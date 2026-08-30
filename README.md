@@ -256,6 +256,24 @@ e 48 h no mesmo instante. Zero ali quase certamente é "sem dado", e mostrá-lo 
 lado de uma vizinha com 39 mm mandaria a pessoa para o lado errado. A leitura vai
 marcada e a tela diz **"dado inconsistente na fonte"** em vez de um número.
 
+### A coleta insiste quando vale a pena
+
+Toda coleta passa por `comum.baixar()`. Antes cada script fazia `requests.get`
+seco: um soluço de rede num servidor municipal — que é o que estas fontes são —
+derrubava a coleta inteira e, no cron encadeado com `&&`, derrubava junto a
+publicação. Quinze minutos sem número novo no site por causa de um TCP reset.
+
+A ideia veio do Fila-Disney, e o motivo dele vale ainda mais aqui: *um ciclo
+perdido é histórico perdido para sempre*. Numa cheia o ciclo perdido pode ser
+justamente o do pico — o dado que depois faltaria para calibrar o tempo de
+descida da próxima.
+
+Insiste em 5xx e timeout, com espera crescente. **Não** insiste em 4xx que não
+seja 429 (página que mudou de endereço não volta na segunda tentativa) nem em
+rede fora (DNS quebrado não melhora esperando). Em 429 respeita o `Retry-After`
+que o servidor mandou — ignorar isso é o caminho para levar bloqueio de uma
+fonte pública que usamos de graça.
+
 ## Bot de consulta no Telegram
 
 O `alerta_cotas.py` fala sozinho quando um rio cruza cota. O `bot.py` é o

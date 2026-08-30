@@ -106,14 +106,12 @@ def parse(html: str) -> list[dict]:
 
 
 def coletar() -> dict:
-    import requests
+    from comum import baixar
 
-    r = requests.get(URL, headers={"User-Agent": UA}, timeout=30)
-    r.raise_for_status()
     return {
         "fonte": URL,
         "coletado_em": datetime.now(timezone.utc).isoformat(),
-        "leituras": parse(r.text),
+        "leituras": parse(baixar(URL)),
     }
 
 

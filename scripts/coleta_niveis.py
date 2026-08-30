@@ -51,20 +51,19 @@ SERIE = DADOS / "tempo-real"
 ULTIMO = SERIE / "ultimo.json"
 
 
-def baixar() -> list[dict]:
+def baixar_niveis() -> list[dict]:
     """Leituras da página da Defesa Civil de Itajaí, já mapeadas para cidades."""
     try:
-        import requests
+        import requests  # noqa: F401  (só para dar erro claro se faltar)
     except ImportError:  # pragma: no cover
         sys.exit("Para baixar é preciso o requests: pip install -r scripts/requirements.txt")
 
     # Reaproveita o analisador de coleta_itajai.py — é a mesma página.
     from coleta_itajai import URL, parse
+    from comum import baixar
 
     espera_turno()
-    resposta = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
-    resposta.raise_for_status()
-    return parse(resposta.text)
+    return parse(baixar(URL))
 
 
 def baixar_chuva() -> list[dict]:
@@ -78,12 +77,10 @@ def baixar_chuva() -> list[dict]:
     """
     try:
         from coleta_chuva import URL as URL_CHUVA, parse as parse_chuva
-        import requests
+        from comum import baixar
 
         espera_turno()
-        resposta = requests.get(URL_CHUVA, headers={"User-Agent": USER_AGENT}, timeout=30)
-        resposta.raise_for_status()
-        return parse_chuva(resposta.text)
+        return parse_chuva(baixar(URL_CHUVA))
     except Exception as e:
         print(f"aviso: chuva não coletada ({e}) — o nível segue normalmente.",
               file=sys.stderr)
@@ -180,7 +177,7 @@ def main() -> int:
         return 0
 
     try:
-        leituras = baixar()
+        leituras = baixar_niveis()
     except Exception as e:  # rede, HTTP, HTML inesperado
         print(f"ERRO ao coletar: {e}", file=sys.stderr)
         return 1

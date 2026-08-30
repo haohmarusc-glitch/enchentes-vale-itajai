@@ -39,6 +39,86 @@ def espera_turno() -> None:
     _ultima_chamada = time.monotonic()
 
 
+# --- HTTP -------------------------------------------------------------------
+#
+# Toda coleta passa por aqui. Antes cada script fazia `requests.get` seco: um
+# soluço de rede num servidor municipal — que é o que estas fontes são —
+# derrubava a coleta inteira, e no cron, encadeado com `&&`, derrubava junto a
+# publicação. Quinze minutos sem número novo no site por causa de um TCP reset.
+#
+# A ideia é do Fila-Disney, e o motivo dele vale ainda mais aqui: um ciclo
+# perdido é histórico perdido para sempre. Numa cheia, o ciclo perdido pode ser
+# justamente o do pico — o dado que depois faltaria para calibrar o tempo de
+# descida da próxima.
+
+HTTP_TIMEOUT_S = 30
+HTTP_TENTATIVAS = 3
+HTTP_BACKOFF_BASE_S = 2
+
+
+def baixar(
+    url: str,
+    *,
+    tentativas: int = HTTP_TENTATIVAS,
+    dormir=time.sleep,
+    transporte=None,
+) -> str:
+    """
+    Baixa a página, insistindo quando vale a pena.
+
+    As três regras que decidem se insiste:
+
+    * **429** — o servidor pediu calma. Espera o `Retry-After` que ele mandou,
+      ou o backoff, o que for maior. Ignorar isso é o caminho para levar bloqueio
+      de uma fonte pública que estamos usando de graça.
+    * **4xx que não é 429** — não vai melhorar sozinho. Página que mudou de
+      endereço não aparece na segunda tentativa; insistir só atrasa o resto.
+    * **conexão recusada, DNS quebrado, rota inexistente** — também não melhora
+      esperando. Duas tentativas e desiste, em vez de empatar a execução por um
+      minuto enquanto a rede está fora.
+
+    `dormir` e `transporte` entram por parâmetro para o teste poder rodar sem
+    rede e sem esperar de verdade.
+    """
+    if transporte is None:
+        import requests
+
+        def transporte(u, cabecalhos, timeout):  # noqa: E306
+            return requests.get(u, headers=cabecalhos, timeout=timeout)
+
+    import requests
+
+    cabecalhos = {"User-Agent": USER_AGENT}
+    ultimo: Exception | None = None
+
+    for tentativa in range(1, tentativas + 1):
+        try:
+            resposta = transporte(url, cabecalhos, HTTP_TIMEOUT_S)
+            if resposta.status_code == 429:
+                pedido = resposta.headers.get("Retry-After") if resposta.headers else None
+                try:
+                    espera = float(pedido) if pedido else HTTP_BACKOFF_BASE_S**tentativa
+                except (TypeError, ValueError):
+                    espera = HTTP_BACKOFF_BASE_S**tentativa
+                ultimo = requests.HTTPError("429 Too Many Requests")
+                if tentativa < tentativas:
+                    dormir(espera)
+                continue
+            resposta.raise_for_status()
+            return resposta.text
+        except (requests.RequestException, ValueError) as exc:
+            ultimo = exc
+            status = getattr(getattr(exc, "response", None), "status_code", None)
+            if status is not None and 400 <= status < 500 and status != 429:
+                break
+            if isinstance(exc, requests.ConnectionError) and tentativa >= 2:
+                break
+            if tentativa < tentativas:
+                dormir(HTTP_BACKOFF_BASE_S**tentativa)
+
+    raise requests.RequestException(f"{url}: {ultimo}") from ultimo
+
+
 def carrega_env(caminho: Path | None = None) -> None:
     """Lê um `.env` simples (CHAVE=valor) para o ambiente, sem sobrescrever."""
     arquivo = caminho or (RAIZ / ".env")

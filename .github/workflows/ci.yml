@@ -15,10 +15,13 @@ jobs:
         with:
           python-version: '3.11'
       - name: Instalar dependências dos scripts
-        run: python3 -m pip install beautifulsoup4
+        run: python3 -m pip install beautifulsoup4 requests
       - name: Validar os JSONs de data/
         working-directory: scripts
         run: python3 validar_dados.py
+      - name: Testes do núcleo HTTP da coleta
+        working-directory: scripts
+        run: python3 teste_http.py
       - name: Testes do analisador da tábua de maré
         working-directory: scripts
         run: python3 teste_coleta_mares.py

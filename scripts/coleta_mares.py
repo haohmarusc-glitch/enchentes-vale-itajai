@@ -226,9 +226,9 @@ def main() -> int:
             )
             return 2
         try:
-            r = requests.get(URL, headers={"User-Agent": UA}, timeout=30)
-            r.raise_for_status()
-            resposta = r.json()
+            from comum import baixar
+
+            resposta = json.loads(baixar(URL))
         except Exception as e:
             print(f"ERRO ao baixar {URL}: {e}", file=sys.stderr)
             return 1
