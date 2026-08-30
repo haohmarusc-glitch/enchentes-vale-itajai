@@ -231,7 +231,7 @@ def cota_da_estacao(titulo: str) -> tuple[float | None, str | None]:
     há e esconderia onde há.
     """
     e = estacao_por_titulo(titulo)
-    for chave in ("atencao", "alerta", "inundacao"):
+    for chave in ("atencao", "alerta", "emergencia", "inundacao"):
         valor = (e or {}).get("cotas_m", {}).get(chave)
         if isinstance(valor, (int, float)):
             return float(valor), chave
@@ -253,7 +253,7 @@ def cota_de_referencia(rio: str, cidade: str) -> tuple[float | None, str | None]
     for c in rio_dados["cidades"]:
         if c["id"] != cidade:
             continue
-        for chave in ("atencao", "alerta", "inundacao"):
+        for chave in ("atencao", "alerta", "emergencia", "inundacao"):
             if chave in c.get("cotas_m", {}):
                 return float(c["cotas_m"][chave]), chave
     return None, None

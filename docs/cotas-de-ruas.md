@@ -33,11 +33,42 @@ Observações:
   **profundidade da lâmina d'água por trecho** (`situa`), que é o dado mais útil para ruas.
 - Não há cota de rio associada a cada polígono. A ligação evento → pico do rio vem de
   `data/enchentes.json` (cruzar pela data).
-- A prefeitura também publica "cotas por endereço" no GeoItajaí (portal de geoprocessamento);
-  não localizei o serviço aberto — **tarefa de investigação**.
+- "Cotas por endereço" ficam no ArcGIS da prefeitura — ver seção própria abaixo.
 - Bairros historicamente atingidos: Cidade Nova, Imaruí, Nossa Senhora das Graças, Fazenda,
   São Vicente, Murta, Cordeiros, Salseiros, Canhanduba, Dom Bosco, Nova Brasília, Bambuzal,
   Itaipava (junto à BR-101). Fonte: mapeamento da Defesa Civil no evento de 2015.
+
+### Itajaí — cotas oficiais por estação (Plano de Contingência v17, 22/12/2025) ✔
+Tabela 11 do Plano de Contingência da COMPDEC define as subfases por estação (já em `data/estacoes.json` → `estacoes_defesa_civil_itajai`):
+
+| Estação | Local | Atenção | Alerta | Emergência |
+|---|---|---|---|---|
+| DC-01 | Itajaí-Açu – CEPSUL | 1,16 | 1,36 | 1,56 |
+| DC-02 | Itajaí-Açu – Praça da Murta | 1,60 | 2,00 | 2,50 |
+| DC-03 | Mirim canal retificado – SEMASA | 1,48 | 1,85 | 2,50 |
+| DC-04 | Mirim – Vitalmar | 1,50 | 1,85 | 2,25 |
+| DC-05 | Mirim curso antigo – Sítio Sr. Hilário | 1,60 | 2,20 | 3,00 |
+| DC-06 | Mirim curso antigo – Clube Itamirim | 1,50 | 1,85 | 2,55 |
+| DC-07 | Ribeirão da Murta – Portal I | 1,00 | 1,35 | 1,65 |
+| DC-08 | Ribeirão Canhanduba – Rio do Meio | 1,80 | 2,30 | 2,89 |
+| DC-09 | Ribeirão da Murta – Bairro Murta | 1,12 | 1,32 | 1,52 |
+| DC-10 | Mirim – Limoeiro | 8,00 | 9,00 | 10,00 |
+| DC-11 | Itajaí-Açu – Santa Regina (Volta de Cima) | 3,00 | 4,00 | 5,00 |
+
+Uso na UI: colorir cada estação de Itajaí (amarelo/laranja/vermelho) pelo nível de `data/tempo-real/ultimo.json`. Atenção: DC-10 tem régua própria (8–10 m), não comparar com as demais.
+
+### Itajaí — arquivos oficiais de cota de inundação (Defesa Civil, página Mapas)
+`https://defesacivil.itajai.sc.gov.br/mapas/` publica, para download direto:
+- **Mapa de Cota de Inundação set/2011** (.zip), **set/2013** (.rar), **jul/2013 por maré** (.rar), **jun/2014** (.rar), **out/2015** (.rar) — provavelmente shapefiles/CAD com cotas; são a origem dos GeoJSON do GeoItajaí e podem trazer atributos que o GitHub não tem (cota por ponto).
+- **Levantamento da Enchente de 1983, 1984, 2001, 2008, 2011** (PDF) e **Mapa das Enchentes de 1983, 1984 e 2001** (PDF).
+- Plano de Contingência (PDF) — Tabela 11 acima; lista de abrigos por zona; bairros por zona de Defesa Civil.
+
+Tarefa: `scripts/baixar_mapas_itajai.py` — baixar os 5 pacotes + PDFs para `data/manchas/itajai/oficial/`, extrair (`unrar`/`unzip`), listar camadas e atributos com `ogrinfo`/`geopandas`, converter para GeoJSON EPSG:4326 e registrar em `data/manchas/index.json` com `fonte`, `evento` e `licenca: "a confirmar"`.
+
+### Itajaí — ArcGIS da prefeitura (cotas por endereço)
+- App "Cotas de Inundação": `https://arcgis.itajai.sc.gov.br/portal/apps/webappviewer/index.html?id=131634abf81347b9a973e79746ae4ef3`
+- App "Histórico de Inundações": `https://arcgis.itajai.sc.gov.br/portal/apps/experiencebuilder/experience/?id=0a0f5df570ce46a5bac16a4348752a74`
+- REST: `https://arcgis.itajai.sc.gov.br/server/rest/services` — serviços públicos existem (ex.: `arcgis_urban/zoneamento/MapServer`, FeatureServer com geoJSON). Tarefa: abrir a raiz do REST no navegador, achar a pasta/serviço da Defesa Civil (cotas de inundação, histórico) e testar `…/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson`. Se responder, é a fonte de "cota por endereço" de Itajaí sem raspagem.
 
 ### Blumenau — tabela oficial de cotas por rua (AlertaBlu)
 - Página: `https://alertablu.blumenau.sc.gov.br/p/cotas` (também `https://defesacivil.blumenau.sc.gov.br/p/cotas`)
@@ -185,8 +216,9 @@ Popular com todas as tabelas da seção 1 (Blumenau, Gaspar, Brusque). Confianç
 2. `scripts/baixar_manchas_itajai.py` + `data/manchas/index.json`.
 3. Componente de busca por rua + simulador (item 3.1 e 3.2).
 4. Mapa Leaflet com as manchas de Itajaí (3.3). Adicionar `leaflet` e `react-leaflet` ao `web/`.
-5. Investigar endpoints: exportação de Rio do Sul (DevTools), mapa de cotas de Gaspar, "cotas por
-   endereço" do GeoItajaí. Registrar o que achar em `docs/cotas-de-ruas.md` (esta seção).
+5. Investigar endpoints: REST do ArcGIS de Itajaí (cotas por endereço), exportação de Rio do Sul
+   (DevTools; há também PDFs por rua em `index.php?r=soscota-rua%2Findex`), mapa de cotas de Gaspar.
+5b. `scripts/baixar_mapas_itajai.py` (seção Itajaí — arquivos oficiais). Registrar o que achar em `docs/cotas-de-ruas.md` (esta seção).
 6. Pendências de contato (não são código): tabela completa de Blumenau (Defesa Civil), planilha de
    Brusque (Defesa Civil), arquivos QGIS do TCC da UFSC, WMS do LabGeo.
 

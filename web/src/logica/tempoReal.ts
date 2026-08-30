@@ -152,7 +152,7 @@ export function foraDeOrdem(chegadas: ChegadaPrevista[]): boolean {
 
 /** A cota mais baixa da cidade — a primeira que importa quando o rio sobe. */
 export function primeiraCota(cidade: Cidade): { chave: string; valor: number } | null {
-  const ordem = ['atencao', 'alerta', 'inundacao', 'inundacao_historica']
+  const ordem = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
   for (const chave of ordem) {
     const valor = cidade.cotas_m[chave]
     if (typeof valor === 'number') return { chave, valor }

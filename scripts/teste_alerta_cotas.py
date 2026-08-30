@@ -128,18 +128,51 @@ class TestDecidir(unittest.TestCase):
         """
         Itajaí tem onze réguas com zeros diferentes. Aplicar a cota da cidade a
         todas criaria alarme onde não há — foi o erro que já custou caro aqui.
+
+        Os títulos abaixo são inventados de propósito: as onze DC reais ganharam
+        cota própria do Plano de Contingência e não passam mais por este
+        caminho. A invariante continua valendo para a próxima estação que
+        aparecer na fonte antes de ser cadastrada — que é justamente quando ela
+        protege.
         """
         dados = {"coletado_em": AGORA.isoformat(), "leituras": [
-            {"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta",
+            {"estacao": "DC-99 Régua nova ainda não cadastrada", "rio": "itajai-mirim",
              "cidade": "itajai", "nivel_m": 9.9, "medido_em": "2026-08-30T00:00:00"},
-            {"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer",
-             "rio": "ribeirao-murta", "cidade": "itajai", "nivel_m": 0.5,
-             "medido_em": "2026-08-30T00:00:00"},
+            {"estacao": "DC-98 Outra régua nova", "rio": "itajai-mirim",
+             "cidade": "itajai", "nivel_m": 0.5, "medido_em": "2026-08-30T00:00:00"},
         ]}
         avisos, _, recusas = decidir(dados, {}, AGORA)
         self.assertEqual(avisos, [])
         self.assertEqual(len(recusas), 2)
         self.assertTrue(all("mais de uma régua" in r for r in recusas), recusas)
+
+    def test_regua_de_estuario_mostra_cota_mas_nao_dispara(self):
+        """
+        As nove réguas de estuário de Itajaí têm cota oficial do Plano de
+        Contingência, e mesmo assim não disparam sozinhas: a maré cruza a cota
+        sem enchente. A DC-01 marcou 1,24 m às 17:21 de 30/08/2026, acima da sua
+        cota de 1,16, e 0,70 m três horas depois.
+        """
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu",
+             "cidade": "itajai", "nivel_m": 9.9, "medido_em": "2026-08-30T00:00:00"},
+        ]}
+        avisos, _, recusas = decidir(dados, {}, AGORA)
+        self.assertEqual(avisos, [], "9,9 m acima de qualquer cota, e ainda assim não dispara")
+        self.assertEqual(len(recusas), 1)
+        self.assertIn("maré", recusas[0])
+
+    def test_regua_fora_do_estuario_dispara_com_a_cota_do_plano(self):
+        """A DC-11, em Ilhota, não é de maré: com o Plano ela passou a avisar."""
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
+             "rio": "itajai-acu", "cidade": "ilhota", "nivel_m": 5.5,
+             "medido_em": "2026-08-30T00:00:00"},
+        ]}
+        avisos, _, _ = decidir(dados, {}, AGORA)
+        self.assertEqual(len(avisos), 1)
+        self.assertEqual(avisos[0]["faixa"], "emergencia")
+        self.assertIn("Emergência", avisos[0]["texto"])
 
     def test_leitura_sem_numero_e_ignorada(self):
         dados = payload(4.6)

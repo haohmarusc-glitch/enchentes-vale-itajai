@@ -134,10 +134,27 @@ class TesteAgrupamentoPorRegua(unittest.TestCase):
 
     def test_cidade_com_varias_reguas_recusa_a_cota_da_cidade(self):
         """A cota de estacoes.json é por cidade; com cinco réguas não dá para
-        saber a qual delas ela se refere. Recusar é melhor que escolher."""
-        limiar, motivo = limiar_da_estacao("DC-10", "itajai-mirim", "itajai", quantas_na_cidade=5)
+        saber a qual delas ela se refere. Recusar é melhor que escolher.
+
+        A estação é inventada: as onze DC reais ganharam cota própria do Plano
+        de Contingência e não caem mais aqui. A invariante segue valendo para a
+        próxima régua que a fonte publicar antes de ser cadastrada.
+        """
+        limiar, motivo = limiar_da_estacao("DC-99 régua nova", "itajai-mirim", "itajai",
+                                           quantas_na_cidade=5)
         self.assertIsNone(limiar)
         self.assertEqual(motivo, "varias-reguas")
+
+    def test_estacao_com_cota_propria_e_analisada_mesmo_com_varias_reguas(self):
+        """
+        O ganho do Plano de Contingência: a DC-10 tem régua de 8 a 10 m e cota
+        própria, então a extração de picos passa a analisá-la — antes ela era
+        recusada junto com as outras dez de Itajaí.
+        """
+        limiar, nome = limiar_da_estacao("DC-10 Rio Itajaí-Mirim – Bairro Limoeiro",
+                                         "itajai-mirim", "itajai", quantas_na_cidade=5)
+        self.assertAlmostEqual(limiar, 8.0)
+        self.assertIn("própria estação", nome)
 
     def test_cidade_com_uma_regua_usa_a_cota_dela(self):
         limiar, nome = limiar_da_estacao("Blumenau", "itajai-acu", "blumenau", quantas_na_cidade=1)

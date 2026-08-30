@@ -83,6 +83,7 @@ RODAPE = (
 ROTULO_COTA = {
     "atencao": "Atenção",
     "alerta": "Alerta",
+    "emergencia": "Emergência",
     "inundacao": "Inundação",
     "inundacao_historica": "Inundação histórica",
 }
@@ -504,7 +505,7 @@ def resposta_cotas(base: Base, cidade: dict) -> list[str]:
     if not cotas:
         linhas.append("\nAs cotas desta cidade ainda não foram levantadas.")
         return linhas
-    for chave in ("atencao", "alerta", "inundacao", "inundacao_historica"):
+    for chave in ("atencao", "alerta", "emergencia", "inundacao", "inundacao_historica"):
         if chave in cotas:
             linhas.append(f"\n{ROTULO_COTA.get(chave, chave)}: <b>{metros(cotas[chave])}</b>")
     if cidade.get("regua"):

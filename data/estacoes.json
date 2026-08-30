@@ -8,6 +8,9 @@
       "ordem": "Sequência montante -> jusante ao longo do eixo. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras que se encontram em Rio do Sul; aparecem antes dele.",
       "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado.",
       "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua."
+    },
+    "notas": {
+      "cotas_itajai": "As onze estações de Itajaí têm cota oficial de atenção, alerta e EMERGÊNCIA (a palavra é do Plano de Contingência da COMPDEC, versão 17 de 22/12/2025, Tabela 11). Cada uma tem seu próprio zero: a DC-10, no Limoeiro, usa régua de 8 a 10 m e não se compara com as demais. Nove delas ficam no estuário e estão marcadas com alerta_automatico=false — a cota aparece na tela, mas o aviso por Telegram não dispara a partir de uma travessia isolada, porque a maré cruza essas cotas sem enchente."
     }
   },
   "rios": {
@@ -284,88 +287,183 @@
       "titulo": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL",
       "rio": "itajai-acu",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.16,
+        "alerta": 1.36,
+        "emergencia": 1.56
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Açu - CEPSUL",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-02",
       "titulo": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
       "rio": "itajai-acu",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.6,
+        "alerta": 2.0,
+        "emergencia": 2.5
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Açu - Praça da Murta",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-03",
       "titulo": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
       "rio": "itajai-mirim",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.48,
+        "alerta": 1.85,
+        "emergencia": 2.5
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Mirim Canal Retificado - SEMASA",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-04",
       "titulo": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados",
       "rio": "itajai-mirim",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.5,
+        "alerta": 1.85,
+        "emergencia": 2.25
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Mirim - Empresa VITALMAR",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-05",
       "titulo": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
       "rio": "itajai-mirim",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.6,
+        "alerta": 2.2,
+        "emergencia": 3.0
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Mirim Curso Antigo - Sítio Sr. Hilário",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-06",
       "titulo": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo",
       "rio": "itajai-mirim",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.5,
+        "alerta": 1.85,
+        "emergencia": 2.55
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Mirim Curso Antigo - Clube Itamirim",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-07",
       "titulo": "DC-07 Ribeirão da Murta - Portal",
       "rio": "ribeirao-murta",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.0,
+        "alerta": 1.35,
+        "emergencia": 1.65
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Ribeirão da Murta - Portal I",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-08",
       "titulo": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
       "rio": "ribeirao-canhanduba",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.8,
+        "alerta": 2.3,
+        "emergencia": 2.89
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Ribeirão da Canhanduba - Rio do Meio",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-09",
       "titulo": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer",
       "rio": "ribeirao-murta",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 1.12,
+        "alerta": 1.32,
+        "emergencia": 1.52
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Ribeirão da Murta - Bairro Murta",
+      "alerta_automatico": false,
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
     },
     {
       "codigo": "DC-10",
       "titulo": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro",
       "rio": "itajai-mirim",
       "cidade": "itajai",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 8.0,
+        "alerta": 9.0,
+        "emergencia": 10.0
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Mirim - Limoeiro"
     },
     {
       "codigo": "DC-11",
       "titulo": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
       "rio": "itajai-acu",
       "cidade": "ilhota",
-      "cotas_m": {},
-      "verificado": false
+      "cotas_m": {
+        "atencao": 3.0,
+        "alerta": 4.0,
+        "emergencia": 5.0
+      },
+      "verificado": true,
+      "referencia": "régua",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "nome_no_plano": "Rio Itajaí-Açu - Santa Regina (Volta de Cima)"
     },
     {
       "titulo": "Brusque",
