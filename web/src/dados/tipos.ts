@@ -76,6 +76,16 @@ export interface Evento {
    * que a divergência já foi analisada.
    */
   divergencias?: Divergencia[]
+  /**
+   * Em que referência o nível foi medido.
+   *
+   * Ausente = régua local. `IBGE (régua + 0,20 m)` = a série longa de Blumenau,
+   * que vem da tabela de Cordero & Medeiros e está 20 cm acima da régua. `null`
+   * = a fonte não declara — e para Blumenau isso importa, porque as duas
+   * referências circulam e a diferença entra direto na comparação com as cotas,
+   * que estão na régua.
+   */
+  referencia?: string | null
 }
 
 export interface Enchentes {

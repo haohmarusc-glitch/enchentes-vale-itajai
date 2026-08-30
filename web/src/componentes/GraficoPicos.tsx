@@ -33,6 +33,7 @@ interface Ponto {
   fonte: string
   nota?: string
   divergencias?: { pico_m: number; fonte: string }[]
+  referencia?: string | null
 }
 
 export default function GraficoPicos({
@@ -54,7 +55,17 @@ export default function GraficoPicos({
       fonte: e.fonte,
       ...(e.nota ? { nota: e.nota } : {}),
       ...(e.divergencias ? { divergencias: e.divergencias } : {}),
+      ...('referencia' in e ? { referencia: e.referencia } : {}),
     }))
+
+  // Referências diferentes na mesma cidade não são detalhe de nota de rodapé:
+  // a série longa de Blumenau está 20 cm acima da régua, e as cotas de atenção
+  // e alerta estão NA RÉGUA. Quem olha o gráfico precisa saber que os pontos
+  // não estão todos na mesma escala.
+  const referenciasNaTela = new Set(
+    dados.map((d) => (d.referencia == null ? (d.referencia === null ? 'nao-declarada' : 'regua') : d.referencia)),
+  )
+  const misturaReferencias = referenciasNaTela.size > 1
 
   if (dados.length === 0) {
     return (
@@ -132,6 +143,17 @@ export default function GraficoPicos({
         </li>
       </ul>
 
+      {misturaReferencias ? (
+        <p className={estilos.referencias} role="note">
+          <strong>Atenção: estes pontos não estão todos na mesma referência.</strong> A série longa
+          de {nomeCidade} vem da tabela de Cordero &amp; Medeiros e está em referência IBGE, 20 cm
+          acima da régua; outros registros não declaram a referência. As cotas de atenção, alerta e
+          inundação estão <em>na régua</em>. A conversão não foi aplicada de propósito: a imprensa
+          parece usar IBGE também, e converter sem confirmar com a FURB trocaria um erro conhecido
+          por um erro escondido. Cada linha da tabela abaixo diz a sua referência.
+        </p>
+      ) : null}
+
       <details className={estilos.tabela}>
         <summary>Ver os {dados.length} registros com fonte</summary>
         <div className="rolagem-h">
@@ -140,6 +162,7 @@ export default function GraficoPicos({
               <tr>
                 <th>Data</th>
                 <th>Pico</th>
+                <th>Referência</th>
                 <th>Fonte</th>
               </tr>
             </thead>
@@ -156,6 +179,13 @@ export default function GraficoPicos({
                         {d.divergencias.map((x) => metros(x.pico_m)).join(', ')}
                       </span>
                     ) : null}
+                  </td>
+                  <td className={estilos.referenciaCelula}>
+                    {d.referencia === undefined
+                      ? 'régua'
+                      : d.referencia === null
+                        ? 'não declarada'
+                        : d.referencia}
                   </td>
                   <td>
                     {d.fonte}

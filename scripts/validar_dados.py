@@ -150,6 +150,32 @@ def valida_estacoes() -> set[tuple[str, str]]:
     return conhecidas
 
 
+def valida_referencias() -> None:
+    """
+    Todo registro de Blumenau tem de DECLARAR sua referência.
+
+    Duas circulam para a cidade: a régua local e a do IBGE, 20 cm acima. A série
+    longa (Cordero & Medeiros) é IBGE; as cotas de atenção, alerta e inundação
+    de estacoes.json são régua. Um registro que não diz qual usa faz o leitor
+    supor régua — e supor errado superestima o pico em 20 cm justamente na
+    cidade com a série mais longa do projeto.
+
+    `null` é resposta válida e significa "a fonte não declara". O que não vale é
+    o campo ausente, que é silêncio disfarçado de certeza.
+    """
+    eventos = le_json("enchentes.json")["eventos"]
+    faltando = [
+        e for e in eventos
+        if e.get("cidade") == "blumenau" and "referencia" not in e
+    ]
+    for e in faltando:
+        erro(
+            f"enchentes.json: Blumenau {e.get('data')} não declara 'referencia'. "
+            "Use \"IBGE (régua + 0,20 m)\", null quando a fonte não diz, ou "
+            "omita só em cidades onde a régua é a única referência."
+        )
+
+
 def valida_cotas_ruas() -> None:
     """
     Cotas de rua: o nível em que cada rua começa a alagar.
@@ -332,6 +358,7 @@ def main() -> int:
     valida_enchentes(conhecidas)
     valida_transito(conhecidas)
     valida_cotas_ruas()
+    valida_referencias()
 
     for a in avisos:
         print(f"aviso: {a}")
