@@ -32,14 +32,13 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 try:
-    import requests
-except ImportError:  # pragma: no cover
-    sys.exit("Instale as dependências: pip install -r scripts/requirements.txt")
-
-try:
     from bs4 import BeautifulSoup
 except ImportError:  # pragma: no cover
-    sys.exit("Instale as dependências: pip install -r scripts/requirements.txt")
+    sys.exit("Instale a dependência: pip install beautifulsoup4")
+
+# `requests` é carregado só na hora de baixar. Analisar um HTML salvo — que é o
+# que os testes fazem — não precisa de biblioteca de rede, e exigir uma aqui
+# tornaria o analisador impossível de testar sem instalar o stack inteiro.
 
 URL = "https://defesacivil.itajai.sc.gov.br/monitoramento/mares"
 UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
@@ -187,6 +186,15 @@ def main() -> int:
     if args.arquivo:
         html = Path(args.arquivo).read_text(encoding="utf-8", errors="replace")
     else:
+        try:
+            import requests
+        except ImportError:  # pragma: no cover
+            print(
+                "Para baixar do site é preciso o requests: "
+                "pip install -r scripts/requirements.txt",
+                file=sys.stderr,
+            )
+            return 2
         try:
             r = requests.get(URL, headers={"User-Agent": UA}, timeout=30)
             r.raise_for_status()
