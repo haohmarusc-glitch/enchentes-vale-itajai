@@ -41,6 +41,13 @@ test('frescor separa o que serve do que não serve', () => {
   assert.equal(frescor(MIN_VELHA + 1), 'velha')
 })
 
+test('leitura de uma hora ainda serve — é o ritmo real de algumas fontes', () => {
+  // A estação MKS de Rio do Sul publica quase uma hora atrás das DC de Itajaí.
+  // Com o limite antigo de 45 min ela ficaria permanentemente indisponível.
+  assert.equal(frescor(52), 'agora')
+  assert.equal(frescor(60), 'agora')
+})
+
 test('texto da idade em português', () => {
   assert.equal(textoIdade(0), 'agora mesmo')
   assert.equal(textoIdade(12), 'há 12 min')

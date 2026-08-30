@@ -10,8 +10,26 @@
 import type { Cidade, Trecho } from '../dados/tipos'
 import { caminho, janelaChegada, type Caminho } from './transito'
 
-/** Até aqui a leitura vale como "agora". A fonte publica a cada 15-30 min. */
-export const MIN_AGORA = 45
+/**
+ * Até aqui a leitura vale como "agora".
+ *
+ * Noventa minutos, e não os 45 de antes, por duas razões medidas em campo.
+ *
+ * A primeira: as fontes não publicam no mesmo ritmo. As estações DC de Itajaí
+ * atualizam a cada 15-20 min, mas a estação MKS de Rio do Sul anda quase uma
+ * hora atrás delas. Um limite abaixo do ritmo da própria fonte recusa SEMPRE,
+ * e recusa justamente na cidade que é o melhor indicador de montante da bacia.
+ *
+ * A segunda: a janela de chegada é ancorada no horário da MEDIÇÃO, não em
+ * "agora" — veja `chegadasSePicoAgora`. Uma leitura de uma hora atrás desloca
+ * a janela em uma hora contra um intervalo que já tem três de largura. A idade
+ * não distorce os horários; ela só diz o quanto o NÍVEL ainda representa o rio,
+ * e para isso a tela mostra a idade sempre.
+ *
+ * Quando `scripts/auditar.py` tiver algumas semanas de série, dá para trocar
+ * este número único pela cadência real de cada estação.
+ */
+export const MIN_AGORA = 90
 /** Daqui em diante o número deixa de servir para decidir qualquer coisa. */
 export const MIN_VELHA = 180
 
