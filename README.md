@@ -360,10 +360,38 @@ com o pico é feita pela data, cruzando com `enchentes.json`, e só aparece
 quando aquele pico está registrado. Inventar essa ligação faria alguém olhar o
 mapa de 2011 e concluir que a sua rua alaga a tal metro.
 
+## Mapa das manchas de inundação
+
+Na tela de Itajaí, um mapa Leaflet com as áreas atingidas em nove enchentes
+entre 1983 e 2015 — dado da **própria prefeitura**, na organização GeoItajaí do
+GitHub, licença MIT. Os arquivos `inundaMÊSAAAA` trazem a profundidade da
+lâmina d'água por trecho, e a cor vai do azul claro ao escuro conforme a água
+fica mais funda.
+
+Três coisas que o mapa diz, e uma que ele se recusa a dizer:
+
+- **Não é previsão.** É onde a água chegou naquele evento, na cidade que
+  existia naquele ano — aterro, drenagem e construção mudaram o terreno.
+- **Não estar na mancha não quer dizer que não alaga**: o levantamento cobre o
+  que foi mapeado.
+- Quando a fonte publica **faixas de profundidade que se sobrepõem** (out/2015
+  tem "0,41 a 0,60" e "0,51 a 1"), a tela diz isso em vez de corrigir por conta.
+- **Não diz com quantos metros de rio aquilo aconteceu.** Os polígonos não
+  trazem cota, e o pico de Itajaí dessas datas ainda não está levantado. Sem
+  isso o mapa não se compara com o nível de hoje — e essa é hoje a pendência
+  mais valiosa do projeto.
+
+O Leaflet carrega à parte, como o gráfico de picos: ele pesa mais que todo o
+resto do site somado, e o mapa existe só nesta tela. Quem abre o site no celular
+durante a chuva para ver o nível do rio não paga por ele.
+
 ## Pendências
 
 Em ordem de impacto.
 
+- [ ] **Mapa base do OpenStreetMap durante uma cheia.** O mapa das manchas usa os servidores públicos de tiles do OSM, cuja política desencoraja uso pesado. Numa noite de enchente o acesso ao site multiplica; vale medir e, se preciso, passar para um provedor de tiles ou servir os próprios.
+- [ ] **Resolver a referência altimétrica de Blumenau** — teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou resposta da FURB. Enquanto não sair, a regra bloqueante do `CLAUDE.md` vale: o site rotula cada ponto e recusa parear referências diferentes, ao custo de a previsão Rio do Sul → Blumenau ficar em "dados insuficientes".
+- [ ] _(opcional)_ Seletor régua/IBGE nos gráficos de Blumenau, aplicando ±0,20 m só para visualizar. Só vale a pena se a verificação acima demorar — o gráfico já mostra a referência de cada ponto e avisa quando mistura.
 - [ ] **Levantar os picos de Itajaí de 1983, 1984, 2001, 2008, 2011, jul e set/2013, jun/2014 e out/2015.** As manchas de inundação desses nove eventos já estão no repositório, mas nenhuma tem o nível do rio correspondente — a legenda do mapa fica sem dizer "isto foi com o rio em X m", que é o que tornaria a mancha comparável com o nível de hoje.
 - [ ] **Conseguir a tabela completa de cotas de rua.** Hoje são 57 pontos vindos do que a imprensa reproduziu. As tabelas oficiais existem: Blumenau (AlertaBlu, bloqueia robôs — pedir à Defesa Civil), Brusque (planilha não pública — pedir por ofício), Rio do Sul (555 itens com botão de exportar, portal em JS) e Gaspar (mapa "Pesquise sua cota").
 - [ ] **Resolver a discordância entre as fontes de tempo de descida.** Somados por caminhos diferentes, os trechos de `transito.json` produzem janelas fora da ordem do rio: no eixo do Açu, Blumenau aparece podendo receber a água antes de Apiúna, que fica acima. O site e o bot **dizem** isso quando acontece, em vez de esconder — mas a correção de verdade é conciliar o hidrograma de projeto da JICA com os modelos acadêmicos, trecho a trecho.

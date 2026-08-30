@@ -1,6 +1,16 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
 import PainelMare from '../componentes/PainelMare'
+
+/**
+ * O mapa carrega à parte, como o gráfico de picos.
+ *
+ * O Leaflet sozinho pesa mais que todo o resto do site somado, e o mapa existe
+ * só nesta tela. Embutido no pacote inicial, quem abre o site no celular
+ * durante a chuva para ver o nível do rio pagaria por ele sem chegar a usá-lo.
+ */
+const MapaManchas = lazy(() => import('../componentes/MapaManchas'))
+
 import SeloConfianca from '../componentes/SeloConfianca'
 import { cidade, fontesGerais, trechos } from '../dados/carregar'
 import { dataHora } from '../logica/formato'
@@ -142,6 +152,16 @@ export default function TelaItajai() {
           Levantar esses picos, com data e hora, é a pendência mais importante do projeto.
         </p>
       </section>
+      <Suspense
+        fallback={
+          <section className="cartao">
+            <p>Carregando o mapa das enchentes…</p>
+          </section>
+        }
+      >
+        <MapaManchas />
+      </Suspense>
+
     </>
   )
 }
@@ -186,6 +206,7 @@ function Chegada({ partida, trecho }: { partida: Date; trecho: Caminho }) {
       </p>
 
       <PainelMare inicio={inicio} fim={fim} />
+
     </div>
   )
 }

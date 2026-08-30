@@ -63,8 +63,11 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   2. Conflito de valor para o mesmo (cidade, evento) usa o mecanismo `divergencias`:
      um valor adotado, os demais guardados com fonte e referência. Não criar dois registros
      para o mesmo evento; `agruparEmEventos` não deve escolher por magnitude.
-  3. Nenhuma conversão entre referências é gravada no JSON. O seletor régua/IBGE na UI
-     aplica ±0,20 m só para visualização e exibe a referência de cada ponto.
+  3. Nenhuma conversão entre referências é gravada no JSON. A UI **exibe a referência de cada
+     ponto e avisa quando o gráfico mistura referências** — feito. Um seletor régua/IBGE que
+     aplique ±0,20 m só para visualização fica como pendência OPCIONAL, a fazer apenas se a
+     verificação no HidroWeb demorar: enquanto a ambiguidade não for resolvida ele ajuda, e
+     depois dela nasce e morre em dias.
   4. Busca "minha rua" e simulador usam somente nível em `régua` (cotas de rua e tempo real
      são régua). Há teste que trava isso.
   5. Previsão a jusante pareia igual com igual: montante e jusante na mesma referência.
