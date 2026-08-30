@@ -8,7 +8,7 @@ Site que mostra dados históricos de enchentes nos rios **Itajaí-Açu** e **Ita
 
 - nível do rio em cada cidade ao longo do curso (montante → jusante);
 - previsão empírica do nível na próxima cidade a jusante;
-- tempo estimado de chegada da onda de cheia;
+- tempo estimado de chegada da cheia;
 - painel especial para **Itajaí**, na foz, que recebe os dois rios e sofre influência da maré.
 
 Público: moradores da região (Itajaí, Navegantes, Blumenau, Brusque…) sem formação técnica. Textos em **português do Brasil**.
@@ -21,7 +21,7 @@ Público: moradores da região (Itajaí, Navegantes, Blumenau, Brusque…) sem f
 data/
   estacoes.json   cidades por rio, ordem, códigos ANA, cotas de referência, URLs de tempo real
   enchentes.json  picos históricos: um registro por (evento, cidade), com fonte e confiança
-  transito.json   tempos de trânsito da onda de cheia entre cidades
+  transito.json   tempo que a cheia leva para descer entre cidades
 scripts/          Python 3.11+ — coleta (ANA, Defesa Civil) e cálculo de correlações
 web/              React + Vite + TypeScript — o site
 ```

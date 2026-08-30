@@ -116,7 +116,7 @@ export default function DiagramaRio({
                 <span className={estilos.setaTexto}>
                   {trecho ? (
                     <>
-                      a onda leva <strong>{faixaHoras(trecho)}</strong> até {proxima.nome}{' '}
+                      a cheia leva <strong>{faixaHoras(trecho)}</strong> até {proxima.nome}{' '}
                       <SeloConfianca
                         nivel={trecho.confianca}
                         fonte={trecho.fontes.join(' · ')}

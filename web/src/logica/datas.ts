@@ -38,7 +38,7 @@ const DIA_MS = 86_400_000
  * Folga máxima, em dias, entre dois registros do mesmo evento.
  *
  * O pico não acontece no mesmo dia em todas as cidades: da cabeceira à foz a
- * onda leva mais de um dia. Sem essa folga, o pico de Blumenau (09/09) e o de
+ * cheia leva mais de um dia. Sem essa folga, o pico de Blumenau (09/09) e o de
  * Itajaí (10/09) seriam tratados como eventos diferentes e o pareamento
  * devolveria lista vazia. Sete dias cobrem a bacia inteira com sobra e ainda
  * separam eventos distintos, que na região vêm com semanas de intervalo.

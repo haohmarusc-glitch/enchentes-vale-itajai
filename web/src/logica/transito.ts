@@ -1,5 +1,5 @@
 /**
- * Tempo de trânsito da onda de cheia entre duas cidades.
+ * Tempo que a cheia leva para descer de uma cidade até a outra.
  *
  * `transito.json` cobre só alguns trechos, e alguns deles "pulam" cidades
  * (ex.: Blumenau → Itajaí passa por Gaspar e Ilhota sem registro intermediário).

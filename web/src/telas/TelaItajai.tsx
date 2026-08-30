@@ -19,8 +19,8 @@ const ORIGENS: Origem[] = [
 ]
 
 /**
- * Itajaí recebe os dois rios. O que a tela faz é somar o tempo de trânsito ao
- * horário do pico informado rio acima — nada mais. Não há previsão de altura
+ * Itajaí recebe os dois rios. O que a tela faz é somar o tempo que a cheia leva
+ * para descer ao horário do pico informado rio acima — nada mais. Não há previsão de altura
  * aqui: não existem pares históricos suficientes entre as cidades de montante e
  * Itajaí, e a maré, que muda tudo na foz, ainda não está integrada.
  */
@@ -32,7 +32,7 @@ export default function TelaItajai() {
       <h1>Itajaí — foz</h1>
       <p className={estilos.intro}>
         Itajaí recebe o Itajaí-Açu e o Itajaí-Mirim, e ainda sofre com a maré. Informe o horário do
-        pico rio acima para ver quando a onda costuma chegar.
+        pico rio acima para ver quando a cheia costuma chegar.
       </p>
 
       <AvisoLegal />
@@ -65,7 +65,7 @@ export default function TelaItajai() {
               <div aria-live="polite">
                 {!trecho ? (
                   <p className={estilos.semDado}>
-                    O tempo de trânsito entre {c?.nome ?? origem.cidadeId} e Itajaí ainda não está em{' '}
+                    O tempo que a cheia leva de {c?.nome ?? origem.cidadeId} até Itajaí ainda não está em{' '}
                     <code>transito.json</code>. Sem esse dado, não há como estimar a chegada.
                   </p>
                 ) : !valida ? (
@@ -151,7 +151,7 @@ function Chegada({ partida, trecho }: { partida: Date; trecho: Caminho }) {
         </p>
       ) : null}
       <p className={estilos.ressalva}>
-        A janela vale para a onda que já está descendo. Chuva nova entre as duas cidades, manobra de
+        A janela vale para a cheia que já está descendo. Chuva nova entre as duas cidades, manobra de
         barragem ou maré alta podem adiantar, atrasar ou aumentar a cheia.
       </p>
     </div>

@@ -114,12 +114,12 @@ export default function PainelPrevisao({ rioId, eventos, trechos, montante, jusa
       <p className={estilos.transito}>
         {trecho ? (
           <>
-            Tempo de trânsito da onda: <strong>{faixaHoras(trecho)}</strong>{' '}
+            Tempo até a cheia descer: <strong>{faixaHoras(trecho)}</strong>{' '}
             <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} />
           </>
         ) : (
           <span className={estilos.semDado}>
-            Tempo de trânsito entre {montante.nome} e {jusante.nome} ainda não levantado.
+            Tempo de descida entre {montante.nome} e {jusante.nome} ainda não levantado.
           </span>
         )}
       </p>

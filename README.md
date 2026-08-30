@@ -1,6 +1,6 @@
 # Enchentes do Vale do Itajaí
 
-Site com dados históricos de enchentes nos rios **Itajaí-Açu** e **Itajaí-Mirim** (SC): nível do rio em cada cidade, previsão empírica para a cidade a jusante e tempo estimado de chegada da onda de cheia. Itajaí, na foz, recebe os dois rios e a influência da maré.
+Site com dados históricos de enchentes nos rios **Itajaí-Açu** e **Itajaí-Mirim** (SC): nível do rio em cada cidade, previsão empírica para a cidade a jusante e tempo estimado de chegada da cheia. Itajaí, na foz, recebe os dois rios e a influência da maré.
 
 > Este projeto **não substitui** o AlertaBlu, a Defesa Civil de SC nem as Defesas Civis municipais. Em emergência, ligue 199.
 
@@ -10,7 +10,7 @@ Site com dados históricos de enchentes nos rios **Itajaí-Açu** e **Itajaí-Mi
 data/
   estacoes.json   cidades, códigos ANA, cotas de referência, ordem no rio
   enchentes.json  picos históricos por rio/cidade/data, com fonte e confiança
-  transito.json   tempos de trânsito da onda de cheia entre cidades
+  transito.json   tempo que a cheia leva para descer entre cidades
 scripts/
   validar_dados.py     portão de qualidade dos JSONs (roda no CI)
   ana_hidroweb.py      coleta de séries da ANA (aguarda credenciais)

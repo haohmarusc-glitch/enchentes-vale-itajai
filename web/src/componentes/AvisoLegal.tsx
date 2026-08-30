@@ -29,7 +29,7 @@ export default function AvisoLegal() {
           cidade com os de outra.
         </li>
         <li>
-          Tempos de chegada da onda de cheia são <strong>faixas estimadas</strong>, não horários.
+          Tempos de chegada da cheia são <strong>faixas estimadas</strong>, não horários.
           Chuva forte a jusante, maré alta e barragens mudam tudo.
         </li>
         <li>

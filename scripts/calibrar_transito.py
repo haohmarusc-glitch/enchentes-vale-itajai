@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Calcula o tempo de trânsito real da onda de cheia a partir dos dados.
+"""Calcula quanto tempo a cheia leva de verdade para descer entre duas cidades.
 
 Como funciona: para cada par de cidades vizinhas no mesmo rio, procura eventos
 em que AS DUAS tenham data **e hora** de pico registradas em `enchentes.json`,
@@ -71,7 +71,7 @@ def medicoes(eventos: list[dict], rio: str, de: str, para: str) -> list[float]:
             if t1 is None:
                 continue
             delta = (t1 - t0) / timedelta(hours=1)
-            # A onda desce: o pico a jusante vem depois do de montante.
+            # A água desce: o pico a jusante vem depois do de montante.
             if 0 < delta <= MAX_HORAS:
                 candidatos.append(delta)
         # Mais de um candidato = ambíguo; medir o errado é pior que não medir.

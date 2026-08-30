@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "descricao": "Tempo estimado para a onda de cheia percorrer cada trecho. Valores iniciais de literatura; calibrar com horários de pico reais em enchentes.json.",
+    "descricao": "Tempo estimado para a cheia percorrer cada trecho. Valores iniciais de literatura; calibrar com horários de pico reais em enchentes.json.",
     "campos": {
       "horas_min / horas_max": "Faixa em horas.",
       "confianca": "alta = estudo técnico; media = artigo acadêmico citado sem verificação direta; baixa = estimativa informal."

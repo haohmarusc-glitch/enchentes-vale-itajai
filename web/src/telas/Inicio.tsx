@@ -23,7 +23,7 @@ export default function Inicio() {
     <>
       <h1>Enchentes do Vale do Itajaí</h1>
       <p className={estilos.entrada}>
-        Onde o rio já chegou em cada cidade, quanto tempo a onda de cheia leva para descer e o que os
+        Onde o rio já chegou em cada cidade, quanto tempo a cheia leva para descer e o que os
         eventos passados sugerem para a cidade seguinte.
       </p>
 
@@ -70,7 +70,7 @@ export default function Inicio() {
           não existe dado, a tela diz que não existe — não preenchemos buraco com estimativa.
         </p>
         <p>
-          <strong>Tempo de chegada é sempre faixa.</strong> "14–17 h" quer dizer que a onda costumou
+          <strong>Tempo de chegada é sempre faixa.</strong> "14–17 h" quer dizer que a cheia costumou
           levar entre 14 e 17 horas naquele trecho. Não é horário marcado, e chuva no meio do
           caminho muda a conta.
         </p>
