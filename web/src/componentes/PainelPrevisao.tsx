@@ -137,7 +137,8 @@ export default function PainelPrevisao({ rioId, eventos, trechos, montante, jusa
         {trecho ? (
           <>
             Tempo até a cheia descer: <strong>{faixaHoras(trecho)}</strong>{' '}
-            <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} />
+            <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} tipo="trecho"
+                      />
           </>
         ) : (
           <span className={estilos.semDado}>

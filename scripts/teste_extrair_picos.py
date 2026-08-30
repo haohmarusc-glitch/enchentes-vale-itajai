@@ -144,6 +144,26 @@ class TesteAgrupamentoPorRegua(unittest.TestCase):
         self.assertAlmostEqual(limiar, 6.0)
         self.assertEqual(nome, "atencao")
 
+    def test_cota_propria_da_estacao_destrava_a_analise(self):
+        """
+        É esta a saída para Itajaí: cota por régua em estacoes.json. Com ela, a
+        estação passa a ser analisada mesmo numa cidade com cinco réguas.
+        """
+        titulo = "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
+        with unittest.mock.patch(
+            "comum.le_json",
+            side_effect=lambda nome: {
+                "estacoes_tempo_real": [
+                    {"codigo": "DC-10", "titulo": titulo, "rio": "itajai-mirim",
+                     "cidade": "itajai", "cotas_m": {"atencao": 5.5}, "verificado": True}
+                ],
+                "rios": {},
+            } if nome == "estacoes.json" else {},
+        ):
+            limiar, nome = limiar_da_estacao(titulo, "itajai-mirim", "itajai", quantas_na_cidade=5)
+        self.assertAlmostEqual(limiar, 5.5)
+        self.assertIn("própria estação", nome)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

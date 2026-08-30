@@ -1,0 +1,50 @@
+.selo {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--raio);
+  border: 1px solid;
+}
+
+.numero {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.idade {
+  font-size: 0.82rem;
+  opacity: 0.85;
+}
+
+.aviso {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.normal {
+  background: var(--agua-fundo);
+  border-color: var(--agua-clara);
+  color: var(--agua);
+}
+
+.acima {
+  background: var(--alerta-fundo);
+  border-color: var(--alerta);
+  color: var(--alerta);
+}
+
+.velha {
+  background: var(--fundo);
+  border-color: var(--borda);
+  color: var(--tinta-fraca);
+}
+
+.semHorario {
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+  font-style: italic;
+}

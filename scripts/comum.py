@@ -83,38 +83,82 @@ def cidades(rio: str | None = None) -> list[dict[str, Any]]:
     return saida
 
 
-# --- Estações da Defesa Civil de Itajaí ---------------------------------------
+# --- Estações de tempo real -------------------------------------------------
 #
-# A página de níveis publica estações com nomes próprios (DC-01, DC-02, …) mais
-# leituras de Brusque, Blumenau e Rio do Sul. Este mapa liga cada uma ao par
-# (rio, cidade) de `estacoes.json`. Fica aqui, e não no coletor, para que os
-# scripts de análise possam usá-lo sem depender de biblioteca de rede.
+# A ligação entre o título que a Defesa Civil publica e o par (rio, cidade)
+# fica em `estacoes.json`, não aqui: é dado, não código, e quem mantém os dados
+# precisa poder acrescentar estação sem mexer em Python. As expressões abaixo
+# são só a rede de segurança para um título que ainda não esteja cadastrado.
 
 import re as _re
 
-MAPA_ESTACOES: list[tuple[str, str, str]] = [
+_FALLBACK: list[tuple[str, str, str]] = [
     (r"^DC-0[12]\b", "itajai-acu", "itajai"),
     (r"^DC-11\b", "itajai-acu", "ilhota"),
     (r"^DC-0[3456]\b", "itajai-mirim", "itajai"),
     (r"^DC-10\b", "itajai-mirim", "itajai"),
-    (r"^DC-0[789]\b", "ribeirao", "itajai"),
+    (r"^DC-07\b|^DC-09\b", "ribeirao-murta", "itajai"),
+    (r"^DC-08\b", "ribeirao-canhanduba", "itajai"),
     (r"^Brusque", "itajai-mirim", "brusque"),
     (r"^Blumenau", "itajai-acu", "blumenau"),
     (r"^Rio do Sul", "itajai-acu", "rio-do-sul"),
 ]
 
 
+def estacoes_tempo_real() -> list[dict[str, Any]]:
+    return le_json("estacoes.json").get("estacoes_tempo_real", [])
+
+
+def estacao_por_titulo(titulo: str) -> dict[str, Any] | None:
+    """
+    A estação cadastrada que corresponde a este título.
+
+    Casa pelo título exato e, se não achar, pelo código DC-NN no começo — a
+    Defesa Civil já mudou o texto depois do código mais de uma vez, e o código
+    é a parte estável.
+    """
+    cadastradas = estacoes_tempo_real()
+    for e in cadastradas:
+        if e.get("titulo") == titulo:
+            return e
+    codigo = _re.match(r"^(DC-\d{2})\b", titulo or "")
+    if codigo:
+        for e in cadastradas:
+            if e.get("codigo") == codigo.group(1):
+                return e
+    return None
+
+
 def classificar_estacao(titulo: str) -> tuple[str | None, str | None]:
-    """(rio, cidade) da estação, ou (None, None) quando o nome não é reconhecido."""
-    for padrao, rio, cidade in MAPA_ESTACOES:
-        if _re.search(padrao, titulo):
+    """(rio, cidade) da estação, ou (None, None) quando o título é desconhecido."""
+    e = estacao_por_titulo(titulo)
+    if e:
+        return e.get("rio"), e.get("cidade")
+    for padrao, rio, cidade in _FALLBACK:
+        if _re.search(padrao, titulo or ""):
             return rio, cidade
+    return None, None
+
+
+def cota_da_estacao(titulo: str) -> tuple[float | None, str | None]:
+    """
+    Cota de referência DESTA régua, quando cadastrada em `estacoes.json`.
+
+    Existe porque a cota da cidade não serve para uma cidade com várias réguas:
+    os zeros são diferentes, e aplicar a mesma a todas criaria evento onde não
+    há e esconderia onde há.
+    """
+    e = estacao_por_titulo(titulo)
+    for chave in ("atencao", "alerta", "inundacao"):
+        valor = (e or {}).get("cotas_m", {}).get(chave)
+        if isinstance(valor, (int, float)):
+            return float(valor), chave
     return None, None
 
 
 def cota_de_referencia(rio: str, cidade: str) -> tuple[float | None, str | None]:
     """
-    Cota a partir da qual vale considerar que há cheia, e o nome dela.
+    Cota a partir da qual vale considerar que há cheia, pela CIDADE.
 
     Prefere 'atencao', depois 'alerta', depois 'inundacao'. Devolve (None, None)
     quando a cidade não tem cota levantada — e nesse caso quem chama deve pedir

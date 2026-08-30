@@ -17,11 +17,28 @@ export function dataHora(d: Date): string {
   })
 }
 
+/**
+ * O que a confiança significa depende do que ela qualifica.
+ *
+ * Num registro histórico ela fala da procedência do número; num trecho de
+ * tempo de descida, do tipo de estudo que o produziu. `transito.json` e
+ * `enchentes.json` documentam as duas escalas, e elas não são a mesma —
+ * chamar de "imprensa" um trecho derivado do hidrograma da JICA seria mentir
+ * sobre a origem do dado.
+ */
 export const ROTULO_CONFIANCA = {
   alta: 'Fonte oficial ou acadêmica',
   media: 'Imprensa ou compilação',
   baixa: 'Compilação informal ou dado disputado',
 } as const
+
+export const ROTULO_CONFIANCA_TRECHO = {
+  alta: 'Faixa afirmada pelo próprio estudo técnico',
+  media: 'Hidrograma de projeto ou modelo acadêmico citado',
+  baixa: 'Estimativa informal, ainda não calibrada',
+} as const
+
+export type TipoConfianca = 'registro' | 'trecho'
 
 export const ROTULO_COTA: Record<string, string> = {
   atencao: 'Atenção',

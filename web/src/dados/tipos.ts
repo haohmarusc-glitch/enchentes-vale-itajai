@@ -21,8 +21,6 @@ export interface Cidade {
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>
   fontes_tempo_real: string[]
-  /** Estações da Defesa Civil de Itajaí que leem esta cidade. */
-  estacoes_dc_itajai?: string[]
 }
 
 /**

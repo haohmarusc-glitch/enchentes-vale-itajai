@@ -1,0 +1,56 @@
+.condicao {
+  font-size: 1.02rem;
+}
+
+.se {
+  background: var(--atencao-fundo);
+  border-left: 6px solid var(--atencao);
+  border-radius: var(--raio);
+  padding: 0.7rem 0.85rem;
+  font-size: 0.92rem;
+}
+
+.recusa {
+  background: var(--fundo);
+  border-left: 6px solid var(--tinta-fraca);
+  border-radius: var(--raio);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.lista {
+  list-style: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.lista li {
+  background: var(--agua-fundo);
+  border-radius: var(--raio);
+  padding: 0.6rem 0.75rem;
+}
+
+.cidade {
+  display: block;
+  font-weight: 700;
+}
+
+.janela {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.trecho {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+
+.ressalva {
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+  margin: 0;
+}

@@ -122,3 +122,8 @@
 .somaTrechos {
   font-size: 0.85rem;
 }
+
+.aoVivo {
+  display: block;
+  margin: 0.4rem 0;
+}

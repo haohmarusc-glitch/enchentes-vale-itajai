@@ -102,6 +102,38 @@ def valida_estacoes() -> set[tuple[str, str]]:
                (x["id"] for x in r["cidades"])):
             erro(f"{onde}: está ao mesmo tempo no eixo e fora dele — escolha um lugar só")
 
+    # Estações de tempo real: o título é a chave de ligação com a fonte, e a
+    # cota fica aqui porque cada régua tem seu zero.
+    registro = estacoes.get("estacoes_tempo_real", [])
+    # Quantas réguas cada cidade tem. Com uma só, a cota da cidade serve; com
+    # várias, cada régua precisa da sua, porque os zeros são diferentes.
+    reguas: dict[tuple[str, str], int] = {}
+    for e in registro:
+        chave = (e.get("rio"), e.get("cidade"))
+        reguas[chave] = reguas.get(chave, 0) + 1
+
+    titulos: set[str] = set()
+    for i, e in enumerate(registro):
+        onde = f"estacoes.json / estacoes_tempo_real[{i}] ({e.get('titulo', '???')})"
+        for campo in ("titulo", "rio", "cidade", "cotas_m", "verificado"):
+            if campo not in e:
+                erro(f"{onde}: falta o campo '{campo}'")
+                continue
+        if not str(e.get("titulo", "")).strip():
+            erro(f"{onde}: título vazio — é por ele que o coletor liga a leitura à cidade")
+        if e.get("titulo") in titulos:
+            erro(f"{onde}: título repetido; a ligação com a fonte ficaria ambígua")
+        titulos.add(e.get("titulo"))
+        for chave, valor in (e.get("cotas_m") or {}).items():
+            if not isinstance(valor, (int, float)) or not 0 < valor < PICO_MAXIMO_M:
+                erro(f"{onde}: cota '{chave}' = {valor} fora de faixa plausível")
+        if not (e.get("cotas_m") or {}) and reguas.get((e.get("rio"), e.get("cidade")), 0) > 1:
+            aviso(
+                f"{onde}: sem cota própria, e {e.get('cidade')} tem "
+                f"{reguas[(e.get('rio'), e.get('cidade'))]} réguas neste rio — "
+                "extrair_picos.py não analisa esta estação"
+            )
+
     globals()["_no_eixo"] = no_eixo
     return conhecidas
 

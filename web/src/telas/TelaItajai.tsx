@@ -72,7 +72,8 @@ export default function TelaItajai() {
                 ) : !valida ? (
                   <p className={estilos.aguardando}>
                     Trecho conhecido: <strong>{faixaHoras(trecho)}</strong>{' '}
-                    <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} />.
+                    <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} tipo="trecho"
+                      />.
                     Informe o horário do pico para ver a janela de chegada.
                   </p>
                 ) : (
@@ -106,6 +107,29 @@ export default function TelaItajai() {
           , coletada por <code>scripts/coleta_mares.py</code>. Fonte de origem:{' '}
           {fontesGerais.mare_itajai}. A UNIVALI/CTTMAR e a Defesa Civil ampliaram o marégrafo do
           porto justamente para medir esse efeito sobre o Açu e o Mirim.
+        </p>
+      </section>
+
+      <section className="cartao">
+        <h2>Por que esta tela não mostra o nível de Itajaí ao vivo</h2>
+        <p>
+          A Defesa Civil de Itajaí publica <strong>várias réguas na cidade</strong> — DC-01 e
+          DC-02 no Açu, DC-03 a DC-06 e DC-10 no Mirim, DC-11 na divisa. Elas têm zeros
+          diferentes: numa mesma hora podem marcar 0,92 m e 4,82 m. Escolher uma delas e chamar
+          de "o nível de Itajaí" seria comparar réguas, que é o erro que esta tela avisa para
+          ninguém cometer.
+        </p>
+        <p className={estilos.fonteMare}>
+          Enquanto não houver cota de referência por régua, o caminho é ver estação por estação
+          na{' '}
+          <a
+            href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
+            target="_blank"
+            rel="noreferrer"
+          >
+            página da Defesa Civil de Itajaí
+          </a>
+          .
         </p>
       </section>
 
@@ -145,7 +169,8 @@ function Chegada({ partida, trecho }: { partida: Date; trecho: Caminho }) {
       </p>
       <p className={estilos.detalhe}>
         Trecho de {faixaHoras(trecho)}{' '}
-        <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} />
+        <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} tipo="trecho"
+                      />
         {!trecho.direto ? ` — soma de ${trecho.trechos.length} trechos` : ''}. Horários no fuso do
         seu aparelho.
       </p>
