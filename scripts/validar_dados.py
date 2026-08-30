@@ -107,8 +107,16 @@ def valida_estacoes() -> set[tuple[str, str]]:
     registro = estacoes.get("estacoes_tempo_real", [])
     # Quantas réguas cada cidade tem. Com uma só, a cota da cidade serve; com
     # várias, cada régua precisa da sua, porque os zeros são diferentes.
+    #
+    # Pluviômetro NÃO é régua e fica fora desta conta. A distinção não é
+    # cosmética: a estação Guarani mede chuva em Brusque e está cadastrada no
+    # mesmo (rio, cidade) da régua de Brusque. Contada como régua, a cidade
+    # passaria a "ter duas", e a regra de recusar cota de cidade onde há mais
+    # de uma régua calaria o aviso de cota no Itajaí-Mirim inteiro.
     reguas: dict[tuple[str, str], int] = {}
     for e in registro:
+        if e.get("tipo") == "pluviometro":
+            continue
         chave = (e.get("rio"), e.get("cidade"))
         reguas[chave] = reguas.get(chave, 0) + 1
 
@@ -127,7 +135,11 @@ def valida_estacoes() -> set[tuple[str, str]]:
         for chave, valor in (e.get("cotas_m") or {}).items():
             if not isinstance(valor, (int, float)) or not 0 < valor < PICO_MAXIMO_M:
                 erro(f"{onde}: cota '{chave}' = {valor} fora de faixa plausível")
-        if not (e.get("cotas_m") or {}) and reguas.get((e.get("rio"), e.get("cidade")), 0) > 1:
+        if (
+            e.get("tipo") != "pluviometro"
+            and not (e.get("cotas_m") or {})
+            and reguas.get((e.get("rio"), e.get("cidade")), 0) > 1
+        ):
             aviso(
                 f"{onde}: sem cota própria, e {e.get('cidade')} tem "
                 f"{reguas[(e.get('rio'), e.get('cidade'))]} réguas neste rio — "

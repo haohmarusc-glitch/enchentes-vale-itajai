@@ -109,6 +109,44 @@ class TestParse(unittest.TestCase):
         self.assertEqual(por_titulo(self.leituras, "Brusque")["rio"], "itajai-mirim")
 
 
+class TestCadastro(unittest.TestCase):
+    """
+    Estações que só existem na página de chuvas.
+
+    A página de níveis tem 13 estações; a de chuvas tem 14. A extra é a DC-00,
+    um pluviômetro puro na sede da Defesa Civil. Antes de ser cadastrada, ela
+    era coletada e descartada em silêncio — 28 mm em 24 h que não contavam
+    para cidade nenhuma.
+    """
+
+    def test_dc00_e_de_itajai_e_nao_tem_rio(self):
+        from comum import classificar_estacao
+        rio, cidade = classificar_estacao("DC-00 Defesa Civil de Itajaí")
+        self.assertEqual(cidade, "itajai")
+        self.assertIsNone(rio, "DC-00 não tem régua, só pluviômetro")
+
+    def test_guarani_e_a_mesma_brusque_da_pagina_de_niveis(self):
+        from comum import classificar_estacao
+        self.assertEqual(classificar_estacao("Brusque Estação Guarani"),
+                         classificar_estacao("Brusque"))
+
+    def test_pluviometro_nao_conta_como_regua(self):
+        """
+        A Guarani está no mesmo (rio, cidade) da régua de Brusque. Se contasse
+        como régua, a cidade passaria a "ter duas" e a regra que recusa a cota
+        da cidade onde há várias calaria o aviso no Itajaí-Mirim inteiro.
+        """
+        import json
+        from comum import DADOS
+        registro = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        reguas = [
+            e for e in registro["estacoes_tempo_real"]
+            if e.get("tipo") != "pluviometro"
+            and (e.get("rio"), e.get("cidade")) == ("itajai-mirim", "brusque")
+        ]
+        self.assertEqual(len(reguas), 1, [e["titulo"] for e in reguas])
+
+
 class TestCoerencia(unittest.TestCase):
     def test_leitura_encaixada_e_coerente(self):
         dc9 = por_titulo(parse(PAGINA), "DC-09")

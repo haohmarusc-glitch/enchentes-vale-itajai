@@ -385,6 +385,23 @@
       "cidade": "rio-do-sul",
       "cotas_m": {},
       "verificado": false
+    },
+    {
+      "codigo": "DC-00",
+      "titulo": "DC-00 Defesa Civil de Itajaí",
+      "rio": null,
+      "cidade": "itajai",
+      "tipo": "pluviometro",
+      "cotas_m": {},
+      "verificado": false
+    },
+    {
+      "titulo": "Brusque Estação Guarani",
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "tipo": "pluviometro",
+      "cotas_m": {},
+      "verificado": false
     }
   ]
 }

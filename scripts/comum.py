@@ -92,7 +92,9 @@ def cidades(rio: str | None = None) -> list[dict[str, Any]]:
 
 import re as _re
 
-_FALLBACK: list[tuple[str, str, str]] = [
+_FALLBACK: list[tuple[str, str | None, str]] = [
+    # DC-00 é pluviômetro puro: aparece só na página de chuvas, sem régua.
+    (r"^DC-00\b", None, "itajai"),
     (r"^DC-0[12]\b", "itajai-acu", "itajai"),
     (r"^DC-11\b", "itajai-acu", "ilhota"),
     (r"^DC-0[3456]\b", "itajai-mirim", "itajai"),
