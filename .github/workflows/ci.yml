@@ -31,6 +31,12 @@ jobs:
       - name: Testes do auditor
         working-directory: scripts
         run: python3 teste_auditar.py
+      - name: Testes do aviso de cota
+        working-directory: scripts
+        run: python3 teste_alerta_cotas.py
+      - name: Testes do vigia da coleta
+        working-directory: scripts
+        run: python3 teste_saude_coleta.py
       - name: Sintaxe do publicador de tempo real
         run: bash -n scripts/publicar_tempo_real.sh
 
