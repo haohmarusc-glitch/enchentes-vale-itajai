@@ -58,8 +58,9 @@ ele que troca o hidrograma de projeto da JICA por medição de cheia real. O cam
    com mais frequência não infla o arquivo: a página atualiza a cada 15–30 min.
    São ~110 bytes por leitura, algo como 40 MB por ano; `--compactar` reduz os meses
    fechados a cerca de um décimo. Esses arquivos ficam **fora do git**.
-2. Passada a cheia, `extrair_picos.py` lê a série, separa os episódios acima da cota
-   de atenção de cada cidade e imprime os registros propostos, com data e hora.
+2. Passada a cheia, `extrair_picos.py` lê a série **régua por régua** — nunca juntando
+   estações da mesma cidade, que têm zeros diferentes — separa os episódios acima da cota
+   de atenção e imprime os registros propostos, com data e hora.
    Ele **não grava**: confira cada pico contra o boletim da Defesa Civil antes.
 3. Conferido, `extrair_picos.py --escrever` inclui os registros, e
    `calibrar_transito.py` passa a ter material para medir os tempos de descida.
@@ -137,6 +138,7 @@ Em ordem de impacto.
 
 - [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
+- [ ] **Levantar a cota de referência de cada régua de Itajaí** (DC-01 a DC-11). As cotas de `estacoes.json` são por cidade, e Itajaí tem cinco réguas só no Mirim, com zeros diferentes: em 30/08/2026, no mesmo instante, elas marcavam 0,92 / 1,14 / 1,07 / 0,97 e 4,82 m. Sem cota por régua, `extrair_picos.py` se recusa a analisar essas estações — o que é o certo, mas deixa a foz de fora.
 - [ ] **Registrar o horário do pico** (campo `hora`, `HH:MM`) nos eventos. Só 2 dos 116 têm. É o que troca o hidrograma de projeto da JICA por medição de cheia real, em `calibrar_transito.py`.
 - [ ] Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10. Se forem o mesmo evento, vira mais um par.
 - [ ] Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama — hoje sem nenhum registro.
