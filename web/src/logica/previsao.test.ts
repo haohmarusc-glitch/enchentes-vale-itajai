@@ -1,7 +1,16 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Evento } from '../dados/tipos'
-import { MIN_PARES, agruparEmEventos, ajustar, parear, prever } from './previsao'
+import {
+  MIN_PARES,
+  NAO_DECLARADA,
+  REGUA,
+  agruparEmEventos,
+  ajustar,
+  parear,
+  prever,
+  referenciaDe,
+} from './previsao'
 
 function ev(cidade: string, data: string, pico_m: number): Evento {
   return { rio: 'itajai-acu', cidade, data, pico_m, confianca: 'alta', fonte: 'teste' }
@@ -112,4 +121,81 @@ test('relação decrescente é tratada como implausível', () => {
   }
   const r = prever(eventos, 'cima', 'baixo', 10)
   assert.equal(r.status, 'relacao-implausivel')
+})
+
+// --- Referência altimétrica (REGRA BLOQUEANTE do CLAUDE.md) -----------------
+//
+// Duas referências coexistem em Blumenau: a régua da estação ANA 83800002 e o
+// zero do IBGE, 20 cm acima. 12,80 m na régua e 13,00 m no IBGE são o MESMO
+// nível. Estes casos garantem que nem o agrupamento nem o pareamento deixem a
+// magnitude arbitrar entre as duas.
+
+const IBGE = 'IBGE (régua + 0,20 m)'
+
+test('agrupar não mistura referências, e a magnitude não escolhe entre elas', () => {
+  // O caso real: set/2011 em Blumenau, 12,80 m pela Defesa Civil (régua) e
+  // 13,00 m pelo CEOPS (IBGE). Sem separar, o `reduce` que fica com o maior
+  // adotaria 13,00 m em silêncio — trocando a referência sem avisar ninguém.
+  const grupos = agruparEmEventos([
+    ev('blumenau', '2011-09-08', 12.8),
+    { ...ev('blumenau', '2011-09-09', 13.0), referencia: IBGE },
+  ])
+  assert.equal(grupos.length, 2, 'referências diferentes são eventos diferentes')
+  const porRef = Object.fromEntries(grupos.map((g) => [g.referencia, g.pico_m]))
+  assert.equal(porRef['régua'], 12.8)
+  assert.equal(porRef[IBGE], 13.0)
+})
+
+test('dentro da mesma referência, o maior segue sendo o pico', () => {
+  const grupos = agruparEmEventos([
+    ev('blumenau', '2011-09-08', 12.4),
+    ev('blumenau', '2011-09-09', 12.8),
+  ])
+  assert.equal(grupos.length, 1)
+  assert.equal(grupos[0]!.pico_m, 12.8)
+  assert.equal(grupos[0]!.leituras, 2)
+})
+
+test('campo ausente é régua; null é ausência de referência', () => {
+  assert.equal(referenciaDe({}), REGUA)
+  assert.equal(referenciaDe({ referencia: undefined }), REGUA)
+  assert.equal(referenciaDe({ referencia: null }), NAO_DECLARADA)
+  assert.equal(referenciaDe({ referencia: IBGE }), IBGE)
+})
+
+test('não pareia montante em régua com jusante em IBGE', () => {
+  // Vinte centímetros sistemáticos no y de cada par — e a reta depois vira
+  // metros na tela de alguém.
+  const eventos = [
+    ...[1, 2, 3, 4, 5, 6].map((i) => ev('rio-do-sul', `200${i}-05-10`, 5 + i * 0.3)),
+    ...[1, 2, 3, 4, 5, 6].map((i) => ({
+      ...ev('blumenau', `200${i}-05-11`, 8 + i * 0.5),
+      referencia: IBGE,
+    })),
+  ]
+  assert.equal(parear(eventos, 'rio-do-sul', 'blumenau').length, 0)
+})
+
+test('pareia quando as duas pontas estão na mesma referência', () => {
+  const eventos = [
+    ...[1, 2, 3, 4, 5, 6].map((i) => ev('rio-do-sul', `200${i}-05-10`, 5 + i * 0.3)),
+    ...[1, 2, 3, 4, 5, 6].map((i) => ev('blumenau', `200${i}-05-11`, 8 + i * 0.5)),
+  ]
+  assert.equal(parear(eventos, 'rio-do-sul', 'blumenau').length, 6)
+})
+
+test('registro sem referência declarada não pareia com ninguém', () => {
+  // `null` não é uma referência: é a ausência de uma. Supor que dois registros
+  // não declarados estão na mesma escala é exatamente o erro que a regra impede.
+  const eventos = [
+    ...[1, 2, 3, 4, 5, 6].map((i) => ({
+      ...ev('rio-do-sul', `200${i}-05-10`, 5 + i * 0.3),
+      referencia: null,
+    })),
+    ...[1, 2, 3, 4, 5, 6].map((i) => ({
+      ...ev('blumenau', `200${i}-05-11`, 8 + i * 0.5),
+      referencia: null,
+    })),
+  ]
+  assert.equal(parear(eventos, 'rio-do-sul', 'blumenau').length, 0)
 })

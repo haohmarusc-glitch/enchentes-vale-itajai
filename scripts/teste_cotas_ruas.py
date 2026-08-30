@@ -108,6 +108,22 @@ class TestCotasRuas(unittest.TestCase):
         self.assertLess(len(set(nomes)), len(nomes), "esperava alguma rua com mais de um ponto")
 
 
+    def test_cotas_de_rua_sao_sempre_em_regua(self):
+        """
+        Item 4 da REGRA BLOQUEANTE do CLAUDE.md.
+
+        A busca "minha rua" e o simulador comparam a cota da rua com o nível ao
+        vivo, que vem da Defesa Civil e é régua. Uma cota em referência IBGE
+        produziria "faltam 2,30 m" com 20 cm de erro embutido e nada na tela
+        denunciando. Hoje isto é verdade por construção; o teste faz com que
+        continue sendo por decisão.
+        """
+        for r in self.cotas:
+            with self.subTest(rua=r.get("rua")):
+                self.assertIn(r.get("referencia", "régua"), ("régua",),
+                              "cota de rua fora da referência régua")
+
+
 class TestManchas(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

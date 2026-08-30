@@ -150,6 +150,10 @@ def valida_estacoes() -> set[tuple[str, str]]:
     return conhecidas
 
 
+#: Conjunto fechado. Ver REGRA_REFERENCIA_BLUMENAU em enchentes.json.
+REFERENCIAS_VALIDAS = ("régua", "IBGE (régua + 0,20 m)")
+
+
 def valida_referencias() -> None:
     """
     Todo registro de Blumenau tem de DECLARAR sua referência.
@@ -163,17 +167,46 @@ def valida_referencias() -> None:
     `null` é resposta válida e significa "a fonte não declara". O que não vale é
     o campo ausente, que é silêncio disfarçado de certeza.
     """
-    eventos = le_json("enchentes.json")["eventos"]
-    faltando = [
-        e for e in eventos
-        if e.get("cidade") == "blumenau" and "referencia" not in e
-    ]
-    for e in faltando:
-        erro(
-            f"enchentes.json: Blumenau {e.get('data')} não declara 'referencia'. "
-            "Use \"IBGE (régua + 0,20 m)\", null quando a fonte não diz, ou "
-            "omita só em cidades onde a régua é a única referência."
-        )
+    dados = le_json("enchentes.json")
+    eventos = dados["eventos"]
+    regra_viva = "REGRA_REFERENCIA_BLUMENAU" in dados.get("_meta", {})
+
+    for e in eventos:
+        if regra_viva and e.get("cidade") == "blumenau" and "referencia" not in e:
+            erro(
+                f"enchentes.json: Blumenau {e.get('data')} não declara 'referencia'. "
+                f"Use {REFERENCIAS_VALIDAS[1]!r}, {REFERENCIAS_VALIDAS[0]!r}, ou null "
+                "quando a fonte não diz."
+            )
+        if "referencia" not in e:
+            continue
+        ref = e["referencia"]
+        if ref is None:
+            continue
+        if ref not in REFERENCIAS_VALIDAS:
+            # Conjunto fechado de propósito. Uma string livre como
+            # "desconhecida — provavelmente IBGE" mistura o que se sabe com o
+            # que se suspeita, e daqui a seis meses alguém varre o arquivo para
+            # converter e lê "provavelmente" como "sim". Hipótese vai em
+            # 'referencia_hipotese' ou 'nota'.
+            erro(
+                f"enchentes.json: {e.get('cidade')} {e.get('data')} tem referencia "
+                f"{ref!r}, fora do conjunto fechado {REFERENCIAS_VALIDAS}. "
+                "Hipótese vai em 'referencia_hipotese' ou 'nota'."
+            )
+
+    # Item 2 da regra: conflito é divergência, não registro duplicado.
+    vistos: dict[tuple, int] = {}
+    for e in eventos:
+        chave = (e.get("rio"), e.get("cidade"), e.get("data"))
+        vistos[chave] = vistos.get(chave, 0) + 1
+    for chave, n in sorted(vistos.items()):
+        if n > 1:
+            erro(
+                f"enchentes.json: {chave[1]} {chave[2]} aparece {n} vezes. "
+                "Conflito de valor usa 'divergencias' — um adotado, os demais "
+                "guardados com fonte —, não registros duplicados."
+            )
 
 
 def valida_cotas_ruas() -> None:

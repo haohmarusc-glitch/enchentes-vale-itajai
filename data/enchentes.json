@@ -34,6 +34,17 @@
       "1000": 19.1,
       "metodo": "Gumbel, série 1852-2002, nível na régua",
       "fonte": "Cordero & Medeiros, XV SBRH, Tabela 5"
+    },
+    "REGRA_REFERENCIA_BLUMENAU": {
+      "por_que": "Duas referências coexistem para Blumenau: a régua da estação ANA 83800002 (Defesa Civil/AlertaBlu, leituras operacionais) e o zero do IBGE, que é a régua + 0,20 m (série CEOPS/FURB, Cordero & Medeiros, Tabela 4, 1852-2001). Evidência de que as duas circulam: set/2011 = 13,00 m (CEOPS) contra 12,80 m (Defesa Civil), diferença exata de 0,20 m.",
+      "enquanto_existir": [
+        "referencia é rótulo, com conjunto fechado: 'régua', 'IBGE (régua + 0,20 m)' ou null. Hipótese vai em referencia_hipotese ou nota, nunca no campo referencia.",
+        "Conflito de valor no mesmo (cidade, evento) usa divergencias: um adotado, os demais guardados com fonte. Não criar dois registros para o mesmo evento.",
+        "Nenhuma conversão é gravada no JSON. O seletor da tela aplica ±0,20 m só para ver.",
+        "Busca 'minha rua' e simulador usam somente régua.",
+        "Previsão pareia igual com igual; sem referência declarada, não pareia."
+      ],
+      "como_remover": "Teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou resposta da FURB. Aí converte-se tudo para régua num único commit, com a decisão registrada em docs/fontes-academicas.md."
     }
   },
   "eventos": [

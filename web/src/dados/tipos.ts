@@ -131,6 +131,15 @@ export interface TabuaMare {
  */
 export interface CotaRua {
   cidade: string
+  /**
+   * Sempre `régua`, quando presente.
+   *
+   * Cotas de rua são levantadas contra a régua da cidade, e o nível ao vivo da
+   * Defesa Civil também é régua — por isso a busca "minha rua" e o simulador
+   * comparam maçã com maçã. Um valor diferente aqui significaria comparar uma
+   * cota de rua com um nível 20 cm deslocado, e o carregador descarta.
+   */
+  referencia?: string
   rio: string
   rua: string
   bairro: string | null

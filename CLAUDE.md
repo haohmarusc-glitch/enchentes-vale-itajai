@@ -50,6 +50,30 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Campos com `verificado: false` ou `null` significam "ainda não conferido na fonte oficial" — não inventar valores.
 - Datas em ISO (`AAAA-MM-DD`); só o ano quando o dia é desconhecido.
 
+### Referência altimétrica de Blumenau — REGRA BLOQUEANTE
+- Duas referências coexistem: **régua** da estação ANA 83800002 (Defesa Civil/AlertaBlu,
+  leituras operacionais) e **zero do IBGE** = régua + 0,20 m (série CEOPS/FURB,
+  Cordero & Medeiros, Tabela 4, 1852–2001).
+- Evidência: set/2011 = 13,00 m (CEOPS) vs 12,80 m (Defesa Civil), diferença exata de 0,20 m.
+  Os valores históricos populares (15,34 m em 1983, 15,46 m em 1984) coincidem com a tabela IBGE.
+- Enquanto `data/enchentes.json._meta.REGRA_REFERENCIA_BLUMENAU` existir:
+  1. `referencia` é rótulo do registro, com conjunto fechado: `"régua"`,
+     `"IBGE (régua + 0,20 m)"` ou `null`. Hipóteses vão em `referencia_hipotese` ou `nota`,
+     nunca no campo `referencia`. O validador rejeita registro sem o campo.
+  2. Conflito de valor para o mesmo (cidade, evento) usa o mecanismo `divergencias`:
+     um valor adotado, os demais guardados com fonte e referência. Não criar dois registros
+     para o mesmo evento; `agruparEmEventos` não deve escolher por magnitude.
+  3. Nenhuma conversão entre referências é gravada no JSON. O seletor régua/IBGE na UI
+     aplica ±0,20 m só para visualização e exibe a referência de cada ponto.
+  4. Busca "minha rua" e simulador usam somente nível em `régua` (cotas de rua e tempo real
+     são régua). Há teste que trava isso.
+  5. Previsão a jusante pareia igual com igual: montante e jusante na mesma referência.
+     Se só houver série IBGE no montante, documentar o deslocamento e não parear com
+     jusante em régua.
+- Remoção da regra: teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984)
+  ou resposta da FURB. Conversão para `régua` em um único commit, decisão registrada em
+  `docs/fontes-academicas.md`.
+
 ## Telas
 
 1. `/acu` — **Itajaí-Açu**: Taió / Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí
