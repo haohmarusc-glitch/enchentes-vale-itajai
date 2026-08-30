@@ -7,6 +7,7 @@ Aqui é o contrário: a pessoa pergunta quando quer — de madrugada, sem abrir 
 site, com internet ruim. Uma mensagem de texto passa onde uma página não passa.
 
 Comandos:
+    /rua [cidade] [rua]  a partir de quantos metros aquela rua alaga
     /nivel [cidade]      nível agora, cota e idade da leitura
     /chuva [cidade]      acumulado de 1 h, 12 h, 24 h e 48 h
     /previsao [cidade]   se o pico fosse agora, quando chega a jusante
@@ -136,17 +137,31 @@ def quando(d: datetime) -> str:
 class Base:
     """Tudo que o bot precisa, lido do disco. Sem rede além do Telegram."""
 
-    def __init__(self, ultimo: dict, estacoes: dict, transito: dict, enchentes: dict):
+    def __init__(self, ultimo: dict, estacoes: dict, transito: dict, enchentes: dict,
+                 cotas_ruas: dict | None = None):
         self.ultimo = ultimo
         self.estacoes = estacoes
         self.transito = transito["trechos"]
         self.enchentes = enchentes["eventos"]
+        cotas_ruas = cotas_ruas or {"cotas": [], "_meta": {}}
+        # REGRA BLOQUEANTE do CLAUDE.md, item 4: só régua. A cota de rua é
+        # comparada com o nível ao vivo da Defesa Civil, que é régua; uma cota
+        # em outra referência daria "faltam 2,30 m" com 20 cm de erro embutido
+        # e nada na mensagem denunciando.
+        self.cotas_ruas = [
+            c for c in cotas_ruas.get("cotas", [])
+            if c.get("referencia", "régua") == "régua"
+        ]
 
     @classmethod
     def do_disco(cls) -> "Base":
         ultimo = json.loads(ULTIMO.read_text(encoding="utf-8")) if ULTIMO.exists() else {}
+        try:
+            cotas = le_json("cotas-ruas.json")
+        except FileNotFoundError:
+            cotas = None
         return cls(ultimo, le_json("estacoes.json"), le_json("transito.json"),
-                   le_json("enchentes.json"))
+                   le_json("enchentes.json"), cotas)
 
     def cidades(self) -> list[dict]:
         saida = []
@@ -176,12 +191,60 @@ class Base:
     def chuva_da_cidade(self, cidade_id: str) -> list[dict]:
         return [c for c in (self.ultimo.get("chuva") or []) if c.get("cidade") == cidade_id]
 
+    def cidades_com_ruas(self) -> list[dict]:
+        """Cidades que têm alguma cota de rua levantada."""
+        ids = {c["cidade"] for c in self.cotas_ruas}
+        vistas, saida = set(), []
+        for c in self.cidades():
+            if c["id"] in ids and c["id"] not in vistas:
+                vistas.add(c["id"])
+                saida.append(c)
+        return saida
+
+    def separar_cidade(self, argumento: str) -> tuple[dict | None, str]:
+        """
+        Reparte "Blumenau São Rafael" em (cidade, "São Rafael").
+
+        Casa o PREFIXO MAIS LONGO, porque há nome de cidade que é começo de
+        outro e nome de rua que começa com nome de cidade — "Rua Rio do Sul",
+        em Gaspar, é rua. Sem cidade reconhecida, devolve (None, argumento
+        inteiro) e quem chama procura em todas, rotulando cada resultado.
+        """
+        alvo = sem_acento(argumento)
+        melhor, resto = None, argumento
+        for c in self.cidades_com_ruas():
+            nome = sem_acento(c["nome"])
+            if alvo == nome:
+                return c, ""
+            if alvo.startswith(nome + " ") and (melhor is None or len(nome) > len(sem_acento(melhor["nome"]))):
+                melhor, resto = c, argumento[len(c["nome"]):].strip()
+        return melhor, resto
+
+    def ruas(self, cidade_id: str | None, termo: str) -> list[dict]:
+        """
+        Ruas que casam com o termo, da cota mais baixa para a mais alta.
+
+        Sem cota vai por último: a fonte cita a rua e não publica o número, e
+        essa resposta é legítima — só não pode empurrar para baixo quem tem
+        número, que é quem a pessoa precisa ver primeiro.
+        """
+        alvo = sem_acento(termo)
+        if len(alvo) < 2:
+            return []
+        achadas = [
+            c for c in self.cotas_ruas
+            if (cidade_id is None or c["cidade"] == cidade_id)
+            and (alvo in sem_acento(c.get("rua", "")) or alvo in sem_acento(c.get("bairro") or ""))
+        ]
+        return sorted(achadas, key=lambda c: (c["cota_m"] is None, c["cota_m"] or 0, c["rua"]))
+
 
 # --- respostas --------------------------------------------------------------
 
 def ajuda() -> str:
     return (
         "<b>Cheias do Vale do Itajaí</b>\n\n"
+        "/rua <i>cidade rua</i> — a partir de quantos metros a sua rua alaga\n"
         "/nivel <i>cidade</i> — nível do rio agora\n"
         "/chuva <i>cidade</i> — quanto choveu em 1 h, 12 h, 24 h e 48 h\n"
         "/previsao <i>cidade</i> — se o pico fosse agora, quando chega embaixo\n"
@@ -345,6 +408,96 @@ def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
     return linhas
 
 
+#: Quantas ruas cabem numa mensagem. O Telegram recusa acima de 4096
+#: caracteres, e uma resposta recusada é silêncio — o pior resultado possível.
+MAX_RUAS = 10
+
+
+def nome_do_ponto(c: dict) -> str:
+    """`Rua São Rafael (final da rua)` — o ponto faz parte da identidade."""
+    ponto = c.get("ponto")
+    return f"{c['rua']} ({ponto})" if ponto and ponto != c["rua"] else c["rua"]
+
+
+def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -> list[str]:
+    """
+    "A partir de quantos metros a minha rua alaga?"
+
+    É a pergunta que a pessoa realmente faz. Tudo o mais que o bot responde
+    está em metros de régua, que é a linguagem de quem opera o rio.
+
+    Não há previsão nenhuma aqui: é leitura de tabela. A tabela diz o que
+    acontece SE o rio chegar naquele nível; quem diz se vai chegar é a Defesa
+    Civil.
+    """
+    e = notificador.esc
+    if not termo:
+        nomes = ", ".join(c["nome"] for c in base.cidades_com_ruas())
+        return [
+            "<b>Cotas de rua</b>\n\n"
+            "Diga a cidade e a rua. Exemplo: <code>/rua Blumenau São Rafael</code>\n\n"
+            f"Cidades com cotas levantadas: {e(nomes) or 'nenhuma ainda'}.\n"
+            "Também funciona sem a cidade: <code>/rua Beira Rio</code>."
+        ]
+
+    achadas = base.ruas(cidade["id"] if cidade else None, termo)
+    onde = f" em {e(cidade['nome'])}" if cidade else ""
+    if not achadas:
+        quantas = len(base.cotas_ruas) if cidade is None else len(base.ruas(cidade["id"], ""))
+        return [
+            f"Nenhuma rua com “{e(termo)}”{onde} entre as levantadas.\n\n"
+            "<b>Isso não quer dizer que a sua rua não alaga.</b> Quer dizer que ela "
+            "não está nesta lista, que está longe de completa — são poucas centenas "
+            "de pontos, vindos do que as Defesas Civis publicaram.\n\n"
+            "Quem sabe se a sua rua alaga é a Defesa Civil do seu município."
+        ]
+
+    # O nível de agora só entra quando a cidade tem UMA régua: com várias, não
+    # dá para dizer qual delas representa o rio, e "faltam 2,30 m" sairia
+    # medido contra a régua errada.
+    niveis: dict[str, tuple[float, float | None]] = {}
+    for c in {x["cidade"] for x in achadas}:
+        leituras = base.leituras_da_cidade(c)
+        if len(leituras) == 1 and isinstance(leituras[0].get("nivel_m"), (int, float)):
+            niveis[c] = (float(leituras[0]["nivel_m"]),
+                         idade_min(leituras[0].get("medido_em"), agora))
+
+    nomes_cidade = {c["id"]: c["nome"] for c in base.cidades()}
+    linhas = [f"<b>Cotas de rua</b> — “{e(termo)}”{onde}"]
+
+    for c in achadas[:MAX_RUAS]:
+        rotulo = e(nome_do_ponto(c))
+        cidade_nome = e(nomes_cidade.get(c["cidade"], c["cidade"]))
+        if c["cota_m"] is None:
+            linhas.append(f"\n\n<b>{rotulo}</b> — {cidade_nome}"
+                          f"\n<i>{e(c.get('nota') or 'a fonte não publica a cota exata')}</i>")
+            continue
+        linhas.append(f"\n\n<b>{rotulo}</b> — {cidade_nome}"
+                      f"\nAlaga a partir de <b>{metros(c['cota_m'])}</b>")
+        atual = niveis.get(c["cidade"])
+        if atual:
+            falta = round(c["cota_m"] - atual[0], 2)
+            if falta > 0:
+                linhas.append(f"\nO rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
+                              f"faltam <b>{metros(falta)}</b> de subida.")
+            else:
+                linhas.append(f"\n⚠️ O rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
+                              "este nível <b>já foi alcançado</b>.")
+
+    if len(achadas) > MAX_RUAS:
+        linhas.append(f"\n\n<i>Mais {len(achadas) - MAX_RUAS} rua(s) casaram. "
+                      "Escreva o nome com mais letras para reduzir.</i>")
+
+    if cidade is None and len({c["cidade"] for c in achadas}) > 1:
+        linhas.append("\n\n⚠️ <b>Os resultados são de cidades diferentes.</b> Cada cidade tem "
+                      "sua própria régua: estes metros <b>não se comparam</b> entre si.")
+
+    linhas.append("\n\n<i>Cotas são aproximadas e envelhecem: obra e enchente nova mudam os "
+                  "valores. Isto é leitura de tabela, não previsão — não diz se o rio vai "
+                  "chegar nesse nível.</i>")
+    return linhas
+
+
 def resposta_cotas(base: Base, cidade: dict) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — cotas de referência"]
     cotas = cidade.get("cotas_m") or {}
@@ -406,6 +559,10 @@ def responder(texto: str, base: Base, agora: datetime) -> str | None:
         return emergencia()
     if comando == "rios":
         return "".join(resposta_rios(base, agora)) + RODAPE
+
+    if comando in ("rua", "ruas", "minharua"):
+        cidade, resto = base.separar_cidade(argumento)
+        return "".join(resposta_rua(base, cidade, resto.strip(), agora)) + RODAPE
 
     if comando not in ("nivel", "chuva", "previsao", "cotas"):
         return None  # comando de outro bot, ou digitado errado: silêncio
@@ -471,6 +628,7 @@ def grava_estado(estado: dict) -> None:
 #: O menu que aparece no botão "/" do Telegram. Sem isto a pessoa precisa
 #: adivinhar os comandos — e adivinhar durante uma cheia não acontece.
 MENU = [
+    ("rua", "A partir de quantos metros a sua rua alaga"),
     ("nivel", "Nível do rio agora, numa cidade"),
     ("chuva", "Quanto choveu em 1 h, 12 h, 24 h e 48 h"),
     ("previsao", "Se o pico fosse agora, quando chega embaixo"),

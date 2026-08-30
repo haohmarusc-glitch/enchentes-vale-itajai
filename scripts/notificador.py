@@ -26,6 +26,12 @@ from comum import carrega_env
 
 TIMEOUT_S = 15
 
+#: O Telegram recusa mensagem acima de 4096 caracteres, e recusa é silêncio —
+#: o pior resultado possível num aviso de cheia. Cortamos antes, com marca, em
+#: vez de descobrir na hora que a mensagem não saiu.
+LIMITE_CARACTERES = 4096
+CORTE = "\n\n<i>[mensagem cortada por limite do Telegram]</i>"
+
 
 def _credenciais() -> tuple[str, str]:
     carrega_env()
@@ -71,7 +77,15 @@ def enviar(mensagem: str) -> bool:
     return _postar(chat, mensagem)
 
 
+def encurtar(mensagem: str) -> str:
+    """Corta no limite do Telegram, preservando a marca de que houve corte."""
+    if len(mensagem) <= LIMITE_CARACTERES:
+        return mensagem
+    return mensagem[: LIMITE_CARACTERES - len(CORTE)] + CORTE
+
+
 def _postar(chat: str, mensagem: str) -> bool:
+    mensagem = encurtar(mensagem)
     token, _ = _credenciais()
     if not (token and chat):
         print(
