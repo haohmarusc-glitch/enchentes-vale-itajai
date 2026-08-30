@@ -325,10 +325,47 @@ Se um dos testes ficar vermelho, não ajuste o gabarito para calar o teste: ou
 uma implementação divergiu da outra, ou alguém mudou a lógica sem regerar. Nos
 dois casos a pergunta é qual das duas está certa.
 
+## Cotas de rua e manchas de inundação
+
+O dado mais direto do projeto: **a partir de que nível do rio cada rua começa a
+alagar**. Não passa por modelo nenhum — é leitura de tabela. E responde a
+pergunta que a pessoa realmente faz, que nunca foi "quantos metros" e sim
+"a minha rua".
+
+`data/cotas-ruas.json` — 57 registros de Blumenau, Gaspar e Brusque, cada um com
+fonte, data e confiança. Regras que o validador e os testes travam:
+
+- **O registro é por PONTO, não por rua.** A Rua São Rafael, em Blumenau, alaga
+  a 7,40 m no final e a 7,75 m perto do nº 169. Deduplicar por nome perderia a
+  cota mais baixa, que é a que importa.
+- **`cota_m` nulo é resposta legítima** — a fonte cita a rua e não publica o
+  número — mas exige uma nota dizendo isso. Sem a nota vira buraco silencioso,
+  e alguém depois preenche com um chute.
+- **O aviso não pode chegar depois da água.** Se a cota mais baixa cadastrada
+  para a cidade for maior que a da primeira rua, o validador dá ERRO. Foi assim
+  que descobrimos que o aviso de Brusque disparava 1,20 m tarde demais.
+
+`data/manchas/` — as áreas atingidas em nove eventos entre 1983 e 2015, em
+GeoJSON, publicadas pela **própria prefeitura de Itajaí** na organização
+GeoItajaí do GitHub, sob licença MIT. Dado oficial e aberto, o oposto do resto
+que este projeto raspa de HTML. Os arquivos `inundaMÊSAAAA` trazem a
+profundidade da lâmina d'água por trecho.
+
+```bash
+python3 scripts/baixar_manchas_itajai.py
+```
+
+**A mancha não promete nível de rio.** Os polígonos não trazem cota; a ligação
+com o pico é feita pela data, cruzando com `enchentes.json`, e só aparece
+quando aquele pico está registrado. Inventar essa ligação faria alguém olhar o
+mapa de 2011 e concluir que a sua rua alaga a tal metro.
+
 ## Pendências
 
 Em ordem de impacto.
 
+- [ ] **Levantar os picos de Itajaí de 1983, 1984, 2001, 2008, 2011, jul e set/2013, jun/2014 e out/2015.** As manchas de inundação desses nove eventos já estão no repositório, mas nenhuma tem o nível do rio correspondente — a legenda do mapa fica sem dizer "isto foi com o rio em X m", que é o que tornaria a mancha comparável com o nível de hoje.
+- [ ] **Conseguir a tabela completa de cotas de rua.** Hoje são 57 pontos vindos do que a imprensa reproduziu. As tabelas oficiais existem: Blumenau (AlertaBlu, bloqueia robôs — pedir à Defesa Civil), Brusque (planilha não pública — pedir por ofício), Rio do Sul (555 itens com botão de exportar, portal em JS) e Gaspar (mapa "Pesquise sua cota").
 - [ ] **Resolver a discordância entre as fontes de tempo de descida.** Somados por caminhos diferentes, os trechos de `transito.json` produzem janelas fora da ordem do rio: no eixo do Açu, Blumenau aparece podendo receber a água antes de Apiúna, que fica acima. O site e o bot **dizem** isso quando acontece, em vez de esconder — mas a correção de verdade é conciliar o hidrograma de projeto da JICA com os modelos acadêmicos, trecho a trecho.
 - [ ] **Ampliar a cobertura de chuva.** A fonte de Itajaí só publica pluviômetro em Itajaí, Brusque, Ilhota e Rio do Sul. Vidal Ramos, Botuverá, Guabiruba, Taió, Ituporanga, Ibirama, Apiúna, Indaial, Blumenau e Gaspar ficam sem chuva na tela. Candidatas: CEMADEN (nacional, tem pluviômetro na maioria dos municípios de risco de SC), AlertaBlu (Blumenau) e a Defesa Civil de SC.
 - [ ] **Acumular a série de chuva**, como já se faz com o nível. Com nível de montante explicando pouco o de jusante (r² = 0,21), a chuva é a candidata mais forte a preditor de verdade — mas só depois de meses de série pareada com os picos.

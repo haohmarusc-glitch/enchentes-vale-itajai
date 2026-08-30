@@ -1,0 +1,265 @@
+{
+  "_meta": {
+    "descricao": "Manchas de inundação históricas, por evento.",
+    "aviso": "Os polígonos NÃO trazem nível de rio. A ligação com o pico é feita pela data, e só aparece quando o pico daquele evento está registrado em enchentes.json. Mancha não é previsão: mostra onde a água chegou naquele evento, com a cidade que existia naquele ano.",
+    "licenca": "MIT",
+    "fonte": "https://github.com/geoitajai/sie"
+  },
+  "manchas": [
+    {
+      "cidade": "itajai",
+      "evento": "1983-07",
+      "tipo": "mancha total",
+      "arquivo": "manchas/itajai/enchente1983.geojson",
+      "tem_lamina": false,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 1,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "1984-08",
+      "tipo": "mancha total",
+      "arquivo": "manchas/itajai/enchente1984.geojson",
+      "tem_lamina": false,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 1,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2001",
+      "tipo": "mancha total",
+      "arquivo": "manchas/itajai/enchente2001.geojson",
+      "tem_lamina": false,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 1,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2008-11",
+      "tipo": "mancha total",
+      "arquivo": "manchas/itajai/enchente2008.geojson",
+      "tem_lamina": false,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 1,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2011-09",
+      "tipo": "mancha total",
+      "arquivo": "manchas/itajai/enchente2011.geojson",
+      "tem_lamina": false,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 32,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2011-09",
+      "tipo": "lâmina d'água",
+      "arquivo": "manchas/itajai/inundasetembro2011.geojson",
+      "tem_lamina": true,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 5,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [
+        {
+          "rotulo": "0,50",
+          "lamina_min_m": null,
+          "lamina_max_m": 0.5
+        },
+        {
+          "rotulo": "0,51 a 1",
+          "lamina_min_m": 0.51,
+          "lamina_max_m": 1.0
+        },
+        {
+          "rotulo": "1,01 a 1,50",
+          "lamina_min_m": 1.01,
+          "lamina_max_m": 1.5
+        },
+        {
+          "rotulo": "1,51 a 2",
+          "lamina_min_m": 1.51,
+          "lamina_max_m": 2.0
+        },
+        {
+          "rotulo": "2,01 a 3",
+          "lamina_min_m": 2.01,
+          "lamina_max_m": 3.0
+        }
+      ],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2013-07",
+      "tipo": "lâmina d'água",
+      "arquivo": "manchas/itajai/inundajulho2013.geojson",
+      "tem_lamina": true,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 48,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [
+        {
+          "rotulo": "0,20",
+          "lamina_min_m": null,
+          "lamina_max_m": 0.2
+        },
+        {
+          "rotulo": "0,21 a 0,40",
+          "lamina_min_m": 0.21,
+          "lamina_max_m": 0.4
+        },
+        {
+          "rotulo": "0,41 a 0,60",
+          "lamina_min_m": 0.41,
+          "lamina_max_m": 0.6
+        }
+      ],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2013-09",
+      "tipo": "lâmina d'água",
+      "arquivo": "manchas/itajai/inundasetembro2013.geojson",
+      "tem_lamina": true,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 58,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [
+        {
+          "rotulo": "0,20",
+          "lamina_min_m": null,
+          "lamina_max_m": 0.2
+        },
+        {
+          "rotulo": "0,21 a 0,40",
+          "lamina_min_m": 0.21,
+          "lamina_max_m": 0.4
+        }
+      ],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2014-06",
+      "tipo": "lâmina d'água",
+      "arquivo": "manchas/itajai/inundajunho2014.geojson",
+      "tem_lamina": true,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 55,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [
+        {
+          "rotulo": "0,20",
+          "lamina_min_m": null,
+          "lamina_max_m": 0.2
+        },
+        {
+          "rotulo": "0,21 a 0,40",
+          "lamina_min_m": 0.21,
+          "lamina_max_m": 0.4
+        }
+      ],
+      "classes_sobrepostas": false
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2015-10",
+      "tipo": "lâmina d'água",
+      "arquivo": "manchas/itajai/inundaoutubro2015.geojson",
+      "tem_lamina": true,
+      "pico_registrado": null,
+      "licenca": "MIT",
+      "fonte": "https://github.com/geoitajai/sie (GeoItajaí / Prefeitura de Itajaí)",
+      "feicoes": 155,
+      "geometrias": [
+        "MultiPolygon"
+      ],
+      "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
+      "classes_lamina": [
+        {
+          "rotulo": "0,20",
+          "lamina_min_m": null,
+          "lamina_max_m": 0.2
+        },
+        {
+          "rotulo": "0,21 a 0,40",
+          "lamina_min_m": 0.21,
+          "lamina_max_m": 0.4
+        },
+        {
+          "rotulo": "0,41 a 0,60",
+          "lamina_min_m": 0.41,
+          "lamina_max_m": 0.6
+        },
+        {
+          "rotulo": "0,51 a 1",
+          "lamina_min_m": 0.51,
+          "lamina_max_m": 1.0
+        }
+      ],
+      "classes_sobrepostas": true
+    }
+  ]
+}
