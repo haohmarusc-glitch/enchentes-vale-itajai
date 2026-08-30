@@ -112,3 +112,27 @@ export interface TabuaMare {
   preamares: EntradaMare[]
   baixamares: EntradaMare[]
 }
+
+/**
+ * Nível do rio, na régua da PRÓPRIA cidade, a partir do qual uma rua alaga.
+ *
+ * `cota_m` nulo é resposta legítima: a fonte cita a rua e não publica o número.
+ * Nesse caso `nota` diz por quê. Nulo NÃO é zero, e não foi estimado.
+ */
+export interface CotaRua {
+  cidade: string
+  rio: string
+  rua: string
+  bairro: string | null
+  ponto: string | null
+  cota_m: number | null
+  fonte: string
+  data_fonte: string
+  confianca: Confianca
+  nota?: string
+}
+
+export interface CotasRuas {
+  _meta: { descricao: string; aviso: string[]; campos: Record<string, string> }
+  cotas: CotaRua[]
+}

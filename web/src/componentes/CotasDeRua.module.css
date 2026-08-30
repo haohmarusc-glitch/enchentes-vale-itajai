@@ -1,0 +1,156 @@
+.regua {
+  margin: 0 0 0.9rem;
+  color: #40587a;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.rotulo {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.busca {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem;
+  border: 1px solid #b9c8da;
+  border-radius: 6px;
+}
+
+.resultados,
+.lista {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+}
+
+.resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid #e6ebf1;
+}
+
+.lista li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.3rem 0.8rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #f0f3f7;
+}
+
+.nomeRua {
+  font-weight: 600;
+}
+
+.bairro {
+  color: #5c6b7f;
+  font-size: 0.85rem;
+}
+
+.cota {
+  color: #17457a;
+  font-variant-numeric: tabular-nums;
+}
+
+.falta {
+  color: #40587a;
+  font-size: 0.88rem;
+}
+
+/* Rua citada pela fonte sem cota. Não é zero e não entra em conta nenhuma —
+   o tom de ressalva é para não parecer um número que sumiu. */
+.semNumero,
+.semNumeroBloco {
+  color: #6b4f14;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  border-radius: 5px;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.semNumeroBloco {
+  display: block;
+  margin-top: 0.8rem;
+}
+
+.fonte {
+  color: #7a8899;
+  font-size: 0.78rem;
+}
+
+.vazio {
+  margin: 0.7rem 0 0;
+  padding: 0.6rem 0.7rem;
+  background: #f6f8fa;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.divisor {
+  border: none;
+  border-top: 1px solid #e6ebf1;
+  margin: 1.1rem 0 0.9rem;
+}
+
+.controle {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.controle input[type='range'] {
+  flex: 1;
+  min-width: 0;
+}
+
+.valor {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #17457a;
+  font-variant-numeric: tabular-nums;
+  min-width: 4.5rem;
+  text-align: right;
+}
+
+.voltar {
+  margin-top: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #17457a;
+  text-decoration: underline;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.contagem {
+  margin: 0.9rem 0 0;
+  font-size: 1rem;
+}
+
+.rotuloLista {
+  margin: 0.9rem 0 0;
+  color: #40587a;
+  font-size: 0.9rem;
+}
+
+.proxima {
+  color: #5c6b7f;
+}
+
+.avisos {
+  margin: 1.1rem 0 0;
+  padding-left: 1.1rem;
+  color: #5c6b7f;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}

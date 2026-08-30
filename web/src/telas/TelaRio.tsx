@@ -3,7 +3,8 @@ import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
 import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
-import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
+import CotasDeRua from '../componentes/CotasDeRua'
+import { avisosCotasRuas, cidadesDoRio, cotasRuas, eventosDoRio, rio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
 import estilos from './TelaRio.module.css'
@@ -108,6 +109,15 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           origem={selecionada}
           leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)!}
           agora={agora}
+        />
+      ) : null}
+
+      {selecionada ? (
+        <CotasDeRua
+          cidade={selecionada}
+          cotas={cotasRuas}
+          leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
+          avisos={avisosCotasRuas}
         />
       ) : null}
 
