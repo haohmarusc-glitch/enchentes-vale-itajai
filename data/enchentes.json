@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "descricao": "Picos históricos de enchente por rio e cidade. Um registro por (evento, cidade).",
+    "campos": {
+      "pico_m": "Nível máximo na régua local, em metros.",
+      "data": "AAAA-MM-DD do pico quando conhecido; só o ano quando não.",
+      "confianca": "alta = fonte oficial/acadêmica; media = imprensa; baixa = compilação informal ou dado disputado."
+    },
+    "pendencias": [
+      "Cruzar todos os picos de Blumenau com o acervo CEOPS/FURB e o dataset Mendeley.",
+      "Levantar picos de Rio do Sul, Gaspar, Ilhota e Itajaí para os mesmos eventos.",
+      "Registrar horário do pico em cada cidade para calcular tempos de trânsito reais."
+    ]
+  },
+  "eventos": [
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1852-10-29", "pico_m": 16.30, "confianca": "baixa", "fonte": "Compilações históricas; valor contestado por historiadores locais" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1855", "pico_m": 13.30, "confianca": "baixa", "fonte": "Relato histórico (Avé-Lallemant)" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1880", "pico_m": 17.10, "confianca": "media", "fonte": "Compilação de cotas 1852-2008 (AlertaBlu/CEOPS)" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1911", "pico_m": 16.90, "confianca": "media", "fonte": "Compilação de cotas 1852-2008 (AlertaBlu/CEOPS)" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1983-07", "pico_m": 15.34, "confianca": "media", "fonte": "Compilação; conferir no CEOPS" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1984-08", "pico_m": 15.46, "confianca": "media", "fonte": "Compilação; conferir no CEOPS" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2011-09-09", "pico_m": 13.00, "confianca": "alta", "fonte": "Artigo ABRH (CEOPS/FURB) - cota de referência das cartas-enchente" },
+    { "rio": "itajai-acu", "cidade": "timbo", "data": "2011-09-09", "pico_m": 9.86, "confianca": "alta", "fonte": "Artigo ABRH (CEOPS/FURB)" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2013", "pico_m": 10.51, "confianca": "baixa", "fonte": "Compilação informal" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2023-10-13", "pico_m": 10.75, "confianca": "media", "fonte": "Imprensa/compilação" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2023-11-17", "pico_m": 9.14, "confianca": "media", "fonte": "Imprensa/compilação" },
+    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2026-07-12", "pico_m": 5.65, "confianca": "media", "fonte": "Imprensa (monitoramento estadual); subiu >4 m em <24 h" },
+
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "1984", "pico_m": 10.30, "confianca": "baixa", "fonte": "Compilação informal" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2008-11", "pico_m": 8.75, "confianca": "baixa", "fonte": "Compilação informal" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2011-09", "pico_m": 10.03, "confianca": "baixa", "fonte": "Compilação informal" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2013", "pico_m": 7.61, "confianca": "baixa", "fonte": "Compilação informal" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2020-12-15", "pico_m": 4.95, "confianca": "alta", "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2022-06-23", "pico_m": 5.46, "confianca": "alta", "fonte": "Prefeitura de Brusque (pico 0h45)" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2023-10-13", "pico_m": 6.91, "confianca": "media", "fonte": "Imprensa/compilação" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2023-11-17", "pico_m": 8.96, "confianca": "media", "fonte": "Imprensa/compilação" }
+  ]
+}

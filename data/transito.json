@@ -1,0 +1,16 @@
+{
+  "_meta": {
+    "descricao": "Tempo estimado para a onda de cheia percorrer cada trecho. Valores iniciais de literatura; calibrar com horários de pico reais em enchentes.json.",
+    "campos": {
+      "horas_min / horas_max": "Faixa em horas.",
+      "confianca": "alta = estudo técnico; media = artigo acadêmico citado sem verificação direta; baixa = estimativa informal."
+    }
+  },
+  "trechos": [
+    { "rio": "itajai-acu", "de": "ituporanga", "para": "rio-do-sul", "horas_min": 6, "horas_max": 6, "confianca": "media", "fonte": "Modelos acadêmicos (ABRH), citado em compilação" },
+    { "rio": "itajai-acu", "de": "taio", "para": "rio-do-sul", "horas_min": 8, "horas_max": 8, "confianca": "media", "fonte": "Modelos acadêmicos (ABRH), citado em compilação" },
+    { "rio": "itajai-acu", "de": "rio-do-sul", "para": "blumenau", "horas_min": 7, "horas_max": 10, "confianca": "media", "fonte": "Estudo JICA na bacia do Itajaí, citado em compilação" },
+    { "rio": "itajai-acu", "de": "blumenau", "para": "itajai", "horas_min": 14, "horas_max": 17, "confianca": "media", "fonte": "Estudo JICA na bacia do Itajaí, citado em compilação" },
+    { "rio": "itajai-mirim", "de": "brusque", "para": "itajai", "horas_min": 6, "horas_max": 6, "confianca": "baixa", "fonte": "Estimativa informal; calibrar" }
+  ]
+}
