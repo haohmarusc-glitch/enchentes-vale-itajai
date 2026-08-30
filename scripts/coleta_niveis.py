@@ -67,6 +67,29 @@ def baixar() -> list[dict]:
     return parse(resposta.text)
 
 
+def baixar_chuva() -> list[dict]:
+    """
+    Chuva acumulada, da segunda página da mesma fonte.
+
+    Falha aqui NUNCA derruba a coleta de nível. O nível é o que decide se
+    alguém sai de casa; a chuva é contexto valioso, mas secundário. Uma página
+    de chuva fora do ar não pode apagar o nível do site — devolve lista vazia,
+    e a tela simplesmente não mostra chuva.
+    """
+    try:
+        from coleta_chuva import URL as URL_CHUVA, parse as parse_chuva
+        import requests
+
+        espera_turno()
+        resposta = requests.get(URL_CHUVA, headers={"User-Agent": USER_AGENT}, timeout=30)
+        resposta.raise_for_status()
+        return parse_chuva(resposta.text)
+    except Exception as e:
+        print(f"aviso: chuva não coletada ({e}) — o nível segue normalmente.",
+              file=sys.stderr)
+        return []
+
+
 def chaves_existentes(arquivo: Path) -> set[tuple[str, str]]:
     """(estação, carimbo de medição) já gravados no mês."""
     if not arquivo.exists():
@@ -177,6 +200,9 @@ def main() -> int:
         return 0
 
     novas, repetidas = acumular(leituras)
+
+    chuva = baixar_chuva()
+
     SERIE.mkdir(parents=True, exist_ok=True)
     ULTIMO.write_text(
         json.dumps(
@@ -184,6 +210,8 @@ def main() -> int:
                 "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
                 "leituras": leituras,
+                "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
+                "chuva": chuva,
             },
             ensure_ascii=False,
             indent=2,
@@ -192,6 +220,7 @@ def main() -> int:
         encoding="utf-8",
     )
     print(f"\n{novas} medição(ões) nova(s), {repetidas} já registrada(s).")
+    print(f"{len(chuva)} estação(ões) com chuva publicada.")
     return 0
 
 

@@ -226,10 +226,41 @@ mensagem manda o link do site, onde a conta é uma só.
 
 Falha avisa na hora e não repete antes de 6 h. A recuperação avisa sem esperar.
 
+## Chuva acumulada
+
+Ao lado do nível, cada cidade mostra quanto choveu, do pluviômetro da própria
+cidade. Coletado por `scripts/coleta_chuva.py` da segunda página da mesma
+fonte (`/monitoramento/chuvas`) e publicado junto do nível em `ultimo.json`.
+
+**As janelas são as da fonte: 10 min, 1 h, 12 h, 24 h e 48 h.** Ela não publica
+6 h, e aqui não se estima — numa cheia a chuva não cai constante, e dividir o
+acumulado de 12 h suporia justamente o contrário. A metade final de um período
+de 12 h pode conter toda a chuva.
+
+**É pluviômetro, não radar.** Radar mede refletividade e estima intensidade
+sobre uma área; não vira milímetro acumulado confiável num ponto. Um número de
+radar ao lado do nome da cidade teria cara de medição sem ser uma.
+
+**Milímetro se compara entre cidades; metro de régua não.** Por isso a chuva de
+uma cidade com vários pluviômetros é agregada e o nível não: cinco aparelhos em
+Itajaí medem a mesma grandeza. Mostra-se o **maior**, não a média — o que enche
+o rio é a chuva onde ela caiu, e a média entre um ponto encharcado e um seco
+inventa um meio-termo que não aconteceu em lugar nenhum. Quando os pontos
+discordam, a faixa inteira aparece: em 30/08/2026, Itajaí marcava
+`14,0–39,6 mm em 24 h` entre seis pluviômetros.
+
+**Trava de coerência.** As janelas são encaixadas, então o acumulado tem de ser
+não-decrescente. A fonte publica série que viola isso: a estação Guarani, em
+Brusque, registrava 0,20 mm nos últimos 10 minutos e 0,00 mm em 1 h, 12 h, 24 h
+e 48 h no mesmo instante. Zero ali quase certamente é "sem dado", e mostrá-lo ao
+lado de uma vizinha com 39 mm mandaria a pessoa para o lado errado. A leitura vai
+marcada e a tela diz **"dado inconsistente na fonte"** em vez de um número.
+
 ## Pendências
 
 Em ordem de impacto.
 
+- [ ] **Acumular a série de chuva**, como já se faz com o nível. Com nível de montante explicando pouco o de jusante (r² = 0,21), a chuva é a candidata mais forte a preditor de verdade — mas só depois de meses de série pareada com os picos.
 - [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
 - [ ] **Preencher a cota de cada régua de Itajaí** em `estacoes_tempo_real` de `estacoes.json`. As 14 estações já estão cadastradas com o título exato da fonte; falta o número da cota de atenção de cada uma. Enquanto `cotas_m` estiver vazio nas cidades com várias réguas, `extrair_picos.py` se recusa a analisar essas estações e o site não mostra nível ao vivo para Itajaí — o que é o certo, mas deixa a foz de fora. O validador lista exatamente quais faltam. **Agora isto também cala o aviso por Telegram em Itajaí**: sem cota por régua, `alerta_cotas.py` se recusa a avisar as onze estações da foz — rodando contra a coleta real, ele vigia **2 das 13 estações** que chegam no arquivo — Rio do Sul e Brusque. `alerta_cotas.py --seco` imprime esse panorama toda vez, com a cota de cada régua vigiada.
@@ -257,5 +288,6 @@ Em ordem de impacto.
 - [x] Nível ao vivo no site, com selo de idade e recusa de calcular chegada a partir de leitura velha.
 - [x] Site publicado no GitHub Pages, com os dados validados antes de cada publicação.
 - [x] Registro das 14 estações de tempo real com o título exato da fonte, pronto para receber a cota de cada régua.
+- [x] Chuva acumulada por cidade (1 h / 12 h / 24 h / 48 h), agregando os pluviômetros e recusando leitura que não fecha.
 - [x] Aviso por Telegram quando um rio cruza cota, e vigia que percebe a coleta morrendo — ver **Avisos** abaixo.
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.

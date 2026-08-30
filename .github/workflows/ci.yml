@@ -28,6 +28,9 @@ jobs:
       - name: Testes do analisador da página de níveis
         working-directory: scripts
         run: python3 teste_coleta_niveis.py
+      - name: Testes do analisador da página de chuvas
+        working-directory: scripts
+        run: python3 teste_coleta_chuva.py
       - name: Testes do auditor
         working-directory: scripts
         run: python3 teste_auditar.py
