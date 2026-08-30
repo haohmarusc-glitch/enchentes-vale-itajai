@@ -1,0 +1,7 @@
+.faixa {
+  background: var(--alerta);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}

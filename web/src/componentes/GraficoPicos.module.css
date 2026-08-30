@@ -1,0 +1,52 @@
+.grafico {
+  margin: 0 -0.5rem;
+}
+
+.legenda {
+  font-size: 0.9rem;
+  color: var(--tinta-fraca);
+}
+
+.vazio {
+  font-style: italic;
+  color: var(--tinta-fraca);
+}
+
+.legendaCores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  list-style: none;
+  margin: 0.25rem 0 0.75rem;
+  padding: 0;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.amostra {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 2px;
+  margin-right: 0.35rem;
+  vertical-align: -1px;
+}
+
+.tabela summary {
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0.4rem 0;
+}
+
+.tabela th,
+.tabela td {
+  border-bottom: 1px solid var(--borda);
+  padding: 0.4rem 0.6rem 0.4rem 0;
+  text-align: left;
+  font-size: 0.88rem;
+  vertical-align: top;
+}
+
+.tabela th {
+  white-space: nowrap;
+}

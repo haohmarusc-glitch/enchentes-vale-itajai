@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Rio">
+  <rect width="64" height="64" rx="10" fill="#0b3a5b"/>
+  <g fill="none" stroke="#7fc4ec" stroke-width="5" stroke-linecap="round">
+    <path d="M8 28c6-7 12-7 18 0s12 7 18 0 6-7 12-3"/>
+    <path d="M8 42c6-7 12-7 18 0s12 7 18 0 6-7 12-3"/>
+  </g>
+</svg>

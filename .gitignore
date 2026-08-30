@@ -4,3 +4,6 @@ __pycache__/
 .venv/
 .env
 *.pyc
+
+# séries brutas baixadas da ANA (grandes, reproduzíveis pelo script)
+data/series/

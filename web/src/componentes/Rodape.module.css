@@ -1,0 +1,33 @@
+.rodape {
+  background: var(--agua);
+  color: #dceaf4;
+  margin-top: 2rem;
+  padding: 1.25rem 0 2rem;
+}
+
+.dentro {
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.titulo {
+  font-size: 1rem;
+  color: #fff;
+}
+
+.lista {
+  margin: 0 0 0.75rem;
+  padding-left: 1.15rem;
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
+.lista a {
+  color: #a8d5f2;
+}
+
+.nota {
+  font-size: 0.85rem;
+  margin: 0;
+}
