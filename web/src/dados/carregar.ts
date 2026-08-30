@@ -205,6 +205,14 @@ function cotaRuaValida(c: CotaRua): boolean {
     descarta('cota de rua sem fonte ou com confiança inválida', c)
     return false
   }
+  // REGRA BLOQUEANTE do CLAUDE.md, item 4: busca e simulador só em régua.
+  // O nível ao vivo com que estas cotas são comparadas vem da Defesa Civil, que
+  // é régua. Uma cota em outra referência produziria "faltam 2,30 m" com 20 cm
+  // de erro embutido, sem nada na tela denunciando.
+  if (c.referencia !== undefined && c.referencia !== 'régua') {
+    descarta('cota de rua fora da referência régua', c)
+    return false
+  }
   if (c.cota_m === null) return true // legítimo: a fonte cita e não publica o número
   if (typeof c.cota_m !== 'number' || !Number.isFinite(c.cota_m)) {
     descarta('cota de rua com cota_m que não é número', c)

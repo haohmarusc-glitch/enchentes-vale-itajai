@@ -78,6 +78,12 @@ export interface EventoAgrupado {
   confianca: Confianca
   /** Quantas leituras entraram no grupo. */
   leituras: number
+  /**
+   * Referência altimétrica do grupo. Eventos de referências diferentes NÃO se
+   * misturam: 12,80 m na régua e 13,00 m no IBGE são o mesmo nível, e deixar a
+   * magnitude arbitrar escolheria sempre o IBGE, em silêncio.
+   */
+  referencia: string
 }
 
 /**
@@ -92,28 +98,65 @@ export interface EventoAgrupado {
  * ficam cada uma no seu grupo.
  */
 export function agruparEmEventos(eventos: Evento[]): EventoAgrupado[] {
-  const ordenados = [...eventos].sort((a, b) => comparaData(a.data, b.data))
-  const grupos: Evento[][] = []
-
-  for (const ev of ordenados) {
-    const ultimo = grupos[grupos.length - 1]
-    const anterior = ultimo?.[ultimo.length - 1]
-    if (ultimo && anterior && mesmoEvento(anterior.data, ev.data)) {
-      ultimo.push(ev)
-    } else {
-      grupos.push([ev])
-    }
+  // Agrupa POR REFERÊNCIA antes de agrupar por data. Sem isso, um registro em
+  // referência IBGE (20 cm acima da régua) cairia no mesmo grupo que um em
+  // régua, e o `reduce` abaixo — que fica com o maior — escolheria sempre o
+  // IBGE, em silêncio, no caminho da previsão. Magnitude não pode arbitrar
+  // entre referências: 12,80 m na régua e 13,00 m no IBGE são o MESMO nível.
+  const porReferencia = new Map<string, Evento[]>()
+  for (const ev of eventos) {
+    const chave = referenciaDe(ev)
+    const lista = porReferencia.get(chave)
+    if (lista) lista.push(ev)
+    else porReferencia.set(chave, [ev])
   }
 
-  return grupos.map((grupo) => {
-    const maior = grupo.reduce((a, b) => (b.pico_m > a.pico_m ? b : a))
-    return {
-      data: maior.data,
-      pico_m: maior.pico_m,
-      confianca: grupo.reduce<Confianca>((pior, e) => piorConfianca(pior, e.confianca), 'alta'),
-      leituras: grupo.length,
+  const saida: EventoAgrupado[] = []
+  for (const [referencia, doGrupo] of porReferencia) {
+    const ordenados = [...doGrupo].sort((a, b) => comparaData(a.data, b.data))
+    const grupos: Evento[][] = []
+
+    for (const ev of ordenados) {
+      const ultimo = grupos[grupos.length - 1]
+      const anterior = ultimo?.[ultimo.length - 1]
+      if (ultimo && anterior && mesmoEvento(anterior.data, ev.data)) {
+        ultimo.push(ev)
+      } else {
+        grupos.push([ev])
+      }
     }
-  })
+
+    for (const grupo of grupos) {
+      // Dentro de uma mesma referência, o maior É o pico do evento: são
+      // leituras do mesmo rio na mesma escala, em dias diferentes da cheia.
+      const maior = grupo.reduce((a, b) => (b.pico_m > a.pico_m ? b : a))
+      saida.push({
+        data: maior.data,
+        pico_m: maior.pico_m,
+        confianca: grupo.reduce<Confianca>((pior, e) => piorConfianca(pior, e.confianca), 'alta'),
+        leituras: grupo.length,
+        referencia,
+      })
+    }
+  }
+  return saida.sort((a, b) => comparaData(a.data, b.data))
+}
+
+/**
+ * A referência de um registro, normalizada.
+ *
+ * Campo ausente = régua local, que é a referência de todas as cidades menos
+ * Blumenau. `null` vira `'não declarada'` — e isso NÃO é uma referência: é a
+ * ausência de uma. Dois registros não declarados não "batem" entre si, porque
+ * não se sabe se estão na mesma escala.
+ */
+export const REGUA = 'régua'
+export const NAO_DECLARADA = 'não declarada'
+
+export function referenciaDe(e: { referencia?: string | null }): string {
+  if (!('referencia' in e) || e.referencia === undefined) return REGUA
+  if (e.referencia === null) return NAO_DECLARADA
+  return e.referencia
 }
 
 /**
@@ -133,10 +176,20 @@ export function parear(
   const pares: Par[] = []
 
   for (const m of montante) {
-    const candidatos = jusante.filter((j) => mesmoEvento(m.data, j.data))
+    // Pareia igual com igual. Um montante em IBGE contra um jusante em régua
+    // injeta 20 cm sistemáticos na reta — e a reta depois vira metros na tela
+    // de alguém. Sem referência declarada, também não pareia: não se sabe se
+    // os dois estão na mesma escala, e supor que sim é o erro que a regra do
+    // CLAUDE.md existe para impedir.
+    if (m.referencia === NAO_DECLARADA) continue
+    const candidatos = jusante.filter(
+      (j) => j.referencia === m.referencia && mesmoEvento(m.data, j.data),
+    )
     if (candidatos.length !== 1) continue
     const j = candidatos[0]!
-    const irmaos = montante.filter((o) => mesmoEvento(o.data, j.data))
+    const irmaos = montante.filter(
+      (o) => o.referencia === j.referencia && mesmoEvento(o.data, j.data),
+    )
     if (irmaos.length !== 1) continue
     pares.push({
       data: m.data.length >= j.data.length ? m.data : j.data,
