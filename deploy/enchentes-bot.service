@@ -1,0 +1,35 @@
+# Bot de consulta do Telegram, sempre de pé.
+#
+# Instalar na VPS:
+#     sudo cp deploy/enchentes-bot.service /etc/systemd/system/
+#     sudo systemctl daemon-reload
+#     sudo systemctl enable --now enchentes-bot
+#     systemctl status enchentes-bot
+#     journalctl -u enchentes-bot -f
+#
+# Por que systemd e não cron: o bot fica escutando (long polling), não roda e
+# sai. E por que não Docker como no Fila-Disney: este projeto não tem imagem;
+# são três dependências Python e um clone do git. Menos peça, menos coisa para
+# quebrar às três da manhã.
+
+[Unit]
+Description=Bot de consulta de cheias do Vale do Itajai (Telegram)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/enchentes-vale-itajai
+ExecStart=/usr/bin/python3 scripts/bot.py
+Restart=always
+# Espera crescente entre tentativas: se o Telegram estiver fora, não adianta
+# martelar de segundo em segundo.
+RestartSec=10
+# Sem teto, um vazamento aqui competiria com a coleta de nível pela memória da
+# VPS — e a coleta é que decide se alguém sai de casa.
+MemoryMax=256M
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

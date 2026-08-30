@@ -5,6 +5,7 @@ import { faixaHoras } from '../logica/transito'
 import {
   MIN_AGORA,
   chegadasSePicoAgora,
+  foraDeOrdem,
   frescor,
   idadeMin,
   primeiraCota,
@@ -57,6 +58,10 @@ export default function PainelSePicoAgora({
 
   const chegadas = chegadasSePicoAgora(trechos, rioId, cidades, origem, leitura.medidoEm)
   if (chegadas.length === 0) return null
+  // Fontes de trânsito que não concordam entre si podem produzir uma cidade
+  // recebendo a água antes de outra que fica acima dela. Isso é dito, não
+  // escondido: empurrar horário para arrumar a ordem inventaria precisão.
+  const desordenado = foraDeOrdem(chegadas)
 
   const cota = primeiraCota(origem)
   const acimaDaCota = cota !== null && leitura.nivel_m >= cota.valor
@@ -103,6 +108,15 @@ export default function PainelSePicoAgora({
           </li>
         ))}
       </ul>
+
+      {desordenado ? (
+        <p className={estilos.desordem} role="note">
+          <strong>Os horários acima não estão em ordem de rio abaixo.</strong> Os tempos de
+          descida vêm de fontes diferentes que não concordam entre si, e por isso alguma cidade
+          aparece recebendo a água antes de outra que fica acima dela. Leia cada linha como a
+          estimativa daquele trecho, não como uma sequência.
+        </p>
+      ) : null}
 
       <p className={estilos.ressalva}>
         A conta não prevê altura, só horário — e ignora a chuva que cair no caminho, manobra de

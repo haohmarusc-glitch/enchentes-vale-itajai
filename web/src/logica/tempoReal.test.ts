@@ -7,6 +7,7 @@ import {
   chegadasSePicoAgora,
   deBrasilia,
   frescor,
+  foraDeOrdem,
   idadeMin,
   primeiraCota,
   textoIdade,
@@ -104,4 +105,17 @@ test('primeira cota é a mais baixa que importa', () => {
   assert.deepEqual(primeiraCota(CIDADES[0]!), { chave: 'atencao', valor: 4.5 })
   assert.deepEqual(primeiraCota(CIDADES[1]!), { chave: 'atencao', valor: 6.0 })
   assert.equal(primeiraCota(CIDADES[2]!), null, 'sem cota levantada, sem palpite')
+})
+
+test('janela fora da ordem do rio é detectada', () => {
+  // A água passa pelas cidades na ordem do curso. Quando os trechos vêm de
+  // fontes que não concordam, uma cidade pode aparecer recebendo antes de
+  // outra acima dela — e isso tem de ser dito, não arrumado por baixo.
+  const chegada = (h: number) =>
+    ({ inicio: new Date(2026, 7, 31, h), fim: new Date(2026, 7, 31, h + 3) }) as never
+
+  assert.equal(foraDeOrdem([chegada(1), chegada(2), chegada(5)]), false)
+  assert.equal(foraDeOrdem([chegada(2), chegada(1)]), true)
+  assert.equal(foraDeOrdem([]), false)
+  assert.equal(foraDeOrdem([chegada(4)]), false)
 })

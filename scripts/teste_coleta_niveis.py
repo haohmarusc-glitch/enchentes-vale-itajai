@@ -86,5 +86,38 @@ class TesteParse(unittest.TestCase):
         self.assertEqual(parse("<html><body><p>Indisponível</p></body></html>"), [])
 
 
+
+class TestSemRede(unittest.TestCase):
+    """
+    Analisar HTML não pode exigir biblioteca de rede.
+
+    Isto já era verdade por acidente — a CI não instalava `requests`, então
+    qualquer import solto quebrava o teste. Agora a CI instala (o núcleo HTTP
+    precisa dela), e a propriedade viraria invisível. Aqui ela é afirmada:
+    quem só quer entender um HTML salvo não deveria precisar de rede nenhuma,
+    e um import no topo do módulo transformaria falta de dependência em coleta
+    silenciosamente morta.
+    """
+
+    def test_parse_funciona_com_requests_indisponivel(self):
+        import subprocess
+        import sys
+        from pathlib import Path
+
+        codigo = (
+            "import sys; sys.modules['requests'] = None\n"
+            "import coleta_itajai, coleta_chuva\n"
+            "assert len(coleta_itajai.parse(open('/dev/stdin').read())) >= 1\n"
+            "print('ok')\n"
+        )
+        r = subprocess.run(
+            [sys.executable, "-c", codigo],
+            input=PAGINA, capture_output=True, text=True,
+            cwd=str(Path(__file__).resolve().parent),
+        )
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("ok", r.stdout)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

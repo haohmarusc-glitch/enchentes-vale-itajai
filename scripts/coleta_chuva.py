@@ -155,17 +155,13 @@ def parse(html: str) -> list[dict]:
 
 
 def coletar() -> dict:
-    import requests
-
-    from comum import espera_turno
+    from comum import baixar, espera_turno
 
     espera_turno()
-    r = requests.get(URL, headers={"User-Agent": USER_AGENT}, timeout=30)
-    r.raise_for_status()
     return {
         "fonte": URL,
         "coletado_em": datetime.now(timezone.utc).isoformat(),
-        "chuva": parse(r.text),
+        "chuva": parse(baixar(URL)),
     }
 
 

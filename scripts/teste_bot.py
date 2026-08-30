@@ -1,0 +1,225 @@
+#!/usr/bin/env python3
+"""Testes das respostas do bot.
+
+Todas contra uma base montada com os números reais colhidos em 30/08/2026.
+`responder` é função pura — recebe os dados e o relógio —, então dá para testar
+cada resposta sem rede e sem Telegram nenhum.
+
+O que estes casos protegem: que o bot nunca invente número, que toda leitura
+saia com a idade, e que toda resposta lembre que isto não é alerta oficial.
+
+    python3 scripts/teste_bot.py
+"""
+
+import unittest
+from datetime import datetime, timezone
+
+from bot import Base, responder, sem_acento, texto_idade
+from comum import le_json
+
+AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
+
+ULTIMO = {
+    "coletado_em": "2026-08-30T21:25:00+00:00",
+    "leituras": [
+        {"estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu", "cidade": "rio-do-sul",
+         "nivel_m": 3.52, "medido_em": "2026-08-30T17:55:00"},
+        {"estacao": "Brusque", "rio": "itajai-mirim", "cidade": "brusque",
+         "nivel_m": 1.94, "medido_em": "2026-08-30T18:15:00"},
+        {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu",
+         "cidade": "itajai", "nivel_m": 0.81, "medido_em": "2026-08-30T18:20:00"},
+        {"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+         "rio": "itajai-acu", "cidade": "itajai", "nivel_m": 1.53,
+         "medido_em": "2026-08-30T18:20:00"},
+    ],
+    "chuva": [
+        {"estacao": "DC-09 Ribeirão da Murta", "rio": "ribeirao-murta", "cidade": "itajai",
+         "mm": {"min10": 0.0, "h1": 1.2, "h12": 40.8, "h24": 40.8, "h48": 42.6},
+         "medido_em": "2026-08-30T18:20:00", "coerente": True, "incoerencias": []},
+        {"estacao": "DC-06 Itamirim", "rio": "itajai-mirim", "cidade": "itajai",
+         "mm": {"min10": 0.0, "h1": 0.4, "h12": 14.6, "h24": 14.6, "h48": 15.4},
+         "medido_em": "2026-08-30T18:20:00", "coerente": True, "incoerencias": []},
+        {"estacao": "Brusque Estação Guarani", "rio": "itajai-mirim", "cidade": "brusque",
+         "mm": {"min10": 0.4, "h1": 0.0, "h12": 0.0, "h24": 0.0, "h48": 0.0},
+         "medido_em": "2026-08-30T18:15:00", "coerente": False,
+         "incoerencias": ["min10=0.4 mm > h1=0 mm"]},
+    ],
+}
+
+
+def base() -> Base:
+    return Base(ULTIMO, le_json("estacoes.json"), le_json("transito.json"),
+                le_json("enchentes.json"))
+
+
+def resp(texto: str) -> str:
+    return responder(texto, base(), AGORA)
+
+
+class TestNivel(unittest.TestCase):
+    def test_nivel_traz_valor_estacao_e_idade(self):
+        t = resp("/nivel Rio do Sul")
+        self.assertIn("3,52 m", t)
+        self.assertIn("Estação MKS", t)
+        # 17:55 em Brasília são 20:55 UTC; AGORA é 21:30 UTC.
+        self.assertIn("há 35 min", t, "toda leitura sai com a idade")
+
+    def test_cidade_com_varias_reguas_avisa_que_nao_se_comparam(self):
+        t = resp("/nivel Itajaí")
+        self.assertIn("0,81 m", t)
+        self.assertIn("1,53 m", t)
+        self.assertIn("não se comparam", t)
+
+    def test_cidade_sem_leitura_diz_que_nao_tem(self):
+        t = resp("/nivel Blumenau")
+        self.assertIn("Sem leitura ao vivo", t)
+        self.assertNotIn(" m\n", t.split("Sem leitura")[0][:200] or " ")
+
+    def test_sem_acento_e_sem_maiuscula_funciona(self):
+        self.assertIn("3,52 m", resp("/nivel rio do sul"))
+        self.assertIn("1,94 m", resp("/nivel BRUSQUE"))
+
+    def test_cidade_desconhecida_nao_chuta(self):
+        t = resp("/nivel Curitiba")
+        self.assertIn("Não conheço", t)
+
+
+class TestChuva(unittest.TestCase):
+    def test_chuva_mostra_as_janelas_da_fonte(self):
+        t = resp("/chuva Itajaí")
+        self.assertIn("24 h", t)
+        self.assertIn("40,8 mm", t)
+        self.assertIn("14,6", t, "quando os pontos discordam, mostra a faixa")
+        self.assertNotIn("6 h:", t, "a fonte não publica 6 h")
+
+    def test_pluviometro_inconsistente_nao_vira_zero(self):
+        """
+        O caso real da Guarani. Dizer "0,0 mm" ali seria dizer que não choveu em
+        Brusque — a pior resposta possível numa noite de chuva.
+        """
+        t = resp("/chuva Brusque")
+        self.assertIn("inconsistente", t)
+        self.assertNotIn("0,0 mm", t)
+
+    def test_cidade_sem_pluviometro(self):
+        self.assertIn("Não há pluviômetro", resp("/chuva Botuverá"))
+
+
+class TestPrevisao(unittest.TestCase):
+    def test_previsao_encadeia_ate_a_foz(self):
+        t = resp("/previsao Rio do Sul")
+        self.assertIn("Blumenau", t)
+        self.assertIn("Itajaí", t)
+        self.assertIn("conta condicional", t)
+
+    def test_janela_ancorada_na_medicao_e_nao_em_agora(self):
+        """
+        A leitura de Rio do Sul é das 17:55; a chegada em Blumenau (7-10 h) tem
+        de ser contada a partir dali, não das 18:30. Ancorar em "agora"
+        empurraria toda a janela 35 min para frente.
+        """
+        t = resp("/previsao Rio do Sul")
+        self.assertIn("00:55", t, "17:55 + 7 h")
+        self.assertIn("03:55", t, "17:55 + 10 h")
+
+    def test_cidade_com_varias_reguas_recusa(self):
+        t = resp("/previsao Itajaí")
+        self.assertIn("mais de uma régua", t)
+
+    def test_cidade_sem_leitura_recusa(self):
+        self.assertIn("não há leitura ao vivo", resp("/previsao Blumenau"))
+
+    def test_foz_nao_tem_para_onde_mandar(self):
+        t = resp("/previsao Brusque")
+        self.assertIn("Itajaí", t)
+
+
+    def test_cidade_dos_dois_rios_nao_responde_duplicado(self):
+        """
+        Itajaí existe no Açu e no Mirim. Chuva e nível são por cidade: a mesma
+        resposta saindo duas vezes fazia a mensagem parecer defeito.
+        """
+        t = resp("/chuva Itajaí")
+        self.assertEqual(t.count("chuva acumulada"), 1)
+        self.assertEqual(resp("/nivel Itajaí").count("nível do rio"), 1)
+
+    def test_ordem_impossivel_e_denunciada(self):
+        """
+        Os tempos de descida vêm de fontes diferentes e não concordam: no eixo
+        do Açu, Blumenau pode aparecer recebendo a água antes de Apiúna, que
+        fica acima. Esconder isso seria apresentar como sequência algo que a
+        fonte não sustenta.
+        """
+        t = resp("/previsao Rio do Sul")
+        self.assertIn("não estão em ordem de rio abaixo", t)
+
+    def test_previsao_sem_desordem_nao_avisa_a_toa(self):
+        b = base()
+        b.transito = [
+            {"rio": "itajai-mirim", "de": "brusque", "para": "itajai",
+             "horas_min": 6, "horas_max": 6, "confianca": "baixa", "fonte": "F"},
+        ]
+        t = responder("/previsao Brusque", b, AGORA)
+        self.assertNotIn("não estão em ordem", t)
+
+
+class TestCotas(unittest.TestCase):
+    def test_cotas_com_aviso_de_regua_propria(self):
+        t = resp("/cotas Rio do Sul")
+        self.assertIn("Atenção", t)
+        self.assertIn("4,50 m", t)
+        self.assertIn("própria régua", t)
+
+    def test_cidade_sem_cota_diz_que_falta(self):
+        self.assertIn("ainda não foram levantadas", resp("/cotas Ilhota"))
+
+
+class TestGerais(unittest.TestCase):
+    def test_toda_resposta_lembra_que_nao_e_alerta_oficial(self):
+        for cmd in ("/ajuda", "/rios", "/emergencia", "/nivel Brusque",
+                    "/chuva Itajaí", "/previsao Rio do Sul", "/cotas Blumenau"):
+            with self.subTest(cmd=cmd):
+                t = resp(cmd)
+                self.assertIn("199", t, f"{cmd} não traz o telefone de emergência")
+
+    def test_texto_que_nao_e_comando_e_ignorado(self):
+        self.assertIsNone(resp("bom dia"))
+        self.assertIsNone(resp(""))
+
+    def test_comando_desconhecido_fica_em_silencio(self):
+        """Em grupo, responder a comando de outro bot é ruído."""
+        self.assertIsNone(resp("/piada"))
+
+    def test_comando_com_arroba_do_grupo(self):
+        self.assertIn("3,52 m", resp("/nivel@cheias_bot Rio do Sul"))
+
+    def test_comando_sem_cidade_lista_as_cidades(self):
+        t = resp("/nivel")
+        self.assertIn("Blumenau", t)
+        self.assertIn("/nivel Blumenau", t)
+
+    def test_rios_mostra_tudo_com_idade(self):
+        t = resp("/rios")
+        self.assertIn("Rio do Sul", t)
+        self.assertIn("Brusque", t)
+        self.assertIn("maior de 2 réguas", t)
+
+    def test_escapa_html_do_que_a_pessoa_digitou(self):
+        t = resp("/nivel <b>xxx</b>")
+        self.assertNotIn("<b>xxx</b>", t)
+
+
+class TestAuxiliares(unittest.TestCase):
+    def test_sem_acento(self):
+        self.assertEqual(sem_acento("Itajaí-Açu"), "itajai-acu")
+
+    def test_texto_idade(self):
+        self.assertEqual(texto_idade(0), "agora mesmo")
+        self.assertEqual(texto_idade(45), "há 45 min")
+        self.assertEqual(texto_idade(60), "há 1 h")
+        self.assertEqual(texto_idade(155), "há 2 h 35")
+        self.assertEqual(texto_idade(None), "sem horário de medição")
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
