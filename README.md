@@ -2,6 +2,8 @@
 
 Site com dados históricos de enchentes nos rios **Itajaí-Açu** e **Itajaí-Mirim** (SC): nível do rio em cada cidade, previsão empírica para a cidade a jusante e tempo estimado de chegada da cheia. Itajaí, na foz, recebe os dois rios e a influência da maré.
 
+**No ar:** https://haohmarusc-glitch.github.io/enchentes-vale-itajai
+
 > Este projeto **não substitui** o AlertaBlu, a Defesa Civil de SC nem as Defesas Civis municipais. Em emergência, ligue 199.
 
 ## Estrutura
@@ -75,7 +77,11 @@ máquina qualquer) e o `data/mare-itajai.json` resultante ser commitado. Enquant
 estiver vazio, a tela da foz pede a tábua a quem estiver usando — ela não estima horário
 de preamar.
 
-O site é estático e usa `HashRouter`, então funciona em GitHub Pages ou Vercel sem reescrita de rotas no servidor.
+O site é estático e usa `HashRouter`, então funciona em GitHub Pages ou Vercel sem reescrita de
+rotas no servidor. `.github/workflows/pages.yml` publica a cada push no `main` — e **valida os
+JSONs antes de construir**: se os dados não passarem, nada vai ao ar e o site no ar continua o de
+antes. As publicações de tempo real vão para o branch `tempo-real` e não disparam build; a página
+busca aquele branch em tempo de execução.
 
 ## Telas
 
@@ -171,5 +177,6 @@ Em ordem de impacto.
 - [x] Eixo do Itajaí-Açu completo em `transito.json` a partir do estudo JICA, incluindo Ituporanga, Apiúna e os trechos entre Blumenau e a foz.
 - [x] Painel de maré na tela da foz, com coletor da tábua oficial e cálculo de sizígia.
 - [x] Nível ao vivo no site, com selo de idade e recusa de calcular chegada a partir de leitura velha.
+- [x] Site publicado no GitHub Pages, com os dados validados antes de cada publicação.
 - [x] Registro das 14 estações de tempo real com o título exato da fonte, pronto para receber a cota de cada régua.
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.

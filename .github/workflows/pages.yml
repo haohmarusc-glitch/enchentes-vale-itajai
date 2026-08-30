@@ -1,0 +1,82 @@
+# Publica o site no GitHub Pages a cada mudança no main.
+#
+# O build é estático e o roteamento usa HashRouter, então não é preciso
+# reescrita de rotas no servidor — o Pages serve os arquivos e pronto.
+#
+# As publicações de tempo real NÃO passam por aqui: elas vão para o branch
+# `tempo-real`, que este fluxo ignora de propósito. Se cada coleta de 15
+# minutos disparasse um build, o site viveria em reconstrução e o nível ao vivo
+# ainda assim só apareceria depois do deploy. A página busca aquele branch em
+# tempo de execução justamente para não depender disto.
+name: Publicar site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicação por vez, sem cancelar a que já está em andamento: derrubar um
+# deploy no meio deixaria o site num estado indefinido.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Construir
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Publicar dado de enchente inválido é o pior desfecho possível deste
+      # projeto. O portão de qualidade roda ANTES do build: se os JSONs não
+      # passarem, nada vai ao ar e o site no ar continua o de antes.
+      - name: Validar os dados antes de publicar
+        working-directory: scripts
+        run: python3 validar_dados.py
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Instalar dependências
+        working-directory: web
+        run: npm ci
+
+      - name: Testes da lógica
+        working-directory: web
+        run: npm test
+
+      - name: Build
+        working-directory: web
+        run: npm run build
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  publicar:
+    name: Publicar
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4
