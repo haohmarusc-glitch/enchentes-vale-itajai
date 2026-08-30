@@ -171,13 +171,68 @@ Essas regras estão em `web/src/logica/previsao.ts` e cobertas por testes em `we
 - Defesa Civil de Itajaí: https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios
 - CEOPS/FURB (acervo histórico): http://ceops.furb.br/
 
+## Avisos (Telegram)
+
+O site é *pull*: só serve para quem o abre. Ninguém abre uma página às três da
+manhã, que é quando várias das cheias do Vale atingiram o pico. Estes dois
+scripts vão atrás da pessoa.
+
+```bash
+cp .env.example .env          # preencher TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID
+python3 scripts/notificador.py --teste
+python3 scripts/alerta_cotas.py --seco    # mostra o que enviaria, sem enviar
+python3 scripts/saude_coleta.py           # sai 0 se a coleta está viva, 1 se não
+```
+
+No cron, logo depois da coleta:
+
+```cron
+*/15 * * * * cd /root/enchentes-vale-itajai && python3 scripts/coleta_niveis.py && python3 scripts/alerta_cotas.py
+17 * * * *   cd /root/enchentes-vale-itajai && python3 scripts/saude_coleta.py --avisar
+```
+
+### As regras de aviso, e por que não são as de um bot comum
+
+**Não há horário de silêncio.** Um bot de notificação normal cala de madrugada.
+Aqui isso mataria gente: 2008 e 2011 subiram de noite, e o aviso da madrugada é
+o único que dá tempo de sair de casa. Quem quiser silêncio configura no próprio
+Telegram — não no código de todo mundo.
+
+**O intervalo entre avisos não é cronômetro.** Repetir "está em alerta" a cada
+45 min vira ruído, e ruído faz a pessoa desligar o bot justamente antes da noite
+em que ele importaria. Então: mudança de faixa avisa sempre; a mesma faixa só
+repete depois de 3 h **e** se o rio tiver subido 30 cm desde o último aviso; a
+descida e a volta ao normal avisam uma vez.
+
+**Cada régua tem sua cota.** O limiar vem da própria estação. A cota da cidade
+só vale onde a cidade tem uma régua só — em Itajaí são onze, com zeros
+diferentes. Sem cota por régua, o script **não avisa** aquela estação e diz por
+quê. Alarme com cota errada é pior que alarme nenhum: ensina a ignorar o
+próximo.
+
+**O aviso não calcula chegada a jusante.** O encadeamento de tempo de descida
+vive em TypeScript (`web/src/logica/transito.ts`), e reescrevê-lo em Python
+criaria duas contas de vida diferentes que podem divergir em silêncio. A
+mensagem manda o link do site, onde a conta é uma só.
+
+### O vigia da coleta
+
+`saude_coleta.py` responde a duas perguntas, e a segunda é a traiçoeira:
+
+1. **a coleta rodou?** (`coletado_em`) — cron morto, disco cheio, pacote quebrado;
+2. **a fonte publicou?** (`medido_em` mais recente) — o cron correndo
+   perfeitamente a cada 15 min sobre uma página que parou de atualizar há seis
+   horas. O arquivo fica novo; o dado, velho.
+
+Falha avisa na hora e não repete antes de 6 h. A recuperação avisa sem esperar.
+
 ## Pendências
 
 Em ordem de impacto.
 
 - [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
-- [ ] **Preencher a cota de cada régua de Itajaí** em `estacoes_tempo_real` de `estacoes.json`. As 14 estações já estão cadastradas com o título exato da fonte; falta o número da cota de atenção de cada uma. Enquanto `cotas_m` estiver vazio nas cidades com várias réguas, `extrair_picos.py` se recusa a analisar essas estações e o site não mostra nível ao vivo para Itajaí — o que é o certo, mas deixa a foz de fora. O validador lista exatamente quais faltam.
+- [ ] **Preencher a cota de cada régua de Itajaí** em `estacoes_tempo_real` de `estacoes.json`. As 14 estações já estão cadastradas com o título exato da fonte; falta o número da cota de atenção de cada uma. Enquanto `cotas_m` estiver vazio nas cidades com várias réguas, `extrair_picos.py` se recusa a analisar essas estações e o site não mostra nível ao vivo para Itajaí — o que é o certo, mas deixa a foz de fora. O validador lista exatamente quais faltam. **Agora isto também cala o aviso por Telegram em Itajaí**: sem cota por régua, `alerta_cotas.py` se recusa a avisar as onze estações da foz — hoje ele só cobre Rio do Sul, Brusque e Blumenau.
 - [ ] **Registrar o horário do pico** (campo `hora`, `HH:MM`) nos eventos. Só 2 dos 116 têm. É o que troca o hidrograma de projeto da JICA por medição de cheia real, em `calibrar_transito.py`.
 - [ ] Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10. Se forem o mesmo evento, vira mais um par.
 - [ ] Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama — hoje sem nenhum registro.
@@ -186,7 +241,6 @@ Em ordem de impacto.
 - [ ] Verificar os códigos ANA já cadastrados (`verificado: false` em Taió, Rio do Sul e Blumenau).
 - [ ] Localizar estações do Itajaí-Mirim e das cidades do Açu ainda sem `codigo_ana`.
 - [ ] Levantar cotas de atenção/alerta/inundação das demais cidades; hoje só Rio do Sul, Blumenau e Brusque têm.
-- [ ] Colocar `coleta_niveis.py` e `coleta_mares.py` no cron de uma máquina e mostrar o nível em tempo real na tela, com aviso de leitura velha.
 
 ## Concluído
 
@@ -201,4 +255,5 @@ Em ordem de impacto.
 - [x] Nível ao vivo no site, com selo de idade e recusa de calcular chegada a partir de leitura velha.
 - [x] Site publicado no GitHub Pages, com os dados validados antes de cada publicação.
 - [x] Registro das 14 estações de tempo real com o título exato da fonte, pronto para receber a cota de cada régua.
+- [x] Aviso por Telegram quando um rio cruza cota, e vigia que percebe a coleta morrendo — ver **Avisos** abaixo.
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.
