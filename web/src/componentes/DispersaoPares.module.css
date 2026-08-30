@@ -1,0 +1,39 @@
+.figura {
+  margin: 0.75rem 0;
+}
+
+.svg {
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  display: block;
+}
+
+.eixo {
+  stroke: var(--borda);
+  stroke-width: 1;
+}
+
+.rotulo {
+  font-size: 9px;
+  fill: var(--tinta-fraca);
+}
+
+.ponto {
+  fill: var(--agua-clara);
+  fill-opacity: 0.75;
+  stroke: var(--agua);
+  stroke-width: 1;
+}
+
+.reta {
+  stroke: var(--alerta);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.legenda {
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+  margin-top: 0.25rem;
+}

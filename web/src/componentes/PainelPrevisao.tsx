@@ -3,6 +3,7 @@ import type { Cidade, Evento, Trecho } from '../dados/tipos'
 import { MIN_PARES, R2_MINIMO, prever } from '../logica/previsao'
 import { caminho, faixaHoras } from '../logica/transito'
 import { metros, numero } from '../logica/formato'
+import DispersaoPares from './DispersaoPares'
 import SeloConfianca from './SeloConfianca'
 import estilos from './PainelPrevisao.module.css'
 
@@ -67,9 +68,23 @@ export default function PainelPrevisao({ rioId, eventos, trechos, montante, jusa
           </Recusa>
         ) : resultado.status === 'correlacao-fraca' ? (
           <Recusa titulo="Correlação fraca demais">
-            Os {resultado.ajuste.n} eventos pareados não formam relação consistente (r² ={' '}
-            {numero(resultado.ajuste.r2)}; o mínimo aceito é {numero(R2_MINIMO)}). Qualquer número
-            aqui seria chute.
+            <>
+              Os {resultado.ajuste.n} eventos pareados não formam relação consistente (r² ={' '}
+              {numero(resultado.ajuste.r2)}; o mínimo aceito é {numero(R2_MINIMO)}). Qualquer número
+              aqui seria chute.
+              <DispersaoPares
+                pares={resultado.pares}
+                ajuste={resultado.ajuste}
+                nomeMontante={montante.nome}
+                nomeJusante={jusante.nome}
+                mostrarReta={false}
+              />
+              O que a nuvem mostra é real, não falta de dado: o nível de {montante.nome} sozinho
+              não determina o de {jusante.nome}. Entre as duas cidades entram afluentes e chuva
+              própria, e é isso que decide o quanto o rio sobe lá embaixo. Para saber{' '}
+              <strong>quando</strong> a água chega, o tempo de descida abaixo é bem mais firme que
+              qualquer previsão de altura.
+            </>
           </Recusa>
         ) : resultado.status === 'relacao-implausivel' ? (
           <Recusa titulo="Relação implausível">
@@ -103,6 +118,13 @@ export default function PainelPrevisao({ rioId, eventos, trechos, montante, jusa
                 como ordem de grandeza, nada além disso.
               </p>
             ) : null}
+            <DispersaoPares
+              pares={resultado.pares}
+              ajuste={resultado.ajuste}
+              nomeMontante={montante.nome}
+              nomeJusante={jusante.nome}
+              mostrarReta
+            />
             <p className={estilos.ressalva}>
               A estimativa ignora a chuva que cair entre as duas cidades, o estado das barragens e a
               maré. Ela só descreve o que aconteceu em cheias passadas.
@@ -131,7 +153,7 @@ function Recusa({ titulo, children }: { titulo: string; children: React.ReactNod
   return (
     <div className={estilos.recusa}>
       <strong>{titulo}</strong>
-      <p>{children}</p>
+      <div className={estilos.corpoRecusa}>{children}</div>
     </div>
   )
 }

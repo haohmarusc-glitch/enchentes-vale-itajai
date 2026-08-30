@@ -33,3 +33,21 @@ export const ROTULO_COTA: Record<string, string> = {
 export function rotuloCota(chave: string): string {
   return ROTULO_COTA[chave] ?? chave.charAt(0).toUpperCase() + chave.slice(1)
 }
+
+/**
+ * As fontes de tempo real vêm anotadas em `estacoes.json` como
+ * `"https://… (DC-01, DC-02)"` — a URL e, entre parênteses, qual estação ou
+ * leitura ela traz. Sem separar os dois, a tela mostraria o mesmo domínio duas
+ * vezes sem dizer que um link é o nível do rio e o outro é a maré.
+ */
+export function fonteTempoReal(texto: string): { url: string; rotulo: string } {
+  const m = /^(\S+)\s*\((.+)\)\s*$/.exec(texto.trim())
+  const url = m ? m[1]! : texto.trim()
+  let host = url
+  try {
+    host = new URL(url).hostname
+  } catch {
+    // Texto que não é URL: mostra como veio, em vez de sumir com a informação.
+  }
+  return { url, rotulo: m ? `${host} — ${m[2]!}` : host }
+}

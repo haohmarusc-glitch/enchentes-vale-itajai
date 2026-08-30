@@ -3,6 +3,7 @@ import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
 import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
+import { parear } from '../logica/previsao'
 import estilos from './TelaRio.module.css'
 
 /**
@@ -37,7 +38,23 @@ export default function TelaRio({ rioId }: { rioId: string }) {
   const cidadeId = selecionadaId ?? padrao
   const selecionada = cidades.find((c) => c.id === cidadeId)
   const indice = cidades.findIndex((c) => c.id === cidadeId)
-  const jusante = indice >= 0 ? cidades[indice + 1] : undefined
+
+  /**
+   * Cidade a jusante para a estimativa.
+   *
+   * A vizinha imediata quase sempre não tem pico levantado, e parear com ela só
+   * produz "dados insuficientes" — escondendo a comparação que existe mais
+   * abaixo. Procura a primeira cidade a jusante com algum evento em comum; se
+   * nenhuma tiver, cai na vizinha, e a tela explica o que falta.
+   */
+  const jusante = useMemo(() => {
+    if (indice < 0) return undefined
+    for (let j = indice + 1; j < cidades.length; j++) {
+      const alvo = cidades[j]!
+      if (parear(eventos, cidades[indice]!.id, alvo.id).length > 0) return alvo
+    }
+    return cidades[indice + 1]
+  }, [cidades, eventos, indice])
 
   if (!dadosRio) {
     return <p>Rio não encontrado em <code>estacoes.json</code>.</p>

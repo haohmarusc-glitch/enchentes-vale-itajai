@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
+import PainelMare from '../componentes/PainelMare'
 import SeloConfianca from '../componentes/SeloConfianca'
 import { cidade, fontesGerais, trechos } from '../dados/carregar'
 import { dataHora } from '../logica/formato'
@@ -84,23 +85,27 @@ export default function TelaItajai() {
       </div>
 
       <section className="cartao">
-        <h2>Maré — ainda não integrada</h2>
+        <h2>Por que a maré pesa tanto aqui</h2>
         <p>
-          Na foz, a maré alta segura a vazante e o rio sobe mais do que a chuva sozinha explicaria.
-          Isso é decisivo em Itajaí, e por isso <strong>não vamos estimar altura aqui</strong>{' '}
-          enquanto a tábua de maré não estiver conectada.
+          Itajaí é o único município cortado pelos dois maiores rios da bacia. Na foz, a maré alta{' '}
+          <strong>trava a saída da água</strong>: o rio não deixa de descer por falta de força, e
+          sim porque o mar está no caminho. A mesma cheia que passaria batido na vazante empoça na
+          preamar.
+        </p>
+        <p>
+          O Itajaí-Mirim sofre duas vezes. A UNIVALI documenta, no estudo do canal extravasor, que a
+          inundação de Itajaí se deve também ao transbordamento do Mirim — cujas águas{' '}
+          <strong>não escoam para o Açu</strong> quando os dois leitos já estão cheios. Some a isso
+          uma preamar de sizígia e o Mirim não tem para onde ir.
         </p>
         <p className={estilos.fonteMare}>
-          Fonte prevista: {fontesGerais.mare_itajai ?? 'tábuas de maré da Marinha do Brasil (DHN)'}.
-          Enquanto isso, consulte a{' '}
-          <a
-            href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Defesa Civil de Itajaí
+          A tábua usada nesta tela vem da{' '}
+          <a href={fontesGerais.mare_dc_itajai} target="_blank" rel="noreferrer">
+            página de marés da Defesa Civil de Itajaí
           </a>
-          , que publica o nível dos dois rios e dos ribeirões em tempo real.
+          , coletada por <code>scripts/coleta_mares.py</code>. Fonte de origem:{' '}
+          {fontesGerais.mare_itajai}. A UNIVALI/CTTMAR e a Defesa Civil ampliaram o marégrafo do
+          porto justamente para medir esse efeito sobre o Açu e o Mirim.
         </p>
       </section>
 
@@ -151,9 +156,11 @@ function Chegada({ partida, trecho }: { partida: Date; trecho: Caminho }) {
         </p>
       ) : null}
       <p className={estilos.ressalva}>
-        A janela vale para a cheia que já está descendo. Chuva nova entre as duas cidades, manobra de
-        barragem ou maré alta podem adiantar, atrasar ou aumentar a cheia.
+        A janela vale para a cheia que já está descendo. Chuva nova entre as duas cidades ou manobra
+        de barragem podem adiantar, atrasar ou aumentar a cheia.
       </p>
+
+      <PainelMare inicio={inicio} fim={fim} />
     </div>
   )
 }

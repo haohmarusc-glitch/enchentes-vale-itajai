@@ -31,6 +31,8 @@ interface Ponto {
   pico: number
   confianca: Confianca
   fonte: string
+  nota?: string
+  divergencias?: { pico_m: number; fonte: string }[]
 }
 
 export default function GraficoPicos({
@@ -50,6 +52,8 @@ export default function GraficoPicos({
       pico: e.pico_m,
       confianca: e.confianca,
       fonte: e.fonte,
+      ...(e.nota ? { nota: e.nota } : {}),
+      ...(e.divergencias ? { divergencias: e.divergencias } : {}),
     }))
 
   if (dados.length === 0) {
@@ -143,8 +147,26 @@ export default function GraficoPicos({
               {[...dados].reverse().map((d) => (
                 <tr key={`${d.data}-${d.pico}`}>
                   <td>{dataLegivel(d.data)}</td>
-                  <td>{metros(d.pico)}</td>
-                  <td>{d.fonte}</td>
+                  <td>
+                    {metros(d.pico)}
+                    {d.divergencias?.length ? (
+                      <span className={estilos.divergencia}>
+                        {' '}
+                        outras fontes:{' '}
+                        {d.divergencias.map((x) => metros(x.pico_m)).join(', ')}
+                      </span>
+                    ) : null}
+                  </td>
+                  <td>
+                    {d.fonte}
+                    {d.nota ? <span className={estilos.nota}> {d.nota}</span> : null}
+                    {d.divergencias?.map((x) => (
+                      <span key={x.fonte} className={estilos.nota}>
+                        {' '}
+                        {metros(x.pico_m)}: {x.fonte}.
+                      </span>
+                    ))}
+                  </td>
                 </tr>
               ))}
             </tbody>

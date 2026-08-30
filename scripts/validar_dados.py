@@ -59,6 +59,7 @@ def valida_data(valor: str, onde: str) -> None:
 def valida_estacoes() -> set[tuple[str, str]]:
     estacoes = le_json("estacoes.json")
     conhecidas: set[tuple[str, str]] = set()
+    no_eixo: set[tuple[str, str]] = set()
 
     for rio_id, rio in estacoes["rios"].items():
         ordens: list[int] = []
@@ -73,6 +74,7 @@ def valida_estacoes() -> set[tuple[str, str]]:
             ids.add(cidade["id"])
             ordens.append(cidade["ordem"])
             conhecidas.add((rio_id, cidade["id"]))
+            no_eixo.add((rio_id, cidade["id"]))
 
             codigo = cidade.get("codigo_ana")
             if codigo is not None and not re.fullmatch(r"\d{8}", str(codigo)):
@@ -88,6 +90,19 @@ def valida_estacoes() -> set[tuple[str, str]]:
         if sorted(ordens) != esperado:
             erro(f"estacoes.json / {rio_id}: 'ordem' deveria ser {esperado}, veio {sorted(ordens)}")
 
+    # Afluentes com régua própria: existem nos dados, mas ficam fora da sequência do eixo.
+    for afluente in estacoes.get("afluentes_monitorados", []):
+        onde = f"estacoes.json / afluentes_monitorados / {afluente.get('id', '???')}"
+        for campo in ("id", "nome", "rio", "desagua_em", "observacao"):
+            if campo not in afluente:
+                erro(f"{onde}: falta o campo '{campo}'")
+        for rio_id in estacoes["rios"]:
+            conhecidas.add((rio_id, afluente["id"]))
+        if any(afluente["id"] == c for r in estacoes["rios"].values() for c in
+               (x["id"] for x in r["cidades"])):
+            erro(f"{onde}: está ao mesmo tempo no eixo e fora dele — escolha um lugar só")
+
+    globals()["_no_eixo"] = no_eixo
     return conhecidas
 
 
@@ -119,6 +134,19 @@ def valida_enchentes(conhecidas: set[tuple[str, str]]) -> None:
             erro(f"{onde}: sem fonte — a regra do projeto é não aceitar dado sem procedência")
         if "hora" in ev and not RE_HORA.match(str(ev["hora"])):
             erro(f"{onde}: hora '{ev['hora']}' fora do formato HH:MM")
+        if "nota" in ev and not str(ev["nota"]).strip():
+            erro(f"{onde}: campo 'nota' vazio — remova-o em vez de deixar em branco")
+
+        # Valores divergentes publicados para o MESMO pico. Guardar em vez de descartar
+        # é o que impede alguém de "corrigir" o arquivo de volta para um número pior.
+        for j, div in enumerate(ev.get("divergencias", [])):
+            ondiv = f"{onde} / divergencias[{j}]"
+            if not isinstance(div.get("pico_m"), (int, float)) or not 0 < div["pico_m"] < PICO_MAXIMO_M:
+                erro(f"{ondiv}: pico_m = {div.get('pico_m')} fora da faixa plausível")
+            elif abs(div["pico_m"] - pico) < 1e-9:
+                erro(f"{ondiv}: repete o valor adotado ({pico} m) — não é divergência")
+            if not str(div.get("fonte", "")).strip():
+                erro(f"{ondiv}: divergência sem fonte")
 
         if (ev["rio"], ev["cidade"]) not in conhecidas:
             aviso(f"{onde}: cidade não está em estacoes.json — não vai aparecer no diagrama")
@@ -172,6 +200,12 @@ def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
             )
         if (t["rio"], t["de"]) not in conhecidas and (t["rio"], t["para"]) not in conhecidas:
             aviso(f"{onde}: nenhuma das pontas existe em estacoes.json")
+        fora = [p for p in (t["de"], t["para"]) if (t["rio"], p) not in globals().get("_no_eixo", set())]
+        if fora:
+            erro(
+                f"{onde}: {', '.join(fora)} tem régua própria, fora da sequência do eixo. "
+                "Encadear tempo de descida por essa cidade daria resultado errado."
+            )
 
 
 def main() -> int:

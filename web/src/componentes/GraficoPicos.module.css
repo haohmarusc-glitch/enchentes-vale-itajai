@@ -50,3 +50,17 @@
 .tabela th {
   white-space: nowrap;
 }
+
+.divergencia {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--atencao);
+  white-space: nowrap;
+}
+
+.nota {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--tinta-fraca);
+  font-style: italic;
+}
