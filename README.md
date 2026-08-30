@@ -41,7 +41,7 @@ cd scripts
 python3 -m pip install -r requirements.txt
 python3 validar_dados.py            # sempre antes de commitar mudança em data/
 python3 teste_coleta_mares.py       # testes do analisador da tábua de maré
-python3 coleta_mares.py --verificar # mostra a tábua lida do site, sem gravar
+python3 coleta_mares.py --verificar # mostra a tábua lida do endpoint, sem gravar
 python3 coleta_mares.py             # grava data/mare-itajai.json
 python3 coleta_niveis.py            # coleta e acumula a série dos níveis
 python3 extrair_picos.py            # propõe registros de pico a partir da série
@@ -95,6 +95,12 @@ de 1984, 12,80 m em Rio do Sul viraram 15,46 m em Blumenau; em novembro de 2023,
 viraram 9,14 m. O que decide o nível lá embaixo é onde a chuva caiu, não o nível lá em cima.
 A tela mostra a nuvem de pontos para que isso fique visível, em vez de pedir fé no r².
 
+**Fontes de tempo real: pelo endpoint, não pelo HTML.** A tábua de maré vem de
+`ajax/mares.php`, o mesmo JSON que o gráfico do site consome — `tidelevel` em centímetros
+na série observada, `level` em metros na astronômica (a chave `astronimical_tides` tem o
+erro de digitação na própria API). Os níveis dos rios vêm do HTML da página de níveis, cuja
+estrutura está documentada em `coleta_itajai.py` e coberta por testes com o markup real.
+
 **Maré em Itajaí: qualitativa, nunca em metros.** A preamar não soma centímetros — ela trava
 o escoamento. O site cruza a janela de chegada com as preamares da tábua oficial e diz se a
 cheia chega na maré alta, e se é período de sizígia (calculado da fase da lua, que é exata).
@@ -129,7 +135,7 @@ Essas regras estão em `web/src/logica/previsao.ts` e cobertas por testes em `we
 
 Em ordem de impacto.
 
-- [ ] **Rodar `coleta_mares.py` contra o site no ar e conferir a leitura.** O analisador foi escrito sem acesso ao domínio (bloqueado no ambiente de desenvolvimento) e cobre três formatos plausíveis de página, testados com fixtures. Rode `--verificar` uma vez e ajuste se preciso.
+- [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
 - [ ] **Registrar o horário do pico** (campo `hora`, `HH:MM`) nos eventos. Só 2 dos 116 têm. É o que troca o hidrograma de projeto da JICA por medição de cheia real, em `calibrar_transito.py`.
 - [ ] Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10. Se forem o mesmo evento, vira mais um par.

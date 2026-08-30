@@ -25,6 +25,9 @@ jobs:
       - name: Testes da extração de picos
         working-directory: scripts
         run: python3 teste_extrair_picos.py
+      - name: Testes do analisador da página de níveis
+        working-directory: scripts
+        run: python3 teste_coleta_niveis.py
 
   web:
     name: Testes e build do site
