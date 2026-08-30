@@ -1,0 +1,1080 @@
+{
+  "_meta": {
+    "gerado_por": "web/ferramentas/gerar-gabarito-transito.ts (npm run gabarito)",
+    "o_que_e": "Encadeamento de trânsito para todo par de cidades, de montante a jusante. Contrato entre o site (TypeScript) e o bot (Python): os dois têm teste que o reproduz."
+  },
+  "caminhos": [
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "rio-do-sul",
+      "resultado": {
+        "horas_min": 6,
+        "horas_max": 8,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "apiuna",
+      "resultado": {
+        "horas_min": 15,
+        "horas_max": 17,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "apiuna"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "indaial",
+      "resultado": {
+        "horas_min": 16,
+        "horas_max": 18,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "indaial"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "blumenau",
+      "resultado": {
+        "horas_min": 13,
+        "horas_max": 18,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "gaspar",
+      "resultado": {
+        "horas_min": 15,
+        "horas_max": 20,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "gaspar"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "ilhota",
+      "resultado": {
+        "horas_min": 20,
+        "horas_max": 25,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "gaspar"
+          ],
+          [
+            "gaspar",
+            "ilhota"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 27,
+        "horas_max": 35,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "taio",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "rio-do-sul",
+      "resultado": {
+        "horas_min": 6,
+        "horas_max": 6,
+        "direto": true,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "apiuna",
+      "resultado": {
+        "horas_min": 15,
+        "horas_max": 15,
+        "direto": false,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "apiuna"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "indaial",
+      "resultado": {
+        "horas_min": 16,
+        "horas_max": 16,
+        "direto": false,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "indaial"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "blumenau",
+      "resultado": {
+        "horas_min": 13,
+        "horas_max": 16,
+        "direto": false,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "gaspar",
+      "resultado": {
+        "horas_min": 15,
+        "horas_max": 18,
+        "direto": false,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "gaspar"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "ilhota",
+      "resultado": {
+        "horas_min": 20,
+        "horas_max": 23,
+        "direto": false,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "gaspar"
+          ],
+          [
+            "gaspar",
+            "ilhota"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 27,
+        "horas_max": 33,
+        "direto": false,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "ituporanga",
+            "rio-do-sul"
+          ],
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "apiuna",
+      "resultado": {
+        "horas_min": 9,
+        "horas_max": 9,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "rio-do-sul",
+            "apiuna"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "indaial",
+      "resultado": {
+        "horas_min": 10,
+        "horas_max": 10,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "rio-do-sul",
+            "indaial"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "blumenau",
+      "resultado": {
+        "horas_min": 7,
+        "horas_max": 10,
+        "direto": true,
+        "confianca": "alta",
+        "trechos": [
+          [
+            "rio-do-sul",
+            "blumenau"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "gaspar",
+      "resultado": {
+        "horas_min": 9,
+        "horas_max": 12,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "gaspar"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "ilhota",
+      "resultado": {
+        "horas_min": 14,
+        "horas_max": 17,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "gaspar"
+          ],
+          [
+            "gaspar",
+            "ilhota"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 21,
+        "horas_max": 27,
+        "direto": false,
+        "confianca": "alta",
+        "trechos": [
+          [
+            "rio-do-sul",
+            "blumenau"
+          ],
+          [
+            "blumenau",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "indaial",
+      "resultado": {
+        "horas_min": 1,
+        "horas_max": 1,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "apiuna",
+            "indaial"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "gaspar",
+      "resultado": {
+        "horas_min": 2,
+        "horas_max": 2,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "blumenau",
+            "gaspar"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "ilhota",
+      "resultado": {
+        "horas_min": 7,
+        "horas_max": 7,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "blumenau",
+            "gaspar"
+          ],
+          [
+            "gaspar",
+            "ilhota"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 14,
+        "horas_max": 17,
+        "direto": true,
+        "confianca": "alta",
+        "trechos": [
+          [
+            "blumenau",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "ilhota",
+      "resultado": {
+        "horas_min": 5,
+        "horas_max": 5,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "gaspar",
+            "ilhota"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 15,
+        "horas_max": 15,
+        "direto": false,
+        "confianca": "media",
+        "trechos": [
+          [
+            "gaspar",
+            "ilhota"
+          ],
+          [
+            "ilhota",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 10,
+        "horas_max": 10,
+        "direto": true,
+        "confianca": "media",
+        "trechos": [
+          [
+            "ilhota",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "vidal-ramos",
+      "para": "botuvera",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "vidal-ramos",
+      "para": "guabiruba",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "vidal-ramos",
+      "para": "brusque",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "vidal-ramos",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "botuvera",
+      "para": "vidal-ramos",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "botuvera",
+      "para": "guabiruba",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "botuvera",
+      "para": "brusque",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "botuvera",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "guabiruba",
+      "para": "vidal-ramos",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "guabiruba",
+      "para": "botuvera",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "guabiruba",
+      "para": "brusque",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "guabiruba",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "brusque",
+      "para": "vidal-ramos",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "brusque",
+      "para": "botuvera",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "brusque",
+      "para": "guabiruba",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "brusque",
+      "para": "itajai",
+      "resultado": {
+        "horas_min": 6,
+        "horas_max": 6,
+        "direto": true,
+        "confianca": "baixa",
+        "trechos": [
+          [
+            "brusque",
+            "itajai"
+          ]
+        ]
+      }
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "itajai",
+      "para": "vidal-ramos",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "itajai",
+      "para": "botuvera",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "itajai",
+      "para": "guabiruba",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "itajai",
+      "para": "brusque",
+      "resultado": null
+    }
+  ]
+}

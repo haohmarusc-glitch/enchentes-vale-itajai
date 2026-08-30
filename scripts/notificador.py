@@ -54,9 +54,25 @@ def _sem_token(texto: str, token: str) -> str:
     return texto.replace(token, "***") if token else texto
 
 
+def enviar_para(chat_id: str, mensagem: str) -> bool:
+    """
+    Manda a mensagem para um chat específico.
+
+    Existe para o bot de consulta responder a quem perguntou, que não é
+    necessariamente o dono do `TELEGRAM_CHAT_ID` — esse continua sendo o
+    destino dos avisos automáticos de cota.
+    """
+    return _postar(chat_id, mensagem)
+
+
 def enviar(mensagem: str) -> bool:
-    """Manda a mensagem. Devolve True se o Telegram aceitou."""
-    token, chat = _credenciais()
+    """Manda a mensagem para o chat do dono. Devolve True se o Telegram aceitou."""
+    _, chat = _credenciais()
+    return _postar(chat, mensagem)
+
+
+def _postar(chat: str, mensagem: str) -> bool:
+    token, _ = _credenciais()
     if not (token and chat):
         print(
             "Telegram não configurado (TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID). "

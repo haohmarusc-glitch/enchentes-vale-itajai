@@ -256,10 +256,63 @@ e 48 h no mesmo instante. Zero ali quase certamente é "sem dado", e mostrá-lo 
 lado de uma vizinha com 39 mm mandaria a pessoa para o lado errado. A leitura vai
 marcada e a tela diz **"dado inconsistente na fonte"** em vez de um número.
 
+## Bot de consulta no Telegram
+
+O `alerta_cotas.py` fala sozinho quando um rio cruza cota. O `bot.py` é o
+contrário: responde quando a pessoa pergunta — de madrugada, sem abrir o site,
+com internet ruim. Uma mensagem de texto passa onde uma página não passa.
+
+| Comando | O que devolve |
+|---|---|
+| `/nivel <cidade>` | nível agora, estação e idade da leitura |
+| `/chuva <cidade>` | acumulado de 1 h, 12 h, 24 h e 48 h |
+| `/previsao <cidade>` | se o pico fosse agora, quando chega em cada cidade a jusante |
+| `/cotas <cidade>` | cotas de referência daquela régua |
+| `/rios` | panorama de tudo que está sendo medido |
+| `/emergencia` | telefones e fontes oficiais |
+| `/ajuda` | a lista |
+
+```bash
+sudo cp deploy/enchentes-bot.service /etc/systemd/system/
+sudo systemctl daemon-reload && sudo systemctl enable --now enchentes-bot
+journalctl -u enchentes-bot -f
+```
+
+**Três regras em toda resposta:** nunca inventa número (sem dado, diz que não
+tem); toda leitura sai com a idade; toda resposta lembra que isto não é alerta
+oficial e que emergência é 199.
+
+**Qualquer pessoa pode perguntar.** Diferente do bot do Fila-Disney, que
+restringe comandos a um chat, aqui o público é a razão de existir — e tudo que
+os comandos devolvem já é público. O que continua restrito é o *aviso
+automático* de cota, que vai só para o `TELEGRAM_CHAT_ID`.
+
+### O gabarito de trânsito
+
+`/previsao` precisa do mesmo encadeamento de tempos de descida que o site faz —
+e o site é TypeScript, o bot é Python. Duas implementações de uma conta de vida
+podem divergir em silêncio: o site dizendo uma coisa, o bot outra, sem ninguém
+perceber até a noite errada.
+
+O que impede isso é `data/transito-esperado.json`: o resultado de **todo par de
+cidades**, gerado a partir do `transito.ts` do próprio site. Os dois lados têm
+teste que o reproduz, e a CI roda os dois.
+
+```bash
+cd web && npm run gabarito     # depois de mexer em transito.json ou transito.ts
+git diff data/transito-esperado.json   # e CONFERIR: o gabarito só vale se alguém olhou
+```
+
+Se um dos testes ficar vermelho, não ajuste o gabarito para calar o teste: ou
+uma implementação divergiu da outra, ou alguém mudou a lógica sem regerar. Nos
+dois casos a pergunta é qual das duas está certa.
+
 ## Pendências
 
 Em ordem de impacto.
 
+- [ ] **Resolver a discordância entre as fontes de tempo de descida.** Somados por caminhos diferentes, os trechos de `transito.json` produzem janelas fora da ordem do rio: no eixo do Açu, Blumenau aparece podendo receber a água antes de Apiúna, que fica acima. O site e o bot **dizem** isso quando acontece, em vez de esconder — mas a correção de verdade é conciliar o hidrograma de projeto da JICA com os modelos acadêmicos, trecho a trecho.
+- [ ] **Ampliar a cobertura de chuva.** A fonte de Itajaí só publica pluviômetro em Itajaí, Brusque, Ilhota e Rio do Sul. Vidal Ramos, Botuverá, Guabiruba, Taió, Ituporanga, Ibirama, Apiúna, Indaial, Blumenau e Gaspar ficam sem chuva na tela. Candidatas: CEMADEN (nacional, tem pluviômetro na maioria dos municípios de risco de SC), AlertaBlu (Blumenau) e a Defesa Civil de SC.
 - [ ] **Acumular a série de chuva**, como já se faz com o nível. Com nível de montante explicando pouco o de jusante (r² = 0,21), a chuva é a candidata mais forte a preditor de verdade — mas só depois de meses de série pareada com os picos.
 - [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
@@ -288,6 +341,7 @@ Em ordem de impacto.
 - [x] Nível ao vivo no site, com selo de idade e recusa de calcular chegada a partir de leitura velha.
 - [x] Site publicado no GitHub Pages, com os dados validados antes de cada publicação.
 - [x] Registro das 14 estações de tempo real com o título exato da fonte, pronto para receber a cota de cada régua.
+- [x] Bot de consulta no Telegram (`/nivel`, `/chuva`, `/previsao`, `/cotas`, `/rios`), com o encadeamento de trânsito amarrado ao do site por um gabarito compartilhado.
 - [x] Chuva acumulada por cidade (1 h / 12 h / 24 h / 48 h), agregando os pluviômetros e recusando leitura que não fecha.
 - [x] Aviso por Telegram quando um rio cruza cota, e vigia que percebe a coleta morrendo — ver **Avisos** abaixo.
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.

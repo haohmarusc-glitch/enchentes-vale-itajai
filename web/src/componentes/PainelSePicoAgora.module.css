@@ -54,3 +54,16 @@
   color: var(--tinta-fraca);
   margin: 0;
 }
+
+/* Aviso de que as janelas saem fora da ordem do rio. Amarelo de ressalva, não
+   vermelho de perigo: o problema é da fonte do tempo de descida, não do rio. */
+.desordem {
+  margin: 0.6rem 0 0;
+  padding: 0.5rem 0.65rem;
+  border-radius: 6px;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  color: #6b4f14;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}

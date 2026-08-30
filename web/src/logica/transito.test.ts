@@ -2,6 +2,8 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Trecho } from '../dados/tipos'
 import { caminho, faixaHoras, janelaChegada } from './transito'
+import transito from '../../../data/transito.json'
+import gabaritoTransito from '../../../data/transito-esperado.json'
 
 const t = (de: string, para: string, min: number, max: number): Trecho => ({
   rio: 'itajai-acu',
@@ -62,4 +64,42 @@ test('janela de chegada soma a faixa ao horário do pico', () => {
   const { inicio, fim } = janelaChegada(partida, { horasMin: 14, horasMax: 17 })
   assert.equal(inicio.toISOString(), '2026-07-12T14:00:00.000Z')
   assert.equal(fim.toISOString(), '2026-07-12T17:00:00.000Z')
+})
+
+// --- Contrato com o bot (Python) --------------------------------------------
+//
+// `data/transito-esperado.json` guarda o resultado de todo par de cidades, e o
+// `scripts/teste_transito.py` exige que a implementação Python o reproduza.
+// Este teste fecha o outro lado: mudar a lógica aqui sem regerar o gabarito
+// (`npm run gabarito`) faria o site e o bot responderem coisas diferentes para
+// a mesma pergunta, em silêncio.
+//
+// Vermelho aqui = ou você mudou o comportamento de propósito (regere o
+// gabarito e confira o diff), ou mudou sem querer.
+
+test('o site reproduz o gabarito compartilhado com o bot', () => {
+  const gabarito = gabaritoTransito.caminhos
+  assert.ok(gabarito.length > 50, 'gabarito pequeno demais para provar algo')
+
+  const divergentes: string[] = []
+  for (const g of gabarito) {
+    const c = caminho(transito.trechos as Trecho[], g.rio, g.de, g.para)
+    const obtido =
+      c === null
+        ? null
+        : {
+            horas_min: c.horasMin,
+            horas_max: c.horasMax,
+            direto: c.direto,
+            confianca: c.confianca,
+            trechos: c.trechos.map((t) => [t.de, t.para]),
+          }
+    const igual = JSON.stringify(obtido) === JSON.stringify(g.resultado)
+    if (!igual) {
+      divergentes.push(
+        `${g.rio} ${g.de}->${g.para}: gabarito=${JSON.stringify(g.resultado)} site=${JSON.stringify(obtido)}`,
+      )
+    }
+  }
+  assert.deepEqual(divergentes, [], divergentes.join('\n'))
 })

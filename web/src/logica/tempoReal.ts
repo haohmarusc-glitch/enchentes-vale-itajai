@@ -130,6 +130,26 @@ export function chegadasSePicoAgora(
   return saida
 }
 
+/**
+ * As janelas saem fora da ordem do rio?
+ *
+ * A água passa por cada cidade na ordem em que elas aparecem no curso, então a
+ * janela de uma cidade nunca deveria começar antes da janela da cidade acima.
+ * Quando começa, é porque os trechos de `transito.json` vêm de fontes que não
+ * concordam entre si — o hidrograma de projeto da JICA e os modelos acadêmicos
+ * dão números que, somados por caminhos diferentes, se cruzam.
+ *
+ * A tela precisa dizer isso. Empurrar o horário para "consertar" a ordem seria
+ * inventar uma precisão que a fonte não tem, e apresentar como sequência algo
+ * que os dados não sustentam.
+ */
+export function foraDeOrdem(chegadas: ChegadaPrevista[]): boolean {
+  for (let i = 1; i < chegadas.length; i++) {
+    if (chegadas[i]!.inicio < chegadas[i - 1]!.inicio) return true
+  }
+  return false
+}
+
 /** A cota mais baixa da cidade — a primeira que importa quando o rio sobe. */
 export function primeiraCota(cidade: Cidade): { chave: string; valor: number } | null {
   const ordem = ['atencao', 'alerta', 'inundacao', 'inundacao_historica']

@@ -40,6 +40,12 @@ jobs:
       - name: Testes do vigia da coleta
         working-directory: scripts
         run: python3 teste_saude_coleta.py
+      - name: Trânsito em Python bate com o gabarito do site
+        working-directory: scripts
+        run: python3 teste_transito.py
+      - name: Testes das respostas do bot
+        working-directory: scripts
+        run: python3 teste_bot.py
       - name: Sintaxe do publicador de tempo real
         run: bash -n scripts/publicar_tempo_real.sh
 
