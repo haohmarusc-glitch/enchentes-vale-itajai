@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """
-Sonda: onde encontrar chuva das cidades que a fonte de Itajaí não cobre.
+Sonda: chuva das cidades sem cobertura, e a posição das réguas.
+
+DUAS PERGUNTAS numa passada só, porque cada rodada custa uma ida e volta com
+quem tem acesso à VPS.
 
 O problema: a Defesa Civil de Itajaí publica pluviômetro só em Itajaí, Brusque,
 Ilhota e Rio do Sul. Vidal Ramos, Botuverá, Guabiruba, Taió, Ituporanga,
@@ -24,6 +27,19 @@ Três candidatas, em ordem de cobertura:
 2. **AlertaBlu** — vários pluviômetros em Blumenau, a cidade que mais importa
    e que hoje não tem nem nível ao vivo.
 3. **Defesa Civil de SC** — cobertura estadual.
+
+A SEGUNDA PERGUNTA: onde fica cada régua
+----------------------------------------
+Para o bot responder a uma localização enviada no Telegram ("qual régua está
+perto de mim?"), é preciso a coordenada de cada estação. Isso não se inventa: a
+Defesa Civil de Itajaí tem uma página de mapa, e se ela traz latitude e
+longitude das estações, essa é a fonte — posição de régua tirada de palpite
+apontaria a pessoa para o rio errado.
+
+Vale lembrar o limite que nenhuma coordenada resolve: saber que a régua mais
+próxima está a 3 km NÃO diz se a rua de quem perguntou alaga. Quem sabe isso é
+a Defesa Civil municipal. O bot vai dizer a distância e dizer que não sabe o
+resto.
 
 O que a sonda imprime, por endereço: status, tamanho, tipo. Se for JSON, a
 forma (chaves do topo, quantos registros, o primeiro inteiro). Se for HTML, os
@@ -60,7 +76,19 @@ ALVOS: list[tuple[str, str]] = [
     ("AlertaBlu", "https://alertablu.blumenau.sc.gov.br/"),
     ("AlertaBlu — pluviômetros", "https://alertablu.blumenau.sc.gov.br/d/pluviometros"),
     ("Defesa Civil SC — monitoramento", "https://monitoramento.defesacivil.sc.gov.br/"),
+    # --- Onde ficam as réguas ---
+    ("Itajaí — mapa das estações", "https://defesacivil.itajai.sc.gov.br/monitoramento/Mapa.php"),
+    ("Itajaí — mapa (caminho alternativo)",
+     "https://defesacivil.itajai.sc.gov.br/monitoramento/mapa"),
 ]
+
+#: Coordenada em qualquer formato reconhecível: par de decimais com sinal, ou
+#: chaves nomeadas. Santa Catarina fica perto de -26,9 / -48,7, então o filtro
+#: por faixa evita confundir coordenada com qualquer outro par de números.
+RE_COORD = re.compile(
+    r"""(?:lat(?:itude)?["'\s:=]+(-2[0-9]\.\d+)|(-2[0-9]\.\d{4,})[,\s]+(-4[89]\.\d{4,}))""",
+    re.I,
+)
 
 #: Qualquer coisa que cheire a endpoint dentro de HTML ou JavaScript.
 RE_URL = re.compile(
@@ -147,6 +175,14 @@ def sondar(nome: str, url: str, guardar: Path | None) -> None:
     achados = [p for p in ("chuva", "pluviom", "precipita", "acumulad", "mm")
                if p in r.text.lower()]
     print(f"    termos de chuva presentes: {achados or 'nenhum'}")
+
+    # Coordenadas: só interessa a faixa de Santa Catarina, para não confundir
+    # par de números qualquer com posição de estação.
+    coords = [c for grupo in RE_COORD.findall(r.text) for c in grupo if c]
+    if coords:
+        print(f"    coordenadas na faixa de SC: {len(coords)} — amostra: {coords[:8]}")
+    else:
+        print("    coordenadas: nenhuma reconhecida")
 
 
 def main() -> int:
