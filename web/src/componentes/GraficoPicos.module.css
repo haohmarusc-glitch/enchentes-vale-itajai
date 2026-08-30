@@ -64,3 +64,22 @@
   color: var(--tinta-fraca);
   font-style: italic;
 }
+
+/* Aviso de que o gráfico mistura referências. Amarelo de ressalva: o dado é
+   bom, o que muda é a régua contra a qual ele foi lido. */
+.referencias {
+  margin: 0.8rem 0 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  color: #6b4f14;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.referenciaCelula {
+  white-space: nowrap;
+  color: #5c6b7f;
+  font-size: 0.85rem;
+}

@@ -76,6 +76,16 @@ export interface Evento {
    * que a divergência já foi analisada.
    */
   divergencias?: Divergencia[]
+  /**
+   * Em que referência o nível foi medido.
+   *
+   * Ausente = régua local. `IBGE (régua + 0,20 m)` = a série longa de Blumenau,
+   * que vem da tabela de Cordero & Medeiros e está 20 cm acima da régua. `null`
+   * = a fonte não declara — e para Blumenau isso importa, porque as duas
+   * referências circulam e a diferença entra direto na comparação com as cotas,
+   * que estão na régua.
+   */
+  referencia?: string | null
 }
 
 export interface Enchentes {
@@ -111,4 +121,28 @@ export interface TabuaMare {
   coletado_em: string | null
   preamares: EntradaMare[]
   baixamares: EntradaMare[]
+}
+
+/**
+ * Nível do rio, na régua da PRÓPRIA cidade, a partir do qual uma rua alaga.
+ *
+ * `cota_m` nulo é resposta legítima: a fonte cita a rua e não publica o número.
+ * Nesse caso `nota` diz por quê. Nulo NÃO é zero, e não foi estimado.
+ */
+export interface CotaRua {
+  cidade: string
+  rio: string
+  rua: string
+  bairro: string | null
+  ponto: string | null
+  cota_m: number | null
+  fonte: string
+  data_fonte: string
+  confianca: Confianca
+  nota?: string
+}
+
+export interface CotasRuas {
+  _meta: { descricao: string; aviso: string[]; campos: Record<string, string> }
+  cotas: CotaRua[]
 }
