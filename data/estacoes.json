@@ -3,8 +3,10 @@
     "descricao": "Estações e cidades ao longo dos rios Itajaí-Açu e Itajaí-Mirim, em ordem montante -> jusante.",
     "convencoes": {
       "codigo_ana": "Código da estação fluviométrica no HidroWeb/SNIRH. null = ainda não localizado.",
-      "cotas_m": "Cotas de referência em metros na régua local. Cada cidade tem seu próprio zero; NÃO comparar entre cidades.",
-      "verificado": "true só depois de conferir o dado na fonte oficial."
+      "cotas_m": "Cotas de referência em metros na régua local. Cada cidade tem seu próprio zero; NÃO comparar entre cidades. 'inundacao_historica' é a cota clássica de inundação, mantida ao lado da cota atual quando as duas circulam.",
+      "verificado": "true só depois de conferir o dado na fonte oficial.",
+      "ordem": "Sequência montante -> jusante ao longo do eixo. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras que se encontram em Rio do Sul; aparecem antes dele.",
+      "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado."
     }
   },
   "rios": {
@@ -16,88 +18,153 @@
           "id": "taio",
           "nome": "Taió",
           "ordem": 1,
+          "sub_bacia": "Itajaí do Oeste",
           "codigo_ana": "83050000",
           "verificado": false,
           "barragem": "Barragem Oeste (Taió)",
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [
+            "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
+        },
+        {
+          "id": "ituporanga",
+          "nome": "Ituporanga",
+          "ordem": 2,
+          "sub_bacia": "Itajaí do Sul",
+          "codigo_ana": null,
+          "verificado": false,
+          "barragem": "Barragem Sul (Ituporanga)",
+          "observacao": "Cabeceira do Itajaí do Sul, que se junta ao Itajaí do Oeste em Rio do Sul.",
+          "cotas_m": {},
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
         },
         {
           "id": "rio-do-sul",
           "nome": "Rio do Sul",
-          "ordem": 2,
+          "ordem": 3,
+          "sub_bacia": "Itajaí-Açu",
+          "km_da_foz": 191,
           "codigo_ana": "83300200",
           "verificado": false,
           "observacao": "Confluência dos rios Itajaí do Sul (Ituporanga) e Itajaí do Oeste (Taió).",
-          "cotas_m": {},
+          "cotas_m": {
+            "atencao": 4.5,
+            "alerta": 5.5,
+            "inundacao": 6.5
+          },
           "fontes_tempo_real": [
-            "https://defesacivil.riodosul.sc.gov.br/index.php?r=externo%2Fmetragem"
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Rio do Sul Estação MKS)",
+            "https://defesacivil.riodosul.sc.gov.br/index.php?r=externo%2Fmetragem (JS)",
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ]
         },
         {
           "id": "ibirama",
           "nome": "Ibirama",
-          "ordem": 3,
+          "ordem": 4,
+          "sub_bacia": "Itajaí do Norte",
           "codigo_ana": null,
           "verificado": false,
           "observacao": "Recebe o Itajaí do Norte (barragem José Boiteux).",
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
+        },
+        {
+          "id": "apiuna",
+          "nome": "Apiúna",
+          "ordem": 5,
+          "sub_bacia": "Itajaí-Açu",
+          "codigo_ana": null,
+          "verificado": false,
+          "observacao": "Trecho de calha estreita entre Ibirama e Indaial.",
+          "cotas_m": {},
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
         },
         {
           "id": "indaial",
           "nome": "Indaial",
-          "ordem": 4,
+          "ordem": 6,
+          "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "verificado": false,
           "observacao": "Estação com curva-chave usada pelo CEOPS para estimar vazões em Blumenau.",
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
         },
         {
           "id": "blumenau",
           "nome": "Blumenau",
-          "ordem": 5,
+          "ordem": 7,
+          "sub_bacia": "Itajaí-Açu",
+          "km_da_foz": 70,
           "codigo_ana": "83800002",
           "verificado": false,
           "regua": "Ponte Adolfo Konder (Centro)",
           "cotas_m": {
-            "inundacao": 8.5
+            "atencao": 6.0,
+            "alerta": 6.5,
+            "inundacao": 7.4,
+            "inundacao_historica": 8.5
           },
           "fontes_tempo_real": [
-            "https://alertablu.blumenau.sc.gov.br/",
-            "https://defesacivil.blumenau.sc.gov.br/d/nivel-do-rio"
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Blumenau)",
+            "https://alertablu.blumenau.sc.gov.br/ (bloqueia robôs)",
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ]
         },
         {
           "id": "gaspar",
           "nome": "Gaspar",
-          "ordem": 6,
+          "ordem": 8,
+          "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "verificado": false,
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [
+            "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
+          ]
         },
         {
           "id": "ilhota",
           "nome": "Ilhota",
-          "ordem": 7,
+          "ordem": 9,
+          "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "verificado": false,
           "observacao": "Recebe o rio Luiz Alves.",
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-11 Santa Regina, divisa)"
+          ]
         },
         {
           "id": "itajai",
           "nome": "Itajaí",
-          "ordem": 8,
+          "ordem": 10,
+          "sub_bacia": "Itajaí-Açu",
+          "km_da_foz": 0,
           "codigo_ana": null,
           "verificado": false,
           "observacao": "Foz. Recebe o Itajaí-Mirim. Nível influenciado pela maré.",
           "cotas_m": {},
           "fontes_tempo_real": [
-            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-01, DC-02)",
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/mares (tábua de maré)"
+          ],
+          "estacoes_dc_itajai": [
+            "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL",
+            "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+            "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
           ]
         }
       ]
@@ -110,42 +177,77 @@
           "id": "vidal-ramos",
           "nome": "Vidal Ramos",
           "ordem": 1,
+          "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "verificado": false,
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
         },
         {
           "id": "botuvera",
           "nome": "Botuverá",
           "ordem": 2,
+          "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "verificado": false,
+          "cotas_m": {},
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
+        },
+        {
+          "id": "guabiruba",
+          "nome": "Guabiruba",
+          "ordem": 3,
+          "sub_bacia": "Itajaí-Mirim",
+          "codigo_ana": null,
+          "verificado": false,
+          "observacao": "O relatório-fonte descreve o eixo Botuverá → Guabiruba → Brusque → Itajaí. Posição na sequência ainda não conferida em carta oficial.",
           "cotas_m": {},
           "fontes_tempo_real": []
         },
         {
           "id": "brusque",
           "nome": "Brusque",
-          "ordem": 3,
+          "ordem": 4,
+          "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "verificado": false,
           "regua": "Ponte Estaiada",
-          "afluentes": ["rio Guabiruba"],
+          "afluentes": [
+            "rio Guabiruba"
+          ],
           "observacao": "Alagamentos na Av. Beira-Rio a partir de ~4-5 m. Maré de sizígia em Itajaí afeta a vazante.",
-          "cotas_m": {},
-          "fontes_tempo_real": []
+          "cotas_m": {
+            "inundacao": 6.0
+          },
+          "fontes_tempo_real": [
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Brusque)",
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ]
         },
         {
           "id": "itajai",
           "nome": "Itajaí",
-          "ordem": 4,
+          "ordem": 5,
+          "sub_bacia": "Itajaí-Açu",
+          "km_da_foz": 0,
           "codigo_ana": null,
           "verificado": false,
           "observacao": "Mesmo ponto final da tela do Itajaí-Açu.",
           "cotas_m": {},
           "fontes_tempo_real": [
-            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-03 a DC-06, DC-10)",
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/mares (tábua de maré)"
+          ],
+          "estacoes_dc_itajai": [
+            "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+            "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados",
+            "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+            "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo",
+            "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
           ]
         }
       ]
@@ -157,6 +259,32 @@
     "defesa_civil_sc": "https://monitoramento.defesacivil.sc.gov.br/",
     "ceops_furb_acervo": "http://ceops.furb.br/index.php/sistema-de-alerta/picos-de-enchentes",
     "epagri_ciram": "https://ciram.epagri.sc.gov.br/index.php/solucoes/rios/",
-    "mare_itajai": "Tábuas de maré da Marinha do Brasil (DHN) - porto de Itajaí"
-  }
+    "mare_itajai": "Tábuas de maré da Marinha do Brasil (DHN) - porto de Itajaí",
+    "dc_itajai_niveis": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+    "dc_itajai_mares": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
+    "dc_itajai_barragem": "https://defesacivil.itajai.sc.gov.br/monitoramento/barragem",
+    "dc_gaspar_tabela": "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela",
+    "dc_gaspar_historico": "https://defesacivil.gaspar.sc.gov.br/enchentes",
+    "defesa_civil_sc_mapa": "https://monitoramento.defesacivil.sc.gov.br/mapa",
+    "ana_hidrotelemetria": "http://www.snirh.gov.br/hidrotelemetria",
+    "labgeo_furb": "https://labgeo.furb.br/",
+    "univali_mapi": "https://libgeo.acad.univali.br/mapi/",
+    "mare_dc_itajai": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
+    "jica_relatorio": "https://openjicareport.jica.go.jp/pdf/12043584_01.pdf"
+  },
+  "afluentes_monitorados": [
+    {
+      "id": "timbo",
+      "nome": "Timbó",
+      "rio": "Rio Benedito",
+      "desagua_em": "Itajaí-Açu, entre Indaial e Blumenau",
+      "codigo_ana": null,
+      "verificado": false,
+      "cotas_m": {},
+      "observacao": "Relógio próprio: no hidrograma de projeto da JICA o pico de Timbó ocorre junto com o de Rio do Sul, porque a chuva cai na sub-bacia do Benedito — não é a mesma cheia descendo o Açu. Por isso Timbó não entra na sequência do rio.",
+      "fontes_tempo_real": [
+        "https://monitoramento.defesacivil.sc.gov.br/mapa"
+      ]
+    }
+  ]
 }

@@ -7,7 +7,10 @@
  * Este arquivo é o ponto mais perigoso do projeto. As travas abaixo existem
  * para que a tela prefira dizer "não sei" a dizer um número errado:
  *
- *  1. Pares vêm só de eventos com mês coincidente (ver `datas.mesmoEvento`).
+ *  1. Cada cidade tem suas leituras agrupadas em EVENTOS antes de parear: duas
+ *     leituras a poucos dias uma da outra são a mesma cheia, e o pico do evento é
+ *     a maior delas. Sem isso, 8 e 9 de setembro de 2011 em Blumenau contariam
+ *     como dois eventos e o par com Rio do Sul seria descartado por ambiguidade.
  *  2. Menos de 5 pares  → `dados-insuficientes` (regra do CLAUDE.md).
  *  3. r² abaixo de 0,50 → `correlacao-fraca`, sem número na tela.
  *  4. Inclinação <= 0   → `relacao-implausivel`: rio a jusante não desce quando
@@ -20,7 +23,7 @@
  * diretamente na tela.
  */
 import type { Confianca, Evento } from '../dados/tipos'
-import { mesmoEvento } from './datas'
+import { comparaData, mesmoEvento } from './datas'
 
 /** Mínimo de pares para arriscar qualquer estimativa. */
 export const MIN_PARES = 5
@@ -67,11 +70,57 @@ export type Previsao =
       extrapolacao: boolean
     }
 
+/** Uma cheia, depois de juntar as leituras que descrevem o mesmo episódio. */
+export interface EventoAgrupado {
+  /** Data da leitura mais alta do grupo. */
+  data: string
+  pico_m: number
+  confianca: Confianca
+  /** Quantas leituras entraram no grupo. */
+  leituras: number
+}
+
+/**
+ * Agrupa as leituras de UMA cidade em eventos.
+ *
+ * Duas leituras a até `TOLERANCIA_DIAS` uma da outra são a mesma cheia — o rio
+ * sobe, fica dias acima da cota e a Defesa Civil registra mais de um valor. O
+ * pico do evento é o maior deles; os outros são pontos da mesma subida, não
+ * eventos separados.
+ *
+ * Leituras com data só de ano nunca se agrupam com nada (ver `mesmoEvento`) e
+ * ficam cada uma no seu grupo.
+ */
+export function agruparEmEventos(eventos: Evento[]): EventoAgrupado[] {
+  const ordenados = [...eventos].sort((a, b) => comparaData(a.data, b.data))
+  const grupos: Evento[][] = []
+
+  for (const ev of ordenados) {
+    const ultimo = grupos[grupos.length - 1]
+    const anterior = ultimo?.[ultimo.length - 1]
+    if (ultimo && anterior && mesmoEvento(anterior.data, ev.data)) {
+      ultimo.push(ev)
+    } else {
+      grupos.push([ev])
+    }
+  }
+
+  return grupos.map((grupo) => {
+    const maior = grupo.reduce((a, b) => (b.pico_m > a.pico_m ? b : a))
+    return {
+      data: maior.data,
+      pico_m: maior.pico_m,
+      confianca: grupo.reduce<Confianca>((pior, e) => piorConfianca(pior, e.confianca), 'alta'),
+      leituras: grupo.length,
+    }
+  })
+}
+
 /**
  * Pares (pico montante, pico jusante) do mesmo evento.
  *
- * Se uma cidade tiver mais de um registro para o mesmo evento, o par é
- * descartado: não há como saber qual dos dois é o pico correto, e escolher um
+ * Se um evento de uma cidade casar com mais de um evento da outra, o par é
+ * descartado: não há como saber quais dos dois se correspondem, e escolher um
  * seria inventar dado.
  */
 export function parear(
@@ -79,8 +128,8 @@ export function parear(
   cidadeMontante: string,
   cidadeJusante: string,
 ): Par[] {
-  const montante = eventos.filter((e) => e.cidade === cidadeMontante)
-  const jusante = eventos.filter((e) => e.cidade === cidadeJusante)
+  const montante = agruparEmEventos(eventos.filter((e) => e.cidade === cidadeMontante))
+  const jusante = agruparEmEventos(eventos.filter((e) => e.cidade === cidadeJusante))
   const pares: Par[] = []
 
   for (const m of montante) {

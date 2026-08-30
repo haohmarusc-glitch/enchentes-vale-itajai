@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "descricao": "Tábua de maré do porto de Itajaí. O site cruza estas preamares com a janela de chegada da cheia: maré alta trava o escoamento do rio.",
+    "fuso": "Horário local (America/Sao_Paulo), sem indicação de fuso — igual ao que a fonte publica e ao que o site espera.",
+    "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
+    "fonte_oficial": "Tábuas de maré da Marinha do Brasil (DHN) — porto de Itajaí",
+    "aviso": "Preencher rodando scripts/coleta_mares.py. Enquanto estiver vazio, a tela pede a tábua a quem estiver usando, em vez de estimar horário de preamar — que não se estima."
+  },
+  "porto": "Itajaí",
+  "coletado_em": null,
+  "preamares": [],
+  "baixamares": []
+}

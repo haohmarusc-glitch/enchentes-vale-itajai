@@ -8,13 +8,16 @@
 import estacoesJson from '@dados/estacoes.json'
 import enchentesJson from '@dados/enchentes.json'
 import transitoJson from '@dados/transito.json'
+import mareJson from '@dados/mare-itajai.json'
 import type {
+  AfluenteMonitorado,
   Cidade,
   Confianca,
   Enchentes,
   Estacoes,
   Evento,
   Rio,
+  TabuaMare,
   Transito,
   Trecho,
 } from './tipos'
@@ -46,6 +49,12 @@ for (const [rioId, rio] of Object.entries(estacoes.rios)) {
 }
 
 function eventoValido(e: Evento): boolean {
+  for (const d of e.divergencias ?? []) {
+    if (typeof d.pico_m !== 'number' || !Number.isFinite(d.pico_m)) {
+      descarta('divergência com pico_m inválido', e)
+      return false
+    }
+  }
   if (typeof e.rio !== 'string' || !cidadesPorRio.has(e.rio)) {
     descarta('rio desconhecido', e)
     return false
@@ -118,6 +127,8 @@ export function cidade(rioId: string, cidadeId: string): Cidade | undefined {
 export function nomeCidade(rioId: string, cidadeId: string): string {
   const c = cidade(rioId, cidadeId)
   if (c) return c.nome
+  const afluente = (estacoes.afluentes_monitorados ?? []).find((a) => a.id === cidadeId)
+  if (afluente) return afluente.nome
   const emOutroRio = [...cidadesPorRio.values()]
     .map((m) => m.get(cidadeId))
     .find((x): x is Cidade => Boolean(x))
@@ -135,6 +146,40 @@ export function eventosDaCidade(rioId: string, cidadeId: string): Evento[] {
 /** Cidades que aparecem em `enchentes.json` para um rio, mesmo sem estação cadastrada. */
 export function cidadesComHistorico(rioId: string): string[] {
   return [...new Set(eventosDoRio(rioId).map((e) => e.cidade))]
+}
+
+/**
+ * Cidades com régua própria fora da sequência do eixo (Timbó, no Benedito).
+ * Elas aparecem nos dados mas nunca entram no encadeamento de tempo de descida.
+ */
+export const afluentesMonitorados: AfluenteMonitorado[] = estacoes.afluentes_monitorados ?? []
+
+const RE_QUANDO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/
+
+const tabua = mareJson as unknown as TabuaMare
+
+function entradaMareValida(e: { quando: string; altura_m?: number }): boolean {
+  if (typeof e.quando !== 'string' || !RE_QUANDO.test(e.quando)) {
+    descarta('entrada de maré com horário fora do formato AAAA-MM-DDTHH:MM', e)
+    return false
+  }
+  if (Number.isNaN(new Date(e.quando).getTime())) {
+    descarta('entrada de maré com horário que não existe no calendário', e)
+    return false
+  }
+  return true
+}
+
+/**
+ * Tábua de maré de Itajaí, coletada por `scripts/coleta_mares.py`.
+ *
+ * Vem vazia enquanto ninguém rodou o coletor. Vazia é um estado legítimo: a
+ * tela pede a tábua a quem está usando em vez de estimar horário de preamar.
+ */
+export const mareItajai: TabuaMare = {
+  ...tabua,
+  preamares: (tabua.preamares ?? []).filter(entradaMareValida),
+  baixamares: (tabua.baixamares ?? []).filter(entradaMareValida),
 }
 
 export const fontesGerais = estacoes.fontes_gerais

@@ -3,37 +3,1006 @@
     "descricao": "Picos históricos de enchente por rio e cidade. Um registro por (evento, cidade).",
     "campos": {
       "pico_m": "Nível máximo na régua local, em metros.",
-      "data": "AAAA-MM-DD do pico quando conhecido; só o ano quando não.",
-      "hora": "HH:MM do pico, quando o boletim da fonte registra. Sem ele não dá para calibrar tempo de trânsito.",
-      "confianca": "alta = fonte oficial/acadêmica; media = imprensa; baixa = compilação informal ou dado disputado."
+      "data": "AAAA-MM-DD do pico quando conhecido; AAAA-MM ou só o ano quando não.",
+      "hora": "HH:MM do pico, quando o boletim da fonte registra. Sem ele não dá para calibrar tempo de descida.",
+      "confianca": "alta = fonte oficial/acadêmica; media = imprensa; baixa = compilação informal ou dado disputado.",
+      "nota": "Ressalva sobre o registro, exibida junto do número.",
+      "divergencias": "Outros valores publicados para o MESMO pico, com a fonte de cada um. O campo pico_m é o adotado; nada aqui é descartado em silêncio."
     },
     "pendencias": [
-      "Cruzar todos os picos de Blumenau com o acervo CEOPS/FURB e o dataset Mendeley.",
-      "Levantar picos de Rio do Sul, Gaspar, Ilhota e Itajaí para os mesmos eventos.",
-      "Registrar horário do pico em cada cidade para calcular tempos de trânsito reais."
+      "Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10.",
+      "Levantar picos de Itajaí (foz) — nenhum registro até agora; sem eles a tela da foz não estima altura.",
+      "Registrar o horário do pico (campo 'hora') para calibrar os tempos de descida com medição, não com hidrograma de projeto.",
+      "Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama."
     ]
   },
   "eventos": [
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1852-10-29", "pico_m": 16.30, "confianca": "baixa", "fonte": "Compilações históricas; valor contestado por historiadores locais" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1855", "pico_m": 13.30, "confianca": "baixa", "fonte": "Relato histórico (Avé-Lallemant)" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1880", "pico_m": 17.10, "confianca": "media", "fonte": "Compilação de cotas 1852-2008 (AlertaBlu/CEOPS)" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1911", "pico_m": 16.90, "confianca": "media", "fonte": "Compilação de cotas 1852-2008 (AlertaBlu/CEOPS)" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1983-07", "pico_m": 15.34, "confianca": "media", "fonte": "Compilação; conferir no CEOPS" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "1984-08", "pico_m": 15.46, "confianca": "media", "fonte": "Compilação; conferir no CEOPS" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2011-09-09", "pico_m": 13.00, "confianca": "alta", "fonte": "Artigo ABRH (CEOPS/FURB) - cota de referência das cartas-enchente" },
-    { "rio": "itajai-acu", "cidade": "timbo", "data": "2011-09-09", "pico_m": 9.86, "confianca": "alta", "fonte": "Artigo ABRH (CEOPS/FURB)" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2013", "pico_m": 10.51, "confianca": "baixa", "fonte": "Compilação informal" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2023-10-13", "pico_m": 10.75, "confianca": "media", "fonte": "Imprensa/compilação" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2023-11-17", "pico_m": 9.14, "confianca": "media", "fonte": "Imprensa/compilação" },
-    { "rio": "itajai-acu", "cidade": "blumenau", "data": "2026-07-12", "pico_m": 5.65, "confianca": "media", "fonte": "Imprensa (monitoramento estadual); subiu >4 m em <24 h" },
-
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "1984", "pico_m": 10.30, "confianca": "baixa", "fonte": "Compilação informal" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2008-11", "pico_m": 8.75, "confianca": "baixa", "fonte": "Compilação informal" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2011-09", "pico_m": 10.03, "confianca": "baixa", "fonte": "Compilação informal" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2013", "pico_m": 7.61, "confianca": "baixa", "fonte": "Compilação informal" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2020-12-15", "hora": "20:45", "pico_m": 4.95, "confianca": "alta", "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2022-06-23", "hora": "00:45", "pico_m": 5.46, "confianca": "alta", "fonte": "Prefeitura de Brusque (pico 0h45)" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2023-10-13", "pico_m": 6.91, "confianca": "media", "fonte": "Imprensa/compilação" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2023-11-17", "pico_m": 8.96, "confianca": "media", "fonte": "Imprensa/compilação" }
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1852-10-29",
+      "pico_m": 16.3,
+      "confianca": "baixa",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
+      "nota": "Primeiro grande registro após a colonização. Algumas fontes citam 16,50 m. Valor contestado por historiadores locais.",
+      "divergencias": [
+        {
+          "pico_m": 16.5,
+          "fonte": "Outras compilações históricas"
+        }
+      ]
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1855-11-20",
+      "pico_m": 13.3,
+      "confianca": "baixa",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
+      "nota": "Relato histórico (Avé-Lallemant); dia confirmado pela compilação 1852–2017."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1862-11",
+      "pico_m": 9.0,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1864-09-17",
+      "pico_m": 10.0,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1868-11-27",
+      "pico_m": 13.3,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1869-10-21",
+      "pico_m": 11.0,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1870-10-11",
+      "pico_m": 10.0,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1880-09-23",
+      "pico_m": 17.1,
+      "confianca": "alta",
+      "fonte": "Águas de SC / Comitê do Itajaí — bacia do rio Itajaí",
+      "nota": "Maior cota de que se tem registro na bacia (Comitê do Itajaí / Águas SC)."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1888-01",
+      "pico_m": 12.8,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1891-06-18",
+      "pico_m": 13.8,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1898-05-01",
+      "pico_m": 12.8,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1898-12-25",
+      "pico_m": 11.3,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1900-10-02",
+      "pico_m": 12.8,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1911-10-02",
+      "pico_m": 16.9,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
+      "nota": "Segunda maior cota da série. Quase toda a área urbana histórica submersa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1911-10-29",
+      "pico_m": 9.86,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1923-06-20",
+      "pico_m": 9.0,
+      "confianca": "media",
+      "fonte": "Itajaípedia — enchentes em Itajaí"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1925-05-14",
+      "pico_m": 10.3,
+      "confianca": "media",
+      "fonte": "Itajaípedia — enchentes em Itajaí"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1926-01-14",
+      "pico_m": 9.5,
+      "confianca": "media",
+      "fonte": "Itajaípedia — enchentes em Itajaí"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1927-10-09",
+      "pico_m": 12.3,
+      "confianca": "media",
+      "fonte": "Itajaípedia — enchentes em Itajaí"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1928-05-31",
+      "pico_m": 8.2,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1928-06-18",
+      "pico_m": 11.76,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1928-08-15",
+      "pico_m": 10.82,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1928-09-17",
+      "pico_m": 10.3,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1931-05-02",
+      "pico_m": 11.05,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1931-09-14",
+      "pico_m": 11.25,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1931-09-18",
+      "pico_m": 11.53,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1932-05-25",
+      "pico_m": 9.75,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1933-10-04",
+      "pico_m": 11.85,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1935-09-24",
+      "pico_m": 11.65,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1936-08-06",
+      "pico_m": 10.4,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1939-11-27",
+      "pico_m": 11.45,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1943-08-03",
+      "pico_m": 10.5,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1946-02-02",
+      "pico_m": 9.45,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1948-05-17",
+      "pico_m": 11.85,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1950-10-17",
+      "pico_m": 9.45,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1953-11-01",
+      "pico_m": 9.65,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1954-05-08",
+      "pico_m": 9.56,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1954-11-22",
+      "pico_m": 12.53,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1955-05-20",
+      "pico_m": 10.61,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1957-07-20",
+      "pico_m": 9.28,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1957-08-02",
+      "pico_m": 10.6,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1957-08-18",
+      "pico_m": 13.07,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1957-09-16",
+      "pico_m": 9.44,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1961-09-12",
+      "pico_m": 10.35,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1961-09-30",
+      "pico_m": 9.63,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1961-11-01",
+      "pico_m": 12.49,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1962-09-09",
+      "pico_m": 8.94,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1962-09-21",
+      "pico_m": 9.29,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1963-09-29",
+      "pico_m": 9.67,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1966-02-13",
+      "pico_m": 10.07,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1967-02-18",
+      "pico_m": 10.5,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1969-04-06",
+      "pico_m": 10.14,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1971-06-09",
+      "pico_m": 10.35,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1972-08-17",
+      "pico_m": 10.7,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1972-08-29",
+      "pico_m": 11.35,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1973-06-25",
+      "pico_m": 11.3,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1973-07-03",
+      "pico_m": 9.0,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1973-07-22",
+      "pico_m": 9.3,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1973-07-28",
+      "pico_m": 9.35,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1973-08-29",
+      "pico_m": 12.35,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1975-10-04",
+      "pico_m": 12.63,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1975-12-13",
+      "pico_m": 8.5,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1976-05-15",
+      "pico_m": 8.3,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1976-05-29",
+      "pico_m": 10.85,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1977-08-18",
+      "pico_m": 9.15,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1978-12-26",
+      "pico_m": 11.5,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1979-05-10",
+      "pico_m": 9.45,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1979-10-09",
+      "pico_m": 10.45,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1980-07-31",
+      "pico_m": 8.4,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1980-12-22",
+      "pico_m": 13.27,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1982-11-15",
+      "pico_m": 8.65,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-03-04",
+      "pico_m": 10.6,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-05-20",
+      "pico_m": 12.52,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-07-09",
+      "pico_m": 15.34,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
+      "nota": "A cheia mais longa da história recente. A cidade ficou semanas debaixo d'água."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-09-24",
+      "pico_m": 11.75,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1984-08-07",
+      "pico_m": 15.46,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
+      "nota": "Maior cota do século XX depois de 1911. Quarto evento em dois anos."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1990-07-21",
+      "pico_m": 8.82,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
+      "nota": "No mesmo ano, a enxurrada da Rua Belo Horizonte matou 21 pessoas — desastre de encosta, não de cota do rio principal."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1992-05-29",
+      "pico_m": 12.8,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1992-07-01",
+      "pico_m": 10.62,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1997-02-01",
+      "pico_m": 9.44,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1998-04-28",
+      "pico_m": 8.24,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1999-07-03",
+      "pico_m": 8.26,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2001-10-01",
+      "pico_m": 11.02,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2008-11-24",
+      "pico_m": 11.52,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
+      "nota": "A cota do rio não foi recorde. As mortes vieram sobretudo dos deslizamentos."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2009-10-06",
+      "pico_m": 8.17,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2010-04-26",
+      "pico_m": 8.46,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2011-08-31",
+      "pico_m": 8.5,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2011-09-08",
+      "pico_m": 11.6,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2011-09-09",
+      "pico_m": 12.8,
+      "confianca": "alta",
+      "fonte": "Cotas-enchente de Blumenau (ABRH / CEOPS-FURB)",
+      "nota": "Imprensa: 12,6 m. CEOPS/FURB na Ponte Adolfo Konder: 13,00 m. Adotamos 12,80 m como pico da série municipal. Adotada a cota da série municipal. As três leituras publicadas para o mesmo pico estão em 'divergencias'.",
+      "divergencias": [
+        {
+          "pico_m": 13.0,
+          "fonte": "CEOPS/FURB — Ponte Adolfo Konder"
+        },
+        {
+          "pico_m": 12.6,
+          "fonte": "Imprensa"
+        }
+      ]
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2013-09-23",
+      "pico_m": 10.51,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2014-06-09",
+      "pico_m": 10.18,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2015-10-23",
+      "pico_m": 10.03,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2017-06-01",
+      "pico_m": 8.71,
+      "confianca": "media",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2023-10-13",
+      "pico_m": 10.61,
+      "confianca": "media",
+      "fonte": "g1 SC — cobertura das cheias de 2023",
+      "nota": "Maior nível em Blumenau desde 2011. Cota de enchente vigente: 8 m (à época).",
+      "divergencias": [
+        {
+          "pico_m": 10.75,
+          "fonte": "Imprensa/compilação (valor anterior deste repositório)"
+        }
+      ]
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2023-11-17",
+      "pico_m": 9.14,
+      "confianca": "media",
+      "fonte": "Imprensa/compilação"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2024-05-19",
+      "pico_m": 8.67,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2026-07-12",
+      "pico_m": 5.65,
+      "confianca": "media",
+      "fonte": "Imprensa (monitoramento estadual); subiu >4 m em <24 h"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1911-05",
+      "pico_m": 12.2,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1954-10",
+      "pico_m": 10.7,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1957-08",
+      "pico_m": 10.65,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1984-08",
+      "pico_m": 12.8,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "2011-09",
+      "pico_m": 12.96,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "2015-10",
+      "pico_m": 10.71,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "2017-06",
+      "pico_m": 10.89,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "2023-10-07",
+      "pico_m": 11.86,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul",
+      "nota": "Pico de outubro; 9,5 m já caracterizava enchente no dia 7."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "2023-11-18",
+      "pico_m": 13.04,
+      "confianca": "media",
+      "fonte": "Portal GCD — série histórica de Rio do Sul",
+      "nota": "Segunda maior (ou a maior recente) da série local. Calamidade pública."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2023-10-09",
+      "pico_m": 12.4,
+      "confianca": "media",
+      "fonte": "g1 SC — cobertura das cheias de 2023",
+      "nota": "Maior enchente da história do município, a jusante da Barragem Oeste."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2011-09-09",
+      "pico_m": 9.86,
+      "confianca": "alta",
+      "fonte": "Artigo ABRH (CEOPS/FURB)"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "1984-08",
+      "pico_m": 10.5,
+      "confianca": "baixa",
+      "fonte": "Defesa Civil de Brusque — cotas do Itajaí-Mirim",
+      "nota": "Marco histórico no Itajaí-Mirim; cota exata varia conforme a régua. Ordem de grandeza das cheias de 1984. A própria fonte avisa que a cota exata varia conforme a régua usada.",
+      "divergencias": [
+        {
+          "pico_m": 10.3,
+          "fonte": "Compilação informal (valor anterior deste repositório)"
+        }
+      ]
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2008-11",
+      "pico_m": 8.5,
+      "confianca": "alta",
+      "fonte": "UNIVALI — inundações e políticas públicas em Brusque",
+      "nota": "Cheia e deslizamentos; impulsionou o debate da barragem no Mirim.",
+      "divergencias": [
+        {
+          "pico_m": 8.75,
+          "fonte": "Compilação informal (valor anterior deste repositório)"
+        }
+      ]
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2011-09",
+      "pico_m": 10.03,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Brusque — cotas do Itajaí-Mirim",
+      "nota": "Maior enchente em Brusque desde 1984."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2013",
+      "pico_m": 7.61,
+      "confianca": "baixa",
+      "fonte": "Compilação informal"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2020-12-15",
+      "hora": "20:45",
+      "pico_m": 4.95,
+      "confianca": "alta",
+      "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2022-06-23",
+      "hora": "00:45",
+      "pico_m": 5.46,
+      "confianca": "alta",
+      "fonte": "Prefeitura de Brusque (pico 0h45)"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-10-13",
+      "pico_m": 6.91,
+      "confianca": "media",
+      "fonte": "Imprensa/compilação"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-11-17",
+      "pico_m": 8.96,
+      "confianca": "media",
+      "fonte": "Defesa Civil de Brusque — revisão de cotas de 2024",
+      "divergencias": [
+        {
+          "pico_m": 9.1,
+          "fonte": "Previsão oficial de pico divulgada na véspera (não é medição)"
+        }
+      ],
+      "nota": "A série do relatório traz 9,10 m, mas o próprio texto diz que era PREVISÃO de pico, não leitura de régua. Mantido o valor medido."
+    }
   ]
 }

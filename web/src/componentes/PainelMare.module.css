@@ -1,0 +1,80 @@
+.painel {
+  border: 1px solid var(--borda);
+  border-left: 6px solid var(--agua-clara);
+  border-radius: var(--raio);
+  padding: 0.85rem 0.9rem;
+  margin-top: 0.85rem;
+  background: var(--papel);
+}
+
+.titulo {
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+
+.regime {
+  margin-bottom: 0.25rem;
+}
+
+.nota,
+.mecanismo {
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.mecanismo {
+  border-top: 1px solid var(--borda);
+  padding-top: 0.6rem;
+  margin: 0.6rem 0 0;
+}
+
+.avaliado,
+.agrava,
+.semTabua {
+  border-radius: var(--raio);
+  padding: 0.7rem 0.8rem;
+  margin: 0.6rem 0;
+}
+
+.avaliado {
+  background: var(--agua-fundo);
+}
+
+.agrava {
+  background: var(--alerta-fundo);
+  border-left: 6px solid var(--alerta);
+}
+
+.semTabua {
+  background: var(--fundo);
+  border-left: 6px solid var(--tinta-fraca);
+}
+
+.veredito {
+  margin-bottom: 0.4rem;
+}
+
+.lista {
+  margin: 0.4rem 0;
+  padding-left: 1.15rem;
+  font-size: 0.92rem;
+}
+
+.campos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.campo span {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 0.25rem;
+}
+
+.campo input {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+}

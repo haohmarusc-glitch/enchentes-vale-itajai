@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Evento } from '../dados/tipos'
-import { MIN_PARES, ajustar, parear, prever } from './previsao'
+import { MIN_PARES, agruparEmEventos, ajustar, parear, prever } from './previsao'
 
 function ev(cidade: string, data: string, pico_m: number): Evento {
   return { rio: 'itajai-acu', cidade, data, pico_m, confianca: 'alta', fonte: 'teste' }
@@ -25,10 +25,35 @@ test('parear só junta registros do mesmo evento', () => {
   assert.equal(pares[0]!.x, 5)
 })
 
-test('parear descarta evento com registro duplicado na mesma cidade', () => {
+test('leituras próximas da mesma cidade viram um evento só, com o maior pico', () => {
+  // O rio fica dias acima da cota e a Defesa Civil registra mais de um valor:
+  // é a mesma cheia, e o pico dela é o maior — não dois eventos.
   const eventos = [...serie(6), ev('baixo', '2000-01-02', 99)]
   const pares = parear(eventos, 'cima', 'baixo')
-  assert.equal(pares.length, 5, 'o evento de janeiro é ambíguo e deve sair')
+  assert.equal(pares.length, 6)
+  assert.equal(pares[0]!.y, 99, 'o pico do evento é a maior leitura do grupo')
+})
+
+test('agruparEmEventos junta o que é a mesma cheia e separa o que não é', () => {
+  const grupos = agruparEmEventos([
+    ev('x', '2011-08-31', 8.5),
+    ev('x', '2011-09-08', 11.6),
+    ev('x', '2011-09-09', 12.8),
+  ])
+  assert.equal(grupos.length, 2, '31/08 está a 8 dias de 08/09 — cheia diferente')
+  assert.equal(grupos[1]!.pico_m, 12.8)
+  assert.equal(grupos[1]!.leituras, 2)
+})
+
+test('evento de mês inteiro que casa com duas cheias distintas é descartado', () => {
+  // Rio do Sul registra "agosto de 1957" sem dia; Blumenau teve DUAS cheias
+  // naquele agosto. Não dá para saber qual corresponde — o par sai.
+  const eventos = [
+    ev('cima', '1957-08', 10.65),
+    ev('baixo', '1957-08-02', 10.6),
+    ev('baixo', '1957-08-18', 13.07),
+  ]
+  assert.equal(parear(eventos, 'cima', 'baixo').length, 0)
 })
 
 test('menos de 5 pares nunca vira número', () => {

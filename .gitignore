@@ -7,3 +7,6 @@ __pycache__/
 
 # séries brutas baixadas da ANA (grandes, reproduzíveis pelo script)
 data/series/
+
+# artefatos de build incremental do TypeScript
+*.tsbuildinfo
