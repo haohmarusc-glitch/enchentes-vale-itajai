@@ -53,12 +53,16 @@ FUSO = ZoneInfo("America/Sao_Paulo")
 SITE = "https://haohmarusc-glitch.github.io/enchentes-vale-itajai/"
 
 #: Da mais baixa para a mais alta. 'normal' é o rio abaixo de qualquer cota.
-FAIXAS = ["normal", "atencao", "alerta", "inundacao"]
+FAIXAS = ["normal", "atencao", "alerta", "emergencia", "inundacao"]
 
 ROTULO = {
     "normal": "abaixo das cotas",
     "atencao": "Atenção",
     "alerta": "Alerta",
+    # A palavra é do Plano de Contingência da COMPDEC de Itajaí. Não virou
+    # "Inundação" porque são subfases diferentes lá, e trocar a palavra da fonte
+    # é o começo de trocar o significado dela.
+    "emergencia": "Emergência",
     "inundacao": "Inundação",
 }
 
@@ -96,6 +100,20 @@ def cotas_da_leitura(leitura: dict, reguas_na_cidade: int) -> tuple[dict, str | 
     ignorar o próximo.
     """
     estacao = estacao_por_titulo(leitura.get("estacao", "")) or {}
+
+    # Estação marcada como "mostra a cota, mas não dispara sozinha".
+    #
+    # É o caso das nove réguas de estuário de Itajaí: a maré cruza a cota de
+    # atenção sem enchente nenhuma — a DC-01 marcou 1,24 m às 17:21 de
+    # 30/08/2026, acima da cota de 1,16, e 0,70 m três horas depois. A subfase
+    # do Plano de Contingência é um estado que a Defesa Civil DECLARA olhando
+    # maré, chuva e montante juntos; automatizar a travessia de uma régua só
+    # reproduz o número sem o julgamento, e um aviso que toca com a maré ensina
+    # a pessoa a ignorar o que tocar na noite da cheia.
+    if estacao.get("alerta_automatico") is False:
+        return {}, (estacao.get("motivo_sem_alerta")
+                    or "estação marcada para não disparar aviso automático")
+
     proprias = {
         k: v for k, v in (estacao.get("cotas_m") or {}).items()
         if isinstance(v, (int, float))
@@ -152,7 +170,8 @@ def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
     if faixa == "normal":
         cabeca = f"🟢 <b>{cidade}</b> voltou para abaixo das cotas"
     elif subiu(faixa, anterior):
-        icone = {"atencao": "🟡", "alerta": "🟠", "inundacao": "🔴"}[faixa]
+        icone = {"atencao": "🟡", "alerta": "🟠",
+                 "emergencia": "🔴", "inundacao": "🔴"}[faixa]
         cabeca = f"{icone} <b>{cidade}</b> chegou à cota de <b>{ROTULO[faixa]}</b>"
     else:
         cabeca = f"🔵 <b>{cidade}</b> baixou para a faixa de <b>{ROTULO[faixa]}</b>"

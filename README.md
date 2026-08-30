@@ -386,11 +386,50 @@ O Leaflet carrega à parte, como o gráfico de picos: ele pesa mais que todo o
 resto do site somado, e o mapa existe só nesta tela. Quem abre o site no celular
 durante a chuva para ver o nível do rio não paga por ele.
 
+## Cotas de Itajaí e a maré
+
+As onze estações de Itajaí ganharam **cota oficial** de atenção, alerta e
+emergência — Tabela 11 do Plano de Contingência da COMPDEC, versão 17 de
+22/12/2025. A palavra "emergência" é da fonte e ficou como está: lá é a terceira
+subfase, não sinônimo de inundação.
+
+Cada uma tem seu próprio zero. A **DC-10**, no Limoeiro, usa régua de 8 a 10 m e
+não se compara com as demais.
+
+### Por que nove delas não disparam aviso sozinhas
+
+Itajaí fica na foz. Nas réguas do estuário o nível sobe e desce com a maré duas
+vezes por dia, e essa oscilação é **maior que a distância até a cota**. Medido
+nos nossos próprios dados: em 30/08/2026 a **DC-01 marcou 1,24 m às 17:21** —
+acima da sua cota de atenção, 1,16 m — e **0,70 m três horas depois**, sem
+enchente nenhuma.
+
+A subfase do Plano de Contingência é um estado que a Defesa Civil **declara**
+olhando maré, chuva e montante juntos. Automatizar a travessia de uma régua só
+reproduz o número sem o julgamento — e um aviso que toca com a maré ensina a
+pessoa a ignorar o que tocar na noite da cheia.
+
+Então: **a cota aparece na tela** para as onze, e o **aviso automático** vale
+para as duas que não são de estuário (DC-10 e DC-11), mais Rio do Sul e Brusque.
+As nove ficam marcadas com `alerta_automatico: false` e o motivo escrito.
+
+```bash
+python3 scripts/medir_mare.py     # troca esse julgamento por medição
+```
+
+O script lê a série já coletada e, por estação, calcula a amplitude diária, a
+folga até a cota e quantas vezes o nível cruzou a cota em quantos dias. Quando a
+amplitude é maior que a folga, a régua cruza sozinha. Ele **sugere** e mostra o
+número ao lado; mudar quem dispara aviso continua sendo decisão de quem mantém
+o projeto.
+
 ## Pendências
 
 Em ordem de impacto.
 
-- [ ] **Cotas de rua de Itajaí.** A cidade com mais gente exposta é a única entre as grandes sem nenhuma cota: nem por régua (as onze DC estão com `cotas_m` vazio), nem por rua. O `docs/cotas-de-ruas.md` registra que a prefeitura publica "cotas por endereço" no portal do GeoItajaí, mas o serviço aberto não foi localizado — é tarefa de investigação, e é a que mais muda o alcance do projeto.
+- [ ] **Rodar `scripts/medir_mare.py` depois de algumas semanas de série** e decidir, por medição, quais das nove réguas de estuário de Itajaí podem disparar aviso. Hoje a trava está posta por julgamento sobre três leituras.
+- [ ] **Investigar o REST do ArcGIS da prefeitura de Itajaí** (`arcgis.itajai.sc.gov.br/server/rest/services`), onde ficam as "cotas por endereço" — seria a fonte das cotas de rua de Itajaí sem raspagem.
+- [ ] **Cotas de rua de Itajaí.** As cotas por RÉGUA chegaram (Plano de Contingência); faltam as por rua. O `docs/cotas-de-ruas.md` registra que a prefeitura publica "cotas por endereço" no portal do GeoItajaí, mas o serviço aberto não foi localizado — é tarefa de investigação, e é a que mais muda o alcance do projeto.
 - [ ] **Mapa base do OpenStreetMap durante uma cheia.** O mapa das manchas usa os servidores públicos de tiles do OSM, cuja política desencoraja uso pesado. Numa noite de enchente o acesso ao site multiplica; vale medir e, se preciso, passar para um provedor de tiles ou servir os próprios.
 - [ ] **Resolver a referência altimétrica de Blumenau** — teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou resposta da FURB. Enquanto não sair, a regra bloqueante do `CLAUDE.md` vale: o site rotula cada ponto e recusa parear referências diferentes, ao custo de a previsão Rio do Sul → Blumenau ficar em "dados insuficientes".
 - [ ] _(opcional)_ Seletor régua/IBGE nos gráficos de Blumenau, aplicando ±0,20 m só para visualizar. Só vale a pena se a verificação acima demorar — o gráfico já mostra a referência de cada ponto e avisa quando mistura.

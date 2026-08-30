@@ -25,6 +25,9 @@ jobs:
       - name: Testes das cotas de rua e das manchas
         working-directory: scripts
         run: python3 teste_cotas_ruas.py
+      - name: Testes da medição de maré
+        working-directory: scripts
+        run: python3 teste_medir_mare.py
       - name: Testes do analisador da tábua de maré
         working-directory: scripts
         run: python3 teste_coleta_mares.py

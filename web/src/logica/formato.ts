@@ -44,6 +44,10 @@ export const ROTULO_COTA: Record<string, string> = {
   atencao: 'Atenção',
   alerta: 'Alerta',
   inundacao: 'Inundação',
+  // Palavra do Plano de Contingência da COMPDEC de Itajaí, mantida como a
+  // fonte a escreve: lá "emergência" é a terceira subfase, não sinônimo de
+  // inundação.
+  emergencia: 'Emergência',
   inundacao_historica: 'Inundação histórica',
   transbordamento: 'Transbordamento',
 }
