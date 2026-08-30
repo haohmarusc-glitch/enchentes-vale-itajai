@@ -1,7 +1,9 @@
 import type { Cidade, Trecho } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade } from '../dados/tempoReal'
+import { chuvaDaCidade } from '../logica/chuva'
 import NivelAoVivo from './NivelAoVivo'
+import ChuvaAoVivo from './ChuvaAoVivo'
 import { caminho, faixaHoras } from '../logica/transito'
 import { fonteTempoReal, metros, rotuloCota } from '../logica/formato'
 import SeloConfianca from './SeloConfianca'
@@ -52,6 +54,9 @@ export default function DiagramaRio({
         }
         const registros = registrosPorCidade[cidade.id] ?? 0
         const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
+        // Chuva vem por cidade, não por rio: o pluviômetro mede o que caiu
+        // naquele ponto, e não pertence a uma calha em particular.
+        const chuva = chuvaDaCidade(tempoReal.chuva, cidade.id)
         const selecionada = cidadeSelecionada === cidade.id
         const cotas = Object.entries(cidade.cotas_m)
 
@@ -75,6 +80,10 @@ export default function DiagramaRio({
                     <span className={estilos.aoVivo}>
                       <NivelAoVivo leitura={aoVivo} cidade={cidade} agora={agora} />
                     </span>
+                  ) : null}
+
+                  {chuva ? (
+                    <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} />
                   ) : null}
 
                   {cotas.length > 0 ? (

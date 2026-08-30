@@ -1,0 +1,72 @@
+.chuva {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  background: #eef4fb;
+  border: 1px solid #cfe0f2;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+/* Cinza quando a medição já não representa o momento — mesma regra do nível. */
+.velha {
+  background: #f2f2f2;
+  border-color: #dcdcdc;
+  color: #555;
+}
+
+.icone {
+  font-size: 1rem;
+}
+
+.destaque {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.valor {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #17457a;
+}
+
+.velha .valor {
+  color: #555;
+}
+
+.janela {
+  color: #40587a;
+}
+
+.outras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.6rem;
+  color: #40587a;
+}
+
+.outra {
+  white-space: nowrap;
+}
+
+.meta {
+  flex-basis: 100%;
+  color: #5c6b7f;
+  font-size: 0.78rem;
+}
+
+.problema {
+  display: block;
+  margin-top: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  color: #6b4f14;
+  font-size: 0.82rem;
+}

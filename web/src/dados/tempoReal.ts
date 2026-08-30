@@ -36,9 +36,34 @@ export interface LeituraAoVivo {
   medidoEm: Date | null
 }
 
+/** Janelas de acumulado publicadas pela fonte. Ela NÃO publica 6 h. */
+export interface MilimetrosPorJanela {
+  min10: number | null
+  h1: number | null
+  h12: number | null
+  h24: number | null
+  h48: number | null
+}
+
+export interface ChuvaAoVivo {
+  estacao: string
+  rio: string | null
+  cidade: string | null
+  mm: MilimetrosPorJanela
+  medidoEm: Date | null
+  /**
+   * As janelas são encaixadas, então o acumulado tem de ser não-decrescente.
+   * Quando a fonte publica série que não fecha — e ela publica —, isto vem
+   * `false` e a tela mostra o problema em vez do número.
+   */
+  coerente: boolean
+  incoerencias: string[]
+}
+
 export interface EstadoTempoReal {
   situacao: 'carregando' | 'ok' | 'indisponivel'
   leituras: LeituraAoVivo[]
+  chuva: ChuvaAoVivo[]
   /** Quando a coleta rodou (não é quando o rio foi medido). */
   coletadoEm: Date | null
   fonte: string | null
@@ -70,10 +95,54 @@ function leituraValida(bruta: unknown): LeituraAoVivo | null {
   }
 }
 
+const JANELAS = ['min10', 'h1', 'h12', 'h24', 'h48'] as const
+
+function mm(bruto: unknown): number | null {
+  if (typeof bruto !== 'number' || !Number.isFinite(bruto)) return null
+  // Chuva negativa não existe. O recorde brasileiro em 24 h fica bem abaixo de
+  // 1000 mm; acima disso é defeito de sensor, não temporal.
+  if (bruto < 0 || bruto > 1000) return null
+  return bruto
+}
+
+function chuvaValida(bruta: unknown): ChuvaAoVivo | null {
+  if (typeof bruta !== 'object' || bruta === null) return null
+  const c = bruta as Record<string, unknown>
+  if (typeof c.estacao !== 'string' || c.estacao.trim() === '') return null
+
+  const cru = (typeof c.mm === 'object' && c.mm !== null ? c.mm : {}) as Record<string, unknown>
+  const valores = Object.fromEntries(
+    JANELAS.map((j) => [j, mm(cru[j])]),
+  ) as unknown as MilimetrosPorJanela
+  if (JANELAS.every((j) => valores[j] === null)) return null
+
+  let medidoEm: Date | null = null
+  if (typeof c.medido_em === 'string' && RE_SEM_FUSO.test(c.medido_em)) {
+    const d = deBrasilia(c.medido_em)
+    medidoEm = Number.isNaN(d.getTime()) ? null : d
+  }
+
+  const incoerencias = Array.isArray(c.incoerencias)
+    ? c.incoerencias.filter((i): i is string => typeof i === 'string')
+    : []
+
+  return {
+    estacao: c.estacao,
+    rio: typeof c.rio === 'string' ? c.rio : null,
+    cidade: typeof c.cidade === 'string' ? c.cidade : null,
+    mm: valores,
+    medidoEm,
+    // Ausência do campo NÃO vale como "coerente": só o `true` explícito vale.
+    coerente: c.coerente === true && incoerencias.length === 0,
+    incoerencias,
+  }
+}
+
 export async function buscarTempoReal(sinal?: AbortSignal): Promise<EstadoTempoReal> {
   const vazio: EstadoTempoReal = {
     situacao: 'indisponivel',
     leituras: [],
+    chuva: [],
     coletadoEm: null,
     fonte: null,
   }
@@ -93,9 +162,14 @@ export async function buscarTempoReal(sinal?: AbortSignal): Promise<EstadoTempoR
     const coletado =
       typeof dados.coletado_em === 'string' ? new Date(dados.coletado_em) : null
 
+    const chuva = Array.isArray(dados.chuva)
+      ? dados.chuva.map(chuvaValida).filter((c): c is ChuvaAoVivo => c !== null)
+      : []
+
     return {
       situacao: 'ok',
       leituras,
+      chuva,
       coletadoEm: coletado && !Number.isNaN(coletado.getTime()) ? coletado : null,
       fonte: typeof dados.fonte === 'string' ? dados.fonte : null,
     }
@@ -110,6 +184,7 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
   const [estado, setEstado] = useState<EstadoTempoReal>({
     situacao: 'carregando',
     leituras: [],
+    chuva: [],
     coletadoEm: null,
     fonte: null,
   })
