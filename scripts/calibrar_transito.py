@@ -42,14 +42,32 @@ def instante(ev: dict) -> datetime | None:
         return None
 
 
-def pares_vizinhos() -> list[tuple[str, str, str]]:
-    """(rio, cidade de montante, cidade de jusante) para cada par consecutivo."""
+def pares_para_calibrar() -> list[tuple[str, str, str]]:
+    """
+    (rio, cidade de montante, cidade de jusante) que vale a pena medir.
+
+    São os pares de cidades vizinhas MAIS os trechos que já existem em
+    `transito.json`. Só os vizinhos não bastam: o trecho mais bem documentado
+    da bacia, Rio do Sul -> Blumenau, tem Ibirama, Apiúna e Indaial no meio, e
+    ficaria de fora justamente o par que se quer trocar por medição.
+    """
     estacoes = le_json("estacoes.json")
-    saida = []
+    saida: list[tuple[str, str, str]] = []
+    vistos: set[tuple[str, str, str]] = set()
+
+    def junta(par: tuple[str, str, str]) -> None:
+        if par not in vistos:
+            vistos.add(par)
+            saida.append(par)
+
     for rio_id, rio in estacoes["rios"].items():
         ordenadas = sorted(rio["cidades"], key=lambda c: c["ordem"])
         for a, b in zip(ordenadas, ordenadas[1:]):
-            saida.append((rio_id, a["id"], b["id"]))
+            junta((rio_id, a["id"], b["id"]))
+
+    for t in le_json("transito.json")["trechos"]:
+        junta((t["rio"], t["de"], t["para"]))
+
     return saida
 
 
@@ -97,7 +115,7 @@ def main() -> int:
     print(f"{com_hora} de {len(eventos)} registros têm data e hora de pico.\n")
 
     calibrados = 0
-    for rio, de, para in pares_vizinhos():
+    for rio, de, para in pares_para_calibrar():
         horas = medicoes(eventos, rio, de, para)
         atual = por_chave.get((rio, de, para))
         rotulo = f"{rio}: {de} -> {para}"

@@ -10,3 +10,8 @@ data/series/
 
 # artefatos de build incremental do TypeScript
 *.tsbuildinfo
+
+# Série bruta de tempo real: matéria-prima, reconstruível pela coleta.
+# O que vale versionar é o pico destilado dela, em data/enchentes.json.
+data/tempo-real/*.ndjson
+data/tempo-real/*.ndjson.gz
