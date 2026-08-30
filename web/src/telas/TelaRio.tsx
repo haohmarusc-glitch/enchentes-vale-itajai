@@ -2,8 +2,10 @@ import { Suspense, lazy, useMemo, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
+import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
+import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
 import estilos from './TelaRio.module.css'
 
 /**
@@ -33,6 +35,11 @@ export default function TelaRio({ rioId }: { rioId: string }) {
       (registrosPorCidade[c.id] ?? 0) > (registrosPorCidade[melhor.id] ?? 0) ? c : melhor,
     ).id
   }, [cidades, registrosPorCidade])
+
+  const tempoReal = useTempoReal()
+  // Um único "agora" por render: assim todos os cartões contam a idade das
+  // leituras a partir do mesmo instante.
+  const agora = useMemo(() => new Date(), [tempoReal])
 
   const [selecionadaId, setSelecionadaId] = useState<string | null>(null)
   const cidadeId = selecionadaId ?? padrao
@@ -82,6 +89,8 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           registrosPorCidade={registrosPorCidade}
           cidadeSelecionada={cidadeId}
           aoSelecionar={setSelecionadaId}
+          tempoReal={tempoReal}
+          agora={agora}
         />
         {semCobertura > 0 ? (
           <p className={estilos.cobertura}>
@@ -90,6 +99,17 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           </p>
         ) : null}
       </section>
+
+      {selecionada && leituraDaCidade(tempoReal, rioId, selecionada.id) ? (
+        <PainelSePicoAgora
+          rioId={rioId}
+          cidades={cidades}
+          trechos={trechos}
+          origem={selecionada}
+          leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)!}
+          agora={agora}
+        />
+      ) : null}
 
       {selecionada ? (
         <section className="cartao">

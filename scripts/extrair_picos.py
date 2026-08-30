@@ -29,7 +29,7 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from comum import DADOS, cota_de_referencia, grava_json, le_json
+from comum import DADOS, cota_da_estacao, cota_de_referencia, grava_json, le_json
 
 SERIE = DADOS / "tempo-real"
 
@@ -133,12 +133,17 @@ def limiar_da_estacao(
     """
     Cota a partir da qual vale considerar cheia NESTA régua.
 
-    As cotas de `estacoes.json` são por cidade. Onde a cidade tem uma régua só,
-    a cota é dela e pode ser usada. Onde há várias — Itajaí — não dá para saber
-    a qual delas a cota se refere, e aplicar a mesma a todas produziria evento
-    onde não há e esconderia onde há. Nesse caso o script recusa e pede
-    `--limiar`, em vez de escolher no escuro.
+    Na ordem: a cota da própria estação, quando cadastrada em `estacoes.json`;
+    depois a cota da cidade, mas só se a cidade tiver uma régua só.
+
+    Onde a cidade tem várias — Itajaí — a cota da cidade não serve: os zeros
+    são diferentes, e aplicar a mesma a todas produziria evento onde não há e
+    esconderia onde há. Nesse caso o script recusa e pede `--limiar`, em vez de
+    escolher no escuro.
     """
+    propria, nome = cota_da_estacao(estacao)
+    if propria is not None:
+        return propria, f"{nome} da própria estação"
     if quantas_na_cidade > 1:
         return None, "varias-reguas"
     return cota_de_referencia(rio, cidade)

@@ -15,6 +15,7 @@ data/
   tempo-real/      série coletada dos níveis (fora do git; só ultimo.json entra)
 scripts/
   validar_dados.py     portão de qualidade dos JSONs (roda no CI)
+  publicar_tempo_real.sh publica a última leitura no branch `tempo-real`
   coleta_mares.py      baixa a tábua de maré da Defesa Civil de Itajaí
   coleta_niveis.py     coleta contínua dos níveis, acumulando a série de uma cheia
   coleta_itajai.py     leitura avulsa dos níveis (mostra e sai)
@@ -102,6 +103,16 @@ na série observada, `level` em metros na astronômica (a chave `astronimical_ti
 erro de digitação na própria API). Os níveis dos rios vêm do HTML da página de níveis, cuja
 estrutura está documentada em `coleta_itajai.py` e coberta por testes com o markup real.
 
+**Nível ao vivo: com a idade sempre à vista.** O site busca a última leitura em tempo de
+execução (não no build, que teria a idade do último deploy). A idade aparece junto do número;
+passando de 3 h a tela diz, em letras, que aquilo não serve como nível atual. O cálculo de
+chegada a jusante só roda com leitura de até 45 minutos — com dado velho os horários sairiam
+já vencidos, com cara de previsão. E é sempre condicional: **se** o pico for agora, porque o
+tempo de descida é medido de pico a pico e o rio pode subir por mais horas.
+
+Cidade com mais de uma régua não mostra nível ao vivo. Itajaí tem cinco só no Mirim, com
+zeros diferentes — escolher uma e chamar de "o nível de Itajaí" seria comparar réguas.
+
 **Maré em Itajaí: qualitativa, nunca em metros.** A preamar não soma centímetros — ela trava
 o escoamento. O site cruza a janela de chegada com as preamares da tábua oficial e diz se a
 cheia chega na maré alta, e se é período de sizígia (calculado da fase da lua, que é exata).
@@ -138,7 +149,7 @@ Em ordem de impacto.
 
 - [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
-- [ ] **Levantar a cota de referência de cada régua de Itajaí** (DC-01 a DC-11). As cotas de `estacoes.json` são por cidade, e Itajaí tem cinco réguas só no Mirim, com zeros diferentes: em 30/08/2026, no mesmo instante, elas marcavam 0,92 / 1,14 / 1,07 / 0,97 e 4,82 m. Sem cota por régua, `extrair_picos.py` se recusa a analisar essas estações — o que é o certo, mas deixa a foz de fora.
+- [ ] **Preencher a cota de cada régua de Itajaí** em `estacoes_tempo_real` de `estacoes.json`. As 14 estações já estão cadastradas com o título exato da fonte; falta o número da cota de atenção de cada uma. Enquanto `cotas_m` estiver vazio nas cidades com várias réguas, `extrair_picos.py` se recusa a analisar essas estações e o site não mostra nível ao vivo para Itajaí — o que é o certo, mas deixa a foz de fora. O validador lista exatamente quais faltam.
 - [ ] **Registrar o horário do pico** (campo `hora`, `HH:MM`) nos eventos. Só 2 dos 116 têm. É o que troca o hidrograma de projeto da JICA por medição de cheia real, em `calibrar_transito.py`.
 - [ ] Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10. Se forem o mesmo evento, vira mais um par.
 - [ ] Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama — hoje sem nenhum registro.
@@ -159,4 +170,6 @@ Em ordem de impacto.
 - [x] Série histórica do relatório documental incorporada: 116 registros (97 de Blumenau desde 1852, 9 de Rio do Sul, 8 de Brusque, Taió e Timbó), cada um com fonte, confiança e divergências.
 - [x] Eixo do Itajaí-Açu completo em `transito.json` a partir do estudo JICA, incluindo Ituporanga, Apiúna e os trechos entre Blumenau e a foz.
 - [x] Painel de maré na tela da foz, com coletor da tábua oficial e cálculo de sizígia.
+- [x] Nível ao vivo no site, com selo de idade e recusa de calcular chegada a partir de leitura velha.
+- [x] Registro das 14 estações de tempo real com o título exato da fonte, pronto para receber a cota de cada régua.
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.

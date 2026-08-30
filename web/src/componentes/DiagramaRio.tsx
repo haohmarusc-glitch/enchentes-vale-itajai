@@ -1,4 +1,7 @@
 import type { Cidade, Trecho } from '../dados/tipos'
+import type { EstadoTempoReal } from '../dados/tempoReal'
+import { leituraDaCidade } from '../dados/tempoReal'
+import NivelAoVivo from './NivelAoVivo'
 import { caminho, faixaHoras } from '../logica/transito'
 import { fonteTempoReal, metros, rotuloCota } from '../logica/formato'
 import SeloConfianca from './SeloConfianca'
@@ -12,6 +15,8 @@ interface Props {
   registrosPorCidade: Record<string, number>
   cidadeSelecionada: string | null
   aoSelecionar: (cidadeId: string) => void
+  tempoReal: EstadoTempoReal
+  agora: Date
 }
 
 /**
@@ -25,6 +30,8 @@ export default function DiagramaRio({
   registrosPorCidade,
   cidadeSelecionada,
   aoSelecionar,
+  tempoReal,
+  agora,
 }: Props) {
   return (
     <ol className={estilos.diagrama}>
@@ -44,6 +51,7 @@ export default function DiagramaRio({
           }
         }
         const registros = registrosPorCidade[cidade.id] ?? 0
+        const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
         const selecionada = cidadeSelecionada === cidade.id
         const cotas = Object.entries(cidade.cotas_m)
 
@@ -63,6 +71,12 @@ export default function DiagramaRio({
                 </span>
 
                 <span className={estilos.detalhes}>
+                  {aoVivo ? (
+                    <span className={estilos.aoVivo}>
+                      <NivelAoVivo leitura={aoVivo} cidade={cidade} agora={agora} />
+                    </span>
+                  ) : null}
+
                   {cotas.length > 0 ? (
                     <span className={estilos.cotas}>
                       {cotas.map(([chave, valor]) => (
@@ -103,12 +117,6 @@ export default function DiagramaRio({
 
                   {cidade.observacao ? (
                     <span className={estilos.observacao}>{cidade.observacao}</span>
-                  ) : null}
-
-                  {cidade.estacoes_dc_itajai?.length ? (
-                    <span className={estilos.linhaMeta}>
-                      Estações: {cidade.estacoes_dc_itajai.join(' · ')}
-                    </span>
                   ) : null}
 
                   {cidade.fontes_tempo_real.length > 0 ? (
@@ -153,6 +161,7 @@ export default function DiagramaRio({
                       <SeloConfianca
                         nivel={trecho.confianca}
                         fonte={trecho.fontes.join(' · ')}
+                      tipo="trecho"
                       />
                       {!trecho.direto ? (
                         <span className={estilos.somaTrechos}>

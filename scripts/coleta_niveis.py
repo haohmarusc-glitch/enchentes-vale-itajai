@@ -17,8 +17,14 @@ Duas decisões que mantêm o arquivo pequeno e correto:
   meses fechados a cerca de um décimo disso.
 
 Os `.ndjson` ficam fora do git (veja o `.gitignore`): são matéria-prima, e o
-que vale versionar é o pico destilado deles. `ultimo.json` continua versionado
-porque é pequeno e diz qual foi a última leitura vista.
+que vale versionar é o pico destilado deles, em `enchentes.json`.
+
+`ultimo.json` também NÃO é versionado no `main`. Ele é publicado à parte, no
+branch `tempo-real`, por `scripts/publicar_tempo_real.sh` — é de lá que o site
+busca o nível ao vivo. Rode os dois em sequência no cron:
+
+    */15 * * * * cd /caminho/do/repo && python3 scripts/coleta_niveis.py >> /var/log/niveis.log 2>&1 \
+                 && scripts/publicar_tempo_real.sh >> /var/log/niveis.log 2>&1
 
 Uso:
     python3 scripts/coleta_niveis.py              # coleta e acumula
