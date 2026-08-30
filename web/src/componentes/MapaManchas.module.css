@@ -1,0 +1,36 @@
+.intro { margin: 0 0 0.9rem; color: #40587a; font-size: 0.92rem; line-height: 1.5; }
+.rotulo { display: block; font-weight: 600; margin: 0.9rem 0 0.3rem; }
+.seletor {
+  width: 100%; box-sizing: border-box; padding: 0.55rem 0.6rem;
+  font-size: 0.95rem; border: 1px solid #b9c8da; border-radius: 6px; background: #fff;
+}
+/* Altura fixa para o mapa não colapsar antes de o Leaflet medir o contêiner. */
+.mapa { height: 340px; margin-top: 0.8rem; border-radius: 8px; border: 1px solid #cfe0f2; }
+.estado { margin: 0.5rem 0 0; color: #5c6b7f; font-size: 0.88rem; }
+.erro {
+  margin: 0.5rem 0 0; padding: 0.5rem 0.6rem; border-radius: 6px;
+  background: #fdf3e3; border: 1px solid #edd6a8; color: #6b4f14; font-size: 0.88rem;
+}
+.legenda {
+  list-style: none; margin: 0.3rem 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 0.9rem; font-size: 0.88rem;
+}
+.legenda li { display: flex; align-items: center; gap: 0.35rem; }
+.amostra {
+  width: 0.95rem; height: 0.95rem; border-radius: 3px; border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.ressalva {
+  margin: 0.6rem 0 0; padding: 0.5rem 0.6rem; border-radius: 6px;
+  background: #fdf3e3; border: 1px solid #edd6a8; color: #6b4f14;
+  font-size: 0.85rem; line-height: 1.45;
+}
+.nivel {
+  margin: 0.9rem 0 0; padding: 0.6rem 0.7rem; border-radius: 6px;
+  background: #f6f8fa; font-size: 0.92rem; line-height: 1.5;
+}
+.avisos {
+  margin: 0.9rem 0 0; padding-left: 1.1rem; color: #40587a;
+  font-size: 0.86rem; line-height: 1.55;
+}
+.avisos li { margin-bottom: 0.35rem; }
+.credito { margin: 0.9rem 0 0; color: #7a8899; font-size: 0.78rem; }
