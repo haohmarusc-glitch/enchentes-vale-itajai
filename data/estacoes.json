@@ -215,14 +215,16 @@
           "afluentes": [
             "rio Guabiruba"
           ],
-          "observacao": "Alagamentos na Av. Beira-Rio a partir de ~4-5 m. Maré de sizígia em Itajaí afeta a vazante.",
+          "observacao": "A Av. Beira-Rio alaga a 4,80 m — é o primeiro ponto do Itajaí-Mirim entre os levantados, e por isso a cota de atenção é essa, e não um número redondo. Antes disso a única cota cadastrada era inundação (6,00 m), e o aviso saía 1,20 m depois de a água já estar na rua. Fonte: lista oficial de cotas por rua da Defesa Civil de Brusque (out/2023). Pontos que alagam ainda antes, entre 5,46 m e 5,80 m, não têm cota exata publicada. Maré de sizígia em Itajaí afeta a vazante.",
           "cotas_m": {
-            "inundacao": 6.0
+            "inundacao": 6.0,
+            "atencao": 4.8
           },
           "fontes_tempo_real": [
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Brusque)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
-          ]
+          ],
+          "cotas_verificado": false
         },
         {
           "id": "itajai",

@@ -22,6 +22,9 @@ jobs:
       - name: Testes do núcleo HTTP da coleta
         working-directory: scripts
         run: python3 teste_http.py
+      - name: Testes das cotas de rua e das manchas
+        working-directory: scripts
+        run: python3 teste_cotas_ruas.py
       - name: Testes do analisador da tábua de maré
         working-directory: scripts
         run: python3 teste_coleta_mares.py
