@@ -81,3 +81,53 @@ def cidades(rio: str | None = None) -> list[dict[str, Any]]:
         for cidade in sorted(dados["cidades"], key=lambda c: c["ordem"]):
             saida.append({**cidade, "rio": rio_id})
     return saida
+
+
+# --- Estações da Defesa Civil de Itajaí ---------------------------------------
+#
+# A página de níveis publica estações com nomes próprios (DC-01, DC-02, …) mais
+# leituras de Brusque, Blumenau e Rio do Sul. Este mapa liga cada uma ao par
+# (rio, cidade) de `estacoes.json`. Fica aqui, e não no coletor, para que os
+# scripts de análise possam usá-lo sem depender de biblioteca de rede.
+
+import re as _re
+
+MAPA_ESTACOES: list[tuple[str, str, str]] = [
+    (r"^DC-0[12]\b", "itajai-acu", "itajai"),
+    (r"^DC-11\b", "itajai-acu", "ilhota"),
+    (r"^DC-0[3456]\b", "itajai-mirim", "itajai"),
+    (r"^DC-10\b", "itajai-mirim", "itajai"),
+    (r"^DC-0[789]\b", "ribeirao", "itajai"),
+    (r"^Brusque", "itajai-mirim", "brusque"),
+    (r"^Blumenau", "itajai-acu", "blumenau"),
+    (r"^Rio do Sul", "itajai-acu", "rio-do-sul"),
+]
+
+
+def classificar_estacao(titulo: str) -> tuple[str | None, str | None]:
+    """(rio, cidade) da estação, ou (None, None) quando o nome não é reconhecido."""
+    for padrao, rio, cidade in MAPA_ESTACOES:
+        if _re.search(padrao, titulo):
+            return rio, cidade
+    return None, None
+
+
+def cota_de_referencia(rio: str, cidade: str) -> tuple[float | None, str | None]:
+    """
+    Cota a partir da qual vale considerar que há cheia, e o nome dela.
+
+    Prefere 'atencao', depois 'alerta', depois 'inundacao'. Devolve (None, None)
+    quando a cidade não tem cota levantada — e nesse caso quem chama deve pedir
+    um limiar explícito em vez de inventar um.
+    """
+    estacoes = le_json("estacoes.json")
+    rio_dados = estacoes["rios"].get(rio)
+    if not rio_dados:
+        return None, None
+    for c in rio_dados["cidades"]:
+        if c["id"] != cidade:
+            continue
+        for chave in ("atencao", "alerta", "inundacao"):
+            if chave in c.get("cotas_m", {}):
+                return float(c["cotas_m"][chave]), chave
+    return None, None

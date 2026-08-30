@@ -22,10 +22,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 try:
-    import requests
     from bs4 import BeautifulSoup
 except ImportError:
-    sys.exit("Instale as dependências: pip install requests beautifulsoup4")
+    sys.exit("Instale a dependência: pip install beautifulsoup4")
+
+# `requests` entra só no caminho que baixa a página: analisar HTML salvo não
+# usa rede, e exigir a biblioteca aqui impediria de importar este módulo para
+# reaproveitar o analisador.
 
 URL = "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
 UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
@@ -88,6 +91,8 @@ def parse(html: str) -> list[dict]:
 
 
 def coletar() -> dict:
+    import requests
+
     r = requests.get(URL, headers={"User-Agent": UA}, timeout=30)
     r.raise_for_status()
     return {

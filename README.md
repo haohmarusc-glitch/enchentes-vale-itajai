@@ -12,10 +12,13 @@ data/
   enchentes.json  picos históricos por rio/cidade/data, com fonte e confiança
   transito.json   tempo que a cheia leva para descer entre cidades
   mare-itajai.json tábua de maré do porto de Itajaí (preamares e baixa-mares)
+  tempo-real/      série coletada dos níveis (fora do git; só ultimo.json entra)
 scripts/
   validar_dados.py     portão de qualidade dos JSONs (roda no CI)
   coleta_mares.py      baixa a tábua de maré da Defesa Civil de Itajaí
-  coleta_itajai.py     baixa os níveis em tempo real da Defesa Civil de Itajaí
+  coleta_niveis.py     coleta contínua dos níveis, acumulando a série de uma cheia
+  coleta_itajai.py     leitura avulsa dos níveis (mostra e sai)
+  extrair_picos.py     acha os picos na série e PROPÕE registros para enchentes.json
   ana_hidroweb.py      coleta de séries da ANA (aguarda credenciais)
   calibrar_transito.py mede o tempo real de descida a partir dos horários de pico
 web/                   site em React + Vite + TypeScript
@@ -40,9 +43,30 @@ python3 validar_dados.py            # sempre antes de commitar mudança em data/
 python3 teste_coleta_mares.py       # testes do analisador da tábua de maré
 python3 coleta_mares.py --verificar # mostra a tábua lida do site, sem gravar
 python3 coleta_mares.py             # grava data/mare-itajai.json
-python3 coleta_itajai.py            # níveis em tempo real da Defesa Civil de Itajaí
+python3 coleta_niveis.py            # coleta e acumula a série dos níveis
+python3 extrair_picos.py            # propõe registros de pico a partir da série
 python3 calibrar_transito.py        # relata o que dá para calibrar
 ```
+
+### Registrar uma cheia nova
+
+O que falta em quase todo registro de `enchentes.json` é o **horário do pico** — e é
+ele que troca o hidrograma de projeto da JICA por medição de cheia real. O caminho:
+
+1. `coleta_niveis.py` no cron (`*/15 * * * *`) acumula uma linha por medição em
+   `data/tempo-real/AAAA-MM.ndjson`. Deduplica pelo carimbo da fonte, então rodar
+   com mais frequência não infla o arquivo: a página atualiza a cada 15–30 min.
+   São ~110 bytes por leitura, algo como 40 MB por ano; `--compactar` reduz os meses
+   fechados a cerca de um décimo. Esses arquivos ficam **fora do git**.
+2. Passada a cheia, `extrair_picos.py` lê a série, separa os episódios acima da cota
+   de atenção de cada cidade e imprime os registros propostos, com data e hora.
+   Ele **não grava**: confira cada pico contra o boletim da Defesa Civil antes.
+3. Conferido, `extrair_picos.py --escrever` inclui os registros, e
+   `calibrar_transito.py` passa a ter material para medir os tempos de descida.
+
+Isso só rende a partir da **próxima** cheia: a página publica o nível de agora, não
+o histórico. Para as antigas, o caminho continua sendo os boletins da Defesa Civil e
+o acervo do CEOPS.
 
 Para manter a maré em dia, `coleta_mares.py` deve rodar de tempos em tempos (cron numa
 máquina qualquer) e o `data/mare-itajai.json` resultante ser commitado. Enquanto o arquivo
@@ -115,7 +139,7 @@ Em ordem de impacto.
 - [ ] Verificar os códigos ANA já cadastrados (`verificado: false` em Taió, Rio do Sul e Blumenau).
 - [ ] Localizar estações do Itajaí-Mirim e das cidades do Açu ainda sem `codigo_ana`.
 - [ ] Levantar cotas de atenção/alerta/inundação das demais cidades; hoje só Rio do Sul, Blumenau e Brusque têm.
-- [ ] Colocar `coleta_itajai.py` e `coleta_mares.py` em execução periódica e mostrar o nível em tempo real na tela, com aviso de leitura velha.
+- [ ] Colocar `coleta_niveis.py` e `coleta_mares.py` no cron de uma máquina e mostrar o nível em tempo real na tela, com aviso de leitura velha.
 
 ## Concluído
 
@@ -127,3 +151,4 @@ Em ordem de impacto.
 - [x] Série histórica do relatório documental incorporada: 116 registros (97 de Blumenau desde 1852, 9 de Rio do Sul, 8 de Brusque, Taió e Timbó), cada um com fonte, confiança e divergências.
 - [x] Eixo do Itajaí-Açu completo em `transito.json` a partir do estudo JICA, incluindo Ituporanga, Apiúna e os trechos entre Blumenau e a foz.
 - [x] Painel de maré na tela da foz, com coletor da tábua oficial e cálculo de sizígia.
+- [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.

@@ -22,6 +22,9 @@ jobs:
       - name: Testes do analisador da tábua de maré
         working-directory: scripts
         run: python3 teste_coleta_mares.py
+      - name: Testes da extração de picos
+        working-directory: scripts
+        run: python3 teste_extrair_picos.py
 
   web:
     name: Testes e build do site
