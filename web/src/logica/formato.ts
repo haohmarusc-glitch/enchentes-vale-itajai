@@ -44,11 +44,24 @@ export const ROTULO_COTA: Record<string, string> = {
   atencao: 'Atenção',
   alerta: 'Alerta',
   inundacao: 'Inundação',
+  inundacao_historica: 'Inundação histórica',
   transbordamento: 'Transbordamento',
 }
 
+/**
+ * Nome legível de uma cota.
+ *
+ * As chaves de `estacoes.json` são identificadores sem acento e com sublinhado,
+ * porque são chaves. O plano B troca sublinhado por espaço em vez de mostrar o
+ * identificador cru: uma cota nova cadastrada amanhã aparece como "Cota de rua"
+ * e não como "Cota_de_rua". Sem acento, porque acento não se adivinha — para
+ * isso a chave precisa entrar na tabela acima.
+ */
 export function rotuloCota(chave: string): string {
-  return ROTULO_COTA[chave] ?? chave.charAt(0).toUpperCase() + chave.slice(1)
+  const conhecida = ROTULO_COTA[chave]
+  if (conhecida) return conhecida
+  const legivel = chave.replace(/_/g, ' ')
+  return legivel.charAt(0).toUpperCase() + legivel.slice(1)
 }
 
 /**
