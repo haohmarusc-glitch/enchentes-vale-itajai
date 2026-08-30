@@ -18,6 +18,7 @@ data/
 scripts/
   validar_dados.py     portão de qualidade dos JSONs (roda no CI)
   publicar_tempo_real.sh publica a última leitura no branch `tempo-real`
+  auditar.py           audita a coleta e compara a defasagem observada com a publicada
   coleta_mares.py      baixa a tábua de maré da Defesa Civil de Itajaí
   coleta_niveis.py     coleta contínua dos níveis, acumulando a série de uma cheia
   coleta_itajai.py     leitura avulsa dos níveis (mostra e sai)
@@ -49,7 +50,28 @@ python3 coleta_mares.py             # grava data/mare-itajai.json
 python3 coleta_niveis.py            # coleta e acumula a série dos níveis
 python3 extrair_picos.py            # propõe registros de pico a partir da série
 python3 calibrar_transito.py        # relata o que dá para calibrar
+python3 auditar.py                  # audita os últimos 15 dias de coleta
 ```
+
+### Auditar
+
+`auditar.py` responde três perguntas sobre a série já coletada:
+
+1. **A coleta está viva?** Estação que parou de publicar, buraco na série, sensor travado
+   repetindo o mesmo valor. Descobrir na cheia que uma régua está muda há três dias é tarde.
+2. **As leituras são plausíveis?** Valor fora de faixa, salto impossível.
+3. **A defasagem observada bate com a publicada?** Por correlação cruzada entre as duas pontas
+   de cada trecho de `transito.json`.
+
+Sobre a terceira, o limite que não dá para contornar: **onda de cheia viaja mais rápido que
+água baixa**. Uma defasagem medida em período seco não confirma nem refuta a faixa da JICA,
+que vale para cheia — serve para pegar erro grosseiro (trecho invertido, cidade trocada, faixa
+fora de ordem de grandeza). O relatório repete isso, para ninguém ler o resultado como
+validação do que não foi validado.
+
+Ele sai com código 1 quando há problema de **coleta**, que é operacional e precisa acordar
+alguém. Defasagem fora da faixa em água baixa é observação, não erro, e não derruba o código
+de saída. No cron, uma vez por dia já basta.
 
 ### Registrar uma cheia nova
 

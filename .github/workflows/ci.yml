@@ -28,6 +28,9 @@ jobs:
       - name: Testes do analisador da página de níveis
         working-directory: scripts
         run: python3 teste_coleta_niveis.py
+      - name: Testes do auditor
+        working-directory: scripts
+        run: python3 teste_auditar.py
       - name: Sintaxe do publicador de tempo real
         run: bash -n scripts/publicar_tempo_real.sh
 
