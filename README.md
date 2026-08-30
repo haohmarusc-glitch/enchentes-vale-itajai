@@ -232,7 +232,7 @@ Em ordem de impacto.
 
 - [ ] **Aguardar a Defesa Civil publicar a maré.** O endpoint `ajax/mares.php` respondia `{"tides":[],"astronimical_tides":[]}` em 30/08/2026 — o gráfico do próprio site fica em branco nesse estado. O coletor já está escrito para o formato certo e passa a encher sozinho quando a fonte voltar. Enquanto isso, a tela da foz aceita a tábua digitada.
 - [ ] **Levantar picos de Itajaí (foz).** Nenhum registro até agora — a tela da foz não estima altura nenhuma sem eles.
-- [ ] **Preencher a cota de cada régua de Itajaí** em `estacoes_tempo_real` de `estacoes.json`. As 14 estações já estão cadastradas com o título exato da fonte; falta o número da cota de atenção de cada uma. Enquanto `cotas_m` estiver vazio nas cidades com várias réguas, `extrair_picos.py` se recusa a analisar essas estações e o site não mostra nível ao vivo para Itajaí — o que é o certo, mas deixa a foz de fora. O validador lista exatamente quais faltam. **Agora isto também cala o aviso por Telegram em Itajaí**: sem cota por régua, `alerta_cotas.py` se recusa a avisar as onze estações da foz — hoje ele só cobre Rio do Sul, Brusque e Blumenau.
+- [ ] **Preencher a cota de cada régua de Itajaí** em `estacoes_tempo_real` de `estacoes.json`. As 14 estações já estão cadastradas com o título exato da fonte; falta o número da cota de atenção de cada uma. Enquanto `cotas_m` estiver vazio nas cidades com várias réguas, `extrair_picos.py` se recusa a analisar essas estações e o site não mostra nível ao vivo para Itajaí — o que é o certo, mas deixa a foz de fora. O validador lista exatamente quais faltam. **Agora isto também cala o aviso por Telegram em Itajaí**: sem cota por régua, `alerta_cotas.py` se recusa a avisar as onze estações da foz — rodando contra a coleta real, ele vigia **2 das 13 estações** que chegam no arquivo — Rio do Sul e Brusque. `alerta_cotas.py --seco` imprime esse panorama toda vez, com a cota de cada régua vigiada.
 - [ ] **Registrar o horário do pico** (campo `hora`, `HH:MM`) nos eventos. Só 2 dos 116 têm. É o que troca o hidrograma de projeto da JICA por medição de cheia real, em `calibrar_transito.py`.
 - [ ] Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10. Se forem o mesmo evento, vira mais um par.
 - [ ] Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama — hoje sem nenhum registro.
@@ -240,7 +240,9 @@ Em ordem de impacto.
 - [ ] Solicitar acesso à API da ANA (hidro@ana.gov.br) e conferir as rotas em `ana_hidroweb.py`, que ainda não foram validadas contra a API real.
 - [ ] Verificar os códigos ANA já cadastrados (`verificado: false` em Taió, Rio do Sul e Blumenau).
 - [ ] Localizar estações do Itajaí-Mirim e das cidades do Açu ainda sem `codigo_ana`.
-- [ ] Levantar cotas de atenção/alerta/inundação das demais cidades; hoje só Rio do Sul, Blumenau e Brusque têm.
+- [ ] **Levantar cota de atenção e de alerta de Brusque.** Hoje só a de inundação (6,00 m) está cadastrada, e o aviso por Telegram pula direto de "abaixo das cotas" para "inundação": não existe aviso adiantado nenhum no Itajaí-Mirim. O `--seco` marca a estação com ⚠ por causa disso.
+- [ ] Levantar cotas de atenção/alerta/inundação das demais cidades; hoje só Rio do Sul, Blumenau e Brusque têm — e Brusque só a de inundação.
+- [ ] Descobrir por que **Blumenau não aparece na coleta**. A cidade tem as três cotas cadastradas, mas a estação não vem no `ultimo.json` (o analisador já prevê o caso: "Blumenau às vezes vem vazio"). Enquanto não vier, a cidade com a série histórica mais longa do projeto fica sem aviso e sem nível ao vivo.
 
 ## Concluído
 

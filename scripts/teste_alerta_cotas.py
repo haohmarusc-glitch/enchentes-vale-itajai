@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 
 from alerta_cotas import (
     REPETE_H,
+    resolver,
     SUBIDA_M,
     decidir,
     faixa_de,
@@ -145,6 +146,52 @@ class TestDecidir(unittest.TestCase):
         dados["leituras"][0]["nivel_m"] = None
         avisos, _, _ = decidir(dados, {}, AGORA)
         self.assertEqual(avisos, [])
+
+
+class TestResolver(unittest.TestCase):
+    """O panorama e o aviso têm de concordar sobre quem está sendo vigiado."""
+
+    def test_diz_quem_vigia_e_quem_nao(self):
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+             "cidade": "rio-do-sul", "nivel_m": 3.6, "medido_em": "2026-08-30T00:00:00"},
+            {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu",
+             "cidade": "itajai", "nivel_m": 1.2, "medido_em": "2026-08-30T00:00:00"},
+            {"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+             "rio": "itajai-acu", "cidade": "itajai", "nivel_m": 1.5,
+             "medido_em": "2026-08-30T00:00:00"},
+        ]}
+        vigiadas, recusas = resolver(dados)
+        self.assertEqual([v["leitura"]["cidade"] for v in vigiadas], ["rio-do-sul"])
+        self.assertEqual(len(recusas), 2)
+
+    def test_o_panorama_nao_diverge_do_aviso(self):
+        """
+        Se o relatório dissesse que uma estação está vigiada enquanto o aviso a
+        ignora, a pessoa confiaria num alcance que não existe.
+        """
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+             "cidade": "rio-do-sul", "nivel_m": 6.6, "medido_em": "2026-08-30T00:00:00"},
+            {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu",
+             "cidade": "itajai", "nivel_m": 9.9, "medido_em": "2026-08-30T00:00:00"},
+            {"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+             "rio": "itajai-acu", "cidade": "itajai", "nivel_m": 9.9,
+             "medido_em": "2026-08-30T00:00:00"},
+        ]}
+        vigiadas, _ = resolver(dados)
+        avisos, _, _ = decidir(dados, {}, AGORA)
+        self.assertEqual(
+            {v["leitura"]["estacao"] for v in vigiadas},
+            {"Rio do Sul Estação MKS"})
+        self.assertTrue({a["estacao"] for a in avisos} <= {v["leitura"]["estacao"] for v in vigiadas})
+
+    def test_leitura_sem_numero_aparece_como_recusa_nao_some(self):
+        dados = payload(4.6)
+        dados["leituras"][0]["nivel_m"] = None
+        vigiadas, recusas = resolver(dados)
+        self.assertEqual(vigiadas, [])
+        self.assertIn("não trouxe número", recusas[0])
 
 
 class TestTexto(unittest.TestCase):

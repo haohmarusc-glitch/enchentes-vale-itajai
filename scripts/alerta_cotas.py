@@ -180,12 +180,13 @@ def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
     return "\n".join(linhas)
 
 
-def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dict, list[str]]:
+def resolver(dados: dict) -> tuple[list[dict], list[str]]:
     """
-    O que avisar agora. Função pura: recebe o relógio, não olha para ele.
+    Quem dá para vigiar e quem não dá, com o porquê.
 
-    Devolve (avisos, estado novo, recusas). Recusa é estação que ficou de fora
-    e por quê — para aparecer no --seco em vez de sumir em silêncio.
+    Um lugar só decide isso, usado tanto pelo `decidir` quanto pelo panorama
+    que o `--seco` imprime: se fossem dois caminhos, o relatório poderia dizer
+    que uma estação está vigiada enquanto o aviso a ignora em silêncio.
     """
     leituras = dados.get("leituras") or []
     reguas_na_cidade: dict[tuple, int] = {}
@@ -193,22 +194,43 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         chave = (l.get("rio"), l.get("cidade"))
         reguas_na_cidade[chave] = reguas_na_cidade.get(chave, 0) + 1
 
-    avisos: list[dict] = []
-    novo = dict(estado)
+    vigiadas: list[dict] = []
     recusas: list[str] = []
-
     for leitura in leituras:
         titulo = leitura.get("estacao") or ""
         nivel = leitura.get("nivel_m")
         if not isinstance(nivel, (int, float)):
+            recusas.append(f"{titulo}: a leitura não trouxe número de nível")
             continue
-
-        cotas, motivo = cotas_da_leitura(leitura, reguas_na_cidade[(leitura.get("rio"), leitura.get("cidade"))])
+        cotas, motivo = cotas_da_leitura(
+            leitura, reguas_na_cidade[(leitura.get("rio"), leitura.get("cidade"))]
+        )
         if motivo:
             recusas.append(f"{titulo}: {motivo}")
             continue
+        vigiadas.append({
+            "leitura": leitura,
+            "cotas": cotas,
+            "faixa": faixa_de(float(nivel), cotas),
+        })
+    return vigiadas, recusas
 
-        faixa = faixa_de(float(nivel), cotas)
+
+def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dict, list[str]]:
+    """
+    O que avisar agora. Função pura: recebe o relógio, não olha para ele.
+
+    Devolve (avisos, estado novo, recusas). Recusa é estação que ficou de fora
+    e por quê — para aparecer no --seco em vez de sumir em silêncio.
+    """
+    vigiadas, recusas = resolver(dados)
+    avisos: list[dict] = []
+    novo = dict(estado)
+
+    for item in vigiadas:
+        leitura, cotas, faixa = item["leitura"], item["cotas"], item["faixa"]
+        titulo = leitura.get("estacao") or ""
+        nivel = leitura["nivel_m"]
         antes = novo.get(titulo) or {}
         faixa_antes = antes.get("faixa", "normal")
         nivel_antes = antes.get("nivel_m")
@@ -285,13 +307,39 @@ def main() -> int:
         return 1
     dados = json.loads(caminho.read_text(encoding="utf-8"))
 
-    avisos, estado, recusas = decidir(dados, le_estado(), datetime.now(timezone.utc))
+    agora = datetime.now(timezone.utc)
+    avisos, estado, recusas = decidir(dados, le_estado(), agora)
 
+    # O panorama vem antes de tudo, e o que ESTÁ vigiado vem antes do que não
+    # está. Antes daqui a saída era só uma lista de recusas: quem lesse não
+    # tinha como saber que Rio do Sul, Brusque e Blumenau estavam cobertos —
+    # só que Itajaí não estava. Num aviso de cheia, saber o alcance do que se
+    # vigia é tão importante quanto o aviso.
+    vigiadas, _ = resolver(dados)
+    print(f"vigiando {len(vigiadas)} estação(ões); {len(recusas)} de fora.\n")
+    for item in sorted(vigiadas, key=lambda i: str(i["leitura"].get("cidade"))):
+        leitura, cotas, faixa = item["leitura"], item["cotas"], item["faixa"]
+        idade = idade_min(leitura.get("medido_em"), agora)
+        quando = f"há {int(idade)} min" if idade is not None else "sem horário"
+        limites = " · ".join(
+            f"{ROTULO[nome]} {cotas[nome]:.2f}".replace(".", ",")
+            for nome in FAIXAS[1:] if nome in cotas
+        )
+        nivel = f"{leitura['nivel_m']:.2f}".replace(".", ",")
+        print(f"  {leitura.get('cidade')}: {nivel} m ({quando}) "
+              f"— {ROTULO[faixa]} · {leitura.get('estacao')}")
+        print(f"      cotas desta régua: {limites}")
+        if "atencao" not in cotas:
+            # Sem cota de atenção o aviso pula de "normal" para uma faixa alta:
+            # não existe aviso adiantado nenhum nesta régua.
+            print("      ⚠ sem cota de atenção — esta régua não dá aviso adiantado")
+    if recusas:
+        print()
     for r in recusas:
-        print(f"sem cota, sem aviso — {r}")
+        print(f"  sem cota, sem aviso — {r}")
 
     if not avisos:
-        print("nenhuma mudança de faixa.")
+        print("\nnenhuma mudança de faixa.")
         if not args.seco:
             grava_estado(estado)
         return 0
