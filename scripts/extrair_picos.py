@@ -90,9 +90,17 @@ def arquivos_da_serie(mes: str | None) -> list[Path]:
     return achados
 
 
-def ler_serie(mes: str | None) -> dict[tuple[str, str], list[Leitura]]:
-    """Leituras agrupadas por (rio, cidade)."""
-    por_cidade: dict[tuple[str, str], list[Leitura]] = {}
+def ler_serie(mes: str | None) -> dict[str, dict]:
+    """
+    Leituras agrupadas por ESTAÇÃO — nunca por cidade.
+
+    Itajaí tem cinco réguas só no Itajaí-Mirim (DC-03 a DC-06 e DC-10), com
+    zeros diferentes: numa mesma hora elas leem 0,92 m, 1,14 m, 1,07 m, 0,97 m
+    e 4,82 m. Juntar isso num balde por cidade e chamar a maior de "pico" seria
+    comparar réguas — exatamente o que este projeto avisa em toda tela para
+    ninguém fazer.
+    """
+    por_estacao: dict[str, dict] = {}
     for arquivo in arquivos_da_serie(mes):
         abrir = gzip.open if arquivo.suffix == ".gz" else open
         with abrir(arquivo, "rt", encoding="utf-8") as f:
@@ -109,13 +117,31 @@ def ler_serie(mes: str | None) -> dict[tuple[str, str], list[Leitura]]:
                     continue
                 if not d.get("rio") or not d.get("cidade"):
                     continue  # estação não mapeada para uma cidade do projeto
-                chave = (d["rio"], d["cidade"])
-                por_cidade.setdefault(chave, []).append(
-                    Leitura(quando, nivel, d.get("estacao", "?"))
+                estacao = d.get("estacao") or "?"
+                grupo = por_estacao.setdefault(
+                    estacao, {"rio": d["rio"], "cidade": d["cidade"], "leituras": []}
                 )
-    for leituras in por_cidade.values():
-        leituras.sort(key=lambda l: l.quando)
-    return por_cidade
+                grupo["leituras"].append(Leitura(quando, nivel, estacao))
+    for grupo in por_estacao.values():
+        grupo["leituras"].sort(key=lambda l: l.quando)
+    return por_estacao
+
+
+def limiar_da_estacao(
+    estacao: str, rio: str, cidade: str, quantas_na_cidade: int
+) -> tuple[float | None, str | None]:
+    """
+    Cota a partir da qual vale considerar cheia NESTA régua.
+
+    As cotas de `estacoes.json` são por cidade. Onde a cidade tem uma régua só,
+    a cota é dela e pode ser usada. Onde há várias — Itajaí — não dá para saber
+    a qual delas a cota se refere, e aplicar a mesma a todas produziria evento
+    onde não há e esconderia onde há. Nesse caso o script recusa e pede
+    `--limiar`, em vez de escolher no escuro.
+    """
+    if quantas_na_cidade > 1:
+        return None, "varias-reguas"
+    return cota_de_referencia(rio, cidade)
 
 
 def separar_eventos(leituras: list[Leitura], limiar: float) -> list[Evento]:
@@ -148,8 +174,8 @@ def main() -> int:
     ap.add_argument("--escrever", action="store_true", help="grava as propostas em enchentes.json")
     args = ap.parse_args()
 
-    por_cidade = ler_serie(args.mes)
-    if not por_cidade:
+    por_estacao = ler_serie(args.mes)
+    if not por_estacao:
         print(
             f"Nenhuma leitura em {SERIE.relative_to(DADOS.parent)}. "
             "Rode scripts/coleta_niveis.py primeiro — a série é construída ao longo do tempo, "
@@ -160,22 +186,38 @@ def main() -> int:
     enchentes = le_json("enchentes.json")
     propostas: list[dict] = []
 
-    for (rio, cidade), leituras in sorted(por_cidade.items()):
+    # Quantas réguas cada cidade tem na série coletada.
+    reguas_por_cidade: dict[tuple[str, str], int] = {}
+    for grupo in por_estacao.values():
+        chave = (grupo["rio"], grupo["cidade"])
+        reguas_por_cidade[chave] = reguas_por_cidade.get(chave, 0) + 1
+
+    for estacao, grupo in sorted(por_estacao.items()):
+        rio, cidade, leituras = grupo["rio"], grupo["cidade"], grupo["leituras"]
         if args.cidade and cidade != args.cidade:
             continue
 
-        limiar, nome_cota = (args.limiar, "informada na linha de comando") if args.limiar else \
-            cota_de_referencia(rio, cidade)
-        if limiar is None:
-            print(
-                f"{cidade} ({rio}): sem cota de referência em estacoes.json. "
-                f"{len(leituras)} leituras guardadas; use --limiar para analisar mesmo assim."
+        if args.limiar:
+            limiar, nome_cota = args.limiar, "informada na linha de comando"
+        else:
+            limiar, nome_cota = limiar_da_estacao(
+                estacao, rio, cidade, reguas_por_cidade[(rio, cidade)]
             )
+
+        if limiar is None:
+            motivo = (
+                f"{cidade} tem {reguas_por_cidade[(rio, cidade)]} réguas na série e a cota "
+                "de estacoes.json é por cidade — não dá para saber a qual delas ela se refere"
+                if nome_cota == "varias-reguas"
+                else "sem cota de referência em estacoes.json"
+            )
+            print(f"\n{estacao} ({cidade}/{rio}): {motivo}.")
+            print(f"  {len(leituras)} leituras guardadas; use --limiar para analisar mesmo assim.")
             continue
 
         eventos = separar_eventos(leituras, limiar)
         print(
-            f"\n{cidade} ({rio}): {len(leituras)} leituras, "
+            f"\n{estacao} ({cidade}/{rio}): {len(leituras)} leituras, "
             f"cota de {nome_cota} = {limiar:.2f} m -> {len(eventos)} evento(s)"
         )
 
@@ -188,9 +230,9 @@ def main() -> int:
                 f" | acima da cota de {ev.inicio:%d/%m %H:%M} a {ev.fim:%d/%m %H:%M}"
                 f" | {len(ev.leituras)} leituras{marca}"
             )
-            for s in ev.suspeitos:
+            for s_ in ev.suspeitos:
                 print(
-                    f"     ATENÇÃO: salto grande até {s.nivel_m:.2f} m em {s.quando:%d/%m %H:%M}"
+                    f"     ATENÇÃO: salto grande até {s_.nivel_m:.2f} m em {s_.quando:%d/%m %H:%M}"
                     " — pode ser subida rápida real ou falha de sensor. Confira antes de aceitar."
                 )
             if marca:
@@ -202,7 +244,7 @@ def main() -> int:
                 "hora": hora,
                 "pico_m": round(ev.pico_m, 2),
                 "confianca": "alta",
-                "fonte": f"Defesa Civil de Itajaí, leitura automática ({', '.join(ev.estacoes)})",
+                "fonte": f"Defesa Civil de Itajaí, leitura automática ({estacao})",
             })
 
     if not propostas:
