@@ -1,0 +1,124 @@
+.diagrama {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  position: relative;
+}
+
+.cidade {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 0.85rem 0.85rem 0.85rem 2.4rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.cidade:hover {
+  border-color: var(--agua-clara);
+}
+
+.selecionada {
+  border-color: var(--agua-clara);
+  border-width: 2px;
+  background: var(--agua-fundo);
+}
+
+.marcador {
+  position: absolute;
+  left: 0.85rem;
+  top: 1.15rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--agua-clara);
+}
+
+.corpo {
+  display: block;
+}
+
+.nome {
+  display: block;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.regua {
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.detalhes {
+  display: block;
+}
+
+.cotas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  margin: 0.35rem 0;
+}
+
+.cota {
+  font-size: 0.92rem;
+}
+
+.linhaMeta,
+.observacao {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+  margin-top: 0.2rem;
+}
+
+.observacao {
+  font-style: italic;
+}
+
+.semDado {
+  color: #6a6a72;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.seta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0 0.5rem 1.22rem;
+}
+
+.setaLinha {
+  flex: 0 0 auto;
+  width: 2px;
+  height: 2.1rem;
+  background: var(--agua-clara);
+  position: relative;
+}
+
+.setaLinha::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  bottom: -1px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--agua-clara);
+}
+
+.setaTexto {
+  font-size: 0.9rem;
+  color: var(--tinta-fraca);
+}
+
+.somaTrechos {
+  font-size: 0.85rem;
+}

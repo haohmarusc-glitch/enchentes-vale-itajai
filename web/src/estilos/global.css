@@ -1,0 +1,120 @@
+/*
+ * Mobile-first. A maioria vai abrir isto no celular, à noite, debaixo de chuva,
+ * possivelmente nervosa: fonte grande, contraste alto, nada de cinza claro.
+ */
+:root {
+  --agua: #0b3a5b;
+  --agua-clara: #1c6ea4;
+  --agua-fundo: #eaf3f8;
+  --papel: #ffffff;
+  --fundo: #f4f6f8;
+  --tinta: #14202b;
+  --tinta-fraca: #485a6b;
+  --borda: #cfd8e0;
+  --alerta: #b3261e;
+  --alerta-fundo: #fdecea;
+  --atencao: #8a5300;
+  --atencao-fundo: #fdf3e2;
+  --ok: #1b5e20;
+  --raio: 10px;
+  --largura: 56rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--tinta);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin: 0 0 0.5rem;
+}
+
+h1 {
+  font-size: 1.6rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+}
+
+h3 {
+  font-size: 1.05rem;
+}
+
+p {
+  margin: 0 0 0.75rem;
+}
+
+a {
+  color: var(--agua-clara);
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--agua-clara);
+  outline-offset: 2px;
+}
+
+button,
+select,
+input {
+  font: inherit;
+  min-height: 44px; /* alvo de toque */
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+.conteudo {
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.cartao {
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.discreto {
+  color: var(--tinta-fraca);
+  font-size: 0.9rem;
+}
+
+.rolagem-h {
+  overflow-x: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

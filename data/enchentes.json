@@ -4,6 +4,7 @@
     "campos": {
       "pico_m": "Nível máximo na régua local, em metros.",
       "data": "AAAA-MM-DD do pico quando conhecido; só o ano quando não.",
+      "hora": "HH:MM do pico, quando o boletim da fonte registra. Sem ele não dá para calibrar tempo de trânsito.",
       "confianca": "alta = fonte oficial/acadêmica; media = imprensa; baixa = compilação informal ou dado disputado."
     },
     "pendencias": [
@@ -30,8 +31,8 @@
     { "rio": "itajai-mirim", "cidade": "brusque", "data": "2008-11", "pico_m": 8.75, "confianca": "baixa", "fonte": "Compilação informal" },
     { "rio": "itajai-mirim", "cidade": "brusque", "data": "2011-09", "pico_m": 10.03, "confianca": "baixa", "fonte": "Compilação informal" },
     { "rio": "itajai-mirim", "cidade": "brusque", "data": "2013", "pico_m": 7.61, "confianca": "baixa", "fonte": "Compilação informal" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2020-12-15", "pico_m": 4.95, "confianca": "alta", "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)" },
-    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2022-06-23", "pico_m": 5.46, "confianca": "alta", "fonte": "Prefeitura de Brusque (pico 0h45)" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2020-12-15", "hora": "20:45", "pico_m": 4.95, "confianca": "alta", "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)" },
+    { "rio": "itajai-mirim", "cidade": "brusque", "data": "2022-06-23", "hora": "00:45", "pico_m": 5.46, "confianca": "alta", "fonte": "Prefeitura de Brusque (pico 0h45)" },
     { "rio": "itajai-mirim", "cidade": "brusque", "data": "2023-10-13", "pico_m": 6.91, "confianca": "media", "fonte": "Imprensa/compilação" },
     { "rio": "itajai-mirim", "cidade": "brusque", "data": "2023-11-17", "pico_m": 8.96, "confianca": "media", "fonte": "Imprensa/compilação" }
   ]

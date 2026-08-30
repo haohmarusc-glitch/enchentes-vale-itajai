@@ -1,0 +1,48 @@
+.cabecalho {
+  background: var(--agua);
+  color: #fff;
+}
+
+.faixa {
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 0.75rem 1rem 0;
+}
+
+.marca {
+  display: inline-block;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+
+.abas {
+  display: flex;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+}
+
+.aba {
+  display: block;
+  padding: 0.6rem 0.85rem;
+  color: #dceaf4;
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: var(--raio) var(--raio) 0 0;
+  min-height: 44px;
+}
+
+.aba:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.abaAtiva {
+  background: var(--fundo);
+  color: var(--agua);
+  font-weight: 700;
+}

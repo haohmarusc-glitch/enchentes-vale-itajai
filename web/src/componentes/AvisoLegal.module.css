@@ -1,0 +1,27 @@
+.aviso {
+  background: var(--atencao-fundo);
+  border: 1px solid #e0c48a;
+  border-left: 6px solid var(--atencao);
+  border-radius: var(--raio);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.titulo {
+  font-size: 1rem;
+  color: var(--atencao);
+  margin-bottom: 0.5rem;
+}
+
+.lista {
+  margin: 0;
+  padding-left: 1.15rem;
+}
+
+.lista li {
+  margin-bottom: 0.5rem;
+}
+
+.lista li:last-child {
+  margin-bottom: 0;
+}

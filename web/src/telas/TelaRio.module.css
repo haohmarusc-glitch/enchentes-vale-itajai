@@ -1,0 +1,17 @@
+.foz {
+  color: var(--tinta-fraca);
+  margin-top: -0.25rem;
+}
+
+.instrucao {
+  font-size: 0.92rem;
+  color: var(--tinta-fraca);
+}
+
+.cobertura {
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+  border-top: 1px solid var(--borda);
+  padding-top: 0.75rem;
+  margin: 0.75rem 0 0;
+}
