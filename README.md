@@ -282,6 +282,7 @@ com internet ruim. Uma mensagem de texto passa onde uma página não passa.
 
 | Comando | O que devolve |
 |---|---|
+| `/rua <cidade> <rua>` | a partir de quantos metros aquela rua alaga, e quanto falta o rio subir |
 | `/nivel <cidade>` | nível agora, estação e idade da leitura |
 | `/chuva <cidade>` | acumulado de 1 h, 12 h, 24 h e 48 h |
 | `/previsao <cidade>` | se o pico fosse agora, quando chega em cada cidade a jusante |
@@ -389,6 +390,7 @@ durante a chuva para ver o nível do rio não paga por ele.
 
 Em ordem de impacto.
 
+- [ ] **Cotas de rua de Itajaí.** A cidade com mais gente exposta é a única entre as grandes sem nenhuma cota: nem por régua (as onze DC estão com `cotas_m` vazio), nem por rua. O `docs/cotas-de-ruas.md` registra que a prefeitura publica "cotas por endereço" no portal do GeoItajaí, mas o serviço aberto não foi localizado — é tarefa de investigação, e é a que mais muda o alcance do projeto.
 - [ ] **Mapa base do OpenStreetMap durante uma cheia.** O mapa das manchas usa os servidores públicos de tiles do OSM, cuja política desencoraja uso pesado. Numa noite de enchente o acesso ao site multiplica; vale medir e, se preciso, passar para um provedor de tiles ou servir os próprios.
 - [ ] **Resolver a referência altimétrica de Blumenau** — teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou resposta da FURB. Enquanto não sair, a regra bloqueante do `CLAUDE.md` vale: o site rotula cada ponto e recusa parear referências diferentes, ao custo de a previsão Rio do Sul → Blumenau ficar em "dados insuficientes".
 - [ ] _(opcional)_ Seletor régua/IBGE nos gráficos de Blumenau, aplicando ±0,20 m só para visualizar. Só vale a pena se a verificação acima demorar — o gráfico já mostra a referência de cada ponto e avisa quando mistura.

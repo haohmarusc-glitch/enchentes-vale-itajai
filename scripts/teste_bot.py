@@ -48,8 +48,9 @@ ULTIMO = {
 
 
 def base() -> Base:
+    # Com as cotas de rua REAIS: é contra elas que /rua responde em produção.
     return Base(ULTIMO, le_json("estacoes.json"), le_json("transito.json"),
-                le_json("enchentes.json"))
+                le_json("enchentes.json"), le_json("cotas-ruas.json"))
 
 
 def resp(texto: str) -> str:
@@ -161,6 +162,102 @@ class TestPrevisao(unittest.TestCase):
         ]
         t = responder("/previsao Brusque", b, AGORA)
         self.assertNotIn("não estão em ordem", t)
+
+
+class TestRua(unittest.TestCase):
+    """
+    /rua — a pergunta que a pessoa realmente faz.
+
+    Tudo o mais que o bot responde está em metros de régua, que é a linguagem de
+    quem opera o rio. Aqui é leitura de tabela: nenhuma previsão no meio.
+    """
+
+    def test_acha_rua_com_cidade(self):
+        t = resp("/rua Blumenau São Rafael")
+        self.assertIn("7,40 m", t)
+        self.assertIn("7,75 m", t)
+        self.assertLess(t.index("7,40"), t.index("7,75"), "a cota mais baixa vem primeiro")
+
+    def test_o_ponto_faz_parte_do_nome(self):
+        """
+        A São Rafael alaga a 7,40 m no final e a 7,75 m perto do nº 169.
+        Sem o ponto, as duas linhas pareceriam a mesma rua duplicada.
+        """
+        t = resp("/rua Blumenau São Rafael")
+        self.assertIn("final da rua", t)
+        self.assertIn("169", t)
+
+    def test_sem_acento_e_sem_maiuscula(self):
+        self.assertIn("7,40 m", resp("/rua blumenau sao rafael"))
+        self.assertIn("7,40 m", resp("/rua BLUMENAU SAO RAFAEL"))
+
+    def test_nome_de_cidade_dentro_de_nome_de_rua(self):
+        """
+        "Rua Rio do Sul", em Gaspar, é rua — e "Rio do Sul" é cidade. Casar o
+        prefixo mais curto mandaria a busca para a cidade errada.
+        """
+        t = resp("/rua Gaspar Rio do Sul")
+        self.assertIn("Gaspar", t)
+        self.assertNotIn("Nenhuma rua", t)
+
+    def test_sem_cidade_busca_em_todas_e_avisa(self):
+        t = resp("/rua Beira")
+        self.assertIn("Brusque", t)
+        self.assertIn("4,80 m", t)
+
+    def test_rua_sem_cota_aparece_com_a_nota_e_sem_numero(self):
+        """Nulo não é zero: a rua aparece, mas sem número e com o porquê."""
+        t = resp("/rua Gaspar Alfazema")
+        self.assertIn("Alfazema", t)
+        self.assertNotIn("0,00 m", t)
+        self.assertIn("não publica a cota exata", t)
+
+    def test_rua_desconhecida_nao_diz_que_nao_alaga(self):
+        """A diferença entre as duas frases é alguém sair de casa ou não."""
+        t = resp("/rua Blumenau Avenida Brasil")
+        self.assertIn("não quer dizer que a sua rua não alaga", t)
+
+    def test_compara_com_o_nivel_de_agora_quando_a_cidade_tem_uma_regua(self):
+        t = resp("/rua Brusque Beira-Rio")
+        self.assertIn("faltam", t)
+        self.assertIn("1,94 m", t)
+
+    def test_nao_compara_com_o_nivel_onde_a_cidade_tem_varias_reguas(self):
+        """
+        Itajaí tem onze réguas com zeros diferentes. "Faltam 2,30 m" sairia
+        medido contra a régua errada.
+        """
+        b = base()
+        b.cotas_ruas = [{"cidade": "itajai", "rio": "itajai-acu", "rua": "Rua Teste",
+                         "bairro": None, "ponto": None, "cota_m": 3.0,
+                         "fonte": "F", "data_fonte": "2026", "confianca": "media"}]
+        t = responder("/rua Itajaí Teste", b, AGORA)
+        self.assertIn("3,00 m", t)
+        self.assertNotIn("faltam", t)
+
+    def test_sem_argumento_lista_as_cidades(self):
+        t = resp("/rua")
+        self.assertIn("Blumenau", t)
+        self.assertIn("/rua Blumenau", t)
+
+    def test_traz_as_ressalvas_obrigatorias(self):
+        t = resp("/rua Blumenau São Rafael")
+        self.assertIn("não previsão", t.replace("não é previsão", "não previsão"))
+        self.assertIn("199", t)
+
+
+class TestLimiteDoTelegram(unittest.TestCase):
+    def test_mensagem_longa_e_cortada_com_marca(self):
+        """
+        Acima de 4096 caracteres o Telegram recusa, e recusa é silêncio — o pior
+        resultado possível num aviso de cheia.
+        """
+        import notificador
+        curta = "a" * 100
+        self.assertEqual(notificador.encurtar(curta), curta)
+        longa = notificador.encurtar("b" * 9000)
+        self.assertLessEqual(len(longa), notificador.LIMITE_CARACTERES)
+        self.assertIn("cortada", longa)
 
 
 class TestCotas(unittest.TestCase):
