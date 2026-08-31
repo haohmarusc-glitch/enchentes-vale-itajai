@@ -59,6 +59,9 @@ export default function DiagramaRio({
         const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
         // Chuva vem por cidade, não por rio: o pluviômetro mede o que caiu
         // naquele ponto, e não pertence a uma calha em particular.
+        // Quando a coleta da chuva falhou, `chuva` vem null para TODA cidade.
+        // Sem dizer isso, a tela fica igual a "não há pluviômetro aqui" — e,
+        // durante uma chuva, isso lê-se como "não está chovendo".
         const chuva = chuvaDaCidade(tempoReal.chuva, cidade.id)
         const selecionada = cidadeSelecionada === cidade.id
         const cotas = Object.entries(cidade.cotas_m)
@@ -91,7 +94,11 @@ export default function DiagramaRio({
 
                   {chuva ? (
                     <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} />
-                  ) : null}
+                  ) : tempoReal.chuvaOk ? null : (
+                    <span className={estilos.chuvaFalhou}>
+                      🌧 chuva: não foi possível coletar agora
+                    </span>
+                  )}
 
                   {cotas.length > 0 ? (
                     <span className={estilos.cotas}>

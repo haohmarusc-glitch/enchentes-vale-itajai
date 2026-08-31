@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import indice from '@dados/manchas/index.json'
-import { corDaLamina, legenda, ordenar, rotuloEvento } from '../logica/manchas'
+import { coresPorRotulo, legenda, ordenar, rotuloEvento } from '../logica/manchas'
 import type { Mancha } from '../logica/manchas'
 import { metros } from '../logica/formato'
 import estilos from './MapaManchas.module.css'
@@ -61,6 +61,14 @@ export default function MapaManchas() {
       return
     }
 
+    // Tirar a camada ANTES de buscar a nova, não depois que ela chega.
+    // Do jeito anterior, entre escolher out/2015 e o arquivo chegar, o mapa
+    // continuava com a água de set/2011 enquanto a legenda logo abaixo já era
+    // a de 2015 — mancha de um ano com a legenda de outro. Mapa vazio por um
+    // instante é melhor do que mapa errado com cara de certo.
+    camadaRef.current?.remove()
+    camadaRef.current = null
+
     let vivo = true
     setCarregando(true)
     setErro(null)
@@ -68,15 +76,14 @@ export default function MapaManchas() {
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((geo) => {
         if (!vivo) return
-        camadaRef.current?.remove()
+        const cores = coresPorRotulo(escolhida.classes_lamina)
         const camada = L.geoJSON(geo as GeoJSON.GeoJsonObject, {
           style: (f) => {
             const situa = (f?.properties as { situa?: string } | undefined)?.situa
-            const classe = escolhida.classes_lamina.find((c) => c.rotulo === situa)
             return {
               color: '#1f5f96',
               weight: 0.6,
-              fillColor: classe ? corDaLamina(classe) : '#6aa8db',
+              fillColor: (situa ? cores.get(situa) : undefined) ?? '#6aa8db',
               fillOpacity: 0.55,
             }
           },
@@ -100,6 +107,12 @@ export default function MapaManchas() {
       vivo = false
     }
   }, [escolhida])
+
+  // A mesma conta que pinta o mapa, para a legenda não divergir dele.
+  const coresDaEscolhida = useMemo(
+    () => coresPorRotulo(escolhida?.classes_lamina ?? []),
+    [escolhida],
+  )
 
   if (manchas.length === 0) return null
 
@@ -145,7 +158,10 @@ export default function MapaManchas() {
           <ul className={estilos.legenda}>
             {legenda(escolhida).map((c) => (
               <li key={c.rotulo}>
-                <span className={estilos.amostra} style={{ background: corDaLamina(c) }} />
+                <span
+                  className={estilos.amostra}
+                  style={{ background: coresDaEscolhida.get(c.rotulo) ?? '#6aa8db' }}
+                />
                 {c.rotulo} m
               </li>
             ))}

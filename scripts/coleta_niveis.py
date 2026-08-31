@@ -66,7 +66,7 @@ def baixar_niveis() -> list[dict]:
     return parse(baixar(URL))
 
 
-def baixar_chuva() -> list[dict]:
+def baixar_chuva() -> tuple[list[dict], bool]:
     """
     Chuva acumulada, da segunda página da mesma fonte.
 
@@ -80,11 +80,26 @@ def baixar_chuva() -> list[dict]:
         from comum import baixar
 
         espera_turno()
-        return parse_chuva(baixar(URL_CHUVA))
+        return parse_chuva(baixar(URL_CHUVA)), True
     except Exception as e:
         print(f"aviso: chuva não coletada ({e}) — o nível segue normalmente.",
               file=sys.stderr)
-        return []
+        # A lista vazia vai junto com a marca de que ela é FALHA, não ausência.
+        # Sem isso, `chuva: []` significa as duas coisas ao mesmo tempo, e a
+        # tela mostra "sem pluviômetro" em toda cidade quando a fonte caiu — o
+        # que, no meio de uma chuva, lê-se como "não está chovendo".
+        return [], False
+
+
+def estacoes_do_ultimo() -> set[str]:
+    """Os títulos que vieram na coleta anterior, do ultimo.json que vamos trocar."""
+    try:
+        with open(ULTIMO, encoding="utf-8") as f:
+            return {l["estacao"] for l in json.load(f).get("leituras", []) if l.get("estacao")}
+    except (OSError, ValueError, KeyError, TypeError):
+        # Primeira rodada, arquivo ilegível: sem base de comparação, e isso não
+        # é motivo para atrapalhar a coleta de agora.
+        return set()
 
 
 def chaves_existentes(arquivo: Path) -> set[tuple[str, str]]:
@@ -196,9 +211,27 @@ def main() -> int:
     if args.no_save:
         return 0
 
+    # Página que volta pela metade não é erro visível: `if not leituras` só pega
+    # o caso de ZERO estação. Caindo de catorze para duas, a coleta segue,
+    # publica, e as doze somem da tela como se não existissem. O vigia detecta,
+    # mas roda de hora em hora enquanto a coleta roda a cada quinze minutos —
+    # três de cada quatro coletas nunca são olhadas.
+    #
+    # O aviso NÃO muda o código de saída, de propósito: o cron encadeia
+    # `coleta_niveis.py && publicar_tempo_real.sh`, e sair com erro impediria a
+    # publicação. O site congelaria no dado anterior em vez de receber as
+    # leituras que chegaram — pior do que publicar parte com a idade à vista.
+    sumidas = sorted(estacoes_do_ultimo() - {l["estacao"] for l in leituras})
+    if sumidas:
+        print(
+            f"AVISO: {len(sumidas)} estação(ões) que vieram na coleta anterior não vieram "
+            f"agora: {', '.join(sumidas)}. A página pode ter voltado incompleta.",
+            file=sys.stderr,
+        )
+
     novas, repetidas = acumular(leituras)
 
-    chuva = baixar_chuva()
+    chuva, chuva_ok = baixar_chuva()
 
     SERIE.mkdir(parents=True, exist_ok=True)
     ULTIMO.write_text(
@@ -209,6 +242,15 @@ def main() -> int:
                 "leituras": leituras,
                 "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
                 "chuva": chuva,
+                # Falso só quando a coleta da chuva FALHOU. Lista vazia com
+                # chuva_ok verdadeiro é "a fonte não publica pluviômetro"; com
+                # falso é "não conseguimos buscar". Sem esta marca a tela conta
+                # a mesma história nos dois casos, e num deles ela é falsa.
+                "chuva_ok": chuva_ok,
+                # Quem veio na coleta anterior e não veio agora. Vai no arquivo
+                # publicado para o vigia enxergar a rodada exata em que sumiu,
+                # e não só a que ele por acaso amostrou.
+                "estacoes_ausentes": sumidas,
             },
             ensure_ascii=False,
             indent=2,

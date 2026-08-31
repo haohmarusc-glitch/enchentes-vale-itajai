@@ -10,7 +10,15 @@ numa noite de chuva não avisa ninguém.
     python3 scripts/teste_coleta_niveis.py
 """
 
+import json
+import sys
+import tempfile
+import types
 import unittest
+from pathlib import Path
+from unittest import mock
+
+import coleta_niveis
 
 from coleta_itajai import parse
 
@@ -178,6 +186,89 @@ class TesteFaixaPlausivel(unittest.TestCase):
         leituras = self.uma("5,21 m")
         self.assertEqual(len(leituras), 1)
         self.assertEqual(leituras[0]["nivel_m"], 5.21)
+
+
+class TestChuvaFalhaVersusAusencia(unittest.TestCase):
+    """
+    `chuva: []` significava duas coisas ao mesmo tempo: "a fonte não publica
+    pluviômetro" e "não conseguimos buscar". A tela mostrava as duas igual — e,
+    no meio de uma chuva, a segunda aparecendo como a primeira lê-se como "não
+    está chovendo". A marca `chuva_ok` separa os dois casos.
+    """
+
+    def test_falha_na_coleta_devolve_lista_vazia_e_marca_falso(self):
+        with mock.patch.dict(sys.modules, {"coleta_chuva": None}):
+            chuva, ok = coleta_niveis.baixar_chuva()
+        self.assertEqual(chuva, [])
+        self.assertFalse(ok, "falha tem de vir marcada, não apenas vazia")
+
+    def test_coleta_boa_devolve_marca_verdadeira(self):
+        falso = types.ModuleType("coleta_chuva")
+        falso.URL = "http://exemplo"
+        falso.parse = lambda _html: [{"estacao": "P-1", "cidade": "itajai"}]
+        with mock.patch.dict(sys.modules, {"coleta_chuva": falso}), \
+             mock.patch.object(coleta_niveis, "espera_turno", lambda: None), \
+             mock.patch("comum.baixar", lambda *a, **k: "<html></html>"):
+            chuva, ok = coleta_niveis.baixar_chuva()
+        self.assertEqual(len(chuva), 1)
+        self.assertTrue(ok)
+
+    def test_fonte_sem_pluviometro_nenhum_nao_e_falha(self):
+        """Lista vazia com a marca verdadeira é 'não há aparelho', e é legítimo."""
+        falso = types.ModuleType("coleta_chuva")
+        falso.URL = "http://exemplo"
+        falso.parse = lambda _html: []
+        with mock.patch.dict(sys.modules, {"coleta_chuva": falso}), \
+             mock.patch.object(coleta_niveis, "espera_turno", lambda: None), \
+             mock.patch("comum.baixar", lambda *a, **k: "<html></html>"):
+            chuva, ok = coleta_niveis.baixar_chuva()
+        self.assertEqual(chuva, [])
+        self.assertTrue(ok, "fonte vazia é resposta, não falha")
+
+
+class TestPaginaParcial(unittest.TestCase):
+    """
+    `if not leituras` só pega o caso de ZERO estação. Caindo de catorze para
+    duas, a coleta seguia, publicava, e as doze sumiam da tela como se não
+    existissem. O vigia detecta, mas roda de hora em hora enquanto a coleta roda
+    a cada quinze minutos: três de cada quatro coletas nunca são olhadas.
+    """
+
+    def escrever_ultimo(self, titulos):
+        coleta_niveis.ULTIMO.parent.mkdir(parents=True, exist_ok=True)
+        coleta_niveis.ULTIMO.write_text(json.dumps(
+            {"leituras": [{"estacao": t, "nivel_m": 1.0} for t in titulos]}), encoding="utf-8")
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        alvo = Path(self.tmp.name) / "ultimo.json"
+        patch = mock.patch.object(coleta_niveis, "ULTIMO", alvo)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def test_estacao_que_sumiu_e_nomeada(self):
+        self.escrever_ultimo(["DC-01", "DC-02", "DC-10"])
+        agora = coleta_niveis.estacoes_do_ultimo()
+        sumidas = sorted(agora - {"DC-01"})
+        self.assertEqual(sumidas, ["DC-02", "DC-10"])
+
+    def test_primeira_rodada_nao_acusa_nada(self):
+        """Sem arquivo anterior não há base de comparação, e isso não é problema."""
+        self.assertEqual(coleta_niveis.estacoes_do_ultimo(), set())
+
+    def test_arquivo_ilegivel_nao_derruba_a_coleta(self):
+        coleta_niveis.ULTIMO.write_text("{ isto não é json", encoding="utf-8")
+        self.assertEqual(coleta_niveis.estacoes_do_ultimo(), set())
+
+    def test_arquivo_sem_leituras_nao_derruba(self):
+        coleta_niveis.ULTIMO.write_text(json.dumps({"coletado_em": "x"}), encoding="utf-8")
+        self.assertEqual(coleta_niveis.estacoes_do_ultimo(), set())
+
+    def test_estacao_nova_nao_conta_como_sumida(self):
+        self.escrever_ultimo(["DC-01"])
+        sumidas = sorted(coleta_niveis.estacoes_do_ultimo() - {"DC-01", "DC-99"})
+        self.assertEqual(sumidas, [], "estação a mais é ganho, não perda")
 
 
 if __name__ == "__main__":

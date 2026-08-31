@@ -88,3 +88,32 @@ test('rede fora não vira nível inventado', async () => {
   assert.equal(estado.situacao, 'indisponivel')
   assert.deepEqual(estado.leituras, [])
 })
+
+test('chuva vazia por FALHA não se confunde com ausência de pluviômetro', async () => {
+  // `chuva: []` significava as duas coisas: "a fonte não publica pluviômetro
+  // nesta cidade" e "não conseguimos buscar". No meio de uma chuva, a segunda
+  // aparecendo como a primeira lê-se na tela como "não está chovendo".
+  const falhou = await buscarComLimite(500, respondeCom({ ...CORPO, chuva_ok: false }))
+  assert.equal(falhou.situacao, 'ok')
+  assert.equal(falhou.chuvaOk, false)
+})
+
+test('arquivo antigo, sem a marca, não vira "falhou"', async () => {
+  // Compatibilidade: os ultimo.json já publicados não têm chuva_ok, e neles a
+  // lista vazia sempre quis dizer "sem pluviômetro".
+  const antigo = await buscarComLimite(500, respondeCom(CORPO))
+  assert.equal(antigo.chuvaOk, true)
+})
+
+test('chuva_ok verdadeiro é respeitado como veio', async () => {
+  const ok = await buscarComLimite(500, respondeCom({ ...CORPO, chuva_ok: true }))
+  assert.equal(ok.chuvaOk, true)
+})
+
+test('sem resposta nenhuma não se afirma que a chuva falhou', async () => {
+  // Não saber nada sobre a chuva é diferente de saber que ela falhou.
+  const fora = await buscarComLimite(500, () =>
+    Promise.resolve({ ok: false, json: async () => ({}) } as Response))
+  assert.equal(fora.situacao, 'indisponivel')
+  assert.equal(fora.chuvaOk, true)
+})

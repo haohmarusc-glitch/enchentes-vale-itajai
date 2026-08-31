@@ -44,8 +44,16 @@ export interface ResumoChuva {
   pluviometros: number
   /** Quantos ficaram de fora por publicarem série que não fecha. */
   descartados: number
-  /** A medição mais recente entre os que entraram. */
+  /**
+   * A medição MAIS ANTIGA entre as que entraram — a idade que a tela mostra.
+   *
+   * É de propósito que não seja a mais recente: os valores exibidos são o maior
+   * de cada janela, e o maior pode vir do pluviômetro mais parado. Só o mais
+   * antigo é uma afirmação verdadeira sobre o conjunto inteiro.
+   */
   medidoEm: Date | null
+  /** A mais recente, para dizer as duas quando estão longe uma da outra. */
+  maisNovoEm?: Date | null
 }
 
 export function resumir(leituras: ChuvaAoVivo[]): ResumoChuva | null {
@@ -55,7 +63,7 @@ export function resumir(leituras: ChuvaAoVivo[]): ResumoChuva | null {
     // Havia leitura, mas nenhuma confiável: isso precisa aparecer na tela como
     // problema da fonte, não como ausência de chuva.
     return descartados > 0
-      ? { porJanela: {}, pluviometros: 0, descartados, medidoEm: null }
+      ? { porJanela: {}, pluviometros: 0, descartados, medidoEm: null, maisNovoEm: null }
       : null
   }
 
@@ -77,7 +85,14 @@ export function resumir(leituras: ChuvaAoVivo[]): ResumoChuva | null {
     porJanela,
     pluviometros: boas.length,
     descartados,
-    medidoEm: instantes.length > 0 ? new Date(Math.max(...instantes)) : null,
+    // O INSTANTE MAIS ANTIGO, não o mais recente. Os números exibidos são o
+    // maior de cada janela entre os pluviômetros, e o maior pode vir de um
+    // aparelho parado há horas. Com o instante mais novo, a tela dizia "80 mm
+    // em 24 h, há 5 min" sobre uma leitura de três horas atrás — e quem lê
+    // conclui que está chovendo forte agora. A idade tem de ser um limite:
+    // nenhuma leitura deste resumo é mais velha do que isto.
+    medidoEm: instantes.length > 0 ? new Date(Math.min(...instantes)) : null,
+    maisNovoEm: instantes.length > 0 ? new Date(Math.max(...instantes)) : null,
   }
 }
 

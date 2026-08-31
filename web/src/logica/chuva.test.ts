@@ -81,10 +81,45 @@ test('diferença de aparelho não vira faixa na tela', () => {
   assert.equal(textoFaixa({ maior: 39.6, menor: 39.0 }), '39,0–39,6 mm')
 })
 
-test('o horário do resumo é o da medição mais recente', () => {
+test('o horário do resumo é o da medição mais ANTIGA', () => {
+  // Este teste afirmava o contrário e, com isso, travava o defeito no lugar:
+  // ele exigia a medição mais recente. Como o valor exibido é o MAIOR entre os
+  // pluviômetros, e o maior pode vir do aparelho mais parado, a idade só é
+  // verdadeira sobre o conjunto se for a do mais velho.
   const r = resumir([
     leitura({ medidoEm: new Date('2026-08-30T21:10:00Z') }),
     leitura({ estacao: 'Brusque', medidoEm: new Date('2026-08-30T21:15:00Z') }),
   ])!
-  assert.equal(r.medidoEm?.toISOString(), '2026-08-30T21:15:00.000Z')
+  assert.equal(r.medidoEm?.toISOString(), '2026-08-30T21:10:00.000Z')
+  assert.equal(r.maisNovoEm?.toISOString(), '2026-08-30T21:15:00.000Z')
+})
+
+test('a idade do resumo é a do pluviômetro mais VELHO', () => {
+  // Os valores mostrados são o maior de cada janela, e o maior pode vir do
+  // aparelho parado. Com a idade do mais novo, a tela dizia "80 mm em 24 h,
+  // há 5 min" sobre uma leitura de três horas atrás.
+  const resumo = resumir([
+    leitura({ estacao: 'VELHO', medidoEm: new Date('2026-08-30T15:30:00Z'), mm: { h24: 80 } }),
+    leitura({ estacao: 'NOVO', medidoEm: new Date('2026-08-30T18:25:00Z'), mm: { h24: 2 } }),
+  ])
+  assert.equal(resumo?.medidoEm?.toISOString(), '2026-08-30T15:30:00.000Z')
+  assert.equal(resumo?.maisNovoEm?.toISOString(), '2026-08-30T18:25:00.000Z')
+})
+
+test('o maior valor exibido nunca é mais novo do que a idade declarada', () => {
+  // A invariante que importa: a idade é um limite superior para o conjunto.
+  const resumo = resumir([
+    leitura({ estacao: 'A', medidoEm: new Date('2026-08-30T10:00:00Z'), mm: { h24: 90 } }),
+    leitura({ estacao: 'B', medidoEm: new Date('2026-08-30T18:00:00Z'), mm: { h24: 1 } }),
+    leitura({ estacao: 'C', medidoEm: new Date('2026-08-30T17:00:00Z'), mm: { h24: 5 } }),
+  ])
+  assert.equal(resumo?.porJanela.h24?.maior, 90)
+  assert.equal(resumo?.medidoEm?.toISOString(), '2026-08-30T10:00:00.000Z')
+})
+
+test('um pluviômetro só tem as duas idades iguais', () => {
+  const resumo = resumir([
+    leitura({ estacao: 'UNICO', medidoEm: new Date('2026-08-30T18:00:00Z'), mm: { h24: 7 } }),
+  ])
+  assert.equal(resumo?.medidoEm?.getTime(), resumo?.maisNovoEm?.getTime())
 })

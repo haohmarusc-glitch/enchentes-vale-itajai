@@ -66,6 +66,15 @@ export interface EstadoTempoReal {
   situacao: 'carregando' | 'ok' | 'indisponivel'
   leituras: LeituraAoVivo[]
   chuva: ChuvaAoVivo[]
+  /**
+   * Falso só quando a COLETA da chuva falhou.
+   *
+   * Lista vazia com isto verdadeiro é "a fonte não publica pluviômetro nesta
+   * cidade"; com falso é "não conseguimos buscar". As duas coisas apareciam
+   * iguais na tela — e, no meio de uma chuva, "sem pluviômetro" lê-se como
+   * "não está chovendo".
+   */
+  chuvaOk: boolean
   /** Quando a coleta rodou (não é quando o rio foi medido). */
   coletadoEm: Date | null
   fonte: string | null
@@ -151,6 +160,7 @@ export async function buscarTempoReal(
     situacao: 'indisponivel',
     leituras: [],
     chuva: [],
+    chuvaOk: true,
     coletadoEm: null,
     fonte: null,
   }
@@ -178,6 +188,10 @@ export async function buscarTempoReal(
       situacao: 'ok',
       leituras,
       chuva,
+      // Ausente = arquivo antigo, de antes da marca existir. Nesses, lista
+      // vazia sempre significou "sem pluviômetro", então o padrão é verdadeiro:
+      // só o `false` explícito diz que a coleta falhou.
+      chuvaOk: dados.chuva_ok !== false,
       coletadoEm: coletado && !Number.isNaN(coletado.getTime()) ? coletado : null,
       fonte: typeof dados.fonte === 'string' ? dados.fonte : null,
     }
@@ -219,6 +233,7 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
     situacao: 'carregando',
     leituras: [],
     chuva: [],
+    chuvaOk: true,
     coletadoEm: null,
     fonte: null,
   })

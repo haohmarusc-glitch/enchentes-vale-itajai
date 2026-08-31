@@ -10,6 +10,8 @@ uma cheia. Daí estes casos, com atrasos plantados e falhas injetadas.
 
 import math
 import unittest
+
+import auditar
 from datetime import datetime, timedelta
 
 from auditar import (
@@ -108,6 +110,44 @@ class TesteCobertura(unittest.TestCase):
         pontos = onda(50, ruido=0.01) + [(INICIO + timedelta(days=1), 97.0)]
         c = cobertura(sorted(pontos), dias=15, agora=sorted(pontos)[-1][0])
         self.assertTrue(any("fora de faixa" in p for p in c["problemas"]), c["problemas"])
+
+
+class TestVereditoDoTrecho(unittest.TestCase):
+    """
+    O veredito de trecho é o que levaria alguém a mexer no transito.json — e o
+    transito.json é o que vira hora de chegada na tela das pessoas. Medida que
+    não decide não pode sair com cara de decisão.
+
+    Os números vêm de série sintética com defasagem CONHECIDA de 6 h: com pouco
+    ruído o método devolve 6,00 h com r=0,998; com ruído alto devolve 8,50 h com
+    r=0,593 — erro de duas horas e meia passando pelo limiar de 0,5.
+    """
+
+    def veredito(self, horas, r, minimo=6, maximo=8):
+        # Chama a função do módulo, não uma cópia dela: teste que reimplementa a
+        # lógica passa mesmo quando o código quebra.
+        return auditar.veredito_do_trecho(horas, r, minimo, maximo)
+
+    def test_medida_firme_dentro_da_faixa(self):
+        self.assertEqual(self.veredito(6.0, 0.998), "dentro-da-faixa")
+
+    def test_medida_firme_fora_contradiz_o_publicado(self):
+        self.assertEqual(self.veredito(14.0, 0.97), "fora-da-faixa")
+
+    def test_medida_fraca_fora_nao_contradiz(self):
+        """O caso real do ruído: 8,50 h com r=0,593 não é prova contra 6-8 h."""
+        self.assertEqual(self.veredito(8.5, 0.593), "fora-da-faixa-sem-firmeza")
+
+    def test_um_passo_de_reamostragem_nao_e_divergencia(self):
+        """5,75 h contra 6-8 h é a resolução do método, não o rio."""
+        self.assertEqual(self.veredito(5.75, 0.97), "dentro-da-faixa")
+        self.assertEqual(self.veredito(8.25, 0.97), "dentro-da-faixa")
+
+    def test_dois_passos_ja_e_divergencia(self):
+        self.assertEqual(self.veredito(5.5, 0.97), "fora-da-faixa")
+
+    def test_o_limiar_forte_e_maior_que_o_minimo(self):
+        self.assertGreater(auditar.CORRELACAO_FORTE, auditar.CORRELACAO_MINIMA)
 
 
 if __name__ == "__main__":
