@@ -9,13 +9,10 @@ import estacoesJson from '@dados/estacoes.json'
 import enchentesJson from '@dados/enchentes.json'
 import transitoJson from '@dados/transito.json'
 import mareJson from '@dados/mare-itajai.json'
-import cotasRuasJson from '@dados/cotas-ruas.json'
 import type {
   AfluenteMonitorado,
   Cidade,
   Confianca,
-  CotaRua,
-  CotasRuas,
   Enchentes,
   Estacoes,
   EstacaoTempoReal,
@@ -197,44 +194,6 @@ export const fontesGerais = estacoes.fontes_gerais
 
 // --- Cotas de rua -----------------------------------------------------------
 //
-// O dado mais direto do projeto: a partir de que nível cada rua alaga. Não
-// passa por modelo nenhum. Por isso o filtro aqui é severo — um registro
-// malformado não destoaria de nada na tela, só mandaria a pessoa para o lado
-// errado.
-
-const cotasBrutas = cotasRuasJson as unknown as CotasRuas
-
-function cotaRuaValida(c: CotaRua): boolean {
-  if (!c.cidade || !c.rua) {
-    descarta('cota de rua sem cidade ou sem rua', c)
-    return false
-  }
-  if (!ehConfianca(c.confianca) || !c.fonte) {
-    descarta('cota de rua sem fonte ou com confiança inválida', c)
-    return false
-  }
-  // REGRA BLOQUEANTE do CLAUDE.md, item 4: busca e simulador só em régua.
-  // O nível ao vivo com que estas cotas são comparadas vem da Defesa Civil, que
-  // é régua. Uma cota em outra referência produziria "faltam 2,30 m" com 20 cm
-  // de erro embutido, sem nada na tela denunciando.
-  if (c.referencia !== undefined && c.referencia !== 'régua') {
-    descarta('cota de rua fora da referência régua', c)
-    return false
-  }
-  if (c.cota_m === null) return true // legítimo: a fonte cita e não publica o número
-  if (typeof c.cota_m !== 'number' || !Number.isFinite(c.cota_m)) {
-    descarta('cota de rua com cota_m que não é número', c)
-    return false
-  }
-  // Nenhuma régua da bacia chega perto de 25 m.
-  if (c.cota_m <= 0 || c.cota_m >= 25) {
-    descarta('cota de rua fora de faixa plausível', c)
-    return false
-  }
-  return true
-}
-
-export const cotasRuas: CotaRua[] = (cotasBrutas.cotas ?? []).filter(cotaRuaValida)
-
-/** Os avisos que a tela é obrigada a mostrar junto das cotas. */
-export const avisosCotasRuas: string[] = cotasBrutas._meta?.aviso ?? []
+// As cotas de rua saíram daqui para `dados/cotasRuas.ts`, que é carregado à
+// parte junto do componente da busca: são 611 registros e crescendo, e quem
+// abre o site para ver o nível do rio não precisa baixá-los.

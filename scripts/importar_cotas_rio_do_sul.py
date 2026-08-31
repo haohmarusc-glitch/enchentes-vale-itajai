@@ -127,14 +127,36 @@ def extrair(js: str) -> tuple[list[dict], list[str]]:
     return ruas, recusas
 
 
-def como_registro(rua: dict, fonte: str, quando: str) -> dict:
+def cota_de_inundacao_da_cidade() -> float | None:
+    """A cota mais baixa que a cidade cadastra — o piso do que é cheia lá."""
+    estacoes = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+    for c in estacoes["rios"].get(RIO, {}).get("cidades", []):
+        if c["id"] == CIDADE:
+            valores = [v for v in (c.get("cotas_m") or {}).values()
+                       if isinstance(v, (int, float))]
+            return min(valores) if valores else None
+    return None
+
+
+def como_registro(rua: dict, fonte: str, quando: str,
+                  piso_da_cidade: float | None = None) -> dict:
     """
     Um registro no formato de `cotas-ruas.json`.
 
     `cota_m` recebe a MÍNIMA — o nível em que a água chega à rua. É o número
     que serve para avisar; a máxima diz quando a rua está inteira embaixo
-    d'água, e vai em `cota_max_m`, sem substituir a outra. O teto da escala da
-    fonte (20 m) não vira cota: vira nota.
+    d'água, e vai em `cota_max_m`, sem substituir a outra.
+
+    Duas coisas viram NOTA em vez de número, porque número que não se sustenta
+    é pior que número ausente:
+
+    * o teto da escala da fonte (20 m), que quer dizer "acima disto não foi
+      medido" e não "a rua alaga inteira aqui";
+    * cota abaixo da menor cota que a própria cidade cadastra. Rio do Sul
+      publica ruas alagando a 3,11 m, e a régua marca 3,35 m num dia seco: sem
+      a ressalva, o bot diria "este nível já foi alcançado" com tempo bom, que
+      é o alarme falso que ensina a ignorar o aviso de verdade. O dado entra —
+      é oficial e publicado —, mas entra dizendo que precisa de conferência.
     """
     registro = {
         "cidade": CIDADE,
@@ -148,11 +170,22 @@ def como_registro(rua: dict, fonte: str, quando: str) -> dict:
         "confianca": "alta",
         "referencia": "régua",
     }
+
+    notas = []
     if rua["max"] is not None and rua["max"] < TETO_DA_FONTE:
         registro["cota_max_m"] = rua["max"]
     elif rua["max"] is not None:
-        registro["nota"] = (f"A fonte publica máxima {rua['max']:.2f} m, que é o teto da "
-                            "escala dela — não a cota em que a rua alaga inteira.")
+        notas.append(f"A fonte publica máxima {rua['max']:.2f} m, que é o teto da escala "
+                     "dela — não a cota em que a rua alaga inteira.")
+
+    if piso_da_cidade is not None and rua["min"] < piso_da_cidade:
+        notas.append(f"Esta cota ({rua['min']:.2f} m) fica ABAIXO da menor cota de "
+                     f"referência de Rio do Sul ({piso_da_cidade:.2f} m): a rua alagaria "
+                     "com o rio em nível quase normal. Vem assim da fonte e ainda não foi "
+                     "conferida com a Defesa Civil — não use como aviso sozinha.")
+
+    if notas:
+        registro["nota"] = " ".join(notas)
     return registro
 
 
@@ -228,20 +261,21 @@ def main() -> int:
     menor = min(r["min"] for r in ruas)
     maior = max(r["min"] for r in ruas)
     print(f"\nfaixa das mínimas: {menor:.2f} m a {maior:.2f} m")
-    # Rio do Sul cadastra inundação em 6,50 m. Mínima abaixo disso seria rua
-    # alagando antes da cota de inundação da cidade — possível, mas é o tipo
-    # de coisa que se confere antes de virar aviso.
-    abaixo = [r for r in ruas if r["min"] < 6.5]
+    # Mínima abaixo da menor cota da cidade seria rua alagando antes de o rio
+    # dar sinal de cheia — possível, mas é o tipo de coisa que se confere antes
+    # de virar aviso.
+    piso = cota_de_inundacao_da_cidade()
+    abaixo = [r for r in ruas if piso is not None and r["min"] < piso]
     if abaixo:
-        print(f"ATENÇÃO: {len(abaixo)} rua(s) com mínima abaixo da cota de inundação "
-              f"da cidade (6,50 m) — conferir antes de confiar:")
+        print(f"ATENÇÃO: {len(abaixo)} rua(s) com mínima abaixo da menor cota de "
+              f"referência da cidade ({piso:.2f} m). Entram com nota de ressalva:")
         for r in abaixo[:10]:
             print(f"  {r['rua']}: {r['min']:.2f} m")
 
     fonte = (f"Defesa Civil de Rio do Sul — \"Cota de Cheias por Rua\", "
              f"{TABELA} (dado publicado em {url})")
     quando = date.today().isoformat()
-    registros = [como_registro(r, fonte, quando) for r in ruas]
+    registros = [como_registro(r, fonte, quando, piso) for r in ruas]
 
     base = json.loads(ARQUIVO.read_text(encoding="utf-8"))
     mesclados, novos, atualizados = mesclar(base.get("cotas", []), registros)

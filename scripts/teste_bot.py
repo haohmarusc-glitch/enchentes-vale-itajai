@@ -413,6 +413,22 @@ class TestCotaMaxima(unittest.TestCase):
         self.assertIn("Alaga a partir de <b>8,12 m</b>", t)
         self.assertIn("toda a rua a 9,65 m", t)
 
+    def test_ressalva_sai_junto_do_numero(self):
+        """
+        Rio do Sul publica rua alagando a 3,11 m; a régua marca 3,35 m num dia
+        seco. Sem a ressalva ao lado, o bot diria "já foi alcançado" com tempo
+        bom — o alarme falso que ensina a ignorar o aviso de verdade.
+        """
+        b = base()
+        b.cotas_ruas = [{"cidade": "rio-do-sul", "rio": "itajai-acu", "rua": "POUSO REDONDO",
+                         "bairro": None, "ponto": "ponto mais baixo", "cota_m": 3.11,
+                         "fonte": "portal", "data_fonte": "2026-08-31", "confianca": "alta",
+                         "referencia": "régua",
+                         "nota": "Esta cota fica ABAIXO da menor cota de referência."}]
+        t = resp("/rua Rio do Sul pouso redondo", b)
+        self.assertIn("3,11 m", t)
+        self.assertIn("ABAIXO da menor cota", t)
+
     def test_sem_maxima_a_frase_nao_aparece(self):
         b = base()
         b.cotas_ruas = [{"cidade": "rio-do-sul", "rio": "itajai-acu", "rua": "1 DE MAIO",

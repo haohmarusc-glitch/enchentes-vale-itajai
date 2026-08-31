@@ -531,6 +531,11 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
         # pela mínima, que é quando a água chega à rua.
         if isinstance(c.get("cota_max_m"), (int, float)):
             linhas.append(f" · toda a rua a {metros(c['cota_max_m'])}")
+        # A ressalva sai JUNTO do número, e não só quando ele falta: Rio do Sul
+        # publica ruas alagando abaixo da menor cota da cidade, e sem isto o bot
+        # diria "já foi alcançado" com tempo bom.
+        if c.get("nota"):
+            linhas.append(f"\n<i>{e(c['nota'])}</i>")
         atual = niveis.get(c["cidade"])
         if atual:
             falta = round(c["cota_m"] - atual[0], 2)

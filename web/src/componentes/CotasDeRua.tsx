@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react'
-import type { Cidade, CotaRua } from '../dados/tipos'
+import type { Cidade } from '../dados/tipos'
 import type { LeituraAoVivo } from '../dados/tempoReal'
+// A tabela vem daqui, e não por propriedade: assim ela viaja no mesmo pedaço
+// que este componente, que só é carregado quando a busca aparece na tela.
+import { avisosCotasRuas, cotasRuas } from '../dados/cotasRuas'
 import {
   atingidas,
   buscar,
@@ -15,10 +18,8 @@ import estilos from './CotasDeRua.module.css'
 
 interface Props {
   cidade: Cidade
-  cotas: CotaRua[]
   /** Nível ao vivo da cidade, quando existe uma régua só. */
   leitura: LeituraAoVivo | null
-  avisos: string[]
 }
 
 /**
@@ -36,7 +37,9 @@ interface Props {
  * chegar naquele nível. Ele lê uma tabela. A tabela diz o que acontece SE o rio
  * chegar lá; quem diz se vai chegar é a Defesa Civil.
  */
-export default function CotasDeRua({ cidade, cotas, leitura, avisos }: Props) {
+export default function CotasDeRua({ cidade, leitura }: Props) {
+  const cotas = cotasRuas
+  const avisos = avisosCotasRuas
   const dela = useMemo(() => daCidade(cotas, cidade.id), [cotas, cidade.id])
   const faixa = useMemo(() => faixaDaCidade(cotas, cidade.id), [cotas, cidade.id])
   const [termo, setTermo] = useState('')
@@ -104,6 +107,11 @@ export default function CotasDeRua({ cidade, cotas, leitura, avisos }: Props) {
                           : 'este nível já foi alcançado'}
                       </span>
                     ) : null}
+                    {/* A nota sai JUNTO do número, e não só quando ele falta.
+                        Rio do Sul publica ruas alagando abaixo da menor cota
+                        da cidade: sem a ressalva ao lado, "este nível já foi
+                        alcançado" apareceria num dia de sol. */}
+                    {c.nota ? <span className={estilos.ressalva}>{c.nota}</span> : null}
                   </>
                 ) : (
                   <span className={estilos.semNumero}>{c.nota ?? 'cota não publicada'}</span>
