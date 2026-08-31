@@ -91,6 +91,26 @@ def baixar_chuva() -> tuple[list[dict], bool]:
         return [], False
 
 
+def baixar_chuva_sc() -> list[dict]:
+    """
+    A chuva da Rede Integrada da Defesa Civil de SC, que cobre onze cidades sem
+    pluviômetro na fonte de Itajaí — e resgata Brusque e Rio do Sul, onde a
+    fonte de Itajaí publica série quebrada (todas as janelas em 0,0 com 0,4 mm
+    nos últimos 10 min, o que o validador marca como incoerente e a tela recusa).
+
+    Falha aqui não pode derrubar nada: devolve lista vazia e o resto segue. Só
+    chuva — o motivo de o nível não entrar está em `coleta_chuva_sc.py`.
+    """
+    try:
+        from coleta_chuva_sc import baixar_estacoes, converter
+
+        leituras, _recusadas = converter(baixar_estacoes())
+        return leituras
+    except Exception as e:
+        print(f"aviso: chuva da Defesa Civil de SC não coletada ({e}).", file=sys.stderr)
+        return []
+
+
 def estacoes_do_ultimo() -> set[str]:
     """Os títulos que vieram na coleta anterior, do ultimo.json que vamos trocar."""
     try:
@@ -232,6 +252,11 @@ def main() -> int:
     novas, repetidas = acumular(leituras)
 
     chuva, chuva_ok = baixar_chuva()
+    # As duas fontes convivem na mesma lista: o site e o bot já mostram o maior
+    # de vários pluviômetros por cidade, e cada leitura carrega a sua própria
+    # idade. Nomes não colidem porque os da Defesa Civil de SC vêm com o código
+    # DCSC na frente.
+    chuva = chuva + baixar_chuva_sc()
 
     SERIE.mkdir(parents=True, exist_ok=True)
     ULTIMO.write_text(
