@@ -1,0 +1,65 @@
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.3rem 0;
+}
+
+/* O aviso vem ANTES dos números, de propósito: quem os lê precisa saber que
+   não se somam antes de os somar na cabeça. */
+.aviso {
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: #6b4f14;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+}
+
+.nivel {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.acima {
+  color: #a8360a;
+}
+
+.nome {
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.idade {
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--tinta-fraca);
+}
+
+.atrasada { color: #8a6d1f; }
+.velha { color: #a8360a; font-style: normal; font-weight: 600; }
+
+.cota,
+.semAlerta {
+  font-size: 0.78rem;
+  color: var(--tinta-fraca);
+  flex-basis: 100%;
+}
+
+.semAlerta {
+  font-style: italic;
+}

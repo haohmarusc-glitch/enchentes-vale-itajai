@@ -203,3 +203,31 @@ e continua verificando assinatura, validade e nome do host. Enquanto isso não �
 feito, Blumenau depende da página da Defesa Civil de Itajaí, que em 31/08/2026
 estava publicando a estação com o carimbo **congelado há mais de três horas**
 enquanto as outras treze atualizavam a cada 15–30 min.
+
+
+### Correção: a defasagem de Blumenau é da estação, não do caminho (31/08/2026)
+
+Este documento afirmava, acima, que a estação Blumenau da página de Itajaí estava
+publicando com o carimbo congelado enquanto as outras treze atualizavam a cada
+15–30 min, e tratava a coleta direta do AlertaBlu como o conserto.
+
+**Conferido no navegador, contra a fonte primária: o AlertaBlu mostra o mesmo
+valor com a mesma idade** — 5,11 m há 3 h, no mesmo instante em que a nossa
+coleta trazia 5,11 m há 3 h. A cadência de publicação é da própria estação de
+Blumenau. Não há atraso de repasse, e a nossa coleta está fiel à fonte.
+
+O que isso muda:
+
+* **Não existe fonte pública mais fresca de Blumenau.** A tela mostrando "há 3 h"
+  está dizendo a verdade, e não há número melhor a buscar.
+* **Coletar direto do AlertaBlu não melhora o frescor.** Continua valendo por ser
+  fonte primária em vez de menção secundária, e pela série horária histórica —
+  mas sai da fila de urgência onde este documento a tinha posto.
+* **A extrapolação foi retirada.** Durante a subida de 31/08 estimei, pelo ritmo
+  medido, que o nível real de Blumenau poderia estar perto de 5,9 m. Não há
+  evidência nenhuma disso e o número não foi publicado em lugar nenhum. O que se
+  sabe é o que a fonte diz: 5,11 m, há 3 h.
+
+Fica de pé uma melhoria que a subida revelou: a tela precisa distinguir leitura
+velha com rio **parado** de leitura velha com rio **subindo**. Hoje mostra as
+duas igual, e a segunda é a que engana.
