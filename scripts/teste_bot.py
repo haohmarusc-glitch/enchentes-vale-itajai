@@ -12,7 +12,7 @@ saia com a idade, e que toda resposta lembre que isto não é alerta oficial.
 """
 
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import os
 import sys
@@ -20,7 +20,7 @@ import unittest.mock
 from pathlib import Path
 
 import notificador
-from bot import (REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
+from bot import (IDADE_MAXIMA_PREVISAO_MIN, REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
                  nome_curto, responder, sem_acento, texto_idade)
 from comum import le_json
 
@@ -216,6 +216,65 @@ class TestPrevisao(unittest.TestCase):
         ]
         t = responder("/previsao Brusque", b, AGORA)
         self.assertNotIn("não estão em ordem", t)
+
+
+class TestPrevisaoComLeituraVelha(unittest.TestCase):
+    """
+    A conta é "se o pico fosse AGORA", e parte do instante da medição. Com
+    leitura velha o "agora" é mentira: com uma de 30 h, o bot anunciava chegada
+    em Apiúna para o dia ANTERIOR, com cara de previsão.
+    """
+
+    def base_com(self, cidade, estacao, nivel, horas_atras):
+        medido = datetime(2026, 8, 30, 18, 30) - timedelta(hours=horas_atras)
+        ultimo = {"coletado_em": "2026-08-30T21:25:00+00:00", "leituras": [
+            {"estacao": estacao, "rio": "itajai-acu", "cidade": cidade, "nivel_m": nivel,
+             "medido_em": medido.isoformat(timespec="minutes")}]}
+        return Base(ultimo, le_json("estacoes.json"), le_json("transito.json"),
+                    le_json("enchentes.json"), le_json("cotas-ruas.json"))
+
+    def test_leitura_fresca_calcula(self):
+        b = self.base_com("rio-do-sul", "Rio do Sul Estação MKS", 3.52, 0.1)
+        r = responder("/previsao Rio do Sul", b, AGORA)
+        self.assertIn("Apiúna", r)
+        self.assertNotIn("Não dá para calcular com ela", r)
+
+    def test_no_limite_ainda_calcula(self):
+        b = self.base_com("rio-do-sul", "Rio do Sul Estação MKS", 3.52,
+                          IDADE_MAXIMA_PREVISAO_MIN / 60 - 0.1)
+        self.assertNotIn("Não dá para calcular com ela",
+                         responder("/previsao Rio do Sul", b, AGORA))
+
+    def test_passando_do_limite_recusa(self):
+        b = self.base_com("rio-do-sul", "Rio do Sul Estação MKS", 3.52,
+                          IDADE_MAXIMA_PREVISAO_MIN / 60 + 0.1)
+        r = responder("/previsao Rio do Sul", b, AGORA)
+        self.assertIn("Não dá para calcular com ela", r)
+
+    def test_a_recusa_diz_a_idade_e_o_nivel(self):
+        """Recusar não é sumir com o dado: o número e a idade continuam à vista."""
+        b = self.base_com("rio-do-sul", "Rio do Sul Estação MKS", 3.52, 30)
+        r = responder("/previsao Rio do Sul", b, AGORA)
+        self.assertIn("há 30 h", r)
+        self.assertIn("3,52 m", r)
+
+    def test_leitura_velha_nao_anuncia_horario_nenhum(self):
+        b = self.base_com("rio-do-sul", "Rio do Sul Estação MKS", 3.52, 30)
+        r = responder("/previsao Rio do Sul", b, AGORA)
+        self.assertNotIn("por volta de", r)
+        self.assertNotIn("entre 2", r)
+
+    def test_janela_ja_passada_nao_vira_previsao(self):
+        """
+        Trecho curto com leitura de algumas horas: Apiúna→Indaial é de 1 h, e
+        com 2 h 30 de leitura a janela inteira já ficou para trás. Dizer "por
+        volta de" um horário passado faz a pessoa procurar no relógio uma água
+        que, se veio, veio antes.
+        """
+        b = self.base_com("apiuna", "Apiúna", 2.10, 2.5)
+        r = responder("/previsao Apiúna", b, AGORA)
+        self.assertIn("janela já passou", r)
+        self.assertNotIn("Indaial</b>: por volta", r)
 
 
 class TestRua(unittest.TestCase):

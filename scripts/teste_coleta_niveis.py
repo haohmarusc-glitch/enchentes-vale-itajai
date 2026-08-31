@@ -10,7 +10,12 @@ numa noite de chuva não avisa ninguém.
     python3 scripts/teste_coleta_niveis.py
 """
 
+import sys
+import types
 import unittest
+from unittest import mock
+
+import coleta_niveis
 
 from coleta_itajai import parse
 
@@ -178,6 +183,44 @@ class TesteFaixaPlausivel(unittest.TestCase):
         leituras = self.uma("5,21 m")
         self.assertEqual(len(leituras), 1)
         self.assertEqual(leituras[0]["nivel_m"], 5.21)
+
+
+class TestChuvaFalhaVersusAusencia(unittest.TestCase):
+    """
+    `chuva: []` significava duas coisas ao mesmo tempo: "a fonte não publica
+    pluviômetro" e "não conseguimos buscar". A tela mostrava as duas igual — e,
+    no meio de uma chuva, a segunda aparecendo como a primeira lê-se como "não
+    está chovendo". A marca `chuva_ok` separa os dois casos.
+    """
+
+    def test_falha_na_coleta_devolve_lista_vazia_e_marca_falso(self):
+        with mock.patch.dict(sys.modules, {"coleta_chuva": None}):
+            chuva, ok = coleta_niveis.baixar_chuva()
+        self.assertEqual(chuva, [])
+        self.assertFalse(ok, "falha tem de vir marcada, não apenas vazia")
+
+    def test_coleta_boa_devolve_marca_verdadeira(self):
+        falso = types.ModuleType("coleta_chuva")
+        falso.URL = "http://exemplo"
+        falso.parse = lambda _html: [{"estacao": "P-1", "cidade": "itajai"}]
+        with mock.patch.dict(sys.modules, {"coleta_chuva": falso}), \
+             mock.patch.object(coleta_niveis, "espera_turno", lambda: None), \
+             mock.patch("comum.baixar", lambda *a, **k: "<html></html>"):
+            chuva, ok = coleta_niveis.baixar_chuva()
+        self.assertEqual(len(chuva), 1)
+        self.assertTrue(ok)
+
+    def test_fonte_sem_pluviometro_nenhum_nao_e_falha(self):
+        """Lista vazia com a marca verdadeira é 'não há aparelho', e é legítimo."""
+        falso = types.ModuleType("coleta_chuva")
+        falso.URL = "http://exemplo"
+        falso.parse = lambda _html: []
+        with mock.patch.dict(sys.modules, {"coleta_chuva": falso}), \
+             mock.patch.object(coleta_niveis, "espera_turno", lambda: None), \
+             mock.patch("comum.baixar", lambda *a, **k: "<html></html>"):
+            chuva, ok = coleta_niveis.baixar_chuva()
+        self.assertEqual(chuva, [])
+        self.assertTrue(ok, "fonte vazia é resposta, não falha")
 
 
 if __name__ == "__main__":

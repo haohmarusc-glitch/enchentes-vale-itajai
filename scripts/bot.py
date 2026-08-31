@@ -98,6 +98,15 @@ REPETE_AVISO = 20
 #: pergunta ao mesmo tempo — que é justamente a hora da cheia.
 INTERVALO_POR_CHAT_S = 2
 
+#: Idade máxima da leitura para /previsao responder com horário.
+#:
+#: A conta é "se o pico fosse AGORA": ela usa o instante da medição como
+#: partida. Com leitura velha, "agora" é mentira e os horários saem no passado —
+#: com uma de 30 h, o bot anunciava chegada em Apiúna para o dia anterior, com
+#: cara de previsão. Três horas é o mesmo limite que o site usa para marcar
+#: leitura como velha (MIN_VELHA).
+IDADE_MAXIMA_PREVISAO_MIN = 180
+
 #: A partir de quantos minutos de diferença entre o pluviômetro mais velho e o
 #: mais novo vale dizer as duas idades. Abaixo disso, a do mais velho já conta a
 #: história e duas idades só encompridam a mensagem.
@@ -416,6 +425,18 @@ def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
 
     l = leituras[0]
     idade = idade_min(l.get("medido_em"), agora)
+    if idade is not None and idade > IDADE_MAXIMA_PREVISAO_MIN:
+        linhas.append(
+            f"\nA última leitura de {notificador.esc(cidade['nome'])} é de "
+            f"{texto_idade(idade)}: <b>3,52</b>".replace("<b>3,52</b>", metros(l["nivel_m"]))
+        )
+        linhas.append(
+            "\n\n<b>Não dá para calcular com ela.</b> Esta conta parte de "
+            "\"se o pico fosse agora\", e com leitura velha o \"agora\" é falso — "
+            "os horários sairiam no passado, com cara de previsão. "
+            f"Volte quando a coleta se recuperar, ou veja {SITE}."
+        )
+        return linhas
     linhas.append(f"\n{notificador.esc(cidade['nome'])} está em <b>{metros(l['nivel_m'])}</b>"
                   f" ({texto_idade(idade)}).")
 
@@ -451,7 +472,13 @@ def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
             fora_de_ordem = True
         maior_inicio = inicio if maior_inicio is None else max(maior_inicio, inicio)
 
-        if inicio == fim:
+        # Janela inteiramente no passado não é previsão. Acontece nos trechos
+        # curtos — Apiúna→Indaial é de 1 h — quando a leitura já tem algumas
+        # horas. Dizer "por volta de" um horário que já passou faz a pessoa
+        # procurar no relógio uma água que, se veio, veio antes.
+        if fim < agora:
+            horario = f"janela já passou ({quando(fim)})"
+        elif inicio == fim:
             horario = f"por volta de {quando(inicio)}"
         else:
             horario = f"entre {quando(inicio)} e {quando(fim)}"

@@ -127,3 +127,13 @@
   display: block;
   margin: 0.4rem 0;
 }
+
+/* Coleta da chuva fora do ar. Diferente de "sem pluviômetro": ali não há
+   aparelho; aqui há, e não conseguimos ler. Calar as duas do mesmo jeito faz
+   a segunda parecer a primeira — e, durante a chuva, parecer "não choveu". */
+.chuvaFalhou {
+  display: inline-block;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+  font-style: italic;
+}

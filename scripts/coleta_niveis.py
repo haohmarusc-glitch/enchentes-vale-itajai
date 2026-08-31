@@ -66,7 +66,7 @@ def baixar_niveis() -> list[dict]:
     return parse(baixar(URL))
 
 
-def baixar_chuva() -> list[dict]:
+def baixar_chuva() -> tuple[list[dict], bool]:
     """
     Chuva acumulada, da segunda página da mesma fonte.
 
@@ -80,11 +80,15 @@ def baixar_chuva() -> list[dict]:
         from comum import baixar
 
         espera_turno()
-        return parse_chuva(baixar(URL_CHUVA))
+        return parse_chuva(baixar(URL_CHUVA)), True
     except Exception as e:
         print(f"aviso: chuva não coletada ({e}) — o nível segue normalmente.",
               file=sys.stderr)
-        return []
+        # A lista vazia vai junto com a marca de que ela é FALHA, não ausência.
+        # Sem isso, `chuva: []` significa as duas coisas ao mesmo tempo, e a
+        # tela mostra "sem pluviômetro" em toda cidade quando a fonte caiu — o
+        # que, no meio de uma chuva, lê-se como "não está chovendo".
+        return [], False
 
 
 def chaves_existentes(arquivo: Path) -> set[tuple[str, str]]:
@@ -198,7 +202,7 @@ def main() -> int:
 
     novas, repetidas = acumular(leituras)
 
-    chuva = baixar_chuva()
+    chuva, chuva_ok = baixar_chuva()
 
     SERIE.mkdir(parents=True, exist_ok=True)
     ULTIMO.write_text(
@@ -209,6 +213,11 @@ def main() -> int:
                 "leituras": leituras,
                 "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
                 "chuva": chuva,
+                # Falso só quando a coleta da chuva FALHOU. Lista vazia com
+                # chuva_ok verdadeiro é "a fonte não publica pluviômetro"; com
+                # falso é "não conseguimos buscar". Sem esta marca a tela conta
+                # a mesma história nos dois casos, e num deles ela é falsa.
+                "chuva_ok": chuva_ok,
             },
             ensure_ascii=False,
             indent=2,
