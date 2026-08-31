@@ -1,0 +1,5417 @@
+{
+ "_meta": {
+  "origem": "API pública Asthon usada pelo portal da Defesa Civil de Rio do Sul",
+  "base": "https://public.asthon.com.br/public/",
+  "city_id": 4214805,
+  "extraido_em": "2026-08-31T12:26:37.041Z"
+ },
+ "stations_list": [
+  {
+   "station_id": "9be9253b-7525-441e-924f-1a1be0944530",
+   "name": "Agronômica",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.257997512817383,
+   "longitude": -49.71219253540039,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4200309,
+   "spatial_city_name": "Agronômica",
+   "river_id": 129,
+   "river_name": "Rio Trombudo",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "e641eeec-41db-419c-81d8-b99991f23d4b",
+   "name": "Atalanta (H)",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.40060043334961,
+   "longitude": -49.71799850463867,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4201802,
+   "spatial_city_name": "Atalanta",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "d6e340c8-c1d6-441d-8fd0-4381ff17cb54",
+   "name": "Barragem Oeste Taió",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.09743881225586,
+   "longitude": -50.03879165649414,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4217808,
+   "spatial_city_name": "Taió",
+   "river_id": 127,
+   "river_name": "Rio Itajaí-Açu",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "barragem",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "60c6cf33-0148-4c64-842d-5a118f53b6f4",
+   "name": "Barragem Sul Ituporanga",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.503854751586914,
+   "longitude": -49.55359649658203,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4208500,
+   "spatial_city_name": "Ituporanga",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "barragem",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "2e98e31f-157b-4430-8b92-aaa1d48569dc",
+   "name": "Braço do Trombudo",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.359600067138672,
+   "longitude": -49.88290023803711,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4202859,
+   "spatial_city_name": "Braço do Trombudo",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 0,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 1,
+   "station_pressure_sensor": 1,
+   "station_wind_sensor": 1,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "d7c9ca1a-bf7e-40b3-918b-68bfd869ae8c",
+   "name": "Fundo Canoas",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.193367432,
+   "longitude": -49.679439754,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 133,
+   "river_name": "Ribeirão Fundo do Canoas",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "101dbb79-b018-476b-b3a8-dd542241a40b",
+   "name": "Fundos Itoupava",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.14641377074217,
+   "longitude": -49.654038748553546,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "device_type_id": 16,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 1,
+   "station_level_sensor": 0,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 1,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "5118971f-e88f-4d83-bfe5-5f7120525c1a",
+   "name": "Itoupava",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.16567960718597,
+   "longitude": -49.644450542889956,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 131,
+   "river_name": "Rio Itoupava",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "22829ddf-7ddf-441a-a4c0-b1f056a01c4e",
+   "name": "Mirim Doce",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.200700759887695,
+   "longitude": -50.07059860229492,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4210852,
+   "spatial_city_name": "Mirim Doce",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "caca79cc-d21b-4333-bea8-0128a4fd3117",
+   "name": "Petrolândia",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.53580093383789,
+   "longitude": -49.696998596191406,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4212700,
+   "spatial_city_name": "Petrolândia",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "3167e629-3bbe-48f2-9244-c65dfe6882d8",
+   "name": "Ponte BR 470",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.244108213,
+   "longitude": -49.690846306,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4209508,
+   "spatial_city_name": "Laurentino",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "020084eb-1467-4bf6-8831-e4ed9baca7b5",
+   "name": "Ponte BR-470 – Rio Itajaí do Oeste",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.2443356481,
+   "longitude": -49.6913013211,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4209508,
+   "spatial_city_name": "Laurentino",
+   "river_id": 127,
+   "river_name": "Rio Itajaí-Açu",
+   "device_type_id": 29,
+   "owner_id": "DREIK",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "f6360951-219f-4859-935f-b2e2d13962f1",
+   "name": "Ponte Dom Tito Buss",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.206783432556648,
+   "longitude": -49.63349523825673,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 127,
+   "river_name": "Rio Itajaí-Açu",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "039a5d4f-f58d-4fca-bef6-5d37e132a6f0",
+   "name": "Ponte Hannelore Hartmann Eyng – Rio Itajaí do Sul",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.2359960771,
+   "longitude": -49.6460330207,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 128,
+   "river_name": "Rio Itajaí do Sul",
+   "device_type_id": 29,
+   "owner_id": "DREIK",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "30475400-b7ba-4551-9646-19df0c3bfa38",
+   "name": "Ponte Ricardo Kanitz - Rio Itajaí do Sul",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.268189577009522,
+   "longitude": -49.653854213009396,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 128,
+   "river_name": "Rio Itajaí do Sul",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "2c4e604b-0c9a-4914-92e5-a58a31eb344b",
+   "name": "Ribeirão do Tigre",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.271152455,
+   "longitude": -49.688747144,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "device_type_id": 16,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 0,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 1,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "9904f124-b719-4f2d-99ad-65d1a5045c1b",
+   "name": "Ribeirão do Tigre",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.262949755357248,
+   "longitude": -49.68920359411101,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 223,
+   "river_name": "Ribeirão do Tigre",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "d918188f-23b0-4722-9170-6db4b8f19274",
+   "name": "Rio do Oeste",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.185070037841797,
+   "longitude": -49.807533264160156,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214607,
+   "spatial_city_name": "Rio do Oeste",
+   "river_id": 127,
+   "river_name": "Rio Itajaí-Açu",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "352f16bc-ca64-4cf6-8c52-d3585b2243b3",
+   "name": "SDC-SC Agrolândia",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.412532806396484,
+   "longitude": -49.83266830444336,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4200200,
+   "spatial_city_name": "Agrolândia",
+   "river_id": 129,
+   "river_name": "Rio Trombudo",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "d1f36c77-3b26-4f0b-a43f-5c7f5f39f665",
+   "name": "SDC-SC Laurentino",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.222692489624023,
+   "longitude": -49.73173522949219,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4209508,
+   "spatial_city_name": "Laurentino",
+   "river_id": 127,
+   "river_name": "Rio Itajaí-Açu",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "4a4fb0d7-cddc-4776-808d-d9272aaee5b1",
+   "name": "SDC-SC Pouso Redondo",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.25749969482422,
+   "longitude": -49.94142532348633,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4213708,
+   "spatial_city_name": "Pouso Redondo",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "d2f60af1-53e3-497f-81d6-c6498d28f5a2",
+   "name": "SDC-SC Rio do Sul",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.20722007751465,
+   "longitude": -49.63349914550781,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 127,
+   "river_name": "Rio Itajaí-Açu",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "b77a75b8-c79c-4117-8db9-e44955f5e45a",
+   "name": "SDC-SC Salete (H)",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -26.98270034790039,
+   "longitude": -50.01100158691406,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4215307,
+   "spatial_city_name": "Salete",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "2500b3f6-edac-4874-890a-d54558b0159b",
+   "name": "Serra Canoas",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.183854876,
+   "longitude": -49.698286375,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "device_type_id": 16,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 0,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 1,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "65334d3c-8d2d-4857-b7b4-b2a1b67b2ea0",
+   "name": "Serra Taboão",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.263806996,
+   "longitude": -49.58475347,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4201901,
+   "spatial_city_name": "Aurora",
+   "device_type_id": 16,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 0,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 1,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "f6eef1ec-d6a0-4a53-be01-2495509b2435",
+   "name": "Taboão",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.232194444,
+   "longitude": -49.613513889,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 134,
+   "river_name": "Ribeirão Taboão",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "2592150e-ea14-4f5b-85d4-e61700434c80",
+   "name": "Valada São Paulo",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.102887106,
+   "longitude": -49.623727502,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "device_type_id": 16,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 0,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 1,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "977818a2-b62c-413b-b605-f2d6c89bdc41",
+   "name": "Valada São Paulo",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.136113064,
+   "longitude": -49.62347124,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4214805,
+   "spatial_city_name": "Rio do Sul",
+   "river_id": 130,
+   "river_name": "Rio das Cobras",
+   "device_type_id": 9,
+   "owner_id": "ASTHON",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 0,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  },
+  {
+   "station_id": "bd65df3e-a5e3-4760-a879-56df0fb90787",
+   "name": "Vidal Ramos",
+   "station_type_id": 0,
+   "enabled": 1,
+   "latitude": -27.38547706604004,
+   "longitude": -49.35812759399414,
+   "has_position": true,
+   "billing_city_id": 4214805,
+   "billing_city_name": "Rio do Sul",
+   "spatial_city_id": 4219200,
+   "spatial_city_name": "Vidal Ramos",
+   "device_type_id": 30,
+   "owner_id": "DCSC",
+   "water_body_role": "fluvial",
+   "station_technical_status": 0,
+   "station_level_sensor": 1,
+   "station_rainfall_sensor": 1,
+   "station_temp_humidity_sensor": 0,
+   "station_pressure_sensor": 0,
+   "station_wind_sensor": 0,
+   "station_solar_uv_sensor": 0,
+   "station_air_quality_sensor": 0
+  }
+ ],
+ "stations_live": [
+  {
+   "station_id": "d7c9ca1a-bf7e-40b3-918b-68bfd869ae8c",
+   "last_reading_at": "2026-08-31 12:23:16.803602+00",
+   "level_m": 0,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.653564290473018,
+   "overflow_cota_m": 2.187,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 1.0935
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 1.5308999999999997
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 2.187
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 2.187,
+   "observation_level": 1.5308999999999997
+  },
+  {
+   "station_id": "f6eef1ec-d6a0-4a53-be01-2495509b2435",
+   "last_reading_at": "2026-08-31 12:22:49.986964+00",
+   "level_m": 0.5553702468312206,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.767311541027351,
+   "overflow_cota_m": 3.666,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 1.833
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 2.5662
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 3.666
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 3.666,
+   "observation_level": 2.5662
+  },
+  {
+   "station_id": "020084eb-1467-4bf6-8831-e4ed9baca7b5",
+   "last_reading_at": "2026-08-31 12:20:00+00",
+   "level_m": 4.33,
+   "rainfall_mm": 1.3999999999999986,
+   "rainfall_cumulative_mm": 22.2,
+   "temperature_c": 16.6,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null,
+   "overflow_cota_m": 6.5,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 4.5
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 5.5
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 6.5
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 6.5,
+   "observation_level": 5.5
+  },
+  {
+   "station_id": "d6e340c8-c1d6-441d-8fd0-4381ff17cb54",
+   "last_reading_at": "2026-08-31 12:21:54.58+00",
+   "level_m": 9.790008544921875,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null,
+   "level_gauge_zero_m": 339,
+   "level_absolute_m": 348.7900085449219,
+   "overflow_cota_m": 23.3,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 11.65
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 16.31
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 23.3
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 23.3,
+   "observation_level": 16.31
+  },
+  {
+   "station_id": "60c6cf33-0148-4c64-842d-5a118f53b6f4",
+   "last_reading_at": "2026-08-31 12:21:59.506+00",
+   "level_m": 19.010009765625,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null,
+   "level_gauge_zero_m": 370,
+   "level_absolute_m": 389.010009765625,
+   "overflow_cota_m": 31,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 15.5
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 21.7
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 31
+    }
+   ],
+   "band_key": "atencao",
+   "band_label": "Atenção",
+   "band_color": "#eab308",
+   "band_ordinal": 1,
+   "band_is_overflow": false,
+   "level_status": 1,
+   "attention_level": 31,
+   "observation_level": 21.7
+  },
+  {
+   "station_id": "9904f124-b719-4f2d-99ad-65d1a5045c1b",
+   "last_reading_at": "2026-08-31 12:23:41.788051+00",
+   "level_m": 1.3892595063375577,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.900200133422281,
+   "overflow_cota_m": 2.451,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 1.2255
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 1.7157
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 2.451
+    }
+   ],
+   "band_key": "atencao",
+   "band_label": "Atenção",
+   "band_color": "#eab308",
+   "band_ordinal": 1,
+   "band_is_overflow": false,
+   "level_status": 1,
+   "attention_level": 2.451,
+   "observation_level": 1.7157
+  },
+  {
+   "station_id": "65334d3c-8d2d-4857-b7b4-b2a1b67b2ea0",
+   "last_reading_at": "2026-08-31 12:22:55.022923+00",
+   "level_m": null,
+   "rainfall_mm": 0.1,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": 0,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 4.081763527054108
+  },
+  {
+   "station_id": "30475400-b7ba-4551-9646-19df0c3bfa38",
+   "last_reading_at": "2026-08-31 12:23:05.655577+00",
+   "level_m": 3.9414418604651167,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.94046511627907,
+   "overflow_cota_m": 6.5,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 4.5
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 5.5
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 6.5
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 6.5,
+   "observation_level": 5.5
+  },
+  {
+   "station_id": "101dbb79-b018-476b-b3a8-dd542241a40b",
+   "last_reading_at": null,
+   "level_m": null,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "977818a2-b62c-413b-b605-f2d6c89bdc41",
+   "last_reading_at": "2026-08-31 12:21:11.590033+00",
+   "level_m": 0.5561122244488977,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.842885771543086,
+   "overflow_cota_m": 3.06,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 1.53
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 2.142
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 3.06
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 3.06,
+   "observation_level": 2.142
+  },
+  {
+   "station_id": "9be9253b-7525-441e-924f-1a1be0944530",
+   "last_reading_at": "2026-08-31 12:21:38+00",
+   "level_m": 4.22,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "d918188f-23b0-4722-9170-6db4b8f19274",
+   "last_reading_at": null,
+   "level_m": null,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "caca79cc-d21b-4333-bea8-0128a4fd3117",
+   "last_reading_at": "2026-08-31 12:21:45.277+00",
+   "level_m": 450.74,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "22829ddf-7ddf-441a-a4c0-b1f056a01c4e",
+   "last_reading_at": "2026-08-31 12:21:57+00",
+   "level_m": 349.08,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "2e98e31f-157b-4430-8b92-aaa1d48569dc",
+   "last_reading_at": "2026-08-31 12:21:42.872+00",
+   "level_m": null,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": 15.899999618530273,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "e641eeec-41db-419c-81d8-b99991f23d4b",
+   "last_reading_at": "2026-08-31 12:22:00+00",
+   "level_m": 454.12,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "b77a75b8-c79c-4117-8db9-e44955f5e45a",
+   "last_reading_at": "2026-08-31 12:21:56.467+00",
+   "level_m": 400.4,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "4a4fb0d7-cddc-4776-808d-d9272aaee5b1",
+   "last_reading_at": "2026-08-31 12:21:48.064+00",
+   "level_m": 2.91,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "d1f36c77-3b26-4f0b-a43f-5c7f5f39f665",
+   "last_reading_at": "2026-08-31 12:21:31.298+00",
+   "level_m": 2.92,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "352f16bc-ca64-4cf6-8c52-d3585b2243b3",
+   "last_reading_at": "2026-08-31 12:21:56.29+00",
+   "level_m": 1.3,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "bd65df3e-a5e3-4760-a879-56df0fb90787",
+   "last_reading_at": "2026-08-31 12:21:50.688+00",
+   "level_m": 2.93,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "2c4e604b-0c9a-4914-92e5-a58a31eb344b",
+   "last_reading_at": "2026-08-31 12:23:01.591186+00",
+   "level_m": null,
+   "rainfall_mm": 0,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": 0,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.952751677852349
+  },
+  {
+   "station_id": "2592150e-ea14-4f5b-85d4-e61700434c80",
+   "last_reading_at": "2026-08-31 12:22:31.547124+00",
+   "level_m": null,
+   "rainfall_mm": 0,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": 0,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.991392064559516
+  },
+  {
+   "station_id": "f6360951-219f-4859-935f-b2e2d13962f1",
+   "last_reading_at": "2026-08-31 12:24:31.110632+00",
+   "level_m": 3.667873754152824,
+   "rainfall_mm": 0,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.950033222591362,
+   "overflow_cota_m": 6.5,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 4.5
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 5.5
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 6.5
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 6.5,
+   "observation_level": 5.5
+  },
+  {
+   "station_id": "d2f60af1-53e3-497f-81d6-c6498d28f5a2",
+   "last_reading_at": "2026-08-31 12:21:58.752+00",
+   "level_m": 3.76,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null
+  },
+  {
+   "station_id": "039a5d4f-f58d-4fca-bef6-5d37e132a6f0",
+   "last_reading_at": "2026-08-31 12:20:00+00",
+   "level_m": 3.78,
+   "rainfall_mm": 0,
+   "rainfall_cumulative_mm": 0,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": null,
+   "overflow_cota_m": 6.5,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 4.5
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 5.5
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 6.5
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 6.5,
+   "observation_level": 5.5
+  },
+  {
+   "station_id": "2500b3f6-edac-4874-890a-d54558b0159b",
+   "last_reading_at": "2026-08-31 12:23:56.983732+00",
+   "level_m": null,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": 0,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 4.056338028169014
+  },
+  {
+   "station_id": "5118971f-e88f-4d83-bfe5-5f7120525c1a",
+   "last_reading_at": "2026-08-31 12:09:18.603673+00",
+   "level_m": 0.9099999999999993,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.8415999999999997,
+   "overflow_cota_m": 3.404,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 1.702
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 2.3827999999999996
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 3.404
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 3.404,
+   "observation_level": 2.3827999999999996
+  },
+  {
+   "station_id": "3167e629-3bbe-48f2-9244-c65dfe6882d8",
+   "last_reading_at": "2026-08-31 12:22:46.141838+00",
+   "level_m": 3.6236595744680855,
+   "rainfall_mm": null,
+   "rainfall_cumulative_mm": null,
+   "temperature_c": null,
+   "flow_l": null,
+   "flow_today_l": null,
+   "flow_month_l": null,
+   "ntc2_c": null,
+   "battery_v": 3.807446808510638,
+   "overflow_cota_m": 6.5,
+   "band_thresholds": [
+    {
+     "band_key": "atencao",
+     "label": "Atenção",
+     "color_hex": "#eab308",
+     "ordinal": 1,
+     "is_overflow": false,
+     "cota_m": 4.5
+    },
+    {
+     "band_key": "alerta",
+     "label": "Alerta",
+     "color_hex": "#f97316",
+     "ordinal": 2,
+     "is_overflow": false,
+     "cota_m": 5.5
+    },
+    {
+     "band_key": "emergencia",
+     "label": "Emergência",
+     "color_hex": "#ef4444",
+     "ordinal": 3,
+     "is_overflow": true,
+     "cota_m": 6.5
+    }
+   ],
+   "band_key": "normal",
+   "band_label": "Normal",
+   "band_color": "#22c55e",
+   "band_ordinal": 0,
+   "band_is_overflow": false,
+   "level_status": 0,
+   "attention_level": 6.5,
+   "observation_level": 5.5
+  }
+ ],
+ "dams": [
+  {
+   "station_id": "d6e340c8-c1d6-441d-8fd0-4381ff17cb54",
+   "name": "Barragem Oeste Taió",
+   "city_id": 4214805,
+   "latitude": -27.09743881225586,
+   "longitude": -50.03879165649414,
+   "river_name": "Itajaí do Oeste",
+   "measured_at": "2026-08-31T12:21:54.58Z",
+   "montante_m": 348.7900085449219,
+   "nivel_m": 9.790008544921875,
+   "gauge_zero_m": 339,
+   "jusante_m": 3.5399999618530273,
+   "percent_use": 6.767082214355469,
+   "vertido": 0,
+   "capacidade_atual": 6.76437520980835,
+   "capacidade_maxima": 99.95999908447266,
+   "comportas": [
+    {
+     "key": "comporta_1",
+     "nome": "C1",
+     "aberta": false
+    },
+    {
+     "key": "comporta_2",
+     "nome": "C2",
+     "aberta": false
+    },
+    {
+     "key": "comporta_3",
+     "nome": "C3",
+     "aberta": false
+    },
+    {
+     "key": "comporta_4",
+     "nome": "C4",
+     "aberta": false
+    },
+    {
+     "key": "comporta_5",
+     "nome": "C5",
+     "aberta": false
+    },
+    {
+     "key": "comporta_6",
+     "nome": "C6",
+     "aberta": false
+    },
+    {
+     "key": "comporta_7",
+     "nome": "C7",
+     "aberta": false
+    }
+   ],
+   "comportas_abertas": 0,
+   "comportas_total": 7
+  },
+  {
+   "station_id": "60c6cf33-0148-4c64-842d-5a118f53b6f4",
+   "name": "Barragem Sul Ituporanga",
+   "city_id": 4214805,
+   "latitude": -27.503854751586914,
+   "longitude": -49.55359649658203,
+   "river_name": "Itajaí do Sul",
+   "measured_at": "2026-08-31T12:21:59.506Z",
+   "montante_m": 389.010009765625,
+   "nivel_m": 19.010009765625,
+   "gauge_zero_m": 370,
+   "jusante_m": 1.1299999952316284,
+   "percent_use": 18.53571891784668,
+   "vertido": 0,
+   "capacidade_atual": 19.2827091217041,
+   "capacidade_maxima": 104.02999877929688,
+   "comportas": [
+    {
+     "key": "comporta_1",
+     "nome": "C1",
+     "aberta": false
+    },
+    {
+     "key": "comporta_2",
+     "nome": "C2",
+     "aberta": false
+    },
+    {
+     "key": "comporta_3",
+     "nome": "C3",
+     "aberta": false
+    },
+    {
+     "key": "comporta_4",
+     "nome": "C4",
+     "aberta": false
+    },
+    {
+     "key": "comporta_5",
+     "nome": "C5",
+     "aberta": false
+    }
+   ],
+   "comportas_abertas": 0,
+   "comportas_total": 5
+  }
+ ],
+ "panel": {
+  "city_id": 4214805,
+  "stations": [
+   {
+    "station_id": "020084eb-1467-4bf6-8831-e4ed9baca7b5",
+    "name": "Ponte BR-470 – Rio Itajaí do Oeste",
+    "station_type_id": 0,
+    "latitude": -27.2443356481,
+    "longitude": -49.6913013211,
+    "river_name": "Rio Itajaí-Açu",
+    "river_position": 4,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "overflow_cota_m": 6.5,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 4.5
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 5.5
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 6.5
+     }
+    ],
+    "attention_level": 6.5,
+    "observation_level": 5.5,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 4.33,
+    "rainfall_1h": 5.800000000000001,
+    "rainfall_2h": 12.399999999999999,
+    "rainfall_24h": 22.2,
+    "is_raining": false,
+    "temperature_c": 16.6,
+    "last_reading_at": "2026-08-31T12:20:00Z"
+   },
+   {
+    "station_id": "039a5d4f-f58d-4fca-bef6-5d37e132a6f0",
+    "name": "Ponte Hannelore Hartmann Eyng – Rio Itajaí do Sul",
+    "station_type_id": 0,
+    "latitude": -27.2359960771,
+    "longitude": -49.6460330207,
+    "river_name": "Rio Itajaí do Sul",
+    "river_position": 2,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "overflow_cota_m": 6.5,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 4.5
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 5.5
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 6.5
+     }
+    ],
+    "attention_level": 6.5,
+    "observation_level": 5.5,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 3.78,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:20:00Z"
+   },
+   {
+    "station_id": "101dbb79-b018-476b-b3a8-dd542241a40b",
+    "name": "Fundos Itoupava",
+    "station_type_id": 0,
+    "latitude": -27.14641377074217,
+    "longitude": -49.654038748553546,
+    "level_sensor": 0,
+    "rainfall_sensor": 1,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": null
+   },
+   {
+    "station_id": "22829ddf-7ddf-441a-a4c0-b1f056a01c4e",
+    "name": "Mirim Doce",
+    "station_type_id": 0,
+    "latitude": -27.200700759887695,
+    "longitude": -50.07059860229492,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 349.08,
+    "rainfall_1h": 4.2,
+    "rainfall_2h": 10,
+    "rainfall_24h": 15.599999999999994,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:57Z"
+   },
+   {
+    "station_id": "2500b3f6-edac-4874-890a-d54558b0159b",
+    "name": "Serra Canoas",
+    "station_type_id": 0,
+    "latitude": -27.183854876,
+    "longitude": -49.698286375,
+    "level_sensor": 0,
+    "rainfall_sensor": 0,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "temperature_c": 0,
+    "wind_speed_ms": 0.6789095345390931,
+    "last_reading_at": "2026-08-31T12:23:56.983732Z"
+   },
+   {
+    "station_id": "2592150e-ea14-4f5b-85d4-e61700434c80",
+    "name": "Valada São Paulo",
+    "station_type_id": 0,
+    "latitude": -27.102887106,
+    "longitude": -49.623727502,
+    "level_sensor": 0,
+    "rainfall_sensor": 1,
+    "rainfall_1h": 3.75,
+    "rainfall_2h": 52.5,
+    "rainfall_24h": 67.25,
+    "is_raining": false,
+    "temperature_c": 0,
+    "wind_speed_ms": 0,
+    "last_reading_at": "2026-08-31T12:24:43.191063Z"
+   },
+   {
+    "station_id": "2c4e604b-0c9a-4914-92e5-a58a31eb344b",
+    "name": "Ribeirão do Tigre",
+    "station_type_id": 0,
+    "latitude": -27.271152455,
+    "longitude": -49.688747144,
+    "level_sensor": 0,
+    "rainfall_sensor": 1,
+    "rainfall_1h": 4,
+    "rainfall_2h": 9.75,
+    "rainfall_24h": 17,
+    "is_raining": true,
+    "temperature_c": 0,
+    "wind_speed_ms": 0,
+    "last_reading_at": "2026-08-31T12:25:11.040038Z"
+   },
+   {
+    "station_id": "2e98e31f-157b-4430-8b92-aaa1d48569dc",
+    "name": "Braço do Trombudo",
+    "station_type_id": 0,
+    "latitude": -27.359600067138672,
+    "longitude": -49.88290023803711,
+    "level_sensor": 0,
+    "rainfall_sensor": 1,
+    "rainfall_1h": 0.6000000000000001,
+    "rainfall_2h": 1,
+    "rainfall_24h": 1.9999999999999998,
+    "is_raining": false,
+    "temperature_c": 15.899999618530273,
+    "humidity_pct": 97.3499984741211,
+    "wind_speed_ms": 0.6000000238418579,
+    "last_reading_at": "2026-08-31T12:21:42.872Z"
+   },
+   {
+    "station_id": "30475400-b7ba-4551-9646-19df0c3bfa38",
+    "name": "Ponte Ricardo Kanitz - Rio Itajaí do Sul",
+    "station_type_id": 0,
+    "latitude": -27.268189577009522,
+    "longitude": -49.653854213009396,
+    "river_name": "Rio Itajaí do Sul",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 6.5,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 4.5
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 5.5
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 6.5
+     }
+    ],
+    "attention_level": 6.5,
+    "observation_level": 5.5,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 3.951408637873754,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:25:13.185276Z"
+   },
+   {
+    "station_id": "3167e629-3bbe-48f2-9244-c65dfe6882d8",
+    "name": "Ponte BR 470",
+    "station_type_id": 0,
+    "latitude": -27.244108213,
+    "longitude": -49.690846306,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 6.5,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 4.5
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 5.5
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 6.5
+     }
+    ],
+    "attention_level": 6.5,
+    "observation_level": 5.5,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 3.6303085106382977,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:24:52.224142Z"
+   },
+   {
+    "station_id": "352f16bc-ca64-4cf6-8c52-d3585b2243b3",
+    "name": "SDC-SC Agrolândia",
+    "station_type_id": 0,
+    "latitude": -27.412532806396484,
+    "longitude": -49.83266830444336,
+    "river_name": "Rio Trombudo",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 1.3,
+    "rainfall_1h": 3.31,
+    "rainfall_2h": 11.7,
+    "rainfall_24h": 17.36,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:56.29Z"
+   },
+   {
+    "station_id": "4a4fb0d7-cddc-4776-808d-d9272aaee5b1",
+    "name": "SDC-SC Pouso Redondo",
+    "station_type_id": 0,
+    "latitude": -27.25749969482422,
+    "longitude": -49.94142532348633,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 2.91,
+    "rainfall_1h": 4.08,
+    "rainfall_2h": 13.049999999999999,
+    "rainfall_24h": 18.259999999999998,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:48.064Z"
+   },
+   {
+    "station_id": "5118971f-e88f-4d83-bfe5-5f7120525c1a",
+    "name": "Itoupava",
+    "station_type_id": 0,
+    "latitude": -27.16567960718597,
+    "longitude": -49.644450542889956,
+    "river_name": "Rio Itoupava",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 3.404,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 1.702
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 2.3827999999999996
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 3.404
+     }
+    ],
+    "attention_level": 3.404,
+    "observation_level": 2.3827999999999996,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 0.9099999999999993,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:09:18.603673Z"
+   },
+   {
+    "station_id": "60c6cf33-0148-4c64-842d-5a118f53b6f4",
+    "name": "Barragem Sul Ituporanga",
+    "station_type_id": 0,
+    "latitude": -27.503854751586914,
+    "longitude": -49.55359649658203,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "overflow_cota_m": 31,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 15.5
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 21.7
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 31
+     }
+    ],
+    "attention_level": 31,
+    "observation_level": 21.7,
+    "band_key": "atencao",
+    "band_label": "Atenção",
+    "band_color": "#eab308",
+    "band_ordinal": 1,
+    "band_is_overflow": false,
+    "level_status": 1,
+    "level_gauge_zero_m": 370,
+    "level_absolute_m": 389.010009765625,
+    "level_m": 19.010009765625,
+    "rainfall_1h": 7.659999999999999,
+    "rainfall_2h": 14.55,
+    "rainfall_24h": 17.55,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:59.506Z"
+   },
+   {
+    "station_id": "65334d3c-8d2d-4857-b7b4-b2a1b67b2ea0",
+    "name": "Serra Taboão",
+    "station_type_id": 0,
+    "latitude": -27.263806996,
+    "longitude": -49.58475347,
+    "level_sensor": 0,
+    "rainfall_sensor": 1,
+    "rainfall_1h": 4.400000000000001,
+    "rainfall_2h": 10.299999999999995,
+    "rainfall_24h": 18.000000000000007,
+    "is_raining": true,
+    "temperature_c": 0,
+    "wind_speed_ms": 1.2847665534350046,
+    "last_reading_at": "2026-08-31T12:25:04.429312Z"
+   },
+   {
+    "station_id": "977818a2-b62c-413b-b605-f2d6c89bdc41",
+    "name": "Valada São Paulo",
+    "station_type_id": 0,
+    "latitude": -27.136113064,
+    "longitude": -49.62347124,
+    "river_name": "Rio das Cobras",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 3.06,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 1.53
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 2.142
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 3.06
+     }
+    ],
+    "attention_level": 3.06,
+    "observation_level": 2.142,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 0.536072144288577,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:25:29.27396Z"
+   },
+   {
+    "station_id": "9904f124-b719-4f2d-99ad-65d1a5045c1b",
+    "name": "Ribeirão do Tigre",
+    "station_type_id": 0,
+    "latitude": -27.262949755357248,
+    "longitude": -49.68920359411101,
+    "river_name": "Ribeirão do Tigre",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 2.451,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 1.2255
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 1.7157
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 2.451
+     }
+    ],
+    "attention_level": 2.451,
+    "observation_level": 1.7157,
+    "band_key": "atencao",
+    "band_label": "Atenção",
+    "band_color": "#eab308",
+    "band_ordinal": 1,
+    "band_is_overflow": false,
+    "level_status": 1,
+    "level_m": 1.3892595063375577,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:23:41.788051Z"
+   },
+   {
+    "station_id": "9be9253b-7525-441e-924f-1a1be0944530",
+    "name": "Agronômica",
+    "station_type_id": 0,
+    "latitude": -27.257997512817383,
+    "longitude": -49.71219253540039,
+    "river_name": "Rio Trombudo",
+    "river_position": 2,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 4.22,
+    "rainfall_1h": 5,
+    "rainfall_2h": 10.8,
+    "rainfall_24h": 13.6,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:38Z"
+   },
+   {
+    "station_id": "b77a75b8-c79c-4117-8db9-e44955f5e45a",
+    "name": "SDC-SC Salete (H)",
+    "station_type_id": 0,
+    "latitude": -26.98270034790039,
+    "longitude": -50.01100158691406,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 400.4,
+    "rainfall_1h": 3.8,
+    "rainfall_2h": 11.2,
+    "rainfall_24h": 18.2,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:56.467Z"
+   },
+   {
+    "station_id": "bd65df3e-a5e3-4760-a879-56df0fb90787",
+    "name": "Vidal Ramos",
+    "station_type_id": 0,
+    "latitude": -27.38547706604004,
+    "longitude": -49.35812759399414,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 2.93,
+    "rainfall_1h": 8.16,
+    "rainfall_2h": 17.019999999999996,
+    "rainfall_24h": 18.959999999999997,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:50.688Z"
+   },
+   {
+    "station_id": "caca79cc-d21b-4333-bea8-0128a4fd3117",
+    "name": "Petrolândia",
+    "station_type_id": 0,
+    "latitude": -27.53580093383789,
+    "longitude": -49.696998596191406,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 450.74,
+    "rainfall_1h": 5.4,
+    "rainfall_2h": 9.6,
+    "rainfall_24h": 11.999999999999998,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:45.277Z"
+   },
+   {
+    "station_id": "d1f36c77-3b26-4f0b-a43f-5c7f5f39f665",
+    "name": "SDC-SC Laurentino",
+    "station_type_id": 0,
+    "latitude": -27.222692489624023,
+    "longitude": -49.73173522949219,
+    "river_name": "Rio Itajaí-Açu",
+    "river_position": 3,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 2.92,
+    "rainfall_1h": 5.4,
+    "rainfall_2h": 10.8,
+    "rainfall_24h": 14.200000000000001,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:31.298Z"
+   },
+   {
+    "station_id": "d2f60af1-53e3-497f-81d6-c6498d28f5a2",
+    "name": "SDC-SC Rio do Sul",
+    "station_type_id": 0,
+    "latitude": -27.20722007751465,
+    "longitude": -49.63349914550781,
+    "river_name": "Rio Itajaí-Açu",
+    "river_position": 6,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 3.76,
+    "rainfall_1h": 8.46,
+    "rainfall_2h": 15.709999999999999,
+    "rainfall_24h": 20.439999999999998,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:58.752Z"
+   },
+   {
+    "station_id": "d6e340c8-c1d6-441d-8fd0-4381ff17cb54",
+    "name": "Barragem Oeste Taió",
+    "station_type_id": 0,
+    "latitude": -27.09743881225586,
+    "longitude": -50.03879165649414,
+    "river_name": "Rio Itajaí-Açu",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "overflow_cota_m": 23.3,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 11.65
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 16.31
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 23.3
+     }
+    ],
+    "attention_level": 23.3,
+    "observation_level": 16.31,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_gauge_zero_m": 339,
+    "level_absolute_m": 348.7900085449219,
+    "level_m": 9.790008544921875,
+    "rainfall_1h": 4.739999999999999,
+    "rainfall_2h": 13.14,
+    "rainfall_24h": 24.289999999999996,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:21:54.58Z"
+   },
+   {
+    "station_id": "d7c9ca1a-bf7e-40b3-918b-68bfd869ae8c",
+    "name": "Fundo Canoas",
+    "station_type_id": 0,
+    "latitude": -27.193367432,
+    "longitude": -49.679439754,
+    "river_name": "Ribeirão Fundo do Canoas",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 2.187,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 1.0935
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 1.5308999999999997
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 2.187
+     }
+    ],
+    "attention_level": 2.187,
+    "observation_level": 1.5308999999999997,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 0,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:25:24.514168Z"
+   },
+   {
+    "station_id": "d918188f-23b0-4722-9170-6db4b8f19274",
+    "name": "Rio do Oeste",
+    "station_type_id": 0,
+    "latitude": -27.185070037841797,
+    "longitude": -49.807533264160156,
+    "river_name": "Rio Itajaí-Açu",
+    "river_position": 2,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": null
+   },
+   {
+    "station_id": "e641eeec-41db-419c-81d8-b99991f23d4b",
+    "name": "Atalanta (H)",
+    "station_type_id": 0,
+    "latitude": -27.40060043334961,
+    "longitude": -49.71799850463867,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "level_m": 454.12,
+    "rainfall_1h": 2.8,
+    "rainfall_2h": 7.6,
+    "rainfall_24h": 9.999999999999998,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:22:00Z"
+   },
+   {
+    "station_id": "f6360951-219f-4859-935f-b2e2d13962f1",
+    "name": "Ponte Dom Tito Buss",
+    "station_type_id": 0,
+    "latitude": -27.206783432556648,
+    "longitude": -49.63349523825673,
+    "river_name": "Rio Itajaí-Açu",
+    "river_position": 7,
+    "level_sensor": 1,
+    "rainfall_sensor": 1,
+    "overflow_cota_m": 6.5,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 4.5
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 5.5
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 6.5
+     }
+    ],
+    "attention_level": 6.5,
+    "observation_level": 5.5,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 3.667873754152824,
+    "rainfall_1h": 4.25,
+    "rainfall_2h": 10.75,
+    "rainfall_24h": 16.75,
+    "is_raining": true,
+    "last_reading_at": "2026-08-31T12:24:31.110632Z"
+   },
+   {
+    "station_id": "f6eef1ec-d6a0-4a53-be01-2495509b2435",
+    "name": "Taboão",
+    "station_type_id": 0,
+    "latitude": -27.232194444,
+    "longitude": -49.613513889,
+    "river_name": "Ribeirão Taboão",
+    "river_position": 1,
+    "level_sensor": 1,
+    "rainfall_sensor": 0,
+    "overflow_cota_m": 3.666,
+    "band_thresholds": [
+     {
+      "band_key": "atencao",
+      "label": "Atenção",
+      "color_hex": "#eab308",
+      "ordinal": 1,
+      "is_overflow": false,
+      "cota_m": 1.833
+     },
+     {
+      "band_key": "alerta",
+      "label": "Alerta",
+      "color_hex": "#f97316",
+      "ordinal": 2,
+      "is_overflow": false,
+      "cota_m": 2.5662
+     },
+     {
+      "band_key": "emergencia",
+      "label": "Emergência",
+      "color_hex": "#ef4444",
+      "ordinal": 3,
+      "is_overflow": true,
+      "cota_m": 3.666
+     }
+    ],
+    "attention_level": 3.666,
+    "observation_level": 2.5662,
+    "band_key": "normal",
+    "band_label": "Normal",
+    "band_color": "#22c55e",
+    "band_ordinal": 0,
+    "band_is_overflow": false,
+    "level_status": 0,
+    "level_m": 0.5086724482988652,
+    "rainfall_1h": 0,
+    "rainfall_2h": 0,
+    "rainfall_24h": 0,
+    "is_raining": false,
+    "last_reading_at": "2026-08-31T12:24:56.644024Z"
+   }
+  ]
+ },
+ "history_30d_sample": {
+  "station_id": "f6360951-219f-4859-935f-b2e2d13962f1",
+  "station_type": 0,
+  "level_datum": "gauge_zero",
+  "level": [
+   {
+    "timestamp": "2026-08-01T13:00:00Z",
+    "value": 2.9407829734937714
+   },
+   {
+    "timestamp": "2026-08-01T14:00:00Z",
+    "value": 2.8955348860524484
+   },
+   {
+    "timestamp": "2026-08-01T15:00:00Z",
+    "value": 2.856571551491857
+   },
+   {
+    "timestamp": "2026-08-01T16:00:00Z",
+    "value": 2.8192807121645562
+   },
+   {
+    "timestamp": "2026-08-01T17:00:00Z",
+    "value": 2.780943236826283
+   },
+   {
+    "timestamp": "2026-08-01T18:00:00Z",
+    "value": 2.7664479787939027
+   },
+   {
+    "timestamp": "2026-08-01T19:00:00Z",
+    "value": 2.7655088899469176
+   },
+   {
+    "timestamp": "2026-08-01T20:00:00Z",
+    "value": 2.801733084799638
+   },
+   {
+    "timestamp": "2026-08-01T21:00:00Z",
+    "value": 2.83221020679188
+   },
+   {
+    "timestamp": "2026-08-01T22:00:00Z",
+    "value": 2.8392680377997577
+   },
+   {
+    "timestamp": "2026-08-01T23:00:00Z",
+    "value": 2.8398147356783903
+   },
+   {
+    "timestamp": "2026-08-02T00:00:00Z",
+    "value": 2.8460656377811007
+   },
+   {
+    "timestamp": "2026-08-02T01:00:00Z",
+    "value": 2.8539242822500803
+   },
+   {
+    "timestamp": "2026-08-02T02:00:00Z",
+    "value": 2.8689416231608926
+   },
+   {
+    "timestamp": "2026-08-02T03:00:00Z",
+    "value": 2.8527390180878562
+   },
+   {
+    "timestamp": "2026-08-02T04:00:00Z",
+    "value": 2.835796769389391
+   },
+   {
+    "timestamp": "2026-08-02T05:00:00Z",
+    "value": 2.8272947318462265
+   },
+   {
+    "timestamp": "2026-08-02T06:00:00Z",
+    "value": 2.7994810402107926
+   },
+   {
+    "timestamp": "2026-08-02T07:00:00Z",
+    "value": 2.7921737066919805
+   },
+   {
+    "timestamp": "2026-08-02T08:00:00Z",
+    "value": 2.7893700012304663
+   },
+   {
+    "timestamp": "2026-08-02T09:00:00Z",
+    "value": 2.7881395348837215
+   },
+   {
+    "timestamp": "2026-08-02T10:00:00Z",
+    "value": 2.770816326530613
+   },
+   {
+    "timestamp": "2026-08-02T11:00:00Z",
+    "value": 2.7135721839415163
+   },
+   {
+    "timestamp": "2026-08-02T12:00:00Z",
+    "value": 2.663865117782732
+   },
+   {
+    "timestamp": "2026-08-02T13:00:00Z",
+    "value": 2.5985333355293077
+   },
+   {
+    "timestamp": "2026-08-02T14:00:00Z",
+    "value": 2.555596816976127
+   },
+   {
+    "timestamp": "2026-08-02T18:00:00Z",
+    "value": 2.549416832339298
+   },
+   {
+    "timestamp": "2026-08-02T19:00:00Z",
+    "value": 2.5814265197905164
+   },
+   {
+    "timestamp": "2026-08-02T20:00:00Z",
+    "value": 2.6428132612142705
+   },
+   {
+    "timestamp": "2026-08-02T21:00:00Z",
+    "value": 2.687195029406184
+   },
+   {
+    "timestamp": "2026-08-02T22:00:00Z",
+    "value": 2.713755454372984
+   },
+   {
+    "timestamp": "2026-08-02T23:00:00Z",
+    "value": 2.7351518065668348
+   },
+   {
+    "timestamp": "2026-08-03T00:00:00Z",
+    "value": 2.7588778441053066
+   },
+   {
+    "timestamp": "2026-08-03T01:00:00Z",
+    "value": 2.77106261782214
+   },
+   {
+    "timestamp": "2026-08-03T02:00:00Z",
+    "value": 2.7792965647298473
+   },
+   {
+    "timestamp": "2026-08-03T03:00:00Z",
+    "value": 2.7822309269954357
+   },
+   {
+    "timestamp": "2026-08-03T04:00:00Z",
+    "value": 2.7751941803184796
+   },
+   {
+    "timestamp": "2026-08-03T05:00:00Z",
+    "value": 2.7716468913146657
+   },
+   {
+    "timestamp": "2026-08-03T06:00:00Z",
+    "value": 2.7685496620460537
+   },
+   {
+    "timestamp": "2026-08-03T07:00:00Z",
+    "value": 2.7726356589147287
+   },
+   {
+    "timestamp": "2026-08-03T08:00:00Z",
+    "value": 2.7826024363233652
+   },
+   {
+    "timestamp": "2026-08-03T09:00:00Z",
+    "value": 2.797075266353536
+   },
+   {
+    "timestamp": "2026-08-03T10:00:00Z",
+    "value": 2.796207878500238
+   },
+   {
+    "timestamp": "2026-08-03T11:00:00Z",
+    "value": 2.7621872855315655
+   },
+   {
+    "timestamp": "2026-08-03T12:00:00Z",
+    "value": 2.7337948979276674
+   },
+   {
+    "timestamp": "2026-08-03T13:00:00Z",
+    "value": 2.6986966420034135
+   },
+   {
+    "timestamp": "2026-08-03T14:00:00Z",
+    "value": 2.6455031552925496
+   },
+   {
+    "timestamp": "2026-08-03T15:00:00Z",
+    "value": 2.6072331927378483
+   },
+   {
+    "timestamp": "2026-08-03T16:00:00Z",
+    "value": 2.5739827038543703
+   },
+   {
+    "timestamp": "2026-08-03T17:00:00Z",
+    "value": 2.5581948450763154
+   },
+   {
+    "timestamp": "2026-08-03T18:00:00Z",
+    "value": 2.5713421096068916
+   },
+   {
+    "timestamp": "2026-08-03T19:00:00Z",
+    "value": 2.58796201030281
+   },
+   {
+    "timestamp": "2026-08-03T20:00:00Z",
+    "value": 2.637818101777728
+   },
+   {
+    "timestamp": "2026-08-03T21:00:00Z",
+    "value": 2.670594763801934
+   },
+   {
+    "timestamp": "2026-08-03T22:00:00Z",
+    "value": 2.693602380601053
+   },
+   {
+    "timestamp": "2026-08-03T23:00:00Z",
+    "value": 2.7130904837236103
+   },
+   {
+    "timestamp": "2026-08-04T00:00:00Z",
+    "value": 2.7187917874460075
+   },
+   {
+    "timestamp": "2026-08-04T01:00:00Z",
+    "value": 2.7302293495282255
+   },
+   {
+    "timestamp": "2026-08-04T02:00:00Z",
+    "value": 2.732728998576176
+   },
+   {
+    "timestamp": "2026-08-04T03:00:00Z",
+    "value": 2.7426957759848136
+   },
+   {
+    "timestamp": "2026-08-04T04:00:00Z",
+    "value": 2.747041958902424
+   },
+   {
+    "timestamp": "2026-08-04T05:00:00Z",
+    "value": 2.7356953013763663
+   },
+   {
+    "timestamp": "2026-08-04T06:00:00Z",
+    "value": 2.7314320082483685
+   },
+   {
+    "timestamp": "2026-08-04T07:00:00Z",
+    "value": 2.7212197437114383
+   },
+   {
+    "timestamp": "2026-08-04T08:00:00Z",
+    "value": 2.7318984337921237
+   },
+   {
+    "timestamp": "2026-08-04T09:00:00Z",
+    "value": 2.7320170859041295
+   },
+   {
+    "timestamp": "2026-08-04T10:00:00Z",
+    "value": 2.729940673943998
+   },
+   {
+    "timestamp": "2026-08-04T11:00:00Z",
+    "value": 2.717172248874439
+   },
+   {
+    "timestamp": "2026-08-04T12:00:00Z",
+    "value": 2.6836378296338457
+   },
+   {
+    "timestamp": "2026-08-04T13:00:00Z",
+    "value": 2.6647846708404472
+   },
+   {
+    "timestamp": "2026-08-04T14:00:00Z",
+    "value": 2.6399013444990973
+   },
+   {
+    "timestamp": "2026-08-04T15:00:00Z",
+    "value": 2.588007585165904
+   },
+   {
+    "timestamp": "2026-08-04T16:00:00Z",
+    "value": 2.5865268030697695
+   },
+   {
+    "timestamp": "2026-08-04T17:00:00Z",
+    "value": 2.527882628376977
+   },
+   {
+    "timestamp": "2026-08-04T18:00:00Z",
+    "value": 2.5318613372358922
+   },
+   {
+    "timestamp": "2026-08-04T19:00:00Z",
+    "value": 2.5472840090943545
+   },
+   {
+    "timestamp": "2026-08-04T20:00:00Z",
+    "value": 2.611101311223385
+   },
+   {
+    "timestamp": "2026-08-04T21:00:00Z",
+    "value": 2.6575708176237436
+   },
+   {
+    "timestamp": "2026-08-04T22:00:00Z",
+    "value": 2.6875507493834188
+   },
+   {
+    "timestamp": "2026-08-04T23:00:00Z",
+    "value": 2.705099183211402
+   },
+   {
+    "timestamp": "2026-08-05T00:00:00Z",
+    "value": 2.715364722153999
+   },
+   {
+    "timestamp": "2026-08-05T01:00:00Z",
+    "value": 2.7255331231685322
+   },
+   {
+    "timestamp": "2026-08-05T02:00:00Z",
+    "value": 2.7251955348988477
+   },
+   {
+    "timestamp": "2026-08-05T03:00:00Z",
+    "value": 2.7202115159044253
+   },
+   {
+    "timestamp": "2026-08-05T04:00:00Z",
+    "value": 2.717858319652234
+   },
+   {
+    "timestamp": "2026-08-05T05:00:00Z",
+    "value": 2.714068075346373
+   },
+   {
+    "timestamp": "2026-08-05T06:00:00Z",
+    "value": 2.7114993662650346
+   },
+   {
+    "timestamp": "2026-08-05T07:00:00Z",
+    "value": 2.7071600199423784
+   },
+   {
+    "timestamp": "2026-08-05T08:00:00Z",
+    "value": 2.708111364067539
+   },
+   {
+    "timestamp": "2026-08-05T09:00:00Z",
+    "value": 2.713505394924673
+   },
+   {
+    "timestamp": "2026-08-05T10:00:00Z",
+    "value": 2.714193327996411
+   },
+   {
+    "timestamp": "2026-08-05T11:00:00Z",
+    "value": 2.7104782093605957
+   },
+   {
+    "timestamp": "2026-08-05T12:00:00Z",
+    "value": 2.699381732329938
+   },
+   {
+    "timestamp": "2026-08-05T13:00:00Z",
+    "value": 2.6800847185968775
+   },
+   {
+    "timestamp": "2026-08-05T14:00:00Z",
+    "value": 2.668148640007869
+   },
+   {
+    "timestamp": "2026-08-05T15:00:00Z",
+    "value": 2.674389110225762
+   },
+   {
+    "timestamp": "2026-08-05T16:00:00Z",
+    "value": 2.6744749736685445
+   },
+   {
+    "timestamp": "2026-08-05T17:00:00Z",
+    "value": 2.6796063365585274
+   },
+   {
+    "timestamp": "2026-08-05T18:00:00Z",
+    "value": 2.6784235129592746
+   },
+   {
+    "timestamp": "2026-08-05T19:00:00Z",
+    "value": 2.691576963779118
+   },
+   {
+    "timestamp": "2026-08-05T20:00:00Z",
+    "value": 2.697022580621112
+   },
+   {
+    "timestamp": "2026-08-05T21:00:00Z",
+    "value": 2.698396545127825
+   },
+   {
+    "timestamp": "2026-08-05T22:00:00Z",
+    "value": 2.702749092224678
+   },
+   {
+    "timestamp": "2026-08-05T23:00:00Z",
+    "value": 2.706756476703532
+   },
+   {
+    "timestamp": "2026-08-06T00:00:00Z",
+    "value": 2.7183765050539797
+   },
+   {
+    "timestamp": "2026-08-06T01:00:00Z",
+    "value": 2.713623074433849
+   },
+   {
+    "timestamp": "2026-08-06T02:00:00Z",
+    "value": 2.7069848780798336
+   },
+   {
+    "timestamp": "2026-08-06T03:00:00Z",
+    "value": 2.7072629039347245
+   },
+   {
+    "timestamp": "2026-08-06T04:00:00Z",
+    "value": 2.702355554841227
+   },
+   {
+    "timestamp": "2026-08-06T05:00:00Z",
+    "value": 2.700558595039022
+   },
+   {
+    "timestamp": "2026-08-06T06:00:00Z",
+    "value": 2.693055936790508
+   },
+   {
+    "timestamp": "2026-08-06T07:00:00Z",
+    "value": 2.6890086891793676
+   },
+   {
+    "timestamp": "2026-08-06T08:00:00Z",
+    "value": 2.688071787391237
+   },
+   {
+    "timestamp": "2026-08-06T09:00:00Z",
+    "value": 2.6900228938752946
+   },
+   {
+    "timestamp": "2026-08-06T10:00:00Z",
+    "value": 2.6954857078567542
+   },
+   {
+    "timestamp": "2026-08-06T11:00:00Z",
+    "value": 2.685768604115416
+   },
+   {
+    "timestamp": "2026-08-06T12:00:00Z",
+    "value": 2.6798557494161277
+   },
+   {
+    "timestamp": "2026-08-06T13:00:00Z",
+    "value": 2.649199792607621
+   },
+   {
+    "timestamp": "2026-08-06T14:00:00Z",
+    "value": 2.6482377048043335
+   },
+   {
+    "timestamp": "2026-08-06T15:00:00Z",
+    "value": 2.692449054357284
+   },
+   {
+    "timestamp": "2026-08-06T16:00:00Z",
+    "value": 2.708358989292001
+   },
+   {
+    "timestamp": "2026-08-06T17:00:00Z",
+    "value": 2.6753885683066785
+   },
+   {
+    "timestamp": "2026-08-06T18:00:00Z",
+    "value": 2.6445404195459448
+   },
+   {
+    "timestamp": "2026-08-06T19:00:00Z",
+    "value": 2.663203597298789
+   },
+   {
+    "timestamp": "2026-08-06T20:00:00Z",
+    "value": 2.6893293492695878
+   },
+   {
+    "timestamp": "2026-08-06T21:00:00Z",
+    "value": 2.7162016781843485
+   },
+   {
+    "timestamp": "2026-08-06T22:00:00Z",
+    "value": 2.727271395355141
+   },
+   {
+    "timestamp": "2026-08-06T23:00:00Z",
+    "value": 2.729200196874616
+   },
+   {
+    "timestamp": "2026-08-07T00:00:00Z",
+    "value": 2.748616107228779
+   },
+   {
+    "timestamp": "2026-08-07T01:00:00Z",
+    "value": 2.795258661604176
+   },
+   {
+    "timestamp": "2026-08-07T02:00:00Z",
+    "value": 2.8320162676137017
+   },
+   {
+    "timestamp": "2026-08-07T03:00:00Z",
+    "value": 2.860754627432367
+   },
+   {
+    "timestamp": "2026-08-07T04:00:00Z",
+    "value": 2.9327685492801767
+   },
+   {
+    "timestamp": "2026-08-07T05:00:00Z",
+    "value": 2.9942303433001123
+   },
+   {
+    "timestamp": "2026-08-07T06:00:00Z",
+    "value": 3.0721926910299024
+   },
+   {
+    "timestamp": "2026-08-07T07:00:00Z",
+    "value": 3.1746290143964555
+   },
+   {
+    "timestamp": "2026-08-07T08:00:00Z",
+    "value": 3.286585574965169
+   },
+   {
+    "timestamp": "2026-08-07T09:00:00Z",
+    "value": 3.386146179401994
+   },
+   {
+    "timestamp": "2026-08-07T10:00:00Z",
+    "value": 3.476677740863786
+   },
+   {
+    "timestamp": "2026-08-07T11:00:00Z",
+    "value": 3.544700796002172
+   },
+   {
+    "timestamp": "2026-08-07T12:00:00Z",
+    "value": 3.580814478669435
+   },
+   {
+    "timestamp": "2026-08-07T13:00:00Z",
+    "value": 3.5963857641645207
+   },
+   {
+    "timestamp": "2026-08-07T14:00:00Z",
+    "value": 3.612081086964048
+   },
+   {
+    "timestamp": "2026-08-07T15:00:00Z",
+    "value": 3.623772520214362
+   },
+   {
+    "timestamp": "2026-08-07T16:00:00Z",
+    "value": 3.6733954391078774
+   },
+   {
+    "timestamp": "2026-08-07T17:00:00Z",
+    "value": 3.6232970974406897
+   },
+   {
+    "timestamp": "2026-08-07T18:00:00Z",
+    "value": 3.6536791817964716
+   },
+   {
+    "timestamp": "2026-08-07T19:00:00Z",
+    "value": 3.703189439556163
+   },
+   {
+    "timestamp": "2026-08-07T20:00:00Z",
+    "value": 3.7580889145820864
+   },
+   {
+    "timestamp": "2026-08-07T21:00:00Z",
+    "value": 3.822728258311316
+   },
+   {
+    "timestamp": "2026-08-07T22:00:00Z",
+    "value": 3.8438160155802468
+   },
+   {
+    "timestamp": "2026-08-07T23:00:00Z",
+    "value": 3.856024363233668
+   },
+   {
+    "timestamp": "2026-08-08T00:00:00Z",
+    "value": 3.84610722877764
+   },
+   {
+    "timestamp": "2026-08-08T01:00:00Z",
+    "value": 3.8243521594684355
+   },
+   {
+    "timestamp": "2026-08-08T02:00:00Z",
+    "value": 3.820365448504982
+   },
+   {
+    "timestamp": "2026-08-08T03:00:00Z",
+    "value": 3.8207191083485137
+   },
+   {
+    "timestamp": "2026-08-08T04:00:00Z",
+    "value": 3.8145843807432662
+   },
+   {
+    "timestamp": "2026-08-08T05:00:00Z",
+    "value": 3.8006782413688533
+   },
+   {
+    "timestamp": "2026-08-08T06:00:00Z",
+    "value": 3.779019373954432
+   },
+   {
+    "timestamp": "2026-08-08T07:00:00Z",
+    "value": 3.7684057118002894
+   },
+   {
+    "timestamp": "2026-08-08T08:00:00Z",
+    "value": 3.7561000850516577
+   },
+   {
+    "timestamp": "2026-08-08T09:00:00Z",
+    "value": 3.7422393172553976
+   },
+   {
+    "timestamp": "2026-08-08T10:00:00Z",
+    "value": 3.716946711621571
+   },
+   {
+    "timestamp": "2026-08-08T11:00:00Z",
+    "value": 3.6572160479984785
+   },
+   {
+    "timestamp": "2026-08-08T12:00:00Z",
+    "value": 3.628014969494415
+   },
+   {
+    "timestamp": "2026-08-08T13:00:00Z",
+    "value": 3.5849867706812466
+   },
+   {
+    "timestamp": "2026-08-08T14:00:00Z",
+    "value": 3.5183161667303384
+   },
+   {
+    "timestamp": "2026-08-08T15:00:00Z",
+    "value": 3.4735521847640816
+   },
+   {
+    "timestamp": "2026-08-08T16:00:00Z",
+    "value": 3.4375304540420806
+   },
+   {
+    "timestamp": "2026-08-08T17:00:00Z",
+    "value": 3.3963316970214397
+   },
+   {
+    "timestamp": "2026-08-08T18:00:00Z",
+    "value": 3.367145847869399
+   },
+   {
+    "timestamp": "2026-08-08T19:00:00Z",
+    "value": 3.381537884471118
+   },
+   {
+    "timestamp": "2026-08-08T20:00:00Z",
+    "value": 3.400809943865278
+   },
+   {
+    "timestamp": "2026-08-08T21:00:00Z",
+    "value": 3.409046037019459
+   },
+   {
+    "timestamp": "2026-08-08T22:00:00Z",
+    "value": 3.46266196013289
+   },
+   {
+    "timestamp": "2026-08-08T23:00:00Z",
+    "value": 3.541936402467963
+   },
+   {
+    "timestamp": "2026-08-09T00:00:00Z",
+    "value": 3.6123920265780725
+   },
+   {
+    "timestamp": "2026-08-09T01:00:00Z",
+    "value": 3.6618936877076407
+   },
+   {
+    "timestamp": "2026-08-09T02:00:00Z",
+    "value": 3.7458845514950183
+   },
+   {
+    "timestamp": "2026-08-09T03:00:00Z",
+    "value": 3.81617447879851
+   },
+   {
+    "timestamp": "2026-08-09T04:00:00Z",
+    "value": 3.867214797085955
+   },
+   {
+    "timestamp": "2026-08-09T05:00:00Z",
+    "value": 3.907778796771827
+   },
+   {
+    "timestamp": "2026-08-09T06:00:00Z",
+    "value": 3.9396908244680846
+   },
+   {
+    "timestamp": "2026-08-09T07:00:00Z",
+    "value": 3.9525177304964525
+   },
+   {
+    "timestamp": "2026-08-09T08:00:00Z",
+    "value": 3.966198420373953
+   },
+   {
+    "timestamp": "2026-08-09T09:00:00Z",
+    "value": 3.966031640105741
+   },
+   {
+    "timestamp": "2026-08-09T10:00:00Z",
+    "value": 3.960385638297872
+   },
+   {
+    "timestamp": "2026-08-09T11:00:00Z",
+    "value": 3.9328735565009634
+   },
+   {
+    "timestamp": "2026-08-09T12:00:00Z",
+    "value": 3.893839907045629
+   },
+   {
+    "timestamp": "2026-08-09T13:00:00Z",
+    "value": 3.845641010518797
+   },
+   {
+    "timestamp": "2026-08-09T14:00:00Z",
+    "value": 3.8191391032163264
+   },
+   {
+    "timestamp": "2026-08-09T15:00:00Z",
+    "value": 3.809236572631077
+   },
+   {
+    "timestamp": "2026-08-09T16:00:00Z",
+    "value": 3.7793058404992057
+   },
+   {
+    "timestamp": "2026-08-09T17:00:00Z",
+    "value": 3.800671540489941
+   },
+   {
+    "timestamp": "2026-08-09T18:00:00Z",
+    "value": 3.7824483599378778
+   },
+   {
+    "timestamp": "2026-08-09T19:00:00Z",
+    "value": 3.794891222805703
+   },
+   {
+    "timestamp": "2026-08-09T20:00:00Z",
+    "value": 3.8161595782548545
+   },
+   {
+    "timestamp": "2026-08-09T21:00:00Z",
+    "value": 3.8257161117787035
+   },
+   {
+    "timestamp": "2026-08-09T22:00:00Z",
+    "value": 3.8414994197827568
+   },
+   {
+    "timestamp": "2026-08-09T23:00:00Z",
+    "value": 3.8514270251643468
+   },
+   {
+    "timestamp": "2026-08-10T00:00:00Z",
+    "value": 3.8535871105851616
+   },
+   {
+    "timestamp": "2026-08-10T01:00:00Z",
+    "value": 3.862344166018708
+   },
+   {
+    "timestamp": "2026-08-10T02:00:00Z",
+    "value": 3.8804737367021276
+   },
+   {
+    "timestamp": "2026-08-10T03:00:00Z",
+    "value": 3.901714138641043
+   },
+   {
+    "timestamp": "2026-08-10T04:00:00Z",
+    "value": 3.9302402196293746
+   },
+   {
+    "timestamp": "2026-08-10T05:00:00Z",
+    "value": 3.956313164893616
+   },
+   {
+    "timestamp": "2026-08-10T06:00:00Z",
+    "value": 3.9826810226492784
+   },
+   {
+    "timestamp": "2026-08-10T07:00:00Z",
+    "value": 4.003714539007093
+   },
+   {
+    "timestamp": "2026-08-10T08:00:00Z",
+    "value": 4.027207446808511
+   },
+   {
+    "timestamp": "2026-08-10T09:00:00Z",
+    "value": 4.051123468729851
+   },
+   {
+    "timestamp": "2026-08-10T10:00:00Z",
+    "value": 4.068874113475178
+   },
+   {
+    "timestamp": "2026-08-10T11:00:00Z",
+    "value": 4.084319515774028
+   },
+   {
+    "timestamp": "2026-08-10T12:00:00Z",
+    "value": 4.0862683418928825
+   },
+   {
+    "timestamp": "2026-08-10T13:00:00Z",
+    "value": 4.026776333616079
+   },
+   {
+    "timestamp": "2026-08-10T14:00:00Z",
+    "value": 3.9673551934749014
+   },
+   {
+    "timestamp": "2026-08-10T15:00:00Z",
+    "value": 3.9127403031551955
+   },
+   {
+    "timestamp": "2026-08-10T16:00:00Z",
+    "value": 3.8640352874217414
+   },
+   {
+    "timestamp": "2026-08-10T17:00:00Z",
+    "value": 3.71465265553264
+   },
+   {
+    "timestamp": "2026-08-10T18:00:00Z",
+    "value": 3.618645418326692
+   },
+   {
+    "timestamp": "2026-08-10T19:00:00Z",
+    "value": 3.6329971837551454
+   },
+   {
+    "timestamp": "2026-08-10T20:00:00Z",
+    "value": 3.6588234620231423
+   },
+   {
+    "timestamp": "2026-08-10T21:00:00Z",
+    "value": 3.6733220477082456
+   },
+   {
+    "timestamp": "2026-08-10T22:00:00Z",
+    "value": 3.665122981651838
+   },
+   {
+    "timestamp": "2026-08-10T23:00:00Z",
+    "value": 3.654389492228154
+   },
+   {
+    "timestamp": "2026-08-11T00:00:00Z",
+    "value": 3.6338884442940964
+   },
+   {
+    "timestamp": "2026-08-11T01:00:00Z",
+    "value": 3.615913238377983
+   },
+   {
+    "timestamp": "2026-08-11T02:00:00Z",
+    "value": 3.589598646034816
+   },
+   {
+    "timestamp": "2026-08-11T03:00:00Z",
+    "value": 3.563909574468085
+   },
+   {
+    "timestamp": "2026-08-11T04:00:00Z",
+    "value": 3.538064516129031
+   },
+   {
+    "timestamp": "2026-08-11T05:00:00Z",
+    "value": 3.518918439716311
+   },
+   {
+    "timestamp": "2026-08-11T06:00:00Z",
+    "value": 3.4930568484042555
+   },
+   {
+    "timestamp": "2026-08-11T07:00:00Z",
+    "value": 3.441869423472889
+   },
+   {
+    "timestamp": "2026-08-11T08:00:00Z",
+    "value": 3.43093085106383
+   },
+   {
+    "timestamp": "2026-08-11T09:00:00Z",
+    "value": 3.429476396276597
+   },
+   {
+    "timestamp": "2026-08-11T10:00:00Z",
+    "value": 3.4147374742621817
+   },
+   {
+    "timestamp": "2026-08-11T11:00:00Z",
+    "value": 3.383636071882983
+   },
+   {
+    "timestamp": "2026-08-11T12:00:00Z",
+    "value": 3.3464360017804116
+   },
+   {
+    "timestamp": "2026-08-11T13:00:00Z",
+    "value": 3.3153040523483033
+   },
+   {
+    "timestamp": "2026-08-11T14:00:00Z",
+    "value": 3.328347264437689
+   },
+   {
+    "timestamp": "2026-08-11T15:00:00Z",
+    "value": 3.3291190159574464
+   },
+   {
+    "timestamp": "2026-08-11T16:00:00Z",
+    "value": 3.3054629629629635
+   },
+   {
+    "timestamp": "2026-08-11T17:00:00Z",
+    "value": 3.271127109317681
+   },
+   {
+    "timestamp": "2026-08-11T18:00:00Z",
+    "value": 3.2629264817629178
+   },
+   {
+    "timestamp": "2026-08-11T19:00:00Z",
+    "value": 3.2604964539007093
+   },
+   {
+    "timestamp": "2026-08-11T20:00:00Z",
+    "value": 3.255539974210187
+   },
+   {
+    "timestamp": "2026-08-11T21:00:00Z",
+    "value": 3.2585756413525324
+   },
+   {
+    "timestamp": "2026-08-11T22:00:00Z",
+    "value": 3.257171985815602
+   },
+   {
+    "timestamp": "2026-08-11T23:00:00Z",
+    "value": 3.2579846251063342
+   },
+   {
+    "timestamp": "2026-08-12T00:00:00Z",
+    "value": 3.258916437886067
+   },
+   {
+    "timestamp": "2026-08-12T01:00:00Z",
+    "value": 3.262941323138299
+   },
+   {
+    "timestamp": "2026-08-12T02:00:00Z",
+    "value": 3.2576152482269496
+   },
+   {
+    "timestamp": "2026-08-12T03:00:00Z",
+    "value": 3.2621854365370506
+   },
+   {
+    "timestamp": "2026-08-12T04:00:00Z",
+    "value": 3.264430407801419
+   },
+   {
+    "timestamp": "2026-08-12T05:00:00Z",
+    "value": 3.2666254091653024
+   },
+   {
+    "timestamp": "2026-08-12T06:00:00Z",
+    "value": 3.2743484042553193
+   },
+   {
+    "timestamp": "2026-08-12T07:00:00Z",
+    "value": 3.291303191489362
+   },
+   {
+    "timestamp": "2026-08-12T08:00:00Z",
+    "value": 3.2990245367192865
+   },
+   {
+    "timestamp": "2026-08-12T09:00:00Z",
+    "value": 3.3251523210831726
+   },
+   {
+    "timestamp": "2026-08-12T10:00:00Z",
+    "value": 3.3346019032303658
+   },
+   {
+    "timestamp": "2026-08-12T11:00:00Z",
+    "value": 3.353168918474247
+   },
+   {
+    "timestamp": "2026-08-12T12:00:00Z",
+    "value": 3.380840357790815
+   },
+   {
+    "timestamp": "2026-08-12T13:00:00Z",
+    "value": 3.3809756354573275
+   },
+   {
+    "timestamp": "2026-08-12T14:00:00Z",
+    "value": 3.3975219954304694
+   },
+   {
+    "timestamp": "2026-08-12T15:00:00Z",
+    "value": 3.4158566682486944
+   },
+   {
+    "timestamp": "2026-08-12T16:00:00Z",
+    "value": 3.4277218794494537
+   },
+   {
+    "timestamp": "2026-08-12T17:00:00Z",
+    "value": 3.4286710963455143
+   },
+   {
+    "timestamp": "2026-08-12T18:00:00Z",
+    "value": 3.4286710963455143
+   },
+   {
+    "timestamp": "2026-08-12T19:00:00Z",
+    "value": 3.4919085805934236
+   },
+   {
+    "timestamp": "2026-08-12T20:00:00Z",
+    "value": 3.5431703844328433
+   },
+   {
+    "timestamp": "2026-08-12T21:00:00Z",
+    "value": 3.5890560201626776
+   },
+   {
+    "timestamp": "2026-08-12T22:00:00Z",
+    "value": 3.6541101091599435
+   },
+   {
+    "timestamp": "2026-08-12T23:00:00Z",
+    "value": 3.74531676022454
+   },
+   {
+    "timestamp": "2026-08-13T00:00:00Z",
+    "value": 3.870088593576966
+   },
+   {
+    "timestamp": "2026-08-13T01:00:00Z",
+    "value": 3.99578073089701
+   },
+   {
+    "timestamp": "2026-08-13T02:00:00Z",
+    "value": 4.109978877093549
+   },
+   {
+    "timestamp": "2026-08-13T03:00:00Z",
+    "value": 4.19375883855676
+   },
+   {
+    "timestamp": "2026-08-13T04:00:00Z",
+    "value": 4.260827392448416
+   },
+   {
+    "timestamp": "2026-08-13T05:00:00Z",
+    "value": 4.313624758120095
+   },
+   {
+    "timestamp": "2026-08-13T06:00:00Z",
+    "value": 4.360717960853006
+   },
+   {
+    "timestamp": "2026-08-13T07:00:00Z",
+    "value": 4.398269852473401
+   },
+   {
+    "timestamp": "2026-08-13T08:00:00Z",
+    "value": 4.4312269927284245
+   },
+   {
+    "timestamp": "2026-08-13T09:00:00Z",
+    "value": 4.430362253812643
+   },
+   {
+    "timestamp": "2026-08-13T10:00:00Z",
+    "value": 4.3757160357718625
+   },
+   {
+    "timestamp": "2026-08-13T11:00:00Z",
+    "value": 4.273189368770766
+   },
+   {
+    "timestamp": "2026-08-13T12:00:00Z",
+    "value": 4.132157680805399
+   },
+   {
+    "timestamp": "2026-08-13T13:00:00Z",
+    "value": 3.9507359188372266
+   },
+   {
+    "timestamp": "2026-08-13T14:00:00Z",
+    "value": 3.868761895937844
+   },
+   {
+    "timestamp": "2026-08-13T15:00:00Z",
+    "value": 3.848400421411962
+   },
+   {
+    "timestamp": "2026-08-13T16:00:00Z",
+    "value": 3.760409708780108
+   },
+   {
+    "timestamp": "2026-08-13T17:00:00Z",
+    "value": 3.6697844900551435
+   },
+   {
+    "timestamp": "2026-08-13T18:00:00Z",
+    "value": 3.6114016242594524
+   },
+   {
+    "timestamp": "2026-08-13T19:00:00Z",
+    "value": 3.5767326097907217
+   },
+   {
+    "timestamp": "2026-08-13T20:00:00Z",
+    "value": 3.571875056332179
+   },
+   {
+    "timestamp": "2026-08-13T21:00:00Z",
+    "value": 3.57232188999631
+   },
+   {
+    "timestamp": "2026-08-13T22:00:00Z",
+    "value": 3.5638713174512846
+   },
+   {
+    "timestamp": "2026-08-13T23:00:00Z",
+    "value": 3.602568493100321
+   },
+   {
+    "timestamp": "2026-08-14T00:00:00Z",
+    "value": 3.668134284567159
+   },
+   {
+    "timestamp": "2026-08-14T01:00:00Z",
+    "value": 3.7907412029051852
+   },
+   {
+    "timestamp": "2026-08-14T02:00:00Z",
+    "value": 3.9666627371128502
+   },
+   {
+    "timestamp": "2026-08-14T03:00:00Z",
+    "value": 4.148851141356769
+   },
+   {
+    "timestamp": "2026-08-14T04:00:00Z",
+    "value": 4.268397261653075
+   },
+   {
+    "timestamp": "2026-08-14T05:00:00Z",
+    "value": 4.374518272425248
+   },
+   {
+    "timestamp": "2026-08-14T06:00:00Z",
+    "value": 4.46125066981031
+   },
+   {
+    "timestamp": "2026-08-14T07:00:00Z",
+    "value": 4.526989202657809
+   },
+   {
+    "timestamp": "2026-08-14T08:00:00Z",
+    "value": 4.573017527780959
+   },
+   {
+    "timestamp": "2026-08-14T09:00:00Z",
+    "value": 4.597275747508306
+   },
+   {
+    "timestamp": "2026-08-14T10:00:00Z",
+    "value": 4.5929611237716115
+   },
+   {
+    "timestamp": "2026-08-14T11:00:00Z",
+    "value": 4.570139993734917
+   },
+   {
+    "timestamp": "2026-08-14T12:00:00Z",
+    "value": 4.514315687188239
+   },
+   {
+    "timestamp": "2026-08-14T13:00:00Z",
+    "value": 4.453488840337573
+   },
+   {
+    "timestamp": "2026-08-14T14:00:00Z",
+    "value": 4.413285565834505
+   },
+   {
+    "timestamp": "2026-08-14T15:00:00Z",
+    "value": 4.378321001707456
+   },
+   {
+    "timestamp": "2026-08-14T16:00:00Z",
+    "value": 4.340557746103453
+   },
+   {
+    "timestamp": "2026-08-14T17:00:00Z",
+    "value": 4.274798583444002
+   },
+   {
+    "timestamp": "2026-08-14T18:00:00Z",
+    "value": 4.2666444406815405
+   },
+   {
+    "timestamp": "2026-08-14T19:00:00Z",
+    "value": 4.234359748161286
+   },
+   {
+    "timestamp": "2026-08-14T20:00:00Z",
+    "value": 4.213274338179635
+   },
+   {
+    "timestamp": "2026-08-14T21:00:00Z",
+    "value": 4.187494643059361
+   },
+   {
+    "timestamp": "2026-08-14T22:00:00Z",
+    "value": 4.17623617012202
+   },
+   {
+    "timestamp": "2026-08-14T23:00:00Z",
+    "value": 4.185229166390913
+   },
+   {
+    "timestamp": "2026-08-15T00:00:00Z",
+    "value": 4.234081632653062
+   },
+   {
+    "timestamp": "2026-08-15T01:00:00Z",
+    "value": 4.331253884899797
+   },
+   {
+    "timestamp": "2026-08-15T02:00:00Z",
+    "value": 4.456654970515537
+   },
+   {
+    "timestamp": "2026-08-15T03:00:00Z",
+    "value": 4.567299909392932
+   },
+   {
+    "timestamp": "2026-08-15T04:00:00Z",
+    "value": 4.663444075304542
+   },
+   {
+    "timestamp": "2026-08-15T05:00:00Z",
+    "value": 4.750815671898268
+   },
+   {
+    "timestamp": "2026-08-15T06:00:00Z",
+    "value": 4.839345193441217
+   },
+   {
+    "timestamp": "2026-08-15T07:00:00Z",
+    "value": 4.9318826135105205
+   },
+   {
+    "timestamp": "2026-08-15T08:00:00Z",
+    "value": 5.032250562640662
+   },
+   {
+    "timestamp": "2026-08-15T09:00:00Z",
+    "value": 5.111020255063765
+   },
+   {
+    "timestamp": "2026-08-15T10:00:00Z",
+    "value": 5.176981326612441
+   },
+   {
+    "timestamp": "2026-08-15T11:00:00Z",
+    "value": 5.208865035428607
+   },
+   {
+    "timestamp": "2026-08-15T12:00:00Z",
+    "value": 5.2115357617150435
+   },
+   {
+    "timestamp": "2026-08-15T13:00:00Z",
+    "value": 5.204610670346704
+   },
+   {
+    "timestamp": "2026-08-15T14:00:00Z",
+    "value": 5.161074589008898
+   },
+   {
+    "timestamp": "2026-08-15T15:00:00Z",
+    "value": 5.11536103116658
+   },
+   {
+    "timestamp": "2026-08-15T16:00:00Z",
+    "value": 5.11083166599961
+   },
+   {
+    "timestamp": "2026-08-15T17:00:00Z",
+    "value": 5.104139838791154
+   },
+   {
+    "timestamp": "2026-08-15T18:00:00Z",
+    "value": 5.117749819722965
+   },
+   {
+    "timestamp": "2026-08-15T19:00:00Z",
+    "value": 5.131079181736165
+   },
+   {
+    "timestamp": "2026-08-15T20:00:00Z",
+    "value": 5.142107127047365
+   },
+   {
+    "timestamp": "2026-08-15T21:00:00Z",
+    "value": 5.140597363096587
+   },
+   {
+    "timestamp": "2026-08-15T22:00:00Z",
+    "value": 5.131598258130268
+   },
+   {
+    "timestamp": "2026-08-15T23:00:00Z",
+    "value": 5.124386730880621
+   },
+   {
+    "timestamp": "2026-08-16T00:00:00Z",
+    "value": 5.117047948059053
+   },
+   {
+    "timestamp": "2026-08-16T01:00:00Z",
+    "value": 5.104843640782542
+   },
+   {
+    "timestamp": "2026-08-16T02:00:00Z",
+    "value": 5.092393520365618
+   },
+   {
+    "timestamp": "2026-08-16T03:00:00Z",
+    "value": 5.074246690585567
+   },
+   {
+    "timestamp": "2026-08-16T04:00:00Z",
+    "value": 5.050038781750073
+   },
+   {
+    "timestamp": "2026-08-16T05:00:00Z",
+    "value": 5.0258486927152966
+   },
+   {
+    "timestamp": "2026-08-16T06:00:00Z",
+    "value": 5.002171800825112
+   },
+   {
+    "timestamp": "2026-08-16T07:00:00Z",
+    "value": 4.973971977627306
+   },
+   {
+    "timestamp": "2026-08-16T08:00:00Z",
+    "value": 4.952728943951033
+   },
+   {
+    "timestamp": "2026-08-16T09:00:00Z",
+    "value": 4.929330074497138
+   },
+   {
+    "timestamp": "2026-08-16T10:00:00Z",
+    "value": 4.904636874114048
+   },
+   {
+    "timestamp": "2026-08-16T11:00:00Z",
+    "value": 4.87023848583258
+   },
+   {
+    "timestamp": "2026-08-16T12:00:00Z",
+    "value": 4.81494584174056
+   },
+   {
+    "timestamp": "2026-08-16T13:00:00Z",
+    "value": 4.764755640439475
+   },
+   {
+    "timestamp": "2026-08-16T14:00:00Z",
+    "value": 4.721795430846527
+   },
+   {
+    "timestamp": "2026-08-16T15:00:00Z",
+    "value": 4.688498761018354
+   },
+   {
+    "timestamp": "2026-08-16T16:00:00Z",
+    "value": 4.665600638731335
+   },
+   {
+    "timestamp": "2026-08-16T17:00:00Z",
+    "value": 4.69027585553133
+   },
+   {
+    "timestamp": "2026-08-16T18:00:00Z",
+    "value": 4.779311033710309
+   },
+   {
+    "timestamp": "2026-08-16T19:00:00Z",
+    "value": 4.898391476593703
+   },
+   {
+    "timestamp": "2026-08-16T20:00:00Z",
+    "value": 4.985123863818308
+   },
+   {
+    "timestamp": "2026-08-16T21:00:00Z",
+    "value": 5.05518660988231
+   },
+   {
+    "timestamp": "2026-08-16T22:00:00Z",
+    "value": 5.103159741984441
+   },
+   {
+    "timestamp": "2026-08-16T23:00:00Z",
+    "value": 5.152177954847275
+   },
+   {
+    "timestamp": "2026-08-17T00:00:00Z",
+    "value": 5.189125403149307
+   },
+   {
+    "timestamp": "2026-08-17T01:00:00Z",
+    "value": 5.209822203701179
+   },
+   {
+    "timestamp": "2026-08-17T02:00:00Z",
+    "value": 5.22057531409982
+   },
+   {
+    "timestamp": "2026-08-17T03:00:00Z",
+    "value": 5.227441536916197
+   },
+   {
+    "timestamp": "2026-08-17T04:00:00Z",
+    "value": 5.229626880076592
+   },
+   {
+    "timestamp": "2026-08-17T05:00:00Z",
+    "value": 5.22986314165337
+   },
+   {
+    "timestamp": "2026-08-17T06:00:00Z",
+    "value": 5.228209210207726
+   },
+   {
+    "timestamp": "2026-08-17T07:00:00Z",
+    "value": 5.226954119007838
+   },
+   {
+    "timestamp": "2026-08-17T08:00:00Z",
+    "value": 5.227451886804939
+   },
+   {
+    "timestamp": "2026-08-17T09:00:00Z",
+    "value": 5.225356038782034
+   },
+   {
+    "timestamp": "2026-08-17T10:00:00Z",
+    "value": 5.2127177815132955
+   },
+   {
+    "timestamp": "2026-08-17T11:00:00Z",
+    "value": 5.195252966628113
+   },
+   {
+    "timestamp": "2026-08-17T12:00:00Z",
+    "value": 5.174893299428442
+   },
+   {
+    "timestamp": "2026-08-17T13:00:00Z",
+    "value": 5.135267555273723
+   },
+   {
+    "timestamp": "2026-08-17T14:00:00Z",
+    "value": 5.088587404003747
+   },
+   {
+    "timestamp": "2026-08-17T15:00:00Z",
+    "value": 5.0538797102442805
+   },
+   {
+    "timestamp": "2026-08-17T16:00:00Z",
+    "value": 5.021778947767082
+   },
+   {
+    "timestamp": "2026-08-17T17:00:00Z",
+    "value": 4.995681935849483
+   },
+   {
+    "timestamp": "2026-08-17T18:00:00Z",
+    "value": 4.974736241150948
+   },
+   {
+    "timestamp": "2026-08-17T19:00:00Z",
+    "value": 4.970168988353506
+   },
+   {
+    "timestamp": "2026-08-17T20:00:00Z",
+    "value": 4.9999505587831825
+   },
+   {
+    "timestamp": "2026-08-17T21:00:00Z",
+    "value": 5.039953785831585
+   },
+   {
+    "timestamp": "2026-08-17T22:00:00Z",
+    "value": 5.088319035294345
+   },
+   {
+    "timestamp": "2026-08-17T23:00:00Z",
+    "value": 5.12841586036805
+   },
+   {
+    "timestamp": "2026-08-18T00:00:00Z",
+    "value": 5.146794725858469
+   },
+   {
+    "timestamp": "2026-08-18T01:00:00Z",
+    "value": 5.167953931400833
+   },
+   {
+    "timestamp": "2026-08-18T02:00:00Z",
+    "value": 5.1865958388667535
+   },
+   {
+    "timestamp": "2026-08-18T03:00:00Z",
+    "value": 5.200630608877621
+   },
+   {
+    "timestamp": "2026-08-18T04:00:00Z",
+    "value": 5.212030498694875
+   },
+   {
+    "timestamp": "2026-08-18T05:00:00Z",
+    "value": 5.2197963700752545
+   },
+   {
+    "timestamp": "2026-08-18T06:00:00Z",
+    "value": 5.224919247740221
+   },
+   {
+    "timestamp": "2026-08-18T07:00:00Z",
+    "value": 5.230702566079765
+   },
+   {
+    "timestamp": "2026-08-18T08:00:00Z",
+    "value": 5.241528693214852
+   },
+   {
+    "timestamp": "2026-08-18T09:00:00Z",
+    "value": 5.25300704895442
+   },
+   {
+    "timestamp": "2026-08-18T10:00:00Z",
+    "value": 5.258665162875805
+   },
+   {
+    "timestamp": "2026-08-18T11:00:00Z",
+    "value": 5.246146906626367
+   },
+   {
+    "timestamp": "2026-08-18T12:00:00Z",
+    "value": 5.221357578974083
+   },
+   {
+    "timestamp": "2026-08-18T13:00:00Z",
+    "value": 5.166089998599439
+   },
+   {
+    "timestamp": "2026-08-18T14:00:00Z",
+    "value": 5.129215949095121
+   },
+   {
+    "timestamp": "2026-08-18T15:00:00Z",
+    "value": 5.091130442867961
+   },
+   {
+    "timestamp": "2026-08-18T16:00:00Z",
+    "value": 5.04857876706961
+   },
+   {
+    "timestamp": "2026-08-18T17:00:00Z",
+    "value": 5.005283665399594
+   },
+   {
+    "timestamp": "2026-08-18T18:00:00Z",
+    "value": 4.975204016235847
+   },
+   {
+    "timestamp": "2026-08-18T19:00:00Z",
+    "value": 4.988374236385575
+   },
+   {
+    "timestamp": "2026-08-18T20:00:00Z",
+    "value": 5.050690818957105
+   },
+   {
+    "timestamp": "2026-08-18T21:00:00Z",
+    "value": 5.08473698212183
+   },
+   {
+    "timestamp": "2026-08-18T22:00:00Z",
+    "value": 5.112030981854793
+   },
+   {
+    "timestamp": "2026-08-18T23:00:00Z",
+    "value": 5.135634711229449
+   },
+   {
+    "timestamp": "2026-08-19T00:00:00Z",
+    "value": 5.1473431274900365
+   },
+   {
+    "timestamp": "2026-08-19T01:00:00Z",
+    "value": 5.156619956953792
+   },
+   {
+    "timestamp": "2026-08-19T02:00:00Z",
+    "value": 5.1536987533736
+   },
+   {
+    "timestamp": "2026-08-19T03:00:00Z",
+    "value": 5.159482071713146
+   },
+   {
+    "timestamp": "2026-08-19T04:00:00Z",
+    "value": 5.155339795303835
+   },
+   {
+    "timestamp": "2026-08-19T05:00:00Z",
+    "value": 5.146314499711144
+   },
+   {
+    "timestamp": "2026-08-19T06:00:00Z",
+    "value": 5.139894393365162
+   },
+   {
+    "timestamp": "2026-08-19T07:00:00Z",
+    "value": 5.136494288626227
+   },
+   {
+    "timestamp": "2026-08-19T08:00:00Z",
+    "value": 5.132565074444997
+   },
+   {
+    "timestamp": "2026-08-19T09:00:00Z",
+    "value": 5.134789857111406
+   },
+   {
+    "timestamp": "2026-08-19T10:00:00Z",
+    "value": 5.12897010393748
+   },
+   {
+    "timestamp": "2026-08-19T11:00:00Z",
+    "value": 5.095718986473922
+   },
+   {
+    "timestamp": "2026-08-19T12:00:00Z",
+    "value": 5.043272082942792
+   },
+   {
+    "timestamp": "2026-08-19T13:00:00Z",
+    "value": 4.971516582133611
+   },
+   {
+    "timestamp": "2026-08-19T14:00:00Z",
+    "value": 4.89096453445834
+   },
+   {
+    "timestamp": "2026-08-19T15:00:00Z",
+    "value": 4.849602129107562
+   },
+   {
+    "timestamp": "2026-08-19T16:00:00Z",
+    "value": 4.83006525942283
+   },
+   {
+    "timestamp": "2026-08-19T17:00:00Z",
+    "value": 4.815697515932538
+   },
+   {
+    "timestamp": "2026-08-19T18:00:00Z",
+    "value": 4.826232590749213
+   },
+   {
+    "timestamp": "2026-08-19T19:00:00Z",
+    "value": 4.860921586223482
+   },
+   {
+    "timestamp": "2026-08-19T20:00:00Z",
+    "value": 4.918923607854517
+   },
+   {
+    "timestamp": "2026-08-19T21:00:00Z",
+    "value": 4.978408843124902
+   },
+   {
+    "timestamp": "2026-08-19T22:00:00Z",
+    "value": 5.013742534837426
+   },
+   {
+    "timestamp": "2026-08-19T23:00:00Z",
+    "value": 5.048432500184325
+   },
+   {
+    "timestamp": "2026-08-20T00:00:00Z",
+    "value": 5.085834826039181
+   },
+   {
+    "timestamp": "2026-08-20T01:00:00Z",
+    "value": 5.131869710367507
+   },
+   {
+    "timestamp": "2026-08-20T02:00:00Z",
+    "value": 5.160929638006257
+   },
+   {
+    "timestamp": "2026-08-20T03:00:00Z",
+    "value": 5.181115966242555
+   },
+   {
+    "timestamp": "2026-08-20T04:00:00Z",
+    "value": 5.187853434745863
+   },
+   {
+    "timestamp": "2026-08-20T05:00:00Z",
+    "value": 5.1886985391766265
+   },
+   {
+    "timestamp": "2026-08-20T06:00:00Z",
+    "value": 5.183027341621798
+   },
+   {
+    "timestamp": "2026-08-20T07:00:00Z",
+    "value": 5.177081662276694
+   },
+   {
+    "timestamp": "2026-08-20T08:00:00Z",
+    "value": 5.165904076569322
+   },
+   {
+    "timestamp": "2026-08-20T09:00:00Z",
+    "value": 5.156697511031143
+   },
+   {
+    "timestamp": "2026-08-20T10:00:00Z",
+    "value": 5.151181938911021
+   },
+   {
+    "timestamp": "2026-08-20T11:00:00Z",
+    "value": 5.125726288975191
+   },
+   {
+    "timestamp": "2026-08-20T12:00:00Z",
+    "value": 5.110345285524569
+   },
+   {
+    "timestamp": "2026-08-20T13:00:00Z",
+    "value": 5.061291004969283
+   },
+   {
+    "timestamp": "2026-08-20T14:00:00Z",
+    "value": 5.016506155517674
+   },
+   {
+    "timestamp": "2026-08-20T15:00:00Z",
+    "value": 4.94738066297177
+   },
+   {
+    "timestamp": "2026-08-20T16:00:00Z",
+    "value": 4.904641042633091
+   },
+   {
+    "timestamp": "2026-08-20T17:00:00Z",
+    "value": 4.861076455176227
+   },
+   {
+    "timestamp": "2026-08-20T18:00:00Z",
+    "value": 4.827051027170311
+   },
+   {
+    "timestamp": "2026-08-20T19:00:00Z",
+    "value": 4.809331892523434
+   },
+   {
+    "timestamp": "2026-08-20T20:00:00Z",
+    "value": 4.834093423147035
+   },
+   {
+    "timestamp": "2026-08-20T21:00:00Z",
+    "value": 4.841205887942736
+   },
+   {
+    "timestamp": "2026-08-20T22:00:00Z",
+    "value": 4.841586654928614
+   },
+   {
+    "timestamp": "2026-08-20T23:00:00Z",
+    "value": 4.842536722717623
+   },
+   {
+    "timestamp": "2026-08-21T00:00:00Z",
+    "value": 4.833010181496236
+   },
+   {
+    "timestamp": "2026-08-21T01:00:00Z",
+    "value": 4.813643204957946
+   },
+   {
+    "timestamp": "2026-08-21T02:00:00Z",
+    "value": 4.816028300590738
+   },
+   {
+    "timestamp": "2026-08-21T03:00:00Z",
+    "value": 4.814820707168823
+   },
+   {
+    "timestamp": "2026-08-21T04:00:00Z",
+    "value": 4.8047610747486225
+   },
+   {
+    "timestamp": "2026-08-21T05:00:00Z",
+    "value": 4.790445768707294
+   },
+   {
+    "timestamp": "2026-08-21T06:00:00Z",
+    "value": 4.7757807308970115
+   },
+   {
+    "timestamp": "2026-08-21T07:00:00Z",
+    "value": 4.776436609152289
+   },
+   {
+    "timestamp": "2026-08-21T08:00:00Z",
+    "value": 4.761968706462333
+   },
+   {
+    "timestamp": "2026-08-21T09:00:00Z",
+    "value": 4.759859172144862
+   },
+   {
+    "timestamp": "2026-08-21T10:00:00Z",
+    "value": 4.730522121886853
+   },
+   {
+    "timestamp": "2026-08-21T11:00:00Z",
+    "value": 4.682378505709365
+   },
+   {
+    "timestamp": "2026-08-21T12:00:00Z",
+    "value": 4.620638868351937
+   },
+   {
+    "timestamp": "2026-08-21T13:00:00Z",
+    "value": 4.550744571997059
+   },
+   {
+    "timestamp": "2026-08-21T14:00:00Z",
+    "value": 4.491913854362308
+   },
+   {
+    "timestamp": "2026-08-21T15:00:00Z",
+    "value": 4.440664687690863
+   },
+   {
+    "timestamp": "2026-08-21T16:00:00Z",
+    "value": 4.398098269540765
+   },
+   {
+    "timestamp": "2026-08-21T17:00:00Z",
+    "value": 4.351712769988633
+   },
+   {
+    "timestamp": "2026-08-21T18:00:00Z",
+    "value": 4.304109511178476
+   },
+   {
+    "timestamp": "2026-08-21T19:00:00Z",
+    "value": 4.290473747873071
+   },
+   {
+    "timestamp": "2026-08-21T20:00:00Z",
+    "value": 4.282046849247713
+   },
+   {
+    "timestamp": "2026-08-21T21:00:00Z",
+    "value": 4.32499301453825
+   },
+   {
+    "timestamp": "2026-08-21T22:00:00Z",
+    "value": 4.329741602067184
+   },
+   {
+    "timestamp": "2026-08-21T23:00:00Z",
+    "value": 4.306205750945126
+   },
+   {
+    "timestamp": "2026-08-22T00:00:00Z",
+    "value": 4.2796565465323475
+   },
+   {
+    "timestamp": "2026-08-22T01:00:00Z",
+    "value": 4.276176861702126
+   },
+   {
+    "timestamp": "2026-08-22T02:00:00Z",
+    "value": 4.257947695035461
+   },
+   {
+    "timestamp": "2026-08-22T03:00:00Z",
+    "value": 4.225478723404255
+   },
+   {
+    "timestamp": "2026-08-22T04:00:00Z",
+    "value": 4.196969980765991
+   },
+   {
+    "timestamp": "2026-08-22T05:00:00Z",
+    "value": 4.16635031853403
+   },
+   {
+    "timestamp": "2026-08-22T06:00:00Z",
+    "value": 4.126572731390861
+   },
+   {
+    "timestamp": "2026-08-22T07:00:00Z",
+    "value": 4.087818288725682
+   },
+   {
+    "timestamp": "2026-08-22T08:00:00Z",
+    "value": 4.046268538192432
+   },
+   {
+    "timestamp": "2026-08-22T09:00:00Z",
+    "value": 4.013648863888384
+   },
+   {
+    "timestamp": "2026-08-22T10:00:00Z",
+    "value": 3.9687466478833104
+   },
+   {
+    "timestamp": "2026-08-22T11:00:00Z",
+    "value": 3.8738172256780006
+   },
+   {
+    "timestamp": "2026-08-22T12:00:00Z",
+    "value": 3.757178144254263
+   },
+   {
+    "timestamp": "2026-08-22T13:00:00Z",
+    "value": 3.6678687386517375
+   },
+   {
+    "timestamp": "2026-08-22T14:00:00Z",
+    "value": 3.5597054423521346
+   },
+   {
+    "timestamp": "2026-08-22T15:00:00Z",
+    "value": 3.501530014501892
+   },
+   {
+    "timestamp": "2026-08-22T16:00:00Z",
+    "value": 3.4227123780306163
+   },
+   {
+    "timestamp": "2026-08-22T17:00:00Z",
+    "value": 3.3898617591821725
+   },
+   {
+    "timestamp": "2026-08-22T18:00:00Z",
+    "value": 3.3457212663030167
+   },
+   {
+    "timestamp": "2026-08-22T19:00:00Z",
+    "value": 3.334927359325798
+   },
+   {
+    "timestamp": "2026-08-22T20:00:00Z",
+    "value": 3.3451217130802644
+   },
+   {
+    "timestamp": "2026-08-22T21:00:00Z",
+    "value": 3.3971480857182894
+   },
+   {
+    "timestamp": "2026-08-22T22:00:00Z",
+    "value": 3.4146302333562097
+   },
+   {
+    "timestamp": "2026-08-22T23:00:00Z",
+    "value": 3.418176365944233
+   },
+   {
+    "timestamp": "2026-08-23T00:00:00Z",
+    "value": 3.409899627459029
+   },
+   {
+    "timestamp": "2026-08-23T01:00:00Z",
+    "value": 3.378095475715235
+   },
+   {
+    "timestamp": "2026-08-23T02:00:00Z",
+    "value": 3.3411228523345455
+   },
+   {
+    "timestamp": "2026-08-23T03:00:00Z",
+    "value": 3.284029575258086
+   },
+   {
+    "timestamp": "2026-08-23T04:00:00Z",
+    "value": 3.215961410512308
+   },
+   {
+    "timestamp": "2026-08-23T05:00:00Z",
+    "value": 3.147574375059405
+   },
+   {
+    "timestamp": "2026-08-23T06:00:00Z",
+    "value": 3.0925845084025485
+   },
+   {
+    "timestamp": "2026-08-23T07:00:00Z",
+    "value": 3.0022907126922624
+   },
+   {
+    "timestamp": "2026-08-23T08:00:00Z",
+    "value": 2.9289936793080504
+   },
+   {
+    "timestamp": "2026-08-23T09:00:00Z",
+    "value": 2.8801330671989342
+   },
+   {
+    "timestamp": "2026-08-23T10:00:00Z",
+    "value": 2.821182341199954
+   },
+   {
+    "timestamp": "2026-08-23T11:00:00Z",
+    "value": 2.7152811973821853
+   },
+   {
+    "timestamp": "2026-08-23T12:00:00Z",
+    "value": 2.6056601225220932
+   },
+   {
+    "timestamp": "2026-08-23T13:00:00Z",
+    "value": 2.487229042744762
+   },
+   {
+    "timestamp": "2026-08-23T14:00:00Z",
+    "value": 2.416557879573233
+   },
+   {
+    "timestamp": "2026-08-23T15:00:00Z",
+    "value": 2.4029160854561997
+   },
+   {
+    "timestamp": "2026-08-23T16:00:00Z",
+    "value": 2.3825641025641016
+   },
+   {
+    "timestamp": "2026-08-23T17:00:00Z",
+    "value": 2.3603272027135733
+   },
+   {
+    "timestamp": "2026-08-23T18:00:00Z",
+    "value": 2.34802731995126
+   },
+   {
+    "timestamp": "2026-08-23T19:00:00Z",
+    "value": 2.362243100536565
+   },
+   {
+    "timestamp": "2026-08-23T20:00:00Z",
+    "value": 2.4173295126894176
+   },
+   {
+    "timestamp": "2026-08-23T21:00:00Z",
+    "value": 2.5051414465808444
+   },
+   {
+    "timestamp": "2026-08-23T22:00:00Z",
+    "value": 2.5563741134751763
+   },
+   {
+    "timestamp": "2026-08-23T23:00:00Z",
+    "value": 2.5630230496453903
+   },
+   {
+    "timestamp": "2026-08-24T00:00:00Z",
+    "value": 2.5636008738601825
+   },
+   {
+    "timestamp": "2026-08-24T01:00:00Z",
+    "value": 2.585979752916953
+   },
+   {
+    "timestamp": "2026-08-24T02:00:00Z",
+    "value": 2.600893894834443
+   },
+   {
+    "timestamp": "2026-08-24T03:00:00Z",
+    "value": 2.6038604143402804
+   },
+   {
+    "timestamp": "2026-08-24T04:00:00Z",
+    "value": 2.606231549902558
+   },
+   {
+    "timestamp": "2026-08-24T05:00:00Z",
+    "value": 2.6291350632069195
+   },
+   {
+    "timestamp": "2026-08-24T06:00:00Z",
+    "value": 2.618264331551951
+   },
+   {
+    "timestamp": "2026-08-24T07:00:00Z",
+    "value": 2.5984048569527602
+   },
+   {
+    "timestamp": "2026-08-24T08:00:00Z",
+    "value": 2.579610631826519
+   },
+   {
+    "timestamp": "2026-08-24T09:00:00Z",
+    "value": 2.571348276789536
+   },
+   {
+    "timestamp": "2026-08-24T10:00:00Z",
+    "value": 2.562198605153759
+   },
+   {
+    "timestamp": "2026-08-24T11:00:00Z",
+    "value": 2.5162271323910006
+   },
+   {
+    "timestamp": "2026-08-24T12:00:00Z",
+    "value": 2.4665569906990124
+   },
+   {
+    "timestamp": "2026-08-24T13:00:00Z",
+    "value": 2.4250456479728904
+   },
+   {
+    "timestamp": "2026-08-24T14:00:00Z",
+    "value": 2.403623784432164
+   },
+   {
+    "timestamp": "2026-08-24T15:00:00Z",
+    "value": 2.375513103524852
+   },
+   {
+    "timestamp": "2026-08-24T16:00:00Z",
+    "value": 2.3494231202977742
+   },
+   {
+    "timestamp": "2026-08-24T17:00:00Z",
+    "value": 2.333143958032125
+   },
+   {
+    "timestamp": "2026-08-24T18:00:00Z",
+    "value": 2.3184615384615386
+   },
+   {
+    "timestamp": "2026-08-24T19:00:00Z",
+    "value": 2.367870410485563
+   },
+   {
+    "timestamp": "2026-08-24T20:00:00Z",
+    "value": 2.4082735132155846
+   },
+   {
+    "timestamp": "2026-08-24T21:00:00Z",
+    "value": 2.4561071556538114
+   },
+   {
+    "timestamp": "2026-08-24T22:00:00Z",
+    "value": 2.4913902977074054
+   },
+   {
+    "timestamp": "2026-08-24T23:00:00Z",
+    "value": 2.4970957181734645
+   },
+   {
+    "timestamp": "2026-08-25T00:00:00Z",
+    "value": 2.5051796611766917
+   },
+   {
+    "timestamp": "2026-08-25T01:00:00Z",
+    "value": 2.510911118737131
+   },
+   {
+    "timestamp": "2026-08-25T02:00:00Z",
+    "value": 2.5123911568044464
+   },
+   {
+    "timestamp": "2026-08-25T03:00:00Z",
+    "value": 2.511519868585733
+   },
+   {
+    "timestamp": "2026-08-25T04:00:00Z",
+    "value": 2.5129621010638297
+   },
+   {
+    "timestamp": "2026-08-25T05:00:00Z",
+    "value": 2.5111959773936174
+   },
+   {
+    "timestamp": "2026-08-25T06:00:00Z",
+    "value": 2.5102546744036114
+   },
+   {
+    "timestamp": "2026-08-25T07:00:00Z",
+    "value": 2.5054576032540674
+   },
+   {
+    "timestamp": "2026-08-25T08:00:00Z",
+    "value": 2.506514241592314
+   },
+   {
+    "timestamp": "2026-08-25T09:00:00Z",
+    "value": 2.507902065081351
+   },
+   {
+    "timestamp": "2026-08-25T10:00:00Z",
+    "value": 2.4982038908283313
+   },
+   {
+    "timestamp": "2026-08-25T11:00:00Z",
+    "value": 2.4786697405079168
+   },
+   {
+    "timestamp": "2026-08-25T12:00:00Z",
+    "value": 2.434975399815594
+   },
+   {
+    "timestamp": "2026-08-25T13:00:00Z",
+    "value": 2.381108332493013
+   },
+   {
+    "timestamp": "2026-08-25T14:00:00Z",
+    "value": 2.3635029661168603
+   },
+   {
+    "timestamp": "2026-08-25T15:00:00Z",
+    "value": 2.3470034093769296
+   },
+   {
+    "timestamp": "2026-08-25T16:00:00Z",
+    "value": 2.3441431938310866
+   },
+   {
+    "timestamp": "2026-08-25T17:00:00Z",
+    "value": 2.346899251606853
+   },
+   {
+    "timestamp": "2026-08-25T18:00:00Z",
+    "value": 2.389527407610935
+   },
+   {
+    "timestamp": "2026-08-25T19:00:00Z",
+    "value": 2.407480259839196
+   },
+   {
+    "timestamp": "2026-08-25T20:00:00Z",
+    "value": 2.451389010219733
+   },
+   {
+    "timestamp": "2026-08-25T21:00:00Z",
+    "value": 2.492481383892771
+   },
+   {
+    "timestamp": "2026-08-25T22:00:00Z",
+    "value": 2.5113810744571152
+   },
+   {
+    "timestamp": "2026-08-25T23:00:00Z",
+    "value": 2.5226341862821333
+   },
+   {
+    "timestamp": "2026-08-26T00:00:00Z",
+    "value": 2.527341014584953
+   },
+   {
+    "timestamp": "2026-08-26T01:00:00Z",
+    "value": 2.520970111448835
+   },
+   {
+    "timestamp": "2026-08-26T02:00:00Z",
+    "value": 2.5020128246050413
+   },
+   {
+    "timestamp": "2026-08-26T03:00:00Z",
+    "value": 2.493191816018387
+   },
+   {
+    "timestamp": "2026-08-26T04:00:00Z",
+    "value": 2.514027161805648
+   },
+   {
+    "timestamp": "2026-08-26T05:00:00Z",
+    "value": 2.522464833533611
+   },
+   {
+    "timestamp": "2026-08-26T06:00:00Z",
+    "value": 2.509067586104828
+   },
+   {
+    "timestamp": "2026-08-26T07:00:00Z",
+    "value": 2.5003485664349223
+   },
+   {
+    "timestamp": "2026-08-26T08:00:00Z",
+    "value": 2.489017992440977
+   },
+   {
+    "timestamp": "2026-08-26T09:00:00Z",
+    "value": 2.4874021141113545
+   },
+   {
+    "timestamp": "2026-08-26T10:00:00Z",
+    "value": 2.490613443634465
+   },
+   {
+    "timestamp": "2026-08-26T11:00:00Z",
+    "value": 2.478933661986924
+   },
+   {
+    "timestamp": "2026-08-26T12:00:00Z",
+    "value": 2.4605259581827736
+   },
+   {
+    "timestamp": "2026-08-26T13:00:00Z",
+    "value": 2.4436050114786325
+   },
+   {
+    "timestamp": "2026-08-26T14:00:00Z",
+    "value": 2.423266440411194
+   },
+   {
+    "timestamp": "2026-08-26T15:00:00Z",
+    "value": 2.3906739196841102
+   },
+   {
+    "timestamp": "2026-08-26T16:00:00Z",
+    "value": 2.356291645052656
+   },
+   {
+    "timestamp": "2026-08-26T17:00:00Z",
+    "value": 2.343312634382195
+   },
+   {
+    "timestamp": "2026-08-26T18:00:00Z",
+    "value": 2.339464523411273
+   },
+   {
+    "timestamp": "2026-08-26T19:00:00Z",
+    "value": 2.3634706486406247
+   },
+   {
+    "timestamp": "2026-08-26T20:00:00Z",
+    "value": 2.399272908366534
+   },
+   {
+    "timestamp": "2026-08-26T21:00:00Z",
+    "value": 2.4565457739820116
+   },
+   {
+    "timestamp": "2026-08-26T22:00:00Z",
+    "value": 2.476582832389941
+   },
+   {
+    "timestamp": "2026-08-26T23:00:00Z",
+    "value": 2.475292313402767
+   },
+   {
+    "timestamp": "2026-08-27T00:00:00Z",
+    "value": 2.470417446421935
+   },
+   {
+    "timestamp": "2026-08-27T01:00:00Z",
+    "value": 2.4587950900644926
+   },
+   {
+    "timestamp": "2026-08-27T02:00:00Z",
+    "value": 2.4765947746314643
+   },
+   {
+    "timestamp": "2026-08-27T03:00:00Z",
+    "value": 2.4740587950060924
+   },
+   {
+    "timestamp": "2026-08-27T04:00:00Z",
+    "value": 2.4566423748794333
+   },
+   {
+    "timestamp": "2026-08-27T05:00:00Z",
+    "value": 2.4639849191096874
+   },
+   {
+    "timestamp": "2026-08-27T06:00:00Z",
+    "value": 2.462828073089702
+   },
+   {
+    "timestamp": "2026-08-27T07:00:00Z",
+    "value": 2.4642514199978574
+   },
+   {
+    "timestamp": "2026-08-27T08:00:00Z",
+    "value": 2.47030315614618
+   },
+   {
+    "timestamp": "2026-08-27T09:00:00Z",
+    "value": 2.481273532668881
+   },
+   {
+    "timestamp": "2026-08-27T10:00:00Z",
+    "value": 2.4842719211746576
+   },
+   {
+    "timestamp": "2026-08-27T11:00:00Z",
+    "value": 2.4555101410526214
+   },
+   {
+    "timestamp": "2026-08-27T12:00:00Z",
+    "value": 2.416696743219556
+   },
+   {
+    "timestamp": "2026-08-27T13:00:00Z",
+    "value": 2.3902355673523554
+   },
+   {
+    "timestamp": "2026-08-27T14:00:00Z",
+    "value": 2.3596789312709276
+   },
+   {
+    "timestamp": "2026-08-27T15:00:00Z",
+    "value": 2.3465035626916193
+   },
+   {
+    "timestamp": "2026-08-27T16:00:00Z",
+    "value": 2.3384479261854665
+   },
+   {
+    "timestamp": "2026-08-27T17:00:00Z",
+    "value": 2.3242987237863146
+   },
+   {
+    "timestamp": "2026-08-27T18:00:00Z",
+    "value": 2.330198807157058
+   },
+   {
+    "timestamp": "2026-08-27T19:00:00Z",
+    "value": 2.3642025804864706
+   },
+   {
+    "timestamp": "2026-08-27T20:00:00Z",
+    "value": 2.4148907347851196
+   },
+   {
+    "timestamp": "2026-08-27T21:00:00Z",
+    "value": 2.4623503186530806
+   },
+   {
+    "timestamp": "2026-08-27T22:00:00Z",
+    "value": 2.4840916792599708
+   },
+   {
+    "timestamp": "2026-08-27T23:00:00Z",
+    "value": 2.4951966845262623
+   },
+   {
+    "timestamp": "2026-08-28T00:00:00Z",
+    "value": 2.5037608704965084
+   },
+   {
+    "timestamp": "2026-08-28T01:00:00Z",
+    "value": 2.510995557997894
+   },
+   {
+    "timestamp": "2026-08-28T02:00:00Z",
+    "value": 2.5133457937620416
+   },
+   {
+    "timestamp": "2026-08-28T03:00:00Z",
+    "value": 2.5134559497527493
+   },
+   {
+    "timestamp": "2026-08-28T04:00:00Z",
+    "value": 2.5107747895995067
+   },
+   {
+    "timestamp": "2026-08-28T05:00:00Z",
+    "value": 2.50802743815955
+   },
+   {
+    "timestamp": "2026-08-28T06:00:00Z",
+    "value": 2.5003446115488406
+   },
+   {
+    "timestamp": "2026-08-28T07:00:00Z",
+    "value": 2.495820452150099
+   },
+   {
+    "timestamp": "2026-08-28T08:00:00Z",
+    "value": 2.4940306521155207
+   },
+   {
+    "timestamp": "2026-08-28T09:00:00Z",
+    "value": 2.498171914625075
+   },
+   {
+    "timestamp": "2026-08-28T10:00:00Z",
+    "value": 2.4798879482071707
+   },
+   {
+    "timestamp": "2026-08-28T11:00:00Z",
+    "value": 2.4396000958297557
+   },
+   {
+    "timestamp": "2026-08-28T12:00:00Z",
+    "value": 2.40540643131832
+   },
+   {
+    "timestamp": "2026-08-28T13:00:00Z",
+    "value": 2.356310892836826
+   },
+   {
+    "timestamp": "2026-08-28T14:00:00Z",
+    "value": 2.281209952193705
+   },
+   {
+    "timestamp": "2026-08-28T15:00:00Z",
+    "value": 2.2580112428875023
+   },
+   {
+    "timestamp": "2026-08-28T16:00:00Z",
+    "value": 2.243814894948842
+   },
+   {
+    "timestamp": "2026-08-28T17:00:00Z",
+    "value": 2.2397620311976563
+   },
+   {
+    "timestamp": "2026-08-28T18:00:00Z",
+    "value": 2.2842128183281263
+   },
+   {
+    "timestamp": "2026-08-28T19:00:00Z",
+    "value": 2.3093224437951876
+   },
+   {
+    "timestamp": "2026-08-28T20:00:00Z",
+    "value": 2.383146161666172
+   },
+   {
+    "timestamp": "2026-08-28T21:00:00Z",
+    "value": 2.439233102663759
+   },
+   {
+    "timestamp": "2026-08-28T22:00:00Z",
+    "value": 2.473715044080008
+   },
+   {
+    "timestamp": "2026-08-28T23:00:00Z",
+    "value": 2.5096500057427145
+   },
+   {
+    "timestamp": "2026-08-29T00:00:00Z",
+    "value": 2.5388342394277594
+   },
+   {
+    "timestamp": "2026-08-29T01:00:00Z",
+    "value": 2.5536966388995572
+   },
+   {
+    "timestamp": "2026-08-29T02:00:00Z",
+    "value": 2.5604841241096223
+   },
+   {
+    "timestamp": "2026-08-29T03:00:00Z",
+    "value": 2.566741921204071
+   },
+   {
+    "timestamp": "2026-08-29T04:00:00Z",
+    "value": 2.5690330569613447
+   },
+   {
+    "timestamp": "2026-08-29T05:00:00Z",
+    "value": 2.571611332447985
+   },
+   {
+    "timestamp": "2026-08-29T06:00:00Z",
+    "value": 2.5576345598000145
+   },
+   {
+    "timestamp": "2026-08-29T07:00:00Z",
+    "value": 2.553668765797026
+   },
+   {
+    "timestamp": "2026-08-29T08:00:00Z",
+    "value": 2.5452079852632465
+   },
+   {
+    "timestamp": "2026-08-29T09:00:00Z",
+    "value": 2.549725021482697
+   },
+   {
+    "timestamp": "2026-08-29T10:00:00Z",
+    "value": 2.5340578427032603
+   },
+   {
+    "timestamp": "2026-08-29T11:00:00Z",
+    "value": 2.529143212097844
+   },
+   {
+    "timestamp": "2026-08-29T12:00:00Z",
+    "value": 2.5387744261051024
+   },
+   {
+    "timestamp": "2026-08-29T13:00:00Z",
+    "value": 2.511575121992561
+   },
+   {
+    "timestamp": "2026-08-29T14:00:00Z",
+    "value": 2.4651317781974718
+   },
+   {
+    "timestamp": "2026-08-29T15:00:00Z",
+    "value": 2.4359162741361327
+   },
+   {
+    "timestamp": "2026-08-29T16:00:00Z",
+    "value": 2.3898303828888534
+   },
+   {
+    "timestamp": "2026-08-29T17:00:00Z",
+    "value": 2.424425710743617
+   },
+   {
+    "timestamp": "2026-08-29T18:00:00Z",
+    "value": 2.6986175409520583
+   },
+   {
+    "timestamp": "2026-08-29T19:00:00Z",
+    "value": 3.0167380323463533
+   },
+   {
+    "timestamp": "2026-08-29T20:00:00Z",
+    "value": 3.2478462291804546
+   },
+   {
+    "timestamp": "2026-08-29T21:00:00Z",
+    "value": 3.408984063745019
+   },
+   {
+    "timestamp": "2026-08-29T22:00:00Z",
+    "value": 3.532766710934042
+   },
+   {
+    "timestamp": "2026-08-29T23:00:00Z",
+    "value": 3.6136653386454176
+   },
+   {
+    "timestamp": "2026-08-30T00:00:00Z",
+    "value": 3.657558730594862
+   },
+   {
+    "timestamp": "2026-08-30T01:00:00Z",
+    "value": 3.6684347666804054
+   },
+   {
+    "timestamp": "2026-08-30T02:00:00Z",
+    "value": 3.676422846462896
+   },
+   {
+    "timestamp": "2026-08-30T03:00:00Z",
+    "value": 3.670962824488639
+   },
+   {
+    "timestamp": "2026-08-30T04:00:00Z",
+    "value": 3.652507271578139
+   },
+   {
+    "timestamp": "2026-08-30T05:00:00Z",
+    "value": 3.6400996649276145
+   },
+   {
+    "timestamp": "2026-08-30T06:00:00Z",
+    "value": 3.6315276518510675
+   },
+   {
+    "timestamp": "2026-08-30T07:00:00Z",
+    "value": 3.6154537277247587
+   },
+   {
+    "timestamp": "2026-08-30T08:00:00Z",
+    "value": 3.616015527786328
+   },
+   {
+    "timestamp": "2026-08-30T09:00:00Z",
+    "value": 3.6131880120713147
+   },
+   {
+    "timestamp": "2026-08-30T10:00:00Z",
+    "value": 3.6051953426603647
+   },
+   {
+    "timestamp": "2026-08-30T11:00:00Z",
+    "value": 3.613465914856631
+   },
+   {
+    "timestamp": "2026-08-30T12:00:00Z",
+    "value": 3.636854189358383
+   },
+   {
+    "timestamp": "2026-08-30T13:00:00Z",
+    "value": 3.631719506249641
+   },
+   {
+    "timestamp": "2026-08-30T14:00:00Z",
+    "value": 3.6410286010652477
+   },
+   {
+    "timestamp": "2026-08-30T15:00:00Z",
+    "value": 3.6458005165727294
+   },
+   {
+    "timestamp": "2026-08-30T16:00:00Z",
+    "value": 3.657705517728322
+   },
+   {
+    "timestamp": "2026-08-30T17:00:00Z",
+    "value": 3.6462513720189995
+   },
+   {
+    "timestamp": "2026-08-30T18:00:00Z",
+    "value": 3.5955467041815328
+   },
+   {
+    "timestamp": "2026-08-30T19:00:00Z",
+    "value": 3.5151472924943157
+   },
+   {
+    "timestamp": "2026-08-30T20:00:00Z",
+    "value": 3.4246165161783835
+   },
+   {
+    "timestamp": "2026-08-30T21:00:00Z",
+    "value": 3.378120884599555
+   },
+   {
+    "timestamp": "2026-08-30T22:00:00Z",
+    "value": 3.333222789191891
+   },
+   {
+    "timestamp": "2026-08-30T23:00:00Z",
+    "value": 3.3002127536366146
+   },
+   {
+    "timestamp": "2026-08-31T00:00:00Z",
+    "value": 3.2690000602028717
+   },
+   {
+    "timestamp": "2026-08-31T01:00:00Z",
+    "value": 3.2563962659093115
+   },
+   {
+    "timestamp": "2026-08-31T02:00:00Z",
+    "value": 3.288071848246834
+   },
+   {
+    "timestamp": "2026-08-31T03:00:00Z",
+    "value": 3.3207879075631155
+   },
+   {
+    "timestamp": "2026-08-31T04:00:00Z",
+    "value": 3.3435047021217468
+   },
+   {
+    "timestamp": "2026-08-31T05:00:00Z",
+    "value": 3.3786157253599094
+   },
+   {
+    "timestamp": "2026-08-31T06:00:00Z",
+    "value": 3.40880982529829
+   },
+   {
+    "timestamp": "2026-08-31T07:00:00Z",
+    "value": 3.418229710488846
+   },
+   {
+    "timestamp": "2026-08-31T08:00:00Z",
+    "value": 3.4281173864894785
+   },
+   {
+    "timestamp": "2026-08-31T09:00:00Z",
+    "value": 3.4305695301376358
+   },
+   {
+    "timestamp": "2026-08-31T10:00:00Z",
+    "value": 3.5129078690393643
+   },
+   {
+    "timestamp": "2026-08-31T11:00:00Z",
+    "value": 3.577485393515866
+   },
+   {
+    "timestamp": "2026-08-31T12:00:00Z",
+    "value": 3.6487707641196008
+   }
+  ]
+ }
+}

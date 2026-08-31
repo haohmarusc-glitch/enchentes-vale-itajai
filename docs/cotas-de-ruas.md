@@ -316,16 +316,42 @@ do levantamento (os pontos não atingidos em 2023) e por uma cota de atenção a
 
 ### Rio do Sul — API pública Asthon (tempo real) ⭐ a fazer
 
-`public.asthon.com.br`, `city_id 4214805`: **29 estações do Alto Vale** — Taió, Ituporanga, Agronômica,
-Petrolândia, Mirim Doce, Braço do Trombudo, entre outras —, barragens e histórico horário. Cobre cidades
-que hoje **não têm nível nenhum na tela** (Taió, Ituporanga, Vidal Ramos). Faixas oficiais na régua da
-**Ponte Dom Tito Buss**: atenção 4,50 · alerta 5,50 · emergência 6,50 · abertura de abrigos 7,00 m — as
-três primeiras são as que já estão em `estacoes.json`, e o nome da régua foi preenchido a partir daqui.
+`public.asthon.com.br`, `city_id 4214805`: **29 estações do Alto Vale**, duas barragens e histórico
+horário. Um dump está em `data/brutos/rio-do-sul-asthon-2026-08-31.json`, e
+`scripts/analisar_asthon.py` diz, estação por estação, o que dá para fazer com ela. **O resultado corrige
+o que esta seção dizia antes**, e a correção é do tipo que este projeto existe para fazer:
 
-Só responde para Rio do Sul; outras cidades voltam `null`. Substitui a raspagem do portal, que virou SPA
-em 2026. **Antes de coletar:** checar `robots.txt` e termos, como em toda fonte nova; e uma leitura só
-vira aviso se vier com a cota **daquela** estação — sem isso ela seria comparada com a régua de outra
-cidade, que é o erro que este documento recusa em três lugares diferentes.
+| | quantas | o quê |
+|---|---|---|
+| **pode virar aviso** | 5 | régua de rio com cota própria: Ponte Dom Tito Buss, Itoupava, Ribeirão do Tigre, Taboão, Valada São Paulo |
+| **só para mostrar** | 10 | régua de rio sem cota, ou com cota que não é dela |
+| **fora** | 13 | sem nível, leitura fora de faixa, ou barragem |
+
+Três achados, nenhum visível na lista de nomes:
+
+1. **Taió e Ituporanga não têm régua de cidade aqui — têm BARRAGEM.** O que a API publica é "Barragem
+   Oeste Taió" e "Barragem Sul Ituporanga": nível de reservatório na escala do próprio barramento (a de
+   Taió marca 9,79 m com atenção em 11,65 m). Mostrar isso como "o rio em Taió" seria número certo
+   respondendo a pergunta errada. A frase anterior desta seção — "cobre Taió e Ituporanga" — estava errada.
+2. **Quatro estações leem centenas de metros:** Mirim Doce 349,08 · Salete (H) 400,4 · Petrolândia 450,74 ·
+   Atalanta (H) 454,12. Não é nível de rio. É o mesmo problema já visto no monitoramento da Defesa Civil
+   de SC, e a resposta é a mesma: fora.
+3. **Cinco réguas trazem a mesma cota, 4,50 / 5,50 / 6,50** — as faixas oficiais de Rio do Sul —, em rios
+   diferentes e até em outro município (Laurentino). Uma delas está certa, a de Dom Tito Buss; as outras
+   quatro são a cota de Rio do Sul copiada até que alguém confirme. Aplicar a cota de uma régua a outra
+   cria alarme onde não há e cala onde há.
+
+**O que sobra de bom: Vidal Ramos.** É régua de rio, no município de Vidal Ramos, cabeceira do
+Itajaí-Mirim — uma das cidades sem nível nenhum na tela hoje. Só que **sem cota**: dá para mostrar, nunca
+para disparar. Taió e Ituporanga continuam sem nível de cidade.
+
+**A confirmação que dá crédito ao resto:** as faixas de Dom Tito Buss na API são exatamente as que já
+estão em `estacoes.json` (atenção 4,50 · alerta 5,50 · a terceira, que lá se chama "emergência" e aqui
+"inundação", 6,50). Duas fontes independentes, mesmo número.
+
+**Antes de coletar:** checar `robots.txt` e os termos de uso, como em toda fonte nova — o que não dá para
+fazer a partir do dump. E uma leitura só vira aviso se vier com a cota **daquela** estação, que é o que
+`analisar_asthon.py` decide.
 
 #### A lista de 555 ruas está completa e conferida ✔
 
