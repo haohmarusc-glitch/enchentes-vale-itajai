@@ -170,6 +170,13 @@ export interface CotaRua {
   bairro: string | null
   ponto: string | null
   cota_m: number | null
+  /**
+   * Nível em que a rua alaga INTEIRA, quando a fonte publica os dois números.
+   * Rio do Sul publica mínima e máxima por logradouro; as demais, só uma cota.
+   * Nunca é usado no lugar de `cota_m`: quem decide sair de casa decide pela
+   * mínima, que é quando a água chega.
+   */
+  cota_max_m?: number
   fonte: string
   data_fonte: string
   confianca: Confianca

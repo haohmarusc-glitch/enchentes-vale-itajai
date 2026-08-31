@@ -527,6 +527,10 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
             continue
         linhas.append(f"\n\n<b>{rotulo}</b> — {cidade_nome}"
                       f"\nAlaga a partir de <b>{metros(c['cota_m'])}</b>")
+        # A máxima é informação, não gatilho: quem decide sair de casa decide
+        # pela mínima, que é quando a água chega à rua.
+        if isinstance(c.get("cota_max_m"), (int, float)):
+            linhas.append(f" · toda a rua a {metros(c['cota_max_m'])}")
         atual = niveis.get(c["cidade"])
         if atual:
             falta = round(c["cota_m"] - atual[0], 2)

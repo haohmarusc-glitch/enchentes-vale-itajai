@@ -277,6 +277,18 @@ def valida_cotas_ruas() -> None:
         if not isinstance(cota, (int, float)) or not 0 < cota < PICO_MAXIMO_M:
             erro(f"{onde}: cota_m = {cota} fora de faixa plausível")
             continue
+
+        # `cota_max_m` é o nível em que a rua alaga INTEIRA, quando a fonte
+        # publica os dois números (Rio do Sul publica). Abaixo da mínima seria
+        # leitura trocada, e trocado é pior que ausente: diria que a rua está
+        # toda embaixo d'água antes de a água chegar nela.
+        maxima = r.get("cota_max_m")
+        if maxima is not None:
+            if not isinstance(maxima, (int, float)) or not 0 < maxima < PICO_MAXIMO_M:
+                erro(f"{onde}: cota_max_m = {maxima} fora de faixa plausível")
+            elif maxima < cota:
+                erro(f"{onde}: cota_max_m {maxima} é MENOR que cota_m {cota} — "
+                     "a rua alagaria inteira antes de a água chegar")
         anterior = primeira_rua.get(cidade)
         primeira_rua[cidade] = cota if anterior is None else min(anterior, cota)
 
