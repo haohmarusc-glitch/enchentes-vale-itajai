@@ -9,6 +9,8 @@ desligar o bot antes da noite em que ele importaria. Daí os casos abaixo.
 """
 
 import unittest
+
+import alerta_cotas
 from datetime import datetime, timedelta, timezone
 
 from alerta_cotas import (
@@ -262,6 +264,46 @@ class TestIdade(unittest.TestCase):
     def test_sem_horario_devolve_none(self):
         self.assertIsNone(idade_min(None, AGORA))
         self.assertIsNone(idade_min("ontem de tarde", AGORA))
+
+
+class TestNivelImplausivel(unittest.TestCase):
+    """
+    O caminho do aviso é o único que fala sozinho, de madrugada. O site recusa
+    nível fora de 0–25 m desde sempre; aqui a trava faltava. Não há registro da
+    fonte publicando 0,00 m — a página omite a estação sem leitura — mas a
+    assimetria era uma trava a menos onde ela custa mais.
+    """
+
+    def resolver(self, nivel):
+        dados = {"leituras": [{
+            "estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+            "cidade": "rio-do-sul", "nivel_m": nivel,
+            "medido_em": "2026-08-30T22:00",
+        }]}
+        return alerta_cotas.resolver(dados)
+
+    def test_zero_nao_vira_faixa_normal(self):
+        vigiadas, recusas = self.resolver(0.0)
+        self.assertEqual(vigiadas, [])
+        self.assertTrue(any("não é nível de rio" in m for m in recusas), recusas)
+
+    def test_valor_absurdo_nao_vira_inundacao(self):
+        vigiadas, recusas = self.resolver(139.0)
+        self.assertEqual(vigiadas, [])
+        self.assertTrue(any("139.00 m" in m or "139,00" in m for m in recusas), recusas)
+
+    def test_negativo_recusado(self):
+        vigiadas, _ = self.resolver(-1.5)
+        self.assertEqual(vigiadas, [])
+
+    def test_nivel_normal_continua_passando(self):
+        vigiadas, recusas = self.resolver(6.80)
+        self.assertEqual(len(vigiadas), 1, recusas)
+        self.assertEqual(vigiadas[0]["faixa"], "inundacao")
+
+    def test_a_recusa_diz_a_faixa_para_quem_le_o_seco(self):
+        _, recusas = self.resolver(0.0)
+        self.assertTrue(any("0–25 m" in m for m in recusas), recusas)
 
 
 if __name__ == "__main__":

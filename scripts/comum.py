@@ -51,6 +51,23 @@ def espera_turno() -> None:
 # justamente o do pico — o dado que depois faltaria para calibrar o tempo de
 # descida da próxima.
 
+#: Faixa em que um número pode ser nível de rio nesta bacia.
+#:
+#: Nenhuma régua daqui chega perto de 25 m — o recorde de Blumenau, em 1880, é
+#: 17,10 m. Zero ou negativo não é leitura: é sensor mudo ou defeito de
+#: análise. A faixa vive aqui porque o site (`web/src/dados/tempoReal.ts`) usa
+#: os mesmos limites, e as duas implementações divergirem em silêncio é como
+#: uma delas passar a aceitar o que a outra recusa.
+NIVEL_MINIMO_M = 0.0
+NIVEL_MAXIMO_M = 25.0
+
+
+def nivel_plausivel(valor) -> bool:
+    """Se este número pode ser o nível de um rio da bacia."""
+    return (isinstance(valor, (int, float)) and not isinstance(valor, bool)
+            and NIVEL_MINIMO_M < float(valor) < NIVEL_MAXIMO_M)
+
+
 HTTP_TIMEOUT_S = 30
 HTTP_TENTATIVAS = 3
 HTTP_BACKOFF_BASE_S = 2
