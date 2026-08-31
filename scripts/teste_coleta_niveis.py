@@ -119,5 +119,66 @@ class TestSemRede(unittest.TestCase):
         self.assertIn("ok", r.stdout)
 
 
+class TesteBlocoContaminado(unittest.TestCase):
+    """
+    O pior defeito que a auditoria achou nesta coleta.
+
+    `bloco_da_estacao` sobe do <h2> até o <li> da estação. Quando a página não
+    tem <li> nem <article>, ela cai para o avô — que pode ser o contêiner de
+    TODAS as estações. Aí o texto do bloco tem várias leituras, o `search` acha
+    a primeira e a copia para cada título.
+
+    Medido antes do conserto: o DC-10 (Limoeiro), que estava em 5,21 m, saía
+    com 1,39 m — o nível de uma régua de estuário. O aviso compararia esse
+    1,39 com a cota de atenção de 8,00 m do Limoeiro e concluiria que está
+    tudo normal, no meio da cheia.
+    """
+
+    PAGINA_SEM_LI = """<html><body><h1>Nível dos Rios</h1><div class="cards">
+      <div class="card"><h2>DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL</h2></div>
+      <div class="card"><span class="label">Nível do Rio: </span> 1,39 m
+         <span class="label">Data e hora da medição: </span> 30/08/2026 15:51</div>
+      <div class="card"><h2>DC-10 Rio Itajaí-Mirim - Limoeiro</h2></div>
+      <div class="card"><span class="label">Nível do Rio: </span> 5,21 m
+         <span class="label">Data e hora da medição: </span> 30/08/2026 15:50</div>
+    </div></body></html>"""
+
+    def test_bloco_com_varias_leituras_nao_vira_leitura_nenhuma(self):
+        leituras = parse(self.PAGINA_SEM_LI)
+        self.assertEqual(leituras, [], "número errado com cara de certo é pior que nenhum")
+
+    def test_nao_copia_o_nivel_de_uma_estacao_para_outra(self):
+        por_estacao = {l["estacao"]: l["nivel_m"] for l in parse(self.PAGINA_SEM_LI)}
+        self.assertNotIn(1.39, por_estacao.values())
+
+    def test_a_pagina_normal_continua_sendo_lida(self):
+        """A trava não pode custar a coleta que funciona."""
+        leituras = parse(PAGINA)
+        self.assertGreaterEqual(len(leituras), 2)
+        por = {l["estacao"]: l["nivel_m"] for l in leituras}
+        self.assertEqual(por["Blumenau"], 5.65)
+
+
+class TesteFaixaPlausivel(unittest.TestCase):
+    def uma(self, texto_nivel):
+        html = ("<html><body><ul><li><h2>DC-10 Limoeiro</h2>"
+                f'<span class="label">Nível do Rio: </span> {texto_nivel} '
+                '<span class="label">Data e hora da medição: </span> 30/08/2026 15:50'
+                "</li></ul></body></html>")
+        return parse(html)
+
+    def test_valor_absurdo_nao_entra(self):
+        """9999,00 viraria alerta de inundação em todas as cidades."""
+        self.assertEqual(self.uma("9999,00 m"), [])
+
+    def test_zero_nao_entra(self):
+        self.assertEqual(self.uma("0,00 m"), [])
+
+    def test_nivel_normal_entra(self):
+        leituras = self.uma("5,21 m")
+        self.assertEqual(len(leituras), 1)
+        self.assertEqual(leituras[0]["nivel_m"], 5.21)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

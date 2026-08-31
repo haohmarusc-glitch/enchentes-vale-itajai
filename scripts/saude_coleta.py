@@ -66,8 +66,14 @@ def _idade_min(quando: datetime, agora: datetime) -> float:
     return (agora - quando).total_seconds() / 60
 
 
-def avaliar(dados: dict | None, agora: datetime) -> Diagnostico:
-    """Função pura: o relógio entra por parâmetro para o teste poder mentir."""
+def avaliar(dados: dict | None, agora: datetime,
+            vistas_antes: set[str] | None = None) -> Diagnostico:
+    """
+    Função pura: o relógio entra por parâmetro para o teste poder mentir.
+
+    `vistas_antes` são os títulos das estações que vieram na coleta anterior.
+    Sem eles não há comparação — é o que acontece na primeira rodada.
+    """
     if dados is None:
         return Diagnostico(False, "não há arquivo de coleta", [])
 
@@ -111,6 +117,54 @@ def avaliar(dados: dict | None, agora: datetime) -> Diagnostico:
             detalhes.append(f"medição mais recente há {idade:.0f} min")
             if idade > TOLERANCIA_FONTE_MIN:
                 problemas.append(f"a fonte não publica leitura nova há {idade:.0f} min")
+
+        # Cada estação, e não só a mais nova.
+        #
+        # `max(medidos)` responde "a fonte publicou alguma coisa" — e uma
+        # estação viva mascarava todas as outras. Com doze réguas congeladas
+        # há seis horas e uma publicando, o vigia dizia "coleta e fonte em
+        # dia", que é exatamente a hora em que ele deveria gritar.
+        paradas = []
+        for l in leituras:
+            m = l.get("medido_em")
+            if not m:
+                paradas.append(f"{l.get('estacao', '?')} (sem horário)")
+                continue
+            try:
+                q = datetime.fromisoformat(m)
+            except ValueError:
+                paradas.append(f"{l.get('estacao', '?')} (horário ilegível)")
+                continue
+            if q.tzinfo is None:
+                q = q.replace(tzinfo=FUSO)
+            i = _idade_min(q, agora)
+            if i > TOLERANCIA_FONTE_MIN:
+                paradas.append(f"{l.get('estacao', '?')} (há {i:.0f} min)")
+        if paradas:
+            problemas.append(
+                f"{len(paradas)} de {len(leituras)} estação(ões) sem leitura nova: "
+                + ", ".join(paradas[:5])
+                + (f" e mais {len(paradas) - 5}" if len(paradas) > 5 else "")
+            )
+
+    # Estações que vieram na rodada ANTERIOR e sumiram nesta.
+    #
+    # A página da Defesa Civil já veio parcial antes. Sem esta conta, uma régua
+    # some do arquivo e nada denuncia: a tela deixa de mostrá-la, o aviso deixa
+    # de vigiá-la, e o vigia continua dizendo que está tudo bem.
+    #
+    # A comparação é com a rodada anterior, e não com o cadastro, de propósito:
+    # Blumenau está cadastrada e nunca vem, e um vigia permanentemente vermelho
+    # ensina quem opera a ignorá-lo — que é o oposto do que ele serve.
+    if vistas_antes:
+        agora_vistas = {l.get("estacao") for l in leituras if l.get("estacao")}
+        sumidas = sorted(t for t in vistas_antes if t not in agora_vistas)
+        if sumidas:
+            problemas.append(
+                f"{len(sumidas)} estação(ões) que vieram na coleta anterior sumiram: "
+                + ", ".join(sumidas[:5])
+                + (f" e mais {len(sumidas) - 5}" if len(sumidas) > 5 else "")
+            )
 
     if problemas:
         return Diagnostico(False, "; ".join(problemas), detalhes)
@@ -171,27 +225,41 @@ def main() -> int:
 
     caminho = Path(args.arquivo) if args.arquivo else ULTIMO
     dados = None
+    ilegivel = None
     if caminho.exists():
         try:
             dados = json.loads(caminho.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            print(f"FALHA: {caminho} não é JSON válido: {exc}", file=sys.stderr)
-            return 1
+        except (json.JSONDecodeError, OSError, UnicodeDecodeError) as exc:
+            # Arquivo ilegível é DIAGNÓSTICO, não saída silenciosa.
+            #
+            # Antes daqui saía `return 1` antes do `--avisar`: no único caso em
+            # que o site está sem dado nenhum, o vigia se calava. E só o
+            # JSONDecodeError era pego — permissão negada ou disco com erro
+            # estouravam em traceback, que para o cron é o mesmo silêncio.
+            ilegivel = f"{caminho.name} não pôde ser lido: {exc}"
 
     agora = datetime.now(timezone.utc)
-    diag = avaliar(dados, agora)
+    estado = le_estado()
+    vistas_antes = set(estado.get("estacoes_vistas") or [])
+    diag = (Diagnostico(False, ilegivel, []) if ilegivel
+            else avaliar(dados, agora, vistas_antes))
     print(diag)
 
     if args.avisar:
-        estado = le_estado()
         if deve_avisar(diag, estado, agora):
             notificador.enviar(texto(diag))
-            ESTADO.parent.mkdir(parents=True, exist_ok=True)
-            ESTADO.write_text(
-                json.dumps({"falhando": not diag.ok, "avisado_em": agora.isoformat()},
-                           ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8",
+            estado = {"falhando": not diag.ok, "avisado_em": agora.isoformat()}
+
+        # A lista de estações é gravada em TODA rodada, e não só quando há
+        # aviso: é ela que faz a comparação da próxima. Guardada só junto do
+        # aviso, uma coleta parcial logo depois de um aviso passaria batida.
+        if dados:
+            estado["estacoes_vistas"] = sorted(
+                {l.get("estacao") for l in (dados.get("leituras") or []) if l.get("estacao")}
             )
+        ESTADO.parent.mkdir(parents=True, exist_ok=True)
+        ESTADO.write_text(json.dumps(estado, ensure_ascii=False, indent=2) + "\n",
+                          encoding="utf-8")
 
     return 0 if diag.ok else 1
 
