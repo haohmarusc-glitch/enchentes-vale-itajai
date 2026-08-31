@@ -28,6 +28,9 @@ from analisar_kml_brusque import (
 )
 from comum import DADOS
 
+#: `data_fonte` dos registros que vieram da camada conferida de 2023.
+CAMADA_2023 = "2023-11"
+
 
 class TestNormalizar(unittest.TestCase):
     def test_tira_acento_e_prefixo(self):
@@ -183,6 +186,10 @@ class TestArquivoReal(unittest.TestCase):
             for r in json.loads((DADOS / "cotas-ruas.json").read_text(encoding="utf-8"))["cotas"]
             if r.get("cidade") == CIDADE
         ]
+        # A análise desta pasta cruza a camada de 2011 com o que se sabia de
+        # Brusque ANTES dela — a lista oficial de out/2023. Cruzar com a camada
+        # de 2023, importada depois, seria comparar o KML com ele mesmo.
+        cls.oficiais = [r for r in cls.cadastro if r.get("data_fonte") != CAMADA_2023]
 
     def test_so_uma_pasta_tem_numero(self):
         censo = censo_por_pasta(self.pontos)
@@ -202,14 +209,14 @@ class TestArquivoReal(unittest.TestCase):
                            "19 m acima do recorde não é nível de régua")
 
     def test_parte_do_arquivo_bate_com_o_cadastro(self):
-        comuns = cruzar_com_cadastro(self.numerados, self.cadastro)
+        comuns = cruzar_com_cadastro(self.numerados, self.oficiais)
         acertos = sum(1 for c in comuns if c["bate"])
         self.assertGreater(acertos, 0, "há cotas de régua verdadeiras aqui dentro")
         self.assertLess(acertos, len(comuns), "mas não são todas — é mistura")
 
     def test_os_acertos_nao_sao_acaso(self):
-        comuns = cruzar_com_cadastro(self.numerados, self.cadastro)
-        nossas = [r["cota_m"] for r in self.cadastro if isinstance(r.get("cota_m"), (int, float))]
+        comuns = cruzar_com_cadastro(self.numerados, self.oficiais)
+        nossas = [r["cota_m"] for r in self.oficiais if isinstance(r.get("cota_m"), (int, float))]
         self.assertLess(probabilidade_por_acaso(comuns, nossas, rodadas=5000), 0.01)
 
     def test_a_mediana_sobe_com_a_distancia(self):
@@ -220,31 +227,74 @@ class TestArquivoReal(unittest.TestCase):
     def test_o_veredito_continua_sendo_nao_importar(self):
         pico = pico_da_cidade(self.eventos, CIDADE, ANO_DA_PASTA)
         acima, total = acima_de(self.numerados, pico)
-        comuns = cruzar_com_cadastro(self.numerados, self.cadastro)
+        comuns = cruzar_com_cadastro(self.numerados, self.oficiais)
         acertos = sum(1 for c in comuns if c["bate"])
         self.assertFalse(importavel(acima / total, acertos, len(comuns)))
 
-    def test_nenhum_registro_de_brusque_veio_do_kml(self):
-        """Uma importação deixaria sua marca na fonte de cada registro."""
+    def test_nenhum_registro_de_brusque_veio_desta_pasta(self):
+        """
+        A camada de 2023 do mesmo arquivo foi importada — ela fecha a conta
+        `cota + lâmina = 8,96 m` e é cota de régua provada. Esta aqui, não.
+        O guarda continua, apertado no que importa: nenhum registro pode citar
+        a pasta de 2011, e todo registro que venha do KML tem de nomear a
+        camada de 2023 e a conferência que a autorizou.
+        """
         for registro in self.cadastro:
             fonte = str(registro.get("fonte") or "").lower()
-            for marca in ("my maps", "mymaps", "kml", "cotas de cheia 2011"):
-                self.assertNotIn(marca, fonte, f"{registro.get('rua')}: {registro.get('fonte')}")
+            with self.subTest(rua=registro.get("rua")):
+                self.assertNotIn(ANO_DA_PASTA, fonte,
+                                 f"{registro.get('rua')}: {registro.get('fonte')}")
+                self.assertNotIn(PASTA_COM_COTA.lower(), fonte,
+                                 f"{registro.get('rua')}: {registro.get('fonte')}")
+                if "my maps" in fonte:
+                    self.assertIn("cotas de cheia 2023", fonte)
+                    self.assertIn("8,96", fonte,
+                                  "quem vem do KML precisa dizer contra que pico foi conferido")
 
-    def test_nenhuma_cota_de_brusque_passa_do_pico_historico(self):
+    def test_a_lista_oficial_de_brusque_nao_passa_do_pico_historico(self):
         """
         Ao contrário de Blumenau e Rio do Sul, cuja lista oficial traz ruas altas que
-        nunca alagaram, os 27 pontos de Brusque vêm de uma lista que só desceu até
+        nunca alagaram, os 27 pontos de out/2023 vêm de uma lista que só desceu até
         8,01 m. Qualquer valor acima do recorde da cidade aqui seria contaminação.
         """
         serie = pico_da_cidade(self.eventos, CIDADE)
-        for registro in self.cadastro:
+        for registro in self.oficiais:
             if e_numero(registro.get("cota_m")):
                 self.assertLess(registro["cota_m"], serie, registro.get("rua"))
 
-    def test_brusque_continua_com_o_cadastro_pequeno(self):
-        self.assertLess(len(self.cadastro), 100,
-                        "Brusque tem 27 pontos oficiais; centenas significam importação indevida")
+    def test_cota_acima_do_recorde_so_entra_dizendo_que_esta(self):
+        """
+        A camada de 2023 traz pontos altos legítimos — o mais alto, 11,01 m, é
+        um poste que nenhuma cheia conhecida alcançou. Pode entrar, mas não
+        calado: quem lê precisa saber que ali nunca chegou água.
+        """
+        serie = pico_da_cidade(self.eventos, CIDADE)
+        for registro in self.cadastro:
+            if e_numero(registro.get("cota_m")) and registro["cota_m"] > serie:
+                with self.subTest(rua=registro.get("rua")):
+                    self.assertIn("maior pico já registrado",
+                                  str(registro.get("nota") or ""))
+
+    def test_nada_em_brusque_alcanca_a_escala_da_pasta_de_2011(self):
+        """
+        A pasta de 2011 vai a 29,53 m. Se ela vazar para o cadastro algum dia,
+        é por aqui que aparece — sem depender de como a fonte foi escrita.
+        """
+        teto_da_pasta = max(p["cota"] for p in com_cota(self.numerados))
+        for registro in self.cadastro:
+            if e_numero(registro.get("cota_m")):
+                self.assertLess(registro["cota_m"], 12.0, registro.get("rua"))
+        self.assertGreater(teto_da_pasta, 25.0, "a pasta de 2011 continua fora de escala")
+
+    def test_brusque_tem_a_lista_oficial_mais_a_camada_conferida_e_nada_mais(self):
+        """
+        377 = 27 da lista oficial de out/2023 + 350 da camada conferida. A pasta
+        de 2011 tem 1.679 pontos: se ela entrar, este número explode.
+        """
+        self.assertEqual(len(self.oficiais), 27)
+        self.assertLess(len(self.cadastro), 500,
+                        "a pasta de 2011 tem 1.679 pontos; centenas a mais "
+                        "significam importação indevida")
 
 
 if __name__ == "__main__":

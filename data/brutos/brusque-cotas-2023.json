@@ -1,0 +1,3586 @@
+{
+ "_meta": {
+  "descricao": "Camada 'Cotas de cheia 2023' do Google My Maps de cotas de enchente da Defesa Civil de Brusque.",
+  "origem": "KML exportado do Google My Maps 'Cotas Enchente de Brusque' (bit.ly/novascotasbrusque). O KML completo tem 5,97 MB e quatro camadas; aqui está só a de 2023.",
+  "recebido_em": "2026-08-31",
+  "total": 357,
+  "o_que_e_cada_campo": {
+   "cota_rotulo": "o NOME do marcador no mapa — é a cota da régua da Ponte Estaiada em que o ponto começa a alagar",
+   "nivel_registrado_no_local": "a LÂMINA d'água medida ali na cheia de 17/11/2023, cujo pico foi 8,96 m"
+  },
+  "verificacao": "cota + lâmina = 8,96 m (o pico registrado) em 183 dos 184 pontos que têm lâmina, batendo em 1 cm. É a prova de que a camada é cota de régua.",
+  "camada_2011_nao_entra": "A outra camada do mesmo KML, 'Cotas de Cheia 2011' (1.679 pontos), NÃO é cota de régua — ver scripts/analisar_kml_brusque.py e docs/cotas-de-ruas.md."
+ },
+ "pontos": [
+  {
+   "cota_rotulo": "7,65",
+   "bairro": "Jardim Maluche",
+   "rua": "Bartolomeu Pruner",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,31",
+   "conferencia": "Correta",
+   "lon": -48.932929,
+   "lat": -27.100666
+  },
+  {
+   "cota_rotulo": "8,27",
+   "bairro": "Santa Teresinha",
+   "rua": "Dorval Luz - parede casa n 174 fundos",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,69",
+   "conferencia": "Correta",
+   "lon": -48.878781,
+   "lat": -27.059995
+  },
+  {
+   "cota_rotulo": "7,94",
+   "bairro": "Centro I",
+   "rua": "Vicente Schaeffer",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,02",
+   "conferencia": "Correta",
+   "lon": -48.909219,
+   "lat": -27.096366
+  },
+  {
+   "cota_rotulo": "7,80",
+   "bairro": "Souza Cruz",
+   "rua": "SC 022",
+   "esquina": "Cerca em frente a 520",
+   "nivel_registrado_no_local": "1,16",
+   "conferencia": "Correta",
+   "lon": -48.934843,
+   "lat": -27.127383
+  },
+  {
+   "cota_rotulo": "8,90",
+   "bairro": "Rio Branco",
+   "rua": "RB - 003",
+   "esquina": "Ernesto Bianchine",
+   "nivel_registrado_no_local": "0,06",
+   "conferencia": "Correta",
+   "lon": -48.940398,
+   "lat": -27.117486
+  },
+  {
+   "cota_rotulo": "8,56",
+   "bairro": "Rio Branco",
+   "rua": "RB - 003 - poste em frente a casa de madeira",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,40",
+   "conferencia": "Correta",
+   "lon": -48.939997,
+   "lat": -27.117003
+  },
+  {
+   "cota_rotulo": "7,21",
+   "bairro": "Rio Branco",
+   "rua": "Vilton Barbosa - casa n. 154",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,75",
+   "conferencia": "Correta",
+   "lon": -48.939844,
+   "lat": -27.11574
+  },
+  {
+   "cota_rotulo": "8,50",
+   "bairro": "Santa Rita",
+   "rua": "Alemanha",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,46",
+   "conferencia": "Correta",
+   "lon": -48.909228,
+   "lat": -27.087042
+  },
+  {
+   "cota_rotulo": "7,74",
+   "bairro": "Limoeiro",
+   "rua": "Rua particular transversal a rua Itajai - Fundos 1156",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,22",
+   "conferencia": "Correta",
+   "lon": -48.87165,
+   "lat": -27.043388
+  },
+  {
+   "cota_rotulo": "7,36",
+   "bairro": "Santa Terezinha",
+   "rua": "Julio Orthman - muro casa n 206",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,60",
+   "conferencia": "Correta",
+   "lon": -48.88274,
+   "lat": -27.060178
+  },
+  {
+   "cota_rotulo": "7,89",
+   "bairro": "Santa Terezinha",
+   "rua": "Ema Staack - Em frente 266",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,07",
+   "conferencia": "Correta",
+   "lon": -48.883225,
+   "lat": -27.060442
+  },
+  {
+   "cota_rotulo": "8,02",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack - Próx. ao 267",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,94",
+   "conferencia": "Correta",
+   "lon": -48.883172,
+   "lat": -27.060671
+  },
+  {
+   "cota_rotulo": "7,56",
+   "bairro": "Santa Terezinha",
+   "rua": "Theodoro Heirich Staack",
+   "esquina": "Muro casa n 75",
+   "nivel_registrado_no_local": "1,40",
+   "conferencia": "Correta",
+   "lon": -48.885255,
+   "lat": -27.064234
+  },
+  {
+   "cota_rotulo": "8,37",
+   "bairro": "Santa Terezinha",
+   "rua": "Mathias Moritz - Em frente 315",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,59",
+   "conferencia": "Correta",
+   "lon": -48.884044,
+   "lat": -27.064937
+  },
+  {
+   "cota_rotulo": "8,02",
+   "bairro": "Santa Terezinha",
+   "rua": "Francisco Staack - Muro em frente casa n 21",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,94",
+   "conferencia": "Correta",
+   "lon": -48.885215,
+   "lat": -27.064502
+  },
+  {
+   "cota_rotulo": "7,83",
+   "bairro": "Santa Terezinha",
+   "rua": "Francisco Staack - Poste casa n 4",
+   "esquina": "Mathias Moritz",
+   "nivel_registrado_no_local": "1,13",
+   "conferencia": "Correta",
+   "lon": -48.884244,
+   "lat": -27.064589
+  },
+  {
+   "cota_rotulo": "8,57",
+   "bairro": "Santa Terezinha",
+   "rua": "Luiz Boos",
+   "esquina": "Poste frente a casa n 36",
+   "nivel_registrado_no_local": "0,39",
+   "conferencia": "Correta",
+   "lon": -48.890978,
+   "lat": -27.074958
+  },
+  {
+   "cota_rotulo": "7,05",
+   "bairro": "Santa Terezinha",
+   "rua": "Leopoldo Heil",
+   "esquina": "Placa de sinalização início da rua",
+   "nivel_registrado_no_local": "1,91",
+   "conferencia": "Correta",
+   "lon": -48.894923,
+   "lat": -27.074791
+  },
+  {
+   "cota_rotulo": "8,41",
+   "bairro": "Santa Terezinha",
+   "rua": "Maria Martha Benvenutti Pereira - segundo poste próximo a rotatória",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,55",
+   "conferencia": "Correta",
+   "lon": -48.882014,
+   "lat": -27.057261
+  },
+  {
+   "cota_rotulo": "8,01",
+   "bairro": "Limoeiro",
+   "rua": "LM-023 - Muro casa n 55",
+   "esquina": "Pedro Winter",
+   "nivel_registrado_no_local": "0,95",
+   "conferencia": "Correta",
+   "lon": -48.872118,
+   "lat": -27.04397
+  },
+  {
+   "cota_rotulo": "7,96",
+   "bairro": "Limoeiro",
+   "rua": "LM-023 - muro casa n 145",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,00",
+   "conferencia": "Correta",
+   "lon": -48.872841,
+   "lat": -27.044122
+  },
+  {
+   "cota_rotulo": "8,68",
+   "bairro": "Limoeiro",
+   "rua": "Itajaí - muro da casa n 1444",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,28",
+   "conferencia": "Correta",
+   "lon": -48.868083,
+   "lat": -27.038801
+  },
+  {
+   "cota_rotulo": "7,51",
+   "bairro": "Santa Rita",
+   "rua": "Vitório Demarche",
+   "esquina": "Muro casa n 250",
+   "nivel_registrado_no_local": "1,45",
+   "conferencia": "Correta",
+   "lon": -48.90788,
+   "lat": -27.083589
+  },
+  {
+   "cota_rotulo": "8,49",
+   "bairro": "Santa Rita",
+   "rua": "Célia Zen",
+   "esquina": "Poste em frente a associação Santa Rita",
+   "nivel_registrado_no_local": "0,47",
+   "conferencia": "Correta",
+   "lon": -48.906733,
+   "lat": -27.085134
+  },
+  {
+   "cota_rotulo": "6,40",
+   "bairro": "Santa Terezinha",
+   "rua": "Frederico Radke - Poste residencial n 170",
+   "esquina": "Beira Rio",
+   "nivel_registrado_no_local": "2,56",
+   "conferencia": "Correta",
+   "lon": -48.891765,
+   "lat": -27.072384
+  },
+  {
+   "cota_rotulo": "8,21",
+   "bairro": "Guarani",
+   "rua": "Ayres Lourenço Penk - Em frente 322",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,75",
+   "conferencia": "Correta",
+   "lon": -48.93286,
+   "lat": -27.098292
+  },
+  {
+   "cota_rotulo": "7,89",
+   "bairro": "Guarani",
+   "rua": "Henrique Deichman - Casa 74",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,07",
+   "conferencia": "Correta",
+   "lon": -48.934289,
+   "lat": -27.098076
+  },
+  {
+   "cota_rotulo": "6,19",
+   "bairro": "Rio Branco",
+   "rua": "Leonardo Pedro Voss - casa 11B",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,77",
+   "conferencia": "Correta",
+   "lon": -48.94202,
+   "lat": -27.12842
+  },
+  {
+   "cota_rotulo": "8,31",
+   "bairro": "Souza Cruz",
+   "rua": "SC-020",
+   "esquina": "Poste em frente a casa n 593",
+   "nivel_registrado_no_local": "0,65",
+   "conferencia": "Correta",
+   "lon": -48.935018,
+   "lat": -27.126208
+  },
+  {
+   "cota_rotulo": "7,60",
+   "bairro": "Souza Cruz",
+   "rua": "Tv. Lagoa Dourada",
+   "esquina": "Poste em frente a casa n° 534",
+   "nivel_registrado_no_local": "1,36",
+   "conferencia": "Correta",
+   "lon": -48.935316,
+   "lat": -27.127278
+  },
+  {
+   "cota_rotulo": "8,58",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,38",
+   "conferencia": "Correta",
+   "lon": -48.955586,
+   "lat": -27.139949
+  },
+  {
+   "cota_rotulo": "6,90",
+   "bairro": "Maluche",
+   "rua": "Francisco Sassi - Muro Casa 222",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,06",
+   "conferencia": "Correta",
+   "lon": -48.93435,
+   "lat": -27.102164
+  },
+  {
+   "cota_rotulo": "6,89",
+   "bairro": "Maluche",
+   "rua": "Pref. Victor Gevaerd - Poste",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,07",
+   "conferencia": "Correta",
+   "lon": -48.933803,
+   "lat": -27.102313
+  },
+  {
+   "cota_rotulo": "8,02",
+   "bairro": "Maluche",
+   "rua": "Bruno Maluche - Muro Casa 790",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,94",
+   "conferencia": "Correta",
+   "lon": -48.933306,
+   "lat": -27.102274
+  },
+  {
+   "cota_rotulo": "7,96",
+   "bairro": "Maluche",
+   "rua": "Jacó Bauer - Casa 751",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,00",
+   "conferencia": "Correta",
+   "lon": -48.932819,
+   "lat": -27.101837
+  },
+  {
+   "cota_rotulo": "8,41",
+   "bairro": "Maluche",
+   "rua": "João Paulo I - Poste",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,55",
+   "conferencia": "Correta",
+   "lon": -48.932673,
+   "lat": -27.102072
+  },
+  {
+   "cota_rotulo": "7,21",
+   "bairro": "Maluche",
+   "rua": "Osvaldo Mafezoli - Muro Casa 765",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,75",
+   "conferencia": "Correta",
+   "lon": -48.934138,
+   "lat": -27.103289
+  },
+  {
+   "cota_rotulo": "7,46",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina - Casa 435",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,50",
+   "conferencia": "Correta",
+   "lon": -48.95661,
+   "lat": -27.140029
+  },
+  {
+   "cota_rotulo": "7,72",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina - Casa 410",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,24",
+   "conferencia": "Correta",
+   "lon": -48.957799,
+   "lat": -27.140124
+  },
+  {
+   "cota_rotulo": "8,46",
+   "bairro": "Dom Joaquim",
+   "rua": "Leonidas Padilha de Oliveira - pilar da casa 190",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,50",
+   "conferencia": "Correta",
+   "lon": -48.957413,
+   "lat": -27.137798
+  },
+  {
+   "cota_rotulo": "8,13",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ-050 - Muro da casa 195",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,83",
+   "conferencia": "Correta",
+   "lon": -48.956893,
+   "lat": -27.137647
+  },
+  {
+   "cota_rotulo": "8,26",
+   "bairro": "Dom Joaquim",
+   "rua": "Anna Heil - Muro 629",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,70",
+   "conferencia": "Correta",
+   "lon": -48.95886,
+   "lat": -27.133369
+  },
+  {
+   "cota_rotulo": "7,86",
+   "bairro": "Dom Joaquim",
+   "rua": "Anna Heil - Parede da casa 714",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,10",
+   "conferencia": "Correta",
+   "lon": -48.958772,
+   "lat": -27.132808
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Dom Joaquim",
+   "rua": "Eberhardt Hort - Em frente 22",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,90",
+   "conferencia": "Correta",
+   "lon": -48.95893,
+   "lat": -27.141373
+  },
+  {
+   "cota_rotulo": "7,23",
+   "bairro": "Dom Joaquim",
+   "rua": "Carlos Hort - Muro Casa 179",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,73",
+   "conferencia": "Correta",
+   "lon": -48.959165,
+   "lat": -27.142595
+  },
+  {
+   "cota_rotulo": "8,71",
+   "bairro": "Dom Joaquim",
+   "rua": "Padre Vicente Schmidt - Muro casa 29",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,25",
+   "conferencia": "Correta",
+   "lon": -48.96031,
+   "lat": -27.143172
+  },
+  {
+   "cota_rotulo": "8,71",
+   "bairro": "Guarani",
+   "rua": "João Voss Junior - Muro casa 08",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,25",
+   "conferencia": "Correta",
+   "lon": -48.946638,
+   "lat": -27.103432
+  },
+  {
+   "cota_rotulo": "8,10",
+   "bairro": "Guarani",
+   "rua": "Osvaldo Hassmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,86",
+   "conferencia": "Correta",
+   "lon": -48.944816,
+   "lat": -27.101914
+  },
+  {
+   "cota_rotulo": "8,01",
+   "bairro": "Guarani",
+   "rua": "Godofredo Hassmann - Muro Casa 133",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,95",
+   "conferencia": "Correta",
+   "lon": -48.943121,
+   "lat": -27.101164
+  },
+  {
+   "cota_rotulo": "7,07",
+   "bairro": "Guarani",
+   "rua": "Ricardo Montibeller - Muro Casa 19",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,89",
+   "conferencia": "Correta",
+   "lon": -48.942506,
+   "lat": -27.101246
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Guarani",
+   "rua": "Ernesto Bianchini - Muro Casa 32",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,90",
+   "conferencia": "Correta",
+   "lon": -48.94214,
+   "lat": -27.099458
+  },
+  {
+   "cota_rotulo": "7,96",
+   "bairro": "Guarani",
+   "rua": "Ernesto Bianchini - Loja 40",
+   "esquina": "Augusto Fischer",
+   "nivel_registrado_no_local": "1,00",
+   "conferencia": "Correta",
+   "lon": -48.942065,
+   "lat": -27.100036
+  },
+  {
+   "cota_rotulo": "8,71",
+   "bairro": "Guarani",
+   "rua": "Augusto Fischer - Entrada - Muro Casa 127",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,25",
+   "conferencia": "Correta",
+   "lon": -48.942685,
+   "lat": -27.099944
+  },
+  {
+   "cota_rotulo": "8,66",
+   "bairro": "Guarani",
+   "rua": "Augusto Fischer - Muro Casa 80",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,30",
+   "conferencia": "Correta",
+   "lon": -48.943035,
+   "lat": -27.100357
+  },
+  {
+   "cota_rotulo": "8,61",
+   "bairro": "Guarani",
+   "rua": "João Boos - Muro Casa 76",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,35",
+   "conferencia": "Correta",
+   "lon": -48.943228,
+   "lat": -27.100272
+  },
+  {
+   "cota_rotulo": "7,83",
+   "bairro": "Guarani",
+   "rua": "Júlio Schorner - Muro Casa 86",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,13",
+   "conferencia": "Correta",
+   "lon": -48.943587,
+   "lat": -27.1008
+  },
+  {
+   "cota_rotulo": "7,64",
+   "bairro": "Guarani",
+   "rua": "General Osório - Muro Casa 787",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,32",
+   "conferencia": "Correta",
+   "lon": -48.939605,
+   "lat": -27.098592
+  },
+  {
+   "cota_rotulo": "7,28",
+   "bairro": "Guarani",
+   "rua": "General Osório - Muro Comercio 547",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,68",
+   "conferencia": "Correta",
+   "lon": -48.936114,
+   "lat": -27.097356
+  },
+  {
+   "cota_rotulo": "7,91",
+   "bairro": "Guarani",
+   "rua": "General Osório - Muro casa 315",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,05",
+   "conferencia": "Correta",
+   "lon": -48.930862,
+   "lat": -27.096176
+  },
+  {
+   "cota_rotulo": "8,89",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ-050 - Frente 315 - Boca de Lobo",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,07",
+   "conferencia": "Correta",
+   "lon": -48.956837,
+   "lat": -27.136305
+  },
+  {
+   "cota_rotulo": "6,86",
+   "bairro": "Limoeiro",
+   "rua": "José Laurentino Junior - Fundos rua Itajaí",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,10",
+   "conferencia": "Correta",
+   "lon": -48.866632,
+   "lat": -27.036428
+  },
+  {
+   "cota_rotulo": "8,12",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack - poste Frente 225",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,84",
+   "conferencia": "Correta",
+   "lon": -48.882312,
+   "lat": -27.060712
+  },
+  {
+   "cota_rotulo": "7,73",
+   "bairro": "Santa Terezinha",
+   "rua": "George Boettger - Frente 38",
+   "esquina": "Poste frente a casa n 38",
+   "nivel_registrado_no_local": "1,23",
+   "conferencia": "Correta",
+   "lon": -48.889061,
+   "lat": -27.075117
+  },
+  {
+   "cota_rotulo": "8,24",
+   "bairro": "Santa Terezinha",
+   "rua": "João Habitzreuter",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,72",
+   "conferencia": "Correta",
+   "lon": -48.892819,
+   "lat": -27.07323
+  },
+  {
+   "cota_rotulo": "8,43",
+   "bairro": "Souza Cruz",
+   "rua": "Alberto Knopp",
+   "esquina": "Em frente a Alumisil, n 330",
+   "nivel_registrado_no_local": "0,53",
+   "conferencia": "Correta",
+   "lon": -48.933265,
+   "lat": -27.119464
+  },
+  {
+   "cota_rotulo": "7,99",
+   "bairro": "Souza Cruz",
+   "rua": "Rua do Cedro - muro casa n 592",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,97",
+   "conferencia": "Correta",
+   "lon": -48.935016,
+   "lat": -27.125751
+  },
+  {
+   "cota_rotulo": "8,30",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio - Frente 459",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,66",
+   "conferencia": "Correta",
+   "lon": -48.956604,
+   "lat": -27.133689
+  },
+  {
+   "cota_rotulo": "8,36",
+   "bairro": "Rio Branco",
+   "rua": "Vilton Barbosa - Inicio da rua",
+   "esquina": "Ernesto Bianchini",
+   "nivel_registrado_no_local": "0,60",
+   "conferencia": "Correta",
+   "lon": -48.940829,
+   "lat": -27.116984
+  },
+  {
+   "cota_rotulo": "8,83",
+   "bairro": "Centro",
+   "rua": "Rodrigues Alves - no poste em frente Mega Motos",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,13",
+   "conferencia": "Correta",
+   "lon": -48.915324,
+   "lat": -27.099942
+  },
+  {
+   "cota_rotulo": "8,31",
+   "bairro": "Centro",
+   "rua": "João Luis Gonzaga",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,65",
+   "conferencia": "Correta",
+   "lon": -48.909387,
+   "lat": -27.096805
+  },
+  {
+   "cota_rotulo": "7,80",
+   "bairro": "Centro",
+   "rua": "Arthur Olinger",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,16",
+   "conferencia": "Correta",
+   "lon": -48.909438,
+   "lat": -27.096013
+  },
+  {
+   "cota_rotulo": "7,38",
+   "bairro": "Guarani",
+   "rua": "Nelson Mattiolli - Poste entrada da rua",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,58",
+   "conferencia": "Correta",
+   "lon": -48.935263,
+   "lat": -27.097098
+  },
+  {
+   "cota_rotulo": "7,86",
+   "bairro": "Guarani",
+   "rua": "Gerson Venturelli - Poste frente casa 14",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,10",
+   "conferencia": "Correta",
+   "lon": -48.935718,
+   "lat": -27.096916
+  },
+  {
+   "cota_rotulo": "8,33",
+   "bairro": "Rio Branco",
+   "rua": "Claudino Huber - Poste frente casa 98",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,63",
+   "conferencia": "Correta",
+   "lon": -48.939,
+   "lat": -27.118656
+  },
+  {
+   "cota_rotulo": "7,99",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio - Muro casa 350",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,97 m",
+   "conferencia": "Correta",
+   "lon": -48.956139,
+   "lat": -27.135103
+  },
+  {
+   "cota_rotulo": "8,51",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini - Muro 765",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,45",
+   "conferencia": "Correta",
+   "lon": -48.944646,
+   "lat": -27.114719
+  },
+  {
+   "cota_rotulo": "6,23",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,73 m",
+   "conferencia": "Correta",
+   "lon": -48.945351,
+   "lat": -27.112744
+  },
+  {
+   "cota_rotulo": "6,36",
+   "bairro": "Centro",
+   "rua": "Av. Arno Carlos Gracher - Poste frente 335",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,60",
+   "conferencia": "Correta",
+   "lon": -48.910116,
+   "lat": -27.0972
+  },
+  {
+   "cota_rotulo": "8,63",
+   "bairro": "Guarani",
+   "rua": "GU-19 - Calçada",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,33",
+   "conferencia": "Correta",
+   "lon": -48.935602,
+   "lat": -27.101564
+  },
+  {
+   "cota_rotulo": "8,85",
+   "bairro": "Guarani",
+   "rua": "Hercílio Paza - calçada",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,11",
+   "conferencia": "Correta",
+   "lon": -48.936748,
+   "lat": -27.100959
+  },
+  {
+   "cota_rotulo": "8,61",
+   "bairro": "Guarani",
+   "rua": "Osvaldo Hassmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,35",
+   "conferencia": "Correta",
+   "lon": -48.944821,
+   "lat": -27.102174
+  },
+  {
+   "cota_rotulo": "8,25",
+   "bairro": "Dom Joaquim",
+   "rua": "Leônidas Padilha - muro da casa 755",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,71",
+   "conferencia": "Correta",
+   "lon": -48.957549,
+   "lat": -27.137603
+  },
+  {
+   "cota_rotulo": "8,76",
+   "bairro": "Guarani",
+   "rua": "Gabriel Siegel",
+   "esquina": "Muro da casa 112",
+   "nivel_registrado_no_local": "0,20",
+   "conferencia": "Correta",
+   "lon": -48.947997,
+   "lat": -27.10226
+  },
+  {
+   "cota_rotulo": "7,59",
+   "bairro": "Guarani",
+   "rua": "Nelson Mattiolli",
+   "esquina": "Frente a casa n° 15",
+   "nivel_registrado_no_local": "1,37",
+   "conferencia": "Correta",
+   "lon": -48.935266,
+   "lat": -27.096913
+  },
+  {
+   "cota_rotulo": "8,72",
+   "bairro": "Guarani",
+   "rua": "Gabriel Siegel - Poste em frente residência 99",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,24",
+   "conferencia": "Correta",
+   "lon": -48.947445,
+   "lat": -27.102558
+  },
+  {
+   "cota_rotulo": "7,96",
+   "bairro": "Santa Terezinha",
+   "rua": "Francisco Staack",
+   "esquina": "Muro casa n 13",
+   "nivel_registrado_no_local": "1,00",
+   "conferencia": "Correta",
+   "lon": -48.885906,
+   "lat": -27.064585
+  },
+  {
+   "cota_rotulo": "8,69",
+   "bairro": "Guarani",
+   "rua": "GU-20",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,27",
+   "conferencia": "Correta",
+   "lon": -48.935584,
+   "lat": -27.101039
+  },
+  {
+   "cota_rotulo": "8,19",
+   "bairro": "Souza Cruz",
+   "rua": "SC - 22",
+   "esquina": "Travessa Lagoa dourada",
+   "nivel_registrado_no_local": "0,77",
+   "conferencia": "Correta",
+   "lon": -48.934774,
+   "lat": -27.127274
+  },
+  {
+   "cota_rotulo": "8,31",
+   "bairro": "Santa Terezinha",
+   "rua": "Theodoro Heirich Staack",
+   "esquina": "Poste em frente a n. 146",
+   "nivel_registrado_no_local": "0,65",
+   "conferencia": "Correta",
+   "lon": -48.883296,
+   "lat": -27.064181
+  },
+  {
+   "cota_rotulo": "8,39",
+   "bairro": "Limoeiro",
+   "rua": "Juvenal Vechi",
+   "esquina": "Valdir Franzen",
+   "nivel_registrado_no_local": "0,57",
+   "conferencia": "Correta",
+   "lon": -48.881258,
+   "lat": -27.049786
+  },
+  {
+   "cota_rotulo": "8,36",
+   "bairro": "Limoeiro",
+   "rua": "Maria Scarpa Formonte - n. 20, casa 1",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,60",
+   "conferencia": "Correta",
+   "lon": -48.881036,
+   "lat": -27.048431
+  },
+  {
+   "cota_rotulo": "8,30",
+   "bairro": "Limoeiro",
+   "rua": "Antônio Giraldi",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,66",
+   "conferencia": "Correta",
+   "lon": -48.881112,
+   "lat": -27.047825
+  },
+  {
+   "cota_rotulo": "8,36",
+   "bairro": "Limoeiro",
+   "rua": "Valdir Franzen",
+   "esquina": "Antonio Giraldi",
+   "nivel_registrado_no_local": "0,60",
+   "conferencia": "Correta",
+   "lon": -48.881992,
+   "lat": -27.047479
+  },
+  {
+   "cota_rotulo": "8,35",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,61",
+   "conferencia": "Correta",
+   "lon": -48.878205,
+   "lat": -27.049015
+  },
+  {
+   "cota_rotulo": "7,93",
+   "bairro": "Limoeiro",
+   "rua": "Lindolfo Hipólito Coelho",
+   "esquina": "poste em frente ao n. 179",
+   "nivel_registrado_no_local": "1,03",
+   "conferencia": "Correta",
+   "lon": -48.877555,
+   "lat": -27.047836
+  },
+  {
+   "cota_rotulo": "8,63",
+   "bairro": "Limoeiro",
+   "rua": "Itajaí",
+   "esquina": "Poste em frente ao n. 1444",
+   "nivel_registrado_no_local": "0,33",
+   "conferencia": "Correta",
+   "lon": -48.868169,
+   "lat": -27.038849
+  },
+  {
+   "cota_rotulo": "8,90",
+   "bairro": "Limoeiro",
+   "rua": "Itajaí",
+   "esquina": "Poste em frente ao BrusDoce",
+   "nivel_registrado_no_local": "0,06",
+   "conferencia": "Correta",
+   "lon": -48.867871,
+   "lat": -27.037956
+  },
+  {
+   "cota_rotulo": "8,85",
+   "bairro": "Limoeiro",
+   "rua": "Itajaí",
+   "esquina": "Poste em frente ao n. 1433, casa 1",
+   "nivel_registrado_no_local": "0,11",
+   "conferencia": "Correta",
+   "lon": -48.868333,
+   "lat": -27.039495
+  },
+  {
+   "cota_rotulo": "8,04",
+   "bairro": "Limoeiro",
+   "rua": "Itajaí",
+   "esquina": "LM 023. Poste em frente ao n. 1030",
+   "nivel_registrado_no_local": "0,92",
+   "conferencia": "Correta",
+   "lon": -48.871544,
+   "lat": -27.044326
+  },
+  {
+   "cota_rotulo": "7,98",
+   "bairro": "Limoeiro",
+   "rua": "Lm 023",
+   "esquina": "Poste em frente ao n. 60",
+   "nivel_registrado_no_local": "0,98",
+   "conferencia": "Correta",
+   "lon": -48.872349,
+   "lat": -27.043715
+  },
+  {
+   "cota_rotulo": "8,35",
+   "bairro": "Limoeiro",
+   "rua": "Pedro Winter",
+   "esquina": "Poste em frente ao n. 89",
+   "nivel_registrado_no_local": "0,61",
+   "conferencia": "Correta",
+   "lon": -48.872453,
+   "lat": -27.044501
+  },
+  {
+   "cota_rotulo": "7,62",
+   "bairro": "Limoeiro",
+   "rua": "LM - 005",
+   "esquina": "Poste na esquina com a Pedro Winter.",
+   "nivel_registrado_no_local": "1,34",
+   "conferencia": "Correta",
+   "lon": -48.873095,
+   "lat": -27.0451
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Limoeiro",
+   "rua": "LM 023",
+   "esquina": "Poste em frente ao n. 145",
+   "nivel_registrado_no_local": "0,90",
+   "conferencia": "Correta",
+   "lon": -48.872819,
+   "lat": -27.044101
+  },
+  {
+   "cota_rotulo": "7,83",
+   "bairro": "Limoeiro",
+   "rua": "LM 023",
+   "esquina": "Poste ao final da rua",
+   "nivel_registrado_no_local": "1,13",
+   "conferencia": "Correta",
+   "lon": -48.873314,
+   "lat": -27.044536
+  },
+  {
+   "cota_rotulo": "7,87",
+   "bairro": "Limoeiro",
+   "rua": "LM 005",
+   "esquina": "Poste com esquina com a rua Itajaí",
+   "nivel_registrado_no_local": "1,09",
+   "conferencia": "Correta",
+   "lon": -48.872864,
+   "lat": -27.045382
+  },
+  {
+   "cota_rotulo": "8,33",
+   "bairro": "Limoeiro",
+   "rua": "Lindolfo Hipólito Coelho",
+   "esquina": "Poste em frente ao n. 295",
+   "nivel_registrado_no_local": "0,63",
+   "conferencia": "Correta",
+   "lon": -48.877528,
+   "lat": -27.046461
+  },
+  {
+   "cota_rotulo": "8,04",
+   "bairro": "Limoeiro",
+   "rua": "Lindolfo Hipólito Coelho",
+   "esquina": "Poste em frente ao n. 135, esquina com Rua Maria Heiderscheidt Coelho",
+   "nivel_registrado_no_local": "0,92",
+   "conferencia": "Correta",
+   "lon": -48.877588,
+   "lat": -27.04862
+  },
+  {
+   "cota_rotulo": "7,87",
+   "bairro": "Limoeiro",
+   "rua": "Lindolfo Hipólito Coelho",
+   "esquina": "Poste em frente ao n. 63",
+   "nivel_registrado_no_local": "1,09",
+   "conferencia": "Correta",
+   "lon": -48.877596,
+   "lat": -27.049529
+  },
+  {
+   "cota_rotulo": "7,81",
+   "bairro": "Limoeiro",
+   "rua": "Lindolfo Hipólito Coelho",
+   "esquina": "Poste em frente ao n. 105. Esquina com a rua Maria Heiderscheidt Coelho",
+   "nivel_registrado_no_local": "1,15",
+   "conferencia": "Correta",
+   "lon": -48.877585,
+   "lat": -27.048956
+  },
+  {
+   "cota_rotulo": "8,77",
+   "bairro": "Dom Joaquim",
+   "rua": "Padre Vicente Schmitz",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,19",
+   "conferencia": "Correta",
+   "lon": -48.960392,
+   "lat": -27.143169
+  },
+  {
+   "cota_rotulo": "8,81",
+   "bairro": "Dom Joquim",
+   "rua": "Padre Vicente Scmitz",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,154",
+   "conferencia": "Correta",
+   "lon": -48.959501,
+   "lat": -27.143224
+  },
+  {
+   "cota_rotulo": "8,76",
+   "bairro": "Dom Joaquim",
+   "rua": "Padre Vicente Schmitz",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,2 m",
+   "conferencia": "Correta",
+   "lon": -48.959818,
+   "lat": -27.143192
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Dom Joaquim",
+   "rua": "Carlos Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,90 m",
+   "conferencia": "Correta",
+   "lon": -48.959287,
+   "lat": -27.142677
+  },
+  {
+   "cota_rotulo": "8,12",
+   "bairro": "Joaquim",
+   "rua": "Carlos Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,84 m",
+   "conferencia": "Correta",
+   "lon": -48.959452,
+   "lat": -27.142587
+  },
+  {
+   "cota_rotulo": "8,17",
+   "bairro": "Dom Joaquim",
+   "rua": "Carlos Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,79 m",
+   "conferencia": "Correta",
+   "lon": -48.959832,
+   "lat": -27.142587
+  },
+  {
+   "cota_rotulo": "6,91",
+   "bairro": "Dom Joaquim",
+   "rua": "Carlos Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,05",
+   "conferencia": "Correta",
+   "lon": -48.959027,
+   "lat": -27.1426
+  },
+  {
+   "cota_rotulo": "8,05",
+   "bairro": "Dom Joaquim",
+   "rua": "Eberhardt Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,91",
+   "conferencia": "Correta",
+   "lon": -48.958766,
+   "lat": -27.141438
+  },
+  {
+   "cota_rotulo": "8,03",
+   "bairro": "Dom Joaquim",
+   "rua": "Eberhardt Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,93 m",
+   "conferencia": "Correta",
+   "lon": -48.959111,
+   "lat": -27.141376
+  },
+  {
+   "cota_rotulo": "8,18",
+   "bairro": "Dom Joaquim",
+   "rua": "Eberhardt Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,78 m",
+   "conferencia": "Correta",
+   "lon": -48.95952,
+   "lat": -27.141377
+  },
+  {
+   "cota_rotulo": "8,27",
+   "bairro": "Dom Joaquim",
+   "rua": "Eberhardt Hort",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,69 m",
+   "conferencia": "Correta",
+   "lon": -48.959922,
+   "lat": -27.14137
+  },
+  {
+   "cota_rotulo": "7,46",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,50",
+   "conferencia": "Correta",
+   "lon": -48.956533,
+   "lat": -27.140038
+  },
+  {
+   "cota_rotulo": "7,65",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,31 m",
+   "conferencia": "Correta",
+   "lon": -48.956482,
+   "lat": -27.140138
+  },
+  {
+   "cota_rotulo": "8,02",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,94 m",
+   "conferencia": "Correta",
+   "lon": -48.956812,
+   "lat": -27.140122
+  },
+  {
+   "cota_rotulo": "8,10",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,86",
+   "conferencia": "Correta",
+   "lon": -48.956819,
+   "lat": -27.140014
+  },
+  {
+   "cota_rotulo": "7,73",
+   "bairro": "Dom Joaquim",
+   "rua": "Irmã Josefina",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,23 m",
+   "conferencia": "Correta",
+   "lon": -48.958009,
+   "lat": -27.140121
+  },
+  {
+   "cota_rotulo": "8,00",
+   "bairro": "Dom Jaoquim",
+   "rua": "Irmã Josefina",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,96 m",
+   "conferencia": "Correta",
+   "lon": -48.958319,
+   "lat": -27.14011
+  },
+  {
+   "cota_rotulo": "8,12",
+   "bairro": "Dom Joaquim",
+   "rua": "Leônidas Padilha de Oliveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,84 m",
+   "conferencia": "Correta",
+   "lon": -48.957498,
+   "lat": -27.137839
+  },
+  {
+   "cota_rotulo": "8,00",
+   "bairro": "Dom Joaquim",
+   "rua": "Leônidas Padilha de Oliveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,96 m",
+   "conferencia": "Correta",
+   "lon": -48.957559,
+   "lat": -27.138175
+  },
+  {
+   "cota_rotulo": "8,56",
+   "bairro": "Dom Joaquim",
+   "rua": "Leônidas Padilha de Oliveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,40 m",
+   "conferencia": "Correta",
+   "lon": -48.957394,
+   "lat": -27.137135
+  },
+  {
+   "cota_rotulo": "7,99",
+   "bairro": "Dom Joaquim",
+   "rua": "Anna Heil",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,97 m",
+   "conferencia": "Correta",
+   "lon": -48.958966,
+   "lat": -27.133226
+  },
+  {
+   "cota_rotulo": "7,69",
+   "bairro": "Dom Joaquim",
+   "rua": "Anna Heil",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,27 m",
+   "conferencia": "Correta",
+   "lon": -48.958953,
+   "lat": -27.132839
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ-050",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,90 m",
+   "conferencia": "Correta",
+   "lon": -48.956779,
+   "lat": -27.137512
+  },
+  {
+   "cota_rotulo": "8,07",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ-050",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,89 m",
+   "conferencia": "Correta",
+   "lon": -48.95679,
+   "lat": -27.137899
+  },
+  {
+   "cota_rotulo": "8,25",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ - 050",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,71 m",
+   "conferencia": "Correta",
+   "lon": -48.956778,
+   "lat": -27.137127
+  },
+  {
+   "cota_rotulo": "8,50",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,46 m",
+   "conferencia": "Correta",
+   "lon": -48.955699,
+   "lat": -27.139953
+  },
+  {
+   "cota_rotulo": "7,75",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,23 m",
+   "conferencia": "Correta",
+   "lon": -48.955566,
+   "lat": -27.139231
+  },
+  {
+   "cota_rotulo": "7,95",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,01 m",
+   "conferencia": "Correta",
+   "lon": -48.956552,
+   "lat": -27.133359
+  },
+  {
+   "cota_rotulo": "7,67",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,29 m",
+   "conferencia": "Correta",
+   "lon": -48.95664,
+   "lat": -27.133091
+  },
+  {
+   "cota_rotulo": "8,61",
+   "bairro": "Souza Cruz",
+   "rua": "Alberto Knop",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,35 m",
+   "conferencia": "Correta",
+   "lon": -48.933123,
+   "lat": -27.119219
+  },
+  {
+   "cota_rotulo": "8,28",
+   "bairro": "Souza Cruz",
+   "rua": "Alberto Knop",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,68 m",
+   "conferencia": "Correta",
+   "lon": -48.933446,
+   "lat": -27.119794
+  },
+  {
+   "cota_rotulo": "7,62",
+   "bairro": "Souza Cruz",
+   "rua": "Rua do Cedro",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,34 m",
+   "conferencia": "Correta",
+   "lon": -48.934867,
+   "lat": -27.125623
+  },
+  {
+   "cota_rotulo": "8,29",
+   "bairro": "Souza Cruz",
+   "rua": "Rua do Cedro",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,67 m",
+   "conferencia": "Correta",
+   "lon": -48.935158,
+   "lat": -27.125861
+  },
+  {
+   "cota_rotulo": "8,59",
+   "bairro": "Souza Cruz",
+   "rua": "SC-020",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,37 m",
+   "conferencia": "Correta",
+   "lon": -48.935135,
+   "lat": -27.126057
+  },
+  {
+   "cota_rotulo": "8,53",
+   "bairro": "Souza Cruz",
+   "rua": "Rua do Cedro",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,43 m",
+   "conferencia": "Correta",
+   "lon": -48.935283,
+   "lat": -27.125847
+  },
+  {
+   "cota_rotulo": "8,13",
+   "bairro": "Souza Cruz",
+   "rua": "SC-020",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,83 m",
+   "conferencia": "Correta",
+   "lon": -48.934798,
+   "lat": -27.126512
+  },
+  {
+   "cota_rotulo": "8,20",
+   "bairro": "Souza Cruz",
+   "rua": "Travessa Lagoa Dourada",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,76 m",
+   "conferencia": "Correta",
+   "lon": -48.935388,
+   "lat": -27.126986
+  },
+  {
+   "cota_rotulo": "8,80",
+   "bairro": "Souza Cruz",
+   "rua": "Travessa Lagoa Dourada",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,16 m",
+   "conferencia": "Correta",
+   "lon": -48.935504,
+   "lat": -27.126763
+  },
+  {
+   "cota_rotulo": "7,69",
+   "bairro": "Souza Cruz",
+   "rua": "Travessa Lagoa Dourada",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,27 m",
+   "conferencia": "Correta",
+   "lon": -48.93521,
+   "lat": -27.127607
+  },
+  {
+   "cota_rotulo": "7,62",
+   "bairro": "Souza Cruz",
+   "rua": "SC-022",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,34 m",
+   "conferencia": "Correta",
+   "lon": -48.934895,
+   "lat": -27.127404
+  },
+  {
+   "cota_rotulo": "7,70",
+   "bairro": "Souza Cruz",
+   "rua": "SC-022",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,26",
+   "conferencia": "Correta",
+   "lon": -48.935044,
+   "lat": -27.127483
+  },
+  {
+   "cota_rotulo": "8,14",
+   "bairro": "Souza Cruz",
+   "rua": "SC-022",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,82 m",
+   "conferencia": "Correta",
+   "lon": -48.934732,
+   "lat": -27.127251
+  },
+  {
+   "cota_rotulo": "7,23",
+   "bairro": "Jardim Maluche",
+   "rua": "Francisco Sassi",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,73 m",
+   "conferencia": "Correta",
+   "lon": -48.932658,
+   "lat": -27.100934
+  },
+  {
+   "cota_rotulo": "6,87",
+   "bairro": "Jardim Maluche",
+   "rua": "Bartolomeu Pruner",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,09 m",
+   "conferencia": "Correta",
+   "lon": -48.932201,
+   "lat": -27.100892
+  },
+  {
+   "cota_rotulo": "6,14",
+   "bairro": "Jardim Maluche",
+   "rua": "Francisco Sassi",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,82 m",
+   "conferencia": "Correta",
+   "lon": -48.934317,
+   "lat": -27.10242
+  },
+  {
+   "cota_rotulo": "6,81",
+   "bairro": "Jardim Maluche",
+   "rua": "Francisco Sassi",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,15 m",
+   "conferencia": "Correta",
+   "lon": -48.933942,
+   "lat": -27.10179
+  },
+  {
+   "cota_rotulo": "7,66",
+   "bairro": "Jardim Maluche",
+   "rua": "Prefeito Victor A. Gevaerd",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,30 m",
+   "conferencia": "Correta",
+   "lon": -48.933505,
+   "lat": -27.102327
+  },
+  {
+   "cota_rotulo": "7,71",
+   "bairro": "Jardim Maluche",
+   "rua": "Prefeito Victor A. Gevaerd",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,25 m",
+   "conferencia": "Correta",
+   "lon": -48.933309,
+   "lat": -27.10236
+  },
+  {
+   "cota_rotulo": "8,19",
+   "bairro": "Jardim Maluche",
+   "rua": "Bruni Maluche",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,77 m",
+   "conferencia": "Correta",
+   "lon": -48.933317,
+   "lat": -27.102083
+  },
+  {
+   "cota_rotulo": "8,05",
+   "bairro": "Jardim Maluche",
+   "rua": "Jacó Bauer",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,91 m",
+   "conferencia": "Correta",
+   "lon": -48.932994,
+   "lat": -27.101809
+  },
+  {
+   "cota_rotulo": "8,35",
+   "bairro": "Jardim Maluche",
+   "rua": "Jacó Bauer",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,61 m",
+   "conferencia": "Correta",
+   "lon": -48.933439,
+   "lat": -27.101773
+  },
+  {
+   "cota_rotulo": "7,71",
+   "bairro": "Jardim Maluche",
+   "rua": "João Paulo I",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,25 m",
+   "conferencia": "Correta",
+   "lon": -48.932644,
+   "lat": -27.101819
+  },
+  {
+   "cota_rotulo": "8,24",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": "Poste em frente ao n. 434",
+   "nivel_registrado_no_local": "0,72",
+   "conferencia": "Correta",
+   "lon": -48.878203,
+   "lat": -27.049099
+  },
+  {
+   "cota_rotulo": "8,33",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": "Poste na esquina com a rua Maria Heiderscheidt Coelho",
+   "nivel_registrado_no_local": "0,63",
+   "conferencia": "Correta",
+   "lon": -48.878179,
+   "lat": -27.048722
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Limoeiro",
+   "rua": "-27.0496 -48.8781",
+   "esquina": "Poste em frente ao n. 344",
+   "nivel_registrado_no_local": "0,90",
+   "conferencia": "Correta",
+   "lon": -48.878222,
+   "lat": -27.049559
+  },
+  {
+   "cota_rotulo": "8,03",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": "Poste em frente ao n. 250",
+   "nivel_registrado_no_local": "0,93",
+   "conferencia": "Correta",
+   "lon": -48.87826,
+   "lat": -27.050659
+  },
+  {
+   "cota_rotulo": "8,44",
+   "bairro": "Limoeiro",
+   "rua": "Valdir Franzen",
+   "esquina": "Poste em frente ao n. 330",
+   "nivel_registrado_no_local": "0,52",
+   "conferencia": "Correta",
+   "lon": -48.882067,
+   "lat": -27.047414
+  },
+  {
+   "cota_rotulo": "8,29",
+   "bairro": "Limoeiro",
+   "rua": "Antônio Giraldi",
+   "esquina": "Último Poste da rua, n. 340",
+   "nivel_registrado_no_local": "0,67",
+   "conferencia": "Correta",
+   "lon": -48.882424,
+   "lat": -27.047557
+  },
+  {
+   "cota_rotulo": "8,43",
+   "bairro": "Limoeiro",
+   "rua": "Valdir Franzen",
+   "esquina": "Poste em frente a esquina com rua Maria Scarpa Formonte",
+   "nivel_registrado_no_local": "0,53",
+   "conferencia": "Correta",
+   "lon": -48.882211,
+   "lat": -27.048249
+  },
+  {
+   "cota_rotulo": "8,47",
+   "bairro": "Limoeiro",
+   "rua": "Maria Scarpa Formonte",
+   "esquina": "Poste em frente ao n. 50",
+   "nivel_registrado_no_local": "0,49",
+   "conferencia": "Correta",
+   "lon": -48.881531,
+   "lat": -27.048415
+  },
+  {
+   "cota_rotulo": "7,19",
+   "bairro": "Jardim Maluche",
+   "rua": "João Paulo I",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,77 m",
+   "conferencia": "Correta",
+   "lon": -48.932479,
+   "lat": -27.101453
+  },
+  {
+   "cota_rotulo": "7,10",
+   "bairro": "Jardim Maluche",
+   "rua": "João Paulo I",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,86 m",
+   "conferencia": "Correta",
+   "lon": -48.932617,
+   "lat": -27.101411
+  },
+  {
+   "cota_rotulo": "7,11",
+   "bairro": "Jardim Maluche",
+   "rua": "João Paulo I",
+   "esquina": "Bartolomeu Pruner",
+   "nivel_registrado_no_local": "1,85 m",
+   "conferencia": "Correta",
+   "lon": -48.932585,
+   "lat": -27.101028
+  },
+  {
+   "cota_rotulo": "7,19",
+   "bairro": "Jardim Maluche",
+   "rua": "Osvaldo Maffezzolli",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,77 m",
+   "conferencia": "Correta",
+   "lon": -48.934115,
+   "lat": -27.103189
+  },
+  {
+   "cota_rotulo": "6,46",
+   "bairro": "Jardim Maluche",
+   "rua": "Osvaldo Maffezzolli",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,50 m",
+   "conferencia": "Correta",
+   "lon": -48.934417,
+   "lat": -27.103161
+  },
+  {
+   "cota_rotulo": "6,63",
+   "bairro": "Jardim Maluche",
+   "rua": "Francisco Sassi",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,33 m",
+   "conferencia": "Correta",
+   "lon": -48.93455,
+   "lat": -27.103124
+  },
+  {
+   "cota_rotulo": "7,42",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,54 m",
+   "conferencia": "Correta",
+   "lon": -48.930362,
+   "lat": -27.096513
+  },
+  {
+   "cota_rotulo": "7,96",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,00 m",
+   "conferencia": "Correta",
+   "lon": -48.92992,
+   "lat": -27.096818
+  },
+  {
+   "cota_rotulo": "7,79",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,17 m",
+   "conferencia": "Correta",
+   "lon": -48.930854,
+   "lat": -27.096309
+  },
+  {
+   "cota_rotulo": "7,70",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,26 m",
+   "conferencia": "Correta",
+   "lon": -48.931492,
+   "lat": -27.096229
+  },
+  {
+   "cota_rotulo": "8,26",
+   "bairro": "Guarani",
+   "rua": "Gerson Venturelli",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,70 m",
+   "conferencia": "Correta",
+   "lon": -48.935813,
+   "lat": -27.096636
+  },
+  {
+   "cota_rotulo": "7,50",
+   "bairro": "Guarani",
+   "rua": "Gerson Venturelli",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,46 m",
+   "conferencia": "Correta",
+   "lon": -48.935604,
+   "lat": -27.097205
+  },
+  {
+   "cota_rotulo": "7,13",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,83 m",
+   "conferencia": "Correta",
+   "lon": -48.935562,
+   "lat": -27.097306
+  },
+  {
+   "cota_rotulo": "8,25",
+   "bairro": "Guarani",
+   "rua": "Nelson Mattiolli",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,71 m",
+   "conferencia": "Correta",
+   "lon": -48.935311,
+   "lat": -27.09674
+  },
+  {
+   "cota_rotulo": "7,60",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,36 m",
+   "conferencia": "Correta",
+   "lon": -48.934887,
+   "lat": -27.097081
+  },
+  {
+   "cota_rotulo": "8,15",
+   "bairro": "Guarani",
+   "rua": "Euvaldo Deichmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,81 m",
+   "conferencia": "Correta",
+   "lon": -48.934937,
+   "lat": -27.096962
+  },
+  {
+   "cota_rotulo": "8,91",
+   "bairro": "Guarani",
+   "rua": "Euvaldo Deichmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,05 m",
+   "conferencia": "Correta",
+   "lon": -48.93498,
+   "lat": -27.096684
+  },
+  {
+   "cota_rotulo": "8,65",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,31 m",
+   "conferencia": "Correta",
+   "lon": -48.934165,
+   "lat": -27.096868
+  },
+  {
+   "cota_rotulo": "7,46",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,50 m",
+   "conferencia": "Correta",
+   "lon": -48.936301,
+   "lat": -27.097522
+  },
+  {
+   "cota_rotulo": "7,87",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,09 m",
+   "conferencia": "Correta",
+   "lon": -48.937106,
+   "lat": -27.097778
+  },
+  {
+   "cota_rotulo": "8,14",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,82 m",
+   "conferencia": "Correta",
+   "lon": -48.93787,
+   "lat": -27.097991
+  },
+  {
+   "cota_rotulo": "7,82",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,14 m",
+   "conferencia": "Correta",
+   "lon": -48.938622,
+   "lat": -27.098208
+  },
+  {
+   "cota_rotulo": "7,78",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,18 m",
+   "conferencia": "Correta",
+   "lon": -48.938966,
+   "lat": -27.098377
+  },
+  {
+   "cota_rotulo": "8,51",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": "Poste em frente ao n. 130",
+   "nivel_registrado_no_local": "0,45",
+   "conferencia": "Correta",
+   "lon": -48.878319,
+   "lat": -27.052212
+  },
+  {
+   "cota_rotulo": "8,84",
+   "bairro": "Limoeiro",
+   "rua": "Afonso Belli",
+   "esquina": "Poste em frente ao n. 455",
+   "nivel_registrado_no_local": "0,12",
+   "conferencia": "Correta",
+   "lon": -48.878976,
+   "lat": -27.048392
+  },
+  {
+   "cota_rotulo": "8,28",
+   "bairro": "Limoeiro",
+   "rua": "Antônio Giraldi",
+   "esquina": "Poste em frente ao n. 80",
+   "nivel_registrado_no_local": "0,68",
+   "conferencia": "Correta",
+   "lon": -48.880909,
+   "lat": -27.047815
+  },
+  {
+   "cota_rotulo": "8,33",
+   "bairro": "Limoeiro",
+   "rua": "Valdir Franzen",
+   "esquina": "Poste na esquina com rua Juvenal Vechi",
+   "nivel_registrado_no_local": "0,63",
+   "conferencia": "Correta",
+   "lon": -48.880791,
+   "lat": -27.049502
+  },
+  {
+   "cota_rotulo": "8,34",
+   "bairro": "Limoeiro",
+   "rua": "Maria Scarpa Formonti",
+   "esquina": "Poste em frente a antena",
+   "nivel_registrado_no_local": "0,62",
+   "conferencia": "Correta",
+   "lon": -48.880399,
+   "lat": -27.0501
+  },
+  {
+   "cota_rotulo": "8,39",
+   "bairro": "Limoeiro",
+   "rua": "Maria Scarpa Formonti",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,57",
+   "conferencia": "Correta",
+   "lon": -48.880468,
+   "lat": -27.051699
+  },
+  {
+   "cota_rotulo": "7,48",
+   "bairro": "Limoeiro",
+   "rua": "Maria Scarpa Formonti",
+   "esquina": "Av. Beira Rio",
+   "nivel_registrado_no_local": "1,48",
+   "conferencia": "Correta",
+   "lon": -48.880361,
+   "lat": -27.05277
+  },
+  {
+   "cota_rotulo": "3,76",
+   "bairro": "Limoeiro",
+   "rua": "Av. Beira Rio / Maria Scarpa Formonti",
+   "esquina": null,
+   "nivel_registrado_no_local": "5,20",
+   "conferencia": "Correta",
+   "lon": -48.880587,
+   "lat": -27.053374
+  },
+  {
+   "cota_rotulo": "7,10",
+   "bairro": "Rio Branco",
+   "rua": "Vilton Barbosa",
+   "esquina": "Poste em frente ao n. 154",
+   "nivel_registrado_no_local": "1,86",
+   "conferencia": "Correta",
+   "lon": -48.93994,
+   "lat": -27.115705
+  },
+  {
+   "cota_rotulo": "6,71",
+   "bairro": "Rio Branco",
+   "rua": "Vilton Barbosa",
+   "esquina": "Poste em frente ao n. 130",
+   "nivel_registrado_no_local": "2,25",
+   "conferencia": "Correta",
+   "lon": -48.940169,
+   "lat": -27.116088
+  },
+  {
+   "cota_rotulo": "8,20",
+   "bairro": "Rio Branco",
+   "rua": "RB - 003",
+   "esquina": "Poste na rua",
+   "nivel_registrado_no_local": "0,76",
+   "conferencia": "Correta",
+   "lon": -48.940143,
+   "lat": -27.117208
+  },
+  {
+   "cota_rotulo": "6,29",
+   "bairro": "Rio Branco",
+   "rua": "Leonardo Pedro Voss",
+   "esquina": "Poste ao final da rua, em frente a casa com n. 11B",
+   "nivel_registrado_no_local": "2,67",
+   "conferencia": "Correta",
+   "lon": -48.94209,
+   "lat": -27.128388
+  },
+  {
+   "cota_rotulo": "7,51",
+   "bairro": "Rio Branco",
+   "rua": "Leonardo Pedro Voss",
+   "esquina": "Parede da casa n. 145",
+   "nivel_registrado_no_local": "1,45",
+   "conferencia": "Correta",
+   "lon": -48.942078,
+   "lat": -27.128102
+  },
+  {
+   "cota_rotulo": "6,10",
+   "bairro": "Centro I",
+   "rua": "Arno Carlos Gracher",
+   "esquina": "Poste na esquina com Moritz Germando Hoffmann,",
+   "nivel_registrado_no_local": "2,86",
+   "conferencia": "Correta",
+   "lon": -48.910133,
+   "lat": -27.09738
+  },
+  {
+   "cota_rotulo": "7,67",
+   "bairro": "Centro I",
+   "rua": "Moritz Germano Hoffmann",
+   "esquina": "Poste em frente ao n. 100",
+   "nivel_registrado_no_local": "1,29",
+   "conferencia": "Correta",
+   "lon": -48.910815,
+   "lat": -27.097152
+  },
+  {
+   "cota_rotulo": "8,13",
+   "bairro": "Centro I",
+   "rua": "Moritz Germando Hoffmann",
+   "esquina": "Poste em frente ao n. 165",
+   "nivel_registrado_no_local": "0,83",
+   "conferencia": "Correta",
+   "lon": -48.911196,
+   "lat": -27.097136
+  },
+  {
+   "cota_rotulo": "8,36",
+   "bairro": "Centro I",
+   "rua": "João Luiz Gonzaga",
+   "esquina": "Poste em frente ao n. 179, esquina com Arno Carlos Gracher",
+   "nivel_registrado_no_local": "0,60",
+   "conferencia": "Correta",
+   "lon": -48.909444,
+   "lat": -27.096787
+  },
+  {
+   "cota_rotulo": "8,66",
+   "bairro": "Centro I",
+   "rua": "João Luiz Gonzaga",
+   "esquina": "Poste em frente ao n. 150",
+   "nivel_registrado_no_local": "0,30",
+   "conferencia": "Correta",
+   "lon": -48.909757,
+   "lat": -27.096837
+  },
+  {
+   "cota_rotulo": "7,62",
+   "bairro": "Centro I",
+   "rua": "Arno Carlos Gracher",
+   "esquina": "Poste na esquina com João Luiz Gonzaga",
+   "nivel_registrado_no_local": "1,34",
+   "conferencia": "Correta",
+   "lon": -48.90946,
+   "lat": -27.096952
+  },
+  {
+   "cota_rotulo": "8,51",
+   "bairro": "Centro I",
+   "rua": "Arno Carlos Gracher",
+   "esquina": "Poste na esquina com rua Vicente Schaefer (casa n. 191)",
+   "nivel_registrado_no_local": "0,45",
+   "conferencia": "Correta",
+   "lon": -48.908902,
+   "lat": -27.096445
+  },
+  {
+   "cota_rotulo": "8,30",
+   "bairro": "Centro I",
+   "rua": "Vicente Schaefer",
+   "esquina": "Poste em frente ao n. 114",
+   "nivel_registrado_no_local": "0,66",
+   "conferencia": "Correta",
+   "lon": -48.909643,
+   "lat": -27.096353
+  },
+  {
+   "cota_rotulo": "7,84",
+   "bairro": "Centro I",
+   "rua": "Arthur Olinger",
+   "esquina": "Poste em frente casa azul (n. 123 na esquina com Vicente Schaefer)",
+   "nivel_registrado_no_local": "1,12",
+   "conferencia": "Correta",
+   "lon": -48.909336,
+   "lat": -27.096223
+  },
+  {
+   "cota_rotulo": "7,86",
+   "bairro": "Centro I",
+   "rua": "Arthu Olinger",
+   "esquina": "Poste em frente ao n. 129",
+   "nivel_registrado_no_local": "1,10",
+   "conferencia": "Correta",
+   "lon": -48.909285,
+   "lat": -27.096004
+  },
+  {
+   "cota_rotulo": "8,75",
+   "bairro": "Centro I",
+   "rua": "Arthur Olinger",
+   "esquina": "Poste em frente ao n. 88",
+   "nivel_registrado_no_local": "0,21",
+   "conferencia": "Correta",
+   "lon": -48.910127,
+   "lat": -27.095942
+  },
+  {
+   "cota_rotulo": "8,69",
+   "bairro": "Centro I",
+   "rua": "Rodrigues Alves",
+   "esquina": "Segundo poste em frente Mega Motos Honda",
+   "nivel_registrado_no_local": "0,27",
+   "conferencia": "Correta",
+   "lon": -48.915315,
+   "lat": -27.099778
+  },
+  {
+   "cota_rotulo": "8,60",
+   "bairro": "Guarani",
+   "rua": "Gabriel Siegel",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,31 m",
+   "conferencia": "Correta",
+   "lon": -48.946523,
+   "lat": -27.102714
+  },
+  {
+   "cota_rotulo": "8,41",
+   "bairro": "Guarani",
+   "rua": "João Vos Júnior",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,55 m",
+   "conferencia": "Correta",
+   "lon": -48.946529,
+   "lat": -27.10297
+  },
+  {
+   "cota_rotulo": "8,76",
+   "bairro": "Guarani",
+   "rua": "João Vos Júnior",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,20 m",
+   "conferencia": "Correta",
+   "lon": -48.946531,
+   "lat": -27.1035
+  },
+  {
+   "cota_rotulo": "8,69",
+   "bairro": "Guarani",
+   "rua": "Gabriel Siegel",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,27 m",
+   "conferencia": "Correta",
+   "lon": -48.947054,
+   "lat": -27.102637
+  },
+  {
+   "cota_rotulo": "8,85",
+   "bairro": "Guarani",
+   "rua": "Gabriel Siegel",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,11 m",
+   "conferencia": "Correta",
+   "lon": -48.947706,
+   "lat": -27.102472
+  },
+  {
+   "cota_rotulo": "8,78",
+   "bairro": "Guarani",
+   "rua": "Gabriel Siegel",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,18 m",
+   "conferencia": "Correta",
+   "lon": -48.948053,
+   "lat": -27.10224
+  },
+  {
+   "cota_rotulo": "8,56",
+   "bairro": "Rio Branco",
+   "rua": "Claudino Huber",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,40 m",
+   "conferencia": "Correta",
+   "lon": -48.938579,
+   "lat": -27.118674
+  },
+  {
+   "cota_rotulo": "7,61",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,35 m",
+   "conferencia": "Correta",
+   "lon": -48.945452,
+   "lat": -27.111944
+  },
+  {
+   "cota_rotulo": "6,74",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,22 m",
+   "conferencia": "Correta",
+   "lon": -48.945492,
+   "lat": -27.112299
+  },
+  {
+   "cota_rotulo": "6,76",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,20 m",
+   "conferencia": "Correta",
+   "lon": -48.945298,
+   "lat": -27.113261
+  },
+  {
+   "cota_rotulo": "7,56",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,14 m",
+   "conferencia": "Correta",
+   "lon": -48.944981,
+   "lat": -27.113863
+  },
+  {
+   "cota_rotulo": "8,21",
+   "bairro": "Rio Branco",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,75 m",
+   "conferencia": "Correta",
+   "lon": -48.944814,
+   "lat": -27.11435
+  },
+  {
+   "cota_rotulo": "8,46",
+   "bairro": "Santa Rita",
+   "rua": "Alemanha",
+   "esquina": "Poste em frente ao n. 110",
+   "nivel_registrado_no_local": "0,50",
+   "conferencia": "Correta",
+   "lon": -48.909336,
+   "lat": -27.086788
+  },
+  {
+   "cota_rotulo": "8,77",
+   "bairro": "Santa Rita",
+   "rua": "Inglaterra",
+   "esquina": "Poste perto da esquina com rua Alemanha",
+   "nivel_registrado_no_local": "0,19",
+   "conferencia": "Correta",
+   "lon": -48.909345,
+   "lat": -27.08712
+  },
+  {
+   "cota_rotulo": "8,79",
+   "bairro": "Santa Rita",
+   "rua": "Célia Zen",
+   "esquina": "Poste na esquina com rua SR 005",
+   "nivel_registrado_no_local": "0,17",
+   "conferencia": "Correta",
+   "lon": -48.906632,
+   "lat": -27.085467
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Santa Terezinha",
+   "rua": "Joaquim Reis",
+   "esquina": "Poste em frente ao n. 87",
+   "nivel_registrado_no_local": "0,90",
+   "conferencia": "Correta",
+   "lon": -48.889508,
+   "lat": -27.074473
+  },
+  {
+   "cota_rotulo": "7,92",
+   "bairro": "Santa Terezinha",
+   "rua": "Joaquim Reis",
+   "esquina": "Poste em frente ao n. 52",
+   "nivel_registrado_no_local": "1,04",
+   "conferencia": "Correta",
+   "lon": -48.889533,
+   "lat": -27.075023
+  },
+  {
+   "cota_rotulo": "8,33",
+   "bairro": "Santa Terezinha",
+   "rua": "George Boettger",
+   "esquina": "Poste em frente ao n. 77",
+   "nivel_registrado_no_local": "0,63",
+   "conferencia": "Correta",
+   "lon": -48.890196,
+   "lat": -27.075168
+  },
+  {
+   "cota_rotulo": "8,71",
+   "bairro": "Santa Terezinha",
+   "rua": "Luiz Boss",
+   "esquina": "Poste em frente ao n. 220",
+   "nivel_registrado_no_local": "0,25",
+   "conferencia": "Correta",
+   "lon": -48.890988,
+   "lat": -27.074667
+  },
+  {
+   "cota_rotulo": "8,79",
+   "bairro": "Santa Terezinha",
+   "rua": "Luiz Boss",
+   "esquina": "Poste em frente ao n. 51",
+   "nivel_registrado_no_local": "0,17",
+   "conferencia": "Correta",
+   "lon": -48.891007,
+   "lat": -27.074094
+  },
+  {
+   "cota_rotulo": "5,80",
+   "bairro": "São Luiz",
+   "rua": "Av. Governador Luiz Henrique da Silveira",
+   "esquina": "Poste",
+   "nivel_registrado_no_local": "3,16",
+   "conferencia": "Correta",
+   "lon": -48.892578,
+   "lat": -27.071944
+  },
+  {
+   "cota_rotulo": "8,13",
+   "bairro": "Santa Rita",
+   "rua": "Vitório Demarche",
+   "esquina": "Poste em frente ao n. 250",
+   "nivel_registrado_no_local": "0,83",
+   "conferencia": "Correta",
+   "lon": -48.907816,
+   "lat": -27.083588
+  },
+  {
+   "cota_rotulo": "6,30",
+   "bairro": "Santa Terezinha",
+   "rua": "Maria Martha Benvenutti Pereira",
+   "esquina": "Primeiro poste da rua, na esquina com av Beira Rio",
+   "nivel_registrado_no_local": "2,66",
+   "conferencia": "Correta",
+   "lon": -48.882334,
+   "lat": -27.05725
+  },
+  {
+   "cota_rotulo": "5,41",
+   "bairro": "Santa Terezinha",
+   "rua": "Av. Beira Rio",
+   "esquina": "Rotatória na esquina com rua Maria Martha Benvenutti Pereira",
+   "nivel_registrado_no_local": "3,55",
+   "conferencia": "Correta",
+   "lon": -48.882735,
+   "lat": -27.057283
+  },
+  {
+   "cota_rotulo": "7,84",
+   "bairro": "Santa Terezinha",
+   "rua": "Theodoro Heirich Staack",
+   "esquina": "Poste em frente ao n. 47",
+   "nivel_registrado_no_local": "1,12",
+   "conferencia": "Correta",
+   "lon": -48.88402,
+   "lat": -27.064168
+  },
+  {
+   "cota_rotulo": "8,78",
+   "bairro": "Santa Terezinha",
+   "rua": "Theodoro Heirich Staack",
+   "esquina": "Poste em frente ao n. 120",
+   "nivel_registrado_no_local": "0,18",
+   "conferencia": "Correta",
+   "lon": -48.882576,
+   "lat": -27.064135
+  },
+  {
+   "cota_rotulo": "7,74",
+   "bairro": "Santa Terezinha",
+   "rua": "Theodoro Heirich Staack",
+   "esquina": "Postem em frente ao n. 109",
+   "nivel_registrado_no_local": "1,22",
+   "conferencia": "Correta",
+   "lon": -48.885325,
+   "lat": -27.064178
+  },
+  {
+   "cota_rotulo": "7,73",
+   "bairro": "Santa Terezinha",
+   "rua": "Mathias Moritz",
+   "esquina": "Poste em frente ao n. 298",
+   "nivel_registrado_no_local": "1,23",
+   "conferencia": "Correta",
+   "lon": -48.883993,
+   "lat": -27.064499
+  },
+  {
+   "cota_rotulo": "7,94",
+   "bairro": "Santa Terezinha",
+   "rua": "Francisco Staack",
+   "esquina": "Poste em frente ao n. 25",
+   "nivel_registrado_no_local": "1,02",
+   "conferencia": "Correta",
+   "lon": -48.885305,
+   "lat": -27.064581
+  },
+  {
+   "cota_rotulo": "8,22",
+   "bairro": "Santa Terezinha",
+   "rua": "Francisco Staack",
+   "esquina": "Poste em frente ao n. 67",
+   "nivel_registrado_no_local": "0,74",
+   "conferencia": "Correta",
+   "lon": -48.885745,
+   "lat": -27.064594
+  },
+  {
+   "cota_rotulo": "7,81",
+   "bairro": "Guarani",
+   "rua": "Godofredo Hassmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,15 m",
+   "conferencia": "Correta",
+   "lon": -48.943117,
+   "lat": -27.101092
+  },
+  {
+   "cota_rotulo": "8,50",
+   "bairro": "Guarani",
+   "rua": "Godofredo Hassmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,46 m",
+   "conferencia": "Correta",
+   "lon": -48.943096,
+   "lat": -27.101378
+  },
+  {
+   "cota_rotulo": "7,28",
+   "bairro": "Guarani",
+   "rua": "Ricardo Montibeller",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,68 m",
+   "conferencia": "Correta",
+   "lon": -48.942505,
+   "lat": -27.101014
+  },
+  {
+   "cota_rotulo": "7,68",
+   "bairro": "Guarani",
+   "rua": "Ricardo Montibeller",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,28 m",
+   "conferencia": "Correta",
+   "lon": -48.942484,
+   "lat": -27.101556
+  },
+  {
+   "cota_rotulo": "8,40",
+   "bairro": "Guarani",
+   "rua": "Osvaldo Hassmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,56 m",
+   "conferencia": "Correta",
+   "lon": -48.944765,
+   "lat": -27.102023
+  },
+  {
+   "cota_rotulo": "8,09",
+   "bairro": "Guarani",
+   "rua": "GU-07",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,87 m",
+   "conferencia": "Correta",
+   "lon": -48.941336,
+   "lat": -27.098965
+  },
+  {
+   "cota_rotulo": "7,67",
+   "bairro": "Guarani",
+   "rua": "GU-07",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,29 m",
+   "conferencia": "Correta",
+   "lon": -48.941321,
+   "lat": -27.099572
+  },
+  {
+   "cota_rotulo": "7,75 m",
+   "bairro": "Guarani",
+   "rua": "GU-07",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,21 m",
+   "conferencia": "Correta",
+   "lon": -48.941321,
+   "lat": -27.099323
+  },
+  {
+   "cota_rotulo": "8,48",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,48 m",
+   "conferencia": "Correta",
+   "lon": -48.941436,
+   "lat": -27.098936
+  },
+  {
+   "cota_rotulo": "7,87",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,09 m",
+   "conferencia": "Correta",
+   "lon": -48.940362,
+   "lat": -27.098969
+  },
+  {
+   "cota_rotulo": "7,69",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,27 m",
+   "conferencia": "Correta",
+   "lon": -48.939586,
+   "lat": -27.098728
+  },
+  {
+   "cota_rotulo": "8,30",
+   "bairro": "Guarani",
+   "rua": "GU-01",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,66 m",
+   "conferencia": "Correta",
+   "lon": -48.933445,
+   "lat": -27.098054
+  },
+  {
+   "cota_rotulo": "7,47",
+   "bairro": "Guarani",
+   "rua": "GU-01",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,49 m",
+   "conferencia": "Correta",
+   "lon": -48.933455,
+   "lat": -27.097823
+  },
+  {
+   "cota_rotulo": "8,75",
+   "bairro": "Guarani",
+   "rua": "Ayres Lourenço Penk",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,21 m",
+   "conferencia": "Correta",
+   "lon": -48.933318,
+   "lat": -27.098464
+  },
+  {
+   "cota_rotulo": "8,00",
+   "bairro": "Guarani",
+   "rua": "Ayres Lourenço Penk",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,96 m",
+   "conferencia": "Correta",
+   "lon": -48.932722,
+   "lat": -27.098163
+  },
+  {
+   "cota_rotulo": "8,65",
+   "bairro": "Guarani",
+   "rua": "GU-19",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,31 m",
+   "conferencia": "Correta",
+   "lon": -48.935933,
+   "lat": -27.101495
+  },
+  {
+   "cota_rotulo": "8,82",
+   "bairro": "Guarani",
+   "rua": "Hercilio Paza",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,14",
+   "conferencia": "Correta",
+   "lon": -48.936811,
+   "lat": -27.100978
+  },
+  {
+   "cota_rotulo": "8,53",
+   "bairro": "Guarani",
+   "rua": "Henrique Deichmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,43 m",
+   "conferencia": "Correta",
+   "lon": -48.934284,
+   "lat": -27.098784
+  },
+  {
+   "cota_rotulo": "8,51",
+   "bairro": "Guarani",
+   "rua": "Henrique Deichmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,45 m",
+   "conferencia": "Correta",
+   "lon": -48.934245,
+   "lat": -27.097532
+  },
+  {
+   "cota_rotulo": "7,92",
+   "bairro": "Guarani",
+   "rua": "Henrique Deichmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,04 m",
+   "conferencia": "Correta",
+   "lon": -48.93427,
+   "lat": -27.09816
+  },
+  {
+   "cota_rotulo": "8,92",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,04 m",
+   "conferencia": "Correta",
+   "lon": -48.942192,
+   "lat": -27.098796
+  },
+  {
+   "cota_rotulo": "8,10",
+   "bairro": "Guarani",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,86 m",
+   "conferencia": "Correta",
+   "lon": -48.942008,
+   "lat": -27.099438
+  },
+  {
+   "cota_rotulo": "8,07",
+   "bairro": "Guarani",
+   "rua": "Ernesto Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,89 m",
+   "conferencia": "Correta",
+   "lon": -48.941847,
+   "lat": -27.100245
+  },
+  {
+   "cota_rotulo": "7,87",
+   "bairro": "Guarani",
+   "rua": "Augusto Fischer",
+   "esquina": "Ernesto Bianchini",
+   "nivel_registrado_no_local": "1,09 m",
+   "conferencia": "Correta",
+   "lon": -48.942043,
+   "lat": -27.100038
+  },
+  {
+   "cota_rotulo": "8,37",
+   "bairro": "Guarani",
+   "rua": "Augusto Fischer",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,59 m",
+   "conferencia": "Correta",
+   "lon": -48.942288,
+   "lat": -27.100102
+  },
+  {
+   "cota_rotulo": "8,62",
+   "bairro": "Guarani",
+   "rua": "Augusto Fischer",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,34 m",
+   "conferencia": "Correta",
+   "lon": -48.942828,
+   "lat": -27.10024
+  },
+  {
+   "cota_rotulo": "7,53",
+   "bairro": "Guarani",
+   "rua": "João Boos",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,43 m",
+   "conferencia": "Correta",
+   "lon": -48.943171,
+   "lat": -27.10064
+  },
+  {
+   "cota_rotulo": "8,56",
+   "bairro": "Guarani",
+   "rua": "João Boos",
+   "esquina": "Augusto Fischer",
+   "nivel_registrado_no_local": "0,40 m",
+   "conferencia": "Correta",
+   "lon": -48.943213,
+   "lat": -27.100348
+  },
+  {
+   "cota_rotulo": "8,63",
+   "bairro": "Guarani",
+   "rua": "Júlio Schorner",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,33 m",
+   "conferencia": "Correta",
+   "lon": -48.943783,
+   "lat": -27.099848
+  },
+  {
+   "cota_rotulo": "8,51",
+   "bairro": "Guarani",
+   "rua": "Júlio Schorner",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,45 m",
+   "conferencia": "Correta",
+   "lon": -48.943658,
+   "lat": -27.10013
+  },
+  {
+   "cota_rotulo": "8,56",
+   "bairro": "Guarani",
+   "rua": "Júlio Schorner",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,40 m",
+   "conferencia": "Correta",
+   "lon": -48.943606,
+   "lat": -27.100554
+  },
+  {
+   "cota_rotulo": "5,91",
+   "bairro": "São Luiz",
+   "rua": "Av. Luiz Henrique da Silveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "3,05 m",
+   "conferencia": "Correta",
+   "lon": -48.908954,
+   "lat": -27.083298
+  },
+  {
+   "cota_rotulo": "6,23",
+   "bairro": "São Luiz",
+   "rua": "Avenida Luiz Henrique da Silveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,73 m",
+   "conferencia": "Correta",
+   "lon": -48.910324,
+   "lat": -27.086486
+  },
+  {
+   "cota_rotulo": "4,86",
+   "bairro": "Santa Terezinha",
+   "rua": "Av. Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "4,10 m",
+   "conferencia": "Correta",
+   "lon": -48.883501,
+   "lat": -27.060358
+  },
+  {
+   "cota_rotulo": "5,31",
+   "bairro": "Santa Terezinha",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": "Theodoro Heirich Staack",
+   "nivel_registrado_no_local": "3,65 m",
+   "conferencia": "Correta",
+   "lon": -48.885905,
+   "lat": -27.064143
+  },
+  {
+   "cota_rotulo": "7.88",
+   "bairro": "Centro II",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": "Poste em frente ao hotel 101",
+   "nivel_registrado_no_local": "1,08 m",
+   "conferencia": "Correta",
+   "lon": -48.908726,
+   "lat": -27.097421
+  },
+  {
+   "cota_rotulo": "6,06",
+   "bairro": "Centro I",
+   "rua": "Av. Bepe Rosa",
+   "esquina": "Poste lado direito ao Plaza Rivel",
+   "nivel_registrado_no_local": "2,90 m",
+   "conferencia": "Correta",
+   "lon": -48.915457,
+   "lat": -27.100812
+  },
+  {
+   "cota_rotulo": "5,94",
+   "bairro": "Centro II",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": "Adolfo Schlosser",
+   "nivel_registrado_no_local": "3,02 m",
+   "conferencia": "Correta",
+   "lon": -48.920513,
+   "lat": -27.102991
+  },
+  {
+   "cota_rotulo": "10,22",
+   "bairro": "Guarani",
+   "rua": "Hilário Mattioli",
+   "esquina": "GU-020",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.936024,
+   "lat": -27.101031
+  },
+  {
+   "cota_rotulo": "9,94",
+   "bairro": "Guarani",
+   "rua": "Hercílio Paza",
+   "esquina": "Guilherme A. Valle",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.936841,
+   "lat": -27.101454
+  },
+  {
+   "cota_rotulo": "9,83",
+   "bairro": "Centro II",
+   "rua": "Beco Pavesi",
+   "esquina": null,
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.917292,
+   "lat": -27.102635
+  },
+  {
+   "cota_rotulo": "7,28",
+   "bairro": "Centro II",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,68 m",
+   "conferencia": "Correta",
+   "lon": -48.912592,
+   "lat": -27.100241
+  },
+  {
+   "cota_rotulo": "7,66",
+   "bairro": "Guarani",
+   "rua": "General Osório",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,30",
+   "conferencia": "Correta",
+   "lon": -48.936699,
+   "lat": -27.097637
+  },
+  {
+   "cota_rotulo": "8,05",
+   "bairro": "Guarani",
+   "rua": "Orídes Schwatz",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,91 m",
+   "conferencia": "Correta",
+   "lon": -48.938472,
+   "lat": -27.099393
+  },
+  {
+   "cota_rotulo": "7,85",
+   "bairro": "Rio Branco",
+   "rua": "João Bianchini",
+   "esquina": "Poste lado direito da empresa n. 385",
+   "nivel_registrado_no_local": "1,11",
+   "conferencia": "Correta",
+   "lon": -48.951624,
+   "lat": -27.136345
+  },
+  {
+   "cota_rotulo": "9,13",
+   "bairro": "Santa Terezinha",
+   "rua": "Dorval Luz",
+   "esquina": "Rua Maria Martha Benvenutti Pereira",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.878764,
+   "lat": -27.057395
+  },
+  {
+   "cota_rotulo": "8,99",
+   "bairro": "Volta Grande",
+   "rua": "Aires Cardoso",
+   "esquina": null,
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.875214,
+   "lat": -27.043874
+  },
+  {
+   "cota_rotulo": "6,79",
+   "bairro": "Santa Terezinha",
+   "rua": "Leopoldo Heil",
+   "esquina": "Av. Bepe Rosa",
+   "nivel_registrado_no_local": "2,17",
+   "conferencia": "Correta",
+   "lon": -48.894926,
+   "lat": -27.074725
+  },
+  {
+   "cota_rotulo": "8,02",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack",
+   "esquina": "Emma Staack",
+   "nivel_registrado_no_local": "0,94 m",
+   "conferencia": "Correta",
+   "lon": -48.883222,
+   "lat": -27.060667
+  },
+  {
+   "cota_rotulo": "7,98",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack",
+   "esquina": "Emma Staack",
+   "nivel_registrado_no_local": "0,98 m",
+   "conferencia": "Correta",
+   "lon": -48.883303,
+   "lat": -27.060518
+  },
+  {
+   "cota_rotulo": "7,88",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,08 m",
+   "conferencia": "Correta",
+   "lon": -48.88277,
+   "lat": -27.060696
+  },
+  {
+   "cota_rotulo": "8,30",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,66 m",
+   "conferencia": "Correta",
+   "lon": -48.881865,
+   "lat": -27.06075
+  },
+  {
+   "cota_rotulo": "7,13",
+   "bairro": "Santa Terezinha",
+   "rua": "Júlio Orthmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,83 m",
+   "conferencia": "Correta",
+   "lon": -48.883039,
+   "lat": -27.060147
+  },
+  {
+   "cota_rotulo": "7,42",
+   "bairro": "Santa Terezinha",
+   "rua": "Júlio Orthmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,54 m",
+   "conferencia": "Correta",
+   "lon": -48.882429,
+   "lat": -27.060124
+  },
+  {
+   "cota_rotulo": "7,96",
+   "bairro": "Santa Terezinha",
+   "rua": "Júlio Orthamann",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,00 m",
+   "conferencia": "Correta",
+   "lon": -48.881664,
+   "lat": -27.060165
+  },
+  {
+   "cota_rotulo": "6,95",
+   "bairro": "Santa Terezinha",
+   "rua": "João Habitzreuter",
+   "esquina": "Av. Beira Rio",
+   "nivel_registrado_no_local": "2,01 m",
+   "conferencia": "Correta",
+   "lon": -48.892816,
+   "lat": -27.073161
+  },
+  {
+   "cota_rotulo": "7,70",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,26 m",
+   "conferencia": "Correta",
+   "lon": -48.956066,
+   "lat": -27.135335
+  },
+  {
+   "cota_rotulo": "7,97",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,99 m",
+   "conferencia": "Correta",
+   "lon": -48.955534,
+   "lat": -27.135867
+  },
+  {
+   "cota_rotulo": "8,46",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,50 m",
+   "conferencia": "Correta",
+   "lon": -48.95632,
+   "lat": -27.134888
+  },
+  {
+   "cota_rotulo": "7,75",
+   "bairro": "Rio Branco",
+   "rua": "João Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,21 m",
+   "conferencia": "Correta",
+   "lon": -48.951611,
+   "lat": -27.13588
+  },
+  {
+   "cota_rotulo": "8,99",
+   "bairro": "Rio  Branco",
+   "rua": "João Bianchini",
+   "esquina": null,
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.951589,
+   "lat": -27.134893
+  },
+  {
+   "cota_rotulo": "8,08",
+   "bairro": "Rio Branco",
+   "rua": "João Bianchini",
+   "esquina": "Terceiro poste depois da ponte",
+   "nivel_registrado_no_local": "0,88 m",
+   "conferencia": "Correta",
+   "lon": -48.951627,
+   "lat": -27.136734
+  },
+  {
+   "cota_rotulo": "7,83",
+   "bairro": "Guarani",
+   "rua": "Orídes Schwatz",
+   "esquina": "General Osório",
+   "nivel_registrado_no_local": "1,13 m",
+   "conferencia": "Correta",
+   "lon": -48.938492,
+   "lat": -27.098293
+  },
+  {
+   "cota_rotulo": "7,90",
+   "bairro": "Guarani",
+   "rua": "Gerson Venturelli",
+   "esquina": "General Osório",
+   "nivel_registrado_no_local": "1,30 m",
+   "conferencia": "Correta",
+   "lon": -48.93682,
+   "lat": -27.09753
+  },
+  {
+   "cota_rotulo": "8,76",
+   "bairro": "Guarani",
+   "rua": "Gerson Venturelli",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,20 m",
+   "conferencia": "Correta",
+   "lon": -48.936973,
+   "lat": -27.097332
+  },
+  {
+   "cota_rotulo": "6,02",
+   "bairro": "Santa Terezinha",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": "Theodoro Heirich Staack",
+   "nivel_registrado_no_local": "2,94 m",
+   "conferencia": "Correta",
+   "lon": -48.885594,
+   "lat": -27.0641
+  },
+  {
+   "cota_rotulo": "5,30",
+   "bairro": "Santa Terezinha",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": "Poste próximo a Rua Theodoro Henrich",
+   "nivel_registrado_no_local": "3,66 m",
+   "conferencia": "Correta",
+   "lon": -48.885883,
+   "lat": -27.064322
+  },
+  {
+   "cota_rotulo": "7,78",
+   "bairro": "Centro II",
+   "rua": "Manfredo Hoffmann",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,18",
+   "conferencia": "Correta",
+   "lon": -48.909195,
+   "lat": -27.097826
+  },
+  {
+   "cota_rotulo": "5,54",
+   "bairro": "Centro II",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "3,42 m",
+   "conferencia": "Correta",
+   "lon": -48.913765,
+   "lat": -27.100886
+  },
+  {
+   "cota_rotulo": "5,77",
+   "bairro": "Centro II",
+   "rua": "Avenida Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "3,19 m",
+   "conferencia": "Correta",
+   "lon": -48.919319,
+   "lat": -27.10256
+  },
+  {
+   "cota_rotulo": "8,59",
+   "bairro": "Volta Grande",
+   "rua": "Aires Cardoso",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,37 m",
+   "conferencia": "Correta",
+   "lon": -48.875394,
+   "lat": -27.043658
+  },
+  {
+   "cota_rotulo": "8,84",
+   "bairro": "Volta Grande",
+   "rua": "Aires Cardoso",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,12 m",
+   "conferencia": "Correta",
+   "lon": -48.875781,
+   "lat": -27.043106
+  },
+  {
+   "cota_rotulo": "8,52",
+   "bairro": "Volta Grande",
+   "rua": "Aires Cardoso",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,44 m",
+   "conferencia": "Correta",
+   "lon": -48.876202,
+   "lat": -27.042465
+  },
+  {
+   "cota_rotulo": "8,71",
+   "bairro": "Volta Grande",
+   "rua": "Rua Abraão de Souza e Silva",
+   "esquina": "Aires Cardoso",
+   "nivel_registrado_no_local": "0,25 m",
+   "conferencia": "Correta",
+   "lon": -48.876307,
+   "lat": -27.042249
+  },
+  {
+   "cota_rotulo": "6,11",
+   "bairro": "São Luiz",
+   "rua": "Avenida Luiz Henrique da Silveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "2,85 m",
+   "conferencia": "Correta",
+   "lon": -48.909258,
+   "lat": -27.084858
+  },
+  {
+   "cota_rotulo": "5,12",
+   "bairro": "Centro I",
+   "rua": "Av. Governador Luiz Henrique da Silveira",
+   "esquina": null,
+   "nivel_registrado_no_local": "3,84 m",
+   "conferencia": "Correta",
+   "lon": -48.907778,
+   "lat": -27.090581
+  },
+  {
+   "cota_rotulo": "6,59",
+   "bairro": "Santa Terezinha",
+   "rua": "Catarina Staack",
+   "esquina": "Av. Beira rio",
+   "nivel_registrado_no_local": "2,37 m",
+   "conferencia": "Correta",
+   "lon": -48.883368,
+   "lat": -27.060636
+  },
+  {
+   "cota_rotulo": "4,91",
+   "bairro": "Santa Terezinha",
+   "rua": "Av. Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "4,05 m",
+   "conferencia": "Correta",
+   "lon": -48.883491,
+   "lat": -27.060732
+  },
+  {
+   "cota_rotulo": "6,18",
+   "bairro": "Centro II",
+   "rua": "Av. Governador Luiz Henrique da Silveira",
+   "esquina": "Último poste antes da porção de mão único da via",
+   "nivel_registrado_no_local": "2,78",
+   "conferencia": "Correta",
+   "lon": -48.909261,
+   "lat": -27.090144
+  },
+  {
+   "cota_rotulo": "5,15",
+   "bairro": "Santa Terezinha",
+   "rua": "Av. Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "3,81 m",
+   "conferencia": "Correta",
+   "lon": -48.883223,
+   "lat": -27.06003
+  },
+  {
+   "cota_rotulo": "5,25",
+   "bairro": "Santa Rita",
+   "rua": "Av. Bepe Rosa",
+   "esquina": "Tubo de metal na ponte e na ponte do bombeiro",
+   "nivel_registrado_no_local": "3,71",
+   "conferencia": "Correta",
+   "lon": -48.907557,
+   "lat": -27.090077
+  },
+  {
+   "cota_rotulo": "9,00",
+   "bairro": "Santa Terezinha",
+   "rua": "Maria Martha Benvenutti Pereira",
+   "esquina": null,
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.880936,
+   "lat": -27.057278
+  },
+  {
+   "cota_rotulo": "9,11",
+   "bairro": "Santa Terezinha",
+   "rua": "Maria Martha Benvenutti Pereira",
+   "esquina": null,
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.879886,
+   "lat": -27.057272
+  },
+  {
+   "cota_rotulo": "8,27",
+   "bairro": "Centro II",
+   "rua": "Beco Laguna",
+   "esquina": null,
+   "nivel_registrado_no_local": "8,27 m",
+   "conferencia": "Correta",
+   "lon": -48.917916,
+   "lat": -27.101691
+  },
+  {
+   "cota_rotulo": "5.92",
+   "bairro": "CII",
+   "rua": "Av. Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "3.04",
+   "conferencia": "Correta",
+   "lon": -48.918044,
+   "lat": -27.101524
+  },
+  {
+   "cota_rotulo": "9.78",
+   "bairro": "Centro II",
+   "rua": "Beco Laguna",
+   "esquina": null,
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.917586,
+   "lat": -27.102202
+  },
+  {
+   "cota_rotulo": "9,64",
+   "bairro": "Centro II",
+   "rua": "Pedro Werner",
+   "esquina": "Beco Laguna",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.917198,
+   "lat": -27.102723
+  },
+  {
+   "cota_rotulo": "5.95",
+   "bairro": "Centro II",
+   "rua": "Av. Bepe Rosa",
+   "esquina": null,
+   "nivel_registrado_no_local": "3.01",
+   "conferencia": "Correta",
+   "lon": -48.914487,
+   "lat": -27.10099
+  },
+  {
+   "cota_rotulo": "7,10",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ 042",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,86 m",
+   "conferencia": "Correta",
+   "lon": -49.000741,
+   "lat": -27.147428
+  },
+  {
+   "cota_rotulo": "7,83",
+   "bairro": "Jardim Maluche",
+   "rua": "Pedro Guilherme Klann Krieger",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,13 m",
+   "conferencia": "Correta",
+   "lon": -48.930256,
+   "lat": -27.099335
+  },
+  {
+   "cota_rotulo": "7,52",
+   "bairro": "Jardim Maluche",
+   "rua": "Pedro Guilherme Klann Krieger",
+   "esquina": "Último poste da rua",
+   "nivel_registrado_no_local": "1,44 m",
+   "conferencia": "Correta",
+   "lon": -48.930196,
+   "lat": -27.098795
+  },
+  {
+   "cota_rotulo": "8,66",
+   "bairro": "Jardim Maluche",
+   "rua": "Francisco Sassi",
+   "esquina": "Pedro Guilherme Klann Krieger",
+   "nivel_registrado_no_local": "0,30 m",
+   "conferencia": "Correta",
+   "lon": -48.930301,
+   "lat": -27.099843
+  },
+  {
+   "cota_rotulo": "7,52",
+   "bairro": "Jardim Maluche",
+   "rua": "Continuação Beira Rio",
+   "esquina": "Guarita IFSC",
+   "nivel_registrado_no_local": "1,44",
+   "conferencia": "Correta",
+   "lon": -48.928316,
+   "lat": -27.099088
+  },
+  {
+   "cota_rotulo": "5,95",
+   "bairro": "Jardim Maluche",
+   "rua": "Continuação Beira Rio",
+   "esquina": null,
+   "nivel_registrado_no_local": "3,01",
+   "conferencia": "Correta",
+   "lon": -48.927816,
+   "lat": -27.099123
+  },
+  {
+   "cota_rotulo": "8,40",
+   "bairro": "Centro II",
+   "rua": "Selma Carminatti Kohler",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,56 m",
+   "conferencia": "Correta",
+   "lon": -48.905326,
+   "lat": -27.092227
+  },
+  {
+   "cota_rotulo": "7.67",
+   "bairro": "Centro II",
+   "rua": "Av. Bepe Rosa",
+   "esquina": "Selma Carminatti Kohler",
+   "nivel_registrado_no_local": "1,29 m",
+   "conferencia": "Correta",
+   "lon": -48.905535,
+   "lat": -27.092311
+  },
+  {
+   "cota_rotulo": "7.48",
+   "bairro": "Centro II",
+   "rua": "Av. Bepe Rosa",
+   "esquina": "Placa sinalização",
+   "nivel_registrado_no_local": "1,48 m",
+   "conferencia": "Correta",
+   "lon": -48.905659,
+   "lat": -27.091621
+  },
+  {
+   "cota_rotulo": "7,76",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ-042",
+   "esquina": null,
+   "nivel_registrado_no_local": "1,20 m",
+   "conferencia": "Correta",
+   "lon": -49.001106,
+   "lat": -27.147244
+  },
+  {
+   "cota_rotulo": "8,06",
+   "bairro": "Dom Joaquim",
+   "rua": "DJ-042",
+   "esquina": "Segundo poste apos a casa n. 3677",
+   "nivel_registrado_no_local": "0,90 m",
+   "conferencia": "Correta",
+   "lon": -49.001463,
+   "lat": -27.14701
+  },
+  {
+   "cota_rotulo": "7,58",
+   "bairro": "Dom Joaquim",
+   "rua": "Beira Rio",
+   "esquina": "Marca d´água presenciada em vistoria",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.967578,
+   "lat": -27.138899
+  },
+  {
+   "cota_rotulo": "6,48",
+   "bairro": "Maluche",
+   "rua": "Francisco Sassi",
+   "esquina": "muro da casa 388 (90cm)",
+   "nivel_registrado_no_local": "1,10",
+   "conferencia": "Correta",
+   "lon": -48.934512,
+   "lat": -27.102769
+  },
+  {
+   "cota_rotulo": "5,21",
+   "bairro": "Centro I",
+   "rua": "Avenida Arno Carlos Gracher",
+   "esquina": "Túnel Terminal Urbano",
+   "nivel_registrado_no_local": "3,75",
+   "conferencia": "Correta",
+   "lon": -48.913542,
+   "lat": -27.100018
+  },
+  {
+   "cota_rotulo": "11,01",
+   "bairro": "Centro 1",
+   "rua": "Barão do Rio Branco",
+   "esquina": "Poste em frente ao estacionamento dos bombeiros",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.907774,
+   "lat": -27.091006
+  },
+  {
+   "cota_rotulo": "10,52",
+   "bairro": "Centro 1",
+   "rua": "Av. Arno Carlos Gracher",
+   "esquina": "Poste em frente a Polícia Científica",
+   "nivel_registrado_no_local": null,
+   "conferencia": "Correta",
+   "lon": -48.907101,
+   "lat": -27.090906
+  },
+  {
+   "cota_rotulo": "8,67 ",
+   "bairro": "Limoeiro",
+   "rua": "Afonso Belli",
+   "esquina": "Poste em frente ao n. 585",
+   "nivel_registrado_no_local": "0,29",
+   "conferencia": "Correta",
+   "lon": -48.878916,
+   "lat": -27.046875
+  },
+  {
+   "cota_rotulo": "8,66",
+   "bairro": "Limoeiro",
+   "rua": "Afonso Belli",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,30",
+   "conferencia": "Correta",
+   "lon": -48.878918,
+   "lat": -27.046233
+  },
+  {
+   "cota_rotulo": "8,71",
+   "bairro": "Limoeiro",
+   "rua": "Afonso Belli",
+   "esquina": "Poste ao final da rua, em frente ao n. 610",
+   "nivel_registrado_no_local": "0,25",
+   "conferencia": "Correta",
+   "lon": -48.878906,
+   "lat": -27.045866
+  },
+  {
+   "cota_rotulo": "8,34",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": null,
+   "nivel_registrado_no_local": "0,62",
+   "conferencia": "Correta",
+   "lon": -48.878082,
+   "lat": -27.045217
+  },
+  {
+   "cota_rotulo": "8,61",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": "Poste em frente ao n. 710",
+   "nivel_registrado_no_local": "0,35",
+   "conferencia": "Correta",
+   "lon": -48.878106,
+   "lat": -27.046104
+  },
+  {
+   "cota_rotulo": "8,54",
+   "bairro": "Limoeiro",
+   "rua": "Horácio Anacleto da Silva",
+   "esquina": "Poste em frente ao n. 630",
+   "nivel_registrado_no_local": "0,42",
+   "conferencia": "Correta",
+   "lon": -48.878131,
+   "lat": -27.047004
+  }
+ ]
+}

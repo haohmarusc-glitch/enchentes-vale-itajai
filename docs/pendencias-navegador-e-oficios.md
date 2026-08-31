@@ -50,7 +50,7 @@ Destinatários prováveis:
 
 ---
 
-### C1. Ofício — Defesa Civil de Brusque (cotas de atenção/alerta do Mirim + planilha 2024)
+### C1. Ofício — Defesa Civil de Brusque (cotas de atenção/alerta do Mirim + 2ª etapa do levantamento)
 Assunto: Solicitação: cotas de atenção e alerta do Itajaí-Mirim em Brusque e planilha de cotas por rua
 
 À Defesa Civil de Brusque,
@@ -59,10 +59,17 @@ Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Softw
 
 Ao montar a parte do Itajaí-Mirim, notei uma lacuna que gostaria de confirmar com vocês. Para Brusque, encontrei publicamente apenas a cota de inundação da Beira-Rio (4,80 m na Ponte Estaiada). Não localizei cotas de atenção e de alerta anteriores à inundação. Como o Itajaí-Mirim responde rápido, essa faixa de aviso adiantado é justamente o que dá tempo de reação em Itajaí, a jusante.
 
+Usei o mapa "Cotas Enchente de Brusque", que vocês publicam no Google My Maps, e gostaria de registrar duas coisas que encontrei nele — a segunda me parece do interesse de vocês.
+
+Primeiro, o agradecimento: a camada de 2023 é um dado excelente. Cada marcador traz a cota e a lâmina d'água medida no local, e a soma das duas fecha em 8,96 m — o pico de 17/11/2023 — em 338 dos 344 pontos que trazem lâmina, com diferença de um centímetro. Foi essa conferência que me permitiu usar esses pontos com segurança, citando a Defesa Civil de Brusque como fonte.
+
+Segundo, o ponto que me preocupou: o marcador mais baixo dessa camada é a Av. Beira Rio, esquina com a Rua Maria Scarpa Formonti, no Limoeiro, com cota de 3,76 m (e 5,20 m de lâmina em 2023 — a soma fecha certo). Ele fica 1,04 m ABAIXO da cota de 4,80 m, que é a mais baixa que encontrei publicada para a cidade. Se estiver correto, naquele ponto a água chega bem antes de qualquer aviso baseado nos 4,80 m. No site eu deixei o número visível com a ressalva de que não foi confirmado com vocês e não o usei para disparar aviso, justamente para não criar alarme indevido — mas achei que valia comunicar.
+
 Gostaria de solicitar, se puderem disponibilizar:
 1. As cotas oficiais de atenção e de alerta do Itajaí-Mirim na régua de Brusque (Ponte Estaiada), além da cota de inundação de 4,80 m.
-2. A planilha atualizada de cotas de enchente por rua (a atualização de 2024, com os 357 pontos revisados após novembro de 2023), em formato de planilha ou PDF.
-3. Se existir, o tempo médio de deslocamento da cheia entre Brusque e a foz em Itajaí observado nos últimos eventos.
+2. A confirmação do ponto de 3,76 m acima, e do nível em que o rio costuma ficar na Ponte Estaiada fora de cheia — preciso disso para saber se essa cota pode ou não servir de aviso.
+3. A 2ª etapa do levantamento de cotas por rua, com os pontos que não foram atingidos em novembro de 2023, em planilha ou PDF. A 1ª etapa eu já consegui pelo mapa público.
+4. Se existir, o tempo médio de deslocamento da cheia entre Brusque e a foz em Itajaí observado nos últimos eventos.
 
 O site deixa claro em todas as páginas que não substitui a Defesa Civil e que, em emergência, deve-se ligar 199. O objetivo é ajudar a população a entender o comportamento do rio e dar o crédito devido à Defesa Civil de Brusque em tudo o que for utilizado.
 

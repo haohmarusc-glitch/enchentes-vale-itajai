@@ -246,9 +246,73 @@ onde mora o aviso adiantado. É a camada "Cotas de cheia 2023" do próprio KML (
 
 **O que resolveria:** o KML **original**. A conversão que chegou aqui preservou só `pasta`, `cota`,
 `rua`, `bairro` e `coord`; o original trazia ainda `obs`, `esquina` e coordenadas UTM
-(`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa. O original
-não está mais disponível. Alternativa melhor: a planilha da Defesa Civil de Brusque, que já era o
-pedido pendente desta seção.
+(`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa.
+
+#### O KML original chegou — e a camada de 2023 passou (31/08/2026) ✔
+
+O arquivo original apareceu (`Cotas_Enchente_de_Brusque.kml.xml`, 5,97 MB). Ele resolve exatamente o
+que faltava: a camada **"Cotas de cheia 2023"**, que na conversão anterior vinha sem número nenhum,
+traz **dois** campos por marcador — o **nome** do marcador e um "Nível registrado no local". Somados,
+dão sempre a mesma coisa:
+
+| Ponto | Nome | Nível registrado | Soma |
+|---|---|---|---|
+| Bartolomeu Pruner | 7,65 | 1,31 | **8,96** |
+| Dorval Luz | 8,27 | 0,69 | **8,96** |
+| Vicente Schaeffer | 7,94 | 1,02 | **8,96** |
+
+8,96 m é o pico de Brusque em 17/11/2023. Logo: o nome do marcador é a **cota da régua da Ponte
+Estaiada** em que o ponto começa a alagar, e o outro campo é a **lâmina d'água** medida ali naquele
+dia. A conta fecha em **338 dos 344 pontos** que publicam lâmina — 98,3%, com erro de 1 cm.
+
+Isso é de outra natureza que a discussão do parágrafo anterior. Não é inferência sobre o que a
+fonte quis dizer: é aritmética contra um pico conhecido, refazível por qualquer um com
+`python3 scripts/importar_cotas_brusque.py --seco`. Por isso esta camada entra com
+`confianca: alta`, enquanto os 1.938 pontos de Blumenau, que vieram por imprensa, ficaram em
+`media`.
+
+**350 pontos importados**, com `referencia: "régua"` e `data_fonte: "2023-11"`. O importador refaz a
+conta a cada execução e **recusa a importação inteira** se ela deixar de fechar em 95% dos pontos —
+se a fonte trocar o significado dos campos, o script para em vez de gravar número sem significado.
+
+Seis pontos ficaram de fora, e o motivo é o mesmo em todos: **a própria conta não fecha**.
+
+| Ponto | Conta | Erro |
+|---|---|---|
+| Beira Rio | 7,75 + 1,23 = 8,98 | 0,02 m |
+| Gabriel Siegel | 8,60 + 0,31 = 8,91 | 0,05 m |
+| Gerson Venturelli | 7,90 + 1,30 = 9,20 | 0,24 m |
+| Ernesto Bianchini | 7,56 + 1,14 = 8,70 | 0,26 m |
+| Francisco Sassi | 6,48 + 1,10 = 7,58 | 1,38 m |
+| Beco Laguna | 8,27 + 8,27 = 16,54 | 7,58 m (o campo repete a cota) |
+
+Quando os dois números da fonte discordam, não dá para saber qual está errado. Gravar o primeiro
+seria avisar a rua na hora errada — cedo demais, ou nunca.
+
+**Um achado de segurança, que a importação trouxe junto.** O ponto mais baixo da camada é a
+**Av. Beira Rio esquina com Maria Scarpa Formonti, no Limoeiro: 3,76 m** (com 5,20 m de lâmina em
+2023 — a conta fecha). Isso fica **1,04 m abaixo** da cota de atenção de Brusque, 4,80 m, que é a
+menor que a cidade publica. Quer dizer: naquele ponto, a água chega mais de um metro antes de o
+aviso automático tocar.
+
+O registro entra com o número verdadeiro e aparece na tela e no bot com a ressalva, mas leva
+`usar_para_aviso: false` — o mesmo mecanismo usado em duas ruas de Rio do Sul. O motivo é que a
+alternativa seria baixar o limiar de aviso da cidade inteira para 3,76 m por causa de um ponto, e
+ninguém aqui sabe se 3,76 m fica acima do nível normal do Mirim na Ponte Estaiada. Um aviso que
+toca em dia de sol é desligado pelo usuário, e aí não toca na noite que importa. **Quem resolve
+isso é a Defesa Civil de Brusque**, e é mais um argumento para o ofício que já era o pedido
+pendente desta seção.
+
+**A recusa da camada de 2011 continua de pé**, e ganhou mais uma evidência agora que dá para cruzar
+as duas: por vizinho mais próximo, os oito pares a menos de 30 m um do outro diferem em **+2,04 m na
+mediana, de −0,43 a +5,36 m**. Pontos a vinte metros de distância não discordam cinco metros na mesma
+grandeza, e o sinal sistematicamente positivo é o que se espera de altitude de terreno.
+`scripts/teste_analisar_kml_brusque.py` (38 testes) foi apertado em vez de afrouxado: nenhum registro
+pode citar a pasta de 2011, todo registro vindo do KML tem de nomear a camada de 2023 e o pico contra
+o qual foi conferido, e cota acima do recorde da cidade só entra dizendo na nota que está.
+
+Alternativa melhor, ainda pendente: a planilha da Defesa Civil de Brusque, sobretudo pela 2ª etapa
+do levantamento (os pontos não atingidos em 2023) e por uma cota de atenção abaixo de 4,80 m.
 
 ### Rio do Sul — API pública Asthon (tempo real) ⭐ a fazer
 

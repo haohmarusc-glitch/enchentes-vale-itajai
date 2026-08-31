@@ -20,8 +20,8 @@ import unittest.mock
 from pathlib import Path
 
 import notificador
-from bot import (IDADE_MAXIMA_PREVISAO_MIN, REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
-                 nome_curto, responder, sem_acento, texto_idade)
+from bot import (IDADE_MAXIMA_PREVISAO_MIN, MAX_RUAS, REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha,
+                 eh_timeout, nome_curto, responder, resposta_rua, sem_acento, texto_idade)
 from comum import le_json
 
 AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
@@ -396,6 +396,39 @@ class TestLimiteDoTelegram(unittest.TestCase):
         longa = notificador.encurtar("b" * 9000)
         self.assertLessEqual(len(longa), notificador.LIMITE_CARACTERES)
         self.assertIn("cortada", longa)
+
+    def test_nenhuma_busca_de_rua_real_chega_a_ser_cortada(self):
+        """
+        O corte existe para não perder a mensagem inteira, mas cortar já é
+        perder informação: a última rua da lista sai pela metade. Cada
+        importação nova aumenta o texto — a de Brusque acrescentou uma nota por
+        ponto, dizendo quanta água cobriu ali em 2023 —, e é aqui que se vê se
+        o limite ficou perto.
+
+        Só entram os termos que casam com pelo menos MAX_RUAS ruas: acima disso
+        a resposta já está no teto, então o pior caso está nesse grupo.
+        """
+        import collections
+
+        b = base()
+        cotas = le_json("cotas-ruas.json")["cotas"]
+        frequencia = collections.Counter(
+            pedaco for c in cotas for pedaco in str(c["rua"]).lower().split()
+            if len(pedaco) >= 2
+        )
+        cheios = [t for t, n in frequencia.items() if n >= MAX_RUAS]
+        self.assertGreater(len(cheios), 50, "amostra pequena demais para valer de guarda")
+
+        pior_termo, pior = "", 0
+        for termo in cheios:
+            tamanho = len("".join(resposta_rua(b, None, termo, AGORA)))
+            if tamanho > pior:
+                pior_termo, pior = termo, tamanho
+        self.assertLess(
+            pior, notificador.LIMITE_CARACTERES,
+            f"a busca por “{pior_termo}” gera {pior} caracteres e seria cortada — "
+            "diminuir MAX_RUAS ou encurtar as notas antes de importar mais",
+        )
 
 
 class TestCotas(unittest.TestCase):
