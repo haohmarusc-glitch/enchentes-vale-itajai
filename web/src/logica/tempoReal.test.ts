@@ -9,6 +9,7 @@ import {
   frescor,
   foraDeOrdem,
   idadeMin,
+  cotaAlcancada,
   primeiraCota,
   textoIdade,
 } from './tempoReal'
@@ -99,6 +100,31 @@ test('cidade sem trecho conhecido fica de fora, não vira palpite', () => {
 test('a última cidade não tem para onde mandar', () => {
   const chegadas = chegadasSePicoAgora(TRECHOS, 'itajai-acu', CIDADES, CIDADES[3]!, new Date())
   assert.deepEqual(chegadas, [])
+})
+
+/*
+ * `primeiraCota` responde "a partir de quando é cheia aqui" — a pergunta certa
+ * para um painel condicional, e a errada para um nível ao vivo. Com o rio dois
+ * patamares acima, anunciar a cota de atenção é a frase mais fraca possível na
+ * hora em que se precisa da mais forte.
+ */
+test('cota alcançada é a mais ALTA já passada', () => {
+  const rioDoSul = CIDADES[0]!  // atenção 4,5 · alerta 5,5 · inundação 6,5
+  assert.deepEqual(cotaAlcancada(rioDoSul, 7.0), { chave: 'inundacao', valor: 6.5 })
+  assert.deepEqual(cotaAlcancada(rioDoSul, 6.5), { chave: 'inundacao', valor: 6.5 },
+    'na cota exata já conta como alcançada')
+  assert.deepEqual(cotaAlcancada(rioDoSul, 5.6), { chave: 'alerta', valor: 5.5 })
+  assert.deepEqual(cotaAlcancada(rioDoSul, 4.5), { chave: 'atencao', valor: 4.5 })
+})
+
+test('nível abaixo de tudo não anuncia cota nenhuma', () => {
+  assert.equal(cotaAlcancada(CIDADES[0]!, 4.49), null)
+  assert.equal(cotaAlcancada(CIDADES[2]!, 99), null, 'cidade sem cota levantada não inventa')
+})
+
+test('cota alcançada não depende da ordem em que as cotas foram escritas', () => {
+  // Blumenau, no teste, tem `inundacao` ANTES de `atencao` no objeto.
+  assert.deepEqual(cotaAlcancada(CIDADES[1]!, 8.0), { chave: 'inundacao', valor: 7.4 })
 })
 
 test('primeira cota é a mais baixa que importa', () => {

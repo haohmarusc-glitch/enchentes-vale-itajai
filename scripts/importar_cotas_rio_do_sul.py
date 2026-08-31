@@ -163,7 +163,10 @@ def como_registro(rua: dict, fonte: str, quando: str,
         "rio": RIO,
         "rua": rua["rua"],
         "bairro": None,
-        "ponto": "ponto mais baixo (mínima publicada pela fonte)",
+        # A fonte publica a mínima como "o ponto em que a rua começa a alagar";
+        # o parêntese sobre a fonte é redundante e vira parêntese dentro de
+        # parêntese na mensagem do bot.
+        "ponto": "ponto mais baixo",
         "cota_m": rua["min"],
         "fonte": fonte,
         "data_fonte": quando,

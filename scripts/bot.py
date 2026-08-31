@@ -509,11 +509,20 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     # dá para dizer qual delas representa o rio, e "faltam 2,30 m" sairia
     # medido contra a régua errada.
     niveis: dict[str, tuple[float, float | None]] = {}
+    #: Por que a cidade ficou sem comparação. Silêncio aqui parece esquecimento;
+    #: a pessoa perguntou "a minha rua alaga com quantos metros" e a pergunta
+    #: seguinte é sempre "e onde está o rio agora".
+    sem_nivel: dict[str, str] = {}
     for c in {x["cidade"] for x in achadas}:
         leituras = base.leituras_da_cidade(c)
         if len(leituras) == 1 and isinstance(leituras[0].get("nivel_m"), (int, float)):
             niveis[c] = (float(leituras[0]["nivel_m"]),
                          idade_min(leituras[0].get("medido_em"), agora))
+        elif len(leituras) > 1:
+            sem_nivel[c] = (f"tem {len(leituras)} réguas com zeros diferentes, e nenhuma "
+                            "delas sozinha é “o nível da cidade”")
+        else:
+            sem_nivel[c] = "não aparece na fonte de tempo real que coletamos"
 
     nomes_cidade = {c["id"]: c["nome"] for c in base.cidades()}
     linhas = [f"<b>Cotas de rua</b> — “{e(termo)}”{onde}"]
@@ -550,6 +559,15 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
             else:
                 linhas.append(f"\n⚠️ O rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
                               "este nível <b>já foi alcançado</b>.")
+
+    # A explicação sai UMA vez por cidade, no fim: repetida em cada rua ocupava
+    # metade da mensagem. Mas sai — silêncio aqui parece esquecimento, e a
+    # pergunta seguinte a "minha rua alaga a quantos metros" é sempre "e onde
+    # está o rio agora".
+    faltando = sorted({c["cidade"] for c in achadas[:MAX_RUAS]} & set(sem_nivel))
+    for cid in faltando:
+        linhas.append(f"\n\n<i>Quanto falta subir em {e(nomes_cidade.get(cid, cid))}, não dá "
+                      f"para dizer: a cidade {sem_nivel[cid]}.</i>")
 
     if len(achadas) > MAX_RUAS:
         linhas.append(f"\n\n<i>Mais {len(achadas) - MAX_RUAS} rua(s) casaram. "

@@ -136,6 +136,15 @@ export function nomeCidade(rioId: string, cidadeId: string): string {
   return emOutroRio?.nome ?? cidadeId
 }
 
+/**
+ * O nome de uma cidade quando não se sabe (nem importa) o rio dela — o caso de
+ * uma lista de cidades cobertas por alguma tabela. `nomeCidade` já procura nos
+ * dois rios quando não acha no que recebeu; isto só deixa a intenção à vista.
+ */
+export function nomeDeCidade(cidadeId: string): string {
+  return nomeCidade('', cidadeId)
+}
+
 export function eventosDoRio(rioId: string): Evento[] {
   return eventos.filter((e) => e.rio === rioId)
 }

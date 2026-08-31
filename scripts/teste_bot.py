@@ -242,6 +242,31 @@ class TestRua(unittest.TestCase):
         self.assertIn("Blumenau", t)
         self.assertIn("/rua Blumenau", t)
 
+    def test_diz_por_que_nao_ha_comparacao_com_o_nivel(self):
+        """
+        Blumenau tem cota de rua e não aparece na coleta. Sem explicação, o
+        silêncio parece esquecimento — e a pergunta seguinte a "minha rua alaga
+        a quantos metros" é sempre "e onde está o rio agora".
+        """
+        t = resp("/rua Blumenau São Rafael")
+        self.assertIn("7,40 m", t)
+        self.assertIn("não dá para dizer", t)
+        self.assertIn("não aparece na fonte de tempo real", t)
+
+    def test_a_explicacao_sai_uma_vez_por_cidade(self):
+        t = resp("/rua Blumenau São Rafael")
+        # Duas ruas casam; a ressalva não pode sair duas vezes.
+        self.assertEqual(t.count("não dá para dizer"), 1)
+
+    def test_cidade_de_varias_reguas_diz_o_motivo_certo(self):
+        b = base()
+        b.cotas_ruas = [{"cidade": "itajai", "rio": "itajai-acu", "rua": "Rua Teste",
+                         "bairro": None, "ponto": None, "cota_m": 2.0, "fonte": "t",
+                         "data_fonte": "2026-08-31", "confianca": "media",
+                         "referencia": "régua"}]
+        t = resp("/rua Itajaí teste", b)
+        self.assertIn("réguas com zeros diferentes", t)
+
     def test_traz_as_ressalvas_obrigatorias(self):
         t = resp("/rua Blumenau São Rafael")
         self.assertIn("não previsão", t.replace("não é previsão", "não previsão"))
