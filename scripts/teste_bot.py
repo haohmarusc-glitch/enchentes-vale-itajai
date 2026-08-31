@@ -829,5 +829,63 @@ class TestNenhumLogNovoVazaSegredo(unittest.TestCase):
         self.assertIn("{erro}", linhas[0])
 
 
+class TestObservacaoNasCotas(unittest.TestCase):
+    """
+    A observação da cidade é onde moram as ressalvas que o número sozinho não
+    conta. O site já a mostrava; o bot, que é o canal de quem consulta às três
+    da manhã, mostrava só os números.
+
+    O caso que motivou: em Brusque a cota de 4,80 m é a Av. Beira-Rio, marginal
+    ao rio, JÁ alagando — a fonte a chama de "cota de inundação da via". Ela
+    está como atenção porque é o primeiro sinal, mas quem lê "Atenção 4,80 m"
+    sem a ressalva não tem como saber que ali a água já está numa via, e que
+    NÃO existe faixa de aviso antes disso.
+    """
+
+    def test_a_observacao_sai_junto_das_cotas(self):
+        r = responder("/cotas Brusque", base(), AGORA)
+        self.assertIn("Av. Beira-Rio", r)
+        self.assertIn("não existe faixa de aviso antes do primeiro alagamento".lower(),
+                      r.lower())
+
+    def test_os_numeros_continuam_vindo_primeiro(self):
+        """A ressalva é depois do número, não no lugar dele."""
+        r = responder("/cotas Brusque", base(), AGORA)
+        self.assertLess(r.index("4,80 m"), r.index("Av. Beira-Rio"))
+
+    def test_cidade_sem_observacao_nao_ganha_bloco_vazio(self):
+        b = base()
+        for c in b.cidades():
+            if c["id"] == "brusque":
+                c["observacao"] = ""
+        r = responder("/cotas Brusque", b, AGORA)
+        self.assertNotIn("<i></i>", r)
+
+    def test_observacao_comprida_e_cortada_com_ponteiro_para_o_site(self):
+        b = base()
+        for c in b.cidades():
+            if c["id"] == "brusque":
+                c["observacao"] = "palavra " * 400
+        r = responder("/cotas Brusque", b, AGORA)
+        self.assertIn("(o resto no site)", r)
+        self.assertLess(len(r), 4096, "a mensagem tem de caber no limite do Telegram")
+
+    def test_nenhuma_cidade_estoura_o_limite_do_telegram(self):
+        """Itajaí é o pior caso: onze réguas mais a observação."""
+        b = base()
+        for cidade in b.cidades():
+            r = responder(f"/cotas {cidade['nome']}", b, AGORA) or ""
+            self.assertLessEqual(len(r), 4096, cidade["nome"])
+
+    def test_a_ressalva_de_brusque_diz_que_a_agua_ja_esta_na_via(self):
+        """
+        O ponto todo: a diferença entre "prepare-se" e "já começou". Trocar uma
+        pela outra é errar para o lado de quem se sente seguro.
+        """
+        r = responder("/cotas Brusque", base(), AGORA).lower()
+        self.assertIn("já está", r)
+        self.assertNotIn("aviso prévio, é o começo".replace("é o começo", "ZZZ"), r)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

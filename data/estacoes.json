@@ -219,7 +219,7 @@
           "afluentes": [
             "rio Guabiruba"
           ],
-          "observacao": "A Av. Beira-Rio alaga a 4,80 m — é o primeiro ponto do Itajaí-Mirim entre os levantados, e por isso a cota de atenção é essa, e não um número redondo. Antes disso a única cota cadastrada era inundação (6,00 m), e o aviso saía 1,20 m depois de a água já estar na rua. Fonte: lista oficial de cotas por rua da Defesa Civil de Brusque (out/2023). Pontos que alagam ainda antes, entre 5,46 m e 5,80 m, não têm cota exata publicada. Maré de sizígia em Itajaí afeta a vazante.",
+          "observacao": "A régua é a Ponte Estaiada. A cota de 4,80 m é o nível em que a Av. Beira-Rio, marginal ao rio, começa a alagar — a fonte a chama de \"cota de inundação da via\". Ela está cadastrada como ATENÇÃO porque é o primeiro sinal, e porque antes dela a única cota conhecida era 6,00 m, o que fazia o aviso sair depois de a água já estar na rua. Mas é preciso dizer o que isso significa: em Brusque NÃO existe faixa de aviso antes do primeiro alagamento. Quando o rio chega aos 4,80 m, a via marginal já está sendo atingida — não é um aviso prévio, é o começo. Não há cota de atenção nem de alerta publicadas abaixo disso, e obtê-las com a Defesa Civil de Brusque é a pendência que fecharia essa lacuna. Num rio de resposta rápida como o Mirim, é onde mais falta margem. Outros pontos alagam entre 5,46 m e 5,80 m — depois da Beira-Rio e antes da maioria das ruas da lista oficial, que começa em 5,64 m — mas sem cota exata publicada. Fonte das cotas por rua: lista oficial da Defesa Civil de Brusque (out/2023). Maré de sizígia em Itajaí afeta a vazante.",
           "cotas_m": {
             "inundacao": 6.0,
             "atencao": 4.8

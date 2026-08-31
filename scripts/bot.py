@@ -645,6 +645,12 @@ def linhas_de_cotas(cotas: dict) -> list[str]:
     return [f"\n{ROTULO_COTA.get(k, k)}: <b>{metros(v)}</b>" for k, v in ordenar_cotas(cotas)]
 
 
+#: Quanto da observação da cidade cabe na resposta de /cotas. O texto inteiro de
+#: algumas cidades passa de mil caracteres e empurraria as réguas para fora do
+#: limite do Telegram; cortado, ele vira convite para abrir o site.
+LIMITE_OBSERVACAO = 600
+
+
 def resposta_cotas(base: Base, cidade: dict) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — cotas de referência"]
     cotas = cidade.get("cotas_m") or {}
@@ -697,9 +703,17 @@ def resposta_cotas(base: Base, cidade: dict) -> list[str]:
 
     linhas.append("\n\n<i>Cada régua tem seu próprio zero: estes metros não se "
                   "comparam com os de outra régua nem com os de outra cidade.</i>")
+    # A observação da cidade é onde moram as ressalvas que o número sozinho não
+    # conta — em Brusque, que a cota de 4,80 m é a via marginal JÁ alagando, e
+    # que não existe faixa de aviso antes dela. O site já mostrava isso; o bot,
+    # que é o canal de quem consulta às três da manhã, mostrava só os números.
+    observacao = (cidade.get("observacao") or "").strip()
+    if observacao:
+        if len(observacao) > LIMITE_OBSERVACAO:
+            observacao = observacao[:LIMITE_OBSERVACAO].rsplit(" ", 1)[0] + "… (o resto no site)"
+        linhas.append(f"\n\n<i>{notificador.esc(observacao)}</i>")
+
     return linhas
-
-
 def nome_curto(leitura: dict) -> str:
     """
     O nome da régua sem a calha repetida em todas.
