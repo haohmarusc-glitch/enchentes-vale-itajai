@@ -52,6 +52,16 @@ PASSO_MIN = 15
 MAX_DEFASAGEM_H = 48
 #: Abaixo disto a correlação não sustenta conclusão nenhuma.
 CORRELACAO_MINIMA = 0.5
+#: Acima disto a defasagem medida é firme o bastante para contradizer o
+#: transito.json publicado.
+#:
+#: Entre os dois valores a medida existe mas não decide. Medido em série
+#: sintética com defasagem conhecida de 6 h: com pouco ruído o método devolve
+#: 6,00 h com r=0,998; com ruído alto devolve 8,50 h com r=0,593 — erro de duas
+#: horas e meia passando pelo limiar de 0,5. Um "fora-da-faixa" dali levaria
+#: alguém a mudar tempo de descida publicado, que é o que alimenta a hora de
+#: chegada que as pessoas leem.
+CORRELACAO_FORTE = 0.9
 MIN_PONTOS_SOBREPOSTOS = 48
 
 
@@ -222,6 +232,31 @@ def defasagem(
     return melhor
 
 
+def veredito_do_trecho(horas: float, correlacao: float,
+                       horas_min: float, horas_max: float) -> str:
+    """
+    O que a defasagem medida diz sobre a faixa publicada em transito.json.
+
+    Duas coisas separam este veredito de um simples "está dentro ou fora":
+
+    * **A faixa ganha a tolerância de um passo de reamostragem.** A medida tem
+      resolução de PASSO_MIN, então 5,75 h contra "6-8 h" é diferença do método,
+      não do rio.
+    * **Fora da faixa com correlação fraca não contradiz o publicado.** Em série
+      sintética com defasagem CONHECIDA de 6 h, o método devolve 6,00 h com
+      r=0,998 quando há pouco ruído, e 8,50 h com r=0,593 quando há muito — erro
+      de duas horas e meia passando pelo limiar de 0,5. Chamar isso de
+      "fora-da-faixa" levaria alguém a mudar tempo de descida publicado, que é o
+      que alimenta a hora de chegada que as pessoas leem.
+    """
+    passo_h = PASSO_MIN / 60
+    if (horas_min - passo_h) <= horas <= (horas_max + passo_h):
+        return "dentro-da-faixa"
+    if correlacao >= CORRELACAO_FORTE:
+        return "fora-da-faixa"
+    return "fora-da-faixa-sem-firmeza"
+
+
 def auditar_trechos(por_estacao: dict[str, dict]) -> list[dict]:
     """Compara a defasagem observada com a faixa publicada em transito.json."""
     # Uma régua por cidade: com várias, não dá para saber qual representa a cidade.
@@ -263,7 +298,9 @@ def auditar_trechos(por_estacao: dict[str, dict]) -> list[dict]:
             })
             continue
 
-        dentro = t["horas_min"] <= medida["horas"] <= t["horas_max"]
+        veredito = veredito_do_trecho(
+            medida["horas"], medida["correlacao"], t["horas_min"], t["horas_max"]
+        )
         saida.append({
             "trecho": rotulo,
             "estacoes": [est_m, est_j],
@@ -271,7 +308,7 @@ def auditar_trechos(por_estacao: dict[str, dict]) -> list[dict]:
             "horas_observadas": medida["horas"],
             "correlacao": round(medida["correlacao"], 3),
             "pontos": medida["pontos"],
-            "veredito": "dentro-da-faixa" if dentro else "fora-da-faixa",
+            "veredito": veredito,
         })
     return saida
 
@@ -331,9 +368,15 @@ def main() -> int:
 
     problemas = sum(1 for c in cob.values() if c["veredito"] != "ok")
     fora = sum(1 for t in trechos if t["veredito"] == "fora-da-faixa")
+    sem_firmeza = sum(1 for t in trechos if t["veredito"] == "fora-da-faixa-sem-firmeza")
     print(f"\n=== RESUMO ===")
     print(f"{len(cob)} estações, {problemas} com problema de coleta.")
     print(f"{len(trechos)} trechos publicados, {fora} com defasagem fora da faixa.")
+    if sem_firmeza:
+        # Contado à parte de propósito: somado ao de cima, viraria argumento
+        # para mexer no transito.json com medida que não decide.
+        print(f"{sem_firmeza} ficaram fora da faixa com correlação fraca demais para "
+              f"contradizer o publicado (r < {CORRELACAO_FORTE}).")
 
     if args.json:
         Path(args.json).write_text(
