@@ -246,22 +246,112 @@ onde mora o aviso adiantado. É a camada "Cotas de cheia 2023" do próprio KML (
 
 **O que resolveria:** o KML **original**. A conversão que chegou aqui preservou só `pasta`, `cota`,
 `rua`, `bairro` e `coord`; o original trazia ainda `obs`, `esquina` e coordenadas UTM
-(`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa. O original
-não está mais disponível. Alternativa melhor: a planilha da Defesa Civil de Brusque, que já era o
-pedido pendente desta seção.
+(`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa.
+
+#### O KML original chegou — e a camada de 2023 passou (31/08/2026) ✔
+
+O arquivo original apareceu (`Cotas_Enchente_de_Brusque.kml.xml`, 5,97 MB). Ele resolve exatamente o
+que faltava: a camada **"Cotas de cheia 2023"**, que na conversão anterior vinha sem número nenhum,
+traz **dois** campos por marcador — o **nome** do marcador e um "Nível registrado no local". Somados,
+dão sempre a mesma coisa:
+
+| Ponto | Nome | Nível registrado | Soma |
+|---|---|---|---|
+| Bartolomeu Pruner | 7,65 | 1,31 | **8,96** |
+| Dorval Luz | 8,27 | 0,69 | **8,96** |
+| Vicente Schaeffer | 7,94 | 1,02 | **8,96** |
+
+8,96 m é o pico de Brusque em 17/11/2023. Logo: o nome do marcador é a **cota da régua da Ponte
+Estaiada** em que o ponto começa a alagar, e o outro campo é a **lâmina d'água** medida ali naquele
+dia. A conta fecha em **338 dos 344 pontos** que publicam lâmina — 98,3%, com erro de 1 cm.
+
+Isso é de outra natureza que a discussão do parágrafo anterior. Não é inferência sobre o que a
+fonte quis dizer: é aritmética contra um pico conhecido, refazível por qualquer um com
+`python3 scripts/importar_cotas_brusque.py --seco`. Por isso esta camada entra com
+`confianca: alta`, enquanto os 1.938 pontos de Blumenau, que vieram por imprensa, ficaram em
+`media`.
+
+**350 pontos importados**, com `referencia: "régua"` e `data_fonte: "2023-11"`. O importador refaz a
+conta a cada execução e **recusa a importação inteira** se ela deixar de fechar em 95% dos pontos —
+se a fonte trocar o significado dos campos, o script para em vez de gravar número sem significado.
+
+Seis pontos ficaram de fora, e o motivo é o mesmo em todos: **a própria conta não fecha**.
+
+| Ponto | Conta | Erro |
+|---|---|---|
+| Beira Rio | 7,75 + 1,23 = 8,98 | 0,02 m |
+| Gabriel Siegel | 8,60 + 0,31 = 8,91 | 0,05 m |
+| Gerson Venturelli | 7,90 + 1,30 = 9,20 | 0,24 m |
+| Ernesto Bianchini | 7,56 + 1,14 = 8,70 | 0,26 m |
+| Francisco Sassi | 6,48 + 1,10 = 7,58 | 1,38 m |
+| Beco Laguna | 8,27 + 8,27 = 16,54 | 7,58 m (o campo repete a cota) |
+
+Quando os dois números da fonte discordam, não dá para saber qual está errado. Gravar o primeiro
+seria avisar a rua na hora errada — cedo demais, ou nunca.
+
+**Um achado de segurança, que a importação trouxe junto.** O ponto mais baixo da camada é a
+**Av. Beira Rio esquina com Maria Scarpa Formonti, no Limoeiro: 3,76 m** (com 5,20 m de lâmina em
+2023 — a conta fecha). Isso fica **1,04 m abaixo** da cota de atenção de Brusque, 4,80 m, que é a
+menor que a cidade publica. Quer dizer: naquele ponto, a água chega mais de um metro antes de o
+aviso automático tocar.
+
+O registro entra com o número verdadeiro e aparece na tela e no bot com a ressalva, mas leva
+`usar_para_aviso: false` — o mesmo mecanismo usado em duas ruas de Rio do Sul. O motivo é que a
+alternativa seria baixar o limiar de aviso da cidade inteira para 3,76 m por causa de um ponto, e
+ninguém aqui sabe se 3,76 m fica acima do nível normal do Mirim na Ponte Estaiada. Um aviso que
+toca em dia de sol é desligado pelo usuário, e aí não toca na noite que importa. **Quem resolve
+isso é a Defesa Civil de Brusque**, e é mais um argumento para o ofício que já era o pedido
+pendente desta seção.
+
+**A recusa da camada de 2011 continua de pé**, e ganhou mais uma evidência agora que dá para cruzar
+as duas: por vizinho mais próximo, os oito pares a menos de 30 m um do outro diferem em **+2,04 m na
+mediana, de −0,43 a +5,36 m**. Pontos a vinte metros de distância não discordam cinco metros na mesma
+grandeza, e o sinal sistematicamente positivo é o que se espera de altitude de terreno.
+`scripts/teste_analisar_kml_brusque.py` (38 testes) foi apertado em vez de afrouxado: nenhum registro
+pode citar a pasta de 2011, todo registro vindo do KML tem de nomear a camada de 2023 e o pico contra
+o qual foi conferido, e cota acima do recorde da cidade só entra dizendo na nota que está.
+
+Alternativa melhor, ainda pendente: a planilha da Defesa Civil de Brusque, sobretudo pela 2ª etapa
+do levantamento (os pontos não atingidos em 2023) e por uma cota de atenção abaixo de 4,80 m.
 
 ### Rio do Sul — API pública Asthon (tempo real) ⭐ a fazer
 
-`public.asthon.com.br`, `city_id 4214805`: **29 estações do Alto Vale** — Taió, Ituporanga, Agronômica,
-Petrolândia, Mirim Doce, Braço do Trombudo, entre outras —, barragens e histórico horário. Cobre cidades
-que hoje **não têm nível nenhum na tela** (Taió, Ituporanga, Vidal Ramos). Faixas oficiais na régua da
-**Ponte Dom Tito Buss**: atenção 4,50 · alerta 5,50 · emergência 6,50 · abertura de abrigos 7,00 m — as
-três primeiras são as que já estão em `estacoes.json`, e o nome da régua foi preenchido a partir daqui.
+`public.asthon.com.br`, `city_id 4214805`: **29 estações do Alto Vale**, duas barragens e histórico
+horário. Um dump está em `data/brutos/rio-do-sul-asthon-2026-08-31.json`, e
+`scripts/analisar_asthon.py` diz, estação por estação, o que dá para fazer com ela. **O resultado corrige
+o que esta seção dizia antes**, e a correção é do tipo que este projeto existe para fazer:
 
-Só responde para Rio do Sul; outras cidades voltam `null`. Substitui a raspagem do portal, que virou SPA
-em 2026. **Antes de coletar:** checar `robots.txt` e termos, como em toda fonte nova; e uma leitura só
-vira aviso se vier com a cota **daquela** estação — sem isso ela seria comparada com a régua de outra
-cidade, que é o erro que este documento recusa em três lugares diferentes.
+| | quantas | o quê |
+|---|---|---|
+| **pode virar aviso** | 5 | régua de rio com cota própria: Ponte Dom Tito Buss, Itoupava, Ribeirão do Tigre, Taboão, Valada São Paulo |
+| **só para mostrar** | 10 | régua de rio sem cota, ou com cota que não é dela |
+| **fora** | 13 | sem nível, leitura fora de faixa, ou barragem |
+
+Três achados, nenhum visível na lista de nomes:
+
+1. **Taió e Ituporanga não têm régua de cidade aqui — têm BARRAGEM.** O que a API publica é "Barragem
+   Oeste Taió" e "Barragem Sul Ituporanga": nível de reservatório na escala do próprio barramento (a de
+   Taió marca 9,79 m com atenção em 11,65 m). Mostrar isso como "o rio em Taió" seria número certo
+   respondendo a pergunta errada. A frase anterior desta seção — "cobre Taió e Ituporanga" — estava errada.
+2. **Quatro estações leem centenas de metros:** Mirim Doce 349,08 · Salete (H) 400,4 · Petrolândia 450,74 ·
+   Atalanta (H) 454,12. Não é nível de rio. É o mesmo problema já visto no monitoramento da Defesa Civil
+   de SC, e a resposta é a mesma: fora.
+3. **Cinco réguas trazem a mesma cota, 4,50 / 5,50 / 6,50** — as faixas oficiais de Rio do Sul —, em rios
+   diferentes e até em outro município (Laurentino). Uma delas está certa, a de Dom Tito Buss; as outras
+   quatro são a cota de Rio do Sul copiada até que alguém confirme. Aplicar a cota de uma régua a outra
+   cria alarme onde não há e cala onde há.
+
+**O que sobra de bom: Vidal Ramos.** É régua de rio, no município de Vidal Ramos, cabeceira do
+Itajaí-Mirim — uma das cidades sem nível nenhum na tela hoje. Só que **sem cota**: dá para mostrar, nunca
+para disparar. Taió e Ituporanga continuam sem nível de cidade.
+
+**A confirmação que dá crédito ao resto:** as faixas de Dom Tito Buss na API são exatamente as que já
+estão em `estacoes.json` (atenção 4,50 · alerta 5,50 · a terceira, que lá se chama "emergência" e aqui
+"inundação", 6,50). Duas fontes independentes, mesmo número.
+
+**Antes de coletar:** checar `robots.txt` e os termos de uso, como em toda fonte nova — o que não dá para
+fazer a partir do dump. E uma leitura só vira aviso se vier com a cota **daquela** estação, que é o que
+`analisar_asthon.py` decide.
 
 #### A lista de 555 ruas está completa e conferida ✔
 
@@ -289,16 +379,64 @@ portal) e sem cota máxima, que o jornal não publicou. Rio do Sul está em 555.
 - Referências: enchente a partir de ~7,00 m (abrigos abertos a 7 m); cota de alerta usual
   6,50–7,50 m.
 
-#### Gaspar — Google My Maps da Defesa Civil (1.615 pontos) — a obter
+#### Gaspar — Google My Maps da Defesa Civil: 1.613 pontos importados (31/08/2026) ✔
 
-`cotas_enchente_gaspar_01042020`, com cota, rua, rua de referência, bairro e lat/lon. O KML sai por
-`https://www.google.com/maps/d/kml?mid=<id>&forcekml=1`, o que permitiria pontos no mapa sem geocodificar.
+`cotas_enchente_gaspar_01042020`, uma pasta só, 1.615 pontos, cada um com cota, rua (`refer_1`), rua
+transversal ou número (`refer_2`), bairro, UTM e lat/lon.
 
-**Ler a recusa do KML de Brusque antes de importar este.** É a mesma origem (My Maps de Defesa Civil) e o
-mesmo campo chamado `cota`; lá ele se mostrou uma mistura de nível de régua com outra grandeza. Gaspar tem
-23 cotas já cadastradas, que servem de cruzamento — e a cidade **não tem nenhuma cota em `estacoes.json`**,
-então hoje nem haveria contra o que comparar. Baixar o KML **com todos os campos** (`obs`, `esquina`, UTM),
-que é o que faltou em Brusque.
+O arquivo chegou com a mesma armadilha do de Brusque: uma conversão pronta que já gravava tudo como
+`referencia: "régua"`, sem uma linha de evidência. **A afirmação foi testada antes de importar**, por
+`scripts/analisar_kml_gaspar.py`, com o mesmo instrumento que recusou a camada de 2011 de Brusque. Desta
+vez ela passou, e por dois caminhos independentes.
+
+**1. As quatro ruas em comum batem todas, ao centavo, e sempre no menor valor da rua.**
+
+| Rua | Nosso cadastro (CEOPS/FURB) | KML (faixa da rua) | |
+|---|---|---|---|
+| Rua Petúnia | 6,20 | 6,20 – 6,57 | bate no menor |
+| Rua Costa Rica | 6,20 | 6,20 – 6,20 | bate no menor |
+| Av. Hilberto Gaertner | 6,25 | 6,25 – 8,30 | bate no menor |
+| Rua Sertão Verde | 6,34 | 6,34 – 7,75 | bate no menor |
+
+O menor valor da rua é exatamente onde a água chega primeiro — é a grandeza que o nosso cadastro guarda.
+Em Brusque foram 4 acertos em 13 ruas, com as outras nove divergindo de 0,5 a 2,3 m sem deslocamento
+constante; aqui **não há uma divergência sequer**.
+
+**2. A ordem das duas listas publicadas se reproduz.** O estudo do CEOPS, pela imprensa, nomeia 17 ruas
+atingidas primeiro (a partir de ~6,20 m) e 5 que entram depois (~7,4 m) — sem número por rua, só a ordem.
+No KML as medianas saem **6,63 m** e **7,07 m**, na ordem certa, com **P por acaso = 0,0014**. Nada no
+arquivo diz a que grupo cada rua pertence: se o campo `cota` fosse altitude de terreno, ou régua com outro
+zero, não teria por que respeitar essa separação.
+
+**O que não fecha, e por que não decide.** A mesma matéria diz que a 7 m alagam 53 ruas e a 9 m alagam 329.
+Contando as ruas do KML pela mínima de cada uma, dão 18 e 158 — cerca de metade. **Não é deslocamento de
+escala**: o limiar que daria 53 ruas seria 7,82 m e o que daria 329 seria 10,91 m, dois desvios diferentes,
+enquanto um deslocamento constante seria o mesmo nos dois. As explicações prováveis são de contagem: a
+matéria conta ruas da cidade inteira (53 é 3,8% de ~1.390 ruas) e este mapa tem 408; e o mapa é de abril de
+2020, quatro anos depois do estudo. Nenhuma delas toca na única pergunta que decide a importação — se os
+números estão na mesma régua —, e essa os itens 1 e 2 respondem.
+
+**1.613 pontos importados**, com `referencia: "régua"`, `confianca: alta` e `data_fonte: "2020-04"`.
+Gaspar vai de 23 para 1.618 registros. `scripts/importar_cotas_gaspar.py` roda a análise de novo antes de
+gravar e **recusa a importação se o veredito mudar** — a prova não fica num documento, fica no caminho da
+execução.
+
+**O que a importação substituiu.** Dezoito registros de Gaspar estavam com `cota_m: null` — a fonte
+anterior (imprensa, sobre este mesmo estudo) citava a rua sem publicar o número. Foram trocados pelos
+numerados, e não somados a eles: a mesma busca não pode devolver "alaga a partir de 6,46 m" e "cota não
+publicada" para a mesma rua. Os **cinco registros com número não saíram**, mesmo repetindo valores que a
+fonte oficial traz — são eles a prova de escala, e apagá-los deixaria a conferência sem contra o que rodar
+da próxima vez.
+
+**Uma pendência pequena que ficou.** Nosso cadastro tem "Rua Lino" a 6,57 m, do estudo pela imprensa; o KML
+tem "Rua Lírio" com mínima de **exatamente 6,57 m** e não tem nenhuma "Rua Lino". É provável que sejam a
+mesma rua, com erro de transcrição em algum ponto da cadeia — mas "é provável" não apaga registro. Os dois
+ficam, e a pergunta vai junto no contato com a Defesa Civil de Gaspar.
+
+**Gaspar continua sem cota em `estacoes.json`** e sem estação de tempo real coletada, então nenhuma dessas
+1.613 cotas dispara aviso: elas respondem "a partir de que nível a minha rua alaga", e não "o rio está
+chegando lá". O validador avisa isso a cada execução. Conseguir a régua e as cotas de referência de Gaspar
+é o que falta para a cidade entrar no aviso por Telegram.
 
 ### Indaial, Ilhota, Timbó, Ibirama, Taió, Vidal Ramos, Botuverá
 - Nada aberto localizado. Indaial tem portal da Defesa Civil em `indaial.atende.net`.

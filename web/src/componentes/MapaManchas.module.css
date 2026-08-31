@@ -34,3 +34,18 @@
 }
 .avisos li { margin-bottom: 0.35rem; }
 .credito { margin: 0.9rem 0 0; color: #7a8899; font-size: 0.78rem; }
+
+/* "Este ponto ficou dentro de quais manchas?" — o resultado do clique. */
+.consulta {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--borda, #d8dee6);
+  border-radius: 8px;
+  background: var(--fundo-suave, #f7f9fb);
+}
+
+.eventos {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+  line-height: 1.6;
+}

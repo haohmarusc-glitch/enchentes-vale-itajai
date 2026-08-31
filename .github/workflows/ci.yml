@@ -19,42 +19,24 @@ jobs:
       - name: Validar os JSONs de data/
         working-directory: scripts
         run: python3 validar_dados.py
-      - name: Testes do núcleo HTTP da coleta
+      # Roda TODO scripts/teste_*.py, e não uma lista escrita à mão.
+      # A lista tinha ficado para trás: seis arquivos de teste existiam no
+      # repositório e não rodavam aqui, entre eles o que guarda a recusa do KML
+      # de Brusque. Um teste que não roda na CI é um teste que não existe no dia
+      # em que alguém apontar um importador para o arquivo errado.
+      - name: Todos os testes dos scripts
         working-directory: scripts
-        run: python3 teste_http.py
-      - name: Testes das cotas de rua e das manchas
-        working-directory: scripts
-        run: python3 teste_cotas_ruas.py
-      - name: Testes da medição de maré
-        working-directory: scripts
-        run: python3 teste_medir_mare.py
-      - name: Testes do analisador da tábua de maré
-        working-directory: scripts
-        run: python3 teste_coleta_mares.py
-      - name: Testes da extração de picos
-        working-directory: scripts
-        run: python3 teste_extrair_picos.py
-      - name: Testes do analisador da página de níveis
-        working-directory: scripts
-        run: python3 teste_coleta_niveis.py
-      - name: Testes do analisador da página de chuvas
-        working-directory: scripts
-        run: python3 teste_coleta_chuva.py
-      - name: Testes do auditor
-        working-directory: scripts
-        run: python3 teste_auditar.py
-      - name: Testes do aviso de cota
-        working-directory: scripts
-        run: python3 teste_alerta_cotas.py
-      - name: Testes do vigia da coleta
-        working-directory: scripts
-        run: python3 teste_saude_coleta.py
-      - name: Trânsito em Python bate com o gabarito do site
-        working-directory: scripts
-        run: python3 teste_transito.py
-      - name: Testes das respostas do bot
-        working-directory: scripts
-        run: python3 teste_bot.py
+        run: |
+          falhou=""
+          for arquivo in teste_*.py; do
+            echo "::group::$arquivo"
+            python3 "$arquivo" || falhou="$falhou $arquivo"
+            echo "::endgroup::"
+          done
+          if [ -n "$falhou" ]; then
+            echo "falharam:$falhou"
+            exit 1
+          fi
       - name: Sintaxe do publicador de tempo real
         run: bash -n scripts/publicar_tempo_real.sh
 

@@ -20,8 +20,8 @@ import unittest.mock
 from pathlib import Path
 
 import notificador
-from bot import (IDADE_MAXIMA_PREVISAO_MIN, REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
-                 nome_curto, responder, sem_acento, texto_idade)
+from bot import (IDADE_MAXIMA_PREVISAO_MIN, MAX_RUAS, REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha,
+                 eh_timeout, nome_curto, responder, resposta_rua, sem_acento, texto_idade)
 from comum import le_json
 
 AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
@@ -319,10 +319,34 @@ class TestRua(unittest.TestCase):
         self.assertIn("4,80 m", t)
 
     def test_rua_sem_cota_aparece_com_a_nota_e_sem_numero(self):
-        """Nulo não é zero: a rua aparece, mas sem número e com o porquê."""
-        t = resp("/rua Gaspar Alfazema")
-        self.assertIn("Alfazema", t)
+        """
+        Nulo não é zero: a rua aparece, mas sem número e com o porquê.
+
+        O exemplo era uma rua de Gaspar até a importação do mapa da Defesa Civil
+        dar número a ela — e o teste quebrou, que é o comportamento certo: ele
+        existe para o caso sem número, não para uma rua específica. Os que
+        continuam sem número são os cinco pontos de Brusque que a fonte descreve
+        por faixa ("entre 5,46 m e 5,80 m") sem publicar o valor.
+        """
+        t = resp("/rua Brusque Túnel do Terminal Urbano")
+        self.assertIn("Terminal Urbano", t)
         self.assertNotIn("0,00 m", t)
+        self.assertNotIn("Alaga a partir de", t)
+        self.assertIn("5,46 m", t, "a nota tem de dizer o que se sabe")
+
+    def test_rua_sem_cota_e_sem_nota_diz_que_a_fonte_nao_publicou(self):
+        """
+        O caso de última linha: sem número E sem nota, o bot ainda tem de
+        explicar. Silêncio aqui vira "a rua não alaga" na cabeça de quem lê.
+        """
+        b = Base(ULTIMO, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"),
+                 {"_meta": {}, "cotas": [{"cidade": "brusque", "rio": "itajai-mirim",
+                                          "rua": "Rua Sem Nada", "bairro": None,
+                                          "ponto": None, "cota_m": None,
+                                          "fonte": "teste", "data_fonte": "2026-01",
+                                          "confianca": "baixa"}]})
+        t = resp("/rua Brusque Sem Nada", b)
         self.assertIn("não publica a cota exata", t)
 
     def test_rua_desconhecida_nao_diz_que_nao_alaga(self):
@@ -396,6 +420,39 @@ class TestLimiteDoTelegram(unittest.TestCase):
         longa = notificador.encurtar("b" * 9000)
         self.assertLessEqual(len(longa), notificador.LIMITE_CARACTERES)
         self.assertIn("cortada", longa)
+
+    def test_nenhuma_busca_de_rua_real_chega_a_ser_cortada(self):
+        """
+        O corte existe para não perder a mensagem inteira, mas cortar já é
+        perder informação: a última rua da lista sai pela metade. Cada
+        importação nova aumenta o texto — a de Brusque acrescentou uma nota por
+        ponto, dizendo quanta água cobriu ali em 2023 —, e é aqui que se vê se
+        o limite ficou perto.
+
+        Só entram os termos que casam com pelo menos MAX_RUAS ruas: acima disso
+        a resposta já está no teto, então o pior caso está nesse grupo.
+        """
+        import collections
+
+        b = base()
+        cotas = le_json("cotas-ruas.json")["cotas"]
+        frequencia = collections.Counter(
+            pedaco for c in cotas for pedaco in str(c["rua"]).lower().split()
+            if len(pedaco) >= 2
+        )
+        cheios = [t for t, n in frequencia.items() if n >= MAX_RUAS]
+        self.assertGreater(len(cheios), 50, "amostra pequena demais para valer de guarda")
+
+        pior_termo, pior = "", 0
+        for termo in cheios:
+            tamanho = len("".join(resposta_rua(b, None, termo, AGORA)))
+            if tamanho > pior:
+                pior_termo, pior = termo, tamanho
+        self.assertLess(
+            pior, notificador.LIMITE_CARACTERES,
+            f"a busca por “{pior_termo}” gera {pior} caracteres e seria cortada — "
+            "diminuir MAX_RUAS ou encurtar as notas antes de importar mais",
+        )
 
 
 class TestCotas(unittest.TestCase):

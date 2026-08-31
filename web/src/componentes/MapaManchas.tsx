@@ -4,6 +4,8 @@ import 'leaflet/dist/leaflet.css'
 import indice from '@dados/manchas/index.json'
 import { coresPorRotulo, legenda, ordenar, rotuloEvento } from '../logica/manchas'
 import type { Mancha } from '../logica/manchas'
+import { dentroDaColecao } from '../logica/pontoNaMancha'
+import type { Coordenada } from '../logica/pontoNaMancha'
 import { metros } from '../logica/formato'
 import estilos from './MapaManchas.module.css'
 
@@ -38,6 +40,15 @@ export default function MapaManchas() {
   const mapaRef = useRef<L.Map | null>(null)
   const camadaRef = useRef<L.GeoJSON | null>(null)
 
+  // "Este ponto ficou dentro de quais manchas?"
+  const [ponto, setPonto] = useState<Coordenada | null>(null)
+  const [atingido, setAtingido] = useState<Mancha[] | null>(null)
+  const [consultando, setConsultando] = useState(false)
+  const [erroConsulta, setErroConsulta] = useState<string | null>(null)
+  const marcaRef = useRef<L.CircleMarker | null>(null)
+  /** Os GeoJSON já baixados, para o segundo clique não repetir 1,6 MB. */
+  const cacheRef = useRef(new Map<string, unknown>())
+
   useEffect(() => {
     if (!divRef.current || mapaRef.current) return
     const mapa = L.map(divRef.current, { scrollWheelZoom: false }).setView(CENTRO, 12)
@@ -45,12 +56,63 @@ export default function MapaManchas() {
       maxZoom: 18,
       attribution: '© colaboradores do OpenStreetMap',
     }).addTo(mapa)
+    mapa.on('click', (e: L.LeafletMouseEvent) => {
+      // GeoJSON guarda [longitude, latitude]; o Leaflet entrega o contrário.
+      // Trocar os dois aqui e não em `dentroDaColecao` mantém a lógica pura
+      // falando a língua do arquivo, que é onde o erro seria invisível.
+      setPonto([e.latlng.lng, e.latlng.lat])
+    })
     mapaRef.current = mapa
     return () => {
       mapa.remove()
       mapaRef.current = null
     }
   }, [])
+
+  // A consulta do ponto: baixa os eventos que ainda faltam e responde em quais
+  // ele caiu dentro. É um clique explícito da pessoa, por isso pode buscar
+  // todos os arquivos — o seletor lá em cima continua baixando um por vez.
+  useEffect(() => {
+    const mapa = mapaRef.current
+    if (!mapa || !ponto) return
+
+    marcaRef.current?.remove()
+    marcaRef.current = L.circleMarker([ponto[1], ponto[0]], {
+      radius: 7,
+      color: '#111827',
+      weight: 2,
+      fillColor: '#fbbf24',
+      fillOpacity: 1,
+    }).addTo(mapa)
+
+    let vivo = true
+    setConsultando(true)
+    setErroConsulta(null)
+    setAtingido(null)
+    Promise.all(
+      manchas.map(async (m) => {
+        const cache = cacheRef.current
+        if (!cache.has(m.arquivo)) {
+          const url = urlDoArquivo(m.arquivo)
+          if (!url) throw new Error(`arquivo de ${rotuloEvento(m.evento)} não está no pacote`)
+          const r = await fetch(url)
+          if (!r.ok) throw new Error(`HTTP ${r.status}`)
+          cache.set(m.arquivo, await r.json())
+        }
+        return dentroDaColecao(ponto, cache.get(m.arquivo)) ? m : null
+      }),
+    )
+      .then((achados) => {
+        if (!vivo) return
+        setAtingido(achados.filter((m): m is Mancha => m !== null))
+      })
+      .catch((e: Error) => vivo && setErroConsulta(e.message))
+      .finally(() => vivo && setConsultando(false))
+
+    return () => {
+      vivo = false
+    }
+  }, [ponto, manchas])
 
   useEffect(() => {
     const mapa = mapaRef.current
@@ -144,6 +206,44 @@ export default function MapaManchas() {
 
       <div className={estilos.mapa} ref={divRef} role="img"
            aria-label={`Mapa das áreas atingidas em Itajaí na enchente de ${escolhida ? rotuloEvento(escolhida.evento) : ''}`} />
+
+      <div className={estilos.consulta}>
+        <p className={estilos.rotulo}>Toque num ponto do mapa</p>
+        {ponto === null ? (
+          <p className={estilos.estado}>
+            O mapa responde <strong>em quais destas enchentes aquele ponto ficou dentro da
+            área atingida</strong>. Não diz com quantos metros de rio — os arquivos não trazem
+            cota.
+          </p>
+        ) : consultando ? (
+          <p className={estilos.estado}>Conferindo o ponto nas nove enchentes…</p>
+        ) : erroConsulta ? (
+          <p className={estilos.erro}>
+            Não deu para conferir este ponto ({erroConsulta}). O resto da página segue funcionando.
+          </p>
+        ) : atingido === null ? null : atingido.length === 0 ? (
+          <p className={estilos.estado}>
+            Este ponto <strong>não caiu dentro de nenhuma</strong> das manchas levantadas.{' '}
+            <strong>Isso não quer dizer que ali não alaga</strong> — o levantamento cobre o que foi
+            mapeado, e a cidade mudou desde 1983.
+          </p>
+        ) : (
+          <>
+            <p className={estilos.estado}>
+              Este ponto ficou dentro da área atingida em{' '}
+              <strong>
+                {atingido.length} {atingido.length === 1 ? 'enchente' : 'enchentes'}
+              </strong>
+              :
+            </p>
+            <ul className={estilos.eventos}>
+              {atingido.map((m) => (
+                <li key={m.arquivo}>{rotuloEvento(m.evento)}</li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
 
       {carregando ? <p className={estilos.estado}>Carregando a mancha…</p> : null}
       {erro ? (
