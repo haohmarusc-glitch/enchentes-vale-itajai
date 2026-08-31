@@ -77,7 +77,12 @@ class TestCotasRuas(unittest.TestCase):
         """
         primeira: dict[str, float] = {}
         for r in self.cotas:
-            if r["cota_m"] is not None:
+            # Cota marcada para não mover aviso fica de fora, pelo mesmo
+            # motivo do validador: exigir que a cidade baixe a cota de atenção
+            # por causa de um número que ninguém conferiu faria o aviso tocar
+            # em dia de sol. Rio do Sul publica duas assim, a 3,11 e 3,26 m,
+            # com a régua marcando 3,35 m sem chuva.
+            if r["cota_m"] is not None and r.get("usar_para_aviso") is not False:
                 atual = primeira.get(r["cidade"])
                 primeira[r["cidade"]] = r["cota_m"] if atual is None else min(atual, r["cota_m"])
 
@@ -94,6 +99,27 @@ class TestCotasRuas(unittest.TestCase):
                     menor, rua,
                     f"em {cidade} o aviso dispara a {menor:.2f} m, "
                     f"depois da primeira rua alagar a {rua:.2f} m",
+                )
+
+    def test_cota_fora_do_aviso_explica_e_e_mesmo_baixa(self):
+        """
+        A saída da regra acima não pode virar porta dos fundos: só entra aí a
+        cota que fica abaixo da menor cota da cidade, e sempre com a nota
+        dizendo por quê.
+        """
+        for r in self.cotas:
+            if r.get("usar_para_aviso") is not False:
+                continue
+            with self.subTest(rua=r["rua"]):
+                self.assertTrue(r.get("nota"), "sem nota explicando")
+                cadastradas = [
+                    v for v in (self.cidades.get(r["cidade"]) or {}).values()
+                    if isinstance(v, (int, float))
+                ]
+                self.assertTrue(cadastradas, "cidade sem cota para comparar")
+                self.assertLess(
+                    r["cota_m"], min(cadastradas),
+                    "está fora do aviso sem ser mais baixa que a cota da cidade",
                 )
 
     def test_mesma_rua_pode_ter_varias_cotas(self):
