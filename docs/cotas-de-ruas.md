@@ -127,6 +127,21 @@ Tarefa: `scripts/baixar_mapas_itajai.py` — baixar os 5 pacotes + PDFs para `da
 | Rua Max Scheidemantel | Fortaleza | 7,90 | próximo ao nº 85 |
 | Rua Max Aldemann | Fortaleza | 7,95 | início / ponto mais baixo |
 
+#### Conferência pendente das cotas de Blumenau (PDF oficial de 2014)
+
+As 1.938 cotas de Blumenau entraram com `confianca: media`, por virem da relação de 2023 via imprensa.
+Existe um caminho para conferir contra documento oficial: o PDF da Prefeitura "Cotas de enchente das ruas
+de Blumenau", hospedado pelo Farol Blumenau em
+`https://farolblumenau.com/wp-content/uploads/2014/06/Cotas-de-enchente-das-ruas-Blumenau.pdf`
+(o site bloqueia robôs — baixar no navegador, salvar em `data/brutos/`). Traz rua, bairro, cota, abrigo
+(códigos E9, N2, C7…) e observação do ponto. É de 2014, então serve para **conferir**, não para
+substituir: onde os dois baterem, a relação de 2023 ganha respaldo oficial; onde divergirem, vale o
+mecanismo de `divergencias`, não a escolha silenciosa de um dos dois.
+
+O caminho definitivo continua sendo a FURB, que está refazendo o levantamento em 2026 (prof. Ademar
+Cordero), pela primeira vez incluindo a região da Celesc para cima (rua Bahia, Rio do Testo, sentido
+Pomerode/Indaial) e compatível com GPS de celular. Entrega prevista à Defesa Civil em **novembro de 2026**.
+
 ### Gaspar — mapa de cotas por rua (CEOPS/FURB, 2016–2017)
 - Estudo feito pelo CEOPS/FURB (coord. Ademar Cordeiro), rua por rua, referenciado à régua da
   ANA na empresa Círculo, usando as marcas de 2011 e, em alguns casos, 1983.
@@ -220,11 +235,49 @@ comportamento de altitude do terreno.
 conferível, e `scripts/teste_analisar_kml_brusque.py` (36 testes) trava a conclusão: se alguém
 apontar um importador para esse arquivo, os testes quebram.
 
+**Um quarto motivo, que só apareceu depois.** A Defesa Civil de Brusque concluiu em **jul/2024** a 1ª
+etapa de uma atualização das cotas: **357 pontos**, revistos até 8,96 m (a cheia de 17/11/2023), com 2ª
+etapa em andamento. Publicada em `https://bit.ly/novascotasbrusque` (bloqueia robôs — abrir no navegador e
+salvar em `data/brutos/`). O achado do estudo é que as cotas **subiram** em vários bairros por causa dos
+canais extravasores da Beira-Rio: com o mesmo pico de 2011, hoje alagariam **menos** ruas. Ou seja, mesmo
+a parte do KML que é régua de verdade está **desatualizada abaixo de ~7,50 m**, que é justamente a faixa
+onde mora o aviso adiantado. É a camada "Cotas de cheia 2023" do próprio KML (357 pontos) — que veio
+**sem número nenhum** na conversão que recebemos.
+
 **O que resolveria:** o KML **original**. A conversão que chegou aqui preservou só `pasta`, `cota`,
 `rua`, `bairro` e `coord`; o original trazia ainda `obs`, `esquina` e coordenadas UTM
 (`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa. O original
 não está mais disponível. Alternativa melhor: a planilha da Defesa Civil de Brusque, que já era o
 pedido pendente desta seção.
+
+### Rio do Sul — API pública Asthon (tempo real) ⭐ a fazer
+
+`public.asthon.com.br`, `city_id 4214805`: **29 estações do Alto Vale** — Taió, Ituporanga, Agronômica,
+Petrolândia, Mirim Doce, Braço do Trombudo, entre outras —, barragens e histórico horário. Cobre cidades
+que hoje **não têm nível nenhum na tela** (Taió, Ituporanga, Vidal Ramos). Faixas oficiais na régua da
+**Ponte Dom Tito Buss**: atenção 4,50 · alerta 5,50 · emergência 6,50 · abertura de abrigos 7,00 m — as
+três primeiras são as que já estão em `estacoes.json`, e o nome da régua foi preenchido a partir daqui.
+
+Só responde para Rio do Sul; outras cidades voltam `null`. Substitui a raspagem do portal, que virou SPA
+em 2026. **Antes de coletar:** checar `robots.txt` e termos, como em toda fonte nova; e uma leitura só
+vira aviso se vier com a cota **daquela** estação — sem isso ela seria comparada com a régua de outra
+cidade, que é o erro que este documento recusa em três lugares diferentes.
+
+#### A lista de 555 ruas está completa e conferida ✔
+
+Havia duas leituras independentes da mesma tabela oficial: a nossa, raspada do portal (554 ruas,
+`confianca: alta`, com mínima e máxima), e a transcrição integral da NSC Total de 14/08/2026 (545 ruas,
+só a mínima), agora em `data/brutos/rio-do-sul-nsc-2026-08-14.json`.
+
+`scripts/conferir_rio_do_sul_nsc.py` cruza as duas: **das 538 ruas que as duas publicam com o mesmo nome,
+538 trazem a cota idêntica ao centavo. Zero divergências.** Outras seis "só da NSC" são a mesma rua com
+outra grafia (Amábile/Amabilio Testoni, Menegetti/Meneghetti, Guaiâniazes/Guaianazes, Gutenberg/Gutemberg,
+Frankenberger/Frankemberger, Jurací/Juracy Dalfovo), com cota igual.
+
+E **uma rua só a NSC tinha: Visconde de Cairu, 19,01 m.** Não é grafia de outra — temos "Visconde de Mauá"
+a 10,89 m, e "Hilberto Bruch" a 19,01 m, que a NSC publica separadamente. O portal declara **555** itens e
+tínhamos 554: era esta. Entrou com a fonte da NSC e `confianca: media` (não `alta`, porque não veio do
+portal) e sem cota máxima, que o jornal não publicou. Rio do Sul está em 555.
 
 ### Rio do Sul — tabela "Cota de Cheias por Rua" com exportação
 - Portal: `https://defesacivil.riodosul.sc.gov.br/` → "Cota de Cheias por Rua" (555 itens, campos
@@ -235,6 +288,17 @@ pedido pendente desta seção.
   Enchente" e "Mapa Inund. e Abrigos".
 - Referências: enchente a partir de ~7,00 m (abrigos abertos a 7 m); cota de alerta usual
   6,50–7,50 m.
+
+#### Gaspar — Google My Maps da Defesa Civil (1.615 pontos) — a obter
+
+`cotas_enchente_gaspar_01042020`, com cota, rua, rua de referência, bairro e lat/lon. O KML sai por
+`https://www.google.com/maps/d/kml?mid=<id>&forcekml=1`, o que permitiria pontos no mapa sem geocodificar.
+
+**Ler a recusa do KML de Brusque antes de importar este.** É a mesma origem (My Maps de Defesa Civil) e o
+mesmo campo chamado `cota`; lá ele se mostrou uma mistura de nível de régua com outra grandeza. Gaspar tem
+23 cotas já cadastradas, que servem de cruzamento — e a cidade **não tem nenhuma cota em `estacoes.json`**,
+então hoje nem haveria contra o que comparar. Baixar o KML **com todos os campos** (`obs`, `esquina`, UTM),
+que é o que faltou em Brusque.
 
 ### Indaial, Ilhota, Timbó, Ibirama, Taió, Vidal Ramos, Botuverá
 - Nada aberto localizado. Indaial tem portal da Defesa Civil em `indaial.atende.net`.

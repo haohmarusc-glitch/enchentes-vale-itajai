@@ -54,7 +54,7 @@
           "km_da_foz": 191,
           "codigo_ana": "83300200",
           "verificado": false,
-          "observacao": "Confluência dos rios Itajaí do Sul (Ituporanga) e Itajaí do Oeste (Taió).",
+          "observacao": "Confluência dos rios Itajaí do Sul (Ituporanga) e Itajaí do Oeste (Taió). As cotas 4,50 / 5,50 / 6,50 m são as faixas oficiais desta régua. A abertura de abrigos se dá a 7,00 m, acima da maior cota cadastrada — o aviso automático, que para na de 6,50 m, portanto sai antes, não depois.",
           "cotas_m": {
             "atencao": 4.5,
             "alerta": 5.5,
@@ -64,7 +64,8 @@
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Rio do Sul Estação MKS)",
             "https://defesacivil.riodosul.sc.gov.br/index.php?r=externo%2Fmetragem (JS)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
-          ]
+          ],
+          "regua": "Ponte Dom Tito Buss"
         },
         {
           "id": "ibirama",

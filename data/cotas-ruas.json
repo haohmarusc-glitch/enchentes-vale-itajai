@@ -31050,6 +31050,19 @@
       "data_fonte": "2023",
       "confianca": "media",
       "referencia": "régua"
+    },
+    {
+      "cidade": "rio-do-sul",
+      "rio": "itajai-acu",
+      "rua": "VISCONDE DE CAIRU",
+      "bairro": null,
+      "ponto": "ponto mais baixo",
+      "cota_m": 19.01,
+      "fonte": "Defesa Civil de Rio do Sul — \"Cota de Cheias por Rua\", transcrição integral publicada pela NSC Total em 14/08/2026 (https://www.nsctotal.com.br/cotidiano/cota-de-enchente-rio-do-sul). Bruto em data/brutos/rio-do-sul-nsc-2026-08-14.json",
+      "data_fonte": "2026-08-14",
+      "confianca": "media",
+      "referencia": "régua",
+      "nota": "A raspagem do portal oficial trouxe 554 das 555 ruas que ele declara; esta é a que faltou. Por vir da transcrição do jornal, e não do portal, entra como media — as outras 554 são alta. Sem cota máxima porque o jornal não a publicou."
     }
   ]
 }
