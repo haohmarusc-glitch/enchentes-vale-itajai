@@ -144,3 +144,62 @@ que a auditoria acabou de achar em `coleta_itajai.py`), uso de `comum.baixar` (r
 `Retry-After`), escrita no `ultimo.json` que o site, o bot e o aviso realmente leem — hoje escrevem
 em arquivos que ninguém consome —, e limpeza dos snapshots com carimbo de hora, que num cron de 10
 minutos são 144 arquivos por dia, para sempre.
+
+
+## O que a sonda respondeu na VPS (31/08/2026)
+
+`scripts/sonda_fontes_novas.py` rodou e decidiu as três perguntas. Duas respostas
+contrariaram o que este documento esperava.
+
+### Defesa Civil de SC — GraphQL ✅ para chuva, ❌ para nível
+
+`robots.txt` traz `Disallow:` vazio — **permissão explícita para tudo**. HTTP 200,
+174 estações no estado, **61 na bacia do Itajaí**.
+
+**Não vem cota de referência.** Os campos de uma estação, na íntegra:
+
+```
+codigo · name · timestamp · position(bacia, latitude, longitude, regiao, altitude)
+data.rio: rio_nome(null) · rio_nivel · rio_nivel_tendencia(null)
+data.chuva.acumulado: h001 · h024
+```
+
+Sem a cota daquela régua, **nenhuma leitura pode virar aviso** — seria comparada
+com a cota de outra. Era a condição posta aqui, e não é atendida.
+
+**E o "nível" não é a mesma grandeza entre estações.** Cruzando com as nossas
+leituras do mesmo instante:
+
+| Cidade | Nossa régua | DCSC | Diferença |
+|---|---|---|---|
+| Brusque | 3,21 m | 3,25 m | +0,04 |
+| Rio do Sul | 5,44 m | 5,52 m | +0,08 |
+| **Ilhota** | 3,25 m | **10,34 m** | **+7,09** |
+
+As estações com sufixo `(H)` trazem 342, 385, 456, 877, 914 — altitude ou outra
+coisa, não leitura de régua. Apiúna vem 81,97. É a **terceira** vez que o projeto
+encontra um campo chamado "nível" ou "cota" que não é o que parece, depois do
+`Relevo_Ponto_Cotado_Altimetrico` de Itajaí e do KML de Brusque.
+
+**A chuva não tem esse problema:** milímetro é milímetro em qualquer lugar, não
+depende de régua, zero nem datum. Por isso entrou — `scripts/coleta_chuva_sc.py`
+coleta `chuva.acumulado` e **nem pede** `rio_nivel` na consulta, para ninguém se
+tentar depois.
+
+### Blumenau — a sonda derrubou a esperança que este documento tinha
+
+`DCSC-00026 SDC-SC Blumenau` publica chuva (19,06 mm/24 h) e **`rio_nivel: null`**.
+A Defesa Civil de SC **não resolve o nível de Blumenau**.
+
+E o AlertaBlu continua barrado: `robots.txt` inacessível por
+`CERTIFICATE_VERIFY_FAILED — unable to get local issuer certificate`, o mesmo
+erro de 30/08. Como o `git pull` da mesma VPS funciona, o repositório de CAs da
+máquina está bom: é o servidor de Blumenau enviando a **cadeia incompleta**, sem
+o certificado intermediário. Navegador disfarça (busca pelo AIA); Python não.
+
+**Não desligar a verificação.** O conserto honesto é baixar o intermediário que
+falta e passá-lo como CA — isso completa a cadeia que o servidor deveria mandar,
+e continua verificando assinatura, validade e nome do host. Enquanto isso não é
+feito, Blumenau depende da página da Defesa Civil de Itajaí, que em 31/08/2026
+estava publicando a estação com o carimbo **congelado há mais de três horas**
+enquanto as outras treze atualizavam a cada 15–30 min.
