@@ -44,7 +44,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from comum import DADOS, estacao_por_titulo
+from comum import (DADOS, NIVEL_MAXIMO_M, NIVEL_MINIMO_M, estacao_por_titulo,
+                   nivel_plausivel)
 import notificador
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
@@ -220,6 +221,17 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
         nivel = leitura.get("nivel_m")
         if not isinstance(nivel, (int, float)):
             recusas.append(f"{titulo}: a leitura não trouxe número de nível")
+            continue
+        # A mesma faixa que o site aplica desde sempre, e que faltava aqui.
+        # O caminho do aviso é o único que fala sozinho, de madrugada: se um
+        # sensor devolvesse 0,00 m durante a cheia, `faixa_de` classificaria
+        # como "normal" e sairia um "🟢 voltou para abaixo das cotas". Não há
+        # registro da fonte publicando isso — a página omite a estação muda,
+        # e é por isso que nunca aconteceu — mas a diferença entre as duas
+        # implementações é uma trava a menos justamente onde ela custa mais.
+        if not nivel_plausivel(nivel):
+            recusas.append(f"{titulo}: {float(nivel):.2f} m não é nível de rio desta "
+                           f"bacia (fora de {NIVEL_MINIMO_M:.0f}–{NIVEL_MAXIMO_M:.0f} m)")
             continue
         cotas, motivo = cotas_da_leitura(
             leitura, reguas_na_cidade[(leitura.get("rio"), leitura.get("cidade"))]

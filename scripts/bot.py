@@ -634,6 +634,26 @@ def resposta_cotas(base: Base, cidade: dict) -> list[str]:
     return linhas
 
 
+def nome_curto(leitura: dict) -> str:
+    """
+    O nome da régua sem a calha repetida em todas.
+
+    "DC-07 Ribeirão da Murta - Portal" vira "DC-07 Portal": num panorama de
+    treze linhas, o que muda entre elas é o local, não o nome do rio. O código
+    fica, porque é por ele que se acha a régua na página da Defesa Civil.
+    """
+    titulo = (leitura.get("estacao") or "").strip()
+    codigo = ""
+    if titulo[:2].isalpha() and titulo[2:3] == "-":
+        codigo, _, titulo = titulo.partition(" ")
+    # A fonte separa calha e local por hífen, comum ou longo.
+    for sep in (" – ", " - ", " — "):
+        if sep in titulo:
+            titulo = titulo.split(sep)[-1]
+            break
+    return f"{codigo} {titulo}".strip() if codigo else titulo
+
+
 def resposta_rios(base: Base, agora: datetime) -> list[str]:
     leituras = base.ultimo.get("leituras") or []
     if not leituras:
@@ -645,11 +665,29 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
     nomes = {c["id"]: c["nome"] for c in base.cidades()}
     for cid, ls in sorted(por_cidade.items()):
         nome = nomes.get(cid, cid)
-        maior = max(ls, key=lambda x: x["nivel_m"])
-        idade = idade_min(maior.get("medido_em"), agora)
-        sufixo = f" (maior de {len(ls)} réguas, que não se comparam)" if len(ls) > 1 else ""
-        linhas.append(f"\n<b>{notificador.esc(nome)}</b>: {metros(maior['nivel_m'])}"
-                      f"{sufixo} · {texto_idade(idade)}")
+        if len(ls) == 1:
+            l = ls[0]
+            idade = idade_min(l.get("medido_em"), agora)
+            linhas.append(f"\n<b>{notificador.esc(nome)}</b>: {metros(l['nivel_m'])}"
+                          f" · {texto_idade(idade)}")
+            continue
+
+        # Cidade com mais de uma régua NÃO tem um número.
+        #
+        # Aqui havia `max(ls, key=nivel_m)`: elegia o maior metro como se fosse
+        # o nível da cidade, comparando réguas de zeros diferentes — a operação
+        # que todo o resto do projeto recusa (`leituraDaCidade` devolve nulo,
+        # `resposta_previsao` recusa, `cotas_da_leitura` recusa). A ressalva ao
+        # lado não desfazia o número: em Itajaí saía "4,88 m" num dia calmo,
+        # que é a régua de Limoeiro, 20 km rio acima e com zero mais alto — e,
+        # pior, uma subida de metro e meio nas outras nove não mudava o número,
+        # porque o vencedor é sempre a mesma régua.
+        linhas.append(f"\n<b>{notificador.esc(nome)}</b> — {len(ls)} réguas, "
+                      "com zeros diferentes (não se comparam):")
+        for l in sorted(ls, key=lambda x: x.get("estacao", "")):
+            idade = idade_min(l.get("medido_em"), agora)
+            linhas.append(f"\n  {metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
+                          f" · {texto_idade(idade)}")
     coletado = base.ultimo.get("coletado_em")
     if coletado:
         try:

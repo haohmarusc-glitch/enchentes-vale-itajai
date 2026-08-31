@@ -15,7 +15,7 @@ import unittest
 from datetime import datetime, timezone
 
 from bot import (REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
-                 responder, sem_acento, texto_idade)
+                 nome_curto, responder, sem_acento, texto_idade)
 from comum import le_json
 
 AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
@@ -337,7 +337,41 @@ class TestGerais(unittest.TestCase):
         t = resp("/rios")
         self.assertIn("Rio do Sul", t)
         self.assertIn("Brusque", t)
-        self.assertIn("maior de 2 réguas", t)
+        self.assertIn("há ", t)
+
+    def test_rios_nao_elege_um_numero_para_cidade_de_varias_reguas(self):
+        """
+        Havia `max(nivel_m)` aqui: elegia o maior metro como se fosse o nível
+        da cidade, comparando réguas de zeros diferentes. Em Itajaí saía
+        "4,88 m" num dia calmo — a régua de Limoeiro, 20 km rio acima. E uma
+        subida de metro e meio nas outras nove não mudava o número, porque o
+        vencedor é sempre a mesma régua.
+        """
+        t = resp("/rios")
+        # As duas réguas de Itajaí na base de teste leem 0,81 e 1,53:
+        # nenhuma pode aparecer como "o nível de Itajaí", e as duas precisam
+        # aparecer, cada uma com o nome da sua régua.
+        self.assertNotIn("maior de", t)
+        self.assertIn("2 réguas, com zeros diferentes", t)
+        self.assertIn("0,81 m", t)
+        self.assertIn("1,53 m", t)
+        self.assertIn("DC-01", t)
+        self.assertIn("DC-02", t)
+
+    def test_rios_mantem_uma_linha_para_cidade_de_uma_regua(self):
+        t = resp("/rios")
+        self.assertRegex(t, r"<b>Brusque</b>: \d+,\d\d m · h")
+
+    def test_nome_curto_tira_a_calha_e_guarda_o_codigo(self):
+        """No panorama o que muda entre as linhas é o local, não o nome do rio."""
+        self.assertEqual(
+            nome_curto({"estacao": "DC-07 Ribeirão da Murta - Portal"}), "DC-07 Portal")
+        self.assertEqual(
+            nome_curto({"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"}),
+            "DC-10 Bairro Limoeiro")
+        # Sem código e sem hífen, fica como veio — nada é adivinhado.
+        self.assertEqual(nome_curto({"estacao": "Brusque"}), "Brusque")
+        self.assertEqual(nome_curto({"estacao": ""}), "")
 
     def test_escapa_html_do_que_a_pessoa_digitou(self):
         t = resp("/nivel <b>xxx</b>")
