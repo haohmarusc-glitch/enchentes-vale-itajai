@@ -353,16 +353,64 @@ portal) e sem cota máxima, que o jornal não publicou. Rio do Sul está em 555.
 - Referências: enchente a partir de ~7,00 m (abrigos abertos a 7 m); cota de alerta usual
   6,50–7,50 m.
 
-#### Gaspar — Google My Maps da Defesa Civil (1.615 pontos) — a obter
+#### Gaspar — Google My Maps da Defesa Civil: 1.613 pontos importados (31/08/2026) ✔
 
-`cotas_enchente_gaspar_01042020`, com cota, rua, rua de referência, bairro e lat/lon. O KML sai por
-`https://www.google.com/maps/d/kml?mid=<id>&forcekml=1`, o que permitiria pontos no mapa sem geocodificar.
+`cotas_enchente_gaspar_01042020`, uma pasta só, 1.615 pontos, cada um com cota, rua (`refer_1`), rua
+transversal ou número (`refer_2`), bairro, UTM e lat/lon.
 
-**Ler a recusa do KML de Brusque antes de importar este.** É a mesma origem (My Maps de Defesa Civil) e o
-mesmo campo chamado `cota`; lá ele se mostrou uma mistura de nível de régua com outra grandeza. Gaspar tem
-23 cotas já cadastradas, que servem de cruzamento — e a cidade **não tem nenhuma cota em `estacoes.json`**,
-então hoje nem haveria contra o que comparar. Baixar o KML **com todos os campos** (`obs`, `esquina`, UTM),
-que é o que faltou em Brusque.
+O arquivo chegou com a mesma armadilha do de Brusque: uma conversão pronta que já gravava tudo como
+`referencia: "régua"`, sem uma linha de evidência. **A afirmação foi testada antes de importar**, por
+`scripts/analisar_kml_gaspar.py`, com o mesmo instrumento que recusou a camada de 2011 de Brusque. Desta
+vez ela passou, e por dois caminhos independentes.
+
+**1. As quatro ruas em comum batem todas, ao centavo, e sempre no menor valor da rua.**
+
+| Rua | Nosso cadastro (CEOPS/FURB) | KML (faixa da rua) | |
+|---|---|---|---|
+| Rua Petúnia | 6,20 | 6,20 – 6,57 | bate no menor |
+| Rua Costa Rica | 6,20 | 6,20 – 6,20 | bate no menor |
+| Av. Hilberto Gaertner | 6,25 | 6,25 – 8,30 | bate no menor |
+| Rua Sertão Verde | 6,34 | 6,34 – 7,75 | bate no menor |
+
+O menor valor da rua é exatamente onde a água chega primeiro — é a grandeza que o nosso cadastro guarda.
+Em Brusque foram 4 acertos em 13 ruas, com as outras nove divergindo de 0,5 a 2,3 m sem deslocamento
+constante; aqui **não há uma divergência sequer**.
+
+**2. A ordem das duas listas publicadas se reproduz.** O estudo do CEOPS, pela imprensa, nomeia 17 ruas
+atingidas primeiro (a partir de ~6,20 m) e 5 que entram depois (~7,4 m) — sem número por rua, só a ordem.
+No KML as medianas saem **6,63 m** e **7,07 m**, na ordem certa, com **P por acaso = 0,0014**. Nada no
+arquivo diz a que grupo cada rua pertence: se o campo `cota` fosse altitude de terreno, ou régua com outro
+zero, não teria por que respeitar essa separação.
+
+**O que não fecha, e por que não decide.** A mesma matéria diz que a 7 m alagam 53 ruas e a 9 m alagam 329.
+Contando as ruas do KML pela mínima de cada uma, dão 18 e 158 — cerca de metade. **Não é deslocamento de
+escala**: o limiar que daria 53 ruas seria 7,82 m e o que daria 329 seria 10,91 m, dois desvios diferentes,
+enquanto um deslocamento constante seria o mesmo nos dois. As explicações prováveis são de contagem: a
+matéria conta ruas da cidade inteira (53 é 3,8% de ~1.390 ruas) e este mapa tem 408; e o mapa é de abril de
+2020, quatro anos depois do estudo. Nenhuma delas toca na única pergunta que decide a importação — se os
+números estão na mesma régua —, e essa os itens 1 e 2 respondem.
+
+**1.613 pontos importados**, com `referencia: "régua"`, `confianca: alta` e `data_fonte: "2020-04"`.
+Gaspar vai de 23 para 1.636 registros. `scripts/importar_cotas_gaspar.py` roda a análise de novo antes de
+gravar e **recusa a importação se o veredito mudar** — a prova não fica num documento, fica no caminho da
+execução.
+
+**O que a importação substituiu.** Dezoito registros de Gaspar estavam com `cota_m: null` — a fonte
+anterior (imprensa, sobre este mesmo estudo) citava a rua sem publicar o número. Foram trocados pelos
+numerados, e não somados a eles: a mesma busca não pode devolver "alaga a partir de 6,46 m" e "cota não
+publicada" para a mesma rua. Os **cinco registros com número não saíram**, mesmo repetindo valores que a
+fonte oficial traz — são eles a prova de escala, e apagá-los deixaria a conferência sem contra o que rodar
+da próxima vez.
+
+**Uma pendência pequena que ficou.** Nosso cadastro tem "Rua Lino" a 6,57 m, do estudo pela imprensa; o KML
+tem "Rua Lírio" com mínima de **exatamente 6,57 m** e não tem nenhuma "Rua Lino". É provável que sejam a
+mesma rua, com erro de transcrição em algum ponto da cadeia — mas "é provável" não apaga registro. Os dois
+ficam, e a pergunta vai junto no contato com a Defesa Civil de Gaspar.
+
+**Gaspar continua sem cota em `estacoes.json`** e sem estação de tempo real coletada, então nenhuma dessas
+1.613 cotas dispara aviso: elas respondem "a partir de que nível a minha rua alaga", e não "o rio está
+chegando lá". O validador avisa isso a cada execução. Conseguir a régua e as cotas de referência de Gaspar
+é o que falta para a cidade entrar no aviso por Telegram.
 
 ### Indaial, Ilhota, Timbó, Ibirama, Taió, Vidal Ramos, Botuverá
 - Nada aberto localizado. Indaial tem portal da Defesa Civil em `indaial.atende.net`.

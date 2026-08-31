@@ -319,10 +319,34 @@ class TestRua(unittest.TestCase):
         self.assertIn("4,80 m", t)
 
     def test_rua_sem_cota_aparece_com_a_nota_e_sem_numero(self):
-        """Nulo não é zero: a rua aparece, mas sem número e com o porquê."""
-        t = resp("/rua Gaspar Alfazema")
-        self.assertIn("Alfazema", t)
+        """
+        Nulo não é zero: a rua aparece, mas sem número e com o porquê.
+
+        O exemplo era uma rua de Gaspar até a importação do mapa da Defesa Civil
+        dar número a ela — e o teste quebrou, que é o comportamento certo: ele
+        existe para o caso sem número, não para uma rua específica. Os que
+        continuam sem número são os cinco pontos de Brusque que a fonte descreve
+        por faixa ("entre 5,46 m e 5,80 m") sem publicar o valor.
+        """
+        t = resp("/rua Brusque Túnel do Terminal Urbano")
+        self.assertIn("Terminal Urbano", t)
         self.assertNotIn("0,00 m", t)
+        self.assertNotIn("Alaga a partir de", t)
+        self.assertIn("5,46 m", t, "a nota tem de dizer o que se sabe")
+
+    def test_rua_sem_cota_e_sem_nota_diz_que_a_fonte_nao_publicou(self):
+        """
+        O caso de última linha: sem número E sem nota, o bot ainda tem de
+        explicar. Silêncio aqui vira "a rua não alaga" na cabeça de quem lê.
+        """
+        b = Base(ULTIMO, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"),
+                 {"_meta": {}, "cotas": [{"cidade": "brusque", "rio": "itajai-mirim",
+                                          "rua": "Rua Sem Nada", "bairro": None,
+                                          "ponto": None, "cota_m": None,
+                                          "fonte": "teste", "data_fonte": "2026-01",
+                                          "confianca": "baixa"}]})
+        t = resp("/rua Brusque Sem Nada", b)
         self.assertIn("não publica a cota exata", t)
 
     def test_rua_desconhecida_nao_diz_que_nao_alaga(self):
