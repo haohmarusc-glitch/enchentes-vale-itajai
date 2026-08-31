@@ -291,6 +291,10 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
                 "estacao": titulo,
                 "faixa": faixa,
                 "anterior": faixa_antes,
+                # O estado que esta estação tinha ANTES. Se o Telegram recusar
+                # a mensagem, é para cá que ela volta — senão a travessia fica
+                # registrada como avisada e o aviso nunca mais sai.
+                "estado_antes": dict(antes) if antes else None,
                 "texto": texto_aviso(
                     leitura, faixa, faixa_antes, cotas,
                     idade_min(leitura.get("medido_em"), agora),
@@ -308,6 +312,21 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
             novo[titulo] = {**antes, "faixa": faixa}
 
     return avisos, novo, recusas
+
+
+def desfazer(estado: dict, aviso: dict) -> None:
+    """
+    Devolve a estação ao estado anterior, para a próxima rodada tentar de novo.
+
+    Sem chave anterior, remove: a estação volta a ser desconhecida, que é o que
+    ela era antes desta rodada.
+    """
+    titulo = aviso["estacao"]
+    antes = aviso.get("estado_antes")
+    if antes:
+        estado[titulo] = antes
+    else:
+        estado.pop(titulo, None)
 
 
 def le_estado() -> dict:
@@ -375,15 +394,34 @@ def main() -> int:
             grava_estado(estado)
         return 0
 
+    falhas = []
     for aviso in avisos:
         print(f"\n--- {aviso['estacao']}: {aviso['anterior']} -> {aviso['faixa']}")
         print(aviso["texto"])
-        if not args.seco:
-            notificador.enviar(aviso["texto"])
+        if args.seco:
+            continue
+        # O retorno do envio DECIDE se o estado avança.
+        #
+        # Antes ele era descartado: com o Telegram fora do ar, sem rede ou com
+        # o token recusado, a mensagem não saía e mesmo assim a travessia
+        # ficava gravada como avisada. Na rodada seguinte a faixa já era a
+        # mesma, não havia "informação nova", e o aviso daquela cheia NUNCA
+        # mais saía. Alarme que não toca é pior que alarme nenhum, porque
+        # ninguém fica sabendo que não tocou.
+        if not notificador.enviar(aviso["texto"]):
+            desfazer(estado, aviso)
+            falhas.append(aviso["estacao"])
+
+    if falhas:
+        print(f"\n⚠ {len(falhas)} aviso(s) NÃO enviado(s): {', '.join(falhas)}.",
+              file=sys.stderr)
+        print("   O estado destas estações não avançou: a próxima rodada tenta de novo.",
+              file=sys.stderr)
 
     if not args.seco:
         grava_estado(estado)
-    return 0
+    # Sai diferente de zero para o cron não achar que correu tudo bem.
+    return 1 if falhas else 0
 
 
 if __name__ == "__main__":

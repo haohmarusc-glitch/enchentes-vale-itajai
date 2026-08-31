@@ -306,5 +306,82 @@ class TestNivelImplausivel(unittest.TestCase):
         self.assertTrue(any("0–25 m" in m for m in recusas), recusas)
 
 
+class TestEnvioQueFalha(unittest.TestCase):
+    """
+    Alarme que não toca é pior que alarme nenhum, porque ninguém fica sabendo
+    que não tocou.
+
+    O retorno de `notificador.enviar` era descartado e o estado avançava do
+    mesmo jeito: com o Telegram fora do ar, a travessia ficava gravada como
+    avisada, a rodada seguinte não via "informação nova", e o aviso daquela
+    cheia nunca mais saía.
+    """
+
+    def aviso(self, antes=None):
+        return {"estacao": "Rio do Sul Estação MKS", "faixa": "inundacao",
+                "anterior": "normal", "estado_antes": antes, "texto": "…"}
+
+    def test_falha_devolve_a_estacao_ao_estado_anterior(self):
+        antes = {"faixa": "alerta", "nivel_m": 5.9, "avisado_em": "2026-08-30T20:00:00+00:00"}
+        estado = {"Rio do Sul Estação MKS": {"faixa": "inundacao", "nivel_m": 6.8,
+                                             "avisado_em": "2026-08-30T21:00:00+00:00"}}
+        alerta_cotas.desfazer(estado, self.aviso(antes))
+        self.assertEqual(estado["Rio do Sul Estação MKS"], antes)
+
+    def test_estacao_sem_estado_anterior_volta_a_ser_desconhecida(self):
+        estado = {"Rio do Sul Estação MKS": {"faixa": "inundacao", "nivel_m": 6.8}}
+        alerta_cotas.desfazer(estado, self.aviso(None))
+        self.assertNotIn("Rio do Sul Estação MKS", estado)
+
+    def test_desfazer_nao_toca_em_outra_estacao(self):
+        estado = {"Rio do Sul Estação MKS": {"faixa": "inundacao"},
+                  "Brusque": {"faixa": "atencao", "nivel_m": 4.9}}
+        alerta_cotas.desfazer(estado, self.aviso(None))
+        self.assertEqual(estado["Brusque"], {"faixa": "atencao", "nivel_m": 4.9})
+
+    def test_o_aviso_carrega_o_estado_anterior_para_poder_desfazer(self):
+        """Sem este campo, `desfazer` não teria para onde voltar."""
+        dados = {"leituras": [{
+            "estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+            "cidade": "rio-do-sul", "nivel_m": 6.80, "medido_em": "2026-08-30T22:00",
+        }]}
+        antes = {"Rio do Sul Estação MKS": {"faixa": "alerta", "nivel_m": 5.9,
+                                            "avisado_em": "2026-08-30T20:00:00+00:00"}}
+        agora = datetime(2026, 8, 31, 1, 0, tzinfo=timezone.utc)
+        avisos, _, _ = alerta_cotas.decidir(dados, antes, agora)
+        self.assertEqual(len(avisos), 1)
+        self.assertEqual(avisos[0]["estado_antes"]["faixa"], "alerta")
+
+    def test_a_travessia_volta_a_avisar_na_rodada_seguinte(self):
+        """
+        O teste que fecha o ciclo: aviso falha, estado é desfeito, e a rodada
+        seguinte — com o mesmo nível — manda de novo.
+        """
+        dados = {"leituras": [{
+            "estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+            "cidade": "rio-do-sul", "nivel_m": 6.80, "medido_em": "2026-08-30T22:00",
+        }]}
+        agora = datetime(2026, 8, 31, 1, 0, tzinfo=timezone.utc)
+        avisos, estado, _ = alerta_cotas.decidir(dados, {}, agora)
+        self.assertEqual(len(avisos), 1)
+
+        # O Telegram recusou: desfaz.
+        alerta_cotas.desfazer(estado, avisos[0])
+
+        de_novo, _, _ = alerta_cotas.decidir(dados, estado, agora)
+        self.assertEqual(len(de_novo), 1, "a travessia precisa voltar a avisar")
+
+    def test_sem_desfazer_a_travessia_ficaria_calada(self):
+        """A prova de que o conserto muda o resultado, e não só o código."""
+        dados = {"leituras": [{
+            "estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+            "cidade": "rio-do-sul", "nivel_m": 6.80, "medido_em": "2026-08-30T22:00",
+        }]}
+        agora = datetime(2026, 8, 31, 1, 0, tzinfo=timezone.utc)
+        _, estado, _ = alerta_cotas.decidir(dados, {}, agora)
+        calado, _, _ = alerta_cotas.decidir(dados, estado, agora)
+        self.assertEqual(calado, [], "era este o comportamento antigo, e ele calava o aviso")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

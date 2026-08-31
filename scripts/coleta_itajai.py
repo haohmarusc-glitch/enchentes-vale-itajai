@@ -49,7 +49,8 @@ UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes
 RAIZ = Path(__file__).resolve().parent.parent
 SAIDA = RAIZ / "data" / "tempo-real"
 
-from comum import classificar_estacao
+from comum import (NIVEL_MAXIMO_M, NIVEL_MINIMO_M, classificar_estacao,
+                   nivel_plausivel)
 
 RE_NIVEL = re.compile(r"N[ií]vel do Rio:\s*([\d.,]+)\s*m", re.I)
 RE_DATA = re.compile(r"Data e hora da medi[cç][aã]o:\s*(\d{2}/\d{2}/\d{4})\s+(\d{2}:\d{2})", re.I)
@@ -57,11 +58,19 @@ RE_DATA = re.compile(r"Data e hora da medi[cç][aã]o:\s*(\d{2}/\d{2}/\d{4})\s+(
 
 def bloco_da_estacao(h2):
     """
-    O elemento que contém o título E as leituras.
+    O elemento que contém o título E as leituras DESTA estação.
 
     Sobe do <h2> até o <li> da estação. Se a página mudar e esse <li> deixar de
     existir, cai para o avô e depois para o pai — o suficiente para atravessar
     o <header> que envolve o título.
+
+    O fallback é a parte perigosa, e por isso ele é conferido em `parse`: um
+    avô pode ser o contêiner de TODAS as estações. Quando isso acontece, o
+    texto do bloco tem várias leituras de nível, `RE_NIVEL.search` acha a
+    primeira e a copia para cada estação. Reproduzido com a página
+    reestruturada: o DC-10, que estava em 5,21 m, saía com 1,39 m — o nível de
+    uma régua de estuário —, e o aviso compararia esse 1,39 com a cota de
+    atenção de 8,00 m do Limoeiro e diria que está tudo normal.
     """
     for candidato in (h2.find_parent("li"), h2.find_parent("article"),
                       h2.parent.parent if h2.parent else None, h2.parent):
@@ -72,7 +81,8 @@ def bloco_da_estacao(h2):
 
 def parse(html: str) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
-    leituras = []
+    leituras: list[dict] = []
+    recusadas: list[str] = []
     vistos = set()
     for h2 in soup.find_all("h2"):
         titulo = h2.get_text(" ", strip=True)
@@ -81,9 +91,19 @@ def parse(html: str) -> list[dict]:
 
         bloco = bloco_da_estacao(h2)
         texto = " ".join(bloco.get_text(" ", strip=True).split())
-        m_nivel = RE_NIVEL.search(texto)
-        if not m_nivel:
+        niveis = RE_NIVEL.findall(texto)
+        if not niveis:
             continue  # estação sem leitura (ex.: Blumenau às vezes vem vazio)
+        if len(niveis) > 1:
+            # O bloco pegou mais de uma estação: é o fallback do avô alcançando
+            # o contêiner inteiro. Atribuir a primeira leitura a este título
+            # daria um número errado com cara de certo — pior que número
+            # nenhum. Some da coleta, e o vigia (`saude_coleta.py`) grita.
+            recusadas.append(f"{titulo}: o bloco tem {len(niveis)} leituras de nível — "
+                             "a página mudou de estrutura e não dá para saber qual é desta "
+                             "estação")
+            continue
+        m_nivel = RE_NIVEL.search(texto)
         if titulo in vistos:
             continue  # o mesmo <h2> alcançado por dois caminhos
         vistos.add(titulo)
@@ -95,13 +115,24 @@ def parse(html: str) -> list[dict]:
             medido_em = datetime.strptime(
                 f"{m_data.group(1)} {m_data.group(2)}", "%d/%m/%Y %H:%M"
             ).isoformat()
+        nivel = float(m_nivel.group(1).replace(".", "").replace(",", "."))
+        # A mesma faixa que o site e o aviso aplicam. Aqui ela pega o caso em
+        # que a página troca o separador decimal ou publica um valor de teste:
+        # "9999,00" viraria alerta de inundação em todas as cidades.
+        if not nivel_plausivel(nivel):
+            recusadas.append(f"{titulo}: {nivel:.2f} m não é nível de rio desta bacia "
+                             f"(fora de {NIVEL_MINIMO_M:.0f}–{NIVEL_MAXIMO_M:.0f} m)")
+            continue
+
         leituras.append({
             "estacao": titulo,
             "rio": rio,
             "cidade": cidade,
-            "nivel_m": float(m_nivel.group(1).replace(".", "").replace(",", ".")),
+            "nivel_m": nivel,
             "medido_em": medido_em,  # horário local (America/Sao_Paulo), sem fuso
         })
+    for m in recusadas:
+        print(f"recusada — {m}", file=sys.stderr)
     return leituras
 
 

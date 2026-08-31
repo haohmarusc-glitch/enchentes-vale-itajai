@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 
 from saude_coleta import (
     SILENCIO_H,
+    Diagnostico,
     TOLERANCIA_COLETA_MIN,
     TOLERANCIA_FONTE_MIN,
     avaliar,
@@ -116,6 +117,85 @@ class TestTexto(unittest.TestCase):
 
     def test_recuperacao_e_curta(self):
         self.assertIn("voltou", texto(avaliar(coleta(), AGORA)))
+
+
+class TestEstacaoParada(unittest.TestCase):
+    """
+    O vigia olhava `max(medidos)` — "a fonte publicou ALGUMA coisa". Com doze
+    réguas congeladas há seis horas e uma publicando, ele dizia "coleta e fonte
+    em dia", que é exatamente a hora em que deveria gritar.
+    """
+
+    @staticmethod
+    def brasilia(minutos_atras):
+        """Hora de Brasília, sem fuso — o formato que a fonte publica."""
+        return (AGORA - timedelta(minutes=minutos_atras)).astimezone(
+            timezone(timedelta(hours=-3))
+        ).replace(tzinfo=None).isoformat()
+
+    def coleta_mista(self):
+        return {
+            "coletado_em": (AGORA - timedelta(minutes=5)).isoformat(),
+            "leituras": [
+                {"estacao": "Viva", "nivel_m": 3.5, "medido_em": self.brasilia(10)},
+                {"estacao": "Congelada", "nivel_m": 6.8, "medido_em": self.brasilia(360)},
+            ],
+        }
+
+    def test_uma_estacao_viva_nao_mascara_a_congelada(self):
+        diag = avaliar(self.coleta_mista(), AGORA)
+        self.assertFalse(diag.ok)
+        self.assertIn("Congelada", diag.motivo)
+
+    def test_a_estacao_viva_nao_e_acusada(self):
+        diag = avaliar(self.coleta_mista(), AGORA)
+        self.assertNotIn("Viva", diag.motivo)
+
+    def test_todas_em_dia_continua_ok(self):
+        diag = avaliar(coleta(), AGORA)
+        self.assertTrue(diag.ok, diag.motivo)
+
+
+class TestEstacaoQueSumiu(unittest.TestCase):
+    """
+    A página da Defesa Civil já veio parcial. Sem esta conta, uma régua some do
+    arquivo e nada denuncia: a tela para de mostrá-la, o aviso para de vigiá-la,
+    e o vigia segue dizendo que está tudo bem.
+    """
+
+    def test_estacao_que_veio_antes_e_sumiu_e_denunciada(self):
+        # A coleta traz DC-01; a rodada anterior tinha DC-01 e Brusque.
+        diag = avaliar(coleta(), AGORA, vistas_antes={"DC-01", "Brusque"})
+        self.assertFalse(diag.ok)
+        self.assertIn("Brusque", diag.motivo)
+
+    def test_sem_rodada_anterior_nao_acusa_nada(self):
+        """Primeira rodada não tem com o que comparar, e não pode inventar falha."""
+        self.assertTrue(avaliar(coleta(), AGORA, vistas_antes=None).ok)
+        self.assertTrue(avaliar(coleta(), AGORA, vistas_antes=set()).ok)
+
+    def test_estacao_nova_nao_e_problema(self):
+        """Régua que apareceu agora e não estava antes é boa notícia, não falha."""
+        diag = avaliar(coleta(leituras=2), AGORA, vistas_antes={"DC-01"})
+        self.assertTrue(diag.ok, diag.motivo)
+
+
+class TestArquivoIlegivel(unittest.TestCase):
+    """
+    O `ultimo.json` corrompido é o ÚNICO caso em que o site fica sem dado
+    nenhum — e era o caso em que o vigia se calava: `return 1` antes do
+    `--avisar`. Pior: só `JSONDecodeError` era pego; permissão negada ou disco
+    com erro estouravam em traceback, que para o cron é o mesmo silêncio.
+    """
+
+    def test_ilegivel_vira_diagnostico_de_falha(self):
+        diag = Diagnostico(False, "ultimo.json não pôde ser lido: linha 1", [])
+        self.assertFalse(diag.ok)
+        self.assertIn("não pôde ser lido", str(diag))
+
+    def test_falha_de_leitura_avisa_como_qualquer_outra(self):
+        diag = Diagnostico(False, "ultimo.json não pôde ser lido: x", [])
+        self.assertTrue(deve_avisar(diag, {}, AGORA), "primeira falha avisa na hora")
 
 
 if __name__ == "__main__":
