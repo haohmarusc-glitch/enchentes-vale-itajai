@@ -537,6 +537,11 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
         if c.get("nota"):
             linhas.append(f"\n<i>{e(c['nota'])}</i>")
         atual = niveis.get(c["cidade"])
+        # Registro marcado para não mover aviso não vira "já foi alcançado":
+        # a comparação daria uma frase assustadora a partir de um número que o
+        # próprio registro diz não estar conferido. A nota, acima, explica.
+        if c.get("usar_para_aviso") is False:
+            atual = None
         if atual:
             falta = round(c["cota_m"] - atual[0], 2)
             if falta > 0:

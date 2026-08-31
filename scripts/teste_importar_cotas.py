@@ -96,11 +96,15 @@ class TestRegistro(unittest.TestCase):
         self.assertEqual(r["cota_m"], 3.11)
         self.assertIn("ABAIXO", r["nota"])
         self.assertIn("não foi conferida", r["nota"])
+        # Não move aviso: sem isto, o validador exigiria baixar a cota de
+        # atenção da cidade por causa de um número que ninguém conferiu.
+        self.assertIs(r["usar_para_aviso"], False)
 
     def test_cota_acima_do_piso_nao_ganha_ressalva(self):
         r = como_registro({"rua": "1 DE MAIO", "min": 8.12, "max": 9.65},
                           "fonte", "2026-08-31", piso_da_cidade=4.5)
         self.assertNotIn("nota", r)
+        self.assertNotIn("usar_para_aviso", r)
 
     def test_as_duas_ressalvas_cabem_no_mesmo_registro(self):
         r = como_registro({"rua": "ESTRANHA", "min": 3.0, "max": TETO_DA_FONTE},

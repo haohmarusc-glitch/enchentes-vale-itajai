@@ -429,6 +429,23 @@ class TestCotaMaxima(unittest.TestCase):
         self.assertIn("3,11 m", t)
         self.assertIn("ABAIXO da menor cota", t)
 
+    def test_cota_nao_conferida_nao_vira_ja_foi_alcancado(self):
+        """
+        A régua de Rio do Sul marca 3,35 m num dia seco. Com uma cota de 3,11 m
+        não conferida, a comparação diria "já foi alcançado" com tempo bom.
+        """
+        b = base()
+        b.cotas_ruas = [{"cidade": "rio-do-sul", "rio": "itajai-acu", "rua": "POUSO REDONDO",
+                         "bairro": None, "ponto": "ponto mais baixo", "cota_m": 3.11,
+                         "fonte": "portal", "data_fonte": "2026-08-31", "confianca": "alta",
+                         "referencia": "régua", "usar_para_aviso": False,
+                         "nota": "Abaixo da menor cota de referência, não conferida."}]
+        t = resp("/rua Rio do Sul pouso redondo", b)
+        self.assertIn("3,11 m", t)
+        self.assertIn("não conferida", t)
+        self.assertNotIn("já foi alcançado", t)
+        self.assertNotIn("faltam", t)
+
     def test_sem_maxima_a_frase_nao_aparece(self):
         b = base()
         b.cotas_ruas = [{"cidade": "rio-do-sul", "rio": "itajai-acu", "rua": "1 DE MAIO",
