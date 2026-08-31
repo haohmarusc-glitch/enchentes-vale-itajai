@@ -217,6 +217,15 @@ mensagem manda o link do site, onde a conta é uma só.
 
 ### O vigia da coleta
 
+A coleta também se confere sozinha: se uma estação veio na rodada anterior e não
+veio agora, `coleta_niveis.py` nomeia as que sumiram no `stderr` e grava a lista
+em `estacoes_ausentes` no `ultimo.json`. O aviso **não** muda o código de saída,
+de propósito — o cron encadeia `coleta_niveis.py && publicar_tempo_real.sh`, e
+sair com erro faria o site congelar no dado anterior em vez de receber as
+leituras que chegaram. Isso importa porque o vigia roda de hora em hora enquanto
+a coleta roda a cada quinze minutos: sem esta conferência, três de cada quatro
+coletas nunca seriam olhadas.
+
 `saude_coleta.py` responde a duas perguntas, e a segunda é a traiçoeira:
 
 1. **a coleta rodou?** (`coletado_em`) — cron morto, disco cheio, pacote quebrado;
