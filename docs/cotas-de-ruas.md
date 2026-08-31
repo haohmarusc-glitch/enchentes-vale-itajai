@@ -391,7 +391,7 @@ matéria conta ruas da cidade inteira (53 é 3,8% de ~1.390 ruas) e este mapa te
 números estão na mesma régua —, e essa os itens 1 e 2 respondem.
 
 **1.613 pontos importados**, com `referencia: "régua"`, `confianca: alta` e `data_fonte: "2020-04"`.
-Gaspar vai de 23 para 1.636 registros. `scripts/importar_cotas_gaspar.py` roda a análise de novo antes de
+Gaspar vai de 23 para 1.618 registros. `scripts/importar_cotas_gaspar.py` roda a análise de novo antes de
 gravar e **recusa a importação se o veredito mudar** — a prova não fica num documento, fica no caminho da
 execução.
 
