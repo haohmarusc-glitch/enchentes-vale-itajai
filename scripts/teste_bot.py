@@ -14,7 +14,8 @@ saia com a idade, e que toda resposta lembre que isto não é alerta oficial.
 import unittest
 from datetime import datetime, timezone
 
-from bot import Base, responder, sem_acento, texto_idade
+from bot import (REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
+                 responder, sem_acento, texto_idade)
 from comum import le_json
 
 AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
@@ -352,6 +353,47 @@ class TestAuxiliares(unittest.TestCase):
         self.assertEqual(texto_idade(60), "há 1 h")
         self.assertEqual(texto_idade(155), "há 2 h 35")
         self.assertEqual(texto_idade(None), "sem horário de medição")
+
+
+class TestLogDoLaco(unittest.TestCase):
+    """
+    O journal é onde se olha durante uma cheia. Log que grita "erro" para
+    rotina ensina quem opera a ignorar o log inteiro — o mesmo defeito de um
+    aviso que toca com a maré.
+    """
+
+    class ReadTimeout(Exception):
+        pass
+
+    def test_timeout_solitario_do_long_polling_nao_vira_erro(self):
+        self.assertIsNone(aviso_de_falha(self.ReadTimeout("read timeout=40"), 1))
+        self.assertIsNone(aviso_de_falha(self.ReadTimeout("read timeout=40"), 2))
+
+    def test_timeout_que_insiste_aparece(self):
+        aviso = aviso_de_falha(self.ReadTimeout("read timeout=40"),
+                                   TIMEOUTS_TOLERADOS)
+        self.assertIsNotNone(aviso)
+        self.assertIn("sem receber mensagens", aviso)
+
+    def test_queda_longa_nao_escreve_uma_linha_a_cada_meio_minuto(self):
+        e = self.ReadTimeout("read timeout=40")
+        # Avisa ao cruzar o limite, cala nas seguintes, e volta a avisar de
+        # tempos em tempos para a queda não sumir do log.
+        self.assertIsNotNone(aviso_de_falha(e, TIMEOUTS_TOLERADOS))
+        self.assertIsNone(aviso_de_falha(e, TIMEOUTS_TOLERADOS + 1))
+        self.assertIsNotNone(aviso_de_falha(e, REPETE_AVISO))
+        self.assertIsNone(aviso_de_falha(e, REPETE_AVISO + 1))
+
+    def test_erro_que_ninguem_previu_sai_na_primeira(self):
+        aviso = aviso_de_falha(ValueError("json quebrado"), 1)
+        self.assertIn("erro na rodada", aviso)
+        self.assertIn("json quebrado", aviso)
+
+    def test_so_erro_de_verdade_faz_o_bot_dormir(self):
+        # Dormir depois de um timeout é mais tempo calado sem motivo: a espera
+        # já foi gasta pendurada na conexão.
+        self.assertTrue(eh_timeout(self.ReadTimeout("x")))
+        self.assertFalse(eh_timeout(ValueError("x")))
 
 
 if __name__ == "__main__":
