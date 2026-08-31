@@ -22,7 +22,9 @@ const PADRAO =
   'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo.json'
 
 /** Dá para apontar para outra fonte sem recompilar o código, via .env do Vite. */
-export const URL_TEMPO_REAL = import.meta.env.VITE_URL_TEMPO_REAL || PADRAO
+// `import.meta.env` só existe sob o Vite; o runner de teste importa este
+// módulo direto. Sem a guarda, o arquivo nem carrega fora da build.
+export const URL_TEMPO_REAL = import.meta.env?.VITE_URL_TEMPO_REAL || PADRAO
 
 /** Depois disso a página desiste: melhor sem número que travada esperando. */
 const TEMPO_LIMITE_MS = 8000
@@ -138,7 +140,13 @@ function chuvaValida(bruta: unknown): ChuvaAoVivo | null {
   }
 }
 
-export async function buscarTempoReal(sinal?: AbortSignal): Promise<EstadoTempoReal> {
+/** O `fetch`, injetável para o teste rodar sem rede. */
+export type Transporte = (url: string, init: RequestInit) => Promise<Response>
+
+export async function buscarTempoReal(
+  sinal?: AbortSignal,
+  transporte: Transporte = (url, init) => fetch(url, init),
+): Promise<EstadoTempoReal> {
   const vazio: EstadoTempoReal = {
     situacao: 'indisponivel',
     leituras: [],
@@ -148,7 +156,7 @@ export async function buscarTempoReal(sinal?: AbortSignal): Promise<EstadoTempoR
   }
 
   try {
-    const resposta = await fetch(URL_TEMPO_REAL, { cache: 'no-store', signal: sinal })
+    const resposta = await transporte(URL_TEMPO_REAL, { cache: 'no-store', signal: sinal })
     if (!resposta.ok) return vazio
     const corpo: unknown = await resposta.json()
     if (typeof corpo !== 'object' || corpo === null) return vazio
@@ -179,6 +187,32 @@ export async function buscarTempoReal(sinal?: AbortSignal): Promise<EstadoTempoR
   }
 }
 
+/**
+ * Uma busca, com o seu próprio limite de tempo.
+ *
+ * Existe separada do hook para poder ser testada sem DOM — e é aqui que morava
+ * o defeito: o controle era criado UMA vez, ao montar a tela, com um
+ * `setTimeout(abort, 8 s)` que nunca era cancelado no sucesso. Aos 8 segundos
+ * o sinal virava abortado para sempre, e a busca de 5 em 5 minutos reusava o
+ * mesmo sinal: a página mostrava o nível ao abrir e o perdia na primeira
+ * atualização, sem voltar enquanto ficasse aberta.
+ */
+export async function buscarComLimite(
+  limiteMs: number = TEMPO_LIMITE_MS,
+  transporte?: Transporte,
+  registrar?: (c: AbortController) => void,
+): Promise<EstadoTempoReal> {
+  const controle = new AbortController()
+  registrar?.(controle)
+  const limite = setTimeout(() => controle.abort(), limiteMs)
+  try {
+    return await buscarTempoReal(controle.signal, transporte)
+  } finally {
+    clearTimeout(limite)
+  }
+}
+
+
 /** Busca uma vez ao abrir a página, e a cada `intervaloMin` enquanto ela ficar aberta. */
 export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
   const [estado, setEstado] = useState<EstadoTempoReal>({
@@ -191,11 +225,23 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
 
   useEffect(() => {
     let vivo = true
-    const controle = new AbortController()
-    const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS)
+    // Um controle POR BUSCA.
+    //
+    // Havia um só, criado ao montar, com `setTimeout(abort, 8 s)` que nunca era
+    // cancelado no sucesso: aos 8 segundos o sinal era abortado para sempre, e
+    // a busca de 5 em 5 minutos reusava esse mesmo sinal. Ou seja, a página
+    // mostrava o nível ao abrir e o PERDIA na primeira atualização, sem voltar
+    // enquanto ficasse aberta. Quem deixa a tela aberta durante a chuva é
+    // exatamente quem mais precisa dela.
+    const emVoo = new Set<AbortController>()
 
     const buscar = async () => {
-      const novo = await buscarTempoReal(controle.signal)
+      let meu: AbortController | null = null
+      const novo = await buscarComLimite(TEMPO_LIMITE_MS, undefined, (c) => {
+        meu = c
+        emVoo.add(c)
+      })
+      if (meu) emVoo.delete(meu)
       if (vivo) setEstado(novo)
     }
 
@@ -204,9 +250,8 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
 
     return () => {
       vivo = false
-      clearTimeout(limite)
       clearInterval(relogio)
-      controle.abort()
+      for (const c of emVoo) c.abort()
     }
   }, [intervaloMin])
 

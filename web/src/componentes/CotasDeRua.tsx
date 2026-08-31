@@ -4,6 +4,7 @@ import type { LeituraAoVivo } from '../dados/tempoReal'
 // A tabela vem daqui, e não por propriedade: assim ela viaja no mesmo pedaço
 // que este componente, que só é carregado quando a busca aparece na tela.
 import { avisosCotasRuas, cotasRuas } from '../dados/cotasRuas'
+import { frescor, idadeMin, textoIdade } from '../logica/tempoReal'
 import {
   atingidas,
   buscar,
@@ -20,6 +21,8 @@ interface Props {
   cidade: Cidade
   /** Nível ao vivo da cidade, quando existe uma régua só. */
   leitura: LeituraAoVivo | null
+  /** O relógio, para medir a idade da leitura — como faz o `NivelAoVivo`. */
+  agora: Date
 }
 
 /**
@@ -37,7 +40,7 @@ interface Props {
  * chegar naquele nível. Ele lê uma tabela. A tabela diz o que acontece SE o rio
  * chegar lá; quem diz se vai chegar é a Defesa Civil.
  */
-export default function CotasDeRua({ cidade, leitura }: Props) {
+export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   const cotas = cotasRuas
   const avisos = avisosCotasRuas
   const dela = useMemo(() => daCidade(cotas, cidade.id), [cotas, cidade.id])
@@ -47,9 +50,20 @@ export default function CotasDeRua({ cidade, leitura }: Props) {
 
   if (dela.length === 0) return null
 
-  const nivelAtual = leitura?.nivel_m ?? null
-  // O controle começa no nível de agora quando ele existe; sem leitura ao vivo,
-  // na cota mais baixa levantada — o primeiro ponto em que algo acontece.
+  // A idade decide se a leitura vale como "o nível de agora".
+  //
+  // Este cartão comparava `leitura.nivel_m` com as cotas de rua sem olhar a
+  // idade e sem receber o relógio: um número de quatro horas atrás virava
+  // "faltam 2,30 m de subida", que é a diferença entre alguém sair de casa e
+  // não sair. O `NivelAoVivo`, dois cartões acima, já recusava o mesmo número.
+  const idade = leitura?.medidoEm ? idadeMin(leitura.medidoEm, agora) : null
+  const velha = idade === null || frescor(idade) === 'velha'
+  const nivelAtual = leitura && !velha ? leitura.nivel_m : null
+
+  // Sem nível utilizável o controle começa na cota mais baixa levantada — mas
+  // isso NÃO é o nível de agora, e a tela diz. Antes caía para cá em silêncio,
+  // e a contagem de ruas alagadas DIMINUÍA sozinha quando a coleta falhava.
+  const semNivel = nivelAtual === null
   const nivel = simulado ?? nivelAtual ?? faixa?.min ?? 0
   const achadas = buscar(cotas, cidade.id, termo)
   const jaAlagam = atingidas(cotas, cidade.id, nivel)
@@ -161,6 +175,18 @@ export default function CotasDeRua({ cidade, leitura }: Props) {
         A {metros(nivel)}, <strong>{jaAlagam.length}</strong> de {dela.length} ruas conhecidas
         {jaAlagam.length === 1 ? ' já estaria alagada' : ' já estariam alagadas'} em {cidade.nome}.
       </p>
+
+      {semNivel && simulado === null ? (
+        <p className={estilos.semNumeroBloco}>
+          <strong>Este não é o nível de agora.</strong>{' '}
+          {leitura && idade !== null
+            ? `A última leitura desta régua é de ${textoIdade(idade)} e é velha demais para servir
+               como nível atual.`
+            : 'Não há leitura ao vivo desta cidade agora.'}{' '}
+          O controle começou na cota mais baixa levantada, que é o primeiro ponto em que algo
+          acontece — mova-o para ver outros níveis.
+        </p>
+      ) : null}
 
       {jaAlagam.length > 0 ? (
         <ul className={estilos.lista}>

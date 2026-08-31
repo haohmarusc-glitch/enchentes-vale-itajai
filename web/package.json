@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "tsx --test src/logica/*.test.ts",
+    "test": "tsx --test src/logica/*.test.ts src/dados/*.test.ts",
     "gabarito": "tsx ferramentas/gerar-gabarito-transito.ts"
   },
   "dependencies": {

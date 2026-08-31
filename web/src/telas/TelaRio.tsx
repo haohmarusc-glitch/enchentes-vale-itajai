@@ -126,6 +126,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           <CotasDeRua
             cidade={selecionada}
             leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
+            agora={agora}
           />
         </Suspense>
       ) : null}

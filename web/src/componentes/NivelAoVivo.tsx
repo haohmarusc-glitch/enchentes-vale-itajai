@@ -1,7 +1,7 @@
 import type { Cidade } from '../dados/tipos'
 import type { LeituraAoVivo } from '../dados/tempoReal'
 import { metros, rotuloCota } from '../logica/formato'
-import { frescor, idadeMin, primeiraCota, textoIdade } from '../logica/tempoReal'
+import { cotaAlcancada, frescor, idadeMin, textoIdade } from '../logica/tempoReal'
 import estilos from './NivelAoVivo.module.css'
 
 /**
@@ -32,8 +32,11 @@ export default function NivelAoVivo({
 
   const idade = idadeMin(leitura.medidoEm, agora)
   const estado = frescor(idade)
-  const cota = primeiraCota(cidade)
-  const acimaDaCota = cota !== null && leitura.nivel_m >= cota.valor
+  // A cota mais alta já passada, não a primeira da lista: com o rio dois
+  // patamares acima, anunciar "atenção" é a frase mais fraca possível na hora
+  // em que se precisa da mais forte.
+  const cota = cotaAlcancada(cidade, leitura.nivel_m)
+  const acimaDaCota = cota !== null
 
   const classe =
     estado === 'velha' ? estilos.velha : acimaDaCota ? estilos.acima : estilos.normal

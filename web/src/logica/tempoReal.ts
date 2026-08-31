@@ -151,6 +151,30 @@ export function foraDeOrdem(chegadas: ChegadaPrevista[]): boolean {
 }
 
 /** A cota mais baixa da cidade — a primeira que importa quando o rio sobe. */
+/**
+ * A cota MAIS ALTA que o nível já passou — e não a primeira da lista.
+ *
+ * `primeiraCota` responde "a partir de quando é cheia aqui", que é a pergunta
+ * certa para um painel condicional. Para um nível ao vivo ela é a resposta
+ * errada: com Blumenau em 12,00 m, dizer "acima da cota de atenção" (4,50 m) é
+ * verdade e é a frase mais fraca possível no momento em que se precisa da mais
+ * forte — a cidade está dois patamares acima disso.
+ *
+ * Devolve nulo quando o nível não passou nenhuma: aí não há o que anunciar.
+ */
+export function cotaAlcancada(
+  cidade: Cidade,
+  nivel: number,
+): { chave: string; valor: number } | null {
+  let maior: { chave: string; valor: number } | null = null
+  for (const [chave, valor] of Object.entries(cidade.cotas_m)) {
+    if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
+    if (nivel < valor) continue
+    if (maior === null || valor > maior.valor) maior = { chave, valor }
+  }
+  return maior
+}
+
 export function primeiraCota(cidade: Cidade): { chave: string; valor: number } | null {
   const ordem = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
   for (const chave of ordem) {
