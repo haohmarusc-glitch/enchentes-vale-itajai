@@ -7,6 +7,20 @@
   color: var(--tinta-fraca);
 }
 
+/* Mesmo destaque da ressalva de referências, mas ACIMA do gráfico: quando a
+   escala está misturada, quem olha só as barras precisa ver o aviso sem
+   rolar. */
+.legendaAviso {
+  margin: 0 0 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  color: #6b4f14;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
 .vazio {
   font-style: italic;
   color: var(--tinta-fraca);

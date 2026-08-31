@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import type { Cidade, Confianca, Evento } from '../dados/tipos'
 import { comparaData, dataCurta, dataLegivel } from '../logica/datas'
+import { legendaDaEscala, misturaReferencias as misturaDeReferencias } from '../logica/referencias'
 import { metros, numero, rotuloCota } from '../logica/formato'
 import estilos from './GraficoPicos.module.css'
 
@@ -62,10 +63,8 @@ export default function GraficoPicos({
   // a série longa de Blumenau está 20 cm acima da régua, e as cotas de atenção
   // e alerta estão NA RÉGUA. Quem olha o gráfico precisa saber que os pontos
   // não estão todos na mesma escala.
-  const referenciasNaTela = new Set(
-    dados.map((d) => (d.referencia == null ? (d.referencia === null ? 'nao-declarada' : 'regua') : d.referencia)),
-  )
-  const misturaReferencias = referenciasNaTela.size > 1
+  const misturaReferencias = misturaDeReferencias(dados.map((d) => d.referencia))
+  const legendaEscala = legendaDaEscala(nomeCidade, cidade?.regua, dados.map((d) => d.referencia))
 
   if (dados.length === 0) {
     return (
@@ -82,9 +81,12 @@ export default function GraficoPicos({
 
   return (
     <div>
-      <p className={estilos.legenda}>
-        Alturas na régua de <strong>{nomeCidade}</strong>
-        {cidade?.regua ? ` (${cidade.regua})` : ''}. Não compare com outra cidade.
+      <p
+        className={legendaEscala.ehAviso ? estilos.legendaAviso : estilos.legenda}
+        role={legendaEscala.ehAviso ? 'note' : undefined}
+      >
+        {legendaEscala.ehAviso ? <strong>⚠️ </strong> : null}
+        {legendaEscala.texto}
       </p>
 
       <div className={estilos.grafico}>

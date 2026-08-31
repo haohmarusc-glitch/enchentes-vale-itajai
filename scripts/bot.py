@@ -98,6 +98,11 @@ REPETE_AVISO = 20
 #: pergunta ao mesmo tempo — que é justamente a hora da cheia.
 INTERVALO_POR_CHAT_S = 2
 
+#: A partir de quantos minutos de diferença entre o pluviômetro mais velho e o
+#: mais novo vale dizer as duas idades. Abaixo disso, a do mais velho já conta a
+#: história e duas idades só encompridam a mensagem.
+DIFERENCA_DE_IDADE_MIN = 15
+
 RODAPE = (
     "\n\n<i>Não é alerta oficial. Siga a Defesa Civil do seu município, "
     "a Defesa Civil de SC e o AlertaBlu. Emergência: <b>199</b>.</i>"
@@ -383,7 +388,15 @@ def resposta_chuva(base: Base, cidade: dict, agora: datetime) -> list[str]:
     rodape = f"\n\n{len(boas)} pluviômetro"
     rodape += f"s, maior valor de cada janela" if len(boas) > 1 else ""
     if idades:
-        rodape += f" · {texto_idade(min(idades))}"
+        # A IDADE DO MAIS VELHO, não a do mais novo. O número exibido é o MAIOR
+        # de cada janela, e ele pode vir de um pluviômetro parado há horas. Com
+        # a idade do mais novo, "80 mm em 24 h · há 5 min" saía de uma leitura
+        # de seis horas atrás — e quem lê conclui que está chovendo forte agora.
+        # A idade tem de ser um limite: nenhuma leitura aqui é mais velha que
+        # isto.
+        rodape += f" · {texto_idade(max(idades))}"
+        if len(idades) > 1 and max(idades) - min(idades) >= DIFERENCA_DE_IDADE_MIN:
+            rodape += f" no mais velho, {texto_idade(min(idades))} no mais novo"
     linhas.append(rodape)
     if len(todas) > len(boas):
         linhas.append(f"\n{len(todas) - len(boas)} descartado(s) por dado inconsistente na fonte.")

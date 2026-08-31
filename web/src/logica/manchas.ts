@@ -49,15 +49,61 @@ export interface Mancha {
  */
 const ESCALA = ['#cfe3f5', '#9dc6e8', '#6aa8db', '#3d87c4', '#1f5f96', '#123f66']
 
+/** Cinza aqui significa "a fonte não disse", não "raso". */
+export const CINZA_SEM_NUMERO = '#b9c0c8'
+
+/** Um ponto qualquer da escala, interpolando entre as paradas vizinhas. */
+function rampa(t: number): string {
+  const posicao = Math.min(Math.max(t, 0), 1) * (ESCALA.length - 1)
+  const i = Math.min(Math.floor(posicao), ESCALA.length - 2)
+  const fracao = posicao - i
+  const canais = [0, 1, 2].map((c) => {
+    const de = parseInt(ESCALA[i]!.slice(1 + c * 2, 3 + c * 2), 16)
+    const ate = parseInt(ESCALA[i + 1]!.slice(1 + c * 2, 3 + c * 2), 16)
+    return Math.round(de + (ate - de) * fracao)
+  })
+  return '#' + canais.map((v) => v.toString(16).padStart(2, '0')).join('')
+}
+
 /**
- * A cor de uma classe, pela profundidade máxima.
+ * A cor de cada faixa DAQUELE mapa, garantidamente distintas entre si.
  *
- * Classe sem número reconhecido fica cinza — e cinza aqui significa "a fonte
- * não disse", não "raso".
+ * Antes a cor vinha de limiares fixos, e duas faixas caíam no mesmo degrau:
+ * no mapa de set/2011, "1,01 a 1,50" e "1,51 a 2" saíam da mesma cor. Quem
+ * olhava não tinha como separar um metro e meio de dois metros de água — e a
+ * legenda, logo abaixo, listava as duas com o mesmo quadradinho.
+ *
+ * Agora a escala é esticada sobre as faixas que aquele mapa realmente tem, na
+ * ordem do raso para o fundo. A consequência, dita aqui para ninguém se
+ * enganar: **a mesma cor não significa a mesma profundidade em mapas
+ * diferentes**. Isso é aceitável porque a tela mostra um evento por vez e a
+ * legenda vem sempre junto; limiar fixo, por outro lado, volta a colidir
+ * calado assim que a fonte publicar uma faixa nova — que foi como isto nasceu.
+ */
+export function coresPorRotulo(classes: ClasseLamina[]): Map<string, string> {
+  const cores = new Map<string, string>()
+  const comNumero = classes
+    .filter((c) => c.lamina_max_m !== null)
+    .sort((a, b) => a.lamina_max_m! - b.lamina_max_m!)
+
+  comNumero.forEach((classe, i) => {
+    cores.set(classe.rotulo, rampa(comNumero.length === 1 ? 0.6 : i / (comNumero.length - 1)))
+  })
+  for (const classe of classes) {
+    if (classe.lamina_max_m === null) cores.set(classe.rotulo, CINZA_SEM_NUMERO)
+  }
+  return cores
+}
+
+/**
+ * A cor de uma classe solta, sem o contexto do mapa.
+ *
+ * Só para a feição cujo `situa` não está na lista de classes daquele arquivo.
+ * Quem tem a lista deve usar `coresPorRotulo`, que é o que evita a colisão.
  */
 export function corDaLamina(classe: ClasseLamina): string {
   const topo = classe.lamina_max_m
-  if (topo === null) return '#b9c0c8'
+  if (topo === null) return CINZA_SEM_NUMERO
   if (topo <= 0.2) return ESCALA[0]!
   if (topo <= 0.4) return ESCALA[1]!
   if (topo <= 0.6) return ESCALA[2]!

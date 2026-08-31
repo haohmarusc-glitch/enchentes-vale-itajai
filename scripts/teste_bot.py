@@ -114,6 +114,52 @@ class TestChuva(unittest.TestCase):
         self.assertIn("Não há pluviômetro", resp("/chuva Botuverá"))
 
 
+class TestIdadeDaChuva(unittest.TestCase):
+    """
+    O número exibido é o MAIOR de cada janela, e pode vir de um pluviômetro
+    parado há horas. A idade tem de ser um limite superior: nenhuma leitura
+    daquela resposta é mais velha que o que está escrito. Com a idade do mais
+    novo, "80 mm em 24 h · há 5 min" saía de uma leitura de três horas atrás.
+    """
+
+    def base_com(self, chuvas):
+        b = base()
+        b.chuva_da_cidade = lambda _cidade: chuvas
+        return b
+
+    def chuva(self, estacao, medido_em, h24):
+        return {"estacao": estacao, "cidade": "itajai", "coerente": True,
+                "medido_em": medido_em, "mm": {"h1": 0.0, "h12": h24 / 2, "h24": h24,
+                                               "h48": h24}}
+
+    def test_a_idade_e_a_do_mais_velho(self):
+        base = self.base_com([self.chuva("VELHO", "2026-08-30T15:30:00", 80.0),
+                              self.chuva("NOVO", "2026-08-30T18:25:00", 2.0)])
+        r = responder("/chuva Itajaí", base, AGORA)
+        self.assertIn("há 3 h no mais velho", r)
+        self.assertIn("há 5 min no mais novo", r)
+
+    def test_nao_diz_agora_quando_o_maior_valor_e_velho(self):
+        base = self.base_com([self.chuva("VELHO", "2026-08-30T15:30:00", 80.0),
+                              self.chuva("NOVO", "2026-08-30T18:30:00", 2.0)])
+        r = responder("/chuva Itajaí", base, AGORA)
+        depois = r.split("pluviômetro", 1)[1]
+        self.assertNotIn("· agora mesmo", depois, "80 mm de 3 h atrás não é 'agora mesmo'")
+
+    def test_idades_parecidas_saem_com_uma_idade_so(self):
+        base = self.base_com([self.chuva("A", "2026-08-30T18:25:00", 8.0),
+                              self.chuva("B", "2026-08-30T18:20:00", 6.0)])
+        r = responder("/chuva Itajaí", base, AGORA)
+        self.assertIn("há 10 min", r)
+        self.assertNotIn("mais velho", r, "5 min de diferença não merece duas idades")
+
+    def test_um_pluviometro_so_continua_simples(self):
+        base = self.base_com([self.chuva("UNICO", "2026-08-30T18:25:00", 8.0)])
+        r = responder("/chuva Itajaí", base, AGORA)
+        self.assertIn("há 5 min", r)
+        self.assertNotIn("mais velho", r)
+
+
 class TestPrevisao(unittest.TestCase):
     def test_previsao_encadeia_ate_a_foz(self):
         t = resp("/previsao Rio do Sul")
