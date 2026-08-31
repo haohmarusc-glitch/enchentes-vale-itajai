@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import html
 import os
+import re
 import sys
 
 from comum import carrega_env
@@ -55,9 +56,34 @@ def esc(texto: object) -> str:
     return html.escape(str(texto), quote=False)
 
 
+# O token viaja no CAMINHO da URL do Telegram (`/bot<token>/sendMessage`), então
+# ele aparece inteiro em qualquer mensagem de erro de rede. Redigir só o token
+# configurado não basta: um texto cortado no meio do token não casa com o
+# `replace`, e depois de uma troca de token o log antigo continua carregando o
+# anterior. Por isso a regex apaga o que estiver entre `/bot` e a próxima barra,
+# seja ele qual for.
+RE_CAMINHO_BOT = re.compile(r"(/bot)[^/\s]+")
+
+
+def sem_segredo(texto: object) -> str:
+    """
+    Tira credencial de qualquer texto antes de ele virar log.
+
+    Chamar isto ANTES de cortar o texto, nunca depois: cortar primeiro pode
+    deixar meio token para trás, e meio token ainda é mais do que se deve
+    publicar. Quem lê um log costuma colar o trecho inteiro em outro lugar —
+    foi assim que este defeito importou.
+    """
+    saida = RE_CAMINHO_BOT.sub(r"\1***", str(texto))
+    token, _ = _credenciais()
+    if token:
+        saida = saida.replace(token, "***")
+    return saida
+
+
 def _sem_token(texto: str, token: str) -> str:
-    """Tira o token de qualquer texto antes de ele virar log."""
-    return texto.replace(token, "***") if token else texto
+    """Compatibilidade: `sem_segredo` é o caminho novo e não pede o token."""
+    return sem_segredo(texto)
 
 
 def enviar_para(chat_id: str, mensagem: str) -> bool:
@@ -109,13 +135,13 @@ def _postar(chat: str, mensagem: str) -> bool:
             timeout=TIMEOUT_S,
         )
     except Exception as exc:  # rede caindo não pode derrubar a coleta
-        print(f"falha ao enviar Telegram: {_sem_token(str(exc), token)}", file=sys.stderr)
+        print(f"falha ao enviar Telegram: {sem_segredo(exc)}", file=sys.stderr)
         return False
 
     if resposta.status_code != 200:
         print(
             f"Telegram HTTP {resposta.status_code}: "
-            f"{_sem_token(resposta.text[:300], token)}",
+            f"{sem_segredo(resposta.text)[:300]}",
             file=sys.stderr,
         )
         return False

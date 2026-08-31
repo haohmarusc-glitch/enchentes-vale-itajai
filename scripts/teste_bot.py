@@ -14,6 +14,12 @@ saia com a idade, e que toda resposta lembre que isto não é alerta oficial.
 import unittest
 from datetime import datetime, timezone
 
+import os
+import sys
+import unittest.mock
+from pathlib import Path
+
+import notificador
 from bot import (REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, eh_timeout,
                  nome_curto, responder, sem_acento, texto_idade)
 from comum import le_json
@@ -514,6 +520,208 @@ class TestCotaMaxima(unittest.TestCase):
         t = resp("/rua Rio do Sul 1 de maio", b)
         self.assertIn("8,12 m", t)
         self.assertNotIn("toda a rua", t)
+
+
+TOKEN_FALSO = "8000000001:AAH_token_de_teste_nunca_use_isto_xyz"
+
+# Como o Telegram devolve o erro: a URL inteira, com o token no caminho.
+ERRO_DE_REDE = (
+    "HTTPSConnectionPool(host='api.telegram.org', port=443): Max retries exceeded "
+    f"with url: /bot{TOKEN_FALSO}/getUpdates (Caused by NewConnectionError(...))"
+)
+
+
+class ErroFalso(Exception):
+    """Erro de rede qualquer — o que importa é o texto que ele carrega."""
+
+
+class TestTokenNaoVazaNoLog(unittest.TestCase):
+    """
+    O token no log é acesso ao bot para quem ler o log — e log é justamente o
+    que se copia e cola para pedir ajuda. Estes casos travam isso.
+    """
+
+    def setUp(self):
+        self.env = unittest.mock.patch.dict(
+            os.environ, {"TELEGRAM_BOT_TOKEN": TOKEN_FALSO, "TELEGRAM_CHAT_ID": "1"}
+        )
+        self.env.start()
+        self.addCleanup(self.env.stop)
+
+    def test_erro_na_rodada_nao_carrega_o_token(self):
+        linha = aviso_de_falha(ErroFalso(ERRO_DE_REDE), 1)
+        self.assertNotIn(TOKEN_FALSO, linha)
+        self.assertIn("/bot***/", linha)
+
+    def test_o_resto_da_mensagem_de_erro_continua_no_log(self):
+        """Esconder o token não pode virar esconder o defeito."""
+        linha = aviso_de_falha(ErroFalso(ERRO_DE_REDE), 1)
+        self.assertIn("api.telegram.org", linha)
+        self.assertIn("Max retries exceeded", linha)
+
+    def test_nem_meio_token_escapa(self):
+        """Um pedaço do segredo ainda é segredo."""
+        linha = aviso_de_falha(ErroFalso(ERRO_DE_REDE), 1)
+        self.assertNotIn(TOKEN_FALSO.split(":")[1][:12], linha)
+
+    def test_aviso_de_timeout_nunca_teve_o_token_e_continua_sem(self):
+        erro = type("ReadTimeout", (Exception,), {})(ERRO_DE_REDE)
+        linha = aviso_de_falha(erro, TIMEOUTS_TOLERADOS)
+        self.assertNotIn(TOKEN_FALSO, linha)
+
+
+class TestUmaVezNaoDerramaTraceback(unittest.TestCase):
+    """
+    `--uma-vez` chamava `rodada` sem proteção: falha de rede subia até o topo e
+    o Python imprimia o traceback, com a URL e o token dentro. É o modo que roda
+    em cron e o que se digita para depurar — a saída que mais acaba colada.
+    """
+
+    def setUp(self):
+        self.env = unittest.mock.patch.dict(
+            os.environ, {"TELEGRAM_BOT_TOKEN": TOKEN_FALSO, "TELEGRAM_CHAT_ID": "1"}
+        )
+        self.env.start()
+        self.addCleanup(self.env.stop)
+
+    def _rodar(self):
+        import io, contextlib, bot as modulo_bot
+        err = io.StringIO()
+        with unittest.mock.patch.object(modulo_bot, "rodada",
+                                        side_effect=ErroFalso(ERRO_DE_REDE)), \
+             unittest.mock.patch.object(modulo_bot, "le_estado", return_value={}), \
+             unittest.mock.patch.object(sys, "argv", ["bot.py", "--uma-vez"]), \
+             contextlib.redirect_stderr(err):
+            codigo = modulo_bot.main()
+        return codigo, err.getvalue()
+
+    def test_a_falha_nao_vira_traceback(self):
+        codigo, saida = self._rodar()
+        self.assertEqual(codigo, 1, "falha tem de sair com código de erro")
+        self.assertIn("não deu para processar a fila", saida)
+
+    def test_e_o_token_nao_aparece(self):
+        _, saida = self._rodar()
+        self.assertNotIn(TOKEN_FALSO, saida)
+        self.assertIn("/bot***/", saida)
+
+    def test_o_motivo_da_falha_continua_visivel(self):
+        _, saida = self._rodar()
+        self.assertIn("api.telegram.org", saida)
+
+
+class TestSemSegredo(unittest.TestCase):
+    def setUp(self):
+        self.env = unittest.mock.patch.dict(
+            os.environ, {"TELEGRAM_BOT_TOKEN": TOKEN_FALSO, "TELEGRAM_CHAT_ID": "1"}
+        )
+        self.env.start()
+        self.addCleanup(self.env.stop)
+
+    def test_apaga_o_token_configurado(self):
+        self.assertEqual(notificador.sem_segredo(f"x {TOKEN_FALSO} y"), "x *** y")
+
+    def test_apaga_token_que_nao_e_o_nosso(self):
+        """Depois de uma troca de token, o log antigo ainda carrega o anterior."""
+        sujo = "url: /bot123456:OUTRO_TOKEN_QUALQUER/sendMessage"
+        self.assertEqual(notificador.sem_segredo(sujo), "url: /bot***/sendMessage")
+
+    def test_para_na_barra_e_no_espaco(self):
+        limpo = notificador.sem_segredo("/bot9:SEGREDO/getUpdates depois disso")
+        self.assertEqual(limpo, "/bot***/getUpdates depois disso")
+
+    def test_aceita_excecao_direto_sem_str(self):
+        self.assertNotIn(TOKEN_FALSO, notificador.sem_segredo(ErroFalso(ERRO_DE_REDE)))
+
+    def test_texto_sem_segredo_nenhum_passa_intacto(self):
+        self.assertEqual(notificador.sem_segredo("rio a 3,52 m"), "rio a 3,52 m")
+
+    def test_sem_token_configurado_a_regex_ainda_protege(self):
+        with unittest.mock.patch.dict(os.environ, {"TELEGRAM_BOT_TOKEN": ""}):
+            self.assertEqual(notificador.sem_segredo("/botABC/x"), "/bot***/x")
+
+    def test_corta_depois_de_limpar_nao_antes(self):
+        """
+        Cortar primeiro e limpar depois deixaria meio token para trás quando o
+        token cai em cima do limite. Este caso prova a ordem.
+        """
+        recheio = "a" * 290
+        texto = f"{recheio}{TOKEN_FALSO} fim"
+        self.assertNotIn(TOKEN_FALSO[:20], notificador.sem_segredo(texto)[:300])
+
+
+class TestNenhumLogNovoVazaSegredo(unittest.TestCase):
+    """
+    Guarda estrutural, além dos casos de comportamento acima.
+
+    Os dois vazamentos vieram de alguém escrever `{e}` num print e não lembrar
+    que o texto do erro carrega a URL, e a URL carrega o token. Este caso lê o
+    fonte dos dois módulos que falam com o Telegram e cobra `sem_segredo` em
+    toda interpolação de erro — para o quarto ponto de chamada já nascer certo.
+    """
+
+    MODULOS = ("bot.py", "notificador.py")
+    NOMES_DE_ERRO = ("e", "erro", "exc", "excecao")
+
+    def _linhas_logicas(self, texto):
+        """Junta continuação de linha: um print quebrado em três ainda é um."""
+        atual, saida, inicio = "", [], 1
+        for numero, linha in enumerate(texto.splitlines(), 1):
+            if not atual:
+                inicio = numero
+            atual += linha.strip() + " "
+            if atual.count("(") <= atual.count(")"):
+                saida.append((inicio, atual))
+                atual = ""
+        if atual:
+            saida.append((inicio, atual))
+        return saida
+
+    def _suspeitas(self, texto, modulo="<teste>"):
+        """
+        Linha que leva um erro para fora sem limpar.
+
+        Cobre `print` E `return`: o vazamento de `aviso_de_falha` era um return,
+        e uma primeira versão desta guarda, que só olhava print, passou por ele
+        sem ver. Quem monta a linha e quem a imprime podem estar separados.
+        """
+        achadas = []
+        for numero, linha in self._linhas_logicas(texto):
+            if "print(" not in linha and not linha.lstrip().startswith("return "):
+                continue
+            interpola = any(f"{{{nome}" in linha for nome in self.NOMES_DE_ERRO)
+            if (interpola or ".text" in linha) and "sem_segredo" not in linha:
+                achadas.append(f"{modulo}:{numero}: {linha.strip()[:110]}")
+        return achadas
+
+    def test_todo_erro_que_sai_passa_por_sem_segredo(self):
+        aqui = Path(__file__).parent
+        suspeitas = []
+        for modulo in self.MODULOS:
+            suspeitas += self._suspeitas((aqui / modulo).read_text(encoding="utf-8"), modulo)
+        self.assertEqual(suspeitas, [], "erro sai sem sem_segredo: " + " | ".join(suspeitas))
+
+    def test_a_guarda_pega_o_return_que_escapou_da_primeira_versao(self):
+        """Exatamente a linha que vazava, na forma em que vazava."""
+        vazando = '    return f"erro na rodada: {erro}"'
+        self.assertEqual(len(self._suspeitas(vazando)), 1)
+
+    def test_a_guarda_aceita_o_return_ja_limpo(self):
+        limpo = '    return f"erro na rodada: {notificador.sem_segredo(erro)}"'
+        self.assertEqual(self._suspeitas(limpo), [])
+
+    def test_a_guarda_pega_um_vazamento_de_verdade(self):
+        """A guarda só vale se falhar quando deve. Este caso prova que falha."""
+        linhas = self._linhas_logicas('print(f"erro: {e}", file=sys.stderr)')
+        self.assertEqual(len(linhas), 1)
+        self.assertIn("{e}", linhas[0][1])
+        self.assertNotIn("sem_segredo", linhas[0][1])
+
+    def test_junta_print_quebrado_em_varias_linhas(self):
+        fonte = 'print(\n    f"erro: {erro}",\n    file=sys.stderr,\n)'
+        linhas = [l for _, l in self._linhas_logicas(fonte)]
+        self.assertEqual(len(linhas), 1, "print quebrado tem de virar uma linha lógica só")
+        self.assertIn("{erro}", linhas[0])
 
 
 if __name__ == "__main__":

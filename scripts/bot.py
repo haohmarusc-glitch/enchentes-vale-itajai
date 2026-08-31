@@ -42,6 +42,14 @@ O que continua restrito é o AVISO AUTOMÁTICO de cota: ele vai só para o
 conversa, com outras consequências (limite de envio do Telegram, gente que
 recebe aviso de cidade onde não mora, responsabilidade sobre quem não recebeu).
 
+O TOKEN NÃO PODE APARECER EM LOG
+--------------------------------
+Ele viaja no CAMINHO da URL do Telegram (`/bot<token>/getUpdates`), então todo
+erro de rede o carrega no texto. Por isso nenhum erro sai daqui sem passar por
+`notificador.sem_segredo()` — nem impresso, nem devolvido para quem imprime, e
+nem como traceback: `--uma-vez` captura a falha em vez de deixá-la subir. Log é
+o que se copia e cola para pedir ajuda, e o token vale acesso ao bot.
+
 Uso:
     python3 scripts/bot.py            # fica escutando (long polling)
     python3 scripts/bot.py --uma-vez  # processa o que está na fila e sai
@@ -829,7 +837,8 @@ def registrar_menu() -> None:
             timeout=15,
         )
     except Exception as e:
-        print(f"não deu para registrar o menu de comandos: {e}", file=sys.stderr)
+        print(f"não deu para registrar o menu de comandos: {notificador.sem_segredo(e)}",
+              file=sys.stderr)
 
 
 def descartar_pendentes() -> int:
@@ -868,6 +877,7 @@ def rodada(estado: dict, espera: int) -> dict:
         timeout=espera + 15,
     )
     if resposta.status_code != 200:
+        # Só o código: o corpo da resposta do Telegram repete a URL chamada.
         print(f"getUpdates HTTP {resposta.status_code}", file=sys.stderr)
         time.sleep(5)
         return estado
@@ -931,7 +941,10 @@ def aviso_de_falha(erro: BaseException, seguidas: int) -> str | None:
             return None
         return (f"sem resposta do Telegram em {seguidas} chamadas seguidas "
                 f"({type(erro).__name__}) — o bot está sem receber mensagens")
-    return f"erro na rodada: {erro}"
+    # O texto do erro de rede carrega a URL chamada, e a URL do Telegram carrega
+    # o token no caminho. Sem esta limpeza, `journalctl` guarda a credencial em
+    # texto puro — e log é justamente o que se copia e cola para pedir ajuda.
+    return f"erro na rodada: {notificador.sem_segredo(erro)}"
 
 
 def main() -> int:
@@ -945,7 +958,16 @@ def main() -> int:
 
     estado = le_estado()
     if args.uma_vez:
-        grava_estado(rodada(estado, espera=0))
+        # Sem este try, uma falha de rede sobe até o topo e o Python imprime o
+        # traceback inteiro — com a URL do Telegram, que carrega o token. E
+        # `--uma-vez` é o que roda em cron e o que a gente digita para depurar,
+        # ou seja, exatamente a saída que acaba colada em outro lugar.
+        try:
+            grava_estado(rodada(estado, espera=0))
+        except Exception as e:
+            print(f"não deu para processar a fila: {notificador.sem_segredo(e)}",
+                  file=sys.stderr)
+            return 1
         return 0
 
     registrar_menu()
