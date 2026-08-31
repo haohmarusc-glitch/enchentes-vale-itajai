@@ -198,15 +198,30 @@ class TestFormatoDoArquivo(unittest.TestCase):
             self.assertIn(campo, r, f"falta {campo}")
 
     def test_o_arquivo_real_continua_valido_depois_de_mesclar(self):
+        """
+        Com uma rua que ainda NÃO está no arquivo — as 554 de Rio do Sul já
+        estão, e usar uma delas testaria atualização, não inclusão.
+        """
         arquivo = Path(__file__).resolve().parent.parent / "data" / "cotas-ruas.json"
         base = json.loads(arquivo.read_text(encoding="utf-8"))
-        novos = [como_registro({"rua": "1 DE MAIO", "min": 8.12, "max": 9.65},
-                               "portal", "2026-08-31")]
+        novos = [como_registro({"rua": "RUA QUE NAO EXISTE NO ARQUIVO", "min": 8.12,
+                                "max": 9.65}, "portal", "2026-08-31")]
         saida, n, _ = mesclar(base["cotas"], novos)
         self.assertEqual(n, 1)
         self.assertEqual(len(saida), len(base["cotas"]) + 1)
         # Nenhum registro anterior mudou.
         self.assertEqual(saida[: len(base["cotas"])], base["cotas"])
+
+    def test_reimportar_o_arquivo_real_nao_duplica_nada(self):
+        """As 554 já estão gravadas: mesclar de novo atualiza, não acrescenta."""
+        arquivo = Path(__file__).resolve().parent.parent / "data" / "cotas-ruas.json"
+        base = json.loads(arquivo.read_text(encoding="utf-8"))
+        de_rio_do_sul = [r for r in base["cotas"] if r["cidade"] == "rio-do-sul"]
+        self.assertGreater(len(de_rio_do_sul), 500)
+        saida, n, a = mesclar(base["cotas"], de_rio_do_sul)
+        self.assertEqual(n, 0)
+        self.assertEqual(a, len(de_rio_do_sul))
+        self.assertEqual(saida, base["cotas"])
 
 
 if __name__ == "__main__":

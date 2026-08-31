@@ -5,6 +5,35 @@
 > Leia o `CLAUDE.md` antes. Tudo aqui segue as mesmas regras: cada cidade tem sua própria régua,
 > todo dado precisa de `fonte` e `confianca`, nada é inventado.
 
+## 0. O que a sondagem respondeu (31/08/2026)
+
+Três sondas rodaram na VPS contra os portais (`scripts/sonda_cotas_ruas.py`, `2` e `3`). O que
+mudou em relação ao levantamento original:
+
+| Fonte | Resultado |
+|---|---|
+| **Rio do Sul** | ✅ **RESOLVIDO.** Não é portal Yii com tabela em HTML: é aplicação Vite, e os **554 logradouros com mínima e máxima viajam dentro do pacote** (`assets/index-<hash>.js`). Importados por `scripts/importar_cotas_rio_do_sul.py`. |
+| **Itajaí — ArcGIS** | ❌ **Não é fonte aberta.** A raiz do REST abre sem token (108 serviços), mas a pasta `defesacivil` responde `499 Token Required` — é onde o app "Cotas de Inundação" busca. Vira ofício à prefeitura. |
+| **Itajaí — `historico_inundacoes`** | ⚠️ **Já temos.** Dez camadas: manchas de 1983, 1984, 2001, 2008 e 2011, `cotas_2011_setembro` com lâmina, e quatro com 48/58/55/155 feições — exatamente os arquivos do GeoItajaí que já estão em `data/manchas/`. Mesma base, servida de outro jeito. |
+| **Gaspar** | ⏳ Timeout de conexão nas duas tentativas. O host responde na coleta de níveis, então é instabilidade ou bloqueio ao IP da VPS: repetir. |
+| **Blumenau** | 🚫 Fora por `robots.txt`, como antes. Pedir à Defesa Civil. |
+
+### A armadilha que a sondagem revelou
+
+O ArcGIS de Itajaí publica `Relevo_Ponto_Cotado_Altimetrico`, com um campo chamado **`cota`**, em
+metros, com valores plausíveis (5,50 · 6,39 · 4,73). É **altura do terreno acima do nível do mar**.
+A cota deste projeto é o **nível do rio na régua** a partir do qual a rua alaga. Mesmo nome,
+grandezas opostas; ligar uma na outra exige perfil de linha d'água. Copiado sem isso, produziria o
+número que faz alguém dormir em casa numa noite em que devia sair. **Não usar.**
+
+### O que a importação de Rio do Sul ensinou
+
+A tabela oficial publica duas ruas alagando **abaixo do nível normal do rio** (3,11 m e 3,26 m, com
+a menor cota da cidade em 4,50 m e a régua marcando 3,35 m num dia seco). Elas entraram — são dado
+oficial —, mas com `usar_para_aviso: false`: aparecem na busca com a ressalva e não movem alarme.
+É o mesmo mecanismo do `alerta_automatico: false` das réguas de estuário de Itajaí. Conferir com a
+Defesa Civil de Rio do Sul para que virem aviso.
+
 ## 1. O que existe, por cidade
 
 ### Itajaí (Açu + Mirim) — dados abertos em GeoJSON, licença MIT ⭐
