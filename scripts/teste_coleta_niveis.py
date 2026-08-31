@@ -271,5 +271,42 @@ class TestPaginaParcial(unittest.TestCase):
         self.assertEqual(sumidas, [], "estação a mais é ganho, não perda")
 
 
+class TestChuvaDeSCEntraNaLista(unittest.TestCase):
+    """
+    O coletor de SC existia gravando um arquivo que ninguém lia — chuva colhida
+    e nunca mostrada. Estes casos travam a ligação: ela tem de entrar na mesma
+    lista que o site e o bot leem.
+    """
+
+    def test_as_duas_fontes_convivem_na_mesma_lista(self):
+        falso = types.ModuleType("coleta_chuva_sc")
+        falso.baixar_estacoes = lambda: []
+        falso.converter = lambda _e: ([{"estacao": "DCSC-00026 SDC-SC Blumenau",
+                                        "cidade": "blumenau", "mm": {"h24": 19.4}}], [])
+        with mock.patch.dict(sys.modules, {"coleta_chuva_sc": falso}):
+            de_sc = coleta_niveis.baixar_chuva_sc()
+        self.assertEqual(len(de_sc), 1)
+        self.assertEqual(de_sc[0]["cidade"], "blumenau")
+
+    def test_falha_em_sc_nao_derruba_a_coleta(self):
+        with mock.patch.dict(sys.modules, {"coleta_chuva_sc": None}):
+            self.assertEqual(coleta_niveis.baixar_chuva_sc(), [])
+
+    def test_o_codigo_dcsc_evita_colisao_de_nome(self):
+        """
+        Sem o código na frente, "SDC-SC Brusque" e a "Brusque Estação Guarani"
+        da outra fonte poderiam se confundir na tela, que agrupa por cidade.
+        """
+        falso = types.ModuleType("coleta_chuva_sc")
+        falso.baixar_estacoes = lambda: []
+        falso.converter = lambda _e: ([{"estacao": "DCSC-00019 SDC-SC Brusque",
+                                        "cidade": "brusque", "mm": {"h24": 60.4}}], [])
+        with mock.patch.dict(sys.modules, {"coleta_chuva_sc": falso}):
+            de_sc = coleta_niveis.baixar_chuva_sc()
+        outra = {"estacao": "Brusque Estação Guarani", "cidade": "brusque"}
+        nomes = {l["estacao"] for l in de_sc} | {outra["estacao"]}
+        self.assertEqual(len(nomes), 2, "as duas estações de Brusque têm de ser distintas")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
