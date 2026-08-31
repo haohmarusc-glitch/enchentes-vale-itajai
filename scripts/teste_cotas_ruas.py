@@ -128,8 +128,25 @@ class TestCotasRuas(unittest.TestCase):
         deduplicar por nome de rua, perde a cota mais baixa — justamente a que
         importa.
         """
-        chaves = [(r["cidade"], r["rua"], r.get("ponto")) for r in self.cotas]
-        self.assertEqual(len(chaves), len(set(chaves)), "registro duplicado (cidade, rua, ponto)")
+        # A identidade inclui a COTA, e não só o texto do ponto. As fontes
+        # descrevem pontos distintos com a mesma frase — "Sem número",
+        # "Defronte ao autoshopping" —, e a Rua Franz Volles tem três desses,
+        # a 11,10, 14,05 e 16,95 m. Deduplicar por (rua, ponto) apagaria dois.
+        chaves = [(r["cidade"], r["rua"], r.get("ponto"), r.get("cota_m")) for r in self.cotas]
+        self.assertEqual(len(chaves), len(set(chaves)),
+                         "registro duplicado (cidade, rua, ponto, cota)")
+
+        # A folga acima não pode virar porta dos fundos: quando (rua, ponto)
+        # se repete, as cotas TÊM de ser diferentes — senão é duplicata mesmo.
+        por_ponto: dict[tuple, list[float]] = {}
+        for r in self.cotas:
+            por_ponto.setdefault((r["cidade"], r["rua"], r.get("ponto")), []).append(r.get("cota_m"))
+        for k, cotas in por_ponto.items():
+            if len(cotas) > 1:
+                with self.subTest(ponto=k):
+                    self.assertEqual(len(cotas), len(set(cotas)),
+                                     "mesmo ponto, mesma cota, dois registros")
+
         nomes = [(r["cidade"], r["rua"]) for r in self.cotas]
         self.assertLess(len(set(nomes)), len(nomes), "esperava alguma rua com mais de um ponto")
 
