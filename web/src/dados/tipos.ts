@@ -177,6 +177,13 @@ export interface CotaRua {
    * mínima, que é quando a água chega.
    */
   cota_max_m?: number
+  /**
+   * `false` quando o número não serve para mover aviso — hoje, as cotas que a
+   * fonte publica abaixo do nível normal do rio. Mesmo conceito do
+   * `alerta_automatico: false` das réguas de estuário: o valor aparece na
+   * tela, com a ressalva, e não dispara nada.
+   */
+  usar_para_aviso?: boolean
   fonte: string
   data_fonte: string
   confianca: Confianca

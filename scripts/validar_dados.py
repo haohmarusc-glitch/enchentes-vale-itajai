@@ -253,6 +253,7 @@ def valida_cotas_ruas() -> None:
             )
 
     primeira_rua: dict[str, float] = {}
+    sem_aviso: dict[str, list[str]] = {}
     for i, r in enumerate(registros):
         onde = f"cotas-ruas.json / cotas[{i}] ({r.get('rua', '???')})"
         for campo in ("cidade", "rio", "rua", "cota_m", "fonte", "confianca"):
@@ -289,8 +290,21 @@ def valida_cotas_ruas() -> None:
             elif maxima < cota:
                 erro(f"{onde}: cota_max_m {maxima} é MENOR que cota_m {cota} — "
                      "a rua alagaria inteira antes de a água chegar")
+        # Registro marcado para não mover aviso fica fora desta conta. É o caso
+        # das cotas que a fonte publica abaixo do nível normal do rio: exigir
+        # que a cidade baixe a cota de atenção por causa de um número que
+        # ninguém conferiu faria o aviso tocar em dia de sol.
+        if r.get("usar_para_aviso") is False:
+            sem_aviso.setdefault(cidade, []).append(f"{r.get('rua', '?')} ({cota:.2f} m)")
+            continue
         anterior = primeira_rua.get(cidade)
         primeira_rua[cidade] = cota if anterior is None else min(anterior, cota)
+
+    for cidade, ruas in sorted(sem_aviso.items()):
+        aviso(f"cotas-ruas.json: {cidade} tem {len(ruas)} cota(s) marcada(s) para não "
+              f"mover aviso, por ficarem abaixo do nível normal do rio: "
+              f"{', '.join(ruas[:5])}. Aparecem na tela com a ressalva; conferir com a "
+              "Defesa Civil para virarem aviso.")
 
     for cidade, rua_mais_baixa in sorted(primeira_rua.items()):
         cot = das_cidades.get(cidade) or {}

@@ -183,6 +183,12 @@ def como_registro(rua: dict, fonte: str, quando: str,
                      f"referência de Rio do Sul ({piso_da_cidade:.2f} m): a rua alagaria "
                      "com o rio em nível quase normal. Vem assim da fonte e ainda não foi "
                      "conferida com a Defesa Civil — não use como aviso sozinha.")
+        # Mesmo conceito do `alerta_automatico: false` das réguas de estuário:
+        # o número aparece na tela, com a ressalva, e não move aviso nenhum.
+        # Sem isto, o validador exigiria baixar a cota de atenção da cidade
+        # para 3,11 m por causa de um registro que ninguém conferiu — e o aviso
+        # passaria a tocar com o rio em nível normal.
+        registro["usar_para_aviso"] = False
 
     if notas:
         registro["nota"] = " ".join(notas)

@@ -100,7 +100,10 @@ export default function CotasDeRua({ cidade, leitura }: Props) {
                         ? ` · toda a rua a ${metros(c.cota_max_m)}`
                         : ''}
                     </span>
-                    {nivelAtual !== null ? (
+                    {/* Registro marcado para não mover aviso não vira "já foi
+                        alcançado": seria uma frase assustadora tirada de um
+                        número que o próprio registro diz não estar conferido. */}
+                    {nivelAtual !== null && c.usar_para_aviso !== false ? (
                       <span className={estilos.falta}>
                         {faltaPara(c.cota_m, nivelAtual) > 0
                           ? `faltam ${metros(faltaPara(c.cota_m, nivelAtual))} de subida`
