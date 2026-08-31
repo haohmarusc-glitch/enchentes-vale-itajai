@@ -56,6 +56,20 @@ export function buscar(cotas: CotaRua[], cidadeId: string, termo: string): CotaR
 }
 
 /** Ruas já alagadas com o rio neste nível, da mais funda para a mais rasa. */
+/**
+ * As ruas da cidade que TÊM cota — as únicas que podem ser contadas.
+ *
+ * O cartão dizia "3 de 23 ruas conhecidas já estariam alagadas" usando o total
+ * da cidade no denominador. Em Gaspar, 18 das 23 ruas não têm cota: a fonte as
+ * cita sem número. Elas nunca podem entrar no numerador, então incluí-las
+ * embaixo faz o alagamento parecer quase cinco vezes menos espalhado do que o
+ * próprio dado diz — e erra para o lado de quem lê achando que está seguro.
+ * As sem cota continuam na tela, contadas à parte.
+ */
+export function comCota(cotas: CotaRua[], cidadeId: string): CotaRua[] {
+  return daCidade(cotas, cidadeId).filter((c) => c.cota_m !== null)
+}
+
 export function atingidas(cotas: CotaRua[], cidadeId: string, nivelM: number): CotaRua[] {
   return daCidade(cotas, cidadeId)
     .filter((c) => c.cota_m !== null && c.cota_m <= nivelM)

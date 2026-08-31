@@ -4,6 +4,8 @@ import {
   atingidas,
   buscar,
   cidadesComCotas,
+  comCota,
+  daCidade,
   faixaDaCidade,
   faltaPara,
   nomeCompleto,
@@ -11,6 +13,7 @@ import {
   proximas,
 } from './cotasRuas'
 import type { CotaRua } from '../dados/tipos'
+import arquivoReal from '../../../data/cotas-ruas.json'
 
 function c(over: Partial<CotaRua>): CotaRua {
   return {
@@ -109,4 +112,46 @@ test('quanto falta subir, arredondado ao centímetro', () => {
 test('o ponto faz parte do nome mostrado', () => {
   assert.equal(nomeCompleto(c({ ponto: 'final da rua' })), 'Rua São Rafael (final da rua)')
   assert.equal(nomeCompleto(c({ ponto: null })), 'Rua São Rafael')
+})
+
+test('o denominador da contagem exclui rua sem cota', () => {
+  // Gaspar é o caso real: 23 ruas levantadas, 18 sem cota exata na fonte. Com
+  // as 23 no denominador, "3 de 23" faz o alagamento parecer quase cinco vezes
+  // menos espalhado do que o dado diz — e erra para o lado de quem se sente
+  // seguro.
+  const cotas = [
+    c({ cidade: 'gaspar', rua: 'A', cota_m: 6.0 }),
+    c({ cidade: 'gaspar', rua: 'B', cota_m: 6.5 }),
+    c({ cidade: 'gaspar', rua: 'C', cota_m: null }),
+    c({ cidade: 'gaspar', rua: 'D', cota_m: null }),
+  ]
+  assert.equal(daCidade(cotas, 'gaspar').length, 4)
+  assert.equal(comCota(cotas, 'gaspar').length, 2)
+})
+
+test('toda rua atingida está entre as que têm cota', () => {
+  // A invariante: o numerador nunca pode passar do denominador.
+  const cotas = [
+    c({ cidade: 'gaspar', rua: 'A', cota_m: 6.0 }),
+    c({ cidade: 'gaspar', rua: 'B', cota_m: null }),
+  ]
+  const atingiu = atingidas(cotas, 'gaspar', 9)
+  assert.ok(atingiu.length <= comCota(cotas, 'gaspar').length)
+  assert.ok(atingiu.every((c) => c.cota_m !== null), 'rua sem cota não pode ser dita alagada')
+})
+
+test('cidade só com ruas sem cota tem denominador zero, não o total', () => {
+  const cotas = [c({ cidade: 'gaspar', rua: 'A', cota_m: null })]
+  assert.equal(comCota(cotas, 'gaspar').length, 0)
+})
+
+test('nas cidades reais o numerador nunca passa do denominador', () => {
+  const reais = (arquivoReal as { cotas: CotaRua[] }).cotas
+  for (const cidade of cidadesComCotas(reais)) {
+    const denominador = comCota(reais, cidade).length
+    for (const nivel of [0, 5, 10, 15, 25]) {
+      assert.ok(atingidas(reais, cidade, nivel).length <= denominador,
+        `${cidade} a ${nivel} m`)
+    }
+  }
 })

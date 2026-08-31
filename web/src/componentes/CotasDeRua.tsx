@@ -99,6 +99,8 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   const jaAlagam = atingidas(cotas, cidade.id, nivel)
   const seguintes = proximas(cotas, cidade.id, nivel, 4)
   const semCota = dela.filter((c) => c.cota_m === null)
+  // O denominador é só quem tem cota: rua sem número nunca entra no numerador.
+  const contaveis = dela.length - semCota.length
 
   const piso = faixa ? Math.max(0, Math.floor((faixa.min - 1) * 10) / 10) : 0
   const teto = faixa ? Math.ceil((faixa.max + 1) * 10) / 10 : 10
@@ -202,7 +204,8 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
       ) : null}
 
       <p className={estilos.contagem}>
-        A {metros(nivel)}, <strong>{jaAlagam.length}</strong> de {dela.length} ruas conhecidas
+        A {metros(nivel)}, <strong>{jaAlagam.length}</strong> de {contaveis}{' '}
+        {contaveis === 1 ? 'rua com cota levantada' : 'ruas com cota levantada'}
         {jaAlagam.length === 1 ? ' já estaria alagada' : ' já estariam alagadas'} em {cidade.nome}.
       </p>
 
