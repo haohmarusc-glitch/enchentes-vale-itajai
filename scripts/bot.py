@@ -70,6 +70,21 @@ SITE = "https://haohmarusc-glitch.github.io/enchentes-vale-itajai/"
 #: Quanto o Telegram segura a conexão esperando mensagem nova.
 ESPERA_S = 25
 
+#: Quantos timeouts seguidos do long polling ainda são rotina.
+#:
+#: O Telegram segura a conexão por ESPERA_S e devolve lista vazia; de vez em
+#: quando a conexão fica pendurada e estoura o timeout de leitura. Isso não
+#: perde mensagem — o `offset` só avança depois de processar, então a chamada
+#: seguinte refaz a mesma consulta. Registrar cada um como "erro" enche o
+#: journal de alarme falso, e log que grita à toa ensina quem opera a ignorar
+#: o log inteiro: é o mesmo defeito de um aviso que toca com a maré. A partir
+#: daqui, porém, não é mais soluço de rede — é o bot surdo, e isso precisa
+#: aparecer.
+TIMEOUTS_TOLERADOS = 3
+
+#: Depois do primeiro aviso, repete só de tantas falhas em tantas.
+REPETE_AVISO = 20
+
 #: Uma resposta por chat a cada tantos segundos. Não é para punir ninguém: é
 #: para um chat sozinho não consumir a fila numa hora em que muita gente
 #: pergunta ao mesmo tempo — que é justamente a hora da cheia.
@@ -820,6 +835,35 @@ def rodada(estado: dict, espera: int) -> dict:
     return estado
 
 
+def eh_timeout(erro: BaseException) -> bool:
+    """
+    Comparação por NOME de classe, de propósito: assim este módulo continua
+    importável sem o `requests` instalado, como os testes de resposta exigem.
+    """
+    return type(erro).__name__ in ("ReadTimeout", "ConnectTimeout", "Timeout")
+
+
+def aviso_de_falha(erro: BaseException, seguidas: int) -> str | None:
+    """
+    O que escrever no log depois de uma rodada que falhou — ou nada.
+
+    Timeout do long polling é rotina até `TIMEOUTS_TOLERADOS` seguidos; daí em
+    diante vira linha de log, porque o bot está sem falar com o Telegram. Todo
+    o resto sai na hora: erro que ninguém previu é justamente o que precisa
+    aparecer.
+    """
+    if eh_timeout(erro):
+        # Na travessia do limite, e depois de tantas em tantas: uma queda longa
+        # do Telegram escreveria uma linha a cada meio minuto, e log que rola
+        # sozinho esconde tanto quanto log que não existe.
+        primeira = seguidas == TIMEOUTS_TOLERADOS
+        if seguidas < TIMEOUTS_TOLERADOS or not (primeira or seguidas % REPETE_AVISO == 0):
+            return None
+        return (f"sem resposta do Telegram em {seguidas} chamadas seguidas "
+                f"({type(erro).__name__}) — o bot está sem receber mensagens")
+    return f"erro na rodada: {erro}"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--uma-vez", action="store_true", help="processa a fila e sai")
@@ -841,16 +885,24 @@ def main() -> int:
         grava_estado(estado)
 
     print("bot escutando. Ctrl+C para parar.")
+    seguidas = 0
     while True:
         try:
             estado = rodada(estado, espera=ESPERA_S)
             grava_estado(estado)
+            seguidas = 0
         except KeyboardInterrupt:
             print("\nparando.")
             return 0
         except Exception as e:  # rede caindo não pode matar o bot
-            print(f"erro na rodada: {e}", file=sys.stderr)
-            time.sleep(10)
+            seguidas += 1
+            aviso = aviso_de_falha(e, seguidas)
+            if aviso:
+                print(aviso, file=sys.stderr)
+            # Timeout já gastou o tempo de espera pendurado na conexão; dormir
+            # de novo seria mais tempo de bot calado sem motivo.
+            if not eh_timeout(e):
+                time.sleep(10)
 
 
 if __name__ == "__main__":
