@@ -166,8 +166,23 @@ export function cotaAlcancada(
   cidade: Cidade,
   nivel: number,
 ): { chave: string; valor: number } | null {
+  return cotaAlcancadaEntre(Object.entries(cidade.cotas_m), nivel)
+}
+
+/**
+ * A cota mais alta alcançada, a partir de uma lista de cotas solta.
+ *
+ * Existe para a cidade de VÁRIAS réguas: cada uma tem as suas, e comparar o
+ * nível de uma com a cota da cidade — ou com a de outra régua — é o erro que
+ * este projeto recusa. Em Itajaí a DC-10 usa 8/9/10 m enquanto a cidade tem
+ * outras cotas: o mesmo 6,75 m seria "abaixo de tudo" numa e alarme na outra.
+ */
+export function cotaAlcancadaEntre(
+  cotas: [string, unknown][],
+  nivel: number,
+): { chave: string; valor: number } | null {
   let maior: { chave: string; valor: number } | null = null
-  for (const [chave, valor] of Object.entries(cidade.cotas_m)) {
+  for (const [chave, valor] of cotas) {
     if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
     if (nivel < valor) continue
     if (maior === null || valor > maior.valor) maior = { chave, valor }

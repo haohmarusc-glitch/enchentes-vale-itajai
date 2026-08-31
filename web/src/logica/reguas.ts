@@ -21,6 +21,12 @@ import type { EstacaoTempoReal } from '../dados/tipos'
 export interface ReguaComCota {
   /** `DC-10`, quando a fonte publica código; senão o título. */
   id: string
+  /**
+   * O título EXATO que a fonte publica — é por ele que a leitura ao vivo se
+   * liga à régua. Casar por código seria casar por prefixo, e prefixo casa
+   * errado calado.
+   */
+  titulo: string
   /** Como chamar a régua na tela. */
   nome: string
   cotas: [string, number][]
@@ -92,6 +98,7 @@ export function todasAsReguas(
     if (cotas.length === 0) continue
     saida.push({
       id: e.codigo ?? e.titulo,
+      titulo: e.titulo,
       nome: nomeDaRegua(e),
       cotas,
       // Só `false` explícito tira a régua do aviso automático. Ausente quer

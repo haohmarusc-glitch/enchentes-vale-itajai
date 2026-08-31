@@ -273,6 +273,29 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
   return estado
 }
 
+/**
+ * TODAS as leituras de uma cidade naquele rio, sem eleger nenhuma.
+ *
+ * Itajaí tem onze réguas com zeros diferentes, e `leituraDaCidade` desiste —
+ * corretamente, porque não existe "o nível de Itajaí". A consequência era a
+ * cidade da foz, que recebe os dois rios, ficar SEM NÚMERO na tela enquanto o
+ * dado existia. Aqui elas saem lado a lado, cada uma com o seu nome, para a
+ * tela mostrar sem somar nem escolher.
+ *
+ * Quem precisa de UM número — a previsão a jusante e a busca "minha rua" —
+ * continua usando `leituraDaCidade` e continua desistindo. Isso é a REGRA
+ * BLOQUEANTE do CLAUDE.md, item 4.
+ */
+export function leiturasDaCidade(
+  estado: EstadoTempoReal,
+  rioId: string,
+  cidadeId: string,
+): LeituraAoVivo[] {
+  return estado.leituras
+    .filter((l) => l.rio === rioId && l.cidade === cidadeId)
+    .sort((a, b) => a.estacao.localeCompare(b.estacao))
+}
+
 /** A leitura mais recente de uma cidade, na régua de um rio. */
 export function leituraDaCidade(
   estado: EstadoTempoReal,

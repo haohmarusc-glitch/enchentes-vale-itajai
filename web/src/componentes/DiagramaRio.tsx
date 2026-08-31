@@ -1,6 +1,6 @@
 import type { Cidade, Trecho } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
-import { leituraDaCidade } from '../dados/tempoReal'
+import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import { estacoesTempoReal } from '../dados/carregar'
 import { reguasComCota } from '../logica/reguas'
 import ReguasDaCidade from './ReguasDaCidade'
@@ -10,6 +10,7 @@ import ChuvaAoVivo from './ChuvaAoVivo'
 import { caminho, faixaHoras } from '../logica/transito'
 import { fonteTempoReal, metros, rotuloCota } from '../logica/formato'
 import SeloConfianca from './SeloConfianca'
+import VariasReguas from './VariasReguas'
 import estilos from './DiagramaRio.module.css'
 
 interface Props {
@@ -57,6 +58,10 @@ export default function DiagramaRio({
         }
         const registros = registrosPorCidade[cidade.id] ?? 0
         const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
+        // Cidade de várias réguas: `leituraDaCidade` desiste, corretamente, e
+        // por causa disso Itajaí — a foz, que recebe os dois rios — aparecia
+        // sem número nenhum. Aqui elas saem todas, cada uma com a cota dela.
+        const todasAsLeituras = leiturasDaCidade(tempoReal, rioId, cidade.id)
         // Chuva vem por cidade, não por rio: o pluviômetro mede o que caiu
         // naquele ponto, e não pertence a uma calha em particular.
         // Quando a coleta da chuva falhou, `chuva` vem null para TODA cidade.
@@ -90,6 +95,13 @@ export default function DiagramaRio({
                     <span className={estilos.aoVivo}>
                       <NivelAoVivo leitura={aoVivo} cidade={cidade} agora={agora} />
                     </span>
+                  ) : todasAsLeituras.length > 1 ? (
+                    <VariasReguas
+                      leituras={todasAsLeituras}
+                      reguas={reguas}
+                      cidade={cidade}
+                      agora={agora}
+                    />
                   ) : null}
 
                   {chuva ? (
