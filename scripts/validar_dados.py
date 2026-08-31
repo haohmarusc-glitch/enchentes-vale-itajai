@@ -236,6 +236,22 @@ def valida_cotas_ruas() -> None:
             das_cidades.setdefault(c["id"], {}).update(c.get("cotas_m") or {})
             rio_da_cidade.setdefault(c["id"], set()).add(rio_id)
 
+    # Réguas que TÊM cota e podem disparar aviso. Ilhota e Itajaí só têm cota
+    # aqui, e não em `cotas_m` da cidade: sem isto o validador diria que elas
+    # não têm cota nenhuma. As de estuário ficam de fora porque não disparam
+    # aviso — é essa a pergunta desta checagem.
+    reguas_com_aviso: dict[str, list[str]] = {}
+    for e in estacoes.get("estacoes_tempo_real") or []:
+        if e.get("tipo") == "pluviometro" or e.get("alerta_automatico") is False:
+            continue
+        if not any(isinstance(v, (int, float)) for v in (e.get("cotas_m") or {}).values()):
+            continue
+        cidade_id = e.get("cidade")
+        if cidade_id:
+            reguas_com_aviso.setdefault(cidade_id, []).append(
+                e.get("codigo") or e.get("titulo") or "?"
+            )
+
     primeira_rua: dict[str, float] = {}
     for i, r in enumerate(registros):
         onde = f"cotas-ruas.json / cotas[{i}] ({r.get('rua', '???')})"
@@ -268,11 +284,23 @@ def valida_cotas_ruas() -> None:
         cot = das_cidades.get(cidade) or {}
         numericas = {k: v for k, v in cot.items() if isinstance(v, (int, float))}
         if not numericas:
-            aviso(
-                f"cotas-ruas.json: {cidade} tem rua alagando a {rua_mais_baixa:.2f} m, "
-                f"mas a cidade não tem NENHUMA cota cadastrada em estacoes.json — "
-                "o aviso por Telegram não cobre esta cidade"
-            )
+            reguas = reguas_com_aviso.get(cidade) or []
+            if reguas:
+                # A cota existe, mas na régua da Defesa Civil, não na régua da
+                # cidade. Comparar as duas seria somar zeros diferentes — o
+                # erro que o item 4 da REGRA BLOQUEANTE do CLAUDE.md proíbe.
+                aviso(
+                    f"cotas-ruas.json: {cidade} tem rua alagando a {rua_mais_baixa:.2f} m e "
+                    f"não tem cota de cidade, só a(s) régua(s) {', '.join(sorted(reguas))}. "
+                    "Conferir se a cota de rua foi levantada contra essa mesma régua antes "
+                    "de confiar na comparação"
+                )
+            else:
+                aviso(
+                    f"cotas-ruas.json: {cidade} tem rua alagando a {rua_mais_baixa:.2f} m, "
+                    f"mas a cidade não tem NENHUMA cota cadastrada em estacoes.json — "
+                    "o aviso por Telegram não cobre esta cidade"
+                )
             continue
         menor_cota, nome = min((v, k) for k, v in numericas.items())
         if menor_cota > rua_mais_baixa:

@@ -45,10 +45,35 @@ export interface Rio {
   cidades: Cidade[]
 }
 
+/**
+ * Régua ou pluviômetro publicado em tempo real. Nem toda estação tem cota
+ * cadastrada, e nem toda cota vale como gatilho de aviso: as do estuário de
+ * Itajaí oscilam com a maré, e por isso trazem `alerta_automatico: false` com o
+ * motivo escrito por extenso.
+ */
+export interface EstacaoTempoReal {
+  /** Código da fonte (`DC-01`). Ausente nas estações que a fonte não numera. */
+  codigo?: string
+  titulo: string
+  /** Nome da régua no Plano de Contingência, quando difere do título. */
+  nome_no_plano?: string
+  rio: string | null
+  cidade: string | null
+  /** `pluviometro` mede chuva, não nível. */
+  tipo?: string
+  cotas_m: Record<string, number>
+  verificado: boolean
+  referencia?: string | null
+  fonte_cotas?: string
+  alerta_automatico?: boolean
+  motivo_sem_alerta?: string
+}
+
 export interface Estacoes {
   _meta: unknown
   rios: Record<string, Rio>
   afluentes_monitorados?: AfluenteMonitorado[]
+  estacoes_tempo_real?: EstacaoTempoReal[]
   fontes_gerais: Record<string, string>
 }
 

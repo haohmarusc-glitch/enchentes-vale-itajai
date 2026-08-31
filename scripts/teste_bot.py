@@ -265,10 +265,46 @@ class TestCotas(unittest.TestCase):
         t = resp("/cotas Rio do Sul")
         self.assertIn("Atenção", t)
         self.assertIn("4,50 m", t)
-        self.assertIn("própria régua", t)
+        self.assertIn("próprio zero", t)
 
     def test_cidade_sem_cota_diz_que_falta(self):
-        self.assertIn("ainda não foram levantadas", resp("/cotas Ilhota"))
+        # Taió não tem cota cadastrada nem régua com cota em estacoes.json.
+        self.assertIn("ainda não foram levantadas", resp("/cotas Taió"))
+
+    def test_ilhota_mostra_a_cota_da_regua_da_defesa_civil(self):
+        """
+        Ilhota tem cota oficial (DC-11), só que dentro de `estacoes_tempo_real`
+        e não em `cotas_m` da cidade. O bot já respondeu "ainda não foram
+        levantadas" para ela — dizer que não há dado quando há manda a pessoa
+        procurar em outro lugar na pior hora possível.
+        """
+        t = resp("/cotas Ilhota")
+        self.assertNotIn("ainda não foram levantadas", t)
+        self.assertIn("DC-11", t)
+        self.assertIn("3,00 m", t)
+        self.assertIn("Plano de Contingência", t)
+
+    def test_itajai_sai_uma_vez_com_as_onze_reguas_e_os_ribeiroes(self):
+        t = resp("/cotas Itajaí")
+        # Uma resposta só, não uma por rio: o separador de blocos não aparece.
+        self.assertNotIn("———", t)
+        for codigo in ("DC-01", "DC-06", "DC-10"):
+            self.assertIn(codigo, t)
+        # Os ribeirões não estão em nenhuma tela de rio; aqui eles aparecem.
+        self.assertIn("Ribeirão da Murta", t)
+        self.assertIn("Ribeirão da Canhanduba", t)
+
+    def test_regua_de_mare_vem_marcada_e_explicada(self):
+        t = resp("/cotas Itajaí")
+        self.assertIn("estuário", t)
+        self.assertIn("não dispara aviso automático", t)
+        # Limoeiro fica rio acima e não leva a marca.
+        limoeiro = t.split("DC-10")[1].split("\n")[0]
+        self.assertNotIn("*", limoeiro)
+
+    def test_resposta_de_itajai_cabe_no_telegram(self):
+        """Onze réguas com bloco cada uma estouravam o limite de 4096."""
+        self.assertLess(len(resp("/cotas Itajaí")), 4096)
 
 
 class TestGerais(unittest.TestCase):

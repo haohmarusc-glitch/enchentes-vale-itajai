@@ -12,7 +12,9 @@ import PainelMare from '../componentes/PainelMare'
 const MapaManchas = lazy(() => import('../componentes/MapaManchas'))
 
 import SeloConfianca from '../componentes/SeloConfianca'
-import { cidade, fontesGerais, trechos } from '../dados/carregar'
+import { cidade, estacoesTempoReal, fontesGerais, trechos } from '../dados/carregar'
+import { separarFonte, todasAsReguas } from '../logica/reguas'
+import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import { dataHora } from '../logica/formato'
 import { caminho, faixaHoras, janelaChegada } from '../logica/transito'
 import type { Caminho } from '../logica/transito'
@@ -152,6 +154,8 @@ export default function TelaItajai() {
           Levantar esses picos, com data e hora, é a pendência mais importante do projeto.
         </p>
       </section>
+      <ReguasDeItajai />
+
       <Suspense
         fallback={
           <section className="cartao">
@@ -163,6 +167,44 @@ export default function TelaItajai() {
       </Suspense>
 
     </>
+  )
+}
+
+/**
+ * As réguas de Itajaí, com as cotas do Plano de Contingência.
+ *
+ * Esta tela é o único lugar onde os ribeirões aparecem: Murta e Canhanduba não
+ * estão em nenhum dos dois eixos, mas alagam bairro em Itajaí, e a cota deles é
+ * oficial. Aqui não há nível ao vivo — o que a cidade tem são onze réguas com
+ * zeros diferentes, e eleger uma como "o nível de Itajaí" seria produzir um
+ * número que não existe.
+ */
+function ReguasDeItajai() {
+  const reguas = todasAsReguas(estacoesTempoReal, 'itajai')
+  if (reguas.length === 0) return null
+
+  const fontes = [...new Set(reguas.map((r) => r.fonteCotas).filter((f): f is string => !!f))]
+
+  return (
+    <section className="cartao">
+      <h2>Cotas oficiais das réguas de Itajaí</h2>
+      <ReguasDaCidade reguas={reguas} cidade="Itajaí" comTitulo={false} />
+      {fontes.map((bruta) => {
+        const { texto, url } = separarFonte(bruta)
+        return (
+          <p className={estilos.detalhe} key={bruta}>
+            Fonte:{' '}
+            {url ? (
+              <a href={url} target="_blank" rel="noreferrer">
+                {texto}
+              </a>
+            ) : (
+              texto
+            )}
+          </p>
+        )
+      })}
+    </section>
   )
 }
 
