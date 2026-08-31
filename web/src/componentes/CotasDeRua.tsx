@@ -4,10 +4,12 @@ import type { LeituraAoVivo } from '../dados/tempoReal'
 // A tabela vem daqui, e não por propriedade: assim ela viaja no mesmo pedaço
 // que este componente, que só é carregado quando a busca aparece na tela.
 import { avisosCotasRuas, cotasRuas } from '../dados/cotasRuas'
+import { nomeDeCidade } from '../dados/carregar'
 import { frescor, idadeMin, textoIdade } from '../logica/tempoReal'
 import {
   atingidas,
   buscar,
+  cidadesComCotas,
   daCidade,
   faixaDaCidade,
   faltaPara,
@@ -48,7 +50,35 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   const [termo, setTermo] = useState('')
   const [simulado, setSimulado] = useState<number | null>(null)
 
-  if (dela.length === 0) return null
+  // Cidade sem cota levantada não some da tela.
+  //
+  // O cartão inteiro desaparecia — e quem viu a busca funcionando em Blumenau
+  // concluía que a rua dele não alaga, ou que o site não faz isso. Ausência de
+  // dado tem de aparecer como ausência de dado, que é a mesma regra do resto
+  // do projeto: "não sei" é resposta; sumir não é.
+  if (dela.length === 0) {
+    // Nomear as cidades cobertas: assim a pessoa confere na hora se a dela
+    // está na lista, em vez de só saber que "algumas" estão.
+    const cobertas = cidadesComCotas(cotas).map(nomeDeCidade)
+    return (
+      <section className="cartao">
+        <h2>A minha rua alaga com quantos metros?</h2>
+        <p className={estilos.vazio}>
+          <strong>Ainda não há cota de rua levantada para {cidade.nome}.</strong> Isso não quer
+          dizer que as ruas de lá não alagam — quer dizer que a tabela não existe aqui. As cotas
+          por rua saem das Defesas Civis municipais, e até agora estas publicaram a sua:{' '}
+          {cobertas.join(', ')}.
+        </p>
+        {cidade.id === 'itajai' ? (
+          <p className={estilos.vazio}>
+            Para Itajaí existe outra coisa, e ela está na <strong>tela da foz</strong>: o mapa das
+            manchas de nove enchentes, de 1983 a 2015, com a área que a água alcançou em cada uma.
+            Não é cota por rua, mas responde parte da mesma pergunta.
+          </p>
+        ) : null}
+      </section>
+    )
+  }
 
   // A idade decide se a leitura vale como "o nível de agora".
   //
