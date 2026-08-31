@@ -88,7 +88,15 @@ export default function CotasDeRua({ cidade, cotas, leitura, avisos }: Props) {
                 {c.bairro ? <span className={estilos.bairro}>{c.bairro}</span> : null}
                 {c.cota_m !== null ? (
                   <>
-                    <span className={estilos.cota}>alaga a partir de {metros(c.cota_m)}</span>
+                    <span className={estilos.cota}>
+                      alaga a partir de {metros(c.cota_m)}
+                      {/* A máxima é informação, não gatilho: quem decide sair
+                          de casa decide pela mínima, que é quando a água
+                          chega. */}
+                      {c.cota_max_m !== undefined
+                        ? ` · toda a rua a ${metros(c.cota_max_m)}`
+                        : ''}
+                    </span>
                     {nivelAtual !== null ? (
                       <span className={estilos.falta}>
                         {faltaPara(c.cota_m, nivelAtual) > 0

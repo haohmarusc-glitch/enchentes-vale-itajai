@@ -54,8 +54,9 @@ def base() -> Base:
                 le_json("enchentes.json"), le_json("cotas-ruas.json"))
 
 
-def resp(texto: str) -> str:
-    return responder(texto, base(), AGORA)
+def resp(texto: str, b=None) -> str:
+    """A base padrão é a real; passe outra para testar um dado que ainda não existe."""
+    return responder(texto, b if b is not None else base(), AGORA)
 
 
 class TestNivel(unittest.TestCase):
@@ -394,6 +395,33 @@ class TestLogDoLaco(unittest.TestCase):
         # já foi gasta pendurada na conexão.
         self.assertTrue(eh_timeout(self.ReadTimeout("x")))
         self.assertFalse(eh_timeout(ValueError("x")))
+
+
+class TestCotaMaxima(unittest.TestCase):
+    """
+    Rio do Sul publica mínima E máxima por logradouro. A máxima é informação;
+    o gatilho continua sendo a mínima, que é quando a água chega à rua.
+    """
+
+    def test_maxima_aparece_sem_virar_o_numero_principal(self):
+        b = base()
+        b.cotas_ruas = [{"cidade": "rio-do-sul", "rio": "itajai-acu", "rua": "1 DE MAIO",
+                         "bairro": None, "ponto": "ponto mais baixo", "cota_m": 8.12,
+                         "cota_max_m": 9.65, "fonte": "portal", "data_fonte": "2026-08-31",
+                         "confianca": "alta", "referencia": "régua"}]
+        t = resp("/rua Rio do Sul 1 de maio", b)
+        self.assertIn("Alaga a partir de <b>8,12 m</b>", t)
+        self.assertIn("toda a rua a 9,65 m", t)
+
+    def test_sem_maxima_a_frase_nao_aparece(self):
+        b = base()
+        b.cotas_ruas = [{"cidade": "rio-do-sul", "rio": "itajai-acu", "rua": "1 DE MAIO",
+                         "bairro": None, "ponto": "ponto mais baixo", "cota_m": 8.12,
+                         "fonte": "portal", "data_fonte": "2026-08-31",
+                         "confianca": "alta", "referencia": "régua"}]
+        t = resp("/rua Rio do Sul 1 de maio", b)
+        self.assertIn("8,12 m", t)
+        self.assertNotIn("toda a rua", t)
 
 
 if __name__ == "__main__":
