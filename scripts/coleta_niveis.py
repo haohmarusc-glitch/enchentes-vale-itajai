@@ -40,6 +40,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import re
 import shutil
 import sys
 from datetime import datetime, timezone
@@ -141,8 +142,34 @@ def chaves_existentes(arquivo: Path) -> set[tuple[str, str]]:
     return vistas
 
 
-def acumular(leituras: list[dict]) -> tuple[int, int]:
-    """Acrescenta só o que é medição nova. Devolve (novas, repetidas)."""
+def linha_da_serie(l: dict) -> dict:
+    """
+    O que vai para o `.ndjson`: nível OU chuva, conforme a leitura.
+
+    A chuva guarda as janelas e a marca de coerência. Guardar a incoerente
+    marcada, em vez de descartar, é o mesmo critério da tela: descartar calado
+    vira "não choveu" quando alguém for ler a série meses depois.
+    """
+    base = {
+        "estacao": l.get("estacao"),
+        "rio": l.get("rio"),
+        "cidade": l.get("cidade"),
+        "medido_em": l["medido_em"],
+    }
+    if "mm" in l:
+        return {**base, "mm": l["mm"], "coerente": l.get("coerente", True)}
+    return {**base, "nivel_m": l["nivel_m"]}
+
+
+def acumular(leituras: list[dict], prefixo: str = "") -> tuple[int, int]:
+    """
+    Acrescenta só o que é medição nova. Devolve (novas, repetidas).
+
+    `prefixo` separa as séries por tipo: o nível vai em `AAAA-MM.ndjson` e a
+    chuva em `chuva-AAAA-MM.ndjson`. São grandezas diferentes, com campos
+    diferentes, e misturá-las num arquivo só obrigaria todo leitor a adivinhar
+    qual linha é qual.
+    """
     SERIE.mkdir(parents=True, exist_ok=True)
     novas = repetidas = 0
     por_mes: dict[str, list[dict]] = {}
@@ -155,7 +182,7 @@ def acumular(leituras: list[dict]) -> tuple[int, int]:
         por_mes.setdefault(l["medido_em"][:7], []).append(l)
 
     for mes, do_mes in sorted(por_mes.items()):
-        arquivo = SERIE / f"{mes}.ndjson"
+        arquivo = SERIE / f"{prefixo}{mes}.ndjson"
         vistas = chaves_existentes(arquivo)
         linhas = []
         for l in do_mes:
@@ -164,13 +191,7 @@ def acumular(leituras: list[dict]) -> tuple[int, int]:
                 repetidas += 1
                 continue
             vistas.add(chave)
-            linhas.append(json.dumps({
-                "estacao": l.get("estacao"),
-                "rio": l.get("rio"),
-                "cidade": l.get("cidade"),
-                "medido_em": l["medido_em"],
-                "nivel_m": l["nivel_m"],
-            }, ensure_ascii=False))
+            linhas.append(json.dumps(linha_da_serie(l), ensure_ascii=False))
             novas += 1
         if linhas:
             with open(arquivo, "a", encoding="utf-8") as f:
@@ -179,12 +200,21 @@ def acumular(leituras: list[dict]) -> tuple[int, int]:
     return novas, repetidas
 
 
+#: O `AAAA-MM` no fim do nome do arquivo de série, com ou sem prefixo.
+MES_NO_NOME = re.compile(r"(\d{4}-\d{2})$")
+
+
 def compactar() -> int:
     """Comprime os meses já fechados. O mês corrente fica intocado."""
     mes_atual = datetime.now().strftime("%Y-%m")
     feitos = 0
     for arquivo in sorted(SERIE.glob("*.ndjson")):
-        if arquivo.stem >= mes_atual:
+        # O mês vem do FIM do nome, não do nome inteiro. Com a série de chuva o
+        # stem virou `chuva-2026-08`, e comparar isso com `2026-08` como texto
+        # dá sempre "maior" — "c" vem depois de "2" —, então nenhum arquivo de
+        # chuva jamais seria compactado, em silêncio.
+        mes = MES_NO_NOME.search(arquivo.stem)
+        if not mes or mes.group(1) >= mes_atual:
             continue
         destino = arquivo.with_suffix(".ndjson.gz")
         if destino.exists():
@@ -258,6 +288,14 @@ def main() -> int:
     # DCSC na frente.
     chuva = chuva + baixar_chuva_sc()
 
+    # A chuva também vira série. Sem isto ela vivia só no ultimo.json, que é
+    # sobrescrito a cada rodada: quinze minutos depois, o dado tinha sumido.
+    # Com o nível de montante explicando pouco o de jusante (r² = 0,21), a
+    # chuva é a candidata mais forte a preditor de verdade — e preditor se
+    # constrói com série pareada aos picos, que só existe se for guardada
+    # desde já. Um ciclo perdido é histórico perdido para sempre.
+    novas_chuva, repetidas_chuva = acumular(chuva, prefixo="chuva-")
+
     SERIE.mkdir(parents=True, exist_ok=True)
     ULTIMO.write_text(
         json.dumps(
@@ -283,8 +321,9 @@ def main() -> int:
         + "\n",
         encoding="utf-8",
     )
-    print(f"\n{novas} medição(ões) nova(s), {repetidas} já registrada(s).")
-    print(f"{len(chuva)} estação(ões) com chuva publicada.")
+    print(f"\n{novas} medição(ões) nova(s) de nível, {repetidas} já registrada(s).")
+    print(f"{len(chuva)} estação(ões) com chuva publicada; "
+          f"{novas_chuva} nova(s) na série, {repetidas_chuva} já registrada(s).")
     return 0
 
 
