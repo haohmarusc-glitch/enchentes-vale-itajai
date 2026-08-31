@@ -3,8 +3,7 @@ import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
 import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
-import CotasDeRua from '../componentes/CotasDeRua'
-import { avisosCotasRuas, cidadesDoRio, cotasRuas, eventosDoRio, rio, trechos } from '../dados/carregar'
+import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
 import estilos from './TelaRio.module.css'
@@ -16,6 +15,16 @@ import estilos from './TelaRio.module.css'
  * rede ruim, é essa informação que precisa chegar.
  */
 const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
+
+/**
+ * A busca "minha rua" carrega à parte, e leva a tabela junto.
+ *
+ * São 611 cotas e crescendo — Rio do Sul sozinha publica 554 logradouros. No
+ * pacote inicial isso é um quarto de megabyte que todo mundo baixa e
+ * interpreta, inclusive quem abriu o site no celular, no meio da chuva, só
+ * para ver o nível do rio.
+ */
+const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
@@ -113,12 +122,12 @@ export default function TelaRio({ rioId }: { rioId: string }) {
       ) : null}
 
       {selecionada ? (
-        <CotasDeRua
-          cidade={selecionada}
-          cotas={cotasRuas}
-          leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
-          avisos={avisosCotasRuas}
-        />
+        <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
+          <CotasDeRua
+            cidade={selecionada}
+            leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
+          />
+        </Suspense>
       ) : null}
 
       {selecionada ? (

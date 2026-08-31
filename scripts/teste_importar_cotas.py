@@ -15,7 +15,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from importar_cotas_rio_do_sul import (
-    TETO_DA_FONTE, como_registro, extrair, mesclar, robots_permite,
+    TETO_DA_FONTE, como_registro, cota_de_inundacao_da_cidade, extrair, mesclar,
+    robots_permite,
 )
 
 
@@ -82,6 +83,42 @@ class TestRegistro(unittest.TestCase):
                           "fonte", "2026-08-31")
         self.assertNotIn("cota_max_m", r)
         self.assertIn("teto da escala", r["nota"])
+
+    def test_cota_abaixo_do_piso_da_cidade_entra_com_ressalva(self):
+        """
+        A fonte publica rua alagando a 3,11 m e a menor cota de Rio do Sul é
+        4,50 m — a régua marca mais que isso num dia seco. O dado entra, porque
+        é oficial e publicado, mas entra dizendo que precisa de conferência:
+        sem a nota, "este nível já foi alcançado" apareceria com tempo bom.
+        """
+        r = como_registro({"rua": "POUSO REDONDO", "min": 3.11, "max": 7.0},
+                          "fonte", "2026-08-31", piso_da_cidade=4.5)
+        self.assertEqual(r["cota_m"], 3.11)
+        self.assertIn("ABAIXO", r["nota"])
+        self.assertIn("não foi conferida", r["nota"])
+
+    def test_cota_acima_do_piso_nao_ganha_ressalva(self):
+        r = como_registro({"rua": "1 DE MAIO", "min": 8.12, "max": 9.65},
+                          "fonte", "2026-08-31", piso_da_cidade=4.5)
+        self.assertNotIn("nota", r)
+
+    def test_as_duas_ressalvas_cabem_no_mesmo_registro(self):
+        r = como_registro({"rua": "ESTRANHA", "min": 3.0, "max": TETO_DA_FONTE},
+                          "fonte", "2026-08-31", piso_da_cidade=4.5)
+        self.assertIn("teto da escala", r["nota"])
+        self.assertIn("ABAIXO", r["nota"])
+        self.assertNotIn("cota_max_m", r)
+
+    def test_sem_piso_conhecido_nada_e_inventado(self):
+        r = como_registro({"rua": "X", "min": 3.0, "max": None},
+                          "fonte", "2026-08-31", piso_da_cidade=None)
+        self.assertNotIn("nota", r)
+
+    def test_o_piso_vem_do_arquivo_e_nao_de_numero_cravado(self):
+        """Se a cota de Rio do Sul mudar em estacoes.json, a ressalva acompanha."""
+        piso = cota_de_inundacao_da_cidade()
+        self.assertIsNotNone(piso)
+        self.assertGreater(piso, 0)
 
     def test_todo_registro_leva_fonte_e_confianca(self):
         r = como_registro({"rua": "X", "min": 9.0, "max": None}, "portal", "2026-08-31")

@@ -81,6 +81,19 @@
   margin-top: 0.8rem;
 }
 
+/* Mesma cara do aviso de cota ausente: as duas dizem "confira antes de agir". */
+.ressalva {
+  display: block;
+  margin-top: 0.35rem;
+  color: #6b4f14;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  border-radius: 5px;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
 .fonte {
   color: #7a8899;
   font-size: 0.78rem;
