@@ -39,6 +39,7 @@ const ORIGENS: Origem[] = [
  */
 export default function TelaItajai() {
   const [horarios, setHorarios] = useState<Record<string, string>>({})
+  const [mapaAberto, setMapaAberto] = useState(false)
 
   return (
     <>
@@ -156,15 +157,48 @@ export default function TelaItajai() {
       </section>
       <ReguasDeItajai />
 
-      <Suspense
-        fallback={
-          <section className="cartao">
-            <p>Carregando o mapa das enchentes…</p>
-          </section>
-        }
-      >
-        <MapaManchas />
-      </Suspense>
+      {/*
+        O mapa só é montado quando a pessoa pede. Antes ele era renderizado de
+        imediato: mesmo com o chunk em `lazy`, o componente aparecia na primeira
+        pintura, então TODO visitante baixava o Leaflet e puxava dezenas de
+        tiles do OpenStreetMap — quisesse ver o mapa ou não.
+
+        Isso custa duas vezes, e as duas doem no mesmo momento. Para quem abre o
+        site no celular durante a chuva, é download que atrasa justamente o
+        número que a pessoa veio buscar, na hora em que a rede está pior. E para
+        o OpenStreetMap, cujos tiles públicos têm política que desencoraja uso
+        pesado, é tráfego que multiplica numa noite de enchente — exatamente
+        quando o site não pode cair.
+
+        Quem quer o mapa clica e recebe. Quem quer o nível do rio não paga por
+        um mapa de 1983.
+      */}
+      {mapaAberto ? (
+        <Suspense
+          fallback={
+            <section className="cartao">
+              <p>Carregando o mapa das enchentes…</p>
+            </section>
+          }
+        >
+          <MapaManchas />
+        </Suspense>
+      ) : (
+        <section className="cartao">
+          <h2>Até onde a água chegou</h2>
+          <p className={estilos.introMapa}>
+            Áreas atingidas em nove enchentes de Itajaí, entre 1983 e 2015, publicadas pela{' '}
+            <strong>própria prefeitura</strong> na organização GeoItajaí, sob licença MIT.
+          </p>
+          <button type="button" className={estilos.abrirMapa} onClick={() => setMapaAberto(true)}>
+            Ver o mapa das áreas atingidas
+          </button>
+          <p className={estilos.avisoMapa}>
+            O mapa fica fora do carregamento inicial de propósito: ele baixa bem mais dados que o
+            resto da página, e numa noite de chuva quem abre o site quer primeiro o nível do rio.
+          </p>
+        </section>
+      )}
 
     </>
   )

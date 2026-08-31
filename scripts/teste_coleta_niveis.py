@@ -15,6 +15,7 @@ import sys
 import tempfile
 import types
 import unittest
+from datetime import datetime, timedelta
 from pathlib import Path
 from unittest import mock
 
@@ -306,6 +307,116 @@ class TestChuvaDeSCEntraNaLista(unittest.TestCase):
         outra = {"estacao": "Brusque Estação Guarani", "cidade": "brusque"}
         nomes = {l["estacao"] for l in de_sc} | {outra["estacao"]}
         self.assertEqual(len(nomes), 2, "as duas estações de Brusque têm de ser distintas")
+
+
+class TestSerieDeChuva(unittest.TestCase):
+    """
+    A chuva vivia só no ultimo.json, sobrescrito a cada rodada: quinze minutos
+    depois, o dado tinha sumido. Com o nível de montante explicando pouco o de
+    jusante (r² = 0,21), a chuva é a candidata mais forte a preditor — e
+    preditor se constrói com série, que só existe se for guardada desde já.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        p = mock.patch.object(coleta_niveis, "SERIE", Path(self.tmp.name))
+        p.start()
+        self.addCleanup(p.stop)
+
+    def chuva(self, estacao="P-1", medido="2026-08-31T17:49:23", h24=19.4, coerente=True):
+        return {"estacao": estacao, "rio": None, "cidade": "blumenau", "medido_em": medido,
+                "mm": {"min10": None, "h1": 1.0, "h12": None, "h24": h24, "h48": None},
+                "coerente": coerente}
+
+    def nivel(self, estacao="Brusque", medido="2026-08-31T18:05:00", m=3.29):
+        return {"estacao": estacao, "rio": "itajai-mirim", "cidade": "brusque",
+                "medido_em": medido, "nivel_m": m}
+
+    def arquivos(self):
+        return sorted(p.name for p in Path(self.tmp.name).iterdir())
+
+    def test_chuva_e_nivel_vao_para_arquivos_SEPARADOS(self):
+        """Grandezas diferentes, campos diferentes: juntar obrigaria a adivinhar."""
+        coleta_niveis.acumular([self.nivel()])
+        coleta_niveis.acumular([self.chuva()], prefixo="chuva-")
+        self.assertEqual(self.arquivos(), ["2026-08.ndjson", "chuva-2026-08.ndjson"])
+
+    def test_a_linha_de_chuva_guarda_as_janelas(self):
+        coleta_niveis.acumular([self.chuva()], prefixo="chuva-")
+        linha = json.loads((Path(self.tmp.name) / "chuva-2026-08.ndjson").read_text().strip())
+        self.assertEqual(linha["mm"]["h24"], 19.4)
+        self.assertNotIn("nivel_m", linha, "chuva não tem nível")
+
+    def test_a_linha_de_nivel_nao_ganha_campo_de_chuva(self):
+        coleta_niveis.acumular([self.nivel()])
+        linha = json.loads((Path(self.tmp.name) / "2026-08.ndjson").read_text().strip())
+        self.assertEqual(linha["nivel_m"], 3.29)
+        self.assertNotIn("mm", linha)
+
+    def test_leitura_incoerente_e_guardada_MARCADA(self):
+        """
+        Descartar calado viraria "não choveu" para quem ler a série meses
+        depois. É o mesmo critério da tela.
+        """
+        coleta_niveis.acumular([self.chuva(h24=0.0, coerente=False)], prefixo="chuva-")
+        linha = json.loads((Path(self.tmp.name) / "chuva-2026-08.ndjson").read_text().strip())
+        self.assertFalse(linha["coerente"])
+
+    def test_a_mesma_medicao_nao_entra_duas_vezes(self):
+        self.assertEqual(coleta_niveis.acumular([self.chuva()], prefixo="chuva-"), (1, 0))
+        self.assertEqual(coleta_niveis.acumular([self.chuva()], prefixo="chuva-"), (0, 1))
+
+    def test_sem_carimbo_nao_vira_linha(self):
+        c = self.chuva(); c["medido_em"] = None
+        self.assertEqual(coleta_niveis.acumular([c], prefixo="chuva-"), (0, 0))
+        self.assertEqual(self.arquivos(), [])
+
+    def test_a_chuva_nao_polui_a_serie_de_nivel(self):
+        """Sem prefixo elas cairiam no mesmo arquivo e o leitor teria de adivinhar."""
+        coleta_niveis.acumular([self.nivel()])
+        coleta_niveis.acumular([self.chuva(medido="2026-08-31T18:05:00")], prefixo="chuva-")
+        do_nivel = (Path(self.tmp.name) / "2026-08.ndjson").read_text().strip().splitlines()
+        self.assertEqual(len(do_nivel), 1)
+        self.assertIn("nivel_m", do_nivel[0])
+
+
+class TestCompactarComPrefixo(unittest.TestCase):
+    """
+    O mês vem do FIM do nome. Com a série de chuva o stem virou `chuva-2026-08`,
+    e comparar isso com `2026-08` como texto dá sempre "maior" — "c" vem depois
+    de "2" —, então nenhum arquivo de chuva jamais seria compactado, em silêncio.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.dir = Path(self.tmp.name)
+        p = mock.patch.object(coleta_niveis, "SERIE", self.dir)
+        p.start()
+        self.addCleanup(p.stop)
+        hoje = datetime.now()
+        self.atual = hoje.strftime("%Y-%m")
+        self.passado = (hoje.replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
+
+    def criar(self, *nomes):
+        for n in nomes:
+            (self.dir / n).write_text('{"estacao":"x","medido_em":"2020-01-01T00:00:00"}\n')
+
+    def test_compacta_as_duas_series_do_mes_fechado(self):
+        self.criar(f"{self.passado}.ndjson", f"chuva-{self.passado}.ndjson")
+        self.assertEqual(coleta_niveis.compactar(), 2)
+        sobrou = sorted(p.name for p in self.dir.iterdir())
+        self.assertEqual(sobrou, [f"{self.passado}.ndjson.gz", f"chuva-{self.passado}.ndjson.gz"])
+
+    def test_o_mes_corrente_fica_intocado_nas_duas(self):
+        self.criar(f"{self.atual}.ndjson", f"chuva-{self.atual}.ndjson")
+        self.assertEqual(coleta_niveis.compactar(), 0)
+
+    def test_nome_sem_mes_no_fim_e_ignorado(self):
+        """Arquivo estranho na pasta não vira lixo compactado."""
+        self.criar("qualquer-coisa.ndjson")
+        self.assertEqual(coleta_niveis.compactar(), 0)
 
 
 if __name__ == "__main__":
