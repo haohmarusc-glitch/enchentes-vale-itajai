@@ -1,0 +1,58 @@
+.bloco {
+  display: block;
+  margin: 0.35rem 0;
+}
+
+.titulo {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.aviso {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+
+.lista {
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.regua {
+  display: block;
+  margin: 0.3rem 0;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--borda, #d8d8de);
+}
+
+.nome {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.cotas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+}
+
+.cota {
+  font-size: 0.92rem;
+}
+
+.mare {
+  display: block;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #6a6a72;
+}
+
+.explicacao {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}

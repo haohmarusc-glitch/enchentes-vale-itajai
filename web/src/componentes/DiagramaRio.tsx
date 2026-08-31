@@ -1,6 +1,9 @@
 import type { Cidade, Trecho } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade } from '../dados/tempoReal'
+import { estacoesTempoReal } from '../dados/carregar'
+import { reguasComCota } from '../logica/reguas'
+import ReguasDaCidade from './ReguasDaCidade'
 import { chuvaDaCidade } from '../logica/chuva'
 import NivelAoVivo from './NivelAoVivo'
 import ChuvaAoVivo from './ChuvaAoVivo'
@@ -59,6 +62,10 @@ export default function DiagramaRio({
         const chuva = chuvaDaCidade(tempoReal.chuva, cidade.id)
         const selecionada = cidadeSelecionada === cidade.id
         const cotas = Object.entries(cidade.cotas_m)
+        // Cidade sem cota própria pode ter cotas oficiais por régua — Itajaí
+        // tem onze, Ilhota tem uma. Dizer "não levantadas" nesses casos seria
+        // esconder dado publicado.
+        const reguas = reguasComCota(estacoesTempoReal, rioId, cidade.id)
 
         return (
           <li key={cidade.id} className={estilos.item}>
@@ -94,9 +101,13 @@ export default function DiagramaRio({
                         </span>
                       ))}
                     </span>
-                  ) : (
+                  ) : reguas.length === 0 ? (
                     <span className={estilos.semDado}>cotas de referência não levantadas</span>
-                  )}
+                  ) : null}
+
+                  {reguas.length > 0 ? (
+                    <ReguasDaCidade reguas={reguas} cidade={cidade.nome} />
+                  ) : null}
 
                   {cidade.sub_bacia || cidade.km_da_foz !== undefined ? (
                     <span className={estilos.linhaMeta}>

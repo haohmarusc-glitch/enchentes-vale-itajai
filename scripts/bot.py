@@ -186,6 +186,43 @@ class Base:
             return exatas
         return [c for c in self.cidades() if alvo in sem_acento(c["nome"]) or alvo in c["id"]]
 
+    def reguas_com_cota(self, cidade_id: str) -> list[dict]:
+        """
+        As réguas da cidade que têm cota cadastrada, em qualquer calha.
+
+        Existe porque `cotas_m` da cidade só serve para cidade de uma régua só.
+        Itajaí tem onze — duas no Açu, quatro no Mirim, três em ribeirões e a de
+        Limoeiro — e Ilhota tem uma que mora em `estacoes_tempo_real`. Sem isto,
+        o bot respondia "as cotas desta cidade ainda não foram levantadas" para
+        duas cidades cujas cotas estão publicadas no Plano de Contingência.
+        Dizer que não há dado quando há manda a pessoa procurar em outro lugar
+        na hora em que ela tem menos tempo.
+
+        Pluviômetro fica de fora: ele mede chuva, e cota ao lado dele seria
+        outra grandeza.
+        """
+        saida = []
+        for e in self.estacoes.get("estacoes_tempo_real") or []:
+            if e.get("cidade") != cidade_id or e.get("tipo") == "pluviometro":
+                continue
+            cotas = {k: float(v) for k, v in (e.get("cotas_m") or {}).items()
+                     if isinstance(v, (int, float))}
+            if not cotas:
+                continue
+            nome = e.get("nome_no_plano") or e.get("titulo") or ""
+            codigo = e.get("codigo")
+            if codigo and not nome.startswith(codigo):
+                nome = f"{codigo} — {nome}"
+            saida.append({
+                "nome": nome,
+                "cotas": cotas,
+                # Só `false` explícito tira do aviso automático; ausente é
+                # régua comum de rio, como a de Ilhota.
+                "alerta_automatico": e.get("alerta_automatico") is not False,
+                "fonte": e.get("fonte_cotas"),
+            })
+        return saida
+
     def leituras_da_cidade(self, cidade_id: str) -> list[dict]:
         return [l for l in (self.ultimo.get("leituras") or []) if l.get("cidade") == cidade_id]
 
@@ -499,19 +536,72 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     return linhas
 
 
+ORDEM_COTAS = ("atencao", "alerta", "emergencia", "inundacao", "inundacao_historica")
+
+
+def ordenar_cotas(cotas: dict) -> list[tuple[str, float]]:
+    """Na ordem em que a água sobe; cota nova, ainda sem posição, vai no fim."""
+    conhecidas = [k for k in ORDEM_COTAS if k in cotas]
+    outras = sorted(k for k in cotas if k not in ORDEM_COTAS)
+    return [(k, cotas[k]) for k in conhecidas + outras]
+
+
+def linhas_de_cotas(cotas: dict) -> list[str]:
+    return [f"\n{ROTULO_COTA.get(k, k)}: <b>{metros(v)}</b>" for k, v in ordenar_cotas(cotas)]
+
+
 def resposta_cotas(base: Base, cidade: dict) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — cotas de referência"]
     cotas = cidade.get("cotas_m") or {}
-    if not cotas:
+    reguas = base.reguas_com_cota(cidade["id"])
+
+    if cotas:
+        linhas.extend(linhas_de_cotas(cotas))
+        if cidade.get("regua"):
+            linhas.append(f"\n\nRégua: {notificador.esc(cidade['regua'])}")
+    elif not reguas:
         linhas.append("\nAs cotas desta cidade ainda não foram levantadas.")
         return linhas
-    for chave in ("atencao", "alerta", "emergencia", "inundacao", "inundacao_historica"):
-        if chave in cotas:
-            linhas.append(f"\n{ROTULO_COTA.get(chave, chave)}: <b>{metros(cotas[chave])}</b>")
-    if cidade.get("regua"):
-        linhas.append(f"\n\nRégua: {notificador.esc(cidade['regua'])}")
-    linhas.append("\n<i>Cada cidade tem sua própria régua: estes metros não se "
-                  "comparam com os de outra cidade.</i>")
+
+    if reguas:
+        if cotas:
+            linhas.append("\n\n<b>Outras réguas desta cidade</b>")
+        else:
+            # Cidade sem cota única: são as réguas que têm cota, cada uma com
+            # seu zero. Escolher uma como "a cota da cidade" inventaria um
+            # número que não existe em documento nenhum.
+            plural = "s" if len(reguas) > 1 else ""
+            linhas.append(f"\n\n{len(reguas)} régua{plural} com cota oficial cadastrada:")
+        for r in reguas:
+            marca = "" if r["alerta_automatico"] else " *"
+            valores = " · ".join(
+                f"{ROTULO_COTA.get(k, k)} {metros(v)}"
+                for k, v in ordenar_cotas(r["cotas"])
+            )
+            # Uma linha por régua, e não um bloco: com onze réguas, o bloco
+            # estourava o limite do Telegram e a mensagem chegava cortada
+            # justamente na última régua.
+            linhas.append(f"\n\n<b>{notificador.esc(r['nome'])}</b>{marca}\n{valores}")
+
+        fontes = []
+        for r in reguas:
+            if r["fonte"] and r["fonte"] not in fontes:
+                fontes.append(r["fonte"])
+        # Cota sem fonte é número solto: quem quiser conferir precisa saber de
+        # que documento ele saiu.
+        for f in fontes:
+            linhas.append(f"\n\n<i>Fonte: {notificador.esc(f)}</i>")
+
+        if any(not r["alerta_automatico"] for r in reguas):
+            # A explicação sai UMA vez, no fim: repetida em cada régua ela
+            # ocupava metade da mensagem.
+            linhas.append("\n\n<i>* Régua no estuário: sobe e desce com a maré, e passa da "
+                          "cota de atenção em dia de sol. A cota é oficial, mas cruzá-la nessas "
+                          "réguas, sozinha, não quer dizer que há cheia — por isso o bot não "
+                          "dispara aviso automático por elas.</i>")
+
+    linhas.append("\n\n<i>Cada régua tem seu próprio zero: estes metros não se "
+                  "comparam com os de outra régua nem com os de outra cidade.</i>")
     return linhas
 
 
@@ -581,11 +671,13 @@ def responder(texto: str, base: Base, agora: datetime) -> str | None:
         return (f"“{notificador.esc(argumento)}” casa com "
                 f"{len(achadas)} cidades. Seja mais específico.")
 
-    if comando in ("nivel", "chuva"):
-        # Itajaí aparece nos dois rios. Nível e chuva são por CIDADE — a
+    if comando in ("nivel", "chuva", "cotas"):
+        # Itajaí aparece nos dois rios. Nível, chuva e cota são por CIDADE — a
         # pergunta "quanto choveu em Itajaí" tem uma resposta só, e repeti-la
-        # duas vezes fazia a mensagem parecer defeito. Previsão e cotas
-        # dependem do rio e seguem saindo uma vez por rio.
+        # duas vezes fazia a mensagem parecer defeito. A cota entrou aqui
+        # quando passou a listar as réguas: as onze de Itajaí, com os ribeirões
+        # junto, saem de uma vez e não picadas por calha. Previsão continua
+        # saindo uma vez por rio, porque ela É por rio.
         vistas: set[str] = set()
         unicas = []
         for c in achadas:

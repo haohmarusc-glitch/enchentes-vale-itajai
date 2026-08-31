@@ -18,6 +18,7 @@ import type {
   CotasRuas,
   Enchentes,
   Estacoes,
+  EstacaoTempoReal,
   Evento,
   Rio,
   TabuaMare,
@@ -156,6 +157,13 @@ export function cidadesComHistorico(rioId: string): string[] {
  * Elas aparecem nos dados mas nunca entram no encadeamento de tempo de descida.
  */
 export const afluentesMonitorados: AfluenteMonitorado[] = estacoes.afluentes_monitorados ?? []
+
+/**
+ * As estações de tempo real cadastradas — é nelas que ficam as cotas oficiais
+ * das cidades com mais de uma régua (Itajaí) ou cuja régua não é a da cidade
+ * (Ilhota). Ver `logica/reguas.ts` para o porquê de não escolher uma delas.
+ */
+export const estacoesTempoReal: EstacaoTempoReal[] = estacoes.estacoes_tempo_real ?? []
 
 const RE_QUANDO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/
 
