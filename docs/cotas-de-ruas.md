@@ -26,6 +26,11 @@ A cota deste projeto é o **nível do rio na régua** a partir do qual a rua ala
 grandezas opostas; ligar uma na outra exige perfil de linha d'água. Copiado sem isso, produziria o
 número que faz alguém dormir em casa numa noite em que devia sair. **Não usar.**
 
+A mesma armadilha reapareceu no KML de Brusque, por outro caminho e com outra cara — ver
+"O KML do My Maps não passou", na seção de Brusque. Lá o arquivo é uma **mistura**: tem cota de
+régua verdadeira e valor de outra grandeza no mesmo campo, o que é pior do que ser todo errado,
+porque parte dele confere.
+
 ### O que a importação de Rio do Sul ensinou
 
 A tabela oficial publica duas ruas alagando **abaixo do nível normal do rio** (3,11 m e 3,26 m, com
@@ -175,6 +180,51 @@ Tarefa: `scripts/baixar_mapas_itajai.py` — baixar os 5 pacotes + PDFs para `da
   do Loteamento Malossi/Santa Rita. Bairros primeiro atingidos: Taboão, Pamplona, Bela Aliança,
   Santa Rita; depois Centro, Guarani, Santa Terezinha, Rio Branco, Maluche, Dom Joaquim.
 - Afluente relevante: rio Guabiruba, com estação própria (nova, 2025).
+
+#### O KML do My Maps não passou — 1.679 pontos recusados (31/08/2026)
+
+Chegou ao projeto o KML do Google My Maps de cotas de Brusque: 3.688 marcadores em quatro pastas.
+Só a pasta **"Cotas de Cheia 2011"** tem números — 1.679 pontos com um campo `cota` e coordenada.
+Junto veio um conversor que gravaria todos eles com `referencia: "régua"` e `confianca: "alta"`.
+
+Essa afirmação foi testada antes de qualquer importação, por
+`scripts/analisar_kml_brusque.py`, sobre `data/brutos/brusque-mymaps-cotas.json`. **Não se
+sustenta.** Três medidas, todas refazíveis rodando o script:
+
+| Medida | Resultado |
+|---|---|
+| Pontos acima do pico de **2011** em Brusque (10,03 m, `confianca: alta`) | **1.076 de 1.679 = 64,1%** |
+| Pontos acima do **maior pico da série** (10,50 m, ago/1984) | 920 de 1.679 = 54,8% |
+| Maior valor do arquivo | **29,53 m** — 19 m acima do recorde histórico |
+| Ruas em comum com a lista oficial que batem no centavo | **4 de 13** (P por acaso = 0,0001) |
+| Mediana da cota, 0–2 km da régua → 4–8 km | 10,16 m → **12,43 m** |
+
+A pasta se contradiz: chama-se "Cotas de Cheia 2011" e dois terços dos seus pontos trazem valor
+acima do que o rio marcou em 2011. Se fossem níveis de régua daquela cheia, esses pontos estavam
+secos.
+
+Ao mesmo tempo, **parte do arquivo é régua de verdade**. Quatro ruas batem no centavo com a lista
+oficial da Defesa Civil — Coelho Neto 5,64 · México 7,80 · Francisco Heil 7,90 · Padre Gracher 7,95 —
+e em três delas o valor que bate é o **menor** daquela rua no KML. Um teste de embaralhamento
+(20.000 rodadas) põe a chance de isso ser acaso em 0,0001. As outras nove ruas em comum ficam de
+0,5 m a 2,3 m **acima** do nosso valor, sem deslocamento constante — então também não é uma
+referência única deslocada, como o caso régua/IBGE de Blumenau.
+
+O que sobra é uma **mistura**, sem campo que separe uma coisa da outra ponto a ponto. Importar
+entregaria, a quem procura a própria rua, ou a cota certa ou um número que pode errar por até 19 m.
+É a mesma armadilha do `Relevo_Ponto_Cotado_Altimetrico` de Itajaí, descrita na seção 0: um campo
+chamado `cota` que não é nível de régua. A subida da mediana com a distância do rio é o
+comportamento de altitude do terreno.
+
+**Brusque fica com os 27 pontos que já tem.** O bruto ficou no repositório para a recusa ser
+conferível, e `scripts/teste_analisar_kml_brusque.py` (36 testes) trava a conclusão: se alguém
+apontar um importador para esse arquivo, os testes quebram.
+
+**O que resolveria:** o KML **original**. A conversão que chegou aqui preservou só `pasta`, `cota`,
+`rua`, `bairro` e `coord`; o original trazia ainda `obs`, `esquina` e coordenadas UTM
+(`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa. O original
+não está mais disponível. Alternativa melhor: a planilha da Defesa Civil de Brusque, que já era o
+pedido pendente desta seção.
 
 ### Rio do Sul — tabela "Cota de Cheias por Rua" com exportação
 - Portal: `https://defesacivil.riodosul.sc.gov.br/` → "Cota de Cheias por Rua" (555 itens, campos
