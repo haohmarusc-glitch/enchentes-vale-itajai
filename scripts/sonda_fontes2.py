@@ -211,6 +211,10 @@ def sondar_alertablu() -> None:
 
 
 def main() -> int:
+    # Sem isto, `python3 sonda.py | tee arquivo.txt` — que é como a sonda é
+    # usada — guarda tudo em bloco e só descarrega no fim: quem roda fica
+    # olhando um terminal parado por meio minuto, sem saber se travou.
+    sys.stdout.reconfigure(line_buffering=True)
     try:
         import requests  # noqa: F401
     except ImportError:
