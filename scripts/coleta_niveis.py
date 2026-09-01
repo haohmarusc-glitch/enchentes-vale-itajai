@@ -154,6 +154,25 @@ def baixar_nivel_alertablu(leituras: list[dict]) -> list[dict]:
         print(f"aviso: resgate de Blumenau pelo AlertaBlu falhou ({e}).", file=sys.stderr)
         return []
 
+
+def baixar_nivel_asthon() -> list[dict]:
+    """
+    Nível de Vidal Ramos pela API Asthon do Alto Vale — a única cidade sem nível
+    na tela que a Asthon cobre com régua própria (mesmo zero das cotas). Só ela,
+    por lista fechada de estação; ver `coleta_asthon.py`.
+
+    Falha aqui NUNCA derruba a coleta: devolve lista vazia e o resto segue. É
+    nível de mais uma cidade, não a fonte principal.
+    """
+    try:
+        from coleta_asthon import coletar
+
+        return coletar()
+    except Exception as e:
+        print(f"aviso: Asthon (Vidal Ramos) não coletada ({e}).", file=sys.stderr)
+        return []
+
+
 def estacoes_do_ultimo() -> set[str]:
     """Os títulos que vieram na coleta anterior, do ultimo.json que vamos trocar."""
     try:
@@ -377,6 +396,10 @@ def main() -> int:
     except Exception as e:  # rede, HTTP, HTML inesperado
         print(f"ERRO ao coletar: {e}", file=sys.stderr)
         return 1
+
+    # Vidal Ramos (Asthon) entra depois: fonte à parte, e a falha dela já é
+    # engolida em baixar_nivel_asthon, então não pode derrubar a coleta acima.
+    leituras = leituras + baixar_nivel_asthon()
 
     for l in leituras:
         alvo = f"{l['cidade']} ({l['rio']})" if l.get("cidade") else "não mapeada"
