@@ -207,7 +207,7 @@ export default function DiagramaRio({
 
             {proxima ? (
               <div className={estilos.seta}>
-                <span className={estilos.setaLinha} aria-hidden="true" />
+                <span className={`${estilos.setaLinha} ${estilos[`seg_${faixa}`] ?? ''}`} aria-hidden="true" />
                 <span className={estilos.setaTexto}>
                   {trecho && alvo ? (
                     <>
