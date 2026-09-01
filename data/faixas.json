@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "descricao": "Fonte ÚNICA dos textos das faixas de nível. O site lê daqui (web/src/componentes/LegendaFaixas.tsx); nenhum texto de faixa deve ser escrito à mão em outro lugar.",
+    "regra": "O site DESCREVE a faixa e remete à Defesa Civil (199). NUNCA dá ordem de evacuação — quem recomenda ação é a Defesa Civil de cada cidade. As únicas chamadas permitidas são 'Siga a Defesa Civil' e 'ligue 199'.",
+    "cor": "A COR é a faixa de cada cidade NA RÉGUA DELA, não o nível em metros. Cidades na mesma cor NÃO estão no mesmo metro. 'sem-dado' é cinza explícito, nunca verde, e nunca some."
+  },
+  "disclaimer": "A cor é a faixa de cada cidade na régua dela — não o nível em metros. Cidades em cores iguais não estão no mesmo metro.",
+  "rotulo_legenda_inundacao": "Inundação / Emergência",
+  "ordem_legenda": ["normal", "atencao", "alerta", "inundacao", "sem-dado", "varias"],
+  "faixas": {
+    "normal": {
+      "rotulo": "Abaixo da atenção",
+      "acao": "Rio abaixo da cota de atenção."
+    },
+    "atencao": {
+      "rotulo": "Atenção",
+      "acao": "Nível na faixa de atenção desta régua. Siga a Defesa Civil."
+    },
+    "alerta": {
+      "rotulo": "Alerta",
+      "acao": "Nível na faixa de alerta desta régua. Siga a Defesa Civil; ligue 199 em emergência."
+    },
+    "inundacao": {
+      "rotulo": "Inundação",
+      "acao": "Nível na faixa de inundação desta régua. Siga a Defesa Civil e ligue 199."
+    },
+    "emergencia": {
+      "rotulo": "Emergência",
+      "acao": "Nível na faixa de inundação desta régua. Siga a Defesa Civil e ligue 199."
+    },
+    "sem-dado": {
+      "rotulo": "Sem cota / sem leitura",
+      "acao": "Sem dado para dizer a faixa aqui — não conclua que está seguro."
+    },
+    "varias": {
+      "rotulo": "Várias réguas",
+      "acao": "Vários pontos de medição; veja cada régua abaixo."
+    }
+  }
+}
