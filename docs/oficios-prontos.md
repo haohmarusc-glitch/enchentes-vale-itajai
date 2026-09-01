@@ -11,7 +11,6 @@ Situação:
 |---|---|---|---|
 | C1 | Defesa Civil de Brusque | defesacivil@brusque.sc.gov.br | ✅ enviado 31/08 |
 | C2 | Defesa Civil / GEOItajaí | (protocolo da Prefeitura / Defesa Civil de Itajaí) | a enviar |
-| C3 | UNIVALI — marégrafo | michelena@univali.br; ariadne@univali.br | a reenviar |
 | C4 | Defesa Civil de Gaspar | defesacivil@gaspar.sc.gov.br | a enviar |
 | C5 | EPAGRI/CIRAM — Hidrologia | sshidrosc@epagri.sc.gov.br | a enviar |
 
@@ -97,27 +96,6 @@ Notei, porém, que a pasta de serviços "defesacivil" exige token de autenticaç
 O site não substitui a Defesa Civil e informa isso em todas as páginas (emergência: 199). O objetivo é puramente informativo e comunitário.
 
 Fico à disposição para conversar e para atender às condições de uso que a Prefeitura considerar adequadas.
-Atenciosamente,
-Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
-
----
-
-## C3 — UNIVALI (marégrafo de Cabeçudas)
-
-**Para:** michelena@univali.br; ariadne@univali.br
-**Assunto:** Reforço: acesso aberto aos dados do marégrafo de Cabeçudas
-
-Prezados,
-
-Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Escrevi em 30/08 (para bjast@univali.br) sobre um site aberto e sem fins comerciais das enchentes dos rios Itajaí-Açu e Itajaí-Mirim (github.com/haohmarusc-glitch/enchentes-vale-itajai). Reencaminho o pedido, entendendo que vocês são os contatos titular e suplente da UNIVALI/CTTMAR no GRAC do Plano de Contingência de Itajaí.
-
-O site tem uma tela para a foz, em Itajaí, que relaciona a chegada da cheia dos dois rios com o estado da maré — porque na foz a maré influencia o nível do Açu e do Mirim. Hoje uso a tábua de maré prevista; o dado que faltaria para fechar essa análise é a medição real do marégrafo de Cabeçudas, cuja ampliação, pelo que li, foi feita justamente para medir esse efeito.
-
-Gostaria de saber se há uma forma de acesso aberto aos dados do marégrafo (um endereço de dados, um export, ou a indicação de com quem falar), em qualquer frequência que vocês considerem adequada. Identifico todas as requisições com o nome do projeto e cito a UNIVALI/CTTMAR como fonte.
-
-O site deixa claro que não é sistema oficial de alerta e que, em emergência, deve-se ligar 199.
-
-Agradeço desde já e fico à disposição.
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
