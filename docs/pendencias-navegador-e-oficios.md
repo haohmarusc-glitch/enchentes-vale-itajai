@@ -121,9 +121,13 @@ número ao vivo, e as duas vias automáticas estão fechadas:
   `/robots.txt`. Não é IPv6, DNS, TLS nem cliente nosso. A tabela só foi lida a partir de um HTML salvo
   pelo navegador de dentro da região.
 - A estação de Gaspar na rede estadual (`DCSC-00005`) responde com carimbo de hora fresco e **sem valor
-  de nível** — três vezes seguidas em 01/09/2026 (03:09, 03:24 e 03:33 UTC). Ela publica chuva, não régua.
-  O mesmo já valia para Blumenau (`DCSC-00026`, `rio_nivel: null`), a outra cidade da bacia com sistema
-  municipal próprio.
+  de nível** — três vezes seguidas em 01/09/2026 (03:09, 03:24 e 03:33 UTC). A metadados do GraphQL
+  estadual **declara** sensor de rio (`rio_nivel.value=true`, observado na coleta de resgate de
+  01/09/2026), então não é pluviômetro puro; mas o **valor** de nível não veio em nenhuma das três. Na
+  prática ela entrega só chuva, e **não serve como nível ao vivo enquanto não reportar** — por isso não
+  entra em `data/estacoes.json`: registrar uma régua que nunca devolveu número seria cobertura aparente,
+  pior que o buraco declarado. O mesmo já valia para Blumenau (`DCSC-00026`, `rio_nivel: null`), a outra
+  cidade da bacia com sistema municipal próprio.
 
 **Ao receber resposta:** gravar a origem da leitura em `data/estacoes.json` (cidade `gaspar`,
 `fontes_tempo_real`), e, se a régua for nomeada, trocar o rótulo provisório
