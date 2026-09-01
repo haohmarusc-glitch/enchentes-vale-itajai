@@ -571,6 +571,69 @@ class TestGerais(unittest.TestCase):
         self.assertNotIn("<b>xxx</b>", t)
 
 
+#: Blumenau em cheia com as DUAS leituras da MESMA régua (ANA 83800002): a
+#: primária (página da Defesa Civil de Itajaí), mais velha, e o resgate do
+#: AlertaBlu, mais fresco, marcado com `resgate_de`. Foi o caso real que fez o
+#: bot dizer "2 réguas que não se comparam" e sumir com o nível da cidade.
+ULTIMO_BLUMENAU = {
+    "coletado_em": "2026-08-30T21:25:00+00:00",
+    "leituras": [
+        {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+         "nivel_m": 6.43, "medido_em": "2026-08-30T15:11:00"},
+        {"estacao": "Blumenau (AlertaBlu)", "rio": "itajai-acu", "cidade": "blumenau",
+         "nivel_m": 6.54, "medido_em": "2026-08-30T17:26:00", "resgate_de": "Blumenau"},
+    ],
+}
+
+
+def base_blumenau() -> Base:
+    return Base(ULTIMO_BLUMENAU, le_json("estacoes.json"), le_json("transito.json"),
+                le_json("enchentes.json"), le_json("cotas-ruas.json"))
+
+
+class TestReguaDeResgate(unittest.TestCase):
+    """
+    Primária e resgate são a MESMA régua — mesmo zero — e não podem contar como
+    duas. Sem juntá-las, Blumenau em cheia (primária velha + AlertaBlu fresco)
+    aparecia como "2 réguas que não se comparam" e o bot recusava dizer o nível,
+    a previsão e o quanto falta subir na rua. É o mesmo colapso do site.
+    """
+
+    def r(self, texto: str) -> str:
+        return responder(texto, base_blumenau(), AGORA)
+
+    def test_nivel_mostra_uma_regua_a_mais_fresca(self):
+        t = self.r("/nivel Blumenau")
+        self.assertIn("6,54 m", t, "a leitura mais fresca da régua")
+        self.assertIn("AlertaBlu", t)
+        self.assertNotIn("6,43 m", t, "a primária velha não vira uma segunda régua")
+        self.assertNotIn("não se comparam", t)
+
+    def test_rios_traz_blumenau_como_uma_linha_so(self):
+        t = self.r("/rios")
+        self.assertRegex(t, r"<b>Blumenau</b>: 6,54 m · h")
+        self.assertNotIn("réguas, com zeros diferentes", t)
+
+    def test_previsao_de_blumenau_calcula(self):
+        t = self.r("/previsao Blumenau")
+        self.assertNotIn("mais de uma régua", t)
+        self.assertIn("6,54 m", t)
+        self.assertIn("Itajaí", t, "a onda desce até a foz")
+
+    def test_rua_de_blumenau_compara_com_o_nivel(self):
+        t = self.r("/rua Blumenau São Rafael")
+        self.assertIn("6,54 m", t, "o nível da cidade volta a aparecer")
+        self.assertNotIn("réguas com zeros diferentes", t)
+        self.assertNotIn("não aparece na fonte de tempo real", t)
+
+    def test_itajai_com_onze_reguas_continua_onze(self):
+        """O colapso junta só primária+resgate; réguas distintas seguem distintas."""
+        t = resp("/nivel Itajaí")
+        self.assertIn("0,81 m", t)
+        self.assertIn("1,53 m", t)
+        self.assertIn("não se comparam", t)
+
+
 class TestAuxiliares(unittest.TestCase):
     def test_sem_acento(self):
         self.assertEqual(sem_acento("Itajaí-Açu"), "itajai-acu")

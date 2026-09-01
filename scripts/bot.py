@@ -170,6 +170,45 @@ def quando(d: datetime) -> str:
     return d.astimezone(FUSO).strftime("%d/%m às %H:%M")
 
 
+def regua_de(leitura: dict) -> str:
+    """
+    A régua de uma leitura. A leitura de RESGATE cai na régua da primária:
+    `resgate_de` traz o título da primária, e as duas medem a MESMA régua, com o
+    MESMO zero — em Blumenau, a estação ANA 83800002, que a Defesa Civil e o
+    AlertaBlu publicam. Sem juntá-las, a primária e o resgate contam como duas
+    réguas "que não se comparam", e o bot some com o nível da cidade justamente
+    quando a primária falha e o resgate assume — foi o que houve com Blumenau em
+    cheia. É o mesmo colapso que o `leituraDaCidade` faz no site.
+    """
+    return str(leitura.get("resgate_de") or leitura.get("estacao") or "")
+
+
+def por_regua(leituras: list[dict], agora: datetime) -> list[dict]:
+    """
+    Uma leitura por régua distinta — a mais fresca de cada.
+
+    Junta primária e resgate (mesma régua) e mantém a leitura mais recente das
+    duas. NÃO mistura réguas distintas: as onze de Itajaí, com zeros diferentes,
+    continuam onze. A ordem de saída é a de primeira aparição de cada régua na
+    lista, para não embaralhar o que já era estável.
+    """
+    def idade(l: dict) -> float:
+        # Menor = mais fresca; leitura sem horário vai para o fim do desempate.
+        m = idade_min(l.get("medido_em"), agora)
+        return m if m is not None else float("inf")
+
+    melhor: dict[str, dict] = {}
+    ordem: list[str] = []
+    for l in leituras:
+        r = regua_de(l)
+        if r not in melhor:
+            ordem.append(r)
+            melhor[r] = l
+        elif idade(l) < idade(melhor[r]):
+            melhor[r] = l
+    return [melhor[r] for r in ordem]
+
+
 # --- dados ------------------------------------------------------------------
 
 class Base:
@@ -260,8 +299,16 @@ class Base:
             })
         return saida
 
-    def leituras_da_cidade(self, cidade_id: str) -> list[dict]:
-        return [l for l in (self.ultimo.get("leituras") or []) if l.get("cidade") == cidade_id]
+    def leituras_da_cidade(self, cidade_id: str, agora: datetime) -> list[dict]:
+        """
+        As leituras ao vivo da cidade, UMA por régua (primária e resgate juntas).
+
+        Recebe `agora` porque juntar primária e resgate exige saber qual das duas
+        é a mais fresca. Sem o agrupamento, Blumenau — primária + AlertaBlu —
+        parecia ter duas réguas e o bot recusava dizer o nível dela.
+        """
+        cruas = [l for l in (self.ultimo.get("leituras") or []) if l.get("cidade") == cidade_id]
+        return por_regua(cruas, agora)
 
     def chuva_da_cidade(self, cidade_id: str) -> list[dict]:
         return [c for c in (self.ultimo.get("chuva") or []) if c.get("cidade") == cidade_id]
@@ -346,7 +393,7 @@ def emergencia() -> str:
 
 def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
-    leituras = base.leituras_da_cidade(cidade["id"])
+    leituras = base.leituras_da_cidade(cidade["id"], agora)
     if not leituras:
         linhas.append("\nSem leitura ao vivo desta cidade na fonte que coletamos.")
         if cidade.get("fonte_tempo_real"):
@@ -414,7 +461,7 @@ def resposta_chuva(base: Base, cidade: dict, agora: datetime) -> list[str]:
 
 def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>Se o pico em {notificador.esc(cidade['nome'])} fosse agora</b>"]
-    leituras = base.leituras_da_cidade(cidade["id"])
+    leituras = base.leituras_da_cidade(cidade["id"], agora)
     if len(leituras) != 1:
         motivo = (
             "esta cidade tem mais de uma régua e não dá para dizer qual representa o rio"
@@ -562,7 +609,7 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     #: seguinte é sempre "e onde está o rio agora".
     sem_nivel: dict[str, str] = {}
     for c in {x["cidade"] for x in achadas}:
-        leituras = base.leituras_da_cidade(c)
+        leituras = base.leituras_da_cidade(c, agora)
         if len(leituras) == 1 and isinstance(leituras[0].get("nivel_m"), (int, float)):
             niveis[c] = (float(leituras[0]["nivel_m"]),
                          idade_min(leituras[0].get("medido_em"), agora))
@@ -751,6 +798,10 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
     nomes = {c["id"]: c["nome"] for c in base.cidades()}
     for cid, ls in sorted(por_cidade.items()):
         nome = nomes.get(cid, cid)
+        # Junta primária e resgate antes de decidir: Blumenau tem duas leituras
+        # da MESMA régua (Defesa Civil + AlertaBlu) e não pode virar "2 réguas
+        # que não se comparam".
+        ls = por_regua(ls, agora)
         if len(ls) == 1:
             l = ls[0]
             idade = idade_min(l.get("medido_em"), agora)
