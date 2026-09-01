@@ -443,3 +443,33 @@ e não alimenta o `alerta_cotas.py`. Há teste travando cada uma dessas três co
 **O que já dá para usar agora:** a **chuva** da mesma estação. Milímetro é milímetro em qualquer
 lugar — não depende de régua, de zero nem de datum. Em 01/09/2026 a rede dava Ilhota 107,6 mm/24h,
 Gaspar 77,2 e Blumenau 22,0. É a assimetria que explica a cheia descendo pelo baixo vale.
+
+### Duas falhas do próprio `gaspar_estadual.py`, achadas na primeira execução na VPS
+
+A primeira versão rodou e disse `SEM LEITURA` dos dois lados. Um dos dois estava errado.
+
+**Procurava no arquivo errado.** `nivel_do_municipio()` lia `data/tempo-real/ultimo.json` — o
+arquivo da coleta geral, onde Gaspar **não está**, que é exatamente a lacuna que motivou o script.
+A leitura do município mora em `data/tempo-real/ultimo_gaspar.json`, que o `coleta_gaspar.py`
+escreve, com a régua sob o rótulo `Rio Itajaí Açu Gaspar`. Havia **3,85 m** guardados no
+repositório e o script dizia que não havia nada. Corrigido, com teste que falha se alguém apontar
+de volta para o `ultimo.json` — ler dali traria o nível de *outra* cidade para o par de calibração.
+
+**E a pior: pareava leituras a horas de distância.** Na execução real o lado estadual carimbou
+`2026-09-01T03:24:30Z` e o do município, `2026-08-31T22:59` — **266 minutos** de intervalo. Com o
+arquivo certo, a versão antiga teria subtraído os dois e impresso uma diferença como se fosse
+deslocamento de régua. Numa cheia o rio sobe nesse tempo: o número seria parte régua, parte subida,
+sem como separar — um valor que **parece medido e não é**, que é a única coisa que este script
+existe para impedir.
+
+Agora há `JANELA_MAXIMA_MIN = 30`. O par fora dela é **recusado**, com o intervalo dito na saída.
+Trinta minutos porque a 20 cm/h — subida forte no médio Itajaí — a parcela de subida fica em ~10 cm,
+uma ordem de grandeza abaixo do `LIMITE_DE_COERENCIA_M` de 1,00 m; há teste que trava essa relação.
+Par com horário faltando de um lado também é recusado: sem carimbo não dá para afirmar "mesmo
+instante".
+
+**O que a execução também mostrou sobre a fonte.** A estação `DCSC-00005` respondeu com carimbo
+fresco (`03:24:30Z`) e **sem valor de nível** — segunda observação independente, depois da de
+03:09Z. Não é "não trouxe naquele instante": parece ser que a estação de Gaspar na rede estadual
+publica chuva e não publica régua. Se isso se confirmar em mais coletas, o caminho estadual morre e
+sobra o ofício à Defesa Civil de Gaspar pedindo um endpoint estável.

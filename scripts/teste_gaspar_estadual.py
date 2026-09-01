@@ -21,8 +21,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import gaspar_estadual as m
 from gaspar_estadual import (CODIGO_GASPAR, EVIDENCIA_DE_ZEROS_DIFERENTES,
-                             LIMITE_DE_COERENCIA_M, estacoes, medir_deslocamento,
-                             nivel_da_estacao, usavel_para_aviso)
+                             JANELA_MAXIMA_MIN, LIMITE_DE_COERENCIA_M,
+                             ROTULO_MUNICIPIO, estacoes, medir_deslocamento,
+                             minutos_entre, nivel_da_estacao, nivel_do_municipio,
+                             usavel_para_aviso)
 
 
 def resposta(*estacoes_) -> dict:
@@ -118,6 +120,121 @@ class TestDeslocamento(unittest.TestCase):
     def test_o_limite_separa_cheia_de_outro_zero(self):
         self.assertIn("batem", medir_deslocamento(4.0, 4.0 - LIMITE_DE_COERENCIA_M)[1])
         self.assertIn("NÃO", medir_deslocamento(4.0, 4.0 - LIMITE_DE_COERENCIA_M - 0.01)[1])
+
+
+class TestLadoDoMunicipio(unittest.TestCase):
+    """
+    A primeira versão procurava em `ultimo.json` — arquivo da coleta geral, onde
+    Gaspar não está, que é justamente o problema. Resultado: dizia "SEM LEITURA"
+    com 3,85 m guardados no repositório ao lado. Um lado do par existia e o
+    script não via.
+    """
+
+    def caminho(self):
+        return Path(__file__).resolve().parent.parent / "data/tempo-real/ultimo_gaspar.json"
+
+    def test_le_o_arquivo_que_o_coletor_de_gaspar_escreve(self):
+        if not self.caminho().exists():
+            self.skipTest("ultimo_gaspar.json ainda não coletado neste checkout")
+        nivel, quando = nivel_do_municipio()
+        self.assertIsNotNone(nivel, "há leitura no arquivo e o script não a achou")
+        self.assertIsNotNone(quando)
+
+    def test_o_rotulo_procurado_e_o_que_a_tabela_publica(self):
+        if not self.caminho().exists():
+            self.skipTest("ultimo_gaspar.json ainda não coletado neste checkout")
+        rotulos = [e.get("rotulo")
+                   for e in json.loads(self.caminho().read_text())["estacoes"]]
+        self.assertIn(ROTULO_MUNICIPIO, rotulos)
+
+    def test_ultimo_json_da_coleta_geral_nao_serve_de_fonte(self):
+        """
+        Gaspar não está no `ultimo.json` — é essa a lacuna. Um `ultimo.json`
+        cheio, sem `ultimo_gaspar.json`, tem de dar "sem leitura": ler dali
+        traria o nível de OUTRA cidade para o par de calibração de Gaspar.
+        """
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            raiz = Path(tmp)
+            (raiz / "tempo-real").mkdir()
+            (raiz / "tempo-real" / "ultimo.json").write_text(json.dumps(
+                {"leituras": [{"cidade": "gaspar", "nivel_m": 9.99,
+                               "medido_em": "2026-09-01T03:00:00"}]}))
+            antes = m.DADOS
+            try:
+                m.DADOS = raiz
+                self.assertEqual(nivel_do_municipio(), (None, None))
+            finally:
+                m.DADOS = antes
+
+    def test_leitura_marcada_implausivel_nao_vira_meio_par(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            raiz = Path(tmp)
+            (raiz / "tempo-real").mkdir()
+            (raiz / "tempo-real" / "ultimo_gaspar.json").write_text(json.dumps(
+                {"estacoes": [{"rotulo": ROTULO_MUNICIPIO, "nivel_m": 392.62,
+                               "nivel_plausivel": False,
+                               "medido_em_iso": "2026-09-01T03:00:00"}]}))
+            antes = m.DADOS
+            try:
+                m.DADOS = raiz
+                nivel, quando = nivel_do_municipio()
+                self.assertIsNone(nivel)
+                self.assertEqual(quando, "2026-09-01T03:00:00")
+            finally:
+                m.DADOS = antes
+
+
+class TestJanelaDeTempo(unittest.TestCase):
+    """
+    A falha mais perigosa da primeira versão: ela pareava leituras a horas de
+    distância e devolvia a diferença como se fosse deslocamento de régua. Numa
+    cheia o rio sobe nesse intervalo, e a parcela de subida não se separa da de
+    régua — sairia um número que PARECE medido e não é.
+    """
+
+    def test_par_fora_da_janela_e_recusado(self):
+        """O caso real: município 31/08 22:59 x estadual 01/09 03:24 = 266 min."""
+        d, porque = medir_deslocamento(4.10, 3.85,
+                                       "2026-09-01T03:24:30.759+00:00",
+                                       "2026-08-31T22:59:00")
+        self.assertIsNone(d)
+        self.assertIn("266 min", porque)
+
+    def test_par_dentro_da_janela_e_medido(self):
+        d, _ = medir_deslocamento(4.10, 3.85,
+                                  "2026-08-31T23:10:00", "2026-08-31T22:59:00")
+        self.assertAlmostEqual(d, 0.25)
+
+    def test_a_borda_da_janela(self):
+        base = "2026-09-01T00:00:00"
+        dentro = f"2026-09-01T00:{JANELA_MAXIMA_MIN:02d}:00"
+        fora = f"2026-09-01T00:{JANELA_MAXIMA_MIN:02d}:01"
+        self.assertIsNotNone(medir_deslocamento(4.1, 3.85, dentro, base)[0])
+        self.assertIsNone(medir_deslocamento(4.1, 3.85, fora, base)[0])
+
+    def test_horario_faltando_de_um_lado_recusa(self):
+        """Sem horário não dá para afirmar que são o mesmo instante."""
+        d, porque = medir_deslocamento(4.1, 3.85, None, "2026-08-31T22:59:00")
+        self.assertIsNone(d)
+        self.assertIn("sem horário", porque)
+
+    def test_a_janela_e_curta_o_bastante_para_a_subida_ser_desprezivel(self):
+        """
+        A 20 cm/h — subida forte no médio Itajaí — a parcela de subida dentro da
+        janela precisa ficar bem abaixo do limite de coerência, senão o veredito
+        "batem" poderia ser só o rio parado por sorte.
+        """
+        subida_na_janela_m = 0.20 * (JANELA_MAXIMA_MIN / 60)
+        self.assertLess(subida_na_janela_m, LIMITE_DE_COERENCIA_M / 5)
+
+    def test_minutos_entre_aguenta_formatos_e_lixo(self):
+        self.assertAlmostEqual(
+            minutos_entre("2026-09-01T03:24:30.759+00:00", "2026-09-01T03:00:00Z"),
+            24.5, places=1)
+        for ruim in (None, "", "ontem", "2026-13-45"):
+            self.assertIsNone(minutos_entre(ruim, "2026-09-01T03:00:00Z"))
 
 
 class TestEvidencia(unittest.TestCase):
