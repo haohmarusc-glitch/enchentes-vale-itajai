@@ -465,10 +465,56 @@ tem "Rua Lírio" com mínima de **exatamente 6,57 m** e não tem nenhuma "Rua Li
 mesma rua, com erro de transcrição em algum ponto da cadeia — mas "é provável" não apaga registro. Os dois
 ficam, e a pergunta vai junto no contato com a Defesa Civil de Gaspar.
 
-**Gaspar continua sem cota em `estacoes.json`** e sem estação de tempo real coletada, então nenhuma dessas
-1.613 cotas dispara aviso: elas respondem "a partir de que nível a minha rua alaga", e não "o rio está
-chegando lá". O validador avisa isso a cada execução. Conseguir a régua e as cotas de referência de Gaspar
-é o que falta para a cidade entrar no aviso por Telegram.
+#### Gaspar — as faixas da régua, pelo Plano de Contingência (01/09/2026) ✔
+
+A cota de régua de Gaspar, que faltava, está no **Plano de Contingência da Superintendência Municipal de
+Proteção e Defesa Civil de Gaspar** — item 4.2.3, fluxograma "MONITORAMENTO RIO ITAJAÍ AÇU", p. 25. PDF em
+`data/brutos/gaspar-plano-de-contingencia.pdf`.
+
+| Faixa | Nome no Plano | Vira |
+|---|---|---|
+| 0 a 5 m | NORMALIDADE | nada — é o leito |
+| 5 a 6 m | ATENÇÃO/ALERTA | `cotas_m.atencao` |
+| 6 a 7 m | ALERTA/ALARME | `cotas_m.alerta` |
+| acima de 7 m | RESPOSTA | `cotas_m.emergencia` |
+
+**A armadilha da página 25.** O fluxograma é uma **imagem**, e a imagem escreve "7 a 8 metros" na caixa
+vermelha. Só que o PDF, depois de desenhar a imagem, pinta por cima outra caixa vermelha **opaca** e escreve
+nela, em branco, "Acima de 7 metros". Quem abre o PDF lê "Acima de 7 metros"; quem extrai a imagem lê "7 a 8
+metros". Vale o que o documento mostra: a faixa **não tem teto**. Ler a imagem teria inventado um limite
+superior que a versão vigente removeu de propósito.
+
+**Por que `emergencia` e não `inundacao`.** 7,00 m é a fase de RESPOSTA do Plano, não o nível em que Gaspar
+alaga — a primeira rua do cadastro alaga a **6,20 m**, 80 cm antes. Chamar a faixa de "inundação" diria ao
+morador que a água chega mais tarde do que chega.
+
+**A margem é real, e é o que faz a cota valer.** A atenção a 5,00 m fica **1,20 m abaixo** da primeira rua.
+É o oposto de Brusque, onde a primeira cota conhecida (4,80 m) é o nível em que a via marginal *já* está
+alagando. Em Gaspar há aviso antes da água.
+
+**A referência.** O Plano **não nomeia o zero** da régua. O que sustenta tratá-la como a mesma das cotas de
+rua é a coerência entre três publicações da mesma Defesa Civil: as 26 vias do quadro do item 4.2.2 (p. 23-24)
+batem com o cadastro vindo do KML em **24 casos ao centavo**; a faixa de RESPOSTA começa dentro dessa mesma
+escala; e a leitura da tabela de monitoramento do município em 31/08/2026, **3,85 m**, cai na faixa de
+normalidade do mesmo fluxograma. `scripts/conferir_gaspar_plano.py` refaz as três conferências e falha alto
+se alguma parar de fechar; `scripts/teste_conferir_gaspar_plano.py` pina a transcrição contra o PDF.
+
+**O que o quadro do Plano corrigiu no cadastro.** Duas coisas, e a primeira é a que importava:
+
+- **Rua Santa Isabel (7,00 m) não existia no nosso cadastro.** O KML de 2020 não a traz com nome próprio —
+  ela aparece só como *esquina* do ponto da Rua Imaruí, que marca exatamente esses 7,00 m. Quem morasse nela
+  buscava o próprio endereço em "minha rua" e não achava nada. Entrou como registro seu, e há teste travando
+  a ausência de qualquer via do quadro.
+- **Duas divergências de centímetros**, anotadas nos registros e não convertidas: Rua Imaruí (Plano 7,02 ×
+  nosso 7,00) e Rua Maria da Silva (Plano 6,99 × nosso 7,00). São duas publicações da mesma Defesa Civil e
+  nenhuma delas erra sozinha; adotar uma por conta própria seria escolher sem critério.
+
+**O que ainda não existe: leitura.** A cota agora aparece na tela e no bot, e o aviso automático passa a
+funcionar **no instante em que houver leitura** — mas Gaspar continua **sem coleta de nível**. A única fonte
+é a tabela do próprio município, cujo host dá timeout de conexão desde a VPS (`coleta_gaspar.py` roda por
+`--arquivo`, com HTML salvo do navegador). A Defesa Civil de SC publica Gaspar, mas só chuva: o `rio_nivel`
+de lá não vem com cota por estação e não é a mesma grandeza entre estações. Ou seja, a lacuna de Gaspar
+mudou de natureza — era "não há cota", virou "não há leitura".
 
 ### Indaial, Ilhota, Timbó, Ibirama, Taió, Vidal Ramos, Botuverá
 - Nada aberto localizado. Indaial tem portal da Defesa Civil em `indaial.atende.net`.

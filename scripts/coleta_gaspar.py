@@ -7,10 +7,12 @@ Traz a estação do Itajaí-Açu em Gaspar, as barragens e pluviômetros.
 
 POR QUE GASPAR
 --------------
-Gaspar tem **1.618 cotas de rua** e **nenhuma cota de régua** em `estacoes.json`.
-Os números dizem a partir de quanto cada rua alaga; falta o "o rio está chegando
-lá". Enquanto a cidade não tiver cota de referência, **nada que este script
-colete dispara aviso** — ele mostra, e é só.
+Gaspar tem **1.619 cotas de rua**, e desde 01/09/2026 tem também cota de régua:
+5,00 / 6,00 / 7,00 m, do Plano de Contingência da Defesa Civil do município (ver
+`conferir_gaspar_plano.py`). A ordem se inverteu — o que falta agora não é a
+cota, é a **leitura**: o aviso de Gaspar passa a funcionar no instante em que
+este script conseguir um número, e o host não responde de fora (abaixo). Por
+isso o que ele coleta importa mais, não menos.
 
 O QUE ESTE SCRIPT SE RECUSA A FAZER
 -----------------------------------
