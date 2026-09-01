@@ -92,23 +92,25 @@ test('não repete o código quando o nome já começa com ele', () => {
  * levantadas" para as duas. Se alguém mexer no estacoes.json e essas cotas
  * sumirem da tela outra vez, é aqui que quebra.
  */
-test('Ilhota mostra a régua DC-11, que vale para aviso', () => {
+test('Ilhota não tem régua própria — a DC-11 é de Itajaí, não dela', () => {
+  // A DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é estação de
+  // Itajaí, confirmado no Plano de Contingência da COMPDEC Itajaí. Ler o nível
+  // dela como o de Ilhota é comparar réguas de cidades diferentes.
   const saida = reguasComCota(estacoesTempoReal, 'itajai-acu', 'ilhota')
-  assert.equal(saida.length, 1)
-  assert.equal(saida[0]!.id, 'DC-11')
-  assert.equal(saida[0]!.alertaAutomatico, true)
-  const cotas = Object.fromEntries(saida[0]!.cotas)
-  assert.equal(cotas.atencao, 3)
-  assert.equal(cotas.alerta, 4)
+  assert.equal(saida.length, 0)
 })
 
-test('Itajaí mostra cota nas duas telas, e a do Açu é toda de estuário', () => {
+test('Itajaí mostra cota nas duas telas; no Açu a DC-11 dispara e o estuário não', () => {
   const acu = reguasComCota(estacoesTempoReal, 'itajai-acu', 'itajai')
   const mirim = reguasComCota(estacoesTempoReal, 'itajai-mirim', 'itajai')
   assert.ok(acu.length > 0, 'a tela do Açu ficaria dizendo que Itajaí não tem cota')
   assert.ok(mirim.length > 0, 'a tela do Mirim ficaria dizendo que Itajaí não tem cota')
-  // DC-01 e DC-02 estão no estuário: nenhuma dispara aviso sozinha.
-  assert.ok(acu.every((r) => !r.alertaAutomatico))
+  // DC-01 e DC-02 estão no estuário: não disparam sozinhas.
+  assert.equal(acu.find((r) => r.id === 'DC-01')!.alertaAutomatico, false)
+  assert.equal(acu.find((r) => r.id === 'DC-02')!.alertaAutomatico, false)
+  // A DC-11, em Santa Regina, fica acima da maré e dispara — é a única de rio
+  // no Açu de Itajaí.
+  assert.equal(acu.find((r) => r.id === 'DC-11')!.alertaAutomatico, true)
   // Limoeiro (DC-10) fica rio acima e não sofre maré.
   assert.equal(mirim.find((r) => r.id === 'DC-10')!.alertaAutomatico, true)
 })

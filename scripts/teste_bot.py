@@ -466,24 +466,24 @@ class TestCotas(unittest.TestCase):
         # Taió não tem cota cadastrada nem régua com cota em estacoes.json.
         self.assertIn("ainda não foram levantadas", resp("/cotas Taió"))
 
-    def test_ilhota_mostra_a_cota_da_regua_da_defesa_civil(self):
+    def test_ilhota_nao_tem_cota_porque_a_dc11_e_de_itajai(self):
         """
-        Ilhota tem cota oficial (DC-11), só que dentro de `estacoes_tempo_real`
-        e não em `cotas_m` da cidade. O bot já respondeu "ainda não foram
-        levantadas" para ela — dizer que não há dado quando há manda a pessoa
-        procurar em outro lugar na pior hora possível.
+        Ilhota NÃO tem régua própria. A DC-11 fica na divisa mas é estação de
+        Itajaí (Plano de Contingência, Tabela 11 + Zona 1) — mostrá-la como cota
+        de Ilhota seria comparar réguas de cidades diferentes. Antes o cadastro
+        atribuía a DC-11 a Ilhota; corrigido. Dizer "não levantadas" aqui é o
+        certo, e a DC-11 responde em /cotas Itajaí.
         """
         t = resp("/cotas Ilhota")
-        self.assertNotIn("ainda não foram levantadas", t)
-        self.assertIn("DC-11", t)
-        self.assertIn("3,00 m", t)
-        self.assertIn("Plano de Contingência", t)
+        self.assertIn("ainda não foram levantadas", t)
+        self.assertNotIn("DC-11", t)
 
     def test_itajai_sai_uma_vez_com_as_onze_reguas_e_os_ribeiroes(self):
         t = resp("/cotas Itajaí")
         # Uma resposta só, não uma por rio: o separador de blocos não aparece.
         self.assertNotIn("———", t)
-        for codigo in ("DC-01", "DC-06", "DC-10"):
+        # A DC-11, corrigida para Itajaí, tem de aparecer aqui — e não some.
+        for codigo in ("DC-01", "DC-06", "DC-10", "DC-11"):
             self.assertIn(codigo, t)
         # Os ribeirões não estão em nenhuma tela de rio; aqui eles aparecem.
         self.assertIn("Ribeirão da Murta", t)
