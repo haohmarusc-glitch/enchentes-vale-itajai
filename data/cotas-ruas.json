@@ -44987,7 +44987,8 @@
       "fonte": "Defesa Civil de Gaspar — Google My Maps \"Cotas de enchente\", pasta cotas_enchente_gaspar_01042020. Cotas do estudo do CEOPS/FURB (coord. Ademar Cordeiro), referenciadas à régua da ANA na empresa Círculo. Escala conferida contra as cotas já cadastradas: 4 de 4 ruas em comum batem ao centavo. Bruto em data/brutos/gaspar-cotas-2020.json",
       "data_fonte": "2020-04",
       "confianca": "alta",
-      "referencia": "régua"
+      "referencia": "régua",
+      "nota": "O quadro do Plano de Contingência (p. 24) publica 6,99 m para esta rua; o KML de 2020, 7,00 m. 1 cm de diferença entre duas publicações da mesma Defesa Civil, mantido como está: adotar um dos dois por conta própria seria escolher sem critério."
     },
     {
       "cidade": "gaspar",
@@ -50975,7 +50976,8 @@
       "fonte": "Defesa Civil de Gaspar — Google My Maps \"Cotas de enchente\", pasta cotas_enchente_gaspar_01042020. Cotas do estudo do CEOPS/FURB (coord. Ademar Cordeiro), referenciadas à régua da ANA na empresa Círculo. Escala conferida contra as cotas já cadastradas: 4 de 4 ruas em comum batem ao centavo. Bruto em data/brutos/gaspar-cotas-2020.json",
       "data_fonte": "2020-04",
       "confianca": "alta",
-      "referencia": "régua"
+      "referencia": "régua",
+      "nota": "O quadro do Plano de Contingência (p. 24) publica 7,02 m para esta rua. Nosso ponto, vindo do KML, é a esquina com a Rua Santa Isabel e marca 7,00 m — que é o valor que o mesmo quadro dá para a Santa Isabel. Os 2 cm ficam registrados e nada foi convertido: as duas fontes são da mesma Defesa Civil e nenhuma delas erra sozinha."
     },
     {
       "cidade": "gaspar",
@@ -60040,6 +60042,19 @@
       "referencia": "régua",
       "abrigo": "EBM Tiradentes",
       "abrigo_codigo": "C1"
+    },
+    {
+      "cidade": "gaspar",
+      "rio": "itajai-acu",
+      "rua": "Rua Santa Isabel",
+      "bairro": "Margem Esquerda",
+      "ponto": null,
+      "cota_m": 7.0,
+      "fonte": "Plano de Contingência da Superintendência Municipal de Proteção e Defesa Civil de Gaspar, item 4.2.2 — quadro das vias nas menores cotas altimétricas, p. 23-24 — data/brutos/gaspar-plano-de-contingencia.pdf",
+      "data_fonte": "2026",
+      "confianca": "alta",
+      "referencia": "régua",
+      "nota": "Rua que faltava no cadastro: o KML de 2020 não a traz com nome próprio, só como esquina do ponto da Rua Imaruí — que marca exatamente estes 7,00 m. O Plano a lista separadamente, e sem este registro quem mora nela buscava o próprio endereço e não achava nada."
     }
   ]
 }

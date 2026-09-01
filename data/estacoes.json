@@ -134,7 +134,16 @@
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "verificado": false,
-          "cotas_m": {},
+          "regua": "Rio Itajaí-Açu em Gaspar (o Plano não nomeia o ponto nem publica o zero)",
+          "referencia": "régua",
+          "cotas_verificado": true,
+          "fonte_cotas": "Plano de Contingência da Superintendência Municipal de Proteção e Defesa Civil de Gaspar, item 4.2.3 — fluxograma \"MONITORAMENTO RIO ITAJAÍ AÇU\", p. 25 — data/brutos/gaspar-plano-de-contingencia.pdf",
+          "observacao": "As faixas são as do fluxograma do Plano: 0 a 5 m NORMALIDADE, 5 a 6 m ATENÇÃO/ALERTA, 6 a 7 m ALERTA/ALARME e ACIMA DE 7 m RESPOSTA. Cada cota aqui é o PISO da faixa. 'emergencia' é a fase de RESPOSTA do Plano, não o nível em que Gaspar alaga: a primeira rua do cadastro alaga a 6,20 m, ou seja, 80 cm ANTES dela — por isso a faixa não entrou como 'inundacao'. Detalhe que muda o número: na p. 25 o fluxograma é uma imagem que escreve \"7 a 8 metros\", e o PDF pinta por cima uma caixa opaca com \"Acima de 7 metros\". Vale o que o PDF mostra — a faixa não tem teto. A margem é real: a atenção a 5,00 m fica 1,20 m abaixo da primeira rua, e a leitura da tabela do município em 31/08/2026 (3,85 m) cai dentro da normalidade do mesmo fluxograma. O Plano NÃO nomeia o zero da régua; o que sustenta tratá-la como a mesma das cotas de rua é a coerência entre três publicações da mesma Defesa Civil — 23 das 26 vias do quadro do Plano batem ao centavo com o cadastro vindo do KML. Confira com scripts/conferir_gaspar_plano.py. 'verificado' segue false porque é do codigo_ana que ele fala, e esse continua desconhecido.",
+          "cotas_m": {
+            "atencao": 5.0,
+            "alerta": 6.0,
+            "emergencia": 7.0
+          },
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
           ]

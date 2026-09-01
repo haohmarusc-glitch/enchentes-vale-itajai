@@ -2,12 +2,15 @@
 """
 Testes do importador das cotas de Gaspar.
 
-Esta é a maior importação do projeto — 1.613 pontos de uma vez, numa cidade que
-não tem cota nenhuma em `estacoes.json` e, portanto, nenhum aviso automático. O
-número na tela é tudo o que o morador de Gaspar tem. Então o que se testa aqui é
-o portão (que ele feche se a prova de escala cair), a substituição (que ela só
-alcance registro realmente superado) e a identidade (que ponto nenhum apague
-outro em silêncio).
+Esta é a maior importação do projeto — 1.613 pontos de uma vez. Quando ela foi
+escrita, Gaspar não tinha cota nenhuma em `estacoes.json`, e o número na tela era
+tudo o que o morador tinha. As faixas da régua chegaram depois, pelo Plano de
+Contingência (5 / 6 / 7 m, ver `conferir_gaspar_plano.py`) — e o que sustenta
+tratá-las como a mesma régua destes pontos é justamente a prova de escala que se
+testa aqui. Ou seja: o portão ficou mais importante, não menos. O que se testa é
+ele (que feche se a prova de escala cair), a substituição (que ela só alcance
+registro realmente superado) e a identidade (que ponto nenhum apague outro em
+silêncio).
 """
 
 import json

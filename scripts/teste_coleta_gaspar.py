@@ -2,10 +2,11 @@
 """
 Testes do leitor da tabela da Defesa Civil de Gaspar.
 
-Gaspar é a cidade com mais cotas de rua e nenhuma cota de régua. O que este
-script propuser como cota vira, um dia, o limiar que dispara o aviso lá — e um
-limiar errado não aparece na tela: o site continua bonito, o bot continua
-respondendo, e o telefone toca na hora errada, ou não toca.
+Gaspar é a cidade com mais cotas de rua, e agora tem cota de régua — 5,00 / 6,00
+/ 7,00 m, do Plano de Contingência. Ou seja: o aviso de Gaspar já está armado e
+espera só um número. O que este script propuser como cota entraria em cima de uma
+faixa oficial, e um limiar errado não aparece na tela: o site continua bonito, o
+bot continua respondendo, e o telefone toca na hora errada, ou não toca.
 
 Por isso quase todos os testes aqui são sobre o que ele **recusa** a chamar de
 nível e de cota.
