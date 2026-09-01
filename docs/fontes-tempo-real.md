@@ -342,3 +342,43 @@ python3 scripts/coleta_gaspar.py --arquivo pagina-salva.html --cotas
 Vale lembrar o que isso resolve e o que não resolve: mesmo com a página em mãos, se a tabela
 publicar só o nível atual, **as cotas de régua de Gaspar continuam faltando** — e aí vêm por
 ofício à Defesa Civil ou pelo Plano de Contingência, como foi com as onze estações de Itajaí.
+
+
+### A tabela chegou pelo navegador, e a resposta é "não tem cota" (01/09/2026)
+
+A página foi salva do navegador de quem está na região e está em
+`data/brutos/gaspar-monitoramento-2026-08-31.html`. O parser leu:
+
+| | |
+|---|---|
+| **Rio Itajaí Açu Gaspar** | **3,85 m** · 31/08 22:59 · fonte "DC. Gaspar" |
+| Ribeirão Belchior Central | 1,68 m · 31/08 23:24 |
+| seis pluviômetros | 82 a 108 mm em 24 h |
+| Barragens Norte, Oeste e Sul | 265,90 · 351,81 · 392,62 m — cota de reservatório acima do mar, marcadas como fora da faixa de nível de rio |
+
+**Nenhuma faixa de cota.** A tabela tem dez colunas — Estação, Fonte, Coleta, Nível e cinco de
+chuva — e nenhuma delas é limiar. O que a página publica é leitura, não referência.
+
+Então está respondido: **as cotas de régua de Gaspar não estão nesta página** e precisam vir da
+Defesa Civil, por ofício ou pelo Plano de Contingência do município — que o próprio menu do site
+publica em `/plano-de-contingencia`, e que é o caminho mais curto por ser o mesmo salvar-do-
+navegador.
+
+#### O que a página real ensinou sobre o parser
+
+A primeira versão leu **zero estações** dela, e passava em todos os testes. Duas suposições
+minhas, as duas erradas:
+
+* **o nível vem sem unidade** — `<td>3,85</td>`, não "3,85 m". Eu tinha tornado o "m"
+  obrigatório justamente para separar nível de porcentagem, e a regra que protegia de um erro
+  causou outro;
+* **a data vem sem ano** — "31/08 22:59".
+
+A correção não foi afrouxar a regex: foi **ler pela coluna do cabeçalho**. Assim chuva fica na
+coluna de chuva e nível na de nível, sem nada deduzido do formato do número — e o risco original
+(a porcentagem virar nível) some junto, estruturalmente. O ano ausente é resolvido pela única
+leitura possível para uma medição já feita: o ano corrente, ou o anterior se isso jogaria a
+data no futuro.
+
+A página está no repositório como fixture, e os testes rodam contra ela. Exemplo inventado passa
+enquanto a fonte muda embaixo dele — foi exatamente o que aconteceu aqui.

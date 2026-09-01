@@ -59,11 +59,22 @@ URL = "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela"
 ROBOTS = "https://defesacivil.gaspar.sc.gov.br/robots.txt"
 SAIDA = "tempo-real/ultimo_gaspar.json"
 
-#: Um nível: número com vírgula ou ponto seguido de "m". A unidade é obrigatória
-#: — é ela que separa "3,25 m" de "85,4 %" e de "01/09/2026".
-RE_NIVEL = re.compile(r"(\d{1,3}[,.]\d{1,2})\s*m\b", re.IGNORECASE)
-RE_PORCENTAGEM = re.compile(r"(\d{1,3}(?:[,.]\d{1,2})?)\s*%")
-RE_QUANDO = re.compile(r"(\d{2}/\d{2}/\d{4})\D{0,6}(\d{2}:\d{2})")
+#: Um número solto, com ou sem "m" no fim: "3,85", "265,90", "6,00 m". A tabela
+#: de Gaspar não põe unidade nenhuma, e outras põem — aceitar as duas formas é
+#: seguro porque quem separa nível de chuva é a COLUNA, não o texto. O que
+#: continua fora é "85,4 %", que não casa, e qualquer célula com palavra.
+RE_NUMERO = re.compile(r"^-?\d{1,4}[,.]?\d{0,3}\s*m?\.?$", re.IGNORECASE)
+#: A data como a página escreve: "31/08 22:59" — dia e mês, SEM ano.
+RE_QUANDO = re.compile(r"(\d{2})/(\d{2})(?:/(\d{4}))?\D{1,6}(\d{2}):(\d{2})")
+
+#: Os nomes de coluna que interessam, sem acento e em minúscula. O cabeçalho
+#: desta tabela diz "Nível" no topo e "Cota" no rodapé, para a mesma coluna.
+COLUNAS = {
+    "estacao": "estacao", "fonte": "fonte", "coleta": "coleta",
+    "nivel": "nivel", "cota": "nivel",
+    "chuva atual": "chuva_atual", "ultima hora": "chuva_1h", "6 horas": "chuva_6h",
+    "12 horas": "chuva_12h", "24 horas": "chuva_24h", "48 horas": "chuva_48h",
+}
 
 #: Os rótulos de faixa que a tabela pode trazer, e o nome que usamos.
 FAIXAS = {"atencao": "atencao", "alerta": "alerta", "emergencia": "emergencia",
@@ -80,47 +91,91 @@ def sem_acento(texto: str) -> str:
 
 
 def numero(texto) -> float | None:
-    achado = RE_NIVEL.search(str(texto or ""))
-    return float(achado.group(1).replace(",", ".")) if achado else None
+    """"3,85" vira 3.85. "-" e vazio viram None, que é o que a fonte quer dizer."""
+    limpo = str(texto or "").strip()
+    if not RE_NUMERO.match(limpo):
+        return None
+    try:
+        return float(re.sub(r"\s*m\.?$", "", limpo, flags=re.IGNORECASE).replace(",", "."))
+    except ValueError:
+        return None
+
+
+def indices_do_cabecalho(cels: list[str]) -> dict[str, int]:
+    """
+    Onde cada coluna está. É isto que substitui adivinhar pelo texto da célula.
+
+    A primeira versão exigia a unidade "m" para um número virar nível, e a
+    tabela real não põe unidade nenhuma: `<td>3,85</td>`. A regra que protegia
+    de confundir nível com porcentagem passou a não ler nada. Pela coluna, os
+    dois problemas somem juntos — chuva fica na coluna de chuva, nível na de
+    nível, e nada é deduzido do formato do número.
+    """
+    achadas: dict[str, int] = {}
+    for i, celula in enumerate(cels):
+        nome = COLUNAS.get(sem_acento(celula).strip())
+        if nome and nome not in achadas:
+            achadas[nome] = i
+    return achadas
+
+
+def quando_de(texto: str, agora: datetime | None = None) -> tuple[str | None, str | None]:
+    """
+    A data da coleta: o texto como a fonte escreve, e o instante em ISO.
+
+    A página omite o ano ("31/08 22:59"). Inventar um é o tipo de coisa que
+    este projeto não faz calado, então: usa-se o ano corrente e, se isso jogar a
+    leitura no futuro, o anterior — que é a única leitura possível para uma
+    medição já feita. O texto original fica junto para conferência.
+    """
+    achado = RE_QUANDO.search(str(texto or ""))
+    if not achado:
+        return None, None
+    dia, mes, ano, hora, minuto = achado.groups()
+    agora = agora or datetime.now()
+    for candidato in ([int(ano)] if ano else [agora.year, agora.year - 1]):
+        try:
+            quando = datetime(candidato, int(mes), int(dia), int(hora), int(minuto))
+        except ValueError:
+            continue
+        if ano or quando <= agora:
+            return achado.group(0), quando.isoformat()
+    return achado.group(0), None
 
 
 def celulas(linha_html) -> list[str]:
     return [c.get_text(" ", strip=True) for c in linha_html.find_all(["td", "th"])]
 
 
-def ler_linha(cels: list[str]) -> dict | None:
-    """
-    Uma linha da tabela vira uma leitura — ou nada.
+def ler_linha(cels: list[str], indices: dict[str, int],
+              agora: datetime | None = None) -> dict | None:
+    """Uma linha da tabela vira uma leitura, lida pelas colunas do cabeçalho."""
+    def celula(nome: str) -> str:
+        i = indices.get(nome)
+        return cels[i].strip() if i is not None and i < len(cels) else ""
 
-    Cada grandeza sai da SUA célula. Juntar a linha inteira e pegar o primeiro
-    número faria a ocupação de uma barragem ("85,4 %") virar nível de rio, que é
-    o que acontecia antes.
-    """
-    if not cels or len(cels) < 2:
-        return None
-    rotulo = cels[0].strip()
-    if not rotulo:
+    rotulo = celula("estacao") or (cels[0].strip() if cels else "")
+    if not rotulo or "nivel" not in indices:
         return None
 
-    nivel = porcentagem = quando = None
-    for celula in cels[1:]:
-        if nivel is None and (achado := RE_NIVEL.search(celula)):
-            nivel = float(achado.group(1).replace(",", "."))
-        if porcentagem is None and (achado := RE_PORCENTAGEM.search(celula)):
-            porcentagem = float(achado.group(1).replace(",", "."))
-        if quando is None and (achado := RE_QUANDO.search(celula)):
-            quando = f"{achado.group(1)} {achado.group(2)}"
-
-    if nivel is None and porcentagem is None:
+    nivel = numero(celula("nivel"))
+    texto_quando, iso = quando_de(celula("coleta"), agora)
+    chuva = {nome: numero(celula(nome)) for nome in
+             ("chuva_atual", "chuva_1h", "chuva_6h", "chuva_12h", "chuva_24h", "chuva_48h")
+             if nome in indices}
+    if nivel is None and not any(v is not None for v in chuva.values()):
         return None
     return {
         "rotulo": rotulo,
+        "fonte_da_leitura": celula("fonte") or None,
         "nivel_m": nivel,
-        # A régua de plausibilidade que a coleta inteira usa. Fora dela o número
-        # aparece na linha bruta e não no campo, para não ser lido como nível.
+        # A régua de plausibilidade que a coleta inteira usa. As barragens desta
+        # tabela leem 265 a 392 m — cota do reservatório acima do mar, não nível
+        # de rio —, e é isto que impede o número de passar por nível.
         "nivel_plausivel": nivel is not None and nivel_plausivel(nivel),
-        "ocupacao_pct": porcentagem,
-        "medido_em": quando,
+        "medido_em": texto_quando,
+        "medido_em_iso": iso,
+        "chuva_mm": chuva or None,
         # A linha crua fica para quem for ajustar o parser contra o HTML real.
         "linha_bruta": " | ".join(cels)[:220],
     }
@@ -160,14 +215,28 @@ def analisar(html: str) -> dict:
     leitura = {"fonte": URL, "coletado_em": datetime.now(timezone.utc).isoformat(),
                "estacoes": [], "barragens": [], "faixas_propostas": {}}
 
-    linhas = [celulas(tr) for tabela in sopa.find_all("table")
-              for tr in tabela.find_all("tr")]
-    for cels in linhas:
-        item = ler_linha(cels)
-        if item is None:
+    linhas = []
+    for tabela in sopa.find_all("table"):
+        todas = [celulas(tr) for tr in tabela.find_all("tr")]
+        # O cabeçalho é a primeira linha que nomeia a coluna de nível. Sem ela
+        # não se lê a tabela: melhor não ler do que ler pela posição chutada.
+        indices: dict[str, int] = {}
+        for cels in todas:
+            candidatos = indices_do_cabecalho(cels)
+            if "nivel" in candidatos:
+                indices = candidatos
+                break
+        if not indices:
             continue
-        (leitura["barragens"] if e_barragem(item["rotulo"])
-         else leitura["estacoes"]).append(item)
+        for cels in todas:
+            if indices_do_cabecalho(cels).get("nivel") is not None:
+                continue  # é o próprio cabeçalho, ou o rodapé que o repete
+            linhas.append(cels)
+            item = ler_linha(cels, indices)
+            if item is None:
+                continue
+            (leitura["barragens"] if e_barragem(item["rotulo"])
+             else leitura["estacoes"]).append(item)
 
     nivel_gaspar = next((e["nivel_m"] for e in leitura["estacoes"]
                          if "gaspar" in sem_acento(e["rotulo"]) and e["nivel_plausivel"]), None)
@@ -245,13 +314,16 @@ def main() -> int:
 
     print(f"{len(leitura['estacoes'])} estações · {len(leitura['barragens'])} barragens "
           f"· faixas rotuladas: {sorted(leitura['faixas_propostas']) or 'nenhuma'}")
-    for e in leitura["estacoes"][:10]:
-        marca = "" if e["nivel_plausivel"] or e["nivel_m"] is None else "  <- fora de faixa"
-        print(f"  {str(e['nivel_m']):>7} m  {e['medido_em'] or '-':<17} "
-              f"{e['rotulo'][:44]}{marca}")
-    for b in leitura["barragens"]:
-        print(f"  [barragem] {str(b['nivel_m']):>7} m · ocupação "
-              f"{b['ocupacao_pct'] if b['ocupacao_pct'] is not None else '-'}%  {b['rotulo'][:40]}")
+    for e in leitura["estacoes"] + leitura["barragens"]:
+        if e["nivel_m"] is None:
+            chuva = (e["chuva_mm"] or {}).get("chuva_24h")
+            medida = f"{chuva:>6.1f} mm/24h" if chuva is not None else "        só chuva"
+        else:
+            medida = f"{e['nivel_m']:>6.2f} m     "
+        marca = "" if e["nivel_plausivel"] or e["nivel_m"] is None else \
+            "  <- fora da faixa de nível de rio"
+        etiqueta = "[barragem] " if e_barragem(e["rotulo"]) else "           "
+        print(f"  {etiqueta}{medida}  {e['medido_em'] or '-':<14} {e['rotulo'][:40]}{marca}")
     print(f"\nUser-Agent: {USER_AGENT}")
     print("Enquanto Gaspar não tiver cota em estacoes.json, nada disto dispara aviso.")
 

@@ -12,61 +12,124 @@ nível e de cota.
 """
 
 import sys
+from datetime import datetime
 import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 from coleta_gaspar import (MARGEM_DO_NIVEL_M, analisar, e_barragem,
-                           faixas_da_linha, ler_linha, permitido)
+                           faixas_da_linha, indices_do_cabecalho, ler_linha,
+                           numero, permitido, quando_de)
+
+RAIZ = Path(__file__).resolve().parent.parent
+PAGINA_REAL = RAIZ / "data" / "brutos" / "gaspar-monitoramento-2026-08-31.html"
 
 TABELA = """
 <table>
-  <tr><th>Estação</th><th>Nível</th><th>Atualizado</th></tr>
-  <tr><td>Rio Itajaí Açu Gaspar</td><td>3,25 m</td><td>01/09/2026 01:00</td></tr>
-  <tr><td>Barragem Oeste</td><td>ocupação 85,4 %</td><td>9,79 m</td></tr>
+  <tr><td>Estação</td><td>Fonte</td><td>Coleta</td><td>Nível</td><td>24 horas</td></tr>
+  <tr><td>Rio Itajaí Açu Gaspar</td><td>DC. Gaspar</td><td>31/08 22:59</td>
+      <td>3,85</td><td>70,00</td></tr>
+  <tr><td>Barragem Oeste Taió</td><td>DCSC</td><td>31/08 23:29</td>
+      <td>351,81</td><td>0,00</td></tr>
 </table>
 """
 
+CABECALHO = ["Estação", "Fonte", "Coleta", "Nível", "24 horas"]
+INDICES = {"estacao": 0, "fonte": 1, "coleta": 2, "nivel": 3, "chuva_24h": 4}
+
+
+class TestNumero(unittest.TestCase):
+    """
+    A tabela real escreve `<td>3,85</td>` — sem unidade. A primeira versão
+    exigia o "m" para um número virar nível, e por isso leu ZERO estações na
+    página de verdade. A unidade não é o que separa nível de chuva: a coluna é.
+    """
+
+    def test_le_numero_sem_unidade(self):
+        self.assertEqual(numero("3,85"), 3.85)
+        self.assertEqual(numero("265,90"), 265.9)
+        self.assertEqual(numero("0,00"), 0.0)
+
+    def test_traco_e_vazio_viram_none(self):
+        for texto in ("-", "", "   ", None):
+            with self.subTest(texto=texto):
+                self.assertIsNone(numero(texto))
+
+    def test_texto_com_numero_dentro_nao_vira_numero(self):
+        self.assertIsNone(numero("Coleta 31/08 22:59"))
+        self.assertIsNone(numero("Rio Itajaí Açu Gaspar"))
+
+
+class TestCabecalho(unittest.TestCase):
+    def test_acha_as_colunas_pelo_nome(self):
+        self.assertEqual(indices_do_cabecalho(CABECALHO), INDICES)
+
+    def test_cota_e_nivel_sao_a_mesma_coluna(self):
+        """O rodapé desta tabela diz "Cota" onde o topo diz "Nível"."""
+        self.assertEqual(indices_do_cabecalho(["Estação", "Cota"])["nivel"], 1)
+
+    def test_linha_de_dados_nao_e_confundida_com_cabecalho(self):
+        self.assertNotIn("nivel", indices_do_cabecalho(
+            ["Rio Itajaí Açu Gaspar", "DC. Gaspar", "31/08 22:59", "3,85"]))
+
+
+class TestQuando(unittest.TestCase):
+    def test_le_a_data_sem_ano_da_pagina(self):
+        agora = datetime(2026, 9, 1, 2, 0)
+        texto, iso = quando_de("31/08 22:59", agora)
+        self.assertEqual(texto, "31/08 22:59")
+        self.assertEqual(iso, "2026-08-31T22:59:00")
+
+    def test_data_que_cairia_no_futuro_usa_o_ano_anterior(self):
+        """Em 1º de janeiro, "31/12 23:00" é do ano passado, não do que vem."""
+        _, iso = quando_de("31/12 23:00", datetime(2026, 1, 1, 3, 0))
+        self.assertEqual(iso, "2025-12-31T23:00:00")
+
+    def test_ano_explicito_e_respeitado(self):
+        _, iso = quando_de("09/09/2011 14:00", datetime(2026, 9, 1))
+        self.assertEqual(iso, "2011-09-09T14:00:00")
+
+    def test_texto_sem_data_nao_inventa_nada(self):
+        self.assertEqual(quando_de("sem data"), (None, None))
+
 
 class TestLerLinha(unittest.TestCase):
-    def test_cada_grandeza_sai_da_propria_celula(self):
-        """
-        O defeito que motivou a reescrita: juntando a linha inteira e pegando o
-        primeiro decimal, a ocupação de 85,4 % da barragem virava o nível dela.
-        """
-        item = ler_linha(["Barragem Oeste", "ocupação 85,4 %", "9,79 m"])
-        self.assertEqual(item["ocupacao_pct"], 85.4)
-        self.assertEqual(item["nivel_m"], 9.79)
+    def test_le_o_nivel_pela_coluna(self):
+        item = ler_linha(["Rio Itajaí Açu Gaspar", "DC. Gaspar", "31/08 22:59", "3,85",
+                          "70,00"], INDICES, datetime(2026, 9, 1, 2, 0))
+        self.assertEqual(item["nivel_m"], 3.85)
+        self.assertTrue(item["nivel_plausivel"])
+        self.assertEqual(item["chuva_mm"]["chuva_24h"], 70.0)
+        self.assertEqual(item["fonte_da_leitura"], "DC. Gaspar")
 
-    def test_a_unidade_e_obrigatoria_para_virar_nivel(self):
-        """Sem o "m", 85,4 é ocupação e 01/09/2026 é data — nenhum é nível."""
-        item = ler_linha(["X", "85,4 %", "01/09/2026 01:00"])
+    def test_chuva_nao_vira_nivel(self):
+        """
+        A coluna de 24 h desta linha traz 70,00 — um número perfeitamente
+        plausível como nível. Quem impede a confusão é a coluna.
+        """
+        item = ler_linha(["PLUVIÔMETRO", "Cemaden", "31/08 23:29", "-", "82,29"],
+                         INDICES)
         self.assertIsNone(item["nivel_m"])
+        self.assertEqual(item["chuva_mm"]["chuva_24h"], 82.29)
 
-    def test_nivel_fora_da_faixa_do_rio_e_marcado(self):
-        """
-        349 m é o caso das estações que leem altitude. O número aparece, mas
-        marcado — nunca some calado nem passa por nível.
-        """
-        item = ler_linha(["Mirim Doce", "349,08 m"])
-        self.assertEqual(item["nivel_m"], 349.08)
+    def test_barragem_em_centenas_de_metros_e_marcada(self):
+        """265 a 392 m é cota de reservatório acima do mar, não nível de rio."""
+        item = ler_linha(["Barragem Sul Ituporanga", "DCSC", "31/08 23:29", "392,62",
+                          "0,00"], INDICES)
+        self.assertEqual(item["nivel_m"], 392.62)
         self.assertFalse(item["nivel_plausivel"])
 
-    def test_nivel_plausivel_e_marcado_como_tal(self):
-        self.assertTrue(ler_linha(["Gaspar", "3,25 m"])["nivel_plausivel"])
+    def test_sem_coluna_de_nivel_nao_le_a_linha(self):
+        """Melhor não ler do que ler pela posição chutada."""
+        self.assertIsNone(ler_linha(["X", "Y"], {"estacao": 0}))
 
-    def test_linha_sem_numero_nenhum_nao_vira_leitura(self):
-        self.assertIsNone(ler_linha(["Estação", "Nível", "Atualizado"]))
-
-    def test_linha_vazia_ou_curta_demais_nao_vira_leitura(self):
-        for cels in ([], [""], ["só o rótulo"]):
-            with self.subTest(cels=cels):
-                self.assertIsNone(ler_linha(cels))
+    def test_linha_sem_rotulo_nao_vira_leitura(self):
+        self.assertIsNone(ler_linha(["", "", "", "3,85"], INDICES))
 
     def test_a_linha_bruta_fica_para_o_ajuste_do_parser(self):
-        item = ler_linha(["Gaspar", "3,25 m", "01/09/2026 01:00"])
-        self.assertIn("3,25 m", item["linha_bruta"])
+        item = ler_linha(["Gaspar", "DC", "31/08 22:59", "3,85", "0,00"], INDICES)
+        self.assertIn("3,85", item["linha_bruta"])
 
 
 class TestFaixas(unittest.TestCase):
@@ -113,7 +176,7 @@ class TestAnalisar(unittest.TestCase):
     def test_separa_estacao_de_barragem(self):
         lido = analisar(TABELA)
         self.assertEqual([e["rotulo"] for e in lido["estacoes"]], ["Rio Itajaí Açu Gaspar"])
-        self.assertEqual([b["rotulo"] for b in lido["barragens"]], ["Barragem Oeste"])
+        self.assertEqual([b["rotulo"] for b in lido["barragens"]], ["Barragem Oeste Taió"])
 
     def test_a_tabela_de_exemplo_nao_produz_faixa_nenhuma(self):
         """
@@ -143,13 +206,59 @@ class TestArquivoSalvo(unittest.TestCase):
             caminho = arquivo.name
         lido = analisar(Path(caminho).read_text(encoding="utf-8"))
         self.assertEqual([e["rotulo"] for e in lido["estacoes"]], ["Rio Itajaí Açu Gaspar"])
-        self.assertEqual(lido["estacoes"][0]["nivel_m"], 3.25)
+        self.assertEqual(lido["estacoes"][0]["nivel_m"], 3.85)
         Path(caminho).unlink()
 
     def test_html_com_byte_estranho_nao_quebra_a_leitura(self):
         """Página salva do navegador pode vir em outra codificação."""
         lido = analisar(TABELA.replace("Açu", "A\ufffdu"))
         self.assertEqual(len(lido["estacoes"]), 1)
+
+
+class TestPaginaReal(unittest.TestCase):
+    """
+    Contra a página que a Defesa Civil de Gaspar publicou em 31/08/2026, salva
+    do navegador. Exemplo inventado passa enquanto a fonte muda embaixo dele —
+    e foi exatamente o que aconteceu: a primeira versão passava nos testes e
+    lia zero estações da página de verdade.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.lido = analisar(PAGINA_REAL.read_text(encoding="utf-8"))
+
+    def test_le_o_nivel_do_itajai_acu_em_gaspar(self):
+        gaspar = next(e for e in self.lido["estacoes"]
+                      if "Rio Itajaí Açu Gaspar" in e["rotulo"])
+        self.assertEqual(gaspar["nivel_m"], 3.85)
+        self.assertTrue(gaspar["nivel_plausivel"])
+        self.assertEqual(gaspar["medido_em"], "31/08 22:59")
+
+    def test_le_o_ribeirao_belchior(self):
+        belchior = next(e for e in self.lido["estacoes"] if "BELCHIOR" in e["rotulo"])
+        self.assertEqual(belchior["nivel_m"], 1.68)
+
+    def test_as_tres_barragens_ficam_fora_da_faixa_de_rio(self):
+        self.assertEqual(len(self.lido["barragens"]), 3)
+        for b in self.lido["barragens"]:
+            with self.subTest(rotulo=b["rotulo"]):
+                self.assertFalse(b["nivel_plausivel"])
+                self.assertGreater(b["nivel_m"], 200)
+
+    def test_os_pluviometros_nao_ganham_nivel(self):
+        pluvio = [e for e in self.lido["estacoes"] if "PLU" in e["rotulo"].upper()]
+        self.assertEqual(len(pluvio), 6)
+        for p in pluvio:
+            with self.subTest(rotulo=p["rotulo"]):
+                self.assertIsNone(p["nivel_m"])
+                self.assertIsNotNone(p["chuva_mm"]["chuva_24h"])
+
+    def test_a_pagina_nao_publica_faixa_de_cota(self):
+        """
+        A resposta que o levantamento buscava: a tabela traz leitura, não
+        limiar. As cotas de régua de Gaspar têm de vir por outro caminho.
+        """
+        self.assertEqual(self.lido["faixas_propostas"], {})
 
 
 class TestRobots(unittest.TestCase):

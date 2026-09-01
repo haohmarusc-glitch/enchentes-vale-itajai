@@ -1,0 +1,196 @@
+{
+ "fonte": "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (HTML salvo em ../data/brutos/gaspar-monitoramento-2026-08-31.html)",
+ "coletado_em": "2026-09-01T02:35:45.930575+00:00",
+ "estacoes": [
+  {
+   "rotulo": "PLU - ARRAIAL D' OURO",
+   "fonte_da_leitura": "CEMADEN",
+   "nivel_m": null,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 23:29",
+   "medido_em_iso": "2026-08-31T23:29:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 0.39,
+    "chuva_6h": 28.3,
+    "chuva_12h": 45.47,
+    "chuva_24h": 91.77,
+    "chuva_48h": 123.23
+   },
+   "linha_bruta": "PLU - ARRAIAL D' OURO | CEMADEN | 31/08 23:29 | - | 0,00 | 0,39 | 28,30 | 45,47 | 91,77 | 123,23"
+  },
+  {
+   "rotulo": "PLU LOC. - SERTÃO VERDE",
+   "fonte_da_leitura": "DC. GASPAR",
+   "nivel_m": null,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 17:12",
+   "medido_em_iso": "2026-08-31T17:12:00",
+   "chuva_mm": {
+    "chuva_atual": 42.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 42.0,
+    "chuva_24h": 104.0,
+    "chuva_48h": 104.0
+   },
+   "linha_bruta": "PLU LOC. - SERTÃO VERDE | DC. GASPAR | 31/08 17:12 | - | 42,00 | 0,00 | 0,00 | 42,00 | 104,00 | 104,00"
+  },
+  {
+   "rotulo": "PLU. - ALTO GASPARINHO",
+   "fonte_da_leitura": "DC. GASPAR",
+   "nivel_m": null,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 13:50",
+   "medido_em_iso": "2026-08-31T13:50:00",
+   "chuva_mm": {
+    "chuva_atual": 108.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 108.0,
+    "chuva_24h": 108.0,
+    "chuva_48h": 108.0
+   },
+   "linha_bruta": "PLU. - ALTO GASPARINHO | DC. GASPAR | 31/08 13:50 | - | 108,00 | 0,00 | 0,00 | 108,00 | 108,00 | 108,00"
+  },
+  {
+   "rotulo": "PLUVIÔMETRO -  BATEIAS",
+   "fonte_da_leitura": "Cemaden",
+   "nivel_m": null,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 23:29",
+   "medido_em_iso": "2026-08-31T23:29:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 1.18,
+    "chuva_6h": 24.17,
+    "chuva_12h": 36.2,
+    "chuva_24h": 82.29,
+    "chuva_48h": 108.71
+   },
+   "linha_bruta": "PLUVIÔMETRO -  BATEIAS | Cemaden | 31/08 23:29 | - | 0,00 | 1,18 | 24,17 | 36,20 | 82,29 | 108,71"
+  },
+  {
+   "rotulo": "PLUVIÔMETRO - MACUCOS",
+   "fonte_da_leitura": "DC. GASPAR",
+   "nivel_m": null,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 19:28",
+   "medido_em_iso": "2026-08-31T19:28:00",
+   "chuva_mm": {
+    "chuva_atual": 100.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 100.0,
+    "chuva_12h": 100.0,
+    "chuva_24h": 100.0,
+    "chuva_48h": 100.0
+   },
+   "linha_bruta": "PLUVIÔMETRO - MACUCOS | DC. GASPAR | 31/08 19:28 | - | 100,00 | 0,00 | 100,00 | 100,00 | 100,00 | 100,00"
+  },
+  {
+   "rotulo": "PLUVIÔMETRO - POÇO GRANDE",
+   "fonte_da_leitura": "Cemaden",
+   "nivel_m": null,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 23:29",
+   "medido_em_iso": "2026-08-31T23:29:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 1.18,
+    "chuva_6h": 27.14,
+    "chuva_12h": 42.49,
+    "chuva_24h": 88.15,
+    "chuva_48h": 117.69
+   },
+   "linha_bruta": "PLUVIÔMETRO - POÇO GRANDE | Cemaden | 31/08 23:29 | - | 0,00 | 1,18 | 27,14 | 42,49 | 88,15 | 117,69"
+  },
+  {
+   "rotulo": "RIBEIRÃO BELCHIOR CENTRAL",
+   "fonte_da_leitura": "DC GASPAR",
+   "nivel_m": 1.68,
+   "nivel_plausivel": true,
+   "medido_em": "31/08 23:24",
+   "medido_em_iso": "2026-08-31T23:24:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 0.0,
+    "chuva_24h": 0.4,
+    "chuva_48h": 0.6
+   },
+   "linha_bruta": "RIBEIRÃO BELCHIOR CENTRAL | DC GASPAR | 31/08 23:24 | 1,68 | 0,00 | 0,00 | 0,00 | 0,00 | 0,40 | 0,60"
+  },
+  {
+   "rotulo": "Rio Itajaí Açu Gaspar",
+   "fonte_da_leitura": "DC. Gaspar",
+   "nivel_m": 3.85,
+   "nivel_plausivel": true,
+   "medido_em": "31/08 22:59",
+   "medido_em_iso": "2026-08-31T22:59:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 60.0,
+    "chuva_24h": 70.0,
+    "chuva_48h": 105.0
+   },
+   "linha_bruta": "Rio Itajaí Açu Gaspar | DC. Gaspar | 31/08 22:59 | 3,85 | 0,00 | 0,00 | 0,00 | 60,00 | 70,00 | 105,00"
+  }
+ ],
+ "barragens": [
+  {
+   "rotulo": "Barragem Norte José Boiteux",
+   "fonte_da_leitura": "DCSC",
+   "nivel_m": 265.9,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 17:00",
+   "medido_em_iso": "2026-08-31T17:00:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 0.0,
+    "chuva_24h": 0.0,
+    "chuva_48h": 0.0
+   },
+   "linha_bruta": "Barragem Norte José Boiteux | DCSC | 31/08 17:00 | 265,90 | 0,00 | 0,00 | 0,00 | 0,00 | 0,00 | 0,00"
+  },
+  {
+   "rotulo": "Barragem Oeste Taió",
+   "fonte_da_leitura": "DCSC",
+   "nivel_m": 351.81,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 23:29",
+   "medido_em_iso": "2026-08-31T23:29:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 0.0,
+    "chuva_24h": 0.0,
+    "chuva_48h": 0.0
+   },
+   "linha_bruta": "Barragem Oeste Taió | DCSC | 31/08 23:29 | 351,81 | 0,00 | 0,00 | 0,00 | 0,00 | 0,00 | 0,00"
+  },
+  {
+   "rotulo": "Barragem Sul Ituporanga",
+   "fonte_da_leitura": "DCSC",
+   "nivel_m": 392.62,
+   "nivel_plausivel": false,
+   "medido_em": "31/08 23:29",
+   "medido_em_iso": "2026-08-31T23:29:00",
+   "chuva_mm": {
+    "chuva_atual": 0.0,
+    "chuva_1h": 0.0,
+    "chuva_6h": 0.0,
+    "chuva_12h": 0.0,
+    "chuva_24h": 0.0,
+    "chuva_48h": 0.0
+   },
+   "linha_bruta": "Barragem Sul Ituporanga | DCSC | 31/08 23:29 | 392,62 | 0,00 | 0,00 | 0,00 | 0,00 | 0,00 | 0,00"
+  }
+ ],
+ "faixas_propostas": {}
+}
