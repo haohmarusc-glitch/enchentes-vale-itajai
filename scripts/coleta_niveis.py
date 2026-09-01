@@ -21,7 +21,9 @@ que vale versionar é o pico destilado deles, em `enchentes.json`.
 
 `ultimo.json` também NÃO é versionado no `main`. Ele é publicado à parte, no
 branch `tempo-real`, por `scripts/publicar_tempo_real.sh` — é de lá que o site
-busca o nível ao vivo. Rode os dois em sequência no cron:
+busca o nível ao vivo. Ao lado dele vai `serie-recente.json`, as últimas horas
+de nível por cidade recortadas da série ndjson, para a linha do tempo do site.
+Rode os dois em sequência no cron:
 
     */15 * * * * cd /caminho/do/repo && python3 scripts/coleta_niveis.py >> /var/log/niveis.log 2>&1 \
                  && scripts/publicar_tempo_real.sh >> /var/log/niveis.log 2>&1
@@ -43,13 +45,24 @@ import json
 import re
 import shutil
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from comum import DADOS, USER_AGENT, espera_turno
 
 SERIE = DADOS / "tempo-real"
 ULTIMO = SERIE / "ultimo.json"
+SERIE_RECENTE = SERIE / "serie-recente.json"
+
+#: Quantas horas da série o site recebe para desenhar a linha do tempo. 48 para
+#: um slider de "últimas 24h" ter folga, sem virar um arquivo grande no celular.
+HORAS_SERIE_RECENTE = 48
+
+#: `medido_em` é hora de Brasília sem fuso (regra do projeto). Para recortar a
+#: janela, o "agora" tem de estar no MESMO relógio — senão a série entraria
+#: deslocada, o mesmo erro de fuso que já custou uma sessão.
+FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 
 def baixar_niveis() -> list[dict]:
@@ -229,6 +242,94 @@ def acumular(leituras: list[dict], prefixo: str = "") -> tuple[int, int]:
     return novas, repetidas
 
 
+def _ler_ndjson(arquivo: Path):
+    """Gera os dicts de um `.ndjson` ou `.ndjson.gz`, pulando linha quebrada."""
+    abrir = (
+        (lambda: gzip.open(arquivo, "rt", encoding="utf-8"))
+        if arquivo.suffix == ".gz"
+        else (lambda: open(arquivo, encoding="utf-8"))
+    )
+    with abrir() as f:
+        for linha in f:
+            linha = linha.strip()
+            if not linha:
+                continue
+            try:
+                yield json.loads(linha)
+            except ValueError:
+                continue
+
+
+def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
+    """
+    Monta `serie-recente.json` com as últimas `horas` de NÍVEL, por rio e cidade,
+    para o site desenhar a linha do tempo. Lê a série ndjson acumulada — só ela
+    tem histórico; o `ultimo.json` é um instante. Devolve quantos pontos entraram.
+
+    Só nível, de propósito: a chuva é outra grandeza e outra série, e dobraria o
+    arquivo que o celular baixa. `medido_em` continua sendo hora de Brasília sem
+    fuso, igual ao resto do projeto — nada de converter aqui.
+    """
+    agora = datetime.now(FUSO_BRASILIA).replace(tzinfo=None)
+    corte = agora - timedelta(hours=horas)
+
+    # Quais meses ler: o de agora e, se a janela recua para o mês anterior, ele
+    # também. Passar de dois é desnecessário — a janela é de horas.
+    meses = {agora.strftime("%Y-%m"), corte.strftime("%Y-%m")}
+    arquivos = [
+        SERIE / nome
+        for mes in meses
+        for nome in (f"{mes}.ndjson", f"{mes}.ndjson.gz")
+        if (SERIE / nome).exists()
+    ]
+
+    series: dict[str, dict[str, list[dict]]] = {}
+    pontos = 0
+    for arquivo in arquivos:
+        for d in _ler_ndjson(arquivo):
+            if d.get("nivel_m") is None or not d.get("medido_em"):
+                continue
+            try:
+                quando = datetime.fromisoformat(str(d["medido_em"]).replace(" ", "T"))
+            except ValueError:
+                continue
+            if quando < corte:
+                continue
+            rio, cidade = d.get("rio"), d.get("cidade")
+            if not rio or not cidade:
+                continue
+            series.setdefault(rio, {}).setdefault(cidade, []).append(
+                {"medido_em": d["medido_em"], "nivel_m": d["nivel_m"]}
+            )
+            pontos += 1
+
+    for por_cidade in series.values():
+        for linha in por_cidade.values():
+            linha.sort(key=lambda p: p["medido_em"])
+
+    SERIE.mkdir(parents=True, exist_ok=True)
+    SERIE_RECENTE.write_text(
+        json.dumps(
+            {
+                "_meta": {
+                    "descricao": "Últimas horas de nível por rio e cidade, para a linha do tempo do site.",
+                    "medido_em": "hora de Brasília sem fuso, como no resto do projeto",
+                    "gerado_em": "UTC, do momento em que este arquivo foi montado",
+                    "so_nivel": "chuva é outra série; este arquivo é só nível",
+                },
+                "gerado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "janela_horas": horas,
+                "series": series,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return pontos
+
+
 #: O `AAAA-MM` no fim do nome do arquivo de série, com ou sem prefixo.
 MES_NO_NOME = re.compile(r"(\d{4}-\d{2})$")
 
@@ -326,6 +427,10 @@ def main() -> int:
     # desde já. Um ciclo perdido é histórico perdido para sempre.
     novas_chuva, repetidas_chuva = acumular(chuva, prefixo="chuva-")
 
+    # A linha do tempo do site: as últimas horas de nível, recortadas da série
+    # acumulada. Publicada junto do ultimo.json pelo publicar_tempo_real.sh.
+    pontos_serie = escrever_serie_recente()
+
     SERIE.mkdir(parents=True, exist_ok=True)
     ULTIMO.write_text(
         json.dumps(
@@ -354,6 +459,8 @@ def main() -> int:
     print(f"\n{novas} medição(ões) nova(s) de nível, {repetidas} já registrada(s).")
     print(f"{len(chuva)} estação(ões) com chuva publicada; "
           f"{novas_chuva} nova(s) na série, {repetidas_chuva} já registrada(s).")
+    print(f"serie-recente.json: {pontos_serie} ponto(s) de nível nas últimas "
+          f"{HORAS_SERIE_RECENTE} h.")
     return 0
 
 
