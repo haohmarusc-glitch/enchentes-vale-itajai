@@ -12,10 +12,15 @@
 # trabalho de quem está no `main` não é tocada. Pode rodar no mesmo cron da
 # coleta, logo depois dela.
 #
-# Precisa de credencial de push. Numa VPS, o jeito usual é um token com escopo
-# de repositório no remoto:
-#     git remote set-url origin https://USUARIO:TOKEN@github.com/OWNER/REPO.git
-# ou uma chave SSH com o remoto em git@github.com:OWNER/REPO.git
+# Precisa de credencial de push. PREFIRA uma chave SSH de deploy (deploy key),
+# criada só para este repositório, com o remoto em git@github.com:OWNER/REPO.git:
+#     ssh-keygen -t ed25519 -f ~/.ssh/enchentes_deploy -N ""
+#     # e cadastre a .pub em Settings > Deploy keys do repo, COM permissão de escrita
+#     git remote set-url origin git@github.com:OWNER/REPO.git
+# Evite embutir token no URL (https://USUARIO:TOKEN@github.com/...): ele fica
+# gravado em texto no `.git/config` e vaza em qualquer log de erro. Se precisar
+# mesmo de token, use um PAT fine-grained com "Contents: write" SÓ neste repo,
+# guardado num arquivo 0600, nunca no URL do remoto.
 #
 # Uso:
 #     scripts/publicar_tempo_real.sh          # publica
