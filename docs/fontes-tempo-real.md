@@ -473,3 +473,38 @@ fresco (`03:24:30Z`) e **sem valor de nível** — segunda observação independ
 03:09Z. Não é "não trouxe naquele instante": parece ser que a estação de Gaspar na rede estadual
 publica chuva e não publica régua. Se isso se confirmar em mais coletas, o caminho estadual morre e
 sobra o ofício à Defesa Civil de Gaspar pedindo um endpoint estável.
+
+### A evidência do portão de Gaspar mudou de perna (01/09/2026)
+
+Uma revisão de `coleta_itajai.py` chegou com uma linha só de diferença:
+
+```diff
+-    (r"^DC-11\b", "itajai-acu", "ilhota"),
++    (r"^DC-11\b", "itajai-acu", "itajai"),  # Santa Regina/Volta de Cima = bairro de Itajaí (montante)
+```
+
+Ela vem sem fonte geográfica, e **não foi aplicada** — ver a pendência da DC-11 no README. Mas obrigou
+a revisar o que dependia da atribuição, e algo dependia.
+
+O portão do `gaspar_estadual.py` estava apoiado no par **Ilhota (DCSC-00030) × nossa DC-11**: 10,67 m
+contra 3,34 m. Esse par só prova zero diferente **se as duas leituras forem da mesma cidade**. Com o
+município da DC-11 em aberto, ele pode estar comparando dois lugares distintos — e aí não prova nada.
+A conclusão continuava certa; uma das pernas dela, não.
+
+**A perna nova não depende de município nenhum.** É a mesma estrutura, nomeada igual nas duas fontes,
+no mesmo intervalo de horas:
+
+| Estrutura | Tabela do município de Gaspar | Rede estadual | Diferença |
+|---|---|---|---|
+| Barragem Sul Ituporanga | 392,62 m | **22,79 m** (`DCSC-00038`) | **369,83 m** |
+| Barragem Oeste Taió | 351,81 m | **12,97 m** (`DCSC-00040`) | **338,84 m** |
+
+Cota do reservatório acima do mar contra altura na escala do próprio barramento. Não há "mas será que
+é o mesmo lugar?" a levantar: é o mesmo barramento, com o mesmo nome, nos dois arquivos. E a rede
+estadual **concorda** com a nossa em outras estações (Brusque 4,48 × 4,42) — que é exatamente o que
+"não é a mesma grandeza **entre estações**" significa: não dá para saber, estação a estação, qual das
+duas coisas se está lendo.
+
+O par de Ilhota ficou em `EVIDENCIA_CONTESTADA`, marcado, e há teste garantindo que o motivo impresso
+ao recusar **não o cita**. Justificar a recusa com o argumento que caiu seria manter a decisão certa
+pela razão errada — e a próxima pessoa a ler descobriria isso do pior jeito.

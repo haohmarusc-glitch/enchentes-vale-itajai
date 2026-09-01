@@ -11,15 +11,23 @@ Contingência (`conferir_gaspar_plano.py`) — e não tem leitura: o host do
 município não responde de fora. A rede estadual (GraphQL da Defesa Civil de SC)
 tem uma estação em Gaspar, `DCSC-00005`, e é tentador ligar uma coisa na outra.
 
-**Não dá, ainda.** O `rio_nivel` da rede estadual não é a mesma grandeza entre
-estações, e isso está medido duas vezes, com sete metros de diferença:
+**Não dá.** "Nível" não é a mesma grandeza entre as fontes, e a prova não
+depende de onde fica estação nenhuma — é a MESMA estrutura, nomeada igual nos
+dois lugares, no mesmo intervalo de horas:
 
-    Ilhota, 31/08/2026:  estadual 10,34 m   nossa régua 3,25 m   (7,09 m)
-    Ilhota, 01/09/2026:  estadual 10,67 m   nossa régua 3,34 m   (7,33 m)
+    Barragem Sul Ituporanga:  Gaspar 392,62 m   estadual 22,79 m   (369,83 m)
+    Barragem Oeste Taió:      Gaspar 351,81 m   estadual 12,97 m   (338,84 m)
 
-Não é ruído nem leitura velha: é outro zero. Nas mesmas duas ocasiões Brusque
-bate (4,48 contra 4,42) — ou seja, a rede concorda em algumas estações e está
-7 m fora em outras, que é exatamente o que "não é a mesma grandeza" significa.
+Isso é cota do reservatório acima do mar contra altura na escala do próprio
+barramento. E a rede estadual **concorda** com a nossa em outras estações —
+Brusque 4,48 contra 4,42 —, que é exatamente o que "não é a mesma grandeza entre
+estações" significa: não dá para saber, por estação, qual das duas coisas se
+está lendo.
+
+Havia uma segunda prova, o par de Ilhota (estadual 10,67 m contra 3,34 m na
+nossa DC-11), e ela **saiu de sustentação**: em que município fica a DC-11 está
+em aberto, e se for Itajaí o par compara duas cidades diferentes. Fica em
+`EVIDENCIA_CONTESTADA`, marcada, sem segurar nada.
 
 POR QUE ISSO SERIA GRAVE EM GASPAR
 ----------------------------------
@@ -69,11 +77,32 @@ CODIGO_GASPAR = "DCSC-00005"
 #: commit que registre o par em `docs/fontes-tempo-real.md`.
 DESLOCAMENTO_CONHECIDO_M: float | None = None
 
-#: A prova de que a rede não está num zero só. Cada item é
-#: (data, código, nível estadual, nossa régua, nome da nossa estação).
-EVIDENCIA_DE_ZEROS_DIFERENTES = [
-    ("2026-08-31", "DCSC-00030", 10.34, 3.25, "DC-11 Santa Regina (Ilhota)"),
-    ("2026-09-01", "DCSC-00030", 10.67, 3.34, "DC-11 Santa Regina (Ilhota)"),
+#: A prova de que "nível" não é a mesma grandeza entre fontes, sem depender de
+#: onde fica estação nenhuma: a MESMA estrutura, nomeada igual nas duas fontes,
+#: no mesmo intervalo de horas. Cada item é
+#: (estrutura, valor no município de Gaspar, valor na rede estadual, código).
+#:
+#: 370 m de diferença é cota do reservatório acima do mar contra altura na
+#: escala do próprio barramento. Nenhuma leitura de rio explica isso, e nenhum
+#: argumento sobre limite municipal a desfaz.
+EVIDENCIA_INDEPENDENTE = [
+    ("Barragem Sul Ituporanga", 392.62, 22.79, "DCSC-00038"),
+    ("Barragem Oeste Taió", 351.81, 12.97, "DCSC-00040"),
+]
+
+#: A evidência que ANTES sustentava sozinha este portão, hoje sob contestação.
+#:
+#: O par era: rede estadual em Ilhota (DCSC-00030) contra a nossa DC-11. Só que
+#: **em que município fica a DC-11 está em aberto** — o nosso cadastro diz
+#: `ilhota`, e uma especificação recebida a lista entre as estações de Itajaí,
+#: com o nome "Santa Regina (Volta de Cima)". Se a DC-11 for de Itajaí, este par
+#: compara DUAS CIDADES DIFERENTES e não prova zero diferente nenhum.
+#:
+#: Fica registrado, marcado, e **não sustenta o portão**: quem sustenta é a
+#: evidência das barragens acima. Ver a pendência da DC-11 no README.
+EVIDENCIA_CONTESTADA = [
+    ("2026-08-31", "DCSC-00030", 10.34, 3.25, "DC-11 Santa Regina — município em disputa"),
+    ("2026-09-01", "DCSC-00030", 10.67, 3.34, "DC-11 Santa Regina — município em disputa"),
 ]
 
 #: Diferença acima da qual duas leituras da mesma cidade não podem ser o mesmo
@@ -203,9 +232,10 @@ def usavel_para_aviso() -> tuple[bool, str]:
     if DESLOCAMENTO_CONHECIDO_M is None:
         return False, (
             "deslocamento entre a régua estadual e a do Plano NÃO medido. "
-            "Na mesma rede, Ilhota vem 7,3 m acima da nossa régua; se Gaspar "
-            "tiver deslocamento parecido, 5/6/7 m viram faixa errada nos dois "
-            "sentidos — e o sentido que esconde a cheia é o que mata."
+            "A mesma Barragem Sul aparece como 392,62 m na tabela de Gaspar e "
+            "22,79 m na rede estadual: 'nível' não é uma grandeza só. Se Gaspar "
+            "tiver deslocamento, 5/6/7 m viram faixa errada nos dois sentidos "
+            "— e o sentido que esconde a cheia é o que mata."
         )
     return True, f"deslocamento medido: {DESLOCAMENTO_CONHECIDO_M:+.2f} m"
 
@@ -256,9 +286,12 @@ def main() -> int:
     args = p.parse_args()
 
     print("Gaspar na rede estadual (DCSC-00005) — medição, não coleta\n")
-    for data, cod, deles, nosso, quem in EVIDENCIA_DE_ZEROS_DIFERENTES:
-        print(f"  evidência {data}: {cod} veio {deles:.2f} m; {quem} marcava "
-              f"{nosso:.2f} m — {deles - nosso:.2f} m de diferença")
+    for nome, gaspar, estadual, cod in EVIDENCIA_INDEPENDENTE:
+        print(f"  {nome}: tabela de Gaspar {gaspar:.2f} m; rede estadual "
+              f"({cod}) {estadual:.2f} m — {gaspar - estadual:.2f} m de diferença")
+    for data, cod, deles, nosso, quem in EVIDENCIA_CONTESTADA:
+        print(f"  [contestada] {data}: {cod} veio {deles:.2f} m; {quem} marcava "
+              f"{nosso:.2f} m — não sustenta o portão")
 
     try:
         resposta = consultar()
