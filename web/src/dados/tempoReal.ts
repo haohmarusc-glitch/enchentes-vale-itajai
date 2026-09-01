@@ -36,6 +36,14 @@ export interface LeituraAoVivo {
   nivel_m: number
   /** Instante da medição. Null quando a fonte não publicou o horário. */
   medidoEm: Date | null
+  /**
+   * Título da régua PRIMÁRIA, quando esta leitura é um resgate (backup) dela.
+   * Blumenau tem primária (página de Itajaí) e resgate (AlertaBlu) da MESMA
+   * régua ANA 83800002 — os dois têm o mesmo zero e são a mesma régua. Sem
+   * este campo, o site as via como duas réguas e escondia o nível atrás de
+   * "várias réguas". O vigia já junta as duas por aqui (`resgate_de`).
+   */
+  resgateDe: string | null
 }
 
 /** Janelas de acumulado publicadas pela fonte. Ela NÃO publica 6 h. */
@@ -103,6 +111,7 @@ function leituraValida(bruta: unknown): LeituraAoVivo | null {
     cidade: typeof l.cidade === 'string' ? l.cidade : null,
     nivel_m: nivel,
     medidoEm,
+    resgateDe: typeof l.resgate_de === 'string' ? l.resgate_de : null,
   }
 }
 
@@ -296,6 +305,15 @@ export function leiturasDaCidade(
     .sort((a, b) => a.estacao.localeCompare(b.estacao))
 }
 
+/**
+ * Identidade da régua de uma leitura: a primária pelo título, o resgate pelo
+ * título da primária que ele socorre. Primária + resgate da MESMA régua colam
+ * na mesma identidade — é assim que o vigia também as junta.
+ */
+export function reguaDe(l: LeituraAoVivo): string {
+  return l.resgateDe ?? l.estacao
+}
+
 /** A leitura mais recente de uma cidade, na régua de um rio. */
 export function leituraDaCidade(
   estado: EstadoTempoReal,
@@ -304,8 +322,17 @@ export function leituraDaCidade(
 ): LeituraAoVivo | null {
   const candidatas = estado.leituras.filter((l) => l.rio === rioId && l.cidade === cidadeId)
   if (candidatas.length === 0) return null
-  // Cidade com mais de uma régua: não dá para escolher uma como "o nível da
-  // cidade" — os zeros são diferentes. Melhor não mostrar nenhuma.
-  if (candidatas.length > 1) return null
-  return candidatas[0]!
+  // Réguas DISTINTAS na mesma cidade (Itajaí tem onze, com zeros diferentes):
+  // não dá para eleger "o nível da cidade". Mas primária + resgate da mesma
+  // régua contam como UMA — senão Blumenau, socorrido pelo AlertaBlu, cairia
+  // aqui e o site esconderia o nível atrás de "várias réguas".
+  const reguas = new Set(candidatas.map(reguaDe))
+  if (reguas.size > 1) return null
+  // Uma régua só (talvez com backup): vale a leitura mais recente com carimbo —
+  // "viva se qualquer das duas está fresca".
+  return candidatas.reduce<LeituraAoVivo | null>((melhor, l) => {
+    if (!l.medidoEm) return melhor
+    if (!melhor || !melhor.medidoEm) return l
+    return l.medidoEm.getTime() > melhor.medidoEm.getTime() ? l : melhor
+  }, null) ?? candidatas[0]!
 }
