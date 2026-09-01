@@ -555,6 +555,19 @@ class TestGerais(unittest.TestCase):
         t = resp("/rios")
         self.assertRegex(t, r"<b>Brusque</b>: \d+,\d\d m · h")
 
+    def test_rios_segue_a_ordem_do_rio_e_nao_a_alfabetica(self):
+        """
+        Montante -> jusante, o Açu inteiro (até a foz, Itajaí) e depois o Mirim.
+        Alfabético punha Brusque antes de Rio do Sul — o rio de baixo antes da
+        cabeceira do de cima. A base tem Rio do Sul (Açu, alto), Itajaí (foz do
+        Açu) e Brusque (Mirim).
+        """
+        t = resp("/rios")
+        self.assertLess(t.index("Rio do Sul"), t.index("Itajaí"),
+                        "a cabeceira do Açu vem antes da foz")
+        self.assertLess(t.index("Itajaí"), t.index("Brusque"),
+                        "o Açu inteiro vem antes do Mirim")
+
     def test_nome_curto_tira_a_calha_e_guarda_o_codigo(self):
         """No panorama o que muda entre as linhas é o local, não o nome do rio."""
         self.assertEqual(
