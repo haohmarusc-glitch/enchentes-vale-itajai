@@ -112,16 +112,26 @@ function desenharRun(mapa: L.Map, pontos: LonLat[], cor: string): void {
  * sem coordenada cadastrada não vira âncora. Carrega sob botão, para não pesar no
  * celular.
  */
+// Longe, o mapa mostra só o rio colorido e os pontos das cidades — "onde está o
+// perigo". Ao aproximar deste zoom, os nomes das cidades aparecem, e o toque
+// numa cidade abre as cotas de rua e o abrigo dela (detalhe). É a transição
+// visão geral→detalhe do Kikikuru, com o dado que temos por cidade — rua e
+// abrigo não têm coordenada, então não viram pino no mapa.
+const ZOOM_ROTULOS = 11
+
 export default function MapaRios({
   rioId,
   cidades,
   tempoReal,
   agora,
+  aoSelecionar,
 }: {
   rioId: string
   cidades: Cidade[]
   tempoReal: EstadoTempoReal
   agora: Date
+  /** Chamado ao tocar numa cidade — abre o detalhe dela na tela do rio. */
+  aoSelecionar?: (cidadeId: string) => void
 }) {
   const divRef = useRef<HTMLDivElement | null>(null)
   const mapaRef = useRef<L.Map | null>(null)
@@ -205,22 +215,40 @@ export default function MapaRios({
           }
         }
 
-        // Marcadores das cidades por cima de tudo, com o número e a ação.
+        // Marcadores das cidades por cima de tudo, com o número e a ação. O nome
+        // fica num rótulo que só aparece quando o mapa está aproximado; o toque
+        // seleciona a cidade e abre o detalhe (cotas de rua e abrigo) na tela.
         for (const a of ancoras) {
-          L.circleMarker([a.ponto[1], a.ponto[0]], {
+          const marcador = L.circleMarker([a.ponto[1], a.ponto[0]], {
             radius: 8,
             color: '#111827',
             weight: 2,
             fillColor: COR_FAIXA[a.faixa],
             fillOpacity: 1,
+          }).addTo(mapa)
+          marcador.bindPopup(
+            `<strong>${a.cidade.nome}</strong><br>${ROTULO_FAIXA[a.faixa]}` +
+              (a.aoVivo ? `<br>${metros(a.aoVivo.nivel_m)}` : '') +
+              `<br><em>${ACAO_FAIXA[a.faixa]}</em>` +
+              (aoSelecionar
+                ? `<br><span class="${estilos.dicaDetalhe ?? ''}">Toque para ver as cotas de rua e o abrigo</span>`
+                : ''),
+          )
+          marcador.bindTooltip(a.cidade.nome, {
+            permanent: true,
+            direction: 'top',
+            className: estilos.rotuloCidade,
           })
-            .addTo(mapa)
-            .bindPopup(
-              `<strong>${a.cidade.nome}</strong><br>${ROTULO_FAIXA[a.faixa]}` +
-                (a.aoVivo ? `<br>${metros(a.aoVivo.nivel_m)}` : '') +
-                `<br><em>${ACAO_FAIXA[a.faixa]}</em>`,
-            )
+          if (aoSelecionar) marcador.on('click', () => aoSelecionar(a.cidade.id))
         }
+
+        // Zoom troca a informação: os rótulos das cidades só aparecem de perto.
+        const ajustarRotulos = () => {
+          const cls = estilos.semRotulos
+          if (cls) divRef.current?.classList.toggle(cls, mapa.getZoom() < ZOOM_ROTULOS)
+        }
+        mapa.on('zoomend', ajustarRotulos)
+        ajustarRotulos()
       })
       .catch((e: Error) => vivo && setErro(e.message))
 
@@ -229,7 +257,7 @@ export default function MapaRios({
       mapa.remove()
       mapaRef.current = null
     }
-  }, [rioId, cidades, tempoReal, agora])
+  }, [rioId, cidades, tempoReal, agora, aoSelecionar])
 
   return (
     <div className={estilos.bloco}>
@@ -237,9 +265,11 @@ export default function MapaRios({
       {erro ? <p className={estilos.erro}>Mapa indisponível: {erro}</p> : null}
       <div ref={divRef} className={estilos.mapa} role="img" aria-label={`Mapa do ${rioId}`} />
       <p className={estilos.credito}>
-        Traçado dos rios: © colaboradores do OpenStreetMap (ODbL). Cada trecho tem
-        a cor da faixa da cidade a montante; o marcador, a faixa da cidade — nunca
-        o nível em metros. Trecho cinza é onde ainda não há régua que o pinte.
+        Aproxime para ver os nomes; toque numa cidade para as cotas de rua e o
+        abrigo dela. Traçado dos rios: © colaboradores do OpenStreetMap (ODbL).
+        Cada trecho tem a cor da faixa da cidade a montante; o marcador, a faixa
+        da cidade — nunca o nível em metros. Trecho cinza é onde ainda não há
+        régua que o pinte.
       </p>
     </div>
   )

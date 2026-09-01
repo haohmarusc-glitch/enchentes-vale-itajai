@@ -16,3 +16,24 @@
   color: var(--alerta);
   font-weight: 700;
 }
+
+/* Rótulo com o nome da cidade — some quando o mapa está afastado. */
+.rotuloCidade {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  box-shadow: none;
+  padding: 0 0.3rem;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #1a1a1a;
+}
+.rotuloCidade::before { display: none; } /* sem a setinha do balão */
+.semRotulos :global(.leaflet-tooltip) { display: none !important; }
+
+/* Dica dentro do balão, guiando ao detalhe da cidade. */
+.dicaDetalhe {
+  display: block;
+  margin-top: 0.25rem;
+  color: #1c6ea4;
+  font-size: 0.85em;
+}
