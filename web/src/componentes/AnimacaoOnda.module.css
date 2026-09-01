@@ -1,0 +1,67 @@
+.controles {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+.botao {
+  flex: none;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid var(--borda);
+  border-radius: 0.4rem;
+  background: var(--fundo-cartao, #fff);
+  cursor: pointer;
+}
+.barra {
+  flex: 1 1 8rem;
+  min-width: 6rem;
+}
+.instante {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+.cidades {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.cidade {
+  display: grid;
+  grid-template-columns: 1.1rem 1fr auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-top: 1px solid var(--borda);
+}
+.ponto {
+  width: 0.95rem;
+  height: 0.95rem;
+  border-radius: 50%;
+  border: 1px solid #111827;
+}
+.nome {
+  font-weight: 600;
+}
+.faixa {
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+  text-align: right;
+}
+.nivel {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  min-width: 4.5rem;
+}
+.nota {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+.vazio {
+  margin: 0;
+  color: var(--tinta-fraca);
+}

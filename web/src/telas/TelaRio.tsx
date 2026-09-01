@@ -28,6 +28,7 @@ const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
 const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 const MapaRios = lazy(() => import('../componentes/MapaRios'))
 const LinhaDoTempo = lazy(() => import('../componentes/LinhaDoTempo'))
+const AnimacaoOnda = lazy(() => import('../componentes/AnimacaoOnda'))
 
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
@@ -140,6 +141,19 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           </>
         )}
       </section>
+
+      {cidades.some((c) => serieDaCidade(serie, rioId, c.id).length > 0) ? (
+        <section className="cartao">
+          <h2>Reprodução das últimas horas</h2>
+          <p className={estilos.instrucao}>
+            Toque em reproduzir para ver a cheia caminhar de cima para baixo — cada cidade na cor
+            da faixa dela naquele instante. É o que foi medido, não previsão.
+          </p>
+          <Suspense fallback={<p className={estilos.instrucao}>Carregando a reprodução…</p>}>
+            <AnimacaoOnda rioId={rioId} cidades={cidades} serie={serie} />
+          </Suspense>
+        </section>
+      ) : null}
 
       {selecionada && leituraDaCidade(tempoReal, rioId, selecionada.id) ? (
         <PainelSePicoAgora
