@@ -1,0 +1,81 @@
+# Tela do rio no estilo Kikikuru — como está montada
+
+Inspiração: o Kikikuru (キキクル) da Agência Meteorológica do Japão — o rio inteiro
+colorido por trecho, a cor ligada à ação, uma barra de tempo com histórico, e o
+zoom que troca a informação. Copiamos o **método**, não os dados (que são do
+Japão). O que segue é o mapa dos componentes e das regras que os prendem, para
+achar rápido e não reintroduzir os erros que a honestidade do projeto proíbe.
+
+## A regra que atravessa tudo: cor = faixa, nunca metro
+
+A cor de uma cidade é a **faixa da régua DELA** (abaixo da atenção / atenção /
+alerta / inundação), nunca o nível absoluto em metros. Cada cidade tem seu zero;
+duas cidades na mesma cor **não** estão no mesmo metro. Por isso a cor é
+normalizada e pode ser comparada de montante a jusante — o metro não. Quem
+computa a faixa é `web/src/logica/tempoReal.ts::faixaDaCidade`:
+
+- sem cota cadastrada, ou leitura velha, ou sem leitura → `sem-dado` (cinza,
+  **nunca** verde — ausência de dado não pode parecer segurança);
+- cidade com várias réguas distintas (a foz) → `varias`;
+- caso contrário, a faixa da cota mais alta alcançada.
+
+Os **textos** de cada faixa (rótulo + a frase que remete à Defesa Civil) vêm de
+`data/faixas.json` — fonte única — e o site nunca recomenda ação: as únicas
+chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
+
+## Os componentes
+
+| O quê | Arquivo | Lê de |
+|---|---|---|
+| Diagrama linear, colorido por trecho | `web/src/componentes/DiagramaRio.tsx` | `ultimo.json` (via `useTempoReal`) |
+| Mapa geográfico, rio colorido por trecho | `web/src/componentes/MapaRios.tsx` | `data/rios/*.geojson` + `ultimo.json` |
+| Linha do tempo de 24 h por cidade | `web/src/componentes/LinhaDoTempo.tsx` | `serie-recente.json` (via `useSerieRecente`) |
+| Reprodução da onda descendo | `web/src/componentes/AnimacaoOnda.tsx` | `serie-recente.json` |
+| Legenda + textos das faixas | `web/src/componentes/LegendaFaixas.tsx` | `data/faixas.json` |
+| Chegada a jusante "se o pico fosse agora" | `web/src/componentes/PainelSePicoAgora.tsx` | `ultimo.json` + `transito.json` |
+
+Tudo é montado em `web/src/telas/TelaRio.tsx`, que no **desktop** põe o mapa numa
+coluna fixa (sticky) à esquerda e os dados à direita; no **celular** é coluna
+única, com o mapa por último, sob o botão "Ver mapa" (não puxa Leaflet numa rede
+ruim). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
+
+## O traçado do rio (mapa geográfico)
+
+- Vem do OpenStreetMap (`waterway=river`), licença **ODbL** — o crédito está na
+  tela. O bruto fica em `data/brutos/tracado-rios-osm.json`; `scripts/converter_tracado_rios.py`
+  agrupa por nome e emite `data/rios/itajai-acu.geojson` e `itajai-mirim.geojson`
+  (MultiLineString, `[lon,lat]`).
+- No cliente, `MapaRios` encaixa cada cidade no ponto mais próximo do rio, forma
+  uma "espinha" montante→jusante e projeta cada aresta do traçado nela para saber
+  entre quais cidades ela cai; a aresta ganha a cor da cidade **a montante** —
+  a mesma regra do diagrama. Trecho sem cidade que o pinte fica cinza.
+
+## A linha do tempo e a onda (`serie-recente.json`)
+
+- O navegador só tem o `ultimo.json` (um instante). A série acumulada em
+  `data/tempo-real/AAAA-MM.ndjson` é matéria-prima **gitignorada** (só na VPS).
+- `scripts/coleta_niveis.py::escrever_serie_recente` recorta as últimas ~48 h de
+  **nível** por rio e cidade em `data/tempo-real/serie-recente.json`, e
+  `publicar_tempo_real.sh` publica esse arquivo junto do `ultimo.json` no branch
+  `tempo-real`. Só nível (chuva é outra grandeza e dobraria o arquivo).
+- `LinhaDoTempo` desenha UMA cidade por vez (régua própria, nunca metros de
+  cidades diferentes no mesmo eixo) com as cotas como faixas de cor e um `Brush`
+  de 24 h. `AnimacaoOnda` reproduz o passado: a cada instante pinta cada cidade
+  pela faixa dela naquele momento (usa `serie.ts::leituraEm`, a última medição
+  ATÉ o instante — nunca a futura). É reprodução do MEDIDO, não previsão.
+
+## Fuso — a regra que já custou uma sessão
+
+`medido_em` sem fuso = **hora de Brasília** (America/Sao_Paulo). Toda fonte grava
+assim. O site lê com `deBrasilia()`. Fontes que publicam UTC (a Asthon manda
+`last_reading_at` com `Z`) **convertem na entrada do coletor**, não no site. Ver
+a regra completa no `CLAUDE.md`.
+
+## O que ainda falta (do brief do Kikikuru e além)
+
+- **Projeção na mesma barra do tempo**: hoje a chegada a jusante vive num painel
+  à parte (`PainelSePicoAgora`); juntá-la ao slider é o que resta do item 3.
+- **Cota de referência de Vidal Ramos** (e das demais cabeceiras): sem ela o
+  nível aparece mas a faixa fica cinza. Ver Pendências no `README.md`.
+- **Sinal antecipado das barragens** (Oeste/Sul subindo rápido) como aviso de
+  cheia a jusante — anotado, ainda não na tela.

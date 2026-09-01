@@ -34,7 +34,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - React 18 + Vite + TypeScript (strict).
 - Roteamento: `react-router-dom`.
 - Gráficos: `recharts`.
-- Mapa: começar com um **diagrama linear** do rio (cidades em sequência). Mapa geográfico (Leaflet) é etapa futura.
+- Mapa: o **diagrama linear** do rio (cidades em sequência) e o **mapa geográfico** (Leaflet, traçado do OSM colorido por trecho) já existem, no estilo Kikikuru — ver `docs/kikikuru.md` para o mapa dos componentes e as regras (cor = faixa, nunca metro; fuso; série de 24 h).
 - Estilo: CSS Modules ou Tailwind, escolher um e manter. Mobile-first — a maioria dos usuários vai acessar pelo celular durante a chuva.
 - Sem backend por enquanto: importar os JSONs de `../data` diretamente (configurar alias no Vite).
 - Deploy alvo: GitHub Pages ou Vercel (build estático).
