@@ -127,16 +127,48 @@ Tarefa: `scripts/baixar_mapas_itajai.py` — baixar os 5 pacotes + PDFs para `da
 | Rua Max Scheidemantel | Fortaleza | 7,90 | próximo ao nº 85 |
 | Rua Max Aldemann | Fortaleza | 7,95 | início / ponto mais baixo |
 
-#### Conferência pendente das cotas de Blumenau (PDF oficial de 2014)
+#### Conferência das cotas de Blumenau contra o PDF oficial de 2014 — 1.891 de 1.891 (01/09/2026) ✔
 
-As 1.938 cotas de Blumenau entraram com `confianca: media`, por virem da relação de 2023 via imprensa.
-Existe um caminho para conferir contra documento oficial: o PDF da Prefeitura "Cotas de enchente das ruas
-de Blumenau", hospedado pelo Farol Blumenau em
-`https://farolblumenau.com/wp-content/uploads/2014/06/Cotas-de-enchente-das-ruas-Blumenau.pdf`
-(o site bloqueia robôs — baixar no navegador, salvar em `data/brutos/`). Traz rua, bairro, cota, abrigo
-(códigos E9, N2, C7…) e observação do ponto. É de 2014, então serve para **conferir**, não para
-substituir: onde os dois baterem, a relação de 2023 ganha respaldo oficial; onde divergirem, vale o
-mecanismo de `divergencias`, não a escolha silenciosa de um dos dois.
+As 1.938 cotas de Blumenau tinham entrado com `confianca: media`, por virem da relação de 2023 **via
+imprensa**: o número podia ter sido digitado errado no caminho entre a prefeitura e a matéria, e não
+havia como saber.
+
+O PDF chegou — "Cotas das ruas de Blumenau", da Secretaria Municipal de Defesa Civil, 111 páginas,
+2.034 registros (`data/brutos/blumenau-cotas-2014.pdf`). `scripts/conferir_blumenau_2014.py` cruza os
+dois pelo MESMO ponto de cada rua, e não pela cota — casar pela cota só acharia par onde os números já
+são iguais, e a conferência sempre daria certo.
+
+| | |
+|---|---|
+| pares pelo mesmo ponto | **1.891** |
+| batem ao centavo | **1.891** |
+| divergem | **0** |
+| deslocamento mediano (PDF − nosso) | **0,00 m** |
+
+**Zero divergências.** A relação da imprensa reproduz o documento oficial exatamente, e as 1.891 cotas
+conferidas subiram de `media` para `alta` — a definição no `_meta` de `cotas-ruas.json` é "alta = tabela
+oficial direta", e agora a fonte direta existe. Nenhum número mudou: a operação confirma, não corrige, e
+é isso que a torna segura. As 47 que a conferência não pareou (redação diferente do ponto) continuam em
+`media`.
+
+**O deslocamento zero também responde a uma pergunta maior.** Se as duas listas estivessem em
+referências diferentes, isso apareceria como diferença constante — 0,20 m, no caso régua/IBGE que o
+`CLAUDE.md` trata como regra bloqueante. Não é o caso entre estas duas: elas estão na mesma régua.
+(Isso não resolve a regra, que é sobre a série histórica de picos; só descarta que a lista de ruas
+esteja meio numa referência e meio noutra.)
+
+**O que o PDF acrescenta, e é o mais importante: o ABRIGO de cada rua**, com código (E9, N2, C7…).
+A relação da imprensa não trazia. É a outra metade da mesma decisão — a cota diz que é hora de sair, o
+abrigo diz para onde —, e agora sai no site e no bot logo abaixo da cota. Chegou a **2.018 dos 2.042**
+registros de Blumenau. Os 24 restantes são ruas grafadas de forma diferente nas duas fontes ("Lions
+Clube" e "Lions Club"), e ficam sem abrigo de propósito: chutar qual é o certo seria mandar alguém para
+o lugar errado.
+
+Mais **104 pontos** que só o PDF tem entraram, com abrigo e `confianca: alta`. Dois ficaram de fora
+porque a própria fonte não identificou a rua ("Não Localizado") — isso é a ausência de um nome, não um
+nome, e viraria uma "Rua Não Localizado" que ninguém procura.
+
+Blumenau vai de 1.938 para **2.042** registros.
 
 O caminho definitivo continua sendo a FURB, que está refazendo o levantamento em 2026 (prof. Ademar
 Cordero), pela primeira vez incluindo a região da Celesc para cima (rua Bahia, Rio do Testo, sentido

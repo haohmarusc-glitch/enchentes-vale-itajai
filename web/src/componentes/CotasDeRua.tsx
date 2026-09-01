@@ -146,6 +146,15 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
                         ? ` · toda a rua a ${metros(c.cota_max_m)}`
                         : ''}
                     </span>
+                    {/* O abrigo vem logo abaixo da cota porque é a outra metade
+                        da mesma decisão: a cota diz que é hora de sair, o
+                        abrigo diz para onde. */}
+                    {c.abrigo ? (
+                      <span className={estilos.abrigo}>
+                        Abrigo: <strong>{c.abrigo}</strong>
+                        {c.abrigo_codigo ? ` (${c.abrigo_codigo})` : ''}
+                      </span>
+                    ) : null}
                     {/* Registro marcado para não mover aviso não vira "já foi
                         alcançado": seria uma frase assustadora tirada de um
                         número que o próprio registro diz não estar conferido. */}

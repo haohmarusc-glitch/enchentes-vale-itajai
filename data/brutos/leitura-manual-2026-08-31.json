@@ -1,0 +1,13 @@
+{
+  "_meta": {
+    "origem": "Leitura manual no painel da Defesa Civil de SC (monitoramento.defesacivil.sc.gov.br/tabela), via celular",
+    "coletado_em": "2026-08-31T19:26:00-03:00",
+    "coletado_por": "usuário (screenshots)",
+    "nota": "Coleta manual das três estações que a via automatizada não cobriu neste momento (Chrome offline). Coluna 'Rio (m)' do painel. Estações (H)/(M) reportam altitude absoluta em outra referência — usados aqui apenas os níveis de rio das estações SDC-SC."
+  },
+  "leituras": [
+    { "cidade": "taio",        "codigo_dcsc": "DCSC-00041", "estacao": "Taió (SDC-SC)",        "rio": "itajai-acu",   "nivel_m": 5.40 },
+    { "cidade": "ituporanga",  "codigo_dcsc": "DCSC-00039", "estacao": "SDC-SC Ituporanga",    "rio": "itajai-acu",   "nivel_m": 1.27 },
+    { "cidade": "vidal-ramos", "codigo_dcsc": "DCSC-00024", "estacao": "SDC-SC Vidal Ramos",   "rio": "itajai-mirim", "nivel_m": 3.29 }
+  ]
+}

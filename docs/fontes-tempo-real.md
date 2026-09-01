@@ -231,3 +231,31 @@ O que isso muda:
 Fica de pé uma melhoria que a subida revelou: a tela precisa distinguir leitura
 velha com rio **parado** de leitura velha com rio **subindo**. Hoje mostra as
 duas igual, e a segunda é a que engana.
+
+
+## Vidal Ramos: duas fontes, o mesmo rio (01/09/2026)
+
+Uma leitura manual do painel da Defesa Civil de SC, feita pelo celular em 31/08 e guardada em
+`data/brutos/leitura-manual-2026-08-31.json`, trouxe as três cidades que hoje não têm nível na tela:
+**Taió 5,40 m · Ituporanga 1,27 m · Vidal Ramos 3,29 m** (coluna "Rio (m)", só estações `SDC-SC`; as
+`(H)`/`(M)` trazem altitude em outra referência e ficaram de fora).
+
+Vale como **evidência**, não como dado exibido: é um instante único, de uma coluna que este projeto já
+tinha recusado uma vez — o `rio_nivel` do GraphQL da Defesa Civil de SC, que trazia Ilhota a 10,34 m
+enquanto a nossa régua marcava 3,25 m.
+
+Mas ela permite uma conferência que antes não dava para fazer. **Vidal Ramos aparece nas duas redes**:
+
+| fonte | nível | quando |
+|---|---|---|
+| API Asthon (`data/brutos/rio-do-sul-asthon-2026-08-31.json`) | 2,93 m | 31/08 12:21 UTC |
+| painel da Defesa Civil de SC (leitura manual) | 3,29 m | 31/08 22:26 UTC |
+
+Dois painéis independentes, dez horas de intervalo, mesma ordem de grandeza e subida plausível. Não
+prova que é o mesmo sensor nem o mesmo zero, mas afasta a hipótese de que a coluna "Rio (m)" das
+estações `SDC-SC` seja outra grandeza — que era o medo levantado pelo caso de Ilhota.
+
+**O que continua faltando para virar aviso:** a cota daquela régua. Vidal Ramos, Taió e Ituporanga não
+têm nenhuma em `estacoes.json`, e sem ela um número na tela é só um número. Taió e Ituporanga têm o
+agravante de a Asthon publicar só as BARRAGENS delas, em escala de reservatório — ver
+`scripts/analisar_asthon.py`.

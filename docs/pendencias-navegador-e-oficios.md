@@ -50,7 +50,16 @@ Destinatários prováveis:
 
 ---
 
-### C1. Ofício — Defesa Civil de Brusque (cotas de atenção/alerta do Mirim + 2ª etapa do levantamento)
+### C1. Ofício — Defesa Civil de Brusque ✅ ENVIADO 31/08/2026
+Enviado para `defesacivil@brusque.sc.gov.br`. O texto abaixo é o que foi mandado. Ao receber resposta:
+gravar as cotas de atenção/alerta em `data/estacoes.json` (cidade `brusque`) e tirar a nota da lacuna de
+aviso adiantado do Mirim. **O ponto de 3,76 m só foi achado depois do envio** — se houver resposta, vale
+completar com a comparação que reforça a pergunta: dos 47 marcadores do bairro Limoeiro, o segundo mais
+baixo é 6,86 m e a mediana é 8,33 m, e a própria rua Maria Scarpa Formonti aparece em outro ponto a
+7,48 m. Ou seja: ou é a faixa marginal do rio, ou houve algo na medição — e é isso que só eles podem
+dizer.
+
+#### Texto enviado
 Assunto: Solicitação: cotas de atenção e alerta do Itajaí-Mirim em Brusque e planilha de cotas por rua
 
 À Defesa Civil de Brusque,
