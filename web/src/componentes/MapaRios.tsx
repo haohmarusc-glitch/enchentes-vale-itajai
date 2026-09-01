@@ -35,13 +35,22 @@ const COR_FAIXA: Record<Faixa, string> = {
 
 type LonLat = [number, number]
 
+// Longitude e latitude não têm o mesmo comprimento em metros: perto de 27° S um
+// grau de longitude vale ~0,89 grau de latitude. Sem corrigir isso, o "mais
+// próximo" entortaria nos trechos leste–oeste (a maior parte do Vale). Escala só
+// para comparar distâncias; nada disso vai para a tela.
+const K_LON = Math.cos((27 * Math.PI) / 180)
+function dist2(a: LonLat, b: LonLat): number {
+  return ((a[0] - b[0]) * K_LON) ** 2 + (a[1] - b[1]) ** 2
+}
+
 /** Ponto do traçado mais próximo de uma coordenada — encaixa o marcador no rio. */
 function maisProximoNoRio(coords: LonLat[][], alvo: LonLat): LonLat | null {
   let melhor: LonLat | null = null
   let dist = Infinity
   for (const linha of coords) {
     for (const p of linha) {
-      const d = (p[0] - alvo[0]) ** 2 + (p[1] - alvo[1]) ** 2
+      const d = dist2(p, alvo)
       if (d < dist) {
         dist = d
         melhor = p
@@ -52,10 +61,56 @@ function maisProximoNoRio(coords: LonLat[][], alvo: LonLat): LonLat | null {
 }
 
 /**
+ * Distância² de um ponto ao segmento a–b e onde caiu (t em 0..1). Usada para
+ * projetar cada pedaço do rio na "espinha" das cidades em ordem.
+ */
+function projetarNoSegmento(p: LonLat, a: LonLat, b: LonLat): number {
+  const abx = (b[0] - a[0]) * K_LON
+  const aby = b[1] - a[1]
+  const apx = (p[0] - a[0]) * K_LON
+  const apy = p[1] - a[1]
+  const len2 = abx * abx + aby * aby
+  const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, (apx * abx + apy * aby) / len2))
+  const cx = abx * t - apx
+  const cy = aby * t - apy
+  return cx * cx + cy * cy
+}
+
+/**
+ * Em qual trecho entre cidades consecutivas este ponto do rio cai. A espinha são
+ * os pontos das cidades (já encaixados no rio), na ordem montante→jusante. Devolve
+ * o índice da cidade A MONTANTE do trecho — é ela quem dá a cor, como no diagrama.
+ */
+function trechoDoPonto(espinha: LonLat[], p: LonLat): number {
+  if (espinha.length < 2) return 0
+  let melhor = 0
+  let dist = Infinity
+  for (let i = 0; i < espinha.length - 1; i++) {
+    const d = projetarNoSegmento(p, espinha[i]!, espinha[i + 1]!)
+    if (d < dist) {
+      dist = d
+      melhor = i
+    }
+  }
+  return melhor
+}
+
+/** Desenha um pedaço contínuo do rio ([lon,lat]…) numa cor só. */
+function desenharRun(mapa: L.Map, pontos: LonLat[], cor: string): void {
+  if (pontos.length < 2) return
+  L.polyline(
+    pontos.map((p) => [p[1], p[0]] as [number, number]),
+    { color: cor, weight: 4, opacity: 0.9 },
+  ).addTo(mapa)
+}
+
+/**
  * Mapa geográfico do rio, no espírito do Kikikuru: o traçado real (OpenStreetMap)
- * com um marcador colorido por cidade — a cor é a faixa da PRÓPRIA cidade, a
- * mesma do diagrama. Cidade sem coordenada cadastrada ainda não aparece; cidade
- * sem faixa aparece cinza. Carrega sob botão, para não pesar no celular.
+ * pintado por trecho — cada trecho na cor da faixa da cidade a montante, a mesma
+ * regra do diagrama linear — com um marcador colorido por cidade por cima. Onde
+ * não há cidade que pinte (nascentes, pontas soltas), o rio fica cinza. Cidade
+ * sem coordenada cadastrada não vira âncora. Carrega sob botão, para não pesar no
+ * celular.
  */
 export default function MapaRios({
   rioId,
@@ -97,32 +152,73 @@ export default function MapaRios({
       .then((geo: { geometry: { coordinates: LonLat[][] } }) => {
         if (!vivo) return
         const coords = geo.geometry.coordinates
-        // O rio, em azul, por baixo dos marcadores.
-        const linha = L.geoJSON(geo as unknown as GeoJSON.GeoJsonObject, {
-          style: { color: '#1c6ea4', weight: 3, opacity: 0.85 },
-        }).addTo(mapa)
-        mapa.fitBounds(linha.getBounds(), { padding: [16, 16] })
 
-        for (const cidade of cidades) {
-          const coord = cidade.coordenadas
-          if (!coord) continue
-          const alvo: LonLat = [coord[1], coord[0]] // [lon,lat] para casar com o rio
-          const ponto = maisProximoNoRio(coords, alvo) ?? alvo
-          const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
-          const temVarias = aoVivo === null && leiturasDaCidade(tempoReal, rioId, cidade.id).length > 1
-          const faixa = faixaDaCidade(cidade, aoVivo, temVarias, agora)
-          L.circleMarker([ponto[1], ponto[0]], {
+        // Cada cidade com coordenada vira uma âncora encaixada no rio, na ordem
+        // montante→jusante. A espinha por essas âncoras diz, para cada pedaço do
+        // traçado, entre quais cidades ele está — e a faixa da cidade a montante
+        // dá a cor daquele trecho, a mesma regra do diagrama linear.
+        const ancoras = cidades
+          .filter((c) => c.coordenadas)
+          .map((cidade) => {
+            const coord = cidade.coordenadas!
+            const alvo: LonLat = [coord[1], coord[0]] // [lon,lat] para casar com o rio
+            const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
+            const temVarias =
+              aoVivo === null && leiturasDaCidade(tempoReal, rioId, cidade.id).length > 1
+            return {
+              cidade,
+              aoVivo,
+              faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
+              ponto: maisProximoNoRio(coords, alvo) ?? alvo,
+            }
+          })
+        const espinha = ancoras.map((a) => a.ponto)
+
+        // Fundo cinza-azulado do rio inteiro, para o traçado nunca sumir mesmo
+        // onde não há cidade que o pinte (nascentes, pontas soltas do OSM).
+        const fundo = L.geoJSON(geo as unknown as GeoJSON.GeoJsonObject, {
+          style: { color: '#9aa7b2', weight: 3, opacity: 0.55 },
+        }).addTo(mapa)
+        mapa.fitBounds(fundo.getBounds(), { padding: [16, 16] })
+
+        // Por cima, cada trecho na cor da faixa da cidade a montante. Agrupa
+        // arestas vizinhas de mesma cor numa só linha, para não criar milhares
+        // de camadas no celular.
+        if (espinha.length >= 2) {
+          for (const linha of coords) {
+            if (linha.length < 2) continue
+            let inicio = 0
+            let corAtual = ancoras[trechoDoPonto(espinha, linha[0]!)]!.faixa
+            for (let i = 1; i < linha.length; i++) {
+              const meio: LonLat = [
+                (linha[i - 1]![0] + linha[i]![0]) / 2,
+                (linha[i - 1]![1] + linha[i]![1]) / 2,
+              ]
+              const cor = ancoras[trechoDoPonto(espinha, meio)]!.faixa
+              if (cor !== corAtual) {
+                desenharRun(mapa, linha.slice(inicio, i + 1), COR_FAIXA[corAtual])
+                inicio = i
+                corAtual = cor
+              }
+            }
+            desenharRun(mapa, linha.slice(inicio), COR_FAIXA[corAtual])
+          }
+        }
+
+        // Marcadores das cidades por cima de tudo, com o número e a ação.
+        for (const a of ancoras) {
+          L.circleMarker([a.ponto[1], a.ponto[0]], {
             radius: 8,
             color: '#111827',
             weight: 2,
-            fillColor: COR_FAIXA[faixa],
+            fillColor: COR_FAIXA[a.faixa],
             fillOpacity: 1,
           })
             .addTo(mapa)
             .bindPopup(
-              `<strong>${cidade.nome}</strong><br>${ROTULO_FAIXA[faixa]}` +
-                (aoVivo ? `<br>${metros(aoVivo.nivel_m)}` : '') +
-                `<br><em>${ACAO_FAIXA[faixa]}</em>`,
+              `<strong>${a.cidade.nome}</strong><br>${ROTULO_FAIXA[a.faixa]}` +
+                (a.aoVivo ? `<br>${metros(a.aoVivo.nivel_m)}` : '') +
+                `<br><em>${ACAO_FAIXA[a.faixa]}</em>`,
             )
         }
       })
@@ -141,8 +237,9 @@ export default function MapaRios({
       {erro ? <p className={estilos.erro}>Mapa indisponível: {erro}</p> : null}
       <div ref={divRef} className={estilos.mapa} role="img" aria-label={`Mapa do ${rioId}`} />
       <p className={estilos.credito}>
-        Traçado dos rios: © colaboradores do OpenStreetMap (ODbL). A cor de cada
-        cidade é a faixa da régua dela — não o nível em metros.
+        Traçado dos rios: © colaboradores do OpenStreetMap (ODbL). Cada trecho tem
+        a cor da faixa da cidade a montante; o marcador, a faixa da cidade — nunca
+        o nível em metros. Trecho cinza é onde ainda não há régua que o pinte.
       </p>
     </div>
   )
