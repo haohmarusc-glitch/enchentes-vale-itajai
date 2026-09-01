@@ -74,6 +74,13 @@ Some-se a isso que os três GeoJSON que o bloco 4 usaria — pontos cotados,
 terreno sujeito a inundação e o `itajai-arcgis-inundacoes` — **não estão no
 repositório**. Só as manchas estão, já convertidas em `data/manchas/`.
 
+**Isso agora tem conserto sem navegador:** `scripts/baixar_itajai_arcgis.py`
+busca as três direto do ArcGIS público da Prefeitura, com a paginação dos 5.237
+pontos e a conferência do `robots.txt` do host. Só que **baixar o arquivo não
+destrava o bloco 4** — o problema nunca foi a falta do arquivo, foi a referência.
+O que o download destrava é o cruzamento com as manchas, que já está feito, e o
+terreno inundável, que é a mesma espécie de resposta factual.
+
 ### O que destrava, em ordem de qualidade
 
 1. **A cota por endereço oficial** (ArcGIS da Prefeitura, pasta `defesacivil`,
