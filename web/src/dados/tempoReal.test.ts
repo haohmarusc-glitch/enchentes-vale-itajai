@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buscarComLimite } from './tempoReal'
+import { buscarComLimite, leituraDaCidade, leiturasDaCidade, reguaDe } from './tempoReal'
 import type { Transporte } from './tempoReal'
 
 /*
@@ -116,4 +116,52 @@ test('sem resposta nenhuma não se afirma que a chuva falhou', async () => {
     Promise.resolve({ ok: false, json: async () => ({}) } as Response))
   assert.equal(fora.situacao, 'indisponivel')
   assert.equal(fora.chuvaOk, true)
+})
+
+/*
+ * Régua com resgate (Blumenau): primária (página de Itajaí, às vezes velha) e
+ * backup (AlertaBlu, fresco) são a MESMA régua ANA 83800002, com o mesmo zero.
+ * O bug real, visto numa cheia: o site as tratava como "várias réguas", dizia
+ * que "não se comparam" e ESCONDIA que Blumenau estava em inundação. Estes
+ * casos travam a correção — primária + resgate colam numa régua só.
+ */
+function estadoCom(leiturasBrutas: unknown[]): Promise<import('./tempoReal').EstadoTempoReal> {
+  return buscarComLimite(500, respondeCom({ ...CORPO, leituras: leiturasBrutas }))
+}
+
+const PRIMARIA_VELHA = {
+  estacao: 'Blumenau', rio: 'itajai-acu', cidade: 'blumenau',
+  nivel_m: 7.49, medido_em: '2026-09-01T08:35',
+}
+const RESGATE_FRESCO = {
+  estacao: 'Blumenau (AlertaBlu)', rio: 'itajai-acu', cidade: 'blumenau',
+  nivel_m: 7.54, medido_em: '2026-09-01T11:00', resgate_de: 'Blumenau',
+}
+
+test('primária + resgate da mesma régua NÃO viram "várias": vale a mais fresca', async () => {
+  const estado = await estadoCom([PRIMARIA_VELHA, RESGATE_FRESCO])
+  const um = leituraDaCidade(estado, 'itajai-acu', 'blumenau')
+  assert.notEqual(um, null) // antes do fix, era null -> "várias réguas"
+  assert.equal(um!.nivel_m, 7.54) // a fresca do AlertaBlu, não a velha
+})
+
+test('resgate sozinho (primária não veio) ainda dá o nível', async () => {
+  const estado = await estadoCom([RESGATE_FRESCO])
+  assert.equal(leituraDaCidade(estado, 'itajai-acu', 'blumenau')!.nivel_m, 7.54)
+})
+
+test('réguas DISTINTAS de verdade continuam sem "o nível" (Itajaí)', async () => {
+  const estado = await estadoCom([
+    { estacao: 'DC-01', rio: 'itajai-acu', cidade: 'itajai', nivel_m: 0.98, medido_em: '2026-09-01T11:31' },
+    { estacao: 'DC-02', rio: 'itajai-acu', cidade: 'itajai', nivel_m: 1.57, medido_em: '2026-09-01T11:31' },
+  ])
+  assert.equal(leituraDaCidade(estado, 'itajai-acu', 'itajai'), null)
+  assert.equal(leiturasDaCidade(estado, 'itajai-acu', 'itajai').length, 2)
+})
+
+test('reguaDe: o resgate herda a identidade da primária que socorre', async () => {
+  const estado = await estadoCom([PRIMARIA_VELHA, RESGATE_FRESCO])
+  const [a, b] = leiturasDaCidade(estado, 'itajai-acu', 'blumenau')
+  assert.equal(reguaDe(a!), 'Blumenau')
+  assert.equal(reguaDe(b!), 'Blumenau') // o (AlertaBlu) aponta para a primária
 })
