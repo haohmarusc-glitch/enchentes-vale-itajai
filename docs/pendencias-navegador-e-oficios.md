@@ -41,12 +41,14 @@ emergência definidos (Plano de Contingência, Tabela 11), MAS:
 
 Encaminhamentos (ofícios B1 e B2 abaixo) para obter as cotas de atenção/alerta de Brusque e fechar a lacuna.
 
-## C. Ofícios a enviar (rascunhos prontos em C1–C3; enviar quando tiver os e-mails)
+## C. Ofícios a enviar (rascunhos prontos em C1–C4; enviar quando tiver os e-mails)
 
 Destinatários prováveis:
 - Defesa Civil de Brusque: pelo site `defesacivil.brusque.sc.gov.br` (menu Contato) ou protocolo da Prefeitura.
 - Prefeitura/Defesa Civil de Itajaí (GEOItajaí / SEURB): `arcgis.itajai.sc.gov.br` é do município; o serviço
   `defesacivil` está fechado por token — pedir liberação de leitura ou export das camadas de cota por endereço.
+- Defesa Civil de Gaspar: `defesacivil@gaspar.sc.gov.br` — endereço oficial, do cabeçalho de todas as páginas
+  do Plano de Contingência. É o único destinatário desta lista que já veio confirmado por documento.
 
 ---
 
@@ -103,6 +105,56 @@ Notei, porém, que a pasta de serviços "defesacivil" exige token de autenticaç
 O site não substitui a Defesa Civil e informa isso em todas as páginas (emergência: 199). O objetivo é puramente informativo e comunitário.
 
 Fico à disposição para conversar e para atender às condições de uso que a Prefeitura considerar adequadas.
+Atenciosamente, Jefferson — [telefone / e-mail]
+
+### C4. Ofício — Defesa Civil de Gaspar (leitura do nível + confirmação da régua)
+
+**Rascunho pronto. Contato oficial, do cabeçalho do próprio Plano de Contingência:**
+`defesacivil@gaspar.sc.gov.br` · Rua Coronel Aristiliano Ramos, 435 — Centro, Gaspar/SC · (47) 3091-2020.
+
+**Por que este ofício existe.** Gaspar é a única cidade do eixo do Açu com cota de régua e sem leitura.
+As faixas 5 / 6 / 7 m vieram do Plano de Contingência (item 4.2.3) e já estão no site. O que falta é o
+número ao vivo, e as duas vias automáticas estão fechadas:
+
+- `defesacivil.gaspar.sc.gov.br` **não responde de fora da região**: o DNS resolve (186.250.184.3), e a
+  conexão IPv4 estoura o tempo em 15 s, em três tentativas e duas datas, tanto em `/` quanto em
+  `/robots.txt`. Não é IPv6, DNS, TLS nem cliente nosso. A tabela só foi lida a partir de um HTML salvo
+  pelo navegador de dentro da região.
+- A estação de Gaspar na rede estadual (`DCSC-00005`) responde com carimbo de hora fresco e **sem valor
+  de nível** — três vezes seguidas em 01/09/2026 (03:09, 03:24 e 03:33 UTC). Ela publica chuva, não régua.
+  O mesmo já valia para Blumenau (`DCSC-00026`, `rio_nivel: null`), a outra cidade da bacia com sistema
+  municipal próprio.
+
+**Ao receber resposta:** gravar a origem da leitura em `data/estacoes.json` (cidade `gaspar`,
+`fontes_tempo_real`), e, se a régua for nomeada, trocar o rótulo provisório
+`"Rio Itajaí-Açu em Gaspar (o Plano não nomeia o ponto nem publica o zero)"` pelo nome real. Se a
+resposta disser que as faixas do Plano se referem a outra régua que não a das cotas de rua, isso é
+**bloqueante**: derruba a coerência que sustenta o cadastro de hoje e as cotas voltam a `{}` até nova
+medição.
+
+#### Texto a enviar
+
+Assunto: Solicitação: acesso ao nível do Itajaí-Açu em Gaspar e confirmação da régua das cotas do Plano de Contingência
+
+À Superintendência Municipal de Proteção e Defesa Civil de Gaspar,
+
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados são públicos (github.com/haohmarusc-glitch/enchentes-vale-itajai) e tudo é apresentado com a fonte citada.
+
+Antes dos pedidos, o agradecimento: o material que a Defesa Civil de Gaspar publica é, de longe, o mais completo que encontrei na bacia. O mapa "Cotas de enchente" no Google My Maps rendeu 1.619 pontos de rua com cota, e o Plano de Contingência trouxe as faixas de monitoramento do rio, que eram exatamente o que faltava para Gaspar. Conferi um material contra o outro: das 26 vias do quadro do item 4.2.2, 24 batem ao centavo com os pontos do mapa. É uma consistência que não encontrei em nenhuma outra cidade.
+
+Tenho quatro pedidos, em ordem de importância.
+
+1. Uma forma de ler o nível do rio de fora da região. A página defesacivil.gaspar.sc.gov.br/monitoramento/tabela não responde a acessos de fora de Santa Catarina: o endereço resolve normalmente, mas a conexão expira. Testei em duas datas, três tentativas, e o mesmo servidor de onde faço os testes acessa sem problema os sites das Defesas Civis de Itajaí, Blumenau e Rio do Sul. Consegui ler a tabela apenas uma vez, a partir de um arquivo salvo pelo navegador de dentro da região, e nela o Rio Itajaí-Açu em Gaspar marcava 3,85 m às 22h59 de 31/08/2026. Se houver um endereço de dados (JSON, CSV ou similar) que possa ser consultado de fora, ou se for possível liberar o acesso, o nível de Gaspar passa a aparecer no site junto com o das demais cidades. Também consultei a rede estadual (monitoramento.defesacivil.sc.gov.br), mas a estação de Gaspar ali publica apenas chuva, sem valor de nível de rio.
+
+2. A confirmação de a que régua se referem as faixas do fluxograma do Plano. O item 4.2.3 traz 0 a 5 m como normalidade, 5 a 6 m como atenção/alerta, 6 a 7 m como alerta/alarme e acima de 7 m como resposta. Cadastrei essas faixas como as cotas de Gaspar, entendendo que estão na mesma régua das cotas de rua do item 4.2.2 e da tabela de monitoramento — a leitura de 3,85 m cai na faixa de normalidade e as cotas de rua vão de 6,20 m a 7,33 m, o que é coerente. Mas o Plano não nomeia o ponto da régua nem o zero a que ela se refere, e essa é a informação que não posso deduzir. Se forem réguas diferentes, o que está no site hoje está errado e eu retiro imediatamente.
+
+3. A confirmação de três cotas de rua. Comparando o quadro do Plano com o mapa público, encontrei duas diferenças pequenas e uma ausência: a Rua Imaruí aparece com 7,02 m no Plano, enquanto o ponto do mapa (esquina com a Rua Santa Isabel) marca 7,00 m; a Rua Maria da Silva aparece com 6,99 m no Plano e 7,00 m no mapa; e a Rua Santa Isabel, que o Plano lista com 7,00 m, não existe com nome próprio no mapa. Mantive os dois valores registrados em cada caso, sem escolher entre eles.
+
+4. Uma dúvida antiga sobre um nome de rua. Em um levantamento mais antigo do CEOPS, reproduzido pela imprensa, consta uma "Rua Lino" com cota de 6,57 m. No mapa de vocês existe uma "Rua Lírio" cuja cota mínima é exatamente 6,57 m, e não existe nenhuma "Rua Lino". Suponho que seja a mesma rua com um erro de transcrição em algum ponto da cadeia, mas mantive as duas cadastradas por não ter como confirmar.
+
+O site avisa em todas as páginas que não é sistema oficial de alerta, que não substitui a Defesa Civil e que, em emergência, deve-se ligar 199. Nenhum número que vocês publicam é alterado ou convertido por mim: quando duas fontes divergem, as duas ficam registradas com a origem de cada uma. O crédito à Defesa Civil de Gaspar aparece em cada dado utilizado.
+
+Fico à disposição para qualquer esclarecimento e agradeço desde já.
 Atenciosamente, Jefferson — [telefone / e-mail]
 
 ### C3. (opcional) Reforço à Univali sobre o marégrafo
