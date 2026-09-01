@@ -20,11 +20,12 @@ Duas diferenças em relação à especificação, e as duas são deliberadas:
   preamar não é cheia de rio. Elas aparecem na tela com a cota; o que não fazem
   é tocar o telefone de ninguém. O porquê está no README, em "Por que nove delas
   não disparam aviso sozinhas".
-- **A DC-11 (Santa Regina, 3,00 / 4,00 / 5,00) não existe no nosso cadastro.**
-  Temos DC-01 a DC-10 mais a DC-00 (a própria Defesa Civil). Se a estação existe
-  no Plano de Contingência v17, é dado que falta — mas não entra por transcrição
-  de uma especificação: entra quando alguém abrir o Plano e conferir. Está nas
-  pendências.
+- **A DC-11 (Santa Regina / Volta de Cima, 3,00 / 4,00 / 5,00) é de Itajaí.**
+  Conferido no Plano de Contingência v17 (Tabela 11, p. 23) — que também põe Santa
+  Regina e Volta de Cima na Zona 1 da Defesa Civil de Itajaí (p. 12). Fica no
+  extremo a montante, na divisa com Ilhota, e é a única das onze réguas de Itajaí
+  acima da maré, por isso dispara aviso. Esteve cadastrada por engano como régua
+  de Ilhota; corrigido. Ilhota não tem régua própria.
 
 ## Bloco 2 — maré ✔ existe
 

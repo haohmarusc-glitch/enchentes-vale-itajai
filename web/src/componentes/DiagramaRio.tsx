@@ -71,8 +71,9 @@ export default function DiagramaRio({
         const selecionada = cidadeSelecionada === cidade.id
         const cotas = Object.entries(cidade.cotas_m)
         // Cidade sem cota própria pode ter cotas oficiais por régua — Itajaí
-        // tem onze, Ilhota tem uma. Dizer "não levantadas" nesses casos seria
-        // esconder dado publicado.
+        // tem onze (a DC-11, em Santa Regina/Volta de Cima, é a única de rio
+        // acima da maré). Dizer "não levantadas" nesses casos seria esconder
+        // dado publicado.
         const reguas = reguasComCota(estacoesTempoReal, rioId, cidade.id)
 
         return (

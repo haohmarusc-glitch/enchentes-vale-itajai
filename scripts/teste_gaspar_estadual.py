@@ -261,9 +261,14 @@ class TestEvidencia(unittest.TestCase):
                                f"{nome} ({cod}): a diferença precisa ser inequívoca")
 
     def test_a_evidencia_contestada_esta_marcada_como_tal(self):
-        """Ela pode ficar registrada; o que não pode é voltar a sustentar."""
+        """
+        A dúvida da DC-11 foi resolvida (é de Itajaí, pelo Plano). Isso não a
+        promove a evidência: agora ela é um par entre cidades comprovadamente
+        diferentes, o que é ainda menos utilizável como "mesma régua". O que
+        não pode é voltar a sustentar o portão.
+        """
         for *_, quem in EVIDENCIA_CONTESTADA:
-            self.assertIn("disputa", quem)
+            self.assertIn("Itajaí", quem)
 
     def test_o_portao_nao_cita_a_evidencia_contestada(self):
         """
@@ -290,14 +295,18 @@ class TestEvidencia(unittest.TestCase):
         self.assertGreater(pior, maior,
                            "o deslocamento medido já passa da maior cota de Gaspar")
 
-    def test_a_duvida_da_dc11_esta_registrada_onde_alguem_ve(self):
+    def test_a_resolucao_da_dc11_esta_registrada(self):
         """
-        Uma pendência que só existe no comentário de um script morre com ele.
-        Enquanto a DC-11 estiver em disputa, o README tem de dizer.
+        A dúvida virou fato (DC-11 é de Itajaí) e o cadastro tem de refletir:
+        cidade `itajai`, sem marca de disputa. Se alguém reabrir por engano,
+        cai aqui.
         """
-        readme = (Path(__file__).resolve().parent.parent / "README.md").read_text()
-        self.assertIn("DC-11", readme)
-        self.assertIn("Volta de Cima", readme)
+        import json
+        est = json.loads(
+            (Path(__file__).resolve().parent.parent / "data/estacoes.json").read_text())
+        dc11 = next(e for e in est["estacoes_tempo_real"] if e["codigo"] == "DC-11")
+        self.assertEqual(dc11["cidade"], "itajai")
+        self.assertNotIn("cidade_em_disputa", dc11)
 
 
 class TestNaoAlimentaOAviso(unittest.TestCase):

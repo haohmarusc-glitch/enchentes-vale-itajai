@@ -155,11 +155,9 @@
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "verificado": false,
-          "observacao": "Recebe o rio Luiz Alves.",
+          "observacao": "Recebe o rio Luiz Alves. NÃO tem régua própria de nível ao vivo: a estação DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é de Itajaí, a jusante, com zero próprio — usá-la como nível de Ilhota seria comparar réguas de cidades diferentes. Como Gaspar antes do Plano, Ilhota aparece no eixo sem nível ao vivo até haver fonte com régua da própria cidade.",
           "cotas_m": {},
-          "fontes_tempo_real": [
-            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-11 Santa Regina, divisa)"
-          ]
+          "fontes_tempo_real": []
         },
         {
           "id": "itajai",
@@ -464,7 +462,7 @@
       "codigo": "DC-11",
       "titulo": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
       "rio": "itajai-acu",
-      "cidade": "ilhota",
+      "cidade": "itajai",
       "cotas_m": {
         "atencao": 3.0,
         "alerta": 4.0,
@@ -474,8 +472,7 @@
       "referencia": "régua",
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Açu - Santa Regina (Volta de Cima)",
-      "cidade_em_disputa": true,
-      "nota_cidade": "A atribuição `cidade: ilhota` está EM ABERTO. A especificação que trouxe a estação a lista entre as de Itajaí, e uma versão posterior afirma que Santa Regina / Volta de Cima é bairro de Itajaí, a montante, e não o município de Ilhota. Nenhuma das duas versões veio com fonte geográfica, e por isso nada foi trocado: trocar por plausibilidade é o erro que a REGRA BLOQUEANTE existe para impedir. O que está em jogo: esta é a ÚNICA fonte de nível ao vivo de Ilhota, então o site mostra a leitura dela como o nível daquela cidade e o aviso por Telegram sai com o nome dela. Se a estação for de Itajaí, Ilhota fica sem nível — como Gaspar — e o aviso está com a cidade errada. Resolve pela Tabela 11 do Plano de Contingência de Itajaí ou por pergunta à COMPDEC (ofício C2). Ver a pendência no README."
+      "nota_cidade": "Estação de Itajaí, não de Ilhota. Confirmado no Plano de Contingência da COMPDEC Itajaí (v17, 22/12/2025): a Tabela 11 (p. 23) a lista como estação de Itajaí, e a p. 12 põe Santa Regina e Volta de Cima na ZONA 1 da Defesa Civil de Itajaí — localidades do município, no extremo a montante, junto à divisa com Ilhota. É a única das onze réguas de Itajaí que fica acima da maré (rio de verdade), por isso dispara aviso, ao contrário das nove de estuário. Ilhota, a montante daqui, NÃO tem régua própria: esta leitura é de Itajaí e não pode ser lida como o nível de Ilhota — zeros diferentes, cidade diferente."
     },
     {
       "titulo": "Brusque",

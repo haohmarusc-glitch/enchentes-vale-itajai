@@ -90,19 +90,21 @@ EVIDENCIA_INDEPENDENTE = [
     ("Barragem Oeste Taió", 351.81, 12.97, "DCSC-00040"),
 ]
 
-#: A evidência que ANTES sustentava sozinha este portão, hoje sob contestação.
+#: A evidência que ANTES sustentava sozinha este portão, e por que ela nunca
+#: devia ter sustentado.
 #:
-#: O par era: rede estadual em Ilhota (DCSC-00030) contra a nossa DC-11. Só que
-#: **em que município fica a DC-11 está em aberto** — o nosso cadastro diz
-#: `ilhota`, e uma especificação recebida a lista entre as estações de Itajaí,
-#: com o nome "Santa Regina (Volta de Cima)". Se a DC-11 for de Itajaí, este par
-#: compara DUAS CIDADES DIFERENTES e não prova zero diferente nenhum.
+#: O par era: rede estadual em Ilhota (DCSC-00030) contra a nossa DC-11. Ficou
+#: provado (Plano de Contingência da COMPDEC Itajaí, Tabela 11 + Zona 1) que a
+#: DC-11 é de **Itajaí**, não de Ilhota — ou seja, o par comparava DUAS CIDADES
+#: DIFERENTES e nunca provou zero diferente nenhum. Foi por pouco: a decisão de
+#: reassentar o portão nas barragens foi tomada enquanto a dúvida ainda estava
+#: aberta, e a resolução só confirmou que estava certa em não confiar nele.
 #:
-#: Fica registrado, marcado, e **não sustenta o portão**: quem sustenta é a
-#: evidência das barragens acima. Ver a pendência da DC-11 no README.
+#: Continua aqui, marcado, como lembrete: quem sustenta o portão é a evidência
+#: das barragens acima, que não depende de município nenhum.
 EVIDENCIA_CONTESTADA = [
-    ("2026-08-31", "DCSC-00030", 10.34, 3.25, "DC-11 Santa Regina — município em disputa"),
-    ("2026-09-01", "DCSC-00030", 10.67, 3.34, "DC-11 Santa Regina — município em disputa"),
+    ("2026-08-31", "DCSC-00030", 10.34, 3.25, "DC-11 Santa Regina — é de Itajaí, não de Ilhota"),
+    ("2026-09-01", "DCSC-00030", 10.67, 3.34, "DC-11 Santa Regina — é de Itajaí, não de Ilhota"),
 ]
 
 #: Diferença acima da qual duas leituras da mesma cidade não podem ser o mesmo
@@ -291,7 +293,7 @@ def main() -> int:
               f"({cod}) {estadual:.2f} m — {gaspar - estadual:.2f} m de diferença")
     for data, cod, deles, nosso, quem in EVIDENCIA_CONTESTADA:
         print(f"  [contestada] {data}: {cod} veio {deles:.2f} m; {quem} marcava "
-              f"{nosso:.2f} m — não sustenta o portão")
+              f"{nosso:.2f} m — cidades diferentes, não sustenta o portão")
 
     try:
         resposta = consultar()
