@@ -24,6 +24,7 @@ set -euo pipefail
 
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ARQUIVO="$RAIZ/data/tempo-real/ultimo.json"
+SERIE_RECENTE="$RAIZ/data/tempo-real/serie-recente.json"
 BRANCH="tempo-real"
 SECO=0
 [ "${1:-}" = "--seco" ] && SECO=1
@@ -43,11 +44,28 @@ if ! python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if 
 fi
 
 BLOB="$(git hash-object -w "$ARQUIVO")"
-TREE="$(printf '100644 blob %s\tultimo.json\n' "$BLOB" | git mktree)"
+
+# serie-recente.json vai junto QUANDO existe e é JSON válido. É opcional de
+# propósito: uma coleta antiga que não o gera continua publicando o nível ao
+# vivo normalmente, sem a linha do tempo. JSON quebrado não sobe — a mesma
+# régua do ultimo.json.
+SERIE_ENTRY=""
+if [ -f "$SERIE_RECENTE" ] && python3 -c 'import json,sys; json.load(open(sys.argv[1]))' "$SERIE_RECENTE" 2>/dev/null; then
+  BLOB_SERIE="$(git hash-object -w "$SERIE_RECENTE")"
+  SERIE_ENTRY="$(printf '100644 blob %s\tserie-recente.json' "$BLOB_SERIE")"
+fi
+
+TREE="$(
+  {
+    printf '100644 blob %s\tultimo.json\n' "$BLOB"
+    [ -n "$SERIE_ENTRY" ] && printf '%s\n' "$SERIE_ENTRY"
+  } | git mktree
+)"
 COMMIT="$(git commit-tree "$TREE" -m "Leitura de $(date -u +%Y-%m-%dT%H:%M:%SZ)")"
 
 if [ "$SECO" = "1" ]; then
   echo "publicaria o commit $COMMIT em refs/heads/$BRANCH"
+  [ -n "$SERIE_ENTRY" ] && echo "(com serie-recente.json)" || echo "(sem serie-recente.json)"
   echo "conteúdo:"
   git show "$COMMIT:ultimo.json" | head -5
   exit 0
