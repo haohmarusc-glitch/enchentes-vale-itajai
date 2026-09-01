@@ -1,43 +1,40 @@
+import faixas from '@dados/faixas.json'
 import type { Faixa } from '../logica/tempoReal'
 import estilos from './LegendaFaixas.module.css'
 
+/**
+ * Os textos das faixas vêm de `data/faixas.json` — fonte ÚNICA. O site DESCREVE
+ * a faixa e remete à Defesa Civil (199); NUNCA recomenda ação, porque não é
+ * alerta oficial. As únicas chamadas permitidas são "Siga a Defesa Civil" e
+ * "ligue 199". Mudar texto de faixa é mudar o JSON, não este arquivo.
+ */
+const F = faixas.faixas as Record<Faixa, { rotulo: string; acao: string }>
+
 /** Rótulo curto de cada faixa, para a legenda e para o selo ao lado da cidade. */
 export const ROTULO_FAIXA: Record<Faixa, string> = {
-  normal: 'Abaixo da atenção',
-  atencao: 'Atenção',
-  alerta: 'Alerta',
-  inundacao: 'Inundação',
-  emergencia: 'Emergência',
-  'sem-dado': 'Sem cota / sem leitura',
-  varias: 'Várias réguas',
+  normal: F.normal.rotulo,
+  atencao: F.atencao.rotulo,
+  alerta: F.alerta.rotulo,
+  inundacao: F.inundacao.rotulo,
+  emergencia: F.emergencia.rotulo,
+  'sem-dado': F['sem-dado'].rotulo,
+  varias: F.varias.rotulo,
 }
 
-/**
- * O que a faixa significa em AÇÃO — a ideia do Kikikuru (a cor diz o que fazer,
- * não é enfeite). Mas com o limite deste projeto: NÃO somos alerta oficial.
- * Por isso toda ação forte devolve à Defesa Civil e ao 199, e nenhuma frase diz
- * "a tela mandou". A tela informa; quem manda evacuar é a autoridade.
- */
+/** O que cada faixa DIZ — descrição + remissão à autoridade, nunca ordem. */
 export const ACAO_FAIXA: Record<Faixa, string> = {
-  normal: 'Rio abaixo da cota de atenção.',
-  atencao: 'Fique atento e confira a cota da sua rua.',
-  alerta: 'Prepare o que levar. Siga a Defesa Civil; 199 em emergência.',
-  inundacao: 'Se sua rua tem cota baixa, procure lugar seguro e ligue 199.',
-  emergencia: 'Se sua rua tem cota baixa, procure lugar seguro e ligue 199.',
-  'sem-dado': 'Sem dado para dizer a faixa aqui — não conclua que está seguro.',
-  varias: 'Vários pontos de medição; veja cada régua abaixo.',
+  normal: F.normal.acao,
+  atencao: F.atencao.acao,
+  alerta: F.alerta.acao,
+  inundacao: F.inundacao.acao,
+  emergencia: F.emergencia.acao,
+  'sem-dado': F['sem-dado'].acao,
+  varias: F.varias.acao,
 }
 
 // A ordem em que a legenda aparece: do calmo ao grave, e os dois estados
 // "sem cor de nível" por último, porque não são pontos da escala.
-const NA_LEGENDA: Faixa[] = [
-  'normal',
-  'atencao',
-  'alerta',
-  'inundacao',
-  'sem-dado',
-  'varias',
-]
+const NA_LEGENDA = faixas.ordem_legenda as Faixa[]
 
 /**
  * A legenda das cores do rio. A cor é a faixa da PRÓPRIA cidade, não o metro —
@@ -47,10 +44,7 @@ const NA_LEGENDA: Faixa[] = [
 export default function LegendaFaixas() {
   return (
     <div className={estilos.legenda}>
-      <p className={estilos.aviso}>
-        A cor é a faixa de cada cidade na <strong>régua dela</strong> — não o
-        nível em metros. Cidades em cores iguais não estão no mesmo metro.
-      </p>
+      <p className={estilos.aviso}>{faixas.disclaimer}</p>
       <ul className={estilos.itens}>
         {NA_LEGENDA.map((f) => (
           <li key={f} className={estilos.item}>
@@ -59,7 +53,7 @@ export default function LegendaFaixas() {
               aria-hidden="true"
             />
             <span>
-              <strong>{f === 'inundacao' ? 'Inundação / Emergência' : ROTULO_FAIXA[f]}</strong>
+              <strong>{f === 'inundacao' ? faixas.rotulo_legenda_inundacao : ROTULO_FAIXA[f]}</strong>
               <span className={estilos.acao}> — {ACAO_FAIXA[f]}</span>
             </span>
           </li>
