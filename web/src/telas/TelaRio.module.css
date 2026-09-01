@@ -3,6 +3,32 @@
   margin-top: -0.25rem;
 }
 
+/*
+ * No celular: coluna única, empilhada (o mapa é o último cartão, sob o botão,
+ * para não puxar Leaflet numa rede ruim). No desktop, layout do Kikikuru: o
+ * mapa numa coluna à esquerda, fixa (sticky), e os dados rolando à direita.
+ */
+@media (min-width: 1024px) {
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(22rem, 40%) 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+  /* O mapa vem por último no DOM (para ficar no fim no celular); aqui ele volta
+     para a esquerda e gruda no topo enquanto os dados rolam. */
+  .colunaMapa {
+    order: -1;
+    position: sticky;
+    top: 0.75rem;
+    align-self: start;
+  }
+  .colunaMapa :global(.leaflet-container),
+  .colunaMapa :global(.cartao) {
+    margin-top: 0;
+  }
+}
+
 .instrucao {
   font-size: 0.92rem;
   color: var(--tinta-fraca);

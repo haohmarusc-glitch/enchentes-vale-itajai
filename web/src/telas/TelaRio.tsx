@@ -55,7 +55,11 @@ export default function TelaRio({ rioId }: { rioId: string }) {
   // Um único "agora" por render: assim todos os cartões contam a idade das
   // leituras a partir do mesmo instante.
   const agora = useMemo(() => new Date(), [tempoReal])
-  const [verMapa, setVerMapa] = useState(false)
+  // No desktop o mapa fica na coluna da esquerda, então já abre; no celular
+  // continua sob o botão, para não puxar Leaflet numa rede ruim no meio da chuva.
+  const [verMapa, setVerMapa] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches,
+  )
 
   const [selecionadaId, setSelecionadaId] = useState<string | null>(null)
   const cidadeId = selecionadaId ?? padrao
@@ -92,6 +96,9 @@ export default function TelaRio({ rioId }: { rioId: string }) {
 
       <AvisoLegal />
 
+      <div className={estilos.layout}>
+      <div className={estilos.colunaDados}>
+
       <section className="cartao">
         <h2>Curso do rio, de cima para baixo</h2>
         <p className={estilos.instrucao}>
@@ -114,32 +121,6 @@ export default function TelaRio({ rioId }: { rioId: string }) {
             aparecem no diagrama para deixar claro o que falta, não para sugerir que há dado.
           </p>
         ) : null}
-      </section>
-
-      <section className="cartao">
-        <h2>Mapa do rio</h2>
-        {verMapa ? (
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa…</p>}>
-            <MapaRios
-              rioId={rioId}
-              cidades={cidades}
-              tempoReal={tempoReal}
-              agora={agora}
-              aoSelecionar={setSelecionadaId}
-            />
-          </Suspense>
-        ) : (
-          <>
-            <p className={estilos.instrucao}>
-              O rio no mapa, com cada trecho na cor da faixa da cidade a montante — a mesma do
-              diagrama. Aproxime para ver os nomes; toque numa cidade para as cotas de rua e o
-              abrigo dela. Carrega sob pedido para não pesar no celular.
-            </p>
-            <button type="button" className={estilos.botaoMapa} onClick={() => setVerMapa(true)}>
-              Ver mapa do rio
-            </button>
-          </>
-        )}
       </section>
 
       {cidades.some((c) => serieDaCidade(serie, rioId, c.id).length > 0) ? (
@@ -223,6 +204,38 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           </p>
         </section>
       ) : null}
+
+      </div>
+
+      <div className={estilos.colunaMapa}>
+        <section className="cartao">
+          <h2>Mapa do rio</h2>
+          {verMapa ? (
+            <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa…</p>}>
+              <MapaRios
+                rioId={rioId}
+                cidades={cidades}
+                tempoReal={tempoReal}
+                agora={agora}
+                aoSelecionar={setSelecionadaId}
+              />
+            </Suspense>
+          ) : (
+            <>
+              <p className={estilos.instrucao}>
+                O rio no mapa, com cada trecho na cor da faixa da cidade a montante — a mesma do
+                diagrama. Aproxime para ver os nomes; toque numa cidade para as cotas de rua e o
+                abrigo dela. Carrega sob pedido para não pesar no celular.
+              </p>
+              <button type="button" className={estilos.botaoMapa} onClick={() => setVerMapa(true)}>
+                Ver mapa do rio
+              </button>
+            </>
+          )}
+        </section>
+      </div>
+
+      </div>
     </>
   )
 }

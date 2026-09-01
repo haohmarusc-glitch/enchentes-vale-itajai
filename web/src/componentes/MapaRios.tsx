@@ -5,7 +5,7 @@ import type { Cidade } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import { faixaDaCidade, type Faixa } from '../logica/tempoReal'
-import LegendaFaixas, { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
+import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
 import estilos from './MapaRios.module.css'
 
@@ -261,7 +261,6 @@ export default function MapaRios({
 
   return (
     <div className={estilos.bloco}>
-      <LegendaFaixas />
       {erro ? <p className={estilos.erro}>Mapa indisponível: {erro}</p> : null}
       <div ref={divRef} className={estilos.mapa} role="img" aria-label={`Mapa do ${rioId}`} />
       <p className={estilos.credito}>
