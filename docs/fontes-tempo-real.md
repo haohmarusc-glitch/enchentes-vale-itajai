@@ -470,9 +470,12 @@ instante".
 
 **O que a execução também mostrou sobre a fonte.** A estação `DCSC-00005` respondeu com carimbo
 fresco (`03:24:30Z`) e **sem valor de nível** — segunda observação independente, depois da de
-03:09Z. Não é "não trouxe naquele instante": parece ser que a estação de Gaspar na rede estadual
-publica chuva e não publica régua. Se isso se confirmar em mais coletas, o caminho estadual morre e
-sobra o ofício à Defesa Civil de Gaspar pedindo um endpoint estável.
+03:09Z, e uma terceira às 03:33Z fez o mesmo. A metadados do GraphQL estadual **declara** sensor de
+rio (`rio_nivel.value=true`, visto na coleta de resgate de 01/09/2026): a estação de Gaspar **não é
+pluviômetro puro**, tem canal de régua previsto. Mas o **valor** de nível veio nulo nas três: na
+prática ela publica chuva e não publica régua. Enquanto o número não vier, o caminho estadual não
+serve como nível ao vivo — sobra o ofício à Defesa Civil de Gaspar pedindo um endpoint estável, e o
+`gaspar_estadual.py` só juntará o par de calibração no dia em que a régua estadual devolver valor.
 
 ### A evidência do portão de Gaspar mudou de perna (01/09/2026)
 
