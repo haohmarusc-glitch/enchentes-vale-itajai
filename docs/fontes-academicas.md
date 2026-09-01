@@ -97,6 +97,13 @@ partir de um resumo de segunda mão seria exatamente o erro que a regra existe p
 1. O arquivo em si. Com `data/brutos/blumenau-enchentes-registradas-alertablu.json` no repositório,
    dá para cruzar os 102 eventos contra os nossos 113 de uma vez, e o padrão das diferenças —
    constante em 0,20 m, constante em 0,40 m, ou irregular — responde sozinho.
+   **A análise já está escrita e testada**, em `scripts/conferir_blumenau_alertablu.py`: ela roda no
+   instante em que o arquivo aparecer. Uma coisa que ela faz e que uma comparação ingênua não faria:
+   separa os pares cujo registro nosso está **rotulado IBGE** dos **sem rótulo**, e compara os dois
+   grupos. Uma mediana única sobre grupos que se comportam diferente devolve um número que não
+   descreve nenhum dos dois — e é exatamente esse o caso que 1880/1983/1984 batendo e set/2011
+   fugindo 0,40 m sugere. Quando os grupos discordam, o veredito é **"não converter"**, e não um
+   deslocamento médio.
 2. O teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou a resposta da FURB,
    que continuam sendo as duas saídas que a própria regra prevê para ser removida.
 
