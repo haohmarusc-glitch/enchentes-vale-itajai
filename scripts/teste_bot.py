@@ -563,10 +563,27 @@ class TestGerais(unittest.TestCase):
         Açu) e Brusque (Mirim).
         """
         t = resp("/rios")
-        self.assertLess(t.index("Rio do Sul"), t.index("Itajaí"),
+        # Marcadores da CIDADE (negrito fechado), para não casar com o cabeçalho
+        # do rio "<b>Itajaí-Açu</b>".
+        self.assertLess(t.index("<b>Rio do Sul</b>"), t.index("<b>Itajaí</b>"),
                         "a cabeceira do Açu vem antes da foz")
-        self.assertLess(t.index("Itajaí"), t.index("Brusque"),
+        self.assertLess(t.index("<b>Itajaí</b>"), t.index("<b>Brusque</b>"),
                         "o Açu inteiro vem antes do Mirim")
+
+    def test_rios_mostra_o_rio_inteiro_com_as_lacunas(self):
+        """
+        Segue o mapa do rio: as cidades SEM leitura agora entram na posição
+        delas, marcadas, e não somem — ausência de dado não pode virar buraco
+        invisível. A base de teste não tem Ibirama (Açu) nem Botuverá (Mirim).
+        """
+        t = resp("/rios")
+        self.assertIn("sem leitura agora", t)
+        self.assertIn("Ibirama", t)
+        self.assertIn("Botuverá", t)
+        # E o mapa vem rotulado pelos dois rios, cada um do alto para a foz.
+        self.assertIn("Itajaí-Açu", t)
+        self.assertIn("Itajaí-Mirim", t)
+        self.assertLess(t.index("Itajaí-Açu"), t.index("Itajaí-Mirim"))
 
     def test_nome_curto_tira_a_calha_e_guarda_o_codigo(self):
         """No panorama o que muda entre as linhas é o local, não o nome do rio."""
