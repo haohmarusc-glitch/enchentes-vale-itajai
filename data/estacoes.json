@@ -7,7 +7,8 @@
       "verificado": "true só depois de conferir o dado na fonte oficial.",
       "ordem": "Sequência montante -> jusante ao longo do eixo. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras que se encontram em Rio do Sul; aparecem antes dele.",
       "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado.",
-      "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua."
+      "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua.",
+      "coordenadas": "[lat, lon] da sede municipal, aproximada (OpenStreetMap/IBGE); Vidal Ramos exata da estação Asthon. Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível."
     },
     "notas": {
       "cotas_itajai": "As onze estações de Itajaí têm cota oficial de atenção, alerta e EMERGÊNCIA (a palavra é do Plano de Contingência da COMPDEC, versão 17 de 22/12/2025, Tabela 11). Cada uma tem seu próprio zero: a DC-10, no Limoeiro, usa régua de 8 a 10 m e não se compara com as demais. Nove delas ficam no estuário e estão marcadas com alerta_automatico=false — a cota aparece na tela, mas o aviso por Telegram não dispara a partir de uma travessia isolada, porque a maré cruza essas cotas sem enchente."
@@ -30,6 +31,10 @@
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -27.1173,
+            -49.9958
           ]
         },
         {
@@ -65,7 +70,11 @@
             "https://defesacivil.riodosul.sc.gov.br/index.php?r=externo%2Fmetragem (JS)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "regua": "Ponte Dom Tito Buss"
+          "regua": "Ponte Dom Tito Buss",
+          "coordenadas": [
+            -27.2142,
+            -49.643
+          ]
         },
         {
           "id": "ibirama",
@@ -78,6 +87,10 @@
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -27.0573,
+            -49.5178
           ]
         },
         {
@@ -91,6 +104,10 @@
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -27.0555,
+            -49.393
           ]
         },
         {
@@ -104,6 +121,10 @@
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -26.8978,
+            -49.2311
           ]
         },
         {
@@ -125,6 +146,10 @@
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Blumenau)",
             "https://alertablu.blumenau.sc.gov.br/ (bloqueia robôs)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -26.9194,
+            -49.0661
           ]
         },
         {
@@ -146,6 +171,10 @@
           },
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
+          ],
+          "coordenadas": [
+            -26.9317,
+            -48.9583
           ]
         },
         {
@@ -157,7 +186,11 @@
           "verificado": false,
           "observacao": "Recebe o rio Luiz Alves. NÃO tem régua própria de nível ao vivo: a estação DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é de Itajaí, a jusante, com zero próprio — usá-la como nível de Ilhota seria comparar réguas de cidades diferentes. Como Gaspar antes do Plano, Ilhota aparece no eixo sem nível ao vivo até haver fonte com régua da própria cidade.",
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [],
+          "coordenadas": [
+            -26.9003,
+            -48.8281
+          ]
         },
         {
           "id": "itajai",
@@ -172,6 +205,10 @@
           "fontes_tempo_real": [
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-01, DC-02)",
             "https://defesacivil.itajai.sc.gov.br/monitoramento/mares (tábua de maré)"
+          ],
+          "coordenadas": [
+            -26.9078,
+            -48.6619
           ]
         }
       ]
@@ -190,6 +227,10 @@
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -27.38547,
+            -49.35812
           ]
         },
         {
@@ -202,6 +243,10 @@
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [
+            -27.2028,
+            -49.0739
           ]
         },
         {
@@ -213,7 +258,11 @@
           "verificado": false,
           "observacao": "O relatório-fonte descreve o eixo Botuverá → Guabiruba → Brusque → Itajaí. Posição na sequência ainda não conferida em carta oficial.",
           "cotas_m": {},
-          "fontes_tempo_real": []
+          "fontes_tempo_real": [],
+          "coordenadas": [
+            -27.0839,
+            -48.9808
+          ]
         },
         {
           "id": "brusque",
@@ -235,7 +284,11 @@
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Brusque)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "cotas_verificado": false
+          "cotas_verificado": false,
+          "coordenadas": [
+            -27.0978,
+            -48.9172
+          ]
         },
         {
           "id": "itajai",
@@ -250,6 +303,10 @@
           "fontes_tempo_real": [
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-03 a DC-06, DC-10)",
             "https://defesacivil.itajai.sc.gov.br/monitoramento/mares (tábua de maré)"
+          ],
+          "coordenadas": [
+            -26.9078,
+            -48.6619
           ]
         }
       ]
