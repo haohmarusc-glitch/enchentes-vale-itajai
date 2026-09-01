@@ -25,10 +25,22 @@ Então: **faixa só sai daqui se vier rotulada numa célula própria da tabela**
 mesmo assim ela é PROPOSTA, nunca gravada. E uma candidata que seja igual ao
 nível atual é recusada, porque quase certamente é o nível ecoado.
 
+O HOST NÃO RESPONDE DE FORA
+---------------------------
+Em 31/08 e 01/09/2026, de uma VPS na Finlândia, `defesacivil.gaspar.sc.gov.br`
+resolve no DNS (186.250.184.3, só IPv4) e **dá timeout de conexão** em 15 s — na
+raiz e no `robots.txt`. Três tentativas, duas datas. O pacote sai e não volta.
+
+O navegador de quem mora na região alcança. Por isso existe o `--arquivo`: abrir
+a página no navegador, salvar o HTML e passar o arquivo. Ler um arquivo que
+alguém salvou não é rastejar site, então esse caminho não pede `robots.txt` —
+e continua sem pedir nada ao servidor.
+
 Uso:
-    python3 scripts/coleta_gaspar.py            # lê, mostra e grava a última leitura
-    python3 scripts/coleta_gaspar.py --seco     # lê e mostra, sem gravar
-    python3 scripts/coleta_gaspar.py --cotas    # propõe as faixas, se houver, sem gravar
+    python3 scripts/coleta_gaspar.py                      # busca, mostra e grava
+    python3 scripts/coleta_gaspar.py --seco               # busca e mostra, sem gravar
+    python3 scripts/coleta_gaspar.py --cotas              # propõe as faixas, se houver
+    python3 scripts/coleta_gaspar.py --arquivo pagina.html --cotas   # sem rede
 """
 
 import argparse
@@ -37,6 +49,7 @@ import re
 import sys
 import unicodedata
 from datetime import datetime, timezone
+from pathlib import Path
 from urllib.parse import urlparse
 
 from comum import DADOS, USER_AGENT, baixar, espera_turno, nivel_plausivel
@@ -199,21 +212,36 @@ def propor_cotas(leitura: dict) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--arquivo", metavar="HTML",
+                    help="lê um HTML salvo do navegador, em vez de buscar na rede")
     ap.add_argument("--seco", action="store_true", help="mostra sem gravar")
     ap.add_argument("--cotas", action="store_true", help="propõe as faixas, se houver")
     args = ap.parse_args()
 
-    if not permitido():
-        print("\nRECUSADO: o robots.txt de defesacivil.gaspar.sc.gov.br não libera "
-              "esta página, ou não deu para lê-lo.", file=sys.stderr)
-        return 2
+    if args.arquivo:
+        # Arquivo salvo por uma pessoa no navegador dela. Não há requisição
+        # nenhuma aqui, então não há robots.txt a consultar.
+        try:
+            leitura = analisar(Path(args.arquivo).read_text(encoding="utf-8", errors="replace"))
+        except OSError as erro:
+            print(f"não deu para ler {args.arquivo}: {erro}", file=sys.stderr)
+            return 1
+        leitura["fonte"] = f"{URL} (HTML salvo em {args.arquivo})"
+    else:
+        if not permitido():
+            print("\nRECUSADO: o robots.txt de defesacivil.gaspar.sc.gov.br não libera "
+                  "esta página, ou não deu para lê-lo.\n"
+                  "Se for timeout de conexão, o host não responde de fora da região: "
+                  "abra a página no navegador, salve o HTML e use --arquivo.",
+                  file=sys.stderr)
+            return 2
 
-    espera_turno()
-    try:
-        leitura = analisar(baixar(URL))
-    except Exception as erro:
-        print(f"não deu para ler {URL}: {erro}", file=sys.stderr)
-        return 1
+        espera_turno()
+        try:
+            leitura = analisar(baixar(URL))
+        except Exception as erro:
+            print(f"não deu para ler {URL}: {erro}", file=sys.stderr)
+            return 1
 
     print(f"{len(leitura['estacoes'])} estações · {len(leitura['barragens'])} barragens "
           f"· faixas rotuladas: {sorted(leitura['faixas_propostas']) or 'nenhuma'}")
