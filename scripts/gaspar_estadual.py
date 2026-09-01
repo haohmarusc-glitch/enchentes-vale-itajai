@@ -81,6 +81,20 @@ EVIDENCIA_DE_ZEROS_DIFERENTES = [
 #: defasagem de horário.
 LIMITE_DE_COERENCIA_M = 1.0
 
+#: Distância máxima, em minutos, entre as duas leituras de um par.
+#:
+#: Sem isto o script faria a pior coisa que ele existe para impedir: um número
+#: que PARECE medido e não é. Parear a leitura do município de 31/08 22:59 com
+#: a estadual de 01/09 03:24 — o caso real que apareceu na primeira execução —
+#: dá 4h25 de intervalo, e numa cheia o rio sobe nesse tempo. A diferença seria
+#: parte deslocamento de régua, parte subida do rio, sem como separar.
+#: Trinta minutos porque, a 20 cm/h (subida forte no médio Itajaí), a parcela de
+#: subida fica em ~10 cm — uma ordem de grandeza abaixo do limite de coerência.
+JANELA_MAXIMA_MIN = 30
+
+#: Como a tabela do município chama a régua do rio, em `ultimo_gaspar.json`.
+ROTULO_MUNICIPIO = "Rio Itajaí Açu Gaspar"
+
 Q_TAGS = """query Tags_data { tags_data(clients: ["%s"]) { qualle_meteorologia {
   codigo name { general local } timestamp
   data { rio { rio_nivel { value } rio_nivel_tendencia { value } }
@@ -137,18 +151,46 @@ def nivel_do_municipio() -> tuple[float | None, str | None]:
 
     É o outro lado do par. Sem ela não há deslocamento a medir — só um número
     solto de origem desconhecida.
+
+    O arquivo é `ultimo_gaspar.json`, que o `coleta_gaspar.py` escreve, e NÃO o
+    `ultimo.json` da coleta geral: Gaspar não está na coleta geral, que é
+    justamente o problema. A primeira versão deste script procurava no arquivo
+    errado e dizia "SEM LEITURA" com 3,85 m guardados no repositório ao lado.
     """
-    caminho = DADOS / "tempo-real" / "ultimo.json"
+    caminho = DADOS / "tempo-real" / "ultimo_gaspar.json"
     if not caminho.exists():
         return None, None
     try:
         dados = json.loads(caminho.read_text(encoding="utf-8"))
     except (ValueError, OSError):
         return None, None
-    for l in dados.get("leituras") or []:
-        if l.get("cidade") == "gaspar" and isinstance(l.get("nivel_m"), (int, float)):
-            return float(l["nivel_m"]), l.get("medido_em")
+    for e in dados.get("estacoes") or []:
+        if e.get("rotulo") != ROTULO_MUNICIPIO:
+            continue
+        valor = e.get("nivel_m")
+        # `nivel_plausivel` é o veredito do próprio coletor. Um número que ele
+        # marcou como implausível não vira metade de um par de calibração.
+        if isinstance(valor, (int, float)) and e.get("nivel_plausivel"):
+            return float(valor), e.get("medido_em_iso")
+        return None, e.get("medido_em_iso")
     return None, None
+
+
+def minutos_entre(a: str | None, b: str | None) -> float | None:
+    """Distância entre dois carimbos ISO, em minutos. `None` se algum faltar."""
+    def ler(s):
+        if not s:
+            return None
+        try:
+            d = datetime.fromisoformat(str(s).replace("Z", "+00:00"))
+        except ValueError:
+            return None
+        return d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+
+    x, y = ler(a), ler(b)
+    if x is None or y is None:
+        return None
+    return abs((x - y).total_seconds()) / 60.0
 
 
 def usavel_para_aviso() -> tuple[bool, str]:
@@ -169,12 +211,19 @@ def usavel_para_aviso() -> tuple[bool, str]:
 
 
 def medir_deslocamento(estadual: float | None,
-                       municipal: float | None) -> tuple[float | None, str]:
+                       municipal: float | None,
+                       quando_e: str | None = None,
+                       quando_m: str | None = None) -> tuple[float | None, str]:
     """
-    O par que destrava a fonte: estadual menos municipal, no mesmo instante.
+    O par que destrava a fonte: estadual menos municipal, no MESMO instante.
 
-    Não grava nada. Um par só não fecha a questão — o deslocamento tem de se
-    repetir em leituras de níveis diferentes antes de virar constante.
+    "No mesmo instante" não é detalhe. Duas leituras separadas por horas numa
+    cheia diferem porque o rio subiu, e essa parcela não se separa do
+    deslocamento de régua. Um par fora da janela é recusado — devolver o número
+    assim mesmo seria fabricar a medição que este script existe para exigir.
+
+    Não grava nada. Um par só também não fecha a questão: o deslocamento tem de
+    se repetir em níveis diferentes antes de virar constante.
     """
     if estadual is None and municipal is None:
         return None, "nenhum dos dois lados tem leitura"
@@ -182,12 +231,22 @@ def medir_deslocamento(estadual: float | None,
         return None, "a rede estadual não trouxe nível de Gaspar"
     if municipal is None:
         return None, "não há leitura da tabela do município para parear"
+
+    intervalo = minutos_entre(quando_e, quando_m)
+    if intervalo is None and (quando_e or quando_m):
+        return None, "um dos lados veio sem horário — não dá para saber se são o mesmo instante"
+    if intervalo is not None and intervalo > JANELA_MAXIMA_MIN:
+        return None, (f"as duas leituras estão a {intervalo:.0f} min uma da outra "
+                      f"(máximo {JANELA_MAXIMA_MIN} min): numa cheia o rio sobe nesse "
+                      "tempo, e a diferença seria parte subida, parte régua")
+
     d = estadual - municipal
+    perto = f" ({intervalo:.0f} min de intervalo)" if intervalo is not None else ""
     if abs(d) <= LIMITE_DE_COERENCIA_M:
-        return d, (f"os dois lados batem dentro de {LIMITE_DE_COERENCIA_M:.2f} m "
+        return d, (f"os dois lados batem dentro de {LIMITE_DE_COERENCIA_M:.2f} m{perto} "
                    "— indício de mesma régua, a confirmar em outro nível")
     return d, ("os dois lados NÃO são a mesma régua: "
-               f"{abs(d):.2f} m de diferença no mesmo instante")
+               f"{abs(d):.2f} m de diferença{perto}")
 
 
 def main() -> int:
@@ -225,7 +284,7 @@ def main() -> int:
           f"{f'{municipal:.2f} m' if municipal is not None else 'SEM LEITURA'}"
           f"  ({quando_m or 'sem horário'})")
 
-    d, porque = medir_deslocamento(estadual, municipal)
+    d, porque = medir_deslocamento(estadual, municipal, quando_e, quando_m)
     print(f"\n  deslocamento   : "
           f"{f'{d:+.2f} m' if d is not None else 'não medível'} — {porque}")
 
