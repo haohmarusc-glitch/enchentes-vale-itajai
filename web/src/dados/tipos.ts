@@ -184,6 +184,17 @@ export interface CotaRua {
    * tela, com a ressalva, e não dispara nada.
    */
   usar_para_aviso?: boolean
+  /**
+   * Abrigo que a Defesa Civil indica para aquele ponto, quando a fonte informa
+   * — hoje só Blumenau, do PDF oficial de 2014.
+   *
+   * É a outra metade da mesma decisão: a cota diz que é hora de sair, o abrigo
+   * diz para onde. Uma rua comprida pode ter abrigos diferentes em pontos
+   * diferentes, por isso o campo é do REGISTRO e não da rua.
+   */
+  abrigo?: string | null
+  /** O código do abrigo na fonte (ex.: `E9`). */
+  abrigo_codigo?: string | null
   fonte: string
   data_fonte: string
   confianca: Confianca

@@ -588,6 +588,12 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
         # pela mínima, que é quando a água chega à rua.
         if isinstance(c.get("cota_max_m"), (int, float)):
             linhas.append(f" · toda a rua a {metros(c['cota_max_m'])}")
+        # O abrigo vem logo abaixo da cota porque é a outra metade da mesma
+        # decisão: a cota diz que é hora de sair, o abrigo diz para onde. Só
+        # Blumenau tem, por enquanto, e é do PDF oficial da Defesa Civil.
+        if c.get("abrigo"):
+            codigo = f" ({e(c['abrigo_codigo'])})" if c.get("abrigo_codigo") else ""
+            linhas.append(f"\nAbrigo: <b>{e(c['abrigo'])}</b>{codigo}")
         # A ressalva sai JUNTO do número, e não só quando ele falta: Rio do Sul
         # publica ruas alagando abaixo da menor cota da cidade, e sem isto o bot
         # diria "já foi alcançado" com tempo bom.
