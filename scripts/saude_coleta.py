@@ -66,6 +66,19 @@ def _idade_min(quando: datetime, agora: datetime) -> float:
     return (agora - quando).total_seconds() / 60
 
 
+def regua_de(leitura: dict) -> str:
+    """
+    Identidade da RÉGUA de uma leitura — não da linha.
+
+    A mesma régua pode aparecer duas vezes quando há fonte de resgate (Blumenau
+    vem da Defesa Civil de Itajaí e, quando essa esfria, do AlertaBlu). O resgate
+    carrega `resgate_de` com o título da régua primária que ele cobre; por ele as
+    duas leituras contam como UMA régua. Sem `resgate_de`, a régua é o próprio
+    título — e as onze de Itajaí seguem distintas, cada uma vigiada por si.
+    """
+    return leitura.get("resgate_de") or leitura.get("estacao", "?")
+
+
 def avaliar(dados: dict | None, agora: datetime,
             vistas_antes: set[str] | None = None) -> Diagnostico:
     """
@@ -118,28 +131,43 @@ def avaliar(dados: dict | None, agora: datetime,
             if idade > TOLERANCIA_FONTE_MIN:
                 problemas.append(f"a fonte não publica leitura nova há {idade:.0f} min")
 
-        # Cada estação, e não só a mais nova.
+        # Cada RÉGUA, e não só a mais nova nem cada linha.
         #
-        # `max(medidos)` responde "a fonte publicou alguma coisa" — e uma
-        # estação viva mascarava todas as outras. Com doze réguas congeladas
-        # há seis horas e uma publicando, o vigia dizia "coleta e fonte em
-        # dia", que é exatamente a hora em que ele deveria gritar.
-        paradas = []
+        # Duas coisas se cruzam aqui:
+        #  - `max(medidos)` responde só "a fonte publicou ALGUMA coisa", e uma
+        #    régua viva mascarava as outras. Com doze congeladas há seis horas e
+        #    uma publicando, o vigia dizia "tudo em dia" — a hora de gritar.
+        #    Por isso a conta é por régua.
+        #  - a mesma régua pode vir DUAS vezes (primária + resgate). As duas são
+        #    a mesma régua, viva se QUALQUER uma está fresca; sem juntar, o vigia
+        #    gritaria "Blumenau parada" com a primária velha ao lado do resgate
+        #    novo. `regua_de` junta pelo `resgate_de`.
+        idade_da_regua: dict[str, float | None] = {}
         for l in leituras:
+            regua = regua_de(l)
             m = l.get("medido_em")
-            if not m:
-                paradas.append(f"{l.get('estacao', '?')} (sem horário)")
-                continue
-            try:
-                q = datetime.fromisoformat(m)
-            except ValueError:
-                paradas.append(f"{l.get('estacao', '?')} (horário ilegível)")
-                continue
-            if q.tzinfo is None:
-                q = q.replace(tzinfo=FUSO)
-            i = _idade_min(q, agora)
-            if i > TOLERANCIA_FONTE_MIN:
-                paradas.append(f"{l.get('estacao', '?')} (há {i:.0f} min)")
+            idade = None
+            if m:
+                try:
+                    q = datetime.fromisoformat(m)
+                    if q.tzinfo is None:
+                        q = q.replace(tzinfo=FUSO)
+                    idade = _idade_min(q, agora)
+                except ValueError:
+                    idade = None
+            if idade is not None:
+                anterior = idade_da_regua.get(regua)
+                if anterior is None or idade < anterior:
+                    idade_da_regua[regua] = idade  # fica com a leitura mais nova
+            else:
+                idade_da_regua.setdefault(regua, None)
+        paradas = []
+        for regua in sorted(idade_da_regua):
+            idade = idade_da_regua[regua]
+            if idade is None:
+                paradas.append(f"{regua} (sem horário)")
+            elif idade > TOLERANCIA_FONTE_MIN:
+                paradas.append(f"{regua} (há {idade:.0f} min)")
         if paradas:
             problemas.append(
                 f"{len(paradas)} de {len(leituras)} estação(ões) sem leitura nova: "
@@ -157,7 +185,7 @@ def avaliar(dados: dict | None, agora: datetime,
     # Blumenau está cadastrada e nunca vem, e um vigia permanentemente vermelho
     # ensina quem opera a ignorá-lo — que é o oposto do que ele serve.
     if vistas_antes:
-        agora_vistas = {l.get("estacao") for l in leituras if l.get("estacao")}
+        agora_vistas = {regua_de(l) for l in leituras if l.get("estacao")}
         sumidas = sorted(t for t in vistas_antes if t not in agora_vistas)
         if sumidas:
             problemas.append(
@@ -255,7 +283,7 @@ def main() -> int:
         # aviso, uma coleta parcial logo depois de um aviso passaria batida.
         if dados:
             estado["estacoes_vistas"] = sorted(
-                {l.get("estacao") for l in (dados.get("leituras") or []) if l.get("estacao")}
+                {regua_de(l) for l in (dados.get("leituras") or []) if l.get("estacao")}
             )
         ESTADO.parent.mkdir(parents=True, exist_ok=True)
         ESTADO.write_text(json.dumps(estado, ensure_ascii=False, indent=2) + "\n",

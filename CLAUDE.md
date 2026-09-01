@@ -50,6 +50,23 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Campos com `verificado: false` ou `null` significam "ainda não conferido na fonte oficial" — não inventar valores.
 - Datas em ISO (`AAAA-MM-DD`); só o ano quando o dia é desconhecido.
 
+### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
+- **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
+  Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`
+  **grava** local, o site lê com `deBrasilia()` (com teste travando), o vigia lê com `FUSO`.
+  Toda fonte nova de nível/chuva grava `medido_em` no MESMO horário de Brasília, sem fuso.
+- **`coletado_em` é UTC** (campo diferente, do momento da coleta) — não confundir os dois.
+  Uma fonte de resgate (AlertaBlu) gravou UTC "para honrar o contrato" e leu o comentário do
+  `coletado_em` por engano: o vigia passou a ver a leitura como 2h no futuro. Custou uma sessão.
+- Padronizar tudo em UTC é possível, mas **não é troca de uma linha**: teria que mudar junto o
+  `coleta_itajai.py`, o `deBrasilia()` do site (e seu teste), o vigia e a série histórica. Fica
+  como refatoração deliberada e testada — nunca no meio de uma cheia, porque mexe na idade da
+  leitura que o morador vê na tela.
+- Régua com fonte de resgate (primária + backup) marca a leitura de backup com
+  `resgate_de: "<título da primária>"`. O vigia (`saude_coleta.regua_de`) junta as duas como UMA
+  régua por esse campo — viva se qualquer das duas está fresca —, sem mascarar as réguas
+  distintas de uma cidade com várias (Itajaí tem onze).
+
 ### Referência altimétrica de Blumenau — REGRA BLOQUEANTE
 - Duas referências coexistem: **régua** da estação ANA 83800002 (Defesa Civil/AlertaBlu,
   leituras operacionais) e **zero do IBGE** = régua + 0,20 m (série CEOPS/FURB,

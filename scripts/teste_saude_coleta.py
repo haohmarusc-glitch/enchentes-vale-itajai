@@ -18,6 +18,7 @@ from saude_coleta import (
     TOLERANCIA_FONTE_MIN,
     avaliar,
     deve_avisar,
+    regua_de,
     texto,
 )
 
@@ -197,6 +198,68 @@ class TestArquivoIlegivel(unittest.TestCase):
         diag = Diagnostico(False, "ultimo.json não pôde ser lido: x", [])
         self.assertTrue(deve_avisar(diag, {}, AGORA), "primeira falha avisa na hora")
 
+
+
+class TestResgateNaoContaDuasVezes(unittest.TestCase):
+    """
+    Bug A: a mesma régua vinda de duas fontes (primária + resgate) era contada
+    como duas estações, e o vigia gritava com a leitura velha ao lado da nova.
+    A régua é UMA; está viva se qualquer das duas está fresca.
+    """
+
+    def _local(self, minutos_atras):
+        return (AGORA - timedelta(minutes=minutos_atras)).astimezone(
+            timezone(timedelta(hours=-3))).replace(tzinfo=None).isoformat()
+
+    def coleta_com_resgate(self, primaria_min, resgate_min):
+        return {
+            "coletado_em": (AGORA - timedelta(minutes=3)).isoformat(),
+            "leituras": [
+                {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+                 "nivel_m": 7.5, "medido_em": self._local(primaria_min)},
+                {"estacao": "Blumenau (AlertaBlu)", "resgate_de": "Blumenau",
+                 "rio": "itajai-acu", "cidade": "blumenau",
+                 "nivel_m": 7.5, "medido_em": self._local(resgate_min)},
+            ],
+        }
+
+    def test_primaria_velha_mas_resgate_fresco_nao_e_falha(self):
+        # Primária há 6h, resgate há 40 min: a régua está viva.
+        d = avaliar(self.coleta_com_resgate(360, 40), AGORA)
+        self.assertTrue(d.ok, d.motivo)
+        self.assertNotIn("Blumenau", d.motivo)
+
+    def test_as_duas_velhas_e_falha_uma_vez_so(self):
+        # Ambas paradas: falha, mas Blumenau aparece UMA vez, não duas.
+        d = avaliar(self.coleta_com_resgate(360, 200), AGORA)
+        self.assertFalse(d.ok)
+        self.assertEqual(d.motivo.count("Blumenau"), 1, d.motivo)
+
+    def test_regua_de_usa_o_resgate_de(self):
+        self.assertEqual(regua_de({"estacao": "Blumenau (AlertaBlu)",
+                                    "resgate_de": "Blumenau"}), "Blumenau")
+        self.assertEqual(regua_de({"estacao": "DC-02"}), "DC-02")
+
+
+class TestItajaiNaoMascara(unittest.TestCase):
+    """
+    A régua-a-régua não pode voltar a mascarar: Itajaí tem onze réguas de
+    títulos distintos, e uma fresca não cobre as outras dez.
+    """
+
+    def test_uma_viva_nao_esconde_dez_congeladas(self):
+        agora = AGORA
+        def local(min):
+            return (agora - timedelta(minutes=min)).astimezone(
+                timezone(timedelta(hours=-3))).replace(tzinfo=None).isoformat()
+        leituras = [{"estacao": "DC-01", "cidade": "itajai", "rio": "itajai-acu",
+                     "nivel_m": 1.2, "medido_em": local(30)}]
+        leituras += [{"estacao": f"DC-{i:02d}", "cidade": "itajai", "rio": "itajai-acu",
+                      "nivel_m": 1.2, "medido_em": local(400)} for i in range(2, 12)]
+        d = avaliar({"coletado_em": (agora - timedelta(minutes=3)).isoformat(),
+                     "leituras": leituras}, agora)
+        self.assertFalse(d.ok)
+        self.assertIn("10 de 11", d.motivo)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

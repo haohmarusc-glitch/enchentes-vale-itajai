@@ -100,7 +100,7 @@ Notei, porém, que a pasta de serviços "defesacivil" exige token de autenticaç
 1. Se possível, a liberação de leitura pública (ou um export em GeoJSON/shapefile) das camadas de cota de inundação por endereço mantidas nessa pasta, para que o site possa informar ao morador a partir de que nível do rio sua rua é atingida, como as Defesas Civis de Blumenau, Gaspar e Brusque já fazem.
 2. A confirmação da licença de uso das camadas públicas do serviço historico_inundacoes e do Relevo_Ponto_Cotado_Altimetrico, para eu citá-la corretamente.
 3. O dicionário de dados da camada Hidrografia_Terreno_Sujeito_Inundacao: o que ela representa e em que escala. Baixei os 110 polígonos e eles somam 38,7 hectares, com o menor tendo 4 m² — enquanto a mancha da cheia de 1983, do próprio serviço de vocês, cobre 7.086 ha. Como não sei o que a camada mapeia, preferi não publicá-la: com o nome que ela tem, quem morasse fora dos polígonos poderia entender que sua rua não alaga.
-3. Se houver, a cota do marégrafo de Cabeçudas (UNIVALI/Porto) em formato aberto, para relacionar maré e nível do rio na foz.
+4. Se houver, a cota do marégrafo de Cabeçudas (UNIVALI/Porto) em formato aberto, para relacionar maré e nível do rio na foz.
 
 O site não substitui a Defesa Civil e informa isso em todas as páginas (emergência: 199). O objetivo é puramente informativo e comunitário.
 
