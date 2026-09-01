@@ -18,6 +18,8 @@ export interface Cidade {
   barragem?: string
   observacao?: string
   afluentes?: string[]
+  /** [lat, lon] da sede, aproximada (OSM/IBGE) — o mapa encaixa no traçado. */
+  coordenadas?: [number, number]
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>
   fontes_tempo_real: string[]

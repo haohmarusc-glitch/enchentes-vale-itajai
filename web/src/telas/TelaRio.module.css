@@ -15,3 +15,16 @@
   padding-top: 0.75rem;
   margin: 0.75rem 0 0;
 }
+
+.botaoMapa {
+  appearance: none;
+  border: 1px solid var(--agua-clara);
+  background: var(--agua-clara);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: var(--raio);
+  cursor: pointer;
+}
+.botaoMapa:hover { background: var(--agua); }

@@ -1,0 +1,18 @@
+.bloco { margin-top: 0.5rem; }
+.mapa {
+  height: 60vh;
+  min-height: 22rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+.credito {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+.erro {
+  margin: 0 0 0.5rem;
+  color: var(--alerta);
+  font-weight: 700;
+}

@@ -615,3 +615,37 @@ público:
 Enquanto o acesso não vier, **nada é atribuído**: o `codigo_ana` `83892990` não vai para `vidal-ramos`
 até a coordenada bater contra `-27.38547, -49.35812`. A regra é a mesma que barrou a DC-11: coordenada,
 não nome.
+
+## Traçado dos rios para o mapa geográfico — OpenStreetMap (01/09/2026)
+
+O mapa geográfico da tela do rio (fase 2b, no espírito do Kikikuru) usa o traçado dos rios do
+**OpenStreetMap**, sob licença **ODbL** (crédito na tela e no GeoJSON). O egress do ambiente de dev
+não alcança o Overpass; baixado na VPS.
+
+**Bruto:** `data/brutos/tracado-rios-osm.json` (resposta `out geom;` do Overpass).
+**Convertido por:** `scripts/converter_tracado_rios.py` → `data/rios/itajai-acu.geojson` e
+`itajai-mirim.geojson` (um MultiLineString por rio, em [lon, lat]).
+
+**Como regenerar (na VPS):**
+```bash
+UA='enchentes-vale-itajai/0.1 (+github.com/haohmarusc-glitch/enchentes-vale-itajai)'
+curl -s -A "$UA" 'https://overpass-api.de/api/interpreter' \
+  --data-urlencode 'data=[out:json][timeout:120];
+    (
+      way["waterway"="river"]["name"="Rio Itajaí-Açu"](-27.8,-50.2,-26.4,-48.4);
+      way["waterway"="river"]["name"="Rio Itajaí do Oeste"](-27.8,-50.2,-26.4,-48.4);
+      way["waterway"="river"]["name"="Rio Itajaí-Mirim"](-27.8,-50.2,-26.4,-48.4);
+    );
+    out geom;' > data/brutos/tracado-rios-osm.json
+python3 scripts/converter_tracado_rios.py
+```
+
+**Decisões e limites registrados:**
+- O Açu do site = **Rio Itajaí-Açu + Rio Itajaí do Oeste** (a cabeceira de Taió, que troca de nome
+  na confluência de Rio do Sul). Assim a linha cobre o diagrama de Taió à foz.
+- A **outra cabeceira, o Itajaí do Sul (Ituporanga), fica de fora** por enquanto — o eixo do
+  diagrama do Açu segue Taió → Rio do Sul. Por isso **Ituporanga não tem marcador no mapa**.
+- **Coordenadas das cidades** (`estacoes.json → cidade.coordenadas`, `[lat, lon]`): sede municipal
+  aproximada (OSM/IBGE); Vidal Ramos exata da Asthon. Servem só para POSICIONAR o marcador, que
+  **encaixa no ponto mais próximo do traçado** — imprecisão de sede não tira o ponto do rio. Não é
+  dado de nível.

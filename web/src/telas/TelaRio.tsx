@@ -25,6 +25,7 @@ const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
  * para ver o nível do rio.
  */
 const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
+const MapaRios = lazy(() => import('../componentes/MapaRios'))
 
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
@@ -50,6 +51,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
   // Um único "agora" por render: assim todos os cartões contam a idade das
   // leituras a partir do mesmo instante.
   const agora = useMemo(() => new Date(), [tempoReal])
+  const [verMapa, setVerMapa] = useState(false)
 
   const [selecionadaId, setSelecionadaId] = useState<string | null>(null)
   const cidadeId = selecionadaId ?? padrao
@@ -108,6 +110,25 @@ export default function TelaRio({ rioId }: { rioId: string }) {
             aparecem no diagrama para deixar claro o que falta, não para sugerir que há dado.
           </p>
         ) : null}
+      </section>
+
+      <section className="cartao">
+        <h2>Mapa do rio</h2>
+        {verMapa ? (
+          <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa…</p>}>
+            <MapaRios rioId={rioId} cidades={cidades} tempoReal={tempoReal} agora={agora} />
+          </Suspense>
+        ) : (
+          <>
+            <p className={estilos.instrucao}>
+              O rio no mapa, com cada cidade na cor da faixa dela — a mesma do diagrama. Carrega
+              sob pedido para não pesar no celular.
+            </p>
+            <button type="button" className={estilos.botaoMapa} onClick={() => setVerMapa(true)}>
+              Ver mapa do rio
+            </button>
+          </>
+        )}
       </section>
 
       {selecionada && leituraDaCidade(tempoReal, rioId, selecionada.id) ? (
