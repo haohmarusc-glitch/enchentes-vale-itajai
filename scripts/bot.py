@@ -795,8 +795,18 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
     por_cidade: dict[str, list[dict]] = {}
     for l in leituras:
         por_cidade.setdefault(str(l.get("cidade")), []).append(l)
-    nomes = {c["id"]: c["nome"] for c in base.cidades()}
-    for cid, ls in sorted(por_cidade.items()):
+    cidades = base.cidades()
+    nomes = {c["id"]: c["nome"] for c in cidades}
+    # Na ordem do RIO, montante -> jusante: o Açu inteiro (terminando na foz,
+    # Itajaí) e depois o Mirim — a mesma sequência das telas. Alfabético
+    # embaralhava Rio do Sul (cabeceira) com Brusque. A régua da foz herda a
+    # posição da primeira aparição (fim do Açu); cidade fora do cadastro vai ao
+    # fim.
+    ordem_rio: dict[str, int] = {}
+    for i, c in enumerate(cidades):
+        ordem_rio.setdefault(c["id"], i)
+    for cid, ls in sorted(por_cidade.items(),
+                          key=lambda kv: ordem_rio.get(kv[0], len(ordem_rio))):
         nome = nomes.get(cid, cid)
         # Junta primária e resgate antes de decidir: Blumenau tem duas leituras
         # da MESMA régua (Defesa Civil + AlertaBlu) e não pode virar "2 réguas
