@@ -787,54 +787,72 @@ def nome_curto(leitura: dict) -> str:
     return f"{codigo} {titulo}".strip() if codigo else titulo
 
 
+NOME_RIO = {"itajai-acu": "Itajaí-Açu", "itajai-mirim": "Itajaí-Mirim"}
+
+
+def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime) -> list[str]:
+    """
+    Uma cidade no /rios: a linha do nível, o bloco de várias réguas, ou a lacuna.
+
+    Sem leitura, a cidade NÃO some nem vira verde — aparece no mapa do rio
+    marcada como sem leitura, para quem lê não confundir "sem dado" com "rio
+    baixo". É a mesma honestidade do site (faixa cinza para ausência).
+    """
+    if not ls:
+        return [f"\n{notificador.esc(nome)}: <i>sem leitura agora</i>"]
+    if len(ls) == 1:
+        l = ls[0]
+        idade = idade_min(l.get("medido_em"), agora)
+        return [f"\n<b>{notificador.esc(nome)}</b>: {metros(l['nivel_m'])}"
+                f" · {texto_idade(idade)}"]
+
+    # Cidade com mais de uma régua NÃO tem um número. Nenhuma é "o nível da
+    # cidade": cada uma tem seu zero. (Havia `max(nivel_m)` aqui, que elegia o
+    # maior metro comparando réguas de zeros diferentes — em Itajaí saía a régua
+    # de Limoeiro, 20 km rio acima, como se fosse a foz.)
+    saida = [f"\n<b>{notificador.esc(nome)}</b> — {len(ls)} réguas, "
+             "com zeros diferentes (não se comparam):"]
+    for l in sorted(ls, key=lambda x: x.get("estacao", "")):
+        idade = idade_min(l.get("medido_em"), agora)
+        saida.append(f"\n  {metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
+                     f" · {texto_idade(idade)}")
+    return saida
+
+
 def resposta_rios(base: Base, agora: datetime) -> list[str]:
     leituras = base.ultimo.get("leituras") or []
     if not leituras:
         return ["Não há coleta disponível agora."]
-    linhas = ["<b>Tudo que está sendo medido</b>"]
     por_cidade: dict[str, list[dict]] = {}
     for l in leituras:
         por_cidade.setdefault(str(l.get("cidade")), []).append(l)
-    cidades = base.cidades()
-    nomes = {c["id"]: c["nome"] for c in cidades}
-    # Na ordem do RIO, montante -> jusante: o Açu inteiro (terminando na foz,
-    # Itajaí) e depois o Mirim — a mesma sequência das telas. Alfabético
-    # embaralhava Rio do Sul (cabeceira) com Brusque. A régua da foz herda a
-    # posição da primeira aparição (fim do Açu); cidade fora do cadastro vai ao
-    # fim.
-    ordem_rio: dict[str, int] = {}
-    for i, c in enumerate(cidades):
-        ordem_rio.setdefault(c["id"], i)
-    for cid, ls in sorted(por_cidade.items(),
-                          key=lambda kv: ordem_rio.get(kv[0], len(ordem_rio))):
-        nome = nomes.get(cid, cid)
-        # Junta primária e resgate antes de decidir: Blumenau tem duas leituras
-        # da MESMA régua (Defesa Civil + AlertaBlu) e não pode virar "2 réguas
-        # que não se comparam".
-        ls = por_regua(ls, agora)
-        if len(ls) == 1:
-            l = ls[0]
-            idade = idade_min(l.get("medido_em"), agora)
-            linhas.append(f"\n<b>{notificador.esc(nome)}</b>: {metros(l['nivel_m'])}"
-                          f" · {texto_idade(idade)}")
-            continue
 
-        # Cidade com mais de uma régua NÃO tem um número.
-        #
-        # Aqui havia `max(ls, key=nivel_m)`: elegia o maior metro como se fosse
-        # o nível da cidade, comparando réguas de zeros diferentes — a operação
-        # que todo o resto do projeto recusa (`leituraDaCidade` devolve nulo,
-        # `resposta_previsao` recusa, `cotas_da_leitura` recusa). A ressalva ao
-        # lado não desfazia o número: em Itajaí saía "4,88 m" num dia calmo,
-        # que é a régua de Limoeiro, 20 km rio acima e com zero mais alto — e,
-        # pior, uma subida de metro e meio nas outras nove não mudava o número,
-        # porque o vencedor é sempre a mesma régua.
-        linhas.append(f"\n<b>{notificador.esc(nome)}</b> — {len(ls)} réguas, "
-                      "com zeros diferentes (não se comparam):")
-        for l in sorted(ls, key=lambda x: x.get("estacao", "")):
-            idade = idade_min(l.get("medido_em"), agora)
-            linhas.append(f"\n  {metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
-                          f" · {texto_idade(idade)}")
+    linhas = ["<b>O rio agora</b> — de montante à foz"]
+    # Segue o MAPA do rio: cada cidade na ordem do curso, o Açu inteiro (até a
+    # foz, Itajaí) e depois o Mirim. As cidades SEM leitura agora entram na
+    # posição delas, marcadas — o morador vê o rio inteiro e onde há e onde não
+    # há olho neste momento. Itajaí (foz dos dois) aparece uma vez, no fim do Açu.
+    vistas: set[str] = set()
+    rio_atual: str | None = None
+    for c in base.cidades():
+        cid = c["id"]
+        if cid in vistas:
+            continue
+        vistas.add(cid)
+        if c["rio"] != rio_atual:
+            rio_atual = c["rio"]
+            linhas.append(f"\n\n<b>{NOME_RIO.get(rio_atual, rio_atual)}</b>")
+        # Junta primária e resgate antes de decidir (Blumenau: Defesa Civil +
+        # AlertaBlu são a MESMA régua).
+        linhas.extend(_cidade_no_panorama(c["nome"], por_regua(por_cidade.get(cid, []), agora), agora))
+
+    # Uma leitura de cidade fora do cadastro nunca some: entra no fim.
+    for cid, ls in por_cidade.items():
+        if cid in vistas:
+            continue
+        vistas.add(cid)
+        linhas.extend(_cidade_no_panorama(cid, por_regua(ls, agora), agora))
+
     coletado = base.ultimo.get("coletado_em")
     if coletado:
         try:
