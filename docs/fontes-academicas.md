@@ -54,3 +54,51 @@ Nota: a Tabela 4 usa referência IBGE (régua + 0,20 m). O site deve exibir na r
    `data/manchas/inventario-ufsc.json` (cidade, evento, tipo de registro, origem).
 5. Ler o PDF SBRH 2013 (cotas-enchente de Blumenau) e registrar a Tabela 2 em `enchentes.json`.
 6. Quando a FURB responder: substituir os picos `confianca: media/baixa` de 2002–2026 pela série oficial.
+
+
+## O que a tabela do AlertaBlu acrescenta — e o que ela complica (01/09/2026)
+
+Um documento de mapeamento de fontes relatou que o AlertaBlu publica, em `/p/enchentes`, a
+**tabela histórica oficial de Blumenau: 102 enchentes entre 1852 e 2024**, e concluiu que ela
+"confirma que a série popular está em referência IBGE". Os quatro valores citados foram conferidos
+contra `data/enchentes.json`. **Três batem; o quarto não, e é justamente o que importa.**
+
+| evento | AlertaBlu (relatado) | nosso registro | referência do nosso |
+|---|---|---|---|
+| 1880 | 17,10 | **17,10** | IBGE (régua + 0,20 m) |
+| jul/1983 | 15,34 | **15,34** | IBGE (régua + 0,20 m) |
+| ago/1984 | 15,46 | **15,46** | IBGE (régua + 0,20 m) |
+| set/2011 | 12,60 | **12,80** adotado · divergências **13,00** e **12,60** | `null` |
+
+Para os três eventos antigos, a coincidência ao centavo com a série rotulada IBGE é real e vale
+como corroboração de que a tabela do AlertaBlu e a série popular são a mesma série.
+
+**Mas 2011 desmonta a conclusão, e desmonta pelo lado que interessa.** O valor de 12,60 já estava no
+nosso arquivo — como divergência, atribuída a "Imprensa". Se ele vem do AlertaBlu, ele não é
+imprensa: é a **própria Defesa Civil de Blumenau**. E aí a conta muda de forma:
+
+* CEOPS/FURB, Ponte Adolfo Konder: **13,00 m**
+* Defesa Civil (AlertaBlu): **12,60 m**
+* diferença: **0,40 m**, e não 0,20 m
+
+A regra bloqueante do `CLAUDE.md` se apoia em "set/2011 = 13,00 m (CEOPS) vs 12,80 m (Defesa Civil),
+diferença exata de 0,20 m". O 12,80 é o valor que **nós adotamos** para a série municipal, com fonte
+"ABRH / CEOPS-FURB" — não uma leitura publicada pela Defesa Civil. Se a Defesa Civil publica 12,60,
+a evidência fundadora da regra precisa ser reexaminada: ou há três leituras do mesmo pico em três
+referências, ou uma das atribuições está trocada.
+
+**Nada foi alterado por causa disto**, e é deliberado. O arquivo
+`blumenau-enchentes-registradas-alertablu.json` que sustentaria a afirmação **não chegou ao
+repositório** — o relato dele chegou, o dado não. Mudar a referência de 113 registros de Blumenau a
+partir de um resumo de segunda mão seria exatamente o erro que a regra existe para impedir.
+
+**O que resolve, em ordem de força:**
+
+1. O arquivo em si. Com `data/brutos/blumenau-enchentes-registradas-alertablu.json` no repositório,
+   dá para cruzar os 102 eventos contra os nossos 113 de uma vez, e o padrão das diferenças —
+   constante em 0,20 m, constante em 0,40 m, ou irregular — responde sozinho.
+2. O teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou a resposta da FURB,
+   que continuam sendo as duas saídas que a própria regra prevê para ser removida.
+
+Até lá a regra fica de pé, e o campo `referencia` do registro de 2011 continua `null` — que é o
+rótulo honesto para "não se sabe", e não um problema a ser preenchido no chute.

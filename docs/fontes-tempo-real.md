@@ -259,3 +259,55 @@ estações `SDC-SC` seja outra grandeza — que era o medo levantado pelo caso d
 têm nenhuma em `estacoes.json`, e sem ela um número na tela é só um número. Taió e Ituporanga têm o
 agravante de a Asthon publicar só as BARRAGENS delas, em escala de reservatório — ver
 `scripts/analisar_asthon.py`.
+
+
+## AlertaBlu: o argumento de conformidade chegou, a verificação não (01/09/2026)
+
+Um documento de mapeamento de fontes trouxe um argumento a favor de coletar do AlertaBlu, e ele é
+bom: o coletor buscaria só **assets de dados** — `/static/data/nivel_oficial.json`,
+`/static/data/situacao_atual.json`, `/static/data/aviso.json` — mais a página pública
+`/p/enchentes`. O que o `robots.txt` de sites assim costuma restringir são as **páginas renderizadas**
+do painel, e `/static/` normalmente fica fora de qualquer `Disallow`.
+
+O próprio documento marca a verificação como pendente, e é essa a razão de o coletor continuar fora.
+**Argumento sobre o que o `robots.txt` provavelmente diz não é o `robots.txt`.** Um site que este
+projeto já recusou uma vez não volta a ser coletado por raciocínio plausível — volta por leitura.
+
+E há **dois** bloqueios, não um. O documento trata só do primeiro:
+
+1. **`robots.txt` não lido.** Nunca conseguimos abrir o arquivo para ver o texto literal nem um
+   eventual `Crawl-delay`.
+2. **Cadeia de certificado incompleta.** A sonda de 31/08 falhou com
+   `CERTIFICATE_VERIFY_FAILED — unable to get local issuer certificate`; o servidor de Blumenau não
+   envia o intermediário. O navegador disfarça (busca pelo AIA), o Python não. **Não desligar a
+   verificação** — abriria a coleta para qualquer um no caminho injetar nível de rio. O conserto é
+   baixar o intermediário que falta e passá-lo como CA.
+
+O segundo bloqueio é justamente o que impede o primeiro de ser resolvido pelo caminho óbvio: sem
+cadeia, o `curl` não busca nem o `robots.txt`.
+
+**Os dois comandos que destravam, na VPS:**
+
+```bash
+# 1) o texto literal do robots.txt
+curl -sS https://defesacivil.blumenau.sc.gov.br/robots.txt
+
+# 2) se falhar por certificado, ver o que o servidor manda e de quem falta o intermediário
+echo | openssl s_client -connect defesacivil.blumenau.sc.gov.br:443 \
+  -servername defesacivil.blumenau.sc.gov.br 2>/dev/null | grep -E "^ *[0-9]+ s:|^ *i:|Verify return"
+```
+
+Registrar aqui o resultado — data e trecho literal — para a conformidade ficar **documentada, não
+presumida**. Se `/static/` e `/p/enchentes` não aparecerem em `Disallow`, o coletor entra; e o
+`User-Agent` identificado e o cron de 10 min que o documento já prevê são as boas práticas certas
+para acompanhá-lo.
+
+### O que muda quando entrar
+
+Menos do que parece para o **nível**: a correção de 31/08 mostrou que o AlertaBlu publica o mesmo
+valor com a mesma idade que já recebemos pela página da Defesa Civil de Itajaí — 5,11 m há 3 h, nos
+dois. A defasagem é da estação, não do caminho.
+
+O que muda de verdade é a **tabela histórica de `/p/enchentes`**: 102 enchentes de 1852 a 2024, da
+fonte municipal oficial. Ver `docs/fontes-academicas.md` para o que ela já complicou — o valor de
+set/2011 que ela publica não é o que a regra de referência de Blumenau pressupõe.

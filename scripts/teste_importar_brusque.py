@@ -189,6 +189,47 @@ class TestMesclar(unittest.TestCase):
         self.assertEqual(len(saida), 3)
 
 
+class TestOAncoraDaConta(unittest.TestCase):
+    """
+    `PICO_2023_M` é o número contra o qual 350 cotas de rua de Brusque foram
+    provadas. Ele vive como constante no importador, e o pico correspondente
+    vive em `enchentes.json`: se um mudar sem o outro, a prova passa a apontar
+    para um alvo que não existe mais e ninguém percebe.
+
+    O risco não é hipotético. O GraphQL da Defesa Civil de SC publica **8,52 m**
+    para Brusque em 17/11/2023 — 0,44 m abaixo do nosso valor. É a mesma
+    assinatura do caso de Ilhota, onde aquela fonte trazia 10,34 m e a nossa
+    régua marcava 3,25 m: outra referência, não outra medição. Uma
+    "reconciliação" da série com aquela fonte reescreveria o pico e, com ele,
+    invalidaria em silêncio a aritmética que autorizou a importação inteira.
+    """
+
+    def test_o_pico_da_constante_e_o_pico_registrado_em_enchentes(self):
+        eventos = json.loads(
+            (RAIZ / "data" / "enchentes.json").read_text(encoding="utf-8"))["eventos"]
+        registrados = [e["pico_m"] for e in eventos
+                       if e.get("cidade") == "brusque"
+                       and str(e.get("data") or "").startswith("2023-11")]
+        self.assertEqual(registrados, [PICO_2023_M],
+                         "o pico de 17/11/2023 em enchentes.json mudou; as 350 cotas de "
+                         "rua de Brusque foram provadas contra o valor antigo")
+
+    def test_a_conta_da_camada_so_fecha_no_pico_registrado(self):
+        """
+        Se alguém trocar o pico por 8,52 m, a conta tem de PARAR de fechar — é
+        assim que a troca vira erro visível em vez de dado errado publicado.
+        """
+        pontos = json.loads(
+            (RAIZ / "data" / BRUTO).read_text(encoding="utf-8"))["pontos"]
+        com_lamina = [p for p in pontos if fecha_a_conta(p) is not None]
+        fecham_em_852 = sum(
+            1 for p in com_lamina
+            if abs(numero(p["cota_rotulo"]) + numero(p["nivel_registrado_no_local"]) - 8.52)
+            <= TOLERANCIA_M)
+        self.assertLess(fecham_em_852 / len(com_lamina), 0.05,
+                        "a camada não pode fechar nos dois números ao mesmo tempo")
+
+
 class TestCamadaReal(unittest.TestCase):
     """
     Contra o arquivo bruto de verdade. Um teste que só usa exemplo inventado
