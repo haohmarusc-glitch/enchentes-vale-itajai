@@ -473,3 +473,131 @@ fresco (`03:24:30Z`) e **sem valor de nível** — segunda observação independ
 03:09Z. Não é "não trouxe naquele instante": parece ser que a estação de Gaspar na rede estadual
 publica chuva e não publica régua. Se isso se confirmar em mais coletas, o caminho estadual morre e
 sobra o ofício à Defesa Civil de Gaspar pedindo um endpoint estável.
+
+### A evidência do portão de Gaspar mudou de perna (01/09/2026)
+
+Uma revisão de `coleta_itajai.py` chegou com uma linha só de diferença:
+
+```diff
+-    (r"^DC-11\b", "itajai-acu", "ilhota"),
++    (r"^DC-11\b", "itajai-acu", "itajai"),  # Santa Regina/Volta de Cima = bairro de Itajaí (montante)
+```
+
+Ela vem sem fonte geográfica, e **não foi aplicada** — ver a pendência da DC-11 no README. Mas obrigou
+a revisar o que dependia da atribuição, e algo dependia.
+
+O portão do `gaspar_estadual.py` estava apoiado no par **Ilhota (DCSC-00030) × nossa DC-11**: 10,67 m
+contra 3,34 m. Esse par só prova zero diferente **se as duas leituras forem da mesma cidade**. Com o
+município da DC-11 em aberto, ele pode estar comparando dois lugares distintos — e aí não prova nada.
+A conclusão continuava certa; uma das pernas dela, não.
+
+**A perna nova não depende de município nenhum.** É a mesma estrutura, nomeada igual nas duas fontes,
+no mesmo intervalo de horas:
+
+| Estrutura | Tabela do município de Gaspar | Rede estadual | Diferença |
+|---|---|---|---|
+| Barragem Sul Ituporanga | 392,62 m | **22,79 m** (`DCSC-00038`) | **369,83 m** |
+| Barragem Oeste Taió | 351,81 m | **12,97 m** (`DCSC-00040`) | **338,84 m** |
+
+Cota do reservatório acima do mar contra altura na escala do próprio barramento. Não há "mas será que
+é o mesmo lugar?" a levantar: é o mesmo barramento, com o mesmo nome, nos dois arquivos. E a rede
+estadual **concorda** com a nossa em outras estações (Brusque 4,48 × 4,42) — que é exatamente o que
+"não é a mesma grandeza **entre estações**" significa: não dá para saber, estação a estação, qual das
+duas coisas se está lendo.
+
+O par de Ilhota ficou em `EVIDENCIA_CONTESTADA`, marcado, e há teste garantindo que o motivo impresso
+ao recusar **não o cita**. Justificar a recusa com o argumento que caiu seria manter a decisão certa
+pela razão errada — e a próxima pessoa a ler descobriria isso do pior jeito.
+
+## EPAGRI/CIRAM — boletim de hidrologia: fonte nova, com códigos ANA e três armadilhas (01/09/2026)
+
+Chegou o **Boletim n° 150/2026 da Equipe de Hidrologia da EPAGRI/CIRAM**, de 31/08/2026. Guardado em
+`data/brutos/epagri-ciram-boletim-150-2026-08-31.pdf`. É a quarta rede a aparecer no projeto, depois da
+Defesa Civil de Itajaí, da Defesa Civil de SC e da Asthon — e a primeira que publica **código ANA**.
+
+### O que ele traz de novo
+
+| Código | Município | Estação | 31/08 | Bacia no boletim |
+|---|---|---|---|---|
+| `83105000` | Alfredo Wagner | Saltinho | 115 cm | Itajaí-Açu |
+| `83892990` | Vidal Ramos | Salseiro | 254 cm | Itajaí-Açu |
+| `83029900` | Taió | Barragem Taió Montante | (só chuva) | Itajaí-Açu |
+
+Nenhum dos três está no nosso cadastro. Contato: `sshidrosc@epagri.sc.gov.br`; o rodapé aponta um
+"Rios On-Line", que pode ser a versão viva do que o PDF congela.
+
+**O prêmio é o código ANA.** Vidal Ramos, Taió e Ituporanga estão com `codigo_ana: null` ou não
+verificado, e é o código que destrava a série histórica no HidroWeb — que é o que falta para essas
+cidades terem cota. Se a estação da EPAGRI for a mesma que já lemos, o `null` fecha.
+
+### Armadilha 1 — os níveis estão em CENTÍMETROS
+
+`254` é 2,54 m. O boletim escreve `(cm)` no cabeçalho de cada bloco e nunca repete a unidade nas
+linhas. Um coletor que leia o número cru e grave em metros põe **254 m** no lugar de 2,54 m — e o
+`nivel_plausivel()` do `comum.py` (0 < v < 25) pegaria esse caso, mas não pegaria um `115` virando
+115 m se alguém afrouxar o teto. A chuva, no mesmo PDF, está em mm.
+
+### Armadilha 2 — é foto das 06:00, não tempo real
+
+O boletim diz, na primeira linha, que **"das 15 monitoradas, 15 encontram-se na condição de
+normalidade"**. Isso é verdade às 06:00 de 31/08 e para as estações DELE. Às 23:35 do mesmo dia,
+Rio do Sul estava em 6,56 m — **acima da cota de inundação de 6,50 m**. Não há contradição: são
+estações diferentes, num horário 17 h anterior. Mas o registro fica, porque a frase "15 de 15 em
+normalidade" é exatamente o tipo de coisa que, colada numa tela sem a hora, tranquiliza no dia errado.
+**Este boletim nunca pode aparecer como estado atual.**
+
+### Armadilha 3 — "Vidal Ramos / Salseiro" não é atribuível ainda
+
+É tentador preencher `codigo_ana: "83892990"` em Vidal Ramos e seguir. **Não dá**, e a razão é a mesma
+da DC-11, de uma hora antes: mesmo município não é mesma estação.
+
+- A nossa estação de Vidal Ramos, pela Asthon, chama-se **"Vidal Ramos"**, fica em
+  `-27.38547, -49.35812`, e tem `owner_id: "DCSC"` — ou seja, Asthon e Defesa Civil de SC são a
+  **mesma régua**, o que confirma o que o README já dizia.
+- A da EPAGRI chama-se **"Salseiro"**, e o boletim não publica coordenada.
+- Nomes diferentes, mesmo município. Um município tem mais de uma régua — Itajaí tem onze.
+
+E o teste que resolveria não pode ser feito com o que há: a EPAGRI leu **06:00** (254 cm) e a nossa
+leitura mais próxima naquele dia é **12:21** (2,93 m, Asthon). Seis horas, com o rio subindo. Comparar
+os dois daria um "deslocamento" que é parte régua e parte subida — a mesma armadilha que o
+`JANELA_MAXIMA_MIN` do `gaspar_estadual.py` recusa. Resolve com coordenada da estação (pedir à EPAGRI)
+ou com duas leituras a menos de 30 min uma da outra.
+
+**Cuidado com o nome:** "Salseiros" também é um **bairro de Itajaí**, na lista de bairros
+historicamente atingidos, 100 km rio abaixo. São coisas diferentes.
+
+### E ele também não dispara aviso
+
+Como a rede estadual, o boletim **não publica cota de referência** por estação. Serve para série e
+para código; não serve para decidir faixa.
+
+### E o "Rios On-Line": onde a versão viva mora, e como achar o endpoint
+
+A página que o boletim indica é `https://ciram.epagri.sc.gov.br/rios-online/`. O HTML salvo dela
+(recebido em 01/09) mostra o que ela é: **Angular + Leaflet**, sem um único dado no HTML. Conferido —
+nem "Vidal Ramos", nem "Salseiro", nem código de 8 dígitos aparecem no arquivo. Tudo entra depois, por
+chamada do bundle `main.822c10b5600d8764.js`, que não veio junto (o upload trouxe só o `.html`, sem a
+pasta `_files/`).
+
+O host também não responde do ambiente de dev (`http=000` em 0,2 s, recusa do proxy), como os demais.
+
+**Como achar o endpoint, na VPS.** Antes de tudo o `robots.txt`; depois o bundle, que carrega a URL
+base da API em texto:
+
+```bash
+UA='enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)'
+curl -s -A "$UA" https://ciram.epagri.sc.gov.br/robots.txt | head -20
+
+# o nome do bundle muda a cada build: pegue o atual da própria página
+curl -s -A "$UA" https://ciram.epagri.sc.gov.br/rios-online/ \
+  | grep -o 'main\.[a-f0-9]*\.js' | head -1
+
+# e então procure a base da API dentro dele
+curl -s -A "$UA" https://ciram.epagri.sc.gov.br/rios-online/main.<hash>.js \
+  | grep -o -E 'https?://[A-Za-z0-9./_-]{10,90}' | sort -u | head -40
+```
+
+Se o `robots.txt` liberar e o endpoint devolver as estações com **coordenada**, duas coisas se
+resolvem de uma vez: a dúvida "Salseiro é a nossa régua de Vidal Ramos?" (basta comparar com
+`-27.38547, -49.35812`) e o `codigo_ana` que falta nas cabeceiras. **Se o `robots.txt` proibir, para
+por aí** — e o caminho vira o e-mail `sshidrosc@epagri.sc.gov.br`, que serve para os dois pedidos.

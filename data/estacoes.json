@@ -473,7 +473,9 @@
       "verificado": true,
       "referencia": "régua",
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
-      "nome_no_plano": "Rio Itajaí-Açu - Santa Regina (Volta de Cima)"
+      "nome_no_plano": "Rio Itajaí-Açu - Santa Regina (Volta de Cima)",
+      "cidade_em_disputa": true,
+      "nota_cidade": "A atribuição `cidade: ilhota` está EM ABERTO. A especificação que trouxe a estação a lista entre as de Itajaí, e uma versão posterior afirma que Santa Regina / Volta de Cima é bairro de Itajaí, a montante, e não o município de Ilhota. Nenhuma das duas versões veio com fonte geográfica, e por isso nada foi trocado: trocar por plausibilidade é o erro que a REGRA BLOQUEANTE existe para impedir. O que está em jogo: esta é a ÚNICA fonte de nível ao vivo de Ilhota, então o site mostra a leitura dela como o nível daquela cidade e o aviso por Telegram sai com o nome dela. Se a estação for de Itajaí, Ilhota fica sem nível — como Gaspar — e o aviso está com a cidade errada. Resolve pela Tabela 11 do Plano de Contingência de Itajaí ou por pergunta à COMPDEC (ofício C2). Ver a pendência no README."
     },
     {
       "titulo": "Brusque",

@@ -20,7 +20,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import gaspar_estadual as m
-from gaspar_estadual import (CODIGO_GASPAR, EVIDENCIA_DE_ZEROS_DIFERENTES,
+from gaspar_estadual import (CODIGO_GASPAR, EVIDENCIA_CONTESTADA,
+                             EVIDENCIA_INDEPENDENTE,
                              JANELA_MAXIMA_MIN, LIMITE_DE_COERENCIA_M,
                              ROTULO_MUNICIPIO, estacoes, medir_deslocamento,
                              minutos_entre, nivel_da_estacao, nivel_do_municipio,
@@ -238,28 +239,65 @@ class TestJanelaDeTempo(unittest.TestCase):
 
 
 class TestEvidencia(unittest.TestCase):
-    """A prova que sustenta o portão fica no arquivo, não na memória de alguém."""
+    """
+    A prova que sustenta o portão fica no arquivo, não na memória de alguém — e
+    não pode depender de nada que esteja em disputa.
 
-    def test_a_evidencia_e_de_zeros_diferentes_de_verdade(self):
-        self.assertTrue(EVIDENCIA_DE_ZEROS_DIFERENTES)
-        for data, cod, deles, nosso, _ in EVIDENCIA_DE_ZEROS_DIFERENTES:
-            self.assertGreater(abs(deles - nosso), 5.0,
-                               f"{data} {cod}: a evidência precisa ser gritante")
+    Este bloco existe porque a primeira versão dependia: ela se apoiava no par
+    de Ilhota, que compara a rede estadual com a nossa DC-11. Depois apareceu a
+    dúvida sobre em que MUNICÍPIO fica a DC-11. Se for Itajaí, aquele par
+    compara duas cidades diferentes e não prova zero nenhum — e o portão de
+    Gaspar teria ficado de pé sobre uma premissa falsa.
+    """
+
+    def test_a_evidencia_independente_e_a_mesma_estrutura_nas_duas_fontes(self):
+        """
+        Barragem nomeada igual dos dois lados: não há "mas será que é o mesmo
+        lugar?" a levantar. É por isso que ela substitui o par de Ilhota.
+        """
+        self.assertTrue(EVIDENCIA_INDEPENDENTE)
+        for nome, gaspar, estadual, cod in EVIDENCIA_INDEPENDENTE:
+            self.assertGreater(gaspar - estadual, 100.0,
+                               f"{nome} ({cod}): a diferença precisa ser inequívoca")
+
+    def test_a_evidencia_contestada_esta_marcada_como_tal(self):
+        """Ela pode ficar registrada; o que não pode é voltar a sustentar."""
+        for *_, quem in EVIDENCIA_CONTESTADA:
+            self.assertIn("disputa", quem)
+
+    def test_o_portao_nao_cita_a_evidencia_contestada(self):
+        """
+        O motivo que o script imprime ao recusar tem de vir da prova que se
+        sustenta. Citar Ilhota ali seria justificar a recusa com o argumento
+        que caiu.
+        """
+        _, motivo = usavel_para_aviso()
+        self.assertNotIn("Ilhota", motivo)
+        self.assertIn("Barragem", motivo)
 
     def test_as_cotas_de_gaspar_estao_na_faixa_que_o_deslocamento_arruinaria(self):
         """
-        Não é abstrato: 5/6/7 m e um deslocamento de 7 m se sobrepõem. Se as
-        cotas de Gaspar mudarem para uma escala em que isso deixe de valer,
-        este teste cai e o raciocínio tem de ser refeito.
+        Não é abstrato: as cotas de Gaspar vão a 7 m e os deslocamentos medidos
+        passam de 300 m. Se as cotas mudarem para uma escala em que isso deixe
+        de valer, este teste cai e o raciocínio tem de ser refeito.
         """
         estacoes_json = json.loads(
             (Path(__file__).resolve().parent.parent / "data/estacoes.json").read_text())
         g = next(c for c in estacoes_json["rios"]["itajai-acu"]["cidades"]
                  if c["id"] == "gaspar")
         maior = max(g["cotas_m"].values())
-        pior = max(abs(d - n) for _, _, d, n, _ in EVIDENCIA_DE_ZEROS_DIFERENTES)
+        pior = max(gaspar - estadual for _, gaspar, estadual, _ in EVIDENCIA_INDEPENDENTE)
         self.assertGreater(pior, maior,
                            "o deslocamento medido já passa da maior cota de Gaspar")
+
+    def test_a_duvida_da_dc11_esta_registrada_onde_alguem_ve(self):
+        """
+        Uma pendência que só existe no comentário de um script morre com ele.
+        Enquanto a DC-11 estiver em disputa, o README tem de dizer.
+        """
+        readme = (Path(__file__).resolve().parent.parent / "README.md").read_text()
+        self.assertIn("DC-11", readme)
+        self.assertIn("Volta de Cima", readme)
 
 
 class TestNaoAlimentaOAviso(unittest.TestCase):
