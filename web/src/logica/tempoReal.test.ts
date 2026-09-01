@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Cidade, Trecho } from '../dados/tipos'
 import {
+  faixaDaCidade,
   MIN_AGORA,
   MIN_VELHA,
   chegadasSePicoAgora,
@@ -144,4 +145,58 @@ test('janela fora da ordem do rio é detectada', () => {
   assert.equal(foraDeOrdem([chegada(2), chegada(1)]), true)
   assert.equal(foraDeOrdem([]), false)
   assert.equal(foraDeOrdem([chegada(4)]), false)
+})
+
+test('faixaDaCidade colore pela cota da própria cidade', () => {
+  const blumenau = {
+    id: 'blumenau', nome: 'Blumenau', ordem: 7,
+    cotas_m: { atencao: 6.0, alerta: 6.5, inundacao: 7.4 },
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+  const agora = new Date('2026-09-01T12:00:00Z')
+  const leitura = (n: number) => ({ nivel_m: n, medidoEm: new Date('2026-09-01T11:55:00Z') })
+  assert.equal(faixaDaCidade(blumenau, leitura(5.0), false, agora), 'normal')
+  assert.equal(faixaDaCidade(blumenau, leitura(6.1), false, agora), 'atencao')
+  assert.equal(faixaDaCidade(blumenau, leitura(6.6), false, agora), 'alerta')
+  assert.equal(faixaDaCidade(blumenau, leitura(7.6), false, agora), 'inundacao')
+})
+
+test('leitura VELHA nunca pinta de cor — vira sem-dado', () => {
+  const blumenau = {
+    id: 'blumenau', nome: 'Blumenau', ordem: 7,
+    cotas_m: { atencao: 6.0, alerta: 6.5, inundacao: 7.4 },
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+  const agora = new Date('2026-09-01T12:00:00Z')
+  // 6 horas atrás, acima da inundação: se pintasse, mentiria vermelho sobre
+  // dado velho. Tem de virar cinza.
+  const velha = { nivel_m: 7.6, medidoEm: new Date('2026-09-01T06:00:00Z') }
+  assert.equal(faixaDaCidade(blumenau, velha, false, agora), 'sem-dado')
+})
+
+test('sem cota e sem leitura viram sem-dado, nunca verde', () => {
+  const agora = new Date('2026-09-01T12:00:00Z')
+  const semCota = {
+    id: 'vidal-ramos', nome: 'Vidal Ramos', ordem: 1, cotas_m: {},
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+  const leitura = { nivel_m: 3.0, medidoEm: new Date('2026-09-01T11:55:00Z') }
+  // Tem leitura, mas não tem cota: não dá para dizer a faixa. Cinza.
+  assert.equal(faixaDaCidade(semCota, leitura, false, agora), 'sem-dado')
+
+  const comCota = {
+    id: 'brusque', nome: 'Brusque', ordem: 3, cotas_m: { atencao: 4.8, inundacao: 6.0 },
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+  // Tem cota, mas nenhuma leitura: cinza também.
+  assert.equal(faixaDaCidade(comCota, null, false, agora), 'sem-dado')
+})
+
+test('cidade de várias réguas (foz) não recebe uma cor só', () => {
+  const agora = new Date('2026-09-01T12:00:00Z')
+  const itajai = {
+    id: 'itajai', nome: 'Itajaí', ordem: 8, cotas_m: {},
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+  assert.equal(faixaDaCidade(itajai, null, true, agora), 'varias')
 })

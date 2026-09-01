@@ -16,6 +16,15 @@
   --atencao: #8a5300;
   --atencao-fundo: #fdf3e2;
   --ok: #1b5e20;
+  /* Faixas de perigo do rio (cor = faixa da própria cidade, nunca o metro).
+     Verde -> amarelo -> laranja -> vermelho, mais o cinza de "sem dado".
+     Cada faixa também tem rótulo em texto, para não depender só da cor. */
+  --faixa-normal: #2e7d32;
+  --faixa-atencao: #e6a700;
+  --faixa-alerta: #e2661a;
+  --faixa-inundacao: #c62828;
+  --faixa-emergencia: #c62828;
+  --faixa-sem-dado: #9aa7b2;
   --raio: 10px;
   --largura: 56rem;
 }
