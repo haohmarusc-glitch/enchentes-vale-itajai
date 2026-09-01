@@ -311,3 +311,34 @@ dois. A defasagem é da estação, não do caminho.
 O que muda de verdade é a **tabela histórica de `/p/enchentes`**: 102 enchentes de 1852 a 2024, da
 fonte municipal oficial. Ver `docs/fontes-academicas.md` para o que ela já complicou — o valor de
 set/2011 que ela publica não é o que a regra de referência de Blumenau pressupõe.
+
+
+## Gaspar: o host não responde de fora da região (01/09/2026)
+
+`defesacivil.gaspar.sc.gov.br` **resolve no DNS e não aceita conexão** de uma VPS na
+Finlândia. Três tentativas, duas datas, com a causa isolada em 01/09:
+
+```
+getent ahosts defesacivil.gaspar.sc.gov.br   → 186.250.184.3   (só IPv4, sem AAAA)
+curl -4 ... /robots.txt                      → timeout de conexão em 15 s
+curl -4 ... /                                → timeout de conexão em 15 s
+```
+
+Não é IPv6 (não há registro AAAA), não é DNS (resolve), não é TLS (a conexão não chega a
+ser estabelecida) e não é o nosso cliente HTTP (o `curl` cru falha igual). O pacote sai e
+não volta: ou o host recusa tráfego de fora do Brasil, ou está fora para quem vem daqui.
+
+**Nenhuma mudança de código conserta isso**, e o `coleta_gaspar.py` faz o certo ao recusar:
+erro de rede não vira permissão.
+
+**O caminho que funciona** é o mesmo do KML de Brusque e do PDF de Blumenau: o navegador de
+quem mora na região alcança a página. Salvar o HTML e passar em `--arquivo` faz o parser
+rodar sem tocar na rede — e, como não há requisição, também não há `robots.txt` a consultar.
+
+```
+python3 scripts/coleta_gaspar.py --arquivo pagina-salva.html --cotas
+```
+
+Vale lembrar o que isso resolve e o que não resolve: mesmo com a página em mãos, se a tabela
+publicar só o nível atual, **as cotas de régua de Gaspar continuam faltando** — e aí vêm por
+ofício à Defesa Civil ou pelo Plano de Contingência, como foi com as onze estações de Itajaí.

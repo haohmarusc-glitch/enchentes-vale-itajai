@@ -127,6 +127,31 @@ class TestAnalisar(unittest.TestCase):
         self.assertEqual((lido["estacoes"], lido["barragens"]), ([], []))
 
 
+class TestArquivoSalvo(unittest.TestCase):
+    """
+    O host de Gaspar dá timeout de conexão de fora da região — três tentativas,
+    duas datas, com DNS resolvendo. O navegador de quem mora lá alcança, então
+    o caminho é salvar o HTML e passar o arquivo. Ler arquivo que alguém salvou
+    não é rastejar site: não há requisição, e por isso não há robots a consultar.
+    """
+
+    def test_le_a_mesma_tabela_de_um_arquivo(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".html", encoding="utf-8",
+                                         delete=False) as arquivo:
+            arquivo.write(TABELA)
+            caminho = arquivo.name
+        lido = analisar(Path(caminho).read_text(encoding="utf-8"))
+        self.assertEqual([e["rotulo"] for e in lido["estacoes"]], ["Rio Itajaí Açu Gaspar"])
+        self.assertEqual(lido["estacoes"][0]["nivel_m"], 3.25)
+        Path(caminho).unlink()
+
+    def test_html_com_byte_estranho_nao_quebra_a_leitura(self):
+        """Página salva do navegador pode vir em outra codificação."""
+        lido = analisar(TABELA.replace("Açu", "A\ufffdu"))
+        self.assertEqual(len(lido["estacoes"]), 1)
+
+
 class TestRobots(unittest.TestCase):
     def test_disallow_da_pagina_barra(self):
         self.assertFalse(permitido(buscar=lambda u: "User-agent: *\nDisallow: /monitoramento"))
