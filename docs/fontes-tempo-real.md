@@ -568,36 +568,50 @@ historicamente atingidos, 100 km rio abaixo. São coisas diferentes.
 
 ### E ele também não dispara aviso
 
-Como a rede estadual, o boletim **não publica cota de referência** por estação. Serve para série e
-para código; não serve para decidir faixa.
+O **boletim em PDF** não publica cota de referência por estação — serve para série e para código, não
+para decidir faixa. Mas isso vale só para o PDF: o **Rios On-Line classifica cada estação em faixas**
+(ver seção abaixo), então os limiares existem do lado da EPAGRI. Não os temos ainda; o PDF não os traz.
 
-### E o "Rios On-Line": onde a versão viva mora, e como achar o endpoint
+### O "Rios On-Line": endpoint mapeado pelo navegador, e por que ele não abre (01/09/2026)
 
-A página que o boletim indica é `https://ciram.epagri.sc.gov.br/rios-online/`. O HTML salvo dela
-(recebido em 01/09) mostra o que ela é: **Angular + Leaflet**, sem um único dado no HTML. Conferido —
-nem "Vidal Ramos", nem "Salseiro", nem código de 8 dígitos aparecem no arquivo. Tudo entra depois, por
-chamada do bundle `main.822c10b5600d8764.js`, que não veio junto (o upload trouxe só o `.html`, sem a
-pasta `_files/`).
+A versão viva do boletim é `https://ciram.epagri.sc.gov.br/rios-online/` — Angular + Leaflet, sem um
+dado no HTML. Investigada pelo navegador (o host não responde do ambiente de dev, e o site ainda arma
+uma trava de `debugger` contra o DevTools — desarma com Ctrl+F8). O que ficou apurado:
 
-O host também não responde do ambiente de dev (`http=000` em 0,2 s, recusa do proxy), como os demais.
+**O `robots.txt` libera.** Só `/wp-admin/` está bloqueado; `/rios-online/` e a API estão livres. O
+WordPress do host expõe só `wp/v2` e plugins de tema no `wp-json` — **nenhum namespace de hidrologia**.
+Os dados vêm de um serviço à parte.
 
-**Como achar o endpoint, na VPS.** Antes de tudo o `robots.txt`; depois o bundle, que carrega a URL
-base da API em texto:
+**Os endpoints:**
 
-```bash
-UA='enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)'
-curl -s -A "$UA" https://ciram.epagri.sc.gov.br/robots.txt | head -20
+| O quê | Endpoint | Estado |
+|---|---|---|
+| Estações (o alvo) | `POST .../api/rios-online-server/webresources/monitoramentohidrologia/estacoesMapa` | **exige credencial** |
+| Bacias | `GET .../api/rios-online-server/cache/bacias.txt` | **aberto** — Itajaí-Açú = código **8** |
+| Tiles | `https://maps.epagri.sc.gov.br/tile/{z}/{x}/{y}.png` | aberto |
 
-# o nome do bundle muda a cada build: pegue o atual da própria página
-curl -s -A "$UA" https://ciram.epagri.sc.gov.br/rios-online/ \
-  | grep -o 'main\.[a-f0-9]*\.js' | head -1
+**Onde trava, com precisão.** O `estacoesMapa` responde 401 sem credencial, 406 com Content-Type
+errado, e **401 mesmo no replay same-origin** (que reenvia o cookie). Ou seja: a credencial **não é o
+cookie** — é um header `Authorization` que o app Angular injeta em tempo de execução. Lê-lo exigiria
+abrir o bundle `main.<hash>.js` e achar a construção do header (o hash de 01/09 era `822c10b5600d8764`).
 
-# e então procure a base da API dentro dele
-curl -s -A "$UA" https://ciram.epagri.sc.gov.br/rios-online/main.<hash>.js \
-  | grep -o -E 'https?://[A-Za-z0-9./_-]{10,90}' | sort -u | head -40
-```
+**O que o painel confirmou, e é o achado que muda a leitura desta fonte:** os ícones de status provam
+que a EPAGRI **classifica cada estação em faixas** — `Enchente: Emergência / Alerta / Atenção`,
+`Normal`, `Estiagem: Atenção / Alerta / Emergência` — com **tendência** `Subindo / Descendo / Parado`.
+Os limiares existem na fonte. Se o `estacoesMapa` devolver os *thresholds*, e não só a cor, essa é a
+**cota de referência que falta para Taió, Ituporanga e Vidal Ramos** — mais do que a coordenada.
 
-Se o `robots.txt` liberar e o endpoint devolver as estações com **coordenada**, duas coisas se
-resolvem de uma vez: a dúvida "Salseiro é a nossa régua de Vidal Ramos?" (basta comparar com
-`-27.38547, -49.35812`) e o `codigo_ana` que falta nas cabeceiras. **Se o `robots.txt` proibir, para
-por aí** — e o caminho vira o e-mail `sshidrosc@epagri.sc.gov.br`, que serve para os dois pedidos.
+**O caminho a partir daqui — e a recomendação.** Duas opções, e a segunda é a mais limpa para um órgão
+público:
+
+1. *Ler o bundle na VPS.* O `robots.txt` permite. `curl` o `main.<hash>.js` e procurar como o header
+   `Authorization` é montado (token fixo do app, ou uma chamada de login prévia). Funciona, mas o
+   endpoint é interno de uma app que resiste a inspeção: pode mudar de nome no próximo build, sem aviso.
+   Um coletor apoiado nisso é frágil por construção.
+2. *Pedir à EPAGRI.* E-mail a `sshidrosc@epagri.sc.gov.br` pedindo acesso documentado à API, citando o
+   projeto. Resolve o header **e** já traz a relação código ANA ↔ coordenada de bandeja — o que mata a
+   dúvida do Salseiro de uma vez. É o **ofício C5**, redigido em `docs/pendencias-navegador-e-oficios.md`.
+
+Enquanto o acesso não vier, **nada é atribuído**: o `codigo_ana` `83892990` não vai para `vidal-ramos`
+até a coordenada bater contra `-27.38547, -49.35812`. A regra é a mesma que barrou a DC-11: coordenada,
+não nome.

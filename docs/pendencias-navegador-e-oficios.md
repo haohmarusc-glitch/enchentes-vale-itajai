@@ -41,7 +41,7 @@ emergência definidos (Plano de Contingência, Tabela 11), MAS:
 
 Encaminhamentos (ofícios B1 e B2 abaixo) para obter as cotas de atenção/alerta de Brusque e fechar a lacuna.
 
-## C. Ofícios a enviar (rascunhos prontos em C1–C4; enviar quando tiver os e-mails)
+## C. Ofícios a enviar (rascunhos prontos em C1–C5; enviar quando tiver os e-mails)
 
 Destinatários prováveis:
 - Defesa Civil de Brusque: pelo site `defesacivil.brusque.sc.gov.br` (menu Contato) ou protocolo da Prefeitura.
@@ -155,6 +155,49 @@ Tenho quatro pedidos, em ordem de importância.
 O site avisa em todas as páginas que não é sistema oficial de alerta, que não substitui a Defesa Civil e que, em emergência, deve-se ligar 199. Nenhum número que vocês publicam é alterado ou convertido por mim: quando duas fontes divergem, as duas ficam registradas com a origem de cada uma. O crédito à Defesa Civil de Gaspar aparece em cada dado utilizado.
 
 Fico à disposição para qualquer esclarecimento e agradeço desde já.
+Atenciosamente, Jefferson — [telefone / e-mail]
+
+### C5. Ofício — EPAGRI/CIRAM, Equipe de Hidrologia (acesso à API + código ANA ↔ coordenada)
+
+**Rascunho pronto.** Contato oficial, do rodapé do Boletim: `sshidrosc@epagri.sc.gov.br` · Rodovia Admar
+Gonzaga, 1347, Itacorubi, Florianópolis/SC · (48) 3665-5124.
+
+**Por que este ofício, e por que ele é o caminho principal e não a alternativa.** O Rios On-Line da EPAGRI
+é a fonte aberta mais promissora que o projeto achou para as cabeceiras (Taió, Ituporanga, Vidal Ramos),
+por três razões: publica **código ANA** por estação — nenhuma outra fonte faz isso; **classifica cada
+estação em faixas** (Enchente/Normal/Estiagem), ou seja, tem os limiares que faltam a essas cidades; e o
+`robots.txt` **libera** o acesso. Mas o endpoint das estações (`estacoesMapa`) exige um header
+`Authorization` que o app injeta em runtime — não é o cookie. Dá para achá-lo lendo o bundle na VPS, só
+que um coletor apoiado num endpoint interno de uma app que resiste a inspeção é frágil: muda no próximo
+build, sem aviso. O acesso documentado resolve isso de vez, e de quebra traz a relação código↔coordenada,
+que é o que decide se a estação "Salseiro" (`83892990`) é a nossa régua de Vidal Ramos.
+
+**Ao receber resposta:** se vier a relação código↔coordenada, conferir `83892990` contra `-27.38547 /
+-49.35812`; se bater, gravar `codigo_ana` em `vidal-ramos` e o `verificado: true`. Se vierem os limiares
+por estação, é a cota de referência dessas cidades — grava em `cotas_m`, com `fonte_cotas` apontando a
+EPAGRI, e as três saem de "nível na tela, nenhum aviso".
+
+#### Texto a enviar
+
+Assunto: Solicitação de acesso à API do Rios On-Line e à relação de estações da bacia do Itajaí-Açú
+
+À Equipe de Hidrologia da EPAGRI/CIRAM,
+
+Meu nome é Jefferson, sou morador da região do Vale do Itajaí e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que reúne o nível do rio em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados são públicos (github.com/haohmarusc-glitch/enchentes-vale-itajai) e cada informação é apresentada com a fonte citada.
+
+O Boletim de Monitoramento Hidrológico de vocês e o painel Rios On-Line são, de longe, o material mais completo que encontrei para as cabeceiras da bacia — Taió, Ituporanga, Vidal Ramos e Alfredo Wagner —, que são justamente as cidades para as quais eu tenho o nível do rio mas ainda não tenho a cota de referência que permitiria orientar a população. Duas coisas do painel me chamaram a atenção: ele publica o código da estação (que entendo ser o código da ANA) e classifica cada estação em faixas de situação (Atenção, Alerta e Emergência, para enchente e para estiagem). Essas duas informações são exatamente as que faltam ao meu projeto.
+
+Gostaria de solicitar, se for possível:
+
+1. A forma adequada de acessar os dados do Rios On-Line de maneira programática e estável — o painel consome um serviço que requer autenticação, e eu prefiro pedir o acesso correto a depender de uma solução frágil. Respeito integralmente qualquer limite de frequência ou termo de uso que vocês indicarem, e identifico todas as requisições com o nome do projeto.
+
+2. A relação das estações da bacia do Rio Itajaí-Açú com o código da estação e as coordenadas geográficas de cada uma. Preciso das coordenadas para vincular com segurança cada estação de vocês à régua correspondente no meu cadastro — por exemplo, para confirmar se a estação "Salseiro", em Vidal Ramos, é a mesma régua que eu já acompanho por outra rede naquele município. Sem a coordenada, eu não faço o vínculo, para não arriscar somar dados de réguas diferentes.
+
+3. Se estiverem disponíveis, os valores das faixas de Atenção, Alerta e Emergência (em centímetros de régua) de cada estação da bacia. É a informação que permitiria ao site dizer ao morador dessas cidades a partir de que nível o rio entra em cada faixa — hoje eu mostro o número, mas não tenho como qualificá-lo.
+
+O site deixa claro em todas as páginas que não é sistema oficial de alerta, que não substitui a Defesa Civil nem os órgãos oficiais de monitoramento, e que em emergência se deve ligar 199. Os níveis de vocês são publicados em centímetros e assim seriam tratados, com o crédito à EPAGRI/CIRAM em cada dado utilizado.
+
+Fico à disposição para qualquer esclarecimento e agradeço desde já a atenção.
 Atenciosamente, Jefferson — [telefone / e-mail]
 
 ### C3. (opcional) Reforço à Univali sobre o marégrafo
