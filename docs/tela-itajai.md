@@ -74,12 +74,67 @@ Some-se a isso que os três GeoJSON que o bloco 4 usaria — pontos cotados,
 terreno sujeito a inundação e o `itajai-arcgis-inundacoes` — **não estão no
 repositório**. Só as manchas estão, já convertidas em `data/manchas/`.
 
-**Isso agora tem conserto sem navegador:** `scripts/baixar_itajai_arcgis.py`
-busca as três direto do ArcGIS público da Prefeitura, com a paginação dos 5.237
-pontos e a conferência do `robots.txt` do host. Só que **baixar o arquivo não
-destrava o bloco 4** — o problema nunca foi a falta do arquivo, foi a referência.
-O que o download destrava é o cruzamento com as manchas, que já está feito, e o
-terreno inundável, que é a mesma espécie de resposta factual.
+**Os três chegaram em 01/09/2026**, por `scripts/baixar_itajai_arcgis.py`, que
+busca direto do ArcGIS público da Prefeitura — sem navegador, com a paginação
+dos 5.237 pontos e a conferência do `robots.txt` do host, que liberou.
+
+E as contagens confirmaram o que o documento prometia, inclusive nos detalhes
+que denunciariam erro: 32 polígonos em 2011, 5 · 48 · 58 · 55 · 155 nas camadas
+de lâmina, 5.237 pontos cotados em seis páginas, 110 polígonos de terreno.
+
+**Baixar não destravou o bloco 4**, e não ia destravar: o problema nunca foi a
+falta do arquivo, foi a referência. O que os arquivos responderam foi outra
+coisa — e uma das respostas foi um "não" que valia a viagem. Ver
+`scripts/analisar_itajai_arcgis.py`.
+
+### O "terreno sujeito a inundação" não vai para a tela ✘
+
+A camada tem 110 polígonos somando **38,7 hectares**, com mediana de 1.786 m² e
+o menor deles com **4 m²**. A mancha de 1983 sozinha cobre **7.086 ha** — **183
+vezes mais**. Três quartos dos polígonos caem dentro das manchas históricas e um
+quarto cai fora, espalhados por 19 km de município.
+
+Sejam o que forem — pontos de alagamento localizado, lotes levantados,
+estruturas de drenagem —, **não são "a área inundável de Itajaí"**. Publicar isso
+com esse rótulo diria a quem mora fora dos polígonos que sua rua não alaga,
+quando a mancha de 1983 diz o contrário para uma área 183 vezes maior. É o mesmo
+erro do bloco 4 por outro caminho: um número certo respondendo a pergunta
+errada, com toda a aparência de resposta.
+
+Nada nisso aparece em conferência de formato: o arquivo é válido, os polígonos
+são reais, as coordenadas estão em EPSG:4326 e dentro do município. Só a
+comparação de ordem de grandeza denuncia — e há teste travando a conclusão, que
+passa a falhar se a camada for substituída por um levantamento de verdade.
+
+O que falta para usá-la: o **dicionário de dados** da Prefeitura, dizendo o que a
+camada representa e em que escala. Virou pergunta no ofício C2.
+
+### As manchas do ArcGIS não substituem as que já temos ✘
+
+Um documento afirmou que as do ArcGIS são "mais ricas que os GeoJSON do GitHub
+GeoItajaí". São — de **atributo derivado**, não de geometria: mesma contagem de
+feições nas dez camadas, mesmo campo `situa`, e por cima `Shape__Area` e
+`Shape__Length`, que se calculam da própria geometria.
+
+O que se perderia na troca é concreto: as nossas vêm do GitHub da GeoItajaí com
+**licença MIT declarada**, e o serviço do ArcGIS não declara licença nenhuma —
+que é justamente o item 2 do ofício C2. Trocar piora a procedência para ganhar
+número derivável.
+
+### O que os arquivos acrescentaram de verdade: a área de cada cheia ✔
+
+Três camadas publicam a área atingida, e ela confere com a área calculada da
+geometria dentro de 0,4%:
+
+| evento | área atingida |
+|---|---|
+| jul/1983 | **7.086 ha** |
+| ago/1984 | **7.015 ha** |
+| 2001 | **3.425 ha** |
+
+A de 2011 **não** entra: somar o campo `areas` dos 32 polígonos dá 6.995 ha
+contra 7.634 ha calculados, porque eles se sobrepõem — e soma de polígono
+sobreposto não é área.
 
 ### O que destrava, em ordem de qualidade
 
