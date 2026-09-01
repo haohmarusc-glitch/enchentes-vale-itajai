@@ -98,9 +98,10 @@
 
 .setaLinha {
   flex: 0 0 auto;
-  width: 2px;
+  --cor-seg: var(--agua-clara);
+  width: 3px;
   height: 2.1rem;
-  background: var(--agua-clara);
+  background: var(--cor-seg);
   position: relative;
 }
 
@@ -111,7 +112,7 @@
   bottom: -1px;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 7px solid var(--agua-clara);
+  border-top: 7px solid var(--cor-seg);
 }
 
 .setaTexto {
@@ -206,3 +207,14 @@
 .acao_alerta { border-left-color: var(--faixa-alerta); }
 .acao_inundacao { border-left-color: var(--faixa-inundacao); }
 .acao_emergencia { border-left-color: var(--faixa-emergencia); }
+
+/* O segmento do rio (a seta entre duas cidades) na cor da faixa da cidade
+   a MONTANTE — o rio "flui" colorido de cima para baixo, como no Kikikuru.
+   Segmento cinza quando a cidade de cima não tem faixa (sem cota/leitura). */
+.setaLinha.seg_normal { --cor-seg: var(--faixa-normal); }
+.setaLinha.seg_atencao { --cor-seg: var(--faixa-atencao); }
+.setaLinha.seg_alerta { --cor-seg: var(--faixa-alerta); }
+.setaLinha.seg_inundacao { --cor-seg: var(--faixa-inundacao); }
+.setaLinha.seg_emergencia { --cor-seg: var(--faixa-emergencia); }
+/* 'varias' e 'sem-dado' ficam com o azul-neutro padrão da seta: não há uma
+   faixa única a montante para propagar. */
