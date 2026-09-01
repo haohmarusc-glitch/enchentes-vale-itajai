@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buscarSerie, serieDaCidade } from './serie'
-import type { Transporte } from './serie'
+import { buscarSerie, leituraEm, serieDaCidade } from './serie'
+import type { PontoSerie, Transporte } from './serie'
 
 /*
  * O que estes casos protegem: a série é a matéria-prima do slider de 24 h. Se
@@ -63,4 +63,18 @@ test('cidade sem pontos não aparece', async () => {
     responde({ series: { 'itajai-acu': { itajai: [] } } }),
   )
   assert.deepEqual(serieDaCidade(estado, 'itajai-acu', 'itajai'), [])
+})
+
+test('leituraEm pega a última medição até o instante, nunca a futura', () => {
+  const pts: PontoSerie[] = [
+    { medidoEm: new Date('2026-09-01T12:00:00Z'), nivel_m: 3.0 },
+    { medidoEm: new Date('2026-09-01T13:00:00Z'), nivel_m: 4.0 },
+    { medidoEm: new Date('2026-09-01T14:00:00Z'), nivel_m: 5.0 },
+  ]
+  // Antes de tudo: nada.
+  assert.equal(leituraEm(pts, new Date('2026-09-01T11:00:00Z').getTime()), null)
+  // Entre a 2ª e a 3ª: devolve a 2ª (nunca a de 14h, que ainda não aconteceu).
+  assert.equal(leituraEm(pts, new Date('2026-09-01T13:30:00Z').getTime())?.nivel_m, 4.0)
+  // Exatamente no carimbo: conta.
+  assert.equal(leituraEm(pts, new Date('2026-09-01T14:00:00Z').getTime())?.nivel_m, 5.0)
 })

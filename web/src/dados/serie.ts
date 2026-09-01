@@ -149,3 +149,17 @@ export function useSerieRecente(intervaloMin = 5): EstadoSerie {
 export function serieDaCidade(estado: EstadoSerie, rioId: string, cidadeId: string): PontoSerie[] {
   return estado.series[rioId]?.[cidadeId] ?? []
 }
+
+/**
+ * A última leitura medida ATÉ o instante `t` (ms), ou null. É o que a animação
+ * usa para saber a faixa de cada cidade num momento do passado — nunca um valor
+ * futuro, que seria adivinhar. Assume `pontos` já ordenado no tempo.
+ */
+export function leituraEm(pontos: PontoSerie[], t: number): PontoSerie | null {
+  let atual: PontoSerie | null = null
+  for (const p of pontos) {
+    if (p.medidoEm.getTime() <= t) atual = p
+    else break
+  }
+  return atual
+}
