@@ -112,6 +112,35 @@ def baixar_chuva_sc() -> list[dict]:
         return []
 
 
+def baixar_nivel_alertablu(leituras: list[dict]) -> list[dict]:
+    """Resgata Blumenau quando a fonte de Itajai o publica vazio OU velho.
+    O AlertaBlu publica a serie oficial de Blumenau, independente da pagina de
+    Itajai. Se a primaria trouxe Blumenau com menos de 60 min, mantem. Se veio
+    vazio ou com carimbo antigo, busca o AlertaBlu e devolve para conviver na
+    lista (o site/bot ja mostram o mais recente da mesma cidade)."""
+    from datetime import datetime, timezone
+    def idade_min(m):
+        for f in ("%d/%m/%Y %H:%M", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                dt = datetime.strptime(str(m)[:16].replace("T", " "), "%Y-%m-%d %H:%M")
+                return (datetime.now() - dt).total_seconds() / 60
+            except ValueError:
+                pass
+        try:
+            dt = datetime.strptime(str(m), "%d/%m/%Y %H:%M")
+            return (datetime.now() - dt).total_seconds() / 60
+        except ValueError:
+            return 9999
+    atual = [l for l in leituras if l.get("cidade") == "blumenau" and l.get("nivel_m") is not None]
+    if atual and min(idade_min(l.get("medido_em")) for l in atual) < 60:
+        return []
+    try:
+        from coleta_alertablu import URL, baixar, parse
+        return parse(baixar(URL))
+    except Exception as e:
+        print(f"aviso: resgate de Blumenau pelo AlertaBlu falhou ({e}).", file=sys.stderr)
+        return []
+
 def estacoes_do_ultimo() -> set[str]:
     """Os títulos que vieram na coleta anterior, do ultimo.json que vamos trocar."""
     try:
@@ -243,6 +272,7 @@ def main() -> int:
 
     try:
         leituras = baixar_niveis()
+        leituras = leituras + baixar_nivel_alertablu(leituras)
     except Exception as e:  # rede, HTTP, HTML inesperado
         print(f"ERRO ao coletar: {e}", file=sys.stderr)
         return 1
