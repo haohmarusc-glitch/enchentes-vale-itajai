@@ -116,13 +116,20 @@ export default function TelaRio({ rioId }: { rioId: string }) {
         <h2>Mapa do rio</h2>
         {verMapa ? (
           <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa…</p>}>
-            <MapaRios rioId={rioId} cidades={cidades} tempoReal={tempoReal} agora={agora} />
+            <MapaRios
+              rioId={rioId}
+              cidades={cidades}
+              tempoReal={tempoReal}
+              agora={agora}
+              aoSelecionar={setSelecionadaId}
+            />
           </Suspense>
         ) : (
           <>
             <p className={estilos.instrucao}>
-              O rio no mapa, com cada cidade na cor da faixa dela — a mesma do diagrama. Carrega
-              sob pedido para não pesar no celular.
+              O rio no mapa, com cada trecho na cor da faixa da cidade a montante — a mesma do
+              diagrama. Aproxime para ver os nomes; toque numa cidade para as cotas de rua e o
+              abrigo dela. Carrega sob pedido para não pesar no celular.
             </p>
             <button type="button" className={estilos.botaoMapa} onClick={() => setVerMapa(true)}>
               Ver mapa do rio
