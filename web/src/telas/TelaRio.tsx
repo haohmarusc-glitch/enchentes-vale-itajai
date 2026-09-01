@@ -6,6 +6,7 @@ import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
+import { serieDaCidade, useSerieRecente } from '../dados/serie'
 import estilos from './TelaRio.module.css'
 
 /**
@@ -26,6 +27,7 @@ const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
  */
 const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 const MapaRios = lazy(() => import('../componentes/MapaRios'))
+const LinhaDoTempo = lazy(() => import('../componentes/LinhaDoTempo'))
 
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
@@ -48,6 +50,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
   }, [cidades, registrosPorCidade])
 
   const tempoReal = useTempoReal()
+  const serie = useSerieRecente()
   // Um único "agora" por render: assim todos os cartões contam a idade das
   // leituras a partir do mesmo instante.
   const agora = useMemo(() => new Date(), [tempoReal])
@@ -157,6 +160,23 @@ export default function TelaRio({ rioId }: { rioId: string }) {
             agora={agora}
           />
         </Suspense>
+      ) : null}
+
+      {selecionada && selecionada.cotas_m && Object.keys(selecionada.cotas_m).length > 0 ? (
+        <section className="cartao">
+          <h2>Últimas horas em {selecionada.nome}</h2>
+          <p className={estilos.instrucao}>
+            Como o nível vem se comportando na régua desta cidade. A linha cruza as
+            faixas de cota — é a cheia subindo ou baixando.
+          </p>
+          <Suspense fallback={<p className={estilos.instrucao}>Carregando a linha do tempo…</p>}>
+            <LinhaDoTempo
+              cidade={selecionada}
+              serie={serieDaCidade(serie, rioId, selecionada.id)}
+              agora={agora}
+            />
+          </Suspense>
+        </section>
       ) : null}
 
       {selecionada ? (

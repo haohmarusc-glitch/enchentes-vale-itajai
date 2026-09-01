@@ -1,0 +1,15 @@
+.resumo {
+  margin: 0 0 0.5rem;
+}
+.grafico {
+  width: 100%;
+}
+.nota {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+.vazio {
+  margin: 0;
+  color: var(--tinta-fraca);
+}
