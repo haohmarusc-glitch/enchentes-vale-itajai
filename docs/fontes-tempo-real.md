@@ -382,3 +382,64 @@ data no futuro.
 
 A página está no repositório como fixture, e os testes rodam contra ela. Exemplo inventado passa
 enquanto a fonte muda embaixo dele — foi exatamente o que aconteceu aqui.
+
+## Gaspar pela rede estadual: por que o número existe e não pode ser usado (01/09/2026)
+
+Chegou a proposta de contornar o host do município lendo Gaspar pela rede estadual — a estação
+`DCSC-00005` no GraphQL da Defesa Civil de SC. Faz sentido como ideia: Gaspar ganhou cota de régua
+(5,00 / 6,00 / 7,00 m, do Plano de Contingência) e é a única cidade do eixo com cota e sem leitura.
+
+**Três coisas, medidas, dizem que ainda não dá.**
+
+**1. No instante em que foi testada, a estação não devolveu nível.** O snapshot estadual de
+01/09/2026 03:09Z registra: *"Gaspar (DCSC-00005) e Blumenau (DCSC-00026) NÃO retornaram valor de
+nível neste instante"*. Chuva veio (77,2 mm/24h em Gaspar); nível, não. A premissa da proposta não
+se sustentou na primeira medição.
+
+**2. E a proposta em shell não avisaria disso.** O filtro era
+
+```sh
+jq -r '... | select(.codigo=="DCSC-00005") | "..."' || { echo "!! Não achei ..."; }
+```
+
+`jq` sai com **código 0** quando o `select` não casa com nada. Conferido:
+
+```
+$ jq -r '.[] | select(.codigo=="DCSC-00005") | "achei"' fake.json
+$ echo $?
+0
+```
+
+Ou seja: o `||` nunca roda, a saída é **nenhuma linha**, e logo abaixo o script imprime alegremente
+`snapshot salvo em ...`. No caso real das 03:09Z — que é o caso provável, porque a estação
+frequentemente não traz nível — quem rodasse concluiria que deu certo. **Fonte que falha calada é
+pior que fonte fora do ar**, porque a segunda a gente percebe.
+
+**3. E se devolvesse, o número não poderia ser comparado com as faixas 5/6/7.** O `rio_nivel` da
+rede estadual não está num zero só, e agora há duas medições da mesma cidade quase no mesmo instante:
+
+| Data | Estação estadual | Estadual | Nossa régua (DC-11 Santa Regina) | Diferença |
+|---|---|---|---|---|
+| 31/08/2026 | `DCSC-00030` Ilhota | 10,34 m | 3,25 m | **7,09 m** |
+| 01/09/2026 | `DCSC-00030` Ilhota | 10,67 m | 3,34 m | **7,33 m** |
+
+Não é defasagem de horário — uma régua sobe centímetros por hora numa cheia, não sete metros. E não
+é a rede inteira estar errada: **Brusque bate** (estadual 4,48 × nossa 4,42). A rede concorda em
+algumas estações e está 7 m fora em outras, que é exatamente o que "não é a mesma grandeza entre
+estações" significa, e o que o `coleta_chuva_sc.py` já registrava.
+
+**Por que isso seria grave justamente em Gaspar.** As faixas são 5 / 6 / 7 m. Um deslocamento do
+tamanho do de Ilhota **cobre a escala inteira**: mostraria RESPOSTA com o rio no leito ou, para o
+outro lado, normalidade com a água na rua. A segunda mata. E não há como saber qual seria, porque
+**nunca houve um par** — nível estadual de Gaspar e leitura da tabela do município no mesmo instante.
+
+**O que destrava.** Esse par, e só ele. `scripts/gaspar_estadual.py` existe para juntá-lo: quando os
+dois lados tiverem leitura ao mesmo tempo, ele imprime a diferença. Um par não fecha a questão — o
+deslocamento tem de se repetir em níveis diferentes antes de virar constante e ser escrito em
+`DESLOCAMENTO_CONHECIDO_M`, num commit que registre os pares aqui. Enquanto essa constante for
+`None`, o script se recusa a propor o valor para aviso, não escreve em `data/tempo-real/ultimo.json`
+e não alimenta o `alerta_cotas.py`. Há teste travando cada uma dessas três coisas.
+
+**O que já dá para usar agora:** a **chuva** da mesma estação. Milímetro é milímetro em qualquer
+lugar — não depende de régua, de zero nem de datum. Em 01/09/2026 a rede dava Ilhota 107,6 mm/24h,
+Gaspar 77,2 e Blumenau 22,0. É a assimetria que explica a cheia descendo pelo baixo vale.
