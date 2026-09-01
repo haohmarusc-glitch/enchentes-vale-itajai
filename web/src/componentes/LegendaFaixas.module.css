@@ -1,0 +1,70 @@
+.legenda {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--borda);
+  border-radius: 0.5rem;
+  background: var(--papel);
+}
+
+.aviso {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+  color: var(--tinta-fraca);
+}
+
+.itens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+}
+
+.acao {
+  color: var(--tinta-fraca);
+}
+
+.amostra {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  flex: none;
+  position: relative;
+  top: 0.15rem;
+  background: var(--faixa-sem-dado);
+}
+
+/* As cores das faixas. Tons escolhidos para contraste e para não depender só
+   da cor (cada uma tem rótulo em texto ao lado). Definidas em tokens no
+   index.css, para o tema claro/escuro tratar cada uma. */
+.normal { background: var(--faixa-normal); }
+.atencao { background: var(--faixa-atencao); }
+.alerta { background: var(--faixa-alerta); }
+.inundacao { background: var(--faixa-inundacao); }
+.emergencia { background: var(--faixa-emergencia); }
+.sem-dado {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--faixa-sem-dado),
+    var(--faixa-sem-dado) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+.varias {
+  background: conic-gradient(
+    var(--faixa-atencao) 0 25%,
+    var(--faixa-alerta) 0 50%,
+    var(--faixa-inundacao) 0 75%,
+    var(--faixa-normal) 0
+  );
+}

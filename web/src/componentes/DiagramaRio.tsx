@@ -1,6 +1,8 @@
 import type { Cidade, Trecho } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
+import { faixaDaCidade } from '../logica/tempoReal'
+import LegendaFaixas, { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { estacoesTempoReal } from '../dados/carregar'
 import { reguasComCota } from '../logica/reguas'
 import ReguasDaCidade from './ReguasDaCidade'
@@ -40,6 +42,8 @@ export default function DiagramaRio({
   agora,
 }: Props) {
   return (
+    <>
+      <LegendaFaixas />
     <ol className={estilos.diagrama}>
       {cidades.map((cidade, i) => {
         const proxima = cidades[i + 1]
@@ -75,6 +79,10 @@ export default function DiagramaRio({
         // acima da maré). Dizer "não levantadas" nesses casos seria esconder
         // dado publicado.
         const reguas = reguasComCota(estacoesTempoReal, rioId, cidade.id)
+        // A faixa de perigo AGORA, para a cor do marcador. Várias réguas (a
+        // foz) não viram uma cor só; leitura velha ou sem cota viram cinza.
+        const temVarias = aoVivo === null && todasAsLeituras.length > 1
+        const faixa = faixaDaCidade(cidade, aoVivo, temVarias, agora)
 
         return (
           <li key={cidade.id} className={estilos.item}>
@@ -84,12 +92,23 @@ export default function DiagramaRio({
               aria-pressed={selecionada}
               className={`${estilos.cidade} ${selecionada ? estilos.selecionada : ''}`}
             >
-              <span className={estilos.marcador} aria-hidden="true" />
+              <span
+                className={`${estilos.marcador} ${estilos[faixa]}`}
+                aria-label={`faixa: ${ROTULO_FAIXA[faixa]}`}
+                title={ROTULO_FAIXA[faixa]}
+              />
               <span className={estilos.corpo}>
                 <span className={estilos.nome}>
                   {cidade.nome}
+                  <span className={`${estilos.selo} ${estilos[faixa]}`}>{ROTULO_FAIXA[faixa]}</span>
                   {cidade.regua ? <span className={estilos.regua}> — régua: {cidade.regua}</span> : null}
                 </span>
+
+                {faixa === 'atencao' || faixa === 'alerta' || faixa === 'inundacao' || faixa === 'emergencia' ? (
+                  <span className={`${estilos.acao} ${estilos[`acao_${faixa}`] ?? ''}`}>
+                    {ACAO_FAIXA[faixa]}
+                  </span>
+                ) : null}
 
                 <span className={estilos.detalhes}>
                   {aoVivo ? (
@@ -222,5 +241,6 @@ export default function DiagramaRio({
         )
       })}
     </ol>
+    </>
   )
 }

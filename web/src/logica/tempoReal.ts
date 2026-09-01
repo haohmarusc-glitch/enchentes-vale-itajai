@@ -201,3 +201,48 @@ export function primeiraCota(cidade: Cidade): { chave: string; valor: number } |
   const menor = entradas.reduce((a, b) => (b[1] < a[1] ? b : a))
   return { chave: menor[0], valor: menor[1] }
 }
+
+/**
+ * A faixa de perigo de uma cidade AGORA — a cor do mapa, no espírito do
+ * Kikikuru (o mapa de risco da agência meteorológica do Japão), adaptada à
+ * REGRA BLOQUEANTE deste projeto.
+ *
+ * A cor representa a FAIXA da própria cidade (a cota mais alta que o nível dela
+ * cruzou, na régua dela), NUNCA o metro absoluto: duas cidades em "alerta"
+ * podem ambas ser laranja, e isso é comparar faixa, não metro. O que a regra
+ * proíbe — comparar metros entre cidades — continua proibido.
+ *
+ * Três estados NÃO recebem cor de nível, e o mais importante é o primeiro:
+ *  - sem cota, ou sem leitura, ou leitura VELHA → `sem-dado`. Nunca verde:
+ *    verde lê-se como "seguro", e não sabemos disso. É o `発表なし` (sem
+ *    informação) que o próprio Kikikuru distingue do estado de normalidade.
+ *  - cidade de várias réguas (a foz, Itajaí) → `varias`: pintar a foz de uma
+ *    cor só seria eleger uma régua, o que a tela recusa em todo lugar.
+ */
+export type Faixa =
+  | 'normal'
+  | 'atencao'
+  | 'alerta'
+  | 'inundacao'
+  | 'emergencia'
+  | 'sem-dado'
+  | 'varias'
+
+export function faixaDaCidade(
+  cidade: Cidade,
+  aoVivo: { nivel_m: number; medidoEm: Date | null } | null,
+  temVariasReguas: boolean,
+  agora: Date,
+): Faixa {
+  if (temVariasReguas) return 'varias'
+  if (Object.keys(cidade.cotas_m).length === 0) return 'sem-dado'
+  if (!aoVivo || !aoVivo.medidoEm) return 'sem-dado'
+  // Leitura velha não pinta: um número de horas atrás não diz a faixa de agora,
+  // e uma cor forte sobre dado velho é a mentira mais perigosa da tela.
+  if (frescor(idadeMin(aoVivo.medidoEm, agora)) === 'velha') return 'sem-dado'
+  const cota = cotaAlcancada(cidade, aoVivo.nivel_m)
+  if (cota === null) return 'normal'
+  if (cota.chave === 'atencao' || cota.chave === 'alerta') return cota.chave
+  // 'inundacao', 'emergencia' e qualquer cota de topo caem na faixa vermelha.
+  return cota.chave === 'inundacao' ? 'inundacao' : 'emergencia'
+}

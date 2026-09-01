@@ -137,3 +137,72 @@
   color: var(--tinta-fraca);
   font-style: italic;
 }
+
+/* Cor do marcador por faixa de perigo. A cor é a faixa da PRÓPRIA cidade
+   (ver logica/tempoReal.faixaDaCidade), nunca o metro absoluto. Cada faixa
+   tem também o selo em texto ao lado do nome, para não depender só da cor. */
+.marcador.normal { background: var(--faixa-normal); }
+.marcador.atencao { background: var(--faixa-atencao); }
+.marcador.alerta { background: var(--faixa-alerta); }
+.marcador.inundacao { background: var(--faixa-inundacao); }
+.marcador.emergencia { background: var(--faixa-emergencia); }
+.marcador.varias {
+  background: conic-gradient(
+    var(--faixa-atencao) 0 25%,
+    var(--faixa-alerta) 0 50%,
+    var(--faixa-inundacao) 0 75%,
+    var(--faixa-normal) 0
+  );
+}
+.marcador.sem-dado {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--faixa-sem-dado),
+    var(--faixa-sem-dado) 2px,
+    var(--papel) 2px,
+    var(--papel) 4px
+  );
+  border: 1px solid var(--faixa-sem-dado);
+}
+
+/* Selo de texto ao lado do nome: a mesma faixa, escrita, para daltônicos e
+   para quem lê antes de olhar a cor. */
+.selo {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  vertical-align: middle;
+  color: #fff;
+  background: var(--faixa-sem-dado);
+}
+.selo.normal { background: var(--faixa-normal); }
+.selo.atencao { background: var(--faixa-atencao); color: #3a2a00; }
+.selo.alerta { background: var(--faixa-alerta); }
+.selo.inundacao { background: var(--faixa-inundacao); }
+.selo.emergencia { background: var(--faixa-emergencia); }
+.selo.sem-dado { background: var(--faixa-sem-dado); color: #1b2733; }
+.selo.varias {
+  background: linear-gradient(
+    90deg,
+    var(--faixa-atencao),
+    var(--faixa-alerta),
+    var(--faixa-inundacao)
+  );
+}
+
+/* A frase de ação da faixa, na cor da faixa — a cor diz o que fazer. */
+.acao {
+  display: block;
+  margin: 0.15rem 0 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-left: 3px solid var(--faixa-sem-dado);
+  padding-left: 0.5rem;
+}
+.acao_atencao { border-left-color: var(--faixa-atencao); }
+.acao_alerta { border-left-color: var(--faixa-alerta); }
+.acao_inundacao { border-left-color: var(--faixa-inundacao); }
+.acao_emergencia { border-left-color: var(--faixa-emergencia); }
