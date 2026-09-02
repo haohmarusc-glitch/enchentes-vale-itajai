@@ -924,6 +924,27 @@ def _reguas_agrupadas(ls: list[dict], agora: datetime) -> list[str]:
     return out
 
 
+#: Rótulos dos blocos da árvore no /rios, na ordem de exibição. Mesmo desenho da
+#: tela /acu: cabeceiras paralelas, tronco (a única fila real) e afluentes que
+#: entram de lado — para o morador não ler a lista como uma descida em fila.
+BLOCOS_ARVORE = [
+    ("cabeceiras_paralelas", "cabeceiras — correm em paralelo, juntam-se em Rio do Sul"),
+    ("tronco_sequencia", "tronco — a sequência que a água segue, da nascente ao mar"),
+    ("afluentes_laterais", "afluentes laterais — entram no tronco, não são elos da fila"),
+]
+
+
+def _linha_cidade(base: Base, c: dict, por_cidade: dict, agora: datetime, rio: str) -> list[str]:
+    """As linhas de UMA cidade no panorama, com as réguas da foz filtradas por eixo."""
+    cid = c["id"]
+    ls = por_cidade.get(cid, [])
+    if cid == FOZ:
+        # Só as réguas cujo EIXO é este rio — cada ribeirão entra no rio em que
+        # deságua (a Murta no Açu, a Canhanduba no Mirim).
+        ls = [l for l in ls if _eixo_da_regua(l) == rio]
+    return _cidade_no_panorama(c["nome"], por_regua(ls, agora), agora, base.bruto_da_cidade(cid))
+
+
 def resposta_rios(base: Base, agora: datetime) -> list[str]:
     leituras = base.ultimo.get("leituras") or []
     if not leituras:
@@ -933,37 +954,44 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
         por_cidade.setdefault(str(l.get("cidade")), []).append(l)
 
     linhas = ["<b>O rio agora</b> — de montante à foz"]
-    # Segue o MAPA do rio: cada cidade na ordem do curso, o Açu inteiro e depois
-    # o Mirim. As cidades SEM leitura agora entram na posição delas, marcadas.
-    # Itajaí é foz DOS DOIS: aparece no fim de cada rio, mas com só as réguas
-    # daquele rio — as do Açu fecham o Açu, as do Mirim fecham o Mirim (junto de
-    # Vidal Ramos → Botuverá → Brusque). Cada ribeirão vai para o rio em que
-    # deságua (Murta no Açu, Canhanduba no Mirim), rotulado pelo próprio ribeirão.
+    # Segue o MAPA do rio: o Açu inteiro (até a foz, Itajaí) e depois o Mirim. O
+    # Açu é uma ÁRVORE (ver _topologia): sai em blocos — cabeceiras paralelas,
+    # tronco e afluentes laterais —, não numa fila que afirmaria Taió -> Ibirama
+    # -> Indaial. O Mirim é fila. Itajaí é foz DOS DOIS: fecha cada rio, com só as
+    # réguas daquele rio (ribeirão vai para o rio em que deságua).
     mostradas: set[str] = set()
-    foz_por_rio: set[tuple[str, str]] = set()
-    rio_atual: str | None = None
-    for c in base.cidades():
-        cid, rio = c["id"], c["rio"]
-        if cid == FOZ:
-            if (cid, rio) in foz_por_rio:
-                continue
-            foz_por_rio.add((cid, rio))
-        elif cid in mostradas:
-            continue
-        mostradas.add(cid)
-        if rio != rio_atual:
-            rio_atual = rio
-            linhas.append(f"\n\n<b>{NOME_RIO.get(rio_atual, rio_atual)}</b>")
-        # Junta primária e resgate antes de decidir (Blumenau: Defesa Civil +
-        # AlertaBlu são a MESMA régua). Sem municipal, o bruto estadual preenche
-        # a lacuna (rotulado, nunca como cota).
-        ls = por_cidade.get(cid, [])
-        if cid == FOZ:
-            # Só as réguas cujo EIXO é este rio — cada ribeirão entra no rio em
-            # que deságua (a Murta no Açu, a Canhanduba no Mirim).
-            ls = [l for l in ls if _eixo_da_regua(l) == rio]
-        linhas.extend(_cidade_no_panorama(c["nome"], por_regua(ls, agora),
-                                          agora, base.bruto_da_cidade(cid)))
+    for rio_id, rio in base.estacoes["rios"].items():
+        linhas.append(f"\n\n<b>{NOME_RIO.get(rio_id, rio_id)}</b>")
+        do_rio = [c for c in base.cidades() if c["rio"] == rio_id]
+        por_id = {c["id"]: c for c in do_rio}
+        topo = rio.get("_topologia")
+        if topo:
+            vistas_no_rio: set[str] = set()
+            for chave, titulo in BLOCOS_ARVORE:
+                bruto = topo.get(chave, [])
+                ids = [(x["id"] if isinstance(x, dict) else x) for x in bruto]
+                ids = [i for i in ids if i in por_id]
+                if not ids:
+                    continue
+                linhas.append(f"\n<i>{titulo}</i>")
+                for cid in ids:
+                    linhas.extend(_linha_cidade(base, por_id[cid], por_cidade, agora, rio_id))
+                    vistas_no_rio.add(cid)
+                    if cid != FOZ:
+                        mostradas.add(cid)
+            # Rede de segurança: cidade do cadastro fora da árvore nunca some.
+            resto = [c for c in do_rio if c["id"] not in vistas_no_rio]
+            if resto:
+                linhas.append("\n<i>outros pontos — ainda sem posição na árvore</i>")
+                for c in resto:
+                    linhas.extend(_linha_cidade(base, c, por_cidade, agora, rio_id))
+                    if c["id"] != FOZ:
+                        mostradas.add(c["id"])
+        else:
+            for c in do_rio:
+                linhas.extend(_linha_cidade(base, c, por_cidade, agora, rio_id))
+                if c["id"] != FOZ:
+                    mostradas.add(c["id"])
 
     # Uma leitura de cidade fora do cadastro nunca some: entra no fim.
     for cid, ls in por_cidade.items():
