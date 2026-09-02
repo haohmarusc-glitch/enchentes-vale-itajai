@@ -838,10 +838,21 @@ ORDEM_CURSO = ["itajai-acu", "itajai-mirim", "ribeirao-murta", "ribeirao-canhand
 #: régua dela vai para a seção do rio que ela mede: as do Açu fecham o Açu, as do
 #: Mirim fecham o Mirim, junto de Vidal Ramos → Botuverá → Brusque.
 FOZ = "itajai"
-#: Os ribeirões de Itajaí (Murta, Canhanduba) NÃO estão em nenhum eixo de rio
-#: (Plano de Contingência da COMPDEC): são réguas de estuário. Não se penduram no
-#: Açu nem no Mirim — saem num bloco à parte, no fim.
-CURSOS_RIBEIRAO = {"ribeirao-murta", "ribeirao-canhanduba"}
+#: Cada ribeirão de Itajaí deságua no SEU rio, e é sob ele que a régua aparece no
+#: painel — a Murta no Açu, a Canhanduba (Rio do Meio) no Mirim. Definido com o
+#: Jefferson em 02/09/2026 (conhecimento local; a confirmar no mapa de bacia do
+#: Plano da COMPDEC). Continuam réguas de estuário: mostram a cota, mas seguem
+#: sem aviso automático — isso é regra do cadastro e não muda aqui.
+RIBEIRAO_PARA_RIO = {
+    "ribeirao-murta": "itajai-acu",
+    "ribeirao-canhanduba": "itajai-mirim",
+}
+
+
+def _eixo_da_regua(l: dict) -> str | None:
+    """O rio a que a régua pertence — o ribeirão vai para o rio em que deságua."""
+    r = l.get("rio")
+    return RIBEIRAO_PARA_RIO.get(r, r)
 
 
 def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict | None = None) -> list[str]:
@@ -915,8 +926,8 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
     # o Mirim. As cidades SEM leitura agora entram na posição delas, marcadas.
     # Itajaí é foz DOS DOIS: aparece no fim de cada rio, mas com só as réguas
     # daquele rio — as do Açu fecham o Açu, as do Mirim fecham o Mirim (junto de
-    # Vidal Ramos → Botuverá → Brusque). Os ribeirões, que não estão em eixo
-    # nenhum, saem num bloco à parte, no fim.
+    # Vidal Ramos → Botuverá → Brusque). Cada ribeirão vai para o rio em que
+    # deságua (Murta no Açu, Canhanduba no Mirim), rotulado pelo próprio ribeirão.
     mostradas: set[str] = set()
     foz_por_rio: set[tuple[str, str]] = set()
     rio_atual: str | None = None
@@ -937,19 +948,11 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
         # a lacuna (rotulado, nunca como cota).
         ls = por_cidade.get(cid, [])
         if cid == FOZ:
-            # Só as réguas DESTE rio; ribeirões e o outro rio saem daqui.
-            ls = [l for l in ls if l.get("rio") == rio]
+            # Só as réguas cujo EIXO é este rio — cada ribeirão entra no rio em
+            # que deságua (a Murta no Açu, a Canhanduba no Mirim).
+            ls = [l for l in ls if _eixo_da_regua(l) == rio]
         linhas.extend(_cidade_no_panorama(c["nome"], por_regua(ls, agora),
                                           agora, base.bruto_da_cidade(cid)))
-
-    # Os ribeirões de Itajaí (Murta, Canhanduba) — réguas de estuário, fora dos
-    # eixos do Açu e do Mirim (Plano da COMPDEC). Bloco próprio, sem fingir que
-    # pertencem a um dos rios.
-    ribeirao = [l for l in por_cidade.get(FOZ, []) if l.get("rio") in CURSOS_RIBEIRAO]
-    if ribeirao:
-        linhas.append("\n\n<b>Ribeirões de Itajaí</b> "
-                      "<i>(estuário, fora dos eixos do Açu e do Mirim)</i>")
-        linhas.extend(_reguas_agrupadas(por_regua(ribeirao, agora), agora))
 
     # Uma leitura de cidade fora do cadastro nunca some: entra no fim.
     for cid, ls in por_cidade.items():

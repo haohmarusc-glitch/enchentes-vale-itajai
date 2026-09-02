@@ -623,19 +623,20 @@ class TestGerais(unittest.TestCase):
         t = resp("/rios", b)
         i_acu = t.index("Itajaí-Açu")
         i_mirim = t.index("Itajaí-Mirim")
-        i_rib = t.index("Ribeirões de Itajaí")
-        # A régua do Açu fecha o Açu, ANTES do cabeçalho do Mirim.
+        # Açu: as réguas do Açu + o Ribeirão da Murta (que deságua no Açu),
+        # tudo ANTES do cabeçalho do Mirim.
         self.assertLess(i_acu, t.index("DC-01"))
         self.assertLess(t.index("DC-01"), i_mirim)
-        # A do Mirim vem na seção do Mirim (depois de Brusque), antes dos ribeirões.
-        self.assertLess(i_mirim, t.index("DC-10"))
+        self.assertLess(t.index("Ribeirão da Murta"), i_mirim)
+        self.assertLess(t.index("DC-07"), i_mirim)
+        # Mirim: as réguas do Mirim (depois de Brusque) + o Ribeirão Canhanduba.
         self.assertLess(t.index("Brusque"), t.index("DC-10"))
-        self.assertLess(t.index("DC-10"), i_rib)
-        # Os ribeirões saem à parte, agrupados pelo próprio ribeirão.
-        self.assertLess(i_rib, t.index("DC-07"))
-        self.assertIn("fora dos eixos", t)
-        self.assertIn("Ribeirão da Murta", t)
-        self.assertIn("Ribeirão Canhanduba", t)
+        self.assertLess(i_mirim, t.index("DC-10"))
+        self.assertLess(i_mirim, t.index("Ribeirão Canhanduba"))
+        self.assertLess(i_mirim, t.index("DC-08"))
+        # Não há mais bloco solto de ribeirões.
+        self.assertNotIn("Ribeirões de Itajaí", t)
+        self.assertNotIn("fora dos eixos", t)
 
     def test_rios_nao_rotula_curso_quando_a_cidade_tem_um_so(self):
         """As duas réguas de Itajaí na base padrão são ambas do Açu: sem subtítulo."""
