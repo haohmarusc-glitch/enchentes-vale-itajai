@@ -619,6 +619,36 @@ Enquanto o acesso não vier, **nada é atribuído**: o `codigo_ana` `83892990` n
 até a coordenada bater contra `-27.38547, -49.35812`. A regra é a mesma que barrou a DC-11: coordenada,
 não nome.
 
+### A norma da EPAGRI, lida por inteiro (RN de dez/2024): o que é aberto e o que é ofício (02/09/2026)
+
+Chegou a norma oficial — *Normas e Procedimentos para o Fornecimento de Dados, Declarações e Laudos
+Ambientais* (Deliberação DEX 05/2024, EPAGRI/Ciram). Ela reordena o que sabíamos das fontes da EPAGRI:
+
+- **Existe download GRATUITO e imediato**, só com cadastro (pessoa física serve), em
+  `https://ciram.epagri.sc.gov.br/dadosambientaispublicos/` — dados **horários brutos dos últimos 24
+  meses**. As variáveis liberadas nesse download são: temperatura, umidade, vento, pressão,
+  **precipitação** e **altura da maré**. Para o resto (inclusive **nível do rio**) e para além dos 24
+  meses, é solicitação (item 3).
+- **Achado que muda a tela do Itajaí:** a **altura de maré** da EPAGRI é um dado ABERTO (Anexo I:
+  5 min e horária), não precisa de ofício. Hoje o `PainelMare` mostra só maré **prevista** (tábua, via
+  `coleta_mares.py`) porque o marégrafo de Cabeçudas não publica — mas se houver uma PCD maregráfica da
+  EPAGRI no estuário de Itajaí, esse portal dá maré **medida**. Antes de usar: confirmar por
+  **coordenada** que a PCD está no porto/estuário de Itajaí (regra do projeto), e conferir o fuso do
+  arquivo (a norma não declara; abrir o CSV e checar contra uma leitura conhecida). Enquanto não
+  confirmado, a maré segue **prevista** — não trocar por suposição.
+- **Nível do rio NÃO está no download imediato** — confirma que o ofício C9/C5 (acesso programático ao
+  Rios On-Line, com código ANA ↔ coordenada e as faixas) continua sendo o caminho certo para o nível.
+- **Séries temporais por e-mail** (`dadosciram@epagri.sc.gov.br`) são o canal PAGO por padrão (Anexo IV:
+  R$ 11,86 + R$ 0,48/dado). Acadêmico tem isenção (item 4.1), **mas** o Anexo II exige carta timbrada
+  assinada pelo **orientador/chefe de departamento** — que o projeto não tem. Por isso o enquadramento
+  comunitário do C9, dirigido à **Sala de Situação** (`sshidrosc@`), foi a escolha deliberada e correta:
+  desvia dos dois pedágios (nota fiscal e ofício de orientador) caindo no canal de acesso ao painel.
+- **Regra de repasse:** a EPAGRI **não permite repasse a terceiros** e exige citação da fonte. Um site
+  público que republica a série da EPAGRI precisa dessa autorização explícita — mais um motivo para o
+  pedido formal do C9 pedir o *acesso ao painel/tempo real*, não a série temporal para redistribuir.
+
+Norma guardada como referência; o quadro de status dos ofícios está em `docs/oficios-prontos.md`.
+
 ## Traçado dos rios para o mapa geográfico — OpenStreetMap (01/09/2026)
 
 O mapa geográfico da tela do rio (fase 2b, no espírito do Kikikuru) usa o traçado dos rios do
