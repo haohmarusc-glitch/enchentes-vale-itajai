@@ -36,6 +36,11 @@ from comum import DADOS
 import notificador
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
+#: O bruto estadual (Taió, Ituporanga, Rio do Sul e as outras cabeceiras). Roda
+#: por um cron próprio; quando esse some — como sumiu na migração pro /opt, e o
+#: vigia ficou 13 h cego —, é justamente a cabeceira, onde a cheia começa, que
+#: congela. Por isso ele entra na vigilância.
+ULTIMO_NIVEL_SC = DADOS / "tempo-real" / "ultimo_nivel_sc.json"
 ESTADO = DADOS / "tempo-real" / "estado_saude.json"
 FUSO = ZoneInfo("America/Sao_Paulo")
 
@@ -46,6 +51,12 @@ TOLERANCIA_COLETA_MIN = 45
 #: com quase uma hora de atraso. O dobro disso é folga honesta antes de dizer
 #: que a fonte parou.
 TOLERANCIA_FONTE_MIN = 120
+
+#: O bruto estadual tem muita estação que fica silenciosa por horas (das 25, é
+#: normal só umas 7 publicarem num instante). Então a folga da fonte aqui é
+#: maior: o que importa vigiar é o COLETOR rodar (coletado_em) e a mais nova
+#: entre todas não passar disto — não cada régua, uma a uma.
+TOLERANCIA_BRUTO_FONTE_MIN = 180
 
 #: Não repete o mesmo aviso de falha antes disto. Uma coleta morta continua
 #: morta; avisar de 15 em 15 minutos só ensina a ignorar.
@@ -199,6 +210,57 @@ def avaliar(dados: dict | None, agora: datetime,
     return Diagnostico(True, "coleta e fonte em dia", detalhes)
 
 
+def avaliar_bruto(dados: dict | None, agora: datetime) -> Diagnostico:
+    """
+    Vigia o bruto estadual, e SÓ o essencial dele: o coletor rodou
+    (`coletado_em`) e a leitura mais nova entre as estações não está velha demais.
+
+    De propósito NÃO faz a conta por régua do `avaliar`: no bruto estadual a
+    maioria das estações fica sem leitura num instante qualquer, e cobrar cada
+    uma deixaria o vigia permanentemente vermelho — que é o mesmo que mudo.
+    """
+    if dados is None:
+        return Diagnostico(False, "o nível estadual (cabeceiras) não tem arquivo de coleta", [])
+
+    detalhes: list[str] = []
+    problemas: list[str] = []
+
+    bruto = dados.get("coletado_em")
+    if not bruto:
+        problemas.append("o nível estadual não diz quando foi coletado")
+    else:
+        try:
+            coletado = datetime.fromisoformat(bruto)
+            if coletado.tzinfo is None:  # `coletado_em` é UTC por contrato
+                coletado = coletado.replace(tzinfo=timezone.utc)
+            idade = _idade_min(coletado, agora)
+            detalhes.append(f"nível estadual: coletor rodou há {idade:.0f} min")
+            if idade > TOLERANCIA_COLETA_MIN:
+                problemas.append(f"o coletor de nível estadual não roda há {idade:.0f} min")
+        except ValueError:
+            problemas.append(f"nível estadual: coletado_em ilegível: {bruto!r}")
+
+    medidos = []
+    for l in dados.get("leituras") or []:
+        m = l.get("medido_em")
+        if not m:
+            continue
+        try:
+            q = datetime.fromisoformat(m)
+        except ValueError:
+            continue
+        medidos.append(q.replace(tzinfo=FUSO) if q.tzinfo is None else q)
+    if medidos:
+        idade = _idade_min(max(medidos), agora)
+        detalhes.append(f"nível estadual: medição mais recente há {idade:.0f} min")
+        if idade > TOLERANCIA_BRUTO_FONTE_MIN:
+            problemas.append(f"o nível estadual não tem leitura nova há {idade:.0f} min")
+
+    if problemas:
+        return Diagnostico(False, "; ".join(problemas), detalhes)
+    return Diagnostico(True, "nível estadual em dia", detalhes)
+
+
 def deve_avisar(diag: Diagnostico, estado: dict, agora: datetime) -> bool:
     """
     Manda aviso de falha no máximo uma vez a cada SILENCIO_H — e manda a
@@ -271,6 +333,24 @@ def main() -> int:
     vistas_antes = set(estado.get("estacoes_vistas") or [])
     diag = (Diagnostico(False, ilegivel, []) if ilegivel
             else avaliar(dados, agora, vistas_antes))
+
+    # O bruto estadual entra na mesma nota. Só no caminho de produção: um
+    # `--arquivo` de teste aponta só o ultimo.json, e não deve arrastar o
+    # arquivo real do estadual para dentro do teste.
+    if not args.arquivo:
+        bruto_dados = None
+        if ULTIMO_NIVEL_SC.exists():
+            try:
+                bruto_dados = json.loads(ULTIMO_NIVEL_SC.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError, UnicodeDecodeError):
+                bruto_dados = None  # ilegível cai no "sem arquivo" do avaliar_bruto
+        diag_bruto = avaliar_bruto(bruto_dados, agora)
+        if not diag_bruto.ok:
+            motivo = diag_bruto.motivo if diag.ok else f"{diag.motivo}; {diag_bruto.motivo}"
+            diag = Diagnostico(False, motivo, diag.detalhes + diag_bruto.detalhes)
+        else:
+            diag.detalhes.extend(diag_bruto.detalhes)
+
     print(diag)
 
     if args.avisar:
