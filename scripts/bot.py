@@ -821,6 +821,19 @@ def nome_curto(leitura: dict) -> str:
 
 NOME_RIO = {"itajai-acu": "Itajaí-Açu", "itajai-mirim": "Itajaí-Mirim"}
 
+#: Curso d'água de cada régua, para subagrupar a foz. As onze réguas de Itajaí
+#: medem QUATRO cursos diferentes (dois rios + dois ribeirões); no painel cada
+#: uma aparece sob o seu, não amontoadas — o morador de Canhanduba não lê o nível
+#: do Açu achando que é o do ribeirão dele.
+NOME_CURSO = {
+    "itajai-acu": "Rio Itajaí-Açu",
+    "itajai-mirim": "Rio Itajaí-Mirim",
+    "ribeirao-murta": "Ribeirão da Murta",
+    "ribeirao-canhanduba": "Ribeirão Canhanduba",
+}
+#: Ordem de exibição dos cursos: os dois rios principais, depois os ribeirões.
+ORDEM_CURSO = ["itajai-acu", "itajai-mirim", "ribeirao-murta", "ribeirao-canhanduba"]
+
 
 def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict | None = None) -> list[str]:
     """
@@ -850,10 +863,23 @@ def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict 
     # de Limoeiro, 20 km rio acima, como se fosse a foz.)
     saida = [f"\n<b>{notificador.esc(nome)}</b> — {len(ls)} réguas, "
              "com zeros diferentes (não se comparam):"]
-    for l in sorted(ls, key=lambda x: x.get("estacao", "")):
-        idade = idade_min(l.get("medido_em"), agora)
-        saida.append(f"\n  {metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
-                     f" · {texto_idade(idade)}")
+    # Cada régua sob o SEU curso d'água. Itajaí mede quatro (Açu, Mirim e dois
+    # ribeirões); amontoá-las numa lista só fazia o morador ler a régua errada.
+    # Cidade com várias réguas num curso só (não é o caso de Itajaí) segue plana.
+    por_curso: dict[str, list[dict]] = {}
+    for l in ls:
+        por_curso.setdefault(l.get("rio") or "", []).append(l)
+    multi = len(por_curso) > 1
+    ordem = sorted(por_curso, key=lambda r: ORDEM_CURSO.index(r) if r in ORDEM_CURSO
+                   else len(ORDEM_CURSO))
+    recuo = "    " if multi else "  "
+    for rio in ordem:
+        if multi:
+            saida.append(f"\n  <i>{notificador.esc(NOME_CURSO.get(rio, rio or '—'))}</i>")
+        for l in sorted(por_curso[rio], key=lambda x: x.get("estacao", "")):
+            idade = idade_min(l.get("medido_em"), agora)
+            saida.append(f"\n{recuo}{metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
+                         f" · {texto_idade(idade)}")
     return saida
 
 
