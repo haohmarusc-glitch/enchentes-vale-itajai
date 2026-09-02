@@ -834,6 +834,26 @@ NOME_CURSO = {
 #: Ordem de exibição dos cursos: os dois rios principais, depois os ribeirões.
 ORDEM_CURSO = ["itajai-acu", "itajai-mirim", "ribeirao-murta", "ribeirao-canhanduba"]
 
+#: Itajaí é a foz DOS DOIS rios (aparece no fim do Açu e no fim do Mirim). Cada
+#: régua dela vai para a seção do rio que ela mede: as do Açu fecham o Açu, as do
+#: Mirim fecham o Mirim, junto de Vidal Ramos → Botuverá → Brusque.
+FOZ = "itajai"
+#: Cada ribeirão de Itajaí deságua no SEU rio, e é sob ele que a régua aparece no
+#: painel — a Murta no Açu, a Canhanduba (Rio do Meio) no Mirim. Definido com o
+#: Jefferson em 02/09/2026 (conhecimento local; a confirmar no mapa de bacia do
+#: Plano da COMPDEC). Continuam réguas de estuário: mostram a cota, mas seguem
+#: sem aviso automático — isso é regra do cadastro e não muda aqui.
+RIBEIRAO_PARA_RIO = {
+    "ribeirao-murta": "itajai-acu",
+    "ribeirao-canhanduba": "itajai-mirim",
+}
+
+
+def _eixo_da_regua(l: dict) -> str | None:
+    """O rio a que a régua pertence — o ribeirão vai para o rio em que deságua."""
+    r = l.get("rio")
+    return RIBEIRAO_PARA_RIO.get(r, r)
+
 
 def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict | None = None) -> list[str]:
     """
@@ -863,9 +883,18 @@ def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict 
     # de Limoeiro, 20 km rio acima, como se fosse a foz.)
     saida = [f"\n<b>{notificador.esc(nome)}</b> — {len(ls)} réguas, "
              "com zeros diferentes (não se comparam):"]
-    # Cada régua sob o SEU curso d'água. Itajaí mede quatro (Açu, Mirim e dois
-    # ribeirões); amontoá-las numa lista só fazia o morador ler a régua errada.
-    # Cidade com várias réguas num curso só (não é o caso de Itajaí) segue plana.
+    saida.extend(_reguas_agrupadas(ls, agora))
+    return saida
+
+
+def _reguas_agrupadas(ls: list[dict], agora: datetime) -> list[str]:
+    """
+    As linhas de várias réguas, cada uma sob o SEU curso d'água.
+
+    Itajaí mede quatro cursos (Açu, Mirim e dois ribeirões); amontoá-las numa
+    lista só fazia o morador ler a régua errada. Com um curso só (não é o caso da
+    foz), a lista segue plana, sem subtítulo.
+    """
     por_curso: dict[str, list[dict]] = {}
     for l in ls:
         por_curso.setdefault(l.get("rio") or "", []).append(l)
@@ -873,14 +902,15 @@ def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict 
     ordem = sorted(por_curso, key=lambda r: ORDEM_CURSO.index(r) if r in ORDEM_CURSO
                    else len(ORDEM_CURSO))
     recuo = "    " if multi else "  "
+    out: list[str] = []
     for rio in ordem:
         if multi:
-            saida.append(f"\n  <i>{notificador.esc(NOME_CURSO.get(rio, rio or '—'))}</i>")
+            out.append(f"\n  <i>{notificador.esc(NOME_CURSO.get(rio, rio or '—'))}</i>")
         for l in sorted(por_curso[rio], key=lambda x: x.get("estacao", "")):
             idade = idade_min(l.get("medido_em"), agora)
-            saida.append(f"\n{recuo}{metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
-                         f" · {texto_idade(idade)}")
-    return saida
+            out.append(f"\n{recuo}{metros(l['nivel_m'])} — {notificador.esc(nome_curto(l))}"
+                       f" · {texto_idade(idade)}")
+    return out
 
 
 def resposta_rios(base: Base, agora: datetime) -> list[str]:
@@ -892,31 +922,43 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
         por_cidade.setdefault(str(l.get("cidade")), []).append(l)
 
     linhas = ["<b>O rio agora</b> — de montante à foz"]
-    # Segue o MAPA do rio: cada cidade na ordem do curso, o Açu inteiro (até a
-    # foz, Itajaí) e depois o Mirim. As cidades SEM leitura agora entram na
-    # posição delas, marcadas — o morador vê o rio inteiro e onde há e onde não
-    # há olho neste momento. Itajaí (foz dos dois) aparece uma vez, no fim do Açu.
-    vistas: set[str] = set()
+    # Segue o MAPA do rio: cada cidade na ordem do curso, o Açu inteiro e depois
+    # o Mirim. As cidades SEM leitura agora entram na posição delas, marcadas.
+    # Itajaí é foz DOS DOIS: aparece no fim de cada rio, mas com só as réguas
+    # daquele rio — as do Açu fecham o Açu, as do Mirim fecham o Mirim (junto de
+    # Vidal Ramos → Botuverá → Brusque). Cada ribeirão vai para o rio em que
+    # deságua (Murta no Açu, Canhanduba no Mirim), rotulado pelo próprio ribeirão.
+    mostradas: set[str] = set()
+    foz_por_rio: set[tuple[str, str]] = set()
     rio_atual: str | None = None
     for c in base.cidades():
-        cid = c["id"]
-        if cid in vistas:
+        cid, rio = c["id"], c["rio"]
+        if cid == FOZ:
+            if (cid, rio) in foz_por_rio:
+                continue
+            foz_por_rio.add((cid, rio))
+        elif cid in mostradas:
             continue
-        vistas.add(cid)
-        if c["rio"] != rio_atual:
-            rio_atual = c["rio"]
+        mostradas.add(cid)
+        if rio != rio_atual:
+            rio_atual = rio
             linhas.append(f"\n\n<b>{NOME_RIO.get(rio_atual, rio_atual)}</b>")
         # Junta primária e resgate antes de decidir (Blumenau: Defesa Civil +
         # AlertaBlu são a MESMA régua). Sem municipal, o bruto estadual preenche
         # a lacuna (rotulado, nunca como cota).
-        linhas.extend(_cidade_no_panorama(c["nome"], por_regua(por_cidade.get(cid, []), agora),
+        ls = por_cidade.get(cid, [])
+        if cid == FOZ:
+            # Só as réguas cujo EIXO é este rio — cada ribeirão entra no rio em
+            # que deságua (a Murta no Açu, a Canhanduba no Mirim).
+            ls = [l for l in ls if _eixo_da_regua(l) == rio]
+        linhas.extend(_cidade_no_panorama(c["nome"], por_regua(ls, agora),
                                           agora, base.bruto_da_cidade(cid)))
 
     # Uma leitura de cidade fora do cadastro nunca some: entra no fim.
     for cid, ls in por_cidade.items():
-        if cid in vistas:
+        if cid in mostradas or cid == FOZ:
             continue
-        vistas.add(cid)
+        mostradas.add(cid)
         linhas.extend(_cidade_no_panorama(cid, por_regua(ls, agora), agora))
 
     coletado = base.ultimo.get("coletado_em")

@@ -593,26 +593,50 @@ class TestGerais(unittest.TestCase):
             nome_curto({"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"}),
             "DC-10 Bairro Limoeiro")
 
-    def test_rios_agrupa_as_reguas_de_itajai_por_curso(self):
-        """Itajaí mede quatro cursos; cada régua vem sob o seu, não amontoada."""
+    def test_rios_distribui_as_reguas_de_itajai_por_rio(self):
+        """
+        Itajaí é foz dos dois: a régua do Açu fecha o Açu, a do Mirim fecha o
+        Mirim (junto de Brusque), e os ribeirões — fora dos eixos — saem à parte.
+        """
+        # Cada rio com DUAS réguas (como na foz real), para vir o bloco com os
+        # nomes das réguas, não a linha única de "um número".
         u = {"coletado_em": "2026-08-30T21:25:00+00:00", "leituras": [
+            {"estacao": "Brusque", "rio": "itajai-mirim", "cidade": "brusque",
+             "nivel_m": 2.0, "medido_em": "2026-08-30T18:15:00"},
             {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu",
-             "cidade": "itajai", "nivel_m": 0.81, "medido_em": "2026-08-30T18:20:00"},
+             "cidade": "itajai", "nivel_m": 0.90, "medido_em": "2026-08-30T18:20:00"},
+            {"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+             "rio": "itajai-acu", "cidade": "itajai", "nivel_m": 0.92,
+             "medido_em": "2026-08-30T18:20:00"},
             {"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim",
              "cidade": "itajai", "nivel_m": 4.61, "medido_em": "2026-08-30T18:20:00"},
+            {"estacao": "DC-03 Rio Itajaí-Mirim - Captação SEMASA", "rio": "itajai-mirim",
+             "cidade": "itajai", "nivel_m": 0.59, "medido_em": "2026-08-30T18:20:00"},
             {"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta",
              "cidade": "itajai", "nivel_m": 0.36, "medido_em": "2026-08-30T18:20:00"},
+            {"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+             "rio": "ribeirao-canhanduba", "cidade": "itajai", "nivel_m": 1.1,
+             "medido_em": "2026-08-30T18:20:00"},
         ]}
         b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
                  le_json("enchentes.json"), le_json("cotas-ruas.json"))
-        bloco = resp("/rios", b).split("3 réguas")[1]
-        for rotulo in ("Rio Itajaí-Açu", "Rio Itajaí-Mirim", "Ribeirão da Murta"):
-            self.assertIn(rotulo, bloco)
-        # Ordem: os dois rios principais, depois o ribeirão.
-        self.assertLess(bloco.index("Rio Itajaí-Açu"), bloco.index("Rio Itajaí-Mirim"))
-        self.assertLess(bloco.index("Rio Itajaí-Mirim"), bloco.index("Ribeirão da Murta"))
-        # A régua do Mirim fica sob o Mirim, não solta.
-        self.assertLess(bloco.index("Rio Itajaí-Mirim"), bloco.index("DC-10 Bairro Limoeiro"))
+        t = resp("/rios", b)
+        i_acu = t.index("Itajaí-Açu")
+        i_mirim = t.index("Itajaí-Mirim")
+        # Açu: as réguas do Açu + o Ribeirão da Murta (que deságua no Açu),
+        # tudo ANTES do cabeçalho do Mirim.
+        self.assertLess(i_acu, t.index("DC-01"))
+        self.assertLess(t.index("DC-01"), i_mirim)
+        self.assertLess(t.index("Ribeirão da Murta"), i_mirim)
+        self.assertLess(t.index("DC-07"), i_mirim)
+        # Mirim: as réguas do Mirim (depois de Brusque) + o Ribeirão Canhanduba.
+        self.assertLess(t.index("Brusque"), t.index("DC-10"))
+        self.assertLess(i_mirim, t.index("DC-10"))
+        self.assertLess(i_mirim, t.index("Ribeirão Canhanduba"))
+        self.assertLess(i_mirim, t.index("DC-08"))
+        # Não há mais bloco solto de ribeirões.
+        self.assertNotIn("Ribeirões de Itajaí", t)
+        self.assertNotIn("fora dos eixos", t)
 
     def test_rios_nao_rotula_curso_quando_a_cidade_tem_um_so(self):
         """As duas réguas de Itajaí na base padrão são ambas do Açu: sem subtítulo."""
