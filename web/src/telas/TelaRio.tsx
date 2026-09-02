@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, useState } from 'react'
+import { Suspense, lazy, useMemo, useRef, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
@@ -64,6 +64,21 @@ export default function TelaRio({ rioId }: { rioId: string }) {
   )
 
   const [selecionadaId, setSelecionadaId] = useState<string | null>(null)
+
+  // Âncora para o detalhe da cidade (cotas de rua e abrigo). No celular o mapa é
+  // o último cartão da página; ao tocar numa cidade nele, o detalhe muda lá em
+  // cima, fora da tela — e para quem está com o dedo no mapa "não abre nada".
+  // Por isso a seleção VINDA DO MAPA rola o detalhe até a vista. A seleção pelo
+  // diagrama não precisa: o detalhe já vem logo abaixo dele.
+  const detalheRef = useRef<HTMLDivElement | null>(null)
+  const selecionarERolar = (id: string) => {
+    setSelecionadaId(id)
+    // Espera o React repintar o detalhe da nova cidade antes de rolar.
+    requestAnimationFrame(() =>
+      detalheRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+    )
+  }
+
   const cidadeId = selecionadaId ?? padrao
   const selecionada = cidades.find((c) => c.id === cidadeId)
   const indice = cidades.findIndex((c) => c.id === cidadeId)
@@ -151,13 +166,15 @@ export default function TelaRio({ rioId }: { rioId: string }) {
       ) : null}
 
       {selecionada ? (
-        <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
-          <CotasDeRua
-            cidade={selecionada}
-            leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
-            agora={agora}
-          />
-        </Suspense>
+        <div ref={detalheRef}>
+          <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
+            <CotasDeRua
+              cidade={selecionada}
+              leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
+              agora={agora}
+            />
+          </Suspense>
+        </div>
       ) : null}
 
       {selecionada && selecionada.cotas_m && Object.keys(selecionada.cotas_m).length > 0 ? (
@@ -220,7 +237,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
                 cidades={cidades}
                 tempoReal={tempoReal}
                 agora={agora}
-                aoSelecionar={setSelecionadaId}
+                aoSelecionar={selecionarERolar}
               />
             </Suspense>
           ) : (
