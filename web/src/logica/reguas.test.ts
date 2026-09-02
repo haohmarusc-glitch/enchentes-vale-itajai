@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { reguasComCota, separarFonte, todasAsReguas } from './reguas'
+import { agruparPorCurso, reguasComCota, separarFonte, todasAsReguas } from './reguas'
 import type { EstacaoTempoReal } from '../dados/tipos'
 
 /*
@@ -136,6 +136,34 @@ test('todas as réguas de Itajaí incluem os ribeirões, que não têm tela de r
     ...reguasComCota(estacoesTempoReal, 'itajai-mirim', 'itajai'),
   ].map((r) => r.id)
   for (const r of ribeiroes) assert.ok(!nasTelas.includes(r.id))
+})
+
+test('agruparPorCurso: cursos na ordem rio→ribeirão e réguas montante→foz', () => {
+  const todas = todasAsReguas(estacoesTempoReal, 'itajai')
+  const grupos = agruparPorCurso(todas)
+  // Os quatro cursos de Itajaí, nesta ordem: os dois rios, depois os ribeirões.
+  assert.deepEqual(
+    grupos.map((g) => g.rio),
+    ['itajai-acu', 'itajai-mirim', 'ribeirao-murta', 'ribeirao-canhanduba'],
+  )
+  // No Mirim, Limoeiro (DC-10) é a mais a montante — vem primeiro.
+  const mirim = grupos.find((g) => g.rio === 'itajai-mirim')!
+  assert.equal(mirim.reguas[0]!.id, 'DC-10')
+  // A ordem_descida é monótona não decrescente descendo a lista.
+  for (let i = 1; i < mirim.reguas.length; i++) {
+    const a = mirim.reguas[i - 1]!.ordemDescida
+    const b = mirim.reguas[i]!.ordemDescida
+    if (a != null && b != null) assert.ok(a <= b, `${mirim.reguas[i]!.id} fora de ordem`)
+  }
+})
+
+test('agruparPorCurso: DC-04 e DC-06 ficam co-locadas, sem fila entre elas', () => {
+  const grupos = agruparPorCurso(todasAsReguas(estacoesTempoReal, 'itajai'))
+  const mirim = grupos.find((g) => g.rio === 'itajai-mirim')!
+  const d4 = mirim.reguas.find((r) => r.id === 'DC-04')!
+  const d6 = mirim.reguas.find((r) => r.id === 'DC-06')!
+  assert.equal(d4.ordemDescida, d6.ordemDescida, 'mesma posição na descida')
+  assert.ok(d4.ordemNota, 'a co-locada explica que a ordem entre elas é indefinível')
 })
 
 test('separarFonte tira a URL do texto sem inventar link', () => {

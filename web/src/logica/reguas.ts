@@ -42,6 +42,71 @@ export interface ReguaComCota {
   rio: string | null
   /** Documento de onde a cota veio, como escrito no arquivo. */
   fonteCotas: string | null
+  /**
+   * Posição na descida do curso (1 = mais a montante). `null` quando a fonte
+   * não deu coordenada. Réguas co-locadas (braços paralelos) compartilham o
+   * valor e trazem `ordemNota`.
+   */
+  ordemDescida: number | null
+  ordemNota: string | null
+}
+
+/** Nome de cada curso d'água, para o subtítulo do agrupamento. */
+export const NOME_CURSO: Record<string, string> = {
+  'itajai-acu': 'Rio Itajaí-Açu',
+  'itajai-mirim': 'Rio Itajaí-Mirim',
+  'ribeirao-murta': 'Ribeirão da Murta',
+  'ribeirao-canhanduba': 'Ribeirão Canhanduba',
+}
+
+/** Ordem de exibição dos cursos: os dois rios, depois os ribeirões. */
+const ORDEM_CURSO = ['itajai-acu', 'itajai-mirim', 'ribeirao-murta', 'ribeirao-canhanduba']
+
+/** Um curso d'água com suas réguas já na ordem da descida (montante → foz). */
+export interface GrupoDeCurso {
+  rio: string
+  nome: string
+  reguas: ReguaComCota[]
+}
+
+/**
+ * Agrupa as réguas por curso e ordena cada grupo pela descida do rio.
+ *
+ * É o mesmo desenho do `/rios` do bot: numa cidade com réguas em vários cursos
+ * (Itajaí tem quatro), amontoá-las numa lista faz o morador ler a régua errada.
+ * Cada curso vira um bloco com nome; dentro dele, montante → foz por
+ * `ordemDescida`. As co-locadas (DC-04 × DC-06) ficam juntas, sem fila.
+ */
+export function agruparPorCurso(reguas: ReguaComCota[]): GrupoDeCurso[] {
+  const porCurso = new Map<string, ReguaComCota[]>()
+  for (const r of reguas) {
+    const chave = r.rio ?? ''
+    const lista = porCurso.get(chave)
+    if (lista) lista.push(r)
+    else porCurso.set(chave, [r])
+  }
+  const posicao = (rio: string) => {
+    const i = ORDEM_CURSO.indexOf(rio)
+    return i < 0 ? ORDEM_CURSO.length : i
+  }
+  return [...porCurso.keys()]
+    .sort((a, b) => posicao(a) - posicao(b))
+    .map((rio) => ({
+      rio,
+      nome: NOME_CURSO[rio] ?? rio ?? '—',
+      reguas: [...porCurso.get(rio)!].sort(porDescida),
+    }))
+}
+
+/**
+ * Montante → foz por `ordemDescida`. Sem ela (fonte sem coordenada), cai para o
+ * id, que é estável — nunca inventa uma ordem física a partir do código.
+ */
+function porDescida(a: ReguaComCota, b: ReguaComCota): number {
+  if (a.ordemDescida != null && b.ordemDescida != null && a.ordemDescida !== b.ordemDescida) {
+    return a.ordemDescida - b.ordemDescida
+  }
+  return a.id.localeCompare(b.id)
 }
 
 /**
@@ -108,6 +173,8 @@ export function todasAsReguas(
       referencia: e.referencia ?? null,
       rio: e.rio,
       fonteCotas: e.fonte_cotas ?? null,
+      ordemDescida: e.ordem_descida ?? null,
+      ordemNota: e.ordem_nota ?? null,
     })
   }
   return saida

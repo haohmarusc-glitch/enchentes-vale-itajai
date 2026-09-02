@@ -66,6 +66,13 @@
   line-height: 1.5;
 }
 
+.introReguas {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+  line-height: 1.5;
+}
+
 /* O mapa entra sob pedido: quem quer o nível do rio não paga pelo download de
    um mapa de 1983, e o tráfego nos tiles públicos do OpenStreetMap não
    multiplica sozinho numa noite de enchente. */

@@ -71,6 +71,19 @@ export interface EstacaoTempoReal {
   fonte_cotas?: string
   alerta_automatico?: boolean
   motivo_sem_alerta?: string
+  /** [lat, lon] da régua, quando a fonte publica — hoje as 11 réguas DC de
+   *  Itajaí (marcadores da página Mapa.php da Defesa Civil). */
+  lat?: number
+  lon?: number
+  /**
+   * Posição na descida do curso (1 = mais a montante, cresce até a foz),
+   * calculada pela distância à foz em `scripts/ordenar_estacoes_itajai.py`.
+   * Duas réguas co-locadas (DC-04 × DC-06, braços paralelos) compartilham o
+   * mesmo valor e trazem `ordem_nota` dizendo que a ordem entre elas é
+   * indefinível. Ausente quando não há coordenada.
+   */
+  ordem_descida?: number
+  ordem_nota?: string
 }
 
 export interface Estacoes {

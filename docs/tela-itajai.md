@@ -27,6 +27,35 @@ Duas diferenças em relação à especificação, e as duas são deliberadas:
   acima da maré, por isso dispara aviso. Esteve cadastrada por engano como régua
   de Ilhota; corrigido. Ilhota não tem régua própria.
 
+### Ordem de descida no painel (T5, 02/09/2026) ✔ existe
+
+Com as coordenadas das 11 réguas preenchidas (`preencher_coordenadas_dc.py`) e a
+ordem calculada (`ordenar_estacoes_itajai.py`, campo `ordem_descida` no
+`estacoes.json`), o painel deixou de ser uma lista plana por código. Agora
+`ReguasDaCidade` recebe `agrupadoPorCurso` e mostra as réguas **sob o seu curso
+d'água** — Rio Itajaí-Açu, Rio Itajaí-Mirim, Ribeirão da Murta, Ribeirão
+Canhanduba, nessa ordem — e, dentro de cada um, **da nascente para o mar** por
+`ordem_descida`. É o mesmo desenho do `/rios` do bot (`_reguas_agrupadas`), pela
+mesma razão: numa cidade com quatro cursos, a lista plana faz o morador ler a
+régua errada (a de Limoeiro, 26 km rio acima, encostava na do estuário).
+
+**DC-04 × DC-06 saem lado a lado, não em fila.** As duas ficam à mesma distância
+da foz (~4,8 km) em braços paralelos do Mirim; a fonte não distingue qual vem
+antes. Compartilham `ordem_descida` e trazem `ordem_nota` — a tela as agrupa num
+bloco com a ressalva, em vez de inventar uma sequência. A lógica está em
+`agruparPorCurso`/`emParesColocados`, travada por teste (`reguas.test.ts`).
+
+Sem coordenada (`ordem_descida` ausente), a régua cai para a ordem do id, que é
+estável — nunca se deduz posição física a partir do número do código.
+
+**Pendente (não neste commit): marcador de cada régua DC no mapa.** As 11 réguas
+já têm `lat`/`lon` no `estacoes.json`, mas o `MapaRios` hoje ancora UM marcador
+por cidade e usa essas âncoras para colorir o traçado por faixa. Espalhar 11
+marcadores em Itajaí mexe nessa lógica (várias réguas na foz, algumas fora do
+traçado — canal e ribeirões) e no enquadramento da bacia — é mudança à parte, com
+teste próprio, para não arriscar a coloração que o morador lê. Fica como próximo
+passo, separado desta entrega da sequência.
+
 ## Bloco 2 — maré ✔ existe
 
 `PainelMare`, com `scripts/coleta_mares.py` (tábua oficial) e cálculo de

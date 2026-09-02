@@ -16,7 +16,7 @@ function regua(titulo: string, cotas: [string, number][]): ReguaComCota {
   return {
     id: titulo.split(' ')[0]!, titulo, nome: titulo, cotas,
     alertaAutomatico: true, motivoSemAlerta: null, referencia: 'régua',
-    rio: 'itajai-mirim', fonteCotas: null,
+    rio: 'itajai-mirim', fonteCotas: null, ordemDescida: null, ordemNota: null,
   }
 }
 

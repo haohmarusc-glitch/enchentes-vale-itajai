@@ -20,6 +20,37 @@
   margin-top: 0.3rem;
 }
 
+.grupo {
+  display: block;
+  margin-top: 0.55rem;
+}
+
+.curso {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--tinta-fraca);
+}
+
+.par {
+  display: block;
+  margin: 0.3rem 0;
+  padding-left: 0.6rem;
+  border-left: 2px dashed var(--borda, #d8d8de);
+}
+
+.parNota {
+  display: block;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--tinta-fraca);
+}
+
+.par .regua {
+  border-left: none;
+  padding-left: 0;
+}
+
 .regua {
   display: block;
   margin: 0.3rem 0;
