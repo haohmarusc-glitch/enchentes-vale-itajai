@@ -105,6 +105,11 @@ JSONs antes de construir**: se os dados não passarem, nada vai ao ar e o site n
 antes. As publicações de tempo real vão para o branch `tempo-real` e não disparam build; a página
 busca aquele branch em tempo de execução.
 
+O **site** publica sozinho no push ao `main` (acima). Os **coletores e o bot rodam na VPS**, de
+`/opt/enchentes-vale-itajai`, e o deploy de lá é um comando (como root, que tem o alias de deploy):
+`scripts/deploy.sh` — traz o `main` e reinicia o bot só se o código dele (`bot.py` ou os módulos que
+ele importa) mudou; os coletores pegam o código novo no próximo ciclo do cron, sem restart.
+
 ## Telas
 
 1. **`/acu` — Itajaí-Açu** — Taió/Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí
