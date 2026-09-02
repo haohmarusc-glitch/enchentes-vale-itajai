@@ -145,6 +145,10 @@ export default function MapaRios({
       attribution: '© colaboradores do OpenStreetMap',
     }).addTo(mapa)
     mapaRef.current = mapa
+    // Primeira pintura já na bacia (zoom 9), para o mapa nunca piscar o mundo ou
+    // Santa Catarina inteira enquanto o traçado carrega. O fitBounds abaixo
+    // refina para o enquadramento das cidades assim que o geojson chega.
+    mapa.setView([-27.0, -49.2], 9)
 
     const url = urlDoRio(rioId)
     if (!url) {
@@ -189,7 +193,15 @@ export default function MapaRios({
         const fundo = L.geoJSON(geo as unknown as GeoJSON.GeoJsonObject, {
           style: { color: '#9aa7b2', weight: 3, opacity: 0.55 },
         }).addTo(mapa)
-        mapa.fitBounds(fundo.getBounds(), { padding: [16, 16] })
+        // Enquadra a BACIA pelos marcadores das cidades, não pelo traçado inteiro
+        // (que se estende por afluentes e deixava a bacia pequena no canto). O
+        // morador abre o mapa já vendo as cidades do rio. Sem cidade com
+        // coordenada, cai para os limites do traçado.
+        const limites =
+          espinha.length > 0
+            ? L.latLngBounds(espinha.map((p) => [p[1], p[0]] as [number, number]))
+            : fundo.getBounds()
+        mapa.fitBounds(limites, { padding: [24, 24] })
 
         // Por cima, cada trecho na cor da faixa da cidade a montante. Agrupa
         // arestas vizinhas de mesma cor numa só linha, para não criar milhares
