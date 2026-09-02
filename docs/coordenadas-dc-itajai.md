@@ -1,5 +1,14 @@
 # Coordenadas das 11 réguas DC de Itajaí — busca no ArcGIS (02/09/2026)
 
+> **✅ ATUALIZAÇÃO (02/09/2026): as 11 coordenadas foram ENCONTRADAS** — não no ArcGIS (que segue
+> atrás de token, abaixo), mas nos **marcadores Leaflet da página `Mapa.php` da Defesa Civil de Itajaí**
+> (`defesacivil.itajai.sc.gov.br/monitoramento/Mapa.php`), lidas do HTML. Preenchidas em
+> `data/estacoes.json` → `estacoes_tempo_real` por `scripts/preencher_coordenadas_dc.py` (com
+> `fonte_coordenada` e teste travando a coerência: DC-01/CEPSUL a mais perto da foz, DC-10/Limoeiro a mais
+> longe). **Destrava a ordenação do Mirim** (próximo passo: `scripts/ordenar_estacoes_itajai.py` projetando
+> no traçado, para desempatar DC-04×DC-06). O resto desta seção fica como registro histórico da busca.
+
+
 Objetivo: preencher `coordenadas` das réguas DC-01..DC-11 em `data/estacoes.json` para ordenar o
 Itajaí-Mirim (e os demais) **pela descida do rio em direção ao mar**, em vez de por descrição.
 
