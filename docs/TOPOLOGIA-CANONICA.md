@@ -90,8 +90,9 @@ fica vermelho. Rode `python3 scripts/validar_dados.py` antes de todo commit em
   Indaial e Ilhota).
 - Distância **ao longo do rio** no `transito.json` (hoje as faixas são de
   literatura JICA; a reta subestima o percurso ~1,3–1,5×).
-- Trazer a estrutura de árvore também ao `/rios` do bot (hoje o bot lista o Açu na
-  ordem do arquivo, sem os rótulos de cabeceira/afluente que a tela mostra).
+- ~~Trazer a estrutura de árvore ao `/rios` do bot~~ — **feito** (02/09/2026):
+  `resposta_rios` mostra o Açu em três blocos (cabeceiras / tronco / afluentes),
+  como a tela; o Mirim segue em fila. Travado por `teste_bot.py`.
 - Chuva de Apiúna: os mapeamentos (CEMADEN, DCSC-00178) foram removidos com a
   saída do município do eixo; se um dia quiser mostrar chuva de ponto fora do
   eixo, é uma feature à parte.
