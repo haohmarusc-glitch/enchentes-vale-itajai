@@ -1,0 +1,177 @@
+#!/usr/bin/env python3
+"""
+Coleta o NÍVEL BRUTO das estações da bacia do Itajaí na rede estadual (Defesa Civil de SC, GraphQL).
+
+Fonte: POST https://monitoramento.defesacivil.sc.gov.br/graphql  (query Tags_data)
+É a versão em Python do curl validado em 01/09/2026. Irmão do `coleta_chuva_sc.py` (mesma fonte).
+
+REGRA DE FUNDO: o nível estadual é BRUTO — está no zero de régua da estação, NÃO no zero das cotas
+municipais. Por isso TODA leitura sai com:
+    origem="estadual", datum="bruto_estadual", offset_datum=None, usar_para_cota=False
+Nada daqui pinta faixa nem dispara aviso até um offset ser calibrado POR ESTAÇÃO e validado em mais de um
+instante (o caso Brusque, 17h "offset ~0" -> 23h diferença de 1,9 m, mostra que um ponto só não basta).
+
+ARMADILHAS que este coletor já trata (todas vistas em 01/09):
+  1. `rio_nivel.value` é o NÚMERO; `rio_nivel.show.value` é só flag de exibição (booleano). Lê-se .value,
+     e ainda assim com guarda `e_numero` (um booleano não é metro).
+  2. `value` null = "sem leitura agora", NÃO "sem sensor". Gaspar (DCSC-00005) tem sensor e às vezes vem null.
+  3. Estações "(H)" reportam ALTITUDE/cota absoluta (Salete 399 m, Petrolândia 876 m…). Descartadas.
+     Também descarta qualquer valor > LIMITE_M (30 m) — nenhum rio urbano da bacia chega perto disso.
+  4. `rio_nivel_tendencia.value` é LIXO (Pomerode 108, Ibirama 85, Trombudo 113). Ignorado. Tendência se
+     calcula da NOSSA série.
+  5. FUSO — o mesmo erro que já "custou uma sessão" (ver CLAUDE.md). O GraphQL manda UTC (+00:00), mas o
+     contrato do projeto é `medido_em` em hora de BRASÍLIA SEM fuso — é o que `coleta_itajai.py` grava, o
+     site lê com `deBrasilia()`, o vigia lê com `FUSO`, e o irmão `coleta_chuva_sc.py` já converte assim.
+     Por isso `medido_em` passa por `hora_local()`; guardar UTC cru deslocaria a idade em 3 h. (`coletado_em`
+     é outro campo, do momento da coleta, e esse SIM é UTC.)
+  6. `position.bacia` pode ser null -> tratado como "" no filtro.
+  7. Guabiruba 24,91 m e Pomerode 0,86 m são leituras suspeitas (grandeza/sensor errado) -> vão para
+     `suspeitas`, não para `leituras`. Lista em SUSPEITAS; ampliar conforme a auditoria.
+
+Uso:
+    python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
+    python3 scripts/coleta_nivel_sc.py --so-acu   # só as estações mapeadas do Itajaí-Açu/Mirim
+Rodar na VPS (o container do assistente não alcança este host). Cron: */15.
+"""
+import argparse
+import json
+import sys
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import requests
+
+URL = "https://monitoramento.defesacivil.sc.gov.br/graphql"
+UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
+SAIDA = Path(__file__).resolve().parent.parent / "data" / "tempo-real"
+LIMITE_M = 30.0          # acima disto não é régua de rio urbano (é altitude / reservatório grande)
+BACIA_RE = "Itaja"       # filtro em position.bacia (case-insensitive)
+
+#: Fuso das medições no resto do projeto: `medido_em` é hora de Brasília SEM fuso, e o GraphQL devolve UTC
+#: com fuso. Converter errado desloca a idade de toda leitura em três horas — e a idade é o que diz se o
+#: número serve. Idêntico ao `coleta_chuva_sc.py`.
+FUSO_BRASILIA = timezone(timedelta(hours=-3))
+
+# Estações que interessam à cadeia (código → cidade/slug). Fora daqui ainda é coletado, só sem 'cidade'.
+CADEIA = {
+    "DCSC-00025": "agrolandia", "DCSC-00039": "ituporanga", "DCSC-00033": "pouso-redondo",
+    "DCSC-00041": "taio", "DCSC-00031": "laurentino", "DCSC-00001": "agronomica",
+    "DCSC-00013": "rio-do-sul", "DCSC-00032": "lontras", "DCSC-00020": "ibirama",
+    "DCSC-00043": "presidente-getulio", "DCSC-00021": "jose-boiteux", "DCSC-00003": "ascurra",
+    "DCSC-00006": "indaial", "DCSC-00023": "timbo", "DCSC-00004": "benedito-novo",
+    "DCSC-00011": "rio-dos-cedros", "DCSC-00028": "doutor-pedrinho", "DCSC-00007": "pomerode",
+    "DCSC-00026": "blumenau", "DCSC-00005": "gaspar", "DCSC-00030": "ilhota",
+    "DCSC-00163": "ilhota-arraial-dos-cunhas",
+    # Mirim
+    "DCSC-00024": "vidal-ramos", "DCSC-00018": "botuvera", "DCSC-00027": "botuvera-2",
+    "DCSC-00019": "brusque", "DCSC-00029": "guabiruba",
+    # barragens (reservatório, datum próprio — nunca cota urbana)
+    "DCSC-00040": "barragem-oeste-taio", "DCSC-00038": "barragem-sul-ituporanga",
+}
+RESERVATORIOS = {"DCSC-00040", "DCSC-00038"}
+# Leituras que a auditoria de 01/09 marcou como grandeza/sensor errado. Vão para 'suspeitas'.
+SUSPEITAS = {"DCSC-00029": "Guabiruba 24,91 m: impossível p/ ribeirão — outra grandeza/datum",
+             "DCSC-00007": "Pomerode: oscila absurdo entre leituras — sensor/unidade suspeita"}
+
+QUERY = ('query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
+         'codigo name { general local } timestamp position { bacia latitude longitude } '
+         'data { rio { rio_nivel { value } } chuva { acumulado { h024 { value } } } } } } }')
+
+
+def e_numero(valor) -> bool:
+    """`isinstance(True, int)` é True em Python, e True não é metro."""
+    return isinstance(valor, (int, float)) and not isinstance(valor, bool)
+
+
+def hora_local(carimbo: str | None) -> str | None:
+    """UTC do GraphQL -> hora de Brasília sem fuso, que é o formato do projeto (ver armadilha 5)."""
+    if not carimbo:
+        return None
+    try:
+        t = datetime.fromisoformat(str(carimbo).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=timezone.utc)
+    return t.astimezone(FUSO_BRASILIA).replace(tzinfo=None).isoformat(timespec="seconds")
+
+
+def buscar() -> list[dict]:
+    r = requests.post(URL, json={"operationName": "Tags_data", "query": QUERY},
+                      headers={"User-Agent": UA}, timeout=60)
+    r.raise_for_status()
+    j = r.json()
+    if j.get("errors"):
+        raise RuntimeError(j["errors"])
+    return j["data"]["tags_data"]["qualle_meteorologia"]
+
+
+def converter(estacoes: list[dict], so_cadeia: bool = False) -> tuple[list[dict], list[dict], list[dict]]:
+    """Devolve (leituras, sem_leitura, suspeitas). Tudo com datum bruto e usar_para_cota=False."""
+    leituras, sem_leitura, suspeitas = [], [], []
+    for s in estacoes:
+        bacia = (s.get("position") or {}).get("bacia") or ""          # armadilha 6
+        if BACIA_RE.lower() not in bacia.lower():
+            continue
+        cod = s.get("codigo", "")
+        cidade = CADEIA.get(cod)
+        if so_cadeia and not cidade:
+            continue
+        nome = " ".join(x for x in [(s.get("name") or {}).get("general"), (s.get("name") or {}).get("local")] if x).strip()
+        if "(H)" in nome:                                              # armadilha 3
+            continue
+        rio = ((s.get("data") or {}).get("rio") or {}).get("rio_nivel") or {}
+        val = rio.get("value")                                         # armadilha 1 (NÃO show.value)
+        chuva = (((s.get("data") or {}).get("chuva") or {}).get("acumulado") or {}).get("h024") or {}
+        base = {
+            "codigo": cod, "estacao": nome, "cidade": cidade,
+            "origem": "estadual",
+            "datum": "reservatorio" if cod in RESERVATORIOS else "bruto_estadual",
+            "offset_datum": None, "usar_para_cota": False,
+            "medido_em": hora_local(s.get("timestamp")),                # UTC (+00:00) -> Brasília (armadilha 5)
+            "chuva_24h_mm": chuva.get("value") if e_numero(chuva.get("value")) else None,
+            "lat": (s.get("position") or {}).get("latitude"),
+            "lon": (s.get("position") or {}).get("longitude"),
+        }
+        if val is None:                                                # armadilha 2
+            sem_leitura.append({**base, "motivo": "value null — sensor sem leitura agora (não 'sem sensor')"})
+            continue
+        if not e_numero(val):                                          # armadilha 1 (booleano/lixo)
+            sem_leitura.append({**base, "motivo": f"value não numérico: {val!r}"})
+            continue
+        v = float(val)
+        if cod in SUSPEITAS:                                           # armadilha 7
+            suspeitas.append({**base, "nivel_bruto_m": round(v, 2), "motivo": SUSPEITAS[cod]})
+            continue
+        if v > LIMITE_M and cod not in RESERVATORIOS:                  # armadilha 3 (valor absurdo)
+            suspeitas.append({**base, "nivel_bruto_m": round(v, 2), "motivo": f"> {LIMITE_M} m: altitude/grandeza errada"})
+            continue
+        leituras.append({**base, "nivel_bruto_m": round(v, 2)})
+    return leituras, sem_leitura, suspeitas
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--so-acu", action="store_true", help="só estações mapeadas na CADEIA")
+    a = ap.parse_args()
+    try:
+        est = buscar()
+    except Exception as e:
+        print(f"ERRO ao buscar a rede estadual: {e}", file=sys.stderr)
+        return 1
+    leituras, sem, susp = converter(est, so_cadeia=a.so_acu)
+    saida = {
+        "fonte": URL, "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "aviso": "NÍVEL BRUTO (datum da estação). usar_para_cota=False em todas. Não comparar com cotas municipais sem offset calibrado.",
+        "leituras": leituras, "sem_leitura": sem, "suspeitas": susp,
+    }
+    SAIDA.mkdir(parents=True, exist_ok=True)
+    (SAIDA / "ultimo_nivel_sc.json").write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")
+    for l in sorted(leituras, key=lambda x: x["cidade"] or "zz"):
+        print(f"{l['nivel_bruto_m']:6.2f} m bruto  {l['codigo']}  {l['estacao'][:32]:32s}  [{l['cidade'] or '-'}]")
+    print(f"\n{len(leituras)} com nível · {len(sem)} sem leitura agora · {len(susp)} suspeitas → data/tempo-real/ultimo_nivel_sc.json")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
