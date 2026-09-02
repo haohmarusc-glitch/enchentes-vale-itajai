@@ -49,7 +49,8 @@
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
-          ]
+          ],
+          "coordenadas": [-27.4131, -49.6006]
         },
         {
           "id": "rio-do-sul",
