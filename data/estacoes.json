@@ -31,6 +31,10 @@
         "nao_e_regua_de_rio": [
           { "id": "apiuna", "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026." }
         ],
+        "afluentes_rios": [
+          { "nome": "Rio Benedito (Timbó)", "entra_perto_de": "indaial", "ponto_exato": "a confirmar por coordenada — antes ou depois da régua de Indaial. As fontes internas divergem: afluentes_monitorados diz 'entre Indaial e Blumenau', a nota do tronco supunha acima de Indaial. Overpass estava fora do ar (02/09); resolver com o mapa." },
+          { "nome": "Rio Luís Alves", "entra_perto_de": "ilhota", "ponto_exato": "a confirmar por coordenada — antes ou depois da régua de Ilhota (Ilhota 'recebe o rio Luiz Alves')." }
+        ],
         "nota": "A bacia do Itajaí-Açu é uma ÁRVORE, não uma fila. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras PARALELAS que se juntam em Rio do Sul, onde NASCE o Açu. Ibirama fica no Rio Hercílio (Itajaí do Norte), afluente lateral — não é elo do tronco: um pico nele ENTRA no tronco, não desce por ele. A única sequência que a tela pode afirmar é o tronco (tronco_sequencia). Dentro de cada ramo vale ordem_no_ramo; entre ramos, nada 'vem antes'. Verificado em mapa + Overpass (02/09/2026); ver docs/TOPOLOGIA-CANONICA.md.",
         "fonte": "OpenStreetMap + Overpass API, 02/09/2026"
       },
@@ -351,7 +355,7 @@
       "id": "timbo",
       "nome": "Timbó",
       "rio": "Rio Benedito",
-      "desagua_em": "Itajaí-Açu, entre Indaial e Blumenau",
+      "desagua_em": "Itajaí-Açu, perto de Indaial (ponto exato — antes ou depois da régua — a confirmar por coordenada; ver rios['itajai-acu']._topologia.afluentes_rios)",
       "codigo_ana": null,
       "verificado": false,
       "cotas_m": {},

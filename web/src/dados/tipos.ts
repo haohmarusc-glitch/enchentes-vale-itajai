@@ -69,6 +69,12 @@ export interface Topologia {
   cabeceiras_paralelas: string[]
   /** Afluentes que entram no tronco de lado — não são elos da sequência. */
   afluentes_laterais: { id: string; entra_perto_de: string; rio: string }[]
+  /**
+   * Rios tributários que entram no tronco mas NÃO têm régua própria no cadastro
+   * (Benedito, Luís Alves). `ponto_exato` guarda a confirmação pendente de onde
+   * exatamente entram — antes ou depois da régua da cidade vizinha.
+   */
+  afluentes_rios?: { nome: string; entra_perto_de: string; ponto_exato: string }[]
   /** Ids que saíram do eixo por não serem régua de rio (ex.: estação de altitude). */
   nao_e_regua_de_rio?: { id: string; motivo: string }[]
   nota?: string
