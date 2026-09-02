@@ -664,6 +664,71 @@ class TestReguaDeResgate(unittest.TestCase):
         self.assertIn("não se comparam", t)
 
 
+#: Nível BRUTO estadual: Ibirama não tem fonte municipal na base de teste (é
+#: lacuna no /rios); Rio do Sul TEM (3,52 no ULTIMO) — o bruto dele não pode
+#: aparecer, porque a municipal manda.
+NIVEL_SC = {"leituras": [
+    {"codigo": "DCSC-00020", "estacao": "SDC-SC Ibirama", "cidade": "ibirama",
+     "origem": "estadual", "datum": "bruto_estadual", "offset_datum": None,
+     "usar_para_cota": False, "nivel_bruto_m": 2.83, "medido_em": "2026-08-30T18:10:00"},
+    {"codigo": "DCSC-00013", "estacao": "SDC-SC Rio do Sul", "cidade": "rio-do-sul",
+     "origem": "estadual", "datum": "bruto_estadual", "offset_datum": None,
+     "usar_para_cota": False, "nivel_bruto_m": 6.52, "medido_em": "2026-08-30T18:10:00"},
+]}
+
+
+def base_sc() -> Base:
+    return Base(ULTIMO, le_json("estacoes.json"), le_json("transito.json"),
+                le_json("enchentes.json"), le_json("cotas-ruas.json"), NIVEL_SC)
+
+
+class TestNivelEstadualBruto(unittest.TestCase):
+    """
+    O nível bruto estadual preenche as lacunas do /rios (cidades sem fonte
+    municipal), mas rotulado e nunca como cota: fica FORA de leituras_da_cidade,
+    então /rua e /previsao não o tocam; onde há municipal, a municipal manda.
+    """
+
+    def r(self, texto: str) -> str:
+        return responder(texto, base_sc(), AGORA)
+
+    def test_rios_preenche_a_lacuna_com_bruto_rotulado(self):
+        t = self.r("/rios")
+        self.assertIn("2,83 m", t)
+        self.assertIn("bruto estadual", t)
+
+    def test_nivel_sem_municipal_mostra_bruto_nao_comparavel(self):
+        t = self.r("/nivel Ibirama")
+        self.assertIn("2,83 m", t)
+        self.assertIn("rede estadual", t)
+        self.assertIn("não comparável", t)
+
+    def test_municipal_manda_onde_ela_existe(self):
+        t = self.r("/rios")
+        self.assertNotIn("6,52", t, "o bruto de Rio do Sul não entra: há municipal")
+        n = responder("/nivel Rio do Sul", base_sc(), AGORA)
+        self.assertIn("3,52 m", n)
+        self.assertNotIn("rede estadual", n)
+
+    def test_bruto_nao_entra_na_previsao(self):
+        """Bruto não é cota-comparável: previsão de cidade que só tem bruto recusa."""
+        t = self.r("/previsao Ibirama")
+        self.assertIn("não há leitura ao vivo", t)
+
+    def test_bruto_nao_vira_faltam_na_rua(self):
+        b = base_sc()
+        b.cotas_ruas = [{"cidade": "ibirama", "rio": "itajai-acu", "rua": "Rua Teste",
+                         "bairro": None, "ponto": None, "cota_m": 5.0, "fonte": "t",
+                         "data_fonte": "2026", "confianca": "media", "referencia": "régua"}]
+        t = responder("/rua Ibirama Teste", b, AGORA)
+        self.assertNotIn("faltam", t)
+
+    def test_sem_arquivo_estadual_nada_muda(self):
+        """Base sem nivel_sc: o bruto é vazio e o /rios volta a 'sem leitura agora'."""
+        t = resp("/nivel Ibirama")
+        self.assertIn("Sem leitura ao vivo", t)
+
+
 class TestAuxiliares(unittest.TestCase):
     def test_sem_acento(self):
         self.assertEqual(sem_acento("Itajaí-Açu"), "itajai-acu")
