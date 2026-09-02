@@ -150,6 +150,67 @@ def converter(estacoes: list[dict], so_cadeia: bool = False) -> tuple[list[dict]
     return leituras, sem_leitura, suspeitas
 
 
+def _linha_serie(l: dict) -> dict:
+    """O que vai para a série ndjson — só o essencial do nível bruto."""
+    return {
+        "codigo": l.get("codigo"), "cidade": l.get("cidade"), "estacao": l.get("estacao"),
+        "datum": l.get("datum"), "nivel_bruto_m": l.get("nivel_bruto_m"), "medido_em": l.get("medido_em"),
+    }
+
+
+def _chaves_existentes(arquivo: Path) -> set:
+    """(codigo, medido_em) já gravados no mês, para não duplicar."""
+    vistas: set = set()
+    if not arquivo.exists():
+        return vistas
+    for linha in arquivo.read_text(encoding="utf-8").splitlines():
+        linha = linha.strip()
+        if not linha:
+            continue
+        try:
+            d = json.loads(linha)
+        except json.JSONDecodeError:
+            continue
+        if d.get("medido_em"):
+            vistas.add((d.get("codigo", ""), d["medido_em"]))
+    return vistas
+
+
+def acumular_serie(leituras: list[dict]) -> tuple[int, int]:
+    """
+    Acrescenta o nível bruto novo em `nivel-sc-AAAA-MM.ndjson` (dedup por codigo+medido_em).
+
+    Devolve (novas, repetidas). É a matéria-prima da tendência confiável e do offset
+    calibrado — o `.ndjson` fica fora do git (é série, não fonte de verdade). Igual ao
+    `acumular` do `coleta_niveis.py`, só que por `codigo` (a régua estadual não tem nome
+    único como as municipais).
+    """
+    SAIDA.mkdir(parents=True, exist_ok=True)
+    novas = repetidas = 0
+    por_mes: dict[str, list[dict]] = {}
+    for l in leituras:
+        m = l.get("medido_em")
+        if not m:                       # sem carimbo não dá para deduplicar nem datar o pico
+            continue
+        por_mes.setdefault(str(m)[:7], []).append(l)
+    for mes, do_mes in sorted(por_mes.items()):
+        arquivo = SAIDA / f"nivel-sc-{mes}.ndjson"
+        vistas = _chaves_existentes(arquivo)
+        linhas = []
+        for l in do_mes:
+            chave = (l.get("codigo", ""), l["medido_em"])
+            if chave in vistas:
+                repetidas += 1
+                continue
+            vistas.add(chave)
+            linhas.append(json.dumps(_linha_serie(l), ensure_ascii=False))
+            novas += 1
+        if linhas:
+            with open(arquivo, "a", encoding="utf-8") as f:
+                f.write("\n".join(linhas) + "\n")
+    return novas, repetidas
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--so-acu", action="store_true", help="só estações mapeadas na CADEIA")
@@ -167,9 +228,11 @@ def main():
     }
     SAIDA.mkdir(parents=True, exist_ok=True)
     (SAIDA / "ultimo_nivel_sc.json").write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")
+    novas, repetidas = acumular_serie(leituras)
     for l in sorted(leituras, key=lambda x: x["cidade"] or "zz"):
         print(f"{l['nivel_bruto_m']:6.2f} m bruto  {l['codigo']}  {l['estacao'][:32]:32s}  [{l['cidade'] or '-'}]")
     print(f"\n{len(leituras)} com nível · {len(sem)} sem leitura agora · {len(susp)} suspeitas → data/tempo-real/ultimo_nivel_sc.json")
+    print(f"série: +{novas} leitura(s) nova(s), {repetidas} repetida(s) em nivel-sc-AAAA-MM.ndjson")
     return 0
 
 

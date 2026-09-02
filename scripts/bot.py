@@ -71,6 +71,7 @@ from comum import DADOS, le_json
 from transito import caminho, faixa_horas, janela_chegada
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
+ULTIMO_NIVEL_SC = DADOS / "tempo-real" / "ultimo_nivel_sc.json"
 ESTADO = DADOS / "tempo-real" / "estado_bot.json"
 FUSO = ZoneInfo("America/Sao_Paulo")
 SITE = "https://haohmarusc-glitch.github.io/enchentes-vale-itajai/"
@@ -215,7 +216,7 @@ class Base:
     """Tudo que o bot precisa, lido do disco. Sem rede além do Telegram."""
 
     def __init__(self, ultimo: dict, estacoes: dict, transito: dict, enchentes: dict,
-                 cotas_ruas: dict | None = None):
+                 cotas_ruas: dict | None = None, nivel_sc: dict | None = None):
         self.ultimo = ultimo
         self.estacoes = estacoes
         self.transito = transito["trechos"]
@@ -229,16 +230,37 @@ class Base:
             c for c in cotas_ruas.get("cotas", [])
             if c.get("referencia", "régua") == "régua"
         ]
+        # Nível BRUTO da rede estadual (coleta_nivel_sc.py). Datum próprio da
+        # estação, NÃO a cota do projeto — por isso fica FORA de leituras_da_cidade
+        # (que alimenta /rua e /previsao) e só é EXIBIDO, rotulado, onde não há
+        # fonte municipal. Uma leitura por cidade, a mais fresca; só cidades do
+        # projeto (barragens e slugs auxiliares como botuvera-2 ficam de fora).
+        cidades_ids = {c["id"] for c in self.cidades()}
+        self._bruto: dict[str, dict] = {}
+        for l in (nivel_sc or {}).get("leituras") or []:
+            cid = l.get("cidade")
+            if cid not in cidades_ids or not isinstance(l.get("nivel_bruto_m"), (int, float)):
+                continue
+            atual = self._bruto.get(cid)
+            # Mais fresca vence. `medido_em` é ISO em hora de Brasília (mesmo
+            # formato), então comparar as strings já ordena no tempo.
+            if atual is None or str(l.get("medido_em") or "") > str(atual.get("medido_em") or ""):
+                self._bruto[cid] = l
+
+    def bruto_da_cidade(self, cidade_id: str) -> dict | None:
+        """A leitura bruta estadual da cidade (datum próprio), ou None. Só para EXIBIR."""
+        return self._bruto.get(cidade_id)
 
     @classmethod
     def do_disco(cls) -> "Base":
         ultimo = json.loads(ULTIMO.read_text(encoding="utf-8")) if ULTIMO.exists() else {}
+        nivel_sc = json.loads(ULTIMO_NIVEL_SC.read_text(encoding="utf-8")) if ULTIMO_NIVEL_SC.exists() else {}
         try:
             cotas = le_json("cotas-ruas.json")
         except FileNotFoundError:
             cotas = None
         return cls(ultimo, le_json("estacoes.json"), le_json("transito.json"),
-                   le_json("enchentes.json"), cotas)
+                   le_json("enchentes.json"), cotas, nivel_sc)
 
     def cidades(self) -> list[dict]:
         saida = []
@@ -395,6 +417,16 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
     leituras = base.leituras_da_cidade(cidade["id"], agora)
     if not leituras:
+        bruto = base.bruto_da_cidade(cidade["id"])
+        if bruto is not None:
+            idade = idade_min(bruto.get("medido_em"), agora)
+            linhas.append(f"\n<b>{metros(bruto['nivel_bruto_m'])}</b> — "
+                          f"{notificador.esc(bruto.get('estacao', ''))} (rede estadual)"
+                          f"\n<i>{texto_idade(idade)}</i>")
+            linhas.append("\n<i>Nível BRUTO da régua da estação estadual: zero próprio, "
+                          "<b>não comparável</b> com as cotas desta cidade. Serve para ver o "
+                          "rio subir ou descer, não para dizer quanto falta para uma cota.</i>")
+            return linhas
         linhas.append("\nSem leitura ao vivo desta cidade na fonte que coletamos.")
         if cidade.get("fonte_tempo_real"):
             linhas.append(f"Fonte oficial: {notificador.esc(cidade['fonte_tempo_real'])}")
@@ -790,15 +822,21 @@ def nome_curto(leitura: dict) -> str:
 NOME_RIO = {"itajai-acu": "Itajaí-Açu", "itajai-mirim": "Itajaí-Mirim"}
 
 
-def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime) -> list[str]:
+def _cidade_no_panorama(nome: str, ls: list[dict], agora: datetime, bruto: dict | None = None) -> list[str]:
     """
     Uma cidade no /rios: a linha do nível, o bloco de várias réguas, ou a lacuna.
 
-    Sem leitura, a cidade NÃO some nem vira verde — aparece no mapa do rio
-    marcada como sem leitura, para quem lê não confundir "sem dado" com "rio
-    baixo". É a mesma honestidade do site (faixa cinza para ausência).
+    Sem leitura municipal, se houver nível BRUTO estadual ele preenche a lacuna —
+    mas rotulado e sem virar cota: régua própria da estação, não comparável. Sem
+    nem isso, a cidade NÃO some nem vira verde: fica "sem leitura agora", para quem
+    lê não confundir "sem dado" com "rio baixo" (a mesma honestidade da faixa cinza
+    do site).
     """
     if not ls:
+        if bruto is not None:
+            idade = idade_min(bruto.get("medido_em"), agora)
+            return [f"\n{notificador.esc(nome)}: {metros(bruto['nivel_bruto_m'])} "
+                    f"<i>(bruto estadual — régua própria, não comparável)</i> · {texto_idade(idade)}"]
         return [f"\n{notificador.esc(nome)}: <i>sem leitura agora</i>"]
     if len(ls) == 1:
         l = ls[0]
@@ -843,8 +881,10 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
             rio_atual = c["rio"]
             linhas.append(f"\n\n<b>{NOME_RIO.get(rio_atual, rio_atual)}</b>")
         # Junta primária e resgate antes de decidir (Blumenau: Defesa Civil +
-        # AlertaBlu são a MESMA régua).
-        linhas.extend(_cidade_no_panorama(c["nome"], por_regua(por_cidade.get(cid, []), agora), agora))
+        # AlertaBlu são a MESMA régua). Sem municipal, o bruto estadual preenche
+        # a lacuna (rotulado, nunca como cota).
+        linhas.extend(_cidade_no_panorama(c["nome"], por_regua(por_cidade.get(cid, []), agora),
+                                          agora, base.bruto_da_cidade(cid)))
 
     # Uma leitura de cidade fora do cadastro nunca some: entra no fim.
     for cid, ls in por_cidade.items():

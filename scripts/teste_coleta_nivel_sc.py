@@ -12,12 +12,15 @@ municipal sem offset calibrado.
 """
 
 import sys
+import tempfile
 import unittest
+import unittest.mock
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from coleta_nivel_sc import converter, e_numero, hora_local
+import coleta_nivel_sc
+from coleta_nivel_sc import acumular_serie, converter, e_numero, hora_local
 
 
 def estacao(codigo="DCSC-00006", nome="SDC-SC Indaial", local="",
@@ -126,6 +129,27 @@ class TestCadeia(unittest.TestCase):
     def test_so_cadeia_recusa_estacao_fora_do_mapa(self):
         leituras, _, _ = converter([estacao(codigo="DCSC-99999", nome="SDC-SC Outra")], so_cadeia=True)
         self.assertEqual(leituras, [])
+
+
+class TestSerie(unittest.TestCase):
+    """A série ndjson acumula sem duplicar — é a matéria-prima do offset."""
+
+    def test_acumula_uma_vez_e_deduplica_na_segunda(self):
+        leituras, _, _ = converter([estacao()])
+        with tempfile.TemporaryDirectory() as d:
+            with unittest.mock.patch.object(coleta_nivel_sc, "SAIDA", Path(d)):
+                self.assertEqual(acumular_serie(leituras), (1, 0))
+                self.assertEqual(acumular_serie(leituras), (0, 1))   # mesma leitura: repetida
+                arq = Path(d) / "nivel-sc-2026-09.ndjson"            # mês de medido_em (Brasília)
+                self.assertTrue(arq.exists())
+                linhas = [x for x in arq.read_text(encoding="utf-8").splitlines() if x.strip()]
+                self.assertEqual(len(linhas), 1)
+
+    def test_leitura_sem_carimbo_nao_entra(self):
+        with tempfile.TemporaryDirectory() as d:
+            with unittest.mock.patch.object(coleta_nivel_sc, "SAIDA", Path(d)):
+                self.assertEqual(acumular_serie([{"codigo": "X", "nivel_bruto_m": 1.0, "medido_em": None}]),
+                                 (0, 0))
 
 
 class TestENumero(unittest.TestCase):
