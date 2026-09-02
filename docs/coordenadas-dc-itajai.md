@@ -56,3 +56,34 @@ não está no repositório**. Passos quando o arquivo estiver disponível (subir
 1. `data/brutos/itajai-abrigos-defesa-civil.json` (bruto) → `data/abrigos-itajai.json` (normalizado).
 2. Tela de Itajaí, seção "Meu ponto": os 3 abrigos mais próximos (distância em linha reta), com endereço
    e capacidade, e o aviso de que a ativação é decisão da Defesa Civil.
+
+---
+
+## Coordenadas das estações ESTADUAIS (DCSC) — encontradas e ADOTADAS (02/09/2026)
+
+Fonte: **GraphQL da Defesa Civil de SC** (`monitoramento.defesacivil.sc.gov.br/graphql`), campo
+`position { latitude longitude }` da própria query `Tags_data` do app (o servidor tem allowlist de
+queries — é preciso usar a query exata do bundle). **61 estações da bacia, todas com coordenada.**
+Bruto em `data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json`.
+
+**Atenção — o que isto NÃO é:** são as estações **estaduais da cadeia** (Taió, Rio do Sul, …, Brusque),
+**não** as 11 réguas DC municipais de Itajaí. A ordenação do Mirim pelas DC de Itajaí **segue bloqueada**
+(seção acima). Estas coordenadas servem para a cadeia, não para a foz.
+
+### Adotadas em `data/estacoes.json`
+As 13 cidades da cadeia passaram a usar a coordenada da **estação** (posição da régua no rio), no lugar
+da sede municipal aproximada. É melhor para o marcador e para projetar no traçado. Movimentos maiores:
+Ituporanga ~7,9 km, Blumenau ~6,9 km, Botuverá ~5,0 km, Indaial ~4,1 km (a sede ficava longe da régua).
+Exceções mantidas: **Vidal Ramos** (já era a estação Asthon) e **Itajaí** (foz, sem estação estadual).
+A convenção no `_meta` do `estacoes.json` foi atualizada para refletir a nova origem.
+
+### 🎯 Confirma por coordenada: nossa Vidal Ramos = estação Asthon = DCSC
+**DCSC-00024 = -27.38548, -49.35813** contra a Asthon **-27.38547, -49.35812** → **~4 m**. É a MESMA
+estação, confirmado por coordenada (não por nome). **Ressalva:** isto confirma a identidade da NOSSA
+régua; se a "Salseiro" 83892990 da EPAGRI é essa mesma estação continua dependendo da coordenada da
+EPAGRI (ofício C9) — a pendência EPAGRI/Salseiro do README segue aberta por esse lado.
+
+### O que estas coordenadas destravam (cadeia, não Itajaí)
+- Vínculo estação↔cidade por coordenada (regra do projeto).
+- Ordenar a cadeia do Açu e do Mirim pela descida real (projetando no traçado) — quando houver o script.
+- Distância entre estações como insumo para calibrar tempo de trânsito com base física.
