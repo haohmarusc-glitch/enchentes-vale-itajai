@@ -309,6 +309,37 @@ class TestChuvaDeSCEntraNaLista(unittest.TestCase):
         self.assertEqual(len(nomes), 2, "as duas estações de Brusque têm de ser distintas")
 
 
+class TestZeroDeSensorParado(unittest.TestCase):
+    """Pluviômetro preso em zero numa cidade que chove vira suspeito, sem sumir."""
+
+    def _mm(self, **kw):
+        base = {"min10": None, "h1": None, "h12": None, "h24": None, "h48": None}
+        base.update(kw)
+        return base
+
+    def test_zero_com_outra_estacao_chovendo_vira_suspeito(self):
+        chuva = [
+            {"cidade": "brusque", "estacao": "Guarani", "mm": self._mm(h1=0.0, h24=0.0), "coerente": True},
+            {"cidade": "brusque", "estacao": "DCSC Brusque", "mm": self._mm(h1=1.0, h24=8.2), "coerente": True},
+        ]
+        self.assertEqual(coleta_niveis.marcar_zero_suspeito(chuva), 1)
+        self.assertFalse(chuva[0]["coerente"])
+        self.assertTrue(any("sensor parado" in p for p in chuva[0]["incoerencias"]))
+        self.assertTrue(chuva[1]["coerente"], "a estação que mede chuva fica intacta")
+
+    def test_cidade_seca_de_verdade_nao_e_marcada(self):
+        chuva = [
+            {"cidade": "taio", "estacao": "A", "mm": self._mm(h1=0.0, h24=0.0), "coerente": True},
+            {"cidade": "taio", "estacao": "B", "mm": self._mm(h24=0.0), "coerente": True},
+        ]
+        self.assertEqual(coleta_niveis.marcar_zero_suspeito(chuva), 0)
+        self.assertTrue(all(l["coerente"] for l in chuva))
+
+    def test_estacao_com_chuva_nunca_e_marcada(self):
+        chuva = [{"cidade": "x", "estacao": "A", "mm": self._mm(h24=5.0), "coerente": True}]
+        self.assertEqual(coleta_niveis.marcar_zero_suspeito(chuva), 0)
+
+
 class TestSerieDeChuva(unittest.TestCase):
     """
     A chuva vivia só no ultimo.json, sobrescrito a cada rodada: quinze minutos

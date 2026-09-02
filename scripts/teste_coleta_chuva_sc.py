@@ -73,6 +73,11 @@ class TestValorDe(unittest.TestCase):
     def test_zero_e_um_valor_de_verdade(self):
         self.assertEqual(valor_de({"value": 0}), 0.0)
 
+    def test_arredonda_o_float_ieee_da_api(self):
+        # A API devolve 0.009999999776… mm; sem arredondar, isso vaza para a tela.
+        self.assertEqual(valor_de({"value": 0.009999999776482582}), 0.01)
+        self.assertEqual(valor_de({"value": 12.34999}), 12.35)
+
 
 class TestMapa(unittest.TestCase):
     def test_estacao_fora_do_mapa_e_recusada_com_motivo(self):

@@ -265,6 +265,39 @@ def acumular(leituras: list[dict], prefixo: str = "") -> tuple[int, int]:
     return novas, repetidas
 
 
+def marcar_zero_suspeito(chuva: list[dict]) -> int:
+    """
+    Rebaixa para incoerente o pluviômetro preso em ZERO enquanto OUTRA estação
+    da MESMA cidade mede chuva.
+
+    Um sensor parado publica 0,0 em toda janela e passa na coerência (0 ≤ 0 ≤ 0),
+    então a tela o mostra como "não choveu". Numa cidade onde a outra estação diz
+    que está chovendo, isso é a pior mentira possível — foi o caso de Brusque
+    Estação Guarani (0,0) enquanto a Rede DC-SC dava 8,2 mm/24 h. NÃO esconde a
+    leitura: marca `coerente: false`, que a tela já trata como suspeita, sem
+    apagar o dado (uma cidade seca de verdade, com todas as estações em zero,
+    continua mostrando zero). Devolve quantas marcou.
+    """
+    def valores(l: dict) -> list[float]:
+        return [v for v in (l.get("mm") or {}).values() if isinstance(v, (int, float))]
+
+    cidades_com_chuva = {
+        l.get("cidade") for l in chuva if any(v > 0 for v in valores(l))
+    }
+    marcadas = 0
+    for l in chuva:
+        vals = valores(l)
+        tudo_zero = bool(vals) and all(v == 0 for v in vals)
+        if l.get("coerente", True) and tudo_zero and l.get("cidade") in cidades_com_chuva:
+            l["coerente"] = False
+            l.setdefault("incoerencias", []).append(
+                "zero em todas as janelas enquanto outra estação da cidade mede chuva "
+                "— possível sensor parado"
+            )
+            marcadas += 1
+    return marcadas
+
+
 def _ler_ndjson(arquivo: Path):
     """Gera os dicts de um `.ndjson` ou `.ndjson.gz`, pulando linha quebrada."""
     abrir = (
@@ -445,6 +478,11 @@ def main() -> int:
     # idade. Nomes não colidem porque os da Defesa Civil de SC vêm com o código
     # DCSC na frente.
     chuva = chuva + baixar_chuva_sc()
+    # Com as duas fontes juntas dá para cruzar: um pluviômetro preso em ZERO em
+    # toda janela numa cidade onde OUTRA estação mede chuva é sensor parado, não
+    # "não choveu". Aqui é o único ponto em que as estações da cidade estão lado
+    # a lado.
+    marcar_zero_suspeito(chuva)
 
     # A chuva também vira série. Sem isto ela vivia só no ultimo.json, que é
     # sobrescrito a cada rodada: quinze minutos depois, o dado tinha sumido.
