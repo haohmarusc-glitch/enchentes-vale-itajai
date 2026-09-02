@@ -6,6 +6,7 @@ import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
+import { useNivelSc } from '../dados/nivelSc'
 import { serieDaCidade, useSerieRecente } from '../dados/serie'
 import estilos from './TelaRio.module.css'
 
@@ -51,6 +52,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
   }, [cidades, registrosPorCidade])
 
   const tempoReal = useTempoReal()
+  const nivelSc = useNivelSc()
   const serie = useSerieRecente()
   // Um único "agora" por render: assim todos os cartões contam a idade das
   // leituras a partir do mesmo instante.
@@ -113,6 +115,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           cidadeSelecionada={cidadeId}
           aoSelecionar={setSelecionadaId}
           tempoReal={tempoReal}
+          nivelSc={nivelSc}
           agora={agora}
         />
         {semCobertura > 0 ? (

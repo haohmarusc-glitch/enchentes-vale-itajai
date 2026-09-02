@@ -112,11 +112,17 @@ def e_numero(valor) -> bool:
 
 
 def valor_de(caixa) -> float | None:
-    """O `{"value": x}` do GraphQL, ou None quando a fonte não publicou."""
+    """
+    O `{"value": x}` do GraphQL, ou None quando a fonte não publicou.
+
+    Arredonda para 2 casas: a API devolve float IEEE cru (0.009999999776… mm),
+    que sem isto vaza para o JSON e para a tela. Pluviômetro tem passo de 0,1–0,2
+    mm; 2 casas guardam tudo que a fonte tem e somem com o ruído do float.
+    """
     if not isinstance(caixa, dict):
         return None
     v = caixa.get("value")
-    return float(v) if e_numero(v) else None
+    return round(float(v), 2) if e_numero(v) else None
 
 
 def hora_local(carimbo: str | None) -> str | None:

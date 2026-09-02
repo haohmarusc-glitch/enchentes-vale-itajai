@@ -1,7 +1,8 @@
 import type { Cidade, Trecho } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
-import { faixaDaCidade } from '../logica/tempoReal'
+import type { NivelSc } from '../dados/nivelSc'
+import { faixaDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import LegendaFaixas, { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { estacoesTempoReal } from '../dados/carregar'
 import { reguasComCota } from '../logica/reguas'
@@ -24,6 +25,8 @@ interface Props {
   cidadeSelecionada: string | null
   aoSelecionar: (cidadeId: string) => void
   tempoReal: EstadoTempoReal
+  /** Nível BRUTO estadual por cidade, para preencher (rotulado) as lacunas. */
+  nivelSc?: NivelSc
   agora: Date
 }
 
@@ -39,6 +42,7 @@ export default function DiagramaRio({
   cidadeSelecionada,
   aoSelecionar,
   tempoReal,
+  nivelSc,
   agora,
 }: Props) {
   return (
@@ -83,6 +87,14 @@ export default function DiagramaRio({
         // foz) não viram uma cor só; leitura velha ou sem cota viram cinza.
         const temVarias = aoVivo === null && todasAsLeituras.length > 1
         const faixa = faixaDaCidade(cidade, aoVivo, temVarias, agora)
+        // Sem leitura municipal (e não sendo a foz de várias réguas), o nível
+        // BRUTO estadual preenche a lacuna — rotulado e SEM cor de faixa (a
+        // régua estadual tem zero próprio, não comparável com as cotas). Onde há
+        // municipal, nem se olha o bruto: a municipal manda.
+        const bruto =
+          aoVivo === null && todasAsLeituras.length <= 1
+            ? nivelSc?.get(cidade.id) ?? null
+            : null
 
         return (
           <li key={cidade.id} className={estilos.item}>
@@ -122,6 +134,14 @@ export default function DiagramaRio({
                       cidade={cidade}
                       agora={agora}
                     />
+                  ) : bruto ? (
+                    <span className={estilos.brutoEstadual}>
+                      <strong>{metros(bruto.nivelBrutoM)}</strong> — {bruto.estacao} (rede estadual)
+                      {bruto.medidoEm ? <> · {textoIdade(idadeMin(bruto.medidoEm, agora))}</> : null}
+                      <span className={estilos.brutoNota}>
+                        nível bruto — régua própria da estação, não comparável com as cotas desta cidade
+                      </span>
+                    </span>
                   ) : null}
 
                   {chuva ? (
