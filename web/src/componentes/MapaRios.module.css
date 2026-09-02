@@ -36,4 +36,14 @@
   margin-top: 0.25rem;
   color: #1c6ea4;
   font-size: 0.85em;
+  /* É um <button> de verdade agora; tira o cromo de botão e deixa com cara de
+     link, mas com alvo de toque confortável no celular. */
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0.25rem 0;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
 }
