@@ -592,6 +592,33 @@ class TestGerais(unittest.TestCase):
         self.assertEqual(
             nome_curto({"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"}),
             "DC-10 Bairro Limoeiro")
+
+    def test_rios_agrupa_as_reguas_de_itajai_por_curso(self):
+        """Itajaí mede quatro cursos; cada régua vem sob o seu, não amontoada."""
+        u = {"coletado_em": "2026-08-30T21:25:00+00:00", "leituras": [
+            {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu",
+             "cidade": "itajai", "nivel_m": 0.81, "medido_em": "2026-08-30T18:20:00"},
+            {"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim",
+             "cidade": "itajai", "nivel_m": 4.61, "medido_em": "2026-08-30T18:20:00"},
+            {"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta",
+             "cidade": "itajai", "nivel_m": 0.36, "medido_em": "2026-08-30T18:20:00"},
+        ]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"), le_json("cotas-ruas.json"))
+        bloco = resp("/rios", b).split("3 réguas")[1]
+        for rotulo in ("Rio Itajaí-Açu", "Rio Itajaí-Mirim", "Ribeirão da Murta"):
+            self.assertIn(rotulo, bloco)
+        # Ordem: os dois rios principais, depois o ribeirão.
+        self.assertLess(bloco.index("Rio Itajaí-Açu"), bloco.index("Rio Itajaí-Mirim"))
+        self.assertLess(bloco.index("Rio Itajaí-Mirim"), bloco.index("Ribeirão da Murta"))
+        # A régua do Mirim fica sob o Mirim, não solta.
+        self.assertLess(bloco.index("Rio Itajaí-Mirim"), bloco.index("DC-10 Bairro Limoeiro"))
+
+    def test_rios_nao_rotula_curso_quando_a_cidade_tem_um_so(self):
+        """As duas réguas de Itajaí na base padrão são ambas do Açu: sem subtítulo."""
+        t = resp("/rios")
+        self.assertIn("2 réguas, com zeros diferentes", t)
+        self.assertNotIn("Rio Itajaí-Açu", t)  # só o cabeçalho "Itajaí-Açu", sem "Rio "
         # Sem código e sem hífen, fica como veio — nada é adivinhado.
         self.assertEqual(nome_curto({"estacao": "Brusque"}), "Brusque")
         self.assertEqual(nome_curto({"estacao": ""}), "")
