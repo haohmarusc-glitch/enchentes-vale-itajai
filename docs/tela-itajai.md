@@ -34,6 +34,13 @@ sizígia. A maré aparece marcada como **prevista**, não medida, exatamente com
 especificação pede — o marégrafo de Cabeçudas não publica dado aberto, e o
 pedido está no ofício C3.
 
+**Pista de maré medida (RN EPAGRI, dez/2024):** a EPAGRI publica **altura de maré**
+(5 min/horária, últimos 24 meses) como download GRATUITO em
+`ciram.epagri.sc.gov.br/dadosambientaispublicos/` (só cadastro). Se houver uma PCD
+maregráfica da EPAGRI no estuário de Itajaí — a confirmar por **coordenada**, não nome —,
+dá para trocar a maré prevista por medida naquele ponto. Enquanto não confirmado por
+coordenada e fuso, segue prevista. Detalhes em `docs/fontes-tempo-real.md` (seção EPAGRI).
+
 ## Bloco 3 — chegada dos dois rios ✔ existe
 
 `janelaChegada` e `faixaHoras` em `web/src/logica/transito.ts`, com os tempos de
