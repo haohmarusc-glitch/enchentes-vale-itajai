@@ -18,7 +18,9 @@ export interface Cidade {
   barragem?: string
   observacao?: string
   afluentes?: string[]
-  /** [lat, lon] da sede, aproximada (OSM/IBGE) — o mapa encaixa no traçado. */
+  /** [lat, lon] da estação de nível (Defesa Civil de SC) — posição da régua no
+   *  rio, não o centro da cidade; o mapa encaixa no traçado. Exceções: Itajaí
+   *  (foz, sem estação estadual) e Vidal Ramos (Asthon, = DCSC). */
   coordenadas?: [number, number]
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>

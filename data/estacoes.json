@@ -8,7 +8,7 @@
       "ordem": "Sequência montante -> jusante ao longo do eixo. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras que se encontram em Rio do Sul; aparecem antes dele.",
       "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado.",
       "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua.",
-      "coordenadas": "[lat, lon] da sede municipal, aproximada (OpenStreetMap/IBGE); Vidal Ramos exata da estação Asthon. Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível."
+      "coordenadas": "[lat, lon] da ESTAÇÃO de nível (Defesa Civil de SC, GraphQL, adotada 02/09/2026), não do centro da cidade — é a posição real da régua no rio. Exceções: Vidal Ramos (estação Asthon, = DCSC, 4 m) e Itajaí (foz, sem estação estadual, sede aproximada). Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível."
     },
     "notas": {
       "cotas_itajai": "As onze estações de Itajaí têm cota oficial de atenção, alerta e EMERGÊNCIA (a palavra é do Plano de Contingência da COMPDEC, versão 17 de 22/12/2025, Tabela 11). Cada uma tem seu próprio zero: a DC-10, no Limoeiro, usa régua de 8 a 10 m e não se compara com as demais. Nove delas ficam no estuário e estão marcadas com alerta_automatico=false — a cota aparece na tela, mas o aviso por Telegram não dispara a partir de uma travessia isolada, porque a maré cruza essas cotas sem enchente."
@@ -32,10 +32,7 @@
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [
-            -27.1173,
-            -49.9958
-          ]
+          "coordenadas": [-27.1163, -50.0003]
         },
         {
           "id": "ituporanga",
@@ -50,7 +47,7 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.4131, -49.6006]
+          "coordenadas": [-27.4822, -49.5825]
         },
         {
           "id": "rio-do-sul",
@@ -72,10 +69,7 @@
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "regua": "Ponte Dom Tito Buss",
-          "coordenadas": [
-            -27.2142,
-            -49.643
-          ]
+          "coordenadas": [-27.2072, -49.6335]
         },
         {
           "id": "ibirama",
@@ -89,10 +83,7 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [
-            -27.0573,
-            -49.5178
-          ]
+          "coordenadas": [-27.057, -49.52]
         },
         {
           "id": "apiuna",
@@ -106,10 +97,7 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [
-            -27.0555,
-            -49.393
-          ]
+          "coordenadas": [-27.0365, -49.3936]
         },
         {
           "id": "indaial",
@@ -123,10 +111,7 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [
-            -26.8978,
-            -49.2311
-          ]
+          "coordenadas": [-26.9109, -49.27]
         },
         {
           "id": "blumenau",
@@ -148,10 +133,7 @@
             "https://alertablu.blumenau.sc.gov.br/ (bloqueia robôs)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [
-            -26.9194,
-            -49.0661
-          ]
+          "coordenadas": [-26.9224, -49.1354]
         },
         {
           "id": "gaspar",
@@ -173,10 +155,7 @@
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
           ],
-          "coordenadas": [
-            -26.9317,
-            -48.9583
-          ]
+          "coordenadas": [-26.9264, -48.9643]
         },
         {
           "id": "ilhota",
@@ -188,10 +167,7 @@
           "observacao": "Recebe o rio Luiz Alves. NÃO tem régua própria de nível ao vivo: a estação DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é de Itajaí, a jusante, com zero próprio — usá-la como nível de Ilhota seria comparar réguas de cidades diferentes. Como Gaspar antes do Plano, Ilhota aparece no eixo sem nível ao vivo até haver fonte com régua da própria cidade.",
           "cotas_m": {},
           "fontes_tempo_real": [],
-          "coordenadas": [
-            -26.9003,
-            -48.8281
-          ]
+          "coordenadas": [-26.8944, -48.8248]
         },
         {
           "id": "itajai",
@@ -245,10 +221,7 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [
-            -27.2028,
-            -49.0739
-          ]
+          "coordenadas": [-27.1862, -49.1206]
         },
         {
           "id": "guabiruba",
@@ -260,10 +233,7 @@
           "observacao": "O relatório-fonte descreve o eixo Botuverá → Guabiruba → Brusque → Itajaí. Posição na sequência ainda não conferida em carta oficial.",
           "cotas_m": {},
           "fontes_tempo_real": [],
-          "coordenadas": [
-            -27.0839,
-            -48.9808
-          ]
+          "coordenadas": [-27.0868, -48.9774]
         },
         {
           "id": "brusque",
@@ -286,10 +256,7 @@
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "cotas_verificado": false,
-          "coordenadas": [
-            -27.0978,
-            -48.9172
-          ]
+          "coordenadas": [-27.1007, -48.9172]
         },
         {
           "id": "itajai",
