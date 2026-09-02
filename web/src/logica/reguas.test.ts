@@ -166,6 +166,29 @@ test('agruparPorCurso: DC-04 e DC-06 ficam co-locadas, sem fila entre elas', () 
   assert.ok(d4.ordemNota, 'a co-locada explica que a ordem entre elas é indefinível')
 })
 
+test('agruparPorCurso: o Mirim se divide em curso antigo e canal, com o reencontro', () => {
+  const grupos = agruparPorCurso(todasAsReguas(estacoesTempoReal, 'itajai'))
+  const mirim = grupos.find((g) => g.rio === 'itajai-mirim')!
+  assert.ok(mirim.divisao, 'o Mirim deveria vir dividido em braços')
+  const div = mirim.divisao!
+  // DC-10 fica antes da bifurcação.
+  assert.deepEqual(div.antes.map((r) => r.id), ['DC-10'])
+  // Dois braços, curso antigo primeiro, canal depois.
+  assert.deepEqual(div.bracos.map((b) => b.chave), ['curso antigo', 'canal retificado'])
+  const antigo = div.bracos[0]!, canal = div.bracos[1]!
+  assert.deepEqual(antigo.reguas.map((r) => r.id), ['DC-05', 'DC-06'])
+  assert.deepEqual(canal.reguas.map((r) => r.id), ['DC-03', 'DC-04'])
+  // O reencontro é o par co-locado, um de cada braço.
+  assert.deepEqual(new Set(div.reencontro.map((r) => r.id)), new Set(['DC-06', 'DC-04']))
+})
+
+test('agruparPorCurso: cursos que não bifurcam não ganham divisao', () => {
+  const grupos = agruparPorCurso(todasAsReguas(estacoesTempoReal, 'itajai'))
+  for (const rio of ['itajai-acu', 'ribeirao-murta', 'ribeirao-canhanduba']) {
+    assert.equal(grupos.find((g) => g.rio === rio)!.divisao, undefined, `${rio} não bifurca`)
+  }
+})
+
 test('separarFonte tira a URL do texto sem inventar link', () => {
   assert.deepEqual(separarFonte('Plano de Contingência, Tabela 11 — https://x.gov.br/a.pdf'), {
     texto: 'Plano de Contingência, Tabela 11',

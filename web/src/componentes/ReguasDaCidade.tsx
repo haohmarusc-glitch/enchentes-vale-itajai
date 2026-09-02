@@ -1,4 +1,4 @@
-import type { ReguaComCota } from '../logica/reguas'
+import type { ReguaComCota, GrupoDeCurso } from '../logica/reguas'
 import { agruparPorCurso } from '../logica/reguas'
 import { metros, rotuloCota } from '../logica/formato'
 import estilos from './ReguasDaCidade.module.css'
@@ -65,7 +65,7 @@ export default function ReguasDaCidade({
         grupos!.map((g) => (
           <span key={g.rio} className={estilos.grupo}>
             <span className={estilos.curso}>{g.nome}, da nascente para o mar</span>
-            <ListaDeReguas reguas={g.reguas} destacarPar />
+            {g.divisao ? <CursoComBracos divisao={g.divisao} /> : <ListaDeReguas reguas={g.reguas} destacarPar />}
           </span>
         ))
       ) : (
@@ -80,6 +80,42 @@ export default function ReguasDaCidade({
           : a maré as faz passar da cota de atenção em dia sem chuva, e baixar meio metro em três
           horas. A cota está aqui porque é a oficial, mas cruzá-la não significa, sozinha, que há
           cheia chegando.
+        </span>
+      ) : null}
+    </span>
+  )
+}
+
+/**
+ * Um curso que se divide em braços paralelos (o Mirim em Itajaí): as réguas de
+ * antes da bifurcação, depois cada braço sob o seu nome, e a ressalva de onde os
+ * braços se reencontram. Assim curso antigo e canal não entram intercalados numa
+ * fila — que faria o morador ler o nível de um braço achando que é do outro.
+ */
+function CursoComBracos({ divisao }: { divisao: NonNullable<GrupoDeCurso['divisao']> }) {
+  const nomesReencontro = divisao.reencontro
+    .map((r) => r.nome.split(' ')[0])
+    .filter((n): n is string => !!n)
+  return (
+    <span className={estilos.lista}>
+      {divisao.antes.map((r) => (
+        <Regua key={r.id} regua={r} />
+      ))}
+      {divisao.antes.length > 0 ? (
+        <span className={estilos.notaDivisao}>Daqui para baixo o rio se divide em dois braços paralelos:</span>
+      ) : null}
+      {divisao.bracos.map((b) => (
+        <span key={b.chave} className={estilos.braco}>
+          <span className={estilos.bracoNome}>{b.nome}</span>
+          {b.reguas.map((r) => (
+            <Regua key={r.id} regua={r} />
+          ))}
+        </span>
+      ))}
+      {nomesReencontro.length > 1 ? (
+        <span className={estilos.reencontro}>
+          {nomesReencontro.join(' e ')} ficam no mesmo ponto, onde os dois braços se reúnem perto da
+          foz — não há ordem entre elas.
         </span>
       ) : null}
     </span>

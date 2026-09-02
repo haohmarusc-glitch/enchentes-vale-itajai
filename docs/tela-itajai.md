@@ -39,11 +39,22 @@ Canhanduba, nessa ordem — e, dentro de cada um, **da nascente para o mar** por
 mesma razão: numa cidade com quatro cursos, a lista plana faz o morador ler a
 régua errada (a de Limoeiro, 26 km rio acima, encostava na do estuário).
 
-**DC-04 × DC-06 saem lado a lado, não em fila.** As duas ficam à mesma distância
-da foz (~4,8 km) em braços paralelos do Mirim; a fonte não distingue qual vem
-antes. Compartilham `ordem_descida` e trazem `ordem_nota` — a tela as agrupa num
-bloco com a ressalva, em vez de inventar uma sequência. A lógica está em
-`agruparPorCurso`/`emParesColocados`, travada por teste (`reguas.test.ts`).
+**O Mirim aparece dividido em dois braços paralelos** (refino de 02/09/2026, a
+partir do documento de rota do Jefferson — ver `coordenadas-dc-itajai.md`). Em
+Itajaí o Mirim se separa depois de DC-10 (Limoeiro) em **curso antigo** (DC-05 →
+DC-06) e **canal retificado** (DC-03 → DC-04), que se reencontram perto da foz.
+A tela mostra DC-10, depois os dois braços sob o seu nome, e a ressalva do
+reencontro — em vez de uma fila que intercalava os dois canais (DC-10, DC-05,
+DC-03, DC-04≡DC-06) e fazia ler o nível de um braço achando que era do outro. O
+rótulo do braço vem do **título** de cada régua (`(curso antigo)` / `(canal
+retificado)`), não da coordenada — que segue em disputa. Lógica em
+`agruparPorCurso`/`dividirEmBracos`, `CursoComBracos` na UI, travada por teste.
+
+**DC-04 × DC-06 são o ponto de reencontro dos dois braços.** Ficam à mesma
+distância da foz (~4,8 km); a fonte não distingue qual vem antes. Compartilham
+`ordem_descida` e trazem `ordem_nota`; a tela as mostra cada uma no seu braço, com
+a nota de que ocupam o mesmo ponto — nunca em fila. Fora do agrupamento por
+braço (outras cidades), `emParesColocados` ainda junta co-locadas num par.
 
 Sem coordenada (`ordem_descida` ausente), a régua cai para a ordem do id, que é
 estável — nunca se deduz posição física a partir do número do código.
