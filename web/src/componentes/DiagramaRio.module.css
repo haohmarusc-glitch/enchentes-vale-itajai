@@ -218,3 +218,20 @@
 .setaLinha.seg_emergencia { --cor-seg: var(--faixa-emergencia); }
 /* 'varias' e 'sem-dado' ficam com o azul-neutro padrão da seta: não há uma
    faixa única a montante para propagar. */
+
+/* Nível bruto estadual (rede DC-SC) preenchendo a lacuna de uma cidade sem
+   fonte municipal. Cinza de propósito: não tem cor de faixa, porque a régua
+   estadual tem zero próprio e não é comparável com as cotas do projeto. */
+.brutoEstadual {
+  display: block;
+  color: #4a4a52;
+  font-size: 0.9rem;
+}
+
+.brutoNota {
+  display: block;
+  color: #6a6a72;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin-top: 0.1rem;
+}

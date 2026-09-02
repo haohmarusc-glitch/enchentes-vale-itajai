@@ -30,6 +30,7 @@ set -euo pipefail
 RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ARQUIVO="$RAIZ/data/tempo-real/ultimo.json"
 SERIE_RECENTE="$RAIZ/data/tempo-real/serie-recente.json"
+NIVEL_SC="$RAIZ/data/tempo-real/ultimo_nivel_sc.json"
 BRANCH="tempo-real"
 SECO=0
 [ "${1:-}" = "--seco" ] && SECO=1
@@ -60,10 +61,20 @@ if [ -f "$SERIE_RECENTE" ] && python3 -c 'import json,sys; json.load(open(sys.ar
   SERIE_ENTRY="$(printf '100644 blob %s\tserie-recente.json' "$BLOB_SERIE")"
 fi
 
+# ultimo_nivel_sc.json (nível bruto estadual) vai junto, mesma regra do
+# serie-recente: só quando existe e é JSON válido. O site o lê para preencher,
+# rotulado, as lacunas das cidades sem fonte municipal.
+NIVEL_SC_ENTRY=""
+if [ -f "$NIVEL_SC" ] && python3 -c 'import json,sys; json.load(open(sys.argv[1]))' "$NIVEL_SC" 2>/dev/null; then
+  BLOB_NIVEL_SC="$(git hash-object -w "$NIVEL_SC")"
+  NIVEL_SC_ENTRY="$(printf '100644 blob %s\tultimo_nivel_sc.json' "$BLOB_NIVEL_SC")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
     [ -n "$SERIE_ENTRY" ] && printf '%s\n' "$SERIE_ENTRY"
+    [ -n "$NIVEL_SC_ENTRY" ] && printf '%s\n' "$NIVEL_SC_ENTRY"
   } | git mktree
 )"
 COMMIT="$(git commit-tree "$TREE" -m "Leitura de $(date -u +%Y-%m-%dT%H:%M:%SZ)")"
