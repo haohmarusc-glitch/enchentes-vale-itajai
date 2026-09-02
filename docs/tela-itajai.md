@@ -27,6 +27,46 @@ Duas diferenças em relação à especificação, e as duas são deliberadas:
   acima da maré, por isso dispara aviso. Esteve cadastrada por engano como régua
   de Ilhota; corrigido. Ilhota não tem régua própria.
 
+### Ordem de descida no painel (T5, 02/09/2026) ✔ existe
+
+Com as coordenadas das 11 réguas preenchidas (`preencher_coordenadas_dc.py`) e a
+ordem calculada (`ordenar_estacoes_itajai.py`, campo `ordem_descida` no
+`estacoes.json`), o painel deixou de ser uma lista plana por código. Agora
+`ReguasDaCidade` recebe `agrupadoPorCurso` e mostra as réguas **sob o seu curso
+d'água** — Rio Itajaí-Açu, Rio Itajaí-Mirim, Ribeirão da Murta, Ribeirão
+Canhanduba, nessa ordem — e, dentro de cada um, **da nascente para o mar** por
+`ordem_descida`. É o mesmo desenho do `/rios` do bot (`_reguas_agrupadas`), pela
+mesma razão: numa cidade com quatro cursos, a lista plana faz o morador ler a
+régua errada (a de Limoeiro, 26 km rio acima, encostava na do estuário).
+
+**O Mirim aparece dividido em dois braços paralelos** (refino de 02/09/2026, a
+partir do documento de rota do Jefferson — ver `coordenadas-dc-itajai.md`). Em
+Itajaí o Mirim se separa depois de DC-10 (Limoeiro) em **curso antigo** (DC-05 →
+DC-06) e **canal retificado** (DC-03 → DC-04), que se reencontram perto da foz.
+A tela mostra DC-10, depois os dois braços sob o seu nome, e a ressalva do
+reencontro — em vez de uma fila que intercalava os dois canais (DC-10, DC-05,
+DC-03, DC-04≡DC-06) e fazia ler o nível de um braço achando que era do outro. O
+rótulo do braço vem do **título** de cada régua (`(curso antigo)` / `(canal
+retificado)`), não da coordenada — que segue em disputa. Lógica em
+`agruparPorCurso`/`dividirEmBracos`, `CursoComBracos` na UI, travada por teste.
+
+**DC-04 × DC-06 são o ponto de reencontro dos dois braços.** Ficam à mesma
+distância da foz (~4,8 km); a fonte não distingue qual vem antes. Compartilham
+`ordem_descida` e trazem `ordem_nota`; a tela as mostra cada uma no seu braço, com
+a nota de que ocupam o mesmo ponto — nunca em fila. Fora do agrupamento por
+braço (outras cidades), `emParesColocados` ainda junta co-locadas num par.
+
+Sem coordenada (`ordem_descida` ausente), a régua cai para a ordem do id, que é
+estável — nunca se deduz posição física a partir do número do código.
+
+**Pendente (não neste commit): marcador de cada régua DC no mapa.** As 11 réguas
+já têm `lat`/`lon` no `estacoes.json`, mas o `MapaRios` hoje ancora UM marcador
+por cidade e usa essas âncoras para colorir o traçado por faixa. Espalhar 11
+marcadores em Itajaí mexe nessa lógica (várias réguas na foz, algumas fora do
+traçado — canal e ribeirões) e no enquadramento da bacia — é mudança à parte, com
+teste próprio, para não arriscar a coloração que o morador lê. Fica como próximo
+passo, separado desta entrega da sequência.
+
 ## Bloco 2 — maré ✔ existe
 
 `PainelMare`, com `scripts/coleta_mares.py` (tábua oficial) e cálculo de

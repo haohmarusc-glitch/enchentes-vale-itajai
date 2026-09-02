@@ -119,3 +119,35 @@ só como *checagem de qualidade* (afastamento > 500 m = braço/ribeirão fora do
 MESMA `ordem_descida` e uma `ordem_nota` de braços paralelos. **Nunca forçar sequência entre elas.**
 Para a UI (T5): o canal retificado (DC-03) e os ribeirões não estão no traçado; DC-04/DC-06 são um par
 lado a lado — mostrar como tal, não em fila.
+
+## Estrutura em dois braços do Mirim (documento de rota, 02/09/2026)
+
+O Jefferson mandou um documento de rota hidrológica confirmando o que os próprios **títulos das
+réguas** já dizem: em Itajaí o Mirim **se divide em dois braços paralelos** depois de DC-10 (Limoeiro),
+que se **reencontram** perto da foz:
+
+- **Curso antigo (meandros):** DC-05 (Sítio Hilário) → DC-06 (Clube Itamirim).
+- **Canal retificado:** DC-03 (Captação SEMASA) → DC-04 (Vitalmar, na junção dos dois braços).
+- DC-06 e DC-04 ficam no **mesmo ponto** de reencontro (~4,8 km da foz) — daí o empate do T3.
+
+A tela do Mirim passou a mostrar essa estrutura (curso antigo e canal como braços paralelos, não uma
+fila intercalada). O rótulo do braço vem do título de cada régua (`(curso antigo)` / `(canal
+retificado)`), **não** das coordenadas — que continuam em disputa (abaixo).
+
+### ⚠ PENDÊNCIA — coordenadas do documento divergem dos marcadores do Mapa.php
+
+O documento traz coordenadas próprias, **marcadas como "Aprox."** (3 casas), que **divergem** dos
+marcadores oficiais do Mapa.php (5 casas, adotados no `estacoes.json`) — de 0,9 km (DC-06) até **8,9 km
+(DC-10)** e 5,9 km (DC-05). Além disso o documento é **internamente inconsistente**: o diagrama põe
+DC-04 a montante de DC-03, mas as coordenadas dele mesmo põem DC-03 mais longe da foz (o Mapa.php
+concorda com esta segunda leitura — DC-03/SEMASA a montante da cunha salina, DC-04/Vitalmar na junção).
+
+**Decisão (Jefferson, 02/09/2026): "não sei qual está certa" → manter os marcadores do Mapa.php** (fonte
+verificada, precisa, coerente com a ordem física) e **não sobrescrever** com as do documento. A
+divergência fica registrada aqui até dar para conferir em campo (GPS nos 11 pontos) ou em fonte oficial
+(ofício C2 / GEOItajaí). Isto **não bloqueia** a estrutura em braços (que vem do título), só o futuro
+**marcador de cada régua no mapa**, que depende da coordenada exata.
+
+Coordenadas do documento (para conferência futura, NÃO adotadas):
+DC-10 `-27.055, -48.775` · DC-05 `-26.924, -48.689` · DC-06 `-26.917, -48.683` ·
+DC-04 `-26.908, -48.688` · DC-03 `-26.899, -48.694`.

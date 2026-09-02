@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { reguasComCota, separarFonte, todasAsReguas } from './reguas'
+import { agruparPorCurso, reguasComCota, separarFonte, todasAsReguas } from './reguas'
 import type { EstacaoTempoReal } from '../dados/tipos'
 
 /*
@@ -136,6 +136,57 @@ test('todas as réguas de Itajaí incluem os ribeirões, que não têm tela de r
     ...reguasComCota(estacoesTempoReal, 'itajai-mirim', 'itajai'),
   ].map((r) => r.id)
   for (const r of ribeiroes) assert.ok(!nasTelas.includes(r.id))
+})
+
+test('agruparPorCurso: cursos na ordem rio→ribeirão e réguas montante→foz', () => {
+  const todas = todasAsReguas(estacoesTempoReal, 'itajai')
+  const grupos = agruparPorCurso(todas)
+  // Os quatro cursos de Itajaí, nesta ordem: os dois rios, depois os ribeirões.
+  assert.deepEqual(
+    grupos.map((g) => g.rio),
+    ['itajai-acu', 'itajai-mirim', 'ribeirao-murta', 'ribeirao-canhanduba'],
+  )
+  // No Mirim, Limoeiro (DC-10) é a mais a montante — vem primeiro.
+  const mirim = grupos.find((g) => g.rio === 'itajai-mirim')!
+  assert.equal(mirim.reguas[0]!.id, 'DC-10')
+  // A ordem_descida é monótona não decrescente descendo a lista.
+  for (let i = 1; i < mirim.reguas.length; i++) {
+    const a = mirim.reguas[i - 1]!.ordemDescida
+    const b = mirim.reguas[i]!.ordemDescida
+    if (a != null && b != null) assert.ok(a <= b, `${mirim.reguas[i]!.id} fora de ordem`)
+  }
+})
+
+test('agruparPorCurso: DC-04 e DC-06 ficam co-locadas, sem fila entre elas', () => {
+  const grupos = agruparPorCurso(todasAsReguas(estacoesTempoReal, 'itajai'))
+  const mirim = grupos.find((g) => g.rio === 'itajai-mirim')!
+  const d4 = mirim.reguas.find((r) => r.id === 'DC-04')!
+  const d6 = mirim.reguas.find((r) => r.id === 'DC-06')!
+  assert.equal(d4.ordemDescida, d6.ordemDescida, 'mesma posição na descida')
+  assert.ok(d4.ordemNota, 'a co-locada explica que a ordem entre elas é indefinível')
+})
+
+test('agruparPorCurso: o Mirim se divide em curso antigo e canal, com o reencontro', () => {
+  const grupos = agruparPorCurso(todasAsReguas(estacoesTempoReal, 'itajai'))
+  const mirim = grupos.find((g) => g.rio === 'itajai-mirim')!
+  assert.ok(mirim.divisao, 'o Mirim deveria vir dividido em braços')
+  const div = mirim.divisao!
+  // DC-10 fica antes da bifurcação.
+  assert.deepEqual(div.antes.map((r) => r.id), ['DC-10'])
+  // Dois braços, curso antigo primeiro, canal depois.
+  assert.deepEqual(div.bracos.map((b) => b.chave), ['curso antigo', 'canal retificado'])
+  const antigo = div.bracos[0]!, canal = div.bracos[1]!
+  assert.deepEqual(antigo.reguas.map((r) => r.id), ['DC-05', 'DC-06'])
+  assert.deepEqual(canal.reguas.map((r) => r.id), ['DC-03', 'DC-04'])
+  // O reencontro é o par co-locado, um de cada braço.
+  assert.deepEqual(new Set(div.reencontro.map((r) => r.id)), new Set(['DC-06', 'DC-04']))
+})
+
+test('agruparPorCurso: cursos que não bifurcam não ganham divisao', () => {
+  const grupos = agruparPorCurso(todasAsReguas(estacoesTempoReal, 'itajai'))
+  for (const rio of ['itajai-acu', 'ribeirao-murta', 'ribeirao-canhanduba']) {
+    assert.equal(grupos.find((g) => g.rio === rio)!.divisao, undefined, `${rio} não bifurca`)
+  }
 })
 
 test('separarFonte tira a URL do texto sem inventar link', () => {

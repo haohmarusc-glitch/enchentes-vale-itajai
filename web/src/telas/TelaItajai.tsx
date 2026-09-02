@@ -222,7 +222,12 @@ function ReguasDeItajai() {
   return (
     <section className="cartao">
       <h2>Cotas oficiais das réguas de Itajaí</h2>
-      <ReguasDaCidade reguas={reguas} cidade="Itajaí" comTitulo={false} />
+      <p className={estilos.introReguas}>
+        As onze réguas aparecem sob o seu curso d'água — os dois rios e os dois ribeirões — e na
+        ordem em que o rio desce, da nascente para o mar. É a posição física de cada uma, não o
+        número da régua.
+      </p>
+      <ReguasDaCidade reguas={reguas} cidade="Itajaí" comTitulo={false} agrupadoPorCurso />
       {fontes.map((bruta) => {
         const { texto, url } = separarFonte(bruta)
         return (

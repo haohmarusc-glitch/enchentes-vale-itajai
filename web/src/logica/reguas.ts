@@ -42,6 +42,156 @@ export interface ReguaComCota {
   rio: string | null
   /** Documento de onde a cota veio, como escrito no arquivo. */
   fonteCotas: string | null
+  /**
+   * Posição na descida do curso (1 = mais a montante). `null` quando a fonte
+   * não deu coordenada. Réguas co-locadas (braços paralelos) compartilham o
+   * valor e trazem `ordemNota`.
+   */
+  ordemDescida: number | null
+  ordemNota: string | null
+}
+
+/** Nome de cada curso d'água, para o subtítulo do agrupamento. */
+export const NOME_CURSO: Record<string, string> = {
+  'itajai-acu': 'Rio Itajaí-Açu',
+  'itajai-mirim': 'Rio Itajaí-Mirim',
+  'ribeirao-murta': 'Ribeirão da Murta',
+  'ribeirao-canhanduba': 'Ribeirão Canhanduba',
+}
+
+/** Ordem de exibição dos cursos: os dois rios, depois os ribeirões. */
+const ORDEM_CURSO = ['itajai-acu', 'itajai-mirim', 'ribeirao-murta', 'ribeirao-canhanduba']
+
+/**
+ * Um braço paralelo de um curso, com seu nome e suas réguas na ordem da descida.
+ *
+ * Em Itajaí o Mirim se divide em dois braços — o curso antigo (meandros
+ * naturais) e o canal retificado — que correm lado a lado e se reencontram
+ * perto da foz. O rótulo do braço vem do PRÓPRIO título de cada régua, como a
+ * Defesa Civil o escreve; não é dedução de coordenada (as coordenadas das réguas
+ * ainda estão em disputa — ver `docs/coordenadas-dc-itajai.md`).
+ */
+export interface Braco {
+  chave: string
+  nome: string
+  reguas: ReguaComCota[]
+}
+
+/** Um curso d'água com suas réguas já na ordem da descida (montante → foz). */
+export interface GrupoDeCurso {
+  rio: string
+  nome: string
+  reguas: ReguaComCota[]
+  /**
+   * Só quando o curso se divide em braços paralelos (hoje, o Mirim em Itajaí):
+   * as réguas ANTES da divisão, os braços, e o par de réguas onde eles se
+   * reencontram (uma de cada braço, na mesma posição da descida). Ausente nos
+   * cursos que não bifurcam — a UI mostra a lista plana `reguas`.
+   */
+  divisao?: {
+    antes: ReguaComCota[]
+    bracos: Braco[]
+    reencontro: ReguaComCota[]
+  }
+}
+
+/** Rótulo de braço → nome na tela. A chave casa por substring no título. */
+const NOME_BRACO: Record<string, string> = {
+  'curso antigo': 'Braço do curso antigo (meandros)',
+  'canal retificado': 'Braço do canal retificado',
+}
+/** Ordem de exibição dos braços: o curso natural primeiro, depois o canal. */
+const ORDEM_BRACO = ['curso antigo', 'canal retificado']
+
+/**
+ * O braço a que uma régua pertence, lido do título (a Defesa Civil escreve
+ * "(curso antigo)" / "(canal retificado)"). `null` = régua acima da divisão
+ * (DC-10) ou curso que não bifurca. O canal é testado antes: a régua da junção
+ * (DC-04, "canal retificado e curso antigo") entra como a ponta de baixo do
+ * canal, onde ele reencontra o curso antigo.
+ */
+function bracoDaRegua(r: ReguaComCota): string | null {
+  const t = r.titulo.toLowerCase()
+  if (t.includes('canal retificado')) return 'canal retificado'
+  if (t.includes('curso antigo')) return 'curso antigo'
+  return null
+}
+
+/**
+ * Se o curso se divide em braços (≥ 2 braços rotulados no título), devolve as
+ * réguas de antes da divisão, os braços na ordem de exibição e o par de
+ * reencontro (réguas de braços diferentes na MESMA posição da descida). Senão,
+ * `undefined` — o curso é uma linha só.
+ */
+function dividirEmBracos(reguas: ReguaComCota[]): GrupoDeCurso['divisao'] {
+  const chaves = new Set(reguas.map(bracoDaRegua).filter((c): c is string => c !== null))
+  if (chaves.size < 2) return undefined
+  const antes = reguas.filter((r) => bracoDaRegua(r) === null)
+  const bracos: Braco[] = ORDEM_BRACO.filter((c) => chaves.has(c)).map((chave) => ({
+    chave,
+    nome: NOME_BRACO[chave] ?? chave,
+    reguas: reguas.filter((r) => bracoDaRegua(r) === chave),
+  }))
+  // O reencontro: uma ordem de descida com réguas em mais de um braço.
+  const porOrdem = new Map<number, ReguaComCota[]>()
+  for (const b of bracos) {
+    for (const r of b.reguas) {
+      if (r.ordemDescida == null) continue
+      const arr = porOrdem.get(r.ordemDescida) ?? []
+      arr.push(r)
+      porOrdem.set(r.ordemDescida, arr)
+    }
+  }
+  let reencontro: ReguaComCota[] = []
+  for (const arr of porOrdem.values()) if (arr.length > 1) reencontro = arr
+  return { antes, bracos, reencontro }
+}
+
+/**
+ * Agrupa as réguas por curso e ordena cada grupo pela descida do rio.
+ *
+ * É o mesmo desenho do `/rios` do bot: numa cidade com réguas em vários cursos
+ * (Itajaí tem quatro), amontoá-las numa lista faz o morador ler a régua errada.
+ * Cada curso vira um bloco com nome; dentro dele, montante → foz por
+ * `ordemDescida`. O curso que se divide em braços (o Mirim) vem com `divisao`:
+ * as réguas de antes da bifurcação e os dois braços paralelos, para não
+ * intercalar curso antigo e canal numa fila só — que era ler a régua errada de
+ * novo, agora dentro do mesmo rio.
+ */
+export function agruparPorCurso(reguas: ReguaComCota[]): GrupoDeCurso[] {
+  const porCurso = new Map<string, ReguaComCota[]>()
+  for (const r of reguas) {
+    const chave = r.rio ?? ''
+    const lista = porCurso.get(chave)
+    if (lista) lista.push(r)
+    else porCurso.set(chave, [r])
+  }
+  const posicao = (rio: string) => {
+    const i = ORDEM_CURSO.indexOf(rio)
+    return i < 0 ? ORDEM_CURSO.length : i
+  }
+  return [...porCurso.keys()]
+    .sort((a, b) => posicao(a) - posicao(b))
+    .map((rio) => {
+      const ordenadas = [...porCurso.get(rio)!].sort(porDescida)
+      return {
+        rio,
+        nome: NOME_CURSO[rio] ?? rio ?? '—',
+        reguas: ordenadas,
+        divisao: dividirEmBracos(ordenadas),
+      }
+    })
+}
+
+/**
+ * Montante → foz por `ordemDescida`. Sem ela (fonte sem coordenada), cai para o
+ * id, que é estável — nunca inventa uma ordem física a partir do código.
+ */
+function porDescida(a: ReguaComCota, b: ReguaComCota): number {
+  if (a.ordemDescida != null && b.ordemDescida != null && a.ordemDescida !== b.ordemDescida) {
+    return a.ordemDescida - b.ordemDescida
+  }
+  return a.id.localeCompare(b.id)
 }
 
 /**
@@ -108,6 +258,8 @@ export function todasAsReguas(
       referencia: e.referencia ?? null,
       rio: e.rio,
       fonteCotas: e.fonte_cotas ?? null,
+      ordemDescida: e.ordem_descida ?? null,
+      ordemNota: e.ordem_nota ?? null,
     })
   }
   return saida
