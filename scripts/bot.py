@@ -67,7 +67,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import notificador
-from comum import DADOS, le_json
+from comum import DADOS, chave_montante, le_json
 from transito import caminho, faixa_horas, janela_chegada
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
@@ -265,7 +265,7 @@ class Base:
     def cidades(self) -> list[dict]:
         saida = []
         for rio_id, rio in self.estacoes["rios"].items():
-            for c in sorted(rio["cidades"], key=lambda x: x["ordem"]):
+            for c in sorted(rio["cidades"], key=chave_montante):
                 saida.append({**c, "rio": rio_id})
         return saida
 
@@ -529,7 +529,18 @@ def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
 
     rio_id = cidade["rio"]
     ordem = [c for c in base.cidades() if c["rio"] == rio_id]
-    depois = [c for c in ordem if c["ordem"] > cidade["ordem"]]
+    # "Depois" = a jusante. Em rio em fila, é `ordem` maior. Em rio ramificado (o
+    # Açu), `ordem` é null: a jusante é o TRONCO abaixo da cidade — cabeceiras e
+    # afluentes ficam ANTES do tronco (posição -1) e o `caminho` ainda filtra os
+    # pares sem trecho. Um afluente sem trecho (Ibirama) simplesmente não prevê.
+    def _pos(c: dict) -> float:
+        o = c.get("ordem")
+        if isinstance(o, (int, float)):
+            return o
+        onr = c.get("ordem_no_ramo")
+        return onr if c.get("ramo") == "tronco_acu" and isinstance(onr, (int, float)) else -1
+
+    depois = [c for c in ordem if _pos(c) > _pos(cidade)]
 
     achou = False
     fora_de_ordem = False

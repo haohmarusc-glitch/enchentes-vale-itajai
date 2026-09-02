@@ -7,7 +7,20 @@ export type RioId = 'itajai-acu' | 'itajai-mirim'
 export interface Cidade {
   id: string
   nome: string
-  ordem: number
+  /**
+   * Sequência montante → jusante, SÓ em rio não ramificado (o Mirim). Em rio
+   * ramificado (o Açu, uma árvore) é `null`: usar ordem global afirmaria uma
+   * fila que não existe. Aí a posição vem de `ramo` + `ordem_no_ramo`, e a única
+   * sequência afirmável é o tronco (`Rio._topologia.tronco_sequencia`).
+   */
+  ordem: number | null
+  /** Braço da árvore: `tronco_acu`, `itajai_do_oeste`, `itajai_do_norte`… Só se
+   *  compara posição DENTRO do mesmo ramo. Ausente em rio não ramificado. */
+  ramo?: string
+  /** Posição montante → jusante dentro do ramo (1 = mais a montante). */
+  ordem_no_ramo?: number
+  /** Estação da rede estadual (Defesa Civil de SC), `DCSC-NNNNN`. */
+  codigo_dcsc?: string | null
   /** Sub-bacia a que a cidade pertence (Itajaí do Oeste, Benedito, …). */
   sub_bacia?: string
   /** Distância até a foz, em km, quando conhecida. */
@@ -43,10 +56,31 @@ export interface AfluenteMonitorado {
   fontes_tempo_real: string[]
 }
 
+/**
+ * A árvore de um rio ramificado (hoje só o Açu). Diz qual é a ÚNICA sequência
+ * que a tela pode afirmar (o tronco), quais cidades são cabeceiras paralelas e
+ * quais são afluentes laterais — que entram no tronco, não são elos da fila.
+ */
+export interface Topologia {
+  tipo: 'arvore'
+  /** A sequência montante → jusante que a água realmente segue. */
+  tronco_sequencia: string[]
+  /** Cabeceiras que correm em paralelo e se juntam no início do tronco. */
+  cabeceiras_paralelas: string[]
+  /** Afluentes que entram no tronco de lado — não são elos da sequência. */
+  afluentes_laterais: { id: string; entra_perto_de: string; rio: string }[]
+  /** Ids que saíram do eixo por não serem régua de rio (ex.: estação de altitude). */
+  nao_e_regua_de_rio?: { id: string; motivo: string }[]
+  nota?: string
+  fonte?: string
+}
+
 export interface Rio {
   nome: string
   foz: string
   cidades: Cidade[]
+  /** Presente só em rio ramificado. Ausente = rio em fila (Mirim). */
+  _topologia?: Topologia
 }
 
 /**

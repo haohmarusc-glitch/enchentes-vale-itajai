@@ -3,7 +3,7 @@ import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
 import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
-import { cidadesDoRio, eventosDoRio, rio, trechos } from '../dados/carregar'
+import { cidadesDoRio, eventosDoRio, rio, topologiaDoRio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
@@ -34,6 +34,7 @@ const AnimacaoOnda = lazy(() => import('../componentes/AnimacaoOnda'))
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
   const cidades = useMemo(() => cidadesDoRio(rioId), [rioId])
+  const topologia = useMemo(() => topologiaDoRio(rioId), [rioId])
   const eventos = useMemo(() => eventosDoRio(rioId), [rioId])
 
   const registrosPorCidade = useMemo(() => {
@@ -131,6 +132,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           aoSelecionar={setSelecionadaId}
           tempoReal={tempoReal}
           nivelSc={nivelSc}
+          topologia={topologia}
           agora={agora}
         />
         {semCobertura > 0 ? (

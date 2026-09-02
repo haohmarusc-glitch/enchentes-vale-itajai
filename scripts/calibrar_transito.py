@@ -61,7 +61,7 @@ def pares_para_calibrar() -> list[tuple[str, str, str]]:
             saida.append(par)
 
     for rio_id, rio in estacoes["rios"].items():
-        ordenadas = sorted(rio["cidades"], key=lambda c: c["ordem"])
+        ordenadas = sorted(rio["cidades"], key=lambda c: c["ordem"] if isinstance(c.get("ordem"), (int, float)) else 0)
         for a, b in zip(ordenadas, ordenadas[1:]):
             junta((rio_id, a["id"], b["id"]))
 

@@ -112,7 +112,7 @@ ele importa) mudou; os coletores pegam o código novo no próximo ciclo do cron,
 
 ## Telas
 
-1. **`/acu` — Itajaí-Açu** — Taió/Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí
+1. **`/acu` — Itajaí-Açu** — árvore: cabeceiras Taió ‖ Ituporanga → tronco Rio do Sul → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí (Ibirama é afluente lateral, Rio Hercílio). Ver `docs/TOPOLOGIA-CANONICA.md`.
 2. **`/mirim` — Itajaí-Mirim** — Vidal Ramos → Botuverá → Brusque → Itajaí
 3. **`/itajai` — Itajaí (foz)** — chegada dos dois picos + maré
 4. **`/`** — escolha do rio e aviso legal
@@ -448,6 +448,8 @@ o projeto.
 ## Pendências
 
 Em ordem de impacto.
+
+- [x] **A tela do Açu deixou de afirmar uma fila falsa — virou árvore.** O `/acu` mostrava `Taió → Rio do Sul → Ibirama → Apiúna → Indaial → …` como se a água descesse nessa sequência. Não desce: Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são **cabeceiras paralelas** que se juntam em Rio do Sul; **Ibirama fica no Rio Hercílio** (afluente lateral, não elo); e **Apiúna** era estação de altitude (DCSC-00178 "(H)"), não régua de rio — saiu do eixo, **Ascurra** (DCSC-00003, confirmada no tronco por Overpass) entrou. Verificado em mapa + Overpass 02/09/2026. No `estacoes.json`, `ordem` do Açu virou `null` e a posição passou a `ramo` + `ordem_no_ramo`; `_topologia` guarda a `tronco_sequencia` (Rio do Sul → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí), as cabeceiras e os afluentes. A tela desenha três blocos (cabeceiras / tronco / afluentes), com seta de tempo só no tronco. **E o validador (`scripts/validar_dados.py`) passou a ABORTAR** se a fila global voltar, se faltar `ramo`/`ordem_no_ramo`, se um `codigo_dcsc` sumir ou se uma régua sem aviso não disser o motivo — travado por `scripts/teste_validar_dados.py`. Fonte única: `docs/TOPOLOGIA-CANONICA.md`.
 
 - [ ] **Mostrar a sequência das réguas DC no Mirim (ordem já calculada).** As coordenadas foram preenchidas e a `ordem_descida` gravada por `scripts/ordenar_estacoes_itajai.py` (ordem por distância à foz; o traçado OSM é segmentado e não ordena). Falta a UI (tela do Mirim) exibir a sequência — e tratar DC-04×DC-06 como par co-locado (empate real, não fila) e o canal/ribeirões como fora do eixo desenhado. Detalhe em `docs/coordenadas-dc-itajai.md`. As 11 coordenadas das réguas DC foram achadas nos marcadores do `Mapa.php` da Defesa Civil de Itajaí e preenchidas em `estacoes_tempo_real` (`scripts/preencher_coordenadas_dc.py`, com teste). Falta projetar no traçado (`scripts/ordenar_estacoes_itajai.py`) para gravar `ordem_descida` e desempatar DC-04×DC-06 (5,3 km da foz as duas — só a projeção no traçado resolve; e podem estar em braços diferentes do Mirim, então conferir o afastamento). Depois, mostrar a sequência na tela do Mirim. Detalhe em `docs/coordenadas-dc-itajai.md`.
 - [ ] **Abrigo mais próximo na tela de Itajaí (45 abrigos com coordenada).** A mesma busca achou `Hosted/Abrigos_Defesa_Civil_view_completo` no ArcGIS — **público, sem token**, 45 abrigos com lat/lon, endereço, capacidade e zona. Permite "abrigo mais próximo de você" por distância real, como Blumenau já faz. Falta o arquivo bruto entrar no repo (`data/brutos/itajai-abrigos-defesa-civil.json` → `data/abrigos-itajai.json`) e a seção "Meu ponto" na tela de Itajaí. **Ressalva:** `situacao`/`lotacao` é cadastro, não estado atual — nunca exibir como "aberto agora"; quem ativa abrigo é a Defesa Civil. Detalhe em `docs/coordenadas-dc-itajai.md`.

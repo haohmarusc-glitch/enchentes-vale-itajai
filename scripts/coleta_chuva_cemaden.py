@@ -71,7 +71,6 @@ MUNICIPIO_PARA_CIDADE = {
     "ITUPORANGA": "ituporanga",
     "RIO DO SUL": "rio-do-sul",
     "IBIRAMA": "ibirama",
-    "APIÚNA": "apiuna",
     "INDAIAL": "indaial",
     "BLUMENAU": "blumenau",
     "GASPAR": "gaspar",
