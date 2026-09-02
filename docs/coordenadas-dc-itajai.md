@@ -1,5 +1,14 @@
 # Coordenadas das 11 réguas DC de Itajaí — busca no ArcGIS (02/09/2026)
 
+> **✅ ATUALIZAÇÃO (02/09/2026): as 11 coordenadas foram ENCONTRADAS** — não no ArcGIS (que segue
+> atrás de token, abaixo), mas nos **marcadores Leaflet da página `Mapa.php` da Defesa Civil de Itajaí**
+> (`defesacivil.itajai.sc.gov.br/monitoramento/Mapa.php`), lidas do HTML. Preenchidas em
+> `data/estacoes.json` → `estacoes_tempo_real` por `scripts/preencher_coordenadas_dc.py` (com
+> `fonte_coordenada` e teste travando a coerência: DC-01/CEPSUL a mais perto da foz, DC-10/Limoeiro a mais
+> longe). **Destrava a ordenação do Mirim** (próximo passo: `scripts/ordenar_estacoes_itajai.py` projetando
+> no traçado, para desempatar DC-04×DC-06). O resto desta seção fica como registro histórico da busca.
+
+
 Objetivo: preencher `coordenadas` das réguas DC-01..DC-11 em `data/estacoes.json` para ordenar o
 Itajaí-Mirim (e os demais) **pela descida do rio em direção ao mar**, em vez de por descrição.
 
@@ -87,3 +96,26 @@ EPAGRI (ofício C9) — a pendência EPAGRI/Salseiro do README segue aberta por 
 - Vínculo estação↔cidade por coordenada (regra do projeto).
 - Ordenar a cadeia do Açu e do Mirim pela descida real (projetando no traçado) — quando houver o script.
 - Distância entre estações como insumo para calibrar tempo de trânsito com base física.
+
+---
+
+## Ordem de descida das réguas DC (T2/T3, 02/09/2026) — `scripts/ordenar_estacoes_itajai.py`
+
+**Como, e por que não pela projeção no traçado:** o traçado (`data/rios/*.geojson`) é um
+MultiLineString de **segmentos soltos do OSM** (57 no Mirim), sem ordem nem conectividade — não dá
+"distância ao longo do curso" sem montar um grafo, e o Mirim tem dois braços. Pior, o **canal
+retificado e os ribeirões não estão no traçado** (mediado: DC-03/SEMASA a 2,3 km, ribeirões a
+0,9–4,4 km). Então a ordem é pela **distância à foz** (reta), robusta e verificável; a projeção entra
+só como *checagem de qualidade* (afastamento > 500 m = braço/ribeirão fora do desenho).
+
+**Ordem gravada (`ordem_descida` em `estacoes_tempo_real`, montante → foz):**
+- **Itajaí-Açu:** DC-11 Santa Regina (12,2 km) → DC-02 Praça (7,6) → DC-01 CEPSUL (1,0).
+- **Itajaí-Mirim:** DC-10 Limoeiro (26,0) → DC-05 Sítio (10,9) → DC-03 SEMASA (7,7, *canal, fora do
+  traçado*) → **DC-04 Vitalmar ≡ DC-06 Itamirim (4,8, EMPATE)**.
+- **Ribeirão da Murta:** DC-07 Portal (9,4) → DC-09 (6,5). **Ribeirão Canhanduba:** DC-08 (10,7).
+
+**T3 — o empate NÃO se resolve:** DC-04 e DC-06 estão à mesma distância da foz (~4,8 km) e projetam no
+**mesmo ponto** do traçado (offset 55 m as duas). São co-locadas — não há "qual vem antes". Recebem a
+MESMA `ordem_descida` e uma `ordem_nota` de braços paralelos. **Nunca forçar sequência entre elas.**
+Para a UI (T5): o canal retificado (DC-03) e os ribeirões não estão no traçado; DC-04/DC-06 são um par
+lado a lado — mostrar como tal, não em fila.
