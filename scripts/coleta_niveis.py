@@ -125,6 +125,24 @@ def baixar_chuva_sc() -> list[dict]:
         return []
 
 
+def baixar_chuva_cemaden() -> list[dict]:
+    """
+    A chuva dos pluviômetros do CEMADEN — a rede mais densa da bacia (chuva por
+    bairro; Blumenau sozinha tem catorze ativos). Contexto, nunca cota.
+
+    Falha aqui não pode derrubar nada: devolve lista vazia e o resto segue. Só
+    chuva — o motivo de o nível não entrar está em `coleta_chuva_cemaden.py`.
+    """
+    try:
+        from coleta_chuva_cemaden import baixar_estacoes, converter
+
+        leituras, _recusadas, _sem_dado = converter(baixar_estacoes())
+        return leituras
+    except Exception as e:
+        print(f"aviso: chuva do CEMADEN não coletada ({e}).", file=sys.stderr)
+        return []
+
+
 def baixar_nivel_alertablu(leituras: list[dict]) -> list[dict]:
     """Resgata Blumenau quando a fonte de Itajai o publica vazio OU velho.
     O AlertaBlu publica a serie oficial de Blumenau, independente da pagina de
@@ -478,6 +496,10 @@ def main() -> int:
     # idade. Nomes não colidem porque os da Defesa Civil de SC vêm com o código
     # DCSC na frente.
     chuva = chuva + baixar_chuva_sc()
+    # E o CEMADEN, a rede mais densa — chuva por bairro. Mesma lista: o site e o
+    # bot já mostram o maior de vários pluviômetros por cidade, e o código do
+    # CEMADEN (420…A) não colide com o DCSC nem com os nomes de Itajaí.
+    chuva = chuva + baixar_chuva_cemaden()
     # Com as duas fontes juntas dá para cruzar: um pluviômetro preso em ZERO em
     # toda janela numa cidade onde OUTRA estação mede chuva é sensor parado, não
     # "não choveu". Aqui é o único ponto em que as estações da cidade estão lado

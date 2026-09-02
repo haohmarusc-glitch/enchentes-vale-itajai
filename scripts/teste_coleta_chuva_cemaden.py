@@ -7,20 +7,25 @@ import unittest
 from coleta_chuva_cemaden import (
     CATALOGO,
     MUNICIPIO_PARA_CIDADE,
-    _carimbo_iso,
+    _municipio_sem_uf,
+    _numero,
     converter,
     desembrulhar_jsonp,
 )
 
+MOMENTO = "2026-09-02T09:00:00"  # hora de Brasília fixa, para os testes não dependerem do relógio
 
-def _reg(municipio, valor, carimbo="2026-09-02T03:00:00", codigo="42000000A", nome="Centro"):
-    """Um registro bruto plausível, com os nomes de chave que o coletor tenta."""
+
+def _reg(munic, lbl, cod="420290901A", nome="Centro", icon="flag_verde.png"):
+    """Um registro bruto como o CEMADEN publica (nomes de campo reais)."""
     return {
-        "codigo": codigo,
-        "nome": nome,
-        "municipio": municipio,
-        "acumulado24h": valor,
-        "datahoraultimovalor": carimbo,
+        "estacao_cod": cod,
+        "estacao_nome": nome,
+        "estacao_munic": munic,
+        "estacao_uf": "SC",
+        "estacao_latlon": "[-27.098][-48.925]",
+        "icon": f"https://x/{icon}",
+        "lbl": lbl,
     }
 
 
@@ -34,70 +39,86 @@ class DesembrulhaJsonp(unittest.TestCase):
     def test_json_puro(self):
         self.assertEqual(desembrulhar_jsonp('[{"a":1}]'), [{"a": 1}])
 
-    def test_objeto_com_lista_dentro(self):
-        self.assertEqual(desembrulhar_jsonp('cb({"estacoes":[{"a":1}]})'), [{"a": 1}])
+    def test_objeto_com_features(self):
+        self.assertEqual(desembrulhar_jsonp('cb({"features":[{"a":1}]})'), [{"a": 1}])
+
+
+class MunicipioSemUf(unittest.TestCase):
+    def test_tira_sufixo_uf(self):
+        self.assertEqual(_municipio_sem_uf("BRUSQUE-SC"), "BRUSQUE")
+
+    def test_sem_sufixo_fica_igual(self):
+        self.assertEqual(_municipio_sem_uf("BLUMENAU"), "BLUMENAU")
+
+    def test_nome_composto_com_uf(self):
+        self.assertEqual(_municipio_sem_uf("Rio do Sul-SC"), "RIO DO SUL")
+
+    def test_none_vira_vazio(self):
+        self.assertEqual(_municipio_sem_uf(None), "")
+
+
+class Numero(unittest.TestCase):
+    def test_inteiro_e_float(self):
+        self.assertEqual(_numero(12), 12.0)
+        self.assertEqual(_numero(3.5), 3.5)
+
+    def test_string_numerica(self):
+        self.assertEqual(_numero("25"), 25.0)
+        self.assertEqual(_numero("1,5"), 1.5)
+
+    def test_vazio_e_bool_viram_none(self):
+        self.assertIsNone(_numero(""))
+        self.assertIsNone(_numero(None))
+        self.assertIsNone(_numero(True))  # True não é milímetro
 
 
 class Converter(unittest.TestCase):
-    def test_mapeia_municipio_para_cidade(self):
-        leituras, recusadas = converter([_reg("BLUMENAU", 12.0)])
+    def test_mapeia_municipio_com_uf_para_cidade(self):
+        leituras, recusadas, sem_dado = converter([_reg("BRUSQUE-SC", 12.0)], MOMENTO)
         self.assertEqual(len(leituras), 1)
-        self.assertEqual(leituras[0]["cidade"], "blumenau")
+        self.assertEqual(leituras[0]["cidade"], "brusque")
         self.assertEqual(leituras[0]["mm"]["h24"], 12.0)
-        self.assertEqual(recusadas, [])
+        self.assertEqual((recusadas, sem_dado), ([], 0))
 
-    def test_caixa_do_municipio_nao_importa(self):
-        leituras, _ = converter([_reg("Blumenau", 5.0)])
-        self.assertEqual(len(leituras), 1)
-
-    def test_municipio_fora_do_projeto_e_silencioso(self):
-        # Florianópolis vem no feed estadual, mas não é cidade do projeto.
-        leituras, recusadas = converter([_reg("FLORIANÓPOLIS", 3.0)])
-        self.assertEqual(leituras, [])
-        self.assertEqual(recusadas, [])  # ignorado sem ruído, não é "recusa"
+    def test_carimba_o_momento_da_coleta(self):
+        # A fonte não traz hora por estação; medido_em é a hora da coleta.
+        leituras, _, _ = converter([_reg("GASPAR-SC", 5.0)], MOMENTO)
+        self.assertEqual(leituras[0]["medido_em"], MOMENTO)
 
     def test_so_h24_preenchido(self):
-        leituras, _ = converter([_reg("GASPAR", 8.0)])
+        leituras, _, _ = converter([_reg("ITAJAÍ-SC", 8.0)], MOMENTO)
         mm = leituras[0]["mm"]
         self.assertEqual(mm["h24"], 8.0)
         self.assertIsNone(mm["h1"])
         self.assertIsNone(mm["min10"])
 
-    def test_carimbo_utc_vira_brasilia(self):
-        # 03:00 UTC -> 00:00 de Brasília (-3h), sem fuso no texto.
-        leituras, _ = converter([_reg("ITAJAÍ", 1.0, carimbo="2026-09-02T03:00:00")])
-        self.assertEqual(leituras[0]["medido_em"], "2026-09-02T00:00:00")
+    def test_municipio_fora_do_projeto_e_silencioso(self):
+        leituras, recusadas, sem_dado = converter([_reg("FLORIANÓPOLIS-SC", 3.0)], MOMENTO)
+        self.assertEqual((leituras, recusadas, sem_dado), ([], [], 0))
 
-    def test_chave_de_valor_nao_reconhecida_e_recusa_nao_fabricacao(self):
-        # Registro sem nenhuma chave de valor conhecida: recusa explícita,
-        # NUNCA vira leitura com zero inventado.
-        reg = {"codigo": "x", "municipio": "BLUMENAU", "precipitacao_estranha": 4.0}
-        leituras, recusadas = converter([reg])
+    def test_estacao_inativa_vira_sem_dado_nao_leitura(self):
+        # flag_cinza = sem dado: não vira leitura, mesmo com número velho.
+        leituras, recusadas, sem_dado = converter(
+            [_reg("BLUMENAU-SC", 4.0, icon="flag_cinza.png")], MOMENTO)
         self.assertEqual(leituras, [])
-        self.assertEqual(len(recusadas), 1)
-        self.assertIn("sem chave de chuva reconhecida", recusadas[0])
-        self.assertIn("precipitacao_estranha", recusadas[0])
+        self.assertEqual((recusadas, sem_dado), ([], 1))
+
+    def test_lbl_vazio_vira_sem_dado(self):
+        leituras, recusadas, sem_dado = converter([_reg("BLUMENAU-SC", "")], MOMENTO)
+        self.assertEqual(leituras, [])
+        self.assertEqual((recusadas, sem_dado), ([], 1))
 
     def test_valor_absurdo_recusado(self):
-        leituras, recusadas = converter([_reg("BRUSQUE", 9999.0)])
+        leituras, recusadas, sem_dado = converter([_reg("BRUSQUE-SC", 9999.0)], MOMENTO)
         self.assertEqual(leituras, [])
         self.assertEqual(len(recusadas), 1)
         self.assertIn("fora da faixa plausível", recusadas[0])
 
-    def test_booleano_nao_e_chuva(self):
-        # e_numero rejeita bool; True não é milímetro.
-        leituras, recusadas = converter([_reg("GASPAR", True)])
-        self.assertEqual(leituras, [])
-        self.assertEqual(len(recusadas), 1)
-
-
-class Carimbo(unittest.TestCase):
-    def test_espaco_e_milissegundos(self):
-        self.assertEqual(_carimbo_iso("2026-09-02 03:00:00.0"), "2026-09-02T03:00:00")
-
-    def test_nao_texto_vira_none(self):
-        self.assertIsNone(_carimbo_iso(None))
-        self.assertIsNone(_carimbo_iso(123))
+    def test_attributes_aninhado(self):
+        # Envelope GeoJSON-like: campos dentro de "attributes".
+        leituras, _, _ = converter([{"attributes": _reg("GUABIRUBA-SC", 2.0)}], MOMENTO)
+        self.assertEqual(len(leituras), 1)
+        self.assertEqual(leituras[0]["cidade"], "guabiruba")
 
 
 class CatalogoBate(unittest.TestCase):
@@ -113,7 +134,6 @@ class CatalogoBate(unittest.TestCase):
         self.assertEqual(faltando, set(), f"município mapeado sem estação no catálogo: {faltando}")
 
     def test_ids_de_cidade_sao_do_projeto(self):
-        # Ids reais de data/estacoes.json (Açu + Mirim + afluentes com tela).
         validos = {
             "taio", "ituporanga", "rio-do-sul", "ibirama", "apiuna", "indaial",
             "blumenau", "gaspar", "ilhota", "itajai", "vidal-ramos", "botuvera",
@@ -122,7 +142,6 @@ class CatalogoBate(unittest.TestCase):
         self.assertTrue(set(MUNICIPIO_PARA_CIDADE.values()) <= validos)
 
     def test_timbo_fica_de_fora(self):
-        # Coerência com coleta_chuva_sc: Timbó é afluente sem tela.
         self.assertNotIn("timbo", MUNICIPIO_PARA_CIDADE.values())
 
 
