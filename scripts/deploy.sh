@@ -79,13 +79,16 @@ fi
 info "código do bot mudou:"
 echo "$mudou" | sed 's/^/    /'
 
-if ! systemctl list-unit-files 2>/dev/null | grep -q "^${SERVICO}\.service"; then
-  aviso "serviço ${SERVICO} não encontrado — reinicie o bot à mão. (systemctl list-units | grep enchentes)"
+# Reinicia direto e deixa o systemd ser a fonte da verdade. O `list-unit-files`
+# dava falso "não encontrado" para um serviço que existe e roda; tentar o restart
+# e olhar o resultado é mais honesto do que uma pré-checagem frágil.
+info "reiniciando ${SERVICO}…"
+if ! systemctl restart "$SERVICO" 2>/dev/null; then
+  aviso "não consegui reiniciar ${SERVICO} — confira o nome com:"
+  aviso "  systemctl list-units --all | grep -i enchente"
+  aviso "e reinicie à mão. O código novo já está no /opt."
   exit 1
 fi
-
-info "reiniciando ${SERVICO}…"
-systemctl restart "$SERVICO"
 sleep 2
 if systemctl is-active --quiet "$SERVICO"; then
   ok "${SERVICO} de pé (active)."
