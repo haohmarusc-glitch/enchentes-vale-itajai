@@ -14,9 +14,11 @@ from datetime import datetime, timedelta, timezone
 from saude_coleta import (
     SILENCIO_H,
     Diagnostico,
+    TOLERANCIA_BRUTO_FONTE_MIN,
     TOLERANCIA_COLETA_MIN,
     TOLERANCIA_FONTE_MIN,
     avaliar,
+    avaliar_bruto,
     deve_avisar,
     regua_de,
     texto,
@@ -260,6 +262,53 @@ class TestItajaiNaoMascara(unittest.TestCase):
                      "leituras": leituras}, agora)
         self.assertFalse(d.ok)
         self.assertIn("10 de 11", d.motivo)
+
+def bruto(minutos_atras=5, medido_minutos_atras=30, com_silenciosas=True):
+    """
+    Um ultimo_nivel_sc.json com as idades pedidas. Espelha o real: uma estação
+    fresca e várias silenciosas (medido_em None), que NÃO podem virar falha.
+    """
+    quando = AGORA - timedelta(minutes=minutos_atras)
+    medido = (AGORA - timedelta(minutes=medido_minutos_atras)).astimezone(
+        timezone(timedelta(hours=-3))).replace(tzinfo=None)
+    leituras = [{"estacao": "SDC-SC Taió", "cidade": "taio", "nivel_bruto_m": 5.3,
+                 "medido_em": medido.isoformat()}]
+    if com_silenciosas:
+        leituras += [{"estacao": f"SDC-SC Muda {i}", "cidade": None,
+                      "nivel_bruto_m": None, "medido_em": None} for i in range(18)]
+    return {"coletado_em": quando.isoformat(), "leituras": leituras}
+
+
+class TestAvaliarBruto(unittest.TestCase):
+    def test_bruto_em_dia(self):
+        d = avaliar_bruto(bruto(), AGORA)
+        self.assertTrue(d.ok, d.motivo)
+
+    def test_silenciosas_nao_derrubam(self):
+        # 18 sem leitura + 1 fresca = em dia (é o normal do bruto estadual).
+        d = avaliar_bruto(bruto(com_silenciosas=True), AGORA)
+        self.assertTrue(d.ok, d.motivo)
+
+    def test_coletor_parado_e_falha(self):
+        # O caso real: o cron do coletor estadual sumiu; coletado_em congelou.
+        d = avaliar_bruto(bruto(minutos_atras=13 * 60), AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("não roda", d.motivo)
+
+    def test_fonte_estadual_travada_dentro_da_folga(self):
+        d = avaliar_bruto(bruto(medido_minutos_atras=TOLERANCIA_BRUTO_FONTE_MIN - 10), AGORA)
+        self.assertTrue(d.ok, d.motivo)
+
+    def test_fonte_estadual_travada_alem_da_folga(self):
+        d = avaliar_bruto(bruto(medido_minutos_atras=TOLERANCIA_BRUTO_FONTE_MIN + 30), AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("leitura nova", d.motivo)
+
+    def test_sem_arquivo_e_falha(self):
+        d = avaliar_bruto(None, AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("cabeceiras", d.motivo)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

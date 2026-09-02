@@ -68,7 +68,20 @@ cd /opt/enchentes-vale-itajai
 python3 scripts/coleta_nivel_sc.py            # primeira execução à mão
 python3 scripts/coleta_nivel_sc.py --so-acu   # só as estações mapeadas na CADEIA
 ```
-Cron (mesmo ritmo dos outros): `*/15 * * * * cd /opt/enchentes-vale-itajai && /usr/bin/python3 scripts/coleta_nivel_sc.py >> data/tempo-real/cron_nivel_sc.log 2>&1`
+Cron — **encadeado na linha do `coleta_niveis.py`, ANTES do publish**, para o `ultimo_nivel_sc.json`
+sair fresco no mesmo ciclo (é `publicar_tempo_real.sh` quem o empacota junto do `ultimo.json`). A linha
+é uma só:
+```
+*/15 * * * * cd /opt/enchentes-vale-itajai && python3 scripts/coleta_niveis.py >> /var/log/niveis.log 2>&1 && (python3 scripts/alerta_cotas.py; python3 scripts/coleta_nivel_sc.py ; ./scripts/publicar_tempo_real.sh) >> /var/log/niveis.log 2>&1
+```
+Usa `;` (não `&&`) antes do publish para um tropeço do coletor estadual não travar a publicação do nível
+principal.
+
+> **INCIDENTE 02/09/2026 — não repetir.** Na migração pro `/opt` esta entrada de cron se perdeu, e o
+> `coleta_nivel_sc.py` ficou **13 h sem rodar**: as cabeceiras (Taió, Ituporanga, Rio do Sul…) congelaram
+> no site enquanto o nível principal seguia fresco. O `saude_coleta.py` não pegou porque só vigiava o
+> `ultimo.json` — corrigido: ele agora vigia também o `ultimo_nivel_sc.json` (`avaliar_bruto`). Numa
+> próxima migração, confira que esta linha continua no `crontab -l`.
 
 Aviso honesto: o parser (`converter`) foi testado offline com a estrutura real de 01/09
 (`teste_coleta_nivel_sc.py`: Indaial→leitura, Gaspar→sem_leitura, Salete(H)→descartada, Guabiruba→suspeita,
