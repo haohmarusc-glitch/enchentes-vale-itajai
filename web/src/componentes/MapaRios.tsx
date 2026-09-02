@@ -238,14 +238,28 @@ export default function MapaRios({
             fillColor: COR_FAIXA[a.faixa],
             fillOpacity: 1,
           }).addTo(mapa)
-          marcador.bindPopup(
+          // Popup como ELEMENTO (não string): assim o "toque para ver as cotas"
+          // é um botão de verdade, com clique. Como string, era um <span> que
+          // parecia link mas não fazia nada — no celular, tocar nele não abria a
+          // seção de cotas (o clique só existia no marcador). Os textos abaixo
+          // vêm do cadastro do projeto (nomes, faixas), não do usuário.
+          const conteudo = document.createElement('div')
+          conteudo.innerHTML =
             `<strong>${a.cidade.nome}</strong><br>${ROTULO_FAIXA[a.faixa]}` +
-              (a.aoVivo ? `<br>${metros(a.aoVivo.nivel_m)}` : '') +
-              `<br><em>${ACAO_FAIXA[a.faixa]}</em>` +
-              (aoSelecionar
-                ? `<br><span class="${estilos.dicaDetalhe ?? ''}">Toque para ver as cotas de rua e o abrigo</span>`
-                : ''),
-          )
+            (a.aoVivo ? `<br>${metros(a.aoVivo.nivel_m)}` : '') +
+            `<br><em>${ACAO_FAIXA[a.faixa]}</em>`
+          if (aoSelecionar) {
+            const botao = document.createElement('button')
+            botao.type = 'button'
+            if (estilos.dicaDetalhe) botao.className = estilos.dicaDetalhe
+            botao.textContent = 'Toque para ver as cotas de rua e o abrigo'
+            botao.addEventListener('click', () => {
+              aoSelecionar(a.cidade.id)
+              marcador.closePopup()
+            })
+            conteudo.appendChild(botao)
+          }
+          marcador.bindPopup(conteudo)
           marcador.bindTooltip(a.cidade.nome, {
             permanent: true,
             direction: 'top',
