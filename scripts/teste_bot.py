@@ -222,7 +222,7 @@ class TestPrevisaoComLeituraVelha(unittest.TestCase):
     """
     A conta é "se o pico fosse AGORA", e parte do instante da medição. Com
     leitura velha o "agora" é mentira: com uma de 30 h, o bot anunciava chegada
-    em Apiúna para o dia ANTERIOR, com cara de previsão.
+    a jusante para o dia ANTERIOR, com cara de previsão.
     """
 
     def base_com(self, cidade, estacao, nivel, horas_atras):
@@ -236,7 +236,7 @@ class TestPrevisaoComLeituraVelha(unittest.TestCase):
     def test_leitura_fresca_calcula(self):
         b = self.base_com("rio-do-sul", "Rio do Sul Estação MKS", 3.52, 0.1)
         r = responder("/previsao Rio do Sul", b, AGORA)
-        self.assertIn("Apiúna", r)
+        self.assertIn("Indaial", r)
         self.assertNotIn("Não dá para calcular com ela", r)
 
     def test_no_limite_ainda_calcula(self):
@@ -266,15 +266,15 @@ class TestPrevisaoComLeituraVelha(unittest.TestCase):
 
     def test_janela_ja_passada_nao_vira_previsao(self):
         """
-        Trecho curto com leitura de algumas horas: Apiúna→Indaial é de 1 h, e
-        com 2 h 30 de leitura a janela inteira já ficou para trás. Dizer "por
-        volta de" um horário passado faz a pessoa procurar no relógio uma água
-        que, se veio, veio antes.
+        Trecho curto com leitura de algumas horas: Blumenau→Gaspar é de 2 h, e
+        com 2 h 30 de leitura a janela desse trecho já ficou para trás. Dizer
+        "por volta de" um horário passado faz a pessoa procurar no relógio uma
+        água que, se veio, veio antes.
         """
-        b = self.base_com("apiuna", "Apiúna", 2.10, 2.5)
-        r = responder("/previsao Apiúna", b, AGORA)
+        b = self.base_com("blumenau", "Blumenau", 5.00, 2.5)
+        r = responder("/previsao Blumenau", b, AGORA)
         self.assertIn("janela já passou", r)
-        self.assertNotIn("Indaial</b>: por volta", r)
+        self.assertNotIn("Gaspar</b>: por volta", r)
 
 
 class TestRua(unittest.TestCase):

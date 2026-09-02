@@ -19,6 +19,7 @@ import type {
   Evento,
   Rio,
   TabuaMare,
+  Topologia,
   Transito,
   Trecho,
 } from './tipos'
@@ -117,7 +118,17 @@ export function rio(rioId: string): Rio | undefined {
 export function cidadesDoRio(rioId: string): Cidade[] {
   const r = estacoes.rios[rioId]
   if (!r) return []
-  return [...r.cidades].sort((a, b) => a.ordem - b.ordem)
+  // Rio ramificado (Açu): `ordem` é null e a ordem de exibição é a do arquivo,
+  // já montada em cabeceiras → tronco. `null - null` daria NaN e embaralharia a
+  // lista, então mantemos a ordem do arquivo quando qualquer ordem é null.
+  return [...r.cidades].sort((a, b) =>
+    a.ordem == null || b.ordem == null ? 0 : a.ordem - b.ordem,
+  )
+}
+
+/** A árvore do rio, quando ele é ramificado (só o Açu hoje). */
+export function topologiaDoRio(rioId: string): Topologia | undefined {
+  return estacoes.rios[rioId]?._topologia
 }
 
 export function cidade(rioId: string, cidadeId: string): Cidade | undefined {

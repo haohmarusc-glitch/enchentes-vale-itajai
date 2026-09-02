@@ -1,11 +1,14 @@
 {
   "_meta": {
-    "descricao": "Estações e cidades ao longo dos rios Itajaí-Açu e Itajaí-Mirim, em ordem montante -> jusante.",
+    "descricao": "Estações e cidades dos rios Itajaí-Açu e Itajaí-Mirim. O Itajaí-Açu é uma ÁRVORE (cabeceiras paralelas + tronco + afluentes laterais), não uma fila: ver rios['itajai-acu']._topologia. O Itajaí-Mirim segue como sequência montante -> jusante nas cidades, com os braços (canal retificado / curso antigo) só entre as réguas DC de Itajaí.",
     "convencoes": {
       "codigo_ana": "Código da estação fluviométrica no HidroWeb/SNIRH. null = ainda não localizado.",
+      "codigo_dcsc": "Código da estação na rede estadual (Defesa Civil de SC), formato DCSC-NNNNN. Liga a cidade à estação por coordenada. null quando a cidade não tem estação estadual (a foz usa as réguas DC de Itajaí).",
       "cotas_m": "Cotas de referência em metros na régua local. Cada cidade tem seu próprio zero; NÃO comparar entre cidades. 'inundacao_historica' é a cota clássica de inundação, mantida ao lado da cota atual quando as duas circulam.",
       "verificado": "true só depois de conferir o dado na fonte oficial.",
-      "ordem": "Sequência montante -> jusante ao longo do eixo. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras que se encontram em Rio do Sul; aparecem antes dele.",
+      "ordem": "Sequência montante -> jusante ao longo do eixo, SOMENTE em rio não ramificado (hoje só o Itajaí-Mirim). Em rio ramificado (Itajaí-Açu) é null: a bacia é árvore, não fila, e usar ordem global afirmaria uma sequência que não existe. Ver _topologia e ordem_no_ramo.",
+      "ramo": "Em rio ramificado, o braço a que a cidade pertence: itajai_do_oeste | itajai_do_sul | itajai_do_norte | tronco_acu. Só se comparam posições DENTRO do mesmo ramo (ordem_no_ramo). A única sequência que a UI pode afirmar é o tronco (_topologia.tronco_sequencia).",
+      "ordem_no_ramo": "Posição montante -> jusante DENTRO do ramo (1 = mais a montante). Só comparável entre cidades do MESMO ramo.",
       "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado.",
       "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua.",
       "coordenadas": "[lat, lon] da ESTAÇÃO de nível (Defesa Civil de SC, GraphQL, adotada 02/09/2026), não do centro da cidade — é a posição real da régua no rio. Exceções: Vidal Ramos (estação Asthon, = DCSC, 4 m) e Itajaí (foz, sem estação estadual, sede aproximada). Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível."
@@ -18,15 +21,32 @@
     "itajai-acu": {
       "nome": "Rio Itajaí-Açu",
       "foz": "Itajaí (Oceano Atlântico)",
+      "_topologia": {
+        "tipo": "arvore",
+        "tronco_sequencia": ["rio-do-sul", "ascurra", "indaial", "blumenau", "gaspar", "ilhota", "itajai"],
+        "cabeceiras_paralelas": ["taio", "ituporanga"],
+        "afluentes_laterais": [
+          { "id": "ibirama", "entra_perto_de": "rio-do-sul", "rio": "Rio Hercílio (Itajaí do Norte)" }
+        ],
+        "nao_e_regua_de_rio": [
+          { "id": "apiuna", "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026." }
+        ],
+        "nota": "A bacia do Itajaí-Açu é uma ÁRVORE, não uma fila. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras PARALELAS que se juntam em Rio do Sul, onde NASCE o Açu. Ibirama fica no Rio Hercílio (Itajaí do Norte), afluente lateral — não é elo do tronco: um pico nele ENTRA no tronco, não desce por ele. A única sequência que a tela pode afirmar é o tronco (tronco_sequencia). Dentro de cada ramo vale ordem_no_ramo; entre ramos, nada 'vem antes'. Verificado em mapa + Overpass (02/09/2026); ver docs/TOPOLOGIA-CANONICA.md.",
+        "fonte": "OpenStreetMap + Overpass API, 02/09/2026"
+      },
       "cidades": [
         {
           "id": "taio",
           "nome": "Taió",
-          "ordem": 1,
+          "ordem": null,
+          "ramo": "itajai_do_oeste",
+          "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí do Oeste",
           "codigo_ana": "83050000",
+          "codigo_dcsc": "DCSC-00041",
           "verificado": false,
           "barragem": "Barragem Oeste (Taió)",
+          "observacao": "Cabeceira do Itajaí do Oeste — corre em PARALELO ao Itajaí do Sul (Ituporanga) e se junta a ele em Rio do Sul, onde nasce o Açu. Não é elo de uma fila com Ituporanga.",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
@@ -37,12 +57,15 @@
         {
           "id": "ituporanga",
           "nome": "Ituporanga",
-          "ordem": 2,
+          "ordem": null,
+          "ramo": "itajai_do_sul",
+          "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí do Sul",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00039",
           "verificado": false,
           "barragem": "Barragem Sul (Ituporanga)",
-          "observacao": "Cabeceira do Itajaí do Sul, que se junta ao Itajaí do Oeste em Rio do Sul.",
+          "observacao": "Cabeceira do Itajaí do Sul — corre em PARALELO ao Itajaí do Oeste (Taió) e se junta a ele em Rio do Sul. Overpass 02/09/2026: 'Rio Itajaí do Sul' a menos de 1 km da estação.",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
@@ -52,12 +75,15 @@
         {
           "id": "rio-do-sul",
           "nome": "Rio do Sul",
-          "ordem": 3,
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí-Açu",
           "km_da_foz": 191,
           "codigo_ana": "83300200",
+          "codigo_dcsc": "DCSC-00013",
           "verificado": false,
-          "observacao": "Confluência dos rios Itajaí do Sul (Ituporanga) e Itajaí do Oeste (Taió). As cotas 4,50 / 5,50 / 6,50 m são as faixas oficiais desta régua. A abertura de abrigos se dá a 7,00 m, acima da maior cota cadastrada — o aviso automático, que para na de 6,50 m, portanto sai antes, não depois.",
+          "observacao": "Aqui NASCE o Itajaí-Açu, na confluência dos rios Itajaí do Sul (Ituporanga) e Itajaí do Oeste (Taió) — é o começo do tronco. As cotas 4,50 / 5,50 / 6,50 m são as faixas oficiais desta régua. A abertura de abrigos se dá a 7,00 m, acima da maior cota cadastrada — o aviso automático, que para na de 6,50 m, portanto sai antes, não depois.",
           "cotas_m": {
             "atencao": 4.5,
             "alerta": 5.5,
@@ -74,11 +100,14 @@
         {
           "id": "ibirama",
           "nome": "Ibirama",
-          "ordem": 4,
+          "ordem": null,
+          "ramo": "itajai_do_norte",
+          "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí do Norte",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00020",
           "verificado": false,
-          "observacao": "Recebe o Itajaí do Norte (barragem José Boiteux).",
+          "observacao": "Fica no Rio Hercílio (Itajaí do Norte), afluente LATERAL do tronco — verificado no mapa em 02/09/2026 (o marcador cai sobre 'Rio Hercílio'). NÃO é elo da fila: a cheia de Ibirama ENTRA no tronco perto de Rio do Sul, não desce por Indaial. Recebe o Itajaí do Norte (barragem José Boiteux).",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
@@ -86,27 +115,33 @@
           "coordenadas": [-27.057, -49.52]
         },
         {
-          "id": "apiuna",
-          "nome": "Apiúna",
-          "ordem": 5,
+          "id": "ascurra",
+          "nome": "Ascurra",
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 2,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00003",
           "verificado": false,
-          "observacao": "Trecho de calha estreita entre Ibirama e Indaial.",
+          "observacao": "No tronco do Açu, entre Rio do Sul e Indaial — Overpass 02/09/2026: 'Rio Itajaí-Açu' a menos de 1 km da estação. Entrou no eixo em 02/09/2026 (substitui Apiúna, que é estação de altitude, não régua de rio). Sem cota de referência levantada e sem nível ao vivo próprio por enquanto.",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.0365, -49.3936]
+          "coordenadas": [-26.9613, -49.3729]
         },
         {
           "id": "indaial",
           "nome": "Indaial",
-          "ordem": 6,
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 3,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00006",
           "verificado": false,
-          "observacao": "Estação com curva-chave usada pelo CEOPS para estimar vazões em Blumenau.",
+          "observacao": "No tronco do Açu (verificado no mapa e no Overpass 02/09/2026: 'Rio Itajaí-Açu' ao lado do marcador — não é o Benedito). Estação com curva-chave usada pelo CEOPS para estimar vazões em Blumenau.",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
@@ -116,8 +151,11 @@
         {
           "id": "blumenau",
           "nome": "Blumenau",
-          "ordem": 7,
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 4,
           "sub_bacia": "Itajaí-Açu",
+          "codigo_dcsc": "DCSC-00026",
           "km_da_foz": 70,
           "codigo_ana": "83800002",
           "verificado": false,
@@ -138,9 +176,12 @@
         {
           "id": "gaspar",
           "nome": "Gaspar",
-          "ordem": 8,
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 5,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00005",
           "verificado": false,
           "regua": "Rio Itajaí-Açu em Gaspar (o Plano não nomeia o ponto nem publica o zero)",
           "referencia": "régua",
@@ -160,9 +201,12 @@
         {
           "id": "ilhota",
           "nome": "Ilhota",
-          "ordem": 9,
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 6,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00030",
           "verificado": false,
           "observacao": "Recebe o rio Luiz Alves. NÃO tem régua própria de nível ao vivo: a estação DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é de Itajaí, a jusante, com zero próprio — usá-la como nível de Ilhota seria comparar réguas de cidades diferentes. Como Gaspar antes do Plano, Ilhota aparece no eixo sem nível ao vivo até haver fonte com régua da própria cidade.",
           "cotas_m": {},
@@ -172,12 +216,15 @@
         {
           "id": "itajai",
           "nome": "Itajaí",
-          "ordem": 10,
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 7,
           "sub_bacia": "Itajaí-Açu",
           "km_da_foz": 0,
           "codigo_ana": null,
+          "codigo_dcsc": null,
           "verificado": false,
-          "observacao": "Foz. Recebe o Itajaí-Mirim. Nível influenciado pela maré.",
+          "observacao": "Foz do tronco: recebe o Itajaí-Mirim e o nível sofre influência da maré. Sem estação estadual própria — o nível ao vivo vem das réguas DC de Itajaí (DC-01 na foz). Fim do tronco do Açu.",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (DC-01, DC-02)",

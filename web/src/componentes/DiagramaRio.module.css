@@ -4,6 +4,46 @@
   padding: 0;
 }
 
+/* Blocos da árvore (o Açu): cabeceiras, tronco, afluentes laterais. */
+.ramo {
+  margin: 0 0 1.1rem;
+}
+
+.tituloRamo {
+  margin: 0 0 0.15rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.notaRamo {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+  line-height: 1.45;
+}
+
+/* Papel da cidade na árvore, ao lado do nome (cabeceira / afluente / tronco). */
+.papel {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--borda, #d8d8de);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--tinta-fraca);
+  vertical-align: middle;
+}
+
+/* Nota abaixo de cabeceira/afluente: onde ela se junta ao tronco, sem seta de tempo. */
+.notaConector {
+  display: block;
+  padding: 0.15rem 0 0.15rem 0.4rem;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--tinta-fraca);
+}
+
 .item {
   position: relative;
 }

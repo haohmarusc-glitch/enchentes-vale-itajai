@@ -96,7 +96,9 @@ POR_CIDADE = {
     "DCSC-00030": "ilhota",
     "DCSC-00039": "ituporanga",
     "DCSC-00041": "taio",
-    "DCSC-00178": "apiuna",
+    # Apiúna saiu do eixo em 02/09/2026 (DCSC-00178 é estação de altitude, não
+    # régua de rio — ver estacoes.json / itajai-acu / _topologia.nao_e_regua_de_rio).
+    # Sem cidade na tela, a chuva dela não tem onde aparecer; mapeamento removido.
 }
 
 #: Chuva acima disto em 24 h não é medição, é defeito. O recorde diário do

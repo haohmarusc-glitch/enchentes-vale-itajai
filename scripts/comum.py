@@ -168,6 +168,16 @@ def grava_json(nome: str, conteudo: Any) -> None:
     temporario.replace(destino)
 
 
+#: Chave de ordenação montante -> jusante que aguenta rio ramificado. Em rio em
+#: fila, `ordem` é 1..N. Em rio em árvore (o Açu), `ordem` é null de propósito e
+#: a ordem de exibição é a do arquivo (cabeceiras -> tronco) — o sort estável
+#: preserva essa ordem quando a chave é constante. None não se compara com None,
+#: então cai para 0.
+def chave_montante(c: dict[str, Any]) -> float:
+    o = c.get("ordem")
+    return o if isinstance(o, (int, float)) else 0
+
+
 def cidades(rio: str | None = None) -> list[dict[str, Any]]:
     """Cidades de `estacoes.json`, em ordem montante -> jusante."""
     estacoes = le_json("estacoes.json")
@@ -175,7 +185,7 @@ def cidades(rio: str | None = None) -> list[dict[str, Any]]:
     for rio_id, dados in estacoes["rios"].items():
         if rio is not None and rio_id != rio:
             continue
-        for cidade in sorted(dados["cidades"], key=lambda c: c["ordem"]):
+        for cidade in sorted(dados["cidades"], key=chave_montante):
             saida.append({**cidade, "rio": rio_id})
     return saida
 

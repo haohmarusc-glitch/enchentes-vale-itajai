@@ -36,23 +36,8 @@
     {
       "rio": "itajai-acu",
       "de": "taio",
-      "para": "apiuna",
-      "resultado": {
-        "horas_min": 15,
-        "horas_max": 17,
-        "direto": false,
-        "confianca": "media",
-        "trechos": [
-          [
-            "taio",
-            "rio-do-sul"
-          ],
-          [
-            "rio-do-sul",
-            "apiuna"
-          ]
-        ]
-      }
+      "para": "ascurra",
+      "resultado": null
     },
     {
       "rio": "itajai-acu",
@@ -207,23 +192,8 @@
     {
       "rio": "itajai-acu",
       "de": "ituporanga",
-      "para": "apiuna",
-      "resultado": {
-        "horas_min": 15,
-        "horas_max": 15,
-        "direto": false,
-        "confianca": "baixa",
-        "trechos": [
-          [
-            "ituporanga",
-            "rio-do-sul"
-          ],
-          [
-            "rio-do-sul",
-            "apiuna"
-          ]
-        ]
-      }
+      "para": "ascurra",
+      "resultado": null
     },
     {
       "rio": "itajai-acu",
@@ -367,19 +337,8 @@
     {
       "rio": "itajai-acu",
       "de": "rio-do-sul",
-      "para": "apiuna",
-      "resultado": {
-        "horas_min": 9,
-        "horas_max": 9,
-        "direto": true,
-        "confianca": "media",
-        "trechos": [
-          [
-            "rio-do-sul",
-            "apiuna"
-          ]
-        ]
-      }
+      "para": "ascurra",
+      "resultado": null
     },
     {
       "rio": "itajai-acu",
@@ -503,7 +462,7 @@
     {
       "rio": "itajai-acu",
       "de": "ibirama",
-      "para": "apiuna",
+      "para": "ascurra",
       "resultado": null
     },
     {
@@ -538,66 +497,55 @@
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "taio",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "ituporanga",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "rio-do-sul",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "ibirama",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "indaial",
-      "resultado": {
-        "horas_min": 1,
-        "horas_max": 1,
-        "direto": true,
-        "confianca": "media",
-        "trechos": [
-          [
-            "apiuna",
-            "indaial"
-          ]
-        ]
-      }
+      "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "blumenau",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "gaspar",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "ilhota",
       "resultado": null
     },
     {
       "rio": "itajai-acu",
-      "de": "apiuna",
+      "de": "ascurra",
       "para": "itajai",
       "resultado": null
     },
@@ -628,7 +576,7 @@
     {
       "rio": "itajai-acu",
       "de": "indaial",
-      "para": "apiuna",
+      "para": "ascurra",
       "resultado": null
     },
     {
@@ -682,7 +630,7 @@
     {
       "rio": "itajai-acu",
       "de": "blumenau",
-      "para": "apiuna",
+      "para": "ascurra",
       "resultado": null
     },
     {
@@ -773,7 +721,7 @@
     {
       "rio": "itajai-acu",
       "de": "gaspar",
-      "para": "apiuna",
+      "para": "ascurra",
       "resultado": null
     },
     {
@@ -853,7 +801,7 @@
     {
       "rio": "itajai-acu",
       "de": "ilhota",
-      "para": "apiuna",
+      "para": "ascurra",
       "resultado": null
     },
     {
@@ -918,7 +866,7 @@
     {
       "rio": "itajai-acu",
       "de": "itajai",
-      "para": "apiuna",
+      "para": "ascurra",
       "resultado": null
     },
     {

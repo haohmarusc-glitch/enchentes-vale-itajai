@@ -26,6 +26,30 @@ PICO_MAXIMO_M = 25.0
 #: A cheia de 1852 é o registro mais antigo citado na bibliografia local.
 ANO_MINIMO = 1850
 
+#: Braços válidos de um rio ramificado. Só se compara posição DENTRO do ramo.
+RAMOS_VALIDOS = {
+    "itajai_do_oeste", "itajai_do_sul", "itajai_do_norte", "tronco_acu",
+    "benedito", "luiz_alves", "mirim_tronco", "canal_retificado",
+    "curso_antigo", "reunido", "ribeirao_murta", "ribeirao_canhanduba", "acu",
+}
+RE_DCSC = re.compile(r"^DCSC-\d{5}$")
+
+#: Estação estadual que DEVE continuar ligada a cada cidade (ligação por
+#: coordenada, verificada no mapa/Overpass 02/09/2026). Trava contra um
+#: codigo_dcsc sumir ou trocar em silêncio numa edição futura — foi documentar
+#: sem travar que deixou o JSON errado por versões seguidas.
+CODIGO_DCSC_ESPERADO = {
+    ("itajai-acu", "taio"): "DCSC-00041",
+    ("itajai-acu", "ituporanga"): "DCSC-00039",
+    ("itajai-acu", "rio-do-sul"): "DCSC-00013",
+    ("itajai-acu", "ibirama"): "DCSC-00020",
+    ("itajai-acu", "ascurra"): "DCSC-00003",
+    ("itajai-acu", "indaial"): "DCSC-00006",
+    ("itajai-acu", "blumenau"): "DCSC-00026",
+    ("itajai-acu", "gaspar"): "DCSC-00005",
+    ("itajai-acu", "ilhota"): "DCSC-00030",
+}
+
 erros: list[str] = []
 avisos: list[str] = []
 
@@ -56,13 +80,51 @@ def valida_data(valor: str, onde: str) -> None:
             erro(f"{onde}: '{valor}' não é uma data que existe no calendário")
 
 
+def valida_topologia(rio_id: str, rio: dict, ids: set[str]) -> None:
+    """A árvore de um rio ramificado: o tronco tem de ser a única fila afirmada,
+    e cada id citado tem de existir (ou, para nao_e_regua_de_rio, NÃO existir)."""
+    topo = rio["_topologia"]
+    onde = f"estacoes.json / {rio_id} / _topologia"
+    tronco = topo.get("tronco_sequencia", [])
+    if not tronco:
+        erro(f"{onde}: tronco_sequencia vazio")
+    for cid in tronco:
+        if cid not in ids:
+            erro(f"{onde}: tronco_sequencia cita '{cid}', que não está em cidades")
+    # O tronco_sequencia tem de ser EXATAMENTE as cidades de ramo tronco_acu, na
+    # ordem de ordem_no_ramo — senão a fila da tela discordaria dos dados.
+    tronco_cidades = [c for c in rio["cidades"] if c.get("ramo") == "tronco_acu"]
+    ordenadas = [c["id"] for c in sorted(tronco_cidades, key=lambda c: c.get("ordem_no_ramo") or 0)]
+    if ordenadas != tronco:
+        erro(f"{onde}: tronco_sequencia {tronco} não bate com as cidades de ramo tronco_acu "
+             f"por ordem_no_ramo {ordenadas}")
+    for cid in topo.get("cabeceiras_paralelas", []):
+        if cid not in ids:
+            erro(f"{onde}: cabeceira '{cid}' não está em cidades")
+    for a in topo.get("afluentes_laterais", []):
+        if a.get("id") not in ids:
+            erro(f"{onde}: afluente '{a.get('id')}' não está em cidades")
+        if a.get("entra_perto_de") not in ids:
+            erro(f"{onde}: afluente '{a.get('id')}' entra_perto_de "
+                 f"'{a.get('entra_perto_de')}' que não existe")
+    for x in topo.get("nao_e_regua_de_rio", []):
+        if x.get("id") in ids:
+            erro(f"{onde}: '{x.get('id')}' está em nao_e_regua_de_rio mas ainda aparece em cidades")
+
+
 def valida_estacoes() -> set[tuple[str, str]]:
     estacoes = le_json("estacoes.json")
     conhecidas: set[tuple[str, str]] = set()
     no_eixo: set[tuple[str, str]] = set()
 
     for rio_id, rio in estacoes["rios"].items():
-        ordens: list[int] = []
+        # Árvore x fila. Rio ramificado (tem _topologia) NÃO usa ordem global:
+        # ela afirmaria uma sequência que não existe (Taió antes de Ibirama). A
+        # posição vem de ramo + ordem_no_ramo, e a única fila é o tronco. Rio em
+        # fila (o Mirim) segue com ordem 1..N. As duas coisas nunca no mesmo rio.
+        ramificado = "_topologia" in rio
+        ordens: list = []
+        por_ramo: dict[str, list[int]] = defaultdict(list)
         ids: set[str] = set()
         for cidade in rio["cidades"]:
             onde = f"estacoes.json / {rio_id} / {cidade.get('id', '???')}"
@@ -72,9 +134,33 @@ def valida_estacoes() -> set[tuple[str, str]]:
             if cidade["id"] in ids:
                 erro(f"{onde}: id repetido dentro do mesmo rio")
             ids.add(cidade["id"])
-            ordens.append(cidade["ordem"])
+            ordens.append(cidade.get("ordem"))
             conhecidas.add((rio_id, cidade["id"]))
             no_eixo.add((rio_id, cidade["id"]))
+
+            ramo = cidade.get("ramo")
+            if ramificado:
+                if cidade.get("ordem") is not None:
+                    erro(f"{onde}: 'ordem' global em rio ramificado deve ser null "
+                         f"(a bacia é árvore, não fila; use ordem_no_ramo). Veio {cidade.get('ordem')!r}")
+                if ramo not in RAMOS_VALIDOS:
+                    erro(f"{onde}: 'ramo' ausente ou inválido ({ramo!r}) em rio ramificado")
+                onr = cidade.get("ordem_no_ramo")
+                if not isinstance(onr, int):
+                    erro(f"{onde}: 'ordem_no_ramo' ausente ou não inteiro ({onr!r})")
+                elif ramo in RAMOS_VALIDOS:
+                    por_ramo[ramo].append(onr)
+            elif ramo is not None:
+                erro(f"{onde}: tem 'ramo' mas o rio não é ramificado (sem _topologia) "
+                     f"— árvore e fila não se misturam")
+
+            dcsc = cidade.get("codigo_dcsc")
+            if dcsc is not None and not RE_DCSC.match(str(dcsc)):
+                erro(f"{onde}: codigo_dcsc '{dcsc}' fora do formato DCSC-NNNNN")
+            esperado_dcsc = CODIGO_DCSC_ESPERADO.get((rio_id, cidade["id"]))
+            if esperado_dcsc and dcsc != esperado_dcsc:
+                erro(f"{onde}: codigo_dcsc deveria ser {esperado_dcsc} (ligação verificada por "
+                     f"coordenada) e veio {dcsc!r} — não deixar sumir/trocar sem reverificar no mapa")
 
             codigo = cidade.get("codigo_ana")
             if codigo is not None and not re.fullmatch(r"\d{8}", str(codigo)):
@@ -86,9 +172,27 @@ def valida_estacoes() -> set[tuple[str, str]]:
                 if not isinstance(valor, (int, float)) or not 0 < valor < PICO_MAXIMO_M:
                     erro(f"{onde}: cota '{chave}' = {valor} fora de faixa plausível")
 
-        esperado = list(range(1, len(ordens) + 1))
-        if sorted(ordens) != esperado:
-            erro(f"estacoes.json / {rio_id}: 'ordem' deveria ser {esperado}, veio {sorted(ordens)}")
+        if ramificado:
+            for ramo_id, lista in por_ramo.items():
+                esperado = list(range(1, len(lista) + 1))
+                if sorted(lista) != esperado:
+                    erro(f"estacoes.json / {rio_id} / ramo {ramo_id}: 'ordem_no_ramo' deveria "
+                         f"ser {esperado}, veio {sorted(lista)}")
+            valida_topologia(rio_id, rio, ids)
+        else:
+            esperado = list(range(1, len(ordens) + 1))
+            if sorted(ordens) != esperado:
+                erro(f"estacoes.json / {rio_id}: 'ordem' deveria ser {esperado}, veio {sorted(ordens)}")
+
+    # Trava contra sumiço: toda cidade ligada a uma estação estadual conhecida
+    # tem de continuar no eixo, com o mesmo codigo_dcsc. Documentar não impediu
+    # o JSON de ficar errado por versões; travar impede.
+    for (rio_id, cid), cod in CODIGO_DCSC_ESPERADO.items():
+        cidades_do_rio = estacoes["rios"].get(rio_id, {}).get("cidades", [])
+        achou = next((c for c in cidades_do_rio if c.get("id") == cid), None)
+        if achou is None:
+            erro(f"estacoes.json / {rio_id}: cidade '{cid}' (codigo_dcsc {cod}) sumiu do eixo — "
+                 "se foi de propósito, tire de CODIGO_DCSC_ESPERADO com uma justificativa")
 
     # Afluentes com régua própria: existem nos dados, mas ficam fora da sequência do eixo.
     for afluente in estacoes.get("afluentes_monitorados", []):
@@ -135,6 +239,13 @@ def valida_estacoes() -> set[tuple[str, str]]:
         for chave, valor in (e.get("cotas_m") or {}).items():
             if not isinstance(valor, (int, float)) or not 0 < valor < PICO_MAXIMO_M:
                 erro(f"{onde}: cota '{chave}' = {valor} fora de faixa plausível")
+        # Régua que não dispara aviso (as do estuário, que sobem com a maré)
+        # PRECISA dizer por quê. Sem o motivo, a cota apareceria na tela como
+        # qualquer outra e alguém a leria como perigo — é a régua marcada como
+        # "não pinta faixa sozinha" que não pode virar faixa em silêncio.
+        if e.get("alerta_automatico") is False and not str(e.get("motivo_sem_alerta", "")).strip():
+            erro(f"{onde}: alerta_automatico=false sem 'motivo_sem_alerta' — a régua que "
+                 "não dispara aviso tem de dizer por que, ou vira faixa de perigo enganosa")
         if (
             e.get("tipo") != "pluviometro"
             and not (e.get("cotas_m") or {})
@@ -395,11 +506,20 @@ def valida_enchentes(conhecidas: set[tuple[str, str]]) -> None:
 
 def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
     trechos = le_json("transito.json")["trechos"]
+    # Posição comparável para pegar trecho que sobe o rio. Em rio em fila é a
+    # `ordem`; em rio ramificado só o TRONCO tem sequência (ordem_no_ramo) —
+    # cabeceiras e afluentes entram no tronco de lado e não se comparam por
+    # número. NÃO usar `ordem` para existência: no Açu ela é null de propósito.
     ordem: dict[tuple[str, str], int] = {}
     estacoes = le_json("estacoes.json")
     for rio_id, rio in estacoes["rios"].items():
+        ramificado = "_topologia" in rio
         for cidade in rio["cidades"]:
-            ordem[(rio_id, cidade["id"])] = cidade["ordem"]
+            if ramificado:
+                if cidade.get("ramo") == "tronco_acu" and isinstance(cidade.get("ordem_no_ramo"), int):
+                    ordem[(rio_id, cidade["id"])] = cidade["ordem_no_ramo"]
+            elif isinstance(cidade.get("ordem"), int):
+                ordem[(rio_id, cidade["id"])] = cidade["ordem"]
 
     for i, t in enumerate(trechos):
         onde = f"transito.json[{i}] ({t.get('de', '???')} -> {t.get('para', '???')})"
@@ -419,12 +539,15 @@ def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
         if t["confianca"] not in CONFIANCAS:
             erro(f"{onde}: confianca '{t['confianca']}' não é alta/media/baixa")
 
+        if (t["rio"], t["de"]) not in conhecidas:
+            aviso(f"{onde}: '{t['de']}' não está em estacoes.json; trecho fica invisível na tela")
+        if (t["rio"], t["para"]) not in conhecidas:
+            aviso(f"{onde}: '{t['para']}' não está em estacoes.json; trecho fica invisível na tela")
+        # Só compara sentido quando os dois lados têm posição no MESMO trecho
+        # comparável (fila, ou tronco↔tronco). Feeder de cabeceira/afluente para
+        # o tronco não tem "ordem" entre si — e não é subir o rio.
         de = ordem.get((t["rio"], t["de"]))
         para = ordem.get((t["rio"], t["para"]))
-        if de is None:
-            aviso(f"{onde}: '{t['de']}' não está em estacoes.json; trecho fica invisível na tela")
-        if para is None:
-            aviso(f"{onde}: '{t['para']}' não está em estacoes.json; trecho fica invisível na tela")
         if de is not None and para is not None and de >= para:
             erro(
                 f"{onde}: o trecho sobe o rio (ordem {de} -> {para}). "

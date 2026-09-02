@@ -96,7 +96,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 
 ## Telas
 
-1. `/acu` — **Itajaí-Açu**: Taió / Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí
+1. `/acu` — **Itajaí-Açu** (ÁRVORE, não fila — ver `docs/TOPOLOGIA-CANONICA.md`): cabeceiras paralelas **Taió** (Oeste) ‖ **Ituporanga** (Sul) → tronco **Rio do Sul → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí**; **Ibirama** é afluente lateral (Rio Hercílio), não elo do tronco. `ordem` é `null` no Açu; a posição vem de `ramo` + `ordem_no_ramo`. O validador (`scripts/validar_dados.py`) aborta se a fila global voltar.
 2. `/mirim` — **Itajaí-Mirim**: Vidal Ramos → Botuverá → Brusque → Itajaí
 3. `/itajai` — **Itajaí (foz)**: chegada dos dois picos + maré
 4. `/` — início: escolha do rio + aviso legal
