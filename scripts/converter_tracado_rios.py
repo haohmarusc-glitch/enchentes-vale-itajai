@@ -32,10 +32,22 @@ SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
 
-#: Cada rio do site e os nomes de way do OSM que o compõem, de montante a jusante.
+#: Tronco do site e os nomes de way do OSM que o compõem — match EXATO, e
+#: OBRIGATÓRIO (aborta se faltar: um rio pela metade enganaria o mapa).
 RIOS = {
     "itajai-acu": ["Rio Itajaí do Oeste", "Rio Itajaí-Açu"],
     "itajai-mirim": ["Rio Itajaí-Mirim"],
+}
+
+#: Afluentes do tronco — necessários para scripts/achar_confluencias.py achar
+#: onde Benedito e Luís Alves entram. OPCIONAIS: o bruto só os tem se a query do
+#: Overpass os incluir (ver docs/fontes-tempo-real.md). Match por SUBSTRING em
+#: minúsculas, tolerante à grafia do OSM (Luiz/Luís, acento). Se não achar nada,
+#: pula com aviso — nunca emite um afluente vazio nem aborta o tronco.
+RIOS_AFLUENTES = {
+    "benedito": ["rio benedito"],
+    "luiz-alves": ["rio luiz alves", "rio luís alves"],
+    "hercilio": ["rio hercílio", "rio hercilio"],
 }
 
 
@@ -54,6 +66,28 @@ def linha_do_way(way: dict) -> list[list[float]]:
     """Geometria de um way em [lon, lat] (GeoJSON), como o OSM devolve em lat/lon."""
     return [[p["lon"], p["lat"]] for p in way["geometry"]
             if isinstance(p.get("lon"), (int, float)) and isinstance(p.get("lat"), (int, float))]
+
+
+def linhas_por_substring(elementos: list[dict], chaves: list[str]) -> list[list[list[float]]]:
+    """Ways cujo `name` (minúsculo) contém alguma das chaves — para afluentes."""
+    linhas = []
+    for e in elementos:
+        if e.get("type") != "way" or "geometry" not in e:
+            continue
+        nome = ((e.get("tags") or {}).get("name") or "").lower()
+        if any(c in nome for c in chaves):
+            linha = linha_do_way(e)
+            if len(linha) >= 2:
+                linhas.append(linha)
+    return linhas
+
+
+def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
+    return {
+        "type": "Feature",
+        "properties": {"rio": rio_id, "fonte": ATRIBUICAO, "trechos": len(linhas)},
+        "geometry": {"type": "MultiLineString", "coordinates": linhas},
+    }
 
 
 def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]]) -> dict:
@@ -87,13 +121,25 @@ def main() -> int:
         raise SystemExit(f"falta o bruto {BRUTO} — baixe na VPS (ver docs)")
     dados = json.loads(BRUTO.read_text(encoding="utf-8"))
     por_nome = ways_por_nome(dados.get("elements") or [])
+    elementos = dados.get("elements") or []
     SAIDA.mkdir(parents=True, exist_ok=True)
-    for rio_id, nomes in RIOS.items():
-        feat = geojson_do_rio(rio_id, nomes, por_nome)
+
+    def grava(feat: dict, rio_id: str) -> None:
         destino = SAIDA / f"{rio_id}.geojson"
         destino.write_text(json.dumps(feat, ensure_ascii=False) + "\n", encoding="utf-8")
         pts = sum(len(l) for l in feat["geometry"]["coordinates"])
         print(f"{rio_id}: {feat['properties']['trechos']} trechos, {pts} pontos -> {destino.name}")
+
+    for rio_id, nomes in RIOS.items():   # tronco: obrigatório
+        grava(geojson_do_rio(rio_id, nomes, por_nome), rio_id)
+
+    for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
+        linhas = linhas_por_substring(elementos, chaves)
+        if not linhas:
+            print(f"{rio_id}: nenhum way com {chaves} no bruto — pulado. Inclua o rio na "
+                  "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
+            continue
+        grava(feature_do_rio(rio_id, linhas), rio_id)
     return 0
 
 

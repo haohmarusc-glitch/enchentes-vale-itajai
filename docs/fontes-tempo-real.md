@@ -657,7 +657,9 @@ não alcança o Overpass; baixado na VPS.
 
 **Bruto:** `data/brutos/tracado-rios-osm.json` (resposta `out geom;` do Overpass).
 **Convertido por:** `scripts/converter_tracado_rios.py` → `data/rios/itajai-acu.geojson` e
-`itajai-mirim.geojson` (um MultiLineString por rio, em [lon, lat]).
+`itajai-mirim.geojson` (tronco, obrigatórios) e, quando a query os incluir, os afluentes
+`benedito.geojson`, `luiz-alves.geojson`, `hercilio.geojson` (opcionais — precisam do
+`achar_confluencias.py` achar onde entram no tronco). Um MultiLineString por rio, em [lon, lat].
 
 **Como regenerar (na VPS):**
 ```bash
@@ -668,9 +670,13 @@ curl -s -A "$UA" 'https://overpass-api.de/api/interpreter' \
       way["waterway"="river"]["name"="Rio Itajaí-Açu"](-27.8,-50.2,-26.4,-48.4);
       way["waterway"="river"]["name"="Rio Itajaí do Oeste"](-27.8,-50.2,-26.4,-48.4);
       way["waterway"="river"]["name"="Rio Itajaí-Mirim"](-27.8,-50.2,-26.4,-48.4);
+      way["waterway"="river"]["name"~"Rio Benedito"](-27.8,-50.2,-26.4,-48.4);
+      way["waterway"="river"]["name"~"Rio Lu.z Alves|Rio Lu.s Alves"](-27.8,-50.2,-26.4,-48.4);
+      way["waterway"="river"]["name"~"Rio Herc.lio"](-27.8,-50.2,-26.4,-48.4);
     );
     out geom;' > data/brutos/tracado-rios-osm.json
-python3 scripts/converter_tracado_rios.py
+python3 scripts/converter_tracado_rios.py       # gera tronco + afluentes que vierem
+python3 scripts/achar_confluencias.py --gravar  # grava onde Benedito/Luís Alves entram
 ```
 
 **Decisões e limites registrados:**
