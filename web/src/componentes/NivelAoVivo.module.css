@@ -25,6 +25,15 @@
   letter-spacing: 0.02em;
 }
 
+/* O rio subia quando a leitura foi tirada e ela já não é do agora: o número
+   mostrado erra para baixo. Fica legível sobre o selo cinza (leitura velha) e
+   sobre o de alerta, por isso cor própria em vez de herdar a do selo. */
+.subindo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--alerta);
+}
+
 .normal {
   background: var(--agua-fundo);
   border-color: var(--agua-clara);

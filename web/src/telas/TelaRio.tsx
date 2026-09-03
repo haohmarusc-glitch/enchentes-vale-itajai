@@ -132,6 +132,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           aoSelecionar={setSelecionadaId}
           tempoReal={tempoReal}
           nivelSc={nivelSc}
+          serie={serie}
           topologia={topologia}
           agora={agora}
         />

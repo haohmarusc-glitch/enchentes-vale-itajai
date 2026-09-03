@@ -3,6 +3,8 @@ import type { Cidade, Topologia, Trecho } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import type { NivelSc } from '../dados/nivelSc'
+import type { EstadoSerie } from '../dados/serie'
+import { serieDaCidade, tendencia } from '../dados/serie'
 import { faixaDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import LegendaFaixas, { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { estacoesTempoReal } from '../dados/carregar'
@@ -28,6 +30,9 @@ interface Props {
   tempoReal: EstadoTempoReal
   /** Nível BRUTO estadual por cidade, para preencher (rotulado) as lacunas. */
   nivelSc?: NivelSc
+  /** A série das últimas horas, para dizer se o rio subia quando a leitura foi
+   *  tirada — o que muda como se lê um número que já não é do agora. */
+  serie?: EstadoSerie
   /** A árvore do rio, quando ele é ramificado (o Açu). Ausente = rio em fila. */
   topologia?: Topologia
   agora: Date
@@ -199,7 +204,7 @@ function ItemCidade({
   conector: ReactNode
   props: Props
 }) {
-  const { rioId, cidadeSelecionada, aoSelecionar, tempoReal, nivelSc, agora, registrosPorCidade } =
+  const { rioId, cidadeSelecionada, aoSelecionar, tempoReal, nivelSc, serie, agora, registrosPorCidade } =
     props
   const registros = registrosPorCidade[cidade.id] ?? 0
   const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
@@ -253,7 +258,12 @@ function ItemCidade({
           <span className={estilos.detalhes}>
             {aoVivo ? (
               <span className={estilos.aoVivo}>
-                <NivelAoVivo leitura={aoVivo} cidade={cidade} agora={agora} />
+                <NivelAoVivo
+                  leitura={aoVivo}
+                  cidade={cidade}
+                  agora={agora}
+                  tendencia={serie ? tendencia(serieDaCidade(serie, rioId, cidade.id)) : null}
+                />
               </span>
             ) : todasAsLeituras.length > 1 ? (
               <VariasReguas leituras={todasAsLeituras} reguas={reguas} cidade={cidade} agora={agora} />

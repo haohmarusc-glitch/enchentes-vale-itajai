@@ -163,3 +163,36 @@ export function leituraEm(pontos: PontoSerie[], t: number): PontoSerie | null {
   }
   return atual
 }
+
+/** Para onde o rio ia na última hora medida. `cmh` é a taxa em cm/h. */
+export type Tendencia = { rotulo: 'subindo' | 'descendo' | 'estável'; cmh: number }
+
+/**
+ * A tendência do nível na última hora da série, ou null quando não dá para
+ * dizer (menos de dois pontos, ou dois pontos no mesmo instante).
+ *
+ * Vive aqui, e não dentro do gráfico, porque não serve só para rotular a linha:
+ * é o que diz se uma leitura VELHA ainda pode ser lida como aproximação do
+ * agora. "5,11 m há 3 h" com o rio subindo 20 cm/h não é o mesmo dado que
+ * "5,11 m há 3 h" com o rio parado — o primeiro quer dizer que o rio está mais
+ * alto agora, e a tela mostrava os dois igual.
+ *
+ * O limiar de 2 cm/h separa movimento de ruído de sensor: abaixo disso, dizer
+ * "subindo" seria transformar oscilação de leitura em tendência.
+ */
+export function tendencia(serie: PontoSerie[]): Tendencia | null {
+  if (serie.length < 2) return null
+  const ult = serie[serie.length - 1]!
+  const alvo = ult.medidoEm.getTime() - 3_600_000 // ~1 h antes
+  let ref = serie[0]!
+  for (const p of serie) {
+    if (p.medidoEm.getTime() <= alvo) ref = p
+    else break
+  }
+  const horas = (ult.medidoEm.getTime() - ref.medidoEm.getTime()) / 3_600_000
+  if (horas <= 0) return null
+  const cmh = Math.round(((ult.nivel_m - ref.nivel_m) * 100) / horas)
+  if (cmh >= 2) return { rotulo: 'subindo', cmh }
+  if (cmh <= -2) return { rotulo: 'descendo', cmh }
+  return { rotulo: 'estável', cmh }
+}

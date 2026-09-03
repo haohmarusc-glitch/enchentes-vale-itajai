@@ -11,6 +11,7 @@ import {
 } from 'recharts'
 import type { Cidade } from '../dados/tipos'
 import type { PontoSerie } from '../dados/serie'
+import { tendencia } from '../dados/serie'
 import { faixaDaCidade } from '../logica/tempoReal'
 import { dataHora, metros, numero, rotuloCota } from '../logica/formato'
 import { ROTULO_FAIXA } from './LegendaFaixas'
@@ -36,22 +37,6 @@ const COR_COTA: Record<string, string> = {
 
 const JANELA_PADRAO_H = 24
 
-function tendencia(serie: PontoSerie[]): { rotulo: string; cmh: number } | null {
-  if (serie.length < 2) return null
-  const ult = serie[serie.length - 1]!
-  const alvo = ult.medidoEm.getTime() - 3_600_000 // ~1 h antes
-  let ref = serie[0]!
-  for (const p of serie) {
-    if (p.medidoEm.getTime() <= alvo) ref = p
-    else break
-  }
-  const horas = (ult.medidoEm.getTime() - ref.medidoEm.getTime()) / 3_600_000
-  if (horas <= 0) return null
-  const cmh = Math.round(((ult.nivel_m - ref.nivel_m) * 100) / horas)
-  if (cmh >= 2) return { rotulo: 'subindo', cmh }
-  if (cmh <= -2) return { rotulo: 'descendo', cmh }
-  return { rotulo: 'estável', cmh }
-}
 
 export default function LinhaDoTempo({
   cidade,
