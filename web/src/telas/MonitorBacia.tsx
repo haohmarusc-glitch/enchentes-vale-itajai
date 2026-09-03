@@ -384,9 +384,8 @@ export default function MonitorBacia() {
           aria-label="Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"
         />
 
-        {/* Legenda no canto inferior esquerdo. Recolhe quando o painel de uma
-            cidade está aberto (dividem o mesmo canto). */}
-        {!(sel ?? hover) ? (
+        {/* Legenda sempre visível, canto inferior esquerdo. O painel da cidade
+            vai para o canto direito, então os dois não se cobrem. */}
         <div className={estilos.legenda}>
           <strong className={estilos.legendaTitulo}>Faixa (na régua de cada cidade)</strong>
           <ul>
@@ -410,7 +409,6 @@ export default function MonitorBacia() {
             cidades. Cinza = sem régua fresca (não é seguro, é sem dado).
           </p>
         </div>
-        ) : null}
 
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
             desenhado no canvas). O botão de tela cheia vai no canto inferior
@@ -420,10 +418,10 @@ export default function MonitorBacia() {
           <span className={estilos.aviso}>
             Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.
           </span>
+          <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
+            Tela cheia
+          </button>
         </div>
-        <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
-          Tela cheia
-        </button>
 
         {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
             aparece quando há série publicada. */}
