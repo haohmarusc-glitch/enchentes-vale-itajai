@@ -54,8 +54,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlparse
 
+from coleta_chuva import incoerencias
 from comum import DADOS, USER_AGENT, baixar, espera_turno, nivel_plausivel
 from importar_cotas_rio_do_sul import robots_permite
+
+#: As janelas de chuva de Gaspar, da mais curta para a mais longa. A ORDEM é o
+#: que dá sentido à conferência (janela curta não pode ter mais chuva que a
+#: longa que a contém), então ela mora aqui, junto do parser que lê as colunas.
+JANELAS_GASPAR = [
+    "chuva_atual", "chuva_1h", "chuva_6h", "chuva_12h", "chuva_24h", "chuva_48h",
+]
 
 URL = "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela"
 ROBOTS = "https://defesacivil.gaspar.sc.gov.br/robots.txt"
@@ -167,6 +175,15 @@ def ler_linha(cels: list[str], indices: dict[str, int],
              if nome in indices}
     if nivel is None and not any(v is not None for v in chuva.values()):
         return None
+    # A MESMA conferência de coerência do coletor de Itajaí, agora sobre as
+    # janelas de Gaspar. Não é zelo abstrato: nesta tabela três pluviômetros da
+    # "DC. GASPAR" publicam `chuva atual` de 42, 100 e 108 mm com `1h = 0` — se
+    # 42 mm tivessem caído agora, a última hora não poderia marcar zero. Aquele
+    # campo não é chuva atual naquelas linhas, seja lá o que for. Enquanto isso
+    # passava sem marca, qualquer gatilho por chuva (a atenção de Gaspar dispara
+    # com chuva > 6 mm) alarmaria todo dia — e alarme falso ensina a desligar o
+    # aviso justamente antes da noite em que ele importaria.
+    problemas = incoerencias(chuva, ordem=JANELAS_GASPAR)
     return {
         "rotulo": rotulo,
         "fonte_da_leitura": celula("fonte") or None,
@@ -178,6 +195,11 @@ def ler_linha(cels: list[str], indices: dict[str, int],
         "medido_em": texto_quando,
         "medido_em_iso": iso,
         "chuva_mm": chuva or None,
+        # Mesmo vocabulário do resto da coleta: `coerente: false` + o porquê,
+        # sem apagar o dado. Quem for usar a chuva decide o que fazer com ela;
+        # quem lê a tabela crua continua vendo o que a fonte publicou.
+        "chuva_coerente": None if not chuva else not problemas,
+        "chuva_incoerencias": problemas or None,
         # A linha crua fica para quem for ajustar o parser contra o HTML real.
         "linha_bruta": " | ".join(cels)[:220],
     }

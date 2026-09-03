@@ -98,16 +98,22 @@ def bloco_da_estacao(h2):
     return h2
 
 
-def incoerencias(mm: dict) -> list[str]:
+def incoerencias(mm: dict, ordem: list[str] | None = None) -> list[str]:
     """
     O que não fecha nesta leitura.
 
     Janela curta não pode ter mais chuva que janela longa que a contém. Compara
     só pares em que os dois valores existem: janela ausente é ausência de dado,
     não zero.
+
+    `ordem` permite reusar a MESMA regra em fontes que nomeiam as janelas de
+    outro jeito — a de Gaspar usa `chuva_atual/chuva_1h/...` e tem uma janela de
+    6 h que esta não tem. Uma segunda implementação da regra seria uma regra a
+    mais para divergir, e é sempre a cópia esquecida que passa a aceitar lixo.
     """
     problemas = []
-    presentes = [(nome, mm[nome]) for nome, _ in JANELAS if mm.get(nome) is not None]
+    nomes = ordem if ordem is not None else [nome for nome, _ in JANELAS]
+    presentes = [(nome, mm[nome]) for nome in nomes if mm.get(nome) is not None]
     for (nome_a, valor_a), (nome_b, valor_b) in zip(presentes, presentes[1:]):
         # Tolerância de 0,05 mm: a fonte publica com uma casa e o balde do
         # pluviômetro tem passo de 0,2 mm. Diferença menor que isso é
