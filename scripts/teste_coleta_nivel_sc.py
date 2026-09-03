@@ -52,7 +52,7 @@ class TestFuso(unittest.TestCase):
         self.assertEqual(hora_local("2026-08-31T01:00:00+00:00"), "2026-08-30T22:00:00")
 
     def test_a_leitura_sai_em_horario_de_brasilia(self):
-        leituras, _, _ = converter([estacao()])
+        leituras, _, _, _ = converter([estacao()])
         self.assertEqual(leituras[0]["medido_em"], "2026-09-01T20:42:54",
                          "medido_em é Brasília sem fuso, não o UTC cru do GraphQL")
 
@@ -63,55 +63,75 @@ class TestFuso(unittest.TestCase):
 
 class TestBaldes(unittest.TestCase):
     def test_indaial_vira_leitura(self):
-        leituras, sem, susp = converter([estacao()])
+        leituras, sem, susp, nao_mede = converter([estacao()])
         self.assertEqual(len(leituras), 1)
-        self.assertEqual((sem, susp), ([], []))
+        self.assertEqual((sem, susp, nao_mede), ([], [], []))
         l = leituras[0]
         self.assertEqual(l["cidade"], "indaial")
         self.assertEqual(l["nivel_bruto_m"], 6.86)
 
-    def test_value_null_vai_para_sem_leitura(self):
-        """Gaspar tem sensor e às vezes vem null: é 'sem leitura agora', não some."""
-        leituras, sem, susp = converter([estacao(codigo="DCSC-00005", nome="SDC-SC Gaspar", nivel=None)])
+    def test_value_null_de_estacao_comum_vai_para_sem_leitura(self):
+        """Estação comum com sensor que às vezes vem null: é 'sem leitura agora', não some."""
+        leituras, sem, susp, nao_mede = converter([estacao(nivel=None)])  # Indaial, fora de NAO_MEDE_NIVEL
         self.assertEqual(leituras, [])
         self.assertEqual(len(sem), 1)
-        self.assertEqual(sem[0]["cidade"], "gaspar")
+        self.assertEqual(sem[0]["cidade"], "indaial")
+
+    def test_gaspar_vai_para_nao_mede_nivel_nao_para_sem_leitura(self):
+        """Gaspar: tem_nivel_do_rio=false na API (03/09/2026) — não é 'sensor mudo agora', é
+        ausência estrutural. Não deve mais cair em sem_leitura mesmo com value null."""
+        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00005", nome="SDC-SC Gaspar", nivel=None)])
+        self.assertEqual(leituras, [])
+        self.assertEqual(sem, [])
+        self.assertEqual(len(nao_mede), 1)
+        self.assertEqual(nao_mede[0]["cidade"], "gaspar")
+        self.assertIn("tem_nivel_do_rio", nao_mede[0]["motivo"])
+
+    def test_blumenau_vai_para_nao_mede_nivel(self):
+        """Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não de rio."""
+        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00026", nome="SDC-SC Blumenau", nivel=None)])
+        self.assertEqual(leituras, [])
+        self.assertEqual(len(nao_mede), 1)
+        self.assertEqual(nao_mede[0]["cidade"], "blumenau")
 
     def test_estacao_H_e_descartada(self):
         """'(H)' reporta altitude, não rio: não entra em balde nenhum."""
-        leituras, sem, susp = converter([estacao(nome="SDC-SC Salete (H)", nivel=399.0)])
-        self.assertEqual((leituras, sem, susp), ([], [], []))
+        leituras, sem, susp, nao_mede = converter([estacao(nome="SDC-SC Salete (H)", nivel=399.0)])
+        self.assertEqual((leituras, sem, susp, nao_mede), ([], [], [], []))
 
-    def test_guabiruba_e_suspeita(self):
-        leituras, sem, susp = converter([estacao(codigo="DCSC-00029", nome="SDC-SC Guabiruba", nivel=24.91)])
+    def test_guabiruba_e_suspeita_por_datum_nao_por_sensor_errado(self):
+        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00029", nome="SDC-SC Guabiruba", nivel=24.91)])
         self.assertEqual(leituras, [])
         self.assertEqual(len(susp), 1)
         self.assertEqual(susp[0]["cidade"], "guabiruba")
+        # Correção de 03/09: é estação Hidro real (tem_nivel_do_rio=true) — problema é datum, não sensor.
+        self.assertIn("datum", susp[0]["motivo"])
+        self.assertNotIn("grandeza errada", susp[0]["motivo"])
 
     def test_barragem_tem_datum_reservatorio(self):
-        leituras, _, _ = converter([estacao(codigo="DCSC-00040", nome="SDC-SC Barragem Oeste", nivel=12.0)])
+        leituras, _, _, _ = converter([estacao(codigo="DCSC-00040", nome="SDC-SC Barragem Oeste", nivel=12.0)])
         self.assertEqual(leituras[0]["datum"], "reservatorio")
 
     def test_bacia_null_nao_quebra_e_estacao_de_fora_fica_de_fora(self):
         """position.bacia null não estoura; e sem 'Itaja' a estação não entra."""
-        leituras, sem, susp = converter([estacao(bacia=None)])
-        self.assertEqual((leituras, sem, susp), ([], [], []))
+        leituras, sem, susp, nao_mede = converter([estacao(bacia=None)])
+        self.assertEqual((leituras, sem, susp, nao_mede), ([], [], [], []))
 
     def test_valor_absurdo_vai_para_suspeita(self):
-        leituras, sem, susp = converter([estacao(nivel=50.0)])
+        leituras, sem, susp, nao_mede = converter([estacao(nivel=50.0)])
         self.assertEqual(leituras, [])
         self.assertEqual(len(susp), 1)
 
     def test_booleano_nao_e_metro(self):
         """rio_nivel.value booleano (armadilha 1) não vira 1,00 m — vai para sem_leitura."""
-        leituras, sem, susp = converter([estacao(nivel=True)])
+        leituras, sem, susp, nao_mede = converter([estacao(nivel=True)])
         self.assertEqual(leituras, [])
         self.assertEqual(len(sem), 1)
 
 
 class TestRegraDeFundo(unittest.TestCase):
     def test_toda_leitura_e_bruta_e_nao_serve_para_cota(self):
-        leituras, _, _ = converter([estacao(), estacao(codigo="DCSC-00040", nome="SDC-SC Barragem", nivel=9.0)])
+        leituras, _, _, _ = converter([estacao(), estacao(codigo="DCSC-00040", nome="SDC-SC Barragem", nivel=9.0)])
         self.assertTrue(leituras)
         for l in leituras:
             self.assertFalse(l["usar_para_cota"], "nível estadual nunca vira cota sem offset calibrado")
@@ -122,12 +142,12 @@ class TestRegraDeFundo(unittest.TestCase):
 
 class TestCadeia(unittest.TestCase):
     def test_estacao_fora_da_cadeia_entra_sem_cidade(self):
-        leituras, _, _ = converter([estacao(codigo="DCSC-99999", nome="SDC-SC Outra")])
+        leituras, _, _, _ = converter([estacao(codigo="DCSC-99999", nome="SDC-SC Outra")])
         self.assertEqual(len(leituras), 1)
         self.assertIsNone(leituras[0]["cidade"])
 
     def test_so_cadeia_recusa_estacao_fora_do_mapa(self):
-        leituras, _, _ = converter([estacao(codigo="DCSC-99999", nome="SDC-SC Outra")], so_cadeia=True)
+        leituras, _, _, _ = converter([estacao(codigo="DCSC-99999", nome="SDC-SC Outra")], so_cadeia=True)
         self.assertEqual(leituras, [])
 
 
@@ -135,7 +155,7 @@ class TestSerie(unittest.TestCase):
     """A série ndjson acumula sem duplicar — é a matéria-prima do offset."""
 
     def test_acumula_uma_vez_e_deduplica_na_segunda(self):
-        leituras, _, _ = converter([estacao()])
+        leituras, _, _, _ = converter([estacao()])
         with tempfile.TemporaryDirectory() as d:
             with unittest.mock.patch.object(coleta_nivel_sc, "SAIDA", Path(d)):
                 self.assertEqual(acumular_serie(leituras), (1, 0))

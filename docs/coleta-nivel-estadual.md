@@ -22,12 +22,38 @@ esses números — mas como BRUTO, porque o zero da régua estadual NÃO é o ze
 
 ## O que ele faz quando chamado
 1. POST no GraphQL (`Tags_data`), filtra `position.bacia ~ "Itaja"`.
-2. Separa cada estação em TRÊS baldes:
+2. Separa cada estação em QUATRO baldes:
    - `leituras` — nível bruto válido
-   - `sem_leitura` — `rio_nivel.value == null` = sensor mudo AGORA (não "sem sensor"; ex.: Gaspar hoje)
-   - `suspeitas` — grandeza/sensor errado (Guabiruba 24,91; Pomerode) ou valor > 30 m (altitude)
+   - `sem_leitura` — `rio_nivel.value == null` = sensor mudo AGORA (não "sem sensor")
+   - `suspeitas` — estação Hidro real, mas valor bruto implausível (datum/escala não calibrada:
+     Guabiruba, Pomerode) ou valor > 30 m (altitude)
+   - `nao_mede_nivel` — a estação DECLARADAMENTE não mede nível de rio nesta rede (Gaspar,
+     Blumenau) — ausência estrutural, não "sensor mudo agora". Ver correção de 03/09 abaixo.
 3. Descarta estações "(H)" — reportam altitude, não rio (Salete 399 m, Petrolândia 876 m…).
 4. Grava `data/tempo-real/ultimo_nivel_sc.json`.
+
+## Correção de 03/09/2026 (ver `API-DCSC-CAMPOS-NOVOS.md`)
+Uma investigação nos campos `type` e `filter.relacao.tem_nivel_do_rio` da mesma API (que o coletor
+ainda não pede — ver "Pendência" abaixo) corrigiu duas suposições erradas dos registros de 01/09:
+
+| Estação | Suposição de 01/09 | Confirmado pela API em 03/09 |
+|---|---|---|
+| Gaspar (DCSC-00005) | "tem sensor de rio, reporta intermitente" | `tem_nivel_do_rio = false` — **não mede** nível de rio nesta rede. Não é intermitência, é ausência. |
+| Blumenau (DCSC-00026) | dedução própria: "não reporta, deve ser estação de chuva" | **confirmado pela fonte:** `type = "Meteo"`, `tem_nivel_do_rio = false`. |
+| Guabiruba (DCSC-00029) | "grandeza/sensor errado" | `type = "Hidro"`, `tem_nivel_do_rio = true` — é estação de rio real; o valor alto é problema de **datum/escala**, não de tipo. |
+| Pomerode (DCSC-00007) | "oscila absurdo, sensor suspeito" | `type = "Hidro"`, `tem_nivel_do_rio = true` — estação de rio real, mesmo problema de datum/escala. |
+
+Gaspar e Blumenau saíram de `sem_leitura` para o novo balde `nao_mede_nivel` (dicionário
+`NAO_MEDE_NIVEL` no código). Guabiruba e Pomerode continuam em `suspeitas` — o valor bruto
+continua não sendo usável — mas o texto do motivo não fala mais em "sensor/grandeza errada".
+
+**Pendência (não feita agora):** adicionar `type`, `filter { relacao { tem_nivel_do_rio
+tem_vazao_do_rio tem_chuva_acumulada } }` e `rio { rio_nome rio_area_drenagem }` à `QUERY` do
+coletor, para que essas classificações venham da resposta em vez de ficarem hardcoded. Não feito
+porque a API usa allowlist de query persistida — recusa qualquer query montada à mão, mesmo que
+sintaticamente idêntica — e este ambiente não alcança o host para validar a string exata do
+bundle. Precisa da string exata (inspecionada de um browser real ou da VPS), não de uma
+reconstrução por nome de campo.
 
 ## Schema de cada leitura (regra do datum aplicada no código)
 ```json
@@ -50,7 +76,7 @@ esses números — mas como BRUTO, porque o zero da régua estadual NÃO é o ze
 - NÃO usa `rio_nivel.show.value` (é flag de exibição booleana, não o nível). Lê `rio_nivel.value`, e ainda
   com guarda `e_numero` (um booleano não é metro).
 
-## As armadilhas que ele já trata (todas vistas em 01/09)
+## As armadilhas que ele já trata
 | # | Armadilha | Tratamento |
 |---|---|---|
 | 1 | `show.value` parece o nível mas é booleano | lê `rio_nivel.value`, com guarda `e_numero` |
@@ -59,7 +85,8 @@ esses números — mas como BRUTO, porque o zero da régua estadual NÃO é o ze
 | 4 | `rio_nivel_tendencia` é lixo | ignorado |
 | 5 | timestamp UTC do GraphQL vs Brasília do projeto | **convertido** com `hora_local` (como `coleta_chuva_sc`) |
 | 6 | `position.bacia` null quebra o filtro | tratado como `""` |
-| 7 | Guabiruba 24,91 / Pomerode 0,86 (grandeza errada) | lista `SUSPEITAS` → balde `suspeitas` |
+| 7 | Guabiruba / Pomerode: valor bruto implausível (datum/escala, corrigido 03/09 — não é "sensor errado") | lista `SUSPEITAS` → balde `suspeitas` |
+| 8 | Gaspar / Blumenau: API declara `tem_nivel_do_rio=false` (03/09) — ausência estrutural, não "sensor mudo" | lista `NAO_MEDE_NIVEL` → balde `nao_mede_nivel` |
 
 ## Como rodar na VPS
 Repo vivo: `/opt/enchentes-vale-itajai`.
@@ -83,10 +110,11 @@ principal.
 > `ultimo.json` — corrigido: ele agora vigia também o `ultimo_nivel_sc.json` (`avaliar_bruto`). Numa
 > próxima migração, confira que esta linha continua no `crontab -l`.
 
-Aviso honesto: o parser (`converter`) foi testado offline com a estrutura real de 01/09
-(`teste_coleta_nivel_sc.py`: Indaial→leitura, Gaspar→sem_leitura, Salete(H)→descartada, Guabiruba→suspeita,
-barragem→reservatorio, bacia null→ok, fuso→Brasília). A chamada de REDE não foi testada pelo assistente (o
-container não alcança o host) — o primeiro `python3` real é na VPS. Se der erro, colar a saída.
+Aviso honesto: o parser (`converter`) foi testado offline com a estrutura real de 01/09, atualizado com a
+correção de 03/09 (`teste_coleta_nivel_sc.py`: Indaial→leitura, Gaspar→nao_mede_nivel, Blumenau→nao_mede_nivel,
+Salete(H)→descartada, Guabiruba→suspeita (datum), barragem→reservatorio, bacia null→ok, fuso→Brasília). A
+chamada de REDE não foi testada pelo assistente (o container não alcança o host) — o primeiro `python3` real
+é na VPS. Se der erro, colar a saída.
 
 ## Tarefas que ele habilita (próximas)
 1. **Série de nível bruto** — acumular `ultimo_nivel_sc.json` em ndjson (como `coleta_niveis.py` faz para
@@ -106,7 +134,7 @@ container não alcança o host) — o primeiro `python3` real é na VPS. Se der 
 Açu: 00025 agrolândia · 00039 ituporanga · 00033 pouso-redondo · 00041 taió · 00031 laurentino ·
 00001 agronômica · 00013 rio-do-sul · 00032 lontras · 00020 ibirama · 00043 presidente-getúlio ·
 00021 josé-boiteux · 00003 ascurra · 00006 indaial · 00023 timbó · 00004 benedito-novo ·
-00011 rio-dos-cedros · 00028 doutor-pedrinho · 00007 pomerode(suspeita) · 00026 blumenau(não reporta) ·
-00005 gaspar(intermitente) · 00030 ilhota · 00163 ilhota-arraial-dos-cunhas
-Mirim: 00024 vidal-ramos · 00018 botuverá · 00027 botuverá-2 · 00019 brusque · 00029 guabiruba(suspeita)
+00011 rio-dos-cedros · 00028 doutor-pedrinho · 00007 pomerode(suspeita — datum) · 00026 blumenau(não mede nível — Meteo) ·
+00005 gaspar(não mede nível) · 00030 ilhota · 00163 ilhota-arraial-dos-cunhas
+Mirim: 00024 vidal-ramos · 00018 botuverá · 00027 botuverá-2 · 00019 brusque · 00029 guabiruba(suspeita — datum)
 Barragens (reservatório): 00040 oeste-taió · 00038 sul-ituporanga

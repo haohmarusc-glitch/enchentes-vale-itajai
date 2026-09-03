@@ -14,7 +14,8 @@ instante (o caso Brusque, 17h "offset ~0" -> 23h diferença de 1,9 m, mostra que
 ARMADILHAS que este coletor já trata (todas vistas em 01/09):
   1. `rio_nivel.value` é o NÚMERO; `rio_nivel.show.value` é só flag de exibição (booleano). Lê-se .value,
      e ainda assim com guarda `e_numero` (um booleano não é metro).
-  2. `value` null = "sem leitura agora", NÃO "sem sensor". Gaspar (DCSC-00005) tem sensor e às vezes vem null.
+  2. `value` null = "sem leitura agora", NÃO "sem sensor" — EXCETO as estações de NAO_MEDE_NIVEL (abaixo),
+     que a própria API declara sem `tem_nivel_do_rio`: nessas, null é estrutural, não pontual.
   3. Estações "(H)" reportam ALTITUDE/cota absoluta (Salete 399 m, Petrolândia 876 m…). Descartadas.
      Também descarta qualquer valor > LIMITE_M (30 m) — nenhum rio urbano da bacia chega perto disso.
   4. `rio_nivel_tendencia.value` é LIXO (Pomerode 108, Ibirama 85, Trombudo 113). Ignorado. Tendência se
@@ -25,8 +26,19 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
      Por isso `medido_em` passa por `hora_local()`; guardar UTC cru deslocaria a idade em 3 h. (`coletado_em`
      é outro campo, do momento da coleta, e esse SIM é UTC.)
   6. `position.bacia` pode ser null -> tratado como "" no filtro.
-  7. Guabiruba 24,91 m e Pomerode 0,86 m são leituras suspeitas (grandeza/sensor errado) -> vão para
-     `suspeitas`, não para `leituras`. Lista em SUSPEITAS; ampliar conforme a auditoria.
+  7. Guabiruba 24,81 m e Pomerode são leituras suspeitas -> vão para `suspeitas`, não para `leituras`.
+     CORREÇÃO (03/09/2026, ver docs/API-DCSC-CAMPOS-NOVOS.md): a investigação dos campos `type` e
+     `filter.relacao.tem_nivel_do_rio` da API confirma que as DUAS são estações Hidro reais que DECLARAM
+     medir nível de rio — o problema é datum/escala do valor bruto, não sensor ou grandeza errada. A lista
+     SUSPEITAS abaixo foi reescrita para não sugerir mais "sensor errado".
+  8. Gaspar (DCSC-00005) e Blumenau (DCSC-00026) NÃO medem nível de rio nesta rede — confirmado pela mesma
+     investigação (`tem_nivel_do_rio = false`; Blumenau é `type = "Meteo"`). Antes deste coletor tratava as
+     duas como "sensor de rio que às vezes fica mudo" (armadilha 2); estava errado — é ausência estrutural
+     da capacidade, não intermitência. Vão para o balde `nao_mede_nivel`, não para `sem_leitura`.
+     PENDÊNCIA: a query atual (`QUERY` abaixo) não pede `type`/`tem_nivel_do_rio`/`rio_area_drenagem` — a
+     API usa allowlist de query persistida e recusa query montada à mão (ver o .md citado), então acrescentar
+     esses campos exige a string exata do bundle, não uma reconstrução por nome de campo. Até lá, os dois
+     códigos ficam hardcoded em NAO_MEDE_NIVEL, como já era feito com SUSPEITAS.
 
 Uso:
     python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
@@ -69,9 +81,21 @@ CADEIA = {
     "DCSC-00040": "barragem-oeste-taio", "DCSC-00038": "barragem-sul-ituporanga",
 }
 RESERVATORIOS = {"DCSC-00040", "DCSC-00038"}
-# Leituras que a auditoria de 01/09 marcou como grandeza/sensor errado. Vão para 'suspeitas'.
-SUSPEITAS = {"DCSC-00029": "Guabiruba 24,91 m: impossível p/ ribeirão — outra grandeza/datum",
-             "DCSC-00007": "Pomerode: oscila absurdo entre leituras — sensor/unidade suspeita"}
+# Estações Hidro que a API confirma medir nível de rio (`tem_nivel_do_rio=true`, investigação de
+# 03/09/2026, docs/API-DCSC-CAMPOS-NOVOS.md), mas cujo valor bruto é implausível para o rio local —
+# problema de DATUM/ESCALA da estação, não sensor ou grandeza errada. Vão para 'suspeitas': o valor
+# não é usável cru, mas a estação é real e mede a grandeza certa.
+SUSPEITAS = {"DCSC-00029": "Guabiruba ~24,8 m: estação Hidro real (tem_nivel_do_rio=true), mas o valor "
+                           "bruto é implausível para o ribeirão — datum/escala própria não calibrada",
+             "DCSC-00007": "Pomerode: estação Hidro real (tem_nivel_do_rio=true), mas oscila de forma "
+                           "implausível entre leituras — datum/escala própria não calibrada"}
+# Estações que a mesma investigação confirma NÃO medirem nível de rio nesta rede
+# (`tem_nivel_do_rio=false`; Blumenau é `type="Meteo"`). `value` vem null sempre — não é "sensor mudo
+# agora" (armadilha 2), é ausência estrutural. Vão para 'nao_mede_nivel', não para 'sem_leitura'.
+NAO_MEDE_NIVEL = {"DCSC-00005": "Gaspar: tem_nivel_do_rio=false na API estadual — não mede nível de rio "
+                                 "nesta rede (cota de Gaspar vem da Defesa Civil municipal, não da DCSC)",
+                  "DCSC-00026": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, "
+                                 "não mede nível de rio (cota de Blumenau vem do AlertaBlu, não da DCSC)"}
 
 QUERY = ('query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
          'codigo name { general local } timestamp position { bacia latitude longitude } '
@@ -106,9 +130,11 @@ def buscar() -> list[dict]:
     return j["data"]["tags_data"]["qualle_meteorologia"]
 
 
-def converter(estacoes: list[dict], so_cadeia: bool = False) -> tuple[list[dict], list[dict], list[dict]]:
-    """Devolve (leituras, sem_leitura, suspeitas). Tudo com datum bruto e usar_para_cota=False."""
-    leituras, sem_leitura, suspeitas = [], [], []
+def converter(
+    estacoes: list[dict], so_cadeia: bool = False
+) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
+    """Devolve (leituras, sem_leitura, suspeitas, nao_mede_nivel). Tudo com datum bruto e usar_para_cota=False."""
+    leituras, sem_leitura, suspeitas, nao_mede_nivel = [], [], [], []
     for s in estacoes:
         bacia = (s.get("position") or {}).get("bacia") or ""          # armadilha 6
         if BACIA_RE.lower() not in bacia.lower():
@@ -133,6 +159,9 @@ def converter(estacoes: list[dict], so_cadeia: bool = False) -> tuple[list[dict]
             "lat": (s.get("position") or {}).get("latitude"),
             "lon": (s.get("position") or {}).get("longitude"),
         }
+        if cod in NAO_MEDE_NIVEL:                                      # armadilha 8
+            nao_mede_nivel.append({**base, "motivo": NAO_MEDE_NIVEL[cod]})
+            continue
         if val is None:                                                # armadilha 2
             sem_leitura.append({**base, "motivo": "value null — sensor sem leitura agora (não 'sem sensor')"})
             continue
@@ -147,7 +176,7 @@ def converter(estacoes: list[dict], so_cadeia: bool = False) -> tuple[list[dict]
             suspeitas.append({**base, "nivel_bruto_m": round(v, 2), "motivo": f"> {LIMITE_M} m: altitude/grandeza errada"})
             continue
         leituras.append({**base, "nivel_bruto_m": round(v, 2)})
-    return leituras, sem_leitura, suspeitas
+    return leituras, sem_leitura, suspeitas, nao_mede_nivel
 
 
 def _linha_serie(l: dict) -> dict:
@@ -220,18 +249,19 @@ def main():
     except Exception as e:
         print(f"ERRO ao buscar a rede estadual: {e}", file=sys.stderr)
         return 1
-    leituras, sem, susp = converter(est, so_cadeia=a.so_acu)
+    leituras, sem, susp, nao_mede = converter(est, so_cadeia=a.so_acu)
     saida = {
         "fonte": URL, "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "aviso": "NÍVEL BRUTO (datum da estação). usar_para_cota=False em todas. Não comparar com cotas municipais sem offset calibrado.",
-        "leituras": leituras, "sem_leitura": sem, "suspeitas": susp,
+        "leituras": leituras, "sem_leitura": sem, "suspeitas": susp, "nao_mede_nivel": nao_mede,
     }
     SAIDA.mkdir(parents=True, exist_ok=True)
     (SAIDA / "ultimo_nivel_sc.json").write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")
     novas, repetidas = acumular_serie(leituras)
     for l in sorted(leituras, key=lambda x: x["cidade"] or "zz"):
         print(f"{l['nivel_bruto_m']:6.2f} m bruto  {l['codigo']}  {l['estacao'][:32]:32s}  [{l['cidade'] or '-'}]")
-    print(f"\n{len(leituras)} com nível · {len(sem)} sem leitura agora · {len(susp)} suspeitas → data/tempo-real/ultimo_nivel_sc.json")
+    print(f"\n{len(leituras)} com nível · {len(sem)} sem leitura agora · {len(susp)} suspeitas · "
+          f"{len(nao_mede)} não medem nível → data/tempo-real/ultimo_nivel_sc.json")
     print(f"série: +{novas} leitura(s) nova(s), {repetidas} repetida(s) em nivel-sc-AAAA-MM.ndjson")
     return 0
 
