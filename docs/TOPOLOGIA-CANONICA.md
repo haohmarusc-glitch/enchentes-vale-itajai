@@ -15,6 +15,7 @@ Antes de assumir cadeia linear em qualquer rio, verificar a ramificação.
 Itajaí do OESTE (Taió)  ‖  Itajaí do SUL (Ituporanga)   ← cabeceiras PARALELAS
               └───────────┬───────────┘
                      RIO DO SUL          ← aqui NASCE o Itajaí-Açu (começo do tronco)
+                                           -27.2160314, -49.6483391  **
                           │
                           │ ← entra o Rio Hercílio / Itajaí do Norte
                           │     [IBIRAMA = afluente lateral, NÃO elo do tronco]
@@ -32,6 +33,27 @@ da régua de Indaial / Ilhota) **ainda não está confirmado** — as fontes int
 divergiam (o `afluentes_monitorados` do Timbó dizia "entre Indaial e Blumenau").
 Registrado como pendência em `_topologia.afluentes_rios`, para resolver no mapa
 quando o Overpass voltar (esteve fora do ar em 02/09). Não se inventa o lado.
+
+**\*\*** A **coordenada da confluência** (04/09/2026, em
+`_topologia.confluencia_cabeceiras`). Não é medição nossa de "onde os traçados
+passam mais perto": no arquivo da Defesa Civil de Rio do Sul (API Asthon) os
+três traçados — Itajaí do Sul, Itajaí do Oeste e Itajaí-Açu — **terminam e
+começam no MESMO vértice, ao dígito** (0,0 m). A junção é declarada pela
+topologia da fonte. `scripts/achar_confluencia_cabeceiras.py` reproduz, e
+**recusa** se o vértice deixar de ser compartilhado — devolver "o ponto mais
+próximo" seria inventar precisão que a fonte não deu.
+
+O que faz isso valer como confirmação, e não como "o arquivo disse": o **rumo de
+chegada** de cada cabeceira bate com a geografia levantada aqui por OUTRA fonte
+(OSM/Overpass, 02/09) — o Itajaí do **Sul** chega pelo **sul** (vem de
+Ituporanga), o Itajaí do **Oeste** pelo **oeste** (vem de Taió). Duas fontes
+independentes concordando. Rumo trocado é recusa também: significaria arquivo
+com os nomes invertidos **ou** esta topologia errada, e nenhuma das duas se
+resolve gravando.
+
+Ressalva que não pode sumir: a cobertura daquele arquivo é só o trecho perto de
+Rio do Sul (Sul 10,6 km, Oeste 9,9 km). Serve para o **ponto**, não como
+**traçado de mapa** — por isso fica em `data/brutos/`, não em `data/rios/`.
 
 **A única sequência que a UI pode afirmar** (`_topologia.tronco_sequencia`):
 

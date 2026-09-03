@@ -24,6 +24,14 @@
       "_topologia": {
         "tipo": "arvore",
         "tronco_sequencia": ["rio-do-sul", "ascurra", "indaial", "blumenau", "gaspar", "ilhota", "itajai"],
+        "confluencia_cabeceiras": {
+          "lat": -27.2160314,
+          "lon": -49.6483391,
+          "cabeceiras": ["taio", "ituporanga"],
+          "nasce": "rio-do-sul",
+          "nota": "-27.2160314, -49.6483391 — vértice que o Rio Itajaí do Sul (chega de S, vem de Ituporanga), o Rio Itajaí do Oeste (chega de O, vem de Taió) e o Rio Itajaí-Açu COMPARTILHAM no traçado da Defesa Civil de Rio do Sul (API Asthon, 04/09/2026): a junção é declarada pela fonte, não medida por nós. O rumo de chegada de cada cabeceira confere com a topologia levantada em OSM/Overpass — duas fontes independentes. A cobertura do arquivo é só o trecho perto de Rio do Sul, então ele serve para o ponto, NÃO como traçado de mapa (fica em data/brutos/, não em data/rios/).",
+          "fonte": "Defesa Civil de Rio do Sul / API Asthon, data/brutos/rio-do-sul-rios-tracados.geojson (04/09/2026)"
+        },
         "cabeceiras_paralelas": ["taio", "ituporanga"],
         "afluentes_laterais": [
           { "id": "ibirama", "entra_perto_de": "rio-do-sul", "rio": "Rio Hercílio (Itajaí do Norte)" }
