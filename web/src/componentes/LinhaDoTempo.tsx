@@ -130,8 +130,8 @@ export default function LinhaDoTempo({
             />
             <YAxis domain={[0, teto]} tick={{ fontSize: 11 }} unit=" m" width={56} />
             <Tooltip
-              formatter={(v: number) => [metros(v), 'Nível']}
-              labelFormatter={(t: number) => dataHora(new Date(t))}
+              formatter={(v) => [metros(Number(v)), 'Nível']}
+              labelFormatter={(t) => dataHora(new Date(Number(t)))}
             />
             {cotas.map(([chave, valor]) => (
               <ReferenceLine

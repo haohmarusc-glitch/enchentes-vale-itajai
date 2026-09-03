@@ -100,7 +100,7 @@ export default function GraficoPicos({
               width={64}
             />
             <Tooltip
-              formatter={(v: number) => [metros(v), 'Pico']}
+              formatter={(v) => [metros(Number(v)), 'Pico']}
               labelFormatter={(_rotulo, carga) => {
                 const p = carga?.[0]?.payload as Ponto | undefined
                 return p ? dataLegivel(p.data) : ''
@@ -121,7 +121,7 @@ export default function GraficoPicos({
               />
             ))}
             <Bar dataKey="pico" isAnimationActive={false}>
-              <LabelList dataKey="pico" position="top" fontSize={11} formatter={(v: number) => numero(v)} />
+              <LabelList dataKey="pico" position="top" fontSize={11} formatter={(v) => numero(Number(v))} />
               {dados.map((d) => (
                 <Cell key={`${d.data}-${d.pico}`} fill={COR[d.confianca]} />
               ))}

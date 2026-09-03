@@ -18,3 +18,21 @@ updates:
     directory: "/web"
     schedule:
       interval: "weekly"
+    groups:
+      # react e react-dom (e seus @types) saem de versões majors sincronizadas
+      # upstream — separados, cada PR fica com peer dependency quebrada contra
+      # o outro (visto em 01-04/09/2026: react bumpou para 19 sozinho, e
+      # @types/react-dom ficou preso em ^18, derrubando `npm ci`).
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      # @vitejs/plugin-react trava a versão do vite via peer dependency
+      # (visto no mesmo incidente: plugin-react@6 exige vite@^8, e vite
+      # sozinho ainda estava em ^7 — ERESOLVE no `npm ci`).
+      vite:
+        patterns:
+          - "vite"
+          - "@vitejs/plugin-react"
