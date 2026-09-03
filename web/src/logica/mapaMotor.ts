@@ -19,6 +19,7 @@ import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import { deBrasilia, faixaDaCidade, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { estadoMareAgora, type EstadoMare } from '../logica/mare'
+import { metros } from '../logica/formato'
 import {
   acumuladoEspinha,
   enquadrar,
@@ -540,11 +541,20 @@ export function desenharPinos(
       opcoes.mostrarIdade && opcoes.agora && p.medidoEm
         ? textoIdade(idadeMin(p.medidoEm, opcoes.agora))
         : null
+    // Sub-linha ao lado do ponto: o NÍVEL na régua da própria cidade (quando há
+    // leitura fresca) e a idade. Nível em metros é da régua DELA — a comparação
+    // entre cidades continua sendo só pela faixa (cor), nunca pelo metro.
+    const sub =
+      p.nivel != null
+        ? idade
+          ? `${metros(p.nivel)} · ${idade}`
+          : metros(p.nivel)
+        : idade
     const w = ctx.measureText(nome).width
     const meia = w / 2
     const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, p.x))
     const baseY = p.y - (raio + 2 * escala)
-    const altTotal = idade ? alt + fonte * 0.95 : alt
+    const altTotal = sub ? alt + fonte * 0.95 : alt
     const caixa = { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 }
     const bate = caixas.some(
       (c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0,
@@ -558,14 +568,15 @@ export function desenharPinos(
     ctx.strokeText(nome, cx, baseY)
     ctx.fillStyle = '#eaf1f8'
     ctx.fillText(nome, cx, baseY)
-    if (idade) {
+    if (sub) {
       const fy = baseY - fonte - 1 * escala
-      ctx.font = `500 ${Math.round(fonte * 0.82)}px system-ui, sans-serif`
+      ctx.font = `600 ${Math.round(fonte * 0.85)}px system-ui, sans-serif`
       ctx.lineWidth = 3 * escala
       ctx.strokeStyle = 'rgba(4,12,20,0.92)'
-      ctx.strokeText(idade, cx, fy)
-      ctx.fillStyle = '#9fb2c4'
-      ctx.fillText(idade, cx, fy)
+      ctx.strokeText(sub, cx, fy)
+      // Nível em destaque (claro); só idade fica acinzentada.
+      ctx.fillStyle = p.nivel != null ? '#dff0ff' : '#9fb2c4'
+      ctx.fillText(sub, cx, fy)
     }
   }
 }

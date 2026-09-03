@@ -184,6 +184,102 @@
   text-align: right;
 }
 
+/* Painel de dados da cidade em foco — canto superior direito, sob o chip da maré. */
+.painel {
+  position: absolute;
+  top: 2.6rem;
+  right: 0.5rem;
+  width: min(17rem, 46vw);
+  max-height: calc(100% - 4rem);
+  overflow-y: auto;
+  background: rgba(8, 18, 30, 0.92);
+  border: 1px solid rgba(180, 200, 220, 0.3);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.7rem;
+  color: #e7eef6;
+  font-size: 0.84rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+.painelTopo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+.painelTopo strong {
+  font-size: 1.02rem;
+}
+.painelRio {
+  font-size: 0.72rem;
+  color: #9fb2c4;
+  white-space: nowrap;
+}
+.painelFaixa {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font-weight: 600;
+}
+.painelNivel {
+  margin: 0.3rem 0 0.1rem;
+  font-size: 1.05rem;
+}
+.painelNivel strong {
+  font-variant-numeric: tabular-nums;
+}
+.painelSemDado {
+  color: #9fb2c4;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+.painelBloco {
+  margin-top: 0.4rem;
+}
+.painelRotulo {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #9fb2c4;
+  margin-bottom: 0.1rem;
+}
+.painelBloco ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-variant-numeric: tabular-nums;
+}
+.painelBloco li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.painelSemCota,
+.painelChuva,
+.painelExtra {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+}
+.painelExtra {
+  color: #b9c6d4;
+}
+.painelAcao {
+  margin: 0.45rem 0 0;
+  font-size: 0.82rem;
+  color: #cfe0ef;
+  font-style: italic;
+}
+.painelRessalva {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: #93a4b6;
+  line-height: 1.35;
+  border-top: 1px solid rgba(180, 200, 220, 0.18);
+  padding-top: 0.35rem;
+}
+
 .foraDaVista {
   position: absolute;
   width: 1px;
