@@ -2,15 +2,443 @@
   "_meta": {
     "descricao": "Tábua de maré do porto de Itajaí. O site cruza estas preamares com a janela de chegada da cheia: maré alta trava o escoamento do rio.",
     "fuso": "Horário local (America/Sao_Paulo), sem indicação de fuso — igual ao que a fonte publica e ao que o site espera.",
-    "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/ajax/mares.php",
+    "fonte": "Planilha de previsão de maré da UNIVALI/CTTMAR (Márcio Piazera), importada por scripts/importar_mare_univali.py",
     "fonte_oficial": "Tábuas de maré da Marinha do Brasil (DHN) — porto de Itajaí",
-    "aviso": "Preencher rodando scripts/coleta_mares.py. Em 30/08/2026 o endpoint respondia com listas vazias — o gráfico de maré do próprio site fica em branco nesse estado. Enquanto durar, a tela da foz pede a tábua a quem estiver usando, em vez de estimar horário de preamar, que não se estima.",
-    "metodo": "Preamares e baixa-mares são os máximos e mínimos locais da curva de maré astronômica que a Defesa Civil publica nesse endpoint. A fonte não traz a tábua em forma de tabela; os horários são calculados a partir dela, não estimados."
+    "metodo": "Preamares e baixa-mares são os máximos e mínimos locais que a própria planilha já traz — não recalculados aqui.",
+    "aviso": "INTERINO: o endpoint da Defesa Civil (scripts/coleta_mares.py) está vazio há dias; esta tábua veio da UNIVALI/CTTMAR enquanto isso. A ALTURA (metros) foi OMITIDA de propósito — a planilha usa datum IBGE, e nada aqui garante que bate com o datum que a Defesa Civil/DHN publicam (mesmo problema do datum de Blumenau, que já é REGRA BLOQUEANTE neste projeto). Só o HORÁRIO de cada preamar/baixa-mar entrou, que não depende de datum. A próxima coleta bem-sucedida de coleta_mares.py substitui este arquivo inteiro pela tábua oficial — isso é esperado, não um bug."
   },
   "porto": "Itajaí",
-  "coletado_em": null,
-  "preamares": [],
-  "baixamares": [],
-  "pontos_astronomicos": 0,
-  "pontos_observados": 0
+  "coletado_em": "2026-09-03T14:27:45+00:00",
+  "pontos_astronomicos": 142,
+  "pontos_observados": 0,
+  "preamares": [
+    {
+      "quando": "2026-09-01T04:28"
+    },
+    {
+      "quando": "2026-09-01T16:45"
+    },
+    {
+      "quando": "2026-09-02T05:10"
+    },
+    {
+      "quando": "2026-09-02T17:23"
+    },
+    {
+      "quando": "2026-09-03T00:53"
+    },
+    {
+      "quando": "2026-09-03T05:59"
+    },
+    {
+      "quando": "2026-09-03T12:41"
+    },
+    {
+      "quando": "2026-09-03T18:08"
+    },
+    {
+      "quando": "2026-09-04T01:06"
+    },
+    {
+      "quando": "2026-09-04T07:05"
+    },
+    {
+      "quando": "2026-09-04T13:04"
+    },
+    {
+      "quando": "2026-09-04T19:10"
+    },
+    {
+      "quando": "2026-09-05T01:22"
+    },
+    {
+      "quando": "2026-09-05T13:24"
+    },
+    {
+      "quando": "2026-09-05T20:37"
+    },
+    {
+      "quando": "2026-09-06T01:28"
+    },
+    {
+      "quando": "2026-09-06T13:28"
+    },
+    {
+      "quando": "2026-09-06T22:23"
+    },
+    {
+      "quando": "2026-09-07T00:34"
+    },
+    {
+      "quando": "2026-09-07T13:15"
+    },
+    {
+      "quando": "2026-09-07T23:42"
+    },
+    {
+      "quando": "2026-09-08T13:17"
+    },
+    {
+      "quando": "2026-09-09T00:21"
+    },
+    {
+      "quando": "2026-09-09T13:34"
+    },
+    {
+      "quando": "2026-09-10T00:57"
+    },
+    {
+      "quando": "2026-09-10T13:58"
+    },
+    {
+      "quando": "2026-09-11T01:33"
+    },
+    {
+      "quando": "2026-09-11T14:27"
+    },
+    {
+      "quando": "2026-09-12T02:09"
+    },
+    {
+      "quando": "2026-09-12T14:58"
+    },
+    {
+      "quando": "2026-09-13T02:46"
+    },
+    {
+      "quando": "2026-09-13T15:30"
+    },
+    {
+      "quando": "2026-09-14T03:21"
+    },
+    {
+      "quando": "2026-09-14T16:03"
+    },
+    {
+      "quando": "2026-09-15T03:57"
+    },
+    {
+      "quando": "2026-09-15T12:39"
+    },
+    {
+      "quando": "2026-09-15T16:38"
+    },
+    {
+      "quando": "2026-09-16T04:34"
+    },
+    {
+      "quando": "2026-09-16T12:43"
+    },
+    {
+      "quando": "2026-09-16T17:16"
+    },
+    {
+      "quando": "2026-09-17T05:13"
+    },
+    {
+      "quando": "2026-09-17T13:06"
+    },
+    {
+      "quando": "2026-09-17T18:04"
+    },
+    {
+      "quando": "2026-09-18T06:00"
+    },
+    {
+      "quando": "2026-09-18T13:30"
+    },
+    {
+      "quando": "2026-09-18T19:21"
+    },
+    {
+      "quando": "2026-09-19T07:04"
+    },
+    {
+      "quando": "2026-09-19T13:51"
+    },
+    {
+      "quando": "2026-09-19T21:40"
+    },
+    {
+      "quando": "2026-09-20T09:06"
+    },
+    {
+      "quando": "2026-09-20T13:58"
+    },
+    {
+      "quando": "2026-09-20T23:08"
+    },
+    {
+      "quando": "2026-09-21T12:55"
+    },
+    {
+      "quando": "2026-09-21T23:48"
+    },
+    {
+      "quando": "2026-09-22T12:34"
+    },
+    {
+      "quando": "2026-09-23T00:20"
+    },
+    {
+      "quando": "2026-09-23T12:44"
+    },
+    {
+      "quando": "2026-09-24T00:48"
+    },
+    {
+      "quando": "2026-09-24T13:07"
+    },
+    {
+      "quando": "2026-09-25T01:15"
+    },
+    {
+      "quando": "2026-09-25T13:34"
+    },
+    {
+      "quando": "2026-09-26T01:44"
+    },
+    {
+      "quando": "2026-09-26T14:04"
+    },
+    {
+      "quando": "2026-09-27T02:16"
+    },
+    {
+      "quando": "2026-09-27T14:35"
+    },
+    {
+      "quando": "2026-09-28T02:51"
+    },
+    {
+      "quando": "2026-09-28T15:08"
+    },
+    {
+      "quando": "2026-09-29T03:28"
+    },
+    {
+      "quando": "2026-09-29T15:41"
+    },
+    {
+      "quando": "2026-09-30T04:08"
+    },
+    {
+      "quando": "2026-09-30T16:16"
+    }
+  ],
+  "baixamares": [
+    {
+      "quando": "2026-09-01T09:49"
+    },
+    {
+      "quando": "2026-09-01T20:54"
+    },
+    {
+      "quando": "2026-09-02T09:34"
+    },
+    {
+      "quando": "2026-09-02T21:20"
+    },
+    {
+      "quando": "2026-09-03T02:21"
+    },
+    {
+      "quando": "2026-09-03T09:31"
+    },
+    {
+      "quando": "2026-09-03T15:15"
+    },
+    {
+      "quando": "2026-09-03T21:47"
+    },
+    {
+      "quando": "2026-09-04T03:31"
+    },
+    {
+      "quando": "2026-09-04T09:35"
+    },
+    {
+      "quando": "2026-09-04T16:47"
+    },
+    {
+      "quando": "2026-09-04T22:17"
+    },
+    {
+      "quando": "2026-09-05T04:30"
+    },
+    {
+      "quando": "2026-09-05T17:51"
+    },
+    {
+      "quando": "2026-09-05T22:50"
+    },
+    {
+      "quando": "2026-09-06T05:24"
+    },
+    {
+      "quando": "2026-09-06T18:35"
+    },
+    {
+      "quando": "2026-09-06T23:41"
+    },
+    {
+      "quando": "2026-09-07T06:13"
+    },
+    {
+      "quando": "2026-09-07T19:08"
+    },
+    {
+      "quando": "2026-09-08T06:57"
+    },
+    {
+      "quando": "2026-09-08T19:34"
+    },
+    {
+      "quando": "2026-09-09T07:37"
+    },
+    {
+      "quando": "2026-09-09T19:51"
+    },
+    {
+      "quando": "2026-09-10T08:13"
+    },
+    {
+      "quando": "2026-09-10T19:48"
+    },
+    {
+      "quando": "2026-09-11T08:45"
+    },
+    {
+      "quando": "2026-09-11T19:03"
+    },
+    {
+      "quando": "2026-09-12T09:01"
+    },
+    {
+      "quando": "2026-09-12T19:19"
+    },
+    {
+      "quando": "2026-09-13T07:44"
+    },
+    {
+      "quando": "2026-09-13T19:49"
+    },
+    {
+      "quando": "2026-09-14T07:55"
+    },
+    {
+      "quando": "2026-09-14T20:24"
+    },
+    {
+      "quando": "2026-09-15T08:17"
+    },
+    {
+      "quando": "2026-09-15T13:15"
+    },
+    {
+      "quando": "2026-09-15T21:01"
+    },
+    {
+      "quando": "2026-09-16T08:40"
+    },
+    {
+      "quando": "2026-09-16T14:55"
+    },
+    {
+      "quando": "2026-09-16T21:42"
+    },
+    {
+      "quando": "2026-09-17T09:04"
+    },
+    {
+      "quando": "2026-09-17T16:15"
+    },
+    {
+      "quando": "2026-09-17T22:30"
+    },
+    {
+      "quando": "2026-09-18T09:27"
+    },
+    {
+      "quando": "2026-09-18T17:19"
+    },
+    {
+      "quando": "2026-09-19T02:55"
+    },
+    {
+      "quando": "2026-09-19T09:45"
+    },
+    {
+      "quando": "2026-09-19T18:01"
+    },
+    {
+      "quando": "2026-09-20T03:50"
+    },
+    {
+      "quando": "2026-09-20T09:34"
+    },
+    {
+      "quando": "2026-09-20T18:30"
+    },
+    {
+      "quando": "2026-09-21T04:38"
+    },
+    {
+      "quando": "2026-09-21T18:48"
+    },
+    {
+      "quando": "2026-09-22T05:22"
+    },
+    {
+      "quando": "2026-09-22T18:57"
+    },
+    {
+      "quando": "2026-09-23T06:04"
+    },
+    {
+      "quando": "2026-09-23T19:08"
+    },
+    {
+      "quando": "2026-09-24T06:44"
+    },
+    {
+      "quando": "2026-09-24T19:24"
+    },
+    {
+      "quando": "2026-09-25T07:23"
+    },
+    {
+      "quando": "2026-09-25T19:35"
+    },
+    {
+      "quando": "2026-09-26T08:00"
+    },
+    {
+      "quando": "2026-09-26T19:23"
+    },
+    {
+      "quando": "2026-09-27T08:35"
+    },
+    {
+      "quando": "2026-09-27T19:25"
+    },
+    {
+      "quando": "2026-09-28T09:04"
+    },
+    {
+      "quando": "2026-09-28T19:41"
+    },
+    {
+      "quando": "2026-09-29T09:02"
+    },
+    {
+      "quando": "2026-09-29T20:02"
+    },
+    {
+      "quando": "2026-09-30T08:45"
+    },
+    {
+      "quando": "2026-09-30T20:25"
+    }
+  ]
 }
