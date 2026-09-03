@@ -3,16 +3,19 @@ import { useNavigate } from 'react-router-dom'
 import { cidadesDoRio, mareItajai } from '../dados/carregar'
 import type { Cidade } from '../dados/tipos'
 import { useTempoReal } from '../dados/tempoReal'
+import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
-import { metros } from '../logica/formato'
+import { dataHora, metros } from '../logica/formato'
 import { projetar, type LonLat } from '../logica/mapaCanvas'
 import {
   construirCena,
   desenharBase,
   desenharCorrenteza,
+  desenharOnda,
   desenharPinos,
   type Cena,
+  type LeituraNaHora,
   type Pino,
   type RioParaCena,
 } from '../logica/mapaMotor'
@@ -140,6 +143,7 @@ export default function MonitorBacia() {
   const [sel, setSel] = useState<Pino | null>(null)
 
   const tempoReal = useTempoReal()
+  const serie = useSerieRecente()
   const agora = useMemo(() => new Date(), [tempoReal])
 
   useEffect(() => {
@@ -151,6 +155,48 @@ export default function MonitorBacia() {
     () => RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)),
     [],
   )
+
+  // Grade de instantes da REPRODUÇÃO (últimas ~24 h, passo de 30 min), a partir
+  // da série de nível de todas as cidades. Vazia = sem série publicada ainda.
+  const grade = useMemo(() => {
+    let min = Infinity
+    let max = -Infinity
+    for (const c of cidadesBacia) {
+      for (const r of RIOS_TRONCO) {
+        for (const p of serieDaCidade(serie, r, c.id)) {
+          const t = p.medidoEm.getTime()
+          if (t < min) min = t
+          if (t > max) max = t
+        }
+      }
+    }
+    if (!Number.isFinite(min)) return [] as number[]
+    const inicio = Math.max(min, max - 24 * 3_600_000)
+    const passos: number[] = []
+    for (let t = inicio; t < max; t += 30 * 60_000) passos.push(t)
+    passos.push(max)
+    return passos
+  }, [serie, cidadesBacia])
+
+  // Índice na grade quando em REPRODUÇÃO; null = AO VIVO (usa o ultimo.json).
+  const [idxRepro, setIdxRepro] = useState<number | null>(null)
+  const [tocando, setTocando] = useState(false)
+
+  // Avança a reprodução; ao chegar ao fim, volta AO VIVO.
+  useEffect(() => {
+    if (!tocando || grade.length === 0) return
+    const id = setInterval(() => {
+      setIdxRepro((x) => {
+        const prox = (x ?? 0) + 1
+        if (prox >= grade.length) {
+          setTocando(false)
+          return null // fim → ao vivo
+        }
+        return prox
+      })
+    }, 450)
+    return () => clearInterval(id)
+  }, [tocando, grade.length])
 
   // Baixa os traçados do tronco (obrigatórios) e dos afluentes (opcionais).
   useEffect(() => {
@@ -203,9 +249,22 @@ export default function MonitorBacia() {
     // bacia inteira sem virar formiguinha.
     const escala = Math.max(1, Math.min(1.7, tam.w / 820))
 
-    const cena = construirCena(canvas, rios, tempoReal, agora, tam.w, tam.h, mareItajai)
+    // AO VIVO (idxRepro null) usa o ultimo.json e o agora; na REPRODUÇÃO, cada
+    // cidade recebe a leitura da série ATÉ o instante escolhido (nunca a futura).
+    const emRepro = idxRepro !== null && grade.length > 0
+    const instante = emRepro ? new Date(grade[Math.min(idxRepro!, grade.length - 1)]!) : agora
+    const override: LeituraNaHora | undefined = emRepro
+      ? (rioId, cidadeId) => {
+          const p = leituraEm(serieDaCidade(serie, rioId, cidadeId), instante.getTime())
+          return p ? { nivel_m: p.nivel_m, medidoEm: p.medidoEm } : null
+        }
+      : undefined
+
+    const cena = construirCena(canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override)
     cenaRef.current = cena
-    chuvaRef.current = marcadoresChuva(cena, cidadesBacia, tempoReal.chuva)
+    // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
+    // num instante que não medimos).
+    chuvaRef.current = emRepro ? [] : marcadoresChuva(cena, cidadesBacia, tempoReal.chuva)
 
     const fundo = document.createElement('canvas')
     fundo.width = canvas.width
@@ -224,14 +283,20 @@ export default function MonitorBacia() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, cena.largura, cena.altura)
       ctx.drawImage(fundo, 0, 0, cena.largura, cena.altura)
-      desenharCorrenteza(ctx, cena, reduz ? 0 : (t - inicio) / 1000, escala)
+      const seg = reduz ? 0 : (t - inicio) / 1000
+      desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
+      desenharCorrenteza(ctx, cena, seg, escala)
       desenharChuva(ctx, chuvaRef.current, escala)
-      desenharPinos(ctx, cena, selRef.current, { escala, mostrarIdade: true, agora })
+      desenharPinos(ctx, cena, selRef.current, {
+        escala,
+        mostrarIdade: true,
+        agora: instante,
+      })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
     raf = requestAnimationFrame(quadro)
     return () => cancelAnimationFrame(raf)
-  }, [rios, tempoReal, agora, tam, cidadesBacia])
+  }, [rios, tempoReal, agora, tam, cidadesBacia, idxRepro, grade, serie])
 
   function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
     const cena = cenaRef.current
@@ -310,6 +375,43 @@ export default function MonitorBacia() {
         <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
           Tela cheia
         </button>
+
+        {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
+            aparece quando há série publicada. */}
+        {grade.length > 0 ? (
+          <div className={estilos.controles}>
+            <button
+              type="button"
+              className={estilos.botaoPlay}
+              onClick={() => {
+                if (tocando) {
+                  setTocando(false)
+                } else {
+                  setIdxRepro((x) => (x == null ? 0 : x)) // começa do início da janela
+                  setTocando(true)
+                }
+              }}
+            >
+              {tocando ? '⏸ Pausar' : '▶ Reproduzir 24 h'}
+            </button>
+            <input
+              className={estilos.barra}
+              type="range"
+              min={0}
+              max={grade.length - 1}
+              value={idxRepro ?? grade.length - 1}
+              onChange={(e) => {
+                setTocando(false)
+                const v = Number(e.target.value)
+                setIdxRepro(v >= grade.length - 1 ? null : v)
+              }}
+              aria-label="Instante da reprodução"
+            />
+            <span className={estilos.instante}>
+              {idxRepro == null ? 'ao vivo' : dataHora(new Date(grade[idxRepro]!))}
+            </span>
+          </div>
+        ) : null}
 
         {/* Cartão da cidade tocada. */}
         {sel ? (

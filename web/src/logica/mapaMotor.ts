@@ -76,6 +76,9 @@ export interface Trecho {
   faixa: Faixa
   cum: number[]
   total: number
+  /** Posição montante→jusante do trecho no rio, 0 (nascente) a 1 (foz). É o que
+   *  a onda usa para descer o rio até o mar. */
+  progMid: number
 }
 /** Uma cidade âncora, já projetada, para o pino e o toque. */
 export interface Pino {
@@ -162,6 +165,16 @@ function amostrar(
  * pinos de todos entram na mesma cena. O MAR ancora na foz (a cidade mais a
  * leste, pois o oceano fica a leste — Itajaí é o ponto de maior longitude).
  */
+/**
+ * Leitura de uma cidade num instante do passado, para a REPRODUÇÃO (playback):
+ * o nível medido ATÉ aquele instante, nunca o futuro. Quando presente, substitui
+ * a leitura ao vivo; ausente, o mapa usa o `tempoReal` (o agora).
+ */
+export type LeituraNaHora = (
+  rioId: string,
+  cidadeId: string,
+) => { nivel_m: number; medidoEm: Date | null } | null
+
 export function construirCena(
   el: Element,
   rios: RioParaCena[],
@@ -170,6 +183,7 @@ export function construirCena(
   largura: number,
   altura: number,
   mare: TabuaMare | null,
+  leituraNaHora?: LeituraNaHora,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -193,9 +207,14 @@ export function construirCena(
       .map((cidade) => {
         const coord = cidade.coordenadas!
         const alvo: LonLat = [coord[1], coord[0]] // [lon,lat] para casar com o rio
-        const aoVivo = leituraDaCidade(tempoReal, rio.rioId, cidade.id)
+        // Na reprodução, a leitura vem da série no instante t; ao vivo, do tempoReal.
+        const aoVivo = leituraNaHora
+          ? leituraNaHora(rio.rioId, cidade.id)
+          : leituraDaCidade(tempoReal, rio.rioId, cidade.id)
         const temVarias =
-          aoVivo === null && leiturasDaCidade(tempoReal, rio.rioId, cidade.id).length > 1
+          !leituraNaHora &&
+          aoVivo === null &&
+          leiturasDaCidade(tempoReal, rio.rioId, cidade.id).length > 1
         return {
           cidade,
           faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
@@ -222,20 +241,32 @@ export function construirCena(
       }
       const faixaAresta = (i: number): Faixa =>
         faixaEm([(seq[i - 1]![0] + seq[i]![0]) / 2, (seq[i - 1]![1] + seq[i]![1]) / 2])
+      // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
+      const progMax = cumEspinha[cumEspinha.length - 1] || 1
+      const progMidDe = (a: number, b: number): number => {
+        if (espinha.length < 2) return 0.5
+        const pa = progressoNaEspinha(espinha, cumEspinha, seq[a]!)
+        const pb = progressoNaEspinha(espinha, cumEspinha, seq[b]!)
+        return Math.max(0, Math.min(1, (pa + pb) / 2 / progMax))
+      }
       let pts: [number, number][] = [projetar(enq, seq[0]!)]
       let cur = faixaAresta(1)
+      let ini = 0
+      const empurra = (fim: number) => {
+        const { cum, total } = acumularPixels(pts)
+        trechos.push({ pts, faixa: cur, cum, total, progMid: progMidDe(ini, fim) })
+      }
       for (let i = 1; i < seq.length; i++) {
         pts.push(projetar(enq, seq[i]!))
         const prox = i + 1 < seq.length ? faixaAresta(i + 1) : null
         if (prox !== null && prox !== cur) {
-          const { cum, total } = acumularPixels(pts)
-          trechos.push({ pts, faixa: cur, cum, total })
+          empurra(i)
           pts = [projetar(enq, seq[i]!)]
           cur = prox
+          ini = i
         }
       }
-      const { cum, total } = acumularPixels(pts)
-      trechos.push({ pts, faixa: cur, cum, total })
+      empurra(seq.length - 1)
     }
 
     for (const a of ancoras) {
@@ -415,6 +446,41 @@ export function desenharCorrenteza(
         ctx.stroke()
       }
     }
+  }
+}
+
+/** Uma volta da onda (nascente → mar), em segundos. */
+const PERIODO_ONDA = 5.5
+/** Largura da crista, em fração do curso (0..1). */
+const SIGMA_ONDA = 0.09
+
+/**
+ * A ONDA descendo o rio até o mar: uma crista de luz (azul-água, NÃO a cor de
+ * faixa) que varre cada rio da nascente à foz e repete. É o "a água desce para o
+ * mar" que o mapa mostra por cima do leito colorido — direção e movimento, sem
+ * afirmar nível (a faixa continua sendo o sinal honesto; a onda é o fluxo ao
+ * mar). No trecho cinza a crista é mais fraca, para não competir com o dado.
+ */
+export function desenharOnda(
+  ctx: CanvasRenderingContext2D,
+  cena: Cena,
+  tempo: number,
+  escala = 1,
+): void {
+  const frente = ((tempo / PERIODO_ONDA) % 1 + 1) % 1
+  ctx.lineJoin = 'round'
+  ctx.lineCap = 'round'
+  for (const t of cena.trechos) {
+    if (t.pts.length < 2) continue
+    let d = t.progMid - frente
+    if (d > 0.5) d -= 1
+    else if (d < -0.5) d += 1
+    const alpha = Math.exp(-((d / SIGMA_ONDA) ** 2)) * (t.faixa === 'sem-dado' ? 0.32 : 0.62)
+    if (alpha < 0.03) continue
+    caminhoTrecho(ctx, t.pts)
+    ctx.strokeStyle = `rgba(150,220,255,${alpha.toFixed(3)})`
+    ctx.lineWidth = (t.faixa === 'sem-dado' ? 2 : 3) * escala
+    ctx.stroke()
   }
 }
 

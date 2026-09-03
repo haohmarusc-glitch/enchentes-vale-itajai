@@ -139,6 +139,51 @@
   font-family: inherit;
 }
 
+/* Barra de reprodução das últimas 24 h, centrada embaixo. */
+.controles {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(6, 16, 26, 0.82);
+  border: 1px solid rgba(180, 200, 220, 0.28);
+  border-radius: 0.6rem;
+  padding: 0.35rem 0.6rem;
+  max-width: min(34rem, 60vw);
+  width: max-content;
+}
+.botaoPlay {
+  flex: none;
+  background: rgba(28, 110, 164, 0.9);
+  color: #f2f8ff;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.botaoPlay:hover {
+  background: rgba(34, 128, 188, 1);
+}
+.barra {
+  flex: 1;
+  min-width: 8rem;
+  accent-color: #38aae2;
+}
+.instante {
+  flex: none;
+  color: #cdd8e4;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  min-width: 5.5rem;
+  text-align: right;
+}
+
 .foraDaVista {
   position: absolute;
   width: 1px;

@@ -8,6 +8,7 @@ import {
   construirCena,
   desenharBase,
   desenharCorrenteza,
+  desenharOnda,
   desenharPinos,
   MARGEM,
   type Cena,
@@ -160,7 +161,9 @@ export default function MapaRios({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, cena.largura, cena.altura)
       ctx.drawImage(fundo, 0, 0, cena.largura, cena.altura)
-      desenharCorrenteza(ctx, cena, reduz ? 0 : (t - inicio) / 1000)
+      const seg = reduz ? 0 : (t - inicio) / 1000
+      desenharOnda(ctx, cena, seg) // a onda descendo até o mar
+      desenharCorrenteza(ctx, cena, seg)
       desenharPinos(ctx, cena, selRef.current)
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
