@@ -184,13 +184,15 @@
   text-align: right;
 }
 
-/* Painel de dados da cidade em foco — canto superior direito, sob o chip da maré. */
+/* Painel de dados da cidade em foco — canto INFERIOR esquerdo (fica no lugar da
+   legenda, que recolhe enquanto o painel está aberto). Antes ficava em cima da
+   foz (Itajaí) e tapava o clique no ponto. */
 .painel {
   position: absolute;
-  top: 2.6rem;
-  right: 0.5rem;
-  width: min(17rem, 46vw);
-  max-height: calc(100% - 4rem);
+  bottom: 0.5rem;
+  left: 0.5rem;
+  width: min(17rem, 60vw);
+  max-height: calc(100% - 1.5rem);
   overflow-y: auto;
   background: rgba(8, 18, 30, 0.92);
   border: 1px solid rgba(180, 200, 220, 0.3);
