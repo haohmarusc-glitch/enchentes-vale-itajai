@@ -80,9 +80,10 @@ def carrega_grafo(rio: str):
     # conecta); costurar só pontas soltas evita criar atalho falso no meio.
     soltas = [k for k, viz in grafo.items() if len(viz) == 1]
     for a in soltas:
+        vizinhos_a = {v for v, _ in grafo[a]}  # invariante no laço interno
         melhor, dist = None, PONTA_MAX_KM
         for b in soltas:
-            if b == a or b in {v for v, _ in grafo[a]}:
+            if b == a or b in vizinhos_a:
                 continue
             d = _hav(pos[a], pos[b])
             if d < dist:
@@ -127,7 +128,8 @@ def km_rio_entre(grafo, pos, a: tuple, b: tuple) -> tuple[float | None, float, f
     return dijkstra(grafo, na, nb), da, db
 
 
-def coords_das_cidades(rio: str) -> dict[str, tuple[float, float]]:
+def coords_das_cidades(rio: str) -> tuple[dict[str, tuple[float, float]], dict | None]:
+    """(coordenadas (lon, lat) por cidade, _topologia do rio)."""
     d = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
     saida = {}
     for c in d["rios"][rio]["cidades"]:

@@ -81,8 +81,10 @@ export default function AbrigoMaisProximo() {
           <p className={estilos.status}>Nenhum abrigo cadastrado com nome foi encontrado.</p>
         ) : (
           <ol className={estilos.lista}>
-            {estado.perto.map(({ abrigo, distanciaKm }) => (
-              <li key={`${abrigo.lat},${abrigo.lon}`} className={estilos.item}>
+            {estado.perto.map(({ abrigo, distanciaKm }, i) => (
+              // Índice no fim garante chave única mesmo se dois abrigos da fonte
+              // caírem na mesma coordenada (a lista é curta e recomputada inteira).
+              <li key={`${abrigo.lat},${abrigo.lon}#${i}`} className={estilos.item}>
                 <span className={estilos.nome}>{abrigo.nome}</span>
                 <span className={estilos.dist}>a {distancia(distanciaKm)} em linha reta</span>
                 {abrigo.endereco ? <span className={estilos.endereco}>{abrigo.endereco}</span> : null}

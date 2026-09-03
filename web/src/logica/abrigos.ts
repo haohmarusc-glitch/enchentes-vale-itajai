@@ -34,6 +34,9 @@ export interface AbrigoProximo {
  * Os `n` abrigos NOMEADOS mais próximos de um ponto, do mais perto ao mais
  * longe. Ignora registros sem nome ou sem coordenada finita.
  */
+/** Abrigo com coordenada finita — o `filter` abaixo estreita o tipo para cá. */
+type AbrigoLocalizado = Abrigo & { lat: number; lon: number }
+
 export function maisProximos(
   abrigos: Abrigo[],
   lat: number,
@@ -42,10 +45,8 @@ export function maisProximos(
 ): AbrigoProximo[] {
   return abrigos
     .filter(
-      (a) =>
-        !!a.nome &&
-        Number.isFinite(a.lat) &&
-        Number.isFinite(a.lon),
+      (a): a is AbrigoLocalizado =>
+        !!a.nome && Number.isFinite(a.lat) && Number.isFinite(a.lon),
     )
     .map((abrigo) => ({ abrigo, distanciaKm: distanciaKm([lat, lon], [abrigo.lat, abrigo.lon]) }))
     .sort((x, y) => x.distanciaKm - y.distanciaKm)

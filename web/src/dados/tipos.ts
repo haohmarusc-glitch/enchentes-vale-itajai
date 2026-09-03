@@ -276,8 +276,10 @@ export interface Abrigo {
   endereco: string | null
   zona_defesa_civil: string | null
   capacidade: number | null
-  lat: number
-  lon: number
+  /** Pode vir nulo: a fonte tem 1 registro sem geometria. Quem consome filtra
+   *  por `Number.isFinite` antes de usar (ver logica/abrigos.ts). */
+  lat: number | null
+  lon: number | null
 }
 
 export interface AbrigosItajai {
