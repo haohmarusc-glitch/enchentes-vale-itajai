@@ -12,6 +12,7 @@ import {
 import type { Cidade, Confianca, Evento } from '../dados/tipos'
 import { comparaData, dataCurta, dataLegivel } from '../logica/datas'
 import { legendaDaEscala, misturaReferencias as misturaDeReferencias } from '../logica/referencias'
+import { avisoDeEncosta } from '../logica/encosta'
 import { metros, numero, rotuloCota } from '../logica/formato'
 import estilos from './GraficoPicos.module.css'
 
@@ -65,6 +66,13 @@ export default function GraficoPicos({
   // não estão todos na mesma escala.
   const misturaReferencias = misturaDeReferencias(dados.map((d) => d.referencia))
   const legendaEscala = legendaDaEscala(nomeCidade, cidade?.regua, dados.map((d) => d.referencia))
+
+  // O gráfico ordena por metro de rio, e há um contraexemplo enorme no Vale:
+  // novembro de 2008 é a 32ª maior cota de Blumenau e foi o evento mais letal
+  // da região, porque o que matou foi encosta, não régua. Sem este aviso, a
+  // altura da barra diz "evento médio" — a conclusão exata que este projeto
+  // existe para não deixar acontecer.
+  const encosta = avisoDeEncosta(dados)
 
   if (dados.length === 0) {
     return (
@@ -129,6 +137,22 @@ export default function GraficoPicos({
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+      {encosta ? (
+        <p className={estilos.encosta} role="note">
+          <strong>⚠️ A régua mede o rio, não a encosta.</strong> {encosta.geral}
+          {encosta.exemplo ? (
+            <>
+              {' '}
+              Aqui mesmo: <strong>{dataLegivel(encosta.exemplo.data)}</strong> aparece com{' '}
+              {metros(encosta.exemplo.pico)}, em {encosta.exemplo.posicao}º lugar nesta lista, com{' '}
+              {encosta.exemplo.acima}{' '}
+              {encosta.exemplo.acima === 1 ? 'enchente mais alta' : 'enchentes mais altas'} acima —
+              e é dele que a fonte diz que as mortes vieram sobretudo dos deslizamentos.
+            </>
+          ) : null}
+        </p>
+      ) : null}
 
       <ul className={estilos.legendaCores}>
         <li>

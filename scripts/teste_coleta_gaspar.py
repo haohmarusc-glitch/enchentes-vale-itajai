@@ -282,3 +282,77 @@ class TestRobots(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+#: Cabeçalho com as janelas curtas, que o INDICES enxuto acima não tem.
+INDICES_CHUVA = {"estacao": 0, "fonte": 1, "coleta": 2, "nivel": 3,
+                 "chuva_atual": 4, "chuva_1h": 5, "chuva_6h": 6, "chuva_24h": 7}
+
+
+class TestCoerenciaDaChuva(unittest.TestCase):
+    """
+    Janela curta não pode ter mais chuva que a longa que a contém.
+
+    É a mesma regra do coletor de Itajaí, reusada — e não recopiada — porque
+    regra duplicada é regra que diverge, e é sempre a cópia esquecida que passa
+    a aceitar lixo.
+
+    O que está em jogo: a atenção de Gaspar dispara com chuva acima de 6 mm.
+    Um campo que marca 108 mm com a última hora em zero acionaria isso todo dia.
+    Alarme falso ensina a pessoa a desligar o aviso — justamente antes da noite
+    em que ele importaria.
+    """
+
+    def test_leitura_coerente_passa_sem_marca(self):
+        item = ler_linha(["PLU - ARRAIAL D' OURO", "CEMADEN", "31/08 23:29", "-",
+                          "0,00", "0,39", "28,30", "91,77"], INDICES_CHUVA)
+        self.assertTrue(item["chuva_coerente"])
+        self.assertIsNone(item["chuva_incoerencias"])
+
+    def test_chuva_atual_maior_que_a_ultima_hora_e_marcada(self):
+        # Se 42 mm tivessem caído agora, a última hora não poderia marcar zero.
+        item = ler_linha(["PLU LOC. - SERTÃO VERDE", "DC. GASPAR", "31/08 17:12", "-",
+                          "42,00", "0,00", "0,00", "104,00"], INDICES_CHUVA)
+        self.assertFalse(item["chuva_coerente"])
+        self.assertIn("chuva_atual=42 mm > chuva_1h=0 mm", item["chuva_incoerencias"])
+
+    def test_o_dado_incoerente_nao_e_apagado(self):
+        # Marcar não é censurar: quem lê a tabela crua continua vendo o que a
+        # fonte publicou, e quem for USAR a chuva é que decide o que fazer.
+        item = ler_linha(["PLU. - ALTO GASPARINHO", "DC. GASPAR", "31/08 13:50", "-",
+                          "108,00", "0,00", "0,00", "108,00"], INDICES_CHUVA)
+        self.assertEqual(item["chuva_mm"]["chuva_atual"], 108.0)
+        self.assertFalse(item["chuva_coerente"])
+
+    def test_janela_ausente_nao_conta_como_zero(self):
+        # Ausência de dado não é chuva zero: comparar contra um buraco
+        # inventaria incoerência onde só falta medição.
+        item = ler_linha(["PLU", "Cemaden", "31/08 23:29", "-",
+                          "0,00", "-", "-", "82,29"], INDICES_CHUVA)
+        self.assertTrue(item["chuva_coerente"])
+
+    def test_linha_so_de_nivel_nao_opina_sobre_chuva(self):
+        item = ler_linha(["Rio Itajaí Açu Gaspar", "DC. Gaspar", "31/08 22:59", "3,85",
+                          "70,00"], INDICES)
+        self.assertEqual(item["nivel_m"], 3.85)
+        # Tem chuva_24h, então opina; o que não pode é inventar veredito sem
+        # nenhuma janela.
+        self.assertIsNotNone(item["chuva_coerente"])
+
+    def test_a_pagina_real_marca_exatamente_as_tres_conhecidas(self):
+        """
+        Trava o achado contra a página salva: três pluviômetros da DC. GASPAR
+        publicam `chuva atual` de 42, 100 e 108 mm com a última hora em zero.
+        Se a fonte se corrigir, este teste cai e a descoberta é revisitada — que
+        é o ponto de travar num arquivo real e não num exemplo inventado.
+        """
+        if not PAGINA_REAL.exists():
+            self.skipTest("página real de Gaspar não está neste checkout")
+        d = analisar(PAGINA_REAL.read_text(encoding="utf-8", errors="replace"))
+        ruins = sorted(e["rotulo"] for e in d["estacoes"] if e["chuva_coerente"] is False)
+        self.assertEqual(len(ruins), 3, f"esperava 3 incoerentes, achei {ruins}")
+        # A régua oficial do rio — a que a legenda do /estacao/ver/21 descreve —
+        # tem de estar entre as COERENTES: é nela que um gatilho por chuva se
+        # apoiaria.
+        regua = next(e for e in d["estacoes"] if e["rotulo"] == "Rio Itajaí Açu Gaspar")
+        self.assertTrue(regua["chuva_coerente"])
