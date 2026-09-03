@@ -9,7 +9,10 @@ import estacoesJson from '@dados/estacoes.json'
 import enchentesJson from '@dados/enchentes.json'
 import transitoJson from '@dados/transito.json'
 import mareJson from '@dados/mare-itajai.json'
+import abrigosJson from '@dados/abrigos-itajai.json'
 import type {
+  Abrigo,
+  AbrigosItajai,
   AfluenteMonitorado,
   Cidade,
   Confianca,
@@ -181,6 +184,14 @@ export const afluentesMonitorados: AfluenteMonitorado[] = estacoes.afluentes_mon
  * (Ilhota). Ver `logica/reguas.ts` para o porquê de não escolher uma delas.
  */
 export const estacoesTempoReal: EstacaoTempoReal[] = estacoes.estacoes_tempo_real ?? []
+
+/**
+ * Abrigos oficiais de Itajaí (com coordenada) e o aviso de exibição da fonte.
+ * É cadastro, não estado atual — o aviso tem de aparecer junto na tela.
+ */
+const abrigos = abrigosJson as unknown as AbrigosItajai
+export const abrigosItajai: Abrigo[] = abrigos.abrigos ?? []
+export const avisoAbrigos: string = abrigos._meta?.AVISO_EXIBICAO ?? ''
 
 const RE_QUANDO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/
 

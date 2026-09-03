@@ -93,8 +93,10 @@ fica vermelho. Rode `python3 scripts/validar_dados.py` antes de todo commit em
 ## Pendências (não bloqueiam a topologia)
 
 - **Ponto exato** onde o Benedito e o Luís Alves entram (antes/depois das réguas
-  de Indaial e Ilhota) — registrado em `_topologia.afluentes_rios` como "a
-  confirmar por coordenada"; depende do Overpass/mapa (fora do ar em 02/09).
+  de Indaial e Ilhota) — `scripts/achar_confluencias.py` resolve por geometria
+  (grafo do tronco + Dijkstra), sem Overpass; falta rodar **na VPS**, onde estão
+  os GeoJSON dos afluentes (não no repo). Até lá, `_topologia.afluentes_rios`
+  fica "a confirmar por coordenada".
 - Distância **ao longo do rio** no `transito.json` — **medida** (02/09/2026) por
   `scripts/medir_distancia_rio.py`, montando os segmentos do OSM num grafo e
   caminhando pela água. Gravada como `km_rio` (contexto/QA, **não** muda os

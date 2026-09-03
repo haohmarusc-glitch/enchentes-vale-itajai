@@ -262,3 +262,25 @@ export interface CotasRuas {
   _meta: { descricao: string; aviso: string[]; campos: Record<string, string> }
   cotas: CotaRua[]
 }
+
+/**
+ * Abrigo oficial da Defesa Civil de Itajaí, com coordenada.
+ *
+ * É CADASTRO, não estado atual: `situacao` e `lotacao` existem na fonte e foram
+ * DELIBERADAMENTE deixados de fora do arquivo, para nunca serem lidos como
+ * "aberto agora" numa tela de enchente. Quem ativa abrigo e manda evacuar é a
+ * Defesa Civil. `nome`/`endereco` podem ser nulos num registro sem dado na fonte.
+ */
+export interface Abrigo {
+  nome: string | null
+  endereco: string | null
+  zona_defesa_civil: string | null
+  capacidade: number | null
+  lat: number
+  lon: number
+}
+
+export interface AbrigosItajai {
+  _meta: { AVISO_EXIBICAO: string; total: number } & Record<string, unknown>
+  abrigos: Abrigo[]
+}

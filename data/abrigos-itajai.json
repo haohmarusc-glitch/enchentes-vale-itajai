@@ -1,0 +1,375 @@
+{
+ "_meta": {
+  "origem": "ArcGIS da Prefeitura de Itajaí — Hosted/Abrigos_Defesa_Civil_view_completo (FeatureServer, público sem token)",
+  "url": "https://arcgis.itajai.sc.gov.br/server/rest/services/Hosted/Abrigos_Defesa_Civil_view_completo/FeatureServer/0/query",
+  "coletado_em": "2026-09-03T00:08:54+00:00",
+  "total": 45,
+  "com_coordenada": 45,
+  "AVISO_EXIBICAO": "Esta lista é CADASTRO de abrigos, NÃO estado atual. NUNCA exibir como 'aberto agora' nem sugerir que o morador se dirija a um deles por conta própria. Quem ATIVA abrigo e manda evacuar é a Defesa Civil (199). O site pode mostrar 'abrigo cadastrado mais próximo' como INFORMAÇÃO, com essa ressalva.",
+  "campos_descartados": "situacao e lotacao existem na fonte mas NÃO foram importados — seriam lidos como estado atual.",
+  "qualidade": "1 registro sem nome/endereço na fonte (só coordenada). 14 sem zona de Defesa Civil. Capacidade de 1 a 290.",
+  "atualizar_com": "scripts/coleta_abrigos_itajai.py (usar f=json; f=geojson dá HTTP 500 neste serviço)"
+ },
+ "abrigos": [
+  {
+   "nome": "E.B. Prof. Maria José Hulse Peixoto",
+   "endereco": "Rua Lídia Poel Peixer, nº 555 - Murta",
+   "zona_defesa_civil": "Z2-2",
+   "capacidade": 119,
+   "lat": -26.878544,
+   "lon": -48.700535
+  },
+  {
+   "nome": "E. B José Fernandes Potter",
+   "endereco": "Rua Fermino Vieira Cordeiro, 129 - Espinheiros",
+   "zona_defesa_civil": "Z1-3",
+   "capacidade": 72,
+   "lat": -26.896744,
+   "lon": -48.7204
+  },
+  {
+   "nome": "Associação Lar Padre Jaco",
+   "endereco": "Rua José Cupertino Chaves, nº 186 - Fazenda",
+   "zona_defesa_civil": "Z10-6",
+   "capacidade": 1,
+   "lat": -26.921972,
+   "lon": -48.655731
+  },
+  {
+   "nome": "C.E. de Cordeiros",
+   "endereco": "Avenida Reinaldo Schmithausen, nº1966 - Cordeiros",
+   "zona_defesa_civil": "Z3-2",
+   "capacidade": 206,
+   "lat": -26.887395,
+   "lon": -48.701276
+  },
+  {
+   "nome": "Salão Paroquial da Igreja do São Cristovão",
+   "endereco": "Rua Odílio Garcia, nº 445 - Cordeiros. Murta",
+   "zona_defesa_civil": "Z3-1",
+   "capacidade": 290,
+   "lat": -26.887917,
+   "lon": -48.693662
+  },
+  {
+   "nome": "Salão Paroquial da Igreja São Vicente de Paula",
+   "endereco": "Rua Estefano José Vanolli, nº 1029 - São Vicente",
+   "zona_defesa_civil": "Z4-1",
+   "capacidade": 238,
+   "lat": -26.903213,
+   "lon": -48.688691
+  },
+  {
+   "nome": "Centro Comunitário da Igreja Santo Antônio",
+   "endereco": "Rua Fermino Vieira cordeiro, 915 - Espinheiros",
+   "zona_defesa_civil": "Z1-1",
+   "capacidade": 28,
+   "lat": -27.03136,
+   "lon": -48.801467
+  },
+  {
+   "nome": "Ginásio Ivo Silveira",
+   "endereco": "Rodovia Osvaldo Reis, nº 800 - Fazenda",
+   "zona_defesa_civil": "Z10-4",
+   "capacidade": 100,
+   "lat": -26.929456,
+   "lon": -48.645579
+  },
+  {
+   "nome": "E.B. Pedro Paulo Rebello",
+   "endereco": "Rua Eudoro Silveira, nº 750 - São Vicente",
+   "zona_defesa_civil": "Z4-9",
+   "capacidade": 91,
+   "lat": -26.911678,
+   "lon": -48.698102
+  },
+  {
+   "nome": "Centro Comunitário da Igreja Nossa Senhora de Aparecida",
+   "endereco": "Avenida Ministro Luiz Galotti, nº 1692 – Cidade Nova",
+   "zona_defesa_civil": "Z1-2",
+   "capacidade": 18,
+   "lat": -26.996418,
+   "lon": -48.769415
+  },
+  {
+   "nome": "Clube Tiradentes",
+   "endereco": "Rua José Pereira Liberato, nº 437 – São João",
+   "zona_defesa_civil": "Z7-9",
+   "capacidade": 220,
+   "lat": -26.895038,
+   "lon": -48.68176
+  },
+  {
+   "nome": "E.M. Rosa Negreiros Cabral",
+   "endereco": "Rua Bruno Vicente da Luz, 5526 - Volta de Cima",
+   "zona_defesa_civil": "Z1-8",
+   "capacidade": 28,
+   "lat": -26.857876,
+   "lon": -48.742981
+  },
+  {
+   "nome": "Parque Dom Bosco",
+   "endereco": "Rua Brusque, nº 1333 – Dom Bosco",
+   "zona_defesa_civil": "Z6-1",
+   "capacidade": 241,
+   "lat": -26.919203,
+   "lon": -48.671593
+  },
+  {
+   "nome": "E.B. Prof. Edy Vieira W. Rothbarth",
+   "endereco": "BR 101, Km 115 - Salseiros",
+   "zona_defesa_civil": "Z1-4",
+   "capacidade": 77,
+   "lat": -26.869633,
+   "lon": -48.731024
+  },
+  {
+   "nome": "E.B. Melvin Jones",
+   "endereco": "Rua Sebastião Romeu Soares, nº640 - Cordeiros",
+   "zona_defesa_civil": "Z3-6",
+   "capacidade": 128,
+   "lat": -26.883408,
+   "lon": -48.7011
+  },
+  {
+   "nome": "Salão Paroquial da Igreja São Pedro",
+   "endereco": "Avenida Itaipava, nº 2229 – Itaipava.",
+   "zona_defesa_civil": "Z9-3",
+   "capacidade": 130,
+   "lat": -26.941758,
+   "lon": -48.72212
+  },
+  {
+   "nome": "C.E. Pedro Rizzi",
+   "endereco": "Rua Agílio Cunha, 812 – Cidade Nova",
+   "zona_defesa_civil": "Z5-3",
+   "capacidade": 105,
+   "lat": -26.922903,
+   "lon": -48.694139
+  },
+  {
+   "nome": "G.E. Guilhermina Buchele Muller",
+   "endereco": "Rua Abraão Bernardino Rocha, nº 150 - Fazenda",
+   "zona_defesa_civil": "Z10-11",
+   "capacidade": 110,
+   "lat": -26.925889,
+   "lon": -48.651965
+  },
+  {
+   "nome": "E.B. Gaspar da Costa Moraes",
+   "endereco": "Rodovia Oswaldo Reis, nº 54 - Fazenda",
+   "zona_defesa_civil": "Z10-8",
+   "capacidade": 91,
+   "lat": -26.924919,
+   "lon": -48.650042
+  },
+  {
+   "nome": "Salão Paroquial da Igreja Nossa Sra. de Lurdes",
+   "endereco": "Rua Amaro Jaques, nº 85 - Fazenda",
+   "zona_defesa_civil": "Z10-5",
+   "capacidade": 100,
+   "lat": -26.924471,
+   "lon": -48.651874
+  },
+  {
+   "nome": "Salão Paroquial da Igreja do São Judas",
+   "endereco": "Rua Indaial, s/nº – São Judas.",
+   "zona_defesa_civil": "Z6-2",
+   "capacidade": 120,
+   "lat": -26.912929,
+   "lon": -48.676947
+  },
+  {
+   "nome": "E.B. João Duarte",
+   "endereco": "Rua Ernesto Kobarg, nº 372 – São João.",
+   "zona_defesa_civil": "Z7-15",
+   "capacidade": 127,
+   "lat": -26.898739,
+   "lon": -48.680025
+  },
+  {
+   "nome": "Igreja Sede - Assembleia de Deus",
+   "endereco": "Rua Capitão Adolfo Germano de Andrade, nº 123 - Centro",
+   "zona_defesa_civil": "Z7-3",
+   "capacidade": 124,
+   "lat": -26.903575,
+   "lon": -48.666851
+  },
+  {
+   "nome": "Ginásio do Colégio Salesiano",
+   "endereco": "Rua Felipe Schmidt, nº 87 - Centro.",
+   "zona_defesa_civil": "Z7-13",
+   "capacidade": 220,
+   "lat": -26.907048,
+   "lon": -48.658053
+  },
+  {
+   "nome": "Ginásio do Colégio Fayal",
+   "endereco": "Rua Alfredo Trompowski, 153 – Vila Operária",
+   "zona_defesa_civil": "Z7-12",
+   "capacidade": 200,
+   "lat": -26.909303,
+   "lon": -48.668324
+  },
+  {
+   "nome": "Clube Náutico Almirante Barroso",
+   "endereco": "Rua Almirante Barroso, nº 280 - Centro",
+   "zona_defesa_civil": "Z7-2",
+   "capacidade": 100,
+   "lat": -26.907448,
+   "lon": -48.665855
+  },
+  {
+   "nome": "E.E.B Ary Mascarenhas Passos",
+   "endereco": "Rua Joaçaba, nº 123 - São Vicente / Rio Bonito",
+   "zona_defesa_civil": null,
+   "capacidade": 84,
+   "lat": -26.905973,
+   "lon": -48.701745
+  },
+  {
+   "nome": "E. E. B. Elfrida Cristino da Silva",
+   "endereco": "Av. Gov. Adolfo Konder, s/n.",
+   "zona_defesa_civil": null,
+   "capacidade": 230,
+   "lat": -26.914025,
+   "lon": -48.696449
+  },
+  {
+   "nome": "Salão Paroquial Nossa Senhora de Fátima",
+   "endereco": "Rua Agílio Cunha, nº 445 - Cidade Nova",
+   "zona_defesa_civil": null,
+   "capacidade": 137,
+   "lat": -26.917466,
+   "lon": -48.693443
+  },
+  {
+   "nome": "E.I. Duque de Caxias",
+   "endereco": "Rua Vergílio Cadore, s/nº Campeche",
+   "zona_defesa_civil": "Z9-10",
+   "capacidade": 18,
+   "lat": -27.005854,
+   "lon": -48.837598
+  },
+  {
+   "nome": "Salão Paroquial da Igreja São José",
+   "endereco": "Rua Vergílio Cadore, s/nº Campeche",
+   "zona_defesa_civil": null,
+   "capacidade": 160,
+   "lat": -26.977078,
+   "lon": -48.817647
+  },
+  {
+   "nome": "Salão Paroquial da Igreja do São Roque",
+   "endereco": "Rod. Antonio Heil s/n",
+   "zona_defesa_civil": null,
+   "capacidade": 70,
+   "lat": -26.979089,
+   "lon": -48.797752
+  },
+  {
+   "nome": "Ginásio de Esportes João Sedrez (FEMEL)",
+   "endereco": "Parque do Agricultor Gilmar Graf - BAIA",
+   "zona_defesa_civil": null,
+   "capacidade": 70,
+   "lat": -26.967023,
+   "lon": -48.750128
+  },
+  {
+   "nome": "E.E.B. Monsenhor Vendelino Hobold",
+   "endereco": "Rua Alexandre Moser, nº S/N – Itaipava",
+   "zona_defesa_civil": null,
+   "capacidade": 230,
+   "lat": -26.947799,
+   "lon": -48.733712
+  },
+  {
+   "nome": "E.E.B Raul Bayer Laus",
+   "endereco": "Rua Maria Marques Rampelotti, 150 - Santa Regina",
+   "zona_defesa_civil": null,
+   "capacidade": 264,
+   "lat": -26.870408,
+   "lon": -48.747282
+  },
+  {
+   "nome": "E. B.Henrique Midon",
+   "endereco": "Rua José Pereira Liberato, nº 193 – São João",
+   "zona_defesa_civil": null,
+   "capacidade": 184,
+   "lat": -26.893046,
+   "lon": -48.681639
+  },
+  {
+   "nome": "Salão Paroq. Igreja Nossa Senhora Do Carmo",
+   "endereco": "Rua Serafim Gamba, s/n. Brilhante II",
+   "zona_defesa_civil": null,
+   "capacidade": 130,
+   "lat": -26.964535,
+   "lon": -48.761382
+  },
+  {
+   "nome": "E.E.B.Nilton Kucker",
+   "endereco": "Rua Alfredo Trompowski, nº 506 - Vila Operári",
+   "zona_defesa_civil": null,
+   "capacidade": 268,
+   "lat": -26.907173,
+   "lon": -48.671566
+  },
+  {
+   "nome": "Salão Paroquial da Igreja do São João Batista",
+   "endereco": "Rua Dr. Pedro Rangel, nº 154 – São João.",
+   "zona_defesa_civil": "Z7-6",
+   "capacidade": 192,
+   "lat": -26.900355,
+   "lon": -48.679295
+  },
+  {
+   "nome": "EB Professora Maria Rosa Heleno Schulte",
+   "endereco": "Rua Fermino Vieira Cordeiro 2165 (Espinheiros)",
+   "zona_defesa_civil": null,
+   "capacidade": 130,
+   "lat": -26.897626,
+   "lon": -48.739055
+  },
+  {
+   "nome": "Ginásio Colégio São Jose",
+   "endereco": "Rua Silva nº 365 - Centro",
+   "zona_defesa_civil": null,
+   "capacidade": 110,
+   "lat": -26.903381,
+   "lon": -48.661701
+  },
+  {
+   "nome": "CEMESPI",
+   "endereco": "Rua José Pereira Liberato, nº 1398 – São João",
+   "zona_defesa_civil": "Z7-16",
+   "capacidade": 124,
+   "lat": -26.907181,
+   "lon": -48.670954
+  },
+  {
+   "nome": "E.B. João Paulo II",
+   "endereco": "Rua Luiz José Medeiros, nº 259 - Cordeiros",
+   "zona_defesa_civil": "Z3-5",
+   "capacidade": 170,
+   "lat": -26.900649,
+   "lon": -48.704697
+  },
+  {
+   "nome": null,
+   "endereco": null,
+   "zona_defesa_civil": null,
+   "capacidade": null,
+   "lat": -26.887753,
+   "lon": -48.693708
+  },
+  {
+   "nome": "Ginásio Gabriel Colares",
+   "endereco": "Rua Alberto Werner, 44",
+   "zona_defesa_civil": "Z7-4",
+   "capacidade": 120,
+   "lat": -26.903081,
+   "lon": -48.669136
+  }
+ ]
+}
