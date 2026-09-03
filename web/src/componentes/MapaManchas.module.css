@@ -4,6 +4,48 @@
   width: 100%; box-sizing: border-box; padding: 0.55rem 0.6rem;
   font-size: 0.95rem; border: 1px solid #b9c8da; border-radius: 6px; background: #fff;
 }
+/* Escolha do fundo. Fica ACIMA do mapa, não flutuando sobre ele: num celular
+   de 320 px um seletor sobreposto cobre justamente o canto onde a mancha
+   costuma estar, e ainda disputa o toque com o arrasto do mapa. */
+.fundos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.botaoFundo {
+  flex: 1 1 auto;
+  /* 44 px é o alvo de toque mínimo — dedo molhado, celular na chuva. */
+  min-height: 44px;
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #24425f;
+  background: #fff;
+  border: 1px solid #b9c8da;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.botaoFundo:hover { background: #eef4fa; }
+
+/* Foco visível de verdade: contorno próprio, não o outline que alguns resets
+   apagam. Quem navega por teclado precisa ver onde está. */
+.botaoFundo:focus-visible {
+  outline: 2px solid #1f5f96;
+  outline-offset: 2px;
+}
+
+/* O estado ativo é o `aria-pressed` do próprio botão — assim o que o leitor de
+   tela anuncia e o que a tela mostra vêm da MESMA fonte, e não há como um
+   mudar sem o outro. */
+.botaoFundo[aria-pressed='true'] {
+  background: #1f5f96;
+  border-color: #1f5f96;
+  color: #fff;
+  font-weight: 600;
+}
+
 /* Altura fixa para o mapa não colapsar antes de o Leaflet medir o contêiner. */
 .mapa { height: 340px; margin-top: 0.8rem; border-radius: 8px; border: 1px solid #cfe0f2; }
 .estado { margin: 0.5rem 0 0; color: #5c6b7f; font-size: 0.88rem; }
