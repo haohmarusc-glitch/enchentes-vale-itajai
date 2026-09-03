@@ -563,10 +563,92 @@ def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
             )
 
 
+def _janela_ate(trechos: list[dict], rio_id: str, de: str, para: str) -> tuple[float, float] | None:
+    """
+    Soma da menor cadeia de trechos de `de` até `para` — a mesma busca do site.
+
+    Precisa ser a MESMA regra do `caminho()` de web/src/logica/transito.ts (direto
+    quando existe, senão busca em largura): validar um percurso que a tela não usa
+    aprovaria um dado que a tela mostra errado.
+    """
+    doRio = [t for t in trechos if t["rio"] == rio_id]
+    direto = next((t for t in doRio if t["de"] == de and t["para"] == para), None)
+    if direto:
+        return (direto["horas_min"], direto["horas_max"])
+    fila: list[tuple[str, list[dict]]] = [(de, [])]
+    visto = {de}
+    while fila:
+        atual, rota = fila.pop(0)
+        for t in doRio:
+            if t["de"] != atual or t["para"] in visto:
+                continue
+            nova = rota + [t]
+            if t["para"] == para:
+                return (sum(x["horas_min"] for x in nova), sum(x["horas_max"] for x in nova))
+            visto.add(t["para"])
+            fila.append((t["para"], nova))
+    return None
+
+
+def valida_monotonia_transito() -> None:
+    """
+    A janela de chegada não pode contradizer a ordem do rio.
+
+    IMPOSSÍVEL (erro) é `min_montante > max_jusante`: não existe atribuição de
+    tempos que satisfaça as duas janelas, então uma das fontes está errada e a
+    tela afirmaria uma física que o próprio dado refuta.
+
+    SOBREPOSIÇÃO (aviso) é a janela de baixo COMEÇAR antes da de cima sem que
+    isso seja impossível. Acontece porque um trecho vem do ponto de uma fonte e
+    o outro da faixa de outra — no Açu, `rio-do-sul->indaial` é o ponto do
+    hidrograma de projeto (Indaial +10) e `rio-do-sul->blumenau` é a faixa que o
+    texto do estudo afirma (7–10 h). Não é contradição: o hidrograma põe as duas
+    cidades na MESMA hora, e 10 ≤ 10. Vira aviso, não erro — tratar sobreposição
+    como defeito empurraria alguém a "consertar" trocando valor de fonte por
+    interpolação, que é perder dado, não ganhar precisão.
+    """
+    trechos = le_json("transito.json")["trechos"]
+    estacoes = le_json("estacoes.json")
+    for rio_id, rio in estacoes["rios"].items():
+        topo = rio.get("_topologia")
+        if topo:
+            sequencia = topo.get("tronco_sequencia", [])
+        else:
+            com_ordem = [c for c in rio["cidades"] if isinstance(c.get("ordem"), int)]
+            sequencia = [c["id"] for c in sorted(com_ordem, key=lambda c: c["ordem"])]
+        if len(sequencia) < 2:
+            continue
+
+        origem = sequencia[0]
+        janelas: list[tuple[str, float, float]] = []
+        for cidade in sequencia[1:]:
+            j = _janela_ate(trechos, rio_id, origem, cidade)
+            if j:
+                janelas.append((cidade, j[0], j[1]))
+
+        for i, (cima, cima_min, _) in enumerate(janelas):
+            for baixo, baixo_min, baixo_max in janelas[i + 1:]:
+                if cima_min > baixo_max:
+                    erro(
+                        f"transito.json / {rio_id}: {cima} ({cima_min}–{_} h desde {origem}) "
+                        f"não cabe antes de {baixo} ({baixo_min}–{baixo_max} h), que fica a "
+                        f"jusante. Não há tempo que satisfaça as duas: uma das fontes está errada."
+                    )
+                elif baixo_min < cima_min:
+                    aviso(
+                        f"transito.json / {rio_id}: a janela de {baixo} começa antes da de {cima}, "
+                        f"que fica acima ({baixo_min} h contra {cima_min} h desde {origem}). "
+                        "Não é contradição — as faixas se sobrepõem porque vêm de fontes "
+                        "diferentes do mesmo estudo. A tela e o bot dizem isso; ver "
+                        "docs/JANELA-DE-CHEGADA.md."
+                    )
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
     valida_transito(conhecidas)
+    valida_monotonia_transito()
     valida_cotas_ruas()
     valida_referencias()
 
