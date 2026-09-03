@@ -3,11 +3,13 @@ import estilos from './App.module.css'
 import FaixaEmergencia from './componentes/FaixaEmergencia'
 import Rodape from './componentes/Rodape'
 import Inicio from './telas/Inicio'
+import MonitorBacia from './telas/MonitorBacia'
 import TelaItajai from './telas/TelaItajai'
 import TelaRio from './telas/TelaRio'
 
 const ABAS = [
   { para: '/', rotulo: 'Início', fim: true },
+  { para: '/monitor', rotulo: 'Monitor', fim: false },
   { para: '/acu', rotulo: 'Itajaí-Açu', fim: false },
   { para: '/mirim', rotulo: 'Itajaí-Mirim', fim: false },
   { para: '/itajai', rotulo: 'Itajaí (foz)', fim: false },
@@ -45,6 +47,7 @@ export default function App() {
       <main className="conteudo">
         <Routes>
           <Route path="/" element={<Inicio />} />
+          <Route path="/monitor" element={<MonitorBacia />} />
           <Route path="/acu" element={<TelaRio rioId="itajai-acu" />} />
           <Route path="/mirim" element={<TelaRio rioId="itajai-mirim" />} />
           <Route path="/itajai" element={<TelaItajai />} />

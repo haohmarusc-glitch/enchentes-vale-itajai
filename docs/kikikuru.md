@@ -28,7 +28,8 @@ chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
 | O quê | Arquivo | Lê de |
 |---|---|---|
 | Diagrama linear, colorido por trecho | `web/src/componentes/DiagramaRio.tsx` | `ultimo.json` (via `useTempoReal`) |
-| Mapa do rio em `<canvas>`, colorido por trecho + correnteza animada | `web/src/componentes/MapaRios.tsx` (geometria pura em `web/src/logica/mapaCanvas.ts`) | `data/rios/*.geojson` + `ultimo.json` |
+| Mapa do rio em `<canvas>`, colorido por trecho + correnteza + onda | `web/src/componentes/MapaRios.tsx` (motor em `web/src/logica/mapaMotor.ts`; geometria pura em `mapaCanvas.ts`) | `data/rios/*.geojson` + `ultimo.json` |
+| Monitor da bacia em tela cheia (Açu + Mirim juntos) + reprodução 24 h | `web/src/telas/MonitorBacia.tsx` (mesmo motor `mapaMotor.ts`) | `data/rios/*.geojson` + `ultimo.json` + `serie-recente.json` + `mare-itajai.json` |
 | Linha do tempo de 24 h por cidade | `web/src/componentes/LinhaDoTempo.tsx` | `serie-recente.json` (via `useSerieRecente`) |
 | Reprodução da onda descendo | `web/src/componentes/AnimacaoOnda.tsx` | `serie-recente.json` |
 | Legenda + textos das faixas | `web/src/componentes/LegendaFaixas.tsx` | `data/faixas.json` |
@@ -63,6 +64,15 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   **significa o nível**, não enfeita. Trecho cinza **não corre** —
   `VEL_FAIXA['sem-dado'] = 0` —, porque não se anima uma água que não se mede.
   `prefers-reduced-motion` congela o movimento (um quadro estático).
+- Na **foz** (a leste, onde fica Itajaí) o mapa desenha o **MAR**, colorido pela
+  **maré** numa escala **azul PRÓPRIA** — jamais a de cheia. Isto é deliberado:
+  maré alta **não** é cheia (as réguas do estuário são `alerta_automatico:false`);
+  o que ela faz é **travar o escoamento** do rio. `estadoMareAgora` (em
+  `logica/mare.ts`) lê a tábua (`data/mare-itajai.json`, via `mareItajai`) e diz
+  se a maré **sobe** ou **desce** agora e a que altura do ciclo — o azul segue
+  essa altura, e um chip mostra "Mar · Maré subindo/baixando". **Sem tábua**
+  (hoje ela está vazia) o mar fica **cinza**, "maré: sem dado" — nada é estimado;
+  acende quando `scripts/coleta_mares.py` preencher a tábua.
 - Os nomes das cidades têm **anticolisão**: onde os pinos se amontoam (a foz do
   Açu), o rótulo da faixa **mais grave** ganha o espaço e o nome que cairia por
   cima é omitido — o ponto continua e o toque abre o detalhe. A altura do mapa
