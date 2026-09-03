@@ -17,6 +17,7 @@
 import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
+import type { BrutoEstadual, NivelSc } from '../dados/nivelSc'
 import { deBrasilia, faixaDaCidade, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { estadoMareAgora, type EstadoMare } from '../logica/mare'
 import { metros } from '../logica/formato'
@@ -90,6 +91,14 @@ export interface Pino {
   faixa: Faixa
   nivel: number | null
   medidoEm: Date | null
+  /**
+   * Nível BRUTO da rede estadual (DCSC), quando existir para a cidade — datum
+   * PRÓPRIO da estação, nunca comparável às cotas municipais (`cidade.cotas_m`)
+   * nem usado para calcular `faixa`. Só preenche a lacuna das cidades sem
+   * fonte municipal (a maioria das cabeceiras do Açu): o pino mostra este
+   * valor, claramente rotulado como bruto, em vez de ficar sem número nenhum.
+   */
+  nivelBruto: BrutoEstadual | null
 }
 /** O MAR na foz, colorido pela MARÉ (escala própria, nunca a de cheia). */
 export interface MarVis {
@@ -185,6 +194,13 @@ export function construirCena(
   altura: number,
   mare: TabuaMare | null,
   leituraNaHora?: LeituraNaHora,
+  /**
+   * Nível bruto da rede estadual (DCSC), por cidade. Só usado AO VIVO (não na
+   * reprodução — a série do bruto não está encaixada no playback, e mostrar um
+   * valor "atual" durante o passado seria inventar). Opcional: quem não passa
+   * (MapaRios, hoje) mantém o comportamento de sempre.
+   */
+  nivelBrutoSc?: NivelSc,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -216,11 +232,15 @@ export function construirCena(
           !leituraNaHora &&
           aoVivo === null &&
           leiturasDaCidade(tempoReal, rio.rioId, cidade.id).length > 1
+        // Bruto só entra AO VIVO (não em leituraNaHora/reprodução — ver o
+        // parâmetro nivelBrutoSc).
+        const bruto = !leituraNaHora ? (nivelBrutoSc?.get(cidade.id) ?? null) : null
         return {
           cidade,
           faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
+          nivelBruto: bruto,
           ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
         }
       })
@@ -284,6 +304,7 @@ export function construirCena(
         faixa: a.faixa,
         nivel: a.nivel,
         medidoEm: a.medidoEm,
+        nivelBruto: a.nivelBruto,
       })
     }
   }
@@ -541,6 +562,15 @@ export function desenharPinos(
       opcoes.mostrarIdade && opcoes.agora && p.medidoEm
         ? textoIdade(idadeMin(p.medidoEm, opcoes.agora))
         : null
+    // Sem leitura calibrada (municipal), mas com bruto DCSC: mostra o bruto em
+    // vez de deixar a cidade sem número — é a lacuna que a rede estadual
+    // preenche na maioria das cabeceiras do Açu. Nunca soma nem substitui o
+    // calibrado; só aparece quando ele falta.
+    const usaBruto = p.nivel == null && p.nivelBruto != null
+    const idadeBruto =
+      usaBruto && opcoes.mostrarIdade && opcoes.agora && p.nivelBruto?.medidoEm
+        ? textoIdade(idadeMin(p.nivelBruto.medidoEm, opcoes.agora))
+        : null
     // Sub-linha ao lado do ponto: o NÍVEL na régua da própria cidade (quando há
     // leitura fresca) e a idade. Nível em metros é da régua DELA — a comparação
     // entre cidades continua sendo só pela faixa (cor), nunca pelo metro.
@@ -549,7 +579,11 @@ export function desenharPinos(
         ? idade
           ? `${metros(p.nivel)} · ${idade}`
           : metros(p.nivel)
-        : idade
+        : usaBruto
+          ? idadeBruto
+            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
+            : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
+          : idade
     const w = ctx.measureText(nome).width
     const meia = w / 2
     const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, p.x))
@@ -574,8 +608,10 @@ export function desenharPinos(
       ctx.lineWidth = 3 * escala
       ctx.strokeStyle = 'rgba(4,12,20,0.92)'
       ctx.strokeText(sub, cx, fy)
-      // Nível em destaque (claro); só idade fica acinzentada.
-      ctx.fillStyle = p.nivel != null ? '#dff0ff' : '#9fb2c4'
+      // Nível calibrado em destaque (claro); bruto DCSC em violeta (marca visual
+      // de "outro tipo de dado", nunca as cores de faixa/severidade); sem
+      // nenhum dos dois, só a idade, acinzentada.
+      ctx.fillStyle = p.nivel != null ? '#dff0ff' : usaBruto ? '#c9a6f0' : '#9fb2c4'
       ctx.fillText(sub, cx, fy)
     }
   }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { cidadesDoRio, mareItajai } from '../dados/carregar'
 import type { Cidade } from '../dados/tipos'
 import { useTempoReal } from '../dados/tempoReal'
+import { useNivelSc } from '../dados/nivelSc'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
@@ -174,6 +175,7 @@ export default function MonitorBacia() {
   const [hover, setHover] = useState<Pino | null>(null)
 
   const tempoReal = useTempoReal()
+  const nivelSc = useNivelSc()
   const serie = useSerieRecente()
   const agora = useMemo(() => new Date(), [tempoReal])
 
@@ -292,7 +294,9 @@ export default function MonitorBacia() {
         }
       : undefined
 
-    const cena = construirCena(canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override)
+    const cena = construirCena(
+      canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc,
+    )
     cenaRef.current = cena
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
     // num instante que não medimos).
@@ -328,7 +332,7 @@ export default function MonitorBacia() {
     }
     raf = requestAnimationFrame(quadro)
     return () => cancelAnimationFrame(raf)
-  }, [rios, tempoReal, agora, tam, cidadesBacia, idxRepro, grade, serie])
+  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie])
 
   /** Pino mais próximo do ponteiro, dentro do raio — ou null. */
   function pinoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {
@@ -467,6 +471,7 @@ export default function MonitorBacia() {
           const cid = foco.cidade
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})
           const ch = chuvaDaCidade(tempoReal.chuva, foco.rioId, cid.id)
+          const brutoSc = nivelSc.get(cid.id) ?? null
           return (
             <div className={estilos.painel}>
               <div className={estilos.painelTopo}>
@@ -508,6 +513,21 @@ export default function MonitorBacia() {
                   Sem cota de referência cadastrada — a faixa fica cinza.
                 </p>
               )}
+              {brutoSc ? (
+                <div className={estilos.painelBloco}>
+                  <span className={estilos.painelRotulo}>Nível bruto — rede estadual (DCSC)</span>
+                  <p className={estilos.painelExtra}>
+                    <strong>{metros(brutoSc.nivelBrutoM)}</strong>
+                    {brutoSc.medidoEm ? <> · {textoIdade(idadeMin(brutoSc.medidoEm, agora))}</> : null}
+                    {' — '}
+                    {brutoSc.estacao}
+                  </p>
+                  <p className={estilos.painelRessalva}>
+                    Régua PRÓPRIA da estação estadual, zero diferente da régua municipal —
+                    não comparável às cotas acima nem à faixa de cor deste pino.
+                  </p>
+                </div>
+              ) : null}
               <p className={estilos.painelChuva}>
                 {ch && (ch.h1 != null || ch.h24 != null) ? (
                   <>

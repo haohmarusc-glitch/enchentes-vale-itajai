@@ -35,10 +35,15 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
      investigação (`tem_nivel_do_rio = false`; Blumenau é `type = "Meteo"`). Antes deste coletor tratava as
      duas como "sensor de rio que às vezes fica mudo" (armadilha 2); estava errado — é ausência estrutural
      da capacidade, não intermitência. Vão para o balde `nao_mede_nivel`, não para `sem_leitura`.
-     PENDÊNCIA: a query atual (`QUERY` abaixo) não pede `type`/`tem_nivel_do_rio`/`rio_area_drenagem` — a
-     API usa allowlist de query persistida e recusa query montada à mão (ver o .md citado), então acrescentar
-     esses campos exige a string exata do bundle, não uma reconstrução por nome de campo. Até lá, os dois
-     códigos ficam hardcoded em NAO_MEDE_NIVEL, como já era feito com SUSPEITAS.
+  9. QUERY_CAMPOS_NOVOS (03/09/2026) pede também `type`, `filter.relacao.tem_nivel_do_rio` e
+     `data.rio.{rio_nome,rio_area_drenagem}`. A API usa allowlist de query persistida e pode recusar
+     qualquer string que não seja a exata do bundle (ver o .md citado) — este ambiente não alcança o
+     host para validar isso de antemão. Por isso `buscar()` TENTA a enriquecida primeiro e, se a API
+     devolver `errors`, CAI para a QUERY original (validada em 01/09) automaticamente — nunca decide
+     às cegas qual string funciona; é a resposta real, na primeira execução na VPS, que decide. Quando
+     a enriquecida funciona, `converter()` usa `tem_nivel_do_rio` da própria resposta para classificar
+     (substituindo NAO_MEDE_NIVEL); quando não funciona (campo ausente = None), cai para os dicionários
+     hardcoded abaixo, que continuam servindo de rede de segurança.
 
 Uso:
     python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
@@ -97,9 +102,22 @@ NAO_MEDE_NIVEL = {"DCSC-00005": "Gaspar: tem_nivel_do_rio=false na API estadual 
                   "DCSC-00026": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, "
                                  "não mede nível de rio (cota de Blumenau vem do AlertaBlu, não da DCSC)"}
 
+#: Query validada por curl em 01/09/2026. Sempre funciona — é o fallback seguro de `buscar()`.
 QUERY = ('query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
          'codigo name { general local } timestamp position { bacia latitude longitude } '
          'data { rio { rio_nivel { value } } chuva { acumulado { h024 { value } } } } } } }')
+
+#: Tentativa (03/09/2026, docs/API-DCSC-CAMPOS-NOVOS.md) de pedir também `type`,
+#: `filter.relacao.tem_nivel_do_rio` e `data.rio.{rio_nome,rio_area_drenagem}`. Não validada contra
+#: o host real por este ambiente (allowlist de query persistida — ver armadilha 9 no docstring).
+#: `buscar()` tenta esta primeiro e cai para `QUERY` se a API recusar.
+QUERY_CAMPOS_NOVOS = (
+    'query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
+    'codigo name { general local } timestamp type position { bacia latitude longitude } '
+    'filter { relacao { tem_nivel_do_rio tem_vazao_do_rio tem_chuva_acumulada } } '
+    'data { rio { rio_nome rio_nivel { value } rio_area_drenagem } '
+    'chuva { acumulado { h024 { value } } } } } } }'
+)
 
 
 def e_numero(valor) -> bool:
@@ -120,13 +138,29 @@ def hora_local(carimbo: str | None) -> str | None:
     return t.astimezone(FUSO_BRASILIA).replace(tzinfo=None).isoformat(timespec="seconds")
 
 
-def buscar() -> list[dict]:
-    r = requests.post(URL, json={"operationName": "Tags_data", "query": QUERY},
+def _post(query: str) -> dict:
+    r = requests.post(URL, json={"operationName": "Tags_data", "query": query},
                       headers={"User-Agent": UA}, timeout=60)
     r.raise_for_status()
-    j = r.json()
-    if j.get("errors"):
-        raise RuntimeError(j["errors"])
+    return r.json()
+
+
+def buscar() -> list[dict]:
+    """
+    Tenta QUERY_CAMPOS_NOVOS (type/tem_nivel_do_rio/rio_area_drenagem); se a API recusar
+    (`errors` no GraphQL, ou a request falhar), cai para a QUERY original de 01/09 — nunca
+    escolhe às cegas qual string funciona, é a resposta real que decide (armadilha 9).
+    """
+    try:
+        j = _post(QUERY_CAMPOS_NOVOS)
+        if j.get("errors"):
+            raise RuntimeError(j["errors"])
+    except Exception as e:
+        print(f"aviso: query com campos novos (type/tem_nivel_do_rio/rio_area_drenagem) recusada "
+              f"({e}); caindo para a query original de 01/09", file=sys.stderr)
+        j = _post(QUERY)
+        if j.get("errors"):
+            raise RuntimeError(j["errors"])
     return j["data"]["tags_data"]["qualle_meteorologia"]
 
 
@@ -146,9 +180,14 @@ def converter(
         nome = " ".join(x for x in [(s.get("name") or {}).get("general"), (s.get("name") or {}).get("local")] if x).strip()
         if "(H)" in nome:                                              # armadilha 3
             continue
-        rio = ((s.get("data") or {}).get("rio") or {}).get("rio_nivel") or {}
+        rio_bloco = (s.get("data") or {}).get("rio") or {}
+        rio = rio_bloco.get("rio_nivel") or {}
         val = rio.get("value")                                         # armadilha 1 (NÃO show.value)
         chuva = (((s.get("data") or {}).get("chuva") or {}).get("acumulado") or {}).get("h024") or {}
+        # Campos novos (armadilha 9): None quando QUERY_CAMPOS_NOVOS não foi aceita pela API —
+        # nesse caso caímos nos dicionários hardcoded abaixo, como antes.
+        tipo_estacao = s.get("type")
+        declara_nivel = ((s.get("filter") or {}).get("relacao") or {}).get("tem_nivel_do_rio")
         base = {
             "codigo": cod, "estacao": nome, "cidade": cidade,
             "origem": "estadual",
@@ -158,8 +197,17 @@ def converter(
             "chuva_24h_mm": chuva.get("value") if e_numero(chuva.get("value")) else None,
             "lat": (s.get("position") or {}).get("latitude"),
             "lon": (s.get("position") or {}).get("longitude"),
+            "tipo_estacao": tipo_estacao,
+            "rio_nome": rio_bloco.get("rio_nome"),
+            "rio_area_drenagem_km2": rio_bloco.get("rio_area_drenagem"),
         }
-        if cod in NAO_MEDE_NIVEL:                                      # armadilha 8
+        if declara_nivel is False:                                     # armadilha 9: a API declara
+            motivo = "API declara tem_nivel_do_rio=false"
+            if tipo_estacao:
+                motivo += f" (type={tipo_estacao})"
+            nao_mede_nivel.append({**base, "motivo": motivo})
+            continue
+        if declara_nivel is None and cod in NAO_MEDE_NIVEL:             # armadilha 8: rede de segurança
             nao_mede_nivel.append({**base, "motivo": NAO_MEDE_NIVEL[cod]})
             continue
         if val is None:                                                # armadilha 2

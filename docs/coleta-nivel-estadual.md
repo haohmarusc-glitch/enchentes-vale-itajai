@@ -33,8 +33,8 @@ esses números — mas como BRUTO, porque o zero da régua estadual NÃO é o ze
 4. Grava `data/tempo-real/ultimo_nivel_sc.json`.
 
 ## Correção de 03/09/2026 (ver `API-DCSC-CAMPOS-NOVOS.md`)
-Uma investigação nos campos `type` e `filter.relacao.tem_nivel_do_rio` da mesma API (que o coletor
-ainda não pede — ver "Pendência" abaixo) corrigiu duas suposições erradas dos registros de 01/09:
+Uma investigação nos campos `type` e `filter.relacao.tem_nivel_do_rio` da mesma API corrigiu duas
+suposições erradas dos registros de 01/09:
 
 | Estação | Suposição de 01/09 | Confirmado pela API em 03/09 |
 |---|---|---|
@@ -47,13 +47,27 @@ Gaspar e Blumenau saíram de `sem_leitura` para o novo balde `nao_mede_nivel` (d
 `NAO_MEDE_NIVEL` no código). Guabiruba e Pomerode continuam em `suspeitas` — o valor bruto
 continua não sendo usável — mas o texto do motivo não fala mais em "sensor/grandeza errada".
 
-**Pendência (não feita agora):** adicionar `type`, `filter { relacao { tem_nivel_do_rio
-tem_vazao_do_rio tem_chuva_acumulada } }` e `rio { rio_nome rio_area_drenagem }` à `QUERY` do
-coletor, para que essas classificações venham da resposta em vez de ficarem hardcoded. Não feito
-porque a API usa allowlist de query persistida — recusa qualquer query montada à mão, mesmo que
-sintaticamente idêntica — e este ambiente não alcança o host para validar a string exata do
-bundle. Precisa da string exata (inspecionada de um browser real ou da VPS), não de uma
-reconstrução por nome de campo.
+### `QUERY_CAMPOS_NOVOS` — tentativa com fallback automático (04/09/2026)
+`buscar()` agora tenta uma segunda query (`QUERY_CAMPOS_NOVOS`), que pede também `type`,
+`filter { relacao { tem_nivel_do_rio tem_vazao_do_rio tem_chuva_acumulada } }` e
+`rio { rio_nome rio_area_drenagem }`. Como a API usa allowlist de query persistida — pode recusar
+qualquer string que não seja a exata do bundle — e este ambiente não alcança o host para validar
+isso de antemão, o coletor **não decide às cegas**: tenta a enriquecida primeiro e, se a resposta
+vier com `errors`, cai automaticamente para a `QUERY` original (validada em 01/09), sem quebrar.
+É a primeira execução real na VPS que decide se a string funciona.
+
+Quando a enriquecida é aceita, `converter()` usa `tem_nivel_do_rio` da própria resposta —
+dinamicamente, inclusive para estações que `NAO_MEDE_NIVEL` ainda não conhece, e a declaração da
+API tem prioridade sobre o dicionário hardcoded se um dia divergirem (ex.: sensor da estação
+reativado). Quando a enriquecida é recusada, `type`/`tem_nivel_do_rio` chegam como `None` em cada
+estação, e `converter()` cai para os dicionários hardcoded — mesmo comportamento de antes.
+`rio_nome` e `rio_area_drenagem_km2` (quando presentes) entram no schema de cada leitura só como
+dado extra (útil para o peso das cabeceiras, ver o `.md` da investigação) — nenhum uso ainda os
+consome.
+
+**Ainda não confirmado**: se `QUERY_CAMPOS_NOVOS` de fato passa pela allowlist. A primeira execução
+na VPS que imprimir o aviso "query com campos novos recusada" (ou não) é quem confirma — colar a
+saída aqui quando isso acontecer.
 
 ## Schema de cada leitura (regra do datum aplicada no código)
 ```json

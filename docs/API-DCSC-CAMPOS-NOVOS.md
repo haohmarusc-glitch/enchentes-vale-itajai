@@ -68,11 +68,21 @@ tem_vazao_do_rio tem_chuva_acumulada } }` e `rio { rio_nome rio_area_drenagem }`
 do bundle** (a allowlist recusa query montada à mão). Gravar `tipo_estacao` e `declara_nivel` em cada
 leitura; descartar por `declara_nivel === false` antes de aplicar as heurísticas atuais.
 
-## Estado desta tarefa (03/09/2026)
-As correções de classificação (Gaspar, Blumenau, Guabiruba, Pomerode) foram aplicadas em
+## Estado desta tarefa
+**03/09/2026**: as correções de classificação (Gaspar, Blumenau, Guabiruba, Pomerode) foram aplicadas em
 `coleta_nivel_sc.py` como valores hardcoded (`NAO_MEDE_NIVEL`, `SUSPEITAS` reescrito) — mesmo padrão
-já usado para `SUSPEITAS` desde a versão de 01/09. A adição dos campos novos à `QUERY` em si **não foi
-feita**: quem investigou este documento tinha acesso à resposta real da API; a sessão que aplicou a
-correção não tem acesso de rede a este host (roda só na VPS) e por isso não pode validar a string exata
-do bundle. Precisa de alguém com acesso ao bundle (browser real ou VPS) para colar a query exata antes
-de estender `QUERY` — ver `docs/coleta-nivel-estadual.md`.
+já usado para `SUSPEITAS` desde a versão de 01/09. A adição dos campos novos à `QUERY` em si não foi
+feita: quem investigou este documento tinha acesso à resposta real da API; a sessão que aplicou a
+correção não tem acesso de rede a este host (roda só na VPS) e por isso não podia validar a string
+exata do bundle.
+
+**04/09/2026**: adicionada `QUERY_CAMPOS_NOVOS` em `coleta_nivel_sc.py`, com `type`,
+`filter { relacao { tem_nivel_do_rio tem_vazao_do_rio tem_chuva_acumulada } }` e
+`rio { rio_nome rio_area_drenagem }` — reconstruída por nome de campo, não copiada do bundle (este
+ambiente segue sem acesso de rede ao host). Para não arriscar quebrar o coletor em produção com uma
+string não testada, `buscar()` tenta essa query primeiro e cai automaticamente para a `QUERY`
+original (validada em 01/09) se a API devolver `errors` — nunca decide às cegas qual string
+funciona. `converter()` já sabe usar os campos quando eles vêm (prioridade sobre os dicionários
+hardcoded) e ignorá-los quando não vêm (comportamento idêntico ao de antes). Falta apenas a
+confirmação real: rodar isso contra o host de verdade (VPS) e ver se `QUERY_CAMPOS_NOVOS` passa pela
+allowlist ou se cai no fallback — ver `docs/coleta-nivel-estadual.md`.
