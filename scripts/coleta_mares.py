@@ -192,6 +192,10 @@ def montar(astronomica: list[dict], observada: list[dict]) -> dict:
                 "tabela; os horários são calculados a partir dela, não estimados."
             ),
             "aviso": "Gerado por scripts/coleta_mares.py.",
+            # Curto, para a TELA (PainelMare.tsx e o mapa) creditar a fonte certa — sem isto a
+            # tela cairia no fallback genérico em vez de linkar a página real da Defesa Civil.
+            "fonte_curta": "Defesa Civil de Itajaí",
+            "fonte_url": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
         },
         "porto": "Itajaí",
         "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),

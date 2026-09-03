@@ -13,7 +13,7 @@ import AbrigoMaisProximo from '../componentes/AbrigoMaisProximo'
 const MapaManchas = lazy(() => import('../componentes/MapaManchas'))
 
 import SeloConfianca from '../componentes/SeloConfianca'
-import { cidade, estacoesTempoReal, fontesGerais, trechos } from '../dados/carregar'
+import { cidade, estacoesTempoReal, fontesGerais, mareItajai, trechos } from '../dados/carregar'
 import { separarFonte, todasAsReguas } from '../logica/reguas'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import { dataHora } from '../logica/formato'
@@ -114,13 +114,22 @@ export default function TelaItajai() {
           uma preamar de sizígia e o Mirim não tem para onde ir.
         </p>
         <p className={estilos.fonteMare}>
-          A tábua usada nesta tela vem da{' '}
-          <a href={fontesGerais.mare_dc_itajai} target="_blank" rel="noreferrer">
-            página de marés da Defesa Civil de Itajaí
-          </a>
-          , coletada por <code>scripts/coleta_mares.py</code>. Fonte de origem:{' '}
-          {fontesGerais.mare_itajai}. A UNIVALI/CTTMAR e a Defesa Civil ampliaram o marégrafo do
-          porto justamente para medir esse efeito sobre o Açu e o Mirim.
+          Fonte da tábua usada nesta tela:{' '}
+          {mareItajai._meta.fonte_url ? (
+            <a href={mareItajai._meta.fonte_url} target="_blank" rel="noreferrer">
+              {mareItajai._meta.fonte_curta ?? 'não identificada'}
+            </a>
+          ) : (
+            mareItajai._meta.fonte_curta ?? 'não identificada'
+          )}
+          . Fonte de origem: {fontesGerais.mare_itajai}. A UNIVALI e a Defesa Civil ampliaram o
+          marégrafo do porto justamente para medir esse efeito sobre o Açu e o Mirim.
+          {mareItajai._meta.aviso_interino ? (
+            <>
+              {' '}
+              <strong>Aviso:</strong> {mareItajai._meta.aviso_interino}
+            </>
+          ) : null}
         </p>
       </section>
 

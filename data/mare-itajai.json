@@ -2,13 +2,15 @@
   "_meta": {
     "descricao": "Tábua de maré do porto de Itajaí. O site cruza estas preamares com a janela de chegada da cheia: maré alta trava o escoamento do rio.",
     "fuso": "Horário local (America/Sao_Paulo), sem indicação de fuso — igual ao que a fonte publica e ao que o site espera.",
-    "fonte": "Planilha de previsão de maré da UNIVALI/CTTMAR (Márcio Piazera), importada por scripts/importar_mare_univali.py",
+    "fonte": "Planilha de previsão de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) (Márcio Piazera), importada por scripts/importar_mare_univali.py",
     "fonte_oficial": "Tábuas de maré da Marinha do Brasil (DHN) — porto de Itajaí",
     "metodo": "Preamares e baixa-mares são os máximos e mínimos locais que a própria planilha já traz — não recalculados aqui.",
-    "aviso": "INTERINO: o endpoint da Defesa Civil (scripts/coleta_mares.py) está vazio há dias; esta tábua veio da UNIVALI/CTTMAR enquanto isso. A ALTURA (metros) foi OMITIDA de propósito — a planilha usa datum IBGE, e nada aqui garante que bate com o datum que a Defesa Civil/DHN publicam (mesmo problema do datum de Blumenau, que já é REGRA BLOQUEANTE neste projeto). Só o HORÁRIO de cada preamar/baixa-mar entrou, que não depende de datum. A próxima coleta bem-sucedida de coleta_mares.py substitui este arquivo inteiro pela tábua oficial — isso é esperado, não um bug."
+    "aviso": "INTERINO: o endpoint da Defesa Civil (scripts/coleta_mares.py) está vazio há dias; esta tábua veio do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) enquanto isso. A ALTURA (metros) foi OMITIDA de propósito — a planilha usa datum IBGE, e nada aqui garante que bate com o datum que a Defesa Civil/DHN publicam (mesmo problema do datum de Blumenau, que já é REGRA BLOQUEANTE neste projeto). Só o HORÁRIO de cada preamar/baixa-mar entrou, que não depende de datum. A próxima coleta bem-sucedida de coleta_mares.py substitui este arquivo inteiro pela tábua oficial — isso é esperado, não um bug.",
+    "fonte_curta": "Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) — previsão harmônica",
+    "aviso_interino": "Tábua interina: o endpoint da Defesa Civil está sem dado. Horários de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC), sem a altura (datum não confirmado contra a Defesa Civil)."
   },
   "porto": "Itajaí",
-  "coletado_em": "2026-09-03T14:27:45+00:00",
+  "coletado_em": "2026-09-03T14:51:50+00:00",
   "pontos_astronomicos": 142,
   "pontos_observados": 0,
   "preamares": [

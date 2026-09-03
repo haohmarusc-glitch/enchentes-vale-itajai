@@ -44,6 +44,8 @@ export default function PainelMare({ inicio, fim }: { inicio: Date; fim: Date })
   const cruzamento = cruzarComMare(inicio, fim, informadas)
   const nivel = agravamento(cruzamento)
   const daFonte = daTabua.length > 0
+  const metaTabua = mareItajai._meta
+  const fonteCurta = metaTabua.fonte_curta ?? 'fonte não identificada'
 
   return (
     <section className={estilos.painel} aria-labelledby="mare-titulo">
@@ -133,16 +135,25 @@ export default function PainelMare({ inicio, fim }: { inicio: Date; fim: Date })
             o rio já começa a represar antes do instante da maré alta.{' '}
             {daFonte ? (
               <>
-                Tábua de{' '}
-                <a href={fontesGerais.mare_dc_itajai} target="_blank" rel="noreferrer">
-                  Defesa Civil de Itajaí
-                </a>
+                Fonte da tábua:{' '}
+                {metaTabua.fonte_url ? (
+                  <a href={metaTabua.fonte_url} target="_blank" rel="noreferrer">
+                    {fonteCurta}
+                  </a>
+                ) : (
+                  fonteCurta
+                )}
                 .
               </>
             ) : (
               'Preamares informadas nesta tela.'
             )}
           </p>
+          {daFonte && metaTabua.aviso_interino ? (
+            <p className={estilos.nota}>
+              <strong>Aviso:</strong> {metaTabua.aviso_interino}
+            </p>
+          ) : null}
         </div>
       )}
 
