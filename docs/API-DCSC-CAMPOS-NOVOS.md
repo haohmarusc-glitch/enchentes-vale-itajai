@@ -83,6 +83,15 @@ ambiente segue sem acesso de rede ao host). Para não arriscar quebrar o coletor
 string não testada, `buscar()` tenta essa query primeiro e cai automaticamente para a `QUERY`
 original (validada em 01/09) se a API devolver `errors` — nunca decide às cegas qual string
 funciona. `converter()` já sabe usar os campos quando eles vêm (prioridade sobre os dicionários
-hardcoded) e ignorá-los quando não vêm (comportamento idêntico ao de antes). Falta apenas a
-confirmação real: rodar isso contra o host de verdade (VPS) e ver se `QUERY_CAMPOS_NOVOS` passa pela
-allowlist ou se cai no fallback — ver `docs/coleta-nivel-estadual.md`.
+hardcoded) e ignorá-los quando não vêm (comportamento idêntico ao de antes).
+
+**04/09/2026 (mesmo dia, confirmação real na VPS): a allowlist RECUSA `QUERY_CAMPOS_NOVOS`** —
+`400 Client Error: Bad Request`. O fallback funcionou: o coletor caiu para a `QUERY` original e
+rodou normalmente (25 leituras, nenhum erro fatal). A reconstrução por nome de campo, sem a string
+exata do bundle, não passa pela allowlist — confirma o aviso original deste documento ("usando a
+query exata do bundle — a allowlist recusa query customizada"). `type`/`tem_nivel_do_rio`/
+`rio_area_drenagem` continuam vindos como `None`; as classificações de Gaspar/Blumenau/Guabiruba/
+Pomerode seguem só pelos dicionários hardcoded. Para destravar isto de verdade, alguém precisa
+capturar a query exata que o bundle do site envia (inspecionando a aba Network de um navegador real
+em `monitoramento.defesacivil.sc.gov.br/mapa`, não reconstruindo por nome de campo) — ver
+`docs/coleta-nivel-estadual.md`.

@@ -65,9 +65,25 @@ estação, e `converter()` cai para os dicionários hardcoded — mesmo comporta
 dado extra (útil para o peso das cabeceiras, ver o `.md` da investigação) — nenhum uso ainda os
 consome.
 
-**Ainda não confirmado**: se `QUERY_CAMPOS_NOVOS` de fato passa pela allowlist. A primeira execução
-na VPS que imprimir o aviso "query com campos novos recusada" (ou não) é quem confirma — colar a
-saída aqui quando isso acontecer.
+**CONFIRMADO (04/09/2026, primeira execução real na VPS): a allowlist RECUSA `QUERY_CAMPOS_NOVOS`.**
+```
+aviso: query com campos novos (type/tem_nivel_do_rio/rio_area_drenagem) recusada
+(400 Client Error: Bad Request for url: https://monitoramento.defesacivil.sc.gov.br/graphql);
+caindo para a query original de 01/09
+```
+O fallback funcionou como projetado: o coletor caiu para a `QUERY` original e rodou normalmente
+(25 leituras, 16 sem leitura, 5 suspeitas, 2 não medem nível — nenhuma queda, nenhum erro fatal,
+`ultimo_nivel_sc.json` gravado e a série ndjson acrescentada). É a prova de que o design com
+fallback (em vez de trocar a `QUERY` direto) era a escolha certa: uma string não validada teria
+derrubado o coletor em produção sem isso.
+
+**O que isto significa para os campos novos**: `type`/`tem_nivel_do_rio`/`rio_area_drenagem`
+continuam vindo como `None` em toda leitura (o ramo dinâmico em `converter()` fica inerte, sem
+prejuízo — é só um caminho morto até alguém trazer a string exata). As classificações de
+Gaspar/Blumenau/Guabiruba/Pomerode continuam vindo só dos dicionários hardcoded
+(`NAO_MEDE_NIVEL`/`SUSPEITAS`), como desde o PR #121. Para obter os campos de verdade seria preciso
+a string exata do bundle (inspecionada de um browser real logado no `monitoramento.defesacivil.sc.gov.br`,
+não reconstruída por nome de campo) — não é uma tarefa deste ambiente.
 
 ## Schema de cada leitura (regra do datum aplicada no código)
 ```json
