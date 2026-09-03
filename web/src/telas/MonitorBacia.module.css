@@ -44,16 +44,15 @@
   margin-top: 0.15rem;
 }
 .botaoCheia {
-  position: absolute;
-  right: 0.5rem;
-  bottom: 0.5rem;
-  background: rgba(6, 16, 26, 0.82);
+  display: inline-block;
+  margin-top: 0.4rem;
+  background: rgba(28, 110, 164, 0.85);
   color: #eaf1f8;
   border: 1px solid rgba(180, 200, 220, 0.35);
   border-radius: 0.5rem;
-  padding: 0.4rem 0.7rem;
+  padding: 0.3rem 0.6rem;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   cursor: pointer;
 }
 .botaoCheia:hover {
@@ -184,13 +183,12 @@
   text-align: right;
 }
 
-/* Painel de dados da cidade em foco — canto INFERIOR esquerdo (fica no lugar da
-   legenda, que recolhe enquanto o painel está aberto). Antes ficava em cima da
-   foz (Itajaí) e tapava o clique no ponto. */
+/* Painel de dados da cidade em foco — canto INFERIOR direito. Fica longe da
+   legenda (inferior esquerda) e do ponto de Itajaí (foz, topo direito). */
 .painel {
   position: absolute;
   bottom: 0.5rem;
-  left: 0.5rem;
+  right: 0.5rem;
   width: min(17rem, 60vw);
   max-height: calc(100% - 1.5rem);
   overflow-y: auto;
