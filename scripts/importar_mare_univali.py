@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Importa a tábua de maré de uma planilha da UNIVALI/CTTMAR (previsão harmônica).
+"""Importa a tábua de maré de uma planilha do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) (previsão harmônica).
 
 POR QUE ESTE SCRIPT EXISTE, SEPARADO DO `coleta_mares.py`
 -----------------------------------------------------------
@@ -9,7 +9,7 @@ POR QUE ESTE SCRIPT EXISTE, SEPARADO DO `coleta_mares.py`
 durar: `PainelMare` mostra "não temos a tábua deste dia" e o mar do mapa fica
 cinza, "maré: sem dado".
 
-A UNIVALI/CTTMAR — a própria fonte que `logica/mare.ts` cita como quem ampliou
+O Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) — a própria fonte que `logica/mare.ts` cita como quem ampliou
 o marégrafo de Itajaí — mantém uma planilha de previsão harmônica (maré
 astronômica) para o porto. Este script lê essa planilha e preenche a tábua
 enquanto o endpoint da Defesa Civil não volta. A PRÓXIMA execução bem-sucedida
@@ -132,7 +132,7 @@ def montar(preamares: list[tuple[datetime, float]], baixamares: list[tuple[datet
             ),
             "fuso": "Horário local (America/Sao_Paulo), sem indicação de fuso — igual ao "
                     "que a fonte publica e ao que o site espera.",
-            "fonte": "Planilha de previsão de maré da UNIVALI/CTTMAR (Márcio Piazera), "
+            "fonte": "Planilha de previsão de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) (Márcio Piazera), "
                      "importada por scripts/importar_mare_univali.py",
             "fonte_oficial": "Tábuas de maré da Marinha do Brasil (DHN) — porto de Itajaí",
             "metodo": (
@@ -141,13 +141,21 @@ def montar(preamares: list[tuple[datetime, float]], baixamares: list[tuple[datet
             ),
             "aviso": (
                 "INTERINO: o endpoint da Defesa Civil (scripts/coleta_mares.py) está vazio há "
-                "dias; esta tábua veio da UNIVALI/CTTMAR enquanto isso. A ALTURA (metros) foi "
+                "dias; esta tábua veio do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) enquanto isso. A ALTURA (metros) foi "
                 "OMITIDA de propósito — a planilha usa datum IBGE, e nada aqui garante que bate "
                 "com o datum que a Defesa Civil/DHN publicam (mesmo problema do datum de "
                 "Blumenau, que já é REGRA BLOQUEANTE neste projeto). Só o HORÁRIO de cada "
                 "preamar/baixa-mar entrou, que não depende de datum. A próxima coleta bem-"
                 "sucedida de coleta_mares.py substitui este arquivo inteiro pela tábua oficial — "
                 "isso é esperado, não um bug."
+            ),
+            # Curtos, para a TELA (não o prosa acima, que é para quem lê o JSON). A tela nunca
+            # deve cravar "Defesa Civil" quando o dado é de outra fonte — foi exatamente esse
+            # erro que este par de campos corrige em PainelMare.tsx.
+            "fonte_curta": "Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) — previsão harmônica",
+            "aviso_interino": (
+                "Tábua interina: o endpoint da Defesa Civil está sem dado. Horários de maré do "
+                "Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC), sem a altura (datum não confirmado contra a Defesa Civil)."
             ),
         },
         "porto": "Itajaí",
@@ -177,7 +185,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    ap.add_argument("--arquivo", required=True, help="planilha .xlsx da UNIVALI/CTTMAR")
+    ap.add_argument("--arquivo", required=True, help="planilha .xlsx do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC)")
     ap.add_argument("--verificar", action="store_true", help="mostra o que veio e não grava")
     args = ap.parse_args()
 

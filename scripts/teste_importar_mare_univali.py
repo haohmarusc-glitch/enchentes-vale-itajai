@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Testes do importador da tábua de maré da UNIVALI/CTTMAR.
+"""Testes do importador da tábua de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC).
 
 O ponto mais delicado testado aqui: `formatar()` NUNCA emite `altura_m` — a
 planilha vem em datum IBGE, e nada garante que bate com o datum que a Defesa
@@ -117,6 +117,15 @@ class TesteFormatarNuncaEmiteAltura(unittest.TestCase):
         self.assertIn("IBGE", aviso)
         self.assertIn("INTERINO", aviso)
         self.assertEqual(dados["porto"], "Itajaí")
+
+    def test_meta_credita_univali_para_a_tela_nao_a_defesa_civil(self):
+        # PainelMare.tsx lia _meta.fonte_curta e, faltando ela, cravava "Defesa
+        # Civil de Itajaí" mesmo quando o dado era desta planilha — a fonte
+        # errada aparecendo na tela. fonte_curta existir aqui é o que corrige.
+        dados = montar([], [])
+        self.assertIn("UNIVALI", dados["_meta"]["fonte_curta"])
+        self.assertNotIn("Defesa Civil", dados["_meta"]["fonte_curta"])
+        self.assertIn("aviso_interino", dados["_meta"])
 
 
 if __name__ == "__main__":

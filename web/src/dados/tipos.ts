@@ -196,8 +196,24 @@ export interface EntradaMare {
   altura_m?: number
 }
 
+/**
+ * Metadados da tábua — a tela usa `fonte_curta` (e `aviso_interino`, quando
+ * presente) para creditar a fonte de verdade em vez de cravar "Defesa Civil"
+ * como se fosse sempre ela. Os demais campos são para quem lê o JSON/audita,
+ * não para a UI.
+ */
+export interface MetaTabuaMare {
+  fonte_curta?: string
+  /** Link da fonte, só quando ela tem uma página pública (a DC tem; a
+   *  planilha da UNIVALI não). */
+  fonte_url?: string
+  /** Presente só na tábua INTERINA (não veio do endpoint oficial da Defesa
+   *  Civil) — a tela mostra isto como aviso, não some em silêncio. */
+  aviso_interino?: string
+}
+
 export interface TabuaMare {
-  _meta: unknown
+  _meta: MetaTabuaMare
   porto: string
   /** ISO UTC da coleta, ou null quando a tábua ainda não foi coletada. */
   coletado_em: string | null

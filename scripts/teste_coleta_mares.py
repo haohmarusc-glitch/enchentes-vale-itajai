@@ -119,6 +119,13 @@ class TesteMontagem(unittest.TestCase):
         self.assertRegex(d["preamares"][0]["quando"], r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$")
         self.assertIn("fonte", d["_meta"])
 
+    def test_meta_credita_a_defesa_civil_para_a_tela(self):
+        # A tela (PainelMare.tsx) lê _meta.fonte_curta para creditar a fonte —
+        # sem isto ela cairia num fallback genérico em vez do link real.
+        d = montar([], [])
+        self.assertEqual(d["_meta"]["fonte_curta"], "Defesa Civil de Itajaí")
+        self.assertIn("fonte_url", d["_meta"])
+
     def test_fonte_vazia_produz_listas_vazias(self):
         d = montar([], [])
         self.assertEqual(d["preamares"], [])
