@@ -28,7 +28,8 @@ chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
 | O quê | Arquivo | Lê de |
 |---|---|---|
 | Diagrama linear, colorido por trecho | `web/src/componentes/DiagramaRio.tsx` | `ultimo.json` (via `useTempoReal`) |
-| Mapa do rio em `<canvas>`, colorido por trecho + correnteza animada | `web/src/componentes/MapaRios.tsx` (geometria pura em `web/src/logica/mapaCanvas.ts`) | `data/rios/*.geojson` + `ultimo.json` |
+| Mapa do rio em `<canvas>`, colorido por trecho + correnteza + onda | `web/src/componentes/MapaRios.tsx` (motor em `web/src/logica/mapaMotor.ts`; geometria pura em `mapaCanvas.ts`) | `data/rios/*.geojson` + `ultimo.json` |
+| Monitor da bacia em tela cheia (Açu + Mirim juntos) + reprodução 24 h | `web/src/telas/MonitorBacia.tsx` (mesmo motor `mapaMotor.ts`) | `data/rios/*.geojson` + `ultimo.json` + `serie-recente.json` + `mare-itajai.json` |
 | Linha do tempo de 24 h por cidade | `web/src/componentes/LinhaDoTempo.tsx` | `serie-recente.json` (via `useSerieRecente`) |
 | Reprodução da onda descendo | `web/src/componentes/AnimacaoOnda.tsx` | `serie-recente.json` |
 | Legenda + textos das faixas | `web/src/componentes/LegendaFaixas.tsx` | `data/faixas.json` |
