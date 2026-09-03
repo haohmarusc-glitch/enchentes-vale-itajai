@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buscarSerie, leituraEm, serieDaCidade } from './serie'
+import { buscarSerie, leituraEm, serieDaCidade, tendencia } from './serie'
 import type { PontoSerie, Transporte } from './serie'
 
 /*
@@ -77,4 +77,64 @@ test('leituraEm pega a última medição até o instante, nunca a futura', () =>
   assert.equal(leituraEm(pts, new Date('2026-09-01T13:30:00Z').getTime())?.nivel_m, 4.0)
   // Exatamente no carimbo: conta.
   assert.equal(leituraEm(pts, new Date('2026-09-01T14:00:00Z').getTime())?.nivel_m, 5.0)
+})
+
+/*
+ * `tendencia` saiu de dentro do gráfico para cá porque não serve só de rótulo:
+ * é o que diz se uma leitura VELHA ainda vale como aproximação do agora. Um
+ * "subindo" errado aqui vira um aviso a mais na tela de quem decide sair de
+ * casa; um "estável" errado esconde o rio subindo.
+ */
+function pontos(...pares: [string, number][]): PontoSerie[] {
+  return pares.map(([iso, nivel_m]) => ({ medidoEm: new Date(iso), nivel_m }))
+}
+
+test('tendencia: subindo acima de 2 cm/h, com a taxa em cm/h', () => {
+  const t = tendencia(pontos(
+    ['2026-09-01T12:00:00Z', 3.0],
+    ['2026-09-01T13:00:00Z', 3.2],
+  ))
+  assert.equal(t?.rotulo, 'subindo')
+  assert.equal(t?.cmh, 20)
+})
+
+test('tendencia: descendo é simétrico', () => {
+  const t = tendencia(pontos(
+    ['2026-09-01T12:00:00Z', 3.2],
+    ['2026-09-01T13:00:00Z', 3.0],
+  ))
+  assert.equal(t?.rotulo, 'descendo')
+  assert.equal(t?.cmh, -20)
+})
+
+test('tendencia: oscilação de sensor abaixo de 2 cm/h é estável, não "subindo"', () => {
+  // 1 cm em uma hora: dizer "subindo" aqui viraria ruído em tendência.
+  const t = tendencia(pontos(
+    ['2026-09-01T12:00:00Z', 3.00],
+    ['2026-09-01T13:00:00Z', 3.01],
+  ))
+  assert.equal(t?.rotulo, 'estável')
+})
+
+test('tendencia: compara com ~1 h antes, não com o começo da série', () => {
+  // O rio subiu muito de madrugada e está parado na última hora: a tendência
+  // é do agora, senão a tela diria "subindo" com o rio estabilizado.
+  const t = tendencia(pontos(
+    ['2026-09-01T08:00:00Z', 1.0],
+    ['2026-09-01T12:00:00Z', 5.0],
+    ['2026-09-01T13:00:00Z', 5.0],
+  ))
+  assert.equal(t?.rotulo, 'estável')
+})
+
+test('tendencia: sem dois pontos não inventa direção', () => {
+  assert.equal(tendencia([]), null)
+  assert.equal(tendencia(pontos(['2026-09-01T12:00:00Z', 3.0])), null)
+})
+
+test('tendencia: dois pontos no mesmo instante não viram divisão por zero', () => {
+  assert.equal(tendencia(pontos(
+    ['2026-09-01T12:00:00Z', 3.0],
+    ['2026-09-01T12:00:00Z', 4.0],
+  )), null)
 })
