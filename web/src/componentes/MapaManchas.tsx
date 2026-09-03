@@ -31,6 +31,80 @@ function urlDoArquivo(arquivo: string): string | undefined {
 /** Itajaí, na foz. Enquadramento inicial; os dados reposicionam o mapa. */
 const CENTRO: [number, number] = [-26.9, -48.67]
 
+/**
+ * Os três fundos do mapa. A ATRIBUIÇÃO é condição de licença das três fontes,
+ * não cortesia: tem de estar visível enquanto a camada estiver ativa, e trocar
+ * junto com ela — por isso vive aqui, colada na URL, e não num texto solto.
+ *
+ * Nada de Google Maps/Earth: a licença não permite embutir tiles em site
+ * próprio (seria a Google Maps Platform, paga e com chave).
+ */
+const FUNDOS = {
+  escuro: {
+    nome: 'Escuro',
+    url: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    atribuicao: '© CARTO · © OpenStreetMap',
+    maxZoom: 19,
+  },
+  satelite: {
+    nome: 'Satélite',
+    // ⚠️ Esri inverte a ordem: {z}/{y}/{x}, não {z}/{x}/{y} como as outras.
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    atribuicao: 'Imagem: Esri, Maxar, Earthstar Geographics',
+    maxZoom: 18,
+  },
+  mapa: {
+    nome: 'Mapa',
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    atribuicao: '© colaboradores do OpenStreetMap',
+    maxZoom: 19,
+  },
+} as const
+
+type ChaveFundo = keyof typeof FUNDOS
+
+/**
+ * O fundo padrão é escuro por FUNÇÃO, não por estética: qualquer fundo com
+ * textura concorre com as manchas e com a legenda de lâmina d'água. Satélite e
+ * mapa entram como escolha de quem está olhando — o satélite ajuda a reconhecer
+ * a barra, os molhes e o bairro; o mapa ajuda a achar a rua.
+ */
+const FUNDO_PADRAO: ChaveFundo = 'escuro'
+const CHAVE_LOCAL = 'enchentes:fundo-mapa'
+
+/**
+ * O traço da mancha, ajustado ao fundo.
+ *
+ * Sobre o satélite, o contorno fino de 0,6 px e o azul translúcido somem contra
+ * telhado e mata — e a mancha é justamente o dado da tela. Sobre imagem, o
+ * contorno engrossa e escurece, e o preenchimento ganha opacidade. É a mesma
+ * ideia do contorno escuro sob as linhas de faixa no monitor: o fundo pode
+ * mudar, a leitura do risco não pode piorar.
+ */
+function estiloDaMancha(cores: Map<string, string>, sobreSatelite: boolean) {
+  return (f?: GeoJSON.Feature) => {
+    const situa = (f?.properties as { situa?: string } | undefined)?.situa
+    return {
+      color: sobreSatelite ? '#04141f' : '#1f5f96',
+      weight: sobreSatelite ? 1.4 : 0.6,
+      fillColor: (situa ? cores.get(situa) : undefined) ?? '#6aa8db',
+      fillOpacity: sobreSatelite ? 0.72 : 0.55,
+    }
+  }
+}
+
+function fundoSalvo(): ChaveFundo {
+  // localStorage falha em navegador com dados de site bloqueados; a tela tem de
+  // abrir mesmo assim, no padrão.
+  try {
+    const v = localStorage.getItem(CHAVE_LOCAL)
+    if (v && v in FUNDOS) return v as ChaveFundo
+  } catch {
+    /* sem preferência salva: segue no padrão */
+  }
+  return FUNDO_PADRAO
+}
+
 export default function MapaManchas() {
   const manchas = useMemo(() => ordenar((indice as { manchas: Mancha[] }).manchas), [])
   const [escolhida, setEscolhida] = useState<Mancha | undefined>(manchas[0])
@@ -38,6 +112,12 @@ export default function MapaManchas() {
   const [carregando, setCarregando] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
   const mapaRef = useRef<L.Map | null>(null)
+  const [fundo, setFundo] = useState<ChaveFundo>(fundoSalvo)
+  const fundoLayerRef = useRef<L.TileLayer | null>(null)
+  // O efeito que cria o mapa roda uma vez só (deps []), então não pode fechar
+  // sobre o `fundo` do primeiro render — lê o ref, sempre atual.
+  const fundoRef = useRef<ChaveFundo>(fundo)
+  fundoRef.current = fundo
   const camadaRef = useRef<L.GeoJSON | null>(null)
 
   // "Este ponto ficou dentro de quais manchas?"
@@ -52,9 +132,19 @@ export default function MapaManchas() {
   useEffect(() => {
     if (!divRef.current || mapaRef.current) return
     const mapa = L.map(divRef.current, { scrollWheelZoom: false }).setView(CENTRO, 12)
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© colaboradores do OpenStreetMap',
+    // Pane próprio para o fundo, abaixo do overlay (400). Sem ele, trocar de
+    // camada exigiria `bringToBack()`, que joga a camada NOVA para trás das
+    // tiles antigas que o Leaflet ainda mantém no DOM: o fundo novo carrega,
+    // fica escondido, e a tela não muda. Com pane fixo, trocar é só remover uma
+    // e adicionar a outra.
+    mapa.createPane('fundo')
+    const pane = mapa.getPane('fundo')
+    if (pane) pane.style.zIndex = '180'
+    const inicial = FUNDOS[fundoRef.current]
+    fundoLayerRef.current = L.tileLayer(inicial.url, {
+      pane: 'fundo',
+      maxZoom: inicial.maxZoom,
+      attribution: inicial.atribuicao,
     }).addTo(mapa)
     mapa.on('click', (e: L.LeafletMouseEvent) => {
       // GeoJSON guarda [longitude, latitude]; o Leaflet entrega o contrário.
@@ -68,6 +158,34 @@ export default function MapaManchas() {
       mapaRef.current = null
     }
   }, [])
+
+  // Troca o fundo: remove a camada atual e põe a nova no mesmo pane. A
+  // atribuição vai junto na própria camada, então o Leaflet a troca sozinho —
+  // que é o que a licença exige.
+  useEffect(() => {
+    const mapa = mapaRef.current
+    if (!mapa) return
+    const escolha = FUNDOS[fundo]
+    fundoLayerRef.current?.remove()
+    fundoLayerRef.current = L.tileLayer(escolha.url, {
+      pane: 'fundo',
+      maxZoom: escolha.maxZoom,
+      attribution: escolha.atribuicao,
+    }).addTo(mapa)
+    try {
+      localStorage.setItem(CHAVE_LOCAL, fundo)
+    } catch {
+      /* sem espaço ou bloqueado: a escolha vale só nesta visita */
+    }
+    // Repinta a mancha para o novo fundo SEM rebaixar o GeoJSON: são até 651 kB
+    // por evento, e trocar de fundo não pode custar outro download a quem está
+    // numa rede ruim no meio da chuva.
+    if (camadaRef.current && escolhida) {
+      camadaRef.current.setStyle(
+        estiloDaMancha(coresPorRotulo(escolhida.classes_lamina), fundo === 'satelite'),
+      )
+    }
+  }, [fundo, escolhida])
 
   // A consulta do ponto: baixa os eventos que ainda faltam e responde em quais
   // ele caiu dentro. É um clique explícito da pessoa, por isso pode buscar
@@ -140,15 +258,7 @@ export default function MapaManchas() {
         if (!vivo) return
         const cores = coresPorRotulo(escolhida.classes_lamina)
         const camada = L.geoJSON(geo as GeoJSON.GeoJsonObject, {
-          style: (f) => {
-            const situa = (f?.properties as { situa?: string } | undefined)?.situa
-            return {
-              color: '#1f5f96',
-              weight: 0.6,
-              fillColor: (situa ? cores.get(situa) : undefined) ?? '#6aa8db',
-              fillOpacity: 0.55,
-            }
-          },
+          style: estiloDaMancha(cores, fundoRef.current === 'satelite'),
           onEachFeature: (f, camadaDaFeicao) => {
             const situa = (f.properties as { situa?: string } | undefined)?.situa
             camadaDaFeicao.bindPopup(
@@ -203,6 +313,23 @@ export default function MapaManchas() {
           </option>
         ))}
       </select>
+
+      <p className={estilos.rotulo} id="fundo-mapa">
+        Fundo do mapa
+      </p>
+      <div className={estilos.fundos} role="group" aria-labelledby="fundo-mapa">
+        {(Object.keys(FUNDOS) as ChaveFundo[]).map((k) => (
+          <button
+            key={k}
+            type="button"
+            className={estilos.botaoFundo}
+            aria-pressed={fundo === k}
+            onClick={() => setFundo(k)}
+          >
+            {FUNDOS[k].nome}
+          </button>
+        ))}
+      </div>
 
       <div className={estilos.mapa} ref={divRef} role="img"
            aria-label={`Mapa das áreas atingidas em Itajaí na enchente de ${escolhida ? rotuloEvento(escolhida.evento) : ''}`} />
@@ -308,9 +435,12 @@ export default function MapaManchas() {
         </li>
       </ul>
 
+      {/* O crédito do fundo acompanha a camada ativa: com o satélite ligado,
+          "© colaboradores do OpenStreetMap" fixo aqui seria crédito à fonte
+          errada — e a atribuição é condição de licença das três. */}
       <p className={estilos.credito}>
-        Dados: GeoItajaí / Prefeitura de Itajaí (licença MIT) · Mapa base: © colaboradores do
-        OpenStreetMap
+        Dados: GeoItajaí / Prefeitura de Itajaí (licença MIT) · Mapa base:{' '}
+        {FUNDOS[fundo].atribuicao}
       </p>
     </section>
   )
