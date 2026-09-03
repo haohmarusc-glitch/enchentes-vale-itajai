@@ -69,6 +69,12 @@ export interface Topologia {
   cabeceiras_paralelas: string[]
   /** Afluentes que entram no tronco de lado — não são elos da sequência. */
   afluentes_laterais: { id: string; entra_perto_de: string; rio: string }[]
+  /**
+   * Rios tributários que entram no tronco mas NÃO têm régua própria no cadastro
+   * (Benedito, Luís Alves). `ponto_exato` guarda a confirmação pendente de onde
+   * exatamente entram — antes ou depois da régua da cidade vizinha.
+   */
+  afluentes_rios?: { nome: string; entra_perto_de: string; ponto_exato: string }[]
   /** Ids que saíram do eixo por não serem régua de rio (ex.: estação de altitude). */
   nao_e_regua_de_rio?: { id: string; motivo: string }[]
   nota?: string
@@ -255,4 +261,26 @@ export interface CotaRua {
 export interface CotasRuas {
   _meta: { descricao: string; aviso: string[]; campos: Record<string, string> }
   cotas: CotaRua[]
+}
+
+/**
+ * Abrigo oficial da Defesa Civil de Itajaí, com coordenada.
+ *
+ * É CADASTRO, não estado atual: `situacao` e `lotacao` existem na fonte e foram
+ * DELIBERADAMENTE deixados de fora do arquivo, para nunca serem lidos como
+ * "aberto agora" numa tela de enchente. Quem ativa abrigo e manda evacuar é a
+ * Defesa Civil. `nome`/`endereco` podem ser nulos num registro sem dado na fonte.
+ */
+export interface Abrigo {
+  nome: string | null
+  endereco: string | null
+  zona_defesa_civil: string | null
+  capacidade: number | null
+  lat: number
+  lon: number
+}
+
+export interface AbrigosItajai {
+  _meta: { AVISO_EXIBICAO: string; total: number } & Record<string, unknown>
+  abrigos: Abrigo[]
 }

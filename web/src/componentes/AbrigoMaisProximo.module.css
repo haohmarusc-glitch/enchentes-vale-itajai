@@ -1,0 +1,73 @@
+.aviso {
+  margin: 0 0 0.7rem;
+  padding: 0.6rem 0.7rem;
+  border-left: 3px solid var(--faixa-alerta, #e0a500);
+  background: #fff8e6;
+  border-radius: 0 6px 6px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #3a2a00;
+}
+
+.botao {
+  display: inline-block;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--borda, #c8ccd2);
+  border-radius: 8px;
+  background: var(--fundo-botao, #f2f5f8);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botao:hover {
+  background: var(--fundo-botao-hover, #e7edf3);
+}
+
+.status {
+  margin: 0.5rem 0;
+  font-size: 0.92rem;
+  color: var(--tinta-fraca);
+}
+
+.lista {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+}
+
+.item {
+  display: block;
+  margin: 0.4rem 0;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--borda, #d8d8de);
+}
+
+.nome {
+  display: block;
+  font-weight: 600;
+}
+
+.dist {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+}
+
+.endereco {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.meta {
+  display: block;
+  font-size: 0.84rem;
+  color: var(--tinta-fraca);
+}
+
+.fonte {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+  line-height: 1.45;
+}

@@ -19,13 +19,19 @@ Itajaí do OESTE (Taió)  ‖  Itajaí do SUL (Ituporanga)   ← cabeceiras PARA
                           │ ← entra o Rio Hercílio / Itajaí do Norte
                           │     [IBIRAMA = afluente lateral, NÃO elo do tronco]
                        ASCURRA            (tronco)
-                          │ ← entra o Rio Benedito (Timbó)
+                          │ ← entra o Rio Benedito (Timbó), perto de Indaial *
                        INDAIAL → BLUMENAU → GASPAR
-                          │ ← entra o Rio Luís Alves
+                          │ ← entra o Rio Luís Alves, perto de Ilhota *
                         ILHOTA
                           │ ← entra o ITAJAÍ-MIRIM (que é ramificado; ver abaixo)
                         ITAJAÍ → foz (Atlântico)
 ```
+
+**\*** O **ponto exato** onde o Benedito e o Luís Alves entram (antes ou depois
+da régua de Indaial / Ilhota) **ainda não está confirmado** — as fontes internas
+divergiam (o `afluentes_monitorados` do Timbó dizia "entre Indaial e Blumenau").
+Registrado como pendência em `_topologia.afluentes_rios`, para resolver no mapa
+quando o Overpass voltar (esteve fora do ar em 02/09). Não se inventa o lado.
 
 **A única sequência que a UI pode afirmar** (`_topologia.tronco_sequencia`):
 
@@ -86,10 +92,19 @@ fica vermelho. Rode `python3 scripts/validar_dados.py` antes de todo commit em
 
 ## Pendências (não bloqueiam a topologia)
 
-- Ponto exato da foz do Benedito e do Luís Alves (antes/depois das réguas de
-  Indaial e Ilhota).
-- Distância **ao longo do rio** no `transito.json` (hoje as faixas são de
-  literatura JICA; a reta subestima o percurso ~1,3–1,5×).
+- **Ponto exato** onde o Benedito e o Luís Alves entram (antes/depois das réguas
+  de Indaial e Ilhota) — `scripts/achar_confluencias.py` resolve por geometria
+  (grafo do tronco + Dijkstra), sem Overpass; falta rodar **na VPS**, onde estão
+  os GeoJSON dos afluentes (não no repo). Até lá, `_topologia.afluentes_rios`
+  fica "a confirmar por coordenada".
+- Distância **ao longo do rio** no `transito.json` — **medida** (02/09/2026) por
+  `scripts/medir_distancia_rio.py`, montando os segmentos do OSM num grafo e
+  caminhando pela água. Gravada como `km_rio` (contexto/QA, **não** muda os
+  tempos, que seguem do JICA) onde as duas pontas estão no traçado: Rio do Sul→
+  Indaial 85,8 km, Gaspar→Ilhota 16,9 km, Ilhota→Itajaí 33,2 km — sinuosidade de
+  **1,2 a 2,0×** a reta, velocidade implícita 3–9 km/h (coerente com o JICA).
+  Fica de fora quem está longe do traçado (Blumenau, coordenada da estação ~3 km
+  do talvegue) ou em braço não mapeado (Taió/Ituporanga, cabeceiras).
 - ~~Trazer a estrutura de árvore ao `/rios` do bot~~ — **feito** (02/09/2026):
   `resposta_rios` mostra o Açu em três blocos (cabeceiras / tronco / afluentes),
   como a tela; o Mirim segue em fila. Travado por `teste_bot.py`.

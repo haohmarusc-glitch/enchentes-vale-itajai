@@ -3,7 +3,8 @@
     "descricao": "Tempo estimado para a cheia percorrer cada trecho. Base: estudo JICA (Preparatory Survey, Itajaí River Basin, 2011). Calibrar com horários de pico reais em enchentes.json.",
     "campos": {
       "horas_min / horas_max": "Faixa em horas. Quando a fonte traz valor único, mínimo e máximo coincidem e a tela avisa que é aproximação.",
-      "confianca": "alta = faixa afirmada pelo próprio estudo técnico; media = derivada de tabela de hidrograma de projeto ou de modelo acadêmico citado; baixa = estimativa informal."
+      "confianca": "alta = faixa afirmada pelo próprio estudo técnico; media = derivada de tabela de hidrograma de projeto ou de modelo acadêmico citado; baixa = estimativa informal.",
+      "km_rio": "Distância AO LONGO DO RIO (traçado OSM, ODbL), em km, por scripts/medir_distancia_rio.py. Contexto/QA — NÃO é usada para calcular tempo; os horas_min/max continuam do estudo JICA."
     },
     "origem_das_faixas": {
       "afirmadas_pela_jica": "Rio do Sul -> Blumenau: 7 a 10 h. Blumenau -> Itajaí: 14 a 17 h. O pico na foz cai no dia seguinte ao pico em Rio do Sul.",
@@ -16,11 +17,11 @@
   "trechos": [
     { "rio": "itajai-acu", "de": "taio", "para": "rio-do-sul", "horas_min": 6, "horas_max": 8, "confianca": "media", "fonte": "Faixa cobre as duas fontes: hidrograma de projeto JICA (6 h) e modelos acadêmicos ABRH (8 h)" },
     { "rio": "itajai-acu", "de": "ituporanga", "para": "rio-do-sul", "horas_min": 6, "horas_max": 6, "confianca": "baixa", "fonte": "Modelos acadêmicos (ABRH), citado em compilação. O hidrograma de projeto da JICA discorda: põe o pico de Ituporanga ~1 h DEPOIS do de Rio do Sul. Conferir antes de usar." },
-    { "rio": "itajai-acu", "de": "rio-do-sul", "para": "indaial", "horas_min": 10, "horas_max": 10, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos). Passa por Ascurra, no tronco, sem tempo próprio levantado." },
+    { "rio": "itajai-acu", "de": "rio-do-sul", "para": "indaial", "horas_min": 10, "horas_max": 10, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos). Passa por Ascurra, no tronco, sem tempo próprio levantado.", "km_rio": 85.8 },
     { "rio": "itajai-acu", "de": "rio-do-sul", "para": "blumenau", "horas_min": 7, "horas_max": 10, "confianca": "alta", "fonte": "Estudo JICA, Preparatory Survey 2011, seções 7.5.3-7.5.4 (faixa afirmada pelo estudo)" },
     { "rio": "itajai-acu", "de": "blumenau", "para": "gaspar", "horas_min": 2, "horas_max": 2, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos)" },
-    { "rio": "itajai-acu", "de": "gaspar", "para": "ilhota", "horas_min": 5, "horas_max": 5, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos)" },
-    { "rio": "itajai-acu", "de": "ilhota", "para": "itajai", "horas_min": 10, "horas_max": 10, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos)" },
+    { "rio": "itajai-acu", "de": "gaspar", "para": "ilhota", "horas_min": 5, "horas_max": 5, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos)", "km_rio": 16.9 },
+    { "rio": "itajai-acu", "de": "ilhota", "para": "itajai", "horas_min": 10, "horas_max": 10, "confianca": "media", "fonte": "Hidrograma de projeto JICA (Tabela 7.5.1, cheia de 5 anos)", "km_rio": 33.2 },
     { "rio": "itajai-acu", "de": "blumenau", "para": "itajai", "horas_min": 14, "horas_max": 17, "confianca": "alta", "fonte": "Estudo JICA, Preparatory Survey 2011, seções 7.5.3-7.5.4 (faixa afirmada pelo estudo)" },
     { "rio": "itajai-mirim", "de": "brusque", "para": "itajai", "horas_min": 6, "horas_max": 6, "confianca": "baixa", "fonte": "Estimativa informal; calibrar. O hidrograma de projeto da JICA põe o pico de Brusque ~6 h após o de Rio do Sul, mas por chuva na própria sub-bacia do Mirim, não por deslocamento da cheia do Açu." }
   ]

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
 import PainelMare from '../componentes/PainelMare'
+import AbrigoMaisProximo from '../componentes/AbrigoMaisProximo'
 
 /**
  * O mapa carrega à parte, como o gráfico de picos.
@@ -156,6 +157,7 @@ export default function TelaItajai() {
         </p>
       </section>
       <ReguasDeItajai />
+      <AbrigoMaisProximo />
 
       {/*
         O mapa só é montado quando a pessoa pede. Antes ele era renderizado de
