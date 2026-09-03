@@ -123,6 +123,36 @@ const VAR_LEGENDA: Record<Faixa, string> = {
   varias: '--agua-clara',
 }
 
+/** Rótulo legível de cada cota de referência, na ordem em que sobem. */
+const ROTULO_COTA: Record<string, string> = {
+  atencao: 'Atenção',
+  alerta: 'Alerta',
+  inundacao: 'Inundação',
+  emergencia: 'Emergência',
+  inundacao_historica: 'Inundação histórica',
+}
+const ORDEM_COTA = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
+
+/** Cotas da régua da cidade, ordenadas de baixo para cima. */
+function cotasOrdenadas(cotas: Record<string, number>): [string, number][] {
+  return Object.entries(cotas).sort((a, b) => {
+    const ia = ORDEM_COTA.indexOf(a[0])
+    const ib = ORDEM_COTA.indexOf(b[0])
+    if (ia !== -1 && ib !== -1) return ia - ib
+    return a[1] - b[1]
+  })
+}
+
+/** Chuva recente da cidade (1 h e 24 h), da coleta ao vivo — null se não houver. */
+function chuvaDaCidade(
+  chuva: { rio: string | null; cidade: string | null; mm: { h1: number | null; h24: number | null } }[],
+  rioId: string,
+  cidadeId: string,
+): { h1: number | null; h24: number | null } | null {
+  const c = chuva.find((x) => x.rio === rioId && x.cidade === cidadeId)
+  return c ? { h1: c.mm.h1, h24: c.mm.h24 } : null
+}
+
 /**
  * Tela cheia de monitoramento da bacia do Itajaí: Açu + Mirim (+ afluentes) num
  * `<canvas>` só, em alta definição. Cada trecho na cor da faixa da cidade a
@@ -141,14 +171,16 @@ export default function MonitorBacia() {
   const [rios, setRios] = useState<RioParaCena[] | null>(null)
   const [tam, setTam] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
   const [sel, setSel] = useState<Pino | null>(null)
+  const [hover, setHover] = useState<Pino | null>(null)
 
   const tempoReal = useTempoReal()
   const serie = useSerieRecente()
   const agora = useMemo(() => new Date(), [tempoReal])
 
+  // O anel destaca a cidade em FOCO: a selecionada (clique) ou a sob o mouse.
   useEffect(() => {
-    selRef.current = sel?.cidade.id ?? null
-  }, [sel])
+    selRef.current = (sel ?? hover)?.cidade.id ?? null
+  }, [sel, hover])
 
   // Todas as cidades da bacia, para casar a chuva com a coordenada.
   const cidadesBacia = useMemo(
@@ -298,15 +330,16 @@ export default function MonitorBacia() {
     return () => cancelAnimationFrame(raf)
   }, [rios, tempoReal, agora, tam, cidadesBacia, idxRepro, grade, serie])
 
-  function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
+  /** Pino mais próximo do ponteiro, dentro do raio — ou null. */
+  function pinoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {
     const cena = cenaRef.current
     const canvas = canvasRef.current
-    if (!cena || !canvas) return
+    if (!cena || !canvas) return null
     const r = canvas.getBoundingClientRect()
     const x = ev.clientX - r.left
     const y = ev.clientY - r.top
     let melhor: Pino | null = null
-    let d = 24 * 24
+    let d = 26 * 26
     for (const p of cena.pinos) {
       const dd = (p.x - x) ** 2 + (p.y - y) ** 2
       if (dd < d) {
@@ -314,7 +347,18 @@ export default function MonitorBacia() {
         melhor = p
       }
     }
-    setSel(melhor)
+    return melhor
+  }
+
+  function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
+    setSel(pinoNoPonto(ev))
+  }
+
+  // Passar o mouse por cima destaca a cidade e abre o painel de dados no canto.
+  // Só atualiza quando muda de cidade, para não repintar à toa.
+  function aoMover(ev: React.PointerEvent<HTMLCanvasElement>) {
+    const p = pinoNoPonto(ev)
+    setHover((atual) => (atual?.cidade.id === p?.cidade.id ? atual : p))
   }
 
   function telaCheia() {
@@ -334,6 +378,8 @@ export default function MonitorBacia() {
           className={estilos.tela}
           style={{ width: '100%', height: '100%' }}
           onPointerDown={aoTocar}
+          onPointerMove={aoMover}
+          onPointerLeave={() => setHover(null)}
           role="img"
           aria-label="Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"
         />
@@ -413,36 +459,91 @@ export default function MonitorBacia() {
           </div>
         ) : null}
 
-        {/* Cartão da cidade tocada. */}
-        {sel ? (
-          <div
-            className={estilos.balao}
-            style={{
-              left: `${(sel.x / (tam.w || 1)) * 100}%`,
-              top: `${(sel.y / (tam.h || 1)) * 100}%`,
-            }}
-          >
-            <strong>{sel.cidade.nome}</strong>
-            <br />
-            {ROTULO_FAIXA[sel.faixa]}
-            {sel.nivel != null ? <> · {metros(sel.nivel)}</> : null}
-            {sel.medidoEm ? (
-              <>
-                <br />
-                <span className={estilos.idade}>{textoIdade(idadeMin(sel.medidoEm, agora))}</span>
-              </>
-            ) : null}
-            <br />
-            <em>{ACAO_FAIXA[sel.faixa]}</em>
-            <button
-              type="button"
-              className={estilos.dicaDetalhe}
-              onClick={() => navigate(rotaDoRio(sel.rioId))}
-            >
-              Abrir {sel.rioId === 'itajai-mirim' ? 'o Mirim' : 'o Açu'}
-            </button>
-          </div>
-        ) : null}
+        {/* Painel de dados da cidade em foco (mouse por cima ou toque), no canto
+            superior direito, abaixo do chip da maré. Traz tudo o que temos dela. */}
+        {(sel ?? hover) ? (() => {
+          const foco = (sel ?? hover)!
+          const cid = foco.cidade
+          const cotas = cotasOrdenadas(cid.cotas_m ?? {})
+          const ch = chuvaDaCidade(tempoReal.chuva, foco.rioId, cid.id)
+          return (
+            <div className={estilos.painel}>
+              <div className={estilos.painelTopo}>
+                <strong>{cid.nome}</strong>
+                <span className={estilos.painelRio}>
+                  {foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
+                </span>
+              </div>
+              <div className={estilos.painelFaixa}>
+                <span
+                  className={estilos.amostra}
+                  style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
+                />
+                {ROTULO_FAIXA[foco.faixa]}
+              </div>
+              <p className={estilos.painelNivel}>
+                {foco.nivel != null ? (
+                  <>
+                    <strong>{metros(foco.nivel)}</strong>
+                    {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))}</> : null}
+                  </>
+                ) : (
+                  <span className={estilos.painelSemDado}>sem leitura fresca</span>
+                )}
+              </p>
+              {cotas.length > 0 ? (
+                <div className={estilos.painelBloco}>
+                  <span className={estilos.painelRotulo}>Cotas da régua</span>
+                  <ul>
+                    {cotas.map(([k, v]) => (
+                      <li key={k}>
+                        {ROTULO_COTA[k] ?? k}: {metros(v)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className={estilos.painelSemCota}>
+                  Sem cota de referência cadastrada — a faixa fica cinza.
+                </p>
+              )}
+              <p className={estilos.painelChuva}>
+                {ch && (ch.h1 != null || ch.h24 != null) ? (
+                  <>
+                    Chuva:{' '}
+                    {ch.h1 != null ? (
+                      <>
+                        <strong>{ch.h1.toFixed(1)} mm</strong> (1 h)
+                      </>
+                    ) : null}
+                    {ch.h1 != null && ch.h24 != null ? ' · ' : ''}
+                    {ch.h24 != null ? <>{ch.h24.toFixed(0)} mm (24 h)</> : null}
+                  </>
+                ) : (
+                  'Sem chuva recente medida aqui.'
+                )}
+              </p>
+              {cid.sub_bacia ? (
+                <p className={estilos.painelExtra}>Sub-bacia: {cid.sub_bacia}</p>
+              ) : null}
+              {cid.km_da_foz != null ? (
+                <p className={estilos.painelExtra}>{cid.km_da_foz} km até a foz</p>
+              ) : null}
+              <p className={estilos.painelAcao}>{ACAO_FAIXA[foco.faixa]}</p>
+              <button
+                type="button"
+                className={estilos.dicaDetalhe}
+                onClick={() => navigate(rotaDoRio(foco.rioId))}
+              >
+                Abrir {foco.rioId === 'itajai-mirim' ? 'o Mirim' : 'o Açu'} →
+              </button>
+              <p className={estilos.painelRessalva}>
+                Nível na régua <strong>desta</strong> cidade. Não compare metros entre
+                cidades — a comparação é pela faixa (cor).
+              </p>
+            </div>
+          )
+        })() : null}
       </div>
 
       {/* Acesso por teclado/leitor: as cidades viram botões fora da vista. */}
