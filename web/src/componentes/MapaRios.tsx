@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { Cidade } from '../dados/tipos'
+import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
-import { faixaDaCidade, type Faixa } from '../logica/tempoReal'
+import { deBrasilia, faixaDaCidade, type Faixa } from '../logica/tempoReal'
+import { estadoMareAgora, type EstadoMare } from '../logica/mare'
 import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
 import {
@@ -71,10 +72,19 @@ interface Pino {
   faixa: Faixa
   nivel: number | null
 }
+/** O MAR na foz, colorido pela MARÉ (escala própria, nunca a de cheia). */
+interface MarVis {
+  estado: EstadoMare
+  corSea: string
+  rotulo: string
+  x: number
+  y: number
+}
 interface Cena {
   trechos: Trecho[]
   pinos: Pino[]
   cores: Record<Faixa, string>
+  mar: MarVis | null
   largura: number
   altura: number
 }
@@ -126,6 +136,14 @@ function amostrar(
  * cor daquele trecho, a mesma regra do diagrama. Sem âncora que pinte, o trecho
  * é `sem-dado` (cinza, e sem correnteza).
  */
+/** Azul do mar por altura de maré: fundo (baixamar) → claro (preamar). */
+function azulMare(altura01: number): string {
+  const lo = [18, 50, 74]
+  const hi = [47, 134, 201]
+  const c = lo.map((v, i) => Math.round(v + (hi[i]! - v) * altura01))
+  return `rgba(${c[0]},${c[1]},${c[2]},0.5)`
+}
+
 function construirCena(
   el: Element,
   coords: LonLat[][],
@@ -135,6 +153,7 @@ function construirCena(
   agora: Date,
   largura: number,
   altura: number,
+  mare: TabuaMare | null,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -206,7 +225,36 @@ function construirCena(
     return { cidade: a.cidade, x, y, faixa: a.faixa, nivel: a.nivel }
   })
 
-  return { trechos, pinos, cores, largura, altura }
+  // O MAR na foz. A foz é a cidade mais a LESTE (o oceano fica a leste; Itajaí
+  // é o ponto de maior longitude da bacia), então o âncora do mar é o pino de
+  // maior x. A cor vem da MARÉ, na sua própria escala azul — nunca a faixa de
+  // cheia. Sem tábua, ou instante fora do trecho informado: mar cinza, "sem dado".
+  let mar: MarVis | null = null
+  const pinoFoz = pinos.reduce<Pino | null>((m, p) => (m === null || p.x > m.x ? p : m), null)
+  if (pinoFoz) {
+    const paraData = (e: { quando: string; altura_m?: number }) => ({
+      quando: deBrasilia(e.quando),
+      altura_m: e.altura_m,
+    })
+    const ma = mare
+      ? estadoMareAgora(
+          (mare.preamares ?? []).map(paraData),
+          (mare.baixamares ?? []).map(paraData),
+          agora,
+        )
+      : { estado: 'sem-dado' as EstadoMare, altura01: null, proxima: null }
+    const corSea =
+      ma.altura01 === null ? 'rgba(58,76,94,0.42)' : azulMare(ma.altura01)
+    const rotulo =
+      ma.estado === 'subindo'
+        ? 'Maré subindo ▲'
+        : ma.estado === 'baixando'
+          ? 'Maré baixando ▼'
+          : 'Maré: sem dado'
+    mar = { estado: ma.estado, corSea, rotulo, x: pinoFoz.x, y: pinoFoz.y }
+  }
+
+  return { trechos, pinos, cores, mar, largura, altura }
 }
 
 /** Traça a poligonal de um trecho — reusado pelo brilho e pelo núcleo. */
@@ -232,6 +280,11 @@ function desenharBase(ctx: CanvasRenderingContext2D, cena: Cena): void {
   g.addColorStop(1, '#081019')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, cena.largura, cena.altura)
+
+  // O MAR entra ANTES do rio (fica atrás do leito e dos pinos). É a leste da
+  // foz — como Itajaí é o ponto mais a leste da bacia, o mar ocupa a faixa
+  // direita do mapa.
+  desenharMar(ctx, cena)
 
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
@@ -270,6 +323,53 @@ function desenharBase(ctx: CanvasRenderingContext2D, cena: Cena): void {
     ctx.stroke()
   }
   ctx.globalAlpha = 1
+
+  // A etiqueta da maré, por cima de tudo da base (mas ainda sob os pinos).
+  desenharEtiquetaMare(ctx, cena)
+}
+
+/**
+ * O MAR na foz, colorido pela MARÉ (escala azul PRÓPRIA, jamais a de cheia).
+ * Ocupa a faixa direita (leste) do mapa a partir da foz, com transparência para
+ * não cobrir o leito. Cinza translúcido quando não há tábua — o mar continua
+ * ali, só sem número.
+ */
+function desenharMar(ctx: CanvasRenderingContext2D, cena: Cena): void {
+  const mar = cena.mar
+  if (!mar) return
+  const x0 = Math.min(mar.x - 6, cena.largura * 0.72)
+  const g = ctx.createLinearGradient(x0, 0, cena.largura, 0)
+  g.addColorStop(0, 'rgba(0,0,0,0)')
+  g.addColorStop(1, mar.corSea)
+  ctx.fillStyle = g
+  ctx.fillRect(x0, 0, cena.largura - x0, cena.altura)
+}
+
+/** Chip "Mar / Maré subindo·baixando·sem dado" no alto, ancorado à direita. */
+function desenharEtiquetaMare(ctx: CanvasRenderingContext2D, cena: Cena): void {
+  const mar = cena.mar
+  if (!mar) return
+  ctx.font = '600 11px system-ui, sans-serif'
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'middle'
+  const texto = `Mar · ${mar.rotulo}`
+  const w = ctx.measureText(texto).width
+  const padX = 8
+  const h = 20
+  const x = cena.largura - (w + padX * 2) - 8
+  const y = 8
+  ctx.fillStyle = 'rgba(6,16,26,0.72)'
+  const r = 6
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.arcTo(x + w + padX * 2, y, x + w + padX * 2, y + h, r)
+  ctx.arcTo(x + w + padX * 2, y + h, x, y + h, r)
+  ctx.arcTo(x, y + h, x, y, r)
+  ctx.arcTo(x, y, x + w + padX * 2, y, r)
+  ctx.closePath()
+  ctx.fill()
+  ctx.fillStyle = mar.estado === 'sem-dado' ? '#9fb2c4' : '#bfe0ff'
+  ctx.fillText(texto, x + padX, y + h / 2 + 0.5)
 }
 
 /**
@@ -403,6 +503,7 @@ export default function MapaRios({
   tempoReal,
   agora,
   aoSelecionar,
+  mare = null,
 }: {
   rioId: string
   cidades: Cidade[]
@@ -410,6 +511,8 @@ export default function MapaRios({
   agora: Date
   /** Chamado ao tocar numa cidade — abre o detalhe dela na tela do rio. */
   aoSelecionar?: (cidadeId: string) => void
+  /** Tábua de maré de Itajaí — colore o MAR na foz. Ausente = mar cinza. */
+  mare?: TabuaMare | null
 }) {
   const divRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -485,7 +588,7 @@ export default function MapaRios({
     canvas.width = Math.round(tam.w * dpr)
     canvas.height = Math.round(tam.h * dpr)
 
-    const cena = construirCena(canvas, coords, cidades, rioId, tempoReal, agora, tam.w, tam.h)
+    const cena = construirCena(canvas, coords, cidades, rioId, tempoReal, agora, tam.w, tam.h, mare)
     cenaRef.current = cena
 
     // Base (fundo escuro + leito luminoso) numa camada só, desenhada uma vez; a
@@ -513,7 +616,7 @@ export default function MapaRios({
     }
     raf = requestAnimationFrame(quadro)
     return () => cancelAnimationFrame(raf)
-  }, [coords, cidades, tempoReal, agora, tam, rioId])
+  }, [coords, cidades, tempoReal, agora, tam, rioId, mare])
 
   // Toque/clique: acha o pino mais próximo e abre o detalhe da cidade.
   function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
@@ -611,8 +714,10 @@ export default function MapaRios({
         Cada trecho tem a cor da faixa da cidade a montante; a correnteza desce no
         sentido do rio e corre mais rápido onde o nível está mais alto — nunca o
         nível em metros. Trecho <strong>cinza</strong> é onde ainda não há régua
-        que o pinte, e por isso fica parado. Toque numa cidade para as cotas de
-        rua e o abrigo dela. Traçado: © colaboradores do OpenStreetMap (ODbL).
+        que o pinte, e por isso fica parado. Na foz, a faixa <strong>azul</strong>{' '}
+        é a <strong>maré</strong> (escala própria, não a de cheia): maré alta
+        trava o escoamento do rio. Toque numa cidade para as cotas de rua e o
+        abrigo dela. Traçado: © colaboradores do OpenStreetMap (ODbL).
       </p>
     </div>
   )

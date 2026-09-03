@@ -3,7 +3,7 @@ import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
 import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
-import { cidadesDoRio, eventosDoRio, rio, topologiaDoRio, trechos } from '../dados/carregar'
+import { cidadesDoRio, eventosDoRio, mareItajai, rio, topologiaDoRio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
@@ -240,6 +240,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
                 tempoReal={tempoReal}
                 agora={agora}
                 aoSelecionar={selecionarERolar}
+                mare={mareItajai}
               />
             </Suspense>
           ) : (

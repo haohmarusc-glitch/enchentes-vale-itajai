@@ -128,3 +128,77 @@ export const TEXTO_REGIME: Record<RegimeMare, string> = {
   quadratura: 'maré de quadratura (lua em quarto) — preamares mais baixas do mês',
   intermediaria: 'maré intermediária, entre sizígia e quadratura',
 }
+
+/** Um extremo de maré da tábua: preamar (alta) ou baixamar (baixa). */
+export interface ExtremoMare {
+  tipo: 'preamar' | 'baixamar'
+  quando: Date
+  altura_m?: number
+}
+
+/** Está a maré subindo (enchente), baixando (vazante), ou não dá para dizer? */
+export type EstadoMare = 'subindo' | 'baixando' | 'sem-dado'
+
+export interface MareAgora {
+  estado: EstadoMare
+  /**
+   * Altura relativa da maré AGORA, 0 (baixamar) a 1 (preamar), por interpolação
+   * de cosseno entre os dois extremos que cercam o instante. Null quando não há
+   * como saber (tábua vazia, ou o instante fora do trecho informado). NÃO é
+   * centímetro de rio nem de maré — é só a posição no ciclo, para colorir o mar.
+   */
+  altura01: number | null
+  /** O próximo extremo (a preamar ou baixamar que vem a seguir), se houver. */
+  proxima: ExtremoMare | null
+}
+
+/** Meio ciclo de maré semidiurna ~6,2 h; acima de 12 h entre extremos é lacuna. */
+const MAX_ENTRE_EXTREMOS_MS = 12 * 3_600_000
+
+/**
+ * O que a maré está fazendo AGORA, na foz — para o MAR no mapa.
+ *
+ * Junta preamares e baixamares informadas, acha o par que cerca o instante e diz
+ * se a maré sobe ou desce e a que altura do ciclo está. Sem par que cerque o
+ * agora — tábua vazia, ou só cobrindo outro dia — devolve `sem-dado`: o mar fica
+ * cinza e nada é inventado. Isto é DELIBERADAMENTE separado da faixa de cheia:
+ * maré alta NÃO é cheia (as réguas do estuário nem disparam alerta por isso). O
+ * mar muda de cor pela maré na sua PRÓPRIA escala; o perigo que ela carrega é
+ * outro — maré alta trava o escoamento do rio.
+ */
+export function estadoMareAgora(
+  preamares: { quando: Date; altura_m?: number }[],
+  baixamares: { quando: Date; altura_m?: number }[],
+  agora: Date,
+): MareAgora {
+  const extremos: ExtremoMare[] = [
+    ...preamares.map((p) => ({ tipo: 'preamar' as const, quando: p.quando, altura_m: p.altura_m })),
+    ...baixamares.map((b) => ({ tipo: 'baixamar' as const, quando: b.quando, altura_m: b.altura_m })),
+  ]
+    .filter((e) => !Number.isNaN(e.quando.getTime()))
+    .sort((a, b) => a.quando.getTime() - b.quando.getTime())
+
+  let antes: ExtremoMare | null = null
+  let depois: ExtremoMare | null = null
+  for (const e of extremos) {
+    if (e.quando.getTime() <= agora.getTime()) antes = e
+    else {
+      depois = e
+      break
+    }
+  }
+  // Sem cercar o instante dos dois lados: não há como dizer sobe/desce agora.
+  if (!antes || !depois) return { estado: 'sem-dado', altura01: null, proxima: depois }
+  // Extremos consecutivos deviam alternar; se não, a tábua tem buraco. E um vão
+  // grande demais entre eles é lacuna, não meia-maré real.
+  if (antes.tipo === depois.tipo) return { estado: 'sem-dado', altura01: null, proxima: depois }
+  if (depois.quando.getTime() - antes.quando.getTime() > MAX_ENTRE_EXTREMOS_MS)
+    return { estado: 'sem-dado', altura01: null, proxima: depois }
+
+  const fase =
+    (agora.getTime() - antes.quando.getTime()) /
+    (depois.quando.getTime() - antes.quando.getTime())
+  const subindo = antes.tipo === 'baixamar' // baixamar → preamar
+  const altura01 = subindo ? (1 - Math.cos(Math.PI * fase)) / 2 : (1 + Math.cos(Math.PI * fase)) / 2
+  return { estado: subindo ? 'subindo' : 'baixando', altura01, proxima: depois }
+}

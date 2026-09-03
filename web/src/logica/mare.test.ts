@@ -4,8 +4,49 @@ import {
   agravamento,
   cruzarComMare,
   diasAteSizigia,
+  estadoMareAgora,
   regimeMare,
 } from './mare'
+
+const H = 3_600_000
+
+test('maré subindo: entre baixamar e a próxima preamar', () => {
+  const base = new Date('2026-09-03T12:00:00Z')
+  const baixamares = [{ quando: new Date(base.getTime()) }]
+  const preamares = [{ quando: new Date(base.getTime() + 6 * H) }]
+  const agora = new Date(base.getTime() + 3 * H) // meio do caminho
+  const m = estadoMareAgora(preamares, baixamares, agora)
+  assert.equal(m.estado, 'subindo')
+  assert.ok(m.altura01 !== null && Math.abs(m.altura01 - 0.5) < 1e-9) // meio ciclo
+  assert.equal(m.proxima?.tipo, 'preamar')
+})
+
+test('maré baixando: entre preamar e a próxima baixamar', () => {
+  const base = new Date('2026-09-03T12:00:00Z')
+  const preamares = [{ quando: new Date(base.getTime()) }]
+  const baixamares = [{ quando: new Date(base.getTime() + 6 * H) }]
+  const agora = new Date(base.getTime() + 1 * H) // logo após a preamar
+  const m = estadoMareAgora(preamares, baixamares, agora)
+  assert.equal(m.estado, 'baixando')
+  // Perto da preamar a altura ainda é alta (> 0,5).
+  assert.ok(m.altura01 !== null && m.altura01 > 0.5)
+  assert.equal(m.proxima?.tipo, 'baixamar')
+})
+
+test('tábua vazia ou fora do trecho: sem-dado (mar cinza, nada inventado)', () => {
+  const agora = new Date('2026-09-03T12:00:00Z')
+  assert.equal(estadoMareAgora([], [], agora).estado, 'sem-dado')
+  // Extremos todos no passado: não cercam o agora.
+  const passado = [{ quando: new Date(agora.getTime() - 30 * H) }]
+  assert.equal(estadoMareAgora(passado, [], agora).estado, 'sem-dado')
+  // Vão maior que meio ciclo (12 h) entre extremos: lacuna, não meia-maré.
+  const m = estadoMareAgora(
+    [{ quando: new Date(agora.getTime() + 20 * H) }],
+    [{ quando: new Date(agora.getTime() - 20 * H) }],
+    agora,
+  )
+  assert.equal(m.estado, 'sem-dado')
+})
 
 test('lua nova conhecida é sizígia', () => {
   // Lua nova de 6 de janeiro de 2000, 18:14 UTC — a própria referência.
