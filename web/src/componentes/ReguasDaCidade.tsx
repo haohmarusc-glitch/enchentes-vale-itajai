@@ -42,10 +42,12 @@ export default function ReguasDaCidade({
   if (reguas.length === 0) return null
 
   const comMare = reguas.filter((r) => !r.alertaAutomatico)
-  // Só agrupa quando há mais de um curso; com um curso só, um subtítulo único
-  // seria ruído.
+  // O SUBTÍTULO do curso só aparece com mais de um curso — com um só, ele é
+  // ruído. Mas a ORDEM (montante → foz), os braços paralelos e o par co-locado
+  // valem sempre: é o que a tela de rio precisa, onde as réguas já vêm filtradas
+  // por um curso só e antes saíam em fila achatada, sem ordem nenhuma.
   const grupos = agrupadoPorCurso ? agruparPorCurso(reguas) : null
-  const mostrarGrupos = grupos != null && grupos.length > 1
+  const mostrarNomeDoCurso = grupos != null && grupos.length > 1
 
   return (
     <span className={estilos.bloco}>
@@ -61,10 +63,12 @@ export default function ReguasDaCidade({
         Cada régua tem seu próprio zero: os metros de uma não se comparam com os de outra.
       </span>
 
-      {mostrarGrupos ? (
-        grupos!.map((g) => (
+      {grupos ? (
+        grupos.map((g) => (
           <span key={g.rio} className={estilos.grupo}>
-            <span className={estilos.curso}>{g.nome}, da nascente para o mar</span>
+            {mostrarNomeDoCurso ? (
+              <span className={estilos.curso}>{g.nome}, da nascente para o mar</span>
+            ) : null}
             {g.divisao ? <CursoComBracos divisao={g.divisao} /> : <ListaDeReguas reguas={g.reguas} destacarPar />}
           </span>
         ))

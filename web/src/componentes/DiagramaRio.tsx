@@ -285,7 +285,16 @@ function ItemCidade({
               <span className={estilos.semDado}>cotas de referência não levantadas</span>
             ) : null}
 
-            {reguas.length > 0 ? <ReguasDaCidade reguas={reguas} cidade={cidade.nome} /> : null}
+            {/* `agrupadoPorCurso` aqui não agrupa nada — `reguasComCota` já filtrou
+                por este rio, então há um curso só e o subtítulo não aparece. O que
+                ele traz é a SEQUÊNCIA: montante → foz pela `ordemDescida`, os dois
+                braços paralelos do Mirim em Itajaí separados (curso antigo × canal
+                retificado) e o par co-locado sem fila. Antes as réguas saíam numa
+                lista achatada, em que a de Limoeiro, 26 km rio acima, encostava na
+                do estuário. */}
+            {reguas.length > 0 ? (
+              <ReguasDaCidade reguas={reguas} cidade={cidade.nome} agrupadoPorCurso />
+            ) : null}
 
             {cidade.sub_bacia || cidade.km_da_foz !== undefined ? (
               <span className={estilos.linhaMeta}>
