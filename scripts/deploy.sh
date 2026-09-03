@@ -83,10 +83,20 @@ echo "$mudou" | sed 's/^/    /'
 # dava falso "não encontrado" para um serviço que existe e roda; tentar o restart
 # e olhar o resultado é mais honesto do que uma pré-checagem frágil.
 info "reiniciando ${SERVICO}…"
-if ! systemctl restart "$SERVICO" 2>/dev/null; then
-  aviso "não consegui reiniciar ${SERVICO} — confira o nome com:"
-  aviso "  systemctl list-units --all | grep -i enchente"
-  aviso "e reinicie à mão. O código novo já está no /opt."
+# Captura o erro REAL do restart em vez de escondê-lo (o 2>/dev/null antigo
+# transformava qualquer falha — inclusive transitória — no palpite errado
+# "nome não encontrado", que confundiu num deploy real).
+if ! saida_restart="$(systemctl restart "$SERVICO" 2>&1)"; then
+  aviso "falha ao reiniciar ${SERVICO}:"
+  [[ -n "$saida_restart" ]] && printf '    %s\n' "$saida_restart" >&2
+  # Só sugere "nome errado" se o unit realmente não existir.
+  if ! systemctl cat "$SERVICO" >/dev/null 2>&1; then
+    aviso "o unit ${SERVICO} não existe. Serviços parecidos:"
+    systemctl list-units --all --type=service 2>/dev/null | grep -i enchente | sed 's/^/    /' >&2
+  else
+    aviso "o unit existe; veja o log: journalctl -u ${SERVICO} -n 40 --no-pager"
+  fi
+  aviso "o código novo já está no /opt; reinicie à mão quando resolver."
   exit 1
 fi
 sleep 2
