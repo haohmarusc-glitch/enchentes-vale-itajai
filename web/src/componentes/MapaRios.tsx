@@ -1,17 +1,28 @@
-import { useEffect, useRef, useState } from 'react'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Cidade } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import { faixaDaCidade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
+import {
+  acumuladoEspinha,
+  enquadrar,
+  limitesDe,
+  maisProximoNoRio,
+  posicoesCorrenteza,
+  progressoNaEspinha,
+  projetar,
+  trechoDoPonto,
+  LARGURA_FAIXA,
+  VEL_FAIXA,
+  type Enquadramento,
+  type LonLat,
+} from '../logica/mapaCanvas'
 import estilos from './MapaRios.module.css'
 
-// O traçado entra como URL (não como import de dado), como o mapa de manchas:
-// são arquivos grandes, e o Vite os emite à parte para a tela buscar só o do
-// rio aberto.
+// O traçado entra como URL (não como import de dado): são arquivos grandes, e o
+// Vite os emite à parte para a tela buscar só o do rio aberto.
 const TRACADOS = import.meta.glob('@dados/rios/*.geojson', {
   query: '?url',
   import: 'default',
@@ -23,7 +34,19 @@ function urlDoRio(rioId: string): string | undefined {
   return chave ? TRACADOS[chave] : undefined
 }
 
-const COR_FAIXA: Record<Faixa, string> = {
+// A cor de cada faixa vem da MESMA variável CSS que a legenda e o diagrama usam
+// (fonte única). 'varias' não tem variável própria: usa o azul da água, como no
+// mapa antigo. Fallbacks só para o caso improvável de a variável não resolver.
+const VAR_FAIXA: Record<Faixa, string> = {
+  normal: '--faixa-normal',
+  atencao: '--faixa-atencao',
+  alerta: '--faixa-alerta',
+  inundacao: '--faixa-inundacao',
+  emergencia: '--faixa-emergencia',
+  'sem-dado': '--faixa-sem-dado',
+  varias: '--agua-clara',
+}
+const FALLBACK_FAIXA: Record<Faixa, string> = {
   normal: '#2e7d32',
   atencao: '#e6a700',
   alerta: '#e2661a',
@@ -33,92 +56,347 @@ const COR_FAIXA: Record<Faixa, string> = {
   varias: '#1c6ea4',
 }
 
-type LonLat = [number, number]
-
-// Longitude e latitude não têm o mesmo comprimento em metros: perto de 27° S um
-// grau de longitude vale ~0,89 grau de latitude. Sem corrigir isso, o "mais
-// próximo" entortaria nos trechos leste–oeste (a maior parte do Vale). Escala só
-// para comparar distâncias; nada disso vai para a tela.
-const K_LON = Math.cos((27 * Math.PI) / 180)
-function dist2(a: LonLat, b: LonLat): number {
-  return ((a[0] - b[0]) * K_LON) ** 2 + (a[1] - b[1]) ** 2
+/** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
+interface Trecho {
+  pts: [number, number][]
+  faixa: Faixa
+  cum: number[]
+  total: number
+}
+/** Uma cidade âncora, já projetada, para o pino e o toque. */
+interface Pino {
+  cidade: Cidade
+  x: number
+  y: number
+  faixa: Faixa
+  nivel: number | null
+}
+interface Cena {
+  trechos: Trecho[]
+  pinos: Pino[]
+  cores: Record<Faixa, string>
+  largura: number
+  altura: number
 }
 
-/** Ponto do traçado mais próximo de uma coordenada — encaixa o marcador no rio. */
-function maisProximoNoRio(coords: LonLat[][], alvo: LonLat): LonLat | null {
-  let melhor: LonLat | null = null
-  let dist = Infinity
+const MARGEM = 18
+const ESPACO_SETA = 22 // px entre setas de correnteza
+const VEL_PX = 24 // px/s da correnteza na faixa de referência
+
+function corDaFaixa(el: Element, f: Faixa): string {
+  const v = getComputedStyle(el).getPropertyValue(VAR_FAIXA[f]).trim()
+  return v || FALLBACK_FAIXA[f]
+}
+
+function acumularPixels(pts: [number, number][]): { cum: number[]; total: number } {
+  const cum = [0]
+  for (let i = 1; i < pts.length; i++) {
+    const dx = pts[i]![0] - pts[i - 1]![0]
+    const dy = pts[i]![1] - pts[i - 1]![1]
+    cum.push(cum[i - 1]! + Math.hypot(dx, dy))
+  }
+  return { cum, total: cum[cum.length - 1] ?? 0 }
+}
+
+/** Ponto e direção a uma distância `pos` ao longo de um trecho já acumulado. */
+function amostrar(
+  t: Trecho,
+  pos: number,
+): { x: number; y: number; dx: number; dy: number } | null {
+  if (t.pts.length < 2) return null
+  let j = 0
+  while (j < t.cum.length - 1 && t.cum[j + 1]! < pos) j++
+  const a = t.pts[j]!
+  const b = t.pts[j + 1]!
+  const seg = (t.cum[j + 1]! - t.cum[j]!) || 1
+  const u = Math.max(0, Math.min(1, (pos - t.cum[j]!) / seg))
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
+  return {
+    x: a[0] + (b[0] - a[0]) * u,
+    y: a[1] + (b[1] - a[1]) * u,
+    dx: (b[0] - a[0]) / len,
+    dy: (b[1] - a[1]) / len,
+  }
+}
+
+/**
+ * Monta a cena: cada cidade com coordenada vira âncora encaixada no rio (ordem
+ * montante→jusante); a "espinha" por essas âncoras diz, para cada pedaço do
+ * traçado, entre quais cidades ele está — e a faixa da cidade a MONTANTE dá a
+ * cor daquele trecho, a mesma regra do diagrama. Sem âncora que pinte, o trecho
+ * é `sem-dado` (cinza, e sem correnteza).
+ */
+function construirCena(
+  el: Element,
+  coords: LonLat[][],
+  cidades: Cidade[],
+  rioId: string,
+  tempoReal: EstadoTempoReal,
+  agora: Date,
+  largura: number,
+  altura: number,
+): Cena {
+  const cores = {} as Record<Faixa, string>
+  ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
+
+  const ancoras = cidades
+    .filter((c) => c.coordenadas)
+    .map((cidade) => {
+      const coord = cidade.coordenadas!
+      const alvo: LonLat = [coord[1], coord[0]] // [lon,lat] para casar com o rio
+      const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
+      const temVarias =
+        aoVivo === null && leiturasDaCidade(tempoReal, rioId, cidade.id).length > 1
+      return {
+        cidade,
+        faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
+        nivel: aoVivo?.nivel_m ?? null,
+        ponto: maisProximoNoRio(coords, alvo) ?? alvo,
+      }
+    })
+  const espinha = ancoras.map((a) => a.ponto)
+  const cumEspinha = acumuladoEspinha(espinha)
+
+  const faixaEm = (p: LonLat): Faixa =>
+    ancoras.length === 0 ? 'sem-dado' : ancoras[trechoDoPonto(espinha, p)]!.faixa
+
+  const todos = coords.flat()
+  const lim = limitesDe(todos.length ? todos : espinha)
+  const enq: Enquadramento = enquadrar(
+    lim ?? { minLon: -49.5, maxLon: -48.5, minLat: -27.5, maxLat: -26.5 },
+    largura,
+    altura,
+    MARGEM,
+  )
+
+  const trechos: Trecho[] = []
   for (const linha of coords) {
-    for (const p of linha) {
-      const d = dist2(p, alvo)
-      if (d < dist) {
-        dist = d
-        melhor = p
+    if (linha.length < 2) continue
+    // Orienta o way no sentido do rio pela espinha (o OSM não os entrega todos
+    // montante→jusante). A cor é por trecho e independe disso; só a correnteza
+    // precisa do sentido certo.
+    let seq = linha
+    if (espinha.length >= 2) {
+      const pa = progressoNaEspinha(espinha, cumEspinha, linha[0]!)
+      const pb = progressoNaEspinha(espinha, cumEspinha, linha[linha.length - 1]!)
+      if (pb < pa) seq = [...linha].reverse()
+    }
+    // A cor de cada aresta vem do MEIO dela (mesma regra do mapa antigo). Agrupa
+    // arestas vizinhas de mesma faixa num trecho só.
+    const faixaAresta = (i: number): Faixa =>
+      faixaEm([(seq[i - 1]![0] + seq[i]![0]) / 2, (seq[i - 1]![1] + seq[i]![1]) / 2])
+    let pts: [number, number][] = [projetar(enq, seq[0]!)]
+    let cur = faixaAresta(1)
+    for (let i = 1; i < seq.length; i++) {
+      pts.push(projetar(enq, seq[i]!))
+      const prox = i + 1 < seq.length ? faixaAresta(i + 1) : null
+      if (prox !== null && prox !== cur) {
+        const { cum, total } = acumularPixels(pts)
+        trechos.push({ pts, faixa: cur, cum, total })
+        pts = [projetar(enq, seq[i]!)]
+        cur = prox
+      }
+    }
+    const { cum, total } = acumularPixels(pts)
+    trechos.push({ pts, faixa: cur, cum, total })
+  }
+
+  const pinos: Pino[] = ancoras.map((a) => {
+    const [x, y] = projetar(enq, a.ponto)
+    return { cidade: a.cidade, x, y, faixa: a.faixa, nivel: a.nivel }
+  })
+
+  return { trechos, pinos, cores, largura, altura }
+}
+
+/** Traça a poligonal de um trecho — reusado pelo brilho e pelo núcleo. */
+function caminhoTrecho(ctx: CanvasRenderingContext2D, pts: [number, number][]): void {
+  ctx.beginPath()
+  ctx.moveTo(pts[0]![0], pts[0]![1])
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i]![0], pts[i]![1])
+}
+
+/**
+ * Fundo escuro + rio luminoso: o que não muda entre quadros. Desenhado uma vez.
+ *
+ * O visual escuro com o leito brilhando (halo na cor da faixa + núcleo claro)
+ * veio do protótipo estudado e do pedido "animação moderna". O brilho é da COR
+ * da faixa — logo diz o nível, não decora. O trecho `sem-dado` foge de tudo
+ * isso: cinza apagado, SEM brilho e mais fino, para nunca parecer um leito
+ * "aceso"/seguro onde não há medida.
+ */
+function desenharBase(ctx: CanvasRenderingContext2D, cena: Cena): void {
+  ctx.clearRect(0, 0, cena.largura, cena.altura)
+  const g = ctx.createLinearGradient(0, 0, 0, cena.altura)
+  g.addColorStop(0, '#0c1c2e')
+  g.addColorStop(1, '#081019')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, cena.largura, cena.altura)
+
+  ctx.lineJoin = 'round'
+  ctx.lineCap = 'round'
+
+  // 1) Halo: traço largo na cor da faixa, com sombra da mesma cor (bloom). Cinza
+  //    não entra aqui.
+  for (const t of cena.trechos) {
+    if (t.pts.length < 2 || t.faixa === 'sem-dado') continue
+    caminhoTrecho(ctx, t.pts)
+    ctx.strokeStyle = cena.cores[t.faixa]
+    ctx.shadowColor = cena.cores[t.faixa]
+    ctx.shadowBlur = 12 * LARGURA_FAIXA[t.faixa]
+    ctx.globalAlpha = 0.9
+    ctx.lineWidth = 3.4 * LARGURA_FAIXA[t.faixa]
+    ctx.stroke()
+  }
+  ctx.shadowBlur = 0
+
+  // 2) O cinza (sem-dado), apagado e sem brilho, por baixo dos núcleos claros.
+  for (const t of cena.trechos) {
+    if (t.pts.length < 2 || t.faixa !== 'sem-dado') continue
+    caminhoTrecho(ctx, t.pts)
+    ctx.strokeStyle = cena.cores['sem-dado']
+    ctx.globalAlpha = 0.5
+    ctx.lineWidth = 2.4
+    ctx.stroke()
+  }
+
+  // 3) Núcleo claro no leito colorido, para o "quente" do neon.
+  for (const t of cena.trechos) {
+    if (t.pts.length < 2 || t.faixa === 'sem-dado') continue
+    caminhoTrecho(ctx, t.pts)
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)'
+    ctx.globalAlpha = 1
+    ctx.lineWidth = 1.4 * LARGURA_FAIXA[t.faixa]
+    ctx.stroke()
+  }
+  ctx.globalAlpha = 1
+}
+
+/**
+ * Setas da correnteza descendo o rio — o movimento que significa o nível. Cada
+ * seta é desenhada duas vezes: um traço escuro por baixo (halo, para contrastar
+ * tanto no laranja quanto no vermelho) e o branco por cima. Tamanho e largura
+ * crescem um pouco com a faixa, junto com a velocidade, para o olhar captar o
+ * sentido do fluxo de imediato.
+ */
+function desenharCorrenteza(ctx: CanvasRenderingContext2D, cena: Cena, tempo: number): void {
+  ctx.lineJoin = 'round'
+  ctx.lineCap = 'round'
+  for (const t of cena.trechos) {
+    // cinza não corre; trecho curto não recebe seta — regra na função pura.
+    const posicoes = posicoesCorrenteza(t.total, VEL_FAIXA[t.faixa], tempo, ESPACO_SETA, VEL_PX)
+    if (posicoes.length === 0) continue
+    const h = 4.6 * LARGURA_FAIXA[t.faixa] // meia-altura da seta
+    for (let camada = 0; camada < 2; camada++) {
+      ctx.strokeStyle = camada === 0 ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.97)'
+      ctx.lineWidth = camada === 0 ? 3.4 : 2.2
+      for (const pos of posicoes) {
+        const a = amostrar(t, pos)
+        if (!a) continue
+        const px = -a.dy // perpendicular
+        const py = a.dx
+        ctx.beginPath()
+        ctx.moveTo(a.x - a.dx * h + px * h, a.y - a.dy * h + py * h)
+        ctx.lineTo(a.x + a.dx * h, a.y + a.dy * h) // ponta, no sentido de jusante
+        ctx.lineTo(a.x - a.dx * h - px * h, a.y - a.dy * h - py * h)
+        ctx.stroke()
       }
     }
   }
-  return melhor
 }
 
-/**
- * Distância² de um ponto ao segmento a–b e onde caiu (t em 0..1). Usada para
- * projetar cada pedaço do rio na "espinha" das cidades em ordem.
- */
-function projetarNoSegmento(p: LonLat, a: LonLat, b: LonLat): number {
-  const abx = (b[0] - a[0]) * K_LON
-  const aby = b[1] - a[1]
-  const apx = (p[0] - a[0]) * K_LON
-  const apy = p[1] - a[1]
-  const len2 = abx * abx + aby * aby
-  const t = len2 === 0 ? 0 : Math.max(0, Math.min(1, (apx * abx + apy * aby) / len2))
-  const cx = abx * t - apx
-  const cy = aby * t - apy
-  return cx * cx + cy * cy
+// Gravidade da faixa, para o rótulo da cidade MAIS grave ganhar o espaço quando
+// os nomes se amontoam (é numa cheia que o nome da cidade em alerta precisa
+// aparecer). 'sem-dado'/'varias' por último: não são pontos da escala.
+const GRAVIDADE: Record<Faixa, number> = {
+  emergencia: 6,
+  inundacao: 5,
+  alerta: 4,
+  atencao: 3,
+  normal: 2,
+  varias: 1,
+  'sem-dado': 0,
 }
 
-/**
- * Em qual trecho entre cidades consecutivas este ponto do rio cai. A espinha são
- * os pontos das cidades (já encaixados no rio), na ordem montante→jusante. Devolve
- * o índice da cidade A MONTANTE do trecho — é ela quem dá a cor, como no diagrama.
- */
-function trechoDoPonto(espinha: LonLat[], p: LonLat): number {
-  if (espinha.length < 2) return 0
-  let melhor = 0
-  let dist = Infinity
-  for (let i = 0; i < espinha.length - 1; i++) {
-    const d = projetarNoSegmento(p, espinha[i]!, espinha[i + 1]!)
-    if (d < dist) {
-      dist = d
-      melhor = i
+/** Pinos das cidades por cima, cada um na cor da faixa; o selecionado com anel. */
+function desenharPinos(
+  ctx: CanvasRenderingContext2D,
+  cena: Cena,
+  selecionada: string | null,
+): void {
+  // 1) Os pontos (sempre todos — nenhuma cidade some do mapa). Sobre o fundo
+  // escuro, o pino tem brilho na cor da faixa e um anel claro; o cinza não brilha.
+  for (const p of cena.pinos) {
+    const sel = p.cidade.id === selecionada
+    const cinza = p.faixa === 'sem-dado'
+    if (sel) {
+      ctx.beginPath()
+      ctx.arc(p.x, p.y, 12, 0, Math.PI * 2)
+      ctx.strokeStyle = 'rgba(230,240,250,0.9)'
+      ctx.lineWidth = 2
+      ctx.stroke()
     }
+    ctx.beginPath()
+    ctx.arc(p.x, p.y, sel ? 8 : 7, 0, Math.PI * 2)
+    ctx.fillStyle = cena.cores[p.faixa]
+    ctx.shadowColor = cinza ? 'transparent' : cena.cores[p.faixa]
+    ctx.shadowBlur = cinza ? 0 : 10
+    ctx.fill()
+    ctx.shadowBlur = 0
+    ctx.lineWidth = 2
+    ctx.strokeStyle = cinza ? 'rgba(180,195,210,0.8)' : 'rgba(255,255,255,0.92)'
+    ctx.stroke()
   }
-  return melhor
-}
 
-/** Desenha um pedaço contínuo do rio ([lon,lat]…) numa cor só. */
-function desenharRun(mapa: L.Map, pontos: LonLat[], cor: string): void {
-  if (pontos.length < 2) return
-  L.polyline(
-    pontos.map((p) => [p[1], p[0]] as [number, number]),
-    { color: cor, weight: 4, opacity: 0.9 },
-  ).addTo(mapa)
+  // 2) Os nomes, com anticolisão: onde os pinos se amontoam (a foz do Açu), o
+  // rótulo da faixa MAIS grave (e a cidade selecionada) tem prioridade; um nome
+  // que cairia por cima de outro é omitido — o ponto continua lá e o toque abre
+  // o detalhe. O texto é preso dentro do canvas para não cortar na borda.
+  ctx.font = '600 11px system-ui, sans-serif'
+  ctx.textBaseline = 'bottom'
+  const ordem = [...cena.pinos].sort((a, b) => {
+    const sa = a.cidade.id === selecionada ? 100 : GRAVIDADE[a.faixa]
+    const sb = b.cidade.id === selecionada ? 100 : GRAVIDADE[b.faixa]
+    return sb - sa
+  })
+  const caixas: { x0: number; y0: number; x1: number; y1: number }[] = []
+  const alt = 13
+  const pad = 3
+  for (const p of ordem) {
+    const w = ctx.measureText(p.cidade.nome).width
+    const meia = w / 2
+    const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, p.x))
+    const baseY = p.y - 9
+    const caixa = { x0: cx - meia - 1, y0: baseY - alt, x1: cx + meia + 1, y1: baseY + 1 }
+    const bate = caixas.some(
+      (c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0,
+    )
+    if (bate && p.cidade.id !== selecionada) continue
+    caixas.push(caixa)
+    ctx.textAlign = 'center'
+    // Texto claro com contorno escuro — legível sobre o fundo escuro e sobre o
+    // leito luminoso.
+    ctx.lineWidth = 3.2
+    ctx.strokeStyle = 'rgba(4,12,20,0.92)'
+    ctx.strokeText(p.cidade.nome, cx, baseY)
+    ctx.fillStyle = '#eaf1f8'
+    ctx.fillText(p.cidade.nome, cx, baseY)
+  }
 }
 
 /**
- * Mapa geográfico do rio, no espírito do Kikikuru: o traçado real (OpenStreetMap)
- * pintado por trecho — cada trecho na cor da faixa da cidade a montante, a mesma
- * regra do diagrama linear — com um marcador colorido por cidade por cima. Onde
- * não há cidade que pinte (nascentes, pontas soltas), o rio fica cinza. Cidade
- * sem coordenada cadastrada não vira âncora. Carrega sob botão, para não pesar no
- * celular.
+ * Mapa geográfico do rio em <canvas>, no espírito do Kikikuru: o traçado real
+ * (OpenStreetMap) pintado por trecho — cada trecho na cor da faixa da cidade a
+ * montante — com a correnteza animada descendo no sentido do rio, MAIS RÁPIDA
+ * onde o nível está mais alto (a animação significa o nível, não enfeita).
+ * Trecho sem cidade que o pinte fica cinza e PARADO — não fingimos conhecer uma
+ * água que não medimos. Toque numa cidade abre as cotas de rua e o abrigo dela.
+ *
+ * Substitui o mapa Leaflet do rio: dispensa o mapa-base de ruas (que aqui só
+ * mostrava "onde é"), fica mais leve nesse ponto e desenha a árvore do Açu com
+ * cada braço na sua linha. (O Leaflet segue no pacote pelo mapa de manchas de
+ * Itajaí, onde as ruas do fundo são essenciais.)
  */
-// Longe, o mapa mostra só o rio colorido e os pontos das cidades — "onde está o
-// perigo". Ao aproximar deste zoom, os nomes das cidades aparecem, e o toque
-// numa cidade abre as cotas de rua e o abrigo dela (detalhe). É a transição
-// visão geral→detalhe do Kikikuru, com o dado que temos por cidade — rua e
-// abrigo não têm coordenada, então não viram pino no mapa.
-const ZOOM_ROTULOS = 11
-
 export default function MapaRios({
   rioId,
   cidades,
@@ -134,167 +412,207 @@ export default function MapaRios({
   aoSelecionar?: (cidadeId: string) => void
 }) {
   const divRef = useRef<HTMLDivElement | null>(null)
-  const mapaRef = useRef<L.Map | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [erro, setErro] = useState<string | null>(null)
-
+  const [coords, setCoords] = useState<LonLat[][] | null>(null)
+  const [tam, setTam] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
+  const [sel, setSel] = useState<Pino | null>(null)
+  const cenaRef = useRef<Cena | null>(null)
+  // A seleção é lida por ref dentro do laço de animação, para trocar o anel do
+  // pino sem reconstruir a cena (o que reiniciaria a correnteza a cada toque).
+  const selRef = useRef<string | null>(null)
   useEffect(() => {
-    if (!divRef.current || mapaRef.current) return
-    const mapa = L.map(divRef.current, { scrollWheelZoom: false })
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© colaboradores do OpenStreetMap',
-    }).addTo(mapa)
-    mapaRef.current = mapa
-    // Primeira pintura já na bacia (zoom 9), para o mapa nunca piscar o mundo ou
-    // Santa Catarina inteira enquanto o traçado carrega. O fitBounds abaixo
-    // refina para o enquadramento das cidades assim que o geojson chega.
-    mapa.setView([-27.0, -49.2], 9)
+    selRef.current = sel?.cidade.id ?? null
+  }, [sel])
 
+  // Busca o traçado do rio aberto.
+  useEffect(() => {
     const url = urlDoRio(rioId)
     if (!url) {
       setErro('traçado deste rio ainda não disponível')
-      mapa.setView([-27.0, -49.2], 9)
-      return () => {
-        mapa.remove()
-        mapaRef.current = null
-      }
+      setCoords(null)
+      return
     }
-
     let vivo = true
+    setErro(null)
+    setCoords(null)
+    setSel(null)
     fetch(url)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then((geo: { geometry: { coordinates: LonLat[][] } }) => {
-        if (!vivo) return
-        const coords = geo.geometry.coordinates
-
-        // Cada cidade com coordenada vira uma âncora encaixada no rio, na ordem
-        // montante→jusante. A espinha por essas âncoras diz, para cada pedaço do
-        // traçado, entre quais cidades ele está — e a faixa da cidade a montante
-        // dá a cor daquele trecho, a mesma regra do diagrama linear.
-        const ancoras = cidades
-          .filter((c) => c.coordenadas)
-          .map((cidade) => {
-            const coord = cidade.coordenadas!
-            const alvo: LonLat = [coord[1], coord[0]] // [lon,lat] para casar com o rio
-            const aoVivo = leituraDaCidade(tempoReal, rioId, cidade.id)
-            const temVarias =
-              aoVivo === null && leiturasDaCidade(tempoReal, rioId, cidade.id).length > 1
-            return {
-              cidade,
-              aoVivo,
-              faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
-              ponto: maisProximoNoRio(coords, alvo) ?? alvo,
-            }
-          })
-        const espinha = ancoras.map((a) => a.ponto)
-
-        // Fundo cinza-azulado do rio inteiro, para o traçado nunca sumir mesmo
-        // onde não há cidade que o pinte (nascentes, pontas soltas do OSM).
-        const fundo = L.geoJSON(geo as unknown as GeoJSON.GeoJsonObject, {
-          style: { color: '#9aa7b2', weight: 3, opacity: 0.55 },
-        }).addTo(mapa)
-        // Enquadra a BACIA pelos marcadores das cidades, não pelo traçado inteiro
-        // (que se estende por afluentes e deixava a bacia pequena no canto). O
-        // morador abre o mapa já vendo as cidades do rio. Sem cidade com
-        // coordenada, cai para os limites do traçado.
-        const limites =
-          espinha.length > 0
-            ? L.latLngBounds(espinha.map((p) => [p[1], p[0]] as [number, number]))
-            : fundo.getBounds()
-        mapa.fitBounds(limites, { padding: [24, 24] })
-
-        // Por cima, cada trecho na cor da faixa da cidade a montante. Agrupa
-        // arestas vizinhas de mesma cor numa só linha, para não criar milhares
-        // de camadas no celular.
-        if (espinha.length >= 2) {
-          for (const linha of coords) {
-            if (linha.length < 2) continue
-            let inicio = 0
-            let corAtual = ancoras[trechoDoPonto(espinha, linha[0]!)]!.faixa
-            for (let i = 1; i < linha.length; i++) {
-              const meio: LonLat = [
-                (linha[i - 1]![0] + linha[i]![0]) / 2,
-                (linha[i - 1]![1] + linha[i]![1]) / 2,
-              ]
-              const cor = ancoras[trechoDoPonto(espinha, meio)]!.faixa
-              if (cor !== corAtual) {
-                desenharRun(mapa, linha.slice(inicio, i + 1), COR_FAIXA[corAtual])
-                inicio = i
-                corAtual = cor
-              }
-            }
-            desenharRun(mapa, linha.slice(inicio), COR_FAIXA[corAtual])
-          }
-        }
-
-        // Marcadores das cidades por cima de tudo, com o número e a ação. O nome
-        // fica num rótulo que só aparece quando o mapa está aproximado; o toque
-        // seleciona a cidade e abre o detalhe (cotas de rua e abrigo) na tela.
-        for (const a of ancoras) {
-          const marcador = L.circleMarker([a.ponto[1], a.ponto[0]], {
-            radius: 8,
-            color: '#111827',
-            weight: 2,
-            fillColor: COR_FAIXA[a.faixa],
-            fillOpacity: 1,
-          }).addTo(mapa)
-          // Popup como ELEMENTO (não string): assim o "toque para ver as cotas"
-          // é um botão de verdade, com clique. Como string, era um <span> que
-          // parecia link mas não fazia nada — no celular, tocar nele não abria a
-          // seção de cotas (o clique só existia no marcador). Os textos abaixo
-          // vêm do cadastro do projeto (nomes, faixas), não do usuário.
-          const conteudo = document.createElement('div')
-          conteudo.innerHTML =
-            `<strong>${a.cidade.nome}</strong><br>${ROTULO_FAIXA[a.faixa]}` +
-            (a.aoVivo ? `<br>${metros(a.aoVivo.nivel_m)}` : '') +
-            `<br><em>${ACAO_FAIXA[a.faixa]}</em>`
-          if (aoSelecionar) {
-            const botao = document.createElement('button')
-            botao.type = 'button'
-            if (estilos.dicaDetalhe) botao.className = estilos.dicaDetalhe
-            botao.textContent = 'Toque para ver as cotas de rua e o abrigo'
-            botao.addEventListener('click', () => {
-              aoSelecionar(a.cidade.id)
-              marcador.closePopup()
-            })
-            conteudo.appendChild(botao)
-          }
-          marcador.bindPopup(conteudo)
-          marcador.bindTooltip(a.cidade.nome, {
-            permanent: true,
-            direction: 'top',
-            className: estilos.rotuloCidade,
-          })
-          if (aoSelecionar) marcador.on('click', () => aoSelecionar(a.cidade.id))
-        }
-
-        // Zoom troca a informação: os rótulos das cidades só aparecem de perto.
-        const ajustarRotulos = () => {
-          const cls = estilos.semRotulos
-          if (cls) divRef.current?.classList.toggle(cls, mapa.getZoom() < ZOOM_ROTULOS)
-        }
-        mapa.on('zoomend', ajustarRotulos)
-        ajustarRotulos()
+        if (vivo) setCoords(geo.geometry.coordinates)
       })
       .catch((e: Error) => vivo && setErro(e.message))
-
     return () => {
       vivo = false
-      mapa.remove()
-      mapaRef.current = null
     }
-  }, [rioId, cidades, tempoReal, agora, aoSelecionar])
+  }, [rioId])
+
+  // Altura ideal pela PROPORÇÃO da bacia: um rio largo e baixo (o Açu) não
+  // precisa de 60vh de altura com o traçado numa faixa fina no meio. Calcula da
+  // largura atual e da razão geográfica; a CSS ainda impõe um piso.
+  const alturaIdeal = useMemo(() => {
+    if (!coords || tam.w < 2) return null
+    const lim = limitesDe(coords.flat())
+    if (!lim) return null
+    const cosLat = Math.cos((((lim.minLat + lim.maxLat) / 2) * Math.PI) / 180)
+    const geoW = Math.max(1e-9, (lim.maxLon - lim.minLon) * cosLat)
+    const geoH = Math.max(1e-9, lim.maxLat - lim.minLat)
+    const alvo = (tam.w - 2 * MARGEM) * (geoH / geoW) + 2 * MARGEM
+    return Math.round(Math.max(280, Math.min(560, alvo)))
+  }, [coords, tam.w])
+
+  // Mede o container e reage a mudança de tamanho (rotação do celular etc.).
+  useEffect(() => {
+    const div = divRef.current
+    if (!div) return
+    const medir = () => setTam({ w: div.clientWidth, h: div.clientHeight })
+    medir()
+    const ro = new ResizeObserver(medir)
+    ro.observe(div)
+    return () => ro.disconnect()
+  }, [])
+
+  // Monta a cena e roda a animação. Reconstrói quando muda o rio, os dados, o
+  // horário ou o tamanho; a correnteza corre entre reconstruções.
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || !coords || tam.w < 2 || tam.h < 2) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const dpr = Math.min(2, window.devicePixelRatio || 1)
+    canvas.width = Math.round(tam.w * dpr)
+    canvas.height = Math.round(tam.h * dpr)
+
+    const cena = construirCena(canvas, coords, cidades, rioId, tempoReal, agora, tam.w, tam.h)
+    cenaRef.current = cena
+
+    // Base (fundo escuro + leito luminoso) numa camada só, desenhada uma vez; a
+    // correnteza e os pinos vão por cima a cada quadro.
+    const fundo = document.createElement('canvas')
+    fundo.width = canvas.width
+    fundo.height = canvas.height
+    const fctx = fundo.getContext('2d')!
+    fctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    desenharBase(fctx, cena)
+
+    const reduz =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    let raf = 0
+    const inicio = performance.now()
+    const quadro = (t: number) => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, cena.largura, cena.altura)
+      ctx.drawImage(fundo, 0, 0, cena.largura, cena.altura)
+      desenharCorrenteza(ctx, cena, reduz ? 0 : (t - inicio) / 1000)
+      desenharPinos(ctx, cena, selRef.current)
+      if (!reduz) raf = requestAnimationFrame(quadro)
+    }
+    raf = requestAnimationFrame(quadro)
+    return () => cancelAnimationFrame(raf)
+  }, [coords, cidades, tempoReal, agora, tam, rioId])
+
+  // Toque/clique: acha o pino mais próximo e abre o detalhe da cidade.
+  function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
+    const cena = cenaRef.current
+    const canvas = canvasRef.current
+    if (!cena || !canvas) return
+    const r = canvas.getBoundingClientRect()
+    const x = ev.clientX - r.left
+    const y = ev.clientY - r.top
+    let melhor: Pino | null = null
+    let d = 22 * 22
+    for (const p of cena.pinos) {
+      const dd = (p.x - x) ** 2 + (p.y - y) ** 2
+      if (dd < d) {
+        d = dd
+        melhor = p
+      }
+    }
+    if (melhor) {
+      setSel(melhor)
+      aoSelecionar?.(melhor.cidade.id)
+    } else {
+      setSel(null)
+    }
+  }
 
   return (
     <div className={estilos.bloco}>
       {erro ? <p className={estilos.erro}>Mapa indisponível: {erro}</p> : null}
-      <div ref={divRef} className={estilos.mapa} role="img" aria-label={`Mapa do ${rioId}`} />
+      <div
+        ref={divRef}
+        className={estilos.mapa}
+        style={alturaIdeal ? { height: `${alturaIdeal}px` } : undefined}
+      >
+        <canvas
+          ref={canvasRef}
+          className={estilos.tela}
+          style={{ width: '100%', height: '100%' }}
+          onPointerDown={aoTocar}
+          role="img"
+          aria-label={`Mapa do rio ${rioId}: traçado colorido pela faixa de cada cidade, com a correnteza descendo`}
+        />
+        {sel ? (
+          <div
+            className={estilos.balao}
+            style={{
+              left: `${(sel.x / (tam.w || 1)) * 100}%`,
+              top: `${(sel.y / (tam.h || 1)) * 100}%`,
+            }}
+          >
+            <strong>{sel.cidade.nome}</strong>
+            <br />
+            {ROTULO_FAIXA[sel.faixa]}
+            {sel.nivel != null ? (
+              <>
+                <br />
+                {metros(sel.nivel)}
+              </>
+            ) : null}
+            <br />
+            <em>{ACAO_FAIXA[sel.faixa]}</em>
+            {aoSelecionar ? (
+              <button
+                type="button"
+                className={estilos.dicaDetalhe}
+                onClick={() => {
+                  aoSelecionar(sel.cidade.id)
+                  setSel(null)
+                }}
+              >
+                Ver as cotas de rua e o abrigo
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+
+      {/* Acesso por teclado/leitor de tela: o canvas não é focável por cidade,
+          então as âncoras viram botões (fora da vista) que fazem o mesmo toque. */}
+      {aoSelecionar ? (
+        <ul className={estilos.foraDaVista}>
+          {cidades
+            .filter((c) => c.coordenadas)
+            .map((c) => (
+              <li key={c.id}>
+                <button type="button" onClick={() => aoSelecionar(c.id)}>
+                  Ver detalhe de {c.nome}
+                </button>
+              </li>
+            ))}
+        </ul>
+      ) : null}
+
       <p className={estilos.credito}>
-        Aproxime para ver os nomes; toque numa cidade para as cotas de rua e o
-        abrigo dela. Traçado dos rios: © colaboradores do OpenStreetMap (ODbL).
-        Cada trecho tem a cor da faixa da cidade a montante; o marcador, a faixa
-        da cidade — nunca o nível em metros. Trecho cinza é onde ainda não há
-        régua que o pinte.
+        Cada trecho tem a cor da faixa da cidade a montante; a correnteza desce no
+        sentido do rio e corre mais rápido onde o nível está mais alto — nunca o
+        nível em metros. Trecho <strong>cinza</strong> é onde ainda não há régua
+        que o pinte, e por isso fica parado. Toque numa cidade para as cotas de
+        rua e o abrigo dela. Traçado: © colaboradores do OpenStreetMap (ODbL).
       </p>
     </div>
   )

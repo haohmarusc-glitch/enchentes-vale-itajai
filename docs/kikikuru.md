@@ -28,7 +28,7 @@ chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
 | O quê | Arquivo | Lê de |
 |---|---|---|
 | Diagrama linear, colorido por trecho | `web/src/componentes/DiagramaRio.tsx` | `ultimo.json` (via `useTempoReal`) |
-| Mapa geográfico, rio colorido por trecho | `web/src/componentes/MapaRios.tsx` | `data/rios/*.geojson` + `ultimo.json` |
+| Mapa do rio em `<canvas>`, colorido por trecho + correnteza animada | `web/src/componentes/MapaRios.tsx` (geometria pura em `web/src/logica/mapaCanvas.ts`) | `data/rios/*.geojson` + `ultimo.json` |
 | Linha do tempo de 24 h por cidade | `web/src/componentes/LinhaDoTempo.tsx` | `serie-recente.json` (via `useSerieRecente`) |
 | Reprodução da onda descendo | `web/src/componentes/AnimacaoOnda.tsx` | `serie-recente.json` |
 | Legenda + textos das faixas | `web/src/componentes/LegendaFaixas.tsx` | `data/faixas.json` |
@@ -36,19 +36,38 @@ chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
 
 Tudo é montado em `web/src/telas/TelaRio.tsx`, que no **desktop** põe o mapa numa
 coluna fixa (sticky) à esquerda e os dados à direita; no **celular** é coluna
-única, com o mapa por último, sob o botão "Ver mapa" (não puxa Leaflet numa rede
-ruim). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
+única, com o mapa por último, sob o botão "Ver mapa". O mapa do rio é um
+`<canvas>` próprio (NÃO puxa o Leaflet: as telas `/acu` e `/mirim` deixaram de
+baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
 
-## O traçado do rio (mapa geográfico)
+## O traçado do rio (mapa em canvas)
 
 - Vem do OpenStreetMap (`waterway=river`), licença **ODbL** — o crédito está na
   tela. O bruto fica em `data/brutos/tracado-rios-osm.json`; `scripts/converter_tracado_rios.py`
   agrupa por nome e emite `data/rios/itajai-acu.geojson` e `itajai-mirim.geojson`
   (MultiLineString, `[lon,lat]`).
-- No cliente, `MapaRios` encaixa cada cidade no ponto mais próximo do rio, forma
-  uma "espinha" montante→jusante e projeta cada aresta do traçado nela para saber
-  entre quais cidades ela cai; a aresta ganha a cor da cidade **a montante** —
-  a mesma regra do diagrama. Trecho sem cidade que o pinte fica cinza.
+- O mapa do rio é desenhado num `<canvas>` (não é Leaflet): sem mapa-base de
+  ruas, projeção equiretangular própria (a geometria pura fica em
+  `web/src/logica/mapaCanvas.ts`, testada). A troca veio do estudo do protótipo
+  Grok e do pedido "animação moderna bem intuitiva". O Leaflet segue no pacote,
+  mas só carrega com o **mapa de manchas** de Itajaí (`MapaManchas`), onde as
+  ruas do fundo são essenciais — logo a economia da dependência não se realiza
+  enquanto aquele mapa não mudar.
+- `MapaRios` encaixa cada cidade no ponto mais próximo do rio, forma uma
+  "espinha" montante→jusante e, para cada aresta do traçado, decide entre quais
+  cidades ela cai; a aresta ganha a cor da cidade **a montante** — a mesma regra
+  do diagrama. Trecho sem cidade que o pinte fica **cinza**.
+- Sobre a cor, a **correnteza animada** desce no sentido do rio (setas orientadas
+  pela espinha, pois os ways do OSM não vêm todos montante→jusante) e corre
+  **mais rápido onde o nível está mais alto** (`VEL_FAIXA`): a animação
+  **significa o nível**, não enfeita. Trecho cinza **não corre** —
+  `VEL_FAIXA['sem-dado'] = 0` —, porque não se anima uma água que não se mede.
+  `prefers-reduced-motion` congela o movimento (um quadro estático).
+- Os nomes das cidades têm **anticolisão**: onde os pinos se amontoam (a foz do
+  Açu), o rótulo da faixa **mais grave** ganha o espaço e o nome que cairia por
+  cima é omitido — o ponto continua e o toque abre o detalhe. A altura do mapa
+  se ajusta à proporção da bacia. Acesso por teclado/leitor: botões fora da
+  vista repetem o toque em cada cidade (o canvas não é focável por cidade).
 
 ## A linha do tempo e a onda (`serie-recente.json`)
 

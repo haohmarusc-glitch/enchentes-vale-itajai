@@ -1,10 +1,17 @@
 .bloco { margin-top: 0.5rem; }
 .mapa {
+  position: relative;
   height: 60vh;
-  min-height: 22rem;
+  min-height: 17rem;
   border: 1px solid var(--borda);
   border-radius: 0.5rem;
   overflow: hidden;
+  background: #0b1a2b;
+  touch-action: manipulation;
+}
+.tela {
+  display: block;
+  cursor: pointer;
 }
 .credito {
   margin: 0.5rem 0 0;
@@ -17,27 +24,30 @@
   font-weight: 700;
 }
 
-/* Rótulo com o nome da cidade — some quando o mapa está afastado. */
-.rotuloCidade {
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  box-shadow: none;
-  padding: 0 0.3rem;
-  font-weight: 700;
-  font-size: 0.78rem;
-  color: #1a1a1a;
+/* Cartão da cidade tocada, ancorado no pino. Fica dentro do mapa e não deixa
+   estourar a borda; o translate o centraliza acima do ponto. */
+.balao {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 0.7rem));
+  max-width: min(15rem, 80%);
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid var(--borda);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+  color: #14202b;
+  line-height: 1.3;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  pointer-events: auto;
 }
-.rotuloCidade::before { display: none; } /* sem a setinha do balão */
-.semRotulos :global(.leaflet-tooltip) { display: none !important; }
 
-/* Dica dentro do balão, guiando ao detalhe da cidade. */
+/* Dica dentro do balão, guiando ao detalhe da cidade — botão de verdade com
+   cara de link e alvo de toque confortável no celular. */
 .dicaDetalhe {
   display: block;
-  margin-top: 0.25rem;
+  margin-top: 0.35rem;
   color: #1c6ea4;
-  font-size: 0.85em;
-  /* É um <button> de verdade agora; tira o cromo de botão e deixa com cara de
-     link, mas com alvo de toque confortável no celular. */
+  font-size: 0.9em;
   appearance: none;
   background: none;
   border: 0;
@@ -46,4 +56,23 @@
   text-decoration: underline;
   cursor: pointer;
   font-family: inherit;
+}
+
+/* Botões só para teclado e leitor de tela — o canvas não é focável por cidade. */
+.foraDaVista {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.foraDaVista button:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  clip: auto;
 }
