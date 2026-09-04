@@ -115,47 +115,67 @@ class Medida(unittest.TestCase):
 
 
 class ContraOsDadosReais(unittest.TestCase):
+    """
+    A REGRA, não o retrato — e a troca tem história.
+
+    Até 04/09/2026 aqui havia um retrato: "o Canhanduba é o buraco conhecido de
+    578 m". O próprio comentário dele prescrevia o que fazer quando o vão
+    fechasse — "apague este teste, deixe a regra valer para todos" —, mas o
+    conserto (o Rio Conceição, que fecha o vão) entrou e o teste virou
+    CONDICIONAL em vez disso:
+
+        if (cf.RIOS / "rio-conceicao.geojson").exists():
+            ...assertivas...
+
+    Ou seja: apagar o `rio-conceicao.geojson` fazia a asserção SUMIR EM
+    SILÊNCIO, e o conjunto inteiro dos testes continuava verde. Uma sabotagem
+    encontrou isso — apagar aquele arquivo não punha um único teste vermelho,
+    enquanto apagar o do Ribeirão da Murta punha dois. Guarda que desaparece
+    junto com aquilo que ela guarda não é guarda.
+
+    Agora vale a regra: NENHUM afluente desenhado pode ficar cortado. Ela cobre
+    os que existem hoje e os que entrarem depois, e não precisa de manutenção
+    quando um vão fecha.
+    """
+
     def setUp(self):
         self.rs = {r["rio"]: r for r in cf.avaliar()}
 
-    def test_o_Murta_chega_no_Acu(self):
-        """Regra permanente: este afluente está completo e tem de continuar."""
-        r = self.rs["ribeirao-murta"]
-        self.assertEqual(r["chega_em"], "itajai-acu")
-        self.assertFalse(r["cortado"], f"o Murta se afastou do Açu: {r['metros']} m")
+    def test_NENHUM_afluente_desenhado_fica_cortado(self):
+        # Afluente cortado AFIRMA que a água pára ali — e o mapa desenha essa
+        # afirmação. É a regra inteira, sem lista de exceções.
+        cortados = [f"{r} a {d['metros']} m de {d['chega_em']}"
+                    for r, d in sorted(self.rs.items()) if d["cortado"]]
+        self.assertEqual(
+            cortados, [],
+            "afluente desenhado sem chegar no rio que o recebe: " + "; ".join(cortados)
+            + ". Rebaixe o trecho que falta pelo Overpass "
+              "(docs/tracado-ribeiroes.md) — nunca desenhe o vão à mão.",
+        )
 
-    def test_o_Canhanduba_e_o_BURACO_CONHECIDO_de_578_m(self):
+    def test_cada_afluente_chega_no_tronco_que_o_cadastro_diz(self):
+        # Chegar não basta: chegar no rio ERRADO seria traçado trocado.
+        esperado = {
+            "ribeirao-murta": "itajai-acu",
+            "ribeirao-canhanduba": "itajai-mirim",
+            "rio-conceicao": "itajai-mirim",
+        }
+        for rio, tronco in esperado.items():
+            with self.subTest(rio=rio):
+                self.assertIn(rio, self.rs, f"{rio} sumiu de data/rios/")
+                self.assertEqual(self.rs[rio]["chega_em"], tronco)
+
+    def test_o_Canhanduba_chega_PELO_Rio_Conceicao(self):
         """
-        RETRATO QUE DEVE ENVELHECER, como o das quatro réguas que faltavam.
+        O caminho importa, não só o destino.
 
-        Em 04/09/2026 o traçado do Canhanduba morre a 578 m do Itajaí-Mirim: o
-        último trecho antes da foz não casou com nenhum nome da consulta, e não
-        está no bruto (`data/brutos/tracado-ribeiroes-osm.json` só tem 19
-        elementos, e os três perto da ponta já foram convertidos).
-
-        Quando o trecho for rebaixado, este teste FALHA — e a falha é a notícia
-        boa. Aí: apague este teste, deixe o `test_o_Murta_chega_no_Acu` valer
-        para todos, e feche a pendência do README.
+        O trecho final do Canhanduba não se chama Canhanduba: é o **Rio
+        Conceição** (3 vias, ~650 m de canal para 578 m em linha reta —
+        sinuosidade 1,12, normal em várzea). Sem ele desenhado, o Canhanduba
+        morre a 578 m do Mirim. Cobrar a VIA, e não só o "não cortado", é o que
+        faz apagar aquele arquivo virar teste vermelho.
         """
-        r = self.rs["ribeirao-canhanduba"]
-        self.assertEqual(r["chega_em"], "itajai-mirim",
-                         "o Canhanduba deságua no Mirim — se mudou de tronco, "
-                         "o traçado foi trocado")
-        if (cf.RIOS / "rio-conceicao.geojson").exists():
-            # VÃO FECHADO. O `baixar_vao_canhanduba.py` mostrou (04/09/2026) que
-            # o trecho final se chama Rio Conceição: 3 vias, ~650 m de canal
-            # para 578 m em linha reta — sinuosidade 1,12, normal em várzea.
-            # Com ele desenhado, o Canhanduba chega ao Mirim PELO Conceição.
-            self.assertFalse(r["cortado"], f"o Conceição está em data/rios/ mas "
-                                           f"o Canhanduba segue a {r['metros']} m")
-            self.assertEqual(r["via"], ["rio-conceicao"])
-            return
-        # AINDA ABERTO: retrato dos 578 m, que deve envelhecer.
-        self.assertAlmostEqual(
-            r["metros"], 578, delta=30,
-            msg=f"o vão do Canhanduba mudou ({r['metros']} m) e o Conceição não "
-                "está em data/rios/. Se o traçado perdeu vias, investigue; se o "
-                "vão fechou por outro caminho, atualize este teste.")
+        self.assertEqual(self.rs["ribeirao-canhanduba"]["via"], ["rio-conceicao"])
 
 
 if __name__ == "__main__":
