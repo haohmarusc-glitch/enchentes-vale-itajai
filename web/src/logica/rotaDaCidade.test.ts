@@ -19,7 +19,10 @@ const estacoes = JSON.parse(
 ) as {
   rios: Record<
     string,
-    { cidades: { id: string }[]; _topologia?: { tronco_sequencia?: string[] } }
+    {
+      cidades: { id: string; nome: string }[]
+      _topologia?: { tronco_sequencia?: string[] }
+    }
   >
 }
 
@@ -102,5 +105,41 @@ test('cidade com tela própria continua no cadastro — o desvio não a apaga', 
   const ids = new Set(cidadesDoRio('itajai-acu').map((c) => c.id))
   for (const cidadeId of Object.keys(telasProprias())) {
     assert.ok(ids.has(cidadeId), `${cidadeId} tem tela própria mas sumiu do cadastro do Açu`)
+  }
+})
+
+/**
+ * O índice de cidades da tela inicial.
+ *
+ * É a porta mais curta do site: quem abre na chuva quer a cidade dele, sem ter
+ * de saber em qual rio ela fica. Um link errado aqui manda a pessoa para uma
+ * página vazia no pior momento possível.
+ */
+const INICIO = readFileSync(new URL('../telas/Inicio.tsx', import.meta.url), 'utf8')
+
+test('o índice da tela inicial monta o endereço no mesmo formato das rotas', () => {
+  // `/acu/gaspar` e `/mirim/brusque`: apelido do rio + id da cidade.
+  assert.match(INICIO, /\$\{apelido\}\/\$\{c\.id\}/, 'o índice deixou de montar /<rio>/<cidade>')
+  assert.match(INICIO, /'\/itajai'/, 'Itajaí precisa ir para a tela da foz, não para a genérica')
+})
+
+test('Itajaí está nos DOIS rios — por isso o índice tem de desduplicar', () => {
+  const noAcu = cidadesDoRio('itajai-acu').some((c) => c.id === 'itajai')
+  const noMirim = cidadesDoRio('itajai-mirim').some((c) => c.id === 'itajai')
+  assert.ok(noAcu && noMirim, 'se Itajaí sair de um dos rios, a desduplicação vira código morto')
+})
+
+test('nenhuma cidade repete id dentro do mesmo rio — o índice usaria a chave errada', () => {
+  for (const rioId of ['itajai-acu', 'itajai-mirim']) {
+    const ids = cidadesDoRio(rioId).map((c) => c.id)
+    assert.equal(new Set(ids).size, ids.length, `${rioId} tem id repetido`)
+  }
+})
+
+test('toda cidade tem nome não vazio — chip sem rótulo é chip que ninguém acha', () => {
+  for (const rioId of ['itajai-acu', 'itajai-mirim']) {
+    for (const c of cidadesDoRio(rioId)) {
+      assert.ok(String(c.nome ?? '').trim().length > 0, `${rioId}/${c.id} sem nome`)
+    }
   }
 })

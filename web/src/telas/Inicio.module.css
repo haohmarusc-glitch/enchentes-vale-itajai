@@ -43,3 +43,49 @@
   font-size: 0.85rem;
   color: var(--tinta-fraca);
 }
+
+.instrucaoCidades {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.listaCidades {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+/* Alvos generosos de propósito: quem usa isto está com uma mão só, no
+   celular, na chuva. Chip apertado erra o toque e leva à cidade do lado. */
+.chipCidade {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 7.5rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(128, 128, 128, 0.32);
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.chipCidade:hover,
+.chipCidade:focus-visible {
+  border-color: #1c6ea4;
+  background: rgba(28, 110, 164, 0.08);
+}
+
+.nomeCidade {
+  font-weight: 600;
+}
+
+.rioCidade {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
