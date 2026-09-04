@@ -450,5 +450,73 @@ class TestCompactarComPrefixo(unittest.TestCase):
         self.assertEqual(coleta_niveis.compactar(), 0)
 
 
+class TaioFiadoNaColeta(unittest.TestCase):
+    """
+    Taió entra pelo mesmo molde do Asthon: fonte à parte, falha engolida.
+
+    O que estes testes protegem é o contrato do encadeamento. O cron roda
+    `coleta_niveis.py && alerta_cotas.py && publicar_tempo_real.sh`: se a coleta
+    de Taió pudesse levantar exceção, uma cabeceira fora do ar derrubaria a
+    publicação de TODAS as cidades — quinze minutos sem número novo por causa de
+    uma API municipal.
+    """
+
+    def _payload(self, leituras):
+        return {
+            "fonte": "u", "coletado_em": "2026-09-04T05:00:00+00:00",
+            "leituras": leituras,
+            "barragem": {"comportas": {"abertas": 7, "total": 7, "regime": "vertendo"}},
+            "chuva_mm": {}, "historico": [],
+        }
+
+    def test_falha_da_fonte_nao_derruba_a_coleta(self):
+        import coleta_taio
+
+        def explode():
+            raise RuntimeError("HTTP 400")
+
+        with mock.patch.object(coleta_taio, "payload", explode):
+            self.assertEqual(coleta_niveis.baixar_nivel_taio(gravar=False), [])
+
+    def test_devolve_a_leitura_da_cidade(self):
+        import coleta_taio
+
+        leitura = {"estacao": "Taió — Rio Itajaí do Oeste, Centro", "rio": "itajai-acu",
+                   "cidade": "taio", "nivel_m": 5.25,
+                   "medido_em": "2026-09-04T01:00:00", "usar_para_cota": True}
+        with mock.patch.object(coleta_taio, "payload", lambda: self._payload([leitura])):
+            self.assertEqual(coleta_niveis.baixar_nivel_taio(gravar=False), [leitura])
+
+    def test_no_save_NAO_reescreve_o_arquivo_que_vai_ao_ar(self):
+        """
+        `--no-save` é ensaio. Se ele gravasse, um teste de coleta rodado na VPS
+        trocaria o arquivo que o publicador manda ao ar no minuto seguinte.
+        """
+        import coleta_taio
+        import comum
+
+        with mock.patch.object(coleta_taio, "payload", lambda: self._payload([])), \
+             mock.patch.object(comum, "grava_json") as gravou:
+            coleta_niveis.baixar_nivel_taio(gravar=False)
+        gravou.assert_not_called()
+
+    def test_gravando_leva_a_BARRAGEM_junto_e_nao_so_o_nivel(self):
+        """
+        As comportas não cabem em `leituras` — não são nível de rio —, então o
+        payload inteiro vai para o arquivo. Se só o nível fosse gravado, o único
+        dado de operação de barragem da bacia se perderia a cada coleta.
+        """
+        import coleta_taio
+        import comum
+
+        with mock.patch.object(coleta_taio, "payload", lambda: self._payload([])), \
+             mock.patch.object(comum, "grava_json") as gravou:
+            coleta_niveis.baixar_nivel_taio(gravar=True)
+        gravou.assert_called_once()
+        destino, conteudo = gravou.call_args[0]
+        self.assertEqual(destino, coleta_taio.SAIDA)
+        self.assertEqual(conteudo["barragem"]["comportas"]["regime"], "vertendo")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
