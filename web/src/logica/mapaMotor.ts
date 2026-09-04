@@ -62,6 +62,8 @@ export const COR_REGUA_SEM_GRAU = '#6fb6e8'
 
 /** O mínimo que `desenharReguas` precisa — vem de `logica/reguasNoMapa`. */
 export type ReguaDesenhavel = {
+  /** Nome do LUGAR ("Portal I"), não o código — ver `logica/reguasNoMapa`. */
+  nome: string
   codigo: string
   lon: number
   lat: number
@@ -641,7 +643,9 @@ export function desenharReguas(
     }
 
     if (g.nivel == null) continue
-    const texto = g.codigo ? `${g.codigo} ${metros(g.nivel)}` : metros(g.nivel)
+    // O NOME do lugar, não o código: "Portal I 0,32 m" diz onde é a quem mora
+    // ali; "DC-07 0,32 m" não diz nada.
+    const texto = g.nome ? `${g.nome} ${metros(g.nivel)}` : metros(g.nivel)
     ctx.font = `600 ${fonte}px system-ui, sans-serif`
     const w = ctx.measureText(texto).width
     const tx = x + r + 3 * escala

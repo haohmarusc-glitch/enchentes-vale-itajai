@@ -31,6 +31,18 @@ const CHAVES_QUE_PINTAM = new Set(['atencao', 'alerta', 'inundacao', 'emergencia
 export type ReguaNoMapa = {
   codigo: string
   titulo: string
+  /**
+   * O nome do LUGAR, para o rótulo no mapa — "Portal I", "Rio do Meio",
+   * "Bairro Murta".
+   *
+   * O mapa rotulava com o código (`DC-07 0,32 m`), e ninguém que mora no
+   * Portal I sabe o que é DC-07. O `nome_no_plano` do cadastro traz o nome que
+   * a Defesa Civil usa no Plano de Contingência — e a parte depois do hífen é
+   * justamente o ponto de referência, sem o nome do rio que já se vê no mapa.
+   * O código continua no `codigo`, para o painel e para cruzar com o site da
+   * Defesa Civil.
+   */
+  nome: string
   lon: number
   lat: number
   nivel: number | null
@@ -46,6 +58,28 @@ export type ReguaNoMapa = {
 }
 
 export type LeituraDeRegua = { titulo: string; nivel_m: number; medidoEm: Date | null }
+
+/**
+ * O ponto de referência da régua, curto o bastante para caber no mapa.
+ *
+ * `"Ribeirão da Murta - Portal I"` -> `"Portal I"`. Sem o nome do rio, que o
+ * mapa já mostra, e sem o código, que não diz nada a quem mora ali. Cai para o
+ * código e depois para o título quando a fonte não nomeia — nunca fica vazio,
+ * porque ponto sem rótulo no meio de outros dez é ponto que não se identifica.
+ */
+export function nomeDoLugar(e: {
+  nome_no_plano?: string
+  codigo?: string
+  titulo: string
+}): string {
+  const n = e.nome_no_plano?.trim()
+  if (n) {
+    const corte = n.lastIndexOf(' - ')
+    const curto = corte >= 0 ? n.slice(corte + 3).trim() : n
+    if (curto) return curto
+  }
+  return e.codigo?.trim() || e.titulo
+}
 
 /**
  * Junta cadastro + leitura e decide a cor de cada régua.
@@ -74,6 +108,7 @@ export function reguasNoMapa(
     const base = {
       codigo: e.codigo ?? '',
       titulo: e.titulo,
+      nome: nomeDoLugar(e),
       lon: e.lon,
       lat: e.lat,
       nivel: leitura?.nivel_m ?? null,

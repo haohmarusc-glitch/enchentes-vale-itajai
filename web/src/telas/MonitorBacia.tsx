@@ -53,7 +53,31 @@ function urlDoRio(rioId: string): string | undefined {
 
 /** Rios do tronco (têm cidades que os pintam). Afluentes entram como linha extra. */
 const RIOS_TRONCO = ['itajai-acu', 'itajai-mirim'] as const
-const AFLUENTES = ['benedito', 'luiz-alves', 'hercilio'] as const
+/**
+ * Traçados OPCIONAIS: entram quando o geojson existe, e somem sem quebrar nada.
+ *
+ * Os três últimos são de ITAJAÍ e existem por medição, não por gosto. Com o
+ * traçado de hoje (`scripts/conferir_reguas_no_tracado.py`), quatro das onze
+ * réguas caem longe de qualquer curso desenhado:
+ *
+ *     DC-08 Rio do Meio    4,41 km   Rio Canhanduba
+ *     DC-03 SEMASA         2,32 km   canal retificado do Mirim
+ *     DC-07 Portal I       2,25 km   Ribeirão da Murta
+ *     DC-09 Bairro Murta   0,87 km   Ribeirão da Murta
+ *
+ * As outras sete estão a menos de 0,2 km — inclusive a DC-11, na margem do
+ * meandro da Volta de Cima, a 0,09 km: o tronco está certo, o que falta são os
+ * cursos menores, que a consulta original do Overpass não pediu (só buscou
+ * `waterway=river`). Ver `docs/tracado-ribeiroes.md`.
+ */
+const AFLUENTES = [
+  'benedito',
+  'luiz-alves',
+  'hercilio',
+  'ribeirao-murta',
+  'ribeirao-canhanduba',
+  'mirim-canal-retificado',
+] as const
 
 async function baixarTracado(rioId: string): Promise<LonLat[][] | null> {
   const url = urlDoRio(rioId)

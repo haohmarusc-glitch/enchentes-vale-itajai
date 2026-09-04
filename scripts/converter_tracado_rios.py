@@ -28,6 +28,17 @@ from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
 BRUTO = RAIZ / "data/brutos/tracado-rios-osm.json"
+
+#: Bruto OPCIONAL e SEPARADO, com os cursos menores de Itajaí.
+#:
+#: Separado de propósito: o `tracado-rios-osm.json` já produz um tronco
+#: conferido (as sete réguas que caem nele estão a menos de 0,2 km), e
+#: rebaixá-lo para acrescentar ribeirão arriscaria mexer no que já está certo
+#: por causa do que ainda falta. Este arquivo só ALIMENTA os afluentes
+#: opcionais; some sem quebrar nada.
+#:
+#: A consulta do Overpass está em `docs/tracado-ribeiroes.md`.
+BRUTO_RIBEIROES = RAIZ / "data/brutos/tracado-ribeiroes-osm.json"
 SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
@@ -48,6 +59,22 @@ RIOS_AFLUENTES = {
     "benedito": ["rio benedito"],
     "luiz-alves": ["rio luiz alves", "rio luís alves"],
     "hercilio": ["rio hercílio", "rio hercilio"],
+    # Os cursos de ITAJAÍ que carregam régua e não estavam no mapa. Medido em
+    # 04/09/2026 (scripts/conferir_reguas_no_tracado.py): sem eles, DC-07 fica a
+    # 2,25 km, DC-09 a 0,87 km e DC-08 a 4,41 km do traçado mais próximo — os
+    # pinos flutuavam fora de qualquer rio. São `waterway=stream`/`canal` no
+    # OSM, e a consulta original só pediu `waterway=river`: por isso faltavam.
+    "ribeirao-murta": ["ribeirão da murta", "ribeirao da murta"],
+    "ribeirao-canhanduba": [
+        "ribeirão da canhanduba", "ribeirao da canhanduba",
+        "rio canhanduba", "rio do meio",
+    ],
+    # O canal retificado do Mirim, onde fica a DC-03 (SEMASA), hoje a 2,32 km do
+    # traçado. Fica em id próprio, e não fundido ao Mirim, porque é obra: o
+    # curso antigo continua existindo ao lado (DC-05 e DC-06 estão nele), e
+    # juntar os dois numa linha só apagaria essa distinção — que o cadastro faz
+    # questão de manter no título de cada régua.
+    "mirim-canal-retificado": ["canal retificado", "canal do itajaí-mirim"],
 }
 
 
@@ -122,6 +149,18 @@ def main() -> int:
     dados = json.loads(BRUTO.read_text(encoding="utf-8"))
     por_nome = ways_por_nome(dados.get("elements") or [])
     elementos = dados.get("elements") or []
+
+    # O bruto dos ribeirões entra SÓ na busca por substring (afluentes
+    # opcionais). O tronco continua saindo do bruto conferido, intocado.
+    if BRUTO_RIBEIROES.exists():
+        extra = json.loads(BRUTO_RIBEIROES.read_text(encoding="utf-8"))
+        n = len(extra.get("elements") or [])
+        elementos = elementos + (extra.get("elements") or [])
+        print(f"bruto dos ribeirões: +{n} elemento(s) de {BRUTO_RIBEIROES.name}")
+    else:
+        print(f"sem {BRUTO_RIBEIROES.name} — ribeirões de Itajaí ficam de fora "
+              "(ver docs/tracado-ribeiroes.md para baixar na VPS)")
+
     SAIDA.mkdir(parents=True, exist_ok=True)
 
     def grava(feat: dict, rio_id: str) -> None:
