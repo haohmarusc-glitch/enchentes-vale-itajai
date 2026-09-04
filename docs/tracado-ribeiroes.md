@@ -31,6 +31,70 @@ for apagado ou trocado, o teste diz qual régua voltou a flutuar.
 
 O texto abaixo é o registro de como se chegou lá.
 
+## AINDA ABERTO: o Canhanduba não chega no Mirim (04/09/2026)
+
+Medido por `scripts/conferir_afluentes_chegam.py`:
+
+| afluente | chega em | distância |
+|---|---|---|
+| `ribeirao-murta` | `itajai-acu` | **0 m** — completo |
+| `ribeirao-canhanduba` | `itajai-mirim` | **578 m** — CORTADO |
+
+O traçado do Canhanduba morre em `-48.6948975, -26.9394653`, na várzea, sem
+tocar o Mirim. O ponto do Mirim mais próximo é `-48.6931636, -26.9345082`.
+
+**Afluente cortado é pior que afluente ausente.** Ausente, quem olha sabe que
+não sabe. Cortado, o mapa **afirma** que a água pára ali — e quem mora entre a
+ponta do traçado e o rio conclui que o ribeirão não chega perto de casa.
+
+**O pedaço que falta NÃO está no bruto.** `data/brutos/tracado-ribeiroes-osm.json`
+tem 19 elementos, e as três vias perto da ponta (`1162566966`, `290763074`,
+`135631719`) são todas "Rio Canhanduba" e já foram convertidas. Ou seja: o
+último trecho antes da foz tem outro nome no OSM, ou nenhum, e a consulta por
+nome não o alcança.
+
+### Consulta para fechar o vão (rodar na VPS)
+
+Pega TODO curso d'água na caixa em volta da ponta, sem filtrar por nome — é
+justamente o nome que está faltando:
+
+```bash
+cd /opt/enchentes-vale-itajai
+curl -sS 'https://overpass-api.de/api/interpreter' \
+  -H 'User-Agent: enchentes-vale-itajai (github.com/haohmarusc-glitch)' \
+  --data-urlencode 'data=
+[out:json][timeout:60];
+(
+  way["waterway"~"river|stream|canal|ditch"]
+     (-26.945,-48.700,-26.930,-48.688);
+);
+out geom;
+' > /tmp/vao-canhanduba.json
+
+python3 -c "
+import json
+from collections import Counter
+d = json.load(open('/tmp/vao-canhanduba.json'))
+print(Counter((e.get('tags') or {}).get('name') or '(sem nome)' for e in d['elements']))
+"
+```
+
+Com o nome em mãos (ou a confirmação de que o trecho é `(sem nome)`), o passo
+seguinte é decidir COMO capturá-lo. Casar por nome não serve para uma via sem
+nome; a alternativa é juntar o bruto novo ao existente e casar por
+**conectividade** — vias que compartilham nó com o Canhanduba já convertido.
+
+**Nunca desenhar o vão à mão.** Uma linha reta de 578 m entre a ponta e o rio
+seria geografia inventada num mapa de enchente, que é o oposto do que este
+projeto faz.
+
+### A trava
+
+`scripts/teste_conferir_afluentes_chegam.py` guarda os 578 m como retrato que
+**deve envelhecer**: quando o trecho for rebaixado, o teste falha dizendo
+"se DIMINUIU, o trecho que faltava foi rebaixado: apague este teste e feche a
+pendência". O Murta, esse já vale como regra permanente.
+
 ## O que foi medido (não olhado), em 04/09/2026 pela manhã
 
 `python3 scripts/conferir_reguas_no_tracado.py` mede a distância de cada régua
