@@ -23,27 +23,65 @@
       "foz": "Itajaí (Oceano Atlântico)",
       "_topologia": {
         "tipo": "arvore",
-        "tronco_sequencia": ["rio-do-sul", "lontras", "ascurra", "indaial", "blumenau", "gaspar", "ilhota", "itajai"],
+        "tronco_sequencia": [
+          "rio-do-sul",
+          "lontras",
+          "ascurra",
+          "indaial",
+          "blumenau",
+          "gaspar",
+          "ilhota",
+          "itajai"
+        ],
         "confluencia_cabeceiras": {
           "lat": -27.2160314,
           "lon": -49.6483391,
-          "cabeceiras": ["taio", "ituporanga"],
+          "cabeceiras": [
+            "taio",
+            "ituporanga"
+          ],
           "nasce": "rio-do-sul",
           "nota": "-27.2160314, -49.6483391 — vértice que o Rio Itajaí do Sul (chega de S, vem de Ituporanga), o Rio Itajaí do Oeste (chega de O, vem de Taió) e o Rio Itajaí-Açu COMPARTILHAM no traçado da Defesa Civil de Rio do Sul (API Asthon, 04/09/2026): a junção é declarada pela fonte, não medida por nós. O rumo de chegada de cada cabeceira confere com a topologia levantada em OSM/Overpass — duas fontes independentes. A cobertura do arquivo é só o trecho perto de Rio do Sul, então ele serve para o ponto, NÃO como traçado de mapa (fica em data/brutos/, não em data/rios/).",
           "fonte": "Defesa Civil de Rio do Sul / API Asthon, data/brutos/rio-do-sul-rios-tracados.geojson (04/09/2026)"
         },
-        "cabeceiras_paralelas": ["taio", "ituporanga"],
+        "cabeceiras_paralelas": [
+          "taio",
+          "ituporanga"
+        ],
         "afluentes_laterais": [
-          { "id": "ibirama", "entra_perto_de": "rio-do-sul", "rio": "Rio Hercílio (Itajaí do Norte)" },
-          { "id": "timbo", "entra_perto_de": "indaial", "rio": "Rio Benedito" },
-          { "id": "rio-dos-cedros", "entra_perto_de": "timbo", "rio": "Rio dos Cedros (desagua no Benedito)" }
+          {
+            "id": "ibirama",
+            "entra_perto_de": "rio-do-sul",
+            "rio": "Rio Hercílio (Itajaí do Norte)"
+          },
+          {
+            "id": "timbo",
+            "entra_perto_de": "indaial",
+            "rio": "Rio Benedito"
+          },
+          {
+            "id": "rio-dos-cedros",
+            "entra_perto_de": "timbo",
+            "rio": "Rio dos Cedros (desagua no Benedito)"
+          }
         ],
         "nao_e_regua_de_rio": [
-          { "id": "apiuna", "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026." }
+          {
+            "id": "apiuna",
+            "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026."
+          }
         ],
         "afluentes_rios": [
-          { "nome": "Rio Benedito (Timbó)", "entra_perto_de": "indaial", "ponto_exato": "Entra ENTRE Ascurra e Indaial, a MONTANTE de Indaial — confirmado por fonte oficial e independente: o AIBH do Itajaí-Açu (CEDRO+ENGERA para o IMA, 2021) descreve o 'trecho entre Ascurra e Indaial, a montante da confluência com o Rio Benedito, ~14 km'. É fato geográfico descritivo, não conclusão de cheia do estudo (esta última não se usa — o estudo foi pago pelos empreendedores das PCHs). Ver docs/AIBH-ITAJAI-ACU.md." },
-          { "nome": "Rio Luís Alves", "entra_perto_de": "ilhota", "ponto_exato": "a confirmar por coordenada — antes ou depois da régua de Ilhota (Ilhota 'recebe o rio Luiz Alves')." }
+          {
+            "nome": "Rio Benedito (Timbó)",
+            "entra_perto_de": "indaial",
+            "ponto_exato": "Entra ENTRE Ascurra e Indaial, a MONTANTE de Indaial — confirmado por fonte oficial e independente: o AIBH do Itajaí-Açu (CEDRO+ENGERA para o IMA, 2021) descreve o 'trecho entre Ascurra e Indaial, a montante da confluência com o Rio Benedito, ~14 km'. É fato geográfico descritivo, não conclusão de cheia do estudo (esta última não se usa — o estudo foi pago pelos empreendedores das PCHs). Ver docs/AIBH-ITAJAI-ACU.md."
+          },
+          {
+            "nome": "Rio Luís Alves",
+            "entra_perto_de": "ilhota",
+            "ponto_exato": "a confirmar por coordenada — antes ou depois da régua de Ilhota (Ilhota 'recebe o rio Luiz Alves')."
+          }
         ],
         "nota": "A bacia do Itajaí-Açu é uma ÁRVORE, não uma fila. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras PARALELAS que se juntam em Rio do Sul, onde NASCE o Açu. Ibirama fica no Rio Hercílio (Itajaí do Norte), afluente lateral — não é elo do tronco: um pico nele ENTRA no tronco, não desce por ele. A única sequência que a tela pode afirmar é o tronco (tronco_sequencia). Dentro de cada ramo vale ordem_no_ramo; entre ramos, nada 'vem antes'. Verificado em mapa + Overpass (02/09/2026); ver docs/TOPOLOGIA-CANONICA.md.",
         "fonte": "OpenStreetMap + Overpass API, 02/09/2026"
@@ -76,7 +114,10 @@
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.1163, -50.0003]
+          "coordenadas": [
+            -27.1163,
+            -50.0003
+          ]
         },
         {
           "id": "ituporanga",
@@ -94,7 +135,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.4822, -49.5825]
+          "coordenadas": [
+            -27.4822,
+            -49.5825
+          ]
         },
         {
           "id": "rio-do-sul",
@@ -119,7 +163,10 @@
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "regua": "Ponte Dom Tito Buss",
-          "coordenadas": [-27.2072, -49.6335]
+          "coordenadas": [
+            -27.2072,
+            -49.6335
+          ]
         },
         {
           "id": "ibirama",
@@ -144,7 +191,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.057, -49.52]
+          "coordenadas": [
+            -27.057,
+            -49.52
+          ]
         },
         {
           "id": "lontras",
@@ -167,7 +217,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.1683, -49.5386]
+          "coordenadas": [
+            -27.1683,
+            -49.5386
+          ]
         },
         {
           "id": "ascurra",
@@ -184,7 +237,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-26.9613, -49.3729]
+          "coordenadas": [
+            -26.9613,
+            -49.3729
+          ]
         },
         {
           "id": "indaial",
@@ -207,7 +263,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-26.9109, -49.27]
+          "coordenadas": [
+            -26.9109,
+            -49.27
+          ]
         },
         {
           "id": "blumenau",
@@ -232,7 +291,10 @@
             "https://alertablu.blumenau.sc.gov.br/ (bloqueia robôs)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-26.9224, -49.1354]
+          "coordenadas": [
+            -26.9224,
+            -49.1354
+          ]
         },
         {
           "id": "gaspar",
@@ -256,7 +318,10 @@
           },
           "cotas_divergencias": [
             {
-              "cotas_m": { "atencao": 6.0, "emergencia": 7.0 },
+              "cotas_m": {
+                "atencao": 6.0,
+                "emergencia": 7.0
+              },
               "fonte": "Legenda da estação 21 no site da Defesa Civil de Gaspar — https://defesacivil.gaspar.sc.gov.br/estacao/ver/21 (consultada em 03/09/2026): NORMALIDADE abaixo de 6,00 m · ATENÇÃO acima de 6,00 m OU chuva acima de 6,00 mm · EMERGÊNCIA acima de 7,00 m. Três estados, duas cotas, sem faixa de alerta.",
               "por_que_nao_foi_adotada": "As duas fontes são oficiais e do MESMO município, e se contradizem na fronteira dos 5 a 6 m: o Plano chama essa faixa de ATENÇÃO/ALERTA, a legenda chama de normalidade. Adotamos a que avisa MAIS CEDO, que é a regra do projeto quando fonte oficial conflita. O custo de errar para o outro lado é medido: a primeira rua do cadastro alaga a 6,20 m, então a atenção a 6,00 m deixaria 20 cm de margem, contra 1,20 m com 5,00 m — e há teste travando a margem em pelo menos 1 m. Pendência: perguntar à Superintendência de Gaspar qual das duas vale como gatilho de aviso.",
               "gatilho_composto": "A legenda traz algo que o Plano não tem e que só ACRESCENTA aviso: a atenção dispara por nível OU por chuva acima de 6,00 mm. Nenhuma outra cidade da bacia tem gatilho composto. Não foi implementado porque 'chuva atual' não existe no nosso vocabulário (a coleta guarda min10/h1/h12/h24/h48) e porque no próprio feed de Gaspar esse campo é incoerente em parte das estações — ver README e scripts/coleta_gaspar.py."
@@ -265,7 +330,10 @@
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
           ],
-          "coordenadas": [-26.9264, -48.9643]
+          "coordenadas": [
+            -26.9264,
+            -48.9643
+          ]
         },
         {
           "id": "ilhota",
@@ -288,7 +356,10 @@
             "emergencia": 10.5
           },
           "fontes_tempo_real": [],
-          "coordenadas": [-26.8944, -48.8248]
+          "coordenadas": [
+            -26.8944,
+            -48.8248
+          ]
         },
         {
           "id": "itajai",
@@ -334,7 +405,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-26.8231, -49.2708]
+          "coordenadas": [
+            -26.8231,
+            -49.2708
+          ]
         },
         {
           "id": "rio-dos-cedros",
@@ -360,7 +434,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-26.7397, -49.2703]
+          "coordenadas": [
+            -26.7397,
+            -49.2703
+          ]
         },
         {
           "id": "trombudo-central",
@@ -383,7 +460,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.3053, -49.7919]
+          "coordenadas": [
+            -27.3053,
+            -49.7919
+          ]
         }
       ]
     },
@@ -418,7 +498,10 @@
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "coordenadas": [-27.1862, -49.1206]
+          "coordenadas": [
+            -27.1862,
+            -49.1206
+          ]
         },
         {
           "id": "guabiruba",
@@ -430,7 +513,10 @@
           "observacao": "O relatório-fonte descreve o eixo Botuverá → Guabiruba → Brusque → Itajaí. Posição na sequência ainda não conferida em carta oficial.",
           "cotas_m": {},
           "fontes_tempo_real": [],
-          "coordenadas": [-27.0868, -48.9774]
+          "coordenadas": [
+            -27.0868,
+            -48.9774
+          ]
         },
         {
           "id": "brusque",
@@ -453,7 +539,10 @@
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "cotas_verificado": false,
-          "coordenadas": [-27.1007, -48.9172]
+          "coordenadas": [
+            -27.1007,
+            -48.9172
+          ]
         },
         {
           "id": "itajai",
@@ -496,9 +585,7 @@
     "mare_dc_itajai": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
     "jica_relatorio": "https://openjicareport.jica.go.jp/pdf/12043584_01.pdf"
   },
-  "afluentes_monitorados": [
-
-  ],
+  "afluentes_monitorados": [],
   "estacoes_tempo_real": [
     {
       "codigo": "DC-01",
@@ -520,7 +607,8 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Açu - CEPSUL",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "nome_anterior": "DC-01 Rio Itajaí-Açu - CEPSUL"
     },
     {
       "codigo": "DC-02",
@@ -542,7 +630,8 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Açu - Praça da Murta",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "nome_anterior": "DC-02 Rio Itajaí-Açu - Praça da Murta"
     },
     {
       "codigo": "DC-03",
@@ -676,7 +765,8 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Canhanduba - Rio do Meio",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "nome_anterior": "DC-08 Ribeirão da Canhanduba - Rio do Meio"
     },
     {
       "codigo": "DC-09",
@@ -698,7 +788,8 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Murta - Bairro Murta",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "nome_anterior": "DC-09 Ribeirão da Murta - Bairro Murta"
     },
     {
       "codigo": "DC-10",
