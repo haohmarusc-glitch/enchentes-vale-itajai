@@ -458,6 +458,29 @@ o projeto.
 
 Em ordem de impacto.
 
+### Quanto do mapa está apagado, e o que acende cada pedaço
+
+Medido em 04/09/2026 por `scripts/conferir_cobertura.py` contra o `ultimo.json`
+publicado. **Cinza não é defeito** — é o site se recusando a afirmar o que não
+mediu. O que a tabela dá é o TAMANHO da recusa, para ordenar a quem pedir o quê:
+
+| rio | animado | apagado |
+|---|---|---|
+| Itajaí-Açu | 184 de 323 km — **57%** | 139 km |
+| Itajaí-Mirim | 50 de 186 km — **27%** | 136 km |
+
+| km cinza | causa | como destrava |
+|---|---|---|
+| **122,3 km** | sem leitura **e** sem cota | Lontras, Ascurra, Botuverá, Guabiruba — as duas coisas |
+| **84,2 km** | **sem cota** | **Vidal Ramos** tem nível ao vivo (2,51 m) e falta só o limiar — um número acende 45% do Mirim |
+| **69,3 km** | **sem leitura** | Ilhota (36,4), Gaspar (16,9), Indaial (16,0) — têm cota oficial, a fonte é que não publica |
+
+O maior retorno por pedido é **a cota de Vidal Ramos**: um único limiar, e há
+caminho apontado (o endpoint `panel` da Asthon traz `band_thresholds`; comando em
+`docs/API-ASTHON-COMPLETA.md`). Depois vêm **Ilhota, Gaspar e Indaial**, que já
+têm cota do Plano de Contingência e esperam só a leitura.
+
+
 - [ ] **⚠️ Cotas de Rio do Sul vão mudar — obra de Melhorias Fluviais (em licitação, 2026).** O AIBH do Itajaí-Açu (2021) descreve o projeto estadual de rebaixamento do leito + comporta de controle no trecho **Rio do Sul–Lontras**; o usuário informou (02/09/2026) que a obra **não foi executada e está em licitação** neste ano. Quando sair, ela **muda a curva-chave** (mesma vazão → nível menor na régua), põe o nível de cheia sob **operação de comporta**, e **quebra a série histórica** de Rio do Sul — que é o ponto onde nasce o Açu e a primeira referência do tronco, logo afeta previsão a jusante. **Ação:** acompanhar a licitação (Defesa Civil de SC); ao concluir, revalidar as cotas (4,50/5,50/6,50/abrigos 7,00) com a Defesa Civil de Rio do Sul, pedir a **nova curva-chave**, e marcar em `enchentes.json` uma **quebra de série** ("antes/depois das melhorias") para os picos de Rio do Sul. Já anotado na `observacao` de Rio do Sul (`estacoes.json`). Detalhe em `docs/AIBH-ITAJAI-ACU.md` §3.
 - [x] **Onde o Benedito entra no tronco — resolvido por fonte oficial.** O AIBH do Itajaí-Açu (CEDRO+ENGERA para o IMA, 2021) descreve o "trecho entre Ascurra e Indaial, a montante da confluência com o Rio Benedito, ~14 km": o Benedito entra **entre Ascurra e Indaial, a montante de Indaial** — confirma o diagrama da topologia e corrige a suposição antiga ("entre Indaial e Blumenau"). É fato geográfico descritivo (não a conclusão de cheia do estudo, que é de fonte interessada e não se usa). Gravado em `_topologia.afluentes_rios` e no `desagua_em` do Timbó. **Falta o Luís Alves** (antes/depois da régua de Ilhota): segue para o `achar_confluencias.py` na VPS — o `converter_tracado_rios.py` e a query do Overpass já foram estendidos para baixar `luiz-alves.geojson`.
 
