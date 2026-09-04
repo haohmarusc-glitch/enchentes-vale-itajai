@@ -192,6 +192,59 @@ test('sem cota e sem leitura viram sem-dado, nunca verde', () => {
   assert.equal(faixaDaCidade(comCota, null, false, agora), 'sem-dado')
 })
 
+test('fase branda da cidade NUNCA vira vermelho — o defeito de 04/09/2026', () => {
+  const agora = new Date('2026-09-01T12:00:00Z')
+  const leitura = (n: number) => ({ nivel_m: n, medidoEm: new Date('2026-09-01T11:55:00Z') })
+
+  // Taió, como está no estacoes.json: o Plano da COMPDEC tem CINCO fases, e a
+  // mais branda (monitoramento, 5,00 m) fica a QUATRO metros da emergência.
+  const taio = {
+    id: 'taio', nome: 'Taió', ordem: null,
+    cotas_m: { monitoramento: 5.0, atencao: 7.0, alerta: 8.0, emergencia: 9.0 },
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+
+  // O defeito: a cota mais alta ALCANÇADA era 'monitoramento', e todo nome
+  // desconhecido caía na cor mais forte. A leitura real de 03/09 (5,25 m), que
+  // a Defesa Civil de Taió pintava de amarelo, saía VERMELHA aqui.
+  assert.equal(faixaDaCidade(taio, leitura(5.25), false, agora), 'normal')
+  // E a escala verdadeira continua inteira — este é o outro lado do teste:
+  // recusar o alarme falso não pode calar o alarme certo.
+  assert.equal(faixaDaCidade(taio, leitura(7.1), false, agora), 'atencao')
+  assert.equal(faixaDaCidade(taio, leitura(8.1), false, agora), 'alerta')
+  assert.equal(faixaDaCidade(taio, leitura(9.1), false, agora), 'emergencia')
+
+  // Ibirama: `observacao_cota` 3,00 é observação, e a emergência é 4,00.
+  const ibirama = {
+    id: 'ibirama', nome: 'Ibirama', ordem: null,
+    cotas_m: { observacao_cota: 3.0, atencao: 3.5, emergencia: 4.0 },
+    codigo_ana: null, verificado: false, fontes_tempo_real: [],
+  } as unknown as Parameters<typeof faixaDaCidade>[0]
+  assert.equal(faixaDaCidade(ibirama, leitura(3.05), false, agora), 'normal')
+  assert.equal(faixaDaCidade(ibirama, leitura(4.05), false, agora), 'emergencia')
+})
+
+test('cidade só com marca de comportamento fica CINZA, não vermelha', () => {
+  const agora = new Date('2026-09-01T12:00:00Z')
+  const leitura = (n: number) => ({ nivel_m: n, medidoEm: new Date('2026-09-01T11:55:00Z') })
+
+  // Os três casos que o estacoes.json descreve como "chave que o código não
+  // desenha". Não há escala de acionamento publicada para nenhuma delas, então
+  // a resposta honesta é "não sei" — cinza —, e não a cor mais forte.
+  const casos: [string, Record<string, number>, number][] = [
+    ['lontras', { seguranca_observada: 9.2 }, 9.25],          // número de imprensa
+    ['timbo', { ativacao_plancon: 5.0, ruas_alerta_citadas: 6.0 }, 6.05], // gatilho de gabinete
+    ['trombudo-central', { inundacao_historica: 8.71 }, 8.76], // marca histórica
+  ]
+  for (const [id, cotas_m, nivel] of casos) {
+    const cidade = {
+      id, nome: id, ordem: null, cotas_m,
+      codigo_ana: null, verificado: false, fontes_tempo_real: [],
+    } as unknown as Parameters<typeof faixaDaCidade>[0]
+    assert.equal(faixaDaCidade(cidade, leitura(nivel), false, agora), 'sem-dado', id)
+  }
+})
+
 test('cidade de várias réguas (foz) não recebe uma cor só', () => {
   const agora = new Date('2026-09-01T12:00:00Z')
   const itajai = {

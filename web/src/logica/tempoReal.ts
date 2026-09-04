@@ -228,6 +228,37 @@ export type Faixa =
   | 'sem-dado'
   | 'varias'
 
+/**
+ * As chaves de `cotas_m` que PINTAM faixa no mapa — vocabulário FECHADO.
+ *
+ * Por que fechado, e por que isto é a correção de um defeito grave (04/09/2026):
+ * a função pegava a cota mais alta alcançada entre TODAS as chaves e mandava
+ * qualquer nome desconhecido para a cor mais forte. Como cada cidade guarda,
+ * além das fases, marcas que NÃO são gatilho, a tela dizia emergência no
+ * patamar mais brando de cada uma:
+ *
+ *   Taió 5,05 m            -> vermelho, e o Plano da COMPDEC chama isso de
+ *                             MONITORAMENTO (a emergência dele é 9,00 m)
+ *   Ibirama 3,05 m         -> vermelho, sendo `observacao_cota` (emergência 4,00)
+ *   Lontras 9,25 m         -> vermelho a partir de `seguranca_observada`
+ *   Timbó 5,05 m           -> vermelho a partir de `ativacao_plancon`
+ *   Trombudo C. 8,76 m     -> vermelho a partir de `inundacao_historica`
+ *
+ * O `estacoes.json` já dizia, em quatro cidades, que essas chaves existiam
+ * JUSTAMENTE porque "o código não desenha" — a intenção estava escrita no dado
+ * e era falsa no código. Este conjunto torna a intenção verdadeira.
+ *
+ * Uma cor forte que a Defesa Civil não declarou é tão perigosa quanto o
+ * silêncio: quem vê emergência num dia de monitoramento aprende a não acreditar
+ * na tela, e não acredita no dia em que ela estiver certa.
+ *
+ * Fora daqui não é rebaixamento de risco, é recusa de INVENTAR aviso: o número
+ * continua na tela pelo `NivelAoVivo` ("acima da cota de monitoramento"), com o
+ * nome que a fonte deu. Acrescentar uma chave nova aqui é decidir que ela é
+ * fase de acionamento — só com documento da COMPDEC dizendo isso.
+ */
+const CHAVES_QUE_PINTAM = new Set(['atencao', 'alerta', 'inundacao', 'emergencia'])
+
 export function faixaDaCidade(
   cidade: Cidade,
   aoVivo: { nivel_m: number; medidoEm: Date | null } | null,
@@ -235,12 +266,18 @@ export function faixaDaCidade(
   agora: Date,
 ): Faixa {
   if (temVariasReguas) return 'varias'
-  if (Object.keys(cidade.cotas_m).length === 0) return 'sem-dado'
+  const quePintam = Object.entries(cidade.cotas_m).filter(([chave]) =>
+    CHAVES_QUE_PINTAM.has(chave),
+  )
+  // Sem NENHUMA cota de acionamento, a cidade fica cinza mesmo tendo número
+  // gravado em `cotas_m`: é o caso de Lontras, Timbó e Trombudo Central, onde o
+  // que existe é marca de comportamento, não escala de aviso.
+  if (quePintam.length === 0) return 'sem-dado'
   if (!aoVivo || !aoVivo.medidoEm) return 'sem-dado'
   // Leitura velha não pinta: um número de horas atrás não diz a faixa de agora,
   // e uma cor forte sobre dado velho é a mentira mais perigosa da tela.
   if (frescor(idadeMin(aoVivo.medidoEm, agora)) === 'velha') return 'sem-dado'
-  const cota = cotaAlcancada(cidade, aoVivo.nivel_m)
+  const cota = cotaAlcancadaEntre(quePintam, aoVivo.nivel_m)
   if (cota === null) return 'normal'
   if (cota.chave === 'atencao' || cota.chave === 'alerta') return cota.chave
   // 'inundacao', 'emergencia' e qualquer cota de topo caem na faixa vermelha.
