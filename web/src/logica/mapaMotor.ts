@@ -747,6 +747,27 @@ export function desenharReguas(
 }
 
 /** Pinos das cidades por cima, cada um na cor da faixa; o selecionado com anel. */
+/**
+ * O que dizer no pino quando NÃO há número nenhum — nem municipal, nem bruto.
+ *
+ * Antes, esses pinos mostravam só o nome, e duas situações muito diferentes
+ * ficavam idênticas na tela:
+ *
+ *  - GASPAR tem cota oficial (5/6/7 m), régua conhecida e estação cadastrada
+ *    (`DCSC-00005`); o que falta é a fonte publicar — a estação estadual manda
+ *    chuva, não régua, e há ofício pendente à Defesa Civil do município. Pino
+ *    mudo ali faz quem mora em Gaspar concluir que o site não cobre a cidade
+ *    dele, quando o que falta é um dado que alguém pode ir buscar.
+ *  - GUABIRUBA não tem régua no cadastro. Não há o que publicar.
+ *
+ * Duas palavras separam as duas. "sem leitura" é lacuna com dono; "sem régua"
+ * é ausência de instrumento. Nenhuma das duas é "está tudo bem" — e era assim
+ * que o nome sozinho podia ser lido.
+ */
+function semNumero(cidade: Cidade): string {
+  return cidade.regua ? 'sem leitura' : 'sem régua'
+}
+
 export function desenharPinos(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
@@ -816,7 +837,7 @@ export function desenharPinos(
           ? idadeBruto
             ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
             : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
-          : idade
+          : (idade ?? semNumero(p.cidade))
     const w = ctx.measureText(nome).width
     const meia = w / 2
     const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, p.x))
