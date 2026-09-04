@@ -31,7 +31,56 @@ for apagado ou trocado, o teste diz qual régua voltou a flutuar.
 
 O texto abaixo é o registro de como se chegou lá.
 
-## AINDA ABERTO: o Canhanduba não chega no Mirim (04/09/2026)
+## O vão do Canhanduba: o trecho final chama-se RIO CONCEIÇÃO (04/09/2026)
+
+`baixar_vao_canhanduba.py` rodou na VPS e achou o que a busca por nome nunca
+alcançaria:
+
+```
+distância até o Mirim hoje: 578 m
+Overpass devolveu 10 elemento(s) na caixa.
+     4x  Rio Conceição
+     3x  Rio Itajaí-Mirim
+     3x  Rio Canhanduba
+cadeia encontrada: 3 via(s), ~650 m
+   id=290763072   river  Rio Conceição   2 pts
+   id=1515580162  river  Rio Conceição  11 pts
+   id=1515580161  river  Rio Conceição   8 pts
+```
+
+**Por que a busca por nome falhou:** o trecho final não se chama Canhanduba.
+
+**Por que a cadeia é confiável:** 650 m de canal para 578 m em linha reta —
+sinuosidade de **1,12**, normal em várzea. Se a cadeia estivesse vagando para
+outro lugar, seria muito mais longa que a reta.
+
+**Entra como rio PRÓPRIO (`rio-conceicao`), não fundido ao Canhanduba.** O OSM
+lhe dá outro nome, e juntar os dois faria o arquivo afirmar que 650 m de Rio
+Conceição são Canhanduba. Desenhados lado a lado eles se tocam, a água chega ao
+Mirim na tela, e nenhum dos dois diz ser o outro.
+
+`conferir_afluentes_chegam.py` passou a seguir CADEIA: um afluente conta como
+chegado quando alcança um tronco **ou** outro afluente que alcança um tronco, e
+o relatório mostra o caminho (`chega em itajai-mirim (via rio-conceicao)`).
+Encostar num curso que também está cortado **não** vale — sem essa regra, dois
+afluentes cortados se validariam um ao outro.
+
+### Passos que faltam na VPS
+
+```bash
+cd /opt/enchentes-vale-itajai
+git pull origin main
+python3 scripts/baixar_vao_canhanduba.py --gravar
+python3 scripts/converter_tracado_rios.py
+python3 scripts/conferir_afluentes_chegam.py    # Canhanduba: via rio-conceicao
+python3 scripts/conferir_reguas_no_tracado.py
+git add data/brutos/vao-canhanduba-osm.json data/rios/rio-conceicao.geojson
+git commit -m "Fecha o vao do Canhanduba pelo Rio Conceicao"
+git push origin main
+```
+
+## Como era antes: o vão de 578 m (registro)
+
 
 Medido por `scripts/conferir_afluentes_chegam.py`:
 

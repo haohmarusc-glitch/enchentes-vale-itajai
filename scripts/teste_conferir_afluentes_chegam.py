@@ -69,6 +69,43 @@ class Medida(unittest.TestCase):
         })
         self.assertTrue(rs[0]["cortado"], "passar perto no meio não é desaguar")
 
+    def test_afluente_que_chega_PELO_VIZINHO_nao_e_cortado(self):
+        """
+        O caso real do Canhanduba: ele não toca o Mirim — deságua no Rio
+        Conceição, que deságua no Mirim. É geografia, não defeito, e foi por
+        isso que a busca por nome nunca fechou o vão.
+        """
+        rs = {r["rio"]: r for r in self.com({
+            "itajai-mirim": [[[-48.70, -26.93], [-48.60, -26.93]]],
+            # O vizinho toca o tronco.
+            "rio-conceicao": [[[-48.65, -26.95], [-48.65, -26.9301]]],
+            # E o afluente toca o vizinho, longe do tronco.
+            "ribeirao-x": [[[-48.65, -26.98], [-48.65, -26.9501]]],
+        })}
+        self.assertFalse(rs["ribeirao-x"]["cortado"], rs["ribeirao-x"])
+        self.assertEqual(rs["ribeirao-x"]["via"], ["rio-conceicao"])
+        self.assertEqual(rs["ribeirao-x"]["chega_em"], "itajai-mirim")
+
+    def test_chegar_por_vizinho_que_TAMBEM_esta_cortado_nao_vale(self):
+        """
+        Encostar num curso que não chega a lugar nenhum não faz a água chegar.
+        Sem esta regra, dois afluentes cortados se validariam um ao outro.
+        """
+        rs = {r["rio"]: r for r in self.com({
+            "itajai-mirim": [[[-48.70, -26.93], [-48.60, -26.93]]],
+            "solto-a": [[[-48.65, -26.99], [-48.65, -26.97]]],
+            "solto-b": [[[-48.65, -26.9701], [-48.65, -26.96]]],
+        })}
+        self.assertTrue(rs["solto-a"]["cortado"])
+        self.assertTrue(rs["solto-b"]["cortado"])
+
+    def test_quem_chega_DIRETO_nao_ganha_via(self):
+        rs = {r["rio"]: r for r in self.com({
+            "itajai-mirim": [[[-48.70, -26.93], [-48.60, -26.93]]],
+            "ribeirao-x": [[[-48.65, -26.95], [-48.65, -26.9301]]],
+        })}
+        self.assertEqual(rs["ribeirao-x"]["via"], [])
+
     def test_o_tronco_nao_e_avaliado_como_afluente(self):
         rs = self.com({
             "itajai-acu": [[[-48.70, -26.90], [-48.60, -26.90]]],
@@ -104,11 +141,21 @@ class ContraOsDadosReais(unittest.TestCase):
         self.assertEqual(r["chega_em"], "itajai-mirim",
                          "o Canhanduba deságua no Mirim — se mudou de tronco, "
                          "o traçado foi trocado")
+        if (cf.RIOS / "rio-conceicao.geojson").exists():
+            # VÃO FECHADO. O `baixar_vao_canhanduba.py` mostrou (04/09/2026) que
+            # o trecho final se chama Rio Conceição: 3 vias, ~650 m de canal
+            # para 578 m em linha reta — sinuosidade 1,12, normal em várzea.
+            # Com ele desenhado, o Canhanduba chega ao Mirim PELO Conceição.
+            self.assertFalse(r["cortado"], f"o Conceição está em data/rios/ mas "
+                                           f"o Canhanduba segue a {r['metros']} m")
+            self.assertEqual(r["via"], ["rio-conceicao"])
+            return
+        # AINDA ABERTO: retrato dos 578 m, que deve envelhecer.
         self.assertAlmostEqual(
             r["metros"], 578, delta=30,
-            msg=f"o vão do Canhanduba mudou ({r['metros']} m). Se DIMINUIU, o "
-                "trecho que faltava foi rebaixado: apague este teste e feche a "
-                "pendência. Se AUMENTOU, o traçado perdeu vias.")
+            msg=f"o vão do Canhanduba mudou ({r['metros']} m) e o Conceição não "
+                "está em data/rios/. Se o traçado perdeu vias, investigue; se o "
+                "vão fechou por outro caminho, atualize este teste.")
 
 
 if __name__ == "__main__":

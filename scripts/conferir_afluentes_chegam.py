@@ -89,34 +89,63 @@ def vias(rio_id: str) -> list[list[tuple[float, float]]]:
             for linha in dados["geometry"]["coordinates"]]
 
 
+def _mais_perto(ls: list[list[tuple[float, float]]],
+                alvos: dict[str, list[list[tuple[float, float]]]]):
+    """
+    (distância em km, nome do alvo, ponta) do afluente até o alvo mais próximo.
+
+    A PONTA é o que importa: um curso pode passar perto de outro no meio do
+    trajeto e mesmo assim não desaguar nele.
+    """
+    pontas = [p for l in ls for p in (l[0], l[-1])]
+    melhor = None
+    for ponta in pontas:
+        for nome, linhas in alvos.items():
+            d = km_a_linhas(ponta, linhas)
+            if melhor is None or d < melhor[0]:
+                melhor = (d, nome, ponta)
+    return melhor
+
+
 def avaliar(limite_m: float = LIMITE_M) -> list[dict]:
-    """Uma linha por afluente desenhado: onde ele encosta, e a que distância."""
-    troncos = {t: vias(t) for t in TRONCOS}
-    troncos = {t: ls for t, ls in troncos.items() if ls}
+    """
+    Uma linha por afluente desenhado: onde ele encosta, e a que distância.
+
+    Segue CADEIA. O Ribeirão Canhanduba não toca o Mirim: ele deságua no **Rio
+    Conceição**, que deságua no Mirim — foi por isso que a busca por nome nunca
+    o fechou, e é geografia, não defeito. Então um afluente conta como chegado
+    quando alcança um tronco OU outro afluente que, por sua vez, alcança um
+    tronco. O caminho inteiro sai no relatório, para ninguém confundir "chega
+    pelo vizinho" com "chega direto".
+    """
+    troncos = {t: ls for t in TRONCOS if (ls := vias(t))}
+    afluentes = {c.stem: vias(c.stem) for c in sorted(RIOS.glob("*.geojson"))
+                 if c.stem not in TRONCOS and vias(c.stem)}
+
+    #: Quem chega direto no tronco — a base da cadeia.
+    direto: dict[str, tuple[float, str, tuple]] = {}
+    for rio_id, ls in afluentes.items():
+        m = _mais_perto(ls, troncos)
+        if m:
+            direto[rio_id] = m
 
     saida = []
-    for caminho in sorted(RIOS.glob("*.geojson")):
-        rio_id = caminho.stem
-        if rio_id in TRONCOS:
-            continue
-        ls = vias(rio_id)
-        if not ls:
-            continue
-        # A PONTA é o que importa: um afluente pode passar perto do tronco no
-        # meio do curso e mesmo assim não desaguar nele.
-        pontas = [p for l in ls for p in (l[0], l[-1])]
-        melhor = None
-        for ponta in pontas:
-            for nome, linhas in troncos.items():
-                d = km_a_linhas(ponta, linhas)
-                if melhor is None or d < melhor[0]:
-                    melhor = (d, nome, ponta)
-        if melhor is None:
-            continue
-        d, nome, ponta = melhor
+    for rio_id, ls in afluentes.items():
+        d, nome, ponta = direto[rio_id]
+        via = []
+        if d * 1000 > limite_m:
+            # Não toca tronco: tenta pelos VIZINHOS que tocam.
+            vizinhos = {n: afluentes[n] for n, (dv, _, _) in direto.items()
+                        if n != rio_id and dv * 1000 <= limite_m}
+            m = _mais_perto(ls, vizinhos) if vizinhos else None
+            if m and m[0] * 1000 <= limite_m:
+                d, intermediario, ponta = m
+                via = [intermediario]
+                nome = direto[intermediario][1]
         saida.append({
             "rio": rio_id,
             "chega_em": nome,
+            "via": via,
             "metros": round(d * 1000, 1),
             "ponta": [round(ponta[0], 7), round(ponta[1], 7)],
             "cortado": d * 1000 > limite_m,
@@ -139,7 +168,9 @@ def main() -> int:
 
     for r in linhas:
         marca = "   <<< CORTADO" if r["cortado"] else ""
-        print(f"{r['rio']:24} chega em {r['chega_em']:24} a {r['metros']:7.0f} m{marca}")
+        caminho = f" (via {' -> '.join(r['via'])})" if r["via"] else ""
+        print(f"{r['rio']:24} chega em {r['chega_em']:20}{caminho} "
+              f"a {r['metros']:7.0f} m{marca}")
 
     cortados = [r for r in linhas if r["cortado"]]
     print()
