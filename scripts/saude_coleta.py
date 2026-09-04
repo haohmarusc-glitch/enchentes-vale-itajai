@@ -32,7 +32,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from comum import DADOS, RAIZ
+# `regua_de` mora no `comum` para o vigia e o `alerta_cotas` darem a MESMA
+# resposta sobre o que é uma régua — a divergência entre os dois deixou
+# Blumenau sem aviso automático. Ver o docstring lá.
+from comum import DADOS, RAIZ, regua_de
 import notificador
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
@@ -85,17 +88,6 @@ def _idade_min(quando: datetime, agora: datetime) -> float:
     return (agora - quando).total_seconds() / 60
 
 
-def regua_de(leitura: dict) -> str:
-    """
-    Identidade da RÉGUA de uma leitura — não da linha.
-
-    A mesma régua pode aparecer duas vezes quando há fonte de resgate (Blumenau
-    vem da Defesa Civil de Itajaí e, quando essa esfria, do AlertaBlu). O resgate
-    carrega `resgate_de` com o título da régua primária que ele cobre; por ele as
-    duas leituras contam como UMA régua. Sem `resgate_de`, a régua é o próprio
-    título — e as onze de Itajaí seguem distintas, cada uma vigiada por si.
-    """
-    return leitura.get("resgate_de") or leitura.get("estacao", "?")
 
 
 def avaliar(dados: dict | None, agora: datetime,

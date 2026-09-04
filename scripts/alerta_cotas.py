@@ -45,6 +45,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from comum import (DADOS, NIVEL_MAXIMO_M, NIVEL_MINIMO_M, estacao_por_titulo,
+                   regua_de,
                    nivel_plausivel)
 import notificador
 
@@ -200,6 +201,19 @@ def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
     return "\n".join(linhas)
 
 
+def _mais_nova(a: dict, b: dict) -> bool:
+    """`a` foi medida depois de `b`? Leitura sem carimbo nunca ganha."""
+    qa, qb = a.get("medido_em"), b.get("medido_em")
+    if not qa:
+        return False
+    if not qb:
+        return True
+    try:
+        return datetime.fromisoformat(qa) > datetime.fromisoformat(qb)
+    except ValueError:
+        return False
+
+
 def resolver(dados: dict) -> tuple[list[dict], list[str]]:
     """
     Quem dá para vigiar e quem não dá, com o porquê.
@@ -209,10 +223,29 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
     que uma estação está vigiada enquanto o aviso a ignora em silêncio.
     """
     leituras = dados.get("leituras") or []
-    reguas_na_cidade: dict[tuple, int] = {}
+
+    # Conta RÉGUAS, não linhas. Blumenau vem duas vezes — primária e resgate do
+    # AlertaBlu, ligadas por `resgate_de` —, e contando linhas o alerta via
+    # "2 réguas", recusava a cota da CIDADE e DEIXAVA BLUMENAU SEM AVISO
+    # AUTOMÁTICO NENHUM. A cidade com 97 registros históricos desde 1852, muda
+    # no caminho que fala sozinho de madrugada. O mapa continuava pintando a cor
+    # certa, então nada denunciava. Achado em 04/09/2026 rodando o `--seco`
+    # contra o `ultimo.json` publicado.
+    reguas_na_cidade: dict[tuple, set[str]] = {}
     for l in leituras:
         chave = (l.get("rio"), l.get("cidade"))
-        reguas_na_cidade[chave] = reguas_na_cidade.get(chave, 0) + 1
+        reguas_na_cidade.setdefault(chave, set()).add(regua_de(l))
+
+    # E vigia UMA leitura por régua: a mais recente. Sem isto, com a contagem
+    # certa, Blumenau passaria a avisar DUAS vezes pela mesma travessia — uma
+    # por linha —, que é o outro jeito de gastar a confiança no alarme.
+    melhor_da_regua: dict[str, dict] = {}
+    for l in leituras:
+        r = regua_de(l)
+        atual = melhor_da_regua.get(r)
+        if atual is None or _mais_nova(l, atual):
+            melhor_da_regua[r] = l
+    leituras = list(melhor_da_regua.values())
 
     vigiadas: list[dict] = []
     recusas: list[str] = []
@@ -234,7 +267,7 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
                            f"bacia (fora de {NIVEL_MINIMO_M:.0f}–{NIVEL_MAXIMO_M:.0f} m)")
             continue
         cotas, motivo = cotas_da_leitura(
-            leitura, reguas_na_cidade[(leitura.get("rio"), leitura.get("cidade"))]
+            leitura, len(reguas_na_cidade[(leitura.get("rio"), leitura.get("cidade"))])
         )
         if motivo:
             recusas.append(f"{titulo}: {motivo}")
@@ -261,8 +294,13 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
     for item in vigiadas:
         leitura, cotas, faixa = item["leitura"], item["cotas"], item["faixa"]
         titulo = leitura.get("estacao") or ""
+        # O estado é guardado pela RÉGUA, não pelo título da linha. Quando a
+        # primária esfria e o resgate assume, o título muda e o estado sob o
+        # antigo ficaria órfão — a travessia seria avisada de novo. Para toda
+        # régua sem resgate, `regua_de` é o próprio título: nada muda.
+        chave_estado = regua_de(leitura)
         nivel = leitura["nivel_m"]
-        antes = novo.get(titulo) or {}
+        antes = novo.get(chave_estado) or {}
         faixa_antes = antes.get("faixa", "normal")
         nivel_antes = antes.get("nivel_m")
         desde = antes.get("avisado_em")
@@ -289,6 +327,12 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         if manda:
             avisos.append({
                 "estacao": titulo,
+                # A chave do ESTADO viaja junto com o aviso. Sem ela o
+                # `desfazer` gravaria sob o título e o estado ficaria sob a
+                # régua: o rollback não desfaria nada, e uma travessia recusada
+                # pelo Telegram ficaria registrada como avisada — o aviso nunca
+                # mais sairia.
+                "chave_estado": chave_estado,
                 "faixa": faixa,
                 "anterior": faixa_antes,
                 # O estado que esta estação tinha ANTES. Se o Telegram recusar
@@ -300,7 +344,7 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
                     idade_min(leitura.get("medido_em"), agora),
                 ),
             })
-            novo[titulo] = {
+            novo[chave_estado] = {
                 "faixa": faixa,
                 "nivel_m": float(nivel),
                 "avisado_em": agora.isoformat(),
@@ -309,7 +353,7 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
             # Guarda a faixa mesmo sem avisar, senão a próxima rodada acha que
             # houve mudança. O nível e o horário do último aviso ficam como
             # estavam: é contra eles que se mede "subiu desde o último aviso".
-            novo[titulo] = {**antes, "faixa": faixa}
+            novo[chave_estado] = {**antes, "faixa": faixa}
 
     return avisos, novo, recusas
 
@@ -321,12 +365,15 @@ def desfazer(estado: dict, aviso: dict) -> None:
     Sem chave anterior, remove: a estação volta a ser desconhecida, que é o que
     ela era antes desta rodada.
     """
-    titulo = aviso["estacao"]
+    # Pela chave do ESTADO (a régua), não pelo título da linha — são
+    # diferentes quando há fonte de resgate. `estacao` fica para avisos antigos
+    # que ainda não a carregam.
+    chave = aviso.get("chave_estado") or aviso["estacao"]
     antes = aviso.get("estado_antes")
     if antes:
-        estado[titulo] = antes
+        estado[chave] = antes
     else:
-        estado.pop(titulo, None)
+        estado.pop(chave, None)
 
 
 def le_estado() -> dict:
