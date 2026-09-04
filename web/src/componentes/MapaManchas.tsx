@@ -40,11 +40,18 @@ const CENTRO: [number, number] = [-26.9, -48.67]
  * próprio (seria a Google Maps Platform, paga e com chave).
  */
 const FUNDOS = {
+  // Trocado do CARTO para o Esri em 04/09/2026: o `basemaps.cartocdn.com`
+  // passou a servir os tiles com "API KEY REQUIRED" repetido por cima de tudo.
+  // O Esri não pede chave e já é o provedor do Satélite aqui. Preço: teto de
+  // zoom 16 (o CARTO ia a 19); quem precisa de mais perto usa o "Mapa".
+  // Os "canvas" do Esri separam desenho e rótulo, daí o `rotulos`.
   escuro: {
     nome: 'Escuro',
-    url: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    atribuicao: '© CARTO · © OpenStreetMap',
-    maxZoom: 19,
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    rotulos:
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+    atribuicao: 'Esri, HERE, Garmin, © colaboradores do OpenStreetMap',
+    maxZoom: 16,
   },
   satelite: {
     nome: 'Satélite',
@@ -62,6 +69,22 @@ const FUNDOS = {
 } as const
 
 type ChaveFundo = keyof typeof FUNDOS
+
+/**
+ * Põe a camada de RÓTULOS por cima da base, quando o fundo tem uma.
+ *
+ * Vai no mesmo pane, adicionada depois, então fica acima da base e abaixo das
+ * manchas. Fundo escuro sem nome de bairro é bonito e mudo — e aqui a pessoa
+ * está procurando a rua dela.
+ */
+function porRotulos(
+  escolha: (typeof FUNDOS)[ChaveFundo],
+  mapa: L.Map,
+): L.TileLayer | null {
+  const url = 'rotulos' in escolha ? escolha.rotulos : null
+  if (!url) return null
+  return L.tileLayer(url, { pane: 'fundo', maxZoom: escolha.maxZoom }).addTo(mapa)
+}
 
 /**
  * O fundo padrão é escuro por FUNÇÃO, não por estética: qualquer fundo com
@@ -114,6 +137,8 @@ export default function MapaManchas() {
   const mapaRef = useRef<L.Map | null>(null)
   const [fundo, setFundo] = useState<ChaveFundo>(fundoSalvo)
   const fundoLayerRef = useRef<L.TileLayer | null>(null)
+  /** Camada de nomes de rua/bairro, quando o fundo separa desenho e rótulo. */
+  const rotulosLayerRef = useRef<L.TileLayer | null>(null)
   // O efeito que cria o mapa roda uma vez só (deps []), então não pode fechar
   // sobre o `fundo` do primeiro render — lê o ref, sempre atual.
   const fundoRef = useRef<ChaveFundo>(fundo)
@@ -146,6 +171,7 @@ export default function MapaManchas() {
       maxZoom: inicial.maxZoom,
       attribution: inicial.atribuicao,
     }).addTo(mapa)
+    rotulosLayerRef.current = porRotulos(inicial, mapa)
     mapa.on('click', (e: L.LeafletMouseEvent) => {
       // GeoJSON guarda [longitude, latitude]; o Leaflet entrega o contrário.
       // Trocar os dois aqui e não em `dentroDaColecao` mantém a lógica pura
@@ -167,11 +193,13 @@ export default function MapaManchas() {
     if (!mapa) return
     const escolha = FUNDOS[fundo]
     fundoLayerRef.current?.remove()
+    rotulosLayerRef.current?.remove()
     fundoLayerRef.current = L.tileLayer(escolha.url, {
       pane: 'fundo',
       maxZoom: escolha.maxZoom,
       attribution: escolha.atribuicao,
     }).addTo(mapa)
+    rotulosLayerRef.current = porRotulos(escolha, mapa)
     try {
       localStorage.setItem(CHAVE_LOCAL, fundo)
     } catch {

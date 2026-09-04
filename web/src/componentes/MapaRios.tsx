@@ -3,7 +3,7 @@ import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
-import { eixoDoRio } from '../dados/carregar'
+import { eixoDoRio, temReguaCadastrada } from '../dados/carregar'
 import { limitesDe, VISTA_INTEIRA, type LonLat, type Vista } from '../logica/mapaCanvas'
 import {
   construirCena,
@@ -198,7 +198,7 @@ export default function MapaRios({
       const seg = reduz ? 0 : (t - inicio) / 1000
       desenharOnda(ctx, cena, seg) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg)
-      desenharPinos(ctx, cena, selRef.current)
+      desenharPinos(ctx, cena, selRef.current, { temRegua: temReguaCadastrada })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
     raf = requestAnimationFrame(quadro)

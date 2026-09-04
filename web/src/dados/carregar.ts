@@ -208,6 +208,30 @@ export const afluentesMonitorados: AfluenteMonitorado[] = estacoes.afluentes_mon
 export const estacoesTempoReal: EstacaoTempoReal[] = estacoes.estacoes_tempo_real ?? []
 
 /**
+ * As cidades que TÊM régua, contando as do cadastro de estações.
+ *
+ * POR QUE EXISTE (04/09/2026). O pino sem número dizia "sem régua" em ITAJAÍ —
+ * a cidade com ONZE réguas, a que mais tem na bacia. A causa é a mesma cegueira
+ * que o `conferir_mapa_e_alarme.py` teve: o campo `regua` mora na CIDADE, e as
+ * réguas de Itajaí moram em `estacoes_tempo_real`, fora do `rios[].cidades[]`.
+ * Quem só olhava o campo da cidade concluía "não há instrumento".
+ *
+ * Dizer "sem leitura" quando a fonte está calada é lacuna com dono. Dizer "sem
+ * régua" onde há onze é errado, e errado na direção que faz o morador concluir
+ * que o site não cobre a cidade dele — bem no lugar onde os dois rios chegam.
+ */
+const CIDADES_COM_REGUA: Set<string> = new Set(
+  estacoesTempoReal
+    .filter((e) => e.tipo !== 'pluviometro' && e.cidade)
+    .map((e) => e.cidade as string),
+)
+
+/** Há régua cadastrada para esta cidade — na própria cidade ou em `estacoes_tempo_real`. */
+export function temReguaCadastrada(cidadeId: string): boolean {
+  return CIDADES_COM_REGUA.has(cidadeId)
+}
+
+/**
  * Abrigos oficiais de Itajaí (com coordenada) e o aviso de exibição da fonte.
  * É cadastro, não estado atual — o aviso tem de aparecer junto na tela.
  */
