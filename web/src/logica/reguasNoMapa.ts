@@ -61,6 +61,14 @@ export type ReguaNoMapa = {
   faixa: Faixa | null
   /** Por que não tem cor, para o painel poder dizer em vez de só omitir. */
   motivoSemCor: string | null
+  /**
+   * As cotas DESTA régua, não as da cidade.
+   *
+   * Em Itajaí cada uma tem as suas, com zeros diferentes: a DC-01 usa
+   * 1,16/1,36/1,56 e a DC-10 usa 8/9/10. Mostrar a cota da cidade ao lado do
+   * número de uma régua convidaria à comparação que a régua de cada uma proíbe.
+   */
+  cotas: Record<string, number>
 }
 
 export type LeituraDeRegua = { titulo: string; nivel_m: number; medidoEm: Date | null }
@@ -119,6 +127,9 @@ export function reguasNoMapa(
       lat: e.lat,
       nivel: leitura?.nivel_m ?? null,
       medidoEm: leitura?.medidoEm ?? null,
+      cotas: Object.fromEntries(
+        Object.entries(e.cotas_m ?? {}).filter(([, v]) => typeof v === 'number'),
+      ) as Record<string, number>,
     }
 
     // A ordem das recusas importa: a da maré vem PRIMEIRO, porque ela vale

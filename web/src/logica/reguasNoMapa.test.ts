@@ -93,6 +93,20 @@ test('o rótulo é o nome do LUGAR, não o código', () => {
   assert.equal(nomeDoLugar({ nome_no_plano: '   ', codigo: 'DC-1', titulo: 'T' }), 'DC-1')
 })
 
+test('cada régua leva as cotas DELA, não as da cidade', () => {
+  /**
+   * Em Itajaí os zeros são diferentes: a DC-01 usa 1,16/1,36/1,56 e a DC-10 usa
+   * 8/9/10. Mostrar a cota da cidade ao lado do número de uma régua convidaria
+   * exatamente à comparação que a régua de cada uma proíbe.
+   */
+  const est = base({ cotas_m: { atencao: 1.16, alerta: 1.36 }, alerta_automatico: false })
+  const r = reguasNoMapa([est], [fresca(1.2)], AGORA)[0]!
+  assert.deepEqual(r.cotas, { atencao: 1.16, alerta: 1.36 })
+  // Cota não-numérica não entra: o painel formata metros e um texto viraria NaN.
+  const sujo = base({ cotas_m: { atencao: 1.16, nota: 'ver plano' } as never })
+  assert.deepEqual(reguasNoMapa([sujo], [], AGORA)[0]!.cotas, { atencao: 1.16 })
+})
+
 test('contra os dados REAIS: as onze de Itajaí entram, e nove não podem pintar', () => {
   const d = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf-8'))
   const ets: EstacaoTempoReal[] = d.estacoes_tempo_real
@@ -104,6 +118,8 @@ test('contra os dados REAIS: as onze de Itajaí entram, e nove não podem pintar
     assert.ok(r.motivoSemCor, `${r.codigo} sem leitura tinha de dizer por que não tem cor`)
     // Todas as onze têm nome de lugar no Plano — nenhuma cai para o código.
     assert.ok(r.nome && !/^DC-\d/.test(r.nome), `${r.codigo} ficou rotulada com o código: ${r.nome}`)
+    // E cada uma traz as cotas dela — é o que o painel mostra ao ser tocada.
+    assert.ok(Object.keys(r.cotas).length >= 3, `${r.codigo} sem as cotas próprias`)
   }
   // Os três dos ribeirões, que são os que o mapa escondia.
   const nomes = rs.map((r) => r.nome)

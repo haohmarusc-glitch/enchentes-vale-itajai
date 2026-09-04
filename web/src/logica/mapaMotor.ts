@@ -620,6 +620,8 @@ export function desenharReguas(
   cena: Cena,
   reguas: ReguaDesenhavel[],
   escala = 1,
+  /** Código da régua em foco: ganha anel, como o pino de cidade selecionado. */
+  selecionada: string | null = null,
 ): void {
   const r = 3.4 * escala
   const fonte = Math.round(9.5 * escala)
@@ -629,6 +631,13 @@ export function desenharReguas(
     const [x, y] = projetar(cena.enq, [g.lon, g.lat])
     if (x < -20 || y < -20 || x > cena.largura + 20 || y > cena.altura + 20) continue
 
+    if (g.codigo && g.codigo === selecionada) {
+      ctx.beginPath()
+      ctx.arc(x, y, r + 3.2 * escala, 0, Math.PI * 2)
+      ctx.lineWidth = 1.8 * escala
+      ctx.strokeStyle = '#e8f4ff'
+      ctx.stroke()
+    }
     ctx.beginPath()
     ctx.arc(x, y, r, 0, Math.PI * 2)
     if (g.faixa) {
