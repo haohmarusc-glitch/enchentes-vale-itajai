@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import gzip
+import math
 import json
 import statistics
 import sys
@@ -148,6 +149,70 @@ def destendenciar(pontos: list[tuple[datetime, float]],
     return saida
 
 
+#: Período da maré semidiurna lunar (M2). É a componente que domina a maré na
+#: costa de SC, e o que se procura no sinal rápido de uma régua de estuário.
+PERIODO_M2_H = 12.42
+
+#: Fração da variância rápida que precisa estar NA frequência da maré para a
+#: régua ser chamada de estuário. Validado com dado sintético: maré pura dá ~1,0;
+#: rio com ruído lento dá abaixo de 0,2.
+FRACAO_DE_MARE = 0.45
+
+
+def fracao_na_frequencia_da_mare(pontos: list[tuple[datetime, float]],
+                                 periodo_h: float = PERIODO_M2_H) -> float | None:
+    """
+    Quanto da oscilação RÁPIDA desta régua está na frequência da maré (0 a 1).
+
+    POR QUE ISTO SUBSTITUIU A CORRELAÇÃO COM OUTRA RÉGUA (04/09/2026)
+    ----------------------------------------------------------------
+    A primeira versão comparava o resíduo desta régua com o de NOVE réguas de
+    estuário e ficava com o MAIOR. Rodado na VPS, isso deu falso positivo em
+    cheio:
+
+        Taió       "MARÉ" — correlação +0,69 com DC-04
+        Blumenau   "MARÉ" — correlação +0,73 com DC-05
+
+    Taió fica a ~200 km do mar. E o DC-05, usado ali de referência, falhava no
+    próprio teste ("não é maré", +0,43) — eu estava usando como padrão uma régua
+    que o método reprovava.
+
+    Duas causas, as duas minhas:
+
+    * **comparação múltipla** — pegar o máximo entre nove candidatas infla o
+      número sozinho, ainda mais em série curta;
+    * **a maré PROPAGA com atraso** rio acima, então correlacionar a atraso zero
+      entre réguas a distâncias diferentes mede menos do que existe (a DC-11 dá
+      +0,55 com a DC-01, que fica 11 km mais perto do mar) e o "melhor par" acaba
+      escolhido por acaso de fase, não por física.
+
+    Este teste não tem referência, então não tem nem uma coisa nem outra: mede a
+    energia do resíduo NA frequência da maré, contra a energia total dele. É um
+    ajuste de seno e cosseno no período M2 — régua de estuário concentra quase
+    tudo ali; rio, quase nada.
+    """
+    if len(pontos) < 20:
+        return None
+    residuo = destendenciar(pontos)
+    t0 = pontos[0][0]
+    horas = [(t - t0).total_seconds() / 3600 for t, _ in pontos]
+    # Menos de dois ciclos não distingue período nenhum.
+    if horas[-1] < 2 * periodo_h:
+        return None
+
+    w = 2 * math.pi / periodo_h
+    media = statistics.fmean(residuo)
+    y = [v - media for v in residuo]
+    n = len(y)
+    a = 2 / n * sum(v * math.cos(w * h) for v, h in zip(y, horas))
+    b = 2 / n * sum(v * math.sin(w * h) for v, h in zip(y, horas))
+    energia_mare = (a * a + b * b) / 2
+    energia_total = sum(v * v for v in y) / n
+    if energia_total <= 0:
+        return None
+    return min(1.0, energia_mare / energia_total)
+
+
 def correlacao(a: list[float], b: list[float]) -> float | None:
     """Pearson entre duas listas do mesmo tamanho, ou None se não der."""
     par = [(x, y) for x, y in zip(a, b) if x is not None and y is not None]
@@ -225,9 +290,14 @@ def medir(titulo: str, pontos: list[tuple[datetime, float]],
     cruzou, dias_cruzou = travessias(pontos, cota) if cota is not None else (0, 0)
 
     duracoes = duracao_das_travessias(pontos, cota) if cota is not None else []
+    fracao = fracao_na_frequencia_da_mare(pontos)
     return {
         "estacao": titulo,
         "codigo": estacao.get("codigo"),
+        # Quanto da oscilação rápida está NA frequência da maré (0 a 1). É o
+        # teste principal: não usa referência, então não sofre de comparação
+        # múltipla nem do atraso com que a maré sobe o rio.
+        "mare_fracao": None if fracao is None else round(fracao, 2),
         # Quanto tempo a régua fica acima da cota em cada travessia. Maré cruza
         # e volta em horas; cheia cruza e fica. Sem outra régua para comparar,
         # é o melhor separador que existe — e é o que calibraria uma regra de
@@ -253,27 +323,27 @@ def veredito(m: dict) -> tuple[str, str]:
 
     A ORDEM DAS REGRAS IMPORTA, e mudou em 04/09/2026. Antes, a primeira coisa
     que decidia era a amplitude — e amplitude não distingue maré de cheia.
-    Agora a ASSINATURA DE MARÉ vem primeiro quando existe: se o resíduo desta
-    régua anda junto com o de uma régua de maré conhecida, é maré, e aí a
-    amplitude quer dizer o que o script sempre supôs. Quando a assinatura diz
+    Agora a ASSINATURA DE MARÉ vem primeiro quando existe: se a oscilação rápida
+    desta régua está concentrada no período de 12,4 h, é maré, e aí a amplitude
+    quer dizer o que o script sempre supôs. Quando a assinatura diz
     que NÃO é maré, a amplitude grande passa a ser evidência de CHEIA — e
     recomendar trava nesse caso calaria um aviso verdadeiro.
     """
-    if m.get("mare_correlacao") is not None and m["mare_correlacao"] < CORRELACAO_DE_MARE:
+    if m.get("mare_fracao") is not None and m["mare_fracao"] < FRACAO_DE_MARE:
         if m.get("menor_cota_m") is not None and m["travessias"]:
             return ("pode disparar",
-                    f"as travessias NÃO têm assinatura de maré (correlação "
-                    f"{m['mare_correlacao']:+.2f} com {m.get('mare_referencia', '?')}, "
-                    f"abaixo de {CORRELACAO_DE_MARE:.2f}) — a oscilação parece ser o RIO")
+                    f"só {m['mare_fracao']:.0%} da oscilação rápida está na frequência "
+                    f"da maré (12,4 h), abaixo de {FRACAO_DE_MARE:.0%} — a oscilação "
+                    f"parece ser o RIO")
     if m["dias"] < MIN_DIAS:
         return "sem opinião", f"só {m['dias']} dia(s) de série; um dia não separa maré de cheia"
     if m["menor_cota_m"] is None:
         return "sem opinião", "estação sem cota cadastrada"
     if m["folga_ate_a_cota_m"] is not None and m["amplitude_diaria_mediana_m"] > m["folga_ate_a_cota_m"]:
         selo = ""
-        if m.get("mare_correlacao") is not None and m["mare_correlacao"] >= CORRELACAO_DE_MARE:
-            selo = (f"; e a oscilação É de maré (correlação {m['mare_correlacao']:+.2f} "
-                    f"com {m.get('mare_referencia', '?')})")
+        if m.get("mare_fracao") is not None and m["mare_fracao"] >= FRACAO_DE_MARE:
+            selo = (f"; e a oscilação É de maré ({m['mare_fracao']:.0%} dela está no "
+                    f"período de 12,4 h)")
         if m.get("horas_acima_mediana") is not None:
             selo += (f"; fica acima da cota {m['horas_acima_mediana']:.1f} h por travessia "
                      f"(máx {m['horas_acima_maxima']:.1f} h)")
@@ -385,10 +455,16 @@ def main() -> int:
         if m.get("horas_acima_mediana") is not None:
             print(f"       fica acima da cota {m['horas_acima_mediana']:.1f} h por travessia "
                   f"(máx {m['horas_acima_maxima']:.1f} h)")
-        if m.get("mare_correlacao") is not None:
-            eh = "MARÉ" if m["mare_correlacao"] >= CORRELACAO_DE_MARE else "não é maré"
-            print(f"       assinatura: {eh} — correlação {m['mare_correlacao']:+.2f} "
-                  f"com {m['mare_referencia'][:34]}")
+        if m.get("mare_fracao") is not None:
+            eh = "MARÉ" if m["mare_fracao"] >= FRACAO_DE_MARE else "não é maré"
+            extra = ""
+            if m.get("mare_correlacao") is not None:
+                # Secundária: informativa quando a referência é de fato de
+                # estuário, mas NÃO decide — ver `fracao_na_frequencia_da_mare`.
+                extra = (f" · anda com {m['mare_referencia'][:24]} "
+                         f"({m['mare_correlacao']:+.2f})")
+            print(f"       assinatura: {eh} — {m['mare_fracao']:.0%} da oscilação "
+                  f"rápida no período de 12,4 h{extra}")
         print(f"       hoje: {hoje} · medição sugere: {sugestao} — {porque}{marca}\n")
 
     if divergem:

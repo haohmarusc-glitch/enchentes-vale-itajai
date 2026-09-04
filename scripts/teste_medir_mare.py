@@ -17,8 +17,9 @@ import tempfile
 from pathlib import Path
 
 import medir_mare
-from medir_mare import (CORRELACAO_DE_MARE, amostrar, correlacao, destendenciar,
-                        duracao_das_travessias, leituras_da_serie, medir,
+from medir_mare import (CORRELACAO_DE_MARE, FRACAO_DE_MARE, amostrar, correlacao,
+                        destendenciar, duracao_das_travessias,
+                        fracao_na_frequencia_da_mare, leituras_da_serie, medir,
                         travessias, veredito)
 
 INICIO = datetime(2026, 9, 1, 0, 0)
@@ -330,32 +331,111 @@ class QuantoTempoFicaAcimaDaCota(unittest.TestCase):
         self.assertGreater(de_cheia[0], 40.0)
 
 
+class OTesteDeMareNaoPrecisaDeReferencia(unittest.TestCase):
+    """
+    O detector de maré trocou de método em 04/09/2026, e o motivo foi um FALSO
+    POSITIVO no dado real.
+
+    A primeira versão comparava o resíduo da régua com o de NOVE réguas de
+    estuário e ficava com o maior. Rodado na VPS:
+
+        Taió       "MARÉ" — correlação +0,69 com DC-04
+        Blumenau   "MARÉ" — correlação +0,73 com DC-05
+
+    Taió fica a ~200 km do mar. E o DC-05, usado ali de referência, reprovava no
+    próprio teste (+0,43, "não é maré").
+
+    Duas causas: **comparação múltipla** (o máximo entre nove sobe sozinho) e o
+    fato de a maré **propagar com atraso** rio acima, que faz a correlação a
+    atraso zero medir errado nos dois sentidos — a DC-11 dá +0,90 com a DC-06 e
+    só +0,55 com a DC-01, que está 11 km mais perto do mar.
+
+    O teste novo mede, na PRÓPRIA régua, quanto da oscilação rápida está no
+    período de 12,4 h (M2). Sem referência: sem comparação múltipla, sem
+    problema de fase.
+    """
+
+    def com_ruido_lento(self, dias=6, base=5.0, amplitude_mare=0.0,
+                        tendencia=0.0, lento=0.0):
+        """Série com maré opcional, recessão opcional e uma oscilação de 37 h."""
+        n = int(dias * 24 * 60 / 15)
+        pontos = []
+        for i in range(n):
+            h = i * 15 / 60
+            v = base + amplitude_mare / 2 * math.sin(2 * math.pi * h / 12.42)
+            v -= tendencia * h / 24
+            v += lento * math.sin(2 * math.pi * h / 37)
+            pontos.append((INICIO + timedelta(minutes=15 * i), round(v, 3)))
+        return pontos
+
+    def test_mare_pura_concentra_quase_tudo_na_frequencia_dela(self):
+        f = fracao_na_frequencia_da_mare(self.com_ruido_lento(amplitude_mare=0.9))
+        self.assertIsNotNone(f)
+        self.assertGreater(f, 0.9)
+
+    def test_mare_SOB_recessao_de_cheia_continua_sendo_mare(self):
+        # O caso que derrubou a versão anterior: cheia descendo por baixo.
+        f = fracao_na_frequencia_da_mare(
+            self.com_ruido_lento(amplitude_mare=0.7, tendencia=0.5))
+        self.assertGreater(f, FRACAO_DE_MARE)
+
+    def test_rio_em_recessao_NAO_e_mare(self):
+        f = fracao_na_frequencia_da_mare(
+            self.com_ruido_lento(tendencia=0.5, lento=0.05))
+        self.assertLess(f, FRACAO_DE_MARE)
+
+    def test_O_CASO_TAIO_oscilacao_LENTA_nao_pode_virar_mare(self):
+        # Taió oscila, mas não em 12,4 h — fica a ~200 km do mar. A versão
+        # anterior a chamava de maré com +0,69 de correlação.
+        f = fracao_na_frequencia_da_mare(self.com_ruido_lento(lento=0.4))
+        self.assertLess(f, FRACAO_DE_MARE,
+                        "oscilação lenta voltou a passar por maré — é o falso "
+                        "positivo de Taió")
+
+    def test_serie_curta_demais_nao_opina(self):
+        # Menos de dois ciclos não distingue período nenhum.
+        curta = self.com_ruido_lento(amplitude_mare=0.9)[:60]  # 15 h
+        self.assertIsNone(fracao_na_frequencia_da_mare(curta))
+
+    def test_serie_constante_nao_divide_por_zero(self):
+        chata = [(INICIO + timedelta(minutes=15 * i), 2.0) for i in range(600)]
+        self.assertIsNone(fracao_na_frequencia_da_mare(chata))
+
+
 class OVereditoUsaAAssinaturaAntesDaAmplitude(unittest.TestCase):
     def test_sem_assinatura_de_mare_a_amplitude_vira_evidencia_de_CHEIA(self):
-        # A correção do defeito: oscilar muito SEM assinatura de maré é o rio
-        # subindo, e recomendar trava aí calaria um aviso verdadeiro.
+        # Oscilar muito SEM estar na frequência da maré é o rio subindo, e
+        # recomendar trava aí calaria um aviso verdadeiro.
         m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
              "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
-             "dias_com_travessia": 3, "mare_correlacao": 0.09,
-             "mare_referencia": "Blumenau"}
-        self.assertEqual(veredito(m)[0], "pode disparar")
+             "dias_com_travessia": 3, "mare_fracao": 0.09}
+        sugestao, porque = veredito(m)
+        self.assertEqual(sugestao, "pode disparar")
+        self.assertIn("12,4 h", porque)
 
     def test_com_assinatura_de_mare_continua_recomendando_a_trava(self):
         m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
              "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
-             "dias_com_travessia": 3, "mare_correlacao": 0.92,
-             "mare_referencia": "DC-09", "horas_acima_mediana": 2.5,
-             "horas_acima_maxima": 4.0}
+             "dias_com_travessia": 3, "mare_fracao": 0.88,
+             "horas_acima_mediana": 0.2, "horas_acima_maxima": 45.5}
         sugestao, porque = veredito(m)
         self.assertEqual(sugestao, "NÃO disparar sozinha")
         self.assertIn("É de maré", porque)
-        self.assertIn("2.5 h", porque)
+        self.assertIn("0.2 h", porque)
 
-    def test_sem_assinatura_calculada_o_comportamento_antigo_vale(self):
-        # Régua sem referência de maré na série: não inventa veredito novo.
+    def test_a_CORRELACAO_sozinha_nao_decide_mais(self):
+        # Era ela que dava o falso positivo de Taió. Continua no relatório como
+        # informação, mas não manda no veredito.
         m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
              "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
-             "dias_com_travessia": 3, "mare_correlacao": None}
+             "dias_com_travessia": 3, "mare_fracao": 0.09,
+             "mare_correlacao": 0.69, "mare_referencia": "DC-04"}
+        self.assertEqual(veredito(m)[0], "pode disparar")
+
+    def test_sem_assinatura_calculada_o_comportamento_antigo_vale(self):
+        m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
+             "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
+             "dias_com_travessia": 3, "mare_fracao": None}
         self.assertEqual(veredito(m)[0], "NÃO disparar sozinha")
 
 
