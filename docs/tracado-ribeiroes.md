@@ -1,9 +1,37 @@
-# Os cursos de Itajaí que faltam no mapa — e como baixá-los
+# Os cursos de Itajaí que faltavam no mapa — e como foram baixados
 
 Levantado em 04/09/2026, depois que as onze réguas da Defesa Civil viraram
-pontos no Monitor e três pareciam flutuar fora de qualquer rio.
+pontos no Monitor e quatro flutuavam fora de qualquer rio.
 
-## O que foi medido (não olhado)
+## RESOLVIDO em 04/09/2026
+
+A consulta rodou na VPS, os três cursos entraram em `data/rios/`
+(commit `72037eb`) e a medição fechou:
+
+| régua | lugar | antes | agora | curso |
+|---|---|---|---|---|
+| DC-08 | Rio do Meio | 4,41 km | **0,00 km** | `ribeirao-canhanduba` |
+| DC-03 | SEMASA | 2,32 km | **0,03 km** | `mirim-canal-retificado` |
+| DC-07 | Portal I | 2,25 km | **0,01 km** | `ribeirao-murta` |
+| DC-09 | Bairro Murta | 0,87 km | **0,01 km** | `ribeirao-murta` |
+
+**As onze réguas caem a menos de 50 m do curso delas**, e cada uma no curso
+que o cadastro diz. A única diferença de nome é a DC-03, cadastrada como
+`itajai-mirim` e casada com `mirim-canal-retificado`: é o mesmo rio, na obra
+que o retificou, e o cadastro guarda essa distinção no título de cada régua
+("canal retificado" contra "curso antigo", onde ficam a DC-05 e a DC-06).
+
+A DC-11 continua a **0,09 km**, como já estava: não tinha o que consertar, e
+serve de controle de que a mudança mexeu só nos ribeirões.
+
+`scripts/teste_conferir_reguas_no_tracado.py` deixou de guardar o retrato das
+quatro que faltavam e passou a cobrar a regra — **nenhuma régua sem curso
+desenhado** —, mais o casamento de cada uma com o curso certo. Se um geojson
+for apagado ou trocado, o teste diz qual régua voltou a flutuar.
+
+O texto abaixo é o registro de como se chegou lá.
+
+## O que foi medido (não olhado), em 04/09/2026 pela manhã
 
 `python3 scripts/conferir_reguas_no_tracado.py` mede a distância de cada régua
 à **linha** do traçado mais próximo:
