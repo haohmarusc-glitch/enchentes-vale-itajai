@@ -245,3 +245,59 @@ export function limitesDe(
   }
   return { minLon, maxLon, minLat, maxLat }
 }
+
+/**
+ * Onde o mapa está olhando: quanto de zoom e em torno de que ponto.
+ *
+ * `zoom: 1` é a bacia inteira, que é como o Monitor sempre abriu. Acima disso a
+ * janela geográfica encolhe em torno de `centro` — e o traçado, os pinos e os
+ * tiles do fundo crescem JUNTOS, porque tudo sai da mesma projeção. É a
+ * diferença entre isto e a lupa do navegador, que estica o bitmap: ali o rio
+ * fica borrado e os rótulos saem da tela; aqui o desenho é refeito.
+ */
+export interface Vista {
+  zoom: number
+  centroLon: number
+  centroLat: number
+}
+
+/** A bacia inteira: o que o mapa mostra antes de alguém tocar nele. */
+export const VISTA_INTEIRA: Vista = { zoom: 1, centroLon: NaN, centroLat: NaN }
+
+/**
+ * Recorta os limites da bacia conforme a vista.
+ *
+ * O centro é preso DENTRO dos limites da bacia: sem isso, um arrasto longo
+ * levaria a tela para o mar aberto ou para o meio de Santa Catarina, e o mapa
+ * ficaria vazio sem dizer por quê — num aplicativo de enchente, tela vazia é
+ * pior que tela sem zoom.
+ */
+export function aplicarVista(
+  limites: { minLon: number; maxLon: number; minLat: number; maxLat: number },
+  vista: Vista,
+): { minLon: number; maxLon: number; minLat: number; maxLat: number } {
+  const zoom = Math.max(1, vista.zoom)
+  if (zoom === 1) return limites
+  const meioLon = (limites.maxLon - limites.minLon) / 2 / zoom
+  const meioLat = (limites.maxLat - limites.minLat) / 2 / zoom
+  const centroLon = Number.isFinite(vista.centroLon)
+    ? Math.min(limites.maxLon, Math.max(limites.minLon, vista.centroLon))
+    : (limites.minLon + limites.maxLon) / 2
+  const centroLat = Number.isFinite(vista.centroLat)
+    ? Math.min(limites.maxLat, Math.max(limites.minLat, vista.centroLat))
+    : (limites.minLat + limites.maxLat) / 2
+  return {
+    minLon: centroLon - meioLon,
+    maxLon: centroLon + meioLon,
+    minLat: centroLat - meioLat,
+    maxLat: centroLat + meioLat,
+  }
+}
+
+/** [x,y] em pixels → [lon,lat]. O inverso de `projetar`, para saber onde o dedo tocou. */
+export function desprojetar(e: Enquadramento, x: number, y: number): LonLat {
+  return [
+    e.minLon + (x - e.deslocX) / (e.cosLat * e.escala),
+    e.maxLat - (y - e.deslocY) / e.escala,
+  ]
+}

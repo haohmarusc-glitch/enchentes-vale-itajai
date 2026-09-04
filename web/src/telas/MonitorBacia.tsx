@@ -8,7 +8,13 @@ import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
 import { dataHora, metros } from '../logica/formato'
-import { projetar, type LonLat } from '../logica/mapaCanvas'
+import {
+  desprojetar,
+  projetar,
+  VISTA_INTEIRA,
+  type LonLat,
+  type Vista,
+} from '../logica/mapaCanvas'
 import {
   COR_BRUTO,
   construirCena,
@@ -209,6 +215,40 @@ function chuvaDaCidade(
  * nível está mais alto, o mar na foz colorido pela maré (escala própria), a
  * chuva recente por cidade e a idade de cada leitura. Não é sistema de alerta.
  */
+/**
+ * Até onde o zoom vai. A bacia tem ~1,9° de largura; dividida por 32 sobram
+ * ~6 km de tela, que é a escala de bairro — o suficiente para ver de que lado
+ * do Ribeirão da Murta está a régua, e não tanto que o traçado do OSM comece a
+ * mostrar mais precisão do que ele tem.
+ */
+const ZOOM_MAX = 32
+
+/**
+ * Quantos pixels o dedo pode andar antes de virar arrasto.
+ *
+ * Abaixo disso o toque ainda seleciona. Sem essa folga, a mão trêmula de quem
+ * olha o telefone numa noite de chuva moveria o mapa em vez de abrir o painel
+ * da régua.
+ */
+const ARRASTO_MIN = 6
+
+/**
+ * O centro geográfico que a vista tem AGORA.
+ *
+ * Enquanto ninguém tocou no mapa, `centroLon/Lat` são NaN — "no meio, seja lá
+ * onde for". Este é o único lugar que resolve esse NaN, e resolve pelos limites
+ * da bacia, que é a mesma referência que `aplicarVista` usa para prender o
+ * arrasto. Duas contas diferentes de "onde é o meio" fariam o primeiro arrasto
+ * dar um salto.
+ */
+function centroAtual(cena: Cena, v: Vista): [number, number] {
+  const b = cena.limitesBase
+  return [
+    Number.isFinite(v.centroLon) ? v.centroLon : (b.minLon + b.maxLon) / 2,
+    Number.isFinite(v.centroLat) ? v.centroLat : (b.minLat + b.maxLat) / 2,
+  ]
+}
+
 export default function MonitorBacia() {
   const navigate = useNavigate()
   const divRef = useRef<HTMLDivElement | null>(null)
@@ -221,6 +261,13 @@ export default function MonitorBacia() {
    */
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const cenaRef = useRef<Cena | null>(null)
+  /** Onde o mapa está olhando. Começa na bacia inteira, como sempre foi. */
+  const [vista, setVista] = useState<Vista>(VISTA_INTEIRA)
+  /** Dedos/ponteiros apertados agora, para separar toque de arrasto e de pinça. */
+  const ponteiros = useRef<Map<number, { x: number; y: number }>>(new Map())
+  /** Distância entre os dois dedos no quadro anterior da pinça. */
+  const pinca = useRef<number | null>(null)
+  const arrastou = useRef(false)
   /**
    * Cache de tiles, por URL, VIVO ENTRE RENDERS.
    *
@@ -414,7 +461,7 @@ export default function MonitorBacia() {
       : undefined
 
     const cena = construirCena(
-      canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc,
+      canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
     )
     cenaRef.current = cena
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
@@ -499,7 +546,7 @@ export default function MonitorBacia() {
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo])
+  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista])
 
   /** Pino mais próximo do ponteiro, dentro do raio — ou null. */
   function pinoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {
@@ -547,7 +594,7 @@ export default function MonitorBacia() {
     return melhor
   }
 
-  function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
+  function selecionar(ev: React.PointerEvent<HTMLCanvasElement>) {
     const g = reguaNoPonto(ev)
     if (g) {
       // Um painel por vez: dois abertos no mesmo canto se cobrem.
@@ -559,11 +606,114 @@ export default function MonitorBacia() {
     setSel(pinoNoPonto(ev))
   }
 
-  // Passar o mouse por cima destaca a cidade e abre o painel de dados no canto.
-  // Só atualiza quando muda de cidade, para não repintar à toa.
-  function aoMover(ev: React.PointerEvent<HTMLCanvasElement>) {
-    const p = pinoNoPonto(ev)
-    setHover((atual) => (atual?.cidade.id === p?.cidade.id ? atual : p))
+  /**
+   * ZOOM E ARRASTO — por que existem, e por que não bastava a lupa do navegador.
+   *
+   * Na foz, onde os dois rios chegam, há onze réguas em poucos quilômetros: os
+   * rótulos se cobrem e o traçado some sob os pinos. Dando pinça na PÁGINA, o
+   * navegador amplia o bitmap — o rio fica borrado, o rótulo continua ilegível e
+   * a legenda sai da tela. Aqui a janela geográfica encolhe e a cena é
+   * REDESENHADA: o traçado continua fino, os rótulos se separam e os tiles do
+   * fundo vêm num nível de zoom maior, mais detalhado.
+   *
+   * O toque continua selecionando: só vira arrasto depois de {@link ARRASTO_MIN}
+   * pixels. Sem essa folga, o dedo que treme ao tocar a régua moveria o mapa em
+   * vez de abrir o painel — e numa cheia, quem olha o telefone tem a mão longe
+   * de firme.
+   */
+  function aplicarZoom(fator: number, ancora?: { x: number; y: number }) {
+    const cena = cenaRef.current
+    setVista((v) => {
+      const zoom = Math.min(ZOOM_MAX, Math.max(1, v.zoom * fator))
+      if (!cena) return { ...v, zoom }
+      // Sem âncora (botões), o centro fica onde está. Com âncora (pinça, roda),
+      // o ponto sob o dedo é o que fica parado — é o que faz a pinça parecer
+      // natural em vez de o mapa fugir.
+      const centro = centroAtual(cena, v)
+      if (!ancora) return { zoom, centroLon: centro[0], centroLat: centro[1] }
+      const [lon, lat] = desprojetar(cena.enq, ancora.x, ancora.y)
+      // O ponto sob o dedo fica parado: o centro se aproxima dele na mesma
+      // razão em que a janela encolhe.
+      const razao = v.zoom / zoom
+      return {
+        zoom,
+        centroLon: lon + (centro[0] - lon) * razao,
+        centroLat: lat + (centro[1] - lat) * razao,
+      }
+    })
+  }
+
+  function aoApontarBaixo(ev: React.PointerEvent<HTMLCanvasElement>) {
+    ev.currentTarget.setPointerCapture?.(ev.pointerId)
+    const r = ev.currentTarget.getBoundingClientRect()
+    ponteiros.current.set(ev.pointerId, { x: ev.clientX - r.left, y: ev.clientY - r.top })
+    arrastou.current = false
+    if (ponteiros.current.size === 2) {
+      const [a, b] = [...ponteiros.current.values()]
+      pinca.current = Math.hypot(a!.x - b!.x, a!.y - b!.y)
+      arrastou.current = true // pinça nunca é toque de seleção
+    }
+  }
+
+  function aoApontarMove(ev: React.PointerEvent<HTMLCanvasElement>) {
+    const cena = cenaRef.current
+    const r = ev.currentTarget.getBoundingClientRect()
+    const x = ev.clientX - r.left
+    const y = ev.clientY - r.top
+    const antes = ponteiros.current.get(ev.pointerId)
+
+    // Sem botão apertado: é só o mouse passeando — destaca a cidade sob ele.
+    if (!antes) {
+      const p = pinoNoPonto(ev)
+      setHover((atual) => (atual?.cidade.id === p?.cidade.id ? atual : p))
+      return
+    }
+    ponteiros.current.set(ev.pointerId, { x, y })
+
+    if (ponteiros.current.size >= 2 && cena) {
+      const [a, b] = [...ponteiros.current.values()]
+      const dist = Math.hypot(a!.x - b!.x, a!.y - b!.y)
+      const anterior = pinca.current
+      pinca.current = dist
+      if (anterior && anterior > 4 && dist > 4) {
+        aplicarZoom(dist / anterior, { x: (a!.x + b!.x) / 2, y: (a!.y + b!.y) / 2 })
+      }
+      return
+    }
+
+    const dx = x - antes.x
+    const dy = y - antes.y
+    if (!arrastou.current && Math.hypot(dx, dy) < ARRASTO_MIN) return
+    arrastou.current = true
+    if (!cena) return
+    arrastarGeo(cena, dx, dy)
+  }
+
+  /** Move o centro por um deslocamento em PIXELS, convertido pela projeção atual. */
+  function arrastarGeo(cena: Cena, dx: number, dy: number) {
+    setVista((v) => {
+      const centro = centroAtual(cena, v)
+      return {
+        zoom: v.zoom,
+        centroLon: centro[0] - dx / (cena.enq.cosLat * cena.enq.escala),
+        centroLat: centro[1] + dy / cena.enq.escala,
+      }
+    })
+  }
+
+  function aoApontarCima(ev: React.PointerEvent<HTMLCanvasElement>) {
+    const tinha = ponteiros.current.delete(ev.pointerId)
+    if (ponteiros.current.size < 2) pinca.current = null
+    // Toque curto = seleção. Arrasto e pinça não selecionam nada.
+    if (tinha && !arrastou.current) selecionar(ev)
+  }
+
+  function aoRolar(ev: React.WheelEvent<HTMLCanvasElement>) {
+    const r = ev.currentTarget.getBoundingClientRect()
+    aplicarZoom(ev.deltaY < 0 ? 1.18 : 1 / 1.18, {
+      x: ev.clientX - r.left,
+      y: ev.clientY - r.top,
+    })
   }
 
   function telaCheia() {
@@ -581,10 +731,15 @@ export default function MonitorBacia() {
         <canvas
           ref={canvasRef}
           className={estilos.tela}
-          style={{ width: '100%', height: '100%' }}
-          onPointerDown={aoTocar}
-          onPointerMove={aoMover}
+          onPointerDown={aoApontarBaixo}
+          onPointerMove={aoApontarMove}
+          onPointerUp={aoApontarCima}
+          onPointerCancel={aoApontarCima}
           onPointerLeave={() => setHover(null)}
+          onWheel={aoRolar}
+          // O navegador não pode rolar a página nem dar a própria pinça em cima
+          // do mapa: o gesto é do mapa, e a lupa do navegador borraria o rio.
+          style={{ width: '100%', height: '100%', touchAction: 'none' }}
           role="img"
           aria-label="Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"
         />
@@ -668,6 +823,38 @@ export default function MonitorBacia() {
           <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
             Tela cheia
           </button>
+        </div>
+
+        {/* ZOOM. Os botões existem além da pinça porque nem todo mundo usa dois
+            dedos, e porque no computador não há pinça nenhuma. "Ver tudo" volta
+            à bacia inteira: sem ele, quem se perde no zoom fica sem saber que
+            existe mapa fora da tela. */}
+        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa">
+          <button
+            type="button"
+            className={estilos.botaoZoom}
+            aria-label="Aproximar"
+            onClick={() => aplicarZoom(1.6)}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className={estilos.botaoZoom}
+            aria-label="Afastar"
+            onClick={() => aplicarZoom(1 / 1.6)}
+          >
+            −
+          </button>
+          {vista.zoom > 1 ? (
+            <button
+              type="button"
+              className={estilos.botaoVerTudo}
+              onClick={() => setVista(VISTA_INTEIRA)}
+            >
+              Ver tudo
+            </button>
+          ) : null}
         </div>
 
         {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
