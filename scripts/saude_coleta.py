@@ -32,7 +32,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from comum import DADOS
+from comum import DADOS, RAIZ
 import notificador
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
@@ -57,6 +57,14 @@ TOLERANCIA_FONTE_MIN = 120
 #: maior: o que importa vigiar é o COLETOR rodar (coletado_em) e a mais nova
 #: entre todas não passar disto — não cada régua, uma a uma.
 TOLERANCIA_BRUTO_FONTE_MIN = 180
+
+#: O branch que o site publica. É contra ele que se mede se o código que roda
+#: na VPS é o código que foi mesclado.
+RAMO_PRODUCAO = "main"
+
+#: `git fetch` numa VPS com rede ruim não pode segurar o vigia. Estourou, o
+#: veredito é "não deu para conferir" — nunca "está atrasado".
+TIMEOUT_GIT_S = 20
 
 #: Não repete o mesmo aviso de falha antes disto. Uma coleta morta continua
 #: morta; avisar de 15 em 15 minutos só ensina a ignorar.
@@ -261,6 +269,71 @@ def avaliar_bruto(dados: dict | None, agora: datetime) -> Diagnostico:
     return Diagnostico(True, "nível estadual em dia", detalhes)
 
 
+def _rodar_git(args: list[str]) -> tuple[int, str]:
+    """Roda git NO CHECKOUT DESTE ARQUIVO. Devolve (código, saída)."""
+    import subprocess
+
+    try:
+        r = subprocess.run(["git", *args], cwd=RAIZ, capture_output=True,
+                           text=True, timeout=TIMEOUT_GIT_S)
+        return r.returncode, (r.stdout or "").strip()
+    except (OSError, subprocess.SubprocessError):
+        # git ausente, sem permissão, timeout: não dá para saber, e não saber
+        # não é o mesmo que estar atrasado.
+        return 127, ""
+
+
+def avaliar_versao(rodar=_rodar_git) -> Diagnostico:
+    """
+    O código que roda aqui é o código que foi mesclado?
+
+    POR QUE ISTO EXISTE (04/09/2026, e é a terceira vez do mesmo padrão):
+    a VPS tem DOIS checkouts. O cron da coleta roda de `/opt`, e o trabalho
+    manual acontece em `/root`. Um `git pull` no segundo não muda nada no
+    primeiro — mas o teste feito à mão passa, e dá a impressão de que o conserto
+    está no ar.
+
+    Aconteceu com o fio de Taió: a leitura aparecia na mão e nunca no site. Já
+    tinha acontecido antes — o comentário do `ULTIMO_NIVEL_SC`, aqui em cima,
+    registra o vigia cego por 13 h "na migração pro /opt".
+
+    O VIGIA NÃO PEGAVA, e não por bug: ele compara cada coleta com a ANTERIOR,
+    então enxerga régua que SUMIU e é cego para régua que NUNCA CHEGOU. Um
+    deploy que não desembarcou não perde nada — logo, não acusa nada. Esta
+    função fecha justamente esse ângulo.
+
+    Falhar em CONFERIR nunca vira "atrasado": sem rede, sem git ou fora de um
+    checkout, o veredito é ok com a ressalva no detalhe. Alarme falso de deploy
+    ensina a ignorar o alarme verdadeiro de cheia.
+    """
+    onde = f"{RAIZ}"
+    cod, _ = rodar(["rev-parse", "--git-dir"])
+    if cod != 0:
+        return Diagnostico(True, "código: não é um checkout git",
+                           [f"código: {onde} não é um checkout git — nada a conferir"])
+
+    if rodar(["fetch", "--quiet", "origin", RAMO_PRODUCAO])[0] != 0:
+        return Diagnostico(True, "código: não deu para conferir",
+                           [f"código: não deu para conferir ({onde}: git fetch falhou)"])
+
+    cod, saida = rodar(["rev-list", "--count", f"HEAD..origin/{RAMO_PRODUCAO}"])
+    if cod != 0 or not saida.isdigit():
+        return Diagnostico(True, "código: não deu para conferir",
+                           [f"código: não deu para contar a distância até origin/{RAMO_PRODUCAO}"])
+
+    atras = int(saida)
+    if atras == 0:
+        return Diagnostico(True, "código em dia",
+                           [f"código: {onde} em dia com origin/{RAMO_PRODUCAO}"])
+    plural = "commit" if atras == 1 else "commits"
+    return Diagnostico(
+        False,
+        f"o código em {onde} está {atras} {plural} atrás de origin/{RAMO_PRODUCAO} — "
+        "o cron está rodando versão antiga",
+        [f"código: {atras} {plural} atrás em {onde}"],
+    )
+
+
 def deve_avisar(diag: Diagnostico, estado: dict, agora: datetime) -> bool:
     """
     Manda aviso de falha no máximo uma vez a cada SILENCIO_H — e manda a
@@ -280,16 +353,35 @@ def deve_avisar(diag: Diagnostico, estado: dict, agora: datetime) -> bool:
         return True
 
 
-def texto(diag: Diagnostico) -> str:
+def texto(diag: Diagnostico, so_versao: bool = False) -> str:
+    """
+    `so_versao`: a coleta está viva e o ÚNICO problema é o código atrasado.
+
+    A manchete muda porque a antiga seria falsa. "A coleta de nível parou" com a
+    coleta rodando normalmente é a pior espécie de aviso: manda procurar defeito
+    onde não há, e ensina a duvidar do próximo — que pode ser o da cheia.
+    """
     e = notificador.esc
     if diag.ok:
         cabeca = "✅ <b>A coleta voltou.</b>"
+    elif so_versao:
+        cabeca = "🚚 <b>O código no ar está atrasado.</b>"
     else:
         cabeca = "🛠 <b>A coleta de nível parou.</b>"
     corpo = [cabeca, "", e(diag.motivo)]
     if diag.detalhes:
         corpo += ["", *[e(d) for d in diag.detalhes]]
-    if not diag.ok:
+    if diag.ok:
+        return "\n".join(corpo)
+    if so_versao:
+        corpo += [
+            "",
+            "A coleta está rodando e o site tem dado fresco — o que não chegou "
+            "foi o código novo. Um conserto já mesclado pode não estar valendo aqui.",
+            "",
+            f"Na VPS: <code>cd {e(str(RAIZ))} && git pull origin {RAMO_PRODUCAO}</code>",
+        ]
+    else:
         corpo += [
             "",
             "Enquanto isso o site mostra a última leitura com a idade dela — "
@@ -329,6 +421,9 @@ def main() -> int:
             ilegivel = f"{caminho.name} não pôde ser lido: {exc}"
 
     agora = datetime.now(timezone.utc)
+    # Falso por padrão: com `--arquivo` (teste) o bloco de produção nem roda, e
+    # a variável precisa existir do mesmo jeito.
+    so_versao = False
     estado = le_estado()
     vistas_antes = set(estado.get("estacoes_vistas") or [])
     diag = (Diagnostico(False, ilegivel, []) if ilegivel
@@ -351,11 +446,24 @@ def main() -> int:
         else:
             diag.detalhes.extend(diag_bruto.detalhes)
 
+        # E o código deste checkout está em dia com o que foi mesclado? Entra
+        # por último e guarda se ele é o ÚNICO problema: com a coleta viva, a
+        # manchete do aviso tem de ser outra.
+        coleta_viva = diag.ok
+        diag_versao = avaliar_versao()
+        if not diag_versao.ok:
+            motivo = (diag_versao.motivo if diag.ok
+                      else f"{diag.motivo}; {diag_versao.motivo}")
+            diag = Diagnostico(False, motivo, diag.detalhes + diag_versao.detalhes)
+            so_versao = coleta_viva
+        else:
+            diag.detalhes.extend(diag_versao.detalhes)
+
     print(diag)
 
     if args.avisar:
         if deve_avisar(diag, estado, agora):
-            notificador.enviar(texto(diag))
+            notificador.enviar(texto(diag, so_versao))
             estado = {"falhando": not diag.ok, "avisado_em": agora.isoformat()}
 
         # A lista de estações é gravada em TODA rodada, e não só quando há
