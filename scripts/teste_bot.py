@@ -463,20 +463,48 @@ class TestCotas(unittest.TestCase):
         self.assertIn("próprio zero", t)
 
     def test_cidade_sem_cota_diz_que_falta(self):
-        # Taió não tem cota cadastrada nem régua com cota em estacoes.json.
-        self.assertIn("ainda não foram levantadas", resp("/cotas Taió"))
+        # Ituporanga segue sem cota cadastrada e sem régua com cota. (Taió tinha
+        # este papel até 04/09/2026, quando entraram as faixas do Plano de
+        # Contingência da COMPDEC — ver test_taio_mostra_o_monitoramento_antes_da_atencao.)
+        self.assertIn("ainda não foram levantadas", resp("/cotas Ituporanga"))
 
-    def test_ilhota_nao_tem_cota_porque_a_dc11_e_de_itajai(self):
+    def test_taio_mostra_o_monitoramento_antes_da_atencao(self):
         """
-        Ilhota NÃO tem régua própria. A DC-11 fica na divisa mas é estação de
-        Itajaí (Plano de Contingência, Tabela 11 + Zona 1) — mostrá-la como cota
-        de Ilhota seria comparar réguas de cidades diferentes. Antes o cadastro
-        atribuía a DC-11 a Ilhota; corrigido. Dizer "não levantadas" aqui é o
-        certo, e a DC-11 responde em /cotas Itajaí.
+        Taió tem CINCO fases e o nosso esquema tem quatro nomes.
+
+        O piso de monitoramento (5,00 m) é gravado com o nome que o Plano usa, e
+        não remapeado para 'atenção' — a tela não pode afirmar um aviso que a
+        COMPDEC não deu. Mas ele precisa sair NA POSIÇÃO CERTA: sem entrar em
+        ORDEM_COTAS, a resposta listaria "Monitoramento 5,00 m" depois de
+        "Emergência 9,00 m", uma escada que sobe e desce.
+        """
+        t = resp("/cotas Taió")
+        self.assertIn("Monitoramento", t)
+        for antes, depois in (("Monitoramento", "Atenção"), ("Atenção", "Alerta"),
+                              ("Alerta", "Emergência")):
+            self.assertLess(t.index(antes), t.index(depois),
+                            f"'{antes}' deveria vir antes de '{depois}' na resposta")
+
+    def test_ilhota_tem_cota_de_referencia_mas_segue_sem_regua_propria(self):
+        """
+        As duas coisas são independentes, e confundi-las foi o bug antigo.
+
+        Ilhota ganhou as faixas do PLANCON 2025/2028 em 04/09/2026 — cota de
+        REFERÊNCIA, para a linha do gráfico e para 'minha rua'. Isso NÃO lhe dá
+        nível ao vivo: a DC-11 fica na divisa mas é estação de Itajaí, com zero
+        próprio (Plano de Contingência, Tabela 11 + Zona 1), e mostrá-la aqui
+        seria comparar réguas de cidades diferentes. Ela responde em /cotas Itajaí.
         """
         t = resp("/cotas Ilhota")
-        self.assertIn("ainda não foram levantadas", t)
-        self.assertNotIn("DC-11", t)
+        self.assertIn("9,20 m", t)
+        self.assertIn("10,50 m", t)
+        # A DC-11 pode ser CITADA — a observação existe justamente para dizer
+        # por que ela não serve aqui. O que não pode é ser apresentada como a
+        # régua de Ilhota. Conferir a linha "Régua:", e não o texto inteiro:
+        # proibir a palavra apagaria a explicação junto com o erro.
+        linha_regua = next(l for l in t.split("\n") if l.startswith("Régua:"))
+        self.assertIn("Cláudio Jeremias Cadorin", linha_regua)
+        self.assertNotIn("DC-11", linha_regua)
 
     def test_itajai_sai_uma_vez_com_as_onze_reguas_e_os_ribeiroes(self):
         t = resp("/cotas Itajaí")
