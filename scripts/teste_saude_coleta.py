@@ -19,6 +19,7 @@ from saude_coleta import (
     TOLERANCIA_FONTE_MIN,
     avaliar,
     avaliar_bruto,
+    avaliar_versao,
     deve_avisar,
     regua_de,
     texto,
@@ -308,6 +309,76 @@ class TestAvaliarBruto(unittest.TestCase):
         d = avaliar_bruto(None, AGORA)
         self.assertFalse(d.ok)
         self.assertIn("cabeceiras", d.motivo)
+
+
+class CodigoAtrasado(unittest.TestCase):
+    """
+    O vigia precisa ver o DEPLOY que não desembarcou.
+
+    A VPS tem dois checkouts: o cron da coleta roda de `/opt`, o trabalho manual
+    acontece em `/root`. Um `git pull` no segundo não muda nada no primeiro, e o
+    teste feito à mão passa — dando a impressão de que o conserto está no ar.
+
+    O resto do vigia é cego para isso por desenho: compara cada coleta com a
+    ANTERIOR, então vê régua que sumiu e não vê régua que nunca chegou. Um
+    deploy que não desembarcou não perde nada, logo não acusa nada.
+    """
+
+    def _git(self, respostas):
+        """Um git de mentira: mapeia o primeiro argumento para (código, saída)."""
+        return lambda args: respostas.get(args[0], (0, ""))
+
+    def test_em_dia_nao_reclama(self):
+        d = avaliar_versao(self._git({"rev-list": (0, "0")}))
+        self.assertTrue(d.ok)
+        self.assertTrue(any("em dia" in x for x in d.detalhes))
+
+    def test_atrasado_e_FALHA_e_diz_quantos_commits(self):
+        d = avaliar_versao(self._git({"rev-list": (0, "3")}))
+        self.assertFalse(d.ok)
+        self.assertIn("3 commits atrás", d.motivo)
+        self.assertIn("versão antiga", d.motivo)
+
+    def test_um_commit_nao_vira_plural(self):
+        d = avaliar_versao(self._git({"rev-list": (0, "1")}))
+        self.assertIn("1 commit atrás", d.motivo)
+        self.assertNotIn("commits", d.motivo)
+
+    def test_sem_rede_NAO_vira_alarme(self):
+        """
+        Falhar em conferir não é o mesmo que estar atrasado.
+
+        Uma VPS com rede ruim gritaria "código atrasado" por engano, e alarme
+        falso de deploy ensina a ignorar o alarme verdadeiro de cheia.
+        """
+        d = avaliar_versao(self._git({"fetch": (128, "")}))
+        self.assertTrue(d.ok, "git fetch falhando não pode virar falha do vigia")
+        self.assertTrue(any("não deu para conferir" in x for x in d.detalhes))
+
+    def test_sem_git_ou_fora_de_checkout_NAO_vira_alarme(self):
+        d = avaliar_versao(self._git({"rev-parse": (127, "")}))
+        self.assertTrue(d.ok)
+        self.assertTrue(any("não é um checkout git" in x for x in d.detalhes))
+
+    def test_saida_estranha_do_git_NAO_vira_alarme(self):
+        for saida in ("", "abc", "-1"):
+            d = avaliar_versao(self._git({"rev-list": (0, saida)}))
+            self.assertTrue(d.ok, f"saída {saida!r} não podia virar falha")
+
+    def test_a_MANCHETE_do_aviso_nao_mente_sobre_a_coleta(self):
+        """
+        Com a coleta viva e só o código atrasado, dizer "a coleta parou" manda
+        procurar defeito onde não há — e ensina a duvidar do próximo aviso, que
+        pode ser o da cheia.
+        """
+        d = Diagnostico(False, "o código em /opt está 3 commits atrás", [])
+        so_versao = texto(d, so_versao=True)
+        self.assertIn("código no ar está atrasado", so_versao)
+        self.assertNotIn("coleta de nível parou", so_versao)
+        self.assertIn("git pull", so_versao, "o aviso tem de trazer o conserto")
+
+        parou = texto(d, so_versao=False)
+        self.assertIn("coleta de nível parou", parou)
 
 
 if __name__ == "__main__":
