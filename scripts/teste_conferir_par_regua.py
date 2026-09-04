@@ -14,6 +14,7 @@ import unittest
 import conferir_par_regua as cpr
 from conferir_par_regua import (
     CERTEZA_M,
+    para_brasilia,
     MAX_MINUTOS_ENTRE,
     TOLERANCIA_M,
     conferir,
@@ -79,15 +80,52 @@ class LeituraDasFontes(unittest.TestCase):
 
 
 class DistanciaNoTempo(unittest.TestCase):
-    def test_conta_minutos_entre_carimbos(self):
+    """
+    AS DUAS FONTES NÃO FALAM O MESMO FUSO — e a primeira versão daqui não viu.
+
+    Rodado de verdade na VPS em 04/09/2026, o script devolveu:
+
+        Ponte Dom Tito Buss   5.35 m  em 2026-09-04T20:15:07.568Z
+        Rio do Sul Est. MKS   5.35 m  em 2026-09-04T17:05:00
+        → NÃO DÁ PARA DIZER (190 min entre as leituras)
+
+    Os níveis batem AO CENTAVO, e mesmo assim ele se recusou a decidir. A causa:
+    `minutos_entre` fazia `d.replace(tzinfo=None)` — DESCARTAVA o fuso em vez de
+    converter. O painel da Asthon carimba em UTC (com `Z`); o nosso `ultimo.json`
+    carimba em Brasília sem fuso. 20:15 UTC É 17:15 de Brasília: são 10 minutos,
+    não 190.
+
+    É a mesma armadilha que o CLAUDE.md registra por extenso, e que já fez o
+    vigia ver leitura 2 h no futuro.
+    """
+
+    def test_carimbos_no_MESMO_fuso_contam_direto(self):
         self.assertAlmostEqual(
             minutos_entre("2026-09-04T18:00:00", "2026-09-04T18:20:00"), 20.0)
 
-    def test_fuso_no_carimbo_nao_estoura(self):
-        self.assertIsNotNone(minutos_entre("2026-09-04T18:00:00Z", "2026-09-04T18:10:00"))
+    def test_O_CASO_REAL_UTC_contra_Brasilia(self):
+        # Os carimbos exatos da rodada de 04/09 na VPS.
+        self.assertAlmostEqual(
+            minutos_entre("2026-09-04T20:15:07.568Z", "2026-09-04T17:05:00"),
+            10.1, delta=0.2,
+            msg="o fuso voltou a ser descartado em vez de convertido: um par "
+                "comparável (5,35 × 5,35 m) vira 'não dá para dizer'",
+        )
+
+    def test_UTC_vira_Brasilia_e_nao_o_contrario(self):
+        # 20:15 UTC = 17:15 de Brasília (UTC-3).
+        self.assertEqual(
+            para_brasilia("2026-09-04T20:15:00Z").strftime("%H:%M"), "17:15")
+
+    def test_carimbo_SEM_fuso_ja_e_Brasilia_e_nao_se_mexe(self):
+        # Convenção do projeto para `medido_em`. Convertê-lo seria deslocar
+        # a leitura em 3 h — o erro na direção oposta.
+        self.assertEqual(
+            para_brasilia("2026-09-04T17:05:00").strftime("%H:%M"), "17:05")
 
     def test_carimbo_ilegivel_vira_None(self):
         self.assertIsNone(minutos_entre("ontem", "2026-09-04T18:00:00"))
+        self.assertIsNone(para_brasilia("ontem"))
 
 
 class OCasoDeRioDoSul(unittest.TestCase):
