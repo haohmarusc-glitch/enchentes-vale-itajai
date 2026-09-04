@@ -195,6 +195,42 @@ def baixar_nivel_asthon() -> list[dict]:
         return []
 
 
+def baixar_nivel_taio(gravar: bool) -> list[dict]:
+    """
+    Nível do CENTRO de Taió e, junto, o ESTADO DAS COMPORTAS da Barragem Oeste.
+
+    Taió é cabeceira do Itajaí do Oeste e não tinha nível de cidade na tela: a
+    rede estadual só dá leitura bruta ali, que por contrato do projeto nunca
+    vira faixa. Esta fonte é municipal, e a régua dela É a que as cotas do Plano
+    de Contingência da COMPDEC descrevem — por isso a leitura sai com
+    `usar_para_cota: True` e pode pintar cor.
+
+    ALÉM DO NÍVEL: é a única fonte de OPERAÇÃO DE BARRAGEM da bacia. O JICA
+    (2011, seção 4.2.2) aponta essa ausência como a causa de a previsão de Rio
+    do Sul não funcionar. As comportas não cabem em `leituras` — não são nível
+    de rio — então o payload inteiro vai para `data/tempo-real/ultimo_taio.json`,
+    que o `publicar_tempo_real.sh` leva junto.
+
+    `gravar` respeita o `--no-save`: sem ele, um ensaio de coleta reescreveria o
+    arquivo que o publicador manda ao ar.
+
+    Falha aqui NUNCA derruba a coleta, como no Asthon: devolve lista vazia e o
+    resto segue. É uma cidade a mais, não a fonte principal.
+    """
+    try:
+        from coleta_taio import SAIDA, payload
+
+        dados = payload()
+        if gravar:
+            from comum import grava_json
+
+            grava_json(SAIDA, dados)
+        return dados.get("leituras") or []
+    except Exception as e:
+        print(f"aviso: Taió (barragem Oeste) não coletada ({e}).", file=sys.stderr)
+        return []
+
+
 def estacoes_do_ultimo() -> set[str]:
     """Os títulos que vieram na coleta anterior, do ultimo.json que vamos trocar."""
     try:
@@ -455,6 +491,10 @@ def main() -> int:
     # Vidal Ramos (Asthon) entra depois: fonte à parte, e a falha dela já é
     # engolida em baixar_nivel_asthon, então não pode derrubar a coleta acima.
     leituras = leituras + baixar_nivel_asthon()
+
+    # Taió (municipal) pelo mesmo motivo, e traz as comportas da Barragem Oeste
+    # no arquivo próprio. `--no-save` não pode reescrever o que vai ao ar.
+    leituras = leituras + baixar_nivel_taio(gravar=not args.no_save)
 
     for l in leituras:
         alvo = f"{l['cidade']} ({l['rio']})" if l.get("cidade") else "não mapeada"

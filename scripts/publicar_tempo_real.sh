@@ -31,6 +31,7 @@ RAIZ="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ARQUIVO="$RAIZ/data/tempo-real/ultimo.json"
 SERIE_RECENTE="$RAIZ/data/tempo-real/serie-recente.json"
 NIVEL_SC="$RAIZ/data/tempo-real/ultimo_nivel_sc.json"
+TAIO="$RAIZ/data/tempo-real/ultimo_taio.json"
 BRANCH="tempo-real"
 SECO=0
 [ "${1:-}" = "--seco" ] && SECO=1
@@ -70,18 +71,44 @@ if [ -f "$NIVEL_SC" ] && python3 -c 'import json,sys; json.load(open(sys.argv[1]
   NIVEL_SC_ENTRY="$(printf '100644 blob %s\tultimo_nivel_sc.json' "$BLOB_NIVEL_SC")"
 fi
 
+# ultimo_taio.json vai junto pela mesma regra dos dois acima. O NÍVEL de Taió
+# não depende deste arquivo — ele já entra no ultimo.json pelo coleta_niveis.py.
+# O que só existe aqui é o ESTADO DAS COMPORTAS da Barragem Oeste, o único dado
+# de operação de barragem que a bacia publica: retendo (amortece a chuva de
+# montante) ou vertendo (a água passa direto). São duas situações diferentes com
+# o mesmo nível a jusante, e sem isso o site mostra Rio do Sul sem dizer se a
+# barragem acima está segurando ou soltando.
+TAIO_ENTRY=""
+if [ -f "$TAIO" ] && python3 -c 'import json,sys; json.load(open(sys.argv[1]))' "$TAIO" 2>/dev/null; then
+  BLOB_TAIO="$(git hash-object -w "$TAIO")"
+  TAIO_ENTRY="$(printf '100644 blob %s\tultimo_taio.json' "$BLOB_TAIO")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
     [ -n "$SERIE_ENTRY" ] && printf '%s\n' "$SERIE_ENTRY"
     [ -n "$NIVEL_SC_ENTRY" ] && printf '%s\n' "$NIVEL_SC_ENTRY"
+    [ -n "$TAIO_ENTRY" ] && printf '%s\n' "$TAIO_ENTRY"
+    # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
+    # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
+    # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o
+    # `git mktree` nem chega a falhar. Era um risco latente enquanto o
+    # ultimo_nivel_sc.json era o último (ele existe sempre na VPS, então nunca
+    # apareceu); com o arquivo de Taió, que só passa a existir depois da
+    # primeira coleta boa, seria a coleta inteira parando de ir ao ar.
+    :
   } | git mktree
 )"
 COMMIT="$(git commit-tree "$TREE" -m "Leitura de $(date -u +%Y-%m-%dT%H:%M:%SZ)")"
 
 if [ "$SECO" = "1" ]; then
   echo "publicaria o commit $COMMIT em refs/heads/$BRANCH"
-  [ -n "$SERIE_ENTRY" ] && echo "(com serie-recente.json)" || echo "(sem serie-recente.json)"
+  # Lista o que REALMENTE vai na árvore, em vez de anunciar um arquivo só. O
+  # ensaio serve para conferir antes de publicar; se ele cala sobre três dos
+  # quatro, a conferência não confere nada.
+  echo "arquivos:"
+  git ls-tree --name-only "$TREE" | sed 's/^/  /'
   echo "conteúdo:"
   git show "$COMMIT:ultimo.json" | head -5
   exit 0

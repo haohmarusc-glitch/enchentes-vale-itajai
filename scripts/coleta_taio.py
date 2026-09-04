@@ -242,6 +242,28 @@ def coletar() -> dict:
     return dados
 
 
+def payload(dados: dict | None = None) -> dict:
+    """
+    O conteúdo de `data/tempo-real/ultimo_taio.json`, num lugar só.
+
+    Existe porque DOIS caminhos gravam este arquivo: o `--gravar` daqui e o
+    `coleta_niveis.py`, que roda no cron a cada quinze minutos. Se cada um
+    montasse o dicionário por conta própria, bastaria acrescentar um campo num
+    deles para o arquivo publicado mudar de forma conforme quem rodou — e quem
+    lê veria duas formas sem ninguém notar.
+
+    `dados` já coletado entra como argumento para o `--de-arquivo` não sair
+    buscando a rede só para montar o mesmo dicionário.
+    """
+    return {
+        "fonte": URL_CARDS,
+        # UTC, e diferente do `medido_em` das leituras, que é horário de
+        # Brasília sem fuso (ver CLAUDE.md). São dois relógios de propósito.
+        "coletado_em": datetime.now().astimezone().isoformat(),
+        **(coletar() if dados is None else dados),
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -281,11 +303,7 @@ def main() -> int:
 
     if args.gravar:
         from comum import grava_json
-        grava_json(SAIDA, {
-            "fonte": URL_CARDS,
-            "coletado_em": datetime.now().astimezone().isoformat(),
-            **dados,
-        })
+        grava_json(SAIDA, payload(dados))
         print(f"\ngravado em data/{SAIDA}")
     return 0
 
