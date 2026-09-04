@@ -156,6 +156,50 @@ class Historico(unittest.TestCase):
         self.assertEqual(s[0]["nivel_m"], 5.17)
         self.assertEqual(s[0]["comportas_abertas"], 7)
 
+    def test_sai_em_ordem_CRONOLOGICA_porque_a_fonte_entrega_ao_contrario(self):
+        """
+        A API devolve do mais NOVO para o mais velho — conferido contra o host
+        em 04/09/2026, com 24 pontos horários.
+
+        Sem inverter, `historico[-1]` (a forma óbvia de pegar "a mais nova")
+        devolveria a de 24 h atrás. Um número de ontem apresentado como o de
+        agora é o erro que este projeto existe para não cometer.
+        """
+        como_a_fonte_manda = [
+            {"dataUltimaAtualizacao": "04/09/2026 03:01:00", "nivel": "5.59",
+             "montante": "17.2", "comportaAberta": "7"},
+            {"dataUltimaAtualizacao": "03/09/2026 15:01:34", "nivel": "4.80",
+             "montante": "17.5", "comportaAberta": "2"},
+            {"dataUltimaAtualizacao": "03/09/2026 04:01:28", "nivel": "4.45",
+             "montante": "17.4", "comportaAberta": "2"},
+        ]
+        s = ct.parse_historico(como_a_fonte_manda)
+        self.assertEqual([p["medido_em"] for p in s], sorted(p["medido_em"] for p in s))
+        self.assertEqual(s[-1]["nivel_m"], 5.59, "a última tem de ser a mais NOVA")
+        self.assertEqual(s[0]["nivel_m"], 4.45, "a primeira tem de ser a mais VELHA")
+
+    def test_a_serie_mostra_a_barragem_MUDANDO_de_regime(self):
+        """
+        O que este campo existe para capturar, com os números reais de 03–04/09.
+
+        Duas comportas abertas e reservatório a 17,50 m; depois SETE abertas e
+        reservatório a 17,20 m, com o nível da cidade subindo de 4,45 para
+        5,59 m — e chuva zero em 24 h. É a barragem soltando água armazenada,
+        não a chuva. Sem este campo, o site mostraria o rio subindo sem dizer
+        por quê, e uma correlação chuva→nível leria a subida como chuva que não
+        houve.
+        """
+        s = ct.parse_historico([
+            {"dataUltimaAtualizacao": "04/09/2026 03:01:00", "nivel": "5.59",
+             "montante": "17.2", "comportaAberta": "7"},
+            {"dataUltimaAtualizacao": "03/09/2026 04:01:28", "nivel": "4.45",
+             "montante": "17.4", "comportaAberta": "2"},
+        ])
+        self.assertEqual([p["comportas_abertas"] for p in s], [2, 7])
+        # O montante NÃO é campo morto: ele se move. A dúvida de 04/09 — se o
+        # 17,2 repetido seria um número congelado na fonte — morre aqui.
+        self.assertNotEqual(s[0]["montante_m"], s[-1]["montante_m"])
+
     def test_ponto_sem_nivel_ou_sem_carimbo_e_descartado(self):
         self.assertEqual(ct.parse_historico([{"nivel": "5.1"}]), [])
         self.assertEqual(ct.parse_historico([{"dataUltimaAtualizacao": "03/09/2026 20:00:34"}]), [])
