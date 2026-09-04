@@ -48,7 +48,25 @@ from comum import USER_AGENT  # noqa: E402
 
 RIOS = RAIZ / "data" / "rios"
 SAIDA = RAIZ / "data" / "brutos" / "vao-canhanduba-osm.json"
-API = "https://overpass-api.de/api/interpreter"
+#: Espelhos do Overpass, na ordem de preferência.
+#:
+#: O primeiro devolveu **504** na primeira tentativa real (04/09/2026): a caixa
+#: aqui tem 1,7 x 1,3 km, então não é peso de consulta — é fila do servidor.
+#: Insistir no mesmo espelho durante um pico de uso é esperar de graça; os
+#: espelhos servem a MESMA base do OSM, então trocar não muda o dado, só a fila.
+ESPELHOS = (
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.private.coffee/api/interpreter",
+)
+
+#: Status que melhoram esperando: fila (504), sobrecarga (502/503) e o pedido
+#: explícito de calma (429). Qualquer outro não melhora sozinho — insistir só
+#: atrasa e ainda castiga um serviço público que usamos de graça.
+STATUS_QUE_ESPERAM = (429, 502, 503, 504)
+
+TENTATIVAS_POR_ESPELHO = 3
+BACKOFF_BASE_S = 5
 
 K_LON = math.cos(math.radians(27))
 
@@ -98,28 +116,61 @@ def ponta_do_canhanduba() -> tuple[float, float]:
                key=lambda p: min(km(p, q) for q in mirim))
 
 
-def buscar(caixa) -> list[dict]:
-    """A resposta do Overpass, CONFERIDA antes de ser interpretada."""
-    import requests
+def buscar(caixa, *, transporte=None, dormir=None, avisar=print) -> list[dict]:
+    """
+    A resposta do Overpass, CONFERIDA antes de ser interpretada.
+
+    Insiste como o resto do projeto insiste (ver `comum.baixar`): espera nos
+    status que melhoram esperando, honra o `Retry-After` quando ele vem, e só
+    então troca de espelho. Um 504 não é motivo para mandar alguém repetir o
+    comando na mão — é fila, e fila passa.
+
+    `transporte` e `dormir` entram por parâmetro para o teste rodar sem rede e
+    sem esperar de verdade.
+    """
+    import time
+
+    if dormir is None:
+        dormir = time.sleep
+    if transporte is None:
+        import requests
+
+        def transporte(url, dados, cabecalhos, timeout):  # noqa: E306
+            return requests.post(url, data=dados, headers=cabecalhos, timeout=timeout)
 
     consulta = CONSULTA.format(sul=caixa[0], oeste=caixa[1], norte=caixa[2], leste=caixa[3])
-    r = requests.post(API, data={"data": consulta},
-                      headers={"User-Agent": USER_AGENT}, timeout=120)
-    if r.status_code != 200:
-        raise SystemExit(
-            f"Overpass respondeu {r.status_code}. Começo do que veio:\n"
-            f"{r.text[:400]}\n\n"
-            "429/504 é limite de uso ou fila: espere alguns minutos e repita."
-        )
-    try:
-        d = r.json()
-    except ValueError:
-        raise SystemExit(
-            "Overpass respondeu 200 mas o corpo NÃO é JSON — é o que fez o "
-            "`curl` gravar lixo no arquivo. Começo do que veio:\n"
-            f"{r.text[:400]}"
-        )
-    return d.get("elements") or []
+    cabecalhos = {"User-Agent": USER_AGENT}
+    ultimo = ""
+
+    for espelho in ESPELHOS:
+        for tentativa in range(1, TENTATIVAS_POR_ESPELHO + 1):
+            r = transporte(espelho, {"data": consulta}, cabecalhos, 120)
+            if r.status_code == 200:
+                try:
+                    return json.loads(r.text).get("elements") or []
+                except ValueError:
+                    ultimo = (f"{espelho} respondeu 200 mas o corpo NÃO é JSON.\n"
+                              f"{r.text[:400]}")
+                    break  # corpo estranho não melhora repetindo
+            ultimo = f"{espelho} respondeu {r.status_code}.\n{r.text[:400]}"
+            if r.status_code not in STATUS_QUE_ESPERAM:
+                break  # 4xx que não é 429 não melhora sozinho
+            if tentativa == TENTATIVAS_POR_ESPELHO:
+                break
+            pedido = (r.headers or {}).get("Retry-After")
+            espera = max(BACKOFF_BASE_S * 2 ** (tentativa - 1),
+                         float(pedido) if str(pedido or "").strip().isdigit() else 0)
+            avisar(f"   {r.status_code} — fila do Overpass; esperando {espera:.0f}s "
+                   f"(tentativa {tentativa} de {TENTATIVAS_POR_ESPELHO})")
+            dormir(espera)
+        avisar(f"   {espelho} não serviu; tentando o próximo espelho")
+
+    raise SystemExit(
+        "Nenhum espelho do Overpass respondeu com JSON. Último retorno:\n"
+        f"{ultimo}\n\n"
+        "504/502/503 é fila e passa: repita daqui a alguns minutos. Se persistir "
+        "em todos os espelhos, o serviço está fora — não é a consulta."
+    )
 
 
 def pontas(via: dict) -> tuple[tuple[float, float], tuple[float, float]]:

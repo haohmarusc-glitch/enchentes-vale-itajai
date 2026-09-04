@@ -79,5 +79,83 @@ class Limites(unittest.TestCase):
                          "os dois têm de concordar sobre o que é 'chegou no rio'")
 
 
+
+class Resposta:
+    """Uma resposta fingida, com o mínimo que `buscar` olha."""
+
+    def __init__(self, status, texto, cabecalhos=None):
+        self.status_code = status
+        self.text = texto
+        self.headers = cabecalhos or {}
+
+
+class Insistencia(unittest.TestCase):
+    """
+    O 504 real de 04/09/2026 tinha de ser resolvido pelo script, não por alguém
+    repetindo o comando na mão. A caixa aqui tem 1,7 x 1,3 km — não é peso de
+    consulta, é fila do servidor, e fila passa.
+    """
+
+    def buscar(self, respostas, **kw):
+        self.chamadas = []
+        self.esperas = []
+
+        def transporte(url, dados, cabecalhos, timeout):
+            self.chamadas.append(url)
+            return respostas.pop(0)
+
+        return bv.buscar(bv.CAIXA, transporte=transporte,
+                         dormir=self.esperas.append, avisar=lambda *_: None, **kw)
+
+    def test_200_de_primeira_nao_espera_nada(self):
+        r = self.buscar([Resposta(200, '{"elements": [{"id": 1}]}')])
+        self.assertEqual(r, [{"id": 1}])
+        self.assertEqual(self.esperas, [])
+
+    def test_504_espera_e_tenta_de_novo_NO_MESMO_espelho(self):
+        r = self.buscar([Resposta(504, "<html>fila</html>"),
+                         Resposta(200, '{"elements": []}')])
+        self.assertEqual(r, [])
+        self.assertEqual(len(self.esperas), 1)
+        self.assertEqual(self.chamadas[0], self.chamadas[1])
+
+    def test_backoff_CRESCE(self):
+        self.buscar([Resposta(504, "x"), Resposta(504, "x"),
+                     Resposta(200, '{"elements": []}')])
+        self.assertGreater(self.esperas[1], self.esperas[0])
+
+    def test_Retry_After_do_servidor_vence_o_backoff_quando_e_maior(self):
+        """Ignorar o pedido de calma é o caminho para levar bloqueio."""
+        self.buscar([Resposta(429, "x", {"Retry-After": "60"}),
+                     Resposta(200, '{"elements": []}')])
+        self.assertGreaterEqual(self.esperas[0], 60)
+
+    def test_esgotado_um_espelho_TROCA_de_espelho(self):
+        respostas = [Resposta(504, "x")] * bv.TENTATIVAS_POR_ESPELHO
+        respostas.append(Resposta(200, '{"elements": [{"id": 7}]}'))
+        r = self.buscar(respostas)
+        self.assertEqual(r, [{"id": 7}])
+        self.assertNotEqual(self.chamadas[0], self.chamadas[-1])
+
+    def test_404_NAO_espera_nem_insiste_no_mesmo_espelho(self):
+        """4xx que não é 429 não melhora sozinho; insistir só castiga a fonte."""
+        with self.assertRaises(SystemExit):
+            self.buscar([Resposta(404, "sumiu")] * 9)
+        self.assertEqual(self.esperas, [])
+        self.assertEqual(len(self.chamadas), len(bv.ESPELHOS))
+
+    def test_200_com_corpo_NAO_JSON_nao_e_repetido_no_mesmo_espelho(self):
+        """Foi o caso do `curl`: 200 com HTML. Repetir não muda o corpo."""
+        with self.assertRaises(SystemExit) as e:
+            self.buscar([Resposta(200, "<html>não é json</html>")] * 9)
+        self.assertIn("não é JSON", str(e.exception).replace("NÃO é JSON", "não é JSON"))
+        self.assertEqual(len(self.chamadas), len(bv.ESPELHOS))
+
+    def test_a_mensagem_final_mostra_o_que_veio(self):
+        """Sem isso, o erro não ajuda a diagnosticar — foi o defeito do curl."""
+        with self.assertRaises(SystemExit) as e:
+            self.buscar([Resposta(504, "PAGINA-DE-FILA")] * 30)
+        self.assertIn("PAGINA-DE-FILA", str(e.exception))
+
 if __name__ == "__main__":
     unittest.main()

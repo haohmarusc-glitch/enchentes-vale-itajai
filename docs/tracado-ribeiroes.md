@@ -79,6 +79,14 @@ python3 scripts/conferir_afluentes_chegam.py   # tem de sair 0 m
 python3 scripts/conferir_reguas_no_tracado.py
 ```
 
+**Fila do Overpass:** na primeira tentativa real (04/09/2026) o servidor
+devolveu **504** — a caixa tem 1,7 × 1,3 km, então não é peso de consulta, é
+fila. O script agora insiste sozinho: espera com backoff nos status que
+melhoram esperando (429, 502, 503, 504), honra o `Retry-After` quando ele vem, e
+só então troca de espelho (`overpass-api.de` → `kumi.systems` →
+`private.coffee`, que servem a MESMA base do OSM). Se todos falharem, ele mostra
+o último retorno — o serviço está fora, não é a consulta.
+
 Se **não** achar, o script diz e sai com erro. Aí o vão é maior que a caixa ou o
 OSM não mapeia o trecho — e a resposta é ampliar a caixa em
 `baixar_vao_canhanduba.CAIXA`, nunca fechar o vão na mão.
