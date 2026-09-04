@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { reguasNoMapa, type LeituraDeRegua } from './reguasNoMapa'
+import { nomeDoLugar, reguasNoMapa, type LeituraDeRegua } from './reguasNoMapa'
 import type { EstacaoTempoReal } from '../dados/tipos'
 
 const AGORA = new Date('2026-09-04T02:10:00')
@@ -68,6 +68,22 @@ test('sem coordenada não entra — não se chuta posição em mapa de enchente'
   assert.equal(reguasNoMapa([base({ cidade: 'gaspar' })], [fresca(1)], AGORA).length, 1)
 })
 
+test('o rótulo é o nome do LUGAR, não o código', () => {
+  /**
+   * O mapa rotulava `DC-07 0,32 m`. Ninguém que mora no Portal I sabe o que é
+   * DC-07 — e é justamente quem mora ali que precisa ler aquele número.
+   */
+  assert.equal(nomeDoLugar({ nome_no_plano: 'Ribeirão da Murta - Portal I', titulo: 'x' }), 'Portal I')
+  assert.equal(nomeDoLugar({ nome_no_plano: 'Ribeirão da Canhanduba - Rio do Meio', titulo: 'x' }), 'Rio do Meio')
+  // Sem hífen, fica o nome inteiro.
+  assert.equal(nomeDoLugar({ nome_no_plano: 'Limoeiro', titulo: 'x' }), 'Limoeiro')
+  // Sem nome no plano, cai para o código; sem código, para o título. Nunca
+  // vazio: ponto sem rótulo no meio de outros dez não se identifica.
+  assert.equal(nomeDoLugar({ codigo: 'DC-99', titulo: 'T' }), 'DC-99')
+  assert.equal(nomeDoLugar({ titulo: 'T' }), 'T')
+  assert.equal(nomeDoLugar({ nome_no_plano: '   ', codigo: 'DC-1', titulo: 'T' }), 'DC-1')
+})
+
 test('contra os dados REAIS: as onze de Itajaí entram, e nove não podem pintar', () => {
   const d = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf-8'))
   const ets: EstacaoTempoReal[] = d.estacoes_tempo_real
@@ -77,5 +93,12 @@ test('contra os dados REAIS: as onze de Itajaí entram, e nove não podem pintar
   assert.equal(deMare.length, 9, 'mudou o número de réguas de estuário no cadastro')
   for (const r of rs) {
     assert.ok(r.motivoSemCor, `${r.codigo} sem leitura tinha de dizer por que não tem cor`)
+    // Todas as onze têm nome de lugar no Plano — nenhuma cai para o código.
+    assert.ok(r.nome && !/^DC-\d/.test(r.nome), `${r.codigo} ficou rotulada com o código: ${r.nome}`)
+  }
+  // Os três dos ribeirões, que são os que o mapa escondia.
+  const nomes = rs.map((r) => r.nome)
+  for (const esperado of ['Portal I', 'Rio do Meio', 'Bairro Murta']) {
+    assert.ok(nomes.includes(esperado), `faltou "${esperado}" — ver nome_no_plano no cadastro`)
   }
 })
