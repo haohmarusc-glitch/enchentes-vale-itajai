@@ -242,27 +242,59 @@ class CadaPontoDizDeQueReguaVeio(unittest.TestCase):
             self.assertIn("medido_em", p)
             self.assertIn("nivel_m", p)
 
-    def test_primaria_e_resgate_de_Blumenau_contam_como_UMA_regua(self):
+    def test_primaria_e_resgate_de_Blumenau_ficam_SEPARADAS_na_serie(self):
         """
-        `resgate_de` diz que a leitura cobre a régua da primária — MESMO zero,
-        estação ANA 83800002, publicada pela Defesa Civil e pelo AlertaBlu.
-        Contá-las como duas réguas some com o nível de Blumenau justamente
-        quando a primária falha e o resgate assume, que foi o que já houve numa
-        cheia. Ver `comum.regua_de`.
+        As duas publicações de Blumenau viram DUAS entradas na legenda — e isso
+        foi decidido por medição, não por gosto.
+
+        A primeira versão deste recorte agrupava por `resgate_de or estacao`, a
+        regra do `comum.regua_de`, porque primária e resgate cobrem a MESMA
+        régua (estação ANA 83800002). Para o ALARME isso continua certo: sem
+        juntá-las, Blumenau fica muda quando a primária falha e o resgate
+        assume — ver `test_o_alarme_continua_juntando_as_duas`.
+
+        Para a SÉRIE está errado. Comparando as duas publicações no mesmo
+        instante, sobre as 48 h publicadas em 04/09/2026:
+
+            AlertaBlu − Defesa Civil de Itajaí
+            mediana +0,065 m · máximo +0,245 m
+            214 de 214 pares com sinal POSITIVO
+
+        Não é defasagem: no período o rio caía 2,3 cm/h, então 6 cm exigiriam
+        2 h 30 min de atraso, e as leituras saem com minutos de diferença.
+
+        Fundidas, produziam um serrilhado de ±6 cm que a `tendencia` do site
+        atravessava: 4,60 m às 13:00 contra 4,35 m às 13:05 = **300 cm/h**.
         """
         self.escrever_mes([
             {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
-             "medido_em": carimbo(2), "nivel_m": 4.67},
+             "medido_em": carimbo(2), "nivel_m": 3.60},
             {"estacao": "AlertaBlu - Blumenau", "resgate_de": "Blumenau",
              "rio": "itajai-acu", "cidade": "blumenau",
-             "medido_em": carimbo(1), "nivel_m": 4.70},
+             "medido_em": carimbo(1), "nivel_m": 3.67},
         ])
         coleta_niveis.escrever_serie_recente(horas=48)
         doc = self.ler()
-        self.assertEqual(doc["reguas"]["itajai-acu"]["blumenau"], ["Blumenau"])
+        self.assertEqual(
+            doc["reguas"]["itajai-acu"]["blumenau"],
+            ["AlertaBlu - Blumenau", "Blumenau"],
+            "as duas publicações voltaram a virar uma só: o serrilhado de 6 cm "
+            "volta, e com ele a tendência de 300 cm/h",
+        )
         pontos = doc["series"]["itajai-acu"]["blumenau"]
-        self.assertEqual([p["r"] for p in pontos], [0, 0],
-                         "primária e resgate viraram réguas diferentes")
+        self.assertEqual(len({p["r"] for p in pontos}), 2)
+
+    def test_o_alarme_continua_juntando_as_duas(self):
+        # A separação vale para a SÉRIE. `regua_de`, que é o que o alarme e o
+        # vigia usam, tem de seguir juntando — senão Blumenau fica muda
+        # justamente quando a primária falha e o resgate assume, que já
+        # aconteceu em cheia.
+        from comum import regua_de
+        self.assertEqual(
+            regua_de({"estacao": "AlertaBlu - Blumenau", "resgate_de": "Blumenau"}),
+            "Blumenau",
+        )
+        self.assertEqual(regua_de({"estacao": "Blumenau"}), "Blumenau")
 
     def test_o_ndjson_guarda_o_resgate_de(self):
         # Sem gravá-lo, quem monta o recorte não tem como juntar as duas.
