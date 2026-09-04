@@ -326,6 +326,55 @@ def avaliar_versao(rodar=_rodar_git) -> Diagnostico:
     )
 
 
+def avaliar_mapa_e_alarme(dados: dict | None) -> Diagnostico:
+    """
+    Toda cidade que o MAPA pode pintar está vigiada pelo ALARME?
+
+    POR QUE O VIGIA OLHA ISTO (04/09/2026)
+    Os dois são caminhos separados — a cor sai do navegador, o Telegram sai
+    daqui. Um pode estar certo com o outro mudo, e foi o que aconteceu com
+    BLUMENAU: o mapa pintava a faixa certa enquanto o alarme recusava a cidade
+    inteira, por contar linhas em vez de réguas depois que o AlertaBlu entrou
+    como resgate.
+
+    Ninguém percebeu por meses porque **cor na tela parece aviso funcionando**.
+    Nenhum teste unitário pega: cada lado, sozinho, é coerente. Só a comparação
+    contra o dado publicado revela — e é isso que passa a rodar de hora em hora,
+    em vez de depender de alguém lembrar de conferir.
+
+    Falha em CONFERIR não vira acusação: sem o script, sem cadastro ou com erro
+    de leitura, o veredito é ok com a ressalva no detalhe. É a mesma regra do
+    `avaliar_versao` — alarme falso ensina a ignorar o alarme verdadeiro.
+    """
+    if dados is None:
+        return Diagnostico(True, "mapa×alarme: sem coleta para conferir", [])
+    try:
+        import json as _json
+
+        import conferir_mapa_e_alarme as cma
+
+        estacoes = _json.loads(
+            (DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        linhas = cma.avaliar(dados, estacoes)
+    except Exception as e:
+        return Diagnostico(True, "mapa×alarme: não deu para conferir",
+                           [f"mapa×alarme: não deu para conferir ({e})"])
+
+    buracos = [r for r in linhas if r["buraco"]]
+    if not buracos:
+        return Diagnostico(True, "mapa e alarme de acordo",
+                           [f"mapa×alarme: {len(linhas)} cidade(s) que pintam, "
+                            "todas vigiadas"])
+    nomes = ", ".join(r["cidade"] for r in buracos)
+    return Diagnostico(
+        False,
+        f"COR SEM ALARME: {nomes} — o mapa pinta a faixa e o aviso automático "
+        "não vigia a cidade",
+        [f"mapa×alarme: {r['cidade']} pinta com {r['cotas']} e não é vigiada"
+         for r in buracos],
+    )
+
+
 def deve_avisar(diag: Diagnostico, estado: dict, agora: datetime) -> bool:
     """
     Manda aviso de falha no máximo uma vez a cada SILENCIO_H — e manda a
@@ -441,6 +490,15 @@ def main() -> int:
         # E o código deste checkout está em dia com o que foi mesclado? Entra
         # por último e guarda se ele é o ÚNICO problema: com a coleta viva, a
         # manchete do aviso tem de ser outra.
+        # Cor sem alarme: a discordância entre os dois caminhos, que nenhum
+        # teste unitário pega porque cada lado, sozinho, é coerente.
+        diag_cma = avaliar_mapa_e_alarme(dados)
+        if not diag_cma.ok:
+            motivo = diag_cma.motivo if diag.ok else f"{diag.motivo}; {diag_cma.motivo}"
+            diag = Diagnostico(False, motivo, diag.detalhes + diag_cma.detalhes)
+        else:
+            diag.detalhes.extend(diag_cma.detalhes)
+
         coleta_viva = diag.ok
         diag_versao = avaliar_versao()
         if not diag_versao.ok:

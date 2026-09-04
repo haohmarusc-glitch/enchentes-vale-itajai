@@ -9,6 +9,7 @@ ruído. Os dois lados estão cobertos aqui.
 """
 
 import unittest
+from unittest import mock
 from datetime import datetime, timedelta, timezone
 
 from saude_coleta import (
@@ -19,6 +20,7 @@ from saude_coleta import (
     TOLERANCIA_FONTE_MIN,
     avaliar,
     avaliar_bruto,
+    avaliar_mapa_e_alarme,
     avaliar_versao,
     deve_avisar,
     regua_de,
@@ -379,6 +381,55 @@ class CodigoAtrasado(unittest.TestCase):
 
         parou = texto(d, so_versao=False)
         self.assertIn("coleta de nível parou", parou)
+
+
+class CorSemAlarme(unittest.TestCase):
+    """
+    O vigia passou a notar a discordância entre o MAPA e o ALARME.
+
+    Foi assim que Blumenau ficou sem aviso automático: o mapa pintava a faixa
+    certa e o alarme recusava a cidade inteira. Ninguém percebeu porque cor na
+    tela PARECE aviso funcionando — e nenhum teste unitário pega, porque cada
+    lado, sozinho, é coerente.
+    """
+
+    def test_de_acordo_nao_reclama(self):
+        dados = {"leituras": [
+            {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+             "nivel_m": 3.4, "medido_em": "2026-09-04T03:00:00"},
+        ]}
+        d = avaliar_mapa_e_alarme(dados)
+        self.assertTrue(d.ok, d.motivo)
+
+    def test_buraco_vira_FALHA_e_nomeia_a_cidade(self):
+        import conferir_mapa_e_alarme as cma
+
+        buraco = [{"cidade": "blumenau", "buraco": True,
+                   "cotas": {"atencao": 6.0}, "vigiada": False, "motivos": []}]
+        with mock.patch.object(cma, "avaliar", lambda *a, **k: buraco):
+            d = avaliar_mapa_e_alarme({"leituras": []})
+        self.assertFalse(d.ok)
+        self.assertIn("COR SEM ALARME", d.motivo)
+        self.assertIn("blumenau", d.motivo)
+
+    def test_falha_em_CONFERIR_nao_vira_acusacao(self):
+        """
+        Sem o script, sem cadastro ou com erro de leitura, o veredito é ok com a
+        ressalva. Alarme falso ensina a ignorar o alarme verdadeiro — a mesma
+        regra do `avaliar_versao`.
+        """
+        import conferir_mapa_e_alarme as cma
+
+        def explode(*a, **k):
+            raise RuntimeError("cadastro ilegível")
+
+        with mock.patch.object(cma, "avaliar", explode):
+            d = avaliar_mapa_e_alarme({"leituras": []})
+        self.assertTrue(d.ok)
+        self.assertTrue(any("não deu para conferir" in x for x in d.detalhes))
+
+    def test_sem_coleta_nao_ha_o_que_conferir(self):
+        self.assertTrue(avaliar_mapa_e_alarme(None).ok)
 
 
 if __name__ == "__main__":
