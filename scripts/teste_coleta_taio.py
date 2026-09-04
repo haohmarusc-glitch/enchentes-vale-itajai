@@ -162,5 +162,89 @@ class Historico(unittest.TestCase):
         self.assertEqual(ct.parse_historico(None), [])
 
 
+class DiagnosticoDeTransporte(unittest.TestCase):
+    """
+    Quando a API recusa, a mensagem tem de dizer O QUE o servidor falou.
+
+    Em 04/09/2026 a primeira execução contra a VPS devolveu só "400 Client
+    Error: Bad Request". Verdadeiro e inútil: não dá para saber se falta um
+    cabeçalho, se o parâmetro mudou ou se o IP está bloqueado. O corpo da
+    resposta quase sempre nomeia a causa, e agora vem junto.
+    """
+
+    def _falso_requests(self, status, corpo, tipo="application/json"):
+        import types
+
+        class Resposta:
+            ok = 200 <= status < 300
+            status_code = status
+            text = corpo
+            headers = {"Content-Type": tipo}
+
+            def json(self):
+                import json as _j
+                return _j.loads(corpo)
+
+        mod = types.ModuleType("requests")
+        mod.get = lambda url, headers=None, timeout=None: Resposta()
+        mod._cabecalhos = {}
+        return mod
+
+    def test_o_erro_carrega_o_corpo_da_resposta(self):
+        import sys
+        sys.modules["requests"] = self._falso_requests(
+            400, '{"error":"missing required header"}')
+        try:
+            with self.assertRaises(ct.RespostaRuim) as caso:
+                ct.baixar_json(ct.URL_CARDS)
+        finally:
+            sys.modules.pop("requests", None)
+        msg = str(caso.exception)
+        self.assertIn("HTTP 400", msg)
+        self.assertIn("missing required header", msg)
+        self.assertIn("application/json", msg)
+
+    def test_corpo_vazio_nao_vira_mensagem_muda(self):
+        import sys
+        sys.modules["requests"] = self._falso_requests(503, "   ", "text/html")
+        try:
+            with self.assertRaises(ct.RespostaRuim) as caso:
+                ct.baixar_json(ct.URL_CARDS)
+        finally:
+            sys.modules.pop("requests", None)
+        self.assertIn("(corpo vazio)", str(caso.exception))
+
+    def test_continua_identificando_o_projeto_no_User_Agent(self):
+        # O Accept foi acrescentado para o caso de servidor que recusa
+        # requisicao sem ele. Nao e disfarce: a identificacao do projeto
+        # permanece, como o CLAUDE.md exige de todo script.
+        import sys, types
+        vistos = {}
+
+        class Resposta:
+            ok = True
+            status_code = 200
+            text = "{}"
+            headers = {"Content-Type": "application/json"}
+
+            def json(self):
+                return {}
+
+        mod = types.ModuleType("requests")
+
+        def get(url, headers=None, timeout=None):
+            vistos.update(headers or {})
+            return Resposta()
+
+        mod.get = get
+        sys.modules["requests"] = mod
+        try:
+            ct.baixar_json(ct.URL_CARDS)
+        finally:
+            sys.modules.pop("requests", None)
+        self.assertIn("enchentes-vale-itajai", vistos.get("User-Agent", ""))
+        self.assertEqual(vistos.get("Accept"), "application/json")
+
+
 if __name__ == "__main__":
     unittest.main()
