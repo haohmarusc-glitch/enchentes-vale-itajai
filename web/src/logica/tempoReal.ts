@@ -71,12 +71,49 @@ export function deBrasilia(semFuso: string): Date {
   return new Date(comoUtc.getTime() - (emBrasilia - comoUtc.getTime()))
 }
 
-/** Minutos entre a medição e agora. Negativo vira 0: relógio adiantado não é futuro. */
+/**
+ * Até quanto tempo no FUTURO ainda é desvio de relógio, e não erro de fuso.
+ *
+ * Relógio de servidor municipal adianta segundos, às vezes um ou dois minutos —
+ * inofensivo, e engolir isso é o certo. Erro de FUSO é outra ordem de grandeza:
+ * UTC gravado como horário de Brasília dá exatamente 3 h. Qualquer coisa entre
+ * 15 min e 3 h não é relógio: é a leitura vindo de um fuso diferente do que o
+ * campo declara.
+ */
+export const MIN_FUTURO_TOLERADO = 15
+
+/**
+ * Minutos entre a medição e agora.
+ *
+ * Desvio pequeno para o futuro vira 0 — relógio adiantado não é futuro, e essa
+ * parte sempre esteve certa. O que MUDOU (04/09/2026): antes o `Math.max(0, …)`
+ * engolia TAMBÉM um adiantamento de horas, e aí a tela mostrava "agora mesmo",
+ * com cor cheia, para uma leitura cujo instante ela não sabe.
+ *
+ * É o incidente que o CLAUDE.md registra: uma fonte de resgate gravou UTC no
+ * campo que, por contrato, é horário de Brasília, e o vigia passou a ver a
+ * leitura 2 h no futuro. Enquanto isso, o site diria que ela é de agora. Se o
+ * valor for de 3 h atrás, "agora mesmo" faz alguém se sentir mais informado do
+ * que está — que é o que este projeto não pode fazer.
+ *
+ * Agora, adiantamento acima da tolerância devolve o número NEGATIVO, e quem
+ * decide o que fazer com ele é o `frescor`.
+ */
 export function idadeMin(medidoEm: Date, agora: Date): number {
-  return Math.max(0, Math.round((agora.getTime() - medidoEm.getTime()) / 60_000))
+  const min = Math.round((agora.getTime() - medidoEm.getTime()) / 60_000)
+  return min < -MIN_FUTURO_TOLERADO ? min : Math.max(0, min)
 }
 
+/**
+ * Leitura do FUTURO não é fresca — é de instante desconhecido.
+ *
+ * Cai em `velha`, que é o vocabulário que o projeto já tem para "não dá para
+ * afirmar faixa com isto": o número continua na tela, com a idade à vista, e
+ * para de pintar cor. Ver `faixaDaCidade`, que já devolve `sem-dado` para
+ * `velha`.
+ */
 export function frescor(idade: number): Frescor {
+  if (idade < 0) return 'velha'
   if (idade <= MIN_AGORA) return 'agora'
   if (idade <= MIN_VELHA) return 'atrasada'
   return 'velha'
@@ -84,6 +121,12 @@ export function frescor(idade: number): Frescor {
 
 /** `há 12 min`, `há 2 h 05`, `há 3 dias`. */
 export function textoIdade(minutos: number): string {
+  // Negativo só chega aqui quando passa da tolerância de relógio: é fuso
+  // trocado. Dizer "agora mesmo" esconderia justamente o sintoma.
+  if (minutos < 0) {
+    const h = Math.round(Math.abs(minutos) / 60)
+    return h >= 1 ? `carimbo ${h} h no futuro` : 'carimbo no futuro'
+  }
   if (minutos < 1) return 'agora mesmo'
   if (minutos < 60) return `há ${minutos} min`
   const horas = Math.floor(minutos / 60)
