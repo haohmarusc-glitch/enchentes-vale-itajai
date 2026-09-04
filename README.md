@@ -51,6 +51,7 @@ python3 coleta_niveis.py            # coleta e acumula a série dos níveis
 python3 extrair_picos.py            # propõe registros de pico a partir da série
 python3 calibrar_transito.py        # relata o que dá para calibrar
 python3 auditar.py                  # audita os últimos 15 dias de coleta
+python3 conferir_saltos_serie.py    # acusa régua misturada na série publicada
 ```
 
 ### Testar no navegador

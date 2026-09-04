@@ -95,9 +95,13 @@ export default function LinhaDoTempo({
   // A última leitura DE CADA RÉGUA. Com várias, não existe "o nível da cidade":
   // dizer um número só obrigaria a escolher uma régua por conta, e o número
   // escolhido apareceria como se fosse o da cidade inteira.
+  // Cada régua leva a SUA tendência. A guarda que apaga a tendência da cidade
+  // (série que mistura zeros) não pode virar "Blumenau nunca tem tendência":
+  // dentro de UMA régua a conta é legítima, e é a informação que interessa.
   const ultimos = grupos.map(([chave, pontos]) => ({
     regua: chave,
     ponto: pontos[pontos.length - 1]!,
+    tend: tendencia(pontos),
   }))
   const ultimo = serie[serie.length - 1]!
   const faixaAgora = faixaDaCidade(
@@ -140,6 +144,13 @@ export default function LinhaDoTempo({
                 />
                 {u.regua || 'régua não identificada'}: <strong>{metros(u.ponto.nivel_m)}</strong>,
                 medido {dataHora(u.ponto.medidoEm)}
+                {u.tend ? (
+                  <>
+                    {' — '}
+                    {u.tend.rotulo}
+                    {u.tend.cmh !== 0 ? ` (${Math.abs(u.tend.cmh)} cm/h)` : ''}
+                  </>
+                ) : null}
               </li>
             ))}
           </ul>

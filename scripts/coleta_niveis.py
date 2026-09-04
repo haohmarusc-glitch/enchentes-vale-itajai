@@ -484,9 +484,38 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
             if not rio or not cidade:
                 continue
             ponto = {"medido_em": d["medido_em"], "nivel_m": d["nivel_m"]}
-            # `regua_de` = `resgate_de` ou `estacao`: junta primária e resgate
-            # numa régua só, que é o que elas são.
-            titulo = d.get("resgate_de") or d.get("estacao")
+            # A FONTE, não a régua — e a diferença foi MEDIDA (04/09/2026).
+            #
+            # A primeira versão disto agrupava por `resgate_de or estacao`, a
+            # regra do `comum.regua_de`, porque primária e resgate medem a MESMA
+            # régua (Blumenau = estação ANA 83800002, publicada pela Defesa Civil
+            # de Itajaí e pelo AlertaBlu). Para o ALARME isso continua certo: sem
+            # juntá-las, Blumenau fica muda justamente quando a primária falha.
+            #
+            # Para a SÉRIE está errado, e o dado diz por quê. Comparando as duas
+            # publicações no mesmo instante (interpolação linear, nos dois
+            # sentidos), sobre as 48 h publicadas em 04/09:
+            #
+            #     AlertaBlu − Defesa Civil de Itajaí
+            #     mediana  +0,065 m   ·   máximo  +0,245 m
+            #     214 de 214 pares comparáveis com sinal POSITIVO
+            #
+            # Não é ruído nem defasagem: no período o rio caía 2,3 cm/h, então
+            # explicar 6 cm por atraso exigiria 2 h 30 min entre as leituras, e
+            # elas saem com minutos de diferença. As duas fontes DISCORDAM em
+            # ~6 cm de forma sistemática.
+            #
+            # Fundi-las numa série só produzia um serrilhado de ±6 cm — a leitura
+            # do AlertaBlu, que sai só no minuto :00, ficava sempre acima das
+            # vizinhas — e a `tendencia` do site atravessava esse degrau: 4,60 m
+            # às 13:00 contra 4,35 m às 13:05 dá **300 cm/h**, três metros por
+            # hora num rio de baixo vale.
+            #
+            # Então: identidade de régua (alarme) e comparabilidade ponto a ponto
+            # (série) são coisas diferentes. Aqui vale a FONTE. O `resgate_de`
+            # continua gravado no ndjson, para quem precisar saber que as duas
+            # cobrem a mesma régua.
+            titulo = d.get("estacao")
             if titulo:
                 ponto["_regua"] = str(titulo)
             series.setdefault(rio, {}).setdefault(cidade, []).append(ponto)
