@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import type { Cidade, Trecho } from '../dados/tipos'
+import { readFileSync } from 'node:fs'
+import faixasJson from '../../../data/faixas.json'
+import { VEL_FAIXA } from './mapaCanvas'
 import {
   faixaDaCidade,
   MIN_AGORA,
@@ -207,7 +210,15 @@ test('fase branda da cidade NUNCA vira vermelho — o defeito de 04/09/2026', ()
   // O defeito: a cota mais alta ALCANÇADA era 'monitoramento', e todo nome
   // desconhecido caía na cor mais forte. A leitura real de 03/09 (5,25 m), que
   // a Defesa Civil de Taió pintava de amarelo, saía VERMELHA aqui.
-  assert.equal(faixaDaCidade(taio, leitura(5.25), false, agora), 'normal')
+  //
+  // Desde 04/09 ela também não é mais 'normal': ganhou faixa PRÓPRIA. Verde
+  // dizia "abaixo da atenção" num nível em que a COMPDEC já está monitorando —
+  // certo sobre a cota, e mudo sobre a fase. O que continua proibido, e é o
+  // ponto deste teste, é a cor FORTE.
+  const f: string = faixaDaCidade(taio, leitura(5.25), false, agora)
+  assert.ok(!['emergencia', 'inundacao', 'alerta'].includes(f),
+    `a fase mais branda de Taió voltou a pintar cor de perigo: ${f}`)
+  assert.equal(f, 'monitoramento')
   // E a escala verdadeira continua inteira — este é o outro lado do teste:
   // recusar o alarme falso não pode calar o alarme certo.
   assert.equal(faixaDaCidade(taio, leitura(7.1), false, agora), 'atencao')
@@ -220,6 +231,10 @@ test('fase branda da cidade NUNCA vira vermelho — o defeito de 04/09/2026', ()
     cotas_m: { observacao_cota: 3.0, atencao: 3.5, emergencia: 4.0 },
     codigo_ana: null, verificado: false, fontes_tempo_real: [],
   } as unknown as Parameters<typeof faixaDaCidade>[0]
+  // `observacao_cota` não está no vocabulário: continua sem pintar, e 3,05
+  // fica 'normal'. Só a chave `monitoramento`, que é fase declarada de Plano,
+  // ganhou faixa — observação de decreto é outra coisa, e promovê-la seria o
+  // mesmo remapeamento que o projeto recusa.
   assert.equal(faixaDaCidade(ibirama, leitura(3.05), false, agora), 'normal')
   assert.equal(faixaDaCidade(ibirama, leitura(4.05), false, agora), 'emergencia')
 })
@@ -253,3 +268,38 @@ test('cidade de várias réguas (foz) não recebe uma cor só', () => {
   } as unknown as Parameters<typeof faixaDaCidade>[0]
   assert.equal(faixaDaCidade(itajai, null, true, agora), 'varias')
 })
+
+test('a faixa branda fica ENTRE normal e atenção — em cor, velocidade e ordem', () => {
+  /**
+   * Não basta existir: ela tem de se comportar como o degrau que é.
+   *
+   * Se a correnteza dela corresse como a da atenção, a animação afirmaria um
+   * perigo que a COMPDEC não declarou — e a velocidade, neste mapa, SIGNIFICA o
+   * nível. Se a cor coincidisse com o verde, a fase sumiria de novo.
+   */
+  assert.ok(VEL_FAIXA.normal < VEL_FAIXA.monitoramento)
+  assert.ok(VEL_FAIXA.monitoramento < VEL_FAIXA.atencao)
+  // A cor vem do CSS, que é a fonte única — o teste lê de lá em vez de repetir
+  // o literal, senão as duas cópias divergem e a legenda passa a mentir.
+  const css = readFileSync(new URL('../estilos/global.css', import.meta.url), 'utf-8')
+  const cor = (nome: string) =>
+    new RegExp(`--faixa-${nome}:\\s*([^;]+);`).exec(css)?.[1]?.trim()
+  assert.ok(cor('monitoramento'), 'faixa sem cor no CSS')
+  assert.notEqual(cor('monitoramento'), cor('normal'))
+  assert.notEqual(cor('monitoramento'), cor('atencao'))
+})
+
+test('a legenda mostra a faixa nova, na posição certa', () => {
+  const ordem = faixasJson.ordem_legenda as string[]
+  assert.ok(ordem.includes('monitoramento'), 'faixa nova fora da legenda é cor sem explicação')
+  assert.ok(ordem.indexOf('normal') < ordem.indexOf('monitoramento'))
+  assert.ok(ordem.indexOf('monitoramento') < ordem.indexOf('atencao'))
+  // E o texto NUNCA dá ordem: descreve e remete à Defesa Civil.
+  const acao = (faixasJson.faixas as Record<string, { acao: string } | undefined>)
+    .monitoramento?.acao
+  assert.ok(acao, 'faixa nova sem texto no faixas.json')
+  assert.match(acao, /Defesa Civil/)
+  assert.ok(!/evacu|saia|abandone/i.test(acao), 'o site não manda ninguém fazer nada')
+})
+
+// As cores vêm do CSS (fonte única); o teste lê de lá para não repetir literal.

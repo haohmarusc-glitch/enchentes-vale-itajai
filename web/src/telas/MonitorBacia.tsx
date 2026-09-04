@@ -24,7 +24,7 @@ import {
   type RioParaCena,
 } from '../logica/mapaMotor'
 import { reguasComCota } from '../logica/reguas'
-import { reguasNoMapa } from '../logica/reguasNoMapa'
+import { reguasNoMapa, type ReguaNoMapa } from '../logica/reguasNoMapa'
 import {
   FUNDOS,
   FUNDO_PADRAO,
@@ -151,10 +151,19 @@ function desenharChuva(ctx: CanvasRenderingContext2D, marcas: MarcadorChuva[], e
   }
 }
 
-const FAIXAS_LEGENDA: Faixa[] = ['normal', 'atencao', 'alerta', 'inundacao', 'sem-dado', 'varias']
+const FAIXAS_LEGENDA: Faixa[] = [
+  'normal',
+  'monitoramento',
+  'atencao',
+  'alerta',
+  'inundacao',
+  'sem-dado',
+  'varias',
+]
 // Mesma variável CSS da legenda do resto do site (fonte única das cores).
 const VAR_LEGENDA: Record<Faixa, string> = {
   normal: '--faixa-normal',
+  monitoramento: '--faixa-monitoramento',
   atencao: '--faixa-atencao',
   alerta: '--faixa-alerta',
   inundacao: '--faixa-inundacao',
@@ -246,6 +255,14 @@ export default function MonitorBacia() {
   const [tam, setTam] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
   const [sel, setSel] = useState<Pino | null>(null)
   const [hover, setHover] = useState<Pino | null>(null)
+  /**
+   * A régua individual em foco (as onze de Itajaí).
+   *
+   * Separada do pino de cidade porque as duas coisas convivem no mesmo lugar:
+   * na foz, o pino de Itajaí fica no meio das réguas dela. Quem toca preciso
+   * numa régua quer a régua; quem toca largo quer a cidade.
+   */
+  const [reguaSel, setReguaSel] = useState<string | null>(null)
 
   const tempoReal = useTempoReal()
   const nivelSc = useNivelSc()
@@ -255,7 +272,8 @@ export default function MonitorBacia() {
   // O anel destaca a cidade em FOCO: a selecionada (clique) ou a sob o mouse.
   useEffect(() => {
     selRef.current = (sel ?? hover)?.cidade.id ?? null
-  }, [sel, hover])
+    reguaSelRef.current = reguaSel
+  }, [sel, hover, reguaSel])
 
   // Todas as cidades da bacia, para casar a chuva com a coordenada.
   const cidadesBacia = useMemo(
@@ -289,6 +307,7 @@ export default function MonitorBacia() {
   )
   const reguasRef = useRef(reguasDoMapa)
   reguasRef.current = reguasDoMapa
+  const reguaSelRef = useRef<string | null>(null)
 
   // Grade de instantes da REPRODUÇÃO (últimas ~24 h, passo de 30 min), a partir
   // da série de nível de todas as cidades. Vazia = sem série publicada ainda.
@@ -467,7 +486,7 @@ export default function MonitorBacia() {
       desenharCorrenteza(ctx, cena, seg, escala)
       desenharChuva(ctx, chuvaRef.current, escala)
       // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
-      desenharReguas(ctx, cena, reguasRef.current, escala)
+      desenharReguas(ctx, cena, reguasRef.current, escala, reguaSelRef.current)
       desenharPinos(ctx, cena, selRef.current, {
         escala,
         mostrarIdade: true,
@@ -502,7 +521,41 @@ export default function MonitorBacia() {
     return melhor
   }
 
+  /**
+   * Régua individual sob o ponteiro — raio MENOR que o da cidade (14 px contra
+   * 26), porque o ponto é menor e porque há onze deles espremidos na foz. Testar
+   * a régua ANTES da cidade é o que torna a DC-01 alcançável ao lado do pino de
+   * Itajaí; um toque largo, fora do raio apertado, continua pegando a cidade.
+   */
+  function reguaNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): ReguaNoMapa | null {
+    const cena = cenaRef.current
+    const canvas = canvasRef.current
+    if (!cena || !canvas) return null
+    const r = canvas.getBoundingClientRect()
+    const x = ev.clientX - r.left
+    const y = ev.clientY - r.top
+    let melhor: ReguaNoMapa | null = null
+    let d = 14 * 14
+    for (const g of reguasRef.current) {
+      const [gx, gy] = projetar(cena.enq, [g.lon, g.lat])
+      const dd = (gx - x) ** 2 + (gy - y) ** 2
+      if (dd < d) {
+        d = dd
+        melhor = g
+      }
+    }
+    return melhor
+  }
+
   function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {
+    const g = reguaNoPonto(ev)
+    if (g) {
+      // Um painel por vez: dois abertos no mesmo canto se cobrem.
+      setReguaSel(g.codigo || g.titulo)
+      setSel(null)
+      return
+    }
+    setReguaSel(null)
     setSel(pinoNoPonto(ev))
   }
 
@@ -654,9 +707,63 @@ export default function MonitorBacia() {
           </div>
         ) : null}
 
+        {/* Painel de UMA RÉGUA, quando o toque foi nela. Vem antes do painel de
+            cidade e o substitui: dois no mesmo canto se cobrem. */}
+        {reguaSel ? (() => {
+          const g = reguasDoMapa.find((r) => (r.codigo || r.titulo) === reguaSel)
+          if (!g) return null
+          const cotas = cotasOrdenadas(g.cotas)
+          return (
+            <div className={estilos.painel}>
+              <div className={estilos.painelTopo}>
+                <strong>{g.nome}</strong>
+                <span className={estilos.painelRio}>{g.codigo || 'régua'}</span>
+              </div>
+              <p className={estilos.painelNivel}>
+                {g.nivel != null ? (
+                  <>
+                    <strong>{metros(g.nivel)}</strong>
+                    {g.medidoEm ? <> · {textoIdade(idadeMin(g.medidoEm, agora))}</> : null}
+                  </>
+                ) : (
+                  <span className={estilos.painelSemDado}>sem leitura fresca</span>
+                )}
+              </p>
+              {cotas.length > 0 ? (
+                <div className={estilos.painelBloco}>
+                  <span className={estilos.painelRotulo}>Cotas DESTA régua</span>
+                  <ul>
+                    {cotas.map(([k, v]) => (
+                      <li key={k}>
+                        {ROTULO_COTA[k] ?? k}: {metros(v)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {/* O porquê de não ter cor, por extenso. Omitir a razão faria a
+                  ausência parecer falta de dado — e aqui o dado existe: o que
+                  não afirmamos é a faixa. */}
+              {g.motivoSemCor ? (
+                <div className={estilos.painelBloco}>
+                  <span className={estilos.painelRotulo}>Por que não tem cor</span>
+                  <p className={estilos.painelRessalva}>{g.motivoSemCor}</p>
+                </div>
+              ) : null}
+              <p className={estilos.painelRessalva}>
+                Cada régua tem o zero dela: <strong>estes metros não se comparam</strong>{' '}
+                com os de outra régua nem com a cota da cidade.
+              </p>
+              <button type="button" onClick={() => setReguaSel(null)}>
+                fechar
+              </button>
+            </div>
+          )
+        })() : null}
+
         {/* Painel de dados da cidade em foco (mouse por cima ou toque), no canto
             superior direito, abaixo do chip da maré. Traz tudo o que temos dela. */}
-        {(sel ?? hover) ? (() => {
+        {!reguaSel && (sel ?? hover) ? (() => {
           const foco = (sel ?? hover)!
           const cid = foco.cidade
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})

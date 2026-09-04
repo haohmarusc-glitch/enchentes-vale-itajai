@@ -205,6 +205,63 @@ def ler_linha(cels: list[str], indices: dict[str, int],
     }
 
 
+#: O rótulo EXATO da régua do Açu na tabela de Gaspar.
+#:
+#: Exato, e não "contém gaspar", porque a mesma tabela traz três coisas que uma
+#: busca frouxa pegaria — e uma delas passaria despercebida:
+#:
+#:   PLU. - ALTO GASPARINHO       pluviômetro cujo NOME contém "gaspar"
+#:   RIBEIRÃO BELCHIOR CENTRAL    1,68 m: nível PLAUSÍVEL, de outro curso
+#:   Barragem Oeste Taió (e +2)   cota de reservatório
+#:
+#: A do meio é a que machuca. Ela passa na régua de plausibilidade, então nada
+#: no sistema a recusaria — e Gaspar apareceria "normal" com 1,68 m enquanto o
+#: Açu estivesse em 6 m. Silêncio no lugar de alarme é o pior desfecho deste
+#: projeto, e é por isso que a escolha é por igualdade e não por semelhança.
+#:
+#: É o mesmo rótulo que o `fontes_tempo_real` de Gaspar cita, no estacoes.json.
+ROTULO_REGUA_ACU = "rio itajai acu gaspar"
+
+
+def e_a_regua_do_acu(rotulo: str) -> bool:
+    """A linha da tabela é a régua do Açu em Gaspar? Comparação por igualdade."""
+    return sem_acento(rotulo).strip().lower() == ROTULO_REGUA_ACU
+
+
+def leitura_da_cidade(analise: dict) -> dict | None:
+    """
+    A leitura de NÍVEL DE CIDADE de Gaspar, no formato do `coleta_niveis.py`.
+
+    Sai com `usar_para_cota: True` porque as cotas de Gaspar (5/6/7 m) vêm do
+    Plano de Contingência do PRÓPRIO município e o número vem da tabela de
+    monitoramento do MESMO município — a que o `fontes_tempo_real` do cadastro
+    aponta. Ressalva registrada: o Plano não nomeia o ponto nem publica o zero
+    da régua, então a correspondência é entre duas publicações da mesma Defesa
+    Civil sobre o mesmo rio, não uma identidade declarada. Gaspar tem uma régua
+    só no Açu, o que torna outra leitura improvável — mas se a Superintendência
+    responder que são pontos diferentes, isto aqui é o que muda.
+
+    Devolve None quando a régua não veio, veio sem carimbo ou com número
+    implausível: sem idade, o número não diz nada sobre agora.
+    """
+    for e in analise.get("estacoes") or []:
+        if not e_a_regua_do_acu(e.get("rotulo") or ""):
+            continue
+        if e.get("nivel_m") is None or not e.get("nivel_plausivel"):
+            return None
+        if not e.get("medido_em_iso"):
+            return None
+        return {
+            "estacao": "Gaspar — Rio Itajaí-Açu (Defesa Civil de Gaspar)",
+            "rio": "itajai-acu",
+            "cidade": "gaspar",
+            "nivel_m": round(float(e["nivel_m"]), 2),
+            "medido_em": e["medido_em_iso"],
+            "usar_para_cota": True,
+        }
+    return None
+
+
 def e_barragem(rotulo: str) -> bool:
     return any(p in sem_acento(rotulo) for p in ("barragem", "represa"))
 

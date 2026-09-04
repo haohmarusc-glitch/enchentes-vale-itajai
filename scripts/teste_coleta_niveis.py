@@ -518,5 +518,82 @@ class TaioFiadoNaColeta(unittest.TestCase):
         self.assertEqual(conteudo["barragem"]["comportas"]["regime"], "vertendo")
 
 
+class GasparFiadaNaColeta(unittest.TestCase):
+    """
+    Gaspar tinha cota verificada e coletor próprio — e ficava CINZA no mapa.
+
+    A leitura ia só para `ultimo_gaspar.json`, que o site não lê. É o mesmo elo
+    que faltava a Taió: o coletor existia, o caminho não.
+    """
+
+    def _cg(self, analise, permitido=True, explode=False):
+        import coleta_gaspar as cg
+
+        def baixar(url):
+            if explode:
+                raise RuntimeError("timeout")
+            return "<html/>"
+
+        return (
+            mock.patch.object(cg, "permitido", lambda: permitido),
+            mock.patch.object(cg, "baixar", baixar),
+            mock.patch.object(cg, "analisar", lambda html: analise),
+        )
+
+    ANALISE = {
+        "estacoes": [
+            {"rotulo": "RIBEIRÃO BELCHIOR CENTRAL", "nivel_m": 1.68,
+             "nivel_plausivel": True, "medido_em_iso": "2026-09-04T06:00:00"},
+            {"rotulo": "Rio Itajaí Açu Gaspar", "nivel_m": 3.85,
+             "nivel_plausivel": True, "medido_em_iso": "2026-09-04T06:00:00"},
+        ],
+        "barragens": [], "faixas_propostas": {},
+    }
+
+    def test_traz_a_regua_do_acu_e_nao_o_ribeirao(self):
+        a, b, c = self._cg(self.ANALISE)
+        with a, b, c:
+            ls = coleta_niveis.baixar_nivel_gaspar(gravar=False)
+        self.assertEqual(len(ls), 1)
+        self.assertEqual(ls[0]["nivel_m"], 3.85)
+        self.assertEqual(ls[0]["cidade"], "gaspar")
+        self.assertTrue(ls[0]["usar_para_cota"])
+
+    def test_falha_da_fonte_nao_derruba_a_coleta(self):
+        # O cron encadeia com `&&`: uma tabela municipal fora do ar não pode
+        # levar junto a publicação de todas as cidades.
+        a, b, c = self._cg(self.ANALISE, explode=True)
+        with a, b, c:
+            self.assertEqual(coleta_niveis.baixar_nivel_gaspar(gravar=False), [])
+
+    def test_robots_que_recusa_e_respeitado(self):
+        a, b, c = self._cg(self.ANALISE, permitido=False)
+        with a, b, c:
+            self.assertEqual(coleta_niveis.baixar_nivel_gaspar(gravar=False), [])
+
+    def test_no_save_NAO_reescreve_o_arquivo_que_vai_ao_ar(self):
+        import coleta_gaspar as cg
+
+        with tempfile.TemporaryDirectory() as tmp:
+            a, b, c = self._cg(self.ANALISE)
+            with a, b, c, mock.patch("comum.DADOS", Path(tmp)):
+                coleta_niveis.baixar_nivel_gaspar(gravar=False)
+            self.assertFalse((Path(tmp) / cg.SAIDA).exists(),
+                             "--no-save gravou o arquivo que o publicador manda ao ar")
+
+    def test_gravando_escreve_a_analise_inteira(self):
+        import coleta_gaspar as cg
+
+        with tempfile.TemporaryDirectory() as tmp:
+            a, b, c = self._cg(self.ANALISE)
+            with a, b, c, mock.patch("comum.DADOS", Path(tmp)):
+                coleta_niveis.baixar_nivel_gaspar(gravar=True)
+            destino = Path(tmp) / cg.SAIDA
+            self.assertTrue(destino.exists())
+            # Inteira, e não só o nível: as barragens e a chuva da tabela
+            # continuam servindo a quem lê o arquivo direto.
+            self.assertIn("estacoes", json.loads(destino.read_text(encoding="utf-8")))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

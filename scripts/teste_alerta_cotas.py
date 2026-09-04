@@ -383,5 +383,105 @@ class TestEnvioQueFalha(unittest.TestCase):
         self.assertEqual(calado, [], "era este o comportamento antigo, e ele calava o aviso")
 
 
+class BlumenauComResgate(unittest.TestCase):
+    """
+    A falha SILENCIOSA de 04/09/2026: Blumenau sem aviso automático nenhum.
+
+    Desde que o AlertaBlu entrou como fonte de RESGATE, Blumenau aparece duas
+    vezes no `ultimo.json` — a primária da Defesa Civil de Itajaí e o resgate,
+    ligadas por `resgate_de`. O `resolver` contava LINHAS, via "a cidade tem 2
+    réguas", recusava a cota da CIDADE e não vigiava nenhuma das duas.
+
+    A cidade com 97 registros históricos desde 1852, muda no único caminho que
+    fala sozinho de madrugada. Nada denunciava: o mapa continuava pintando a cor
+    certa, porque a tela usa outro caminho. Só apareceu rodando o `--seco`
+    contra o `ultimo.json` publicado.
+    """
+
+    COTAS_BLU = {"atencao": 6.0, "alerta": 6.5, "inundacao": 7.4}
+
+    def dados(self, nivel_primaria, nivel_resgate, quando_p="2026-08-30T00:15:00",
+              quando_r="2026-08-30T02:00:00"):
+        return {
+            "coletado_em": AGORA.isoformat(),
+            "leituras": [
+                {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+                 "nivel_m": nivel_primaria, "medido_em": quando_p},
+                {"estacao": "Blumenau (AlertaBlu)", "rio": "itajai-acu",
+                 "cidade": "blumenau", "nivel_m": nivel_resgate,
+                 "medido_em": quando_r, "resgate_de": "Blumenau"},
+            ],
+        }
+
+    def test_primaria_mais_resgate_contam_como_UMA_regua_e_sao_vigiadas(self):
+        vig, rec = resolver(self.dados(6.9, 7.0))
+        self.assertEqual(len(vig), 1, f"esperava UMA vigiada, veio {len(vig)}; recusas={rec}")
+        self.assertEqual(vig[0]["cotas"], self.COTAS_BLU)
+        self.assertEqual(vig[0]["faixa"], "alerta")
+
+    def test_vigia_a_leitura_MAIS_NOVA_das_duas(self):
+        # Com a contagem certa mas sem escolher uma, Blumenau avisaria DUAS
+        # vezes pela mesma travessia — o outro jeito de gastar o alarme.
+        vig, _ = resolver(self.dados(6.9, 7.0))
+        self.assertEqual(vig[0]["leitura"]["estacao"], "Blumenau (AlertaBlu)")
+        # Invertendo os carimbos, ganha a primária.
+        vig, _ = resolver(self.dados(6.9, 7.0, quando_p="2026-08-30T02:00:00",
+                                     quando_r="2026-08-30T00:15:00"))
+        self.assertEqual(vig[0]["leitura"]["estacao"], "Blumenau")
+
+    def test_leitura_sem_carimbo_nunca_ganha_da_que_tem(self):
+        vig, _ = resolver(self.dados(6.9, 7.0, quando_r=None))
+        self.assertEqual(vig[0]["leitura"]["estacao"], "Blumenau")
+
+    def test_as_onze_de_ITAJAI_seguem_distintas(self):
+        """
+        O conserto não pode fundir régua que não é resgate. As de Itajaí não
+        têm `resgate_de`: cada uma é a sua própria régua, e a cidade tem mais de
+        uma — então a cota POR CIDADE continua recusada, que é o certo.
+        """
+        # Títulos inventados de propósito: um "DC-01 X" casaria com a régua
+        # real e seria recusado pela MARÉ, não pela contagem — e o teste
+        # passaria pelo motivo errado.
+        dados = {
+            "coletado_em": AGORA.isoformat(),
+            "leituras": [
+                {"estacao": f"Régua {n} (teste)", "rio": "itajai-acu",
+                 "cidade": "gaspar", "nivel_m": 1.0,
+                 "medido_em": "2026-08-30T02:00:00"}
+                for n in ("A", "B")
+            ],
+        }
+        vig, rec = resolver(dados)
+        self.assertEqual(vig, [])
+        self.assertTrue(any("mais de uma régua" in r for r in rec))
+
+    def test_o_ESTADO_e_guardado_pela_regua_e_a_troca_de_fonte_nao_reavisa(self):
+        """
+        Quando a primária esfria e o resgate assume, o TÍTULO da linha muda. Com
+        o estado sob o título, a travessia seria avisada de novo a cada troca.
+        """
+        # Sobe para alerta com o resgate na frente.
+        avisos, estado, _ = decidir(self.dados(6.9, 7.0), {}, AGORA)
+        self.assertEqual(len(avisos), 1)
+        self.assertIn("Blumenau", estado, "o estado tem de ficar sob a RÉGUA")
+        # Agora a primária é a mais nova, mesmo nível: nada novo a avisar.
+        avisos2, _, _ = decidir(
+            self.dados(7.0, 6.9, quando_p="2026-08-30T02:30:00",
+                       quando_r="2026-08-30T02:00:00"),
+            estado, AGORA)
+        self.assertEqual(avisos2, [], "trocar de fonte reavisou a mesma travessia")
+
+    def test_desfazer_usa_a_chave_do_ESTADO_e_nao_o_titulo(self):
+        """
+        Se o Telegram recusa, o estado volta. Com a chave errada ele não voltaria
+        e a travessia ficaria registrada como avisada — o aviso nunca mais sairia.
+        """
+        avisos, estado, _ = decidir(self.dados(6.9, 7.0), {}, AGORA)
+        aviso = avisos[0]
+        self.assertEqual(aviso["chave_estado"], "Blumenau")
+        alerta_cotas.desfazer(estado, aviso)
+        self.assertNotIn("Blumenau", estado)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

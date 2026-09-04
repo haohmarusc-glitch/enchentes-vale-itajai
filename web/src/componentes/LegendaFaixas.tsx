@@ -13,6 +13,7 @@ const F = faixas.faixas as Record<Faixa, { rotulo: string; acao: string }>
 /** Rótulo curto de cada faixa, para a legenda e para o selo ao lado da cidade. */
 export const ROTULO_FAIXA: Record<Faixa, string> = {
   normal: F.normal.rotulo,
+  monitoramento: F.monitoramento.rotulo,
   atencao: F.atencao.rotulo,
   alerta: F.alerta.rotulo,
   inundacao: F.inundacao.rotulo,
@@ -24,6 +25,7 @@ export const ROTULO_FAIXA: Record<Faixa, string> = {
 /** O que cada faixa DIZ — descrição + remissão à autoridade, nunca ordem. */
 export const ACAO_FAIXA: Record<Faixa, string> = {
   normal: F.normal.acao,
+  monitoramento: F.monitoramento.acao,
   atencao: F.atencao.acao,
   alerta: F.alerta.acao,
   inundacao: F.inundacao.acao,

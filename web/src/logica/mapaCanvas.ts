@@ -134,6 +134,9 @@ export function acumuladoEspinha(espinha: LonLat[]): number[] {
  */
 export const VEL_FAIXA: Record<Faixa, number> = {
   normal: 0.35,
+  // Entre normal e atenção, como a fase é. A correnteza SIGNIFICA o nível:
+  // acelerar mais aqui diria um perigo que a COMPDEC não declarou.
+  monitoramento: 0.45,
   atencao: 0.6,
   alerta: 0.95,
   inundacao: 1.35,
@@ -145,6 +148,7 @@ export const VEL_FAIXA: Record<Faixa, number> = {
 /** Largura relativa do traço por faixa — sutil, reforça a cor sem gritar sozinha. */
 export const LARGURA_FAIXA: Record<Faixa, number> = {
   normal: 0.85,
+  monitoramento: 0.92,
   atencao: 1,
   alerta: 1.15,
   inundacao: 1.4,

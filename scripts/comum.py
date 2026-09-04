@@ -68,6 +68,26 @@ def espera_turno() -> None:
 # justamente o do pico — o dado que depois faltaria para calibrar o tempo de
 # descida da próxima.
 
+def regua_de(leitura: dict) -> str:
+    """
+    Identidade da RÉGUA de uma leitura — não da linha.
+
+    A mesma régua aparece DUAS vezes quando há fonte de resgate: Blumenau vem da
+    Defesa Civil de Itajaí e, quando essa esfria, do AlertaBlu. O resgate carrega
+    `resgate_de` com o título da primária que ele cobre, e por ele as duas contam
+    como UMA régua. Sem `resgate_de`, a régua é o próprio título — e as onze de
+    Itajaí seguem distintas, cada uma por si.
+
+    MORA AQUI, e não em um dos consumidores, porque os dois precisam da MESMA
+    resposta e a divergência entre eles já custou caro: o vigia contava por
+    régua e o `alerta_cotas` contava por linha, então via "Blumenau tem 2
+    réguas", recusava a cota da cidade e **Blumenau ficava sem aviso automático
+    nenhum** — a cidade com 97 registros históricos desde 1852. Ninguém percebia
+    porque o mapa continuava pintando a cor certa; só o Telegram calava.
+    """
+    return leitura.get("resgate_de") or leitura.get("estacao", "?")
+
+
 #: Faixa em que um número pode ser nível de rio nesta bacia.
 #:
 #: Nenhuma régua daqui chega perto de 25 m — o recorde de Blumenau, em 1880, é

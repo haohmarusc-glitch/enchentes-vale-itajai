@@ -19,6 +19,7 @@ import estilos from './AnimacaoOnda.module.css'
  */
 const COR_FAIXA: Record<Faixa, string> = {
   normal: '#2e7d32',
+  monitoramento: '#a3c93a',
   atencao: '#e6a700',
   alerta: '#e2661a',
   inundacao: '#c62828',

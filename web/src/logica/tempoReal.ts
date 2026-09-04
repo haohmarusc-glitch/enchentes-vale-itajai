@@ -221,6 +221,18 @@ export function primeiraCota(cidade: Cidade): { chave: string; valor: number } |
  */
 export type Faixa =
   | 'normal'
+  /**
+   * A fase BRANDA que algumas COMPDEC declaram antes da atenção.
+   *
+   * Taió é o caso que a criou: o Plano de Contingência chama os 5,00 a 7,00 m
+   * de MONITORAMENTO, e a emergência dele é 9,00 m. Sem esta faixa a tela
+   * mostrava "abaixo da atenção" — verde — num nível em que a Defesa Civil do
+   * município já está monitorando. Mapear para `atencao` seria o remapeamento de
+   * um degrau que o projeto recusou ao gravar os dados: nome de fase não se
+   * rebatiza, e chamar de atenção o que a COMPDEC chama de monitoramento
+   * afirmaria um aviso que ninguém deu.
+   */
+  | 'monitoramento'
   | 'atencao'
   | 'alerta'
   | 'inundacao'
@@ -257,7 +269,13 @@ export type Faixa =
  * nome que a fonte deu. Acrescentar uma chave nova aqui é decidir que ela é
  * fase de acionamento — só com documento da COMPDEC dizendo isso.
  */
-const CHAVES_QUE_PINTAM = new Set(['atencao', 'alerta', 'inundacao', 'emergencia'])
+const CHAVES_QUE_PINTAM = new Set([
+  'monitoramento',
+  'atencao',
+  'alerta',
+  'inundacao',
+  'emergencia',
+])
 
 export function faixaDaCidade(
   cidade: Cidade,
@@ -279,7 +297,13 @@ export function faixaDaCidade(
   if (frescor(idadeMin(aoVivo.medidoEm, agora)) === 'velha') return 'sem-dado'
   const cota = cotaAlcancadaEntre(quePintam, aoVivo.nivel_m)
   if (cota === null) return 'normal'
-  if (cota.chave === 'atencao' || cota.chave === 'alerta') return cota.chave
+  if (
+    cota.chave === 'monitoramento' ||
+    cota.chave === 'atencao' ||
+    cota.chave === 'alerta'
+  ) {
+    return cota.chave
+  }
   // 'inundacao', 'emergencia' e qualquer cota de topo caem na faixa vermelha.
   return cota.chave === 'inundacao' ? 'inundacao' : 'emergencia'
 }

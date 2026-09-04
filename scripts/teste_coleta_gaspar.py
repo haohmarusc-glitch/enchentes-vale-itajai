@@ -12,6 +12,7 @@ Por isso quase todos os testes aqui são sobre o que ele **recusa** a chamar de
 nível e de cota.
 """
 
+import json
 import sys
 from datetime import datetime
 import unittest
@@ -19,6 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
+import coleta_gaspar as cg
 from coleta_gaspar import (MARGEM_DO_NIVEL_M, analisar, e_barragem,
                            faixas_da_linha, indices_do_cabecalho, ler_linha,
                            numero, permitido, quando_de)
@@ -352,6 +354,88 @@ class TestCoerenciaDaChuva(unittest.TestCase):
         # apoiaria.
         regua = next(e for e in d["estacoes"] if e["rotulo"] == "Rio Itajaí Açu Gaspar")
         self.assertTrue(regua["chuva_coerente"])
+
+
+class LeituraDeCidade(unittest.TestCase):
+    """
+    Qual linha da tabela vira o NÍVEL DE GASPAR — e por que não pode ser por
+    semelhança de nome.
+
+    A mesma tabela publica três coisas que uma busca frouxa por "gaspar"
+    pegaria, e uma delas não seria recusada por nada no sistema:
+
+        PLU. - ALTO GASPARINHO      pluviômetro, nome contém "gaspar"
+        RIBEIRÃO BELCHIOR CENTRAL   1,68 m — nível PLAUSÍVEL, outro curso
+        Barragem Oeste Taió         cota de reservatório
+
+    A do meio é a perigosa: passa na régua de plausibilidade, então Gaspar
+    apareceria "normal" com 1,68 m enquanto o Açu estivesse em 6 m. Silêncio no
+    lugar de alarme é o pior desfecho deste projeto.
+    """
+
+    def analise(self, estacoes):
+        return {"estacoes": estacoes, "barragens": [], "faixas_propostas": {}}
+
+    def estacao(self, rotulo, nivel=3.85, iso="2026-08-31T22:59:00", plaus=True):
+        return {"rotulo": rotulo, "nivel_m": nivel, "nivel_plausivel": plaus,
+                "medido_em_iso": iso}
+
+    def test_pega_a_regua_do_acu_e_so_ela(self):
+        d = self.analise([
+            self.estacao("PLU. - ALTO GASPARINHO", nivel=None, plaus=False),
+            self.estacao("RIBEIRÃO BELCHIOR CENTRAL", nivel=1.68),
+            self.estacao("Rio Itajaí Açu Gaspar", nivel=3.85),
+        ])
+        l = cg.leitura_da_cidade(d)
+        self.assertIsNotNone(l)
+        self.assertEqual(l["nivel_m"], 3.85, "pegou a régua errada")
+        self.assertEqual(l["cidade"], "gaspar")
+        self.assertEqual(l["rio"], "itajai-acu")
+
+    def test_o_BELCHIOR_sozinho_NAO_vira_nivel_de_gaspar(self):
+        # O caso que o silêncio esconderia: só o ribeirão na tabela.
+        d = self.analise([self.estacao("RIBEIRÃO BELCHIOR CENTRAL", nivel=1.68)])
+        self.assertIsNone(cg.leitura_da_cidade(d))
+
+    def test_gasparinho_nao_e_gaspar(self):
+        d = self.analise([self.estacao("PLU. - ALTO GASPARINHO", nivel=2.0)])
+        self.assertIsNone(cg.leitura_da_cidade(d))
+
+    def test_sem_carimbo_ou_implausivel_nao_ha_leitura(self):
+        # Sem idade o número não diz nada sobre agora.
+        d = self.analise([self.estacao("Rio Itajaí Açu Gaspar", iso=None)])
+        self.assertIsNone(cg.leitura_da_cidade(d))
+        d = self.analise([self.estacao("Rio Itajaí Açu Gaspar", plaus=False)])
+        self.assertIsNone(cg.leitura_da_cidade(d))
+        d = self.analise([self.estacao("Rio Itajaí Açu Gaspar", nivel=None)])
+        self.assertIsNone(cg.leitura_da_cidade(d))
+
+    def test_acento_e_caixa_nao_atrapalham_a_igualdade(self):
+        for r in ("RIO ITAJAI ACU GASPAR", "rio itajaí açu gaspar", " Rio Itajaí Açu Gaspar "):
+            self.assertTrue(cg.e_a_regua_do_acu(r), r)
+        for r in ("Rio Itajaí Açu Ilhota", "Ribeirão Belchior Central", ""):
+            self.assertFalse(cg.e_a_regua_do_acu(r), r)
+
+    def test_a_leitura_REAL_de_31_08_cai_na_faixa_certa(self):
+        """
+        Conferência cruzada com as cotas do Plano (5 / 6 / 7 m): 3,85 m é
+        NORMALIDADE, abaixo da atenção. Se a régua lida fosse outra, este
+        número não teria por que cair onde cai.
+        """
+        d = json.loads((RAIZ / "data/tempo-real/ultimo_gaspar.json").read_text(encoding="utf-8"))
+        l = cg.leitura_da_cidade(d)
+        self.assertIsNotNone(l, "a captura real deixou de produzir leitura de cidade")
+        self.assertEqual(l["nivel_m"], 3.85)
+        est = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
+        gaspar = next(c for c in est["rios"]["itajai-acu"]["cidades"] if c["id"] == "gaspar")
+        self.assertLess(l["nivel_m"], gaspar["cotas_m"]["atencao"])
+
+    def test_sai_marcada_para_virar_faixa(self):
+        # Cota municipal + régua municipal do mesmo rio: PODE pintar cor, ao
+        # contrário do bruto estadual. A ressalva (o Plano não publica o zero)
+        # está escrita no `leitura_da_cidade`.
+        d = self.analise([self.estacao("Rio Itajaí Açu Gaspar")])
+        self.assertIs(cg.leitura_da_cidade(d)["usar_para_cota"], True)
 
 
 if __name__ == "__main__":
