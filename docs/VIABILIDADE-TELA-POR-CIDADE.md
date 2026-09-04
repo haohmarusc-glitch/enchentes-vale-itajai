@@ -73,12 +73,36 @@ mostra as três réguas separadas, com "os metros não se comparam entre elas" �
 Lógica: para cada rua com cota `c` e nível atual `n`: `n ≥ c` → "cota atingida"; `c − n < 0,5` → "próxima";
 senão neutra. É o que o site já faz no slider "E se o rio estivesse em X" — só que no mapa.
 
-**Brusque e Gaspar: pode entrar já.** 100% georreferenciadas.
-⚠️ **Gaspar tem bloqueio prévio:** não está provado que a régua que o coletor lê é a da cota 6/7 m
-(`BLOQUEIO_NAO_PINTAR`). Colorir rua com nível de régua errada é o mesmo erro, só que rua por rua. Resolver
-o teste do par cota↔leitura antes.
+**⚠️ Correção de 04/09/2026 — Brusque NÃO pode entrar já.** A versão original deste documento dizia
+que sim. Conferido no cadastro e no coletor, não passa pela condição que o próprio documento impõe
+mais abaixo ("rua colorida só onde `cotas_verificado = true` e a régua da cota = régua da leitura"):
 
-**Blumenau e Rio do Sul: só depois de geocodificar.** Casar 2.034 nomes de rua com traçados do OSM é
+| o que | Brusque |
+|---|---|
+| `cotas_verificado` em `estacoes.json` | **`false`** — e `fonte_cotas` é `null` |
+| régua das cotas de rua | **Ponte Estaiada**, e isto está bem provado: o `_meta` do bruto registra cota + lâmina = 8,96 m (o pico de 17/11/2023) em **183 dos 184** pontos que têm lâmina |
+| régua da leitura ao vivo | **não identificada** — as duas estações de Brusque em `estacoes_tempo_real` têm `regua: null` |
+| de onde vem a leitura | `coleta_itajai.py`, isto é, a página da Defesa Civil **de Itajaí** — a MESMA que publica Rio do Sul |
+
+Esse último item é o que decide. Foi exatamente nessa página que a leitura de **Rio do Sul** apareceu
+como "Estação MKS" enquanto a cota era da "Ponte Dom Tito Buss" — réguas diferentes, e a cabeceira do
+Açu ficou permanentemente amarela por causa disso. (O `conferir_par_regua.py` acabou provando que ali
+eram a MESMA régua; o ponto não é que a página erre, é que **ninguém sabia**, e a resposta só veio de
+medir.) Colorir 348 ruas de Brusque sobre um pareamento não provado multiplica o mesmo risco rua a rua.
+
+**O que destrava:** achar a fonte que publica a cota da Ponte Estaiada (hoje `fonte_cotas` é `null`),
+cadastrar o par em `conferir_par_regua.py` e rodar. É o mesmo caminho de Gaspar — Brusque só parecia
+liberada porque o número dela não chama atenção.
+
+**Gaspar: também bloqueada**, pelo motivo já conhecido (`BLOQUEIO_NAO_PINTAR`) — não está provado que
+a régua que o coletor lê é a da cota 6/7 m. Colorir rua com nível de régua errada é o mesmo erro, só
+que rua por rua. Resolver o teste do par cota↔leitura antes.
+
+Ou seja: **as duas cidades georreferenciadas estão bloqueadas pela mesma pergunta**, e é a mesma que
+já trava Rio do Sul. Não é coincidência — é o formato do problema: cota e leitura vêm quase sempre de
+páginas diferentes, e nome igual não prova régua igual.
+
+**Blumenau e Rio do Sul: só depois de geocodificar.** Casar 2.042 nomes de rua com traçados do OSM é
 factível (Nominatim/Overpass), mas com erro: ruas homônimas, grafias diferentes, trechos longos com cota
 única. Tem que ser feito **uma vez, revisado, e gravado** — não em runtime. E cada rua geocodificada
 precisa de `confianca` (casou exato / casou aproximado / não casou).
@@ -129,7 +153,7 @@ e mapas de risco oficiais. A decisão deles é deliberada.
 | Parte | Fazer? | Quando |
 |---|---|---|
 | A — tela por cidade | ✅ **feita** | `TelaCidade.tsx`, rota `/:rioId/:cidadeId` |
-| B — ruas por cota × nível | **Sim** — a coordenada já está no `cotas-ruas.json` (1.613 Gaspar + 348 Brusque) | Brusque pode ir; Gaspar só após o teste do par cota↔leitura |
+| B — ruas por cota × nível | a coordenada já está no `cotas-ruas.json` (1.613 Gaspar + 348 Brusque), mas **as duas cidades estão bloqueadas** pelo par cota↔leitura não provado | após o teste do par, nas duas |
 | B — Blumenau e Rio do Sul | Sim, após geocodificação revisada | depois |
 | C — mancha gerada por interpolação | **Não** | — |
 | C' — mancha observada por nível (Itajaí) | **Sim** | após A |
