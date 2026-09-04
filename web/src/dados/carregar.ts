@@ -129,6 +129,28 @@ export function cidadesDoRio(rioId: string): Cidade[] {
   )
 }
 
+/**
+ * As cidades que podem PINTAR o traçado deste rio — o eixo.
+ *
+ * Em rio ramificado (o Açu) são o TRONCO mais as CABECEIRAS PARALELAS: as duas
+ * classes que correm no leito desenhado. Ficam de fora os `afluentes_laterais`
+ * — Ibirama no Rio Hercílio, Timbó no Benedito, Rio dos Cedros — e quem entrou
+ * sem posição na árvore (Trombudo Central), porque a água deles é de OUTRO rio.
+ * O próprio `estacoes.json` diz: "a cheia delas não é a mesma que desce o rio
+ * principal".
+ *
+ * Em rio não ramificado (o Mirim) devolve `undefined`, e aí todas pintam — que
+ * é o certo: não há afluente com régua ali.
+ *
+ * Isto é a classificação. A guarda geométrica que sobra (uma cabeceira cujo rio
+ * não foi desenhado, como Ituporanga a 28 km) mora no `construirCena`.
+ */
+export function eixoDoRio(rioId: string): string[] | undefined {
+  const t = topologiaDoRio(rioId)
+  if (!t) return undefined
+  return [...(t.tronco_sequencia ?? []), ...(t.cabeceiras_paralelas ?? [])]
+}
+
 /** A árvore do rio, quando ele é ramificado (só o Açu hoje). */
 export function topologiaDoRio(rioId: string): Topologia | undefined {
   return estacoes.rios[rioId]?._topologia

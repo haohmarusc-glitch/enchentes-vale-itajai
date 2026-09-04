@@ -3,6 +3,7 @@ import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
+import { eixoDoRio } from '../dados/carregar'
 import { limitesDe, VISTA_INTEIRA, type LonLat, type Vista } from '../logica/mapaCanvas'
 import {
   construirCena,
@@ -163,7 +164,7 @@ export default function MapaRios({
 
     const cena = construirCena(
       canvas,
-      [{ rioId, coords, cidades }],
+      [{ rioId, coords, cidades, eixo: eixoDoRio(rioId) }],
       tempoReal,
       agora,
       tam.w,
