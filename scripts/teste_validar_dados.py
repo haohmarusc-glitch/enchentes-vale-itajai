@@ -178,3 +178,101 @@ class MonotoniaDaJanela(unittest.TestCase):
         self.assertEqual(
             vd._janela_ate(tr["trechos"], "itajai-acu", "rio-do-sul", "gaspar"), (9, 12)
         )
+
+
+def _meses(estacoes_dict, enchentes_dict) -> list[str]:
+    """Roda só `valida_meses_pareados` sobre dados em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+
+    def falso(nome):
+        if nome == "estacoes.json":
+            return estacoes_dict
+        if nome == "enchentes.json":
+            return enchentes_dict
+        return orig(nome)
+
+    vd.le_json = falso
+    try:
+        vd.valida_meses_pareados()
+    finally:
+        vd.le_json = orig
+    return list(vd.avisos)
+
+
+class MesesPareados(unittest.TestCase):
+    """
+    Duas cidades do tronco no mesmo evento registram no mesmo mês.
+
+    A cheia desce o Açu em horas (Rio do Sul → Blumenau, 7 a 10 h). Mês
+    diferente não é imprecisão: são eventos distintos, ou uma data está errada.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.estacoes = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.enchentes = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))
+
+    def base(self):
+        return copy.deepcopy(self.estacoes), copy.deepcopy(self.enchentes)
+
+    def test_nunca_vira_erro(self):
+        # A data pode estar certa e ser evento distinto — quem decide é a fonte.
+        _meses(*self.base())
+        self.assertEqual(vd.erros, [])
+
+    def test_1911_e_o_unico_desalinhado_nos_dados_reais(self):
+        avisos = _meses(*self.base())
+        self.assertEqual(len(avisos), 1, f"esperava só 1911 desalinhado, veio: {avisos}")
+        self.assertIn("rio-do-sul 1911-05", avisos[0])
+        self.assertIn("1911-10-02", avisos[0])
+
+    def test_um_so_evento_de_jusante_no_mesmo_mes_ja_alinha(self):
+        # Blumenau tem 113 registros, vários por ano: a cheia de montante casa
+        # com UMA delas. Exigir que todas batessem alarmaria sobre dado correto.
+        est, enc = self.base()
+        enc["eventos"] = [
+            {"rio": "itajai-acu", "cidade": "rio-do-sul", "data": "1954-10", "pico_m": 10.7},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1954-05-08", "pico_m": 9.56},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1954-10-22", "pico_m": 12.53},
+        ]
+        self.assertEqual(_meses(est, enc), [])
+
+    def test_mes_diferente_em_todos_avisa(self):
+        est, enc = self.base()
+        enc["eventos"] = [
+            {"rio": "itajai-acu", "cidade": "rio-do-sul", "data": "1911-05", "pico_m": 12.2},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1911-10-02", "pico_m": 16.9},
+        ]
+        avisos = _meses(est, enc)
+        self.assertEqual(len(avisos), 1)
+        self.assertIn("não tem evento de blumenau no mesmo mês", avisos[0])
+
+    def test_ano_sem_registro_a_jusante_nao_conclui_nada(self):
+        # Ausência de registro é ausência de dado, não desalinhamento.
+        est, enc = self.base()
+        enc["eventos"] = [
+            {"rio": "itajai-acu", "cidade": "rio-do-sul", "data": "1911-05", "pico_m": 12.2},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1984-08-07", "pico_m": 15.46},
+        ]
+        self.assertEqual(_meses(est, enc), [])
+
+    def test_data_so_com_ano_e_ignorada(self):
+        # Sem mês não há mês para comparar; recusar seria inventar precisão.
+        est, enc = self.base()
+        enc["eventos"] = [
+            {"rio": "itajai-acu", "cidade": "rio-do-sul", "data": "1911", "pico_m": 12.2},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1911-10-02", "pico_m": 16.9},
+        ]
+        self.assertEqual(_meses(est, enc), [])
+
+    def test_cidade_fora_do_tronco_nao_entra_na_conferencia(self):
+        # Taió é cabeceira: o pico dela ENTRA no tronco, e comparar mês com
+        # Blumenau afirmaria uma fila que a topologia nega.
+        est, enc = self.base()
+        enc["eventos"] = [
+            {"rio": "itajai-acu", "cidade": "taio", "data": "1911-05", "pico_m": 12.2},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1911-10-02", "pico_m": 16.9},
+        ]
+        self.assertEqual(_meses(est, enc), [])

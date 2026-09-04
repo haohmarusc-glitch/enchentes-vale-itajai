@@ -644,11 +644,68 @@ def valida_monotonia_transito() -> None:
                     )
 
 
+def valida_meses_pareados() -> None:
+    """
+    Evento do mesmo ano em duas cidades do tronco tem de cair no mesmo MÊS.
+
+    A cheia desce o Açu em horas — Rio do Sul → Blumenau são 7 a 10 h. Então
+    duas cidades do tronco que registram o mesmo evento registram no mesmo dia,
+    e no mesmo mês com folga de sobra. Mês diferente não é imprecisão: são
+    eventos distintos, ou uma das datas está errada.
+
+    A comparação é por MÊS, e não por dia, porque a série de Rio do Sul é quase
+    toda de precisão mensal (7 de 9 registros). Exigir o dia recusaria dado bom.
+
+    O teste é "existe ALGUM evento de jusante no mesmo mês", não "o evento de
+    jusante mais próximo bate": Blumenau tem 113 registros, vários no mesmo ano,
+    e uma cheia de montante casa com UMA delas, não com todas. Comparar contra
+    todas produziria alarme em cima de dado correto.
+
+    Vira AVISO, nunca erro: a data pode estar certa e ser evento distinto —
+    quem decide é a fonte, não este script. O que ele faz é não deixar a
+    divergência passar em silêncio.
+    """
+    eventos = le_json("enchentes.json")["eventos"]
+    estacoes = le_json("estacoes.json")
+    for rio_id, rio in estacoes["rios"].items():
+        topo = rio.get("_topologia")
+        tronco = topo.get("tronco_sequencia", []) if topo else []
+        if len(tronco) < 2:
+            continue
+
+        # Só cidades do tronco: cabeceira e afluente entram no tronco de lado,
+        # e um pico neles não é o mesmo evento descendo.
+        por_cidade: dict[str, list[str]] = {}
+        for e in eventos:
+            if e.get("rio") != rio_id or e.get("cidade") not in tronco:
+                continue
+            por_cidade.setdefault(e["cidade"], []).append(str(e.get("data", "")))
+
+        for i, cima in enumerate(tronco):
+            for baixo in tronco[i + 1:]:
+                for data_cima in por_cidade.get(cima, []):
+                    if len(data_cima) < 7:
+                        continue  # só o ano: não dá para comparar mês
+                    ano, mes = data_cima[:4], data_cima[5:7]
+                    do_ano = [d for d in por_cidade.get(baixo, []) if d[:4] == ano and len(d) >= 7]
+                    if not do_ano:
+                        continue  # jusante não registrou aquele ano: nada a concluir
+                    if any(d[5:7] == mes for d in do_ano):
+                        continue
+                    aviso(
+                        f"enchentes.json: {cima} {data_cima} não tem evento de {baixo} no mesmo "
+                        f"mês (o ano tem {', '.join(sorted(do_ano))}). A cheia desce em horas, "
+                        "então ou são eventos distintos, ou uma das datas está errada — "
+                        "conferir na fonte antes de parear."
+                    )
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
     valida_transito(conhecidas)
     valida_monotonia_transito()
+    valida_meses_pareados()
     valida_cotas_ruas()
     valida_referencias()
 
