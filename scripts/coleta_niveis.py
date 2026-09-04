@@ -315,6 +315,13 @@ def linha_da_serie(l: dict) -> dict:
         "cidade": l.get("cidade"),
         "medido_em": l["medido_em"],
     }
+    # `resgate_de` identifica a RÉGUA: primária e resgate medem a MESMA régua,
+    # com o MESMO zero (Blumenau, estação ANA 83800002, publicada pela Defesa
+    # Civil e pelo AlertaBlu). Sem guardá-lo, quem lê a série depois conta duas
+    # réguas onde há uma — e some com o nível da cidade justamente quando a
+    # primária falha e o resgate assume. Ver `comum.regua_de`.
+    if l.get("resgate_de"):
+        base["resgate_de"] = l["resgate_de"]
     if "mm" in l:
         return {**base, "mm": l["mm"], "coerente": l.get("coerente", True)}
     return {**base, "nivel_m": l["nivel_m"]}
@@ -477,7 +484,9 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
             if not rio or not cidade:
                 continue
             ponto = {"medido_em": d["medido_em"], "nivel_m": d["nivel_m"]}
-            titulo = d.get("estacao")
+            # `regua_de` = `resgate_de` ou `estacao`: junta primária e resgate
+            # numa régua só, que é o que elas são.
+            titulo = d.get("resgate_de") or d.get("estacao")
             if titulo:
                 ponto["_regua"] = str(titulo)
             series.setdefault(rio, {}).setdefault(cidade, []).append(ponto)

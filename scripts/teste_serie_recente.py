@@ -242,6 +242,43 @@ class CadaPontoDizDeQueReguaVeio(unittest.TestCase):
             self.assertIn("medido_em", p)
             self.assertIn("nivel_m", p)
 
+    def test_primaria_e_resgate_de_Blumenau_contam_como_UMA_regua(self):
+        """
+        `resgate_de` diz que a leitura cobre a régua da primária — MESMO zero,
+        estação ANA 83800002, publicada pela Defesa Civil e pelo AlertaBlu.
+        Contá-las como duas réguas some com o nível de Blumenau justamente
+        quando a primária falha e o resgate assume, que foi o que já houve numa
+        cheia. Ver `comum.regua_de`.
+        """
+        self.escrever_mes([
+            {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+             "medido_em": carimbo(2), "nivel_m": 4.67},
+            {"estacao": "AlertaBlu - Blumenau", "resgate_de": "Blumenau",
+             "rio": "itajai-acu", "cidade": "blumenau",
+             "medido_em": carimbo(1), "nivel_m": 4.70},
+        ])
+        coleta_niveis.escrever_serie_recente(horas=48)
+        doc = self.ler()
+        self.assertEqual(doc["reguas"]["itajai-acu"]["blumenau"], ["Blumenau"])
+        pontos = doc["series"]["itajai-acu"]["blumenau"]
+        self.assertEqual([p["r"] for p in pontos], [0, 0],
+                         "primária e resgate viraram réguas diferentes")
+
+    def test_o_ndjson_guarda_o_resgate_de(self):
+        # Sem gravá-lo, quem monta o recorte não tem como juntar as duas.
+        linha = coleta_niveis.linha_da_serie({
+            "estacao": "AlertaBlu - Blumenau", "resgate_de": "Blumenau",
+            "rio": "itajai-acu", "cidade": "blumenau",
+            "medido_em": carimbo(1), "nivel_m": 4.70,
+        })
+        self.assertEqual(linha["resgate_de"], "Blumenau")
+        # E não inventa o campo onde não há resgate.
+        sem = coleta_niveis.linha_da_serie({
+            "estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+            "medido_em": carimbo(1), "nivel_m": 4.67,
+        })
+        self.assertNotIn("resgate_de", sem)
+
     def test_o_meta_explica_o_r(self):
         doc = self.tres_reguas()
         self.assertIn("r", doc["_meta"])

@@ -13,3 +13,28 @@
   margin: 0;
   color: var(--tinta-fraca);
 }
+
+/* Lista das réguas de uma cidade que tem mais de uma (Itajaí tem onze). */
+.listaReguas {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.listaReguas li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+/* Quadradinho da cor da linha daquela régua no gráfico. */
+.amostra {
+  flex: 0 0 auto;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 2px;
+}

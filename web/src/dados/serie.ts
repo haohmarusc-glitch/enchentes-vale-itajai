@@ -25,6 +25,15 @@ export interface PontoSerie {
   /** Instante da medição (Brasília, já resolvido para o momento real). */
   medidoEm: Date
   nivel_m: number
+  /**
+   * A RÉGUA de onde este ponto veio, ou `null` quando a fonte não disse.
+   *
+   * Existe porque uma cidade pode ter várias réguas com ZEROS DIFERENTES —
+   * Itajaí tem onze —, e sem isto a série da cidade sai com todas
+   * intercaladas. Ver o comentário de `tendencia`. Primária e resgate contam
+   * como UMA régua: o publicador já resolve isso por `resgate_de`.
+   */
+  regua: string | null
 }
 
 export type SituacaoSerie = 'carregando' | 'ok' | 'indisponivel'
@@ -44,14 +53,18 @@ const VAZIO: EstadoSerie = {
   geradoEm: null,
 }
 
-function pontoValido(bruto: unknown): PontoSerie | null {
+function pontoValido(bruto: unknown, legenda: string[]): PontoSerie | null {
   if (typeof bruto !== 'object' || bruto === null) return null
   const d = bruto as Record<string, unknown>
   if (typeof d.medido_em !== 'string') return null
   if (typeof d.nivel_m !== 'number' || Number.isNaN(d.nivel_m)) return null
   const medidoEm = deBrasilia(d.medido_em)
   if (Number.isNaN(medidoEm.getTime())) return null
-  return { medidoEm, nivel_m: d.nivel_m }
+  // `r` é índice na legenda `reguas[rio][cidade]`. Fora da legenda ou ausente
+  // vira `null` — "não sei de que régua veio" —, nunca a primeira da lista:
+  // chutar seria afirmar um zero de medição.
+  const r = typeof d.r === 'number' ? legenda[d.r] : undefined
+  return { medidoEm, nivel_m: d.nivel_m, regua: r ?? null }
 }
 
 export type Transporte = (url: string, init: RequestInit) => Promise<Response>
@@ -69,13 +82,22 @@ export async function buscarSerie(
     const brutoSeries = dados.series
     if (typeof brutoSeries !== 'object' || brutoSeries === null) return VAZIO
 
+    const brutoReguas = (dados.reguas ?? {}) as Record<string, unknown>
+    const legendaDe = (rio: string, cidade: string): string[] => {
+      const porCidade = brutoReguas[rio]
+      if (typeof porCidade !== 'object' || porCidade === null) return []
+      const lista = (porCidade as Record<string, unknown>)[cidade]
+      return Array.isArray(lista) ? lista.filter((x): x is string => typeof x === 'string') : []
+    }
+
     const series: Record<string, Record<string, PontoSerie[]>> = {}
     for (const [rio, porCidade] of Object.entries(brutoSeries as Record<string, unknown>)) {
       if (typeof porCidade !== 'object' || porCidade === null) continue
       for (const [cidade, pontos] of Object.entries(porCidade as Record<string, unknown>)) {
         if (!Array.isArray(pontos)) continue
+        const legenda = legendaDe(rio, cidade)
         const validos = pontos
-          .map(pontoValido)
+          .map((p) => pontoValido(p, legenda))
           .filter((p): p is PontoSerie => p !== null)
           .sort((a, b) => a.medidoEm.getTime() - b.medidoEm.getTime())
         if (validos.length > 0) {
@@ -145,9 +167,38 @@ export function useSerieRecente(intervaloMin = 5): EstadoSerie {
   return estado
 }
 
-/** Os pontos de uma cidade naquele rio, ou lista vazia. */
+/**
+ * Os pontos de uma cidade naquele rio, ou lista vazia.
+ *
+ * ATENÇÃO: numa cidade de VÁRIAS RÉGUAS esta lista vem com todas intercaladas,
+ * e réguas diferentes têm zeros diferentes. Para qualquer conta que compare um
+ * ponto com outro, use `porRegua` antes. Ver `tendencia`.
+ */
 export function serieDaCidade(estado: EstadoSerie, rioId: string, cidadeId: string): PontoSerie[] {
   return estado.series[rioId]?.[cidadeId] ?? []
+}
+
+/**
+ * Separa a série por RÉGUA, preservando a ordem no tempo dentro de cada uma.
+ *
+ * A chave é o título da régua; pontos sem régua conhecida caem em `''`, e ficam
+ * separados de propósito — juntá-los com qualquer régua nomeada seria afirmar
+ * um zero de medição que a fonte não disse.
+ */
+export function porRegua(pontos: PontoSerie[]): Map<string, PontoSerie[]> {
+  const saida = new Map<string, PontoSerie[]>()
+  for (const p of pontos) {
+    const chave = p.regua ?? ''
+    const lista = saida.get(chave)
+    if (lista) lista.push(p)
+    else saida.set(chave, [p])
+  }
+  return saida
+}
+
+/** Quantas réguas distintas há nesta série. 1 = dá para comparar ponto com ponto. */
+export function quantasReguas(pontos: PontoSerie[]): number {
+  return porRegua(pontos).size
 }
 
 /**
@@ -182,6 +233,21 @@ export type Tendencia = { rotulo: 'subindo' | 'descendo' | 'estável'; cmh: numb
  */
 export function tendencia(serie: PontoSerie[]): Tendencia | null {
   if (serie.length < 2) return null
+  // SÉRIE MISTURADA NÃO TEM TENDÊNCIA. Uma cidade pode ter várias réguas com
+  // ZEROS DIFERENTES, e esta função pega o último ponto e o de ~1 h antes: se
+  // forem de réguas distintas, a diferença é entre dois ZEROS, não entre dois
+  // instantes do rio.
+  //
+  // Medido na série publicada de 04/09/2026, simulando o site em cada instante
+  // da janela de 48 h: em `itajai-mirim/itajai` (cinco réguas), 736 dos 949
+  // instantes dariam |cm/h| > 30 e 707 dariam > 100, com pico de +2448 — o site
+  // dizendo a quem mora na foz que o rio sobe 24 metros por hora. Em
+  // `itajai-acu/itajai` (DC-01, DC-02, DC-11), pico de −13.140.
+  //
+  // Devolver `null` some com a frase "subindo/descendo" nessas cidades. É o
+  // certo: "não sei" é o que sabemos, e o número que estava ali não era o rio.
+  // Quem quiser a tendência de UMA régua chama `porRegua` e passa a lista dela.
+  if (quantasReguas(serie) > 1) return null
   const ult = serie[serie.length - 1]!
   const alvo = ult.medidoEm.getTime() - 3_600_000 // ~1 h antes
   let ref = serie[0]!
