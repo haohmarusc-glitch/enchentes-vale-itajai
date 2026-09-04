@@ -3,7 +3,7 @@ import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
-import { limitesDe, type LonLat } from '../logica/mapaCanvas'
+import { limitesDe, VISTA_INTEIRA, type LonLat, type Vista } from '../logica/mapaCanvas'
 import {
   construirCena,
   desenharBase,
@@ -48,6 +48,8 @@ export default function MapaRios({
   agora,
   aoSelecionar,
   mare = null,
+  focarEm,
+  zoomDoFoco = 8,
 }: {
   rioId: string
   cidades: Cidade[]
@@ -57,12 +59,40 @@ export default function MapaRios({
   aoSelecionar?: (cidadeId: string) => void
   /** Tábua de maré de Itajaí — colore o MAR na foz. Ausente = mar cinza. */
   mare?: TabuaMare | null
+  /**
+   * Abre o mapa já aproximado nesta cidade, em vez do rio inteiro.
+   *
+   * A tela de uma cidade não precisa mostrar 180 km de rio para dizer onde a
+   * régua está: precisa mostrar o trecho DELA. O rio inteiro continua desenhado
+   * — só a janela é menor —, então quem rolar para os lados vê de onde a água
+   * vem e para onde vai, que é a informação que o zoom não pode custar.
+   */
+  focarEm?: Cidade
+  /** Quanto aproximar quando há foco. 8 ≈ 25 km de tela na bacia do Itajaí. */
+  zoomDoFoco?: number
 }) {
   const divRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [erro, setErro] = useState<string | null>(null)
   const [coords, setCoords] = useState<LonLat[][] | null>(null)
   const [tam, setTam] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
+  /**
+   * A janela do mapa. Sem foco, a bacia inteira — exatamente como sempre foi.
+   * Com foco, aproximada na régua da cidade; sem coordenada não há onde
+   * aproximar, e chutar uma posição num mapa de enchente é pior que não
+   * aproximar.
+   */
+  const vista: Vista = useMemo(
+    () =>
+      focarEm?.coordenadas
+        ? {
+            zoom: zoomDoFoco,
+            centroLon: focarEm.coordenadas[1],
+            centroLat: focarEm.coordenadas[0],
+          }
+        : VISTA_INTEIRA,
+    [focarEm, zoomDoFoco],
+  )
   const [sel, setSel] = useState<Pino | null>(null)
   const cenaRef = useRef<Cena | null>(null)
   // A seleção é lida por ref dentro do laço de animação, para trocar o anel do
@@ -139,6 +169,9 @@ export default function MapaRios({
       tam.w,
       tam.h,
       mare,
+      undefined,
+      undefined,
+      vista,
     )
     cenaRef.current = cena
 
@@ -169,7 +202,7 @@ export default function MapaRios({
     }
     raf = requestAnimationFrame(quadro)
     return () => cancelAnimationFrame(raf)
-  }, [coords, cidades, tempoReal, agora, tam, rioId, mare])
+  }, [coords, cidades, tempoReal, agora, tam, rioId, mare, vista])
 
   // Toque/clique: acha o pino mais próximo e abre o detalhe da cidade.
   function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {

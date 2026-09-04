@@ -1,4 +1,5 @@
 import { Suspense, lazy, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
@@ -166,6 +167,16 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)!}
           agora={agora}
         />
+      ) : null}
+
+      {/* A porta para a página da cidade. O detalhe aqui é um recorte; lá está
+          tudo dela — e o endereço pode ser mandado para o vizinho. */}
+      {selecionada ? (
+        <p className={estilos.abrirCidade}>
+          <Link to={`${rioId === 'itajai-mirim' ? '/mirim' : '/acu'}/${selecionada.id}`}>
+            Abrir a página de {selecionada.nome} →
+          </Link>
+        </p>
       ) : null}
 
       {selecionada ? (

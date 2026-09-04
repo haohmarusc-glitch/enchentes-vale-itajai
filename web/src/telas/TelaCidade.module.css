@@ -1,0 +1,73 @@
+.migalha {
+  margin: 0 0 0.25rem;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.agora {
+  margin: 0 0 0.6rem;
+  font-size: 1.05rem;
+}
+
+/* "Sem dado" precisa de peso visual: um parágrafo apagado no meio da página é
+   lido como "está tudo bem", que é a afirmação que não podemos fazer sem medir. */
+.semDado {
+  margin: 0 0 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 4px solid var(--faixa-sem-dado, #8a94a3);
+  background: rgba(138, 148, 163, 0.12);
+  border-radius: 0.3rem;
+}
+
+.subtitulo {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.cotas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+}
+
+.cotas li {
+  display: flex;
+  flex-direction: column;
+  min-width: 6.5rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(128, 128, 128, 0.28);
+  border-radius: 0.4rem;
+}
+
+.cotaNome {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+.vizinhas {
+  list-style: none;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.rotuloVizinha {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+.instrucao {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  opacity: 0.9;
+}

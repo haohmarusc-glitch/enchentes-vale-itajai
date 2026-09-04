@@ -54,3 +54,9 @@
   cursor: pointer;
 }
 .botaoMapa:hover { background: var(--agua); }
+
+.abrirCidade {
+  margin: 0 0 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
