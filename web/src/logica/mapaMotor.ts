@@ -24,6 +24,7 @@ import { metros } from '../logica/formato'
 import {
   acumuladoEspinha,
   enquadrar,
+  kmEntre,
   limitesDe,
   maisProximoNoRio,
   posicoesCorrenteza,
@@ -181,7 +182,38 @@ export interface RioParaCena {
   rioId: string
   coords: LonLat[][]
   cidades: Cidade[]
+  /**
+   * Os ids que podem PINTAR este traçado — o eixo do rio.
+   *
+   * POR QUE EXISTE (04/09/2026)
+   * `cidadesDoRio('itajai-acu')` devolve as 14 cidades do cadastro, e o mapa
+   * transformava TODAS em âncora, encaixando cada uma no ponto mais próximo do
+   * traçado. Mas seis não estão no tronco, e três estão em OUTROS RIOS:
+   * Timbó fica no Benedito, a 8,2 km do Açu; Rio dos Cedros a 16,6; Ituporanga,
+   * na cabeceira Sul, a 28,0. Encaixadas à força, elas pintavam trechos do rio
+   * principal com a faixa da régua DELAS.
+   *
+   * O `estacoes.json` já diz isso em palavras: "a cheia delas não é a mesma que
+   * desce o rio principal". Pintar o Açu com o nível do Benedito afirma sobre um
+   * rio o que se mediu em outro — e a direção perigosa é a calma: Timbó verde
+   * enquanto o Açu sobe deixaria um trecho VERDE num rio subindo.
+   *
+   * Ausente = todas pintam, que é o certo em rio não ramificado (o Mirim).
+   */
+  eixo?: string[]
 }
+
+/**
+ * Quão longe a régua de uma cidade do eixo pode estar do traçado e ainda pintar.
+ *
+ * Não é folga de cadastro, é o filtro que sobra: uma cabeceira cujo rio NÃO foi
+ * desenhado (Ituporanga, no Itajaí do Sul, a 28 km) continuaria no eixo e seria
+ * encaixada num ponto qualquer do Açu. 5 km deixa passar o caso conhecido e
+ * legítimo — a régua de BLUMENAU fica a 3,0 km do talvegue porque a coordenada
+ * publicada é a da ESTAÇÃO, não do rio (ver `teste_conferir_reguas_no_tracado`)
+ * — e barra o que está em outra bacia.
+ */
+const LIMITE_ANCORA_KM = 5
 
 export function corDaFaixa(el: Element, f: Faixa): string {
   const v = getComputedStyle(el).getPropertyValue(VAR_FAIXA[f]).trim()
@@ -308,10 +340,22 @@ export function construirCena(
           ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
         }
       })
-    const espinha = ancoras.map((a) => a.ponto)
+    // Quem PINTA é só o eixo. As demais continuam como PINO — o nível delas é
+    // informação boa, e some-lo seria esconder dado —, mas não colorem trecho
+    // nenhum nem entram na espinha que ordena montante→jusante.
+    const noEixo = rio.eixo ? new Set(rio.eixo) : null
+    const ancorasQuePintam = ancoras.filter((a) => {
+      if (noEixo && !noEixo.has(a.cidade.id)) return false
+      const c = a.cidade.coordenadas
+      if (!c) return false
+      return kmEntre([c[1], c[0]], a.ponto) <= LIMITE_ANCORA_KM
+    })
+    const espinha = ancorasQuePintam.map((a) => a.ponto)
     const cumEspinha = acumuladoEspinha(espinha)
     const faixaEm = (p: LonLat): Faixa =>
-      ancoras.length === 0 ? 'sem-dado' : ancoras[trechoDoPonto(espinha, p)]!.faixa
+      ancorasQuePintam.length === 0
+        ? 'sem-dado'
+        : ancorasQuePintam[trechoDoPonto(espinha, p)]!.faixa
 
     for (const linha of rio.coords) {
       if (linha.length < 2) continue

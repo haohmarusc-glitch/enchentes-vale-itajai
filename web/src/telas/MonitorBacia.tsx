@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { cidadesDoRio, estacoesTempoReal, mareItajai } from '../dados/carregar'
+import { cidadesDoRio, eixoDoRio, estacoesTempoReal, mareItajai } from '../dados/carregar'
 import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
@@ -414,7 +414,15 @@ export default function MonitorBacia() {
         const cidades = (RIOS_TRONCO as readonly string[]).includes(b.rioId)
           ? cidadesDoRio(b.rioId)
           : []
-        lista.push({ rioId: b.rioId, coords: b.coords, cidades })
+        // O eixo diz quem pode PINTAR. Sem ele, Timbó (no Benedito, a 8,2 km)
+        // e Rio dos Cedros (16,6 km) coloriam trechos do Açu com o nível de
+        // outro rio.
+        lista.push({
+          rioId: b.rioId,
+          coords: b.coords,
+          cidades,
+          eixo: eixoDoRio(b.rioId),
+        })
       }
       setRios(lista)
     })

@@ -31,6 +31,11 @@ export function dist2(a: LonLat, b: LonLat): number {
   return ((a[0] - b[0]) * K_LON) ** 2 + (a[1] - b[1]) ** 2
 }
 
+/** Distância em QUILÔMETROS entre duas coordenadas, na mesma escala do resto. */
+export function kmEntre(a: LonLat, b: LonLat): number {
+  return Math.sqrt(dist2(a, b)) * 111.32
+}
+
 /** Ponto do traçado mais próximo de uma coordenada — encaixa o marcador no rio. */
 export function maisProximoNoRio(coords: LonLat[][], alvo: LonLat): LonLat | null {
   let melhor: LonLat | null = null
