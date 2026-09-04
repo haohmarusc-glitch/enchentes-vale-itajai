@@ -8,11 +8,13 @@ desligar o bot antes da noite em que ele importaria. Daí os casos abaixo.
     python3 scripts/teste_alerta_cotas.py
 """
 
+import json
 import unittest
 
 import alerta_cotas
 from datetime import datetime, timedelta, timezone
 
+from comum import DADOS
 from alerta_cotas import (
     REPETE_H,
     resolver,
@@ -481,6 +483,61 @@ class BlumenauComResgate(unittest.TestCase):
         self.assertEqual(aviso["chave_estado"], "Blumenau")
         alerta_cotas.desfazer(estado, aviso)
         self.assertNotIn("Blumenau", estado)
+
+
+class GasparConfereComAPropriaFonte(unittest.TestCase):
+    """
+    As cotas de Gaspar batem com a LEGENDA da página da Defesa Civil, não só com
+    o Plano de onde saíram.
+
+    As faixas gravadas (5,00 / 6,00 / 7,00 m) vieram do fluxograma da p. 25 do
+    Plano de Contingência. Em 04/09/2026 a página de monitoramento da mesma
+    Defesa Civil (estação 21) mostrou a própria legenda dela: normal < 5,00 m,
+    atenção > 5,00 m (ou chuva atual > 6 mm), emergência > 7,00 m — e a leitura
+    de 1,83 m rotulada NORMALIDADE.
+
+    Duas publicações independentes do mesmo órgão, batendo ao centavo nas duas
+    pontas. É a melhor confirmação que Gaspar vai ter enquanto o zero da régua
+    não for nomeado, então fica travada aqui: quem mexer nesses números tem de
+    passar por este teste.
+
+    A DIVERGÊNCIA está registrada de propósito: a página não tem faixa de
+    ALERTA, o Plano tem (5–6 atenção, 6–7 alerta). Ficamos com o Plano, que dá o
+    degrau intermediário — apagá-lo só tiraria um aviso de quem mora lá.
+    """
+
+    def cotas(self):
+        dados = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        for cidade in dados["rios"]["itajai-acu"]["cidades"]:
+            if cidade["id"] == "gaspar":
+                return {k: float(v) for k, v in (cidade.get("cotas_m") or {}).items()}
+        self.fail("Gaspar sumiu do cadastro do Itajaí-Açu")
+
+    def test_a_leitura_publicada_cai_na_faixa_que_a_fonte_publica(self):
+        # 1,83 m em 04/09/2026 08:05, rotulado NORMALIDADE pela própria página.
+        self.assertEqual(alerta_cotas.faixa_de(1.83, self.cotas()), "normal")
+        # 3,85 m em 31/08/2026, da mesma tabela — também dentro da normalidade.
+        self.assertEqual(alerta_cotas.faixa_de(3.85, self.cotas()), "normal")
+
+    def test_as_duas_pontas_da_legenda_da_pagina(self):
+        cotas = self.cotas()
+        self.assertEqual(cotas["atencao"], 5.00)
+        self.assertEqual(cotas["emergencia"], 7.00)
+        self.assertEqual(alerta_cotas.faixa_de(4.99, cotas), "normal")
+        self.assertEqual(alerta_cotas.faixa_de(5.00, cotas), "atencao")
+        self.assertEqual(alerta_cotas.faixa_de(7.00, cotas), "emergencia")
+
+    def test_o_degrau_de_alerta_do_plano_continua_existindo(self):
+        # A página não o tem; o Plano tem. Perdê-lo tiraria um aviso.
+        cotas = self.cotas()
+        self.assertEqual(cotas["alerta"], 6.00)
+        self.assertEqual(alerta_cotas.faixa_de(6.00, cotas), "alerta")
+
+    def test_a_atencao_fica_ABAIXO_da_primeira_rua_que_alaga(self):
+        # 6,20 m é a primeira via do cadastro de ruas. A atenção a 5,00 m dá
+        # 1,20 m de margem — o oposto de Brusque e de Indaial, onde o único
+        # número disponível já é o da água na rua.
+        self.assertLess(self.cotas()["atencao"], 6.20)
 
 
 if __name__ == "__main__":
