@@ -52,9 +52,18 @@ test('leitura velha, ausente ou sem cota não vira cor — e o motivo fica escri
 })
 
 test('chave que não é fase de acionamento não pinta — o defeito de 04/09', () => {
-  // Mesmo vocabulário fechado do faixaDaCidade: `monitoramento` não é vermelho.
-  const est = base({ cotas_m: { monitoramento: 1 } })
-  assert.equal(reguasNoMapa([est], [fresca(5)], AGORA)[0]!.faixa, null)
+  // Mesmo vocabulário FECHADO do faixaDaCidade. `seguranca_observada` e
+  // `inundacao_historica` são marca de comportamento, não gatilho: não pintam.
+  for (const chave of ['seguranca_observada', 'inundacao_historica', 'ativacao_plancon']) {
+    const est = base({ cotas_m: { [chave]: 1 } })
+    assert.equal(reguasNoMapa([est], [fresca(5)], AGORA)[0]!.faixa, null, chave)
+  }
+  // `monitoramento` É fase declarada de Plano, e desde 04/09 tem faixa PRÓPRIA
+  // — branda, entre normal e atenção. Não vira vermelho, que era o defeito, e
+  // também não vira verde, que calaria a fase.
+  const taio = base({ cotas_m: { monitoramento: 5, atencao: 7 } })
+  assert.equal(reguasNoMapa([taio], [fresca(5.25)], AGORA)[0]!.faixa, 'monitoramento')
+  assert.equal(reguasNoMapa([taio], [fresca(4.5)], AGORA)[0]!.faixa, 'normal')
 })
 
 test('sem coordenada não entra — não se chuta posição em mapa de enchente', () => {

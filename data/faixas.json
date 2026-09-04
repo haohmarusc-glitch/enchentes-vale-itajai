@@ -2,15 +2,28 @@
   "_meta": {
     "descricao": "Fonte ÚNICA dos textos das faixas de nível. O site lê daqui (web/src/componentes/LegendaFaixas.tsx); nenhum texto de faixa deve ser escrito à mão em outro lugar.",
     "regra": "O site DESCREVE a faixa e remete à Defesa Civil (199). NUNCA dá ordem de evacuação — quem recomenda ação é a Defesa Civil de cada cidade. As únicas chamadas permitidas são 'Siga a Defesa Civil' e 'ligue 199'.",
-    "cor": "A COR é a faixa de cada cidade NA RÉGUA DELA, não o nível em metros. Cidades na mesma cor NÃO estão no mesmo metro. 'sem-dado' é cinza explícito, nunca verde, e nunca some."
+    "cor": "A COR é a faixa de cada cidade NA RÉGUA DELA, não o nível em metros. Cidades na mesma cor NÃO estão no mesmo metro. 'sem-dado' é cinza explícito, nunca verde, e nunca some.",
+    "monitoramento": "Faixa BRANDA, abaixo da atenção. Existe porque algumas COMPDEC declaram uma fase de monitoramento antes da atenção — Taió (Plano jan/2026) chama de MONITORAMENTO os 5,00 a 7,00 m, e a emergência dela é 9,00 m. Sem esta faixa, a tela mostrava VERDE ('abaixo da atenção') num nível em que a Defesa Civil do município já está monitorando; com ela, o nome da fase é preservado, que é a regra do projeto — nome de fase não se rebatiza, e chamar isso de 'atenção' afirmaria um aviso que a COMPDEC não deu."
   },
   "disclaimer": "A cor é a faixa de cada cidade na régua dela — não o nível em metros. Cidades em cores iguais não estão no mesmo metro.",
   "rotulo_legenda_inundacao": "Inundação / Emergência",
-  "ordem_legenda": ["normal", "atencao", "alerta", "inundacao", "sem-dado", "varias"],
+  "ordem_legenda": [
+    "normal",
+    "monitoramento",
+    "atencao",
+    "alerta",
+    "inundacao",
+    "sem-dado",
+    "varias"
+  ],
   "faixas": {
     "normal": {
       "rotulo": "Abaixo da atenção",
       "acao": "Rio abaixo da cota de atenção."
+    },
+    "monitoramento": {
+      "rotulo": "Monitoramento",
+      "acao": "Nível na faixa que a Defesa Civil do município chama de monitoramento — ainda abaixo da atenção. Siga a Defesa Civil."
     },
     "atencao": {
       "rotulo": "Atenção",

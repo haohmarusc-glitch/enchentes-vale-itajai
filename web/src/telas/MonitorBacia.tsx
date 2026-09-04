@@ -151,10 +151,19 @@ function desenharChuva(ctx: CanvasRenderingContext2D, marcas: MarcadorChuva[], e
   }
 }
 
-const FAIXAS_LEGENDA: Faixa[] = ['normal', 'atencao', 'alerta', 'inundacao', 'sem-dado', 'varias']
+const FAIXAS_LEGENDA: Faixa[] = [
+  'normal',
+  'monitoramento',
+  'atencao',
+  'alerta',
+  'inundacao',
+  'sem-dado',
+  'varias',
+]
 // Mesma variável CSS da legenda do resto do site (fonte única das cores).
 const VAR_LEGENDA: Record<Faixa, string> = {
   normal: '--faixa-normal',
+  monitoramento: '--faixa-monitoramento',
   atencao: '--faixa-atencao',
   alerta: '--faixa-alerta',
   inundacao: '--faixa-inundacao',

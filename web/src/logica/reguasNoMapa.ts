@@ -26,7 +26,13 @@ import type { EstacaoTempoReal } from '../dados/tipos'
 import { cotaAlcancadaEntre, frescor, idadeMin, type Faixa } from './tempoReal'
 
 /** As chaves que pintam faixa — o mesmo vocabulário fechado do `faixaDaCidade`. */
-const CHAVES_QUE_PINTAM = new Set(['atencao', 'alerta', 'inundacao', 'emergencia'])
+const CHAVES_QUE_PINTAM = new Set([
+  'monitoramento',
+  'atencao',
+  'alerta',
+  'inundacao',
+  'emergencia',
+])
 
 export type ReguaNoMapa = {
   codigo: string
@@ -146,8 +152,10 @@ export function reguasNoMapa(
     const faixa: Faixa =
       cota === null
         ? 'normal'
-        : cota.chave === 'atencao' || cota.chave === 'alerta'
-          ? cota.chave
+        : cota.chave === 'monitoramento' ||
+            cota.chave === 'atencao' ||
+            cota.chave === 'alerta'
+          ? (cota.chave as Faixa)
           : cota.chave === 'inundacao'
             ? 'inundacao'
             : 'emergencia'

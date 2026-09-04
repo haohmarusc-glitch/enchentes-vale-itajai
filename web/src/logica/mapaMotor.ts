@@ -75,6 +75,7 @@ export type ReguaDesenhavel = {
 // (fonte única). 'varias' não tem variável própria: usa o azul da água.
 const VAR_FAIXA: Record<Faixa, string> = {
   normal: '--faixa-normal',
+  monitoramento: '--faixa-monitoramento',
   atencao: '--faixa-atencao',
   alerta: '--faixa-alerta',
   inundacao: '--faixa-inundacao',
@@ -84,6 +85,7 @@ const VAR_FAIXA: Record<Faixa, string> = {
 }
 const FALLBACK_FAIXA: Record<Faixa, string> = {
   normal: '#2e7d32',
+  monitoramento: '#a3c93a',
   atencao: '#e6a700',
   alerta: '#e2661a',
   inundacao: '#c62828',
@@ -98,6 +100,10 @@ const GRAVIDADE: Record<Faixa, number> = {
   inundacao: 5,
   alerta: 4,
   atencao: 3,
+  // Entre normal e atenção: mais grave que "abaixo da atenção", menos que a
+  // atenção declarada. É essa ordem que decide qual rótulo ganha espaço quando
+  // dois pinos se cruzam na tela.
+  monitoramento: 2.5,
   normal: 2,
   varias: 1,
   'sem-dado': 0,

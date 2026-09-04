@@ -20,6 +20,11 @@
      Verde -> amarelo -> laranja -> vermelho, mais o cinza de "sem dado".
      Cada faixa também tem rótulo em texto, para não depender só da cor. */
   --faixa-normal: #2e7d32;
+  /* Faixa BRANDA, entre o verde e o amarelo: a fase que algumas COMPDEC
+     declaram antes da atenção (Taió chama os 5–7 m de monitoramento, e a
+     emergência dela é 9). Mais clara que o verde além de mais amarela, para a
+     diferença sobreviver a quem não distingue verde de amarelo. */
+  --faixa-monitoramento: #a3c93a;
   --faixa-atencao: #e6a700;
   --faixa-alerta: #e2661a;
   --faixa-inundacao: #c62828;
