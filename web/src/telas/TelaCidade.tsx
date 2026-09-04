@@ -1,5 +1,5 @@
 import { Suspense, lazy, useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import AvisoLegal from '../componentes/AvisoLegal'
 import ChuvaAoVivo from '../componentes/ChuvaAoVivo'
 import NivelAoVivo from '../componentes/NivelAoVivo'
@@ -57,6 +57,24 @@ const RIO_DA_URL: Record<string, string> = {
   mirim: 'itajai-mirim',
 }
 
+/**
+ * Cidades que já têm tela PRÓPRIA, mais rica que esta — e que por isso não
+ * podem cair na página genérica.
+ *
+ * Itajaí é o caso: a tela da foz existe para explicar a maré e, sobretudo,
+ * **por que não se mostra "o nível de Itajaí" ao vivo** — são onze réguas com
+ * zeros diferentes, que numa mesma hora marcam 0,92 m e 4,82 m, e escolher uma
+ * delas seria justamente o erro que aquela tela avisa para ninguém cometer.
+ *
+ * Uma página genérica ao lado dela mostraria uma versão mais pobre da mesma
+ * cidade e, pior, CONTRADIRIA essa explicação — duas telas do mesmo lugar
+ * dizendo coisas diferentes é como se perde a confiança de quem lê. Então esta
+ * aqui encaminha para lá em vez de competir.
+ */
+const TELA_PROPRIA: Record<string, string> = {
+  itajai: '/itajai',
+}
+
 export default function TelaCidade() {
   const { rioId: apelido = '', cidadeId = '' } = useParams()
   const rioId = RIO_DA_URL[apelido] ?? ''
@@ -71,6 +89,7 @@ export default function TelaCidade() {
   const agora = useMemo(() => new Date(), [tempoReal])
 
   const cidade = cidades.find((c) => c.id === cidadeId)
+  const telaPropria = TELA_PROPRIA[cidadeId]
 
   /**
    * A sequência que a água realmente segue. No Açu é o tronco; no Mirim, onde
@@ -95,6 +114,10 @@ export default function TelaCidade() {
     () => (cidade && jusante ? caminho(trechos, rioId, cidade.id, jusante.id) : null),
     [cidade, jusante, rioId],
   )
+
+  // Depois dos hooks (a ordem deles não pode variar entre renders), antes de
+  // qualquer conteúdo: a cidade com tela própria vai para lá.
+  if (telaPropria && dadosRio) return <Navigate to={telaPropria} replace />
 
   if (!dadosRio) {
     return (
