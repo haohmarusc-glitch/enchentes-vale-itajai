@@ -53,6 +53,24 @@ python3 calibrar_transito.py        # relata o que dá para calibrar
 python3 auditar.py                  # audita os últimos 15 dias de coleta
 ```
 
+### Testar no navegador
+
+Os testes automatizados não veem a tela: tile que não carrega, canvas que não
+desenha, animação que não roda, texto que não cabe no celular e marca d'água de
+provedor passam verdes por eles. O que fecha essa lacuna é
+**`docs/testes-navegador.md`** — 19 testes com critério de passa/falha, escrito
+para ser entregue **inteiro** a alguém (ou a um agente) com um navegador, sem
+explicação junto.
+
+Rodar depois de toda mudança no MAPA, na SÉRIE ou no fundo de tiles. Dois
+defeitos de 04/09/2026 nasceram justamente onde os 281 testes não alcançam: o
+pino de Itajaí dizendo "sem régua" numa cidade com onze, e o CARTO passando a
+cobrir o mapa com "API KEY REQUIRED".
+
+O arquivo abre com um **PASSO 0** que confere se a coleta na VPS já publica a
+régua de cada ponto (`"reguas"` em `serie-recente.json`) — sem isso, dois dos
+testes medem o dado antigo e não valem.
+
 ### Auditar
 
 `auditar.py` responde três perguntas sobre a série já coletada:
