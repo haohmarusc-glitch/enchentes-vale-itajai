@@ -33,10 +33,31 @@
 > max_jusante`) em vez do início das janelas — assim pega dado contraditório de verdade sem
 > alarme falso sobre faixas que apenas se sobrepõem.
 >
-> **O que decidiria a favor deste doc:** conferir no PDF da JICA se a Tabela 7.5.1 traz mesmo a
-> linha de Indaial, ou se ela foi preenchida por inferência numa sessão anterior. Não temos o PDF.
+> **RESOLVIDO EM 04/09/2026 — e eu também estava parcialmente errado.**
+> A pergunta em aberto era: a Tabela 7.5.1 traz mesmo a linha de Indaial? **Traz.** Ela existe no
+> **Volume III-A (Hydrology), p. A-80**, com o título *"Largest Discharge Peak Time from each City,
+> by Return Period"*, e cobre Ituporanga, Taió, Rio do Sul, Apiúna, Ibirama, Indaial, Timbó,
+> Blumenau, Gaspar, Ilhota, Itajaí e Brusque. Os três números do Volume II são o **resumo** dela.
+> Ou seja: a recusa da reestruturação estava certa, e pelo motivo certo — as cidades intermediárias
+> têm tempo de fonte, e a interpolação as teria apagado.
+>
+> **Mas o meu diagnóstico de "sobreposição, não contradição" repetia o erro que ele apontava.**
+> Eu comparei o 10 h de Indaial com o 7 h de Blumenau e concluí que existia atribuição consistente.
+> Os dois números são de **colunas diferentes**: 10 h é o cenário de 5 anos, 7 h é o de 25/50.
+> Empilhar período de retorno diferente é o que fabrica o paradoxo — dentro de uma coluna só,
+> Indaial e Blumenau ficam a 0–1 h um do outro. A regra correta não é "sobreposição é tolerável";
+> é **nunca comparar célula de um período de retorno com célula de outro**. Está gravada em
+> `data/transito.json._meta.origem_das_faixas.tabela_7_5_1`.
+>
+> **E uma segunda correção, esta no validador que eu escrevi:** ele abortava quando o montante
+> passava do máximo do jusante, sob a premissa de que isso é fisicamente impossível. Não é. Nas
+> colunas de 25 e 50 anos, **Blumenau pica antes de Indaial** (+7 h contra +8 h), porque o Rio
+> Benedito entra justamente em Indaial e adianta o pico de baixo. Manter como erro rejeitaria dado
+> oficial verdadeiro; virou aviso, e o aviso agora nomeia as três causas possíveis.
+>
 > As seções "Achados de 03/09" (obra de 1986, correlação CEOPS Blumenau↔Gaspar, remanso dos
 > ribeirões de Gaspar) **não** foram contestadas e estão no README.
+> Ver `docs/JICA-2011-VERIFICADO.md` e `docs/AUDITORIA-JICA-2011.md`.
 
 # A janela de chegada da cheia — corrigindo a contradição de Indaial
 

@@ -228,6 +228,14 @@
             "alerta": 6.0,
             "emergencia": 7.0
           },
+          "cotas_divergencias": [
+            {
+              "cotas_m": { "atencao": 6.0, "emergencia": 7.0 },
+              "fonte": "Legenda da estação 21 no site da Defesa Civil de Gaspar — https://defesacivil.gaspar.sc.gov.br/estacao/ver/21 (consultada em 03/09/2026): NORMALIDADE abaixo de 6,00 m · ATENÇÃO acima de 6,00 m OU chuva acima de 6,00 mm · EMERGÊNCIA acima de 7,00 m. Três estados, duas cotas, sem faixa de alerta.",
+              "por_que_nao_foi_adotada": "As duas fontes são oficiais e do MESMO município, e se contradizem na fronteira dos 5 a 6 m: o Plano chama essa faixa de ATENÇÃO/ALERTA, a legenda chama de normalidade. Adotamos a que avisa MAIS CEDO, que é a regra do projeto quando fonte oficial conflita. O custo de errar para o outro lado é medido: a primeira rua do cadastro alaga a 6,20 m, então a atenção a 6,00 m deixaria 20 cm de margem, contra 1,20 m com 5,00 m — e há teste travando a margem em pelo menos 1 m. Pendência: perguntar à Superintendência de Gaspar qual das duas vale como gatilho de aviso.",
+              "gatilho_composto": "A legenda traz algo que o Plano não tem e que só ACRESCENTA aviso: a atenção dispara por nível OU por chuva acima de 6,00 mm. Nenhuma outra cidade da bacia tem gatilho composto. Não foi implementado porque 'chuva atual' não existe no nosso vocabulário (a coleta guarda min10/h1/h12/h24/h48) e porque no próprio feed de Gaspar esse campo é incoerente em parte das estações — ver README e scripts/coleta_gaspar.py."
+            }
+          ],
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
           ],
