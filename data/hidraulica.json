@@ -6,16 +6,37 @@
     "IDADE_DO_DADO": "É a geometria de 2011. Não incorpora assoreamento nem obra posterior — entre elas a retificação de Rio do Sul–Lontras, em licitação em 2026, que muda a curva-chave daquele trecho. Usar como ORDEM DE GRANDEZA e período de retorno da época, nunca como capacidade de hoje.",
     "NAO_E_COTA": "Nada aqui vira faixa de aviso. Vazão não se compara com régua, e o site não mostra m³/s ao morador: estes números servem para explicar e para calibrar, não para colorir a tela."
   },
-
   "declividade_por_trecho": {
     "_fonte": "Vol. II, Tabela 3.6.2. Os cinco números do Açu foram conferidos na auditoria.",
     "_por_que_importa": "É o argumento FÍSICO contra interpolar a janela de chegada por distância pura: a onda não viaja a velocidade constante. O trecho mais íngreme (1/85) está no MEIO da bacia, e o quase plano (1/20.000) é justamente o de baixo, até Blumenau — a onda acelera no meio e arrasta no fim. Mas declividade sozinha também não basta: a Tabela 7.5.1 mostra o tempo ENCURTANDO na cheia maior, o que depende de vazão e da operação das barragens, não da geometria.",
     "trechos": [
-      { "de": "itajai", "ate": "montante de Blumenau", "declividade": "1/20000", "nota": "quase plano" },
-      { "de": "blumenau", "ate": "montante de Indaial", "declividade": "1/400" },
-      { "de": "indaial", "ate": "confluência com o Itajaí do Norte", "declividade": "1/1500" },
-      { "de": "confluência com o Itajaí do Norte", "ate": "jusante de Lontras", "declividade": "1/85", "nota": "o trecho mais íngreme da bacia" },
-      { "de": "lontras", "ate": "rio-do-sul", "declividade": "1/3000" }
+      {
+        "de": "itajai",
+        "ate": "montante de Blumenau",
+        "declividade": "1/20000",
+        "nota": "quase plano"
+      },
+      {
+        "de": "blumenau",
+        "ate": "montante de Indaial",
+        "declividade": "1/400"
+      },
+      {
+        "de": "indaial",
+        "ate": "confluência com o Itajaí do Norte",
+        "declividade": "1/1500"
+      },
+      {
+        "de": "confluência com o Itajaí do Norte",
+        "ate": "jusante de Lontras",
+        "declividade": "1/85",
+        "nota": "o trecho mais íngreme da bacia"
+      },
+      {
+        "de": "lontras",
+        "ate": "rio-do-sul",
+        "declividade": "1/3000"
+      }
     ],
     "leito_de_blumenau": "O relatório afirma, em mais de um volume, que a cota do LEITO em Blumenau está ABAIXO do nível médio do mar. É parte da explicação de por que a cidade alaga tanto.",
     "largura_do_canal_m": {
@@ -25,36 +46,123 @@
       "rio_do_sul": "100 a 150"
     }
   },
-
   "capacidade_de_vazao": {
     "_fonte": "Vol. II, Tabelas 3.6.3 e 3.6.4, e figura do Anexo B.",
     "_o_que_e": "Quanto o canal daquela cidade escoa ANTES de transbordar, e a que período de retorno essa vazão corresponde na estatística do estudo. Diz quanto de folga cada cidade tem — outra grandeza para a mesma pergunta que as cotas respondem.",
     "_ressalva_de_intervalos": "O próprio JICA traz números diferentes para a mesma cidade em figuras diferentes (Gaspar aparece como 4.000–6.000 numa e 5.100–6.000 noutra; Blumenau como 4.200–6.000). NÃO fundir esses intervalos como se fossem um levantamento só.",
     "cidades": [
-      { "cidade": "itajai", "rio": "Itajaí-Açu", "m3s": "2000 a 3000", "retorno_anos": "~5", "nota": "ponto frágil do tronco" },
-      { "cidade": "rio-do-sul", "rio": "Itajaí-Açu", "m3s": "1220", "retorno_anos": "~5", "nota": "ponto frágil do tronco" },
-      { "cidade": "ilhota", "rio": "Itajaí-Açu", "m3s": "2500 a 4000", "retorno_anos": "10 a 25" },
-      { "cidade": "gaspar", "rio": "Itajaí-Açu", "m3s": "5100 a 6000", "retorno_anos": "25 a 50", "nota": "outra figura do mesmo relatório traz 4.000 a 6.000 — ver a ressalva de intervalos" },
-      { "cidade": "blumenau", "rio": "Itajaí-Açu", "m3s": "4200 a 6000", "retorno_anos": "25 a 50" },
-      { "cidade": "indaial", "rio": "Itajaí-Açu", "m3s": "5700", "retorno_anos": ">50", "nota": "o mais folgado do tronco" },
-      { "cidade": "lontras", "rio": "Itajaí-Açu", "m3s": "1000 a 1500", "retorno_anos": "5 a 10" },
-      { "cidade": "itajai", "rio": "Itajaí-Mirim (após a reunião dos braços)", "m3s": "300", "retorno_anos": "<5" },
-      { "cidade": "itajai", "rio": "Itajaí-Mirim — canal retificado", "m3s": "500 a 600", "retorno_anos": "25 a 50" },
-      { "cidade": "itajai", "rio": "Itajaí-Mirim — curso antigo", "m3s": "200 a 300", "retorno_anos": "<5" },
-      { "cidade": "brusque", "rio": "Itajaí-Mirim", "m3s": "550 a 700", "retorno_anos": "25 a 50" },
-      { "cidade": "timbo", "rio": "Rio Benedito", "m3s": "860", "retorno_anos": "5 a 10" },
-      { "cidade": "ibirama", "rio": "Itajaí do Norte", "m3s": ">2000", "retorno_anos": ">50" },
-      { "cidade": "rio-do-sul", "rio": "Itajaí do Oeste", "m3s": "760", "retorno_anos": "<5" },
-      { "cidade": "taio", "rio": "Itajaí do Oeste", "m3s": "440", "retorno_anos": "5 a 10" },
-      { "cidade": "rio-do-sul", "rio": "Itajaí do Sul", "m3s": "300 a 500", "retorno_anos": "<5" },
-      { "cidade": "ituporanga", "rio": "Itajaí do Sul", "m3s": "450", "retorno_anos": "30 a 40" }
+      {
+        "cidade": "itajai",
+        "rio": "Itajaí-Açu",
+        "m3s": "2000 a 3000",
+        "retorno_anos": "~5",
+        "nota": "ponto frágil do tronco"
+      },
+      {
+        "cidade": "rio-do-sul",
+        "rio": "Itajaí-Açu",
+        "m3s": "1220",
+        "retorno_anos": "~5",
+        "nota": "ponto frágil do tronco"
+      },
+      {
+        "cidade": "ilhota",
+        "rio": "Itajaí-Açu",
+        "m3s": "2500 a 4000",
+        "retorno_anos": "10 a 25"
+      },
+      {
+        "cidade": "gaspar",
+        "rio": "Itajaí-Açu",
+        "m3s": "5100 a 6000",
+        "retorno_anos": "25 a 50",
+        "nota": "outra figura do mesmo relatório traz 4.000 a 6.000 — ver a ressalva de intervalos"
+      },
+      {
+        "cidade": "blumenau",
+        "rio": "Itajaí-Açu",
+        "m3s": "4200 a 6000",
+        "retorno_anos": "25 a 50"
+      },
+      {
+        "cidade": "indaial",
+        "rio": "Itajaí-Açu",
+        "m3s": "5700",
+        "retorno_anos": ">50",
+        "nota": "o mais folgado do tronco"
+      },
+      {
+        "cidade": "lontras",
+        "rio": "Itajaí-Açu",
+        "m3s": "1000 a 1500",
+        "retorno_anos": "5 a 10"
+      },
+      {
+        "cidade": "itajai",
+        "rio": "Itajaí-Mirim (após a reunião dos braços)",
+        "m3s": "300",
+        "retorno_anos": "<5"
+      },
+      {
+        "cidade": "itajai",
+        "rio": "Itajaí-Mirim — canal retificado",
+        "m3s": "500 a 600",
+        "retorno_anos": "25 a 50"
+      },
+      {
+        "cidade": "itajai",
+        "rio": "Itajaí-Mirim — curso antigo",
+        "m3s": "200 a 300",
+        "retorno_anos": "<5"
+      },
+      {
+        "cidade": "brusque",
+        "rio": "Itajaí-Mirim",
+        "m3s": "550 a 700",
+        "retorno_anos": "25 a 50"
+      },
+      {
+        "cidade": "timbo",
+        "rio": "Rio Benedito",
+        "m3s": "860",
+        "retorno_anos": "5 a 10"
+      },
+      {
+        "cidade": "ibirama",
+        "rio": "Itajaí do Norte",
+        "m3s": ">2000",
+        "retorno_anos": ">50"
+      },
+      {
+        "cidade": "rio-do-sul",
+        "rio": "Itajaí do Oeste",
+        "m3s": "760",
+        "retorno_anos": "<5"
+      },
+      {
+        "cidade": "taio",
+        "rio": "Itajaí do Oeste",
+        "m3s": "440",
+        "retorno_anos": "5 a 10"
+      },
+      {
+        "cidade": "rio-do-sul",
+        "rio": "Itajaí do Sul",
+        "m3s": "300 a 500",
+        "retorno_anos": "<5"
+      },
+      {
+        "cidade": "ituporanga",
+        "rio": "Itajaí do Sul",
+        "m3s": "450",
+        "retorno_anos": "30 a 40"
+      }
     ]
   },
-
   "barragens": {
     "_fonte": "Vol. II, Tabela 3.2.4, e Anexo B (condutos e capacidade de descarga).",
     "_chuva_equivalente": "Definida no próprio anexo como armazenamento dividido pela área de drenagem — quanta chuva sobre a bacia da barragem basta para encher o reservatório. É a explicação de por que a Oeste e a Sul enchem fácil e a Norte não.",
-    "_areas_divergentes": "As áreas de drenagem do JICA (Oeste 1.042, Sul 1.273 km²) NÃO batem com as da API estadual (Oeste 851, Sul 1.164 km²). São delimitações diferentes; registrar as duas, nunca fundir nem escolher em silêncio.",
+    "_areas_divergentes": "As áreas de drenagem do JICA Vol. II (Oeste 1.042, Sul 1.273 km²) NÃO batem com as da API estadual (Oeste 851, Sul 1.164 km²). Registrar as duas, nunca fundir nem escolher em silêncio. ATUALIZADO em 04/09/2026: o JICA Vol. III-A (bloco `areas_drenagem`) traz Oeste 851,2 e Sul 1.165,4 — ou seja, ele concorda com a API estadual, não com o Vol. II. A divergência é INTERNA AO JICA, e o Vol. II é o lado isolado. Ver `areas_drenagem._divergencia_interna_do_JICA`.",
     "oeste": {
       "municipio": "taio",
       "area_drenagem_km2_jica": 1042,
@@ -96,7 +204,6 @@
     },
     "lacuna_da_vazao_de_saida": "O JICA (seção 4.2.2) aponta que a DEINFRA, operadora da Oeste e da Sul, NÃO registrava nem informava as vazões de saída — e dá isso como a razão de a previsão de Rio do Sul não ser apropriada para uso prático. O que temos hoje é o ESTADO DAS COMPORTAS pela API de Taió, que é proxy, não vazão. Pedir a vazão à DEINFRA é pendência do README. Ressalva da auditoria: 2011 não é o estado de hoje — verificar se a vazão por comporta passou a ser publicada antes de tratar a lacuna como atual."
   },
-
   "divisao_do_mirim": {
     "_fonte": "Vol. II, seção 3.5. Citação: \"Distribution ratio of the flood discharge… is assumed to be 2/3 to the canal and 1/3 to the old Mirim River based on the respective estimated flow capacity\".",
     "_o_que_e": "Como a vazão de cheia do Itajaí-Mirim se reparte entre os dois braços na foz. É razão ASSUMIDA pelo estudo a partir da capacidade estimada de cada braço, não medição de evento.",
@@ -105,22 +212,69 @@
     "curso_antigo": "1/3",
     "controversia_registrada": "O próprio relatório registra a opinião de que o canal de atalho PODE TER AGRAVADO a jusante: \"it might be said that the shortcut channel could not solve flooding issues because of some opinions that this shortcut channel had caused an increase of flood discharge in the downstream reaches in Itajaí city\". Controvérsia em documento oficial, não conclusão do estudo."
   },
-
   "curva_chave_2008": {
     "_fonte": "Citada no JICA 2011, mas a fonte imediata é o relatório 'Desastre de 2008 no vale do Itajaí', não um levantamento de seção do próprio estudo.",
     "_o_que_e": "Três pares nível→vazão do MESMO evento. São pontos, não a curva: servem perto desses H e não autorizam converter nível em vazão fora da vizinhança deles.",
     "pontos": [
-      { "cidade": "blumenau", "nivel_m": 11.5, "vazao_m3s": 4200 },
-      { "cidade": "timbo", "rio": "Rio Benedito", "nivel_m": 8.0, "vazao_m3s": 710 },
-      { "cidade": "indaial", "nivel_m": 6.0, "vazao_m3s": 3100 }
+      {
+        "cidade": "blumenau",
+        "nivel_m": 11.5,
+        "vazao_m3s": 4200
+      },
+      {
+        "cidade": "timbo",
+        "rio": "Rio Benedito",
+        "nivel_m": 8.0,
+        "vazao_m3s": 710
+      },
+      {
+        "cidade": "indaial",
+        "nivel_m": 6.0,
+        "vazao_m3s": 3100
+      }
     ]
   },
-
   "periodos_de_retorno": {
     "_fonte": "Vol. II, Tabela 3.3.3.",
     "1983": "~76 anos",
     "1984": "~66 anos",
     "1992": "~33 anos",
     "2008": "Calculado em ~5 anos pela chuva MÉDIA da bacia (121 a 144 mm em 4 dias), e reavaliado como muito mais raro pelo dano real, porque a chuva foi LOCALIZADA: 575 a 576 mm em 4 dias em Blumenau. O retorno que o Vol. III cita para 1 dia em Blumenau é 270 anos. NÃO gravar o número de '8.400 anos' que circulou numa leitura anterior: ele não apareceu nas páginas conferidas."
+  },
+  "areas_drenagem": {
+    "_fonte": "JICA / Nippon Koei 2011, Vol. III-A, Tabela 2.1.1 'Drainage Areas'.",
+    "_o_que_e": "Área de bacia acumulada em cada estação fluviométrica e por sub-bacia. Diz quanta chuva cada ponto do rio recebe — é a grandeza que explica por que a correlação entre duas cidades é forte ou fraca.",
+    "_divergencia_interna_do_JICA": "ATENÇÃO — descoberto em 04/09/2026. As áreas das barragens AQUI (Vol. III-A) NÃO batem com as do bloco `barragens` (Vol. II, Tabela 3.2.4), e batem com as da API estadual: Oeste 851,2 aqui contra 1.042 no Vol. II e 851 na API; Sul 1.165,4 aqui contra 1.273 no Vol. II e 1.164 na API. Ou seja, a divergência que estava registrada como 'JICA × API estadual' é, na verdade, INTERNA AO JICA: o Vol. II é o discrepante, e o Vol. III-A concorda com a API a menos de 0,2%. As três ficam gravadas; fundir seria escolher em silêncio. Consequência prática: a `chuva_equivalente_mm` do bloco `barragens` é armazenamento ÷ área, então muda com a área escolhida — a Oeste sai 79,7 mm pelo Vol. II e 97,5 mm pelo Vol. III-A. O número gravado lá é o do Vol. II, como o próprio JICA o publica; esta nota existe para que ninguém o recalcule sem perceber.",
+    "bacia_total_km2": 14933.2,
+    "sub_bacias_km2": {
+      "itajai_do_sul": 2026.87,
+      "itajai_do_norte_hercilio": 3353.98,
+      "itajai_do_oeste": 3014.37,
+      "benedito": 1500.3,
+      "itajai_mirim": 1678.86,
+      "luiz_alves": 580.01
+    },
+    "estacoes_km2": {
+      "barragem_oeste": 851.2,
+      "barragem_sul": 1165.4,
+      "barragem_norte": 2330.5,
+      "taio": 1569.9,
+      "ituporanga": 1645.3,
+      "ibirama": 3335.4,
+      "rio_do_sul_novo": 5041.6,
+      "apiuna_nova": 9288.8,
+      "indaial": 11276.4,
+      "blumenau": 11922.7,
+      "gaspar": 12271.9,
+      "ilhota": 12498.6,
+      "brusque": 1206.6,
+      "timbo_novo": 1431.3,
+      "luis_alves": 157.3,
+      "rio_trombudo": 590.9,
+      "apos_confluencia_luiz_alves": 13093.8,
+      "apos_confluencia_mirim": 14914.8,
+      "desembocadura": 14933.2
+    },
+    "_leitura": "Rio do Sul 5.041 km² → Indaial 11.276 km²: a área MAIS QUE DOBRA entre as duas, por causa do Hercílio (3.354) e do Benedito (1.500). É a razão quantitativa de a previsão Rio do Sul → Indaial ser fraca: menos da metade da água que passa em Indaial veio de Rio do Sul. Serve de aviso ao pareamento montante→jusante do projeto — par de cidades com salto grande de área precisa de mais eventos para dizer alguma coisa, ou de nada."
   }
 }

@@ -738,7 +738,7 @@ def valida_hidraulica() -> None:
         erro("hidraulica.json: falta _meta.fonte — dado sem fonte não entra neste projeto")
 
     for bloco in ("declividade_por_trecho", "capacidade_de_vazao", "barragens",
-                  "curva_chave_2008", "divisao_do_mirim"):
+                  "curva_chave_2008", "divisao_do_mirim", "areas_drenagem"):
         if bloco not in d:
             erro(f"hidraulica.json: falta o bloco '{bloco}'")
         elif not str(d[bloco].get("_fonte", "")).strip():
@@ -751,6 +751,23 @@ def valida_hidraulica() -> None:
             if not isinstance(b.get(campo), (int, float)):
                 erro(f"hidraulica.json / barragens / {nome}: falta '{campo}'. As duas "
                      "delimitações ficam lado a lado; fundir seria escolher em silêncio.")
+
+    # As TRÊS delimitações de área das barragens têm de continuar visíveis, e a
+    # nota tem de dizer que o lado isolado é o Vol. II. Medido em 04/09/2026:
+    # Vol. III-A dá Oeste 851,2 e Sul 1.165,4, contra 1.042 e 1.273 do Vol. II —
+    # e a API estadual (851 e 1.164) concorda com o Vol. III-A. Perder isso faria
+    # alguém recalcular a `chuva_equivalente_mm` com a área errada: a da Oeste
+    # sai 79,7 mm por um caminho e 97,5 mm pelo outro.
+    areas = d.get("areas_drenagem", {})
+    for nome, esperado in (("barragem_oeste", 851.2), ("barragem_sul", 1165.4)):
+        obtido = areas.get("estacoes_km2", {}).get(nome)
+        if obtido != esperado:
+            erro(f"hidraulica.json / areas_drenagem: {nome} deixou de ser {esperado} km² "
+                 f"(Vol. III-A). Se a fonte mudou, atualize também a nota de divergência.")
+    if "Vol. II" not in str(areas.get("_divergencia_interna_do_JICA", "")):
+        erro("hidraulica.json / areas_drenagem: a nota de divergência sumiu ou deixou de "
+             "nomear o Vol. II. As três delimitações ficam lado a lado; sem a nota, "
+             "alguém recalcula a chuva equivalente com a área errada.")
 
     # Curva-chave: par nível->vazão só serve se os dois lados existirem, e o
     # nível tem de ser plausível como régua de rio.
