@@ -1055,12 +1055,22 @@ export default function MonitorBacia() {
                 <p className={estilos.painelExtra}>{cid.km_da_foz} km até a foz</p>
               ) : null}
               <p className={estilos.painelAcao}>{ACAO_FAIXA[foco.faixa]}</p>
+              {/* A cidade primeiro, o rio depois. Quem toca no pino de Gaspar
+                  quer Gaspar — o rio inteiro e a segunda pergunta, nao a
+                  primeira. */}
               <button
                 type="button"
                 className={estilos.dicaDetalhe}
+                onClick={() => navigate(`${rotaDoRio(foco.rioId)}/${cid.id}`)}
+              >
+                Abrir {cid.nome} →
+              </button>
+              <button
+                type="button"
+                className={estilos.dicaSecundaria}
                 onClick={() => navigate(rotaDoRio(foco.rioId))}
               >
-                Abrir {foco.rioId === 'itajai-mirim' ? 'o Mirim' : 'o Açu'} →
+                Ver {foco.rioId === 'itajai-mirim' ? 'o Mirim' : 'o Açu'} inteiro
               </button>
               <p className={estilos.painelRessalva}>
                 Nível na régua <strong>desta</strong> cidade. Não compare metros entre

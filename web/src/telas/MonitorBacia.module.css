@@ -387,3 +387,21 @@
 .botaoVerTudo:hover {
   background: rgba(24, 38, 58, 0.92);
 }
+
+/* O link secundário ("ver o rio inteiro") é menor e mais apagado que o da
+   cidade: quem tocou no pino de Gaspar quer Gaspar, e a hierarquia visual
+   precisa dizer isso sem obrigar a ler as duas linhas. */
+.dicaSecundaria {
+  display: block;
+  margin-top: 0.1rem;
+  color: #7f96ad;
+  font-size: 0.82em;
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0.15rem 0;
+  text-align: left;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
