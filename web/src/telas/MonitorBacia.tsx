@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { cidadesDoRio, mareItajai } from '../dados/carregar'
+import { cidadesDoRio, estacoesTempoReal, mareItajai } from '../dados/carregar'
 import type { Cidade } from '../dados/tipos'
-import { useTempoReal } from '../dados/tempoReal'
+import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
@@ -10,6 +10,7 @@ import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
 import { dataHora, metros } from '../logica/formato'
 import { projetar, type LonLat } from '../logica/mapaCanvas'
 import {
+  COR_BRUTO,
   construirCena,
   desenharBase,
   desenharCorrenteza,
@@ -20,6 +21,8 @@ import {
   type Pino,
   type RioParaCena,
 } from '../logica/mapaMotor'
+import { reguasComCota } from '../logica/reguas'
+import VariasReguas from '../componentes/VariasReguas'
 import estilos from './MonitorBacia.module.css'
 
 // Traçados como URL (o Vite emite à parte). A bacia toda: Açu + Mirim, mais os
@@ -407,10 +410,19 @@ export default function MonitorBacia() {
               <span className={estilos.amostra} style={{ background: '#2f86c9' }} />
               Mar / maré na foz
             </li>
+            {/* O violeta estava no mapa sem entrada aqui: uma cor com
+                significado e sem explicação. Fica FORA da escala de faixas de
+                propósito — não é grau de perigo, é outro tipo de dado. */}
+            <li>
+              <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
+              ≈ nível bruto (rede estadual)
+            </li>
           </ul>
           <p className={estilos.legendaNota}>
             Cor é a faixa na régua da cidade, <strong>nunca o metro</strong> entre
-            cidades. Cinza = sem régua fresca (não é seguro, é sem dado).
+            cidades. Cinza = sem régua fresca (não é seguro, é sem dado). O número
+            em violeta vem da régua estadual, com zero próprio: aparece quando não
+            há fonte municipal e <strong>não vira faixa</strong>.
           </p>
         </div>
 
@@ -472,6 +484,12 @@ export default function MonitorBacia() {
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})
           const ch = chuvaDaCidade(tempoReal.chuva, foco.rioId, cid.id)
           const brutoSc = nivelSc.get(cid.id) ?? null
+          // As réguas da cidade, quando são VÁRIAS. Itajaí tem onze, todas
+          // publicadas e frescas, e o Monitor não mostrava nenhuma: o pino azul
+          // dizia "várias réguas" e o painel dizia "sem leitura fresca" — falso,
+          // e justamente na cidade da foz, que recebe os dois rios.
+          const daCidade = leiturasDaCidade(tempoReal, foco.rioId, cid.id)
+          const reguas = reguasComCota(estacoesTempoReal, foco.rioId, cid.id)
           return (
             <div className={estilos.painel}>
               <div className={estilos.painelTopo}>
@@ -493,10 +511,24 @@ export default function MonitorBacia() {
                     <strong>{metros(foco.nivel)}</strong>
                     {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))}</> : null}
                   </>
-                ) : (
+                ) : daCidade.length > 1 ? null : (
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>
                 )}
               </p>
+              {/* Cidade de várias réguas: todas, sem eleger nenhuma — o mesmo
+                  componente da tela do rio, com o aviso de que os zeros são
+                  diferentes e os números não se comparam. Dizer "sem leitura"
+                  com onze réguas vivas era esconder o dado, não protegê-lo. */}
+              {foco.nivel == null && daCidade.length > 1 ? (
+                <div className={estilos.painelBloco}>
+                  <VariasReguas
+                    leituras={daCidade}
+                    reguas={reguas}
+                    cidade={cid}
+                    agora={agora}
+                  />
+                </div>
+              ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
                   <span className={estilos.painelRotulo}>Cotas da régua</span>

@@ -36,6 +36,20 @@ import {
   type LonLat,
 } from '../logica/mapaCanvas'
 
+/**
+ * O violeta do número BRUTO da rede estadual.
+ *
+ * Deliberadamente FORA da escala de faixas: violeta não é verde, amarelo,
+ * laranja nem vermelho, então não pode ser lido como grau de perigo. Ele marca
+ * outro TIPO de dado — régua estadual, com zero próprio, que não se compara às
+ * cotas municipais e por isso nunca pinta a bolinha.
+ *
+ * Exportado porque a legenda precisa mostrar a MESMA cor. Enquanto era literal
+ * aqui dentro, o violeta aparecia no mapa sem entrada na legenda: uma cor com
+ * significado e sem explicação, que é pior do que não usar cor nenhuma.
+ */
+export const COR_BRUTO = '#c9a6f0'
+
 // A cor de cada faixa vem da MESMA variável CSS que a legenda e o diagrama usam
 // (fonte única). 'varias' não tem variável própria: usa o azul da água.
 const VAR_FAIXA: Record<Faixa, string> = {
@@ -611,7 +625,7 @@ export function desenharPinos(
       // Nível calibrado em destaque (claro); bruto DCSC em violeta (marca visual
       // de "outro tipo de dado", nunca as cores de faixa/severidade); sem
       // nenhum dos dois, só a idade, acinzentada.
-      ctx.fillStyle = p.nivel != null ? '#dff0ff' : usaBruto ? '#c9a6f0' : '#9fb2c4'
+      ctx.fillStyle = p.nivel != null ? '#dff0ff' : usaBruto ? COR_BRUTO : '#9fb2c4'
       ctx.fillText(sub, cx, fy)
     }
   }
