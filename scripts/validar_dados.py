@@ -31,6 +31,12 @@ RAMOS_VALIDOS = {
     "itajai_do_oeste", "itajai_do_sul", "itajai_do_norte", "tronco_acu",
     "benedito", "luiz_alves", "mirim_tronco", "canal_retificado",
     "curso_antigo", "reunido", "ribeirao_murta", "ribeirao_canhanduba", "acu",
+    # Entraram em 04/09/2026 com as cidades de afluente. Cada nome é o RIO em
+    # que a cidade fica — é o que a fonte municipal afirma. Onde esse rio
+    # encontra o eixo é outra pergunta, e mora em `afluentes_laterais`: quando
+    # não se sabe, a cidade fica fora daquela lista e a tela a mostra em
+    # "Outros pontos", que é o honesto.
+    "rio_dos_cedros", "trombudo",
 }
 RE_DCSC = re.compile(r"^DCSC-\d{5}$")
 

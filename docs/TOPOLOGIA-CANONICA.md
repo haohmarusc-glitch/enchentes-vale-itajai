@@ -17,7 +17,9 @@ Itajaí do OESTE (Taió)  ‖  Itajaí do SUL (Ituporanga)   ← cabeceiras PARA
                      RIO DO SUL          ← aqui NASCE o Itajaí-Açu (começo do tronco)
                                            -27.2160314, -49.6483391  **
                           │
-                          │ ← entra o Rio Hercílio / Itajaí do Norte
+                       LONTRAS            (tronco — jusante imediato de Rio do Sul)
+                          │
+                          │ ← entra o Rio Hercílio / Itajaí do Norte ***
                           │     [IBIRAMA = afluente lateral, NÃO elo do tronco]
                        ASCURRA            (tronco)
                           │ ← entra o Rio Benedito (Timbó), perto de Indaial *
@@ -55,9 +57,19 @@ Ressalva que não pode sumir: a cobertura daquele arquivo é só o trecho perto 
 Rio do Sul (Sul 10,6 km, Oeste 9,9 km). Serve para o **ponto**, não como
 **traçado de mapa** — por isso fica em `data/brutos/`, não em `data/rios/`.
 
+**\*\*\*** A ordem entre **Lontras** e a confluência do Norte vem do JICA 2011: a
+Tabela 3.6.2 lista os trechos "Indaial → confluência do Norte", "confluência do
+Norte → jusante de Lontras" e "Lontras → Rio do Sul" — lendo de jusante para
+montante, o Norte entra **ABAIXO de Lontras**, e a seção 3.1 diz que o encontro
+se dá "in Ibirama city". Nosso `afluentes_laterais` ainda registra Ibirama como
+`entra_perto_de: rio-do-sul`, o que é grosseiro mas não falso: a confluência fica
+entre Lontras e Ascurra. **Pendência**: apertar esse campo para o ponto real
+quando houver coordenada — não foi trocado agora porque a ordem da tabela de
+declividade é inferência de leitura, não uma afirmação literal de confluência.
+
 **A única sequência que a UI pode afirmar** (`_topologia.tronco_sequencia`):
 
-`Rio do Sul → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí`
+`Rio do Sul → Lontras → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí`
 
 Fora dela:
 - **Taió e Ituporanga são cabeceiras paralelas** — nenhuma vem "antes" da outra;
@@ -65,6 +77,24 @@ Fora dela:
 - **Ibirama fica no Rio Hercílio** (afluente). O pico dele ENTRA no tronco perto de
   Rio do Sul, não desce por Indaial. Correlacionar Ibirama→Indaial isolado
   subestima (provável parte do r²=0,21 do `coleta_niveis.py`).
+- **Lontras entrou no tronco** (04/09/2026), entre Rio do Sul e Ascurra. Duas fontes
+  independentes: o JICA 2011 (Tabela 3.6.2) lista os trechos "confluência do Norte →
+  jusante de Lontras" e "Lontras → Rio do Sul"; o levantamento municipal a descreve como
+  jusante imediato de Rio do Sul. A obra estadual de Melhorias Fluviais leva o nome do
+  trecho "Rio do Sul–Lontras".
+- **Timbó (Rio Benedito) e Rio dos Cedros entraram como afluentes laterais** (04/09/2026).
+  O Benedito desagua perto de Indaial (AIBH 2021 + JICA seção 3.1); o Rio dos Cedros
+  desagua no Benedito — o PLANCON de Timbó monitora "o Benedito OU o Cedros", o que
+  confirma que os dois chegam lá. Timbó SAIU de `afluentes_monitorados` ao entrar na
+  árvore: estar nos dois lugares é o que o validador proíbe, e ramo + afluente lateral diz
+  o mesmo com mais precisão. Continua valendo que **o pico de Timbó ocorre JUNTO com o de
+  Rio do Sul** no hidrograma de projeto da JICA — a chuva cai na sub-bacia do Benedito,
+  não é a mesma cheia descendo o Açu, e encadear tempo por Timbó dá errado.
+- **Trombudo Central entrou SEM posição na árvore** (04/09/2026). A fonte diz em que RIO a
+  cidade está (Rio Trombudo), mas não onde esse rio encontra o eixo — e aqui não se inventa
+  o lado, a mesma regra que mantém o Luís Alves "a confirmar". Fica fora de
+  `afluentes_laterais`, e o diagrama a mostra em "Outros pontos". Cuidado com o homônimo: o
+  bairro Barra do Trombudo, em Rio do Sul, é outro lugar.
 - **Apiúna saiu do eixo**: a estação estadual DCSC-00178 é de altitude ("(H)",
   reporta ~82 m) e cai em área de mata sem curso d'água — não é régua de rio.
   Fica em `_topologia.nao_e_regua_de_rio`. Ascurra (DCSC-00003, confirmada no
