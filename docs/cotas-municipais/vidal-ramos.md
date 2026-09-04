@@ -71,3 +71,50 @@ Sem API municipal tipo Taió. O coletor atual (Asthon + DC-SC) cobre o nível; C
 2. Card da cidade: “cabeceira — sobe em minutos; olhe CIRAM + Av. Jorge Lacerda”.
 3. Encadear tempo de descida Vidal Ramos → Botuverá → Brusque (é o único ramo em fila do monitor). Não misturar com o tronco do Açu.
 4. Quando a COMPDEC ou o CIRAM publicar faixa oficial, substituir esta nota.
+
+---
+
+## O endpoint `panel` da Asthon NÃO tem a cota — medido em 04/09/2026
+
+A hipótese em aberto era que `public.asthon.com.br/public/panel?city_id=4214805`
+trouxesse `band_thresholds` por régua e fechasse esta pendência com o dado na
+fonte. **Foi capturado na VPS e não tem.** Para a régua de Vidal Ramos,
+`station_id` `bd65df3e-a5e3-4760-a879-56df0fb90787`, às 11:35 (−03):
+
+| campo | valor |
+|---|---|
+| `level_m` | 2,50 m |
+| `level_sensor` | `1` (é régua de rio) |
+| `band_thresholds` | **`null`** |
+| `attention_level` | **`null`** |
+| `overflow_cota_m` | **`null`** |
+| `river_name` | **`null`** |
+
+Não é captura incompleta — é ausência do campo na fonte. **Não repetir a
+consulta.** Restam a EPAGRI (ofício C5; o "Rios On-Line" classifica cada estação
+em faixas) e a COMPDEC de Vidal Ramos.
+
+### Por que os 3,50 m continuam fora do `estacoes.json`
+
+O número existe e é público: 3,50 m de transbordo (O Município, 2015), com a
+Defesa Civil local citada na mesma matéria dizendo "acima de 3 m", sem faixa.
+Tentador, porque Vidal Ramos comanda **84,2 km cinza** — 45% do Mirim.
+
+O que impede não é purismo. É que **gravar uma cota não acende só o amarelo:
+acende o verde por baixo dela.** Hoje, sem cota, a cabeceira e o trecho a jusante
+saem CINZA, e cinza no mapa diz "não sei" — que é a verdade. Com 3,50 m gravado,
+a leitura de 2,50 m de hoje pintaria 84 km de rio de VERDE, ou seja, o mapa
+afirmaria segurança com base num número de imprensa sobre *comportamento
+observado*, não numa faixa de acionamento. E "transbordo" é justamente o ponto em
+que a água **já saiu** — como os 6,00 m de Indaial e a cota de Brusque —, então
+o amarelo chegaria tarde e o verde chegaria cedo, os dois erros na direção que
+mata.
+
+Indaial tem o número gravado e Vidal Ramos não pela diferença que importa: os
+6,00 m saem da **página da própria COMPDEC**, e os 3,50 m saem de uma matéria de
+jornal de dez anos atrás. A escala de confiança do projeto separa as duas
+(`alta` = oficial, `media` = imprensa), e limiar que dispara aviso é o último
+lugar onde `media` serve.
+
+Se a decisão mudar, ela é do Jefferson — e o caminho honesto seria gravar como
+`inundacao` (a faixa que diz "a água já está fora"), nunca como `atencao`.

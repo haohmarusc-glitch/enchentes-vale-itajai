@@ -1,15 +1,23 @@
 /**
- * Ribeirão e canal ficam cinza e PARADOS — e o dia em que isso mudar tem de ser
- * uma decisão, não um efeito colateral.
+ * Ribeirão fica cinza e PARADO — e o dia em que isso mudar tem de ser uma
+ * decisão, não um efeito colateral.
  *
- * O relato foi: "o canal retificado do Mirim não tem animação". Está certo, e a
- * razão importa. Não é falta de número: a SEMASA (DC-03) publica 0,41 m e o pino
- * mostra. É que a correnteza animada SIGNIFICA a faixa — `VEL_FAIXA` é indexado
- * por faixa —, e a régua daquele trecho é de ESTUÁRIO: a maré cruza a cota sem
- * enchente nenhuma. Fazer a água correr ali afirmaria um nível que a maré não
- * deixa ler.
+ * HISTÓRICO (04/09/2026). Este arquivo já afirmou que o canal retificado do
+ * Mirim também devia ficar cinza. Estava errado, e o morador é que viu: o canal
+ * NÃO é afluente, é o próprio Itajaí-Mirim em outro leito (as réguas DC-03…DC-06
+ * dizem `rio: "itajai-mirim"`; pelo JICA ele leva 2/3 da vazão). Pior: o curso
+ * antigo, ao lado, já saía pintado e animado, porque a geometria dele está
+ * dentro de `itajai-mirim.geojson`. O canal foi para `canaisDoTronco.ts` e hoje
+ * é pintado pela âncora de montante, Brusque — ver `canalDoTronco.test.ts`.
  *
- * Hoje isso vale por DOIS caminhos independentes, e é bom que valha:
+ * O que continua valendo, e é o motivo de este arquivo existir: os RIBEIRÕES de
+ * Itajaí (Murta, Canhanduba, e o Conceição que fecha o vão) ficam cinza. A razão
+ * é a régua, não o desenho: são de estuário — a maré cruza a cota sem enchente
+ * nenhuma —, e por isso estão marcadas `alerta_automatico: false`. Correnteza
+ * animada SIGNIFICA faixa (`VEL_FAIXA` é indexado por faixa); fazer a água
+ * correr ali afirmaria um nível que a maré não deixa ler.
+ *
+ * Isso vale hoje por DOIS caminhos independentes, e é bom que valha:
  *
  *  1. o afluente entra na cena sem cidade (`cidades: []`), então todo trecho cai
  *     em `sem-dado`, e `VEL_FAIXA['sem-dado'] = 0`;
@@ -50,11 +58,19 @@ test('cinza não corre: a velocidade de sem-dado é exatamente zero', () => {
   assert.equal(VEL_FAIXA['sem-dado'], 0)
 })
 
-test('os três cursos de Itajaí estão entre os afluentes desenhados', () => {
+test('os ribeirões de Itajaí estão entre os afluentes desenhados', () => {
   const lista = afluentes()
-  for (const id of ['ribeirao-murta', 'ribeirao-canhanduba', 'mirim-canal-retificado']) {
+  for (const id of ['ribeirao-murta', 'ribeirao-canhanduba', 'rio-conceicao']) {
     assert.ok(lista.includes(id), `${id} saiu da lista de afluentes do Monitor`)
   }
+})
+
+test('o canal retificado NÃO é afluente — é o próprio Mirim', () => {
+  assert.ok(
+    !afluentes().includes('mirim-canal-retificado'),
+    'o canal voltou para os afluentes: ficaria cinza e parado ao lado do curso ' +
+      'antigo, pintado e animado, no mesmo trecho do mesmo rio',
+  )
 })
 
 test('nenhum afluente tem cidade no cadastro — é o que o mantém sem faixa', () => {

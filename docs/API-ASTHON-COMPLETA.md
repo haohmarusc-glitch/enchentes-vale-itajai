@@ -16,20 +16,38 @@ Base: `https://public.asthon.com.br/public/` · `city_id=4214805` · sem autenti
 > | Rio do Sul tem 3 réguas, uma por rio (Dom Tito Buss/Açu, Ricardo Kanitz/Sul, BR 470/Oeste) | 🟡 **PARCIAL.** `stations_list` confirma **Ponte Dom Tito Buss** no Rio Itajaí-Açu e **Ponte Ricardo Kanitz** no Rio Itajaí do Sul (e ainda uma quarta, *Ponte Hannelore Hartmann Eyng*, também no Sul). **"Ponte BR 470" não aparece** nessa captura. |
 >
 > **Consequência prática:** nada de cota foi gravado em `data/estacoes.json` a partir deste documento.
-> A pendência "cota de referência de Vidal Ramos, Taió e Ituporanga" **continua aberta** — o dado que
-> temos em mãos mostra justamente Vidal Ramos sem cota. Para fechá-la é preciso capturar o `panel` de
-> verdade, na VPS:
+
+---
+
+> ## ❌ RESOLVIDO PELA NEGATIVA (04/09/2026) — o `panel` FOI capturado, e não tem a cota
 >
-> ```bash
-> curl -s "https://public.asthon.com.br/public/panel?city_id=4214805" \
->   -o data/brutos/rio-do-sul-asthon-panel.json
-> python3 -c "import json;d=json.load(open('data/brutos/rio-do-sul-asthon-panel.json'));\
-> print([(s['name'], s.get('band_thresholds')) for s in d['stations'] if s.get('level_sensor')])"
-> ```
+> O comando acima **foi executado na VPS**, que alcança o host. A resposta encerra a hipótese: para a
+> régua de Vidal Ramos (`station_id` `bd65df3e-a5e3-4760-a879-56df0fb90787`), às 11:35 de 04/09
+> (−03), o `panel` devolve
 >
-> Se as 21 réguas vierem com `band_thresholds` preenchido, a afirmação se confirma e a pendência fecha
-> com o dado na mão. Enquanto isso, ela fica aberta — a regra do projeto é preferir "não sei" a um
-> número que não se pôde conferir.
+> | campo | valor |
+> |---|---|
+> | `level_m` | **2,50 m** |
+> | `level_sensor` | `1` — é régua de rio, não barragem nem altitude |
+> | `band_thresholds` | **`null`** |
+> | `attention_level` | **`null`** |
+> | `overflow_cota_m` | **`null`** |
+> | `river_name` | **`null`** |
+>
+> Ou seja: **o endpoint publica o nível e não publica cota nenhuma para essa régua.** A afirmação de
+> que o `panel` "entrega `band_thresholds` para 21 réguas e resolve o datum do Alto Vale" está
+> **refutada** para a única régua da bacia que nos interessava aqui — não é captura incompleta, é
+> ausência do campo na fonte.
+>
+> **Não repetir esta consulta.** O caminho Asthon para a cota de Vidal Ramos está fechado; o que resta
+> é a EPAGRI ("Rios On-Line", que classifica por faixas — ofício C5) ou a COMPDEC de Vidal Ramos
+> diretamente. Ver `docs/cotas-municipais/vidal-ramos.md`.
+>
+> O único número público que existe fora da API continua sendo **3,50 m de transbordo** (O Município,
+> 2015; a Defesa Civil local, citada na mesma matéria, diz "acima de 3 m", sem faixa) — e continua
+> **não gravado**, pelo motivo de sempre: gravar uma cota faz a cidade e os 84 km a jusante saírem
+> **VERDES** abaixo dela, e um verde de 84 km apoiado em número de imprensa sobre comportamento afirma
+> segurança que ninguém mediu. Cinza diz "não sei", que é a verdade. Ver a discussão no README.
 
 ---
 

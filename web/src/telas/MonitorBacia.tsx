@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { cidadesDoRio, eixoDoRio, estacoesTempoReal, mareItajai } from '../dados/carregar'
+import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
 import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
@@ -59,6 +60,7 @@ function urlDoRio(rioId: string): string | undefined {
 
 /** Rios do tronco (têm cidades que os pintam). Afluentes entram como linha extra. */
 const RIOS_TRONCO = ['itajai-acu', 'itajai-mirim'] as const
+
 /**
  * Traçados OPCIONAIS: entram quando o geojson existe, e somem sem quebrar nada.
  *
@@ -82,7 +84,6 @@ const AFLUENTES = [
   'hercilio',
   'ribeirao-murta',
   'ribeirao-canhanduba',
-  'mirim-canal-retificado',
   // O trecho que FECHA o vão do Canhanduba até o Mirim. Sem ele desenhado, o
   // Canhanduba morre a 578 m do rio — e o mapa AFIRMA que a água pára ali.
   // Entra como curso próprio porque é assim que o OSM o nomeia: fundir os dois
@@ -408,27 +409,25 @@ export default function MonitorBacia() {
     let vivo = true
     Promise.all([
       ...RIOS_TRONCO.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
+      ...CANAIS.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
       ...AFLUENTES.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
     ]).then((baixados) => {
       if (!vivo) return
-      const lista: RioParaCena[] = []
-      for (const b of baixados) {
-        if (!b.coords) continue
+      // `juntarCanais` funde o canal retificado no traçado do Mirim e o tira da
+      // lista: é o que faz a espinha do Mirim pintar os dois canais igual.
+      const lista: RioParaCena[] = juntarCanais(baixados).map((b) => ({
+        rioId: b.rioId,
+        coords: b.coords,
         // Tronco tem cidades que o pintam; afluente entra só como linha (sem
         // cidade própria no cadastro → fica cinza, honesto).
-        const cidades = (RIOS_TRONCO as readonly string[]).includes(b.rioId)
+        cidades: (RIOS_TRONCO as readonly string[]).includes(b.rioId)
           ? cidadesDoRio(b.rioId)
-          : []
+          : [],
         // O eixo diz quem pode PINTAR. Sem ele, Timbó (no Benedito, a 8,2 km)
         // e Rio dos Cedros (16,6 km) coloriam trechos do Açu com o nível de
         // outro rio.
-        lista.push({
-          rioId: b.rioId,
-          coords: b.coords,
-          cidades,
-          eixo: eixoDoRio(b.rioId),
-        })
-      }
+        eixo: eixoDoRio(b.rioId),
+      }))
       setRios(lista)
     })
     return () => {
