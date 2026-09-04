@@ -18,9 +18,26 @@ from typing import Any
 RAIZ = Path(__file__).resolve().parent.parent
 DADOS = RAIZ / "data"
 
+#: Identificação do projeto em toda requisição (exigência do CLAUDE.md).
+#:
+#: SEM ACENTO, E ISSO NÃO É DESCUIDO — é o conserto de um bug provado em
+#: 04/09/2026. Cabeçalho HTTP é ASCII; quando o valor tem caractere fora dele,
+#: o `requests` codifica em **latin-1**, e "ó" vira o byte solto 0xF3 — que não
+#: é UTF-8 válido. Servidor com borda que valida UTF-8 no cabeçalho recusa a
+#: requisição antes de a aplicação ver: HTTP 400, corpo vazio, sem
+#: Content-Type. Foi o que a API de Taió (Uniparking) fez, e o teste que
+#: separou as três formas do mesmo caractere mostrou por quê:
+#:
+#:     User-Agent com "...\xc3\xb3..." (ó em UTF-8, dois bytes)  -> 200
+#:     User-Agent com "...\xf3..."     (ó em latin-1, um byte)   -> 400
+#:     User-Agent só ASCII                                       -> 200
+#:
+#: O bug estava latente desde que esta linha foi escrita e valia para os onze
+#: scripts que importam daqui — as outras fontes toleravam o byte inválido, a
+#: de Taió não. `teste_comum.py` trava o ASCII para não voltar.
 USER_AGENT = (
     "enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; "
-    "contato via repositório GitHub)"
+    "contato via repositorio GitHub)"
 )
 
 #: Intervalo mínimo entre chamadas à mesma fonte, em segundos.

@@ -200,11 +200,35 @@ def parse_historico(pontos) -> list[dict]:
     return saida
 
 
+class RespostaRuim(RuntimeError):
+    """HTTP que não é 2xx, carregando o que o servidor respondeu."""
+
+
 def baixar_json(url: str) -> object:
+    """
+    GET com o User-Agent do projeto.
+
+    Em erro, levanta `RespostaRuim` com o CORPO da resposta junto. Sem isso, um
+    400 vira só "Bad Request" e não se sabe o que o servidor quis dizer — foi
+    exatamente o que aconteceu na primeira tentativa contra a VPS em 04/09/2026:
+    o transporte falhou e a mensagem não dizia nada acionável. O corpo quase
+    sempre nomeia o cabeçalho que falta ou o parâmetro recusado.
+    """
     import requests
 
-    r = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=20)
-    r.raise_for_status()
+    r = requests.get(url, headers={
+        "User-Agent": USER_AGENT,
+        # A API devolve JSON; pedir explicitamente evita servidor que recusa
+        # requisição sem Accept. Não é disfarce: continua identificando o projeto.
+        "Accept": "application/json",
+    }, timeout=20)
+    if not r.ok:
+        corpo = (r.text or "").strip().replace("\n", " ")[:400] or "(corpo vazio)"
+        raise RespostaRuim(
+            f"HTTP {r.status_code} em {url}\n"
+            f"  o servidor respondeu: {corpo}\n"
+            f"  tipo do conteudo: {r.headers.get('Content-Type', '(nao informado)')}"
+        )
     return r.json()
 
 
