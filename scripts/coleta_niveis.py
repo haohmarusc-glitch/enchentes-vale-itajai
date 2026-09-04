@@ -231,6 +231,46 @@ def baixar_nivel_taio(gravar: bool) -> list[dict]:
         return []
 
 
+def baixar_nivel_gaspar(gravar: bool) -> list[dict]:
+    """
+    Nível do Açu em GASPAR, da tabela da Defesa Civil do município.
+
+    Gaspar tinha cota VERIFICADA (5/6/7 m, do Plano de Contingência, com o PDF
+    no repositório) e coletor próprio desde antes — e mesmo assim ficava CINZA
+    no mapa, porque a leitura ia só para `ultimo_gaspar.json` e nunca entrava no
+    `ultimo.json` que o site lê. É o mesmo elo que faltava a Taió até hoje: o
+    coletor existia, o caminho não.
+
+    A ESCOLHA DA LINHA É POR IGUALDADE, e isso é o cuidado central aqui. A mesma
+    tabela publica `RIBEIRÃO BELCHIOR CENTRAL` com 1,68 m — nível PLAUSÍVEL, de
+    outro curso. Pego por engano, Gaspar apareceria "normal" com 1,68 m enquanto
+    o Açu estivesse em 6 m: silêncio no lugar de alarme, que é o pior desfecho
+    deste projeto. Ver `ROTULO_REGUA_ACU` no `coleta_gaspar.py`.
+
+    Respeita o `robots.txt` antes de buscar, como o coletor próprio faz.
+    Falha nunca derruba a coleta — é uma cidade a mais, não a fonte principal.
+    """
+    try:
+        import coleta_gaspar as cg
+
+        if not cg.permitido():
+            print("aviso: robots.txt de Gaspar não permite — pulado.", file=sys.stderr)
+            return []
+        analise = cg.analisar(cg.baixar(cg.URL))
+        if gravar:
+            from comum import DADOS
+
+            destino = DADOS / cg.SAIDA
+            destino.parent.mkdir(parents=True, exist_ok=True)
+            destino.write_text(json.dumps(analise, ensure_ascii=False, indent=1) + "\n",
+                               encoding="utf-8")
+        leitura = cg.leitura_da_cidade(analise)
+        return [leitura] if leitura else []
+    except Exception as e:
+        print(f"aviso: Gaspar não coletada ({e}).", file=sys.stderr)
+        return []
+
+
 def estacoes_do_ultimo() -> set[str]:
     """Os títulos que vieram na coleta anterior, do ultimo.json que vamos trocar."""
     try:
@@ -495,6 +535,11 @@ def main() -> int:
     # Taió (municipal) pelo mesmo motivo, e traz as comportas da Barragem Oeste
     # no arquivo próprio. `--no-save` não pode reescrever o que vai ao ar.
     leituras = leituras + baixar_nivel_taio(gravar=not args.no_save)
+
+    # Gaspar (municipal), pelo mesmo motivo e com o mesmo cuidado: a tabela dela
+    # traz outra régua plausível, de outro curso, que não pode virar o nível da
+    # cidade.
+    leituras = leituras + baixar_nivel_gaspar(gravar=not args.no_save)
 
     for l in leituras:
         alvo = f"{l['cidade']} ({l['rio']})" if l.get("cidade") else "não mapeada"
