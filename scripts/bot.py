@@ -119,6 +119,12 @@ RODAPE = (
 )
 
 ROTULO_COTA = {
+    # Fases que alguns planos municipais põem ABAIXO da atenção. O rótulo é o
+    # nome que o próprio plano usa — não se rebatiza para caber no nosso
+    # vocabulário, senão a tela chama de "atenção" o que a cidade chama de
+    # monitoramento, e passa a afirmar um aviso que a COMPDEC não deu.
+    "observacao_cota": "Observação",
+    "monitoramento": "Monitoramento",
     "atencao": "Atenção",
     "alerta": "Alerta",
     "emergencia": "Emergência",
@@ -727,7 +733,14 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     return linhas
 
 
-ORDEM_COTAS = ("atencao", "alerta", "emergencia", "inundacao", "inundacao_historica")
+#: A ordem em que a água sobe. `monitoramento` e `observacao_cota` vêm ANTES de
+#: atenção porque é onde os planos municipais as põem: em Taió a COMPDEC começa
+#: a monitorar a 5,00 m e só chama de atenção a 7,00 m; em Ibirama a observação
+#: é 3,00 m e a atenção 3,50 m. Sem elas aqui, `ordenar_cotas` as jogaria no
+#: fim, e a resposta do bot listaria "monitoramento 5,00 m" DEPOIS de
+#: "emergência 9,00 m" — uma escada que sobe e desce, que é pior que não mostrar.
+ORDEM_COTAS = ("observacao_cota", "monitoramento", "atencao", "alerta",
+               "emergencia", "inundacao", "inundacao_historica")
 
 
 def ordenar_cotas(cotas: dict) -> list[tuple[str, float]]:

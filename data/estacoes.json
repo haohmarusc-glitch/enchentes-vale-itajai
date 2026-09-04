@@ -58,8 +58,17 @@
           "codigo_dcsc": "DCSC-00041",
           "verificado": false,
           "barragem": "Barragem Oeste (Taió)",
-          "observacao": "Cabeceira do Itajaí do Oeste — corre em PARALELO ao Itajaí do Sul (Ituporanga) e se junta a ele em Rio do Sul, onde nasce o Açu. Não é elo de uma fila com Ituporanga.",
-          "cotas_m": {},
+          "regua": "Rio Itajaí do Oeste, régua do CENTRO da cidade — não a da Barragem Oeste",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "Plano de Contingência da COMPDEC de Taió, janeiro/2026 — critérios de acionamento do Rio Itajaí do Oeste, régua do Centro. https://defesacivil.taio.sc.gov.br/wp-content/uploads/2026/01/PLANO-DE-CONTINGENCIA-TAIO-JAN-2026.pdf",
+          "observacao": "Cabeceira do Itajaí do Oeste — corre em PARALELO ao Itajaí do Sul (Ituporanga) e se junta a ele em Rio do Sul, onde nasce o Açu. Não é elo de uma fila com Ituporanga. COTAS (04/09/2026): o Plano de Contingência define CINCO fases — normal até 5,00 m, MONITORAMENTO de 5,00 a 7,00, ATENÇÃO de 7,00 a 8,00, ALERTA de 8,00 a 9,00 e EMERGÊNCIA acima de 9,00. Cada cota aqui é o PISO da fase de mesmo nome; os nomes NÃO foram remapeados, para a tela não chamar de 'atenção' uma faixa que a própria cidade chama de monitoramento. Consequência a saber: entre 5,00 e 7,00 m a tela mostra 'normal' enquanto a COMPDEC de Taió já está monitorando — por isso o piso de 5,00 m fica gravado em 'monitoramento', que o código ainda não desenha. `cotas_verificado: false` porque o PDF NÃO está em data/brutos/ e o domínio é inalcançável do ambiente de desenvolvimento: a transcrição veio de levantamento de 03/09/2026, não de leitura do PDF aqui. Confere com o que se sabe: o pico de 09/10/2023 em enchentes.json é 12,40 m, bem acima da emergência de 9,00 m. ARMADILHA DAS DUAS RÉGUAS: a API municipal traz `nivelCentro` (~5 m, a cidade) e `montante` (~17 m, o reservatório da Barragem Oeste) — usar o segundo como nível da cidade pintaria emergência falsa todo dia.",
+          "cotas_m": {
+            "monitoramento": 5.0,
+            "atencao": 7.0,
+            "alerta": 8.0,
+            "emergencia": 9.0
+          },
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
@@ -119,8 +128,16 @@
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00020",
           "verificado": false,
-          "observacao": "Fica no Rio Hercílio (Itajaí do Norte), afluente LATERAL do tronco — verificado no mapa em 02/09/2026 (o marcador cai sobre 'Rio Hercílio'). NÃO é elo da fila: a cheia de Ibirama ENTRA no tronco perto de Rio do Sul, não desce por Indaial. Recebe o Itajaí do Norte (barragem José Boiteux).",
-          "cotas_m": {},
+          "regua": "Régua do Rio Itajaí do Norte (Hercílio) em Ibirama",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "PLAMCON de Ibirama, homologado pelo Decreto nº 5.431/2024 (atualizado pelo Decreto nº 5.824/2025) — faixas do Rio Itajaí do Norte. https://s3cache.dom.sc.gov.br/atos/2024/08/1724680743_decreto_n_5.431__homologa_o_plano_municipal_de_contingncia.pdf",
+          "observacao": "Fica no Rio Hercílio (Itajaí do Norte), afluente LATERAL do tronco — verificado no mapa em 02/09/2026 (o marcador cai sobre 'Rio Hercílio'). NÃO é elo da fila: a cheia de Ibirama ENTRA no tronco perto de Rio do Sul, não desce por Indaial. Recebe o Itajaí do Norte (barragem José Boiteux). COTAS (04/09/2026): o PLAMCON, homologado por DECRETO, define observação 3,00 m, atenção 3,50 m e emergência 4,00 m. É a fonte mais forte deste lote — decreto publicado no Diário Oficial dos Municípios, não página de site. O piso de observação fica gravado em 'observacao_cota', chave que o código ainda não desenha, para não chamar de 'atenção' a fase que o plano chama de observação. `cotas_verificado: false` porque o PDF não está em data/brutos/ e o domínio é inalcançável daqui. ATENÇÃO À ESCALA: 3 a 4 m aqui não se compara com os 7 a 9 m de Taió nem com os 9 a 10,5 m de Ilhota — cada régua tem seu zero, e este rio é outro. O mesmo plano traz limiares de CHUVA (50 mm/dia observação, 50–100 atenção, acima de 100 emergência); eles não pintam a régua.",
+          "cotas_m": {
+            "observacao_cota": 3.0,
+            "atencao": 3.5,
+            "emergencia": 4.0
+          },
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
@@ -153,8 +170,14 @@
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00006",
           "verificado": false,
-          "observacao": "No tronco do Açu (verificado no mapa e no Overpass 02/09/2026: 'Rio Itajaí-Açu' ao lado do marcador — não é o Benedito). Estação com curva-chave usada pelo CEOPS para estimar vazões em Blumenau.",
-          "cotas_m": {},
+          "regua": "Régua do Itajaí-Açu em Indaial (a COMPDEC não nomeia o ponto)",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "Página \"Cotas de enchente\" da Defesa Civil de Indaial — https://indaial.atende.net/subportal/defesa-civil-indaial/pagina/cotas-de-enchente",
+          "observacao": "No tronco do Açu (verificado no mapa e no Overpass 02/09/2026: 'Rio Itajaí-Açu' ao lado do marcador — não é o Benedito). Estação com curva-chave usada pelo CEOPS para estimar vazões em Blumenau. COTA (04/09/2026) — LEIA ANTES DE USAR: a COMPDEC de Indaial NÃO publica faixa de atenção, alerta ou emergência. O que ela publica é uma lista de 12 vias com alagamento JÁ REGISTRADO a 6,00 m na régua. Os 6,00 m estão gravados aqui como 'atencao' porque é o único número que existe e porque sem ele Indaial não teria aviso nenhum — mas o nome é NOSSO, não da COMPDEC, e é preciso dizer o que ele significa: aos 6,00 m a água já está na rua em doze vias. Não é aviso prévio, é o começo do alagamento. Mesma situação de Brusque, e a mesma pendência: obter da COMPDEC uma cota ABAIXO da primeira inundação é o que fecharia a lacuna. Para escala: os picos clássicos daqui são 7,78 m (1983) e 8,04 m (1984).",
+          "cotas_m": {
+            "atencao": 6.0
+          },
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
@@ -220,8 +243,16 @@
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00030",
           "verificado": false,
-          "observacao": "Recebe o rio Luiz Alves. NÃO tem régua própria de nível ao vivo: a estação DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é de Itajaí, a jusante, com zero próprio — usá-la como nível de Ilhota seria comparar réguas de cidades diferentes. Como Gaspar antes do Plano, Ilhota aparece no eixo sem nível ao vivo até haver fonte com régua da própria cidade.",
-          "cotas_m": {},
+          "regua": "Estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin (a régua que o PLANCON cita)",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "Plano de Contingência da Defesa Civil de Ilhota 2025/2028, versão 016, seção \"Condições sobre o nível do Rio Itajaí\" — https://ilhota.sc.gov.br/wp-content/uploads/2025/08/Plano_de_Contingencia_Defesa_Civil_Ilhota.pdf",
+          "observacao": "Recebe o rio Luiz Alves. NÃO tem régua própria de nível ao vivo: a estação DC-11 (Santa Regina / Volta de Cima) fica na divisa mas é de Itajaí, a jusante, com zero próprio — usá-la como nível de Ilhota seria comparar réguas de cidades diferentes. Como Gaspar antes do Plano, Ilhota aparece no eixo sem nível ao vivo até haver fonte com régua da própria cidade. COTAS (04/09/2026): o PLANCON define quatro fases na régua da ponte — calha normal até 9,20 m; 9,20 a 10,00 REPRESAMENTO DOS RIBEIRÕES, em que a COMPDEC monitora e EXPLICITAMENTE não avisa a população; 10,00 a 10,50 PRONTIDÃO, com cautela nos avisos; acima de 10,50 sinal oficial de EMERGÊNCIA. São quatro fases para os nossos quatro nomes, uma a uma, então a ordem de gravidade foi preservada: 'alerta' aqui é a PRONTIDÃO do plano — o nome muda, a posição e a força não. `cotas_verificado: false` porque o PDF não está em data/brutos/ e o domínio é inalcançável do ambiente de desenvolvimento. DUAS RESSALVAS DO PRÓPRIO PLANO: (1) as cotas de RUA dele são altitude sobre o nível do mar ('Régua Municipal', começando em 12,00 m), NÃO o zero da ponte — nunca misturar com estes números; (2) não está confirmado que a estação estadual DCSC-00030 seja a mesma ponte, e por isso estas cotas não podem pintar a leitura estadual — o que a coleta já impede sozinha, gravando toda leitura da rede estadual com usar_para_cota=false.",
+          "cotas_m": {
+            "atencao": 9.2,
+            "alerta": 10.0,
+            "emergencia": 10.5
+          },
           "fontes_tempo_real": [],
           "coordenadas": [-26.8944, -48.8248]
         },
