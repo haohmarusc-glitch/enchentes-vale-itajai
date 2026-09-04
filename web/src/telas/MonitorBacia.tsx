@@ -783,9 +783,23 @@ export default function MonitorBacia() {
           </ul>
           <p className={estilos.legendaNota}>
             Cor é a faixa na régua da cidade, <strong>nunca o metro</strong> entre
-            cidades. Cinza = sem régua fresca (não é seguro, é sem dado). O número
-            em violeta vem da régua estadual, com zero próprio: aparece quando não
-            há fonte municipal e <strong>não vira faixa</strong>.
+            cidades. Cinza = sem faixa para afirmar (não é seguro, é sem
+            afirmação). O número em violeta vem da régua estadual, com zero
+            próprio: aparece quando não há fonte municipal e{' '}
+            <strong>não vira faixa</strong>.
+          </p>
+          {/* O cinza tem DUAS causas, e chamar as duas de "sem leitura" era
+              falso justamente onde há leitura: o canal do Mirim mostra 0,41 m na
+              SEMASA e mesmo assim fica cinza e parado. Não é falta de número — é
+              recusa de transformar aquele número em faixa, porque a régua é de
+              estuário. Como a correnteza SIGNIFICA a faixa, animá-la afirmaria o
+              nível que a maré torna ilegível. */}
+          <p className={estilos.legendaNota}>
+            Ribeirões e canais (Murta, Canhanduba, canal do Mirim) ficam cinza e{' '}
+            <strong>parados mesmo tendo régua com número</strong>: as réguas deles
+            são de estuário, a maré cruza a cota sem enchente, e a correnteza
+            animada significa a faixa — correr ali afirmaria um nível que a maré
+            não deixa ler. O metro aparece no pino; a cor, não.
           </p>
 
           {/* Seletor de fundo. O ESCURO é o padrão por FUNÇÃO, não por estética:
