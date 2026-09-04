@@ -280,10 +280,6 @@ class TestRobots(unittest.TestCase):
         self.assertFalse(permitido(buscar=falha))
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
-
-
 #: Cabeçalho com as janelas curtas, que o INDICES enxuto acima não tem.
 INDICES_CHUVA = {"estacao": 0, "fonte": 1, "coleta": 2, "nivel": 3,
                  "chuva_atual": 4, "chuva_1h": 5, "chuva_6h": 6, "chuva_24h": 7}
@@ -356,3 +352,7 @@ class TestCoerenciaDaChuva(unittest.TestCase):
         # apoiaria.
         regua = next(e for e in d["estacoes"] if e["rotulo"] == "Rio Itajaí Açu Gaspar")
         self.assertTrue(regua["chuva_coerente"])
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

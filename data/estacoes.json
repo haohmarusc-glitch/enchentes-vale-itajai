@@ -70,6 +70,7 @@
             "emergencia": 9.0
           },
           "fontes_tempo_real": [
+            "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/cards?v=1 (API municipal, campo nivelCentro — a régua do Centro; scripts/coleta_taio.py)",
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Barragem Oeste Taió)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],

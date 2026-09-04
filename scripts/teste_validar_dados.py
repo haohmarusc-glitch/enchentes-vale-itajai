@@ -91,10 +91,6 @@ class TopologiaArvore(unittest.TestCase):
         self.assertTrue(any("motivo_sem_alerta" in e for e in erros_de(d)))
 
 
-if __name__ == "__main__":
-    unittest.main()
-
-
 def _monotonia(estacoes_dict, transito_dict) -> tuple[list[str], list[str]]:
     """Roda só `valida_monotonia_transito` sobre dados em memória."""
     vd.erros.clear()
@@ -294,3 +290,95 @@ class MesesPareados(unittest.TestCase):
             {"rio": "itajai-acu", "cidade": "blumenau", "data": "1911-10-02", "pico_m": 16.9},
         ]
         self.assertEqual(_meses(est, enc), [])
+
+
+def _hidraulica(d) -> tuple[list[str], list[str]]:
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: d if nome == "hidraulica.json" else orig(nome)
+    try:
+        vd.valida_hidraulica()
+    finally:
+        vd.le_json = orig
+    return list(vd.erros), list(vd.avisos)
+
+
+class Hidraulica(unittest.TestCase):
+    """
+    O dado do JICA que explica a bacia — e as travas que o mantêm honesto.
+
+    Não se confere o VALOR aqui (não temos o PDF): confere-se que cada bloco
+    continue com fonte, que as duas delimitações de área das barragens sigam
+    lado a lado, e que um número recusado pela auditoria não volte como valor.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "hidraulica.json").read_text(encoding="utf-8"))
+
+    def base(self):
+        return copy.deepcopy(self.real)
+
+    def test_o_arquivo_real_passa(self):
+        erros, _ = _hidraulica(self.base())
+        self.assertEqual(erros, [])
+
+    def test_bloco_sem_fonte_aborta(self):
+        d = self.base()
+        d["capacidade_de_vazao"].pop("_fonte")
+        self.assertTrue(any("_fonte" in e for e in _hidraulica(d)[0]))
+
+    def test_as_duas_areas_de_drenagem_tem_de_coexistir(self):
+        # JICA diz 1.042 km² para a Oeste; a API estadual diz 851. São
+        # delimitações diferentes — fundir seria escolher em silêncio.
+        d = self.base()
+        d["barragens"]["oeste"].pop("area_drenagem_km2_api_estadual")
+        erros, _ = _hidraulica(d)
+        self.assertTrue(any("escolher em silêncio" in e for e in erros))
+
+    def test_o_retorno_de_8400_anos_nao_pode_voltar_como_valor(self):
+        # A auditoria não achou esse número nas páginas conferidas; o que o
+        # Vol. III cita para 1 dia em Blumenau é 270 anos.
+        d = self.base()
+        d["periodos_de_retorno"]["2008_retorno_anos"] = 8400
+        self.assertTrue(any("8.400 aparece como VALOR" in e for e in _hidraulica(d)[0]))
+
+    def test_mas_CITAR_o_numero_no_texto_com_a_ressalva_e_permitido(self):
+        """
+        O guarda anterior procurava a string e acusava a própria advertência —
+        o texto que manda NÃO gravar 8.400 cita 8.400. Falso positivo real,
+        pego quando o validador reprovou o arquivo que ele deveria aprovar.
+        """
+        d = self.base()
+        texto = json.dumps(d, ensure_ascii=False)
+        self.assertIn("8.400", texto, "a ressalva sobre o número sumiu do arquivo")
+        self.assertEqual(_hidraulica(d)[0], [], "citar na prosa não pode ser erro")
+
+    def test_curva_chave_recusa_par_incompleto(self):
+        d = self.base()
+        d["curva_chave_2008"]["pontos"][0].pop("vazao_m3s")
+        self.assertTrue(any("vazao_m3s" in e for e in _hidraulica(d)[0]))
+
+    def test_curva_chave_recusa_nivel_implausivel(self):
+        # 115 m não é régua de rio desta bacia — seria vírgula fora do lugar.
+        d = self.base()
+        d["curva_chave_2008"]["pontos"][0]["nivel_m"] = 115.0
+        self.assertTrue(any("fora de faixa plausível" in e for e in _hidraulica(d)[0]))
+
+    def test_a_divisao_do_mirim_NAO_entrou_na_topologia(self):
+        """
+        Trava a decisão, não só o dado.
+
+        Gravar 2/3–1/3 em `estacoes.json._topologia` do Mirim parece natural e
+        quebraria o rio inteiro: é a presença desse campo que faz o validador
+        tratar o rio como RAMIFICADO, passando a exigir ramo/ordem_no_ramo em
+        todas as cidades — e o Mirim é fila, com `ordem` 1..N.
+        """
+        est = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        self.assertNotIn("_topologia", est["rios"]["itajai-mirim"],
+                         "o Mirim é fila; _topologia o tornaria ramificado")
+        self.assertIn("divisao_do_mirim", self.real)
+
+if __name__ == "__main__":
+    unittest.main()

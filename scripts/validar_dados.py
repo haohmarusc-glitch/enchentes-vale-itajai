@@ -714,12 +714,72 @@ def valida_meses_pareados() -> None:
                     )
 
 
+def valida_hidraulica() -> None:
+    """
+    Confere `hidraulica.json` — o dado do JICA que explica a bacia.
+
+    O que se confere aqui NÃO é o valor: é que cada bloco continue com FONTE, e
+    que os números que o site poderia confundir com cota fiquem fora do alcance.
+    Vazão em m³/s e cota em metros são grandezas diferentes; o dia em que uma
+    virar a outra na tela, alguém decide errado.
+
+    Trava também a ressalva que a auditoria levantou: as áreas de drenagem das
+    barragens divergem entre o JICA e a API estadual, e as duas têm de continuar
+    gravadas lado a lado. Fundir seria escolher em silêncio.
+    """
+    d = le_json("hidraulica.json")
+    if "_meta" not in d or "fonte" not in d.get("_meta", {}):
+        erro("hidraulica.json: falta _meta.fonte — dado sem fonte não entra neste projeto")
+
+    for bloco in ("declividade_por_trecho", "capacidade_de_vazao", "barragens",
+                  "curva_chave_2008", "divisao_do_mirim"):
+        if bloco not in d:
+            erro(f"hidraulica.json: falta o bloco '{bloco}'")
+        elif not str(d[bloco].get("_fonte", "")).strip():
+            erro(f"hidraulica.json / {bloco}: falta '_fonte'")
+
+    # As duas delimitações de área têm de coexistir — ver o comentário acima.
+    for nome in ("oeste", "sul"):
+        b = d.get("barragens", {}).get(nome, {})
+        for campo in ("area_drenagem_km2_jica", "area_drenagem_km2_api_estadual"):
+            if not isinstance(b.get(campo), (int, float)):
+                erro(f"hidraulica.json / barragens / {nome}: falta '{campo}'. As duas "
+                     "delimitações ficam lado a lado; fundir seria escolher em silêncio.")
+
+    # Curva-chave: par nível->vazão só serve se os dois lados existirem, e o
+    # nível tem de ser plausível como régua de rio.
+    for i, p_ in enumerate(d.get("curva_chave_2008", {}).get("pontos", [])):
+        onde = f"hidraulica.json / curva_chave_2008[{i}] ({p_.get('cidade', '???')})"
+        if not isinstance(p_.get("nivel_m"), (int, float)) or not 0 < p_["nivel_m"] < PICO_MAXIMO_M:
+            erro(f"{onde}: nivel_m fora de faixa plausível")
+        if not isinstance(p_.get("vazao_m3s"), (int, float)) or p_["vazao_m3s"] <= 0:
+            erro(f"{onde}: vazao_m3s ausente ou não positiva")
+
+    # O número que a auditoria NÃO conseguiu confirmar não pode voltar como
+    # VALOR. Procurar a string seria pior que inútil: o próprio texto que avisa
+    # para não gravá-lo cita o número, e o guarda acusaria a advertência.
+    if _tem_valor(d, 8400):
+        erro("hidraulica.json: 8.400 aparece como VALOR. O retorno de '8.400 anos' para 2008 "
+             "não foi confirmado na fonte — a auditoria achou 270 anos para 1 dia em "
+             "Blumenau. Citar em texto, com a ressalva, tudo bem; gravar como número, não.")
+
+
+def _tem_valor(no, alvo: float) -> bool:
+    """O número aparece em alguma POSIÇÃO DE VALOR da árvore? Texto não conta."""
+    if isinstance(no, dict):
+        return any(_tem_valor(v, alvo) for v in no.values())
+    if isinstance(no, list):
+        return any(_tem_valor(v, alvo) for v in no)
+    return isinstance(no, (int, float)) and not isinstance(no, bool) and float(no) == alvo
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
     valida_transito(conhecidas)
     valida_monotonia_transito()
     valida_meses_pareados()
+    valida_hidraulica()
     valida_cotas_ruas()
     valida_referencias()
 
