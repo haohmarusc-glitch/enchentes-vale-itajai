@@ -90,9 +90,19 @@ Açu ficou permanentemente amarela por causa disso. (O `conferir_par_regua.py` a
 eram a MESMA régua; o ponto não é que a página erre, é que **ninguém sabia**, e a resposta só veio de
 medir.) Colorir 348 ruas de Brusque sobre um pareamento não provado multiplica o mesmo risco rua a rua.
 
-**O que destrava:** achar a fonte que publica a cota da Ponte Estaiada (hoje `fonte_cotas` é `null`),
-cadastrar o par em `conferir_par_regua.py` e rodar. É o mesmo caminho de Gaspar — Brusque só parecia
-liberada porque o número dela não chama atenção.
+**O que destrava, e não é ofício:** a segunda fonte já está mapeada. A ficha
+`docs/cotas-municipais/brusque.md` registra o portal próprio da Defesa Civil de Brusque,
+`https://defesacivil.brusque.sc.gov.br/monitoramento`, com **6 réguas de nível minuto a minuto** e a
+câmera da ponte estaiada — é a página da régua a que as cotas pertencem. Capturar essa página de dentro
+da região (ou da VPS), cadastrar o par em `conferir_par_regua.py` e rodar: se os dois números baterem,
+as 348 ruas destravam.
+
+O que falta para fazer isso é ver a página. Ela não responde de fora da região (`connect_rejected`,
+igual à de Gaspar — mesma stack DEXTAK), e o `conferir_par_regua.py` de hoje só sabe ler o painel da
+Asthon (`stations[].level_m`). Brusque vai precisar de um leitor próprio, escrito **contra o HTML real**,
+como o `coleta_itajai.py` foi — nunca contra uma estrutura suposta.
+
+Brusque só parecia liberada porque o número dela não chama atenção.
 
 **Gaspar: também bloqueada**, pelo motivo já conhecido (`BLOQUEIO_NAO_PINTAR`) — não está provado que
 a régua que o coletor lê é a da cota 6/7 m. Colorir rua com nível de régua errada é o mesmo erro, só
