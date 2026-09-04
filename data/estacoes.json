@@ -23,7 +23,7 @@
       "foz": "Itajaí (Oceano Atlântico)",
       "_topologia": {
         "tipo": "arvore",
-        "tronco_sequencia": ["rio-do-sul", "ascurra", "indaial", "blumenau", "gaspar", "ilhota", "itajai"],
+        "tronco_sequencia": ["rio-do-sul", "lontras", "ascurra", "indaial", "blumenau", "gaspar", "ilhota", "itajai"],
         "confluencia_cabeceiras": {
           "lat": -27.2160314,
           "lon": -49.6483391,
@@ -34,7 +34,9 @@
         },
         "cabeceiras_paralelas": ["taio", "ituporanga"],
         "afluentes_laterais": [
-          { "id": "ibirama", "entra_perto_de": "rio-do-sul", "rio": "Rio Hercílio (Itajaí do Norte)" }
+          { "id": "ibirama", "entra_perto_de": "rio-do-sul", "rio": "Rio Hercílio (Itajaí do Norte)" },
+          { "id": "timbo", "entra_perto_de": "indaial", "rio": "Rio Benedito" },
+          { "id": "rio-dos-cedros", "entra_perto_de": "timbo", "rio": "Rio dos Cedros (desagua no Benedito)" }
         ],
         "nao_e_regua_de_rio": [
           { "id": "apiuna", "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026." }
@@ -145,11 +147,34 @@
           "coordenadas": [-27.057, -49.52]
         },
         {
+          "id": "lontras",
+          "nome": "Lontras",
+          "ordem": null,
+          "ramo": "tronco_acu",
+          "ordem_no_ramo": 2,
+          "sub_bacia": "Itajaí-Açu",
+          "codigo_ana": null,
+          "codigo_dcsc": null,
+          "verificado": false,
+          "regua": "Régua do Itajaí-Açu em Lontras (a fonte não nomeia o ponto)",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "Defesa Civil / prefeito de Lontras em maio de 2022, citados pela RBA TV — cota de segurança 9,20 m. É IMPRENSA, não documento: não há tabela de atenção/alerta/emergência no site nem PLANCON indexado.",
+          "observacao": "ENTROU NO TRONCO em 04/09/2026, entre Rio do Sul e Ascurra. A posição tem duas fontes independentes: o JICA 2011 (Tabela 3.6.2) lista os trechos 'confluência do Norte -> jusante de Lontras' e 'Lontras -> Rio do Sul', e o levantamento municipal a descreve como jusante imediato de Rio do Sul. A obra estadual de Melhorias Fluviais leva o nome do trecho 'Rio do Sul-Lontras'. A cota de 9,20 m ficou em 'seguranca_observada', chave que o código NÃO desenha: é número de imprensa sobre comportamento, não faixa de acionamento, e pintar faixa com ele seria dar ao morador uma cor que a COMPDEC não declarou. DUAS RAZÕES PARA RECONFERIR ANTES DE PROMOVER A COTA: o desassoreamento de 16 km no Açu urbano e a própria obra Rio do Sul-Lontras (rebaixamento do leito + comporta) mudam a curva-chave — o número é de 2022 e pode já não valer. NÃO copiar as cotas de Rio do Sul (4,50/5,50/6,50): zeros diferentes, e Lontras fica na curva logo abaixo da confluência.",
+          "cotas_m": {
+            "seguranca_observada": 9.2
+          },
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [-27.1683, -49.5386]
+        },
+        {
           "id": "ascurra",
           "nome": "Ascurra",
           "ordem": null,
           "ramo": "tronco_acu",
-          "ordem_no_ramo": 2,
+          "ordem_no_ramo": 3,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00003",
@@ -166,7 +191,7 @@
           "nome": "Indaial",
           "ordem": null,
           "ramo": "tronco_acu",
-          "ordem_no_ramo": 3,
+          "ordem_no_ramo": 4,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00006",
@@ -189,7 +214,7 @@
           "nome": "Blumenau",
           "ordem": null,
           "ramo": "tronco_acu",
-          "ordem_no_ramo": 4,
+          "ordem_no_ramo": 5,
           "sub_bacia": "Itajaí-Açu",
           "codigo_dcsc": "DCSC-00026",
           "km_da_foz": 70,
@@ -214,7 +239,7 @@
           "nome": "Gaspar",
           "ordem": null,
           "ramo": "tronco_acu",
-          "ordem_no_ramo": 5,
+          "ordem_no_ramo": 6,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00005",
@@ -247,7 +272,7 @@
           "nome": "Ilhota",
           "ordem": null,
           "ramo": "tronco_acu",
-          "ordem_no_ramo": 6,
+          "ordem_no_ramo": 7,
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00030",
@@ -270,7 +295,7 @@
           "nome": "Itajaí",
           "ordem": null,
           "ramo": "tronco_acu",
-          "ordem_no_ramo": 7,
+          "ordem_no_ramo": 8,
           "sub_bacia": "Itajaí-Açu",
           "km_da_foz": 0,
           "codigo_ana": null,
@@ -286,6 +311,79 @@
             -26.9078,
             -48.6619
           ]
+        },
+        {
+          "id": "timbo",
+          "nome": "Timbó",
+          "ordem": null,
+          "ramo": "benedito",
+          "ordem_no_ramo": 1,
+          "sub_bacia": "Rio Benedito",
+          "codigo_ana": null,
+          "codigo_dcsc": null,
+          "verificado": false,
+          "regua": "Rio Benedito, Rua Equador",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "PLANCON de Timbó, dez/2025: o plano é ativado quando o Benedito OU o Rio dos Cedros chegam a 5,00 m (ou chuva acima de 200 mm, FURB/CENAD). Ruas citadas em alerta a 6,00 m em 2024 (Beco Guatemala, Rua Arthur Giotti, Rua Haiti).",
+          "observacao": "ENTROU EM 04/09/2026, no Rio Benedito — afluente que desagua no tronco perto de Indaial (AIBH 2021 e JICA 2011, seção 3.1). NÃO é elo da fila: o pico daqui ENTRA no tronco, não desce por ele, e é por isso que Timbó já estava entre os nao_encadeados do transito.json. AS COTAS NÃO SÃO FAIXAS DE AVISO: o PLANCON fixa um GATILHO DE ATIVAÇÃO do gabinete a 5,00 m, não uma escala de atenção/alerta/emergência, e por isso o número ficou em 'ativacao_plancon' — chave que o código não desenha. Chamar isso de 'atenção' poria na tela uma cor que a COMPDEC não declarou. Pico operacional visto: 7,62 m em jan/2021. As cotas de rua de 2022 seguem a mesma régua da Rua Equador e estão no GEO Timbó; não foram extraídas uma a uma aqui — o mapa é a fonte. RELÓGIO PRÓPRIO (vinha de afluentes_monitorados, que Timbó deixou ao entrar na árvore): no hidrograma de projeto da JICA o pico de Timbó ocorre JUNTO com o de Rio do Sul, porque a chuva cai na sub-bacia do Benedito — não é a mesma cheia descendo o Açu. Encadear tempo de descida por Timbó daria resultado errado.",
+          "cotas_m": {
+            "ativacao_plancon": 5.0,
+            "ruas_alerta_citadas": 6.0
+          },
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [-26.8231, -49.2708]
+        },
+        {
+          "id": "rio-dos-cedros",
+          "nome": "Rio dos Cedros",
+          "ordem": null,
+          "ramo": "rio_dos_cedros",
+          "ordem_no_ramo": 1,
+          "sub_bacia": "Rio dos Cedros",
+          "codigo_ana": null,
+          "codigo_dcsc": null,
+          "verificado": false,
+          "regua": "Régua da Praça Matriz",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
+          "observacao": "ENTROU EM 04/09/2026. Fica no Rio dos Cedros, que desagua no Benedito — o próprio PLANCON de Timbó monitora 'o Benedito OU o Cedros', o que confirma que os dois chegam lá. As três fases mapeiam uma a uma nos nossos três nomes, então a POSIÇÃO e a FORÇA foram preservadas: o 'alarme' do plano é o nosso 'emergencia'. cotas_verificado fica false por dois motivos: a escala é cruzamento de duas publicações, não documento homologado, e o próprio levantamento pede para confirmar com a COMPDEC se a escala de 2014 ainda vale depois do desassoreamento de 4,92 km em 2026. As barragens citadas no PLANCON antigo (Pinhal e Rio Bonito) são LOCAIS — não confundir com a Oeste de Taió nem com a Sul de Ituporanga.",
+          "cotas_m": {
+            "atencao": 4.8,
+            "alerta": 5.3,
+            "emergencia": 5.7,
+            "praca_boca_lobo": 6.02
+          },
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [-26.7397, -49.2703]
+        },
+        {
+          "id": "trombudo-central",
+          "nome": "Trombudo Central",
+          "ordem": null,
+          "ramo": "trombudo",
+          "ordem_no_ramo": 1,
+          "sub_bacia": "Rio Trombudo",
+          "codigo_ana": null,
+          "codigo_dcsc": null,
+          "verificado": false,
+          "regua": "Régua do Rio Trombudo (a fonte não nomeia o ponto)",
+          "referencia": "régua",
+          "cotas_verificado": false,
+          "fonte_cotas": "Prefeitura de Trombudo Central e GOVSC: pico de 8,71 m em nov/2023, descrito como a maior enchente da história do município. NÃO há tabela de atenção, alerta ou emergência publicada.",
+          "observacao": "ENTROU EM 04/09/2026, no Rio Trombudo. FICA DE PROPÓSITO FORA DE afluentes_laterais: a fonte diz em que RIO a cidade está, mas não onde esse rio encontra o eixo, e este projeto não inventa o lado — a mesma regra que mantém o Luís Alves com 'a confirmar por coordenada'. Por isso a tela a mostra em 'Outros pontos', com a nota de que ainda não tem posição na árvore, em vez de fingir uma. O único número que existe é o pico de 2023, gravado como 'inundacao_historica': é marca histórica, não gatilho, e não dispara aviso nenhum. ATENÇÃO AO HOMÔNIMO: o bairro Barra do Trombudo, em Rio do Sul, é outro lugar — não misturar.",
+          "cotas_m": {
+            "inundacao_historica": 8.71
+          },
+          "fontes_tempo_real": [
+            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+          ],
+          "coordenadas": [-27.3053, -49.7919]
         }
       ]
     },
@@ -399,19 +497,7 @@
     "jica_relatorio": "https://openjicareport.jica.go.jp/pdf/12043584_01.pdf"
   },
   "afluentes_monitorados": [
-    {
-      "id": "timbo",
-      "nome": "Timbó",
-      "rio": "Rio Benedito",
-      "desagua_em": "Itajaí-Açu, ENTRE Ascurra e Indaial, a montante de Indaial (confirmado pelo AIBH do Itajaí-Açu, 2021; ver rios['itajai-acu']._topologia.afluentes_rios e docs/AIBH-ITAJAI-ACU.md)",
-      "codigo_ana": null,
-      "verificado": false,
-      "cotas_m": {},
-      "observacao": "Relógio próprio: no hidrograma de projeto da JICA o pico de Timbó ocorre junto com o de Rio do Sul, porque a chuva cai na sub-bacia do Benedito — não é a mesma cheia descendo o Açu. Por isso Timbó não entra na sequência do rio.",
-      "fontes_tempo_real": [
-        "https://monitoramento.defesacivil.sc.gov.br/mapa"
-      ]
-    }
+
   ],
   "estacoes_tempo_real": [
     {

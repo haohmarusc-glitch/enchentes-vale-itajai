@@ -24,8 +24,12 @@ function ordenar(cidades: Cidade[]): Cidade[] {
 test('o Açu é uma árvore: tem _topologia e o tronco é a única sequência', () => {
   const acu = estacoes.rios['itajai-acu']!
   assert.ok(acu._topologia, 'o Açu precisa de _topologia — sem ela a tela volta a ser fila')
+  // Lontras entrou no tronco em 04/09/2026, entre Rio do Sul e Ascurra: o JICA
+  // 2011 (Tabela 3.6.2) lista os trechos "confluência do Norte -> jusante de
+  // Lontras" e "Lontras -> Rio do Sul", e o levantamento municipal a descreve
+  // como jusante imediato de Rio do Sul. A obra estadual leva o nome do trecho.
   assert.deepEqual(acu._topologia!.tronco_sequencia, [
-    'rio-do-sul', 'ascurra', 'indaial', 'blumenau', 'gaspar', 'ilhota', 'itajai',
+    'rio-do-sul', 'lontras', 'ascurra', 'indaial', 'blumenau', 'gaspar', 'ilhota', 'itajai',
   ])
   assert.deepEqual(acu._topologia!.cabeceiras_paralelas, ['taio', 'ituporanga'])
   assert.equal(acu._topologia!.afluentes_laterais[0]!.id, 'ibirama')
