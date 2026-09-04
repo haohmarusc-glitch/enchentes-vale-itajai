@@ -345,3 +345,45 @@
   line-height: 1.25;
   color: #93a9bd;
 }
+
+/* ZOOM — canto direito, abaixo do chip da maré (que é desenhado no canvas, no
+   topo). Alvos grandes de propósito: quem usa isto está com uma mão só, na
+   chuva, e um botão de 28 px erra o toque. */
+.zoom {
+  position: absolute;
+  top: 3.4rem;
+  right: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 3;
+}
+
+.botaoZoom,
+.botaoVerTudo {
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(10, 16, 26, 0.78);
+  color: #eaf2ff;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  backdrop-filter: blur(3px);
+}
+
+.botaoZoom {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.botaoVerTudo {
+  padding: 0.45rem 0.6rem;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.botaoZoom:hover,
+.botaoVerTudo:hover {
+  background: rgba(24, 38, 58, 0.92);
+}

@@ -25,6 +25,20 @@ tem de ser VIGIADA pelo alarme. Se for recusada, a recusa precisa estar na lista
 fechada de motivos aceitos — e "a cidade tem mais de uma régua" só é aceito
 quando as réguas são MESMO distintas, não quando são a mesma vista duas vezes.
 
+E COBRA NOS DOIS NÍVEIS (ampliado em 04/09/2026)
+Cota não mora só na cidade. As onze réguas da Defesa Civil de Itajaí têm cota
+PRÓPRIA, em `estacoes_tempo_real`, porque cada uma tem o seu zero — e o Monitor
+pinta cada uma como um PINO, pelo `reguasNoMapa`. Enquanto esta conferência
+percorria só `rios[].cidades[]`, Itajaí não aparecia em nenhuma linha: a cidade
+na foz dos dois rios, com onze réguas na tela, estava fora do guarda que existe
+justamente para achar cor sem alarme. Hoje **duas** dessas réguas pintam —
+DC-10 (Limoeiro) e DC-11 (Santa Regina) —, e eram exatamente as duas que
+ninguém conferia.
+
+A régua pinta quando NÃO está marcada `alerta_automatico: false` E tem cota das
+que pintam — a mesma ordem do `reguasNoMapa.ts`, onde a recusa da maré vem
+primeiro porque é a única que não some quando o dado melhora.
+
 Uso:
     python3 scripts/conferir_mapa_e_alarme.py
     python3 scripts/conferir_mapa_e_alarme.py --arquivo /tmp/ultimo.json
@@ -77,15 +91,42 @@ def cidades_que_pintam(estacoes: dict) -> dict[tuple[str, str], dict]:
     return saida
 
 
+def reguas_que_pintam(estacoes: dict) -> dict[str, dict]:
+    """
+    título -> cotas que pintam, para as réguas com cota PRÓPRIA.
+
+    Mesma ordem de recusa do `reguasNoMapa.ts`: régua marcada para não disparar
+    sozinha (maré) não pinta, e por isso não é cobrada aqui — o site também não
+    a pinta, então não há discordância entre os dois lados. Pluviômetro não é
+    nível de rio e fica de fora pelo mesmo motivo que fica fora do mapa.
+    """
+    saida = {}
+    for e in estacoes.get("estacoes_tempo_real") or []:
+        if e.get("tipo") == "pluviometro":
+            continue
+        if e.get("alerta_automatico") is False:
+            continue
+        cotas = {k: v for k, v in (e.get("cotas_m") or {}).items()
+                 if k in CHAVES_QUE_PINTAM and isinstance(v, (int, float))}
+        if cotas:
+            saida[e.get("titulo") or ""] = cotas
+    return saida
+
+
 def avaliar(dados: dict, estacoes: dict) -> list[dict]:
     """Uma linha por cidade que PODE pintar e tem leitura — vigiada ou não."""
     pintam = cidades_que_pintam(estacoes)
     vigiadas, recusas = ac.resolver(dados)
 
     vigiadas_por_cidade = set()
+    #: Por RÉGUA, que é a chave em que o alarme guarda estado — e a única em que
+    #: dá para perguntar "esta régua está vigiada?" sem a resposta da cidade
+    #: mascarar a da estação. Em Itajaí, onze réguas na mesma cidade.
+    vigiadas_por_regua = set()
     for v in vigiadas:
         l = v["leitura"]
         vigiadas_por_cidade.add((l.get("rio"), l.get("cidade")))
+        vigiadas_por_regua.add(regua_de(l))
 
     # Recusas vêm por TÍTULO; liga cada uma à cidade da leitura correspondente.
     por_titulo = {}
@@ -98,6 +139,10 @@ def avaliar(dados: dict, estacoes: dict) -> list[dict]:
         if not l:
             continue
         recusa_da_cidade.setdefault((l.get("rio"), l.get("cidade")), []).append(r)
+
+    recusa_da_estacao: dict[str, list[str]] = {}
+    for r in recusas:
+        recusa_da_estacao.setdefault(r.split(":", 1)[0], []).append(r)
 
     saida = []
     for chave, cotas in sorted(pintam.items()):
@@ -119,6 +164,32 @@ def avaliar(dados: dict, estacoes: dict) -> list[dict]:
             "motivos": motivos,
             "buraco": not vigiada and not aceita,
             "cotas": cotas,
+            "escopo": "cidade",
+            "estacao": None,
+        })
+
+    # E agora as réguas com cota PRÓPRIA, que não passam por `rios[].cidades[]`.
+    for titulo, cotas in sorted(reguas_que_pintam(estacoes).items()):
+        leituras = [l for l in (dados.get("leituras") or [])
+                    if (l.get("estacao") or "") == titulo
+                    and l.get("usar_para_cota") is not False]
+        if not leituras:
+            continue  # sem leitura que possa virar faixa: o pino também não pinta
+        motivos = recusa_da_estacao.get(titulo, [])
+        vigiada = any(regua_de(l) in vigiadas_por_regua for l in leituras)
+        aceita = any(a in m for m in motivos for a in RECUSAS_ACEITAS)
+        alguma = leituras[0]
+        saida.append({
+            "rio": alguma.get("rio"),
+            "cidade": alguma.get("cidade"),
+            "reguas": len({regua_de(l) for l in leituras}),
+            "leituras": len(leituras),
+            "vigiada": vigiada,
+            "motivos": motivos,
+            "buraco": not vigiada and not aceita,
+            "cotas": cotas,
+            "escopo": "regua",
+            "estacao": titulo,
         })
     return saida
 
@@ -141,20 +212,23 @@ def main() -> int:
     for r in linhas:
         marca = "  <<< COR SEM ALARME" if r["buraco"] else ""
         estado = "vigiada" if r["vigiada"] else "recusada"
-        print(f"{r['cidade']:14} {r['reguas']} régua(s) / {r['leituras']} leitura(s)"
-              f"  {estado}{marca}")
+        quem = r["estacao"] or r["cidade"]
+        print(f"{r['escopo']:6} {quem[:36]:36} {r['reguas']} régua(s) / "
+              f"{r['leituras']} leitura(s)  {estado}{marca}")
         for m in r["motivos"]:
             print(f"                 {m[:96]}")
 
+    cidades = sum(1 for r in linhas if r["escopo"] == "cidade")
+    reguas = len(linhas) - cidades
     buracos = [r for r in linhas if r["buraco"]]
     print()
     if not buracos:
-        print(f"as {len(linhas)} cidades que podem pintar estão vigiadas (ou recusadas "
-              "por motivo aceito).")
+        print(f"{cidades} cidade(s) e {reguas} régua(s) que podem pintar estão vigiadas "
+              "(ou recusadas por motivo aceito).")
         return 0
-    print(f"{len(buracos)} cidade(s) que o MAPA PINTA e o ALARME NÃO VIGIA:")
+    print(f"{len(buracos)} ponto(s) que o MAPA PINTA e o ALARME NÃO VIGIA:")
     for r in buracos:
-        print(f"  {r['cidade']} — cotas {r['cotas']}")
+        print(f"  [{r['escopo']}] {r['estacao'] or r['cidade']} — cotas {r['cotas']}")
         for m in r["motivos"] or ["(nem sequer apareceu nas recusas)"]:
             print(f"      {m[:96]}")
     print("\nCor na tela parece aviso funcionando. Não é.")

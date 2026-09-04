@@ -32,9 +32,21 @@ import {
   trechoDoPonto,
   LARGURA_FAIXA,
   VEL_FAIXA,
+  aplicarVista,
   type Enquadramento,
   type LonLat,
+  type Vista,
 } from '../logica/mapaCanvas'
+
+/**
+ * Os limites da bacia, ou uma caixa de segurança quando ainda não há traçado —
+ * mapa sem limite não projeta nada, e um canvas em branco não avisa ninguém.
+ */
+function limitesOuBacia(
+  lim: { minLon: number; maxLon: number; minLat: number; maxLat: number } | null,
+): { minLon: number; maxLon: number; minLat: number; maxLat: number } {
+  return lim ?? { minLon: -50.2, maxLon: -48.5, minLat: -27.6, maxLat: -26.7 }
+}
 
 /**
  * O violeta do número BRUTO da rede estadual.
@@ -155,6 +167,11 @@ export interface Cena {
   cores: Record<Faixa, string>
   mar: MarVis | null
   enq: Enquadramento
+  /**
+   * Os limites da BACIA INTEIRA, independentes do zoom. É o retângulo em que a
+   * tela prende o centro do arrasto, para nunca sair para o mar aberto.
+   */
+  limitesBase: { minLon: number; maxLon: number; minLat: number; maxLat: number }
   largura: number
   altura: number
 }
@@ -242,15 +259,21 @@ export function construirCena(
    * (MapaRios, hoje) mantém o comportamento de sempre.
    */
   nivelBrutoSc?: NivelSc,
+  /**
+   * Zoom e centro. Ausente = a bacia inteira, que é como o mapa sempre abriu.
+   * Recorta os limites ANTES de enquadrar, então traçado, pinos, rótulos e os
+   * tiles do fundo crescem juntos — nada aqui é bitmap esticado.
+   */
+  vista?: Vista,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
 
   // Enquadramento comum: cobre o traçado de TODOS os rios.
   const todos = rios.flatMap((r) => r.coords.flat())
-  const lim = limitesDe(todos)
+  const limBase = limitesOuBacia(limitesDe(todos))
   const enq: Enquadramento = enquadrar(
-    lim ?? { minLon: -50.2, maxLon: -48.5, minLat: -27.6, maxLat: -26.7 },
+    vista ? aplicarVista(limBase, vista) : limBase,
     largura,
     altura,
     MARGEM,
@@ -377,7 +400,7 @@ export function construirCena(
     mar = { estado: ma.estado, corSea, rotulo, x: pinoFoz.x, y: pinoFoz.y }
   }
 
-  return { trechos, pinos, cores, mar, enq, largura, altura }
+  return { trechos, pinos, cores, mar, enq, limitesBase: limBase, largura, altura }
 }
 
 function caminhoTrecho(ctx: CanvasRenderingContext2D, pts: [number, number][]): void {
