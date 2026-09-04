@@ -39,6 +39,20 @@ BRUTO = RAIZ / "data/brutos/tracado-rios-osm.json"
 #:
 #: A consulta do Overpass está em `docs/tracado-ribeiroes.md`.
 BRUTO_RIBEIROES = RAIZ / "data/brutos/tracado-ribeiroes-osm.json"
+
+#: Bruto do VÃO do Canhanduba — o trecho final até o Mirim.
+#:
+#: Existe porque a busca por NOME não o alcançava: medido em 04/09/2026, o
+#: traçado do Canhanduba morria a 578 m do Mirim, e o pedaço que falta chama-se
+#: **Rio Conceição** no OSM. `baixar_vao_canhanduba.py` o achou por
+#: CONECTIVIDADE (650 m de canal para 578 m em linha reta — sinuosidade 1,12,
+#: normal em várzea; se a cadeia estivesse vagando, seria muito mais longa).
+#:
+#: Entra como rio PRÓPRIO, não fundido ao Canhanduba: o OSM lhe dá outro nome, e
+#: juntar os dois faria o arquivo afirmar que 650 m de Rio Conceição são
+#: Canhanduba. Desenhados lado a lado eles se tocam, a água chega ao Mirim na
+#: tela, e nenhum dos dois diz ser o outro.
+BRUTO_VAO_CANHANDUBA = RAIZ / "data/brutos/vao-canhanduba-osm.json"
 SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
@@ -75,6 +89,8 @@ RIOS_AFLUENTES = {
     # juntar os dois numa linha só apagaria essa distinção — que o cadastro faz
     # questão de manter no título de cada régua.
     "mirim-canal-retificado": ["canal retificado", "canal do itajaí-mirim"],
+    # O trecho que liga o Canhanduba ao Mirim. Ver BRUTO_VAO_CANHANDUBA.
+    "rio-conceicao": ["rio conceição", "rio conceicao"],
 }
 
 
@@ -152,14 +168,16 @@ def main() -> int:
 
     # O bruto dos ribeirões entra SÓ na busca por substring (afluentes
     # opcionais). O tronco continua saindo do bruto conferido, intocado.
-    if BRUTO_RIBEIROES.exists():
-        extra = json.loads(BRUTO_RIBEIROES.read_text(encoding="utf-8"))
-        n = len(extra.get("elements") or [])
-        elementos = elementos + (extra.get("elements") or [])
-        print(f"bruto dos ribeirões: +{n} elemento(s) de {BRUTO_RIBEIROES.name}")
-    else:
-        print(f"sem {BRUTO_RIBEIROES.name} — ribeirões de Itajaí ficam de fora "
-              "(ver docs/tracado-ribeiroes.md para baixar na VPS)")
+    for extra_caminho, oque in ((BRUTO_RIBEIROES, "ribeirões de Itajaí"),
+                                (BRUTO_VAO_CANHANDUBA, "vão do Canhanduba")):
+        if extra_caminho.exists():
+            extra = json.loads(extra_caminho.read_text(encoding="utf-8"))
+            n = len(extra.get("elements") or [])
+            elementos = elementos + (extra.get("elements") or [])
+            print(f"bruto ({oque}): +{n} elemento(s) de {extra_caminho.name}")
+        else:
+            print(f"sem {extra_caminho.name} — {oque} fica de fora "
+                  "(ver docs/tracado-ribeiroes.md para baixar na VPS)")
 
     SAIDA.mkdir(parents=True, exist_ok=True)
 
