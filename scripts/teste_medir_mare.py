@@ -17,7 +17,9 @@ import tempfile
 from pathlib import Path
 
 import medir_mare
-from medir_mare import leituras_da_serie, medir, travessias, veredito
+from medir_mare import (CORRELACAO_DE_MARE, amostrar, correlacao, destendenciar,
+                        duracao_das_travessias, leituras_da_serie, medir,
+                        travessias, veredito)
 
 INICIO = datetime(2026, 9, 1, 0, 0)
 
@@ -199,6 +201,162 @@ class AsTresReguasDoAcuEmItajaiSaoSEPARADAS(unittest.TestCase):
             misturada, max(separadas) * 1.5,
             "o fixture parou de reproduzir a diferença — o teste virou vazio",
         )
+
+
+class SepararMareDeCheia(unittest.TestCase):
+    """
+    O defeito do próprio script, achado em 04/09/2026.
+
+    Ele media amplitude e travessias e chamava as duas coisas de "oscila" —
+    mas amplitude NÃO distingue maré de cheia. Na janela de 6 dias em que
+    rodou, a bacia inteira descia de um evento real (Blumenau −1,15 m, DC-10
+    −1,00 m, Brusque −0,52 m), e ele recomendou travar a DC-11. Num evento
+    assim, ele recomendaria travar régua que estava alarmando CERTO — o erro na
+    direção que cala.
+
+    O separador: recessão de cheia é LENTA (dias), maré é RÁPIDA (12,4 h).
+    Tirando a média móvel de 13 h, a recessão sai e a maré fica.
+    """
+
+    def reta_descendo(self, dias=6, base=5.0, queda=0.5):
+        """Rio em recessão pura: desce devagar, sem maré."""
+        n = int(dias * 24 * 60 / 15)
+        return [(INICIO + timedelta(minutes=15 * i), base - queda * (i / 96) / 24)
+                for i in range(n)]
+
+    def test_destendenciar_apaga_a_recessao_e_deixa_a_mare(self):
+        so_mare = serie(6, 1.0, 0.9)
+        com_recessao = [(t, v - 0.5 * i / 96 / 24)
+                        for i, (t, v) in enumerate(so_mare)]
+        r = destendenciar(com_recessao)
+        # A maré sobrevive: o resíduo ainda tem a amplitude dela.
+        self.assertGreater(max(r) - min(r), 0.5)
+        # E a recessão some: o resíduo não tem tendência.
+        self.assertAlmostEqual(sum(r[:50]) / 50, sum(r[-50:]) / 50, delta=0.15)
+
+    def test_regua_de_MARE_correlaciona_com_a_referencia(self):
+        ref = serie(6, 1.0, 0.9)
+        alvo = [(t, v + 1.8 - 0.5 * i / 96 / 24)
+                for i, (t, v) in enumerate(serie(6, 0.0, 0.7))]
+        r = correlacao(destendenciar(alvo), destendenciar(ref))
+        self.assertIsNotNone(r)
+        self.assertGreaterEqual(r, CORRELACAO_DE_MARE)
+
+    def test_regua_de_RIO_nao_correlaciona_com_a_referencia(self):
+        """
+        O caso REAL, e o único que prova que a destendência faz falta.
+
+        Numa semana com cheia, a régua de estuário TAMBÉM está em recessão —
+        as duas descem juntas. A correlação CRUA fica alta por causa da queda
+        compartilhada, e é isso que fazia o script confundir cheia com maré.
+        Medido no dado real de 04/09: DC-11 × Blumenau dava +0,77 CRU e cai
+        para +0,09 destendenciado.
+
+        Uma reta descendo contra uma maré pura não serve de teste: ela já
+        correlaciona mal sem destendenciar nada, e o teste passaria mesmo com a
+        destendência removida. A falsificação flagrou exatamente isso.
+        """
+        # Proporções do dado REAL de 04/09: a recessão domina a maré. Blumenau
+        # caiu 1,15 m em 48 h enquanto a oscilação rápida da DC-11 era 0,33 m
+        # de pico a pico. `tendencia` é queda por dia.
+        ref = serie(6, 1.0, 0.33, tendencia=-0.5)
+        # Rio em recessão na MESMA taxa, com um bolinho lento de 7 h que não é
+        # maré — sem ele o resíduo fica degenerado e a correlação vira None.
+        rio = [(t, v + 0.02 * math.sin(2 * math.pi * (i / 4) / 7))
+               for i, (t, v) in enumerate(serie(6, 5.0, 0.0, tendencia=-0.5))]
+
+        cru = correlacao([v for _, v in rio], [v for _, v in ref])
+        self.assertIsNotNone(cru)
+        self.assertGreater(
+            cru, CORRELACAO_DE_MARE,
+            "o fixture parou de reproduzir o defeito: sem destendenciar, as duas "
+            "têm de parecer parecidas por causa da queda compartilhada",
+        )
+
+        limpo = correlacao(destendenciar(rio), destendenciar(ref))
+        self.assertIsNotNone(limpo)
+        self.assertLess(
+            limpo, CORRELACAO_DE_MARE,
+            "destendenciada, a régua de rio não pode passar por maré — é o que "
+            "impede o script de recomendar trava para quem estava alarmando certo",
+        )
+
+    def test_correlacao_com_poucos_pontos_devolve_None_em_vez_de_numero(self):
+        self.assertIsNone(correlacao([1.0, 2.0], [1.0, 2.0]))
+
+    def test_correlacao_de_serie_constante_nao_divide_por_zero(self):
+        self.assertIsNone(correlacao([1.0] * 30, list(range(30))))
+
+    def test_amostrar_interpola_na_grade_da_outra_regua(self):
+        pontos = [(INICIO, 1.0), (INICIO + timedelta(hours=2), 3.0)]
+        meio = amostrar(pontos, [INICIO + timedelta(hours=1)])
+        self.assertAlmostEqual(meio[0], 2.0)
+
+    def test_amostrar_fora_do_intervalo_vira_None_e_nao_extrapola(self):
+        pontos = [(INICIO, 1.0), (INICIO + timedelta(hours=2), 3.0)]
+        fora = amostrar(pontos, [INICIO - timedelta(hours=5)])
+        self.assertIsNone(fora[0])
+
+
+class QuantoTempoFicaAcimaDaCota(unittest.TestCase):
+    """
+    O número que falta para calibrar uma regra de persistência — "só avisar
+    depois de N horas acima". Maré cruza e VOLTA em horas; cheia cruza e FICA.
+    Sem esta medição, o N seria chute.
+    """
+
+    def test_mede_cada_travessia_separadamente(self):
+        # Sobe, desce, sobe de novo: duas travessias.
+        p = [(INICIO + timedelta(hours=h), n) for h, n in
+             ((0, 1.0), (1, 3.0), (2, 3.0), (3, 1.0), (4, 3.0), (5, 1.0))]
+        self.assertEqual(duracao_das_travessias(p, 2.0), [2.0, 1.0])
+
+    def test_serie_que_termina_ACIMA_conta_ate_o_fim(self):
+        # Não descartar: uma cheia em curso é exatamente esse caso.
+        p = [(INICIO + timedelta(hours=h), n) for h, n in ((0, 1.0), (1, 3.0), (4, 3.0))]
+        self.assertEqual(duracao_das_travessias(p, 2.0), [3.0])
+
+    def test_serie_sempre_abaixo_nao_tem_travessia(self):
+        p = [(INICIO + timedelta(hours=h), 1.0) for h in range(5)]
+        self.assertEqual(duracao_das_travessias(p, 2.0), [])
+
+    def test_mare_fica_POUCO_tempo_acima_e_cheia_fica_MUITO(self):
+        # A diferença que sustenta a ideia de persistência.
+        de_mare = duracao_das_travessias(serie(6, 2.8, 0.7), 3.0)
+        cheia = [(INICIO + timedelta(hours=h), 3.5) for h in range(48)]
+        de_cheia = duracao_das_travessias(cheia, 3.0)
+        self.assertTrue(de_mare, "o fixture de maré parou de cruzar a cota")
+        self.assertLess(max(de_mare), 12.0)
+        self.assertGreater(de_cheia[0], 40.0)
+
+
+class OVereditoUsaAAssinaturaAntesDaAmplitude(unittest.TestCase):
+    def test_sem_assinatura_de_mare_a_amplitude_vira_evidencia_de_CHEIA(self):
+        # A correção do defeito: oscilar muito SEM assinatura de maré é o rio
+        # subindo, e recomendar trava aí calaria um aviso verdadeiro.
+        m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
+             "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
+             "dias_com_travessia": 3, "mare_correlacao": 0.09,
+             "mare_referencia": "Blumenau"}
+        self.assertEqual(veredito(m)[0], "pode disparar")
+
+    def test_com_assinatura_de_mare_continua_recomendando_a_trava(self):
+        m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
+             "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
+             "dias_com_travessia": 3, "mare_correlacao": 0.92,
+             "mare_referencia": "DC-09", "horas_acima_mediana": 2.5,
+             "horas_acima_maxima": 4.0}
+        sugestao, porque = veredito(m)
+        self.assertEqual(sugestao, "NÃO disparar sozinha")
+        self.assertIn("É de maré", porque)
+        self.assertIn("2.5 h", porque)
+
+    def test_sem_assinatura_calculada_o_comportamento_antigo_vale(self):
+        # Régua sem referência de maré na série: não inventa veredito novo.
+        m = {"dias": 6, "menor_cota_m": 3.0, "folga_ate_a_cota_m": 0.2,
+             "amplitude_diaria_mediana_m": 0.85, "travessias": 7,
+             "dias_com_travessia": 3, "mare_correlacao": None}
+        self.assertEqual(veredito(m)[0], "NÃO disparar sozinha")
 
 
 if __name__ == "__main__":

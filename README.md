@@ -52,6 +52,8 @@ python3 extrair_picos.py            # propõe registros de pico a partir da sér
 python3 calibrar_transito.py        # relata o que dá para calibrar
 python3 auditar.py                  # audita os últimos 15 dias de coleta
 python3 conferir_saltos_serie.py    # acusa régua misturada na série publicada
+python3 conferir_par_regua.py rio-do-sul   # a cota aplicada é da régua que o site lê?
+python3 medir_mare.py               # quais réguas podem disparar sozinhas
 ```
 
 ### Testar no navegador
