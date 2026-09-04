@@ -50,6 +50,25 @@ import {
  */
 export const COR_BRUTO = '#c9a6f0'
 
+/**
+ * O tom das réguas que mostram número e NÃO afirmam faixa (as nove de maré).
+ *
+ * Azul-água de propósito: é a mesma família do pino "várias réguas" da foz, do
+ * qual estas são as partes — lê-se como subordinado, não como um grau novo. E
+ * fica FORA da escala verde/amarelo/laranja/vermelho, que é o que separa "aqui
+ * tem medição" de "aqui tem perigo".
+ */
+export const COR_REGUA_SEM_GRAU = '#6fb6e8'
+
+/** O mínimo que `desenharReguas` precisa — vem de `logica/reguasNoMapa`. */
+export type ReguaDesenhavel = {
+  codigo: string
+  lon: number
+  lat: number
+  nivel: number | null
+  faixa: Faixa | null
+}
+
 // A cor de cada faixa vem da MESMA variável CSS que a legenda e o diagrama usam
 // (fonte única). 'varias' não tem variável própria: usa o azul da água.
 const VAR_FAIXA: Record<Faixa, string> = {
@@ -572,6 +591,73 @@ export interface OpcoesPinos {
   /** Mostra a idade da leitura sob o nome (para a tela de monitoramento). */
   mostrarIdade?: boolean
   agora?: Date
+}
+
+/**
+ * As RÉGUAS individuais de uma cidade, como pontos menores que o pino dela.
+ *
+ * Itajaí tem onze, e o mapa mostrava um pino azul só. Os ribeirões (Murta,
+ * Canhanduba), onde a enxurrada urbana acontece, não apareciam em lugar nenhum.
+ *
+ * A cor vem de `reguasNoMapa`, que já aplicou a regra da maré: nove das onze
+ * são de estuário e NÃO recebem cor de perigo, porque a maré cruza a cota sem
+ * enchente. Elas saem como ANEL vazado — marcador de "medição, sem grau" —, com
+ * o número do lado. Bolinha cheia colorida é reservada a quem pode mesmo virar
+ * aviso. Ver `logica/reguasNoMapa.ts` para o porquê inteiro.
+ *
+ * Desenhadas ANTES dos pinos das cidades, para o pino maior ficar por cima.
+ */
+export function desenharReguas(
+  ctx: CanvasRenderingContext2D,
+  cena: Cena,
+  reguas: ReguaDesenhavel[],
+  escala = 1,
+): void {
+  const r = 3.4 * escala
+  const fonte = Math.round(9.5 * escala)
+  const caixas: { x0: number; y0: number; x1: number; y1: number }[] = []
+
+  for (const g of reguas) {
+    const [x, y] = projetar(cena.enq, [g.lon, g.lat])
+    if (x < -20 || y < -20 || x > cena.largura + 20 || y > cena.altura + 20) continue
+
+    ctx.beginPath()
+    ctx.arc(x, y, r, 0, Math.PI * 2)
+    if (g.faixa) {
+      // Pode virar aviso: bolinha cheia na cor da faixa DELA (cota própria).
+      ctx.fillStyle = cena.cores[g.faixa]
+      ctx.fill()
+      ctx.lineWidth = 1.2 * escala
+      ctx.strokeStyle = 'rgba(4,12,20,0.9)'
+      ctx.stroke()
+    } else {
+      // Sem grau: anel vazado. Não é cinza de "sem dado" — há dado, e ele
+      // aparece ao lado; o que não afirmamos é a faixa.
+      ctx.fillStyle = 'rgba(6,18,30,0.85)'
+      ctx.fill()
+      ctx.lineWidth = 1.6 * escala
+      ctx.strokeStyle = COR_REGUA_SEM_GRAU
+      ctx.stroke()
+    }
+
+    if (g.nivel == null) continue
+    const texto = g.codigo ? `${g.codigo} ${metros(g.nivel)}` : metros(g.nivel)
+    ctx.font = `600 ${fonte}px system-ui, sans-serif`
+    const w = ctx.measureText(texto).width
+    const tx = x + r + 3 * escala
+    const ty = y + fonte * 0.35
+    const caixa = { x0: tx - 1, y0: ty - fonte, x1: tx + w + 1, y1: ty + 2 }
+    if (caixas.some((c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0)) {
+      continue // rótulo que colide some; o ponto fica, e o painel lista todas
+    }
+    caixas.push(caixa)
+    ctx.textAlign = 'left'
+    ctx.lineWidth = 3 * escala
+    ctx.strokeStyle = 'rgba(4,12,20,0.92)'
+    ctx.strokeText(texto, tx, ty)
+    ctx.fillStyle = g.faixa ? '#dff0ff' : COR_REGUA_SEM_GRAU
+    ctx.fillText(texto, tx, ty)
+  }
 }
 
 /** Pinos das cidades por cima, cada um na cor da faixa; o selecionado com anel. */

@@ -16,12 +16,15 @@ import {
   desenharCorrenteza,
   desenharOnda,
   desenharPinos,
+  desenharReguas,
+  COR_REGUA_SEM_GRAU,
   type Cena,
   type LeituraNaHora,
   type Pino,
   type RioParaCena,
 } from '../logica/mapaMotor'
 import { reguasComCota } from '../logica/reguas'
+import { reguasNoMapa } from '../logica/reguasNoMapa'
 import {
   FUNDOS,
   FUNDO_PADRAO,
@@ -176,6 +179,13 @@ function chuvaDaCidade(
 export default function MonitorBacia() {
   const navigate = useNavigate()
   const divRef = useRef<HTMLDivElement | null>(null)
+  /**
+   * As réguas com coordenada própria, como pontos no mapa.
+   *
+   * Hoje são as onze da Defesa Civil de Itajaí. Nove delas NÃO recebem cor —
+   * são de estuário, e a maré cruza a cota sem enchente; `reguasNoMapa` aplica
+   * essa regra. Ver o cabeçalho de `logica/reguasNoMapa.ts`.
+   */
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const cenaRef = useRef<Cena | null>(null)
   /**
@@ -228,6 +238,33 @@ export default function MonitorBacia() {
     () => RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)),
     [],
   )
+
+  /**
+   * As réguas com coordenada própria, como pontos no mapa.
+   *
+   * Hoje são as onze da Defesa Civil de Itajaí — duas no Açu, quatro no Mirim,
+   * três em ribeirões (Murta, Canhanduba) e duas mais acima. O Monitor mostrava
+   * a foz como UM pino azul de "várias réguas", e os ribeirões, onde a enxurrada
+   * urbana acontece, não apareciam em lugar nenhum.
+   *
+   * NOVE delas NÃO recebem cor: são de estuário, e a maré cruza a cota sem
+   * enchente. `reguasNoMapa` aplica essa regra — ver o cabeçalho de lá.
+   */
+  const reguasDoMapa = useMemo(
+    () =>
+      reguasNoMapa(
+        estacoesTempoReal,
+        tempoReal.leituras.map((l) => ({
+          titulo: l.estacao,
+          nivel_m: l.nivel_m,
+          medidoEm: l.medidoEm,
+        })),
+        agora,
+      ),
+    [tempoReal, agora],
+  )
+  const reguasRef = useRef(reguasDoMapa)
+  reguasRef.current = reguasDoMapa
 
   // Grade de instantes da REPRODUÇÃO (últimas ~24 h, passo de 30 min), a partir
   // da série de nível de todas as cidades. Vazia = sem série publicada ainda.
@@ -405,6 +442,8 @@ export default function MonitorBacia() {
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
       desenharChuva(ctx, chuvaRef.current, escala)
+      // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
+      desenharReguas(ctx, cena, reguasRef.current, escala)
       desenharPinos(ctx, cena, selRef.current, {
         escala,
         mostrarIdade: true,
@@ -498,6 +537,16 @@ export default function MonitorBacia() {
             <li>
               <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
               ≈ nível bruto (rede estadual)
+            </li>
+            {/* As nove réguas de estuário de Itajaí. Mostram número e não
+                afirmam faixa: a maré cruza a cota sem enchente, e uma cor que
+                acende com a maré ensina a ignorar a cor. */}
+            <li>
+              <span
+                className={estilos.amostra}
+                style={{ background: 'transparent', border: `2px solid ${COR_REGUA_SEM_GRAU}` }}
+              />
+              Régua sem faixa (maré)
             </li>
           </ul>
           <p className={estilos.legendaNota}>
