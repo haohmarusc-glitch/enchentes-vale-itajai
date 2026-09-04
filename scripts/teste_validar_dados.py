@@ -147,18 +147,36 @@ class MonotoniaDaJanela(unittest.TestCase):
             "a sobreposição Blumenau/Indaial deveria aparecer como aviso",
         )
 
-    def test_janela_impossivel_vira_erro(self):
-        # Empurra Indaial para depois do MÁXIMO de Blumenau: agora não existe
-        # tempo que satisfaça as duas janelas.
+    def test_inversao_forte_avisa_mas_NAO_e_erro(self):
+        """
+        Corrigido em 04/09/2026 pela Tabela 7.5.1 da JICA (Vol. III-A, p. A-80).
+
+        Este teste exigia ERRO quando o montante passa do máximo do jusante,
+        sob a premissa de que "não existe tempo que satisfaça as duas janelas".
+        A premissa é falsa: nas colunas de 25 e 50 anos da tabela, Blumenau
+        (jusante) pica ANTES de Indaial (montante) — o Rio Benedito entra em
+        Indaial e adianta o pico de baixo. Manter como erro rejeitaria dado
+        oficial verdadeiro.
+
+        Continua avisando, e o aviso diz que nem chega a encostar — que é a
+        informação útil para quem for conferir.
+        """
         est, tr = self.base()
         for t in tr["trechos"]:
             if t["de"] == "rio-do-sul" and t["para"] == "indaial":
                 t["horas_min"] = t["horas_max"] = 11
-        erros, _ = _monotonia(est, tr)
-        self.assertTrue(
-            any("não cabe antes de" in e for e in erros),
-            "montante depois do máximo do jusante deveria ser erro",
-        )
+        erros, avisos = _monotonia(est, tr)
+        self.assertEqual(erros, [], "inversão não pode abortar: a JICA tem uma real")
+        self.assertTrue(any("nem chega a encostar" in a for a in avisos))
+
+    def test_o_aviso_nomeia_as_tres_causas_possiveis(self):
+        # Quem for arrumar precisa saber se é mistura de coluna, afluente no
+        # meio, ou dado errado — sem isso, "consertar" vira trocar fonte por
+        # interpolação, que é perder dado.
+        _, avisos = _monotonia(*self.base())
+        self.assertTrue(avisos)
+        for pista in ("COLUNAS diferentes", "afluente", "dado errado"):
+            self.assertTrue(any(pista in a for a in avisos), f"o aviso não fala de '{pista}'")
 
     def test_empate_no_limite_ainda_passa(self):
         # min_montante == max_jusante é o empate que o hidrograma afirma

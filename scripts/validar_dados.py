@@ -594,18 +594,30 @@ def valida_monotonia_transito() -> None:
     """
     A janela de chegada não pode contradizer a ordem do rio.
 
-    IMPOSSÍVEL (erro) é `min_montante > max_jusante`: não existe atribuição de
-    tempos que satisfaça as duas janelas, então uma das fontes está errada e a
-    tela afirmaria uma física que o próprio dado refuta.
+    CORREÇÃO DE 04/09/2026 — ISTO NÃO É MAIS ERRO, É AVISO
+    Este teste nasceu tratando `min_montante > max_jusante` como IMPOSSÍVEL:
+    "não existe tempo que satisfaça as duas janelas". A Tabela 7.5.1 da JICA
+    (Vol. III-A, p. A-80), lida na fonte, mostra que a premissa é falsa. Nas
+    colunas de 25 e 50 anos, **Blumenau pica ANTES de Indaial** (+7 h contra
+    +8 h) — e Indaial fica a MONTANTE. Não é erro da tabela: o Rio Benedito
+    entra justamente em Indaial, e num hidrograma de projeto a contribuição do
+    afluente pode adiantar o pico de baixo. Jusante picar antes de montante é
+    fisicamente possível quando há afluente no meio.
 
-    SOBREPOSIÇÃO (aviso) é a janela de baixo COMEÇAR antes da de cima sem que
-    isso seja impossível. Acontece porque um trecho vem do ponto de uma fonte e
-    o outro da faixa de outra — no Açu, `rio-do-sul->indaial` é o ponto do
-    hidrograma de projeto (Indaial +10) e `rio-do-sul->blumenau` é a faixa que o
-    texto do estudo afirma (7–10 h). Não é contradição: o hidrograma põe as duas
-    cidades na MESMA hora, e 10 ≤ 10. Vira aviso, não erro — tratar sobreposição
-    como defeito empurraria alguém a "consertar" trocando valor de fonte por
-    interpolação, que é perder dado, não ganhar precisão.
+    Manter isso como erro rejeitaria dado oficial verdadeiro. Vira aviso.
+
+    O QUE DE FATO CAUSA A INVERSÃO NO NOSSO DADO
+    Não é fonte diferente — é COLUNA diferente da mesma tabela. Conferido célula
+    a célula: `rio-do-sul->indaial = 10 h` é a coluna de 5 anos; o mínimo de
+    `rio-do-sul->blumenau = 7 h` é a de 25/50 anos. Empilhar período de retorno
+    diferente fabrica o paradoxo. Dentro de uma coluna só, Indaial e Blumenau
+    ficam a 0–1 h um do outro.
+
+    Por isso o aviso NOMEIA as três causas possíveis, em vez de sugerir defeito:
+    mistura de colunas, afluente entrando no meio, ou dado realmente errado.
+    Quem for arrumar precisa saber qual das três é — tratar tudo como defeito
+    empurraria alguém a "consertar" trocando valor de fonte por interpolação,
+    que é perder dado, não ganhar precisão.
     """
     trechos = le_json("transito.json")["trechos"]
     estacoes = le_json("estacoes.json")
@@ -626,22 +638,24 @@ def valida_monotonia_transito() -> None:
             if j:
                 janelas.append((cidade, j[0], j[1]))
 
-        for i, (cima, cima_min, _) in enumerate(janelas):
+        for i, (cima, cima_min, cima_max) in enumerate(janelas):
             for baixo, baixo_min, baixo_max in janelas[i + 1:]:
-                if cima_min > baixo_max:
-                    erro(
-                        f"transito.json / {rio_id}: {cima} ({cima_min}–{_} h desde {origem}) "
-                        f"não cabe antes de {baixo} ({baixo_min}–{baixo_max} h), que fica a "
-                        f"jusante. Não há tempo que satisfaça as duas: uma das fontes está errada."
-                    )
-                elif baixo_min < cima_min:
-                    aviso(
-                        f"transito.json / {rio_id}: a janela de {baixo} começa antes da de {cima}, "
-                        f"que fica acima ({baixo_min} h contra {cima_min} h desde {origem}). "
-                        "Não é contradição — as faixas se sobrepõem porque vêm de fontes "
-                        "diferentes do mesmo estudo. A tela e o bot dizem isso; ver "
-                        "docs/JANELA-DE-CHEGADA.md."
-                    )
+                if baixo_min >= cima_min:
+                    continue
+                grave = cima_min > baixo_max
+                aviso(
+                    f"transito.json / {rio_id}: a janela de {baixo} ({baixo_min}–{baixo_max} h "
+                    f"desde {origem}) começa antes da de {cima} ({cima_min}–{cima_max} h), que "
+                    f"fica a montante"
+                    + (" — e nem chega a encostar nela" if grave else "")
+                    + ". Três causas possíveis, nesta ordem de probabilidade: (1) os dois números "
+                    "vêm de COLUNAS diferentes da Tabela 7.5.1 da JICA (períodos de retorno "
+                    "diferentes), que é o caso conhecido no Açu; (2) há afluente entrando entre as "
+                    "duas cidades, e ele adianta o pico de baixo — a própria tabela mostra "
+                    "Blumenau picando antes de Indaial nas colunas de 25 e 50 anos, por causa do "
+                    "Benedito; (3) dado errado. Conferir qual antes de mexer. "
+                    "Ver docs/JANELA-DE-CHEGADA.md e docs/JICA-2011-VERIFICADO.md."
+                )
 
 
 def valida_meses_pareados() -> None:
