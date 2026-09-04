@@ -661,11 +661,22 @@ export function desenharOnda(
   }
 }
 
+/** Há régua cadastrada para esta cidade? Ver `temReguaCadastrada` em `dados/carregar`. */
+export type TemRegua = (cidadeId: string) => boolean
+
 export interface OpcoesPinos {
   escala?: number
   /** Mostra a idade da leitura sob o nome (para a tela de monitoramento). */
   mostrarIdade?: boolean
   agora?: Date
+  /**
+   * Diz se a cidade tem régua CADASTRADA, contando `estacoes_tempo_real`.
+   * Sem isto o rótulo do pino sem número olha só `cidade.regua` e diz "sem
+   * régua" em Itajaí, que tem onze. Passe `temReguaCadastrada` de
+   * `dados/carregar`. O padrão conservador é "não sei se tem", que mantém o
+   * comportamento antigo de quem não passar.
+   */
+  temRegua?: TemRegua
 }
 
 /**
@@ -764,8 +775,14 @@ export function desenharReguas(
  * é ausência de instrumento. Nenhuma das duas é "está tudo bem" — e era assim
  * que o nome sozinho podia ser lido.
  */
-function semNumero(cidade: Cidade): string {
-  return cidade.regua ? 'sem leitura' : 'sem régua'
+export function semNumero(cidade: Cidade, temRegua: TemRegua = () => false): string {
+  // `cidade.regua` não basta, e o relato mostrou por quê: o pino de ITAJAÍ dizia
+  // "sem régua" numa cidade com ONZE. As réguas de Itajaí moram em
+  // `estacoes_tempo_real`, fora do `rios[].cidades[]` — a mesma cegueira que o
+  // `conferir_mapa_e_alarme.py` teve. Quem sabe disso é quem carrega o cadastro,
+  // então a resposta ENTRA por parâmetro: este módulo não importa `carregar`,
+  // cujo alias `@dados` só existe no Vite (o runner dos testes é o node).
+  return cidade.regua || temRegua(cidade.id) ? 'sem leitura' : 'sem régua'
 }
 
 export function desenharPinos(
@@ -837,7 +854,7 @@ export function desenharPinos(
           ? idadeBruto
             ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
             : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
-          : (idade ?? semNumero(p.cidade))
+          : (idade ?? semNumero(p.cidade, opcoes.temRegua))
     const w = ctx.measureText(nome).width
     const meia = w / 2
     const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, p.x))

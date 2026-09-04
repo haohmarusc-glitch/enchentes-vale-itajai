@@ -11,7 +11,7 @@ import {
 } from 'recharts'
 import type { Cidade } from '../dados/tipos'
 import type { PontoSerie } from '../dados/serie'
-import { tendencia } from '../dados/serie'
+import { porRegua, tendencia } from '../dados/serie'
 import { faixaDaCidade } from '../logica/tempoReal'
 import { dataHora, metros, numero, rotuloCota } from '../logica/formato'
 import { ROTULO_FAIXA } from './LegendaFaixas'
@@ -37,6 +37,17 @@ const COR_COTA: Record<string, string> = {
 
 const JANELA_PADRAO_H = 24
 
+/**
+ * Uma cor por RÉGUA, para a cidade que tem mais de uma.
+ *
+ * Não é enfeite: em Itajaí são onze réguas com ZEROS DIFERENTES, e até
+ * 04/09/2026 elas saíam TODAS na mesma linha azul, intercaladas — um serrilhado
+ * de 1,70 m de salto mediano que não é o rio subindo e descendo, é a linha
+ * pulando de régua em régua. Uma linha por régua desfaz isso; a cor só as
+ * separa aos olhos.
+ */
+const CORES_REGUA = ['#1c6ea4', '#7b4fa8', '#2e8b57', '#b06a1a', '#9c2c4b', '#3a7d8c']
+
 
 export default function LinhaDoTempo({
   cidade,
@@ -57,12 +68,37 @@ export default function LinhaDoTempo({
     )
   }
 
-  const dados = serie.map((p) => ({ t: p.medidoEm.getTime(), nivel: p.nivel_m }))
+  // UMA LINHA POR RÉGUA. Réguas diferentes têm zeros diferentes; costurá-las
+  // numa linha só faz o gráfico afirmar subidas e descidas que são troca de
+  // régua, não movimento do rio.
+  const grupos = [...porRegua(serie)]
+  const varias = grupos.length > 1
+  const chaveDe = (i: number) => `n${i}`
+  const porInstante = new Map<number, Record<string, number>>()
+  grupos.forEach(([, pontos], i) => {
+    for (const p of pontos) {
+      const t = p.medidoEm.getTime()
+      const linha = porInstante.get(t) ?? {}
+      linha[chaveDe(i)] = p.nivel_m
+      porInstante.set(t, linha)
+    }
+  })
+  const dados = [...porInstante.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([t, valores]) => ({ t, ...valores }))
+
   const cotas = Object.entries(cidade.cotas_m)
   const maiorCota = cotas.length > 0 ? Math.max(...cotas.map(([, v]) => v)) : 0
   const maiorNivel = Math.max(...serie.map((p) => p.nivel_m))
   const teto = Math.ceil(Math.max(maiorNivel, maiorCota) + 0.5)
 
+  // A última leitura DE CADA RÉGUA. Com várias, não existe "o nível da cidade":
+  // dizer um número só obrigaria a escolher uma régua por conta, e o número
+  // escolhido apareceria como se fosse o da cidade inteira.
+  const ultimos = grupos.map(([chave, pontos]) => ({
+    regua: chave,
+    ponto: pontos[pontos.length - 1]!,
+  }))
   const ultimo = serie[serie.length - 1]!
   const faixaAgora = faixaDaCidade(
     cidade,
@@ -70,6 +106,8 @@ export default function LinhaDoTempo({
     false,
     agora,
   )
+  // `tendencia` devolve null quando a série mistura réguas — é o certo, e é por
+  // isso que a frase "subindo/descendo" some em Itajaí.
   const tend = tendencia(serie)
 
   // Abre mostrando as últimas 24 h; a janela cheia (48 h) fica no arraste.
@@ -84,21 +122,45 @@ export default function LinhaDoTempo({
 
   return (
     <div>
-      <p className={estilos.resumo}>
-        Agora: <strong>{metros(ultimo.nivel_m)}</strong> ({ROTULO_FAIXA[faixaAgora]}), medido{' '}
-        {dataHora(ultimo.medidoEm)}.
-        {tend ? (
-          <>
-            {' '}
-            Nas últimas horas:{' '}
-            <strong>
-              {tend.rotulo}
-              {tend.cmh !== 0 ? ` (${Math.abs(tend.cmh)} cm/h)` : ''}
-            </strong>
-            .
-          </>
-        ) : null}
-      </p>
+      {varias ? (
+        <div className={estilos.resumo}>
+          <p>
+            {cidade.nome} tem <strong>{grupos.length} réguas</strong> nesta série, e cada
+            uma tem o seu próprio zero — os metros de uma não se comparam com os da
+            outra, nem entre si. Por isso não há um "nível da cidade" aqui, e sim a
+            última leitura de cada régua:
+          </p>
+          <ul className={estilos.listaReguas}>
+            {ultimos.map((u, i) => (
+              <li key={u.regua || `sem-${i}`}>
+                <span
+                  className={estilos.amostra}
+                  style={{ background: CORES_REGUA[i % CORES_REGUA.length] }}
+                  aria-hidden="true"
+                />
+                {u.regua || 'régua não identificada'}: <strong>{metros(u.ponto.nivel_m)}</strong>,
+                medido {dataHora(u.ponto.medidoEm)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className={estilos.resumo}>
+          Agora: <strong>{metros(ultimo.nivel_m)}</strong> ({ROTULO_FAIXA[faixaAgora]}), medido{' '}
+          {dataHora(ultimo.medidoEm)}.
+          {tend ? (
+            <>
+              {' '}
+              Nas últimas horas:{' '}
+              <strong>
+                {tend.rotulo}
+                {tend.cmh !== 0 ? ` (${Math.abs(tend.cmh)} cm/h)` : ''}
+              </strong>
+              .
+            </>
+          ) : null}
+        </p>
+      )}
 
       <div className={estilos.grafico}>
         <ResponsiveContainer width="100%" height={280}>
@@ -115,7 +177,7 @@ export default function LinhaDoTempo({
             />
             <YAxis domain={[0, teto]} tick={{ fontSize: 11 }} unit=" m" width={56} />
             <Tooltip
-              formatter={(v) => [metros(Number(v)), 'Nível']}
+              formatter={(v, nome) => [metros(Number(v)), varias ? String(nome) : 'Nível']}
               labelFormatter={(t) => dataHora(new Date(Number(t)))}
             />
             {cotas.map(([chave, valor]) => (
@@ -132,14 +194,21 @@ export default function LinhaDoTempo({
                 }}
               />
             ))}
-            <Line
-              type="monotone"
-              dataKey="nivel"
-              stroke="#1c6ea4"
-              strokeWidth={2}
-              dot={false}
-              isAnimationActive={false}
-            />
+            {grupos.map(([chave], i) => (
+              <Line
+                key={chave || `sem-${i}`}
+                type="monotone"
+                dataKey={chaveDe(i)}
+                name={chave || 'régua não identificada'}
+                stroke={CORES_REGUA[i % CORES_REGUA.length]}
+                strokeWidth={2}
+                dot={false}
+                // Cada régua reporta nos SEUS instantes; sem isto a linha some
+                // nos instantes em que só a outra régua publicou.
+                connectNulls
+                isAnimationActive={false}
+              />
+            ))}
             <Brush
               dataKey="t"
               height={22}
@@ -153,8 +222,9 @@ export default function LinhaDoTempo({
       </div>
 
       <p className={estilos.nota}>
-        Nível na régua de {cidade.nome} — cada cidade tem seu próprio zero, então
-        não compare estes metros com os de outra cidade. Arraste as alças embaixo
+        {varias
+          ? `Uma linha por régua de ${cidade.nome} — cada régua tem seu próprio zero, então não compare os metros de uma com os da outra, nem com os de outra cidade.`
+          : `Nível na régua de ${cidade.nome} — cada cidade tem seu próprio zero, então não compare estes metros com os de outra cidade.`} Arraste as alças embaixo
         do gráfico para ver mais horas. A cor de cada linha tracejada é a faixa
         da cota; a ação de cada faixa está na legenda do mapa.
       </p>

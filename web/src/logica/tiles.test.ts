@@ -11,6 +11,7 @@ import {
   tileY,
   tilesVisiveis,
   urlDoTile,
+  urlDosRotulos,
   zoomPara,
   ehChaveDeFundo,
 } from './tiles'
@@ -135,4 +136,63 @@ test('a TELA mostra a atribuição e ela troca com a camada', () => {
     assert.equal(tela.includes(f.atribuicao), false,
       `a tela repete o crédito "${f.atribuicao}" em vez de ler de FUNDOS`)
   }
+})
+
+/**
+ * NENHUM fundo pode pedir chave de API.
+ *
+ * Em 04/09/2026 o `basemaps.cartocdn.com/dark_all` — que era o fundo Escuro,
+ * e é o PADRÃO — passou a servir os tiles com "API KEY REQUIRED" repetido por
+ * cima de tudo. Os tiles ainda carregavam, então nada quebrou: só o mapa da
+ * cidade ficou coberto de aviso comercial, na tela que alguém abre para ver
+ * onde a água está. Nenhum teste viu, porque nenhum teste olhava as URLs.
+ */
+test('nenhum fundo aponta para provedor que exige chave', () => {
+  const proibidos = [
+    // Passou a exigir chave; foi o defeito de 04/09/2026.
+    'cartocdn.com',
+    // Os que exigem chave desde sempre — para não entrarem por engano.
+    'api.mapbox.com',
+    'tiles.stadiamaps.com',
+    'maps.googleapis.com',
+    'api.maptiler.com',
+    'thunderforest.com',
+  ]
+  for (const [chave, f] of Object.entries(FUNDOS)) {
+    for (const url of [f.url, f.rotulos].filter(Boolean) as string[]) {
+      for (const host of proibidos) {
+        assert.ok(
+          !url.includes(host),
+          `o fundo "${chave}" voltou a apontar para ${host}, que exige chave: ` +
+            'o mapa sai com marca d\'água por cima da cidade',
+        )
+      }
+      assert.ok(
+        !/[?&](api_?key|access_?token|key)=/i.test(url),
+        `o fundo "${chave}" carrega chave na URL — segredo em código do cliente`,
+      )
+    }
+  }
+})
+
+test('o fundo escuro tem rótulos: fundo mudo não orienta ninguém', () => {
+  // Os "canvas" do Esri separam desenho e rótulo. Trocar o CARTO por eles sem
+  // a segunda camada deixaria o mapa bonito e SEM nome de bairro nenhum — e é
+  // por "Santa Regina" que a pessoa se localiza.
+  assert.ok(
+    FUNDOS.escuro.rotulos,
+    'o fundo escuro perdeu a camada de rótulos: some o nome de rua e bairro',
+  )
+  // Rótulo do Esri usa a mesma inversão {z}/{y}/{x} da base.
+  assert.equal(FUNDOS.escuro.invertido, true)
+})
+
+test('urlDosRotulos preenche igual à base, e é null quando não há', () => {
+  const base = urlDoTile(FUNDOS.escuro, 3, 5, 7)
+  const rot = urlDosRotulos(FUNDOS.escuro, 3, 5, 7)
+  assert.ok(rot, 'o escuro tem rótulos')
+  // Esri inverte: o y vem antes do x nas duas.
+  assert.match(base, /\/7\/5\/3$/)
+  assert.match(rot!, /\/7\/5\/3$/)
+  assert.equal(urlDosRotulos(FUNDOS.mapa, 3, 5, 7), null)
 })

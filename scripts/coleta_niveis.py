@@ -315,6 +315,13 @@ def linha_da_serie(l: dict) -> dict:
         "cidade": l.get("cidade"),
         "medido_em": l["medido_em"],
     }
+    # `resgate_de` identifica a RÉGUA: primária e resgate medem a MESMA régua,
+    # com o MESMO zero (Blumenau, estação ANA 83800002, publicada pela Defesa
+    # Civil e pelo AlertaBlu). Sem guardá-lo, quem lê a série depois conta duas
+    # réguas onde há uma — e some com o nível da cidade justamente quando a
+    # primária falha e o resgate assume. Ver `comum.regua_de`.
+    if l.get("resgate_de"):
+        base["resgate_de"] = l["resgate_de"]
     if "mm" in l:
         return {**base, "mm": l["mm"], "coerente": l.get("coerente", True)}
     return {**base, "nivel_m": l["nivel_m"]}
@@ -419,6 +426,33 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
     Só nível, de propósito: a chuva é outra grandeza e outra série, e dobraria o
     arquivo que o celular baixa. `medido_em` continua sendo hora de Brasília sem
     fuso, igual ao resto do projeto — nada de converter aqui.
+
+    CADA PONTO DIZ DE QUE RÉGUA VEIO — e por quê (04/09/2026)
+    ---------------------------------------------------------
+    Até aqui este recorte agrupava por (rio, cidade) e jogava fora o campo
+    `estacao`, que o ndjson mestre guarda. Numa cidade de uma régua só isso não
+    faz diferença. Em ITAJAÍ faz: são onze réguas, com ZEROS DIFERENTES, e a
+    série de `itajai-acu/itajai` saía com DC-01, DC-02 e DC-11 intercaladas —
+    medido na série publicada de 04/09, um serrilhado de 2,70 → 1,20 → 0,56 →
+    2,71 → 1,20 → 0,56, com salto MEDIANO de 1,70 m entre pontos vizinhos. No
+    Mirim em Itajaí são cinco réguas e o salto máximo chega a 4,08 m.
+
+    Isso não era só um gráfico feio. A `tendencia()` do site pega o último ponto
+    e o de ~1 h antes e devolve cm/h — e é o que decide se uma leitura VELHA
+    ainda pode ser lida como o agora. Simulando o site em cada instante da
+    janela de 48 h: em `itajai-mirim/itajai`, **736 dos 949 instantes** dariam
+    |cm/h| > 30 e **707** dariam > 100, com pico de **+2448 cm/h** — o site
+    dizendo a quem mora na foz que o rio sobe 24 metros por hora. Em
+    `itajai-acu/itajai`, pico de −13.140. Blumenau também aparece (primária +
+    resgate sob a mesma cidade): pico de −264.
+
+    O formato foi escolhido para o CELULAR NA CHUVA: gravar o título inteiro em
+    cada ponto engordaria o arquivo em ~70%. Então vai uma legenda por (rio,
+    cidade) em `reguas`, e cada ponto leva só `r`, o índice nela — ~7 bytes por
+    ponto, +7%. E é RETROCOMPATÍVEL de propósito: a lista de pontos continua
+    lista, `r` e `reguas` são campos novos que um site antigo ignora. Publicador
+    e site podem ser implantados em qualquer ordem, o que importa quando a
+    correção sobe no meio de uma cheia.
     """
     agora = datetime.now(FUSO_BRASILIA).replace(tzinfo=None)
     corte = agora - timedelta(hours=horas)
@@ -434,6 +468,7 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
     ]
 
     series: dict[str, dict[str, list[dict]]] = {}
+    reguas: dict[str, dict[str, list[str]]] = {}
     pontos = 0
     for arquivo in arquivos:
         for d in _ler_ndjson(arquivo):
@@ -448,14 +483,26 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
             rio, cidade = d.get("rio"), d.get("cidade")
             if not rio or not cidade:
                 continue
-            series.setdefault(rio, {}).setdefault(cidade, []).append(
-                {"medido_em": d["medido_em"], "nivel_m": d["nivel_m"]}
-            )
+            ponto = {"medido_em": d["medido_em"], "nivel_m": d["nivel_m"]}
+            # `regua_de` = `resgate_de` ou `estacao`: junta primária e resgate
+            # numa régua só, que é o que elas são.
+            titulo = d.get("resgate_de") or d.get("estacao")
+            if titulo:
+                ponto["_regua"] = str(titulo)
+            series.setdefault(rio, {}).setdefault(cidade, []).append(ponto)
             pontos += 1
 
-    for por_cidade in series.values():
-        for linha in por_cidade.values():
+    for rio, por_cidade in series.items():
+        for cidade, linha in por_cidade.items():
             linha.sort(key=lambda p: p["medido_em"])
+            titulos = sorted({p["_regua"] for p in linha if "_regua" in p})
+            if titulos:
+                reguas.setdefault(rio, {})[cidade] = titulos
+            indice = {t: i for i, t in enumerate(titulos)}
+            for ponto in linha:
+                titulo = ponto.pop("_regua", None)
+                if titulo is not None:
+                    ponto["r"] = indice[titulo]
 
     SERIE.mkdir(parents=True, exist_ok=True)
     SERIE_RECENTE.write_text(
@@ -466,9 +513,18 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
                     "medido_em": "hora de Brasília sem fuso, como no resto do projeto",
                     "gerado_em": "UTC, do momento em que este arquivo foi montado",
                     "so_nivel": "chuva é outra série; este arquivo é só nível",
+                    "r": (
+                        "índice da RÉGUA do ponto dentro de reguas[rio][cidade]. "
+                        "Uma cidade pode ter várias réguas com ZEROS DIFERENTES "
+                        "(Itajaí tem onze), e sem este campo a série da cidade sai "
+                        "com todas intercaladas — um serrilhado que não é o rio. "
+                        "Ponto sem 'r' é ponto de régua desconhecida: trate como "
+                        "não comparável, nunca como 'a mesma de antes'."
+                    ),
                 },
                 "gerado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "janela_horas": horas,
+                "reguas": reguas,
                 "series": series,
             },
             ensure_ascii=False,

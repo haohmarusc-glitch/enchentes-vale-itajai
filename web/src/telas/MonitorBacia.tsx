@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { cidadesDoRio, eixoDoRio, estacoesTempoReal, mareItajai } from '../dados/carregar'
+import {
+  cidadesDoRio,
+  eixoDoRio,
+  estacoesTempoReal,
+  mareItajai,
+  temReguaCadastrada,
+} from '../dados/carregar'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
 import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
@@ -38,6 +44,7 @@ import {
   ehChaveDeFundo,
   tilesVisiveis,
   urlDoTile,
+  urlDosRotulos,
   zoomPara,
   type ChaveFundo,
 } from '../logica/tiles'
@@ -494,12 +501,23 @@ export default function MonitorBacia() {
     const cache = tilesRef.current
     let vivo = true
 
+    // Base e, por cima dela, os rótulos — nesta ordem, senão o nome do bairro
+    // fica embaixo do desenho e some. Fundo sem `rotulos` passa direto.
+    const urls = (t: (typeof pedacos)[number]): string[] => {
+      const rotulos = urlDosRotulos(camada, t.x, t.y, t.z)
+      return rotulos ? [urlDoTile(camada, t.x, t.y, t.z), rotulos] : [urlDoTile(camada, t.x, t.y, t.z)]
+    }
+
     const pintarTiles = (c: CanvasRenderingContext2D) => {
-      for (const t of pedacos) {
-        const im = cache.get(urlDoTile(camada, t.x, t.y, t.z))
-        if (im && im !== 'erro' && im.complete && im.naturalWidth > 0) {
-          // +1 px cobre a costura de arredondamento entre vizinhos.
-          c.drawImage(im, t.px, t.py, t.largura + 1, t.altura + 1)
+      for (const camadaUrl of [0, 1]) {
+        for (const t of pedacos) {
+          const url = urls(t)[camadaUrl]
+          if (!url) continue
+          const im = cache.get(url)
+          if (im && im !== 'erro' && im.complete && im.naturalWidth > 0) {
+            // +1 px cobre a costura de arredondamento entre vizinhos.
+            c.drawImage(im, t.px, t.py, t.largura + 1, t.altura + 1)
+          }
         }
       }
     }
@@ -513,8 +531,7 @@ export default function MonitorBacia() {
     }
     redesenharFundo()
 
-    for (const t of pedacos) {
-      const url = urlDoTile(camada, t.x, t.y, t.z)
+    for (const url of pedacos.flatMap(urls)) {
       if (cache.has(url)) continue
       const im = new Image()
       // Sem `crossOrigin`: nada aqui lê pixel de volta (não há getImageData nem
@@ -550,6 +567,7 @@ export default function MonitorBacia() {
         escala,
         mostrarIdade: true,
         agora: instante,
+        temRegua: temReguaCadastrada,
       })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }

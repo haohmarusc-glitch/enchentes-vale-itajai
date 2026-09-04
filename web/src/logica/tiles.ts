@@ -32,14 +32,40 @@ export type Fundo = {
   invertido?: boolean
   /** Fundo com textura, onde o cinza "sem dado" some sem contorno escuro. */
   texturado?: boolean
+  /**
+   * Segunda camada, desenhada POR CIMA da base: nomes de rua, bairro e cidade.
+   *
+   * Os "canvas" do Esri separam desenho e rótulo em serviços diferentes. Sem
+   * esta camada o fundo escuro fica bonito e MUDO — e num mapa de enchente
+   * saber que aquele bairro é Santa Regina não é enfeite, é o que orienta quem
+   * está decidindo se sai de casa.
+   */
+  rotulos?: string
 }
 
 export const FUNDOS: Record<ChaveFundo, Fundo> = {
+  /**
+   * FUNDO ESCURO — trocado do CARTO para o Esri em 04/09/2026.
+   *
+   * O `basemaps.cartocdn.com/dark_all` passou a servir os tiles com a marca
+   * d'água "API KEY REQUIRED" repetida por cima de tudo (visto no celular do
+   * Jefferson em 04/09, com o mapa aberto). Os tiles ainda carregam, então não
+   * é falha de segurança — é o mapa da cidade coberto de aviso comercial na
+   * hora em que alguém está olhando onde a água está.
+   *
+   * O Esri não pede chave e JÁ É o provedor do Satélite aqui, então a
+   * atribuição e os termos que o projeto aceita não mudam. O preço é o teto de
+   * zoom: o Dark Gray Canvas é publicado até o nível 16, contra 19 do CARTO.
+   * Quem precisar de mais perto tem o "Mapa" (OpenStreetMap, até 19) ao lado.
+   */
   escuro: {
     nome: 'Escuro',
-    url: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
-    atribuicao: '© CARTO · © OpenStreetMap',
-    maxZoom: 19,
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    rotulos:
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+    atribuicao: 'Esri, HERE, Garmin, © colaboradores do OpenStreetMap',
+    maxZoom: 16,
+    invertido: true,
   },
   satelite: {
     nome: 'Satélite',
@@ -161,7 +187,16 @@ export function tilesVisiveis(
 
 /** URL do tile, respeitando a inversão do Esri. */
 export function urlDoTile(fundo: Fundo, x: number, y: number, z: number): string {
-  return fundo.url
+  return preencher(fundo.url, x, y, z)
+}
+
+/** URL da camada de RÓTULOS do fundo, quando ele tem uma. */
+export function urlDosRotulos(fundo: Fundo, x: number, y: number, z: number): string | null {
+  return fundo.rotulos ? preencher(fundo.rotulos, x, y, z) : null
+}
+
+function preencher(molde: string, x: number, y: number, z: number): string {
+  return molde
     .replace('{z}', String(z))
     .replace('{x}', String(x))
     .replace('{y}', String(y))
