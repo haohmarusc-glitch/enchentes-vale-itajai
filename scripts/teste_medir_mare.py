@@ -12,7 +12,12 @@ import math
 import unittest
 from datetime import datetime, timedelta
 
-from medir_mare import medir, travessias, veredito
+import json
+import tempfile
+from pathlib import Path
+
+import medir_mare
+from medir_mare import leituras_da_serie, medir, travessias, veredito
 
 INICIO = datetime(2026, 9, 1, 0, 0)
 
@@ -103,6 +108,97 @@ class TestMedir(unittest.TestCase):
         m = medir("Rio do Sul Estação MKS", serie(4, 3.5, 0.1))
         self.assertTrue(m["alerta_automatico_hoje"])
         self.assertEqual(m["menor_cota_m"], 4.5)
+
+
+class AsTresReguasDoAcuEmItajaiSaoSEPARADAS(unittest.TestCase):
+    """
+    O ndjson mestre SEMPRE guardou `estacao`, e `medir_mare` chaveia por ela —
+    então a DC-11 nunca esteve bloqueada por "série misturada".
+
+    A confusão vinha do recorte publicado (`serie-recente.json`), que agrupava
+    só por (rio, cidade) e jogava a estação fora: ali, sim, DC-01, DC-02 e
+    DC-11 saíam intercaladas. Mas não é esse arquivo que este script lê.
+    O bloqueio real da DC-11 é outro: o ndjson mora na VPS.
+
+    Este teste existe para que a afirmação não precise ser acreditada — ele
+    monta um ndjson com as TRÊS réguas do Açu em Itajaí, com os níveis reais de
+    04/09/2026, e cobra que saiam três medidas distintas.
+    """
+
+    DC01 = "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL"
+    DC02 = "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva"
+    DC11 = "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self._orig = medir_mare.SERIE
+        medir_mare.SERIE = Path(self.tmp.name)
+
+    def tearDown(self):
+        medir_mare.SERIE = self._orig
+        self.tmp.cleanup()
+
+    def escrever(self, linhas):
+        (medir_mare.SERIE / "2026-09.ndjson").write_text(
+            "\n".join(json.dumps(l, ensure_ascii=False) for l in linhas) + "\n",
+            encoding="utf-8",
+        )
+
+    def tres_reguas(self):
+        # Níveis reais de 04/09: DC-01 0,56 · DC-02 1,20 · DC-11 2,70.
+        # Cada uma com uma oscilação própria, para não saírem idênticas.
+        linhas = []
+        for i in range(4 * 24 * 4):  # 4 dias, de 15 em 15 min
+            t = (INICIO + timedelta(minutes=15 * i)).isoformat(timespec="seconds")
+            h = i / 4
+            for titulo, base, amp in (
+                (self.DC01, 0.56, 0.9),
+                (self.DC02, 1.20, 0.7),
+                (self.DC11, 2.70, 0.2),
+            ):
+                nivel = base + amp / 2 * math.sin(2 * math.pi * h / 12.4)
+                linhas.append({
+                    "estacao": titulo, "rio": "itajai-acu", "cidade": "itajai",
+                    "medido_em": t, "nivel_m": round(nivel, 2),
+                })
+        self.escrever(linhas)
+
+    def test_a_serie_sai_separada_por_estacao(self):
+        self.tres_reguas()
+        serie = leituras_da_serie("2026-09")
+        self.assertEqual(sorted(serie), sorted([self.DC01, self.DC02, self.DC11]))
+        # E cada uma em torno do SEU nível — não da média das três.
+        for titulo, base in ((self.DC01, 0.56), (self.DC02, 1.20), (self.DC11, 2.70)):
+            niveis = [n for _, n in serie[titulo]]
+            self.assertAlmostEqual(sum(niveis) / len(niveis), base, delta=0.05)
+
+    def test_a_DC11_ganha_medida_propria_com_a_cota_DELA(self):
+        self.tres_reguas()
+        serie = leituras_da_serie("2026-09")
+        m = medir(self.DC11, serie[self.DC11], reguas_na_cidade=3)
+        self.assertIsNotNone(m)
+        self.assertEqual(m["codigo"], "DC-11")
+        # A cota vem da PRÓPRIA estação (3,00 / 4,00 / 5,00), não emprestada da
+        # cidade — Itajaí tem onze réguas, e emprestar mediria contra o zero
+        # errado.
+        self.assertEqual(m["menor_cota_m"], 3.00)
+        self.assertAlmostEqual(m["nivel_tipico_m"], 2.70, delta=0.05)
+
+    def test_juntar_as_tres_daria_uma_amplitude_que_NAO_e_mare(self):
+        # A prova de que separar importa: a mistura das três oscila muito mais
+        # que qualquer uma delas, e a diferença é entre ZEROS, não maré.
+        self.tres_reguas()
+        serie = leituras_da_serie("2026-09")
+        separadas = [
+            medir(t, serie[t], 3)["amplitude_diaria_mediana_m"]
+            for t in (self.DC01, self.DC02, self.DC11)
+        ]
+        juntas = sorted(p for t in serie for p in serie[t])
+        misturada = medir("mistura", juntas, 3)["amplitude_diaria_mediana_m"]
+        self.assertGreater(
+            misturada, max(separadas) * 1.5,
+            "o fixture parou de reproduzir a diferença — o teste virou vazio",
+        )
 
 
 if __name__ == "__main__":
