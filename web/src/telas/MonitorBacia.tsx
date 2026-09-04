@@ -22,6 +22,15 @@ import {
   type RioParaCena,
 } from '../logica/mapaMotor'
 import { reguasComCota } from '../logica/reguas'
+import {
+  FUNDOS,
+  FUNDO_PADRAO,
+  ehChaveDeFundo,
+  tilesVisiveis,
+  urlDoTile,
+  zoomPara,
+  type ChaveFundo,
+} from '../logica/tiles'
 import VariasReguas from '../componentes/VariasReguas'
 import estilos from './MonitorBacia.module.css'
 
@@ -169,6 +178,33 @@ export default function MonitorBacia() {
   const divRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const cenaRef = useRef<Cena | null>(null)
+  /**
+   * Cache de tiles, por URL, VIVO ENTRE RENDERS.
+   *
+   * Sem ele, cada redimensionamento ou tique do relógio pediria o mosaico
+   * inteiro de novo — dezenas de imagens a cada quinze minutos, numa fonte
+   * pública e gratuita que não nos deve nada. `'erro'` marca o que falhou, para
+   * não repetir a tentativa em laço.
+   */
+  const tilesRef = useRef<Map<string, HTMLImageElement | 'erro'>>(new Map())
+  const [fundo, setFundo] = useState<ChaveFundo>(() => {
+    // `localStorage` pode estourar (janela anônima, site data bloqueado): a tela
+    // tem de abrir igual, no escuro, que é o padrão por função.
+    try {
+      const v = localStorage.getItem('monitor-fundo')
+      if (ehChaveDeFundo(v)) return v
+    } catch {
+      // sem preferência guardada é o caso comum, não erro
+    }
+    return FUNDO_PADRAO
+  })
+  useEffect(() => {
+    try {
+      localStorage.setItem('monitor-fundo', fundo)
+    } catch {
+      // guardar é conveniência; não guardar não quebra nada
+    }
+  }, [fundo])
   const chuvaRef = useRef<MarcadorChuva[]>([])
   const selRef = useRef<string | null>(null)
 
@@ -305,12 +341,55 @@ export default function MonitorBacia() {
     // num instante que não medimos).
     chuvaRef.current = emRepro ? [] : marcadoresChuva(cena, cidadesBacia, tempoReal.chuva)
 
-    const fundo = document.createElement('canvas')
-    fundo.width = canvas.width
-    fundo.height = canvas.height
-    const fctx = fundo.getContext('2d')!
+    const fundoCanvas = document.createElement('canvas')
+    fundoCanvas.width = canvas.width
+    fundoCanvas.height = canvas.height
+    const fctx = fundoCanvas.getContext('2d')!
     fctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-    desenharBase(fctx, cena, escala)
+
+    // FUNDO DE MAPA (tiles). A geometria e o porquê de alinhar com a projeção
+    // do canvas estão em `logica/tiles.ts`.
+    const camada = FUNDOS[fundo]
+    const z = zoomPara(cena.enq, camada.maxZoom)
+    const pedacos = tilesVisiveis(cena.enq, tam.w, tam.h, z)
+    const cache = tilesRef.current
+    let vivo = true
+
+    const pintarTiles = (c: CanvasRenderingContext2D) => {
+      for (const t of pedacos) {
+        const im = cache.get(urlDoTile(camada, t.x, t.y, t.z))
+        if (im && im !== 'erro' && im.complete && im.naturalWidth > 0) {
+          // +1 px cobre a costura de arredondamento entre vizinhos.
+          c.drawImage(im, t.px, t.py, t.largura + 1, t.altura + 1)
+        }
+      }
+    }
+
+    const redesenharFundo = () => {
+      fctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      desenharBase(fctx, cena, escala, {
+        fundoTiles: pintarTiles,
+        sobreImagem: !!camada.texturado,
+      })
+    }
+    redesenharFundo()
+
+    for (const t of pedacos) {
+      const url = urlDoTile(camada, t.x, t.y, t.z)
+      if (cache.has(url)) continue
+      const im = new Image()
+      // Sem `crossOrigin`: nada aqui lê pixel de volta (não há getImageData nem
+      // toDataURL), então "sujar" o canvas não custa nada — e exigir CORS só
+      // criaria uma forma nova de o fundo não carregar.
+      im.onload = () => {
+        if (vivo) redesenharFundo()
+      }
+      im.onerror = () => {
+        cache.set(url, 'erro') // some o fundo ali, o mapa segue igual
+      }
+      im.src = url
+      cache.set(url, im)
+    }
 
     const reduz =
       typeof window.matchMedia === 'function' &&
@@ -321,7 +400,7 @@ export default function MonitorBacia() {
     const quadro = (t: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, cena.largura, cena.altura)
-      ctx.drawImage(fundo, 0, 0, cena.largura, cena.altura)
+      ctx.drawImage(fundoCanvas, 0, 0, cena.largura, cena.altura)
       const seg = reduz ? 0 : (t - inicio) / 1000
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
@@ -334,8 +413,11 @@ export default function MonitorBacia() {
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
     raf = requestAnimationFrame(quadro)
-    return () => cancelAnimationFrame(raf)
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie])
+    return () => {
+      vivo = false // tile que chegar depois não redesenha canvas morto
+      cancelAnimationFrame(raf)
+    }
+  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo])
 
   /** Pino mais próximo do ponteiro, dentro do raio — ou null. */
   function pinoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {
@@ -424,6 +506,29 @@ export default function MonitorBacia() {
             em violeta vem da régua estadual, com zero próprio: aparece quando não
             há fonte municipal e <strong>não vira faixa</strong>.
           </p>
+
+          {/* Seletor de fundo. O ESCURO é o padrão por FUNÇÃO, não por estética:
+              qualquer fundo com textura concorre visualmente com as faixas de
+              alerta, e numa noite de chuva, com o celular na mão, isso pesa mais
+              que parecer bonito. Satélite e mapa entram como escolha de quem
+              olha — o satélite ganha na foz, onde reconhecer a barra e os molhes
+              ajuda a se localizar. Ver `docs/CAMADAS-DE-MAPA.md`. */}
+          <div className={estilos.fundos} role="group" aria-label="Fundo do mapa">
+            {(Object.keys(FUNDOS) as ChaveFundo[]).map((k) => (
+              <button
+                key={k}
+                type="button"
+                aria-pressed={fundo === k}
+                className={fundo === k ? estilos.fundoAtivo : estilos.fundoBotao}
+                onClick={() => setFundo(k)}
+              >
+                {FUNDOS[k].nome}
+              </button>
+            ))}
+          </div>
+          {/* A ATRIBUIÇÃO É CONDIÇÃO DE LICENÇA, não cortesia: fica visível
+              enquanto a camada estiver ativa, e troca junto com ela. */}
+          <p className={estilos.atribuicao}>{FUNDOS[fundo].atribuicao}</p>
         </div>
 
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,

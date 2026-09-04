@@ -297,3 +297,51 @@
   height: auto;
   clip: auto;
 }
+
+/* Seletor de fundo do mapa, dentro da legenda. Alvo de toque generoso: o uso
+   típico é celular, de noite, com chuva — e dedo molhado erra botão pequeno. */
+.fundos {
+  display: flex;
+  gap: 0.3rem;
+  margin-top: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.fundoBotao,
+.fundoAtivo {
+  flex: 1 1 auto;
+  min-height: 34px;
+  padding: 0.3rem 0.55rem;
+  border-radius: 7px;
+  border: 1px solid rgba(150, 190, 225, 0.32);
+  background: rgba(10, 26, 42, 0.72);
+  color: #cfe2f2;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.fundoAtivo {
+  border-color: #58a8dd;
+  background: rgba(40, 110, 165, 0.55);
+  color: #f2f9ff;
+  font-weight: 600;
+}
+
+.fundoBotao:hover {
+  border-color: rgba(150, 190, 225, 0.6);
+}
+
+/* Foco visível de verdade: o contorno do teclado não pode sumir sobre o mapa. */
+.fundoBotao:focus-visible,
+.fundoAtivo:focus-visible {
+  outline: 2px solid #8fd0ff;
+  outline-offset: 2px;
+}
+
+.atribuicao {
+  margin: 0.4rem 0 0;
+  font-size: 0.7rem;
+  line-height: 1.25;
+  color: #93a9bd;
+}

@@ -360,7 +360,33 @@ function caminhoTrecho(ctx: CanvasRenderingContext2D, pts: [number, number][]): 
 }
 
 /** Fundo escuro + rio luminoso + mar: o que não muda entre quadros. */
-export function desenharBase(ctx: CanvasRenderingContext2D, cena: Cena, escala = 1): void {
+export type OpcoesBase = {
+  /**
+   * Pinta o fundo de mapa (tiles) por cima do chão escuro e por baixo de tudo.
+   *
+   * Recebe o contexto em vez de uma imagem pronta porque os tiles chegam da
+   * rede um a um: quem chama redesenha a cada um que carrega, e o que ainda não
+   * veio simplesmente não aparece — sobre o chão escuro, não sobre branco.
+   */
+  fundoTiles?: (ctx: CanvasRenderingContext2D) => void
+  /**
+   * Há imagem com TEXTURA embaixo (satélite, mapa de ruas).
+   *
+   * Liga o contorno escuro sob cada traço. Sem ele o satélite prejudica
+   * justamente o dado mais delicado: o CINZA dos trechos sem leitura some
+   * contra a mata, e "não temos dado aqui" é a informação que a imagem mais
+   * degrada — ver `docs/CAMADAS-DE-MAPA.md`. Cinza que some vira, para quem
+   * olha, um rio sem problema.
+   */
+  sobreImagem?: boolean
+}
+
+export function desenharBase(
+  ctx: CanvasRenderingContext2D,
+  cena: Cena,
+  escala = 1,
+  opcoes: OpcoesBase = {},
+): void {
   ctx.clearRect(0, 0, cena.largura, cena.altura)
   const g = ctx.createLinearGradient(0, 0, 0, cena.altura)
   g.addColorStop(0, '#0c1c2e')
@@ -368,11 +394,32 @@ export function desenharBase(ctx: CanvasRenderingContext2D, cena: Cena, escala =
   ctx.fillStyle = g
   ctx.fillRect(0, 0, cena.largura, cena.altura)
 
-  // O MAR entra ANTES do rio (fica atrás do leito e dos pinos).
-  desenharMar(ctx, cena)
+  // Os tiles vão SOBRE o chão escuro: tile que ainda não chegou (ou que falhou)
+  // deixa ver o gradiente, nunca um buraco branco.
+  opcoes.fundoTiles?.(ctx)
+
+  // O MAR entra ANTES do rio (fica atrás do leito e dos pinos). Sobre imagem de
+  // satélite ele sairia por cima do mar de verdade — aí a imagem já diz onde é
+  // água, e a nossa mancha só atrapalharia.
+  if (!opcoes.sobreImagem) desenharMar(ctx, cena)
 
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
+
+  // 0) Contorno escuro sob TODOS os traços, só quando há textura embaixo.
+  //    Inclui o cinza de propósito: é ele que some contra a mata.
+  if (opcoes.sobreImagem) {
+    ctx.globalAlpha = 0.55
+    ctx.strokeStyle = '#040709'
+    for (const t of cena.trechos) {
+      if (t.pts.length < 2) continue
+      caminhoTrecho(ctx, t.pts)
+      const base = t.faixa === 'sem-dado' ? 2.4 : 3.4 * LARGURA_FAIXA[t.faixa]
+      ctx.lineWidth = (base + 3.2) * escala
+      ctx.stroke()
+    }
+    ctx.globalAlpha = 1
+  }
 
   // 1) Halo: traço largo na cor da faixa, com sombra da mesma cor (bloom).
   for (const t of cena.trechos) {

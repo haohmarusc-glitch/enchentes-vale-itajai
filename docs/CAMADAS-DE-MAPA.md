@@ -70,7 +70,31 @@ function trocar(q){
 }
 ```
 
-### 3. O Monitor hoje é canvas próprio (`mapaMotor.ts`), não Leaflet
+### 3. ✅ FEITO (04/09/2026): tiles no canvas, sem trocar o motor
+
+A opção **(b)** foi resolvida por um terceiro caminho, mais barato que os dois previstos:
+**desenhar os tiles no próprio canvas**, sem Leaflet e **sem mexer na projeção**.
+
+O que destravou foi medir em vez de supor. A dúvida era se tile Mercator alinharia com a
+projeção equirretangular do canvas. Alinha, e por um motivo exato: na latitude central as duas
+têm a **mesma proporção** — o `cos(27°) = 0,89101` do enquadramento é o fator que o Mercator
+aplica ali. O que sobra é a curvatura, medida na bacia inteira (−27,6 a −26,4):
+
+    erro máximo: 1,20 px num canvas de 900 px de altura (0,13%)
+
+Cada tile é desenhado na caixa que a **própria `projetar`** devolve para os cantos dele, então o
+erro por tile vira fração de pixel. Trocar a projeção mexeria no traçado do rio, no encaixe das
+cidades e na correnteza — tudo para ganhar um pixel.
+
+`web/src/logica/tiles.ts` guarda a geometria (pura, testável); `MonitorBacia` carrega os tiles com
+cache vivo entre renders e redesenha a cada um que chega. O teste que sustenta isso é de
+alinhamento: o pixel onde o mapa desenha Blumenau, Itajaí, Rio do Sul e Brusque tem de cair dentro
+da caixa do tile que geograficamente as contém — e **falha** se o Mercator for trocado por conta
+linear (conferido: 14.848 px de desvio).
+
+### 3.1 O texto original da decisão (mantido)
+
+O Monitor é canvas próprio (`mapaMotor.ts`), não Leaflet
 Duas saídas, em ordem de esforço:
 - **(a) Só na tela de Itajaí (recomendado começar por aqui).** É onde o satélite mais rende: ver a barra,
   os molhes e a mancha urbana ajuda o morador a se localizar na foz. Se essa tela já usa Leaflet (o mapa
