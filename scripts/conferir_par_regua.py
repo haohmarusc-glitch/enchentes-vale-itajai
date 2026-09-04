@@ -48,10 +48,14 @@ import argparse
 import json
 import sys
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from comum import DADOS, baixar
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
+
+#: `medido_em` sem fuso é Brasília — convenção do projeto (ver CLAUDE.md).
+FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 #: Mesma régua já diverge ~6 cm entre duas publicações (medido em Blumenau).
 TOLERANCIA_M = 0.10
@@ -102,16 +106,35 @@ def nossa_leitura(cidade: str, ultimo: dict) -> tuple[float, str, str] | None:
     return None
 
 
+def para_brasilia(s: str) -> datetime | None:
+    """
+    Carimbo ISO -> horário de Brasília, sem fuso. `None` se não der para ler.
+
+    AS DUAS FONTES NÃO FALAM O MESMO FUSO, e isto já custou uma resposta errada
+    (04/09/2026). O painel da Asthon carimba em UTC, com `Z` no fim
+    (`2026-09-04T20:15:07.568Z`); o nosso `ultimo.json` carimba em Brasília SEM
+    fuso (`2026-09-04T17:05:00`), que é a convenção do projeto para `medido_em`.
+
+    A primeira versão daqui fazia `d.replace(tzinfo=None)` — DESCARTAVA o fuso
+    em vez de converter. Resultado: 20:15 e 17:05 pareciam 190 minutos de
+    distância quando são 10, e o script recusou-se a decidir um par que estava
+    perfeitamente comparável (5,35 m contra 5,35 m). É a mesma armadilha que o
+    CLAUDE.md registra por extenso — `medido_em` sem fuso é Brasília,
+    `coletado_em` é UTC, e confundir os dois já fez o vigia ver leitura 2 h no
+    futuro.
+
+    Regra: quem vem COM fuso é convertido; quem vem SEM já é Brasília.
+    """
+    try:
+        d = datetime.fromisoformat(s.strip().replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return d.astimezone(FUSO_BRASILIA).replace(tzinfo=None) if d.tzinfo else d
+
+
 def minutos_entre(a: str, b: str) -> float | None:
-    """Distância em minutos entre dois carimbos ISO, ou None se não der para ler."""
-    def ler(s: str):
-        s = s.strip().replace("Z", "+00:00")
-        try:
-            d = datetime.fromisoformat(s)
-        except ValueError:
-            return None
-        return d.replace(tzinfo=None) if d.tzinfo else d
-    x, y = ler(a), ler(b)
+    """Distância em minutos entre dois carimbos, no MESMO fuso. None se ilegível."""
+    x, y = para_brasilia(a), para_brasilia(b)
     if x is None or y is None:
         return None
     return abs((x - y).total_seconds()) / 60
