@@ -52,6 +52,41 @@ O menu do portal (visto em resultado de busca) tem:
   "Nova Transenchente" · "Cadastro Voluntários" · "Painel Alternativo"
 - **Um link direto para "Taió"** — sugere integração entre as duas Defesas Civis.
 
+## 5. ✅ O regime mudando, MEDIDO por nós (04/09/2026)
+
+Primeira vez que o projeto vê a Barragem Oeste operar. A série horária da API
+municipal, colhida na VPS:
+
+| quando | nível de Taió | montante (reservatório) | comportas |
+|---|---|---|---|
+| 03/09 04:01 | 4,45 m | 17,4 m | **2** de 7 |
+| 03/09 15:01 | 4,80 m | 17,5 m | **2** de 7 |
+| 03/09 20:41 | 5,25 m | 17,2 m | **7** de 7 |
+| 04/09 02:04 | 5,59 m | 17,2 m | **7** de 7 |
+
+**Chuva no período: 0 mm em 1 h, 12 h e 24 h.**
+
+O que isso mostra, e é exatamente o mecanismo que a seção 3 descreve por
+imprensa — agora com número nosso:
+
+- A barragem **abriu de 2 para 7 comportas** e o reservatório **baixou** de
+  17,5 para 17,2 m: ela está soltando água armazenada.
+- O nível da cidade **subiu 1,14 m** (4,45 → 5,59) **sem uma gota de chuva**.
+- Logo: neste período o rio em Taió foi governado pela **operação da barragem**,
+  não pela chuva. Uma correlação chuva→nível cega para este campo leria essa
+  subida como chuva que não houve.
+- E o regime atual é **VERTENDO**: a barragem não está amortecendo. Chuva que
+  cair acima de Taió agora passa direto para Taió e Rio do Sul.
+
+**Duas dúvidas fechadas pelos dados:**
+
+1. O `montante` **não é campo morto**. A repetição de 17,2 m entre duas leituras
+   levantou a suspeita; a série mostra 17,4 → 17,5 → 17,2, então ele se move.
+2. A série vem da fonte **do mais novo para o mais velho**. `parse_historico`
+   passou a devolvê-la em ordem cronológica, com teste travando: sem isso,
+   `historico[-1]` — a forma óbvia de pegar "a mais nova" — devolveria a de 24 h
+   atrás, e um número de ontem apareceria como o de agora.
+
 ## Ações
 1. **Abrir `defesacivil.taio.sc.gov.br`** (aprovar a permissão no Chrome): buscar cotas de referência,
    histórico, abrigos e o estado das comportas da Barragem Oeste.

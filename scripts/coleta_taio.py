@@ -181,7 +181,19 @@ def parse(cards: dict) -> dict:
 
 
 def parse_historico(pontos) -> list[dict]:
-    """Série horária: nível do Centro e comportas, para ver o regime mudar."""
+    """
+    Série horária: nível do Centro e comportas, para ver o regime mudar.
+
+    SAI EM ORDEM CRONOLÓGICA — do mais antigo para o mais recente — porque a
+    FONTE entrega ao contrário. Conferido contra a API em 04/09/2026: o primeiro
+    ponto da resposta é o de agora e o último é o de 24 h atrás.
+
+    Normalizar aqui não é gosto. É que `historico[-1]` é a forma óbvia de pegar
+    "a leitura mais nova", e com a ordem da fonte ela devolve a MAIS VELHA — um
+    número de ontem apresentado como o de agora, que é exatamente o erro que
+    este projeto não pode cometer. A série do site já é crescente
+    (`web/src/dados/serie.ts`), então esta passa a concordar com ela.
+    """
     saida = []
     for p in pontos or []:
         if not isinstance(p, dict):
@@ -197,6 +209,8 @@ def parse_historico(pontos) -> list[dict]:
             "montante_m": numero(p.get("montante")),
             "comportas_abertas": int(abertas) if abertas is not None else None,
         })
+    # `medido_em` é ISO sem fuso, então ordem de texto == ordem de tempo.
+    saida.sort(key=lambda p: p["medido_em"])
     return saida
 
 
