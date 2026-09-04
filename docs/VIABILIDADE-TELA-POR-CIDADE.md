@@ -25,9 +25,17 @@ que entrega quase o mesmo valor.
 | Rio do Sul | 555 | **não** | — | sim (3 réguas) |
 | Itajaí | **nenhuma** (cota por endereço, ArcGIS fechado) | — | **10 manchas 1983–2015** (`data/manchas/itajai/`) | 11 réguas |
 
-O `cotas-ruas.json` consolidado **não tem campo de coordenada nenhum** — as coordenadas de Gaspar e
-Brusque estão só nos brutos e ainda não foram carregadas para o consolidado. Isso é trabalho a fazer
-antes de (B), não um dado que já está pronto.
+~~O `cotas-ruas.json` consolidado **não tem campo de coordenada nenhum**~~ — **feito em 04/09/2026.**
+`scripts/juntar_coordenadas_cotas.py` levou a coordenada dos brutos para o consolidado:
+**1.613 linhas de Gaspar** (por alinhamento de sequência — a ordem do bruto foi preservada, e é ela que
+resolve as ruas repetidas) e **348 de Brusque** (por chave `(rua, cota)` — a ordem se perdeu). Ficaram
+**2 linhas de Brusque sem coordenada** de propósito: a chave "General Osório, 7,87" tem dois pontos
+reais a ~330 m um do outro e uma linha só no consolidado, então não há como saber qual — e escolher um
+seria pintar 330 m de rua errada.
+
+O bruto `brusque-mymaps-cotas.json` (3.688 pontos, com coordenada) **fica proibido**, pelo motivo que o
+`_meta` dele mesmo dá: *"NÃO IMPORTADO. O campo `cota` deste arquivo não pôde ser identificado como
+nível de régua."* Coordenada boa não redime cota não verificada. O script recusa por nome, com teste.
 
 Itajaí tem ainda **5.237 pontos cotados altimétricos** (`brutos/itajai-pontos-cotados-altimetricos.geojson.json`).
 O `_meta` do próprio arquivo avisa: é **altura do terreno, não cota de régua** — falta o offset para a
@@ -121,7 +129,7 @@ e mapas de risco oficiais. A decisão deles é deliberada.
 | Parte | Fazer? | Quando |
 |---|---|---|
 | A — tela por cidade | ✅ **feita** | `TelaCidade.tsx`, rota `/:rioId/:cidadeId` |
-| B — ruas por cota × nível | **Sim** — mas antes é preciso levar a coordenada dos brutos de Gaspar e Brusque para o `cotas-ruas.json`, que hoje não tem campo de coordenada | após a carga das coordenadas; Gaspar também após o teste da régua |
+| B — ruas por cota × nível | **Sim** — a coordenada já está no `cotas-ruas.json` (1.613 Gaspar + 348 Brusque) | Brusque pode ir; Gaspar só após o teste do par cota↔leitura |
 | B — Blumenau e Rio do Sul | Sim, após geocodificação revisada | depois |
 | C — mancha gerada por interpolação | **Não** | — |
 | C' — mancha observada por nível (Itajaí) | **Sim** | após A |
