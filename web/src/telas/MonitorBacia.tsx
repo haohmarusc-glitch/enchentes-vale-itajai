@@ -83,6 +83,11 @@ const AFLUENTES = [
   'ribeirao-murta',
   'ribeirao-canhanduba',
   'mirim-canal-retificado',
+  // O trecho que FECHA o vão do Canhanduba até o Mirim. Sem ele desenhado, o
+  // Canhanduba morre a 578 m do rio — e o mapa AFIRMA que a água pára ali.
+  // Entra como curso próprio porque é assim que o OSM o nomeia: fundir os dois
+  // faria a tela dizer que 650 m de Rio Conceição são Canhanduba.
+  'rio-conceicao',
 ] as const
 
 async function baixarTracado(rioId: string): Promise<LonLat[][] | null> {
