@@ -104,11 +104,19 @@ class Avaliar(unittest.TestCase):
 
 class ContraOsDadosReais(unittest.TestCase):
     """
-    O estado de 04/09/2026, com o traçado que existe hoje.
+    O estado com o traçado que existe hoje.
 
-    Este teste é um RETRATO que deve envelhecer: quando os ribeirões e o canal
-    entrarem em `data/rios/`, ele falha e é para atualizar — a falha é a notícia
-    boa de que o mapa ficou completo.
+    Em 04/09/2026 este bloco era um RETRATO das quatro réguas que boiavam fora
+    de qualquer rio — DC-03 a 2,32 km, DC-07 a 2,25, DC-08 a 4,41, DC-09 a 0,87
+    —, e trazia escrito que a falha dele seria "a notícia boa de que o mapa
+    ficou completo". Foi o que aconteceu no mesmo dia: com o Ribeirão da Murta,
+    o Rio Canhanduba e o canal retificado do Mirim em `data/rios/`, as ONZE
+    réguas passaram a cair a menos de 50 m do curso delas.
+
+    Então o retrato virou REGRA. Em vez de listar quem falta, o teste agora
+    cobra que não falte ninguém — afirmação mais forte, que não envelhece e que
+    pega o caso perigoso: alguém apagar ou trocar um traçado e um pino voltar a
+    flutuar no meio do bairro, sem erro nenhum na tela.
     """
 
     def setUp(self):
@@ -128,13 +136,50 @@ class ContraOsDadosReais(unittest.TestCase):
         for cod in ("DC-01", "DC-02", "DC-04", "DC-05", "DC-06", "DC-10"):
             self.assertLess(rs[cod]["km"], 0.3, f"{cod} saiu de cima do traçado")
 
-    def test_as_quatro_que_faltam_sao_estas(self):
+    def test_NENHUMA_regua_fica_sem_curso_desenhado(self):
+        """
+        A regra que substituiu o retrato das quatro que faltavam.
+
+        Pino longe de qualquer rio não dá erro: ele simplesmente aparece no
+        lugar errado, e quem mora ali confere a régua do bairro do vizinho
+        achando que é a dele.
+        """
         longe = {r["codigo"] for r in cf.avaliar(self.est, self.tr) if r["longe"]}
         self.assertEqual(
-            longe, {"DC-03", "DC-07", "DC-08", "DC-09"},
-            "mudou o conjunto de réguas sem curso desenhado — atualize o retrato "
-            "e o docs/tracado-ribeiroes.md",
+            longe, set(),
+            "régua voltou a ficar sem curso desenhado. Provável causa: um "
+            "geojson de data/rios/ foi apagado ou trocado. Ver docs/tracado-ribeiroes.md.",
         )
+
+    def test_os_tres_cursos_de_Itajai_estao_desenhados(self):
+        """
+        Nomeia os traçados que resolveram as quatro. Sem isto, o teste acima
+        também passaria se alguém apagasse os três E as réguas junto.
+        """
+        for rio_id in ("ribeirao-murta", "ribeirao-canhanduba", "mirim-canal-retificado"):
+            self.assertIn(rio_id, self.tr, f"{rio_id} sumiu de data/rios/")
+
+    def test_cada_regua_dos_ribeiroes_casa_com_o_curso_do_cadastro(self):
+        """
+        Perto de um rio qualquer não basta: perto do rio CERTO.
+
+        Na foz os cursos correm a poucas centenas de metros uns dos outros, e
+        uma régua encostada no rio errado diria a cidade errada sobre qual água
+        está subindo. Exceção conhecida e aceita: a DC-03, cadastrada como
+        `itajai-mirim`, casa com o `mirim-canal-retificado` — é o mesmo rio, na
+        obra que o retificou, e o cadastro guarda essa distinção no título.
+        """
+        esperado = {
+            "DC-07": "ribeirao-murta",
+            "DC-09": "ribeirao-murta",
+            "DC-08": "ribeirao-canhanduba",
+            "DC-03": "mirim-canal-retificado",
+        }
+        rs = {r["codigo"]: r for r in cf.avaliar(self.est, self.tr)}
+        for codigo, curso in esperado.items():
+            self.assertEqual(rs[codigo]["rio_mais_proximo"], curso,
+                             f"{codigo} casou com {rs[codigo]['rio_mais_proximo']}, não com {curso}")
+            self.assertLess(rs[codigo]["km"], 0.1, f"{codigo} afastou-se do curso dela")
 
     def test_o_script_NAO_acusa_coordenada_errada(self):
         """
