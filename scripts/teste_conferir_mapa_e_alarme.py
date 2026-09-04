@@ -93,8 +93,6 @@ class ContraOsDadosReais(unittest.TestCase):
         self.assertEqual(buracos, [], f"cor sem alarme: {[b['cidade'] for b in buracos]}")
 
 
-if __name__ == "__main__":
-    unittest.main()
 
 
 class ReguaComCotaPropria(unittest.TestCase):
@@ -183,3 +181,7 @@ class ReguaComCotaPropria(unittest.TestCase):
         for titulo in cf.reguas_que_pintam(reais):
             codigos.add(por_titulo[titulo].get("codigo"))
         self.assertEqual(codigos, {"DC-10", "DC-11"})
+
+
+if __name__ == "__main__":
+    unittest.main()
