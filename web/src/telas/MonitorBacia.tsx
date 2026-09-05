@@ -26,6 +26,7 @@ import {
 } from '../logica/mapaCanvas'
 import {
   COR_BRUTO,
+  cidadeNoTrecho,
   construirCena,
   desenharBase,
   desenharCorrenteza,
@@ -661,6 +662,23 @@ export default function MonitorBacia() {
     return melhor
   }
 
+  /**
+   * Cidade do TRECHO DE RIO sob o ponteiro — o toque no rio, não no pino.
+   *
+   * Devolve o PINO daquela cidade, para o painel ser exatamente o mesmo que o
+   * toque no pino abre: quem encosta no rio perto de casa quer a cidade dali, e
+   * não uma segunda tela com outro formato.
+   */
+  function pinoDoTrechoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {
+    const cena = cenaRef.current
+    const canvas = canvasRef.current
+    if (!cena || !canvas) return null
+    const r = canvas.getBoundingClientRect()
+    const achado = cidadeNoTrecho(cena.trechos, ev.clientX - r.left, ev.clientY - r.top)
+    if (!achado) return null
+    return cena.pinos.find((p) => p.cidade.id === achado.cidadeId) ?? null
+  }
+
   function selecionar(ev: React.PointerEvent<HTMLCanvasElement>) {
     const g = reguaNoPonto(ev)
     if (g) {
@@ -670,7 +688,10 @@ export default function MonitorBacia() {
       return
     }
     setReguaSel(null)
-    setSel(pinoNoPonto(ev))
+    // Régua, pino, e só então o rio. A ordem é do alvo mais preciso para o mais
+    // largo: quem mira o pino de Gaspar não pode receber o trecho que passa por
+    // baixo dele.
+    setSel(pinoNoPonto(ev) ?? pinoDoTrechoNoPonto(ev))
   }
 
   /**

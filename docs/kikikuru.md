@@ -64,6 +64,16 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   **significa o nível**, não enfeita. Trecho cinza **não corre** —
   `VEL_FAIXA['sem-dado'] = 0` —, porque não se anima uma água que não se mede.
   `prefers-reduced-motion` congela o movimento (um quadro estático).
+- **Tocar no RIO seleciona a cidade daquele trecho** (`cidadeNoTrecho`, raio 18 px). A ordem do
+  toque é do alvo mais preciso para o mais largo: régua (14 px) → pino da cidade (26 px) → trecho do
+  rio (18 px). A resposta é a cidade que **PINTOU** o trecho — a mesma que decidiu a cor debaixo do
+  dedo —, nunca a mais próxima em linha reta, que poderia ter outra faixa e contradizer o que está na
+  tela. Trecho cinza (`sem-dado`) não devolve nada: ali não se sabe de quem é.
+  **Regra de pintura, medida em 05/09/2026 e anterior a isto:** o trecho entre duas cidades é pintado
+  pela de **montante** (`trechoDoPonto` devolve índice de SEGMENTO da espinha), e por isso a **última
+  cidade do rio não pinta trecho nenhum** — quem colore a foz é a penúltima. O corte de trecho passou
+  a ser por (faixa, âncora) e não só por faixa: duas cidades vizinhas na mesma cor formavam um trecho
+  só, e a metade de baixo devolveria o nome da de cima.
 - As **barragens** (Oeste em Taió, Sul em Ituporanga, Norte em José Boiteux)
   entram como **marcadores próprios**: uma parede de aço com as comportas em
   fila, na coordenada que a API da Asthon publica (`coleta_barragens.py`). É a
