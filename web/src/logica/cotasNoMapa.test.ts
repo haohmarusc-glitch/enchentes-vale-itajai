@@ -33,12 +33,28 @@ function cota(over: Partial<CotaRua> & { lat?: number; lon?: number }): CotaRua 
   } as CotaRua
 }
 
-test('trava 1 — cidade sem par cota↔leitura provado não desenha rua nenhuma', () => {
-  // Brusque TEM 348 ruas com coordenada e mesmo assim não entra: a régua da
-  // leitura ao vivo não é a das cotas dela. Coordenada não é passaporte.
-  const cotas = [cota({ cidade: 'brusque', lat: -27.1, lon: -48.9 })]
-  assert.equal(pontosDeRua(cotas, BRUSQUE, 9).length, 0)
+test('trava 1 — cidade sem par provado APARECE, mas sem estado', () => {
+  // Brusque tem 348 ruas com coordenada e as cotas dela são da Ponte Estaiada;
+  // as duas estações ao vivo têm regua: null. Então o mapa mostra a cota de
+  // cada rua e NÃO diz se alagou. Esconder não protegeria: a pessoa faria a
+  // conta de cabeça com o número do pino ao lado.
+  const cotas = [cota({ cidade: 'brusque', cota_m: 8.2, lat: -27.1, lon: -48.9 })]
+  const p = pontosDeRua(cotas, BRUSQUE, 9)
+  assert.equal(p.length, 1)
+  assert.equal(p[0]?.cotaM, 8.2, 'a cota da rua é informação boa e continua visível')
+  assert.equal(p[0]?.atingida, null, 'mesmo com nível 9 > cota 8,2, NÃO se afirma')
+  assert.equal(p[0]?.motivo, 'regua-nao-provada')
   assert.equal(cidadePodeMostrarRuas(BRUSQUE), false)
+})
+
+test('os dois motivos de "sem estado" não se confundem', () => {
+  // Régua não provada e leitura ausente são coisas diferentes, e a tela diz
+  // qual é: uma se resolve com ofício, a outra com a próxima coleta.
+  const gaspar = [cota({ lat: -26.9, lon: -49.0 })]
+  assert.equal(pontosDeRua(gaspar, GASPAR, null)[0]?.motivo, 'sem-leitura')
+  const brusque = [cota({ cidade: 'brusque', lat: -27.1, lon: -48.9 })]
+  assert.equal(pontosDeRua(brusque, BRUSQUE, null)[0]?.motivo, 'regua-nao-provada')
+  assert.equal(pontosDeRua(gaspar, GASPAR, 9)[0]?.motivo, null)
 })
 
 test('trava 1 — `cotas_verificado` ausente NÃO é permissão', () => {
@@ -65,6 +81,7 @@ test('trava 3 — sem leitura o estado é null, e null não é "não alagou"', (
     const p = pontosDeRua(cotas, GASPAR, n as number | null)
     assert.equal(p.length, 1)
     assert.equal(p[0]?.atingida, null, String(n))
+    assert.equal(p[0]?.motivo, 'sem-leitura', String(n))
   }
 })
 
@@ -115,5 +132,10 @@ test('no cadastro de verdade: Gaspar entra com 1.613 pontos, Brusque com zero', 
     readFileSync(new URL('../../../data/cotas-ruas.json', import.meta.url), 'utf8'),
   ) as { cotas: CotaRua[] }
   assert.equal(pontosDeRua(arq.cotas, GASPAR, 5).length, 1613)
-  assert.equal(pontosDeRua(arq.cotas, BRUSQUE, 5).length, 0)
+  const brusque = pontosDeRua(arq.cotas, BRUSQUE, 5)
+  assert.equal(brusque.length, 348, 'Brusque aparece')
+  assert.ok(
+    brusque.every((p) => p.atingida === null && p.motivo === 'regua-nao-provada'),
+    'e nenhuma das 348 afirma estado enquanto a régua não for provada',
+  )
 })

@@ -477,6 +477,24 @@ o projeto.
 
 ## Pendências
 
+- [x] **Brusque entrou no mapa de ruas — mostrando a cota, sem afirmar o estado (05/09/2026).** As 348
+  ruas georreferenciadas dela aparecem com a cota em que cada uma começa a alagar, e o mapa **não diz
+  quais já alagaram**: as cotas são da **Ponte Estaiada** (provado — cota + lâmina = 8,96 m, o pico de
+  17/11/2023, em 183 dos 184 pontos com lâmina) e as **duas estações ao vivo de Brusque têm
+  `regua: null`**. Comparar as duas seria usar o metro de outro lugar. **Mudei de posição sobre
+  esconder:** ficar invisível não protege ninguém — some com o levantamento e não impede a conta, que a
+  pessoa faz de cabeça com o número do pino ao lado. Os dois motivos de "sem estado" agora são
+  distintos e a tela diz qual é: `sem-leitura` se resolve na próxima coleta, `regua-nao-provada` só com
+  ofício. **Tentei destravar de verdade e não deu:** os nove registros de Brusque em `enchentes.json`
+  têm `nivel_m: null`, então não há pico nosso para comparar com os 8,96 m.
+- [ ] **⚠️ INCONSISTÊNCIA ACHADA, e a decisão é do Jefferson: a tela da cidade JÁ COMPARA as cotas de
+  Brusque com o nível ao vivo.** O `CotasDeRua` não olha `cotas_verificado` — só a idade da leitura —,
+  então em `/mirim/brusque` o site diz "faltam X m de subida" usando exatamente o par que o mapa se
+  recusa a usar. Ou o mapa está rígido demais, ou o cartão está frouxo demais; as duas coisas não podem
+  valer ao mesmo tempo. **Não mexi no cartão**, porque tirar de lá é remover um recurso publicado, e
+  isso é decisão de quem mantém o projeto. O ofício à COMPDEC de Brusque (qual régua a leitura ao vivo
+  publica?) resolve os dois de uma vez.
+
 - [x] **As 1.613 cotas de rua de Gaspar entraram no mapa ao vivo (05/09/2026).** Era o item de maior
   valor que já tinha o dado no repositório, e o que de fato aproveita o zoom: cada ponto é uma rua, e
   **cheio** quer dizer que o rio já passou da cota dela. A conta é aritmética pura — cota levantada

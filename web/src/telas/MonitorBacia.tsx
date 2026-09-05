@@ -11,7 +11,6 @@ import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
 import { kmDaVista, vistaDaCidade } from '../logica/vistaDaCidade'
 import {
   COR_COTA_RUA,
-  cidadePodeMostrarRuas,
   contarRuas,
   pontosDeRua,
   zoomPermiteRuas,
@@ -700,7 +699,7 @@ export default function MonitorBacia() {
     const cena = cenaRef.current
     const pino = cidadeFoco ? cena?.pinos.find((p) => p.cidade.id === cidadeFoco) : undefined
     const perto = cena ? zoomPermiteRuas(kmDaVista(cena.limitesBase, vista.zoom)) : false
-    if (!pino || !perto || !cidadePodeMostrarRuas(pino.cidade)) {
+    if (!pino || !perto) {
       setPontosRua([])
       return
     }
@@ -1258,29 +1257,46 @@ export default function MonitorBacia() {
               {/* As cotas de rua, quando esta cidade as tem e o zoom permite.
                   A conta é aritmética pura — cota levantada menos nível medido
                   —, e por isso pode ser dita com todas as letras. */}
-              {cidadePodeMostrarRuas(cid) ? (
-                pontosRua.length > 0 ? (
+              {pontosRua.length > 0 ? (
                   (() => {
                     const c = contarRuas(pontosRua)
+                    const naoProvada = pontosRua[0]?.motivo === 'regua-nao-provada'
                     return (
                       <p className={estilos.painelExtra}>
-                        {c.semLeitura > 0
-                          ? `${c.semLeitura} ruas levantadas; sem leitura do rio agora, não dá para dizer quais alagaram.`
-                          : `${c.atingidas} de ${c.atingidas + c.aguardando} ruas levantadas já estão abaixo do nível de agora.`}{' '}
-                        Cada ponto é uma rua; cheio, o rio já passou da cota dela. O
-                        vazio entre os pontos não é área seca — é onde não há
-                        levantamento.
+                        {naoProvada ? (
+                          <>
+                            {pontosRua.length} ruas levantadas, cada ponto com a cota em que
+                            começa a alagar. <strong>O mapa não diz quais já alagaram</strong>:
+                            estas cotas são de uma régua e a leitura ao vivo vem de outra
+                            fonte, que ainda não foi identificada — comparar as duas seria
+                            usar o metro de outro lugar.
+                          </>
+                        ) : c.semLeitura > 0 ? (
+                          <>
+                            {c.semLeitura} ruas levantadas; sem leitura do rio agora, não dá
+                            para dizer quais alagaram.
+                          </>
+                        ) : (
+                          <>
+                            {c.atingidas} de {c.atingidas + c.aguardando} ruas levantadas já
+                            estão abaixo do nível de agora. Cada ponto é uma rua; cheio, o rio
+                            já passou da cota dela.
+                          </>
+                        )}{' '}
+                        O vazio entre os pontos não é área seca — é onde não há levantamento.
                       </p>
                     )
                   })()
-                ) : (
-                  <p className={estilos.painelExtra}>
-                    Esta cidade tem cotas de rua levantadas. Aproxime o mapa para vê-las
-                    — de longe os pontos viram uma nuvem, e nuvem parece mancha de
-                    inundação, que é coisa diferente.
-                  </p>
-                )
-              ) : null}
+              ) : (
+                // Vale para qualquer cidade e não promete nada: onde não houver
+                // levantamento, aproximar não faz aparecer ponto nenhum — que é
+                // a resposta certa.
+                <p className={estilos.painelExtra}>
+                  Aproxime o mapa para ver as cotas de rua, onde houver levantamento. De
+                  longe os pontos virariam uma nuvem, e nuvem parece mancha de inundação,
+                  que é coisa diferente.
+                </p>
+              )}
               {/* A cidade primeiro, o rio depois. Quem toca no pino de Gaspar
                   quer Gaspar — o rio inteiro e a segunda pergunta, nao a
                   primeira. */}
