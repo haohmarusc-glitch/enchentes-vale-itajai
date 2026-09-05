@@ -27,8 +27,14 @@ export interface ReguaComCota {
    * errado calado.
    */
   titulo: string
-  /** Como chamar a régua na tela. */
+  /** Como chamar a régua na tela. É o `titulo`, o nome que a fonte publica hoje. */
   nome: string
+  /**
+   * Como o Plano de Contingência chamava a régua, quando difere do `titulo`.
+   * Só serve de nota de rodapé, para quem for conferir no documento — NUNCA
+   * como rótulo: o nome do Plano nomeia lugar errado (ver `nomeDaRegua`).
+   */
+  nomeNoPlano: string | null
   cotas: [string, number][]
   /**
    * `false` quando a régua não serve para disparar aviso a partir de uma
@@ -205,11 +211,44 @@ export function separarFonte(texto: string): { texto: string; url: string | null
   return { texto: m[1]!.trim().replace(/[—-]$/, '').trim(), url: m[2]! }
 }
 
+/**
+ * Compara nomes ignorando o que não muda o LUGAR: acento, caixa, pontuação,
+ * travessão contra hífen e o código na frente.
+ *
+ * Sem isto a nota de rodapé sairia nas onze réguas, porque quase todas diferem
+ * do Plano só por grafia — a DC-11 é "Açú – Santa Regina" no título e
+ * "Açu - Santa Regina" no Plano. Repetir isso embaixo de cada número é ruído
+ * num celular, na chuva. A nota tem que aparecer onde muda o lugar, como na
+ * DC-02: "Praça Celso Pereira da Silva" contra "Praça da Murta".
+ */
+function mesmoLugar(a: string, b: string): boolean {
+  const limpo = (t: string) =>
+    t
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/^dc-\d+\s*/, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
+  const x = limpo(a)
+  const y = limpo(b)
+  return x === y || x.includes(y) || y.includes(x)
+}
+
 function nomeDaRegua(e: EstacaoTempoReal): string {
-  // `nome_no_plano` é como a Defesa Civil chama a régua no documento oficial;
-  // `titulo` é como ela aparece na página de tempo real. Quem confere numa
-  // fonte precisa achar o mesmo nome lá, então o do plano vem primeiro.
-  const nome = e.nome_no_plano ?? e.titulo
+  // O rótulo é o `titulo` — o nome que a fonte publica HOJE.
+  //
+  // Antes daqui saía `nome_no_plano`, com a intenção de que quem fosse
+  // conferir achasse o mesmo nome no documento oficial. A intenção é boa e o
+  // efeito era grave: o Plano é mais velho que a página, e o nome dele aponta
+  // LUGAR ERRADO. A DC-02 fica no Rio Itajaí-Açu, na Praça Celso Pereira da
+  // Silva; o Plano a chama "Praça da Murta", e a tela escrevia Murta. Só que a
+  // Murta de verdade é outra calha e outras duas réguas — DC-07 e DC-09, no
+  // `ribeirao-murta`. Quem mora na Murta lia o nível do Açu achando que era o
+  // ribeirão do bairro dele. Também apagava o ICMBio da DC-01.
+  //
+  // O nome do Plano não se perde: vai em `nomeNoPlano`, como nota de rodapé.
+  const nome = e.titulo
   if (e.codigo && !nome.startsWith(e.codigo)) return `${e.codigo} — ${nome}`
   return nome
 }
@@ -250,6 +289,12 @@ export function todasAsReguas(
       id: e.codigo ?? e.titulo,
       titulo: e.titulo,
       nome: nomeDaRegua(e),
+      // Só quando o Plano nomeia OUTRO lugar. Diferença de acento ou de
+      // travessão não é diferença de lugar — ver `mesmoLugar`.
+      nomeNoPlano:
+        e.nome_no_plano?.trim() && !mesmoLugar(e.titulo, e.nome_no_plano.trim())
+          ? e.nome_no_plano.trim()
+          : null,
       cotas,
       // Só `false` explícito tira a régua do aviso automático. Ausente quer
       // dizer régua comum de rio, como a de Ilhota.

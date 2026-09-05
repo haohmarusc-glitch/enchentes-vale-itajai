@@ -54,10 +54,25 @@
 .velha { color: #a8360a; font-style: normal; font-weight: 600; }
 
 .cota,
+.abaixo,
+.noPlano,
 .semAlerta {
   font-size: 0.78rem;
   color: var(--tinta-fraca);
   flex-basis: 100%;
+}
+
+/* A cota ainda NÃO atingida usa o mesmo tom das outras notas, e nunca a cor de
+   alerta: o rio estar abaixo dela é a situação normal. O que a linha entrega é
+   a distância, não um aviso. */
+.abaixo {
+  font-variant-numeric: tabular-nums;
+}
+
+/* O nome antigo do Plano é nota de rodapé — nunca rótulo. Ver `nomeDaRegua`. */
+.noPlano {
+  font-style: italic;
+  opacity: 0.85;
 }
 
 .semAlerta {

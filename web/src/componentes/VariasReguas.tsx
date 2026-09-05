@@ -40,7 +40,7 @@ export default function VariasReguas({
       </span>
 
       <span className={estilos.lista}>
-        {pareadas.map(({ leitura, regua, cota }) => {
+        {pareadas.map(({ leitura, regua, cota, proxima }) => {
           const idade = leitura.medidoEm ? idadeMin(leitura.medidoEm, agora) : null
           const estado = idade === null ? 'velha' : frescor(idade)
           return (
@@ -49,12 +49,28 @@ export default function VariasReguas({
                 {metros(leitura.nivel_m)}
               </span>
               <span className={estilos.nome}>{regua?.nome ?? leitura.estacao}</span>
+              {regua?.nomeNoPlano ? (
+                <span className={estilos.noPlano}>
+                  no Plano de Contingência: {regua.nomeNoPlano}
+                </span>
+              ) : null}
               <span className={`${estilos.idade} ${estilos[estado] ?? ''}`}>
                 {idade === null ? 'sem horário' : textoIdade(idade)}
               </span>
+              {/* A cota aparece SEMPRE que a régua tem uma — atingida ou não.
+                  Antes só a atingida era mostrada, e régua abaixo de tudo
+                  ficava sem linha nenhuma, indistinguível de régua sem cota
+                  cadastrada. Era o caso da DC-11: 2,63 m com atenção em 3,00 m
+                  aparecia vazia, quando o que faltavam eram 37 cm. É essa
+                  distância que decide, e ela tem que estar escrita. */}
               {cota ? (
                 <span className={estilos.cota}>
                   {rotuloCota(cota.chave)} desta régua: {metros(cota.valor)}
+                </span>
+              ) : proxima ? (
+                <span className={estilos.abaixo}>
+                  {rotuloCota(proxima.chave)} desta régua: {metros(proxima.valor)} · faltam{' '}
+                  {metros(proxima.valor - leitura.nivel_m)}
                 </span>
               ) : null}
               {regua && !regua.alertaAutomatico ? (

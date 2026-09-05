@@ -13,7 +13,7 @@
  */
 import type { LeituraAoVivo } from '../dados/tempoReal'
 import type { ReguaComCota } from './reguas'
-import { cotaAlcancadaEntre } from './tempoReal'
+import { cotaAlcancadaEntre, proximaCotaEntre } from './tempoReal'
 
 export interface LeituraComRegua {
   leitura: LeituraAoVivo
@@ -21,6 +21,12 @@ export interface LeituraComRegua {
   regua: ReguaComCota | null
   /** A cota mais alta que ESTA régua já passou, ou null. */
   cota: { chave: string; valor: number } | null
+  /**
+   * A próxima cota acima do nível, ou null quando já passou de todas. A tela
+   * mostra uma das duas SEMPRE que a régua tem cota — antes só mostrava a
+   * atingida, e régua abaixo de tudo parecia régua sem cota cadastrada.
+   */
+  proxima: { chave: string; valor: number } | null
 }
 
 /**
@@ -39,6 +45,7 @@ export function parear(
       leitura,
       regua,
       cota: regua ? cotaAlcancadaEntre(regua.cotas, leitura.nivel_m) : null,
+      proxima: regua ? proximaCotaEntre(regua.cotas, leitura.nivel_m) : null,
     }
   })
 }
