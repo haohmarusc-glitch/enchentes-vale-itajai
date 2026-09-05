@@ -44,6 +44,15 @@ AS TRÊS ARMADILHAS DESTA FONTE
    fuso, que é a convenção do projeto (ver CLAUDE.md); o ano sai da distância
    até agora, não de `datetime.now().year`.
 
+   ⚠️ O contrato do projeto é o INVERSO do que parece: carimbo sem fuso é
+   **Brasília**, não UTC (CLAUDE.md, "Fuso dos carimbos"). Uma versão deste
+   coletor enunciou o contrato ao contrário e gravou `medido_em_utc`
+   convertendo de Brasília para UTC. É o mesmo engano que a fonte de resgate
+   do AlertaBlu cometeu "para honrar o contrato", e que o CLAUDE.md registra
+   como tendo custado uma sessão: o vigia passou a ver a leitura no futuro.
+   Aqui `medido_em` é Brasília sem fuso, como no `coleta_itajai.py`, no
+   `deBrasilia()` do site e no vigia. `coletado_em` é que é UTC.
+
 3. **A série mistura MEDIDO e PREVISTO no mesmo vetor.** Dois dias para trás e
    dois para a frente. Ler uma linha de previsão como medição é o erro que
    faria a tela afirmar maré que ainda não aconteceu. Aqui as duas saem em
@@ -90,6 +99,11 @@ PRINCIPAL = "balneario-camboriu"
 #: Ordem das colunas no `rows[].c`, conferida contra a fonte em 04/09/2026.
 COLUNAS = ("quando", "observada", "astronomica", "residual",
            "previsao_mohid", "residual_previsto", "nmm")
+
+#: Leitura mais velha que isto não descreve o mar de agora. Estação fora do ar
+#: devolve o ÚLTIMO valor antigo sem avisar, e ele parece atual: com cadência de
+#: 15 min, uma hora sem leitura nova já é sinal de que a estação parou.
+FRESCA_MIN = 60
 
 #: Maré fora desta faixa (em cm) não é maré: é célula trocada ou unidade errada.
 #: A maior amplitude registrada no litoral catarinense fica bem dentro disto.
@@ -145,6 +159,22 @@ def quando_para_iso(bruto: str, agora: datetime) -> str | None:
 
 def plausivel(cm: float | None) -> bool:
     return cm is not None and MIN_CM <= cm <= MAX_CM
+
+
+def idade_min(medido_em: str | None, agora: datetime) -> float | None:
+    """
+    Minutos entre a última medição e agora, nos DOIS em horário de Brasília.
+
+    Converter para UTC aqui daria 180 minutos de erro — e seria o mesmo engano
+    que a fonte de resgate do AlertaBlu cometeu "para honrar o contrato",
+    registrado no CLAUDE.md como tendo custado uma sessão.
+    """
+    if not medido_em:
+        return None
+    try:
+        return round((agora - datetime.fromisoformat(medido_em)).total_seconds() / 60.0, 1)
+    except ValueError:
+        return None
 
 
 def converter(bruto: dict, agora: datetime) -> tuple[list[dict], list[dict]]:
@@ -206,6 +236,9 @@ def coletar(agora: datetime, buscador=buscar) -> dict:
                                     "observada — só astronômica e MOHID. Segunda fonte independente "
                                     "a confirmar que não há maré medida em Itajaí hoje. Por isso a "
                                     "referência é Balneário Camboriú, a 13 km.",
+            "frescor": f"`fresca` é a última medição com até {FRESCA_MIN} min. A estação fora do "
+                       "ar devolve o último valor antigo sem avisar, e ele parece atual — com "
+                       "cadência de 15 min, uma hora sem leitura nova já é sinal de parada.",
             "estacao_principal": PRINCIPAL,
             "aviso": "Maré de outra cidade é CONTEXTO, nunca nível local. Rotular na tela com a "
                      "distância.",
@@ -220,23 +253,30 @@ def coletar(agora: datetime, buscador=buscar) -> dict:
             print(f"aviso: {nome} falhou ({e})", file=sys.stderr)
             continue
         medidas, previsoes = converter(bruto, agora)
+        ultima = medidas[-1] if medidas else None
+        idade = idade_min(ultima["medido_em"], agora) if ultima else None
         saida["estacoes"][chave] = {
             "nome": nome,
             "km_de_itajai": km,
             "endpoint": f"getDataMare{n}_{ident}.php",
             "n_medidas": len(medidas),
             "n_previsoes": len(previsoes),
-            "ultima_medida": medidas[-1] if medidas else None,
+            "ultima_medida": ultima,
+            # Sem leitura nenhuma, `fresca` é False — nunca None disfarçado de
+            # "talvez": estação muda e estação fora do ar dão a mesma tela.
+            "idade_min": idade,
+            "fresca": idade is not None and idade <= FRESCA_MIN,
             "medidas": medidas,
             "previsoes": previsoes,
         }
         marca = "  <- PRINCIPAL" if chave == PRINCIPAL else ""
-        u = medidas[-1] if medidas else None
-        if u:
-            res = u["residual_cm"]
-            print(f"{nome:<22} {len(medidas):>3} medidas · {u['medido_em']}: "
-                  f"{u['observada_cm']:.1f} cm ({u['observada_m']:.3f} m)"
-                  f"{f' · residual {res:+.1f} cm' if res is not None else ''}{marca}")
+        if ultima:
+            res = ultima["residual_cm"]
+            idoso = "" if (idade is not None and idade <= FRESCA_MIN) else "  [VELHA]"
+            print(f"{nome:<22} {len(medidas):>3} medidas · {ultima['medido_em']}: "
+                  f"{ultima['observada_cm']:.1f} cm ({ultima['observada_m']:.3f} m)"
+                  f"{f' · residual {res:+.1f} cm' if res is not None else ''}"
+                  f"{f' · {idade:.0f} min' if idade is not None else ''}{idoso}{marca}")
         else:
             print(f"{nome:<22} SEM maré observada ({len(previsoes)} linhas só de previsão){marca}")
     return saida
