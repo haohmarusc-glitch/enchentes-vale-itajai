@@ -6,7 +6,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { VISTA_INTEIRA } from './mapaCanvas'
-import { KM_NA_TELA, vistaDaCidade, vistaInicial, zoomParaKm } from './vistaDaCidade'
+import { KM_NA_TELA, kmDaVista, vistaDaCidade, vistaInicial, zoomParaKm } from './vistaDaCidade'
 
 /** Um retângulo do tamanho da bacia do Itajaí: ~1,6° de longitude (~158 km). */
 const BACIA = { minLon: -50.2, maxLon: -48.6, minLat: -27.7, maxLat: -26.5 }
@@ -52,4 +52,13 @@ test('o enquadramento cabe a cidade E os vizinhos de montante e jusante', () => 
   // água está chegando.
   assert.ok(KM_NA_TELA >= 16, 'apertado demais esconderia o vizinho de montante')
   assert.ok(KM_NA_TELA <= 40, 'largo demais e volta a ser a bacia inteira')
+})
+
+test('kmDaVista é o inverso exato de zoomParaKm', () => {
+  for (const km of [4, 8, 24, 60]) {
+    assert.ok(Math.abs(kmDaVista(BACIA, zoomParaKm(BACIA, km)) - km) < 1e-6, String(km))
+  }
+  // Zoom 1 é a bacia inteira; zoom inválido não vira NaN silencioso.
+  assert.ok(Math.abs(kmDaVista(BACIA, 1) - kmDaVista(BACIA, 0.5)) < 1e-9)
+  assert.ok(Number.isNaN(kmDaVista({ minLon: 0, maxLon: 0, minLat: 0, maxLat: 0 }, 2)))
 })

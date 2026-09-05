@@ -8,7 +8,15 @@ import {
   temReguaCadastrada,
 } from '../dados/carregar'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
-import { vistaDaCidade } from '../logica/vistaDaCidade'
+import { kmDaVista, vistaDaCidade } from '../logica/vistaDaCidade'
+import {
+  COR_COTA_RUA,
+  cidadePodeMostrarRuas,
+  contarRuas,
+  pontosDeRua,
+  zoomPermiteRuas,
+  type PontoDeRua,
+} from '../logica/cotasNoMapa'
 import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
@@ -32,6 +40,7 @@ import {
   desenharBase,
   desenharCorrenteza,
   desenharBarragens,
+  desenharCotasDeRua,
   desenharOnda,
   desenharPinos,
   desenharReguas,
@@ -319,6 +328,16 @@ export default function MonitorBacia() {
   const [vista, setVista] = useState<Vista>(VISTA_INTEIRA)
   /** Já enquadrou na cidade da rota? Uma vez só: depois o zoom é de quem mexe. */
   const enquadrou = useRef(false)
+  /**
+   * As cotas de rua da cidade em foco, como pontos no mapa.
+   *
+   * Carregadas SOB DEMANDA (`import()` dinâmico): a tabela tem 4.593 registros
+   * e vive num pedaço à parte justamente para que quem abre o mapa só para ver
+   * o nível do rio não a baixe. Só entram quando a cidade tem o par
+   * cota↔leitura provado E o zoom está perto o bastante.
+   */
+  const [pontosRua, setPontosRua] = useState<PontoDeRua[]>([])
+  const pontosRuaRef = useRef<PontoDeRua[]>([])
   /** Dedos/ponteiros apertados agora, para separar toque de arrasto e de pinça. */
   const ponteiros = useRef<Map<number, { x: number; y: number }>>(new Map())
   /** Distância entre os dois dedos no quadro anterior da pinça. */
@@ -619,6 +638,9 @@ export default function MonitorBacia() {
       desenharCorrenteza(ctx, cena, seg, escala)
       desenharChuva(ctx, chuvaRef.current, escala)
       // Barragens antes das réguas e dos pinos: são estrutura no leito, ficam por baixo.
+      // As ruas por BAIXO de tudo: são o fundo da cidade, e nenhum ponto de
+      // rua pode cobrir o pino que traz o número do rio.
+      desenharCotasDeRua(ctx, cena, pontosRuaRef.current, COR_COTA_RUA, escala)
       desenharBarragens(ctx, cena, barragensRef.current, seg, escala)
       // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
       desenharReguas(ctx, cena, reguasRef.current, escala, reguaSelRef.current)
@@ -636,6 +658,10 @@ export default function MonitorBacia() {
       cancelAnimationFrame(raf)
     }
   }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista])
+
+  useEffect(() => {
+    pontosRuaRef.current = pontosRua
+  }, [pontosRua])
 
   /**
    * Enquadra na cidade da rota, UMA VEZ, quando a cena existir.
@@ -660,6 +686,33 @@ export default function MonitorBacia() {
     setVista(v)
     if (pino) setSel(pino)
   }, [cidadeFoco, tam, rios, tempoReal])
+
+  /**
+   * Carrega e recalcula as cotas de rua da cidade em foco.
+   *
+   * As três condições são de segurança, não de desempenho (ver
+   * `logica/cotasNoMapa.ts`): a cidade precisa do par cota↔leitura provado, o
+   * zoom precisa deixar os pontos serem PONTOS — de longe eles viram nuvem, e
+   * nuvem num mapa de enchente lê-se como mancha —, e sem leitura o estado de
+   * cada rua fica indefinido em vez de "não alagou".
+   */
+  useEffect(() => {
+    const cena = cenaRef.current
+    const pino = cidadeFoco ? cena?.pinos.find((p) => p.cidade.id === cidadeFoco) : undefined
+    const perto = cena ? zoomPermiteRuas(kmDaVista(cena.limitesBase, vista.zoom)) : false
+    if (!pino || !perto || !cidadePodeMostrarRuas(pino.cidade)) {
+      setPontosRua([])
+      return
+    }
+    let vivo = true
+    void import('../dados/cotasRuas').then((m) => {
+      if (!vivo) return
+      setPontosRua(pontosDeRua(m.cotasRuas, pino.cidade, pino.nivel))
+    })
+    return () => {
+      vivo = false
+    }
+  }, [cidadeFoco, vista, tam, tempoReal])
 
   /** Pino mais próximo do ponteiro, dentro do raio — ou null. */
   function pinoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {
@@ -1202,6 +1255,32 @@ export default function MonitorBacia() {
                 <p className={estilos.painelExtra}>{cid.km_da_foz} km até a foz</p>
               ) : null}
               <p className={estilos.painelAcao}>{ACAO_FAIXA[foco.faixa]}</p>
+              {/* As cotas de rua, quando esta cidade as tem e o zoom permite.
+                  A conta é aritmética pura — cota levantada menos nível medido
+                  —, e por isso pode ser dita com todas as letras. */}
+              {cidadePodeMostrarRuas(cid) ? (
+                pontosRua.length > 0 ? (
+                  (() => {
+                    const c = contarRuas(pontosRua)
+                    return (
+                      <p className={estilos.painelExtra}>
+                        {c.semLeitura > 0
+                          ? `${c.semLeitura} ruas levantadas; sem leitura do rio agora, não dá para dizer quais alagaram.`
+                          : `${c.atingidas} de ${c.atingidas + c.aguardando} ruas levantadas já estão abaixo do nível de agora.`}{' '}
+                        Cada ponto é uma rua; cheio, o rio já passou da cota dela. O
+                        vazio entre os pontos não é área seca — é onde não há
+                        levantamento.
+                      </p>
+                    )
+                  })()
+                ) : (
+                  <p className={estilos.painelExtra}>
+                    Esta cidade tem cotas de rua levantadas. Aproxime o mapa para vê-las
+                    — de longe os pontos viram uma nuvem, e nuvem parece mancha de
+                    inundação, que é coisa diferente.
+                  </p>
+                )
+              ) : null}
               {/* A cidade primeiro, o rio depois. Quem toca no pino de Gaspar
                   quer Gaspar — o rio inteiro e a segunda pergunta, nao a
                   primeira. */}

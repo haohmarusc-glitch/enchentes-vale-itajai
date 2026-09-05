@@ -793,6 +793,47 @@ export function cidadeNoTrecho(
   return melhor
 }
 
+/**
+ * As COTAS DE RUA da cidade, como pontos.
+ *
+ * Dois estados, nunca um degradê por metro: **cheio** = o rio já passou da cota
+ * daquela rua; **vazado** = ainda não; **vazado e apagado** = não há leitura
+ * para comparar. O vazio ENTRE os pontos continua vazio — não se preenche o que
+ * não se sabe, e é a ausência de cor que diz isso corretamente.
+ *
+ * Desenhado ANTES das réguas, dos pinos e das barragens: são o fundo da
+ * cidade, e nenhum ponto de rua pode cobrir o pino que traz o número do rio.
+ */
+export function desenharCotasDeRua(
+  ctx: CanvasRenderingContext2D,
+  cena: Cena,
+  pontos: readonly { lat: number; lon: number; atingida: boolean | null }[],
+  cor: string,
+  escala = 1,
+): void {
+  if (pontos.length === 0) return
+  const r = 3 * escala
+  ctx.save()
+  ctx.lineWidth = Math.max(1, 1.2 * escala)
+  for (const pt of pontos) {
+    const [x, y] = projetar(cena.enq, [pt.lon, pt.lat])
+    if (x < -20 || y < -20 || x > cena.largura + 20 || y > cena.altura + 20) continue
+    ctx.beginPath()
+    ctx.arc(x, y, r, 0, Math.PI * 2)
+    if (pt.atingida === true) {
+      ctx.fillStyle = cor
+      ctx.fill()
+      // Anel claro: sobre o satélite escuro, o ponto cheio some sem ele.
+      ctx.strokeStyle = 'rgba(255,255,255,0.85)'
+      ctx.stroke()
+    } else {
+      ctx.strokeStyle = pt.atingida === null ? 'rgba(109,31,109,0.45)' : cor
+      ctx.stroke()
+    }
+  }
+  ctx.restore()
+}
+
 export function desenharBarragens(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
