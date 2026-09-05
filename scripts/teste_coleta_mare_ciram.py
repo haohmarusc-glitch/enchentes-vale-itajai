@@ -167,5 +167,44 @@ class OQueOArquivoPromete(unittest.TestCase):
         self.assertIsNone(numero(None))
 
 
+
+class LeituraVelhaNaoELeituraAtual(unittest.TestCase):
+    """Estação fora do ar devolve o último valor antigo sem avisar, e ele
+    parece atual. Com cadência de 15 min, uma hora sem leitura nova é parada."""
+
+    def _saida(self, minutos_atras):
+        quando = AGORA - __import__("datetime").timedelta(minutes=minutos_atras)
+        linha = {"c": [{"v": quando.strftime("%d/%m %H:%M")}, {"v": "61.80"},
+                       {"v": "45.00"}, {"v": "16.80"}, None, None, None]}
+        return coletar(AGORA, buscador=lambda n, i: bruto(linha))["estacoes"][c.PRINCIPAL]
+
+    def test_leitura_de_agora_e_fresca(self):
+        est = self._saida(10)
+        self.assertTrue(est["fresca"])
+        self.assertLessEqual(est["idade_min"], 15)
+
+    def test_leitura_de_tres_horas_NAO_e_fresca(self):
+        est = self._saida(180)
+        self.assertFalse(est["fresca"], "3 h de atraso passou por leitura atual")
+        self.assertGreater(est["idade_min"], c.FRESCA_MIN)
+
+    def test_sem_medida_nenhuma_fresca_e_False_e_nao_None(self):
+        # Estação muda e estação fora do ar têm que dar a mesma resposta: não.
+        est = coletar(AGORA, buscador=lambda n, i: bruto(LINHA_PREVISAO))["estacoes"][c.PRINCIPAL]
+        self.assertIs(est["fresca"], False)
+        self.assertIsNone(est["idade_min"])
+
+    def test_a_idade_e_medida_em_BRASILIA_nos_dois_lados(self):
+        # Converter um dos lados para UTC daria 180 min de erro — e é o engano
+        # que o CLAUDE.md registra como tendo custado uma sessão.
+        est = self._saida(30)
+        self.assertAlmostEqual(est["idade_min"], 30, delta=1,
+                               msg="a idade saiu com deslocamento de fuso")
+
+    def test_carimbo_ilegivel_nao_vira_idade_zero(self):
+        # Zero afirmaria leitura recém-chegada. Ausência diz "não sei".
+        self.assertIsNone(c.idade_min(None, AGORA))
+        self.assertIsNone(c.idade_min("ontem", AGORA))
+
 if __name__ == "__main__":
     unittest.main()
