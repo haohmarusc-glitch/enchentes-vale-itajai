@@ -177,7 +177,12 @@ class SobreOCorpoInteiro(unittest.TestCase):
 
 
 class VariasCidadesDeInteresse(unittest.TestCase):
-    """A Norte só vem por cidade a jusante dela; e Oeste/Sul vêm por várias."""
+    """
+    O coletor aceita N cidades e deduplica. A hipótese original ("a Norte vem por
+    uma cidade a jusante dela") foi REFUTADA em 05/09/2026: Ibirama e Blumenau
+    devolvem `[]`; `city_id` é cadastro do município cliente, não hidrologia. O
+    mecanismo fica, porque um município cliente pode um dia devolver a Norte.
+    """
 
     def test_a_mesma_barragem_por_duas_cidades_entra_UMA_vez(self):
         # Rio do Sul e Ibirama devolvem as duas do Alto Vale; sem dedupe o site
