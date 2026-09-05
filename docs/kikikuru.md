@@ -64,6 +64,16 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   **significa o nível**, não enfeita. Trecho cinza **não corre** —
   `VEL_FAIXA['sem-dado'] = 0` —, porque não se anima uma água que não se mede.
   `prefers-reduced-motion` congela o movimento (um quadro estático).
+- **`/monitor/:cidadeId` abre o MESMO Monitor, enquadrado numa cidade.** Não é uma segunda tela: duas
+  implementações do mapa ao vivo divergem com o tempo, e o dia da divergência é o dia em que a mesma
+  cidade aparece verde numa e laranja na outra. Só mudam o enquadramento inicial e qual pino já vem
+  aberto — **nada do que o mapa afirma depende do zoom**. O enquadramento mostra **24 km de largura**
+  (`KM_NA_TELA`), calculados a partir da largura da bacia e não cravados: é para caber a cidade **e os
+  vizinhos de montante e jusante**, porque a cheia vem de cima e enquadrar só o município esconderia o
+  trecho de onde a água está chegando. Aplica-se **uma vez**; depois o zoom é de quem mexe, senão o
+  mapa seria arrancado da mão da pessoa no meio da cheia. Cidade sem coordenada (ou id errado no
+  endereço) abre na **bacia inteira**: não se inventa posição, e tela em branco num aplicativo de
+  enchente é pior que tela sem zoom.
 - **Tocar no RIO seleciona a cidade daquele trecho** (`cidadeNoTrecho`, raio 18 px). A ordem do
   toque é do alvo mais preciso para o mais largo: régua (14 px) → pino da cidade (26 px) → trecho do
   rio (18 px). A resposta é a cidade que **PINTOU** o trecho — a mesma que decidiu a cor debaixo do

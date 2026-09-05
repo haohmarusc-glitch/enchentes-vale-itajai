@@ -477,6 +477,20 @@ o projeto.
 
 ## Pendências
 
+- [x] **O Monitor abre por cidade: `/monitor/:cidadeId` (05/09/2026).** A tela da cidade já existia,
+  mas o mapa dela é uma janela fixa — sem zoom, sem satélite, sem arrastar. Agora há um endereço
+  próprio que abre **o mesmo Monitor** já enquadrado na cidade, com o painel dela aberto, e a tela da
+  cidade leva para lá. **Reaproveitar em vez de duplicar foi a decisão de segurança:** o mapa ao vivo
+  decide cor por faixa, velocidade por nível e o que cada régua pode afirmar; duas implementações
+  disso divergem com o tempo, e o dia da divergência é o dia em que a mesma cidade aparece verde numa
+  tela e laranja na outra. **O enquadramento mostra 24 km**, calculados da largura da bacia e não
+  cravados, para caber a cidade **e os vizinhos de montante e jusante** — a cheia vem de cima, e
+  enquadrar só o município esconderia o trecho de onde a água está chegando. Aplica-se **uma vez**:
+  depois o zoom é de quem mexe, senão o mapa seria arrancado da mão da pessoa no meio da cheia.
+  **Cidade sem coordenada, ou id errado no endereço, abre na bacia inteira** — não se inventa posição,
+  e mapa em branco é pior que mapa sem zoom. Cinco sabotagens (posição inventada, zoom cravado, zoom
+  abaixo de 1, lat/lon trocados, enquadramento apertado), cada uma reprova.
+
 - [x] **Tocar no TRECHO DO RIO abre a cidade daquele trecho (05/09/2026).** Antes, só o pino respondia
   — e o pino é pequeno. Quem está numa cheia encosta no **rio**, perto de onde mora; a tela não fazia
   nada e parecia travada. A ordem do toque agora vai do alvo mais preciso para o mais largo: régua
