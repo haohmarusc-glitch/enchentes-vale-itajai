@@ -14,7 +14,7 @@ function leitura(estacao: string, nivel: number): LeituraAoVivo {
 
 function regua(titulo: string, cotas: [string, number][]): ReguaComCota {
   return {
-    id: titulo.split(' ')[0]!, titulo, nome: titulo, cotas,
+    id: titulo.split(' ')[0]!, titulo, nome: titulo, nomeNoPlano: null, cotas,
     alertaAutomatico: true, motivoSemAlerta: null, referencia: 'régua',
     rio: 'itajai-mirim', fonteCotas: null, ordemDescida: null, ordemNota: null,
   }
@@ -96,4 +96,47 @@ test('empate não quebra: devolve uma, e é uma das empatadas', () => {
   const escolhida = maisCritica(p)
   assert.ok(escolhida !== null)
   assert.ok([DC10, DC03].includes(escolhida!.leitura.estacao))
+})
+
+/*
+ * A DC-11 no Monitor aparecia "sem cota". A cota estava no cadastro (3,00 m) e
+ * o pareamento funcionava — o que faltava era a TELA: ela só mostrava a cota
+ * depois de atingida, e `cotaAlcancadaEntre` devolve null enquanto o rio está
+ * abaixo de tudo. Régua abaixo da cota ficava indistinguível de régua sem cota
+ * cadastrada. Em 04/09/2026 a DC-11 marcava 2,63 m contra 3,00: faltavam 37 cm,
+ * e era esse número que sumia.
+ */
+test('régua abaixo de todas as cotas traz a PRÓXIMA, com a distância', () => {
+  const p = parear([leitura(DC03, 1.0)], [regua(DC03, [['atencao', 1.48], ['alerta', 1.85]])])
+  assert.equal(p[0]!.cota, null, 'não atingiu nenhuma — certo')
+  assert.deepEqual(p[0]!.proxima, { chave: 'atencao', valor: 1.48 })
+})
+
+test('a próxima é a mais BAIXA acima do nível, não qualquer uma', () => {
+  const p = parear(
+    [leitura(DC03, 1.6)],
+    [regua(DC03, [['atencao', 1.48], ['alerta', 1.85], ['emergencia', 2.5]])],
+  )
+  assert.equal(p[0]!.cota?.chave, 'atencao', 'já passou da atenção')
+  assert.equal(p[0]!.proxima?.chave, 'alerta', 'a próxima é o alerta, não a emergência')
+})
+
+test('acima de todas as cotas não há próxima', () => {
+  const p = parear([leitura(DC03, 9)], [regua(DC03, [['atencao', 1.48]])])
+  assert.equal(p[0]!.proxima, null)
+  assert.equal(p[0]!.cota?.chave, 'atencao')
+})
+
+test('régua sem cadastro não ganha cota nem próxima inventada', () => {
+  const p = parear([leitura('DESCONHECIDA', 3)], [regua(DC03, [['atencao', 1.48]])])
+  assert.equal(p[0]!.regua, null)
+  assert.equal(p[0]!.cota, null)
+  assert.equal(p[0]!.proxima, null)
+})
+
+test('exatamente NA cota conta como atingida, e não como próxima', () => {
+  // A fronteira decide se o morador lê "atingiu" ou "faltam 0,00 m".
+  const p = parear([leitura(DC03, 1.48)], [regua(DC03, [['atencao', 1.48]])])
+  assert.equal(p[0]!.cota?.valor, 1.48)
+  assert.equal(p[0]!.proxima, null)
 })

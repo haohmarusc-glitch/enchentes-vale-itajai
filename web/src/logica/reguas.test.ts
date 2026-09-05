@@ -74,11 +74,86 @@ test('sem aviso automático é só quem tem o campo em false', () => {
   assert.equal(saida[0]!.motivoSemAlerta, 'estuário')
 })
 
-test('usa o nome do plano oficial, com o código na frente quando falta', () => {
+/*
+ * Este teste já travou o CONTRÁRIO — chamava-se "usa o nome do plano oficial" e
+ * exigia `nome_no_plano` como rótulo. A intenção era que quem fosse conferir
+ * achasse o mesmo nome no documento. O efeito, achado em 04/09/2026 olhando o
+ * Monitor: o Plano é mais velho que a página e nomeia LUGAR ERRADO.
+ *
+ * A DC-02 fica no Rio Itajaí-Açu, na Praça Celso Pereira da Silva. O Plano a
+ * chama "Praça da Murta", e a tela escrevia Murta — só que a Murta de verdade é
+ * outra calha, com outras duas réguas (DC-07 e DC-09, no `ribeirao-murta`).
+ * Quem mora na Murta lia o nível do Açu achando que era o ribeirão do bairro.
+ * A DC-01 também perdia o ICMBio.
+ *
+ * O rótulo passa a ser o `titulo`; o nome do Plano vira nota de rodapé.
+ */
+test('o rótulo é o título da fonte, NUNCA o nome do plano', () => {
   const base = [
-    est({ codigo: 'DC-10', titulo: 'DC-10 Rio Itajaí-Mirim', nome_no_plano: 'Limoeiro' }),
+    est({
+      codigo: 'DC-02',
+      titulo: 'DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva',
+      nome_no_plano: 'Rio Itajaí-Açu - Praça da Murta',
+    }),
   ]
-  assert.equal(reguasComCota(base, 'itajai-acu', 'itajai')[0]!.nome, 'DC-10 — Limoeiro')
+  const r = reguasComCota(base, 'itajai-acu', 'itajai')[0]!
+  assert.equal(r.nome, 'DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva')
+  assert.ok(!r.nome.includes('Murta'), 'o rótulo nomeou a Murta para uma régua do Açu')
+})
+
+test('o nome do plano fica guardado, para nota de rodapé', () => {
+  const base = [
+    est({
+      codigo: 'DC-02',
+      titulo: 'DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva',
+      nome_no_plano: 'Rio Itajaí-Açu - Praça da Murta',
+    }),
+  ]
+  assert.equal(
+    reguasComCota(base, 'itajai-acu', 'itajai')[0]!.nomeNoPlano,
+    'Rio Itajaí-Açu - Praça da Murta',
+  )
+})
+
+test('diferença só de acento ou travessão NÃO vira nota de rodapé', () => {
+  // O caso real da DC-11: "Açú – Santa Regina" no título, "Açu - Santa Regina"
+  // no Plano. É o mesmo lugar escrito de dois jeitos. Repetir isso embaixo de
+  // cada número, nas onze réguas, é ruído num celular na chuva.
+  const base = [
+    est({
+      codigo: 'DC-11',
+      titulo: 'DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)',
+      nome_no_plano: 'Rio Itajaí-Açu - Santa Regina (Volta de Cima)',
+    }),
+  ]
+  assert.equal(reguasComCota(base, 'itajai-acu', 'itajai')[0]!.nomeNoPlano, null)
+})
+
+test('o código na frente do título não conta como diferença', () => {
+  const base = [
+    est({ codigo: 'DC-07', titulo: 'DC-07 Ribeirão da Murta - Portal', nome_no_plano: 'Ribeirão da Murta - Portal I' }),
+  ]
+  assert.equal(reguasComCota(base, 'itajai-acu', 'itajai')[0]!.nomeNoPlano, null)
+})
+
+test('nome de LUGAR diferente vira nota de rodapé', () => {
+  // Aqui a nota tem que aparecer: quem for conferir no Plano procura "Murta".
+  const base = [
+    est({
+      codigo: 'DC-02',
+      titulo: 'DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva',
+      nome_no_plano: 'Rio Itajaí-Açu - Praça da Murta',
+    }),
+  ]
+  assert.equal(
+    reguasComCota(base, 'itajai-acu', 'itajai')[0]!.nomeNoPlano,
+    'Rio Itajaí-Açu - Praça da Murta',
+  )
+})
+
+test('o código entra na frente quando o título não começa com ele', () => {
+  const base = [est({ codigo: 'DC-10', titulo: 'Rio Itajaí-Mirim - Limoeiro' })]
+  assert.equal(reguasComCota(base, 'itajai-acu', 'itajai')[0]!.nome, 'DC-10 — Rio Itajaí-Mirim - Limoeiro')
 })
 
 test('não repete o código quando o nome já começa com ele', () => {
@@ -204,4 +279,24 @@ test('toda cota exibida em Itajaí diz de que documento veio', () => {
   for (const r of todasAsReguas(estacoesTempoReal, 'itajai')) {
     assert.ok(r.fonteCotas, `${r.id} mostraria cota oficial sem fonte`)
   }
+})
+
+/*
+ * Sobre os dados reais. A Murta é `ribeirao-murta`, com DC-07 e DC-09. Se o
+ * rótulo de uma régua do Açu ou do Mirim voltar a dizer "Murta", quem mora lá
+ * lê o nível do rio grande achando que é o ribeirão do bairro dele.
+ */
+test('nenhuma régua fora do ribeirão da Murta é rotulada "Murta"', () => {
+  for (const rio of ['itajai-acu', 'itajai-mirim']) {
+    for (const r of reguasComCota(estacoesTempoReal, rio, 'itajai')) {
+      assert.ok(
+        !/murta/i.test(r.nome),
+        `${r.id} em ${rio} foi rotulada "${r.nome}" — a Murta é outra calha`,
+      )
+    }
+  }
+  // E as do ribeirão continuam dizendo Murta, que é o nome certo delas.
+  const daMurta = reguasComCota(estacoesTempoReal, 'ribeirao-murta', 'itajai')
+  assert.equal(daMurta.length, 2)
+  for (const r of daMurta) assert.ok(/murta/i.test(r.nome), `${r.id} perdeu o nome da Murta`)
 })

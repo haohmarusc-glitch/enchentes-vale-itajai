@@ -233,6 +233,31 @@ export function cotaAlcancadaEntre(
   return maior
 }
 
+/**
+ * A cota mais BAIXA ainda acima do nível — a próxima que o rio encontraria.
+ *
+ * Existe porque `cotaAlcancadaEntre` devolve `null` enquanto o rio está abaixo
+ * de tudo, e a tela usava esse `null` para não mostrar cota nenhuma. O efeito:
+ * a DC-11 marcando 2,63 m com atenção em 3,00 m aparecia como se não tivesse
+ * cota cadastrada — quando o que faltava eram 37 centímetros. Sem o número, o
+ * morador não distingue "falta um palmo" de "falta um metro", e é justamente
+ * essa distância que ele precisa para decidir.
+ *
+ * `null` só quando o rio já passou de todas, ou quando não há cota nenhuma.
+ */
+export function proximaCotaEntre(
+  cotas: [string, unknown][],
+  nivel: number,
+): { chave: string; valor: number } | null {
+  let menor: { chave: string; valor: number } | null = null
+  for (const [chave, valor] of cotas) {
+    if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
+    if (valor <= nivel) continue
+    if (menor === null || valor < menor.valor) menor = { chave, valor }
+  }
+  return menor
+}
+
 export function primeiraCota(cidade: Cidade): { chave: string; valor: number } | null {
   const ordem = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
   for (const chave of ordem) {
