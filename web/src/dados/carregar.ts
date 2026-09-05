@@ -10,6 +10,7 @@ import enchentesJson from '@dados/enchentes.json'
 import transitoJson from '@dados/transito.json'
 import mareJson from '@dados/mare-itajai.json'
 import abrigosJson from '@dados/abrigos-itajai.json'
+import hidraulicaJson from '@dados/hidraulica.json'
 import type {
   Abrigo,
   AbrigosItajai,
@@ -154,6 +155,35 @@ export function eixoDoRio(rioId: string): string[] | undefined {
 /** A árvore do rio, quando ele é ramificado (só o Açu hoje). */
 export function topologiaDoRio(rioId: string): Topologia | undefined {
   return estacoes.rios[rioId]?._topologia
+}
+
+export interface BarragemDaBacia {
+  nome: string
+  municipio_nome: string
+  rio: string
+  rio_id: string
+}
+
+/**
+ * As barragens de contenção que controlam este rio, do `hidraulica.json`
+ * (JICA). Nome, município e curso vêm do arquivo; nada aqui é texto fixo.
+ * Entradas do bloco que começam com `_` são notas, não barragens.
+ */
+/** O bloco cru das barragens do `hidraulica.json`, para quem monta a árvore. */
+export const barragensBrutas: Record<string, unknown> = (
+  hidraulicaJson as { barragens: Record<string, unknown> }
+).barragens
+
+export function barragensDoRio(rioId: string): BarragemDaBacia[] {
+  const bloco = (hidraulicaJson as { barragens: Record<string, unknown> }).barragens
+  const saida: BarragemDaBacia[] = []
+  for (const [chave, b] of Object.entries(bloco)) {
+    if (chave.startsWith('_') || typeof b !== 'object' || b === null) continue
+    const x = b as Partial<BarragemDaBacia>
+    if (x.rio_id !== rioId || !x.nome || !x.municipio_nome || !x.rio) continue
+    saida.push({ nome: x.nome, municipio_nome: x.municipio_nome, rio: x.rio, rio_id: x.rio_id })
+  }
+  return saida
 }
 
 export function cidade(rioId: string, cidadeId: string): Cidade | undefined {

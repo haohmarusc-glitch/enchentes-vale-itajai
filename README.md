@@ -477,6 +477,29 @@ o projeto.
 
 ## Pendências
 
+- [x] **A home ensinava o caminho errado da água — corrigido em 05/09/2026.** O cartão do Açu afirmava
+  `Taió e Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí`: uma **fila** em que
+  **Ibirama** era elo do tronco (fica no **Rio Hercílio**, atrás da Barragem Norte, e entra no Açu só
+  depois de Rio do Sul), **Taió** encabeçava a seta como se o Açu começasse lá (o Açu **nasce** na
+  confluência das duas cabeceiras, em Rio do Sul) e **Lontras e Ascurra**, que SÃO tronco, não existiam.
+  A tela `/acu` já era árvore desde 02/09; a home ficou para trás porque a linha era **texto fixo** no
+  `Inicio.tsx`. Achado numa captura de tela do celular. **Era o erro mais grave daquela tela**, porque o
+  aviso "não compare metros" estava certo enquanto o mapa mental da água estava errado. Agora as linhas
+  saem do `estacoes.json` (`logica/descricaoDoRio.ts`), rotuladas pelo que cada uma é — **Tronco**,
+  **Cabeceiras**, **Entram de lado**, **Barragens** —, e o Mirim ganhou **Guabiruba**, que o texto fixo
+  omitia. Nenhuma tela pode mais divergir da outra nem de `docs/TOPOLOGIA-CANONICA.md`.
+- [x] **A árvore da bacia inteira entrou no Monitor, com as três barragens (05/09/2026).** Bloco "De onde
+  vem a água" abaixo do mapa (`componentes/ArvoreDaBacia.tsx`, lógica em `logica/arvoreDaBacia.ts`):
+  cada cabeceira com o seu rio e a sua barragem, a confluência onde o Açu nasce (com a coordenada da
+  fonte), o tronco, e os afluentes laterais com a barragem de cada um. As três estaduais vêm do
+  `hidraulica.json` (JICA) com ano, volume e número de comportas — a **Norte** com os `2 com comporta +
+  5 sem` que a distinguem. Campo novo `a_montante_de` diz a cidade **com régua** logo abaixo de cada
+  parede (Taió, Ituporanga, Ibirama), e o validador aborta se ela não existir no rio **ou se duas
+  barragens reivindicarem a mesma cidade** — a trava que pegou "Norte acima de Taió" numa sabotagem.
+  **O bloco não mostra nível de barragem, de propósito:** cota de reservatório é altura acima do mar
+  (Taió: 17 m de lago com 5 m na régua do centro) e, ao lado da régua urbana, pintaria emergência falsa.
+  Operação (comportas) tem bloco e mapa próprios. Quatro sabotagens conferidas, cada uma derruba testes.
+
 Em ordem de impacto.
 
 ### Quanto do mapa está apagado, e o que acende cada pedaço

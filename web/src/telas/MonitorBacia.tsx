@@ -52,6 +52,7 @@ import {
   type ChaveFundo,
 } from '../logica/tiles'
 import VariasReguas from '../componentes/VariasReguas'
+import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
 import estilos from './MonitorBacia.module.css'
 
 // Traçados como URL (o Vite emite à parte). A bacia toda: Açu + Mirim, mais os
@@ -1143,6 +1144,10 @@ export default function MonitorBacia() {
           )
         })() : null}
       </div>
+
+      {/* A árvore da bacia, embaixo do mapa: quem vê os pinos precisa saber
+          QUEM ESTÁ ACIMA DE QUEM, e que a barragem não é o rio da cidade. */}
+      <ArvoreDaBacia />
 
       {/* Acesso por teclado/leitor: as cidades viram botões fora da vista. */}
       <ul className={estilos.foraDaVista}>
