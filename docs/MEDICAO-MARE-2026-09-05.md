@@ -73,9 +73,11 @@ uma travessia que durou 47,5 h. Ela falha nos dois critérios por muito pouco, n
 
 ---
 
-## ⛔ Rio do Sul: o aviso já está ligado e não desliga
+## ⛔→✅ Rio do Sul: a leitura desta seção estava ERRADA — corrigida em 05/09/2026
 
-Fora das nove, e mais urgente que todas:
+A versão original desta seção dizia que a cota de 4,50 m está "abaixo do leito normal" e que a pergunta
+ia para a Defesa Civil de Rio do Sul. **As duas coisas estão erradas**, e a refutação estava dentro do
+próprio parágrafo.
 
 ```
 Rio do Sul Estação MKS
@@ -84,10 +86,53 @@ Rio do Sul Estação MKS
   hoje: DISPARA
 ```
 
-A folga é **negativa**: o rio nunca desce até a cota. A única "travessia" da série durou **106 horas** —
-os 6 dias inteiros. A cabeceira do Açu está permanentemente em alerta no mapa, hoje. Isso não é ajuste
-de trava: a cota de 4,50 m está abaixo do leito normal, e a pergunta vai para a **Defesa Civil de Rio do
-Sul**, não para o cadastro.
+**"1 travessia" significa que o rio cruzou de BAIXO para cima.** Se a cota estivesse abaixo do leito, a
+série teria **zero** travessias — o rio começaria a janela já acima e nunca cruzaria nada. A única
+travessia prova que ele esteve **abaixo de 4,50 m** dentro do período. Eu escrevi "o rio nunca desce até
+a cota" ao lado do número que diz o contrário.
+
+### O que realmente aconteceu
+
+A janela de 6 dias caiu inteira **dentro de um evento real e da manobra que veio depois**:
+
+| quando | o quê |
+|---|---|
+| 31/08 19h30 | 5,56 m, subindo 15–20 cm/h |
+| **01/09 04h–05h** | **pico 6,78 m** — 22 cm da marca oficial de enchente (7,00 m). Comportas fechadas, segurando |
+| 03/09 09h20 | 5,30 m, caindo. Defesa Civil **começa a abrir** comportas (6 de 12) |
+| 05/09 08h19 | 5,24–5,50 m · **12 de 12 abertas** · reservatórios em 34% e 38% |
+
+O "típico 5,52 m" é o típico de uma **janela de evento**, não de condição normal. E o aviso ligado
+naqueles dias **não era falso** — havia cheia de verdade, seguida de esvaziamento controlado.
+
+Conferido contra o nosso próprio registro, que é o que dá confiança nisto:
+
+| fonte | quando | montante da Oeste | comportas |
+|---|---|---|---|
+| `docs/TAIO-E-BARRAGEM-OESTE.md` | 03/09 20:41 | **17,2 m** | 7 de 7 |
+| leitura de 05/09 | 05/09 08:19 | **15,00 m** | 7 de 7 |
+
+**−2,2 m em 36 h com tudo aberto.** Duas sessões independentes, dois dias de distância: é esvaziamento.
+
+### O que continua sem resposta
+
+**Onde fica o nível normal de Rio do Sul, num período seco.** Nem esta medição nem a de 04/09 (88 de 88
+leituras acima da cota, em 48 h) estabelecem isso — as duas janelas caem dentro do mesmo evento. A
+conclusão anterior e a atual, se afirmadas como "a cota está errada" ou "a cota está certa", excedem as
+duas igualmente.
+
+Isso se responde sozinho: o `medir_mare.py` lê o ndjson mestre, que acumula. Rodar de novo depois de um
+período seco e comparar.
+
+### O que muda de verdade
+
+O erro do site não é a cota. É **não mostrar o estado do sistema**. Um rio a 5,4 m com 12 de 12 comportas
+abertas significa o oposto de um rio a 5,4 m com as comportas fechadas:
+
+- comportas **fechadas** + rio subindo → a barragem está segurando; **o pior ainda pode vir**
+- comportas **abertas** + rio estável ou caindo → esvaziamento controlado; **o pico já passou**
+
+Detalhe e o caminho para coletar isso em `docs/RIO-DO-SUL-COMPORTAS.md`.
 
 ---
 
