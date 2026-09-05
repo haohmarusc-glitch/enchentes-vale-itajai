@@ -165,6 +165,7 @@
     "_areas_divergentes": "As áreas de drenagem do JICA Vol. II (Oeste 1.042, Sul 1.273 km²) NÃO batem com as da API estadual (Oeste 851, Sul 1.164 km²). Registrar as duas, nunca fundir nem escolher em silêncio. ATUALIZADO em 04/09/2026: o JICA Vol. III-A (bloco `areas_drenagem`) traz Oeste 851,2 e Sul 1.165,4 — ou seja, ele concorda com a API estadual, não com o Vol. II. A divergência é INTERNA AO JICA, e o Vol. II é o lado isolado. Ver `areas_drenagem._divergencia_interna_do_JICA`.",
     "oeste": {
       "nome": "Barragem Oeste",
+      "tipo": "contencao_estadual",
       "municipio": "taio",
       "municipio_nome": "Taió",
       "rio": "Itajaí do Oeste",
@@ -182,6 +183,7 @@
     },
     "sul": {
       "nome": "Barragem Sul",
+      "tipo": "contencao_estadual",
       "municipio": "ituporanga",
       "municipio_nome": "Ituporanga",
       "rio": "Itajaí do Sul",
@@ -197,6 +199,7 @@
     },
     "norte": {
       "nome": "Barragem Norte",
+      "tipo": "contencao_estadual",
       "municipio": "jose-boiteux",
       "municipio_nome": "José Boiteux",
       "rio": "Rio Hercílio (Itajaí do Norte)",
@@ -218,7 +221,30 @@
       "nota": "O fechamento também é acionado pelo nível em Rio do Sul (6,50 m), junto com a Barragem Sul. Os limiares são do relatório de 2011 e podem ter mudado — a operação é da DEINFRA."
     },
     "lacuna_da_vazao_de_saida": "O JICA (seção 4.2.2) aponta que a DEINFRA, operadora da Oeste e da Sul, NÃO registrava nem informava as vazões de saída — e dá isso como a razão de a previsão de Rio do Sul não ser apropriada para uso prático. O que temos hoje é o ESTADO DAS COMPORTAS pela API de Taió, que é proxy, não vazão. Pedir a vazão à DEINFRA é pendência do README. Ressalva da auditoria: 2011 não é o estado de hoje — verificar se a vazão por comporta passou a ser publicada antes de tratar a lacuna como atual.",
-    "_rio_e_nome": "`nome`, `municipio_nome`, `rio` e `rio_id` (05/09/2026) existem para a tela de início nomear as barragens sem texto fixo. `rio` é o curso em que cada uma está — Itajaí do Oeste e Itajaí do Sul conferidos no `river_name` da API Asthon (dams, 05/09/2026); Rio Hercílio (Itajaí do Norte) pela topologia canônica (docs/TOPOLOGIA-CANONICA.md) e pelo JICA. `rio_id` é a bacia em que a tela as mostra: as três controlam o Açu. `a_montante_de` é a cidade COM RÉGUA logo abaixo da parede: Taió (centro a ~9,5 km da Oeste), Ituporanga (abaixo da Sul) e Ibirama (no Hercílio, abaixo da Norte). A régua dessas cidades mede a água já amortecida — ou vertida — pela barragem; a cota do reservatório é OUTRA ESCALA e nunca pinta a cidade."
+    "_rio_e_nome": "`nome`, `municipio_nome`, `rio` e `rio_id` (05/09/2026) existem para a tela de início nomear as barragens sem texto fixo. `rio` é o curso em que cada uma está — Itajaí do Oeste e Itajaí do Sul conferidos no `river_name` da API Asthon (dams, 05/09/2026); Rio Hercílio (Itajaí do Norte) pela topologia canônica (docs/TOPOLOGIA-CANONICA.md) e pelo JICA. `rio_id` é a bacia em que a tela as mostra: as três controlam o Açu. `a_montante_de` é a cidade COM RÉGUA logo abaixo da parede: Taió (centro a ~9,5 km da Oeste), Ituporanga (abaixo da Sul) e Ibirama (no Hercílio, abaixo da Norte). A régua dessas cidades mede a água já amortecida — ou vertida — pela barragem; a cota do reservatório é OUTRA ESCALA e nunca pinta a cidade.",
+    "pinhal": {
+      "nome": "Barragem Pinhal",
+      "tipo": "local",
+      "localidade": "Alto Cedros",
+      "no_municipio": "rio-dos-cedros",
+      "municipio_nome": "Rio dos Cedros",
+      "rio": "Rio dos Cedros (desagua no Benedito)",
+      "rio_id": "itajai-acu",
+      "verificado": false,
+      "fonte": "PLANCON de Rio dos Cedros (versão ~10.7, 2022) e nota antiga no site do município — docs/cotas-municipais/rio-dos-cedros.md"
+    },
+    "rio_bonito": {
+      "nome": "Barragem Rio Bonito",
+      "tipo": "local",
+      "localidade": "Palmeiras",
+      "no_municipio": "rio-dos-cedros",
+      "municipio_nome": "Rio dos Cedros",
+      "rio": "Rio dos Cedros (desagua no Benedito)",
+      "rio_id": "itajai-acu",
+      "verificado": false,
+      "fonte": "PLANCON de Rio dos Cedros (versão ~10.7, 2022) e nota antiga no site do município — docs/cotas-municipais/rio-dos-cedros.md"
+    },
+    "_locais_nao_sao_de_contencao": "Pinhal e Rio Bonito (05/09/2026) são barragens LOCAIS no município de Rio dos Cedros, citadas pelo PLANCON de lá. NÃO são as de contenção de cheia da bacia: as três estaduais (Oeste, Sul, Norte) existem para amortecer a cheia do Açu e têm operação publicada; estas não. Por isso `tipo` separa as duas classes e a tela nunca as lista lado a lado. O que a fonte NÃO diz, e por isso não está aqui: área de drenagem, volume, ano, número de comportas e a posição delas em relação à régua da Praça Matriz — por isso usam `no_municipio` (onde ficam) e não `a_montante_de` (o que fica abaixo da parede), que afirmaria uma posição não conferida. Rio dos Cedros desagua no Benedito, que entra no tronco entre Ascurra e Indaial: elas pertencem ao ramo do Benedito, nunca ao tronco do Açu."
   },
   "divisao_do_mirim": {
     "_fonte": "Vol. II, seção 3.5. Citação: \"Distribution ratio of the flood discharge… is assumed to be 2/3 to the canal and 1/3 to the old Mirim River based on the respective estimated flow capacity\".",

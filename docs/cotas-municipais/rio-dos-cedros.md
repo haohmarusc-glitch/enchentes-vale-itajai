@@ -38,3 +38,7 @@ Confirmar com a COMPDEC se a escala de 2014 ainda vale depois do desassoreamento
 - Fonte bruta: https://monitoramento.defesacivil.sc.gov.br/mapa  
 - Pluviômetros CEMADEN (centro, out/2025): https://resources.cemaden.gov.br/graficos/interativo/grafico_CEMADEN.php?menu=periodo&idpcd=17662&uf=SC  
 - Barragens locais (PLANCON antigo): Pinhal (Alto Cedros) e Rio Bonito (Palmeiras) — **não** são Taió/Ituporanga.
+  Gravadas em `data/hidraulica.json` em 05/09/2026 com `tipo: "local"`, o que as separa das três de
+  contenção da bacia (Oeste, Sul, Norte) em toda a interface. Sem área, volume, ano ou comportas: esta
+  página não os traz, e não se inventa. Sem `a_montante_de` também — dizer que ficam logo acima da régua
+  da Praça Matriz seria afirmar posição que o PLANCON não dá; usam `no_municipio`.

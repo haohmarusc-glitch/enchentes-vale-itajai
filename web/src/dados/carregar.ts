@@ -11,6 +11,7 @@ import transitoJson from '@dados/transito.json'
 import mareJson from '@dados/mare-itajai.json'
 import abrigosJson from '@dados/abrigos-itajai.json'
 import hidraulicaJson from '@dados/hidraulica.json'
+import { barragensDeContencao } from '../logica/arvoreDaBacia'
 import type {
   Abrigo,
   AbrigosItajai,
@@ -157,6 +158,11 @@ export function topologiaDoRio(rioId: string): Topologia | undefined {
   return estacoes.rios[rioId]?._topologia
 }
 
+/** O bloco cru das barragens do `hidraulica.json`, para quem monta a árvore. */
+export const barragensBrutas: Record<string, unknown> = (
+  hidraulicaJson as { barragens: Record<string, unknown> }
+).barragens
+
 export interface BarragemDaBacia {
   nome: string
   municipio_nome: string
@@ -165,25 +171,16 @@ export interface BarragemDaBacia {
 }
 
 /**
- * As barragens de contenção que controlam este rio, do `hidraulica.json`
- * (JICA). Nome, município e curso vêm do arquivo; nada aqui é texto fixo.
- * Entradas do bloco que começam com `_` são notas, não barragens.
+ * As barragens de CONTENÇÃO que controlam este rio, do `hidraulica.json` (JICA).
+ *
+ * O filtro em si mora em `logica/arvoreDaBacia`, onde o teste o alcança: aqui
+ * só entra o dado. As barragens LOCAIS (`tipo: "local"`, como Pinhal e Rio
+ * Bonito no Rio dos Cedros) NÃO entram — elas não amortecem a cheia do Açu, e
+ * somá-las faria a home dizer que a bacia tem cinco barragens de contenção.
+ * Tem três.
  */
-/** O bloco cru das barragens do `hidraulica.json`, para quem monta a árvore. */
-export const barragensBrutas: Record<string, unknown> = (
-  hidraulicaJson as { barragens: Record<string, unknown> }
-).barragens
-
 export function barragensDoRio(rioId: string): BarragemDaBacia[] {
-  const bloco = (hidraulicaJson as { barragens: Record<string, unknown> }).barragens
-  const saida: BarragemDaBacia[] = []
-  for (const [chave, b] of Object.entries(bloco)) {
-    if (chave.startsWith('_') || typeof b !== 'object' || b === null) continue
-    const x = b as Partial<BarragemDaBacia>
-    if (x.rio_id !== rioId || !x.nome || !x.municipio_nome || !x.rio) continue
-    saida.push({ nome: x.nome, municipio_nome: x.municipio_nome, rio: x.rio, rio_id: x.rio_id })
-  }
-  return saida
+  return barragensDeContencao(barragensBrutas, rioId).map((b) => ({ ...b, rio_id: rioId }))
 }
 
 export function cidade(rioId: string, cidadeId: string): Cidade | undefined {

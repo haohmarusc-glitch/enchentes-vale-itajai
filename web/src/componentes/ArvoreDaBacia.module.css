@@ -24,7 +24,8 @@
 }
 
 .ramos,
-.laterais {
+.laterais,
+.locais {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -34,6 +35,12 @@
 
 .ramos {
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+/* Sem a barra à esquerda das outras listas: a local não é galho da árvore. */
+.locais > li {
+  font-size: 0.88rem;
+  color: #4b5563;
 }
 
 .ramo,

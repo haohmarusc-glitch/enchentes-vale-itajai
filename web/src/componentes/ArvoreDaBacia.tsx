@@ -96,6 +96,33 @@ export default function ArvoreDaBacia({ rioId = 'itajai-acu' }: { rioId?: string
         </>
       ) : null}
 
+      {arvore.locaisPorCidade.length ? (
+        <>
+          <span className={estilos.rotulo}>Barragens locais, que não são de contenção</span>
+          <ul className={estilos.locais}>
+            {arvore.locaisPorCidade.map((g) => (
+              <li key={g.cidade}>
+                {g.barragens.map((b) => b.nome).join(' e ')} — em {g.cidade}
+                {g.barragens[0] ? <>, no {g.barragens[0].rio}</> : null}
+                {g.barragens.some((b) => b.localidade) ? (
+                  <div className={estilos.ficha}>
+                    {g.barragens
+                      .filter((b) => b.localidade)
+                      .map((b) => `${b.nome}: ${b.localidade}`)
+                      .join(' · ')}
+                  </div>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          <p className={estilos.ficha}>
+            Citadas pelo Plano de Contingência do município. Não amortecem a cheia do
+            Açu como as três acima, e a operação delas não é publicada — por isso
+            entram sem ficha e sem posição em relação à régua da cidade.
+          </p>
+        </>
+      ) : null}
+
       {arvore.barragensSoltas.length ? (
         <ul className={estilos.laterais}>
           {arvore.barragensSoltas.map((b) => (

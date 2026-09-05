@@ -14,8 +14,11 @@
  * - tronco: a única sequência que a tela pode afirmar, na ordem em que a água desce;
  * - cabeceiras: as paralelas, com o rio de cada uma, e onde se encontram;
  * - laterais: quem entra pelo lado, e por qual rio. NUNCA na seta do tronco.
- * - barragens: as de contenção que controlam o rio, com município e curso —
- *   vêm do `hidraulica.json`, e só entram as do `rio_id` deste rio.
+ * - barragens: as de CONTENÇÃO que controlam o rio, com município e curso —
+ *   vêm do `hidraulica.json`, e só entram as do `rio_id` deste rio. As LOCAIS
+ *   (Pinhal, Rio Bonito) ficam de fora: postas na mesma linha, diriam que a
+ *   bacia tem cinco barragens de contenção, e ela tem três. Elas aparecem no
+ *   Monitor, em bloco próprio, dizendo o que não são.
  * Rio em fila (sem `_topologia`): só o tronco, as cidades por `ordem`.
  *
  * Id sem nome no cadastro aparece pelo próprio id, em vez de sumir calado: o

@@ -477,6 +477,21 @@ o projeto.
 
 ## Pendências
 
+- [x] **Pinhal e Rio Bonito entraram — como barragens LOCAIS, não como as de contenção (05/09/2026).**
+  O PLANCON de Rio dos Cedros cita duas barragens no município (`docs/cotas-municipais/rio-dos-cedros.md`):
+  **Pinhal** (Alto Cedros) e **Rio Bonito** (Palmeiras), no Rio dos Cedros, que desagua no Benedito — ramo
+  do Benedito, **nunca** tronco do Açu. **O risco era somá-las às três estaduais** e a tela passar a dizer
+  que a bacia tem cinco barragens de contenção: tem três, e só elas amortecem a cheia do Açu. Por isso
+  `hidraulica.json` ganhou `tipo` (`contencao_estadual` × `local`), a home lista só as de contenção, e o
+  Monitor mostra as locais em bloco próprio dizendo o que elas não são. **O que a fonte não diz não foi
+  gravado:** área, volume, ano e comportas ficaram de fora, e elas usam `no_municipio` (onde ficam) em vez
+  de `a_montante_de` (o que fica abaixo da parede) — este último afirmaria posição em relação à régua da
+  Praça Matriz que o PLANCON não dá. O validador recusa barragem sem `tipo`, barragem local com
+  `a_montante_de`, e recusa que o conjunto de contenção deixe de ser exatamente Oeste, Sul e Norte.
+  **Uma sabotagem achou folga no teste, não no código:** desligar o filtro de contenção no `dados/carregar`
+  não quebrava nada, porque o teste tinha uma cópia própria do filtro. O filtro foi para
+  `logica/arvoreDaBacia.barragensDeContencao`, onde o teste o alcança, e a sabotagem passou a quebrar.
+
 - [x] **A home ensinava o caminho errado da água — corrigido em 05/09/2026.** O cartão do Açu afirmava
   `Taió e Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí`: uma **fila** em que
   **Ibirama** era elo do tronco (fica no **Rio Hercílio**, atrás da Barragem Norte, e entra no Açu só
