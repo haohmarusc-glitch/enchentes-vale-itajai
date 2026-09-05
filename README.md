@@ -477,6 +477,24 @@ o projeto.
 
 ## Pendências
 
+- [ ] **⛔ AS MANCHAS AO VIVO ESTÃO BLOQUEADAS POR DADO: Itajaí tem ZERO picos no cadastro.** Pedido:
+  "quando os rios encherem, a mancha aparece no mapa", começando por Itajaí. As **dez manchas de
+  Itajaí (1983–2015) já existem** e já são navegáveis por evento em `/itajai`. O que não existe é o
+  número que as liga ao nível de hoje: todas têm **`pico_registrado: null`**, porque `enchentes.json`
+  tem **Blumenau 113, Rio do Sul 9, Brusque 9, Taió 1, Timbó 1 e Itajaí 0**. Sem o pico do evento não
+  há o que comparar com a leitura, e dizer *"o rio está em 3,20 m, então a área alagada é esta"* seria
+  inventar a correspondência — com o erro caindo para o lado de fazer alguém se sentir seguro fora da
+  mancha. **Segunda trava, que sobrevive à primeira:** Itajaí tem **onze réguas com zeros diferentes**,
+  então não basta o pico do evento, é preciso o pico **naquela régua**. **Feito agora:** o mecanismo
+  (`web/src/logica/manchasPorNivel.ts`) está pronto e **escuro** — separa "o rio já passou disto" de
+  "ainda não", recusa comparar réguas diferentes, recusa pico sem régua, recusa tratar "sem leitura"
+  como "abaixo de tudo", e fala sempre no **passado** (*"em 2011 o rio marcou 3,05 m e a água cobriu
+  esta área"*, nunca "vai cobrir"). Oito testes e três sabotagens; **um dos testes trava o próprio
+  bloqueio**, afirmando que hoje nenhuma mancha tem pico — no dia em que os picos entrarem ele cai, e
+  cair é a notícia boa. **Ação:** levantar os picos de Itajaí **com a régua de cada um** (Defesa Civil
+  de Itajaí, CEPSUL/ICMBio, imprensa de 1983, 1984, 2001, 2008, 2011, 2013, 2014 e 2015). É trabalho
+  de fonte, não de código. Plano completo em `docs/PLANO-MANCHAS-E-TELA-POR-CIDADE.md`.
+
 - [x] **⛔ O Itajaí do Sul não estava desenhado — a cabeceira maior faltava no mapa (05/09/2026).**
   Achado por Jefferson no Monitor em produção: **Ituporanga a 27,99 km** e a **Barragem Sul a 31,33 km**
   de qualquer linha, flutuando sobre o satélite. Pior que o pino fora do lugar: a linha que passa perto
