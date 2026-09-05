@@ -72,27 +72,26 @@ from comum import baixar, espera_turno, grava_json
 
 BASE = "https://public.asthon.com.br/public/dams?city_id="
 
-#: Cidades de INTERESSE a consultar. A API devolve as barragens A MONTANTE de
-#: cada cidade, então uma consulta só não cobre o sistema: por Rio do Sul
-#: (4214805) vêm a Oeste e a Sul, mas NÃO a Norte — o Rio Hercílio, que a
-#: Barragem Norte (José Boiteux) controla, entra no tronco ABAIXO de Rio do Sul,
-#: entre Lontras e Ascurra (ver docs/TOPOLOGIA-CANONICA.md).
+#: Cidades a consultar. `city_id` NÃO é hidrologia, é CADASTRO: conferido em
+#: 05/09/2026, na VPS, `dams?city_id=4207106` (Ibirama) e `dams?city_id=4202404`
+#: (Blumenau) devolveram `[]`. Blumenau fica a jusante das TRÊS barragens; se a
+#: API devolvesse "barragens a montante da cidade", como este comentário afirmava
+#: antes, Blumenau traria ao menos a Oeste e a Sul. Não trouxe nada. Logo o
+#: endpoint devolve as barragens CADASTRADAS PARA AQUELE MUNICÍPIO CLIENTE da
+#: Asthon — e o cliente é a Defesa Civil de Rio do Sul, que cadastrou as duas
+#: que a afetam (Oeste e Sul).
 #:
-#: CONFERIDO em 05/09/2026, na VPS: `dams?city_id=4207106` (Ibirama, no Hercílio
-#: abaixo da Norte) devolveu `[]` — lista vazia, sem erro. Ou a Asthon não tem a
-#: Norte cadastrada, ou só responde para municípios que são clientes dela (a API
-#: é a que a Defesa Civil de RIO DO SUL publica), e Ibirama não é. Não dá para
-#: distinguir daqui, e as duas hipóteses levam ao mesmo lugar: a Norte NÃO vem
-#: por este endpoint até alguém achar uma cidade que a devolva. Por isso a lista
-#: tem UMA cidade: consultar Ibirama a cada coleta seria um pedido vazio de 15
-#: em 15 minutos e um aviso permanente no log — aviso que ninguém lê mais é aviso
-#: perdido. `_meta.cobertura` declara a ausência para quem lê o JSON.
+#: Consequência: a Barragem Norte (José Boiteux, Rio Hercílio, que entra no
+#: tronco ABAIXO de Rio do Sul, entre Lontras e Ascurra — docs/TOPOLOGIA-CANONICA.md)
+#: NÃO vem por este endpoint, a menos que algum município cliente da Asthon a
+#: tenha cadastrado. Não se sabe qual, nem se existe. A lista fica com UMA
+#: cidade: consultar cidade que devolve `[]` a cada 15 min é pedido vazio mais
+#: aviso permanente no log, e aviso que ninguém lê mais é aviso perdido.
+#: `_meta.cobertura` declara a ausência para quem lê o JSON.
 #:
-#: Para tentar de novo, à mão, antes de mexer aqui:
-#:     curl 'https://public.asthon.com.br/public/dams?city_id=<IBGE>'
-#: com o IBGE de José Boiteux (onde a Norte está) ou de Blumenau (a jusante das
-#: três) — códigos a conferir no IBGE, não de memória. Só entra na lista a
-#: cidade que devolver a Norte no corpo; respostas são DEDUPLICADAS por `station_id`.
+#: Se aparecer um município que devolva a Norte NO CORPO, ele entra aqui; as
+#: respostas são DEDUPLICADAS por `station_id`, então repetir Oeste e Sul não
+#: as conta duas vezes.
 CITY_IDS = (4214805,)
 URL = BASE + str(CITY_IDS[0])  # mantido para quem só quer o endpoint canônico
 
@@ -239,7 +238,8 @@ def coletar(buscador=None, city_ids=CITY_IDS) -> dict:
             "fonte": [BASE + str(c) for c in city_ids],
             "cobertura": "Oeste (Taió) e Sul (Ituporanga). A BARRAGEM NORTE (José Boiteux, Rio "
                          "Hercílio) NÃO está aqui: a bacia tem três barragens de contenção, e a fonte "
-                         "devolveu lista vazia para Ibirama (city_id=4207106) em 05/09/2026. Quem "
+                         "devolveu lista vazia para Ibirama (4207106) e para Blumenau (4202404) em "
+                         "05/09/2026 — o endpoint é cadastro do município cliente, não hidrologia. Quem "
                          "lê 'todas as comportas abertas' neste arquivo está lendo DUAS das três.",
             "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "fuso": "`medido_em` é Brasília sem fuso, convertido do `measured_at` da fonte, que "

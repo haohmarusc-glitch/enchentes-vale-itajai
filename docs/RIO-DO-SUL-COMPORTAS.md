@@ -114,12 +114,14 @@ discordarem. Comporta sem o campo `aberta` conta como **fechada** — "não sei"
 ## O que falta fazer, em ordem
 
 1. ~~Coletar o `dams`.~~ **Feito.** Falta pôr no cron e publicar junto do resto do tempo real.
-   - **A Barragem Norte NÃO vem por aqui (05/09/2026).** `dams?city_id=4207106` (Ibirama) devolveu `[]`.
-     A API é a da Defesa Civil de Rio do Sul; provavelmente só responde para municípios clientes. O
-     coletor consulta só Rio do Sul, **avisa** quando uma cidade devolve vazio (antes `[]` parecia saúde)
-     e grava em `_meta.cobertura` que o arquivo tem **duas das três** barragens da bacia. Para tentar
-     de novo: mesmo `curl` com o IBGE de José Boiteux ou de Blumenau, conferido no IBGE. Só entra a
-     cidade que devolver a Norte no corpo.
+   - **A Barragem Norte NÃO vem por aqui, e `city_id` é cadastro, não hidrologia (05/09/2026).**
+     `dams?city_id=4207106` (Ibirama) devolveu `[]`. Depois, `dams?city_id=4202404` (**Blumenau**) devolveu
+     `[]` — e Blumenau fica a jusante das **três** barragens. Se a API devolvesse "barragens a montante da
+     cidade", Blumenau traria ao menos a Oeste e a Sul. Não trouxe. Logo o endpoint devolve as barragens
+     **cadastradas para o município cliente** da Asthon: a Defesa Civil de Rio do Sul cadastrou as duas
+     que a afetam. O coletor consulta só Rio do Sul, **avisa** quando uma cidade devolve vazio (antes `[]`
+     parecia saúde) e grava em `_meta.cobertura` que o arquivo tem **duas das três**. Comportas da Norte,
+     se publicadas, estão na Defesa Civil de José Boiteux ou na DEINFRA, que opera as três — ofício.
 2. ~~Mostrar o estado do sistema junto do nível~~ **Feito** (PR #177 texto, PR #178 mapa): comportas
    abertas/fechadas e percentual do reservatório, ao lado do nível de Rio do Sul, Taió e Ituporanga; no
    mapa, cada barragem no seu ponto, comporta a comporta, com a água animada só na aberta e só com
