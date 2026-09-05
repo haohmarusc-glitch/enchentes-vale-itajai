@@ -23,6 +23,7 @@ Uso:
 """
 
 import json
+import pathlib
 import sys
 from pathlib import Path
 
@@ -53,9 +54,37 @@ BRUTO_RIBEIROES = RAIZ / "data/brutos/tracado-ribeiroes-osm.json"
 #: Canhanduba. Desenhados lado a lado eles se tocam, a água chega ao Mirim na
 #: tela, e nenhum dos dois diz ser o outro.
 BRUTO_VAO_CANHANDUBA = RAIZ / "data/brutos/vao-canhanduba-osm.json"
+
+#: Bruto da Defesa Civil de RIO DO SUL (API Asthon), com dez cursos em GeoJSON.
+#:
+#: Existe porque o Itajaí do SUL — a cabeceira que se junta a Taió em Rio do Sul
+#: — NÃO ESTAVA NO MAPA, achado em 05/09/2026. A causa tem duas camadas, e as
+#: duas são a mesma omissão: a consulta original do Overpass não pediu o Sul (o
+#: `tracado-rios-osm.json` tem 50 ways do Oeste e ZERO do Sul), e o `RIOS` aqui
+#: só listava Oeste e Açu. Resultado na tela: Ituporanga e a Barragem Sul
+#: flutuando a 28 e 31 km de qualquer linha, e a linha que passa perto delas
+#: sendo o OESTE — o mapa sugerindo Taió -> Ituporanga -> Rio do Sul EM SÉRIE,
+#: que é a fila que este projeto desmontou nos dados.
+#:
+#: ⚠️ COBERTURA MUNICIPAL, e por isso PARCIAL: são 10,5 km perto de Rio do Sul,
+#: e a ponta de montante ainda fica a 21,4 km de Ituporanga. Desenha a
+#: CONFLUÊNCIA (duas cabeceiras chegando, que é o que a tela precisa afirmar) e
+#: não desenha o trecho de Ituporanga até lá. Completar pelo Overpass:
+#:     way["waterway"]["name"~"Itajaí do Sul",i](-27.60,-49.75,-27.15,-49.45);
+#: Ver docs/TRACADO-ITAJAI-DO-SUL.md.
+BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
 SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
+
+#: O bruto de Rio do Sul não é OSM: é da Defesa Civil do município, pela API
+#: Asthon. Fonte diferente, crédito diferente — não herda a atribuição do OSM.
+ATRIBUICAO_ASTHON = "Defesa Civil de Rio do Sul (API Asthon), captura de 04/09/2026"
+
+#: Cursos que saem do bruto de Rio do Sul, por nome EXATO do campo `nome`.
+#: Só o Sul: o Oeste e o Açu já vêm do OSM, com cobertura muito maior (o Oeste
+#: do OSM alcança Taió; o da Asthon morre a 30 km dela).
+RIOS_DE_RIO_DO_SUL = {"itajai-do-sul": "Rio Itajaí do Sul"}
 
 #: Tronco do site e os nomes de way do OSM que o compõem — match EXATO, e
 #: OBRIGATÓRIO (aborta se faltar: um rio pela metade enganaria o mapa).
@@ -159,6 +188,28 @@ def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]
     }
 
 
+def linhas_do_geojson_asthon(caminho: pathlib.Path, nome: str) -> list[list[list[float]]]:
+    """
+    O curso `nome` do FeatureCollection da Asthon, como lista de linhas.
+
+    Formato diferente do Overpass (Feature/geometry, não element/geometry), por
+    isso não passa pelo `ways_por_nome`. Nome ausente devolve vazio: o traçado é
+    OPCIONAL, e um arquivo que mudou não pode derrubar o tronco.
+    """
+    dados = json.loads(caminho.read_text(encoding="utf-8"))
+    linhas: list[list[list[float]]] = []
+    for f in dados.get("features") or []:
+        props = f.get("properties") or {}
+        if (props.get("nome") or props.get("name")) != nome:
+            continue
+        g = f.get("geometry") or {}
+        if g.get("type") == "LineString" and len(g.get("coordinates") or []) >= 2:
+            linhas.append(g["coordinates"])
+        elif g.get("type") == "MultiLineString":
+            linhas.extend(l for l in g.get("coordinates") or [] if len(l) >= 2)
+    return linhas
+
+
 def main() -> int:
     if not BRUTO.exists():
         raise SystemExit(f"falta o bruto {BRUTO} — baixe na VPS (ver docs)")
@@ -189,6 +240,25 @@ def main() -> int:
 
     for rio_id, nomes in RIOS.items():   # tronco: obrigatório
         grava(geojson_do_rio(rio_id, nomes, por_nome), rio_id)
+
+    # Cabeceira do SUL, do bruto da Defesa Civil de Rio do Sul. Opcional e
+    # parcial — ver BRUTO_RIO_DO_SUL.
+    for rio_id, nome in RIOS_DE_RIO_DO_SUL.items():
+        if not BRUTO_RIO_DO_SUL.exists():
+            print(f"{rio_id}: sem {BRUTO_RIO_DO_SUL.name} — pulado.")
+            continue
+        linhas = linhas_do_geojson_asthon(BRUTO_RIO_DO_SUL, nome)
+        if not linhas:
+            print(f"{rio_id}: '{nome}' não está em {BRUTO_RIO_DO_SUL.name} — pulado.")
+            continue
+        feat = feature_do_rio(rio_id, linhas)
+        feat["properties"]["fonte"] = ATRIBUICAO_ASTHON
+        feat["properties"]["cobertura"] = (
+            "PARCIAL: cobertura municipal de Rio do Sul. Desenha a chegada da cabeceira à "
+            "confluência; NÃO alcança Ituporanga, 21 km a montante. Completar pelo Overpass "
+            "(docs/TRACADO-ITAJAI-DO-SUL.md)."
+        )
+        grava(feat, rio_id)
 
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
         linhas = linhas_por_substring(elementos, chaves)

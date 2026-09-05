@@ -10,12 +10,17 @@ está decidindo se sai de casa. Rode antes de todo commit que mexa em `data/`.
 
 from __future__ import annotations
 
+import json
+import math
 import re
 import sys
 from collections import defaultdict
 from datetime import date
+from pathlib import Path
 
 from comum import le_json
+
+RAIZ = Path(__file__).resolve().parent.parent
 
 CONFIANCAS = {"alta", "media", "baixa"}
 RE_DATA = re.compile(r"^\d{4}(-\d{2}(-\d{2})?)?$")
@@ -720,6 +725,134 @@ def valida_meses_pareados() -> None:
                     )
 
 
+#: Qual traçado desenha cada RAMO da árvore. Ramo sem entrada aqui não é
+#: checado — é o caso de quem não tem rio desenhado nenhum (Benedito, Hercílio).
+TRACADO_DO_RAMO = {
+    "tronco_acu": "itajai-acu",
+    "itajai_do_oeste": "itajai-acu",   # o Oeste vem DENTRO do arquivo do Açu (OSM)
+    "itajai_do_sul": "itajai-do-sul",
+}
+
+#: Pinos que podem cair longe do traçado do ramo deles, com o MOTIVO. Exceção
+#: sem motivo escrito vira lixo em seis meses; cada uma aqui diz por que existe
+#: e o que a remove.
+LONGE_ACEITO = {
+    "blumenau": (3.5, "a coordenada publicada é a da ESTAÇÃO, ~3 km do talvegue — "
+                      "não é erro de traçado nem de cadastro; conhecido e documentado"),
+    "ituporanga": (25.0, "o traçado do Itajaí do Sul é PARCIAL (10,5 km, cobertura "
+                         "municipal de Rio do Sul). Falta o trecho Ituporanga->Rio do Sul, "
+                         "que sai do Overpass — ver docs/TRACADO-ITAJAI-DO-SUL.md. "
+                         "Baixe o trecho e este número cai para <1 km."),
+    # ACHADO POR ESTA PRÓPRIA TRAVA, na primeira execução (05/09/2026), sem que
+    # ninguém tivesse reportado: Guabiruba fica a 4,24 km do Mirim e longe de
+    # todo o resto. Não é erro de coordenada — a cidade fica no RIBEIRÃO
+    # Guabiruba, afluente que não está desenhado. Duas fontes concordam: o
+    # `coleta_nivel_sc.py` já chamava a leitura dela de "implausível PARA O
+    # RIBEIRÃO". É a MESMA omissão do Itajaí do Sul e dos ribeirões de Itajaí: a
+    # consulta do Overpass só pediu `waterway=river` com os nomes do tronco.
+    "guabiruba": (5.0, "fica no Ribeirão Guabiruba, afluente do Mirim que não está "
+                       "desenhado — mesma lacuna do Overpass do Itajaí do Sul. Baixar o "
+                       "ribeirão (docs/TRACADO-ITAJAI-DO-SUL.md) derruba este número."),
+}
+
+#: Acima disto o pino flutua: aparece sobre o satélite, sem rio embaixo.
+LIMITE_PINO_KM = 1.0
+
+
+def _km_ao_segmento(p, a, b) -> float:
+    """Distância em km do ponto ao SEGMENTO ab (não só aos vértices)."""
+    kx = 111.32 * math.cos(math.radians(p[1]))
+    ax, ay = (a[0] - p[0]) * kx, (a[1] - p[1]) * 110.57
+    bx, by = (b[0] - p[0]) * kx, (b[1] - p[1]) * 110.57
+    dx, dy = bx - ax, by - ay
+    if dx == 0 and dy == 0:
+        return math.hypot(ax, ay)
+    t = max(0.0, min(1.0, -(ax * dx + ay * dy) / (dx * dx + dy * dy)))
+    return math.hypot(ax + t * dx, ay + t * dy)
+
+
+def _linhas(caminho) -> list:
+    g = json.loads(caminho.read_text(encoding="utf-8"))
+    feats = g.get("features") if g.get("type") == "FeatureCollection" else [g]
+    saida = []
+    for f in feats or []:
+        geo = f.get("geometry") or {}
+        co = geo.get("coordinates") or []
+        if geo.get("type") == "MultiLineString":
+            saida.extend(l for l in co if len(l) >= 2)
+        elif geo.get("type") == "LineString" and len(co) >= 2:
+            saida.append(co)
+    return saida
+
+
+def valida_pinos_no_tracado() -> None:
+    """
+    Cada cidade com pino cai em cima do traçado do RAMO DELA?
+
+    POR QUE EXISTE (05/09/2026). O Itajaí do Sul não estava desenhado: a
+    consulta do Overpass pediu Açu, Mirim e Oeste, e nunca o Sul. Na tela,
+    Ituporanga e a Barragem Sul flutuavam a 28 e 31 km de qualquer linha — e a
+    linha que passava perto delas era o OESTE, o que faz o mapa sugerir
+    Taió -> Ituporanga -> Rio do Sul EM SÉRIE. Os dados diziam a árvore certa; o
+    DESENHO dizia a fila, e o desenho é o que o morador lê primeiro.
+
+    Ninguém viu por meses porque "parecer certo" não é medida. Agora é: um pino
+    novo que flutue reprova aqui, antes de ir ao ar.
+
+    O QUE ESTE NÚMERO NÃO É: não mede erro de coordenada. Um pino pode estar
+    corretamente longe do talvegue (Blumenau, cuja coordenada é a da estação).
+    Por isso as exceções são NOMEADAS, com motivo — e cada uma tem um teto
+    próprio, para que piorar também reprove.
+    """
+    est = le_json("estacoes.json")
+    rios_dir = RAIZ / "data" / "rios"
+    cache: dict[str, list] = {}
+
+    # Uma cidade pode estar em DOIS rios com UMA coordenada — Itajaí está no Açu
+    # e no Mirim, e o pino dela fica no Açu (0,87 km) e a 2,11 km do Mirim.
+    # Cobrar rio a rio a reprovaria por estar no lugar certo. O que interessa é
+    # se o pino cai em ALGUM rio dela.
+    alvos_por_cidade: dict[str, tuple[list, set[str]]] = {}
+    for rio_id, rio in est.get("rios", {}).items():
+        for c in rio.get("cidades", []):
+            ramo = c.get("ramo")
+            alvo = TRACADO_DO_RAMO.get(ramo) if ramo else rio_id
+            if not alvo:
+                continue
+            coord = c.get("coordenadas")
+            if not isinstance(coord, list) or len(coord) != 2:
+                continue
+            atual = alvos_por_cidade.setdefault(c["id"], (coord, set()))
+            atual[1].add(alvo)
+
+    for cidade_id, (coord, alvos) in sorted(alvos_por_cidade.items()):
+        lat, lon = coord
+        distancias: dict[str, float] = {}
+        for alvo in sorted(alvos):
+            caminho = rios_dir / f"{alvo}.geojson"
+            if not caminho.exists():
+                erro(f"estacoes.json / {cidade_id}: o rio {alvo!r} deveria ser desenhado por "
+                     f"{alvo}.geojson, que NÃO EXISTE. Sem traçado, o pino flutua e a linha "
+                     "vizinha vira o rio dele aos olhos de quem lê.")
+                continue
+            if alvo not in cache:
+                cache[alvo] = _linhas(caminho)
+            distancias[alvo] = min(
+                (_km_ao_segmento((lon, lat), l[i], l[i + 1])
+                 for l in cache[alvo] for i in range(len(l) - 1)),
+                default=math.inf,
+            )
+        if not distancias:
+            continue
+        alvo, d = min(distancias.items(), key=lambda kv: kv[1])
+        teto, motivo = LONGE_ACEITO.get(cidade_id, (LIMITE_PINO_KM, ""))
+        if d > teto:
+            extra = f" (exceção aceita até {teto:g} km: {motivo})" if motivo else ""
+            erro(f"estacoes.json / {cidade_id}: fica a {d:.2f} km do traçado mais perto "
+                 f"({alvo}); limite {teto:g} km{extra}. Ou falta desenhar o rio dele, ou a "
+                 "coordenada está errada — nos dois casos o pino flutua no mapa.")
+
+
 def valida_hidraulica() -> None:
     """
     Confere `hidraulica.json` — o dado do JICA que explica a bacia.
@@ -868,6 +1001,7 @@ def main() -> int:
     valida_hidraulica()
     valida_cotas_ruas()
     valida_referencias()
+    valida_pinos_no_tracado()
 
     for a in avisos:
         print(f"aviso: {a}")
