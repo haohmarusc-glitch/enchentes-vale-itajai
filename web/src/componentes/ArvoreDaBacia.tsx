@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { arvoreDaBacia, type BarragemNaArvore } from '../logica/arvoreDaBacia'
+import { areaEmTexto, arvoreDaBacia, type BarragemNaArvore } from '../logica/arvoreDaBacia'
 import { barragensBrutas, rio as rioDoCadastro } from '../dados/carregar'
 import estilos from './ArvoreDaBacia.module.css'
 
@@ -23,12 +23,19 @@ function Barragem({ b }: { b: BarragemNaArvore }) {
         (b.semComporta ? ` + ${b.semComporta} sem comporta` : '')
       : null,
   ].filter(Boolean)
+  const area = areaEmTexto(b)
   return (
     <div className={estilos.barragem}>
       <span className={estilos.parede} aria-hidden="true" />
       <div>
         <strong>{b.nome}</strong> · {b.municipio}
         {ficha.length ? <div className={estilos.ficha}>{ficha.join(' · ')}</div> : null}
+        {area ? <div className={estilos.ficha}>{area}</div> : null}
+        {b.chuvaEquivalenteMm != null ? (
+          <div className={estilos.ficha}>
+            enche com ~{b.chuvaEquivalenteMm} mm de chuva sobre a bacia dela
+          </div>
+        ) : null}
         <div className={estilos.ficha}>a régua de {b.acimaDe} fica abaixo dela</div>
       </div>
     </div>
@@ -93,6 +100,26 @@ export default function ArvoreDaBacia({ rioId = 'itajai-acu' }: { rioId?: string
               </li>
             ))}
           </ul>
+        </>
+      ) : null}
+
+      {arvore.afluentesSemRegua.length ? (
+        <>
+          <span className={estilos.rotulo}>Entram no tronco sem régua no site</span>
+          <ul className={estilos.locais}>
+            {arvore.afluentesSemRegua.map((r) => (
+              <li key={r.nome}>
+                <strong>{r.nome}</strong>
+                {r.entraPertoDe ? <> — entra perto de {r.entraPertoDe}</> : null}
+                {r.pontoExato ? <div className={estilos.ficha}>{r.pontoExato}</div> : null}
+              </li>
+            ))}
+          </ul>
+          <p className={estilos.ficha}>
+            Trazem água para o tronco e não têm pino no mapa: sem régua no cadastro,
+            não há nível para mostrar. A ausência de pino não significa que não entra
+            água por ali.
+          </p>
         </>
       ) : null}
 

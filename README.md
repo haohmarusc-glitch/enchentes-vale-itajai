@@ -477,6 +477,22 @@ o projeto.
 
 ## Pendências
 
+- [x] **O bloco do Monitor deixou de calar sobre o que o cadastro já sabia (05/09/2026).** Conferência
+  item a item depois de a árvore entrar: três coisas estavam nos dados, com fonte, e não na tela.
+  (1) **Os rios que entram no tronco SEM régua** — o **Benedito** (entre Ascurra e Indaial, a montante de
+  Indaial, pelo AIBH 2021) e o **Luís Alves** (em Ilhota, ponto ainda a confirmar, e a tela diz isso).
+  Sem eles, quem lia o mapa concluía que entre Ascurra e Indaial nada entra; entra a sub-bacia inteira do
+  Benedito, e a ausência de pino é falta de régua, não falta de água. (2) **A área de drenagem de cada
+  barragem**, com as **duas delimitações lado a lado** quando divergem (Oeste: 851 km² na rede estadual
+  contra 1.042 no JICA Vol. II). (3) **A chuva que enche cada reservatório** — 80 mm na Oeste contra
+  154 na Norte, que é a razão física de a Oeste ter vertido em 2001 e 2010 e a Norte não.
+  **A mesma classe de folga apareceu de novo, e de novo no teste:** a função que escreve a área morava no
+  `.tsx`, onde teste nenhum a alcança, e a sabotagem que fundia as duas numa média (946,5 km², número que
+  fonte nenhuma publica) não quebrava nada. Foi para `logica/arvoreDaBacia.areaEmTexto`, e passou a quebrar.
+  **Continua fora, por falta de fonte no repositório:** municípios de formação a montante de cada barragem,
+  percentual da bacia que cada uma controla, a reforma da Sul de 2025 e o primeiro vertimento da Norte
+  em out/2023.
+
 - [x] **Pinhal e Rio Bonito entraram — como barragens LOCAIS, não como as de contenção (05/09/2026).**
   O PLANCON de Rio dos Cedros cita duas barragens no município (`docs/cotas-municipais/rio-dos-cedros.md`):
   **Pinhal** (Alto Cedros) e **Rio Bonito** (Palmeiras), no Rio dos Cedros, que desagua no Benedito — ramo

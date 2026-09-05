@@ -37,6 +37,8 @@ export interface BarragemBruta {
   a_montante_de?: string
   ano?: number
   armazenamento_Mm3?: number
+  area_drenagem_km2_jica?: number
+  area_drenagem_km2_api_estadual?: number
   condutos_com_comporta?: number
   condutos_sem_comporta?: number
   chuva_equivalente_mm?: number
@@ -53,6 +55,13 @@ export interface BarragemNaArvore {
   comportas: number | null
   semComporta: number | null
   chuvaEquivalenteMm: number | null
+  /**
+   * Área de drenagem. Duas delimitações COEXISTEM na Oeste e na Sul (JICA Vol.
+   * II × API estadual) e o cadastro proíbe fundi-las ou escolher em silêncio —
+   * por isso são dois campos, e a tela mostra as duas quando divergem.
+   */
+  areaJicaKm2: number | null
+  areaEstadualKm2: number | null
 }
 
 /**
@@ -74,6 +83,19 @@ export interface CabeceiraNaArvore {
   barragem: BarragemNaArvore | null
 }
 
+/**
+ * Rio que entra no tronco mas NÃO tem régua no cadastro — o Benedito e o Luís
+ * Alves. Sem régua eles somem da árvore montada por cidades, e quem lê o mapa
+ * conclui que entre Ascurra e Indaial nada entra. Entra: o Benedito, com toda
+ * a chuva da sub-bacia dele.
+ */
+export interface AfluenteSemRegua {
+  nome: string
+  entraPertoDe: string
+  /** O que a fonte diz sobre o ponto — inclusive quando ela diz "a confirmar". */
+  pontoExato: string | null
+}
+
 export interface LateralNaArvore {
   cidade: string
   rio: string
@@ -91,6 +113,8 @@ export interface ArvoreDaBacia {
   barragensSoltas: BarragemNaArvore[]
   /** Barragens LOCAIS, por cidade. Não são de contenção da bacia. */
   locaisPorCidade: { cidade: string; barragens: BarragemLocal[] }[]
+  /** Rios que entram no tronco sem régua própria (Benedito, Luís Alves). */
+  afluentesSemRegua: AfluenteSemRegua[]
 }
 
 export interface RioParaArvore {
@@ -100,6 +124,7 @@ export interface RioParaArvore {
     cabeceiras_paralelas?: string[]
     confluencia_cabeceiras?: { nasce?: string; lat?: number; lon?: number }
     afluentes_laterais?: { id: string; rio?: string; entra_perto_de?: string }[]
+    afluentes_rios?: { nome: string; entra_perto_de?: string; ponto_exato?: string }[]
   }
 }
 
@@ -126,6 +151,8 @@ export function barragemDaBacia(
     comportas: numero(b.condutos_com_comporta),
     semComporta: numero(b.condutos_sem_comporta),
     chuvaEquivalenteMm: numero(b.chuva_equivalente_mm),
+    areaJicaKm2: numero(b.area_drenagem_km2_jica),
+    areaEstadualKm2: numero(b.area_drenagem_km2_api_estadual),
   }
 }
 
@@ -151,6 +178,33 @@ export function barragensDeContencao(
     saida.push({ nome: b.nome, municipio_nome: b.municipio_nome, rio: b.rio })
   }
   return saida
+}
+
+/**
+ * A área de drenagem em texto.
+ *
+ * Quando as duas delimitações DIVERGEM, mostra as duas: o `hidraulica.json`
+ * proíbe fundi-las ou escolher em silêncio, e a divergência é grande (Oeste:
+ * 1.042 km² no JICA Vol. II contra 851 na API estadual, que o próprio JICA
+ * Vol. III-A confirma). Uma média inventaria um número que fonte nenhuma
+ * publica.
+ *
+ * Mora aqui, e não no componente, pela mesma razão do `barragensDeContencao`:
+ * no `.tsx` nenhum teste a alcança, e uma sabotagem que fundia as duas numa
+ * média não quebrava nada.
+ */
+export function areaEmTexto(b: {
+  areaJicaKm2: number | null
+  areaEstadualKm2: number | null
+}): string | null {
+  const km = (v: number) => `${v.toLocaleString('pt-BR')} km²`
+  if (b.areaJicaKm2 != null && b.areaEstadualKm2 != null) {
+    return b.areaJicaKm2 === b.areaEstadualKm2
+      ? `drena ${km(b.areaJicaKm2)}`
+      : `drena ${km(b.areaEstadualKm2)} (rede estadual) ou ${km(b.areaJicaKm2)} (JICA Vol. II) — delimitações diferentes`
+  }
+  const so = b.areaEstadualKm2 ?? b.areaJicaKm2
+  return so != null ? `drena ${km(so)}` : null
 }
 
 export function arvoreDaBacia(
@@ -216,6 +270,12 @@ export function arvoreDaBacia(
     .filter(([id]) => !usadas.has(id))
     .map(([, b]) => b)
 
+  const afluentesSemRegua: AfluenteSemRegua[] = (t.afluentes_rios ?? []).map((r) => ({
+    nome: r.nome,
+    entraPertoDe: r.entra_perto_de ? nome(r.entra_perto_de) : '',
+    pontoExato: r.ponto_exato ?? null,
+  }))
+
   const locaisPorCidade = [...locais.entries()].map(([id, barragens]) => ({
     cidade: nome(id),
     barragens,
@@ -228,5 +288,6 @@ export function arvoreDaBacia(
     laterais,
     barragensSoltas,
     locaisPorCidade,
+    afluentesSemRegua,
   }
 }

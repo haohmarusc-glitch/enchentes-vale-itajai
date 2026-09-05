@@ -6,7 +6,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { arvoreDaBacia, barragemDaBacia, type RioParaArvore } from './arvoreDaBacia'
+import { areaEmTexto, arvoreDaBacia, barragemDaBacia, type RioParaArvore } from './arvoreDaBacia'
 
 const estacoes = JSON.parse(
   readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf8'),
@@ -72,6 +72,55 @@ test('a barragem guarda ano, volume e comportas — e a Norte tem condutos SEM c
   const norte = acu.laterais.find((l) => l.cidade === 'Ibirama')?.barragem
   assert.equal(norte?.comportas, 2)
   assert.equal(norte?.semComporta, 5)
+})
+
+test('as áreas de drenagem que DIVERGEM ficam lado a lado, sem fundir', () => {
+  const oeste = acu.cabeceiras[0]?.barragem
+  assert.equal(oeste?.areaJicaKm2, 1042)
+  assert.equal(oeste?.areaEstadualKm2, 851)
+  // A Norte só tem a do JICA — e um campo ausente é null, não zero.
+  const norte = acu.laterais.find((l) => l.cidade === 'Ibirama')?.barragem
+  assert.equal(norte?.areaJicaKm2, 2318)
+  assert.equal(norte?.areaEstadualKm2, null)
+})
+
+test('área com duas delimitações mostra AS DUAS — nunca a média', () => {
+  const texto = areaEmTexto({ areaJicaKm2: 1042, areaEstadualKm2: 851 })
+  assert.ok(texto?.includes('851'), texto ?? '')
+  assert.ok(texto?.includes('1.042'), texto ?? '')
+  // A média (946,5) seria um número que fonte nenhuma publica.
+  assert.ok(!texto?.includes('946'), texto ?? '')
+})
+
+test('área com uma fonte só, ou nenhuma, não inventa a outra', () => {
+  assert.equal(areaEmTexto({ areaJicaKm2: 2318, areaEstadualKm2: null }), 'drena 2.318 km²')
+  assert.equal(areaEmTexto({ areaJicaKm2: null, areaEstadualKm2: null }), null)
+  // Iguais não viram "X ou X".
+  assert.equal(areaEmTexto({ areaJicaKm2: 500, areaEstadualKm2: 500 }), 'drena 500 km²')
+})
+
+test('a chuva que enche cada reservatório vem do cadastro', () => {
+  assert.equal(acu.cabeceiras[0]?.barragem?.chuvaEquivalenteMm, 80)
+  assert.equal(acu.laterais.find((l) => l.cidade === 'Ibirama')?.barragem?.chuvaEquivalenteMm, 154)
+})
+
+test('os rios SEM régua que entram no tronco aparecem — Benedito e Luís Alves', () => {
+  assert.deepEqual(
+    acu.afluentesSemRegua.map((r) => [r.nome, r.entraPertoDe]),
+    [
+      ['Rio Benedito (Timbó)', 'Indaial'],
+      ['Rio Luís Alves', 'Ilhota'],
+    ],
+  )
+  // A ressalva da fonte vai junto, inclusive quando ela diz "a confirmar".
+  const luis = acu.afluentesSemRegua.find((r) => r.nome === 'Rio Luís Alves')
+  assert.ok(luis?.pontoExato?.includes('a confirmar'))
+})
+
+test('rio sem régua não vira elo do tronco nem cidade', () => {
+  for (const r of acu.afluentesSemRegua) {
+    assert.ok(!acu.tronco.includes(r.nome))
+  }
 })
 
 test('barragem sem os campos mínimos não vira meia-barragem: vira null', () => {
