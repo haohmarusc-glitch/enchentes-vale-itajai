@@ -19,7 +19,7 @@ que entrega quase o mesmo valor.
 
 | Cidade | Cotas em `cotas-ruas.json` | Coordenada | Mancha observada | Nível em tempo real |
 |---|---|---|---|---|
-| **Gaspar** | 1.619 | **sim** — `brutos/gaspar-cotas-2020.json`, 1.615 pontos com `lat`/`lon` | — | sim (DC Gaspar) — mas cota da régua em aberto |
+| **Gaspar** | 1.619 | **sim** — `brutos/gaspar-cotas-2020.json`, 1.615 pontos com `lat`/`lon` | — | sim (DC Gaspar, estação 21) — **par cota↔leitura provado em 04/09** |
 | **Brusque** | 377 | **sim** — `brutos/brusque-cotas-2023.json`, 357 com `lat`/`lon`; e `brusque-mymaps-cotas.json`, 3.688 com a coordenada em `coord` (`"lon,lat,0"`, ainda não separada em campos) | — | sim (régua municipal) |
 | Blumenau | 2.042 | **não** — só nome de rua e bairro | — | sim (AlertaBlu) |
 | Rio do Sul | 555 | **não** | — | sim (3 réguas) |
@@ -104,13 +104,33 @@ como o `coleta_itajai.py` foi — nunca contra uma estrutura suposta.
 
 Brusque só parecia liberada porque o número dela não chama atenção.
 
-**Gaspar: também bloqueada**, pelo motivo já conhecido (`BLOQUEIO_NAO_PINTAR`) — não está provado que
-a régua que o coletor lê é a da cota 6/7 m. Colorir rua com nível de régua errada é o mesmo erro, só
-que rua por rua. Resolver o teste do par cota↔leitura antes.
+**✅ Gaspar: DESTRAVADA — o teste do par foi feito e passou (04/09/2026).** Este documento dizia que
+Gaspar estava bloqueada pelo `BLOQUEIO_NAO_PINTAR`, e eu repeti isso mais cedo no mesmo dia. O teste
+foi executado de dentro da região e a resposta é sim:
 
-Ou seja: **as duas cidades georreferenciadas estão bloqueadas pela mesma pergunta**, e é a mesma que
-já trava Rio do Sul. Não é coincidência — é o formato do problema: cota e leitura vêm quase sempre de
-páginas diferentes, e nome igual não prova régua igual.
+| o que foi medido | resultado |
+|---|---|
+| `/estacao/ver/21` e `/monitoramento`, no mesmo instante | **1,92 m nos dois**, mesmo carimbo (04/09 12:46) |
+| quantas estações de NÍVEL o município publica | **duas**, com links distintos |
+| quais | `/ver/21` **Rio Itajaí Açu Gaspar** (1,92 m) · `/ver/73` **Ribeirão Belchior Central** (0,00 m) |
+
+O que fecha o argumento não é só os números baterem — é a **ausência de uma segunda régua no Açu**.
+O modo de falha de Rio do Sul foi cota de uma régua (Ponte Dom Tito Buss) com leitura de outra
+(Estação MKS), as duas no mesmo rio. Em Gaspar não há essa segunda: o município publica **um** ponto
+no Açu, e as cotas do Plano são do fluxograma "MONITORAMENTO RIO ITAJAÍ AÇU". Com uma régua só, cota e
+leitura não têm como se referir a pontos diferentes.
+
+Fica a ressalva que já estava no cadastro: o Plano **não nomeia o ponto nem publica o zero**. O par
+está provado; o zero da régua continua não documentado.
+
+**Achado junto:** o **Ribeirão Belchior Central** é a 2ª estação de nível de Gaspar. Confirma o padrão
+do baixo vale — Gaspar, Ilhota e Itajaí monitoram ribeirões à parte, por causa do represamento. As
+cotas dele **não foram lidas**; abrir `/estacao/ver/73`.
+
+**Brusque continua bloqueada**, e agora é a única das duas: lá existem seis réguas de nível e a leitura
+vem de outra página (a da Defesa Civil de Itajaí), que é exatamente a configuração do erro de Rio do
+Sul. O formato do problema não mudou — cota e leitura vêm quase sempre de páginas diferentes, e nome
+igual não prova régua igual. O que mudou é que em Gaspar a pergunta foi respondida.
 
 **Blumenau e Rio do Sul: só depois de geocodificar.** Casar 2.042 nomes de rua com traçados do OSM é
 factível (Nominatim/Overpass), mas com erro: ruas homônimas, grafias diferentes, trechos longos com cota
@@ -163,7 +183,8 @@ e mapas de risco oficiais. A decisão deles é deliberada.
 | Parte | Fazer? | Quando |
 |---|---|---|
 | A — tela por cidade | ✅ **feita** | `TelaCidade.tsx`, rota `/:rioId/:cidadeId` |
-| B — ruas por cota × nível | a coordenada já está no `cotas-ruas.json` (1.613 Gaspar + 348 Brusque), mas **as duas cidades estão bloqueadas** pelo par cota↔leitura não provado | após o teste do par, nas duas |
+| B — ruas por cota × nível, **Gaspar** | ✅ **liberado** — 1.613 cotas com coordenada e o par cota↔leitura **provado** em 04/09 | pode ir |
+| B — ruas por cota × nível, **Brusque** | 348 cotas com coordenada, mas o par **não** está provado (6 réguas, leitura de outra página) | após o teste do par |
 | B — Blumenau e Rio do Sul | Sim, após geocodificação revisada | depois |
 | C — mancha gerada por interpolação | **Não** | — |
 | C' — mancha observada por nível (Itajaí) | **Sim** | após A |
