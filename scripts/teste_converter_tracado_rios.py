@@ -18,6 +18,7 @@ em 04/09/2026, que devolveu exatamente:
 As duas grafias do canal (com e sem hífen) são o MESMO canal partido em ways
 diferentes, e por isso caem no mesmo arquivo — o que o teste também trava.
 """
+import json
 import unittest
 
 import converter_tracado_rios as ct
@@ -91,6 +92,48 @@ class SemBruto(unittest.TestCase):
         self.assertLess(lon, -40, "longitude e latitude trocadas")
         self.assertGreater(lat, -30)
         self.assertLess(lat, -20)
+
+
+class CabeceiraDoSul(unittest.TestCase):
+    """
+    O Itajaí do Sul não estava no mapa até 05/09/2026: a consulta do Overpass
+    pediu Açu, Mirim e Oeste, e nunca o Sul. Ituporanga flutuava a 28 km, e a
+    linha perto dela era o OESTE — o mapa dizendo série onde os dados dizem
+    árvore. Estes testes travam a origem, o crédito e a ressalva de cobertura.
+    """
+
+    def test_o_bruto_do_osm_realmente_nao_tem_o_sul(self):
+        # A causa raiz, medida. Se um dia o bruto passar a ter o Sul, este teste
+        # cai e o certo é tirá-lo da Asthon e pô-lo no OSM, com mais cobertura.
+        bruto = json.loads(ct.BRUTO.read_text(encoding="utf-8"))
+        nomes = {(e.get("tags") or {}).get("name") for e in bruto.get("elements") or []}
+        self.assertIn("Rio Itajaí do Oeste", nomes)
+        self.assertNotIn("Rio Itajaí do Sul", nomes)
+
+    def test_le_o_sul_do_geojson_da_asthon(self):
+        linhas = ct.linhas_do_geojson_asthon(ct.BRUTO_RIO_DO_SUL, "Rio Itajaí do Sul")
+        self.assertEqual(len(linhas), 1)
+        self.assertGreaterEqual(len(linhas[0]), 30)
+
+    def test_nome_ausente_devolve_vazio_em_vez_de_explodir(self):
+        # Traçado opcional: um bruto que mudou não pode derrubar o tronco.
+        self.assertEqual(ct.linhas_do_geojson_asthon(ct.BRUTO_RIO_DO_SUL, "Rio Inexistente"), [])
+
+    def test_o_credito_do_sul_NAO_e_o_do_osm(self):
+        # Fonte diferente, licença diferente. Herdar a atribuição do OSM daria
+        # crédito a quem não levantou este traçado.
+        self.assertNotEqual(ct.ATRIBUICAO_ASTHON, ct.ATRIBUICAO)
+        self.assertIn("Rio do Sul", ct.ATRIBUICAO_ASTHON)
+
+    def test_o_arquivo_gravado_diz_que_a_cobertura_e_parcial(self):
+        caminho = ct.SAIDA / "itajai-do-sul.geojson"
+        if not caminho.exists():
+            self.skipTest("rode scripts/converter_tracado_rios.py")
+        props = json.loads(caminho.read_text(encoding="utf-8"))["properties"]
+        self.assertIn("PARCIAL", props["cobertura"])
+        self.assertIn("Ituporanga", props["cobertura"])
+        self.assertEqual(props["fonte"], ct.ATRIBUICAO_ASTHON)
+
 
 
 if __name__ == "__main__":

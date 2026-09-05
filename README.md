@@ -477,6 +477,26 @@ o projeto.
 
 ## Pendências
 
+- [x] **⛔ O Itajaí do Sul não estava desenhado — a cabeceira maior faltava no mapa (05/09/2026).**
+  Achado por Jefferson no Monitor em produção: **Ituporanga a 27,99 km** e a **Barragem Sul a 31,33 km**
+  de qualquer linha, flutuando sobre o satélite. Pior que o pino fora do lugar: a linha que passa perto
+  delas **é o Itajaí do Oeste**, então o mapa lia `Taió → Ituporanga → Rio do Sul` **em série** — a fila
+  que o projeto desmontou nos dados, voltando pela porta dos fundos no desenho, que é o que o morador lê
+  primeiro. **Causa raiz, medida, em duas camadas da mesma omissão:** o bruto do Overpass tem **50 ways
+  do Oeste e ZERO do Sul** (a consulta nunca o pediu), e o `RIOS` do conversor só listava Oeste e Açu. O
+  nome do arquivo escondeu: `itajai-acu.geojson` contém **tronco + Oeste**, então Taió cai em cima dele e
+  tudo parecia certo. **É a terceira vez que esta mesma omissão aparece** — antes foram os ribeirões de
+  Itajaí e o vão do Canhanduba. **Feito:** o traçado do Sul saiu da captura da Asthon que já estava em
+  `data/brutos/` (35 pontos) e entrou no mapa, com crédito próprio (não é OSM) e `cobertura: PARCIAL`
+  gravada no arquivo — são 10,5 km, desenham as duas cabeceiras **chegando à confluência** e **não**
+  alcançam Ituporanga, 21 km acima. **E travado:** `valida_pinos_no_tracado` cobra cada cidade a menos de
+  1 km do traçado de algum rio dela, com exceções **nomeadas, com motivo e teto próprio** — piorar uma
+  exceção também reprova. **A trava achou um segundo caso na primeira execução: Guabiruba, a 4,24 km** do
+  Mirim e longe de tudo — ela fica no **Ribeirão Guabiruba**, não desenhado, e o `coleta_nivel_sc.py` já
+  dizia por outro caminho que a leitura dela é "implausível **para o ribeirão**". **Falta** (precisa de
+  rede, o Overpass responde 403 no sandbox): baixar o trecho Ituporanga→Rio do Sul e o Ribeirão Guabiruba
+  — a consulta pronta está em `docs/TRACADO-ITAJAI-DO-SUL.md`. Sair de `LONGE_ACEITO` é a prova de pronto.
+
 - [x] **O bloco do Monitor deixou de calar sobre o que o cadastro já sabia (05/09/2026).** Conferência
   item a item depois de a árvore entrar: três coisas estavam nos dados, com fonte, e não na tela.
   (1) **Os rios que entram no tronco SEM régua** — o **Benedito** (entre Ascurra e Indaial, a montante de

@@ -90,6 +90,23 @@ const RIOS_TRONCO = ['itajai-acu', 'itajai-mirim'] as const
  * `waterway=river`). Ver `docs/tracado-ribeiroes.md`.
  */
 const AFLUENTES = [
+  // A CABECEIRA do Sul. Não é afluente — é uma das duas cabeceiras paralelas
+  // que se juntam em Rio do Sul e ali fazem nascer o Açu —, mas entra por esta
+  // mesma porta porque a mecânica é a mesma: traçado opcional, que some sem
+  // quebrar nada.
+  //
+  // POR QUE FALTAVA (05/09/2026): a consulta original do Overpass pediu Açu,
+  // Mirim e Oeste, nunca o Sul. Na tela, Ituporanga e a Barragem Sul flutuavam
+  // a 28 e 31 km de qualquer linha, e a linha perto delas era o OESTE — o mapa
+  // sugerindo Taió -> Ituporanga -> Rio do Sul em SÉRIE, a fila que o projeto
+  // desmontou nos dados. O desenho é o que o morador lê primeiro.
+  //
+  // ⚠️ PARCIAL: 10,5 km, da Defesa Civil de Rio do Sul (Asthon). Mostra as duas
+  // cabeceiras CHEGANDO à confluência, que é a afirmação que corrige o erro;
+  // não alcança Ituporanga, 21 km acima. Ituporanga segue fora da guarda de
+  // 5 km, então continua sem pintar traçado — que é o certo enquanto o rio dela
+  // não estiver desenhado até lá.
+  'itajai-do-sul',
   'benedito',
   'luiz-alves',
   'hercilio',
