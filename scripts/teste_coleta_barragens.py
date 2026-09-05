@@ -204,9 +204,29 @@ class VariasCidadesDeInteresse(unittest.TestCase):
         self.assertEqual(len(doc["barragens"]), 2)
         self.assertTrue(any("4207106" in a for a in doc["_meta"]["avisos_da_fonte"]))
 
-    def test_a_lista_de_cidades_inclui_rio_do_sul_e_uma_a_jusante_do_hercilio(self):
+    def test_cidade_que_devolve_lista_vazia_vira_aviso_nao_silencio(self):
+        # 05/09/2026: `dams?city_id=4207106` (Ibirama) devolveu `[]`. Sem aviso,
+        # código errado e cidade sem barragem pareceriam coleta saudável.
+        def buscador(cid):
+            return [] if cid == 4207106 else [OESTE, SUL]
+        doc = cb.coletar(buscador=buscador, city_ids=(4214805, 4207106))
+        self.assertEqual(len(doc["barragens"]), 2)
+        avisos = doc["_meta"]["avisos_da_fonte"]
+        self.assertTrue(any("4207106" in a and "vazia" in a for a in avisos), avisos)
+
+    def test_a_lista_de_cidades_tem_rio_do_sul_e_nenhuma_que_devolve_vazio(self):
         self.assertIn(4214805, cb.CITY_IDS)
-        self.assertGreater(len(cb.CITY_IDS), 1, "uma cidade só nunca traz a Norte")
+        # Ibirama saiu porque devolve `[]`; voltar com ela seria pedido vazio a
+        # cada coleta e aviso permanente no log. Só volta cidade que TRAGA a Norte.
+        self.assertNotIn(4207106, cb.CITY_IDS)
+
+    def test_meta_declara_que_a_norte_nao_esta(self):
+        # Quem lê "12 de 12 comportas abertas" precisa saber que são DUAS das TRÊS
+        # barragens da bacia. A ausência da Norte é dado, não omissão.
+        doc = cb.coletar(buscador=lambda _c: [OESTE, SUL])
+        cobertura = doc["_meta"]["cobertura"].upper()
+        self.assertIn("NORTE", cobertura)
+        self.assertIn("NÃO", cobertura)
 
 
 if __name__ == "__main__":

@@ -76,14 +76,24 @@ BASE = "https://public.asthon.com.br/public/dams?city_id="
 #: cada cidade, então uma consulta só não cobre o sistema: por Rio do Sul
 #: (4214805) vêm a Oeste e a Sul, mas NÃO a Norte — o Rio Hercílio, que a
 #: Barragem Norte (José Boiteux) controla, entra no tronco ABAIXO de Rio do Sul,
-#: entre Lontras e Ascurra (ver docs/TOPOLOGIA-CANONICA.md). A Norte só aparece
-#: consultando uma cidade a jusante dela.
+#: entre Lontras e Ascurra (ver docs/TOPOLOGIA-CANONICA.md).
 #:
-#: 4207106 é o código IBGE de Ibirama, que fica no Hercílio abaixo da Norte —
-#: A CONFERIR NA PRIMEIRA RODADA: um código errado devolve vazio ou erro, o
-#: coletor avisa e segue com as outras; nenhum dado é inventado por isso.
-#: As respostas são juntadas e DEDUPLICADAS por `station_id`.
-CITY_IDS = (4214805, 4207106)
+#: CONFERIDO em 05/09/2026, na VPS: `dams?city_id=4207106` (Ibirama, no Hercílio
+#: abaixo da Norte) devolveu `[]` — lista vazia, sem erro. Ou a Asthon não tem a
+#: Norte cadastrada, ou só responde para municípios que são clientes dela (a API
+#: é a que a Defesa Civil de RIO DO SUL publica), e Ibirama não é. Não dá para
+#: distinguir daqui, e as duas hipóteses levam ao mesmo lugar: a Norte NÃO vem
+#: por este endpoint até alguém achar uma cidade que a devolva. Por isso a lista
+#: tem UMA cidade: consultar Ibirama a cada coleta seria um pedido vazio de 15
+#: em 15 minutos e um aviso permanente no log — aviso que ninguém lê mais é aviso
+#: perdido. `_meta.cobertura` declara a ausência para quem lê o JSON.
+#:
+#: Para tentar de novo, à mão, antes de mexer aqui:
+#:     curl 'https://public.asthon.com.br/public/dams?city_id=<IBGE>'
+#: com o IBGE de José Boiteux (onde a Norte está) ou de Blumenau (a jusante das
+#: três) — códigos a conferir no IBGE, não de memória. Só entra na lista a
+#: cidade que devolver a Norte no corpo; respostas são DEDUPLICADAS por `station_id`.
+CITY_IDS = (4214805,)
 URL = BASE + str(CITY_IDS[0])  # mantido para quem só quer o endpoint canônico
 
 #: `medido_em` sem fuso é Brasília — convenção do projeto (CLAUDE.md).
@@ -207,7 +217,15 @@ def coletar(buscador=None, city_ids=CITY_IDS) -> dict:
         except Exception as e:  # noqa: BLE001 — uma cidade fora não derruba as outras
             avisos_rede.append(f"city_id={cid} falhou ({e}); seguindo com as outras")
             continue
-        for b in resposta if isinstance(resposta, list) else []:
+        lista = resposta if isinstance(resposta, list) else []
+        if not lista:
+            # `[]` não é sucesso: ou a cidade não tem barragem cadastrada, ou o
+            # código não existe na fonte. Sem este aviso, um código errado pareceria
+            # saúde — foi exatamente o que 4207106 devolveu em 05/09/2026.
+            avisos_rede.append(f"city_id={cid} devolveu lista vazia — nenhuma barragem cadastrada "
+                               f"para essa cidade na fonte, ou código sem cadastro; nada inventado")
+            continue
+        for b in lista:
             chave = b.get("station_id") or b.get("name")
             if chave in vistos:
                 continue
@@ -219,6 +237,10 @@ def coletar(buscador=None, city_ids=CITY_IDS) -> dict:
         "_meta": {
             "descricao": "Estado das barragens Oeste (Taió) e Sul (Ituporanga), comporta a comporta.",
             "fonte": [BASE + str(c) for c in city_ids],
+            "cobertura": "Oeste (Taió) e Sul (Ituporanga). A BARRAGEM NORTE (José Boiteux, Rio "
+                         "Hercílio) NÃO está aqui: a bacia tem três barragens de contenção, e a fonte "
+                         "devolveu lista vazia para Ibirama (city_id=4207106) em 05/09/2026. Quem "
+                         "lê 'todas as comportas abertas' neste arquivo está lendo DUAS das três.",
             "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "fuso": "`medido_em` é Brasília sem fuso, convertido do `measured_at` da fonte, que "
                     "vem em UTC com Z. `coletado_em` é UTC — campos diferentes, não confundir.",
