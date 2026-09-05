@@ -21,6 +21,8 @@ import { useNivelSc } from '../dados/nivelSc'
 import { serieDaCidade, useSerieRecente } from '../dados/serie'
 import { chuvaDaCidade } from '../logica/chuva'
 import { metros } from '../logica/formato'
+import { barragensDaCidade, useBarragens } from '../dados/barragens'
+import EstadoDasBarragens from '../componentes/EstadoDasBarragens'
 import { reguasComCota } from '../logica/reguas'
 import { caminho, faixaHoras } from '../logica/transito'
 import estilos from './TelaCidade.module.css'
@@ -86,6 +88,9 @@ export default function TelaCidade() {
   const tempoReal = useTempoReal()
   const nivelSc = useNivelSc()
   const serie = useSerieRecente()
+  // Antes de qualquer `return` condicional: hook depois de saída antecipada
+  // quebra a ordem entre renderizações.
+  const mapaBarragens = useBarragens()
   const agora = useMemo(() => new Date(), [tempoReal])
 
   const cidade = cidades.find((c) => c.id === cidadeId)
@@ -155,6 +160,7 @@ export default function TelaCidade() {
   const cotas = Object.entries(cidade.cotas_m ?? {}).filter(([, v]) => typeof v === 'number')
   const rotaDoRio = rioId === 'itajai-mirim' ? '/mirim' : '/acu'
   const bruto = nivelSc.get(cidade.id) ?? null
+  const barragens = barragensDaCidade(mapaBarragens, cidade.id)
 
   return (
     <>
@@ -201,6 +207,11 @@ export default function TelaCidade() {
         ) : null}
 
         {chuva ? <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} /> : null}
+
+        {/* O estado da barragem fica JUNTO do nível, no mesmo cartão. Separado,
+            viraria curiosidade; aqui é o que explica por que o número está onde
+            está. Só aparece nas três cidades que têm barragem acima. */}
+        <EstadoDasBarragens barragens={barragens} agora={agora} />
 
         {cotas.length > 0 ? (
           <>
