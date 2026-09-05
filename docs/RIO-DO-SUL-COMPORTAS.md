@@ -11,10 +11,15 @@ mesma barragem:
 | fonte | quando | montante da Barragem Oeste | comportas |
 |---|---|---|---|
 | `docs/TAIO-E-BARRAGEM-OESTE.md` (registro nosso, API Uniparking) | 03/09 20:41 | **17,2 m** | 7 de 7 abertas |
-| leitura de 05/09 (API Asthon, endpoint `dams`) | 05/09 08:19 | **15,00 m** | 7 de 7 abertas |
+| leitura de 05/09 (API Asthon, `dams`) | 05/09 08:19 | **15,00 m** | 7 de 7 abertas |
+| **coleta própria** (`coleta_barragens.py`, corpo capturado) | **05/09 14:05** | **14,66 m** | **7 de 7 abertas** |
 
-**O reservatório caiu 2,2 m em 36 horas com todas as comportas abertas.** Isso é esvaziamento
-controlado, e nenhuma outra explicação cabe nos dois pontos.
+**O reservatório caiu 2,54 m em 41 horas com todas as comportas abertas** — e a terceira leitura, já
+pela nossa própria coleta, mostra que continuava caindo. Isso é esvaziamento controlado, e nenhuma
+outra explicação cabe nos três pontos.
+
+Na Barragem Sul, no mesmo instante: **22,58 m, 5 de 5 abertas, 35,5% da capacidade**. As doze
+comportas do sistema abertas, os dois reservatórios abaixo de 36%.
 
 No sistema inteiro, em 05/09: **12 de 12 comportas abertas** — 7 de 7 na Oeste (Taió, 34% da
 capacidade) e 5 de 5 na Sul (Ituporanga, 38%).
@@ -73,12 +78,42 @@ Escala reconstruída, com a origem de cada número à vista:
 | 7,00 m | *"marca considerada oficialmente como situação de enchente no município"* | imprensa (`media`) |
 | 8,00 m | nível a partir do qual avisam quem mora em cota abaixo | imprensa (`media`) |
 
-## O que fazer, em ordem
+## ✅ O coletor existe — `scripts/coleta_barragens.py` (05/09/2026)
 
-1. **Coletar o `dams` da Asthon.** Não foi escrito aqui porque `public.asthon.com.br` não responde deste
-   ambiente (`connect_rejected`), e escrever o leitor de um JSON que não se viu é inventar a estrutura
-   dele — o mesmo motivo que segurou o leitor de Brusque. Capturar de dentro da região ou da VPS, e o
-   coletor sai contra o corpo real.
+O corpo foi capturado na VPS e o leitor foi escrito **contra ele**, não contra suposição. E o corpo
+real trouxe uma armadilha que nenhuma descrição tinha adiantado.
+
+### ⚠️ `montante_m` é ALTITUDE, não régua
+
+```
+Barragem Oeste:  montante_m 353,66  ·  gauge_zero_m 339  ·  nivel_m 14,66
+Barragem Sul:    montante_m 392,58  ·  gauge_zero_m 370  ·  nivel_m 22,58
+```
+
+A relação é **exata nas duas**: `nivel_m = montante_m − gauge_zero_m`. Ou seja, `montante_m` é metros
+**acima do nível do mar**, e a leitura da régua da barragem é `nivel_m`.
+
+E o cuidado maior é com a **palavra**: `docs/TAIO-E-BARRAGEM-OESTE.md` chama de *"montante"* o que esta
+API chama de `nivel_m` — registrou **17,2 m** em 03/09, que nesta API seria `montante_m` ≈ 356,2.
+A mesma palavra, duas grandezas, em duas fontes nossas. Comparar `montante_m` com régua de rio erra por
+centenas de metros, e por isso o coletor grava os dois com nomes que não se confundem:
+`altitude_montante_m` e `nivel_na_regua_da_barragem_m`.
+
+### As outras três armadilhas, todas com teste
+
+| armadilha | o que acontece se passar |
+|---|---|
+| `measured_at` vem em **UTC com `Z`** | gravado como local, envelhece a leitura em 3 h na tela |
+| `percent_use` **não** é sempre `capacidade_atual/capacidade_maxima` — bate na Oeste, diverge 0,057 pp na Sul | recalcular inventa um número que a fonte não afirma; o coletor usa o publicado e registra a divergência |
+| `vertido` vem **0 nas duas** com 12 comportas abertas | não é a vazão de saída; gravado cru, com o significado marcado como desconhecido |
+
+O `comportas_abertas` da fonte é um campo derivado: o coletor **conta pela lista** e avisa se os dois
+discordarem. Comporta sem o campo `aberta` conta como **fechada** — "não sei" não pode virar
+"esvaziando", que é a direção que engana.
+
+## O que falta fazer, em ordem
+
+1. ~~Coletar o `dams`.~~ **Feito.** Falta pôr no cron e publicar junto do resto do tempo real.
 2. **Mostrar o estado do sistema junto do nível** de Rio do Sul e Taió: quantas comportas abertas, e o
    percentual de uso dos reservatórios.
 3. **Confirmar com a COMPDEC de Rio do Sul** se a faixa de alerta é mesmo definida por evento. Isso muda
