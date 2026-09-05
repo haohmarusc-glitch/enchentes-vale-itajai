@@ -1,22 +1,20 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import AvisoLegal from '../componentes/AvisoLegal'
-import { cidadesDoRio, eventosDoRio } from '../dados/carregar'
+import { barragensDoRio, cidadesDoRio, eventosDoRio, rio as rioDoCadastro } from '../dados/carregar'
+import { descricaoDoRio } from '../logica/descricaoDoRio'
 import estilos from './Inicio.module.css'
 
+/**
+ * A linha "de onde vem a água" de cada cartão NÃO é texto fixo: sai do
+ * `estacoes.json` por `descricaoDoRio`. O texto fixo que havia aqui afirmou por
+ * dias uma fila falsa no Açu (Ibirama como elo do tronco, sem Lontras nem
+ * Ascurra) depois que a tela do rio já tinha virado árvore. Fonte de verdade é
+ * o cadastro; a home só lê.
+ */
 const RIOS = [
-  {
-    para: '/acu',
-    id: 'itajai-acu',
-    titulo: 'Rio Itajaí-Açu',
-    descricao: 'Taió e Rio do Sul → Ibirama → Indaial → Blumenau → Gaspar → Ilhota → Itajaí',
-  },
-  {
-    para: '/mirim',
-    id: 'itajai-mirim',
-    titulo: 'Rio Itajaí-Mirim',
-    descricao: 'Vidal Ramos → Botuverá → Brusque → Itajaí',
-  },
+  { para: '/acu', id: 'itajai-acu', titulo: 'Rio Itajaí-Açu' },
+  { para: '/mirim', id: 'itajai-mirim', titulo: 'Rio Itajaí-Mirim' },
 ]
 
 /**
@@ -72,11 +70,36 @@ export default function Inicio() {
         {RIOS.map((rio) => {
           const cidades = cidadesDoRio(rio.id).length
           const registros = eventosDoRio(rio.id).length
+          const cadastro = rioDoCadastro(rio.id)
+          const descricao = cadastro ? descricaoDoRio(cadastro, barragensDoRio(rio.id)) : null
           return (
             <li key={rio.id}>
               <Link to={rio.para} className={estilos.cartaoRio}>
                 <span className={estilos.tituloRio}>{rio.titulo}</span>
-                <span className={estilos.descricao}>{rio.descricao}</span>
+                {descricao && (
+                  <span className={estilos.descricao}>
+                    {descricao.cabeceiras && <b className={estilos.rotulo}>Tronco: </b>}
+                    {descricao.tronco}
+                  </span>
+                )}
+                {descricao?.cabeceiras && (
+                  <span className={estilos.laterais}>
+                    <b className={estilos.rotulo}>Cabeceiras: </b>
+                    {descricao.cabeceiras}
+                  </span>
+                )}
+                {descricao?.laterais && (
+                  <span className={estilos.laterais}>
+                    <b className={estilos.rotulo}>Entram de lado: </b>
+                    {descricao.laterais}
+                  </span>
+                )}
+                {descricao?.barragens && (
+                  <span className={estilos.laterais}>
+                    <b className={estilos.rotulo}>Barragens: </b>
+                    {descricao.barragens}
+                  </span>
+                )}
                 <span className={estilos.contagem}>
                   {cidades} cidades · {registros} picos históricos registrados
                 </span>

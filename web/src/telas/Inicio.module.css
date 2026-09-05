@@ -38,6 +38,20 @@
   margin: 0.2rem 0;
 }
 
+/* Cabeceiras e afluentes laterais: menor e mais claro que o tronco, para não
+   ler como continuação da seta. O rótulo diz o que cada linha É. */
+.laterais {
+  display: block;
+  font-size: 0.82rem;
+  color: #4b5563;
+  margin: 0 0 0.2rem;
+}
+
+.rotulo {
+  font-weight: 600;
+  color: #374151;
+}
+
 .contagem {
   display: block;
   font-size: 0.85rem;

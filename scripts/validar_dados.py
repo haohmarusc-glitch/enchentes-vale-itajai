@@ -752,6 +752,32 @@ def valida_hidraulica() -> None:
                 erro(f"hidraulica.json / barragens / {nome}: falta '{campo}'. As duas "
                      "delimitações ficam lado a lado; fundir seria escolher em silêncio.")
 
+    # A tela de início nomeia as barragens a partir daqui, sem texto fixo. Sem
+    # estes campos ela ficaria muda sobre uma delas — ou inventaria o nome.
+    abaixo_de_barragem: dict[str, str] = {}
+    for nome in ("oeste", "sul", "norte"):
+        b = d.get("barragens", {}).get(nome, {})
+        for campo in ("nome", "municipio_nome", "rio", "rio_id", "a_montante_de"):
+            if not str(b.get(campo, "")).strip():
+                erro(f"hidraulica.json / barragens / {nome}: falta '{campo}' (a tela lê daqui)")
+        # A cidade logo abaixo da parede tem de existir no rio da barragem — senão
+        # a tela diria "acima de X" para um X sem página e sem régua.
+        est_h = le_json("estacoes.json")
+        rio_id, abaixo = b.get("rio_id"), b.get("a_montante_de")
+        ids = {c["id"] for c in est_h.get("rios", {}).get(rio_id, {}).get("cidades", [])}
+        if abaixo and abaixo not in ids:
+            erro(f"hidraulica.json / barragens / {nome}: a_montante_de={abaixo!r} não é cidade de {rio_id!r}")
+        # Duas barragens não são a de logo acima da MESMA cidade: a árvore as
+        # penduraria no mesmo galho e uma delas apareceria no ramo errado — a
+        # Norte, que está no Hercílio, encostada na cabeceira do Oeste, por
+        # exemplo. Sem isto, uma troca de cidade passa calada.
+        if abaixo:
+            outra = abaixo_de_barragem.get(abaixo)
+            if outra:
+                erro(f"hidraulica.json / barragens / {nome}: a_montante_de={abaixo!r} já é de "
+                     f"{outra!r}. Cada barragem tem a SUA cidade logo abaixo da parede.")
+            abaixo_de_barragem[abaixo] = nome
+
     # As TRÊS delimitações de área das barragens têm de continuar visíveis, e a
     # nota tem de dizer que o lado isolado é o Vol. II. Medido em 04/09/2026:
     # Vol. III-A dá Oeste 851,2 e Sul 1.165,4, contra 1.042 e 1.273 do Vol. II —

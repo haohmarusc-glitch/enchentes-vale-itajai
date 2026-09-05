@@ -1,0 +1,103 @@
+.bloco {
+  margin-top: 1rem;
+}
+
+.titulo {
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
+}
+
+.entrada {
+  margin: 0 0 0.7rem;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.rotulo {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin: 0.6rem 0 0.2rem;
+}
+
+.ramos,
+.laterais {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.ramos {
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.ramo,
+.laterais > li {
+  border-left: 3px solid #cbd5e1;
+  padding-left: 0.6rem;
+}
+
+.barragem {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  font-size: 0.88rem;
+  margin: 0.15rem 0;
+}
+
+/* Cor de estrutura, não de faixa: a barragem é obra no leito, e laranja aqui
+   leria como aviso de cheia. */
+.parede {
+  flex: 0 0 auto;
+  width: 0.55rem;
+  height: 1.5rem;
+  border-radius: 2px;
+  background: repeating-linear-gradient(
+    180deg,
+    #6c7c8c 0 0.28rem,
+    #46535f 0.28rem 0.42rem
+  );
+}
+
+.ficha {
+  font-size: 0.78rem;
+  color: #4b5563;
+}
+
+.cidade {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.nasce {
+  margin: 0.7rem 0 0;
+  font-size: 0.9rem;
+}
+
+.coord {
+  font-variant-numeric: tabular-nums;
+  color: #6b7280;
+  font-size: 0.82rem;
+}
+
+.tronco {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.ressalva {
+  margin: 0.8rem 0 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 6px;
+  background: #f3f4f6;
+  font-size: 0.82rem;
+  color: #374151;
+}

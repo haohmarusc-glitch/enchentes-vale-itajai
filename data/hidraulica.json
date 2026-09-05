@@ -164,7 +164,12 @@
     "_chuva_equivalente": "Definida no próprio anexo como armazenamento dividido pela área de drenagem — quanta chuva sobre a bacia da barragem basta para encher o reservatório. É a explicação de por que a Oeste e a Sul enchem fácil e a Norte não.",
     "_areas_divergentes": "As áreas de drenagem do JICA Vol. II (Oeste 1.042, Sul 1.273 km²) NÃO batem com as da API estadual (Oeste 851, Sul 1.164 km²). Registrar as duas, nunca fundir nem escolher em silêncio. ATUALIZADO em 04/09/2026: o JICA Vol. III-A (bloco `areas_drenagem`) traz Oeste 851,2 e Sul 1.165,4 — ou seja, ele concorda com a API estadual, não com o Vol. II. A divergência é INTERNA AO JICA, e o Vol. II é o lado isolado. Ver `areas_drenagem._divergencia_interna_do_JICA`.",
     "oeste": {
+      "nome": "Barragem Oeste",
       "municipio": "taio",
+      "municipio_nome": "Taió",
+      "rio": "Itajaí do Oeste",
+      "rio_id": "itajai-acu",
+      "a_montante_de": "taio",
       "area_drenagem_km2_jica": 1042,
       "area_drenagem_km2_api_estadual": 851,
       "armazenamento_Mm3": 83,
@@ -176,7 +181,12 @@
       "nota": "Enche com ~80 mm de chuva sobre a bacia dela — metade do que a Norte precisa. O relatório registra que a Oeste ESTEVE CHEIA nas cheias de 2001 e 2010, vertendo pelo vertedouro, o que não aconteceu na Sul. Contra cheia de 50 anos, o reservatório excede em 0,9 m a crista do vertedouro."
     },
     "sul": {
+      "nome": "Barragem Sul",
       "municipio": "ituporanga",
+      "municipio_nome": "Ituporanga",
+      "rio": "Itajaí do Sul",
+      "rio_id": "itajai-acu",
+      "a_montante_de": "ituporanga",
       "area_drenagem_km2_jica": 1273,
       "area_drenagem_km2_api_estadual": 1164,
       "armazenamento_Mm3": 93.5,
@@ -186,7 +196,12 @@
       "descarga_em_NHWL_m3s": 194
     },
     "norte": {
+      "nome": "Barragem Norte",
       "municipio": "jose-boiteux",
+      "municipio_nome": "José Boiteux",
+      "rio": "Rio Hercílio (Itajaí do Norte)",
+      "rio_id": "itajai-acu",
+      "a_montante_de": "ibirama",
       "area_drenagem_km2_jica": 2318,
       "armazenamento_Mm3": 357,
       "chuva_equivalente_mm": 154,
@@ -202,7 +217,8 @@
       "inicio_de_fechamento_por_rio_do_sul_m": 6.5,
       "nota": "O fechamento também é acionado pelo nível em Rio do Sul (6,50 m), junto com a Barragem Sul. Os limiares são do relatório de 2011 e podem ter mudado — a operação é da DEINFRA."
     },
-    "lacuna_da_vazao_de_saida": "O JICA (seção 4.2.2) aponta que a DEINFRA, operadora da Oeste e da Sul, NÃO registrava nem informava as vazões de saída — e dá isso como a razão de a previsão de Rio do Sul não ser apropriada para uso prático. O que temos hoje é o ESTADO DAS COMPORTAS pela API de Taió, que é proxy, não vazão. Pedir a vazão à DEINFRA é pendência do README. Ressalva da auditoria: 2011 não é o estado de hoje — verificar se a vazão por comporta passou a ser publicada antes de tratar a lacuna como atual."
+    "lacuna_da_vazao_de_saida": "O JICA (seção 4.2.2) aponta que a DEINFRA, operadora da Oeste e da Sul, NÃO registrava nem informava as vazões de saída — e dá isso como a razão de a previsão de Rio do Sul não ser apropriada para uso prático. O que temos hoje é o ESTADO DAS COMPORTAS pela API de Taió, que é proxy, não vazão. Pedir a vazão à DEINFRA é pendência do README. Ressalva da auditoria: 2011 não é o estado de hoje — verificar se a vazão por comporta passou a ser publicada antes de tratar a lacuna como atual.",
+    "_rio_e_nome": "`nome`, `municipio_nome`, `rio` e `rio_id` (05/09/2026) existem para a tela de início nomear as barragens sem texto fixo. `rio` é o curso em que cada uma está — Itajaí do Oeste e Itajaí do Sul conferidos no `river_name` da API Asthon (dams, 05/09/2026); Rio Hercílio (Itajaí do Norte) pela topologia canônica (docs/TOPOLOGIA-CANONICA.md) e pelo JICA. `rio_id` é a bacia em que a tela as mostra: as três controlam o Açu. `a_montante_de` é a cidade COM RÉGUA logo abaixo da parede: Taió (centro a ~9,5 km da Oeste), Ituporanga (abaixo da Sul) e Ibirama (no Hercílio, abaixo da Norte). A régua dessas cidades mede a água já amortecida — ou vertida — pela barragem; a cota do reservatório é OUTRA ESCALA e nunca pinta a cidade."
   },
   "divisao_do_mirim": {
     "_fonte": "Vol. II, seção 3.5. Citação: \"Distribution ratio of the flood discharge… is assumed to be 2/3 to the canal and 1/3 to the old Mirim River based on the respective estimated flow capacity\".",
