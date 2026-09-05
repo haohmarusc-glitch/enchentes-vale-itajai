@@ -147,7 +147,7 @@ class VertidoNaoEVazao(unittest.TestCase):
         self.assertNotIn("vazao", json.dumps(b))
 
     def test_o_meta_avisa_que_o_significado_e_desconhecido(self):
-        doc = cb.coletar(buscador=lambda: [OESTE, SUL])
+        doc = cb.coletar(buscador=lambda _c: [OESTE, SUL], city_ids=(1,))
         self.assertIn("DESCONHECIDO", doc["_meta"]["vertido"])
         self.assertIn("NÃO é a vazão de saída", doc["_meta"]["vertido"])
 
@@ -159,7 +159,7 @@ class SobreOCorpoInteiro(unittest.TestCase):
         self.assertEqual(avisos, [], "o corpo real de 05/09 não deveria gerar aviso")
 
     def test_o_meta_avisa_da_altitude_e_do_fuso(self):
-        doc = cb.coletar(buscador=lambda: [OESTE, SUL])
+        doc = cb.coletar(buscador=lambda _c: [OESTE, SUL], city_ids=(1,))
         self.assertIn("NÍVEL DO MAR", doc["_meta"]["ALTITUDE_NAO_E_REGUA"])
         self.assertIn("Brasília", doc["_meta"]["fuso"])
         self.assertIn("UTC", doc["_meta"]["fuso"])
@@ -172,6 +172,41 @@ class SobreOCorpoInteiro(unittest.TestCase):
         # `isinstance(True, int)` é True em Python, e True não é metro.
         self.assertIsNone(numero(True))
         self.assertEqual(numero(3), 3.0)
+
+
+
+
+class VariasCidadesDeInteresse(unittest.TestCase):
+    """A Norte só vem por cidade a jusante dela; e Oeste/Sul vêm por várias."""
+
+    def test_a_mesma_barragem_por_duas_cidades_entra_UMA_vez(self):
+        # Rio do Sul e Ibirama devolvem as duas do Alto Vale; sem dedupe o site
+        # mostraria "4 barragens" e contaria as comportas em dobro.
+        doc = cb.coletar(buscador=lambda _c: [OESTE, SUL], city_ids=(4214805, 4207106))
+        self.assertEqual(len(doc["barragens"]), 2)
+
+    def test_barragem_que_so_uma_cidade_traz_entra_tambem(self):
+        norte = dict(SUL, station_id="norte-x", name="Barragem Norte José Boiteux",
+                     river_name="Itajaí do Norte")
+        def buscador(cid):
+            return [OESTE, SUL] if cid == 4214805 else [OESTE, SUL, norte]
+        doc = cb.coletar(buscador=buscador, city_ids=(4214805, 4207106))
+        nomes = sorted(b["nome"] for b in doc["barragens"])
+        self.assertEqual(nomes, ["Barragem Norte José Boiteux", "Barragem Oeste Taió",
+                                 "Barragem Sul Ituporanga"])
+
+    def test_cidade_que_falha_vira_aviso_e_as_outras_seguem(self):
+        def buscador(cid):
+            if cid == 4207106:
+                raise RuntimeError("404")
+            return [OESTE, SUL]
+        doc = cb.coletar(buscador=buscador, city_ids=(4214805, 4207106))
+        self.assertEqual(len(doc["barragens"]), 2)
+        self.assertTrue(any("4207106" in a for a in doc["_meta"]["avisos_da_fonte"]))
+
+    def test_a_lista_de_cidades_inclui_rio_do_sul_e_uma_a_jusante_do_hercilio(self):
+        self.assertIn(4214805, cb.CITY_IDS)
+        self.assertGreater(len(cb.CITY_IDS), 1, "uma cidade só nunca traz a Norte")
 
 
 if __name__ == "__main__":

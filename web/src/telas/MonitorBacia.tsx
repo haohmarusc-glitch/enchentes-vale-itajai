@@ -11,6 +11,8 @@ import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
 import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
+import { useBarragens } from '../dados/barragens'
+import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
@@ -27,6 +29,7 @@ import {
   construirCena,
   desenharBase,
   desenharCorrenteza,
+  desenharBarragens,
   desenharOnda,
   desenharPinos,
   desenharReguas,
@@ -326,6 +329,7 @@ export default function MonitorBacia() {
 
   const tempoReal = useTempoReal()
   const nivelSc = useNivelSc()
+  const mapaBarragens = useBarragens()
   const serie = useSerieRecente()
   const agora = useMemo(() => new Date(), [tempoReal])
 
@@ -367,6 +371,19 @@ export default function MonitorBacia() {
   )
   const reguasRef = useRef(reguasDoMapa)
   reguasRef.current = reguasDoMapa
+
+  /**
+   * As barragens como marcadores, comporta a comporta. O Monitor é a bacia
+   * inteira, então mostra as três (as que a fonte trouxer). A regra da
+   * animação — aberta anima, fechada não, leitura velha não anima nenhuma —
+   * está em `logica/barragensNoMapa.ts`.
+   */
+  const barragensDoMapa = useMemo(
+    () => barragensNoMapa(mapaBarragens.values(), agora, 'bacia'),
+    [mapaBarragens, agora],
+  )
+  const barragensRef = useRef(barragensDoMapa)
+  barragensRef.current = barragensDoMapa
   const reguaSelRef = useRef<string | null>(null)
 
   // Grade de instantes da REPRODUÇÃO (últimas ~24 h, passo de 30 min), a partir
@@ -561,6 +578,8 @@ export default function MonitorBacia() {
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
       desenharChuva(ctx, chuvaRef.current, escala)
+      // Barragens antes das réguas e dos pinos: são estrutura no leito, ficam por baixo.
+      desenharBarragens(ctx, cena, barragensRef.current, seg, escala)
       // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
       desenharReguas(ctx, cena, reguasRef.current, escala, reguaSelRef.current)
       desenharPinos(ctx, cena, selRef.current, {

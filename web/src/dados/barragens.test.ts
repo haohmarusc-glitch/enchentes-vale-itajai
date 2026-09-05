@@ -19,6 +19,8 @@ const CORPO = {
     {
       nome: 'Barragem Oeste Taió',
       rio: 'Itajaí do Oeste',
+      lat: -27.09743881225586,
+      lon: -50.03879165649414,
       medido_em: '2026-09-05T14:05:06',
       altitude_montante_m: 353.66,
       nivel_na_regua_da_barragem_m: 14.66,
@@ -30,6 +32,8 @@ const CORPO = {
     {
       nome: 'Barragem Sul Ituporanga',
       rio: 'Itajaí do Sul',
+      lat: -27.503854751586914,
+      lon: -49.55359649658203,
       medido_em: '2026-09-05T14:04:55',
       altitude_montante_m: 392.58,
       nivel_na_regua_da_barragem_m: 22.58,
@@ -167,4 +171,28 @@ test('barragem que o cadastro pede mas a fonte não trouxe simplesmente não apa
   // Meia resposta não pode virar meia verdade: some, em vez de mostrar "0 de 0".
   const soUma = { barragens: [CORPO.barragens[0]] }
   assert.equal(barragensDaCidade(montarBarragens(soUma), 'rio-do-sul').length, 1)
+})
+
+test('a coordenada da fonte atravessa — é o que põe o marcador no lugar exato', () => {
+  const oeste = montarBarragens(CORPO).get('Barragem Oeste Taió')!
+  assert.equal(oeste.lat, -27.09743881225586)
+  assert.equal(oeste.lon, -50.03879165649414)
+})
+
+test('coordenada fora da bacia vira null, não marcador no lugar errado', () => {
+  // Troca lat/lon, ou altitude no lugar de lat: num mapa de enchente, marcador
+  // errado é pior que nenhum.
+  for (const [lat, lon] of [[-50.03, -27.09], [353.66, -50.03], [0, 0]] as const) {
+    const corpo = { barragens: [{ nome: 'X', comportas_abertas: 1, comportas_total: 1, lat, lon }] }
+    const b = montarBarragens(corpo).get('X')!
+    assert.equal(b.lat, null, `lat=${lat} lon=${lon}`)
+    assert.equal(b.lon, null)
+  }
+})
+
+test('sem coordenada a barragem segue existindo — só não vai ao mapa', () => {
+  const corpo = { barragens: [{ nome: 'X', comportas_abertas: 1, comportas_total: 1 }] }
+  const b = montarBarragens(corpo).get('X')!
+  assert.equal(b.abertas, 1)
+  assert.equal(b.lat, null)
 })
