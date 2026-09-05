@@ -32,6 +32,7 @@ ARQUIVO="$RAIZ/data/tempo-real/ultimo.json"
 SERIE_RECENTE="$RAIZ/data/tempo-real/serie-recente.json"
 NIVEL_SC="$RAIZ/data/tempo-real/ultimo_nivel_sc.json"
 TAIO="$RAIZ/data/tempo-real/ultimo_taio.json"
+BARRAGENS="$RAIZ/data/tempo-real/ultimo_barragens.json"
 BRANCH="tempo-real"
 SECO=0
 [ "${1:-}" = "--seco" ] && SECO=1
@@ -84,12 +85,25 @@ if [ -f "$TAIO" ] && python3 -c 'import json,sys; json.load(open(sys.argv[1]))' 
   TAIO_ENTRY="$(printf '100644 blob %s\tultimo_taio.json' "$BLOB_TAIO")"
 fi
 
+# ultimo_barragens.json: o estado das DUAS barragens, comporta a comporta, do
+# endpoint `dams` da Asthon. Mesma regra opcional dos anteriores. É o que o site
+# lê para dizer, ao lado do nível de Rio do Sul, Taió e Ituporanga, se a
+# barragem acima está segurando ou soltando água — o mesmo nível a jusante
+# significa coisas opostas nos dois casos. Cobre mais que o ultimo_taio.json,
+# que só traz a Oeste e sem a lista por comporta.
+BARRAGENS_ENTRY=""
+if [ -f "$BARRAGENS" ] && python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); sys.exit(0 if d.get("barragens") else 1)' "$BARRAGENS" 2>/dev/null; then
+  BLOB_BARRAGENS="$(git hash-object -w "$BARRAGENS")"
+  BARRAGENS_ENTRY="$(printf '100644 blob %s\tultimo_barragens.json' "$BLOB_BARRAGENS")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
     [ -n "$SERIE_ENTRY" ] && printf '%s\n' "$SERIE_ENTRY"
     [ -n "$NIVEL_SC_ENTRY" ] && printf '%s\n' "$NIVEL_SC_ENTRY"
     [ -n "$TAIO_ENTRY" ] && printf '%s\n' "$TAIO_ENTRY"
+    [ -n "$BARRAGENS_ENTRY" ] && printf '%s\n' "$BARRAGENS_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o

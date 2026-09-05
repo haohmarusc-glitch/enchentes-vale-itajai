@@ -1,0 +1,66 @@
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--linha, #d8d8d8);
+  border-radius: 8px;
+}
+
+.titulo {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tinta-fraca);
+}
+
+.barragem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.linhaTopo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+}
+
+.nome { font-size: 0.9rem; font-weight: 600; }
+
+.idade { font-size: 0.78rem; font-style: italic; color: var(--tinta-fraca); }
+.atrasada { color: #8a6d1f; }
+.velha { color: #a8360a; font-style: normal; font-weight: 600; }
+
+.comportas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+}
+
+/* Nenhuma das duas é cor de alarme: as duas são estados normais de operação.
+   Pintar "soltando" de vermelho faria a manobra correta parecer emergência. */
+.soltando { color: #1d5e8a; }
+.segurando { color: #6b4f14; }
+
+.oQueSignifica { color: var(--tinta-fraca); }
+
+.quais,
+.capacidade {
+  font-size: 0.8rem;
+  color: var(--tinta-fraca);
+}
+
+.ressalva {
+  font-size: 0.76rem;
+  line-height: 1.35;
+  color: #6b4f14;
+  background: #fdf3e3;
+  border: 1px solid #edd6a8;
+  border-radius: 6px;
+  padding: 0.3rem 0.45rem;
+}
