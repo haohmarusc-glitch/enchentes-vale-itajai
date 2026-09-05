@@ -7,13 +7,19 @@ import type { CotaRua } from '../dados/tipos'
  * ganha com o zoom. Também é o mais perigoso de desenhar errado, e por isso
  * este módulo carrega quatro travas:
  *
- * 1. **Só onde o par cota↔leitura foi PROVADO.** A cota de rua descreve UMA
- *    régua; o nível ao vivo vem de OUTRA fonte. Se não forem a mesma régua, o
- *    mapa estaria dizendo "a sua rua alagou" com o metro de outro lugar — a
- *    regra nº 1 do projeto. O cadastro já separa isso: Gaspar tem
- *    `cotas_verificado: true`; Brusque, que TEM 348 ruas georreferenciadas,
- *    tem `false`, porque a régua da leitura ao vivo não é a das cotas dela.
- *    Coordenada não é passaporte.
+ 1. **A COMPARAÇÃO só onde o par cota↔leitura foi PROVADO.** A cota de rua
+ *    descreve UMA régua; o nível ao vivo vem de OUTRA fonte. Se não forem a
+ *    mesma, dizer "a sua rua alagou" usaria o metro de outro lugar — a regra
+ *    nº 1 do projeto. O cadastro separa: Gaspar tem `cotas_verificado: true`;
+ *    **Brusque tem `false`**, porque as cotas dela são da Ponte Estaiada
+ *    (provado: cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184
+ *    pontos) e as duas estações ao vivo dela têm `regua: null`.
+ *
+ *    Mas a cidade não comparável **não some do mapa**: os pontos aparecem com a
+ *    cota de cada rua e **sem estado** — que é informação boa ("esta rua alaga
+ *    com o rio em 8,20 m") sem a afirmação que não se pode fazer. Ficar
+ *    invisível não protegeria ninguém: esconde o levantamento e não impede a
+ *    conta, que a pessoa faria de cabeça com o número do pino ao lado.
  * 2. **Só de perto.** 1.613 pontos no zoom da bacia viram uma nuvem, e nuvem de
  *    pontos num mapa de enchente lê-se como MANCHA — a área alagada que este
  *    projeto se recusa a inventar. Abaixo de `KM_PARA_MOSTRAR` os pontos são
@@ -38,13 +44,22 @@ export const KM_PARA_MOSTRAR = 8
  */
 export const COR_COTA_RUA = '#6d1f6d'
 
+/** Por que um ponto não tem estado. `null` = tem estado. */
+export type SemEstado =
+  /** Não há leitura do rio agora (ou está velha demais). */
+  | 'sem-leitura'
+  /** A régua da leitura ao vivo não é, comprovadamente, a das cotas. */
+  | 'regua-nao-provada'
+
 export interface PontoDeRua {
   rua: string
   lat: number
   lon: number
   cotaM: number
-  /** `true` já alagou, `false` ainda não, `null` sem leitura para comparar. */
+  /** `true` já alagou, `false` ainda não, `null` quando não dá para dizer. */
   atingida: boolean | null
+  /** Quando `atingida` é null, o motivo — a tela diz qual dos dois é. */
+  motivo: SemEstado | null
 }
 
 export interface CidadeParaRuas {
@@ -69,22 +84,28 @@ export function zoomPermiteRuas(kmNaTela: number, limite: number = KM_PARA_MOSTR
 }
 
 /**
- * Os pontos de rua de uma cidade, comparados com o nível de agora.
+ * Os pontos de rua de uma cidade, comparados com o nível de agora QUANDO PODE.
  *
- * Sai vazio quando a cidade não passa na trava 1 — e sai vazio de propósito,
- * não com os pontos "sem estado": desenhar as ruas de Brusque já sugeriria que
- * o número ao lado vale para elas.
+ * Cidade sem par provado devolve os pontos com `atingida: null` e
+ * `motivo: 'regua-nao-provada'`. O mapa mostra a cota de cada rua e não afirma
+ * se ela alagou.
  */
 export function pontosDeRua(
   cotas: readonly CotaRua[],
   cidade: CidadeParaRuas | null | undefined,
   nivelM: number | null | undefined,
 ): PontoDeRua[] {
-  if (!cidadePodeMostrarRuas(cidade)) return []
+  if (!cidade?.id) return []
+  const podeComparar = cidadePodeMostrarRuas(cidade)
   const temNivel = typeof nivelM === 'number' && Number.isFinite(nivelM)
+  const motivo: SemEstado | null = !podeComparar
+    ? 'regua-nao-provada'
+    : temNivel
+      ? null
+      : 'sem-leitura' 
   const saida: PontoDeRua[] = []
   for (const c of cotas) {
-    if (c.cidade !== cidade!.id) continue
+    if (c.cidade !== cidade.id) continue
     if (typeof c.cota_m !== 'number' || !Number.isFinite(c.cota_m)) continue
     const lat = (c as { lat?: unknown }).lat
     const lon = (c as { lon?: unknown }).lon
@@ -95,7 +116,8 @@ export function pontosDeRua(
       lat,
       lon,
       cotaM: c.cota_m,
-      atingida: temNivel ? c.cota_m <= (nivelM as number) : null,
+      atingida: motivo === null ? c.cota_m <= (nivelM as number) : null,
+      motivo,
     })
   }
   return saida
