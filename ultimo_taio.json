@@ -1,0 +1,178 @@
+{
+  "fonte": "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/cards?v=1",
+  "coletado_em": "2026-09-05T23:15:05.786666+00:00",
+  "leituras": [
+    {
+      "estacao": "Taió — Rio Itajaí do Oeste, Centro",
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "nivel_m": 5.47,
+      "medido_em": "2026-09-05T20:13:58",
+      "usar_para_cota": true
+    }
+  ],
+  "barragem": {
+    "nome": "Barragem Oeste (Taió)",
+    "montante_m": 14.38,
+    "jusante_m": null,
+    "comportas": {
+      "abertas": 7,
+      "total": 7,
+      "todas_abertas": true,
+      "regime": "vertendo"
+    },
+    "extravasor": "–",
+    "medido_em": "2026-09-05T20:13:58"
+  },
+  "chuva_mm": {
+    "h1": 0.0,
+    "h12": 1.5,
+    "h24": 5.7
+  },
+  "historico": [
+    {
+      "medido_em": "2026-09-04T21:00:10",
+      "nivel_m": 5.74,
+      "montante_m": 15.67,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-04T22:02:16",
+      "nivel_m": 5.73,
+      "montante_m": 15.61,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-04T23:02:04",
+      "nivel_m": 5.72,
+      "montante_m": 15.57,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T00:01:52",
+      "nivel_m": 5.72,
+      "montante_m": 15.5,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T01:01:40",
+      "nivel_m": 5.71,
+      "montante_m": 15.47,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T02:01:28",
+      "nivel_m": 5.69,
+      "montante_m": 15.41,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T03:01:16",
+      "nivel_m": 5.68,
+      "montante_m": 15.36,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T04:01:04",
+      "nivel_m": 5.67,
+      "montante_m": 15.29,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T05:00:52",
+      "nivel_m": 5.66,
+      "montante_m": 15.23,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T06:00:40",
+      "nivel_m": 5.64,
+      "montante_m": 15.18,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T07:00:28",
+      "nivel_m": 5.63,
+      "montante_m": 15.05,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T08:00:16",
+      "nivel_m": 5.62,
+      "montante_m": 15.05,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T09:00:04",
+      "nivel_m": 5.61,
+      "montante_m": 14.99,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T10:02:10",
+      "nivel_m": 5.6,
+      "montante_m": 14.96,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T11:01:58",
+      "nivel_m": 5.59,
+      "montante_m": 14.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T12:01:46",
+      "nivel_m": 5.58,
+      "montante_m": 14.84,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T13:01:34",
+      "nivel_m": 5.57,
+      "montante_m": 14.79,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T14:01:22",
+      "nivel_m": 5.56,
+      "montante_m": 14.73,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T15:01:10",
+      "nivel_m": 5.54,
+      "montante_m": 14.66,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T16:00:58",
+      "nivel_m": 5.53,
+      "montante_m": 14.61,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T17:00:46",
+      "nivel_m": 5.52,
+      "montante_m": 14.5,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T18:00:34",
+      "nivel_m": 5.5,
+      "montante_m": 14.5,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T19:00:22",
+      "nivel_m": 5.49,
+      "montante_m": 14.44,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-05T20:00:10",
+      "nivel_m": 5.48,
+      "montante_m": 14.38,
+      "comportas_abertas": 7
+    }
+  ]
+}
