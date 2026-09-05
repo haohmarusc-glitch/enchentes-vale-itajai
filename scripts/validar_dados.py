@@ -754,29 +754,66 @@ def valida_hidraulica() -> None:
 
     # A tela de início nomeia as barragens a partir daqui, sem texto fixo. Sem
     # estes campos ela ficaria muda sobre uma delas — ou inventaria o nome.
+    est_h = le_json("estacoes.json")
     abaixo_de_barragem: dict[str, str] = {}
-    for nome in ("oeste", "sul", "norte"):
-        b = d.get("barragens", {}).get(nome, {})
-        for campo in ("nome", "municipio_nome", "rio", "rio_id", "a_montante_de"):
+    # Toda entrada com `nome` é barragem: as três de CONTENÇÃO da bacia e as
+    # LOCAIS (Pinhal, Rio Bonito), que o PLANCON de Rio dos Cedros cita e que
+    # NÃO amortecem a cheia do Açu. Sem `tipo`, a tela as listaria lado a lado
+    # e diria que a bacia tem cinco barragens de contenção. Tem três.
+    for nome, b in d.get("barragens", {}).items():
+        if nome.startswith("_") or not isinstance(b, dict) or not b.get("nome"):
+            continue
+        tipo = b.get("tipo")
+        if tipo not in ("contencao_estadual", "local"):
+            erro(f"hidraulica.json / barragens / {nome}: 'tipo' tem de ser 'contencao_estadual' "
+                 f"ou 'local' (veio {tipo!r}). É o que impede a tela de somar as duas classes.")
+        for campo in ("nome", "municipio_nome", "rio", "rio_id"):
             if not str(b.get(campo, "")).strip():
                 erro(f"hidraulica.json / barragens / {nome}: falta '{campo}' (a tela lê daqui)")
+        rio_id = b.get("rio_id")
+        ids = {c["id"] for c in est_h.get("rios", {}).get(rio_id, {}).get("cidades", [])}
+
+        if tipo == "local":
+            # Barragem local NÃO declara `a_montante_de`: dizer que ela fica logo
+            # acima da régua de uma cidade é afirmar posição hidráulica, e a fonte
+            # das locais (PLANCON municipal) não diz isso. Ela declara só ONDE FICA.
+            if b.get("a_montante_de"):
+                erro(f"hidraulica.json / barragens / {nome}: barragem 'local' não pode ter "
+                     "'a_montante_de' — isso afirma posição acima de uma régua que a fonte não dá. "
+                     "Use 'no_municipio'.")
+            municipio = b.get("no_municipio")
+            if not municipio:
+                erro(f"hidraulica.json / barragens / {nome}: falta 'no_municipio'")
+            elif municipio not in ids:
+                erro(f"hidraulica.json / barragens / {nome}: no_municipio={municipio!r} não é "
+                     f"cidade de {rio_id!r}")
+            continue
+
         # A cidade logo abaixo da parede tem de existir no rio da barragem — senão
         # a tela diria "acima de X" para um X sem página e sem régua.
-        est_h = le_json("estacoes.json")
-        rio_id, abaixo = b.get("rio_id"), b.get("a_montante_de")
-        ids = {c["id"] for c in est_h.get("rios", {}).get(rio_id, {}).get("cidades", [])}
-        if abaixo and abaixo not in ids:
+        abaixo = b.get("a_montante_de")
+        if not abaixo:
+            erro(f"hidraulica.json / barragens / {nome}: falta 'a_montante_de' (a tela lê daqui)")
+        elif abaixo not in ids:
             erro(f"hidraulica.json / barragens / {nome}: a_montante_de={abaixo!r} não é cidade de {rio_id!r}")
-        # Duas barragens não são a de logo acima da MESMA cidade: a árvore as
-        # penduraria no mesmo galho e uma delas apareceria no ramo errado — a
+        # Duas barragens de contenção não são a de logo acima da MESMA cidade: a
+        # árvore as penduraria no mesmo galho e uma apareceria no ramo errado — a
         # Norte, que está no Hercílio, encostada na cabeceira do Oeste, por
         # exemplo. Sem isto, uma troca de cidade passa calada.
         if abaixo:
             outra = abaixo_de_barragem.get(abaixo)
             if outra:
                 erro(f"hidraulica.json / barragens / {nome}: a_montante_de={abaixo!r} já é de "
-                     f"{outra!r}. Cada barragem tem a SUA cidade logo abaixo da parede.")
+                     f"{outra!r}. Cada barragem de contenção tem a SUA cidade logo abaixo da parede.")
             abaixo_de_barragem[abaixo] = nome
+
+    # As três de contenção continuam existindo, com esses nomes. Se uma sumir ou
+    # for rebaixada a 'local', a bacia passaria a ter duas — e o site diria isso.
+    contencao = {n for n, b in d.get("barragens", {}).items()
+                 if isinstance(b, dict) and b.get("tipo") == "contencao_estadual"}
+    if contencao != {"oeste", "sul", "norte"}:
+        erro(f"hidraulica.json / barragens: as de contenção da bacia são oeste, sul e norte; "
+             f"vieram {sorted(contencao)}")
 
     # As TRÊS delimitações de área das barragens têm de continuar visíveis, e a
     # nota tem de dizer que o lado isolado é o Vol. II. Medido em 04/09/2026:

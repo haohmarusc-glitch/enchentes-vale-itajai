@@ -8,6 +8,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { barragensDeContencao } from './arvoreDaBacia'
 import {
   descricaoDoRio,
   descreverBarragens,
@@ -30,12 +31,13 @@ const hidraulica = JSON.parse(
   readFileSync(new URL('../../../data/hidraulica.json', import.meta.url), 'utf8'),
 ) as { barragens: Record<string, unknown> }
 
-/** O mesmo filtro de `dados/carregar.barragensDoRio`, sobre o arquivo cru. */
+/**
+ * O MESMO filtro que a home usa — importado, não copiado. A cópia que existia
+ * aqui deixou passar uma sabotagem: desligar o filtro no `dados/carregar` não
+ * quebrava teste nenhum.
+ */
 function barragensDoCadastro(rioId: string): BarragemParaDescrever[] {
-  return Object.entries(hidraulica.barragens)
-    .filter(([k, b]) => !k.startsWith('_') && typeof b === 'object' && b !== null)
-    .map(([, b]) => b as BarragemParaDescrever & { rio_id?: string })
-    .filter((b) => b.rio_id === rioId)
+  return barragensDeContencao(hidraulica.barragens, rioId)
 }
 const acuCadastro = rioDoCadastro('itajai-acu')
 const acu = descricaoDoRio(acuCadastro, barragensDoCadastro('itajai-acu'))
@@ -78,7 +80,7 @@ test('Açu: os afluentes vão na linha própria, cada um com o rio por onde entr
   )
 })
 
-test('Açu: as TRÊS barragens de contenção, com município e curso, do hidraulica.json', () => {
+test('Açu: as TRÊS barragens de contenção, com município e curso — as locais ficam fora', () => {
   assert.equal(
     acu.barragens,
     'Barragem Oeste em Taió, no Itajaí do Oeste; Barragem Sul em Ituporanga, no Itajaí do Sul; ' +
@@ -86,6 +88,10 @@ test('Açu: as TRÊS barragens de contenção, com município e curso, do hidrau
   )
   // Nenhuma barragem vira elo do tronco nem cidade da seta.
   assert.ok(!acu.tronco.includes('Barragem'))
+  // As locais existem no arquivo e NÃO entram nesta linha: somadas, diriam que
+  // a bacia tem cinco barragens de contenção.
+  assert.ok(!acu.barragens?.includes('Pinhal'))
+  assert.ok(!acu.barragens?.includes('Rio Bonito'))
 })
 
 test('barragem sem rio_id deste rio não entra; rio sem barragem fica null, não vazio', () => {

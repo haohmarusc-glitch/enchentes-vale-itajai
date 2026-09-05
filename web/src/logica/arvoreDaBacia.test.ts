@@ -49,7 +49,7 @@ test('a Barragem Norte fica no ramo lateral, com Ibirama abaixo dela — não no
   assert.ok(!acu.tronco.includes('Ibirama'))
 })
 
-test('as três barragens estão penduradas em alguma cidade — nenhuma solta', () => {
+test('as barragens de CONTENÇÃO continuam sendo três, com as locais no arquivo', () => {
   const nomes = [
     ...acu.cabeceiras.map((c) => c.barragem?.nome),
     ...acu.laterais.map((l) => l.barragem?.nome),
@@ -75,8 +75,46 @@ test('a barragem guarda ano, volume e comportas — e a Norte tem condutos SEM c
 })
 
 test('barragem sem os campos mínimos não vira meia-barragem: vira null', () => {
-  assert.equal(barragemDaBacia({ nome: 'X' }, (id) => id), null)
-  assert.equal(barragemDaBacia({ nome: 'X', municipio_nome: 'Y', rio: 'Z' }, (id) => id), null)
+  assert.equal(barragemDaBacia({ tipo: 'contencao_estadual', nome: 'X' }, (id) => id), null)
+  assert.equal(
+    barragemDaBacia({ tipo: 'contencao_estadual', nome: 'X', municipio_nome: 'Y', rio: 'Z' }, (id) => id),
+    null,
+  )
+})
+
+test('a barragem LOCAL nunca vira ficha de contenção — nem com todos os campos', () => {
+  assert.equal(
+    barragemDaBacia(
+      { tipo: 'local', nome: 'Pinhal', municipio_nome: 'M', rio: 'R', a_montante_de: 'x' },
+      (id) => id,
+    ),
+    null,
+  )
+})
+
+test('Pinhal e Rio Bonito entram como LOCAIS, no município delas, e não como as três', () => {
+  const cedros = acu.locaisPorCidade.find((g) => g.cidade === 'Rio dos Cedros')
+  assert.ok(cedros, 'as locais ficam em Rio dos Cedros')
+  assert.deepEqual(cedros.barragens.map((b) => b.nome).sort(), ['Barragem Pinhal', 'Barragem Rio Bonito'])
+  assert.deepEqual(
+    cedros.barragens.map((b) => b.localidade).sort(),
+    ['Alto Cedros', 'Palmeiras'],
+  )
+  // Nenhuma delas aparece como barragem de cabeceira ou de lateral.
+  const contencao = [
+    ...acu.cabeceiras.map((c) => c.barragem?.nome),
+    ...acu.laterais.map((l) => l.barragem?.nome),
+    ...acu.barragensSoltas.map((b) => b.nome),
+  ].filter(Boolean)
+  assert.ok(!contencao.includes('Barragem Pinhal'))
+  assert.ok(!contencao.includes('Barragem Rio Bonito'))
+})
+
+test('as locais não têm posição em relação à régua: o tipo não carrega acimaDe', () => {
+  const cedros = acu.locaisPorCidade.find((g) => g.cidade === 'Rio dos Cedros')
+  for (const b of cedros?.barragens ?? []) {
+    assert.ok(!('acimaDe' in b), 'barragem local não afirma o que fica abaixo dela')
+  }
 })
 
 test('barragem cuja cidade não é cabeceira nem lateral fica SOLTA, não some calada', () => {
@@ -85,7 +123,7 @@ test('barragem cuja cidade não é cabeceira nem lateral fica SOLTA, não some c
     _topologia: { tronco_sequencia: ['a'], cabeceiras_paralelas: [], afluentes_laterais: [] },
   }
   const arv = arvoreDaBacia('r', rio, {
-    x: { nome: 'B1', municipio_nome: 'M', rio: 'R', rio_id: 'r', a_montante_de: 'z' },
+    x: { tipo: 'contencao_estadual', nome: 'B1', municipio_nome: 'M', rio: 'R', rio_id: 'r', a_montante_de: 'z' },
   })
   assert.equal(arv?.barragensSoltas.length, 1)
   assert.equal(arv?.barragensSoltas[0]?.acimaDe, 'Z')
@@ -97,7 +135,7 @@ test('rio em fila (Mirim) não tem árvore, e nenhuma barragem é inventada para
 
 test('barragem de outro rio não entra nesta árvore', () => {
   const arv = arvoreDaBacia('itajai-acu', rioDoCadastro('itajai-acu'), {
-    outra: { nome: 'B2', municipio_nome: 'M', rio: 'R', rio_id: 'outro-rio', a_montante_de: 'taio' },
+    outra: { tipo: 'contencao_estadual', nome: 'B2', municipio_nome: 'M', rio: 'R', rio_id: 'outro-rio', a_montante_de: 'taio' },
   })
   assert.equal(arv?.cabeceiras[0]?.barragem, null)
   assert.deepEqual(arv?.barragensSoltas, [])
