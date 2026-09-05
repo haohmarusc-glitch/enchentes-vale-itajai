@@ -136,6 +136,18 @@ export interface Trecho {
   /** Posição montante→jusante do trecho no rio, 0 (nascente) a 1 (foz). É o que
    *  a onda usa para descer o rio até o mar. */
   progMid: number
+  /**
+   * A cidade cuja leitura PINTOU este trecho — a mesma que decidiu a `faixa`.
+   * `null` quando nenhuma âncora pinta o rio (trecho cinza, `sem-dado`).
+   *
+   * Existe para o TOQUE: quem encosta num trecho laranja quer a cidade que o
+   * deixou laranja, não a mais próxima em linha reta, que pode ser outra. Por
+   * isso o corte de trecho passou a ser por (faixa, âncora), e não só por
+   * faixa: duas cidades vizinhas na mesma faixa formavam UM trecho, e a metade
+   * de baixo devolveria o nome da de cima.
+   */
+  cidadeId: string | null
+  rioId: string
 }
 /** Uma cidade âncora, já projetada, para o pino e o toque. */
 export interface Pino {
@@ -353,10 +365,9 @@ export function construirCena(
     })
     const espinha = ancorasQuePintam.map((a) => a.ponto)
     const cumEspinha = acumuladoEspinha(espinha)
-    const faixaEm = (p: LonLat): Faixa =>
-      ancorasQuePintam.length === 0
-        ? 'sem-dado'
-        : ancorasQuePintam[trechoDoPonto(espinha, p)]!.faixa
+    const ancoraEm = (p: LonLat) =>
+      ancorasQuePintam.length === 0 ? null : ancorasQuePintam[trechoDoPonto(espinha, p)]!
+    const faixaEm = (p: LonLat): Faixa => ancoraEm(p)?.faixa ?? 'sem-dado' 
 
     for (const linha of rio.coords) {
       if (linha.length < 2) continue
@@ -369,8 +380,13 @@ export function construirCena(
         const pb = progressoNaEspinha(espinha, cumEspinha, linha[linha.length - 1]!)
         if (pb < pa) seq = [...linha].reverse()
       }
-      const faixaAresta = (i: number): Faixa =>
-        faixaEm([(seq[i - 1]![0] + seq[i]![0]) / 2, (seq[i - 1]![1] + seq[i]![1]) / 2])
+      const meioDaAresta = (i: number): LonLat => [
+        (seq[i - 1]![0] + seq[i]![0]) / 2,
+        (seq[i - 1]![1] + seq[i]![1]) / 2,
+      ]
+      const faixaAresta = (i: number): Faixa => faixaEm(meioDaAresta(i))
+      const cidadeAresta = (i: number): string | null =>
+        ancoraEm(meioDaAresta(i))?.cidade.id ?? null
       // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
       const progMax = cumEspinha[cumEspinha.length - 1] || 1
       const progMidDe = (a: number, b: number): number => {
@@ -381,18 +397,32 @@ export function construirCena(
       }
       let pts: [number, number][] = [projetar(enq, seq[0]!)]
       let cur = faixaAresta(1)
+      let curCidade = cidadeAresta(1)
       let ini = 0
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
-        trechos.push({ pts, faixa: cur, cum, total, progMid: progMidDe(ini, fim) })
+        trechos.push({
+          pts,
+          faixa: cur,
+          cum,
+          total,
+          progMid: progMidDe(ini, fim),
+          cidadeId: curCidade,
+          rioId: rio.rioId,
+        })
       }
       for (let i = 1; i < seq.length; i++) {
         pts.push(projetar(enq, seq[i]!))
-        const prox = i + 1 < seq.length ? faixaAresta(i + 1) : null
-        if (prox !== null && prox !== cur) {
+        const temProx = i + 1 < seq.length
+        const prox = temProx ? faixaAresta(i + 1) : null
+        const proxCidade = temProx ? cidadeAresta(i + 1) : null
+        // Corta na troca de faixa OU de âncora. A troca de âncora não muda a
+        // cor; muda de quem é o trecho, e é isso que o toque devolve.
+        if (temProx && (prox !== cur || proxCidade !== curCidade)) {
           empurra(i)
           pts = [projetar(enq, seq[i]!)]
-          cur = prox
+          cur = prox!
+          curCidade = proxCidade
           ini = i
         }
       }
@@ -705,6 +735,64 @@ const COR_AGUA_COMPORTA = 'rgba(150,220,255,0.95)'
  * traçado —, então ela flutua na coordenada exata, sem rio embaixo; o rótulo
  * carrega a informação sozinho.
  */
+/**
+ * Distância, em pixels, de um ponto ao SEGMENTO ab — não aos extremos.
+ *
+ * Ao vértice não serve: num trecho reto e longo, o meio fica a dezenas de
+ * pixels dos dois vértices, e o toque no meio do rio não pegaria nada.
+ */
+export function distanciaAoSegmento(
+  px: number,
+  py: number,
+  a: [number, number],
+  b: [number, number],
+): number {
+  const dx = b[0] - a[0]
+  const dy = b[1] - a[1]
+  if (dx === 0 && dy === 0) return Math.hypot(px - a[0], py - a[1])
+  const t = Math.max(0, Math.min(1, ((px - a[0]) * dx + (py - a[1]) * dy) / (dx * dx + dy * dy)))
+  return Math.hypot(px - (a[0] + t * dx), py - (a[1] + t * dy))
+}
+
+/** Raio do toque no rio, em pixels. Maior que o da régua (14) e menor que o do
+ *  pino (26): o rio é uma linha fina, e o dedo é grosso — mas o pino, quando
+ *  está por perto, tem de ganhar. A ordem de teste é que garante isso. */
+export const RAIO_TRECHO_PX = 18
+
+/**
+ * A cidade do trecho de rio sob o ponteiro — ou `null`.
+ *
+ * POR QUE EXISTE: o mapa já respondia ao toque no PINO, e o pino é pequeno.
+ * Quem está numa cheia encosta no RIO, perto de onde mora, não no ponto exato
+ * da régua. Sem isto, o toque no rio não fazia nada e a tela parecia travada.
+ *
+ * Devolve a cidade que PINTOU o trecho — a mesma que decidiu a cor que a pessoa
+ * está vendo —, nunca a mais próxima em linha reta, que pode ser outra e daria
+ * uma resposta que não bate com o que está na tela. Trecho cinza (`sem-dado`,
+ * `cidadeId` nulo) devolve `null`: ali não se sabe de quem é, e chutar seria
+ * atribuir uma leitura a um trecho que ninguém mediu.
+ */
+export function cidadeNoTrecho(
+  trechos: readonly Trecho[],
+  x: number,
+  y: number,
+  raio: number = RAIO_TRECHO_PX,
+): { cidadeId: string; rioId: string } | null {
+  let melhor: { cidadeId: string; rioId: string } | null = null
+  let d = raio
+  for (const t of trechos) {
+    if (!t.cidadeId) continue
+    for (let i = 1; i < t.pts.length; i++) {
+      const dd = distanciaAoSegmento(x, y, t.pts[i - 1]!, t.pts[i]!)
+      if (dd < d) {
+        d = dd
+        melhor = { cidadeId: t.cidadeId, rioId: t.rioId }
+      }
+    }
+  }
+  return melhor
+}
+
 export function desenharBarragens(
   ctx: CanvasRenderingContext2D,
   cena: Cena,

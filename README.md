@@ -477,6 +477,22 @@ o projeto.
 
 ## Pendências
 
+- [x] **Tocar no TRECHO DO RIO abre a cidade daquele trecho (05/09/2026).** Antes, só o pino respondia
+  — e o pino é pequeno. Quem está numa cheia encosta no **rio**, perto de onde mora; a tela não fazia
+  nada e parecia travada. A ordem do toque agora vai do alvo mais preciso para o mais largo: régua
+  (14 px) → pino (26 px) → trecho (18 px), e o painel que abre é **o mesmo** do toque no pino, com o
+  botão "Abrir {cidade} →". **A resposta é a cidade que PINTOU o trecho**, não a mais próxima em linha
+  reta: quem encosta num trecho laranja quer saber de quem é aquele laranja, e a mais próxima poderia
+  ter outra faixa e contradizer a cor debaixo do dedo. Trecho cinza não devolve chute. **Para isso o
+  corte de trecho passou a ser por (faixa, âncora)**, e não só por faixa — duas cidades vizinhas na
+  mesma cor formavam UM trecho, e a metade de baixo devolveria o nome da de cima. **Achado no caminho,
+  anterior a este trabalho e agora documentado:** `trechoDoPonto` devolve índice de SEGMENTO, então o
+  trecho entre duas cidades é pintado pela de **montante** e a **última cidade do rio não pinta nada**
+  — quem colore a foz é a penúltima. Não mexi nisso: muda cor de mapa de cheia e é decisão sua. Está
+  em `docs/kikikuru.md`. **Cinco sabotagens**, entre elas uma que só foi pega depois de o teste passar
+  a montar a CENA de verdade em vez de `Trecho` à mão — a terceira vez nesta sessão que a folga estava
+  no teste, não no código.
+
 - [ ] **⛔ AS MANCHAS AO VIVO ESTÃO BLOQUEADAS POR DADO: Itajaí tem ZERO picos no cadastro.** Pedido:
   "quando os rios encherem, a mancha aparece no mapa", começando por Itajaí. As **dez manchas de
   Itajaí (1983–2015) já existem** e já são navegáveis por evento em `/itajai`. O que não existe é o
