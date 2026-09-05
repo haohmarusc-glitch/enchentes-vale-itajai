@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import {
   cidadesDoRio,
   eixoDoRio,
@@ -8,6 +8,7 @@ import {
   temReguaCadastrada,
 } from '../dados/carregar'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
+import { vistaDaCidade } from '../logica/vistaDaCidade'
 import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
@@ -284,8 +285,20 @@ function centroAtual(cena: Cena, v: Vista): [number, number] {
   ]
 }
 
+/**
+ * O Monitor, opcionalmente ABERTO NUMA CIDADE (`/monitor/:cidadeId`).
+ *
+ * É o MESMO mapa, e de propósito: uma segunda implementação do mapa ao vivo
+ * divergiria com o tempo, e o dia da divergência é o dia em que a mesma cidade
+ * aparece verde numa tela e laranja na outra. Só muda o ENQUADRAMENTO inicial e
+ * qual pino já vem aberto — nada do que o mapa afirma depende do zoom.
+ *
+ * Cidade sem coordenada no cadastro abre na bacia inteira, como sempre. Não se
+ * inventa posição, e não se deixa a tela em branco.
+ */
 export default function MonitorBacia() {
   const navigate = useNavigate()
+  const { cidadeId: cidadeFoco } = useParams()
   const divRef = useRef<HTMLDivElement | null>(null)
   /**
    * As réguas com coordenada própria, como pontos no mapa.
@@ -296,8 +309,16 @@ export default function MonitorBacia() {
    */
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const cenaRef = useRef<Cena | null>(null)
-  /** Onde o mapa está olhando. Começa na bacia inteira, como sempre foi. */
+  /**
+   * Onde o mapa está olhando. Começa na bacia inteira — ou na cidade da rota.
+   *
+   * O enquadramento da cidade só pode ser calculado depois que a cena existe
+   * (o zoom é relativo aos limites da bacia), então ele é aplicado uma vez, no
+   * efeito abaixo, e não aqui.
+   */
   const [vista, setVista] = useState<Vista>(VISTA_INTEIRA)
+  /** Já enquadrou na cidade da rota? Uma vez só: depois o zoom é de quem mexe. */
+  const enquadrou = useRef(false)
   /** Dedos/ponteiros apertados agora, para separar toque de arrasto e de pinça. */
   const ponteiros = useRef<Map<number, { x: number; y: number }>>(new Map())
   /** Distância entre os dois dedos no quadro anterior da pinça. */
@@ -615,6 +636,30 @@ export default function MonitorBacia() {
       cancelAnimationFrame(raf)
     }
   }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista])
+
+  /**
+   * Enquadra na cidade da rota, UMA VEZ, quando a cena existir.
+   *
+   * Depois disso o zoom é de quem mexe: reaplicar a cada quadro roubaria o
+   * mapa da mão da pessoa no meio de uma cheia, que é quando ela mais precisa
+   * arrastar para ver o vizinho de montante.
+   *
+   * Abre também o painel daquela cidade, para a tela já responder à pergunta
+   * que levou alguém até este endereço — em que pé está a minha cidade.
+   */
+  useEffect(() => {
+    if (!cidadeFoco || enquadrou.current) return
+    const cena = cenaRef.current
+    if (!cena || cena.pinos.length === 0) return
+    const pino = cena.pinos.find((p) => p.cidade.id === cidadeFoco)
+    // Cidade que não está no mapa (id errado no endereço, ou sem coordenada):
+    // fica a bacia inteira. Melhor do que zoom num lugar inventado.
+    const v = vistaDaCidade(pino?.cidade.coordenadas, cena.limitesBase)
+    enquadrou.current = true
+    if (!v) return
+    setVista(v)
+    if (pino) setSel(pino)
+  }, [cidadeFoco, tam, rios, tempoReal])
 
   /** Pino mais próximo do ponteiro, dentro do raio — ou null. */
   function pinoNoPonto(ev: React.PointerEvent<HTMLCanvasElement>): Pino | null {

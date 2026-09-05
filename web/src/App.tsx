@@ -49,6 +49,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/monitor" element={<MonitorBacia />} />
+          {/* O mesmo Monitor, aberto numa cidade. Rota própria para ser um
+              endereço que se dita por telefone durante a chuva. */}
+          <Route path="/monitor/:cidadeId" element={<MonitorBacia />} />
           <Route path="/acu" element={<TelaRio rioId="itajai-acu" />} />
           {/* Uma página por cidade. `rioId` vem na URL para o endereço ser
               compartilhável: `/acu/gaspar` é um endereço; "abra o Açu e toque

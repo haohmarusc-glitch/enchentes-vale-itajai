@@ -253,6 +253,14 @@ export default function TelaCidade() {
               focarEm={cidade}
               barragens={[...mapaBarragens.values()]}
             />
+            {/* O mapa daqui é uma janela fixa. Quem quer aproximar, arrastar,
+                trocar para satélite ou tocar no rio para ver o vizinho vai ao
+                Monitor — que é o MESMO mapa, já enquadrado nesta cidade. */}
+            <p className={estilos.instrucao}>
+              <Link to={`/monitor/${cidade.id}`}>
+                Abrir no monitor ao vivo, com zoom e satélite →
+              </Link>
+            </p>
           </Suspense>
         ) : (
           <p className={estilos.instrucao}>
