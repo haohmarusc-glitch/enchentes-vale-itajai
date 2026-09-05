@@ -39,6 +39,63 @@
   `station-history`, `panel`, `shelters`, `cities/{id}/forecast/bulletin`.
 - 29 estações do Alto Vale + barragens Oeste e Sul. Coletor: `scripts/coleta_rio_do_sul.py`.
 
+## 3b. EPAGRI/CIRAM — maré MEDIDA e residual ⭐⭐ (04/09/2026)
+
+`ciram.epagri.sc.gov.br/index.php/maregrafos/` → JSON **sem autenticação**:
+
+```
+https://ciram.epagri.sc.gov.br/graficos/getDataMare{N}_{ID}.php
+```
+
+Formato Google Charts (`{cols, rows}`), cadência **15 min**, ~384 linhas.
+Coletor: `scripts/coleta_mare_ciram.py`.
+
+**Por que importa mais que a tábua.** O projeto já tinha maré em
+`data/mare-itajai.json`, mas é **previsão astronômica** (planilha da UNIVALI). O
+CIRAM traz **maré observada** e, com ela, o **residual = observada − astronômica**,
+que é a **maré meteorológica**: o empilhamento de água por vento e pressão. É o
+que a tábua não prevê e o que faz a água do rio não escoar. Um residual de 30 cm
+somado a uma preamar de sizígia é a diferença entre o rio vazar e represar.
+
+**Itajaí não publica maré observada.** A estação 12/2921 responde, mas com zero
+linhas de MO — só astronômica e previsão MOHID. É a **segunda fonte independente**
+a dizer isso; a primeira foi a página da Defesa Civil ("Nenhum dado disponível").
+Por isso a referência é **Balneário Camboriú (5/2927), a 13 km** — muito mais perto
+que Imbituba (147 km), que era a alternativa anterior. Maré de outra cidade é
+**contexto, nunca nível local**, e a tela tem que dizer a distância.
+
+Correção registrada: uma resposta anterior afirmou que "Balneário Camboriú não tem
+marégrafo". O **município** não opera um; a **EPAGRI/CIRAM mantém um lá**, medindo
+a cada 15 min. A pergunta sobre Balneário Camboriú levou à melhor fonte de maré do
+projeto.
+
+### As três armadilhas, todas com teste
+
+| armadilha | por que engana | o que o coletor faz |
+|---|---|---|
+| **unidade é centímetro** | 61,80 comparado com régua em metros erra por 100× | grava `_cm` **e** `_m`, com o nome do campo dizendo qual |
+| **carimbo sem ano nem fuso** (`"dd/mm HH:MM"`) | a série cruza a virada do ano; `agora.year` poria metade dela 364 dias no passado | ano vem da **distância até agora**; vira `medido_em` ISO em Brasília |
+| **medido e previsto no mesmo vetor** (2 dias para cada lado) | ler previsão como medição faz a tela afirmar maré que ainda não aconteceu | saem em listas **separadas**, cada linha com `medido: true\|false` |
+
+**O sinal do residual.** A coluna da fonte chama-se `"Mare Residual (MA-MO)"`, o que
+sugere astronômica menos observada. Os números dizem o contrário: em 04/09 22:30,
+Balneário Camboriú tinha observada 61,8 · astronômica 45,0 · residual **+16,8** —
+isto é, **observada − astronômica**. Vale o número, não o rótulo; inverter o sinal
+diria que o mar está sendo empurrado para baixo quando está sendo empurrado para
+cima. Há teste travando, com esses números.
+
+**Quando trocar.** O marégrafo do Cabeçudas (radar, QualiControl) será integrado à
+telemetria do município. Quando publicar, vira a fonte primária e Balneário
+Camboriú volta a ser contexto — e ele deve aparecer na **mesma telemetria que já
+coletamos**, não numa API nova.
+
+**Pergunta em aberto (para o Prof. Mauro):** a estação de Itajaí do CIRAM publica
+astronômica e MOHID, mas não observada. Ela **tem sensor fora do ar, ou nunca teve**
+— e o número astronômico vem só de constantes harmônicas? A resposta diz se há um
+marégrafo em Itajaí a recuperar, além do Cabeçudas.
+
+---
+
 ## 4. ArcGIS oficial da Prefeitura de Itajaí — REST público (GeoJSON) ⭐
 Raiz: `https://arcgis.itajai.sc.gov.br/server/rest/services?f=pjson` (pasta `defesacivil` exige token,
 mas os serviços na raiz são públicos e servem `f=geojson`).
