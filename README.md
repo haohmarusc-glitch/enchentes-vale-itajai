@@ -477,6 +477,20 @@ o projeto.
 
 ## Pendências
 
+- [x] **As 1.613 cotas de rua de Gaspar entraram no mapa ao vivo (05/09/2026).** Era o item de maior
+  valor que já tinha o dado no repositório, e o que de fato aproveita o zoom: cada ponto é uma rua, e
+  **cheio** quer dizer que o rio já passou da cota dela. A conta é aritmética pura — cota levantada
+  menos nível medido —, sem modelo no meio. **Quatro travas, cada uma com sabotagem que a derruba:**
+  (1) **só onde o par cota↔leitura foi provado**: hoje só Gaspar; **Brusque, que tem 348 ruas
+  georreferenciadas, fica de fora** porque a régua da leitura ao vivo não é a das cotas dela —
+  coordenada não é passaporte, e `cotas_verificado` ausente é "ninguém conferiu ainda", não "pode";
+  (2) **só de perto** (≤ 8 km na tela), porque 1.613 pontos no zoom da bacia viram nuvem e nuvem
+  lê-se como **mancha de inundação**, que é outra coisa; (3) **sem leitura do rio, sem estado** — o
+  ponto não afirma nada, já que "não sei" não é "não alagou"; (4) **dois estados, nunca degradê por
+  metro**, com cor fora da paleta de faixa e do violeta do bruto, porque rua alagada não é faixa de
+  rio. O **vazio entre os pontos continua vazio**, e o painel diz isso com todas as letras. A tabela
+  é carregada sob demanda: quem abre o mapa só para ver o nível não baixa 4.593 registros.
+
 - [x] **O Monitor abre por cidade: `/monitor/:cidadeId` (05/09/2026).** A tela da cidade já existia,
   mas o mapa dela é uma janela fixa — sem zoom, sem satélite, sem arrastar. Agora há um endereço
   próprio que abre **o mesmo Monitor** já enquadrado na cidade, com o painel dela aberto, e a tela da

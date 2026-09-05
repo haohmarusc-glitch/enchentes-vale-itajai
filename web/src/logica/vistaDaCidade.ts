@@ -69,6 +69,18 @@ export function vistaDaCidade(
   return { zoom: zoomParaKm(limites, kmAlvo), centroLon: lon, centroLat: lat }
 }
 
+/**
+ * Quantos km de largura a tela mostra num dado zoom — o inverso de `zoomParaKm`.
+ *
+ * Serve para decidir o que só pode aparecer de perto (as cotas de rua: de longe
+ * viram nuvem, e nuvem lê-se como mancha).
+ */
+export function kmDaVista(limites: Limites, zoom: number): number {
+  const larguraKm = (limites.maxLon - limites.minLon) * KM_POR_GRAU_LON
+  if (!Number.isFinite(larguraKm) || larguraKm <= 0) return Number.NaN
+  return larguraKm / Math.max(1, Number.isFinite(zoom) ? zoom : 1)
+}
+
 /** A vista de abertura: a da cidade quando ela existe, a bacia inteira quando não. */
 export function vistaInicial(
   coordenadas: readonly number[] | null | undefined,

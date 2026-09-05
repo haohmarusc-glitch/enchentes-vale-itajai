@@ -64,6 +64,18 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   **significa o nível**, não enfeita. Trecho cinza **não corre** —
   `VEL_FAIXA['sem-dado'] = 0` —, porque não se anima uma água que não se mede.
   `prefers-reduced-motion` congela o movimento (um quadro estático).
+- **As COTAS DE RUA aparecem no mapa da cidade, com quatro travas** (`logica/cotasNoMapa.ts`).
+  (1) **Só onde o par cota↔leitura foi provado** — a cota descreve UMA régua e o nível vem de outra
+  fonte; hoje só **Gaspar** (`cotas_verificado: true`). **Brusque tem 348 ruas georreferenciadas e
+  fica de fora**, porque a régua da leitura ao vivo não é a das cotas dela: coordenada não é
+  passaporte, e `cotas_verificado` ausente é "ninguém conferiu", não "pode". (2) **Só de perto**
+  (≤ 8 km na tela): 1.613 pontos no zoom da bacia viram uma nuvem, e nuvem num mapa de enchente
+  lê-se como **mancha** — a área alagada que este projeto se recusa a inventar. (3) **Sem leitura,
+  sem estado**: o ponto fica vazado e apagado, porque "não sei" não é "não alagou". (4) **Dois
+  estados, nunca um degradê por metro** — cheio, o rio já passou da cota; vazado, ainda não —, com
+  **cor fora da paleta de faixa e do violeta do bruto**, porque rua alagada não é faixa de rio. O
+  **vazio entre os pontos continua vazio**: não se preenche o que não se sabe. Carregadas sob
+  demanda, e desenhadas por baixo de réguas, pinos e barragens.
 - **`/monitor/:cidadeId` abre o MESMO Monitor, enquadrado numa cidade.** Não é uma segunda tela: duas
   implementações do mapa ao vivo divergem com o tempo, e o dia da divergência é o dia em que a mesma
   cidade aparece verde numa e laranja na outra. Só mudam o enquadramento inicial e qual pino já vem
