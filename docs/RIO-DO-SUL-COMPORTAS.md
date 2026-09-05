@@ -114,8 +114,16 @@ discordarem. Comporta sem o campo `aberta` conta como **fechada** — "não sei"
 ## O que falta fazer, em ordem
 
 1. ~~Coletar o `dams`.~~ **Feito.** Falta pôr no cron e publicar junto do resto do tempo real.
-2. **Mostrar o estado do sistema junto do nível** de Rio do Sul e Taió: quantas comportas abertas, e o
-   percentual de uso dos reservatórios.
+   - **A Barragem Norte NÃO vem por aqui (05/09/2026).** `dams?city_id=4207106` (Ibirama) devolveu `[]`.
+     A API é a da Defesa Civil de Rio do Sul; provavelmente só responde para municípios clientes. O
+     coletor consulta só Rio do Sul, **avisa** quando uma cidade devolve vazio (antes `[]` parecia saúde)
+     e grava em `_meta.cobertura` que o arquivo tem **duas das três** barragens da bacia. Para tentar
+     de novo: mesmo `curl` com o IBGE de José Boiteux ou de Blumenau, conferido no IBGE. Só entra a
+     cidade que devolver a Norte no corpo.
+2. ~~Mostrar o estado do sistema junto do nível~~ **Feito** (PR #177 texto, PR #178 mapa): comportas
+   abertas/fechadas e percentual do reservatório, ao lado do nível de Rio do Sul, Taió e Ituporanga; no
+   mapa, cada barragem no seu ponto, comporta a comporta, com a água animada só na aberta e só com
+   leitura fresca (≤ 60 min). Depende do cron da VPS gravar e publicar `ultimo_barragens.json`.
 3. **Confirmar com a COMPDEC de Rio do Sul** se a faixa de alerta é mesmo definida por evento. Isso muda
    o que o site pode afirmar.
 4. **Suprimir cor de alerta durante esvaziamento declarado** — comportas abertas e nível estável ou

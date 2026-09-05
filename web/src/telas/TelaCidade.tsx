@@ -251,6 +251,7 @@ export default function TelaCidade() {
               agora={agora}
               mare={mareItajai}
               focarEm={cidade}
+              barragens={[...mapaBarragens.values()]}
             />
           </Suspense>
         ) : (

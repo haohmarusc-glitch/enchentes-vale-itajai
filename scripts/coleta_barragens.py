@@ -70,7 +70,31 @@ from zoneinfo import ZoneInfo
 
 from comum import baixar, espera_turno, grava_json
 
-URL = "https://public.asthon.com.br/public/dams?city_id=4214805"
+BASE = "https://public.asthon.com.br/public/dams?city_id="
+
+#: Cidades de INTERESSE a consultar. A API devolve as barragens A MONTANTE de
+#: cada cidade, então uma consulta só não cobre o sistema: por Rio do Sul
+#: (4214805) vêm a Oeste e a Sul, mas NÃO a Norte — o Rio Hercílio, que a
+#: Barragem Norte (José Boiteux) controla, entra no tronco ABAIXO de Rio do Sul,
+#: entre Lontras e Ascurra (ver docs/TOPOLOGIA-CANONICA.md).
+#:
+#: CONFERIDO em 05/09/2026, na VPS: `dams?city_id=4207106` (Ibirama, no Hercílio
+#: abaixo da Norte) devolveu `[]` — lista vazia, sem erro. Ou a Asthon não tem a
+#: Norte cadastrada, ou só responde para municípios que são clientes dela (a API
+#: é a que a Defesa Civil de RIO DO SUL publica), e Ibirama não é. Não dá para
+#: distinguir daqui, e as duas hipóteses levam ao mesmo lugar: a Norte NÃO vem
+#: por este endpoint até alguém achar uma cidade que a devolva. Por isso a lista
+#: tem UMA cidade: consultar Ibirama a cada coleta seria um pedido vazio de 15
+#: em 15 minutos e um aviso permanente no log — aviso que ninguém lê mais é aviso
+#: perdido. `_meta.cobertura` declara a ausência para quem lê o JSON.
+#:
+#: Para tentar de novo, à mão, antes de mexer aqui:
+#:     curl 'https://public.asthon.com.br/public/dams?city_id=<IBGE>'
+#: com o IBGE de José Boiteux (onde a Norte está) ou de Blumenau (a jusante das
+#: três) — códigos a conferir no IBGE, não de memória. Só entra na lista a
+#: cidade que devolver a Norte no corpo; respostas são DEDUPLICADAS por `station_id`.
+CITY_IDS = (4214805,)
+URL = BASE + str(CITY_IDS[0])  # mantido para quem só quer o endpoint canônico
 
 #: `medido_em` sem fuso é Brasília — convenção do projeto (CLAUDE.md).
 FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
@@ -173,17 +197,50 @@ def converter(bruto: list) -> tuple[list[dict], list[str]]:
     return saida, avisos
 
 
-def coletar(buscador=None) -> dict:
+def coletar(buscador=None, city_ids=CITY_IDS) -> dict:
+    """
+    Consulta cada cidade de interesse e junta as barragens, uma vez cada
+    (deduplicação por `station_id`): a Oeste e a Sul vêm tanto por Rio do Sul
+    quanto por qualquer cidade a jusante, e não podem entrar duas vezes.
+    Uma cidade que falhe (rede, código errado) vira aviso — as outras seguem.
+    """
     if buscador is None:
-        def buscador():
+        def buscador(city_id: int):
             espera_turno()
-            return json.loads(baixar(URL))
-    bruto = buscador()
-    barragens, avisos = converter(bruto)
+            return json.loads(baixar(BASE + str(city_id)))
+    bruto_total: list = []
+    vistos: set = set()
+    avisos_rede: list[str] = []
+    for cid in city_ids:
+        try:
+            resposta = buscador(cid)
+        except Exception as e:  # noqa: BLE001 — uma cidade fora não derruba as outras
+            avisos_rede.append(f"city_id={cid} falhou ({e}); seguindo com as outras")
+            continue
+        lista = resposta if isinstance(resposta, list) else []
+        if not lista:
+            # `[]` não é sucesso: ou a cidade não tem barragem cadastrada, ou o
+            # código não existe na fonte. Sem este aviso, um código errado pareceria
+            # saúde — foi exatamente o que 4207106 devolveu em 05/09/2026.
+            avisos_rede.append(f"city_id={cid} devolveu lista vazia — nenhuma barragem cadastrada "
+                               f"para essa cidade na fonte, ou código sem cadastro; nada inventado")
+            continue
+        for b in lista:
+            chave = b.get("station_id") or b.get("name")
+            if chave in vistos:
+                continue
+            vistos.add(chave)
+            bruto_total.append(b)
+    barragens, avisos = converter(bruto_total)
+    avisos = avisos_rede + avisos
     return {
         "_meta": {
             "descricao": "Estado das barragens Oeste (Taió) e Sul (Ituporanga), comporta a comporta.",
-            "fonte": URL,
+            "fonte": [BASE + str(c) for c in city_ids],
+            "cobertura": "Oeste (Taió) e Sul (Ituporanga). A BARRAGEM NORTE (José Boiteux, Rio "
+                         "Hercílio) NÃO está aqui: a bacia tem três barragens de contenção, e a fonte "
+                         "devolveu lista vazia para Ibirama (city_id=4207106) em 05/09/2026. Quem "
+                         "lê 'todas as comportas abertas' neste arquivo está lendo DUAS das três.",
             "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "fuso": "`medido_em` é Brasília sem fuso, convertido do `measured_at` da fonte, que "
                     "vem em UTC com Z. `coletado_em` é UTC — campos diferentes, não confundir.",
@@ -230,7 +287,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if a.arquivo:
         with open(a.arquivo, encoding="utf-8") as f:
-            doc = coletar(buscador=lambda: json.load(f))
+            corpo = json.load(f)
+        # Um arquivo só representa UMA consulta; a lista vira uma cidade.
+        doc = coletar(buscador=lambda _cid: corpo, city_ids=(0,))
     else:
         doc = coletar()
 

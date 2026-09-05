@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
+import type { Barragem } from '../dados/barragens'
+import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { ROTULO_FAIXA, ACAO_FAIXA } from './LegendaFaixas'
 import { metros } from '../logica/formato'
 import { eixoDoRio, temReguaCadastrada } from '../dados/carregar'
@@ -9,6 +11,7 @@ import {
   construirCena,
   desenharBase,
   desenharCorrenteza,
+  desenharBarragens,
   desenharOnda,
   desenharPinos,
   MARGEM,
@@ -51,6 +54,7 @@ export default function MapaRios({
   mare = null,
   focarEm,
   zoomDoFoco = 8,
+  barragens = [],
 }: {
   rioId: string
   cidades: Cidade[]
@@ -71,6 +75,11 @@ export default function MapaRios({
   focarEm?: Cidade
   /** Quanto aproximar quando há foco. 8 ≈ 25 km de tela na bacia do Itajaí. */
   zoomDoFoco?: number
+  /**
+   * As barragens a marcar no mapa. Só aparecem no mapa do Açu (as três controlam
+   * afluentes dele); no Mirim a lista é ignorada — ver `barragensNoMapa`.
+   */
+  barragens?: Barragem[]
 }) {
   const divRef = useRef<HTMLDivElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -198,12 +207,13 @@ export default function MapaRios({
       const seg = reduz ? 0 : (t - inicio) / 1000
       desenharOnda(ctx, cena, seg) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg)
+      desenharBarragens(ctx, cena, barragensNoMapa(barragens, agora, rioId), seg)
       desenharPinos(ctx, cena, selRef.current, { temRegua: temReguaCadastrada })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
     raf = requestAnimationFrame(quadro)
     return () => cancelAnimationFrame(raf)
-  }, [coords, cidades, tempoReal, agora, tam, rioId, mare, vista])
+  }, [coords, cidades, tempoReal, agora, tam, rioId, mare, vista, barragens])
 
   // Toque/clique: acha o pino mais próximo e abre o detalhe da cidade.
   function aoTocar(ev: React.PointerEvent<HTMLCanvasElement>) {

@@ -49,6 +49,14 @@ export interface Barragem {
   /** Percentual de uso do reservatório, como a FONTE publica — não recalculado. */
   percentUso: number | null
   medidoEm: Date | null
+  /**
+   * Coordenada da barragem, como a fonte publica — é o que põe o marcador no
+   * lugar exato do mapa. `null` quando a fonte não a trouxe: sem coordenada não
+   * há marcador, e o bloco de texto segue funcionando. Note o que NÃO está aqui:
+   * o nível da barragem em metros (ver o cabeçalho).
+   */
+  lat: number | null
+  lon: number | null
 }
 
 /**
@@ -98,6 +106,13 @@ function barragemValida(bruta: unknown): Barragem | null {
     medidoEm = Number.isNaN(d.getTime()) ? null : d
   }
 
+  // A bacia do Itajaí cabe folgada em lat −28..−26, lon −51..−48. Coordenada
+  // fora disso é troca de campo ou defeito, e um marcador no lugar errado num
+  // mapa de enchente é pior que nenhum: vira null.
+  const lat0 = typeof b.lat === 'number' ? b.lat : Number.NaN
+  const lon0 = typeof b.lon === 'number' ? b.lon : Number.NaN
+  const coordOk = lat0 > -28 && lat0 < -26 && lon0 > -51 && lon0 < -48
+
   return {
     nome: b.nome,
     rio: typeof b.rio === 'string' ? b.rio : null,
@@ -106,6 +121,8 @@ function barragemValida(bruta: unknown): Barragem | null {
     fechadas,
     percentUso,
     medidoEm,
+    lat: coordOk ? lat0 : null,
+    lon: coordOk ? lon0 : null,
   }
 }
 

@@ -38,6 +38,7 @@ import {
   type LonLat,
   type Vista,
 } from '../logica/mapaCanvas'
+import { comportas, faseComporta, rotuloComportas, type BarragemNoMapa } from './barragensNoMapa'
 
 /**
  * Os limites da bacia, ou uma caixa de segurança quando ainda não há traçado —
@@ -677,6 +678,110 @@ export interface OpcoesPinos {
    * comportamento antigo de quem não passar.
    */
   temRegua?: TemRegua
+}
+
+
+/** Cor da parede da barragem — aço, deliberadamente FORA da paleta de faixa. */
+export const COR_BARRAGEM = '#6c7c8c'
+/** A água passando pela comporta aberta: o mesmo azul-água da onda, não a cor de faixa. */
+const COR_AGUA_COMPORTA = 'rgba(150,220,255,0.95)'
+
+/**
+ * As BARRAGENS como marcadores: uma parede com as comportas em fila, cada uma
+ * aberta (a água passa, animada) ou fechada (sólida, parada).
+ *
+ * O que a animação significa aqui — e só isto — está no cabeçalho de
+ * `logica/barragensNoMapa.ts`: comporta aberta anima, fechada não; leitura
+ * VELHA não anima nenhuma (o "cinza não corre" da comporta). A cor é própria:
+ * segurar e soltar são operação normal, e cor de faixa aqui diria perigo.
+ *
+ * O nível da barragem em metros NÃO aparece: a régua dela tem zero próprio
+ * (339 m de altitude na Oeste), e um número ao lado do rio convidaria a
+ * comparação que este projeto existe para não fazer. Sai o estado e o
+ * percentual, que atravessam sem datum.
+ *
+ * A parede é desenhada na horizontal da tela, simbólica. A Sul fica a 20 km
+ * do rio desenhado mais perto — a cabeceira do Itajaí do Sul ainda não tem
+ * traçado —, então ela flutua na coordenada exata, sem rio embaixo; o rótulo
+ * carrega a informação sozinho.
+ */
+export function desenharBarragens(
+  ctx: CanvasRenderingContext2D,
+  cena: Cena,
+  barragens: BarragemNoMapa[],
+  tempo: number,
+  escala = 1,
+): void {
+  if (barragens.length === 0) return
+  const fase = faseComporta(tempo)
+  const fonte = Math.round(9.5 * escala)
+  const caixas: { x0: number; y0: number; x1: number; y1: number }[] = []
+
+  for (const b of barragens) {
+    const [x, y] = projetar(cena.enq, [b.lon, b.lat])
+    if (x < -40 || y < -40 || x > cena.largura + 40 || y > cena.altura + 40) continue
+
+    const lista = comportas(b.total, b.fechadas)
+    const larg = 3.2 * escala // largura de cada comporta
+    const vao = 1.4 * escala // vão entre comportas
+    const alt = 7 * escala // altura da parede
+    const total = lista.length * larg + (lista.length - 1) * vao
+    const x0 = x - total / 2
+    const y0 = y - alt / 2
+
+    // A parede: um retângulo de aço por trás das comportas, com borda escura
+    // para destacar sobre qualquer fundo de mapa.
+    ctx.beginPath()
+    ctx.rect(x0 - 2 * escala, y0 - 1.5 * escala, total + 4 * escala, alt + 3 * escala)
+    ctx.fillStyle = b.fresca ? COR_BARRAGEM : 'rgba(108,124,140,0.55)'
+    ctx.fill()
+    ctx.lineWidth = 1.2 * escala
+    ctx.strokeStyle = 'rgba(4,12,20,0.9)'
+    ctx.stroke()
+
+    lista.forEach((c, i) => {
+      const cx = x0 + i * (larg + vao)
+      ctx.beginPath()
+      ctx.rect(cx, y0, larg, alt)
+      if (!c.aberta) {
+        // Fechada: bloco sólido escuro. Não se mexe.
+        ctx.fillStyle = 'rgba(20,30,40,0.95)'
+        ctx.fill()
+        return
+      }
+      // Aberta: o vão fica escuro-água e, quando a leitura é fresca, um traço
+      // de água ATRAVESSA de cima para baixo, com a fase andando no tempo.
+      ctx.fillStyle = 'rgba(10,40,60,0.9)'
+      ctx.fill()
+      if (!b.fresca) return
+      const py = y0 + ((fase + i * 0.17) % 1) * alt
+      ctx.beginPath()
+      ctx.rect(cx, Math.max(y0, py - 1.6 * escala), larg, 1.6 * escala)
+      ctx.fillStyle = COR_AGUA_COMPORTA
+      ctx.fill()
+    })
+
+    // Rótulo: nome curto + estado. Anticolisão simples, como nas réguas.
+    const nome = b.nome.replace(/^Barragem\s+/i, '')
+    const estado = rotuloComportas(b)
+    const texto = b.fresca ? `${nome} · ${estado}` : `${nome} · ${estado} · sem leitura fresca`
+    ctx.font = `600 ${fonte}px system-ui, sans-serif`
+    const w = ctx.measureText(texto).width
+    const tx = Math.max(2 * escala + w / 2, Math.min(cena.largura - 2 * escala - w / 2, x))
+    const ty = y0 - 4 * escala
+    const caixa = { x0: tx - w / 2 - 1, y0: ty - fonte, x1: tx + w / 2 + 1, y1: ty + 2 }
+    if (caixas.some((c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0)) {
+      continue
+    }
+    caixas.push(caixa)
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'bottom'
+    ctx.lineWidth = 3 * escala
+    ctx.strokeStyle = 'rgba(4,12,20,0.92)'
+    ctx.strokeText(texto, tx, ty)
+    ctx.fillStyle = b.fresca ? '#eaf1f8' : '#9fb2c4'
+    ctx.fillText(texto, tx, ty)
+  }
 }
 
 /**

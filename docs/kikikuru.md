@@ -64,6 +64,24 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   **significa o nível**, não enfeita. Trecho cinza **não corre** —
   `VEL_FAIXA['sem-dado'] = 0` —, porque não se anima uma água que não se mede.
   `prefers-reduced-motion` congela o movimento (um quadro estático).
+- As **barragens** (Oeste em Taió, Sul em Ituporanga, Norte em José Boiteux)
+  entram como **marcadores próprios**: uma parede de aço com as comportas em
+  fila, na coordenada que a API da Asthon publica (`coleta_barragens.py`). É a
+  **terceira animação** do mapa, e ela **significa operação, não nível**:
+  comporta **aberta** mostra a água atravessando (animada); **fechada** é um
+  bloco parado. **Leitura velha não anima nenhuma** — o mesmo "cinza não corre"
+  da correnteza, aplicado à comporta: não se anima um estado que não se sabe
+  mais (`FRESCA_MIN`, 60 min, o mesmo limite do coletor). A **cor é própria**
+  (aço + azul-água), **nunca a de faixa**: segurar e soltar são operação normal,
+  e cor de faixa ali diria perigo. O **nível da barragem em metros NÃO aparece**
+  no mapa — a régua dela tem zero próprio (339 m de altitude na Oeste), e um
+  número ao lado do rio convidaria a comparação que a regra do topo proíbe; o
+  que atravessa sem datum é o estado das comportas e o percentual do
+  reservatório. A parede é horizontal na tela, **simbólica**; a Sul flutua a
+  20 km do rio desenhado mais perto porque a cabeceira do Itajaí do Sul ainda
+  não tem traçado, e o rótulo carrega a informação sozinho. Só nos mapas do
+  **Açu** e da **bacia**: no Mirim não há barragem. Regras em
+  `web/src/logica/barragensNoMapa.ts`, com teste.
 - Na **foz** (a leste, onde fica Itajaí) o mapa desenha o **MAR**, colorido pela
   **maré** numa escala **azul PRÓPRIA** — jamais a de cheia. Isto é deliberado:
   maré alta **não** é cheia (as réguas do estuário são `alerta_automatico:false`);
