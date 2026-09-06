@@ -76,13 +76,37 @@ O Itajaí-Mirim chega à cidade em **dois braços paralelos**: o *canal retifica
 Mesma tela. Procure **Ribeirão da Murta**, **Ribeirão Canhanduba** e **Rio Conceição**.
 
 As réguas deles são de estuário: a maré cruza a cota sem enchente nenhuma. Por isso eles
-mostram o número mas **não** recebem cor de perigo nem animação.
+**não** recebem cor de perigo nem animação, mesmo tendo número.
 
-- ✅ Anel vazado (não bolinha cheia), com número e idade ao lado, **sem setas correndo**.
+**São duas verificações, e elas valem em zooms diferentes.** Faça as duas.
+
+**2a — cinza e parado (vale em QUALQUER zoom).** É esta que impede o alarme de maré de
+vazar para o mapa.
+
+- ✅ Anel **vazado** (não bolinha cheia), traço do ribeirão **cinza**, **sem setas correndo**.
 - ❌ Qualquer ribeirão **animado**, ou pintado de amarelo/laranja/vermelho.
 
-> **Este é o teste mais importante da lista.** Se falhar, é o alarme de maré vazando para o
-> mapa — reporte imediatamente e com print, antes de continuar.
+**2b — número e idade (só de PERTO).** Aproxime até o mapa cobrir **menos de ~6 km** de
+largura — na prática, o bairro, não a cidade.
+
+- ✅ Cada régua com o número e a idade ao lado.
+- ❌ Número sem idade; ou nenhum número mesmo com o mapa bem aproximado.
+
+> **Por que 2b só vale de perto, e por que isto está escrito aqui.** Desde a regra de
+> rótulos por zoom, régua que **não pode virar aviso** (as de estuário) só escreve o número
+> com o mapa a menos de ~6 km. De longe ela é ponto, **de propósito**: em Itajaí são onze
+> réguas em 20 km, e todas escrevendo ao mesmo tempo viram uma pilha ilegível — e pilha
+> ilegível num mapa de cheia é pior que dado escondido, porque parece informação e não se
+> lê. A legenda do mapa explica isso ao morador.
+>
+> A versão anterior deste teste pedia "anel vazado **com número e idade**" numa verificação
+> só. Do jeito que estava, ele **acusava falha exatamente onde a regra está funcionando** —
+> foi o que aconteceu na execução de 06/09/2026.
+
+> **A verificação 2a é a mais importante da lista inteira.** Se falhar, é o alarme de maré
+> vazando para o mapa — reporte imediatamente e com print, antes de continuar. A 2b é
+> informativa: se falhar, o morador perde o número, mas ninguém se sente mais seguro do que
+> está.
 
 ### 3. O Canhanduba chega no Mirim
 `#/monitor`, zoom na parte sul de Itajaí.
@@ -271,7 +295,7 @@ violeta — dado vivo, não maquete.
 | # | Resultado | Observação |
 |---|---|---|
 | 1 | ✅ | Os dois braços do Mirim (canal retificado e curso antigo) verdes e **os dois com setas correndo**. |
-| 2 | ⚠️ **parcial** | A metade perigosa passa: o ribeirão é **cinza e sem seta nenhuma**, com anel vazado. A metade informativa **não foi confirmada**: neste zoom o número não aparece — e isso é a regra do zoom (abaixo), não defeito. Ver abaixo. |
+| 2 | ✅ **2a** · ⏳ 2b | A verificação que importa passa: o ribeirão é **cinza e sem seta nenhuma**, com anel vazado. A 2b (número e idade) não foi confirmada porque exige zoom abaixo de ~6 km. **O teste foi reescrito depois desta execução**, separando as duas — ver o enunciado. |
 | 3 | ✅ | **Medido no traçado, não a olho**: a ponta do Ribeirão Canhanduba encosta no **Rio Conceição a 0 m** — que é exatamente o que o teste pede (o trecho final do Mirim ali chama-se Conceição; a distância de 578 m até a linha `itajai-mirim` é para outro traçado, e não é vão). |
 | 4, 5, 6 | ⏳ **impossível daqui** | o proxy bloqueia os tiles do Esri (`server.arcgisonline.com`). Só com o site no ar. |
 | 7 | ✅ | Itajaí diz **"sem leitura"**; Guabiruba diz **"Sem cota / sem leitura"**. |
@@ -307,20 +331,20 @@ até o vértice mais próximo não tem nada a ver com a distância até a linha.
 Quem for medir geometria aqui: **ponto-a-segmento, sempre**, e a linha inteira,
 não as pontas. As duas medidas erradas apontariam defeito onde não há.
 
-## O teste 2 precisa ser reescrito: ele é anterior à regra de zoom
+## O teste 2 foi reescrito (feito em 06/09/2026)
 
-O teste pede "anel vazado, **com número e idade ao lado**, sem setas correndo".
-Desde a regra de rótulos por zoom, **as réguas de estuário só mostram o número
-com o mapa a menos de 6 km de largura** — de longe elas são ponto, de propósito,
-e a legenda explica. As duas metades do teste passaram a valer em zooms
-diferentes:
+Ele pedia "anel vazado, **com número e idade ao lado**, sem setas correndo" numa
+verificação só, e era anterior à regra de rótulos por zoom. Do jeito que estava,
+**acusava falha exatamente onde a regra está funcionando**.
 
-- **cinza e parado** (a metade que impede o alarme de maré vazar): vale em
-  qualquer zoom, e foi confirmado;
-- **número e idade**: só de perto.
+Agora são **2a** (cinza e parado, vale em qualquer zoom — é a que impede o
+alarme de maré de vazar) e **2b** (número e idade, só abaixo de ~6 km de
+largura). O enunciado no alto deste arquivo já está separado assim, com o motivo
+escrito para quem for testar não repetir o engano.
 
-Reescrever o teste para dizer isso, senão ele vai acusar falha onde a regra
-está funcionando.
+**Lição que vale além deste teste:** quando uma regra de exibição muda, o
+roteiro de teste envelhece junto — e um teste velho não falha em silêncio, ele
+aponta o defeito errado.
 
 ## O que este ambiente NÃO alcança
 

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useMemo, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
 import PainelMare from '../componentes/PainelMare'
 import AbrigoMaisProximo from '../componentes/AbrigoMaisProximo'
@@ -15,6 +15,8 @@ const MapaManchas = lazy(() => import('../componentes/MapaManchas'))
 import SeloConfianca from '../componentes/SeloConfianca'
 import { cidade, estacoesTempoReal, fontesGerais, mareItajai, trechos } from '../dados/carregar'
 import { separarFonte, todasAsReguas } from '../logica/reguas'
+import { leiturasDaCidadeEmTodosOsRios, useTempoReal } from '../dados/tempoReal'
+import VariasReguas from '../componentes/VariasReguas'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import { dataHora } from '../logica/formato'
 import { caminho, faixaHoras, janelaChegada } from '../logica/transito'
@@ -41,6 +43,15 @@ const ORIGENS: Origem[] = [
 export default function TelaItajai() {
   const [horarios, setHorarios] = useState<Record<string, string>>({})
   const [mapaAberto, setMapaAberto] = useState(false)
+  const tempoReal = useTempoReal()
+  // As onze réguas de Itajaí estão espalhadas por quatro cursos d'água (Açu,
+  // Mirim e dois ribeirões): pedir por rio devolveria um terço da cidade.
+  const leiturasDeItajai = leiturasDaCidadeEmTodosOsRios(tempoReal, 'itajai')
+  const reguas = todasAsReguas(estacoesTempoReal, 'itajai')
+  // Itajaí está cadastrada no Açu; é o mesmo município das réguas do Mirim e
+  // dos ribeirões — o que varia é o curso d'água de cada régua, não a cidade.
+  const cidadeItajai = cidade('itajai-acu', 'itajai')
+  const agora = useMemo(() => new Date(), [tempoReal])
 
   return (
     <>
@@ -133,24 +144,58 @@ export default function TelaItajai() {
         </p>
       </section>
 
+      {/* AGORA, RÉGUA POR RÉGUA.
+
+          Esta seção dizia "por que esta tela não mostra o nível de Itajaí ao
+          vivo", e a decisão estava certa quando foi tomada: eleger uma das onze
+          e chamar de "o nível de Itajaí" seria comparar réguas de zeros
+          diferentes, que é o erro que esta tela existe para não cometer.
+
+          Mas o próprio texto dizia a condição: "ENQUANTO NÃO HOUVER cota de
+          referência por régua". Ela foi cumprida — as ONZE têm cota própria
+          cadastrada, e é por isso que a tabela mais abaixo consegue listá-las
+          uma a uma. Com cota por régua, cada leitura é comparada com a cota
+          DELA, e não há comparação entre réguas em lugar nenhum.
+
+          O que continuava acontecendo, enquanto a condição já estava cumprida:
+          a cidade da foz — a única cortada pelos dois rios — mandava o morador
+          para outro site atrás de um número que este projeto já tinha, onze
+          vezes. "A tela cala alguma coisa que ela mediu" é uma das quatro
+          falhas do roteiro de teste. */}
       <section className="cartao">
-        <h2>Por que esta tela não mostra o nível de Itajaí ao vivo</h2>
-        <p>
-          A Defesa Civil de Itajaí publica <strong>várias réguas na cidade</strong> — DC-01 e
-          DC-02 no Açu, DC-03 a DC-06 e DC-10 no Mirim, DC-11 na divisa. Elas têm zeros
-          diferentes: numa mesma hora podem marcar 0,92 m e 4,82 m. Escolher uma delas e chamar
-          de "o nível de Itajaí" seria comparar réguas, que é o erro que esta tela avisa para
-          ninguém cometer.
-        </p>
+        <h2>Como estão as réguas de Itajaí agora</h2>
+        {leiturasDeItajai.length > 0 && cidadeItajai ? (
+          <VariasReguas
+            leituras={leiturasDeItajai}
+            reguas={reguas}
+            cidade={cidadeItajai}
+            agora={agora}
+          />
+        ) : (
+          <p>
+            Sem leitura ao vivo neste momento. As cotas de cada régua continuam na tabela
+            abaixo, e a fonte é a{' '}
+            <a
+              href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
+              target="_blank"
+              rel="noreferrer"
+            >
+              página da Defesa Civil de Itajaí
+            </a>
+            .
+          </p>
+        )}
         <p className={estilos.fonteMare}>
-          Enquanto não houver cota de referência por régua, o caminho é ver estação por estação
-          na{' '}
+          <strong>Não existe "o nível de Itajaí".</strong> As réguas têm zeros diferentes:
+          numa mesma hora podem marcar 0,92 m e 4,82 m sem que uma esteja pior que a outra.
+          Cada número acima é comparado com a cota <em>daquela</em> régua — nunca com a de
+          outra, nem com a de outra cidade. Fonte:{' '}
           <a
             href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
             target="_blank"
             rel="noreferrer"
           >
-            página da Defesa Civil de Itajaí
+            Defesa Civil de Itajaí
           </a>
           .
         </p>
@@ -220,9 +265,13 @@ export default function TelaItajai() {
  *
  * Esta tela é o único lugar onde os ribeirões aparecem: Murta e Canhanduba não
  * estão em nenhum dos dois eixos, mas alagam bairro em Itajaí, e a cota deles é
- * oficial. Aqui não há nível ao vivo — o que a cidade tem são onze réguas com
- * zeros diferentes, e eleger uma como "o nível de Itajaí" seria produzir um
- * número que não existe.
+ * oficial.
+ *
+ * Esta tabela é a REFERÊNCIA (o que cada régua considera atenção, alerta e
+ * emergência). A leitura ao vivo de cada uma fica no bloco "Como estão as
+ * réguas de Itajaí agora", acima. Continua não existindo "o nível de Itajaí":
+ * são onze réguas com zeros diferentes, e cada leitura é comparada com a cota
+ * DELA.
  */
 function ReguasDeItajai() {
   const reguas = todasAsReguas(estacoesTempoReal, 'itajai')

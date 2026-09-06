@@ -306,6 +306,24 @@ export function leiturasDaCidade(
 }
 
 /**
+ * TODAS as leituras de uma cidade, de qualquer rio ou ribeirão.
+ *
+ * `leiturasDaCidade` filtra por rio porque a maioria das telas é de um rio só.
+ * Itajaí não é: ela recebe o Açu, o Mirim e dois ribeirões, e as onze réguas
+ * dela estão espalhadas por esses quatro cursos. Pedir por rio devolveria um
+ * terço da cidade — e a tela da foz existe justamente para olhar a cidade
+ * inteira.
+ */
+export function leiturasDaCidadeEmTodosOsRios(
+  estado: EstadoTempoReal,
+  cidadeId: string,
+): LeituraAoVivo[] {
+  return estado.leituras
+    .filter((l) => l.cidade === cidadeId)
+    .sort((a, b) => a.estacao.localeCompare(b.estacao))
+}
+
+/**
  * Identidade da régua de uma leitura: a primária pelo título, o resgate pelo
  * título da primária que ele socorre. Primária + resgate da MESMA régua colam
  * na mesma identidade — é assim que o vigia também as junta.
