@@ -737,8 +737,18 @@ TRACADO_DO_RAMO = {
 #: sem motivo escrito vira lixo em seis meses; cada uma aqui diz por que existe
 #: e o que a remove.
 LONGE_ACEITO = {
-    "blumenau": (3.5, "a coordenada publicada é a da ESTAÇÃO, ~3 km do talvegue — "
-                      "não é erro de traçado nem de cadastro; conhecido e documentado"),
+    # CORRIGIDO em 06/09/2026 pelo inventário da ANA. O motivo escrito aqui
+    # dizia "a coordenada é a da ESTAÇÃO" e dava a entender que era a régua de
+    # nível. Não é: a DCSC-00026 é do tipo `Meteo`, com `tem_nivel_do_rio:
+    # false` — mede CHUVA. A fluviométrica da ANA em Blumenau (83800002) fica a
+    # 6,93 km deste pino e a 49 m do traçado. A exceção continua, porque mover o
+    # pino trocaria uma coordenada errada por uma de OUTRA REDE; o que muda é
+    # que o motivo agora diz a verdade, e o que a remove ficou concreto.
+    "blumenau": (3.5, "a coordenada publicada é a da DCSC-00026, que é estação de "
+                      "CHUVA (type Meteo, tem_nivel_do_rio false) e fica a ~3 km do "
+                      "talvegue — não é a régua de nível de Blumenau. Remove esta "
+                      "exceção: a coordenada da régua do AlertaBlu/Defesa Civil, que "
+                      "é a fonte do tempo real mostrado na tela"),
     "ituporanga": (25.0, "o traçado do Itajaí do Sul é PARCIAL (10,5 km, cobertura "
                          "municipal de Rio do Sul). Falta o trecho Ituporanga->Rio do Sul, "
                          "que sai do Overpass — ver docs/TRACADO-ITAJAI-DO-SUL.md. "
@@ -1126,6 +1136,125 @@ def _tem_valor(no, alvo: float) -> bool:
     return isinstance(no, (int, float)) and not isinstance(no, bool) and float(no) == alvo
 
 
+#: Estações da ANA já lidas no INVENTÁRIO PÚBLICO (`Inventario31_08_2026.mdb`,
+#: tabela `Estacao`, 1.099.296 registros, aberto com `mdbtools` em 06/09/2026).
+#: Campos: (nome, tipo, lat, lon, fim_da_escala). `lat`/`lon` só quando o
+#: inventário foi transcrito ponto a ponto; None = conhecido o tipo, não a
+#: coordenada. `fim_da_escala` = último ano/mês com régua convencional; None =
+#: ativa.
+#:
+#: POR QUE ESTA TABELA EXISTE. O cruzamento de 06/09/2026 mediu a distância
+#: entre as réguas do projeto e TODAS as estações da ANA em SC. Cinco "bateram"
+#: por coordenada — e QUATRO delas são PLUVIÔMETROS. O caso que ensina é Taió:
+#: a `2750017 TAIÓ` fica a 53 m da nossa régua e não mede rio nenhum. Um
+#: pluviômetro e uma régua cabem no mesmo poste.
+#:
+#: É a emenda à regra nº 1 do projeto: o vínculo é por coordenada E POR TIPO.
+#: Coordenada é condição necessária, não suficiente.
+ESTACOES_ANA_CONHECIDAS = {
+    # --- fluviométricas (medem NÍVEL DE RIO) ---
+    "83050000": ("TAIÓ", "fluviometrica", -27.1139, -49.9953, None),
+    "83300200": ("RIO DO SUL - NOVO", "fluviometrica", -27.2078, -49.6292, None),
+    "83800002": ("BLUMENAU (PCD)", "fluviometrica", -26.9186, -49.0656, "2021-12"),
+    "83920000": ("PORTO ITAJAÍ", "fluviometrica", -26.9167, -48.65, "1937-11"),
+    # sem coordenada transcrita: o tipo basta para a trava de tipo
+    "83030000": ("BARRAGEM OESTE", "fluviometrica", None, None, None),
+    "83094000": ("RIO DO SUL (Itajaí do Oeste)", "fluviometrica", None, None, None),
+    "83250000": ("ITUPORANGA", "fluviometrica", None, None, None),
+    "83300000": ("RIO DO SUL (Itajaí do Sul)", "fluviometrica", None, None, None),
+    "83440000": ("IBIRAMA", "fluviometrica", None, None, "2021-12"),
+    "83520000": ("WARNOW", "fluviometrica", None, None, None),
+    "83690000": ("INDAIAL", "fluviometrica", None, None, "2021-12"),
+    "83800003": ("BLUMENAU (PCD)", "fluviometrica", None, None, None),
+    "83840000": ("GASPAR (MONTANTE ETA)", "fluviometrica", None, None, "2021-12"),
+    "83870001": ("ILHOTA-JUSANTE", "fluviometrica", None, None, None),
+    "83892990": ("SALSEIRO", "fluviometrica", None, None, None),
+    "83892998": ("BOTUVERA-MONTANTE", "fluviometrica", None, None, None),
+    "83900000": ("BRUSQUE (PCD)", "fluviometrica", None, None, None),
+    # --- pluviométricas: SÓ CHUVA. Estão aqui para REPROVAR quem as usar como
+    # régua. Todas ficam a menos de 750 m de uma régua nossa — é essa vizinhança
+    # que faz o erro parecer acerto.
+    "2750017": ("TAIÓ", "pluviometrica", None, None, None),
+    "2648065": ("ITAJAÍ_Centro", "pluviometrica", None, None, None),
+    "2648008": ("ITAJAÍ", "pluviometrica", None, None, None),
+    "2649084": ("INDAIAL", "pluviometrica", None, None, None),
+    "2749097": ("VIDAL RAMOS_Centro", "pluviometrica", None, None, None),
+}
+
+
+def valida_codigo_ana() -> None:
+    """
+    O `codigo_ana` de cada cidade mede NÍVEL DE RIO, e a estação fica no rio?
+
+    POR QUE EXISTE (06/09/2026). O inventário público da ANA foi cruzado com as
+    réguas do projeto por coordenada, que é a regra nº 1. Cinco estações caíram
+    a menos de 750 m de uma régua nossa; QUATRO são pluviômetros. Se uma delas
+    entrasse como `codigo_ana`, o projeto passaria a chamar de "série histórica
+    de nível" uma série de CHUVA — e ninguém veria, porque o código está certo,
+    o nome está certo, o município está certo e a coordenada está certa.
+
+    Três coisas reprovam aqui:
+
+    1. `codigo_ana` que a ANA cadastra como PLUVIOMÉTRICA.
+    2. estação fluviométrica cuja coordenada cai longe do traçado do ramo da
+       cidade — ou a coordenada está errada, ou é estação de outro rio.
+    3. (aviso) estação com a escala ENCERRADA e sem sucessora declarada em
+       `codigo_ana_sucessor`. Quatro réguas da bacia morreram em 12/2021; a
+       série histórica continua valendo, o presente não.
+    """
+    dados = le_json("estacoes.json")
+    cache: dict[str, list] = {}
+
+    for rio_id, rio in dados["rios"].items():
+        for cidade in rio["cidades"]:
+            codigo = cidade.get("codigo_ana")
+            if not codigo:
+                continue
+            cid = cidade["id"]
+            chave = str(codigo).lstrip("0") or "0"
+            conhecida = ESTACOES_ANA_CONHECIDAS.get(chave)
+            if conhecida is None:
+                continue
+
+            nome, tipo, lat, lon, fim = conhecida
+
+            if tipo != "fluviometrica":
+                erro(f"estacoes.json / {cid}: codigo_ana {codigo} ({nome}) é "
+                     f"{tipo.upper()} no inventário da ANA — mede CHUVA, não nível de "
+                     "rio. Estar no município certo e a poucos metros da régua não "
+                     "faz dela a régua: o vínculo é por coordenada E POR TIPO.")
+                continue
+
+            if fim and not cidade.get("codigo_ana_sucessor"):
+                aviso(f"estacoes.json / {cid}: a escala da estação {codigo} ({nome}) "
+                      f"ENCERROU em {fim}. Serve para série histórica, não para o "
+                      "presente. Declare `codigo_ana_sucessor` (ou null com o motivo, "
+                      "quando a ANA não tem sucessora).")
+
+            if lat is None or lon is None:
+                continue
+
+            arquivo = TRACADO_DO_RAMO.get(cidade.get("ramo") or "")
+            if rio_id == "itajai-mirim":
+                arquivo = "itajai-mirim"
+            if not arquivo:
+                continue
+            caminho = RAIZ / "data" / "rios" / f"{arquivo}.geojson"
+            if not caminho.exists():
+                continue
+            if arquivo not in cache:
+                cache[arquivo] = _linhas(caminho)
+
+            p = (lon, lat)
+            d = min((_km_ao_segmento(p, l[i], l[i + 1])
+                     for l in cache[arquivo] for i in range(len(l) - 1)), default=None)
+            if d is not None and d > LIMITE_PINO_KM:
+                erro(f"estacoes.json / {cid}: a estação ANA {codigo} ({nome}) fica a "
+                     f"{d:.2f} km do traçado de {arquivo}; limite {LIMITE_PINO_KM:g} km. "
+                     "Estação fluviométrica fica NO rio — ou a coordenada está errada, "
+                     "ou a estação é de outro curso d'água.")
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
@@ -1139,6 +1268,7 @@ def main() -> int:
     valida_regua_das_cotas()
     valida_pico_copiado_de_outra_cidade()
     valida_cota_de_rua_nao_e_lamina()
+    valida_codigo_ana()
 
     for a in avisos:
         print(f"aviso: {a}")

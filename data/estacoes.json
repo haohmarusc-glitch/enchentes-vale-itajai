@@ -2,7 +2,7 @@
   "_meta": {
     "descricao": "Estações e cidades dos rios Itajaí-Açu e Itajaí-Mirim. O Itajaí-Açu é uma ÁRVORE (cabeceiras paralelas + tronco + afluentes laterais), não uma fila: ver rios['itajai-acu']._topologia. O Itajaí-Mirim segue como sequência montante -> jusante nas cidades, com os braços (canal retificado / curso antigo) só entre as réguas DC de Itajaí.",
     "convencoes": {
-      "codigo_ana": "Código da estação fluviométrica no HidroWeb/SNIRH. null = ainda não localizado.",
+      "codigo_ana": "Código da estação FLUVIOMÉTRICA no HidroWeb/SNIRH. null = ainda não localizado. REGRA (emendada em 06/09/2026): o vínculo cidade<->estação é por coordenada E POR TIPO. No cruzamento com o inventário da ANA, cinco estações caíram a menos de 750 m de uma régua nossa e QUATRO eram PLUVIÔMETROS — a 2750017 TAIÓ fica a 53 m da nossa régua e não mede rio. Coordenada é condição necessária, não suficiente. `scripts/validar_dados.py::valida_codigo_ana` reprova código pluviométrico conhecido e estação fluviométrica cuja coordenada caia fora do traçado.",
       "codigo_dcsc": "Código da estação na rede estadual (Defesa Civil de SC), formato DCSC-NNNNN. Liga a cidade à estação por coordenada. null quando a cidade não tem estação estadual (a foz usa as réguas DC de Itajaí).",
       "cotas_m": "Cotas de referência em metros na régua local. Cada cidade tem seu próprio zero; NÃO comparar entre cidades. 'inundacao_historica' é a cota clássica de inundação, mantida ao lado da cota atual quando as duas circulam.",
       "verificado": "true só depois de conferir o dado na fonte oficial.",
@@ -11,7 +11,7 @@
       "ordem_no_ramo": "Posição montante -> jusante DENTRO do ramo (1 = mais a montante). Só comparável entre cidades do MESMO ramo.",
       "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado.",
       "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua.",
-      "coordenadas": "[lat, lon] da ESTAÇÃO de nível (Defesa Civil de SC, GraphQL, adotada 02/09/2026), não do centro da cidade — é a posição real da régua no rio. Exceções: Vidal Ramos (estação Asthon, = DCSC, 4 m) e Itajaí (foz, sem estação estadual, sede aproximada). Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível."
+      "coordenadas": "[lat, lon] da ESTAÇÃO de nível (Defesa Civil de SC, GraphQL, adotada 02/09/2026), não do centro da cidade — é a posição real da régua no rio. Exceções: Vidal Ramos (estação Asthon, = DCSC, 4 m) e Itajaí (foz, sem estação estadual, sede aproximada). Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível. RESSALVA de 06/09/2026: em Blumenau isso NÃO se cumpre — a coordenada publicada é a da DCSC-00026, que é estação de CHUVA (`type: Meteo`, `tem_nivel_do_rio: false`) e fica a 2,99 km do talvegue. Ver `pino_nota` da cidade."
     },
     "notas": {
       "cotas_itajai": "As onze estações de Itajaí têm cota oficial de atenção, alerta e EMERGÊNCIA (a palavra é do Plano de Contingência da COMPDEC, versão 17 de 22/12/2025, Tabela 11). Cada uma tem seu próprio zero: a DC-10, no Limoeiro, usa régua de 8 a 10 m e não se compara com as demais. Nove delas ficam no estuário e estão marcadas com alerta_automatico=false — a cota aparece na tela, mas o aviso por Telegram não dispara a partir de uma travessia isolada, porque a maré cruza essas cotas sem enchente."
@@ -120,7 +120,17 @@
           ],
           "codigo_ana_verificado": true,
           "codigo_ana_nome": "TAIÓ",
-          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'TAIÓ'. Como: consulta ao HidroWeb v3.3 em 06/09/2026 (arquivo não lido aqui). ⚠️ Falta a COORDENADA da estação — sem ela o vínculo cidade↔estação continua por NOME, e a regra nº 1 do projeto pede coordenada. Está no Inventário do HidroWeb, não no arquivo de cotas."
+          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'TAIÓ'. Como: consulta ao HidroWeb v3.3 em 06/09/2026 (arquivo não lido aqui). COORDENADA OBTIDA em 06/09/2026 no Inventário público da ANA (Inventario31_08_2026.mdb, tabela `Estacao`), aberto com mdbtools em 06/09/2026. A lacuna que este campo declarava está fechada: a estação fica a 0,07 km do traçado do rio (medido aqui, contra data/rios/) e a 0,56 km do pino desta cidade. O vínculo deixa de ser por NOME e passa a ser por coordenada E por tipo — a ANA cadastra esta estação como FLUVIOMÉTRICA. Ver docs/INVENTARIO-ANA.md.",
+          "codigo_ana_coordenadas": [
+            -27.1139,
+            -49.9953
+          ],
+          "codigo_ana_altitude_m": 360,
+          "codigo_ana_area_drenagem_km2": 1570,
+          "codigo_ana_escala": {
+            "inicio": "1929",
+            "fim": null
+          }
         },
         {
           "id": "ituporanga",
@@ -175,7 +185,17 @@
           "cotas_verificado": false,
           "codigo_ana_verificado": true,
           "codigo_ana_nome": "RIO DO SUL - NOVO",
-          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'RIO DO SUL - NOVO'. Como: arquivo de séries históricas baixado e lido (1978–2026, sem lacuna de ano). ⚠️ Falta a COORDENADA da estação — sem ela o vínculo cidade↔estação continua por NOME, e a regra nº 1 do projeto pede coordenada. Está no Inventário do HidroWeb, não no arquivo de cotas."
+          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'RIO DO SUL - NOVO'. Como: arquivo de séries históricas baixado e lido (1978–2026, sem lacuna de ano). COORDENADA OBTIDA em 06/09/2026 no Inventário público da ANA (Inventario31_08_2026.mdb, tabela `Estacao`), aberto com mdbtools em 06/09/2026. A lacuna que este campo declarava está fechada: a estação fica a 0,09 km do traçado do rio (medido aqui, contra data/rios/) e a 0,43 km do pino desta cidade. O vínculo deixa de ser por NOME e passa a ser por coordenada E por tipo — a ANA cadastra esta estação como FLUVIOMÉTRICA. Ver docs/INVENTARIO-ANA.md.",
+          "codigo_ana_coordenadas": [
+            -27.2078,
+            -49.6292
+          ],
+          "codigo_ana_altitude_m": 350,
+          "codigo_ana_area_drenagem_km2": 5160,
+          "codigo_ana_escala": {
+            "inicio": "1978",
+            "fim": null
+          }
         },
         {
           "id": "ibirama",
@@ -306,7 +326,21 @@
           ],
           "codigo_ana_verificado": true,
           "codigo_ana_nome": "BLUMENAU (PCD)",
-          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'BLUMENAU (PCD)'. Como: arquivo de séries históricas baixado e lido (2.654 linhas-mês, 1939–2026). ⚠️ Falta a COORDENADA da estação — sem ela o vínculo cidade↔estação continua por NOME, e a regra nº 1 do projeto pede coordenada. Está no Inventário do HidroWeb, não no arquivo de cotas."
+          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'BLUMENAU (PCD)'. Como: arquivo de séries históricas baixado e lido (2.654 linhas-mês, 1939–2026). COORDENADA OBTIDA em 06/09/2026 no Inventário público da ANA (Inventario31_08_2026.mdb, tabela `Estacao`), aberto com mdbtools em 06/09/2026. A lacuna que este campo declarava está fechada: a estação fica a 0,05 km do traçado do rio (medido aqui, contra data/rios/) e a 6,93 km do pino desta cidade. O vínculo deixa de ser por NOME e passa a ser por coordenada E por tipo — a ANA cadastra esta estação como FLUVIOMÉTRICA. Ver docs/INVENTARIO-ANA.md.",
+          "codigo_ana_coordenadas": [
+            -26.9186,
+            -49.0656
+          ],
+          "codigo_ana_altitude_m": 12,
+          "codigo_ana_area_drenagem_km2": 11803,
+          "codigo_ana_escala": {
+            "inicio": "1939",
+            "fim": "2021-12"
+          },
+          "codigo_ana_sucessor": "83800003",
+          "codigo_ana_sucessor_nota": "A escala convencional da 83800002 ENCERROU em 12/2021; a ANA cadastra a 83800003 BLUMENAU (PCD), na mesma coordenada, como ativa. O `codigo_ana` continua 83800002 porque é dele a SÉRIE HISTÓRICA que o projeto usa (1939–2021, baixada em 06/09/2026). Para o presente, o código é o 83800003 — e nenhum dos dois é a fonte de tempo real do site, que é a Defesa Civil. Não conferido aqui: o inventário não traz a cota do zero de nenhum dos dois, então não se sabe se compartilham o mesmo zero.",
+          "codigo_ana_distancia_do_pino_km": 6.93,
+          "pino_nota": "O pino de Blumenau fica a 2,99 km do traçado do Açu — medido em 06/09/2026, e é a razão da exceção `LONGE_ACEITO['blumenau']` no validador. O que o inventário da ANA acrescentou: essa coordenada é a da DCSC-00026, estação do tipo `Meteo`, que NÃO mede nível de rio. Ou seja, o pino não é 'a régua a 3 km do talvegue' — é uma estação de CHUVA. A estação fluviométrica da ANA em Blumenau (83800002) fica a 6,93 km daqui e a 49 m do traçado. NÃO foi movido: a convenção diz que `coordenadas` é a posição da régua cuja leitura o site mostra, e a régua do tempo real de Blumenau é a da Defesa Civil/AlertaBlu, cuja coordenada o projeto não tem. Mover para a estação da ANA trocaria uma coordenada errada por uma de outra rede. Decisão do Jefferson."
         },
         {
           "id": "gaspar",
@@ -497,7 +531,12 @@
           "coordenadas": [
             -27.38547,
             -49.35812
-          ]
+          ],
+          "codigo_ana_nao_e": {
+            "codigo": "83892990",
+            "nome": "SALSEIRO",
+            "por_que_nao": "Mesmo município, estações diferentes: 6,8 km entre a nossa régua (-27.38547 / -49.35812, Asthon = DCSC) e a SALSEIRO no inventário da ANA, que drena 286 km² — sub-bacia bem menor. O Boletim 150/2026 da EPAGRI publica '83892990 · Vidal Ramos · Salseiro' e é o que tentava o vínculo pelo NOME DO MUNICÍPIO; a coordenada da ANA desmente. NÃO vincular. Respondido pela ANA, não pela EPAGRI — o ofício C9 pedia exatamente esta coordenada. Inventário público da ANA (Inventario31_08_2026.mdb, tabela `Estacao`), aberto com mdbtools em 06/09/2026."
+          }
         },
         {
           "id": "botuvera",

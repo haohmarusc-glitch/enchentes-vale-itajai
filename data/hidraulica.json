@@ -179,7 +179,9 @@
       "condutos_com_comporta": 7,
       "diametro_conduto_mm": 1500,
       "descarga_em_NHWL_m3s": 163,
-      "nota": "Enche com ~80 mm de chuva sobre a bacia dela — metade do que a Norte precisa. O relatório registra que a Oeste ESTEVE CHEIA nas cheias de 2001 e 2010, vertendo pelo vertedouro, o que não aconteceu na Sul. Contra cheia de 50 anos, o reservatório excede em 0,9 m a crista do vertedouro."
+      "nota": "Enche com ~80 mm de chuva sobre a bacia dela — metade do que a Norte precisa. O relatório registra que a Oeste ESTEVE CHEIA nas cheias de 2001 e 2010, vertendo pelo vertedouro, o que não aconteceu na Sul. Contra cheia de 50 anos, o reservatório excede em 0,9 m a crista do vertedouro.",
+      "area_drenagem_km2_ana": 854,
+      "area_drenagem_km2_ana_fonte": "Inventário público da ANA (Inventario31_08_2026.mdb), estação 83030000 BARRAGEM OESTE, lido em 06/09/2026. É a área da ESTAÇÃO, que fica na barragem — serve de aferição da área da barragem, não de substituta dela. FECHA A DIVERGÊNCIA: quatro fontes, três em ~851–854 km² (ANA 854, API estadual 851, JICA Vol. III-A 851,2) e o JICA Vol. II isolado em 1.042. Continua valendo a regra de não fundir nem escolher em silêncio — os valores seguem lado a lado, mas agora se sabe qual é o fora da curva. A estação é FLUVIOMÉTRICA, com escala desde julho/1966 e telemetria desde 2002: é a série mais longa que o projeto conhece na Barragem Oeste."
     },
     "sul": {
       "nome": "Barragem Sul",

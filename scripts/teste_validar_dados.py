@@ -380,5 +380,93 @@ class Hidraulica(unittest.TestCase):
                          "o Mirim é fila; _topologia o tornaria ramificado")
         self.assertIn("divisao_do_mirim", self.real)
 
+
+class CodigoAnaEhReguaDeRio(unittest.TestCase):
+    """
+    A emenda à regra nº 1: o vínculo é por coordenada E POR TIPO.
+
+    O cruzamento com o inventário da ANA (06/09/2026) mediu a distância entre as
+    réguas do projeto e todas as estações da ANA em SC. Cinco caíram a menos de
+    750 m de uma régua nossa — e QUATRO são PLUVIÔMETROS. A `2750017 TAIÓ` fica
+    a 53 m da nossa régua e não mede rio nenhum: município certo, nome certo,
+    coordenada certa, grandeza errada.
+
+    Sem estes testes a trava seria só prosa dentro de uma função — e prosa não
+    reprova ninguém.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def erros(self, estacoes):
+        vd.erros.clear()
+        vd.avisos.clear()
+        orig = vd.le_json
+        vd.le_json = lambda nome: estacoes if nome == "estacoes.json" else orig(nome)
+        try:
+            vd.valida_codigo_ana()
+        finally:
+            vd.le_json = orig
+        return list(vd.erros), list(vd.avisos)
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(self.erros(copy.deepcopy(self.real))[0], [])
+
+    def test_pluviometro_como_codigo_ana_aborta(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "taio")["codigo_ana"] = "2750017"
+        erros, _ = self.erros(d)
+        self.assertTrue(any("PLUVIOMETRICA" in e for e in erros),
+                        "a 2750017 fica a 53 m da régua de Taió e mede CHUVA")
+
+    def test_pluviometro_com_zero_a_esquerda_tambem_aborta(self):
+        """
+        O caso que escapa: com o zero à esquerda o código tem os oito dígitos do
+        HidroWeb e passa na trava de formato. É a forma em que a 02648008 de
+        Itajaí circula.
+        """
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "itajai")["codigo_ana"] = "02648008"
+        erros, _ = self.erros(d)
+        self.assertTrue(any("PLUVIOMETRICA" in e for e in erros))
+
+    def test_estacao_fluviometrica_fora_do_tracado_aborta(self):
+        """A estação de rio fica NO rio. Coordenada longe = coordenada errada."""
+        d = copy.deepcopy(self.real)
+        original = vd.ESTACOES_ANA_CONHECIDAS["83800002"]
+        vd.ESTACOES_ANA_CONHECIDAS["83800002"] = original[:3] + (-49.20,) + original[4:]
+        try:
+            erros, _ = self.erros(d)
+        finally:
+            vd.ESTACOES_ANA_CONHECIDAS["83800002"] = original
+        self.assertTrue(any("do traçado" in e for e in erros))
+
+    def test_escala_encerrada_sem_sucessora_avisa(self):
+        """
+        Quatro réguas da bacia morreram em 12/2021 (Blumenau, Indaial, Gaspar,
+        Ibirama). A série histórica continua valendo; o presente, não.
+        """
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "blumenau").pop("codigo_ana_sucessor")
+        _, avisos = self.erros(d)
+        self.assertTrue(any("ENCERROU" in a for a in avisos))
+
+    def test_o_sucessor_de_blumenau_esta_declarado_nos_dados_reais(self):
+        blu = _cidade(self.real, "itajai-acu", "blumenau")
+        self.assertEqual(blu.get("codigo_ana_sucessor"), "83800003")
+
+    def test_salseiro_continua_fora_de_vidal_ramos(self):
+        """
+        A ANA respondeu o que o ofício C9 pedia à EPAGRI: a SALSEIRO (83892990)
+        fica a 6,8 km da nossa régua e drena 286 km². Mesmo município não é
+        mesma estação — e o registro do porquê tem de ficar no dado, senão o
+        boletim da EPAGRI convida ao mesmo vínculo de novo no mês que vem.
+        """
+        vr = _cidade(self.real, "itajai-mirim", "vidal-ramos")
+        self.assertIsNone(vr["codigo_ana"])
+        self.assertEqual(vr["codigo_ana_nao_e"]["codigo"], "83892990")
+
+
 if __name__ == "__main__":
     unittest.main()
