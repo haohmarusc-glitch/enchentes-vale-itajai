@@ -151,20 +151,37 @@ class TestCotasRuas(unittest.TestCase):
         self.assertLess(len(set(nomes)), len(nomes), "esperava alguma rua com mais de um ponto")
 
 
-    def test_cotas_de_rua_sao_sempre_em_regua(self):
+    def test_toda_cota_declara_sua_referencia(self):
         """
         Item 4 da REGRA BLOQUEANTE do CLAUDE.md.
 
         A busca "minha rua" e o simulador comparam a cota da rua com o nível ao
         vivo, que vem da Defesa Civil e é régua. Uma cota em referência IBGE
         produziria "faltam 2,30 m" com 20 cm de erro embutido e nada na tela
-        denunciando. Hoje isto é verdade por construção; o teste faz com que
-        continue sendo por decisão.
+        denunciando.
+
+        CORRIGIDO em 06/09/2026, e o erro estava NESTE TESTE também. Ele usava
+        `r.get("referencia", "régua")` — o mesmo `default` do leitor do site e
+        do bot —, então uma cota SEM o campo passava aqui como se fosse régua. O
+        teste que devia travar a regra repetia o furo dela. Eram 39 cotas.
+
+        `null` é resposta válida ("a fonte não declara") e essas ficam FORA da
+        comparação; o que não vale é o campo ausente.
         """
+        conjunto = ("régua", "IBGE (régua + 0,20 m)", None)
         for r in self.cotas:
             with self.subTest(rua=r.get("rua")):
-                self.assertIn(r.get("referencia", "régua"), ("régua",),
-                              "cota de rua fora da referência régua")
+                self.assertIn("referencia", r,
+                              "cota de rua sem o campo 'referencia' — ausência não é régua")
+                self.assertIn(r["referencia"], conjunto,
+                              "referência fora do conjunto fechado")
+
+    def test_so_a_regua_e_comparavel_com_o_nivel_ao_vivo(self):
+        """A outra metade: o que NÃO é régua não pode virar 'faltam X m'."""
+        comparaveis = [r for r in self.cotas if r.get("referencia") == "régua"]
+        self.assertGreater(len(comparaveis), 4000, "esperava a maioria comparável")
+        for r in comparaveis:
+            self.assertEqual(r["referencia"], "régua")
 
 
 class TestManchas(unittest.TestCase):

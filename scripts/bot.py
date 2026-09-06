@@ -136,9 +136,31 @@ ROTULO_COTA = {
 # --- texto ------------------------------------------------------------------
 
 def sem_acento(s: str) -> str:
+    """Minúsculas e sem acento. NÃO mexe em hífen — ver `chave_de_rua`."""
     return "".join(
         c for c in unicodedata.normalize("NFD", s.lower()) if unicodedata.category(c) != "Mn"
     )
+
+
+def chave_de_rua(s: str) -> str:
+    """
+    Como `sem_acento`, mas com o HÍFEN virando espaço. Só para busca de RUA.
+
+    Entrou em 06/09/2026, achado por acidente: quem digita "Beira-Rio" — como a
+    avenida é escrita na placa — não achava a "Av. Beira Rio" do cadastro, que a
+    fonte grafou sem hífen. A pessoa lia "nenhuma rua com esse nome entre as
+    levantadas" para uma rua que ESTÁ levantada.
+
+    POR QUE É UMA FUNÇÃO SEPARADA, e não uma mudança no `sem_acento`: aquele
+    também casa IDENTIFICADORES — `rio-do-sul`, `itajai-acu` —, comparados
+    contra o `id` cru do cadastro. Trocar hífen por espaço lá faria "rio-do-sul"
+    deixar de achar Rio do Sul. Foi o `test_sem_acento` que pegou isso; a trava
+    valeu no primeiro dia.
+
+    O hífen vira espaço e não some: "Beira-Rio" e "Beira Rio" passam a ser o
+    mesmo termo, "BeiraRio" continua sendo outro.
+    """
+    return " ".join(sem_acento(s.replace("-", " ").replace("\u2013", " ").replace("\u2014", " ")).split())
 
 
 def metros(v: float) -> str:
@@ -232,9 +254,14 @@ class Base:
         # comparada com o nível ao vivo da Defesa Civil, que é régua; uma cota
         # em outra referência daria "faltam 2,30 m" com 20 cm de erro embutido
         # e nada na mensagem denunciando.
+        #
+        # CORRIGIDO em 06/09/2026, junto com o leitor do site: era
+        # `c.get("referencia", "régua")`, ou seja, cota SEM o campo entrava como
+        # se fosse régua. Ausência virava permissão. Agora o rótulo tem de estar
+        # escrito — `null` é resposta ("a fonte não declara") e fica de fora.
         self.cotas_ruas = [
             c for c in cotas_ruas.get("cotas", [])
-            if c.get("referencia", "régua") == "régua"
+            if c.get("referencia") == "régua"
         ]
         # Nível BRUTO da rede estadual (coleta_nivel_sc.py). Datum próprio da
         # estação, NÃO a cota do projeto — por isso fica FORA de leituras_da_cidade
@@ -378,13 +405,14 @@ class Base:
         essa resposta é legítima — só não pode empurrar para baixo quem tem
         número, que é quem a pessoa precisa ver primeiro.
         """
-        alvo = sem_acento(termo)
+        alvo = chave_de_rua(termo)
         if len(alvo) < 2:
             return []
         achadas = [
             c for c in self.cotas_ruas
             if (cidade_id is None or c["cidade"] == cidade_id)
-            and (alvo in sem_acento(c.get("rua", "")) or alvo in sem_acento(c.get("bairro") or ""))
+            and (alvo in chave_de_rua(c.get("rua", ""))
+                 or alvo in chave_de_rua(c.get("bairro") or ""))
         ]
         return sorted(achadas, key=lambda c: (c["cota_m"] is None, c["cota_m"] or 0, c["rua"]))
 

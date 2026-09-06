@@ -314,9 +314,11 @@ class TestRua(unittest.TestCase):
         self.assertNotIn("Nenhuma rua", t)
 
     def test_sem_cidade_busca_em_todas_e_avisa(self):
+        # 3,76 m e não 4,80 m desde 06/09/2026: a Av. Beira-Rio de 4,80 vinha da
+        # lista da imprensa de Brusque, que não declara a referência da régua.
         t = resp("/rua Beira")
         self.assertIn("Brusque", t)
-        self.assertIn("4,80 m", t)
+        self.assertIn("3,76 m", t)
 
     def test_rua_sem_cota_aparece_com_a_nota_e_sem_numero(self):
         """
@@ -324,11 +326,26 @@ class TestRua(unittest.TestCase):
 
         O exemplo era uma rua de Gaspar até a importação do mapa da Defesa Civil
         dar número a ela — e o teste quebrou, que é o comportamento certo: ele
-        existe para o caso sem número, não para uma rua específica. Os que
-        continuam sem número são os cinco pontos de Brusque que a fonte descreve
-        por faixa ("entre 5,46 m e 5,80 m") sem publicar o valor.
+        existe para o caso sem número, não para uma rua específica.
+
+        Quebrou DE NOVO em 06/09/2026, e por isso agora usa fixture. Os cinco
+        pontos de Brusque que a fonte descreve por faixa ("entre 5,46 m e
+        5,80 m") vinham da lista da imprensa de 17/11/2023, que não declara a
+        referência da régua — e a partir daquela data cota sem referência
+        declarada não entra na busca. O comportamento continua tendo de valer;
+        amarrá-lo a uma linha do arquivo real é que era frágil.
         """
-        t = resp("/rua Brusque Túnel do Terminal Urbano")
+        b = Base(ULTIMO, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"),
+                 {"_meta": {}, "cotas": [{"cidade": "brusque", "rio": "itajai-mirim",
+                                          "rua": "Túnel do Terminal Urbano",
+                                          "bairro": None, "ponto": None, "cota_m": None,
+                                          "referencia": "régua",
+                                          "nota": "A fonte descreve a faixa: entre 5,46 m e "
+                                                  "5,80 m, sem publicar o valor do ponto.",
+                                          "fonte": "teste", "data_fonte": "2026-01",
+                                          "confianca": "baixa"}]})
+        t = resp("/rua Brusque Túnel do Terminal Urbano", b)
         self.assertIn("Terminal Urbano", t)
         self.assertNotIn("0,00 m", t)
         self.assertNotIn("Alaga a partir de", t)
@@ -344,10 +361,23 @@ class TestRua(unittest.TestCase):
                  {"_meta": {}, "cotas": [{"cidade": "brusque", "rio": "itajai-mirim",
                                           "rua": "Rua Sem Nada", "bairro": None,
                                           "ponto": None, "cota_m": None,
+                                          "referencia": "régua",
                                           "fonte": "teste", "data_fonte": "2026-01",
                                           "confianca": "baixa"}]})
         t = resp("/rua Brusque Sem Nada", b)
         self.assertIn("não publica a cota exata", t)
+
+    def test_hifen_nao_esconde_a_rua(self):
+        """
+        Quem digita "Beira-Rio" — como está na placa — tem de achar a "Av. Beira
+        Rio" do cadastro, que a fonte grafou sem hífen. Antes de 06/09/2026 lia
+        "nenhuma rua com esse nome entre as levantadas", para uma rua levantada.
+        """
+        com = resp("/rua Brusque Beira-Rio")
+        sem = resp("/rua Brusque Beira Rio")
+        self.assertNotIn("Nenhuma rua", com)
+        self.assertIn("Beira Rio", com)
+        self.assertEqual(com.count("Alaga a partir de"), sem.count("Alaga a partir de"))
 
     def test_rua_desconhecida_nao_diz_que_nao_alaga(self):
         """A diferença entre as duas frases é alguém sair de casa ou não."""

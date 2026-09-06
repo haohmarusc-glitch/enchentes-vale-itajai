@@ -1314,6 +1314,47 @@ def valida_ruas_sem_coordenada() -> None:
 
 
 
+def valida_referencia_das_cotas_de_rua() -> None:
+    """
+    Toda cota de rua DECLARA sua referência — inclusive para dizer que não sabe.
+
+    A mesma regra que `valida_referencias` aplica ao enchentes.json, e pelo
+    mesmo motivo: `null` é resposta ("a fonte não declara"), campo ausente é
+    silêncio disfarçado de certeza.
+
+    POR QUE VIROU TRAVA (06/09/2026). O leitor do site recusava cota fora da
+    régua com `c.referencia !== undefined && c.referencia !== 'régua'` — ou
+    seja, a cota SEM O CAMPO passava direto e era comparada com o nível ao vivo
+    como se fosse régua. Ausência virava permissão.
+
+    Eram 39 cotas. As 7 de Blumenau, de uma lista de imprensa de 2022, divergem
+    de 3 a 4 metros das cotas rotuladas da MESMA RUA — 7,40 contra 11,85 na São
+    Rafael. Estavam entrando na busca "minha rua" e no simulador sem que nada na
+    tela dissesse de onde vinham.
+
+    O buraco não era sobre essas 39, que hoje estão rotuladas: é sobre a próxima
+    linha a entrar sem referência, num arquivo que cresce por importação.
+    """
+    cotas = le_json("cotas-ruas.json").get("cotas", [])
+    faltando: list[str] = []
+    for c in cotas:
+        onde = f"{c.get('cidade')}/{c.get('rua')}"
+        if "referencia" not in c:
+            faltando.append(onde)
+            continue
+        ref = c["referencia"]
+        if ref is not None and ref not in REFERENCIAS_VALIDAS:
+            erro(f"cotas-ruas.json: {onde} tem referencia {ref!r}, fora do conjunto "
+                 f"fechado {REFERENCIAS_VALIDAS}. Hipótese vai em 'nota', não no rótulo.")
+    if faltando:
+        erro(f"cotas-ruas.json: {len(faltando)} cota(s) sem o campo 'referencia' "
+             f"(ex.: {', '.join(faltando[:3])}). O site só compara cota em 'régua' com o "
+             "nível ao vivo; sem o campo, a cota entra na busca 'minha rua' como se fosse "
+             "régua, e ninguém vê. Use 'régua', 'IBGE (régua + 0,20 m)' ou null com o "
+             "motivo em 'nota' — null é resposta, campo ausente não é.")
+
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
@@ -1329,6 +1370,7 @@ def main() -> int:
     valida_cota_de_rua_nao_e_lamina()
     valida_codigo_ana()
     valida_ruas_sem_coordenada()
+    valida_referencia_das_cotas_de_rua()
 
     for a in avisos:
         print(f"aviso: {a}")

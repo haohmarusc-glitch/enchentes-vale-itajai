@@ -230,14 +230,22 @@ export interface TabuaMare {
 export interface CotaRua {
   cidade: string
   /**
-   * Sempre `régua`, quando presente.
+   * `régua` para entrar na tela. `null` = a fonte não declara.
    *
    * Cotas de rua são levantadas contra a régua da cidade, e o nível ao vivo da
    * Defesa Civil também é régua — por isso a busca "minha rua" e o simulador
    * comparam maçã com maçã. Um valor diferente aqui significaria comparar uma
    * cota de rua com um nível 20 cm deslocado, e o carregador descarta.
+   *
+   * CORRIGIDO em 06/09/2026, e o erro estava AQUI, no tipo: ele dizia "sempre
+   * régua, QUANDO PRESENTE", e o carregador implementou exatamente isso —
+   * ausência do campo virava permissão. Só que ausência nunca provou nada; em
+   * todo o resto do projeto ela significa "ninguém conferiu ainda". Eram 39
+   * cotas entrando sem rótulo. O tipo também proibia `null`, que é justamente a
+   * resposta que o CLAUDE.md manda usar quando a fonte não declara — ou seja,
+   * não dava para escrever a resposta certa.
    */
-  referencia?: string
+  referencia?: string | null
   rio: string
   rua: string
   bairro: string | null
