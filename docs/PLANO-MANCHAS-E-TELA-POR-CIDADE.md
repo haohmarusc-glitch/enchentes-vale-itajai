@@ -139,3 +139,60 @@ e é a que está no ar.
 ⚠️ Além disso, `overpass-api.de` e `nominatim.openstreetmap.org` estão **bloqueados pela política de
 rede deste ambiente** (403 no CONNECT, conferido em 06/09/2026). Qualquer busca de traçado de rua sai
 da VPS, como já saiu a do Itajaí do Sul.
+
+---
+
+## Menu de cidades, tela da cidade no tamanho do Monitor, e o que "mais qualidade" virou — 06/09/2026
+
+Pedido: *"no monitor geral deve ter um menu com os nomes das cidades, com ordem conforme o rio; clica na
+cidade e abre a tela da cidade, mesmo tamanho da tela do monitor; telas da cidade têm que ter mais
+qualidade de imagem e dados"*.
+
+### O menu, na ordem do rio — em grupos, porque o Açu é árvore
+
+`logica/menuDasCidades.ts` monta o menu a partir do `estacoes.json`: **cabeceiras** (Taió e Ituporanga,
+*sem ordem entre si* — correm em paralelo), **tronco** (Rio do Sul → … → Itajaí, com a seta ↓), **afluentes**
+(Ibirama, Timbó, Rio dos Cedros, cada um com onde entra) e **outros pontos** (Trombudo Central, sem posição
+na árvore). O Mirim, que é fila, sai na ordem do cadastro. Uma lista "Taió → Ituporanga → Rio do Sul"
+afirmaria uma sequência que não existe — a mesma crítica do adendo A6 à tela de início. Oito testes contra
+o cadastro real travam isso.
+
+### "Abrir a tela da cidade no tamanho do monitor"
+
+É o próprio Monitor enquadrado na cidade (`/monitor/<id>`): o mesmo mapa, a mesma decisão de cor.
+Faltava uma coisa para o menu funcionar: o enquadramento era **uma vez por montagem** (`enquadrou`), então
+trocar de cidade pelo menu não reenquadrava. Agora é uma vez **por cidade**, e voltar a `/monitor` volta à
+bacia inteira.
+
+### Qualidade de imagem — medido, não suposto
+
+Capturas com Chromium (desktop 1280×800 e celular 390×844) mostraram, antes:
+
+- a legenda cobria o título e o botão "Tela cheia";
+- os botões de zoom, à direita, cobriam o painel da cidade;
+- **no celular, legenda + painel escondiam o mapa inteiro** — num site feito para o celular na chuva;
+- os tiles do fundo eram pedidos pela largura em **CSS**: numa tela 2x chegavam com metade dos pixels do
+  vidro. **Fundo de satélite borrado justamente no celular.**
+
+Depois: título, menu e zoom numa **coluna à esquerda**; legenda **recolhível** (nasce recolhida na tela
+da cidade e no celular; o seletor de fundo fica sempre visível); painel abaixo do chip da maré; no
+celular, o painel vira **folha de baixo** com teto de 46% e a legenda some enquanto ele está aberto;
+`zoomPara` recebe o `devicePixelRatio` e pede **um nível a mais** de zoom em tela 2x/3x — um só, porque
+dois multiplicariam os tiles por dezesseis e estourariam o limite que protege a noite de chuva.
+
+⚠️ As capturas daqui **não têm o fundo de satélite**: `server.arcgisonline.com` é bloqueado pela política
+de rede deste ambiente. O ganho de nitidez dos tiles está testado na conta (`tiles.test.ts`), não visto.
+
+### Dados a mais no painel da cidade
+
+- **De onde a água vem, para onde vai** — o vizinho acima e o abaixo *no eixo* (tronco no Açu, fila no
+  Mirim), com o nível na régua **dele** e a janela de chegada do `transito.json` ("leva cerca de 2 h para
+  chegar aqui"). Cabeceira e afluente recebem a frase honesta: *fora do tronco, a cheia daqui não é a que
+  desce o rio principal*. `logica/vizinhosNoEixo.ts`, o mesmo cálculo da tela da cidade.
+- **Últimas 24 h nesta régua** — mínimo, máximo e variação, lidos da série. **Recusa** quando a série
+  mistura réguas (Itajaí tem onze com zeros diferentes): "mín 0,92 · máx 4,82" seria a DC-03 contra a
+  DC-10. `logica/resumo24h.ts`.
+
+Tudo o que o painel afirma continua vindo de dado gravado: nível medido, cota cadastrada, janela do
+`transito.json`. Nenhuma previsão entrou.
+

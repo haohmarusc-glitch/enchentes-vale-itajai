@@ -3,10 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   cidadesDoRio,
   eixoDoRio,
+  estacoes,
   estacoesTempoReal,
   mareItajai,
   temReguaCadastrada,
+  topologiaDoRio,
+  trechos,
 } from '../dados/carregar'
+import { menuDasCidades } from '../logica/menuDasCidades'
+import { vizinhosNoEixo } from '../logica/vizinhosNoEixo'
+import { resumo24h } from '../logica/resumo24h'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
 import { kmDaVista, vistaQueCabeAsReguas } from '../logica/vistaDaCidade'
 import {
@@ -326,8 +332,31 @@ export default function MonitorBacia() {
    * efeito abaixo, e não aqui.
    */
   const [vista, setVista] = useState<Vista>(VISTA_INTEIRA)
-  /** Já enquadrou na cidade da rota? Uma vez só: depois o zoom é de quem mexe. */
+  /** Já enquadrou na cidade da rota? Uma vez por cidade: depois o zoom é de quem mexe. */
   const enquadrou = useRef(false)
+  /** O menu de cidades, na ordem do rio (logica/menuDasCidades). */
+  const [menuAberto, setMenuAberto] = useState(false)
+  const menu = useMemo(
+    () =>
+      menuDasCidades(
+        Object.entries(estacoes.rios).map(([id, r]) => ({
+          id,
+          nome: r.nome,
+          cidades: r.cidades,
+          _topologia: r._topologia,
+        })),
+      ),
+    [],
+  )
+  /**
+   * A legenda aberta ou só o título. Nasce FECHADA quando a tela abre numa
+   * cidade ou é estreita: no celular, legenda aberta mais painel da cidade
+   * cobriam o mapa inteiro (visto em 06/09/2026) — e o mapa é o motivo de
+   * alguém estar aqui.
+   */
+  const [legendaAberta, setLegendaAberta] = useState<boolean>(
+    () => !cidadeFoco && (typeof window === 'undefined' || window.innerWidth > 700),
+  )
   /**
    * As cotas de rua da cidade em foco, como pontos no mapa.
    *
@@ -572,7 +601,9 @@ export default function MonitorBacia() {
     // FUNDO DE MAPA (tiles). A geometria e o porquê de alinhar com a projeção
     // do canvas estão em `logica/tiles.ts`.
     const camada = FUNDOS[fundo]
-    const z = zoomPara(cena.enq, camada.maxZoom)
+    // `dpr`: em tela 2x o tile da largura CSS chegava com metade dos pixels
+    // do vidro — fundo borrado justamente no celular. Ver `zoomPara`.
+    const z = zoomPara(cena.enq, camada.maxZoom, Math.min(3, window.devicePixelRatio || 1))
     const pedacos = tilesVisiveis(cena.enq, tam.w, tam.h, z)
     const cache = tilesRef.current
     let vivo = true
@@ -673,6 +704,20 @@ export default function MonitorBacia() {
    * Abre também o painel daquela cidade, para a tela já responder à pergunta
    * que levou alguém até este endereço — em que pé está a minha cidade.
    */
+  // A troca de cidade pelo MENU acontece com o componente montado: o
+  // `enquadrou` de uma cidade não pode valer para a seguinte. E voltar para
+  // /monitor é voltar à bacia inteira — não ficar preso no zoom da última.
+  useEffect(() => {
+    enquadrou.current = false
+    setMenuAberto(false)
+    if (!cidadeFoco) {
+      setVista(VISTA_INTEIRA)
+      setSel(null)
+    } else {
+      setLegendaAberta(false)
+    }
+  }, [cidadeFoco])
+
   useEffect(() => {
     if (!cidadeFoco || enquadrou.current) return
     const cena = cenaRef.current
@@ -924,7 +969,7 @@ export default function MonitorBacia() {
 
   return (
     <div className={estilos.pagina}>
-      <div ref={divRef} className={estilos.palco}>
+      <div ref={divRef} className={`${estilos.palco} ${!reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
         <canvas
           ref={canvasRef}
           className={estilos.tela}
@@ -943,8 +988,20 @@ export default function MonitorBacia() {
 
         {/* Legenda sempre visível, canto inferior esquerdo. O painel da cidade
             vai para o canto direito, então os dois não se cobrem. */}
-        <div className={estilos.legenda}>
-          <strong className={estilos.legendaTitulo}>Faixa (na régua de cada cidade)</strong>
+        <div className={`${estilos.legenda} ${legendaAberta ? '' : estilos.legendaFechada}`}>
+          <strong className={estilos.legendaTitulo}>
+            <span>{legendaAberta ? 'Faixa (na régua de cada cidade)' : 'Legenda'}</span>
+            <button
+              type="button"
+              className={estilos.botaoLegenda}
+              aria-expanded={legendaAberta}
+              onClick={() => setLegendaAberta((v) => !v)}
+            >
+              {legendaAberta ? 'recolher' : 'abrir'}
+            </button>
+          </strong>
+          {legendaAberta ? (
+            <>
           <ul>
             {FAIXAS_LEGENDA.map((faixa) => (
               <li key={faixa}>
@@ -998,6 +1055,8 @@ export default function MonitorBacia() {
             animada significa a faixa — correr ali afirmaria um nível que a maré
             não deixa ler. O metro aparece no pino; a cor, não.
           </p>
+            </>
+          ) : null}
 
           {/* Seletor de fundo. O ESCURO é o padrão por FUNÇÃO, não por estética:
               qualquer fundo com textura concorre visualmente com as faixas de
@@ -1026,8 +1085,18 @@ export default function MonitorBacia() {
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
             desenhado no canvas). O botão de tela cheia vai no canto inferior
             direito para não colidir com o chip. */}
+        <div className={estilos.cantoEsquerdo}>
         <div className={estilos.topo}>
           <strong>Monitoramento da bacia</strong>
+          <button
+            type="button"
+            className={estilos.botaoMenu}
+            aria-expanded={menuAberto}
+            aria-controls="menu-cidades"
+            onClick={() => setMenuAberto((v) => !v)}
+          >
+            {menuAberto ? 'Fechar' : 'Cidades ▾'}
+          </button>
           <span className={estilos.aviso}>
             Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.
           </span>
@@ -1035,6 +1104,60 @@ export default function MonitorBacia() {
             Tela cheia
           </button>
         </div>
+
+        {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
+            Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
+            → Rio do Sul" afirmaria uma sequência que não existe. Toque numa
+            cidade abre o monitor DELA (o mesmo mapa, enquadrado nela). */}
+        {menuAberto ? (
+          <nav
+            id="menu-cidades"
+            className={estilos.menuCidades}
+            aria-label="Cidades, na ordem do rio"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setMenuAberto(false)
+            }}
+          >
+            <div className={estilos.menuTopo}>
+              <strong>Cidades, na ordem do rio</strong>
+              <button type="button" className={estilos.botaoLegenda} onClick={() => setMenuAberto(false)}>
+                fechar
+              </button>
+            </div>
+            {menu.map((rio) => (
+              <div key={rio.id} className={estilos.menuRio}>
+                <strong>{rio.nome}</strong>
+                {rio.grupos.map((g) => (
+                  <div key={g.titulo}>
+                    <div className={estilos.menuGrupo}>
+                      {g.titulo}
+                      {g.ordenado ? '' : ' (sem ordem entre si)'}
+                    </div>
+                    <ul className={`${estilos.menuLista} ${g.ordenado ? estilos.menuOrdenado : ''}`}>
+                      {g.itens.map((item) => (
+                        <li key={item.id}>
+                          <button
+                            type="button"
+                            className={`${estilos.menuCidade} ${item.id === cidadeFoco ? estilos.menuAtual : ''}`}
+                            aria-current={item.id === cidadeFoco ? 'page' : undefined}
+                            onClick={() => navigate(`/monitor/${item.id}`)}
+                          >
+                            {item.nome}
+                            {item.detalhe ? <span className={estilos.menuDetalhe}>{item.detalhe}</span> : null}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            ))}
+            <p className={estilos.menuNota}>
+              A seta ↓ é a ordem em que a água desce. Cabeceiras e afluentes não têm
+              ordem entre si: a cheia deles não é a mesma que desce o tronco.
+            </p>
+          </nav>
+        ) : null}
 
         {/* ZOOM. Os botões existem além da pinça porque nem todo mundo usa dois
             dedos, e porque no computador não há pinça nenhuma. "Ver tudo" volta
@@ -1066,6 +1189,7 @@ export default function MonitorBacia() {
               Ver tudo
             </button>
           ) : null}
+        </div>
         </div>
 
         {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
@@ -1173,6 +1297,13 @@ export default function MonitorBacia() {
           // e justamente na cidade da foz, que recebe os dois rios.
           const daCidade = leiturasDaCidade(tempoReal, foco.rioId, cid.id)
           const reguas = reguasComCota(estacoesTempoReal, foco.rioId, cid.id)
+          // De onde a água vem e para onde vai — só DENTRO do eixo (tronco no
+          // Açu, fila no Mirim). O mesmo cálculo da tela da cidade.
+          const cidadesDoFoco = cidadesDoRio(foco.rioId)
+          const eixo = topologiaDoRio(foco.rioId)?.tronco_sequencia ?? cidadesDoFoco.map((c) => c.id)
+          const viz = vizinhosNoEixo(foco.rioId, cid.id, eixo, cidadesDoFoco, trechos)
+          const pinoDe = (id: string) => cenaRef.current?.pinos.find((p) => p.cidade.id === id) ?? null
+          const ultimas = resumo24h(serieDaCidade(serie, foco.rioId, cid.id))
           return (
             <div className={estilos.painel}>
               <div className={estilos.painelTopo}>
@@ -1264,6 +1395,75 @@ export default function MonitorBacia() {
               ) : null}
               {cid.km_da_foz != null ? (
                 <p className={estilos.painelExtra}>{cid.km_da_foz} km até a foz</p>
+              ) : null}
+              {/* VIZINHOS NO EIXO. "A água que está em Rio do Sul chega aqui
+                  quando?" — o painel não respondia. O tempo é sempre um
+                  INTERVALO (transito.json), nunca horário; e o nível do vizinho
+                  é na régua DELE, que não se compara com a daqui. */}
+              {viz.noEixo ? (
+                <div className={estilos.painelBloco}>
+                  <span className={estilos.painelRotulo}>De onde a água vem, para onde vai</span>
+                  <ul className={estilos.painelVizinhos}>
+                    {[
+                      { v: viz.montante, rotulo: 'Acima', sufixo: 'para chegar aqui' },
+                      { v: viz.jusante, rotulo: 'Abaixo', sufixo: 'daqui até lá' },
+                    ].map(({ v, rotulo, sufixo }) => {
+                      if (!v) {
+                        return (
+                          <li key={rotulo}>
+                            <strong>{rotulo}</strong>
+                            {rotulo === 'Acima' ? 'início do tronco nesta tela' : 'fim do curso nesta tela'}
+                          </li>
+                        )
+                      }
+                      const pv = pinoDe(v.id)
+                      return (
+                        <li key={rotulo}>
+                          <strong>{rotulo}</strong>
+                          <button type="button" onClick={() => navigate(`/monitor/${v.id}`)}>
+                            {v.nome}
+                          </button>
+                          {pv?.nivel != null ? (
+                            <>
+                              {' '}— {metros(pv.nivel)} na régua de lá ({ROTULO_FAIXA[pv.faixa]})
+                            </>
+                          ) : null}
+                          {v.janela ? (
+                            <>
+                              {' '}· leva <strong>{v.janela}</strong> {sufixo}
+                            </>
+                          ) : (
+                            <> · tempo de descida ainda não levantado</>
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+              ) : (
+                <p className={estilos.painelExtra}>
+                  Fora do tronco: a cheia daqui <strong>não é a mesma</strong> que desce o rio
+                  principal, então não se encadeia tempo de descida por esta cidade.
+                </p>
+              )}
+              {/* ÚLTIMAS 24 H: três números lidos da série, sem modelo. Recusa
+                  quando a série mistura réguas (Itajaí tem onze). */}
+              {ultimas.resumo ? (
+                <div className={estilos.painelBloco}>
+                  <span className={estilos.painelRotulo}>Últimas 24 h nesta régua</span>
+                  <p className={estilos.painelExtra}>
+                    mín <strong>{metros(ultimas.resumo.min)}</strong> · máx{' '}
+                    <strong>{metros(ultimas.resumo.max)}</strong> ·{' '}
+                    {ultimas.resumo.variacao > 0 ? 'subiu' : ultimas.resumo.variacao < 0 ? 'desceu' : 'estável'}
+                    {ultimas.resumo.variacao !== 0 ? <> {metros(Math.abs(ultimas.resumo.variacao))}</> : null}{' '}
+                    ({ultimas.resumo.pontos} leituras)
+                  </p>
+                </div>
+              ) : ultimas.motivo === 'varias-reguas' ? (
+                <p className={estilos.painelRessalva}>
+                  Sem resumo das últimas horas: esta cidade tem várias réguas com zeros
+                  diferentes, e um mínimo e um máximo misturariam duas réguas.
+                </p>
               ) : null}
               <p className={estilos.painelAcao}>{ACAO_FAIXA[foco.faixa]}</p>
               {/* As cotas de rua, quando esta cidade as tem e o zoom permite.
