@@ -16,15 +16,29 @@
  *    7,75 m perto do nº 169. Agrupar por nome perderia a cota mais baixa —
  *    justamente a que importa.
  */
-import type { CotaRua } from '../dados/tipos'
+import type { Confianca, CotaRua } from '../dados/tipos'
 
 /** Compara ignorando acento e caixa: quem digita no celular não acentua. */
+/**
+ * Minúsculas, sem acento e SEM HÍFEN, para a busca de rua casar.
+ *
+ * O hífen entrou em 06/09/2026, achado por acidente: quem digita "Beira-Rio" —
+ * que é como a avenida é escrita na placa — não achava a "Av. Beira Rio" do
+ * cadastro, que a fonte grafou sem hífen, e lia "nenhuma rua com esse nome
+ * entre as levantadas" para uma rua que ESTÁ levantada. Mesma correção no
+ * `sem_acento` do bot, que tem a mesma busca.
+ *
+ * O hífen vira espaço, e não some: "Beira-Rio" e "Beira Rio" passam a ser o
+ * mesmo termo, mas "BeiraRio" continua sendo outro.
+ */
 export function normalizar(texto: string): string {
   return texto
+    .replace(/[-–—]/g, ' ')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
     .trim()
+    .replace(/\s+/g, ' ')
 }
 
 export function daCidade(cotas: CotaRua[], cidadeId: string): CotaRua[] {
@@ -114,4 +128,63 @@ export function faltaPara(cotaM: number, nivelM: number): number {
 /** `Rua São Rafael (final da rua)` — o ponto faz parte da identidade. */
 export function nomeCompleto(c: CotaRua): string {
   return c.ponto && c.ponto !== c.rua ? `${c.rua} (${c.ponto})` : c.rua
+}
+
+/* -------------------------------------------------------------------------- *
+ * O QUE VALE COMO COTA — o filtro de entrada.
+ * -------------------------------------------------------------------------- */
+
+const CONFIANCAS: Confianca[] = ['alta', 'media', 'baixa']
+
+function ehConfianca(v: unknown): v is Confianca {
+  return typeof v === 'string' && (CONFIANCAS as string[]).includes(v)
+}
+
+function descarta(motivo: string, registro: unknown): void {
+  console.warn(`[dados] registro descartado — ${motivo}`, registro)
+}
+
+/**
+ * Este registro pode virar resposta na tela?
+ *
+ * VIVE AQUI, e não em `dados/cotasRuas.ts`, porque aquele módulo importa o JSON
+ * pelo alias `@dados`, que só existe no Vite: teste nenhum o carrega. A regra
+ * mais severa deste arquivo estava lá, e por isso ninguém podia falsificá-la —
+ * e ela estava errada.
+ */
+export function cotaRuaValida(c: CotaRua): boolean {
+  if (!c.cidade || !c.rua) {
+    descarta('cota de rua sem cidade ou sem rua', c)
+    return false
+  }
+  if (!ehConfianca(c.confianca) || !c.fonte) {
+    descarta('cota de rua sem fonte ou com confiança inválida', c)
+    return false
+  }
+  // REGRA BLOQUEANTE do CLAUDE.md, item 4: busca e simulador só em régua.
+  // O nível ao vivo com que estas cotas são comparadas vem da Defesa Civil, que
+  // é régua. Uma cota em outra referência produziria "faltam 2,30 m" com 20 cm
+  // de erro embutido, sem nada na tela denunciando.
+  //
+  // CORRIGIDO em 06/09/2026. A condição era `c.referencia !== undefined &&
+  // c.referencia !== 'régua'`: uma cota SEM O CAMPO passava direto, comparada
+  // como se fosse régua. Ausência virava permissão — o oposto do que o projeto
+  // faz em todo lugar, onde `null` é "ninguém conferiu ainda". Eram 39 cotas.
+  // O buraco não era sobre elas: era sobre a próxima linha a entrar sem o campo,
+  // num arquivo que cresce por importação.
+  if (c.referencia !== 'régua') {
+    descarta('cota de rua sem referência declarada, ou fora da régua', c)
+    return false
+  }
+  if (c.cota_m === null) return true // legítimo: a fonte cita e não publica o número
+  if (typeof c.cota_m !== 'number' || !Number.isFinite(c.cota_m)) {
+    descarta('cota de rua com cota_m que não é número', c)
+    return false
+  }
+  // Nenhuma régua da bacia chega perto de 25 m.
+  if (c.cota_m <= 0 || c.cota_m >= 25) {
+    descarta('cota de rua fora de faixa plausível', c)
+    return false
+  }
+  return true
 }

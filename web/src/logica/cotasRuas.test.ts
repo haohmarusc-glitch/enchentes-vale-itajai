@@ -1,10 +1,12 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import {
   atingidas,
   buscar,
   cidadesComCotas,
   comCota,
+  cotaRuaValida,
   daCidade,
   faixaDaCidade,
   faltaPara,
@@ -154,4 +156,70 @@ test('nas cidades reais o numerador nunca passa do denominador', () => {
         `${cidade} a ${nivel} m`)
     }
   }
+})
+
+/* -------------------------------------------------------------------------- *
+ * O filtro de entrada. Estava em `dados/cotasRuas.ts`, que importa o JSON pelo
+ * alias `@dados` — só existente no Vite —, então nenhum teste o alcançava. E
+ * estava errado.
+ * -------------------------------------------------------------------------- */
+
+const valida = (extra: Partial<CotaRua>): CotaRua =>
+  ({
+    cidade: 'gaspar',
+    rio: 'itajai-acu',
+    rua: 'Rua Petúnia',
+    bairro: null,
+    ponto: null,
+    cota_m: 6.2,
+    fonte: 'Defesa Civil',
+    data_fonte: '2020',
+    confianca: 'alta',
+    referencia: 'régua',
+    ...extra,
+  }) as CotaRua
+
+test('COTA SEM O CAMPO `referencia` NÃO ENTRA — ausência não é permissão', () => {
+  /**
+   * O defeito, medido em 06/09/2026. A condição era
+   * `c.referencia !== undefined && c.referencia !== 'régua'`: sem o campo, a
+   * primeira metade era falsa e a cota passava, comparada com o nível ao vivo
+   * como se fosse régua — 20 cm de erro possível, sem nada na tela denunciando.
+   * Eram 39 cotas no arquivo. O buraco, porém, é sobre a PRÓXIMA linha a entrar.
+   */
+  const semCampo = valida({})
+  delete (semCampo as { referencia?: unknown }).referencia
+  assert.equal(cotaRuaValida(semCampo), false, 'campo ausente não pode passar')
+
+  const nula = valida({ referencia: null })
+  assert.equal(cotaRuaValida(nula), false, 'null é "não se sabe", não é régua')
+
+  const ibge = valida({ referencia: 'IBGE (régua + 0,20 m)' })
+  assert.equal(cotaRuaValida(ibge), false, 'outra referência não se compara com a régua')
+
+  assert.equal(cotaRuaValida(valida({})), true, 'régua declarada entra')
+})
+
+test('as outras recusas do filtro continuam de pé', () => {
+  assert.equal(cotaRuaValida(valida({ cidade: '' })), false)
+  assert.equal(cotaRuaValida(valida({ rua: '' })), false)
+  assert.equal(cotaRuaValida(valida({ fonte: '' })), false)
+  assert.equal(cotaRuaValida(valida({ confianca: 'altíssima' as never })), false)
+  assert.equal(cotaRuaValida(valida({ cota_m: Number.NaN })), false)
+  assert.equal(cotaRuaValida(valida({ cota_m: 0 })), false)
+  assert.equal(cotaRuaValida(valida({ cota_m: 25 })), false)
+  // Cota nula é legítima: a fonte cita a rua e não publica o número.
+  assert.equal(cotaRuaValida(valida({ cota_m: null })), true)
+})
+
+test('o arquivo real não tem cota sem referência declarada', () => {
+  /**
+   * A mesma conta que `valida_referencia_das_cotas_de_rua` faz no Python. Aqui
+   * ela trava o ARQUIVO; o teste acima trava a FUNÇÃO. As duas coisas quebram
+   * separado: dá para consertar o filtro e deixar entrar dado sem rótulo, e dá
+   * para rotular tudo e afrouxar o filtro depois.
+   */
+  const d = JSON.parse(readFileSync(new URL('../../../data/cotas-ruas.json', import.meta.url), 'utf-8'))
+  const semCampo = (d.cotas as CotaRua[]).filter((c) => !('referencia' in c))
+  assert.equal(semCampo.length, 0, `${semCampo.length} cota(s) sem o campo 'referencia'`)
 })

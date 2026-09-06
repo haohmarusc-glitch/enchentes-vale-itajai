@@ -585,3 +585,65 @@ Popular com todas as tabelas da seção 1 (Blumenau, Gaspar, Brusque). Confianç
 - "Cotas são aproximadas e podem estar desatualizadas; obras e novas enchentes mudam os valores."
 - "Cada cidade usa sua própria régua. 7 m em Gaspar não é 7 m em Blumenau."
 - "Em emergência, ligue 199. Siga a Defesa Civil da sua cidade."
+
+
+---
+
+## A referência ausente virava permissão — 06/09/2026
+
+Uma cota de rua só pode ser comparada com o nível ao vivo se as duas estiverem na **mesma régua**.
+É o item 4 da regra bloqueante do `CLAUDE.md`, e havia código nos dois lados para garantir isso.
+**O código estava errado**, e do mesmo jeito nos três lugares:
+
+| Onde | Condição |
+|---|---|
+| `web/src/dados/cotasRuas.ts` | `c.referencia !== undefined && c.referencia !== 'régua'` |
+| `scripts/bot.py` | `c.get("referencia", "régua") == "régua"` |
+| `scripts/teste_cotas_ruas.py` | `r.get("referencia", "régua")` |
+| `web/src/dados/tipos.ts` | *"Sempre `régua`, **quando presente**"* |
+
+Cota **sem o campo** passava como se fosse régua. Ausência virava permissão — o contrário do que o
+projeto faz em todo lugar, onde `null` significa "ninguém conferiu ainda". Até o teste que devia
+travar a regra repetia o furo dela, e o tipo em TypeScript **proibia `null`**, que é justamente a
+resposta que a regra manda usar quando a fonte não declara.
+
+Eram **39 cotas**. O que cada uma é, medido:
+
+| Fonte | n | Decisão | Como |
+|---|---|---|---|
+| Gaspar — estudo CEOPS/FURB 2017 | 5 | **`régua`** | a própria fonte declara "referenciado à régua da ANA na empresa Círculo", a mesma frase da fonte das 1.613 já rotuladas, do mesmo estudo; 4 das 5 batem **ao centavo** com o conjunto rotulado |
+| Blumenau — imprensa, maio/2022 | 7 | **`régua`** | as sete estão no **PDF oficial de 2014** com a mesma cota, o mesmo bairro e o mesmo ponto |
+| Brusque — imprensa, 17/11/2023 | 27 | **`null`** | 31 destas ruas aparecem pelo nome no bruto do mapa oficial e **nenhuma** com a mesma cota; não prova referência diferente, mas também não prova a igualdade |
+
+### O susto que não era
+
+As sete de Blumenau pareciam divergir **3 a 4 metros** das outras cotas da mesma rua — São Rafael
+7,40 aqui contra 11,85 lá. **Não é divergência:** o PDF oficial traz os três, e são **pontos
+diferentes** da mesma rua (final da rua · casa nº 169 · esquina com a São Roque). É a regra 3 de
+`logica/cotasRuas.ts`, escrita anos antes. Quase virou uma correção errada.
+
+### O que a decisão de Brusque custa, à vista
+
+Entre as 27 estão os **cinco pontos que a fonte descreve por faixa** ("entre 5,46 m e 5,80 m") sem
+publicar o valor — Ponte Estaiada, Túnel do Terminal Urbano, fundos dos loteamentos Ema e Santa
+Mônica, Beira Rio. Eram os registros mais honestos do arquivo e saíram da busca junto com o resto.
+**Resolve:** a lista oficial da Defesa Civil de Brusque com o ponto de cada cota — ofício já pendente.
+
+### Onde a proveniência ficou, e por que não no `nota`
+
+Em `_meta.referencia_das_cotas`, por fonte. A primeira versão desta correção escreveu o raciocínio
+inteiro no campo `nota` de cada linha — e `nota` é **texto de tela**: sai no site e no Telegram. A
+mensagem do bot passou de 4.096 caracteres e o teste do limite reprovou. Pior: o `nota` de cinco
+linhas de Brusque foi **sobrescrito**, e eram justamente as que diziam "entre 5,46 m e 5,80 m".
+Restaurado do git.
+
+### Um achado de acidente: o hífen escondia ruas
+
+Ao conferir o que mudava na busca, "Beira-Rio" em Brusque não achava nada — e a **Av. Beira Rio**
+está no cadastro, grafada sem hífen pela fonte. Quem digitasse como está na placa lia *"nenhuma rua
+com esse nome entre as levantadas"* para uma rua levantada. Corrigido nos dois lados.
+
+⚠️ E aqui quase entrou um segundo erro: a primeira correção mexeu no `sem_acento` do bot, que
+**também casa identificadores** (`rio-do-sul`, `itajai-acu`). Trocar hífen por espaço lá faria
+"rio-do-sul" deixar de achar Rio do Sul. Quem pegou foi o `test_sem_acento`. A normalização de rua
+virou função separada, `chave_de_rua`.

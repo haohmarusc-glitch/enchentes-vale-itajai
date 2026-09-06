@@ -22,6 +22,27 @@
       "abrigo_codigo": "o código do abrigo na fonte (ex.: E9)",
       "lat": "latitude do ponto, quando o bruto da cidade a traz e o par com esta linha é certo; ausente quando não é. Ver scripts/juntar_coordenadas_cotas.py",
       "lon": "longitude, nas mesmas condições de `lat`"
+    },
+    "referencia_das_cotas": {
+      "_regra": "Toda cota DECLARA sua referência, inclusive para dizer que não sabe: 'régua', 'IBGE (régua + 0,20 m)' ou null. O site e o bot só comparam com o nível ao vivo o que estiver em 'régua' — null fica gravado e fora da comparação. CAMPO AUSENTE NÃO EXISTE MAIS: até 06/09/2026 o leitor tratava ausência como se fosse régua, e 39 cotas entravam na busca 'minha rua' sem rótulo. Ausência nunca provou nada. Travas: scripts/validar_dados.py::valida_referencia_das_cotas_de_rua, web/src/logica/cotasRuas.ts::cotaRuaValida e os testes dos dois lados. Este bloco fica no _meta, e não no campo `nota` de cada linha, porque `nota` é TEXTO DE TELA: sai no site e no Telegram, para quem está com o rio subindo.",
+      "blumenau_imprensa_2022": {
+        "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+        "registros": 7,
+        "referencia": "régua",
+        "como_foi_decidido": "Por CONFERÊNCIA, não por inferência. As sete foram encontradas no PDF oficial da Secretaria Municipal de Defesa Civil de 2014 (data/brutos/blumenau-cotas-2014.json) com a MESMA cota, o MESMO bairro e o MESMO ponto: São Rafael 7,40 'Final da rua (pega só uma casa)' e 7,75 'Casa nº 169'; Martha Cordeiro 7,60 e 7,80; Albert Goll 7,65; Max Scheidemantel 7,90; Max Aldemann 7,95. A conferência de 01/09/2026 já havia provado que a lista oficial e a da imprensa estão na MESMA referência (deslocamento mediano 0,00 m em 1.891 pares). O que parecia divergência com as outras cotas de Blumenau não era: a São Rafael tem 7,40 no final, 7,75 no nº 169 e 11,85 na esquina com a São Roque — três PONTOS da mesma rua, os três no documento oficial. É a regra 3 de logica/cotasRuas.ts. O script conferir_blumenau_2014.py não as pareou porque casa pelo TEXTO do ponto, e a redação difere ('final da rua' contra 'Final da rua (pega só uma casa)') — por isso elas seguem em confianca 'media'. Melhorar esse pareamento é pendência."
+      },
+      "brusque_imprensa_2023": {
+        "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
+        "registros": 27,
+        "referencia": null,
+        "como_foi_decidido": "Não há como conferir aqui, então fica null e fora da comparação. MEDIDO em 06/09/2026: no bruto do mapa da Defesa Civil (data/brutos/brusque-cotas-2023.json, 357 pontos), que é a fonte das 350 cotas rotuladas 'régua', 31 destas ruas aparecem pelo NOME e NENHUMA com a mesma cota. Isso não prova referência diferente — podem ser pontos diferentes da mesma rua, como em Blumenau —, mas também não prova a igualdade, e sem prova não se compara. O outro bruto (brusque-mymaps-cotas.json) está proibido pelo _meta dele mesmo: o campo `cota` de lá não foi identificado como nível de régua. CUSTO DESTA DECISÃO, para ficar à vista: entre as 27 estão os CINCO pontos que a fonte descreve por faixa ('entre 5,46 m e 5,80 m') sem publicar o valor — Embaixo da Ponte Estaiada, Túnel do Terminal Urbano, fundos dos loteamentos Ema I e II e Santa Mônica, e a Beira Rio na altura do loteamento. Eram os casos mais honestos do arquivo e saíram da busca junto. RESOLVE: a lista oficial da Defesa Civil de Brusque com o ponto de cada cota — é o ofício à COMPDEC de Brusque que já está pendente."
+      },
+      "gaspar_ceops_2017": {
+        "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+        "registros": 5,
+        "referencia": "régua",
+        "como_foi_decidido": "A PRÓPRIA FONTE declara: 'referenciado à régua da ANA na empresa Círculo' — a mesma frase da fonte das 1.613 cotas de Gaspar já rotuladas 'régua', do mesmo estudo. Rotular aqui é transcrever. Conferido: quatro destas cinco ruas aparecem também no conjunto rotulado com a cota IGUAL AO CENTAVO (6,20 · 6,20 · 6,25 · 6,34), que são as 'quatro ruas em comum' que a fonte do conjunto grande diz ter usado para conferir a escala."
+      }
     }
   },
   "cotas": [
@@ -36,7 +57,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
-      "abrigo_codigo": "E9"
+      "abrigo_codigo": "E9",
+      "referencia": "régua"
     },
     {
       "cidade": "blumenau",
@@ -49,7 +71,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
-      "abrigo_codigo": "E9"
+      "abrigo_codigo": "E9",
+      "referencia": "régua"
     },
     {
       "cidade": "blumenau",
@@ -62,7 +85,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
-      "abrigo_codigo": "E9"
+      "abrigo_codigo": "E9",
+      "referencia": "régua"
     },
     {
       "cidade": "blumenau",
@@ -75,7 +99,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
-      "abrigo_codigo": "E9"
+      "abrigo_codigo": "E9",
+      "referencia": "régua"
     },
     {
       "cidade": "blumenau",
@@ -88,7 +113,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
-      "abrigo_codigo": "E9"
+      "abrigo_codigo": "E9",
+      "referencia": "régua"
     },
     {
       "cidade": "blumenau",
@@ -101,7 +127,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Paróquia São Francisco de Assis",
-      "abrigo_codigo": "E10"
+      "abrigo_codigo": "E10",
+      "referencia": "régua"
     },
     {
       "cidade": "blumenau",
@@ -114,7 +141,8 @@
       "data_fonte": "2022-05",
       "confianca": "media",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
-      "abrigo_codigo": "E9"
+      "abrigo_codigo": "E9",
+      "referencia": "régua"
     },
     {
       "cidade": "gaspar",
@@ -125,7 +153,8 @@
       "cota_m": 6.2,
       "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
       "data_fonte": "2017",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": "régua"
     },
     {
       "cidade": "gaspar",
@@ -136,7 +165,8 @@
       "cota_m": 6.2,
       "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
       "data_fonte": "2017",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": "régua"
     },
     {
       "cidade": "gaspar",
@@ -147,7 +177,8 @@
       "cota_m": 6.25,
       "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
       "data_fonte": "2017",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": "régua"
     },
     {
       "cidade": "gaspar",
@@ -158,7 +189,8 @@
       "cota_m": 6.34,
       "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
       "data_fonte": "2017",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": "régua"
     },
     {
       "cidade": "gaspar",
@@ -169,7 +201,8 @@
       "cota_m": 6.57,
       "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
       "data_fonte": "2017",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": "régua"
     },
     {
       "cidade": "brusque",
@@ -180,7 +213,8 @@
       "cota_m": 5.64,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -191,7 +225,8 @@
       "cota_m": 6.72,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -202,7 +237,8 @@
       "cota_m": 6.82,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -213,7 +249,8 @@
       "cota_m": 7.3,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -224,7 +261,8 @@
       "cota_m": 7.62,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -235,7 +273,8 @@
       "cota_m": 7.62,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -246,7 +285,8 @@
       "cota_m": 7.71,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -258,7 +298,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "media",
-      "nota": "A mesma via tem um ponto que alaga bem antes: a cota de inundação da Beira-Rio é 4,80 m. Os 7,76 m valem para outro trecho. Rua comprida tem mais de uma cota."
+      "nota": "A mesma via tem um ponto que alaga bem antes: a cota de inundação da Beira-Rio é 4,80 m. Os 7,76 m valem para outro trecho. Rua comprida tem mais de uma cota.",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -269,7 +310,8 @@
       "cota_m": 7.77,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -280,7 +322,8 @@
       "cota_m": 7.8,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -291,7 +334,8 @@
       "cota_m": 7.8,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -302,7 +346,8 @@
       "cota_m": 7.82,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -313,7 +358,8 @@
       "cota_m": 7.83,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -324,7 +370,8 @@
       "cota_m": 7.9,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -335,7 +382,8 @@
       "cota_m": 7.94,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -346,7 +394,8 @@
       "cota_m": 7.95,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -357,7 +406,8 @@
       "cota_m": 7.95,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -368,7 +418,8 @@
       "cota_m": 7.95,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -379,7 +430,8 @@
       "cota_m": 7.97,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -390,7 +442,8 @@
       "cota_m": 8.01,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -401,7 +454,8 @@
       "cota_m": 8.01,
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
-      "confianca": "media"
+      "confianca": "media",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -413,7 +467,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "media",
-      "nota": "É o primeiro ponto do Itajaí-Mirim a alagar entre os levantados."
+      "nota": "É o primeiro ponto do Itajaí-Mirim a alagar entre os levantados.",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -425,7 +480,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "baixa",
-      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto."
+      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto.",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -437,7 +493,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "baixa",
-      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto."
+      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto.",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -449,7 +506,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "baixa",
-      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto."
+      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto.",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -461,7 +519,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "baixa",
-      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto."
+      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto.",
+      "referencia": null
     },
     {
       "cidade": "brusque",
@@ -473,7 +532,8 @@
       "fonte": "Lista oficial da Defesa Civil de Brusque (out/2023) reproduzida por O Município em 17/11/2023",
       "data_fonte": "2023-10",
       "confianca": "baixa",
-      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto."
+      "nota": "Alaga entre 5,46 m e 5,80 m, segundo a fonte, que não publica a cota exata deste ponto.",
+      "referencia": null
     },
     {
       "cidade": "rio-do-sul",

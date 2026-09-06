@@ -12,49 +12,17 @@
  * tela — só mandaria a pessoa para o lado errado.
  */
 import cotasRuasJson from '@dados/cotas-ruas.json'
-import type { Confianca, CotaRua, CotasRuas } from './tipos'
+import type { CotaRua, CotasRuas } from './tipos'
+import { cotaRuaValida } from '../logica/cotasRuas'
 
-const CONFIANCAS: Confianca[] = ['alta', 'media', 'baixa']
-
-function ehConfianca(v: unknown): v is Confianca {
-  return typeof v === 'string' && (CONFIANCAS as string[]).includes(v)
-}
-
-function descarta(motivo: string, registro: unknown): void {
-  console.warn(`[dados] registro descartado — ${motivo}`, registro)
-}
-
+// O QUE VALE COMO COTA vive em `logica/cotasRuas`, não aqui.
+//
+// Este módulo importa o JSON pelo alias `@dados`, que SÓ EXISTE NO VITE — teste
+// nenhum consegue carregá-lo. Enquanto o predicado morava aqui, a regra
+// bloqueante da referência (CLAUDE.md item 4) era prosa que ninguém podia
+// falsificar; e de fato ela estava errada, aceitando cota sem o campo. Agora a
+// decisão está na camada pura, com sabotagem que reprova.
 const cotasBrutas = cotasRuasJson as unknown as CotasRuas
-
-function cotaRuaValida(c: CotaRua): boolean {
-  if (!c.cidade || !c.rua) {
-    descarta('cota de rua sem cidade ou sem rua', c)
-    return false
-  }
-  if (!ehConfianca(c.confianca) || !c.fonte) {
-    descarta('cota de rua sem fonte ou com confiança inválida', c)
-    return false
-  }
-  // REGRA BLOQUEANTE do CLAUDE.md, item 4: busca e simulador só em régua.
-  // O nível ao vivo com que estas cotas são comparadas vem da Defesa Civil, que
-  // é régua. Uma cota em outra referência produziria "faltam 2,30 m" com 20 cm
-  // de erro embutido, sem nada na tela denunciando.
-  if (c.referencia !== undefined && c.referencia !== 'régua') {
-    descarta('cota de rua fora da referência régua', c)
-    return false
-  }
-  if (c.cota_m === null) return true // legítimo: a fonte cita e não publica o número
-  if (typeof c.cota_m !== 'number' || !Number.isFinite(c.cota_m)) {
-    descarta('cota de rua com cota_m que não é número', c)
-    return false
-  }
-  // Nenhuma régua da bacia chega perto de 25 m.
-  if (c.cota_m <= 0 || c.cota_m >= 25) {
-    descarta('cota de rua fora de faixa plausível', c)
-    return false
-  }
-  return true
-}
 
 export const cotasRuas: CotaRua[] = (cotasBrutas.cotas ?? []).filter(cotaRuaValida)
 
