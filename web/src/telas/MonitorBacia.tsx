@@ -703,7 +703,7 @@ export default function MonitorBacia() {
       // OS CONTROLES DE HTML TAMBÉM OCUPAM O MAPA. Eles são DOM por cima do
       // vidro, e até aqui o canvas não os enxergava: "Timbó" saía atrás do
       // botão +, "Blumenau" atrás do −, sobrando "…mbó" e "…nau" na tela
-      // (capturas de 07/09/2026). Reservam ANTES dos nomes das cidades porque
+      // (capturas de 06/09/2026). Reservam ANTES dos nomes das cidades porque
       // não têm como ceder — são opacos e o toque é deles.
       const caixaMapa = canvas.getBoundingClientRect()
       for (const el of divRef.current?.querySelectorAll<HTMLElement>('[data-tapa-mapa]') ?? []) {
@@ -1049,7 +1049,7 @@ export default function MonitorBacia() {
             embaixo. Com a legenda aberta numa tela larga o rodapé subia e
             cobria o botão "−" — AFASTAR, que é justamente como se volta para a
             bacia inteira depois de se perder no zoom (medido em 1280×900 e
-            1440×700, 07/09/2026). O comentário antigo do CSS já contava essa
+            1440×700, 06/09/2026). O comentário antigo do CSS já contava essa
             história com outros números: 13rem cobria, 17rem não. Teto mágico
             é sempre provisório.
 
@@ -1169,7 +1169,7 @@ export default function MonitorBacia() {
         </div>
         {/* RODAPÉ — uma coluna só, e é isso que impede a sobreposição.
 
-            O DEFEITO QUE ISTO CORRIGE (07/09/2026, relatado pelo Jefferson:
+            O DEFEITO QUE ISTO CORRIGE (06/09/2026, relatado pelo Jefferson:
             "não é possível mudar o fundo do mapa"). A barra de reprodução era
             centrada embaixo e a legenda ficava no canto inferior esquerdo: no
             celular as duas ocupam a MESMA faixa, e a barra tinha `z-index: 5`.

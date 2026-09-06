@@ -258,7 +258,7 @@ A pergunta 2 é a que mais importa. Responda-a mesmo que todos os 19 testes pass
 
 ---
 
-# Execução de 07/09/2026 (Claude, ambiente remoto)
+# Execução de 06/09/2026 (Claude, ambiente remoto)
 
 **PASSO 0: achou `reguas`** — logo, o 9 e o 10 valem.
 
@@ -328,3 +328,123 @@ está funcionando.
 `ciram.epagri.sc.gov.br`, `defesacivil.*.sc.gov.br`, `*.ana.gov.br`,
 `overpass-api.de`, `nominatim.openstreetmap.org` e a preview do Cloudflare.
 Tudo que depender dessas fontes é do Jefferson ou do VPS.
+
+---
+
+# Execução de 06/09/2026 (Chrome do Jefferson)
+
+Complementa a execução acima. Rodada no **Chrome local**, sobre a **preview do
+Cloudflare** do branch, com dado ao vivo. O objetivo era só o que o ambiente
+remoto não alcança: os tiles do Esri (4, 5, 6) e os links do rodapé (19); mais
+uma segunda passada em 3 e 15.
+
+| # | Resultado | Como foi verificado |
+|---|---|---|
+| 3 | ✅ | medido, não olhado — ver abaixo |
+| 4 | ✅ | nenhum "API KEY REQUIRED"; `World_Dark_Gray_Base` e `World_Dark_Gray_Reference` todos **200** |
+| 5 | ✅ | rótulos carregam em três zooms: bacia, cidade e rua |
+| 6 | ✅ | pela rede: há `tile/16/`, **nenhum `tile/17/`**; "Mapa" recupera o detalhe |
+| 15 | ✅ | 3 quadros ao longo da reprodução, valores contínuos |
+| 19 | ⚠️ parcial | 8 links abertos; 1 achado; 4 não verificados |
+
+## 3 — a cadeia inteira, medida
+
+Distância mínima **ponto-a-segmento** entre os traçados de `data/rios/`:
+
+| Par | Distância |
+|---|---:|
+| `ribeirao-canhanduba` ↔ `rio-conceicao` | **0,0 m** |
+| `rio-conceicao` ↔ `itajai-mirim` | **0,0 m** |
+| `itajai-mirim` ↔ `mirim-canal-retificado` | **0,0 m** |
+| `ribeirao-murta` ↔ `itajai-acu` | **0,0 m** |
+
+> **TERCEIRA ocorrência do mesmo erro de método, evitada a tempo.** A primeira
+> medida usou as EXTREMIDADES das linhas e deu **393 m** entre a ponta do
+> Canhanduba e o Conceição — o que teria sido reportado como falha. A junção
+> não está na ponta da linha.
+>
+> Extremidade não é conexão, do mesmo modo que vértice não é segmento. Foram
+> três vezes no mesmo dia: a ponta do Murta (1.234 m que eram 0), a régua DC-03
+> (534 m que eram 20) e esta.
+>
+> **Antes de reportar qualquer distância neste projeto: ponto-a-segmento, sobre
+> a LINHA INTEIRA, nunca extremidade contra extremidade.**
+
+## 6 — um falso alarme que vale registrar
+
+No primeiro zoom o fundo escuro pareceu **sumir** — a tela ficou azul-escura
+lisa. Era carregamento: os tiles chegam com alguns segundos de atraso nesse
+nível. Depois de esperar, o fundo aparece completo.
+
+Quem testar no celular com rede fraca vai ver a mesma coisa. **Não é o defeito
+que o teste 6 procura** — o defeito seria o fundo sumir e não voltar.
+
+## 15 — a onda, com dado de verdade
+
+Três quadros, 05/09 20:44 → 06/09 07:44 → 06/09 16:14, sem travar a página:
+
+| | Taió | Rio do Sul |
+|---|---:|---:|
+| 05/09 20:44 | 5,47 m | 5,37 m |
+| 06/09 07:44 | 5,31 m | 5,25 m |
+| 06/09 16:14 | 5,17 m | 5,22 m |
+
+Valores contínuos, maré alternando de forma coerente, e as cidades sem dado
+naquele instante dizendo **"sem leitura"** em vez de herdar cor do quadro
+anterior. Nada piscando ao acaso. É a metade que a execução remota não pôde
+observar por não haver cheia descendo.
+
+## 19 — links das fontes
+
+**Abrem:** AlertaBlu (redireciona para o portal da Defesa Civil de Blumenau),
+Defesa Civil de SC (raiz e `/mapa`), HidroWeb séries históricas, Defesa Civil de
+Itajaí (`nivel-rios`, `mares`, `barragem`) e Defesa Civil de Gaspar
+(`/monitoramento/tabela`).
+
+**Dois pontos a resolver:**
+
+1. **O link do CEOPS/FURB é `http://`, não `https://`.** Num site que as pessoas
+   abrem no meio da chuva, link em texto claro no rodapé não é detalhe estético.
+   **Não foi trocado**: deste ambiente não dá para saber se o `ceops.furb.br`
+   serve https (o proxy devolve 000 no https e 403 no http — os dois são dele,
+   não da fonte), e link quebrado no rodapé é pior que link em texto claro.
+   Resolver é abrir o endereço em https no navegador: se abrir, trocar; se não,
+   registrar aqui que a fonte só serve http.
+2. **`defesacivil.gaspar.sc.gov.br/enchentes` devolveu conteúdo idêntico ao
+   `/monitoramento/tabela`.** Pode ser SPA, pode ser 404 caindo na home.
+   Precisa de conferência humana. Importa porque é a fonte dos **70 registros
+   históricos candidatos de Gaspar**.
+
+**Não verificados** (a extensão negou permissão de domínio): `labgeo.furb.br`,
+`libgeo.acad.univali.br/mapi/`, `snirh.gov.br/hidrotelemetria` e o PDF da JICA
+em `openjicareport.jica.go.jp`.
+
+---
+
+# Placar acumulado — 18 dos 19
+
+| | |
+|---|---|
+| ✅ **passaram** | 1, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18 |
+| ⚠️ **2** | a metade perigosa passa (cinza e parado, o que impede o alarme de maré vazar). O texto do teste é anterior à regra de rótulos por zoom e **precisa ser reescrito**, senão acusa falha onde a regra funciona. |
+| ⚠️ **9** | **não existe gráfico de Itajaí em tela nenhuma** — e o dado existe, farto (955+565+191+381 pontos, com índice de régua). Lacuna, não perigo. |
+| ⚠️ **19** | parcial: 8 abrem, 1 achado (http do CEOPS), 1 a conferir (Gaspar), 4 não verificados. |
+
+## As três perguntas do fim
+
+**1. Algo fora da lista que afirme número sem idade, ou pinte verde onde devia
+ser cinza?** Sim, dois, os dois achados nesta rodada e **os dois já corrigidos**:
+a reprodução elegia uma das onze réguas de Itajaí em silêncio (trocando de régua
+a cada minuto, 3,10 m virando 1,47 m), e rótulos de cidades fora da tela
+flutuavam sobre bairros a 60 km de onde a leitura foi feita.
+
+**2. Um morador de Itajaí, no meio de uma chuva forte, poderia se sentir mais
+seguro do que está?** Hoje, não — mas **até esta rodada, sim, e não em Itajaí**:
+Indaial estava com `atencao: 6,00 m` quando a emergência do município é 5,50 m.
+Um morador de Indaial vendo 5,6 m lia "abaixo da atenção". Corrigido.
+
+**3. O que não se entende sem ler este arquivo?** Por que a maior parte do mapa
+é cinza. A legenda explica ("cinza = sem faixa para afirmar"), mas quem abre no
+meio da chuva vê um mapa quase todo apagado e pode concluir que o site não
+funciona, em vez de que o site não sabe. É honesto e é a decisão certa — mas o
+custo de compreensão existe e não está resolvido.

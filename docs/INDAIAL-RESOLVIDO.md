@@ -1,6 +1,6 @@
 # Indaial: como o erro entrou, e o que o consertou
 
-Resolvido em 07/09/2026, com o PDF lido na fonte pelo Jefferson (o proxy do
+Resolvido em 06/09/2026, com o PDF lido na fonte pelo Jefferson (o proxy do
 ambiente de desenvolvimento recusa `indaial.atende.net`).
 
 ## O erro

@@ -4,7 +4,7 @@ Documentos recebidos: `RESULTADOS.md` e `historicos-candidatos.json` (96 registr
 candidatos, nenhum importado). Este arquivo registra **o que o cruzamento com o
 repositório revelou** — não é importação nem certificação.
 
-> **RESOLVIDO EM 07/09/2026.** O Jefferson abriu o PDF no navegador dele e a
+> **RESOLVIDO EM 06/09/2026.** O Jefferson abriu o PDF no navegador dele e a
 > pesquisa estava certa: o repositório é que estava errado, para o lado
 > perigoso. As cotas foram corrigidas para 3 / 4 / 5,5 e os 16 picos entraram.
 > O registro do problema fica abaixo, porque como o erro entrou importa tanto

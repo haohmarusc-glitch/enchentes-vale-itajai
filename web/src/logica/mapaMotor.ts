@@ -835,7 +835,7 @@ export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; 
 /**
  * O pino está DENTRO da tela? Se não está, o rótulo dele não pode existir.
  *
- * O DEFEITO QUE ISTO CORRIGE (07/09/2026, capturas do Jefferson com o mapa
+ * O DEFEITO QUE ISTO CORRIGE (06/09/2026, capturas do Jefferson com o mapa
  * aproximado em Itajaí). O ponto é desenhado em `p.x` — fora da tela, some. O
  * rótulo, não: `caixaDoRotuloDoPino` prende o centro dele na borda, para que
  * uma cidade na beirada não saia cortada. Com o pino LONGE, essa mesma trava

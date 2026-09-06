@@ -1294,7 +1294,7 @@ def valida_ordem_das_cotas() -> None:
     """
     As cotas de uma cidade sobem na ordem das faixas?
 
-    POR QUE EXISTE (07/09/2026). Indaial estava cadastrada com `atencao: 6,00 m`
+    POR QUE EXISTE (06/09/2026). Indaial estava cadastrada com `atencao: 6,00 m`
     — um nome NOSSO, não da COMPDEC: a leitura anterior achou só a página do
     município, que lista 12 vias com alagamento já registrado a 6,00 m, e gravou
     esse número como atenção por ser o único que existia.
@@ -1340,7 +1340,7 @@ def valida_cobertura_da_mare() -> None:
     """
     Até quando a tábua de maré alcança?
 
-    POR QUE EXISTE (07/09/2026). A base tinha preamares e baixamares de
+    POR QUE EXISTE (06/09/2026). A base tinha preamares e baixamares de
     01/09/2026 a 30/09/2026 e MAIS NADA — um único mês. Em 06/09 isso eram 24
     dias de tábua restantes: no dia 1º de outubro o painel de maré de Itajaí
     ficaria vazio, sem ninguém ser avisado, e a maré é metade da explicação da
