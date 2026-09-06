@@ -9,6 +9,7 @@ cada um estraga UM ponto dos dados reais e exige que `valida_estacoes` acuse.
 import copy
 import json
 import unittest
+from datetime import date, timedelta
 
 from comum import DADOS
 import validar_dados as vd
@@ -510,6 +511,67 @@ class CodigoAnaEhReguaDeRio(unittest.TestCase):
         vr = _cidade(self.real, "itajai-mirim", "vidal-ramos")
         self.assertIsNone(vr["codigo_ana"])
         self.assertEqual(vr["codigo_ana_nao_e"]["codigo"], "83892990")
+
+
+
+class TestaCoberturaDaMare(unittest.TestCase):
+    """
+    A tábua de maré acaba, e o painel da foz fica MUDO sem avisar.
+
+    Em 06/09/2026 a base tinha preamares e baixamares de 01/09 a 30/09 e mais
+    nada: 24 dias de tábua restantes, e no dia 1º de outubro o painel de maré
+    de Itajaí ficaria vazio. Maré alta trava a saída da água do rio — é metade
+    da explicação da cheia na foz.
+    """
+
+    def _com_mare(self, ultimo_dia):
+        """Roda o validador contra uma tábua que termina no dia dado."""
+        orig = vd.le_json
+        tabua = {
+            "preamares": [{"quando": f"{ultimo_dia}T04:28", "altura_m": 1.1}],
+            "baixamares": [{"quando": f"{ultimo_dia}T09:49", "altura_m": 0.2}],
+        }
+        vd.le_json = lambda nome: tabua if nome == "mare-itajai.json" else orig(nome)
+        vd.erros.clear()
+        vd.avisos.clear()
+        try:
+            vd.valida_cobertura_da_mare()
+            return list(vd.erros), list(vd.avisos)
+        finally:
+            vd.le_json = orig
+            vd.erros.clear()
+            vd.avisos.clear()
+
+    def test_tabua_que_ja_acabou_e_ERRO(self):
+        erros, _ = self._com_mare((date.today() - timedelta(days=3)).isoformat())
+        self.assertTrue(erros, "tábua vencida tem de reprovar, não só avisar")
+        self.assertIn("JÁ está sem tábua", " ".join(erros))
+
+    def test_tabua_acabando_avisa_com_semanas_de_folga(self):
+        erros, avisos = self._com_mare((date.today() + timedelta(days=10)).isoformat())
+        self.assertFalse(erros, "ainda há tábua: avisa, não reprova")
+        self.assertTrue(avisos)
+        self.assertIn("restam 10 dia(s)", " ".join(avisos))
+
+    def test_tabua_farta_nao_reclama(self):
+        erros, avisos = self._com_mare((date.today() + timedelta(days=200)).isoformat())
+        self.assertFalse(erros)
+        self.assertFalse(avisos, "tábua do ano inteiro não pode virar ruído")
+
+    def test_lista_vazia_e_ERRO(self):
+        # Sem preamar não há painel de maré nenhum — e isso não é "sem dado
+        # hoje", é a tela da foz perdendo metade do que ela explica.
+        orig = vd.le_json
+        vd.le_json = lambda nome: {"preamares": [], "baixamares": []} if nome == "mare-itajai.json" else orig(nome)
+        vd.erros.clear()
+        vd.avisos.clear()
+        try:
+            vd.valida_cobertura_da_mare()
+            self.assertEqual(len(vd.erros), 2, "preamares e baixamares vazios, dois erros")
+        finally:
+            vd.le_json = orig
+            vd.erros.clear()
+            vd.avisos.clear()
 
 
 if __name__ == "__main__":

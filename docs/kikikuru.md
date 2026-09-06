@@ -6,6 +6,53 @@ zoom que troca a informação. Copiamos o **método**, não os dados (que são d
 Japão). O que segue é o mapa dos componentes e das regras que os prendem, para
 achar rápido e não reintroduzir os erros que a honestidade do projeto proíbe.
 
+## A reprodução não pode eleger uma régua em silêncio (07/09/2026)
+
+Achado rodando o site **com dado ao vivo**, executando os testes de
+`docs/testes-navegador.md` — nenhum teste puro pegava, porque o defeito estava
+num componente que ninguém tinha olhado.
+
+O painel "Reprodução das últimas horas" (`componentes/AnimacaoOnda`) pegava o
+ponto mais próximo do instante na série da cidade e escrevia o metro dele. Para
+Itajaí, essa série **não é de uma régua**: é a costura das réguas daquele rio na
+cidade. No Açu são DC-01 (CEPSUL), DC-02 (Praça) e DC-11 (Santa Regina), cada
+uma com o seu zero.
+
+Na série publicada em 06/09/2026, medido:
+
+- **as 564 transições entre pontos vizinhos trocavam de régua**;
+- **381 delas saltavam mais de 1,00 m**;
+- exemplo real: 3,10 m → 1,47 m entre 16:10 e 16:11 — **1,63 m em um minuto**,
+  que não é o rio, é a régua trocando.
+
+É o mesmo defeito que rendeu "+2448 cm/h" na tendência de Itajaí, e que o teste
+10 do roteiro foi escrito para vigiar. Foi corrigido no gráfico e na tendência,
+e **sobreviveu na reprodução**.
+
+A linha ainda escrevia **"Sem cota / sem leitura — 0,65 m"**: o rótulo é da
+faixa (cinza porque não há cota da cidade para afirmar faixa) e negava a
+leitura que estava do lado. Todas as outras cidades cinza mostram "—"; só
+Itajaí mostrava número.
+
+Agora vale a mesma regra do resto do site: **cidade com mais de uma régua não
+tem "o nível da cidade"** — a linha diz "N réguas nesta cidade" e manda ler a
+lista de cada uma (`logica/reproducaoPorCidade`).
+
+### A armadilha do resgate
+
+A primeira versão da correção **derrubou Blumenau junto**: "Blumenau" e
+"Blumenau (AlertaBlu)" são a MESMA régua ANA 83800002, e passariam por duas.
+Perder o número de Blumenau é exatamente o que o teste 11 do roteiro vigia.
+
+O vínculo vem em `resgate_de` no `ultimo.json`. **A série publicada não o
+traz** — lista os dois títulos lado a lado —, embora o comentário de
+`dados/serie.ts` afirme que "o publicador já resolve isso por `resgate_de`".
+Para a série, essa afirmação não vale hoje. Por isso o mapa resgate→primária
+entra por parâmetro, montado das leituras ao vivo.
+
+Vínculo **circular** (A socorre B, B socorre A) não junta: sem primária não há
+zero comum garantido, e o lado seguro é a cidade ficar sem metro.
+
 ## A coluna da esquerda é UMA coluna (07/09/2026, segunda rodada)
 
 Empilhar a barra de reprodução com a legenda resolveu o toque nos botões de

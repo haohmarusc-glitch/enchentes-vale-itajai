@@ -153,7 +153,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
             da faixa dela naquele instante. É o que foi medido, não previsão.
           </p>
           <Suspense fallback={<p className={estilos.instrucao}>Carregando a reprodução…</p>}>
-            <AnimacaoOnda rioId={rioId} cidades={cidades} serie={serie} />
+            <AnimacaoOnda rioId={rioId} cidades={cidades} serie={serie} leituras={tempoReal.leituras} />
           </Suspense>
         </section>
       ) : null}
