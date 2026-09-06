@@ -72,10 +72,38 @@
 }
 
 /* Legenda sempre visível, canto inferior esquerdo. */
-.legenda {
+/* RODAPÉ: barra de reprodução EM CIMA, legenda embaixo, numa coluna só.
+
+   Antes eram dois blocos `position: absolute` na mesma faixa de baixo — a
+   legenda à esquerda, a barra centrada — e a barra levava `z-index: 5`. Em
+   tela estreita eles se cruzavam, e como z-index só decide quem fica na
+   frente, o toque nos botões Escuro/Satélite/Mapa (que vivem DENTRO da
+   legenda) era comido pela barra: o fundo do mapa não trocava.
+
+   Numa coluna isso não tem como acontecer: um está abaixo do outro no fluxo,
+   em qualquer largura. O `pointer-events: none` do envelope garante que a
+   faixa vazia ao lado dos blocos continue sendo do MAPA — arrastar o rio ali
+   ainda funciona. */
+.rodape {
   position: absolute;
   left: 0.5rem;
+  right: 0.5rem;
   bottom: 0.5rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  /* Deixa livre a coluna da esquerda (título, menu, zoom): sem este teto a
+     legenda aberta subia até os botões + e −. */
+  max-height: calc(100% - 14rem);
+  pointer-events: none;
+}
+.rodape > * {
+  pointer-events: auto;
+}
+
+.legenda {
   background: rgba(6, 16, 26, 0.8);
   color: #eaf1f8;
   border: 1px solid rgba(180, 200, 220, 0.25);
@@ -83,10 +111,9 @@
   padding: 0.5rem 0.65rem;
   font-size: 0.8rem;
   max-width: min(20rem, 60%);
-  /* Abaixo do título E DO ZOOM, sempre. 13rem deixava a legenda subir até os
-     botões + e −, que ficavam por cima do título dela (captura de 06/09/2026).
-     17rem é a altura da coluna da esquerda inteira: título, menu e zoom. */
-  max-height: calc(100% - 17rem);
+  /* Item de coluna: encolhe dentro do teto do rodapé em vez de ter altura
+     própria em %, que não resolve contra um envelope de altura automática. */
+  min-height: 0;
   overflow-y: auto;
 }
 .legendaTitulo {
@@ -178,10 +205,6 @@
 
 /* Barra de reprodução das últimas 24 h, centrada embaixo. */
 .controles {
-  position: absolute;
-  bottom: 0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -189,11 +212,9 @@
   border: 1px solid rgba(180, 200, 220, 0.28);
   border-radius: 0.6rem;
   padding: 0.35rem 0.6rem;
-  max-width: min(34rem, 60vw);
+  max-width: 100%;
   width: max-content;
-  /* Acima da legenda: centrada embaixo, ela caía justamente sobre os botões
-     Escuro/Satélite/Mapa numa tela estreita (capturas de 06/09/2026). */
-  z-index: 5;
+  flex: none;
 }
 .botaoPlay {
   flex: none;
@@ -635,11 +656,23 @@
     z-index: 7;
   }
   .legenda {
-    max-width: calc(100% - 1rem);
-    max-height: 40%;
+    max-width: 100%;
   }
+  /* No celular a barra ocupa a largura toda e QUEBRA LINHA. Somados, botão +
+     cursor + horário passam de 374 px numa tela de 390, e o "ao vivo" saía
+     cortado na borda (capturas do Jefferson de 06 e 07/09/2026). Um horário
+     pela metade é ambíguo — "06/09 14:" pode ser qualquer hora. */
   .controles {
-    max-width: calc(100% - 1rem);
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .barra {
+    min-width: 6rem;
+  }
+  /* No celular a coluna da esquerda é mais curta (título encolhido, sem menu
+     aberto), mas a legenda aberta ainda não pode comer a tela toda. */
+  .rodape {
+    max-height: 62%;
   }
 }
 

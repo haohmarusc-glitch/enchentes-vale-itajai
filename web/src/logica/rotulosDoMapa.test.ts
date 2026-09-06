@@ -14,6 +14,7 @@ import {
   caixaDaEtiquetaMare,
   caixaDoRotuloDoPino,
   colide,
+  pinoNaTela,
   planejarRotulosDosPinos,
   textoDoPino,
   type Caixa,
@@ -158,3 +159,43 @@ test('cena sem mar não inventa chip', () => {
   assert.equal(caixaDaEtiquetaMare(medir, { mar: null, largura: CENA_LARGURA } as never), null)
 })
 
+
+
+/**
+ * PINO FORA DA TELA NÃO TEM RÓTULO.
+ *
+ * Capturas do Jefferson de 07/09/2026, mapa aproximado em Itajaí: "Ascurra",
+ * "Blumenau" e "Indaial" apareciam presos na margem esquerda, SEM bolinha
+ * nenhuma — os pinos estavam a 60 km dali. A trava de borda existe para o pino
+ * que encosta na beirada; com o pino longe, ela virava um nível do rio escrito
+ * em cima de um bairro que não é o dele.
+ */
+test('pino fora da tela não ganha rótulo — nem preso na margem', () => {
+  const fora = pino('ascurra', -420, 150, { nivelBruto: { nivelBrutoM: 7.74, medidoEm: null } as unknown as Pino['nivelBruto'] })
+  const plano = planejarRotulosDosPinos(medir, cena([fora]), null, {}, [])
+  assert.equal(plano.size, 0, 'o nome saía sobre Itaipava, a 60 km de Ascurra')
+})
+
+test('pino encostado na borda MANTÉM o rótulo, preso para dentro', () => {
+  // Este é o caso que a trava de borda existe para atender: a bolinha aparece
+  // pela metade, o nome tem de continuar legível e inteiro.
+  const encostado = pino('itajai', 2, 150)
+  const plano = planejarRotulosDosPinos(medir, cena([encostado]), null, {}, [])
+  const r = plano.get('itajai')
+  assert.ok(r, 'quem está na tela não pode perder o nome')
+  assert.ok(r!.caixa.x0 >= 0, 'e o nome não pode sair cortado pela esquerda')
+})
+
+test('fora da tela em qualquer um dos quatro lados', () => {
+  for (const [x, y] of [[-50, 150], [CENA_LARGURA + 50, 150], [200, -50], [200, 350]] as const) {
+    assert.equal(pinoNaTela({ x, y }, { largura: CENA_LARGURA, altura: 300 }), false, `${x},${y}`)
+  }
+  assert.equal(pinoNaTela({ x: 200, y: 150 }, { largura: CENA_LARGURA, altura: 300 }), true)
+})
+
+test('nem a cidade SELECIONADA ganha rótulo estando fora da tela', () => {
+  // A selecionada fura a anticolisão de propósito (quem tocou nela quer o
+  // número dela). Furar a borda é outra coisa: apontaria para o lugar errado.
+  const plano = planejarRotulosDosPinos(medir, cena([pino('blumenau', -300, 100)]), 'blumenau', {}, [])
+  assert.equal(plano.size, 0)
+})

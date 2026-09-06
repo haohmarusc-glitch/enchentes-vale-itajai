@@ -6,6 +6,38 @@ zoom que troca a informação. Copiamos o **método**, não os dados (que são d
 Japão). O que segue é o mapa dos componentes e das regras que os prendem, para
 achar rápido e não reintroduzir os erros que a honestidade do projeto proíbe.
 
+## Quem ocupa o mapa não é só o canvas (07/09/2026)
+
+Três defeitos vistos nas capturas do celular do Jefferson, com uma raiz comum:
+**o mapa é canvas COM HTML por cima, e cada metade ignorava a outra.**
+
+1. **O fundo do mapa não trocava.** A barra de reprodução ficava centrada
+   embaixo e a legenda no canto inferior esquerdo — duas caixas `absolute` na
+   MESMA faixa. A barra tinha `z-index: 5`, e z-index não separa nada: só
+   decide quem recebe o toque. Recebia a barra, então Escuro/Satélite/Mapa
+   apareciam e não funcionavam, e a atribuição do OpenStreetMap (condição de
+   licença) ficava coberta. Agora os dois são filhos de `.rodape`, uma coluna:
+   em largura nenhuma podem se cobrir, porque um está abaixo do outro no fluxo.
+
+2. **Nome de cidade atrás de botão.** A anticolisão só conhecia o que o canvas
+   desenha. "Timbó" saía atrás do `+` e "Blumenau" atrás do `−`, sobrando
+   "…mbó" e "…nau". Quem lê "nau" não sabe se é Blumenau ou Navegantes, e são
+   lados opostos da bacia. Os blocos opacos de HTML agora levam
+   `data-tapa-mapa` e entram na mesma lista `caixas`, via
+   `logica/controlesSobreOMapa`. Reservam ANTES dos nomes das cidades: são
+   opacos e o toque é deles, não têm como ceder.
+
+3. **Rótulo sem pino, preso na margem.** `caixaDoRotuloDoPino` prende o centro
+   do rótulo dentro da tela para que a cidade da beirada não saia cortada. Com
+   o pino LONGE da tela isso virava outra coisa: "≈7,74 m bruto · Ascurra"
+   escrito sobre Itaipava, "Blumenau" e "Indaial" sobre bairros de Itajaí, a
+   60 km de onde essas leituras foram feitas — e sem bolinha nenhuma embaixo.
+   `pinoNaTela` corta o rótulo de quem está fora; quem só encosta na borda
+   mantém, que é o caso para o qual a trava existe.
+
+**Regra:** rótulo só existe onde o ponto dele existe, e o que é opaco por cima
+do vidro reserva espaço como se fosse desenho.
+
 ## A regra que atravessa tudo: cor = faixa, nunca metro
 
 A cor de uma cidade é a **faixa da régua DELA** (abaixo da atenção / atenção /
