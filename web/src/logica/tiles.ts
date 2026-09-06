@@ -123,10 +123,22 @@ export function tileY(lat: number, z: number): number {
  * acrescenta nada visível; pedir de menos deixa o fundo borrado. O teto é o do
  * provedor — passar dele devolve 404, não imagem melhor.
  */
-export function zoomPara(e: Enquadramento, maxZoom: number): number {
+export function zoomPara(e: Enquadramento, maxZoom: number, dpr: number = 1): number {
   // Largura em pixels de 360° de longitude, na escala deste enquadramento.
+  //
+  // `dpr` (06/09/2026): num celular com tela 2x ou 3x, o canvas tem o dobro
+  // de pixels do que a largura em CSS diz — e o tile escolhido pela largura em
+  // CSS chega com 256 pixels para cobrir 512 de tela. É isso que deixava o
+  // fundo de satélite BORRADO justamente no aparelho em que o site mais é
+  // usado. Um nível a mais de zoom por dobro de dpr traz o tile na resolução
+  // do vidro. Custa 4x mais pedidos por nível; o teto da camada continua
+  // valendo, e `tilesVisiveis` tem o limite que protege a noite de chuva.
   const mundoPx = 360 * e.cosLat * e.escala
-  const z = Math.round(Math.log2(Math.max(1, mundoPx / LADO_TILE)))
+  // No máximo UM nível a mais: em 3x seriam dois, e dois níveis multiplicam
+  // os tiles por dezesseis — mais do que o limite de `tilesVisiveis` aceita
+  // numa tela grande, e aí o fundo sumia inteiro. Um nível já traz o dobro.
+  const nitidez = Number.isFinite(dpr) && dpr > 1 ? Math.min(1, Math.round(Math.log2(dpr))) : 0
+  const z = Math.round(Math.log2(Math.max(1, mundoPx / LADO_TILE))) + nitidez
   return Math.max(0, Math.min(maxZoom, z))
 }
 

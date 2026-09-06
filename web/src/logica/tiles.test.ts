@@ -196,3 +196,16 @@ test('urlDosRotulos preenche igual à base, e é null quando não há', () => {
   assert.match(rot!, /\/7\/5\/3$/)
   assert.equal(urlDosRotulos(FUNDOS.mapa, 3, 5, 7), null)
 })
+
+test('tela 2x pede um nível a mais de zoom — o tile chega na resolução do vidro', () => {
+  const base = zoomPara(E, 19)
+  assert.equal(zoomPara(E, 19, 2), base + 1)
+  assert.equal(zoomPara(E, 19, 3), base + 1, '3x NÃO passa de um nível: dois multiplicariam os tiles por 16 e estourariam o limite')
+  assert.equal(zoomPara(E, 19, 1), base)
+  // O teto da camada continua mandando: um dpr alto não passa dele.
+  assert.equal(zoomPara(E, base, 3), base)
+  // dpr inválido não vira NaN nem zoom negativo.
+  assert.equal(zoomPara(E, 19, Number.NaN), base)
+  assert.equal(zoomPara(E, 19, 0), base)
+})
+

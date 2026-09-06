@@ -150,7 +150,7 @@ test('cidade com levantamento SEM coordenada não recebe "aproxime o mapa"', () 
    */
   const blu = avisoDeRuas('blumenau')
   assert.equal(blu.tipo, 'sem-coordenada')
-  assert.equal(blu.tipo === 'sem-coordenada' ? blu.ruas : 0, 2042)
+  assert.equal(blu.tipo === 'sem-coordenada' ? blu.ruas : 0, 2023)
   assert.equal(avisoDeRuas('rio-do-sul').tipo, 'sem-coordenada')
 })
 

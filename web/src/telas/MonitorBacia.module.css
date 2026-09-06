@@ -26,11 +26,23 @@
 }
 
 /* Barra de topo com título, aviso e o botão de tela cheia. */
-.topo {
+/* Coluna do canto esquerdo: título, menu (quando aberto) e zoom, um abaixo
+   do outro. Com cada um posicionado à parte, o zoom cobria o botão de tela
+   cheia e o menu cobria o título (visto em 06/09/2026). */
+.cantoEsquerdo {
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
-  max-width: 60%;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+  max-width: min(24rem, calc(100% - 1rem));
+  max-height: calc(100% - 1rem);
+}
+.topo {
+  max-width: 100%;
   background: rgba(6, 16, 26, 0.72);
   color: #eaf1f8;
   padding: 0.4rem 0.6rem;
@@ -71,11 +83,35 @@
   padding: 0.5rem 0.65rem;
   font-size: 0.8rem;
   max-width: min(20rem, 60%);
+  /* Abaixo do título e do zoom, sempre — a legenda inteira cobria os dois. */
+  max-height: calc(100% - 13rem);
+  overflow-y: auto;
 }
 .legendaTitulo {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-size: 0.82rem;
   margin-bottom: 0.35rem;
+}
+.legendaFechada {
+  max-height: none;
+  overflow: visible;
+}
+.legendaFechada .legendaTitulo {
+  margin-bottom: 0;
+}
+.botaoLegenda {
+  appearance: none;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #dbe6f2;
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.45rem;
+  font: inherit;
+  font-size: 0.74rem;
+  cursor: pointer;
 }
 .legenda ul {
   list-style: none;
@@ -189,8 +225,8 @@
   position: absolute;
   bottom: 0.5rem;
   right: 0.5rem;
-  width: min(17rem, 60vw);
-  max-height: calc(100% - 1.5rem);
+  width: min(18rem, 60vw);
+  max-height: calc(100% - 3.4rem);
   overflow-y: auto;
   background: rgba(8, 18, 30, 0.92);
   border: 1px solid rgba(180, 200, 220, 0.3);
@@ -349,10 +385,9 @@
 /* ZOOM — canto direito, abaixo do chip da maré (que é desenhado no canvas, no
    topo). Alvos grandes de propósito: quem usa isto está com uma mão só, na
    chuva, e um botão de 28 px erra o toque. */
+/* À ESQUERDA, sob o título: à direita colidia com o painel da cidade, que
+   cresce para cima e cobria os botões (visto em 06/09/2026). */
 .zoom {
-  position: absolute;
-  top: 3.4rem;
-  right: 0.6rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -405,3 +440,165 @@
   cursor: pointer;
   font-family: inherit;
 }
+
+/* Botão "Cidades" no título: abre o menu na ordem do rio. */
+.botaoMenu {
+  margin-left: 0.6rem;
+  appearance: none;
+  background: rgba(28, 110, 164, 0.9);
+  color: #f2f8ff;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.botaoMenu:hover {
+  background: rgba(34, 128, 188, 1);
+}
+
+/* O menu: uma folha sobre o mapa, à esquerda, rolável. Um toque em qualquer
+   cidade abre o monitor dela e fecha o menu. */
+.menuCidades {
+  width: min(22rem, 100%);
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  background: rgba(8, 18, 30, 0.96);
+  border: 1px solid rgba(180, 200, 220, 0.3);
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.7rem 0.7rem;
+  color: #e7eef6;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+.menuTopo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.menuRio {
+  margin-top: 0.5rem;
+  font-size: 0.92rem;
+}
+.menuGrupo {
+  margin: 0.35rem 0 0.1rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9fb2c4;
+}
+.menuLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menuLista li + li {
+  margin-top: 0.1rem;
+}
+.menuLista li::before {
+  content: '';
+  display: inline-block;
+  width: 0.55rem;
+  color: #6f879e;
+}
+.menuOrdenado li + li::before {
+  content: '↓';
+  font-size: 0.7rem;
+}
+.menuCidade {
+  appearance: none;
+  background: none;
+  border: 0;
+  color: #eaf2ff;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 0.22rem 0.35rem;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  text-align: left;
+}
+.menuCidade:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.menuAtual {
+  background: rgba(28, 110, 164, 0.55);
+  font-weight: 600;
+}
+.menuDetalhe {
+  color: #9fb2c4;
+  font-size: 0.76rem;
+  margin-left: 0.3rem;
+}
+.menuNota {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  color: #b9c6d4;
+  line-height: 1.35;
+}
+
+/* Vizinhos no eixo, dentro do painel. */
+.painelVizinhos {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+}
+.painelVizinhos li {
+  display: block;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+.painelVizinhos li strong:first-child {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9fb2c4;
+}
+.painelVizinhos button {
+  display: inline;
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #7cc4ff;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* CELULAR: legenda e painel cobriam o mapa inteiro. O painel vira folha de
+   baixo, largura toda, com teto; a legenda nasce recolhida (ver o componente). */
+@media (max-width: 700px) {
+  .cantoEsquerdo {
+    max-width: calc(100% - 1rem);
+  }
+  .topo {
+    max-width: calc(100% - 8.5rem); /* deixa o chip da maré, no topo direito, à vista */
+  }
+  .menuCidades {
+    width: 100%;
+  }
+  /* Com o painel da cidade aberto (folha de baixo), a legenda ficaria POR
+     BAIXO dele. Some enquanto o painel está aberto; volta ao fechá-lo. */
+  .temPainel .legenda {
+    display: none;
+  }
+  .painel {
+    left: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    max-height: 46%;
+  }
+  .legenda {
+    max-width: calc(100% - 1rem);
+    max-height: 40%;
+  }
+  .controles {
+    max-width: calc(100% - 1rem);
+  }
+}
+
