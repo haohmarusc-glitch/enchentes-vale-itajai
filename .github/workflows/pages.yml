@@ -10,9 +10,22 @@
 # tempo de execução justamente para não depender disto.
 name: Publicar site
 
+# SÓ MANUAL, desde 06/09/2026. Antes era `push: branches: [main]`.
+#
+# POR QUÊ: o site saiu do ar de propósito. O GitHub Pages não sabe pedir login
+# (Pages privado só existe no GitHub Enterprise), então o endereço público foi
+# despublicado e o site passou a ser servido pelo Cloudflare Pages em
+# `enchentes.premercadosc.com`, atrás do Cloudflare Access — que exige e-mail
+# autorizado antes de entregar a página.
+#
+# Se este fluxo continuasse disparando a cada merge, ele RE-PUBLICARIA o
+# endereço do GitHub Pages sozinho, e a porta que acabou de ser fechada voltaria
+# a abrir — sem ninguém perceber, porque nada falharia. Despublicar sem tirar o
+# gatilho dura até o próximo merge.
+#
+# Para voltar ao GitHub Pages um dia: Actions -> "Publicar site" -> Run workflow.
+# Ver docs/PUBLICACAO-E-ACESSO.md.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

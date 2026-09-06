@@ -8,7 +8,43 @@ cada uma custa — para a escolha ser feita com os números na mesa, não por im
 
 ---
 
-## O estado de hoje (conferido em 05/09/2026)
+## ✅ O DESENHO ESCOLHIDO — montado em 06/09/2026
+
+| camada | o quê |
+|---|---|
+| endereço | **`enchentes.premercadosc.com`** |
+| quem serve | **Cloudflare Pages**, projeto `enchentes-vale-itajai`, build automático do `main` |
+| quem protege | **Cloudflare Access**, aplicação `enchentes`, política **"Só eu"** (Action: Allow → Emails) |
+| plano | **Zero Trust Free** (equipe `orange-glade-ea3f`) — sem custo |
+| login | **código de uso único por e-mail**. Quem entra NÃO precisa de conta na Cloudflare |
+| GitHub Pages | **despublicado**, e o fluxo `pages.yml` virou **só manual** |
+
+### Como AUTORIZAR uma autoridade que pedir
+Zero Trust → **Access controls → Applications → `enchentes` → política "Só eu"** → em *Include / Emails*,
+acrescentar o e-mail. Ela recebe um código por e-mail e entra. **Revogar é apagar a linha.**
+
+### Como PUBLICAR de vez, quando decidir
+Remover a política da aplicação (ou apagar a aplicação). O site fica aberto **no mesmo endereço**, sem
+mexer em build, DNS ou código.
+
+### ⚠️ As portas que precisam ficar fechadas
+1. **GitHub Pages** — despublicado. **E o gatilho do fluxo foi removido**: `pages.yml` só roda por
+   `workflow_dispatch`. Sem isso, o próximo merge no `main` republicaria o endereço sozinho, e a porta
+   recém-fechada voltaria a abrir sem ninguém perceber, porque nada falharia.
+2. **`enchentes-vale-itajai.pages.dev`** — o endereço que o Cloudflare Pages dá de fábrica **continua
+   público** e serve o mesmo site. Proteger o domínio próprio NÃO o fecha. Tentar acrescentá-lo como
+   segundo destino da mesma aplicação (*Add public hostname → Switch to custom input*, ou *Add Workers*);
+   uma aplicação aceita até cinquenta destinos, então ele fica sob a mesma política.
+3. **Pré-visualizações de PR** — cada PR gera um endereço `*.pages.dev` próprio. Em Pages → Settings há
+   uma política de acesso para *preview deployments*; vale ligar.
+
+### O que continua público, de propósito
+O **repositório** e o branch **`tempo-real`**. Fechá-los quebraria o nível ao vivo (ver opção D abaixo),
+e o dado vem de fontes públicas — Defesa Civil e rede estadual. O pedido é sobre o site.
+
+---
+
+## O estado de hoje (conferido em 05/09/2026)## O estado de hoje (conferido em 05/09/2026)
 
 | o quê | como está |
 |---|---|
