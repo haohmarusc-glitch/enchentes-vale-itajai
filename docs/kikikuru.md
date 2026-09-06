@@ -213,3 +213,34 @@ como dispensar a folha que cobre metade do mapa. O bloco do topo encolheu no cel
 continua, menor), a barra "Reproduzir 24 h" saiu de cima do seletor de fundo, e a legenda deixou de
 subir até os botões + e −.
 
+### Quantos rótulos de régua o zoom comporta — 06/09/2026
+
+A anticolisão sozinha não bastou para Itajaí. Ela decide **quem some**, e quem some é quem chegou
+depois — sem critério nenhum. Com onze réguas em 20 km, o resultado era uma pilha: parece informação
+e não se lê, que num mapa de cheia é pior que dado escondido.
+
+`logica/rotulosDasReguas.ts` decide pelo **que o número significa**, não por contagem:
+
+| Largura da tela | O que mostra o número |
+|---|---|
+| até **6 km** | todas — aí cabem |
+| 6 a **45 km** (a tela de uma cidade) | só as réguas que podem **virar aviso** (têm faixa) |
+| acima de 45 km (a bacia) | nenhuma — o **ponto** fica, e quem fala é o pino da cidade |
+
+A régua **selecionada** mantém o rótulo em qualquer zoom: quem tocou nela quer o número dela.
+
+**Por que não um teto de quantidade.** "No máximo cinco" esconderia justamente a régua que subiu, num
+dia de chuva, por ser a sexta da lista. O critério é o grau: em Itajaí, nove das onze são de estuário
+(`alerta_automatico: false`) e o número delas sobe e desce com a maré sem enchente nenhuma — elas não
+perdem nada por não gritar de longe.
+
+**Medida de zoom inválida devolve `todas`** — é o comportamento de antes da regra, e na dúvida não se
+esconde dado.
+
+A legenda diz a regra com todas as letras, senão quem vê onze pontos e dois números não tem como
+saber por quê.
+
+⚠️ **Verificado por teste, não por captura.** O nível "todas" só se vê com leitura fresca, e neste
+ambiente o site é servido sem dado ao vivo — nas capturas daqui nenhuma régua tem faixa, então todos
+os zooms parecem iguais.
+
