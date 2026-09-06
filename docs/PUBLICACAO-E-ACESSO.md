@@ -19,7 +19,10 @@ cada uma custa — para a escolha ser feita com os números na mesa, não por im
 | login | **código de uso único por e-mail**. Quem entra NÃO precisa de conta na Cloudflare |
 | GitHub Pages | **despublicado**, e o fluxo `pages.yml` virou **só manual** |
 
-### As QUATRO portas, e como cada uma se fecha (medido em 06/09/2026)
+### ✅ FECHADO E CONFERIDO em 06/09/2026 — as quatro portas
+
+**O site não está mais acessível a ninguém além de quem você autorizar.** As quatro conferências foram
+feitas em janela anônima, uma a uma.
 
 Não existe um botão só. Foram quatro sistemas diferentes, e a própria Cloudflare avisa na tela:
 *"This protects preview deployment URLs only. Production pages.dev and custom domains are managed
@@ -30,7 +33,7 @@ separately in Zero Trust."*
 | `enchentes.premercadosc.com` | destino da aplicação `enchentes` no Access | ✅ pede e-mail |
 | `enchentes-vale-itajai.pages.dev` | **segundo destino** na MESMA aplicação (Subdomain vazio, Domain com o endereço inteiro) | ✅ pede e-mail |
 | `*.enchentes-vale-itajai.pages.dev` (pré-visualizações) | Pages → Settings → **General → Preview access → Restrict previews** | ✅ pede e-mail |
-| GitHub Pages | Settings → Pages → **Unpublish site** + `pages.yml` só manual | a confirmar no navegador |
+| GitHub Pages | Settings → Pages → **Unpublish site** + `pages.yml` só manual | ✅ 404 |
 
 **Três armadilhas que custaram tentativas, para não se repetirem:**
 
@@ -47,6 +50,15 @@ separately in Zero Trust."*
 
 **A conferência tem de ser em JANELA ANÔNIMA.** Na janela normal a sessão do Access já está aberta e
 tudo carrega, dando a impressão de que o site está liberado para todo mundo.
+
+### Quando este documento precisa ser relido
+
+- **Antes de dizer a alguém que o site está fechado.** A tabela acima é de 06/09/2026; portas novas
+  aparecem sozinhas (foi o caso das pré-visualizações, que nasceram com o projeto no Cloudflare).
+- **Se um dia alguém trocar o Cloudflare por outro serviço.** As quatro portas são de sistemas
+  diferentes; trocar um deixa os outros três abertos.
+- **Antes de publicar de vez.** Remover a política é um clique, e é irreversível na prática: o endereço
+  já terá sido visto.
 
 ### Como AUTORIZAR uma autoridade que pedir### Como AUTORIZAR uma autoridade que pedir
 Zero Trust → **Access controls → Applications → `enchentes` → política "Só eu"** → em *Include / Emails*,
