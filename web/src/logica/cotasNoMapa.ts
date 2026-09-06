@@ -78,6 +78,49 @@ export function cidadePodeMostrarRuas(cidade: CidadeParaRuas | null | undefined)
   return cidade?.cotas_verificado === true
 }
 
+/**
+ * Cidades com cota de rua LEVANTADA e sem coordenada na fonte, e quantas.
+ *
+ * POR QUE ISTO É UMA CONSTANTE, e não uma contagem. O `cotas-ruas.json` tem
+ * 3 MB e é carregado só quando o zoom já permite desenhar os pontos. Mas a
+ * frase que o mapa mostra ANTES disso precisa saber a diferença entre "esta
+ * cidade não tem levantamento" e "tem, e não dá para pôr no mapa" — e carregar
+ * 3 MB no celular de alguém no meio da chuva só para escolher uma frase seria
+ * cobrar caro pela honestidade. São dois números que mudam quando a fonte
+ * mudar, e `scripts/validar_dados.py::valida_ruas_sem_coordenada` reprova o
+ * commit em que eles deixarem de bater com o arquivo.
+ *
+ * O QUE ELES CORRIGEM. Blumenau tem o MAIOR levantamento do projeto — 2.042
+ * ruas — e nenhuma com coordenada: a lista da Defesa Civil publicada pela
+ * imprensa traz rua, bairro e cota, sem ponto. Rio do Sul tem 555 na mesma
+ * situação. Até aqui o mapa dizia a essas duas cidades "aproxime para ver as
+ * cotas de rua": a pessoa aproximava, não achava nada, e podia concluir que a
+ * rua dela não foi levantada. Foi — só não está no mapa, e está na tela da
+ * cidade, por nome.
+ */
+export const RUAS_SEM_COORDENADA: Readonly<Record<string, number>> = {
+  blumenau: 2042,
+  'rio-do-sul': 555,
+}
+
+/** O que o mapa tem a dizer quando não há ponto de rua para desenhar. */
+export type AvisoDeRuas =
+  /** Pode haver levantamento; de perto ele aparece. */
+  | { tipo: 'aproxime' }
+  /** Há levantamento, e ele não vai aparecer aqui por falta de coordenada. */
+  | { tipo: 'sem-coordenada'; ruas: number }
+
+/**
+ * Qual aviso a cidade merece quando o mapa não tem ponto para mostrar.
+ *
+ * Fica aqui, e não no componente, porque é uma DECISÃO sobre o que se pode
+ * afirmar — e decisão dentro de `.tsx` é decisão que teste nenhum alcança.
+ */
+export function avisoDeRuas(cidadeId: string | null | undefined): AvisoDeRuas {
+  const ruas = cidadeId ? RUAS_SEM_COORDENADA[cidadeId] : undefined
+  return typeof ruas === 'number' ? { tipo: 'sem-coordenada', ruas } : { tipo: 'aproxime' }
+}
+
 /** O zoom de agora permite ver os pontos como pontos? Ver trava 2. */
 export function zoomPermiteRuas(kmNaTela: number, limite: number = KM_PARA_MOSTRAR): boolean {
   return Number.isFinite(kmNaTela) && kmNaTela > 0 && kmNaTela <= limite

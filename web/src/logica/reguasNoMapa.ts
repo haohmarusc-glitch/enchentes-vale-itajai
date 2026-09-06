@@ -38,6 +38,17 @@ export type ReguaNoMapa = {
   codigo: string
   titulo: string
   /**
+   * A cidade a que a régua pertence, como o cadastro a nomeia.
+   *
+   * O mapa não filtra por cidade — mostra a bacia inteira. Quem precisa deste
+   * campo é o ENQUADRAMENTO por cidade: abrir o monitor de Itajaí tem de caber
+   * as onze réguas dela, e sem saber de quem é cada uma não há como medir isso.
+   *
+   * `null` quando o cadastro não diz de que cidade é — e aí ela simplesmente
+   * não entra no enquadramento de cidade nenhuma, em vez de entrar na errada.
+   */
+  cidade: string | null
+  /**
    * O nome do LUGAR, para o rótulo no mapa — "Portal I", "Rio do Meio",
    * "Bairro Murta".
    *
@@ -122,6 +133,7 @@ export function reguasNoMapa(
     const base = {
       codigo: e.codigo ?? '',
       titulo: e.titulo,
+      cidade: e.cidade,
       nome: nomeDoLugar(e),
       lon: e.lon,
       lat: e.lat,

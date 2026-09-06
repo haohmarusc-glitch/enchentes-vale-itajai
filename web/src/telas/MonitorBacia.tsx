@@ -8,9 +8,10 @@ import {
   temReguaCadastrada,
 } from '../dados/carregar'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
-import { kmDaVista, vistaDaCidade } from '../logica/vistaDaCidade'
+import { kmDaVista, vistaQueCabeAsReguas } from '../logica/vistaDaCidade'
 import {
   COR_COTA_RUA,
+  avisoDeRuas,
   contarRuas,
   pontosDeRua,
   zoomPermiteRuas,
@@ -679,7 +680,18 @@ export default function MonitorBacia() {
     const pino = cena.pinos.find((p) => p.cidade.id === cidadeFoco)
     // Cidade que não está no mapa (id errado no endereço, ou sem coordenada):
     // fica a bacia inteira. Melhor do que zoom num lugar inventado.
-    const v = vistaDaCidade(pino?.cidade.coordenadas, cena.limitesBase)
+    //
+    // O enquadramento cabe o pino E AS RÉGUAS DA CIDADE. Itajaí tem onze,
+    // espalhadas por 20,8 x 17,6 km: com a janela fixa de 24 km centrada no
+    // pino, a DC-10 (Bairro Limoeiro) ficava a 24,2 km do centro, fora da tela.
+    // Ver `vistaQueCabeAsReguas`.
+    const daCidade = reguasRef.current.filter((r) => r.cidade === cidadeFoco)
+    const v = vistaQueCabeAsReguas(
+      pino?.cidade.coordenadas,
+      daCidade,
+      cena.limitesBase,
+      cena.largura > 0 ? cena.altura / cena.largura : 1,
+    )
     enquadrou.current = true
     if (!v) return
     setVista(v)
@@ -1288,14 +1300,27 @@ export default function MonitorBacia() {
                     )
                   })()
               ) : (
-                // Vale para qualquer cidade e não promete nada: onde não houver
-                // levantamento, aproximar não faz aparecer ponto nenhum — que é
-                // a resposta certa.
-                <p className={estilos.painelExtra}>
-                  Aproxime o mapa para ver as cotas de rua, onde houver levantamento. De
-                  longe os pontos virariam uma nuvem, e nuvem parece mancha de inundação,
-                  que é coisa diferente.
-                </p>
+                (() => {
+                  // A frase é decidida em `logica/cotasNoMapa`, não aqui: dizer
+                  // "aproxime" a quem tem levantamento sem coordenada faz a
+                  // pessoa aproximar, não achar nada e concluir que a rua dela
+                  // não foi levantada. Blumenau tem 2.042 ruas nesse caso.
+                  const aviso = avisoDeRuas(cid.id)
+                  return aviso.tipo === 'sem-coordenada' ? (
+                    <p className={estilos.painelExtra}>
+                      Esta cidade tem <strong>{aviso.ruas} ruas levantadas</strong>, mas a
+                      fonte publica rua e bairro <strong>sem a coordenada</strong> de cada
+                      ponto — por isso elas não entram no mapa. Aproximar não vai fazê-las
+                      aparecer. Elas estão na tela da cidade, buscáveis por nome.
+                    </p>
+                  ) : (
+                    <p className={estilos.painelExtra}>
+                      Aproxime o mapa para ver as cotas de rua, onde houver levantamento. De
+                      longe os pontos virariam uma nuvem, e nuvem parece mancha de inundação,
+                      que é coisa diferente.
+                    </p>
+                  )
+                })()
               )}
               {/* A cidade primeiro, o rio depois. Quem toca no pino de Gaspar
                   quer Gaspar — o rio inteiro e a segunda pergunta, nao a

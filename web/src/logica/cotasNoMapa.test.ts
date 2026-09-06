@@ -8,6 +8,8 @@ import { readFileSync } from 'node:fs'
 import {
   COR_COTA_RUA,
   KM_PARA_MOSTRAR,
+  RUAS_SEM_COORDENADA,
+  avisoDeRuas,
   cidadePodeMostrarRuas,
   contarRuas,
   pontosDeRua,
@@ -138,4 +140,48 @@ test('no cadastro de verdade: Gaspar entra com 1.613 pontos, Brusque com zero', 
     brusque.every((p) => p.atingida === null && p.motivo === 'regua-nao-provada'),
     'e nenhuma das 348 afirma estado enquanto a régua não for provada',
   )
+})
+
+test('cidade com levantamento SEM coordenada não recebe "aproxime o mapa"', () => {
+  /**
+   * Blumenau tem 2.042 ruas levantadas e nenhuma com coordenada. Mandar
+   * aproximar faz a pessoa procurar e não achar — e concluir que a rua dela não
+   * foi levantada. Foi: está na tela da cidade, por nome.
+   */
+  const blu = avisoDeRuas('blumenau')
+  assert.equal(blu.tipo, 'sem-coordenada')
+  assert.equal(blu.tipo === 'sem-coordenada' ? blu.ruas : 0, 2042)
+  assert.equal(avisoDeRuas('rio-do-sul').tipo, 'sem-coordenada')
+})
+
+test('cidade com pontos no mapa, ou sem levantamento nenhum, recebe "aproxime"', () => {
+  // Gaspar e Brusque têm coordenada: para elas aproximar RESOLVE.
+  assert.equal(avisoDeRuas('gaspar').tipo, 'aproxime')
+  assert.equal(avisoDeRuas('brusque').tipo, 'aproxime')
+  // Itajaí não tem cota de rua nenhuma: aproximar não promete nada.
+  assert.equal(avisoDeRuas('itajai').tipo, 'aproxime')
+  assert.equal(avisoDeRuas(null).tipo, 'aproxime')
+  assert.equal(avisoDeRuas(undefined).tipo, 'aproxime')
+  assert.equal(avisoDeRuas('cidade-que-nao-existe').tipo, 'aproxime')
+})
+
+test('os números declarados batem com o cotas-ruas.json de verdade', () => {
+  /**
+   * A mesma conta que `scripts/validar_dados.py::valida_ruas_sem_coordenada`
+   * faz do lado do Python. Está nos dois lados de propósito: o validador roda
+   * no CI de dados, este roda no CI do site, e quem mexer em um só vai ser
+   * pego pelo outro.
+   */
+  const d = JSON.parse(readFileSync(new URL('../../../data/cotas-ruas.json', import.meta.url), 'utf-8'))
+  const conta = new Map<string, { total: number; com: number }>()
+  for (const c of d.cotas as { cidade?: string; cota_m?: unknown; lat?: unknown; lon?: unknown }[]) {
+    if (!c.cidade || typeof c.cota_m !== 'number') continue
+    const n = conta.get(c.cidade) ?? { total: 0, com: 0 }
+    n.total += 1
+    if (typeof c.lat === 'number' && typeof c.lon === 'number') n.com += 1
+    conta.set(c.cidade, n)
+  }
+  const esperado: Record<string, number> = {}
+  for (const [cid, n] of conta) if (n.com === 0 && n.total > 0) esperado[cid] = n.total
+  assert.deepEqual({ ...RUAS_SEM_COORDENADA }, esperado)
 })

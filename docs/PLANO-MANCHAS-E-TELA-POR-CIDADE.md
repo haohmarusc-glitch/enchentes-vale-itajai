@@ -80,3 +80,62 @@ pico. No dia em que os picos entrarem, esse teste cai — e cair é a notícia b
 - **Interpolar entre eventos.** Duas manchas não fazem uma terceira: a cidade de 1983 não é a de 2015.
 - **Preencher o vazio entre as ruas.** A ausência de cor diz corretamente "não sabemos".
 - **Usar mancha como previsão.** Mancha é registro do que já aconteceu, na cidade que existia no ano.
+
+---
+
+## Onde os mapas das cidades pararam — 06/09/2026
+
+### ✅ O enquadramento passou a caber as réguas da cidade
+
+Medido contra o cadastro: as **onze réguas de Itajaí** se espalham por **20,8 x 17,6 km**, e a
+**DC-10 (Bairro Limoeiro) fica a 24,2 km do pino**. O enquadramento por cidade era uma janela fixa de
+24 km centrada no pino — ou seja, **abrir `/monitor/itajai` escondia uma das onze réguas da própria
+cidade**, e nada na tela dizia que faltava uma. Quem mora no Limoeiro abria "Itajaí" e não achava o
+número que existe.
+
+`vistaQueCabeAsReguas` enquadra a caixa que contém o pino **e as réguas**, com 20% de folga, levando
+em conta a **proporção da tela** (numa tela deitada, 16:9, a dispersão norte-sul some primeiro).
+`KM_NA_TELA = 24` continua valendo — virou **piso**, não teto, pelo motivo original: caber os vizinhos
+de montante e jusante. Para toda cidade que não seja Itajaí nada muda, porque só Itajaí publica a
+coordenada das réguas.
+
+Seis testes, com o cadastro real. Duas sabotagens: ignorar as réguas e ignorar a proporção da tela —
+as duas reprovam.
+
+### ✅ Blumenau parou de receber "aproxime o mapa" para não achar nada
+
+O painel dizia a **toda** cidade sem ponto: *"Aproxime o mapa para ver as cotas de rua."* Blumenau tem
+o **maior levantamento do projeto — 2.042 ruas — e nenhuma com coordenada**; Rio do Sul tem 555 na
+mesma situação. A pessoa aproximava, não achava nada, e podia concluir que a rua dela não foi
+levantada. **Foi** — está na tela da cidade, buscável por nome.
+
+Agora essas duas cidades recebem a frase que diz o que é: *"tem N ruas levantadas, mas a fonte publica
+rua e bairro sem a coordenada de cada ponto."* A decisão vive em `logica/cotasNoMapa.ts`
+(`avisoDeRuas`), não no `.tsx`, e os dois números têm trava dos dois lados —
+`valida_ruas_sem_coordenada` no Python e um teste no site — porque número copiado à mão envelhece
+calado.
+
+### ⛔ O que falta, e o que o desbloqueia
+
+| Cidade | Cotas | Coordenada | Mapa da cidade |
+|---|---|---|---|
+| **Gaspar** | 1.619 | 1.613 | ✅ pontos **com estado** (par cota↔leitura provado) |
+| **Brusque** | 377 | 348 | ✅ pontos **sem estado** (a régua da leitura não é a das cotas) |
+| **Blumenau** | 2.042 | **0** | ❌ só por nome, na tela da cidade |
+| **Rio do Sul** | 555 | **0** | ❌ idem |
+| **Itajaí** | 0 | — | manchas por evento; nenhum pico para acendê-las |
+
+**Gaspar e Brusque vieram georreferenciadas da fonte** (KML da Defesa Civil). Blumenau e Rio do Sul
+vieram de tabela — rua, bairro e cota. Pôr essas duas no mapa exige **geocodificar**, e é aí que mora
+o próximo perigo: uma cota é de um PONTO da rua ("final da rua", "esquina com X"), e uma rua de 2 km
+tem cotas diferentes nas duas pontas. Colocar o ponto no meio da rua acerta o nome e erra o lugar —
+e num mapa de enchente errar o lugar é dizer a alguém que a casa dele alaga num nível que não é o
+dela.
+
+Então **não é "rodar um geocodificador"**: é decidir o que se desenha quando só se sabe a rua, e não
+o ponto. Enquanto isso não for resolvido, a lista por nome na tela da cidade é a forma honesta —
+e é a que está no ar.
+
+⚠️ Além disso, `overpass-api.de` e `nominatim.openstreetmap.org` estão **bloqueados pela política de
+rede deste ambiente** (403 no CONNECT, conferido em 06/09/2026). Qualquer busca de traçado de rua sai
+da VPS, como já saiu a do Itajaí do Sul.
