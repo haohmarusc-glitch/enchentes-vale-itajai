@@ -15,6 +15,7 @@ import { vizinhosNoEixo } from '../logica/vizinhosNoEixo'
 import { resumo24h } from '../logica/resumo24h'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
 import { kmDaVista, vistaQueCabeAsReguas } from '../logica/vistaDaCidade'
+import { reguasComRotulo } from '../logica/rotulosDasReguas'
 import {
   COR_COTA_RUA,
   avisoDeRuas,
@@ -336,6 +337,11 @@ export default function MonitorBacia() {
    * efeito abaixo, e não aqui.
    */
   const [vista, setVista] = useState<Vista>(VISTA_INTEIRA)
+  // O laço de animação precisa do zoom de AGORA para decidir quais réguas
+  // mostram o número (`logica/rotulosDasReguas`); `vista` é estado e não chega
+  // lá dentro. Mesma convenção dos outros refs deste arquivo.
+  const vistaRef = useRef(vista)
+  vistaRef.current = vista
   /** Já enquadrou na cidade da rota? Uma vez por cidade: depois o zoom é de quem mexe. */
   const enquadrou = useRef(false)
   /** O menu de cidades, na ordem do rio (logica/menuDasCidades). */
@@ -702,7 +708,22 @@ export default function MonitorBacia() {
       )
       desenharBarragens(ctx, cena, barragensRef.current, seg, escala, caixas)
       // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
-      desenharReguas(ctx, cena, reguasRef.current, escala, reguaSelRef.current, caixas)
+      // Quais réguas mostram o NÚMERO neste zoom. Em Itajaí são onze, e de
+      // longe elas escreviam umas por cima das outras e por cima do nome da
+      // cidade. Ver `logica/rotulosDasReguas`.
+      desenharReguas(
+        ctx,
+        cena,
+        reguasRef.current,
+        escala,
+        reguaSelRef.current,
+        caixas,
+        reguasComRotulo(
+          reguasRef.current,
+          kmDaVista(cena.limitesBase, vistaRef.current.zoom),
+          reguaSelRef.current,
+        ),
+      )
       desenharPinos(ctx, cena, selRef.current, { ...opcoesPinos, rotulos })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
@@ -1077,6 +1098,14 @@ export default function MonitorBacia() {
             são de estuário, a maré cruza a cota sem enchente, e a correnteza
             animada significa a faixa — correr ali afirmaria um nível que a maré
             não deixa ler. O metro aparece no pino; a cor, não.
+          </p>
+          {/* Sem esta linha, quem vê onze pontos e dois números em Itajaí não
+              tem como saber por quê — e some do mapa é o que mais parece
+              "não existe". */}
+          <p className={estilos.legendaNota}>
+            Com o mapa afastado, <strong>só as réguas que podem virar aviso mostram o
+            número</strong> — as demais aparecem como ponto. Itajaí tem onze, e nove são de
+            estuário. <strong>Aproxime para ver todas</strong>, ou toque numa para ler a dela.
           </p>
             </>
           ) : null}

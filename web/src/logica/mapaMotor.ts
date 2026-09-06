@@ -1111,6 +1111,13 @@ export function desenharReguas(
   selecionada: string | null = null,
   /** Rótulos já colocados — ver `desenharBarragens`. */
   caixas: Caixa[] = [],
+  /**
+   * Códigos que podem mostrar o NÚMERO neste zoom (`logica/rotulosDasReguas`).
+   *
+   * `undefined` = todas, que é o comportamento de quem não passar. O PONTO de
+   * toda régua é desenhado sempre; o que este conjunto decide é quem fala.
+   */
+  comRotulo?: ReadonlySet<string>,
 ): void {
   const r = 3.4 * escala
   const fonte = Math.round(9.5 * escala)
@@ -1146,6 +1153,7 @@ export function desenharReguas(
     }
 
     if (g.nivel == null) continue
+    if (comRotulo && g.codigo && !comRotulo.has(g.codigo)) continue
     // O NOME do lugar, não o código: "Portal I 0,32 m" diz onde é a quem mora
     // ali; "DC-07 0,32 m" não diz nada.
     const texto = g.nome ? `${g.nome} ${metros(g.nivel)}` : metros(g.nivel)
