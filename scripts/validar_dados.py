@@ -1271,6 +1271,71 @@ COTAS_NO_MAPA_TS = "web/src/logica/cotasNoMapa.ts"
 DIAS_DE_MARE_MINIMOS = 30
 
 
+#: A ordem em que as faixas de uma régua sobem. Uma cota que quebre esta ordem
+#: significa que a tela vai chamar de "abaixo da atenção" um nível que a fonte
+#: já trata como alerta ou emergência.
+ORDEM_DAS_FAIXAS = ["monitoramento", "atencao", "alerta", "inundacao", "emergencia"]
+
+#: Chaves de `cotas_m` que NÃO são degraus da escada de aviso: são anotações da
+#: fonte (o pico histórico, o gatilho do PLANCON, a cota de uma praça). Não
+#: entram na conferência de ordem, e listá-las aqui é o que impede o validador
+#: de virar ruído — seis avisos que ninguém precisa ler ensinam a ignorar avisos.
+COTAS_QUE_NAO_SAO_FAIXA = {
+    "observacao_cota",
+    "seguranca_observada",
+    "inundacao_historica",
+    "ativacao_plancon",
+    "ruas_alerta_citadas",
+    "praca_boca_lobo",
+}
+
+
+def valida_ordem_das_cotas() -> None:
+    """
+    As cotas de uma cidade sobem na ordem das faixas?
+
+    POR QUE EXISTE (07/09/2026). Indaial estava cadastrada com `atencao: 6,00 m`
+    — um nome NOSSO, não da COMPDEC: a leitura anterior achou só a página do
+    município, que lista 12 vias com alagamento já registrado a 6,00 m, e gravou
+    esse número como atenção por ser o único que existia.
+
+    A COMPDEC publica, sim, uma escala, num PDF na aba Arquivos da mesma página:
+    até 3 m normal, 3 a 4 m atenção, 4 a 5,5 m alerta, acima de 5,5 m
+    emergência. Ou seja, a "atenção" cadastrada ficava **1,5 m acima da
+    emergência do próprio município** — e a tela chamaria de "abaixo da atenção"
+    um nível que Indaial já trata como emergência. O erro apontava para o lado
+    perigoso, que é o único lado que este projeto não pode errar.
+
+    Uma cidade com uma cota só não é pega aqui — era o caso de Indaial, e é por
+    isso que este validador não teria evitado aquele erro. Ele existe para o
+    seguinte: a partir do momento em que a escala inteira está cadastrada,
+    inverter duas faixas passa a reprovar.
+    """
+    estacoes = le_json("estacoes.json")
+    for rio_id, rio in estacoes.get("rios", {}).items():
+        for cidade in rio.get("cidades", []):
+            cotas = cidade.get("cotas_m") or {}
+            presentes = [(f, cotas[f]) for f in ORDEM_DAS_FAIXAS if isinstance(cotas.get(f), (int, float))]
+            for (fa, va), (fb, vb) in zip(presentes, presentes[1:]):
+                if vb <= va:
+                    erro(
+                        f"estacoes.json: {rio_id}/{cidade['id']}: '{fb}' ({vb} m) não é MAIOR que "
+                        f"'{fa}' ({va} m). Fora de ordem, a tela chama de '{fa}' um nível que a "
+                        f"fonte já trata como '{fb}'."
+                    )
+            desconhecidas = set(cotas) - set(ORDEM_DAS_FAIXAS) - COTAS_QUE_NAO_SAO_FAIXA
+            if desconhecidas:
+                # Chave que não é degrau conhecido nem anotação conhecida: ou é
+                # faixa nova (declarar em ORDEM_DAS_FAIXAS, na altura certa) ou é
+                # erro de digitação numa que existe — e "atencaoo" não pinta nada.
+                aviso(
+                    f"estacoes.json: {rio_id}/{cidade['id']}: chave de cota desconhecida "
+                    f"({', '.join(sorted(desconhecidas))}). Se for faixa nova, declarar em "
+                    f"ORDEM_DAS_FAIXAS na altura certa; se for anotação, em COTAS_QUE_NAO_SAO_FAIXA. "
+                    f"Do jeito que está, ela não pinta nem é conferida."
+                )
+
+
 def valida_cobertura_da_mare() -> None:
     """
     Até quando a tábua de maré alcança?
@@ -1428,6 +1493,7 @@ def main() -> int:
     valida_codigo_ana()
     valida_ruas_sem_coordenada()
     valida_referencia_das_cotas_de_rua()
+    valida_ordem_das_cotas()
     valida_cobertura_da_mare()
 
     for a in avisos:
