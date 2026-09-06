@@ -1266,6 +1266,63 @@ def valida_codigo_ana() -> None:
 COTAS_NO_MAPA_TS = "web/src/logica/cotasNoMapa.ts"
 
 
+# A tábua de maré acaba, e quando acaba o painel da foz fica MUDO. Estes são
+# os prazos: aviso quando resta menos que o primeiro, erro quando já acabou.
+DIAS_DE_MARE_MINIMOS = 30
+
+
+def valida_cobertura_da_mare() -> None:
+    """
+    Até quando a tábua de maré alcança?
+
+    POR QUE EXISTE (07/09/2026). A base tinha preamares e baixamares de
+    01/09/2026 a 30/09/2026 e MAIS NADA — um único mês. Em 06/09 isso eram 24
+    dias de tábua restantes: no dia 1º de outubro o painel de maré de Itajaí
+    ficaria vazio, sem ninguém ser avisado, e a maré é metade da explicação da
+    cheia na foz (maré alta trava a saída da água).
+
+    Uma tábua que acaba não avisa que acabou. Este validador avisa.
+
+    A tábua é PREVISÃO ASTRONÔMICA e vem de fonte anual (CHM/Marinha,
+    Epagri/Ciram, UNIVALI): renovar é trabalho de importação, não de coleta
+    automática — mais uma razão para o alarme tocar com semanas de folga.
+    """
+    try:
+        dados = le_json("mare-itajai.json")
+    except FileNotFoundError:
+        aviso("mare-itajai.json: ausente — o painel de maré da foz fica sem tábua.")
+        return
+
+    hoje = date.today()
+    for chave in ("preamares", "baixamares"):
+        pontos = dados.get(chave)
+        if not isinstance(pontos, list) or not pontos:
+            erro(f"mare-itajai.json: '{chave}' vazio ou ausente — o painel da foz fica mudo.")
+            continue
+        quandos = [p.get("quando") for p in pontos if isinstance(p, dict) and isinstance(p.get("quando"), str)]
+        if not quandos:
+            erro(f"mare-itajai.json: '{chave}' sem nenhum campo `quando` legível.")
+            continue
+        try:
+            ultimo = max(date.fromisoformat(q[:10]) for q in quandos)
+        except ValueError:
+            erro(f"mare-itajai.json: '{chave}' tem `quando` fora do formato ISO.")
+            continue
+        restam = (ultimo - hoje).days
+        if restam < 0:
+            erro(
+                f"mare-itajai.json: '{chave}' terminou em {ultimo.isoformat()}, "
+                f"há {-restam} dia(s). O painel de maré da foz JÁ está sem tábua."
+            )
+        elif restam < DIAS_DE_MARE_MINIMOS:
+            aviso(
+                f"mare-itajai.json: '{chave}' vai até {ultimo.isoformat()} — restam "
+                f"{restam} dia(s). Importar a tábua do ano antes que acabe: fonte anual "
+                f"(CHM/Marinha ou Epagri/Ciram), com proveniência por evento e sem "
+                f"misturar em silêncio com a série já cadastrada."
+            )
+
+
 def valida_ruas_sem_coordenada() -> None:
     """
     Os números de `RUAS_SEM_COORDENADA` batem com o `cotas-ruas.json`?
@@ -1371,6 +1428,7 @@ def main() -> int:
     valida_codigo_ana()
     valida_ruas_sem_coordenada()
     valida_referencia_das_cotas_de_rua()
+    valida_cobertura_da_mare()
 
     for a in avisos:
         print(f"aviso: {a}")
