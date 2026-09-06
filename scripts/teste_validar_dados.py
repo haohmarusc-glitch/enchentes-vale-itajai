@@ -237,11 +237,35 @@ class MesesPareados(unittest.TestCase):
         _meses(*self.base())
         self.assertEqual(vd.erros, [])
 
-    def test_1911_e_o_unico_desalinhado_nos_dados_reais(self):
+    #: Os desalinhamentos que o cadastro REAL tem hoje, cada um com o motivo.
+    #: Enumerar em vez de contar é o que faz um desalinhamento NOVO reprovar:
+    #: "pelo menos N" aceitaria qualquer coisa que entrasse depois.
+    DESALINHADOS_CONHECIDOS = {
+        # A data de 1911 de Rio do Sul (05) não bate com nenhuma de jusante no
+        # mesmo mês. Pendência antiga, anterior a Indaial.
+        ("rio-do-sul 1911-05", "indaial"),
+        ("rio-do-sul 1911-05", "blumenau"),
+        # Entraram com os 16 picos de Indaial em 07/09/2026, do PDF da COMPDEC.
+        # São sinal para conferir na fonte, NÃO para trocar a data: corrigir por
+        # plausibilidade seria inventar medição.
+        ("indaial 1927-11-09", "blumenau"),
+        # Esta é a que a própria fonte pediu para conferir. Mantida literal.
+        ("indaial 2014-09-08", "blumenau"),
+    }
+
+    def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):
         avisos = _meses(*self.base())
-        self.assertEqual(len(avisos), 1, f"esperava só 1911 desalinhado, veio: {avisos}")
-        self.assertIn("rio-do-sul 1911-05", avisos[0])
-        self.assertIn("1911-10-02", avisos[0])
+        achados = set()
+        for a in avisos:
+            for montante, jusante in self.DESALINHADOS_CONHECIDOS:
+                if montante in a and f"evento de {jusante}" in a:
+                    achados.add((montante, jusante))
+        novos = [a for a in avisos if not any(
+            m in a and f"evento de {j}" in a for m, j in self.DESALINHADOS_CONHECIDOS)]
+        self.assertEqual(novos, [], "desalinhamento NOVO: conferir na fonte antes de aceitar")
+        self.assertEqual(
+            achados, self.DESALINHADOS_CONHECIDOS,
+            "um desalinhamento conhecido sumiu — se foi resolvido, tirar daqui com a fonte que resolveu")
 
     def test_um_so_evento_de_jusante_no_mesmo_mes_ja_alinha(self):
         # Blumenau tem 113 registros, vários por ano: a cheia de montante casa
@@ -570,6 +594,100 @@ class TestaCoberturaDaMare(unittest.TestCase):
             self.assertEqual(len(vd.erros), 2, "preamares e baixamares vazios, dois erros")
         finally:
             vd.le_json = orig
+            vd.erros.clear()
+            vd.avisos.clear()
+
+
+
+class TestaCotasDeIndaial(unittest.TestCase):
+    """
+    A escala de Indaial é a que a COMPDEC publica — não um número nosso.
+
+    Até 07/09/2026 o cadastro trazia `atencao: 6,00 m`, e esse nome era NOSSO: a
+    leitura anterior achou só a PÁGINA do município, que lista 12 vias com
+    alagamento já registrado a 6,00 m, e gravou o único número que existia.
+
+    A COMPDEC publica uma escala, no PDF "Indaial - cotas de enchente" da aba
+    ARQUIVOS da mesma página: até 3 m normal, 3 a 4 m atenção, 4 a 5,5 m alerta,
+    acima de 5,5 m emergência.
+
+    Os 6,00 m ficavam, portanto, 1,5 m ACIMA da emergência do próprio município.
+    A tela chamaria de "abaixo da atenção" um nível que Indaial já trata como
+    emergência — o lado perigoso, o único que este projeto não pode errar.
+    """
+
+    def setUp(self):
+        self.indaial = _cidade(vd.le_json("estacoes.json"), "itajai-acu", "indaial")
+
+    def test_a_escala_e_a_do_PDF(self):
+        self.assertEqual(self.indaial["cotas_m"], {"atencao": 3.0, "alerta": 4.0, "emergencia": 5.5})
+
+    def test_a_atencao_nunca_mais_passa_da_emergencia(self):
+        c = self.indaial["cotas_m"]
+        self.assertLess(c["atencao"], c["emergencia"], "foi exatamente este o erro de 07/09/2026")
+
+    def test_os_6_metros_nao_voltam_como_cota(self):
+        # Os 6,00 m são alagamento de rua, que começa meio metro depois da
+        # emergência. Continuam valendo como fato; não são degrau da escada.
+        self.assertNotIn(6.0, self.indaial["cotas_m"].values())
+
+    def test_a_fonte_aponta_para_o_PDF_e_nao_so_para_a_pagina(self):
+        # Foi ler só a página que produziu o erro: a escala está no anexo.
+        self.assertIn("PDF", self.indaial["fonte_cotas"])
+        self.assertIn("cotas de enchente", self.indaial["fonte_cotas"])
+
+    def test_a_referencia_da_regua_esta_registrada(self):
+        # 67 m (o que o PDF diz que 5,5 m equivale) menos 5,5 = 61,5 = o RN.
+        # É isso que prova que o zero da régua É o RN, e que não há dois datums.
+        self.assertIn("1402-X", self.indaial["regua_das_cotas"])
+        self.assertIn("61,49", self.indaial["regua_das_cotas"])
+
+
+class TestaOrdemDasCotas(unittest.TestCase):
+    """As faixas de uma régua sobem na ordem, em todas as cidades."""
+
+    def _erros_com(self, cotas):
+        orig = vd.le_json
+        falso = {"rios": {"r": {"cidades": [{"id": "x", "cotas_m": cotas}]}}}
+        vd.le_json = lambda nome: falso if nome == "estacoes.json" else orig(nome)
+        vd.erros.clear()
+        vd.avisos.clear()
+        try:
+            vd.valida_ordem_das_cotas()
+            return list(vd.erros), list(vd.avisos)
+        finally:
+            vd.le_json = orig
+            vd.erros.clear()
+            vd.avisos.clear()
+
+    def test_atencao_acima_da_emergencia_e_ERRO(self):
+        erros, _ = self._erros_com({"atencao": 6.0, "alerta": 4.0, "emergencia": 5.5})
+        self.assertTrue(erros)
+
+    def test_escala_certa_passa(self):
+        erros, avisos = self._erros_com({"atencao": 3.0, "alerta": 4.0, "emergencia": 5.5})
+        self.assertFalse(erros)
+        self.assertFalse(avisos)
+
+    def test_cota_igual_a_anterior_e_ERRO(self):
+        # Duas faixas no mesmo metro não são duas faixas: uma delas nunca acende.
+        erros, _ = self._erros_com({"atencao": 4.0, "alerta": 4.0})
+        self.assertTrue(erros)
+
+    def test_anotacao_conhecida_nao_vira_ruido(self):
+        _, avisos = self._erros_com({"atencao": 3.0, "inundacao_historica": 8.04})
+        self.assertFalse(avisos, "anotação da fonte não é degrau e não deve avisar")
+
+    def test_chave_desconhecida_avisa(self):
+        _, avisos = self._erros_com({"atencaoo": 3.0})
+        self.assertTrue(avisos, "erro de digitação numa faixa não pinta nada e tem de aparecer")
+
+    def test_o_cadastro_REAL_esta_em_ordem(self):
+        vd.erros.clear()
+        try:
+            vd.valida_ordem_das_cotas()
+            self.assertEqual(vd.erros, [])
+        finally:
             vd.erros.clear()
             vd.avisos.clear()
 

@@ -4,7 +4,13 @@ Documentos recebidos: `RESULTADOS.md` e `historicos-candidatos.json` (96 registr
 candidatos, nenhum importado). Este arquivo registra **o que o cruzamento com o
 repositório revelou** — não é importação nem certificação.
 
-## ⚠️ URGENTE — Indaial: as cotas do site podem estar 3 m acima da fonte
+> **RESOLVIDO EM 07/09/2026.** O Jefferson abriu o PDF no navegador dele e a
+> pesquisa estava certa: o repositório é que estava errado, para o lado
+> perigoso. As cotas foram corrigidas para 3 / 4 / 5,5 e os 16 picos entraram.
+> O registro do problema fica abaixo, porque como o erro entrou importa tanto
+> quanto o número certo. Ver `docs/INDAIAL-RESOLVIDO.md`.
+
+## ⚠️ ~~URGENTE~~ RESOLVIDO — Indaial: as cotas do site estavam 3 m acima da fonte
 
 O repositório tem, para Indaial:
 

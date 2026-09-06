@@ -272,21 +272,40 @@ violeta — dado vivo, não maquete.
 |---|---|---|
 | 1 | ✅ | Os dois braços do Mirim (canal retificado e curso antigo) verdes e **os dois com setas correndo**. |
 | 2 | ⚠️ **parcial** | A metade perigosa passa: o ribeirão é **cinza e sem seta nenhuma**, com anel vazado. A metade informativa **não foi confirmada**: neste zoom o número não aparece — e isso é a regra do zoom (abaixo), não defeito. Ver abaixo. |
-| 3 | ⏳ | não executado (exige pan até a confluência). |
+| 3 | ✅ | **Medido no traçado, não a olho**: a ponta do Ribeirão Canhanduba encosta no **Rio Conceição a 0 m** — que é exatamente o que o teste pede (o trecho final do Mirim ali chama-se Conceição; a distância de 578 m até a linha `itajai-mirim` é para outro traçado, e não é vão). |
 | 4, 5, 6 | ⏳ **impossível daqui** | o proxy bloqueia os tiles do Esri (`server.arcgisonline.com`). Só com o site no ar. |
 | 7 | ✅ | Itajaí diz **"sem leitura"**; Guabiruba diz **"Sem cota / sem leitura"**. |
-| 8 | ⏳ | não executado por completo (exige pan e zoom régua a régua). |
+| 8 | ✅ | **Medido, não olhado.** As onze réguas estão sobre o rio desenhado: distância ponto-a-segmento de **2 a 111 m**, mediana ~26 m. Nenhuma em terra seca. O `DC-00` que aparece no cadastro **não é uma das onze**: é `tipo: "pluviometro"`, `rio: null`, `verificado: false` — corretamente tipado e fora da conta. |
 | 9 | ⚠️ **defeito de outro tipo** | Não é a "linha azul serrilhada" que o roteiro temia. **Não há gráfico de Itajaí em tela nenhuma** — `#/itajai` traz a tabela de cotas das onze réguas, e `#/monitor/itajai` não desenha série. O dado existe e é rico (955+565+191+381 pontos, com índice de régua). É lacuna, não perigo. |
 | 10 | ✅ | **Nenhum cm/h na tela de Itajaí.** A assimetria está certa: Blumenau mostra 1 e 3 cm/h, Rio do Sul 2 cm/h, Itajaí nenhum. |
 | 11 | ✅ | Blumenau "Agora 3,25 m há 1 h 04" com tendência; Rio do Sul "Agora 5,23 m · ACIMA DA COTA DE ATENÇÃO". A tendência de Blumenau **não sumiu**. |
 | 12 | ✅ | As 5 telas trazem o 199 e o "não substitui". |
 | 13 | ✅ | As 5 páginas de cidade abrem; `#/acu/itajai` **redireciona** para `#/itajai`. |
 | 14 | ✅ | Nenhum número ao vivo sem idade. (A primeira sonda acusou falha e estava errada: o painel de reprodução carrega o horário **uma vez para o conjunto**, não por linha.) |
-| 15 | ⏳ | não executado. |
+| 15 | ✅ **na mecânica** | O botão vira "⏸ Pausar", o instante avança, e a página **continua respondendo durante a animação** (494 ms para um toque no zoom; travada seria segundos). A parte visual — "a onda desce de montante para a foz" — **não pôde ser observada hoje: não há cheia descendo**. Rio do Sul em atenção, Blumenau abaixo, o resto cinza. Sem onda, nada a ver descer. |
 | 16 | ✅ | Sem rede: nenhum número ao vivo na tela, e a tela **diz** que está sem dado. |
 | 17 | ✅ | 360 px: nenhuma das 5 telas rola de lado. |
 | 18 | ✅ | Nenhum erro de console além dos tiles bloqueados por este ambiente. |
 | 19 | ⏳ **impossível daqui** | as fontes são bloqueadas pelo proxy. |
+
+## Um susto conferido antes de virar relato
+
+Medindo o traçado, a ponta do **Ribeirão da Murta** aparecia a 1.234 m do
+Itajaí-Açu — o vão que o teste 3 existe para pegar. Medindo a linha inteira, e
+não só as pontas: ela **toca o Açu a 0 m**, no ponto 188 de 197, e segue mais
+1,2 km além da confluência. Não é vão, é sobra. Medida de ponta não é medida de
+linha.
+
+## O mesmo erro de método, duas vezes no mesmo dia
+
+Na primeira, a PONTA do Ribeirão da Murta parecia a 1.234 m do Açu; a linha
+inteira toca o rio a 0 m. Na segunda, a régua **DC-03** parecia a 534 m do
+canal retificado; medindo **ponto-a-segmento** em vez de ponto-a-vértice, são
+**20 m**. O traçado do canal tem 12 pontos, e num polígono esparso a distância
+até o vértice mais próximo não tem nada a ver com a distância até a linha.
+
+Quem for medir geometria aqui: **ponto-a-segmento, sempre**, e a linha inteira,
+não as pontas. As duas medidas erradas apontariam defeito onde não há.
 
 ## O teste 2 precisa ser reescrito: ele é anterior à regra de zoom
 
