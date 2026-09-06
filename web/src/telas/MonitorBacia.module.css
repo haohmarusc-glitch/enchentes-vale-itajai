@@ -83,8 +83,10 @@
   padding: 0.5rem 0.65rem;
   font-size: 0.8rem;
   max-width: min(20rem, 60%);
-  /* Abaixo do título e do zoom, sempre — a legenda inteira cobria os dois. */
-  max-height: calc(100% - 13rem);
+  /* Abaixo do título E DO ZOOM, sempre. 13rem deixava a legenda subir até os
+     botões + e −, que ficavam por cima do título dela (captura de 06/09/2026).
+     17rem é a altura da coluna da esquerda inteira: título, menu e zoom. */
+  max-height: calc(100% - 17rem);
   overflow-y: auto;
 }
 .legendaTitulo {
@@ -189,6 +191,9 @@
   padding: 0.35rem 0.6rem;
   max-width: min(34rem, 60vw);
   width: max-content;
+  /* Acima da legenda: centrada embaixo, ela caía justamente sobre os botões
+     Escuro/Satélite/Mapa numa tela estreita (capturas de 06/09/2026). */
+  z-index: 5;
 }
 .botaoPlay {
   flex: none;
@@ -245,6 +250,22 @@
 }
 .painelTopo strong {
   font-size: 1.02rem;
+}
+.botaoFechar {
+  appearance: none;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 0.35rem;
+  color: #cdd8e4;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.15rem 0.4rem;
+  cursor: pointer;
+  order: 3;
+}
+.botaoFechar:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 .painelRio {
   font-size: 0.72rem;
@@ -576,8 +597,20 @@
   .cantoEsquerdo {
     max-width: calc(100% - 1rem);
   }
+  /* O aviso legal continua — ele não pode sumir —, mas encolhido: o bloco do
+     topo estava comendo um terço da tela do celular. */
   .topo {
     max-width: calc(100% - 8.5rem); /* deixa o chip da maré, no topo direito, à vista */
+    font-size: 0.82rem;
+    padding: 0.3rem 0.5rem;
+  }
+  .aviso {
+    font-size: 0.72rem;
+  }
+  .botaoCheia {
+    margin-top: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.78rem;
   }
   .menuCidades {
     width: 100%;
@@ -587,11 +620,19 @@
   .temPainel .legenda {
     display: none;
   }
+  /* Folha de baixo OPACA e por cima de tudo.
+     Com 0,92 de opacidade os rótulos do mapa atravessavam o texto do painel e
+     o deixavam ilegível (capturas de 06/09/2026). Num aviso de cheia, texto
+     que se lê pela metade é pior que texto nenhum. O z-index tira de cima
+     dele os botões de zoom e a barra de reprodução, que ficavam flutuando no
+     meio da leitura. */
   .painel {
     left: 0.5rem;
     right: 0.5rem;
     width: auto;
-    max-height: 46%;
+    max-height: 52%;
+    background: #08121e;
+    z-index: 7;
   }
   .legenda {
     max-width: calc(100% - 1rem);

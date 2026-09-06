@@ -594,6 +594,28 @@ function desenharMar(ctx: CanvasRenderingContext2D, cena: Cena): void {
   ctx.fillRect(x0, 0, cena.largura - x0, cena.altura)
 }
 
+/**
+ * O retângulo do chip da maré, no topo-direito.
+ *
+ * Exportado para entrar na MESMA lista de rótulos das cidades: sem isso o
+ * "sem leitura" de Itajaí, que fica bem embaixo dele, saía por baixo do chip
+ * (captura de 06/09/2026). O chip é fixo na tela e não pode ceder — então
+ * reserva primeiro, e o rótulo da cidade se acomoda.
+ */
+export function caixaDaEtiquetaMare(
+  medir: Medidor,
+  cena: Pick<Cena, 'mar' | 'largura'>,
+  escala = 1,
+): Caixa | null {
+  if (!cena.mar) return null
+  const w = medir(`Mar · ${cena.mar.rotulo}`, Math.round(FONTE_PINO * escala))
+  const padX = 8 * escala
+  const h = 20 * escala
+  const x = cena.largura - (w + padX * 2) - 8 * escala
+  const y = 8 * escala
+  return { x0: x, y0: y, x1: x + w + padX * 2, y1: y + h }
+}
+
 function desenharEtiquetaMare(ctx: CanvasRenderingContext2D, cena: Cena, escala: number): void {
   const mar = cena.mar
   if (!mar) return
@@ -708,6 +730,137 @@ export interface OpcoesPinos {
    * comportamento antigo de quem não passar.
    */
   temRegua?: TemRegua
+  /** O plano pronto (o Monitor reserva os nomes antes de tudo). */
+  rotulos?: Map<string, RotuloDoPino>
+  /** Lista compartilhada de rótulos já colocados, quando não há plano pronto. */
+  caixas?: Caixa[]
+}
+
+/** Tamanho da fonte do NOME no pino, em px na escala 1. */
+export const FONTE_PINO = 11
+/** A sub-linha (nível e idade) sai neste fator da fonte do nome. */
+export const FATOR_SUB = 0.85
+/** Altura da linha do nome, em px na escala 1. */
+const ALT_NOME = 13
+
+/** Mede um texto numa fonte — o que a caixa precisa saber do canvas. */
+export type Medidor = (texto: string, fonte: number) => number
+
+export function medidorDe(ctx: CanvasRenderingContext2D): Medidor {
+  return (texto, fonte) => {
+    ctx.font = `600 ${fonte}px system-ui, sans-serif`
+    return ctx.measureText(texto).width
+  }
+}
+
+/** Onde o rótulo de um pino fica, e o retângulo que ele ocupa. */
+export interface RotuloDoPino {
+  cx: number
+  baseY: number
+  nome: string
+  sub: string
+  caixa: Caixa
+}
+
+/**
+ * A caixa do rótulo do pino — pela LARGURA DO TEXTO MAIS LARGO.
+ *
+ * O DEFEITO QUE ISTO CORRIGE (06/09/2026, achado nas capturas do celular do
+ * Jefferson). A caixa era medida só com a largura do NOME, mas o que se desenha
+ * é o nome MAIS a sub-linha, que quase sempre é mais larga: "Ilhota" mede uns
+ * 45 px e "≈9,77 m bruto · há 5 min" passa de 120. A anticolisão então
+ * reservava um terço do espaço real, e por isso Blumenau, Gaspar, Ilhota e
+ * Itajaí saíam empilhadas umas sobre as outras.
+ *
+ * O mesmo número serve de trava na borda: com a largura errada, "Ibirama" e
+ * "Brusque" tinham o nome dentro da tela e o nível CORTADO no lado direito.
+ * Num mapa de cheia, um número cortado pela metade é pior que número nenhum.
+ */
+export function caixaDoRotuloDoPino(
+  ponto: { x: number; y: number },
+  larguras: { nome: number; sub: number },
+  cena: { largura: number },
+  escala = 1,
+): { cx: number; baseY: number; caixa: Caixa } {
+  const fonte = Math.round(FONTE_PINO * escala)
+  const raio = 7 * escala
+  const pad = 3 * escala
+  const larg = Math.max(larguras.nome, larguras.sub)
+  const meia = larg / 2
+  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, ponto.x))
+  const baseY = ponto.y - (raio + 2 * escala)
+  const altTotal = larguras.sub > 0 ? ALT_NOME * escala + fonte * 0.95 : ALT_NOME * escala
+  return {
+    cx,
+    baseY,
+    caixa: { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 },
+  }
+}
+
+/** O nome e a sub-linha que o pino mostra. */
+export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; sub: string } {
+  const idade =
+    opcoes.mostrarIdade && opcoes.agora && p.medidoEm
+      ? textoIdade(idadeMin(p.medidoEm, opcoes.agora))
+      : null
+  // Sem leitura calibrada (municipal), mas com bruto DCSC: mostra o bruto em
+  // vez de deixar a cidade sem número — é a lacuna que a rede estadual preenche
+  // na maioria das cabeceiras do Açu. Nunca soma nem substitui o calibrado.
+  const usaBruto = p.nivel == null && p.nivelBruto != null
+  const idadeBruto =
+    usaBruto && opcoes.mostrarIdade && opcoes.agora && p.nivelBruto?.medidoEm
+      ? textoIdade(idadeMin(p.nivelBruto.medidoEm, opcoes.agora))
+      : null
+  const sub =
+    p.nivel != null
+      ? idade
+        ? `${metros(p.nivel)} · ${idade}`
+        : metros(p.nivel)
+      : usaBruto
+        ? idadeBruto
+          ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
+          : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
+        : (idade ?? semNumero(p.cidade, opcoes.temRegua))
+  return { nome: p.cidade.nome, sub: sub ?? '' }
+}
+
+/**
+ * Quais rótulos de pino cabem, e onde — a faixa MAIS grave tem prioridade.
+ *
+ * Puro: recebe um `Medidor` em vez do canvas, e é por isso que dá para
+ * falsificar em teste. A lista `caixas` é COMPARTILHADA com as barragens e as
+ * réguas; o Monitor chama esta função ANTES delas, para o nome da cidade nunca
+ * perder espaço para um rótulo secundário.
+ */
+export function planejarRotulosDosPinos(
+  medir: Medidor,
+  cena: Cena,
+  selecionada: string | null,
+  opcoes: OpcoesPinos = {},
+  caixas: Caixa[] = [],
+): Map<string, RotuloDoPino> {
+  const escala = opcoes.escala ?? 1
+  const fonte = Math.round(FONTE_PINO * escala)
+  const fonteSub = Math.round(fonte * FATOR_SUB)
+  const plano = new Map<string, RotuloDoPino>()
+  const ordem = [...cena.pinos].sort((a, b) => {
+    const sa = a.cidade.id === selecionada ? 100 : GRAVIDADE[a.faixa]
+    const sb = b.cidade.id === selecionada ? 100 : GRAVIDADE[b.faixa]
+    return sb - sa
+  })
+  for (const p of ordem) {
+    const { nome, sub } = textoDoPino(p, opcoes)
+    const { cx, baseY, caixa } = caixaDoRotuloDoPino(
+      p,
+      { nome: medir(nome, fonte), sub: sub ? medir(sub, fonteSub) : 0 },
+      cena,
+      escala,
+    )
+    if (colide(caixa, caixas) && p.cidade.id !== selecionada) continue
+    caixas.push(caixa)
+    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa })
+  }
+  return plano
 }
 
 
@@ -834,17 +987,39 @@ export function desenharCotasDeRua(
   ctx.restore()
 }
 
+/** Retângulo de um rótulo já colocado na tela, em pixels do canvas. */
+export interface Caixa {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
+}
+
+/** O rótulo pisa em algum já colocado? */
+export function colide(c: Caixa, caixas: readonly Caixa[]): boolean {
+  return caixas.some((o) => c.x0 < o.x1 && c.x1 > o.x0 && c.y0 < o.y1 && c.y1 > o.y0)
+}
+
 export function desenharBarragens(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
   barragens: BarragemNoMapa[],
   tempo: number,
   escala = 1,
+  /**
+   * Rótulos JÁ colocados, compartilhados com as réguas e os pinos.
+   *
+   * Sem isto cada desenhista tinha a sua própria lista e nenhum enxergava os
+   * outros: o nome "Taió" saía por cima de "Oeste Taió · 7 de 7 abertas", e as
+   * onze réguas de Itajaí por cima do nome da cidade (celular do Jefferson,
+   * 06/09/2026). Quem reserva primeiro fica — e o Monitor reserva os NOMES DAS
+   * CIDADES antes de tudo, porque são a âncora: sem eles não se sabe onde é nada.
+   */
+  caixas: Caixa[] = [],
 ): void {
   if (barragens.length === 0) return
   const fase = faseComporta(tempo)
   const fonte = Math.round(9.5 * escala)
-  const caixas: { x0: number; y0: number; x1: number; y1: number }[] = []
 
   for (const b of barragens) {
     const [x, y] = projetar(cena.enq, [b.lon, b.lat])
@@ -899,7 +1074,7 @@ export function desenharBarragens(
     const tx = Math.max(2 * escala + w / 2, Math.min(cena.largura - 2 * escala - w / 2, x))
     const ty = y0 - 4 * escala
     const caixa = { x0: tx - w / 2 - 1, y0: ty - fonte, x1: tx + w / 2 + 1, y1: ty + 2 }
-    if (caixas.some((c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0)) {
+    if (colide(caixa, caixas)) {
       continue
     }
     caixas.push(caixa)
@@ -934,10 +1109,11 @@ export function desenharReguas(
   escala = 1,
   /** Código da régua em foco: ganha anel, como o pino de cidade selecionado. */
   selecionada: string | null = null,
+  /** Rótulos já colocados — ver `desenharBarragens`. */
+  caixas: Caixa[] = [],
 ): void {
   const r = 3.4 * escala
   const fonte = Math.round(9.5 * escala)
-  const caixas: { x0: number; y0: number; x1: number; y1: number }[] = []
 
   for (const g of reguas) {
     const [x, y] = projetar(cena.enq, [g.lon, g.lat])
@@ -978,7 +1154,7 @@ export function desenharReguas(
     const tx = x + r + 3 * escala
     const ty = y + fonte * 0.35
     const caixa = { x0: tx - 1, y0: ty - fonte, x1: tx + w + 1, y1: ty + 2 }
-    if (caixas.some((c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0)) {
+    if (colide(caixa, caixas)) {
       continue // rótulo que colide some; o ponto fica, e o painel lista todas
     }
     caixas.push(caixa)
@@ -1049,75 +1225,35 @@ export function desenharPinos(
     ctx.stroke()
   }
 
-  // Nomes com anticolisão: a faixa MAIS grave (e a selecionada) tem prioridade.
-  const fonte = Math.round(11 * escala)
-  ctx.font = `600 ${fonte}px system-ui, sans-serif`
+  // Os rótulos: quem cabe foi decidido em `planejarRotulosDosPinos`, que é
+  // puro e testável. Aqui só se pinta.
+  const fonte = Math.round(FONTE_PINO * escala)
+  const rotulos =
+    opcoes.rotulos ??
+    planejarRotulosDosPinos(medidorDe(ctx), cena, selecionada, opcoes, opcoes.caixas ?? [])
   ctx.textBaseline = 'bottom'
-  const ordem = [...cena.pinos].sort((a, b) => {
-    const sa = a.cidade.id === selecionada ? 100 : GRAVIDADE[a.faixa]
-    const sb = b.cidade.id === selecionada ? 100 : GRAVIDADE[b.faixa]
-    return sb - sa
-  })
-  const caixas: { x0: number; y0: number; x1: number; y1: number }[] = []
-  const alt = 13 * escala
-  const pad = 3 * escala
-  for (const p of ordem) {
-    const nome = p.cidade.nome
-    const idade =
-      opcoes.mostrarIdade && opcoes.agora && p.medidoEm
-        ? textoIdade(idadeMin(p.medidoEm, opcoes.agora))
-        : null
-    // Sem leitura calibrada (municipal), mas com bruto DCSC: mostra o bruto em
-    // vez de deixar a cidade sem número — é a lacuna que a rede estadual
-    // preenche na maioria das cabeceiras do Açu. Nunca soma nem substitui o
-    // calibrado; só aparece quando ele falta.
+  for (const p of cena.pinos) {
+    const r = rotulos.get(p.cidade.id)
+    if (!r) continue
     const usaBruto = p.nivel == null && p.nivelBruto != null
-    const idadeBruto =
-      usaBruto && opcoes.mostrarIdade && opcoes.agora && p.nivelBruto?.medidoEm
-        ? textoIdade(idadeMin(p.nivelBruto.medidoEm, opcoes.agora))
-        : null
-    // Sub-linha ao lado do ponto: o NÍVEL na régua da própria cidade (quando há
-    // leitura fresca) e a idade. Nível em metros é da régua DELA — a comparação
-    // entre cidades continua sendo só pela faixa (cor), nunca pelo metro.
-    const sub =
-      p.nivel != null
-        ? idade
-          ? `${metros(p.nivel)} · ${idade}`
-          : metros(p.nivel)
-        : usaBruto
-          ? idadeBruto
-            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
-            : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
-          : (idade ?? semNumero(p.cidade, opcoes.temRegua))
-    const w = ctx.measureText(nome).width
-    const meia = w / 2
-    const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, p.x))
-    const baseY = p.y - (raio + 2 * escala)
-    const altTotal = sub ? alt + fonte * 0.95 : alt
-    const caixa = { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 }
-    const bate = caixas.some(
-      (c) => caixa.x0 < c.x1 && caixa.x1 > c.x0 && caixa.y0 < c.y1 && caixa.y1 > c.y0,
-    )
-    if (bate && p.cidade.id !== selecionada) continue
-    caixas.push(caixa)
     ctx.textAlign = 'center'
     ctx.lineWidth = 3.2 * escala
     ctx.strokeStyle = 'rgba(4,12,20,0.92)'
     ctx.font = `600 ${fonte}px system-ui, sans-serif`
-    ctx.strokeText(nome, cx, baseY)
+    ctx.strokeText(r.nome, r.cx, r.baseY)
     ctx.fillStyle = '#eaf1f8'
-    ctx.fillText(nome, cx, baseY)
-    if (sub) {
-      const fy = baseY - fonte - 1 * escala
-      ctx.font = `600 ${Math.round(fonte * 0.85)}px system-ui, sans-serif`
+    ctx.fillText(r.nome, r.cx, r.baseY)
+    if (r.sub) {
+      const fy = r.baseY - fonte - 1 * escala
+      ctx.font = `600 ${Math.round(fonte * FATOR_SUB)}px system-ui, sans-serif`
       ctx.lineWidth = 3 * escala
       ctx.strokeStyle = 'rgba(4,12,20,0.92)'
-      ctx.strokeText(sub, cx, fy)
+      ctx.strokeText(r.sub, r.cx, fy)
       // Nível calibrado em destaque (claro); bruto DCSC em violeta (marca visual
       // de "outro tipo de dado", nunca as cores de faixa/severidade); sem
       // nenhum dos dois, só a idade, acinzentada.
       ctx.fillStyle = p.nivel != null ? '#dff0ff' : usaBruto ? COR_BRUTO : '#9fb2c4'
-      ctx.fillText(sub, cx, fy)
+      ctx.fillText(r.sub, r.cx, fy)
     }
   }
 }
