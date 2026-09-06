@@ -255,3 +255,57 @@ No fim, responda também estas três:
    mora lá também não vai.)
 
 A pergunta 2 é a que mais importa. Responda-a mesmo que todos os 19 testes passem.
+
+---
+
+# Execução de 07/09/2026 (Claude, ambiente remoto)
+
+**PASSO 0: achou `reguas`** — logo, o 9 e o 10 valem.
+
+O site foi servido de `vite preview` sobre a build do branch, com o **dado real
+do branch `tempo-real`** (os quatro JSON baixados por `curl` e servidos à
+página; o navegador deste ambiente não alcança o `raw.githubusercontent`, o
+`curl` alcança). Blumenau 3,25 m, Rio do Sul 5,23 m em atenção, brutos em
+violeta — dado vivo, não maquete.
+
+| # | Resultado | Observação |
+|---|---|---|
+| 1 | ✅ | Os dois braços do Mirim (canal retificado e curso antigo) verdes e **os dois com setas correndo**. |
+| 2 | ⚠️ **parcial** | A metade perigosa passa: o ribeirão é **cinza e sem seta nenhuma**, com anel vazado. A metade informativa **não foi confirmada**: neste zoom o número não aparece — e isso é a regra do zoom (abaixo), não defeito. Ver abaixo. |
+| 3 | ⏳ | não executado (exige pan até a confluência). |
+| 4, 5, 6 | ⏳ **impossível daqui** | o proxy bloqueia os tiles do Esri (`server.arcgisonline.com`). Só com o site no ar. |
+| 7 | ✅ | Itajaí diz **"sem leitura"**; Guabiruba diz **"Sem cota / sem leitura"**. |
+| 8 | ⏳ | não executado por completo (exige pan e zoom régua a régua). |
+| 9 | ⚠️ **defeito de outro tipo** | Não é a "linha azul serrilhada" que o roteiro temia. **Não há gráfico de Itajaí em tela nenhuma** — `#/itajai` traz a tabela de cotas das onze réguas, e `#/monitor/itajai` não desenha série. O dado existe e é rico (955+565+191+381 pontos, com índice de régua). É lacuna, não perigo. |
+| 10 | ✅ | **Nenhum cm/h na tela de Itajaí.** A assimetria está certa: Blumenau mostra 1 e 3 cm/h, Rio do Sul 2 cm/h, Itajaí nenhum. |
+| 11 | ✅ | Blumenau "Agora 3,25 m há 1 h 04" com tendência; Rio do Sul "Agora 5,23 m · ACIMA DA COTA DE ATENÇÃO". A tendência de Blumenau **não sumiu**. |
+| 12 | ✅ | As 5 telas trazem o 199 e o "não substitui". |
+| 13 | ✅ | As 5 páginas de cidade abrem; `#/acu/itajai` **redireciona** para `#/itajai`. |
+| 14 | ✅ | Nenhum número ao vivo sem idade. (A primeira sonda acusou falha e estava errada: o painel de reprodução carrega o horário **uma vez para o conjunto**, não por linha.) |
+| 15 | ⏳ | não executado. |
+| 16 | ✅ | Sem rede: nenhum número ao vivo na tela, e a tela **diz** que está sem dado. |
+| 17 | ✅ | 360 px: nenhuma das 5 telas rola de lado. |
+| 18 | ✅ | Nenhum erro de console além dos tiles bloqueados por este ambiente. |
+| 19 | ⏳ **impossível daqui** | as fontes são bloqueadas pelo proxy. |
+
+## O teste 2 precisa ser reescrito: ele é anterior à regra de zoom
+
+O teste pede "anel vazado, **com número e idade ao lado**, sem setas correndo".
+Desde a regra de rótulos por zoom, **as réguas de estuário só mostram o número
+com o mapa a menos de 6 km de largura** — de longe elas são ponto, de propósito,
+e a legenda explica. As duas metades do teste passaram a valer em zooms
+diferentes:
+
+- **cinza e parado** (a metade que impede o alarme de maré vazar): vale em
+  qualquer zoom, e foi confirmado;
+- **número e idade**: só de perto.
+
+Reescrever o teste para dizer isso, senão ele vai acusar falha onde a regra
+está funcionando.
+
+## O que este ambiente NÃO alcança
+
+`server.arcgisonline.com` (tiles), `indaial.atende.net`, `marinha.mil.br`,
+`ciram.epagri.sc.gov.br`, `defesacivil.*.sc.gov.br`, `*.ana.gov.br`,
+`overpass-api.de`, `nominatim.openstreetmap.org` e a preview do Cloudflare.
+Tudo que depender dessas fontes é do Jefferson ou do VPS.
