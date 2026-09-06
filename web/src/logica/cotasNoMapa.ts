@@ -90,7 +90,7 @@ export function cidadePodeMostrarRuas(cidade: CidadeParaRuas | null | undefined)
  * mudar, e `scripts/validar_dados.py::valida_ruas_sem_coordenada` reprova o
  * commit em que eles deixarem de bater com o arquivo.
  *
- * O QUE ELES CORRIGEM. Blumenau tem o MAIOR levantamento do projeto — 2.042
+ * O QUE ELES CORRIGEM. Blumenau tem o MAIOR levantamento do projeto — 2.023
  * ruas — e nenhuma com coordenada: a lista da Defesa Civil publicada pela
  * imprensa traz rua, bairro e cota, sem ponto. Rio do Sul tem 555 na mesma
  * situação. Até aqui o mapa dizia a essas duas cidades "aproxime para ver as
@@ -99,7 +99,7 @@ export function cidadePodeMostrarRuas(cidade: CidadeParaRuas | null | undefined)
  * cidade, por nome.
  */
 export const RUAS_SEM_COORDENADA: Readonly<Record<string, number>> = {
-  blumenau: 2042,
+  blumenau: 2023,
   'rio-do-sul': 555,
 }
 

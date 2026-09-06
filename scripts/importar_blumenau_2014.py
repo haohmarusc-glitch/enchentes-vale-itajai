@@ -106,8 +106,10 @@ def enriquecer(cadastro: list[dict], pdf: list[dict]) -> tuple[int, int]:
     por_ponto = indexar_abrigos(pdf)
     por_cota = indexar_abrigos_por_cota(pdf)
     confirmados = com_abrigo = 0
-    pares = {(normalizar_rua(p["rua"]), normalizar_ponto(p["ponto"]))
-             for p in parear(pdf, cadastro) if p["bate"]}
+    # A chave vem do próprio pareamento: é ele que sabe se o par veio por texto
+    # igual ou por redação equivalente. Recalcular aqui repetiria só a primeira
+    # camada — e foi assim que 47 registros conferidos à mão ficaram em `media`.
+    pares = {p["chave"] for p in parear(pdf, cadastro) if p["bate"]}
 
     for registro in cadastro:
         # O abrigo vai para todo registro que o PDF descreve, mesmo os que a
@@ -132,13 +134,83 @@ def enriquecer(cadastro: list[dict], pdf: list[dict]) -> tuple[int, int]:
     return confirmados, com_abrigo
 
 
+#: Palavras de logradouro escritas por extenso. Quando a abreviação vem seguida
+#: de uma delas, a fonte já disse o tipo: "AL Alameda Rio Branco", "R Praça
+#: Victor Konder", "R Via Expressa Paul Fritz Kuehnrich".
+POR_EXTENSO = {"rua", "avenida", "alameda", "travessa", "rodovia", "estrada",
+               "praca", "praça", "via", "beco", "largo", "servidao", "servidão"}
+
+
 def nome_da_rua(bruto: str) -> str:
-    """"R 1º de Janeiro" vira "Rua 1º de Janeiro"; o resto do nome não muda."""
+    """
+    "R 1º de Janeiro" vira "Rua 1º de Janeiro"; o resto do nome não muda.
+
+    CORRIGIDO em 06/09/2026: "AL Alameda Rio Branco" virava "Alameda Alameda
+    Rio Branco" — a abreviação era expandida em cima da palavra que o PDF já
+    trazia. Foram 15 registros com nome dobrado na tela, mais "Rua Alameda Rio
+    Branco", "Rua Praça Victor Konder" e "Rua Via Expressa …". Quando a palavra
+    seguinte já é o tipo do logradouro, a abreviação simplesmente cai.
+    """
     partes = (bruto or "").strip().split()
     if not partes:
         return ""
     inteiro = LOGRADOURO.get(partes[0].rstrip(".").lower())
-    return " ".join([inteiro] + partes[1:]) if inteiro else " ".join(partes)
+    if not inteiro:
+        return " ".join(partes)
+    if len(partes) > 1 and partes[1].lower() in POR_EXTENSO:
+        return " ".join(partes[1:])
+    return " ".join([inteiro] + partes[1:])
+
+
+def reparar_importacao_anterior(cotas: list[dict]) -> tuple[list[dict], list[str], list[str]]:
+    """
+    Desfaz o que o prefixo único fez em 01/09/2026. Devolve (cotas, removidos,
+    renomeados), sem mudar cota nenhuma.
+
+    1. Registro importado do PDF (`data_fonte` 2014-06) que descreve o MESMO
+       ponto, com a MESMA cota, de um registro que já existia — sob a chave de
+       rua corrigida — é duplicata e sai. O que fica é o registro antigo, que
+       vai receber do PDF a confiança e o abrigo pelo caminho normal.
+    2. Nome de rua com a palavra (ou par de palavras) inicial dobrada perde a
+       repetição: "Alameda Alameda …", "Praca Praca …", "Via Expressa Via
+       Expressa …" são artefatos de importação, não nomes.
+    """
+    antigos: dict[tuple, dict] = {}
+    for c in cotas:
+        if c.get("cidade") == CIDADE and c.get("data_fonte") != DATA_FONTE:
+            antigos[_chave_corrigida(c)] = c
+
+    mantidos, removidos = [], []
+    for c in cotas:
+        if (c.get("cidade") == CIDADE and c.get("data_fonte") == DATA_FONTE
+                and _chave_corrigida(c) in antigos):
+            removidos.append(f"{c['rua']} ({c.get('ponto')}) {c['cota_m']:.2f}")
+            continue
+        mantidos.append(c)
+
+    renomeados = []
+    for c in mantidos:
+        if c.get("cidade") != CIDADE:
+            continue
+        novo = _sem_palavra_dobrada(c["rua"])
+        if novo != c["rua"]:
+            renomeados.append(f"{c['rua']} -> {novo}")
+            c["rua"] = novo
+    return mantidos, removidos, renomeados
+
+
+def _chave_corrigida(c: dict) -> tuple:
+    cota = round(c["cota_m"], 2) if c.get("cota_m") is not None else None
+    return (normalizar_rua(c.get("rua")), normalizar_ponto(c.get("ponto")), cota)
+
+
+def _sem_palavra_dobrada(nome: str) -> str:
+    partes = (nome or "").split()
+    if len(partes) >= 2 and partes[0].lower() == partes[1].lower():
+        return " ".join(partes[1:])
+    if len(partes) >= 4 and [x.lower() for x in partes[0:2]] == [x.lower() for x in partes[2:4]]:
+        return " ".join(partes[2:])
+    return nome
 
 
 def como_registro(bruto: dict) -> dict | None:
@@ -186,6 +258,18 @@ def main() -> int:
 
     arquivo = DADOS / "cotas-ruas.json"
     dados = json.loads(arquivo.read_text(encoding="utf-8"))
+
+    dados["cotas"], removidos, renomeados = reparar_importacao_anterior(dados["cotas"])
+    if removidos:
+        print(f"{len(removidos)} duplicata(s) da importação anterior saem "
+              "(mesmo ponto e mesma cota de um registro que já existia):")
+        for r in removidos:
+            print(f"  - {r}")
+    if renomeados:
+        print(f"{len(renomeados)} nome(s) com palavra dobrada corrigido(s):")
+        for r in renomeados:
+            print(f"  - {r}")
+
     cadastro = [c for c in dados["cotas"]
                 if c.get("cidade") == CIDADE and c.get("data_fonte") != DATA_FONTE]
 

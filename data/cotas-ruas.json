@@ -53,9 +53,9 @@
       "bairro": "Itoupava Norte",
       "ponto": "final da rua",
       "cota_m": 7.4,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
       "abrigo_codigo": "E9",
       "referencia": "régua"
@@ -67,9 +67,9 @@
       "bairro": "Fortaleza",
       "ponto": "ponto mais baixo",
       "cota_m": 7.6,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
       "abrigo_codigo": "E9",
       "referencia": "régua"
@@ -81,9 +81,9 @@
       "bairro": "Fortaleza",
       "ponto": "esquina com Rua 1º de Janeiro",
       "cota_m": 7.65,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
       "abrigo_codigo": "E9",
       "referencia": "régua"
@@ -95,9 +95,9 @@
       "bairro": "Itoupava Norte",
       "ponto": "próximo ao nº 169",
       "cota_m": 7.75,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
       "abrigo_codigo": "E9",
       "referencia": "régua"
@@ -109,9 +109,9 @@
       "bairro": "Fortaleza",
       "ponto": "esquina com Rua 1º de Janeiro",
       "cota_m": 7.8,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
       "abrigo_codigo": "E9",
       "referencia": "régua"
@@ -123,9 +123,9 @@
       "bairro": "Fortaleza",
       "ponto": "próximo ao nº 85",
       "cota_m": 7.9,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Paróquia São Francisco de Assis",
       "abrigo_codigo": "E10",
       "referencia": "régua"
@@ -137,9 +137,9 @@
       "bairro": "Fortaleza",
       "ponto": "início / ponto mais baixo",
       "cota_m": 7.95,
-      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022",
+      "fonte": "https://ndmais.com.br/ — relação oficial da Defesa Civil de Blumenau reproduzida pela imprensa em maio de 2022 Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2022-05",
-      "confianca": "media",
+      "confianca": "alta",
       "abrigo": "Igreja Evangélica Livre de Blumenau - IELBLU",
       "abrigo_codigo": "E9",
       "referencia": "régua"
@@ -7860,9 +7860,9 @@
       "bairro": "Centro",
       "ponto": "Defronte à ilha para pedestres do Tabajara Tênis ...",
       "cota_m": 8.9,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Paróquia Luterana Centro",
       "abrigo_codigo": "S3"
@@ -10598,9 +10598,9 @@
       "bairro": "Itoupava Central",
       "ponto": "Esquina - Rua entrada, defronte à oficina - ...",
       "cota_m": 10.45,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "EBM Wilhelm Theodor Schurmann",
       "abrigo_codigo": "N5"
@@ -10780,9 +10780,9 @@
       "bairro": "Velha",
       "ponto": "Esquina com o Parque Ramiro Ruediger - Alberto ...",
       "cota_m": 10.5,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Paróquia Luterana da Velha",
       "abrigo_codigo": "W1"
@@ -12962,10 +12962,12 @@
       "bairro": "Centro",
       "ponto": "Esquina - Rua 7 de Setembro",
       "cota_m": 11.2,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Tiradentes",
+      "abrigo_codigo": "C1"
     },
     {
       "cidade": "blumenau",
@@ -13338,10 +13340,12 @@
       "bairro": "Centro",
       "ponto": "Esquina - Rua Ceará",
       "cota_m": 11.25,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "Paróquia Luterana Centro",
+      "abrigo_codigo": "S3"
     },
     {
       "cidade": "blumenau",
@@ -15394,9 +15398,9 @@
       "bairro": "Itoupava Central",
       "ponto": "Defronte ao restaurante Alemão, próximo a ...",
       "cota_m": 11.8,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Sociedade Esportiva Recreativa e Cultural Salto do Norte",
       "abrigo_codigo": "N1"
@@ -16934,10 +16938,12 @@
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Lauro Muller",
       "cota_m": 12.2,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Tiradentes",
+      "abrigo_codigo": "C1"
     },
     {
       "cidade": "blumenau",
@@ -17380,9 +17386,9 @@
       "bairro": "Itoupavazinha",
       "ponto": "Casa nº 144 - na enchente de Set/2011, a rua foi ...",
       "cota_m": 12.3,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "EBM Felipe Schmidt",
       "abrigo_codigo": "N2"
@@ -17954,9 +17960,9 @@
       "bairro": "Fortaleza",
       "ponto": "Casa nº 403 - a enchente de Set/2011 atingiu do ...",
       "cota_m": 12.4,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Paróquia São Francisco de Assis",
       "abrigo_codigo": "E10"
@@ -19074,9 +19080,9 @@
       "bairro": "Itoupava Central",
       "ponto": "Defronte ao pátio de veículos apreendidos, do ...",
       "cota_m": 12.6,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "EEB Jonas Rosário Coelho Neves",
       "abrigo_codigo": "N3"
@@ -19788,9 +19794,9 @@
       "bairro": "Badenfurt",
       "ponto": "Casa nº 66 - na enchente de Set/2011, a rua foi ...",
       "cota_m": 12.75,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Sociedade Esportiva Recreativa e Cultural Salto do Norte",
       "abrigo_codigo": "N1"
@@ -20236,9 +20242,9 @@
       "bairro": "Fortaleza",
       "ponto": "Casa nº 50 - a enchente de Set/2011 atingiu do ...",
       "cota_m": 12.85,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Paróquia São Francisco de Assis",
       "abrigo_codigo": "E10"
@@ -20754,10 +20760,12 @@
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Rua Pastor Stutzer",
       "cota_m": 12.95,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Tiradentes",
+      "abrigo_codigo": "C1"
     },
     {
       "cidade": "blumenau",
@@ -21546,14 +21554,16 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Praca Praca Victor Konder",
+      "rua": "Praca Victor Konder",
       "bairro": "Centro",
       "ponto": "Atrás da Prefeitura",
       "cota_m": 13.1,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "Catedral São Paulo Apóstolo",
+      "abrigo_codigo": "C2"
     },
     {
       "cidade": "blumenau",
@@ -22262,9 +22272,9 @@
       "bairro": "Itoupavazinha",
       "ponto": "Casa nº 90 - na enchente de Set/2011, a rua foi ...",
       "cota_m": 13.25,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "EBM Felipe Schmidt",
       "abrigo_codigo": "N2"
@@ -22934,9 +22944,9 @@
       "bairro": "Itoupava Norte",
       "ponto": "Defronte ao trevo da empresa Teka Tecelagem ...",
       "cota_m": 13.45,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Capela São João Batista",
       "abrigo_codigo": "E6"
@@ -22976,10 +22986,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Engenheiro Gustav Leyen",
       "cota_m": 13.5,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -23380,9 +23392,9 @@
       "bairro": "Itoupavazinha",
       "ponto": "Casa nº 188 - na enchente de Set/2011, a rua foi ...",
       "cota_m": 13.55,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "EBM Felipe Schmidt",
       "abrigo_codigo": "N2"
@@ -23450,10 +23462,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Doutor Celso Leon Salles",
       "cota_m": 13.6,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -23896,10 +23910,12 @@
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Rua Amapá",
       "cota_m": 13.7,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Tiradentes",
+      "abrigo_codigo": "C1"
     },
     {
       "cidade": "blumenau",
@@ -24118,9 +24134,9 @@
       "bairro": "Fortaleza",
       "ponto": "Casa nº 404 - a enchente de Set/2011 atingiu do ...",
       "cota_m": 13.75,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Paróquia São Francisco de Assis",
       "abrigo_codigo": "E10"
@@ -25378,10 +25394,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Alameda Ralf Bruno Gross",
       "cota_m": 14.1,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -26496,9 +26514,9 @@
       "bairro": "Vorstadt",
       "ponto": "Defronte ao dique de contenção contra cheias - do ...",
       "cota_m": 14.45,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "EBM Vidal Ramos",
       "abrigo_codigo": "E2"
@@ -26860,9 +26878,9 @@
       "bairro": "Badenfurt",
       "ponto": "Casa nº 484 - na enchente de Set/2011, a rua foi ...",
       "cota_m": 14.55,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Sociedade Esportiva Recreativa e Cultural Salto do Norte",
       "abrigo_codigo": "N1"
@@ -27166,10 +27184,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Erich Karmann",
       "cota_m": 14.7,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -28844,10 +28864,12 @@
       "bairro": "Vorstadt",
       "ponto": "Entrada do condomínio City Figueiras - direita",
       "cota_m": 15.3,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -28870,10 +28892,12 @@
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Rua Farmacêutico João Medeiros",
       "cota_m": 15.3,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Tiradentes",
+      "abrigo_codigo": "C1"
     },
     {
       "cidade": "blumenau",
@@ -29232,10 +29256,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Oswaldo Olinger",
       "cota_m": 15.45,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -29706,10 +29732,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Jefferson Mattos",
       "cota_m": 15.65,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -29718,10 +29746,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Galdino Galizza",
       "cota_m": 15.65,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -30654,10 +30684,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Alameda Ralf Bruno Gross",
       "cota_m": 16.05,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -30848,9 +30880,9 @@
       "bairro": "Itoupava Norte",
       "ponto": "Esquina com a Via Expressa - Via Paul Fritz ...",
       "cota_m": 16.1,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
+      "confianca": "alta",
       "referencia": "régua",
       "abrigo": "Capela São João Batista",
       "abrigo_codigo": "E6"
@@ -31310,10 +31342,12 @@
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Padre Réus",
       "cota_m": 16.35,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -32414,10 +32448,12 @@
       "bairro": "Vorstadt",
       "ponto": "Entrada do condomínio City Figueiras - esquerda",
       "cota_m": 16.95,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "EBM Vidal Ramos",
+      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -34130,14 +34166,16 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Via Expressa Via Expressa Paul Fritz Kuehnrich",
+      "rua": "Via Expressa Paul Fritz Kuehnrich",
       "bairro": "Fortaleza",
       "ponto": "Subindo a Via Expressa",
       "cota_m": 18.1,
-      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json",
+      "fonte": "Defesa Civil de Blumenau — relação de cotas por rua (2023), reproduzida pela NSC Total (visualização Flourish 3801020). Bruto em data/brutos/blumenau-cotas-ruas-2023.json Valor conferido contra o PDF oficial da Defesa Civil de Blumenau (data/brutos/blumenau-cotas-2014.pdf): bate ao centavo.",
       "data_fonte": "2023",
-      "confianca": "media",
-      "referencia": "régua"
+      "confianca": "alta",
+      "referencia": "régua",
+      "abrigo": "Paróquia São Francisco de Assis",
+      "abrigo_codigo": "E10"
     },
     {
       "cidade": "blumenau",
@@ -62896,34 +62934,6 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Alameda Alameda Rio Branco",
-      "bairro": "Centro",
-      "ponto": "Esquina - Rua 7 de Setembro",
-      "cota_m": 11.2,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Tiradentes",
-      "abrigo_codigo": "C1"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Duque de Caxias",
-      "bairro": "Centro",
-      "ponto": "Esquina - Rua Ceará",
-      "cota_m": 11.25,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "Paróquia Luterana Centro",
-      "abrigo_codigo": "S3"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Crisciuma",
       "bairro": "Garcia",
       "ponto": "Casa nº 21",
@@ -63232,20 +63242,6 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Rua Alameda Rio Branco",
-      "bairro": "Jardim Blumenau",
-      "ponto": "Esquina  - Lauro Muller",
-      "cota_m": 12.2,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Tiradentes",
-      "abrigo_codigo": "C1"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Frederico Guilherme Busch",
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Alameda Rio Branco",
@@ -63316,80 +63312,10 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Rua Alameda Rio Branco",
-      "bairro": "Jardim Blumenau",
-      "ponto": "Esquina - Rua Pastor Stutzer",
-      "cota_m": 12.95,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Tiradentes",
-      "abrigo_codigo": "C1"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Rua Praça Victor Konder",
-      "bairro": "Centro",
-      "ponto": "Atrás da Prefeitura",
-      "cota_m": 13.1,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "Catedral São Paulo Apóstolo",
-      "abrigo_codigo": "C2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Leoberto Leal",
       "bairro": "Vorstadt",
       "ponto": "Esquina - Rua Antônio Treis",
       "cota_m": 13.4,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Tiradentes",
-      "abrigo_codigo": "C1"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Engenheiro Gustav Leyen",
-      "cota_m": 13.5,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Doutor Celso Leon Salles",
-      "cota_m": 13.6,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Rio Branco",
-      "bairro": "Jardim Blumenau",
-      "ponto": "Esquina - Rua Amapá",
-      "cota_m": 13.7,
       "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
       "data_fonte": "2014-06",
       "confianca": "alta",
@@ -63438,20 +63364,6 @@
       "referencia": "régua",
       "abrigo": "EBM Anita Garibaldi",
       "abrigo_codigo": "N4"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Alameda Ralf Bruno Gross",
-      "cota_m": 14.1,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -63638,20 +63550,6 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Alameda Alameda Ralf Bruno Gross",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Erich Karmann",
-      "cota_m": 14.7,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Lauro Muller",
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Rua Floriano Peixoto",
@@ -63694,20 +63592,6 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Entrada do condomínio City Figueiras - direita",
-      "cota_m": 15.3,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Das Missões",
       "bairro": "Itoupava Norte",
       "ponto": "Sem número",
@@ -63718,20 +63602,6 @@
       "referencia": "régua",
       "abrigo": "EEB Júlia Lopes de Almeida",
       "abrigo_codigo": "E4"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Rio Branco",
-      "bairro": "Jardim Blumenau",
-      "ponto": "Esquina - Rua Farmacêutico João Medeiros",
-      "cota_m": 15.3,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Tiradentes",
-      "abrigo_codigo": "C1"
     },
     {
       "cidade": "blumenau",
@@ -63750,20 +63620,6 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Oswaldo Olinger",
-      "cota_m": 15.45,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Thomé Braga",
       "bairro": "Jardim Blumenau",
       "ponto": "Esquina - Rua Engenheiro Emílio Baungart",
@@ -63774,48 +63630,6 @@
       "referencia": "régua",
       "abrigo": "EBM Tiradentes",
       "abrigo_codigo": "C1"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Galdino Galizza",
-      "cota_m": 15.65,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Jefferson Mattos",
-      "cota_m": 15.65,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Alameda Ralf Bruno Gross",
-      "cota_m": 16.05,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -63848,20 +63662,6 @@
     {
       "cidade": "blumenau",
       "rio": "itajai-acu",
-      "rua": "Alameda Alameda Ralf Bruno Gross",
-      "bairro": "Vorstadt",
-      "ponto": "Esquina - Rua Padre Réus",
-      "cota_m": 16.35,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
       "rua": "Rua Profª. Nemésia Margarida",
       "bairro": "Itoupava Seca",
       "ponto": "Entrada da passarela",
@@ -63886,20 +63686,6 @@
       "referencia": "régua",
       "abrigo": "EBM Gustavo Richard",
       "abrigo_codigo": "E5"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Alameda Alameda Adolfo Schmalz",
-      "bairro": "Vorstadt",
-      "ponto": "Entrada do condomínio City Figueiras - esquerda",
-      "cota_m": 16.95,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "EBM Vidal Ramos",
-      "abrigo_codigo": "E2"
     },
     {
       "cidade": "blumenau",
@@ -63956,20 +63742,6 @@
       "referencia": "régua",
       "abrigo": "EBM Gustavo Richard",
       "abrigo_codigo": "E5"
-    },
-    {
-      "cidade": "blumenau",
-      "rio": "itajai-acu",
-      "rua": "Rua Via Expressa Paul Fritz Kuehnrich",
-      "bairro": "Fortaleza",
-      "ponto": "Subindo a Via Expressa",
-      "cota_m": 18.1,
-      "fonte": "Defesa Civil de Blumenau — \"Cotas das ruas de Blumenau\", PDF da Secretaria Municipal de Defesa Civil (111 páginas, 2.034 pontos). Bruto em data/brutos/blumenau-cotas-2014.pdf",
-      "data_fonte": "2014-06",
-      "confianca": "alta",
-      "referencia": "régua",
-      "abrigo": "Paróquia São Francisco de Assis",
-      "abrigo_codigo": "E10"
     },
     {
       "cidade": "blumenau",

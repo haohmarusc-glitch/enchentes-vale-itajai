@@ -647,3 +647,53 @@ com esse nome entre as levantadas"* para uma rua levantada. Corrigido nos dois l
 **também casa identificadores** (`rio-do-sul`, `itajai-acu`). Trocar hífen por espaço lá faria
 "rio-do-sul" deixar de achar Rio do Sul. Quem pegou foi o `test_sem_acento`. A normalização de rua
 virou função separada, `chave_de_rua`.
+
+
+---
+
+## O prefixo único: 47 cotas em `media` e 19 pontos em dobro — 06/09/2026
+
+A conferência contra o PDF de 2014 pareava por (rua, ponto), e `normalizar_rua` tirava **um** prefixo.
+O PDF escreve **abreviação e palavra** — "AL Alameda Rio Branco", "R Praça Victor Konder" —, então
+sobrava "alameda rio branco" de um lado e "rio branco" do outro, e 21 ruas da imprensa "não existiam"
+no documento oficial. Daí duas coisas, encadeadas:
+
+1. essas ruas ficaram em `confianca: media`, com o número certo e o carimbo errado;
+2. como "não existiam", o importador as trouxe do PDF como pontos **novos** — e o expansor de
+   abreviação escreveu a palavra em cima da que já estava lá: **"Alameda Alameda Adolfo Schmalz"**,
+   15 vezes, mais "Rua Alameda Rio Branco", "Rua Praça Victor Konder", "Rua Via Expressa…". **19
+   pontos entraram em dobro**, mesmo lugar e mesma cota, com dois nomes. Quem buscasse "Rio Branco"
+   via a mesma esquina duas vezes.
+
+O teste que devia pegar duplicata (`test_a_importacao_nao_criou_ponto_duplicado`) usava a mesma
+chave defeituosa — repetia o bug que existia para pegar.
+
+### O que mudou
+
+| | antes | depois |
+|---|---|---|
+| pares com o PDF | 1.891 | **1.933** (1.910 texto igual + 23 redação equivalente) |
+| divergências | 0 | **0** |
+| deslocamento mediano | 0,00 m | **0,00 m** |
+| registros da imprensa em `media` | 47 | **5** |
+| registros de Blumenau | 2.042 | **2.023** (−19 duplicatas) |
+| nomes com palavra dobrada | 17 | **0** |
+
+**Nenhuma cota mudou.** Os 42 que subiram para `alta` batem ao centavo com o documento oficial; os 19
+que saíram eram cópias de registros que continuam lá — e que agora carregam o abrigo que só a cópia tinha.
+
+### A segunda camada do pareamento, e por que não é circular
+
+Os 23 pares novos por **redação equivalente** (`ponto_canonico`): "esquina com Rua X" ≡ "Esquina - Rua
+X"; "próximo ao nº 169" ≡ "Casa nº 169"; "ponto mais baixo" ≡ "Ponto mais baixo da rua"; o parêntese que
+só o PDF tem; e o texto **cortado** pela imprensa ("…a rua foi" em vez de "…a rua foi atingida até o
+nº 168"), aceito só quando o nosso ponto é o começo de **um único** ponto do PDF naquela rua, em
+fronteira de palavra. A cota **nunca escolhe o candidato** — é comparada depois, sozinha, e um par
+canônico que divergir derruba a confirmação como qualquer outro. Que os 23 tenham batido ao centavo
+é a prova independente de que as equivalências descrevem o mesmo lugar.
+
+### Os cinco que ficam em `media`, de propósito
+
+Gustav Michel (não está no PDF), Inominada 1546 (o PDF só tem "R Inominada", sem número), um ponto da
+Humberto de Campos que o PDF não descreve, e as duas da **Lions Clube** — o PDF escreve "Lions Club"
+para os mesmos pontos e a mesma cota, mas o projeto recusa esse casamento desde 01/09, e mantém.

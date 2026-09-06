@@ -22,10 +22,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from conferir_blumenau_2014 import (DATA_FONTE, MINIMO_DE_PARES, carregar_pdf,
                                     confirmado, deslocamento, normalizar_ponto,
-                                    normalizar_rua, parear, sem_par_no_cadastro)
+                                    normalizar_rua, parear, ponto_canonico,
+                                    sem_par_no_cadastro)
 from extrair_blumenau_2014 import analisar, bairros_do_texto, separar_rua_e_bairro
 from importar_blumenau_2014 import (LOGRADOURO, como_registro, enriquecer,
-                                    nome_da_rua)
+                                    nome_da_rua, reparar_importacao_anterior)
 
 RAIZ = Path(__file__).resolve().parent.parent
 
@@ -204,13 +205,33 @@ class TestEnriquecer(unittest.TestCase):
         """
         Um registro que só casa pela COTA ganha o abrigo, mas não o carimbo de
         confiança: casar pela cota provaria só que a cota é igual à cota.
+
+        A fixture mudou em 06/09/2026: "final da rua" e "Final da rua (pega só
+        uma casa)" passaram a parear por REDAÇÃO, que é ponto, não cota — e aí
+        a confiança sobe de direito (teste abaixo). O caso circular de verdade
+        é um ponto que não tem nada a ver com o do PDF e só coincide no número.
         """
-        cadastro = [{"rua": "Rua São Rafael", "ponto": "final da rua",
+        cadastro = [{"rua": "Rua São Rafael", "ponto": "esquina com Rua São Roque",
                      "cota_m": 7.40, "confianca": "media", "fonte": "imprensa"}]
         confirmados, com_abrigo = enriquecer(cadastro, self.PDF)
         self.assertEqual((confirmados, com_abrigo), (0, 1))
         self.assertEqual(cadastro[0]["confianca"], "media")
         self.assertEqual(cadastro[0]["abrigo"], "IELBLU")
+
+    def test_a_confianca_sobe_por_redacao_equivalente(self):
+        """O ponto casou pela redação; a cota foi comparada depois e bateu."""
+        cadastro = [{"rua": "Rua São Rafael", "ponto": "final da rua",
+                     "cota_m": 7.40, "confianca": "media", "fonte": "imprensa"}]
+        confirmados, _ = enriquecer(cadastro, self.PDF)
+        self.assertEqual(confirmados, 1)
+        self.assertEqual(cadastro[0]["confianca"], "alta")
+
+    def test_redacao_equivalente_com_cota_diferente_nao_sobe(self):
+        cadastro = [{"rua": "Rua São Rafael", "ponto": "final da rua",
+                     "cota_m": 7.60, "confianca": "media", "fonte": "imprensa"}]
+        confirmados, _ = enriquecer(cadastro, self.PDF)
+        self.assertEqual(confirmados, 0)
+        self.assertEqual(cadastro[0]["confianca"], "media")
 
     def test_rua_comprida_recebe_o_abrigo_do_ponto_dela(self):
         """A Marechal Deodoro tem dois abrigos, em pontos diferentes."""
@@ -238,6 +259,149 @@ class TestEnriquecer(unittest.TestCase):
                      "cota_m": 7.40, "confianca": "media", "fonte": "imprensa"}]
         enriquecer(cadastro, self.PDF)
         self.assertEqual(cadastro[0]["cota_m"], 7.40)
+
+
+class TestPrefixoRepetido(unittest.TestCase):
+    """
+    O bug de 01/09/2026: `normalizar_rua` tirava UM prefixo, o PDF escreve
+    "AL Alameda Rio Branco", e 21 ruas da imprensa "não existiam" no documento
+    oficial. Daí o importador as trouxe de novo, com o nome dobrado — 19
+    duplicatas, "Alameda Alameda Adolfo Schmalz" na tela.
+    """
+
+    def test_abreviacao_e_palavra_juntas_dao_o_mesmo_nome(self):
+        self.assertEqual(normalizar_rua("AL Alameda Rio Branco"), "rio branco")
+        self.assertEqual(normalizar_rua("R Alameda Rio Branco"), "rio branco")
+        self.assertEqual(normalizar_rua("Alameda Rio Branco"), "rio branco")
+
+    def test_palavra_dobrada_no_inicio_cai(self):
+        self.assertEqual(normalizar_rua("Alameda Alameda Adolfo Schmalz"),
+                         normalizar_rua("Alameda Adolfo Schmalz"))
+        self.assertEqual(normalizar_rua("Praca Praca Victor Konder"),
+                         normalizar_rua("R Praça Victor Konder"))
+        self.assertEqual(normalizar_rua("Via Expressa Via Expressa Paul Fritz Kuehnrich"),
+                         normalizar_rua("R Via Expressa Paul Fritz Kuehnrich"))
+
+    def test_praca_e_rua_do_mesmo_nome_continuam_diferentes(self):
+        # "Praça Victor Konder" e "Rua Victor Konder" existem as duas no PDF.
+        self.assertNotEqual(normalizar_rua("R Praça Victor Konder"),
+                            normalizar_rua("R Victor Konder"))
+
+    def test_o_importador_nao_dobra_mais_a_palavra(self):
+        self.assertEqual(nome_da_rua("AL Alameda Rio Branco"), "Alameda Rio Branco")
+        self.assertEqual(nome_da_rua("R Praça Victor Konder"), "Praça Victor Konder")
+        self.assertEqual(nome_da_rua("R Via Expressa Paul Fritz Kuehnrich"),
+                         "Via Expressa Paul Fritz Kuehnrich")
+        self.assertEqual(nome_da_rua("R São Rafael"), "Rua São Rafael", "o caso comum não muda")
+
+
+class TestRedacaoEquivalente(unittest.TestCase):
+    """
+    A segunda camada do pareamento. Cada equivalência aqui foi vista lado a
+    lado no cruzamento de 06/09/2026, e a cota independente bateu em todas.
+    """
+
+    def test_as_redacoes_vistas_no_cruzamento(self):
+        pares = [
+            ("final da rua", "Final da rua (pega só uma casa)"),
+            ("ponto mais baixo", "Ponto mais baixo da rua"),
+            ("esquina com Rua 1º de Janeiro", "Esquina - Rua 1º de Janeiro"),
+            ("próximo ao nº 169", "Casa nº 169"),
+            ("início / ponto mais baixo", "Início da rua - ponto mais baixo da rua"),
+        ]
+        for nosso, deles in pares:
+            with self.subTest(nosso=nosso):
+                self.assertEqual(ponto_canonico(nosso), ponto_canonico(deles))
+
+    def test_pontos_diferentes_continuam_diferentes(self):
+        self.assertNotEqual(ponto_canonico("Casa nº 169"), ponto_canonico("Casa nº 16"))
+        self.assertNotEqual(ponto_canonico("Esquina - Rua São Roque"),
+                            ponto_canonico("Esquina - Rua 1º de Janeiro"))
+
+    def pdf(self, *pontos):
+        return [{"rua": "R Marconi", "observacao": obs, "cota_rotulo": cota}
+                for obs, cota in pontos]
+
+    def test_texto_cortado_pareia_quando_e_o_unico_comeco(self):
+        # A imprensa cortou: "...a rua foi" em vez de "...a rua foi atingida até essa casa".
+        pdf = self.pdf(("Casa nº 144 - na enchente de Set/2011, a rua foi atingida até essa casa", "12,30"),
+                       ("Casa nº 35", "10,30"))
+        pares = parear(pdf, [{"rua": "Rua Marconi", "cota_m": 12.30,
+                              "ponto": "Casa nº 144 - na enchente de Set/2011, a rua foi"}])
+        self.assertEqual(len(pares), 1)
+        self.assertEqual(pares[0]["nivel"], "canonico")
+        self.assertTrue(pares[0]["bate"])
+
+    def test_comeco_so_vale_em_fronteira_de_palavra(self):
+        # "Casa nº 1" não é o começo de "Casa nº 144".
+        pdf = self.pdf(("Casa nº 144", "12,30"))
+        self.assertEqual(parear(pdf, [{"rua": "Rua Marconi", "cota_m": 12.30, "ponto": "Casa nº 1"}]), [])
+
+    def test_ambiguo_nao_pareia(self):
+        # Dois pontos do PDF começam do mesmo jeito: não dá para saber qual é.
+        pdf = self.pdf(("Entrada do condomínio - direita", "15,30"),
+                       ("Entrada do condomínio - esquerda", "16,95"))
+        self.assertEqual(parear(pdf, [{"rua": "Rua Marconi", "cota_m": 15.30,
+                                       "ponto": "Entrada do condomínio"}]), [])
+
+    def test_a_segunda_camada_tambem_denuncia_divergencia(self):
+        """A cota não escolhe o candidato; ela é comparada depois — e pode falhar."""
+        pdf = self.pdf(("Ponto mais baixo da rua", "7,60"))
+        pares = parear(pdf, [{"rua": "Rua Marconi", "cota_m": 9.99, "ponto": "ponto mais baixo"}])
+        self.assertEqual(len(pares), 1)
+        self.assertFalse(pares[0]["bate"])
+
+    def test_ponto_ja_tomado_pela_primeira_camada_nao_pareia_de_novo(self):
+        pdf = self.pdf(("Ponto mais baixo da rua", "7,60"))
+        cadastro = [{"rua": "Rua Marconi", "cota_m": 7.60, "ponto": "Ponto mais baixo da rua"},
+                    {"rua": "Rua Marconi", "cota_m": 7.60, "ponto": "ponto mais baixo"}]
+        pares = parear(pdf, cadastro)
+        self.assertEqual([p["nivel"] for p in pares], ["exato"])
+
+    def test_ponto_com_redacao_equivalente_nao_e_reimportado(self):
+        pdf = self.pdf(("Final da rua (pega só uma casa)", "7,40"))
+        self.assertEqual(sem_par_no_cadastro(pdf, [{"rua": "Rua Marconi", "cota_m": 9.99,
+                                                    "ponto": "final da rua"}]), [])
+
+
+class TestReparo(unittest.TestCase):
+    def test_duplicata_do_pdf_sai_e_o_registro_antigo_fica(self):
+        cotas = [
+            {"cidade": "blumenau", "rua": "Alameda Rio Branco", "ponto": "Esquina - Rua Amapá",
+             "cota_m": 13.70, "data_fonte": "2023-05", "confianca": "media"},
+            {"cidade": "blumenau", "rua": "Alameda Alameda Rio Branco", "ponto": "Esquina - Rua Amapá",
+             "cota_m": 13.70, "data_fonte": DATA_FONTE, "confianca": "alta"},
+        ]
+        mantidos, removidos, _ = reparar_importacao_anterior(cotas)
+        self.assertEqual(len(mantidos), 1)
+        self.assertEqual(mantidos[0]["data_fonte"], "2023-05")
+        self.assertEqual(len(removidos), 1)
+
+    def test_ponto_do_pdf_sem_gemeo_nao_sai(self):
+        cotas = [{"cidade": "blumenau", "rua": "Alameda Rio Branco", "ponto": "Esquina - Rua Amapá",
+                  "cota_m": 13.70, "data_fonte": DATA_FONTE, "confianca": "alta"}]
+        mantidos, removidos, _ = reparar_importacao_anterior(cotas)
+        self.assertEqual((len(mantidos), removidos), (1, []))
+
+    def test_cota_diferente_nao_e_duplicata(self):
+        cotas = [
+            {"cidade": "blumenau", "rua": "Alameda Rio Branco", "ponto": "Esquina - Rua Amapá",
+             "cota_m": 13.70, "data_fonte": "2023-05"},
+            {"cidade": "blumenau", "rua": "Alameda Alameda Rio Branco", "ponto": "Esquina - Rua Amapá",
+             "cota_m": 13.75, "data_fonte": DATA_FONTE},
+        ]
+        self.assertEqual(reparar_importacao_anterior(cotas)[1], [])
+
+    def test_nome_dobrado_perde_a_repeticao_e_nada_mais(self):
+        cotas = [{"cidade": "blumenau", "rua": "Praca Praca Victor Konder", "cota_m": 13.1},
+                 {"cidade": "blumenau", "rua": "Via Expressa Via Expressa Paul", "cota_m": 18.1},
+                 {"cidade": "blumenau", "rua": "Rua Amazonas", "cota_m": 7.2},
+                 {"cidade": "gaspar", "rua": "Rua Rua Nova", "cota_m": 6.0}]
+        mantidos, _, renomeados = reparar_importacao_anterior(cotas)
+        self.assertEqual([c["rua"] for c in mantidos],
+                         ["Praca Victor Konder", "Via Expressa Paul", "Rua Amazonas", "Rua Rua Nova"])
+        self.assertEqual(len(renomeados), 2, "só Blumenau, que é o que este script importa")
+
 
 
 class TestArquivoReal(unittest.TestCase):
@@ -277,11 +441,33 @@ class TestArquivoReal(unittest.TestCase):
                 self.assertTrue(c["cota_m"] is None or 0 < c["cota_m"] < 25.0)
 
     def test_a_importacao_nao_criou_ponto_duplicado(self):
+        """
+        Com a chave de rua CORRIGIDA. A versão anterior deste teste passava com
+        19 duplicatas no arquivo, porque "alameda alameda rio branco" e "rio
+        branco" eram chaves diferentes — o teste repetia o bug que devia pegar.
+        """
         vistos = set()
         for c in self.blumenau:
             chave = (normalizar_rua(c["rua"]), normalizar_ponto(c.get("ponto")), c["cota_m"])
             self.assertNotIn(chave, vistos, f"{c['rua']} ({c.get('ponto')})")
             vistos.add(chave)
+
+    def test_nenhum_nome_de_rua_com_palavra_dobrada(self):
+        for c in self.blumenau:
+            partes = c["rua"].lower().split()
+            self.assertFalse(len(partes) >= 2 and partes[0] == partes[1], c["rua"])
+            self.assertFalse(len(partes) >= 4 and partes[0:2] == partes[2:4], c["rua"])
+
+    def test_quase_todo_registro_da_imprensa_esta_confirmado_pelo_pdf(self):
+        """
+        Ficam em `media` só os que o PDF de fato não descreve: Gustav Michel
+        (não está no documento), Inominada 1546, um ponto da Humberto de Campos
+        e a Lions Clube/Lions Club, cujo par por nome o projeto recusa de
+        propósito. Cinco. Eram 47.
+        """
+        antigos = [c for c in self.blumenau if c.get("data_fonte") != DATA_FONTE]
+        em_media = [c for c in antigos if c.get("confianca") != "alta"]
+        self.assertLessEqual(len(em_media), 5, [c["rua"] for c in em_media])
 
 
 if __name__ == "__main__":
