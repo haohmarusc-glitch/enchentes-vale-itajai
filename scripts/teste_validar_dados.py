@@ -245,7 +245,7 @@ class MesesPareados(unittest.TestCase):
         # mesmo mês. Pendência antiga, anterior a Indaial.
         ("rio-do-sul 1911-05", "indaial"),
         ("rio-do-sul 1911-05", "blumenau"),
-        # Entraram com os 16 picos de Indaial em 07/09/2026, do PDF da COMPDEC.
+        # Entraram com os 16 picos de Indaial em 06/09/2026, do PDF da COMPDEC.
         # São sinal para conferir na fonte, NÃO para trocar a data: corrigir por
         # plausibilidade seria inventar medição.
         ("indaial 1927-11-09", "blumenau"),
@@ -603,7 +603,7 @@ class TestaCotasDeIndaial(unittest.TestCase):
     """
     A escala de Indaial é a que a COMPDEC publica — não um número nosso.
 
-    Até 07/09/2026 o cadastro trazia `atencao: 6,00 m`, e esse nome era NOSSO: a
+    Até 06/09/2026 o cadastro trazia `atencao: 6,00 m`, e esse nome era NOSSO: a
     leitura anterior achou só a PÁGINA do município, que lista 12 vias com
     alagamento já registrado a 6,00 m, e gravou o único número que existia.
 
@@ -624,7 +624,7 @@ class TestaCotasDeIndaial(unittest.TestCase):
 
     def test_a_atencao_nunca_mais_passa_da_emergencia(self):
         c = self.indaial["cotas_m"]
-        self.assertLess(c["atencao"], c["emergencia"], "foi exatamente este o erro de 07/09/2026")
+        self.assertLess(c["atencao"], c["emergencia"], "foi exatamente este o erro de 06/09/2026")
 
     def test_os_6_metros_nao_voltam_como_cota(self):
         # Os 6,00 m são alagamento de rua, que começa meio metro depois da

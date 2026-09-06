@@ -34,7 +34,7 @@ test('controle de tamanho zero não reserva nada', () => {
 })
 
 test('o rótulo que caía atrás do botão + agora colide, e por isso some', () => {
-  // A captura de 07/09/2026: "Timbó" desenhado em x≈100, y≈590 do canvas,
+  // A captura de 06/09/2026: "Timbó" desenhado em x≈100, y≈590 do canvas,
   // exatamente onde vive o botão +. Antes o canvas não sabia do botão.
   const timbo: Caixa = { x0: 30, y0: 560, x1: 260, y1: 600 }
   const controles = caixasDosControles([ret(24, 748, 92, 78)], MAPA)

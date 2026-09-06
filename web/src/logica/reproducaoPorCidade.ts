@@ -2,7 +2,7 @@
  * O que a REPRODUÇÃO pode mostrar na linha de cada cidade — e quando não pode
  * mostrar número nenhum.
  *
- * O DEFEITO QUE ISTO CORRIGE (07/09/2026, achado rodando o site com dado ao
+ * O DEFEITO QUE ISTO CORRIGE (06/09/2026, achado rodando o site com dado ao
  * vivo). O painel "Reprodução das últimas horas" pegava o ponto mais próximo
  * do instante na série da cidade e escrevia o metro dele. Para Itajaí, essa
  * série NÃO é de uma régua: é a costura das réguas daquele rio na cidade — no

@@ -6,7 +6,7 @@ zoom que troca a informação. Copiamos o **método**, não os dados (que são d
 Japão). O que segue é o mapa dos componentes e das regras que os prendem, para
 achar rápido e não reintroduzir os erros que a honestidade do projeto proíbe.
 
-## A reprodução não pode eleger uma régua em silêncio (07/09/2026)
+## A reprodução não pode eleger uma régua em silêncio (06/09/2026)
 
 Achado rodando o site **com dado ao vivo**, executando os testes de
 `docs/testes-navegador.md` — nenhum teste puro pegava, porque o defeito estava
@@ -53,7 +53,7 @@ entra por parâmetro, montado das leituras ao vivo.
 Vínculo **circular** (A socorre B, B socorre A) não junta: sem primária não há
 zero comum garantido, e o lado seguro é a cidade ficar sem metro.
 
-## A coluna da esquerda é UMA coluna (07/09/2026, segunda rodada)
+## A coluna da esquerda é UMA coluna (06/09/2026, segunda rodada)
 
 Empilhar a barra de reprodução com a legenda resolveu o toque nos botões de
 fundo, e **criou um defeito novo**: título/menu/zoom continuavam num bloco
@@ -98,7 +98,7 @@ são erros de medição que se repetem:
 Medição que não se conferiu contra si mesma vale tanto quanto número sem
 idade.
 
-## Quem ocupa o mapa não é só o canvas (07/09/2026)
+## Quem ocupa o mapa não é só o canvas (06/09/2026)
 
 Três defeitos vistos nas capturas do celular do Jefferson, com uma raiz comum:
 **o mapa é canvas COM HTML por cima, e cada metade ignorava a outra.**

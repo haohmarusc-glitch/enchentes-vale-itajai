@@ -164,7 +164,7 @@ test('cena sem mar não inventa chip', () => {
 /**
  * PINO FORA DA TELA NÃO TEM RÓTULO.
  *
- * Capturas do Jefferson de 07/09/2026, mapa aproximado em Itajaí: "Ascurra",
+ * Capturas do Jefferson de 06/09/2026, mapa aproximado em Itajaí: "Ascurra",
  * "Blumenau" e "Indaial" apareciam presos na margem esquerda, SEM bolinha
  * nenhuma — os pinos estavam a 60 km dali. A trava de borda existe para o pino
  * que encosta na beirada; com o pino longe, ela virava um nível do rio escrito

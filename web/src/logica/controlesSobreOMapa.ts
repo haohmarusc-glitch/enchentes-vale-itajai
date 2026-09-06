@@ -3,7 +3,7 @@ import type { Caixa } from './mapaMotor'
 /**
  * Os CONTROLES DE HTML que ficam por cima do canvas, como caixas do canvas.
  *
- * O DEFEITO QUE ISTO CORRIGE (07/09/2026, capturas do Jefferson no celular).
+ * O DEFEITO QUE ISTO CORRIGE (06/09/2026, capturas do Jefferson no celular).
  * A anticolisão do mapa só conhecia o que o próprio canvas desenha — pinos,
  * barragens, réguas, chip da maré. Os botões são DOM por cima do vidro, e o
  * canvas não os enxergava: "Timbó" saía atrás do botão +, "Blumenau" atrás do
