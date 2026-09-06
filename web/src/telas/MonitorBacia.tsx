@@ -48,8 +48,12 @@ import {
   desenharBarragens,
   desenharCotasDeRua,
   desenharOnda,
+  caixaDaEtiquetaMare,
   desenharPinos,
   desenharReguas,
+  medidorDe,
+  planejarRotulosDosPinos,
+  type Caixa,
   COR_REGUA_SEM_GRAU,
   type Cena,
   type LeituraNaHora,
@@ -672,15 +676,34 @@ export default function MonitorBacia() {
       // As ruas por BAIXO de tudo: são o fundo da cidade, e nenhum ponto de
       // rua pode cobrir o pino que traz o número do rio.
       desenharCotasDeRua(ctx, cena, pontosRuaRef.current, COR_COTA_RUA, escala)
-      desenharBarragens(ctx, cena, barragensRef.current, seg, escala)
-      // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
-      desenharReguas(ctx, cena, reguasRef.current, escala, reguaSelRef.current)
-      desenharPinos(ctx, cena, selRef.current, {
+
+      // ANTICOLISÃO ENTRE OS TRÊS DESENHISTAS. Cada um tinha a sua lista de
+      // rótulos e nenhum enxergava os outros: "Taió" saía por cima de "Oeste
+      // Taió · 7 de 7 abertas", e as onze réguas de Itajaí por cima do nome da
+      // cidade. A lista agora é UMA, e os NOMES DAS CIDADES reservam primeiro —
+      // são a âncora do mapa; barragem e régua cedem espaço a eles, nunca o
+      // contrário.
+      const opcoesPinos = {
         escala,
         mostrarIdade: true,
         agora: instante,
         temRegua: temReguaCadastrada,
-      })
+      }
+      const caixas: Caixa[] = []
+      // O chip da maré é fixo no topo-direito e não cede: reserva antes de todos.
+      const chipMare = caixaDaEtiquetaMare(medidorDe(ctx), cena, escala)
+      if (chipMare) caixas.push(chipMare)
+      const rotulos = planejarRotulosDosPinos(
+        medidorDe(ctx),
+        cena,
+        selRef.current,
+        opcoesPinos,
+        caixas,
+      )
+      desenharBarragens(ctx, cena, barragensRef.current, seg, escala, caixas)
+      // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
+      desenharReguas(ctx, cena, reguasRef.current, escala, reguaSelRef.current, caixas)
+      desenharPinos(ctx, cena, selRef.current, { ...opcoesPinos, rotulos })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
     raf = requestAnimationFrame(quadro)
@@ -1308,6 +1331,17 @@ export default function MonitorBacia() {
             <div className={estilos.painel}>
               <div className={estilos.painelTopo}>
                 <strong>{cid.nome}</strong>
+                {/* FECHAR: no celular o painel é uma folha que cobre metade do
+                    mapa, e não havia como dispensá-la — quem abria uma cidade
+                    ficava sem o mapa até recarregar a página. */}
+                <button
+                  type="button"
+                  className={estilos.botaoFechar}
+                  aria-label={`Fechar o painel de ${cid.nome}`}
+                  onClick={() => { setSel(null); setHover(null) }}
+                >
+                  ✕
+                </button>
                 <span className={estilos.painelRio}>
                   {foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
                 </span>

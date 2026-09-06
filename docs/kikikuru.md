@@ -161,3 +161,55 @@ a regra completa no `CLAUDE.md`.
   nível aparece mas a faixa fica cinza. Ver Pendências no `README.md`.
 - **Sinal antecipado das barragens** (Oeste/Sul subindo rápido) como aviso de
   cheia a jusante — anotado, ainda não na tela.
+
+---
+
+## Os rótulos do mapa: uma lista só, e a caixa pelo texto mais largo — 06/09/2026
+
+Capturas do celular do Jefferson, com o site no ar e dado ao vivo, mostraram três defeitos que
+nenhuma captura minha tinha pegado (aqui os tiles do fundo são bloqueados, e o mapa vazio esconde a
+colisão):
+
+1. **Blumenau, Gaspar, Ilhota e Itajaí empilhadas** umas sobre as outras;
+2. **"Ibirama" e "Brusque" com o NÍVEL cortado** na borda direita da tela;
+3. **"Taió" por cima de "Oeste Taió · 7 de 7 abertas"**, e as onze réguas de Itajaí por cima do nome
+   da cidade.
+
+### A raiz de (1) e (2): a caixa media o nome, o desenho mostrava a sub-linha
+
+```ts
+const w = ctx.measureText(nome).width   // ← "Ilhota", ~36 px
+```
+
+…mas o que se desenha é o nome **mais** a sub-linha: `≈9,77 m bruto · há 5 min`, que passa de 120 px.
+A anticolisão reservava **um terço** do espaço real, e o mesmo número servia de trava na borda — daí
+o nome caber e o número ser cortado. **Num mapa de cheia, um número cortado pela metade é pior que
+número nenhum.** `caixaDoRotuloDoPino` passou a usar `max(nome, sub)` nas duas coisas.
+
+### A raiz de (3): cada desenhista tinha a sua lista
+
+`desenharBarragens`, `desenharReguas` e `desenharPinos` tinham, cada um, um `caixas` local. Nenhum
+enxergava os outros. Agora a lista é **uma só**, criada por quadro no Monitor, e a ordem de reserva é
+uma decisão, não um acaso:
+
+1. **o chip da maré** — é fixo na tela e não pode ceder;
+2. **os nomes das cidades** — são a âncora do mapa: sem eles não se sabe onde é nada;
+3. barragens e réguas, que cedem espaço ao que veio antes.
+
+Dentro das cidades continua valendo a faixa **mais grave** primeiro, e a cidade selecionada nunca
+perde o rótulo.
+
+### O que ficou testável
+
+`planejarRotulosDosPinos` é puro — recebe um `Medidor` (`(texto, fonte) => largura`) em vez do
+canvas —, e o desenho só pinta o que ele decidiu. Onze testes em `logica/rotulosDoMapa.test.ts`, com
+sabotagem: voltar a medir a caixa pelo nome reprova.
+
+### E o painel da cidade, no celular
+
+Era translúcido (`0,92`): os rótulos do mapa **atravessavam o texto** e o deixavam ilegível. Agora é
+opaco, fica por cima dos botões de zoom e da barra de reprodução, e ganhou um **✕** — antes não havia
+como dispensar a folha que cobre metade do mapa. O bloco do topo encolheu no celular (o aviso legal
+continua, menor), a barra "Reproduzir 24 h" saiu de cima do seletor de fundo, e a legenda deixou de
+subir até os botões + e −.
+
