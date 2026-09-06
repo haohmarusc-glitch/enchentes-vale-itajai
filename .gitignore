@@ -19,3 +19,6 @@ data/tempo-real/*.ndjson.gz
 # Estado local dos avisos (em qual faixa cada régua estava, quando avisou).
 # É estado da máquina que roda o cron, não dado do projeto.
 data/tempo-real/estado_*.json
+
+# Capturas das sondas de layout (testes-navegador)
+falha-*.png

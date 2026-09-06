@@ -1040,6 +1040,133 @@ export default function MonitorBacia() {
           aria-label="Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"
         />
 
+
+        {/* COLUNA DA ESQUERDA — o topo em cima, o rodapé embaixo, os dois na
+            MESMA coluna, com `justify-content: space-between`.
+
+            Por que não bastou empilhar o rodapé: título/menu/zoom continuavam
+            num bloco `absolute` colado no topo e o rodapé noutro colado
+            embaixo. Com a legenda aberta numa tela larga o rodapé subia e
+            cobria o botão "−" — AFASTAR, que é justamente como se volta para a
+            bacia inteira depois de se perder no zoom (medido em 1280×900 e
+            1440×700, 07/09/2026). O comentário antigo do CSS já contava essa
+            história com outros números: 13rem cobria, 17rem não. Teto mágico
+            é sempre provisório.
+
+            Numa coluna só, os dois disputam a mesma altura pelas regras do
+            flex: quando não cabe, a legenda e o menu ROLAM, e nenhum dos dois
+            invade o outro em resolução nenhuma. */}
+        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''}`}>
+        {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
+            desenhado no canvas). O botão de tela cheia vai no canto inferior
+            direito para não colidir com o chip. */}
+        <div className={estilos.cantoEsquerdo}>
+        <div className={estilos.topo} data-tapa-mapa>
+          <strong>Monitoramento da bacia</strong>
+          <button
+            type="button"
+            className={estilos.botaoMenu}
+            aria-expanded={menuAberto}
+            aria-controls="menu-cidades"
+            onClick={() => setMenuAberto((v) => !v)}
+          >
+            {menuAberto ? 'Fechar' : 'Cidades ▾'}
+          </button>
+          <span className={estilos.aviso}>
+            Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.
+          </span>
+          <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
+            Tela cheia
+          </button>
+        </div>
+
+        {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
+            Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
+            → Rio do Sul" afirmaria uma sequência que não existe. Toque numa
+            cidade abre o monitor DELA (o mesmo mapa, enquadrado nela). */}
+        {menuAberto ? (
+          <nav
+            id="menu-cidades"
+            className={estilos.menuCidades}
+            data-tapa-mapa
+            aria-label="Cidades, na ordem do rio"
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') setMenuAberto(false)
+            }}
+          >
+            <div className={estilos.menuTopo}>
+              <strong>Cidades, na ordem do rio</strong>
+              <button type="button" className={estilos.botaoLegenda} onClick={() => setMenuAberto(false)}>
+                fechar
+              </button>
+            </div>
+            {menu.map((rio) => (
+              <div key={rio.id} className={estilos.menuRio}>
+                <strong>{rio.nome}</strong>
+                {rio.grupos.map((g) => (
+                  <div key={g.titulo}>
+                    <div className={estilos.menuGrupo}>
+                      {g.titulo}
+                      {g.ordenado ? '' : ' (sem ordem entre si)'}
+                    </div>
+                    <ul className={`${estilos.menuLista} ${g.ordenado ? estilos.menuOrdenado : ''}`}>
+                      {g.itens.map((item) => (
+                        <li key={item.id}>
+                          <button
+                            type="button"
+                            className={`${estilos.menuCidade} ${item.id === cidadeFoco ? estilos.menuAtual : ''}`}
+                            aria-current={item.id === cidadeFoco ? 'page' : undefined}
+                            onClick={() => navigate(`/monitor/${item.id}`)}
+                          >
+                            {item.nome}
+                            {item.detalhe ? <span className={estilos.menuDetalhe}>{item.detalhe}</span> : null}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            ))}
+            <p className={estilos.menuNota}>
+              A seta ↓ é a ordem em que a água desce. Cabeceiras e afluentes não têm
+              ordem entre si: a cheia deles não é a mesma que desce o tronco.
+            </p>
+          </nav>
+        ) : null}
+
+        {/* ZOOM. Os botões existem além da pinça porque nem todo mundo usa dois
+            dedos, e porque no computador não há pinça nenhuma. "Ver tudo" volta
+            à bacia inteira: sem ele, quem se perde no zoom fica sem saber que
+            existe mapa fora da tela. */}
+        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa" data-tapa-mapa>
+          <button
+            type="button"
+            className={estilos.botaoZoom}
+            aria-label="Aproximar"
+            onClick={() => aplicarZoom(1.6)}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className={estilos.botaoZoom}
+            aria-label="Afastar"
+            onClick={() => aplicarZoom(1 / 1.6)}
+          >
+            −
+          </button>
+          {vista.zoom > 1 ? (
+            <button
+              type="button"
+              className={estilos.botaoVerTudo}
+              onClick={() => setVista(VISTA_INTEIRA)}
+            >
+              Ver tudo
+            </button>
+          ) : null}
+        </div>
+        </div>
         {/* RODAPÉ — uma coluna só, e é isso que impede a sobreposição.
 
             O DEFEITO QUE ISTO CORRIGE (07/09/2026, relatado pelo Jefferson:
@@ -1196,116 +1323,6 @@ export default function MonitorBacia() {
               enquanto a camada estiver ativa, e troca junto com ela. */}
           <p className={estilos.atribuicao}>{FUNDOS[fundo].atribuicao}</p>
         </div>
-        </div>
-
-        {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
-            desenhado no canvas). O botão de tela cheia vai no canto inferior
-            direito para não colidir com o chip. */}
-        <div className={estilos.cantoEsquerdo}>
-        <div className={estilos.topo} data-tapa-mapa>
-          <strong>Monitoramento da bacia</strong>
-          <button
-            type="button"
-            className={estilos.botaoMenu}
-            aria-expanded={menuAberto}
-            aria-controls="menu-cidades"
-            onClick={() => setMenuAberto((v) => !v)}
-          >
-            {menuAberto ? 'Fechar' : 'Cidades ▾'}
-          </button>
-          <span className={estilos.aviso}>
-            Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.
-          </span>
-          <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
-            Tela cheia
-          </button>
-        </div>
-
-        {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
-            Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
-            → Rio do Sul" afirmaria uma sequência que não existe. Toque numa
-            cidade abre o monitor DELA (o mesmo mapa, enquadrado nela). */}
-        {menuAberto ? (
-          <nav
-            id="menu-cidades"
-            className={estilos.menuCidades}
-            data-tapa-mapa
-            aria-label="Cidades, na ordem do rio"
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') setMenuAberto(false)
-            }}
-          >
-            <div className={estilos.menuTopo}>
-              <strong>Cidades, na ordem do rio</strong>
-              <button type="button" className={estilos.botaoLegenda} onClick={() => setMenuAberto(false)}>
-                fechar
-              </button>
-            </div>
-            {menu.map((rio) => (
-              <div key={rio.id} className={estilos.menuRio}>
-                <strong>{rio.nome}</strong>
-                {rio.grupos.map((g) => (
-                  <div key={g.titulo}>
-                    <div className={estilos.menuGrupo}>
-                      {g.titulo}
-                      {g.ordenado ? '' : ' (sem ordem entre si)'}
-                    </div>
-                    <ul className={`${estilos.menuLista} ${g.ordenado ? estilos.menuOrdenado : ''}`}>
-                      {g.itens.map((item) => (
-                        <li key={item.id}>
-                          <button
-                            type="button"
-                            className={`${estilos.menuCidade} ${item.id === cidadeFoco ? estilos.menuAtual : ''}`}
-                            aria-current={item.id === cidadeFoco ? 'page' : undefined}
-                            onClick={() => navigate(`/monitor/${item.id}`)}
-                          >
-                            {item.nome}
-                            {item.detalhe ? <span className={estilos.menuDetalhe}>{item.detalhe}</span> : null}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            ))}
-            <p className={estilos.menuNota}>
-              A seta ↓ é a ordem em que a água desce. Cabeceiras e afluentes não têm
-              ordem entre si: a cheia deles não é a mesma que desce o tronco.
-            </p>
-          </nav>
-        ) : null}
-
-        {/* ZOOM. Os botões existem além da pinça porque nem todo mundo usa dois
-            dedos, e porque no computador não há pinça nenhuma. "Ver tudo" volta
-            à bacia inteira: sem ele, quem se perde no zoom fica sem saber que
-            existe mapa fora da tela. */}
-        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa" data-tapa-mapa>
-          <button
-            type="button"
-            className={estilos.botaoZoom}
-            aria-label="Aproximar"
-            onClick={() => aplicarZoom(1.6)}
-          >
-            +
-          </button>
-          <button
-            type="button"
-            className={estilos.botaoZoom}
-            aria-label="Afastar"
-            onClick={() => aplicarZoom(1 / 1.6)}
-          >
-            −
-          </button>
-          {vista.zoom > 1 ? (
-            <button
-              type="button"
-              className={estilos.botaoVerTudo}
-              onClick={() => setVista(VISTA_INTEIRA)}
-            >
-              Ver tudo
-            </button>
-          ) : null}
         </div>
         </div>
 

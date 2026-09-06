@@ -29,17 +29,60 @@
 /* Coluna do canto esquerdo: título, menu (quando aberto) e zoom, um abaixo
    do outro. Com cada um posicionado à parte, o zoom cobria o botão de tela
    cheia e o menu cobria o título (visto em 06/09/2026). */
-.cantoEsquerdo {
+/* A COLUNA DA ESQUERDA inteira: topo em cima, rodapé embaixo, um só fluxo.
+
+   Dois blocos `absolute` — um colado no topo, outro no fundo — não têm como
+   saber um do outro: com a legenda aberta numa tela larga, o rodapé subia e
+   cobria o botão "−" (AFASTAR), que é como se volta para a bacia inteira.
+   `space-between` numa coluna só resolve por construção: quando falta altura,
+   os dois encolhem e rolam, e nenhum invade o outro. */
+.colunaEsquerda {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: 4;
+  inset: 0.5rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  /* O envelope cobre o mapa inteiro: sem isto, arrastar o rio pararia de
+     funcionar em toda a área dele. Os filhos reativam o toque. */
+  pointer-events: none;
+}
+/* O `auto` vai até as FOLHAS, nunca aos envelopes. Posto no filho direto, a
+   caixa do rodapé — que é larga e quase toda transparente — passava a comer o
+   toque do mapa e dos botões que ficam sob ela. Só o que se vê recebe toque. */
+.colunaEsquerda > * {
+  min-height: 0;
+  pointer-events: none;
+}
+.topo,
+.menuCidades,
+.zoom,
+.controles,
+.legenda {
+  pointer-events: auto;
+}
+
+/* O TOPO NÃO ENCOLHE. Ele carrega os botões de zoom, e botão de zoom cortado
+   é pior que botão nenhum: some no corte de um container que ninguém sabe que
+   rola. Deixado encolhível, o flex tirava altura dele proporcionalmente e o
+   "−" (afastar) ficava metade fora — medido em 1280×900 e 1440×700.
+   Quem cede altura é o rodapé, cuja legenda rola. */
+/* Com o MENU ABERTO o rodapé sai inteiro em vez de virar uma tira cortada.
+   Numa tela de 700 px sobrava só a borda de cima do botão de reprodução — meio
+   controle desenhado parece defeito, e a legenda não dava para ler nem tocar.
+   O menu é passageiro: abre, escolhe a cidade, fecha. */
+.comMenu .rodape {
+  display: none;
+}
+
+.cantoEsquerdo {
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.45rem;
-  max-width: min(24rem, calc(100% - 1rem));
-  max-height: calc(100% - 1rem);
+  max-width: min(24rem, 100%);
 }
 .topo {
   max-width: 100%;
@@ -85,22 +128,15 @@
    faixa vazia ao lado dos blocos continue sendo do MAPA — arrastar o rio ali
    ainda funciona. */
 .rodape {
-  position: absolute;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0.5rem;
-  z-index: 5;
+  /* É o rodapé que cede: a legenda rola, o zoom fica inteiro. */
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.4rem;
-  /* Deixa livre a coluna da esquerda (título, menu, zoom): sem este teto a
-     legenda aberta subia até os botões + e −. */
-  max-height: calc(100% - 14rem);
-  pointer-events: none;
-}
-.rodape > * {
-  pointer-events: auto;
+  /* Sem teto em rem: quem limita a altura é a coluna, pelo espaço que sobra
+     depois do topo. Teto mágico foi o que deixou o rodapé cobrir o zoom. */
+  overflow: hidden;
 }
 
 .legenda {
@@ -506,7 +542,10 @@
 .menuCidades {
   width: min(22rem, 100%);
   min-height: 0;
-  max-height: 100%;
+  /* Teto em vh, não em %: a altura do pai é indefinida (ele encolhe), e
+     `max-height: 100%` contra pai indefinido não vale nada — a lista crescia
+     até empurrar o zoom e o rodapé para fora do mapa. */
+  max-height: 40vh;
   overflow-y: auto;
   background: rgba(8, 18, 30, 0.96);
   border: 1px solid rgba(180, 200, 220, 0.3);
@@ -616,7 +655,7 @@
    baixo, largura toda, com teto; a legenda nasce recolhida (ver o componente). */
 @media (max-width: 700px) {
   .cantoEsquerdo {
-    max-width: calc(100% - 1rem);
+    max-width: 100%;
   }
   /* O aviso legal continua — ele não pode sumir —, mas encolhido: o bloco do
      topo estava comendo um terço da tela do celular. */
@@ -669,10 +708,10 @@
   .barra {
     min-width: 6rem;
   }
-  /* No celular a coluna da esquerda é mais curta (título encolhido, sem menu
-     aberto), mas a legenda aberta ainda não pode comer a tela toda. */
-  .rodape {
-    max-height: 62%;
+  /* No celular a legenda aberta ainda não pode comer a tela toda — mas o teto
+     agora é dela, não do rodapé: o rodapé inteiro já é limitado pela coluna. */
+  .legenda {
+    max-height: 55vh;
   }
 }
 

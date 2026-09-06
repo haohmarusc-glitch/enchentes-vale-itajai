@@ -6,6 +6,51 @@ zoom que troca a informação. Copiamos o **método**, não os dados (que são d
 Japão). O que segue é o mapa dos componentes e das regras que os prendem, para
 achar rápido e não reintroduzir os erros que a honestidade do projeto proíbe.
 
+## A coluna da esquerda é UMA coluna (07/09/2026, segunda rodada)
+
+Empilhar a barra de reprodução com a legenda resolveu o toque nos botões de
+fundo, e **criou um defeito novo**: título/menu/zoom continuavam num bloco
+`absolute` colado no topo e o rodapé noutro colado embaixo. Com a legenda
+aberta numa tela larga o rodapé subia e cobria o botão **"−" (afastar)** — que
+é justamente como se volta para a bacia inteira depois de se perder no zoom. O
+comentário antigo do CSS já contava a mesma história com outros números: 13rem
+cobria, 17rem não. **Teto mágico é sempre provisório.**
+
+Três regras, todas por construção e não por número:
+
+1. **Topo e rodapé são filhos da MESMA coluna**, com `justify-content:
+   space-between`. Não existe altura em que um invada o outro.
+2. **O topo não encolhe** (`flex: none`). Ele carrega o zoom, e botão de zoom
+   cortado é pior que botão nenhum: some no corte de um container que ninguém
+   sabe que rola. Quem cede altura é o rodapé, cuja legenda rola.
+3. **`pointer-events: auto` só nas folhas.** Posto no envelope, a caixa do
+   rodapé — larga e quase toda transparente — passava a comer o toque do mapa
+   e dos botões sob ela. Um envelope nunca recebe toque.
+
+Com o menu de cidades aberto o rodapé some inteiro: numa tela de 700 px
+sobrava só a borda de cima do botão de reprodução, e meio controle desenhado
+parece defeito.
+
+### A sonda que reprova isto
+
+`web/testes-navegador/colisao-dos-controles.mjs`. Os testes puros alcançam a
+decisão (qual rótulo cabe, qual régua fala em cada zoom); não alcançam a
+geometria. Foi por isso que o seletor de fundo ficou visível e inerte sem
+nenhum teste reprovar.
+
+**A sonda mentiu três vezes antes de ficar de pé** — vale registrar, porque
+são erros de medição que se repetem:
+
+- comparou com um elemento **inexistente** (a barra de reprodução não é
+  renderizada sem série publicada) e deu "não cruza" à toa;
+- mediu um bloco **antes** do `scrollIntoView` e o outro **depois**,
+  comparando dois estados de rolagem;
+- contou como "coberto" o botão que estava **fora da janela**, ou rolado para
+  fora do painel que o contém.
+
+Medição que não se conferiu contra si mesma vale tanto quanto número sem
+idade.
+
 ## Quem ocupa o mapa não é só o canvas (07/09/2026)
 
 Três defeitos vistos nas capturas do celular do Jefferson, com uma raiz comum:
