@@ -14,7 +14,8 @@
       "coordenadas": "[lat, lon] da ESTAÇÃO de nível (Defesa Civil de SC, GraphQL, adotada 02/09/2026), não do centro da cidade — é a posição real da régua no rio. Exceções: Vidal Ramos (estação Asthon, = DCSC, 4 m) e Itajaí (foz, sem estação estadual, sede aproximada). Usada só para POSICIONAR o marcador no mapa, que encaixa no traçado do rio — não é dado de nível. RESSALVA de 06/09/2026: em Blumenau isso NÃO se cumpre — a coordenada publicada é a da DCSC-00026, que é estação de CHUVA (`type: Meteo`, `tem_nivel_do_rio: false`) e fica a 2,99 km do talvegue. Ver `pino_nota` da cidade."
     },
     "notas": {
-      "cotas_itajai": "As onze estações de Itajaí têm cota oficial de atenção, alerta e EMERGÊNCIA (a palavra é do Plano de Contingência da COMPDEC, versão 17 de 22/12/2025, Tabela 11). Cada uma tem seu próprio zero: a DC-10, no Limoeiro, usa régua de 8 a 10 m e não se compara com as demais. Nove delas ficam no estuário e estão marcadas com alerta_automatico=false — a cota aparece na tela, mas o aviso por Telegram não dispara a partir de uma travessia isolada, porque a maré cruza essas cotas sem enchente."
+      "cotas_itajai": "As onze estações de Itajaí têm cota oficial de atenção, alerta e EMERGÊNCIA (a palavra é do Plano de Contingência da COMPDEC, versão 17 de 22/12/2025, Tabela 11). Cada uma tem seu próprio zero: a DC-10, no Limoeiro, usa régua de 8 a 10 m e não se compara com as demais. Nove delas ficam no estuário e estão marcadas com alerta_automatico=false — a cota aparece na tela, mas o aviso por Telegram não dispara a partir de uma travessia isolada, porque a maré cruza essas cotas sem enchente.",
+      "quebra_de_12_2021": "QUATRO estações de referência da ANA encerraram a escala convencional no MESMO mês, 12/2021: 83800002 BLUMENAU (1939→), 83690000 INDAIAL (1929→), 83840000 GASPAR (1927→) e 83440000 IBIRAMA (1928→). Não é coincidência: é reestruturação da rede. POR QUE ISSO É PERIGOSO PARA ESTE PROJETO: uma série de 80 a 90 anos que simplesmente para em 12/2021 não parece quebrada — parece que o rio parou de subir. Quem baixar qualquer uma delas e calcular 'o maior nível dos últimos anos' vai achar um número baixo e não vai saber por quê. Mesma classe da quebra de 1986 (Blumenau/Gaspar) e da futura obra de Rio do Sul. Sucessoras: Blumenau→83800003, Indaial→83520000 WARNOW, Ibirama→só estações de usina, Gaspar→NENHUMA. Fonte: Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026. Detalhe em docs/INVENTARIO-ANA.md."
     }
   },
   "rios": {
@@ -151,7 +152,22 @@
           "coordenadas": [
             -27.4822,
             -49.5825
-          ]
+          ],
+          "codigo_ana_candidatos": [
+            {
+              "codigo": "83145140",
+              "nome": "DCSC BARRAGEMSUL ITUPORANGA JUSANTE",
+              "evidencia": "a 45 m da DCSC-00039, que é este pino (Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026.)",
+              "falta": "o TIPO da estação não foi lido. A regra emendada exige coordenada E tipo, e sem o tipo o vínculo não se escreve."
+            },
+            {
+              "codigo": "83250000",
+              "nome": "ITUPORANGA",
+              "evidencia": "fluviométrica no Itajaí do Sul, 1.650 km², escala desde 1929 — a série longa do ramo",
+              "falta": "a COORDENADA. Sem ela não se sabe se é esta régua ou outra do município."
+            }
+          ],
+          "codigo_ana_candidatos_nota": "Dois candidatos, um com coordenada e sem tipo, outro com tipo e sem coordenada — e nenhum dos dois basta sozinho, que é exatamente a lição do cruzamento de 06/09/2026. Enquanto um deles não tiver os dois, `codigo_ana` fica null. ACHADO COLATERAL, que vale independentemente do código: o nome da 83145140 diz JUSANTE DA BARRAGEM SUL — a régua que o site mostra para Ituporanga fica ABAIXO da parede, ou seja, lê água já amortecida pela barragem. Isso importa para previsão e ainda não estava escrito em lugar nenhum."
         },
         {
           "id": "rio-do-sul",
@@ -195,7 +211,8 @@
           "codigo_ana_escala": {
             "inicio": "1978",
             "fim": null
-          }
+          },
+          "codigo_ana_ressalva": "⚠️ ABERTO (06/09/2026). O `codigo_ana` desta cidade é a 83300200 RIO DO SUL - NOVO, que a ANA cadastra no Itajaí-AÇU e que fica a 0,43 km deste pino (medido aqui). Mas o cruzamento do inventário mostra a DCSC-00013 — que É este pino — a apenas 35 m da 83094000 RIO DO SUL, cadastrada no Itajaí do OESTE. Ou seja: a estação colada na nossa régua pode não ser a do código que usamos. Rio do Sul tem quatro estações da ANA em três rios (83094000 Oeste, 83300000 Sul, 83300002 e 83300200 Açu), espelhando as três réguas físicas do município. NÃO resolvido, e não se resolve por magnitude: parear a série de um rio com a régua de outro é o mesmo erro que este projeto evita em toda parte. ⚠️ E a área de 83094000 aparece como 5.160 km², igual à do Açu, o que não faz sentido para uma cabeceira — provável erro de cadastro na ANA. Não usar essa área sem conferir. Ver docs/INVENTARIO-ANA.md."
         },
         {
           "id": "ibirama",
@@ -349,14 +366,14 @@
           "ramo": "tronco_acu",
           "ordem_no_ramo": 6,
           "sub_bacia": "Itajaí-Açu",
-          "codigo_ana": null,
+          "codigo_ana": "83840000",
           "codigo_dcsc": "DCSC-00005",
           "verificado": false,
           "regua": "Rio Itajaí-Açu em Gaspar (o Plano não nomeia o ponto nem publica o zero)",
           "referencia": "régua",
           "cotas_verificado": true,
           "fonte_cotas": "Plano de Contingência da Superintendência Municipal de Proteção e Defesa Civil de Gaspar, item 4.2.3 — fluxograma \"MONITORAMENTO RIO ITAJAÍ AÇU\", p. 25 — data/brutos/gaspar-plano-de-contingencia.pdf",
-          "observacao": "As faixas são as do fluxograma do Plano: 0 a 5 m NORMALIDADE, 5 a 6 m ATENÇÃO/ALERTA, 6 a 7 m ALERTA/ALARME e ACIMA DE 7 m RESPOSTA. Cada cota aqui é o PISO da faixa. 'emergencia' é a fase de RESPOSTA do Plano, não o nível em que Gaspar alaga: a primeira rua do cadastro alaga a 6,20 m, ou seja, 80 cm ANTES dela — por isso a faixa não entrou como 'inundacao'. Detalhe que muda o número: na p. 25 o fluxograma é uma imagem que escreve \"7 a 8 metros\", e o PDF pinta por cima uma caixa opaca com \"Acima de 7 metros\". Vale o que o PDF mostra — a faixa não tem teto. A margem é real: a atenção a 5,00 m fica 1,20 m abaixo da primeira rua, e a leitura da tabela do município em 31/08/2026 (3,85 m) cai dentro da normalidade do mesmo fluxograma. O Plano NÃO nomeia o zero da régua; o que sustenta tratá-la como a mesma das cotas de rua é a coerência entre três publicações da mesma Defesa Civil — 23 das 26 vias do quadro do Plano batem ao centavo com o cadastro vindo do KML. Confira com scripts/conferir_gaspar_plano.py. 'verificado' segue false porque é do codigo_ana que ele fala, e esse continua desconhecido.",
+          "observacao": "As faixas são as do fluxograma do Plano: 0 a 5 m NORMALIDADE, 5 a 6 m ATENÇÃO/ALERTA, 6 a 7 m ALERTA/ALARME e ACIMA DE 7 m RESPOSTA. Cada cota aqui é o PISO da faixa. 'emergencia' é a fase de RESPOSTA do Plano, não o nível em que Gaspar alaga: a primeira rua do cadastro alaga a 6,20 m, ou seja, 80 cm ANTES dela — por isso a faixa não entrou como 'inundacao'. Detalhe que muda o número: na p. 25 o fluxograma é uma imagem que escreve \"7 a 8 metros\", e o PDF pinta por cima uma caixa opaca com \"Acima de 7 metros\". Vale o que o PDF mostra — a faixa não tem teto. A margem é real: a atenção a 5,00 m fica 1,20 m abaixo da primeira rua, e a leitura da tabela do município em 31/08/2026 (3,85 m) cai dentro da normalidade do mesmo fluxograma. O Plano NÃO nomeia o zero da régua; o que sustenta tratá-la como a mesma das cotas de rua é a coerência entre três publicações da mesma Defesa Civil — 23 das 26 vias do quadro do Plano batem ao centavo com o cadastro vindo do KML. Confira com scripts/conferir_gaspar_plano.py. ATUALIZADO em 06/09/2026: o codigo_ana deixou de ser desconhecido — é a 83840000 GASPAR (MONTANTE ETA), a 10 m deste pino, FLUVIOMÉTRICA, com escala de 1927 a 12/2021. Isso dá a Gaspar 94 anos de série histórica na ANA e explica, com data, o `tem_nivel_do_rio: false` da estação estadual: a régua foi DESATIVADA, não é intermitência. O Plano continua sem nomear o zero, e é disso que o `verificado` desta cidade ainda fala.",
           "cotas_m": {
             "atencao": 5.0,
             "alerta": 6.0,
@@ -379,7 +396,16 @@
           "coordenadas": [
             -26.9264,
             -48.9643
-          ]
+          ],
+          "codigo_ana_nome": "GASPAR (MONTANTE ETA)",
+          "codigo_ana_verificado": true,
+          "codigo_ana_escala": {
+            "inicio": "1927",
+            "fim": "2021-12"
+          },
+          "codigo_ana_verificacao": "Vinculado em 06/09/2026 por COORDENADA E POR TIPO, a regra emendada. Coordenada: a DCSC-00005 (que é este pino) fica a 10 m da 83840000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026. Tipo: a ANA a cadastra como FLUVIOMÉTRICA, com escala de 1927 a 12/2021. Não é vínculo por nome — há um pluviômetro a 348 m da régua de Indaial que teria 'batido' pelos mesmos critérios se o tipo não fosse conferido. ⚠️ A coordenada da estação da ANA não foi transcrita: a distância de 10 m foi medida por Jefferson contra o cadastro da ANA, e não pôde ser refeita aqui. Por isso a trava do validador confere o TIPO desta estação, mas não a geometria dela.",
+          "codigo_ana_sucessor": null,
+          "codigo_ana_sucessor_nota": "A ANA NÃO tem estação sucessora em Gaspar — é a única das quatro que morreram em 12/2021 sem substituta. Por isso o campo é null com motivo, e não um código inventado. Consequência prática: para o presente, a ÚNICA fonte de nível de Gaspar é a municipal (/estacao/ver/21), a mesma régua das cotas de rua. O que era um dado solitário passa a ser um dado solitário POR UM MOTIVO CONHECIDO."
         },
         {
           "id": "ilhota",
@@ -595,7 +621,15 @@
             -48.9172
           ],
           "regua_das_cotas": "Ponte Estaiada",
-          "regua_das_cotas_fonte": "data/brutos/brusque-cotas-2023.json (_meta): cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184 pontos com lâmina. A leitura ao vivo vem de estação sem régua identificada; par NÃO provado."
+          "regua_das_cotas_fonte": "data/brutos/brusque-cotas-2023.json (_meta): cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184 pontos com lâmina. A leitura ao vivo vem de estação sem régua identificada; par NÃO provado.",
+          "codigo_ana_candidatos": [
+            {
+              "codigo": "83900000",
+              "nome": "BRUSQUE (PCD)",
+              "evidencia": "fluviométrica no Itajaí-Mirim, 1.240 km², escala desde 1929, a 51 m da DCSC-00019 (Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026.)",
+              "falta": "o nosso `codigo_dcsc` de Brusque é NULL — o projeto nunca registrou que este pino é a DCSC-00019. A distância de 51 m é entre a ANA e a DCSC-00019, não entre a ANA e um ponto que este repositório afirme. Preencher o codigo_dcsc (ou a coordenada da estação da ANA) fecha o vínculo."
+            }
+          ]
         },
         {
           "id": "itajai",

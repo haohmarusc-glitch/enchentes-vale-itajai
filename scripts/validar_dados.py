@@ -1225,7 +1225,13 @@ def valida_codigo_ana() -> None:
                      "faz dela a régua: o vínculo é por coordenada E POR TIPO.")
                 continue
 
-            if fim and not cidade.get("codigo_ana_sucessor"):
+            # `codigo_ana_sucessor: null` COM nota é resposta válida: em Gaspar
+            # a ANA não tem sucessora nenhuma, e exigir um código faria inventar
+            # um. O que não pode é a chave faltar.
+            declarou = ("codigo_ana_sucessor" in cidade
+                        and (cidade["codigo_ana_sucessor"]
+                             or cidade.get("codigo_ana_sucessor_nota")))
+            if fim and not declarou:
                 aviso(f"estacoes.json / {cid}: a escala da estação {codigo} ({nome}) "
                       f"ENCERROU em {fim}. Serve para série histórica, não para o "
                       "presente. Declare `codigo_ana_sucessor` (ou null com o motivo, "

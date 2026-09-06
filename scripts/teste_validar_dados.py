@@ -456,6 +456,50 @@ class CodigoAnaEhReguaDeRio(unittest.TestCase):
         blu = _cidade(self.real, "itajai-acu", "blumenau")
         self.assertEqual(blu.get("codigo_ana_sucessor"), "83800003")
 
+    def test_sucessora_nula_COM_motivo_e_resposta_valida(self):
+        """
+        Gaspar é a única das quatro réguas mortas em 12/2021 sem sucessora na
+        ANA. Exigir um código ali faria inventar um; o que não pode é a chave
+        faltar sem que ninguém tenha olhado.
+        """
+        d = copy.deepcopy(self.real)
+        gaspar = _cidade(d, "itajai-acu", "gaspar")
+        self.assertIsNone(gaspar["codigo_ana_sucessor"])
+        self.assertTrue(gaspar["codigo_ana_sucessor_nota"])
+        _, avisos = self.erros(d)
+        self.assertFalse([a for a in avisos if "ENCERROU" in a and "gaspar" in a])
+
+    def test_sucessora_nula_SEM_motivo_ainda_avisa(self):
+        d = copy.deepcopy(self.real)
+        gaspar = _cidade(d, "itajai-acu", "gaspar")
+        gaspar.pop("codigo_ana_sucessor_nota")
+        _, avisos = self.erros(d)
+        self.assertTrue([a for a in avisos if "ENCERROU" in a and "gaspar" in a])
+
+    def test_ituporanga_e_brusque_nao_escrevem_codigo_sem_os_dois_criterios(self):
+        """
+        Trava a DECISÃO, não o dado: os dois têm candidato forte e faltando
+        metade da prova — Ituporanga tem coordenada sem tipo, Brusque tem tipo
+        sem o elo DCSC do nosso lado. Um `codigo_ana` preenchido ali seria
+        vínculo por nome com aparência de vínculo por coordenada.
+        """
+        for rio, cidade_id in (("itajai-acu", "ituporanga"), ("itajai-mirim", "brusque")):
+            c = _cidade(self.real, rio, cidade_id)
+            self.assertIsNone(c["codigo_ana"], cidade_id)
+            self.assertTrue(c["codigo_ana_candidatos"], cidade_id)
+            for cand in c["codigo_ana_candidatos"]:
+                self.assertTrue(cand["falta"], "candidato sem dizer o que falta")
+
+    def test_a_quebra_de_12_2021_esta_registrada(self):
+        """
+        Uma série de 90 anos que para em 12/2021 não PARECE quebrada — parece
+        que o rio parou de subir. Quem calcular 'o maior nível dos últimos anos'
+        acha um número baixo e não sabe por quê.
+        """
+        nota = self.real["_meta"]["notas"].get("quebra_de_12_2021", "")
+        for codigo in ("83800002", "83690000", "83840000", "83440000"):
+            self.assertIn(codigo, nota)
+
     def test_salseiro_continua_fora_de_vidal_ramos(self):
         """
         A ANA respondeu o que o ofício C9 pedia à EPAGRI: a SALSEIRO (83892990)

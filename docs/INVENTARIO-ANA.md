@@ -147,9 +147,16 @@ isolado não basta; é o registro inteiro que diz o que a estação é.**
 
 Não é coincidência: é reestruturação da rede. Séries de 80 a 90 anos terminam em 12/2021.
 
-**Explica Gaspar.** A DCSC-00005 fica a **10 m** da 83840000 — é a mesma estação — e declara
-`tem_nivel_do_rio = false`. Não é intermitência nem "só chuva": é **desativação, com data**. Terceira
-explicação para o mesmo campo, e a primeira que traz um mês.
+**Explica Gaspar, e dá a ele 94 anos de série.** A DCSC-00005 fica a **10 m** da 83840000 — é a
+mesma estação — e declara `tem_nivel_do_rio = false`. Não é intermitência nem "só chuva": é
+**desativação, com data**. Terceira explicação para o mesmo campo, e a primeira que traz um mês.
+
+Com coordenada **e** tipo conferidos, o `codigo_ana` de Gaspar foi escrito: **83840000 GASPAR
+(MONTANTE ETA)**, fluviométrica, escala de 1927 a 12/2021. O `codigo_ana_sucessor` é **`null` com
+motivo** — Gaspar é a única das quatro sem substituta na ANA, e exigir um código ali faria inventar
+um. A consequência prática vale registrar: para o presente, a **única** fonte de nível de Gaspar é a
+municipal (`/estacao/ver/21`), que ontem provou ser a mesma régua das cotas de rua. O dado solitário
+continua solitário — mas agora por um motivo conhecido.
 
 **Para Blumenau, o código ativo hoje é a `83800003`**, na mesma coordenada. O `codigo_ana` do projeto
 segue `83800002` porque é dele a série histórica que usamos (1939–2021); o sucessor está declarado em
@@ -198,6 +205,36 @@ rios diferentes. Ainda não resolvido — anotado aqui para não virar par silen
 
 ---
 
+## Os vínculos que **não** foram escritos, e o que falta em cada um
+
+O levantamento pedia "gravar os cinco vínculos ANA↔DCSC com menos de 60 m". Só **um** foi escrito
+(Gaspar). Os outros quatro faltam metade da prova — e a regra emendada exige as duas metades.
+
+| Cidade | Candidato | Tem | Falta |
+|---|---|---|---|
+| **Gaspar** | 83840000 | coordenada (10 m) **e** tipo | — **escrito** |
+| **Ituporanga** | 83145140 DCSC BARRAGEMSUL JUSANTE | coordenada (45 m) | **o tipo** |
+| **Ituporanga** | 83250000 ITUPORANGA | tipo (fluviométrica, 1929) | **a coordenada** |
+| **Brusque** | 83900000 BRUSQUE (PCD) | tipo (fluviométrica, 1929) | **o elo do nosso lado**: `codigo_dcsc` de Brusque é `null` — os 51 m são até a DCSC-00019, que este repositório nunca afirmou ser este pino |
+| **Rio do Sul** | 83094000 (Oeste), a 35 m | coordenada | ⚠️ ver abaixo — conflita com o código que já usamos |
+| Barragem Sul | 83145100 | coordenada (45 m) | o tipo; e não é cidade |
+
+Cada candidato está gravado em `estacoes.json` (`codigo_ana_candidatos`) **com o campo `falta`**, e
+há teste travando que nenhum deles vire `codigo_ana` enquanto o `falta` não for resolvido.
+
+**Achado colateral em Ituporanga, que vale independentemente do código:** o nome da 83145140 diz
+**JUSANTE DA BARRAGEM SUL**. A régua que o site mostra para Ituporanga fica **abaixo da parede** —
+lê água já amortecida pela barragem. Isso importa para previsão e não estava escrito em lugar nenhum.
+
+## ⚠️ Rio do Sul: a estação colada na nossa régua pode não ser a do código que usamos
+
+O `codigo_ana` de Rio do Sul é a **83300200** (Itajaí-**Açu**), a 0,43 km do pino. Mas o cruzamento
+põe a **DCSC-00013 — que é este pino — a 35 m da 83094000**, que a ANA cadastra no Itajaí do
+**Oeste**. São grandezas de rios diferentes.
+
+**Não resolvido, e não se resolve por magnitude.** Gravado como `codigo_ana_ressalva` na cidade, para
+não virar par silencioso. É a mesma família do "pintar a MKS com a cota da Tito".
+
 ## As estações "DCSC" na ANA: só quatro no país
 
 `83029940 DCSC BARRAGEM OESTE TAIÓ` · `83145100 DCSC BARRAGEM SUL ITUPORANGA` ·
@@ -237,5 +274,9 @@ coordenada.
 2. **Coordenadas das demais estações** (Ituporanga, Brusque, Warnow, Ilhota, Botuverá, Barragem
    Oeste) — com elas os `codigo_ana` que faltam podem ser gravados **e conferidos pela trava**.
 3. **Qual coordenada o pino de Blumenau deve usar** — decisão do Jefferson.
-4. **Rio do Sul: qual régua pareia com qual série da ANA** (Oeste × Sul × Açu).
-5. A área de 5.160 km² da 83094000 — conferir antes de qualquer uso.
+4. **Rio do Sul: qual régua pareia com qual série da ANA** (Oeste × Sul × Açu) — gravado como
+   `codigo_ana_ressalva`, aberto.
+5. **O `codigo_dcsc` de Brusque**, que é `null` — sem ele o vínculo com a 83900000 não fecha do
+   nosso lado.
+6. **O tipo da 83145140 e da 83145100** (as duas "DCSC" de barragem), que destrava Ituporanga.
+7. A área de 5.160 km² da 83094000 — conferir antes de qualquer uso.
