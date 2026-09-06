@@ -858,6 +858,54 @@ def valida_pinos_no_tracado() -> None:
 CHAVES_QUE_PINTAM = {"atencao", "alerta", "inundacao", "emergencia"}
 
 
+#: Abaixo disto, um `cota_m` de rua é lâmina d'água disfarçada. Ver a guarda.
+PISO_COTA_DE_RUA_M = 3.0
+
+
+def valida_cota_de_rua_nao_e_lamina() -> None:
+    """
+    Um `cota_m` baixo demais é LÂMINA D'ÁGUA, não cota de rua.
+
+    POR QUE EXISTE (06/09/2026). O ArcGIS da Prefeitura de Itajaí publica 3.434
+    pontos num app chamado **"Cotas de Inundação"**, com um campo chamado
+    **`cota`** — e ele NÃO é cota de rua. Os valores vão de 0 a 2,86 m, mediana
+    0,60: é a **lâmina**, quanto a água subiu NAQUELE endereço durante o evento.
+    Cota de rua é outra coisa: o **nível do rio** a partir do qual a rua alaga.
+
+    A confusão é fácil e o estrago é grande. Se essas linhas entrassem em
+    `cotas-ruas.json` porque "as duas têm cota", o site diria "a sua rua alaga
+    com o rio em 0,60 m" — e o rio está nesse nível quase sempre.
+
+    A separação é MEDIDA, não estipulada. As 4.588 cotas de rua do cadastro:
+
+        blumenau    mín  7,40    rio-do-sul  mín  3,11
+        gaspar      mín  6,20    brusque     mín  3,76
+
+    **Nenhuma abaixo de 3,00 m.** As lâminas de Itajaí, nenhuma acima de 2,86.
+    As duas faixas não se tocam, e o piso cai no vão entre elas.
+
+    Se um dia existir cota de rua legítima abaixo do piso — cidade de várzea com
+    régua de zero alto —, o registro declara `cota_baixa_conferida: true` com a
+    nota de quem conferiu. O que não pode é entrar em silêncio.
+    """
+    dados = le_json("cotas-ruas.json")
+    baixas = []
+    for c in dados.get("cotas", []):
+        v = c.get("cota_m")
+        if not isinstance(v, (int, float)) or v >= PISO_COTA_DE_RUA_M:
+            continue
+        if c.get("cota_baixa_conferida") is True:
+            continue
+        baixas.append((c.get("cidade"), c.get("rua"), v))
+    if baixas:
+        amostra = "; ".join(f"{cid}/{rua}={v:.2f}" for cid, rua, v in baixas[:4])
+        erro(f"cotas-ruas.json: {len(baixas)} rua(s) com cota_m abaixo de "
+             f"{PISO_COTA_DE_RUA_M:.2f} m ({amostra}). Cota de rua é o NÍVEL DO RIO em que a rua "
+             "alaga; valor tão baixo é lâmina d'água (quanto a água subiu no endereço) entrando no "
+             "lugar errado — o ArcGIS de Itajaí chama a lâmina de 'cota'. A menor cota real do "
+             "cadastro é 3,11 m. Se a cota baixa for legítima, marque `cota_baixa_conferida: true`.")
+
+
 def valida_pico_copiado_de_outra_cidade() -> None:
     """
     Um pico igual ao de OUTRA cidade no mesmo evento é cópia até prova em contrário.
@@ -1090,6 +1138,7 @@ def main() -> int:
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
     valida_pico_copiado_de_outra_cidade()
+    valida_cota_de_rua_nao_e_lamina()
 
     for a in avisos:
         print(f"aviso: {a}")

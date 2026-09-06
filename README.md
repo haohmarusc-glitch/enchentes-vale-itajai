@@ -477,6 +477,59 @@ o projeto.
 
 ## Pendências
 
+- [x] **Os três códigos ANA estão CONFERIDOS no HidroWeb (06/09/2026).** 83800002 = **BLUMENAU (PCD)**,
+  83300200 = **RIO DO SUL - NOVO**, 83050000 = **TAIÓ** — todas fluviométricas. Responde a pergunta 2 do
+  ofício C6 sem esperar a ANA. Gravado como `codigo_ana_verificado` + `codigo_ana_nome`. **Também
+  confirmado:** as datas de `enchentes.json` estão certas (o máximo mensal de Blumenau cai exatamente em
+  09/07/1983 e 07/08/1984), e o **"NOVO" de Rio do Sul não é quebra de série** no nosso período — a
+  estação cobre 1978–2026 sem nenhum ano faltando. ⚠️ **Falta a COORDENADA** das três: sem ela o vínculo
+  cidade↔estação continua por NOME, e a regra nº 1 pede coordenada.
+- [ ] **⛔ O teste da REGRA_REFERENCIA_BLUMENAU NÃO pôde ser executado — e o motivo agora é medido.** O
+  teste previa ler o pico de 09/07/1983 e 07/08/1984 no HidroWeb. **Mas para 1983 e 1984 o HidroWeb só
+  tem MÉDIA DIÁRIA**; leitura instantânea só começa em **1989**, conferido ano a ano. O que há: **15,19 m**
+  (1983) e **14,85 m** (1984), contra 15,34 e 15,46 do cadastro — mas **média do dia contra pico
+  instantâneo são grandezas diferentes**, e comparar as duas é o mesmo erro de natureza que o projeto
+  recusa em outros lugares. **A regra continua valendo, agora por motivo medido e não por falta de
+  tentativa.** **E há um achado que precisa de explicação antes de qualquer conversão:** em set/2011 — o
+  evento que originou a regra — a série **consistida** de Blumenau dá **8,47 m no dia 9**, enquanto o
+  **bruto do mesmo dia às 07:00 marca 12,48 m**, e nenhum dos dois é 12,80 nem 13,00. A série consistida
+  do HidroWeb **não captura a cheia** e não serve como árbitro do datum. (Rio do Sul no mesmo evento
+  fecha: 12,32 consistido e 12,39 bruto, ambos no dia 9 — o problema é específico de Blumenau.)
+  **O que resolve, e é a próxima busca de maior valor:** o **INVENTÁRIO da estação 83800002**, que traz
+  latitude, longitude, altitude e a **COTA DO ZERO DA RÉGUA** — essa última responde o datum
+  **diretamente**, sem comparar picos, e de quebra fecha a lacuna de coordenada do C6. Ver
+  `docs/HIDROWEB-BLUMENAU-E-RIO-DO-SUL.md`.
+
+- [x] **TRÊS coisas diferentes se chamam "cota", e agora há trava medida (06/09/2026).** O app do
+  ArcGIS de Itajaí publica 3.434 pontos chamados **"Cotas de Inundação"**, campo **`cota`** — e não é
+  cota de rua: são **lâminas**, de **0 a 2,86 m, mediana 0,60**, quanto a água subiu naquele endereço.
+  **Cota de rua é o NÍVEL DO RIO em que a rua alaga**; e há ainda a **cota altimétrica** (terreno,
+  0,15 a 370 m). Se as lâminas entrassem em `cotas-ruas.json` porque "as duas têm cota", o site diria
+  *"a sua rua alaga com o rio em 0,60 m"* — nível em que o rio está quase sempre. **A separação é
+  medida:** as 4.588 cotas de rua do cadastro têm mínimo **3,11 m** (Blumenau 7,40 · Gaspar 6,20 ·
+  Brusque 3,76 · Rio do Sul 3,11) e **nenhuma abaixo de 3,00**; as lâminas, nenhuma acima de 2,86. As
+  faixas **não se tocam**, e `valida_cota_de_rua_nao_e_lamina` põe o piso no vão entre elas, com escape
+  declarado (`cota_baixa_conferida`). Sabotagem conferida.
+- [ ] **O ArcGIS de Itajaí: metade já era nossa, e o que falta é o melhor.** Conferido feição a feição:
+  as **357 manchas** do `historico_inundacoes` são **duplicata** do que já temos pelo GeoItajaí — as dez
+  camadas batem, inclusive as 32 partes de 2011 e as 155 de 2015 —, então o arquivo de 1,9 MB **não foi
+  acrescentado**. **Duas correções ao levantamento:** 2014-06 **não é evento novo** (está em
+  `inundajunho2014.geojson` desde o início, mesmas 55 feições), e os **5.237 pontos cotados também já
+  estão** no repositório, com `_meta` avisando que são altura de terreno. **O que é genuinamente novo e
+  ainda falta:** as **3.434 lâminas por endereço** (363 KB — o achado, e nenhuma outra cidade da bacia
+  tem), as **17.120 curvas de nível a 1 m** (456 MB, paginar na VPS), os **57.418 lotes** (geocodificação
+  por lote) e as **129.296 edificações com número de pavimentos** (a orientação em enchente é subir de
+  andar). E `Hidrografia_Trecho_Drenagem`, provável fonte dos ribeirões Murta e Canhanduba que faltam no
+  traçado. ⚠️ **Acentuação corrompida na origem** (mojibake latin1→utf8): corrigir no processamento.
+- [ ] **⛔ O DATUM VERTICAL do terreno de Itajaí não está declarado.** Nem as curvas de nível nem os
+  pontos cotados dizem o datum; o CRS horizontal é EPSG:31982, o vertical não está em lugar nenhum. **Sem
+  ele nada disso vira "até onde a água chega"** — subtrair o nível da régua DC-01 de uma cota altimétrica
+  é o erro de referência que o projeto já cometeu em Ilhota, Brusque e na série de Blumenau. Dois
+  caminhos: perguntar ao GEOItajaí/COMPDEC o datum e o offset para o zero de cada régua DC, ou **derivar
+  empiricamente** cruzando mancha por faixa de lâmina com curva de nível do mesmo evento — se a mancha de
+  "0,41 a 0,60 m" de out/2015 acompanha a curva de 3 m, o offset sai da comparação. Ver
+  `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+
 - [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
   negativo.** Era o único passo que destravava as manchas ao vivo. **Tudo que circula com metro nas
   datas das dez manchas é régua de BLUMENAU**: 15,34 (1983), 15,46 (1984), 11,02 (2001), 11,52 (2008),

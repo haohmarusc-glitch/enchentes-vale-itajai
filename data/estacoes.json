@@ -117,7 +117,10 @@
           "coordenadas": [
             -27.1163,
             -50.0003
-          ]
+          ],
+          "codigo_ana_verificado": true,
+          "codigo_ana_nome": "TAIÓ",
+          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'TAIÓ'. Como: consulta ao HidroWeb v3.3 em 06/09/2026 (arquivo não lido aqui). ⚠️ Falta a COORDENADA da estação — sem ela o vínculo cidade↔estação continua por NOME, e a regra nº 1 do projeto pede coordenada. Está no Inventário do HidroWeb, não no arquivo de cotas."
         },
         {
           "id": "ituporanga",
@@ -169,7 +172,10 @@
           ],
           "regua_das_cotas": "Ponte Dom Tito Buss",
           "regua_das_cotas_fonte": "scripts/conferir_par_regua.py: as cotas 4,50/5,50/6,50 são da Ponte Dom Tito Buss, e a leitura ao vivo chega como 'Rio do Sul Estação MKS', por outra página. O par NÃO foi provado — são réguas de nome diferente, e pintar a MKS com a cota da Tito é aplicar a cota de uma régua a outra.",
-          "cotas_verificado": false
+          "cotas_verificado": false,
+          "codigo_ana_verificado": true,
+          "codigo_ana_nome": "RIO DO SUL - NOVO",
+          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'RIO DO SUL - NOVO'. Como: arquivo de séries históricas baixado e lido (1978–2026, sem lacuna de ano). ⚠️ Falta a COORDENADA da estação — sem ela o vínculo cidade↔estação continua por NOME, e a regra nº 1 do projeto pede coordenada. Está no Inventário do HidroWeb, não no arquivo de cotas."
         },
         {
           "id": "ibirama",
@@ -297,7 +303,10 @@
           "coordenadas": [
             -26.9224,
             -49.1354
-          ]
+          ],
+          "codigo_ana_verificado": true,
+          "codigo_ana_nome": "BLUMENAU (PCD)",
+          "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'BLUMENAU (PCD)'. Como: arquivo de séries históricas baixado e lido (2.654 linhas-mês, 1939–2026). ⚠️ Falta a COORDENADA da estação — sem ela o vínculo cidade↔estação continua por NOME, e a regra nº 1 do projeto pede coordenada. Está no Inventário do HidroWeb, não no arquivo de cotas."
         },
         {
           "id": "gaspar",
