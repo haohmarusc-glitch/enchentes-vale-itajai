@@ -19,7 +19,36 @@ cada uma custa — para a escolha ser feita com os números na mesa, não por im
 | login | **código de uso único por e-mail**. Quem entra NÃO precisa de conta na Cloudflare |
 | GitHub Pages | **despublicado**, e o fluxo `pages.yml` virou **só manual** |
 
-### Como AUTORIZAR uma autoridade que pedir
+### As QUATRO portas, e como cada uma se fecha (medido em 06/09/2026)
+
+Não existe um botão só. Foram quatro sistemas diferentes, e a própria Cloudflare avisa na tela:
+*"This protects preview deployment URLs only. Production pages.dev and custom domains are managed
+separately in Zero Trust."*
+
+| porta | como se fechou | conferido |
+|---|---|---|
+| `enchentes.premercadosc.com` | destino da aplicação `enchentes` no Access | ✅ pede e-mail |
+| `enchentes-vale-itajai.pages.dev` | **segundo destino** na MESMA aplicação (Subdomain vazio, Domain com o endereço inteiro) | ✅ pede e-mail |
+| `*.enchentes-vale-itajai.pages.dev` (pré-visualizações) | Pages → Settings → **General → Preview access → Restrict previews** | ✅ pede e-mail |
+| GitHub Pages | Settings → Pages → **Unpublish site** + `pages.yml` só manual | a confirmar no navegador |
+
+**Três armadilhas que custaram tentativas, para não se repetirem:**
+
+1. **O destino do Access é EXATO, não cobre subdomínios.** Cadastrar
+   `enchentes-vale-itajai.pages.dev` **não** protege
+   `claude-projeto-critico-segur.enchentes-vale-itajai.pages.dev` — medido: continuou abrindo sem pedir
+   e-mail. As pré-visualizações precisam do `Restrict previews`, que é outro lugar.
+2. **O campo `pages.dev` vai no Domain, com o Subdomain VAZIO.** Preenchido nos dois, monta
+   `x.pages.dev.x.pages.dev`, um endereço que não existe — e a tela **salva assim sem reclamar**,
+   parecendo protegida.
+3. **A tela do `Restrict previews` disse "Access policy could not be created" E "previews are
+   restricted" ao mesmo tempo.** O teste em janela anônima provou que estava protegido. **Mensagem de
+   painel não é conferência.**
+
+**A conferência tem de ser em JANELA ANÔNIMA.** Na janela normal a sessão do Access já está aberta e
+tudo carrega, dando a impressão de que o site está liberado para todo mundo.
+
+### Como AUTORIZAR uma autoridade que pedir### Como AUTORIZAR uma autoridade que pedir
 Zero Trust → **Access controls → Applications → `enchentes` → política "Só eu"** → em *Include / Emails*,
 acrescentar o e-mail. Ela recebe um código por e-mail e entra. **Revogar é apagar a linha.**
 
