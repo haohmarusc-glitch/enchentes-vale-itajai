@@ -1261,6 +1261,59 @@ def valida_codigo_ana() -> None:
                      "ou a estação é de outro curso d'água.")
 
 
+#: Arquivo do site que guarda quantas ruas de cada cidade foram levantadas SEM
+#: coordenada. Ver a guarda abaixo.
+COTAS_NO_MAPA_TS = "web/src/logica/cotasNoMapa.ts"
+
+
+def valida_ruas_sem_coordenada() -> None:
+    """
+    Os números de `RUAS_SEM_COORDENADA` batem com o `cotas-ruas.json`?
+
+    POR QUE EXISTE (06/09/2026). O mapa dizia a TODA cidade sem ponto de rua
+    "aproxime para ver as cotas de rua". Blumenau tem o maior levantamento do
+    projeto — 2.042 ruas — e NENHUMA com coordenada, porque a lista da Defesa
+    Civil publicada pela imprensa traz rua, bairro e cota, sem ponto. Quem mora
+    lá aproximava, não achava nada, e podia concluir que a rua dele não tinha
+    sido levantada. Foi: está na tela da cidade, por nome.
+
+    A frase certa depende de saber, ANTES de carregar 3 MB de cotas, se a
+    cidade tem levantamento não mapeável. Por isso o site guarda dois números
+    fixos — e por isso eles precisam desta trava: número copiado à mão envelhece
+    calado, e este envelheceria dizendo a uma cidade que ela tem levantamento
+    que ela deixou de ter, ou escondendo o que ela passou a ter.
+    """
+    cotas = le_json("cotas-ruas.json").get("cotas", [])
+    por_cidade: dict[str, dict[str, int]] = defaultdict(lambda: {"total": 0, "com": 0})
+    for c in cotas:
+        cid = c.get("cidade")
+        if not cid or not isinstance(c.get("cota_m"), (int, float)):
+            continue
+        por_cidade[cid]["total"] += 1
+        if isinstance(c.get("lat"), (int, float)) and isinstance(c.get("lon"), (int, float)):
+            por_cidade[cid]["com"] += 1
+
+    esperado = {cid: n["total"] for cid, n in por_cidade.items() if n["com"] == 0 and n["total"]}
+
+    fonte = (RAIZ / COTAS_NO_MAPA_TS).read_text(encoding="utf-8")
+    bloco = re.search(
+        r"RUAS_SEM_COORDENADA:[^=]*=\s*\{(.*?)\}", fonte, re.S)
+    if not bloco:
+        erro(f"{COTAS_NO_MAPA_TS}: não achei RUAS_SEM_COORDENADA. Se o nome mudou, "
+             "atualize esta guarda junto — sem ela os números voltam a envelhecer calados.")
+        return
+    declarado = {
+        m.group(1) or m.group(2): int(m.group(3))
+        for m in re.finditer(r"(?:'([^']+)'|([A-Za-z_][\w-]*))\s*:\s*(\d+)", bloco.group(1))
+    }
+    if declarado != esperado:
+        erro(f"{COTAS_NO_MAPA_TS}: RUAS_SEM_COORDENADA diz {declarado}, mas o "
+             f"cotas-ruas.json tem {esperado}. O mapa usa esses números para escolher "
+             "entre 'aproxime para ver as ruas' e 'esta cidade tem N ruas levantadas que "
+             "não entram no mapa' — errado, ele manda alguém procurar o que não está lá.")
+
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
@@ -1275,6 +1328,7 @@ def main() -> int:
     valida_pico_copiado_de_outra_cidade()
     valida_cota_de_rua_nao_e_lamina()
     valida_codigo_ana()
+    valida_ruas_sem_coordenada()
 
     for a in avisos:
         print(f"aviso: {a}")
