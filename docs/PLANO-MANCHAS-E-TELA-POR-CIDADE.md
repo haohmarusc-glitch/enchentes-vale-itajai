@@ -55,10 +55,16 @@ pico. No dia em que os picos entrarem, esse teste cai — e cair é a notícia b
 
 ## A ordem daqui
 
-1. **Levantar os picos de Itajaí, com a régua de cada um.** É o único passo que destrava as manchas ao
-   vivo, e é trabalho de FONTE, não de código: Defesa Civil de Itajaí, CEPSUL/ICMBio, imprensa dos
-   eventos de 1983, 1984, 2001, 2008, 2011, 2013, 2014 e 2015. Cada registro precisa de `fonte`,
-   `confianca` e da régua — sem a régua o número não serve.
+1. ~~Levantar os picos de Itajaí~~ ⛔ **BUSCA FEITA EM 06/09/2026, RESULTADO NEGATIVO.** Tudo que
+   circula com metro nas datas das dez manchas é **régua de Blumenau** — 15,34 (1983), 15,46 (1984),
+   11,02 (2001), 11,52 (2008), 10,18 (2014), 10,03 (2015). A "Itajaipedia" copia a série de Blumenau; a
+   estação ANA de Itajaí (**02648008**) é **pluviométrica**; e **não há código fluviométrico da barra**
+   no cadastro. O JICA lista Itajaí em 1983 com 40 mil atingidos e **a célula de nível vazia**.
+   **Isto não é "ainda não procuramos": é que o número pode não existir publicado.** Quem o tem, se
+   alguém tem, é a **Defesa Civil de Itajaí**, que opera as onze réguas e publicou as manchas — é
+   pergunta de **ofício**, não de busca. Ver `docs/ADENDO-2026-09-05-NOITE.md`.
+   **A busca virou trava:** `valida_pico_copiado_de_outra_cidade` recusa um pico de Itajaí igual ao de
+   outra cidade no mesmo evento, porque os números errados estão a um copiar-e-colar de distância.
 2. **Acender o mecanismo** e mostrar a mancha do evento mais alto já alcançado, no mapa de Itajaí. Nesse
    ponto o pedido está cumprido para Itajaí, sem nenhuma linha de previsão.
 3. **Clicar no trecho do rio** seleciona a cidade daquele trecho, no Monitor. Independente das manchas,

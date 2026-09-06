@@ -166,7 +166,10 @@
           "coordenadas": [
             -27.2072,
             -49.6335
-          ]
+          ],
+          "regua_das_cotas": "Ponte Dom Tito Buss",
+          "regua_das_cotas_fonte": "scripts/conferir_par_regua.py: as cotas 4,50/5,50/6,50 são da Ponte Dom Tito Buss, e a leitura ao vivo chega como 'Rio do Sul Estação MKS', por outra página. O par NÃO foi provado — são réguas de nome diferente, e pintar a MKS com a cota da Tito é aplicar a cota de uma régua a outra.",
+          "cotas_verificado": false
         },
         {
           "id": "ibirama",
@@ -542,7 +545,9 @@
           "coordenadas": [
             -27.1007,
             -48.9172
-          ]
+          ],
+          "regua_das_cotas": "Ponte Estaiada",
+          "regua_das_cotas_fonte": "data/brutos/brusque-cotas-2023.json (_meta): cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184 pontos com lâmina. A leitura ao vivo vem de estação sem régua identificada; par NÃO provado."
         },
         {
           "id": "itajai",

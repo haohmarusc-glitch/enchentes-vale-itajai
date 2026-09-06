@@ -853,6 +853,92 @@ def valida_pinos_no_tracado() -> None:
                  "coordenada está errada — nos dois casos o pino flutua no mapa.")
 
 
+#: Chaves de cota que PINTAM cor no mapa. Fora daqui, a chave é marca de
+#: referência e não vira faixa (ver logica/faixaDaCidade e docs/kikikuru.md).
+CHAVES_QUE_PINTAM = {"atencao", "alerta", "inundacao", "emergencia"}
+
+
+def valida_pico_copiado_de_outra_cidade() -> None:
+    """
+    Um pico igual ao de OUTRA cidade no mesmo evento é cópia até prova em contrário.
+
+    POR QUE EXISTE (06/09/2026). A busca pelos picos de Itajaí devolveu resultado
+    NEGATIVO: tudo que circula com metro nas datas das dez manchas é régua de
+    BLUMENAU. 15,34 em 1983, 15,46 em 1984, 11,02 em 2001, 11,52 em 2008 — todos
+    de Blumenau, todos aparecendo em textos que falam de Itajaí. A "Itajaipedia"
+    copia a série de Blumenau; a estação ANA da cidade (02648008) é PLUVIOMÉTRICA;
+    e não há código fluviométrico da barra no cadastro.
+
+    Ou seja: os números errados estão a um copiar-e-colar de distância, com o nome
+    do evento certo ao lado. Gravar 15,34 m como pico de Itajaí aplicaria a régua
+    de uma cidade a 70 km rio acima — a régua de Blumenau, cujo zero não tem
+    relação nenhuma com a foz.
+
+    Dois picos podem coincidir de verdade? Podem, por acaso, ao centímetro — e por
+    isso a saída é declarar `coincidencia_conferida: true` no registro, com a nota
+    de quem conferiu. O que não pode é passar em silêncio.
+    """
+    dados = le_json("enchentes.json")
+    por_evento: dict = {}
+    for e in dados.get("eventos", []):
+        # O campo é `pico_m`. A primeira versão desta guarda leu `nivel_m`, que
+        # não existe em enchentes.json: ela passava em silêncio, sem nunca poder
+        # disparar. Guarda que não morde é pior que guarda nenhuma, porque
+        # parece proteger.
+        nivel = e.get("pico_m")
+        if not isinstance(nivel, (int, float)):
+            continue
+        chave = (e.get("data") or e.get("ano"), round(float(nivel), 2))
+        por_evento.setdefault(chave, []).append(e)
+    for (quando, nivel), registros in sorted(por_evento.items(), key=lambda kv: str(kv[0])):
+        cidades = {r.get("cidade") for r in registros}
+        if len(cidades) < 2:
+            continue
+        nao_conferidos = [r for r in registros if r.get("coincidencia_conferida") is not True]
+        if len(nao_conferidos) < 2:
+            continue
+        erro(f"enchentes.json: {sorted(cidades)} têm o MESMO nível {nivel:.2f} m em {quando!r}. "
+             "Cada cidade tem a sua régua, com zero próprio; nível idêntico entre cidades é cópia "
+             "até prova em contrário — o caso conhecido é a série de Blumenau reaparecendo como se "
+             "fosse de Itajaí. Se a coincidência foi conferida na fonte, marque "
+             "`coincidencia_conferida: true` no registro, com a nota de quem conferiu.")
+
+
+def valida_regua_das_cotas() -> None:
+    """
+    Cidade que PINTA cor no mapa declara de qual régua são as cotas?
+
+    POR QUE EXISTE (06/09/2026). A regra nº 1 do projeto é não aplicar a cota de
+    uma régua à leitura de outra. Medido: NOVE cidades pintam e, até este
+    commit, NENHUMA declarava a régua das cotas — e as dezesseis estações ao
+    vivo têm `regua: null`. Ou seja, a regra existia em palavras e não havia
+    campo onde ela pudesse ser conferida.
+
+    Rio do Sul é o caso em que alguém sabia os nomes: as cotas 4,50/5,50/6,50
+    são da **Ponte Dom Tito Buss** e a leitura chega como **Estação MKS**
+    (scripts/conferir_par_regua.py). São réguas de nome diferente, e a cor do
+    mapa sai desse par não provado.
+
+    É AVISO, não erro, de propósito: virar erro reprovaria as nove de uma vez e
+    o conserto seria apagar cota — tirar cor do mapa numa cidade durante cheia é
+    decisão de quem mantém o projeto, não efeito colateral de um validador. O
+    aviso mantém a lacuna VISÍVEL a cada rodada, que é o que faltava.
+    """
+    est = le_json("estacoes.json")
+    sem_regua = []
+    for rio in est.get("rios", {}).values():
+        for c in rio.get("cidades", []):
+            if not (set(c.get("cotas_m") or {}) & CHAVES_QUE_PINTAM):
+                continue
+            if not str(c.get("regua_das_cotas") or "").strip():
+                sem_regua.append(c["id"])
+    if sem_regua:
+        aviso(f"estacoes.json: {len(sem_regua)} cidade(s) pintam cor no mapa sem declarar de qual "
+              f"régua são as cotas ({', '.join(sorted(sem_regua))}). A cor sai de um par "
+              "cota<->leitura que ninguém pode conferir. Preencher `regua_das_cotas` com o nome que "
+              "a FONTE dá, ou registrar por que não se sabe.")
+
+
 def valida_hidraulica() -> None:
     """
     Confere `hidraulica.json` — o dado do JICA que explica a bacia.
@@ -1002,6 +1088,8 @@ def main() -> int:
     valida_cotas_ruas()
     valida_referencias()
     valida_pinos_no_tracado()
+    valida_regua_das_cotas()
+    valida_pico_copiado_de_outra_cidade()
 
     for a in avisos:
         print(f"aviso: {a}")
