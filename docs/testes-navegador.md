@@ -275,7 +275,7 @@ violeta — dado vivo, não maquete.
 | 3 | ✅ | **Medido no traçado, não a olho**: a ponta do Ribeirão Canhanduba encosta no **Rio Conceição a 0 m** — que é exatamente o que o teste pede (o trecho final do Mirim ali chama-se Conceição; a distância de 578 m até a linha `itajai-mirim` é para outro traçado, e não é vão). |
 | 4, 5, 6 | ⏳ **impossível daqui** | o proxy bloqueia os tiles do Esri (`server.arcgisonline.com`). Só com o site no ar. |
 | 7 | ✅ | Itajaí diz **"sem leitura"**; Guabiruba diz **"Sem cota / sem leitura"**. |
-| 8 | ⏳ | não executado por completo (exige pan e zoom régua a régua). |
+| 8 | ✅ | **Medido, não olhado.** As onze réguas estão sobre o rio desenhado: distância ponto-a-segmento de **2 a 111 m**, mediana ~26 m. Nenhuma em terra seca. O `DC-00` que aparece no cadastro **não é uma das onze**: é `tipo: "pluviometro"`, `rio: null`, `verificado: false` — corretamente tipado e fora da conta. |
 | 9 | ⚠️ **defeito de outro tipo** | Não é a "linha azul serrilhada" que o roteiro temia. **Não há gráfico de Itajaí em tela nenhuma** — `#/itajai` traz a tabela de cotas das onze réguas, e `#/monitor/itajai` não desenha série. O dado existe e é rico (955+565+191+381 pontos, com índice de régua). É lacuna, não perigo. |
 | 10 | ✅ | **Nenhum cm/h na tela de Itajaí.** A assimetria está certa: Blumenau mostra 1 e 3 cm/h, Rio do Sul 2 cm/h, Itajaí nenhum. |
 | 11 | ✅ | Blumenau "Agora 3,25 m há 1 h 04" com tendência; Rio do Sul "Agora 5,23 m · ACIMA DA COTA DE ATENÇÃO". A tendência de Blumenau **não sumiu**. |
@@ -295,6 +295,17 @@ Itajaí-Açu — o vão que o teste 3 existe para pegar. Medindo a linha inteira
 não só as pontas: ela **toca o Açu a 0 m**, no ponto 188 de 197, e segue mais
 1,2 km além da confluência. Não é vão, é sobra. Medida de ponta não é medida de
 linha.
+
+## O mesmo erro de método, duas vezes no mesmo dia
+
+Na primeira, a PONTA do Ribeirão da Murta parecia a 1.234 m do Açu; a linha
+inteira toca o rio a 0 m. Na segunda, a régua **DC-03** parecia a 534 m do
+canal retificado; medindo **ponto-a-segmento** em vez de ponto-a-vértice, são
+**20 m**. O traçado do canal tem 12 pontos, e num polígono esparso a distância
+até o vértice mais próximo não tem nada a ver com a distância até a linha.
+
+Quem for medir geometria aqui: **ponto-a-segmento, sempre**, e a linha inteira,
+não as pontas. As duas medidas erradas apontariam defeito onde não há.
 
 ## O teste 2 precisa ser reescrito: ele é anterior à regra de zoom
 
