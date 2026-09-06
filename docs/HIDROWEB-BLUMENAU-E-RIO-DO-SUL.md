@@ -72,11 +72,16 @@ ali as duas séries concordam. O problema é específico de Blumenau.
 
 ## O que ainda falta buscar, em ordem de valor
 
-1. **⭐ O INVENTÁRIO da estação 83800002.** É o registro que traz **latitude, longitude, altitude e a
-   COTA DO ZERO DA RÉGUA** — e é essa última que responde a pergunta do datum **diretamente**, sem
-   depender de comparar picos. Não está no arquivo de cotas; está no Inventário.
-   No portal: `/hidroweb/mapa` ou a busca por Inventário. Resolve ao mesmo tempo a lacuna de
-   **coordenada** do ofício C6.
+1. ~~**⭐ O INVENTÁRIO da estação 83800002.**~~ **FEITO em 06/09/2026, e o item estava errado.**
+   O inventário público foi baixado (`Inventario31_08_2026.mdb`) e **não traz a cota do zero da
+   régua**: a tabela `fichareferencianivel` existe, com a coluna `cota`, e está **vazia**. Ele é só
+   o catálogo de estações. A pergunta do datum **não** foi respondida por aí — segue pela API ou
+   pelos picos instantâneos pós-1989.
+   O que ele resolveu: a lacuna de **coordenada** do ofício C6 (as três estações caem sobre o
+   traçado, medido), o **tipo** de cada estação — que virou trava no validador —, e a dúvida
+   Salseiro × Vidal Ramos. Tudo em `docs/INVENTARIO-ANA.md`.
+   ⚠️ E acrescentou um alerta: a escala da 83800002 **encerrou em 12/2021**; para o presente a
+   estação é a **83800003**.
 2. **A série instantânea consistida de um evento pós-1989** em que o projeto também tenha valor — aí o
    teste original passa a ser executável, com grandezas iguais dos dois lados.
 3. **Por que a série consistida de Blumenau não captura set/2011.** Pode ser correção deliberada da
