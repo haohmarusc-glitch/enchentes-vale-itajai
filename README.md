@@ -477,6 +477,29 @@ o projeto.
 
 ## Pendências
 
+- [x] **Os três códigos ANA estão CONFERIDOS no HidroWeb (06/09/2026).** 83800002 = **BLUMENAU (PCD)**,
+  83300200 = **RIO DO SUL - NOVO**, 83050000 = **TAIÓ** — todas fluviométricas. Responde a pergunta 2 do
+  ofício C6 sem esperar a ANA. Gravado como `codigo_ana_verificado` + `codigo_ana_nome`. **Também
+  confirmado:** as datas de `enchentes.json` estão certas (o máximo mensal de Blumenau cai exatamente em
+  09/07/1983 e 07/08/1984), e o **"NOVO" de Rio do Sul não é quebra de série** no nosso período — a
+  estação cobre 1978–2026 sem nenhum ano faltando. ⚠️ **Falta a COORDENADA** das três: sem ela o vínculo
+  cidade↔estação continua por NOME, e a regra nº 1 pede coordenada.
+- [ ] **⛔ O teste da REGRA_REFERENCIA_BLUMENAU NÃO pôde ser executado — e o motivo agora é medido.** O
+  teste previa ler o pico de 09/07/1983 e 07/08/1984 no HidroWeb. **Mas para 1983 e 1984 o HidroWeb só
+  tem MÉDIA DIÁRIA**; leitura instantânea só começa em **1989**, conferido ano a ano. O que há: **15,19 m**
+  (1983) e **14,85 m** (1984), contra 15,34 e 15,46 do cadastro — mas **média do dia contra pico
+  instantâneo são grandezas diferentes**, e comparar as duas é o mesmo erro de natureza que o projeto
+  recusa em outros lugares. **A regra continua valendo, agora por motivo medido e não por falta de
+  tentativa.** **E há um achado que precisa de explicação antes de qualquer conversão:** em set/2011 — o
+  evento que originou a regra — a série **consistida** de Blumenau dá **8,47 m no dia 9**, enquanto o
+  **bruto do mesmo dia às 07:00 marca 12,48 m**, e nenhum dos dois é 12,80 nem 13,00. A série consistida
+  do HidroWeb **não captura a cheia** e não serve como árbitro do datum. (Rio do Sul no mesmo evento
+  fecha: 12,32 consistido e 12,39 bruto, ambos no dia 9 — o problema é específico de Blumenau.)
+  **O que resolve, e é a próxima busca de maior valor:** o **INVENTÁRIO da estação 83800002**, que traz
+  latitude, longitude, altitude e a **COTA DO ZERO DA RÉGUA** — essa última responde o datum
+  **diretamente**, sem comparar picos, e de quebra fecha a lacuna de coordenada do C6. Ver
+  `docs/HIDROWEB-BLUMENAU-E-RIO-DO-SUL.md`.
+
 - [x] **TRÊS coisas diferentes se chamam "cota", e agora há trava medida (06/09/2026).** O app do
   ArcGIS de Itajaí publica 3.434 pontos chamados **"Cotas de Inundação"**, campo **`cota`** — e não é
   cota de rua: são **lâminas**, de **0 a 2,86 m, mediana 0,60**, quanto a água subiu naquele endereço.
