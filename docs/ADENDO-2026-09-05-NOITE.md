@@ -72,6 +72,34 @@ Por isso `manchasPorNivel` exige `reguaDoPico === reguaDaLeitura` e **recusa pic
 o pico tem de trazer o nome da régua **da época**, e a comparação só acontece se for a mesma régua que
 o site lê hoje. Um pico de 2011 na "régua do porto" não se compara com a leitura da DC-11.
 
+### O ArcGIS de Itajaí também NÃO tem cota — conferido em 06/09/2026
+
+O visualizador `arcgis.itajai.sc.gov.br/portal/apps/webappviewer` consome o
+`server/rest/services/historico_inundacoes/FeatureServer`, cujo bruto **já está no repositório**
+(`data/brutos/itajai-arcgis-inundacoes.geojson.json`, 10 camadas, 357 feições). Atributos de todas as
+camadas, lidos um a um:
+
+| camada | atributos |
+|---|---|
+| 1983 | `objectid`, `...area`, `hectares`, `Shape__Area`, `Shape__Length` |
+| outras de área total | `objectid`, `sum_area`, `sum_hectar`, `Shape__*` |
+| as de lâmina | `objectid`, `Shape__*`, **`situa`** (`"0,20"`, `"0,21 a 0,40"`, `"0,51 a 1"`) |
+
+**Área, hectares e classe de lâmina. Nenhum campo de cota de régua.** É o mesmo conteúdo das manchas do
+GeoItajaí, com outro empacotamento — o que também confirma a decisão de **não trocar uma pela outra**.
+
+**O que ainda vale conferir nessa fonte, e é uma pergunta pequena:** se ALGUMA camada do serviço tem
+campo de nível que o bruto não capturou. Responde-se abrindo, num navegador com acesso:
+
+```
+https://arcgis.itajai.sc.gov.br/server/rest/services/historico_inundacoes/FeatureServer?f=json
+https://arcgis.itajai.sc.gov.br/server/rest/services/?f=json
+```
+
+O primeiro lista as camadas e **os campos de cada uma**; o segundo lista os outros serviços publicados
+pela prefeitura — é onde apareceria uma série de cota, se existir. Procurar por `cota`, `nivel`,
+`regua`, `metro`.
+
 ### Onde ainda dá para achar o metro (nesta ordem)
 
 1. **HidroWeb, pelo mapa** — filtrar município Itajaí, procurar ícone de **onda** (fluviométrica, não
