@@ -477,6 +477,33 @@ o projeto.
 
 ## Pendências
 
+- [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
+  negativo.** Era o único passo que destravava as manchas ao vivo. **Tudo que circula com metro nas
+  datas das dez manchas é régua de BLUMENAU**: 15,34 (1983), 15,46 (1984), 11,02 (2001), 11,52 (2008),
+  10,51 (2013), 10,18 (2014), 10,03 (2015). A *"Itajaipedia"* **copia a série de Blumenau** apesar do
+  nome; a estação ANA de Itajaí (**02648008**) é **pluviométrica**, não régua de rio; e **não há código
+  fluviométrico da barra** no cadastro (há RdS 83300200, Blumenau 83800002, Brusque 83900000,
+  Ituporanga 83250000, Luiz Alves 83880000). O JICA lista Itajaí em 1983 com 40 mil atingidos e **a
+  célula de nível vazia**; a tese Fachi usa a mancha da DC de Itajaí com hidrograma de
+  **Indaial/Blumenau**. **Isto é diferente de "ainda não procuramos".** Quem tem o número, se alguém
+  tem, é a **Defesa Civil de Itajaí** — ofício, não busca. **A busca virou trava:**
+  `valida_pico_copiado_de_outra_cidade` recusa pico de uma cidade igual ao de outra no mesmo evento,
+  porque os números de Blumenau estão a um copiar-e-colar de distância, com o nome do evento certo ao
+  lado; gravar 15,34 m como pico de Itajaí aplicaria a régua de uma cidade a 70 km rio acima. Sabotagem
+  conferida: um registro de Itajaí copiado de Blumenau reprova o validador. **Achado no caminho:** a
+  primeira versão da trava lia `nivel_m`, campo que não existe em `enchentes.json` (é `pico_m`) — ela
+  passava em silêncio e nunca poderia disparar. Guarda que não morde é pior que guarda nenhuma.
+- [ ] **⚠️ NOVE cidades pintam cor no mapa e sete não declaram de qual régua são as cotas.** Medido em
+  06/09/2026. A regra nº 1 do projeto — não aplicar a cota de uma régua à leitura de outra — existia em
+  palavras e **não havia campo onde ser conferida**; as **dezesseis** estações ao vivo têm `regua: null`.
+  O caso com nome é **Rio do Sul**: as cotas 4,50/5,50/6,50 são da **Ponte Dom Tito Buss** e a leitura
+  chega como **Estação MKS** (`conferir_par_regua.py`) — réguas de nome diferente, e **é esse par que
+  pinta a cor do mapa**. Preenchido `regua_das_cotas` onde a fonte NOMEIA a régua (Rio do Sul e Brusque,
+  Ponte Estaiada), e `valida_regua_das_cotas` passa a **avisar** as que faltam. **Aviso e não erro de
+  propósito:** virar erro reprovaria as nove de uma vez e o conserto seria apagar cota — tirar cor do
+  mapa de uma cidade durante cheia é decisão de quem mantém o projeto, não efeito colateral de
+  validador.
+
 - [x] **Brusque entrou no mapa de ruas — mostrando a cota, sem afirmar o estado (05/09/2026).** As 348
   ruas georreferenciadas dela aparecem com a cota em que cada uma começa a alagar, e o mapa **não diz
   quais já alagaram**: as cotas são da **Ponte Estaiada** (provado — cota + lâmina = 8,96 m, o pico de
