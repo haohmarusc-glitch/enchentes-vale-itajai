@@ -477,6 +477,36 @@ o projeto.
 
 ## Pendências
 
+- [x] **TRÊS coisas diferentes se chamam "cota", e agora há trava medida (06/09/2026).** O app do
+  ArcGIS de Itajaí publica 3.434 pontos chamados **"Cotas de Inundação"**, campo **`cota`** — e não é
+  cota de rua: são **lâminas**, de **0 a 2,86 m, mediana 0,60**, quanto a água subiu naquele endereço.
+  **Cota de rua é o NÍVEL DO RIO em que a rua alaga**; e há ainda a **cota altimétrica** (terreno,
+  0,15 a 370 m). Se as lâminas entrassem em `cotas-ruas.json` porque "as duas têm cota", o site diria
+  *"a sua rua alaga com o rio em 0,60 m"* — nível em que o rio está quase sempre. **A separação é
+  medida:** as 4.588 cotas de rua do cadastro têm mínimo **3,11 m** (Blumenau 7,40 · Gaspar 6,20 ·
+  Brusque 3,76 · Rio do Sul 3,11) e **nenhuma abaixo de 3,00**; as lâminas, nenhuma acima de 2,86. As
+  faixas **não se tocam**, e `valida_cota_de_rua_nao_e_lamina` põe o piso no vão entre elas, com escape
+  declarado (`cota_baixa_conferida`). Sabotagem conferida.
+- [ ] **O ArcGIS de Itajaí: metade já era nossa, e o que falta é o melhor.** Conferido feição a feição:
+  as **357 manchas** do `historico_inundacoes` são **duplicata** do que já temos pelo GeoItajaí — as dez
+  camadas batem, inclusive as 32 partes de 2011 e as 155 de 2015 —, então o arquivo de 1,9 MB **não foi
+  acrescentado**. **Duas correções ao levantamento:** 2014-06 **não é evento novo** (está em
+  `inundajunho2014.geojson` desde o início, mesmas 55 feições), e os **5.237 pontos cotados também já
+  estão** no repositório, com `_meta` avisando que são altura de terreno. **O que é genuinamente novo e
+  ainda falta:** as **3.434 lâminas por endereço** (363 KB — o achado, e nenhuma outra cidade da bacia
+  tem), as **17.120 curvas de nível a 1 m** (456 MB, paginar na VPS), os **57.418 lotes** (geocodificação
+  por lote) e as **129.296 edificações com número de pavimentos** (a orientação em enchente é subir de
+  andar). E `Hidrografia_Trecho_Drenagem`, provável fonte dos ribeirões Murta e Canhanduba que faltam no
+  traçado. ⚠️ **Acentuação corrompida na origem** (mojibake latin1→utf8): corrigir no processamento.
+- [ ] **⛔ O DATUM VERTICAL do terreno de Itajaí não está declarado.** Nem as curvas de nível nem os
+  pontos cotados dizem o datum; o CRS horizontal é EPSG:31982, o vertical não está em lugar nenhum. **Sem
+  ele nada disso vira "até onde a água chega"** — subtrair o nível da régua DC-01 de uma cota altimétrica
+  é o erro de referência que o projeto já cometeu em Ilhota, Brusque e na série de Blumenau. Dois
+  caminhos: perguntar ao GEOItajaí/COMPDEC o datum e o offset para o zero de cada régua DC, ou **derivar
+  empiricamente** cruzando mancha por faixa de lâmina com curva de nível do mesmo evento — se a mancha de
+  "0,41 a 0,60 m" de out/2015 acompanha a curva de 3 m, o offset sai da comparação. Ver
+  `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+
 - [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
   negativo.** Era o único passo que destravava as manchas ao vivo. **Tudo que circula com metro nas
   datas das dez manchas é régua de BLUMENAU**: 15,34 (1983), 15,46 (1984), 11,02 (2001), 11,52 (2008),
