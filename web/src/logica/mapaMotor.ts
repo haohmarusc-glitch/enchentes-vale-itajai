@@ -832,6 +832,37 @@ export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; 
  * réguas; o Monitor chama esta função ANTES delas, para o nome da cidade nunca
  * perder espaço para um rótulo secundário.
  */
+/**
+ * O pino está DENTRO da tela? Se não está, o rótulo dele não pode existir.
+ *
+ * O DEFEITO QUE ISTO CORRIGE (07/09/2026, capturas do Jefferson com o mapa
+ * aproximado em Itajaí). O ponto é desenhado em `p.x` — fora da tela, some. O
+ * rótulo, não: `caixaDoRotuloDoPino` prende o centro dele na borda, para que
+ * uma cidade na beirada não saia cortada. Com o pino LONGE, essa mesma trava
+ * largava o nome flutuando na margem, sem bolinha nenhuma embaixo.
+ *
+ * Na captura, "≈7,74 m bruto · há 11 min / Ascurra" aparecia sobre Itaipava, e
+ * "Blumenau" e "Indaial" sobre bairros de Itajaí — a 60 km de onde essas
+ * leituras foram feitas. Num mapa de cheia isso não é um rótulo mal colocado:
+ * é um nível do rio escrito em cima de um bairro que não é o dele.
+ *
+ * A margem deixa passar o pino que está SÓ ENCOSTANDO na borda (esse a trava
+ * ainda serve, e a bolinha aparece pela metade); corta o que está fora.
+ */
+export function pinoNaTela(
+  ponto: { x: number; y: number },
+  cena: { largura: number; altura: number },
+  escala = 1,
+): boolean {
+  const margem = 7 * escala // o raio do pino: encostou, ainda se vê
+  return (
+    ponto.x >= -margem &&
+    ponto.x <= cena.largura + margem &&
+    ponto.y >= -margem &&
+    ponto.y <= cena.altura + margem
+  )
+}
+
 export function planejarRotulosDosPinos(
   medir: Medidor,
   cena: Cena,
@@ -849,6 +880,9 @@ export function planejarRotulosDosPinos(
     return sb - sa
   })
   for (const p of ordem) {
+    // Fora da tela não ganha rótulo — nem a cidade selecionada: o nome dela
+    // preso na margem apontaria para o lugar errado do mesmo jeito.
+    if (!pinoNaTela(p, cena, escala)) continue
     const { nome, sub } = textoDoPino(p, opcoes)
     const { cx, baseY, caixa } = caixaDoRotuloDoPino(
       p,

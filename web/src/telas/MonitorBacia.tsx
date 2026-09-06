@@ -10,6 +10,7 @@ import {
   topologiaDoRio,
   trechos,
 } from '../dados/carregar'
+import { caixasDosControles } from '../logica/controlesSobreOMapa'
 import { menuDasCidades } from '../logica/menuDasCidades'
 import { vizinhosNoEixo } from '../logica/vizinhosNoEixo'
 import { resumo24h } from '../logica/resumo24h'
@@ -699,6 +700,15 @@ export default function MonitorBacia() {
       // O chip da maré é fixo no topo-direito e não cede: reserva antes de todos.
       const chipMare = caixaDaEtiquetaMare(medidorDe(ctx), cena, escala)
       if (chipMare) caixas.push(chipMare)
+      // OS CONTROLES DE HTML TAMBÉM OCUPAM O MAPA. Eles são DOM por cima do
+      // vidro, e até aqui o canvas não os enxergava: "Timbó" saía atrás do
+      // botão +, "Blumenau" atrás do −, sobrando "…mbó" e "…nau" na tela
+      // (capturas de 07/09/2026). Reservam ANTES dos nomes das cidades porque
+      // não têm como ceder — são opacos e o toque é deles.
+      const caixaMapa = canvas.getBoundingClientRect()
+      for (const el of divRef.current?.querySelectorAll<HTMLElement>('[data-tapa-mapa]') ?? []) {
+        caixas.push(...caixasDosControles([el.getBoundingClientRect()], caixaMapa, 4))
+      }
       const rotulos = planejarRotulosDosPinos(
         medidorDe(ctx),
         cena,
@@ -1030,9 +1040,62 @@ export default function MonitorBacia() {
           aria-label="Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"
         />
 
+        {/* RODAPÉ — uma coluna só, e é isso que impede a sobreposição.
+
+            O DEFEITO QUE ISTO CORRIGE (07/09/2026, relatado pelo Jefferson:
+            "não é possível mudar o fundo do mapa"). A barra de reprodução era
+            centrada embaixo e a legenda ficava no canto inferior esquerdo: no
+            celular as duas ocupam a MESMA faixa, e a barra tinha `z-index: 5`.
+            O z-index não separa nada — só decide quem recebe o toque. Quem
+            recebia era a barra, então Escuro/Satélite/Mapa ficavam visíveis e
+            INERTES, e o mapa ainda cobria a atribuição do OpenStreetMap, que é
+            condição de licença.
+
+            Empilhar numa coluna resolve por geometria: em largura nenhuma os
+            dois podem se cobrir, porque um está ABAIXO do outro no fluxo. */}
+        <div className={estilos.rodape}>
+          {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
+              aparece quando há série publicada. */}
+          {grade.length > 0 ? (
+            <div className={estilos.controles} data-tapa-mapa>
+              <button
+                type="button"
+                className={estilos.botaoPlay}
+                onClick={() => {
+                  if (tocando) {
+                    setTocando(false)
+                  } else {
+                    setIdxRepro((x) => (x == null ? 0 : x)) // começa do início da janela
+                    setTocando(true)
+                  }
+                }}
+              >
+                {tocando ? '⏸ Pausar' : '▶ Reproduzir 24 h'}
+              </button>
+              <input
+                className={estilos.barra}
+                type="range"
+                min={0}
+                max={grade.length - 1}
+                value={idxRepro ?? grade.length - 1}
+                onChange={(e) => {
+                  setTocando(false)
+                  const v = Number(e.target.value)
+                  setIdxRepro(v >= grade.length - 1 ? null : v)
+                }}
+                aria-label="Instante da reprodução"
+              />
+              <span className={estilos.instante}>
+                {idxRepro == null ? 'ao vivo' : dataHora(new Date(grade[idxRepro]!))}
+              </span>
+            </div>
+          ) : null}
         {/* Legenda sempre visível, canto inferior esquerdo. O painel da cidade
             vai para o canto direito, então os dois não se cobrem. */}
-        <div className={`${estilos.legenda} ${legendaAberta ? '' : estilos.legendaFechada}`}>
+        <div
+          className={`${estilos.legenda} ${legendaAberta ? '' : estilos.legendaFechada}`}
+          data-tapa-mapa
+        >
           <strong className={estilos.legendaTitulo}>
             <span>{legendaAberta ? 'Faixa (na régua de cada cidade)' : 'Legenda'}</span>
             <button
@@ -1133,12 +1196,13 @@ export default function MonitorBacia() {
               enquanto a camada estiver ativa, e troca junto com ela. */}
           <p className={estilos.atribuicao}>{FUNDOS[fundo].atribuicao}</p>
         </div>
+        </div>
 
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
             desenhado no canvas). O botão de tela cheia vai no canto inferior
             direito para não colidir com o chip. */}
         <div className={estilos.cantoEsquerdo}>
-        <div className={estilos.topo}>
+        <div className={estilos.topo} data-tapa-mapa>
           <strong>Monitoramento da bacia</strong>
           <button
             type="button"
@@ -1165,6 +1229,7 @@ export default function MonitorBacia() {
           <nav
             id="menu-cidades"
             className={estilos.menuCidades}
+            data-tapa-mapa
             aria-label="Cidades, na ordem do rio"
             onKeyDown={(e) => {
               if (e.key === 'Escape') setMenuAberto(false)
@@ -1215,7 +1280,7 @@ export default function MonitorBacia() {
             dedos, e porque no computador não há pinça nenhuma. "Ver tudo" volta
             à bacia inteira: sem ele, quem se perde no zoom fica sem saber que
             existe mapa fora da tela. */}
-        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa">
+        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa" data-tapa-mapa>
           <button
             type="button"
             className={estilos.botaoZoom}
@@ -1244,42 +1309,6 @@ export default function MonitorBacia() {
         </div>
         </div>
 
-        {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
-            aparece quando há série publicada. */}
-        {grade.length > 0 ? (
-          <div className={estilos.controles}>
-            <button
-              type="button"
-              className={estilos.botaoPlay}
-              onClick={() => {
-                if (tocando) {
-                  setTocando(false)
-                } else {
-                  setIdxRepro((x) => (x == null ? 0 : x)) // começa do início da janela
-                  setTocando(true)
-                }
-              }}
-            >
-              {tocando ? '⏸ Pausar' : '▶ Reproduzir 24 h'}
-            </button>
-            <input
-              className={estilos.barra}
-              type="range"
-              min={0}
-              max={grade.length - 1}
-              value={idxRepro ?? grade.length - 1}
-              onChange={(e) => {
-                setTocando(false)
-                const v = Number(e.target.value)
-                setIdxRepro(v >= grade.length - 1 ? null : v)
-              }}
-              aria-label="Instante da reprodução"
-            />
-            <span className={estilos.instante}>
-              {idxRepro == null ? 'ao vivo' : dataHora(new Date(grade[idxRepro]!))}
-            </span>
-          </div>
-        ) : null}
 
         {/* Painel de UMA RÉGUA, quando o toque foi nela. Vem antes do painel de
             cidade e o substitui: dois no mesmo canto se cobrem. */}
@@ -1288,7 +1317,7 @@ export default function MonitorBacia() {
           if (!g) return null
           const cotas = cotasOrdenadas(g.cotas)
           return (
-            <div className={estilos.painel}>
+            <div className={estilos.painel} data-tapa-mapa>
               <div className={estilos.painelTopo}>
                 <strong>{g.nome}</strong>
                 <span className={estilos.painelRio}>{g.codigo || 'régua'}</span>
@@ -1357,7 +1386,7 @@ export default function MonitorBacia() {
           const pinoDe = (id: string) => cenaRef.current?.pinos.find((p) => p.cidade.id === id) ?? null
           const ultimas = resumo24h(serieDaCidade(serie, foco.rioId, cid.id))
           return (
-            <div className={estilos.painel}>
+            <div className={estilos.painel} data-tapa-mapa>
               <div className={estilos.painelTopo}>
                 <strong>{cid.nome}</strong>
                 {/* FECHAR: no celular o painel é uma folha que cobre metade do
