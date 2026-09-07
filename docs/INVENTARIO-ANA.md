@@ -109,7 +109,39 @@ mesmo: **o boletim não publica coordenada**, e por isso o ofício C5/C9 à EPAG
 essa relação código ↔ coordenada.
 
 **A ANA publica.** SALSEIRO fica a **6,8 km** da nossa régua (−27,38547 / −49,35812) e drena
-**286 km²** — sub-bacia bem menor. Mesmo município, estações diferentes. **Não vincular.**
+**286 km²**. Mesmo município, estações diferentes. **Não vincular.**
+
+### ⚠️ Errata do próprio parágrafo acima (07/09/2026)
+
+Esta seção dizia que os 286 km² eram *"sub-bacia bem menor"*. **A justificativa não se sustenta**, e
+a correção veio de conhecimento local do Jefferson: **Salseiro é uma localidade RURAL de Vidal
+Ramos**. Isso explica o rótulo "Salseiro – Vidal Ramos" sem mistério — é a estação do Salseiro, no
+município de Vidal Ramos, não a régua da sede.
+
+Duas coisas caem junto com a frase:
+
+1. **Não havia com o que comparar.** O repositório não tem área de drenagem para a nossa própria
+   régua de Vidal Ramos (`codigo_ana` é `null`). "Bem menor" que quanto?
+2. **O que dá para comparar aponta ao contrário:**
+
+   | ponto | área | código ANA |
+   |---|---:|---|
+   | SALSEIRO (Vidal Ramos, ordem 1) | 286 km² | 83892990 |
+   | BOTUVERA-MONTANTE (ordem 2) | 827 km² | 838929**98** |
+   | BRUSQUE (ordem 4) | 1.240 km² | 83900000 |
+
+   É uma progressão montante→jusante limpa, própria de três pontos **do mesmo rio** — e os dois
+   primeiros códigos são quase consecutivos, que é como a ANA numera estações ao longo de um curso.
+   O SALSEIRO é, muito provavelmente, o próprio **Itajaí-Mirim**.
+
+**A recusa continua de pé, e por motivo mais forte:** não é "outro rio", é **outro ponto do mesmo
+rio**, a 6,8 km — com outro zero. Cota de um ponto não se transplanta para outro, e é exatamente por
+isso que as cotas publicadas para a estação 31 no portal de Brusque (atenção 3,00 / emergência 4,50)
+**não** podem virar as cotas da sede de Vidal Ramos.
+
+**E vira oportunidade, não só recusa:** o Mirim não tem nenhum código ANA a montante de Brusque.
+Se a 83892990 é fluviométrica no Mirim, a série dela serve ao **histórico do rio** — jamais às
+cotas da sede.
 
 Gravado em `data/estacoes.json` como `vidal-ramos.codigo_ana_nao_e`, e travado por teste: o registro
 precisa ficar **no dado**, senão o próximo boletim da EPAGRI convida ao mesmo vínculo de novo.

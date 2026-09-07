@@ -977,6 +977,41 @@ class TestaVidalRamosNaoHerdaOSalseiro(unittest.TestCase):
         self.assertIn("SALSEIRO", motivo.upper())
         self.assertIn("6,8 km", motivo)
 
+    def test_a_recusa_nao_se_apoia_mais_na_area_de_drenagem(self):
+        """
+        O motivo gravado era "drena 286 km² — sub-bacia bem menor". Não se
+        sustentava: não há área de drenagem cadastrada para a nossa própria
+        régua de Vidal Ramos, então a comparação era com nada. E o que dá para
+        comparar aponta ao contrário — 286 km² (Salseiro) → 827 km²
+        (BOTUVERA-MONTANTE) → 1.240 km² (Brusque) é progressão limpa de
+        montante para jusante, própria de pontos do MESMO rio, com códigos
+        quase consecutivos (83892990 / 83892998).
+
+        A recusa continua, por motivo mais forte: 6,8 km é outro ponto do rio,
+        com outro zero. Este teste existe para o motivo velho não voltar.
+        """
+        motivo = self.vr["codigo_ana_nao_e"]["por_que_nao"]
+        self.assertIn("CORRIGIDO", motivo)
+        self.assertIn("6,8 km", motivo)
+        self.assertNotIn("sub-bacia bem menor. O Boletim", motivo)
+
+    def test_o_que_a_area_de_drenagem_nao_prova_esta_dito(self):
+        motivo = self.vr["codigo_ana_nao_e"]["por_que_nao"]
+        self.assertIn("827", motivo, "a comparação que desmente tem de estar no dado")
+        self.assertIn("1.240", motivo)
+
+    def test_o_traco_e_o_zero_convivendo_no_mesmo_cartao_estao_registrados(self):
+        """
+        A captura de 07/09 mostra '---' nas cinco acumuladas e '0,00 mm' na
+        chuva atual, no mesmo cartão. A página prova, sozinha, que '---' é o
+        'não tenho dado' desta fonte — e que o 0,00 ao lado, numa estação
+        parada há 142 dias, é número fabricado. A regra de atenção da legenda
+        lê justamente esse campo.
+        """
+        motivo = self.vr["cotas_m_por_que_vazio"]
+        self.assertIn("---", motivo)
+        self.assertIn("35,00 mm", motivo)
+
     def test_as_cotas_do_salseiro_nao_aparecem_em_lugar_nenhum_da_cidade(self):
         texto = json.dumps(self.vr, ensure_ascii=False)
         for chave in ("atencao", "alerta", "emergencia", "inundacao"):
