@@ -267,6 +267,45 @@ class MesesPareados(unittest.TestCase):
             achados, self.DESALINHADOS_CONHECIDOS,
             "um desalinhamento conhecido sumiu — se foi resolvido, tirar daqui com a fonte que resolveu")
 
+    def test_a_excecao_de_lista_esparsa_e_estreita_e_tem_motivo(self):
+        """
+        `LISTAS_SO_COM_CHEIA_GRANDE` é uma porta na trava, e porta sem tranca
+        vira corredor. Duas coisas a seguram: cada entrada precisa de MOTIVO
+        escrito, e a lista precisa continuar curta — se um dia meia bacia
+        estiver aqui, a trava não protege mais nada.
+        """
+        self.assertIn("gaspar", vd.LISTAS_SO_COM_CHEIA_GRANDE)
+        self.assertLessEqual(len(vd.LISTAS_SO_COM_CHEIA_GRANDE), 3,
+                             "excecoes demais: a trava deixou de valer")
+        for cidade, motivo in vd.LISTAS_SO_COM_CHEIA_GRANDE.items():
+            self.assertGreater(len(motivo), 60, f"{cidade} sem motivo escrito")
+
+    def test_a_esparsidade_de_gaspar_continua_verdadeira_NO_DADO(self):
+        """
+        A exceção vale por uma MEDIÇÃO, não por opinião: nenhum evento de
+        Blumenau abaixo de 8,50 m tem par em Gaspar no mesmo mês. Se alguém
+        importar as cheias pequenas de Gaspar um dia, a premissa cai e a
+        exceção tem de sair junto — este teste é quem avisa.
+        """
+        ev = self.enchentes["eventos"]
+        g_meses = {e["data"][:7] for e in ev if e["cidade"] == "gaspar"}
+        bl = [e for e in ev
+              if e["cidade"] == "blumenau" and len(e["data"]) >= 7 and e.get("pico_m")]
+        com_par = [e["pico_m"] for e in bl if e["data"][:7] in g_meses]
+        self.assertTrue(com_par, "Gaspar sumiu da base")
+        self.assertGreaterEqual(
+            min(com_par), 8.0,
+            "a lista de Gaspar deixou de ter limiar — reveja LISTAS_SO_COM_CHEIA_GRANDE")
+
+    def test_a_excecao_nao_desliga_a_trava_para_quem_nao_esta_nela(self):
+        """Blumenau como jusante continua sendo cobrada."""
+        est, enc = self.base()
+        enc["eventos"] = [
+            {"rio": "itajai-acu", "cidade": "rio-do-sul", "data": "1954-10", "pico_m": 10.7},
+            {"rio": "itajai-acu", "cidade": "blumenau", "data": "1954-12-01", "pico_m": 9.0},
+        ]
+        self.assertTrue([a for a in _meses(est, enc) if "evento de blumenau" in a])
+
     def test_um_so_evento_de_jusante_no_mesmo_mes_ja_alinha(self):
         # Blumenau tem 113 registros, vários por ano: a cheia de montante casa
         # com UMA delas. Exigir que todas batessem alarmaria sobre dado correto.

@@ -477,6 +477,35 @@ o projeto.
 
 ## Pendências
 
+- [x] **Gaspar: 49 registros importados, 21 segurados — a coluna do ANO está desalinhada em dois
+  trechos da fonte (07/09/2026).** A tabela chegou pelo celular do Jefferson (a página é
+  inalcançável daqui e da VPS): **70 linhas, 1852–2023**. Gaspar sai de **zero** picos para **49** —
+  a maior entrada única já feita na base. **O achado:** 21 registros não pareavam, e as duas
+  hipóteses óbvias foram refutadas no conjunto ("mês um a menos" conserta 6 e quebra 38; "ano
+  deslocado uma linha" conserta 12 e quebra 29). Mas **onze dos acertos casam com dia e mês
+  IDÊNTICOS** a um evento já cadastrado em outro ano — ~1/365 por caso — e ficam em **dois trechos
+  contíguos** da tabela. Data imprecisa de registro antigo não produz onze igualdades exatas: é
+  coluna que escorregou uma linha. **Por isso não entram:** se o ano está errado, o pico de 8,43 m
+  publicado em 1939 é o de 1943, e parear Gaspar-1939 com Blumenau-1939 cruzaria águas de cheias
+  diferentes. Não dá para saber daqui se escorregou só o ano ou a data inteira. As duas linhas que o
+  levantamento já estranhava (`09/11/2011` e `09/06/1983`) **estão assim na página** — não era erro
+  de transcrição.
+- [x] **A importação NÃO destravou a previsão Blumenau → Gaspar, e a surpresa é instrutiva.** São
+  **48 pares no mesmo evento e ZERO utilizáveis**: Gaspar é `régua`, Blumenau é IBGE ou nulo, e a
+  previsão pareia igual com igual — corretamente, porque 20 cm de datum é erro que ninguém vê.
+  Funciona **Gaspar × Indaial (9 pares, ambos régua)**. **Consequência:** resolver o datum de
+  Blumenau ficou muito mais valioso — antes bloqueava correlação com uma cidade sem dado, agora
+  bloqueia com uma que tem 49 picos e 1.619 cotas de rua, a 2 h a jusante no tronco.
+- [x] **A trava dos meses pareados disparou 38 vezes, e medir provou que era propriedade da fonte.**
+  `test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos` reprovou — como devia. A
+  premissa da trava é que as duas cidades registram os MESMOS eventos, e com Gaspar é falso: nos
+  meses em que Gaspar registra, a mediana de Blumenau é **11,13 m** (mínimo 8,50); nos que não
+  registra, **9,60 m** (mínimo 5,65). **Nenhum evento de Blumenau abaixo de 8,50 m tem par em
+  Gaspar** — o menor pico da lista é 6,19 m e a primeira rua alaga a 6,20 m: é lista de cheias que
+  ALAGARAM. Entrou `LISTAS_SO_COM_CHEIA_GRANDE` com o motivo medido, e três testes: exceção precisa
+  de motivo, precisa continuar curta (máx. 3 cidades), e **a esparsidade tem de continuar verdadeira
+  no dado**. Ruído de 38 avisos é como uma trava morre — deixando de ser lida. Detalhe em
+  `docs/GASPAR-IMPORTACAO.md`.
 - [x] **Corrigi a minha própria auditoria: os "10 elos de trânsito faltando" não são 10 coisas a
   procurar (07/09/2026).** A primeira versão de `docs/LACUNAS-DE-DADOS.md` listou os dez numa tabela
   chapada, sob o título "os elos que faltam" — lê-se como lista de tarefas. Fui à fonte: **nove

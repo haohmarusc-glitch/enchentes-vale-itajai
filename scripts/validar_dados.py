@@ -679,6 +679,27 @@ def valida_monotonia_transito() -> None:
                 )
 
 
+#: Cidades cuja lista publicada só traz as cheias GRANDES, e por isso não
+#: servem como jusante em `valida_meses_pareados`.
+#:
+#: MEDIDO EM 07/09/2026, ao importar os 70 registros de Gaspar. A trava supõe
+#: que as duas cidades registram os MESMOS eventos; com Gaspar isso é falso, e
+#: a diferença é grande: nos meses em que Gaspar tem registro, a mediana de
+#: Blumenau é 11,13 m (mínimo 8,50); nos meses em que não tem, 9,60 m (mínimo
+#: 5,65). **Nenhum evento de Blumenau abaixo de 8,50 m tem par em Gaspar.** O
+#: menor pico da lista de Gaspar é 6,19 m, e a primeira rua dele alaga a
+#: 6,20 m — é uma lista de cheias que ALAGARAM, não de todas as subidas.
+#:
+#: Sem esta exceção a importação gerava 38 avisos de "desalinhamento" que são
+#: propriedade das fontes, não erro de dado — e ruído nessa quantidade faz a
+#: trava parar de ser lida, que é como uma trava morre.
+LISTAS_SO_COM_CHEIA_GRANDE = {
+    "gaspar": "a lista publicada pela Defesa Civil de Gaspar tem limiar de magnitude "
+              "(menor pico 6,19 m; a primeira rua alaga a 6,20 m). Medido em 07/09/2026: "
+              "nenhum evento de Blumenau abaixo de 8,50 m tem par em Gaspar.",
+}
+
+
 def valida_meses_pareados() -> None:
     """
     Evento do mesmo ano em duas cidades do tronco tem de cair no mesmo MÊS.
@@ -718,6 +739,11 @@ def valida_meses_pareados() -> None:
 
         for i, cima in enumerate(tronco):
             for baixo in tronco[i + 1:]:
+                # Jusante que só publica cheia grande não desmente montante:
+                # a ausência é do critério da fonte, não da data. Ver
+                # LISTAS_SO_COM_CHEIA_GRANDE.
+                if baixo in LISTAS_SO_COM_CHEIA_GRANDE:
+                    continue
                 for data_cima in por_cidade.get(cima, []):
                     if len(data_cima) < 7:
                         continue  # só o ano: não dá para comparar mês
