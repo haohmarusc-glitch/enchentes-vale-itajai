@@ -61,6 +61,29 @@ from comum import DADOS, baixar, espera_turno, le_json
 
 URL = "https://defesacivil.gaspar.sc.gov.br/enchentes"
 
+#: POR QUE ESTES REGISTROS ENTRAM COMO `referencia: "régua"` (07/09/2026).
+#:
+#: A página `/enchentes` **não declara referência vertical nenhuma** — a leitura
+#: direta da fonte confirmou isso, e a objeção é justa: cadastrar "régua" sem a
+#: fonte dizer seria supor. O que sustenta a decisão é uma MEDIÇÃO, não a
+#: suposição:
+#:
+#:     menor cota de rua de Gaspar  : 6,20 m   (1.619 pontos)
+#:     menor pico da lista histórica: 6,19 m   (70 registros)
+#:     diferença                    : 1 cm
+#:
+#: As cotas de rua vêm do estudo CEOPS/FURB (coord. Ademar Cordeiro), que
+#: DECLARA a referência: "régua da ANA na empresa Círculo". A lista histórica
+#: começa exatamente onde a primeira rua alaga, a um centímetro. Dois conjuntos
+#: publicados por caminhos diferentes não concordam no piso por acaso: é a mesma
+#: escala, e a lista é de cheias QUE ALAGARAM.
+#:
+#: É EVIDÊNCIA FORTE, NÃO PROVA. A fonte continua sem declarar, e se a
+#: Superintendência disser que são pontos diferentes, isto aqui é o que muda.
+#: `teste_importar_gaspar_enchentes.py` trava o 1 cm: se os dois pisos se
+#: afastarem, a decisão precisa ser revista.
+REFERENCIA = "régua"
+
 #: Tolerância de pareamento do site, em dias (`web/src/logica/datas.ts`).
 #: Repetida aqui porque as duas implementações divergirem em silêncio já custou
 #: caro neste projeto — se mudar lá, muda aqui, e o teste cobra lendo o arquivo
@@ -303,7 +326,7 @@ def monta(crus: list[dict], eventos: list[dict]) -> list[dict]:
             "data": inicio,
             "pico_m": pico,
             "confianca": "alta",
-            "referencia": "régua",
+            "referencia": REFERENCIA,
             "fonte": fonte,
             "data_e_do_inicio_do_evento": True,
         }
