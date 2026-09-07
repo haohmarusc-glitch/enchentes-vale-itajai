@@ -19,9 +19,9 @@ que entrega quase o mesmo valor.
 
 | Cidade | Cotas em `cotas-ruas.json` | Coordenada | Mancha observada | Nível em tempo real |
 |---|---|---|---|---|
-| **Gaspar** | 1.619 | **sim** — `brutos/gaspar-cotas-2020.json`, 1.615 pontos com `lat`/`lon` | — | sim (DC Gaspar, estação 21) — **par cota↔leitura provado em 04/09** |
+| **Gaspar** | 1.615 | **sim** — `brutos/gaspar-cotas-2020.json`, 1.615 pontos com `lat`/`lon` | — | sim (DC Gaspar, estação 21) — **par cota↔leitura provado em 04/09** |
 | **Brusque** | 377 | **sim** — `brutos/brusque-cotas-2023.json`, 357 com `lat`/`lon`; e `brusque-mymaps-cotas.json`, 3.688 com a coordenada em `coord` (`"lon,lat,0"`, ainda não separada em campos) | — | sim (régua municipal) |
-| Blumenau | 2.042 | **não** — só nome de rua e bairro | — | sim (AlertaBlu) |
+| Blumenau | 2.023 | **não** — só nome de rua e bairro | — | sim (AlertaBlu) |
 | Rio do Sul | 555 | **não** | — | sim (3 réguas) |
 | Itajaí | **nenhuma** (cota por endereço, ArcGIS fechado) | — | **10 manchas 1983–2015** (`data/manchas/itajai/`) | 11 réguas |
 
@@ -132,7 +132,7 @@ vem de outra página (a da Defesa Civil de Itajaí), que é exatamente a configu
 Sul. O formato do problema não mudou — cota e leitura vêm quase sempre de páginas diferentes, e nome
 igual não prova régua igual. O que mudou é que em Gaspar a pergunta foi respondida.
 
-**Blumenau e Rio do Sul: só depois de geocodificar.** Casar 2.042 nomes de rua com traçados do OSM é
+**Blumenau e Rio do Sul: só depois de geocodificar.** Casar 2.023 nomes de rua com traçados do OSM é
 factível (Nominatim/Overpass), mas com erro: ruas homônimas, grafias diferentes, trechos longos com cota
 única. Tem que ser feito **uma vez, revisado, e gravado** — não em runtime. E cada rua geocodificada
 precisa de `confianca` (casou exato / casou aproximado / não casou).

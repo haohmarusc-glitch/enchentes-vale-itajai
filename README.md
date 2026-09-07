@@ -487,6 +487,22 @@ o projeto.
   registros cuja data só fecha com o ano da linha de cima, com a tabela linha a linha. O ofício
   **não pede correção**: diz que se forem cheias locais de Gaspar entram como estão, e que a única
   coisa que não dá para fazer é escolher por conta própria.
+- [x] **⚠️ A lista das "próximas 5 ruas a alagar" de Gaspar mostrava três ruas — quatro cotas
+  duplicadas.** A conferência dos **1.615** pontos que a página da Defesa Civil publica contra os
+  **1.619** do repositório achou quatro linhas repetidas: Petúnia (6,20 m), Costa Rica (6,20 m),
+  Hilberto Gaertner (6,25 m) e Sertão Verde (6,34 m) entraram **duas vezes** — uma pela consulta rua
+  a rua do CEOPS/FURB de 2017 (só nome e cota) e outra pela camada do Google My Maps de 2020 (nome,
+  bairro, ponto e coordenada). Mesma medição, mesmo centímetro, mesma referência. **Não era ruído de
+  contagem:** as quatro estavam no fundo da escala da cidade, e `proximas()` conta LINHAS — com o rio
+  abaixo de 6,20 m a lista das *próximas 5 a alagar* gastava cinco lugares em **três ruas**, duas
+  delas repetidas, e empurrava a rua seguinte para fora. A lista que existe para dizer quem alaga
+  primeiro escondia uma rua. As quatro saíram e `valida_cota_de_rua_duplicada` passa a barrar o caso,
+  com regra estreita de propósito: rua comprida **tem** dois pontos na mesma cota (a Adolfo Radunz
+  alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
+  barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
+  Gaspar: 1.619 → **1.615**, exatamente o que a fonte publica. Fica anotado o resíduo que **não** foi
+  explicado: a página conta 621 valores distintos e o arquivo conta 623, com a faixa batendo ao
+  centímetro (6,20 a 19,19 m).
 - [x] **⚠️ Defeito meu, achado ao escrever o ofício: eram 49 registros de Gaspar, viraram 48.** O de
   **23/11/2013 (7,80 m)** entrou marcado como `pareamento: "confere"`, e o único evento próximo era
   `blumenau 2013` — granularidade de **ano**, que o site **nunca** pareia. A minha
@@ -505,7 +521,7 @@ o projeto.
   três barragens estaduais (números de **altitude de reservatório**: 273,75 / 350,44 / 388,07) e
   saíram três pluviômetros locais. **Mesmo com a rede funcionando não haveria o que coletar.** E não
   há plano B: a API estadual declara `tem_nivel_do_rio=false` para a DCSC-00005, e a ANA 83840000
-  encerrou em 12/2021 **sem sucessora**. A cidade tem **1.619 cotas de rua e 49 picos** e o site não
+  encerrou em 12/2021 **sem sucessora**. A cidade tem **1.615 cotas de rua e 48 picos** e o site não
   consegue dizer em que nível o rio está — o pino fica cinza, que é o honesto. **O que resolve:**
   perguntar à Superintendência de Gaspar se a régua mudou de endereço, ou pedir o endpoint.
 - [x] **O vigia consertado: uma fonte que morre não fica mais invisível (07/09/2026).**
@@ -541,7 +557,7 @@ o projeto.
   previsão pareia igual com igual — corretamente, porque 20 cm de datum é erro que ninguém vê.
   Funciona **Gaspar × Indaial (9 pares, ambos régua)**. **Consequência:** resolver o datum de
   Blumenau ficou muito mais valioso — antes bloqueava correlação com uma cidade sem dado, agora
-  bloqueia com uma que tem 49 picos e 1.619 cotas de rua, a 2 h a jusante no tronco.
+  bloqueia com uma que tem 48 picos e 1.615 cotas de rua, a 2 h a jusante no tronco.
 - [x] **A trava dos meses pareados disparou 38 vezes, e medir provou que era propriedade da fonte.**
   `test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos` reprovou — como devia. A
   premissa da trava é que as duas cidades registram os MESMOS eventos, e com Gaspar é falso: nos
@@ -769,7 +785,7 @@ o projeto.
   ponto não afirma nada, já que "não sei" não é "não alagou"; (4) **dois estados, nunca degradê por
   metro**, com cor fora da paleta de faixa e do violeta do bruto, porque rua alagada não é faixa de
   rio. O **vazio entre os pontos continua vazio**, e o painel diz isso com todas as letras. A tabela
-  é carregada sob demanda: quem abre o mapa só para ver o nível não baixa 4.593 registros.
+  é carregada sob demanda: quem abre o mapa só para ver o nível não baixa 4.570 registros.
 
 - [x] **O Monitor abre por cidade: `/monitor/:cidadeId` (05/09/2026).** A tela da cidade já existia,
   mas o mapa dela é uma janela fixa — sem zoom, sem satélite, sem arrastar. Agora há um endereço
@@ -1006,7 +1022,7 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - [ ] **Resolver a referência altimétrica de Blumenau** — teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou resposta da FURB. Enquanto não sair, a regra bloqueante do `CLAUDE.md` vale: o site rotula cada ponto e recusa parear referências diferentes, ao custo de a previsão Rio do Sul → Blumenau ficar em "dados insuficientes".
 - [ ] _(opcional)_ Seletor régua/IBGE nos gráficos de Blumenau, aplicando ±0,20 m só para visualizar. Só vale a pena se a verificação acima demorar — o gráfico já mostra a referência de cada ponto e avisa quando mistura.
 - [ ] **Levantar os picos de Itajaí de 1983, 1984, 2001, 2008, 2011, jul e set/2013, jun/2014 e out/2015.** As manchas de inundação desses nove eventos já estão no repositório, mas nenhuma tem o nível do rio correspondente — a legenda do mapa fica sem dizer "isto foi com o rio em X m", que é o que tornaria a mancha comparável com o nível de hoje.
-- [ ] **Conseguir as tabelas de cota de rua que faltam.** Rio do Sul e Blumenau saíram (ver Concluído). Brusque e Gaspar saíram também, pelos KML das respectivas Defesas Civis (ver Concluído). Resta **Itajaí** (ArcGIS fechado por token — ofício à prefeitura), que segue sendo a única cidade com manchas de inundação no repositório e nenhuma cota de rua. Hoje são **4.593 pontos**: 2.042 de Blumenau, 1.619 de Gaspar, 555 de Rio do Sul e 377 de Brusque.
+- [ ] **Conseguir as tabelas de cota de rua que faltam.** Rio do Sul e Blumenau saíram (ver Concluído). Brusque e Gaspar saíram também, pelos KML das respectivas Defesas Civis (ver Concluído). Resta **Itajaí** (ArcGIS fechado por token — ofício à prefeitura), que segue sendo a única cidade com manchas de inundação no repositório e nenhuma cota de rua. Hoje são **4.570 pontos**: 2.023 de Blumenau, 1.615 de Gaspar, 555 de Rio do Sul e 377 de Brusque.
 - [x] **Coletar a API pública Asthon de Rio do Sul — feito para Vidal Ramos.** `public.asthon.com.br`, `city_id 4214805`. Das 29 estações do Alto Vale, `analisar_asthon.py` já dizia que **só Vidal Ramos** serve como régua de cidade; as demais são barragem (reservatório), altitude ou a cota da Ponte Dom Tito Buss (4,50/5,50/6,50) copiada para outra régua. `scripts/coleta_asthon.py` coleta Vidal Ramos por lista fechada de `station_id`, converte o carimbo de UTC para Brasília e é fiado no `coleta_niveis.py` (ver Concluído). Taió e Ituporanga **não** saem por aqui (só barragem) — seguem pela pendência do HidroWeb/ofício. As barragens ficam anotadas como sinal antecipado de cheia (subiram +12 m em 48 h em 01/09), nunca como nível de cidade.
 - [ ] **Conferir as cotas de Blumenau contra o PDF oficial de 2014** (Farol Blumenau, bloqueia robôs — pelo navegador). As 1.938 estão como `confianca: media`; onde os dois baterem, ganham respaldo oficial, e onde divergirem vale o mecanismo de `divergencias`. O definitivo é a FURB, com entrega prevista para **novembro de 2026**.
 - [ ] **Cota de referência de Vidal Ramos e Ituporanga — Taió saiu.** Taió ganhou as faixas do Plano de Contingência da COMPDEC em 04/09 (ver Concluído). Restam duas, e por motivos diferentes: **Ituporanga** não apareceu no levantamento de 41 municípios (não há arquivo dela); **Vidal Ramos** apareceu, mas a COMPDEC **não publicou tabela** — o que existe é comportamento observado (transborda "acima de 3 m" segundo a Defesa Civil citada pela imprensa em 2015, ~3,50 m num levantamento do mesmo ano, ~3,80 m de teto em eventos recentes). Não foi gravado: número de imprensa sobre comportamento não é faixa de acionamento, e a cabeceira do Mirim sobe em minutos — errar para cima ali é caro. Ver `docs/cotas-municipais/vidal-ramos.md`.

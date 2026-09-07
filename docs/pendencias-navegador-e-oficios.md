@@ -144,7 +144,7 @@ Assunto: Solicitação: acesso ao nível do Itajaí-Açu em Gaspar e confirmaç�
 
 Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados são públicos (github.com/haohmarusc-glitch/enchentes-vale-itajai) e tudo é apresentado com a fonte citada.
 
-Antes dos pedidos, o agradecimento: o material que a Defesa Civil de Gaspar publica é, de longe, o mais completo que encontrei na bacia. O mapa "Cotas de enchente" no Google My Maps rendeu 1.619 pontos de rua com cota, e o Plano de Contingência trouxe as faixas de monitoramento do rio, que eram exatamente o que faltava para Gaspar. Conferi um material contra o outro: das 26 vias do quadro do item 4.2.2, 24 batem ao centavo com os pontos do mapa. É uma consistência que não encontrei em nenhuma outra cidade.
+Antes dos pedidos, o agradecimento: o material que a Defesa Civil de Gaspar publica é, de longe, o mais completo que encontrei na bacia. O mapa "Cotas de enchente" no Google My Maps rendeu 1.613 pontos de rua com cota, e o Plano de Contingência trouxe as faixas de monitoramento do rio, que eram exatamente o que faltava para Gaspar. Conferi um material contra o outro: das 26 vias do quadro do item 4.2.2, 24 batem ao centavo com os pontos do mapa. É uma consistência que não encontrei em nenhuma outra cidade.
 
 Tenho quatro pedidos, em ordem de importância.
 

@@ -2,7 +2,7 @@
 """Importa o histórico de enchentes que a Defesa Civil de Gaspar publica.
 
 POR QUE EXISTE (07/09/2026)
-Gaspar tem **zero picos** em `enchentes.json` e 1.619 cotas de rua: sabe-se em
+Gaspar tem **zero picos** em `enchentes.json` e 1.615 cotas de rua: sabe-se em
 que nível cada rua alaga e não se sabe em que nível o rio esteve. A página
 `/enchentes` do município traz **71 registros de 1852 a 2023**, cada um com
 data de início, data de término e metragem máxima. Seria a maior entrada única
@@ -68,7 +68,7 @@ URL = "https://defesacivil.gaspar.sc.gov.br/enchentes"
 #: fonte dizer seria supor. O que sustenta a decisão é uma MEDIÇÃO, não a
 #: suposição:
 #:
-#:     menor cota de rua de Gaspar  : 6,20 m   (1.619 pontos)
+#:     menor cota de rua de Gaspar  : 6,20 m   (1.615 pontos)
 #:     menor pico da lista histórica: 6,19 m   (70 registros)
 #:     diferença                    : 1 cm
 #:

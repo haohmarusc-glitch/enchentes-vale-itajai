@@ -20,7 +20,7 @@ de projeto, nunca medida.
 | Ascurra | acu | — | — | — | — | — | — | — |
 | Indaial | acu | — | sim | sim | 16 | — | — | — |
 | Blumenau | acu | — | sim | — | 113 | sim | 2023 | sim |
-| Gaspar | acu | — | sim | sim | 49 | sim | 1619 | sim |
+| Gaspar | acu | — | sim | sim | 48 | sim | 1615 | sim |
 | Ilhota | acu | — | sim | — | — | — | — | sim |
 | Itajaí | acu | — | — | — | — | — | — | n/a |
 | Timbó | acu | — | — | — | 1 | — | — | — |
@@ -52,7 +52,7 @@ Com as duas mas sem conferência na fonte: **Taió**, **Rio do Sul**, **Blumenau
 
 ### 3. Hora do pico — o que destrava `transito.json`
 
-**198 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
+**197 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
 
 A hora só existe em boletim de cheia: boletim diário da Defesa Civil estadual, ofício municipal do dia, série horária da ANA/HidroWeb.
 
@@ -76,7 +76,7 @@ Cada estação conferida traz série inteira de cota, com hora — resolve os it
 
 Sem nenhuma cota de rua: **Taió**, **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
-Com cota mas **sem coordenada** (2613 endereços): **Blumenau** 2023, **Rio do Sul** 555, **Brusque** 29, **Gaspar** 6. Aparecem na busca por nome, não no mapa. Geocodificação pendente.
+Com cota mas **sem coordenada** (2609 endereços): **Blumenau** 2023, **Rio do Sul** 555, **Brusque** 29, **Gaspar** 2. Aparecem na busca por nome, não no mapa. Geocodificação pendente.
 
 ### 7. Trânsito — os elos que faltam, e quais valem procurar
 

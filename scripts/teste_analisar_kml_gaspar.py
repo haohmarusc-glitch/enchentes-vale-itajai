@@ -25,6 +25,39 @@ from comum import DADOS
 #: `data_fonte` dos registros gerados por esta importação.
 CAMADA_2020 = "2020-04"
 
+#: A consulta rua a rua do CEOPS/FURB, como a fonte de 2017 a publicava.
+#:
+#: A prova morava no cadastro operacional, e isso a tornava frágil: em
+#: 07/09/2026 quatro das cinco linhas saíram de `cotas-ruas.json` por serem a
+#: MESMA medição já presente na camada de 2020, com menos detalhe — e a
+#: limpeza derrubou de imediato os dois testes que sustentam a importação
+#: inteira dos 1.613 pontos. Não porque a conferência tivesse deixado de valer:
+#: porque ela estava lendo o lugar errado.
+#:
+#: A conferência compara a camada de 2020 com **o que a fonte de 2017 dizia** —
+#: não com o que sobrou no cadastro depois. Por isso lê o bruto, que é o
+#: registro daquela consulta e não muda quando o cadastro é limpo.
+BRUTO_2017 = DADOS / "brutos" / "gaspar-cotas-2017-consulta.json"
+
+
+def conhecimento_anterior_a_2020() -> list[dict]:
+    """
+    Tudo o que se sabia sobre as cotas de Gaspar ANTES da camada de 2020.
+
+    Cruzar o KML com os registros que ele mesmo gerou seria compará-lo consigo
+    mesmo — daí a camada de 2020 ficar de fora. O que entra é a consulta de
+    2017, lida do bruto, mais qualquer cota de Gaspar de outra fonte que esteja
+    no cadastro (o Plano de Contingência de 2026, por exemplo).
+    """
+    de_2017 = json.loads(BRUTO_2017.read_text(encoding="utf-8"))["cotas"]
+    outras = [
+        c for c in json.loads(
+            (DADOS / "cotas-ruas.json").read_text(encoding="utf-8"))["cotas"]
+        if c.get("cidade") == CIDADE
+        and c.get("data_fonte") not in (CAMADA_2020, "2017")
+    ]
+    return de_2017 + outras
+
 
 class TestNumero(unittest.TestCase):
     def test_le_virgula_e_ponto(self):
@@ -106,13 +139,7 @@ class TestArquivoReal(unittest.TestCase):
     def setUpClass(cls):
         cls.pontos = carregar_bruto()
         cls.minimas = minima_por_rua(cls.pontos)
-        # Só o que se sabia ANTES desta importação. Cruzar o KML com os
-        # registros que ele mesmo gerou seria compará-lo consigo mesmo.
-        cls.cadastro = [
-            c for c in json.loads(
-                (DADOS / "cotas-ruas.json").read_text(encoding="utf-8"))["cotas"]
-            if c.get("cidade") == CIDADE and c.get("data_fonte") != CAMADA_2020
-        ]
+        cls.cadastro = conhecimento_anterior_a_2020()
 
     def test_todo_ponto_tem_numero_e_rua(self):
         for p in self.pontos:
@@ -167,6 +194,43 @@ class TestArquivoReal(unittest.TestCase):
     def test_o_bruto_avisa_que_campo_chamado_cota_nao_prova_nada(self):
         meta = json.loads((DADOS / BRUTO).read_text(encoding="utf-8"))["_meta"]
         self.assertIn("armadilha", json.dumps(meta, ensure_ascii=False))
+
+
+class TestAProvaNaoMoraNoCadastro(unittest.TestCase):
+    """
+    A conferência que autorizou a importação não pode depender do cadastro.
+
+    Em 07/09/2026 quatro cotas de Gaspar saíram de `cotas-ruas.json` — eram a
+    mesma medição da camada de 2020 repetida com menos detalhe, e duas linhas
+    faziam a lista das "próximas a alagar" gastar dois lugares numa rua só.
+    A limpeza era certa, e mesmo assim derrubou na hora os dois testes que
+    sustentam a entrada dos 1.613 pontos: as quatro ruas que saíram eram
+    exatamente as quatro em comum com o KML.
+
+    Prova que some quando o cadastro é limpo não é prova. A daqui em diante
+    mora no bruto de 2017, e estes testes travam isso.
+    """
+
+    def test_as_quatro_ruas_da_conferencia_nao_estao_mais_no_cadastro(self):
+        cadastro = json.loads(
+            (DADOS / "cotas-ruas.json").read_text(encoding="utf-8"))["cotas"]
+        de_2017_no_cadastro = {
+            c["rua"] for c in cadastro
+            if c.get("cidade") == CIDADE and c.get("data_fonte") == "2017"
+        }
+        self.assertEqual(de_2017_no_cadastro, {"Rua Lino"},
+                         "só a Rua Lino sobrevive no cadastro: a camada de 2020 não a tem")
+
+    def test_e_ainda_assim_a_conferencia_acha_as_quatro(self):
+        comuns = cruzar_com_cadastro(carregar_bruto(), conhecimento_anterior_a_2020())
+        self.assertEqual(len(comuns), 4)
+        for c in comuns:
+            self.assertTrue(c["bate"] and c["bate_no_menor"], c["rua"])
+
+    def test_o_bruto_diz_por_que_existe(self):
+        bruto = json.loads(BRUTO_2017.read_text(encoding="utf-8"))
+        self.assertEqual(len(bruto["cotas"]), 5)
+        self.assertIn("prova", json.dumps(bruto, ensure_ascii=False).lower())
 
 
 if __name__ == "__main__":

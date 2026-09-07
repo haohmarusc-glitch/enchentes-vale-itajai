@@ -119,7 +119,7 @@ calado.
 
 | Cidade | Cotas | Coordenada | Mapa da cidade |
 |---|---|---|---|
-| **Gaspar** | 1.619 | 1.613 | ✅ pontos **com estado** (par cota↔leitura provado) |
+| **Gaspar** | 1.615 | 1.613 | ✅ pontos **com estado** (par cota↔leitura provado) |
 | **Brusque** | 377 | 348 | ✅ pontos **sem estado** (a régua da leitura não é a das cotas) |
 | **Blumenau** | 2.023 | **0** | ❌ só por nome, na tela da cidade |
 | **Rio do Sul** | 555 | **0** | ❌ idem |

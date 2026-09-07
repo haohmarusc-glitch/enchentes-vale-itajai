@@ -14,6 +14,7 @@ import json
 import math
 import re
 import sys
+import unicodedata
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
@@ -1553,6 +1554,74 @@ def valida_referencia_das_cotas_de_rua() -> None:
 
 
 
+def valida_cota_de_rua_duplicada() -> None:
+    """
+    A mesma rua, a mesma cota, duas linhas — uma delas sem ponto.
+
+    O arquivo cresce por importação, e a mesma medição chega por caminhos
+    diferentes: o estudo do CEOPS/FURB veio uma vez pela consulta rua a rua
+    (só nome e cota) e outra pela camada do Google My Maps da Defesa Civil
+    (nome, bairro, ponto e coordenada). Quando as duas entram, o ponto vira
+    duas linhas.
+
+    POR QUE É ERRO, E NÃO AVISO (07/09/2026). `proximas()` devolve as N ruas
+    seguintes a alagar contando LINHAS. As quatro duplicatas de Gaspar estavam
+    todas no fundo da escala — 6,20 · 6,20 · 6,25 · 6,34 —, então a lista das
+    "próximas 5 a alagar" mostrava TRÊS ruas em cinco lugares, duas delas
+    repetidas, e empurrava para fora justamente a rua seguinte. A lista que
+    existe para avisar quem alaga primeiro escondia uma rua. O mesmo vale para
+    o cartão "N de M ruas já alagadas", que também conta linhas.
+
+    A REGRA É ESTREITA DE PROPÓSITO. Rua comprida TEM dois pontos na mesma
+    cota — a Adolfo Radunz alaga a 9,55 m na esquina da Macaé e depois da casa
+    nº 105 — e são 143 pares assim no arquivo. Barrar "mesma rua, mesma cota"
+    apagaria todos eles. O que se barra é só o caso em que uma das linhas NÃO
+    TEM PONTO: sem ponto ela não pode ser um ponto distinto, é a mesma medição
+    com menos detalhe. Some a linha pobre, fica a que tem bairro, ponto e
+    coordenada.
+    """
+    cotas = le_json("cotas-ruas.json").get("cotas", [])
+    por_medicao: dict[tuple, list[dict]] = {}
+    for c in cotas:
+        if c.get("cota_m") is None:
+            continue
+        chave = (c.get("cidade"), nome_de_rua_comparavel(c.get("rua", "")), c["cota_m"])
+        por_medicao.setdefault(chave, []).append(c)
+
+    dominadas: list[str] = []
+    for (cidade, rua, cota), linhas in sorted(por_medicao.items()):
+        if len(linhas) < 2:
+            continue
+        sem_ponto = [linha for linha in linhas if not linha.get("ponto")]
+        com_ponto = [linha for linha in linhas if linha.get("ponto")]
+        if sem_ponto and com_ponto:
+            dominadas.append(f"{cidade}/{rua} a {cota:.2f} m")
+
+    if dominadas:
+        erro(f"cotas-ruas.json: {len(dominadas)} cota(s) repetida(s) — mesma cidade, mesma "
+             f"rua e mesma cota, uma linha COM ponto e outra SEM "
+             f"(ex.: {'; '.join(dominadas[:3])}). Sem ponto ela não é outro ponto da rua, é "
+             "a mesma medição com menos detalhe. Duas linhas fazem 'proximas()' gastar dois "
+             "lugares numa rua só e empurrar a rua seguinte para fora da lista. Apague a "
+             "linha sem ponto e mantenha a que tem bairro, ponto e coordenada.")
+
+
+def nome_de_rua_comparavel(rua: str) -> str:
+    """
+    Nome de rua reduzido ao que identifica a rua, para comparar cadastros.
+
+    "Av. Hilberto Gaertner" e "Avenida Hilberto Gaertner" são a mesma avenida:
+    uma fonte abreviou, a outra não. Tira acento, caixa, hífen e o tipo do
+    logradouro na frente. Só para COMPARAR — o nome que vai para a tela é
+    sempre o que a fonte publicou.
+    """
+    texto = unicodedata.normalize("NFD", rua or "")
+    texto = "".join(c for c in texto if unicodedata.category(c) != "Mn")
+    texto = texto.replace("-", " ").lower().strip()
+    texto = re.sub(r"^(av\.?|avenida|r\.?|rua)\s+", "", texto)
+    return re.sub(r"\s+", " ", texto)
+
+
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
@@ -1569,6 +1638,7 @@ def main() -> int:
     valida_codigo_ana()
     valida_ruas_sem_coordenada()
     valida_referencia_das_cotas_de_rua()
+    valida_cota_de_rua_duplicada()
     valida_ordem_das_cotas()
     valida_cobertura_da_mare()
 

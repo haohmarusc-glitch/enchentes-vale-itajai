@@ -7,7 +7,7 @@ Traz a estação do Itajaí-Açu em Gaspar, as barragens e pluviômetros.
 
 POR QUE GASPAR
 --------------
-Gaspar tem **1.619 cotas de rua**, e desde 01/09/2026 tem também cota de régua:
+Gaspar tem **1.615 cotas de rua**, e desde 01/09/2026 tem também cota de régua:
 5,00 / 6,00 / 7,00 m, do Plano de Contingência da Defesa Civil do município (ver
 `conferir_gaspar_plano.py`). A ordem se inverteu — o que falta agora não é a
 cota, é a **leitura**: o aviso de Gaspar passa a funcionar no instante em que
