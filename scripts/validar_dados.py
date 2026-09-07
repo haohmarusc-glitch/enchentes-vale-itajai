@@ -59,6 +59,16 @@ CODIGO_DCSC_ESPERADO = {
     ("itajai-acu", "blumenau"): "DCSC-00026",
     ("itajai-acu", "gaspar"): "DCSC-00005",
     ("itajai-acu", "ilhota"): "DCSC-00030",
+    # Mirim, escritas em 07/09/2026. Ficaram null desde o começo, embora
+    # `scripts/coleta_nivel_sc.py` já lesse essas mesmas estações como estas
+    # cidades para publicar a leitura ao vivo: a ligação existia em CÓDIGO e
+    # não estava no DADO. Conferida aqui do mesmo jeito que as do Açu — o pino
+    # de cada uma cai a menos de 4 m da estação em
+    # data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json.
+    ("itajai-mirim", "vidal-ramos"): "DCSC-00024",
+    ("itajai-mirim", "botuvera"): "DCSC-00018",
+    ("itajai-mirim", "guabiruba"): "DCSC-00029",
+    ("itajai-mirim", "brusque"): "DCSC-00019",
 }
 
 erros: list[str] = []

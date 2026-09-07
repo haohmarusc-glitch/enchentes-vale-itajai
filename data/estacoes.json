@@ -554,6 +554,7 @@
           "ordem": 1,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00024",
           "verificado": false,
           "cotas_m": {},
           "fontes_tempo_real": [
@@ -575,6 +576,7 @@
           "ordem": 2,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00018",
           "verificado": false,
           "cotas_m": {},
           "fontes_tempo_real": [
@@ -591,6 +593,7 @@
           "ordem": 3,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
+          "codigo_dcsc": "DCSC-00029",
           "verificado": false,
           "observacao": "O relatório-fonte descreve o eixo Botuverá → Guabiruba → Brusque → Itajaí. Posição na sequência ainda não conferida em carta oficial.",
           "cotas_m": {},
@@ -605,7 +608,16 @@
           "nome": "Brusque",
           "ordem": 4,
           "sub_bacia": "Itajaí-Mirim",
-          "codigo_ana": null,
+          "codigo_ana": "83900000",
+          "codigo_dcsc": "DCSC-00019",
+          "codigo_ana_nome": "BRUSQUE (PCD)",
+          "codigo_ana_verificado": true,
+          "codigo_ana_escala": {
+            "inicio": "1929",
+            "fim": null
+          },
+          "codigo_ana_area_drenagem_km2": 1240,
+          "codigo_ana_verificacao": "Vinculado em 07/09/2026 por COORDENADA E POR TIPO, a regra emendada — mesmo padrão de Gaspar. Coordenada: a DCSC-00019 (que é este pino, 3,5 m medidos contra data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json) fica a 51 m da 83900000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026 — logo a estação da ANA fica a no máximo ~55 m deste pino, por desigualdade triangular. É um LIMITE, não um ponto: a coordenada da 83900000 não foi transcrita para cá, então a trava de distância ao traçado não roda sobre ela. Tipo: a ANA a cadastra como FLUVIOMÉTRICA no Itajaí-Mirim, 1.240 km², escala desde 1929, sem fim declarado. O que faltava não era prova da ANA e sim do NOSSO lado: o codigo_dcsc de Brusque era null, e por isso os 51 m mediam até uma estação que este repositório nunca tinha afirmado ser este pino. Duas evidências independentes fecharam isso: a coincidência de coordenada (3,5 m) e o coletor scripts/coleta_nivel_sc.py, que já lia DCSC-00019 como 'brusque' para publicar a leitura ao vivo do site — a ligação existia em código e não estava no dado.",
           "verificado": false,
           "regua": "Ponte Estaiada",
           "afluentes": [
@@ -626,15 +638,7 @@
             -48.9172
           ],
           "regua_das_cotas": "Ponte Estaiada",
-          "regua_das_cotas_fonte": "data/brutos/brusque-cotas-2023.json (_meta): cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184 pontos com lâmina. A leitura ao vivo vem de estação sem régua identificada; par NÃO provado.",
-          "codigo_ana_candidatos": [
-            {
-              "codigo": "83900000",
-              "nome": "BRUSQUE (PCD)",
-              "evidencia": "fluviométrica no Itajaí-Mirim, 1.240 km², escala desde 1929, a 51 m da DCSC-00019 (Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026.)",
-              "falta": "o nosso `codigo_dcsc` de Brusque é NULL — o projeto nunca registrou que este pino é a DCSC-00019. A distância de 51 m é entre a ANA e a DCSC-00019, não entre a ANA e um ponto que este repositório afirme. Preencher o codigo_dcsc (ou a coordenada da estação da ANA) fecha o vínculo."
-            }
-          ]
+          "regua_das_cotas_fonte": "data/brutos/brusque-cotas-2023.json (_meta): cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184 pontos com lâmina. A leitura ao vivo vem de estação sem régua identificada; par NÃO provado."
         },
         {
           "id": "itajai",

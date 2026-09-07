@@ -501,19 +501,59 @@ class CodigoAnaEhReguaDeRio(unittest.TestCase):
         _, avisos = self.erros(d)
         self.assertTrue([a for a in avisos if "ENCERROU" in a and "gaspar" in a])
 
-    def test_ituporanga_e_brusque_nao_escrevem_codigo_sem_os_dois_criterios(self):
+    def test_ituporanga_nao_escreve_codigo_sem_os_dois_criterios(self):
         """
-        Trava a DECISÃO, não o dado: os dois têm candidato forte e faltando
-        metade da prova — Ituporanga tem coordenada sem tipo, Brusque tem tipo
-        sem o elo DCSC do nosso lado. Um `codigo_ana` preenchido ali seria
-        vínculo por nome com aparência de vínculo por coordenada.
+        Trava a DECISÃO, não o dado: Ituporanga tem dois candidatos e nenhum
+        com a prova inteira — a 83145140 tem coordenada sem tipo, a 83250000
+        tem tipo sem coordenada. Um `codigo_ana` preenchido ali seria vínculo
+        por nome com aparência de vínculo por coordenada.
+
+        Brusque saía junto daqui até 07/09/2026; ver o teste abaixo.
         """
-        for rio, cidade_id in (("itajai-acu", "ituporanga"), ("itajai-mirim", "brusque")):
-            c = _cidade(self.real, rio, cidade_id)
-            self.assertIsNone(c["codigo_ana"], cidade_id)
-            self.assertTrue(c["codigo_ana_candidatos"], cidade_id)
-            for cand in c["codigo_ana_candidatos"]:
-                self.assertTrue(cand["falta"], "candidato sem dizer o que falta")
+        c = _cidade(self.real, "itajai-acu", "ituporanga")
+        self.assertIsNone(c["codigo_ana"])
+        self.assertTrue(c["codigo_ana_candidatos"])
+        for cand in c["codigo_ana_candidatos"]:
+            self.assertTrue(cand["falta"], "candidato sem dizer o que falta")
+
+    def test_brusque_so_fechou_porque_o_elo_do_nosso_lado_apareceu(self):
+        """
+        O que faltava em Brusque nunca foi prova da ANA — a 83900000 sempre
+        teve tipo (fluviométrica) e vizinhança (51 m da DCSC-00019). Faltava o
+        NOSSO lado: `codigo_dcsc` era null, então os 51 m mediam até uma
+        estação que este repositório nunca tinha afirmado ser este pino.
+
+        Escrever o `codigo_ana` sem o `codigo_dcsc` reabriria exatamente o
+        buraco que o candidato descrevia, então os dois andam juntos aqui.
+        """
+        c = _cidade(self.real, "itajai-mirim", "brusque")
+        self.assertEqual(c["codigo_ana"], "83900000")
+        self.assertEqual(c["codigo_dcsc"], "DCSC-00019")
+        self.assertNotIn("codigo_ana_candidatos", c)
+        self.assertIn("DCSC-00019", c["codigo_ana_verificacao"])
+
+    def test_o_pino_de_cada_cidade_com_codigo_dcsc_cai_em_cima_da_estacao(self):
+        """
+        `codigo_dcsc` é ligação POR COORDENADA — é o que a convenção promete.
+        As quatro do Mirim foram escritas em 07/09/2026 e precisam passar pela
+        mesma régua das nove do Açu, senão a promessa vale só para metade.
+        """
+        import math as _math
+        bruto = DADOS / "brutos" / "dcsc-estacoes-coordenadas-bacia-itajai.json"
+        dcsc = {e["codigo"]: e for e in json.loads(bruto.read_text(encoding="utf-8"))["estacoes"]}
+        vistas = 0
+        for rio in self.real["rios"].values():
+            for c in rio["cidades"]:
+                cod = c.get("codigo_dcsc")
+                if not cod or cod not in dcsc:
+                    continue
+                la, lo = c["coordenadas"]
+                dy = (dcsc[cod]["lat"] - la) * 111320
+                dx = (dcsc[cod]["lon"] - lo) * 111320 * _math.cos(_math.radians(la))
+                d = _math.hypot(dx, dy)
+                self.assertLess(d, 50, f"{c['id']} está a {d:.0f} m da {cod}")
+                vistas += 1
+        self.assertGreaterEqual(vistas, 13, "o cruzamento deixou de olhar cidades")
 
     def test_a_quebra_de_12_2021_esta_registrada(self):
         """

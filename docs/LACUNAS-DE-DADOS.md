@@ -29,7 +29,7 @@ de projeto, nunca medida.
 | Vidal Ramos | mirim | sim | — | — | — | — | — | — |
 | Botuverá | mirim | — | — | — | — | — | — | — |
 | Guabiruba | mirim | — | — | — | — | — | — | — |
-| Brusque | mirim | sim | — | — | 9 | — | 377 | sim |
+| Brusque | mirim | sim | — | — | 9 | sim | 377 | sim |
 | Itajaí | mirim | sim | — | — | — | — | — | n/a |
 
 `n/a` em trânsito = a cidade é foz, ou entrou sem posição na árvore (Trombudo Central: a fonte diz o rio, não a confluência).
@@ -68,7 +68,7 @@ Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Gaspar**, *
 
 ### 5. Série da ANA — o acervo que fecha as lacunas de uma vez
 
-Sem `codigo_ana` conferido no HidroWeb: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**, **Brusque**.
+Sem `codigo_ana` conferido no HidroWeb: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
 Cada estação conferida traz série inteira de cota, com hora — resolve os itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por unidade de esforço da lista.
 

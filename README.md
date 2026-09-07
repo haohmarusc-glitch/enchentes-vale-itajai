@@ -477,6 +477,30 @@ o projeto.
 
 ## Pendências
 
+- [x] **Brusque ganhou `codigo_ana`, e o que faltava não era da ANA (07/09/2026).** O candidato
+  83900000 BRUSQUE (PCD) estava travado pelo `falta`: *"o nosso `codigo_dcsc` de Brusque é NULL — os
+  51 m são até a DCSC-00019, que este repositório nunca afirmou ser este pino"*. A resposta estava
+  dentro de casa, em dois lugares independentes: o pino de Brusque cai a **3,5 m** da DCSC-00019 em
+  `data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json`, e `scripts/coleta_nivel_sc.py` **já lia**
+  DCSC-00019 como `brusque` para publicar a leitura ao vivo do site — a ligação existia em CÓDIGO e
+  não estava no DADO. Com o elo escrito, a 83900000 fica a **≤ ~55 m** do pino por desigualdade
+  triangular; está gravado como **limite, não ponto**, porque a coordenada da estação continua não
+  transcrita. **Vidal Ramos, Botuverá e Guabiruba estavam na mesma situação** e ganharam
+  `codigo_dcsc` junto: o Mirim inteiro estava fora do `CODIGO_DCSC_ESPERADO`, a trava que impede o
+  código sumir em silêncio — valia só para o Açu. Novo teste exige que o pino de TODA cidade com
+  `codigo_dcsc` caia a menos de 50 m da estação; passa nas treze.
+- [ ] **⛔ As outras sete estações da ANA não fecham deste ambiente — vira execução do Jefferson.**
+  Medido em 07/09/2026: `*.ana.gov.br`, `snirh.gov.br` e `dadosabertos.ana.gov.br` respondem **403 no
+  CONNECT do proxy**, inclusive o inventário público, que **não exige autenticação**. Nenhuma
+  coordenada da ANA se lê daqui. `scripts/ana_inventario.py` faz a busca e imprime tipo, coordenada,
+  distância ao pino e a linha pronta para `ESTACOES_ANA_CONHECIDAS` — **rodar de fora**, com
+  `--json data/brutos/ana-inventario-2026-09-07.json`. As sete: **83250000 Ituporanga** (falta a
+  coordenada) e **83145140** (falta o tipo) — complementares, uma execução resolve as duas;
+  **83520000 WARNOW** (Indaial), **83870001 ILHOTA-JUSANTE**, **83440000 IBIRAMA** (escala morta em
+  12/2021, precisa declarar sucessora), **83892998 BOTUVERA-MONTANTE** (a 3,5 km da DCSC-00018 —
+  provável NÃO, que vale tanto quanto um sim) e **83094000 RIO DO SUL (Oeste)**, que conflita com a
+  83300200 já usada. Detalhe em `docs/CODIGOS-ANA-PENDENTES.md`.
+
 - [x] **A lista do que falta agora é medida, não lembrada (07/09/2026).** `scripts/auditar_lacunas.py`
   cruza `estacoes.json`, `enchentes.json`, `transito.json` e `cotas-ruas.json` e escreve
   `docs/LACUNAS-DE-DADOS.md`: sete camadas por cidade e a lista de busca ordenada por impacto.
