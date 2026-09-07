@@ -115,6 +115,81 @@ exatamente o que o comentário original alerta. É decisão de quem opera.
    no Brasil, ou coleta a partir de outra máquina.
 3. **Consertar o vigia**, para o próximo desaparecimento não levar seis dias.
 
+---
+
+## Leitura direta da fonte (07/09/2026), pelo navegador
+
+O Jefferson abriu as páginas e extraiu o conteúdo. Confirma tudo acima e
+acrescenta quatro coisas.
+
+### ✅ Confirma que Gaspar não mede o Açu
+
+Sete estações, **uma só de rio, e é um ribeirão afluente**. A régua do Açu não
+existe na página. O "sem leitura" que o app mostra em Gaspar **não é falha do
+app**.
+
+### 🔌 Endpoints, que o coletor ainda não usava
+
+| O quê | Endpoint |
+|---|---|
+| Série histórica por estação | `POST /estacao/baixar-historico` — campos `codest`, `inicio`, `fim` |
+| Detalhe + série de 12 h | `GET /estacao/ver/{id}` — Belchior **73**, Arraial d'Ouro 54, Bateias 13, Poço Grande 15 |
+| Busca de cota por endereço | `POST /cotas/pesquisar` |
+
+Servem para o **Belchior**, não para o Açu — que continua sem existir na fonte.
+Ainda assim valem: `baixar-historico` aceita intervalo arbitrário, o que
+resolveria série histórica se a régua voltar. **O formulário não foi acionado.**
+
+### Cotas do Ribeirão Belchior Central
+
+Publicadas na legenda de `/estacao/ver/73`: normalidade < 5,00 m · atenção
+5,00 m (ou chuva atual > 6,00 mm) · emergência 7,00 m. **Não há faixa de alerta
+intermediária** — a fonte pula de atenção para emergência.
+
+⚠️ E a série de 12 h do Belchior é **0,00 em todos os 71 pontos**, de 03:28 a
+15:18. Zero servido como medição, não como ausência. Qualquer coletor que aponte
+para essa estação precisa tratar `0,00` como suspeito.
+
+### ⚠️ Duas correções ao levantamento
+
+**1. As cotas de rua de Gaspar já estão no repositório.** O relatório diz que
+`data/cotas-ruas.json` *"hoje só tem Itajaí"*. É o inverso: o arquivo tem
+**Gaspar 1.619**, Blumenau 2.023, Rio do Sul 555 e Brusque 377 — e **não tem
+Itajaí**. As de Gaspar entraram pelo estudo CEOPS/FURB.
+
+**2. A contagem difere em quatro.** A página serve **1.615** pontos; o
+repositório tem **1.619**. Pode ser mudança da página na reformulação, ou quatro
+duplicados do nosso lado. Não resolvido — anotado para não passar em silêncio.
+
+---
+
+## ✅ A referência vertical: a objeção era justa, e a medição respondeu
+
+O levantamento anotou: *"A fonte não explicita a referência vertical da régua de
+Gaspar. Cadastrar sem referência resolvida."* Está certo sobre a fonte — a
+página não declara nada.
+
+Os 49 registros entraram como `referencia: "régua"` mesmo assim, e o que
+sustenta isso é uma **medição**, não uma suposição:
+
+| | |
+|---|---|
+| menor cota de rua de Gaspar (1.619 pontos) | **6,20 m** |
+| menor pico da lista histórica (70 registros) | **6,19 m** |
+| **diferença** | **1 cm** |
+
+As cotas de rua vêm do estudo CEOPS/FURB (coord. Ademar Cordeiro), que
+**declara** a referência: *"régua da ANA na empresa Círculo"*. A lista histórica
+**começa exatamente onde a primeira rua alaga**, a um centímetro. Dois conjuntos
+publicados por caminhos diferentes não concordam no piso por acaso: é a mesma
+escala, e a lista é de cheias **que alagaram**.
+
+**É evidência forte, não prova.** Se a Superintendência disser que são pontos
+diferentes, é isto que muda. `teste_importar_gaspar_enchentes.py` trava o 1 cm:
+se os dois pisos se afastarem, a decisão precisa ser revista.
+
+---
+
 ## O que este episódio ensinou, além de Gaspar
 
 - **Fonte que some é mais perigosa que fonte errada**: a errada dispara trava, a

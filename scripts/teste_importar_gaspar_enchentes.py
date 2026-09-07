@@ -143,6 +143,39 @@ class RegistrosMontados(unittest.TestCase):
             self.assertEqual(r["referencia"], "régua")
 
 
+class ReferenciaVertical(unittest.TestCase):
+    """
+    A fonte NÃO declara referência. A leitura direta da página, em 07/09/2026,
+    confirmou isso — e a objeção "cadastrar sem referência resolvida" é justa.
+
+    O que sustenta gravar "régua" é uma MEDIÇÃO: a menor cota de rua de Gaspar
+    (6,20 m, estudo CEOPS/FURB, que DECLARA a régua da ANA na empresa Círculo) e
+    o menor pico da lista histórica (6,19 m) diferem em **1 cm**. A lista começa
+    exatamente onde a primeira rua alaga. Dois conjuntos publicados por caminhos
+    diferentes não concordam no piso por acaso.
+
+    Este teste trava o que sustenta a decisão, não a decisão: se os dois pisos
+    se afastarem, é a hora de rever.
+    """
+
+    def test_o_piso_das_duas_series_bate_em_um_centimetro(self):
+        ruas = [c["cota_m"] for c in ig.le_json("cotas-ruas.json")["cotas"]
+                if c["cidade"] == "gaspar" and c.get("cota_m")]
+        picos = [e["pico_m"] for e in ig.le_json("enchentes.json")["eventos"]
+                 if e["cidade"] == "gaspar" and e.get("pico_m")]
+        self.assertTrue(ruas and picos, "Gaspar sumiu de um dos dois arquivos")
+        distancia_cm = abs(min(ruas) - min(picos)) * 100
+        self.assertLessEqual(
+            distancia_cm, 5,
+            f"os pisos se afastaram para {distancia_cm:.0f} cm — a evidência que "
+            "sustenta `referencia: régua` em Gaspar caiu, reveja a decisão")
+
+    def test_a_referencia_gravada_e_regua(self):
+        self.assertEqual(ig.REFERENCIA, "régua")
+        for r in registros():
+            self.assertEqual(r["referencia"], ig.REFERENCIA)
+
+
 class ToleranciaBateComOSite(unittest.TestCase):
     def test_sete_dias(self):
         """Se `web/src/logica/datas.ts` mudar, isto tem de mudar junto."""
