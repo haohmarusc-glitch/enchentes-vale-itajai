@@ -23,6 +23,16 @@ from importar_cotas_brusque import (
 
 RAIZ = Path(__file__).resolve().parent.parent
 
+#: A cidade como está cadastrada — de onde sai o piso de aviso, para nenhum
+#: número de escala ficar congelado neste arquivo. Ver
+#: `test_ponto_abaixo_do_piso_de_aviso_esta_marcado`.
+BRUSQUE = next(
+    c
+    for c in json.loads((RAIZ / "data" / "estacoes.json").read_text(encoding="utf-8"))
+    ["rios"]["itajai-mirim"]["cidades"]
+    if c["id"] == "brusque"
+)
+
 
 def ponto(cota, lamina=None, rua="Rua Teste", bairro="Centro", esquina=None) -> dict:
     return {"cota_rotulo": cota, "nivel_registrado_no_local": lamina,
@@ -300,11 +310,28 @@ class TestNoArquivoGravado(unittest.TestCase):
     def test_a_camada_de_2023_entrou(self):
         self.assertGreater(len(self.de_2023), 300)
 
-    def test_o_unico_ponto_abaixo_do_piso_esta_marcado(self):
-        piso = 4.80
+    def test_ponto_abaixo_do_piso_de_aviso_esta_marcado(self):
+        """
+        O piso vem do CADASTRO, não de um número escrito aqui.
+
+        Este teste dizia `piso = 4.80`, congelado. Em 07/09/2026 a escala de
+        Brusque foi corrigida para a que o município publica (atenção 3,00 m,
+        emergência 5,00 m) e o teste passou a reprovar um ponto que estava
+        certo: a Av. Beira Rio a 3,76 m, que com piso 4,80 tinha de ser
+        descartada como implausível e com piso 3,00 é uma marginal alagando
+        entre a atenção e a emergência, exatamente onde se espera.
+
+        A cota nunca esteve errada; a escala contra a qual ela era medida é que
+        estava. Um piso escrito no teste transforma a correção da escala em
+        falha do dado — por isso ele agora é lido de `estacoes.json`.
+        """
+        cotas_da_cidade = [v for k, v in (BRUSQUE.get("cotas_m") or {}).items()
+                           if isinstance(v, (int, float))]
+        self.assertTrue(cotas_da_cidade, "Brusque sem cota para servir de piso")
+        piso = min(cotas_da_cidade)
         for c in self.de_2023:
             if c["cota_m"] < piso:
-                with self.subTest(rua=c["rua"]):
+                with self.subTest(rua=c["rua"], piso=piso):
                     self.assertIs(c.get("usar_para_aviso"), False)
 
     def test_nenhuma_cota_de_2023_chega_perto_do_teto_da_camada_de_2011(self):

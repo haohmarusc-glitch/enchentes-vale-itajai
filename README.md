@@ -501,6 +501,33 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **🔴 Brusque avisava 1,80 m TARDE — a escala do município apareceu.** O portal da Defesa Civil
+  de Brusque publica, na legenda da estação "Ponte Estaiada – DCSC", **atenção 3,00 m** (ou chuva
+  > 6,00 mm) e **emergência 5,00 m**. O cadastro tinha `atencao: 4,80` e `inundacao: 6,00`. Entre
+  3,00 e 4,80 m a tela dizia **normal** enquanto a Defesa Civil já declara **atenção**. É o mesmo
+  erro de Indaial em nova roupa: os 4,80 m nunca foram um limiar de aviso — eram a cota em que a
+  **Av. Beira-Rio começa a alagar**, gravada no campo `atencao` por ser o único número que existia.
+  **O par régua↔cota, que estava "NÃO provado", ficou provado:** três leituras do mesmo minuto —
+  1,27 m na página da Ponte Estaiada, 1,27 m na rede estadual (DCSC-00019) e 1,28 m na nossa coleta
+  — são a mesma régua; Brusque não opera régua própria, a Ponte Estaiada é repasse do DCSC.
+  A troca **reconcilia** o que a ressalva anterior estranhava: a Defesa Civil declarar atenção com a
+  régua em 3,49 m deixa de ser enigma com um limiar de 3,00 m. E **uma segunda evidência caiu no
+  colo**: a Av. Beira Rio / Maria Scarpa Formonti (3,76 m, levantada no local depois da cheia de
+  2023) estava **excluída do aviso** por ficar abaixo do piso de 4,80 — um ponto real descartado
+  como implausível. Com atenção em 3,00 m ela cai entre atenção e emergência, que é onde uma
+  marginal deve mesmo alagar: voltou ao aviso. A cota nunca esteve errada; a escala contra a qual
+  era medida é que estava. Continua valendo da ressalva antiga que a Defesa Civil lê Vidal Ramos →
+  Botuverá → Brusque e a **tendência**, não uma régua sozinha.
+- [x] **⛔ E a armadilha que NÃO foi seguida: as cotas do Salseiro não são as de Vidal Ramos.** O
+  mesmo portal publica "Salseiro – Vidal Ramos" com escala completa (atenção 3,00 / emergência
+  4,50) — justo o que falta na única cidade cuja leitura chega fresca e ainda assim fica cinza no
+  mapa. Mas a ANA já respondeu ao ofício C9 que a **SALSEIRO fica a 6,8 km** da nossa régua e drena
+  **286 km²**: é o vínculo por nome de município que `codigo_ana_nao_e` recusou, voltando por outra
+  porta. Três sinais a mais: a estação está **parada desde 18/04/2026** e mesmo assim serve o número
+  sob o rótulo "situação de NORMALIDADE"; não aparece na tabela das 22 do portal, só por URL direta;
+  e o gatilho de chuva de **35,00 mm** destoa dos 6,00 mm da Ponte Estaiada e do Belchior de Gaspar.
+  O motivo ficou escrito no dado, com teste — senão o mesmo achado convida ao mesmo erro no mês que
+  vem. O que resolve de verdade é perguntar as cotas da DCSC-00024 à Defesa Civil de Vidal Ramos.
 - [x] **Um erro em qualquer componente apagava o telefone da Defesa Civil.** Sem limite de erro, o
   React desmonta a árvore INTEIRA quando um componente lança — e a árvore inteira inclui a
   `FaixaEmergencia`, cujo comentário diz o que estava em jogo: *"se alguém abrir o site em pânico e

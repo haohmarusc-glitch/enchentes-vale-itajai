@@ -908,5 +908,81 @@ class TestaCotaDeRuaDuplicada(unittest.TestCase):
         )), [])
 
 
+class TestaCotasDeBrusque(unittest.TestCase):
+    """
+    A escala de Brusque é a que o município publica, não a cota de uma rua.
+
+    Até 07/09/2026 `atencao` era 4,80 m — a cota em que a Av. Beira-Rio começa
+    a alagar, gravada ali por ser o único número que existia. É o mesmo erro
+    que Indaial tinha com 6,00 m (doze vias alagando) no lugar da escala da
+    COMPDEC, e com a mesma consequência: entre 3,00 e 4,80 m a tela dizia
+    NORMAL enquanto a Defesa Civil já declara ATENÇÃO — 1,80 m de rio errando
+    para o lado de quem lê achando que está seguro.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.brusque = _cidade(cls.real, "itajai-mirim", "brusque")
+
+    def test_a_escala_e_a_do_municipio(self):
+        self.assertEqual(self.brusque["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+
+    def test_os_4_80_nao_voltam_como_faixa(self):
+        """Podem voltar como anotação; como degrau de aviso, não."""
+        for chave, valor in self.brusque["cotas_m"].items():
+            self.assertNotEqual(valor, 4.8, f"{chave} não pode ser a cota da Beira-Rio")
+            self.assertNotEqual(valor, 6.0, f"{chave} não pode ser o 6,00 sem procedência")
+
+    def test_a_atencao_nunca_passa_da_emergencia(self):
+        self.assertLess(self.brusque["cotas_m"]["atencao"],
+                        self.brusque["cotas_m"]["emergencia"])
+
+    def test_o_par_regua_cota_esta_declarado_como_provado(self):
+        """Três leituras do mesmo minuto (1,27 · 1,27 · 1,28) provaram a régua."""
+        self.assertIn("PAR PROVADO", self.brusque["regua_das_cotas_fonte"])
+
+    def test_a_fonte_da_escala_aponta_para_a_pagina_do_municipio(self):
+        self.assertIn("defesacivil.brusque.sc.gov.br", self.brusque["fonte_cotas"])
+
+    def test_o_que_saiu_fica_registrado_com_o_motivo(self):
+        # Trocar cota de segurança sem deixar o rastro do que havia antes é
+        # como o 4,80 chegou aqui em primeiro lugar.
+        saiu = self.brusque["cotas_substituidas_em_2026_09_07"]
+        self.assertEqual(saiu["_o_que_saiu"], {"atencao": 4.8, "inundacao": 6.0})
+        self.assertIn("Beira-Rio", saiu["_por_que_saiu"])
+
+
+class TestaVidalRamosNaoHerdaOSalseiro(unittest.TestCase):
+    """
+    As cotas do Salseiro não podem virar as cotas de Vidal Ramos.
+
+    O portal de Brusque publica 'Salseiro – Vidal Ramos' com uma escala
+    completa — justo o que falta nesta cidade. Mas a ANA já respondeu que a
+    SALSEIRO fica a 6,8 km desta régua e drena 286 km². É o vínculo por NOME DE
+    MUNICÍPIO que `codigo_ana_nao_e` recusou, voltando por outra porta.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.vr = _cidade(cls.real, "itajai-mirim", "vidal-ramos")
+
+    def test_continua_sem_cota(self):
+        self.assertEqual(self.vr["cotas_m"], {})
+
+    def test_e_o_motivo_esta_escrito_no_dado(self):
+        # Sem isto, o mesmo achado convida ao mesmo erro no mês que vem.
+        motivo = self.vr["cotas_m_por_que_vazio"]
+        self.assertIn("SALSEIRO", motivo.upper())
+        self.assertIn("6,8 km", motivo)
+
+    def test_as_cotas_do_salseiro_nao_aparecem_em_lugar_nenhum_da_cidade(self):
+        texto = json.dumps(self.vr, ensure_ascii=False)
+        for chave in ("atencao", "alerta", "emergencia", "inundacao"):
+            self.assertNotIn(f'"{chave}": 3.0', texto)
+            self.assertNotIn(f'"{chave}": 4.5', texto)
+
+
 if __name__ == "__main__":
     unittest.main()

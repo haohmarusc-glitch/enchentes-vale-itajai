@@ -37709,8 +37709,7 @@
       "data_fonte": "2023-11",
       "confianca": "alta",
       "referencia": "régua",
-      "usar_para_aviso": false,
-      "nota": "Na cheia de 17/11/2023, que chegou a 8.96 m, a água cobriu 5.20 m neste ponto. Esta cota (3.76 m) fica ABAIXO da menor cota de referência de Brusque (4.80 m): o ponto alagaria com o rio em nível quase normal. Vem assim da fonte e ainda não foi conferida com a Defesa Civil — não use como aviso sozinha.",
+      "nota": "Na cheia de 17/11/2023, que chegou a 8,96 m, a água cobriu 5,20 m neste ponto. VOLTOU AO AVISO em 07/09/2026. Estava fora dele com a justificativa de ficar abaixo da menor cota de Brusque, que era 4,80 m — e 3,76 m abaixo de 4,80 m parecia dizer que o ponto alagava com o rio quase normal, o que soava implausível para um levantamento feito no local. A escala do município apareceu (atenção 3,00 m, emergência 5,00 m) e o estranho desapareceu junto: 3,76 m cai ENTRE a atenção e a emergência, que é onde uma marginal de rio deve mesmo alagar. A cota nunca esteve errada; a escala contra a qual ela era medida é que estava.",
       "lat": -27.053374,
       "lon": -48.880587
     },
