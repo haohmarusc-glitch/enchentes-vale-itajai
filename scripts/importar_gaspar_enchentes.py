@@ -166,10 +166,31 @@ def vao_em_dias(a: str, b: str) -> int:
     return max(0, (max(ia, ib) - min(fa, fb)).days)
 
 
-def par_mais_proximo(data: str, eventos: list[dict]) -> tuple[int, dict] | None:
-    """O evento já cadastrado mais próximo desta data, em qualquer cidade."""
+def par_mais_proximo(data: str, eventos: list[dict],
+                     cidade: str = "gaspar") -> tuple[int, dict] | None:
+    """
+    O evento já cadastrado mais próximo desta data, em OUTRA cidade.
+
+    Duas exclusões, e as duas são correções de 07/09/2026 — a primeira é um
+    defeito que chegou a marcar um registro errado:
+
+    * **Granularidade de ANO nunca pareia.** `web/src/logica/datas.ts` diz por
+      quê: *"2023 teve duas enchentes no mesmo rio (outubro e novembro), e
+      juntar registros de eventos diferentes produziria uma correlação falsa"*.
+      A primeira versão daqui media só a distância, então um registro de
+      Gaspar caía "a zero dias" de um `blumenau 2013` que cobre o ano inteiro —
+      e entrou marcado como `pareamento: "confere"` sem que o site jamais fosse
+      parear os dois. Um registro afetado, achado ao escrever o ofício.
+    * **A própria cidade não conta.** Depois da primeira importação, Gaspar
+      está na base; parear um registro de Gaspar com outro de Gaspar é
+      circular e não diz nada sobre a data estar certa.
+    """
     candidatos = []
     for e in eventos:
+        if e.get("cidade") == cidade:
+            continue
+        if len(str(e.get("data", "")).split("-")) < 2:
+            continue
         try:
             candidatos.append((vao_em_dias(data, e["data"]), e))
         except ValueError:
