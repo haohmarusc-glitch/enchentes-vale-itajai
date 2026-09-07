@@ -1,0 +1,290 @@
+#!/usr/bin/env python3
+"""Importa o histórico de enchentes que a Defesa Civil de Gaspar publica.
+
+POR QUE EXISTE (07/09/2026)
+Gaspar tem **zero picos** em `enchentes.json` e 1.619 cotas de rua: sabe-se em
+que nível cada rua alaga e não se sabe em que nível o rio esteve. A página
+`/enchentes` do município traz **71 registros de 1852 a 2023**, cada um com
+data de início, data de término e metragem máxima. Seria a maior entrada única
+já feita na base — razão de sobra para a importação ser conferida, e não
+automática.
+
+TRÊS ARMADILHAS, e o script existe por causa delas:
+
+1. **A data publicada é do INÍCIO do evento, não do pico.** Vai para `data`
+   assim mesmo, mas marcada: `data_e_do_inicio_do_evento: true`, com `data_fim`
+   ao lado. Isso NÃO atrapalha o pareamento da previsão, que tolera sete dias
+   (`web/src/logica/datas.ts`) — atrapalharia qualquer cálculo de HORÁRIO, e
+   por isso o registro diz o que é em vez de deixar adivinharem.
+
+2. **A fonte tem data impossível.** O registro de 20/11/1855 traz término
+   `24/11/9855`. O importador **preserva o original** e marca `data_anomala`;
+   virar 9855 em 1855 em silêncio apagaria a prova de que a fonte errou, que é
+   exatamente a classe de erro que este projeto persegue.
+
+3. **Data que não pareia com evento nenhum é suspeita, não é fato.** Dos oito
+   valores de controle conferidos em 07/09/2026, **seis batem com um evento já
+   cadastrado a zero ou um dia** — e dois não: `09/11/2011` (o mais perto é
+   Blumenau 09/09/2011, dois meses antes) e `09/06/1983` (Blumenau tem
+   09/07/1983). Nos dois o DIA bate com um pico conhecido de Blumenau e o MÊS
+   não. Pode ser erro da fonte, pode ser evento local de verdade. **Não se
+   conserta nem se descarta**: entra com `pareamento: "sem par"` e a nota
+   dizendo qual era o candidato.
+
+O script NÃO grava sem `--gravar`, e nunca sobrescreve registro existente.
+
+⚠️ **DE ONDE ELE NÃO RODA.** Este ambiente tem `defesacivil.gaspar.sc.gov.br`
+bloqueado na saída (403 no CONNECT, medido em 07/09/2026). Rode da VPS, ou
+salve a página e passe `--arquivo`.
+
+⚠️ **A ESTRUTURA DA TABELA NÃO FOI CONFERIDA** contra a página real, pelo mesmo
+motivo. O parser acha a tabela pelos CABEÇALHOS, aceita várias grafias e,
+quando não encontra, **imprime os cabeçalhos que a página trouxe** — para o
+conserto ser de uma linha. Mesma disciplina de `ana_inventario.py`.
+
+Uso:
+    python3 scripts/importar_gaspar_enchentes.py --arquivo pagina.html
+    python3 scripts/importar_gaspar_enchentes.py --gravar
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import sys
+import unicodedata
+from datetime import date, timedelta
+from pathlib import Path
+
+from comum import DADOS, baixar, espera_turno, le_json
+
+URL = "https://defesacivil.gaspar.sc.gov.br/enchentes"
+
+#: Tolerância de pareamento do site, em dias (`web/src/logica/datas.ts`).
+#: Repetida aqui porque as duas implementações divergirem em silêncio já custou
+#: caro neste projeto — se mudar lá, muda aqui, e o teste cobra lendo o arquivo
+#: do site. O mesmo cuidado que `comum.NIVEL_MAXIMO_M` tem com a faixa de nível.
+TOLERANCIA_DIAS = 7
+
+#: O arquivo do site de onde a tolerância vem — lido pelo teste, não pelo script.
+RAIZ_WEB = DADOS.parent / "web" / "src" / "logica" / "datas.ts"
+
+#: Faixa em que um ano pode ser um evento desta bacia. O 9855 do término de
+#: 20/11/1855 é o caso real que esta faixa existe para pegar.
+ANO_MINIMO, ANO_MAXIMO = 1800, date.today().year
+
+#: Cabeçalhos que valem para cada coluna, sem acento e em minúscula.
+COLUNAS = {
+    "inicio": ("inicio", "datainicio", "datadeinicio", "iniciodaenchente", "data"),
+    "fim": ("termino", "fim", "datatermino", "datadetermino", "fimdaenchente"),
+    "pico": ("metragem", "metragemmaxima", "cota", "cotamaxima", "nivel",
+             "nivelmaximo", "maxima", "altura"),
+}
+
+
+def chave(texto: str) -> str:
+    sem = unicodedata.normalize("NFKD", texto or "")
+    sem = "".join(c for c in sem if not unicodedata.combining(c))
+    return re.sub(r"[^a-z0-9]", "", sem.lower())
+
+
+def numero(texto: str) -> float | None:
+    """'9,80 m' -> 9.8. Vírgula é decimal em português; ponto também aparece."""
+    if not texto:
+        return None
+    m = re.search(r"(\d+)[.,](\d+)", texto)
+    if m:
+        return float(f"{m.group(1)}.{m.group(2)}")
+    m = re.search(r"\b(\d{1,2})\b", texto)
+    return float(m.group(1)) if m else None
+
+
+def data_iso(texto: str) -> tuple[str | None, bool]:
+    """
+    `dd/mm/aaaa` -> `aaaa-mm-dd`, e um sinal de que o valor é impossível.
+
+    Devolve `(None, True)` para o que não é data nenhuma e
+    `(texto_original, True)` para data cujo ano sai da faixa da bacia — o caso
+    real é o término `24/11/9855`. **Nunca conserta**: quem lê o JSON precisa
+    ver que a fonte publicou aquilo.
+    """
+    if not texto:
+        return None, False
+    m = re.search(r"(\d{1,2})\s*/\s*(\d{1,2})\s*/\s*(\d{2,5})", texto.strip())
+    if not m:
+        return None, True
+    d, mes, a = (int(x) for x in m.groups())
+    if not (ANO_MINIMO <= a <= ANO_MAXIMO) or not (1 <= mes <= 12) or not (1 <= d <= 31):
+        return texto.strip(), True
+    try:
+        return date(a, mes, d).isoformat(), False
+    except ValueError:
+        return texto.strip(), True
+
+
+def intervalo(s: str) -> tuple[date, date]:
+    """Mesma granularidade de `web/src/logica/datas.ts`: ano, mês ou dia."""
+    p = s.split("-")
+    if len(p) == 3:
+        d = date(int(p[0]), int(p[1]), int(p[2]))
+        return d, d
+    if len(p) == 2:
+        ano, mes = int(p[0]), int(p[1])
+        inicio = date(ano, mes, 1)
+        fim = date(ano + (mes == 12), mes % 12 + 1, 1) - timedelta(days=1)
+        return inicio, fim
+    return date(int(p[0]), 1, 1), date(int(p[0]), 12, 31)
+
+
+def vao_em_dias(a: str, b: str) -> int:
+    ia, fa = intervalo(a)
+    ib, fb = intervalo(b)
+    return max(0, (max(ia, ib) - min(fa, fb)).days)
+
+
+def par_mais_proximo(data: str, eventos: list[dict]) -> tuple[int, dict] | None:
+    """O evento já cadastrado mais próximo desta data, em qualquer cidade."""
+    candidatos = []
+    for e in eventos:
+        try:
+            candidatos.append((vao_em_dias(data, e["data"]), e))
+        except ValueError:
+            continue
+    return min(candidatos, key=lambda x: x[0]) if candidatos else None
+
+
+def linhas_da_tabela(html: str) -> tuple[list[dict], list[str]]:
+    """Devolve (registros crus, cabeçalhos vistos) — o segundo para diagnóstico."""
+    from bs4 import BeautifulSoup
+
+    sopa = BeautifulSoup(html, "html.parser")
+    vistos: list[str] = []
+    for tabela in sopa.find_all("table"):
+        linhas = tabela.find_all("tr")
+        if not linhas:
+            continue
+        cabecalhos = [c.get_text(" ", strip=True) for c in linhas[0].find_all(["th", "td"])]
+        vistos.extend(cabecalhos)
+        posicao = {}
+        for i, cab in enumerate(cabecalhos):
+            k = chave(cab)
+            for campo, aceitos in COLUNAS.items():
+                if campo not in posicao and any(k.startswith(a) for a in aceitos):
+                    posicao[campo] = i
+        if "inicio" not in posicao or "pico" not in posicao:
+            continue
+        saida = []
+        for linha in linhas[1:]:
+            celulas = [c.get_text(" ", strip=True) for c in linha.find_all(["td", "th"])]
+            if len(celulas) <= max(posicao.values()):
+                continue
+            saida.append({campo: celulas[i] for campo, i in posicao.items()})
+        if saida:
+            return saida, cabecalhos
+    return [], vistos
+
+
+def monta(crus: list[dict], eventos: list[dict]) -> list[dict]:
+    fonte = ("Histórico de enchentes publicado pela Defesa Civil de Gaspar "
+             f"({URL}), lido em {date.today().isoformat()} por "
+             "scripts/importar_gaspar_enchentes.py. Dados atribuídos ao CEOPS.")
+    saida = []
+    for cru in crus:
+        inicio, inicio_anomala = data_iso(cru.get("inicio", ""))
+        fim, fim_anomala = data_iso(cru.get("fim", ""))
+        pico = numero(cru.get("pico", ""))
+        if inicio is None or pico is None:
+            continue
+
+        reg = {
+            "rio": "itajai-acu",
+            "cidade": "gaspar",
+            "data": inicio,
+            "pico_m": pico,
+            "confianca": "alta",
+            "referencia": "régua",
+            "fonte": fonte,
+            "data_e_do_inicio_do_evento": True,
+        }
+        if fim:
+            reg["data_fim"] = fim
+
+        notas = ["A data é a de INÍCIO do evento publicada pela fonte, não a do pico. "
+                 "Serve para parear eventos (a tolerância do site é de sete dias); "
+                 "NÃO serve para calibrar tempo de trânsito."]
+        if inicio_anomala or fim_anomala:
+            reg["data_anomala"] = True
+            qual = "início" if inicio_anomala else "término"
+            notas.append(f"⚠️ A fonte publica uma data de {qual} IMPOSSÍVEL, e ela está "
+                         "preservada como veio. Não foi consertada de propósito: virar o "
+                         "valor em silêncio apagaria a prova de que a fonte errou.")
+
+        if not (inicio_anomala or fim_anomala):
+            par = par_mais_proximo(inicio, eventos)
+            if par and par[0] <= TOLERANCIA_DIAS:
+                reg["pareamento"] = "confere"
+            elif par:
+                dias, e = par
+                reg["pareamento"] = "sem par"
+                notas.append(
+                    f"⚠️ Não pareia com evento nenhum já cadastrado: o mais perto é "
+                    f"{e['cidade']} {e['data']} ({e['pico_m']} m), a {dias} dias — acima da "
+                    f"tolerância de {TOLERANCIA_DIAS}. Pode ser erro de data na fonte ou "
+                    "evento local de verdade. Conferir antes de usar na previsão.")
+        reg["nota"] = " ".join(notas)
+        saida.append(reg)
+    return saida
+
+
+def main(argv: list[str] | None = None) -> int:
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument("--arquivo", type=Path, help="HTML salvo, em vez de baixar")
+    p.add_argument("--gravar", action="store_true", help="escreve em enchentes.json")
+    args = p.parse_args(argv)
+
+    if args.arquivo:
+        html = args.arquivo.read_text(encoding="utf-8", errors="replace")
+    else:
+        try:
+            espera_turno()
+            html = baixar(URL)
+        except Exception as erro:
+            print(f"⚠️ {type(erro).__name__}: {erro}\nEste ambiente bloqueia "
+                  "defesacivil.gaspar.sc.gov.br — rode da VPS ou use --arquivo. "
+                  "Nada foi gravado.", file=sys.stderr)
+            return 1
+
+    crus, cabecalhos = linhas_da_tabela(html)
+    if not crus:
+        print("Nenhuma linha reconhecida. Cabeçalhos que a página trouxe:\n  "
+              + ("\n  ".join(cabecalhos) if cabecalhos else "(nenhuma tabela)"),
+              file=sys.stderr)
+        return 1
+
+    base = le_json("enchentes.json")
+    existentes = {(e["cidade"], e["data"]) for e in base["eventos"]}
+    novos = [r for r in monta(crus, base["eventos"])
+             if (r["cidade"], r["data"]) not in existentes]
+
+    anomalas = [r for r in novos if r.get("data_anomala")]
+    sem_par = [r for r in novos if r.get("pareamento") == "sem par"]
+    print(f"{len(crus)} linhas lidas · {len(novos)} novas · "
+          f"{len(anomalas)} com data impossível · {len(sem_par)} sem par")
+    for r in anomalas + sem_par:
+        print(f"\n  {r['data']} → {r.get('data_fim', '?')}   {r['pico_m']} m")
+        print(f"    {r['nota']}")
+
+    if not args.gravar:
+        print("\n(nada gravado — use --gravar)")
+        return 0
+
+    base["eventos"].extend(novos)
+    caminho = DADOS / "enchentes.json"
+    caminho.write_text(json.dumps(base, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"\n{len(novos)} registros acrescentados em {caminho} (ordem preservada)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

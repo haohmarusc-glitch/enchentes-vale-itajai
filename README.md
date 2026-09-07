@@ -477,6 +477,24 @@ o projeto.
 
 ## Pendências
 
+- [ ] **Importador de Gaspar pronto e testado; falta rodar de fora (07/09/2026).**
+  `scripts/importar_gaspar_enchentes.py` traz os **71 registros de 1852 a 2023** da página da Defesa
+  Civil para uma cidade que hoje tem **zero picos** — seria a maior entrada única já feita na base.
+  **Nada foi importado:** este ambiente tem `defesacivil.gaspar.sc.gov.br` bloqueado. **O que deu
+  para conferir daqui, e é o mais valioso:** dos oito valores de controle, **seis pareiam com um
+  evento já cadastrado a zero ou um dia** — confirma que a fonte é real e que a escala de Gaspar
+  conversa com a das outras cidades. ⚠️ **Dois não pareiam, e o padrão é estranho:** `09/11/2011`
+  (9,42 m) e `09/06/1983` (11,50 m) têm o **dia** igual ao de um pico conhecido de Blumenau
+  (09/09/2011 e 09/07/1983) e o **mês** diferente, nas duas linhas. Pode ser erro de mês na fonte,
+  pode ser evento local — Gaspar alaga por conta própria na confluência com o Luís Alves. O
+  importador marca `pareamento: "sem par"` com o candidato nomeado; **nem conserta nem descarta.** O
+  validador achou os mesmos dois sozinho, por outro caminho. **Erro meu no caminho:** na primeira
+  passada comparei só contra Blumenau e o `29/05/1911` apareceu como "não pareia" — 1911 teve dois
+  eventos, e o de maio está em **Rio do Sul**. As três armadilhas tratadas: a data é de **início**
+  do evento (marcada, e não calibra trânsito); o término **24/11/9855** da própria fonte é
+  **preservado** e marcado, nunca virado em 1855; e data sem par vira suspeita, não fato. Detalhe em
+  `docs/GASPAR-IMPORTACAO.md`.
+
 - [x] **Corrigi a minha própria auditoria: os "10 elos de trânsito faltando" não são 10 coisas a
   procurar (07/09/2026).** A primeira versão de `docs/LACUNAS-DE-DADOS.md` listou os dez numa tabela
   chapada, sob o título "os elos que faltam" — lê-se como lista de tarefas. Fui à fonte: **nove
