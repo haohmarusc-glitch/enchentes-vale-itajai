@@ -301,6 +301,20 @@ def markdown(rel: dict) -> str:
         "de projeto, nunca medida.\n\n"
     )
 
+    if not rel["ao_vivo_lido"]:
+        f.append(
+            "> ⚠️ **A coluna \"Leitura ao vivo\" não foi medida nesta execução** e sai como `?`.\n"
+            "> O auditor só a preenche quando recebe `--ao-vivo <ultimo.json>` do branch\n"
+            "> `tempo-real`. Rodar sem isso e ler `—` faria a matriz afirmar que NENHUMA cidade\n"
+            "> publica nível — falso, e mandaria procurar fonte para cidade que já tem.\n"
+            ">\n"
+            "> ```\n"
+            "> curl -sSL -o /tmp/ultimo.json \\\n"
+            ">   https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo.json\n"
+            "> python3 scripts/auditar_lacunas.py --ao-vivo /tmp/ultimo.json --markdown docs/LACUNAS-DE-DADOS.md\n"
+            "> ```\n\n"
+        )
+
     f.append("## Matriz por cidade\n\n")
     f.append(
         "| Cidade | Rio | Leitura ao vivo | Cotas atenção+alerta | Cotas conferidas | "
@@ -309,8 +323,13 @@ def markdown(rel: dict) -> str:
     )
     for l in linhas:
         tr = "n/a" if l["transito"] is None else sim(l["transito"])
+        # `?` quando a coluna NÃO FOI MEDIDA. Sem isso ela sai `—`, igualzinho a
+        # "medido e ausente", e a matriz passa a afirmar que nenhuma cidade tem
+        # leitura ao vivo — o que é falso e manda procurar fonte para cidade que
+        # já publica. Ausência nunca prova ausência; falta de medição, menos ainda.
+        vivo = sim(l["vivo"]) if rel["ao_vivo_lido"] else "?"
         f.append(
-            f"| {l['nome']} | {l['rio'].replace('itajai-', '')} | {sim(l['vivo'])} | "
+            f"| {l['nome']} | {l['rio'].replace('itajai-', '')} | {vivo} | "
             f"{sim(l['cotas_essenciais'])} | {sim(l['cotas_verificado'])} | "
             f"{l['picos'] or '—'} | {sim(l['ana_verificado'])} | "
             f"{l['ruas'] or '—'} | {tr} |\n"
@@ -334,8 +353,13 @@ def markdown(rel: dict) -> str:
     f.append("\n## Lista de busca, por impacto\n")
 
     f.append("\n### 1. Leitura ao vivo — o pino cinza\n\n")
+    if not rel["ao_vivo_lido"]:
+        f.append(
+            "**Não medido nesta execução** — ver o aviso no topo. A lista abaixo só existe "
+            "quando o auditor roda com `--ao-vivo`.\n"
+        )
     f.append(
-        f"Sem leitura em: {nomes(lambda l: not l['vivo'])}.\n\n"
+        f"Sem leitura em: {nomes(lambda l: not l['vivo']) if rel['ao_vivo_lido'] else '(não medido)'}.\n\n"
         "É o que mais escurece o mapa e o único item que não tem substituto "
         "histórico: nenhuma pesquisa em acervo acende um pino hoje. O pedido é "
         "ofício à Defesa Civil do município pedindo o endpoint que a página de "

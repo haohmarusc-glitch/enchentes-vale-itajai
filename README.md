@@ -501,6 +501,18 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **A auditoria de lacunas dizia que NENHUMA cidade tem leitura ao vivo — e sete têm.** A coluna
+  "Leitura ao vivo" só é preenchida quando o auditor roda com `--ao-vivo <ultimo.json>`. Sem isso ela
+  saía **`—`** para as 19 cidades, indistinguível de "medido e ausente", e o documento passava a
+  afirmar uma falta que não existe. O aviso até existia — **mas só no terminal**, que rola e some,
+  enquanto o documento é o que fica no repositório e o que alguém lê meses depois. Consequência
+  prática: **Taió, Rio do Sul, Blumenau, Itajaí (nos dois rios), Vidal Ramos e Brusque** estavam na
+  lista de busca "ofício à Defesa Civil pedindo o endpoint" **sem precisar estar**. Agora coluna não
+  medida sai **`?`**, o documento carrega o aviso com o comando certo, e a lista de busca diz "não
+  medido" em vez de acusar cidade nenhuma. Regenerada com a leitura real: **"sem leitura ao vivo"
+  caiu de 19 para 12 cidades** e deixou de ser o buraco nº 1. Cinco testes, montados sobre o auditor
+  de verdade e não sobre fixture à mão — fixture inventado sai da forma real sem avisar, que é o
+  mesmo tipo de mentira silenciosa que este item corrige.
 - [x] **🔴 Brusque avisava 1,80 m TARDE — a escala do município apareceu.** O portal da Defesa Civil
   de Brusque publica, na legenda da estação "Ponte Estaiada – DCSC", **atenção 3,00 m** (ou chuva
   > 6,00 mm) e **emergência 5,00 m**. O cadastro tinha `atencao: 4,80` e `inundacao: 6,00`. Entre
