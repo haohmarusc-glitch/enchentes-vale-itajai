@@ -501,6 +501,22 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **Os elos de trânsito do Mirim ficaram mensuráveis — pelo horário, nunca pelo valor.** Os três
+  elos `vidal-ramos → botuvera → guabiruba → brusque` são a lógica que a Defesa Civil de Brusque usa
+  de fato, e **nenhum podia ser medido**: Botuverá e Guabiruba não têm régua municipal, então nenhuma
+  cheia futura produziria o par de horários. O que destrava é uma observação simples — **tempo de
+  trânsito se mede entre horários, e horário não depende do zero da régua**: um máximo é um máximo em
+  qualquer datum. A rede estadual publica Botuverá e Vidal Ramos, e `coleta_nivel_sc.py` já vinha
+  acumulando esses números em `nivel-sc-AAAA-MM.ndjson` **sem que nada os lesse**. Agora
+  `extrair_picos.py --serie-estadual` lê essa série, mapeia a cidade pelo `codigo_dcsc` e descarta
+  reservatório (datum próprio). **A fronteira está em código, não em comentário:** toda leitura nasce
+  com `so_horario=True`; `--serie-estadual` **exige `--limiar`** (aplicar cota municipal ao número
+  estadual é o erro que já medimos — Indaial a 5,98 m estadual num dia sem chuva contra emergência
+  municipal de 5,50 m) e **recusa `--escrever`**, porque gravar `pico_m` em zero estadual poria no
+  `enchentes.json` um número que parece régua municipal e não é. Achado de passagem: o glob `*.ndjson`
+  do leitor municipal vinha varrendo também as séries de chuva e a estadual, cuspindo um aviso por
+  linha — ruído que ensina a ignorar avisos. Oito testes, um deles medindo o vão de 2 h entre dois
+  picos sintéticos de Vidal Ramos e Botuverá.
 - [x] **A auditoria de lacunas dizia que NENHUMA cidade tem leitura ao vivo — e sete têm.** A coluna
   "Leitura ao vivo" só é preenchida quando o auditor roda com `--ao-vivo <ultimo.json>`. Sem isso ela
   saía **`—`** para as 19 cidades, indistinguível de "medido e ausente", e o documento passava a

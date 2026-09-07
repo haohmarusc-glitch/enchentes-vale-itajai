@@ -16,6 +16,7 @@ import tempfile
 import unittest.mock
 from pathlib import Path
 
+import extrair_picos as ep
 from extrair_picos import (
     INTERVALO_ENTRE_EVENTOS_H,
     MIN_LEITURAS,
@@ -180,6 +181,125 @@ class TesteAgrupamentoPorRegua(unittest.TestCase):
             limiar, nome = limiar_da_estacao(titulo, "itajai-mirim", "itajai", quantas_na_cidade=5)
         self.assertAlmostEqual(limiar, 5.5)
         self.assertIn("própria estação", nome)
+
+
+class SerieEstadualSoParaHorario(unittest.TestCase):
+    """
+    A rede estadual destrava os elos de trânsito do Itajaí-Mirim — só o horário.
+
+    Os três elos (`vidal-ramos → botuvera → guabiruba → brusque`) são a lógica
+    que a Defesa Civil de Brusque usa de fato, e nenhum podia ser medido:
+    Botuverá e Guabiruba não têm régua municipal, então nenhuma cheia futura
+    produziria o par de horários. A rede estadual publica Botuverá e Vidal
+    Ramos, e a coleta já vinha acumulando esses números sem que nada os lesse.
+
+    O que destrava é simples: **tempo de trânsito se mede entre horários, e
+    horário não depende do zero da régua.** O que o zero desconhecido impede é
+    dizer quantos METROS o pico teve — e é isso que estes testes travam.
+    """
+
+    #: Cheia sintética: Vidal Ramos (montante) pica às 10:00 com 4,80 m e
+    #: Botuverá às 12:00 com 4,60 m — 2 h de vão. É exatamente o par de
+    #: horários que o elo `vidal-ramos → botuvera` precisa, e note que os
+    #: VALORES não são comparáveis entre as duas (zeros diferentes): só o vão é.
+    HORAS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00"]
+    VIDAL = [2.0, 3.5, 4.8, 3.9, 2.8, 2.1, 1.9]
+    BOTUVERA = [2.1, 2.4, 3.2, 4.0, 4.6, 3.5, 2.4]
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        caminho = Path(self.dir.name) / "nivel-sc-2026-09.ndjson"
+        with open(caminho, "w", encoding="utf-8") as f:
+            for hora, vr, bo in zip(self.HORAS, self.VIDAL, self.BOTUVERA):
+                for codigo, estacao, nivel in (
+                    ("DCSC-00024", "SDC-SC Vidal Ramos", vr),
+                    ("DCSC-00018", "SDC-SC Botuverá 1", bo),
+                ):
+                    f.write(json.dumps({
+                        "codigo": codigo, "estacao": estacao, "cidade": None,
+                        "datum": "bruto_estadual", "nivel_bruto_m": nivel,
+                        "medido_em": f"2026-09-05T{hora}:00",
+                    }, ensure_ascii=False) + "\n")
+        # Uma linha de reservatório, que NÃO pode entrar: datum próprio.
+        with open(caminho, "a", encoding="utf-8") as f:
+            f.write(json.dumps({
+                "codigo": "DCSC-00024", "estacao": "Barragem Oeste",
+                "datum": "reservatorio", "nivel_bruto_m": 350.42,
+                "medido_em": "2026-09-05T10:00:00",
+            }, ensure_ascii=False) + "\n")
+        self.patch = unittest.mock.patch("extrair_picos.SERIE", Path(self.dir.name))
+        self.patch.start()
+
+    def tearDown(self):
+        self.patch.stop()
+        self.dir.cleanup()
+
+    def test_a_cidade_sai_do_codigo_dcsc(self):
+        grupos = ep.ler_serie_estadual(None)
+        self.assertEqual(grupos["SDC-SC Vidal Ramos"]["cidade"], "vidal-ramos")
+        self.assertEqual(grupos["SDC-SC Vidal Ramos"]["rio"], "itajai-mirim")
+        self.assertEqual(grupos["SDC-SC Botuverá 1"]["cidade"], "botuvera")
+
+    def test_reservatorio_fica_de_fora(self):
+        """Cota absoluta de reservatório não é nível de régua de rio."""
+        grupos = ep.ler_serie_estadual(None)
+        self.assertNotIn(350.42, [l.nivel_m for l in grupos["Barragem Oeste"]["leituras"]]
+                         if "Barragem Oeste" in grupos else [])
+        self.assertNotIn("Barragem Oeste", grupos)
+
+    def test_toda_leitura_estadual_nasce_marcada(self):
+        for grupo in ep.ler_serie_estadual(None).values():
+            for l in grupo["leituras"]:
+                self.assertTrue(l.so_horario, "leitura estadual sem a marca de datum")
+
+    def test_o_horario_do_pico_e_o_que_o_transito_precisa(self):
+        grupos = ep.ler_serie_estadual(None)
+        picos = {}
+        for nome, grupo in grupos.items():
+            eventos = ep.separar_eventos(grupo["leituras"], 3.0)
+            self.assertEqual(len(eventos), 1, f"{nome} deveria ter um evento")
+            picos[grupo["cidade"]] = eventos[0].quando
+        vao = (picos["botuvera"] - picos["vidal-ramos"]).total_seconds() / 3600
+        self.assertEqual(vao, 2.0, "o vão entre os picos é o tempo de trânsito")
+
+    def test_o_evento_inteiro_herda_a_marca(self):
+        grupo = ep.ler_serie_estadual(None)["SDC-SC Vidal Ramos"]
+        self.assertTrue(ep.separar_eventos(grupo["leituras"], 3.0)[0].so_horario)
+
+    def test_a_serie_estadual_nao_entra_no_glob_municipal(self):
+        """
+        `*.ndjson` pegava o arquivo estadual e o de chuva. O leitor municipal
+        cuspia um aviso por linha — ruído que ensina a ignorar avisos.
+        """
+        self.assertEqual(ep.arquivos_da_serie(None), [])
+        self.assertEqual(ler_serie(None), {})
+
+
+class SerieEstadualNaoGrava(unittest.TestCase):
+    """
+    Gravar `pico_m` em datum estadual poria no enchentes.json um número que
+    parece régua municipal e não é. As duas travas ficam em código.
+    """
+
+    def roda(self, *args) -> tuple[int, str]:
+        import io as _io
+        import contextlib
+        err = _io.StringIO()
+        with unittest.mock.patch("sys.argv", ["extrair_picos.py", *args]), \
+             contextlib.redirect_stderr(err), contextlib.redirect_stdout(_io.StringIO()):
+            codigo = ep.main()
+        return codigo, err.getvalue()
+
+    def test_sem_limiar_recusa_e_explica(self):
+        codigo, err = self.roda("--serie-estadual")
+        self.assertEqual(codigo, 2)
+        self.assertIn("exige --limiar", err)
+        self.assertIn("5,98", err, "o exemplo de Indaial precisa estar no erro")
+
+    def test_com_escrever_recusa_e_explica(self):
+        codigo, err = self.roda("--serie-estadual", "--limiar", "3", "--escrever")
+        self.assertEqual(codigo, 2)
+        self.assertIn("não grava", err)
 
 
 if __name__ == "__main__":
