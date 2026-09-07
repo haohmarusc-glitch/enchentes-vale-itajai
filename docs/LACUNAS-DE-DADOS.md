@@ -13,7 +13,7 @@ de projeto, nunca medida.
 | Cidade | Rio | Leitura ao vivo | Cotas atenção+alerta | Cotas conferidas | Picos | Série ANA | Cotas de rua | Trânsito a jusante |
 |---|---|---|---|---|---|---|---|---|
 | Taió | acu | sim | sim | — | 1 | sim | — | sim |
-| Ituporanga | acu | — | — | — | — | — | — | sim |
+| Ituporanga | acu | — | — | — | — | sim | — | sim |
 | Rio do Sul | acu | sim | sim | — | 9 | sim | 555 | — |
 | Ibirama | acu | — | — | — | — | — | — | — |
 | Lontras | acu | — | — | — | — | — | — | — |
@@ -68,7 +68,7 @@ Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Gaspar**, *
 
 ### 5. Série da ANA — o acervo que fecha as lacunas de uma vez
 
-Sem `codigo_ana` conferido no HidroWeb: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
+Sem `codigo_ana` conferido no HidroWeb: **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
 Cada estação conferida traz série inteira de cota, com hora — resolve os itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por unidade de esforço da lista.
 

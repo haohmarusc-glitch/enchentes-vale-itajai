@@ -140,7 +140,25 @@
           "ramo": "itajai_do_sul",
           "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí do Sul",
-          "codigo_ana": null,
+          "codigo_ana": "83145140",
+          "codigo_ana_nome": "DCSC BARRAGEMSUL ITUPORANGA JUSANTE",
+          "codigo_ana_verificado": true,
+          "codigo_ana_escala": {
+            "inicio": "2020-10",
+            "fim": null
+          },
+          "codigo_ana_area_drenagem_km2": 1170,
+          "codigo_ana_coordenadas": [
+            -27.4819,
+            -49.5828
+          ],
+          "codigo_ana_distancia_do_pino_km": 0.045,
+          "codigo_ana_verificacao": "Vinculado em 07/09/2026 por COORDENADA E POR TIPO. O que faltava era só o TIPO, e ele veio: FLUVIOMÉTRICA, 1.170 km², escala aberta desde 10/2020. A coordenada da ANA (-27,4819 / -49,5828) fica a 45 m deste pino — medido aqui, não afirmado pela fonte. ATENÇÃO AO QUE ESTA RÉGUA MEDE: o nome diz JUSANTE DA BARRAGEM SUL, e é literal — a leitura é de água já amortecida pela barragem. Isso importa para previsão a jusante e para não ler a série como se fosse regime natural. E a série é CURTA: começa em 10/2020, não tem 2008 nem 2011. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente de desenvolvimento tem *.ana.gov.br bloqueado). Bruto: data/brutos/ana-inventario-2026-09-07.json.",
+          "codigo_ana_nao_e": {
+            "codigo": "83250000",
+            "nome": "ITUPORANGA",
+            "por_que_nao": "É a armadilha desta cidade, e quase caímos nela: 83250000 se chama ITUPORANGA, é fluviométrica no Itajaí do Sul e tem a série mais longa do ramo — 1.650 km², aberta desde 04/1929, 97 anos. Estava listada como 'a série longa que destrava Ituporanga'. A coordenada desmente: -27,3986 / -49,6058, a 9,59 km deste pino, e drena 1.650 km² contra os 1.170 km² da nossa. São estações diferentes, em pontos diferentes do rio. Usar a série dela como histórico de Ituporanga seria vínculo POR NOME DE MUNICÍPIO com aparência de vínculo por coordenada — o erro que a regra emendada existe para impedir. NÃO vincular. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente de desenvolvimento tem *.ana.gov.br bloqueado). Bruto: data/brutos/ana-inventario-2026-09-07.json."
+          },
           "codigo_dcsc": "DCSC-00039",
           "verificado": false,
           "barragem": "Barragem Sul (Ituporanga)",
@@ -152,22 +170,7 @@
           "coordenadas": [
             -27.4822,
             -49.5825
-          ],
-          "codigo_ana_candidatos": [
-            {
-              "codigo": "83145140",
-              "nome": "DCSC BARRAGEMSUL ITUPORANGA JUSANTE",
-              "evidencia": "a 45 m da DCSC-00039, que é este pino (Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026.)",
-              "falta": "o TIPO da estação não foi lido. A regra emendada exige coordenada E tipo, e sem o tipo o vínculo não se escreve."
-            },
-            {
-              "codigo": "83250000",
-              "nome": "ITUPORANGA",
-              "evidencia": "fluviométrica no Itajaí do Sul, 1.650 km², escala desde 1929 — a série longa do ramo",
-              "falta": "a COORDENADA. Sem ela não se sabe se é esta régua ou outra do município."
-            }
-          ],
-          "codigo_ana_candidatos_nota": "Dois candidatos, um com coordenada e sem tipo, outro com tipo e sem coordenada — e nenhum dos dois basta sozinho, que é exatamente a lição do cruzamento de 06/09/2026. Enquanto um deles não tiver os dois, `codigo_ana` fica null. ACHADO COLATERAL, que vale independentemente do código: o nome da 83145140 diz JUSANTE DA BARRAGEM SUL — a régua que o site mostra para Ituporanga fica ABAIXO da parede, ou seja, lê água já amortecida pela barragem. Isso importa para previsão e ainda não estava escrito em lugar nenhum."
+          ]
         },
         {
           "id": "rio-do-sul",
@@ -212,7 +215,7 @@
             "inicio": "1978",
             "fim": null
           },
-          "codigo_ana_ressalva": "⚠️ ABERTO (06/09/2026). O `codigo_ana` desta cidade é a 83300200 RIO DO SUL - NOVO, que a ANA cadastra no Itajaí-AÇU e que fica a 0,43 km deste pino (medido aqui). Mas o cruzamento do inventário mostra a DCSC-00013 — que É este pino — a apenas 35 m da 83094000 RIO DO SUL, cadastrada no Itajaí do OESTE. Ou seja: a estação colada na nossa régua pode não ser a do código que usamos. Rio do Sul tem quatro estações da ANA em três rios (83094000 Oeste, 83300000 Sul, 83300002 e 83300200 Açu), espelhando as três réguas físicas do município. NÃO resolvido, e não se resolve por magnitude: parear a série de um rio com a régua de outro é o mesmo erro que este projeto evita em toda parte. ⚠️ E a área de 83094000 aparece como 5.160 km², igual à do Açu, o que não faz sentido para uma cabeceira — provável erro de cadastro na ANA. Não usar essa área sem conferir. Ver docs/INVENTARIO-ANA.md."
+          "codigo_ana_ressalva": "⚠️ CONTINUA ABERTO, mas ENCOLHEU MUITO (07/09/2026). O `codigo_ana` desta cidade é a 83300200 RIO DO SUL - NOVO, cadastrada no Itajaí-AÇU, a 0,43 km deste pino. A dúvida era: a 83094000, cadastrada no Itajaí do OESTE, fica a apenas 35 m da nossa régua — seria ELA a estação daqui? A leitura do inventário em 07/09/2026 trouxe o dado que faltava e mudou a pergunta: A ESCALA DA 83094000 ENCERROU EM 08/2005. Ela é a estação que ficava na nossa régua e está MORTA há 21 anos; a 83300200 é a que continua publicando. Para o presente não há escolha a fazer. Para o histórico, a pergunta que resta é se as duas compartilham o zero — e essa é a mesma pergunta do datum de Blumenau, que o inventário público não responde. ⚠️ DOIS SINAIS DE QUE O CADASTRO DA 83094000 É FRÁGIL, e os dois vieram juntos: a área aparece como 5.160 km², IGUAL à do Açu, o que não faz sentido para uma cabeceira; e a data de início da escala vem como 1800-01-01, que não é data, é preenchimento. Não usar nem a área nem o rio declarado dessa estação sem conferir em outra fonte. As quatro estações da ANA em Rio do Sul (83094000 Oeste, 83300000 Sul, 83300002 e 83300200 Açu) seguem espelhando as três réguas físicas do município, e continua valendo: não parear série de um rio com régua de outro. Ver docs/INVENTARIO-ANA.md e docs/CODIGOS-ANA-PENDENTES.md."
         },
         {
           "id": "ibirama",
@@ -223,6 +226,14 @@
           "sub_bacia": "Itajaí do Norte",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00020",
+          "codigo_ana_candidatos": [
+            {
+              "codigo": "83440000",
+              "nome": "IBIRAMA",
+              "evidencia": "Fluviométrica no Rio Hercílio, 3.330 km², escala de 12/1928 a 12/2021. A coordenada (-27,0539 / -49,5167) fica a 476 m deste pino — medido aqui em 07/09/2026.",
+              "falta": "A DECISÃO, não o dado. 476 m não é os 10 m de Gaspar nem os 6,9 km de Blumenau: cai na faixa em que o projeto não tem critério escrito. O que resolve não é outra busca e sim olhar o Hercílio no mapa — se as duas estão no mesmo trecho reto, é a mesma régua; se há confluência entre elas, não é. O traçado do Hercílio NÃO está em data/rios/, então essa conferência ainda não pode ser feita aqui. E vem junto uma segunda pendência: a escala encerrou em 12/2021, então o vínculo precisa declarar codigo_ana_sucessor — as candidatas conhecidas são de usina (83380000 CGH Mafrás Montante, 83430000 PCH Ibirama Barramento), que medem barramento, não a cidade."
+            }
+          ],
           "verificado": false,
           "regua": "Régua do Rio Itajaí do Norte (Hercílio) em Ibirama",
           "referencia": "régua",
@@ -298,6 +309,11 @@
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00006",
+          "codigo_ana_nao_e": {
+            "codigo": "83520000",
+            "nome": "WARNOW",
+            "por_que_nao": "3,95 km deste pino. A WARNOW é a sucessora da 83690000 INDAIAL na rede da ANA, é fluviométrica, drena 9.790 km² e tem escala aberta desde 10/1927 — 99 anos, a série mais longa da bacia. Era a candidata natural, e a coordenada (-26,9417 / -49,2897) desmente: não é esta régua. A antecessora 83690000 já ficava a 4,1 km do mesmo pino, ou seja, a estação da ANA em Indaial NUNCA foi a nossa. A série da WARNOW continua valendo como série DO RIO naquele ponto; o que não vale é chamá-la de histórico da régua de Indaial, cujas cotas vêm da COMPDEC. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente tem *.ana.gov.br bloqueado). Distância medida aqui, contra o pino desta cidade. Bruto: data/brutos/ana-inventario-2026-09-07.json."
+          },
           "verificado": false,
           "regua": "Régua do Itajaí-Açu em Indaial (a COMPDEC não nomeia o ponto)",
           "referencia": "régua",
@@ -421,6 +437,11 @@
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00030",
+          "codigo_ana_nao_e": {
+            "codigo": "83870001",
+            "nome": "ILHOTA-JUSANTE",
+            "por_que_nao": "1,18 km deste pino — acima do limite de 1 km que o projeto usa para dizer 'mesma régua'. Fluviométrica, 12.357 km², escala aberta. A antecessora 83870000 já ficava a 1,2 km, o que confirma que é o mesmo sítio da ANA e não o nosso. Fica perto o bastante para ser tentador e longe o bastante para ser outra: sem a cota do zero das duas réguas, parear as séries somaria um degrau desconhecido. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente tem *.ana.gov.br bloqueado). Distância medida aqui, contra o pino desta cidade. Bruto: data/brutos/ana-inventario-2026-09-07.json."
+          },
           "verificado": false,
           "regua": "Estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin (a régua que o PLANCON cita)",
           "referencia": "régua",
@@ -577,6 +598,11 @@
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00018",
+          "codigo_ana_nao_e": {
+            "codigo": "83892998",
+            "nome": "BOTUVERA-MONTANTE",
+            "por_que_nao": "3,47 km deste pino, e o nome já avisava: MONTANTE. Fluviométrica, 827 km², desde 05/1985. Mesma família do Salseiro em Vidal Ramos — mesmo município, estação diferente. NÃO vincular. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente tem *.ana.gov.br bloqueado). Distância medida aqui, contra o pino desta cidade. Bruto: data/brutos/ana-inventario-2026-09-07.json."
+          },
           "verificado": false,
           "cotas_m": {},
           "fontes_tempo_real": [

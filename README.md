@@ -526,18 +526,35 @@ o projeto.
   `codigo_dcsc` junto: o Mirim inteiro estava fora do `CODIGO_DCSC_ESPERADO`, a trava que impede o
   código sumir em silêncio — valia só para o Açu. Novo teste exige que o pino de TODA cidade com
   `codigo_dcsc` caia a menos de 50 m da estação; passa nas treze.
-- [ ] **⛔ As outras sete estações da ANA não fecham deste ambiente — vira execução do Jefferson.**
-  Medido em 07/09/2026: `*.ana.gov.br`, `snirh.gov.br` e `dadosabertos.ana.gov.br` respondem **403 no
-  CONNECT do proxy**, inclusive o inventário público, que **não exige autenticação**. Nenhuma
-  coordenada da ANA se lê daqui. `scripts/ana_inventario.py` faz a busca e imprime tipo, coordenada,
-  distância ao pino e a linha pronta para `ESTACOES_ANA_CONHECIDAS` — **rodar de fora**, com
-  `--json data/brutos/ana-inventario-2026-09-07.json`. As sete: **83250000 Ituporanga** (falta a
-  coordenada) e **83145140** (falta o tipo) — complementares, uma execução resolve as duas;
-  **83520000 WARNOW** (Indaial), **83870001 ILHOTA-JUSANTE**, **83440000 IBIRAMA** (escala morta em
-  12/2021, precisa declarar sucessora), **83892998 BOTUVERA-MONTANTE** (a 3,5 km da DCSC-00018 —
-  provável NÃO, que vale tanto quanto um sim) e **83094000 RIO DO SUL (Oeste)**, que conflita com a
-  83300200 já usada. Detalhe em `docs/CODIGOS-ANA-PENDENTES.md`.
-
+- [x] **As oito estações da ANA foram lidas — Ituporanga fechou, quatro "nãos" ficaram provados
+  (07/09/2026).** `scripts/ana_inventario.py` rodou **na VPS**, porque este ambiente tem
+  `*.ana.gov.br` bloqueado. Todas as oito são fluviométricas. **Ituporanga = 83145140 DCSC
+  BARRAGEMSUL JUSANTE**, a 45 m do pino — mas a série é **curta (desde 10/2020)** e a régua lê água
+  **amortecida pela barragem**. **A armadilha era a outra:** a 83250000 se chama ITUPORANGA, é
+  fluviométrica e tem 97 anos de escala (1929) — e fica a **9,59 km**, drenando 1.650 km² contra os
+  1.170 da nossa. Gravada como `codigo_ana_nao_e`. **Quatro nãos:** Indaial × WARNOW (3,95 km — e a
+  antecessora já ficava a 4,1 km, ou seja **a estação da ANA em Indaial nunca foi a nossa**),
+  Botuverá × BOTUVERA-MONTANTE (3,47 km), Ilhota × ILHOTA-JUSANTE (1,18 km) e Taió × BARRAGEM OESTE
+  (4,35 km). **Sobrou uma decisão:** Ibirama × 83440000 a **476 m** — nem os 10 m de Gaspar nem os
+  6,9 km de Blumenau; resolve olhando o Hercílio, cujo traçado não está em `data/rios/`. **A
+  ressalva de Rio do Sul encolheu:** a 83094000, que fica a 35 m da nossa régua, **encerrou a escala
+  em 08/2005** — para o presente não há escolha a fazer. Dois sinais de cadastro frágil nela: área
+  igual à do Açu e início de escala em **1800-01-01**, que não é data. Detalhe em
+  `docs/CODIGOS-ANA-PENDENTES.md`.
+- [x] **Um defeito meu, achado na saída do próprio script.** A distância saía com
+  `f"{d:,.0f} m"`, e a execução real imprimiu **`4,350 m`** para 4.350 metros. Em português a
+  vírgula é separador **decimal**: lê-se 4,35 m. Erro de mil vezes, e na direção que faz estação
+  distante parecer colada na régua — o vínculo errado que o script existe para impedir. Os
+  vereditos estavam certos (a comparação usa o número), a leitura é que enganava. Agora acima de
+  1 km sai em km, com vírgula decimal, e nunca há separador de milhar.
+- [x] **A trava do código ANA passou a medir contra DUAS referências, valendo a mais perto.** Ela
+  media só contra o traçado do rio, e reprovou a 83145140: 45 m do pino, **21,4 km** do traçado
+  PARCIAL do Itajaí do Sul. A estação não está em outro rio — o rio é que não está desenhado. A
+  primeira correção mediu só contra o pino e reprovou **Blumenau**, onde o problema é o oposto: o
+  pino é régua de **chuva** a 3 km do talvegue, e a 83800002 está a 6,94 km dele e a **49 m** do
+  traçado. A pergunta é uma só ("esta estação é de outro curso d'água?") e cada referência falha num
+  caso diferente. Três testes por sabotagem travam os dois casos e o buraco que a regra do mínimo
+  poderia abrir.
 - [x] **A lista do que falta agora é medida, não lembrada (07/09/2026).** `scripts/auditar_lacunas.py`
   cruza `estacoes.json`, `enchentes.json`, `transito.json` e `cotas-ruas.json` e escreve
   `docs/LACUNAS-DE-DADOS.md`: sete camadas por cidade e a lista de busca ordenada por impacto.

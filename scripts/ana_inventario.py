@@ -157,6 +157,20 @@ def metros(a: tuple[float, float], b: tuple[float, float]) -> float:
     return math.hypot(dx, dy)
 
 
+def distancia(m: float) -> str:
+    """
+    Distância em texto que não engana quem lê em português.
+
+    A primeira versão imprimia `f"{d:,.0f} m"`, e a saída real de 07/09/2026
+    trouxe **"4,350 m"** para uma estação a 4.350 metros. Em pt-BR a vírgula é
+    separador DECIMAL: aquilo se lê 4,35 m. Erro de mil vezes, e na direção
+    perigosa — faz estação longe parecer colada na régua, que é exatamente o
+    vínculo errado que este script existe para impedir. Acima de 1 km vai em
+    quilômetros, com vírgula decimal, e nunca há separador de milhar.
+    """
+    return f"{m:.0f} m" if m < 1000 else f"{m / 1000:.2f} km".replace(".", ",")
+
+
 def pino_da_cidade(cidade_id: str):
     for rio in le_json("estacoes.json")["rios"].values():
         for c in rio["cidades"]:
@@ -188,7 +202,7 @@ def relata(achadas: list[dict]) -> None:
         pino = pino_da_cidade(cidade_id) if cidade_id else None
         if pino:
             d = metros(pino, (e["lat"], e["lon"]))
-            print(f"    distância ao pino de {cidade_id}: {d:,.0f} m"
+            print(f"    distância ao pino de {cidade_id}: {distancia(d)}"
                   + ("   ✅ mesma régua" if d < 200 else
                      "   ⚠️ perto, conferir" if d < 1000 else
                      "   ❌ é OUTRA estação — não vincular"))
