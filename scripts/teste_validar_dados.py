@@ -977,6 +977,18 @@ class TestaVidalRamosNaoHerdaOSalseiro(unittest.TestCase):
         self.assertIn("SALSEIRO", motivo.upper())
         self.assertIn("6,8 km", motivo)
 
+    def test_o_traco_e_o_zero_convivendo_no_mesmo_cartao_estao_registrados(self):
+        """
+        A captura de 07/09 mostra '---' nas cinco acumuladas e '0,00 mm' na
+        chuva atual, no mesmo cartão. A página prova, sozinha, que '---' é o
+        'não tenho dado' desta fonte — e que o 0,00 ao lado, numa estação
+        parada há 142 dias, é número fabricado. A regra de atenção da legenda
+        lê justamente esse campo.
+        """
+        motivo = self.vr["cotas_m_por_que_vazio"]
+        self.assertIn("---", motivo)
+        self.assertIn("35,00 mm", motivo)
+
     def test_as_cotas_do_salseiro_nao_aparecem_em_lugar_nenhum_da_cidade(self):
         texto = json.dumps(self.vr, ensure_ascii=False)
         for chave in ("atencao", "alerta", "emergencia", "inundacao"):
