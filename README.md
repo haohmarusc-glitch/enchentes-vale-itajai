@@ -477,6 +477,31 @@ o projeto.
 
 ## Pendências
 
+- [ ] **⛔ Gaspar está sem NENHUMA fonte de nível ao vivo, e ficou seis dias sem ninguém perceber
+  (07/09/2026).** Diagnóstico fechado com o Jefferson, cruzando a VPS, este ambiente e o navegador
+  do celular dele. **Duas coisas juntas, e a segunda decide:** (1) o host
+  `defesacivil.gaspar.sc.gov.br` dá **timeout de 30 s** na VPS enquanto a mesma página abre normal
+  num celular no Brasil — bloqueio de IP estrangeiro ou rota, não queda; (2) **a página foi
+  reformulada** (rodapé: *"Desenvolvido por DEXTAK"*) e a régua **"Rio Itajaí Açu Gaspar" SAIU
+  DELA**. Em 31/08 marcava **3,85 m**; hoje a tabela tem sete linhas e nenhuma é o Açu — entraram
+  três barragens estaduais (números de **altitude de reservatório**: 273,75 / 350,44 / 388,07) e
+  saíram três pluviômetros locais. **Mesmo com a rede funcionando não haveria o que coletar.** E não
+  há plano B: a API estadual declara `tem_nivel_do_rio=false` para a DCSC-00005, e a ANA 83840000
+  encerrou em 12/2021 **sem sucessora**. A cidade tem **1.619 cotas de rua e 49 picos** e o site não
+  consegue dizer em que nível o rio está — o pino fica cinza, que é o honesto. **O que resolve:**
+  perguntar à Superintendência de Gaspar se a régua mudou de endereço, ou pedir o endpoint.
+- [ ] **O vigia avisou uma vez e calou — uma fonte que morre fica invisível.** `saude_coleta.py`
+  compara com a **rodada anterior**, não com o cadastro, de propósito (*"Blumenau está cadastrada e
+  nunca vem, e um vigia permanentemente vermelho ensina quem opera a ignorá-lo"*). O raciocínio
+  continua valendo, mas tem consequência: quando Gaspar sumiu em 01/09 ele reclamou **uma vez**; na
+  rodada seguinte Gaspar já não estava em `vistas_antes` e o alarme sumiu junto com a estação.
+  Enquanto isso `coleta_niveis.py` chama Gaspar a cada 15 min pelo cron — **~96 falhas por dia**, 30 s
+  de timeout cada, sem nada acusar. **Conserto proposto, não feito:** lembrar das estações vistas nos
+  últimos N dias em vez de só na última rodada — quem nunca veio não é cobrado, quem veio ontem
+  continua sendo. Não fiz porque **muda quando o Telegram dispara**, e alarme demais é exatamente o
+  que o comentário original alerta. É decisão de quem opera. Detalhe em
+  `docs/GASPAR-SEM-NIVEL-AO-VIVO.md`.
+
 - [x] **Gaspar: 49 registros importados, 21 segurados — a coluna do ANO está desalinhada em dois
   trechos da fonte (07/09/2026).** A tabela chegou pelo celular do Jefferson (a página é
   inalcançável daqui e da VPS): **70 linhas, 1852–2023**. Gaspar sai de **zero** picos para **49** —
