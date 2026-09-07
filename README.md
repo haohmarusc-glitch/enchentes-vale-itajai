@@ -477,6 +477,67 @@ o projeto.
 
 ## Pendências
 
+- [x] **Brusque: a pergunta estava errada, não a resposta (07/09/2026).** Eu vinha procurando "a cota
+  de alerta de Brusque". A cheia de 31/08–01/09/2026 diz que essa pergunta não tem resposta: a Defesa
+  Civil declarou **atenção** com a régua de Brusque em **3,49 m** (Vidal Ramos 3,31 · Botuverá 4,86) e
+  **manteve "atenção"** no dia seguinte com Brusque em **5,04 m**, depois de um pico de 5,74 m com
+  alagamentos nas áreas previstas. A mesma palavra cobriu 3,49 e 5,04 — e a nossa `atencao` de 4,80 m
+  cai **entre** as duas. Consequência que a tela carrega: em um momento o site pinta **mais calmo**
+  que a Defesa Civil e em outro **mais grave**, nos dois casos por motivo estrutural. A Defesa Civil
+  olha **Vidal Ramos → Botuverá → Brusque** e a tendência — a lógica montante → jusante que este
+  projeto quer construir, e cujos dois elos estão entre os que faltam em `transito.json`. Gravado em
+  `cotas_ressalva`; **nenhuma cota foi mudada**, e não se inventa `alerta`. O que NÃO se conclui: que
+  4,80 m está errado — 3,49 m foi a régua quando um estado de BACIA foi declarado, não um limiar de
+  Brusque.
+- [ ] **Gaspar: 71 registros de 1852 a 2023 na página oficial, com uma armadilha que vira teste.** A
+  fonte traz **`20/11/1855 → término 24/11/9855`**. O importador **não pode** virar 9855 em 1855 em
+  silêncio: preserva o original e marca a data como anômala — é a classe de erro que este projeto
+  persegue, o conserto invisível que apaga a prova de que a fonte errou. Ressalva anterior de pé: a
+  data publicada é de **início do evento**, não do pico, e não calibra trânsito. Gaspar tem hoje
+  **zero picos**, então esses 71 seriam a maior entrada única já feita na base.
+- [ ] **83690000 é reconciliação de VERSÕES, não um offset.** Documento da ANEEL registra que a ANA
+  informou revisão dos dados fluviométricos da estação, **incluindo a curva-chave**, dados **pós-2008
+  não consistidos**, e área de drenagem divergente que a ANA **alterou no HidroWeb em março de 2016**.
+  Estudo da UNIVALI dá **9.850 km², ~66% da bacia**, e lembra que estação de curva-chave deve ficar
+  fora da influência da maré. Baixar a série e comparar picos sem saber de qual versão cada valor veio
+  produz resultado que parece limpo e não é. ⚠️ **A área não se funde:** o inventário dá 9.790 km² para
+  a **83520000 WARNOW** (sucessora) e a UNIVALI 9.850 km² para a **83690000** — estações diferentes,
+  e a área da 83690000 mudou de cadastro em 2016. Guardar lado a lado.
+- [ ] **Maré: a fonte está definida, com uma correção.** Porto de Itajaí é a **tábua nº 52, p. 166–168**
+  do CHM para 2026. A Marinha **comercializa a edição completa**; o que é aberto é o produto de dados
+  **por estação**. Não presumir que exista um PDF gratuito da edição inteira. A tábua atual acaba em
+  **30/09/2026**.
+- [ ] **🔴 Indaial COMPDEC ↔ DCSC-00006: a busca voltou vazia, e isso se registra.** Nova rodada com
+  DCSC-00006, SDC-SC, COMPDEC, datas de out/2023, API e combinações **não recuperou o valor histórico
+  simultâneo**. Continua `COMPDEC 05/10/2023 08:00 = 5,27 m` contra `DCSC-00006 = desconhecido`. **O
+  offset não vai ser fabricado.** O caminho deixa de ser busca textual e passa a ser API/backend do
+  monitoramento estadual, arquivo histórico, ou ofício. Detalhe em
+  `docs/PESQUISA-2026-09-07-TERCEIRA-RODADA.md`.
+
+- [x] **Brusque ganhou `codigo_ana`, e o que faltava não era da ANA (07/09/2026).** O candidato
+  83900000 BRUSQUE (PCD) estava travado pelo `falta`: *"o nosso `codigo_dcsc` de Brusque é NULL — os
+  51 m são até a DCSC-00019, que este repositório nunca afirmou ser este pino"*. A resposta estava
+  dentro de casa, em dois lugares independentes: o pino de Brusque cai a **3,5 m** da DCSC-00019 em
+  `data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json`, e `scripts/coleta_nivel_sc.py` **já lia**
+  DCSC-00019 como `brusque` para publicar a leitura ao vivo do site — a ligação existia em CÓDIGO e
+  não estava no DADO. Com o elo escrito, a 83900000 fica a **≤ ~55 m** do pino por desigualdade
+  triangular; está gravado como **limite, não ponto**, porque a coordenada da estação continua não
+  transcrita. **Vidal Ramos, Botuverá e Guabiruba estavam na mesma situação** e ganharam
+  `codigo_dcsc` junto: o Mirim inteiro estava fora do `CODIGO_DCSC_ESPERADO`, a trava que impede o
+  código sumir em silêncio — valia só para o Açu. Novo teste exige que o pino de TODA cidade com
+  `codigo_dcsc` caia a menos de 50 m da estação; passa nas treze.
+- [ ] **⛔ As outras sete estações da ANA não fecham deste ambiente — vira execução do Jefferson.**
+  Medido em 07/09/2026: `*.ana.gov.br`, `snirh.gov.br` e `dadosabertos.ana.gov.br` respondem **403 no
+  CONNECT do proxy**, inclusive o inventário público, que **não exige autenticação**. Nenhuma
+  coordenada da ANA se lê daqui. `scripts/ana_inventario.py` faz a busca e imprime tipo, coordenada,
+  distância ao pino e a linha pronta para `ESTACOES_ANA_CONHECIDAS` — **rodar de fora**, com
+  `--json data/brutos/ana-inventario-2026-09-07.json`. As sete: **83250000 Ituporanga** (falta a
+  coordenada) e **83145140** (falta o tipo) — complementares, uma execução resolve as duas;
+  **83520000 WARNOW** (Indaial), **83870001 ILHOTA-JUSANTE**, **83440000 IBIRAMA** (escala morta em
+  12/2021, precisa declarar sucessora), **83892998 BOTUVERA-MONTANTE** (a 3,5 km da DCSC-00018 —
+  provável NÃO, que vale tanto quanto um sim) e **83094000 RIO DO SUL (Oeste)**, que conflita com a
+  83300200 já usada. Detalhe em `docs/CODIGOS-ANA-PENDENTES.md`.
+
 - [x] **A lista do que falta agora é medida, não lembrada (07/09/2026).** `scripts/auditar_lacunas.py`
   cruza `estacoes.json`, `enchentes.json`, `transito.json` e `cotas-ruas.json` e escreve
   `docs/LACUNAS-DE-DADOS.md`: sete camadas por cidade e a lista de busca ordenada por impacto.
