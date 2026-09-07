@@ -295,6 +295,7 @@ export const mareItajai: TabuaMare = {
 }
 
 export const fontesGerais = estacoes.fontes_gerais
+export const fontesGeraisEstado = estacoes.fontes_gerais_estado
 
 // --- Cotas de rua -----------------------------------------------------------
 //

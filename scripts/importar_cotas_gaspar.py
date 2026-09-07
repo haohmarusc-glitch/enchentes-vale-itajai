@@ -68,14 +68,33 @@ DATA_FONTE = "2020-04"
 
 def chave(r: dict) -> tuple:
     """
-    Identidade: cidade, rua, ponto e a COTA.
+    Identidade: cidade, rua, ponto, cota — e a COORDENADA, quando existe.
 
     A cota entra porque a fonte descreve pontos distintos com o mesmo texto —
     há ruas com dezenas de marcadores e `refer_2` repetido. Sem ela, um
     apagaria o outro em silêncio.
+
+    A COORDENADA entrou em 07/09/2026, e o motivo é que a cota não bastou.
+    Dois pares de pontos do levantamento sumiam na importação:
+
+    * "Rua Cerena Dellandrea", ponto "251", 9,73 m — dois marcadores a **42 m**
+      um do outro, ambos arredondando para a mesma cota;
+    * "Rodovia Jorge Lacerda", ponto "Sem referência", 9,77 m — dois marcadores
+      a **331 m** um do outro. Aqui o "ponto" é um texto de preenchimento, e
+      texto de preenchimento não identifica lugar nenhum.
+
+    Eram 1.615 pontos levantados e 1.613 cadastrados. Nada no arquivo dizia que
+    dois tinham sumido: a identidade colidia e o segundo era contado como
+    repetido. Quando a fonte dá coordenada, a coordenada É o ponto — o texto é
+    rótulo para a tela, não identificador.
+
+    Arredondar em 5 casas (~1 m) é de propósito: absorve ruído de conversão do
+    UTM sem fundir marcadores distintos, que na fonte estão a dezenas de metros.
     """
     return (r["cidade"], normalizar(r["rua"]), normalizar(r.get("ponto")),
-            round(r["cota_m"], 2) if e_numero(r.get("cota_m")) else None)
+            round(r["cota_m"], 2) if e_numero(r.get("cota_m")) else None,
+            round(r["lat"], 5) if e_numero(r.get("lat")) else None,
+            round(r["lon"], 5) if e_numero(r.get("lon")) else None)
 
 
 def como_registro(p: dict) -> dict | None:
@@ -102,6 +121,15 @@ def como_registro(p: dict) -> dict | None:
         # o mesmo sentido das outras cidades: nível lido na régua da própria
         # cidade, nunca comparável com o de outra.
         "referencia": "régua",
+        # A COORDENADA VEM DAQUI, e não de um cruzamento posterior por nome.
+        # Ela é o que o levantamento topográfico realmente mediu — o par
+        # (rua, ponto) é rótulo para a tela. Até 07/09/2026 ela era colada
+        # depois por juntar_coordenadas_cotas.py, e o import ficava sem saber
+        # distinguir dois marcadores da mesma rua com a mesma cota: dois pares
+        # deles, a 42 m e a 331 m um do outro, colidiam e o segundo era
+        # descartado como repetido. Ver `chave`.
+        **({"lat": round(p["lat"], 6)} if e_numero(p.get("lat")) else {}),
+        **({"lon": round(p["lon"], 6)} if e_numero(p.get("lon")) else {}),
     }
 
 
@@ -197,7 +225,7 @@ def main() -> int:
     if not importavel(acertos, len(comuns), grupos["na_ordem"], grupos["p"]):
         print(
             "\nRECUSADO: a prova de que estes números estão na régua de Gaspar não fecha.\n"
-            "Sem ela, seriam 1.615 cotas de rua publicadas sem se saber o que medem —\n"
+            "Sem ela, seriam 1.617 cotas de rua publicadas sem se saber o que medem —\n"
             "que foi exatamente o caso da camada de 2011 de Brusque. Rodar\n"
             "scripts/analisar_kml_gaspar.py e conferir a fonte antes de importar.",
             file=sys.stderr,

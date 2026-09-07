@@ -126,12 +126,28 @@ export interface EstacaoTempoReal {
   ordem_nota?: string
 }
 
+/**
+ * Estado de um link do rodapé, conferido no navegador.
+ *
+ * As chaves que começam com `_` são documentação do bloco, não fontes — por
+ * isso o tipo aceita `string` além do registro.
+ */
+export interface EstadoDeFonte {
+  estado: 'ok' | 'fora_do_ar' | 'exige_cadastro'
+  observado: string
+  por_que_importa?: string
+  o_que_resolve?: string
+}
+
+export type EstadoDasFontes = Record<string, EstadoDeFonte | string | unknown>
+
 export interface Estacoes {
   _meta: unknown
   rios: Record<string, Rio>
   afluentes_monitorados?: AfluenteMonitorado[]
   estacoes_tempo_real?: EstacaoTempoReal[]
   fontes_gerais: Record<string, string>
+  fontes_gerais_estado?: EstadoDasFontes
 }
 
 /** Outro valor publicado para o MESMO pico, por outra fonte. */

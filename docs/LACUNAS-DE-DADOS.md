@@ -20,7 +20,7 @@ de projeto, nunca medida.
 | Ascurra | acu | — | — | — | — | — | — | — |
 | Indaial | acu | — | sim | sim | 16 | — | — | — |
 | Blumenau | acu | — | sim | — | 113 | sim | 2023 | sim |
-| Gaspar | acu | — | sim | sim | 48 | sim | 1615 | sim |
+| Gaspar | acu | — | sim | sim | 48 | sim | 1617 | sim |
 | Ilhota | acu | — | sim | — | — | — | — | sim |
 | Itajaí | acu | — | — | — | — | — | — | n/a |
 | Timbó | acu | — | — | — | 1 | — | — | — |

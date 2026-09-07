@@ -8,7 +8,7 @@ Testado o padrão `https://defesacivil.<cidade>.sc.gov.br/` para as 23 cidades d
 | **Itajaí** | ✅ | 11 réguas + cotas oficiais, marés, barragens, chuvas, `Mapa.php` (coordenadas), 45 abrigos (via ArcGIS) |
 | **Blumenau** | ✅ (AlertaBlu) | nível horário, 102 enchentes históricas, risco por bairro, 2.034 cotas de rua (PDF 2014) |
 | **Rio do Sul** | ✅ | API Asthon: 27 estações / 21 com nível / 11 com cota, 10 traçados de rio, 23 abrigos com status, 555 cotas de rua |
-| **Gaspar** | ✅ | cotas 6/7 (gatilho composto), 69 enchentes 1852–2023, 28 abrigos **com cota própria**, 1.615 cotas de rua |
+| **Gaspar** | ✅ | cotas 6/7 (gatilho composto), 69 enchentes 1852–2023, 28 abrigos **com cota própria**, 1.617 cotas de rua |
 | **Taió** | ✅ | ⬅️ **NOVO, não explorado** — descoberto nesta varredura |
 
 ## As outras 18 NÃO têm portal dedicado

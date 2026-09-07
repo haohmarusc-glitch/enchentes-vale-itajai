@@ -43,7 +43,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que reúne o nível do rio em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados são públicos (github.com/haohmarusc-glitch/enchentes-vale-itajai), cada informação aparece com a fonte citada, e todas as páginas deixam claro que o site **não é sistema oficial de alerta** e não substitui a Defesa Civil — em emergência, 199.
 
-Escrevo porque o portal de vocês é, de longe, o material mais completo que encontrei para Gaspar: as 1.615 cotas de rua, o histórico de enchentes desde 1852 e a tabela de monitoramento não têm equivalente nos outros municípios da bacia. Justamente por usar esse material com cuidado, cheguei a três dúvidas que só vocês podem responder.
+Escrevo porque o portal de vocês é, de longe, o material mais completo que encontrei para Gaspar: as 1.617 cotas de rua, o histórico de enchentes desde 1852 e a tabela de monitoramento não têm equivalente nos outros municípios da bacia. Justamente por usar esse material com cuidado, cheguei a três dúvidas que só vocês podem responder.
 
 **1. A régua do Rio Itajaí-Açu saiu da tabela de monitoramento.**
 

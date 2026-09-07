@@ -319,7 +319,7 @@
           "referencia": "régua",
           "cotas_verificado": true,
           "fonte_cotas": "PDF \"Indaial - cotas de enchente\", aba Arquivos da página da Defesa Civil de Indaial — https://indaial.atende.net/cidadao/pagina/cotas-de-enchente (a mesma página existe no subportal da Defesa Civil). Lido na fonte em 06/09/2026.",
-          "observacao": "No tronco do Açu (verificado no mapa e no Overpass 02/09/2026: 'Rio Itajaí-Açu' ao lado do marcador — não é o Benedito). Estação com curva-chave usada pelo CEOPS para estimar vazões em Blumenau. COTAS CORRIGIDAS EM 06/09/2026, E A CORREÇÃO É GRAVE: até aqui o cadastro trazia 'atencao: 6,00 m', um nome NOSSO — a leitura anterior tinha achado só a PÁGINA da COMPDEC, que lista 12 vias com alagamento já registrado a 6,00 m, e gravou esse número como atenção por ser o único que existia. A COMPDEC publica, sim, uma escala: ela está no PDF 'Indaial - cotas de enchente', na aba ARQUIVOS da mesma página. A escala oficial é até 3 m normal, 3 a 4 m atenção, 4 a 5,5 m alerta, acima de 5,5 m emergência. Ou seja, os 6,00 m que estavam gravados como ATENÇÃO ficam 1,5 m ACIMA da EMERGÊNCIA do município — o erro apontava para o lado perigoso, chamando de 'abaixo da atenção' um nível que Indaial já trata como emergência. As duas informações convivem e as duas continuam valendo: a escala é o aviso, e os 6,00 m são o alagamento de rua, que começa meio metro depois da emergência. A lista das 12 vias não é cota e não entra em cotas_m. REFERÊNCIA RESOLVIDA: o PDF diz que 5,5 m equivale a aproximadamente a cota 67 m acima do nível do mar; 67 − 5,5 = 61,5, que é o RN 1402-X do IBGE (61,49 m, perto da rua Tiradentes). Logo o zero da régua É o RN, não há duas referências concorrentes, e a escala publicada é a operacional. Caiu a hipótese de datum diferente levantada em docs/PESQUISA-2026-09-06-CRUZAMENTO.md. Para escala: os picos clássicos daqui são 7,76 m (1983) e 8,04 m (1984).",
+          "observacao": "No tronco do Açu (verificado no mapa e no Overpass 02/09/2026: 'Rio Itajaí-Açu' ao lado do marcador — não é o Benedito). REFUTADO EM 07/09/2026: este cadastro afirmava que a estação tem 'curva-chave usada pelo CEOPS para estimar vazões em Blumenau'. A seção 'Curvas de Descarga' da ficha da 83800002 na Hidro-Telemetria da ANA está VAZIA, conferida em dois carregamentos. Se essa curva existe, não é a da ANA. A afirmação era herdada, não medida, e sai daqui. COTAS CORRIGIDAS EM 06/09/2026, E A CORREÇÃO É GRAVE: até aqui o cadastro trazia 'atencao: 6,00 m', um nome NOSSO — a leitura anterior tinha achado só a PÁGINA da COMPDEC, que lista 12 vias com alagamento já registrado a 6,00 m, e gravou esse número como atenção por ser o único que existia. A COMPDEC publica, sim, uma escala: ela está no PDF 'Indaial - cotas de enchente', na aba ARQUIVOS da mesma página. A escala oficial é até 3 m normal, 3 a 4 m atenção, 4 a 5,5 m alerta, acima de 5,5 m emergência. Ou seja, os 6,00 m que estavam gravados como ATENÇÃO ficam 1,5 m ACIMA da EMERGÊNCIA do município — o erro apontava para o lado perigoso, chamando de 'abaixo da atenção' um nível que Indaial já trata como emergência. As duas informações convivem e as duas continuam valendo: a escala é o aviso, e os 6,00 m são o alagamento de rua, que começa meio metro depois da emergência. A lista das 12 vias não é cota e não entra em cotas_m. REFERÊNCIA RESOLVIDA: o PDF diz que 5,5 m equivale a aproximadamente a cota 67 m acima do nível do mar; 67 − 5,5 = 61,5, que é o RN 1402-X do IBGE (61,49 m, perto da rua Tiradentes). Logo o zero da régua É o RN, não há duas referências concorrentes, e a escala publicada é a operacional. Caiu a hipótese de datum diferente levantada em docs/PESQUISA-2026-09-06-CRUZAMENTO.md. Para escala: os picos clássicos daqui são 7,76 m (1983) e 8,04 m (1984).",
           "cotas_m": {
             "atencao": 3.0,
             "alerta": 4.0,
@@ -378,7 +378,18 @@
           "codigo_ana_sucessor": "83800003",
           "codigo_ana_sucessor_nota": "A escala convencional da 83800002 ENCERROU em 12/2021; a ANA cadastra a 83800003 BLUMENAU (PCD), na mesma coordenada, como ativa. O `codigo_ana` continua 83800002 porque é dele a SÉRIE HISTÓRICA que o projeto usa (1939–2021, baixada em 06/09/2026). Para o presente, o código é o 83800003 — e nenhum dos dois é a fonte de tempo real do site, que é a Defesa Civil. Não conferido aqui: o inventário não traz a cota do zero de nenhum dos dois, então não se sabe se compartilham o mesmo zero.",
           "codigo_ana_distancia_do_pino_km": 6.93,
-          "pino_nota": "O pino de Blumenau fica a 2,99 km do traçado do Açu — medido em 06/09/2026, e é a razão da exceção `LONGE_ACEITO['blumenau']` no validador. O que o inventário da ANA acrescentou: essa coordenada é a da DCSC-00026, estação do tipo `Meteo`, que NÃO mede nível de rio. Ou seja, o pino não é 'a régua a 3 km do talvegue' — é uma estação de CHUVA. A estação fluviométrica da ANA em Blumenau (83800002) fica a 6,93 km daqui e a 49 m do traçado. NÃO foi movido: a convenção diz que `coordenadas` é a posição da régua cuja leitura o site mostra, e a régua do tempo real de Blumenau é a da Defesa Civil/AlertaBlu, cuja coordenada o projeto não tem. Mover para a estação da ANA trocaria uma coordenada errada por uma de outra rede. Decisão do Jefferson."
+          "pino_nota": "O pino de Blumenau fica a 2,99 km do traçado do Açu — medido em 06/09/2026, e é a razão da exceção `LONGE_ACEITO['blumenau']` no validador. O que o inventário da ANA acrescentou: essa coordenada é a da DCSC-00026, estação do tipo `Meteo`, que NÃO mede nível de rio. Ou seja, o pino não é 'a régua a 3 km do talvegue' — é uma estação de CHUVA. A estação fluviométrica da ANA em Blumenau (83800002) fica a 6,93 km daqui e a 49 m do traçado. NÃO foi movido: a convenção diz que `coordenadas` é a posição da régua cuja leitura o site mostra, e a régua do tempo real de Blumenau é a da Defesa Civil/AlertaBlu, cuja coordenada o projeto não tem. Mover para a estação da ANA trocaria uma coordenada errada por uma de outra rede. Decisão do Jefferson.",
+          "codigo_ana_ultima_transmissao": "2024-02-07T14:45",
+          "codigo_ana_ultima_transmissao_nota": "⚠️ A ficha da estação na Hidro-Telemetria da ANA (snirh.gov.br/hidrotelemetria/EstacoesCadastro.aspx) traz 'Desc. Status: Ativo' e, logo abaixo, última transmissão em 07/02/2024 14:45. Dois anos e meio parada, cadastrada como ativa — a mesma classe de silêncio da escala convencional que encerrou em 12/2021 sem que o cadastro dissesse. Equipamento consta como 'Não Informado', ativado em 01/05/1996, sem data de desativação. CONSEQUÊNCIA PRÁTICA: nenhuma, hoje, porque o tempo real de Blumenau vem da Defesa Civil/AlertaBlu e não desta estação. O risco é futuro: quem for ligar telemetria da ANA aqui achando o cadastro confiável vai ligar num cano seco. Lido no navegador em 07/09/2026 (este ambiente tem *.ana.gov.br bloqueado pelo proxy).",
+          "codigo_ana_cotas_da_ana": {
+            "atencao_m": 3.56,
+            "alerta_m": 4.43,
+            "estiagem_m": 1.18,
+            "_unidade_na_fonte": "A ANA publica em CENTÍMETROS: atenção 356,00 · alerta 443,00 · estiagem 118,00. Convertido para metro aqui só para leitura; nada disto entra em cotas_m.",
+            "_NAO_USAR_NA_TELA": "🚫 Estas NÃO são as cotas de Blumenau e nunca podem pintar faixa. As do município, na Ponte Adolfo Konder, são 6,00 / 6,50 / 7,40 m. A diferença é de 2,44 m na atenção e 2,07 m no alerta — e como NÃO é o mesmo deslocamento nas duas, não é a mesma escala transladada: são zeros E critérios diferentes. Ler nível da 83800002 e pintar com as faixas municipais subestimaria o rio em mais de dois metros, que é o lado perigoso do erro. Registrado aqui justamente para que ninguém tente o atalho.",
+            "_fonte": "Ficha da estação na Hidro-Telemetria da ANA, seção 'Alertas da estação', lida no navegador em 07/09/2026."
+          },
+          "codigo_ana_curvas_de_descarga": "NENHUMA. A seção 'Curvas de Descarga' da ficha da 83800002 está VAZIA, conferida em dois carregamentos separados em 07/09/2026. Isso DESFAZ a expectativa que este repositório registrava na nota de Indaial: se a curva-chave que o CEOPS usa para estimar vazões em Blumenau existe, não é esta e não está na ANA. Sem curva-chave não há conversão nível→vazão por aqui — e o projeto não precisa de vazão hoje, então isto fecha uma expectativa, não abre uma pendência."
         },
         {
           "id": "gaspar",
@@ -414,7 +425,7 @@
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)"
           ],
-          "fonte_tempo_real_ressalva": "⛔ SEM FONTE DE NÍVEL AO VIVO DESDE 01/09/2026, e não é problema de rede nosso. Duas coisas aconteceram juntas, e a segunda é a que decide. (1) O host defesacivil.gaspar.sc.gov.br parou de responder à VPS: timeout de 30 s, medido em 07/09/2026, enquanto a mesma página abre normalmente de um celular no Brasil — é bloqueio de IP estrangeiro ou rota, não queda do site. (2) MAIS GRAVE: a página foi reformulada (o rodapé agora diz 'Desenvolvido por DEXTAK') e a régua 'Rio Itajaí Açu Gaspar' SAIU DELA. Em 31/08/2026 ela marcava 3,85 m; em 07/09/2026 a tabela tem sete linhas e nenhuma é o Açu — entraram três barragens estaduais (Norte, Oeste e Sul, cujos números são ALTITUDE de reservatório: 273,75 / 350,44 / 388,07 m) e saíram três pluviômetros locais. O Ribeirão Belchior Central, que restou, publica 0,00. Ou seja: mesmo com a rede funcionando, não há nível do Açu para coletar. CONSEQUÊNCIA: Gaspar não tem NENHUMA fonte de nível ao vivo. A API estadual declara tem_nivel_do_rio=false para a DCSC-00005, e a ANA 83840000 encerrou a escala em 12/2021 sem sucessora. A cidade tem 1.615 cotas de rua e 48 picos históricos, e o site não consegue dizer em que nível o rio está — por isso o pino fica CINZA, que é o honesto. O que resolve: perguntar à Superintendência de Proteção e Defesa Civil de Gaspar se a régua do Açu mudou de endereço na reformulação, ou pedir o endpoint que a página consome. Ver docs/GASPAR-SEM-NIVEL-AO-VIVO.md.",
+          "fonte_tempo_real_ressalva": "⛔ SEM FONTE DE NÍVEL AO VIVO DESDE 01/09/2026, e não é problema de rede nosso. Duas coisas aconteceram juntas, e a segunda é a que decide. (1) O host defesacivil.gaspar.sc.gov.br parou de responder à VPS: timeout de 30 s, medido em 07/09/2026, enquanto a mesma página abre normalmente de um celular no Brasil — é bloqueio de IP estrangeiro ou rota, não queda do site. (2) MAIS GRAVE: a página foi reformulada (o rodapé agora diz 'Desenvolvido por DEXTAK') e a régua 'Rio Itajaí Açu Gaspar' SAIU DELA. Em 31/08/2026 ela marcava 3,85 m; em 07/09/2026 a tabela tem sete linhas e nenhuma é o Açu — entraram três barragens estaduais (Norte, Oeste e Sul, cujos números são ALTITUDE de reservatório: 273,75 / 350,44 / 388,07 m) e saíram três pluviômetros locais. O Ribeirão Belchior Central, que restou, publica 0,00. Ou seja: mesmo com a rede funcionando, não há nível do Açu para coletar. CONSEQUÊNCIA: Gaspar não tem NENHUMA fonte de nível ao vivo. A API estadual declara tem_nivel_do_rio=false para a DCSC-00005, e a ANA 83840000 encerrou a escala em 12/2021 sem sucessora. A cidade tem 1.617 cotas de rua e 48 picos históricos, e o site não consegue dizer em que nível o rio está — por isso o pino fica CINZA, que é o honesto. O que resolve: perguntar à Superintendência de Proteção e Defesa Civil de Gaspar se a régua do Açu mudou de endereço na reformulação, ou pedir o endpoint que a página consome. Ver docs/GASPAR-SEM-NIVEL-AO-VIVO.md.",
           "coordenadas": [
             -26.9264,
             -48.9643
@@ -703,9 +714,9 @@
     "dc_gaspar_tabela": "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela",
     "dc_gaspar_historico": "https://defesacivil.gaspar.sc.gov.br/enchentes",
     "defesa_civil_sc_mapa": "https://monitoramento.defesacivil.sc.gov.br/mapa",
-    "ana_hidrotelemetria": "http://www.snirh.gov.br/hidrotelemetria",
+    "ana_hidrotelemetria": "https://www.snirh.gov.br/hidrotelemetria",
     "labgeo_furb": "https://labgeo.furb.br/",
-    "univali_mapi": "https://libgeo.acad.univali.br/mapi/",
+    "univali_mapi": "https://libgeo.univali.br/mapi/home",
     "mare_dc_itajai": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
     "jica_relatorio": "https://openjicareport.jica.go.jp/pdf/12043584_01.pdf"
   },
@@ -994,5 +1005,29 @@
       "cotas_m": {},
       "verificado": false
     }
-  ]
+  ],
+  "fontes_gerais_estado": {
+    "_o_que_e": "Estado de cada link de `fontes_gerais`, conferido no navegador. O rodapé oferece estes endereços a quem quer checar um número; oferecer link morto é quebrar a promessa do próprio rodapé. Quem está com o rio subindo não tem tempo de descobrir que a fonte caiu.",
+    "_como_conferir": "Abrir cada um num navegador comum, de dentro do Brasil. O ambiente de trabalho tem proxy que recusa vários destes domínios — recusa do proxy NÃO é fonte fora do ar, e não entra aqui.",
+    "_conferido_em": "2026-09-07",
+    "_estados": {
+      "ok": "abre e entrega o dado",
+      "fora_do_ar": "o host não responde — o rodapé mostra como texto, não como link",
+      "exige_cadastro": "abre, mas entrega tela de login em vez de dado"
+    },
+    "ceops_furb_acervo": {
+      "estado": "fora_do_ar",
+      "observado": "ERR_CONNECTION_TIMED_OUT em http:// E em https://, conferido em 07/09/2026. Não é queda geral da FURB: labgeo.furb.br responde do mesmo navegador e da mesma rede, no mesmo minuto.",
+      "por_que_importa": "O CEOPS é o crédito da Carta Enchente de Gaspar, a origem dos 16 picos de Indaial pela FURB e a curva-chave que se esperava para Blumenau. Três coisas diferentes esbarrando no mesmo host fora do ar já é padrão, não coincidência.",
+      "o_que_resolve": "Contato com a FURB: se o acervo mudou de endereço, trocar; se saiu do ar de vez, o rodapé passa a dizer isso em vez de oferecer o link."
+    },
+    "labgeo_furb": {
+      "estado": "exige_cadastro",
+      "observado": "Abre o catálogo de mapas, mas o download pede login. Entrega tela de cadastro, não dado. Conferido em 07/09/2026."
+    },
+    "univali_mapi": {
+      "estado": "exige_cadastro",
+      "observado": "O host antigo libgeo.acad.univali.br redirecionava para libgeo.univali.br/mapi/home — endereço corrigido aqui em 07/09/2026. O dado fica atrás de 'Acessar o Sistema'."
+    }
+  }
 }

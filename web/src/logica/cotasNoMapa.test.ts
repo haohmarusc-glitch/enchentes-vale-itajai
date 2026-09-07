@@ -129,11 +129,16 @@ test('o nome carrega o PONTO quando ele existe — a rua é o par (nome, ponto)'
   assert.equal(p[0]?.rua, 'Rua São Rafael (final da rua)')
 })
 
-test('no cadastro de verdade: Gaspar entra com 1.613 pontos, Brusque com zero', () => {
+test('no cadastro de verdade: Gaspar entra com 1.615 pontos, Brusque com zero', () => {
+  // Eram 1.613 até 07/09/2026. Os dois que faltavam — um na Cerena Dellandrea,
+  // outro na Rodovia Jorge Lacerda — existiam no levantamento e sumiam na
+  // importação: a identidade era (rua, ponto, cota) e os dois colidiam com um
+  // vizinho de mesmo rótulo e mesma cota, a 42 m e a 331 m de distância. No
+  // mapa isso é um trecho de rodovia sem marcador nenhum.
   const arq = JSON.parse(
     readFileSync(new URL('../../../data/cotas-ruas.json', import.meta.url), 'utf8'),
   ) as { cotas: CotaRua[] }
-  assert.equal(pontosDeRua(arq.cotas, GASPAR, 5).length, 1613)
+  assert.equal(pontosDeRua(arq.cotas, GASPAR, 5).length, 1615)
   const brusque = pontosDeRua(arq.cotas, BRUSQUE, 5)
   assert.equal(brusque.length, 348, 'Brusque aparece')
   assert.ok(
@@ -144,7 +149,7 @@ test('no cadastro de verdade: Gaspar entra com 1.613 pontos, Brusque com zero', 
 
 test('cidade com levantamento SEM coordenada não recebe "aproxime o mapa"', () => {
   /**
-   * Blumenau tem 2.042 ruas levantadas e nenhuma com coordenada. Mandar
+   * Blumenau tem 2.023 ruas levantadas e nenhuma com coordenada. Mandar
    * aproximar faz a pessoa procurar e não achar — e concluir que a rua dela não
    * foi levantada. Foi: está na tela da cidade, por nome.
    */

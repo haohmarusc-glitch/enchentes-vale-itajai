@@ -20,6 +20,53 @@ Das 10 cidades do projeto sem nível ao vivo, 8 têm sensor de rio na rede estad
 esses números — mas como BRUTO, porque o zero da régua estadual NÃO é o zero das cotas municipais
 (Ilhota 10,34 estadual × 3,25 régua; Rio do Sul 6,54 × 7,00; Brusque 2,90 × 4,81).
 
+### Medido no MESMO instante (07/09/2026 ~16h39, navegador do Jefferson)
+
+Os três pares acima vieram de leituras próximas, não simultâneas — o que deixava a porta aberta
+para alguém dizer "é o rio que mudou entre uma leitura e outra". Agora tem um par tirado no mesmo
+minuto das duas redes:
+
+| | rede estadual | régua municipal |
+|---|---:|---:|
+| **Rio do Sul** | **3,92 m** | **5,24 m** |
+
+**1,32 m de diferença, no mesmo instante, no mesmo rio.** Não é defasagem de coleta nem cheia
+passando: é o zero. Fecha a discussão de vez, com número.
+
+Na mesma leitura, a rede estadual dava Indaial em **6,01 m** com 0,0 mm de chuva na última hora e
+0,5 mm em 48 h — dia seco, rio parado. As faixas municipais de Indaial (atenção 3,00 · alerta 4,00 ·
+emergência 5,50 m, do PDF da COMPDEC) aplicadas a esse número poriam o site em **emergência num dia
+sem chuva**. É a mesma armadilha vista do outro lado: aqui o erro seria alarme falso, não falsa
+calma — e alarme falso em dia seco é como se perde a confiança que faz alguém sair de casa no dia
+que importa.
+
+O `usar_para_cota: False` que este coletor grava em toda leitura é exatamente o que impede as duas
+coisas. Não é conservadorismo: é a única postura defensável enquanto não houver offset calibrado
+por estação.
+
+### A operação `historic` do GraphQL é bloqueada por lista, não por credencial
+
+A introspecção do `/graphql` está **aberta**, e revela quatro consultas:
+
+```
+historic(system, client, stationCode, startDate, endDate, interval, opts) -> JSON
+telemetry(input) -> Telemetry
+tags_data(clients, station, filters) -> TagsDataQualle
+radares_getRadares(horas) -> RadaresObject
+```
+
+`system` = `Qualle_Hidrometeorologia`; `interval` de `MIN_5` a `HOUR_168`. A `historic` é
+exatamente a série histórica que falta ao projeto.
+
+Consulta arbitrária volta com `{"errors":[{"message":"Operação bloqueada.","extensions":
+{"code":"GRAPHQL_VALIDATION_FAILED"}}]}` — **lista de operações permitidas**, não falta de
+credencial. Forjar a operação que a aplicação usa é precisamente o que o bloqueio existe para
+impedir, e não se faz.
+
+O que isso muda é o pedido: em vez de "vocês têm o histórico?", pede-se **acesso à operação
+`historic` para as estações da bacia, ou um dump da série**. Pergunta específica costuma ser
+respondida; pergunta vaga, não.
+
 ## O que ele faz quando chamado
 1. POST no GraphQL (`Tags_data`), filtra `position.bacia ~ "Itaja"`.
 2. Separa cada estação em QUATRO baldes:
