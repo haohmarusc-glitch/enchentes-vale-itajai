@@ -12,6 +12,7 @@ import unittest
 from unittest import mock
 from datetime import datetime, timedelta, timezone
 
+import saude_coleta as sc
 from saude_coleta import (
     SILENCIO_H,
     Diagnostico,
@@ -162,6 +163,12 @@ class TestEstacaoParada(unittest.TestCase):
         self.assertTrue(diag.ok, diag.motivo)
 
 
+def memoria(*titulos, dias_atras=0):
+    """`{título: quando publicou}`, com o carimbo a N dias de AGORA."""
+    quando = (AGORA - timedelta(days=dias_atras)).isoformat()
+    return {t: quando for t in titulos}
+
+
 class TestEstacaoQueSumiu(unittest.TestCase):
     """
     A página da Defesa Civil já veio parcial. Sem esta conta, uma régua some do
@@ -170,20 +177,86 @@ class TestEstacaoQueSumiu(unittest.TestCase):
     """
 
     def test_estacao_que_veio_antes_e_sumiu_e_denunciada(self):
-        # A coleta traz DC-01; a rodada anterior tinha DC-01 e Brusque.
-        diag = avaliar(coleta(), AGORA, vistas_antes={"DC-01", "Brusque"})
+        # A coleta traz DC-01; a memória tem DC-01 e Brusque.
+        diag = avaliar(coleta(), AGORA, memoria("DC-01", "Brusque"))
         self.assertFalse(diag.ok)
         self.assertIn("Brusque", diag.motivo)
 
-    def test_sem_rodada_anterior_nao_acusa_nada(self):
+    def test_sem_memoria_nao_acusa_nada(self):
         """Primeira rodada não tem com o que comparar, e não pode inventar falha."""
-        self.assertTrue(avaliar(coleta(), AGORA, vistas_antes=None).ok)
-        self.assertTrue(avaliar(coleta(), AGORA, vistas_antes=set()).ok)
+        self.assertTrue(avaliar(coleta(), AGORA, None).ok)
+        self.assertTrue(avaliar(coleta(), AGORA, {}).ok)
 
     def test_estacao_nova_nao_e_problema(self):
         """Régua que apareceu agora e não estava antes é boa notícia, não falha."""
-        diag = avaliar(coleta(leituras=2), AGORA, vistas_antes={"DC-01"})
+        diag = avaliar(coleta(leituras=2), AGORA, memoria("DC-01"))
         self.assertTrue(diag.ok, diag.motivo)
+
+
+class TestMemoriaRolante(unittest.TestCase):
+    """
+    O conserto de 07/09/2026. Antes, a comparação era com a RODADA ANTERIOR: a
+    régua do Açu em Gaspar sumiu em 01/09, o vigia reclamou uma vez, e na
+    rodada seguinte ela já não estava na lista da anterior — ficou invisível
+    por SEIS DIAS enquanto o cron insistia nela a cada 15 minutos.
+
+    A memória rolante conserta isso sem trazer de volta o vermelho permanente
+    que a versão antiga evitava.
+    """
+
+    def test_sumico_de_ontem_continua_sendo_cobrado_hoje(self):
+        """É o caso Gaspar. Antes, isto passava calado a partir da 2ª rodada."""
+        diag = avaliar(coleta(), AGORA, memoria("DC-01", "Brusque", dias_atras=1))
+        self.assertFalse(diag.ok)
+        self.assertIn("Brusque", diag.motivo)
+
+    def test_quem_nao_vem_ha_mais_de_MEMORIA_DIAS_e_esquecido(self):
+        """Sem isto, o vigia ficaria vermelho para sempre — o que ele evita."""
+        antiga = memoria("DC-01", "Brusque", dias_atras=sc.MEMORIA_DIAS + 1)
+        self.assertTrue(avaliar(coleta(), AGORA, antiga).ok)
+
+    def test_estacao_aposentada_nao_e_cobrada_mesmo_recente(self):
+        lembradas = memoria("DC-01", *sc.ESTACOES_APOSENTADAS)
+        self.assertTrue(avaliar(coleta(), AGORA, lembradas).ok)
+
+    def test_toda_aposentada_tem_motivo_escrito_e_o_que_a_tira_de_la(self):
+        """Aposentar sem motivo é o silêncio que este conserto veio desfazer."""
+        self.assertTrue(sc.ESTACOES_APOSENTADAS, "a lista sumiu")
+        for titulo, motivo in sc.ESTACOES_APOSENTADAS.items():
+            self.assertGreater(len(motivo), 80, f"{titulo} sem motivo")
+            self.assertIn("SAI DAQUI", motivo, f"{titulo} não diz o que a remove")
+
+    def test_a_regua_de_gaspar_esta_aposentada(self):
+        """Enquanto a fonte não republicar, cobrar todo dia ensina a ignorar."""
+        self.assertIn("Rio Itajaí Açu Gaspar", sc.ESTACOES_APOSENTADAS)
+
+    def test_carimbo_sem_fuso_nao_estoura(self):
+        """O estado antigo pode ter data sem fuso; contrato do arquivo é UTC."""
+        sem_fuso = {"Brusque": AGORA.replace(tzinfo=None).isoformat()}
+        self.assertFalse(avaliar(coleta(), AGORA, sem_fuso).ok)
+
+    def test_carimbo_ilegivel_e_ignorado_em_vez_de_derrubar_o_vigia(self):
+        self.assertTrue(avaliar(coleta(), AGORA, {"Brusque": "ontem"}).ok)
+
+
+class TestLembrar(unittest.TestCase):
+    """A memória tem de crescer com quem vem e ESQUECER quem passou do prazo."""
+
+    def test_quem_vem_agora_ganha_o_carimbo_de_agora(self):
+        nova = sc.lembrar({}, coleta()["leituras"], AGORA)
+        self.assertEqual(set(nova), {"DC-01"})
+        self.assertEqual(nova["DC-01"], AGORA.isoformat())
+
+    def test_quem_nao_veio_guarda_o_carimbo_antigo(self):
+        antes = memoria("Brusque", dias_atras=1)
+        nova = sc.lembrar(antes, coleta()["leituras"], AGORA)
+        self.assertIn("Brusque", nova)
+        self.assertNotEqual(nova["Brusque"], AGORA.isoformat())
+
+    def test_quem_passou_do_prazo_e_esquecido(self):
+        """Senão o arquivo cresce para sempre com estação de 2026."""
+        antes = memoria("Velha", dias_atras=sc.MEMORIA_DIAS + 2)
+        self.assertNotIn("Velha", sc.lembrar(antes, coleta()["leituras"], AGORA))
 
 
 class TestArquivoIlegivel(unittest.TestCase):

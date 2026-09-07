@@ -73,6 +73,45 @@ TIMEOUT_GIT_S = 20
 #: morta; avisar de 15 em 15 minutos só ensina a ignorar.
 SILENCIO_H = 6
 
+#: Por quantos dias uma estação continua sendo COBRADA depois da última vez que
+#: publicou.
+#:
+#: POR QUE EXISTE (07/09/2026). A comparação era com a RODADA ANTERIOR, e o
+#: motivo continua bom: comparar com o cadastro deixaria o vigia permanentemente
+#: vermelho por causa de estação que nunca vem, e vigia sempre vermelho ensina
+#: quem opera a ignorá-lo. Mas a consequência não estava prevista — **uma fonte
+#: que morre é anunciada UMA VEZ e depois fica invisível**, porque na rodada
+#: seguinte ela já não está na lista da anterior.
+#:
+#: Foi assim que a régua do Itajaí-Açu em Gaspar sumiu em 01/09/2026 e passou
+#: SEIS DIAS sem ninguém notar, enquanto o cron insistia nela a cada 15 minutos.
+#: Ver docs/GASPAR-SEM-NIVEL-AO-VIVO.md.
+#:
+#: A memória rolante é o meio-termo que o comentário antigo implicava e não
+#: implementava: quem NUNCA veio não é cobrado (Blumenau segue sem vermelho
+#: permanente), e quem veio ontem continua cobrado. Três dias cobrem qualquer
+#: manutenção de fim de semana da fonte sem virar alarme perpétuo — e o que
+#: encerra de vez uma cobrança é ESCREVER o motivo em ESTACOES_APOSENTADAS, não
+#: o tempo passar.
+MEMORIA_DIAS = 3
+
+#: Estações que sumiram e que a gente DECIDIU não cobrar mais, cada uma com o
+#: motivo e o que a tira daqui. Sem esta saída, a memória rolante viraria o
+#: vigia permanentemente vermelho que a versão anterior evitava — com a
+#: diferença de que agora o silêncio é uma decisão escrita e datada, não um
+#: efeito colateral de como o código compara listas.
+ESTACOES_APOSENTADAS = {
+    "Rio Itajaí Açu Gaspar":
+        "A Defesa Civil de Gaspar reformulou o portal e RETIROU a régua do "
+        "Itajaí-Açu da tabela de monitoramento entre 31/08/2026 (quando marcava "
+        "3,85 m) e 07/09/2026. Não é falha de rede nem do coletor: a régua não "
+        "está mais publicada. Enquanto isso não muda, cobrar todo dia só ensina "
+        "a ignorar o vigia. SAI DAQUI quando a Superintendência responder o "
+        "ofício C10 (docs/oficios-prontos.md) dizendo se a régua voltou e em que "
+        "endereço — e aí Gaspar volta a ser cobrada. "
+        "Ver docs/GASPAR-SEM-NIVEL-AO-VIVO.md.",
+}
+
 
 class Diagnostico:
     def __init__(self, ok: bool, motivo: str, detalhes: list[str]):
@@ -90,13 +129,64 @@ def _idade_min(quando: datetime, agora: datetime) -> float:
 
 
 
+def esperadas(lembradas: dict, agora: datetime) -> set[str]:
+    """
+    Quais estações ainda são COBRADAS: as que publicaram nos últimos
+    `MEMORIA_DIAS`, menos as aposentadas com motivo escrito.
+
+    Estação que nunca veio não entra aqui — é o que impede o vermelho
+    permanente que a versão de rodada-anterior evitava.
+    """
+    limite = agora - timedelta(days=MEMORIA_DIAS)
+    saida = set()
+    for titulo, quando in (lembradas or {}).items():
+        if titulo in ESTACOES_APOSENTADAS:
+            continue
+        try:
+            visto = datetime.fromisoformat(str(quando))
+        except (ValueError, TypeError):
+            continue
+        if visto.tzinfo is None:
+            visto = visto.replace(tzinfo=timezone.utc)
+        if visto >= limite:
+            saida.add(titulo)
+    return saida
+
+
+def lembrar(lembradas: dict, leituras: list[dict], agora: datetime) -> dict:
+    """
+    Atualiza a memória: quem veio agora ganha o carimbo de agora, quem não veio
+    guarda o carimbo antigo, e quem passou de `MEMORIA_DIAS` é esquecido.
+
+    Esquecer é o que impede o arquivo de crescer para sempre com estação que
+    saiu do ar em 2026 e ninguém mais lembra.
+    """
+    limite = agora - timedelta(days=MEMORIA_DIAS)
+    saida = {}
+    for titulo, quando in (lembradas or {}).items():
+        try:
+            visto = datetime.fromisoformat(str(quando))
+        except (ValueError, TypeError):
+            continue
+        if visto.tzinfo is None:
+            visto = visto.replace(tzinfo=timezone.utc)
+        if visto >= limite:
+            saida[titulo] = visto.isoformat()
+    for l in leituras or []:
+        if l.get("estacao"):
+            saida[regua_de(l)] = agora.isoformat()
+    return saida
+
+
 def avaliar(dados: dict | None, agora: datetime,
-            vistas_antes: set[str] | None = None) -> Diagnostico:
+            lembradas: dict | None = None) -> Diagnostico:
     """
     Função pura: o relógio entra por parâmetro para o teste poder mentir.
 
-    `vistas_antes` são os títulos das estações que vieram na coleta anterior.
-    Sem eles não há comparação — é o que acontece na primeira rodada.
+    `lembradas` é `{título: quando publicou pela última vez}`. Uma estação é
+    cobrada enquanto essa data estiver dentro de `MEMORIA_DIAS` — e não só na
+    rodada seguinte ao sumiço, que foi o que deixou Gaspar invisível por seis
+    dias. Sem memória não há comparação: é o que acontece na primeira rodada.
     """
     if dados is None:
         return Diagnostico(False, "não há arquivo de coleta", [])
@@ -195,12 +285,14 @@ def avaliar(dados: dict | None, agora: datetime,
     # A comparação é com a rodada anterior, e não com o cadastro, de propósito:
     # Blumenau está cadastrada e nunca vem, e um vigia permanentemente vermelho
     # ensina quem opera a ignorá-lo — que é o oposto do que ele serve.
-    if vistas_antes:
+    cobradas = esperadas(lembradas or {}, agora)
+    if cobradas:
         agora_vistas = {regua_de(l) for l in leituras if l.get("estacao")}
-        sumidas = sorted(t for t in vistas_antes if t not in agora_vistas)
+        sumidas = sorted(t for t in cobradas if t not in agora_vistas)
         if sumidas:
             problemas.append(
-                f"{len(sumidas)} estação(ões) que vieram na coleta anterior sumiram: "
+                f"{len(sumidas)} estação(ões) que publicaram nos últimos "
+                f"{MEMORIA_DIAS} dias não vieram agora: "
                 + ", ".join(sumidas[:5])
                 + (f" e mais {len(sumidas) - 5}" if len(sumidas) > 5 else "")
             )
@@ -466,9 +558,16 @@ def main() -> int:
     # a variável precisa existir do mesmo jeito.
     so_versao = False
     estado = le_estado()
-    vistas_antes = set(estado.get("estacoes_vistas") or [])
+    lembradas = estado.get("estacoes_lembradas")
+    if lembradas is None:
+        # MIGRAÇÃO do formato antigo (`estacoes_vistas`, uma lista sem data).
+        # Carimba tudo com AGORA em vez de deixar vazio: um vigia que estreia
+        # sem memória não acusa nada, e um que estreia com memória datada de
+        # ontem acusaria falso sumiço na primeira rodada. Agora é o único
+        # instante que não mente sobre o que ele sabe.
+        lembradas = {t: agora.isoformat() for t in (estado.get("estacoes_vistas") or [])}
     diag = (Diagnostico(False, ilegivel, []) if ilegivel
-            else avaliar(dados, agora, vistas_antes))
+            else avaliar(dados, agora, lembradas))
 
     # O bruto estadual entra na mesma nota. Só no caminho de produção: um
     # `--arquivo` de teste aponta só o ultimo.json, e não deve arrastar o
@@ -516,13 +615,13 @@ def main() -> int:
             notificador.enviar(texto(diag, so_versao))
             estado = {"falhando": not diag.ok, "avisado_em": agora.isoformat()}
 
-        # A lista de estações é gravada em TODA rodada, e não só quando há
-        # aviso: é ela que faz a comparação da próxima. Guardada só junto do
-        # aviso, uma coleta parcial logo depois de um aviso passaria batida.
+        # A memória é gravada em TODA rodada, e não só quando há aviso: é ela
+        # que faz a comparação da próxima. Guardada só junto do aviso, uma
+        # coleta parcial logo depois de um aviso passaria batida.
         if dados:
-            estado["estacoes_vistas"] = sorted(
-                {regua_de(l) for l in (dados.get("leituras") or []) if l.get("estacao")}
-            )
+            estado["estacoes_lembradas"] = lembrar(
+                lembradas, dados.get("leituras") or [], agora)
+            estado.pop("estacoes_vistas", None)  # formato antigo, já migrado
         ESTADO.parent.mkdir(parents=True, exist_ok=True)
         ESTADO.write_text(json.dumps(estado, ensure_ascii=False, indent=2) + "\n",
                           encoding="utf-8")

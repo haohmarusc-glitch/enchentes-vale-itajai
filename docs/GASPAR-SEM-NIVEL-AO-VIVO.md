@@ -92,17 +92,37 @@ Some-se a isso que `coleta_niveis.py` chama Gaspar (linha 627) a cada 15 minutos
 pelo cron: a coleta **vem falhando cerca de 96 vezes por dia**, gastando 30 s de
 timeout em cada ciclo, sem que nada acuse.
 
-### O conserto proposto, e por que não foi feito ainda
+### ✅ Consertado em 07/09/2026
 
-Lembrar das estações vistas nos **últimos N dias**, em vez de só na última
-rodada. É o meio-termo que o comentário implica e não implementou:
+`saude_coleta.py` passou a lembrar das estações vistas nos **últimos
+`MEMORIA_DIAS` = 3 dias**, em vez de só na última rodada. É o meio-termo que o
+comentário antigo implicava e não implementava:
 
 - estação que **nunca** veio não é cobrada — Blumenau continua sem vermelho
-  permanente;
-- estação que veio ontem e não veio hoje **continua cobrada** por N dias.
+  permanente, e o motivo original segue respeitado;
+- estação que veio ontem e não veio hoje **continua cobrada**, que é o caso
+  Gaspar e o que passava calado a partir da segunda rodada;
+- quem passa dos três dias é **esquecido**, para o arquivo de estado não crescer
+  para sempre nem o vigia ficar vermelho eterno.
 
-Não foi feito porque **muda quando o Telegram dispara**, e alarme demais é
-exatamente o que o comentário original alerta. É decisão de quem opera.
+**A saída explícita: `ESTACOES_APOSENTADAS`.** Sem ela, a memória rolante
+traria de volta exatamente o vermelho permanente que a versão anterior evitava.
+Com ela, o silêncio passa a ser uma **decisão escrita e datada** em vez de um
+efeito colateral de como o código compara listas. Cada entrada precisa do motivo
+e de uma linha `SAI DAQUI quando…` — há teste exigindo as duas coisas.
+
+A régua de Gaspar entrou aposentada, e o que a tira de lá é a resposta ao ofício
+C10. Enquanto a fonte não republicar, cobrar todo dia só ensinaria a ignorar o
+vigia.
+
+**A migração do estado é sem susto:** o formato antigo (`estacoes_vistas`, lista
+sem datas) é convertido carimbando tudo com **agora**. Carimbar com "ontem"
+faria a primeira rodada acusar sumiço falso; deixar vazio faria o vigia estrear
+cego. Agora é o único instante que não mente sobre o que ele sabe.
+
+Onze testes novos, e a conferência contra o `ultimo.json` publicado de verdade:
+estado antigo migrado com Gaspar aposentada não cobra; régua viva que some
+ontem é acusada; a mesma régua sumida há quatro dias é esquecida.
 
 ---
 

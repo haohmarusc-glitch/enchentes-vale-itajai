@@ -508,18 +508,21 @@ o projeto.
   encerrou em 12/2021 **sem sucessora**. A cidade tem **1.619 cotas de rua e 49 picos** e o site não
   consegue dizer em que nível o rio está — o pino fica cinza, que é o honesto. **O que resolve:**
   perguntar à Superintendência de Gaspar se a régua mudou de endereço, ou pedir o endpoint.
-- [ ] **O vigia avisou uma vez e calou — uma fonte que morre fica invisível.** `saude_coleta.py`
-  compara com a **rodada anterior**, não com o cadastro, de propósito (*"Blumenau está cadastrada e
-  nunca vem, e um vigia permanentemente vermelho ensina quem opera a ignorá-lo"*). O raciocínio
-  continua valendo, mas tem consequência: quando Gaspar sumiu em 01/09 ele reclamou **uma vez**; na
-  rodada seguinte Gaspar já não estava em `vistas_antes` e o alarme sumiu junto com a estação.
-  Enquanto isso `coleta_niveis.py` chama Gaspar a cada 15 min pelo cron — **~96 falhas por dia**, 30 s
-  de timeout cada, sem nada acusar. **Conserto proposto, não feito:** lembrar das estações vistas nos
-  últimos N dias em vez de só na última rodada — quem nunca veio não é cobrado, quem veio ontem
-  continua sendo. Não fiz porque **muda quando o Telegram dispara**, e alarme demais é exatamente o
-  que o comentário original alerta. É decisão de quem opera. Detalhe em
-  `docs/GASPAR-SEM-NIVEL-AO-VIVO.md`.
-
+- [x] **O vigia consertado: uma fonte que morre não fica mais invisível (07/09/2026).**
+  `saude_coleta.py` comparava com a **rodada anterior**, não com o cadastro — de propósito
+  (*"Blumenau está cadastrada e nunca vem, e um vigia permanentemente vermelho ensina quem opera a
+  ignorá-lo"*). O raciocínio continua valendo, mas a consequência não estava prevista: quando Gaspar
+  sumiu em 01/09 ele reclamou **uma vez**, e na rodada seguinte a estação já não estava na lista da
+  anterior — **seis dias** de silêncio enquanto o cron insistia a cada 15 min. Agora há **memória
+  rolante de 3 dias** (`MEMORIA_DIAS`): quem nunca veio não é cobrado, quem veio ontem continua
+  sendo, e quem passa do prazo é esquecido para o estado não crescer nem o vermelho virar eterno. A
+  saída explícita é `ESTACOES_APOSENTADAS` — **o silêncio passa a ser decisão escrita e datada**, e
+  cada entrada precisa do motivo e de uma linha `SAI DAQUI quando…`, com teste exigindo as duas. A
+  régua de Gaspar entrou aposentada; o que a tira de lá é a resposta ao ofício C10. **A migração do
+  estado antigo carimba tudo com agora** — carimbar com "ontem" acusaria sumiço falso na estreia,
+  deixar vazio faria o vigia estrear cego. Onze testes novos, mais conferência contra o `ultimo.json`
+  publicado: migração com Gaspar aposentada não cobra, régua viva sumida ontem é acusada, e a mesma
+  sumida há quatro dias é esquecida.
 - [x] **Gaspar: 49 registros importados, 21 segurados — a coluna do ANO está desalinhada em dois
   trechos da fonte (07/09/2026).** A tabela chegou pelo celular do Jefferson (a página é
   inalcançável daqui e da VPS): **70 linhas, 1852–2023**. Gaspar sai de **zero** picos para **49** —
