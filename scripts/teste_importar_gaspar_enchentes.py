@@ -143,6 +143,40 @@ class RegistrosMontados(unittest.TestCase):
             self.assertEqual(r["referencia"], "régua")
 
 
+class ParMaisProximo(unittest.TestCase):
+    """
+    Defeito real de 07/09/2026, achado ao escrever o ofício: a primeira versão
+    media só a distância, e um registro de Gaspar caiu "a zero dias" de um
+    `blumenau 2013` — que é granularidade de ANO e cobre o ano inteiro. Entrou
+    marcado como `pareamento: "confere"` sem que o site jamais fosse parear os
+    dois, porque `datas.ts` diz que ano NUNCA pareia. Um registro afetado,
+    retirado da base.
+    """
+
+    EVENTOS = [
+        {"cidade": "blumenau", "data": "2013", "pico_m": 10.51},
+        {"cidade": "blumenau", "data": "2013-09-23", "pico_m": 9.0},
+        {"cidade": "gaspar", "data": "2013-11-20", "pico_m": 7.0},
+    ]
+
+    def test_granularidade_de_ano_nunca_conta_como_par(self):
+        r = ig.par_mais_proximo("2013-11-23", self.EVENTOS)
+        self.assertIsNotNone(r)
+        self.assertEqual(r[1]["data"], "2013-09-23", "pegou o registro de ano")
+        self.assertGreater(r[0], ig.TOLERANCIA_DIAS)
+
+    def test_a_propria_cidade_nao_pareia_consigo(self):
+        """Depois da importação Gaspar está na base; parear consigo é circular."""
+        r = ig.par_mais_proximo("2013-11-23", self.EVENTOS)
+        self.assertNotEqual(r[1]["cidade"], "gaspar")
+
+    def test_o_2013_11_23_nao_esta_na_base(self):
+        """Era o registro afetado. Se voltar, o defeito voltou."""
+        g = [e for e in ig.le_json("enchentes.json")["eventos"]
+             if e["cidade"] == "gaspar" and e["data"] == "2013-11-23"]
+        self.assertEqual(g, [], "voltou o registro que só pareava com um ano")
+
+
 class ReferenciaVertical(unittest.TestCase):
     """
     A fonte NÃO declara referência. A leitura direta da página, em 07/09/2026,

@@ -1,4 +1,4 @@
-# Gaspar: 49 registros importados, 21 segurados — e por quê
+# Gaspar: 48 registros importados, 22 segurados — e por quê
 
 Data: 07/09/2026.
 
@@ -7,8 +7,17 @@ que nível cada rua alaga e não se sabia em que nível o rio esteve. A tabela d
 Defesa Civil chegou pelo celular do Jefferson (a página é inalcançável deste
 ambiente e da VPS) com **70 linhas, de 1852 a 2023**.
 
-**Importados 49. Segurados 21.** Gaspar passa de 0 a 49 picos — a maior entrada
+**Importados 48. Segurados 22.** Gaspar passa de 0 a 48 picos — a maior entrada
 única já feita na base.
+
+⚠️ **Eram 49 e viraram 48 em 07/09/2026**, ao escrever o ofício. O registro de
+**23/11/2013 (7,80 m)** tinha entrado marcado como `pareamento: "confere"`, mas o
+único evento próximo era `blumenau 2013` — granularidade de **ano**, que o site
+**nunca** pareia (`web/src/logica/datas.ts`: *"2023 teve duas enchentes no mesmo
+rio, e juntar registros de eventos diferentes produziria uma correlação falsa"*).
+A minha função de pareamento media só a distância e não aplicava essa regra: um
+registro de ano cobre os 365 dias, então tudo cai "a zero dias" dele. Corrigido,
+com teste, e o registro saiu da base.
 
 ---
 
@@ -65,7 +74,7 @@ de transcrição: `09/11/2011` e `09/06/1983` estão assim na página.
 
 ## O que entrou
 
-- **49 registros**, de 29/10/1852 a 12/10/2023, maior pico **12,56 m** (23/09/1880).
+- **48 registros**, de 29/10/1852 a 12/10/2023, maior pico **12,56 m** (23/09/1880).
 - `referencia: "régua"` em todos, travado por teste — as cotas de rua e o tempo
   real de Gaspar são régua, e misturar com o datum IBGE de Blumenau é a
   `REGRA_REFERENCIA_BLUMENAU`.
@@ -80,7 +89,7 @@ Eu esperava que a previsão **Blumenau → Gaspar** passasse a sair. Não sai:
 
 | Par | Pares no mesmo evento | Mesma referência? |
 |---|---|---|
-| Gaspar × Blumenau | 48 | **0** — Gaspar é régua, Blumenau é IBGE ou nulo |
+| Gaspar × Blumenau | 47 | **0** — Gaspar é régua, Blumenau é IBGE ou nulo |
 | Gaspar × Indaial | 9 | **9** ✅ ambos régua |
 | Gaspar × Rio do Sul | 8 | 0 — Rio do Sul sem referência |
 | Gaspar × Brusque | 5 | 0 — Brusque sem referência |
@@ -91,7 +100,7 @@ datum entre duas cidades é erro que ninguém vê e todo mundo carrega.
 **Consequência que vale registrar: resolver o datum de Blumenau acabou de ficar
 muito mais valioso.** Antes, os 41 registros de Blumenau com `referencia: null` e
 os 72 em IBGE bloqueavam uma correlação com uma cidade sem dado nenhum. Agora
-bloqueiam uma correlação com uma cidade que tem 49 picos e 1.619 cotas de rua —
+bloqueiam uma correlação com uma cidade que tem 48 picos e 1.619 cotas de rua —
 e que é a próxima a jusante de Blumenau no tronco, a 2 h de distância.
 
 ---
@@ -107,7 +116,7 @@ registram os mesmos eventos**. Com Gaspar isso é falso:
 
 | Meses de Blumenau | n | Mediana do pico de Blumenau |
 |---|---|---|
-| em que Gaspar TEM registro | 48 | **11,13 m** (mínimo 8,50) |
+| em que Gaspar TEM registro | 47 | **11,13 m** (mínimo 8,50) |
 | em que Gaspar NÃO tem | 64 | **9,60 m** (mínimo 5,65) |
 
 **Nenhum evento de Blumenau abaixo de 8,50 m tem par em Gaspar.** O menor pico da
@@ -134,8 +143,10 @@ ser lida.
   registro de 20/11/1855, e é `24/11/9855` — impossível. Preservada como veio e
   marcada `data_anomala`; há teste exigindo que o valor gravado **não contenha**
   "1855". Consertar em silêncio apagaria a prova de que a fonte errou.
-- Os **21 segurados** esperam resposta da Defesa Civil de Gaspar sobre o
+- Os **22 segurados** esperam resposta da Defesa Civil de Gaspar sobre o
   desalinhamento. Para importá-los assim mesmo (não recomendado):
-  `--incluir-sem-par`.
+  `--incluir-sem-par`. **O ofício está escrito**, em `docs/oficios-prontos.md`,
+  seção C10 — pergunta os onze do desalinhamento, a régua do Açu que sumiu, a
+  divergência de cotas 5/6 m e a referência de nível do histórico.
 - A **Carta de Enchente** de Gaspar, com dados atribuídos ao CEOPS, continua sem
   levantamento.

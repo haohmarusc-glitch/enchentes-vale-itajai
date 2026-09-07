@@ -1488,18 +1488,6 @@
     {
       "rio": "itajai-acu",
       "cidade": "gaspar",
-      "data": "2013-11-23",
-      "pico_m": 7.8,
-      "confianca": "alta",
-      "referencia": "régua",
-      "fonte": "Histórico de enchentes publicado pela Defesa Civil de Gaspar (https://defesacivil.gaspar.sc.gov.br/enchentes), lido em 2026-09-07 por scripts/importar_gaspar_enchentes.py. Dados atribuídos ao CEOPS.",
-      "data_e_do_inicio_do_evento": true,
-      "pareamento": "confere",
-      "nota": "A data é a de INÍCIO do evento publicada pela fonte, não a do pico. Serve para parear eventos (a tolerância do site é de sete dias); NÃO serve para calibrar tempo de trânsito."
-    },
-    {
-      "rio": "itajai-acu",
-      "cidade": "gaspar",
       "data": "2011-08-31",
       "pico_m": 6.75,
       "confianca": "alta",

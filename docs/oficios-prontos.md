@@ -31,3 +31,70 @@ O site deixa claro em todas as páginas que não é sistema oficial de alerta, q
 Fico à disposição para qualquer esclarecimento e agradeço desde já a atenção.
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C10 — Superintendência Municipal de Proteção e Defesa Civil de Gaspar
+
+**Para:** defesacivil@gaspar.sc.gov.br
+**Assunto:** Três dúvidas sobre os dados publicados no portal da Defesa Civil de Gaspar (régua do Itajaí-Açu, cotas de acionamento e histórico de enchentes)
+
+À Superintendência Municipal de Proteção e Defesa Civil de Gaspar,
+
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que reúne o nível do rio em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados são públicos (github.com/haohmarusc-glitch/enchentes-vale-itajai), cada informação aparece com a fonte citada, e todas as páginas deixam claro que o site **não é sistema oficial de alerta** e não substitui a Defesa Civil — em emergência, 199.
+
+Escrevo porque o portal de vocês é, de longe, o material mais completo que encontrei para Gaspar: as 1.615 cotas de rua, o histórico de enchentes desde 1852 e a tabela de monitoramento não têm equivalente nos outros municípios da bacia. Justamente por usar esse material com cuidado, cheguei a três dúvidas que só vocês podem responder.
+
+**1. A régua do Rio Itajaí-Açu saiu da tabela de monitoramento.**
+
+Até 31/08/2026 a tabela em `/monitoramento/tabela` trazia a estação **"Rio Itajaí Açu Gaspar"** (naquele dia, 3,85 m às 22h59). Consultando em 07/09/2026, a tabela passou a trazer sete estações e nenhuma delas é o Itajaí-Açu: entraram as barragens Norte, Oeste e Sul, e a única estação de rio que restou é o Ribeirão Belchior Central.
+
+Gostaria de saber se **a régua do Açu continua ativa** — e, se sim, em que endereço, já que a página da estação que eu acompanhava era `/estacao/ver/21`. Pergunto porque essa é a **única fonte de nível do Itajaí-Açu em Gaspar** que existe: a rede estadual (DCSC-00005) informa não medir nível de rio no município, e a estação da ANA em Gaspar (83840000) encerrou a escala em dezembro de 2021 sem substituta. Sem ela, meu site simplesmente não consegue dizer a que nível o rio está em Gaspar, e mostra o município sem leitura — o que é o correto, mas é uma lacuna grande justamente na cidade para a qual eu tenho mais cotas de rua levantadas.
+
+Aproveito para registrar uma observação técnica que pode ser útil: a série de 12 horas do Ribeirão Belchior Central publica **0,00 em todos os pontos** (consulta de 07/09/2026, das 03h28 às 15h18). Como 0,00 é um número válido, um sistema que leia essa página pode interpretá-lo como "ribeirão seco" em vez de "sem leitura".
+
+**2. Duas cotas de atenção diferentes, nas duas publicações de vocês.**
+
+O Plano de Contingência (item 4.2.3, fluxograma "MONITORAMENTO RIO ITAJAÍ AÇU", p. 25) trabalha com **atenção a partir de 5,00 m**. A legenda da estação 21, no próprio portal, indica **normalidade abaixo de 6,00 m** e atenção acima disso.
+
+Adotei os 5,00 m, por ser o que avisa mais cedo, e deixei os 6,00 m registrados ao lado como divergência. Mas gostaria de confirmar **qual dos dois é o vigente**, porque a diferença é operacional: a primeira rua do cadastro de vocês alaga a 6,20 m, então a atenção a 5,00 m dá 1,20 m de margem e a 6,00 m dá 20 cm.
+
+**3. A referência de nível do histórico de enchentes.**
+
+A página `/enchentes` traz 70 registros, de 29/10/1852 a 12/10/2023, com data de início e metragem máxima. Não encontrei, em nenhum lugar do portal, a **referência de nível** dessas medidas — a que régua ou zero elas se referem.
+
+Levanto a hipótese de que seja a mesma do levantamento de cotas de rua (o estudo do CEOPS/FURB coordenado por Ademar Cordeiro, que declara referência à régua da ANA na empresa Círculo), porque a menor cota de rua do cadastro é **6,20 m** e o menor registro do histórico é **6,19 m** — um centímetro de diferença, o que sugere que a lista registra as cheias que efetivamente alagaram. **É só uma hipótese**, e prefiro confirmá-la a supor.
+
+**4. Onze registros do histórico cuja data não fecha com as cidades vizinhas.**
+
+Esta é a que mais me deixou em dúvida, e por isso deixei os registros de fora do meu banco em vez de publicá-los.
+
+Cruzando o histórico de vocês com o de Blumenau e Indaial, 48 dos 70 registros batem com um evento conhecido no mesmo dia ou no dia seguinte — o que é esperado, porque a cheia desce de Blumenau a Gaspar em poucas horas. Mas onze registros não batem com evento nenhum, e todos eles **batem exatamente se o ano for o da linha imediatamente acima na tabela**:
+
+| Publicado por vocês | Metragem | Com o ano da linha acima | Evento conhecido |
+|---|---|---|---|
+| 31/10/1950 | 6,96 m | 31/10/1953 | Blumenau, 01/11/1953 (9,65 m) |
+| 17/10/1948 | 8,85 m | 17/10/1950 | Blumenau, 17/10/1950 (9,45 m) |
+| 17/05/1943 | 7,77 m | 17/05/1948 | Blumenau, 17/05/1948 (11,85 m) |
+| 03/08/1939 | 8,43 m | 03/08/1943 | Blumenau, 03/08/1943 (10,50 m) |
+| 27/11/1935 | 8,57 m | 27/11/1939 | Blumenau, 27/11/1939 (11,45 m) |
+| 04/10/1932 | 7,49 m | 04/10/1933 | Blumenau, 04/10/1933 (11,85 m) |
+| 18/06/1927 | 9,20 m | 18/06/1928 | Blumenau, 18/06/1928 (11,76 m) |
+| 09/11/1926 | 7,24 m | 09/11/1927 | Indaial, 09/11/1927 (6,55 m) |
+| 14/01/1925 | 7,80 m | 14/01/1926 | Blumenau, 14/01/1926 (9,50 m) |
+| 14/05/1923 | 6,89 m | 14/05/1925 | Blumenau, 14/05/1925 (10,30 m) |
+| 20/06/1911 | 7,49 m | 20/06/1923 | Blumenau, 20/06/1923 (9,00 m) |
+
+Em dez dos onze casos o **dia e o mês são idênticos** aos de um evento já conhecido em outro ano — coincidência que teria cerca de uma chance em 365 por caso. Eles também ficam em **dois trechos seguidos** da tabela (as linhas de 1950 a 1932 e de 1927 a 1911), que é o padrão de uma coluna que escorregou uma linha em relação às outras.
+
+**Não corrigi nada**, e é por isso que escrevo: pode ser que essas datas estejam certas e sejam cheias locais de Gaspar que não repercutiram nas cidades vizinhas — a confluência com o Rio Luís Alves torna isso perfeitamente possível. Se for esse o caso, são onze registros que só o histórico de vocês tem, e eu gostaria de publicá-los. Se for desalinhamento de tabela, os onze com o ano corrigido também entram. O que eu não posso é escolher por conta própria: se o ano estiver errado, eu estaria cruzando cheias de anos diferentes ao comparar Gaspar com Blumenau.
+
+Registro também, no mesmo espírito, que o registro de 20/11/1855 traz data de término **24/11/9855** — um erro evidente de digitação que preservei como está, sem corrigir.
+
+Sei que são muitas perguntas de uma vez, e nenhuma delas é urgente. Se for mais prático responder só a primeira — se a régua do Açu voltou ou onde encontrá-la —, já ajuda muito. Se houver um endereço direto (um arquivo ou serviço) de onde eu possa ler o nível sem consultar a página, também agradeço a indicação: eu identifico todas as consultas com o nome do projeto e respeito qualquer limite que vocês indicarem.
+
+Todo dado de vocês que o site usa aparece com crédito à Defesa Civil de Gaspar.
+
+Fico à disposição e agradeço a atenção.
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

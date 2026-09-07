@@ -477,6 +477,24 @@ o projeto.
 
 ## Pendências
 
+- [x] **Ofício C10 à Defesa Civil de Gaspar escrito (07/09/2026)** — `docs/oficios-prontos.md`,
+  pronto para copiar. Quatro perguntas, todas com a evidência junto: **(1)** a régua do Itajaí-Açu
+  saiu da tabela de monitoramento entre 31/08 e 07/09 — continua ativa, e em que endereço? É a
+  **única** fonte de nível do Açu em Gaspar; **(2)** o Plano de Contingência põe atenção em 5,00 m e
+  a legenda da estação 21 em 6,00 m — qual vige? (a primeira rua alaga a 6,20 m, então a diferença é
+  1,20 m de margem contra 20 cm); **(3)** qual a referência de nível do histórico `/enchentes` —
+  hipótese de ser a mesma do CEOPS/FURB, pelo centímetro entre 6,19 e 6,20 m; **(4)** os **onze**
+  registros cuja data só fecha com o ano da linha de cima, com a tabela linha a linha. O ofício
+  **não pede correção**: diz que se forem cheias locais de Gaspar entram como estão, e que a única
+  coisa que não dá para fazer é escolher por conta própria.
+- [x] **⚠️ Defeito meu, achado ao escrever o ofício: eram 49 registros de Gaspar, viraram 48.** O de
+  **23/11/2013 (7,80 m)** entrou marcado como `pareamento: "confere"`, e o único evento próximo era
+  `blumenau 2013` — granularidade de **ano**, que o site **nunca** pareia. A minha
+  `par_mais_proximo` media só a distância: um registro de ano cobre 365 dias, então tudo cai "a zero
+  dias" dele. Corrigido (ano não conta, e a própria cidade também não, que seria circular), com três
+  testes, e o registro saiu da base. Um afetado de 49 — mas era um registro publicado com selo de
+  conferido que o site jamais confirmaria.
+
 - [ ] **⛔ Gaspar está sem NENHUMA fonte de nível ao vivo, e ficou seis dias sem ninguém perceber
   (07/09/2026).** Diagnóstico fechado com o Jefferson, cruzando a VPS, este ambiente e o navegador
   do celular dele. **Duas coisas juntas, e a segunda decide:** (1) o host
