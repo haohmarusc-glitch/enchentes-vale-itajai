@@ -91,7 +91,19 @@ RESERVATORIOS = {"DCSC-00040", "DCSC-00038"}
 # problema de DATUM/ESCALA da estação, não sensor ou grandeza errada. Vão para 'suspeitas': o valor
 # não é usável cru, mas a estação é real e mede a grandeza certa.
 SUSPEITAS = {"DCSC-00029": "Guabiruba ~24,8 m: estação Hidro real (tem_nivel_do_rio=true), mas o valor "
-                           "bruto é implausível para o ribeirão — datum/escala própria não calibrada",
+                           "bruto é implausível para o ribeirão — datum/escala própria não calibrada. "
+                           "CAUSA ENCONTRADA em 07/09/2026, e ela confirma a suspeita: a Prefeitura de "
+                           "Brusque informou em ABRIL DE 2026 que o sistema de medição de Guabiruba "
+                           "mudou para 'cota automática', referenciada ao NÍVEL DO MAR — na ocasião a "
+                           "leitura aparecia como 28,4 m com o rio a cerca de 4 m. Não é sensor "
+                           "quebrado nem escala desconhecida: é OUTRA GRANDEZA, altitude em vez de "
+                           "régua. CONSEQUÊNCIA: a série anterior de Guabiruba e a atual NÃO podem ser "
+                           "juntadas sem reconciliar o datum, e há uma quebra de série datada em "
+                           "04/2026 para marcar. ⚠️ O LIMITE_M de 30 m NÃO teria pego isto: 28,4 m "
+                           "passa por baixo dele. Quem pegou foi esta lista, escrita à mão — o que diz "
+                           "que a régua de plausibilidade por valor absoluto é rede de segurança, não "
+                           "a primeira linha. Fonte: Prefeitura de Brusque, abril de 2026, via "
+                           "levantamento externo de 07/09/2026.",
              "DCSC-00007": "Pomerode: estação Hidro real (tem_nivel_do_rio=true), mas oscila de forma "
                            "implausível entre leituras — datum/escala própria não calibrada"}
 # Estações que a mesma investigação confirma NÃO medirem nível de rio nesta rede

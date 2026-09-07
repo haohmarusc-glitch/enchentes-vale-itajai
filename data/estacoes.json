@@ -170,7 +170,8 @@
           "coordenadas": [
             -27.4822,
             -49.5825
-          ]
+          ],
+          "cotas_m_por_que_vazio": "⚠️ EXISTE ESCALA OFICIAL, MAS É DE OUTRA ESTAÇÃO — RECONCILIAÇÃO REABERTA (07/09/2026). A Secretaria de Proteção e Defesa Civil de SC publica (documento de 18/10/2024): normal < 1,40 m; atenção > 1,40 m; alerta > 1,90 m; emergência > 2,60 m — e diz que os níveis vieram de estudos hidráulico-hidrológicos validados com o município. MAS AMARRA ESSES VALORES À ESTAÇÃO 83250000, que este cadastro REJEITOU como régua de Ituporanga por coordenada: fica a 9,59 km deste pino e drena 1.650 km² contra os 1.170 km² da nossa 83145140. Cadastrar 1,40/1,90/2,60 contra a nossa régua seria aplicar a escala de uma estação a outra — o erro do Salseiro, de novo. POR QUE ISTO NÃO É SÓ 'MAIS UM VÍNCULO POR NOME', E A DIFERENÇA IMPORTA: nos casos anteriores (Salseiro, Warnow, Botuvera-Montante) o que havia era um RÓTULO trazendo o nome do município. Aqui há uma DESIGNAÇÃO OPERACIONAL: o estado diz que a situação de inundação de Ituporanga se estabelece por aquela estação. As duas coisas podem ser verdadeiras ao mesmo tempo — a estação fica a 9,59 km E é a referência oficial do município; rio não exige que a régua esteja dentro da cidade. A PERGUNTA VIRA OUTRA, E É ESTA QUE PRECISA DE RESPOSTA: se o estado opera Ituporanga pela 83250000, talvez a régua questionável seja a NOSSA. Escolhemos a 83145140 por proximidade do pino; o estado escolheu a outra por decisão operacional. Enquanto isso não for resolvido, não se cadastra cota nenhuma aqui — nem contra uma régua nem contra a outra. O QUE RESOLVE: perguntar à Defesa Civil de SC (ou à EPAGRI, que opera a 83250000) qual estação alimenta o aviso de Ituporanga hoje, e qual é a cota da régua de cada uma. Fonte do achado: levantamento externo de 07/09/2026 sobre documento da SPDC/SC de 18/10/2024. Não lido por este ambiente."
         },
         {
           "id": "rio-do-sul",
