@@ -217,7 +217,7 @@ modernas do Vale.
 ## 6. 🟡 PRIORIDADE 4 — Tempo de trânsito entre cidades
 
 Quanto tempo a cheia leva para descer de uma cidade à seguinte. Hoje há 9 trechos
-cadastrados; faltam 9. **A Defesa Civil de Brusque opera exatamente assim** —
+cadastrados; faltam 7 que valem procurar (dois saíram da lista — ver abaixo). **A Defesa Civil de Brusque opera exatamente assim** —
 olhando Vidal Ramos → Botuverá → Brusque em sequência.
 
 **Faltam (procurar):**
@@ -225,16 +225,28 @@ olhando Vidal Ramos → Botuverá → Brusque em sequência.
 | De → Para | Rio |
 |---|---|
 | Rio do Sul → Lontras | Açu |
-| Ibirama → Rio do Sul | Açu |
 | Lontras → Ascurra | Açu |
 | Ascurra → Indaial | Açu |
-| Timbó → Indaial | Açu |
 | Rio dos Cedros → Timbó | Açu |
 | **Vidal Ramos → Botuverá** | Mirim |
 | **Botuverá → Guabiruba** | Mirim |
 | **Guabiruba → Brusque** | Mirim |
 
 Os três do Mirim são os mais valiosos: destravam a lógica que a Defesa Civil já usa.
+
+### ⛔ Saíram desta lista em 07/09/2026: `Ibirama → Rio do Sul` e `Timbó → Indaial`
+
+Estavam aqui como "procurar", e **não são coisa a procurar**. Ibirama corre no Rio
+Hercílio e Timbó no Rio Benedito — os dois são **afluentes laterais**, e a outra ponta
+está no **tronco** do Açu.
+
+Aí não há viagem da cheia: o pico do tronco vem da cheia que desce o tronco, e o do
+afluente vem da chuva na sub-bacia dele. O vão entre os dois é a **coincidência de dois
+hidrogramas independentes** — muda de valor, e até de sinal, de cheia para cheia. Um
+número ali teria cara de tempo de trânsito sem ser um.
+
+Mesma família do `Indaial → Blumenau` abaixo. **Nem outra fonte nem uma cheia medida
+resolvem: a grandeza não existe.**
 
 ### ⛔ NÃO procurar: `Indaial → Blumenau`
 

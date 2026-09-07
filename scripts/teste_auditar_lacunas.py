@@ -13,6 +13,7 @@ import unittest
 from pathlib import Path
 
 import auditar_lacunas as al
+from comum import DADOS
 
 
 def cidade(id_, **campos):
@@ -135,8 +136,21 @@ class PorQueFaltaOElo(unittest.TestCase):
         self.assertEqual(self.classe("rio-do-sul", "lontras"), "sem_tempo_de_fonte")
         self.assertIn("não lista lontras", " ".join(self.motivos("rio-do-sul", "lontras")))
 
-    def test_relogio_proprio_de_uma_ponta_e_dito(self):
-        self.assertIn("relógio próprio", " ".join(self.motivos("timbo", "indaial")))
+    def test_relogio_proprio_so_vale_no_elo_de_CONFLUENCIA(self):
+        """
+        `timbo → indaial` é afluente→tronco, e o relógio próprio é exatamente a
+        razão de não haver viagem ali. Mas quem sabe que o elo é de confluência
+        é `tipo_do_elo`, olhando a topologia — esta função recebe o veredito.
+
+        Chamada sem o tipo, ela responderia pela FONTE ("a JICA cobre as duas
+        pontas"), que é verdade e é irrelevante: o problema não é falta de
+        documento, é que a grandeza não existe.
+        """
+        tipo, motivos = al.por_que_falta_o_elo(
+            "timbo", "indaial", self.FONTE, self.TABELA, "confluencia")
+        self.assertEqual(tipo, "confluencia")
+        self.assertIn("relógio próprio", " ".join(motivos))
+        self.assertIn("nem uma cheia medida", " ".join(motivos))
 
     def test_guabiruba_brusque_nao_e_classificado_por_relogio_proprio_sozinho(self):
         """
@@ -149,11 +163,18 @@ class PorQueFaltaOElo(unittest.TestCase):
         motivos = " ".join(self.motivos("guabiruba", "brusque"))
         self.assertIn("não lista guabiruba", motivos)
 
-    def test_os_dois_motivos_aparecem_quando_os_dois_valem(self):
-        """Rio dos Cedros -> Timbó: a de cima não está na tabela E a de baixo
-        tem relógio próprio. Ficar com um só esconde metade do problema."""
+    def test_rio_dos_cedros_timbo_tem_um_motivo_so_e_o_certo(self):
+        """
+        Este teste exigia DOIS motivos — "a de cima não está na tabela E a de
+        baixo tem relógio próprio". O segundo estava errado, e o teste guardava
+        o erro: Rio dos Cedros e Timbó estão os dois no Benedito/Cedros, então
+        a viagem acontece, e o relógio próprio de Timbó é justamente o que ela
+        explica. Dar isso como motivo de o trecho faltar inverte a leitura.
+
+        Sobra o motivo verdadeiro, sozinho: a JICA não lista Rio dos Cedros.
+        """
         motivos = self.motivos("rio-dos-cedros", "timbo")
-        self.assertEqual(len(motivos), 2, motivos)
+        self.assertEqual(motivos, ["a Tabela 7.5.1 da JICA não lista rio-dos-cedros"])
 
     def test_bate_com_o_transito_real_do_repositorio(self):
         """A classificação tem de rodar sobre o dado de verdade sem estourar."""
@@ -234,6 +255,106 @@ class ColunaNaoMedidaNaoViraAusencia(unittest.TestCase):
         self.assertNotIn("**Taió**", busca)
         # e quem não tem continua nela
         self.assertIn("**Ituporanga**", busca)
+
+
+class TipoDoElo(unittest.TestCase):
+    """
+    Medir e procurar são perguntas diferentes.
+
+    `por_que_falta_o_elo` responde "adianta procurar na FONTE?". `tipo_do_elo`
+    responde "adianta MEDIR?". Elas se separaram quando a série da rede
+    estadual passou a permitir datar picos em dez cidades sem régua municipal:
+    de repente todos os elos ficaram mensuráveis, e mensurável não é o mesmo
+    que significativo.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.est = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def tipo(self, de, para, rio="itajai-acu"):
+        return al.tipo_do_elo(self.est, rio, de, para)[0]
+
+    def test_tronco_para_tronco_e_roteamento(self):
+        """A cheia viaja mesmo: o vão entre os picos é a viagem."""
+        self.assertEqual(self.tipo("rio-do-sul", "lontras"), "roteamento")
+        self.assertEqual(self.tipo("lontras", "ascurra"), "roteamento")
+        self.assertEqual(self.tipo("ascurra", "indaial"), "roteamento")
+
+    def test_dentro_do_mesmo_afluente_e_roteamento(self):
+        """
+        Rio dos Cedros e Timbó estão os dois no Benedito/Cedros. A viagem
+        acontece — e o "relógio próprio" de Timbó é justamente o que ela
+        explica, não um motivo para o elo não existir.
+        """
+        self.assertEqual(self.tipo("rio-dos-cedros", "timbo"), "roteamento")
+
+    def test_afluente_para_tronco_e_confluencia(self):
+        """
+        Aqui não há viagem: o pico do tronco vem da cheia que desce o tronco, o
+        do afluente vem da chuva na sub-bacia dele. O vão é coincidência de
+        hidrogramas — muda de valor e até de sinal a cada cheia.
+        """
+        self.assertEqual(self.tipo("ibirama", "rio-do-sul"), "confluencia")
+        self.assertEqual(self.tipo("timbo", "indaial"), "confluencia")
+
+    def test_a_explicacao_nomeia_o_afluente_e_o_rio_dele(self):
+        _, porque = al.tipo_do_elo(self.est, "itajai-acu", "timbo", "indaial")
+        self.assertIn("Benedito", porque)
+        self.assertIn("coincidência", porque)
+
+    def test_rio_em_fila_nao_tem_confluencia_a_declarar(self):
+        """O Mirim não tem `_topologia`: sem afluente lateral declarado, todo elo é viagem."""
+        self.assertEqual(self.tipo("vidal-ramos", "botuvera", rio="itajai-mirim"), "roteamento")
+        self.assertEqual(self.tipo("guabiruba", "brusque", rio="itajai-mirim"), "roteamento")
+
+
+class RelogioProprioNaoEMotivoDeEloDoMesmoCurso(unittest.TestCase):
+    """
+    `relogio_proprio` é uma afirmação sobre o elo com o TRONCO do Açu. Dentro do
+    mesmo curso ela diz o contrário do certo, e chegou a sair impressa assim:
+
+      * `rio-dos-cedros → timbo` ganhava "timbo tem relógio próprio" como
+        motivo de o trecho faltar — quando é justamente a viagem pelo Benedito
+        que esse relógio representa;
+      * `guabiruba → brusque` ganhava "brusque tem relógio próprio" — e Brusque
+        está no MIRIM, onde a marca não vale.
+
+    O tipo já tinha sido corrigido antes; o TEXTO do motivo continuava saindo.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.fonte = json.loads(
+            (DADOS / "transito.json").read_text(encoding="utf-8")
+        )["_meta"]["origem_das_faixas"]
+        cls.tabela = cls.fonte["tabela_7_5_1"]["matriz_horas_por_periodo_de_retorno"]
+
+    def motivos(self, de, para):
+        return al.por_que_falta_o_elo(de, para, self.fonte, self.tabela)[1]
+
+    def test_rio_dos_cedros_timbo_so_diz_o_que_e_verdade(self):
+        motivos = self.motivos("rio-dos-cedros", "timbo")
+        self.assertEqual(len(motivos), 1)
+        self.assertIn("não lista rio-dos-cedros", motivos[0])
+        self.assertNotIn("relógio próprio", " ".join(motivos))
+
+    def test_guabiruba_brusque_so_diz_o_que_e_verdade(self):
+        motivos = self.motivos("guabiruba", "brusque")
+        self.assertEqual(len(motivos), 1)
+        self.assertIn("não lista guabiruba", motivos[0])
+        self.assertNotIn("relógio próprio", " ".join(motivos))
+
+    def test_indaial_blumenau_continua_sendo_pego_pelos_numeros(self):
+        """
+        Tronco→tronco COM afluente no meio: `tipo_do_elo` não pega (a topologia
+        diz `entra_perto_de`, não entre quais duas cidades). Quem pega é o
+        `nao_positivo`, olhando a diferença na JICA.
+        """
+        tipo, motivos = al.por_que_falta_o_elo(
+            "indaial", "blumenau", self.fonte, self.tabela)
+        self.assertEqual(tipo, "nao_positivo")
+        self.assertIn("Benedito", " ".join(motivos))
 
 
 if __name__ == "__main__":

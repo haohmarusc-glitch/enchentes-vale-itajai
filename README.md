@@ -501,6 +501,22 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **Dois elos do Açu saíram da lista de busca: não são tempo de trânsito.** Com a série estadual,
+  todos os elos ficaram **mensuráveis** — e mensurável não é o mesmo que **significativo**. Dos seis
+  que faltavam no Açu, quatro são roteamento de verdade (`rio-do-sul → lontras`, `lontras → ascurra`,
+  `ascurra → indaial` no tronco, e `rio-dos-cedros → timbo` dentro do Benedito). Os outros dois —
+  **`ibirama → rio-do-sul`** e **`timbo → indaial`** — são **afluente lateral → tronco**: ali não há
+  viagem. O pico do tronco vem da cheia que desce o tronco; o do afluente, da chuva na sub-bacia
+  dele. O vão entre os dois é coincidência de hidrogramas, muda de valor e até de **sinal** a cada
+  cheia. Mesma família do `indaial → blumenau`, e mesma conclusão: **nem outra fonte nem uma cheia
+  medida resolvem, porque a grandeza não existe.** Novo `tipo_do_elo` classifica pela topologia
+  canônica, e a auditoria passa a fazer **duas** perguntas — "adianta procurar?" e "adianta medir?".
+  A lista de busca caiu de 9 para **7**. **E dois motivos impressos estavam errados:**
+  `rio-dos-cedros → timbo` levava "timbo tem relógio próprio" quando é justamente a viagem pelo
+  Benedito que esse relógio representa, e `guabiruba → brusque` levava "brusque tem relógio próprio"
+  estando os dois no **Mirim**, onde a marca não vale — o tipo já tinha sido corrigido antes, mas o
+  texto continuava saindo. Dez testes; dois antigos guardavam o comportamento errado e foram
+  corrigidos com o motivo escrito.
 - [x] **Os elos de trânsito do Mirim ficaram mensuráveis — pelo horário, nunca pelo valor.** Os três
   elos `vidal-ramos → botuvera → guabiruba → brusque` são a lógica que a Defesa Civil de Brusque usa
   de fato, e **nenhum podia ser medido**: Botuverá e Guabiruba não têm régua municipal, então nenhuma
