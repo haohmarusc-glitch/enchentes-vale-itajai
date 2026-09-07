@@ -501,6 +501,28 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **Um erro em qualquer componente apagava o telefone da Defesa Civil.** Sem limite de erro, o
+  React desmonta a árvore INTEIRA quando um componente lança — e a árvore inteira inclui a
+  `FaixaEmergencia`, cujo comentário diz o que estava em jogo: *"se alguém abrir o site em pânico e
+  ler uma coisa só, que seja esta: o número da Defesa Civil"*. Um gráfico do recharts com dado
+  inesperado, um canvas sem contexto 2D, um JSON que mudou de forma — qualquer um deles apagava o
+  199 da tela. Agora há `LimiteDeErro`, e ele fica **em volta do conteúdo, nunca em volta da
+  faixa**: o que cai é a tela, e a mensagem manda para AlertaBlu / Defesa Civil em vez de pedir
+  desculpa. Dois testes travam a posição (a faixa antes do limite; as rotas dentro dele).
+- [x] **O 199 agora aparece antes de o JavaScript rodar.** Em 3G a tela ficava branca por segundos
+  enquanto o bundle baixava, e branco não informa nada. O `index.html` passa a trazer, em HTML
+  estático dentro do `#root`, a faixa de emergência, o aviso de que o site não é alerta oficial e um
+  `<noscript>` apontando para o AlertaBlu — visível no primeiro byte pintado, e última coisa na tela
+  se o bundle falhar de vez. O React apaga tudo isso ao montar, sem script para limpar. Cinco testes
+  travam essas garantias.
+- [x] **Acessibilidade e compartilhamento.** Link *"Pular para o conteúdo"* como primeiro elemento
+  focável (antes eram cinco abas para atravessar no teclado a cada página); `preconnect` para o host
+  de tile que o mapa realmente usa, com teste que varre o código e cai se o provedor mudar sem
+  atualizar o `index.html`; `viewport-fit=cover` mais `env(safe-area-inset-*)` nos controles do
+  mapa, que em paisagem no iPhone ficavam parcialmente cobertos pelo notch — e o que sumia era o
+  controle, não a decoração; e tags Open Graph/Twitter, porque no Vale um site assim se espalha por
+  WhatsApp às onze da noite e o cartão é lido por mais gente que a página — por isso o cartão também
+  diz que **não é alerta oficial** e traz o 199.
 - [x] **⚠️ E o 1.615 que "batia" com a fonte batia por engano — dois erros se anulando.** Ao tirar as
   quatro duplicatas, Gaspar caiu para 1.615, o mesmo número que a página publica, e tratei isso como
   confirmação. Não era. Do levantamento de 2020 chegaram ao cadastro **1.613 dos 1.615**, e os outros

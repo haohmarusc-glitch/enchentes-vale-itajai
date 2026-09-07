@@ -1,0 +1,40 @@
+.caixa {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px solid var(--atencao, #b8860b);
+  border-radius: 8px;
+  background: #fff8e6;
+  color: #3a2c00;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.titulo {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+}
+
+.caixa p {
+  margin: 0 0 0.75rem;
+}
+
+.oficial a {
+  color: #0b3a5b;
+}
+
+/* 44px de alvo de toque, como o resto do site. */
+.botao {
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #0b3a5b;
+  border-radius: 6px;
+  background: #fff;
+  color: #0b3a5b;
+  cursor: pointer;
+}
+
+.botao:focus-visible {
+  outline: 3px solid #0b3a5b;
+  outline-offset: 2px;
+}

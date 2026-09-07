@@ -1,6 +1,7 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import estilos from './App.module.css'
 import FaixaEmergencia from './componentes/FaixaEmergencia'
+import LimiteDeErro from './componentes/LimiteDeErro'
 import Rodape from './componentes/Rodape'
 import Inicio from './telas/Inicio'
 import TelaCidade from './telas/TelaCidade'
@@ -19,6 +20,12 @@ const ABAS = [
 export default function App() {
   return (
     <>
+      {/* Primeiro elemento focável da página: quem navega por teclado ou leitor
+          de tela pula o cabeçalho e as cinco abas de uma vez. Fica invisível
+          até receber foco. */}
+      <a href="#conteudo" className={estilos.pularParaConteudo}>
+        Pular para o conteúdo
+      </a>
       <FaixaEmergencia />
       <header className={estilos.cabecalho}>
         <div className={estilos.faixa}>
@@ -45,22 +52,27 @@ export default function App() {
         </div>
       </header>
 
-      <main className="conteudo">
-        <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/monitor" element={<MonitorBacia />} />
-          {/* O mesmo Monitor, aberto numa cidade. Rota própria para ser um
-              endereço que se dita por telefone durante a chuva. */}
-          <Route path="/monitor/:cidadeId" element={<MonitorBacia />} />
-          <Route path="/acu" element={<TelaRio rioId="itajai-acu" />} />
-          {/* Uma página por cidade. `rioId` vem na URL para o endereço ser
-              compartilhável: `/acu/gaspar` é um endereço; "abra o Açu e toque
-              em Gaspar" não é. */}
-          <Route path="/:rioId/:cidadeId" element={<TelaCidade />} />
-          <Route path="/mirim" element={<TelaRio rioId="itajai-mirim" />} />
-          <Route path="/itajai" element={<TelaItajai />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+      <main className="conteudo" id="conteudo" tabIndex={-1}>
+        {/* O limite fica AQUI, em volta do conteúdo — e não em volta do site
+            inteiro. Se uma tela quebrar, é ela que cai: a FaixaEmergencia acima
+            continua na tela com o 199, que é o motivo de ela existir. */}
+        <LimiteDeErro oQue="esta tela">
+          <Routes>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/monitor" element={<MonitorBacia />} />
+            {/* O mesmo Monitor, aberto numa cidade. Rota própria para ser um
+                endereço que se dita por telefone durante a chuva. */}
+            <Route path="/monitor/:cidadeId" element={<MonitorBacia />} />
+            <Route path="/acu" element={<TelaRio rioId="itajai-acu" />} />
+            {/* Uma página por cidade. `rioId` vem na URL para o endereço ser
+                compartilhável: `/acu/gaspar` é um endereço; "abra o Açu e toque
+                em Gaspar" não é. */}
+            <Route path="/:rioId/:cidadeId" element={<TelaCidade />} />
+            <Route path="/mirim" element={<TelaRio rioId="itajai-mirim" />} />
+            <Route path="/itajai" element={<TelaItajai />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </LimiteDeErro>
       </main>
 
       <Rodape />

@@ -3,16 +3,108 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      viewport-fit=cover: no iPhone com notch, sem isto o mapa em tela cheia
+      fica com faixa branca nas laterais em paisagem. O CSS usa env(safe-area-*)
+      para não esconder legenda atrás do notch.
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!--
+      Ligações antecipadas para os servidores de tile do mapa. Numa noite de
+      chuva, em 3G, o handshake de TLS que não precisa ser feito é tempo que o
+      mapa não gasta para aparecer.
+    -->
+    <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin />
+    <link rel="dns-prefetch" href="https://tile.openstreetmap.org" />
     <meta name="theme-color" content="#0b3a5b" />
     <meta
       name="description"
       content="Dados históricos de enchentes nos rios Itajaí-Açu e Itajaí-Mirim (SC). Não substitui a Defesa Civil."
     />
     <title>Enchentes do Vale do Itajaí</title>
+
+    <!--
+      Open Graph e Twitter: no Vale, um site assim se espalha por WhatsApp e
+      Telegram, colado num grupo de bairro às onze da noite. Sem estas tags o
+      link aparece como URL crua e ninguém toca. A descrição repete o aviso de
+      que NÃO é alerta oficial, porque o cartão do compartilhamento é lido por
+      muito mais gente do que a página.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Enchentes do Vale do Itajaí" />
+    <meta property="og:title" content="Enchentes do Vale do Itajaí — nível dos rios e cotas de rua" />
+    <meta
+      property="og:description"
+      content="Nível dos rios Itajaí-Açu e Itajaí-Mirim, cotas de rua por cidade e histórico de cheias. Projeto aberto e NÃO oficial: não substitui a Defesa Civil. Emergência: 199."
+    />
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="Enchentes do Vale do Itajaí — nível dos rios e cotas de rua"
+    />
+    <meta
+      name="twitter:description"
+      content="Nível dos rios, cotas de rua e histórico de cheias no Vale do Itajaí. Projeto aberto e NÃO oficial. Emergência: 199."
+    />
+
+    <style>
+      /* Inline de propósito: uma folha externa é mais um round-trip antes de
+         a primeira coisa aparecer, e o que está aqui é justamente o que precisa
+         aparecer primeiro. */
+      .antes-de-carregar {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        font-size: 17px;
+        line-height: 1.5;
+        color: #0b3a5b;
+        padding: 1rem;
+        max-width: 40rem;
+        margin: 0 auto;
+      }
+      .antes-emergencia {
+        background: #ffe9e9;
+        border: 2px solid #b00020;
+        border-radius: 6px;
+        padding: 0.75rem 1rem;
+        margin: 0 0 1rem;
+        color: #6b0014;
+      }
+      .antes-carregando {
+        color: #4a6a80;
+        margin: 0 0 0.5rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      O que aparece antes de o React montar.
+      
+      Em 3G numa noite de chuva, o bundle demora segundos e a tela fica branca.
+      Branco não informa nada — e este site tem UMA informação que não pode
+      depender de JavaScript nenhum: o telefone da Defesa Civil. Ele fica aqui,
+      em HTML estático, visível no primeiro byte pintado. Se o bundle falhar por
+      completo, ele continua sendo a última coisa na tela em vez de nada.
+
+      O React substitui todo o conteúdo de #root ao montar, então isto some
+      sozinho, sem script e sem classe para remover.
+    -->
+    <div id="root">
+      <div class="antes-de-carregar">
+        <p class="antes-emergencia">
+          <strong>Emergência: ligue 199</strong> (Defesa Civil) ou 193 (Bombeiros).
+          Este site <strong>não é</strong> sistema oficial de alerta.
+        </p>
+        <p class="antes-carregando">Carregando os dados dos rios…</p>
+        <noscript>
+          <p class="antes-carregando">
+            Este site precisa de JavaScript para mostrar os níveis. Sem ele, use o
+            <a href="https://alertablu.blumenau.sc.gov.br/">AlertaBlu</a> ou a
+            <a href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios">Defesa Civil de Itajaí</a>.
+          </p>
+        </noscript>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
