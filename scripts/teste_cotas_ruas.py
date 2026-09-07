@@ -132,20 +132,59 @@ class TestCotasRuas(unittest.TestCase):
         # descrevem pontos distintos com a mesma frase — "Sem número",
         # "Defronte ao autoshopping" —, e a Rua Franz Volles tem três desses,
         # a 11,10, 14,05 e 16,95 m. Deduplicar por (rua, ponto) apagaria dois.
-        chaves = [(r["cidade"], r["rua"], r.get("ponto"), r.get("cota_m")) for r in self.cotas]
-        self.assertEqual(len(chaves), len(set(chaves)),
-                         "registro duplicado (cidade, rua, ponto, cota)")
+        #
+        # E QUANDO A FONTE DÁ COORDENADA, ELA ENTRA NA IDENTIDADE (07/09/2026).
+        # Rua + ponto + cota ainda não bastava: o levantamento de Gaspar tem
+        # dois marcadores em "Rodovia Jorge Lacerda", ambos com o ponto escrito
+        # "Sem referência" e ambos arredondando para 9,77 m — e eles estão a
+        # 331 m um do outro. Outro par, na Cerena Dellandrea, a 42 m. Esta
+        # asserção, como estava, chamava os dois de duplicata: eram 1.615
+        # pontos levantados e 1.613 cadastrados, sem nada no arquivo dizendo
+        # que dois tinham sumido. Texto de preenchimento não identifica lugar;
+        # coordenada identifica.
+        def identidade(r):
+            return (r["cidade"], r["rua"], r.get("ponto"), r.get("cota_m"),
+                    round(r["lat"], 5) if isinstance(r.get("lat"), (int, float)) else None,
+                    round(r["lon"], 5) if isinstance(r.get("lon"), (int, float)) else None)
 
-        # A folga acima não pode virar porta dos fundos: quando (rua, ponto)
-        # se repete, as cotas TÊM de ser diferentes — senão é duplicata mesmo.
+        chaves = [identidade(r) for r in self.cotas]
+        self.assertEqual(len(chaves), len(set(chaves)),
+                         "registro duplicado (cidade, rua, ponto, cota, coordenada)")
+
+        # A folga acima não pode virar porta dos fundos: quando (rua, ponto) se
+        # repete SEM coordenada para separar, as cotas TÊM de ser diferentes —
+        # senão é duplicata mesmo. Com coordenada, dois pontos podem repetir a
+        # cota à vontade: são lugares diferentes que alagam no mesmo nível.
         por_ponto: dict[tuple, list[float]] = {}
         for r in self.cotas:
+            if r.get("lat") is not None:
+                continue
             por_ponto.setdefault((r["cidade"], r["rua"], r.get("ponto")), []).append(r.get("cota_m"))
         for k, cotas in por_ponto.items():
             if len(cotas) > 1:
                 with self.subTest(ponto=k):
                     self.assertEqual(len(cotas), len(set(cotas)),
-                                     "mesmo ponto, mesma cota, dois registros")
+                                     "mesmo ponto, mesma cota, sem coordenada: dois registros")
+
+    def test_os_dois_pontos_que_a_identidade_antiga_perdia(self):
+        """
+        Trava os dois pontos de Gaspar que voltaram em 07/09/2026.
+
+        Enquanto a identidade era (cidade, rua, ponto, cota), estes dois eram
+        contados como repetidos do vizinho e descartados na importação. São
+        pontos reais do levantamento topográfico de 01/04/2020, com bairro,
+        referência e coordenada.
+        """
+        def achar(rua, cota, lat):
+            return [r for r in self.cotas if r["cidade"] == "gaspar"
+                    and r["rua"] == rua and r.get("cota_m") == cota
+                    and abs((r.get("lat") or 0) - lat) < 1e-5]
+
+        self.assertEqual(len(achar("Rua Cerena Dellandrea", 9.73, -26.915713)), 1)
+        self.assertEqual(len(achar("Rodovia Jorge Lacerda", 9.77, -26.923669)), 1)
+        # E os vizinhos que os mascaravam continuam lá — não se trocou um pelo outro.
+        self.assertEqual(len(achar("Rua Cerena Dellandrea", 9.73, -26.915466)), 1)
+        self.assertEqual(len(achar("Rodovia Jorge Lacerda", 9.77, -26.921776)), 1)
 
         nomes = [(r["cidade"], r["rua"]) for r in self.cotas]
         self.assertLess(len(set(nomes)), len(nomes), "esperava alguma rua com mais de um ponto")

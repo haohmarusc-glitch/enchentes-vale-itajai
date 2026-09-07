@@ -19,7 +19,7 @@ que entrega quase o mesmo valor.
 
 | Cidade | Cotas em `cotas-ruas.json` | Coordenada | Mancha observada | Nível em tempo real |
 |---|---|---|---|---|
-| **Gaspar** | 1.615 | **sim** — `brutos/gaspar-cotas-2020.json`, 1.615 pontos com `lat`/`lon` | — | sim (DC Gaspar, estação 21) — **par cota↔leitura provado em 04/09** |
+| **Gaspar** | 1.617 | **sim** — `brutos/gaspar-cotas-2020.json`, 1.615 pontos com `lat`/`lon` | — | sim (DC Gaspar, estação 21) — **par cota↔leitura provado em 04/09** |
 | **Brusque** | 377 | **sim** — `brutos/brusque-cotas-2023.json`, 357 com `lat`/`lon`; e `brusque-mymaps-cotas.json`, 3.688 com a coordenada em `coord` (`"lon,lat,0"`, ainda não separada em campos) | — | sim (régua municipal) |
 | Blumenau | 2.023 | **não** — só nome de rua e bairro | — | sim (AlertaBlu) |
 | Rio do Sul | 555 | **não** | — | sim (3 réguas) |

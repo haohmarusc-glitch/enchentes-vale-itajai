@@ -3,7 +3,7 @@
 Data: 07/09/2026. Diagnóstico fechado com o Jefferson, comparando a VPS, este
 ambiente e o navegador do celular dele.
 
-**Gaspar não tem nenhuma fonte de nível de rio ao vivo.** A cidade tem **1.615
+**Gaspar não tem nenhuma fonte de nível de rio ao vivo.** A cidade tem **1.617
 cotas de rua** e, desde ontem, **48 picos históricos**: sabe-se em que nível cada
 rua alaga e não se sabe em que nível o rio está.
 
@@ -174,7 +174,7 @@ para essa estação precisa tratar `0,00` como suspeito.
 
 **1. As cotas de rua de Gaspar já estão no repositório.** O relatório diz que
 `data/cotas-ruas.json` *"hoje só tem Itajaí"*. É o inverso: o arquivo tem
-**Gaspar 1.615**, Blumenau 2.023, Rio do Sul 555 e Brusque 377 — e **não tem
+**Gaspar 1.617**, Blumenau 2.023, Rio do Sul 555 e Brusque 377 — e **não tem
 Itajaí**. As de Gaspar entraram pelo estudo CEOPS/FURB.
 
 **2. A contagem diferia em quatro — e os quatro eram nossos.** ✅ **Resolvido em
@@ -197,12 +197,43 @@ pontos na mesma cota (a Adolfo Radunz alaga a 9,55 m na esquina da Macaé e depo
 da casa nº 105), e são 143 pares assim no arquivo. Só é barrado o par em que uma
 das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto da rua.
 
-Com isso o repositório passa a ter exatamente os **1.615** que a fonte publica.
+**3. E o 1.615 que "batia" batia por engano — dois erros se anulando.** ⚠️
+Corrigido no mesmo dia, algumas horas depois. Ao tirar as quatro duplicatas o
+total de Gaspar caiu para 1.615, o mesmo número que a página publica, e eu tratei
+isso como confirmação. Não era. A conta certa é outra:
+
+| | |
+|---|---:|
+| pontos no levantamento de 2020 (KML e página) | 1.615 |
+| … quantos chegaram ao cadastro | **1.613** |
+| Rua Lino (consulta de 2017, o KML não tem) | +1 |
+| Rua Santa Isabel (Plano de Contingência de 2026) | +1 |
+| **total correto** | **1.617** |
+
+Faltavam dois pontos do levantamento, e sobravam dois de outras fontes. Os
+números se cancelavam, e o 1.615 parecia acerto.
+
+**Os dois que faltavam** — "Rua Cerena Dellandrea, 251" (9,73 m) e "Rodovia Jorge
+Lacerda, Sem referência" (9,77 m) — nunca chegaram ao cadastro porque a
+identidade de um ponto era `(cidade, rua, ponto, cota)`, e cada um deles colide
+com um vizinho de mesmo rótulo e mesma cota arredondada. Só que os vizinhos estão
+a **42 m** e a **331 m** de distância: são lugares diferentes. Na Jorge Lacerda o
+"ponto" é literalmente o texto `Sem referência` — preenchimento, não endereço.
+
+Quando a fonte dá coordenada, **a coordenada é o ponto**; o texto é rótulo de
+tela. `importar_cotas_gaspar.chave()` passa a incluí-la, e `como_registro` passa a
+carregá-la do KML em vez de deixá-la para um cruzamento posterior por nome. Os
+dois pontos entraram, o teste de identidade em `teste_cotas_ruas.py` foi corrigido
+(era ele que chamava os dois de duplicata) e há teste nominal exigindo que os
+quatro — os dois recuperados e os dois vizinhos que os mascaravam — coexistam.
+
+Gaspar: **1.617**. O levantamento de 2020 contribui com os 1.615 que a fonte
+publica, e os outros dois vêm de fontes que o KML não tem.
+
 Continua em aberto um resíduo menor, anotado para não passar em silêncio: a
-página conta **621 valores distintos** e o nosso arquivo conta **623**. A faixa
-bate exatamente (6,20 m a 19,19 m) e a mediana difere em 1 cm (9,91 contra 9,90).
-Dois valores de diferença não mudam nenhuma decisão de tela — mas também não
-foram explicados.
+página conta **621 valores distintos** e o nosso arquivo conta 623. A faixa bate
+exatamente (6,20 m a 19,19 m). Dois valores de diferença não mudam nenhuma
+decisão de tela — mas também não foram explicados.
 
 ---
 
@@ -217,7 +248,7 @@ sustenta isso é uma **medição**, não uma suposição:
 
 | | |
 |---|---|
-| menor cota de rua de Gaspar (1.615 pontos) | **6,20 m** |
+| menor cota de rua de Gaspar (1.617 pontos) | **6,20 m** |
 | menor pico da lista histórica (70 registros) | **6,19 m** |
 | **diferença** | **1 cm** |
 

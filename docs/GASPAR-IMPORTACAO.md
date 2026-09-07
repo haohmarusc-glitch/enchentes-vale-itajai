@@ -2,7 +2,7 @@
 
 Data: 07/09/2026.
 
-Gaspar tinha **zero picos** em `enchentes.json` e 1.615 cotas de rua: sabia-se em
+Gaspar tinha **zero picos** em `enchentes.json` e 1.617 cotas de rua: sabia-se em
 que nível cada rua alaga e não se sabia em que nível o rio esteve. A tabela da
 Defesa Civil chegou pelo celular do Jefferson (a página é inalcançável deste
 ambiente e da VPS) com **70 linhas, de 1852 a 2023**.
@@ -100,7 +100,7 @@ datum entre duas cidades é erro que ninguém vê e todo mundo carrega.
 **Consequência que vale registrar: resolver o datum de Blumenau acabou de ficar
 muito mais valioso.** Antes, os 41 registros de Blumenau com `referencia: null` e
 os 72 em IBGE bloqueavam uma correlação com uma cidade sem dado nenhum. Agora
-bloqueiam uma correlação com uma cidade que tem 48 picos e 1.615 cotas de rua —
+bloqueiam uma correlação com uma cidade que tem 48 picos e 1.617 cotas de rua —
 e que é a próxima a jusante de Blumenau no tronco, a 2 h de distância.
 
 ---

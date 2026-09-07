@@ -31,3 +31,19 @@
   font-size: 0.85rem;
   margin: 0;
 }
+
+/* Fonte cujo host não responde: continua na lista, mas sem link que engane. */
+.foraDoAr {
+  color: #d9c9a8;
+}
+
+.endereco {
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+.motivo {
+  display: block;
+  font-size: 0.78rem;
+  opacity: 0.85;
+}

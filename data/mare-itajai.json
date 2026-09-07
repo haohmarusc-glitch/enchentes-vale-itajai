@@ -7,7 +7,16 @@
     "metodo": "Preamares e baixa-mares são os máximos e mínimos locais que a própria planilha já traz — não recalculados aqui.",
     "aviso": "INTERINO: o endpoint da Defesa Civil (scripts/coleta_mares.py) está vazio há dias; esta tábua veio do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) enquanto isso. A ALTURA (metros) foi OMITIDA de propósito — a planilha usa datum IBGE, e nada aqui garante que bate com o datum que a Defesa Civil/DHN publicam (mesmo problema do datum de Blumenau, que já é REGRA BLOQUEANTE neste projeto). Só o HORÁRIO de cada preamar/baixa-mar entrou, que não depende de datum. A próxima coleta bem-sucedida de coleta_mares.py substitui este arquivo inteiro pela tábua oficial — isso é esperado, não um bug.",
     "fonte_curta": "Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) — previsão harmônica",
-    "aviso_interino": "Tábua interina: o endpoint da Defesa Civil está sem dado. Horários de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC), sem a altura (datum não confirmado contra a Defesa Civil)."
+    "aviso_interino": "Tábua interina: o endpoint da Defesa Civil está sem dado. Horários de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC), sem a altura (datum não confirmado contra a Defesa Civil).",
+    "fonte_anual_localizada": {
+      "_o_que_e": "A tábua anual do CHM/Marinha, que substitui esta interina. Endereço e metadados lidos no navegador em 07/09/2026 — este ambiente tem marinha.mil.br bloqueado pelo proxy, então nada foi baixado.",
+      "url_2026": "https://www.marinha.mil.br/chm/sites/www.marinha.mil.br.chm/files/dados_de_mare/52 - PORTO DE ITAJAÍ - 166 - 168.pdf",
+      "como_chegar": "marinha.mil.br/chm/tabuas-de-mare-6 ('Tábuas das Marés 2026', página 2 da paginação), a partir de /chm/dados-do-segnav/dados-de-mare-mapa.",
+      "⚠️_armadilha_do_link_obvio": "A página que aparece PRIMEIRO na busca chama-se 'Tábuas de Maré 2025' (/chm/tabuas-de-mare) e serve um PDF cujo nome interno é CAPA-TABUAS-DAS-MARES-2024. Um coletor apontado para o link óbvio importa 2024 achando que é o ano corrente — e maré errada por dois anos não parece errada na tela, só desloca a preamar algumas horas. Conferir o ANO dentro do PDF, nunca o título da página.",
+      "metadados_para_proveniencia": "Porto de Itajaí (SC), 2026 · lat 26°54'.3 S · long 48°39'.2 W · fuso UTC−03:00 · 78 componentes · Nível Médio 0,6 m · Carta 1841 · origem CHM.",
+      "por_que_o_nivel_medio_importa": "0,6 m é o que amarra as alturas ao nível de redução. Sem ele, misturar altura do CHM com a série da UNIVALI (datum IBGE) produz exatamente o erro silencioso que esta tábua evita hoje omitindo a altura.",
+      "⚠️_ate_onde_vai": "O CHM publica 2024, 2025 e 2026. NÃO EXISTE EDIÇÃO 2027 (conferido em 07/09/2026). Importar a tábua de 2026 empurra a parede de 30/09/2026 para 31/12/2026, e nada além — o validador volta a reclamar em dezembro. Não é 'resolver a maré': é comprar três meses."
+    }
   },
   "porto": "Itajaí",
   "coletado_em": "2026-09-03T14:51:50+00:00",
