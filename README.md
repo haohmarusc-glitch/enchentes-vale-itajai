@@ -477,6 +477,19 @@ o projeto.
 
 ## Pendências
 
+- [x] **A lista do que falta agora é medida, não lembrada (07/09/2026).** `scripts/auditar_lacunas.py`
+  cruza `estacoes.json`, `enchentes.json`, `transito.json` e `cotas-ruas.json` e escreve
+  `docs/LACUNAS-DE-DADOS.md`: sete camadas por cidade e a lista de busca ordenada por impacto.
+  Reexecutar em vez de editar o documento à mão. **O que a primeira execução mediu:** 12 das 19
+  linhas do eixo **sem leitura ao vivo** (só Itajaí, Blumenau, Rio do Sul, Brusque, Taió e Vidal
+  Ramos publicam); 6 cidades **sem cota nenhuma** e 5 com **cota incompleta**; **149 picos e ZERO
+  com hora**, o que mantém `transito.json` como tabela de projeto e deixa `calibrar_transito.py`
+  sem o que calibrar; 13 cidades **sem nenhum pico**; **10 elos de trânsito faltando** na topologia — os
+  trechos que existem PULAM cidades (`rio-do-sul → indaial` salta Lontras e Ascurra), e entre Rio
+  do Sul e Blumenau não há um único elo consecutivo; **2.613 cotas de rua sem coordenada** (Blumenau 2.023 e Rio do Sul 555 — aparecem na
+  busca por nome, não no mapa); **41 registros de Blumenau com `referencia: null`**, que é a
+  REGRA_REFERENCIA_BLUMENAU em número; e a **tábua de maré acabando em 30/09/2026**, sem altura.
+
 - [x] **Os três códigos ANA estão CONFERIDOS no HidroWeb (06/09/2026).** 83800002 = **BLUMENAU (PCD)**,
   83300200 = **RIO DO SUL - NOVO**, 83050000 = **TAIÓ** — todas fluviométricas. Responde a pergunta 2 do
   ofício C6 sem esperar a ANA. Gravado como `codigo_ana_verificado` + `codigo_ana_nome`. **Também
