@@ -7,7 +7,10 @@ mandar ofício a Ascurra por um elo que na verdade falta em Indaial —, e errar
 contagem de cotas apaga um buraco real da lista. Os dois casos estão travados
 aqui.
 """
+import json
+import tempfile
 import unittest
+from pathlib import Path
 
 import auditar_lacunas as al
 
@@ -165,6 +168,72 @@ class MinimoDaPrevisao(unittest.TestCase):
     def test_bate_com_o_que_o_claude_md_manda(self):
         """< 5 eventos = 'dados insuficientes', não estimativa."""
         self.assertEqual(al.PARES_MINIMOS, 5)
+
+
+class ColunaNaoMedidaNaoViraAusencia(unittest.TestCase):
+    """
+    `—` significa "medido e ausente". Coluna não medida sai `?`.
+
+    O auditor só preenche a coluna de leitura ao vivo quando recebe
+    `--ao-vivo`. Sem isso ela saía `—` para TODAS as cidades, e o documento
+    passava a afirmar que nenhuma delas publica nível. Era falso — sete
+    publicavam — e mandava procurar fonte para cidade que já tem: Taió, Rio do
+    Sul, Blumenau, Itajaí (nos dois rios), Vidal Ramos e Brusque estavam na
+    lista de busca sem precisar estar.
+
+    O aviso existia, mas só no terminal, que rola e some. O documento é o que
+    fica no repositório e o que alguém lê meses depois.
+
+    Os relatórios aqui vêm de `auditar()` sobre os dados REAIS, e não de um
+    dicionário montado à mão: fixture inventado sai da forma real sem avisar,
+    e este teste existe justamente para pegar coluna que mente.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sem = al.auditar(None)
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False,
+                                         encoding="utf-8") as t:
+            json.dump({"leituras": [
+                {"estacao": "Taió", "cidade": "taio", "rio": "itajai-acu",
+                 "nivel_m": 5.15, "medido_em": "2026-09-07T18:35:00"},
+            ]}, t, ensure_ascii=False)
+            cls.caminho = Path(t.name)
+        cls.com = al.auditar(cls.caminho)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.caminho.unlink(missing_ok=True)
+
+    def linha_de(self, md: str, nome: str) -> str:
+        return next(l for l in md.splitlines() if l.startswith(f"| {nome} |"))
+
+    def test_sem_medicao_a_coluna_sai_interrogacao(self):
+        md = al.markdown(self.sem)
+        self.assertIn("| ? |", self.linha_de(md, "Taió"))
+
+    def test_sem_medicao_o_documento_avisa(self):
+        """O aviso tem de estar no DOCUMENTO, não só no terminal."""
+        md = al.markdown(self.sem)
+        self.assertIn("não foi medida nesta execução", md)
+        self.assertIn("--ao-vivo", md)
+
+    def test_sem_medicao_a_lista_de_busca_nao_acusa_ninguem(self):
+        md = al.markdown(self.sem)
+        busca = md.split("### 1.")[1].split("###")[0]
+        self.assertIn("não medido", busca)
+        self.assertNotIn("**Taió**", busca)
+
+    def test_com_medicao_a_coluna_volta_a_valer(self):
+        md = al.markdown(self.com)
+        self.assertNotIn("| ? |", self.linha_de(md, "Taió"))
+        self.assertNotIn("não foi medida nesta execução", md)
+
+    def test_com_medicao_quem_tem_leitura_sai_da_lista_de_busca(self):
+        busca = al.markdown(self.com).split("### 1.")[1].split("###")[0]
+        self.assertNotIn("**Taió**", busca)
+        # e quem não tem continua nela
+        self.assertIn("**Ituporanga**", busca)
 
 
 if __name__ == "__main__":

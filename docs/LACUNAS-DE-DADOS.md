@@ -12,25 +12,25 @@ de projeto, nunca medida.
 
 | Cidade | Rio | Leitura ao vivo | Cotas atenção+alerta | Cotas conferidas | Picos | Série ANA | Cotas de rua | Trânsito a jusante |
 |---|---|---|---|---|---|---|---|---|
-| Taió | acu | — | sim | — | 1 | sim | — | sim |
+| Taió | acu | sim | sim | — | 1 | sim | — | sim |
 | Ituporanga | acu | — | — | — | — | sim | — | sim |
-| Rio do Sul | acu | — | sim | — | 9 | sim | 555 | — |
+| Rio do Sul | acu | sim | sim | — | 9 | sim | 555 | — |
 | Ibirama | acu | — | — | — | — | — | — | — |
 | Lontras | acu | — | — | — | — | — | — | — |
 | Ascurra | acu | — | — | — | — | — | — | — |
 | Indaial | acu | — | sim | sim | 16 | — | — | — |
-| Blumenau | acu | — | sim | — | 113 | sim | 2023 | sim |
+| Blumenau | acu | sim | sim | — | 113 | sim | 2023 | sim |
 | Gaspar | acu | — | sim | sim | 48 | sim | 1617 | sim |
 | Ilhota | acu | — | sim | — | — | — | — | sim |
-| Itajaí | acu | — | — | — | — | — | — | n/a |
+| Itajaí | acu | sim | — | — | — | — | — | n/a |
 | Timbó | acu | — | — | — | 1 | — | — | — |
 | Rio dos Cedros | acu | — | sim | — | — | — | — | — |
 | Trombudo Central | acu | — | — | — | — | — | — | n/a |
-| Vidal Ramos | mirim | — | — | — | — | — | — | — |
+| Vidal Ramos | mirim | sim | — | — | — | — | — | — |
 | Botuverá | mirim | — | — | — | — | — | — | — |
 | Guabiruba | mirim | — | — | — | — | — | — | — |
-| Brusque | mirim | — | — | — | 9 | sim | 377 | sim |
-| Itajaí | mirim | — | — | — | — | — | — | n/a |
+| Brusque | mirim | sim | — | sim | 9 | sim | 377 | sim |
+| Itajaí | mirim | sim | — | — | — | — | — | n/a |
 
 `n/a` em trânsito = a cidade é foz, ou entrou sem posição na árvore (Trombudo Central: a fonte diz o rio, não a confluência).
 
@@ -38,7 +38,7 @@ de projeto, nunca medida.
 
 ### 1. Leitura ao vivo — o pino cinza
 
-Sem leitura em: **Taió**, **Ituporanga**, **Rio do Sul**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Blumenau**, **Gaspar**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**, **Brusque**.
+Sem leitura em: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Gaspar**, **Ilhota**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Botuverá**, **Guabiruba**.
 
 É o que mais escurece o mapa e o único item que não tem substituto histórico: nenhuma pesquisa em acervo acende um pino hoje. O pedido é ofício à Defesa Civil do município pedindo o endpoint que a página de monitoramento já consome.
 
