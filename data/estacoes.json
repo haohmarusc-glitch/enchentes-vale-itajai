@@ -601,7 +601,8 @@
             "codigo": "83892990",
             "nome": "SALSEIRO",
             "por_que_nao": "Mesmo município, estações diferentes: 6,8 km entre a nossa régua (-27.38547 / -49.35812, Asthon = DCSC) e a SALSEIRO no inventário da ANA, que drena 286 km² — sub-bacia bem menor. O Boletim 150/2026 da EPAGRI publica '83892990 · Vidal Ramos · Salseiro' e é o que tentava o vínculo pelo NOME DO MUNICÍPIO; a coordenada da ANA desmente. NÃO vincular. Respondido pela ANA, não pela EPAGRI — o ofício C9 pedia exatamente esta coordenada. Inventário público da ANA (Inventario31_08_2026.mdb, tabela `Estacao`), aberto com mdbtools em 06/09/2026."
-          }
+          },
+          "cotas_m_por_que_vazio": "⛔ NÃO PREENCHER COM AS COTAS DO SALSEIRO (registrado 07/09/2026). O portal da Defesa Civil de Brusque publica, na estação 31, 'Salseiro – Vidal Ramos' com normalidade < 3,00 m, atenção 3,00 m (ou chuva > 35,00 mm) e emergência 4,50 m. É tentador: são exatamente as cotas que faltam aqui, e o nome da cidade está no rótulo. MAS A RÉGUA É OUTRA. A ANA respondeu ao ofício C9 que a SALSEIRO (83892990) fica a 6,8 km desta régua e drena 286 km² — sub-bacia bem menor. É o mesmo vínculo por NOME DE MUNICÍPIO que o `codigo_ana_nao_e` abaixo já recusou, voltando por outra porta. Aplicar cota de uma régua a outra é o erro que este projeto persegue, e aqui ele viria com aparência de achado. TRÊS SINAIS A MAIS de que não se deve usar: a estação 31 está PARADA desde 18/04/2026 (142 dias na leitura de 07/09) e mesmo assim serve o número com o rótulo 'situação de NORMALIDADE'; ela não aparece na tabela das 22 estações do portal, só por URL direta — aposentada da listagem sem sair do banco; e o gatilho de chuva de 35,00 mm destoa dos 6,00 mm usados na Ponte Estaiada e no Belchior de Gaspar, o que sugere legenda herdada e não revisada. O QUE DE FATO RESOLVE: perguntar à Defesa Civil de Vidal Ramos as cotas da régua DCSC-00024 (a que este site mostra, 'Vidal Ramos (Asthon)'). Esta cidade é a única do projeto cuja leitura chega fresca e ainda assim fica cinza no mapa — falta só a escala."
         },
         {
           "id": "botuvera",
@@ -663,21 +664,34 @@
           ],
           "observacao": "A régua é a Ponte Estaiada. A cota de 4,80 m é o nível em que a Av. Beira-Rio, marginal ao rio, começa a alagar — a fonte a chama de \"cota de inundação da via\". Ela está cadastrada como ATENÇÃO porque é o primeiro sinal, e porque antes dela a única cota conhecida era 6,00 m, o que fazia o aviso sair depois de a água já estar na rua. Mas é preciso dizer o que isso significa: em Brusque NÃO existe faixa de aviso antes do primeiro alagamento. Quando o rio chega aos 4,80 m, a via marginal já está sendo atingida — não é um aviso prévio, é o começo. Não há cota de atenção nem de alerta publicadas abaixo disso, e obtê-las com a Defesa Civil de Brusque é a pendência que fecharia essa lacuna. Num rio de resposta rápida como o Mirim, é onde mais falta margem. Outros pontos alagam entre 5,46 m e 5,80 m — depois da Beira-Rio e antes da maioria das ruas da lista oficial, que começa em 5,64 m — mas sem cota exata publicada. Fonte das cotas por rua: lista oficial da Defesa Civil de Brusque (out/2023). Maré de sizígia em Itajaí afeta a vazante.",
           "cotas_m": {
-            "inundacao": 6.0,
-            "atencao": 4.8
+            "atencao": 3.0,
+            "emergencia": 5.0
           },
           "fontes_tempo_real": [
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Brusque)",
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
-          "cotas_verificado": false,
+          "cotas_verificado": true,
           "cotas_ressalva": "POR QUE NÃO EXISTE `alerta` AQUI, E NÃO SE INVENTA UM (07/09/2026). A auditoria de lacunas marca Brusque como 'cota incompleta'; a leitura certa dessa marca não é 'falta preencher' e sim que a cidade NÃO opera por cota isolada. Na cheia de 31/08–01/09/2026 a Defesa Civil declarou estado de ATENÇÃO com a régua de Brusque em 3,49 m (Vidal Ramos 3,31 / Botuverá 4,86) e MANTEVE 'atenção' no dia seguinte com Brusque em 5,04 m, depois de um pico de 5,74 m com alagamentos nas áreas previstas. A mesma palavra cobriu 3,49 e 5,04 — e a nossa `atencao` de 4,80 m cai ENTRE as duas. Consequência que a tela precisa carregar: em um momento o site pinta MAIS CALMO que a Defesa Civil (3,49 m, abaixo da nossa cota) e em outro MAIS GRAVE (5,04 m, acima) — nos dois casos por motivo estrutural, não por erro de número. A Defesa Civil olha Vidal Ramos → Botuverá → Brusque e a tendência, que é a lógica montante → jusante que este projeto quer construir; os elos `vidal-ramos → botuvera` e `botuvera → brusque` estão entre os que faltam em transito.json. O QUE NÃO SE CONCLUI: que 4,80 m está errado, nem que deva descer para 3,49 m — 3,49 m foi o valor da régua quando um estado de BACIA foi declarado, não um limiar de Brusque. Fonte: cobertura do evento por Olhar do Vale e Diplomata FM, levantamento de 07/09/2026; não lido na fonte por este ambiente. Ver docs/PESQUISA-2026-09-07-TERCEIRA-RODADA.md.",
           "coordenadas": [
             -27.1007,
             -48.9172
           ],
           "regua_das_cotas": "Ponte Estaiada",
-          "regua_das_cotas_fonte": "data/brutos/brusque-cotas-2023.json (_meta): cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184 pontos com lâmina. A leitura ao vivo vem de estação sem régua identificada; par NÃO provado."
+          "regua_das_cotas_fonte": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'.",
+          "fonte_cotas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+          "cotas_substituidas_em_2026_09_07": {
+            "_o_que_saiu": {
+              "atencao": 4.8,
+              "inundacao": 6.0
+            },
+            "_por_que_saiu": "Os 4,80 m NÃO eram um limiar de aviso: eram a cota em que a Av. Beira-Rio, marginal ao rio, começa a alagar — a fonte a chamava de 'cota de inundação da via'. Entraram no campo `atencao` porque era o único número que existia, exatamente como Indaial tinha 6,00 m (doze vias alagando) gravado como atenção até a escala real da COMPDEC aparecer. Agora a escala real de Brusque apareceu, publicada pelo próprio município, e os 4,80 voltam a ser o que sempre foram: uma consequência, não um aviso.",
+            "_a_diferenca_era_perigosa": "Entre 3,00 m e 4,80 m o site dizia NORMAL enquanto a Defesa Civil de Brusque já declara ATENÇÃO. São 1,80 m de rio em que a tela errava para o lado de quem lê achando que está seguro — o único lado que este projeto não pode errar.",
+            "_o_que_isto_reconcilia": "A `cotas_ressalva` anterior estranhava que a Defesa Civil declarasse atenção com a régua em 3,49 m e mantivesse atenção no dia seguinte em 5,04 m, e concluía que a cidade não opera por cota isolada. Com o limiar municipal de 3,00 m, os 3,49 m deixam de ser enigma: estão acima da atenção, exatamente como a declaração dizia. Manter 'atenção' na vazante a 5,04 m é operação normal de Defesa Civil, não contradição de escala.",
+            "_o_que_continua_valendo_da_ressalva_anterior": "Que a Defesa Civil olha Vidal Ramos → Botuverá → Brusque e a TENDÊNCIA, não uma régua sozinha; e que os elos `vidal-ramos → botuvera` e `botuvera → brusque` continuam faltando em transito.json. A escala municipal não substitui essa leitura de bacia.",
+            "_o_6_metros": "Continua sem procedência registrada. Saiu de `cotas_m` porque a escala do município fecha em emergência a 5,00 m, e um `inundacao: 6,00` acima da emergência inverteria a ordem das faixas. Se a origem aparecer, volta como anotação, não como faixa.",
+            "_pendente_de_confirmacao": "Lido no navegador do Jefferson, não por este ambiente (o proxy recusa defesacivil.brusque.sc.gov.br). Vale confirmar com a Defesa Civil de Brusque que a legenda da estação 79 é a escala operacional vigente — mesma pergunta feita a Gaspar no ofício C10."
+          }
         },
         {
           "id": "itajai",
