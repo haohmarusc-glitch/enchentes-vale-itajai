@@ -96,7 +96,18 @@ A busca por "tábua de maré" leva primeiro a uma página intitulada **"Tábuas 
 A estação **83800002 (Blumenau)** da ANA consta como `Desc. Status: Ativo` e sua
 última transmissão foi em **07/02/2024**. Dois anos e meio parada.
 
-### 1.7 Ausência de dado não é dado
+### 1.7 A régua pode trocar de grandeza no meio do caminho
+
+Em **abril de 2026** o sistema de medição de **Guabiruba** passou a usar "cota
+automática", referenciada ao **nível do mar**: a leitura virou **28,4 m** com o rio a
+cerca de 4 m. Não é sensor quebrado nem escala desconhecida — é **outra grandeza**,
+altitude em vez de régua, e há uma **quebra de série datada** ali.
+
+Detalhe que vale para qualquer verificação automática: o nosso corte de plausibilidade
+era 30 m, e **28,4 m passa por baixo dele**. Valor absurdo é rede de segurança, não
+primeira linha — o que pegou foi uma lista escrita à mão.
+
+### 1.8 Ausência de dado não é dado
 
 Se uma tabela não lista uma cidade, isso **não** significa que a cidade não tem o
 dado — significa que aquela tabela não o traz. Diga qual fonte você consultou e o
@@ -144,7 +155,14 @@ Falta só a escala.
 
 Procurar **atenção, alerta e emergência**, com a régua identificada:
 
-**Rio Itajaí-Açu:** Ituporanga · Lontras · Ascurra · Timbó · Trombudo Central · Itajaí
+**Rio Itajaí-Açu:** Lontras · Ascurra · Timbó · Trombudo Central · Itajaí
+
+> **Ituporanga saiu desta lista em 07/09/2026 — a escala existe, o vínculo é que não.**
+> A SPDC/SC publica normal < 1,40 / atenção > 1,40 / alerta > 1,90 / emergência > 2,60 m
+> (documento de 18/10/2024), **amarrados à estação 83250000** — que fica a 9,59 km do
+> nosso pino e drena 1.650 km² contra os 1.170 km² da nossa 83145140. Não é mais "procurar
+> a escala": é **descobrir qual estação alimenta o aviso de Ituporanga hoje**, perguntando
+> à Defesa Civil de SC ou à EPAGRI. Ver `docs/BUSCA-EXTERNA-RODADA-1.md`.
 **Rio Itajaí-Mirim:** Botuverá · Guabiruba · Itajaí
 
 > Atenção em **Lontras, Timbó e Trombudo Central**: há número guardado para elas,
@@ -217,7 +235,7 @@ modernas do Vale.
 ## 6. 🟡 PRIORIDADE 4 — Tempo de trânsito entre cidades
 
 Quanto tempo a cheia leva para descer de uma cidade à seguinte. Hoje há 9 trechos
-cadastrados; faltam 9. **A Defesa Civil de Brusque opera exatamente assim** —
+cadastrados; faltam 7 que valem procurar (dois saíram da lista — ver abaixo). **A Defesa Civil de Brusque opera exatamente assim** —
 olhando Vidal Ramos → Botuverá → Brusque em sequência.
 
 **Faltam (procurar):**
@@ -225,16 +243,28 @@ olhando Vidal Ramos → Botuverá → Brusque em sequência.
 | De → Para | Rio |
 |---|---|
 | Rio do Sul → Lontras | Açu |
-| Ibirama → Rio do Sul | Açu |
 | Lontras → Ascurra | Açu |
 | Ascurra → Indaial | Açu |
-| Timbó → Indaial | Açu |
 | Rio dos Cedros → Timbó | Açu |
 | **Vidal Ramos → Botuverá** | Mirim |
 | **Botuverá → Guabiruba** | Mirim |
 | **Guabiruba → Brusque** | Mirim |
 
 Os três do Mirim são os mais valiosos: destravam a lógica que a Defesa Civil já usa.
+
+### ⛔ Saíram desta lista em 07/09/2026: `Ibirama → Rio do Sul` e `Timbó → Indaial`
+
+Estavam aqui como "procurar", e **não são coisa a procurar**. Ibirama corre no Rio
+Hercílio e Timbó no Rio Benedito — os dois são **afluentes laterais**, e a outra ponta
+está no **tronco** do Açu.
+
+Aí não há viagem da cheia: o pico do tronco vem da cheia que desce o tronco, e o do
+afluente vem da chuva na sub-bacia dele. O vão entre os dois é a **coincidência de dois
+hidrogramas independentes** — muda de valor, e até de sinal, de cheia para cheia. Um
+número ali teria cara de tempo de trânsito sem ser um.
+
+Mesma família do `Indaial → Blumenau` abaixo. **Nem outra fonte nem uma cheia medida
+resolvem: a grandeza não existe.**
 
 ### ⛔ NÃO procurar: `Indaial → Blumenau`
 

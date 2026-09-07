@@ -80,29 +80,37 @@ Com cota mas **sem coordenada** (2609 endereços): **Blumenau** 2023, **Rio do S
 
 ### 7. Trânsito — os elos que faltam, e quais valem procurar
 
-São 10, e **não são 10 coisas a procurar**. 9 faltam por falta de fonte; 1 não é tempo de trânsito nenhum.
+São 10, e **não são 10 coisas a procurar**. 7 faltam por falta de fonte; 3 não são tempo de trânsito nenhum.
 
 **Vale procurar — falta fonte:**
 
 | De | Para | Rio | Por quê |
 |---|---|---|---|
 | Rio do Sul | Lontras | acu | a Tabela 7.5.1 da JICA não lista lontras |
-| Ibirama | Rio do Sul | acu | ibirama tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
 | Lontras | Ascurra | acu | a Tabela 7.5.1 da JICA não lista lontras nem ascurra |
 | Ascurra | Indaial | acu | a Tabela 7.5.1 da JICA não lista ascurra |
-| Timbó | Indaial | acu | timbo tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
-| Rio dos Cedros | Timbó | acu | a Tabela 7.5.1 da JICA não lista rio-dos-cedros; timbo tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
+| Rio dos Cedros | Timbó | acu | a Tabela 7.5.1 da JICA não lista rio-dos-cedros |
 | Vidal Ramos | Botuverá | mirim | a Tabela 7.5.1 da JICA não lista vidal-ramos nem botuvera |
 | Botuverá | Guabiruba | mirim | a Tabela 7.5.1 da JICA não lista botuvera nem guabiruba |
-| Guabiruba | Brusque | mirim | a Tabela 7.5.1 da JICA não lista guabiruba; brusque tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
+| Guabiruba | Brusque | mirim | a Tabela 7.5.1 da JICA não lista guabiruba |
 
 **⛔ Não procurar — o elo não é um tempo de trânsito:**
+
+Nestes, a grandeza não existe: nem outra fonte nem uma cheia medida resolvem. Um número aqui teria cara de tempo de trânsito sem ser um.
+
+`Ibirama → Rio do Sul`
+
+- ibirama é afluente lateral (Rio Hercílio (Itajaí do Norte)) e a outra ponta está no tronco: o pico do tronco vem da cheia que desce o tronco, o do afluente vem da chuva na sub-bacia dele. O vão entre os dois é coincidência de hidrogramas, não viagem — muda de valor e até de sinal a cada cheia
 
 `Indaial → Blumenau`
 
 - a JICA tem as DUAS pontas e a diferença não é positiva (5 anos +0 h, 10 anos +0 h, 25 anos -1 h, 50 anos -1 h)
 - o Rio Benedito entra entre as duas e adianta o pico de baixo
 - não é um tempo de trânsito: inventar um positivo daria horas que não existem
+
+`Timbó → Indaial`
+
+- timbo é afluente lateral (Rio Benedito) e a outra ponta está no tronco: o pico do tronco vem da cheia que desce o tronco, o do afluente vem da chuva na sub-bacia dele. O vão entre os dois é coincidência de hidrogramas, não viagem — muda de valor e até de sinal a cada cheia
 
 ### 8. Maré de Itajaí
 

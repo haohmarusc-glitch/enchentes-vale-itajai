@@ -97,7 +97,61 @@ def proxima_a_jusante(estacoes: dict, rio_id: str, cidade: dict) -> str | None:
     return None
 
 
-def por_que_falta_o_elo(de: str, para: str, fonte: dict, tabela: dict) -> tuple[str, list[str]]:
+def tipo_do_elo(estacoes: dict, rio_id: str, de: str, para: str) -> tuple[str, str]:
+    """
+    Se este trecho for MEDIDO numa cheia, o vão entre os picos é um tempo de
+    trânsito? Devolve (tipo, explicação).
+
+    POR QUE EXISTE (07/09/2026). `por_que_falta_o_elo` responde "adianta
+    procurar na FONTE?". Esta responde outra coisa: "adianta MEDIR?". Elas se
+    separaram quando a série da rede estadual passou a permitir datar picos em
+    dez cidades que não têm régua municipal — de repente todos os elos ficaram
+    mensuráveis, e mensurável não é o mesmo que significativo.
+
+    * **`roteamento`** — a cheia VIAJA de um ponto ao outro, pelo mesmo curso.
+      O vão entre os picos é o tempo de viagem. Vale medir.
+      É o caso de tronco→tronco (`rio-do-sul → lontras`) e de afluente→afluente
+      dentro do mesmo afluente (`rio-dos-cedros → timbo`, os dois no Benedito).
+
+    * **`confluencia`** — uma ponta é afluente lateral e a outra é o tronco.
+      Aqui NÃO há viagem: o pico do tronco vem da cheia que desce o tronco, e o
+      do afluente vem da chuva na sub-bacia dele. O vão entre os dois é a
+      coincidência de dois hidrogramas independentes — muda de valor, e até de
+      SINAL, de cheia para cheia. Medir produziria um número com cara de tempo
+      de trânsito que não é um.
+
+    É a mesma família do `nao_positivo` de `indaial → blumenau`, e por isso a
+    conclusão é a mesma: não é falta de busca nem de medição, é uma grandeza
+    que não existe.
+
+    O QUE ESTA FUNÇÃO NÃO SABE. O caso de Indaial → Blumenau — tronco→tronco
+    COM um afluente desaguando no meio — não é pego aqui: `afluentes_laterais`
+    diz `entra_perto_de`, e "perto de" não diz entre QUAIS duas cidades a
+    confluência cai. Aquele elo continua sendo pego pelo `nao_positivo`, que
+    olha os números da JICA. Enquanto a posição da confluência não estiver no
+    dado, esta função classifica pelas PONTAS e não pelo trecho.
+    """
+    rio = estacoes["rios"][rio_id]
+    topo = rio.get("_topologia")
+    if not topo:
+        return ("roteamento", "rio em fila: todo elo é viagem pelo mesmo curso")
+
+    tronco = set(topo.get("tronco_sequencia", ()))
+    laterais = {a["id"]: a for a in topo.get("afluentes_laterais", ())}
+
+    de_lateral, para_lateral = de in laterais, para in laterais
+    if de_lateral != para_lateral:
+        lateral = de if de_lateral else para
+        return ("confluencia", (
+            f"{lateral} é afluente lateral ({laterais[lateral]['rio']}) e a outra ponta está no "
+            "tronco: o pico do tronco vem da cheia que desce o tronco, o do afluente vem da chuva "
+            "na sub-bacia dele. O vão entre os dois é coincidência de hidrogramas, não viagem — "
+            "muda de valor e até de sinal a cada cheia"))
+    return ("roteamento", "as duas pontas estão no mesmo curso: o vão entre os picos é a viagem")
+
+
+def por_que_falta_o_elo(de: str, para: str, fonte: dict, tabela: dict,
+                        tipo: str = "roteamento") -> tuple[str, list[str]]:
     """
     Por que este trecho não existe — e, sobretudo, se procurar mais resolve.
 
@@ -130,21 +184,51 @@ def por_que_falta_o_elo(de: str, para: str, fonte: dict, tabela: dict) -> tuple[
     Brusque vale em relação ao AÇU; Guabiruba é vizinha dela no MIRIM, e o que
     falta ali é a JICA não listar Guabiruba.
     """
+    # Elo de confluência não é pergunta de FONTE: a grandeza não existe, e
+    # responder "falta procurar" mandaria alguém atrás de um número que não há.
+    # Quem sabe disso é `tipo_do_elo`, que enxerga a topologia; esta função
+    # recebe o veredito em vez de tentar deduzi-lo dos nomes.
+    if tipo == "confluencia":
+        proprio = set(fonte.get("relogio_proprio", ()))
+        donos = [c for c in (de, para) if c in proprio]
+        motivo = (
+            f"{' e '.join(donos)} tem relógio próprio — o pico vem da chuva na sub-bacia, "
+            "não da cheia descendo o Açu, então nem a tabela nem uma cheia medida dão tempo "
+            "de roteamento aqui"
+        ) if donos else (
+            "uma ponta é afluente lateral e a outra está no tronco: não há viagem entre elas"
+        )
+        return ("confluencia", [motivo])
+
     na_tabela = set(fonte.get("cidades_na_tabela", ()))
-    proprio = set(fonte.get("relogio_proprio", ()))
     motivos = []
 
     fora = [c for c in (de, para) if c not in na_tabela]
     if fora:
         motivos.append(f"a Tabela 7.5.1 da JICA não lista {' nem '.join(fora)}")
 
-    donos = [c for c in (de, para) if c in proprio]
-    if donos:
-        motivos.append(
-            f"{' e '.join(donos)} tem relógio próprio — o pico vem da chuva na sub-bacia, "
-            "não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento")
+    # RELÓGIO PRÓPRIO SAIU DAQUI EM 07/09/2026, e o motivo importa.
+    #
+    # `relogio_proprio` diz que o pico daquela cidade vem da chuva na SUB-BACIA
+    # dela, e não da cheia descendo o AÇU. Isso é uma afirmação sobre o elo com
+    # o TRONCO — e todo elo desses agora é classificado como `confluencia` por
+    # `tipo_do_elo`, antes de chegar aqui.
+    #
+    # Onde a marca ainda disparava, ela dizia o contrário do certo:
+    #
+    #   * `rio-dos-cedros → timbo` — os dois no Benedito/Cedros. É roteamento
+    #     DENTRO do afluente, e o relógio próprio de Timbó é justamente o que
+    #     uma viagem Rio dos Cedros → Timbó explica. Dar isso como motivo para
+    #     não haver o trecho inverte a leitura.
+    #   * `guabiruba → brusque` — os dois no MIRIM. O relógio próprio de Brusque
+    #     vale em relação ao Açu; aqui não tem nada a ver. A docstring acima já
+    #     registrava esse erro como corrigido, mas só o TIPO tinha sido: o texto
+    #     do motivo continuava saindo.
+    #
+    # Em ambos, o que falta mesmo é a JICA não listar a cidade de cima — e isso
+    # o primeiro motivo já diz.
 
-    if not fora and not donos:
+    if not fora:
         difs = {p: tabela[para][p] - tabela[de][p] for p in tabela[de]}
         if min(difs.values()) <= 0:
             faixa = ", ".join(f"{p} anos {d:+d} h"
@@ -206,7 +290,18 @@ def auditar(ao_vivo: Path | None) -> dict:
     for l in linhas:
         if l["transito"] is not False:
             continue
-        l["transito_porque"] = por_que_falta_o_elo(l["id"], l["jusante"], fonte_transito, tabela)
+        # DUAS perguntas, não uma. `tipo_do_elo` diz se MEDIR faz sentido;
+        # `por_que_falta_o_elo` diz se PROCURAR resolve. Um elo de confluência
+        # não se resolve por nenhum dos dois caminhos — a grandeza não existe —,
+        # então ele sai da lista de busca em vez de ficar nela para sempre.
+        tipo, porque_tipo = tipo_do_elo(estacoes, l["rio"], l["id"], l["jusante"])
+        l["transito_tipo"] = tipo
+        l["transito_porque"] = por_que_falta_o_elo(
+            l["id"], l["jusante"], fonte_transito, tabela, tipo)
+        if tipo == "confluencia":
+            # A explicação topológica é mais concreta que a genérica: diz QUAL
+            # afluente e em que rio ele corre.
+            l["transito_porque"] = ("confluencia", [porque_tipo, *l["transito_porque"][1]])
 
     manchas = le("manchas/index.json")["manchas"]
     mare = le("mare-itajai.json")
@@ -272,7 +367,7 @@ def imprime(rel: dict) -> None:
             # Separado desde 07/09/2026: o resumo dizia "10 sem trecho" e lia
             # como dez coisas a procurar. Um deles não é — Indaial -> Blumenau
             # tem as duas pontas na JICA e a diferença é zero ou negativa.
-            if l["transito_porque"][0] == "nao_positivo":
+            if l["transito_porque"][0] in ("nao_positivo", "confluencia"):
                 faltas["trânsito que NÃO é tempo de trânsito (não procurar)"] += 1
             else:
                 faltas["sem trecho de trânsito a jusante (falta fonte)"] += 1
@@ -437,7 +532,8 @@ def markdown(rel: dict) -> str:
         f.append("Todos os elos da topologia têm trecho.\n")
     else:
         procurar = [l for l in faltando if l["transito_porque"][0] == "sem_tempo_de_fonte"]
-        nao = [l for l in faltando if l["transito_porque"][0] == "nao_positivo"]
+        nao = [l for l in faltando
+               if l["transito_porque"][0] in ("nao_positivo", "confluencia")]
         f.append(
             f"São {len(faltando)}, e **não são {len(faltando)} coisas a procurar**. "
             f"{len(procurar)} faltam por falta de fonte; "
@@ -452,7 +548,11 @@ def markdown(rel: dict) -> str:
                     f"{l['rio'].replace('itajai-', '')} | {porques} |\n"
                 )
         if nao:
-            f.append("\n**⛔ Não procurar — o elo não é um tempo de trânsito:**\n")
+            f.append("\n**⛔ Não procurar — o elo não é um tempo de trânsito:**\n\n")
+            f.append(
+                "Nestes, a grandeza não existe: nem outra fonte nem uma cheia medida resolvem. "
+                "Um número aqui teria cara de tempo de trânsito sem ser um.\n"
+            )
             for l in nao:
                 f.append(f"\n`{l['nome']} → {nome_de.get(l['jusante'], l['jusante'])}`\n\n")
                 for porque in l["transito_porque"][1]:
