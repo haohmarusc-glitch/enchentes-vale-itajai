@@ -477,6 +477,22 @@ o projeto.
 
 ## Pendências
 
+- [x] **Corrigi a minha própria auditoria: os "10 elos de trânsito faltando" não são 10 coisas a
+  procurar (07/09/2026).** A primeira versão de `docs/LACUNAS-DE-DADOS.md` listou os dez numa tabela
+  chapada, sob o título "os elos que faltam" — lê-se como lista de tarefas. Fui à fonte: **nove
+  faltam por falta de fonte, e um não é tempo de trânsito nenhum.** O `indaial → blumenau` tem as
+  DUAS pontas na Tabela 7.5.1 da JICA, e a diferença é **+0 h** nas cheias de 5 e 10 anos e **−1 h**
+  nas de 25 e 50 — porque o Rio Benedito entra entre as duas e **adianta** o pico de baixo.
+  Preencher um positivo ali diria a quem está em Blumenau que tem horas que não tem. Os outros nove
+  faltam por dois motivos que agora saem escritos: a JICA **não lista** Lontras, Ascurra, Rio dos
+  Cedros, Vidal Ramos, Botuverá nem Guabiruba; e Timbó, Ibirama e Brusque têm **relógio próprio** —
+  o pico vem da chuva na sub-bacia, então o número da tabela não é tempo de roteamento. A
+  classificação é **derivada** de `transito.json` (novos campos `relogio_proprio` e
+  `cidades_na_tabela`, versão legível por máquina do que a prosa já dizia), não escrita à mão. **Erro
+  meu no caminho, travado por teste:** a primeira classificação olhava `relogio_proprio` sem checar
+  antes se a cidade está na tabela, e marcou `guabiruba → brusque` como relógio próprio — o relógio
+  próprio de Brusque vale em relação ao **Açu**, e Guabiruba é vizinha dela no **Mirim**.
+
 - [x] **Brusque: a pergunta estava errada, não a resposta (07/09/2026).** Eu vinha procurando "a cota
   de alerta de Brusque". A cheia de 31/08–01/09/2026 diz que essa pergunta não tem resposta: a Defesa
   Civil declarou **atenção** com a régua de Brusque em **3,49 m** (Vidal Ramos 3,31 · Botuverá 4,86) e
