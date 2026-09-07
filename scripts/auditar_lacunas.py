@@ -97,10 +97,74 @@ def proxima_a_jusante(estacoes: dict, rio_id: str, cidade: dict) -> str | None:
     return None
 
 
+def por_que_falta_o_elo(de: str, para: str, fonte: dict, tabela: dict) -> tuple[str, list[str]]:
+    """
+    Por que este trecho não existe — e, sobretudo, se procurar mais resolve.
+
+    POR QUE EXISTE (07/09/2026). A primeira versão desta auditoria imprimiu os
+    dez elos ausentes numa tabela só, sob o título "os elos que faltam". Lido
+    como lista de tarefas, e não é: fui à fonte e **um deles não é coisa a
+    procurar** — é perigoso de preencher.
+
+    A pergunta que a classificação responde é uma só: **adianta procurar?**
+
+    * **`sem_tempo_de_fonte`** — adianta. Ou a Tabela 7.5.1 da JICA não lista a
+      cidade (Lontras, Ascurra, Vidal Ramos, Botuverá, Guabiruba, Rio dos
+      Cedros), ou lista mas o número dela é o relógio da SUB-BACIA e não a
+      viagem da cheia do Açu (Timbó no Benedito, Ibirama no Hercílio, Brusque
+      no Mirim). Nos dois casos falta FONTE, e outra fonte resolveria.
+    * **`nao_positivo`** — NÃO adianta. A JICA tem as duas pontas e a diferença
+      é zero ou negativa. É Indaial -> Blumenau: +0 h nas cheias de 5 e 10 anos
+      e **-1 h** nas de 25 e 50, porque o Rio Benedito entra entre as duas e
+      ADIANTA o pico de baixo. Inventar um positivo aqui diria a quem está em
+      Blumenau que tem horas que não tem. O elo não falta por falta de busca:
+      ele não é um tempo de trânsito.
+
+    Devolve todos os motivos que se aplicam, não só o primeiro. Rio dos Cedros
+    -> Timbó tem dois (a cidade de cima não está na tabela E a de baixo tem
+    relógio próprio), e ficar com um só esconderia metade do problema.
+
+    ERRO QUE ESTA VERSÃO CONSERTA: a primeira olhava `relogio_proprio` nas duas
+    pontas sem checar antes se a cidade está na tabela, e classificou
+    Guabiruba -> Brusque como "relógio próprio". Não é: o relógio próprio de
+    Brusque vale em relação ao AÇU; Guabiruba é vizinha dela no MIRIM, e o que
+    falta ali é a JICA não listar Guabiruba.
+    """
+    na_tabela = set(fonte.get("cidades_na_tabela", ()))
+    proprio = set(fonte.get("relogio_proprio", ()))
+    motivos = []
+
+    fora = [c for c in (de, para) if c not in na_tabela]
+    if fora:
+        motivos.append(f"a Tabela 7.5.1 da JICA não lista {' nem '.join(fora)}")
+
+    donos = [c for c in (de, para) if c in proprio]
+    if donos:
+        motivos.append(
+            f"{' e '.join(donos)} tem relógio próprio — o pico vem da chuva na sub-bacia, "
+            "não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento")
+
+    if not fora and not donos:
+        difs = {p: tabela[para][p] - tabela[de][p] for p in tabela[de]}
+        if min(difs.values()) <= 0:
+            faixa = ", ".join(f"{p} anos {d:+d} h"
+                              for p, d in sorted(difs.items(), key=lambda x: int(x[0])))
+            return ("nao_positivo", [
+                f"a JICA tem as DUAS pontas e a diferença não é positiva ({faixa})",
+                "o Rio Benedito entra entre as duas e adianta o pico de baixo",
+                "não é um tempo de trânsito: inventar um positivo daria horas que não existem",
+            ])
+        motivos.append("a fonte cobre as duas pontas — o trecho simplesmente não foi escrito")
+
+    return ("sem_tempo_de_fonte", motivos)
+
+
 def auditar(ao_vivo: Path | None) -> dict:
     estacoes = le("estacoes.json")
     eventos = le("enchentes.json")["eventos"]
-    transito = le("transito.json")["trechos"]
+    transito_json = le("transito.json")
+    transito = transito_json["trechos"]
+    fonte_transito = transito_json["_meta"]["origem_das_faixas"]
     ruas = le("cotas-ruas.json")["cotas"]
 
     picos = collections.Counter(e["cidade"] for e in eventos)
@@ -137,6 +201,12 @@ def auditar(ao_vivo: Path | None) -> dict:
                 "transito": (c["id"], jusante) in elos if jusante else None,
             }
         )
+
+    tabela = fonte_transito["tabela_7_5_1"]["matriz_horas_por_periodo_de_retorno"]
+    for l in linhas:
+        if l["transito"] is not False:
+            continue
+        l["transito_porque"] = por_que_falta_o_elo(l["id"], l["jusante"], fonte_transito, tabela)
 
     manchas = le("manchas/index.json")["manchas"]
     mare = le("mare-itajai.json")
@@ -199,7 +269,13 @@ def imprime(rel: dict) -> None:
         if not l["ruas"]:
             faltas["sem cotas de rua"] += 1
         if l["transito"] is False:
-            faltas["sem trecho de trânsito a jusante"] += 1
+            # Separado desde 07/09/2026: o resumo dizia "10 sem trecho" e lia
+            # como dez coisas a procurar. Um deles não é — Indaial -> Blumenau
+            # tem as duas pontas na JICA e a diferença é zero ou negativa.
+            if l["transito_porque"][0] == "nao_positivo":
+                faltas["trânsito que NÃO é tempo de trânsito (não procurar)"] += 1
+            else:
+                faltas["sem trecho de trânsito a jusante (falta fonte)"] += 1
     print("buracos, por quantas cidades atingem:")
     for k, v in faltas.most_common():
         print(f"  {v:3d}  {k}")
@@ -331,17 +407,32 @@ def markdown(rel: dict) -> str:
             "Geocodificação pendente.\n"
         )
 
-    f.append("\n### 7. Trânsito — os elos que faltam\n\n")
+    f.append("\n### 7. Trânsito — os elos que faltam, e quais valem procurar\n\n")
     faltando = [l for l in linhas if l["transito"] is False]
-    if faltando:
-        f.append("| De | Para | Rio |\n|---|---|---|\n")
-        for l in faltando:
-            f.append(
-                f"| {l['nome']} | {nome_de.get(l['jusante'], l['jusante'])} | "
-                f"{l['rio'].replace('itajai-', '')} |\n"
-            )
-    else:
+    if not faltando:
         f.append("Todos os elos da topologia têm trecho.\n")
+    else:
+        procurar = [l for l in faltando if l["transito_porque"][0] == "sem_tempo_de_fonte"]
+        nao = [l for l in faltando if l["transito_porque"][0] == "nao_positivo"]
+        f.append(
+            f"São {len(faltando)}, e **não são {len(faltando)} coisas a procurar**. "
+            f"{len(procurar)} faltam por falta de fonte; "
+            f"{len(nao)} não {'é' if len(nao) == 1 else 'são'} tempo de trânsito nenhum.\n"
+        )
+        if procurar:
+            f.append("\n**Vale procurar — falta fonte:**\n\n| De | Para | Rio | Por quê |\n|---|---|---|---|\n")
+            for l in procurar:
+                porques = "; ".join(l["transito_porque"][1])
+                f.append(
+                    f"| {l['nome']} | {nome_de.get(l['jusante'], l['jusante'])} | "
+                    f"{l['rio'].replace('itajai-', '')} | {porques} |\n"
+                )
+        if nao:
+            f.append("\n**⛔ Não procurar — o elo não é um tempo de trânsito:**\n")
+            for l in nao:
+                f.append(f"\n`{l['nome']} → {nome_de.get(l['jusante'], l['jusante'])}`\n\n")
+                for porque in l["transito_porque"][1]:
+                    f.append(f"- {porque}\n")
 
     f.append("\n### 8. Maré de Itajaí\n\n")
     f.append(

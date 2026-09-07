@@ -1,107 +1,140 @@
-# Os códigos ANA que faltam — o que fechou aqui e o que só fecha de fora
+# Os códigos ANA — o que a execução de 07/09/2026 respondeu
 
-Data: 07/09/2026. Continua `docs/INVENTARIO-ANA.md`.
+Continua `docs/INVENTARIO-ANA.md`. As oito estações pendentes foram lidas no
+inventário público com `scripts/ana_inventario.py`, rodando **na VPS** — este
+ambiente de desenvolvimento tem `*.ana.gov.br` bloqueado (403 no CONNECT do
+proxy, inclusive no inventário, que não exige autenticação). Bruto em
+`data/brutos/ana-inventario-2026-09-07.json`, gerado na VPS.
 
-## ⛔ O ambiente de desenvolvimento não alcança a ANA
-
-Medido em 07/09/2026: **todo `*.ana.gov.br` responde 403 no CONNECT do proxy**, e o
-mesmo vale para `snirh.gov.br` e `dadosabertos.ana.gov.br`. Testados e bloqueados:
-
-```
-dadosabertos.ana.gov.br   www.snirh.gov.br   metadados.snirh.gov.br
-www.ana.gov.br            arcgis.ana.gov.br  telemetriaws1.ana.gov.br
-```
-
-Isso não é intermitência nem falta de credencial: o inventário público
-(`telemetriaws1.ana.gov.br/ServiceANA.asmx/HidroInventario`) **não exige
-autenticação** e mesmo assim não passa. **Nenhuma coordenada da ANA pode ser lida
-daqui.** O que dava para fechar sem a ANA está abaixo; o resto virou script para
-rodar de fora.
+**Resultado: uma cidade fechou, quatro "nãos" ficaram provados, uma decisão
+sobrou e uma ressalva antiga encolheu.** Todas as oito são fluviométricas —
+nenhum pluviômetro disfarçado desta vez.
 
 ---
 
-## ✅ Brusque fechou — e o que faltava não era da ANA
+## ⛔ Antes de tudo: um defeito meu, achado na própria saída
 
-`codigo_ana` de Brusque agora é **83900000 BRUSQUE (PCD)**, fluviométrica no
-Itajaí-Mirim, 1.240 km², escala desde 1929 e sem fim declarado.
+A primeira versão do script imprimia a distância com `f"{d:,.0f} m"`. A saída
+real trouxe **`4,350 m`** para uma estação a **4.350 metros**. Em português a
+vírgula é separador **decimal**: aquilo se lê **4,35 m**.
 
-O `falta` registrado no candidato dizia: *"o nosso `codigo_dcsc` de Brusque é NULL —
-os 51 m são até a DCSC-00019, que este repositório nunca afirmou ser este pino"*.
-Estava certo, e a resposta estava dentro de casa, em dois lugares:
+Erro de mil vezes, e na direção perigosa — faz estação distante parecer colada
+na régua, que é exatamente o vínculo errado que este script existe para
+impedir. Os vereditos impressos estavam certos (a comparação usa o número, não
+o texto), mas quem lesse a saída leria o contrário.
 
-1. **A coordenada.** O pino de Brusque em `estacoes.json` fica a **3,5 m** da
-   DCSC-00019 em `data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json` —
-   medido aqui, mesma ordem de grandeza das nove ligações do Açu (0,9 a 5,9 m).
-2. **O coletor.** `scripts/coleta_nivel_sc.py` **já lia** `DCSC-00019` como
-   `brusque` para publicar a leitura ao vivo que o site mostra. A ligação existia
-   em CÓDIGO e não estava no DADO.
-
-Com o elo escrito, a cadeia fecha por desigualdade triangular: a 83900000 está a
-51 m da DCSC-00019, que está a 3,5 m do nosso pino — logo **≤ ~55 m do pino**. É um
-**limite, não um ponto**: a coordenada da 83900000 continua não transcrita, então a
-trava de distância ao traçado não roda sobre ela. Está dito assim no
-`codigo_ana_verificacao`, para ninguém ler o limite como medição.
-
-### Três cidades ganharam `codigo_dcsc` no caminho
-
-Vidal Ramos (DCSC-00024, 1,1 m), Botuverá (DCSC-00018, 1,5 m) e Guabiruba
-(DCSC-00029, 2,0 m) estavam na mesma situação: pino em cima da estação, coletor já
-usando o código, campo `null`. **O Mirim inteiro estava de fora do
-`CODIGO_DCSC_ESPERADO`** do validador — a trava que existe justamente para o código
-não sumir ou trocar em silêncio valia só para o Açu. Agora vale para as treze.
-
-Novo teste: o pino de **toda** cidade com `codigo_dcsc` tem de cair a menos de 50 m
-da estação. Passa nas treze.
+Corrigido: acima de 1 km sai em quilômetros, com vírgula decimal, e nunca há
+separador de milhar. Travado em `teste_ana_inventario.py::TextoDaDistancia`.
 
 ---
 
-## ⏳ As sete que faltam, e o que cada uma espera
+## ✅ Ituporanga fechou — e a resposta veio cruzada
 
-`scripts/ana_inventario.py` busca exatamente isto. Rodar **de fora deste ambiente**:
+`codigo_ana` de Ituporanga é **83145140 DCSC BARRAGEMSUL ITUPORANGA JUSANTE**:
+fluviométrica, 1.170 km², **a 45 m deste pino**. Era o candidato a que faltava
+só o tipo.
 
-```
-python3 scripts/ana_inventario.py --json data/brutos/ana-inventario-2026-09-07.json
-```
+**A armadilha era a outra.** A `83250000` se chama ITUPORANGA, é fluviométrica
+no Itajaí do Sul e tem a série mais longa do ramo — **aberta desde 04/1929, 97
+anos**. Estava listada como "a série longa que destrava Ituporanga". A
+coordenada desmente: **9,59 km** deste pino, drenando 1.650 km² contra os 1.170
+da nossa. É outra estação, em outro ponto do rio. Usar a série dela como
+histórico de Ituporanga seria vínculo por **nome de município** com aparência de
+vínculo por coordenada — o erro que a regra emendada existe para impedir.
+Gravado como `codigo_ana_nao_e`, com teste.
 
-Ele imprime, para cada estação, o tipo, a coordenada, a distância até o pino da
-cidade e a linha pronta para colar em `ESTACOES_ANA_CONHECIDAS`. **Não grava em
-`estacoes.json`** — a decisão continua humana, como em `ana_hidroweb.py`.
+**Duas coisas a lembrar sobre o que ganhamos:**
 
-| Estação | Destrava | O que falta |
-|---|---|---|
-| 83250000 ITUPORANGA | Ituporanga | a **coordenada** (tipo já se sabe: fluviométrica, 1.650 km², desde 1929) |
-| 83145140 DCSC BARRAGEMSUL JUSANTE | Ituporanga | o **tipo** (coordenada já se sabe: 45 m da DCSC-00039) |
-| 83520000 WARNOW | Indaial | a **coordenada** — é a sucessora da 83690000, morta em 12/2021 |
-| 83870001 ILHOTA-JUSANTE | Ilhota | a **coordenada** — sucessora; a antecessora ficava a 1,2 km da DCSC-00030 |
-| 83440000 IBIRAMA | Ibirama | a **coordenada**, e a escala encerrou em 12/2021 → precisa declarar sucessora |
-| 83892998 BOTUVERA-MONTANTE | Botuverá | a **coordenada** — a 3,5 km da DCSC-00018, provável OUTRA estação |
-| 83094000 RIO DO SUL (Oeste) | Rio do Sul | a **coordenada** — conflita com a 83300200 que já usamos; ver `codigo_ana_ressalva` |
-
-**Ituporanga é a de melhor desfecho possível:** os dois candidatos são
-complementares, cada um com a metade que falta ao outro. Uma execução resolve os
-dois — e diz se são a mesma estação com dois cadastros ou duas de verdade.
-
-**Botuverá provavelmente vai fechar como NÃO.** 3,5 km é a mesma ordem do Salseiro
-(6,8 km), que já foi recusado para Vidal Ramos. Um "não" gravado vale tanto quanto
-um "sim": impede que o próximo levantamento proponha o mesmo vínculo.
+- O nome diz **JUSANTE DA BARRAGEM SUL**, e é literal: a régua lê água já
+  **amortecida pela barragem**. Importa para previsão a jusante e para não ler a
+  série como regime natural.
+- **A série é curta**: começa em **10/2020**. Não tem 2008 nem 2011.
 
 ---
 
-## ⚠️ O que este script NÃO resolve
+## ❌ Quatro "nãos" provados
 
-- **A cota do zero da régua.** Não está no inventário público (a tabela
-  `fichareferencianivel` do `.mdb` vem vazia). A `REGRA_REFERENCIA_BLUMENAU`
-  continua bloqueada, e o caminho é a API autenticada ou a área restrita.
-- **Os nomes dos campos do XML não foram conferidos** contra o serviço real,
-  porque daqui não dá. O parser procura cada informação por uma lista de grafias
-  possíveis e, quando não acha, **imprime os nomes que o XML trouxe** — o conserto
-  vira uma linha em vez de uma caçada. Mesma disciplina de `ana_hidroweb.py`: não
-  chutar nome de campo e fingir que deu certo.
+Um "não" gravado vale tanto quanto um "sim": sem ele, a próxima rodada de
+pesquisa propõe o mesmo vínculo, com a mesma aparência de acerto.
 
-## Por que isso vale a corrida
+| Cidade | Estação | Distância | Por que não |
+|---|---|---|---|
+| **Indaial** | 83520000 WARNOW | **3,95 km** | Sucessora da 83690000, 9.790 km², **99 anos** de escala aberta desde 10/1927 — a série mais longa da bacia. A antecessora já ficava a 4,1 km: **a estação da ANA em Indaial nunca foi a nossa régua** |
+| **Botuverá** | 83892998 BOTUVERA-MONTANTE | **3,47 km** | O nome já avisava: MONTANTE. Mesma família do Salseiro em Vidal Ramos |
+| **Ilhota** | 83870001 ILHOTA-JUSANTE | **1,18 km** | Acima do limite de 1 km. A antecessora 83870000 também ficava a 1,2 km — é o sítio da ANA, não o nosso |
+| **Taió** | 83030000 BARRAGEM OESTE | **4,35 km** | É a barragem, não a cidade. Fica a 30 m da DCSC-00040, que não é pino de cidade nenhuma |
 
-Cada estação fluviométrica confirmada traz **série de cota com hora**. Hoje a base
-tem 149 picos e **nenhum com hora**, o que mantém `transito.json` como tabela de
-projeto e deixa `scripts/calibrar_transito.py` sem o que calibrar. As sete acima
-cobrem seis cidades, e duas delas — Ituporanga (1929) e Warnow (1927) — têm quase
-cem anos de série. É o material de calibração mais longo da bacia.
+O caso de **Ilhota** merece nota: 1,18 km fica perto o bastante para ser
+tentador e longe o bastante para ser outra. Sem a cota do zero das duas réguas,
+parear as séries somaria um degrau desconhecido.
+
+---
+
+## 🟡 Ibirama: sobrou uma decisão, não uma busca
+
+A **83440000 IBIRAMA** (Rio Hercílio, 3.330 km², escala de 12/1928 a **12/2021**)
+fica a **476 m** do nosso pino. Não é os 10 m de Gaspar nem os 6,9 km de
+Blumenau: **cai na faixa em que o projeto não tem critério escrito.**
+
+O que resolve não é outra busca, é olhar o Hercílio: se as duas estão no mesmo
+trecho reto, é a mesma régua; se há confluência entre elas, não é. **O traçado
+do Hercílio não está em `data/rios/`**, então a conferência ainda não pode ser
+feita aqui. E vem junto uma segunda pendência: a escala **encerrou em 12/2021**,
+então o vínculo precisa declarar `codigo_ana_sucessor` — e as candidatas
+conhecidas são de usina (CGH Mafrás Montante, PCH Ibirama Barramento), que medem
+barramento, não a cidade.
+
+Gravado como `codigo_ana_candidatos` com o `falta` dizendo isso.
+
+---
+
+## 🔽 Rio do Sul: a ressalva encolheu muito
+
+A dúvida era: a **83094000** fica a **35 m** da nossa régua, mas está cadastrada
+no Itajaí do **Oeste**, enquanto o código que usamos (**83300200**) está no
+**Açu**, a 0,43 km. Seria a 83094000 a estação daqui?
+
+**O dado que faltava mudou a pergunta: a escala da 83094000 encerrou em 08/2005.**
+Ela é a estação que ficava na nossa régua, e está **morta há 21 anos**. A 83300200
+é a que continua publicando. **Para o presente não há escolha a fazer.**
+
+Para o histórico resta saber se as duas compartilham o zero — que é a mesma
+pergunta do datum de Blumenau, e o inventário público não responde.
+
+⚠️ **Dois sinais de que o cadastro da 83094000 é frágil, e vieram juntos:** a
+área aparece como **5.160 km², igual à do Açu**, o que não faz sentido para uma
+cabeceira; e a data de início da escala vem como **1800-01-01**, que não é data,
+é preenchimento. Não usar nem a área nem o rio declarado dessa estação sem
+conferir em outra fonte.
+
+---
+
+## Uma trava precisou de conserto para aceitar Ituporanga
+
+A regra nº 2 do validador media a estação contra o **traçado do rio**. A
+83145140 fica a 45 m do pino e a **21,4 km** do traçado do Itajaí do Sul — que
+só cobre 10,5 km perto de Rio do Sul. **A estação não está em outro rio; o rio é
+que não está desenhado.**
+
+A primeira correção passou a medir contra o **pino** nas cidades com exceção — e
+reprovou Blumenau, onde o problema é o oposto: lá o pino é uma régua de **chuva**
+a 3 km do talvegue, e a 83800002 está a 6,94 km dele e a **49 m** do traçado.
+
+A regra que ficou: **medir contra as duas referências e valer a mais perto.** A
+pergunta é uma só — "esta estação é de outro curso d'água?" — e cada referência
+falha num caso diferente. Não abre buraco: o pino já é validado contra o traçado
+em `valida_pinos_no_tracado`, com as exceções escritas e datadas. Três testes
+por sabotagem travam os dois casos e o buraco que a regra do mínimo poderia
+abrir (estação longe das duas continua reprovando).
+
+---
+
+## O que sobrou
+
+1. **Ibirama, 476 m** — decisão, com o traçado do Hercílio.
+2. **A cota do zero da régua** — não está no inventário público. Continua sendo
+   o que destrava a `REGRA_REFERENCIA_BLUMENAU`, e agora também a comparação
+   entre 83094000 e 83300200 em Rio do Sul.
+3. **`data/brutos/ana-inventario-2026-09-07.json`** foi gerado na VPS e ainda
+   não está no repositório. Os valores gravados aqui vieram da **saída
+   transcrita**, não do arquivo — commitar o bruto da VPS fecha isso.

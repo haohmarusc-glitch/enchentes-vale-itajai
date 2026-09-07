@@ -13,7 +13,7 @@ de projeto, nunca medida.
 | Cidade | Rio | Leitura ao vivo | Cotas atenção+alerta | Cotas conferidas | Picos | Série ANA | Cotas de rua | Trânsito a jusante |
 |---|---|---|---|---|---|---|---|---|
 | Taió | acu | sim | sim | — | 1 | sim | — | sim |
-| Ituporanga | acu | — | — | — | — | — | — | sim |
+| Ituporanga | acu | — | — | — | — | sim | — | sim |
 | Rio do Sul | acu | sim | sim | — | 9 | sim | 555 | — |
 | Ibirama | acu | — | — | — | — | — | — | — |
 | Lontras | acu | — | — | — | — | — | — | — |
@@ -68,7 +68,7 @@ Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Gaspar**, *
 
 ### 5. Série da ANA — o acervo que fecha as lacunas de uma vez
 
-Sem `codigo_ana` conferido no HidroWeb: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
+Sem `codigo_ana` conferido no HidroWeb: **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
 Cada estação conferida traz série inteira de cota, com hora — resolve os itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por unidade de esforço da lista.
 
@@ -78,20 +78,31 @@ Sem nenhuma cota de rua: **Taió**, **Ituporanga**, **Ibirama**, **Lontras**, **
 
 Com cota mas **sem coordenada** (2613 endereços): **Blumenau** 2023, **Rio do Sul** 555, **Brusque** 29, **Gaspar** 6. Aparecem na busca por nome, não no mapa. Geocodificação pendente.
 
-### 7. Trânsito — os elos que faltam
+### 7. Trânsito — os elos que faltam, e quais valem procurar
 
-| De | Para | Rio |
-|---|---|---|
-| Rio do Sul | Lontras | acu |
-| Ibirama | Rio do Sul | acu |
-| Lontras | Ascurra | acu |
-| Ascurra | Indaial | acu |
-| Indaial | Blumenau | acu |
-| Timbó | Indaial | acu |
-| Rio dos Cedros | Timbó | acu |
-| Vidal Ramos | Botuverá | mirim |
-| Botuverá | Guabiruba | mirim |
-| Guabiruba | Brusque | mirim |
+São 10, e **não são 10 coisas a procurar**. 9 faltam por falta de fonte; 1 não é tempo de trânsito nenhum.
+
+**Vale procurar — falta fonte:**
+
+| De | Para | Rio | Por quê |
+|---|---|---|---|
+| Rio do Sul | Lontras | acu | a Tabela 7.5.1 da JICA não lista lontras |
+| Ibirama | Rio do Sul | acu | ibirama tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
+| Lontras | Ascurra | acu | a Tabela 7.5.1 da JICA não lista lontras nem ascurra |
+| Ascurra | Indaial | acu | a Tabela 7.5.1 da JICA não lista ascurra |
+| Timbó | Indaial | acu | timbo tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
+| Rio dos Cedros | Timbó | acu | a Tabela 7.5.1 da JICA não lista rio-dos-cedros; timbo tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
+| Vidal Ramos | Botuverá | mirim | a Tabela 7.5.1 da JICA não lista vidal-ramos nem botuvera |
+| Botuverá | Guabiruba | mirim | a Tabela 7.5.1 da JICA não lista botuvera nem guabiruba |
+| Guabiruba | Brusque | mirim | a Tabela 7.5.1 da JICA não lista guabiruba; brusque tem relógio próprio — o pico vem da chuva na sub-bacia, não da cheia descendo o Açu, então o número da tabela não é tempo de roteamento |
+
+**⛔ Não procurar — o elo não é um tempo de trânsito:**
+
+`Indaial → Blumenau`
+
+- a JICA tem as DUAS pontas e a diferença não é positiva (5 anos +0 h, 10 anos +0 h, 25 anos -1 h, 50 anos -1 h)
+- o Rio Benedito entra entre as duas e adianta o pico de baixo
+- não é um tempo de trânsito: inventar um positivo daria horas que não existem
 
 ### 8. Maré de Itajaí
 

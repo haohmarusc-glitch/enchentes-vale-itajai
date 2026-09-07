@@ -10,6 +10,27 @@
       "afirmadas_pela_jica": "Rio do Sul -> Blumenau: 7 a 10 h. Blumenau -> Itajaí: 14 a 17 h. O pico na foz cai no dia seguinte ao pico em Rio do Sul.",
       "hidrograma_de_projeto": "Tabela 7.5.1 da JICA, cheia de 5 anos: horas após o pico em Rio do Sul — Taió -6, Ibirama -5, Rio do Sul 0, Timbó 0, Ituporanga +1, Brusque +6, Apiúna +9, Indaial +10, Blumenau +10, Gaspar +12, Ilhota +17, Itajaí +27. É um EVENTO SINTÉTICO, não o relógio de uma enchente que aconteceu.",
       "nao_encadeados": "Timbó (Benedito), Brusque (Mirim) e Ibirama (Itajaí do Norte) têm relógio próprio: o pico deles vem da chuva na sub-bacia, não da mesma cheia descendo o Açu. Encadear tempos por eles daria resultado errado, então esses trechos ficam fora.",
+      "relogio_proprio": [
+        "timbo",
+        "ibirama",
+        "brusque"
+      ],
+      "relogio_proprio_nota": "Versão legível por máquina do texto acima, para scripts/auditar_lacunas.py classificar os elos ausentes em vez de listá-los todos como 'falta procurar'. ATENÇÃO AO QUE ISTO NÃO DIZ: não diz que a água não passa por ali. Timbó deságua mesmo perto de Indaial. Diz que o PICO destas cidades vem da chuva na sub-bacia delas, então a Tabela 7.5.1 não fornece tempo de ROTEAMENTO para elas — o número da tabela é o relógio próprio, não a viagem da cheia do Açu.",
+      "cidades_na_tabela": [
+        "taio",
+        "ibirama",
+        "rio-do-sul",
+        "timbo",
+        "ituporanga",
+        "brusque",
+        "apiuna",
+        "indaial",
+        "blumenau",
+        "gaspar",
+        "ilhota",
+        "itajai"
+      ],
+      "cidades_na_tabela_nota": "As doze cidades que a Tabela 7.5.1 lista, na ordem em que `hidrograma_de_projeto` as traz. FORA DELA, e por isso sem tempo de fonte nenhuma: Lontras, Ascurra, Rio dos Cedros, Trombudo Central, Vidal Ramos, Botuverá e Guabiruba. Apiúna está aqui porque a JICA a lista, mas saiu do eixo em 02/09/2026 (era estação de altitude, não régua de rio).",
       "antecedencia_de_alerta": "CEOPS/FURB e Defesa Civil de Blumenau trabalham com 6 a 8 h de antecedência no Açu. Deslizamento de encosta não entra nesse prazo.",
       "tabela_7_5_1": {
         "onde": "JICA, Preparatory Survey for the Project on Disaster Prevention and Mitigation Measures for the Itajaí River Basin, Nippon Koei, 2011 — Volume III-A (Supporting Report, Hydrology), p. A-80. Título exato: 'Largest Discharge Peak Time from each City, by Return Period'. O texto da seção 3.5.4 do Volume II (7–10 h, 14–17 h, ~1 dia) é o RESUMO desta tabela, não o inventário do relatório.",

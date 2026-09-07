@@ -501,20 +501,22 @@ class CodigoAnaEhReguaDeRio(unittest.TestCase):
         _, avisos = self.erros(d)
         self.assertTrue([a for a in avisos if "ENCERROU" in a and "gaspar" in a])
 
-    def test_ituporanga_nao_escreve_codigo_sem_os_dois_criterios(self):
+    def test_ituporanga_fechou_pelo_TIPO_e_a_serie_e_curta(self):
         """
-        Trava a DECISÃO, não o dado: Ituporanga tem dois candidatos e nenhum
-        com a prova inteira — a 83145140 tem coordenada sem tipo, a 83250000
-        tem tipo sem coordenada. Um `codigo_ana` preenchido ali seria vínculo
-        por nome com aparência de vínculo por coordenada.
+        Os dois candidatos de Ituporanga eram complementares: a 83145140 tinha
+        coordenada sem tipo, a 83250000 tinha tipo sem coordenada. A execução de
+        07/09/2026 resolveu os dois de uma vez — e a resposta foi cruzada: quem
+        fecha é a 83145140 (fluviométrica, 45 m do pino), e a 83250000, que tem
+        a série de 1929, fica a 9,59 km e NÃO é esta régua.
 
-        Brusque saía junto daqui até 07/09/2026; ver o teste abaixo.
+        A série que ficou é curta de propósito: 10/2020. Um teste que só
+        conferisse o código deixaria alguém supor 97 anos de histórico aqui.
         """
         c = _cidade(self.real, "itajai-acu", "ituporanga")
-        self.assertIsNone(c["codigo_ana"])
-        self.assertTrue(c["codigo_ana_candidatos"])
-        for cand in c["codigo_ana_candidatos"]:
-            self.assertTrue(cand["falta"], "candidato sem dizer o que falta")
+        self.assertEqual(c["codigo_ana"], "83145140")
+        self.assertEqual(c["codigo_ana_escala"]["inicio"], "2020-10")
+        self.assertNotIn("codigo_ana_candidatos", c)
+        self.assertIn("JUSANTE DA BARRAGEM SUL", c["codigo_ana_verificacao"])
 
     def test_brusque_so_fechou_porque_o_elo_do_nosso_lado_apareceu(self):
         """
@@ -554,6 +556,55 @@ class CodigoAnaEhReguaDeRio(unittest.TestCase):
                 self.assertLess(d, 50, f"{c['id']} está a {d:.0f} m da {cod}")
                 vistas += 1
         self.assertGreaterEqual(vistas, 13, "o cruzamento deixou de olhar cidades")
+
+    def test_estacao_longe_do_tracado_mas_colada_no_pino_passa(self):
+        """
+        Ituporanga, caso real de 07/09/2026: a 83145140 fica a 45 m do pino e a
+        21,4 km do traçado do Itajaí do Sul — que só cobre 10,5 km perto de Rio
+        do Sul. A estação não está em outro rio; o rio é que não está desenhado.
+        Medir só contra o traçado reprovaria a estação certa.
+        """
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, "itajai-acu", "ituporanga")
+        self.assertEqual(c["codigo_ana"], "83145140")
+        self.assertEqual(self.erros(d)[0], [])
+
+    def test_estacao_longe_do_pino_mas_colada_no_tracado_passa(self):
+        """
+        Blumenau é o caso oposto, e a primeira versão da guarda reprovou ele: o
+        PINO é que não é régua de nível (DCSC-00026 mede chuva, a 3 km do
+        talvegue). A 83800002 está a 6,94 km desse pino e a 49 m do traçado —
+        e é a régua certa.
+        """
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, "itajai-acu", "blumenau")
+        self.assertEqual(c["codigo_ana"], "83800002")
+        self.assertEqual(self.erros(d)[0], [])
+
+    def test_estacao_longe_das_DUAS_referencias_reprova(self):
+        """
+        A regra do mínimo não pode virar 'passa qualquer coisa'. Estação longe
+        do traçado E longe do pino continua sendo de outro curso d'água.
+        """
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, "itajai-acu", "ituporanga")
+        # 83250000 é real, fluviométrica, chama-se ITUPORANGA — e fica a 9,59 km
+        # do pino. É a armadilha desta cidade.
+        c["codigo_ana"] = "83250000"
+        erros, _ = self.erros(d)
+        self.assertTrue([e for e in erros if "83250000" in e and "ituporanga" in e],
+                        f"a 83250000 devia reprovar; erros: {erros}")
+
+    def test_o_nao_e_da_83250000_esta_gravado_no_dado(self):
+        """
+        Um 'não' que mora só no documento volta como proposta na próxima rodada:
+        a 83250000 se chama ITUPORANGA, é fluviométrica e tem a série mais longa
+        do ramo (1929). O que a desmente é a coordenada, e isso fica no JSON.
+        """
+        c = _cidade(self.real, "itajai-acu", "ituporanga")
+        nao_e = c["codigo_ana_nao_e"]
+        self.assertEqual(nao_e["codigo"], "83250000")
+        self.assertIn("9,59 km", nao_e["por_que_nao"])
 
     def test_a_quebra_de_12_2021_esta_registrada(self):
         """
