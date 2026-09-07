@@ -822,5 +822,91 @@ class TestaOrdemDasCotas(unittest.TestCase):
             vd.avisos.clear()
 
 
+def erros_de_cotas(cotas_dict) -> list[str]:
+    """Roda só `valida_cota_de_rua_duplicada` sobre um cotas-ruas.json em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: cotas_dict if nome == "cotas-ruas.json" else orig(nome)
+    try:
+        vd.valida_cota_de_rua_duplicada()
+    finally:
+        vd.le_json = orig
+    return list(vd.erros)
+
+
+class TestaCotaDeRuaDuplicada(unittest.TestCase):
+    """
+    A mesma medição entrando duas vezes some da conta — e some uma rua da lista.
+
+    Gaspar teve quatro: Petúnia, Costa Rica, Hilberto Gaertner e Sertão Verde
+    chegaram pela consulta rua a rua de 2017 (só nome e cota) e de novo pela
+    camada do Google My Maps de 2020 (nome, bairro, ponto e coordenada). Como
+    `proximas()` conta LINHAS e as quatro estavam no fundo da escala, a lista
+    das "próximas 5 ruas a alagar" mostrava três ruas em cinco lugares e
+    empurrava a rua seguinte para fora.
+    """
+
+    def cotas(self, *linhas):
+        return {"cotas": list(linhas)}
+
+    def linha(self, rua, cota, ponto=None, cidade="gaspar"):
+        return {"cidade": cidade, "rua": rua, "cota_m": cota, "ponto": ponto,
+                "referencia": "régua"}
+
+    def test_o_arquivo_real_esta_limpo(self):
+        vd.erros.clear()
+        vd.avisos.clear()
+        vd.valida_cota_de_rua_duplicada()
+        self.assertEqual(vd.erros, [])
+
+    def test_mesma_rua_e_mesma_cota_com_uma_linha_sem_ponto_e_ERRO(self):
+        erros = erros_de_cotas(self.cotas(
+            self.linha("Rua Petúnia", 6.2, ponto=None),
+            self.linha("Rua Petúnia", 6.2, ponto="Final de rua"),
+        ))
+        self.assertEqual(len(erros), 1)
+        self.assertIn("repetida", erros[0])
+
+    def test_a_abreviacao_do_logradouro_nao_esconde_a_duplicata(self):
+        """'Av. Hilberto Gaertner' e 'Avenida Hilberto Gaertner' são a mesma avenida."""
+        erros = erros_de_cotas(self.cotas(
+            self.linha("Av. Hilberto Gaertner", 6.25, ponto=None),
+            self.linha("Avenida Hilberto Gaertner", 6.25, ponto="Final de rua"),
+        ))
+        self.assertEqual(len(erros), 1)
+
+    def test_rua_comprida_com_DOIS_pontos_na_mesma_cota_PASSA(self):
+        """
+        A Adolfo Radunz alaga a 9,55 m na esquina da Macaé e depois da casa
+        nº 105. São 143 pares assim no arquivo: barrar "mesma rua, mesma cota"
+        apagaria todos eles.
+        """
+        self.assertEqual(erros_de_cotas(self.cotas(
+            self.linha("Rua Adolfo Radunz", 9.55, ponto="Esquina - Rua Macaé"),
+            self.linha("Rua Adolfo Radunz", 9.55, ponto="Após a casa nº 105"),
+        )), [])
+
+    def test_mesma_rua_com_cotas_diferentes_PASSA(self):
+        self.assertEqual(erros_de_cotas(self.cotas(
+            self.linha("Rua Petúnia", 6.2, ponto=None),
+            self.linha("Rua Petúnia", 6.35, ponto="Meio da rua"),
+        )), [])
+
+    def test_cidades_diferentes_nunca_se_cruzam(self):
+        """7 m em Gaspar não é 7 m em Blumenau — nem para achar duplicata."""
+        self.assertEqual(erros_de_cotas(self.cotas(
+            self.linha("Rua Sete de Setembro", 7.0, ponto=None, cidade="gaspar"),
+            self.linha("Rua Sete de Setembro", 7.0, ponto="Nº 40", cidade="blumenau"),
+        )), [])
+
+    def test_cota_nula_fica_de_fora(self):
+        """Cota nula não é zero, e não pode virar duplicata de coisa nenhuma."""
+        self.assertEqual(erros_de_cotas(self.cotas(
+            self.linha("Rua Sem Número", None, ponto=None),
+            self.linha("Rua Sem Número", None, ponto="Final"),
+        )), [])
+
+
 if __name__ == "__main__":
     unittest.main()

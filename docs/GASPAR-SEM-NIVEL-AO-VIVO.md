@@ -3,8 +3,8 @@
 Data: 07/09/2026. Diagnóstico fechado com o Jefferson, comparando a VPS, este
 ambiente e o navegador do celular dele.
 
-**Gaspar não tem nenhuma fonte de nível de rio ao vivo.** A cidade tem **1.619
-cotas de rua** e, desde ontem, **49 picos históricos**: sabe-se em que nível cada
+**Gaspar não tem nenhuma fonte de nível de rio ao vivo.** A cidade tem **1.615
+cotas de rua** e, desde ontem, **48 picos históricos**: sabe-se em que nível cada
 rua alaga e não se sabe em que nível o rio está.
 
 ---
@@ -174,12 +174,35 @@ para essa estação precisa tratar `0,00` como suspeito.
 
 **1. As cotas de rua de Gaspar já estão no repositório.** O relatório diz que
 `data/cotas-ruas.json` *"hoje só tem Itajaí"*. É o inverso: o arquivo tem
-**Gaspar 1.619**, Blumenau 2.023, Rio do Sul 555 e Brusque 377 — e **não tem
+**Gaspar 1.615**, Blumenau 2.023, Rio do Sul 555 e Brusque 377 — e **não tem
 Itajaí**. As de Gaspar entraram pelo estudo CEOPS/FURB.
 
-**2. A contagem difere em quatro.** A página serve **1.615** pontos; o
-repositório tem **1.619**. Pode ser mudança da página na reformulação, ou quatro
-duplicados do nosso lado. Não resolvido — anotado para não passar em silêncio.
+**2. A contagem diferia em quatro — e os quatro eram nossos.** ✅ **Resolvido em
+07/09/2026.** A página serve **1.615** pontos; o repositório tinha **1.619**. Eram
+quatro duplicatas do nosso lado: Petúnia (6,20 m), Costa Rica (6,20 m), Hilberto
+Gaertner (6,25 m) e Sertão Verde (6,34 m) entraram **duas vezes** — uma pela
+consulta rua a rua do CEOPS/FURB de 2017 (só nome e cota) e outra pela camada do
+Google My Maps de 2020 (nome, bairro, ponto e coordenada). Mesma medição, mesmo
+centímetro, mesma referência; a linha de 2017 não acrescentava nada.
+
+**E não era ruído de contagem.** As quatro estavam no fundo da escala de Gaspar,
+e `proximas()` conta LINHAS: com o rio abaixo de 6,20 m, a lista das *"próximas 5
+ruas a alagar"* mostrava **três ruas em cinco lugares** — Petúnia, Costa Rica e
+Hilberto Gaertner, duas delas repetidas — e empurrava a rua seguinte para fora.
+A lista que existe para dizer quem alaga primeiro escondia uma rua.
+
+As quatro linhas de 2017 saíram, e `validar_dados.py::valida_cota_de_rua_duplicada`
+passa a **barrar** o caso. A regra é estreita de propósito: rua comprida tem dois
+pontos na mesma cota (a Adolfo Radunz alaga a 9,55 m na esquina da Macaé e depois
+da casa nº 105), e são 143 pares assim no arquivo. Só é barrado o par em que uma
+das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto da rua.
+
+Com isso o repositório passa a ter exatamente os **1.615** que a fonte publica.
+Continua em aberto um resíduo menor, anotado para não passar em silêncio: a
+página conta **621 valores distintos** e o nosso arquivo conta **623**. A faixa
+bate exatamente (6,20 m a 19,19 m) e a mediana difere em 1 cm (9,91 contra 9,90).
+Dois valores de diferença não mudam nenhuma decisão de tela — mas também não
+foram explicados.
 
 ---
 
@@ -189,12 +212,12 @@ O levantamento anotou: *"A fonte não explicita a referência vertical da régua
 Gaspar. Cadastrar sem referência resolvida."* Está certo sobre a fonte — a
 página não declara nada.
 
-Os 49 registros entraram como `referencia: "régua"` mesmo assim, e o que
+Os 48 registros entraram como `referencia: "régua"` mesmo assim, e o que
 sustenta isso é uma **medição**, não uma suposição:
 
 | | |
 |---|---|
-| menor cota de rua de Gaspar (1.619 pontos) | **6,20 m** |
+| menor cota de rua de Gaspar (1.615 pontos) | **6,20 m** |
 | menor pico da lista histórica (70 registros) | **6,19 m** |
 | **diferença** | **1 cm** |
 

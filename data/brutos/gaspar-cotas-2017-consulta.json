@@ -1,0 +1,75 @@
+{
+  "_o_que_e": "As cotas de rua de Gaspar como a consulta rua a rua do CEOPS/FURB as publicava, ANTES da camada do Google My Maps de 2020 entrar no cadastro.",
+  "_fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+  "_data_fonte": "2017",
+  "_referencia": "régua",
+  "_por_que_este_arquivo_existe": [
+    "Estas cinco linhas eram o ÚNICO conhecimento independente sobre a escala das cotas de Gaspar, e é contra elas que a camada de 2020 foi conferida antes de ser importada: 4 de 4 ruas em comum batiam ao centavo, no MENOR valor de cada rua. É essa conferência que autorizou os 1.613 pontos de 2020 a entrar.",
+    "Quatro delas (Petúnia, Costa Rica, Hilberto Gaertner e Sertão Verde) saíram de data/cotas-ruas.json em 07/09/2026 por serem a MESMA medição já presente na camada de 2020, com menos detalhe — e duas linhas faziam a lista das 'próximas a alagar' gastar dois lugares numa rua só. Ver validar_dados.py::valida_cota_de_rua_duplicada.",
+    "Sair do cadastro operacional não pode apagar a prova. A conferência tem de comparar a camada de 2020 com O QUE A FONTE DE 2017 DIZIA — não com o que sobrou no cadastro depois. Enquanto a prova morava só no cadastro, uma limpeza de duplicata derrubava o teste que sustenta a importação inteira. Foi o que aconteceu, e é por isso que a prova mudou de lugar.",
+    "Rua Lino continua no cadastro: a camada de 2020 não a tem, então ela é o único registro daquela rua."
+  ],
+  "_atencao": "Arquivo de PROVA, não de leitura para tela. Nada aqui entra em cotas-ruas.json por importação automática.",
+  "cotas": [
+    {
+      "cidade": "gaspar",
+      "rio": "itajai-acu",
+      "rua": "Rua Petúnia",
+      "bairro": null,
+      "ponto": null,
+      "cota_m": 6.2,
+      "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+      "data_fonte": "2017",
+      "confianca": "media",
+      "referencia": "régua"
+    },
+    {
+      "cidade": "gaspar",
+      "rio": "itajai-acu",
+      "rua": "Rua Costa Rica",
+      "bairro": null,
+      "ponto": null,
+      "cota_m": 6.2,
+      "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+      "data_fonte": "2017",
+      "confianca": "media",
+      "referencia": "régua"
+    },
+    {
+      "cidade": "gaspar",
+      "rio": "itajai-acu",
+      "rua": "Av. Hilberto Gaertner",
+      "bairro": null,
+      "ponto": null,
+      "cota_m": 6.25,
+      "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+      "data_fonte": "2017",
+      "confianca": "media",
+      "referencia": "régua"
+    },
+    {
+      "cidade": "gaspar",
+      "rio": "itajai-acu",
+      "rua": "Rua Sertão Verde",
+      "bairro": null,
+      "ponto": null,
+      "cota_m": 6.34,
+      "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+      "data_fonte": "2017",
+      "confianca": "media",
+      "referencia": "régua"
+    },
+    {
+      "cidade": "gaspar",
+      "rio": "itajai-acu",
+      "rua": "Rua Lino",
+      "bairro": null,
+      "ponto": null,
+      "cota_m": 6.57,
+      "fonte": "Estudo CEOPS/FURB (coord. Ademar Cordeiro), rua a rua, referenciado à régua da ANA na empresa Círculo; consulta em defesacivil.gaspar.sc.gov.br",
+      "data_fonte": "2017",
+      "confianca": "media",
+      "referencia": "régua"
+    }
+  ]
+}
