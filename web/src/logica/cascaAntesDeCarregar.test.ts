@@ -36,9 +36,18 @@ test('a casca fica DENTRO do #root, para o React apagá-la ao montar', () => {
   assert.match(root.slice(0, root.indexOf('</script>')), /antes-de-carregar/)
 })
 
-test('o cartão de compartilhamento também diz que não é alerta oficial', () => {
-  // O card do WhatsApp é lido por muito mais gente do que a página.
-  const og = HTML.match(/property="og:description"[\s\S]{0,400}?\/>/)?.[0] ?? ''
+test('se um dia entrarem tags de compartilhamento, elas repetem a ressalva', () => {
+  /**
+   * As tags Open Graph/Twitter saíram a pedido do Jefferson em 07/09/2026 —
+   * decisão dele, e este teste NÃO as exige de volta.
+   *
+   * O que ele trava é a condição de entrada, para o dia em que voltarem: o
+   * cartão do WhatsApp é lido por muito mais gente do que a página, então ele
+   * não pode anunciar níveis de rio sem dizer que o site não é alerta oficial
+   * e sem trazer o 199. Enquanto não houver tag nenhuma, o teste passa vazio.
+   */
+  const og = HTML.match(/property="og:description"[\s\S]{0,400}?\/>/)?.[0]
+  if (!og) return
   assert.match(og, /NÃO oficial|não substitui/i)
   assert.match(og, /199/)
 })
