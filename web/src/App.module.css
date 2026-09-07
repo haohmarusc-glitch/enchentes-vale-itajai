@@ -46,3 +46,36 @@
   color: var(--agua);
   font-weight: 700;
 }
+
+/*
+ * Pular para o conteúdo: invisível até o foco, e então visível de verdade.
+ *
+ * Não usa `display: none` nem `visibility: hidden` — os dois tiram o link da
+ * ordem de tabulação, que é exatamente o que ele existe para ocupar. Sai da
+ * vista pela posição, e volta quando recebe foco.
+ */
+.pularParaConteudo {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  min-height: 44px;
+  background: #fff;
+  color: #0b3a5b;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 2px solid #0b3a5b;
+  border-radius: 0 0 6px 0;
+}
+
+.pularParaConteudo:focus {
+  left: 0;
+}
+
+/* O <main> recebe foco por programa (tabIndex={-1}) quando o link é usado;
+   o contorno do navegador ali não ajuda ninguém e assusta. */
+.conteudo:focus,
+:global(.conteudo):focus {
+  outline: none;
+}

@@ -39,6 +39,14 @@
 .colunaEsquerda {
   position: absolute;
   inset: 0.5rem;
+  /* O `viewport-fit=cover` do index.html deixa o mapa (100vw) passar por baixo
+     do notch e dos cantos arredondados. Sem esta folga, no iPhone em paisagem a
+     legenda e os botões Escuro/Satélite/Mapa ficam PARCIALMENTE cobertos — e o
+     que some é justamente o controle, não a decoração. Em aparelho sem recorte,
+     `env()` vale 0 e nada muda. */
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+  padding-bottom: env(safe-area-inset-bottom, 0);
   z-index: 5;
   display: flex;
   flex-direction: column;
