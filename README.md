@@ -520,9 +520,9 @@ o projeto.
   de tile que o mapa realmente usa, com teste que varre o código e cai se o provedor mudar sem
   atualizar o `index.html`; `viewport-fit=cover` mais `env(safe-area-inset-*)` nos controles do
   mapa, que em paisagem no iPhone ficavam parcialmente cobertos pelo notch — e o que sumia era o
-  controle, não a decoração; e tags Open Graph/Twitter, porque no Vale um site assim se espalha por
-  WhatsApp às onze da noite e o cartão é lido por mais gente que a página — por isso o cartão também
-  diz que **não é alerta oficial** e traz o 199.
+  controle, não a decoração. **Tags Open Graph/Twitter ficaram de fora** por decisão do Jefferson;
+  o teste que as acompanhava virou condição de entrada, para o dia em que voltarem: cartão que
+  anuncia nível de rio tem de repetir que o site não é alerta oficial e trazer o 199.
 - [x] **⚠️ E o 1.615 que "batia" com a fonte batia por engano — dois erros se anulando.** Ao tirar as
   quatro duplicatas, Gaspar caiu para 1.615, o mesmo número que a página publica, e tratei isso como
   confirmação. Não era. Do levantamento de 2020 chegaram ao cadastro **1.613 dos 1.615**, e os outros
