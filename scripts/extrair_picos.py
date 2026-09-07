@@ -49,12 +49,18 @@ SALTO_SUSPEITO_M_POR_H = 1.5
 
 
 class Leitura:
-    __slots__ = ("quando", "nivel_m", "estacao")
+    __slots__ = ("quando", "nivel_m", "estacao", "so_horario")
 
-    def __init__(self, quando: datetime, nivel_m: float, estacao: str):
+    def __init__(self, quando: datetime, nivel_m: float, estacao: str,
+                 so_horario: bool = False):
         self.quando = quando
         self.nivel_m = nivel_m
         self.estacao = estacao
+        #: True quando o nível vem da rede estadual, cujo zero NÃO é o da régua
+        #: municipal. O HORÁRIO do pico continua válido — um máximo é um máximo
+        #: em qualquer datum —, mas o VALOR não pode virar `pico_m`. Ver
+        #: `--serie-estadual` no rodapé deste arquivo.
+        self.so_horario = so_horario
 
 
 class Evento:
@@ -66,6 +72,9 @@ class Evento:
         self.inicio = leituras[0].quando
         self.fim = leituras[-1].quando
         self.estacoes = sorted({l.estacao for l in leituras})
+        #: Basta UMA leitura de datum não calibrado para o valor do pico ficar
+        #: sem sentido: o máximo pode ter caído justamente nela.
+        self.so_horario = any(l.so_horario for l in leituras)
 
     @property
     def suspeitos(self) -> list[Leitura]:
@@ -80,13 +89,110 @@ class Evento:
         return fora
 
 
+#: Prefixo dos arquivos da série ESTADUAL. Forma diferente da municipal:
+#: `nivel_bruto_m` em vez de `nivel_m`, e sem `rio`/`cidade` — a cidade sai do
+#: `codigo` (DCSC-xxxxx) cruzado com estacoes.json.
+PREFIXO_ESTADUAL = "nivel-sc-"
+
+
+def cidades_por_codigo_dcsc() -> dict[str, tuple[str, str]]:
+    """`DCSC-00024` -> `("itajai-mirim", "vidal-ramos")`, de estacoes.json."""
+    mapa: dict[str, tuple[str, str]] = {}
+    for rio_id, rio in le_json("estacoes.json")["rios"].items():
+        for cidade in rio["cidades"]:
+            if cidade.get("codigo_dcsc"):
+                mapa[cidade["codigo_dcsc"]] = (rio_id, cidade["id"])
+    return mapa
+
+
+def ler_serie_estadual(mes: str | None) -> dict[str, dict]:
+    """
+    A série da rede estadual, para HORÁRIO de pico — nunca para valor.
+
+    POR QUE ELA ENTRA (07/09/2026). Os três elos de trânsito do Itajaí-Mirim
+    (`vidal-ramos → botuvera → guabiruba → brusque`) são a lógica que a Defesa
+    Civil de Brusque de fato usa, e nenhum deles pode ser medido: Botuverá e
+    Guabiruba não têm régua municipal, então nenhuma cheia futura produziria o
+    par de horários. Mas a rede estadual PUBLICA Botuverá e Vidal Ramos, e a
+    coleta já vem acumulando esses números em `nivel-sc-AAAA-MM.ndjson`.
+
+    O que destrava é uma observação simples: **tempo de trânsito se mede entre
+    horários, e horário não depende do zero da régua.** Um máximo é um máximo em
+    qualquer datum. O que o zero desconhecido impede é dizer QUANTOS METROS o
+    pico teve — e é exatamente isso que `so_horario` bloqueia daqui para a
+    frente.
+
+    Duas travas, e as duas em código, não em comentário:
+
+    1. Toda leitura sai com `so_horario=True`, e `--escrever` recusa gravar
+       qualquer evento marcado assim. Sem isso, um `pico_m` em datum estadual
+       entraria no enchentes.json parecendo régua municipal.
+    2. O limiar TEM de vir por `--limiar`. As cotas de estacoes.json são da
+       régua municipal, e aplicá-las ao número estadual é o erro que este
+       projeto já mediu: Indaial marcou 5,98 m na rede estadual num dia sem
+       chuva, contra emergência municipal de 5,50 m. Separar episódios com a
+       cota errada inventaria cheia onde não houve.
+    """
+    por_estacao: dict[str, dict] = {}
+    if not SERIE.exists():
+        return por_estacao
+    de_codigo = cidades_por_codigo_dcsc()
+    padroes = ([f"{PREFIXO_ESTADUAL}{mes}.ndjson", f"{PREFIXO_ESTADUAL}{mes}.ndjson.gz"]
+               if mes else [f"{PREFIXO_ESTADUAL}*.ndjson", f"{PREFIXO_ESTADUAL}*.ndjson.gz"])
+    arquivos: list[Path] = []
+    for padrao in padroes:
+        arquivos.extend(sorted(SERIE.glob(padrao)))
+
+    for arquivo in arquivos:
+        abrir = gzip.open if arquivo.suffix == ".gz" else open
+        with abrir(arquivo, "rt", encoding="utf-8") as f:
+            for numero, linha in enumerate(f, start=1):
+                linha = linha.strip()
+                if not linha:
+                    continue
+                try:
+                    d = json.loads(linha)
+                    quando = datetime.fromisoformat(d["medido_em"])
+                    nivel = float(d["nivel_bruto_m"])
+                except (ValueError, KeyError, TypeError) as e:
+                    print(f"aviso: {arquivo.name}:{numero} ignorada ({e})", file=sys.stderr)
+                    continue
+                # Reservatório tem datum próprio e não é régua de rio: fora.
+                if d.get("datum") != "bruto_estadual":
+                    continue
+                par = de_codigo.get(d.get("codigo") or "")
+                if not par:
+                    continue  # estação estadual sem cidade nossa
+                rio, cidade = par
+                estacao = d.get("estacao") or d.get("codigo") or "?"
+                grupo = por_estacao.setdefault(
+                    estacao, {"rio": rio, "cidade": cidade, "leituras": []}
+                )
+                grupo["leituras"].append(Leitura(quando, nivel, estacao, so_horario=True))
+    for grupo in por_estacao.values():
+        grupo["leituras"].sort(key=lambda l: l.quando)
+    return por_estacao
+
+
+#: Séries que NÃO são nível de régua municipal e não podem entrar no glob dele.
+#: `chuva-` é outra grandeza; `nivel-sc-` é outro DATUM. Sem esta lista, o
+#: `*.ndjson` do modo sem `--mes` varre os três e o leitor municipal cospe um
+#: aviso por linha — ruído que ensina a ignorar avisos — além de arriscar somar
+#: régua estadual à municipal se um dia os campos coincidirem.
+PREFIXOS_DE_OUTRA_SERIE = ("chuva-", PREFIXO_ESTADUAL)
+
+
 def arquivos_da_serie(mes: str | None) -> list[Path]:
+    """Só a série de nível MUNICIPAL — a que está no datum das cotas."""
     if not SERIE.exists():
         return []
     padroes = [f"{mes}.ndjson", f"{mes}.ndjson.gz"] if mes else ["*.ndjson", "*.ndjson.gz"]
     achados: list[Path] = []
     for padrao in padroes:
-        achados.extend(sorted(SERIE.glob(padrao)))
+        achados.extend(
+            p for p in sorted(SERIE.glob(padrao))
+            if not p.name.startswith(PREFIXOS_DE_OUTRA_SERIE)
+        )
     return achados
 
 
@@ -177,14 +283,49 @@ def main() -> int:
     ap.add_argument("--cidade", help="analisa só uma cidade (id de estacoes.json)")
     ap.add_argument("--limiar", type=float, help="cota mínima, para cidades sem cota cadastrada")
     ap.add_argument("--escrever", action="store_true", help="grava as propostas em enchentes.json")
+    ap.add_argument(
+        "--serie-estadual", action="store_true",
+        help="lê a série da rede estadual — SÓ para horário de pico, nunca para o valor. "
+             "Exige --limiar, e o que sair dela não pode ser gravado.",
+    )
     args = ap.parse_args()
 
-    por_estacao = ler_serie(args.mes)
+    if args.serie_estadual and args.limiar is None:
+        print(
+            "ERRO: --serie-estadual exige --limiar.\n"
+            "  As cotas de estacoes.json são da régua MUNICIPAL, e o número estadual está "
+            "noutro zero.\n"
+            "  Medido em 07/09/2026: Rio do Sul deu 3,92 m na rede estadual e 5,24 m na régua "
+            "municipal\n"
+            "  no mesmo minuto. Separar episódios com a cota errada inventaria cheia onde não "
+            "houve —\n"
+            "  Indaial marcou 5,98 m estadual num dia SEM CHUVA, contra emergência municipal de "
+            "5,50 m.\n"
+            "  Escolha o limiar olhando a própria série estadual daquela estação.",
+            file=sys.stderr,
+        )
+        return 2
+
+    if args.serie_estadual and args.escrever:
+        print(
+            "ERRO: --serie-estadual não grava.\n"
+            "  Da série estadual vale o HORÁRIO do pico (um máximo é um máximo em qualquer "
+            "datum),\n"
+            "  mas NÃO o valor: gravar `pico_m` em zero estadual poria no enchentes.json um "
+            "número\n"
+            "  que parece régua municipal e não é. Anote o horário à mão, com a ressalva do "
+            "datum.",
+            file=sys.stderr,
+        )
+        return 2
+
+    por_estacao = ler_serie_estadual(args.mes) if args.serie_estadual else ler_serie(args.mes)
     if not por_estacao:
         print(
             f"Nenhuma leitura em {SERIE.relative_to(DADOS.parent)}. "
-            "Rode scripts/coleta_niveis.py primeiro — a série é construída ao longo do tempo, "
-            "e só cobre cheias que aconteceram depois de a coleta começar.",
+            f"Rode scripts/{'coleta_nivel_sc.py' if args.serie_estadual else 'coleta_niveis.py'} "
+            "primeiro — a série é construída ao longo do tempo, e só cobre cheias que "
+            "aconteceram depois de a coleta começar.",
         )
         return 0
 
@@ -225,6 +366,11 @@ def main() -> int:
             f"\n{estacao} ({cidade}/{rio}): {len(leituras)} leituras, "
             f"cota de {nome_cota} = {limiar:.2f} m -> {len(eventos)} evento(s)"
         )
+        if any(l.so_horario for l in leituras):
+            print(
+                "  ⚠️  DATUM NÃO CALIBRADO (rede estadual): vale o HORÁRIO do pico, "
+                "não o valor em metros."
+            )
 
         for ev in eventos:
             data = ev.quando.date().isoformat()
@@ -242,7 +388,7 @@ def main() -> int:
                 )
             if marca:
                 continue
-            propostas.append({
+            proposta = {
                 "rio": rio,
                 "cidade": cidade,
                 "data": data,
@@ -250,7 +396,12 @@ def main() -> int:
                 "pico_m": round(ev.pico_m, 2),
                 "confianca": "alta",
                 "fonte": f"Defesa Civil de Itajaí, leitura automática ({estacao})",
-            })
+            }
+            if ev.so_horario:
+                # Sai marcada para a trava de gravação lá embaixo. O campo começa
+                # com `_` para nunca ser confundido com campo de dado.
+                proposta["_so_horario"] = True
+            propostas.append(proposta)
 
     if not propostas:
         print("\nNenhuma proposta nova.")
@@ -266,6 +417,17 @@ def main() -> int:
             "e rode de novo com --escrever para incluí-los em enchentes.json."
         )
         return 0
+
+    # Cinto e suspensório: o modo estadual já é recusado lá em cima, mas se um
+    # dia as duas séries forem lidas juntas, é aqui que o valor em datum não
+    # calibrado para de entrar.
+    marcadas = [p for p in propostas if p.get("_so_horario")]
+    if marcadas:
+        print(
+            f"ERRO: {len(marcadas)} proposta(s) vêm de datum não calibrado e não podem ser "
+            "gravadas.", file=sys.stderr,
+        )
+        return 2
 
     enchentes["eventos"].extend(propostas)
     enchentes["eventos"].sort(key=lambda e: (e["rio"], e["cidade"], e["data"].ljust(10, "0")))
