@@ -791,6 +791,11 @@ def _km_ao_segmento(p, a, b) -> float:
     return math.hypot(ax + t * dx, ay + t * dy)
 
 
+def _km_entre(p, q) -> float:
+    """Distância em km entre dois pontos (lon, lat)."""
+    return _km_ao_segmento(p, q, q)
+
+
 def _linhas(caminho) -> list:
     g = json.loads(caminho.read_text(encoding="utf-8"))
     feats = g.get("features") if g.get("type") == "FeatureCollection" else [g]
@@ -1167,19 +1172,23 @@ ESTACOES_ANA_CONHECIDAS = {
     "83300200": ("RIO DO SUL - NOVO", "fluviometrica", -27.2078, -49.6292, None),
     "83800002": ("BLUMENAU (PCD)", "fluviometrica", -26.9186, -49.0656, "2021-12"),
     "83920000": ("PORTO ITAJAÍ", "fluviometrica", -26.9167, -48.65, "1937-11"),
+    # coordenada e tipo lidos no inventário público em 07/09/2026, rodando
+    # scripts/ana_inventario.py da VPS — este ambiente tem *.ana.gov.br
+    # bloqueado. Bruto em data/brutos/ana-inventario-2026-09-07.json.
+    "83030000": ("BARRAGEM OESTE", "fluviometrica", -27.0972, -50.0386, None),
+    "83094000": ("RIO DO SUL", "fluviometrica", -27.2075, -49.6336, "2005-08"),
+    "83145140": ("DCSC BARRAGEMSUL ITUPORANGA JUSANTE", "fluviometrica", -27.4819, -49.5828, None),
+    "83250000": ("ITUPORANGA", "fluviometrica", -27.3986, -49.6058, None),
+    "83440000": ("IBIRAMA", "fluviometrica", -27.0539, -49.5167, "2021-12"),
+    "83520000": ("WARNOW", "fluviometrica", -26.9417, -49.2897, None),
+    "83870001": ("ILHOTA-JUSANTE", "fluviometrica", -26.9025, -48.8325, None),
+    "83892998": ("BOTUVERA-MONTANTE", "fluviometrica", -27.1972, -49.0878, None),
     # sem coordenada transcrita: o tipo basta para a trava de tipo
-    "83030000": ("BARRAGEM OESTE", "fluviometrica", None, None, None),
-    "83094000": ("RIO DO SUL (Itajaí do Oeste)", "fluviometrica", None, None, None),
-    "83250000": ("ITUPORANGA", "fluviometrica", None, None, None),
     "83300000": ("RIO DO SUL (Itajaí do Sul)", "fluviometrica", None, None, None),
-    "83440000": ("IBIRAMA", "fluviometrica", None, None, "2021-12"),
-    "83520000": ("WARNOW", "fluviometrica", None, None, None),
     "83690000": ("INDAIAL", "fluviometrica", None, None, "2021-12"),
     "83800003": ("BLUMENAU (PCD)", "fluviometrica", None, None, None),
     "83840000": ("GASPAR (MONTANTE ETA)", "fluviometrica", None, None, "2021-12"),
-    "83870001": ("ILHOTA-JUSANTE", "fluviometrica", None, None, None),
     "83892990": ("SALSEIRO", "fluviometrica", None, None, None),
-    "83892998": ("BOTUVERA-MONTANTE", "fluviometrica", None, None, None),
     "83900000": ("BRUSQUE (PCD)", "fluviometrica", None, None, None),
     # --- pluviométricas: SÓ CHUVA. Estão aqui para REPROVAR quem as usar como
     # régua. Todas ficam a menos de 750 m de uma régua nossa — é essa vizinhança
@@ -1261,14 +1270,45 @@ def valida_codigo_ana() -> None:
             if arquivo not in cache:
                 cache[arquivo] = _linhas(caminho)
 
+            # DUAS REFERÊNCIAS, VALE A MAIS PERTO (07/09/2026).
+            #
+            # A pergunta desta trava é uma só: **esta estação é de OUTRO curso
+            # d'água?** Duas coisas respondem, e cada uma falha num caso
+            # diferente — por isso as duas ficam, e basta uma passar:
+            #
+            # * o TRAÇADO do rio falha onde ele não está desenhado. A 83145140
+            #   fica a 45 m do pino de Ituporanga e a 21,4 km do traçado do
+            #   Itajaí do Sul, que só cobre 10,5 km perto de Rio do Sul. A
+            #   estação não está em outro rio; o rio é que não está no arquivo.
+            # * o PINO falha onde ele não é a régua de nível. Em Blumenau a
+            #   coordenada é a da DCSC-00026, que mede CHUVA e fica a 3 km do
+            #   talvegue: a 83800002 está a 6,94 km desse pino e a 49 m do
+            #   traçado — e é a régua certa.
+            #
+            # Medir só contra um dos dois reprova estação certa, e foi o que a
+            # primeira versão desta guarda fez com um e depois com o outro. As
+            # duas juntas não abrem buraco: o pino já é validado contra o
+            # traçado em valida_pinos_no_tracado, com as exceções escritas e
+            # datadas em LONGE_ACEITO.
             p = (lon, lat)
-            d = min((_km_ao_segmento(p, l[i], l[i + 1])
-                     for l in cache[arquivo] for i in range(len(l) - 1)), default=None)
-            if d is not None and d > LIMITE_PINO_KM:
+            ao_tracado = min((_km_ao_segmento(p, l[i], l[i + 1])
+                              for l in cache[arquivo] for i in range(len(l) - 1)),
+                             default=None)
+            pino = cidade.get("coordenadas")
+            ao_pino = (_km_entre(p, (pino[1], pino[0]))
+                       if isinstance(pino, list) and len(pino) == 2 else None)
+
+            candidatas = [(d, o) for d, o in
+                          ((ao_tracado, f"do traçado de {arquivo}"),
+                           (ao_pino, f"do pino de {cid}")) if d is not None]
+            if not candidatas:
+                continue
+            d, contra = min(candidatas)
+            if d > LIMITE_PINO_KM:
                 erro(f"estacoes.json / {cid}: a estação ANA {codigo} ({nome}) fica a "
-                     f"{d:.2f} km do traçado de {arquivo}; limite {LIMITE_PINO_KM:g} km. "
-                     "Estação fluviométrica fica NO rio — ou a coordenada está errada, "
-                     "ou a estação é de outro curso d'água.")
+                     f"{d:.2f} km {contra} — a referência mais perto das duas; limite "
+                     f"{LIMITE_PINO_KM:g} km. Estação fluviométrica fica NO rio: ou a "
+                     "coordenada está errada, ou a estação é de outro curso d'água.")
 
 
 #: Arquivo do site que guarda quantas ruas de cada cidade foram levantadas SEM

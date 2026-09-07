@@ -98,6 +98,36 @@ class Distancia(unittest.TestCase):
         self.assertEqual(ai.metros((-27.1, -48.9), (-27.1, -48.9)), 0.0)
 
 
+class TextoDaDistancia(unittest.TestCase):
+    """
+    Bug real da execução de 07/09/2026: `f"{d:,.0f} m"` imprimiu **"4,350 m"**
+    para 4.350 metros. Em pt-BR isso se lê 4,35 m — erro de mil vezes, e na
+    direção que faz estação longe parecer colada na régua. É o vínculo errado
+    que este script inteiro existe para impedir.
+    """
+
+    def test_abaixo_de_um_km_vai_em_metros_inteiros(self):
+        self.assertEqual(ai.distancia(35), "35 m")
+        self.assertEqual(ai.distancia(476), "476 m")
+
+    def test_acima_de_um_km_vai_em_km_com_virgula_decimal(self):
+        self.assertEqual(ai.distancia(4350), "4,35 km")
+        self.assertEqual(ai.distancia(9587), "9,59 km")
+
+    def test_nunca_sai_separador_de_milhar(self):
+        """Era ele que criava a ambiguidade: 4,350 lido como 4,35."""
+        for m in (1000, 1182, 4350, 9587, 12345, 99999):
+            texto = ai.distancia(m)
+            self.assertLessEqual(texto.count(","), 1, texto)
+            if "," in texto:
+                self.assertTrue(texto.endswith(" km"), texto)
+                self.assertEqual(len(texto.split(",")[1].split(" ")[0]), 2, texto)
+
+    def test_a_fronteira_do_km_nao_pula_nem_repete(self):
+        self.assertEqual(ai.distancia(999), "999 m")
+        self.assertEqual(ai.distancia(1000), "1,00 km")
+
+
 class ListaDePendentes(unittest.TestCase):
     def test_brusque_saiu_da_lista(self):
         """Fechou em 07/09/2026 pelo codigo_dcsc; deixar aqui pediria de novo."""
