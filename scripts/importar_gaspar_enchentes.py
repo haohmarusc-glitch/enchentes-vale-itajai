@@ -185,6 +185,106 @@ def linhas_da_tabela(html: str) -> tuple[list[dict], list[str]]:
     return [], vistos
 
 
+#: Uma data `dd/mm/aaaa` — o ano vai até cinco dígitos de propósito, para o
+#: `9855` da fonte ser CAPTURADO e marcado, em vez de ignorado pelo regex.
+RE_DATA = re.compile(r"\b(\d{1,2}/\d{1,2}/\d{2,5})\b")
+
+#: Um número com decimal: `7,45 metros`, `11.40`.
+RE_METROS = re.compile(r"\b\d+[.,]\d+\b")
+
+
+def linhas_do_texto(texto: str) -> tuple[list[dict], list[str]]:
+    """
+    Lê a tabela COLADA, não o HTML.
+
+    POR QUE EXISTE (07/09/2026). A página é inalcançável deste ambiente (403 do
+    proxy) e da VPS (timeout — provável bloqueio de IP estrangeiro pelo site
+    municipal). Quem alcança é o navegador do Jefferson, no celular, e o que um
+    celular produz com facilidade é **texto colado**, não arquivo salvo.
+
+    Por isso o parser não depende de coluna nem de separador: em cada linha
+    pega as DATAS na ordem em que aparecem (a primeira é início, a segunda é
+    término) e o primeiro número com decimal. Sobrevive a tabulação virando
+    espaço, que é o que acontece ao colar.
+
+    A coluna "Nome" (todas as linhas dizem "Enchente") e o `-` de término
+    ausente caem fora sozinhos, sem precisar de regra para eles.
+    """
+    saida = []
+    for linha in texto.splitlines():
+        datas = RE_DATA.findall(linha)
+        metros = RE_METROS.search(linha)
+        if not datas or not metros:
+            continue
+        reg = {"inicio": datas[0], "pico": metros.group(0)}
+        if len(datas) > 1:
+            reg["fim"] = datas[1]
+        saida.append(reg)
+    return saida, []
+
+
+def ano_da_linha_de_cima(datas: list[str], i: int) -> str | None:
+    """A data da linha `i` com o ANO da linha de cima (a mais nova da lista)."""
+    if i == 0:
+        return None
+    try:
+        return date(int(datas[i - 1][:4]), int(datas[i][5:7]), int(datas[i][8:10])).isoformat()
+    except (ValueError, IndexError):
+        return None
+
+
+def marca_ano_deslocado(regs: list[dict], eventos: list[dict]) -> None:
+    """
+    Acha as linhas em que o ANO parece ser o da linha de cima.
+
+    O QUE ISTO DESCOBRIU (07/09/2026), e por que virou código. Dos 70 registros
+    publicados, 21 não pareavam com evento nenhum já cadastrado. Testei duas
+    hipóteses e as duas foram REFUTADAS no conjunto: "o mês está um a menos"
+    conserta 6 e quebra 38; "o ano está deslocado uma linha" conserta 12 e
+    quebra 29. Nenhuma vale para a tabela inteira.
+
+    Mas os acertos da segunda não são acaso: **onze deles casam com DIA E MÊS
+    IDÊNTICOS** a um evento já cadastrado em outro ano — coincidência de ~1/365
+    por caso —, e ficam em DOIS TRECHOS CONTÍGUOS da tabela (as linhas de 1950
+    a 1932 e de 1927 a 1911). É a assinatura de uma coluna que escorregou uma
+    linha num pedaço da tabela, não de datas imprecisas de registro antigo:
+    imprecisão não produz onze igualdades exatas de dia e mês.
+
+    A CONSEQUÊNCIA É GRAVE, e é por isso que estes registros NÃO entram. Se o
+    ano está errado, o pico de 8,43 m publicado em 1939 é na verdade o de 1943 —
+    e uma correlação montante->jusante que pareie o Gaspar de 1939 com o
+    Blumenau de 1939 estaria cruzando águas de cheias diferentes. Pior: não dá
+    para saber daqui se escorregou só o ANO ou a data inteira; no segundo caso,
+    nem o valor pertence àquela linha.
+
+    NÃO SE CONSERTA. O que este código faz é ANOTAR a evidência em cada
+    registro, para o ofício à Defesa Civil de Gaspar poder citar linha por
+    linha.
+    """
+    datas = [r["data"] for r in regs]
+    for i, r in enumerate(regs):
+        if r.get("pareamento") != "sem par":
+            continue
+        alternativa = ano_da_linha_de_cima(datas, i)
+        if not alternativa:
+            continue
+        par = par_mais_proximo(alternativa, eventos)
+        if not par or par[0] > TOLERANCIA_DIAS:
+            continue
+        dias, e = par
+        r["ano_suspeito_de_deslocamento"] = True
+        r["nota"] += (
+            f" ⚠️⚠️ SUSPEITA DE ANO DESLOCADO: com o ano da linha de CIMA da tabela "
+            f"({alternativa}) este registro pareia com {e['cidade']} {e['data']} "
+            f"({e['pico_m']} m), a {dias} dia(s)"
+            + (" — DIA E MÊS IDÊNTICOS" if dias == 0 else "") + ". "
+            "Onze registros desta tabela têm essa mesma assinatura, em dois trechos "
+            "contíguos, o que é sinal de coluna desalinhada e não de data imprecisa. "
+            "Não foi corrigido, e não entra na base: se o ano está errado, parear "
+            "este pico com o de outra cidade no ano publicado cruzaria cheias "
+            "diferentes.")
+
+
 def monta(crus: list[dict], eventos: list[dict]) -> list[dict]:
     fonte = ("Histórico de enchentes publicado pela Defesa Civil de Gaspar "
              f"({URL}), lido em {date.today().isoformat()} por "
@@ -240,10 +340,19 @@ def monta(crus: list[dict], eventos: list[dict]) -> list[dict]:
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--arquivo", type=Path, help="HTML salvo, em vez de baixar")
+    p.add_argument("--texto", type=Path,
+                   help="tabela COLADA em texto (o que o celular consegue produzir)")
     p.add_argument("--gravar", action="store_true", help="escreve em enchentes.json")
+    p.add_argument("--incluir-sem-par", action="store_true",
+                   help="importa também os que não pareiam com evento nenhum (NÃO recomendado: "
+                        "11 deles têm assinatura de ano deslocado)")
     args = p.parse_args(argv)
 
-    if args.arquivo:
+    if args.texto:
+        crus, cabecalhos = linhas_do_texto(
+            args.texto.read_text(encoding="utf-8", errors="replace"))
+        html = None
+    elif args.arquivo:
         html = args.arquivo.read_text(encoding="utf-8", errors="replace")
     else:
         try:
@@ -255,7 +364,8 @@ def main(argv: list[str] | None = None) -> int:
                   "Nada foi gravado.", file=sys.stderr)
             return 1
 
-    crus, cabecalhos = linhas_da_tabela(html)
+    if html is not None:
+        crus, cabecalhos = linhas_da_tabela(html)
     if not crus:
         print("Nenhuma linha reconhecida. Cabeçalhos que a página trouxe:\n  "
               + ("\n  ".join(cabecalhos) if cabecalhos else "(nenhuma tabela)"),
@@ -264,13 +374,21 @@ def main(argv: list[str] | None = None) -> int:
 
     base = le_json("enchentes.json")
     existentes = {(e["cidade"], e["data"]) for e in base["eventos"]}
-    novos = [r for r in monta(crus, base["eventos"])
+    todos = [r for r in monta(crus, base["eventos"])
              if (r["cidade"], r["data"]) not in existentes]
+    marca_ano_deslocado(todos, base["eventos"])
 
-    anomalas = [r for r in novos if r.get("data_anomala")]
-    sem_par = [r for r in novos if r.get("pareamento") == "sem par"]
-    print(f"{len(crus)} linhas lidas · {len(novos)} novas · "
-          f"{len(anomalas)} com data impossível · {len(sem_par)} sem par")
+    anomalas = [r for r in todos if r.get("data_anomala")]
+    sem_par = [r for r in todos if r.get("pareamento") == "sem par"]
+    deslocados = [r for r in todos if r.get("ano_suspeito_de_deslocamento")]
+    # Registro sem par NÃO entra por padrão. Não é conservadorismo genérico: 11
+    # dos 21 têm assinatura de ano deslocado, e um ano errado num pico faz a
+    # correlação cruzar cheias diferentes.
+    novos = todos if args.incluir_sem_par else [r for r in todos if r not in sem_par]
+
+    print(f"{len(crus)} linhas lidas · {len(todos)} novas · {len(anomalas)} com data "
+          f"impossível · {len(sem_par)} sem par ({len(deslocados)} com suspeita de ano "
+          f"deslocado) · {len(novos)} a importar")
     for r in anomalas + sem_par:
         print(f"\n  {r['data']} → {r.get('data_fim', '?')}   {r['pico_m']} m")
         print(f"    {r['nota']}")

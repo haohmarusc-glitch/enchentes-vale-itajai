@@ -12,25 +12,25 @@ de projeto, nunca medida.
 
 | Cidade | Rio | Leitura ao vivo | Cotas atenção+alerta | Cotas conferidas | Picos | Série ANA | Cotas de rua | Trânsito a jusante |
 |---|---|---|---|---|---|---|---|---|
-| Taió | acu | sim | sim | — | 1 | sim | — | sim |
+| Taió | acu | — | sim | — | 1 | sim | — | sim |
 | Ituporanga | acu | — | — | — | — | sim | — | sim |
-| Rio do Sul | acu | sim | sim | — | 9 | sim | 555 | — |
+| Rio do Sul | acu | — | sim | — | 9 | sim | 555 | — |
 | Ibirama | acu | — | — | — | — | — | — | — |
 | Lontras | acu | — | — | — | — | — | — | — |
 | Ascurra | acu | — | — | — | — | — | — | — |
 | Indaial | acu | — | sim | sim | 16 | — | — | — |
-| Blumenau | acu | sim | sim | — | 113 | sim | 2023 | sim |
-| Gaspar | acu | — | sim | sim | — | sim | 1619 | sim |
+| Blumenau | acu | — | sim | — | 113 | sim | 2023 | sim |
+| Gaspar | acu | — | sim | sim | 49 | sim | 1619 | sim |
 | Ilhota | acu | — | sim | — | — | — | — | sim |
-| Itajaí | acu | sim | — | — | — | — | — | n/a |
+| Itajaí | acu | — | — | — | — | — | — | n/a |
 | Timbó | acu | — | — | — | 1 | — | — | — |
 | Rio dos Cedros | acu | — | sim | — | — | — | — | — |
 | Trombudo Central | acu | — | — | — | — | — | — | n/a |
-| Vidal Ramos | mirim | sim | — | — | — | — | — | — |
+| Vidal Ramos | mirim | — | — | — | — | — | — | — |
 | Botuverá | mirim | — | — | — | — | — | — | — |
 | Guabiruba | mirim | — | — | — | — | — | — | — |
-| Brusque | mirim | sim | — | — | 9 | sim | 377 | sim |
-| Itajaí | mirim | sim | — | — | — | — | — | n/a |
+| Brusque | mirim | — | — | — | 9 | sim | 377 | sim |
+| Itajaí | mirim | — | — | — | — | — | — | n/a |
 
 `n/a` em trânsito = a cidade é foz, ou entrou sem posição na árvore (Trombudo Central: a fonte diz o rio, não a confluência).
 
@@ -38,7 +38,7 @@ de projeto, nunca medida.
 
 ### 1. Leitura ao vivo — o pino cinza
 
-Sem leitura em: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Gaspar**, **Ilhota**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Botuverá**, **Guabiruba**.
+Sem leitura em: **Taió**, **Ituporanga**, **Rio do Sul**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Blumenau**, **Gaspar**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**, **Brusque**.
 
 É o que mais escurece o mapa e o único item que não tem substituto histórico: nenhuma pesquisa em acervo acende um pino hoje. O pedido é ofício à Defesa Civil do município pedindo o endpoint que a página de monitoramento já consome.
 
@@ -52,15 +52,15 @@ Com as duas mas sem conferência na fonte: **Taió**, **Rio do Sul**, **Blumenau
 
 ### 3. Hora do pico — o que destrava `transito.json`
 
-**149 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
+**198 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
 
 A hora só existe em boletim de cheia: boletim diário da Defesa Civil estadual, ofício municipal do dia, série horária da ANA/HidroWeb.
 
 ### 4. Picos históricos — a previsão a jusante
 
-Menos de 5 eventos (mínimo da previsão v1): **Taió**, **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Gaspar**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
+Menos de 5 eventos (mínimo da previsão v1): **Taió**, **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
-Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Gaspar**, **Ilhota**, **Itajaí**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
+Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Ilhota**, **Itajaí**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
 3 registros têm só o ano, sem mês nem dia — não pareiam com jusante nem com mancha.
 

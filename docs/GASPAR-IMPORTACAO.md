@@ -1,118 +1,141 @@
-# Importar os 71 registros de Gaspar — o que está pronto e o que falta
+# Gaspar: 49 registros importados, 21 segurados — e por quê
 
 Data: 07/09/2026.
 
-Gaspar tem **zero picos** em `enchentes.json` e **1.619 cotas de rua**: sabe-se em
-que nível cada rua alaga e não se sabe em que nível o rio esteve. A página
-`/enchentes` da Defesa Civil do município traz **71 registros de 1852 a 2023**,
-com data de início, data de término e metragem máxima. Seria a **maior entrada
-única já feita na base**.
+Gaspar tinha **zero picos** em `enchentes.json` e 1.619 cotas de rua: sabia-se em
+que nível cada rua alaga e não se sabia em que nível o rio esteve. A tabela da
+Defesa Civil chegou pelo celular do Jefferson (a página é inalcançável deste
+ambiente e da VPS) com **70 linhas, de 1852 a 2023**.
 
-`scripts/importar_gaspar_enchentes.py` está pronto e testado. **Nada foi
-importado**: este ambiente tem `defesacivil.gaspar.sc.gov.br` bloqueado (403 no
-CONNECT do proxy, medido hoje).
-
-```
-# na VPS, ou com a página salva
-python3 scripts/importar_gaspar_enchentes.py            # só relata
-python3 scripts/importar_gaspar_enchentes.py --gravar   # escreve
-```
+**Importados 49. Segurados 21.** Gaspar passa de 0 a 49 picos — a maior entrada
+única já feita na base.
 
 ---
 
-## O que eu consegui conferir daqui, e é o mais importante
+## ⚠️ O achado: a coluna do ANO está desalinhada em dois trechos da tabela
 
-Cruzei os **oito valores de controle** contra a base, usando a mesma semântica de
-pareamento do site (`web/src/logica/datas.ts`, tolerância de sete dias). **Seis
-batem com um evento já cadastrado a zero ou um dia de vão** — o que confirma que
-a fonte é real, que o formato é `dd/mm/aaaa` e que a escala de Gaspar conversa
-com a das outras cidades:
+Vinte e um registros não pareavam com evento nenhum já cadastrado. Testei duas
+hipóteses e **as duas foram refutadas no conjunto**:
 
-| Gaspar | Pico | Pareia com | Vão |
+| Hipótese | Conserta | Quebra |
+|---|---|---|
+| "o mês publicado é um a menos" | 6 | **38** |
+| "o ano está deslocado uma linha" | 12 | **29** |
+
+Nenhuma vale para a tabela inteira. **Mas os acertos da segunda não são acaso.**
+Onze deles casam com **dia e mês IDÊNTICOS** a um evento já cadastrado, em outro
+ano — coincidência de ~1/365 por caso —, e ficam em **dois trechos contíguos**:
+
+| Linha | Publicado | Com o ano da linha de cima | Bate com |
 |---|---|---|---|
-| 29/10/1852 | 12,00 m | Blumenau 1852-10-29 (16,30) | 0 d |
-| 23/09/1880 | 12,56 m | Blumenau 1880-09-23 (17,10) | 0 d |
-| 29/05/1911 | 12,42 m | **Rio do Sul 1911-05** (12,20) | 0 d |
-| 07/08/1984 | 11,40 m | Blumenau 1984-08-07 (15,46) | 0 d |
-| 24/11/2008 | 9,80 m | Blumenau 2008-11-24 (11,52) | 0 d |
-| 12/10/2023 | 7,45 m | Blumenau 2023-10-13 (10,61) | 1 d |
+| 42 | 1950-10-31 | 1953-10-31 | Blumenau 1953-11-01 (1 d) |
+| 43 | 1948-10-17 | 1950-10-17 | **Blumenau 1950-10-17** |
+| 44 | 1943-05-17 | 1948-05-17 | **Blumenau 1948-05-17** |
+| 45 | 1939-08-03 | 1943-08-03 | **Blumenau 1943-08-03** |
+| 46 | 1935-11-27 | 1939-11-27 | **Blumenau 1939-11-27** |
+| 48 | 1932-10-04 | 1933-10-04 | **Blumenau 1933-10-04** |
+| 53 | 1927-06-18 | 1928-06-18 | **Blumenau 1928-06-18** |
+| 54 | 1926-11-09 | 1927-11-09 | **Indaial 1927-11-09** |
+| 55 | 1925-01-14 | 1926-01-14 | **Blumenau 1926-01-14** |
+| 56 | 1923-05-14 | 1925-05-14 | **Blumenau 1925-05-14** |
+| 57 | 1911-06-20 | 1923-06-20 | **Blumenau 1923-06-20** |
+| 5 | 2011-11-09 | 2013-11-09 | **Blumenau 2013** |
 
-⚠️ **O de 1911 quase virou um falso alarme meu.** Na primeira passada comparei só
-contra Blumenau, cujo evento de 1911 é de **outubro**, e o 29/05 apareceu como
-"não pareia, 126 dias". 1911 teve **dois** eventos: o de maio está em **Rio do
-Sul**. Comparar contra uma cidade só produz um "não" que não existe.
+Em negrito, dia e mês idênticos. **Data imprecisa de registro antigo não produz
+onze igualdades exatas de dia e mês.** É a assinatura de uma coluna que
+escorregou uma linha num pedaço da tabela — o que acontece quando se monta uma
+tabela colando colunas de comprimentos diferentes.
 
-## ⚠️ Dois dos oito NÃO pareiam, e o padrão é estranho
+### Por que isso impede a importação desses 21
 
-| Gaspar | Pico | Mais perto | Vão |
-|---|---|---|---|
-| **09/11/2011** | 9,42 m | Rio do Sul 2011-09 (12,96) | **40 d** |
-| **09/06/1983** | 11,50 m | Blumenau 1983-05-20 (12,52) | **20 d** |
+Se o ano está errado, o pico de **8,43 m publicado em 1939** é na verdade o de
+**1943**. Uma correlação montante → jusante que pareasse o Gaspar de 1939 com o
+Blumenau de 1939 estaria cruzando **águas de cheias diferentes** — e o número que
+sairia disso é o que a tela mostraria para quem mora em Gaspar.
 
-Nos dois casos o **dia bate com um pico conhecido de Blumenau** e o **mês não**:
-Blumenau tem **09/09/2011** (12,80 m) e **09/07/1983** (15,34 m). Mesmo dia, mês
-diferente, nas duas linhas.
+Pior: **não dá para saber daqui se escorregou só o ANO ou a data inteira.** No
+segundo caso nem o valor pertence àquela linha. Por isso não se conserta e não
+se importa: os 21 ficam registrados, com a evidência linha a linha, para o
+ofício à Defesa Civil de Gaspar poder citar.
 
-Pode ser erro de mês na fonte, pode ser evento local de verdade — Gaspar é a
-confluência do Itajaí-Açu com o Rio Luís Alves e alaga por conta própria.
-**Não dá para decidir daqui, e não se decide por parecer.** O importador marca
-esses registros com `pareamento: "sem par"` e a nota dizendo qual era o
-candidato mais próximo; nem conserta nem descarta.
-
-⚠️ **Ressalva sobre esta análise:** os oito valores vieram da transcrição do
-levantamento, não da leitura da página. Um deslize de transcrição é tão provável
-quanto um erro da fonte. **A primeira coisa a fazer com a página aberta é olhar
-essas duas linhas.**
-
-## O ensaio com o validador
-
-Rodei a importação da amostra de nove linhas contra uma cópia de
-`enchentes.json`: **0 erros**. E o validador achou os mesmos dois registros
-sozinho, por outro caminho — a guarda que já existia ("*X não tem evento de
-gaspar no mesmo mês*") acusou 1983-06-09 e 2011-11-09. Duas verificações
-independentes apontando as mesmas duas linhas.
-
-Aviso de escala: nove registros levaram os avisos de 16 para 33, porque a guarda
-é por par. **Os 71 vão gerar muito aviso** — é ruído esperado, não defeito.
+**As duas linhas que o levantamento já tinha estranhado eram reais**, e não erro
+de transcrição: `09/11/2011` e `09/06/1983` estão assim na página.
 
 ---
 
-## As três armadilhas que o importador trata
+## O que entrou
 
-**1. A data é do INÍCIO do evento, não do pico.** Vai para `data` assim mesmo,
-mas marcada: `data_e_do_inicio_do_evento: true`, com `data_fim` ao lado. Isso
-**não atrapalha o pareamento** da previsão, que tolera sete dias — atrapalharia
-qualquer cálculo de **horário**, e por isso o registro diz o que é. Continua
-valendo: **não calibra tempo de trânsito**.
+- **49 registros**, de 29/10/1852 a 12/10/2023, maior pico **12,56 m** (23/09/1880).
+- `referencia: "régua"` em todos, travado por teste — as cotas de rua e o tempo
+  real de Gaspar são régua, e misturar com o datum IBGE de Blumenau é a
+  `REGRA_REFERENCIA_BLUMENAU`.
+- `confianca: "alta"` — fonte oficial do município. As ressalvas vão na nota.
+- Todos com `data_e_do_inicio_do_evento: true`: a data publicada é a de **início**
+  do evento, não a do pico. Não atrapalha o pareamento (a tolerância do site é de
+  sete dias) e **não serve para calibrar tempo de trânsito**.
 
-**2. A fonte publica uma data impossível.** O registro de 20/11/1855 traz
-término **24/11/9855**. O importador **preserva o original** e marca
-`data_anomala`. Virar 9855 em 1855 em silêncio apagaria a prova de que a fonte
-errou — mesma classe de erro que este projeto persegue em toda parte. Há teste
-exigindo que o valor gravado **não contenha** "1855".
+## ⚠️ O que a importação NÃO destravou, e é uma surpresa
 
-**3. Data que não pareia é suspeita, não é fato.** Vira `pareamento: "sem par"`
-com o candidato nomeado na nota.
+Eu esperava que a previsão **Blumenau → Gaspar** passasse a sair. Não sai:
 
-## Decisões tomadas, para não se perder
+| Par | Pares no mesmo evento | Mesma referência? |
+|---|---|---|
+| Gaspar × Blumenau | 48 | **0** — Gaspar é régua, Blumenau é IBGE ou nulo |
+| Gaspar × Indaial | 9 | **9** ✅ ambos régua |
+| Gaspar × Rio do Sul | 8 | 0 — Rio do Sul sem referência |
+| Gaspar × Brusque | 5 | 0 — Brusque sem referência |
 
-- `confianca: "alta"` — a fonte é a Defesa Civil do próprio município, e a
-  escala do projeto diz *alta = oficial/acadêmica*. As ressalvas de data vão na
-  `nota`, não rebaixam o valor.
-- `referencia: "régua"` — as cotas de rua e o tempo real de Gaspar são régua.
-  Misturar com o datum IBGE de Blumenau é a `REGRA_REFERENCIA_BLUMENAU`. Travado
-  por teste.
-- **Idempotente**: não sobrescreve `(cidade, data)` que já exista, e acrescenta
-  ao fim sem reordenar a série histórica.
-- **Não grava sem `--gravar`.**
+A previsão pareia **igual com igual** na referência, e faz isso certo: 20 cm de
+datum entre duas cidades é erro que ninguém vê e todo mundo carrega.
 
-## O que falta
+**Consequência que vale registrar: resolver o datum de Blumenau acabou de ficar
+muito mais valioso.** Antes, os 41 registros de Blumenau com `referencia: null` e
+os 72 em IBGE bloqueavam uma correlação com uma cidade sem dado nenhum. Agora
+bloqueiam uma correlação com uma cidade que tem 49 picos e 1.619 cotas de rua —
+e que é a próxima a jusante de Blumenau no tronco, a 2 h de distância.
 
-1. Rodar de fora, ou salvar a página e passar `--arquivo`.
-2. **Olhar as duas linhas sem par** (09/11/2011 e 09/06/1983) na página aberta.
-3. A estrutura da tabela **não foi conferida** contra a página real. O parser
-   acha as colunas pelos cabeçalhos, aceita várias grafias e, quando não
-   encontra, **imprime os cabeçalhos que a página trouxe** — o conserto vira uma
-   linha. Mesma disciplina de `ana_inventario.py`.
-4. A **Carta de Enchente** de Gaspar, com dados atribuídos ao CEOPS, continua
-   sem levantamento.
+---
+
+## A trava que disparou, e o que ela ensinou
+
+`valida_meses_pareados` acusou **38 desalinhamentos novos**, e o teste
+`test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos` reprovou —
+que é exatamente o que ele existe para fazer.
+
+Fui medir antes de aceitar, e a premissa da trava é que **as duas cidades
+registram os mesmos eventos**. Com Gaspar isso é falso:
+
+| Meses de Blumenau | n | Mediana do pico de Blumenau |
+|---|---|---|
+| em que Gaspar TEM registro | 48 | **11,13 m** (mínimo 8,50) |
+| em que Gaspar NÃO tem | 64 | **9,60 m** (mínimo 5,65) |
+
+**Nenhum evento de Blumenau abaixo de 8,50 m tem par em Gaspar.** O menor pico da
+lista de Gaspar é 6,19 m e a primeira rua dele alaga a 6,20 m: é uma lista de
+cheias **que alagaram**, não de todas as subidas.
+
+Então os 38 avisos são propriedade das FONTES, não erro de dado. Entrou
+`LISTAS_SO_COM_CHEIA_GRANDE` no validador, com o motivo medido escrito junto, e
+três testes: a exceção precisa de motivo, precisa continuar curta (no máximo
+três cidades — porta sem tranca vira corredor), e **a esparsidade tem de
+continuar verdadeira no dado**. Se alguém importar as cheias pequenas de Gaspar
+um dia, a premissa cai e o teste avisa.
+
+Ruído de 38 avisos não é inofensivo: é assim que uma trava morre, deixando de
+ser lida.
+
+---
+
+## Diferenças e pendências
+
+- O levantamento falava em **71 registros**; chegaram **70**. Não sei qual
+  faltou — pode ser corte na cópia. Vale conferir o total na página.
+- **A data de término é `-` em 69 das 70 linhas.** A única preenchida é a do
+  registro de 20/11/1855, e é `24/11/9855` — impossível. Preservada como veio e
+  marcada `data_anomala`; há teste exigindo que o valor gravado **não contenha**
+  "1855". Consertar em silêncio apagaria a prova de que a fonte errou.
+- Os **21 segurados** esperam resposta da Defesa Civil de Gaspar sobre o
+  desalinhamento. Para importá-los assim mesmo (não recomendado):
+  `--incluir-sem-par`.
+- A **Carta de Enchente** de Gaspar, com dados atribuídos ao CEOPS, continua sem
+  levantamento.
