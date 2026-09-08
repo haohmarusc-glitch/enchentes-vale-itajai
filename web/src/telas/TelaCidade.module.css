@@ -71,3 +71,16 @@
   font-size: 0.88rem;
   opacity: 0.9;
 }
+
+/* A ressalva das cotas. Mesmo peso visual do "sem dado" e por motivo parecido:
+   ela diz que a cor desta tela pode não bater com o que a Defesa Civil do
+   município declara, e isso não pode ficar em letra miúda embaixo da lista.
+   Fica AMARELA, não vermelha — não é um alarme sobre o rio, é um aviso sobre
+   como ler o número; vermelho aqui competiria com a cor que significa nível. */
+.avisoCotas {
+  margin: 0.8rem 0 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 4px solid #c8901a;
+  background: rgba(200, 144, 26, 0.12);
+  border-radius: 0.3rem;
+}

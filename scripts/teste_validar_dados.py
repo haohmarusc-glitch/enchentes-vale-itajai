@@ -1547,5 +1547,92 @@ class OutroPontoDoRioCertoNaoEAReguaDaCidade(unittest.TestCase):
         self.assertIn("Ibirama", trecho)
 
 
+class RessalvaDasCotasChegaNaTela(unittest.TestCase):
+    """
+    Apontamento do Jefferson, 08/09/2026: algumas cidades mudam de estado
+    prevendo a DESCIDA da água das cidades de cima, com o nível daqui baixo.
+
+    O projeto já sabia — está em `cotas_ressalva` de Brusque desde 07/09, com o
+    evento medido: a Defesa Civil declarou atenção com a régua de Brusque em
+    3,49 m, olhando Vidal Ramos e Botuverá. E a TELA não lia esse campo, nem
+    nenhum irmão dele: cinco cidades com ressalva, zero chegando à página.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, estacoes):
+        vd.erros.clear()
+        vd.avisos.clear()
+        orig = vd.le_json
+        vd.le_json = lambda nome: estacoes if nome == "estacoes.json" else orig(nome)
+        try:
+            vd.valida_ressalva_chega_na_tela()
+        finally:
+            vd.le_json = orig
+        return list(vd.erros), list(vd.avisos)
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(self.roda(copy.deepcopy(self.real))[0], [])
+
+    def test_ressalva_sem_decisao_aborta(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-mirim", "brusque").pop("cotas_aviso_publico")
+        erros, _ = self.roda(d)
+        self.assertTrue(any("brusque" in e and "chega à tela" in e for e in erros))
+
+    def test_dispensa_explicita_passa(self):
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, "itajai-mirim", "brusque")
+        c.pop("cotas_aviso_publico")
+        c["cotas_aviso_publico_nao_precisa"] = "porque sim"
+        self.assertEqual(self.roda(d)[0], [])
+
+    def test_mostrar_e_dispensar_ao_mesmo_tempo_aborta(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-mirim", "brusque")["cotas_aviso_publico_nao_precisa"] = "x"
+        erros, _ = self.roda(d)
+        self.assertTrue(any("se contradizem" in e for e in erros))
+
+    def test_dispensa_orfa_vira_aviso(self):
+        """A ressalva saiu e a justificativa ficou."""
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, "itajai-acu", "ascurra")
+        c.pop("cotas_ressalva")
+        _, avisos = self.roda(d)
+        self.assertTrue(any("ascurra" in a and "dispensar" in a for a in avisos))
+
+    def test_aviso_publico_longo_aborta(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-mirim", "brusque")["cotas_aviso_publico"] = "x" * 421
+        erros, _ = self.roda(d)
+        self.assertTrue(any("421 caracteres" in e for e in erros))
+
+    def test_a_ressalva_de_brusque_nao_cita_mais_a_cota_que_saiu(self):
+        """
+        A versão de 07/09 dizia "a nossa `atencao` de 4,80 m" e que o site
+        pintava mais CALMO que a Defesa Civil. As duas coisas venceram no mesmo
+        dia: os 4,80 m saíram de cotas_m e entrou a escala municipal de 3,00 m.
+        Ficou desatualizada por um dia — este teste é o que impede o retorno.
+        """
+        brusque = _cidade(copy.deepcopy(self.real), "itajai-mirim", "brusque")
+        self.assertEqual(brusque["cotas_m"].get("atencao"), 3.0)
+        texto = brusque["cotas_ressalva"]
+        self.assertIn("VENCERAM", texto, "a ressalva voltou a afirmar o que já venceu")
+        self.assertIn("cotas_substituidas_em_2026_09_07", texto)
+
+    def test_o_que_a_tela_mostra_nao_repete_o_texto_interno(self):
+        for rio in self.real["rios"].values():
+            for c in rio["cidades"]:
+                publico = c.get("cotas_aviso_publico")
+                if not publico:
+                    continue
+                with self.subTest(cidade=c["id"]):
+                    for marca in ("cotas_m", ".json", "docs/", "`"):
+                        self.assertNotIn(marca, publico,
+                                         "prosa de projeto vazou para a tela")
+
+
 if __name__ == "__main__":
     unittest.main()

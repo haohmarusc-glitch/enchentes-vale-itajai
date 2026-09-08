@@ -214,6 +214,16 @@ export default function TelaCidade() {
             está. Só aparece nas três cidades que têm barragem acima. */}
         <EstadoDasBarragens barragens={barragens} agora={agora} />
 
+        {/* A ressalva vem ANTES dos números. Depois deles, seria rodapé — e o
+            que ela diz é justamente que os números podem não bater com o que a
+            Defesa Civil do município declara. Ler a cota sem isso é ler errado. */}
+        {cidade.cotas_aviso_publico ? (
+          <p className={estilos.avisoCotas}>
+            <strong>Atenção ao ler as cotas desta cidade.</strong>{' '}
+            {cidade.cotas_aviso_publico}
+          </p>
+        ) : null}
+
         {cotas.length > 0 ? (
           <>
             <h3 className={estilos.subtitulo}>Cotas de referência, na régua daqui</h3>
