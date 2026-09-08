@@ -157,7 +157,9 @@
           "codigo_ana_nao_e": {
             "codigo": "83250000",
             "nome": "ITUPORANGA",
-            "por_que_nao": "É a armadilha desta cidade, e quase caímos nela: 83250000 se chama ITUPORANGA, é fluviométrica no Itajaí do Sul e tem a série mais longa do ramo — 1.650 km², aberta desde 04/1929, 97 anos. Estava listada como 'a série longa que destrava Ituporanga'. A coordenada desmente: -27,3986 / -49,6058, a 9,59 km deste pino, e drena 1.650 km² contra os 1.170 km² da nossa. São estações diferentes, em pontos diferentes do rio. Usar a série dela como histórico de Ituporanga seria vínculo POR NOME DE MUNICÍPIO com aparência de vínculo por coordenada — o erro que a regra emendada existe para impedir. NÃO vincular. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente de desenvolvimento tem *.ana.gov.br bloqueado). Bruto: data/brutos/ana-inventario-2026-09-07.json."
+            "por_que_nao": "É a armadilha desta cidade, e quase caímos nela: 83250000 se chama ITUPORANGA, é fluviométrica no Itajaí do Sul e tem a série mais longa do ramo — 1.650 km², aberta desde 04/1929, 97 anos. Estava listada como 'a série longa que destrava Ituporanga'. A coordenada desmente: -27,3986 / -49,6058, a 9,59 km deste pino, e drena 1.650 km² contra os 1.170 km² da nossa. São estações diferentes, em pontos diferentes do rio. Usar a série dela como histórico de Ituporanga seria vínculo POR NOME DE MUNICÍPIO com aparência de vínculo por coordenada — o erro que a regra emendada existe para impedir. NÃO vincular. Inventário público da ANA, lido em 07/09/2026 por scripts/ana_inventario.py rodando na VPS (este ambiente de desenvolvimento tem *.ana.gov.br bloqueado). Bruto: data/brutos/ana-inventario-2026-09-07.json.",
+            "estado": "OFICIAL_PARA_ALERTA — não é a nossa régua, e é a régua do aviso",
+            "designacao_oficial": "CONFIRMADO em 07/09/2026, e muda o estado desta estação sem mudar o vínculo. A Secretaria da Proteção e Defesa Civil de SC determina expressamente que o monitoramento oficial de Ituporanga seja feito pela 83250000, sob responsabilidade da ANA e operada pela EPAGRI, com os dados obtidos via SIG²A-SPEHC ou Gestor PCD/ANA. As faixas que ela publica: atenção > 1,40 m, alerta > 1,90 m, emergência > 2,60 m. AS DUAS COISAS SÃO VERDADEIRAS AO MESMO TEMPO, e é isso que este campo passa a dizer: a 83250000 NÃO é a régua deste pino (9,59 km, 1.650 km² contra 1.170 km²) E é a régua pela qual o estado declara a inundação de Ituporanga. Rio não exige que a régua do aviso esteja dentro da cidade. O que continua proibido é o que sempre esteve: usar a SÉRIE dela como histórico desta régua, ou pintar leitura de uma com cota da outra. Fonte: Manual de Operação das Barragens, SPDC/SC — levantamento externo de 07/09/2026."
           },
           "codigo_dcsc": "DCSC-00039",
           "verificado": false,
@@ -171,7 +173,7 @@
             -27.4822,
             -49.5825
           ],
-          "cotas_m_por_que_vazio": "⚠️ EXISTE ESCALA OFICIAL, MAS É DE OUTRA ESTAÇÃO — RECONCILIAÇÃO REABERTA (07/09/2026). A Secretaria de Proteção e Defesa Civil de SC publica (documento de 18/10/2024): normal < 1,40 m; atenção > 1,40 m; alerta > 1,90 m; emergência > 2,60 m — e diz que os níveis vieram de estudos hidráulico-hidrológicos validados com o município. MAS AMARRA ESSES VALORES À ESTAÇÃO 83250000, que este cadastro REJEITOU como régua de Ituporanga por coordenada: fica a 9,59 km deste pino e drena 1.650 km² contra os 1.170 km² da nossa 83145140. Cadastrar 1,40/1,90/2,60 contra a nossa régua seria aplicar a escala de uma estação a outra — o erro do Salseiro, de novo. POR QUE ISTO NÃO É SÓ 'MAIS UM VÍNCULO POR NOME', E A DIFERENÇA IMPORTA: nos casos anteriores (Salseiro, Warnow, Botuvera-Montante) o que havia era um RÓTULO trazendo o nome do município. Aqui há uma DESIGNAÇÃO OPERACIONAL: o estado diz que a situação de inundação de Ituporanga se estabelece por aquela estação. As duas coisas podem ser verdadeiras ao mesmo tempo — a estação fica a 9,59 km E é a referência oficial do município; rio não exige que a régua esteja dentro da cidade. A PERGUNTA VIRA OUTRA, E É ESTA QUE PRECISA DE RESPOSTA: se o estado opera Ituporanga pela 83250000, talvez a régua questionável seja a NOSSA. Escolhemos a 83145140 por proximidade do pino; o estado escolheu a outra por decisão operacional. Enquanto isso não for resolvido, não se cadastra cota nenhuma aqui — nem contra uma régua nem contra a outra. O QUE RESOLVE: perguntar à Defesa Civil de SC (ou à EPAGRI, que opera a 83250000) qual estação alimenta o aviso de Ituporanga hoje, e qual é a cota da régua de cada uma. Fonte do achado: levantamento externo de 07/09/2026 sobre documento da SPDC/SC de 18/10/2024. Não lido por este ambiente."
+          "cotas_m_por_que_vazio": "⚠️ A ESCALA EXISTE E É OFICIAL, MAS É DE OUTRA RÉGUA (atualizado em 07/09/2026). A SPDC/SC publica atenção > 1,40 m, alerta > 1,90 m, emergência > 2,60 m para Ituporanga — e determina que o monitoramento oficial seja feito pela estação 83250000 (ANA, operada pela EPAGRI). Ver `codigo_ana_nao_e.designacao_oficial`. POR QUE `cotas_m` CONTINUA VAZIO: este campo é lido junto com a leitura ao vivo desta cidade, e a nossa leitura NÃO vem da 83250000 — vem da DCSC-00039, e em datum estadual bruto, com `usar_para_cota: false`. Gravar 1,40/1,90/2,60 aqui criaria o par régua↔cota errado no dia em que alguém ligar uma leitura a esta cidade. É o erro de Brusque (cota da Beira-Rio no campo de atenção) e o do Salseiro (cota de uma régua em outra), juntos. O QUE DESTRAVA, e agora é uma pergunta só: coletar a 83250000 pelo caminho que a própria SPDC indica (SIG²A-SPEHC ou Gestor PCD/ANA). Com a leitura DELA, a cota DELA passa a valer, e Ituporanga acende com par provado — sem depender de reconciliar coordenada nenhuma."
         },
         {
           "id": "rio-do-sul",
@@ -758,7 +760,22 @@
       "nome_no_plano": "Rio Itajaí-Açu - CEPSUL",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
-      "nome_anterior": "DC-01 Rio Itajaí-Açu - CEPSUL"
+      "nome_anterior": "DC-01 Rio Itajaí-Açu - CEPSUL",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.16,
+          "alerta": 1.36,
+          "emergencia": 1.56
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 1.15,
+          "alerta": 1.44,
+          "emergencia": 1.75
+        },
+        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-02",
@@ -781,7 +798,22 @@
       "nome_no_plano": "Rio Itajaí-Açu - Praça da Murta",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
-      "nome_anterior": "DC-02 Rio Itajaí-Açu - Praça da Murta"
+      "nome_anterior": "DC-02 Rio Itajaí-Açu - Praça da Murta",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.6,
+          "alerta": 2.0,
+          "emergencia": 2.5
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 1.6,
+          "alerta": 2.0,
+          "emergencia": 3.3
+        },
+        "_quem_avisa_antes": "as duas atenções coincidem",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-03",
@@ -803,7 +835,22 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim Canal Retificado - SEMASA",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.48,
+          "alerta": 1.85,
+          "emergencia": 2.5
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 2.28,
+          "alerta": 2.85,
+          "emergencia": 3.3
+        },
+        "_quem_avisa_antes": "a nossa avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-04",
@@ -826,7 +873,22 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim - Empresa VITALMAR",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.5,
+          "alerta": 1.85,
+          "emergencia": 2.25
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 1.28,
+          "alerta": 1.6,
+          "emergencia": 2.0
+        },
+        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-05",
@@ -848,7 +910,22 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim Curso Antigo - Sítio Sr. Hilário",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.6,
+          "alerta": 2.2,
+          "emergencia": 3.0
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 1.44,
+          "alerta": 1.8,
+          "emergencia": 2.5
+        },
+        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-06",
@@ -871,7 +948,22 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim Curso Antigo - Clube Itamirim",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.5,
+          "alerta": 1.85,
+          "emergencia": 2.55
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 1.28,
+          "alerta": 1.6,
+          "emergencia": 2.0
+        },
+        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-07",
@@ -893,7 +985,22 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Murta - Portal I",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py)."
+      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.0,
+          "alerta": 1.35,
+          "emergencia": 1.65
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 0.98,
+          "alerta": 1.23,
+          "emergencia": 1.6
+        },
+        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-08",
@@ -916,7 +1023,22 @@
       "nome_no_plano": "Ribeirão da Canhanduba - Rio do Meio",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
-      "nome_anterior": "DC-08 Ribeirão da Canhanduba - Rio do Meio"
+      "nome_anterior": "DC-08 Ribeirão da Canhanduba - Rio do Meio",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.8,
+          "alerta": 2.3,
+          "emergencia": 2.89
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 2.24,
+          "alerta": 2.8,
+          "emergencia": 3.2
+        },
+        "_quem_avisa_antes": "a nossa avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-09",
@@ -939,7 +1061,22 @@
       "nome_no_plano": "Ribeirão da Murta - Bairro Murta",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
-      "nome_anterior": "DC-09 Ribeirão da Murta - Bairro Murta"
+      "nome_anterior": "DC-09 Ribeirão da Murta - Bairro Murta",
+      "cotas_divergencia": {
+        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "adotado_tabela_11_v17": {
+          "atencao": 1.12,
+          "alerta": 1.32,
+          "emergencia": 1.52
+        },
+        "outra_leitura_tabela_13": {
+          "atencao": 0.98,
+          "alerta": 1.23,
+          "emergencia": 1.6
+        },
+        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
+        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+      }
     },
     {
       "codigo": "DC-10",
@@ -1044,5 +1181,18 @@
       "estado": "exige_cadastro",
       "observado": "O host antigo libgeo.acad.univali.br redirecionava para libgeo.univali.br/mapi/home — endereço corrigido aqui em 07/09/2026. O dado fica atrás de 'Acessar o Sistema'."
     }
+  },
+  "_conflito_plancon_itajai": {
+    "registrado_em": "2026-09-07",
+    "resumo": "Duas leituras do Plano de Contingência de Itajaí dão limiares diferentes para nove das onze réguas DC. As nossas vêm da Tabela 11 da versão 17 (22/12/2025), com URL do PDF; as outras, de uma 'Tabela 13' cuja versão do documento não foi declarada.",
+    "por_que_nada_foi_trocado": "NÃO HÁ LADO SEGURO. Em seis réguas a Tabela 13 avisaria ANTES da nossa (DC-01, DC-04, DC-05, DC-06, DC-07, DC-09); em duas a nossa avisa antes (DC-03, DC-08); numa a atenção coincide e só a emergência muda (DC-02: 2,50 contra 3,30). Não dá para 'ficar com a mais conservadora' — isso montaria uma escala que nenhum dos dois documentos publica, e escala remendada de duas fontes é pior que qualquer uma das duas inteira.",
+    "indicio_de_que_sao_a_MESMA_tabela_em_edicoes_diferentes": "Em DC-02 a atenção e o alerta batem exatamente (1,60 e 2,00) e só a emergência difere. Coincidência exata em dois de três valores não acontece entre tabelas de assuntos diferentes: é a mesma tabela, revisada. Isso torna a pergunta da versão a pergunta central.",
+    "o_que_resolve": [
+      "Abrir o PDF da versão 17 (22/12/2025) e ver se a tabela de níveis é a 11 ou a 13 nela — se for a 13, as duas leituras são da MESMA tabela e uma delas está errada na transcrição.",
+      "Se a v17 numera como 11, procurar a edição em que ela é a 13 e comparar as datas: a mais nova vence.",
+      "Confirmar com a COMPDEC de Itajaí qual edição está em vigor."
+    ],
+    "dc_10_e_dc_11": "A Tabela 13 lida NÃO contém DC-10 nem DC-11, e o nosso cadastro tem as duas citando a Tabela 11 da v17. É coerente com terem sido acrescentadas depois da edição que a busca leu — e reforça que a v17 é mais nova. Vale notar, sem concluir nada: os valores das duas são redondos (8/9/10 e 3/4/5) num documento que usa centímetros em todas as outras réguas.",
+    "ate_la": "Os `cotas_m` continuam como estão. O conflito fica gravado em cada régua, em `cotas_divergencia`, para ninguém 'corrigir' metade delas sem ver a outra metade."
   }
 }

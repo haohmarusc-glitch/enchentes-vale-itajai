@@ -1019,5 +1019,111 @@ class TestaVidalRamosNaoHerdaOSalseiro(unittest.TestCase):
             self.assertNotIn(f'"{chave}": 4.5', texto)
 
 
+class ConflitoDoPlanconDeItajai(unittest.TestCase):
+    """
+    Duas leituras do Plano de Contingência de Itajaí, valores diferentes.
+
+    As nossas vêm da Tabela 11 da versão 17 (22/12/2025), com URL do PDF; as
+    outras de uma "Tabela 13" cuja versão não foi declarada. NÃO HÁ LADO
+    SEGURO: em seis réguas a outra leitura avisaria antes, em duas a nossa
+    avisa antes, e numa só a emergência muda.
+
+    Estes testes travam o que não pode acontecer enquanto o conflito estiver
+    aberto: alguém trocar metade dos valores sem ver a outra metade, ou montar
+    uma escala "conservadora" misturando as duas — que seria uma escala que
+    nenhum dos dois documentos publica.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.dc = {e["codigo"]: e for e in cls.real["estacoes_tempo_real"]
+                  if str(e.get("codigo", "")).startswith("DC-")}
+
+    def test_o_conflito_esta_registrado_em_bloco_proprio(self):
+        bloco = self.real["_conflito_plancon_itajai"]
+        self.assertIn("NÃO HÁ LADO SEGURO", bloco["por_que_nada_foi_trocado"])
+        self.assertTrue(bloco["o_que_resolve"], "tem de dizer o que resolve")
+
+    def test_as_nove_reguas_em_conflito_carregam_as_DUAS_leituras(self):
+        emconflito = [c for c, e in self.dc.items() if "cotas_divergencia" in e]
+        self.assertEqual(len(emconflito), 9, emconflito)
+        for cod in emconflito:
+            div = self.dc[cod]["cotas_divergencia"]
+            with self.subTest(regua=cod):
+                self.assertEqual(div["adotado_tabela_11_v17"], self.dc[cod]["cotas_m"],
+                                 "o adotado tem de ser igual ao que está valendo")
+                for faixa in ("atencao", "alerta", "emergencia"):
+                    self.assertIn(faixa, div["outra_leitura_tabela_13"])
+
+    def test_nenhuma_regua_ficou_com_escala_misturada(self):
+        """
+        A tentação: pegar a atenção de uma leitura e a emergência da outra,
+        "para errar para o lado seguro". Isso montaria uma escala que nenhum
+        dos dois documentos publica.
+        """
+        for cod, e in self.dc.items():
+            div = e.get("cotas_divergencia")
+            if not div:
+                continue
+            a, b = div["adotado_tabela_11_v17"], div["outra_leitura_tabela_13"]
+            atual = e["cotas_m"]
+            with self.subTest(regua=cod):
+                self.assertTrue(
+                    atual == a or atual == b,
+                    f"{cod} não bate com nenhuma das duas leituras inteiras: {atual}")
+
+    def test_dc_02_e_a_pista_de_que_e_a_mesma_tabela_revisada(self):
+        """Atenção e alerta batem ao centavo; só a emergência muda. Duas
+        tabelas de assuntos diferentes não coincidem em dois de três."""
+        div = self.dc["DC-02"]["cotas_divergencia"]
+        self.assertEqual(div["adotado_tabela_11_v17"]["atencao"],
+                         div["outra_leitura_tabela_13"]["atencao"])
+        self.assertEqual(div["adotado_tabela_11_v17"]["alerta"],
+                         div["outra_leitura_tabela_13"]["alerta"])
+        self.assertNotEqual(div["adotado_tabela_11_v17"]["emergencia"],
+                            div["outra_leitura_tabela_13"]["emergencia"])
+
+
+class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):
+    """
+    A SPDC/SC determina que o aviso de Ituporanga saia da 83250000 (ANA/EPAGRI),
+    com atenção > 1,40 / alerta > 1,90 / emergência > 2,60 m.
+
+    Isso NÃO reabilita a 83250000 como régua deste pino — ela continua a 9,59 km
+    e drenando 1.650 km² contra 1.170 km². As duas coisas são verdadeiras ao
+    mesmo tempo, e é isso que o dado passa a dizer.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.it = _cidade(real, "itajai-acu", "ituporanga")
+
+    def test_continua_sem_cota_cadastrada(self):
+        """
+        As cotas são da 83250000; a nossa leitura vem da DCSC-00039. Gravar
+        1,40/1,90/2,60 aqui criaria o par régua↔cota errado.
+        """
+        self.assertEqual(self.it["cotas_m"], {})
+
+    def test_a_designacao_oficial_esta_registrada_com_os_valores(self):
+        texto = self.it["codigo_ana_nao_e"]["designacao_oficial"]
+        for v in ("1,40", "1,90", "2,60"):
+            self.assertIn(v, texto)
+        self.assertIn("EPAGRI", texto)
+
+    def test_o_vinculo_continua_recusado(self):
+        # A cidade TEM código ANA — a 83145140. O que continua recusado é a
+        # 83250000 como régua deste pino, apesar de ser a régua do aviso.
+        self.assertEqual(self.it["codigo_ana"], "83145140")
+        self.assertEqual(self.it["codigo_ana_nao_e"]["codigo"], "83250000")
+        self.assertIn("9,59 km", self.it["codigo_ana_nao_e"]["designacao_oficial"])
+
+    def test_o_caminho_que_destrava_esta_dito(self):
+        """Coletar a 83250000: com a leitura dela, a cota dela vale."""
+        self.assertIn("SIG²A-SPEHC", self.it["cotas_m_por_que_vazio"])
+
+
 if __name__ == "__main__":
     unittest.main()

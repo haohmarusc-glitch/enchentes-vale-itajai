@@ -501,6 +501,28 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **🔴 A busca externa achou a Tabela 13 do PLANCON de Itajaí — e ela CONFLITA com a nossa.**
+  Esperava-se uma lacuna; veio um conflito. O repositório já tinha as onze réguas DC citando a
+  **Tabela 11 da versão 17 (22/12/2025)**, com URL do PDF; a busca leu uma **Tabela 13** cuja versão
+  não foi declarada. Os valores divergem nas nove réguas que as duas cobrem. **Nenhum número foi
+  trocado, e o motivo é que não há lado seguro:** em seis réguas a Tabela 13 avisaria *antes*, em
+  duas a nossa avisa antes. Ficar com "a mais conservadora de cada" montaria uma escala que
+  **nenhum dos dois documentos publica** — pior que qualquer uma das duas inteira. **A pista que
+  aponta o caminho:** em DC-02 a atenção e o alerta batem ao centavo e só a emergência muda — duas
+  tabelas de assuntos diferentes não coincidem em dois de três, então é a **mesma tabela revisada**,
+  e a pergunta central é a **versão**. Indício de que a v17 é a mais nova: a Tabela 13 não contém
+  DC-10 nem DC-11, que o nosso cadastro tem. O conflito ficou gravado nas nove réguas
+  (`cotas_divergencia`) e num bloco `_conflito_plancon_itajai`, com testes travando que ninguém
+  troque metade delas nem misture as duas escalas. Descartado o 1,70 m da DC-01 que veio de imprensa
+  na rodada anterior: nenhuma das duas leituras oficiais traz esse valor.
+- [x] **Ituporanga: a escala é oficial, e é de outra régua — as duas coisas ao mesmo tempo.** A
+  SPDC/SC determina que o monitoramento oficial saia da **83250000** (ANA/EPAGRI, via SIG²A-SPEHC ou
+  Gestor PCD/ANA), com atenção > 1,40 / alerta > 1,90 / emergência > 2,60 m. Isso **não** reabilita a
+  83250000 como régua do nosso pino — ela segue a 9,59 km e drenando 1.650 km² contra 1.170 km². O
+  dado passa a dizer as duas coisas: não é a nossa régua, **e** é a régua do aviso; rio não exige que
+  a régua do alerta esteja dentro da cidade. `cotas_m` continua vazio por um motivo preciso: as cotas
+  são da 83250000 e a nossa leitura vem da DCSC-00039 — gravá-las ali criaria o par régua↔cota errado.
+  **O que destrava virou uma pergunta só:** coletar a 83250000 pelo caminho que a própria SPDC indica.
 - [x] **Dois elos do Açu saíram da lista de busca: não são tempo de trânsito.** Com a série estadual,
   todos os elos ficaram **mensuráveis** — e mensurável não é o mesmo que **significativo**. Dos seis
   que faltavam no Açu, quatro são roteamento de verdade (`rio-do-sul → lontras`, `lontras → ascurra`,
