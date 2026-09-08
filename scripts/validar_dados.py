@@ -1561,6 +1561,55 @@ def valida_brutos_citados() -> None:
                   "a exceção pode ter perdido o dono.")
 
 
+#: Campos do cadastro que registram uma RESSALVA sobre as cotas de uma cidade.
+#: São escritos para o projeto: longos, datados, citando campos e arquivos.
+CAMPOS_DE_RESSALVA = ("cotas_ressalva", "cotas_pendencia", "cotas_m_por_que_vazio")
+
+
+def valida_ressalva_chega_na_tela() -> None:
+    """Cidade com ressalva sobre as cotas decide, uma vez, se ela vai à tela.
+
+    ACHADO EM 08/09/2026, do apontamento do Jefferson: algumas cidades mudam de
+    estado prevendo a DESCIDA da água das cidades de cima, mesmo com o nível
+    daqui baixo — a Defesa Civil de Brusque olha Vidal Ramos → Botuverá →
+    Brusque e a tendência, e pode declarar atenção antes de o número de Brusque
+    subir. O projeto já sabia: estava em `cotas_ressalva` desde 07/09.
+
+    E a tela não lia esse campo nem nenhum irmão dele. CINCO cidades traziam
+    ressalva no cadastro e NENHUMA chegava a quem abre a página — ressalva que
+    não aparece é ressalva que não existe, porque quem lê a cor decide sem ela.
+
+    O guarda não obriga a mostrar: obriga a DECIDIR e a escrever a decisão.
+    Ou a cidade tem `cotas_aviso_publico` (o texto curto que a tela mostra), ou
+    tem `cotas_aviso_publico_nao_precisa` dizendo por que aquela ressalva é
+    interna. O que não pode é a ressalva existir e ninguém ter perguntado.
+    """
+    dados = le_json("estacoes.json")
+    for rio in dados["rios"].values():
+        for cidade in rio["cidades"]:
+            cid = cidade["id"]
+            tem = [c for c in CAMPOS_DE_RESSALVA if cidade.get(c)]
+            se_mostra = cidade.get("cotas_aviso_publico")
+            nao_precisa = cidade.get("cotas_aviso_publico_nao_precisa")
+
+            if tem and not se_mostra and not nao_precisa:
+                erro(f"estacoes.json / {cid}: tem {', '.join(tem)} e nada diz se isso "
+                     "chega à tela. Escreva `cotas_aviso_publico` (texto curto, para quem "
+                     "lê a página) ou `cotas_aviso_publico_nao_precisa` (por que a ressalva "
+                     "é interna). Ressalva que não aparece é ressalva que não existe.")
+            if se_mostra and nao_precisa:
+                erro(f"estacoes.json / {cid}: tem `cotas_aviso_publico` E "
+                     "`cotas_aviso_publico_nao_precisa` — os dois se contradizem. Um só.")
+            if nao_precisa and not tem:
+                aviso(f"estacoes.json / {cid}: `cotas_aviso_publico_nao_precisa` sem "
+                      "ressalva nenhuma para dispensar. A ressalva saiu e a justificativa "
+                      "ficou — tire-a.")
+            if se_mostra and len(se_mostra) > 420:
+                erro(f"estacoes.json / {cid}: `cotas_aviso_publico` com {len(se_mostra)} "
+                     "caracteres. É o texto que aparece na tela em cheia: se precisa de mais, "
+                     "o lugar é `cotas_ressalva`, que é o registro interno.")
+
+
 def valida_ordem_das_cotas() -> None:
     """
     As cotas de uma cidade sobem na ordem das faixas?
@@ -1836,6 +1885,7 @@ def main() -> int:
     valida_cota_de_rua_duplicada()
     valida_ordem_das_cotas()
     valida_brutos_citados()
+    valida_ressalva_chega_na_tela()
     valida_cobertura_da_mare()
 
     for a in avisos:

@@ -37,6 +37,26 @@ export interface Cidade {
   coordenadas?: [number, number]
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>
+  /**
+   * Ressalva sobre as cotas ESCRITA PARA QUEM LÊ A TELA, não para quem lê o
+   * JSON. Existe onde a cor desta tela pode divergir do que a Defesa Civil do
+   * município declara — e a pessoa precisa saber disso antes de decidir.
+   *
+   * Hoje em três cidades, por dois motivos diferentes:
+   *
+   * - **Brusque** opera por BACIA: a Defesa Civil olha Vidal Ramos → Botuverá
+   *   → Brusque e a tendência, e pode declarar atenção ANTES de o número daqui
+   *   subir. A régua sozinha não é o critério dela.
+   * - **Ituporanga** e **Vidal Ramos** têm escala publicada por OUTRA régua
+   *   (a 9,6 km e a 6,8 km), com zero próprio. A tela não pinta cor, e sem
+   *   dizer por quê a ausência de cor parece ausência de rio.
+   *
+   * Os campos `cotas_ressalva`, `cotas_pendencia` e `cotas_m_por_que_vazio` do
+   * JSON continuam existindo e são o registro INTERNO, longo e datado. Este é
+   * o que a tela mostra. Nunca despejar aqueles: são escritos para o projeto,
+   * citam campos e arquivos, e em cheia ninguém lê parágrafo de auditoria.
+   */
+  cotas_aviso_publico?: string
   fontes_tempo_real: string[]
 }
 

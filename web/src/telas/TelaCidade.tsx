@@ -214,6 +214,16 @@ export default function TelaCidade() {
             está. Só aparece nas três cidades que têm barragem acima. */}
         <EstadoDasBarragens barragens={barragens} agora={agora} />
 
+        {/* A ressalva vem ANTES dos números. Depois deles, seria rodapé — e o
+            que ela diz é justamente que os números podem não bater com o que a
+            Defesa Civil do município declara. Ler a cota sem isso é ler errado. */}
+        {cidade.cotas_aviso_publico ? (
+          <p className={estilos.avisoCotas}>
+            <strong>Atenção ao ler as cotas desta cidade.</strong>{' '}
+            {cidade.cotas_aviso_publico}
+          </p>
+        ) : null}
+
         {cotas.length > 0 ? (
           <>
             <h3 className={estilos.subtitulo}>Cotas de referência, na régua daqui</h3>
@@ -230,6 +240,18 @@ export default function TelaCidade() {
               <strong>Estes metros não se comparam</strong> com os de outra cidade.
             </p>
           </>
+        ) : reguas.length > 0 ? (
+          /* Itajaí. A escala não está NA CIDADE porque ela tem VÁRIAS — uma por
+             régua, com zeros diferentes (a DC-01 usa 1,16/1,36/1,56 e a DC-10
+             usa 8/9/10). Um número só aqui seria mentira. Até 08/09/2026 esta
+             tela dizia "esta cidade ainda não tem cota" logo abaixo do painel
+             que mostrava as onze escalas — a própria página se desmentia, e
+             ainda afirmava que o site não pinta, quando pinta por régua. */
+          <p className={estilos.instrucao}>
+            As cotas desta cidade estão <strong>em cada régua</strong>, acima — não numa
+            escala única. Elas têm zeros diferentes entre si, e um número só para a cidade
+            inteira seria falso. <strong>A cor sai da régua</strong>, não daqui.
+          </p>
         ) : (
           <p className={estilos.instrucao}>
             Esta cidade ainda não tem cota de acionamento no cadastro. Sem ela, um número
