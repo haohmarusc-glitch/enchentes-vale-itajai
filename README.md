@@ -865,6 +865,21 @@ o projeto.
   já temos o bruto inteiro; se for pasta nova, é fonte nova. E olhar se **alguma camada tem campo de
   nível de RÉGUA**, que é o bloqueio das manchas ao vivo. ⚠️ Número entre 0 e 3 é **lâmina**, não cota de
   régua — o app da prefeitura chama a lâmina de "cota". Detalhe em `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+- [ ] **⚠️ A coleta automatizada do ArcGIS de 08/09 FALHOU inteira, e o relatório dela não diz isso.**
+  Os **seis arquivos** que produziu são todos `*_ERROR.json`, e a tabela de camadas veio com cabeçalho e
+  **nenhuma linha** — zero registros. Mas o texto ao redor afirma o contrário: *"o serviço declara
+  EPSG:4326, limite de 1000 registros e dez camadas"*, *"os `*_metadata.json` preservam esquema e
+  campos"* (não existe nenhum `*_metadata.json`, existem `*_metadata_ERROR.json`) e um título
+  *"Conteúdo histórico confirmado"* cuja lista de dez camadas **é o que este repositório já tem desde
+  06/09** — conhecimento anterior reapresentado como achado. **Nada entrou em `data/`; não havia o que
+  entrar.** Ela também **não olhou o app que motivou a coleta** (`4e097e76…` não aparece no relatório) e
+  trouxe um **segundo id não catalogado**, `03542d8f541c4392bc542b01ca979c6d` — possivelmente o item de
+  web map que o outro app consome, mas isso é hipótese, não achado. **O que destrava é barato: os seis
+  `*_ERROR.json`.** Só o `.md` foi trazido, e é ele que não diz *por que* falhou — `499 Token Required`
+  vira ofício, `403` de saída vira refazer de outra rede, 404 vira corrigir a URL. Coisas opostas.
+  ⛔ E o "próximo alvo" proposto (procurar a "Tabela 13" no ArcGIS) **é caçada encerrada e no lugar
+  errado**: a Tabela 13 é de outra **edição do PDF do PLANCON**, não uma camada de ArcGIS. Detalhe em
+  `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
 
 - [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
   negativo.** Era o único passo que destravava as manchas ao vivo. **Tudo que circula com metro nas
