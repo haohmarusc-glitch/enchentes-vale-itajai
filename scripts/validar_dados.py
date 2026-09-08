@@ -1418,6 +1418,87 @@ COTAS_QUE_NAO_SAO_FAIXA = {
 }
 
 
+#: Bruto CITADO nos JSONs que ainda NÃO está no repositório, com o motivo e o
+#: que o traz. Achado em 08/09/2026 por uma varredura da auditoria: dos 106
+#: caminhos que os JSONs citam como evidência, 105 existiam e UM não — e era
+#: justamente o que sustenta quatro recusas de código ANA e um vínculo. As
+#: recusas continuam certas (a saída da execução foi transcrita e conferida);
+#: o que estava errado era a FRASE, que dizia "Bruto: <caminho>" como quem diz
+#: "está ali, confira" para um arquivo que não está.
+#:
+#: Uma citação assim é do mesmo tipo de defeito que este projeto persegue nos
+#: números: dá a quem lê mais confiança do que a evidência disponível permite.
+#: Por isso a exceção é NOMEADA e VENCÍVEL — quando o arquivo chegar, o guarda
+#: manda tirar a linha daqui.
+BRUTOS_PENDENTES = {
+    "data/brutos/ana-inventario-2026-09-07.json":
+        "gerado na VPS em 07/09/2026 (este ambiente tem *.ana.gov.br bloqueado) e "
+        "nunca commitado. Os valores gravados vieram da saída transcrita da execução. "
+        "Traz: commitar o bruto da VPS — docs/CODIGOS-ANA-PENDENTES.md, 'O que sobrou', item 3.",
+}
+
+#: Onde procurar citação de bruto. Só os JSONs de dados: é ali que a citação
+#: vira evidência de um número que a tela mostra.
+JSONS_QUE_CITAM = ("data/estacoes.json", "data/enchentes.json", "data/transito.json")
+
+RE_CAMINHO_BRUTO = re.compile(r"data/brutos/[A-Za-z0-9_.-]+\.[A-Za-z0-9]{2,10}")
+
+
+def _cada_texto(o, caminho: str = ""):
+    """Percorre o JSON inteiro e devolve (onde, texto) de cada string."""
+    if isinstance(o, dict):
+        for k, v in o.items():
+            yield from _cada_texto(v, f"{caminho}/{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            yield from _cada_texto(v, f"{caminho}[{i}]")
+    elif isinstance(o, str):
+        yield caminho, o
+
+
+def valida_brutos_citados() -> None:
+    """Todo bruto citado nos JSONs existe — ou está declarado como pendente.
+
+    O bloco `codigo_ana_nao_e` é o mecanismo com que este projeto impede um
+    pareamento errado de voltar: ele diz por que aquela estação NÃO é a régua
+    da cidade e aponta o bruto onde isso foi lido. Se o bruto não existe, a
+    recusa continua valendo pelo texto, mas quem quiser reconferir não tem o
+    que abrir — e é reconferência que separa "recusa provada" de "recusa que
+    alguém escreveu".
+
+    Erro para bruto citado e ausente sem declaração. Erro também para
+    declaração que sobrou depois que o arquivo chegou: exceção que não vence
+    vira mobília.
+    """
+    citados: dict[str, list[str]] = defaultdict(list)
+    for arq in JSONS_QUE_CITAM:
+        caminho = RAIZ / arq
+        if not caminho.exists():
+            continue
+        for onde, texto in _cada_texto(le_json(caminho)):
+            for achado in RE_CAMINHO_BRUTO.findall(texto):
+                citados[achado].append(f"{arq}{onde}")
+
+    for bruto, ondes in sorted(citados.items()):
+        existe = (RAIZ / bruto).exists()
+        declarado = bruto in BRUTOS_PENDENTES
+        if not existe and not declarado:
+            erro(f"{bruto} é citado como evidência em {len(ondes)} lugar(es) "
+                 f"({ondes[0]}) e NÃO existe. Ou commite o arquivo, ou declare-o em "
+                 "BRUTOS_PENDENTES dizendo de onde vieram os números e o que traz o "
+                 "bruto. Citar um caminho ausente afirma uma conferência que ninguém "
+                 "pode fazer.")
+        elif existe and declarado:
+            erro(f"{bruto} chegou ao repositório, mas continua em BRUTOS_PENDENTES. "
+                 "Tire a entrada de lá — e, nos textos que o citam, apague o aviso de "
+                 "que o arquivo não está no repo, senão o JSON passa a mentir ao contrário.")
+
+    for bruto in BRUTOS_PENDENTES:
+        if bruto not in citados:
+            aviso(f"{bruto} está em BRUTOS_PENDENTES e não é citado por nenhum JSON — "
+                  "a exceção pode ter perdido o dono.")
+
+
 def valida_ordem_das_cotas() -> None:
     """
     As cotas de uma cidade sobem na ordem das faixas?
@@ -1692,6 +1773,7 @@ def main() -> int:
     valida_referencia_das_cotas_de_rua()
     valida_cota_de_rua_duplicada()
     valida_ordem_das_cotas()
+    valida_brutos_citados()
     valida_cobertura_da_mare()
 
     for a in avisos:

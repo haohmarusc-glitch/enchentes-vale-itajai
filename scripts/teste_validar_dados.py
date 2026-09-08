@@ -8,8 +8,10 @@ cada um estraga UM ponto dos dados reais e exige que `valida_estacoes` acuse.
 
 import copy
 import json
+import tempfile
 import unittest
 from datetime import date, timedelta
+from pathlib import Path
 
 from comum import DADOS
 import validar_dados as vd
@@ -1355,6 +1357,98 @@ class ACotaDaSalseiroNaoEDeVidalRamos(unittest.TestCase):
         texto = self.bloco["a_pagina_nao_envelhece_o_dado"]
         self.assertIn("18/04/2026", texto)
         self.assertIn("VERDE", texto)
+
+
+def _brutos(citacao: str, arquivos: list[str], pendentes: dict[str, str]) -> tuple[list[str], list[str]]:
+    """Roda `valida_brutos_citados` sobre um repo de mentira, em pasta temporária.
+
+    `citacao` é o texto que um bloco do estacoes.json traria; `arquivos` é o
+    que existe de verdade em data/brutos/; `pendentes` é o BRUTOS_PENDENTES.
+    """
+    vd.erros.clear()
+    vd.avisos.clear()
+    with tempfile.TemporaryDirectory() as tmp:
+        raiz = Path(tmp)
+        (raiz / "data" / "brutos").mkdir(parents=True)
+        for nome in arquivos:
+            (raiz / "data" / "brutos" / nome).write_text("{}", encoding="utf-8")
+        (raiz / "data" / "estacoes.json").write_text(
+            json.dumps({"rios": {"x": {"cidades": [{"id": "c", "nota": citacao}]}}}),
+            encoding="utf-8")
+        raiz_orig, pend_orig, le_orig = vd.RAIZ, vd.BRUTOS_PENDENTES, vd.le_json
+        vd.RAIZ, vd.BRUTOS_PENDENTES = raiz, pendentes
+        vd.le_json = lambda caminho: json.loads(Path(caminho).read_text(encoding="utf-8"))
+        try:
+            vd.valida_brutos_citados()
+        finally:
+            vd.RAIZ, vd.BRUTOS_PENDENTES, vd.le_json = raiz_orig, pend_orig, le_orig
+        return list(vd.erros), list(vd.avisos)
+
+
+class BrutoCitadoTemDeExistir(unittest.TestCase):
+    """
+    Achado da auditoria de 08/09/2026: dos 106 caminhos citados como evidência
+    nos JSONs, 105 existiam e um não — o inventário da ANA, que sustenta quatro
+    recusas de código e um vínculo. As recusas seguem certas; a frase é que
+    prometia uma conferência impossível. Este guarda impede a próxima.
+    """
+
+    CITACAO = "Lido no inventário. Bruto: data/brutos/inventario-2026-09-07.json."
+
+    def test_bruto_ausente_e_nao_declarado_e_erro(self):
+        erros, _ = _brutos(self.CITACAO, arquivos=[], pendentes={})
+        self.assertTrue(erros, "citou bruto que não existe e o validador deixou passar")
+        self.assertIn("NÃO existe", erros[0])
+
+    def test_bruto_presente_passa(self):
+        erros, _ = _brutos(self.CITACAO, arquivos=["inventario-2026-09-07.json"], pendentes={})
+        self.assertEqual(erros, [])
+
+    def test_bruto_ausente_mas_declarado_passa(self):
+        erros, _ = _brutos(
+            self.CITACAO, arquivos=[],
+            pendentes={"data/brutos/inventario-2026-09-07.json": "gerado na VPS"})
+        self.assertEqual(erros, [], "a pendência declarada não deveria virar erro")
+
+    def test_a_excecao_vence_quando_o_arquivo_chega(self):
+        """Exceção que não vence vira mobília — e passa a mentir ao contrário."""
+        erros, _ = _brutos(
+            self.CITACAO, arquivos=["inventario-2026-09-07.json"],
+            pendentes={"data/brutos/inventario-2026-09-07.json": "gerado na VPS"})
+        self.assertTrue(erros, "o arquivo chegou e a exceção continuou de pé, calada")
+        self.assertIn("BRUTOS_PENDENTES", erros[0])
+
+    def test_pendencia_sem_dono_vira_aviso(self):
+        _, avisos = _brutos("sem citação nenhuma", arquivos=[],
+                            pendentes={"data/brutos/orfao.json": "ninguém cita"})
+        self.assertTrue(any("perdido o dono" in a for a in avisos))
+
+
+class OInventarioDaAnaEstaDeclaradoComoAusente(unittest.TestCase):
+    """O caso real, travado contra o repositório de verdade."""
+
+    BRUTO = "data/brutos/ana-inventario-2026-09-07.json"
+
+    def test_ou_o_arquivo_existe_ou_a_pendencia_esta_declarada(self):
+        existe = (vd.RAIZ / self.BRUTO).exists()
+        declarado = self.BRUTO in vd.BRUTOS_PENDENTES
+        self.assertNotEqual(existe, declarado,
+                            "o inventário da ANA precisa estar OU no repo OU em "
+                            "BRUTOS_PENDENTES — nunca nos dois, nunca em nenhum")
+
+    def test_quem_cita_avisa_que_o_arquivo_nao_esta(self):
+        """
+        Enquanto o bruto não chegar, cada bloco que o cita diz isso na cara.
+        Se o arquivo chegar, este teste cai junto com o guarda do validador —
+        de propósito: os textos têm de perder o aviso na mesma hora.
+        """
+        if (vd.RAIZ / self.BRUTO).exists():
+            self.skipTest("o bruto chegou; o validador cobra a limpeza dos textos")
+        bruto_texto = (vd.RAIZ / "data" / "estacoes.json").read_text(encoding="utf-8")
+        citacoes = bruto_texto.count(self.BRUTO)
+        self.assertEqual(citacoes, 5, "mudou o número de citações do inventário")
+        self.assertEqual(bruto_texto.count("AINDA NÃO ESTÁ NO REPO"), citacoes,
+                         "há citação do inventário sem o aviso de que o arquivo não está")
 
 
 if __name__ == "__main__":
