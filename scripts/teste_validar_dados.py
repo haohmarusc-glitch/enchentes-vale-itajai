@@ -1634,5 +1634,39 @@ class RessalvaDasCotasChegaNaTela(unittest.TestCase):
                                          "prosa de projeto vazou para a tela")
 
 
+class ARegraDeBlumenauGuardaOResultadoNegativo(unittest.TestCase):
+    """
+    Em 08/09/2026 o acesso à API da ANA saiu e a busca que o `como_remover`
+    mandava fazer FOI FEITA — e não resolve: para jul/1983 e ago/1984 a
+    83800002 só tem média diária, e média diária não decide datum (em set/2011
+    a diferença entre a média consistida e a leitura das 07h foi de 4 m).
+
+    Resultado negativo não guardado vira a mesma busca daqui a um mês. Estes
+    testes travam o registro; se a regra for removida, eles caem junto, que é
+    o comportamento certo.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.meta = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))["_meta"]
+
+    def test_a_regra_ainda_existe(self):
+        self.assertIn("REGRA_REFERENCIA_BLUMENAU", self.meta)
+
+    def test_o_negativo_da_ana_esta_registrado(self):
+        regra = self.meta["REGRA_REFERENCIA_BLUMENAU"]
+        texto = regra.get("tentado_e_NAO_resolve", "")
+        self.assertTrue(texto, "o resultado negativo da API da ANA sumiu do registro")
+        for marca in ("08/09/2026", "83800002", "média diária", "12,48", "8,85"):
+            self.assertIn(marca, texto, f"o registro perdeu {marca!r}")
+
+    def test_o_como_remover_nao_manda_mais_repetir_a_busca_feita(self):
+        """Mandar de novo ao HidroWeb faria alguém gastar uma sessão de novo."""
+        remover = self.meta["REGRA_REFERENCIA_BLUMENAU"]["como_remover"]
+        self.assertIn("FURB", remover)
+        self.assertIn("INSTANT", remover.upper(),
+                      "o que falta é o pico instantâneo — isso tem de estar dito")
+
+
 if __name__ == "__main__":
     unittest.main()

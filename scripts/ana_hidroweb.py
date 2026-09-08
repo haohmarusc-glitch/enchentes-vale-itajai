@@ -101,6 +101,77 @@ def baixa_serie(
     return resposta.json()
 
 
+#: Valor de `Mediadiaria` que marca uma linha de LEITURA da régua (07h, 17h),
+#: por oposição à série de MÉDIAS diárias.
+LEITURA = "0"
+
+#: Valor de `nivelconsistencia` para dado consistido pela ANA.
+CONSISTIDO = "2"
+
+
+def cota_em_metros(valor) -> float | None:
+    """A API devolve CENTÍMETROS, como string: "1519.0" é 15,19 m."""
+    if valor in (None, ""):
+        return None
+    return round(float(valor) / 100.0, 2)
+
+
+def _e_leitura(linha: dict) -> bool:
+    return str(linha.get("Mediadiaria", "")).strip() == LEITURA
+
+
+def pico_do_mes(resposta: dict) -> dict:
+    """O maior valor do mês, tirado SOMENTE das linhas de leitura da régua.
+
+    ⚠️ POR QUE ISTO NÃO É UM `max()` SOBRE A RESPOSTA INTEIRA. Uma consulta
+    devolve VÁRIAS linhas para o mesmo mês, e elas são séries diferentes:
+    médias diárias (`Mediadiaria: 1`) e leituras da régua em hora fixa
+    (`Mediadiaria: 0`, tipicamente 07h e 17h).
+
+    Medido em 08/09/2026 na estação 83800002 (Blumenau), setembro de 2011:
+
+        média diária CONSISTIDA  dia 8 = 885 cm, e descendo até 733 no dia 12
+        leitura das 07h          dia 9 = 1248 cm
+
+    A cheia que a base registra em 12,80 m NÃO EXISTE na série consistida —
+    ela vira uma média diária de 8,85 m. Quem tomasse a série consistida como
+    histórico gravaria o pico QUATRO METROS ABAIXO do real, e no rótulo de
+    maior qualidade, que é o que torna a armadilha eficaz.
+
+    E mesmo a leitura é PISO, não pico: duas por dia, e podem faltar (a das
+    17h do dia 9 está ausente). Por isso o retorno diz `de` — de onde veio o
+    número — em vez de devolver um float solto que alguém guardaria como pico.
+
+    Devolve sempre um dicionário; quando não há linha de leitura, `cota_m` é
+    None e `recusa` explica. Ver docs/ANA-API-2026-09-08.md.
+    """
+    linhas = [l for l in (resposta.get("items") or []) if isinstance(l, dict)]
+    leituras = [l for l in linhas if _e_leitura(l)]
+
+    if not leituras:
+        so_medias = len(linhas)
+        return {
+            "cota_m": None, "dia": None, "de": None,
+            "recusa": (
+                "não há linha de leitura da régua nesta resposta"
+                + (f" (só {so_medias} linha(s) de média diária)" if so_medias else "")
+                + ". Média diária NÃO é pico: em set/2011 a diferença foi de 4 m."
+            ),
+        }
+
+    melhor = {"cota_m": None, "dia": None, "de": None, "recusa": None}
+    for linha in leituras:
+        hora = str(linha.get("Data_Hora_Dado") or "")[-10:].strip() or "?"
+        for dia in range(1, 32):
+            m = cota_em_metros(linha.get(f"Cota_{dia:02d}"))
+            if m is not None and (melhor["cota_m"] is None or m > melhor["cota_m"]):
+                melhor = {"cota_m": m, "dia": dia, "de": f"leitura de {hora}", "recusa": None}
+
+    if melhor["cota_m"] is None:
+        melhor["recusa"] = "há linhas de leitura, mas todas sem valor no mês"
+    return melhor
+
+
 def grava_serie(codigo: str, conteudo: dict) -> Path:
     """Idempotente: reescrever a mesma janela não duplica nada."""
     SERIES.mkdir(parents=True, exist_ok=True)
