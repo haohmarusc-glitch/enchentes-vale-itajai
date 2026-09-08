@@ -89,3 +89,34 @@ O que **não pode** entrar como está:
   isso que o AlertaBlu ficou de fora. A sonda tem o porteiro.
 - **`data/raw` e `data/processed`** não são o layout do projeto: bruto vai em
   `data/brutos/` com proveniência; série derivada não é versionada.
+
+## A listagem de telemetria é OUTRA lista — e só uma estação nela mede o rio
+
+Vista em **08/09/2026 às 20:15**, três páginas, **24 estações**:
+
+| fonte | quantas | o que são |
+|---|---|---|
+| CMID | 17 | escolas (EEF, CEI, CMEI, ETI — "NTE Brusque"), **Experimental: Sim**. Chuva e temperatura; nível `-` |
+| CEMADEN | 5 | Bateas, Centro (Defesa Civil), Limeira, Santa Luzia, Souza Cruz. Chuva; nível `-` |
+| DCSC | 2 | **Ponte Estaiada – DCSC** (a 79, **nível 1,24 m**) e **Souza Cruz – DCSC** (temperatura 17,5, nível `-`) |
+
+**Das 24, só a Ponte Estaiada – DCSC publica nível de rio.** Salseiro, Vidal
+Ramos (3), Botuverá, Guarani, Cedro Alto… **não estão nesta lista**. As quinze
+estações do formulário de histórico são um **registro separado**, e ao menos a
+Salseiro sabidamente parou (18/04/2026). A hipótese honesta: são estações com
+histórico baixável, não telemetria viva.
+
+**Conferência do par, de novo:** portal 1,24 m às 20:15; nossa coleta
+(DCSC-00019) **1,24 m** às 20:05. Quarta concordância desde 07/09.
+
+**Souza Cruz – DCSC** não está no cadastro por esse nome, mas o bruto estadual
+tem a **DCSC-00044 "Brusque (M)"** em −27,118 / −48,924 — um segundo ponto DCSC
+em Brusque. Temperatura sem nível é a cara de estação meteorológica; o "(M)"
+sugere o mesmo. **Hipótese**, não identidade — falta o par de coordenadas.
+
+**Consequência para a estação 3:** o teste das três leituras simultâneas, que
+provou a 79, **não pode ser feito** — não há leitura ao vivo da 3. O teste que
+resta é **histórico contra histórico**: baixar a 3 e sobrepor com o que a nossa
+coleta gravou da DCSC-00024 (`data/tempo-real/*.ndjson`, na VPS). Se coincidir
+carimbo a carimbo na janela comum, é a mesma régua. Se a 3 tiver parado antes
+de a nossa coleta começar, não há janela — e a pista continua pista.
