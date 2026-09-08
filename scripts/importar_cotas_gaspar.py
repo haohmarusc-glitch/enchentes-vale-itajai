@@ -40,7 +40,6 @@ Uso:
 import argparse
 import json
 import sys
-import unicodedata
 from datetime import date
 
 from analisar_kml_brusque import cruzar_com_cadastro, e_numero, normalizar

@@ -32,7 +32,7 @@ import sys
 from datetime import date
 
 from conferir_blumenau_2014 import (BRUTO, CIDADE, DATA_FONTE, carregar_pdf,
-                                    confirmado, indexar, normalizar_ponto,
+                                    confirmado, normalizar_ponto,
                                     normalizar_rua, numero, parear,
                                     sem_par_no_cadastro)
 from comum import DADOS

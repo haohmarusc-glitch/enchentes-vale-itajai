@@ -28,7 +28,6 @@ Uso:
 import argparse
 import json
 import re
-import sys
 
 from comum import DADOS
 

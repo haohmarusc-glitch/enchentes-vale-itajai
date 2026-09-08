@@ -77,10 +77,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from comum import DADOS, baixar, espera_turno, grava_json
+from comum import baixar, espera_turno, grava_json
 
 BASE = "https://ciram.epagri.sc.gov.br/graficos/"
 

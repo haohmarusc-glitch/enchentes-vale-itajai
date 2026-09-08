@@ -923,6 +923,30 @@ o projeto.
   `valida_divergencia_que_virou_registro` passa a barrar o padrão, e um teste trava as quatro
   primeiras posições de Brusque. 197 → 196 registros; nenhum número mudou, um sumiu de onde estava
   duplicado.
+- [x] **🔴 Quatro escadas de cota neste repositório, e nenhuma amarrada às outras.** Achado aplicando
+  ao enchentes uma lição do repo **Premercado**, que a aprendeu em produção: *o mesmo indicador tinha
+  duas contas com o mesmo nome e elas divergiam em silêncio* — "RSI 64,6" num painel e "RSI 67,2" no
+  outro, mesmo ticker, mesmo instante. A grandeza duplicada aqui é **a faixa de aviso**, que pinta a
+  cor da tela e decide se o bot toca, e ela é calculada em quatro lugares: `alerta_cotas.FAIXAS`,
+  `bot.ORDEM_COTAS`, `validar_dados.ORDEM_DAS_FAIXAS` e `tempoReal.CHAVES_QUE_PINTAM`. **As contas nem
+  usam o mesmo critério:** o bot escolhe a faixa pela POSIÇÃO na escada, o site escolhe pelo MAIOR
+  VALOR — só coincidem enquanto o cadastro for monotônico, o que um terceiro arquivo garante.
+  **Divergência VIVA:** `monitoramento` não está na escada do bot, então em **Taió** (monitoramento
+  5,00 m, atenção 7,00 m) o pino acende no site e o bot fica calado — e Taió estava em **4,54 m**, 46
+  cm abaixo. Nada mudou de comportamento: o silêncio virou `alerta_cotas.NAO_DISPARAM_AVISO` com o
+  motivo escrito (monitoramento é a fase que a COMPDEC OLHA, não a que anuncia; avisar ali ensina a
+  ignorar o aviso da noite da cheia). **Divergência aparente, resolvida pela evidência:** o bot e o
+  validador ordenam `inundacao` e `emergencia` de formas opostas — e a pergunta é **mal formada**,
+  porque são **o mesmo degrau com nomes municipais diferentes**: Rio do Sul e Blumenau chamam o topo
+  de "inundação", todo o resto de "emergência", e nenhuma cidade usa os dois. `teste_escadas_de_cota.py`
+  amarra as quatro, com tripwire para o dia em que alguma cidade publicar os dois.
+- [x] **`ruff` na CI, com a config e o raciocínio emprestados do Premercado.** O repo não tinha lint de
+  Python. A config de lá é estreita **de propósito** — *"uma checagem que reprova código correto ensina
+  todo mundo a ignorá-la"* —, e foi por isso que aquele repo ficou três meses sem lint nenhum. Rodada
+  aqui: **30 achados e nenhum `except:` nu**, que é o que mais importaria num coletor de cron (engole
+  SIGTERM junto). Vinte corrigidos automaticamente; dos três restantes, um era **falso positivo em
+  espírito** — o `import requests` do `coleta_mares.py` É a sonda de disponibilidade, o `ImportError`
+  é o objetivo — e ficou com `noqa` e o motivo. Os outros dois eram linha morta.
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível

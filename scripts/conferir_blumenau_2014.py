@@ -31,7 +31,6 @@ Uso:
 import json
 import re
 import statistics
-import sys
 import unicodedata
 from typing import Any
 

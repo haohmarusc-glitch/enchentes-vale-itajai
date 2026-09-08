@@ -63,7 +63,6 @@ import sys
 import time
 import unicodedata
 from datetime import datetime, timezone
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import notificador
@@ -508,7 +507,7 @@ def resposta_chuva(base: Base, cidade: dict, agora: datetime) -> list[str]:
     idades = [idade_min(c.get("medido_em"), agora) for c in boas]
     idades = [i for i in idades if i is not None]
     rodape = f"\n\n{len(boas)} pluviômetro"
-    rodape += f"s, maior valor de cada janela" if len(boas) > 1 else ""
+    rodape += "s, maior valor de cada janela" if len(boas) > 1 else ""
     if idades:
         # A IDADE DO MAIS VELHO, não a do mais novo. O número exibido é o MAIOR
         # de cada janela, e ele pode vir de um pluviômetro parado há horas. Com
@@ -668,7 +667,6 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     achadas = base.ruas(cidade["id"] if cidade else None, termo)
     onde = f" em {e(cidade['nome'])}" if cidade else ""
     if not achadas:
-        quantas = len(base.cotas_ruas) if cidade is None else len(base.ruas(cidade["id"], ""))
         return [
             f"Nenhuma rua com “{e(termo)}”{onde} entre as levantadas.\n\n"
             "<b>Isso não quer dizer que a sua rua não alaga.</b> Quer dizer que ela "

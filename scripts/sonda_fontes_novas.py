@@ -30,7 +30,6 @@ Uso na VPS (daqui do sandbox nenhum destes domínios responde):
 """
 
 import json
-import re
 import sys
 import time
 

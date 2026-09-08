@@ -15,7 +15,13 @@ jobs:
         with:
           python-version: '3.11'
       - name: Instalar dependências dos scripts
-        run: python3 -m pip install beautifulsoup4 requests
+        run: python3 -m pip install beautifulsoup4 requests ruff
+
+      # Emprestado do repo Premercado, com a config junto. O conjunto é
+      # estreito de propósito: só o que pega código que não faz o que parece
+      # fazer. Lint que reprova código correto ensina a ignorar o lint.
+      - name: Lint do Python (ruff)
+        run: ruff check scripts/
       - name: Validar os JSONs de data/
         working-directory: scripts
         run: python3 validar_dados.py
