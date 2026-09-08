@@ -978,6 +978,27 @@ o projeto.
   para provar que são diferentes; não serve para ligá-las. Seis testes travam a ressalva, inclusive um
   que confere que o bruto do boletim continua em `data/brutos/`: medição sem a fonte guardada é
   afirmação, não prova.
+- [x] **A escala da SALSEIRO existe, é oficial, e não é de Vidal Ramos.** A página de detalhes da
+  estação publica normalidade < 3,00 m, atenção > 3,00 m e emergência > 4,50 m. É a tentação perfeita —
+  Vidal Ramos está **sem cota nenhuma**, a escala existe, e tem o nome do município do lado. E é errada:
+  no mesmo dia as duas réguas leram **1,72 m** (Salseiro) e **2,42 m** (a nossa) com nove minutos de
+  diferença, então aplicar 3,00 m à nossa leitura pintaria **atenção** num estado do rio que a própria
+  Salseiro ainda chama de normalidade. **Cota pertence a uma régua, não a um município.** Os números
+  ficam registrados **com o dono**, e há teste que cai se 3,00 ou 4,50 aparecerem como cota de Vidal
+  Ramos em qualquer lugar do cadastro.
+- [x] **A série histórica da 83892990 foi pedida e veio VAZIA — resultado negativo, guardado.** O bloco
+  registrava a oportunidade: *"vale pedir a série histórica — para o histórico do rio, jamais para as
+  cotas da sede"*. O botão "Baixar série histórica" devolveu **233 bytes**: cabeçalho (`data`,
+  `historico`, `chuva`, `cota`, `manual`) e **nenhuma linha**. Guardado assim mesmo em `data/brutos/`,
+  porque **resultado negativo não guardado vira a mesma busca daqui a um mês** — e há teste que cai se
+  o arquivo passar a ter linha, para o texto mudar junto. O caminho que resta para o Mirim a montante de
+  Brusque é o **HidroWeb**, não este exportador.
+- [x] **⚠️ Armadilha da fonte: a página não envelhece o dado.** A tela mostrava *"Estação em situação de
+  NORMALIDADE"* em faixa **verde**, com "Nível do Rio: 1,39 m" — e a última medição era de **18/04/2026
+  10:00**, quase **cinco meses** antes. O verde não some com a idade; a data fica só no título. No mesmo
+  dia o boletim da EPAGRI publicava 172 cm para a **mesma estação** às 08:00 — o número não é o mesmo nos
+  dois sistemas. Qualquer coleta futura dali tem de **exigir carimbo fresco e recusar sozinha**, que é o
+  que este site já faz com as próprias leituras e o oposto do que essa fonte faz.
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível

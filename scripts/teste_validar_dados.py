@@ -1285,5 +1285,77 @@ class SalseiroNaoEARegoaDeVidalRamos(unittest.TestCase):
         self.assertIsNone(_cidade(real, "itajai-mirim", "vidal-ramos")["codigo_ana"])
 
 
+
+class ACotaDaSalseiroNaoEDeVidalRamos(unittest.TestCase):
+    """
+    A página de detalhes da SALSEIRO publica a escala dela: normalidade < 3,00 m,
+    atenção > 3,00 m, emergência > 4,50 m. Vidal Ramos está sem cota nenhuma.
+
+    É a tentação perfeita: a escala existe, é oficial, e tem o nome do município
+    do lado. E é errada — em 08/09/2026 as duas réguas leram 1,72 m e 2,42 m com
+    nove minutos de diferença. Aplicar 3,00 m à nossa leitura pintaria atenção
+    num estado do rio que a própria Salseiro ainda chama de normalidade.
+
+    Cota pertence a uma RÉGUA, não a um município.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.cidade = _cidade(cls.real, "itajai-mirim", "vidal-ramos")
+        cls.bloco = cls.cidade["codigo_ana_nao_e"]
+
+    def test_vidal_ramos_continua_SEM_cota(self):
+        """O teste que mais importa: a escala da Salseiro não virou a da sede."""
+        self.assertEqual(self.cidade["cotas_m"], {})
+
+    def test_os_numeros_da_salseiro_estao_registrados_COM_dono(self):
+        texto = self.bloco["cotas_DA_SALSEIRO_nao_da_sede"]
+        for n in ("3,00", "4,50"):
+            with self.subTest(numero=n):
+                self.assertIn(n, texto)
+        self.assertIn("SÃO DA SALSEIRO", texto)
+
+    def test_o_3_e_o_450_nao_aparecem_como_cota_de_nenhuma_cidade_do_mirim(self):
+        """
+        Guarda de verdade, não de texto: se alguém gravar 3,00/4,50 como cota de
+        Vidal Ramos em qualquer lugar do cadastro, isto cai.
+        """
+        for rio_id, rio in self.real["rios"].items():
+            for c in rio["cidades"]:
+                if c["id"] != "vidal-ramos":
+                    continue
+                with self.subTest(rio=rio_id):
+                    self.assertNotIn(3.0, (c.get("cotas_m") or {}).values())
+                    self.assertNotIn(4.5, (c.get("cotas_m") or {}).values())
+
+    def test_o_resultado_NEGATIVO_da_serie_esta_guardado(self):
+        """
+        O bloco registrava 'vale pedir a série histórica'. Foi pedida e veio
+        vazia. Resultado negativo não guardado vira a mesma busca daqui a um mês.
+        """
+        texto = self.bloco["serie_historica_pedida_e_veio_VAZIA"]
+        self.assertIn("NENHUMA LINHA", texto)
+        bruto = DADOS / "brutos" / "salseiro-83892990-serie-historica-VAZIA-2026-09-08.xls.html"
+        self.assertTrue(bruto.exists(), f"{bruto} sumiu")
+
+    def test_o_bruto_vazio_e_mesmo_vazio(self):
+        """Se um dia alguém repuser o arquivo com dado, o texto tem de mudar junto."""
+        bruto = DADOS / "brutos" / "salseiro-83892990-serie-historica-VAZIA-2026-09-08.xls.html"
+        conteudo = bruto.read_text(encoding="utf-8")
+        self.assertIn("<b>data</b>", conteudo)
+        self.assertEqual(conteudo.count("<tr>"), 2, "passou a ter linha de dado")
+
+    def test_a_armadilha_do_verde_velho_esta_registrada(self):
+        """
+        A tela mostrava faixa VERDE de 'NORMALIDADE' sobre uma leitura de quase
+        cinco meses antes. É o oposto do que este site faz, e por isso fica
+        escrito antes de alguém pensar em coletar dali.
+        """
+        texto = self.bloco["a_pagina_nao_envelhece_o_dado"]
+        self.assertIn("18/04/2026", texto)
+        self.assertIn("VERDE", texto)
+
+
 if __name__ == "__main__":
     unittest.main()
