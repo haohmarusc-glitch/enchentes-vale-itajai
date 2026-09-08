@@ -65,3 +65,21 @@ jobs:
       - name: Build (zero erro de tipo)
         working-directory: web
         run: npm run build
+
+      # POR QUE UM NAVEGADOR NA CI. Em 08/09/2026 o build passou, os 494 testes
+      # passaram, e o site abriu no celular mostrando só a casca estática do
+      # index.html — "Carregando os dados dos rios…". Nada aqui sabia dizer
+      # isso: build compila, teste de unidade roda a lógica FORA do navegador.
+      # Um import circular ou um asset com caminho errado derrubariam o site
+      # inteiro com todas as luzes verdes.
+      #
+      # O teste roda com a rede externa CORTADA, então não depende do runner
+      # alcançar o GitHub — e de quebra prova que a tela sobrevive sem dado ao
+      # vivo, que é o que precisa acontecer numa noite de cheia.
+      - name: Instalar o Chromium
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+
+      - name: Fumaça — o site monta num navegador?
+        working-directory: web
+        run: npm run fumaca

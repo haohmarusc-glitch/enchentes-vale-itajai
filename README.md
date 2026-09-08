@@ -934,8 +934,10 @@ o projeto.
   **Divergência VIVA:** `monitoramento` não está na escada do bot, então em **Taió** (monitoramento
   5,00 m, atenção 7,00 m) o pino acende no site e o bot fica calado — e Taió estava em **4,54 m**, 46
   cm abaixo. Nada mudou de comportamento: o silêncio virou `alerta_cotas.NAO_DISPARAM_AVISO` com o
-  motivo escrito (monitoramento é a fase que a COMPDEC OLHA, não a que anuncia; avisar ali ensina a
-  ignorar o aviso da noite da cheia). **Divergência aparente, resolvida pela evidência:** o bot e o
+  motivo escrito. **Jefferson decidiu em 08/09/2026 manter o bot calado em monitoramento** — é a fase
+  que a COMPDEC OLHA, não a que anuncia, e avisar ali gasta a atenção que a noite da cheia vai
+  precisar. A tela continua PINTANDO, e isso está certo: cor é informação para quem já está olhando,
+  aviso é interrupção que vai atrás da pessoa — não precisam do mesmo limiar. **Divergência aparente, resolvida pela evidência:** o bot e o
   validador ordenam `inundacao` e `emergencia` de formas opostas — e a pergunta é **mal formada**,
   porque são **o mesmo degrau com nomes municipais diferentes**: Rio do Sul e Blumenau chamam o topo
   de "inundação", todo o resto de "emergência", e nenhuma cidade usa os dois. `teste_escadas_de_cota.py`
@@ -947,6 +949,21 @@ o projeto.
   SIGTERM junto). Vinte corrigidos automaticamente; dos três restantes, um era **falso positivo em
   espírito** — o `import requests` do `coleta_mares.py` É a sonda de disponibilidade, o `ImportError`
   é o objetivo — e ficou com `noqa` e o motivo. Os outros dois eram linha morta.
+- [x] **🔴 Nenhuma verificação do repositório sabia dizer se o site MONTA.** Em 08/09 o `npm run build`
+  passou, os **494 testes** passaram, e o site abriu no celular mostrando só isto: *"Emergência: ligue
+  199… Carregando os dados dos rios…"*. Aquele "Carregando" é a **casca estática do `index.html`** — o
+  texto que existe antes de o React montar. **Naquele caso a causa era o endereço** (o site usa
+  `HashRouter` e o link foi passado sem o `#`), não um defeito do código — mas o buraco que ele revelou
+  é real: um import circular, um erro em tempo de módulo ou um asset com caminho errado derrubariam o
+  site inteiro **com todas as luzes verdes**. `web/testes-navegador/fumaca.mjs` carrega o build num
+  Chromium e falha se a casca continuar na tela, se o **199** sumir, se uma rota profunda não renderizar
+  a cidade, ou se qualquer asset **do próprio site** falhar. **Roda com a rede externa cortada** — não
+  depende de o runner alcançar o GitHub, e de quebra prova que a tela sobrevive sem dado ao vivo, que é
+  o que precisa acontecer numa noite de cheia. **A guarda foi provada mordendo:** sabotei o caminho do
+  bundle (o bug real do dia) → 7 falhas, com o nome do asset quebrado; e injetei exceção em tempo de
+  módulo → 2 falhas. *Uma primeira tentativa de sabotagem quebrou a COMPILAÇÃO, o `dist` não foi
+  refeito e o teste passou contra o build antigo — falso verde da sabotagem, não do teste, e o motivo
+  de a prova ter sido feita no `dist` e não no fonte.*
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível
