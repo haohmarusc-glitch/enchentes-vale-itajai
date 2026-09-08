@@ -282,8 +282,11 @@ def auditar(ao_vivo: Path | None) -> dict:
     elos = {(t["de"], t["para"]) for t in transito}
 
     vivo: collections.Counter = collections.Counter()
+    ao_vivo_de = None
     if ao_vivo and ao_vivo.exists():
-        for l in json.loads(ao_vivo.read_text(encoding="utf-8")).get("leituras", []):
+        bruto = json.loads(ao_vivo.read_text(encoding="utf-8"))
+        ao_vivo_de = bruto.get("gerado_em") or bruto.get("coletado_em")
+        for l in bruto.get("leituras", []):
             if l.get("nivel_m") is not None:
                 vivo[l.get("cidade")] += 1
 
@@ -358,6 +361,8 @@ def auditar(ao_vivo: Path | None) -> dict:
         "mare_com_altura": any("altura_m" in p for p in mare["preamares"]),
         "mare_fonte": mare["_meta"].get("fonte", ""),
         "ao_vivo_lido": bool(vivo),
+        "ao_vivo_de": ao_vivo_de,
+        "ao_vivo_leituras": sum(vivo.values()),
     }
 
 
@@ -427,6 +432,29 @@ def imprime(rel: dict) -> None:
         print(f"  {v:3d}  {k}")
 
 
+#: Frase que só existe no Markdown gerado SEM `--ao-vivo`. Serve de marca: um
+#: arquivo que não a contém foi gerado com a coluna de leitura MEDIDA.
+MARCA_SEM_MEDICAO = "**Não medido nesta execução**"
+
+
+def apagaria_medicao(destino: Path, mediu_agora: bool) -> bool:
+    """
+    Este `--markdown` trocaria uma coluna MEDIDA por `?` em toda a matriz?
+
+    POR QUE EXISTE (08/09/2026). Aconteceu: o auditor foi reexecutado sem
+    `--ao-vivo` e o documento commitado perdeu, em silêncio, a lista das doze
+    cidades sem leitura — virou `?` nas dezenove linhas. O `?` está certo (uma
+    sessão anterior o criou justamente para "não medido" não virar "ausente"),
+    mas GRAVAR `?` por cima de medição é perder dado sem avisar.
+
+    O sentido é de mão única: gerar com medição por cima de um "não medido"
+    é ganho, nunca perda.
+    """
+    if mediu_agora or not destino.exists():
+        return False
+    return MARCA_SEM_MEDICAO not in destino.read_text(encoding="utf-8")
+
+
 def markdown(rel: dict) -> str:
     """A matriz e a lista de busca, ambas derivadas do relatório — nada escrito à mão."""
     from datetime import date
@@ -439,6 +467,15 @@ def markdown(rel: dict) -> str:
         f"Gerado por `scripts/auditar_lacunas.py` em "
         f"{date.today().strftime('%d/%m/%Y')}. **Não editar à mão** — reexecutar.\n\n"
     )
+    # A coluna de leitura envelhece muito mais rápido que as outras seis: ela
+    # vale a hora da coleta, não o dia da geração. Sem o carimbo, uma matriz de
+    # semana passada parece tão atual quanto o resto do documento.
+    if rel["ao_vivo_lido"]:
+        f.append(
+            f"Coluna **Leitura ao vivo** medida em `{rel['ao_vivo_de'] or 'sem carimbo'}` "
+            f"({rel['ao_vivo_leituras']} réguas com nível). As outras seis colunas "
+            "não dependem de coleta.\n\n"
+        )
     f.append(
         "Sete camadas por cidade. Cada uma acende uma parte diferente do site, e é\n"
         "isso que ordena a busca: sem leitura o pino fica cinza; sem cota a cor não\n"
@@ -510,7 +547,7 @@ def markdown(rel: dict) -> str:
     f.append("\n### 1. Leitura ao vivo — o pino cinza\n\n")
     if not rel["ao_vivo_lido"]:
         f.append(
-            "**Não medido nesta execução** — ver o aviso no topo. A lista abaixo só existe "
+            f"{MARCA_SEM_MEDICAO} — ver o aviso no topo. A lista abaixo só existe "
             "quando o auditor roda com `--ao-vivo`.\n"
         )
     f.append(
@@ -666,11 +703,27 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--ao-vivo", type=Path, help="ultimo.json do branch tempo-real")
     p.add_argument("--markdown", type=Path, help="grava a matriz em Markdown")
+    p.add_argument(
+        "--aceitar-perder-a-medicao", action="store_true",
+        help="grava por cima de uma matriz medida, trocando a coluna de leitura por `?`",
+    )
     args = p.parse_args(argv)
 
     rel = auditar(args.ao_vivo)
     imprime(rel)
     if args.markdown:
+        if apagaria_medicao(args.markdown, rel["ao_vivo_lido"]) and not args.aceitar_perder_a_medicao:
+            print(
+                f"\nRECUSADO: {args.markdown} tem a coluna de leitura MEDIDA, e esta "
+                "execução não mediu.\nGravar agora trocaria a lista de cidades sem "
+                "leitura por `?` nas dezenove linhas — perda silenciosa.\n\n"
+                "  git fetch origin tempo-real && git show origin/tempo-real:ultimo.json > /tmp/ultimo.json\n"
+                "  python3 scripts/auditar_lacunas.py --ao-vivo /tmp/ultimo.json "
+                f"--markdown {args.markdown}\n\n"
+                "Para gravar mesmo assim, e assumindo a perda: --aceitar-perder-a-medicao",
+                file=sys.stderr,
+            )
+            return 3
         args.markdown.write_text(markdown(rel), encoding="utf-8")
         print(f"\nmatriz gravada em {args.markdown}")
     return 0

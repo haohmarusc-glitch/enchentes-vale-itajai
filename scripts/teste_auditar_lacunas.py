@@ -458,5 +458,88 @@ class ItajaiNaoEBuracoDeCotaNoDadoReal(unittest.TestCase):
         self.assertEqual(ids, {"itajai"}, ids)
 
 
+
+class NaoApagarAMedicaoEmSilencio(unittest.TestCase):
+    """
+    Aconteceu de verdade em 08/09/2026, e foi o próprio conserto da auditoria
+    que causou: reexecutei o auditor SEM `--ao-vivo` e gravei por cima. O
+    documento commitado perdeu a lista das doze cidades sem leitura — virou `?`
+    nas dezenove linhas — sem nada avisar.
+
+    O `?` está certo: uma sessão anterior o criou para "não medido" não ser
+    lido como "ausente". Errado é GRAVAR `?` por cima de medição. Um relatório
+    que sabe menos do que sabia, sem dizer que desaprendeu, é a mesma família
+    de defeito que os dois buracos falsos deste mesmo dia.
+
+    O sentido é de mão única: medição por cima de não-medido é ganho.
+    """
+
+    def escreve(self, texto):
+        d = Path(tempfile.mkdtemp()) / "LACUNAS.md"
+        d.write_text(texto, encoding="utf-8")
+        return d
+
+    def test_recusa_gravar_sem_medicao_por_cima_de_medido(self):
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        self.assertTrue(al.apagaria_medicao(medido, mediu_agora=False))
+
+    def test_com_medicao_agora_nunca_recusa(self):
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        self.assertFalse(al.apagaria_medicao(medido, mediu_agora=True))
+
+    def test_por_cima_de_um_nao_medido_pode(self):
+        """Não-medido sobre não-medido não perde nada."""
+        nao = self.escreve(f"# matriz\n{al.MARCA_SEM_MEDICAO} — etc\n")
+        self.assertFalse(al.apagaria_medicao(nao, mediu_agora=False))
+
+    def test_arquivo_inexistente_pode(self):
+        alvo = Path(tempfile.mkdtemp()) / "ainda-nao-existe.md"
+        self.assertFalse(al.apagaria_medicao(alvo, mediu_agora=False))
+
+    def test_a_marca_aparece_mesmo_no_markdown_sem_medicao(self):
+        """
+        Se o texto do item 1 mudar e a frase sumir, a guarda passa a achar que
+        todo arquivo foi medido e para de proteger. Este teste liga os dois.
+        """
+        self.assertIn(al.MARCA_SEM_MEDICAO, al.markdown(al.auditar(None)))
+
+    def test_main_recusa_e_devolve_codigo_proprio(self):
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        antes = medido.read_text(encoding="utf-8")
+        self.assertEqual(al.main(["--markdown", str(medido)]), 3)
+        self.assertEqual(medido.read_text(encoding="utf-8"), antes,
+                         "recusou mas escreveu assim mesmo")
+
+    def test_a_saida_de_escape_existe_e_grava(self):
+        """
+        A porta de saída é explícita e diz o que custa no próprio nome. Sem ela,
+        quem tem motivo legítimo edita o arquivo à mão — que é pior.
+        """
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        self.assertEqual(
+            al.main(["--markdown", str(medido), "--aceitar-perder-a-medicao"]), 0)
+        self.assertIn(al.MARCA_SEM_MEDICAO, medido.read_text(encoding="utf-8"))
+
+
+class CarimboDaColunaDeLeitura(unittest.TestCase):
+    """A coluna de leitura vale a HORA da coleta, não o dia da geração."""
+
+    def test_o_relatorio_carrega_de_quando_e_a_leitura(self):
+        d = Path(tempfile.mkdtemp()) / "ultimo.json"
+        d.write_text(json.dumps({
+            "gerado_em": "2026-09-08T10:16:24+00:00",
+            "leituras": [{"cidade": "blumenau", "nivel_m": 1.2}],
+        }), encoding="utf-8")
+        rel = al.auditar(d)
+        self.assertEqual(rel["ao_vivo_de"], "2026-09-08T10:16:24+00:00")
+        self.assertEqual(rel["ao_vivo_leituras"], 1)
+        self.assertIn("2026-09-08T10:16:24+00:00", al.markdown(rel))
+
+    def test_sem_medicao_nao_carimba_nada(self):
+        rel = al.auditar(None)
+        self.assertIsNone(rel["ao_vivo_de"])
+        self.assertEqual(rel["ao_vivo_leituras"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

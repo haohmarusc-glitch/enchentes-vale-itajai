@@ -2,46 +2,37 @@
 
 Gerado por `scripts/auditar_lacunas.py` em 08/09/2026. **Não editar à mão** — reexecutar.
 
+Coluna **Leitura ao vivo** medida em `2026-09-08T10:16:24+00:00` (16 réguas com nível). As outras seis colunas não dependem de coleta.
+
 Sete camadas por cidade. Cada uma acende uma parte diferente do site, e é
 isso que ordena a busca: sem leitura o pino fica cinza; sem cota a cor não
 existe nem com leitura; sem pico a previsão a jusante diz "dados
 insuficientes"; sem hora de pico o tempo de trânsito continua sendo tabela
 de projeto, nunca medida.
 
-> ⚠️ **A coluna "Leitura ao vivo" não foi medida nesta execução** e sai como `?`.
-> O auditor só a preenche quando recebe `--ao-vivo <ultimo.json>` do branch
-> `tempo-real`. Rodar sem isso e ler `—` faria a matriz afirmar que NENHUMA cidade
-> publica nível — falso, e mandaria procurar fonte para cidade que já tem.
->
-> ```
-> curl -sSL -o /tmp/ultimo.json \
->   https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo.json
-> python3 scripts/auditar_lacunas.py --ao-vivo /tmp/ultimo.json --markdown docs/LACUNAS-DE-DADOS.md
-> ```
-
 ## Matriz por cidade
 
 | Cidade | Rio | Leitura ao vivo | Cotas atenção+alerta | Cotas conferidas | Picos | Série ANA | Cotas de rua | Trânsito a jusante |
 |---|---|---|---|---|---|---|---|---|
-| Taió | acu | ? | sim | — | 1 | sim | — | sim |
-| Ituporanga | acu | ? | — | — | — | sim | — | sim |
-| Rio do Sul | acu | ? | sim | — | 9 | sim | 555 | — |
-| Ibirama | acu | ? | — | — | — | — | — | — |
-| Lontras | acu | ? | — | — | — | — | — | — |
-| Ascurra | acu | ? | — | — | — | — | — | — |
-| Indaial | acu | ? | sim | sim | 16 | — | — | — |
-| Blumenau | acu | ? | sim | — | 113 | sim | 2023 | sim |
-| Gaspar | acu | ? | sim | sim | 48 | sim | 1617 | sim |
-| Ilhota | acu | ? | sim | — | — | — | — | sim |
-| Itajaí | acu | ? | 11× | — | — | — | — | n/a |
-| Timbó | acu | ? | — | — | 1 | — | — | — |
-| Rio dos Cedros | acu | ? | sim | — | — | — | — | — |
-| Trombudo Central | acu | ? | — | — | — | — | — | n/a |
-| Vidal Ramos | mirim | ? | — | — | — | — | — | — |
-| Botuverá | mirim | ? | — | — | — | — | — | — |
-| Guabiruba | mirim | ? | — | — | — | — | — | — |
-| Brusque | mirim | ? | — | sim | 9 | sim | 377 | sim |
-| Itajaí | mirim | ? | 11× | — | — | — | — | n/a |
+| Taió | acu | sim | sim | — | 1 | sim | — | sim |
+| Ituporanga | acu | — | — | — | — | sim | — | sim |
+| Rio do Sul | acu | sim | sim | — | 9 | sim | 555 | — |
+| Ibirama | acu | — | — | — | — | — | — | — |
+| Lontras | acu | — | — | — | — | — | — | — |
+| Ascurra | acu | — | — | — | — | — | — | — |
+| Indaial | acu | — | sim | sim | 16 | — | — | — |
+| Blumenau | acu | sim | sim | — | 113 | sim | 2023 | sim |
+| Gaspar | acu | — | sim | sim | 48 | sim | 1617 | sim |
+| Ilhota | acu | — | sim | — | — | — | — | sim |
+| Itajaí | acu | sim | 11× | — | — | — | — | n/a |
+| Timbó | acu | — | — | — | 1 | — | — | — |
+| Rio dos Cedros | acu | — | sim | — | — | — | — | — |
+| Trombudo Central | acu | — | — | — | — | — | — | n/a |
+| Vidal Ramos | mirim | sim | — | — | — | — | — | — |
+| Botuverá | mirim | — | — | — | — | — | — | — |
+| Guabiruba | mirim | — | — | — | — | — | — | — |
+| Brusque | mirim | sim | — | sim | 9 | sim | 377 | sim |
+| Itajaí | mirim | sim | 11× | — | — | — | — | n/a |
 
 `n/a` em trânsito = a cidade é foz, ou entrou sem posição na árvore (Trombudo Central: a fonte diz o rio, não a confluência).
 
@@ -49,8 +40,7 @@ de projeto, nunca medida.
 
 ### 1. Leitura ao vivo — o pino cinza
 
-**Não medido nesta execução** — ver o aviso no topo. A lista abaixo só existe quando o auditor roda com `--ao-vivo`.
-Sem leitura em: (não medido).
+Sem leitura em: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Gaspar**, **Ilhota**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Botuverá**, **Guabiruba**.
 
 É o que mais escurece o mapa e o único item que não tem substituto histórico: nenhuma pesquisa em acervo acende um pino hoje. O pedido é ofício à Defesa Civil do município pedindo o endpoint que a página de monitoramento já consome.
 
