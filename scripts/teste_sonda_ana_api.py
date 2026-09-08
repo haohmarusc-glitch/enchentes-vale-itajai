@@ -99,5 +99,31 @@ class AsCandidatasSaoDaBacia(unittest.TestCase):
         self.assertIn("conferência de régua", FONTE)
 
 
+class OResultadoNegativoDaTelemetriaEstaEscrito(unittest.TestCase):
+    """
+    Onze chamadas em 08/09/2026, todas vazias, contra um inventário da MESMA
+    API que afirma a estação telemétrica e operando. Resultado negativo não
+    guardado vira a mesma busca daqui a um mês — e esta custou uma rodada
+    inteira de variações de parâmetro.
+    """
+
+    def test_a_sonda_avisa_que_ja_foi_respondido(self):
+        self.assertIn("RESPONDIDO EM 08/09/2026, E É NÃO", FONTE)
+
+    def test_diz_quantas_tentativas_foram(self):
+        self.assertIn("Onze chamadas", FONTE)
+
+    def test_nomeia_a_contradicao_com_o_inventario(self):
+        """
+        É o ponto que impede alguém de concluir "a estação não transmite": o
+        cadastro da própria ANA diz que transmite desde 1996.
+        """
+        self.assertIn("83900000", FONTE)
+        self.assertIn("05/1996", FONTE)
+
+    def test_manda_parar_de_chutar_parametro(self):
+        self.assertIn("chutando parâmetro", FONTE)
+
+
 if __name__ == "__main__":
     unittest.main()
