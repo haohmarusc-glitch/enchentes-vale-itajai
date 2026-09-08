@@ -24,6 +24,16 @@ DUAS PERGUNTAS, uma execução:
    o item que mais escurece a tela. Aqui a sonda só olha; quem decide se vira
    fonte é a conferência de régua, que é outra conversa.
 
+   ❌ RESPONDIDO EM 08/09/2026, E É NÃO. Onze chamadas — cinco estações, quatro
+   variantes de data/range, e as rotas Detalhada/v1 e Adotada/v2 — todas com
+   "Não houve retorno de registros" e items vazio. E o INVENTÁRIO DA MESMA API
+   discorda: para a 83900000 (BRUSQUE PCD) ele afirma telemétrica, operando, e
+   telemetria aberta desde 05/1996. A rota `OAUthPermissoes/v1`, que diria se a
+   credencial cobre telemetria, devolve HTTP 400.
+   Manter esta parte da sonda tem valor: ela é o teste que se refaz em UMA
+   execução quando a ANA responder ao ofício. O que NÃO se faz é continuar
+   chutando parâmetro — ver docs/ANA-API-2026-09-08.md.
+
 ⚠️ NÃO RODA DESTE AMBIENTE: `*.ana.gov.br` é bloqueado no proxy (403 no
 CONNECT). Rode na VPS, com o `.env` preenchido por `scripts/configurar_ana.sh`.
 
