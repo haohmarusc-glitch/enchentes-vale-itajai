@@ -1197,14 +1197,6 @@
     {
       "rio": "itajai-mirim",
       "cidade": "brusque",
-      "data": "1984",
-      "pico_m": 10.3,
-      "confianca": "baixa",
-      "fonte": "Compilação informal"
-    },
-    {
-      "rio": "itajai-mirim",
-      "cidade": "brusque",
       "data": "1984-08",
       "pico_m": 10.5,
       "confianca": "baixa",
