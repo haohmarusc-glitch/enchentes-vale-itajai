@@ -2,7 +2,7 @@
 
 Gerado por `scripts/auditar_lacunas.py` em 08/09/2026. **Não editar à mão** — reexecutar.
 
-Coluna **Leitura ao vivo** medida em `2026-09-08T14:31:22+00:00` (17 réguas com nível). As outras seis colunas não dependem de coleta.
+Coluna **Leitura ao vivo** medida em `2026-09-08T23:01:25+00:00` (17 réguas com nível). As outras seis colunas não dependem de coleta.
 
 Sete camadas por cidade. Cada uma acende uma parte diferente do site, e é
 isso que ordena a busca: sem leitura o pino fica cinza; sem cota a cor não
@@ -56,7 +56,7 @@ Com as duas mas sem conferência na fonte: **Taió**, **Rio do Sul**, **Blumenau
 
 ### 3. Hora do pico — o que destrava `transito.json`
 
-**196 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
+**196 picos na base, 2 com hora.** Enquanto forem tão poucos (o calibrador exige 3 por par de cidades), todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
 
 A hora só existe em boletim de cheia: boletim diário da Defesa Civil estadual, ofício municipal do dia, série horária da ANA/HidroWeb.
 

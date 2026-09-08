@@ -393,7 +393,11 @@ def auditar(ao_vivo: Path | None) -> dict:
     return {
         "linhas": linhas,
         "eventos": len(eventos),
-        "eventos_com_hora": sum(1 for e in eventos if ":" in str(e.get("data", ""))),
+        # CORRIGIDO EM 08/09/2026: contava ":" na DATA, que é ISO e nunca tem
+        # dois-pontos — o resultado era 0 por construção, e eu repeti "196 picos,
+        # zero com hora" o dia inteiro em cima disso. A hora mora no campo `hora`
+        # (HH:MM, validado), e é ele que calibrar_transito.py lê. Eram 2.
+        "eventos_com_hora": sum(1 for e in eventos if e.get("hora")),
         "eventos_so_ano": sum(1 for e in eventos if len(str(e.get("data", ""))) == 4),
         "eventos_sem_referencia": collections.Counter(
             e["cidade"] for e in eventos if e.get("referencia") is None
@@ -632,7 +636,8 @@ def markdown(rel: dict) -> str:
     f.append("\n### 3. Hora do pico — o que destrava `transito.json`\n\n")
     f.append(
         f"**{rel['eventos']} picos na base, {rel['eventos_com_hora']} com hora.** "
-        "Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de "
+        "Enquanto forem tão poucos (o calibrador exige 3 por par de cidades), todo "
+        "tempo de trânsito exibido é faixa de tabela de "
         "projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` "
         "existe e não tem o que calibrar.\n\n"
         "A hora só existe em boletim de cheia: boletim diário da Defesa Civil "
@@ -669,7 +674,7 @@ def markdown(rel: dict) -> str:
         # "série inteira de cota, COM HORA — resolve os itens 3 e 4 juntos". A
         # metade da hora era falsa, e mandava a auditoria para o alvo errado: a
         # HidroSerieCotas devolve DIA, não hora (uma linha por mês, Cota_01..31).
-        # O item 3 (0 de 196 picos com hora) NÃO sai daqui. Ver
+        # O item 3 (196 picos, só 2 com hora) NÃO sai daqui. Ver
         # docs/ANA-API-2026-09-08.md.
         "Cada estação conferida traz série inteira de cota **por dia** — resolve o "
         "item 4 para aquela cidade, e é o item de maior alcance por unidade de "
