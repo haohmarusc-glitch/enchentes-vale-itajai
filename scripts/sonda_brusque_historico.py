@@ -56,14 +56,34 @@ BASE = "https://defesacivil.brusque.sc.gov.br"
 ROBOTS = f"{BASE}/robots.txt"
 PAGINA = BASE + "/estacao/ver/{codest}"
 BAIXAR = f"{BASE}/estacao/baixar-historico"
+#: O botão faz um POST AJAX aqui antes de submeter o form; sem ele o
+#: servidor pode recusar. Descoberto pelo Jefferson lendo o JS (08/09/2026).
+VALIDAR = f"{BASE}/estacao/baixar-historico?validar"
+#: O servidor recusa janelas maiores que um ano — por isso os dez arquivos
+#: da Salseiro vieram em fatias anuais.
+JANELA_MAXIMA = timedelta(days=366)
 
 #: Estação por id, com o papel que ela JÁ TEM no projeto. Recusa é papel: o
 #: rótulo viaja com o número para a saída nunca sugerir que sondar é vincular.
 ESTACOES = {
+    # ids lidos pelo Jefferson no portal em 08/09/2026 (scripts dele). O PAPEL
+    # viaja com o id: a saída nunca pode sugerir que sondar é vincular.
     "31": "SALSEIRO — RECUSADA como régua de Vidal Ramos (6,8 km, 0,70 m medidos)",
-    "18": "BOTUVERÁ — a conferir",
-    "4": "PONTE ESTAIADA — par provado com a leitura de Brusque (07/09/2026)",
+    "3":  "VIDAL RAMOS — CANDIDATA a ser a NOSSA régua (DCSC-00024): a conferir pelo par "
+          "de leituras simultâneas, como se fez com a 79",
+    "18": "BOTUVERÁ — a conferir (DCSC-00018?)",
+    "2":  "CEOPS - BOTUVERÁ — a conferir; nome parecido já enganou este projeto",
+    "32": "BOTUVERÁ - PREFEITURA — a conferir",
+    "79": "PONTE ESTAIADA – DCSC — par PROVADO com a leitura de Brusque em 07/09/2026 "
+          "(1,27 / 1,27 / 1,28 m). É a DCSC-00019",
+    "4":  "PONTE ESTAIADA – ANA — OUTRA RÉGUA, mesmo nome. Provavelmente a 83900000 "
+          "(BRUSQUE PCD). ⚠️ no #241 eu a rotulei como 'par provado': era a 79",
     "23": "GUARANI — a conferir",
+    "19": "CEDRO ALTO — a conferir", "24": "LIMEIRA ALTA — a conferir",
+    "25": "LIMEIRA BAIXA — a conferir", "21": "DOM JOAQUIM — a conferir (⚠️ o ver/21 "
+          "citado no cadastro é do portal de GASPAR, não deste)",
+    "20": "ZANTÃO — a conferir", "17": "PAQUETÁ — a conferir",
+    "22": "RES. FELIPE HECKERT — a conferir",
 }
 
 #: Os dois formatos que o campo `<input type="date">` e um backend PHP antigo
@@ -99,12 +119,13 @@ def descreve(resposta: requests.Response) -> str:
 
 
 def tenta(sessao, codest: str, inicio: date, fim: date, formato: str):
+    dados = {"codest": codest, "inicio": inicio.strftime(formato), "fim": fim.strftime(formato)}
     espera_turno()
-    return sessao.post(BAIXAR, timeout=60, data={
-        "codest": codest,
-        "inicio": inicio.strftime(formato),
-        "fim": fim.strftime(formato),
-    })
+    v = sessao.post(VALIDAR, timeout=30, data=dados)
+    print(f"   validar: HTTP {v.status_code} · {len(v.content)} bytes · "
+          f"{v.text[:80].replace(chr(10), ' ')!r}")
+    espera_turno()
+    return sessao.post(BAIXAR, timeout=120, data=dados)
 
 
 def main() -> int:
@@ -119,6 +140,10 @@ def main() -> int:
 
     print(f"estação {args.codest}: {ESTACOES[args.codest]}")
     print(f"janela: {args.inicio} a {args.fim}")
+    if args.fim - args.inicio > JANELA_MAXIMA:
+        print("RECUSADO antes de chamar: o servidor não aceita mais de um ano por "
+              "pedido. Fatie por ano, como os dez arquivos da Salseiro.", file=sys.stderr)
+        return 2
     if args.seco:
         print(f"\nGET  {PAGINA.format(codest=args.codest)}   (cookie de sessão)")
         print(f"POST {BAIXAR}   codest, inicio, fim")

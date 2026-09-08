@@ -71,11 +71,28 @@ class SondarNaoEhVincular(unittest.TestCase):
         self.assertIn("RECUSADA", sonda.ESTACOES["31"])
         self.assertIn("0,70 m", sonda.ESTACOES["31"])
 
-    def test_a_ponte_estaiada_diz_que_o_par_foi_provado(self):
-        self.assertIn("provado", sonda.ESTACOES["4"].lower())
+    def test_o_par_provado_e_a_79_nao_a_4(self):
+        """
+        No #241 eu rotulei a 4 como 'par provado'. Era a 79 (Ponte Estaiada –
+        DCSC, a DCSC-00019). A 4 é a Ponte Estaiada – ANA: mesmo nome, outra
+        régua. É o erro que este projeto mais comete, e agora tem teste.
+        """
+        self.assertIn("PROVADO", sonda.ESTACOES["79"])
+        self.assertIn("OUTRA RÉGUA", sonda.ESTACOES["4"])
+        self.assertNotIn("provado com", sonda.ESTACOES["4"].lower())
+
+    def test_a_3_e_candidata_nao_vinculo(self):
+        self.assertIn("CANDIDATA", sonda.ESTACOES["3"])
+        self.assertIn("DCSC-00024", sonda.ESTACOES["3"])
 
     def test_os_ids_sao_os_que_o_jefferson_leu(self):
-        self.assertEqual(set(sonda.ESTACOES), {"31", "18", "4", "23"})
+        self.assertEqual(set(sonda.ESTACOES),
+                         {"31", "3", "18", "2", "32", "4", "79", "23", "19", "24", "25",
+                          "21", "20", "17", "22"})
+
+    def test_valida_antes_de_baixar_e_nao_pede_mais_de_um_ano(self):
+        self.assertIn("?validar", FONTE)
+        self.assertEqual(sonda.JANELA_MAXIMA.days, 366)
 
 
 class NaoEscreveNoProjeto(unittest.TestCase):
