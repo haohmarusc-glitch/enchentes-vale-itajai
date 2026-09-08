@@ -1451,5 +1451,101 @@ class OInventarioDaAnaEstaDeclaradoComoAusente(unittest.TestCase):
                          "há citação do inventário sem o aviso de que o arquivo não está")
 
 
+class OutroPontoDoRioCertoNaoEAReguaDaCidade(unittest.TestCase):
+    """
+    Achado da auditoria de 08/09/2026, e o segundo do mesmo fio.
+
+    Quatro recusas de código ANA invocavam "o limite de 1 km que o projeto usa
+    para dizer 'mesma régua'". Esse limite existia com outro trabalho: o
+    `LIMITE_PINO_KM` mede a estação contra o MENOR entre o traçado e o pino, e
+    reprova coordenada errada ou rio errado. A medida foi constrangedora —
+    TRÊS das quatro estações recusadas ficam a menos de 60 m do traçado do
+    próprio rio da cidade. Ligadas, o validador aprovaria as três em silêncio:
+    a recusa morava só na cabeça de quem leu a distância.
+
+    O erro que este projeto quase comete não é "rio errado", é OUTRO PONTO DO
+    RIO CERTO — e cada ponto tem o seu zero.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, estacoes, excecoes=None):
+        vd.erros.clear()
+        vd.avisos.clear()
+        orig_le, orig_exc = vd.le_json, vd.PINO_LONGE_DA_REGUA
+        vd.le_json = lambda nome: estacoes if nome == "estacoes.json" else orig_le(nome)
+        if excecoes is not None:
+            vd.PINO_LONGE_DA_REGUA = excecoes
+        try:
+            vd.valida_codigo_ana()
+        finally:
+            vd.le_json, vd.PINO_LONGE_DA_REGUA = orig_le, orig_exc
+        return list(vd.erros), list(vd.avisos)
+
+    def liga(self, rio, cidade, codigo):
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, rio, cidade)
+        c["codigo_ana"] = codigo
+        c["codigo_ana_sucessor"] = None
+        c["codigo_ana_sucessor_nota"] = "irrelevante para este teste"
+        return d
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(self.roda(copy.deepcopy(self.real))[0], [])
+
+    def test_as_tres_estacoes_em_cima_do_tracado_agora_reprovam(self):
+        """
+        WARNOW (0,06 km do traçado), ILHOTA-JUSANTE (0,04 km) e
+        BOTUVERA-MONTANTE (0,04 km): antes deste guarda, as três passavam.
+        """
+        casos = [("itajai-acu", "indaial", "83520000", "3.93"),
+                 ("itajai-acu", "ilhota", "83870001", "1.18"),
+                 ("itajai-mirim", "botuvera", "83892998", "3.47")]
+        for rio, cidade, codigo, km in casos:
+            with self.subTest(cidade=cidade):
+                erros, _ = self.roda(self.liga(rio, cidade, codigo))
+                doente = [e for e in erros if cidade in e and "do pino desta cidade" in e]
+                self.assertTrue(doente, f"{codigo} ligada a {cidade} e o validador calou")
+                self.assertIn(km, doente[0], "a distância medida entrou errada no aviso")
+
+    def test_a_excecao_do_blumenau_segura_o_vinculo_real(self):
+        """6,94 km, e com motivo escrito: o pino é da estação de CHUVA."""
+        erros, _ = self.roda(copy.deepcopy(self.real))
+        self.assertFalse([e for e in erros if "blumenau" in e])
+
+    def test_sem_a_excecao_o_blumenau_reprovaria(self):
+        """Se o guarda não medisse, este teste passaria por engano."""
+        erros, _ = self.roda(copy.deepcopy(self.real), excecoes={})
+        self.assertTrue([e for e in erros if "blumenau" in e and "6.94" in e],
+                        "o guarda não está medindo o vínculo real de Blumenau")
+
+    def test_excecao_que_nao_e_usada_vira_aviso(self):
+        _, avisos = self.roda(copy.deepcopy(self.real),
+                              excecoes={**vd.PINO_LONGE_DA_REGUA, "taio": "sem razão"})
+        self.assertTrue(any("taio" in a and "mobília" in a for a in avisos))
+
+    def test_ibirama_continua_indecidida_apesar_dos_476_m(self):
+        """
+        O contraexemplo vivo: 476 m PASSA no guarda e a decisão continua aberta,
+        porque falta o traçado do Hercílio para saber se há confluência entre os
+        dois pontos. Se alguém ligar a 83440000 tratando o guarda como prova,
+        este teste cai — que é exatamente o erro que o guarda existe para achar.
+        """
+        ibirama = _cidade(copy.deepcopy(self.real), "itajai-acu", "ibirama")
+        self.assertIsNone(ibirama.get("codigo_ana"),
+                          "Ibirama foi vinculada sem a conferência do Hercílio")
+        candidatas = [c["codigo"] for c in ibirama.get("codigo_ana_candidatos") or []]
+        self.assertIn("83440000", candidatas, "a candidata sumiu do cadastro")
+
+    def test_o_limite_diz_por_extenso_que_nao_e_prova(self):
+        """Passar no guarda é condição necessária, não suficiente — em código."""
+        fonte = (vd.RAIZ / "scripts" / "validar_dados.py").read_text(encoding="utf-8")
+        trecho = fonte.split("LIMITE_MESMA_REGUA_KM = ")[0][-2200:]
+        self.assertIn("NÃO PROVA", trecho)
+        self.assertIn("Ibirama", trecho)
+
+
 if __name__ == "__main__":
     unittest.main()

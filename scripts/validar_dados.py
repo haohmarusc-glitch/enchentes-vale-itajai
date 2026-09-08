@@ -805,6 +805,48 @@ LONGE_ACEITO = {
 #: Acima disto o pino flutua: aparece sobre o satélite, sem rio embaixo.
 LIMITE_PINO_KM = 1.0
 
+#: Acima disto a estação da ANA não é A RÉGUA DESTA CIDADE — mesmo estando no
+#: rio certo. É outro limite, com outro trabalho, e por isso tem outro nome.
+#:
+#: ACHADO EM 08/09/2026, pela auditoria, e é o motivo desta constante existir.
+#: O `LIMITE_PINO_KM` acima mede a estação contra o MENOR entre o traçado e o
+#: pino — pergunta "esta estação está NUM rio?" e reprova coordenada errada ou
+#: rio errado. Quatro recusas de código ANA escritas em `codigo_ana_nao_e`
+#: invocavam esse número como se ele dissesse "mesma régua". Não dizia, e a
+#: medida é constrangedora: das quatro estações recusadas, TRÊS ficam a menos
+#: de 60 m do traçado do próprio rio da cidade — WARNOW 0,06 km, ILHOTA-JUSANTE
+#: 0,04 km, BOTUVERA-MONTANTE 0,04 km. Ligadas hoje, o validador aprovaria as
+#: três em silêncio. A recusa morava só na cabeça de quem leu a distância.
+#:
+#: E é justamente esse o erro que este projeto quase comete o tempo todo: não
+#: "rio errado", mas OUTRO PONTO DO RIO CERTO — o Salseiro a 6,8 km da sede de
+#: Vidal Ramos, a BOTUVERA-MONTANTE a 3,47 km, a WARNOW a 3,93 km. Cada ponto
+#: tem o seu zero; parear séries de dois deles soma um degrau desconhecido.
+#:
+#: O valor 1,0 km não foi escolhido agora: é o que os dados já separavam. Os
+#: vínculos aceitos com coordenada estão todos abaixo de 0,6 km (Ituporanga
+#: 0,04 · Rio do Sul 0,43 · Taió 0,56) e todas as recusas acima de 1,1 km
+#: (Ilhota 1,18 · Botuverá 3,47 · Indaial 3,93 · Ituporanga/ITUPORANGA 9,53).
+#: Não há caso da bacia entre 0,6 e 1,1 km — a folga é vazia, e é por isso que
+#: o corte não decide nada sozinho.
+#:
+#: ⚠️ PASSAR AQUI NÃO PROVA "MESMA RÉGUA". É condição necessária, não
+#: suficiente, e há contraexemplo VIVO: a candidata de Ibirama (83440000) está
+#: a 476 m e continua INDECIDIDA — se houver confluência do Hercílio entre os
+#: dois pontos, são réguas diferentes apesar dos 476 m. Quem tratar este
+#: número como prova refaz, com outra roupa, o erro que ele existe para achar.
+LIMITE_MESMA_REGUA_KM = 1.0
+
+#: Vínculo aceito acima do limite, com o motivo. Só entra aqui quem tem razão
+#: ESCRITA para o pino estar longe da régua — e o que remove a exceção.
+PINO_LONGE_DA_REGUA = {
+    "blumenau": ("o pino de Blumenau é a coordenada publicada da DCSC-00026, que "
+                 "é estação de CHUVA, não a régua de nível; a 83800002 fica a 40 m "
+                 "do traçado e a 6,94 km desse pino. Remove esta exceção: a "
+                 "coordenada da régua do AlertaBlu/Defesa Civil, que é a fonte do "
+                 "tempo real da tela. Mesmo motivo já escrito em LONGE_ACEITO."),
+}
+
 
 def _km_ao_segmento(p, a, b) -> float:
     """Distância em km do ponto ao SEGMENTO ab (não só aos vértices)."""
@@ -1301,6 +1343,7 @@ def valida_codigo_ana() -> None:
     """
     dados = le_json("estacoes.json")
     cache: dict[str, list] = {}
+    usaram_a_excecao: set[str] = set()
 
     for rio_id, rio in dados["rios"].items():
         for cidade in rio["cidades"]:
@@ -1381,12 +1424,31 @@ def valida_codigo_ana() -> None:
                            (ao_pino, f"do pino de {cid}")) if d is not None]
             if not candidatas:
                 continue
+            if ao_pino is not None and ao_pino > LIMITE_MESMA_REGUA_KM:
+                usaram_a_excecao.add(cid)
+                motivo = PINO_LONGE_DA_REGUA.get(cid)
+                if motivo is None:
+                    erro(f"estacoes.json / {cid}: a estação ANA {codigo} ({nome}) fica a "
+                         f"{ao_pino:.2f} km do pino desta cidade — acima de "
+                         f"{LIMITE_MESMA_REGUA_KM:g} km. Estar no rio certo não faz dela a "
+                         "régua DESTA cidade: outro ponto do rio tem outro zero, e parear "
+                         "as séries somaria um degrau desconhecido. Ou o vínculo está "
+                         "errado (escreva o porquê em codigo_ana_nao_e), ou o pino está, "
+                         "ou há razão para a distância — e aí ela vai em PINO_LONGE_DA_REGUA.")
+
             d, contra = min(candidatas)
             if d > LIMITE_PINO_KM:
                 erro(f"estacoes.json / {cid}: a estação ANA {codigo} ({nome}) fica a "
                      f"{d:.2f} km {contra} — a referência mais perto das duas; limite "
                      f"{LIMITE_PINO_KM:g} km. Estação fluviométrica fica NO rio: ou a "
                      "coordenada está errada, ou a estação é de outro curso d'água.")
+
+    for cid in PINO_LONGE_DA_REGUA:
+        if cid not in usaram_a_excecao:
+            aviso(f"estacoes.json / {cid}: está em PINO_LONGE_DA_REGUA e o vínculo já "
+                  "cabe no limite — ou a estação saiu de ESTACOES_ANA_CONHECIDAS e "
+                  "ninguém está medindo. Tire a exceção ou conserte a medida: exceção "
+                  "que não vence vira mobília.")
 
 
 #: Arquivo do site que guarda quantas ruas de cada cidade foram levantadas SEM
