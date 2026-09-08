@@ -75,7 +75,26 @@
       },
       "ancora_de_itajai": "O Volume II diz '~1 dia' de Rio do Sul até Itajaí. Pela tabela, isso é a coluna de 10 anos (+24 h). A faixa 21–27 h é derivação nossa (7+14 a 10+17), não número que o estudo escreva."
     },
-    "ALERTA_TOPOLOGIA": "O Itajaí-Açu é uma ÁRVORE (ver estacoes.json / rios['itajai-acu']._topologia). Só encadeie/interpole tempo ao longo do TRONCO (rio-do-sul -> ascurra -> indaial -> blumenau -> gaspar -> ilhota -> itajai). NÃO interpole passando por Ibirama (afluente do Rio Hercílio): o pico dele ENTRA no tronco, não desce por ele. Taió e Ituporanga são cabeceiras paralelas que ALIMENTAM Rio do Sul — os trechos taio->rio-do-sul e ituporanga->rio-do-sul são de afluente, não elos de fila. Apiúna saiu do eixo em 02/09/2026 (estação de altitude, não régua de rio); seus trechos foram removidos."
+    "ALERTA_TOPOLOGIA": "O Itajaí-Açu é uma ÁRVORE (ver estacoes.json / rios['itajai-acu']._topologia). Só encadeie/interpole tempo ao longo do TRONCO (rio-do-sul -> ascurra -> indaial -> blumenau -> gaspar -> ilhota -> itajai). NÃO interpole passando por Ibirama (afluente do Rio Hercílio): o pico dele ENTRA no tronco, não desce por ele. Taió e Ituporanga são cabeceiras paralelas que ALIMENTAM Rio do Sul — os trechos taio->rio-do-sul e ituporanga->rio-do-sul são de afluente, não elos de fila. Apiúna saiu do eixo em 02/09/2026 (estação de altitude, não régua de rio); seus trechos foram removidos.",
+    "medicoes": {
+      "_o_que_e": "Tempos de trânsito MEDIDOS em cheias reais, com hora de pico nas duas pontas. NÃO alteram horas_min/horas_max: calibrar_transito.py exige MIN_EVENTOS = 3 eventos entre duas CIDADES de enchentes.json, e o que está aqui não cumpre nem uma coisa nem outra. Fica registrado para não ser remedido, e para virar faixa quando houver três.",
+      "salseiro_para_brusque": [
+        {
+          "evento": "2020-12-15",
+          "montante": "SALSEIRO (ANA 83892990, portal DC Brusque estação 31) — 2,73 m às 13:15",
+          "jusante": "Brusque (Ponte Estaiada) — 4,95 m às 20:45, o registro de enchentes.json com hora",
+          "horas": 7.5,
+          "fonte": "data/brutos/brusque-dc-salseiro-31-historico-2018-2026.tar.gz, lido por scripts/analisar_salseiro_brusque.py em 08/09/2026",
+          "ressalvas": [
+            "UM evento. Não é faixa, não é tempo de trânsito: é a primeira medição com hora nas duas pontas que o projeto tem, e só isso.",
+            "57% da janela de 48 h anterior ao pico de Brusque está AUSENTE na Salseiro (cota 0,00). O pico de 2,73 m às 13:15 é o maior valor que SOBREVIVEU, não necessariamente o pico real — pode haver um maior dentro de um buraco. As 7,5 h são, portanto, um teto plausível, não uma medida fechada.",
+            "A SALSEIRO NÃO É A RÉGUA DE VIDAL RAMOS (6,8 km; 0,70 m medidos em 08/09/2026, codigo_ana_nao_e). Serve como RELÓGIO a montante, porque para trânsito o que importa é a hora do pico e não o metro. Não usar o 2,73 m como nível de Vidal Ramos.",
+            "O trecho pula Botuverá e Guabiruba. Os elos vidal-ramos→botuvera e botuvera→brusque continuam sem fonte.",
+            "O segundo pico de Brusque com hora (23/06/2022, 5,46 m às 00:45) NÃO tem par: a Salseiro está inteiramente ausente nessa janela. Registrado para ninguém procurar de novo nesse arquivo."
+          ]
+        }
+      ]
+    }
   },
   "trechos": [
     {
