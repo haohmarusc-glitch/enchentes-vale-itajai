@@ -893,6 +893,20 @@ o projeto.
   auditor seria o erro oposto. "Sem cotas de atenção/alerta" caiu de 12 para 10 cidades. **Por que
   importa mais do que parece:** buraco falso gasta o tempo de quem procura e ensina a desconfiar da
   lista inteira — que é o contrário do que uma lista de busca serve para fazer.
+- [x] **A busca da série da ANA não eram doze buscas iguais — cinco já estavam feitas.** O item 5 da
+  auditoria listava as doze cidades sem `codigo_ana` sob um título só. **Quatro já tiveram a busca
+  feita e RECUSARAM a estação achada**, com distância medida e motivo gravado: Indaial (`83520000
+  WARNOW`, 3,95 km), Ilhota (`83870001 ILHOTA-JUSANTE`, 1,18 km), **Vidal Ramos** (`83892990
+  SALSEIRO`, 6,8 km) e Botuverá (`83892998 BOTUVERA-MONTANTE`, 3,47 km). Mandar "procurar a estação de
+  Vidal Ramos" sem dizer que a SALSEIRO já foi achada e recusada **convida a trazer de volta a mesma
+  estação** — que é exatamente como um pareamento errado entra, e o projeto já pagou por isso duas
+  vezes (Brusque e o próprio Salseiro). Agora a recusada é **nomeada na tabela**, de propósito, para
+  não voltar. E **Ibirama não é busca, é DECISÃO**: a candidata `83440000` está a 476 m, a distância
+  já foi medida, e o que falta é critério — o traçado do Hercílio, que não está em `data/rios/`.
+  Restam **7 buscas de verdade**. Mesma divisão que o item 7 já fazia para os elos de trânsito.
+  Achado de brinde: cortar o motivo no primeiro `.` partia a coordenada `-27.38547` ao meio e
+  imprimia `(-27` numa tabela sobre coordenadas — **número mutilado parece dado**, e é pior que
+  número nenhum. `primeira_frase()` corta em `. ` e tem teste.
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível

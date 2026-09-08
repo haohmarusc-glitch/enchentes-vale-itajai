@@ -243,6 +243,52 @@ def por_que_falta_o_elo(de: str, para: str, fonte: dict, tabela: dict,
     return ("sem_tempo_de_fonte", motivos)
 
 
+def primeira_frase(texto: str, limite: int = 140) -> str:
+    """
+    A primeira frase, sem partir número decimal nem coordenada ao meio.
+
+    POR QUE EXISTE (08/09/2026). Cortar no primeiro `.` transformou
+    "6,8 km entre a nossa régua (-27.38547 / -49.35812, ...)" em
+    "...a nossa régua (-27" — um pedaço de coordenada, numa tabela sobre
+    coordenadas. O corte é por `. ` (ponto seguido de espaço), que é fim de
+    frase; `-27.38547` não tem espaço depois do ponto e sobrevive inteiro.
+    """
+    frase = (texto or "").split(". ")[0].strip().rstrip(".")
+    if len(frase) > limite:
+        frase = frase[:limite].rsplit(" ", 1)[0] + "…"
+    return frase
+
+
+def estado_da_busca_ana(c: dict) -> tuple[str, str]:
+    """
+    O que falta de fato para esta cidade ter série da ANA — três coisas, não uma.
+
+    POR QUE EXISTE (08/09/2026). O item 5 listava as doze cidades sem código
+    como se todas precisassem da mesma busca. Cinco não precisam:
+
+    * `recusada` — a busca JÁ FOI FEITA e achou uma estação, que foi **rejeitada
+      com distância medida**. Vidal Ramos é o caso: a SALSEIRO está a 6,8 km, no
+      mesmo município e em outro ponto do rio. Mandar "procurar a estação de
+      Vidal Ramos" sem dizer isso convida a trazer de volta a mesma estação
+      recusada — que é exatamente como um pareamento errado entra. O projeto já
+      pagou por isso em Brusque e no próprio Salseiro.
+    * `decisao` — Ibirama tem candidata a 476 m e o que falta **não é busca**: é
+      critério, e o traçado do Hercílio que o resolveria não está em `data/rios/`.
+      Pedir busca aqui aponta para a tarefa errada.
+    * `sem_busca` — ninguém olhou ainda. Só estas são busca de verdade.
+
+    É a mesma divisão que o item 7 já faz para os elos de trânsito.
+    """
+    if c.get("codigo_ana_nao_e"):
+        recusada = c["codigo_ana_nao_e"]
+        return ("recusada", f"{recusada.get('codigo', '?')} {recusada.get('nome', '')}".strip())
+    if c.get("codigo_ana_candidatos"):
+        cands = c["codigo_ana_candidatos"]
+        return ("decisao", ", ".join(
+            f"{x.get('codigo', '?')} {x.get('nome', '')}".strip() for x in cands))
+    return ("sem_busca", "")
+
+
 def cotas_nas_reguas(estacoes: dict, cidade_id: str) -> dict:
     """
     Quantas RÉGUAS daquela cidade têm a escala completa — e quantas conferidas.
@@ -314,6 +360,9 @@ def auditar(ao_vivo: Path | None) -> dict:
                 "picos": picos.get(c["id"], 0),
                 "ana": c.get("codigo_ana"),
                 "ana_verificado": bool(c.get("codigo_ana_verificado")),
+                "ana_busca": estado_da_busca_ana(c)[0],
+                "ana_estacao_fora": estado_da_busca_ana(c)[1],
+                "ana_porque_fora": (c.get("codigo_ana_nao_e") or {}).get("por_que_nao", ""),
                 "ruas": com_rua.get(c["id"], 0),
                 "ruas_com_coordenada": com_coord_rua.get(c["id"], 0),
                 "jusante": jusante,
@@ -619,8 +668,44 @@ def markdown(rel: dict) -> str:
         f"{nomes(lambda l: not l['ana_verificado'])}.\n\n"
         "Cada estação conferida traz série inteira de cota, com hora — resolve os "
         "itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por "
-        "unidade de esforço da lista.\n"
+        "unidade de esforço da lista.\n\n"
+        # Divisão feita em 08/09/2026, pelo mesmo motivo do item 7: a lista
+        # dizia doze e lia como doze buscas iguais. Cinco não são busca.
+        "**Mas não são doze buscas iguais.** Só as do primeiro grupo são busca:\n\n"
     )
+    sem_busca = por_id(lambda l: not l["ana_verificado"] and l["ana_busca"] == "sem_busca")
+    recusadas = por_id(lambda l: not l["ana_verificado"] and l["ana_busca"] == "recusada")
+    decisao = por_id(lambda l: not l["ana_verificado"] and l["ana_busca"] == "decisao")
+
+    f.append(
+        f"**Busca de verdade — ninguém olhou ainda** ({len(sem_busca)}): "
+        + (", ".join(f"**{l['nome']}**" for l in sem_busca) or "nenhuma")
+        + ".\n\n"
+    )
+    if recusadas:
+        f.append(
+            f"⚠️ **A busca JÁ FOI FEITA e a estação achada foi RECUSADA** ({len(recusadas)}) — "
+            "o que falta é uma estação **diferente**, e a recusada está nomeada aqui "
+            "de propósito, para não voltar:\n\n"
+            "| Cidade | Estação recusada | Por quê, em uma linha |\n|---|---|---|\n"
+        )
+        for l in recusadas:
+            porque = primeira_frase(l["ana_porque_fora"])
+            f.append(f"| {l['nome']} | `{l['ana_estacao_fora']}` | {porque} |\n")
+        f.append(
+            "\nO motivo inteiro, com a distância medida e o bruto do inventário, está em "
+            "`codigo_ana_nao_e` de cada cidade em `data/estacoes.json`. **Trazer de volta "
+            "uma destas é como um pareamento errado entra** — já custou caro em Brusque e "
+            "no Salseiro de Vidal Ramos.\n\n"
+        )
+    if decisao:
+        f.append(
+            f"⛔ **Não é busca, é DECISÃO** ({len(decisao)}): "
+            + ", ".join(f"**{l['nome']}** (candidata `{l['ana_estacao_fora']}`)" for l in decisao)
+            + ". A candidata já existe e a distância já foi medida; o que falta é "
+            "critério. Pedir busca aqui aponta para a tarefa errada — o desbloqueio "
+            "está escrito em `codigo_ana_candidatos`.\n"
+        )
 
     f.append("\n### 6. Cotas de rua — a busca \"minha rua\"\n\n")
     f.append(f"Sem nenhuma cota de rua: {nomes(lambda l: not l['ruas'])}.\n")

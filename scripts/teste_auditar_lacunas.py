@@ -541,5 +541,90 @@ class CarimboDaColunaDeLeitura(unittest.TestCase):
         self.assertEqual(rel["ao_vivo_leituras"], 0)
 
 
+
+class OQueFaltaParaASerieDaANA(unittest.TestCase):
+    """
+    O item 5 listava doze cidades como se fossem doze buscas iguais. Cinco não
+    são: quatro já tiveram a busca feita e RECUSARAM a estação achada, com
+    distância medida, e uma espera decisão, não dado.
+
+    Mandar "procurar a estação de Vidal Ramos" sem dizer que a SALSEIRO já foi
+    achada e recusada a 6,8 km convida a trazer de volta a mesma estação — que é
+    exatamente como um pareamento errado entra. O projeto já pagou por isso duas
+    vezes, em Brusque e no próprio Salseiro.
+    """
+
+    def test_estacao_recusada_e_nomeada(self):
+        c = {"codigo_ana_nao_e": {"codigo": "83892990", "nome": "SALSEIRO"}}
+        self.assertEqual(al.estado_da_busca_ana(c), ("recusada", "83892990 SALSEIRO"))
+
+    def test_candidata_pendente_e_decisao_nao_busca(self):
+        c = {"codigo_ana_candidatos": [{"codigo": "83440000", "nome": "IBIRAMA"}]}
+        self.assertEqual(al.estado_da_busca_ana(c), ("decisao", "83440000 IBIRAMA"))
+
+    def test_sem_nada_gravado_e_busca_de_verdade(self):
+        self.assertEqual(al.estado_da_busca_ana({}), ("sem_busca", ""))
+
+    def test_recusa_tem_precedencia_sobre_candidata(self):
+        """Recusa é decisão tomada; candidata é decisão pendente."""
+        c = {"codigo_ana_nao_e": {"codigo": "1", "nome": "A"},
+             "codigo_ana_candidatos": [{"codigo": "2", "nome": "B"}]}
+        self.assertEqual(al.estado_da_busca_ana(c)[0], "recusada")
+
+    def test_no_dado_real_as_quatro_recusas_conhecidas_aparecem(self):
+        rel = al.auditar(None)
+        recusadas = {l["id"]: l["ana_estacao_fora"]
+                     for l in rel["linhas"]
+                     if not l["ana_verificado"] and l["ana_busca"] == "recusada"}
+        self.assertEqual(set(recusadas), {"indaial", "ilhota", "vidal-ramos", "botuvera"})
+        self.assertIn("SALSEIRO", recusadas["vidal-ramos"])
+
+    def test_ibirama_e_decisao_e_nao_entra_na_lista_de_busca(self):
+        rel = al.auditar(None)
+        ib = next(l for l in rel["linhas"] if l["id"] == "ibirama")
+        self.assertEqual(ib["ana_busca"], "decisao")
+
+    def test_as_tres_categorias_somam_as_cidades_sem_codigo(self):
+        """Nenhuma cidade pode escapar da classificação e sumir da lista."""
+        rel = al.auditar(None)
+        sem = [l for l in rel["linhas"] if not l["ana_verificado"]]
+        self.assertEqual(
+            sum(1 for l in sem if l["ana_busca"] in ("sem_busca", "recusada", "decisao")),
+            len(sem))
+
+    def test_o_markdown_nomeia_a_estacao_recusada(self):
+        md = al.markdown(al.auditar(None))
+        for esperado in ("SALSEIRO", "WARNOW", "ILHOTA-JUSANTE", "BOTUVERA-MONTANTE"):
+            with self.subTest(estacao=esperado):
+                self.assertIn(esperado, md)
+
+
+class PrimeiraFraseNaoParteCoordenada(unittest.TestCase):
+    """
+    Cortar no primeiro `.` virou "a nossa régua (-27" — um pedaço de coordenada,
+    numa tabela sobre coordenadas. Um número mutilado numa tabela é pior que
+    número nenhum: parece dado.
+    """
+
+    def test_decimal_sobrevive_inteiro(self):
+        texto = "6,8 km entre a nossa régua (-27.38547 / -49.35812) e a SALSEIRO. NÃO vincular."
+        self.assertEqual(
+            al.primeira_frase(texto),
+            "6,8 km entre a nossa régua (-27.38547 / -49.35812) e a SALSEIRO")
+
+    def test_corta_na_primeira_frase_de_verdade(self):
+        self.assertEqual(al.primeira_frase("Primeira. Segunda."), "Primeira")
+
+    def test_frase_longa_e_truncada_com_reticencia_em_limite_de_palavra(self):
+        longa = " ".join(["palavra"] * 40)
+        saida = al.primeira_frase(longa, limite=30)
+        self.assertTrue(saida.endswith("…"))
+        self.assertNotIn("palavr…", saida, "cortou no meio de uma palavra")
+
+    def test_texto_vazio_nao_explode(self):
+        self.assertEqual(al.primeira_frase(""), "")
+        self.assertEqual(al.primeira_frase(None), "")
+
+
 if __name__ == "__main__":
     unittest.main()
