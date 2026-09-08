@@ -102,6 +102,9 @@ Tarefa: `scripts/baixar_mapas_itajai.py` — baixar os 5 pacotes + PDFs para `da
 ### Itajaí — ArcGIS da prefeitura (cotas por endereço)
 - App "Cotas de Inundação": `https://arcgis.itajai.sc.gov.br/portal/apps/webappviewer/index.html?id=131634abf81347b9a973e79746ae4ef3`
 - App "Histórico de Inundações": `https://arcgis.itajai.sc.gov.br/portal/apps/experiencebuilder/experience/?id=0a0f5df570ce46a5bac16a4348752a74`
+- **App não identificado** (08/09/2026): `https://arcgis.itajai.sc.gov.br/portal/apps/webappviewer/index.html?id=4e097e762ffc484e84648905f0d75347`
+  — não é nenhum dos dois acima e o proxy deste ambiente bloqueia o domínio. O que perguntar a ele
+  está em `docs/ITAJAI-ARCGIS-INVENTARIO.md`, seção "Um TERCEIRO visualizador".
 - REST: `https://arcgis.itajai.sc.gov.br/server/rest/services` — serviços públicos existem (ex.: `arcgis_urban/zoneamento/MapServer`, FeatureServer com geoJSON). Tarefa: abrir a raiz do REST no navegador, achar a pasta/serviço da Defesa Civil (cotas de inundação, histórico) e testar `…/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson`. Se responder, é a fonte de "cota por endereço" de Itajaí sem raspagem.
 
 ### Blumenau — tabela oficial de cotas por rua (AlertaBlu)

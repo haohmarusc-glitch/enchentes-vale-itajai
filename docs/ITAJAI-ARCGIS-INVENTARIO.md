@@ -90,3 +90,136 @@ Sul têm o limiar; Itajaí tem o registro do que aconteceu.
 **O que isso permite dizer:** *"neste endereço, em setembro de 2011, a água chegou a 60 cm"*.
 **O que não permite:** prever. E **continua faltando o pico do rio de cada evento** para indexar a
 biblioteca por nível — o bloqueio de `ADENDO-2026-09-05-NOITE.md`, que a busca externa não resolveu.
+
+---
+
+## Um TERCEIRO visualizador, ainda não identificado (08/09/2026)
+
+Jefferson trouxe este endereço:
+
+```
+https://arcgis.itajai.sc.gov.br/portal/apps/webappviewer/index.html?id=4e097e762ffc484e84648905f0d75347
+```
+
+**É um app novo.** Os dois que o repositório já conhecia são outros:
+
+| app | id | o que é |
+|---|---|---|
+| Cotas de Inundação | `131634abf81347b9a973e79746ae4ef3` | as 3.434 lâminas por endereço; busca na pasta `defesacivil`, que exige token |
+| Histórico de Inundações (experiencebuilder) | `0a0f5df570ce46a5bac16a4348752a74` | consome `historico_inundacoes/FeatureServer`, já baixado inteiro |
+| **este** | **`4e097e762ffc484e84648905f0d75347`** | **não identificado** |
+
+**Não consegui abrir.** O proxy de saída deste ambiente bloqueia `arcgis.itajai.sc.gov.br`
+(`CONNECT tunnel failed, response 403`) — é o mesmo bloqueio que já vale para `*.ana.gov.br`,
+`defesacivil.*.sc.gov.br` e `marinha.mil.br`. Nada foi inferido do id: **id de app não diz o que o app
+mostra**, e chutar aqui seria inventar uma fonte.
+
+### A pergunta que responde isso em um minuto de navegador
+
+Abrir o app e olhar **a lista de camadas** (ícone de camadas, no canto). Depois, o que interessa mesmo:
+
+1. **Qual serviço REST ele consome** — F12 → aba Rede → filtrar por `rest/services`. O caminho que
+   aparecer diz tudo. Se for `historico_inundacoes`, já temos o bruto inteiro e o app não acrescenta
+   nada. Se for `defesacivil/...`, é o app das lâminas com outra roupa. **Se for uma pasta que não está
+   em nenhuma das duas listas, é fonte nova.**
+2. **Se alguma camada tem campo de NÍVEL DE RÉGUA** — não `cota`, não `situa`, não `hectares`. Um campo
+   que diga *o rio estava em tantos metros neste evento*.
+
+### Por que a pergunta 2 é a que vale
+
+É exatamente o bloqueio do `ADENDO-2026-09-05-NOITE.md`: temos as manchas de Itajaí e temos a lâmina por
+endereço, e **não temos o pico do rio de cada evento na régua que o site lê hoje**. Sem esse número, a
+biblioteca de manchas não pode ser indexada por nível — ou seja, o site não pode dizer *"com o rio no
+nível de agora, a mancha parecida é a de 2013"*.
+
+⚠️ **E a armadilha de sempre:** se aparecer um campo com números entre 0 e 3, é **lâmina**, não cota de
+régua. O app da própria prefeitura chama a lâmina de "cota". Um valor só entra como nível de régua se o
+documento disser **de qual régua** ele é — a mesma regra que o PLANCON acabou de cobrar caro.
+
+---
+
+## A coleta de 08/09/2026 02:01 FALHOU INTEIRA — e o relatório não diz isso
+
+Jefferson trouxe `COLETA_ARCGIS_ITAJAI.md`, relatório de uma coleta automatizada contra o ArcGIS de
+Itajaí. **Zero registros foram baixados.** Os seis arquivos que ela produziu são, todos:
+
+```
+historico_inundacoes_ERROR.json
+inundacao_cotas_ERROR.json
+item_03542d8f541c4392bc542b01ca979c6d_data_ERROR.json
+item_03542d8f541c4392bc542b01ca979c6d_metadata_ERROR.json
+item_131634abf81347b9a973e79746ae4ef3_data_ERROR.json
+item_131634abf81347b9a973e79746ae4ef3_metadata_ERROR.json
+```
+
+E a tabela de camadas do relatório tem **cabeçalho e nenhuma linha**.
+
+### Por que isto está registrado aqui em vez de arquivado como levantamento
+
+Porque o texto ao redor dos erros afirma o contrário deles:
+
+| o relatório diz | o que os arquivos mostram |
+|---|---|
+| "Serviço histórico oficial … O serviço declara EPSG:4326, limite de 1000 registros e dez camadas" | `historico_inundacoes_ERROR.json` — o serviço não respondeu |
+| "Os arquivos `*_metadata.json` preservam esquema, campos e metadados das camadas" | não existe nenhum `*_metadata.json`; existem `*_metadata_ERROR.json` |
+| "Os arquivos `*_features.json` preservam atributos e geometrias" | não existe nenhum `*_features.json` |
+| "## Conteúdo histórico confirmado" + a lista das dez camadas | **nada foi confirmado nesta rodada** |
+
+A lista das dez camadas (1983, 1984, 2001, 2008, 2011, cotas set/2011, jul/2013, set/2013, jun/2014,
+out/2015) **bate exatamente com o que este repositório já tem** desde 06/09. Ou seja: é conhecimento
+anterior reapresentado como achado da rodada. **Uma coleta que falhou não "confirma" nada** — e um
+relatório que descreve arquivos de erro como se fossem os dados é a mesma mentira silenciosa que este
+projeto já pagou caro em outras frentes (o `2>/dev/null` que escondeu um `NameError`, o fixture
+escrito à mão que divergia do real).
+
+**Nada deste relatório entrou em `data/`.** Não havia o que entrar.
+
+### E ele não olhou o app que motivou a coleta
+
+O app que Jefferson tinha mandado uma hora antes é `webappviewer/…?id=4e097e762ffc484e84648905f0d75347`.
+**Esse id não aparece em lugar nenhum do relatório.** Os alvos foram outros dois:
+
+| id no relatório | o que é |
+|---|---|
+| `131634abf81347b9a973e79746ae4ef3` | Web AppBuilder — **já catalogado**, é o "Cotas de Inundação" |
+| `03542d8f541c4392bc542b01ca979c6d` | Experience Builder, página `page_3`, view `view_2` — **não catalogado**; o experiencebuilder que conhecíamos é o `0a0f5df570ce46a5bac16a4348752a74` |
+
+Então há agora **dois ids não identificados**: o `4e097e76…` e o `03542d8f…`. **Possibilidade que não dá
+para verificar daqui** (o proxy bloqueia o domínio): `03542d8f…` pode ser o *item de web map* que o app
+`4e097e76…` consome — id de app e id de item são coisas diferentes no ArcGIS. É hipótese, não achado.
+
+### "Tabela 13" no "Próximo alvo" é caçada encerrada, e no lugar errado
+
+O relatório propõe procurar no ArcGIS "a possível Tabela 13 / conjunto das 11 réguas". Isso já foi
+respondido em 08/09 pela fonte primária, e a resposta muda o alvo:
+
+- o PDF do PLANCON **v17** tem 68 páginas e **doze tabelas**; a de níveis é a **Tabela 11, página 23**;
+  **não existe Tabela 13 nele**, e os onze valores já cadastrados batem 11 de 11;
+- a "Tabela 13" é de **outra EDIÇÃO do PLANCON** — um documento, não uma camada de ArcGIS;
+- e naquela edição a **DC-09 é outro rio** ("Ribeirão Ariribá" contra "Ribeirão da Murta" na v17), o que
+  significa que as estações foram **remanejadas entre edições**.
+
+Procurar essa tabela no ArcGIS não acha nada e, se achasse algo parecido, o risco seria pior: amarrar
+cota de uma edição antiga a estação que mudou de curso d'água.
+
+### O que o relatório acerta, e vale repetir
+
+> *"Não se deve interpretar automaticamente classes/polígonos de inundação como nível de régua fluvial;
+> a associação precisa vir de fonte explícita."*
+
+Exatamente a regra da casa, e exatamente o motivo de as manchas de Itajaí ainda não poderem ser
+indexadas por nível.
+
+### O que falta para a coleta valer alguma coisa
+
+**Os seis `*_ERROR.json`.** Só o `.md` foi trazido, e é o `.md` que não diz *por que* falhou. Os erros
+distinguem coisas que exigem respostas opostas:
+
+| se o erro for | então |
+|---|---|
+| `499 Token Required` | é a pasta `defesacivil`, fechada — vira ofício, não código (já sabido desde 06/09) |
+| `403` / bloqueio de saída | é o ambiente de quem rodou, não o servidor — refazer de outra rede |
+| 404 / URL errada | os ids ou o caminho do REST estão errados — corrigir e repetir |
+| timeout | paginar e repetir |
+
+Sem esses arquivos não dá para escolher entre um ofício e um retry, que são coisas muito diferentes.

@@ -128,6 +128,9 @@ que ela não tinha.
 | Cotas de rua de Rio do Sul | ✅ 555 pontos |
 | Cotas de rua de Brusque | ✅ 377 pontos |
 | Código ANA de Rio do Sul, Blumenau, Gaspar, Taió, Ituporanga, Brusque | ✅ confirmados por coordenada |
+| Cotas das réguas DC-01…DC-11 de Itajaí | ⚠️ **JÁ EXISTEM e estão CONFERIDAS na fonte** — Tabela 11, página 23 do PDF da v17 (22/12/2025), 11 de 11 batendo. A "Tabela 13" que apareceu numa rodada é de **outra edição**, na qual a DC-09 é outro rio. **Não trazer valor do PLANCON de Itajaí sem a VERSÃO do documento junto** |
+| Estação oficial do aviso de Ituporanga | ✅ **83250000** (ANA/EPAGRI), com atenção 1,40 / alerta 1,90 / emergência 2,60 — resolvido |
+| Tábua de maré do CHM | ✅ o PDF de 2026 cobre até **31/12**; falta importar. 2027 não existe |
 | `Indaial → Blumenau` no trânsito | ⛔ **não procurar** — ver §6 |
 
 ---
@@ -162,7 +165,7 @@ Procurar **atenção, alerta e emergência**, com a régua identificada:
 > (documento de 18/10/2024), **amarrados à estação 83250000** — que fica a 9,59 km do
 > nosso pino e drena 1.650 km² contra os 1.170 km² da nossa 83145140. Não é mais "procurar
 > a escala": é **descobrir qual estação alimenta o aviso de Ituporanga hoje**, perguntando
-> à Defesa Civil de SC ou à EPAGRI. Ver `docs/BUSCA-EXTERNA-RODADA-1.md`.
+> à Defesa Civil de SC ou à EPAGRI. Ver `docs/BUSCA-EXTERNA-RODADAS.md`.
 **Rio Itajaí-Mirim:** Botuverá · Guabiruba · Itajaí
 
 > Atenção em **Lontras, Timbó e Trombudo Central**: há número guardado para elas,

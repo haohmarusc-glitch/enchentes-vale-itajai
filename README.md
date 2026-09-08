@@ -501,6 +501,30 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
+- [x] **🔴→✅ O conflito das cotas de Itajaí foi ABERTO e FECHADO — pelo PDF, não por escolha.**
+  A busca externa trouxe uma **"Tabela 13"** do PLANCON de Itajaí que divergia das nossas nove
+  réguas DC, cadastradas pela **Tabela 11 da versão 17 (22/12/2025)**. **Nenhum número foi trocado**
+  enquanto o conflito esteve aberto, porque não havia lado seguro: em seis réguas a outra leitura
+  avisaria *antes*, em duas a nossa avisa antes, e "a mais conservadora de cada" montaria uma escala
+  que **nenhum dos documentos publica**. Em 08/09 o PDF da v17 foi lido direto: tem **68 páginas e
+  doze tabelas**, a de níveis é a **Tabela 11, página 23**, e **não existe Tabela 13 nele**. Os
+  **11 de 11 valores batem exatamente** com o cadastro. A outra leitura é de **outra edição** — e a
+  diferença não é só de valores: nela a **DC-09 é "Ribeirão Ariribá"**, na v17 é **"Ribeirão da
+  Murta"**. *Rio diferente para o mesmo código*: as estações foram **remanejadas entre edições**, e
+  uma cota de edição antiga pode estar amarrada a outro curso d'água. **Regra que fica: valor do
+  PLANCON de Itajaí só entra com a VERSÃO do documento junto.** A hipótese de 07/09 ("é a mesma
+  tabela revisada", porque DC-02 coincidia em dois de três) estava **errada** e ficou registrada
+  como erro — indício fraco lido como forte. A leitura da outra edição **continua guardada** nas
+  nove réguas, com teste travando que a apaguem: é a prova do remanejamento. Descartado o 1,70 m da
+  DC-01 que veio de imprensa: nenhuma das leituras oficiais traz esse valor.
+- [x] **Ituporanga: a escala é oficial, e é de outra régua — as duas coisas ao mesmo tempo.** A
+  SPDC/SC determina que o monitoramento oficial saia da **83250000** (ANA/EPAGRI, via SIG²A-SPEHC ou
+  Gestor PCD/ANA), com atenção > 1,40 / alerta > 1,90 / emergência > 2,60 m. Isso **não** reabilita a
+  83250000 como régua do nosso pino — ela segue a 9,59 km e drenando 1.650 km² contra 1.170 km². O
+  dado passa a dizer as duas coisas: não é a nossa régua, **e** é a régua do aviso; rio não exige que
+  a régua do alerta esteja dentro da cidade. `cotas_m` continua vazio por um motivo preciso: as cotas
+  são da 83250000 e a nossa leitura vem da DCSC-00039 — gravá-las ali criaria o par régua↔cota errado.
+  **O que destrava virou uma pergunta só:** coletar a 83250000 pelo caminho que a própria SPDC indica.
 - [x] **Dois elos do Açu saíram da lista de busca: não são tempo de trânsito.** Com a série estadual,
   todos os elos ficaram **mensuráveis** — e mensurável não é o mesmo que **significativo**. Dos seis
   que faltavam no Açu, quatro são roteamento de verdade (`rio-do-sul → lontras`, `lontras → ascurra`,
@@ -831,6 +855,30 @@ o projeto.
   caminhos: perguntar ao GEOItajaí/COMPDEC o datum e o offset para o zero de cada régua DC, ou **derivar
   empiricamente** cruzando mancha por faixa de lâmina com curva de nível do mesmo evento — se a mancha de
   "0,41 a 0,60 m" de out/2015 acompanha a curva de 3 m, o offset sai da comparação. Ver
+  `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+- [ ] **Um terceiro app do ArcGIS de Itajaí apareceu, e não dá para saber o que é daqui.** Jefferson
+  trouxe `webappviewer/index.html?id=4e097e762ffc484e84648905f0d75347` — **não é** nenhum dos dois já
+  catalogados (`131634ab…` das lâminas por endereço, `0a0f5df5…` do histórico). **O proxy deste ambiente
+  bloqueia `arcgis.itajai.sc.gov.br`** (`CONNECT tunnel failed, 403`), então nada foi inferido: id de app
+  não diz o que o app mostra, e chutar aqui seria inventar fonte. **Um minuto de navegador responde:**
+  F12 → Rede → filtrar `rest/services` e ver **qual serviço ele consome** — se for `historico_inundacoes`
+  já temos o bruto inteiro; se for pasta nova, é fonte nova. E olhar se **alguma camada tem campo de
+  nível de RÉGUA**, que é o bloqueio das manchas ao vivo. ⚠️ Número entre 0 e 3 é **lâmina**, não cota de
+  régua — o app da prefeitura chama a lâmina de "cota". Detalhe em `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+- [ ] **⚠️ A coleta automatizada do ArcGIS de 08/09 FALHOU inteira, e o relatório dela não diz isso.**
+  Os **seis arquivos** que produziu são todos `*_ERROR.json`, e a tabela de camadas veio com cabeçalho e
+  **nenhuma linha** — zero registros. Mas o texto ao redor afirma o contrário: *"o serviço declara
+  EPSG:4326, limite de 1000 registros e dez camadas"*, *"os `*_metadata.json` preservam esquema e
+  campos"* (não existe nenhum `*_metadata.json`, existem `*_metadata_ERROR.json`) e um título
+  *"Conteúdo histórico confirmado"* cuja lista de dez camadas **é o que este repositório já tem desde
+  06/09** — conhecimento anterior reapresentado como achado. **Nada entrou em `data/`; não havia o que
+  entrar.** Ela também **não olhou o app que motivou a coleta** (`4e097e76…` não aparece no relatório) e
+  trouxe um **segundo id não catalogado**, `03542d8f541c4392bc542b01ca979c6d` — possivelmente o item de
+  web map que o outro app consome, mas isso é hipótese, não achado. **O que destrava é barato: os seis
+  `*_ERROR.json`.** Só o `.md` foi trazido, e é ele que não diz *por que* falhou — `499 Token Required`
+  vira ofício, `403` de saída vira refazer de outra rede, 404 vira corrigir a URL. Coisas opostas.
+  ⛔ E o "próximo alvo" proposto (procurar a "Tabela 13" no ArcGIS) **é caçada encerrada e no lugar
+  errado**: a Tabela 13 é de outra **edição do PDF do PLANCON**, não uma camada de ArcGIS. Detalhe em
   `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
 
 - [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
