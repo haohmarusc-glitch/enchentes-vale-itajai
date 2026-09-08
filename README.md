@@ -880,6 +880,19 @@ o projeto.
   ⛔ E o "próximo alvo" proposto (procurar a "Tabela 13" no ArcGIS) **é caçada encerrada e no lugar
   errado**: a Tabela 13 é de outra **edição do PDF do PLANCON**, não uma camada de ArcGIS. Detalhe em
   `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+- [x] **A auditoria de lacunas mandava procurar duas coisas que já estavam achadas.** Dois buracos
+  falsos, o mesmo defeito: **(1)** o auditor lia só o `cotas_m` do NÓ da cidade, e por isso dizia
+  *"Itajaí: sem cota nenhuma"* — de uma cidade cujas **onze réguas** citam o PDF do PLANCON por URL e
+  cujos onze valores foram conferidos, 11 de 11, contra a v17. O `cotas_m` vazio da cidade está
+  **certo**: Itajaí não tem uma escala, tem onze, e um número só ali seria mentira; errado era ler o
+  vazio como buraco. A coluna passa a ter **três estados** (`sim` · `11×` · `—`) — achatar os dois
+  primeiros num `—` era o que criava o buraco. **(2)** O item da maré mandava *"procurar a tábua anual
+  do CHM"*, que a rodada 2 já tinha achado: ela cobre outubro, novembro e dezembro de 2026. **Não é
+  busca, é importação** — a parede da FONTE é 31/12/2026, e 2027 é espera, não busca. Nada foi gravado
+  em `data/` nos dois casos: a correção é no relatório, e inventar uma "cota de Itajaí" para calar o
+  auditor seria o erro oposto. "Sem cotas de atenção/alerta" caiu de 12 para 10 cidades. **Por que
+  importa mais do que parece:** buraco falso gasta o tempo de quem procura e ensina a desconfiar da
+  lista inteira — que é o contrário do que uma lista de busca serve para fazer.
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível

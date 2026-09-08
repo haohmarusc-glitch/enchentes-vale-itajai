@@ -357,5 +357,106 @@ class RelogioProprioNaoEMotivoDeEloDoMesmoCurso(unittest.TestCase):
         self.assertIn("Benedito", " ".join(motivos))
 
 
+
+class EscalaQueMoraNasReguas(unittest.TestCase):
+    """
+    O auditor dizia **"Itajaí: sem cota nenhuma"** e mandava procurar o PDF do
+    PLANCON — de uma cidade cujas ONZE réguas citam esse PDF por URL e cujos
+    onze valores foram conferidos, 11 de 11, contra a versão 17.
+
+    O `cotas_m` vazio da cidade está CERTO: Itajaí não tem uma escala, tem onze,
+    uma por régua. Errado era ler o vazio como buraco. Buraco falso gasta o tempo
+    de quem procura e ensina a desconfiar da lista inteira — que é o oposto do
+    que uma lista de busca serve para fazer.
+    """
+
+    def monta(self, reguas):
+        return {"estacoes_tempo_real": reguas}
+
+    def test_regua_sem_a_escala_completa_nao_conta(self):
+        est = self.monta([{"cidade": "x", "cotas_m": {"atencao": 1.0}}])
+        self.assertEqual(al.cotas_nas_reguas(est, "x")["com_escala"], 0)
+
+    def test_conta_so_as_reguas_daquela_cidade(self):
+        est = self.monta([
+            {"cidade": "x", "cotas_m": {"atencao": 1.0, "alerta": 2.0}},
+            {"cidade": "y", "cotas_m": {"atencao": 1.0, "alerta": 2.0}},
+        ])
+        self.assertEqual(al.cotas_nas_reguas(est, "x"),
+                         {"total": 1, "com_escala": 1, "conferidas": 0})
+
+    def test_conferida_exige_o_campo_verificado(self):
+        est = self.monta([
+            {"cidade": "x", "cotas_m": {"atencao": 1.0, "alerta": 2.0}, "verificado": True},
+            {"cidade": "x", "cotas_m": {"atencao": 1.0, "alerta": 2.0}},
+        ])
+        r = al.cotas_nas_reguas(est, "x")
+        self.assertEqual((r["com_escala"], r["conferidas"]), (2, 1))
+
+    def test_o_rotulo_tem_TRES_estados(self):
+        """
+        Achatar "a cidade tem a escala" e "a escala está nas réguas" num `—` só
+        foi exatamente o que criou o buraco falso.
+        """
+        vazio = {"total": 0, "com_escala": 0, "conferidas": 0}
+        self.assertEqual(al.rotulo_de_cota({"cotas_essenciais": True, "reguas": vazio}), "sim")
+        self.assertEqual(al.rotulo_de_cota({"cotas_essenciais": False, "reguas": vazio}), "—")
+        self.assertEqual(
+            al.rotulo_de_cota({"cotas_essenciais": False,
+                               "reguas": {"total": 12, "com_escala": 11, "conferidas": 11}}),
+            "11×")
+
+
+class ItajaiNaoEBuracoDeCotaNoDadoReal(unittest.TestCase):
+    """Sobre o dado de verdade, não sobre fixture — foi o dado real que mentiu."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.rel = al.auditar(None)
+        cls.itajai = [l for l in cls.rel["linhas"] if l["id"] == "itajai"]
+
+    def test_itajai_aparece_nos_dois_rios(self):
+        self.assertEqual(len(self.itajai), 2, "a foz recebe o Açu e o Mirim")
+
+    def test_itajai_nao_conta_como_sem_cota_nenhuma(self):
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertFalse(l["cotas_nenhuma"],
+                                 "11 réguas com escala conferida não é 'sem cota nenhuma'")
+
+    def test_a_escala_de_itajai_esta_nas_reguas_e_sao_onze(self):
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertTrue(l["escala_por_regua"])
+                self.assertEqual(l["reguas"]["com_escala"], 11)
+
+    def test_as_onze_estao_conferidas_na_fonte(self):
+        """
+        Conferidas 11 de 11 contra a Tabela 11 da v17 em 08/09/2026. Se alguém
+        derrubar o `verificado`, o auditor volta a pedir busca por elas.
+        """
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertEqual(l["reguas"]["conferidas"], 11)
+
+    def test_a_cidade_continua_SEM_cota_propria_e_isso_esta_certo(self):
+        """
+        A correção é no relatório, não no dado. Gravar uma "cota de Itajaí"
+        para calar o auditor seria inventar um número que nenhuma régua publica.
+        """
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertEqual(l["cotas"], [])
+                self.assertFalse(l["cotas_essenciais"])
+
+    def test_nenhuma_outra_cidade_tem_escala_so_na_regua(self):
+        """
+        Se aparecer uma segunda, o texto do item 2 do Markdown — escrito no
+        singular para Itajaí — precisa ser relido antes de valer.
+        """
+        ids = {l["id"] for l in self.rel["linhas"] if l["escala_por_regua"]}
+        self.assertEqual(ids, {"itajai"}, ids)
+
+
 if __name__ == "__main__":
     unittest.main()

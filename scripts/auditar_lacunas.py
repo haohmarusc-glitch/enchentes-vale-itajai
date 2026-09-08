@@ -243,6 +243,31 @@ def por_que_falta_o_elo(de: str, para: str, fonte: dict, tabela: dict,
     return ("sem_tempo_de_fonte", motivos)
 
 
+def cotas_nas_reguas(estacoes: dict, cidade_id: str) -> dict:
+    """
+    Quantas RÉGUAS daquela cidade têm a escala completa — e quantas conferidas.
+
+    POR QUE EXISTE (08/09/2026). O auditor só olhava `cotas_m` do nó da cidade,
+    e por isso dizia **"Itajaí: sem cota nenhuma"** — mandando procurar o PDF do
+    PLANCON de uma cidade cujas ONZE réguas citam esse PDF por URL e cujos onze
+    valores foram conferidos, 11 de 11, contra a versão 17.
+
+    O `cotas_m` vazio da cidade está CERTO: Itajaí não tem uma escala, tem onze,
+    uma por régua, e um número só ali seria mentira. Errado era o auditor ler
+    esse vazio como buraco. Buraco falso gasta o tempo de quem procura e, pior,
+    ensina a desconfiar da lista inteira.
+    """
+    reguas = [e for e in estacoes.get("estacoes_tempo_real", [])
+              if e.get("cidade") == cidade_id]
+    com_escala = [e for e in reguas if all(f in (e.get("cotas_m") or {})
+                                           for f in FAIXAS_ESSENCIAIS)]
+    return {
+        "total": len(reguas),
+        "com_escala": len(com_escala),
+        "conferidas": sum(1 for e in com_escala if e.get("verificado")),
+    }
+
+
 def auditar(ao_vivo: Path | None) -> dict:
     estacoes = le("estacoes.json")
     eventos = le("enchentes.json")["eventos"]
@@ -265,6 +290,7 @@ def auditar(ao_vivo: Path | None) -> dict:
     linhas = []
     for c in cidades_do_eixo(estacoes):
         cotas = c.get("cotas_m") or {}
+        reguas = cotas_nas_reguas(estacoes, c["id"])
         jusante = proxima_a_jusante(estacoes, c["rio"], c)
         linhas.append(
             {
@@ -274,8 +300,14 @@ def auditar(ao_vivo: Path | None) -> dict:
                 "vivo": vivo.get(c["id"], 0),
                 "cotas": sorted(cotas),
                 "cotas_essenciais": all(f in cotas for f in FAIXAS_ESSENCIAIS),
-                "cotas_nenhuma": not cotas,
+                "cotas_nenhuma": not cotas and not reguas["com_escala"],
                 "cotas_verificado": bool(c.get("cotas_verificado")),
+                # A escala pode morar nas RÉGUAS em vez de no nó da cidade.
+                # Itajaí é assim: onze réguas, onze escalas, nenhuma "cota de
+                # Itajaí". A cor da tela sai da régua, então é ela que decide
+                # se a cor existe — não o nó.
+                "reguas": reguas,
+                "escala_por_regua": reguas["com_escala"] > 0 and not cotas,
                 "picos": picos.get(c["id"], 0),
                 "ana": c.get("codigo_ana"),
                 "ana_verificado": bool(c.get("codigo_ana_verificado")),
@@ -329,6 +361,20 @@ def auditar(ao_vivo: Path | None) -> dict:
     }
 
 
+def rotulo_de_cota(l: dict) -> str:
+    """
+    Três estados, não dois. `sim` = a cidade tem a escala; `11×` = a escala mora
+    nas réguas (Itajaí); `—` = não existe em lugar nenhum e vale procurar.
+
+    Achatar os dois primeiros num `—` foi o que criou o buraco falso de Itajaí.
+    """
+    if l["cotas_essenciais"]:
+        return "sim"
+    if l["reguas"]["com_escala"]:
+        return f"{l['reguas']['com_escala']}×"
+    return "—"
+
+
 def imprime(rel: dict) -> None:
     print(f"=== {rel['eventos']} picos históricos, {rel['eventos_com_hora']} com hora do pico")
     if not rel["ao_vivo_lido"]:
@@ -341,7 +387,7 @@ def imprime(rel: dict) -> None:
         print(
             f"{l['nome']:20s} {l['rio'].replace('itajai-',''):7s} "
             f"{('sim' if l['vivo'] else '—'):>4s} "
-            f"{('sim' if l['cotas_essenciais'] else '—'):>5s} "
+            f"{rotulo_de_cota(l):>5s} "
             f"{('sim' if l['cotas_verificado'] else '—'):>4s} "
             f"{(str(l['picos']) if l['picos'] else '—'):>4s} "
             f"{('sim' if l['ana_verificado'] else '—'):>4s} "
@@ -353,10 +399,15 @@ def imprime(rel: dict) -> None:
     for l in rel["linhas"]:
         if not l["vivo"]:
             faltas["sem leitura ao vivo"] += 1
-        if not l["cotas_essenciais"]:
+        # A cidade cuja escala mora nas réguas NÃO entra aqui: a tela pinta a
+        # cor a partir da régua, então a cor existe. Contá-la como falta era o
+        # buraco falso de Itajaí.
+        if not l["cotas_essenciais"] and not l["reguas"]["com_escala"]:
             faltas["sem cotas de atenção/alerta"] += 1
         if l["cotas_essenciais"] and not l["cotas_verificado"]:
             faltas["cotas não conferidas na fonte"] += 1
+        if l["escala_por_regua"] and l["reguas"]["conferidas"] < l["reguas"]["com_escala"]:
+            faltas["régua com escala não conferida na fonte"] += 1
         if l["picos"] < PARES_MINIMOS:
             faltas[f"menos de {PARES_MINIMOS} picos"] += 1
         if not l["ana_verificado"]:
@@ -425,7 +476,7 @@ def markdown(rel: dict) -> str:
         vivo = sim(l["vivo"]) if rel["ao_vivo_lido"] else "?"
         f.append(
             f"| {l['nome']} | {l['rio'].replace('itajai-', '')} | {vivo} | "
-            f"{sim(l['cotas_essenciais'])} | {sim(l['cotas_verificado'])} | "
+            f"{rotulo_de_cota(l)} | {sim(l['cotas_verificado'])} | "
             f"{l['picos'] or '—'} | {sim(l['ana_verificado'])} | "
             f"{l['ruas'] or '—'} | {tr} |\n"
         )
@@ -442,6 +493,15 @@ def markdown(rel: dict) -> str:
                 vistos.add(l["id"])
                 saida.append(f"**{l['nome']}**")
         return ", ".join(saida) or "nenhuma"
+
+    def por_id(cond):
+        """As LINHAS que casam, uma por cidade — a foz aparece nos dois rios."""
+        vistos, saida = set(), []
+        for l in linhas:
+            if cond(l) and l["id"] not in vistos:
+                vistos.add(l["id"])
+                saida.append(l)
+        return saida
 
     nome_de = {l["id"]: l["nome"] for l in linhas}
 
@@ -465,8 +525,18 @@ def markdown(rel: dict) -> str:
     f.append(
         f"Sem cota nenhuma: {nomes(lambda l: l['cotas_nenhuma'])}.\n\n"
         f"Com cota incompleta (falta atenção ou alerta): "
-        f"{nomes(lambda l: not l['cotas_nenhuma'] and not l['cotas_essenciais'])} — "
+        f"{nomes(lambda l: not l['cotas_nenhuma'] and not l['cotas_essenciais'] and not l['escala_por_regua'])} — "
         "a tela não consegue pintar a faixa que falta.\n\n"
+        "**Com a escala nas RÉGUAS, não na cidade** — não é buraco, não procurar: "
+        # Desduplicado por id: a foz aparece nos dois rios, e sem isto a frase
+        # sai repetida ("Itajaí 11 de 12 réguas, Itajaí 11 de 12 réguas").
+        + (", ".join(
+            f"**{l['nome']}** ({l['reguas']['com_escala']} de {l['reguas']['total']} "
+            f"réguas com escala, {l['reguas']['conferidas']} conferidas na fonte)"
+            for l in por_id(lambda l: l["escala_por_regua"])) or "nenhuma")
+        + ". A cidade não tem uma escala porque tem VÁRIAS, uma por régua, e um "
+        "número só ali seria mentira. A cor da tela sai da régua, então a cor "
+        "existe.\n\n"
         f"Com as duas mas sem conferência na fonte: "
         f"{nomes(lambda l: l['cotas_essenciais'] and not l['cotas_verificado'])} — "
         "valor veio de resumo, levantamento ou imprensa, não de leitura do Plano "
@@ -562,10 +632,20 @@ def markdown(rel: dict) -> str:
     f.append(
         f"Tábua cobre **{rel['mare_dias']} dias, até {rel['mare_ate']}**; "
         f"altura em metros: {'sim' if rel['mare_com_altura'] else '**não** (só horário)'}.\n\n"
-        "Depois dessa data a tela da foz fica sem maré. A altura foi omitida de "
-        "propósito porque o datum da planilha não está conferido contra o da "
-        "DHN — mesmo problema do datum de Blumenau. Procurar a tábua anual do "
-        "CHM/Marinha para o porto de Itajaí.\n"
+        "Depois dessa data a tela da foz fica sem maré.\n\n"
+        # Corrigido em 08/09/2026: este item dizia "procurar a tábua anual do
+        # CHM/Marinha". Ela já foi achada — a rodada 2 da busca externa conferiu
+        # que o PDF do CHM para o Porto de Itajaí cobre outubro, novembro e
+        # dezembro de 2026. Mandar procurar o que já se tem é buraco falso, e
+        # buraco falso ensina a desconfiar da lista inteira.
+        "**Não é busca, é importação.** A tábua do CHM para o Porto de Itajaí "
+        "**já foi encontrada** e cobre outubro, novembro e dezembro de 2026 — os "
+        "92 dias que faltam existem e estão disponíveis. A parede real da FONTE "
+        "é 31/12/2026, não a data acima, que é da tabela IMPORTADA. **2027 ainda "
+        "não existe no portal**: aí sim é espera, não busca.\n\n"
+        "A altura em metros foi omitida de propósito: o datum da planilha não "
+        "está conferido contra o da DHN — mesmo problema do datum de Blumenau. "
+        "Importar o horário sem a altura continua certo enquanto isso.\n"
     )
 
     f.append("\n### 9. Manchas de inundação\n\n")
