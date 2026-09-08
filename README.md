@@ -856,6 +856,15 @@ o projeto.
   empiricamente** cruzando mancha por faixa de lâmina com curva de nível do mesmo evento — se a mancha de
   "0,41 a 0,60 m" de out/2015 acompanha a curva de 3 m, o offset sai da comparação. Ver
   `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+- [ ] **Um terceiro app do ArcGIS de Itajaí apareceu, e não dá para saber o que é daqui.** Jefferson
+  trouxe `webappviewer/index.html?id=4e097e762ffc484e84648905f0d75347` — **não é** nenhum dos dois já
+  catalogados (`131634ab…` das lâminas por endereço, `0a0f5df5…` do histórico). **O proxy deste ambiente
+  bloqueia `arcgis.itajai.sc.gov.br`** (`CONNECT tunnel failed, 403`), então nada foi inferido: id de app
+  não diz o que o app mostra, e chutar aqui seria inventar fonte. **Um minuto de navegador responde:**
+  F12 → Rede → filtrar `rest/services` e ver **qual serviço ele consome** — se for `historico_inundacoes`
+  já temos o bruto inteiro; se for pasta nova, é fonte nova. E olhar se **alguma camada tem campo de
+  nível de RÉGUA**, que é o bloqueio das manchas ao vivo. ⚠️ Número entre 0 e 3 é **lâmina**, não cota de
+  régua — o app da prefeitura chama a lâmina de "cota". Detalhe em `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
 
 - [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
   negativo.** Era o único passo que destravava as manchas ao vivo. **Tudo que circula com metro nas

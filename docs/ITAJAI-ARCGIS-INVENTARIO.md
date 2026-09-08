@@ -90,3 +90,48 @@ Sul têm o limiar; Itajaí tem o registro do que aconteceu.
 **O que isso permite dizer:** *"neste endereço, em setembro de 2011, a água chegou a 60 cm"*.
 **O que não permite:** prever. E **continua faltando o pico do rio de cada evento** para indexar a
 biblioteca por nível — o bloqueio de `ADENDO-2026-09-05-NOITE.md`, que a busca externa não resolveu.
+
+---
+
+## Um TERCEIRO visualizador, ainda não identificado (08/09/2026)
+
+Jefferson trouxe este endereço:
+
+```
+https://arcgis.itajai.sc.gov.br/portal/apps/webappviewer/index.html?id=4e097e762ffc484e84648905f0d75347
+```
+
+**É um app novo.** Os dois que o repositório já conhecia são outros:
+
+| app | id | o que é |
+|---|---|---|
+| Cotas de Inundação | `131634abf81347b9a973e79746ae4ef3` | as 3.434 lâminas por endereço; busca na pasta `defesacivil`, que exige token |
+| Histórico de Inundações (experiencebuilder) | `0a0f5df570ce46a5bac16a4348752a74` | consome `historico_inundacoes/FeatureServer`, já baixado inteiro |
+| **este** | **`4e097e762ffc484e84648905f0d75347`** | **não identificado** |
+
+**Não consegui abrir.** O proxy de saída deste ambiente bloqueia `arcgis.itajai.sc.gov.br`
+(`CONNECT tunnel failed, response 403`) — é o mesmo bloqueio que já vale para `*.ana.gov.br`,
+`defesacivil.*.sc.gov.br` e `marinha.mil.br`. Nada foi inferido do id: **id de app não diz o que o app
+mostra**, e chutar aqui seria inventar uma fonte.
+
+### A pergunta que responde isso em um minuto de navegador
+
+Abrir o app e olhar **a lista de camadas** (ícone de camadas, no canto). Depois, o que interessa mesmo:
+
+1. **Qual serviço REST ele consome** — F12 → aba Rede → filtrar por `rest/services`. O caminho que
+   aparecer diz tudo. Se for `historico_inundacoes`, já temos o bruto inteiro e o app não acrescenta
+   nada. Se for `defesacivil/...`, é o app das lâminas com outra roupa. **Se for uma pasta que não está
+   em nenhuma das duas listas, é fonte nova.**
+2. **Se alguma camada tem campo de NÍVEL DE RÉGUA** — não `cota`, não `situa`, não `hectares`. Um campo
+   que diga *o rio estava em tantos metros neste evento*.
+
+### Por que a pergunta 2 é a que vale
+
+É exatamente o bloqueio do `ADENDO-2026-09-05-NOITE.md`: temos as manchas de Itajaí e temos a lâmina por
+endereço, e **não temos o pico do rio de cada evento na régua que o site lê hoje**. Sem esse número, a
+biblioteca de manchas não pode ser indexada por nível — ou seja, o site não pode dizer *"com o rio no
+nível de agora, a mancha parecida é a de 2013"*.
+
+⚠️ **E a armadilha de sempre:** se aparecer um campo com números entre 0 e 3, é **lâmina**, não cota de
+régua. O app da própria prefeitura chama a lâmina de "cota". Um valor só entra como nível de régua se o
+documento disser **de qual régua** ele é — a mesma regra que o PLANCON acabou de cobrar caro.
