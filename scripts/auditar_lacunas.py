@@ -136,7 +136,6 @@ def tipo_do_elo(estacoes: dict, rio_id: str, de: str, para: str) -> tuple[str, s
     if not topo:
         return ("roteamento", "rio em fila: todo elo é viagem pelo mesmo curso")
 
-    tronco = set(topo.get("tronco_sequencia", ()))
     laterais = {a["id"]: a for a in topo.get("afluentes_laterais", ())}
 
     de_lateral, para_lateral = de in laterais, para in laterais

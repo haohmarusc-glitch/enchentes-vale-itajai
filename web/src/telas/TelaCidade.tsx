@@ -4,6 +4,7 @@ import AvisoLegal from '../componentes/AvisoLegal'
 import ChuvaAoVivo from '../componentes/ChuvaAoVivo'
 import NivelAoVivo from '../componentes/NivelAoVivo'
 import PainelPrevisao from '../componentes/PainelPrevisao'
+import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
 import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import SeloConfianca from '../componentes/SeloConfianca'
@@ -373,6 +374,11 @@ export default function TelaCidade() {
           </p>
         )}
       </section>
+
+      {/* Logo abaixo do gráfico, de propósito: quem acabou de ver as barras é
+          quem pergunta "e agora, onde estamos nisso?". Longe dali a resposta
+          chega sem a pergunta. */}
+      <PainelCenarioAnterior cidade={cidade} eventos={picos} leitura={leitura} agora={agora} />
 
       {jusante ? (
         <PainelPrevisao

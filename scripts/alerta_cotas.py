@@ -40,7 +40,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -56,6 +56,24 @@ SITE = "https://haohmarusc-glitch.github.io/enchentes-vale-itajai/"
 
 #: Da mais baixa para a mais alta. 'normal' é o rio abaixo de qualquer cota.
 FAIXAS = ["normal", "atencao", "alerta", "emergencia", "inundacao"]
+
+#: Faixas que a TELA pinta mas que NÃO disparam aviso — e por quê.
+#:
+#: Declarado em 08/09/2026, sem mudar comportamento nenhum: `monitoramento` já
+#: não estava em `FAIXAS`, então o bot já se calava ali. O que muda é que a
+#: ausência deixa de parecer esquecimento. Ela foi encontrada por um teste
+#: emprestado do repo Premercado — quatro escadas de cota neste repositório e
+#: nenhuma amarrada às outras —, e o caso é vivo: Taió tem `monitoramento` em
+#: 5,00 m, e entre 5,00 e 7,00 m o pino acende no site sem o bot tocar.
+#:
+#: POR QUE CALAR AQUI É DEFENSÁVEL: monitoramento é a fase em que a COMPDEC
+#: começa a OLHAR, não a que ela anuncia. Em Taió a atenção só vem a 7,00 m,
+#: dois metros acima. Um aviso no telefone a cada travessia dessa marca ensina
+#: a ignorar o que tocar na noite da cheia — o mesmo raciocínio que já mantém
+#: as nove réguas de estuário de Itajaí com `alerta_automatico: false`.
+#:
+#: Se a decisão mudar, tire daqui: o teste passa a cobrar a cobertura.
+NAO_DISPARAM_AVISO = {"monitoramento"}
 
 ROTULO = {
     "normal": "abaixo das cotas",

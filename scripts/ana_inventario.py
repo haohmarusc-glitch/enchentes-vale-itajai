@@ -43,7 +43,7 @@ import xml.etree.ElementTree as ET
 from datetime import date
 from pathlib import Path
 
-from comum import DADOS, USER_AGENT, baixar, espera_turno, le_json
+from comum import USER_AGENT, baixar, espera_turno, le_json
 
 #: Endpoint público do inventário, o mesmo que a página do HidroWeb consome.
 #: NÃO exige autenticação — diferente da API de séries, que é a do

@@ -49,7 +49,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from comum import DADOS, USER_AGENT, espera_turno
+from comum import DADOS, espera_turno
 
 SERIE = DADOS / "tempo-real"
 ULTIMO = SERIE / "ultimo.json"

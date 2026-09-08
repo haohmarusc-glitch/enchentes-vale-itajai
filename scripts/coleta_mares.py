@@ -222,7 +222,10 @@ def main() -> int:
             return 1
     else:
         try:
-            import requests
+            # O import É a checagem: o ImportError abaixo é o objetivo, não um
+            # acidente. Por isso o noqa — remover o import apagaria a mensagem
+            # que diz à pessoa o que instalar.
+            import requests  # noqa: F401
         except ImportError:  # pragma: no cover
             print(
                 "Para baixar é preciso o requests: pip install -r scripts/requirements.txt",

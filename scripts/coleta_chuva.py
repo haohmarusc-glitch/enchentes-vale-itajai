@@ -63,7 +63,7 @@ try:
 except ImportError:
     sys.exit("Instale a dependência: pip install beautifulsoup4")
 
-from comum import USER_AGENT, classificar_estacao
+from comum import classificar_estacao
 
 URL = "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas"
 

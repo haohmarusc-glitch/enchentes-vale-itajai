@@ -47,10 +47,9 @@ Uso:
 import json
 import random
 import statistics
-import sys
 from typing import Any
 
-from analisar_kml_brusque import (TOLERANCIA_M, cruzar_com_cadastro, e_numero,
+from analisar_kml_brusque import (cruzar_com_cadastro, e_numero,
                                   normalizar, probabilidade_por_acaso)
 from comum import DADOS
 

@@ -58,7 +58,6 @@ import argparse
 import json
 import sys
 from datetime import datetime, timezone
-from pathlib import Path
 from typing import Any
 
 from comum import DADOS, USER_AGENT, espera_turno

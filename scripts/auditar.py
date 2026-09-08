@@ -31,7 +31,6 @@ import gzip
 import json
 import math
 import statistics
-import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -349,7 +348,7 @@ def main() -> int:
         for p in c["problemas"]:
             print(f"     ATENÇÃO: {p}")
 
-    print(f"\n=== DEFASAGEM OBSERVADA vs PUBLICADA ===\n")
+    print("\n=== DEFASAGEM OBSERVADA vs PUBLICADA ===\n")
     print(
         "Onda de cheia viaja mais rápido que água baixa. Em período seco isto NÃO\n"
         "confirma nem refuta a faixa publicada, que vale para cheia — serve para pegar\n"
@@ -369,7 +368,7 @@ def main() -> int:
     problemas = sum(1 for c in cob.values() if c["veredito"] != "ok")
     fora = sum(1 for t in trechos if t["veredito"] == "fora-da-faixa")
     sem_firmeza = sum(1 for t in trechos if t["veredito"] == "fora-da-faixa-sem-firmeza")
-    print(f"\n=== RESUMO ===")
+    print("\n=== RESUMO ===")
     print(f"{len(cob)} estações, {problemas} com problema de coleta.")
     print(f"{len(trechos)} trechos publicados, {fora} com defasagem fora da faixa.")
     if sem_firmeza:

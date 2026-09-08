@@ -55,7 +55,7 @@ import re
 import sys
 from datetime import datetime
 
-from comum import DADOS, USER_AGENT, nivel_plausivel
+from comum import USER_AGENT, nivel_plausivel
 
 BASE = "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados"
 URL_CARDS = f"{BASE}/cards?v=1"

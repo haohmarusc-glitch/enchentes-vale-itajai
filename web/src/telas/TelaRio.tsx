@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
 import PainelPrevisao from '../componentes/PainelPrevisao'
+import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
 import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import { cidadesDoRio, eventosDoRio, mareItajai, rio, topologiaDoRio, trechos } from '../dados/carregar'
 import { parear } from '../logica/previsao'
@@ -219,6 +220,15 @@ export default function TelaRio({ rioId }: { rioId: string }) {
             />
           </Suspense>
         </section>
+      ) : null}
+
+      {selecionada ? (
+        <PainelCenarioAnterior
+          cidade={selecionada}
+          eventos={eventos.filter((e) => e.cidade === selecionada.id)}
+          leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
+          agora={agora}
+        />
       ) : null}
 
       {selecionada && jusante ? (

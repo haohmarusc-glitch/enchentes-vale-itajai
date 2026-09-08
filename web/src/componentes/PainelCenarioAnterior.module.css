@@ -1,0 +1,57 @@
+.agora { font-size: 1.02rem; margin: 0 0 0.6rem; }
+
+.aviso {
+  background: var(--atencao-fundo);
+  border-left: 6px solid var(--atencao);
+  border-radius: var(--raio);
+  padding: 0.7rem 0.85rem;
+  font-size: 0.92rem;
+  margin: 0 0 0.75rem;
+}
+
+.proxima { font-size: 1rem; margin: 0 0 0.75rem; }
+
+.acima {
+  background: var(--emergencia-fundo, var(--atencao-fundo));
+  border-left: 6px solid var(--emergencia, var(--atencao));
+  border-radius: var(--raio);
+  padding: 0.7rem 0.85rem;
+  margin: 0 0 0.75rem;
+}
+
+.lista { list-style: none; margin: 0.75rem 0; padding: 0; }
+
+.lista li {
+  display: grid;
+  grid-template-columns: minmax(6rem, auto) 5rem 1fr;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.45rem 0.2rem;
+  border-bottom: 1px solid var(--linha, rgba(0, 0, 0, 0.08));
+  font-size: 0.95rem;
+}
+
+.quando { font-weight: 600; }
+.pico { font-variant-numeric: tabular-nums; text-align: right; }
+.falta { color: var(--tinta-fraca); font-size: 0.9rem; }
+.passada .pico, .passada .quando { opacity: 0.55; }
+
+.ressalva, .regua {
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+  margin: 0.6rem 0 0;
+}
+
+.recusa {
+  background: var(--fundo);
+  border-left: 6px solid var(--tinta-fraca);
+  border-radius: var(--raio);
+  padding: 0.75rem 0.9rem;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+@media (max-width: 30rem) {
+  .lista li { grid-template-columns: 1fr auto; }
+  .falta { grid-column: 1 / -1; }
+}

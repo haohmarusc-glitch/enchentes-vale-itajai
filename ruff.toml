@@ -1,0 +1,40 @@
+# Lint do Python. Emprestado do repo Premercado (08/09/2026), config e raciocínio
+# junto — o que este arquivo escolhe NÃO checar é tão deliberado quanto o que
+# checa.
+#
+# O ruff no padrão dele reprova código correto, e uma checagem que reprova código
+# correto ensina todo mundo a ignorá-la. Rodado aqui, o conjunto abaixo devolveu
+# 30 achados e NENHUM `except:` nu — o Python deste repositório já estava limpo
+# do que importa. Os 30 eram import morto, f-string sem placeholder e duas
+# variáveis calculadas e nunca usadas.
+line-length = 100
+target-version = "py311"
+
+[lint]
+# `F` (pyflakes) pega COISA QUEBRADA: import morto, variável atribuída e nunca
+# lida, redefinição que apaga a anterior, f-string sem placeholder. Nada disso é
+# gosto — é código que não faz o que parece fazer.
+#
+# `E722` (bare except) entra pelo mesmo critério, e aqui vale dobrado: os
+# coletores rodam por cron e um `except:` engole KeyboardInterrupt e SystemExit
+# junto. Coletor que não morre quando mandam morrer vira leitura velha na tela.
+#
+# `E713`/`E714` (`not x in y`, `not x is y`) pegam a negação escrita no lugar
+# errado, que é onde a condição inverte sem ninguém ver.
+select = ["F", "E722", "E713", "E714"]
+
+# O que fica FORA, e por quê:
+#
+#   E501  linha longa — os comentários deste repo carregam a CAUSA RAIZ dos
+#         achados, e quebrá-los para caber em 100 colunas piora a leitura do
+#         que mais importa aqui.
+#   E402  import fora do topo — os testes precisam de `sys.path.insert` antes
+#         de importar os módulos irmãos.
+#   E741  nome ambíguo (`l`, `I`, `O`) — quase todo `l` aqui é "linha" de
+#         arquivo lido. Renomear não deixa nada mais correto.
+ignore = []
+
+[lint.per-file-ignores]
+# Teste pode importar pelo efeito colateral e nomear variável para documentar
+# o que está descartando.
+"scripts/teste_*.py" = ["F401", "F841"]
