@@ -805,6 +805,48 @@ LONGE_ACEITO = {
 #: Acima disto o pino flutua: aparece sobre o satélite, sem rio embaixo.
 LIMITE_PINO_KM = 1.0
 
+#: Acima disto a estação da ANA não é A RÉGUA DESTA CIDADE — mesmo estando no
+#: rio certo. É outro limite, com outro trabalho, e por isso tem outro nome.
+#:
+#: ACHADO EM 08/09/2026, pela auditoria, e é o motivo desta constante existir.
+#: O `LIMITE_PINO_KM` acima mede a estação contra o MENOR entre o traçado e o
+#: pino — pergunta "esta estação está NUM rio?" e reprova coordenada errada ou
+#: rio errado. Quatro recusas de código ANA escritas em `codigo_ana_nao_e`
+#: invocavam esse número como se ele dissesse "mesma régua". Não dizia, e a
+#: medida é constrangedora: das quatro estações recusadas, TRÊS ficam a menos
+#: de 60 m do traçado do próprio rio da cidade — WARNOW 0,06 km, ILHOTA-JUSANTE
+#: 0,04 km, BOTUVERA-MONTANTE 0,04 km. Ligadas hoje, o validador aprovaria as
+#: três em silêncio. A recusa morava só na cabeça de quem leu a distância.
+#:
+#: E é justamente esse o erro que este projeto quase comete o tempo todo: não
+#: "rio errado", mas OUTRO PONTO DO RIO CERTO — o Salseiro a 6,8 km da sede de
+#: Vidal Ramos, a BOTUVERA-MONTANTE a 3,47 km, a WARNOW a 3,93 km. Cada ponto
+#: tem o seu zero; parear séries de dois deles soma um degrau desconhecido.
+#:
+#: O valor 1,0 km não foi escolhido agora: é o que os dados já separavam. Os
+#: vínculos aceitos com coordenada estão todos abaixo de 0,6 km (Ituporanga
+#: 0,04 · Rio do Sul 0,43 · Taió 0,56) e todas as recusas acima de 1,1 km
+#: (Ilhota 1,18 · Botuverá 3,47 · Indaial 3,93 · Ituporanga/ITUPORANGA 9,53).
+#: Não há caso da bacia entre 0,6 e 1,1 km — a folga é vazia, e é por isso que
+#: o corte não decide nada sozinho.
+#:
+#: ⚠️ PASSAR AQUI NÃO PROVA "MESMA RÉGUA". É condição necessária, não
+#: suficiente, e há contraexemplo VIVO: a candidata de Ibirama (83440000) está
+#: a 476 m e continua INDECIDIDA — se houver confluência do Hercílio entre os
+#: dois pontos, são réguas diferentes apesar dos 476 m. Quem tratar este
+#: número como prova refaz, com outra roupa, o erro que ele existe para achar.
+LIMITE_MESMA_REGUA_KM = 1.0
+
+#: Vínculo aceito acima do limite, com o motivo. Só entra aqui quem tem razão
+#: ESCRITA para o pino estar longe da régua — e o que remove a exceção.
+PINO_LONGE_DA_REGUA = {
+    "blumenau": ("o pino de Blumenau é a coordenada publicada da DCSC-00026, que "
+                 "é estação de CHUVA, não a régua de nível; a 83800002 fica a 40 m "
+                 "do traçado e a 6,94 km desse pino. Remove esta exceção: a "
+                 "coordenada da régua do AlertaBlu/Defesa Civil, que é a fonte do "
+                 "tempo real da tela. Mesmo motivo já escrito em LONGE_ACEITO."),
+}
+
 
 def _km_ao_segmento(p, a, b) -> float:
     """Distância em km do ponto ao SEGMENTO ab (não só aos vértices)."""
@@ -1301,6 +1343,7 @@ def valida_codigo_ana() -> None:
     """
     dados = le_json("estacoes.json")
     cache: dict[str, list] = {}
+    usaram_a_excecao: set[str] = set()
 
     for rio_id, rio in dados["rios"].items():
         for cidade in rio["cidades"]:
@@ -1381,12 +1424,31 @@ def valida_codigo_ana() -> None:
                            (ao_pino, f"do pino de {cid}")) if d is not None]
             if not candidatas:
                 continue
+            if ao_pino is not None and ao_pino > LIMITE_MESMA_REGUA_KM:
+                usaram_a_excecao.add(cid)
+                motivo = PINO_LONGE_DA_REGUA.get(cid)
+                if motivo is None:
+                    erro(f"estacoes.json / {cid}: a estação ANA {codigo} ({nome}) fica a "
+                         f"{ao_pino:.2f} km do pino desta cidade — acima de "
+                         f"{LIMITE_MESMA_REGUA_KM:g} km. Estar no rio certo não faz dela a "
+                         "régua DESTA cidade: outro ponto do rio tem outro zero, e parear "
+                         "as séries somaria um degrau desconhecido. Ou o vínculo está "
+                         "errado (escreva o porquê em codigo_ana_nao_e), ou o pino está, "
+                         "ou há razão para a distância — e aí ela vai em PINO_LONGE_DA_REGUA.")
+
             d, contra = min(candidatas)
             if d > LIMITE_PINO_KM:
                 erro(f"estacoes.json / {cid}: a estação ANA {codigo} ({nome}) fica a "
                      f"{d:.2f} km {contra} — a referência mais perto das duas; limite "
                      f"{LIMITE_PINO_KM:g} km. Estação fluviométrica fica NO rio: ou a "
                      "coordenada está errada, ou a estação é de outro curso d'água.")
+
+    for cid in PINO_LONGE_DA_REGUA:
+        if cid not in usaram_a_excecao:
+            aviso(f"estacoes.json / {cid}: está em PINO_LONGE_DA_REGUA e o vínculo já "
+                  "cabe no limite — ou a estação saiu de ESTACOES_ANA_CONHECIDAS e "
+                  "ninguém está medindo. Tire a exceção ou conserte a medida: exceção "
+                  "que não vence vira mobília.")
 
 
 #: Arquivo do site que guarda quantas ruas de cada cidade foram levantadas SEM
@@ -1416,6 +1478,87 @@ COTAS_QUE_NAO_SAO_FAIXA = {
     "ruas_alerta_citadas",
     "praca_boca_lobo",
 }
+
+
+#: Bruto CITADO nos JSONs que ainda NÃO está no repositório, com o motivo e o
+#: que o traz. Achado em 08/09/2026 por uma varredura da auditoria: dos 106
+#: caminhos que os JSONs citam como evidência, 105 existiam e UM não — e era
+#: justamente o que sustenta quatro recusas de código ANA e um vínculo. As
+#: recusas continuam certas (a saída da execução foi transcrita e conferida);
+#: o que estava errado era a FRASE, que dizia "Bruto: <caminho>" como quem diz
+#: "está ali, confira" para um arquivo que não está.
+#:
+#: Uma citação assim é do mesmo tipo de defeito que este projeto persegue nos
+#: números: dá a quem lê mais confiança do que a evidência disponível permite.
+#: Por isso a exceção é NOMEADA e VENCÍVEL — quando o arquivo chegar, o guarda
+#: manda tirar a linha daqui.
+BRUTOS_PENDENTES = {
+    "data/brutos/ana-inventario-2026-09-07.json":
+        "gerado na VPS em 07/09/2026 (este ambiente tem *.ana.gov.br bloqueado) e "
+        "nunca commitado. Os valores gravados vieram da saída transcrita da execução. "
+        "Traz: commitar o bruto da VPS — docs/CODIGOS-ANA-PENDENTES.md, 'O que sobrou', item 3.",
+}
+
+#: Onde procurar citação de bruto. Só os JSONs de dados: é ali que a citação
+#: vira evidência de um número que a tela mostra.
+JSONS_QUE_CITAM = ("data/estacoes.json", "data/enchentes.json", "data/transito.json")
+
+RE_CAMINHO_BRUTO = re.compile(r"data/brutos/[A-Za-z0-9_.-]+\.[A-Za-z0-9]{2,10}")
+
+
+def _cada_texto(o, caminho: str = ""):
+    """Percorre o JSON inteiro e devolve (onde, texto) de cada string."""
+    if isinstance(o, dict):
+        for k, v in o.items():
+            yield from _cada_texto(v, f"{caminho}/{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o):
+            yield from _cada_texto(v, f"{caminho}[{i}]")
+    elif isinstance(o, str):
+        yield caminho, o
+
+
+def valida_brutos_citados() -> None:
+    """Todo bruto citado nos JSONs existe — ou está declarado como pendente.
+
+    O bloco `codigo_ana_nao_e` é o mecanismo com que este projeto impede um
+    pareamento errado de voltar: ele diz por que aquela estação NÃO é a régua
+    da cidade e aponta o bruto onde isso foi lido. Se o bruto não existe, a
+    recusa continua valendo pelo texto, mas quem quiser reconferir não tem o
+    que abrir — e é reconferência que separa "recusa provada" de "recusa que
+    alguém escreveu".
+
+    Erro para bruto citado e ausente sem declaração. Erro também para
+    declaração que sobrou depois que o arquivo chegou: exceção que não vence
+    vira mobília.
+    """
+    citados: dict[str, list[str]] = defaultdict(list)
+    for arq in JSONS_QUE_CITAM:
+        caminho = RAIZ / arq
+        if not caminho.exists():
+            continue
+        for onde, texto in _cada_texto(le_json(caminho)):
+            for achado in RE_CAMINHO_BRUTO.findall(texto):
+                citados[achado].append(f"{arq}{onde}")
+
+    for bruto, ondes in sorted(citados.items()):
+        existe = (RAIZ / bruto).exists()
+        declarado = bruto in BRUTOS_PENDENTES
+        if not existe and not declarado:
+            erro(f"{bruto} é citado como evidência em {len(ondes)} lugar(es) "
+                 f"({ondes[0]}) e NÃO existe. Ou commite o arquivo, ou declare-o em "
+                 "BRUTOS_PENDENTES dizendo de onde vieram os números e o que traz o "
+                 "bruto. Citar um caminho ausente afirma uma conferência que ninguém "
+                 "pode fazer.")
+        elif existe and declarado:
+            erro(f"{bruto} chegou ao repositório, mas continua em BRUTOS_PENDENTES. "
+                 "Tire a entrada de lá — e, nos textos que o citam, apague o aviso de "
+                 "que o arquivo não está no repo, senão o JSON passa a mentir ao contrário.")
+
+    for bruto in BRUTOS_PENDENTES:
+        if bruto not in citados:
+            aviso(f"{bruto} está em BRUTOS_PENDENTES e não é citado por nenhum JSON — "
+                  "a exceção pode ter perdido o dono.")
 
 
 def valida_ordem_das_cotas() -> None:
@@ -1692,6 +1835,7 @@ def main() -> int:
     valida_referencia_das_cotas_de_rua()
     valida_cota_de_rua_duplicada()
     valida_ordem_das_cotas()
+    valida_brutos_citados()
     valida_cobertura_da_mare()
 
     for a in avisos:

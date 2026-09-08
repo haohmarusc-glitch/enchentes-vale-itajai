@@ -8,8 +8,10 @@ cada um estraga UM ponto dos dados reais e exige que `valida_estacoes` acuse.
 
 import copy
 import json
+import tempfile
 import unittest
 from datetime import date, timedelta
+from pathlib import Path
 
 from comum import DADOS
 import validar_dados as vd
@@ -1355,6 +1357,194 @@ class ACotaDaSalseiroNaoEDeVidalRamos(unittest.TestCase):
         texto = self.bloco["a_pagina_nao_envelhece_o_dado"]
         self.assertIn("18/04/2026", texto)
         self.assertIn("VERDE", texto)
+
+
+def _brutos(citacao: str, arquivos: list[str], pendentes: dict[str, str]) -> tuple[list[str], list[str]]:
+    """Roda `valida_brutos_citados` sobre um repo de mentira, em pasta temporária.
+
+    `citacao` é o texto que um bloco do estacoes.json traria; `arquivos` é o
+    que existe de verdade em data/brutos/; `pendentes` é o BRUTOS_PENDENTES.
+    """
+    vd.erros.clear()
+    vd.avisos.clear()
+    with tempfile.TemporaryDirectory() as tmp:
+        raiz = Path(tmp)
+        (raiz / "data" / "brutos").mkdir(parents=True)
+        for nome in arquivos:
+            (raiz / "data" / "brutos" / nome).write_text("{}", encoding="utf-8")
+        (raiz / "data" / "estacoes.json").write_text(
+            json.dumps({"rios": {"x": {"cidades": [{"id": "c", "nota": citacao}]}}}),
+            encoding="utf-8")
+        raiz_orig, pend_orig, le_orig = vd.RAIZ, vd.BRUTOS_PENDENTES, vd.le_json
+        vd.RAIZ, vd.BRUTOS_PENDENTES = raiz, pendentes
+        vd.le_json = lambda caminho: json.loads(Path(caminho).read_text(encoding="utf-8"))
+        try:
+            vd.valida_brutos_citados()
+        finally:
+            vd.RAIZ, vd.BRUTOS_PENDENTES, vd.le_json = raiz_orig, pend_orig, le_orig
+        return list(vd.erros), list(vd.avisos)
+
+
+class BrutoCitadoTemDeExistir(unittest.TestCase):
+    """
+    Achado da auditoria de 08/09/2026: dos 106 caminhos citados como evidência
+    nos JSONs, 105 existiam e um não — o inventário da ANA, que sustenta quatro
+    recusas de código e um vínculo. As recusas seguem certas; a frase é que
+    prometia uma conferência impossível. Este guarda impede a próxima.
+    """
+
+    CITACAO = "Lido no inventário. Bruto: data/brutos/inventario-2026-09-07.json."
+
+    def test_bruto_ausente_e_nao_declarado_e_erro(self):
+        erros, _ = _brutos(self.CITACAO, arquivos=[], pendentes={})
+        self.assertTrue(erros, "citou bruto que não existe e o validador deixou passar")
+        self.assertIn("NÃO existe", erros[0])
+
+    def test_bruto_presente_passa(self):
+        erros, _ = _brutos(self.CITACAO, arquivos=["inventario-2026-09-07.json"], pendentes={})
+        self.assertEqual(erros, [])
+
+    def test_bruto_ausente_mas_declarado_passa(self):
+        erros, _ = _brutos(
+            self.CITACAO, arquivos=[],
+            pendentes={"data/brutos/inventario-2026-09-07.json": "gerado na VPS"})
+        self.assertEqual(erros, [], "a pendência declarada não deveria virar erro")
+
+    def test_a_excecao_vence_quando_o_arquivo_chega(self):
+        """Exceção que não vence vira mobília — e passa a mentir ao contrário."""
+        erros, _ = _brutos(
+            self.CITACAO, arquivos=["inventario-2026-09-07.json"],
+            pendentes={"data/brutos/inventario-2026-09-07.json": "gerado na VPS"})
+        self.assertTrue(erros, "o arquivo chegou e a exceção continuou de pé, calada")
+        self.assertIn("BRUTOS_PENDENTES", erros[0])
+
+    def test_pendencia_sem_dono_vira_aviso(self):
+        _, avisos = _brutos("sem citação nenhuma", arquivos=[],
+                            pendentes={"data/brutos/orfao.json": "ninguém cita"})
+        self.assertTrue(any("perdido o dono" in a for a in avisos))
+
+
+class OInventarioDaAnaEstaDeclaradoComoAusente(unittest.TestCase):
+    """O caso real, travado contra o repositório de verdade."""
+
+    BRUTO = "data/brutos/ana-inventario-2026-09-07.json"
+
+    def test_ou_o_arquivo_existe_ou_a_pendencia_esta_declarada(self):
+        existe = (vd.RAIZ / self.BRUTO).exists()
+        declarado = self.BRUTO in vd.BRUTOS_PENDENTES
+        self.assertNotEqual(existe, declarado,
+                            "o inventário da ANA precisa estar OU no repo OU em "
+                            "BRUTOS_PENDENTES — nunca nos dois, nunca em nenhum")
+
+    def test_quem_cita_avisa_que_o_arquivo_nao_esta(self):
+        """
+        Enquanto o bruto não chegar, cada bloco que o cita diz isso na cara.
+        Se o arquivo chegar, este teste cai junto com o guarda do validador —
+        de propósito: os textos têm de perder o aviso na mesma hora.
+        """
+        if (vd.RAIZ / self.BRUTO).exists():
+            self.skipTest("o bruto chegou; o validador cobra a limpeza dos textos")
+        bruto_texto = (vd.RAIZ / "data" / "estacoes.json").read_text(encoding="utf-8")
+        citacoes = bruto_texto.count(self.BRUTO)
+        self.assertEqual(citacoes, 5, "mudou o número de citações do inventário")
+        self.assertEqual(bruto_texto.count("AINDA NÃO ESTÁ NO REPO"), citacoes,
+                         "há citação do inventário sem o aviso de que o arquivo não está")
+
+
+class OutroPontoDoRioCertoNaoEAReguaDaCidade(unittest.TestCase):
+    """
+    Achado da auditoria de 08/09/2026, e o segundo do mesmo fio.
+
+    Quatro recusas de código ANA invocavam "o limite de 1 km que o projeto usa
+    para dizer 'mesma régua'". Esse limite existia com outro trabalho: o
+    `LIMITE_PINO_KM` mede a estação contra o MENOR entre o traçado e o pino, e
+    reprova coordenada errada ou rio errado. A medida foi constrangedora —
+    TRÊS das quatro estações recusadas ficam a menos de 60 m do traçado do
+    próprio rio da cidade. Ligadas, o validador aprovaria as três em silêncio:
+    a recusa morava só na cabeça de quem leu a distância.
+
+    O erro que este projeto quase comete não é "rio errado", é OUTRO PONTO DO
+    RIO CERTO — e cada ponto tem o seu zero.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, estacoes, excecoes=None):
+        vd.erros.clear()
+        vd.avisos.clear()
+        orig_le, orig_exc = vd.le_json, vd.PINO_LONGE_DA_REGUA
+        vd.le_json = lambda nome: estacoes if nome == "estacoes.json" else orig_le(nome)
+        if excecoes is not None:
+            vd.PINO_LONGE_DA_REGUA = excecoes
+        try:
+            vd.valida_codigo_ana()
+        finally:
+            vd.le_json, vd.PINO_LONGE_DA_REGUA = orig_le, orig_exc
+        return list(vd.erros), list(vd.avisos)
+
+    def liga(self, rio, cidade, codigo):
+        d = copy.deepcopy(self.real)
+        c = _cidade(d, rio, cidade)
+        c["codigo_ana"] = codigo
+        c["codigo_ana_sucessor"] = None
+        c["codigo_ana_sucessor_nota"] = "irrelevante para este teste"
+        return d
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(self.roda(copy.deepcopy(self.real))[0], [])
+
+    def test_as_tres_estacoes_em_cima_do_tracado_agora_reprovam(self):
+        """
+        WARNOW (0,06 km do traçado), ILHOTA-JUSANTE (0,04 km) e
+        BOTUVERA-MONTANTE (0,04 km): antes deste guarda, as três passavam.
+        """
+        casos = [("itajai-acu", "indaial", "83520000", "3.93"),
+                 ("itajai-acu", "ilhota", "83870001", "1.18"),
+                 ("itajai-mirim", "botuvera", "83892998", "3.47")]
+        for rio, cidade, codigo, km in casos:
+            with self.subTest(cidade=cidade):
+                erros, _ = self.roda(self.liga(rio, cidade, codigo))
+                doente = [e for e in erros if cidade in e and "do pino desta cidade" in e]
+                self.assertTrue(doente, f"{codigo} ligada a {cidade} e o validador calou")
+                self.assertIn(km, doente[0], "a distância medida entrou errada no aviso")
+
+    def test_a_excecao_do_blumenau_segura_o_vinculo_real(self):
+        """6,94 km, e com motivo escrito: o pino é da estação de CHUVA."""
+        erros, _ = self.roda(copy.deepcopy(self.real))
+        self.assertFalse([e for e in erros if "blumenau" in e])
+
+    def test_sem_a_excecao_o_blumenau_reprovaria(self):
+        """Se o guarda não medisse, este teste passaria por engano."""
+        erros, _ = self.roda(copy.deepcopy(self.real), excecoes={})
+        self.assertTrue([e for e in erros if "blumenau" in e and "6.94" in e],
+                        "o guarda não está medindo o vínculo real de Blumenau")
+
+    def test_excecao_que_nao_e_usada_vira_aviso(self):
+        _, avisos = self.roda(copy.deepcopy(self.real),
+                              excecoes={**vd.PINO_LONGE_DA_REGUA, "taio": "sem razão"})
+        self.assertTrue(any("taio" in a and "mobília" in a for a in avisos))
+
+    def test_ibirama_continua_indecidida_apesar_dos_476_m(self):
+        """
+        O contraexemplo vivo: 476 m PASSA no guarda e a decisão continua aberta,
+        porque falta o traçado do Hercílio para saber se há confluência entre os
+        dois pontos. Se alguém ligar a 83440000 tratando o guarda como prova,
+        este teste cai — que é exatamente o erro que o guarda existe para achar.
+        """
+        ibirama = _cidade(copy.deepcopy(self.real), "itajai-acu", "ibirama")
+        self.assertIsNone(ibirama.get("codigo_ana"),
+                          "Ibirama foi vinculada sem a conferência do Hercílio")
+        candidatas = [c["codigo"] for c in ibirama.get("codigo_ana_candidatos") or []]
+        self.assertIn("83440000", candidatas, "a candidata sumiu do cadastro")
+
+    def test_o_limite_diz_por_extenso_que_nao_e_prova(self):
+        """Passar no guarda é condição necessária, não suficiente — em código."""
+        fonte = (vd.RAIZ / "scripts" / "validar_dados.py").read_text(encoding="utf-8")
+        trecho = fonte.split("LIMITE_MESMA_REGUA_KM = ")[0][-2200:]
+        self.assertIn("NÃO PROVA", trecho)
+        self.assertIn("Ibirama", trecho)
 
 
 if __name__ == "__main__":
