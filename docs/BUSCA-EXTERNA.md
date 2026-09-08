@@ -128,7 +128,7 @@ que ela não tinha.
 | Cotas de rua de Rio do Sul | ✅ 555 pontos |
 | Cotas de rua de Brusque | ✅ 377 pontos |
 | Código ANA de Rio do Sul, Blumenau, Gaspar, Taió, Ituporanga, Brusque | ✅ confirmados por coordenada |
-| Cotas das réguas DC-01…DC-11 de Itajaí | ⚠️ **JÁ EXISTEM** (Tabela 11 da v17) — e há **conflito aberto** com uma leitura da Tabela 13; ver `BUSCA-EXTERNA-RODADAS.md`. **Não trazer mais valores dessa tabela sem a VERSÃO do documento** |
+| Cotas das réguas DC-01…DC-11 de Itajaí | ⚠️ **JÁ EXISTEM e estão CONFERIDAS na fonte** — Tabela 11, página 23 do PDF da v17 (22/12/2025), 11 de 11 batendo. A "Tabela 13" que apareceu numa rodada é de **outra edição**, na qual a DC-09 é outro rio. **Não trazer valor do PLANCON de Itajaí sem a VERSÃO do documento junto** |
 | Estação oficial do aviso de Ituporanga | ✅ **83250000** (ANA/EPAGRI), com atenção 1,40 / alerta 1,90 / emergência 2,60 — resolvido |
 | Tábua de maré do CHM | ✅ o PDF de 2026 cobre até **31/12**; falta importar. 2027 não existe |
 | `Indaial → Blumenau` no trânsito | ⛔ **não procurar** — ver §6 |

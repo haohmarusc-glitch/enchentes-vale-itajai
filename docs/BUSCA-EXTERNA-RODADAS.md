@@ -171,11 +171,17 @@ avisa antes. Não dá para "ficar com a mais conservadora de cada": isso montari
 escala que **nenhum dos dois documentos publica**, e escala remendada de duas fontes
 é pior que qualquer uma das duas inteira.
 
-### A pista que aponta o caminho
+### A pista que aponta o caminho — ❌ ERRADA, ver a resolução no fim
+
+> **Esta leitura foi refutada em 08/09/2026.** Fica escrita porque o erro é o
+> ensinamento: indício fraco lido como forte. O parágrafo original era:
 
 Em **DC-02 a atenção e o alerta batem ao centavo** (1,60 e 2,00) e só a emergência
 muda (2,50 contra 3,30). Coincidência exata em dois de três valores não acontece
 entre tabelas de assuntos diferentes: **é a mesma tabela, revisada.**
+
+A coincidência era real; a conclusão, não. São **edições diferentes**, e nelas a
+DC-09 nem sequer é o mesmo rio. Dois de três não prova continuidade.
 
 Então a pergunta central é a **versão**, e ela tem resposta objetiva:
 
@@ -265,3 +271,52 @@ melhor que continuar buscando "DCSC-00024": **identificar qual estação histór
 ficava na sede de Vidal Ramos e comparar a coordenada dela com −27,38547 /
 −49,35812.** Se coincidir, abre-se a documentação histórica daquela estação — sem
 transplantar nada do Salseiro.
+
+---
+---
+
+# Resolução — 08/09/2026: o PDF da v17 foi lido na fonte
+
+Jefferson trouxe o **PDF do PLANCON v17 (22/12/2025)**. Ele responde a pergunta
+central da rodada 2 — *qual é a versão* — de forma direta:
+
+- o documento tem **68 páginas** e **doze tabelas**;
+- o índice vai da **Tabela 1 à Tabela 12**: **não existe Tabela 13 nele**;
+- a tabela de níveis é a **Tabela 11, na página 23** — *"Determinação das subfases
+  de alerta do município com base no Nível do Rio (m)"*;
+- a página 22 manda, nas três subfases, *"Ver Tabela 11 com os valores de nível de
+  água (m) dos Rios/Ribeirões"*.
+
+E a conferência valor a valor: **11 de 11 batem EXATAMENTE com o que já estava
+cadastrado**, sem uma divergência de centavo. As únicas diferenças são de hífen
+contra travessão nos nomes.
+
+## O que era, então, a "Tabela 13"
+
+**Outra edição do documento.** E a diferença entre as edições não é só de número de
+tabela nem de valores:
+
+| Código | na leitura externa | na v17 (22/12/2025) |
+|---|---|---|
+| DC-09 | Ribeirão **Ariribá** — Clube Ariribá | Ribeirão da **Murta** – Bairro Murta |
+
+**Rio diferente para o mesmo código de estação.** Isso é mais grave que valor
+revisado: quer dizer que as estações foram **remanejadas** entre edições, e que uma
+cota tirada de uma edição antiga pode estar amarrada a **outro curso d'água**. Um
+número certo no lugar errado avisa a cidade errada.
+
+## A regra que fica
+
+> **Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto.**
+> Sem versão não se sabe a que estação o número pertencia.
+
+## O que isto custou e o que rendeu
+
+Nenhum limiar foi alterado — nem em 07/09, quando o conflito foi registrado, nem
+agora, ao fechá-lo. O conflito passou dois dias aberto **sem que nada no site
+mudasse**, e é isso que estava certo: a régua que o morador lê continuou sendo a
+mesma o tempo todo, e a decisão veio da fonte primária, não de escolher entre duas
+transcrições.
+
+A leitura da outra edição **fica guardada** nas nove réguas. Não é lixo: é a prova
+do remanejamento da DC-09. Há teste travando que ninguém a apague.

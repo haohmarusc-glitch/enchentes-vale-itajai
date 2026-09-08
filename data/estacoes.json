@@ -762,19 +762,20 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-01 Rio Itajaí-Açu - CEPSUL",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.16,
           "alerta": 1.36,
           "emergencia": 1.56
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 1.15,
           "alerta": 1.44,
           "emergencia": 1.75
-        },
-        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -800,19 +801,20 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-02 Rio Itajaí-Açu - Praça da Murta",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.6,
           "alerta": 2.0,
           "emergencia": 2.5
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 1.6,
           "alerta": 2.0,
           "emergencia": 3.3
-        },
-        "_quem_avisa_antes": "as duas atenções coincidem",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -837,19 +839,20 @@
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.48,
           "alerta": 1.85,
           "emergencia": 2.5
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 2.28,
           "alerta": 2.85,
           "emergencia": 3.3
-        },
-        "_quem_avisa_antes": "a nossa avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -875,19 +878,20 @@
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.5,
           "alerta": 1.85,
           "emergencia": 2.25
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 1.28,
           "alerta": 1.6,
           "emergencia": 2.0
-        },
-        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -912,19 +916,20 @@
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.6,
           "alerta": 2.2,
           "emergencia": 3.0
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 1.44,
           "alerta": 1.8,
           "emergencia": 2.5
-        },
-        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -950,19 +955,20 @@
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.5,
           "alerta": 1.85,
           "emergencia": 2.55
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 1.28,
           "alerta": 1.6,
           "emergencia": 2.0
-        },
-        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -987,19 +993,20 @@
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.0,
           "alerta": 1.35,
           "emergencia": 1.65
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 0.98,
           "alerta": 1.23,
           "emergencia": 1.6
-        },
-        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -1025,19 +1032,20 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-08 Ribeirão da Canhanduba - Rio do Meio",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.8,
           "alerta": 2.3,
           "emergencia": 2.89
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 2.24,
           "alerta": 2.8,
           "emergencia": 3.2
-        },
-        "_quem_avisa_antes": "a nossa avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -1063,19 +1071,20 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-09 Ribeirão da Murta - Bairro Murta",
       "cotas_divergencia": {
-        "_o_que_e": "⚠️ CONFLITO ABERTO — NÃO RESOLVER POR CONTA PRÓPRIA (07/09/2026). Uma segunda leitura do Plano de Contingência de Itajaí devolveu valores DIFERENTES para esta régua. Nenhum número foi trocado: os `cotas_m` acima continuam os da Tabela 11 da versão 17.",
+        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
+        "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
+        "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
         "adotado_tabela_11_v17": {
           "atencao": 1.12,
           "alerta": 1.32,
           "emergencia": 1.52
         },
-        "outra_leitura_tabela_13": {
+        "outra_leitura_de_outra_edicao": {
           "atencao": 0.98,
           "alerta": 1.23,
           "emergencia": 1.6
-        },
-        "_quem_avisa_antes": "a leitura da Tabela 13 avisa ANTES",
-        "_fonte_da_outra_leitura": "Levantamento externo de 07/09/2026, citando a 'Tabela 13 — Determinação das subfases de alerta do município com base no Nível do Rio (m)' do PLANCON de Itajaí, sem declarar a versão do documento."
+        }
       }
     },
     {
@@ -1183,16 +1192,11 @@
     }
   },
   "_conflito_plancon_itajai": {
-    "registrado_em": "2026-09-07",
-    "resumo": "Duas leituras do Plano de Contingência de Itajaí dão limiares diferentes para nove das onze réguas DC. As nossas vêm da Tabela 11 da versão 17 (22/12/2025), com URL do PDF; as outras, de uma 'Tabela 13' cuja versão do documento não foi declarada.",
-    "por_que_nada_foi_trocado": "NÃO HÁ LADO SEGURO. Em seis réguas a Tabela 13 avisaria ANTES da nossa (DC-01, DC-04, DC-05, DC-06, DC-07, DC-09); em duas a nossa avisa antes (DC-03, DC-08); numa a atenção coincide e só a emergência muda (DC-02: 2,50 contra 3,30). Não dá para 'ficar com a mais conservadora' — isso montaria uma escala que nenhum dos dois documentos publica, e escala remendada de duas fontes é pior que qualquer uma das duas inteira.",
-    "indicio_de_que_sao_a_MESMA_tabela_em_edicoes_diferentes": "Em DC-02 a atenção e o alerta batem exatamente (1,60 e 2,00) e só a emergência difere. Coincidência exata em dois de três valores não acontece entre tabelas de assuntos diferentes: é a mesma tabela, revisada. Isso torna a pergunta da versão a pergunta central.",
-    "o_que_resolve": [
-      "Abrir o PDF da versão 17 (22/12/2025) e ver se a tabela de níveis é a 11 ou a 13 nela — se for a 13, as duas leituras são da MESMA tabela e uma delas está errada na transcrição.",
-      "Se a v17 numera como 11, procurar a edição em que ela é a 13 e comparar as datas: a mais nova vence.",
-      "Confirmar com a COMPDEC de Itajaí qual edição está em vigor."
-    ],
-    "dc_10_e_dc_11": "A Tabela 13 lida NÃO contém DC-10 nem DC-11, e o nosso cadastro tem as duas citando a Tabela 11 da v17. É coerente com terem sido acrescentadas depois da edição que a busca leu — e reforça que a v17 é mais nova. Vale notar, sem concluir nada: os valores das duas são redondos (8/9/10 e 3/4/5) num documento que usa centímetros em todas as outras réguas.",
-    "ate_la": "Os `cotas_m` continuam como estão. O conflito fica gravado em cada régua, em `cotas_divergencia`, para ninguém 'corrigir' metade delas sem ver a outra metade."
+    "estado": "✅ RESOLVIDO em 08/09/2026",
+    "resolucao": "O PDF da versão 17 (22/12/2025) foi lido diretamente. A tabela de níveis é a Tabela 11 (página 23), o documento tem doze tabelas e NÃO EXISTE Tabela 13 nele. Os onze valores cadastrados batem exatamente com o PDF — 11 de 11.",
+    "logo_a_tabela_13_e_de_outra_edicao": "E a diferença entre as edições não é só de número. Na leitura externa a DC-09 aparece como 'Ribeirão Ariribá — Clube Ariribá'; na v17 ela é 'Ribeirão da Murta – Bairro Murta'. Rio diferente para o mesmo código de estação. Isso é mais sério do que valores revisados: quer dizer que as estações foram REMANEJADAS entre edições, e uma cota de edição antiga pode estar amarrada a outro curso d'água.",
+    "por_que_a_hipotese_anterior_estava_errada": "O registro de 07/09 supunha que 'é a mesma tabela revisada', apoiado em DC-02 coincidir em dois de três valores. A coincidência era real, mas a conclusão não: são edições diferentes com atribuição de estação diferente. Bater em dois de três não prova continuidade — foi indício fraco lido como forte.",
+    "regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão não se sabe a que estação o número pertencia.",
+    "nada_mudou_no_dado": "Nenhum limiar foi alterado, nem em 07/09 nem agora. O conflito foi registrado e depois fechado sem nunca mexer no que estava valendo — que era o certo."
   }
 }

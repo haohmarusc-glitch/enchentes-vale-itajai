@@ -501,20 +501,22 @@ o projeto.
   alaga a 9,55 m na esquina da Macaé e depois da casa nº 105, e são **143 pares assim**), então só é
   barrado o par em que uma das linhas **não tem ponto** — sem ponto ela não pode ser outro ponto.
   Gaspar: 1.619 → 1.615 — e esse 1.615 **batia com a fonte por engano**, ver o item seguinte.
-- [x] **🔴 A busca externa achou a Tabela 13 do PLANCON de Itajaí — e ela CONFLITA com a nossa.**
-  Esperava-se uma lacuna; veio um conflito. O repositório já tinha as onze réguas DC citando a
-  **Tabela 11 da versão 17 (22/12/2025)**, com URL do PDF; a busca leu uma **Tabela 13** cuja versão
-  não foi declarada. Os valores divergem nas nove réguas que as duas cobrem. **Nenhum número foi
-  trocado, e o motivo é que não há lado seguro:** em seis réguas a Tabela 13 avisaria *antes*, em
-  duas a nossa avisa antes. Ficar com "a mais conservadora de cada" montaria uma escala que
-  **nenhum dos dois documentos publica** — pior que qualquer uma das duas inteira. **A pista que
-  aponta o caminho:** em DC-02 a atenção e o alerta batem ao centavo e só a emergência muda — duas
-  tabelas de assuntos diferentes não coincidem em dois de três, então é a **mesma tabela revisada**,
-  e a pergunta central é a **versão**. Indício de que a v17 é a mais nova: a Tabela 13 não contém
-  DC-10 nem DC-11, que o nosso cadastro tem. O conflito ficou gravado nas nove réguas
-  (`cotas_divergencia`) e num bloco `_conflito_plancon_itajai`, com testes travando que ninguém
-  troque metade delas nem misture as duas escalas. Descartado o 1,70 m da DC-01 que veio de imprensa
-  na rodada anterior: nenhuma das duas leituras oficiais traz esse valor.
+- [x] **🔴→✅ O conflito das cotas de Itajaí foi ABERTO e FECHADO — pelo PDF, não por escolha.**
+  A busca externa trouxe uma **"Tabela 13"** do PLANCON de Itajaí que divergia das nossas nove
+  réguas DC, cadastradas pela **Tabela 11 da versão 17 (22/12/2025)**. **Nenhum número foi trocado**
+  enquanto o conflito esteve aberto, porque não havia lado seguro: em seis réguas a outra leitura
+  avisaria *antes*, em duas a nossa avisa antes, e "a mais conservadora de cada" montaria uma escala
+  que **nenhum dos documentos publica**. Em 08/09 o PDF da v17 foi lido direto: tem **68 páginas e
+  doze tabelas**, a de níveis é a **Tabela 11, página 23**, e **não existe Tabela 13 nele**. Os
+  **11 de 11 valores batem exatamente** com o cadastro. A outra leitura é de **outra edição** — e a
+  diferença não é só de valores: nela a **DC-09 é "Ribeirão Ariribá"**, na v17 é **"Ribeirão da
+  Murta"**. *Rio diferente para o mesmo código*: as estações foram **remanejadas entre edições**, e
+  uma cota de edição antiga pode estar amarrada a outro curso d'água. **Regra que fica: valor do
+  PLANCON de Itajaí só entra com a VERSÃO do documento junto.** A hipótese de 07/09 ("é a mesma
+  tabela revisada", porque DC-02 coincidia em dois de três) estava **errada** e ficou registrada
+  como erro — indício fraco lido como forte. A leitura da outra edição **continua guardada** nas
+  nove réguas, com teste travando que a apaguem: é a prova do remanejamento. Descartado o 1,70 m da
+  DC-01 que veio de imprensa: nenhuma das leituras oficiais traz esse valor.
 - [x] **Ituporanga: a escala é oficial, e é de outra régua — as duas coisas ao mesmo tempo.** A
   SPDC/SC determina que o monitoramento oficial saia da **83250000** (ANA/EPAGRI, via SIG²A-SPEHC ou
   Gestor PCD/ANA), com atenção > 1,40 / alerta > 1,90 / emergência > 2,60 m. Isso **não** reabilita a

@@ -1019,19 +1019,23 @@ class TestaVidalRamosNaoHerdaOSalseiro(unittest.TestCase):
             self.assertNotIn(f'"{chave}": 4.5', texto)
 
 
-class ConflitoDoPlanconDeItajai(unittest.TestCase):
+class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
     """
-    Duas leituras do Plano de Contingência de Itajaí, valores diferentes.
+    Duas leituras do Plano de Contingência de Itajaí davam valores diferentes.
+    Em 08/09/2026 o PDF da versão 17 (22/12/2025) foi aberto e lido: a tabela
+    de níveis é a **Tabela 11**, na página 23; o documento tem doze tabelas e
+    **não existe Tabela 13 nele**. Os onze valores cadastrados batem
+    exatamente com o PDF — 11 de 11.
 
-    As nossas vêm da Tabela 11 da versão 17 (22/12/2025), com URL do PDF; as
-    outras de uma "Tabela 13" cuja versão não foi declarada. NÃO HÁ LADO
-    SEGURO: em seis réguas a outra leitura avisaria antes, em duas a nossa
-    avisa antes, e numa só a emergência muda.
+    A outra leitura é de OUTRA EDIÇÃO. E a diferença não é só de valores: lá a
+    DC-09 é "Ribeirão Ariribá — Clube Ariribá"; na v17 é "Ribeirão da Murta –
+    Bairro Murta". Rio diferente para o mesmo código. As estações foram
+    remanejadas entre edições.
 
-    Estes testes travam o que não pode acontecer enquanto o conflito estiver
-    aberto: alguém trocar metade dos valores sem ver a outra metade, ou montar
-    uma escala "conservadora" misturando as duas — que seria uma escala que
-    nenhum dos dois documentos publica.
+    Estes testes travam o que a resolução comprou: que os valores continuem
+    sendo os da v17 inteiros, que a leitura da outra edição fique guardada em
+    vez de descartada (ela é a prova do remanejamento), e que ninguém volte a
+    tratar as duas como versões da mesma tabela.
     """
 
     @classmethod
@@ -1040,12 +1044,30 @@ class ConflitoDoPlanconDeItajai(unittest.TestCase):
         cls.dc = {e["codigo"]: e for e in cls.real["estacoes_tempo_real"]
                   if str(e.get("codigo", "")).startswith("DC-")}
 
-    def test_o_conflito_esta_registrado_em_bloco_proprio(self):
+    def test_o_bloco_do_conflito_diz_que_esta_resolvido_e_como(self):
         bloco = self.real["_conflito_plancon_itajai"]
-        self.assertIn("NÃO HÁ LADO SEGURO", bloco["por_que_nada_foi_trocado"])
-        self.assertTrue(bloco["o_que_resolve"], "tem de dizer o que resolve")
+        self.assertIn("RESOLVIDO", bloco["estado"])
+        self.assertIn("Tabela 11", bloco["resolucao"])
+        self.assertIn("11 de 11", bloco["resolucao"])
 
-    def test_as_nove_reguas_em_conflito_carregam_as_DUAS_leituras(self):
+    def test_a_regra_que_sobrou_exige_a_versao_do_documento(self):
+        """
+        O que este episódio ensinou não é "a v17 está certa" — é que sem a
+        versão não dá para saber a que estação o número pertencia.
+        """
+        bloco = self.real["_conflito_plancon_itajai"]
+        self.assertIn("VERSÃO", bloco["regra_que_fica"])
+
+    def test_o_erro_de_leitura_anterior_ficou_registrado(self):
+        """
+        Em 07/09 supus "é a mesma tabela revisada" porque a DC-02 coincidia em
+        dois de três valores. Indício fraco lido como forte. Apagar isso
+        deixaria só o acerto à vista.
+        """
+        bloco = self.real["_conflito_plancon_itajai"]
+        self.assertIn("indício fraco", bloco["por_que_a_hipotese_anterior_estava_errada"])
+
+    def test_as_nove_reguas_guardam_as_DUAS_leituras(self):
         emconflito = [c for c, e in self.dc.items() if "cotas_divergencia" in e]
         self.assertEqual(len(emconflito), 9, emconflito)
         for cod in emconflito:
@@ -1054,35 +1076,48 @@ class ConflitoDoPlanconDeItajai(unittest.TestCase):
                 self.assertEqual(div["adotado_tabela_11_v17"], self.dc[cod]["cotas_m"],
                                  "o adotado tem de ser igual ao que está valendo")
                 for faixa in ("atencao", "alerta", "emergencia"):
-                    self.assertIn(faixa, div["outra_leitura_tabela_13"])
+                    self.assertIn(faixa, div["outra_leitura_de_outra_edicao"])
 
-    def test_nenhuma_regua_ficou_com_escala_misturada(self):
+    def test_a_leitura_da_outra_edicao_nao_pode_ser_apagada(self):
         """
-        A tentação: pegar a atenção de uma leitura e a emergência da outra,
-        "para errar para o lado seguro". Isso montaria uma escala que nenhum
-        dos dois documentos publica.
+        A tentação depois de resolver: "o conflito acabou, tira o lixo".
+        Mas é justamente a comparação entre as duas que mostra que a DC-09
+        mudou de rio. Descartar a outra leitura apaga a prova.
         """
         for cod, e in self.dc.items():
             div = e.get("cotas_divergencia")
             if not div:
                 continue
-            a, b = div["adotado_tabela_11_v17"], div["outra_leitura_tabela_13"]
+            with self.subTest(regua=cod):
+                self.assertIn("remanejadas", div["_o_que_era_a_outra_leitura"])
+
+    def test_nenhuma_regua_ficou_com_escala_misturada(self):
+        """
+        A tentação antiga: pegar a atenção de uma leitura e a emergência da
+        outra, "para errar para o lado seguro". Isso montaria uma escala que
+        nenhuma das duas edições publica. Continua valendo depois de resolvido.
+        """
+        for cod, e in self.dc.items():
+            div = e.get("cotas_divergencia")
+            if not div:
+                continue
+            a, b = div["adotado_tabela_11_v17"], div["outra_leitura_de_outra_edicao"]
             atual = e["cotas_m"]
             with self.subTest(regua=cod):
                 self.assertTrue(
                     atual == a or atual == b,
                     f"{cod} não bate com nenhuma das duas leituras inteiras: {atual}")
 
-    def test_dc_02_e_a_pista_de_que_e_a_mesma_tabela_revisada(self):
-        """Atenção e alerta batem ao centavo; só a emergência muda. Duas
-        tabelas de assuntos diferentes não coincidem em dois de três."""
-        div = self.dc["DC-02"]["cotas_divergencia"]
-        self.assertEqual(div["adotado_tabela_11_v17"]["atencao"],
-                         div["outra_leitura_tabela_13"]["atencao"])
-        self.assertEqual(div["adotado_tabela_11_v17"]["alerta"],
-                         div["outra_leitura_tabela_13"]["alerta"])
-        self.assertNotEqual(div["adotado_tabela_11_v17"]["emergencia"],
-                            div["outra_leitura_tabela_13"]["emergencia"])
+    def test_o_que_vale_e_a_v17_inteira(self):
+        """Não é "a nossa ganhou": é que a v17 foi lida na fonte e as onze
+        linhas conferem. Se alguém trocar uma cota por um valor da outra
+        edição, isto cai."""
+        for cod, e in self.dc.items():
+            div = e.get("cotas_divergencia")
+            if not div:
+                continue
+            with self.subTest(regua=cod):
+                self.assertEqual(e["cotas_m"], div["adotado_tabela_11_v17"])
 
 
 class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):
