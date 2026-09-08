@@ -357,5 +357,189 @@ class RelogioProprioNaoEMotivoDeEloDoMesmoCurso(unittest.TestCase):
         self.assertIn("Benedito", " ".join(motivos))
 
 
+
+class EscalaQueMoraNasReguas(unittest.TestCase):
+    """
+    O auditor dizia **"Itajaí: sem cota nenhuma"** e mandava procurar o PDF do
+    PLANCON — de uma cidade cujas ONZE réguas citam esse PDF por URL e cujos
+    onze valores foram conferidos, 11 de 11, contra a versão 17.
+
+    O `cotas_m` vazio da cidade está CERTO: Itajaí não tem uma escala, tem onze,
+    uma por régua. Errado era ler o vazio como buraco. Buraco falso gasta o tempo
+    de quem procura e ensina a desconfiar da lista inteira — que é o oposto do
+    que uma lista de busca serve para fazer.
+    """
+
+    def monta(self, reguas):
+        return {"estacoes_tempo_real": reguas}
+
+    def test_regua_sem_a_escala_completa_nao_conta(self):
+        est = self.monta([{"cidade": "x", "cotas_m": {"atencao": 1.0}}])
+        self.assertEqual(al.cotas_nas_reguas(est, "x")["com_escala"], 0)
+
+    def test_conta_so_as_reguas_daquela_cidade(self):
+        est = self.monta([
+            {"cidade": "x", "cotas_m": {"atencao": 1.0, "alerta": 2.0}},
+            {"cidade": "y", "cotas_m": {"atencao": 1.0, "alerta": 2.0}},
+        ])
+        self.assertEqual(al.cotas_nas_reguas(est, "x"),
+                         {"total": 1, "com_escala": 1, "conferidas": 0})
+
+    def test_conferida_exige_o_campo_verificado(self):
+        est = self.monta([
+            {"cidade": "x", "cotas_m": {"atencao": 1.0, "alerta": 2.0}, "verificado": True},
+            {"cidade": "x", "cotas_m": {"atencao": 1.0, "alerta": 2.0}},
+        ])
+        r = al.cotas_nas_reguas(est, "x")
+        self.assertEqual((r["com_escala"], r["conferidas"]), (2, 1))
+
+    def test_o_rotulo_tem_TRES_estados(self):
+        """
+        Achatar "a cidade tem a escala" e "a escala está nas réguas" num `—` só
+        foi exatamente o que criou o buraco falso.
+        """
+        vazio = {"total": 0, "com_escala": 0, "conferidas": 0}
+        self.assertEqual(al.rotulo_de_cota({"cotas_essenciais": True, "reguas": vazio}), "sim")
+        self.assertEqual(al.rotulo_de_cota({"cotas_essenciais": False, "reguas": vazio}), "—")
+        self.assertEqual(
+            al.rotulo_de_cota({"cotas_essenciais": False,
+                               "reguas": {"total": 12, "com_escala": 11, "conferidas": 11}}),
+            "11×")
+
+
+class ItajaiNaoEBuracoDeCotaNoDadoReal(unittest.TestCase):
+    """Sobre o dado de verdade, não sobre fixture — foi o dado real que mentiu."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.rel = al.auditar(None)
+        cls.itajai = [l for l in cls.rel["linhas"] if l["id"] == "itajai"]
+
+    def test_itajai_aparece_nos_dois_rios(self):
+        self.assertEqual(len(self.itajai), 2, "a foz recebe o Açu e o Mirim")
+
+    def test_itajai_nao_conta_como_sem_cota_nenhuma(self):
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertFalse(l["cotas_nenhuma"],
+                                 "11 réguas com escala conferida não é 'sem cota nenhuma'")
+
+    def test_a_escala_de_itajai_esta_nas_reguas_e_sao_onze(self):
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertTrue(l["escala_por_regua"])
+                self.assertEqual(l["reguas"]["com_escala"], 11)
+
+    def test_as_onze_estao_conferidas_na_fonte(self):
+        """
+        Conferidas 11 de 11 contra a Tabela 11 da v17 em 08/09/2026. Se alguém
+        derrubar o `verificado`, o auditor volta a pedir busca por elas.
+        """
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertEqual(l["reguas"]["conferidas"], 11)
+
+    def test_a_cidade_continua_SEM_cota_propria_e_isso_esta_certo(self):
+        """
+        A correção é no relatório, não no dado. Gravar uma "cota de Itajaí"
+        para calar o auditor seria inventar um número que nenhuma régua publica.
+        """
+        for l in self.itajai:
+            with self.subTest(rio=l["rio"]):
+                self.assertEqual(l["cotas"], [])
+                self.assertFalse(l["cotas_essenciais"])
+
+    def test_nenhuma_outra_cidade_tem_escala_so_na_regua(self):
+        """
+        Se aparecer uma segunda, o texto do item 2 do Markdown — escrito no
+        singular para Itajaí — precisa ser relido antes de valer.
+        """
+        ids = {l["id"] for l in self.rel["linhas"] if l["escala_por_regua"]}
+        self.assertEqual(ids, {"itajai"}, ids)
+
+
+
+class NaoApagarAMedicaoEmSilencio(unittest.TestCase):
+    """
+    Aconteceu de verdade em 08/09/2026, e foi o próprio conserto da auditoria
+    que causou: reexecutei o auditor SEM `--ao-vivo` e gravei por cima. O
+    documento commitado perdeu a lista das doze cidades sem leitura — virou `?`
+    nas dezenove linhas — sem nada avisar.
+
+    O `?` está certo: uma sessão anterior o criou para "não medido" não ser
+    lido como "ausente". Errado é GRAVAR `?` por cima de medição. Um relatório
+    que sabe menos do que sabia, sem dizer que desaprendeu, é a mesma família
+    de defeito que os dois buracos falsos deste mesmo dia.
+
+    O sentido é de mão única: medição por cima de não-medido é ganho.
+    """
+
+    def escreve(self, texto):
+        d = Path(tempfile.mkdtemp()) / "LACUNAS.md"
+        d.write_text(texto, encoding="utf-8")
+        return d
+
+    def test_recusa_gravar_sem_medicao_por_cima_de_medido(self):
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        self.assertTrue(al.apagaria_medicao(medido, mediu_agora=False))
+
+    def test_com_medicao_agora_nunca_recusa(self):
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        self.assertFalse(al.apagaria_medicao(medido, mediu_agora=True))
+
+    def test_por_cima_de_um_nao_medido_pode(self):
+        """Não-medido sobre não-medido não perde nada."""
+        nao = self.escreve(f"# matriz\n{al.MARCA_SEM_MEDICAO} — etc\n")
+        self.assertFalse(al.apagaria_medicao(nao, mediu_agora=False))
+
+    def test_arquivo_inexistente_pode(self):
+        alvo = Path(tempfile.mkdtemp()) / "ainda-nao-existe.md"
+        self.assertFalse(al.apagaria_medicao(alvo, mediu_agora=False))
+
+    def test_a_marca_aparece_mesmo_no_markdown_sem_medicao(self):
+        """
+        Se o texto do item 1 mudar e a frase sumir, a guarda passa a achar que
+        todo arquivo foi medido e para de proteger. Este teste liga os dois.
+        """
+        self.assertIn(al.MARCA_SEM_MEDICAO, al.markdown(al.auditar(None)))
+
+    def test_main_recusa_e_devolve_codigo_proprio(self):
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        antes = medido.read_text(encoding="utf-8")
+        self.assertEqual(al.main(["--markdown", str(medido)]), 3)
+        self.assertEqual(medido.read_text(encoding="utf-8"), antes,
+                         "recusou mas escreveu assim mesmo")
+
+    def test_a_saida_de_escape_existe_e_grava(self):
+        """
+        A porta de saída é explícita e diz o que custa no próprio nome. Sem ela,
+        quem tem motivo legítimo edita o arquivo à mão — que é pior.
+        """
+        medido = self.escreve("# matriz\n| Taió | acu | sim |\n")
+        self.assertEqual(
+            al.main(["--markdown", str(medido), "--aceitar-perder-a-medicao"]), 0)
+        self.assertIn(al.MARCA_SEM_MEDICAO, medido.read_text(encoding="utf-8"))
+
+
+class CarimboDaColunaDeLeitura(unittest.TestCase):
+    """A coluna de leitura vale a HORA da coleta, não o dia da geração."""
+
+    def test_o_relatorio_carrega_de_quando_e_a_leitura(self):
+        d = Path(tempfile.mkdtemp()) / "ultimo.json"
+        d.write_text(json.dumps({
+            "gerado_em": "2026-09-08T10:16:24+00:00",
+            "leituras": [{"cidade": "blumenau", "nivel_m": 1.2}],
+        }), encoding="utf-8")
+        rel = al.auditar(d)
+        self.assertEqual(rel["ao_vivo_de"], "2026-09-08T10:16:24+00:00")
+        self.assertEqual(rel["ao_vivo_leituras"], 1)
+        self.assertIn("2026-09-08T10:16:24+00:00", al.markdown(rel))
+
+    def test_sem_medicao_nao_carimba_nada(self):
+        rel = al.auditar(None)
+        self.assertIsNone(rel["ao_vivo_de"])
+        self.assertEqual(rel["ao_vivo_leituras"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()
