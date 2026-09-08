@@ -934,8 +934,10 @@ o projeto.
   **Divergência VIVA:** `monitoramento` não está na escada do bot, então em **Taió** (monitoramento
   5,00 m, atenção 7,00 m) o pino acende no site e o bot fica calado — e Taió estava em **4,54 m**, 46
   cm abaixo. Nada mudou de comportamento: o silêncio virou `alerta_cotas.NAO_DISPARAM_AVISO` com o
-  motivo escrito (monitoramento é a fase que a COMPDEC OLHA, não a que anuncia; avisar ali ensina a
-  ignorar o aviso da noite da cheia). **Divergência aparente, resolvida pela evidência:** o bot e o
+  motivo escrito. **Jefferson decidiu em 08/09/2026 manter o bot calado em monitoramento** — é a fase
+  que a COMPDEC OLHA, não a que anuncia, e avisar ali gasta a atenção que a noite da cheia vai
+  precisar. A tela continua PINTANDO, e isso está certo: cor é informação para quem já está olhando,
+  aviso é interrupção que vai atrás da pessoa — não precisam do mesmo limiar. **Divergência aparente, resolvida pela evidência:** o bot e o
   validador ordenam `inundacao` e `emergencia` de formas opostas — e a pergunta é **mal formada**,
   porque são **o mesmo degrau com nomes municipais diferentes**: Rio do Sul e Blumenau chamam o topo
   de "inundação", todo o resto de "emergência", e nenhuma cidade usa os dois. `teste_escadas_de_cota.py`

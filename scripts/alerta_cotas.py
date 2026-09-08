@@ -66,13 +66,22 @@ FAIXAS = ["normal", "atencao", "alerta", "emergencia", "inundacao"]
 #: nenhuma amarrada às outras —, e o caso é vivo: Taió tem `monitoramento` em
 #: 5,00 m, e entre 5,00 e 7,00 m o pino acende no site sem o bot tocar.
 #:
-#: POR QUE CALAR AQUI É DEFENSÁVEL: monitoramento é a fase em que a COMPDEC
-#: começa a OLHAR, não a que ela anuncia. Em Taió a atenção só vem a 7,00 m,
-#: dois metros acima. Um aviso no telefone a cada travessia dessa marca ensina
-#: a ignorar o que tocar na noite da cheia — o mesmo raciocínio que já mantém
-#: as nove réguas de estuário de Itajaí com `alerta_automatico: false`.
+#: DECIDIDO POR JEFFERSON EM 08/09/2026: o bot NÃO avisa em monitoramento.
+#: Não é omissão herdada nem default à espera de revisão — é posição tomada,
+#: com a divergência (site pinta, bot cala) na mesa quando ela foi tomada.
 #:
-#: Se a decisão mudar, tire daqui: o teste passa a cobrar a cobertura.
+#: O motivo: monitoramento é a fase em que a COMPDEC começa a OLHAR, não a que
+#: ela anuncia. Em Taió a atenção só vem a 7,00 m, dois metros acima. Um aviso
+#: no telefone a cada travessia dessa marca gasta a atenção que a noite da
+#: cheia vai precisar — o mesmo raciocínio que já mantém as nove réguas de
+#: estuário de Itajaí com `alerta_automatico: false`.
+#:
+#: O que a tela continua fazendo, e está certo: PINTAR. Cor é informação que
+#: quem já está olhando recebe; aviso é interrupção que vai atrás da pessoa.
+#: As duas coisas não precisam ter o mesmo limiar, e aqui não têm de propósito.
+#:
+#: Para reverter, tire daqui — `teste_escadas_de_cota.py` volta a cobrar a
+#: cobertura sozinho, sem precisar que ninguém lembre desta conversa.
 NAO_DISPARAM_AVISO = {"monitoramento"}
 
 ROTULO = {
