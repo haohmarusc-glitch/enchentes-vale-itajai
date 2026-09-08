@@ -76,6 +76,23 @@ Sem `codigo_ana` conferido no HidroWeb: **Ibirama**, **Lontras**, **Ascurra**, *
 
 Cada estação conferida traz série inteira de cota, com hora — resolve os itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por unidade de esforço da lista.
 
+**Mas não são doze buscas iguais.** Só as do primeiro grupo são busca:
+
+**Busca de verdade — ninguém olhou ainda** (7): **Lontras**, **Ascurra**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Guabiruba**.
+
+⚠️ **A busca JÁ FOI FEITA e a estação achada foi RECUSADA** (4) — o que falta é uma estação **diferente**, e a recusada está nomeada aqui de propósito, para não voltar:
+
+| Cidade | Estação recusada | Por quê, em uma linha |
+|---|---|---|
+| Indaial | `83520000 WARNOW` | 3,95 km deste pino |
+| Ilhota | `83870001 ILHOTA-JUSANTE` | 1,18 km deste pino — acima do limite de 1 km que o projeto usa para dizer 'mesma régua' |
+| Vidal Ramos | `83892990 SALSEIRO` | Mesmo município, estações diferentes: 6,8 km entre a nossa régua (-27.38547 / -49.35812, Asthon = DCSC) e a SALSEIRO no inventário da ANA |
+| Botuverá | `83892998 BOTUVERA-MONTANTE` | 3,47 km deste pino, e o nome já avisava: MONTANTE |
+
+O motivo inteiro, com a distância medida e o bruto do inventário, está em `codigo_ana_nao_e` de cada cidade em `data/estacoes.json`. **Trazer de volta uma destas é como um pareamento errado entra** — já custou caro em Brusque e no Salseiro de Vidal Ramos.
+
+⛔ **Não é busca, é DECISÃO** (1): **Ibirama** (candidata `83440000 IBIRAMA`). A candidata já existe e a distância já foi medida; o que falta é critério. Pedir busca aqui aponta para a tarefa errada — o desbloqueio está escrito em `codigo_ana_candidatos`.
+
 ### 6. Cotas de rua — a busca "minha rua"
 
 Sem nenhuma cota de rua: **Taió**, **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
