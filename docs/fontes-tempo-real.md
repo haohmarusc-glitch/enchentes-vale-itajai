@@ -623,6 +623,35 @@ os dois daria um "deslocamento" que é parte régua e parte subida — a mesma a
 `JANELA_MAXIMA_MIN` do `gaspar_estadual.py` recusa. Resolve com coordenada da estação (pedir à EPAGRI)
 ou com duas leituras a menos de 30 min uma da outra.
 
+### ✅ RESOLVIDO em 08/09/2026 — e a recusa estava certa
+
+O **boletim 155**, do mesmo dia, deu a segunda leitura que faltava
+(`data/brutos/epagri-ciram-boletim-155-2026-09-08.pdf`):
+
+| Régua | Quando | Nível |
+|---|---|---|
+| EPAGRI/CIRAM **Salseiro** (`83892990`) | 08/09 **08:00** | 172 cm = **1,72 m** |
+| Nossa **Vidal Ramos** (Asthon/DCSC) | 08/09 **07:51** | **2,42 m** |
+
+**Nove minutos de distância** — dentro da janela de 30 min que esta seção exigia. **Diferença: 0,70 m.**
+
+E desta vez o rio não confunde: em **38 leituras de hoje a amplitude foi de 1 cm** (2,42 a 2,43 m,
+com 0,0 mm de chuva). Os 0,70 m não são "parte régua e parte subida" como na tentativa de 31/08 —
+são régua. **São estações diferentes, e agora está medido em vez de argumentado.**
+
+Vale dizer por que a armadilha é tão convidativa: **Salseiro é uma localidade RURAL de Vidal Ramos**.
+A EPAGRI publica a estação sob o nome do município porque é onde ela fica — o rótulo é
+administrativo, não é afirmação de que aquela seja *a* régua da cidade.
+
+#### ⛔ O que os 0,70 m NÃO são
+
+**Não são fator de conversão entre as duas réguas.** É UMA medição, num único nível, com o rio
+parado. Duas réguas a 6,8 km uma da outra têm diferença que **muda com a vazão** — na cheia ela não
+vale 0,70 m. Gravar isso como offset e converter leitura de uma para a outra seria inventar precisão
+a partir de um ponto só, e o erro apareceria justamente no dia em que importa.
+
+Serve para **provar que são réguas diferentes**. Não serve para ligá-las.
+
 **Cuidado com o nome:** "Salseiros" também é um **bairro de Itajaí**, na lista de bairros
 historicamente atingidos, 100 km rio abaixo. São coisas diferentes.
 

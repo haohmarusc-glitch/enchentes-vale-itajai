@@ -964,6 +964,20 @@ o projeto.
   módulo → 2 falhas. *Uma primeira tentativa de sabotagem quebrou a COMPILAÇÃO, o `dist` não foi
   refeito e o teste passou contra o build antigo — falso verde da sabotagem, não do teste, e o motivo
   de a prova ter sido feita no `dist` e não no fonte.*
+- [x] **✅ Salseiro × Vidal Ramos: a recusa deixou de ser argumento e virou MEDIÇÃO.** Desde 01/09 o
+  repositório recusava vincular a estação `83892990 SALSEIRO` (EPAGRI/CIRAM) à nossa régua de Vidal
+  Ramos, e o `docs/fontes-tempo-real.md` dizia o que resolveria: *"coordenada da estação ou duas
+  leituras a menos de 30 min uma da outra"*. O **boletim 155 de 08/09** deu a segunda leitura.
+  **Salseiro às 08:00 = 1,72 m; a nossa Vidal Ramos às 07:51 = 2,42 m.** Nove minutos de distância,
+  **diferença de 0,70 m** — e desta vez o rio não confunde: **38 leituras hoje com amplitude de 1 cm**,
+  então não é "parte régua e parte subida" como na tentativa de 31/08. São réguas diferentes, medido.
+  **Por que a armadilha convida:** Salseiro é localidade **rural de Vidal Ramos**, e a EPAGRI publica a
+  estação sob o nome do município — o rótulo é administrativo, não afirma qual é *a* régua da cidade.
+  ⛔ **E os 0,70 m NÃO são fator de conversão:** uma medição, num nível só, entre réguas a 6,8 km, não
+  descreve a relação delas na cheia — que é justamente quando alguém teria a ideia de converter. Serve
+  para provar que são diferentes; não serve para ligá-las. Seis testes travam a ressalva, inclusive um
+  que confere que o bruto do boletim continua em `data/brutos/`: medição sem a fonte guardada é
+  afirmação, não prova.
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível

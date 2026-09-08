@@ -1234,5 +1234,56 @@ class DivergenciaQueVirouRegistro(unittest.TestCase):
         self.assertFalse(_dispara(eventos))
 
 
+
+class SalseiroNaoEARegoaDeVidalRamos(unittest.TestCase):
+    """
+    Salseiro é localidade RURAL de Vidal Ramos, e a EPAGRI publica a estação sob
+    o nome do município. Parecem a mesma régua e não são: em 08/09/2026 elas
+    leram 1,72 m e 2,42 m com NOVE minutos de diferença, num dia em que o rio
+    variou 1 cm em 38 leituras.
+
+    O que estes testes travam não é a recusa — ela já estava travada. É a
+    RESSALVA: que ninguém use os 0,70 m como fator de conversão. Uma medição,
+    num nível só, entre réguas a 6,8 km, não descreve a relação entre elas na
+    cheia — que é exatamente quando alguém teria a ideia de converter.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.bloco = _cidade(real, "itajai-mirim", "vidal-ramos")["codigo_ana_nao_e"]
+
+    def test_a_recusa_continua_de_pe(self):
+        self.assertEqual(self.bloco["codigo"], "83892990")
+        self.assertIn("NÃO vincular", self.bloco["por_que_nao"])
+
+    def test_a_medicao_esta_registrada_com_as_duas_leituras(self):
+        m = self.bloco["medicao_que_fecha"]
+        for pedaco in ("1,72", "2,42", "0,70", "08:00", "07:51"):
+            with self.subTest(pedaco=pedaco):
+                self.assertIn(pedaco, m)
+
+    def test_o_rio_parado_esta_dito_porque_e_o_que_torna_a_medicao_valida(self):
+        """Sem essa frase, os 0,70 m poderiam ser subida do rio, como em 31/08."""
+        self.assertIn("1 cm", self.bloco["medicao_que_fecha"])
+
+    def test_esta_escrito_que_os_070_m_NAO_sao_conversao(self):
+        # Sem sensibilidade a maiúscula: a ênfase é escolha de escrita e pode
+        # mudar; o que o teste guarda é o ARGUMENTO estar lá.
+        naoe = self.bloco["o_que_os_070_m_NAO_sao"].lower()
+        self.assertIn("não são um fator de conversão", naoe)
+        self.assertIn("muda com a vazão", naoe)
+
+    def test_o_bruto_do_boletim_existe(self):
+        """Medição sem a fonte guardada é afirmação, não prova."""
+        bruto = DADOS / "brutos" / "epagri-ciram-boletim-155-2026-09-08.pdf"
+        self.assertTrue(bruto.exists(), f"{bruto} sumiu")
+
+    def test_vidal_ramos_continua_sem_codigo_ana(self):
+        """A medição CONFIRMOU a recusa; ela não pode ter virado preenchimento."""
+        real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        self.assertIsNone(_cidade(real, "itajai-mirim", "vidal-ramos")["codigo_ana"])
+
+
 if __name__ == "__main__":
     unittest.main()
