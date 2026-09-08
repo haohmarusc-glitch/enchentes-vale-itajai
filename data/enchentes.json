@@ -44,7 +44,8 @@
         "Busca 'minha rua' e simulador usam somente régua.",
         "Previsão pareia igual com igual; sem referência declarada, não pareia."
       ],
-      "como_remover": "Teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou resposta da FURB. Aí converte-se tudo para régua num único commit, com a decisão registrada em docs/fontes-academicas.md."
+      "como_remover": "Resposta da FURB, ou fonte com o pico INSTANTÂNEO da régua da 83800002. ⚠️ NÃO é mais 'teste no HidroWeb': isso foi feito em 08/09/2026 e não resolve — ver tentado_e_NAO_resolve. Quando resolver, converte-se tudo para régua num único commit, com a decisão registrada em docs/fontes-academicas.md.",
+      "tentado_e_NAO_resolve": "❌ A API DA ANA FOI TENTADA EM 08/09/2026 E NÃO RESOLVE — resultado negativo guardado para ninguém refazer a busca. O acesso saiu neste dia e a estação 83800002 respondeu os dois eventos que o 'como_remover' nomeia. MAS: para jul/1983 a API devolve UMA linha e para ago/1984 DUAS, e todas são de MÉDIA DIÁRIA (Mediadiaria=1). Não há linha de leitura da régua naqueles meses. Média diária não decide 0,20 m de datum: em set/2011, na mesma estação, a média diária consistida marcou 8,85 m no dia 8 enquanto a leitura das 07h do dia 9 marcou 12,48 m — QUATRO METROS de diferença entre as duas séries do mesmo mês. As lacunas contra a nossa base confirmam amostragem e não datum, porque não são iguais: 15,34 - 15,19 = 0,15 m em 1983 (cheia de semanas, média perto do pico) e 15,46 - 14,85 = 0,61 m em 1984 (cheia rápida). Um deslocamento de datum seria o mesmo nos dois. O QUE AINDA REMOVERIA A REGRA: resposta da FURB, ou uma fonte com o pico INSTANTÂNEO da régua da ANA — a série de duas leituras por dia subestima pico por construção, e a das 17h do dia 9 de set/2011 está ausente. Detalhe completo em docs/ANA-API-2026-09-08.md."
     }
   },
   "eventos": [

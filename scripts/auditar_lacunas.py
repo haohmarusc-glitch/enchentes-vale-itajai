@@ -665,9 +665,17 @@ def markdown(rel: dict) -> str:
     f.append(
         f"Sem `codigo_ana` conferido no HidroWeb: "
         f"{nomes(lambda l: not l['ana_verificado'])}.\n\n"
-        "Cada estação conferida traz série inteira de cota, com hora — resolve os "
-        "itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por "
-        "unidade de esforço da lista.\n\n"
+        # ⚠️ CORRIGIDO EM 08/09/2026, contra a API de verdade. Esta frase dizia
+        # "série inteira de cota, COM HORA — resolve os itens 3 e 4 juntos". A
+        # metade da hora era falsa, e mandava a auditoria para o alvo errado: a
+        # HidroSerieCotas devolve DIA, não hora (uma linha por mês, Cota_01..31).
+        # O item 3 (0 de 196 picos com hora) NÃO sai daqui. Ver
+        # docs/ANA-API-2026-09-08.md.
+        "Cada estação conferida traz série inteira de cota **por dia** — resolve o "
+        "item 4 para aquela cidade, e é o item de maior alcance por unidade de "
+        "esforço da lista. **Não resolve o item 3:** a série da ANA é diária, sem "
+        "hora do pico (conferido na API em 08/09/2026 — ver "
+        "`docs/ANA-API-2026-09-08.md`).\n\n"
         # Divisão feita em 08/09/2026, pelo mesmo motivo do item 7: a lista
         # dizia doze e lia como doze buscas iguais. Cinco não são busca.
         "**Mas não são doze buscas iguais.** Só as do primeiro grupo são busca:\n\n"

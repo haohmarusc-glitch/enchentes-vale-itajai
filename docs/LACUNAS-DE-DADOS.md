@@ -2,7 +2,7 @@
 
 Gerado por `scripts/auditar_lacunas.py` em 08/09/2026. **Não editar à mão** — reexecutar.
 
-Coluna **Leitura ao vivo** medida em `2026-09-08T10:16:24+00:00` (16 réguas com nível). As outras seis colunas não dependem de coleta.
+Coluna **Leitura ao vivo** medida em `2026-09-08T14:31:22+00:00` (17 réguas com nível). As outras seis colunas não dependem de coleta.
 
 Sete camadas por cidade. Cada uma acende uma parte diferente do site, e é
 isso que ordena a busca: sem leitura o pino fica cinza; sem cota a cor não
@@ -74,7 +74,7 @@ Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Ilhota**, *
 
 Sem `codigo_ana` conferido no HidroWeb: **Ibirama**, **Lontras**, **Ascurra**, **Indaial**, **Ilhota**, **Itajaí**, **Timbó**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
-Cada estação conferida traz série inteira de cota, com hora — resolve os itens 3 e 4 juntos para aquela cidade. É o item de maior alcance por unidade de esforço da lista.
+Cada estação conferida traz série inteira de cota **por dia** — resolve o item 4 para aquela cidade, e é o item de maior alcance por unidade de esforço da lista. **Não resolve o item 3:** a série da ANA é diária, sem hora do pico (conferido na API em 08/09/2026 — ver `docs/ANA-API-2026-09-08.md`).
 
 **Mas não são doze buscas iguais.** Só as do primeiro grupo são busca:
 
