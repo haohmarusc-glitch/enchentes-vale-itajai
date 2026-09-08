@@ -497,7 +497,9 @@
           "coordenadas": [
             -26.9078,
             -48.6619
-          ]
+          ],
+          "cotas_aviso_publico": "Na foz, o número da régua não conta a história toda. Quando os rios estão cheios em Blumenau e nas cidades acima, a correnteza aqui passa do que a navegação aguenta e a Autoridade Marítima fecha o canal do porto — aconteceu de 31/08 a 03/09/2026, com o rio a 7,15 m em Blumenau. A decisão vem do rio acima, não da régua daqui.",
+          "cotas_ressalva": "A FOZ DECIDE PELO RIO ACIMA, E A GRANDEZA NEM É O NÍVEL (registrado em 08/09/2026, do apontamento do Jefferson). O Porto de Itajaí para quando os rios estão cheios em Blumenau e nas cidades a montante — mesmo caso de Brusque, ator diferente: quem decide não é a Defesa Civil, é a AUTORIDADE MARÍTIMA. ⚠️ E o critério NÃO é cota nenhuma desta cidade: é a VELOCIDADE DA CORRENTEZA no canal (a imprensa cita 2 nós como limite para navios de menos de 280 m). Correnteza e nível são grandezas diferentes e podem se descolar na foz, onde a maré ainda empurra a régua para cima e para baixo — por isso nenhuma cota daqui reproduz essa decisão, e nenhuma deve ser inventada para tentar. EVENTO DATADO, e é o MESMO da cheia já registrada em Brusque: fechado na tarde de segunda 31/08/2026 pela Autoridade Marítima, com o Itajaí-Açu a 7,15 m em Blumenau (alerta local: 6,00 m); reaberto com restrições na quinta 03/09/2026 às 11h30, três dias fechado. FONTE: cobertura de imprensa (ND Mais, Agência iNFRA, Portogente, Visor Notícias), lida por BUSCA a partir deste ambiente em 08/09/2026 — os sites em si estão bloqueados pelo proxy e o aviso oficial do Porto NÃO foi lido. Confianca: media. O QUE FALTA para virar dado e não só ressalva: o critério oficial da Capitania dos Portos de Itajaí (o limite em nós, por porte de navio) e uma série de fechamentos com data, que permitiria parear fechamento do canal com nível a montante e medir a antecedência real. O QUE NAO SE FAZ: gravar 7,15 m como cota de Itajaí. Aquele valor e da regua de Blumenau, e entrou aqui so para datar o evento."
         },
         {
           "id": "timbo",
@@ -723,7 +725,9 @@
           "coordenadas": [
             -26.9078,
             -48.6619
-          ]
+          ],
+          "cotas_aviso_publico": "Na foz, o número da régua não conta a história toda. Quando os rios estão cheios em Blumenau e nas cidades acima, a correnteza aqui passa do que a navegação aguenta e a Autoridade Marítima fecha o canal do porto — aconteceu de 31/08 a 03/09/2026, com o rio a 7,15 m em Blumenau. A decisão vem do rio acima, não da régua daqui.",
+          "cotas_ressalva": "A FOZ DECIDE PELO RIO ACIMA, E A GRANDEZA NEM É O NÍVEL (registrado em 08/09/2026, do apontamento do Jefferson). O Porto de Itajaí para quando os rios estão cheios em Blumenau e nas cidades a montante — mesmo caso de Brusque, ator diferente: quem decide não é a Defesa Civil, é a AUTORIDADE MARÍTIMA. ⚠️ E o critério NÃO é cota nenhuma desta cidade: é a VELOCIDADE DA CORRENTEZA no canal (a imprensa cita 2 nós como limite para navios de menos de 280 m). Correnteza e nível são grandezas diferentes e podem se descolar na foz, onde a maré ainda empurra a régua para cima e para baixo — por isso nenhuma cota daqui reproduz essa decisão, e nenhuma deve ser inventada para tentar. EVENTO DATADO, e é o MESMO da cheia já registrada em Brusque: fechado na tarde de segunda 31/08/2026 pela Autoridade Marítima, com o Itajaí-Açu a 7,15 m em Blumenau (alerta local: 6,00 m); reaberto com restrições na quinta 03/09/2026 às 11h30, três dias fechado. FONTE: cobertura de imprensa (ND Mais, Agência iNFRA, Portogente, Visor Notícias), lida por BUSCA a partir deste ambiente em 08/09/2026 — os sites em si estão bloqueados pelo proxy e o aviso oficial do Porto NÃO foi lido. Confianca: media. O QUE FALTA para virar dado e não só ressalva: o critério oficial da Capitania dos Portos de Itajaí (o limite em nós, por porte de navio) e uma série de fechamentos com data, que permitiria parear fechamento do canal com nível a montante e medir a antecedência real. O QUE NAO SE FAZ: gravar 7,15 m como cota de Itajaí. Aquele valor e da regua de Blumenau, e entrou aqui so para datar o evento."
         }
       ]
     }

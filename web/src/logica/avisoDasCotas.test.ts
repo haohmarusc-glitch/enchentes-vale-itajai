@@ -82,3 +82,32 @@ test('o aviso público não despeja o texto interno', () => {
     }
   }
 })
+
+test('Itajaí: a tela não diz mais "não tem cota" em cima das onze escalas', () => {
+  // Até 08/09/2026 a página se desmentia: mostrava o painel das onze réguas com
+  // as escalas de cada uma e, logo abaixo, "esta cidade ainda não tem cota de
+  // acionamento... o site não a pinta". As duas metades eram falsas para Itajaí.
+  const iRamo = TELA.indexOf('reguas.length > 0 ?')
+  assert.ok(iRamo > 0, 'sumiu o ramo que trata cidade sem cota MAS com réguas')
+  const iSemCota = TELA.indexOf('ainda não tem cota de acionamento')
+  assert.ok(iRamo < iSemCota, 'o caso das réguas tem de ser testado ANTES do "sem cota"')
+  assert.match(TELA, /A cor sai da régua/)
+})
+
+test('Itajaí traz o aviso da foz: a decisão vem do rio acima', () => {
+  const itajai = cidades.filter((c) => c.id === 'itajai')
+  assert.equal(itajai.length, 2, 'Itajaí aparece nos dois rios — os dois precisam do aviso')
+  for (const c of itajai) {
+    assert.ok(c.cotas_aviso_publico, 'Itajaí perdeu o aviso da foz')
+    assert.match(c.cotas_aviso_publico as string, /Blumenau/)
+    assert.match(c.cotas_aviso_publico as string, /correnteza/i)
+  }
+})
+
+test('nenhuma cota de Itajaí virou 7,15 m — aquilo é a régua de Blumenau', () => {
+  // O evento é datado por um nível de OUTRA cidade. Copiá-lo para cá seria o
+  // erro que este projeto persegue: metro de uma régua vestido de outra.
+  for (const c of cidades.filter((x) => x.id === 'itajai')) {
+    assert.deepEqual(Object.keys(c.cotas_m ?? {}), [], 'Itajaí ganhou cota de cidade')
+  }
+})
