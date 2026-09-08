@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+/**
+ * Coleta as 10 camadas do FeatureServer "historico_inundacoes" da Prefeitura de Itajai
+ * e grava cada uma como GeoJSON (WGS84 / EPSG:4326), mais um index.json com o resumo.
+ *
+ * Uso:  node coleta_inundacoes_itajai.mjs [pasta_saida]
+ * Requer Node 18+ (fetch nativo). Nao precisa de dependencia.
+ *
+ * ATENCAO: este servico expoe capabilities de escrita (Create, Update, Delete, Editing).
+ * Este script usa SOMENTE /query (leitura). Nao adicione nada que escreva.
+ */
+
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
+
+const BASE =
+  "https://arcgis.itajai.sc.gov.br/server/rest/services/historico_inundacoes/FeatureServer";
+
+// id -> metadados uteis. O campo de area muda de nome por camada (schema inconsistente).
+const CAMADAS = [
+  { id: 0, slug: "area_atingida_1983",  tipo: "extensao", evento: "1983",         campoArea: "hectares" },
+  { id: 1, slug: "area_atingida_1984",  tipo: "extensao", evento: "1984",         campoArea: "sum_hectar" },
+  { id: 2, slug: "area_atingida_2001",  tipo: "extensao", evento: "2001",         campoArea: "sum_hectar" },
+  { id: 3, slug: "area_atingida_2008",  tipo: "extensao", evento: "2008",         campoArea: null },
+  { id: 4, slug: "area_atingida_2011",  tipo: "extensao", evento: "2011",         campoArea: "areas" },
+  { id: 5, slug: "cotas_2011_setembro", tipo: "lamina",   evento: "2011-09",      campoArea: null },
+  { id: 6, slug: "cotas_2013_julho",    tipo: "lamina",   evento: "2013-07",      campoArea: null },
+  { id: 7, slug: "cotas_2013_setembro", tipo: "lamina",   evento: "2013-09",      campoArea: null },
+  { id: 8, slug: "cotas_2014_junho",    tipo: "lamina",   evento: "2014-06",      campoArea: null },
+  { id: 9, slug: "cotas_2015_outubro",  tipo: "lamina",   evento: "2015-10",      campoArea: null },
+];
+
+const PAGINA = 1000; // maxRecordCount do servico
+const TIMEOUT_MS = 90_000; // o servidor e lento: 5 a 10 s por resposta e normal
+
+async function getJSON(url) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const j = await r.json();
+    if (j.error) throw new Error(`ArcGIS: ${j.error.message ?? JSON.stringify(j.error)}`);
+    return j;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function contar(id) {
+  const u = `${BASE}/${id}/query?where=1%3D1&returnCountOnly=true&f=json`;
+  return (await getJSON(u)).count;
+}
+
+/** Baixa uma camada inteira em GeoJSON, paginando por resultOffset se precisar. */
+async function baixarCamada(id, total) {
+  const feicoes = [];
+  for (let off = 0; off < Math.max(total, 1); off += PAGINA) {
+    const u =
+      `${BASE}/${id}/query?where=1%3D1&outFields=*&returnGeometry=true` +
+      `&outSR=4326&resultOffset=${off}&resultRecordCount=${PAGINA}&f=geojson`;
+    const g = await getJSON(u);
+    feicoes.push(...(g.features ?? []));
+    if (!g.exceededTransferLimit && off + PAGINA >= total) break;
+  }
+  return { type: "FeatureCollection", features: feicoes };
+}
+
+/** Soma hectares a partir de Shape__Area (m2), que existe em todas as camadas. */
+function hectares(fc) {
+  return fc.features.reduce((s, f) => s + (f.properties?.Shape__Area ?? 0), 0) / 10_000;
+}
+
+/** Agrupa hectares por faixa de lamina (campo "situa"), quando existir. */
+function porFaixa(fc) {
+  const out = {};
+  for (const f of fc.features) {
+    const k = f.properties?.situa;
+    if (k == null) continue;
+    out[k] = +(((out[k] ?? 0) + (f.properties.Shape__Area ?? 0) / 10_000).toFixed(2));
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+async function main() {
+  const saida = process.argv[2] ?? "./inundacoes_itajai";
+  await mkdir(saida, { recursive: true });
+
+  const indice = [];
+  for (const c of CAMADAS) {
+    process.stdout.write(`camada ${c.id} (${c.slug}) ... `);
+    try {
+      const total = await contar(c.id);
+      const fc = await baixarCamada(c.id, total);
+      const arquivo = `${String(c.id).padStart(2, "0")}_${c.slug}.geojson`;
+      await writeFile(join(saida, arquivo), JSON.stringify(fc), "utf8");
+
+      const reg = {
+        id: c.id,
+        slug: c.slug,
+        tipo: c.tipo,
+        evento: c.evento,
+        arquivo,
+        feicoes: fc.features.length,
+        esperado: total,
+        hectares: +hectares(fc).toFixed(2),
+        ha_por_faixa: porFaixa(fc),
+      };
+      indice.push(reg);
+      console.log(`${reg.feicoes}/${total} feicoes, ${reg.hectares} ha`);
+      if (reg.feicoes !== total) console.warn(`  AVISO: contagem divergente na camada ${c.id}`);
+    } catch (e) {
+      console.log(`FALHOU: ${e.message}`);
+      indice.push({ id: c.id, slug: c.slug, erro: String(e.message) });
+    }
+  }
+
+  await writeFile(join(saida, "index.json"), JSON.stringify(indice, null, 2), "utf8");
+  console.log(`\nPronto em ${saida} (index.json com o resumo).`);
+}
+
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

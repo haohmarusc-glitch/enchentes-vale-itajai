@@ -223,3 +223,94 @@ distinguem coisas que exigem respostas opostas:
 | timeout | paginar e repetir |
 
 Sem esses arquivos não dá para escolher entre um ofício e um retry, que são coisas muito diferentes.
+
+---
+
+## O `coleta_inundacoes_itajai.mjs` (08/09/2026) — revisão
+
+Jefferson trouxe um script Node que baixa as dez camadas do `historico_inundacoes`. Não pude rodá-lo
+(o proxy bloqueia o domínio), mas ele é **testável sem rede**: os dados que ele buscaria já estão em
+`data/brutos/itajai-arcgis-inundacoes.geojson.json` desde 06/09, com as 357 feições e todos os
+atributos. Foi assim que a conferência abaixo foi feita.
+
+### Primeiro: ele refaz algo que já existe e já rodou
+
+`scripts/baixar_itajai_arcgis.py` baixa exatamente estas dez camadas, rodou com sucesso em 06/09, e
+tem o que o `.mjs` não tem — verificação de `robots.txt`, `User-Agent` com o nome do projeto (regra do
+`CLAUDE.md`, vale para **todos** os scripts), espera entre requisições e teto de páginas. **Rodar o
+`.mjs` não traz camada nova.** E mesmo que trouxesse, a decisão de 06/09 continua: **não trocar as
+manchas do GeoItajaí pelas do ArcGIS** — mesma geometria, e as nossas têm licença MIT declarada.
+
+### O que ele acerta, e foi conferido nos dados reais
+
+**`Shape__Area` está em m², e dividir por 10 000 dá hectares que batem com o campo publicado:**
+
+| camada | soma `Shape__Area`/10⁴ | campo publicado | |
+|---|---:|---:|---|
+| 0 · 1983 | 7.085,73 ha | 7.085,69 (`hectares`) | bate |
+| 1 · 1984 | 7.011,24 ha | 7.015,30 (`sum_hectar`) | 0,06% — dentro da tolerância |
+| 2 · 2001 | 3.424,89 ha | 3.424,89 (`sum_hectar`) | exato |
+
+Então a função `hectares()` dele produz número com significado. **Mas o script nunca faz essa
+conferência**: ele declara `campoArea` por camada e **não usa o campo em lugar nenhum**. A única
+autoverificação disponível de graça ficou de fora.
+
+⚠️ E `campoArea: "areas"` na camada 4 (2011) **não é hectare**: soma 69.946.176,72, que é m². Está
+declarado ao lado de `hectares` e `sum_hectar`, que são hectares. Somar os 32 polígonos também não
+vale — **eles se sobrepõem**, o que `analisar_itajai_arcgis.py` já registrava.
+
+### O que ele traz de genuinamente novo: `porFaixa` — e a armadilha dentro dele
+
+Hectares por faixa de lâmina é coisa que o repositório não tinha. Foi incorporado ao
+`analisar_itajai_arcgis.py` (seção 4), com uma guarda que o original não tem:
+
+```
+2015-10: 155 polígonos ·     29.2 ha
+             0,20 m :     20.1 ha
+      0,21 a 0,40 m :      7.5 ha
+      0,41 a 0,60 m :      1.0 ha
+         0,51 a 1 m :      0.6 ha
+     ⚠️  "0,51 a 1" e "0,41 a 0,60" se sobrepõem — NÃO somar como classes
+```
+
+**A camada de out/2015 publica as duas faixas ao mesmo tempo.** Entre 0,51 e 0,60 m as duas valem, e
+`porFaixa` devolveria um dicionário em que elas parecem categorias exclusivas — que é o que um gráfico
+de barras assume sem perguntar. A mesma área contada duas vezes, apresentada como repartição de um
+todo.
+
+E os rótulos de valor único (`"0,20"`, `"0,50"`) **não viram intervalo**: o serviço não diz se são "até
+0,20" ou "exatamente 0,20". Chutar o limite de baixo inventaria área. `limites_da_faixa` devolve `None`
+para eles, de propósito, com teste travando.
+
+### A palavra "cotas" nos nomes de arquivo
+
+O script grava as camadas 5 a 9 como `05_cotas_2011_setembro.geojson`, `06_cotas_2013_julho.geojson`…
+O próprio script sabe que elas são lâmina — o campo `tipo` diz `"lamina"` corretamente. **O nome do
+arquivo contradiz o campo.** Neste projeto essa é a ambiguidade mais cara que existe: a Prefeitura
+chama a lâmina de "cota", e há um validador (`valida_cota_de_rua_nao_e_lamina`) que existe só por causa
+disso. Um arquivo chamado `cotas_2011_setembro` está a um descuido de virar linha em `cotas-ruas.json`,
+onde diria *"sua rua alaga com o rio em 0,60 m"*. **Renomear os slugs para `lamina_...`.**
+
+Trava conferida: nenhum rótulo de lâmina passa de 3,00 m, e a menor cota de rua do cadastro é 3,11 m
+(Rio do Sul). As duas faixas não se tocam — e há teste novo garantindo que continuem não se tocando.
+
+### ⚠️ O achado mais sério do script não é sobre o script
+
+O cabeçalho dele avisa:
+
+> *"este serviço expõe capabilities de escrita (Create, Update, Delete, Editing). Este script usa
+> SOMENTE /query (leitura). Não adicione nada que escreva."*
+
+**Não foi possível verificar daqui** (o proxy bloqueia o domínio), e não consta em nenhum lugar deste
+repositório. Se for verdade, um FeatureServer público com edição habilitada significa que **qualquer
+pessoa poderia alterar ou apagar as manchas históricas de inundação de Itajaí** — o registro de onde a
+água chegou em 1983, 1984, 2001, 2008 e 2011.
+
+**O que fazer:** comunicar ao GEOItajaí/COMPDEC. **O que NÃO fazer, em nenhuma hipótese: testar.**
+Não se sonda endpoint de escrita em serviço de produção alheio para confirmar a hipótese — verificar
+lendo o `?f=json` do serviço, que lista as capabilities sem exercer nenhuma, é suficiente e é o
+caminho. A instrução do script — só `/query`, nunca escrever — está certa e fica valendo aqui.
+
+Nota lateral: se a edição é mesmo aberta, o bruto de 06/09 deixa de ser só cópia de conveniência e
+passa a ser **cópia de segurança de um acervo que pode ser alterado na origem**. Mais uma razão para
+não trocar as nossas manchas pelas de lá.

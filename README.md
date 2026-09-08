@@ -880,6 +880,16 @@ o projeto.
   ⛔ E o "próximo alvo" proposto (procurar a "Tabela 13" no ArcGIS) **é caçada encerrada e no lugar
   errado**: a Tabela 13 é de outra **edição do PDF do PLANCON**, não uma camada de ArcGIS. Detalhe em
   `docs/ITAJAI-ARCGIS-INVENTARIO.md`.
+- [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
+  script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
+  `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível
+  conferir daqui (o proxy bloqueia o domínio) e não constava em lugar nenhum deste repositório. Se for
+  verdade, **qualquer pessoa poderia alterar ou apagar as manchas históricas de Itajaí** — o registro de
+  onde a água chegou em 1983, 1984, 2001, 2008 e 2011. **Verificar lendo `…/FeatureServer?f=json`**, que
+  lista as capabilities sem exercer nenhuma, e **comunicar ao GEOItajaí/COMPDEC**. ⛔ **Não testar
+  escrita em serviço de produção alheio**, em nenhuma hipótese. Efeito colateral: se a edição é aberta,
+  o bruto de 06/09 vira **cópia de segurança de um acervo alterável na origem** — mais uma razão para
+  não trocar as nossas manchas pelas de lá.
 
 - [ ] **⛔ OS PICOS DE ITAJAÍ PODEM NÃO EXISTIR PUBLICADOS — busca feita em 06/09/2026, resultado
   negativo.** Era o único passo que destravava as manchas ao vivo. **Tudo que circula com metro nas
