@@ -1004,6 +1004,57 @@ def valida_pico_copiado_de_outra_cidade() -> None:
              "`coincidencia_conferida: true` no registro, com a nota de quem conferiu.")
 
 
+def valida_divergencia_que_virou_registro() -> None:
+    """
+    Um valor guardado como `divergencias` não pode existir TAMBÉM como registro
+    solto do mesmo evento — é a mesma leitura contada duas vezes.
+
+    POR QUE EXISTE (08/09/2026). Brusque tinha o 10,30 m de 1984 nos dois
+    lugares: como registro `1984` e como divergência dentro do registro
+    `1984-08` (10,50 m), com a fonte dizendo, ela mesma, "valor anterior deste
+    repositório". Alguém moveu o valor para `divergencias` — que é o mecanismo
+    certo, e o que o CLAUDE.md manda fazer — e esqueceu de apagar a linha
+    original.
+
+    O ESTRAGO NÃO É A CONTAGEM, É A ORDEM. Um evento fantasma empurra todos os
+    de baixo uma posição: com ele, a cheia de 2011 era a 3ª maior de Brusque;
+    sem ele, é a 2ª. Morador que lê "terceira maior enchente" está lendo
+    exatamente esse número, e a notícia da cidade também fala nesses termos.
+
+    O que a regra do CLAUDE.md diz, e esta guarda passa a cobrar: "Não criar
+    dois registros para o mesmo evento" — um valor adotado, os demais em
+    `divergencias`.
+    """
+    dados = le_json("enchentes.json")
+    eventos = dados.get("eventos", [])
+    for e in eventos:
+        for div in e.get("divergencias") or []:
+            valor = div.get("pico_m")
+            if not isinstance(valor, (int, float)):
+                continue
+            for outro in eventos:
+                if outro is e or outro.get("cidade") != e.get("cidade"):
+                    continue
+                if not isinstance(outro.get("pico_m"), (int, float)):
+                    continue
+                if round(float(outro["pico_m"]), 2) != round(float(valor), 2):
+                    continue
+                # Mesmo ANO basta: o registro solto costuma ser o antigo, com a
+                # data menos precisa ("1984" contra "1984-08"). Exigir a data
+                # inteira igual deixaria passar justamente o caso real.
+                if str(e.get("data", ""))[:4] != str(outro.get("data", ""))[:4]:
+                    continue
+                erro(
+                    f"enchentes.json: {e.get('cidade')} tem {valor} m de "
+                    f"{str(outro.get('data'))!r} como REGISTRO e, ao mesmo tempo, como "
+                    f"divergência do registro {str(e.get('data'))!r} ({e.get('pico_m')} m). "
+                    "É a mesma leitura contada duas vezes, e ela empurra todo o ranking "
+                    "abaixo dela uma posição. Apague o registro solto — o valor continua "
+                    "guardado na divergência, com a fonte."
+                )
+
+
+
 def valida_regua_das_cotas() -> None:
     """
     Cidade que PINTA cor no mapa declara de qual régua são as cotas?
@@ -1634,6 +1685,7 @@ def main() -> int:
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
     valida_pico_copiado_de_outra_cidade()
+    valida_divergencia_que_virou_registro()
     valida_cota_de_rua_nao_e_lamina()
     valida_codigo_ana()
     valida_ruas_sem_coordenada()

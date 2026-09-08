@@ -907,6 +907,22 @@ o projeto.
   Achado de brinde: cortar o motivo no primeiro `.` partia a coordenada `-27.38547` ao meio e
   imprimia `(-27` numa tabela sobre coordenadas — **número mutilado parece dado**, e é pior que
   número nenhum. `primeira_frase()` corta em `. ` e tem teste.
+- [x] **🔴 Uma divergência de Brusque tinha virado registro, e o ranking das cheias saía errado.** O
+  10,30 m de 1984 estava no arquivo **duas vezes**: como registro solto `1984` e como divergência
+  dentro do registro `1984-08` (10,50 m) — com a fonte dizendo, ela mesma, *"valor anterior deste
+  repositório"*. Alguém moveu o valor para `divergencias`, que é o que o `CLAUDE.md` manda
+  (*"não criar dois registros para o mesmo evento"*), e esqueceu de apagar a linha original.
+  **O estrago não é a contagem, é a ORDEM:** o evento fantasma empurrava tudo abaixo dele uma
+  posição. A cheia de **2011 aparecia como 3ª maior de Brusque quando é a 2ª**, e a de **17/11/2023
+  como 4ª quando é a 3ª** — que é exatamente o número que a imprensa da cidade usa e que o morador
+  lê. **Corroboração independente:** Jefferson trouxe uma matéria de `omunicipio.com.br` intitulada
+  *"enchente desta sexta-feira é terceira maior registrada em Brusque"*; das nossas cheias de Brusque
+  só 17/11/2023 é sexta-feira **e** candidata a terceira maior — e ela só bate com o jornal **depois**
+  da correção. (O domínio está bloqueado pelo proxy deste ambiente; a matéria **não foi lida**, e
+  **nenhum valor foi alterado por causa dela** — a duplicata se provou pela evidência interna.)
+  `valida_divergencia_que_virou_registro` passa a barrar o padrão, e um teste trava as quatro
+  primeiras posições de Brusque. 197 → 196 registros; nenhum número mudou, um sumiu de onde estava
+  duplicado.
 - [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível

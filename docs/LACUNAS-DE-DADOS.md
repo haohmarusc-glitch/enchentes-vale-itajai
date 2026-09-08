@@ -31,7 +31,7 @@ de projeto, nunca medida.
 | Vidal Ramos | mirim | sim | — | — | — | — | — | — |
 | Botuverá | mirim | — | — | — | — | — | — | — |
 | Guabiruba | mirim | — | — | — | — | — | — | — |
-| Brusque | mirim | sim | — | sim | 9 | sim | 377 | sim |
+| Brusque | mirim | sim | — | sim | 8 | sim | 377 | sim |
 | Itajaí | mirim | sim | 11× | — | — | — | — | n/a |
 
 `n/a` em trânsito = a cidade é foz, ou entrou sem posição na árvore (Trombudo Central: a fonte diz o rio, não a confluência).
@@ -56,7 +56,7 @@ Com as duas mas sem conferência na fonte: **Taió**, **Rio do Sul**, **Blumenau
 
 ### 3. Hora do pico — o que destrava `transito.json`
 
-**197 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
+**196 picos na base, 0 com hora.** Enquanto for zero, todo tempo de trânsito exibido é faixa de tabela de projeto (JICA/ABRH), nunca medida nesta bacia. `scripts/calibrar_transito.py` existe e não tem o que calibrar.
 
 A hora só existe em boletim de cheia: boletim diário da Defesa Civil estadual, ofício municipal do dia, série horária da ANA/HidroWeb.
 
@@ -66,9 +66,9 @@ Menos de 5 eventos (mínimo da previsão v1): **Taió**, **Ituporanga**, **Ibira
 
 Sem nenhum: **Ituporanga**, **Ibirama**, **Lontras**, **Ascurra**, **Ilhota**, **Itajaí**, **Rio dos Cedros**, **Trombudo Central**, **Vidal Ramos**, **Botuverá**, **Guabiruba**.
 
-3 registros têm só o ano, sem mês nem dia — não pareiam com jusante nem com mancha.
+2 registros têm só o ano, sem mês nem dia — não pareiam com jusante nem com mancha.
 
-61 registros com `referencia: null` (Blumenau 41, Rio do Sul 9, Brusque 9, Taió 1, Timbó 1). Em Blumenau isso é a REGRA BLOQUEANTE do `enchentes.json`: régua ou IBGE (régua + 0,20 m) muda o valor em 20 cm. Resolve no HidroWeb, estação 83800002, cotas de 09/07/1983 e 07/08/1984.
+60 registros com `referencia: null` (Blumenau 41, Rio do Sul 9, Brusque 8, Taió 1, Timbó 1). Em Blumenau isso é a REGRA BLOQUEANTE do `enchentes.json`: régua ou IBGE (régua + 0,20 m) muda o valor em 20 cm. Resolve no HidroWeb, estação 83800002, cotas de 09/07/1983 e 07/08/1984.
 
 ### 5. Série da ANA — o acervo que fecha as lacunas de uma vez
 

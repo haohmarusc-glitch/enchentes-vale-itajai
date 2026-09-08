@@ -1160,5 +1160,79 @@ class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):
         self.assertIn("SIG²A-SPEHC", self.it["cotas_m_por_que_vazio"])
 
 
+
+def _dispara(eventos: list[dict]) -> bool:
+    """Roda só `valida_divergencia_que_virou_registro` sobre dados em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: ({"eventos": eventos} if nome == "enchentes.json" else orig(nome))
+    try:
+        vd.valida_divergencia_que_virou_registro()
+    finally:
+        vd.le_json = orig
+    return bool(vd.erros)
+
+
+class DivergenciaQueVirouRegistro(unittest.TestCase):
+    """
+    Brusque tinha o 10,30 m de 1984 nos dois lugares: registro solto `1984` e
+    divergência dentro do `1984-08` (10,50 m), com a fonte dizendo, ela mesma,
+    "valor anterior deste repositório".
+
+    O estrago não é a contagem, é a ORDEM. O evento fantasma empurrava todos os
+    de baixo uma posição: a cheia de 2011 aparecia como 3ª maior de Brusque
+    quando é a 2ª, e a de 17/11/2023 como 4ª quando é a 3ª — que é exatamente o
+    número que a imprensa da cidade usa e que o morador lê.
+    """
+
+    def setUp(self):
+        self.real = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))
+        self.brusque = [e for e in self.real["eventos"] if e["cidade"] == "brusque"]
+
+    def test_o_registro_solto_de_1984_nao_voltou(self):
+        soltos = [e for e in self.brusque if e.get("data") == "1984"]
+        self.assertEqual(soltos, [], "o 10,30 m de 1984 é divergência, não registro")
+
+    def test_o_valor_continua_guardado_como_divergencia(self):
+        """Apagar o registro não podia apagar o número: ele é a leitura antiga."""
+        oitenta_e_quatro = next(e for e in self.brusque if e.get("data") == "1984-08")
+        valores = [d["pico_m"] for d in oitenta_e_quatro["divergencias"]]
+        self.assertIn(10.3, valores)
+
+    def test_a_ordem_das_cheias_de_brusque(self):
+        """
+        Trava o ranking que o morador lê. Se um evento fantasma voltar, alguma
+        destas posições muda e o teste cai antes de a tela mentir.
+        """
+        ordem = [e["data"] for e in sorted(self.brusque, key=lambda x: -x["pico_m"])]
+        self.assertEqual(ordem[:4], ["1984-08", "2011-09", "2023-11-17", "2008-11"])
+
+    def test_a_guarda_pega_o_padrao_em_dado_de_mentira(self):
+        eventos = [
+            {"cidade": "x", "data": "1990-05", "pico_m": 9.0,
+             "divergencias": [{"pico_m": 8.0, "fonte": "compilação"}]},
+            {"cidade": "x", "data": "1990", "pico_m": 8.0, "fonte": "compilação"},
+        ]
+        self.assertTrue(_dispara(eventos))
+
+    def test_a_guarda_NAO_reclama_de_ano_diferente(self):
+        """Duas cheias de anos diferentes com o mesmo metro não são duplicata."""
+        eventos = [
+            {"cidade": "x", "data": "1990-05", "pico_m": 9.0,
+             "divergencias": [{"pico_m": 8.0, "fonte": "c"}]},
+            {"cidade": "x", "data": "1991", "pico_m": 8.0, "fonte": "c"},
+        ]
+        self.assertFalse(_dispara(eventos))
+
+    def test_a_guarda_NAO_reclama_de_outra_cidade(self):
+        eventos = [
+            {"cidade": "x", "data": "1990-05", "pico_m": 9.0,
+             "divergencias": [{"pico_m": 8.0, "fonte": "c"}]},
+            {"cidade": "y", "data": "1990", "pico_m": 8.0, "fonte": "c"},
+        ]
+        self.assertFalse(_dispara(eventos))
+
+
 if __name__ == "__main__":
     unittest.main()
