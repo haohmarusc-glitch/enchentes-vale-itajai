@@ -20,10 +20,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from analisar_itajai_arcgis import (AREA_OFICIAL_HA, FRACAO_MINIMA_DA_MANCHA,
-                                    INUNDACOES, TERRENO, TOLERANCIA_AREA,
-                                    area_ha, carregar, mesma_geometria,
-                                    por_camada, terreno_descreve_a_cidade)
+from analisar_itajai_arcgis import (AREA_OFICIAL_HA, CAMADAS_DE_LAMINA,
+                                    FRACAO_MINIMA_DA_MANCHA, INUNDACOES,
+                                    TERRENO, TOLERANCIA_AREA, area_ha,
+                                    carregar, faixas_que_se_sobrepoem,
+                                    ha_por_faixa, limites_da_faixa,
+                                    mesma_geometria, por_camada,
+                                    terreno_descreve_a_cidade)
 
 RAIZ = Path(__file__).resolve().parent.parent
 
@@ -129,6 +132,95 @@ class TestArquivosReais(unittest.TestCase):
     def test_o_bruto_do_ponto_cotado_avisa_o_que_ele_nao_e(self):
         meta = carregar("brutos/itajai-pontos-cotados-altimetricos.geojson.json")["_meta"]
         self.assertIn("não cota de régua", json.dumps(meta, ensure_ascii=False))
+
+
+
+def com_situa(rotulo, area_m2):
+    return {"type": "Feature",
+            "properties": {"situa": rotulo, "Shape__Area": area_m2},
+            "geometry": None}
+
+
+class TestFaixaDeLamina(unittest.TestCase):
+    """
+    A camada de out/2015 publica "0,41 a 0,60" e "0,51 a 1" ao mesmo tempo.
+    Entre 0,51 e 0,60 as duas valem, então elas NÃO são classes disjuntas —
+    e somá-las como se fossem conta a mesma área duas vezes.
+
+    Um gráfico de barras faz exatamente essa soma sem perguntar, e o resultado
+    parece a repartição de um todo. É erro que nenhum teste de formato pega:
+    os rótulos são strings válidas e as áreas são reais.
+    """
+
+    def test_intervalo_vira_par_de_numeros(self):
+        self.assertEqual(limites_da_faixa("0,41 a 0,60"), (0.41, 0.60))
+        self.assertEqual(limites_da_faixa("1,01 a 1,50"), (1.01, 1.50))
+
+    def test_rotulo_de_valor_unico_NAO_vira_intervalo(self):
+        """
+        "0,20" pode ser "até 0,20" ou "exatamente 0,20" — o serviço não diz.
+        Chutar (0,00 a 0,20) inventaria área que ninguém publicou.
+        """
+        self.assertIsNone(limites_da_faixa("0,20"))
+        self.assertIsNone(limites_da_faixa("0,50"))
+
+    def test_acha_a_sobreposicao_de_2015(self):
+        pares = faixas_que_se_sobrepoem(["0,20", "0,21 a 0,40", "0,41 a 0,60", "0,51 a 1"])
+        self.assertEqual(len(pares), 1, pares)
+        self.assertEqual(set(pares[0]), {"0,41 a 0,60", "0,51 a 1"})
+
+    def test_faixas_encaixadas_nao_acusam_sobreposicao(self):
+        """2013-07 tem escala limpa: 0,21–0,40 e 0,41–0,60 não se tocam."""
+        self.assertEqual(faixas_que_se_sobrepoem(["0,21 a 0,40", "0,41 a 0,60"]), [])
+
+    def test_hectares_saem_de_metro_quadrado(self):
+        faixas = ha_por_faixa([com_situa("0,20", 30000), com_situa("0,20", 10000),
+                               com_situa("0,21 a 0,40", 5000)])
+        self.assertAlmostEqual(faixas["0,20"], 4.0)
+        self.assertAlmostEqual(faixas["0,21 a 0,40"], 0.5)
+
+    def test_poligono_sem_situa_fica_de_fora(self):
+        """Camada de extensão não tem lâmina; contá-la como faixa inventaria uma."""
+        self.assertEqual(ha_por_faixa([{"properties": {"Shape__Area": 10000}}]), {})
+
+
+class TestFaixasNosDadosReais(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.camadas = por_camada(carregar(INUNDACOES))
+
+    def test_as_cinco_camadas_de_lamina_tem_situa(self):
+        for camada, evento in CAMADAS_DE_LAMINA.items():
+            with self.subTest(evento=evento):
+                self.assertTrue(ha_por_faixa(self.camadas[camada]),
+                                f"{evento} deixou de trazer o campo situa")
+
+    def test_a_sobreposicao_de_2015_continua_no_dado(self):
+        """
+        Se a Prefeitura arrumar a escala, este teste cai — e aí a guarda pode
+        sair. Enquanto ele passar, somar as faixas de 2015 está errado.
+        """
+        faixas = ha_por_faixa(self.camadas[9])
+        self.assertTrue(faixas_que_se_sobrepoem(faixas),
+                        "2015-10 deixou de ter faixas sobrepostas; rever a seção 4")
+
+    def test_as_outras_quatro_camadas_nao_se_sobrepoem(self):
+        for camada in (5, 6, 7, 8):
+            with self.subTest(camada=camada):
+                self.assertEqual(faixas_que_se_sobrepoem(ha_por_faixa(self.camadas[camada])), [])
+
+    def test_nenhuma_faixa_de_lamina_chega_perto_de_cota_de_rua(self):
+        """
+        A trava central do projeto: lâmina é 0–3 m, cota de rua é 3,11–21,00 m.
+        Se um rótulo de lâmina passasse de 3 m, as duas faixas se tocariam e o
+        piso de `valida_cota_de_rua_nao_e_lamina` deixaria de separá-las.
+        """
+        for camada in CAMADAS_DE_LAMINA:
+            for rotulo in ha_por_faixa(self.camadas[camada]):
+                limites = limites_da_faixa(rotulo)
+                maior = limites[1] if limites else float(rotulo.replace(",", "."))
+                with self.subTest(rotulo=rotulo):
+                    self.assertLess(maior, 3.01, f"lâmina de {rotulo} m invade a faixa das cotas de rua")
 
 
 if __name__ == "__main__":

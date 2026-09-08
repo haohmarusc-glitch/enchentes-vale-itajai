@@ -63,6 +63,10 @@ TOLERANCIA_AREA = 0.03
 #: inundável da cidade" — descreve outra coisa, com nome parecido.
 FRACAO_MINIMA_DA_MANCHA = 0.25
 
+#: As cinco camadas que trazem lâmina d'água por polígono, no campo `situa`.
+CAMADAS_DE_LAMINA = {5: "2011-09", 6: "2013-07", 7: "2013-09",
+                     8: "2014-06", 9: "2015-10"}
+
 
 def carregar(nome: str) -> dict:
     return json.loads((DADOS / nome).read_text(encoding="utf-8"))
@@ -129,6 +133,55 @@ def terreno_descreve_a_cidade(area_terreno: float, area_1983: float) -> bool:
     return area_terreno / area_1983 >= FRACAO_MINIMA_DA_MANCHA
 
 
+def limites_da_faixa(rotulo: str) -> tuple[float, float] | None:
+    """
+    Os dois extremos de um rótulo de lâmina, em metros — ou None.
+
+    `"0,41 a 0,60"` vira `(0.41, 0.60)`. Mas `"0,20"` sozinho devolve **None**,
+    de propósito: o serviço não diz se é "até 0,20" ou "exatamente 0,20", e
+    inventar o limite de baixo é inventar área.
+    """
+    partes = rotulo.split(" a ")
+    if len(partes) != 2:
+        return None
+    try:
+        a, b = (float(x.strip().replace(",", ".")) for x in partes)
+    except ValueError:
+        return None
+    return (a, b) if a <= b else (b, a)
+
+
+def faixas_que_se_sobrepoem(rotulos) -> list[tuple[str, str]]:
+    """
+    Pares de faixas que cobrem a mesma lâmina — logo, não são classes disjuntas.
+
+    POR QUE EXISTE (08/09/2026). A camada de out/2015 publica ao mesmo tempo
+    `"0,41 a 0,60"` e `"0,51 a 1"`: entre 0,51 e 0,60 as duas valem. Somar
+    hectares por faixa como se fossem categorias exclusivas — que é o que um
+    gráfico de barras faz sem perguntar — conta a mesma área duas vezes e
+    apresenta o resultado como repartição de um todo.
+    """
+    com_limite = [(r, lim) for r in rotulos if (lim := limites_da_faixa(r))]
+    pares = []
+    for i, (r1, (a1, b1)) in enumerate(com_limite):
+        for r2, (a2, b2) in com_limite[i + 1:]:
+            if a1 <= b2 and a2 <= b1:
+                pares.append((r1, r2))
+    return pares
+
+
+def ha_por_faixa(feicoes: list[dict]) -> dict[str, float]:
+    """Hectares por rótulo de lâmina, de `Shape__Area` (m²) do próprio serviço."""
+    fora = {}
+    for f in feicoes:
+        prop = f.get("properties") or {}
+        rotulo = prop.get("situa")
+        if rotulo is None:
+            continue
+        fora[rotulo] = fora.get(rotulo, 0.0) + (prop.get("Shape__Area") or 0) / 10000
+    return fora
+
+
 def main() -> int:
     try:
         inundacoes = por_camada(carregar(INUNDACOES))
@@ -165,13 +218,31 @@ def main() -> int:
     print(f"   {len(terreno)} polígonos · {a_terreno:.1f} ha no total · "
           f"mediana {statistics.median(areas):.0f} m² · menor {areas[0]:.0f} m²")
     print(f"   a mancha de 1983 cobre {a_1983:.0f} ha — {a_1983 / a_terreno:.0f} vezes mais")
-    if terreno_descreve_a_cidade(a_terreno, a_1983):
+    pode_terreno = terreno_descreve_a_cidade(a_terreno, a_1983)
+    if pode_terreno:
         print("   pode entrar na tela como área inundável.")
-        return 0
-    print("   NÃO MOSTRAR como \"área inundável\": quem mora fora dos polígonos leria")
-    print("   que sua rua não alaga, e a mancha de 1983 diz o contrário para uma área")
-    print("   muito maior. Falta o dicionário de dados da Prefeitura (ofício C2).")
-    return 2
+    else:
+        print("   NÃO MOSTRAR como \"área inundável\": quem mora fora dos polígonos leria")
+        print("   que sua rua não alaga, e a mancha de 1983 diz o contrário para uma área")
+        print("   muito maior. Falta o dicionário de dados da Prefeitura (ofício C2).")
+
+    print("\n4. Lâmina d'água por faixa — LÂMINA, não cota de régua")
+    print("   quanto a água subiu NAQUELE ponto; não é o nível em que a rua alaga.")
+    houve_sobreposicao = False
+    for camada, evento in sorted(CAMADAS_DE_LAMINA.items()):
+        faixas = ha_por_faixa(inundacoes[camada])
+        total = sum(faixas.values())
+        print(f"   {evento}: {len(inundacoes[camada]):>3} polígonos · {total:>8.1f} ha")
+        for rotulo in sorted(faixas, key=lambda r: limites_da_faixa(r) or (-1.0, -1.0)):
+            print(f"        {rotulo:>12} m : {faixas[rotulo]:>8.1f} ha")
+        for r1, r2 in faixas_que_se_sobrepoem(faixas):
+            houve_sobreposicao = True
+            print(f"        ⚠️  \"{r1}\" e \"{r2}\" se sobrepõem — NÃO somar como classes")
+    if houve_sobreposicao:
+        print("   Faixas sobrepostas contam a mesma área duas vezes. Um gráfico de")
+        print("   barras aqui apresentaria isso como repartição de um todo.")
+
+    return 0 if pode_terreno else 2
 
 
 if __name__ == "__main__":
