@@ -34,6 +34,31 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
+## C11 — Defesa Civil de Ilhota (COMPDEC)
+
+**Para:** dpo@ilhota.sc.gov.br · (47) 3343-8800 / 3343-0181 · Rua Leoberto Leal, 160, Centro, Ilhota-SC, 88320-438
+**Assunto:** Em que régua estão as cotas do Plano de Contingência 2025/2028?
+
+À Coordenadoria Municipal de Proteção e Defesa Civil de Ilhota,
+
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível do rio em cada cidade e as cotas de referência de cada município, sempre com a ressalva de que não substitui a Defesa Civil.
+
+O Plano de Contingência 2025/2028 de Ilhota (versão 016), na seção "Condições sobre o nível do Rio Itajaí", define **9,20 m** (atenção), **10,00 m** (prontidão) e **10,50 m** (emergência), e cita a estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin. Em uma notícia de 2013 a Defesa Civil de Ilhota informava que não contava com régua própria e acompanhava a medição de Gaspar.
+
+Tenho uma única dúvida, e ela decide se posso ou não mostrar essas cotas ao lado de um nível ao vivo:
+
+**As cotas 9,20 / 10,00 / 10,50 m são lidas em qual régua — a de Gaspar, na Ponte Hercílio Deecke, ou uma régua em Ilhota (a da Ponte Cláudio Jeremias Cadorin)? E qual é o zero dessa régua?**
+
+Pergunto porque a conta não fecha sozinha: a cota de emergência de Gaspar é 7,00 m, e se as cotas de Ilhota estivessem na régua de Gaspar, Ilhota só entraria em atenção com o rio 2,20 m acima da emergência de Gaspar. É possível, mas precisa estar escrito para não ser suposto.
+
+Se a estação da Ponte Cadorin publicar leituras em algum endereço, agradeço a indicação.
+
+Muito obrigado pelo trabalho de vocês.
+
+Jefferson
+
+---
+
 ## C10 — Superintendência Municipal de Proteção e Defesa Civil de Gaspar
 
 **Para:** defesacivil@gaspar.sc.gov.br

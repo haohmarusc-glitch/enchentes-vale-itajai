@@ -55,7 +55,7 @@ FUSO = ZoneInfo("America/Sao_Paulo")
 SITE = "https://haohmarusc-glitch.github.io/enchentes-vale-itajai/"
 
 #: Da mais baixa para a mais alta. 'normal' é o rio abaixo de qualquer cota.
-FAIXAS = ["normal", "atencao", "alerta", "emergencia", "inundacao"]
+FAIXAS = ["normal", "monitoramento", "atencao", "alerta", "emergencia", "inundacao"]
 
 #: Faixas que a TELA pinta mas que NÃO disparam aviso — e por quê.
 #:
@@ -82,10 +82,22 @@ FAIXAS = ["normal", "atencao", "alerta", "emergencia", "inundacao"]
 #:
 #: Para reverter, tire daqui — `teste_escadas_de_cota.py` volta a cobrar a
 #: cobertura sozinho, sem precisar que ninguém lembre desta conversa.
+#:
+#: REVISTO EM 09/09/2026, sem mudar o padrão: `monitoramento` entrou em
+#: `FAIXAS` (para a escada saber ordená-lo) e continua aqui (para o bot calar
+#: nele por padrão). O que nasceu é a EXCEÇÃO POR CIDADE: `avisa_em_monitoramento`
+#: em estacoes.json, com quem decidiu, o motivo e o texto que o aviso carrega.
+#: O caso: Taió. A escala estadual (Operação de Barragens, out/2024) chama de
+#: ATENÇÃO os mesmos 5,00 m que o PLANCON municipal chama de MONITORAMENTO —
+#: os degraus coincidem, só o nome diverge —, e Taió é a cidade mais a montante
+#: do Açu: 5,00 m ali ainda é notícia útil rio abaixo. Silenciar seria pagar
+#: uma discordância de vocabulário em aviso não enviado. O aviso cita os dois
+#: rótulos e não declara vencedor; o número decide.
 NAO_DISPARAM_AVISO = {"monitoramento"}
 
 ROTULO = {
     "normal": "abaixo das cotas",
+    "monitoramento": "Monitoramento",
     "atencao": "Atenção",
     "alerta": "Alerta",
     # A palavra é do Plano de Contingência da COMPDEC de Itajaí. Não virou
@@ -169,11 +181,32 @@ def cotas_da_cidade(rio: str, cidade: str) -> dict:
     estacoes = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
     for c in estacoes["rios"].get(rio, {}).get("cidades", []):
         if c["id"] == cidade:
+            # As faixas que calam por padrão só entram se a cidade optou por
+            # avisar nelas, por escrito (`avisa_em_monitoramento`, caso Taió).
+            caladas = set() if c.get("avisa_em_monitoramento") else NAO_DISPARAM_AVISO
             return {
                 k: float(v) for k, v in (c.get("cotas_m") or {}).items()
-                if isinstance(v, (int, float)) and k in FAIXAS
+                if isinstance(v, (int, float)) and k in FAIXAS and k not in caladas
             }
     return {}
+
+
+def nota_da_faixa(rio: str | None, cidade: str | None, faixa: str) -> str | None:
+    """
+    O texto que a cidade manda junto com o aviso desta faixa — hoje só o de
+    `avisa_em_monitoramento`, que carrega a divergência de nome entre o PLANCON
+    e a escala estadual em vez de resolvê-la. Nenhum dos dois documentos é
+    declarado vencedor; o número é que dispara.
+    """
+    if faixa != "monitoramento" or not rio or not cidade:
+        return None
+    estacoes = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+    for c in estacoes["rios"].get(rio, {}).get("cidades", []):
+        if c["id"] == cidade:
+            opcao = c.get("avisa_em_monitoramento") or {}
+            texto = opcao.get("texto_no_aviso") if isinstance(opcao, dict) else None
+            return texto.strip() if isinstance(texto, str) and texto.strip() else None
+    return None
 
 
 def nomes_da_cidade(rio: str | None, cidade: str | None) -> dict:
@@ -215,7 +248,8 @@ def idade_min(medido_em: str | None, agora: datetime) -> float | None:
 
 
 def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
-                idade: float | None, nomes: dict | None = None) -> str:
+                idade: float | None, nomes: dict | None = None,
+                nota: str | None = None) -> str:
     """A mensagem. Curta em cima, ressalvas embaixo — é lida no susto."""
     e = notificador.esc
     cidade = e(str(leitura.get("cidade") or "?").replace("-", " ").title())
@@ -224,7 +258,7 @@ def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
     if faixa == "normal":
         cabeca = f"🟢 <b>{cidade}</b> voltou para abaixo das cotas"
     elif subiu(faixa, anterior):
-        icone = {"atencao": "🟡", "alerta": "🟠",
+        icone = {"monitoramento": "🟡", "atencao": "🟡", "alerta": "🟠",
                  "emergencia": "🔴", "inundacao": "🔴"}[faixa]
         cabeca = f"{icone} <b>{cidade}</b> chegou à cota de <b>{rotulo(faixa, nomes)}</b>"
     else:
@@ -235,6 +269,10 @@ def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
     cota_atual = cotas.get(faixa)
     if isinstance(cota_atual, (int, float)):
         linhas.append(f"Cota de {rotulo(faixa, nomes)}: {cota_atual:.2f}".replace(".", ",") + " m")
+    if nota:
+        # A divergência viaja no aviso: "monitoramento pelo PLANCON, atenção
+        # pela escala estadual". Quem recebe vê os dois nomes e o número.
+        linhas.append(e(nota))
 
     if idade is not None:
         if idade >= IDADE_RESSALVA_MIN:
@@ -395,6 +433,7 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
                     leitura, faixa, faixa_antes, cotas,
                     idade_min(leitura.get("medido_em"), agora),
                     nomes_da_cidade(leitura.get("rio"), leitura.get("cidade")),
+                    nota_da_faixa(leitura.get("rio"), leitura.get("cidade"), faixa),
                 ),
             })
             novo[chave_estado] = {

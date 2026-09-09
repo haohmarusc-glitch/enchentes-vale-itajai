@@ -477,6 +477,16 @@ o projeto.
 
 ## Pendências
 
+- [x] **Taió: o bot passa a avisar a 5,00 m (decisão do Jefferson, 09/09/2026)** — o estado chama de
+  atenção os mesmos 5,00 m que o PLANCON chama de monitoramento; os degraus coincidem, só o nome
+  diverge, e Taió é a cidade mais a montante do Açu. Exceção escrita em `avisa_em_monitoramento`
+  (quem decidiu, motivo, texto), padrão "monitoramento não avisa" mantido nas outras cidades, e o
+  aviso cita os dois rótulos sem declarar vencedor. Validador cobra a exceção por inteiro.
+- [ ] **Gaspar: cadência da estação 21 ainda não medida** — não há coleta rodando. `scripts/vigiar_cadencia_gaspar.py`
+  faz uma consulta por hora e mede o intervalo entre MUDANÇAS em "Última Medição"; tem de rodar de
+  um IP no Brasil (a VPS não alcança o host). `docs/pendencias-navegador-e-oficios.md`, A3.3.
+- [ ] **Ilhota: ofício C11 pronto** — uma pergunta só: as cotas 9,20 / 10,00 / 10,50 são lidas na régua
+  de Gaspar (Ponte Hercílio Deecke) ou numa régua em Ilhota, e qual o zero? `docs/oficios-prontos.md`.
 - [x] **Blumenau: cotas corrigidas para a escala oficial de cinco estágios (09/09/2026)** — o JSON do
   AlertaBlu publica Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8 m (bruto no repo); os
   6,00 / 6,50 / 7,40 sem fonte foram para divergências. A tela pintava atenção dois metros tarde.

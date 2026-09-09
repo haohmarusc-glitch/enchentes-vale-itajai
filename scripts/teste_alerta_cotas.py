@@ -564,5 +564,42 @@ class NomeDaFonteNoAviso(unittest.TestCase):
         self.assertEqual(alerta_cotas.nomes_da_cidade(None, None), {})
 
 
+class TaioAvisaEmMonitoramento(unittest.TestCase):
+    """
+    Decisão de 09/09/2026: em Taió o bot AVISA a 5,00 m (monitoramento), por
+    exceção escrita; nas outras cidades o monitoramento continua calado.
+    """
+
+    def test_taio_avisa_a_5_m_e_o_texto_carrega_os_dois_rotulos(self):
+        dados = payload(5.20, estacao="Taió (teste)", cidade="taio", medido="2026-08-30T02:30:00")
+        avisos, estado, recusas = decidir(dados, {}, AGORA)
+        self.assertEqual(recusas, [])
+        self.assertEqual(len(avisos), 1)
+        self.assertEqual(avisos[0]["faixa"], "monitoramento")
+        self.assertIn("Monitoramento", avisos[0]["texto"])
+        self.assertIn("atenção pela escala estadual", avisos[0]["texto"])
+        self.assertIn("PLANCON", avisos[0]["texto"])
+
+    def test_taio_abaixo_de_5_m_continua_normal(self):
+        avisos, _, _ = decidir(payload(4.80, estacao="Taió (teste)", cidade="taio",
+                                       medido="2026-08-30T02:30:00"), {}, AGORA)
+        self.assertEqual(avisos, [])
+
+    def test_blumenau_em_monitoramento_continua_calado(self):
+        # Blumenau tem monitoramento a 3,00 m e NÃO optou pela exceção.
+        cotas = alerta_cotas.cotas_da_cidade("itajai-acu", "blumenau")
+        self.assertNotIn("monitoramento", cotas)
+        self.assertEqual(alerta_cotas.faixa_de(3.5, cotas), "normal")
+        self.assertEqual(alerta_cotas.nota_da_faixa("itajai-acu", "blumenau", "monitoramento"), None)
+
+    def test_taio_tem_monitoramento_nas_cotas_e_a_nota(self):
+        cotas = alerta_cotas.cotas_da_cidade("itajai-acu", "taio")
+        self.assertEqual(cotas.get("monitoramento"), 5.0)
+        self.assertEqual(alerta_cotas.faixa_de(5.0, cotas), "monitoramento")
+        self.assertEqual(alerta_cotas.faixa_de(7.0, cotas), "atencao")
+        self.assertIn("PLANCON", alerta_cotas.nota_da_faixa("itajai-acu", "taio", "monitoramento"))
+        self.assertIsNone(alerta_cotas.nota_da_faixa("itajai-acu", "taio", "atencao"))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

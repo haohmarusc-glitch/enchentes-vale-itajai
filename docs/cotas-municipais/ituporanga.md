@@ -56,6 +56,29 @@ régua e o zero ditos pela Defesa Civil, a importação é meia hora.
 - Notícia 4935: estação **meteorológica** instalada na Ponte Vitório Sens — história do ponto, não nível.
 - Abertos: zero da régua da ponte; se a Ponte do Rio Gabiroba (5,03 m) está na mesma régua das outras 58.
 
+## Página municipal `nivel-rio`, lida em 09/09/2026
+
+"Rio Itajaí do Sul — Nível do Rio (Centro): **1,46 m**", última leitura 09/09/2026 07:00.
+"Centro" é bairro, não régua: parear com as 60 cotas de rua seria vínculo por nome de lugar, a
+armadilha do Salseiro. **Não pareia.** E com 1,46 m a página exibe "Nível de Criticidade:
+Atenção", enquanto as manchas começam em 3,00 m e a menor cota de rua é 3,38 m. Ou o rótulo está
+travado no HTML, ou é de outra escala. Hipótese (não conclusão): 1,46 ≥ 1,40, a atenção da escala
+**estadual** da 83250000 — a página pode aplicar a escala estadual ao "Centro", ou o "Centro" pode
+ser a própria 83250000. Terceira escala de Ituporanga sem régua nomeada: **não adotar nenhuma.**
+
+O que a página dá de bom: **Download CSV com 8.433 registros**, duas leituras por dia (07:00 e
+17:00), ~11 anos — a baixar para `data/brutos/` e cruzar com Rio do Sul —, e o log completo da
+Barragem Sul com comportas. Cadência: a 2×/dia, com `MIN_VELHA` de 180 min, a cidade pintaria por
+poucos minutos e ficaria cinza o resto do dia.
+
+### Barragem Sul: o log fecha a divergência de ontem, e acha um erro
+
+Montante **17 m às 07:00 de 08/09** e **15 m às 17:00** do mesmo dia: o reservatório esvaziava
+~2 m/dia com as 5 comportas abertas. Os 15,00 da Asthon e os 17,73 do feed estadual são a **mesma
+régua em horas diferentes**, com o feed estadual atrasado — não são três datums. Mas o registro de
+**09/09 07:00 marca montante 3 m** depois de 15 m: queda de 12 m numa noite é erro de digitação.
+Vale avisar Ituporanga.
+
 ## Pistas que se cercam (nenhuma é faixa)
 
 - primeira mancha: 3,00 m

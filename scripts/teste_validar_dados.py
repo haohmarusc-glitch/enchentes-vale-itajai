@@ -1715,5 +1715,50 @@ class NomesNaFonte(unittest.TestCase):
         self.assertIn("vazio", erros[0])
 
 
+def erros_de_monitoramento(estacoes_dict) -> list[str]:
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: estacoes_dict if nome == "estacoes.json" else orig(nome)
+    try:
+        vd.valida_avisa_em_monitoramento()
+    finally:
+        vd.le_json = orig
+    return list(vd.erros)
+
+
+class AvisaEmMonitoramento(unittest.TestCase):
+    """A exceção de Taió tem de estar escrita por inteiro, e apontar para uma cota."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def base(self):
+        return copy.deepcopy(self.real)
+
+    def test_dados_reais_passam_e_taio_e_a_excecao(self):
+        self.assertEqual(erros_de_monitoramento(self.base()), [])
+        t = _cidade(self.base(), "itajai-acu", "taio")
+        self.assertIn("Jefferson", t["avisa_em_monitoramento"]["decidido_por"])
+        self.assertIn("atenção pela escala estadual", t["avisa_em_monitoramento"]["texto_no_aviso"])
+
+    def test_true_sozinho_aborta(self):
+        d = self.base()
+        _cidade(d, "itajai-acu", "taio")["avisa_em_monitoramento"] = True
+        erros = erros_de_monitoramento(d)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("esquecimento", erros[0])
+
+    def test_excecao_sem_cota_de_monitoramento_aborta(self):
+        d = self.base()
+        b = _cidade(d, "itajai-acu", "blumenau")
+        b["avisa_em_monitoramento"] = {"decidido_por": "x", "motivo": "y", "texto_no_aviso": "z"}
+        del b["cotas_m"]["monitoramento"]
+        erros = erros_de_monitoramento(d)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("não aponta para nada", erros[0])
+
+
 if __name__ == "__main__":
     unittest.main()
