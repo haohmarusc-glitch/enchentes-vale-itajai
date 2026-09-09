@@ -130,3 +130,29 @@ Todo dado de vocês que o site usa aparece com crédito à Defesa Civil de Gaspa
 Fico à disposição e agradeço a atenção.
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C12 — EPAGRI/CIRAM, Equipe de Hidrologia: Avisos Hidrológicos de novembro de 2023
+
+> Por que: o Aviso 03 de 19/11/2023 (`aviso_n03_191120236281.pdf`) não está no portal (que publica
+> só os seis boletins mais recentes), não está no WordPress (os PDFs ficam fora dele) e não está no
+> Internet Archive (acervo do diretório termina em 2022). `docs/CIRAM-ACERVO.md`. Mandar como
+> **resposta na mesma thread** do C5 (assunto "Re: Solicitação de acesso aos dados do Rios On-Line…",
+> Mariane Souza Melo de Liz, 09/09/2026): o contexto já está lá e a carta de 09/09 abriu a porta.
+
+**Para:** sshidrosc@epagri.sc.gov.br
+**Assunto:** (na thread do C5) Avisos Hidrológicos nº 01 a 03 de novembro de 2023 — bacia do Itajaí
+
+Prezada Equipe de Hidrologia,
+
+Mais uma vez obrigado pela resposta de 09/09 e pela tabela de estações.
+
+Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí. Solicito os Avisos Hidrológicos nº 01, 02 e 03 do evento extremo de novembro de 2023 — em especial o de 19/11/2023, que no padrão de arquivos do portal seria `aviso_n03_19112023<id>.pdf` —, pelas leituras de Rio do Sul e Taió com horário e taxa de variação em cm/h.
+
+Não os localizei no portal, que publica apenas os boletins mais recentes, nem no Internet Archive, cujo acervo do diretório se encerra em 2022. Aproveito para perguntar se há acesso programático ao acervo de boletins e avisos, ou listagem por período, o que evitaria novos pedidos como este.
+
+Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e-mail até a remoção das estações, peço também a inclusão do endereço haohmarusc@gmail.com nessa lista, enquanto ela existir.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

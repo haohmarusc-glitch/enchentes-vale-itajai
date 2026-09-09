@@ -477,6 +477,13 @@ o projeto.
 
 ## Pendências
 
+- [x] **O Aviso Hidrológico 03 de 19/11/2023 da EPAGRI/CIRAM não existe em lugar acessível (09/09/2026).**
+  Quatro vias fechadas com prova: índice do portal (só os 6 mais recentes), REST do WordPress (os PDFs
+  ficam fora dele, em `ciram_arquivos/midia/hidro/`), extrapolação do id do nome (contador global,
+  irregular antes de 2026) e Internet Archive (cobre só 2020–2022). Sai por e-mail: ofício C12, na
+  thread do C5. A garimpagem no Wayback rendeu **4 avisos de enchente** (o par de 22/01/2021, dois dias
+  antes dos 4,82 m de Brusque) e 80 de estiagem; os PDFs ficam na VPS, o repo recebe os 4, o sha256 e
+  a classificação. Tudo o que custou caro aprender está em `docs/CIRAM-ACERVO.md`.
 - [x] **A série telemétrica da ANA EXISTE para as quatro estações ativas — no passado (09/09/2026).**
   `sonda_ana_api.py --data 2023-11-17 --intervalo DIAS_7` devolveu 672 leituras de 15 min para
   83029900, 83050000, 83250000 e 83892990. A Saltinho/TAIÓ foi de 6,34 m a 10,32 m **e ainda subia**
