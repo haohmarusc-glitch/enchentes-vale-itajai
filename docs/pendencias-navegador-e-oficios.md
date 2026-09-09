@@ -40,9 +40,10 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
 2. ✅ **Snapshot dos dois My Maps de Ituporanga** — FEITO na VPS em 09/09/2026 16:23 (hora local):
    - `ituporanga-mymaps-ruas-2026-09-09.kml` · 20.145 bytes · sha256 `7094bb127dd76d0ca6f887dc78929f4993fba243df4457ed09c7436cc54f053f`
    - `ituporanga-mymaps-manchas-2026-09-09.kml` · 33.999.491 bytes · sha256 `38c4501c9c08242a00c772b9fab745eaa02bf254ba27c22d9625ec591ae9ba05`
-   Os dois estão em `/opt/enchentes-vale-itajai/data/brutos/` na VPS. O de ruas entra no repo
-   quando chegar aqui (20 KB); o de manchas fica na VPS com o hash acima como prova de
-   integridade — se o mapa mudar, o hash denuncia. Comandos usados:
+   Os dois estão em `/opt/enchentes-vale-itajai/data/brutos/` na VPS. O de ruas foi transcrito
+   campo a campo para o repo (`…-ruas-2026-09-09-transcricao.tsv`, 60 pontos; análise em
+   `scripts/analisar_ruas_ituporanga.py`); o de manchas fica na VPS com o hash acima como prova
+   de integridade — se o mapa mudar, o hash denuncia. Comandos usados:
    ```
    cd /opt/enchentes-vale-itajai
    for m in 1o9xZ2BceCkPzaqQQ2m0HIn0ixHVOJcU:ruas 19tpP2Tfsl58ue6GtY5ihBfK3MLkiUrA:manchas; do

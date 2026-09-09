@@ -1,0 +1,66 @@
+# Transcrição dos <Placemark> de data/brutos/ituporanga-mymaps-ruas-2026-09-09.kml (na VPS;
+# sha256 7094bb127dd76d0ca6f887dc78929f4993fba243df4457ed09c7436cc54f053f, 20.145 bytes),
+# impressa na VPS em 09/09/2026 e colada no chat. NÃO é o KML: é o que o KML diz, campo a campo
+# (<name> = cota, <description> = local, <coordinates>). Google My Maps 'Cotas de cheias ruas -
+# Ituporanga', Prefeitura, 07/10/2023, mid 1o9xZ2BceCkPzaqQQ2m0HIn0ixHVOJcU.
+cota_m	local	lat	lon
+3.38	Rua João Back / Galpão Recuperauto	-27.431991	-49.596143
+3.47	Rua Aderbal Ramos da Silva / Rua Balduíno Sens	-27.417716	-49.601226
+3.50	Rua Balduíno Sens / Rua Presidente Nereu	-27.417793	-49.601902
+3.69	Rua Governador Celso Ramos / Beco Gothlf Gralh FINAL	-27.415988	-49.601639
+3.78	Rua Governador Celso Ramos / Beco Gothlf Gralh	-27.415989	-49.600991
+3.85	Rua Aderbal Ramos da Silva / Rua Carlos Thiesen	-27.419266	-49.601096
+3.86	Rua João Back / Rua Cristóvão Colombo	-27.437446	-49.59922
+4.00	Rua Major Generoso / Rua Tenente Jacob Philippi	-27.420932	-49.600691
+4.01	Rua Guilherme Meurer / Rua Vilmar Correa	-27.424171	-49.604365
+4.09	Rua Governador Celso Ramos / Rua Raulino Kretzer	-27.416794	-49.600667
+4.17	Rua Carlos Thiesen / Rua Presidente Nereu	-27.41932	-49.601757
+4.20	Rua Ten Jacob Philippi / Rua Lauro Mello	-27.42046	-49.600549
+4.24	Beco Henrique Holetz FINAL/ Rua Ten Jacob Philippi	-27.419597	-49.60103
+4.40	Rua Tenente Jacob Philippi / Rua 7 de setembro	-27.421708	-49.600563
+4.50	Rua Emílio Altemburg / Rua Presidente Nereu	-27.416576	-49.602495
+4.70	Rua Presidente Nereu / Rua Major Generoso	-27.42094	-49.601685
+4.90	Rua Guilherme Meurer / Rua Vitório Sens	-27.42431	-49.603104
+4.90	Rua Presidente Nereu / Rua 7 de setembro	-27.421786	-49.60159
+5.03	Rua Erich Schuhmacher / Ponte do Rio Gabiroba	-27.418072	-49.596603
+5.11	Rua Paulo França / Rua Tenente Jacob Philippi	-27.422939	-49.600423
+5.19	Rua Carlos Thiesen / Rua Frei Manoel	-27.419253	-49.600332
+5.22	Rua Guilherme Meurer / Rua Amazonas	-27.424192	-49.603752
+5.25	Rua Alexandre Fernandes / Rua Ten Jacob Philippi	-27.423575	-49.60031
+5.32	Rua Guilherme Meurer / Rua José L. Kletenberg	-27.423946	-49.605088
+5.35	Rua Norberto Pedro Ludwig frente da cassa nº 295	-27.418742	-49.603209
+5.38	Rua David Rengel / Rua Ten Jacob Philippi	-27.424205	-49.60023
+5.40	Rua Presidente Nereu / Praça Frei Gabriel	-27.416073	-49.603019
+5.50	Rua 7 de setembro / Rua Leonel Thiesen	-27.421266	-49.598671
+5.50	Rua Paulo França / Rua Presidente Nereu	-27.423021	-49.60142
+5.64	Rua Castelo Branco / Rua Ten Jacob Philippi	-27.424775	-49.600163
+5.66	Beco Henrique Holetz / Rua Ten Jacob Philippi	-27.419567	-49.600354
+5.71	Rua Norberto Pedro Ludwig frente da cassa nº 349	-27.419282	-49.603189
+5.77	Jõao Carlos Thiesen / Servidão Santa Bárbara	-27.418457	-49.59554
+6.00	Rua João Carlos Thiesen / Rua Luciane Haverroth	-27.41858	-49.597905
+6.16	Rua Henrique Wagner / Beco 40	-27.418956	-49.596063
+6.25	Rua Castelo Branco / Rua Presidente Nereu	-27.424912	-49.600901
+6.41	Rua Henrique Wagner / Rua João Carlos Thiesen	-27.418462	-49.596067
+6.57	Rua Leonel Thiesen / Rua Hugo Haverroth	-27.422535	-49.598319
+6.59	Rua Governador Jorge Lacerda / Rua Raulino Kretzer	-27.41677	-49.599135
+6.61	Rua 7 de setembro / Rua Lauro Mello	-27.421643	-49.599769
+6.63	Rua Presidente Nereu / Rua Ten Jacob Philippi	-27.425662	-49.600116
+6.75	Rua Presidente Nereu / Rua José de Anchieta	-27.426293	-49.599282
+6.84	Rua João Back / Rodovia SC-350	-27.43163	-49.595687
+6.87	Rua Governador Jorge Lacerda / Rua Carlos Thiesen	-27.41918	-49.598965
+6.95	Rua Balduíno Sens / Rua Frei Manoel	-27.417638	-49.600503
+7.07	Rua Francisco Muller / Rua José de Anchieta	-27.425985	-49.598495
+7.07	Rua Presidente Nereu / Rua Leonel Thiesen	-27.428243	-49.597231
+7.17	Rua Alexandre Fernandes / Rua Casa frente nº 82	-27.423557	-49.599041
+7.37	Rua Governador Jorge Lacerda / Rua João Carlos Thiesen	-27.418665	-49.598996
+7.41	Rua Presidente Nereu / Rua 14 de fevereiro	-27.415741	-49.603522
+7.74	Rua Alexandre Fernandes / Rua Leonel Thiesen	-27.423544	-49.598258
+8.07	Rua Castelo Branco / Rua Francisco Muller	-27.424755	-49.598898
+8.07	Rua Emílio Altemburg / Rua Governador Celso Ramos (rua bem alta)	-27.4164	-49.600837
+8.07	Rua Lauro Mello FINAL	-27.422605	-49.599288
+8.57	Rua David Rengel / Casa nº 135	-27.424215	-49.599499
+8.63	Rua David Rengel / Rua Leonel Thiesen	-27.42417	-49.598199
+9.24	Rua Emílio Altemburg / Rua Governador Jorge Lacerda	-27.416269	-49.599183
+9.87	Rua Balduíno Sens / Rua Governador Jorge Lacerda	-27.417508	-49.599107
+10.48	Rua Castelo Branco / Rua Leonel Thiesen	-27.424734	-49.598138
+27.77	Prefeitura Garagem	-27.415259	-49.598576

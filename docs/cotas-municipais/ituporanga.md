@@ -25,6 +25,25 @@ KML: `https://www.google.com/maps/d/kml?mid=<mid>&forcekml=1`. Snapshot congelad
 `38c4501c9c08242a…` (hashes completos em `docs/pendencias-navegador-e-oficios.md`, A3). Nenhum dos dois traz faixa de acionamento; as cotas de rua só
 entram quando se souber a régua delas.
 
+## O que os 60 pontos de cota de rua dizem (09/09/2026)
+
+Transcrição em `data/brutos/ituporanga-mymaps-ruas-2026-09-09-transcricao.tsv`;
+análise em `scripts/analisar_ruas_ituporanga.py` (não grava nada).
+
+| Pergunta | Resposta |
+|---|---|
+| Quantos pontos | 60; **59** são cota de rio plausível |
+| Lixo | "Prefeitura Garagem" = **27,77 m** — digitação ou altitude na coluna errada. Avisar a DC |
+| Faixa | **3,38 a 10,48 m**, mediana 5,64 |
+| Acima do teto do mapa de manchas (6,50 m) | **22 pontos** — para essas ruas há cota e não há mancha |
+| Os 3,25 m do secretário | ficam **abaixo da menor cota de rua** (3,38 m) e acima da primeira mancha (3,00 m) |
+| Perímetro | todos a menos de 5 km do centroide: uma cidade só |
+| Outro curso d'água | um ponto cita a **Ponte do Rio Gabiroba** (5,03 m) — mesma régua? a fonte não diz |
+
+Nada disso entra em `cotas-ruas.json`: a régua não está nomeada (provavelmente a
+Ponte Vitório Sens) e a leitura ao vivo é a DCSC-00039, em outro datum. Com a
+régua e o zero ditos pela Defesa Civil, a importação é meia hora.
+
 ## Pistas que se cercam (nenhuma é faixa)
 
 - primeira mancha: 3,00 m
