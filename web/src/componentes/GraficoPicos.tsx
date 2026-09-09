@@ -121,7 +121,7 @@ export default function GraficoPicos({
                 stroke="var(--alerta)"
                 strokeDasharray="5 4"
                 label={{
-                  value: `${rotuloCota(chave)} ${numero(valor)} m`,
+                  value: `${rotuloCota(chave, cidade?.cotas_nomes_na_fonte)} ${numero(valor)} m`,
                   position: 'insideTopLeft',
                   fontSize: 11,
                   fill: '#b3261e',

@@ -1656,6 +1656,40 @@ def valida_ordem_das_cotas() -> None:
                 )
 
 
+def valida_nomes_na_fonte() -> None:
+    """
+    `cotas_nomes_na_fonte` nomeia só faixas que existem em `cotas_m`?
+
+    POR QUE EXISTE (09/09/2026). Blumenau entrou com a escala oficial de cinco
+    estágios mapeada nas quatro chaves da tela, e o topo ("Alerta Máximo")
+    virou `emergencia`. Para a tela escrever o nome da COMPDEC em vez do nosso,
+    nasceu `cotas_nomes_na_fonte`. Um nome apontando para uma chave que a cidade
+    não tem é um erro silencioso — nada quebra, e o nome nunca aparece. Um valor
+    vazio também. Este guarda faz os dois falharem em vez de sumirem.
+    """
+    dados = le_json("estacoes.json")
+    for rio_id, rio in dados["rios"].items():
+        for cidade in rio["cidades"]:
+            nomes = cidade.get("cotas_nomes_na_fonte")
+            if nomes is None:
+                continue
+            cid = f"{rio_id}/{cidade['id']}"
+            if not isinstance(nomes, dict):
+                erro(f"estacoes.json: {cid}: `cotas_nomes_na_fonte` precisa ser um objeto chave -> nome.")
+                continue
+            cotas = cidade.get("cotas_m") or {}
+            for chave, nome in nomes.items():
+                if chave.startswith("_"):
+                    continue
+                if chave not in cotas:
+                    erro(f"estacoes.json: {cid}: `cotas_nomes_na_fonte` nomeia '{chave}', "
+                         f"que não está em cotas_m ({', '.join(sorted(cotas)) or 'vazio'}). "
+                         "O nome nunca apareceria.")
+                if not isinstance(nome, str) or not nome.strip():
+                    erro(f"estacoes.json: {cid}: `cotas_nomes_na_fonte['{chave}']` vazio — "
+                         "ou o nome da fonte, ou tire a chave.")
+
+
 def valida_cobertura_da_mare() -> None:
     """
     Até quando a tábua de maré alcança?
@@ -1886,6 +1920,7 @@ def main() -> int:
     valida_ordem_das_cotas()
     valida_brutos_citados()
     valida_ressalva_chega_na_tela()
+    valida_nomes_na_fonte()
     valida_cobertura_da_mare()
 
     for a in avisos:

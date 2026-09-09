@@ -543,5 +543,26 @@ class GasparConfereComAPropriaFonte(unittest.TestCase):
         self.assertLess(self.cotas()["atencao"], 6.20)
 
 
+class NomeDaFonteNoAviso(unittest.TestCase):
+    """O aviso usa a palavra da COMPDEC: "Alerta Máximo" em Blumenau, não "Emergência"."""
+
+    def test_texto_aviso_escreve_alerta_maximo(self):
+        leitura = {"cidade": "blumenau", "rio": "itajai-acu", "estacao": "Blumenau",
+                   "nivel_m": 8.12, "medido_em": "2026-09-09T10:00:00"}
+        cotas = {"atencao": 4.0, "alerta": 6.0, "emergencia": 8.0}
+        nomes = {"emergencia": "Alerta Máximo"}
+        t = alerta_cotas.texto_aviso(leitura, "emergencia", "alerta", cotas, 5.0, nomes)
+        self.assertIn("Alerta Máximo", t)
+        self.assertNotIn("cota de <b>Emergência</b>", t)
+        sem = alerta_cotas.texto_aviso(leitura, "emergencia", "alerta", cotas, 5.0)
+        self.assertIn("Emergência", sem)
+
+    def test_nomes_da_cidade_le_o_cadastro_real(self):
+        self.assertEqual(alerta_cotas.nomes_da_cidade("itajai-acu", "blumenau").get("emergencia"),
+                         "Alerta Máximo")
+        self.assertEqual(alerta_cotas.nomes_da_cidade("itajai-acu", "brusque"), {})
+        self.assertEqual(alerta_cotas.nomes_da_cidade(None, None), {})
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

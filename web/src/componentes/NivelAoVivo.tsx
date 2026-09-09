@@ -69,7 +69,7 @@ export default function NivelAoVivo({
       {estado === 'velha' ? (
         <span className={estilos.aviso}>não use como nível atual</span>
       ) : acimaDaCota && cota ? (
-        <span className={estilos.aviso}>acima da cota de {rotuloCota(cota.chave)}</span>
+        <span className={estilos.aviso}>acima da cota de {rotuloCota(cota.chave, cidade.cotas_nomes_na_fonte)}</span>
       ) : null}
       {subiaQuandoMediu ? (
         <span className={estilos.subindo}>

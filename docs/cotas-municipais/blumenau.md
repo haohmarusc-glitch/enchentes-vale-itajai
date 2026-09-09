@@ -18,7 +18,7 @@ em 09/09/2026 — bruto `data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-
 | Observação | **3,00 m** | `monitoramento` |
 | Atenção | **4,00 m** | `atencao` |
 | Alerta | **6,00 m** | `alerta` |
-| Alerta Máximo | **8,00 m** | `emergencia` (a tela escreve "Emergência"; rótulo por cidade é pendência) |
+| Alerta Máximo | **8,00 m** | `emergencia` (a tela escreve "Alerta Máximo", via `cotas_nomes_na_fonte`) |
 | Inundação histórica (cadastro) | **8,50 m** | `inundacao_historica` |
 
 Até 09/09/2026 o cadastro trazia **6,00 / 6,50 / 7,40**, rotulados "AlertaBlu" sem bruto —

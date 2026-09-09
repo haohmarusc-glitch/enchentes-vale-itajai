@@ -176,6 +176,31 @@ def cotas_da_cidade(rio: str, cidade: str) -> dict:
     return {}
 
 
+def nomes_da_cidade(rio: str | None, cidade: str | None) -> dict:
+    """`cotas_nomes_na_fonte` da cidade: o nome que a COMPDEC dá a cada faixa."""
+    if not rio or not cidade:
+        return {}
+    estacoes = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+    for c in estacoes["rios"].get(rio, {}).get("cidades", []):
+        if c["id"] == cidade:
+            return {k: v for k, v in (c.get("cotas_nomes_na_fonte") or {}).items()
+                    if not k.startswith("_") and isinstance(v, str) and v.strip()}
+    return {}
+
+
+def rotulo(faixa: str, nomes: dict | None = None) -> str:
+    """
+    O nome da fonte vence o nosso. Em Blumenau o topo é "Alerta Máximo", não
+    "Emergência": um aviso que chega no celular com a palavra que a Defesa
+    Civil usa no rádio é um aviso que a pessoa reconhece; com outra palavra,
+    parece outra escala.
+    """
+    da_fonte = (nomes or {}).get(faixa)
+    if isinstance(da_fonte, str) and da_fonte.strip():
+        return da_fonte.strip()
+    return ROTULO[faixa]
+
+
 def idade_min(medido_em: str | None, agora: datetime) -> float | None:
     """Idade da leitura em minutos. `medido_em` é hora de Brasília sem fuso."""
     if not medido_em:
@@ -190,7 +215,7 @@ def idade_min(medido_em: str | None, agora: datetime) -> float | None:
 
 
 def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
-                idade: float | None) -> str:
+                idade: float | None, nomes: dict | None = None) -> str:
     """A mensagem. Curta em cima, ressalvas embaixo — é lida no susto."""
     e = notificador.esc
     cidade = e(str(leitura.get("cidade") or "?").replace("-", " ").title())
@@ -201,15 +226,15 @@ def texto_aviso(leitura: dict, faixa: str, anterior: str, cotas: dict,
     elif subiu(faixa, anterior):
         icone = {"atencao": "🟡", "alerta": "🟠",
                  "emergencia": "🔴", "inundacao": "🔴"}[faixa]
-        cabeca = f"{icone} <b>{cidade}</b> chegou à cota de <b>{ROTULO[faixa]}</b>"
+        cabeca = f"{icone} <b>{cidade}</b> chegou à cota de <b>{rotulo(faixa, nomes)}</b>"
     else:
-        cabeca = f"🔵 <b>{cidade}</b> baixou para a faixa de <b>{ROTULO[faixa]}</b>"
+        cabeca = f"🔵 <b>{cidade}</b> baixou para a faixa de <b>{rotulo(faixa, nomes)}</b>"
 
     linhas = [cabeca, "", f"{nivel} m — {e(leitura.get('estacao', ''))}"]
 
     cota_atual = cotas.get(faixa)
     if isinstance(cota_atual, (int, float)):
-        linhas.append(f"Cota de {ROTULO[faixa]}: {cota_atual:.2f}".replace(".", ",") + " m")
+        linhas.append(f"Cota de {rotulo(faixa, nomes)}: {cota_atual:.2f}".replace(".", ",") + " m")
 
     if idade is not None:
         if idade >= IDADE_RESSALVA_MIN:
@@ -369,6 +394,7 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
                 "texto": texto_aviso(
                     leitura, faixa, faixa_antes, cotas,
                     idade_min(leitura.get("medido_em"), agora),
+                    nomes_da_cidade(leitura.get("rio"), leitura.get("cidade")),
                 ),
             })
             novo[chave_estado] = {
@@ -445,13 +471,14 @@ def main() -> int:
         leitura, cotas, faixa = item["leitura"], item["cotas"], item["faixa"]
         idade = idade_min(leitura.get("medido_em"), agora)
         quando = f"há {int(idade)} min" if idade is not None else "sem horário"
+        nomes = nomes_da_cidade(leitura.get("rio"), leitura.get("cidade"))
         limites = " · ".join(
-            f"{ROTULO[nome]} {cotas[nome]:.2f}".replace(".", ",")
+            f"{rotulo(nome, nomes)} {cotas[nome]:.2f}".replace(".", ",")
             for nome in FAIXAS[1:] if nome in cotas
         )
         nivel = f"{leitura['nivel_m']:.2f}".replace(".", ",")
         print(f"  {leitura.get('cidade')}: {nivel} m ({quando}) "
-              f"— {ROTULO[faixa]} · {leitura.get('estacao')}")
+              f"— {rotulo(faixa, nomes)} · {leitura.get('estacao')}")
         print(f"      cotas desta régua: {limites}")
         if "atencao" not in cotas:
             # Sem cota de atenção o aviso pula de "normal" para uma faixa alta:

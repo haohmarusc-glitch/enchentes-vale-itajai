@@ -57,6 +57,16 @@ export interface Cidade {
    * citam campos e arquivos, e em cheia ninguém lê parágrafo de auditoria.
    */
   cotas_aviso_publico?: string
+  /**
+   * O nome que a FONTE dá a cada faixa, quando difere do nosso. As chaves de
+   * `cotas_m` são quatro degraus fixos; a Defesa Civil de Blumenau chama o topo
+   * de "Alerta Máximo", a de Ilhota chama o `alerta` de "Prontidão", a de Taió
+   * chama o `monitoramento` de "Observação". A tela escreve o nome da fonte,
+   * porque é o nome que a pessoa vai ouvir no rádio e ler no site oficial —
+   * chamar de "Emergência" o que a COMPDEC chama de "Alerta Máximo" faz a tela
+   * parecer outra escala. Chaves que começam com `_` são anotação, não nome.
+   */
+  cotas_nomes_na_fonte?: Record<string, string>
   fontes_tempo_real: string[]
 }
 

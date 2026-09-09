@@ -74,10 +74,10 @@ export default function PainelSePicoAgora({
         {origem.nome} está em <strong>{metros(leitura.nivel_m)}</strong> ({textoIdade(idade)}).{' '}
         {acimaDaCota && cota ? (
           <>
-            Já passou da cota de {rotuloCota(cota.chave)} ({metros(cota.valor)}).
+            Já passou da cota de {rotuloCota(cota.chave, origem.cotas_nomes_na_fonte)} ({metros(cota.valor)}).
           </>
         ) : cota ? (
-          <>Ainda abaixo da cota de {rotuloCota(cota.chave)} ({metros(cota.valor)}).</>
+          <>Ainda abaixo da cota de {rotuloCota(cota.chave, origem.cotas_nomes_na_fonte)} ({metros(cota.valor)}).</>
         ) : null}
       </p>
 

@@ -61,7 +61,12 @@ export const ROTULO_COTA: Record<string, string> = {
  * e não como "Cota_de_rua". Sem acento, porque acento não se adivinha — para
  * isso a chave precisa entrar na tabela acima.
  */
-export function rotuloCota(chave: string): string {
+export function rotuloCota(chave: string, nomesNaFonte?: Record<string, string>): string {
+  // O nome que a Defesa Civil do município usa vence o nosso: "Alerta Máximo"
+  // em Blumenau, "Prontidão" em Ilhota. Sem ele, o vocabulário fixo. Chave com
+  // `_` na frente é anotação do cadastro, não nome de faixa.
+  const daFonte = !chave.startsWith('_') ? nomesNaFonte?.[chave] : undefined
+  if (typeof daFonte === 'string' && daFonte.trim()) return daFonte.trim()
   const conhecida = ROTULO_COTA[chave]
   if (conhecida) return conhecida
   const legivel = chave.replace(/_/g, ' ')
