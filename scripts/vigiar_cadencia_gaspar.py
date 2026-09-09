@@ -14,9 +14,16 @@ Medição". Rodar de hora em hora não faz a estação ser horária.
 
 ONDE RODAR: de um IP no Brasil. O host não responde à VPS na Finlândia
 (timeout medido em 07/09/2026), então o cron tem de ficar num computador ou
-celular (Termux) em casa. Uma linha no crontab:
+celular (Termux) em casa. O script é STANDALONE: só a biblioteca padrão; se
+`comum.py` estiver ao lado usa o User-Agent e a pasta do projeto, senão um
+User-Agent próprio e `./data/tempo-real/`. Uma linha no crontab:
 
-    0 * * * * cd /caminho/do/repo && python3 scripts/vigiar_cadencia_gaspar.py >> gaspar-cadencia.log 2>&1
+    0 * * * * cd /caminho/do/repo && python3 scripts/vigiar_cadencia_gaspar.py --url >> gaspar-cadencia.log 2>&1
+
+O QUE A PÁGINA MOSTRA (lido pelo Jefferson em 08/09/2026, e é o que o parser
+procura): "Estação em situação de NORMALIDADE - Última Medição 08/09/2026 08:03",
+"NIVEL DO RIO: 1,12 M", "FONTE: DC. GASPAR". A situação também é gravada: é a
+legenda operacional da página, a mesma que variou entre 6,00 e 5,00 m.
 
 O QUE GRAVA: uma linha por consulta em `data/tempo-real/gaspar-cadencia.csv`
 (consultado_em, ultima_medicao, nivel_m, mudou). Se a página mudar de formato e
@@ -24,9 +31,9 @@ o parser não achar os campos, o HTML é salvo ao lado para conferência e a
 linha registra o erro — silêncio nunca.
 
 Uso:
-    python3 scripts/vigiar_cadencia_gaspar.py                    # consulta e grava
+    python3 scripts/vigiar_cadencia_gaspar.py --url              # consulta e grava (padrão)
     python3 scripts/vigiar_cadencia_gaspar.py --arquivo pagina.html   # testa o parser sem rede
-    python3 scripts/vigiar_cadencia_gaspar.py --resumo           # intervalos entre mudanças
+    python3 scripts/vigiar_cadencia_gaspar.py --resumo           # cadência observada e veredito
 """
 
 from __future__ import annotations
@@ -39,11 +46,19 @@ import unicodedata
 from datetime import datetime
 from pathlib import Path
 
-from comum import DADOS, USER_AGENT
+try:  # dentro do repo: pasta e User-Agent do projeto
+    from comum import DADOS, USER_AGENT
+except ImportError:  # sozinho, num celular ou PC em casa
+    DADOS = Path("data")
+    USER_AGENT = "enchentes-vale-itajai/0.1 (medidor de cadencia; github.com/haohmarusc-glitch/enchentes-vale-itajai)"
 
 URL = "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21"
 SAIDA = DADOS / "tempo-real" / "gaspar-cadencia.csv"
-CAMPOS = ["consultado_em", "ultima_medicao", "nivel_m", "mudou", "erro"]
+CAMPOS = ["consultado_em", "ultima_medicao", "nivel_m", "situacao", "mudou", "erro"]
+
+#: Com leituras mais espaçadas que isto, o site nunca pinta Gaspar: é o
+#: MIN_VELHA da tela (minutos).
+MIN_VELHA_MIN = 180
 
 
 def sem_acento(texto: str) -> str:
@@ -62,7 +77,14 @@ def extrair(html: str) -> dict:
     """{'ultima_medicao': 'dd/mm/aaaa hh:mm', 'nivel_m': float} — ou o que der, com erro."""
     t = texto_da_pagina(html)
     plano = sem_acento(t)
-    saida: dict = {"ultima_medicao": None, "nivel_m": None, "erro": None}
+    saida: dict = {"ultima_medicao": None, "nivel_m": None, "situacao": None, "erro": None}
+
+    # "Estação em situação de NORMALIDADE - Última Medição …": a situação é a
+    # legenda operacional da página, e vale guardar porque ela já mudou de
+    # limiar entre consultas (6,00 m em 03/09, 5,00 m em 08/09).
+    s = re.search(r"situacao de ([a-z]+)", plano)
+    if s:
+        saida["situacao"] = s.group(1).upper()
 
     m = re.search(r"ultima medicao\D{0,40}(\d{2}/\d{2}/\d{4})\D{0,5}(\d{2}:\d{2})", plano)
     if m:
@@ -96,6 +118,7 @@ def registrar(dados: dict, agora: datetime, caminho: Path = SAIDA) -> dict:
         "consultado_em": agora.strftime("%Y-%m-%dT%H:%M:%S"),
         "ultima_medicao": dados.get("ultima_medicao") or "",
         "nivel_m": "" if dados.get("nivel_m") is None else f"{dados['nivel_m']:.2f}",
+        "situacao": dados.get("situacao") or "",
         "mudou": mudou,
         "erro": dados.get("erro") or "",
     }
@@ -109,8 +132,8 @@ def registrar(dados: dict, agora: datetime, caminho: Path = SAIDA) -> dict:
     return linha
 
 
-def intervalos_entre_mudancas(linhas: list[dict]) -> list[float]:
-    """Horas entre leituras efetivamente novas — a cadência de verdade."""
+def marcas_novas(linhas: list[dict]) -> list[datetime]:
+    """Os carimbos de "Última Medição" das leituras efetivamente novas."""
     marcas = []
     for l in linhas:
         if l.get("mudou") == "sim" and l.get("ultima_medicao"):
@@ -118,7 +141,44 @@ def intervalos_entre_mudancas(linhas: list[dict]) -> list[float]:
                 marcas.append(datetime.strptime(l["ultima_medicao"], "%d/%m/%Y %H:%M"))
             except ValueError:
                 continue
+    return marcas
+
+
+def intervalos_entre_mudancas(linhas: list[dict]) -> list[float]:
+    """Horas entre leituras efetivamente novas — a cadência de verdade."""
+    marcas = marcas_novas(linhas)
     return [round((b - a).total_seconds() / 3600, 2) for a, b in zip(marcas, marcas[1:])]
+
+
+def veredito(linhas: list[dict], min_velha_min: int = MIN_VELHA_MIN) -> str:
+    """
+    O que a cadência observada significa para a tela. Adaptado da versão do
+    Jefferson (09/09/2026): mínimo, mediana e máximo entre leituras novas, os
+    horários em que a estação publica, e a comparação com MIN_VELHA.
+    """
+    marcas = marcas_novas(linhas)
+    consultas = len(linhas)
+    if len(marcas) < 2:
+        return (f"{consultas} consulta(s), {len(marcas)} leitura(s) nova(s): ainda não dá para medir "
+                "cadência — precisa de pelo menos duas leituras novas.")
+    saltos = sorted((b - a).total_seconds() / 60 for a, b in zip(marcas, marcas[1:]))
+    horarios = ", ".join(sorted({m.strftime("%H:%M") for m in marcas}))
+    partes = [
+        f"{consultas} consulta(s); {len(marcas)} leituras novas, de {marcas[0]:%d/%m %H:%M} a {marcas[-1]:%d/%m %H:%M}.",
+        f"intervalo entre leituras novas: mínimo {saltos[0]:.0f} min · mediana {saltos[len(saltos) // 2]:.0f} min · "
+        f"máximo {saltos[-1]:.0f} min.",
+        f"horários em que a estação publicou: {horarios}.",
+    ]
+    if saltos[0] >= min_velha_min:
+        partes.append(f"VEREDITO: toda leitura fica mais de {min_velha_min} min velha antes da próxima — a tela "
+                      "nunca pintaria Gaspar. A régua vive, mas não serve para cor ao vivo.")
+    elif saltos[len(saltos) // 2] >= min_velha_min:
+        partes.append(f"VEREDITO: a mediana passa de {min_velha_min} min — Gaspar pintaria só em parte do dia. "
+                      "Olhe os horários: se só há leitura em horário comercial, é leitura manual por turno.")
+    else:
+        partes.append(f"VEREDITO: há leituras dentro dos {min_velha_min} min. Vale reapontar o coletor para esta "
+                      "URL — conferindo se isso vale o dia inteiro ou só em horário comercial.")
+    return "\n".join(partes)
 
 
 def baixar() -> str:
@@ -132,7 +192,9 @@ def baixar() -> str:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--arquivo", metavar="HTML", help="testa o parser num HTML salvo, sem rede e sem gravar")
-    ap.add_argument("--resumo", action="store_true", help="imprime os intervalos entre mudanças e sai")
+    ap.add_argument("--url", action="store_true", help="consulta a página e grava (é o padrão; a flag existe "
+                    "para o cron dizer o que faz)")
+    ap.add_argument("--resumo", action="store_true", help="imprime a cadência observada e o veredito")
     args = ap.parse_args()
 
     if args.resumo:
@@ -140,15 +202,17 @@ def main() -> int:
         if SAIDA.exists():
             with SAIDA.open(encoding="utf-8") as f:
                 linhas = list(csv.DictReader(f))
-        horas = intervalos_entre_mudancas(linhas)
-        print(f"{len(linhas)} consulta(s); {sum(1 for l in linhas if l.get('mudou') == 'sim')} leitura(s) nova(s).")
-        print("intervalos entre leituras novas (h):", horas or "ainda não há duas")
+        print(veredito(linhas))
         return 0
 
     if args.arquivo:
         dados = extrair(Path(args.arquivo).read_text(encoding="utf-8", errors="replace"))
         print(dados)
-        return 0 if not dados["erro"] else 1
+        if dados["erro"]:
+            print("PARSER FALHOU — a página mudou de layout? Mande o HTML.", file=sys.stderr)
+            return 1
+        print("OK: os campos foram encontrados. Pode agendar o cron.")
+        return 0
 
     agora = datetime.now()
     try:

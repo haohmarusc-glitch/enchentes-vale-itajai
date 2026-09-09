@@ -13,7 +13,7 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from vigiar_cadencia_gaspar import extrair, intervalos_entre_mudancas, registrar, ultima_linha
+from vigiar_cadencia_gaspar import extrair, intervalos_entre_mudancas, registrar, ultima_linha, veredito
 
 HTML = """<html><body><h1>Rio Itajaí Açu Gaspar</h1>
 <div><span>NÍVEL DO RIO</span> <strong>1,12 m</strong></div>
@@ -51,6 +51,56 @@ class Registro(unittest.TestCase):
             l = registrar({"erro": "rede: timeout"}, datetime(2026, 9, 9, 9, 0), Path(tmp) / "c.csv")
             self.assertEqual(l["mudou"], "")
             self.assertIn("timeout", l["erro"])
+
+
+PAGINA_REAL = """<html><body><div class="card">
+<h5>Rio Itajaí Açu Gaspar</h5>
+<p>Estação em situação de NORMALIDADE - Última Medição 08/09/2026 08:03</p>
+<p>NIVEL DO RIO: 1,12 M</p>
+<p>FONTE: DC. GASPAR</p>
+<p>NORMALIDADE (Nível menor que 5,00 m); ATENÇÃO (Nível maior que 5,00 m ou Chuva atual maior que 6,00 mm);
+EMERGÊNCIA (Nível maior que 7,00 m)</p>
+</div></body></html>"""
+
+
+class PaginaReal(unittest.TestCase):
+    """O texto que o Jefferson leu na página em 08/09/2026, palavra por palavra."""
+
+    def test_parser_le_o_formato_real_inclusive_a_situacao(self):
+        d = extrair(PAGINA_REAL)
+        self.assertEqual(d["ultima_medicao"], "08/09/2026 08:03")
+        self.assertEqual(d["nivel_m"], 1.12)
+        self.assertEqual(d["situacao"], "NORMALIDADE")
+        self.assertIsNone(d["erro"])
+
+    def test_nivel_com_ponto_nao_vira_112(self):
+        d = extrair(PAGINA_REAL.replace("1,12 M", "1.12 M"))
+        self.assertEqual(d["nivel_m"], 1.12)
+
+
+class Veredito(unittest.TestCase):
+    def _linhas(self, horas):
+        base = datetime(2026, 9, 8, 8, 3)
+        out, ant = [], None
+        for h in horas:
+            m = (base + __import__("datetime").timedelta(hours=h)).strftime("%d/%m/%Y %H:%M")
+            out.append({"consultado_em": "", "ultima_medicao": m, "mudou": "sim" if m != ant else "nao"})
+            ant = m
+        return out
+
+    def test_poucas_leituras_nao_da_veredito(self):
+        self.assertIn("ainda não dá", veredito(self._linhas([0, 0, 0])))
+
+    def test_uma_por_turno_nunca_pinta(self):
+        v = veredito(self._linhas([0, 12, 24, 36]))
+        self.assertIn("nunca pintaria", v)
+        self.assertIn("08:03", v)
+        self.assertIn("20:03", v)
+
+    def test_leituras_dentro_de_180_min_valem_reapontar(self):
+        v = veredito(self._linhas([0, 1, 2, 3, 4]))
+        self.assertIn("reapontar", v)
+        self.assertIn("mínimo 60 min", v)
 
 
 if __name__ == "__main__":
