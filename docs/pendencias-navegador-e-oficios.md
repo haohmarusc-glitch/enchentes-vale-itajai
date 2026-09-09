@@ -56,12 +56,15 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
    ```
    O de ruas é pequeno e entra no repo; o de manchas (34 MB) fica na VPS com o
    sha256 registrado aqui, comprimido (`gzip -9`) se couber abaixo de 10 MB.
-3. **Gaspar, `/estacao/ver/21`:** salvar o HTML no celular, mandar, e anotar a
-   hora da "última medição" em três ou quatro consultas ao longo de um dia — é a
-   cadência que decide se a régua pinta ou fica cinza. Depois, testar o botão
-   "BAIXAR SÉRIE HISTÓRICA" (mesmo padrão do portal de Brusque?).
-4. **Ilhota, `ilhota.sc.gov.br/noticia-100533`:** data e texto exato da frase
-   "6,94 m na medição de Gaspar", e a da Defesa Civil sobre não ter régua.
+3. 🟡 **Gaspar, `/estacao/ver/21`:** EM COLETA (09/09/2026) — o Jefferson configurou consulta a
+   cada hora, anotando data/hora da consulta, nível, "Última Medição" e se mudou. A cadência é a
+   das MUDANÇAS em "Última Medição", não a das consultas. Resultado esperado: regular, regular
+   com atrasos, irregular, ou inadequada para uso operacional. Depois, o HTML salvo para
+   `coleta_gaspar.py --arquivo` e o botão "BAIXAR SÉRIE HISTÓRICA".
+4. ✅ **Ilhota, `ilhota.sc.gov.br/noticia-100533`:** RESOLVIDO em 09/09/2026 — a notícia é da cheia de
+   **22/09/2013**. "6,94 m na medição de Gaspar das 16h" = leitura de Gaspar em 22/09/2013 16:00
+   (confirmada pelo Cruzeiro do Vale). "Não contamos com régua…" é de 2013; o PLANCON 2025/2028 cita a
+   ponte Cadorin. Contradição temporal, não atual. Segue aberta a régua dos 9,20 / 10,00 / 10,50.
 
 ## B. Itajaí-Mirim não tem alerta adiantado — lacuna a resolver por ofício
 

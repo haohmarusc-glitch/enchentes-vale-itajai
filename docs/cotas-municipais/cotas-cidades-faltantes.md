@@ -119,7 +119,7 @@ Faixas oficiais da **cota do Rio do Oeste** (régua de cidade, não a da Barrage
 | Fase | Critério no plano |
 |---|---|
 | Normal (verde) | ≤ 5,00 m |
-| Observação / monitoramento (amarelo) | > 5,00 m e ≤ 7,00 m |
+| Monitoramento (amarelo) — nome conferido no PLANCON 2025 e no de jan/2026; não é "Observação" | > 5,00 m e ≤ 7,00 m |
 | Atenção (laranja) | > 7,00 m e ≤ 8,00 m |
 | Alerta (vermelho) | > 8,00 m e ≤ 9,00 m |
 | Emergência (roxo) | > 9,00 m |

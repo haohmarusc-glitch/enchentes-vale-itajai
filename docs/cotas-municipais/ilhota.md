@@ -103,7 +103,14 @@ Outubro/2023 passou da emergência (10,50).
 
 ---
 
-## ⚠️ 09/09/2026 — "não contamos com régua" (relatado)
+## ✅ 09/09/2026 — "não contamos com régua" é de 2013 (resolvido)
+
+A notícia 100533 é da cheia de **22/09/2013**: a frase da Defesa Civil e o "6,94 m na medição de
+Gaspar das 16h" (leitura de Gaspar, confirmada pelo Cruzeiro do Vale) são daquele evento. Em 2013
+Ilhota não tinha régua; o PLANCON 2025/2028 cita a ponte Cadorin. Contradição temporal, não atual.
+Segue aberta a pergunta que importa: em que régua estão 9,20 / 10,00 / 10,50, e qual é o zero.
+
+### Como estava registrado antes da data (histórico)
 
 Levantamento externo (não conferido daqui) cita a Defesa Civil de Ilhota: "não
 contamos com régua ou escala linimétrica que faz a medição do nível do rio, então
