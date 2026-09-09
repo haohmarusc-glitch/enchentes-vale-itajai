@@ -477,6 +477,13 @@ o projeto.
 
 ## Pendências
 
+- [x] **EPAGRI/CIRAM respondeu ao ofício C5 (09/09/2026)** — sem acesso ao Rios On-line porque a rede
+  telemétrica do litoral (da ANA, operada pela EPAGRI) está sendo desmobilizada até dez/2026; limiares
+  não divulgados (sem revisão desde 2023); a divulgação passa à SDC. De graça, explicou o vazio da
+  telemetria da ANA (as estações testadas estavam desativadas: Brusque 27/03/2025, Blumenau 04/04/2026)
+  e confirmou a Salseiro em Vidal Ramos. Só quatro estações da bacia seguem ativas — testar a série
+  telemétrica delas num evento passado: `sonda_ana_api.py --estacoes 83029900,83050000,83250000,83892990
+  --data 2023-11-17 --intervalo DIAS_7`. `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`.
 - [x] **Taió: o bot passa a avisar a 5,00 m (decisão do Jefferson, 09/09/2026)** — o estado chama de
   atenção os mesmos 5,00 m que o PLANCON chama de monitoramento; os degraus coincidem, só o nome
   diverge, e Taió é a cidade mais a montante do Açu. Exceção escrita em `avisa_em_monitoramento`

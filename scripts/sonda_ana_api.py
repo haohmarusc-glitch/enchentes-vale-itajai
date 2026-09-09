@@ -114,14 +114,22 @@ def sonda_inventario(sessao, token, uf: str) -> list:
     return itens
 
 
-def sonda_telemetria(sessao, token, codigos: list[str]) -> None:
-    print(f"\n{'=' * 70}\n2. SÉRIE TELEMÉTRICA — nível ao vivo?\n{'=' * 70}")
+def sonda_telemetria(sessao, token, codigos: list[str], data: str | None = None,
+                     intervalo: str = "HORA_24") -> None:
+    """
+    `data` e `intervalo` entraram em 09/09/2026: as cinco estações testadas em
+    08/09 estavam todas DESATIVADAS (EPAGRI/CIRAM, resposta ao C5), e 'vazio' era
+    a resposta certa. As quatro ativas são 83029900, 83050000, 83250000 e
+    83892990 — e um evento passado (--data 2023-11-17 --intervalo DIAS_7) é o
+    teste que diz se a série telemétrica histórica existe.
+    """
+    print(f"\n{'=' * 70}\n2. SÉRIE TELEMÉTRICA — {data or 'hoje'}, {intervalo}\n{'=' * 70}")
     for codigo in codigos:
         corpo = _pede(sessao, token, ROTA_TELEMETRIA, {
             "Código da Estação": codigo,
             "Tipo Filtro Data": "DATA_LEITURA",
-            "Data de Busca (yyyy-MM-dd)": date.today().isoformat(),
-            "Range Intervalo de busca": "HORA_24",
+            "Data de Busca (yyyy-MM-dd)": data or date.today().isoformat(),
+            "Range Intervalo de busca": intervalo,
         })
         linha, itens = _resumo(corpo)
         print(f"\n   {codigo}: {linha}")
@@ -138,6 +146,9 @@ def main() -> int:
     ap.add_argument("--uf", default="SC")
     ap.add_argument("--estacoes", default=",".join(CANDIDATAS),
                     help="códigos separados por vírgula")
+    ap.add_argument("--data", default=None, help="Data de Busca (AAAA-MM-DD); padrão hoje")
+    ap.add_argument("--intervalo", default="HORA_24",
+                    help="Range Intervalo de busca: HORA_24, DIAS_7 … (o que a spec listar)")
     args = ap.parse_args()
 
     carrega_env()
@@ -151,7 +162,8 @@ def main() -> int:
     print("Autenticado na API da ANA.")
 
     sonda_inventario(sessao, token, args.uf)
-    sonda_telemetria(sessao, token, [c.strip() for c in args.estacoes.split(",") if c.strip()])
+    sonda_telemetria(sessao, token, [c.strip() for c in args.estacoes.split(",") if c.strip()],
+                     args.data, args.intervalo)
 
     print(f"\n{'=' * 70}\nSonda terminada. Nada foi gravado em data/estacoes.json "
           "nem em data/enchentes.json.\n" + "=" * 70)
