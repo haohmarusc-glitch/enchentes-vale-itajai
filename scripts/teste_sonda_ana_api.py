@@ -125,5 +125,80 @@ class OResultadoNegativoDaTelemetriaEstaEscrito(unittest.TestCase):
         self.assertIn("chutando parâmetro", FONTE)
 
 
+class OResultadoPositivoDe0909TambemEstaEscrito(unittest.TestCase):
+    """
+    A EPAGRI explicou o vazio de 08/09 (estações desativadas) e a janela
+    histórica nas quatro ativas devolveu 672 leituras cada. Quem ler só o
+    "É NÃO" de 08/09 desistiria de uma série que existe.
+    """
+
+    def test_a_sonda_diz_que_a_serie_existe_para_as_ativas(self):
+        self.assertIn("REVISTO EM 09/09/2026, E É SIM", FONTE)
+        for codigo in ("83029900", "83050000", "83250000", "83892990"):
+            self.assertIn(codigo, FONTE)
+
+    def test_avisa_que_a_janela_termina_na_data_pedida(self):
+        """É o detalhe que fez a Saltinho parecer ter pico de 10,32 m."""
+        self.assertIn("TERMINANDO na data pedida", FONTE)
+
+
+class ResumoDeCotasNaoInventaPico(unittest.TestCase):
+    """`Cota_Adotada` vem em CENTÍMETROS, como string, e com muitos `null`."""
+
+    ITENS = [
+        {"Data_Hora_Medicao": "2023-11-11 00:00:00.0", "Cota_Adotada": "634.00"},
+        {"Data_Hora_Medicao": "2023-11-11 00:15:00.0", "Cota_Adotada": None},
+        {"Data_Hora_Medicao": "2023-11-14 12:00:00.0", "Cota_Adotada": "920.00"},
+        {"Data_Hora_Medicao": "2023-11-17 23:45:00.0", "Cota_Adotada": "1032.00"},
+    ]
+
+    def test_converte_centimetros_para_metros_e_conta_nulls(self):
+        r = sonda.resumo_cotas(self.ITENS)
+        self.assertEqual((r["n"], r["n_cota"]), (4, 3))
+        self.assertEqual(r["primeira"], ("2023-11-11 00:00:00.0", 6.34))
+        self.assertEqual(r["ultima"], ("2023-11-17 23:45:00.0", 10.32))
+        self.assertEqual(r["minima"][1], 6.34)
+
+    def test_maximo_na_ultima_leitura_e_piso_e_nao_pico(self):
+        """
+        Saltinho, 17/11/2023 23:45: 10,32 m era a última leitura E a maior.
+        O rio ainda subia; a janela acabou antes do pico. Citar 10,32 m como
+        pico faria o morador achar a cheia menor do que foi.
+        """
+        r = sonda.resumo_cotas(self.ITENS)
+        self.assertTrue(r["pico_pode_estar_depois"])
+
+    def test_pico_dentro_da_janela_nao_dispara_o_aviso(self):
+        itens = self.ITENS + [{"Data_Hora_Medicao": "2023-11-18 00:00:00.0",
+                               "Cota_Adotada": "1000.00"}]
+        r = sonda.resumo_cotas(itens)
+        self.assertEqual(r["maxima"], ("2023-11-17 23:45:00.0", 10.32))
+        self.assertFalse(r["pico_pode_estar_depois"])
+
+    def test_serie_toda_nula_nao_vira_zero(self):
+        """Ituporanga (83250000) veio `null` nas pontas; null não é 0,00 m."""
+        r = sonda.resumo_cotas([{"Data_Hora_Medicao": "x", "Cota_Adotada": None}] * 3)
+        self.assertEqual(r["n_cota"], 0)
+        self.assertIsNone(r["maxima"])
+        self.assertFalse(r["pico_pode_estar_depois"])
+
+    def test_lista_vazia(self):
+        self.assertEqual(sonda.resumo_cotas([])["n"], 0)
+
+    def test_string_que_nao_e_numero_vira_ausente(self):
+        self.assertIsNone(sonda._cota_m({"Cota_Adotada": "n/d"}))
+
+
+class AGravacaoDaSerieEOptativaEVaiParaBrutos(unittest.TestCase):
+    def test_flags(self):
+        self.assertIn('"--gravar"', FONTE)
+        self.assertIn('"--sem-inventario"', FONTE)
+
+    def test_nome_do_bruto_da_serie_carrega_estacao_data_e_intervalo(self):
+        """Sem os três no nome, duas janelas da mesma estação se sobrescrevem."""
+        self.assertIn('f"ana-telemetria-{codigo}-{data or date.today().isoformat()}-{intervalo}.json"',
+                      FONTE)
+
+
 if __name__ == "__main__":
     unittest.main()
