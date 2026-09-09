@@ -5,7 +5,12 @@
 **Consulta:** 3 de setembro de 2026  
 **Emergência:** 199. Este arquivo não substitui aviso oficial.
 
-A COMPDEC de Vidal Ramos **não publicou** tabela nomeada atenção / alerta / emergência. O que existe é comportamento observado + uso da régua por Brusque (jusante).
+A COMPDEC de Vidal Ramos **não publicou** tabela nomeada atenção / alerta / emergência.
+
+> 09/09/2026: o caminho "EPAGRI/Rios On-line" para a cota desta régua **fechou** — a rede está sendo
+> desmobilizada e os limiares não serão divulgados (`docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`). A
+> EPAGRI confirmou que a Salseiro (83892990) é de Vidal Ramos, a ~7 km desta régua: outra régua.
+> Resta a COMPDEC. O que existe é comportamento observado + uso da régua por Brusque (jusante).
 
 ---
 

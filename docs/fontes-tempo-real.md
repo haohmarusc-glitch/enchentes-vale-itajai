@@ -571,6 +571,12 @@ pela razão errada — e a próxima pessoa a ler descobriria isso do pior jeito.
 
 ## EPAGRI/CIRAM — boletim de hidrologia: fonte nova, com códigos ANA e três armadilhas (01/09/2026)
 
+> ⚠️ **09/09/2026 — fonte com prazo.** A EPAGRI respondeu ao ofício C5: a rede telemétrica
+> fluviométrica do litoral (da ANA, operada por ela) está sendo desmobilizada, o Rios On-line e os
+> boletins seguem só até a remoção das estações (setembro a dezembro de 2026), os limiares não serão
+> divulgados, e a divulgação passa à SDC. `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`. A carta não fala
+> dos MARÉGRAFOS (seção 3b): perguntar antes de supor que continuam.
+
 Chegou o **Boletim n° 150/2026 da Equipe de Hidrologia da EPAGRI/CIRAM**, de 31/08/2026. Guardado em
 `data/brutos/epagri-ciram-boletim-150-2026-08-31.pdf`. É a quarta rede a aparecer no projeto, depois da
 Defesa Civil de Itajaí, da Defesa Civil de SC e da Asthon — e a primeira que publica **código ANA**.

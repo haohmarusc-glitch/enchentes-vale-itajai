@@ -7,7 +7,12 @@ cada pedido, e os demais ofícios (C1–C4) ficam em `docs/pendencias-navegador-
 
 ---
 
-## C5 — EPAGRI/CIRAM, Equipe de Hidrologia
+## C5 — EPAGRI/CIRAM, Equipe de Hidrologia ✅ RESPONDIDO em 09/09/2026
+
+> Resposta em `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`: sem acesso ao Rios On-line porque a rede
+> telemétrica do litoral está sendo desmobilizada (fim até dez/2026); limiares não divulgados
+> (sem revisão desde 2023); a divulgação passa à SDC; só quatro estações da bacia seguem ativas;
+> Salseiro é de Vidal Ramos, com coordenada. Tabela de 19 estações anexa.
 
 **Para:** sshidrosc@epagri.sc.gov.br
 **Assunto:** Solicitação de acesso à API do Rios On-Line e à relação de estações da bacia do Itajaí-Açú

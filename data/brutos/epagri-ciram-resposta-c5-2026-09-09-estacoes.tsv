@@ -1,0 +1,26 @@
+# Tabela anexa à resposta da EPAGRI/CIRAM (Equipe de Hidrologia) ao ofício C5, recebida pelo
+# Jefferson em 09/09/2026 e colada no chat como CAPTURA DE TELA. Transcrita a olho: os CÓDIGOS
+# e NOMES são confiáveis; coordenadas, altitudes e datas podem ter erro de leitura de imagem
+# ("?" marca dúvida). Todas: tipo Telemétrica, classe Hidrológica, proprietário ANA.
+# A carta diz: só QUATRO seguem "Ativada" (Barragem Taió Montante, Saltinho, Ituporanga,
+# Salseiro); as demais foram desativadas por falta de manutenção ou qualidade de dado.
+codigo	estacao	status	municipio	altitude_m	lat	lon	inicio	fim	anos
+83029900	Barragem Taió Montante	Ativada	Taió	415	-27.0245	-50.1242	14/03/2013		13
+83030000	Barragem Oeste	Desativada	Taió	369	-27.0933	-50.0042	12/03/2013	09/07/2026	13
+83030500	Ponte Moratelli	Desativada	Salete	397	-27.0042	-50.0231	14/03/2013	04/04/2026	13
+83040000	Mirim Doce	Desativada	Mirim Doce	357	-27.2008	-50.0708	14/03/2013	07/04/2026	13
+83050000	Saltinho	Ativada	Taió	350	-27.1133	-49.9847	01/01/1997		29
+83050001	Taió	Desativada	Taió	350	-27.1133	-49.9836	14/03/2013	20/12/2024	11
+83060000	Chapadão do Lageado	Desativada	Chapadão do Lageado	421	-27.6000	-49.5081	14/03/2013	19/08/2022	9
+83250000	Ituporanga	Ativada	Ituporanga	370	-27.3989	-49.6061	28/02/1997		29
+83270000	Rio do Sul - Novo	Em Manutenção	Rio do Sul	350	-27.2075	-49.6300	31/12/1996		29
+83345000	Barra da Prata	Desativada	Vitor Meireles	450	-26.9114	-49.8341	03/02/2012	17/08/2022	10
+83360000	José Boiteux	Desativada	José Boiteux	258	-26.9556	-49.6311	01/01/2012	04/12/2024	12
+83500001	Apiúna - Régua Nova	Desativada	Apiúna	93	-27.0378	-49.3911	01/02/2012	17/08/2022	10
+83500002	Apiúna	Desativada	Apiúna	93	-27.0378	-49.3911	04/04/2000	23/02/2012	12
+83700001	Timbó Novo	Desativada	Timbó	70	-26.8303	-49.2719	14/03/2013	20/12/2024	11
+83680000	Timbó	Desativada	Timbó	70	-26.8194	-49.2747	04/04/2000	23/02/2012	12
+83800002	Blumenau	Desativada	Blumenau	12	-26.9181	-49.0653	07/05/1999	04/04/2026	26
+83831000?	Luiz Alves	Desativada	Luiz Alves	90	-26.7214	-48.9317	07/05/1999	04/04/2026	26
+83892990	Salseiro	Ativada	Vidal Ramos	47	-27.3228	-49.3512	27/05/1999		27
+83900000	Brusque	Desativada	Brusque	35	-27.1011	-48.9183	07/05/1999	27/03/2025	25
