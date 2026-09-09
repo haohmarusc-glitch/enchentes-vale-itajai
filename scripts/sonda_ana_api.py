@@ -34,12 +34,29 @@ DUAS PERGUNTAS, uma execução:
    execução quando a ANA responder ao ofício. O que NÃO se faz é continuar
    chutando parâmetro — ver docs/ANA-API-2026-09-08.md.
 
-⚠️ NÃO RODA DESTE AMBIENTE: `*.ana.gov.br` é bloqueado no proxy (403 no
-CONNECT). Rode na VPS, com o `.env` preenchido por `scripts/configurar_ana.sh`.
+   ✅ REVISTO EM 09/09/2026, E É SIM — NO PASSADO, PARA AS QUATRO ATIVAS. A
+   EPAGRI/CIRAM explicou o vazio: as cinco candidatas de 08/09 estavam todas
+   DESATIVADAS. Com `--data 2023-11-17 --intervalo DIAS_7`, as quatro que
+   seguem ativas (83029900, 83050000, 83250000, 83892990) devolveram 672
+   leituras cada — uma a cada 15 min, 7 dias TERMINANDO na data pedida —, com
+   `Cota_Adotada` em CENTÍMETROS e muitos `null`. A Saltinho (83050000) foi de
+   6,34 m a 10,32 m e ainda subia no último registro: a janela acabou ANTES do
+   pico. Por isso o resumo por estação avisa quando o máximo é a última leitura
+   e sugere a janela seguinte. NADA disso vira registro em enchentes.json por
+   conta própria — a régua da série ainda precisa ser conferida contra a régua
+   da cidade (Taió: a 83050000 fica a 0,56 km do pino; a SDC republica a mesma
+   rede, segundo a EPAGRI — hipótese a testar comparando uma leitura ao vivo).
 
 Uso:
     python3 scripts/sonda_ana_api.py
     python3 scripts/sonda_ana_api.py --uf SC --estacoes 83900000,83870001
+    python3 scripts/sonda_ana_api.py --sem-inventario \
+        --estacoes 83029900,83050000,83250000,83892990 \
+        --data 2023-11-24 --intervalo DIAS_7 --gravar
+
+⚠️ NÃO RODA DESTE AMBIENTE: `*.ana.gov.br` é bloqueado no proxy (403 no
+CONNECT). Rode na VPS, com o `.env` preenchido por `scripts/configurar_ana.sh`.
+
 """
 
 from __future__ import annotations
@@ -89,6 +106,69 @@ def _resumo(corpo: dict) -> tuple[str, list]:
     return f"{corpo.get('message')!r} — {len(itens)} item(ns)", itens
 
 
+def _grava_bruto(nome: str, corpo: dict) -> str:
+    """Grava a resposta crua em data/brutos/ e devolve o caminho relativo.
+
+    É o único lugar onde a sonda escreve. Bruto é evidência: o projeto tem um
+    guarda que cobra a existência de todo bruto citado (`valida_brutos_citados`).
+    """
+    destino = DADOS / "brutos" / nome
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    destino.write_text(json.dumps(corpo, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return f"{destino.relative_to(DADOS.parent)} ({destino.stat().st_size // 1024} KB)"
+
+
+def _cota_m(item: dict) -> float | None:
+    """`Cota_Adotada` vem em CENTÍMETROS, como string ("1032.00"), ou `null`."""
+    bruto = item.get("Cota_Adotada")
+    if bruto in (None, ""):
+        return None
+    try:
+        return round(float(bruto) / 100, 2)
+    except (TypeError, ValueError):
+        return None
+
+
+def resumo_cotas(itens: list) -> dict:
+    """Resume a série telemétrica de UMA estação sem interpretar além do que há.
+
+    Devolve `n` (linhas), `n_cota` (com cota), `primeira`/`ultima`/`maxima`/
+    `minima` como (Data_Hora_Medicao, metros) ou None, e `pico_pode_estar_depois`
+    — verdadeiro quando a MAIOR cota é a ÚLTIMA leitura com valor: a janela de
+    7 dias termina na data pedida, e um rio que ainda sobe no último registro
+    tem o pico fora dela. Esse máximo é piso, não pico.
+    """
+    com_cota = [(it.get("Data_Hora_Medicao"), _cota_m(it)) for it in itens]
+    com_cota = [(q, c) for q, c in com_cota if c is not None]
+    resumo = {"n": len(itens), "n_cota": len(com_cota), "primeira": None, "ultima": None,
+              "maxima": None, "minima": None, "pico_pode_estar_depois": False}
+    if not com_cota:
+        return resumo
+    resumo["primeira"] = com_cota[0]
+    resumo["ultima"] = com_cota[-1]
+    resumo["maxima"] = max(com_cota, key=lambda qc: qc[1])
+    resumo["minima"] = min(com_cota, key=lambda qc: qc[1])
+    resumo["pico_pode_estar_depois"] = resumo["maxima"][1] == resumo["ultima"][1]
+    return resumo
+
+
+def _imprime_resumo_cotas(resumo: dict, data: str | None, intervalo: str) -> None:
+    n, n_cota = resumo["n"], resumo["n_cota"]
+    print(f"      cotas: {n_cota} de {n} linhas têm Cota_Adotada"
+          + (f" ({n - n_cota} null)" if n_cota < n else ""))
+    if not n_cota:
+        print("      ⚠️ nenhuma cota na janela — a estação pode não ter transmitido nível "
+              "neste período; não conclua que não existe série.")
+        return
+    for rotulo in ("primeira", "ultima", "maxima", "minima"):
+        quando, metros = resumo[rotulo]
+        print(f"      {rotulo:8s}: {metros:6.2f} m em {quando}")
+    if resumo["pico_pode_estar_depois"]:
+        print("      ⚠️ a MAIOR cota é a ÚLTIMA leitura: o rio ainda subia quando a janela "
+              f"({intervalo}, terminando em {data or 'hoje'}) acabou. Esse valor é PISO, não "
+              "pico. Repita com --data uma janela adiante antes de citar qualquer máximo.")
+
+
 def sonda_inventario(sessao, token, uf: str) -> list:
     print(f"\n{'=' * 70}\n1. INVENTÁRIO — Unidade Federativa = {uf}\n{'=' * 70}")
     corpo = _pede(sessao, token, ROTA_INVENTARIO, {"Unidade Federativa": uf})
@@ -105,17 +185,15 @@ def sonda_inventario(sessao, token, uf: str) -> list:
     for it in itens[:AMOSTRA]:
         print(f"      {json.dumps(it, ensure_ascii=False)[:200]}")
 
-    destino = DADOS / "brutos" / f"ana-inventario-api-{date.today().isoformat()}.json"
-    destino.parent.mkdir(parents=True, exist_ok=True)
-    destino.write_text(json.dumps(corpo, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"\n   bruto gravado em {destino.relative_to(DADOS.parent)} "
-          f"({destino.stat().st_size // 1024} KB) — COMMITAR: é a evidência que "
-          "cinco blocos do estacoes.json citam e que hoje não existe no repo.")
+    onde = _grava_bruto(f"ana-inventario-api-{date.today().isoformat()}.json", corpo)
+    print(f"\n   bruto gravado em {onde} — COMMITAR: é o que fecha a pendência do "
+          "ana-inventario-2026-09-07.json (BRUTOS_PENDENTES do validador), citado por "
+          "cinco blocos do estacoes.json que hoje apontam para um arquivo que não existe.")
     return itens
 
 
 def sonda_telemetria(sessao, token, codigos: list[str], data: str | None = None,
-                     intervalo: str = "HORA_24") -> None:
+                     intervalo: str = "HORA_24", gravar: bool = False) -> None:
     """
     `data` e `intervalo` entraram em 09/09/2026: as cinco estações testadas em
     08/09 estavam todas DESATIVADAS (EPAGRI/CIRAM, resposta ao C5), e 'vazio' era
@@ -138,6 +216,12 @@ def sonda_telemetria(sessao, token, codigos: list[str], data: str | None = None,
         print(f"      CAMPOS ({len(itens[0])}): {list(itens[0])}")
         print(f"      primeiro: {json.dumps(itens[0], ensure_ascii=False)[:260]}")
         print(f"      ultimo:   {json.dumps(itens[-1], ensure_ascii=False)[:260]}")
+        _imprime_resumo_cotas(resumo_cotas(itens), data, intervalo)
+        if gravar:
+            onde = _grava_bruto(
+                f"ana-telemetria-{codigo}-{data or date.today().isoformat()}-{intervalo}.json",
+                corpo)
+            print(f"      bruto gravado em {onde}")
 
 
 def main() -> int:
@@ -149,6 +233,11 @@ def main() -> int:
     ap.add_argument("--data", default=None, help="Data de Busca (AAAA-MM-DD); padrão hoje")
     ap.add_argument("--intervalo", default="HORA_24",
                     help="Range Intervalo de busca: HORA_24, DIAS_7 … (o que a spec listar)")
+    ap.add_argument("--sem-inventario", action="store_true",
+                    help="pula o inventário (5 MB por chamada) quando só a série interessa")
+    ap.add_argument("--gravar", action="store_true",
+                    help="grava a série telemétrica crua em data/brutos/ana-telemetria-<código>-"
+                         "<data>-<intervalo>.json — é o bruto que um registro futuro citaria")
     args = ap.parse_args()
 
     carrega_env()
@@ -161,9 +250,10 @@ def main() -> int:
         return 1
     print("Autenticado na API da ANA.")
 
-    sonda_inventario(sessao, token, args.uf)
+    if not args.sem_inventario:
+        sonda_inventario(sessao, token, args.uf)
     sonda_telemetria(sessao, token, [c.strip() for c in args.estacoes.split(",") if c.strip()],
-                     args.data, args.intervalo)
+                     args.data, args.intervalo, gravar=args.gravar)
 
     print(f"\n{'=' * 70}\nSonda terminada. Nada foi gravado em data/estacoes.json "
           "nem em data/enchentes.json.\n" + "=" * 70)

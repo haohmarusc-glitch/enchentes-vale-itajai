@@ -477,6 +477,17 @@ o projeto.
 
 ## Pendências
 
+- [x] **A série telemétrica da ANA EXISTE para as quatro estações ativas — no passado (09/09/2026).**
+  `sonda_ana_api.py --data 2023-11-17 --intervalo DIAS_7` devolveu 672 leituras de 15 min para
+  83029900, 83050000, 83250000 e 83892990. A Saltinho/TAIÓ foi de 6,34 m a 10,32 m **e ainda subia**
+  na última linha: a janela de 7 dias termina na data pedida e acabou antes do pico — piso, não pico.
+  A sonda ganhou `resumo_cotas` (conta cotas, acha máximo, avisa quando o máximo é a última leitura),
+  `--gravar` (bruto em `data/brutos/ana-telemetria-*.json`) e `--sem-inventario`. Nada entrou em
+  `enchentes.json`. Falta: a janela seguinte, e comparar uma leitura ao vivo de Taió com a 83050000
+  (a EPAGRI diz que a SDC republica a rede da ANA). O inventário de 09/09 (1.810 estações, 4,9 MB)
+  está na VPS e **precisa ser commitado** para fechar `BRUTOS_PENDENTES`. Fontes conferidas no Gmail
+  e citadas com remetente, hora e assunto em `docs/ANA-API-2026-09-08.md` e
+  `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`.
 - [x] **EPAGRI/CIRAM respondeu ao ofício C5 (09/09/2026)** — sem acesso ao Rios On-line porque a rede
   telemétrica do litoral (da ANA, operada pela EPAGRI) está sendo desmobilizada até dez/2026; limiares
   não divulgados (sem revisão desde 2023); a divulgação passa à SDC. De graça, explicou o vazio da

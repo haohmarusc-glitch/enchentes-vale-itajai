@@ -1,9 +1,16 @@
 # Resposta da EPAGRI/CIRAM ao ofício C5 — a rede telemétrica do litoral está sendo desmontada
 
-Data: 09/09/2026. Remetente: Equipe de Hidrologia da EPAGRI/CIRAM (sshidrosc@epagri.sc.gov.br),
-em resposta ao C5 de `docs/oficios-prontos.md`. Tabela anexa transcrita em
+**Fonte, conferida no Gmail em 09/09/2026:** e-mail de **sshidrosc@epagri.sc.gov.br**
+(SSHidroSC — Sala de Situação Hidrologia SC), assinado por **Mariane Souza Melo de Liz, Equipe
+de Hidrologia EPAGRI/Ciram**, enviado em **09/09/2026 às 10:16** (Brasília), com cópia a
+contatociram@ e joseoliveira@epagri.sc.gov.br. Assunto: *"Re: Solicitação de acesso aos dados do
+Rios On-Line (estações e faixas de situação) — bacia do Itajaí"*. Responde ao e-mail do Jefferson
+de **01/09/2026 23:45** (o C5 de `docs/oficios-prontos.md`), que teve recebimento automático em
+02/09 e acuse de Mariane em 03/09 07:47 ("vou consultar meus colegas que elaboraram o sistema").
+Um anexo, `image.png`: a tabela de estações, transcrita em
 `data/brutos/epagri-ciram-resposta-c5-2026-09-09-estacoes.tsv` (de captura de tela: códigos e
-nomes confiáveis; coordenadas e datas podem ter erro de leitura).
+nomes confiáveis; coordenadas e datas podem ter erro de leitura). O texto colado neste repositório
+confere com o e-mail. Jefferson agradeceu em 09/09 19:09.
 
 ## O que a carta diz, na ordem em que pesa
 
@@ -52,13 +59,14 @@ nomes confiáveis; coordenadas e datas podem ter erro de leitura).
   carta fala da rede **fluviométrica** da ANA; não diz nada dos marégrafos. Perguntar antes de
   supor que continuam.
 
-## O que testar (VPS, com a credencial da ANA)
-
-A sonda testou só estações desativadas. Testar as quatro ativas, e num evento passado:
+## ✅ Testado (VPS, 09/09/2026): a série telemétrica das quatro ativas EXISTE
 
 ```
 python3 scripts/sonda_ana_api.py --estacoes 83029900,83050000,83250000,83892990 --data 2023-11-17 --intervalo DIAS_7
 ```
 
-Se a série telemétrica vier, são níveis **horários** de Taió, Ituporanga e Salseiro na cheia de
-novembro de 2023 — hora de pico nas cabeceiras, que é o que o gabarito de trânsito não tem.
+As quatro devolveram **672 leituras de 15 min** (11/11 a 17/11/2023). A Saltinho (83050000) foi
+de 6,34 m a **10,32 m e ainda subia** na última linha — piso, não pico; Ituporanga veio `null`
+nas duas pontas; Salseiro 1,67 m no início e `null` no fim. Formato, limites e a próxima rodada
+(janela seguinte, `--gravar`, comparação com a leitura ao vivo de Taió) estão em
+`docs/ANA-API-2026-09-08.md`, seção de 09/09. **Nada foi gravado em `enchentes.json`.**

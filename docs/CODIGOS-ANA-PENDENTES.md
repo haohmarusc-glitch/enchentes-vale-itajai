@@ -138,3 +138,7 @@ abrir (estação longe das duas continua reprovando).
 3. **`data/brutos/ana-inventario-2026-09-07.json`** foi gerado na VPS e ainda
    não está no repositório. Os valores gravados aqui vieram da **saída
    transcrita**, não do arquivo — commitar o bruto da VPS fecha isso.
+   **09/09/2026:** a sonda da API gravou na VPS o equivalente pela API,
+   `data/brutos/ana-inventario-api-2026-09-09.json` (1.810 estações, 4,9 MB).
+   Commitar ESSE arquivo e apontar os cinco blocos do `estacoes.json` para ele
+   fecha a pendência; o de 07/09 pode ficar só como referência histórica.
