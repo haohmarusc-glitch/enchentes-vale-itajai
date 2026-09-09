@@ -45,6 +45,8 @@ Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Softw
 
 Escrevo porque o portal de vocês é, de longe, o material mais completo que encontrei para Gaspar: as 1.617 cotas de rua, o histórico de enchentes desde 1852 e a tabela de monitoramento não têm equivalente nos outros municípios da bacia. Justamente por usar esse material com cuidado, cheguei a três dúvidas que só vocês podem responder.
 
+> ✏️ **Antes de enviar (09/09/2026):** a régua NÃO saiu do portal — `/estacao/ver/21` está viva (1,12 m em 08/09 08:03, conferido no navegador). Reescrever a pergunta 1 como: *a estação saiu da listagem de `/monitoramento/tabela` mas continua na página própria; a tabela deixou de ser a referência? e qual é a cadência de atualização da leitura (às 21h ela era das 08:03)?* A pergunta 2 ganha um dado: em 08/09 a legenda já mostrava 5,00 m, não 6,00 — a legenda varia entre consultas?
+
 **1. A régua do Rio Itajaí-Açu saiu da tabela de monitoramento.**
 
 Até 31/08/2026 a tabela em `/monitoramento/tabela` trazia a estação **"Rio Itajaí Açu Gaspar"** (naquele dia, 3,85 m às 22h59). Consultando em 07/09/2026, a tabela passou a trazer sete estações e nenhuma delas é o Itajaí-Açu: entraram as barragens Norte, Oeste e Sul, e a única estação de rio que restou é o Ribeirão Belchior Central.

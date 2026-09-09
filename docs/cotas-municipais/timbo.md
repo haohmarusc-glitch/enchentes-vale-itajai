@@ -30,3 +30,13 @@ Cotas de rua (2022) seguem a régua da Rua Equador — lista por bairro no Insta
 `verificado: false` nas faixas atenção/alerta/emergência clássicas — o plano só fixa o gatilho de 5 m.
 
 Tempo real: DC-SC. Sem API municipal.
+
+---
+
+## 09/09/2026 — escala de quatro faixas, por imprensa
+
+ND Mais (31/08/2026), citando a Defesa Civil de Timbó: até 2,00 m normal ·
+2,01–3,00 atenção · 3,01–4,29 alerta · a partir de 4,30 alto risco, no Rio
+Benedito. A notícia não nomeia a régua (o município tem três: Benedito, Cedros
+e Rua Indaial, após a junção). **Não pinta**; a tela avisa em texto. Entra em
+`cotas_m` quando o PLANCON ou a COMPDEC confirmar régua e tabela.

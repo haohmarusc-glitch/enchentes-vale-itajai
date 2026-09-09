@@ -477,6 +477,16 @@ o projeto.
 
 ## Pendências
 
+- [ ] **⚠️ Blumenau: os 6,00 / 6,50 / 7,40 m estão em conferência (09/09/2026)** — um levantamento
+  externo relata, da página oficial "Nível do Rio" da Defesa Civil, uma escala de cinco estágios
+  (observação 3 m · atenção 4 m · alerta 6 m · alerta máximo 8 m). Se for a vigente, a tela pinta
+  atenção **dois metros tarde**. Não foi trocada no escuro: `scripts/conferir_faixas_blumenau.py` na
+  VPS imprime as faixas do JSON oficial e decide. Até lá a tela de Blumenau avisa em texto. Junto:
+  Gaspar `/estacao/ver/21` está viva (confirmado; a tabela é que a aposentou — medir a cadência antes
+  de reapontar o coletor), Asthon é rota fechada para as outras onze cidades (null com os IBGE certos),
+  Ituporanga tem dois My Maps (cotas de rua e manchas por cota, nenhum com faixa; o de manchas é
+  linkado pela URL `/edit` — congelar snapshot), e a recomendação de pintar a leitura de Gaspar com as
+  cotas de Ilhota foi recusada (régua a 17 km). `docs/COTAS-11-MUNICIPIOS-2026-09-09.md`.
 - [x] **Ofício C10 à Defesa Civil de Gaspar escrito (07/09/2026)** — `docs/oficios-prontos.md`,
   pronto para copiar. Quatro perguntas, todas com a evidência junto: **(1)** a régua do Itajaí-Açu
   saiu da tabela de monitoramento entre 31/08 e 07/09 — continua ativa, e em que endereço? É a

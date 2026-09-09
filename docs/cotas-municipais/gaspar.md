@@ -47,3 +47,17 @@ Histórico completo: https://defesacivil.gaspar.sc.gov.br/enchentes
 Stack DEXTAK. Nível na home atualiza sozinho (ex.: 2,05–2,60 m em 2–3/09/2026). Monitorar também o **Ribeirão Belchior** (app).
 
 Dique municipal (R$ 14 mi anunciados) altera a mancha — revalidar cotas de rua depois da obra.
+
+---
+
+## 09/09/2026 — a régua não morreu
+
+Confirmado no navegador em 08/09 ~21h: `/estacao/ver/21` continua viva sob o site
+novo (DEXTAK) — "Rio Itajaí Açu Gaspar", 1,12 m, FONTE: DC. GASPAR, medição
+08/09/2026 08:03. Legenda: normalidade < 5,00 · atenção > 5,00 ou chuva > 6,00 mm
+· emergência > 7,00 — os valores do Plano. O que saiu em 07/09 foi a linha de
+`/monitoramento/tabela`, não a régua. A página oferece "BAIXAR SÉRIE HISTÓRICA".
+
+Ressalvas: a leitura tinha 13 h de idade às 21h (medir a cadência antes de
+reapontar o coletor), e o host segue sem responder à VPS (só `--arquivo`).
+Detalhes em `docs/COTAS-11-MUNICIPIOS-2026-09-09.md`.
