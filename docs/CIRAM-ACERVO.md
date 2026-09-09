@@ -101,5 +101,5 @@ O que se tira daí, e o que não:
 ## O que ainda não foi feito
 
 - ✅ Os 4 avisos foram lidos (tabela acima). Nada entrou em `enchentes.json`.
-- Pedir à ANA as janelas de jan/2021 e mai/2022 para 83050000 e 83800002 (comandos acima).
+- ✅ Janelas de jan/2021 e mai/2022 pedidas à ANA (09/09/2026): as cristas conferem com os avisos e estão em `docs/ANA-API-2026-09-08.md`, "Quarta rodada". Em mai/2022 a crista de Taió foi 9,49 m, 1,12 m acima da leitura do aviso.
 - Mandar o ofício C12 (avisos de nov/2023 + lista dos boletins diários).

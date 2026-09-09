@@ -95,7 +95,30 @@
           "ressalva_2020_12_12": "A lista SECOM/Rádio Cidade (21/05/2024) registra 5,30 m em Brusque em 12/12/2020, acima da crista de 15/12 (4,95 m às 20:45). O evento teve duas cristas; esta medição pareia a SEGUNDA, que é a que tem hora nos dois lados. Não muda as 7,5 h; muda o que se chama de 'pico do evento' no gráfico.",
           "ressalva_ana_2026_09_09": "TESTADO em 09/09/2026: a série telemétrica da ANA para a 83892990 (sonda_ana_api.py --data 2020-12-15 --intervalo DIAS_7, bruto data/brutos/ana-telemetria-83892990-2020-12-15-DIAS_7.json, no repo desde 09/09/2026) tem o MESMO buraco do portal de Brusque — 07:15 → 13:00 de 15/12/2020 (6 h) — e a mesma crista sobrevivente, 2,73 m às 13:15, seguida de 2,66 / 2,64 / 2,60 m. O portal republica a ANA: o buraco está na fonte, e a ANA NÃO o preenche. Curva: 2,03 m às 07:00, subindo 0,39 m/h; nada até 13:15. A crista real está entre 07:15 e 13:15. Em nov/2023 foi diferente: ali a ANA cobriu 19 h que o portal perdeu. docs/ANA-API-2026-09-08.md"
         }
-      ]
+      ],
+      "taio_e_blumenau_2021_2022": {
+        "_o_que_e": "NÃO é medição de trânsito: é o registro de que, em dois eventos com hora nas duas pontas, BLUMENAU ATINGIU A CRISTA ANTES DE TAIÓ. A onda de Taió (6–8 h até Rio do Sul, mais o tronco até Blumenau) não pode ter sido a causa da crista de Blumenau nesses eventos; a chuva caiu perto de Blumenau. Fica escrito para que a previsão a jusante NÃO pareie o pico de Taió com o pico de Blumenau do mesmo evento como se um causasse o outro.",
+        "fonte": "Série telemétrica da ANA, HidroinfoanaSerieTelemetricaAdotada/v1, sonda na VPS em 09/09/2026 (--data 2021-01-24 e --data 2022-05-06, DIAS_7, --gravar); brutos ana-telemetria-83050000-2021-01-24-DIAS_7.json, ana-telemetria-83800002-2021-01-24-DIAS_7.json, ana-telemetria-83050000-2022-05-06-DIAS_7.json e ana-telemetria-83800002-2022-05-06-DIAS_7.json, ainda na VPS (a commitar).",
+        "eventos": [
+          {
+            "evento": "2021-01-22",
+            "taio_83050000": "crista 6,91 m às 16:15 de 22/01/2021 (645/672 leituras)",
+            "blumenau_83800002": "crista 6,82 m às 21:45 de 21/01/2021 (655/672 leituras)",
+            "ordem": "Blumenau 18 h 30 min ANTES de Taió"
+          },
+          {
+            "evento": "2022-05-05",
+            "taio_83050000": "crista 9,49 m às 04:00 de 05/05/2022, platô 9,47–9,49 m das 02:00 às 05:45 (632/668)",
+            "blumenau_83800002": "crista 9,41 m às 02:45 de 05/05/2022, platô 9,38–9,39 m da 01:00 às 04:00 (671/672)",
+            "ordem": "Blumenau 1 h 15 min ANTES de Taió — praticamente simultâneas"
+          }
+        ],
+        "ressalvas": [
+          "Crista de estação da ANA é crista DAQUELA régua: a 83050000 fica a 0,56 km do pino de Taió e a 83800002 é a régua que a Defesa Civil de Blumenau lê (REGRA_REFERENCIA_BLUMENAU, referência 'régua').",
+          "Dois eventos não fazem regra. Dizem só que a cadeia Taió → Blumenau não explicou ESSAS duas cristas; em uma cheia de cabeceira (Oeste) a ordem pode ser a esperada.",
+          "Nenhum destes quatro picos está em enchentes.json (09/09/2026): entram só por decisão do Jefferson, com o bruto no repo."
+        ]
+      }
     }
   },
   "trechos": [

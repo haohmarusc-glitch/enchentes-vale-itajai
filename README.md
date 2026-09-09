@@ -477,6 +477,13 @@ o projeto.
 
 ## Pendências
 
+- [x] **Quarta rodada da telemetria da ANA (09/09/2026): os dois eventos dos Avisos da CIRAM, e Blumenau
+  atingiu a crista ANTES de Taió nos dois.** Jan/2021: Taió 6,91 m às 16:15 de 22/01, Blumenau 6,82 m às
+  21:45 de 21/01 (18 h 30 antes). Mai/2022: Taió 9,49 m às 04:00 de 05/05, Blumenau 9,41 m às 02:45 (1 h 15
+  antes). A onda de Taió não causou essas cristas; registrado em `transito.json` para a previsão a jusante
+  não parear os dois picos como causa e efeito. As leituras dos avisos conferem com as séries (a de 06/05/2022
+  estava 1,12 m abaixo da crista). Quatro candidatos a `enchentes.json` escritos em
+  `docs/ANA-API-2026-09-08.md`, "Quarta rodada" — entram só com o "sim" do Jefferson e os brutos no repo.
 - [x] **Os brutos chegaram da VPS e `BRUTOS_PENDENTES` esvaziou (09/09/2026).** Branch
   `vps/brutos-2026-09-09`: doze séries de telemetria da ANA, o recorte do inventário de 07/09 (o que cinco
   blocos do cadastro citavam sem existir), o inventário completo de 08/09 (1.808 estações) e os quatro
