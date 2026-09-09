@@ -776,8 +776,17 @@ def ordenar_cotas(cotas: dict) -> list[tuple[str, float]]:
     return [(k, cotas[k]) for k in conhecidas + outras]
 
 
-def linhas_de_cotas(cotas: dict) -> list[str]:
-    return [f"\n{ROTULO_COTA.get(k, k)}: <b>{metros(v)}</b>" for k, v in ordenar_cotas(cotas)]
+def rotulo_cota(chave: str, nomes: dict | None = None) -> str:
+    """O nome da fonte vence o nosso: "Alerta Máximo" em Blumenau, "Prontidão"
+    em Ilhota. É o que `cotas_nomes_na_fonte` guarda; chave com `_` é anotação."""
+    da_fonte = (nomes or {}).get(chave) if not chave.startswith("_") else None
+    if isinstance(da_fonte, str) and da_fonte.strip():
+        return da_fonte.strip()
+    return ROTULO_COTA.get(chave, chave)
+
+
+def linhas_de_cotas(cotas: dict, nomes: dict | None = None) -> list[str]:
+    return [f"\n{rotulo_cota(k, nomes)}: <b>{metros(v)}</b>" for k, v in ordenar_cotas(cotas)]
 
 
 #: Quanto da observação da cidade cabe na resposta de /cotas. O texto inteiro de
@@ -792,7 +801,7 @@ def resposta_cotas(base: Base, cidade: dict) -> list[str]:
     reguas = base.reguas_com_cota(cidade["id"])
 
     if cotas:
-        linhas.extend(linhas_de_cotas(cotas))
+        linhas.extend(linhas_de_cotas(cotas, cidade.get("cotas_nomes_na_fonte")))
         if cidade.get("regua"):
             linhas.append(f"\n\nRégua: {notificador.esc(cidade['regua'])}")
     elif not reguas:

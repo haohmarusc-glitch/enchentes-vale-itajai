@@ -480,8 +480,9 @@ o projeto.
 - [x] **Blumenau: cotas corrigidas para a escala oficial de cinco estágios (09/09/2026)** — o JSON do
   AlertaBlu publica Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8 m (bruto no repo); os
   6,00 / 6,50 / 7,40 sem fonte foram para divergências. A tela pintava atenção dois metros tarde.
-  Pendência pequena que sobrou: rótulo por cidade, para escrever "Alerta Máximo" onde hoje sai
-  "Emergência". Histórico do dia: um levantamento
+  Rótulo por cidade feito em seguida (`cotas_nomes_na_fonte`): a tela, o /cotas do bot e o aviso
+  do vigia escrevem "Alerta Máximo" em Blumenau e "Prontidão" em Ilhota, a palavra da COMPDEC.
+  Histórico do dia: um levantamento
   externo relata, da página oficial "Nível do Rio" da Defesa Civil, uma escala de cinco estágios
   (observação 3 m · atenção 4 m · alerta 6 m · alerta máximo 8 m). Se for a vigente, a tela pinta
   atenção **dois metros tarde**. Não foi trocada no escuro: `scripts/conferir_faixas_blumenau.py` na

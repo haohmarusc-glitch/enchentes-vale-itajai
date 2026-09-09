@@ -14,6 +14,18 @@ test('inundação histórica não sai como Inundacao_historica', () => {
   assert.equal(rotuloCota('inundacao_historica'), 'Inundação histórica')
 })
 
+test('o nome da fonte vence o nosso, e anotação não é nome', () => {
+  // Blumenau: a Defesa Civil chama o topo de "Alerta Máximo"; a tela não pode
+  // escrever "Emergência" e parecer outra escala.
+  const nomes = { emergencia: 'Alerta Máximo', monitoramento: 'Observação', _por_que: 'nota' }
+  assert.equal(rotuloCota('emergencia', nomes), 'Alerta Máximo')
+  assert.equal(rotuloCota('monitoramento', nomes), 'Observação')
+  assert.equal(rotuloCota('atencao', nomes), 'Atenção')
+  assert.notEqual(rotuloCota('_por_que', nomes), 'nota')
+  assert.equal(rotuloCota('emergencia', { emergencia: '  ' }), 'Emergência')
+  assert.equal(rotuloCota('emergencia'), 'Emergência')
+})
+
 test('cota ainda não cadastrada perde o sublinhado', () => {
   assert.equal(rotuloCota('cota_de_rua'), 'Cota de rua')
   assert.equal(rotuloCota('transbordo'), 'Transbordo')

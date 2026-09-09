@@ -33,7 +33,7 @@ import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
-import { dataHora, metros } from '../logica/formato'
+import { dataHora, metros, rotuloCota } from '../logica/formato'
 import {
   desprojetar,
   projetar,
@@ -235,15 +235,14 @@ const VAR_LEGENDA: Record<Faixa, string> = {
   varias: '--agua-clara',
 }
 
-/** Rótulo legível de cada cota de referência, na ordem em que sobem. */
-const ROTULO_COTA: Record<string, string> = {
-  atencao: 'Atenção',
-  alerta: 'Alerta',
-  inundacao: 'Inundação',
-  emergencia: 'Emergência',
-  inundacao_historica: 'Inundação histórica',
-}
-const ORDEM_COTA = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
+/**
+ * Ordem em que as cotas sobem, para o painel. `monitoramento` entrou em
+ * 09/09/2026: sem ele aqui, Taió e Blumenau mostravam a chave crua
+ * ("monitoramento: 3,00 m") e fora de ordem — o rótulo vinha de uma tabela
+ * local que não o conhecia. O rótulo agora é o mesmo do resto do site
+ * (`rotuloCota`), com o nome da fonte quando a cidade o declara.
+ */
+const ORDEM_COTA = ['monitoramento', 'atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
 
 /** Cotas da régua da cidade, ordenadas de baixo para cima. */
 function cotasOrdenadas(cotas: Record<string, number>): [string, number][] {
@@ -1355,7 +1354,7 @@ export default function MonitorBacia() {
                   <ul>
                     {cotas.map(([k, v]) => (
                       <li key={k}>
-                        {ROTULO_COTA[k] ?? k}: {metros(v)}
+                        {rotuloCota(k)}: {metros(v)}
                       </li>
                     ))}
                   </ul>
@@ -1458,7 +1457,7 @@ export default function MonitorBacia() {
                   <ul>
                     {cotas.map(([k, v]) => (
                       <li key={k}>
-                        {ROTULO_COTA[k] ?? k}: {metros(v)}
+                        {rotuloCota(k, cid.cotas_nomes_na_fonte)}: {metros(v)}
                       </li>
                     ))}
                   </ul>

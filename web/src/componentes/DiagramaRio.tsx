@@ -287,7 +287,7 @@ function ItemCidade({
               <span className={estilos.cotas}>
                 {cotas.map(([chave, valor]) => (
                   <span key={chave} className={estilos.cota}>
-                    {rotuloCota(chave)}: <strong>{metros(valor)}</strong>
+                    {rotuloCota(chave, cidade.cotas_nomes_na_fonte)}: <strong>{metros(valor)}</strong>
                   </span>
                 ))}
               </span>

@@ -1211,5 +1211,21 @@ class TestObservacaoNasCotas(unittest.TestCase):
         self.assertNotIn("aviso prévio, é o começo".replace("é o começo", "ZZZ"), r)
 
 
+class NomesDaFonteNoBot(unittest.TestCase):
+    """O /cotas escreve o nome que a COMPDEC usa, não o nosso."""
+
+    def test_alerta_maximo_de_blumenau(self):
+        from bot import linhas_de_cotas, rotulo_cota
+        nomes = {"emergencia": "Alerta Máximo", "monitoramento": "Observação", "_por_que": "x"}
+        self.assertEqual(rotulo_cota("emergencia", nomes), "Alerta Máximo")
+        self.assertEqual(rotulo_cota("atencao", nomes), "Atenção")
+        self.assertEqual(rotulo_cota("emergencia", None), "Emergência")
+        self.assertEqual(rotulo_cota("_por_que", nomes), "_por_que")
+        linhas = linhas_de_cotas({"monitoramento": 3.0, "atencao": 4.0, "emergencia": 8.0}, nomes)
+        self.assertIn("Observação", linhas[0])
+        self.assertIn("Alerta Máximo", linhas[-1])
+        self.assertNotIn("Emergência", "".join(linhas))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

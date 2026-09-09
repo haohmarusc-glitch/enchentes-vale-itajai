@@ -1667,6 +1667,53 @@ class ARegraDeBlumenauGuardaOResultadoNegativo(unittest.TestCase):
         self.assertIn("INSTANT", remover.upper(),
                       "o que falta é o pico instantâneo — isso tem de estar dito")
 
+def erros_de_nomes(estacoes_dict) -> list[str]:
+    """Roda só `valida_nomes_na_fonte` sobre um estacoes.json em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: estacoes_dict if nome == "estacoes.json" else orig(nome)
+    try:
+        vd.valida_nomes_na_fonte()
+    finally:
+        vd.le_json = orig
+    return list(vd.erros)
+
+
+class NomesNaFonte(unittest.TestCase):
+    """`cotas_nomes_na_fonte` só pode nomear faixa que a cidade tem."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def base(self):
+        return copy.deepcopy(self.real)
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(erros_de_nomes(self.base()), [])
+
+    def test_blumenau_declara_alerta_maximo_no_topo(self):
+        b = _cidade(self.base(), "itajai-acu", "blumenau")
+        self.assertEqual(b["cotas_nomes_na_fonte"]["emergencia"], "Alerta Máximo")
+        self.assertEqual(b["cotas_nomes_na_fonte"]["monitoramento"], "Observação")
+
+    def test_nome_para_chave_que_a_cidade_nao_tem_aborta(self):
+        d = self.base()
+        _cidade(d, "itajai-acu", "blumenau")["cotas_nomes_na_fonte"]["inundacao"] = "Inundação"
+        erros = erros_de_nomes(d)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("'inundacao'", erros[0])
+
+    def test_nome_vazio_aborta_e_anotacao_e_ignorada(self):
+        d = self.base()
+        nomes = _cidade(d, "itajai-acu", "blumenau")["cotas_nomes_na_fonte"]
+        nomes["alerta"] = "   "
+        nomes["_nota"] = "anotação, não nome"
+        erros = erros_de_nomes(d)
+        self.assertEqual(len(erros), 1)
+        self.assertIn("vazio", erros[0])
+
 
 if __name__ == "__main__":
     unittest.main()
