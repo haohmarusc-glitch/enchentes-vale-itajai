@@ -123,6 +123,24 @@ class Buracos(unittest.TestCase):
         s = [(T0, 1.0), (T0 + timedelta(hours=3), 1.2)]
         b = buracos(s)
         self.assertEqual(len(b), 1)
+        self.assertEqual(b[0][2], "dado")
+
+    def test_vao_entre_janelas_nao_e_buraco_de_dado(self):
+        """
+        Out/2023 e nov/2023 da 83050000 juntas: 29 dias sem carimbo no meio.
+        Ninguém pediu essa janela — não é a estação que ficou muda.
+        """
+        s = serie([1.0, 1.1]) + serie([1.2, 1.3], inicio=T0 + timedelta(days=29))
+        b = buracos(s)
+        self.assertEqual(len(b), 1)
+        self.assertEqual(b[0][2], "janela")
+
+    def test_mudez_ate_o_fim_da_primeira_janela_e_dado_mesmo_com_vao_depois(self):
+        """Barragem Taió Montante: muda no fim de uma janela, e depois vem outra janela."""
+        s = serie([2.9] + [None] * 8) + serie([None, None], inicio=T0 + timedelta(days=10))
+        tipos = [tipo for _, _, tipo in buracos(s)]
+        self.assertIn("dado", tipos)
+        self.assertIn("janela", tipos)
 
 
 class LeituraDoBruto(unittest.TestCase):

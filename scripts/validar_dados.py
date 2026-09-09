@@ -1492,11 +1492,10 @@ COTAS_QUE_NAO_SAO_FAIXA = {
 #: números: dá a quem lê mais confiança do que a evidência disponível permite.
 #: Por isso a exceção é NOMEADA e VENCÍVEL — quando o arquivo chegar, o guarda
 #: manda tirar a linha daqui.
-BRUTOS_PENDENTES = {
-    "data/brutos/ana-inventario-2026-09-07.json":
-        "gerado na VPS em 07/09/2026 (este ambiente tem *.ana.gov.br bloqueado) e "
-        "nunca commitado. Os valores gravados vieram da saída transcrita da execução. "
-        "Traz: commitar o bruto da VPS — docs/CODIGOS-ANA-PENDENTES.md, 'O que sobrou', item 3.",
+BRUTOS_PENDENTES: dict[str, str] = {
+    # Vazio desde 09/09/2026: o inventário da ANA de 07/09 (o único que já esteve
+    # aqui) chegou da VPS na branch vps/brutos-2026-09-09. Uma entrada nova só
+    # entra com o motivo e o que fecha a pendência, como aquela tinha.
 }
 
 #: Onde procurar citação de bruto. Só os JSONs de dados: é ali que a citação

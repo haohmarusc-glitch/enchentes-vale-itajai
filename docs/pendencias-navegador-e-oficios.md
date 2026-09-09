@@ -2,6 +2,24 @@
 
 ## A. Coletas que exigem o Chrome (extensão Claude reconectada)
 
+**Situação em 09/09/2026 (tabela do Jefferson, conferida contra o repo):**
+
+| item | situação |
+|---|---|
+| A1 · Asthon de Rio do Sul | pendente — só pelo navegador; a VPS leva 403 |
+| A2.1 · cotas de Brusque | ✅ 2.045 pontos (`data/brutos/brusque-mymaps-cotas.json`) — **é a carta de 2011, não o estudo de 2024** |
+| A2.2 · cotas de Blumenau 2014 | ✅ já no repo desde 01/09 (`data/brutos/blumenau-cotas-2014.pdf` e `.json`) |
+| A2.3 · KML de Gaspar | ✅ 1.615 pontos, iguais aos de `gaspar-cotas-2020.json` (`docs/GASPAR-SEM-NIVEL-AO-VIVO.md`); o KML baixado ficou na VPS, sem necessidade de commit |
+| A3.1 · faixas de Blumenau | ✅ 3/4/6/8, JSON oficial |
+| A3.2 · My Maps de Ituporanga | ✅ |
+| A3.3 · cadência de Gaspar | script pronto (`vigiar_cadencia_gaspar.py`); falta rodar o cron de IP brasileiro |
+| A3.4 · Ilhota | ✅ resolvido; régua segue com a COMPDEC (ofício C11) |
+| A4.1 · tábua do CHM | ✅ importada |
+| A4.2 · Aviso 03 da EPAGRI | ✅ encerrado — vai por e-mail (C12); 4 avisos de enchente ganhos e lidos (`docs/CIRAM-ACERVO.md`) |
+| A4.3 · AlertaBlu | ✅ mesmo que A3.1 |
+| A4.4 · 19 cheias de Brusque | ✅ lista completa |
+
+
 ### A1. Reenviar `rio-do-sul-asthon-api.json` com nível ao vivo de Taió, Ituporanga e Vidal Ramos
 Motivo: são as três estações que a Defesa Civil de SC (GraphQL) não resolve bem, mas a API Asthon de
 Rio do Sul cobre (city_id 4214805). Passos no console de `defesacivil.riodosul.sc.gov.br`:

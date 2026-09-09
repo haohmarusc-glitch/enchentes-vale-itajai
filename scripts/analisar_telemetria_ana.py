@@ -120,25 +120,40 @@ def crista(serie: list[tuple[datetime, float | None]],
     }
 
 
+#: Carimbos faltando por mais que isto não são buraco de dado: são o VÃO entre
+#: duas janelas que ninguém pediu à API (out/2023 → nov/2023, por exemplo).
+VAO_ENTRE_JANELAS = timedelta(days=1)
+
+
 def buracos(serie: list[tuple[datetime, float | None]],
-            minimo: timedelta = BURACO_MINIMO) -> list[tuple[datetime, datetime]]:
-    """Trechos sem cota (null OU carimbo faltando) com duração >= `minimo`."""
+            minimo: timedelta = BURACO_MINIMO) -> list[tuple[datetime, datetime, str]]:
+    """Trechos sem cota com duração >= `minimo`, cada um com o tipo.
+
+    `"dado"`: a API respondeu a linha e `Cota_Adotada` veio `null`, ou faltam
+    poucos carimbos — a estação não mediu. `"janela"`: faltam carimbos por mais
+    de um dia — ninguém pediu essa janela; não diz nada sobre a estação.
+    """
     achados = []
     inicio = None
     anterior = None
     for t, c in serie:
-        if anterior is not None and t - anterior > PASSO and inicio is None:
+        if anterior is not None and t - anterior > VAO_ENTRE_JANELAS:
+            if inicio is not None and anterior - inicio + PASSO >= minimo:
+                achados.append((inicio, anterior, "dado"))
+            achados.append((anterior + PASSO, t - PASSO, "janela"))
+            inicio = None
+        elif anterior is not None and t - anterior > PASSO and inicio is None:
             inicio = anterior + PASSO
         if c is None:
             if inicio is None:
                 inicio = t
         else:
             if inicio is not None and t - inicio >= minimo:
-                achados.append((inicio, t - PASSO))
+                achados.append((inicio, t - PASSO, "dado"))
             inicio = None
         anterior = t
     if inicio is not None and serie and serie[-1][0] - inicio + PASSO >= minimo:
-        achados.append((inicio, serie[-1][0]))
+        achados.append((inicio, serie[-1][0], "dado"))
     return achados
 
 
@@ -173,9 +188,12 @@ def relatorio(por_estacao: dict[str, tuple[list, int]], curva: bool) -> None:
         if c["na_borda"]:
             print("   ⚠️ A CRISTA ESTÁ NA BORDA do que se tem: é PISO, não pico. Falta a janela "
                   "vizinha (--data uma semana antes ou depois, na sonda).")
-        for ini, fim in buracos(serie):
+        for ini, fim, tipo in buracos(serie):
             dur = fim - ini + PASSO
-            print(f"   buraco: {_f(ini)} → {_f(fim)} ({dur.total_seconds() / 3600:.1f} h sem cota)")
+            if tipo == "janela":
+                print(f"   (sem janela pedida: {_f(ini)} → {_f(fim)})")
+            else:
+                print(f"   buraco: {_f(ini)} → {_f(fim)} ({dur.total_seconds() / 3600:.1f} h sem cota)")
         if curva:
             print("   curva horária em torno da crista:")
             for t, v in curva_horaria(serie, c["quando"]):
