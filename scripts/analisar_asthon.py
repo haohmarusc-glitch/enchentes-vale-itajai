@@ -33,6 +33,10 @@ O que sobra de bom: **Vidal Ramos**. É régua de rio, no município de Vidal
 Ramos, cabeceira do Itajaí-Mirim, uma das cidades sem nível nenhum na tela hoje.
 Só que **sem cota** — dá para mostrar, nunca para disparar.
 
+E, desde 09/09/2026, a própria **Ponte Dom Tito Buss** (`reference_station_id`
+da cidade): é a régua dona das cotas 4,50 / 5,50 / 6,50, e por isso passou a ser
+a leitura de Rio do Sul no lugar da Estação MKS — ver `coleta_asthon.py`.
+
 Uso:
     python3 scripts/analisar_asthon.py
 """

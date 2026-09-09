@@ -477,6 +477,18 @@ o projeto.
 
 ## Pendências
 
+- [x] **Rio do Sul lia a régua errada — trocada para a régua dona das cotas (09/09/2026).** As cotas
+  4,50 / 5,50 / 6,50 são `band_thresholds` da Ponte Dom Tito Buss na API Asthon; a leitura vinha da
+  "Estação MKS" pela página da Defesa Civil de Itajaí, e o par nunca fora provado (`conferir_par_regua.py`
+  via 88 de 88 leituras acima da atenção). A medição do Jefferson no mesmo instante desmentiu: MKS 4,64 m,
+  Tito Buss DCSC 4,63 m, Tito Buss Asthon 4,46 m — zeros com ~0,17 m de diferença; o site pintava amarelo com o
+  município em NORMAL. `coleta_asthon.py` passa a coletar a estação de referência da cidade
+  (`f6360951…`, cadência 5 min); a MKS sai do mapeamento (`comum._FALLBACK`) e vai para
+  `ESTACOES_APOSENTADAS` — não vira resgate, porque é outra régua. ⚠️ Não conferido daqui (Asthon
+  bloqueada no proxy): a primeira rodada do cron na VPS prova. Junto: os dois registros da sessão do
+  Jefferson em `docs/sessoes/`, a legenda 4,00/7,00 da estação 4 de Brusque em `cotas_divergencias`
+  (conflita com 3,00/5,00 da 79 — reconferir as duas páginas), pistas de cota para Vidal Ramos e
+  Botuverá no portal de Brusque, e A1 corrigido (a VPS alcança a Asthon).
 - [x] **Quarta rodada da telemetria da ANA (09/09/2026): os dois eventos dos Avisos da CIRAM, e Blumenau
   atingiu a crista ANTES de Taió nos dois.** Jan/2021: Taió 6,91 m às 16:15 de 22/01, Blumenau 6,82 m às
   21:45 de 21/01 (18 h 30 antes). Mai/2022: Taió 9,49 m às 04:00 de 05/05, Blumenau 9,41 m às 02:45 (1 h 15

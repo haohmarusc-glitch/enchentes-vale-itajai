@@ -37,7 +37,17 @@
 ## 3. Rio do Sul / Alto Vale — API Asthon (já no repo)
 - `https://public.asthon.com.br/public/` (city_id 4214805): `stations/list`, `stations/live`, `dams`,
   `station-history`, `panel`, `shelters`, `cities/{id}/forecast/bulletin`.
-- 29 estações do Alto Vale + barragens Oeste e Sul. Coletor: `scripts/coleta_rio_do_sul.py`.
+- 29 estações do Alto Vale + barragens Oeste e Sul. Coletor: `scripts/coleta_asthon.py` (lista
+  fechada de `station_id`), chamado de dentro de `coleta_niveis.py`.
+- **A VPS alcança a Asthon** (200, conferido em 09/09/2026); o 403 é do ambiente de
+  desenvolvimento, não da fonte. Endpoints e ids levantados em `docs/sessoes/2026-09-09-FONTES.md`
+  §2: `stations/live` traz `band_thresholds`; `station-history` aceita `resolution=raw` (10 min);
+  `level_datum: "gauge_zero"` vem declarado no histórico.
+- **Desde 09/09/2026 a leitura de Rio do Sul é a Ponte Dom Tito Buss da Asthon**
+  (`f6360951-219f-4859-935f-b2e2d13962f1`, `reference_station_id` da cidade), a régua dona das
+  cotas 4,50 / 5,50 / 6,50. A "Rio do Sul Estação MKS" (página da Defesa Civil de Itajaí) é outra
+  régua — 4,64 m contra 4,46 m no mesmo instante — e saiu da coleta. Ver
+  `docs/sessoes/2026-09-09-SESSAO.md` §4 e `scripts/coleta_asthon.py`.
 
 ## 3b. EPAGRI/CIRAM — maré MEDIDA e residual ⭐⭐ (04/09/2026)
 

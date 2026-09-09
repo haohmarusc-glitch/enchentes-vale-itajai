@@ -53,6 +53,20 @@ from comum import (NIVEL_MAXIMO_M, NIVEL_MINIMO_M, classificar_estacao,
                    nivel_plausivel)
 
 RE_NIVEL = re.compile(r"N[ií]vel do Rio:\s*([\d.,]+)\s*m", re.I)
+
+#: Réguas que a página publica e que o projeto DECIDIU não coletar como nível,
+#: cada uma com o motivo. Não é filtro de qualidade (isso é `nivel_plausivel`):
+#: é a régua certa publicando um número certo que responde à pergunta errada.
+REGUAS_NAO_COLETADAS = {
+    "Rio do Sul Estação MKS":
+        "09/09/2026: é OUTRA régua, não a Ponte Dom Tito Buss da Asthon que é a "
+        "dona das cotas de Rio do Sul (4,50/5,50/6,50). No mesmo instante, MKS "
+        "4,64 m contra Tito Buss Asthon 4,46 m — zero ~0,17 m acima; o site "
+        "pintava atenção com o município em NORMAL. A leitura da cidade vem da "
+        "Asthon (coleta_asthon.py). Coletada aqui, a cidade teria DUAS réguas e a "
+        "tela cairia em 'várias'. A chuva desta estação continua entrando, pela "
+        "página de chuvas: chuva não tem zero de régua.",
+}
 RE_DATA = re.compile(r"Data e hora da medi[cç][aã]o:\s*(\d{2}/\d{2}/\d{4})\s+(\d{2}:\d{2})", re.I)
 
 
@@ -107,6 +121,8 @@ def parse(html: str) -> list[dict]:
         if titulo in vistos:
             continue  # o mesmo <h2> alcançado por dois caminhos
         vistos.add(titulo)
+        if titulo in REGUAS_NAO_COLETADAS:
+            continue  # decisão escrita em REGUAS_NAO_COLETADAS; não é recusa de qualidade
 
         m_data = RE_DATA.search(texto)
         rio, cidade = classificar_estacao(titulo)

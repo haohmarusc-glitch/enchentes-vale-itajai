@@ -176,10 +176,14 @@ Cron — **encadeado na linha do `coleta_niveis.py`, ANTES do publish**, para o 
 sair fresco no mesmo ciclo (é `publicar_tempo_real.sh` quem o empacota junto do `ultimo.json`). A linha
 é uma só:
 ```
-*/15 * * * * cd /opt/enchentes-vale-itajai && python3 scripts/coleta_niveis.py >> /var/log/niveis.log 2>&1 && (python3 scripts/alerta_cotas.py; python3 scripts/coleta_nivel_sc.py ; ./scripts/publicar_tempo_real.sh) >> /var/log/niveis.log 2>&1
+*/15 * * * * cd /opt/enchentes-vale-itajai && python3 scripts/coleta_niveis.py >> /var/log/niveis.log 2>&1 && (python3 scripts/coleta_asthon.py ; python3 scripts/alerta_cotas.py; python3 scripts/coleta_nivel_sc.py ; python3 scripts/coleta_barragens.py --gravar ; ./scripts/publicar_tempo_real.sh) >> /var/log/niveis.log 2>&1
 ```
 Usa `;` (não `&&`) antes do publish para um tropeço do coletor estadual não travar a publicação do nível
-principal.
+principal. Estado conferido na VPS em 09/09/2026 (`docs/sessoes/2026-09-09-SESSAO.md` §12): o
+`coleta_asthon.py` roda DENTRO do encadeamento, antes do vigia e do publish, para a leitura da Asthon
+(Vidal Ramos e, desde 09/09, Rio do Sul) sair no mesmo ciclo em que é coletada. (A chamada avulsa é
+redundante com a que `coleta_niveis.py` já faz por dentro; não atrapalha.) A linha do
+`vigiar_cadencia_gaspar.py` foi retirada: a VPS não alcança o host de Gaspar.
 
 > **INCIDENTE 02/09/2026 — não repetir.** Na migração pro `/opt` esta entrada de cron se perdeu, e o
 > `coleta_nivel_sc.py` ficou **13 h sem rodar**: as cabeceiras (Taió, Ituporanga, Rio do Sul…) congelaram

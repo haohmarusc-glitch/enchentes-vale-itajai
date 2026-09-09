@@ -247,6 +247,10 @@ _FALLBACK: list[tuple[str, str | None, str]] = [
     (r"^DC-08\b", "ribeirao-canhanduba", "itajai"),
     (r"^Brusque", "itajai-mirim", "brusque"),
     (r"^Blumenau", "itajai-acu", "blumenau"),
+    # "Rio do Sul Estação MKS" continua SENDO de Rio do Sul — a chuva dela é
+    # chuva da cidade. O que mudou em 09/09/2026 é que o NÍVEL dela não é mais
+    # coletado (coleta_itajai.REGUAS_NAO_COLETADAS): é outra régua, com zero
+    # ~0,17 m acima da Ponte Dom Tito Buss da Asthon, que é a dona das cotas.
     (r"^Rio do Sul", "itajai-acu", "rio-do-sul"),
 ]
 

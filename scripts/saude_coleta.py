@@ -50,9 +50,9 @@ FUSO = ZoneInfo("America/Sao_Paulo")
 #: A coleta roda a cada 15 min. Três ciclos perdidos já é falha, não atraso.
 TOLERANCIA_COLETA_MIN = 45
 
-#: A fonte mais lenta que acompanhamos (a estação MKS de Rio do Sul) publica
-#: com quase uma hora de atraso. O dobro disso é folga honesta antes de dizer
-#: que a fonte parou.
+#: A fonte mais lenta que acompanhávamos (a estação MKS de Rio do Sul, aposentada
+#: em 09/09/2026) publicava com quase uma hora de atraso. O dobro disso segue
+#: sendo folga honesta antes de dizer que uma fonte parou.
 TOLERANCIA_FONTE_MIN = 120
 
 #: O bruto estadual tem muita estação que fica silenciosa por horas (das 25, é
@@ -110,6 +110,14 @@ ESTACOES_APOSENTADAS = {
         "ofício C10 (docs/oficios-prontos.md) dizendo se a régua voltou e em que "
         "endereço — e aí Gaspar volta a ser cobrada. "
         "Ver docs/GASPAR-SEM-NIVEL-AO-VIVO.md.",
+    "Rio do Sul Estação MKS":
+        "Deixou de ser a régua de Rio do Sul em 09/09/2026, por decisão: é OUTRA "
+        "régua (zero ~0,17 m acima da Ponte Dom Tito Buss da Asthon, que é a dona "
+        "das cotas 4,50/5,50/6,50), e o site pintava atenção sobre ela com a cota "
+        "da outra. A leitura da cidade passou a vir da Asthon (`coleta_asthon.py`, "
+        "estação f6360951…). A MKS continua publicada pela Defesa Civil de Itajaí "
+        "e pode ser coletada de novo como régua própria se um dia tiver cota "
+        "própria. SAI DAQUI se voltar a ser mapeada em comum._FALLBACK.",
 }
 
 

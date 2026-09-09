@@ -130,6 +130,20 @@ class TestCadastro(unittest.TestCase):
         self.assertEqual(classificar_estacao("Brusque Estação Guarani"),
                          classificar_estacao("Brusque"))
 
+    def test_a_chuva_da_mks_continua_sendo_de_rio_do_sul(self):
+        """
+        09/09/2026: o NÍVEL da MKS deixou de ser coletado (é outra régua, zero
+        ~0,17 m acima da Tito Buss da Asthon, dona das cotas), mas a CHUVA dela
+        continua sendo chuva de Rio do Sul — chuva não tem zero de régua. O
+        mapeamento fica; o corte é em coleta_itajai.REGUAS_NAO_COLETADAS.
+        """
+        from coleta_itajai import REGUAS_NAO_COLETADAS
+        from comum import classificar_estacao
+        self.assertEqual(classificar_estacao("Rio do Sul Estação MKS"), ("itajai-acu", "rio-do-sul"))
+        self.assertIn("Rio do Sul Estação MKS", REGUAS_NAO_COLETADAS)
+        self.assertEqual(classificar_estacao("Rio do Sul, Ponte Dom Tito Buss (Asthon)"),
+                         ("itajai-acu", "rio-do-sul"))
+
     def test_pluviometro_nao_conta_como_regua(self):
         """
         A Guarani está no mesmo (rio, cidade) da régua de Brusque. Se contasse
