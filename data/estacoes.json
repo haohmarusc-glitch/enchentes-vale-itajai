@@ -223,9 +223,10 @@
             "inundacao": 6.5
           },
           "fontes_tempo_real": [
-            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Rio do Sul Estação MKS)",
-            "https://defesacivil.riodosul.sc.gov.br/index.php?r=externo%2Fmetragem (JS)",
-            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+            "https://public.asthon.com.br/public/panel?city_id=4214805 (Ponte Dom Tito Buss, station_id f6360951-219f-4859-935f-b2e2d13962f1 — a régua das cotas; scripts/coleta_asthon.py, desde 09/09/2026)",
+            "https://defesacivil.riodosul.sc.gov.br/ (portal novo, React, sobre a mesma API Asthon)",
+            "https://monitoramento.defesacivil.sc.gov.br/mapa (Ponte Dom Tito Buss DCSC — número sem faixa, usar_para_cota: false)",
+            "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios ('Rio do Sul Estação MKS' — NÃO usada desde 09/09/2026: outra régua, zero ~0,17 m acima)"
           ],
           "regua": "Ponte Dom Tito Buss",
           "coordenadas": [
@@ -233,7 +234,7 @@
             -49.6335
           ],
           "regua_das_cotas": "Ponte Dom Tito Buss",
-          "regua_das_cotas_fonte": "scripts/conferir_par_regua.py: as cotas 4,50/5,50/6,50 são da Ponte Dom Tito Buss, e a leitura ao vivo chega como 'Rio do Sul Estação MKS', por outra página. O par NÃO foi provado — são réguas de nome diferente, e pintar a MKS com a cota da Tito é aplicar a cota de uma régua a outra.",
+          "regua_das_cotas_fonte": "✅ RESOLVIDO em 09/09/2026, pelo lado da LEITURA, não da cota. O par MKS × Ponte Dom Tito Buss foi DESMENTIDO por medição no mesmo instante (sessão do Jefferson na VPS, docs/sessoes/2026-09-09-SESSAO.md §4): MKS 4,64 m (~50 min mais velha), Tito Buss DCSC 4,63 m, Tito Buss Asthon 4,46 m. A MKS é a régua da DCSC, com zero ~0,17 m acima da Asthon; as cotas 4,50/5,50/6,50 são band_thresholds da Asthon na Tito Buss (reference_station_id da cidade). Com atenção em 4,50, o site pintava amarelo enquanto o município mostrava NORMAL na régua dona das cotas — e conferir_par_regua.py já tinha visto 88 de 88 leituras da MKS acima da atenção. A leitura de Rio do Sul passou a vir da Tito Buss da Asthon (scripts/coleta_asthon.py, cadência 5 min); a MKS saiu da coleta e do mapeamento (comum._FALLBACK, saude_coleta.ESTACOES_APOSENTADAS). ⚠️ Não conferido deste ambiente (Asthon bloqueada no proxy): a primeira rodada do cron na VPS é que prova que a leitura chega com este título.",
           "cotas_verificado": false,
           "codigo_ana_verificado": true,
           "codigo_ana_nome": "RIO DO SUL - NOVO",
@@ -251,7 +252,8 @@
           "codigo_ana_ressalva": "⚠️ CONTINUA ABERTO, mas ENCOLHEU MUITO (07/09/2026). O `codigo_ana` desta cidade é a 83300200 RIO DO SUL - NOVO, cadastrada no Itajaí-AÇU, a 0,43 km deste pino. A dúvida era: a 83094000, cadastrada no Itajaí do OESTE, fica a apenas 35 m da nossa régua — seria ELA a estação daqui? A leitura do inventário em 07/09/2026 trouxe o dado que faltava e mudou a pergunta: A ESCALA DA 83094000 ENCERROU EM 08/2005. Ela é a estação que ficava na nossa régua e está MORTA há 21 anos; a 83300200 é a que continua publicando. Para o presente não há escolha a fazer. Para o histórico, a pergunta que resta é se as duas compartilham o zero — e essa é a mesma pergunta do datum de Blumenau, que o inventário público não responde. ⚠️ DOIS SINAIS DE QUE O CADASTRO DA 83094000 É FRÁGIL, e os dois vieram juntos: a área aparece como 5.160 km², IGUAL à do Açu, o que não faz sentido para uma cabeceira; e a data de início da escala vem como 1800-01-01, que não é data, é preenchimento. Não usar nem a área nem o rio declarado dessa estação sem conferir em outra fonte. As quatro estações da ANA em Rio do Sul (83094000 Oeste, 83300000 Sul, 83300002 e 83300200 Açu) seguem espelhando as três réguas físicas do município, e continua valendo: não parear série de um rio com régua de outro. Ver docs/INVENTARIO-ANA.md e docs/CODIGOS-ANA-PENDENTES.md.",
           "cotas_pendencia": "As faixas 4,50 / 5,50 / 6,50 são da API municipal (band_thresholds, lidas em 03/09/2026), mas a Defesa Civil de Rio do Sul REVISA a cota de alerta em reunião técnica com a estadual: em 15/08/2026 fixou alerta em 5,50 e 6,50 m (ND Mais); em 31/08/2026 o Jornal Razão registrava 'cota de alerta em vigor de 6,50 a 7,50 m' (RELATADO pelo levantamento externo entregue pelo Jefferson em 09/09/2026 — docs/COTAS-11-MUNICIPIOS-2026-09-09.md — NÃO CONFERIDO daqui: o host está bloqueado neste ambiente; imprensa). Não é mudança de régua, é de gatilho operacional. Datar sempre a versão usada; a API é a fonte que se pode reler, e `coleta_asthon.py` passa pelo painel a cada coleta — vale um guarda que avise quando os três números de band_thresholds mudarem, ainda não feito.",
           "cotas_aviso_publico": "As faixas de Rio do Sul (4,50 / 5,50 / 6,50 m) são da régua da Ponte Dom Tito Buss, como publicadas pela Defesa Civil municipal em 03/09/2026. A cota de alerta é revista em reuniões técnicas ao longo da cheia, e a imprensa noticiou versões diferentes em agosto de 2026. Em cheia, siga a Defesa Civil de Rio do Sul (199).",
-          "codigo_ana_divergencia_epagri": "A EPAGRI/CIRAM lista 83270000 'Rio do Sul – Novo' (Em Manutenção, desde 31/12/1996, −27,2075 / −49,6300); o cadastro usa 83300200 com o MESMO nome. Dois códigos, um nome: conferir no inventário da ANA qual é qual antes de citar qualquer um como 'a' estação. docs/RESPOSTA-EPAGRI-C5-2026-09-09.md"
+          "codigo_ana_divergencia_epagri": "A EPAGRI/CIRAM lista 83270000 'Rio do Sul – Novo' (Em Manutenção, desde 31/12/1996, −27,2075 / −49,6300); o cadastro usa 83300200 com o MESMO nome. Dois códigos, um nome: conferir no inventário da ANA qual é qual antes de citar qualquer um como 'a' estação. docs/RESPOSTA-EPAGRI-C5-2026-09-09.md",
+          "fonte_cotas": "API Asthon, stations/live, band_thresholds da estação f6360951-219f-4859-935f-b2e2d13962f1 (Ponte Dom Tito Buss, reference_station_id da cidade 4214805): 4,50 / 5,50 / 6,50 m. Lidas em 03/09/2026 (data/brutos/rio-do-sul-asthon-2026-08-31.json) e reconferidas em 09/09/2026."
         },
         {
           "id": "ibirama",
@@ -698,7 +700,8 @@
           },
           "cotas_m_por_que_vazio": "⛔ NÃO PREENCHER COM AS COTAS DO SALSEIRO (registrado 07/09/2026). O portal da Defesa Civil de Brusque publica, na estação 31, 'Salseiro – Vidal Ramos' com normalidade < 3,00 m, atenção 3,00 m (ou chuva > 35,00 mm) e emergência 4,50 m. É tentador: são exatamente as cotas que faltam aqui, e o nome da cidade está no rótulo. MAS A RÉGUA É OUTRA. A ANA respondeu ao ofício C9 que a SALSEIRO (83892990) fica a 6,8 km desta régua e drena 286 km² — sub-bacia bem menor. É o mesmo vínculo por NOME DE MUNICÍPIO que o `codigo_ana_nao_e` abaixo já recusou, voltando por outra porta. Aplicar cota de uma régua a outra é o erro que este projeto persegue, e aqui ele viria com aparência de achado. TRÊS SINAIS A MAIS de que não se deve usar: a estação 31 está PARADA desde 18/04/2026 (142 dias na leitura de 07/09) e mesmo assim serve o número com o rótulo 'situação de NORMALIDADE'; ela não aparece na tabela das 22 estações do portal, só por URL direta — aposentada da listagem sem sair do banco; e o gatilho de chuva de 35,00 mm destoa dos 6,00 mm usados na Ponte Estaiada e no Belchior de Gaspar, o que sugere legenda herdada e não revisada. O QUE DE FATO RESOLVE: perguntar à Defesa Civil de Vidal Ramos as cotas da régua DCSC-00024 (a que este site mostra, 'Vidal Ramos (Asthon)'). Esta cidade é a única do projeto cuja leitura chega fresca e ainda assim fica cinza no mapa — falta só a escala. QUARTO SINAL, visto na captura de tela de 07/09/2026 19:08: no MESMO cartão, as cinco acumuladas de chuva (1 h, 6 h, 12 h, 24 h, 48 h) aparecem como '---' e a 'Chuva Atual' aparece como '0,00 mm'. Ou seja, a própria página prova que '---' é como esta fonte diz 'não tenho dado' — e então o '0,00' de uma estação parada há 142 dias não é medição, é número fabricado. Isso importa porque a regra de atenção da legenda lê exatamente esse campo: 'Atenção (Nível maior que 3,00 m OU Chuva atual maior que 35,00 mm)'. O gatilho depende do único campo que se sabe inventado. É a mesma armadilha do Ribeirão Belchior de Gaspar, que serve 0,00 em vez de 'sem leitura', aqui pela via oposta: valor antigo congelado em vez de zero permanente. Some-se que a faixa verde 'situação de NORMALIDADE' no topo é do MUNICÍPIO inteiro, não da estação — o estado de uma régua parada é ecoado como estado da cidade. Nosso `numero()` já devolve None para '---', '—' e 'N/D'; o que não se pode é confiar no 0,00 que vem ao lado deles.",
           "cotas_aviso_publico": "A estação que aparece com o nome de Vidal Ramos em outros sites fica no Salseiro, 6,8 km rio acima, e tem zero próprio — medimos 0,70 m de diferença entre as duas leituras feitas com nove minutos de intervalo. As cotas de lá não valem aqui, e por isso esta tela não pinta cor.",
-          "candidata_historico_portal_brusque": "PISTA, NÃO VÍNCULO (08/09/2026). O portal da Defesa Civil de Brusque tem uma estação 3 chamada 'Vidal Ramos', SEPARADA da 31 'Salseiro – Vidal Ramos' (lida pelo Jefferson na lista de estações). Como a 79 'Ponte Estaiada – DCSC' é o repasse da DCSC-00019 (par provado em 07/09/2026, e reconfirmado em 08/09 às 20:15 com 1,24 m dos dois lados), a 3 PODE ser o repasse da DCSC-00024 — a régua que a nossa coleta ao vivo lê para esta cidade. Se for, o histórico dela desde 2018, baixável pelo mesmo botão, é o histórico da NOSSA régua. ⚠️ CORRIGIDO NO MESMO DIA: o teste das três leituras simultâneas NÃO PODE SER FEITO — a listagem 'Estações de telemetria' do portal (24 estações, vista em 08/09/2026 às 20:15) NÃO inclui a 3, nem a Salseiro, nem Botuverá, nem Guarani; das 24, só a Ponte Estaiada – DCSC publica nível. A 3 não transmite ao vivo, ou não por ali. O QUE DECIDE, então: baixar o histórico da 3 (fatias anuais, ?validar antes) e SOBREPOR com o que a nossa coleta gravou da DCSC-00024 em data/tempo-real/*.ndjson na VPS — se as leituras coincidirem carimbo a carimbo na janela comum, é a mesma régua; se a série da 3 acabar antes de a nossa começar, o teste fica sem janela e a pista continua pista. Até lá: nem série, nem cota, nem trânsito. O 3,00/5,00 que o portal publica para a 3 NÃO ENTRA em cotas_m nem com o par provado, sem antes saber de quem é a escala: o portal é de Brusque, a cidade é Vidal Ramos."
+          "candidata_historico_portal_brusque": "PISTA, NÃO VÍNCULO (08/09/2026). O portal da Defesa Civil de Brusque tem uma estação 3 chamada 'Vidal Ramos', SEPARADA da 31 'Salseiro – Vidal Ramos' (lida pelo Jefferson na lista de estações). Como a 79 'Ponte Estaiada – DCSC' é o repasse da DCSC-00019 (par provado em 07/09/2026, e reconfirmado em 08/09 às 20:15 com 1,24 m dos dois lados), a 3 PODE ser o repasse da DCSC-00024 — a régua que a nossa coleta ao vivo lê para esta cidade. Se for, o histórico dela desde 2018, baixável pelo mesmo botão, é o histórico da NOSSA régua. ⚠️ CORRIGIDO NO MESMO DIA: o teste das três leituras simultâneas NÃO PODE SER FEITO — a listagem 'Estações de telemetria' do portal (24 estações, vista em 08/09/2026 às 20:15) NÃO inclui a 3, nem a Salseiro, nem Botuverá, nem Guarani; das 24, só a Ponte Estaiada – DCSC publica nível. A 3 não transmite ao vivo, ou não por ali. O QUE DECIDE, então: baixar o histórico da 3 (fatias anuais, ?validar antes) e SOBREPOR com o que a nossa coleta gravou da DCSC-00024 em data/tempo-real/*.ndjson na VPS — se as leituras coincidirem carimbo a carimbo na janela comum, é a mesma régua; se a série da 3 acabar antes de a nossa começar, o teste fica sem janela e a pista continua pista. Até lá: nem série, nem cota, nem trânsito. O 3,00/5,00 que o portal publica para a 3 NÃO ENTRA em cotas_m nem com o par provado, sem antes saber de quem é a escala: o portal é de Brusque, a cidade é Vidal Ramos.",
+          "cotas_pistas_2026_09_09": "PISTAS, não cota (docs/sessoes/2026-09-09-SESSAO.md §1): o portal da Defesa Civil de Brusque tem uma estação 3 'Vidal Ramos' (última medição 04/11/2018 — morta) com legenda normalidade < 3,00 / atenção 3,00 ou chuva > 30 mm / emergência 5,00; a Rádio Diplomata (01/09/2026) chamou 3,00 m de atenção e O Município diz que 'transborda' a 3,5 m. Três fontes apontando para atenção em 3,00 m NA RÉGUA DA SEDE — mas nenhuma diz se a estação 3 de 2018 é a mesma régua da Asthon/DCSC-00024 de hoje, nem o zero. É a pergunta a levar à COMPDEC de Vidal Ramos: 'a régua atual é a mesma da estação 3 do portal de Brusque, e a atenção continua em 3,00 m?'. Não entra em cotas_m sem essa resposta."
         },
         {
           "id": "botuvera",
@@ -720,7 +723,8 @@
           "coordenadas": [
             -27.1862,
             -49.1206
-          ]
+          ],
+          "cotas_pistas_2026_09_09": "PISTAS, não cota (docs/sessoes/2026-09-09-SESSAO.md §1): o portal da Defesa Civil de Brusque publica TRÊS estações em Botuverá com legendas diferentes — 18 'Botuverá' (viva em 18/04/2026): atenção 3,50 / emergência 6,00; 2 'CEOPS – Botuverá' (18/12/2020): 3,50 / 6,00; 32 'Botuverá – Prefeitura' (22/11/2022): 3,00 / 5,00. A imprensa de 01/09/2026 chamou 4,45 m de atenção e 3,06 m de normalidade, o que cabe na 18 (3,50) e não na 32 (3,00). Qual delas é a régua que a DCSC publica para Botuverá hoje, e o zero, é a pergunta à COMPDEC. Não entra em cotas_m."
         },
         {
           "id": "guabiruba",
@@ -791,7 +795,17 @@
             "_pendente_de_confirmacao": "Lido no navegador do Jefferson, não por este ambiente (o proxy recusa defesacivil.brusque.sc.gov.br). Vale confirmar com a Defesa Civil de Brusque que a legenda da estação 79 é a escala operacional vigente — mesma pergunta feita a Gaspar no ofício C10."
           },
           "cotas_aviso_publico": "A Defesa Civil de Brusque não decide olhando só esta régua: ela acompanha Vidal Ramos e Botuverá, rio acima, e a tendência da cheia. Pode declarar atenção ANTES de o número daqui subir, porque sabe que a água está descendo. Esta tela mostra a régua daqui — não a decisão dela.",
-          "codigo_ana_telemetria": "DESATIVADA em 27/03/2025 — tabela da EPAGRI/CIRAM na resposta ao C5 (docs/RESPOSTA-EPAGRI-C5-2026-09-09.md). Explica o vazio da HidroinfoanaSerieTelemetricaAdotada em 08/09/2026: não havia o que devolver. O e-mail à ANA sobre a 'telemetria desde 1996' fica sem objeto."
+          "codigo_ana_telemetria": "DESATIVADA em 27/03/2025 — tabela da EPAGRI/CIRAM na resposta ao C5 (docs/RESPOSTA-EPAGRI-C5-2026-09-09.md). Explica o vazio da HidroinfoanaSerieTelemetricaAdotada em 08/09/2026: não havia o que devolver. O e-mail à ANA sobre a 'telemetria desde 1996' fica sem objeto.",
+          "cotas_divergencias": [
+            {
+              "cotas_m": {
+                "atencao": 4.0,
+                "emergencia": 7.0
+              },
+              "fonte": "Legenda da estação 4 'Ponte Estaiada – ANA' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/4), levantada pelo Jefferson em 09/09/2026 (docs/sessoes/2026-09-09-SESSAO.md §1): normalidade < 4,00; atenção > 4,00 ou chuva > 30 mm; emergência > 7,00. Na mesma tabela, a estação 79 'Ponte Estaiada – DCSC' aparece SEM legenda.",
+              "por_que_nao_adotada": "Conflita com a legenda de 3,00 / 5,00 lida na estação 79 em 07/09/2026 (fonte_cotas). Duas leituras do mesmo portal, dois dias, dois números — uma delas mudou ou uma delas foi lida da estação errada. A régua que o site lê é a Ponte Estaiada (par provado com a DCSC em 07/09: 1,27 / 1,27 / 1,28 m); qual das duas legendas é a dela é o que falta saber. Conferir as DUAS páginas de novo (a VPS alcança Brusque): curl -sA enchentes-vale-itajai https://defesacivil.brusque.sc.gov.br/estacao/ver/79 e …/ver/4, e colar a legenda de cada uma. Enquanto isso fica 3,00 / 5,00: pinta mais cedo, que é o erro menos grave."
+            }
+          ]
         },
         {
           "id": "itajai",
@@ -1242,11 +1256,13 @@
       "verificado": false
     },
     {
-      "titulo": "Rio do Sul Estação MKS",
+      "titulo": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
       "rio": "itajai-acu",
       "cidade": "rio-do-sul",
       "cotas_m": {},
-      "verificado": false
+      "verificado": false,
+      "fonte_coordenada": null,
+      "nota": "Régua de referência de Rio do Sul na API Asthon (station_id f6360951-219f-4859-935f-b2e2d13962f1, reference_station_id da cidade 4214805), coletada por scripts/coleta_asthon.py desde 09/09/2026 no lugar da 'Rio do Sul Estação MKS'. As cotas ficam no bloco da cidade (cotas_m 4,50/5,50/6,50) porque são desta régua (band_thresholds) e a cidade tem UMA régua. A MKS, da página da Defesa Civil de Itajaí, é outra régua: no mesmo instante de 09/09/2026, MKS 4,64 m e Tito Buss DCSC 4,63 m contra Tito Buss Asthon 4,46 m (medição do Jefferson na VPS, docs/sessoes/2026-09-09-SESSAO.md, §4). Não é resgate: resgate é a MESMA régua por outro canal."
     },
     {
       "codigo": "DC-00",

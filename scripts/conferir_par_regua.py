@@ -37,6 +37,13 @@ Entre os dois, o veredito é "não dá para dizer" — e "não sei" é resposta.
 O SCRIPT NÃO GRAVA NADA. Ele responde uma pergunta; mudar cota ou quem dispara
 aviso é decisão de quem mantém o projeto.
 
+RIO DO SUL, RESPONDIDO EM 09/09/2026: o par foi DESMENTIDO por medição no mesmo
+instante (sessão do Jefferson na VPS) — MKS 4,64 m e Ponte Dom Tito Buss (DCSC)
+4,63 m contra Ponte Dom Tito Buss (Asthon) 4,46 m. Réguas diferentes, ~0,17 m.
+A solução não foi ajustar cota: foi trocar a LEITURA para a régua dona das cotas
+(`coleta_asthon.py`, estação de referência da cidade na API). A MKS saiu da
+coleta. O texto acima fica como registro do problema.
+
 Uso:
     python3 scripts/conferir_par_regua.py rio-do-sul
     python3 scripts/conferir_par_regua.py --listar

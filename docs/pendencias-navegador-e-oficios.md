@@ -6,7 +6,7 @@
 
 | item | situação |
 |---|---|
-| A1 · Asthon de Rio do Sul | pendente — só pelo navegador; a VPS leva 403 |
+| A1 · Asthon de Rio do Sul | **corrigido em 09/09/2026: a VPS alcança a Asthon** (200); o 403 é deste ambiente de desenvolvimento. `coleta_asthon.py` roda no cron da VPS. Reenviar o `rio-do-sul-asthon-api.json` é `curl` de lá, não do navegador |
 | A2.1 · cotas de Brusque | ✅ 2.045 pontos (`data/brutos/brusque-mymaps-cotas.json`) — **é a carta de 2011, não o estudo de 2024** |
 | A2.2 · cotas de Blumenau 2014 | ✅ já no repo desde 01/09 (`data/brutos/blumenau-cotas-2014.pdf` e `.json`) |
 | A2.3 · KML de Gaspar | ✅ 1.615 pontos, iguais aos de `gaspar-cotas-2020.json` (`docs/GASPAR-SEM-NIVEL-AO-VIVO.md`); o KML baixado ficou na VPS, sem necessidade de commit |

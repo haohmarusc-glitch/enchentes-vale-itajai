@@ -1,13 +1,28 @@
 #!/usr/bin/env python3
-"""Nível de Vidal Ramos pela API Asthon do Alto Vale.
+"""Nível de Vidal Ramos e de Rio do Sul pela API Asthon do Alto Vale.
 
 `public.asthon.com.br` é a API que o portal da Defesa Civil de Rio do Sul usa.
-De todas as estações dela, só UMA entra na tela por aqui: **Vidal Ramos**, régua
-fluvial do próprio município, mesmo zero das cotas — uma das cidades sem nível
-nenhum na tela. As demais são barragem (reservatório, escala do barramento),
+De todas as estações dela, só DUAS entram na tela por aqui, por **lista fechada
+de station_id**, nunca por nome, e só o que foi conferido:
+
+* **Vidal Ramos** — régua fluvial do próprio município, uma das cidades sem
+  nível nenhum na tela até 31/08/2026. Sem cota ainda: mostra, não pinta.
+* **Rio do Sul, Ponte Dom Tito Buss** (desde 09/09/2026) — é a régua de
+  referência da cidade na API (`reference_station_id`) e a DONA das cotas
+  4,50 / 5,50 / 6,50 que `estacoes.json` guarda (`band_thresholds`). Até então
+  a leitura de Rio do Sul vinha da "Estação MKS", pela página da Defesa Civil de
+  Itajaí, e o site pintava a MKS com a cota da Tito Buss — o par nunca foi
+  provado (`conferir_par_regua.py`), e em 09/09/2026 foi DESMENTIDO: no mesmo
+  instante, MKS 4,64 m e Tito Buss (DCSC) 4,63 m contra Tito Buss (Asthon)
+  4,46 m. Zeros diferentes, ~0,17 m; com atenção em 4,50 m, o site pintava
+  amarelo enquanto o município mostrava NORMAL na régua dona das cotas. Cadência
+  de 5 min contra ~1 h da MKS. A MKS saiu da coleta (`comum._FALLBACK`,
+  `saude_coleta.ESTACOES_APOSENTADAS`), e NÃO virou resgate: resgate é para a
+  MESMA régua por outro canal, e esta é outra régua.
+
+As demais estações da API são barragem (reservatório, escala do barramento),
 altitude ou a cota de Rio do Sul copiada para outra régua; `analisar_asthon.py`
-mostra por quê. Por isso este coletor entra por **lista fechada de station_id**,
-nunca por nome, e só o que foi conferido.
+mostra por quê.
 
 Dois cuidados que impedem número certo respondendo pergunta errada:
 
@@ -44,11 +59,17 @@ FUSO_BRASILIA = ZoneInfo("America/Sao_Paulo")
 #: (barragem, altitude e cota copiada ficam de fora).
 POR_ESTACAO = {
     "bd65df3e-a5e3-4760-a879-56df0fb90787": ("itajai-mirim", "vidal-ramos"),
+    # `reference_station_id` da cidade 4214805 na própria API; é a régua cujas
+    # `band_thresholds` são as cotas de Rio do Sul em estacoes.json.
+    "f6360951-219f-4859-935f-b2e2d13962f1": ("itajai-acu", "rio-do-sul"),
 }
 
-#: Título da régua na tela, por cidade.
+#: Título da régua na tela, por cidade. É a chave de ligação com
+#: `estacoes_tempo_real` em estacoes.json e com o estado do vigia — não mudar
+#: sem migrar os dois.
 TITULO = {
     "vidal-ramos": "Vidal Ramos (Asthon)",
+    "rio-do-sul": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
 }
 
 

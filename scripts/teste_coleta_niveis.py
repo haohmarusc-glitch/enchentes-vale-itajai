@@ -94,6 +94,19 @@ class TesteParse(unittest.TestCase):
     def test_pagina_sem_estacoes_devolve_vazio(self):
         self.assertEqual(parse("<html><body><p>Indisponível</p></body></html>"), [])
 
+    def test_o_nivel_da_mks_de_rio_do_sul_nao_entra_mais(self):
+        """
+        09/09/2026: a MKS é outra régua (4,64 m contra 4,46 m da Ponte Dom Tito
+        Buss da Asthon, dona das cotas, no mesmo instante). Coletada, Rio do Sul
+        teria duas réguas e a tela cairia em 'várias'; e antes disso o site
+        pintava atenção sobre ela com a cota da outra. A decisão está escrita em
+        coleta_itajai.REGUAS_NAO_COLETADAS; a página continua publicando.
+        """
+        pagina = PAGINA.replace("<h2>Blumenau</h2>", "<h2>Rio do Sul Estação MKS</h2>")
+        titulos = {l["estacao"] for l in parse(pagina)}
+        self.assertNotIn("Rio do Sul Estação MKS", titulos)
+        self.assertIn("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", titulos)
+
 
 
 class TestSemRede(unittest.TestCase):
