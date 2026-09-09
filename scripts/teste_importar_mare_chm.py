@@ -9,6 +9,7 @@ cruzamento com a tábua anterior mede minutos, não escolhe fonte.
     python3 scripts/teste_importar_mare_chm.py
 """
 
+import importlib.util
 import unittest
 from datetime import datetime
 
@@ -82,6 +83,10 @@ class Cruzamento(unittest.TestCase):
         self.assertIsNone(cruzar(novos, []))
 
 
+# O CI instala só beautifulsoup4, requests e ruff; o pypdf é dependência do
+# importador, não do projeto. Sem ele, o único teste que abre o PDF é pulado
+# com o motivo à vista — os testes com a fixture de texto continuam rodando.
+@unittest.skipUnless(importlib.util.find_spec("pypdf"), "pypdf não instalado (pip install pypdf)")
 class BrutoReal(unittest.TestCase):
     def test_o_pdf_de_2026_cobre_o_ano_inteiro(self):
         if not BRUTO.exists():
