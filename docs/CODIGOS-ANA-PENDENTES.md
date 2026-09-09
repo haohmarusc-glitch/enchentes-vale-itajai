@@ -135,10 +135,11 @@ abrir (estação longe das duas continua reprovando).
 2. **A cota do zero da régua** — não está no inventário público. Continua sendo
    o que destrava a `REGRA_REFERENCIA_BLUMENAU`, e agora também a comparação
    entre 83094000 e 83300200 em Rio do Sul.
-3. **`data/brutos/ana-inventario-2026-09-07.json`** foi gerado na VPS e ainda
-   não está no repositório. Os valores gravados aqui vieram da **saída
-   transcrita**, não do arquivo — commitar o bruto da VPS fecha isso.
-   **09/09/2026:** a sonda da API gravou na VPS o equivalente pela API,
-   `data/brutos/ana-inventario-api-2026-09-09.json` (1.810 estações, 4,9 MB).
-   Commitar ESSE arquivo e apontar os cinco blocos do `estacoes.json` para ele
-   fecha a pendência; o de 07/09 pode ficar só como referência histórica.
+3. ✅ **FECHADO em 09/09/2026.** `data/brutos/ana-inventario-2026-09-07.json` (o
+   recorte da bacia, 20 KB) e `data/brutos/ana-inventario-api-2026-09-08.json`
+   (o inventário completo da API, 1.808 estações de SC, 4,8 MB) chegaram da VPS
+   na branch `vps/brutos-2026-09-09`. `BRUTOS_PENDENTES` está vazio e os cinco
+   blocos do `estacoes.json` dizem que o arquivo está aqui. (A execução
+   transcrita como "09/09" dizia 1.810 estações e um arquivo `…-2026-09-09.json`
+   que não existia na VPS; o que existe é o de 08/09 com 1.808. Diferença de
+   dois itens, não investigada.)

@@ -477,6 +477,14 @@ o projeto.
 
 ## Pendências
 
+- [x] **Os brutos chegaram da VPS e `BRUTOS_PENDENTES` esvaziou (09/09/2026).** Branch
+  `vps/brutos-2026-09-09`: doze séries de telemetria da ANA, o recorte do inventário de 07/09 (o que cinco
+  blocos do cadastro citavam sem existir), o inventário completo de 08/09 (1.808 estações) e os quatro
+  avisos de enchente da CIRAM com sha256 e classificação dos 84. Os avisos lidos: o par de 22/01/2021 é
+  **Taió e Blumenau no Açu**, não pareia com Brusque; a EPAGRI chamava 6,69 m de ALERTA (2021) e 8,37 m
+  de EMERGÊNCIA (2022) na 83050000, diferente das escalas de 2024 e do PLANCON — registrado sem mexer nas
+  cotas em uso. `analisar_telemetria_ana.py` separa buraco de dado de vão entre janelas.
+  `docs/CIRAM-ACERVO.md`, `docs/ANA-API-2026-09-08.md`.
 - [x] **Terceira rodada da telemetria da ANA (09/09/2026): 12,13 m em Taió em 09/10/2023, o buraco de
   2020 está na fonte, e só a Salseiro ainda transmite nível.** Prova de régua: a 83050000 marcou 12,13 m
   às 12:30 de 09/10/2023 contra 12,40 m do g1 no mesmo dia — compatível com a mesma régua, 0,27 m que

@@ -68,13 +68,38 @@ sha256sum data/brutos/ciram-avisos/*.pdf > data/brutos/ciram-avisos.sha256
 cp /tmp/tipos.txt data/brutos/ciram-avisos-tipos.txt
 ```
 
-Enquanto esses três caminhos não chegarem ao repositório, **nenhum JSON os cita** — o
-validador (`valida_brutos_citados`) reprova citação de bruto ausente, e está certo.
+✅ Chegaram em 09/09/2026 (branch `vps/brutos-2026-09-09`): 84 linhas no `.sha256` e na
+classificação, 4 PDFs em `ciram-avisos-enchente/`.
+
+## O que os quatro avisos dizem (lidos em 09/09/2026)
+
+| arquivo | aviso | estação da bacia | leitura | faixa da EPAGRI |
+|---|---|---|---|---|
+| `aviso_n02_22012021310.pdf` | 02/2021, 22/01/2021 07:00 | 83050000 Taió | **6,69 m** às 05:00, +2 cm/h | ALERTA |
+| | | 83800002 Blumenau | **6,59 m** às 05:00, −7 cm/h | ALERTA |
+| `aviso_n03_22012021313.pdf` | 03/2021, 22/01/2021 16:04 | 83050000 Taió | **6,88 m** às 14:00, +2 cm/h | ALERTA |
+| `aviso_n03_060520221856.pdf` | 03/2022, 06/05/2022 08:32 | 83050000 Taió | **8,37 m** às 08:00, −7 cm/h | EMERGÊNCIA |
+| | | 83800002 Blumenau | **6,39 m** às 08:00, −10 cm/h | ALERTA |
+| `aviso_n24_100120221423.pdf` | 24/2022, 10/01/2022 | — | estiagem em toda a bacia; a "enchente" é Camboriú (Rio Pequeno) | não é nossa |
+
+O que se tira daí, e o que não:
+- **O par de 22/01/2021 é Taió e Blumenau, no Itajaí-Açu.** Não pareia com a cheia de
+  Brusque de 24/01/2021 (Itajaí-Mirim): a ressalva acima se confirmou. Serve como dois
+  pontos da subida de Taió (6,69 → 6,88 m em 9 h, +2 cm/h) e um da descida de Blumenau.
+- **Os limiares da EPAGRI para a 83050000 eram outros:** 6,69 m já era ALERTA em 2021, e
+  8,37 m EMERGÊNCIA em 2022. A escala estadual de out/2024 diz alerta 7,00 / emergência
+  8,00; o PLANCON de Taió, 8,00 / 9,00. Registrado em `estacoes.json` (Taió,
+  `avisos_epagri_2021_2022`), sem mexer nas cotas em uso.
+- **Nenhuma dessas leituras é pico.** Em 06/05/2022 o rio já descia às 08:00: a crista foi
+  antes e foi ≥ 8,37 m. A crista exata está na telemetria da ANA, ainda não pedida:
+  `sonda_ana_api.py --sem-inventario --estacoes 83050000,83800002 --data 2022-05-06
+  --intervalo DIAS_7 --gravar` e o mesmo com `--data 2021-01-24`.
+- Para Blumenau, 6,59 m descendo às 05:00 de 22/01/2021 e 6,39 m descendo às 08:00 de
+  06/05/2022 são pontos da descida da **régua da ANA (83800002)**, que não é a da Defesa
+  Civil — vale a regra de referência de Blumenau.
 
 ## O que ainda não foi feito
 
-- Ler os 4 avisos de enchente e extrair (estação, hora, nível, cm/h) — leituras pontuais
-  **de subida**, não picos: valem como pontos da curva, jamais como `hora` de pico em
-  `enchentes.json`.
-- Pedir à EPAGRI, no mesmo e-mail, a inclusão na lista dos **boletins diários por e-mail**,
-  que a carta de 09/09 diz que continuam até as estações serem removidas.
+- ✅ Os 4 avisos foram lidos (tabela acima). Nada entrou em `enchentes.json`.
+- Pedir à ANA as janelas de jan/2021 e mai/2022 para 83050000 e 83800002 (comandos acima).
+- Mandar o ofício C12 (avisos de nov/2023 + lista dos boletins diários).
