@@ -477,6 +477,14 @@ o projeto.
 
 ## Pendências
 
+- [x] **Terceira rodada da telemetria da ANA (09/09/2026): 12,13 m em Taió em 09/10/2023, o buraco de
+  2020 está na fonte, e só a Salseiro ainda transmite nível.** Prova de régua: a 83050000 marcou 12,13 m
+  às 12:30 de 09/10/2023 contra 12,40 m do g1 no mesmo dia — compatível com a mesma régua, 0,27 m que
+  não provam o mesmo zero; decisão do Jefferson entre adotar 12,13 (com 12,40 em `divergencias`) ou o
+  inverso, só com o bruto no repo. Salseiro em 15/12/2020: a ANA tem o **mesmo buraco** do portal de
+  Brusque (07:15 → 13:00), a crista real fica entre 07:15 e 13:15 e as 7,5 h do trânsito são **piso, não
+  teto** — `transito.json` e o doc da Salseiro corrigidos. Semana de 02–08/09/2026: 83892990 com nível,
+  83029900 e 83250000 só chuva, 83050000 sem registro. `docs/ANA-API-2026-09-08.md`, "Terceira rodada".
 - [x] **Telemetria da ANA, segunda rodada (09/09/2026): a crista de Taió em nov/2023 é 10,32 m, e a ANA
   preenche o buraco do portal de Brusque na Salseiro.** Duas janelas de DIAS_7 gravadas na VPS
   (`--gravar`): a 83050000 sobe de 5,80 m a **10,32 m às 21:00 de 17/11**, platô até 00:00 de 18/11,
