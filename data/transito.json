@@ -92,7 +92,8 @@
             "O trecho pula Botuverá e Guabiruba. Os elos vidal-ramos→botuvera e botuvera→brusque continuam sem fonte.",
             "O segundo pico de Brusque com hora (23/06/2022, 5,46 m às 00:45) NÃO tem par: a Salseiro está inteiramente ausente nessa janela. Registrado para ninguém procurar de novo nesse arquivo."
           ],
-          "ressalva_2020_12_12": "A lista SECOM/Rádio Cidade (21/05/2024) registra 5,30 m em Brusque em 12/12/2020, acima da crista de 15/12 (4,95 m às 20:45). O evento teve duas cristas; esta medição pareia a SEGUNDA, que é a que tem hora nos dois lados. Não muda as 7,5 h; muda o que se chama de 'pico do evento' no gráfico."
+          "ressalva_2020_12_12": "A lista SECOM/Rádio Cidade (21/05/2024) registra 5,30 m em Brusque em 12/12/2020, acima da crista de 15/12 (4,95 m às 20:45). O evento teve duas cristas; esta medição pareia a SEGUNDA, que é a que tem hora nos dois lados. Não muda as 7,5 h; muda o que se chama de 'pico do evento' no gráfico.",
+          "ressalva_ana_2026_09_09": "A ANA tem série telemétrica da MESMA estação (83892990) de 15 em 15 min, e em nov/2023 ela cobriu 668 de 672 leituras onde o portal de Brusque ficou 19 h em branco (crista 5,23 m às 09:15 de 17/11 na ANA; 4,83 m às 13:30 no portal, já descendo). Os 57 % de buraco desta janela podem ser preenchidos com sonda_ana_api.py --estacoes 83892990 --data 2020-12-15 --intervalo DIAS_7 --gravar. Ainda não foi pedido. docs/ANA-API-2026-09-08.md"
         }
       ]
     }
