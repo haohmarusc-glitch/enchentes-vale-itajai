@@ -139,3 +139,16 @@ O My Maps de pesquisa citado no levantamento geral **não** é o da COMPDEC. Usa
 6. Rua: tabela Yii ou export já no repo (555 pontos).
 
 A URL antiga `index.php?r=externo%2Fmetragem` ainda aparece no `estacoes.json`; o painel vivo agora é Asthon.
+
+---
+
+## 09/09/2026 — a cota de alerta é revista durante a cheia
+
+Imprensa (relatada): em 15/08/2026 a reunião técnica municipal + estadual fixou
+alerta em 5,50 e 6,50 m (ND Mais); em 31/08/2026 o Jornal Razão registrava "cota
+de alerta em vigor de 6,50 a 7,50 m". Não é mudança de régua, é de gatilho
+operacional. As faixas cadastradas são as da API em 03/09/2026 — datar sempre.
+Pendência: guarda que avise quando `band_thresholds` mudar na coleta.
+
+Asthon para outras cidades: rota fechada (`stations/live` devolve null para os
+onze `city_id` da bacia, conferido pelo Jefferson em 08/09/2026).

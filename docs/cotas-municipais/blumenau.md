@@ -42,3 +42,19 @@ Revisão de cotas de rua contratada com a FURB (R$ 580 mil, dez/2024, 8 meses). 
 - Sem API pública estável (WAF). Usar DC-SC / página de Itajaí “Blumenau” como fallback.
 
 Não misturar com Timbó (Benedito) nem com DC-10 de Itajaí.
+
+---
+
+## ⚠️ 09/09/2026 — os 6,00 / 6,50 / 7,40 estão em conferência
+
+Levantamento externo (não conferido daqui; host bloqueado) relata, da página
+oficial `defesacivil.blumenau.sc.gov.br/d/nivel-do-rio`, uma escala de **cinco
+estágios**: Normalidade 0–3 m · Observação 3–4 · Atenção 4–6 · Alerta 6–8 ·
+Alerta Máximo acima de 8 m. Os nomes batem com as cinco cores listadas acima; os
+números não batem com os três que este arquivo cadastra desde 30/08 (commit
+`9ae8f87`, "AlertaBlu", sem bruto). Se a escala de cinco for a vigente, a tela
+pinta atenção **2 m tarde**.
+
+Decidir: `python3 scripts/conferir_faixas_blumenau.py` na VPS imprime as faixas
+que `static/data/nivel_oficial.json` publica. Enquanto isso a tela avisa em
+texto (`cotas_aviso_publico`). Registro em `cotas_divergencias` de Blumenau.

@@ -27,6 +27,36 @@ Se a Asthon não trouxer Vidal Ramos (fica no Itajaí-Mirim, não no Alto Vale),
    (No teste de 31/08 a camada era `cotas_enchente_gaspar_01042020`, 1.615 pontos, campos cota/refer_1/refer_2/bairro/lat/lon.)
    Salvar em `data/brutos/gaspar-cotas-ruas-mymaps.kml` e rodar `scripts/converter_kml_cotas.py … gaspar`.
 
+### A3. (09/09/2026) Quatro coletas que só o navegador ou a VPS alcançam
+
+Este ambiente recebe 403 do proxy para `*.sc.gov.br`, Asthon e Google. Cada item
+abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já escrita.
+
+1. **Faixas oficiais de Blumenau (BLOQUEANTE).** Na VPS:
+   `python3 scripts/conferir_faixas_blumenau.py` — imprime o que
+   `static/data/nivel_oficial.json` publica além da série. Ou abrir
+   `defesacivil.blumenau.sc.gov.br/d/nivel-do-rio` e mandar a captura. Decide se
+   os 6,00/6,50/7,40 da tela viram 3/4/6/8 (ver `cotas_divergencias` de Blumenau).
+2. **Snapshot dos dois My Maps de Ituporanga**, antes que o mapa editável mude:
+   ```
+   cd /opt/enchentes-vale-itajai
+   for m in 1o9xZ2BceCkPzaqQQ2m0HIn0ixHVOJcU:ruas 19tpP2Tfsl58ue6GtY5ihBfK3MLkiUrA:manchas; do
+     mid=${m%%:*}; nome=${m##*:}
+     curl -sS -A "enchentes-vale-itajai (snapshot de mapa publico)" \
+       -o "data/brutos/ituporanga-mymaps-$nome-2026-09-09.kml" \
+       "https://www.google.com/maps/d/kml?mid=$mid&forcekml=1"
+   done
+   sha256sum data/brutos/ituporanga-mymaps-*.kml; ls -la data/brutos/ituporanga-mymaps-*.kml
+   ```
+   O de ruas é pequeno e entra no repo; o de manchas (34 MB) fica na VPS com o
+   sha256 registrado aqui, comprimido (`gzip -9`) se couber abaixo de 10 MB.
+3. **Gaspar, `/estacao/ver/21`:** salvar o HTML no celular, mandar, e anotar a
+   hora da "última medição" em três ou quatro consultas ao longo de um dia — é a
+   cadência que decide se a régua pinta ou fica cinza. Depois, testar o botão
+   "BAIXAR SÉRIE HISTÓRICA" (mesmo padrão do portal de Brusque?).
+4. **Ilhota, `ilhota.sc.gov.br/noticia-100533`:** data e texto exato da frase
+   "6,94 m na medição de Gaspar", e a da Defesa Civil sobre não ter régua.
+
 ## B. Itajaí-Mirim não tem alerta adiantado — lacuna a resolver por ofício
 
 Constatação (31/08/2026): no Itajaí-Mirim, o monitoramento pula de "abaixo das cotas" direto para

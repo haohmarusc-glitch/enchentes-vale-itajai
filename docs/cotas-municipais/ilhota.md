@@ -100,3 +100,18 @@ Outubro/2023 passou da emergência (10,50).
 3. Lista de ruas (12,00 / 12,15 / 13,15) só como camada de altitude — nunca como nível do rio.  
 4. Sem API municipal; coletor = mapa estadual.  
 5. Se a ponte da BR-470 fechar, o plano prevê segundo posto de comando no Braço do Baú — não muda a régua.
+
+---
+
+## ⚠️ 09/09/2026 — "não contamos com régua" (relatado)
+
+Levantamento externo (não conferido daqui) cita a Defesa Civil de Ilhota: "não
+contamos com régua ou escala linimétrica que faz a medição do nível do rio, então
+dependemos dos dados das cidades vizinhas", e uma notícia municipal
+(`ilhota.sc.gov.br/noticia-100533`) com "6,94 m na medição de Gaspar das 16h".
+Contradiz a régua da Ponte Cláudio Jeremias Cadorin que o PLANCON cita, e abre a
+pergunta que importa: **em que régua estão 9,20 / 10,00 / 10,50?**
+
+Recusado pintar a leitura de Gaspar com essas cotas (~17 km; regra nº 1). Pergunta
+para a COMPDEC (dpo@ilhota.sc.gov.br): a régua das três cotas, e se a estação da
+ponte existe e publica. Conferir data e texto da notícia 100533.
