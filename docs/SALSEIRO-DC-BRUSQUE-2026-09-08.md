@@ -47,7 +47,7 @@ resolução de minutos. A ANA, no mesmo dia, provou entregar só dia.
 | **15/12/2020 20:45**, 4,95 m | **2,73 m às 13:15** | **7,5 h** |
 | 23/06/2022 00:45, 5,46 m | **sem leitura nenhuma** na janela | — |
 
-**7,5 h é teto plausível, não medida fechada:** 57% da janela de 48 h anterior
+**7,5 h é PISO plausível, não medida fechada** (corrigido em 09/09/2026: a série da ANA confirma que o buraco é ANTES das 13:15, então a crista real só pode ser mais cedo e o trânsito, maior): 57% da janela de 48 h anterior
 ao pico de Brusque está ausente na Salseiro. O 2,73 m é o maior valor que
 **sobreviveu**; pode haver um maior dentro de um buraco, e aí o trânsito real
 seria menor. E é **um** evento — `calibrar_transito.py` exige três, entre duas
@@ -98,3 +98,9 @@ valor que sobreviveu, já na descida. Onde as duas séries se sobrepõem, batem 
 sobrevivente**, não crista. Detalhe e próxima rodada em `docs/ANA-API-2026-09-08.md`.
 Para o par de 15/12/2020, a janela da ANA (`--data 2020-12-15`) pode preencher os 57 % de
 buraco e fechar a hora do pico a montante.
+
+**15/12/2020, conferido na ANA (09/09/2026):** a série telemétrica da 83892990 tem o **mesmo
+buraco** do portal (07:15 → 13:00) e a mesma crista sobrevivente (2,73 m às 13:15). O portal
+republica a ANA; em dezembro de 2020 o buraco está na fonte e ninguém o preenche. Como o rio
+subia 0,39 m/h às 07:00 e já descia às 13:30, a crista real fica entre 07:15 e 13:15, e as
+7,5 h até Brusque são **piso**, não teto — o texto acima e o `transito.json` foram corrigidos.
