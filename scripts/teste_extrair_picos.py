@@ -159,7 +159,9 @@ class TesteAgrupamentoPorRegua(unittest.TestCase):
 
     def test_cidade_com_uma_regua_usa_a_cota_dela(self):
         limiar, nome = limiar_da_estacao("Blumenau", "itajai-acu", "blumenau", quantas_na_cidade=1)
-        self.assertAlmostEqual(limiar, 6.0)
+        # Atenção real de Blumenau em estacoes.json: 4,00 m desde 09/09/2026
+        # (escala oficial do AlertaBlu; antes o cadastro trazia 6,00 sem fonte).
+        self.assertAlmostEqual(limiar, 4.0)
         self.assertEqual(nome, "atencao")
 
     def test_cota_propria_da_estacao_destrava_a_analise(self):
