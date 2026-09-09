@@ -98,7 +98,7 @@
       ],
       "taio_e_blumenau_2021_2022": {
         "_o_que_e": "NÃO é medição de trânsito: é o registro de que, em dois eventos com hora nas duas pontas, BLUMENAU ATINGIU A CRISTA ANTES DE TAIÓ. A onda de Taió (6–8 h até Rio do Sul, mais o tronco até Blumenau) não pode ter sido a causa da crista de Blumenau nesses eventos; a chuva caiu perto de Blumenau. Fica escrito para que a previsão a jusante NÃO pareie o pico de Taió com o pico de Blumenau do mesmo evento como se um causasse o outro.",
-        "fonte": "Série telemétrica da ANA, HidroinfoanaSerieTelemetricaAdotada/v1, sonda na VPS em 09/09/2026 (--data 2021-01-24 e --data 2022-05-06, DIAS_7, --gravar); brutos ana-telemetria-83050000-2021-01-24-DIAS_7.json, ana-telemetria-83800002-2021-01-24-DIAS_7.json, ana-telemetria-83050000-2022-05-06-DIAS_7.json e ana-telemetria-83800002-2022-05-06-DIAS_7.json, ainda na VPS (a commitar).",
+        "fonte": "Série telemétrica da ANA, HidroinfoanaSerieTelemetricaAdotada/v1, sonda na VPS em 09/09/2026 (--data 2021-01-24 e --data 2022-05-06, DIAS_7, --gravar); brutos data/brutos/ana-telemetria-83050000-2021-01-24-DIAS_7.json, data/brutos/ana-telemetria-83800002-2021-01-24-DIAS_7.json, data/brutos/ana-telemetria-83050000-2022-05-06-DIAS_7.json e data/brutos/ana-telemetria-83800002-2022-05-06-DIAS_7.json (no repo desde 09/09/2026; scripts/analisar_telemetria_ana.py reproduz as cristas).",
         "eventos": [
           {
             "evento": "2021-01-22",
@@ -116,7 +116,7 @@
         "ressalvas": [
           "Crista de estação da ANA é crista DAQUELA régua: a 83050000 fica a 0,56 km do pino de Taió e a 83800002 é a régua que a Defesa Civil de Blumenau lê (REGRA_REFERENCIA_BLUMENAU, referência 'régua').",
           "Dois eventos não fazem regra. Dizem só que a cadeia Taió → Blumenau não explicou ESSAS duas cristas; em uma cheia de cabeceira (Oeste) a ordem pode ser a esperada.",
-          "Nenhum destes quatro picos está em enchentes.json (09/09/2026): entram só por decisão do Jefferson, com o bruto no repo."
+          "Nenhum destes quatro picos está em enchentes.json (09/09/2026): entram só por decisão do Jefferson; os brutos já estão no repo."
         ]
       }
     }
