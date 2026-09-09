@@ -61,8 +61,12 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
    `scripts/vigiar_cadencia_gaspar.py`, uma consulta por hora que grava `consultado_em`,
    `ultima_medicao`, `nivel_m` e `mudou` em `data/tempo-real/gaspar-cadencia.csv`, e `--resumo`
    imprime os intervalos entre leituras NOVAS. Tem de rodar de um IP no Brasil (a VPS não
-   alcança o host). Crontab: `0 * * * * cd <repo> && python3 scripts/vigiar_cadencia_gaspar.py`.
+   alcança o host). O script é standalone (só biblioteca padrão; roda até num celular com Termux) e
+   o parser procura o texto real da página, lido em 08/09 ("Estação em situação de NORMALIDADE -
+   Última Medição …", "NIVEL DO RIO: 1,12 M"), gravando também a situação. Crontab:
+   `0 * * * * cd <repo> && python3 scripts/vigiar_cadencia_gaspar.py --url >> gaspar-cadencia.log 2>&1`.
    Antes de agendar: salvar o HTML da página e rodar `--arquivo pagina.html` para provar o parser.
+   `--resumo` dá mínimo/mediana/máximo entre leituras novas, horários e o veredito contra os 180 min.
 4. ✅ **Ilhota, `ilhota.sc.gov.br/noticia-100533`:** RESOLVIDO em 09/09/2026 — a notícia é da cheia de
    **22/09/2013**. "6,94 m na medição de Gaspar das 16h" = leitura de Gaspar em 22/09/2013 16:00
    (confirmada pelo Cruzeiro do Vale). "Não contamos com régua…" é de 2013; o PLANCON 2025/2028 cita a
