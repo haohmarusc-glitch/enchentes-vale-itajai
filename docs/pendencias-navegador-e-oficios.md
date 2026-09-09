@@ -88,9 +88,9 @@ python3 scripts/sonda_fontes_novas.py
 ls -la data/brutos/chm-* data/brutos/epagri-ciram-aviso-03-* data/brutos/blumenau-enchentes-registradas-alertablu.json 2>&1
 ```
 
-4. **Brusque, 19 cheias 2019–2024**: abrir `https://rc.fm.br/web/page_noticia/id_981258/` no
-   celular e colar aqui a lista (data e metragem). Entra como `confianca: media` (imprensa
-   citando a SECOM), com o 29/10/2023 em `divergencias`. O repo tem 4 registros nesse período.
+4. ✅ **Brusque, 19 cheias 2019–2024**: FEITO em 09/09/2026 — o Jefferson achou a matéria pelo
+   DuckDuckGo (21/05/2024 15h18, SECOM) e colou a lista. 14 novos, 2 confirmações, 1 divergência,
+   29/10/2023 com dois valores. Transcrição em `data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv`.
 
 Os quatro arquivos são commitáveis (PDFs pequenos e um JSON); mande-os ou commite da VPS.
 

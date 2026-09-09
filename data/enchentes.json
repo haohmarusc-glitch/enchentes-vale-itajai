@@ -1249,7 +1249,14 @@
       "hora": "20:45",
       "pico_m": 4.95,
       "confianca": "alta",
-      "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)"
+      "fonte": "Boletim Defesa Civil de Brusque (pico 20h45-21h)",
+      "divergencias": [
+        {
+          "pico_m": 5.08,
+          "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+        }
+      ],
+      "nota": "A lista SECOM/Rádio Cidade (21/05/2024) traz 5.08 m para este dia; mantido o valor do boletim da Defesa Civil, que tem hora e é fonte primária."
     },
     {
       "rio": "itajai-mirim",
@@ -1266,7 +1273,7 @@
       "data": "2023-10-13",
       "pico_m": 6.91,
       "confianca": "media",
-      "fonte": "Imprensa/compilação"
+      "fonte": "Imprensa/compilação · confirmado por: Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
     },
     {
       "rio": "itajai-mirim",
@@ -1274,7 +1281,7 @@
       "data": "2023-11-17",
       "pico_m": 8.96,
       "confianca": "media",
-      "fonte": "Defesa Civil de Brusque — revisão de cotas de 2024",
+      "fonte": "Defesa Civil de Brusque — revisão de cotas de 2024 · confirmado por: Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv",
       "divergencias": [
         {
           "pico_m": 9.1,
@@ -2006,6 +2013,134 @@
       "data_e_do_inicio_do_evento": true,
       "pareamento": "confere",
       "nota": "A data é a de INÍCIO do evento publicada pela fonte, não a do pico. Serve para parear eventos (a tolerância do site é de sete dias); NÃO serve para calibrar tempo de trânsito."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2019-05-31",
+      "pico_m": 5.9,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2020-12-12",
+      "pico_m": 5.3,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv",
+      "nota": "5,30 m em 12/12/2020 é MAIOR que a crista de 15/12/2020 (4,95 m no boletim da Defesa Civil, com hora; 5,08 m nesta lista). Pela regra dos sete dias o site junta os dois num evento só, e o pico do evento passa a ser este. A medição de trânsito Salseiro → Brusque de 15/12/2020 continua válida: pareia CRISTA com crista, e a de 15/12 às 20:45 é uma crista — a segunda do evento."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2021-01-24",
+      "pico_m": 4.82,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2021-10-12",
+      "pico_m": 5.68,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2022-12-01",
+      "pico_m": 5.03,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2022-12-20",
+      "pico_m": 5.14,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-10-05",
+      "pico_m": 6.85,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-10-08",
+      "pico_m": 6.76,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-10-09",
+      "pico_m": 6.7,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-10-17",
+      "pico_m": 4.79,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-10-29",
+      "pico_m": 5.66,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv",
+      "divergencias": [
+        {
+          "pico_m": 5.09,
+          "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv (a mesma lista traz 29/10/2023 duas vezes: 5,09 e 5,66 m)"
+        }
+      ],
+      "nota": "A fonte lista o dia 29/10/2023 duas vezes, com 5,09 m e 5,66 m. Adotado o MAIOR: se são duas leituras do mesmo dia, o pico do dia é o maior; se um dos dois é erro de digitação, subestimar pico é o lado perigoso (a correlação a jusante sairia baixa). O outro fica em divergencias."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-11-03",
+      "pico_m": 5.62,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-11-16",
+      "pico_m": 7.92,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2023-11-29",
+      "pico_m": 5.39,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2024-05-19",
+      "pico_m": 7.58,
+      "confianca": "media",
+      "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
     }
   ]
 }
