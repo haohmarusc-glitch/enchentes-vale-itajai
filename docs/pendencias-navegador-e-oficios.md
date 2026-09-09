@@ -68,6 +68,28 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
    (confirmada pelo Cruzeiro do Vale). "Não contamos com régua…" é de 2013; o PLANCON 2025/2028 cita a
    ponte Cadorin. Contradição temporal, não atual. Segue aberta a régua dos 9,20 / 10,00 / 10,50.
 
+### A4. (09/09/2026) Quatro brutos que a pesquisa de 06/09 cita e este ambiente não alcança
+
+Na VPS (que alcança EPAGRI e, provavelmente, Marinha e AlertaBlu), em `/opt/enchentes-vale-itajai`:
+
+```
+# 1. Tábua CHM 2026 do Porto de Itajaí — fecha o aviso "baixamares vai até 30/09"
+curl -sS -A "enchentes-vale-itajai (tabua de mare)" -o data/brutos/chm-tabua-mare-itajai-2026.pdf \
+  'https://www.marinha.mil.br/chm/sites/www.marinha.mil.br.chm/files/dados_de_mare/52%20-%20PORTO%20DE%20ITAJA%C3%8D%20-%20166%20-%20168.pdf'
+# 2. Aviso hidrológico 03 da EPAGRI/CIRAM, 19/11/2023 (Rio do Sul e Taió com hora e estação)
+curl -sS -A "enchentes-vale-itajai" -o data/brutos/epagri-ciram-aviso-03-2023-11-19.pdf \
+  'https://ciram.epagri.sc.gov.br/ciram_arquivos/midia/hidro/aviso_n03_191120236281.pdf'
+# 3. Tabela histórica do AlertaBlu (/p/enchentes) — a sonda já sabe o caminho e confere o robots
+python3 scripts/sonda_fontes_novas.py
+ls -la data/brutos/chm-* data/brutos/epagri-ciram-aviso-03-* data/brutos/blumenau-enchentes-registradas-alertablu.json 2>&1
+```
+
+4. **Brusque, 19 cheias 2019–2024**: abrir `https://rc.fm.br/web/page_noticia/id_981258/` no
+   celular e colar aqui a lista (data e metragem). Entra como `confianca: media` (imprensa
+   citando a SECOM), com o 29/10/2023 em `divergencias`. O repo tem 4 registros nesse período.
+
+Os quatro arquivos são commitáveis (PDFs pequenos e um JSON); mande-os ou commite da VPS.
+
 ## B. Itajaí-Mirim não tem alerta adiantado — lacuna a resolver por ofício
 
 Constatação (31/08/2026): no Itajaí-Mirim, o monitoramento pula de "abaixo das cotas" direto para
