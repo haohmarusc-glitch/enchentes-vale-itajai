@@ -20,8 +20,9 @@ A tela lê a DCSC-00039. Ver `cotas_m_por_que_vazio` em `estacoes.json`.
 | Cotas de cheias ruas (Prefeitura, 07/10/2023) | `1o9xZ2BceCkPzaqQQ2m0HIn0ixHVOJcU` | 60 pontos, 3,38 a 10,48 m | um ponto de 27,77 m é lixo |
 | Cotas com Manchas de Inundação | `19tpP2Tfsl58ue6GtY5ihBfK3MLkiUrA` | 78.547 polígonos, COTA 3,00 a 6,50 de 0,5 em 0,5 m (34 MB) | linkado pela URL `/edit` — pode ser editável por qualquer um |
 
-KML: `https://www.google.com/maps/d/kml?mid=<mid>&forcekml=1`. Congelar snapshot
-(pendência A3). Nenhum dos dois traz faixa de acionamento; as cotas de rua só
+KML: `https://www.google.com/maps/d/kml?mid=<mid>&forcekml=1`. Snapshot congelado na VPS em
+09/09/2026: ruas 20.145 bytes, sha256 `7094bb127dd76d0c…`; manchas 33.999.491 bytes, sha256
+`38c4501c9c08242a…` (hashes completos em `docs/pendencias-navegador-e-oficios.md`, A3). Nenhum dos dois traz faixa de acionamento; as cotas de rua só
 entram quando se souber a régua delas.
 
 ## Pistas que se cercam (nenhuma é faixa)
