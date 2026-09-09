@@ -357,9 +357,10 @@
           "verificado": false,
           "regua": "Ponte Adolfo Konder (Centro)",
           "cotas_m": {
-            "atencao": 6.0,
-            "alerta": 6.5,
-            "inundacao": 7.4,
+            "monitoramento": 3.0,
+            "atencao": 4.0,
+            "alerta": 6.0,
+            "emergencia": 8.0,
             "inundacao_historica": 8.5
           },
           "fontes_tempo_real": [
@@ -395,31 +396,37 @@
             "alerta_m": 4.43,
             "estiagem_m": 1.18,
             "_unidade_na_fonte": "A ANA publica em CENTÍMETROS: atenção 356,00 · alerta 443,00 · estiagem 118,00. Convertido para metro aqui só para leitura; nada disto entra em cotas_m.",
-            "_NAO_USAR_NA_TELA": "🚫 Estas NÃO são as cotas de Blumenau e nunca podem pintar faixa. As do município, na Ponte Adolfo Konder, são 6,00 / 6,50 / 7,40 m. A diferença é de 2,44 m na atenção e 2,07 m no alerta — e como NÃO é o mesmo deslocamento nas duas, não é a mesma escala transladada: são zeros E critérios diferentes. Ler nível da 83800002 e pintar com as faixas municipais subestimaria o rio em mais de dois metros, que é o lado perigoso do erro. Registrado aqui justamente para que ninguém tente o atalho.",
+            "_NAO_USAR_NA_TELA": "🚫 Estas NÃO são as cotas de Blumenau e nunca podem pintar faixa. As do município, no JSON oficial do AlertaBlu, são Observação 3 / Atenção 4 / Alerta 6 / Alerta Máximo 8 m. A diferença para a ANA é de 0,44 m na atenção (4,00 × 3,56) e de 1,57 m no alerta (6,00 × 4,43) — e como NÃO é o mesmo deslocamento nas duas, não é a mesma escala transladada: são zeros E critérios diferentes. Ler nível da 83800002 e pintar com as faixas municipais erraria a faixa, e o sentido do erro muda de degrau para degrau. Registrado aqui em 07/09/2026 e recalculado em 09/09/2026, quando as cotas municipais foram corrigidas (antes: 2,44 m e 2,07 m contra 6,00/6,50, que eram números sem fonte).",
             "_fonte": "Ficha da estação na Hidro-Telemetria da ANA, seção 'Alertas da estação', lida no navegador em 07/09/2026."
           },
           "codigo_ana_curvas_de_descarga": "NENHUMA. A seção 'Curvas de Descarga' da ficha da 83800002 está VAZIA, conferida em dois carregamentos separados em 07/09/2026. Isso DESFAZ a expectativa que este repositório registrava na nota de Indaial: se a curva-chave que o CEOPS usa para estimar vazões em Blumenau existe, não é esta e não está na ANA. Sem curva-chave não há conversão nível→vazão por aqui — e o projeto não precisa de vazão hoje, então isto fecha uma expectativa, não abre uma pendência.",
           "cotas_divergencias": [
             {
               "cotas_m": {
-                "observacao": 3.0,
-                "atencao": 4.0,
-                "alerta": 6.0,
-                "alerta_maximo": 8.0
+                "atencao": 6.0,
+                "alerta": 6.5,
+                "inundacao": 7.4
               },
-              "fonte": "Página 'Nível do Rio' da Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/d/nivel-do-rio — como RELATADA pelo levantamento externo entregue pelo Jefferson em 09/09/2026 — docs/COTAS-11-MUNICIPIOS-2026-09-09.md — NÃO CONFERIDO daqui: o host está bloqueado neste ambiente: Normalidade 0–3 m · Observação 3–4 m · Atenção 4–6 m · Alerta 6–8 m · Alerta Máximo acima de 8 m. Os NOMES batem com as cinco cores que docs/cotas-municipais/blumenau.md já registrava do AlertaBlu (verde/amarelo/laranja/vermelho/roxo) e com as 'faixas de condição' que docs/fontes-tempo-real.md diz existirem em static/data/nivel_oficial.json.",
-              "por_que_nao_foi_adotada_ainda": "Os 6,00 / 6,50 / 7,40 em uso entraram em 30/08/2026 (commit 9ae8f87) rotulados 'AlertaBlu', sem bruto no repositório e com TRÊS nomes (atenção/alerta/inundação) que não são os CINCO do AlertaBlu. Se a escala de cinco estágios for a vigente, a tela pinta atenção 2 m TARDE (6,00 contra 4,00) — o lado perigoso do erro. Não foi trocada hoje porque o relato não foi conferido e a origem dos 6,00/6,50/7,40 também não: trocar um número não conferido por outro não conferido é o mesmo erro com o sinal trocado. BLOQUEANTE, e barato de resolver: scripts/conferir_faixas_blumenau.py na VPS lê o JSON oficial e imprime as faixas que ele publica. Enquanto isso a tela avisa, em texto, que o AlertaBlu pode avisar antes."
+              "fonte": "O que o cadastro trazia de 30/08/2026 (commit 9ae8f87) a 09/09/2026, rotulado 'AlertaBlu', SEM bruto no repositório e sem página citada. Origem desconhecida. Um indício: 7,40 m é exatamente a menor cota de rua de Blumenau no cadastro (Rua São Rafael, final) — a 'inundação' pode ter sido deduzida da primeira rua a alagar, não lida de uma escala.",
+              "por_que_foi_substituida": "A fonte oficial publica outra escala, e a diferença apontava para o lado perigoso: a tela chamava de 'abaixo da atenção' um rio que a Defesa Civil já tratava como ATENÇÃO (4 a 6 m) — dois metros de atraso. Substituída em 09/09/2026 pela escala do JSON oficial, com bruto. Ficam aqui para que o número antigo não volte por memória."
             },
             {
               "cotas_m": {
                 "atencao": 6.0,
                 "emergencia": 8.0
               },
-              "fonte": "Legenda de Blumenau no portal da Defesa Civil de GASPAR (/estacao/ver/3), lida em 01/09/2026 — docs/GASPAR-DADOS-NOVOS.md: normalidade < 6,00 · atenção > 6,00 ou chuva > 30 mm · emergência > 8,00. Outra instituição resumindo a régua de Blumenau em dois degraus; os 6 e 8 m coincidem com alerta e alerta máximo da escala de cinco estágios. Referência cruzada, não fonte."
+              "fonte": "Legenda de Blumenau no portal da Defesa Civil de GASPAR (/estacao/ver/3), lida em 01/09/2026 — docs/GASPAR-DADOS-NOVOS.md: normalidade < 6,00 · atenção > 6,00 ou chuva > 30 mm · emergência > 8,00. Outra instituição resumindo a régua de Blumenau em dois degraus, que coincidem com Alerta (6) e Alerta Máximo (8) da escala oficial. Referência cruzada, não fonte."
             }
           ],
-          "cotas_pendencia": "Confirmar a escala vigente da régua de Blumenau (ver cotas_divergencias). TESTE: `python3 scripts/conferir_faixas_blumenau.py` na VPS, que baixa static/data/nivel_oficial.json e imprime tudo o que não é a série horária, sem gravar nada; ou abrir defesacivil.blumenau.sc.gov.br/d/nivel-do-rio no celular e mandar a captura. Se a escala de cinco estágios for a publicada: adotar observação 3 / atenção 4 / alerta 6 / alerta máximo 8 — o validador precisa ganhar 'observacao' e 'alerta_maximo' em ORDEM_DAS_FAIXAS (ou mapeá-los em monitoramento/emergencia), a UI precisa de cinco cores —, guardar 6,00/6,50/7,40 em divergências com a origem que se descobrir, e atualizar docs/cotas-municipais/blumenau.md.",
-          "cotas_aviso_publico": "A Defesa Civil de Blumenau publica cinco estágios para o rio, com observação a partir de 3 m e atenção a partir de 4 m, segundo levantamento de 09/09/2026 ainda em conferência. As faixas desta tela (6,00 / 6,50 / 7,40 m) podem mudar de cor DEPOIS do AlertaBlu. Em cheia, siga o AlertaBlu e a Defesa Civil (199)."
+          "cotas_verificado": true,
+          "fonte_cotas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+          "cotas_nomes_na_fonte": {
+            "monitoramento": "Observação",
+            "atencao": "Atenção",
+            "alerta": "Alerta",
+            "emergencia": "Alerta Máximo",
+            "_por_que": "A tela pinta com quatro chaves fixas, e o precedente é Taió (Observação → monitoramento) e Ilhota (prontidão → alerta): o NOME muda, a posição e a força não. 'Alerta Máximo' entrou como `emergencia` porque é o topo da escada de Blumenau; a tela vai rotulá-lo 'Emergência', que não é a palavra da COMPDEC. Pendência pequena: rótulo por cidade na tela e no bot, para escrever 'Alerta Máximo' onde a fonte escreve."
+          }
         },
         {
           "id": "gaspar",

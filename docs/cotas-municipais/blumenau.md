@@ -3,18 +3,27 @@
 **Portal / app:** [AlertaBlu](https://alertablu.blumenau.sc.gov.br/) (bloqueia robô; app Android/iOS)  
 **SEDECI:** secretaria.defesacivil@blumenau.sc.gov.br · 199  
 **Régua:** Ponte Adolfo Konder · ANA 83800002 · DCSC-00026  
-**Já no monitor:** 6,00 / 6,50 / 7,40 (+ histórica 8,50)
+**Já no monitor (desde 09/09/2026):** Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8 (+ histórica 8,50)
 
 ---
 
 ## Faixas da régua do Centro
 
-| Fase no app | Cota |
-|---|---|
-| Atenção | **6,00 m** |
-| Alerta | **6,50 m** |
-| Inundação | **7,40 m** |
-| Inundação histórica (cadastro) | **8,50 m** |
+Fonte: `static/data/nivel_oficial.json`, campo `condicoes` (fonte "AlertaBLU"), lido na VPS
+em 09/09/2026 — bruto `data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json`.
+
+| Condição na fonte | A partir de | Chave no cadastro |
+|---|---|---|
+| Normalidade | 0 m | — |
+| Observação | **3,00 m** | `monitoramento` |
+| Atenção | **4,00 m** | `atencao` |
+| Alerta | **6,00 m** | `alerta` |
+| Alerta Máximo | **8,00 m** | `emergencia` (a tela escreve "Emergência"; rótulo por cidade é pendência) |
+| Inundação histórica (cadastro) | **8,50 m** | `inundacao_historica` |
+
+Até 09/09/2026 o cadastro trazia **6,00 / 6,50 / 7,40**, rotulados "AlertaBlu" sem bruto —
+origem desconhecida (7,40 coincide com a menor cota de rua, Rua São Rafael). A tela pintava
+atenção **dois metros tarde**. Ficaram em `cotas_divergencias`.
 
 Cores do AlertaBlu (rio, chuva e encosta **separados**, por região): verde normal · amarelo observação · laranja atenção · vermelho alerta · roxo alerta máximo.
 
@@ -24,9 +33,10 @@ Revisão de cotas de rua contratada com a FURB (R$ 580 mil, dez/2024, 8 meses). 
 
 ```json
 "cotas_m": {
-  "atencao": 6.0,
-  "alerta": 6.5,
-  "inundacao": 7.4,
+  "monitoramento": 3.0,
+  "atencao": 4.0,
+  "alerta": 6.0,
+  "emergencia": 8.0,
   "inundacao_historica": 8.5
 }
 ```
@@ -45,7 +55,7 @@ Não misturar com Timbó (Benedito) nem com DC-10 de Itajaí.
 
 ---
 
-## ⚠️ 09/09/2026 — os 6,00 / 6,50 / 7,40 estão em conferência
+## ✅ 09/09/2026 — conferido: a escala de cinco estágios é a oficial (histórico da decisão)
 
 Levantamento externo (não conferido daqui; host bloqueado) relata, da página
 oficial `defesacivil.blumenau.sc.gov.br/d/nivel-do-rio`, uma escala de **cinco

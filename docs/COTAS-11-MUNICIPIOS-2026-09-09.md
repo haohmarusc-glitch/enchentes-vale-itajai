@@ -124,3 +124,24 @@ cidade fica no ribeirão, em 05/09; agora há uma segunda fonte.
 régua e leituras da EPAGRI para estas cidades, renderizadas por JS. Nenhum
 publica o zero da régua. Servem para conferir o que a fonte oficial diz, não
 para substituí-la — e não entram em `fontes_tempo_real`.
+
+---
+
+## Resultado, mais tarde em 09/09/2026: Blumenau conferido e trocado
+
+O Jefferson rodou `conferir_faixas_blumenau.py` na VPS. O JSON oficial
+(`static/data/nivel_oficial.json`, fonte "AlertaBLU") publica em `condicoes`:
+Normalidade 0 · **Observação 3** · **Atenção 4** · **Alerta 6** · **Alerta Máximo 8** m,
+todas `tipo: nvl`. Leitura da meia-noite: 2,68 m (normalidade). Bruto em
+`data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json`.
+
+Adotado no cadastro com as chaves que a tela já pinta — Observação →
+`monitoramento` (como Taió), Alerta Máximo → `emergencia` (o topo) — e os
+6,00 / 6,50 / 7,40 foram para `cotas_divergencias` com o que se sabe da origem
+(nada, além de 7,40 coincidir com a menor cota de rua). O aviso público de
+Blumenau saiu: a tela agora pinta pela escala oficial. A linha 3 de "O que foi
+recusado" acima está resolvida do jeito que dizia: com a fonte, não no escuro.
+
+**Pintou?** Sim: com o rio a 2,68 m nada muda de cor hoje, mas a partir de 3 m
+Blumenau passa a mostrar Observação, e a 4 m Atenção — onde antes ficava
+"normal" até 6 m.

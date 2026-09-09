@@ -400,7 +400,10 @@ class BlumenauComResgate(unittest.TestCase):
     contra o `ultimo.json` publicado.
     """
 
-    COTAS_BLU = {"atencao": 6.0, "alerta": 6.5, "inundacao": 7.4}
+    #: As cotas REAIS de Blumenau em estacoes.json (escala oficial do AlertaBlu
+    #: desde 09/09/2026). `monitoramento` (Observação, 3 m) fica de fora porque o
+    #: vigia só carrega as chaves que disparam aviso.
+    COTAS_BLU = {"atencao": 4.0, "alerta": 6.0, "emergencia": 8.0}
 
     def dados(self, nivel_primaria, nivel_resgate, quando_p="2026-08-30T00:15:00",
               quando_r="2026-08-30T02:00:00"):
