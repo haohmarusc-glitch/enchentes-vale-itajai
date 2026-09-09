@@ -72,9 +72,9 @@ class AsQuatroEscadas(unittest.TestCase):
 
     #: `inundacao` e `emergencia` são O MESMO DEGRAU com nomes municipais
     #: diferentes — o topo, logo acima de `alerta`. Rio do Sul (alerta 5,50 →
-    #: inundação 6,50) e Blumenau (6,50 → 7,40) usam um nome; Taió, Indaial,
-    #: Gaspar, Ilhota, Ibirama, Brusque, Rio dos Cedros e as onze réguas DC de
-    #: Itajaí usam o outro. NENHUMA cidade usa os dois.
+    #: inundação 6,50) usa um nome; Taió, Indaial, Gaspar, Ilhota, Ibirama, Brusque,
+    #: Rio dos Cedros, Blumenau (Alerta Máximo 8,00, desde 09/09/2026) e as onze
+    #: réguas DC de Itajaí usam o outro. NENHUMA cidade usa os dois.
     #:
     #: Foi isto que resolveu a discordância aparente entre as escadas do bot e
     #: do validador: elas ordenam os dois nomes de formas opostas, e a pergunta

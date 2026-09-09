@@ -51,6 +51,10 @@ baixo, se estiver chovendo forte. Nenhuma outra cidade da bacia tem isso — a U
 O mesmo site monitora Blumenau (`/estacao/ver/3`) com legenda simplificada: normalidade < 6,00 ·
 atenção > 6,00 ou chuva > 30,00 mm · emergência > 8,00. **Diferente do que usamos para Blumenau**
 (6,00 / 6,50 / 7,40 do AlertaBlu). Duas instituições, dois recortes — usar o do AlertaBlu para Blumenau
+> ✏️ *Corrigido em 09/09/2026:* os 6,00 / 6,50 / 7,40 não eram do AlertaBlu — eram números sem
+> fonte. O JSON oficial publica Observação 3 / Atenção 4 / Alerta 6 / Alerta Máximo 8; os 6 e 8 desta
+> legenda de Gaspar coincidem com Alerta e Alerta Máximo. Ver `docs/cotas-municipais/blumenau.md`.
+>
 (é a régua da própria cidade) e este só como referência cruzada.
 
 ## 2. ⭐ HISTÓRICO DE ENCHENTES DE GASPAR — 69 eventos, 1852–2023

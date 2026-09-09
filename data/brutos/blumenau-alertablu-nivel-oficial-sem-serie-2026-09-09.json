@@ -1,0 +1,52 @@
+{
+  "condicoes": [
+    {
+      "cor_fundo": 6614628,
+      "nivel": 0,
+      "tipo": "nvl",
+      "condicao": "Normalidade",
+      "cor_fonte": 0,
+      "id": 1
+    },
+    {
+      "cor_fundo": 16448000,
+      "nivel": 3,
+      "tipo": "nvl",
+      "condicao": "Observação",
+      "cor_fonte": 0,
+      "id": 21
+    },
+    {
+      "cor_fundo": 16750114,
+      "nivel": 4,
+      "tipo": "nvl",
+      "condicao": "Atenção",
+      "cor_fonte": 0,
+      "id": 22
+    },
+    {
+      "cor_fundo": 10027008,
+      "nivel": 6,
+      "tipo": "nvl",
+      "condicao": "Alerta",
+      "cor_fonte": 16777215,
+      "id": 25
+    },
+    {
+      "cor_fundo": 10040319,
+      "nivel": 8,
+      "tipo": "nvl",
+      "condicao": "Alerta Máximo",
+      "cor_fonte": 16777215,
+      "id": 122
+    }
+  ],
+  "fonte": "AlertaBLU",
+  "niveis": {
+    "quantos": 24,
+    "ultima": {
+      "nivel": 2.68,
+      "horaLeitura": "2026-09-09T00:00:00Z"
+    }
+  }
+}
