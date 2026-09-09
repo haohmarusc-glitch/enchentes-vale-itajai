@@ -127,7 +127,9 @@ test('Brusque compara, e sai marcada como referência não conferida', () => {
   const { cenario } = cenarioDaCidade(1.26, daCidade('brusque'))
   assert.ok(cenario)
   assert.equal(cenario.referenciaConferida, false)
-  assert.equal(cenario.marcas.length, 8)
+  // 23 desde 09/09/2026: a lista SECOM/Rádio Cidade trouxe 15 registros de
+  // 2019–2024 (eram 8). Uma marca por registro; o pódio não mudou.
+  assert.equal(cenario.marcas.length, 23)
   assert.equal(cenario.marcas[0]!.pico, 10.5)
 })
 

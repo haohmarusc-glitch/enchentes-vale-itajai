@@ -220,9 +220,12 @@ class TestOAncoraDaConta(unittest.TestCase):
         registrados = [e["pico_m"] for e in eventos
                        if e.get("cidade") == "brusque"
                        and str(e.get("data") or "").startswith("2023-11")]
-        self.assertEqual(registrados, [PICO_2023_M],
+        # Desde 09/09/2026 novembro de 2023 tem mais registros (a lista SECOM
+        # trouxe 03/11, 16/11 e 29/11); o pico do mês continua sendo o de 17/11.
+        self.assertEqual(max(registrados), PICO_2023_M,
                          "o pico de 17/11/2023 em enchentes.json mudou; as 350 cotas de "
                          "rua de Brusque foram provadas contra o valor antigo")
+        self.assertIn(PICO_2023_M, registrados)
 
     def test_a_conta_da_camada_so_fecha_no_pico_registrado(self):
         """

@@ -56,3 +56,21 @@ Cotas de rua **podem estar defasadas** após obras (ago/2026). Segunda etapa do 
 - Sem API pública documentada (stack DEXTAK, igual Gaspar).  
 - Câmera: ponte estaiada.  
 - Não misturar com DC-10 de Itajaí (Limoeiro, outra régua).
+
+---
+
+## 09/09/2026 — 19 cheias de 2019 a 2024, da lista SECOM/Rádio Cidade
+
+Matéria de 21/05/2024 (rc.fm.br, id 981258), crédito SECOM/Prefeitura, dados da Defesa Civil;
+transcrita em `data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv`. Entrou em
+`enchentes.json` como `confianca: media` (imprensa citando a prefeitura):
+
+- **14 registros novos** (31/05/2019 a 19/05/2024).
+- **2 confirmações** de valor já cadastrado: 13/10/2023 = 6,91 e 17/11/2023 = 8,96.
+- **1 divergência**: 15/12/2020, 5,08 na lista contra 4,95 no boletim da Defesa Civil com hora
+  (20:45); o boletim fica adotado, a lista fica guardada.
+- **29/10/2023 aparece duas vezes na fonte** (5,09 e 5,66): adotado o maior, o outro em `divergencias`.
+- **12/12/2020 = 5,30 m** é maior que a crista de 15/12: o evento de dezembro de 2020 teve duas
+  cristas, e o pico do evento no gráfico passa a ser o de 12/12. A medição de trânsito Salseiro →
+  Brusque (15/12, 7,5 h) continua válida: pareia a segunda crista, que é a que tem hora dos dois lados.
+

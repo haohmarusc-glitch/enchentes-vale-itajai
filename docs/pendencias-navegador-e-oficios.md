@@ -77,7 +77,7 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
 Na VPS (que alcança EPAGRI e, provavelmente, Marinha e AlertaBlu), em `/opt/enchentes-vale-itajai`:
 
 ```
-# 1. Tábua CHM 2026 do Porto de Itajaí — fecha o aviso "baixamares vai até 30/09"
+# 1. ✅ FEITO em 09/09/2026 (o Jefferson mandou o PDF; importar_mare_chm.py gravou o ano inteiro)
 curl -sS -A "enchentes-vale-itajai (tabua de mare)" -o data/brutos/chm-tabua-mare-itajai-2026.pdf \
   'https://www.marinha.mil.br/chm/sites/www.marinha.mil.br.chm/files/dados_de_mare/52%20-%20PORTO%20DE%20ITAJA%C3%8D%20-%20166%20-%20168.pdf'
 # 2. Aviso hidrológico 03 da EPAGRI/CIRAM, 19/11/2023 (Rio do Sul e Taió com hora e estação)
@@ -88,9 +88,9 @@ python3 scripts/sonda_fontes_novas.py
 ls -la data/brutos/chm-* data/brutos/epagri-ciram-aviso-03-* data/brutos/blumenau-enchentes-registradas-alertablu.json 2>&1
 ```
 
-4. **Brusque, 19 cheias 2019–2024**: abrir `https://rc.fm.br/web/page_noticia/id_981258/` no
-   celular e colar aqui a lista (data e metragem). Entra como `confianca: media` (imprensa
-   citando a SECOM), com o 29/10/2023 em `divergencias`. O repo tem 4 registros nesse período.
+4. ✅ **Brusque, 19 cheias 2019–2024**: FEITO em 09/09/2026 — o Jefferson achou a matéria pelo
+   DuckDuckGo (21/05/2024 15h18, SECOM) e colou a lista. 14 novos, 2 confirmações, 1 divergência,
+   29/10/2023 com dois valores. Transcrição em `data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv`.
 
 Os quatro arquivos são commitáveis (PDFs pequenos e um JSON); mande-os ou commite da VPS.
 
