@@ -279,6 +279,19 @@ class TestPaginaParcial(unittest.TestCase):
         coleta_niveis.ULTIMO.write_text(json.dumps({"coletado_em": "x"}), encoding="utf-8")
         self.assertEqual(coleta_niveis.estacoes_do_ultimo(), set())
 
+    def test_regua_que_o_projeto_parou_de_coletar_nao_e_sumida(self):
+        """
+        09/09/2026: a MKS de Rio do Sul saiu da coleta por decisão
+        (coleta_itajai.REGUAS_NAO_COLETADAS), e a primeira rodada seguinte
+        acusou "1 estação que veio antes não veio agora". Decisão escrita não
+        é página incompleta.
+        """
+        from coleta_itajai import REGUAS_NAO_COLETADAS
+        self.escrever_ultimo(["DC-01", "Rio do Sul Estação MKS"])
+        sumidas = sorted(coleta_niveis.estacoes_do_ultimo() - {"DC-01"}
+                         - set(REGUAS_NAO_COLETADAS))
+        self.assertEqual(sumidas, [])
+
     def test_estacao_nova_nao_conta_como_sumida(self):
         self.escrever_ultimo(["DC-01"])
         sumidas = sorted(coleta_niveis.estacoes_do_ultimo() - {"DC-01", "DC-99"})

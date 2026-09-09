@@ -650,7 +650,14 @@ def main() -> int:
     # `coleta_niveis.py && publicar_tempo_real.sh`, e sair com erro impediria a
     # publicação. O site congelaria no dado anterior em vez de receber as
     # leituras que chegaram — pior do que publicar parte com a idade à vista.
-    sumidas = sorted(estacoes_do_ultimo() - {l["estacao"] for l in leituras})
+    # Régua que o projeto DECIDIU parar de coletar (coleta_itajai.REGUAS_NAO_COLETADAS)
+    # não "sumiu": some da comparação, senão a primeira rodada depois da decisão
+    # acusa a página de ter voltado incompleta — foi assim com a MKS de Rio do
+    # Sul em 09/09/2026.
+    from coleta_itajai import REGUAS_NAO_COLETADAS
+
+    sumidas = sorted(estacoes_do_ultimo() - {l["estacao"] for l in leituras}
+                     - set(REGUAS_NAO_COLETADAS))
     if sumidas:
         print(
             f"AVISO: {len(sumidas)} estação(ões) que vieram na coleta anterior não vieram "
