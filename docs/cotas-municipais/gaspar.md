@@ -61,3 +61,16 @@ novo (DEXTAK) — "Rio Itajaí Açu Gaspar", 1,12 m, FONTE: DC. GASPAR, mediçã
 Ressalvas: a leitura tinha 13 h de idade às 21h (medir a cadência antes de
 reapontar o coletor), e o host segue sem responder à VPS (só `--arquivo`).
 Detalhes em `docs/COTAS-11-MUNICIPIOS-2026-09-09.md`.
+
+---
+
+## 09/09/2026 — uma leitura de 2013 achada por tabela
+
+A notícia 100533 da Prefeitura de Ilhota (cheia de **22/09/2013**) registra "o nível das
+águas do rio Itajaí-Açu em **6,94 m** na medição de Gaspar das **16h**", e o Cruzeiro do Vale
+confirma o mesmo número e hora. É uma leitura de Gaspar em 22/09/2013 16:00 — **não é o pico**
+do evento, e por isso **não entra em `enchentes.json`** (que não tem Gaspar em 2013: os 48
+registros importados do portal pulam de 2011 para 2014). A conferir no `/enchentes` do portal
+de Gaspar: se setembro de 2013 está lá e com que metragem; se o pico do portal for ≥ 6,94 m,
+a leitura das 16h vira um ponto da subida com hora, útil para o trânsito Blumenau → Gaspar.
+

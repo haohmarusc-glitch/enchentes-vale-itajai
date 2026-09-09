@@ -44,6 +44,18 @@ Nada disso entra em `cotas-ruas.json`: a régua não está nomeada (provavelment
 Ponte Vitório Sens) e a leitura ao vivo é a DCSC-00039, em outro datum. Com a
 régua e o zero ditos pela Defesa Civil, a importação é meia hora.
 
+## Segunda rodada (09/09/2026)
+
+- A escala estadual **1,40 / 1,90 / 2,60 m** (estação **83250000**, ANA/EPAGRI) ganhou fonte citável:
+  Defesa Civil de SC, *Operação de Barragens* (out/2024),
+  https://www.defesacivil.sc.gov.br/wp-content/uploads/2024/10/Operacao-de-Barragens.pdf.
+  Não muda nada: é a mesma escala de **outra** régua, já recusada.
+- **Página municipal "Nível do Rio":** https://www.ituporanga.sc.gov.br/nivel-rio. Se for a leitura da
+  Ponte Vitório Sens, e se as 59 cotas de rua forem dessa régua, as duas **pareiam sem precisar do
+  zero** — o zero só importa entre réguas diferentes. Teste: abrir, salvar o HTML, ver que régua nomeia.
+- Notícia 4935: estação **meteorológica** instalada na Ponte Vitório Sens — história do ponto, não nível.
+- Abertos: zero da régua da ponte; se a Ponte do Rio Gabiroba (5,03 m) está na mesma régua das outras 58.
+
 ## Pistas que se cercam (nenhuma é faixa)
 
 - primeira mancha: 3,00 m
