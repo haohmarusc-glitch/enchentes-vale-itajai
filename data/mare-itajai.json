@@ -1,455 +1,7035 @@
 {
   "_meta": {
     "descricao": "Tábua de maré do porto de Itajaí. O site cruza estas preamares com a janela de chegada da cheia: maré alta trava o escoamento do rio.",
-    "fuso": "Horário local (America/Sao_Paulo), sem indicação de fuso — igual ao que a fonte publica e ao que o site espera.",
-    "fonte": "Planilha de previsão de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) (Márcio Piazera), importada por scripts/importar_mare_univali.py",
+    "fuso": "Horário local (America/Sao_Paulo, UTC−3), como a tábua publica e o site espera.",
+    "fonte": "Marinha do Brasil, Centro de Hidrografia da Marinha (CHM/DHN) — Tábua de Marés 2026, Porto de Itajaí (SC), páginas 166–168; 78 componentes harmônicas, Carta 1841. Bruto: data/brutos/chm-tabua-mare-itajai-2026.pdf (sha256 0da7287be13187f787c7f7cf2c3b9e91bad530caddb99b52b60a42c55d0f62b2). Importada por scripts/importar_mare_chm.py.",
     "fonte_oficial": "Tábuas de maré da Marinha do Brasil (DHN) — porto de Itajaí",
-    "metodo": "Preamares e baixa-mares são os máximos e mínimos locais que a própria planilha já traz — não recalculados aqui.",
-    "aviso": "INTERINO: o endpoint da Defesa Civil (scripts/coleta_mares.py) está vazio há dias; esta tábua veio do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) enquanto isso. A ALTURA (metros) foi OMITIDA de propósito — a planilha usa datum IBGE, e nada aqui garante que bate com o datum que a Defesa Civil/DHN publicam (mesmo problema do datum de Blumenau, que já é REGRA BLOQUEANTE neste projeto). Só o HORÁRIO de cada preamar/baixa-mar entrou, que não depende de datum. A próxima coleta bem-sucedida de coleta_mares.py substitui este arquivo inteiro pela tábua oficial — isso é esperado, não um bug.",
-    "fonte_curta": "Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC) — previsão harmônica",
-    "aviso_interino": "Tábua interina: o endpoint da Defesa Civil está sem dado. Horários de maré do Laboratório de Oceanografia Física – UNIVALI (Itajaí/SC), sem a altura (datum não confirmado contra a Defesa Civil).",
-    "fonte_anual_localizada": {
-      "_o_que_e": "A tábua anual do CHM/Marinha, que substitui esta interina. Endereço e metadados lidos no navegador em 07/09/2026 — este ambiente tem marinha.mil.br bloqueado pelo proxy, então nada foi baixado.",
-      "url_2026": "https://www.marinha.mil.br/chm/sites/www.marinha.mil.br.chm/files/dados_de_mare/52 - PORTO DE ITAJAÍ - 166 - 168.pdf",
-      "como_chegar": "marinha.mil.br/chm/tabuas-de-mare-6 ('Tábuas das Marés 2026', página 2 da paginação), a partir de /chm/dados-do-segnav/dados-de-mare-mapa.",
-      "⚠️_armadilha_do_link_obvio": "A página que aparece PRIMEIRO na busca chama-se 'Tábuas de Maré 2025' (/chm/tabuas-de-mare) e serve um PDF cujo nome interno é CAPA-TABUAS-DAS-MARES-2024. Um coletor apontado para o link óbvio importa 2024 achando que é o ano corrente — e maré errada por dois anos não parece errada na tela, só desloca a preamar algumas horas. Conferir o ANO dentro do PDF, nunca o título da página.",
-      "metadados_para_proveniencia": "Porto de Itajaí (SC), 2026 · lat 26°54'.3 S · long 48°39'.2 W · fuso UTC−03:00 · 78 componentes · Nível Médio 0,6 m · Carta 1841 · origem CHM.",
-      "por_que_o_nivel_medio_importa": "0,6 m é o que amarra as alturas ao nível de redução. Sem ele, misturar altura do CHM com a série da UNIVALI (datum IBGE) produz exatamente o erro silencioso que esta tábua evita hoje omitindo a altura.",
-      "⚠️_ate_onde_vai": "O CHM publica 2024, 2025 e 2026. NÃO EXISTE EDIÇÃO 2027 (conferido em 07/09/2026). Importar a tábua de 2026 empurra a parede de 30/09/2026 para 31/12/2026, e nada além — o validador volta a reclamar em dezembro. Não é 'resolver a maré': é comprar três meses."
-    }
+    "altura": "`altura_m` é em metros sobre o NÍVEL DE REDUÇÃO (NR) da carta náutica 1841, o datum da DHN. NÃO é régua de rio nenhum, e os 0,6 m de 'Nível Médio' do cabeçalho são a altura do nível médio do mar sobre o NR — não uma conversão para régua fluvial. O painel usa o HORÁRIO da preamar; a altura é contexto e nunca se compara com cota de régua.",
+    "metodo": "Cada extremo da tábua vira preamar se não for menor que os dois vizinhos e baixa-mar se não for maior; 58 ponto(s) que não eram nem pico nem vale (estofos) foram descartados de propósito — melhor faltar um ponto do que adivinhar.",
+    "fonte_curta": "Marinha do Brasil (CHM/DHN) — Tábua de Marés 2026"
   },
   "porto": "Itajaí",
-  "coletado_em": "2026-09-03T14:51:50+00:00",
-  "pontos_astronomicos": 142,
+  "coletado_em": "2026-09-09T22:03:23+00:00",
+  "pontos_astronomicos": 1754,
   "pontos_observados": 0,
   "preamares": [
     {
-      "quando": "2026-09-01T04:28"
+      "quando": "2026-01-01T00:44",
+      "altura_m": 1.08
     },
     {
-      "quando": "2026-09-01T16:45"
+      "quando": "2026-01-01T12:27",
+      "altura_m": 0.83
     },
     {
-      "quando": "2026-09-02T05:10"
+      "quando": "2026-01-02T01:29",
+      "altura_m": 1.13
     },
     {
-      "quando": "2026-09-02T17:23"
+      "quando": "2026-01-02T13:08",
+      "altura_m": 0.88
     },
     {
-      "quando": "2026-09-03T00:53"
+      "quando": "2026-01-03T02:16",
+      "altura_m": 1.15
     },
     {
-      "quando": "2026-09-03T05:59"
+      "quando": "2026-01-03T13:57",
+      "altura_m": 0.92
     },
     {
-      "quando": "2026-09-03T12:41"
+      "quando": "2026-01-04T03:02",
+      "altura_m": 1.15
     },
     {
-      "quando": "2026-09-03T18:08"
+      "quando": "2026-01-04T14:40",
+      "altura_m": 0.96
     },
     {
-      "quando": "2026-09-04T01:06"
+      "quando": "2026-01-05T03:44",
+      "altura_m": 1.11
     },
     {
-      "quando": "2026-09-04T07:05"
+      "quando": "2026-01-05T09:19",
+      "altura_m": 0.6
     },
     {
-      "quando": "2026-09-04T13:04"
+      "quando": "2026-01-05T15:23",
+      "altura_m": 0.98
     },
     {
-      "quando": "2026-09-04T19:10"
+      "quando": "2026-01-06T04:21",
+      "altura_m": 1.06
     },
     {
-      "quando": "2026-09-05T01:22"
+      "quando": "2026-01-06T16:04",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-05T13:24"
+      "quando": "2026-01-07T05:02",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-05T20:37"
+      "quando": "2026-01-07T16:53",
+      "altura_m": 1.0
     },
     {
-      "quando": "2026-09-06T01:28"
+      "quando": "2026-01-07T23:06",
+      "altura_m": 0.35
     },
     {
-      "quando": "2026-09-06T13:28"
+      "quando": "2026-01-08T05:42",
+      "altura_m": 0.94
     },
     {
-      "quando": "2026-09-06T22:23"
+      "quando": "2026-01-08T17:36",
+      "altura_m": 0.98
     },
     {
-      "quando": "2026-09-07T00:34"
+      "quando": "2026-01-09T06:14",
+      "altura_m": 0.88
     },
     {
-      "quando": "2026-09-07T13:15"
+      "quando": "2026-01-09T18:12",
+      "altura_m": 0.94
     },
     {
-      "quando": "2026-09-07T23:42"
+      "quando": "2026-01-10T01:32",
+      "altura_m": 0.6
     },
     {
-      "quando": "2026-09-08T13:17"
+      "quando": "2026-01-10T07:01",
+      "altura_m": 0.81
     },
     {
-      "quando": "2026-09-09T00:21"
+      "quando": "2026-01-10T19:02",
+      "altura_m": 0.9
     },
     {
-      "quando": "2026-09-09T13:34"
+      "quando": "2026-01-11T02:19",
+      "altura_m": 0.67
     },
     {
-      "quando": "2026-09-10T00:57"
+      "quando": "2026-01-11T07:49",
+      "altura_m": 0.77
     },
     {
-      "quando": "2026-09-10T13:58"
+      "quando": "2026-01-11T15:25",
+      "altura_m": 0.67
     },
     {
-      "quando": "2026-09-11T01:33"
+      "quando": "2026-01-11T19:59",
+      "altura_m": 0.85
     },
     {
-      "quando": "2026-09-11T14:27"
+      "quando": "2026-01-12T02:53",
+      "altura_m": 0.73
     },
     {
-      "quando": "2026-09-12T02:09"
+      "quando": "2026-01-12T08:53",
+      "altura_m": 0.73
     },
     {
-      "quando": "2026-09-12T14:58"
+      "quando": "2026-01-12T21:06",
+      "altura_m": 0.83
     },
     {
-      "quando": "2026-09-13T02:46"
+      "quando": "2026-01-13T03:08",
+      "altura_m": 0.75
     },
     {
-      "quando": "2026-09-13T15:30"
+      "quando": "2026-01-13T10:42",
+      "altura_m": 0.75
     },
     {
-      "quando": "2026-09-14T03:21"
+      "quando": "2026-01-13T22:27",
+      "altura_m": 0.86
     },
     {
-      "quando": "2026-09-14T16:03"
+      "quando": "2026-01-14T11:49",
+      "altura_m": 0.79
     },
     {
-      "quando": "2026-09-15T03:57"
+      "quando": "2026-01-14T23:51",
+      "altura_m": 0.92
     },
     {
-      "quando": "2026-09-15T12:39"
+      "quando": "2026-01-15T12:40",
+      "altura_m": 0.85
     },
     {
-      "quando": "2026-09-15T16:38"
+      "quando": "2026-01-16T00:42",
+      "altura_m": 1.0
     },
     {
-      "quando": "2026-09-16T04:34"
+      "quando": "2026-01-16T13:17",
+      "altura_m": 0.9
     },
     {
-      "quando": "2026-09-16T12:43"
+      "quando": "2026-01-17T01:27",
+      "altura_m": 1.06
     },
     {
-      "quando": "2026-09-16T17:16"
+      "quando": "2026-01-17T13:59",
+      "altura_m": 0.94
     },
     {
-      "quando": "2026-09-17T05:13"
+      "quando": "2026-01-18T02:10",
+      "altura_m": 1.11
     },
     {
-      "quando": "2026-09-17T13:06"
+      "quando": "2026-01-18T14:32",
+      "altura_m": 0.98
     },
     {
-      "quando": "2026-09-17T18:04"
+      "quando": "2026-01-19T02:53",
+      "altura_m": 1.13
     },
     {
-      "quando": "2026-09-18T06:00"
+      "quando": "2026-01-19T15:10",
+      "altura_m": 1.0
     },
     {
-      "quando": "2026-09-18T13:30"
+      "quando": "2026-01-20T03:25",
+      "altura_m": 1.15
     },
     {
-      "quando": "2026-09-18T19:21"
+      "quando": "2026-01-20T15:51",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-19T07:04"
+      "quando": "2026-01-21T04:04",
+      "altura_m": 1.12
     },
     {
-      "quando": "2026-09-19T13:51"
+      "quando": "2026-01-21T16:17",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-19T21:40"
+      "quando": "2026-01-22T04:44",
+      "altura_m": 1.08
     },
     {
-      "quando": "2026-09-20T09:06"
+      "quando": "2026-01-22T16:59",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-20T13:58"
+      "quando": "2026-01-23T05:12",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-20T23:08"
+      "quando": "2026-01-23T17:38",
+      "altura_m": 1.0
     },
     {
-      "quando": "2026-09-21T12:55"
+      "quando": "2026-01-24T05:53",
+      "altura_m": 0.96
     },
     {
-      "quando": "2026-09-21T23:48"
+      "quando": "2026-01-24T18:14",
+      "altura_m": 0.96
     },
     {
-      "quando": "2026-09-22T12:34"
+      "quando": "2026-01-25T06:32",
+      "altura_m": 0.86
     },
     {
-      "quando": "2026-09-23T00:20"
+      "quando": "2026-01-25T13:10",
+      "altura_m": 0.67
     },
     {
-      "quando": "2026-09-23T12:44"
+      "quando": "2026-01-25T19:08",
+      "altura_m": 0.9
     },
     {
-      "quando": "2026-09-24T00:48"
+      "quando": "2026-01-26T07:19",
+      "altura_m": 0.79
     },
     {
-      "quando": "2026-09-24T13:07"
+      "quando": "2026-01-26T13:29",
+      "altura_m": 0.69
     },
     {
-      "quando": "2026-09-25T01:15"
+      "quando": "2026-01-26T20:32",
+      "altura_m": 0.86
     },
     {
-      "quando": "2026-09-25T13:34"
+      "quando": "2026-01-27T08:27",
+      "altura_m": 0.71
     },
     {
-      "quando": "2026-09-26T01:44"
+      "quando": "2026-01-27T13:47",
+      "altura_m": 0.69
     },
     {
-      "quando": "2026-09-26T14:04"
+      "quando": "2026-01-28T00:08",
+      "altura_m": 0.92
     },
     {
-      "quando": "2026-09-27T02:16"
+      "quando": "2026-01-28T09:57",
+      "altura_m": 0.69
     },
     {
-      "quando": "2026-09-27T14:35"
+      "quando": "2026-01-28T13:47",
+      "altura_m": 0.69
     },
     {
-      "quando": "2026-09-28T02:51"
+      "quando": "2026-01-29T00:40",
+      "altura_m": 1.02
     },
     {
-      "quando": "2026-09-28T15:08"
+      "quando": "2026-01-29T11:06",
+      "altura_m": 0.75
     },
     {
-      "quando": "2026-09-29T03:28"
+      "quando": "2026-01-30T01:14",
+      "altura_m": 1.1
     },
     {
-      "quando": "2026-09-29T15:41"
+      "quando": "2026-01-30T12:06",
+      "altura_m": 0.81
     },
     {
-      "quando": "2026-09-30T04:08"
+      "quando": "2026-01-31T01:42",
+      "altura_m": 1.17
     },
     {
-      "quando": "2026-09-30T16:16"
+      "quando": "2026-01-31T13:01",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-02-01T02:14",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-02-01T13:44",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-02-02T02:51",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-02-02T14:21",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-02-03T03:19",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-02-03T15:04",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-02-04T04:01",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-02-04T15:49",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-02-05T04:34",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-02-05T16:19",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-02-06T05:04",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-02-06T17:01",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-02-07T05:40",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-02-07T17:42",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-02-08T01:55",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-02-08T06:10",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-02-08T18:16",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-02-09T02:04",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-02-09T06:57",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-02-09T19:06",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-02-10T02:27",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-02-10T07:55",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-02-10T13:21",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-02-10T20:17",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-02-11T02:53",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-02-11T09:51",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-11T12:44",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-11T22:08",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-02-12T02:51",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-02-12T12:25",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-02-12T23:59",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-02-13T12:38",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-02-14T00:38",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-02-14T13:10",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-02-15T01:19",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-02-15T13:44",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-02-16T01:59",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-02-16T14:14",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-02-17T02:34",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-02-17T14:53",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-02-18T03:04",
+      "altura_m": 1.21
+    },
+    {
+      "quando": "2026-02-18T15:21",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-02-19T03:42",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-02-19T15:59",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-02-20T04:12",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-02-20T16:27",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-02-21T04:51",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-02-21T17:04",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-02-22T05:17",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-02-22T17:53",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-02-23T00:01",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-02-23T05:59",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-02-23T13:12",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-02-23T18:46",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-02-24T00:38",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-02-24T06:49",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-02-24T13:16",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-02-24T20:08",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-02-25T01:16",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-02-25T07:57",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-25T13:38",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-02-26T01:34",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-02-26T09:10",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-26T13:36",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-27T01:01",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-02-27T10:44",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-02-28T01:06",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-02-28T11:46",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-03-01T01:27",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-03-01T12:42",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-03-02T01:57",
+      "altura_m": 1.21
+    },
+    {
+      "quando": "2026-03-02T13:21",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-03-03T02:21",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-03-03T14:02",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-03-04T02:59",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-03-04T14:47",
+      "altura_m": 1.21
+    },
+    {
+      "quando": "2026-03-05T03:27",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-03-05T15:19",
+      "altura_m": 1.21
+    },
+    {
+      "quando": "2026-03-06T04:01",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-03-06T15:57",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-03-07T04:32",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-03-07T16:29",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-03-08T05:02",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-03-08T17:04",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-03-09T01:19",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-03-09T05:32",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-03-09T17:47",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-03-10T01:42",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-03-10T06:04",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-03-10T18:31",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-03-11T02:01",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-03-11T12:08",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-03-11T19:42",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-03-12T02:10",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-03-12T11:01",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-03-13T02:04",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-03-13T12:17",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-03-14T00:46",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-03-14T12:27",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-03-15T00:29",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-03-15T12:51",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-03-16T01:02",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-03-16T13:16",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-03-17T01:36",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-03-17T13:51",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-03-18T02:06",
+      "altura_m": 1.21
+    },
+    {
+      "quando": "2026-03-18T14:21",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-03-19T02:40",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-03-19T14:57",
+      "altura_m": 1.23
+    },
+    {
+      "quando": "2026-03-20T03:08",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-03-20T15:29",
+      "altura_m": 1.23
+    },
+    {
+      "quando": "2026-03-21T03:46",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-03-21T16:04",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-03-22T04:14",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-03-22T16:47",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-03-22T23:04",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-03-23T04:55",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-03-23T17:31",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-03-23T23:59",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-03-24T05:32",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-03-24T12:21",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-03-24T18:25",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-03-25T00:34",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-03-25T06:25",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-03-25T12:55",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-03-26T01:14",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-03-26T07:42",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-03-26T13:06",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-03-27T01:46",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-03-27T09:01",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-03-27T13:08",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-03-28T00:23",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-03-28T10:12",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-03-29T00:34",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-03-29T11:12",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-03-30T00:57",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-03-30T12:12",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-03-31T01:25",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-03-31T12:59",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-04-01T01:57",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-04-01T13:40",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-04-02T02:21",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-04-02T14:17",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-04-03T02:57",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-04-03T14:59",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-04-04T03:25",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-04-04T15:32",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-04-05T03:59",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-04-05T16:04",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-04-06T04:27",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-04-06T16:44",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-04-07T00:51",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-04-07T04:57",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-04-07T17:21",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-04-08T01:06",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-04-08T05:23",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-04-08T18:04",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-04-09T01:29",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-04-09T06:57",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-04-09T19:04",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-04-10T01:44",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-04-10T09:34",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-04-11T01:31",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-04-11T10:55",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-04-12T00:29",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-04-12T11:32",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-04-13T00:10",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-04-13T12:14",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-04-14T00:34",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-04-14T12:47",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-04-15T01:06",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-04-15T13:14",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-04-16T01:40",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-04-16T13:55",
+      "altura_m": 1.21
+    },
+    {
+      "quando": "2026-04-17T02:06",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-04-17T14:29",
+      "altura_m": 1.23
+    },
+    {
+      "quando": "2026-04-18T02:42",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-04-18T15:06",
+      "altura_m": 1.23
+    },
+    {
+      "quando": "2026-04-19T03:10",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-04-19T15:51",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-04-19T21:57",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-04-20T03:51",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-04-20T10:08",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-04-20T16:32",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-04-20T22:51",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-04-21T04:27",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-04-21T11:01",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-04-21T17:19",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-04-21T23:40",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-04-22T05:08",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-04-22T11:29",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-04-22T18:16",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-04-23T00:19",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-04-23T06:10",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-04-23T12:08",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-04-24T01:04",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-04-24T07:21",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-04-24T12:49",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-04-25T01:46",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-04-25T08:34",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-04-25T23:40",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-04-26T09:40",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-04-26T23:53",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-04-27T10:38",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-04-28T00:16",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-04-28T11:34",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-04-29T00:53",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-04-29T12:29",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-04-30T01:23",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-04-30T13:10",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-05-01T01:57",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-05-01T13:57",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-05-02T02:21",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-05-02T14:38",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-05-03T02:57",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-05-03T15:10",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-05-04T03:27",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-05-04T15:51",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-05-05T00:04",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-05-05T04:01",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-05-05T16:27",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-05-06T00:17",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-05-06T04:32",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-05-06T17:06",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-05-07T00:44",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-05-07T05:14",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-05-07T17:51",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-05-08T01:02",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-05-08T06:55",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-05-08T18:38",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-05-09T01:08",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-05-09T08:42",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-05-09T19:55",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-05-10T00:57",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-05-10T09:55",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-05-10T23:55",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-05-11T10:42",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-05-11T23:42",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-05-12T11:23",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-05-13T00:04",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-05-13T12:06",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-05-14T00:34",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-05-14T12:49",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-05-15T01:04",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-05-15T13:25",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-05-16T01:40",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-05-16T14:08",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-05-17T02:06",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-05-17T14:59",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-05-18T02:47",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-05-18T08:49",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-05-18T15:42",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-05-18T21:12",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-05-19T03:25",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-05-19T09:16",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-05-19T16:25",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-05-19T22:17",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-05-20T04:06",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-05-20T10:02",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-05-20T17:14",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-05-20T23:19",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-05-21T05:01",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-05-21T10:57",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-05-21T18:08",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-05-22T00:12",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-05-22T06:02",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-05-22T11:46",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-05-22T19:08",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-05-23T01:04",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-05-23T07:04",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-05-23T12:38",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-05-23T20:17",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-05-24T01:51",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-05-24T08:04",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-05-24T21:40",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-05-25T09:02",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-05-25T22:55",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-05-26T10:01",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-05-26T23:42",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-05-27T10:57",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-05-28T00:14",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-05-28T11:57",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-05-29T00:55",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-05-29T12:53",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-05-30T01:29",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-05-30T13:38",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-05-31T02:01",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-05-31T14:21",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-06-01T02:31",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-06-01T15:02",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-06-02T03:06",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-02T15:42",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-06-03T03:51",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-06-03T16:17",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-06-04T00:06",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-06-04T04:25",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-06-04T16:59",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-06-05T00:25",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-06-05T05:17",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-06-05T17:36",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-06-06T00:49",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-06-06T06:21",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-06-06T18:14",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-06-07T00:57",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-06-07T07:29",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-06-07T19:04",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-08T00:51",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-06-08T08:38",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-06-08T20:16",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-06-09T09:44",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-09T22:55",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-06-10T10:36",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-06-10T23:32",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-11T11:32",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-06-12T00:02",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-06-12T12:23",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-06-13T00:32",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-06-13T13:12",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-06-14T01:06",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-06-14T14:04",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-06-15T01:49",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-06-15T14:57",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-06-16T02:23",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-16T15:38",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-06-17T03:08",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-17T16:21",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-06-17T22:08",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-06-18T03:59",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-18T17:06",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-06-18T23:23",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-06-19T04:51",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-19T10:21",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-06-19T17:53",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-06-20T00:36",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-06-20T05:46",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-20T11:36",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-06-20T18:31",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-21T01:32",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-06-21T06:36",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-21T12:44",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-06-21T19:12",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-06-22T02:06",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-06-22T07:23",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-22T13:47",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-06-22T20:04",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-06-23T02:27",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-06-23T08:16",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-23T14:55",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-06-23T21:12",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-06-24T09:16",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-24T15:29",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-06-24T22:57",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-06-25T10:19",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-25T16:19",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-06-25T23:53",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-06-26T11:34",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-06-27T00:34",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-06-27T12:34",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-06-28T01:10",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-06-28T13:23",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-06-29T01:49",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-06-29T14:12",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-06-30T02:19",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-06-30T14:57",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-07-01T03:01",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-07-01T15:31",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-07-02T03:46",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-07-02T16:08",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-07-03T04:16",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-07-03T16:47",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-07-04T05:01",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-07-04T17:16",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-07-05T05:51",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-07-05T17:53",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-07-06T01:10",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-07-06T06:36",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-07-06T18:29",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-07-07T00:59",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-07-07T07:29",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-07-07T19:14",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-07-08T01:01",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-07-08T08:42",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-07-08T20:23",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-07-09T00:53",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-07-09T10:04",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-07-09T22:23",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-07-10T11:29",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-07-10T23:25",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-07-11T12:29",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-07-12T00:08",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-07-12T13:23",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-07-13T00:53",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-07-13T14:12",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-07-14T01:31",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-07-14T14:55",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-07-15T02:10",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-07-15T15:27",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-07-16T02:59",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-07-16T16:06",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-07-17T03:46",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-07-17T16:49",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-07-18T04:23",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-07-18T10:17",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-07-18T17:16",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-07-19T05:06",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-07-19T17:57",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-07-20T05:57",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-07-20T18:31",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-07-21T06:46",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-07-21T14:21",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-07-21T19:06",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-07-22T02:46",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-07-22T07:38",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-07-22T14:55",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-07-22T20:02",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-07-23T02:04",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-07-23T08:40",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-07-23T15:16",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-07-23T21:47",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-07-24T09:59",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-07-24T15:47",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-07-24T23:36",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-07-25T11:21",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-07-26T00:27",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-07-26T12:25",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-07-27T01:04",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-07-27T13:17",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-07-28T01:40",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-07-28T14:02",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-07-29T02:10",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-07-29T14:44",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-07-30T02:51",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-07-30T15:14",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-07-31T03:25",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-07-31T15:53",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-08-01T04:01",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-08-01T16:23",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-08-02T04:32",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-08-02T16:57",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-08-03T05:08",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-08-03T17:23",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-08-04T05:55",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-08-04T17:59",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-08-05T01:17",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-08-05T06:47",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-08-05T18:42",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-08-06T01:04",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-08-06T08:01",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-08-06T19:38",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-08-07T01:10",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-08-07T11:44",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-08-07T21:04",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-08-08T01:14",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-08-08T12:31",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-08-09T01:14",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-08-09T13:06",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-08-09T23:53",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-08-10T13:38",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-08-11T00:40",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-08-11T14:06",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-08-12T01:16",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-08-12T14:38",
+      "altura_m": 1.11
+    },
+    {
+      "quando": "2026-08-13T02:01",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-08-13T15:06",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-08-14T02:44",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-08-14T15:46",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-08-15T03:19",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-08-15T09:17",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-08-15T16:14",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-08-16T04:01",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-08-16T16:53",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-08-17T04:38",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-08-17T17:16",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-08-18T05:14",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-08-18T17:53",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-08-19T06:01",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-08-19T13:59",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-08-19T18:23",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-08-20T06:53",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-08-20T14:21",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-08-21T01:31",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-08-21T08:02",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-08-21T14:53",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-08-21T21:02",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-08-22T00:38",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-08-22T09:40",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-08-22T15:02",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-08-23T00:29",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-08-23T11:31",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-08-24T00:31",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-08-24T12:21",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-08-25T00:55",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-08-25T13:06",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-08-26T01:21",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-08-26T13:46",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-08-27T01:57",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-08-27T14:16",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-08-28T02:27",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-08-28T14:55",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-08-29T03:01",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-08-29T15:23",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-08-30T03:34",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-08-30T15:59",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-08-31T04:04",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-08-31T16:27",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-09-01T04:44",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-09-01T16:59",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-09-02T05:21",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-09-02T11:25",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-09-02T17:31",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-09-03T06:10",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-09-03T12:04",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-09-03T18:08",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-09-04T00:57",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-09-04T07:38",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-09-04T12:46",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-09-04T19:06",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-09-05T01:02",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-09-05T12:46",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-09-05T20:42",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-09-06T01:06",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-09-06T12:32",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-09-07T01:01",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-09-07T12:51",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-09-07T23:29",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-09-08T13:14",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-09-09T00:19",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-09-09T13:42",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-09-10T01:01",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-09-10T14:06",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-09-11T01:40",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-09-11T14:42",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-09-12T02:17",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-09-12T08:06",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-09-12T15:08",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-09-13T02:59",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-09-13T15:47",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-09-14T03:36",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-09-14T16:14",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-09-15T04:06",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-09-15T16:51",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-09-16T04:47",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-09-16T12:59",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-09-16T17:14",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-09-17T05:27",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-09-17T13:27",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-09-17T17:49",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-09-18T06:12",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-09-18T13:57",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-09-19T00:27",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-09-19T07:23",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-09-19T14:10",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-09-19T20:59",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-09-20T09:17",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-09-20T14:21",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-09-20T23:40",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-09-21T12:55",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-09-22T00:10",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-09-22T12:10",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-09-23T00:31",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-09-23T12:40",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-09-24T00:59",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-09-24T13:16",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-09-25T01:25",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-09-25T13:53",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-09-26T02:01",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-09-26T14:19",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-09-27T02:34",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-09-27T14:57",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-09-28T03:04",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-09-28T15:25",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-09-29T03:46",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-09-29T16:01",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-09-30T04:17",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-09-30T16:34",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-10-01T05:02",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-10-01T11:19",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-10-01T17:04",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-10-02T06:02",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-10-02T12:04",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-10-02T17:55",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-10-03T00:17",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-10-03T12:47",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-10-03T19:01",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-10-04T00:46",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-10-04T13:19",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-10-04T20:16",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-10-05T00:46",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-10-05T12:02",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-10-05T21:51",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-06T12:10",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-10-06T22:59",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-10-07T12:34",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-10-07T23:49",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-10-08T13:04",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-10-09T00:38",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-10-09T13:40",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-10-10T01:12",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-10-10T14:06",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-10-11T01:57",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-10-11T14:44",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-10-12T02:38",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-10-12T15:10",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-10-13T03:08",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-10-13T15:49",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-10-14T03:49",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-10-14T12:06",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-10-14T16:16",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-10-15T04:23",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-10-15T12:29",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-10-15T16:53",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-16T05:04",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-10-16T12:59",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-10-16T17:21",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-10-17T05:55",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-10-17T13:23",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-10-17T18:31",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-10-18T06:55",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-18T13:51",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-10-18T20:29",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-10-19T08:31",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-19T13:53",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-10-19T22:23",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-20T12:10",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-10-20T23:14",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-10-21T11:38",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-10-21T23:51",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-10-22T12:08",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-10-23T00:25",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-10-23T12:46",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-10-24T00:59",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-10-24T13:17",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-10-25T01:31",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-10-25T13:55",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-10-26T02:06",
+      "altura_m": 1.19
+    },
+    {
+      "quando": "2026-10-26T14:19",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-10-27T02:49",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-10-27T14:59",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-10-28T03:23",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-10-28T09:16",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-10-28T15:34",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-10-29T04:06",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-10-29T10:10",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-10-29T16:08",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-10-29T22:21",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-10-30T05:01",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-10-30T11:06",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-30T16:57",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-10-30T23:04",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-10-31T06:01",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-10-31T11:59",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-10-31T17:51",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-10-31T23:53",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-11-01T07:17",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-11-01T12:42",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-11-01T18:57",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-11-02T00:16",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-11-02T13:19",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-11-02T20:02",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-11-03T10:53",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-11-03T21:08",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-11-04T11:21",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-11-04T22:12",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-05T11:57",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-05T23:12",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-11-06T12:25",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-11-07T00:06",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-11-07T13:02",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-11-08T00:55",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-11-08T13:42",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-11-09T01:36",
+      "altura_m": 1.1
+    },
+    {
+      "quando": "2026-11-09T14:08",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-11-10T02:16",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-11-10T14:49",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-11T02:57",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-11-11T15:21",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-11-12T03:34",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-11-12T15:59",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-11-13T04:10",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-11-13T12:08",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-11-13T16:38",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-11-14T04:55",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-14T12:34",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-11-14T17:17",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-11-15T05:38",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-11-15T13:02",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-11-15T18:19",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-11-16T06:25",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-11-16T13:21",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-11-16T19:44",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-11-17T07:34",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-11-17T13:34",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-11-17T21:06",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-11-18T09:04",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-11-18T22:14",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-11-19T10:47",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-11-19T23:06",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-11-20T11:36",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-20T23:51",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-11-21T12:10",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-11-22T00:29",
+      "altura_m": 1.08
+    },
+    {
+      "quando": "2026-11-22T12:47",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-11-23T01:06",
+      "altura_m": 1.15
+    },
+    {
+      "quando": "2026-11-23T13:19",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-11-24T01:51",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-11-24T13:59",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-11-25T02:36",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-11-25T14:31",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-26T03:14",
+      "altura_m": 1.13
+    },
+    {
+      "quando": "2026-11-26T15:10",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-11-27T04:04",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-11-27T09:57",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-11-27T15:59",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-11-28T04:59",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-11-28T10:57",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-11-28T16:47",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-11-28T22:19",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-11-29T05:55",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-11-29T11:55",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-11-29T17:40",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-11-29T23:12",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-11-30T06:49",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-11-30T12:46",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-11-30T18:34",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-01T00:06",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-12-01T07:49",
+      "altura_m": 0.79
+    },
+    {
+      "quando": "2026-12-01T13:36",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-01T19:25",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-12-02T01:01",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-12-02T08:53",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-12-02T14:08",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-12-02T20:25",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-12-03T01:44",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-12-03T10:02",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-12-03T14:25",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-12-03T21:31",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-12-04T11:02",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-04T22:38",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-12-05T11:53",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-12-05T23:44",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-12-06T12:34",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-12-07T00:38",
+      "altura_m": 1.0
+    },
+    {
+      "quando": "2026-12-07T06:49",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-12-07T13:12",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-08T01:17",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-12-08T13:55",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-09T02:04",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-12-09T14:27",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-10T02:49",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-12-10T15:06",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-12-11T03:21",
+      "altura_m": 1.04
+    },
+    {
+      "quando": "2026-12-11T15:51",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-12-12T04:02",
+      "altura_m": 1.02
+    },
+    {
+      "quando": "2026-12-12T16:25",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-12-13T04:46",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-12-13T12:34",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-12-13T17:08",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-12-14T05:19",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-12-14T13:02",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-12-14T17:59",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-15T06:01",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-15T13:17",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-12-15T18:53",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-16T06:49",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-12-16T13:19",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-12-16T19:51",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-17T07:46",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-17T13:04",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-12-17T21:04",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-12-18T09:02",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-18T22:17",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-19T10:46",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-12-19T23:23",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-12-20T11:34",
+      "altura_m": 0.85
+    },
+    {
+      "quando": "2026-12-21T00:12",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-12-21T12:14",
+      "altura_m": 0.86
+    },
+    {
+      "quando": "2026-12-22T01:01",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-12-22T12:57",
+      "altura_m": 0.88
+    },
+    {
+      "quando": "2026-12-23T01:47",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-12-23T13:36",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-24T02:32",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-12-24T14:10",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-12-25T03:12",
+      "altura_m": 1.17
+    },
+    {
+      "quando": "2026-12-25T15:01",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-12-26T04:02",
+      "altura_m": 1.12
+    },
+    {
+      "quando": "2026-12-26T09:21",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-12-26T15:49",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-12-27T04:49",
+      "altura_m": 1.06
+    },
+    {
+      "quando": "2026-12-27T10:55",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-12-27T16:29",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-12-28T05:25",
+      "altura_m": 0.98
+    },
+    {
+      "quando": "2026-12-28T12:23",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-12-28T17:12",
+      "altura_m": 0.96
+    },
+    {
+      "quando": "2026-12-28T23:06",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-29T06:08",
+      "altura_m": 0.9
+    },
+    {
+      "quando": "2026-12-29T13:34",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-12-29T18:02",
+      "altura_m": 0.94
+    },
+    {
+      "quando": "2026-12-30T00:14",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-12-30T06:59",
+      "altura_m": 0.83
+    },
+    {
+      "quando": "2026-12-30T14:04",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-12-30T18:55",
+      "altura_m": 0.92
+    },
+    {
+      "quando": "2026-12-31T01:16",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-12-31T07:46",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-12-31T14:44",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-12-31T19:49",
+      "altura_m": 0.88
     }
   ],
   "baixamares": [
     {
-      "quando": "2026-09-01T09:49"
+      "quando": "2026-01-01T08:08",
+      "altura_m": 0.35
     },
     {
-      "quando": "2026-09-01T20:54"
+      "quando": "2026-01-01T20:02",
+      "altura_m": 0.1
     },
     {
-      "quando": "2026-09-02T09:34"
+      "quando": "2026-01-02T09:02",
+      "altura_m": 0.36
     },
     {
-      "quando": "2026-09-02T21:20"
+      "quando": "2026-01-02T20:53",
+      "altura_m": 0.02
     },
     {
-      "quando": "2026-09-03T02:21"
+      "quando": "2026-01-03T09:49",
+      "altura_m": 0.42
     },
     {
-      "quando": "2026-09-03T09:31"
+      "quando": "2026-01-03T21:34",
+      "altura_m": -0.02
     },
     {
-      "quando": "2026-09-03T15:15"
+      "quando": "2026-01-04T10:21",
+      "altura_m": 0.48
     },
     {
-      "quando": "2026-09-03T21:47"
+      "quando": "2026-01-04T22:14",
+      "altura_m": -0.01
     },
     {
-      "quando": "2026-09-04T03:31"
+      "quando": "2026-01-05T07:47",
+      "altura_m": 0.52
     },
     {
-      "quando": "2026-09-04T09:35"
+      "quando": "2026-01-05T11:01",
+      "altura_m": 0.58
     },
     {
-      "quando": "2026-09-04T16:47"
+      "quando": "2026-01-05T23:02",
+      "altura_m": 0.06
     },
     {
-      "quando": "2026-09-04T22:17"
+      "quando": "2026-01-06T08:12",
+      "altura_m": 0.44
     },
     {
-      "quando": "2026-09-05T04:30"
+      "quando": "2026-01-06T23:46",
+      "altura_m": 0.19
     },
     {
-      "quando": "2026-09-05T17:51"
+      "quando": "2026-01-07T08:59",
+      "altura_m": 0.38
     },
     {
-      "quando": "2026-09-05T22:50"
+      "quando": "2026-01-07T21:14",
+      "altura_m": 0.29
     },
     {
-      "quando": "2026-09-06T05:24"
+      "quando": "2026-01-08T00:12",
+      "altura_m": 0.33
     },
     {
-      "quando": "2026-09-06T18:35"
+      "quando": "2026-01-08T09:36",
+      "altura_m": 0.36
     },
     {
-      "quando": "2026-09-06T23:41"
+      "quando": "2026-01-08T21:51",
+      "altura_m": 0.33
     },
     {
-      "quando": "2026-09-07T06:13"
+      "quando": "2026-01-09T10:08",
+      "altura_m": 0.4
     },
     {
-      "quando": "2026-09-07T19:08"
+      "quando": "2026-01-09T22:21",
+      "altura_m": 0.4
     },
     {
-      "quando": "2026-09-08T06:57"
+      "quando": "2026-01-10T03:44",
+      "altura_m": 0.56
     },
     {
-      "quando": "2026-09-08T19:34"
+      "quando": "2026-01-10T10:53",
+      "altura_m": 0.46
     },
     {
-      "quando": "2026-09-09T07:37"
+      "quando": "2026-01-10T23:01",
+      "altura_m": 0.48
     },
     {
-      "quando": "2026-09-09T19:51"
+      "quando": "2026-01-11T04:46",
+      "altura_m": 0.6
     },
     {
-      "quando": "2026-09-10T08:13"
+      "quando": "2026-01-11T11:36",
+      "altura_m": 0.54
     },
     {
-      "quando": "2026-09-10T19:48"
+      "quando": "2026-01-11T16:40",
+      "altura_m": 0.67
     },
     {
-      "quando": "2026-09-11T08:45"
+      "quando": "2026-01-11T23:40",
+      "altura_m": 0.58
     },
     {
-      "quando": "2026-09-11T19:03"
+      "quando": "2026-01-12T05:53",
+      "altura_m": 0.6
     },
     {
-      "quando": "2026-09-12T09:01"
+      "quando": "2026-01-12T17:01",
+      "altura_m": 0.56
     },
     {
-      "quando": "2026-09-12T19:19"
+      "quando": "2026-01-13T00:36",
+      "altura_m": 0.67
     },
     {
-      "quando": "2026-09-13T07:44"
+      "quando": "2026-01-13T06:44",
+      "altura_m": 0.58
     },
     {
-      "quando": "2026-09-13T19:49"
+      "quando": "2026-01-13T17:32",
+      "altura_m": 0.44
     },
     {
-      "quando": "2026-09-14T07:55"
+      "quando": "2026-01-14T07:25",
+      "altura_m": 0.54
     },
     {
-      "quando": "2026-09-14T20:24"
+      "quando": "2026-01-14T18:10",
+      "altura_m": 0.31
     },
     {
-      "quando": "2026-09-15T08:17"
+      "quando": "2026-01-15T08:02",
+      "altura_m": 0.52
     },
     {
-      "quando": "2026-09-15T13:15"
+      "quando": "2026-01-15T18:51",
+      "altura_m": 0.19
     },
     {
-      "quando": "2026-09-15T21:01"
+      "quando": "2026-01-16T08:38",
+      "altura_m": 0.48
     },
     {
-      "quando": "2026-09-16T08:40"
+      "quando": "2026-01-16T19:27",
+      "altura_m": 0.1
     },
     {
-      "quando": "2026-09-16T14:55"
+      "quando": "2026-01-17T09:06",
+      "altura_m": 0.46
     },
     {
-      "quando": "2026-09-16T21:42"
+      "quando": "2026-01-17T20:02",
+      "altura_m": 0.04
     },
     {
-      "quando": "2026-09-17T09:04"
+      "quando": "2026-01-18T09:46",
+      "altura_m": 0.46
     },
     {
-      "quando": "2026-09-17T16:15"
+      "quando": "2026-01-18T20:36",
+      "altura_m": 0.0
     },
     {
-      "quando": "2026-09-17T22:30"
+      "quando": "2026-01-19T07:34",
+      "altura_m": 0.44
     },
     {
-      "quando": "2026-09-18T09:27"
+      "quando": "2026-01-19T21:17",
+      "altura_m": 0.01
     },
     {
-      "quando": "2026-09-18T17:19"
+      "quando": "2026-01-20T07:57",
+      "altura_m": 0.42
     },
     {
-      "quando": "2026-09-19T02:55"
+      "quando": "2026-01-20T21:57",
+      "altura_m": 0.04
     },
     {
-      "quando": "2026-09-19T09:45"
+      "quando": "2026-01-21T08:19",
+      "altura_m": 0.4
     },
     {
-      "quando": "2026-09-19T18:01"
+      "quando": "2026-01-21T22:51",
+      "altura_m": 0.11
     },
     {
-      "quando": "2026-09-20T03:50"
+      "quando": "2026-01-22T08:55",
+      "altura_m": 0.42
     },
     {
-      "quando": "2026-09-20T09:34"
+      "quando": "2026-01-22T23:46",
+      "altura_m": 0.21
     },
     {
-      "quando": "2026-09-20T18:30"
+      "quando": "2026-01-23T09:21",
+      "altura_m": 0.44
     },
     {
-      "quando": "2026-09-21T04:38"
+      "quando": "2026-01-24T00:49",
+      "altura_m": 0.31
     },
     {
-      "quando": "2026-09-21T18:48"
+      "quando": "2026-01-24T09:57",
+      "altura_m": 0.5
     },
     {
-      "quando": "2026-09-22T05:22"
+      "quando": "2026-01-25T01:57",
+      "altura_m": 0.42
     },
     {
-      "quando": "2026-09-22T18:57"
+      "quando": "2026-01-25T10:14",
+      "altura_m": 0.54
     },
     {
-      "quando": "2026-09-23T06:04"
+      "quando": "2026-01-25T15:23",
+      "altura_m": 0.63
     },
     {
-      "quando": "2026-09-23T19:08"
+      "quando": "2026-01-26T03:40",
+      "altura_m": 0.5
     },
     {
-      "quando": "2026-09-24T06:44"
+      "quando": "2026-01-26T10:34",
+      "altura_m": 0.58
     },
     {
-      "quando": "2026-09-24T19:24"
+      "quando": "2026-01-26T16:31",
+      "altura_m": 0.56
     },
     {
-      "quando": "2026-09-25T07:23"
+      "quando": "2026-01-27T05:01",
+      "altura_m": 0.52
     },
     {
-      "quando": "2026-09-25T19:35"
+      "quando": "2026-01-27T11:04",
+      "altura_m": 0.61
     },
     {
-      "quando": "2026-09-26T08:00"
+      "quando": "2026-01-27T17:17",
+      "altura_m": 0.46
     },
     {
-      "quando": "2026-09-26T19:23"
+      "quando": "2026-01-28T06:12",
+      "altura_m": 0.48
     },
     {
-      "quando": "2026-09-27T08:35"
+      "quando": "2026-01-28T11:59",
+      "altura_m": 0.65
     },
     {
-      "quando": "2026-09-27T19:25"
+      "quando": "2026-01-28T18:12",
+      "altura_m": 0.33
     },
     {
-      "quando": "2026-09-28T09:04"
+      "quando": "2026-01-29T07:16",
+      "altura_m": 0.44
     },
     {
-      "quando": "2026-09-28T19:41"
+      "quando": "2026-01-29T19:02",
+      "altura_m": 0.17
     },
     {
-      "quando": "2026-09-29T09:02"
+      "quando": "2026-01-30T08:04",
+      "altura_m": 0.42
     },
     {
-      "quando": "2026-09-29T20:02"
+      "quando": "2026-01-30T19:51",
+      "altura_m": 0.05
     },
     {
-      "quando": "2026-09-30T08:45"
+      "quando": "2026-01-31T08:44",
+      "altura_m": 0.42
     },
     {
-      "quando": "2026-09-30T20:25"
+      "quando": "2026-01-31T20:31",
+      "altura_m": -0.02
+    },
+    {
+      "quando": "2026-02-01T09:10",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-02-01T21:08",
+      "altura_m": -0.04
+    },
+    {
+      "quando": "2026-02-02T09:32",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-02-02T21:55",
+      "altura_m": -0.01
+    },
+    {
+      "quando": "2026-02-03T07:34",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-02-03T22:23",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-02-04T08:04",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-02-04T20:27",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-02-05T08:44",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-02-05T20:55",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-02-06T09:12",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-02-06T21:14",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-02-07T09:53",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-02-07T21:49",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-02-08T03:31",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-02-08T10:16",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-02-08T22:16",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-02-09T04:29",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-09T10:51",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-02-09T22:51",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-02-10T05:49",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-02-10T11:16",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-02-10T16:21",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-02-10T23:14",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-02-11T06:38",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-02-11T17:04",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-02-12T00:02",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-02-12T07:12",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-02-12T17:49",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-02-13T07:44",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-02-13T18:29",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-02-14T08:06",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-02-14T19:08",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-02-15T08:44",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-02-15T19:40",
+      "altura_m": 0.01
+    },
+    {
+      "quando": "2026-02-16T09:02",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-02-16T20:21",
+      "altura_m": -0.02
+    },
+    {
+      "quando": "2026-02-17T09:01",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-02-17T20:55",
+      "altura_m": -0.02
+    },
+    {
+      "quando": "2026-02-18T07:51",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-02-18T21:42",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-02-19T08:06",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-02-19T22:38",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-02-20T08:31",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-02-20T23:19",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-02-21T09:01",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-02-22T00:29",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-02-22T09:25",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-02-22T22:02",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-02-23T02:25",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-02-23T09:46",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-02-23T14:31",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-02-23T22:04",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-02-24T04:01",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-02-24T10:04",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-02-24T16:01",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-02-24T21:29",
+      "altura_m": 0.81
+    },
+    {
+      "quando": "2026-02-25T05:16",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-02-25T10:32",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-02-25T17:02",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-02-26T06:21",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-02-26T11:17",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-02-26T17:59",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-02-27T07:06",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-02-27T18:47",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-02-28T07:42",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-02-28T19:27",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-03-01T08:04",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-03-01T20:04",
+      "altura_m": 0.0
+    },
+    {
+      "quando": "2026-03-02T08:17",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-03-02T20:46",
+      "altura_m": 0.01
+    },
+    {
+      "quando": "2026-03-03T07:01",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-03-03T21:10",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-03-04T07:14",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-03-04T21:02",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-03-04T21:46",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-03-05T07:53",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-03-05T20:01",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-03-06T08:17",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-03-06T20:17",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-03-07T08:57",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-03-07T20:49",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-03-08T09:25",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-03-08T21:10",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-03-09T03:14",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-03-09T09:59",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-03-09T21:42",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-03-10T04:19",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-03-10T10:14",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-03-10T22:04",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-03-11T10:46",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-03-11T15:38",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-03-11T22:38",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-03-12T06:14",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-03-12T16:31",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-03-13T06:40",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-03-13T17:12",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-03-14T07:04",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-03-14T17:57",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-03-15T07:34",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-03-15T18:36",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-03-16T07:59",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-03-16T19:19",
+      "altura_m": 0.02
+    },
+    {
+      "quando": "2026-03-17T08:27",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-03-17T19:55",
+      "altura_m": -0.01
+    },
+    {
+      "quando": "2026-03-18T08:42",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-03-18T20:42",
+      "altura_m": 0.01
+    },
+    {
+      "quando": "2026-03-19T07:27",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-03-19T21:36",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-03-20T07:46",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-03-20T22:25",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-03-21T08:04",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-03-21T23:10",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-03-22T08:32",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-03-22T20:59",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-03-23T01:06",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-03-23T08:55",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-03-23T21:10",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-03-24T03:01",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-03-24T09:17",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-03-24T14:04",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-03-24T21:14",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-03-25T04:08",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-03-25T09:42",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-03-25T15:27",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-03-26T05:21",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-03-26T10:17",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-03-26T16:36",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-03-27T06:06",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-03-27T11:17",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-03-27T17:31",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-03-28T06:42",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-03-28T18:25",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-03-29T07:04",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-03-29T19:04",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-03-30T07:17",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-03-30T19:44",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-03-31T06:31",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-03-31T20:10",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-04-01T06:25",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-04-01T20:44",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-04-02T06:59",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-04-02T19:06",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-04-03T07:27",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-04-03T19:25",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-04-04T08:04",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-04-04T19:55",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-04-05T08:40",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-04-05T20:17",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-04-06T09:12",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-04-06T20:49",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-04-07T03:06",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-04-07T09:49",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-04-07T21:10",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-04-08T04:16",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-04-08T13:10",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-04-08T21:44",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-04-09T05:21",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-04-09T14:46",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-04-09T22:02",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-04-10T05:42",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-04-10T15:47",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-04-11T06:02",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-04-11T16:34",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-04-12T06:21",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-04-12T17:16",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-04-13T06:51",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-04-13T18:06",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-04-14T07:16",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-04-14T18:51",
+      "altura_m": 0.07
+    },
+    {
+      "quando": "2026-04-15T07:42",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-04-15T19:42",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-04-16T08:12",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-04-16T20:40",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-04-17T08:02",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-04-17T08:46",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-04-17T21:34",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-04-18T07:12",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-04-18T22:23",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-04-19T07:42",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-04-19T20:02",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-04-19T23:32",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-04-20T08:02",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-04-20T11:19",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-04-20T20:25",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-04-21T01:42",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-04-21T08:34",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-04-21T12:17",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-04-21T20:49",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-04-22T03:02",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-04-22T08:57",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-04-22T13:49",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-04-22T21:08",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-04-23T04:06",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-04-23T09:42",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-04-23T14:57",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-04-24T05:02",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-04-24T10:44",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-04-24T16:04",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-04-25T05:46",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-04-25T17:06",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-04-26T06:08",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-04-26T18:01",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-04-27T06:27",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-04-27T18:47",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-04-28T06:21",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-04-28T19:19",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-04-29T05:51",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-04-29T19:55",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-04-30T06:10",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-04-30T18:17",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-05-01T06:42",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-05-01T18:38",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-05-02T07:16",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-05-02T19:02",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-05-03T08:01",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-05-03T19:31",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-05-04T08:44",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-05-04T20:01",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-05-05T01:42",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-05-05T09:44",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-05-05T20:27",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-05-06T02:59",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-05-06T11:27",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-05-06T21:01",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-05-07T03:53",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-05-07T12:40",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-05-07T21:27",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-05-08T04:31",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-05-08T13:57",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-05-08T22:01",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-05-09T04:59",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-05-09T14:55",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-05-09T22:23",
+      "altura_m": 0.77
+    },
+    {
+      "quando": "2026-05-10T05:16",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-05-10T15:53",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-05-11T05:46",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-05-11T16:40",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-05-12T06:06",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-05-12T17:32",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-05-13T06:36",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-05-13T18:38",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-05-14T07:10",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-05-14T19:42",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-05-15T07:53",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-05-15T20:42",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-05-16T08:47",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-05-16T21:38",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-05-17T09:40",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-05-17T22:32",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-05-18T07:17",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-05-18T10:27",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-05-18T19:51",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-05-18T23:53",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-05-19T07:57",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-05-19T11:19",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-05-19T20:08",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-05-20T01:25",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-05-20T08:31",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-05-20T12:14",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-05-20T20:53",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-05-21T02:51",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-05-21T09:06",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-05-21T13:19",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-05-21T21:31",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-05-22T03:47",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-05-22T10:02",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-05-22T14:16",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-05-22T22:08",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-05-23T04:38",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-05-23T11:02",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-05-23T15:29",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-05-23T23:02",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-05-24T05:10",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-05-24T16:38",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-05-25T05:44",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-05-25T17:46",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-05-26T05:53",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-05-26T18:40",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-05-27T05:36",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-05-27T19:16",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-05-28T05:38",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-05-28T19:59",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-05-29T06:12",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-05-29T20:14",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-05-30T06:47",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-05-30T18:12",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-05-31T07:29",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-05-31T18:53",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-06-01T08:19",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-06-01T19:19",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-06-02T09:16",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-06-02T19:55",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-06-03T10:23",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-06-03T20:21",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-06-04T02:02",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-06-04T11:19",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-06-04T20:57",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-06-05T03:02",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-06-05T12:14",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-06-05T21:25",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-06-06T03:36",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-06-06T13:14",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-06-06T22:01",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-06-07T04:06",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-06-07T14:06",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-06-07T22:27",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-06-08T04:42",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-08T15:06",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-09T05:02",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-06-09T16:06",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-10T05:36",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-06-10T17:19",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-11T06:06",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-11T18:40",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-12T06:53",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-06-12T19:47",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-06-13T07:44",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-06-13T20:44",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-06-14T08:34",
+      "altura_m": 0.07
+    },
+    {
+      "quando": "2026-06-14T21:38",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-06-15T09:23",
+      "altura_m": 0.02
+    },
+    {
+      "quando": "2026-06-15T22:25",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-06-16T10:14",
+      "altura_m": -0.01
+    },
+    {
+      "quando": "2026-06-16T23:25",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-06-17T11:06",
+      "altura_m": 0.01
+    },
+    {
+      "quando": "2026-06-17T20:08",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-06-18T00:42",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-06-18T12:02",
+      "altura_m": 0.07
+    },
+    {
+      "quando": "2026-06-18T20:55",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-19T02:02",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-06-19T09:10",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-19T12:53",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-06-19T21:27",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-06-20T03:06",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-06-20T09:59",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-06-20T13:46",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-20T22:04",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-06-21T04:01",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-06-21T10:42",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-06-21T14:42",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-06-21T22:51",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-06-22T04:47",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-06-22T11:16",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-06-22T16:21",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-06-22T23:46",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-06-23T05:06",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-06-23T12:06",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-23T17:46",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-24T05:21",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-24T13:06",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-06-24T18:46",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-25T05:32",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-06-25T14:12",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-06-25T19:32",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-06-26T05:55",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-06-26T20:10",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-06-27T06:31",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-06-27T20:42",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-06-28T07:10",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-06-28T21:06",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-06-29T07:44",
+      "altura_m": 0.02
+    },
+    {
+      "quando": "2026-06-29T18:59",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-06-30T08:27",
+      "altura_m": -0.01
+    },
+    {
+      "quando": "2026-06-30T19:23",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-07-01T09:12",
+      "altura_m": 0.0
+    },
+    {
+      "quando": "2026-07-01T19:57",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-07-02T09:51",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-07-02T20:21",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-07-03T10:51",
+      "altura_m": 0.07
+    },
+    {
+      "quando": "2026-07-03T20:55",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-07-04T11:46",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-07-04T21:21",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-07-05T12:42",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-07-05T21:57",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-07-06T03:08",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-07-06T13:36",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-07-06T22:17",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-07-07T03:51",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-07-07T14:29",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-07-07T22:42",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-07-08T04:34",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-07-08T15:57",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-07-08T23:01",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-07-09T05:06",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-07-09T17:25",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-07-10T05:53",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-07-10T18:47",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-07-11T06:40",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-07-11T19:49",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-07-12T07:27",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-07-12T20:38",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-07-13T08:16",
+      "altura_m": -0.04
+    },
+    {
+      "quando": "2026-07-13T21:19",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-07-14T09:06",
+      "altura_m": -0.1
+    },
+    {
+      "quando": "2026-07-14T22:01",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-07-15T10:01",
+      "altura_m": -0.1
+    },
+    {
+      "quando": "2026-07-15T22:17",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-07-16T10:49",
+      "altura_m": -0.04
+    },
+    {
+      "quando": "2026-07-16T20:04",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-07-17T11:23",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-07-17T20:44",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-07-18T09:01",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-07-18T12:08",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-07-18T21:12",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-07-19T09:23",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-07-19T21:53",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-07-20T10:01",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-07-20T22:21",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-07-21T10:40",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-07-21T16:14",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-07-21T22:59",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-07-22T04:38",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-07-22T11:12",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-07-22T17:44",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-07-22T23:44",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-07-23T04:57",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-07-23T12:01",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-07-23T18:51",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-07-24T05:14",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-07-24T13:02",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-07-24T19:36",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-07-25T05:51",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-07-25T20:04",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-07-26T06:25",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-07-26T20:25",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-07-27T07:01",
+      "altura_m": 0.02
+    },
+    {
+      "quando": "2026-07-27T20:55",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-07-28T07:32",
+      "altura_m": -0.03
+    },
+    {
+      "quando": "2026-07-28T21:04",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-07-29T08:12",
+      "altura_m": -0.06
+    },
+    {
+      "quando": "2026-07-29T19:27",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-07-30T08:38",
+      "altura_m": -0.06
+    },
+    {
+      "quando": "2026-07-30T19:55",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-07-31T09:25",
+      "altura_m": -0.03
+    },
+    {
+      "quando": "2026-07-31T20:14",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-08-01T10:27",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-08-01T20:44",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-08-02T11:10",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-08-02T21:06",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-08-03T12:04",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-08-03T21:40",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-08-04T13:04",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-08-04T21:59",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-08-05T02:40",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-08-05T14:19",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-08-05T22:08",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-08-06T03:57",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-08-06T16:10",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-08-06T22:19",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-08-07T04:53",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-08-07T17:46",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-08-07T22:55",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-08-08T05:34",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-08-08T18:53",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-08-09T06:23",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-08-09T19:42",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-08-10T07:12",
+      "altura_m": -0.03
+    },
+    {
+      "quando": "2026-08-10T20:17",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-08-11T08:01",
+      "altura_m": -0.11
+    },
+    {
+      "quando": "2026-08-11T20:53",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-08-12T08:49",
+      "altura_m": -0.15
+    },
+    {
+      "quando": "2026-08-12T21:08",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-08-13T09:29",
+      "altura_m": -0.1
+    },
+    {
+      "quando": "2026-08-13T19:27",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-08-14T10:08",
+      "altura_m": -0.02
+    },
+    {
+      "quando": "2026-08-14T19:57",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-08-15T08:04",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-08-15T10:57",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-08-15T20:19",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-08-16T08:23",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-08-16T20:59",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-08-17T08:55",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-08-17T21:27",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-08-18T09:21",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-08-18T21:59",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-08-19T09:57",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-08-19T16:08",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-08-19T22:21",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-08-20T10:29",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-08-20T22:51",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-08-21T04:10",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-08-21T11:02",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-08-21T18:46",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-08-21T23:01",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-08-22T04:57",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-08-22T11:38",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-08-22T19:14",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-08-23T05:25",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-08-23T19:38",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-08-24T06:04",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-08-24T19:59",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-08-25T06:38",
+      "altura_m": 0.0
+    },
+    {
+      "quando": "2026-08-25T20:12",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-08-26T07:14",
+      "altura_m": -0.06
+    },
+    {
+      "quando": "2026-08-26T20:42",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-08-27T07:38",
+      "altura_m": -0.09
+    },
+    {
+      "quando": "2026-08-27T19:21",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-08-28T08:17",
+      "altura_m": -0.09
+    },
+    {
+      "quando": "2026-08-28T19:40",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-08-29T08:42",
+      "altura_m": -0.04
+    },
+    {
+      "quando": "2026-08-29T20:01",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-08-30T09:31",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-08-30T20:17",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-08-31T10:47",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-08-31T20:51",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-09-01T11:51",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-09-01T21:08",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-09-02T09:57",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-09-02T13:04",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-09-02T21:32",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-09-03T10:04",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-09-03T15:12",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-09-03T21:40",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-09-04T03:23",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-09-04T09:10",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-09-04T16:31",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-09-04T22:02",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-09-05T04:27",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-09-05T17:55",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-09-05T22:25",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-09-06T05:16",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-09-06T18:44",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-09-07T06:08",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-09-07T19:17",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-09-08T06:57",
+      "altura_m": -0.04
+    },
+    {
+      "quando": "2026-09-08T19:49",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-09-09T07:40",
+      "altura_m": -0.09
+    },
+    {
+      "quando": "2026-09-09T20:04",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-09-10T08:17",
+      "altura_m": -0.08
+    },
+    {
+      "quando": "2026-09-10T19:44",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-09-11T08:59",
+      "altura_m": -0.02
+    },
+    {
+      "quando": "2026-09-11T19:06",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-09-12T07:21",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-09-12T09:36",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-09-12T19:31",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-09-13T07:32",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-09-13T20:04",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-09-14T07:57",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-09-14T20:38",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-09-15T08:21",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-09-15T21:06",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-09-16T08:53",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-09-16T15:01",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-09-16T21:40",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-09-17T09:19",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-09-17T16:04",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-09-17T22:02",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-09-18T09:55",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-09-18T22:14",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-09-19T03:21",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-09-19T10:19",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-09-19T18:17",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-09-20T04:14",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-09-20T10:55",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-09-20T18:38",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-09-21T05:01",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-09-21T18:59",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-09-22T05:32",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-09-22T19:12",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-09-23T06:12",
+      "altura_m": 0.02
+    },
+    {
+      "quando": "2026-09-23T19:44",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-09-24T06:42",
+      "altura_m": -0.03
+    },
+    {
+      "quando": "2026-09-24T19:55",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-09-25T07:19",
+      "altura_m": -0.06
+    },
+    {
+      "quando": "2026-09-25T19:25",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-09-26T07:46",
+      "altura_m": -0.04
+    },
+    {
+      "quando": "2026-09-26T19:19",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-09-27T08:27",
+      "altura_m": 0.01
+    },
+    {
+      "quando": "2026-09-27T19:34",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-09-28T08:17",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-09-28T20:01",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-09-29T08:19",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-09-29T20:19",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-09-30T08:49",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-09-30T20:51",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-10-01T09:02",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-10-01T14:08",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-10-01T21:04",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-10-02T09:19",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-10-02T15:27",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-10-02T21:23",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-10-03T02:55",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-10-03T16:42",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-10-03T21:53",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-10-04T04:04",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-10-04T17:44",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-10-04T22:40",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-10-05T05:02",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-10-05T18:17",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-10-06T05:51",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-10-06T18:49",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-10-07T06:38",
+      "altura_m": 0.04
+    },
+    {
+      "quando": "2026-10-07T19:06",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-10-08T07:16",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-10-08T19:16",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-10-09T07:57",
+      "altura_m": 0.07
+    },
+    {
+      "quando": "2026-10-09T18:19",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-10-10T08:27",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-10-10T18:44",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-10-11T06:47",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-10-11T19:12",
+      "altura_m": 0.04
+    },
+    {
+      "quando": "2026-10-12T07:02",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-10-12T19:53",
+      "altura_m": 0.02
+    },
+    {
+      "quando": "2026-10-13T07:31",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-10-13T20:23",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-10-14T08:01",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-10-14T13:44",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-10-14T21:02",
+      "altura_m": 0.12
+    },
+    {
+      "quando": "2026-10-15T08:29",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-10-15T14:53",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-10-15T21:38",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-10-16T09:01",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-10-16T15:53",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-10-16T22:29",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-10-17T09:29",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-10-17T17:01",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-10-18T02:31",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-10-18T10:01",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-10-18T17:38",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-10-19T03:34",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-10-19T10:36",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-10-19T17:57",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-10-20T04:17",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-10-20T18:08",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-10-21T05:02",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-10-21T18:38",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-10-22T05:38",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-10-22T18:57",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-10-23T06:21",
+      "altura_m": 0.05
+    },
+    {
+      "quando": "2026-10-23T19:27",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-10-24T07:04",
+      "altura_m": 0.03
+    },
+    {
+      "quando": "2026-10-24T19:42",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-10-25T07:44",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-10-25T20:21",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-10-26T08:51",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-10-26T19:17",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-10-27T10:01",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-10-27T19:38",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-10-28T07:55",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-10-28T11:04",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-10-28T20:02",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-10-29T08:10",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-10-29T12:51",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-10-29T20:34",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-10-29T23:53",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-10-30T08:49",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-10-30T14:12",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-10-30T20:59",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-10-31T01:06",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-10-31T09:12",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-10-31T15:19",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-10-31T21:36",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-11-01T02:21",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-11-01T09:46",
+      "altura_m": 0.75
+    },
+    {
+      "quando": "2026-11-01T16:23",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-11-01T22:19",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-11-02T03:40",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-11-02T17:12",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-11-03T04:42",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-11-03T17:53",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-11-04T05:38",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-04T18:14",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-11-05T06:27",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-05T18:32",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-11-06T07:06",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-11-06T18:17",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-11-07T07:49",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-11-07T18:04",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-11-08T06:01",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-11-08T08:02",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-11-08T18:29",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-11-09T06:08",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-11-09T19:10",
+      "altura_m": 0.07
+    },
+    {
+      "quando": "2026-11-10T06:44",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-11-10T19:53",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-11-11T07:10",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-11-11T20:32",
+      "altura_m": 0.08
+    },
+    {
+      "quando": "2026-11-12T07:47",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-11-12T21:19",
+      "altura_m": 0.13
+    },
+    {
+      "quando": "2026-11-13T08:16",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-11-13T14:14",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-11-13T22:23",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-14T08:51",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-11-14T15:10",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-11-14T23:49",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-11-15T09:19",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-11-15T16:02",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-11-16T01:40",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-11-16T09:59",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-11-16T16:40",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-11-17T02:38",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-11-17T10:27",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-11-17T17:02",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-11-18T03:36",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-11-18T17:29",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-11-19T04:21",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-11-19T17:57",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-11-20T05:12",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-20T18:25",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-11-21T06:08",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-11-21T18:55",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-11-22T07:04",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-11-22T19:40",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-23T08:04",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-23T20:19",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-11-24T09:06",
+      "altura_m": 0.25
+    },
+    {
+      "quando": "2026-11-24T21:04",
+      "altura_m": 0.11
+    },
+    {
+      "quando": "2026-11-25T10:08",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-11-25T22:01",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-11-26T11:17",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-11-26T22:57",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-11-27T08:02",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-11-27T12:42",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-11-27T23:49",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-11-28T08:44",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-11-28T13:53",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-11-28T21:04",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-11-29T00:49",
+      "altura_m": 0.21
+    },
+    {
+      "quando": "2026-11-29T09:14",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-11-29T15:01",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-11-29T21:53",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-11-30T01:59",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-11-30T10:01",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-11-30T15:57",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-11-30T22:34",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-12-01T03:17",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-12-01T10:53",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-12-01T16:47",
+      "altura_m": 0.63
+    },
+    {
+      "quando": "2026-12-01T23:16",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-12-02T04:27",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-12-02T11:55",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-12-02T17:17",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-12-03T00:14",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-12-03T05:32",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-12-03T13:12",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-12-03T17:53",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-12-04T06:25",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-04T18:02",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-12-05T07:10",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-12-05T18:12",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-06T07:57",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-12-06T18:27",
+      "altura_m": 0.27
+    },
+    {
+      "quando": "2026-12-07T05:17",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-12-07T08:29",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-12-07T19:06",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-12-08T05:57",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-12-08T19:36",
+      "altura_m": 0.1
+    },
+    {
+      "quando": "2026-12-09T06:31",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-09T20:25",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-12-10T07:04",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-12-10T20:59",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-12-11T07:44",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-12-11T21:34",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-12-12T08:14",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-12T22:32",
+      "altura_m": 0.15
+    },
+    {
+      "quando": "2026-12-13T08:47",
+      "altura_m": 0.42
+    },
+    {
+      "quando": "2026-12-13T14:12",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-12-13T23:31",
+      "altura_m": 0.23
+    },
+    {
+      "quando": "2026-12-14T09:17",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-12-14T15:01",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-12-15T00:38",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-12-15T09:55",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-12-15T15:34",
+      "altura_m": 0.65
+    },
+    {
+      "quando": "2026-12-16T01:47",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-12-16T10:23",
+      "altura_m": 0.6
+    },
+    {
+      "quando": "2026-12-16T16:06",
+      "altura_m": 0.61
+    },
+    {
+      "quando": "2026-12-17T02:46",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-12-17T11:12",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-12-17T16:51",
+      "altura_m": 0.56
+    },
+    {
+      "quando": "2026-12-18T03:55",
+      "altura_m": 0.38
+    },
+    {
+      "quando": "2026-12-18T17:16",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-12-19T04:57",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-12-19T17:57",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-20T06:06",
+      "altura_m": 0.33
+    },
+    {
+      "quando": "2026-12-20T18:40",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-12-21T07:12",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-12-21T19:23",
+      "altura_m": 0.19
+    },
+    {
+      "quando": "2026-12-22T08:12",
+      "altura_m": 0.29
+    },
+    {
+      "quando": "2026-12-22T20:10",
+      "altura_m": 0.09
+    },
+    {
+      "quando": "2026-12-23T09:10",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-12-23T21:02",
+      "altura_m": 0.01
+    },
+    {
+      "quando": "2026-12-24T10:04",
+      "altura_m": 0.36
+    },
+    {
+      "quando": "2026-12-24T21:55",
+      "altura_m": -0.02
+    },
+    {
+      "quando": "2026-12-25T10:55",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-12-25T22:44",
+      "altura_m": 0.0
+    },
+    {
+      "quando": "2026-12-26T08:02",
+      "altura_m": 0.58
+    },
+    {
+      "quando": "2026-12-26T11:46",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-12-26T23:25",
+      "altura_m": 0.06
+    },
+    {
+      "quando": "2026-12-27T08:36",
+      "altura_m": 0.54
+    },
+    {
+      "quando": "2026-12-27T12:42",
+      "altura_m": 0.62
+    },
+    {
+      "quando": "2026-12-28T00:16",
+      "altura_m": 0.17
+    },
+    {
+      "quando": "2026-12-28T09:08",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-12-28T14:10",
+      "altura_m": 0.69
+    },
+    {
+      "quando": "2026-12-28T21:32",
+      "altura_m": 0.35
+    },
+    {
+      "quando": "2026-12-29T01:23",
+      "altura_m": 0.31
+    },
+    {
+      "quando": "2026-12-29T09:53",
+      "altura_m": 0.46
+    },
+    {
+      "quando": "2026-12-29T15:06",
+      "altura_m": 0.73
+    },
+    {
+      "quando": "2026-12-29T22:04",
+      "altura_m": 0.4
+    },
+    {
+      "quando": "2026-12-30T02:55",
+      "altura_m": 0.44
+    },
+    {
+      "quando": "2026-12-30T10:27",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-12-30T16:02",
+      "altura_m": 0.71
+    },
+    {
+      "quando": "2026-12-30T22:47",
+      "altura_m": 0.48
+    },
+    {
+      "quando": "2026-12-31T04:16",
+      "altura_m": 0.5
+    },
+    {
+      "quando": "2026-12-31T11:10",
+      "altura_m": 0.52
+    },
+    {
+      "quando": "2026-12-31T16:55",
+      "altura_m": 0.67
+    },
+    {
+      "quando": "2026-12-31T23:19",
+      "altura_m": 0.54
     }
   ]
 }

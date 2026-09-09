@@ -77,7 +77,7 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
 Na VPS (que alcança EPAGRI e, provavelmente, Marinha e AlertaBlu), em `/opt/enchentes-vale-itajai`:
 
 ```
-# 1. Tábua CHM 2026 do Porto de Itajaí — fecha o aviso "baixamares vai até 30/09"
+# 1. ✅ FEITO em 09/09/2026 (o Jefferson mandou o PDF; importar_mare_chm.py gravou o ano inteiro)
 curl -sS -A "enchentes-vale-itajai (tabua de mare)" -o data/brutos/chm-tabua-mare-itajai-2026.pdf \
   'https://www.marinha.mil.br/chm/sites/www.marinha.mil.br.chm/files/dados_de_mare/52%20-%20PORTO%20DE%20ITAJA%C3%8D%20-%20166%20-%20168.pdf'
 # 2. Aviso hidrológico 03 da EPAGRI/CIRAM, 19/11/2023 (Rio do Sul e Taió com hora e estação)

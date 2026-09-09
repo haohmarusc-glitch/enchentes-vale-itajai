@@ -136,7 +136,7 @@ quatro continuam fora do repo porque os hosts não respondem deste ambiente.
 | Ascurra, régua da Travessa Zonta | ✅ `cotas_ressalva` de Ascurra desde 06/09: não associar ao Açu |
 | Blumenau, dez datas ausentes | 🔴 Espera o bruto `data/brutos/blumenau-enchentes-registradas-alertablu.json` (a tabela de `/p/enchentes`, 102 enchentes), que `conferir_blumenau_alertablu.py` já sabe ler e que ainda não chegou. Sem ele, nada a conciliar |
 | Brusque, 19 cheias 2019–2024 (rc.fm.br, creditado à SECOM) | ✅ ABSORVIDO em 09/09/2026 (o Jefferson colou a lista): 14 novos, 2 confirmações, 1 divergência (15/12/2020), 29/10/2023 com dois valores em `divergencias`. `docs/cotas-municipais/brusque.md` |
-| Maré, tábua CHM 2026 | 🔴 O PDF do CHM (Porto de Itajaí, 166–168) não abre daqui (HTTP 000). `mare-itajai.json` continua na planilha da UNIVALI, que acaba em 30/09/2026 — o validador avisa todo dia. Sem importador de CHM ainda; nasce quando o PDF chegar |
+| Maré, tábua CHM 2026 | ✅ IMPORTADA em 09/09/2026: o Jefferson mandou o PDF, `importar_mare_chm.py` gravou 876 preamares e 878 baixa-mares de 01/01 a 31/12/2026, com altura sobre o nível de redução da DHN. Cruzamento com a UNIVALI em setembro: mediana 14 min. `docs/TABUA-CHM-2026.md` |
 | Rio do Sul e Taió, boletim CIRAM de 19/11/2023 | 🔴 Aviso 03 (aviso_n03_191120236281.pdf) não abre daqui. São leituras pontuais com hora e código de estação — NÃO picos; valem como pontos da subida, não como `hora` de pico |
 
 O que os números do documento **não** são: "96 + 35 candidatos" não são eventos novos. Gaspar já
