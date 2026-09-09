@@ -1690,6 +1690,36 @@ def valida_nomes_na_fonte() -> None:
                          "ou o nome da fonte, ou tire a chave.")
 
 
+def valida_avisa_em_monitoramento() -> None:
+    """
+    A exceção "o bot avisa em monitoramento" está escrita por inteiro?
+
+    POR QUE EXISTE (09/09/2026). O padrão do vigia é calar em `monitoramento`.
+    Taió virou exceção por decisão do Jefferson, e uma exceção que só diz `true`
+    é a que o eu futuro lê como esquecimento. Aqui ela precisa de quem decidiu,
+    o motivo e o texto que o aviso carrega — e a cidade precisa TER a cota de
+    monitoramento, senão a exceção não aponta para nada.
+    """
+    dados = le_json("estacoes.json")
+    for rio_id, rio in dados["rios"].items():
+        for cidade in rio["cidades"]:
+            opcao = cidade.get("avisa_em_monitoramento")
+            if opcao is None:
+                continue
+            cid = f"{rio_id}/{cidade['id']}"
+            if not isinstance(opcao, dict):
+                erro(f"estacoes.json: {cid}: `avisa_em_monitoramento` precisa ser um objeto com "
+                     "decidido_por, motivo e texto_no_aviso — `true` sozinho é esquecimento disfarçado.")
+                continue
+            for campo in ("decidido_por", "motivo", "texto_no_aviso"):
+                v = opcao.get(campo)
+                if not isinstance(v, str) or not v.strip():
+                    erro(f"estacoes.json: {cid}: `avisa_em_monitoramento.{campo}` vazio.")
+            if not isinstance((cidade.get("cotas_m") or {}).get("monitoramento"), (int, float)):
+                erro(f"estacoes.json: {cid}: `avisa_em_monitoramento` sem cota `monitoramento` em cotas_m — "
+                     "a exceção não aponta para nada.")
+
+
 def valida_cobertura_da_mare() -> None:
     """
     Até quando a tábua de maré alcança?
@@ -1921,6 +1951,7 @@ def main() -> int:
     valida_brutos_citados()
     valida_ressalva_chega_na_tela()
     valida_nomes_na_fonte()
+    valida_avisa_em_monitoramento()
     valida_cobertura_da_mare()
 
     for a in avisos:

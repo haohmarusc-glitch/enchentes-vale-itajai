@@ -56,11 +56,13 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
    ```
    O de ruas é pequeno e entra no repo; o de manchas (34 MB) fica na VPS com o
    sha256 registrado aqui, comprimido (`gzip -9`) se couber abaixo de 10 MB.
-3. 🟡 **Gaspar, `/estacao/ver/21`:** EM COLETA (09/09/2026) — o Jefferson configurou consulta a
-   cada hora, anotando data/hora da consulta, nível, "Última Medição" e se mudou. A cadência é a
-   das MUDANÇAS em "Última Medição", não a das consultas. Resultado esperado: regular, regular
-   com atrasos, irregular, ou inadequada para uso operacional. Depois, o HTML salvo para
-   `coleta_gaspar.py --arquivo` e o botão "BAIXAR SÉRIE HISTÓRICA".
+3. 🔴 **Gaspar, `/estacao/ver/21`:** CORRIGIDO em 09/09/2026 — NÃO há coleta configurada (o
+   documento da segunda rodada dizia que havia; o Jefferson desmentiu). O que resolve está no repo:
+   `scripts/vigiar_cadencia_gaspar.py`, uma consulta por hora que grava `consultado_em`,
+   `ultima_medicao`, `nivel_m` e `mudou` em `data/tempo-real/gaspar-cadencia.csv`, e `--resumo`
+   imprime os intervalos entre leituras NOVAS. Tem de rodar de um IP no Brasil (a VPS não
+   alcança o host). Crontab: `0 * * * * cd <repo> && python3 scripts/vigiar_cadencia_gaspar.py`.
+   Antes de agendar: salvar o HTML da página e rodar `--arquivo pagina.html` para provar o parser.
 4. ✅ **Ilhota, `ilhota.sc.gov.br/noticia-100533`:** RESOLVIDO em 09/09/2026 — a notícia é da cheia de
    **22/09/2013**. "6,94 m na medição de Gaspar das 16h" = leitura de Gaspar em 22/09/2013 16:00
    (confirmada pelo Cruzeiro do Vale). "Não contamos com régua…" é de 2013; o PLANCON 2025/2028 cita a
