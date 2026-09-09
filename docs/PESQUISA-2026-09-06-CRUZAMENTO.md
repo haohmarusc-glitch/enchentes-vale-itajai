@@ -137,7 +137,7 @@ quatro continuam fora do repo porque os hosts não respondem deste ambiente.
 | Blumenau, dez datas ausentes | 🔴 Espera o bruto `data/brutos/blumenau-enchentes-registradas-alertablu.json` (a tabela de `/p/enchentes`, 102 enchentes), que `conferir_blumenau_alertablu.py` já sabe ler e que ainda não chegou. Sem ele, nada a conciliar |
 | Brusque, 19 cheias 2019–2024 (rc.fm.br, creditado à SECOM) | ✅ ABSORVIDO em 09/09/2026 (o Jefferson colou a lista): 14 novos, 2 confirmações, 1 divergência (15/12/2020), 29/10/2023 com dois valores em `divergencias`. `docs/cotas-municipais/brusque.md` |
 | Maré, tábua CHM 2026 | ✅ IMPORTADA em 09/09/2026: o Jefferson mandou o PDF, `importar_mare_chm.py` gravou 876 preamares e 878 baixa-mares de 01/01 a 31/12/2026, com altura sobre o nível de redução da DHN. Cruzamento com a UNIVALI em setembro: mediana 14 min. `docs/TABUA-CHM-2026.md` |
-| Rio do Sul e Taió, boletim CIRAM de 19/11/2023 | 🔴 Aviso 03 (aviso_n03_191120236281.pdf) não abre daqui. São leituras pontuais com hora e código de estação — NÃO picos; valem como pontos da subida, não como `hora` de pico |
+| Rio do Sul e Taió, boletim CIRAM de 19/11/2023 | ❌ ENCERRADO em 09/09/2026: o Aviso 03 não está no portal, no WordPress nem no Wayback (`docs/CIRAM-ACERVO.md`); vai por e-mail (ofício C12). Antes dizia: não abre daqui. São leituras pontuais com hora e código de estação — NÃO picos; valem como pontos da subida, não como `hora` de pico |
 
 O que os números do documento **não** são: "96 + 35 candidatos" não são eventos novos. Gaspar já
 entrou (48 de 70), Indaial já entrou (16 de 16), e os demais dependem dos quatro brutos acima.

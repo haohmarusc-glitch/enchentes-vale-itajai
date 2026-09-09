@@ -86,3 +86,15 @@ Corrigido; a auditoria regenerada diz 2.
   (Ponte Estaiada) do mesmo portal, baixadas do mesmo jeito, fechariam a
   cadeia — com a Ponte Estaiada tendo o par com a nossa leitura **provado** em
   07/09/2026.
+
+## Adendo de 09/09/2026 — o máximo do portal era um sobrevivente
+
+A série telemétrica da **ANA** para a mesma estação (83892990, `sonda_ana_api.py --gravar`,
+bruto na VPS) tem **668 de 672 leituras** na semana de 11 a 17/11/2023 e põe a crista em
+**5,23 m às 09:15 de 17/11**. O portal de Brusque está **em branco de 16/11 18:00 a 17/11
+13:00** (19 h: a subida e a crista); os **4,83 m às 13:30** da tabela acima são o primeiro
+valor que sobreviveu, já na descida. Onde as duas séries se sobrepõem, batem (portal 3,83 m
+às 22:00; ANA 3,76 m às 23:00). O "máximo" desta fonte passa a ser lido como **máximo
+sobrevivente**, não crista. Detalhe e próxima rodada em `docs/ANA-API-2026-09-08.md`.
+Para o par de 15/12/2020, a janela da ANA (`--data 2020-12-15`) pode preencher os 57 % de
+buraco e fechar a hora do pico a montante.

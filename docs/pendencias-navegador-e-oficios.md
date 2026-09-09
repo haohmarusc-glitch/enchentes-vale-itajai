@@ -80,9 +80,10 @@ Na VPS (que alcança EPAGRI e, provavelmente, Marinha e AlertaBlu), em `/opt/enc
 # 1. ✅ FEITO em 09/09/2026 (o Jefferson mandou o PDF; importar_mare_chm.py gravou o ano inteiro)
 curl -sS -A "enchentes-vale-itajai (tabua de mare)" -o data/brutos/chm-tabua-mare-itajai-2026.pdf \
   'https://www.marinha.mil.br/chm/sites/www.marinha.mil.br.chm/files/dados_de_mare/52%20-%20PORTO%20DE%20ITAJA%C3%8D%20-%20166%20-%20168.pdf'
-# 2. Aviso hidrológico 03 da EPAGRI/CIRAM, 19/11/2023 (Rio do Sul e Taió com hora e estação)
-curl -sS -A "enchentes-vale-itajai" -o data/brutos/epagri-ciram-aviso-03-2023-11-19.pdf \
-  'https://ciram.epagri.sc.gov.br/ciram_arquivos/midia/hidro/aviso_n03_191120236281.pdf'
+# 2. ❌ ENCERRADO em 09/09/2026: o Aviso 03 de 19/11/2023 NÃO existe em lugar acessível
+#    (portal só tem os 6 mais recentes; REST do WordPress não vê a pasta; Wayback termina em
+#    2022; o id do nome não se extrapola). Sai por e-mail: ofício C12. docs/CIRAM-ACERVO.md.
+#    A garimpagem rendeu 4 avisos de enchente (2020–2022) e 80 de estiagem, na VPS.
 # 3. Tabela histórica do AlertaBlu (/p/enchentes) — a sonda já sabe o caminho e confere o robots
 python3 scripts/sonda_fontes_novas.py
 ls -la data/brutos/chm-* data/brutos/epagri-ciram-aviso-03-* data/brutos/blumenau-enchentes-registradas-alertablu.json 2>&1

@@ -477,6 +477,23 @@ o projeto.
 
 ## Pendências
 
+- [x] **Telemetria da ANA, segunda rodada (09/09/2026): a crista de Taió em nov/2023 é 10,32 m, e a ANA
+  preenche o buraco do portal de Brusque na Salseiro.** Duas janelas de DIAS_7 gravadas na VPS
+  (`--gravar`): a 83050000 sobe de 5,80 m a **10,32 m às 21:00 de 17/11**, platô até 00:00 de 18/11,
+  desce a 6,30 m — crista no meio das janelas, não na borda. A 83892990 (Salseiro) tem 668/672 leituras
+  e crista **5,23 m às 09:15 de 17/11**, onde o portal de Brusque ficou **19 h em branco** (o 4,83 m às
+  13:30 do portal era sobrevivente da descida). Barragem Taió Montante ficou muda no meio da cheia;
+  Ituporanga (83250000) não tem cota em novembro inteiro; `HORA_24` de hoje veio vazio (a estação
+  "ativa" não transmite). `scripts/analisar_telemetria_ana.py` junta as janelas, acha a crista com platô
+  e lista buracos (17 testes). **Nada em `enchentes.json`:** falta o bruto no repo e a prova de régua —
+  o teste é out/2023 (12,40 m em 09/10 no g1). `docs/ANA-API-2026-09-08.md`, "Segunda rodada".
+- [x] **O Aviso Hidrológico 03 de 19/11/2023 da EPAGRI/CIRAM não existe em lugar acessível (09/09/2026).**
+  Quatro vias fechadas com prova: índice do portal (só os 6 mais recentes), REST do WordPress (os PDFs
+  ficam fora dele, em `ciram_arquivos/midia/hidro/`), extrapolação do id do nome (contador global,
+  irregular antes de 2026) e Internet Archive (cobre só 2020–2022). Sai por e-mail: ofício C12, na
+  thread do C5. A garimpagem no Wayback rendeu **4 avisos de enchente** (o par de 22/01/2021, dois dias
+  antes dos 4,82 m de Brusque) e 80 de estiagem; os PDFs ficam na VPS, o repo recebe os 4, o sha256 e
+  a classificação. Tudo o que custou caro aprender está em `docs/CIRAM-ACERVO.md`.
 - [x] **A série telemétrica da ANA EXISTE para as quatro estações ativas — no passado (09/09/2026).**
   `sonda_ana_api.py --data 2023-11-17 --intervalo DIAS_7` devolveu 672 leituras de 15 min para
   83029900, 83050000, 83250000 e 83892990. A Saltinho/TAIÓ foi de 6,34 m a 10,32 m **e ainda subia**
