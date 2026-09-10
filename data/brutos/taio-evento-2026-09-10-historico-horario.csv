@@ -1,0 +1,25 @@
+medido_em,nivel_m,chuva_mm,montante_m,comportas_abertas,comportas_fechadas,fonte
+2026-09-09 20:00,2.19,0.0,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-09 21:00,2.18,0.0,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-09 22:00,2.17,0.0,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-09 23:00,2.18,3.6,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 00:00,2.38,0.8,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 01:00,2.50,1.9,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 02:00,2.76,0.8,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 03:00,3.08,0.9,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 04:00,3.41,0.0,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 05:00,3.70,0.0,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 06:00,4.00,0.0,2.9,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 07:00,4.30,0.0,7.0,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 08:00,4.61,0.0,7.0,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 09:00,4.91,0.0,7.0,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 10:00,5.13,0.0,7.0,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 11:00,5.28,0.0,7.0,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 12:00,5.39,0.0,7.0,7,0,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 13:00,5.46,,7.0,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 14:00,5.42,,7.0,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 15:00,5.25,,7.0,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 16:00,5.06,,7.0,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 17:00,4.90,,10.4,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 18:00,4.73,,10.4,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
+2026-09-10 19:00,4.56,,10.4,0,7,api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico
