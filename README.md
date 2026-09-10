@@ -477,6 +477,11 @@ o projeto.
 
 ## Pendências
 
+- [x] **Taió: a escala estadual e o PLANCON são da mesma régua (09/09/2026).** O Manual de Operação de
+  Barragens (SC, out/2024, p. 9, seção 3.3) nomeia a estação SDC Taió – 00041 — a régua do Centro do
+  PLANCON. Degraus idênticos (5 / 7 / 8), rótulos deslocados uma casa, mais o 9,00 municipal. A divergência
+  fecha com `regua_confirmada`, `resolucao` e `resolvido_em`; a ressalva do `avisa_em_monitoramento` sai de
+  "não conferido" para resolvida. Nada muda no que pinta nem no que avisa.
 - [x] **Taió: decisão (b) do Jefferson (09/09/2026) — a régua histórica continua sendo a da imprensa/Defesa
   Civil; a estação 83050000 da ANA entra só como divergência.** Em 09/10/2023, 12,40 m (g1) segue adotado e
   12,13 m (ANA, 12:30, 0,56 km do pino) foi para `divergencias`. As cristas da ANA sem registro
