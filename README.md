@@ -477,35 +477,37 @@ o projeto.
 
 ## Pendências
 
-- [x] **Gaspar convertido; o parser aprendeu mais dois formatos (10/09/2026).** Com o parser certo a VPS
-  deu **1.615 com cota, 0 sem** e gravou `data/brutos/gaspar-cotas-ruas-mymaps.json` (vai para o ramo
-  `vps/brutos-2026-09-09` junto com o KML). Os outros três KML que estavam na pasta mostraram dois
-  formatos novos: a camada **"Cotas de cheia 2023" de Brusque** (357 pontos) traz a cota em
-  `Nível registrado no local`, com `Bairro`/`Rua`/`Esquina`/`Conferência` por extenso — os sinônimos
-  passam a ignorar maiúsculas e acentos e o ponto grava `cota_campo` (de onde a cota saiu); as **ruas de
-  Ituporanga** (60 pontos) têm a cota no `<name>` ("3,38 metros") e a rua no `<description>` — o nome
-  vale como cota **só** quando não há campo, e `cota_campo` fica `nome_marcador`. Fixtures inferidas do
-  resumo da VPS (6 testes); os Placemarks verbatim ainda não foram colados. Brusque inteiro deu 1.679 com
-  cota (camada 2011) e 2.009 sem — `Ruas` (1.643 linhas) e `Pontes` (9) não têm cota mesmo. No `.gitignore`:
-  `data/brutos/ciram-avisos/` (84 PDFs, ~70 MB; o repo guarda os 4 de enchente e o sha256 de todos) e
-  `data/tempo-real/gaspar-cadencia.csv` (log do vigia).
-- [ ] **Manchas de Ituporanga: 25 polígonos por cota, sem conversor.** `ituporanga-mymaps-manchas-2026-09-09.kml`
-  tem pastas `COTA - 3,00` … `COTA - 6,50` (8 faixas) com `MPOLYGON`, e o `kml_para_json.py` os recusa por
-  desenho: é conversor de PONTO. Precisa de um polígono → GeoJSON por cota, como as manchas de Itajaí, e de
-  provar antes a que régua "COTA 3,00" se refere (Ituporanga tem escala oficial de OUTRA régua — ver
-  abaixo). Nada disso entra no mapa sem essa prova.
-- [ ] **Brusque 2023 e Ituporanga (ruas): 417 pontos com cota que NINGUÉM analisou.** A camada 2023 de
-  Brusque diz "nível registrado no local" — pode ser lâmina d'água na rua, não leitura de régua; as ruas
-  de Ituporanga dizem "3,38 metros" sem dizer de quê. Antes de qualquer importador: `analisar_kml_*`
-  como se fez para Gaspar, com a régua nomeada. Sem isso, não pintam.
-- [x] **`kml_para_json.py` lê o formato REAL do export de Gaspar (10/09/2026).** A primeira rodada na VPS
-  deu 1.615 pontos sem campo nenhum e o guarda recusou gravar — o `<description>` real não usa
-  dois-pontos: nome e valor separados por corrida de espaços, rua no topo sem chave, quebra de linha
-  depois da chave. O Placemark verbatim virou fixture (4 testes). Junto: `data/tempo-real/ultimo_gaspar.json`
-  saiu do git (a coleta o reescreve a cada ciclo e ele sujava o `main` na VPS); a captura de 31/08 que um
-  teste lia foi para `data/brutos/gaspar-monitoramento-2026-08-31-analise.json`, e os instantâneos de
-  `data/tempo-real/` entraram no `.gitignore`. O acervo da Asthon rodou na VPS: Tito Buss 31.659 leituras
-  desde 26/07, Vidal Ramos 8.747 desde 28/07.
+- [x] **O KML ORIGINAL de Brusque chegou — e a camada 2023 tem número (10/09/2026).** O que
+  `docs/cotas-de-ruas.md` dava por perdido ("o KML original não está mais disponível; pedir de novo")
+  estava na pasta da VPS: `data/brutos/brusque-cotas-ruas-mymaps.kml` (5,7 MB, 3.688 placemarks), com
+  `obs`, `esquina` e as coordenadas UTM da camada 2011 que a conversão de agosto perdeu, e a camada
+  **"Cotas de cheia 2023" com 357 pontos numerados**, que na conversão antiga vinha vazia. Lido com o
+  KML na mão: o `<name>` (3,76–11,01 m) é a **cota da rua** e "Nível registrado no local" (0,06–5,20 m,
+  às vezes "0,40 m") é a **lâmina d'água medida no ponto** — em **338 dos 344** pontos com os dois
+  números, cota + lâmina = **8,96 m**, o pico de 17/11/2023 na Ponte Estaiada: a Defesa Civil derivou
+  cada cota como pico menos lâmina. O `kml_para_json.py` grava isso como é: `cota` do nome
+  (`cota_campo = "nome_marcador"`), lâmina em `lamina_local_m`, e um campo chamado "nível" nunca vira
+  cota. Fixtures agora são os Placemarks verbatim (Brusque 2023 e Ituporanga; 23 testes). Junto no
+  repo: o KML de Gaspar e seu JSON (1.615 com cota, regerado com `cota_campo`), o KML de ruas de
+  Ituporanga (60 com cota, o nome "3,38 metros" é a cota) e o acervo da Asthon (Tito Buss 31.659 e
+  Vidal Ramos 8.747 leituras, `gauge_zero`). **`brusque-mymaps-cotas.json` (agosto) fica como
+  registro histórico**; o próximo passo é apontar `analisar_kml_brusque.py` para o KML original,
+  onde `obs`/`esquina`/UTM podem decidir a referência da camada 2011.
+- [ ] **Manchas de Ituporanga: não são polígonos, e ficam fora do git.** O KML de manchas (32,4 MB,
+  sha256 no `.gitignore`) tem 25 placemarks "MPOLYGON" em pastas `COTA - 3,00` … `COTA - 6,50`, mas
+  cada um é um `MultiGeometry` de milhares de `LineString` de poucos metros — hachura exportada de CAD,
+  sem anel de polígono. Reconstruir a mancha disso é trabalho de GIS e ainda dependeria de provar a
+  que régua "COTA 3,00" se refere (Ituporanga tem escala oficial de OUTRA régua). O caminho certo é
+  pedir o shapefile/GeoJSON à Defesa Civil de Ituporanga. Nada disso entra no mapa sem essa prova.
+- [ ] **Gaspar: a cadência começou a ser medida — e a página disse ALERTA a 1,74 m.** O cron do
+  `vigiar_cadencia_gaspar.py` está rodando na VPS (de hora em hora, :23). Dez consultas seguidas
+  deram timeout (23:23 → 08:23) e a de **09:23 passou**: "Última Medição 10/09/2026 05:53",
+  **1,74 m**, situação **ALERTA**. Duas coisas a apurar: (1) a VPS alcança Gaspar às vezes — o
+  bloqueio é intermitente, não total; (2) **ALERTA a 1,74 m não bate com a legenda** (atenção acima
+  de 5,00 m OU chuva atual acima de 6,00 mm; emergência acima de 7,00 m; sem faixa "alerta"): ou é o
+  gatilho de chuva, ou a legenda ganhou um quarto estado. Jefferson: abrir `/estacao/ver/21` no
+  navegador e ler situação, nível, chuva atual e a legenda de hoje. Enquanto isso o site não usa
+  essa situação para nada (Gaspar continua cinza por idade).
 - [x] **Dois scripts da sessão do Jefferson entram no repo (10/09/2026).** `baixar_historico_asthon.py`
   baixa a janela de ~6 semanas da API Asthon para `data/brutos/asthon-historico/` e mescla sem perder o
   antigo (fuso convertido pelo `coleta_asthon`, UA e turno do `comum`; 6 testes). `kml_para_json.py`

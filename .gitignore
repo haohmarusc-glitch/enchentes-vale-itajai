@@ -38,3 +38,10 @@ data/brutos/ciram-avisos/
 # Log do vigia de cadência da página de Gaspar (vigiar_cadencia_gaspar.py):
 # cresce a cada consulta; o resultado vai para a documentação, não para o git.
 data/tempo-real/gaspar-cadencia.csv
+
+# Manchas de Ituporanga do My Maps (32,4 MB): fica na VPS, fora do git, como o
+# docs/pendencias-navegador-e-oficios.md A3.2 já mandava. sha256 do arquivo
+# recebido em 10/09/2026: 38c4501c9c08242a00c772b9fab745eaa02bf254ba27c22d9625ec591ae9ba05.
+# Não são polígonos: MultiGeometry de milhares de LineStrings minúsculas
+# (hachura de CAD), em pastas "COTA - 3,00" … "COTA - 6,50".
+data/brutos/ituporanga-mymaps-manchas-2026-09-09.kml

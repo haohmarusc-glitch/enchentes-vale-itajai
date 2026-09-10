@@ -16,11 +16,17 @@ ninguém pode refazer. Este script é a conversão com teste, para os dois:
   `longitu` (truncado assim na fonte). Decimal com VÍRGULA (`8,25`). O
   `<name>` traz a cota com três casas (`8,246`) e o campo `cota` com duas
   (`8,25`) — não misturar.
-* **Brusque, camada "Cotas de cheia 2023"** (vista na VPS em 10/09/2026, 357
-  pontos) — `ExtendedData` com nomes por extenso: `descrição`, `Bairro`,
-  `Rua`, `Esquina`, `Nível registrado no local`, `Conferência`. A cota está
-  em "Nível registrado no local"; a busca de sinônimos ignora maiúsculas e
-  acentos. `cota_campo` diz de qual campo a cota saiu.
+* **Brusque, camada "Cotas de cheia 2023"** (KML original lido em 10/09/2026,
+  357 pontos) — `ExtendedData` com nomes por extenso: `descrição`, `Bairro`,
+  `Rua`, `Esquina`, `Nível registrado no local`, `Conferência`, `gx_media_links`
+  (foto). **"Nível registrado no local" NÃO é a cota: é a LÂMINA d'água medida
+  no ponto** (0,06–5,20 m, mediana 0,90; às vezes com unidade, "0,40 m"). A
+  cota da rua é o `<name>` (7,65): em 337 dos 343 pontos com os dois números,
+  `<name>` + lâmina = **8,96 m**, o pico de 17/11/2023 na Ponte Estaiada — a
+  Defesa Civil derivou a cota de cada rua como pico menos lâmina. Por isso a
+  lâmina vai para `lamina_local_m`/`lamina_local_rotulo`, e a cota sai do
+  nome (`cota_campo = "nome_marcador"`). A busca de sinônimos ignora
+  maiúsculas e acentos.
 * **Ituporanga, ruas** (60 pontos) — nem `ExtendedData` nem campos: o
   `<name>` É a cota ("3,38 metros") e o `<description>` é a rua. Só quando
   não há campo de cota o `<name>` vale como cota, e aí `cota_campo` é
@@ -70,7 +76,9 @@ SINONIMOS = {
 }
 #: Nomes de campo que carregam a cota, por ordem de preferência. Comparados
 #: sem maiúsculas nem acentos (ver `_norm`).
-CAMPOS_DE_COTA = ("cota", "nivel registrado no local")
+CAMPOS_DE_COTA = ("cota",)
+#: Campos que são LÂMINA d'água no ponto, não cota de régua (Brusque 2023).
+CAMPOS_DE_LAMINA = ("nivel registrado no local",)
 #: `<name>` que É a cota: "3,38 metros", "4,00 m", "8,246". Só vale quando
 #: não há campo de cota.
 RE_COTA_NO_NOME = re.compile(r"^(\d+[.,]\d+)\s*(m|metros)?$", re.I)
@@ -82,10 +90,14 @@ RE_CHAVE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 def numero(texto) -> float | None:
-    """'8,25' e '15.55' viram 8.25 e 15.55; '698098,862749' vira 698098.862749."""
+    """'8,25' e '15.55' viram 8.25 e 15.55; '698098,862749' vira 698098.862749.
+
+    Unidade colada no fim ('0,40 m', '3,38 metros') é descartada — aparece em
+    parte da camada 2023 de Brusque e nos nomes de Ituporanga.
+    """
     if texto is None:
         return None
-    t = str(texto).strip()
+    t = re.sub(r"\s*(m|metros)\s*$", "", str(texto).strip(), flags=re.I).strip()
     if not t:
         return None
     if "," in t and "." not in t:
@@ -204,6 +216,11 @@ def ponto_de(placemark, pasta: str | None) -> dict:
     if ponto["cota_campo"] is None and nome and RE_COTA_NO_NOME.match(nome.strip()):
         m = RE_COTA_NO_NOME.match(nome.strip())
         ponto["cota_rotulo"], ponto["cota"], ponto["cota_campo"] = nome.strip(), numero(m.group(1)), "nome_marcador"
+    for candidato in CAMPOS_DE_LAMINA:
+        if candidato in por_norm:
+            ponto["lamina_local_rotulo"] = por_norm[candidato][1].strip() or None
+            ponto["lamina_local_m"] = numero(por_norm[candidato][1])
+            break
     for origem, destino in SINONIMOS.items():
         if origem in por_norm and destino not in ponto:
             ponto[destino] = por_norm[origem][1].strip() or None
@@ -256,8 +273,10 @@ def montar(pontos: list[dict], origem: Path, texto: str) -> dict:
             "o_que_e_cada_campo": {
                 "campos": "TODOS os campos da fonte, como vieram (ExtendedData ou linhas do <description>)",
                 "cota_rotulo": "o campo de cota da fonte, como texto; `cota` é o mesmo em número",
-                "cota_campo": ("de onde a cota saiu: 'cota' (Gaspar, Brusque 2011), 'Nível registrado no local' "
-                               "(Brusque 2023) ou 'nome_marcador' (Ituporanga, onde o <name> é a cota)"),
+                "cota_campo": ("de onde a cota saiu: 'cota' (Gaspar, Brusque 2011) ou 'nome_marcador' "
+                               "(Brusque 2023 e Ituporanga, onde o <name> é a cota)"),
+                "lamina_local_m": ("'Nível registrado no local' (Brusque 2023): LÂMINA d'água medida no ponto, "
+                                   "não cota — cota + lâmina = 8,96 m (pico de 17/11/2023) em 337 de 343 pontos"),
                 "rua/esquina": "refer_1/refer_2 (Gaspar) ou ruas/esquina (Brusque)",
                 "nome_marcador": "o <name> do marcador — em Gaspar é a cota com três casas; não é a cota_rotulo",
                 "lon/lat": "do <coordinates> do ponto",

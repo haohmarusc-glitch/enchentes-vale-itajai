@@ -279,6 +279,13 @@ a parte do KML que é régua de verdade está **desatualizada abaixo de ~7,50 m*
 onde mora o aviso adiantado. É a camada "Cotas de cheia 2023" do próprio KML (357 pontos) — que veio
 **sem número nenhum** na conversão que recebemos.
 
+> **10/09/2026 — o KML original CHEGOU.** Está em `data/brutos/brusque-cotas-ruas-mymaps.kml`
+> (3.688 placemarks), convertido por `scripts/kml_para_json.py` com tudo preservado (`obs`, `esquina`,
+> `coord_x`/`coord_y` da camada 2011; e a camada 2023 com número). Na camada 2023 o `<name>` é a cota da
+> rua e "Nível registrado no local" é a lâmina no ponto: cota + lâmina = 8,96 m em 338 de 344 pontos.
+> O parágrafo abaixo descreve o problema como era; a análise da referência da camada 2011 com os campos
+> recuperados é o próximo passo (`analisar_kml_brusque.py` ainda lê o JSON de agosto).
+
 **O que resolveria:** o KML **original**. A conversão que chegou aqui preservou só `pasta`, `cota`,
 `rua`, `bairro` e `coord`; o original trazia ainda `obs`, `esquina` e coordenadas UTM
 (`coord_x`, `coord_y`) — que é justamente onde estaria dito o que o número significa.

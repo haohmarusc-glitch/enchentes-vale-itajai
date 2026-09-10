@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Cotas de cheias ruas - Ituporanga</name>
+    <description/>
+    <Style id="icon-1899-DB4436-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1899-DB4436-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1</scale>
+        <Icon>
+          <href>https://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="32" xunits="pixels" y="64" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1899-DB4436">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-DB4436-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-DB4436-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name>Cotas de Cheias Ituporanga</name>
+      <Placemark>
+        <name>3,38 metros</name>
+        <description>Rua João Back / Galpão Recuperauto</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.596143,-27.431991,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3,47 metros</name>
+        <description>Rua Aderbal Ramos da Silva / Rua Balduíno Sens</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.601226,-27.417716,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3,50 metros</name>
+        <description>Rua Balduíno Sens / Rua Presidente Nereu</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.601902,-27.417793,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3,69 metros</name>
+        <description>Rua Governador Celso Ramos / Beco Gothlf Gralh FINAL</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.601639,-27.415988,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3,78 metros</name>
+        <description>Rua Governador Celso Ramos / Beco Gothlf Gralh</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600991,-27.415989,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3,85 metros</name>
+        <description>Rua Aderbal Ramos da Silva / Rua Carlos Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.601096,-27.419266,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>3,86 metros</name>
+        <description>Rua João Back / Rua Cristóvão Colombo</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.59922,-27.437446,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,00 metros</name>
+        <description>Rua Major Generoso / Rua Tenente Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600691,-27.420932,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,01 metros</name>
+        <description>Rua Guilherme Meurer / Rua Vilmar Correa</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.604365,-27.424171,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,09 metros</name>
+        <description>Rua Governador Celso Ramos / Rua Raulino Kretzer</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600667,-27.416794,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,17 metros</name>
+        <description>Rua Carlos Thiesen / Rua Presidente Nereu</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.601757,-27.41932,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,20 metros</name>
+        <description>Rua Ten Jacob Philippi / Rua Lauro Mello</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600549,-27.42046,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,24 metros</name>
+        <description>Beco Henrique Holetz FINAL/ Rua Ten Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.60103,-27.419597,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,40 metros</name>
+        <description>Rua Tenente Jacob Philippi / Rua 7 de setembro</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600563,-27.421708,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,50 metros</name>
+        <description>Rua Emílio Altemburg / Rua Presidente Nereu</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.602495,-27.416576,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,70 metros</name>
+        <description>Rua Presidente Nereu / Rua Major Generoso</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.601685,-27.42094,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,90 metros</name>
+        <description>Rua Guilherme Meurer / Rua Vitório Sens</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.603104,-27.42431,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4,90 metros</name>
+        <description>Rua Presidente Nereu / Rua 7 de setembro</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.60159,-27.421786,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,03 metros</name>
+        <description>Rua Erich Schuhmacher / Ponte do Rio Gabiroba</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.596603,-27.418072,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,11 metros</name>
+        <description>Rua Paulo França / Rua Tenente Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600423,-27.422939,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,19 metros</name>
+        <description>Rua Carlos Thiesen / Rua Frei Manoel</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600332,-27.419253,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,22 metros</name>
+        <description>Rua Guilherme Meurer / Rua Amazonas</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.603752,-27.424192,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,25 metros</name>
+        <description>Rua Alexandre Fernandes / Rua Ten Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.60031,-27.423575,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,32 metros</name>
+        <description>Rua Guilherme Meurer / Rua José L. Kletenberg</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.605088,-27.423946,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,35 metros</name>
+        <description>Rua Norberto Pedro Ludwig frente da cassa nº 295</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.603209,-27.418742,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,38 metros</name>
+        <description>Rua David Rengel / Rua Ten Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.60023,-27.424205,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,40 metros</name>
+        <description>Rua Presidente Nereu / Praça Frei Gabriel</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.603019,-27.416073,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,50 metros</name>
+        <description>Rua 7 de setembro / Rua Leonel Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598671,-27.421266,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,50 metros</name>
+        <description>Rua Paulo França / Rua Presidente Nereu</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.60142,-27.423021,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,64 metros</name>
+        <description>Rua Castelo Branco / Rua Ten Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600163,-27.424775,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,66 metros</name>
+        <description>Beco Henrique Holetz / Rua Ten Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600354,-27.419567,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,71 metros</name>
+        <description>Rua Norberto Pedro Ludwig frente da cassa nº 349</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.603189,-27.419282,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>5,77 metros</name>
+        <description>Jõao Carlos Thiesen / Servidão Santa Bárbara</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.59554,-27.418457,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,00 metros</name>
+        <description>Rua João Carlos Thiesen / Rua Luciane Haverroth</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.597905,-27.41858,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,16 metros</name>
+        <description>Rua Henrique Wagner / Beco 40</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.596063,-27.418956,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,25 metros</name>
+        <description>Rua Castelo Branco / Rua Presidente Nereu</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600901,-27.424912,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,41 metros</name>
+        <description>Rua Henrique Wagner / Rua João Carlos Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.596067,-27.418462,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,57 metros</name>
+        <description>Rua Leonel Thiesen / Rua Hugo Haverroth</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598319,-27.422535,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,59 metros</name>
+        <description>Rua Governador Jorge Lacerda / Rua Raulino Kretzer</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599135,-27.41677,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,61 metros</name>
+        <description>Rua 7 de setembro / Rua Lauro Mello</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599769,-27.421643,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,63 metros</name>
+        <description>Rua Presidente Nereu / Rua Ten Jacob Philippi</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600116,-27.425662,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,75 metros</name>
+        <description>Rua Presidente Nereu / Rua José de Anchieta</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599282,-27.426293,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,84 metros</name>
+        <description>Rua João Back / Rodovia SC-350</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.595687,-27.43163,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,87 metros</name>
+        <description>Rua Governador Jorge Lacerda / Rua Carlos Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598965,-27.41918,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>6,95 metros</name>
+        <description>Rua Balduíno Sens / Rua Frei Manoel</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600503,-27.417638,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7,07 metros</name>
+        <description>Rua Francisco Muller / Rua José de Anchieta</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598495,-27.425985,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7,07 metros</name>
+        <description>Rua Presidente Nereu / Rua Leonel Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.597231,-27.428243,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7,17 metros</name>
+        <description>Rua Alexandre Fernandes / Rua Casa frente nº 82</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599041,-27.423557,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7,37 metros</name>
+        <description>Rua Governador Jorge Lacerda / Rua João Carlos Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598996,-27.418665,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7,41 metros</name>
+        <description>Rua Presidente Nereu / Rua 14 de fevereiro</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.603522,-27.415741,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>7,74 metros</name>
+        <description>Rua Alexandre Fernandes / Rua Leonel Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598258,-27.423544,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8,07 metros</name>
+        <description>Rua Castelo Branco / Rua Francisco Muller</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598898,-27.424755,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8,07 metros</name>
+        <description>Rua Emílio Altemburg / Rua Governador Celso Ramos (rua bem alta)</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.600837,-27.4164,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8,07 metros</name>
+        <description>Rua Lauro Mello FINAL</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599288,-27.422605,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8,57 metros</name>
+        <description>Rua David Rengel / Casa nº 135</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599499,-27.424215,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>8,63 metros</name>
+        <description>Rua David Rengel / Rua Leonel Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598199,-27.42417,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>9,24 metros</name>
+        <description>Rua Emílio Altemburg / Rua Governador Jorge Lacerda</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599183,-27.416269,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>9,87 metros</name>
+        <description>Rua Balduíno Sens / Rua Governador Jorge Lacerda</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.599107,-27.417508,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>10,48 metros</name>
+        <description>Rua Castelo Branco / Rua Leonel Thiesen</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598138,-27.424734,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>27,77 metros</name>
+        <description>Prefeitura Garagem</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.598576,-27.415259,0
+          </coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

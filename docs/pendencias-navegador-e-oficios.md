@@ -12,7 +12,7 @@
 | A2.3 · KML de Gaspar | ✅ 1.615 pontos, iguais aos de `gaspar-cotas-2020.json` (`docs/GASPAR-SEM-NIVEL-AO-VIVO.md`); o KML baixado ficou na VPS, sem necessidade de commit |
 | A3.1 · faixas de Blumenau | ✅ 3/4/6/8, JSON oficial |
 | A3.2 · My Maps de Ituporanga | ✅ |
-| A3.3 · cadência de Gaspar | script pronto (`vigiar_cadencia_gaspar.py`); falta rodar o cron de IP brasileiro |
+| A3.3 · cadência de Gaspar | cron rodando na VPS (:23); 1ª leitura em 10/09 09:23 — 1,74 m, ALERTA, medição 05:53; 10 timeouts antes |
 | A3.4 · Ilhota | ✅ resolvido; régua segue com a COMPDEC (ofício C11) |
 | A4.1 · tábua do CHM | ✅ importada |
 | A4.2 · Aviso 03 da EPAGRI | ✅ encerrado — vai por e-mail (C12); 4 avisos de enchente ganhos e lidos (`docs/CIRAM-ACERVO.md`) |
@@ -85,6 +85,11 @@ abaixo é um minuto no celular ou na VPS, e cada um destrava uma decisão já es
    `0 * * * * cd <repo> && python3 scripts/vigiar_cadencia_gaspar.py --url >> gaspar-cadencia.log 2>&1`.
    Antes de agendar: salvar o HTML da página e rodar `--arquivo pagina.html` para provar o parser.
    `--resumo` dá mínimo/mediana/máximo entre leituras novas, horários e o veredito contra os 180 min.
+   **10/09/2026:** o cron está na VPS e o bloqueio é INTERMITENTE, não total — dez consultas seguidas
+   deram `rede: <urlopen error timed out>` (23:23 → 08:23) e a das **09:23 passou**: "Última Medição
+   10/09/2026 05:53", **1,74 m**, situação **ALERTA**. Primeira linha real do CSV. ALERTA a 1,74 m não
+   existe na legenda lida em 08/09 (atenção > 5,00 m ou chuva > 6,00 mm; emergência > 7,00 m) — apurar
+   no navegador se é o gatilho de chuva ou um quarto estado. O CSV fica fora do git (`.gitignore`).
 4. ✅ **Ilhota, `ilhota.sc.gov.br/noticia-100533`:** RESOLVIDO em 09/09/2026 — a notícia é da cheia de
    **22/09/2013**. "6,94 m na medição de Gaspar das 16h" = leitura de Gaspar em 22/09/2013 16:00
    (confirmada pelo Cruzeiro do Vale). "Não contamos com régua…" é de 2013; o PLANCON 2025/2028 cita a

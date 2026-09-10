@@ -61,28 +61,68 @@ KML_BRUSQUE = """<?xml version="1.0" encoding="UTF-8"?>
 <Point><coordinates>-48.959923,-27.15305,0</coordinates></Point></Placemark>
 </Folder></Document></kml>"""
 
-#: Camada "Cotas de cheia 2023" de Brusque, como a VPS a resumiu em 10/09/2026:
-#: campos por extenso, a cota em "Nível registrado no local". Valores inferidos
-#: do resumo (campos=['descrição','Bairro','Rua','Esquina','Nível registrado
-#: no local','Conferência']); o Placemark verbatim ainda não foi colado.
+#: Camada "Cotas de cheia 2023" de Brusque — o primeiro Placemark do KML
+#: original, VERBATIM (VPS, 10/09/2026), sem a foto (gx_media_links encurtado).
+#: O <name> (7,65) é a cota da rua; "Nível registrado no local" (1,31) é a
+#: lâmina medida no ponto: 7,65 + 1,31 = 8,96, o pico de 17/11/2023.
 KML_BRUSQUE_2023 = """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <Folder><name>Cotas de cheia 2023</name>
-<Placemark><name>7,65</name>
-<ExtendedData><Data name="descrição"><value>ponto 3</value></Data><Data name="Bairro"><value>Centro</value></Data>
-<Data name="Rua"><value>Rua Azambuja</value></Data><Data name="Esquina"><value>Rua Y</value></Data>
-<Data name="Nível registrado no local"><value>7,65</value></Data><Data name="Conferência"><value>sim</value></Data></ExtendedData>
-<Point><coordinates>-48.91,-27.10,0</coordinates></Point></Placemark>
+<Placemark>
+        <name>7,65</name>
+        <description><![CDATA[<img src="https://lh3.googleusercontent.com/umsh/AN6v0v7z" height="200" width="auto" /><br><br>descrição: <br><br>Bairro: Jardim Maluche<br>Rua: Bartolomeu Pruner<br>Esquina: <br>Nível registrado no local: 1,31<br>Conferência: Correta<br>Bairro: Jardim Maluche<br>Rua: Bartolomeu Pruner<br>Esquina: <br>Nível registrado no local: 1,31<br>Conferência: Correta]]></description>
+        <styleUrl>#icon-1697-0288D1-labelson</styleUrl>
+        <ExtendedData>
+          <Data name="descrição">
+            <value>
+Bairro: Jardim Maluche
+Rua: Bartolomeu Pruner
+Esquina:
+Nível registrado no local: 1,31
+Conferência: Correta</value>
+          </Data>
+          <Data name="Bairro">
+            <value>Jardim Maluche</value>
+          </Data>
+          <Data name="Rua">
+            <value>Bartolomeu Pruner</value>
+          </Data>
+          <Data name="Esquina">
+            <value/>
+          </Data>
+          <Data name="Nível registrado no local">
+            <value>1,31</value>
+          </Data>
+          <Data name="Conferência">
+            <value>Correta</value>
+          </Data>
+          <Data name="gx_media_links">
+            <value>https://lh3.googleusercontent.com/umsh/AN6v0v7z</value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            -48.93,-27.11,0
+          </coordinates>
+        </Point>
+      </Placemark>
 </Folder></Document></kml>"""
 
-#: Ruas de Ituporanga (60 pontos na VPS, 10/09/2026): o <name> É a cota
-#: ("3,38 metros") e o <description> é só a rua. Inferido do resumo
-#: (campos=['_titulo']); o Placemark verbatim ainda não foi colado.
+#: Ruas de Ituporanga — o primeiro Placemark do KML, VERBATIM (VPS, 10/09/2026):
+#: o <name> É a cota ("3,38 metros") e o <description> é só a rua.
 KML_ITUPORANGA_RUAS = """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <Folder><name>Cotas de Cheias Ituporanga</name>
-<Placemark><name>3,38 metros</name><description>Rua Vereador Joaquim Boeing</description>
-<Point><coordinates>-49.60,-27.41,0</coordinates></Point></Placemark>
+<Placemark>
+        <name>3,38 metros</name>
+        <description>Rua João Back / Galpão Recuperauto</description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.596143,-27.431991,0
+          </coordinates>
+        </Point>
+      </Placemark>
 </Folder></Document></kml>"""
 
 KML_SEM_COTA = """<?xml version="1.0" encoding="UTF-8"?>
@@ -194,22 +234,35 @@ class Brusque2023(unittest.TestCase):
     def setUp(self):
         self.p = pontos_do_kml(KML_BRUSQUE_2023)[0]
 
-    def test_a_cota_sai_do_nivel_registrado_no_local(self):
+    def test_a_cota_e_o_nome_e_o_nivel_registrado_e_lamina(self):
         self.assertEqual(self.p["cota"], 7.65)
         self.assertEqual(self.p["cota_rotulo"], "7,65")
-        self.assertEqual(self.p["cota_campo"], "Nível registrado no local")
+        self.assertEqual(self.p["cota_campo"], "nome_marcador")
+        self.assertEqual(self.p["lamina_local_m"], 1.31)
+        self.assertEqual(self.p["lamina_local_rotulo"], "1,31")
+        # a prova de que o nome é a cota: cota + lâmina = pico de 17/11/2023
+        self.assertAlmostEqual(self.p["cota"] + self.p["lamina_local_m"], 8.96)
 
     def test_sinonimos_ignoram_maiusculas_e_acentos(self):
-        self.assertEqual(self.p["rua"], "Rua Azambuja")
-        self.assertEqual(self.p["esquina"], "Rua Y")
-        self.assertEqual(self.p["bairro"], "Centro")
-        self.assertEqual(self.p["conferencia"], "sim")
-        # os nomes originais ficam intactos em `campos`
+        self.assertEqual(self.p["rua"], "Bartolomeu Pruner")
+        self.assertIsNone(self.p["esquina"])          # <value/> vazio vira None
+        self.assertEqual(self.p["bairro"], "Jardim Maluche")
+        self.assertEqual(self.p["conferencia"], "Correta")
+        # os nomes originais ficam intactos em `campos`, foto incluída
         self.assertIn("Nível registrado no local", self.p["campos"])
+        self.assertIn("gx_media_links", self.p["campos"])
+        self.assertEqual(self.p["formato"], "extended_data")
 
-    def test_o_campo_cota_tem_preferencia_sobre_o_nivel(self):
+    def test_lamina_com_unidade_colada_e_lida(self):
+        kml = KML_BRUSQUE_2023.replace("<value>1,31</value>", "<value>0,40 m</value>")
+        p = pontos_do_kml(kml)[0]
+        self.assertEqual(p["lamina_local_m"], 0.40)
+        self.assertEqual(p["lamina_local_rotulo"], "0,40 m")
+
+    def test_o_campo_cota_tem_preferencia_sobre_o_nome(self):
         p = pontos_do_kml(KML_BRUSQUE)[0]
         self.assertEqual(p["cota_campo"], "cota")
+        self.assertNotIn("lamina_local_m", p)
 
 
 class IturangaNomeEhCota(unittest.TestCase):
@@ -218,7 +271,7 @@ class IturangaNomeEhCota(unittest.TestCase):
         self.assertEqual(p["cota"], 3.38)
         self.assertEqual(p["cota_rotulo"], "3,38 metros")
         self.assertEqual(p["cota_campo"], "nome_marcador")
-        self.assertEqual(p["_titulo"], "Rua Vereador Joaquim Boeing")
+        self.assertEqual(p["_titulo"], "Rua João Back / Galpão Recuperauto")
         self.assertEqual(resumo(pontos_do_kml(KML_ITUPORANGA_RUAS))["com_cota"], 1)
 
     def test_em_gaspar_o_nome_nao_substitui_o_campo_cota(self):
