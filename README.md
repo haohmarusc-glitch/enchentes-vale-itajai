@@ -477,6 +477,12 @@ o projeto.
 
 ## Pendências
 
+- [x] **Taió: decisão (b) do Jefferson (09/09/2026) — a régua histórica continua sendo a da imprensa/Defesa
+  Civil; a estação 83050000 da ANA entra só como divergência.** Em 09/10/2023, 12,40 m (g1) segue adotado e
+  12,13 m (ANA, 12:30, 0,56 km do pino) foi para `divergencias`. As cristas da ANA sem registro
+  correspondente (6,91 m em 22/01/2021, 9,49 m em 05/05/2022, 10,32 m em 17/11/2023) não viram registro:
+  ficam em `estacoes.json` (`codigo_ana_decisao_regua`, `codigo_ana_telemetria_*`) e no doc da API. Vira
+  (a) num commit só se a COMPDEC confirmar o mesmo zero. Blumenau 2021/2022 continua só proposta.
 - [x] **Rio do Sul lia a régua errada — trocada para a régua dona das cotas (09/09/2026).** As cotas
   4,50 / 5,50 / 6,50 são `band_thresholds` da Ponte Dom Tito Buss na API Asthon; a leitura vinha da
   "Estação MKS" pela página da Defesa Civil de Itajaí, e o par nunca fora provado (`conferir_par_regua.py`

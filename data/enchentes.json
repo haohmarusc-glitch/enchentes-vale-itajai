@@ -1185,7 +1185,13 @@
       "pico_m": 12.4,
       "confianca": "media",
       "fonte": "g1 SC — cobertura das cheias de 2023",
-      "nota": "Maior enchente da história do município, a jusante da Barragem Oeste."
+      "nota": "Maior enchente da história do município, a jusante da Barragem Oeste. Decisão (b) do Jefferson em 09/09/2026: a régua histórica de Taió continua sendo a da imprensa/Defesa Civil (12,40 m adotado); a crista da estação da ANA fica em divergencias, não substitui. As demais cristas da ANA em Taió (6,91 m em 22/01/2021, 9,49 m em 05/05/2022, 10,32 m em 17/11/2023) NÃO viram registro por essa mesma decisão — ficam em estacoes.json e em docs/ANA-API-2026-09-08.md como cristas daquela régua.",
+      "divergencias": [
+        {
+          "pico_m": 12.13,
+          "fonte": "ANA, série telemétrica da estação 83050000 'TAIÓ'/Saltinho (HidroinfoanaSerieTelemetricaAdotada), crista às 12:30 de 09/10/2023, platô 12,11–12,13 m das 12:15 às 15:45 — bruto data/brutos/ana-telemetria-83050000-2023-10-12-DIAS_7.json, lido por scripts/analisar_telemetria_ana.py. RÉGUA DA ANA, a 0,56 km do pino da cidade: mesmo dia e mesma ordem de grandeza que os 12,40 m, 0,27 m de diferença que não provam o mesmo zero."
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
