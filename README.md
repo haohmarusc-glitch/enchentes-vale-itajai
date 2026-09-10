@@ -477,6 +477,14 @@ o projeto.
 
 ## Pendências
 
+- [x] **Dois scripts da sessão do Jefferson entram no repo (10/09/2026).** `baixar_historico_asthon.py`
+  baixa a janela de ~6 semanas da API Asthon para `data/brutos/asthon-historico/` e mescla sem perder o
+  antigo (fuso convertido pelo `coleta_asthon`, UA e turno do `comum`; 6 testes). `kml_para_json.py`
+  converte KML do My Maps nos dois formatos que apareceram — Brusque com `ExtendedData` e ponto decimal,
+  Gaspar com campos no `<description>`, vírgula e `longitu` — e recusa gravar quando nenhum ponto tem cota,
+  a falha silenciosa dos 1.615 vazios (12 testes). Das três tarefas de código pedidas, as outras duas já
+  estavam feitas: Blumenau 3/4/6/8 com o `nivel_oficial.json` (09/09) e Rio do Sul na Ponte Dom Tito Buss
+  da Asthon (#260). `vigiar_cadencia_gaspar.py` segue no repo, ainda sem rodada real (só do PC).
 - [x] **Taió: a escala estadual e o PLANCON são da mesma régua (09/09/2026).** O Manual de Operação de
   Barragens (SC, out/2024, p. 9, seção 3.3) nomeia a estação SDC Taió – 00041 — a régua do Centro do
   PLANCON. Degraus idênticos (5 / 7 / 8), rótulos deslocados uma casa, mais o 9,00 municipal. A divergência

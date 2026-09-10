@@ -700,3 +700,13 @@ canônico que divergir derruba a confirmação como qualquer outro. Que os 23 te
 Gustav Michel (não está no PDF), Inominada 1546 (o PDF só tem "R Inominada", sem número), um ponto da
 Humberto de Campos que o PDF não descreve, e as duas da **Lions Clube** — o PDF escreve "Lions Club"
 para os mesmos pontos e a mesma cota, mas o projeto recusa esse casamento desde 01/09, e mantém.
+
+## Conversão de KML com código (10/09/2026)
+
+A conversão de agosto foi feita fora do repo e perdeu campos de Brusque. Agora existe
+`scripts/kml_para_json.py`, com teste, para os dois formatos que o My Maps entrega:
+Brusque com `<ExtendedData>` e ponto decimal; Gaspar com os campos soltos no
+`<description>`, vírgula decimal e o campo `longitu` truncado. O JSON de saída tem as
+chaves que `importar_cotas_gaspar.py` lê e guarda TODOS os campos da fonte em `campos`.
+Ponto sem cota é contado; KML sem nenhuma cota não grava — é a falha silenciosa que
+devolvia 1.615 pontos vazios. A régua continua sendo pergunta dos `analisar_kml_*.py`.

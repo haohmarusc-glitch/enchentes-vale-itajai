@@ -43,6 +43,7 @@
   desenvolvimento, não da fonte. Endpoints e ids levantados em `docs/sessoes/2026-09-09-FONTES.md`
   §2: `stations/live` traz `band_thresholds`; `station-history` aceita `resolution=raw` (10 min);
   `level_datum: "gauge_zero"` vem declarado no histórico.
+- **Acervo:** a API guarda ~6 semanas de histórico (em 09/09/2026, desde 28/07). `scripts/baixar_historico_asthon.py` (do Jefferson, revisado em 10/09) baixa a janela de todas as estações para `data/brutos/asthon-historico/<estação>.csv` e MESCLA com o que já está lá — rodado periodicamente na VPS, guarda o que a API descartaria. Valor cru, fuso convertido na entrada.
 - **Desde 09/09/2026 a leitura de Rio do Sul é a Ponte Dom Tito Buss da Asthon**
   (`f6360951-219f-4859-935f-b2e2d13962f1`, `reference_station_id` da cidade), a régua dona das
   cotas 4,50 / 5,50 / 6,50. A "Rio do Sul Estação MKS" (página da Defesa Civil de Itajaí) é outra
