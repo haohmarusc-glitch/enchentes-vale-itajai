@@ -110,6 +110,15 @@ Conclusão: o formato “camada COTA — X m no Google My Maps” hoje é **só 
 
 ## 1. Taió — Itajaí do Oeste
 
+> **Fechado em 09/09/2026 — as duas escalas são da mesma régua.** O Manual de Operação de
+> Barragens da Defesa Civil de SC (out/2024, p. 9, seção 3.3) vincula a escala estadual à
+> estação **SDC Taió – 00041**, que é a régua do Centro do PLANCON. Os degraus são idênticos
+> (5 / 7 / 8 m); o estado os chama de atenção / alerta / emergência e o PLANCON de
+> monitoramento / atenção / alerta, com um quarto degrau municipal em 9,00 que o estado não
+> tem. Rótulo deslocado uma casa, não discordância sobre o rio. A tela pinta pelo PLANCON; o
+> bot avisa em 5,00 m por exceção escrita (`avisa_em_monitoramento`) e o aviso cita os dois
+> rótulos. Registro em `cotas_divergencias` de Taió, com `regua_confirmada` e `resolvido_em`.
+
 **Estação no cadastro:** DCSC-00041 · ANA 83050000  
 **Site municipal:** [defesacivil.taio.sc.gov.br](https://defesacivil.taio.sc.gov.br/)  
 **Documento:** [Plano de Contingência — janeiro de 2026 (PDF)](https://defesacivil.taio.sc.gov.br/wp-content/uploads/2026/01/PLANO-DE-CONTINGENCIA-TAIO-JAN-2026.pdf)
