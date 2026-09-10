@@ -29,3 +29,12 @@ data/tempo-real/serie-recente.json
 
 # Capturas das sondas de layout (testes-navegador)
 falha-*.png
+
+# Acervo completo de avisos da CIRAM (84 PDFs, ~70 MB) baixado na VPS em 09/09/2026.
+# No repo ficam só os 4 de enchente (ciram-avisos-enchente/), o sha256 de todos
+# (ciram-avisos.sha256) e a classificação (ciram-avisos-tipos.txt).
+data/brutos/ciram-avisos/
+
+# Log do vigia de cadência da página de Gaspar (vigiar_cadencia_gaspar.py):
+# cresce a cada consulta; o resultado vai para a documentação, não para o git.
+data/tempo-real/gaspar-cadencia.csv

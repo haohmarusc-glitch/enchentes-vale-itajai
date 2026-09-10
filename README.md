@@ -477,6 +477,27 @@ o projeto.
 
 ## Pendências
 
+- [x] **Gaspar convertido; o parser aprendeu mais dois formatos (10/09/2026).** Com o parser certo a VPS
+  deu **1.615 com cota, 0 sem** e gravou `data/brutos/gaspar-cotas-ruas-mymaps.json` (vai para o ramo
+  `vps/brutos-2026-09-09` junto com o KML). Os outros três KML que estavam na pasta mostraram dois
+  formatos novos: a camada **"Cotas de cheia 2023" de Brusque** (357 pontos) traz a cota em
+  `Nível registrado no local`, com `Bairro`/`Rua`/`Esquina`/`Conferência` por extenso — os sinônimos
+  passam a ignorar maiúsculas e acentos e o ponto grava `cota_campo` (de onde a cota saiu); as **ruas de
+  Ituporanga** (60 pontos) têm a cota no `<name>` ("3,38 metros") e a rua no `<description>` — o nome
+  vale como cota **só** quando não há campo, e `cota_campo` fica `nome_marcador`. Fixtures inferidas do
+  resumo da VPS (6 testes); os Placemarks verbatim ainda não foram colados. Brusque inteiro deu 1.679 com
+  cota (camada 2011) e 2.009 sem — `Ruas` (1.643 linhas) e `Pontes` (9) não têm cota mesmo. No `.gitignore`:
+  `data/brutos/ciram-avisos/` (84 PDFs, ~70 MB; o repo guarda os 4 de enchente e o sha256 de todos) e
+  `data/tempo-real/gaspar-cadencia.csv` (log do vigia).
+- [ ] **Manchas de Ituporanga: 25 polígonos por cota, sem conversor.** `ituporanga-mymaps-manchas-2026-09-09.kml`
+  tem pastas `COTA - 3,00` … `COTA - 6,50` (8 faixas) com `MPOLYGON`, e o `kml_para_json.py` os recusa por
+  desenho: é conversor de PONTO. Precisa de um polígono → GeoJSON por cota, como as manchas de Itajaí, e de
+  provar antes a que régua "COTA 3,00" se refere (Ituporanga tem escala oficial de OUTRA régua — ver
+  abaixo). Nada disso entra no mapa sem essa prova.
+- [ ] **Brusque 2023 e Ituporanga (ruas): 417 pontos com cota que NINGUÉM analisou.** A camada 2023 de
+  Brusque diz "nível registrado no local" — pode ser lâmina d'água na rua, não leitura de régua; as ruas
+  de Ituporanga dizem "3,38 metros" sem dizer de quê. Antes de qualquer importador: `analisar_kml_*`
+  como se fez para Gaspar, com a régua nomeada. Sem isso, não pintam.
 - [x] **`kml_para_json.py` lê o formato REAL do export de Gaspar (10/09/2026).** A primeira rodada na VPS
   deu 1.615 pontos sem campo nenhum e o guarda recusou gravar — o `<description>` real não usa
   dois-pontos: nome e valor separados por corrida de espaços, rua no topo sem chave, quebra de linha

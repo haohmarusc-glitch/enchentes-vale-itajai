@@ -61,6 +61,30 @@ KML_BRUSQUE = """<?xml version="1.0" encoding="UTF-8"?>
 <Point><coordinates>-48.959923,-27.15305,0</coordinates></Point></Placemark>
 </Folder></Document></kml>"""
 
+#: Camada "Cotas de cheia 2023" de Brusque, como a VPS a resumiu em 10/09/2026:
+#: campos por extenso, a cota em "Nível registrado no local". Valores inferidos
+#: do resumo (campos=['descrição','Bairro','Rua','Esquina','Nível registrado
+#: no local','Conferência']); o Placemark verbatim ainda não foi colado.
+KML_BRUSQUE_2023 = """<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<Folder><name>Cotas de cheia 2023</name>
+<Placemark><name>7,65</name>
+<ExtendedData><Data name="descrição"><value>ponto 3</value></Data><Data name="Bairro"><value>Centro</value></Data>
+<Data name="Rua"><value>Rua Azambuja</value></Data><Data name="Esquina"><value>Rua Y</value></Data>
+<Data name="Nível registrado no local"><value>7,65</value></Data><Data name="Conferência"><value>sim</value></Data></ExtendedData>
+<Point><coordinates>-48.91,-27.10,0</coordinates></Point></Placemark>
+</Folder></Document></kml>"""
+
+#: Ruas de Ituporanga (60 pontos na VPS, 10/09/2026): o <name> É a cota
+#: ("3,38 metros") e o <description> é só a rua. Inferido do resumo
+#: (campos=['_titulo']); o Placemark verbatim ainda não foi colado.
+KML_ITUPORANGA_RUAS = """<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<Folder><name>Cotas de Cheias Ituporanga</name>
+<Placemark><name>3,38 metros</name><description>Rua Vereador Joaquim Boeing</description>
+<Point><coordinates>-49.60,-27.41,0</coordinates></Point></Placemark>
+</Folder></Document></kml>"""
+
 KML_SEM_COTA = """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document><Folder><name>x</name>
 <Placemark><name>ponto</name><description>só texto, sem campo</description>
@@ -164,6 +188,47 @@ class Brusque(unittest.TestCase):
         self.assertEqual(p["pasta"], "Cotas de Cheia 2011")
         # nada se perde: os nove campos ficam em `campos`
         self.assertEqual(len(p["campos"]), 9)
+
+
+class Brusque2023(unittest.TestCase):
+    def setUp(self):
+        self.p = pontos_do_kml(KML_BRUSQUE_2023)[0]
+
+    def test_a_cota_sai_do_nivel_registrado_no_local(self):
+        self.assertEqual(self.p["cota"], 7.65)
+        self.assertEqual(self.p["cota_rotulo"], "7,65")
+        self.assertEqual(self.p["cota_campo"], "Nível registrado no local")
+
+    def test_sinonimos_ignoram_maiusculas_e_acentos(self):
+        self.assertEqual(self.p["rua"], "Rua Azambuja")
+        self.assertEqual(self.p["esquina"], "Rua Y")
+        self.assertEqual(self.p["bairro"], "Centro")
+        self.assertEqual(self.p["conferencia"], "sim")
+        # os nomes originais ficam intactos em `campos`
+        self.assertIn("Nível registrado no local", self.p["campos"])
+
+    def test_o_campo_cota_tem_preferencia_sobre_o_nivel(self):
+        p = pontos_do_kml(KML_BRUSQUE)[0]
+        self.assertEqual(p["cota_campo"], "cota")
+
+
+class IturangaNomeEhCota(unittest.TestCase):
+    def test_o_nome_vale_como_cota_so_quando_nao_ha_campo(self):
+        p = pontos_do_kml(KML_ITUPORANGA_RUAS)[0]
+        self.assertEqual(p["cota"], 3.38)
+        self.assertEqual(p["cota_rotulo"], "3,38 metros")
+        self.assertEqual(p["cota_campo"], "nome_marcador")
+        self.assertEqual(p["_titulo"], "Rua Vereador Joaquim Boeing")
+        self.assertEqual(resumo(pontos_do_kml(KML_ITUPORANGA_RUAS))["com_cota"], 1)
+
+    def test_em_gaspar_o_nome_nao_substitui_o_campo_cota(self):
+        p = pontos_do_kml(KML_GASPAR_REAL)[0]
+        self.assertEqual(p["cota_campo"], "cota")
+        self.assertNotEqual(p["cota_rotulo"], p["nome_marcador"])
+
+    def test_nome_que_nao_e_numero_nao_vira_cota(self):
+        self.assertEqual(resumo(pontos_do_kml(KML_SEM_COTA))["com_cota"], 0)
+        self.assertIsNone(pontos_do_kml(KML_SEM_COTA)[0]["cota_campo"])
 
 
 class FalhaSilenciosa(unittest.TestCase):
