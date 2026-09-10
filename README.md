@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+> **Checklist vivo do que falta para cada cidade pintar: `docs/CHECKLIST-PINTAR-CIDADES.md`** (10/09/2026).
+
 - [x] **O KML ORIGINAL de Brusque chegou — e a camada 2023 tem número (10/09/2026).** O que
   `docs/cotas-de-ruas.md` dava por perdido ("o KML original não está mais disponível; pedir de novo")
   estava na pasta da VPS: `data/brutos/brusque-cotas-ruas-mymaps.kml` (5,7 MB, 3.688 placemarks), com
