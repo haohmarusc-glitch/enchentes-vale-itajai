@@ -57,7 +57,7 @@ KML_BRUSQUE = """<?xml version="1.0" encoding="UTF-8"?>
 <ExtendedData><Data name="descrição"><value>ponto 12</value></Data><Data name="cota"><value>15.55</value></Data>
 <Data name="obs"><value>esquina com a Rua X</value></Data><Data name="bairro"><value>Dom Joaquim</value></Data>
 <Data name="coord_x"><value>703000.5</value></Data><Data name="coord_y"><value>6995000.1</value></Data>
-<Data name="ruas"><value>Luiz Moreli</value></Data><Data name="esquina"><value>Rua X</value></Data><Data name="esquina_co"><value>12</value></Data></ExtendedData>
+<Data name="ruas"><value>Luiz Moreli</value></Data><Data name="esquina"><value>1</value></Data><Data name="esquina_co"><value>Rua X</value></Data></ExtendedData>
 <Point><coordinates>-48.959923,-27.15305,0</coordinates></Point></Placemark>
 </Folder></Document></kml>"""
 
@@ -222,7 +222,8 @@ class Brusque(unittest.TestCase):
         self.assertEqual(p["formato"], "extended_data")
         self.assertEqual(p["cota"], 15.55)
         self.assertEqual(p["rua"], "Luiz Moreli")
-        self.assertEqual(p["esquina"], "Rua X")
+        self.assertEqual(p["esquina"], "Rua X")        # vem de esquina_co, não do sinalizador
+        self.assertEqual(p["esquina_flag"], "1")
         self.assertEqual(p["obs"], "esquina com a Rua X")
         self.assertEqual(p["coord_x"], "703000.5")
         self.assertEqual(p["pasta"], "Cotas de Cheia 2011")

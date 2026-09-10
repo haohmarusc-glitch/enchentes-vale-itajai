@@ -493,6 +493,15 @@ o projeto.
   Vidal Ramos 8.747 leituras, `gauge_zero`). **`brusque-mymaps-cotas.json` (agosto) fica como
   registro histórico**; o próximo passo é apontar `analisar_kml_brusque.py` para o KML original,
   onde `obs`/`esquina`/UTM podem decidir a referência da camada 2011.
+- [x] **Os campos recuperados da camada 2011 de Brusque NÃO decidem a referência (10/09/2026).** Era
+  a esperança de `docs/cotas-de-ruas.md` ("`obs`, `esquina` e UTM são justamente o que decidiria").
+  Lidos no KML original: `obs` é número da casa ("N 440") ou distância ("100m", "final da rua"), em 654
+  variantes; `esquina` é um SINALIZADOR (vazio ou "1", 593 pontos) e `esquina_co` ("esquina com") é a
+  transversal (770 pontos) — a conversão de agosto trocou os dois, e o parser agora grava a transversal
+  em `esquina` e o sinalizador em `esquina_flag` (fixture e teste corrigidos). Nenhum dos três separa
+  ponto de régua de ponto de terreno: a mistura de 5,07 a 23,31 m continua sem campo que diga qual é
+  qual. O que resolve segue sendo a planilha da Defesa Civil de Brusque (ofício). `analisar_kml_brusque.py`
+  continua lendo o JSON de agosto — as conclusões dele valem, e o KML original não as muda.
 - [ ] **Manchas de Ituporanga: não são polígonos, e ficam fora do git.** O KML de manchas (32,4 MB,
   sha256 no `.gitignore`) tem 25 placemarks "MPOLYGON" em pastas `COTA - 3,00` … `COTA - 6,50`, mas
   cada um é um `MultiGeometry` de milhares de `LineString` de poucos metros — hachura exportada de CAD,
