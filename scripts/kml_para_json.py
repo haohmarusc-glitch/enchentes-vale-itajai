@@ -68,9 +68,14 @@ NS = {"k": "http://www.opengis.net/kml/2.2"}
 #: Como cada nome de campo da fonte vira o nome que os importadores esperam.
 #: Gaspar chama a rua de `refer_1` e a transversal de `refer_2`; Brusque, de
 #: `ruas` e `esquina`. O importador lê `rua` e `esquina`.
+#: Brusque 2011, lido no KML original (10/09/2026): `esquina` é um SINALIZADOR
+#: (vazio ou "1", 593 pontos) e `esquina_co` ("esquina com") é a transversal
+#: (770 pontos). A ordem abaixo importa: o primeiro sinônimo presente vence, e
+#: `esquina_co` tem de vir antes de `esquina`. `obs` é número da casa ("N 440")
+#: ou distância ("100m", "final da rua") — nada que decida referência.
 SINONIMOS = {
     "refer_1": "rua", "ruas": "rua", "rua": "rua",
-    "refer_2": "esquina", "esquina": "esquina",
+    "esquina_co": "esquina", "refer_2": "esquina", "esquina": "esquina",
     "longitu": "longitude", "longitude": "longitude", "latitude": "latitude",
     "bairro": "bairro", "conferencia": "conferencia",
 }
@@ -224,6 +229,8 @@ def ponto_de(placemark, pasta: str | None) -> dict:
     for origem, destino in SINONIMOS.items():
         if origem in por_norm and destino not in ponto:
             ponto[destino] = por_norm[origem][1].strip() or None
+    if "esquina_co" in por_norm and "esquina" in por_norm:
+        ponto["esquina_flag"] = por_norm["esquina"][1].strip() or None
     for chave in ("sequencia", "obs", "esquina_co", "descrição", "coord_x", "coord_y", "_titulo"):
         if chave in brutos:
             ponto[chave] = brutos[chave].strip() or None
@@ -277,7 +284,8 @@ def montar(pontos: list[dict], origem: Path, texto: str) -> dict:
                                "(Brusque 2023 e Ituporanga, onde o <name> é a cota)"),
                 "lamina_local_m": ("'Nível registrado no local' (Brusque 2023): LÂMINA d'água medida no ponto, "
                                    "não cota — cota + lâmina = 8,96 m (pico de 17/11/2023) em 337 de 343 pontos"),
-                "rua/esquina": "refer_1/refer_2 (Gaspar) ou ruas/esquina (Brusque)",
+                "rua/esquina": ("refer_1/refer_2 (Gaspar), ruas/esquina_co (Brusque 2011 — `esquina` lá é só "
+                                "um sinalizador, guardado em esquina_flag) ou Rua/Esquina (Brusque 2023)"),
                 "nome_marcador": "o <name> do marcador — em Gaspar é a cota com três casas; não é a cota_rotulo",
                 "lon/lat": "do <coordinates> do ponto",
             },
