@@ -292,3 +292,41 @@ class DiagnosticoDeTransporte(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HistoricoAcumulado(unittest.TestCase):
+    """O `dados/historico` é janela móvel de 24 h; o que não for anexado some (10/09/2026)."""
+
+    def _linhas(self, caminho):
+        return [json.loads(x) for x in Path(caminho).read_text(encoding="utf-8").splitlines() if x.strip()]
+
+    def test_anexa_so_o_que_ainda_nao_esta_la_e_em_ordem(self):
+        import tempfile
+        h1 = [{"medido_em": "2026-09-10T13:00:15", "nivel_m": 5.46, "montante_m": 10.4, "comportas_abertas": 0},
+              {"medido_em": "2026-09-10T12:00:41", "nivel_m": 5.39, "montante_m": 10.0, "comportas_abertas": 7}]
+        with tempfile.TemporaryDirectory() as d:
+            arq = Path(d, "taio-historico.ndjson")
+            self.assertEqual(ct.acumula_historico(h1, arq), 2)
+            self.assertEqual([x["medido_em"] for x in self._linhas(arq)],
+                             ["2026-09-10T12:00:41", "2026-09-10T13:00:15"])       # ordem de tempo
+            h2 = h1 + [{"medido_em": "2026-09-10T14:00:29", "nivel_m": 5.42, "montante_m": 10.4, "comportas_abertas": 0}]
+            self.assertEqual(ct.acumula_historico(h2, arq), 1)                      # só a nova
+            self.assertEqual(len(self._linhas(arq)), 3)
+            self.assertEqual(ct.acumula_historico(h2, arq), 0)                      # idempotente
+            self.assertEqual(self._linhas(arq)[-1]["comportas_abertas"], 0)
+
+    def test_linha_sem_carimbo_e_ignorada_e_lista_vazia_nao_cria_arquivo(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            arq = Path(d, "x.ndjson")
+            self.assertEqual(ct.acumula_historico([], arq), 0)
+            self.assertFalse(arq.exists())
+            self.assertEqual(ct.acumula_historico([{"nivel_m": 1.0}], arq), 0)
+            self.assertFalse(arq.exists())
+
+    def test_falha_de_disco_nao_derruba_a_coleta(self):
+        # caminho impossível (arquivo dentro de um arquivo): devolve 0 e avisa, sem levantar
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            bloqueio = Path(d, "eh-arquivo"); bloqueio.write_text("x", encoding="utf-8")
+            self.assertEqual(ct.acumula_historico([{"medido_em": "2026-09-10T13:00:15"}], bloqueio / "y.ndjson"), 0)

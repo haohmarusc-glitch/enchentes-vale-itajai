@@ -54,6 +54,7 @@ import json
 import re
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from comum import USER_AGENT, nivel_plausivel
 
@@ -62,6 +63,11 @@ URL_CARDS = f"{BASE}/cards?v=1"
 URL_HISTORICO = f"{BASE}/historico?v=1"
 
 SAIDA = "tempo-real/ultimo_taio.json"
+#: Série horária acumulada (nível + montante + comportas). O `dados/historico` da
+#: API é uma JANELA MÓVEL de 24 h: o que não for guardado some no dia seguinte.
+#: Aprendido em 10/09/2026, no dia em que as comportas da Barragem Oeste fecharam
+#: no pico de 5,48 m — e o `ultimo_taio.json` é reescrito a cada ciclo.
+HISTORICO_ACUMULADO = "tempo-real/taio-historico.ndjson"
 
 #: A régua da CIDADE. Só este campo vira nível de cidade — ver a armadilha no
 #: cabeçalho.
@@ -256,6 +262,35 @@ def coletar() -> dict:
     return dados
 
 
+def acumula_historico(historico: list[dict], caminho=None) -> int:
+    """Anexa ao ndjson as linhas do histórico que ainda não estão lá (chave: medido_em).
+
+    Devolve quantas linhas novas gravou. Nunca levanta: perder a acumulação não
+    pode derrubar a coleta do card, que é o que o morador vê.
+    """
+    from comum import DADOS
+    caminho = Path(caminho) if caminho else DADOS / HISTORICO_ACUMULADO
+    try:
+        vistos: set[str] = set()
+        if caminho.exists():
+            with caminho.open(encoding="utf-8") as f:
+                for linha in f:
+                    try:
+                        vistos.add(json.loads(linha)["medido_em"])
+                    except (json.JSONDecodeError, KeyError, TypeError):
+                        continue
+        novas = [h for h in historico if h.get("medido_em") and h["medido_em"] not in vistos]
+        if novas:
+            caminho.parent.mkdir(parents=True, exist_ok=True)
+            with caminho.open("a", encoding="utf-8") as f:
+                for h in sorted(novas, key=lambda h: h["medido_em"]):
+                    f.write(json.dumps(h, ensure_ascii=False) + "\n")
+        return len(novas)
+    except OSError as e:
+        print(f"aviso: não acumulei o histórico de Taió ({e})", file=sys.stderr)
+        return 0
+
+
 def payload(dados: dict | None = None) -> dict:
     """
     O conteúdo de `data/tempo-real/ultimo_taio.json`, num lugar só.
@@ -269,12 +304,14 @@ def payload(dados: dict | None = None) -> dict:
     `dados` já coletado entra como argumento para o `--de-arquivo` não sair
     buscando a rede só para montar o mesmo dicionário.
     """
+    dados = coletar() if dados is None else dados
+    acumula_historico(dados.get("historico") or [])
     return {
         "fonte": URL_CARDS,
         # UTC, e diferente do `medido_em` das leituras, que é horário de
         # Brasília sem fuso (ver CLAUDE.md). São dois relógios de propósito.
         "coletado_em": datetime.now().astimezone().isoformat(),
-        **(coletar() if dados is None else dados),
+        **dados,
     }
 
 
