@@ -188,7 +188,7 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 
-## C14 — Defesa Civil de Blumenau / AlertaBlu: cache de 30 dias no `nivel_oficial.json` (RASCUNHO, aguarda "sim")
+## C14 — Defesa Civil de Blumenau / AlertaBlu: cache de 30 dias no `nivel_oficial.json` ✅ ENVIADO em 10/09/2026 20:58 BRT (Gmail, id 1a08dc0ec504818b)
 
 > Por que: medido em 10/09/2026 (23:45Z, VPS): `static/data/nivel_oficial.json` é servido com
 > `Cache-Control: max-age=2592000` e `Expires` um mês à frente, enquanto o `Last-Modified` muda a
