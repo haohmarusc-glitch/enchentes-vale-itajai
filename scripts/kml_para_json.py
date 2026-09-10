@@ -1,0 +1,236 @@
+#!/usr/bin/env python3
+"""Converte um KML do Google My Maps (cotas de rua) no JSON bruto que os importadores leem.
+
+POR QUE EXISTE (10/09/2026)
+Os dois KMLs que o projeto já recebeu vieram em formatos DIFERENTES, e a
+conversão de agosto foi feita fora do repo, sem código — por isso o de Brusque
+perdeu `obs`, `esquina` e as coordenadas UTM ("perda_conhecida" no bruto) e
+ninguém pode refazer. Este script é a conversão com teste, para os dois:
+
+* **Brusque** — `<ExtendedData>` de verdade: `descrição`, `cota`, `obs`,
+  `bairro`, `coord_x`, `coord_y`, `ruas`, `esquina`, `esquina_co`. Decimal
+  com PONTO (`15.55`).
+* **Gaspar** — sem `ExtendedData`: os campos vêm como texto solto no
+  `<description>`, separados por `<br>`: `FID`, `sequencia`, `cota`,
+  `refer_1`, `refer_2`, `bairro`, `coord_x`, `coord_y`, `latitude`,
+  `longitu` (truncado assim na fonte). Decimal com VÍRGULA (`8,25`). O
+  `<name>` traz a cota com três casas (`8,246`) e o campo `cota` com duas
+  (`8,25`) — não misturar.
+
+⚠️ FALHA SILENCIOSA É O INIMIGO. Um parser que só conhece um formato lê o
+outro e devolve 1.615 pontos com tudo vazio — arquivo válido, contagem certa,
+conteúdo nenhum. Por isso: ponto sem cota é contado e listado; se NENHUM
+ponto tiver cota, o script sai com erro e não grava.
+
+O que o JSON de saída NÃO afirma: que o campo `cota` é nível de régua. Foi a
+armadilha da camada "Cotas de Cheia 2011" de Brusque. Quem decide isso é
+`analisar_kml_gaspar.py` / `analisar_kml_brusque.py`, depois.
+
+Uso:
+    python3 scripts/kml_para_json.py data/brutos/gaspar-cotas-ruas-mymaps.kml --saida data/brutos/gaspar-cotas-2020.json
+    python3 scripts/kml_para_json.py brusque.kml --saida data/brutos/brusque-mymaps-cotas.json --forcar
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import html
+import json
+import re
+import sys
+import xml.etree.ElementTree as ET
+from datetime import date
+from pathlib import Path
+
+NS = {"k": "http://www.opengis.net/kml/2.2"}
+
+#: Como cada nome de campo da fonte vira o nome que os importadores esperam.
+#: Gaspar chama a rua de `refer_1` e a transversal de `refer_2`; Brusque, de
+#: `ruas` e `esquina`. O importador lê `rua` e `esquina`.
+SINONIMOS = {
+    "refer_1": "rua", "ruas": "rua", "rua": "rua",
+    "refer_2": "esquina", "esquina": "esquina",
+    "longitu": "longitude", "longitude": "longitude", "latitude": "latitude",
+}
+
+RE_BR = re.compile(r"<br\s*/?>", re.I)
+RE_TAG = re.compile(r"<[^>]+>")
+
+
+def numero(texto) -> float | None:
+    """'8,25' e '15.55' viram 8.25 e 15.55; '698098,862749' vira 698098.862749."""
+    if texto is None:
+        return None
+    t = str(texto).strip()
+    if not t:
+        return None
+    if "," in t and "." not in t:
+        t = t.replace(",", ".")
+    elif "," in t and "." in t:
+        # '1.234,56' (milhar com ponto) — não apareceu nas fontes; trata por segurança.
+        t = t.replace(".", "").replace(",", ".")
+    try:
+        return float(t)
+    except ValueError:
+        return None
+
+
+def _local(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1]
+
+
+def campos_da_descricao(descricao: str | None) -> dict[str, str]:
+    """`FID: 1<br>sequencia: 1<br>cota: 8,25<br>…` -> {'FID': '1', 'sequencia': '1', 'cota': '8,25', …}."""
+    if not descricao:
+        return {}
+    texto = html.unescape(descricao)
+    saida: dict[str, str] = {}
+    for pedaco in RE_BR.split(texto):
+        pedaco = RE_TAG.sub("", pedaco).strip()
+        if ":" not in pedaco:
+            continue
+        chave, valor = pedaco.split(":", 1)
+        chave = chave.strip()
+        if chave:
+            saida[chave] = valor.strip()
+    return saida
+
+
+def campos_do_extended(placemark) -> dict[str, str]:
+    saida: dict[str, str] = {}
+    for data in placemark.iter():
+        nome_tag = _local(data.tag)
+        if nome_tag == "Data":
+            valor = data.find("k:value", NS)
+            if valor is None:
+                valor = next((f for f in data if _local(f.tag) == "value"), None)
+            saida[data.get("name", "").strip()] = (valor.text or "").strip() if valor is not None else ""
+        elif nome_tag == "SimpleData":
+            saida[data.get("name", "").strip()] = (data.text or "").strip()
+    saida.pop("", None)
+    return saida
+
+
+def coordenadas(placemark) -> tuple[float | None, float | None]:
+    for el in placemark.iter():
+        if _local(el.tag) == "coordinates" and el.text:
+            partes = el.text.strip().split()[0].split(",")
+            if len(partes) >= 2:
+                return numero(partes[0]), numero(partes[1])
+    return None, None
+
+
+def ponto_de(placemark, pasta: str | None) -> dict:
+    nome = next((el.text for el in placemark if _local(el.tag) == "name"), None)
+    descricao = next((el.text for el in placemark if _local(el.tag) == "description"), None)
+    brutos = campos_do_extended(placemark)
+    formato = "extended_data"
+    if not brutos:
+        brutos = campos_da_descricao(descricao)
+        formato = "description"
+    lon, lat = coordenadas(placemark)
+
+    ponto: dict = {
+        "pasta": pasta,
+        "nome_marcador": (nome or "").strip() or None,
+        "formato": formato,
+        "campos": brutos,
+    }
+    # Chaves que os importadores leem — as mesmas do gaspar-cotas-2020.json.
+    ponto["cota_rotulo"] = brutos.get("cota")
+    ponto["cota"] = numero(brutos.get("cota"))
+    for origem, destino in SINONIMOS.items():
+        if origem in brutos and destino not in ponto:
+            ponto[destino] = brutos[origem].strip() or None
+    for chave in ("bairro", "sequencia", "obs", "esquina_co", "descrição", "coord_x", "coord_y"):
+        if chave in brutos:
+            ponto[chave] = brutos[chave].strip() or None
+    ponto["lon"], ponto["lat"] = lon, lat
+    return ponto
+
+
+def pontos_do_kml(texto_xml: str) -> list[dict]:
+    raiz = ET.fromstring(texto_xml)
+    saida: list[dict] = []
+
+    def visita(no, pasta):
+        for filho in no:
+            tag = _local(filho.tag)
+            if tag == "Folder":
+                nome = next((el.text for el in filho if _local(el.tag) == "name"), None)
+                visita(filho, (nome or "").strip() or pasta)
+            elif tag == "Placemark":
+                saida.append(ponto_de(filho, pasta))
+            elif tag in ("Document", "kml"):
+                visita(filho, pasta)
+    visita(raiz, None)
+    return saida
+
+
+def resumo(pontos: list[dict]) -> dict:
+    sem_cota = [p for p in pontos if p["cota"] is None]
+    pastas: dict[str, int] = {}
+    formatos: dict[str, int] = {}
+    for p in pontos:
+        pastas[p["pasta"] or "(sem pasta)"] = pastas.get(p["pasta"] or "(sem pasta)", 0) + 1
+        formatos[p["formato"]] = formatos.get(p["formato"], 0) + 1
+    return {"total": len(pontos), "com_cota": len(pontos) - len(sem_cota),
+            "sem_cota": len(sem_cota), "pastas": pastas, "formatos": formatos}
+
+
+def montar(pontos: list[dict], origem: Path, texto: str) -> dict:
+    r = resumo(pontos)
+    return {
+        "_meta": {
+            "descricao": "Pontos de um KML do Google My Maps, convertidos por scripts/kml_para_json.py.",
+            "origem": str(origem),
+            "sha256_do_kml": hashlib.sha256(texto.encode("utf-8")).hexdigest(),
+            "convertido_em": date.today().isoformat(),
+            "total": r["total"], "com_cota": r["com_cota"], "sem_cota": r["sem_cota"],
+            "pastas": r["pastas"], "formatos": r["formatos"],
+            "o_que_e_cada_campo": {
+                "campos": "TODOS os campos da fonte, como vieram (ExtendedData ou linhas do <description>)",
+                "cota_rotulo": "o campo 'cota' da fonte, como texto; `cota` é o mesmo em número",
+                "rua/esquina": "refer_1/refer_2 (Gaspar) ou ruas/esquina (Brusque)",
+                "nome_marcador": "o <name> do marcador — em Gaspar é a cota com três casas; não é a cota_rotulo",
+                "lon/lat": "do <coordinates> do ponto",
+            },
+            "atencao": ("Um campo chamado 'cota' NÃO prova ser nível de régua — ver analisar_kml_gaspar.py "
+                        "e analisar_kml_brusque.py antes de importar."),
+        },
+        "pontos": pontos,
+    }
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("kml", type=Path)
+    ap.add_argument("--saida", type=Path, default=None, help="JSON de destino (padrão: só imprime o resumo)")
+    ap.add_argument("--forcar", action="store_true", help="sobrescreve o destino se já existir")
+    args = ap.parse_args()
+
+    texto = args.kml.read_text(encoding="utf-8")
+    pontos = pontos_do_kml(texto)
+    r = resumo(pontos)
+    print(f"{r['total']} placemark(s); {r['com_cota']} com cota, {r['sem_cota']} sem; "
+          f"formatos {r['formatos']}; pastas {r['pastas']}")
+    for p in [p for p in pontos if p["cota"] is None][:10]:
+        print(f"   sem cota: {p['nome_marcador']!r} campos={list(p['campos'])[:6]}", file=sys.stderr)
+    if r["total"] and r["com_cota"] == 0:
+        print("ERRO: nenhum ponto tem cota — o formato não foi reconhecido. Nada gravado.", file=sys.stderr)
+        return 2
+    if args.saida is None:
+        return 0
+    if args.saida.exists() and not args.forcar:
+        print(f"{args.saida} já existe; use --forcar para sobrescrever.", file=sys.stderr)
+        return 3
+    args.saida.write_text(json.dumps(montar(pontos, args.kml, texto), ensure_ascii=False, indent=2) + "\n",
+                          encoding="utf-8")
+    print(f"gravado em {args.saida}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
