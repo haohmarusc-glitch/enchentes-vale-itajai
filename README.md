@@ -505,6 +505,12 @@ o projeto.
   números da Defesa Civil nas três cheias de 2023 (8,63 vs 8,96 em 17/11), enquanto em 09/2026 o par é
   idêntico — ou o zero mudou, ou o 8,96 é de outra leitura, e o 8,96 é a base das cotas de rua de 2023.
   Nenhuma crista entrou em `enchentes.json`. Ver `docs/DCSC-HISTORICO-2026-09-10.md`.
+- [ ] **Ofício C13 a Brusque, rascunhado, aguarda o "sim" (10/09/2026).** Três perguntas fechadas em
+  `docs/oficios-prontos.md`: em que régua foi lido o 8,96 m de 17/11/2023 (a DCSC-00019 registra 8,63 m às
+  21:30, e ~0,30 m a menos também em 05/10 e 13/10); se houve ajuste de zero na DCSC-00019 entre 2023 e
+  2026 (em 09/2026 o par com a Ponte Estaiada é idêntico); e qual das duas legendas do portal (estação 4:
+  4,00 / 7,00; estação 79: 3,00 / 5,00) é a vigente. Enquanto não responde, as 357 cotas de rua de 2023
+  seguem sem importar e o 3,00 / 5,00 segue como adotado.
 - [ ] **Histórico DCSC: retomar Taió e baixar as outras 16 estações da cadeia, a partir de 2022-06-01.**
   Lista e ordem em `docs/DCSC-HISTORICO-2026-09-10.md`. O script de download do PC entra em `scripts/`.
   Séries vivem na VPS (`data/series/dcsc/`), regeradas pelo consolidador a partir dos zips.
