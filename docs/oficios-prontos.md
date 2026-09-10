@@ -148,7 +148,7 @@ Prezada Equipe de Hidrologia,
 
 Mais uma vez obrigado pela resposta de 09/09 e pela tabela de estações.
 
-Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí. Solicito os Avisos Hidrológicos nº 01, 02 e 03 do evento extremo de novembro de 2023 — em especial o de 19/11/2023, que no padrão de arquivos do portal seria `aviso_n03_19112023<id>.pdf` —, pelas leituras de Rio do Sul e Taió com horário e taxa de variação em cm/h.
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes no Vale do Itajaí. Solicito os Avisos Hidrológicos nº 01, 02 e 03 do evento extremo de novembro de 2023 — em especial o de 19/11/2023, que no padrão de arquivos do portal seria `aviso_n03_19112023<id>.pdf` —, pelas leituras de Rio do Sul e Taió com horário e taxa de variação em cm/h.
 
 Não os localizei no portal, que publica apenas os boletins mais recentes, nem no Internet Archive, cujo acervo do diretório se encerra em 2022. Aproveito para perguntar se há acesso programático ao acervo de boletins e avisos, ou listagem por período, o que evitaria novos pedidos como este.
 
@@ -174,7 +174,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 Prezada Coordenadoria Municipal de Proteção e Defesa Civil de Brusque,
 
-Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí, que usa as cotas de rua publicadas pela Defesa Civil de Brusque e a leitura ao vivo da estação "Ponte Estaiada – DCSC" (DCSC-00019, rede estadual). Ao comparar as duas fontes encontrei uma diferença que não consigo resolver sozinho, e por isso peço três esclarecimentos:
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes no Vale do Itajaí, que usa as cotas de rua publicadas pela Defesa Civil de Brusque e a leitura ao vivo da estação "Ponte Estaiada – DCSC" (DCSC-00019, rede estadual). Ao comparar as duas fontes encontrei uma diferença que não consigo resolver sozinho, e por isso peço três esclarecimentos:
 
 1. **Em qual régua foi lido o pico de 8,96 m de 17/11/2023** que consta na revisão das cotas de rua de 2024? A série da estação DCSC-00019 registra máximo de 8,63 m às 21:30 daquele dia, e diferenças parecidas (cerca de 0,30 m) aparecem nas cheias de 05/10/2023 (6,50 m na estação; 6,85 m divulgado) e 13/10/2023 (6,63 m; 6,91 m). A leitura de 8,96 m foi (a) na própria estação DCSC-00019, (b) em régua manual da Ponte Estaiada, ou (c) em outra estação?
 
@@ -182,7 +182,7 @@ Mantenho um site público e sem fins comerciais com dados históricos de enchent
 
 3. **Qual das duas legendas vale para a Ponte Estaiada hoje?** O portal mostra a estação 4 "Ponte Estaiada – ANA" com normalidade abaixo de 4,00 m, atenção acima de 4,00 m ou chuva acima de 30 mm e emergência acima de 7,00 m; e a estação 79 "Ponte Estaiada – DCSC" com atenção em 3,00 m e emergência em 5,00 m. As duas estações medem a mesma régua? Qual legenda é a de acionamento vigente?
 
-Os dados que uso ficam públicos, com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. Se for mais prático, um contato telefônico resolve em poucos minutos.
+Os dados que uso serão publicados com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. Se for mais prático, um contato telefônico resolve em poucos minutos.
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
@@ -203,7 +203,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 Prezada Diretoria de Proteção e Defesa Civil de Blumenau,
 
-Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí, que lê o nível do Itajaí-Açu no AlertaBlu. Escrevo para relatar um detalhe técnico observado na cheia de 10/09/2026, que pode afetar quem consome os dados de vocês.
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes no Vale do Itajaí, que lê o nível do Itajaí-Açu no AlertaBlu. Escrevo para relatar um detalhe técnico observado na cheia de 10/09/2026, que pode afetar quem consome os dados de vocês.
 
 O arquivo `https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json` é atualizado a cada hora (`Last-Modified` de 10/09/2026 23:41 UTC, último ponto 23:00 UTC), mas é entregue com os cabeçalhos `Cache-Control: max-age=2592000` e `Expires` trinta dias à frente. Com isso, navegadores e sistemas que respeitam o cache guardam a cópia por até um mês: em 10/09, com o rio em 4,26 m, um navegador comum recebia a série terminando em 09/09 às 21:00 UTC, com 2,66 m. Um `Cache-Control: no-cache` ou `max-age` de poucos minutos nesse arquivo resolveria.
 
