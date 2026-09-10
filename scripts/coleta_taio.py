@@ -209,11 +209,18 @@ def parse_historico(pontos) -> list[dict]:
         if not medido or nivel is None:
             continue
         abertas = numero(p.get("comportaAberta"))
+        fechadas = numero(p.get("comportaFechada"))
         saida.append({
             "medido_em": medido,
             "nivel_m": round(nivel, 2),
+            # A mesma linha da fonte traz chuva, montante e jusante da barragem e
+            # as comportas dos dois lados — mais que a Asthon. Chaves conferidas
+            # contra a API em 10/09/2026 (coleta_taio_historico.py do Jefferson).
+            "chuva_mm": numero(p.get("chuva")),
             "montante_m": numero(p.get("montante")),
+            "jusante_m": numero(p.get("jusante")),
             "comportas_abertas": int(abertas) if abertas is not None else None,
+            "comportas_fechadas": int(fechadas) if fechadas is not None else None,
         })
     # `medido_em` é ISO sem fuso, então ordem de texto == ordem de tempo.
     saida.sort(key=lambda p: p["medido_em"])

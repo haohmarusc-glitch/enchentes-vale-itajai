@@ -49,7 +49,8 @@ régua da leitura.
 
 ## D. Evento de 10/09/2026 — onda descendo a bacia
 
-- [x] D1 · Evidências congeladas: os dois relatórios em `docs/eventos/`, o card + histórico de Taió com comportas (`data/brutos/taio-cards-e-historico-2026-09-10-1945.json`) e a série de 48 h publicada às 19:46 (`data/brutos/evento-2026-09-10-serie-recente-1946.json`).
+- [x] D1 · Evidências congeladas: os dois relatórios em `docs/eventos/`, o card + histórico de Taió com comportas (`data/brutos/taio-cards-e-historico-2026-09-10-1945.json`), a série de 48 h publicada às 19:46 (`data/brutos/evento-2026-09-10-serie-recente-1946.json`) e o CSV horário do navegador, 09/09 20h → 10/09 19h, com chuva e comportas (`data/brutos/taio-evento-2026-09-10-historico-horario.csv`).
+- [x] D7 · O `coleta_taio_historico.py` do navegador NÃO entrou: faria o mesmo que `coleta_taio.acumula_historico` (no cron a cada 15 min, contra 12 h), gravando num CSV rastreado em `data/brutos/` que cresceria a cada rodada. O que ele tinha a mais entrou no parser: `chuva_mm`, `jusante_m` e `comportas_fechadas` na mesma linha horária.
 - [x] D2 · Taió: mínima 2,40 m 00:13 → crista **5,48 m às 13:29** → 4,45 m 19:43. Cruzou 5,00 m ~09:45. 86,3 mm/24 h. Comportas da Oeste 7→0 às 13h. Gravado em `estacoes.json` como evidência de campo da decisão de avisar em 5,00 m.
 - [ ] D3 · Rio do Sul (Tito Buss): 2,96 m 00:14 → 4,29 m às 16:57 → 4,20 m 19:44. Atenção em 4,50. Confirmar amanhã se 16:57 foi a crista ou só um patamar — a subida foi em paralelo com Taió (chuva na bacia inteira), não é a onda de Taió chegando, e a barragem fechou no pico: **não serve para calibrar trânsito**.
 - [ ] D4 · Blumenau: **4,26 m desde 15:35, acima da atenção (4,00)** nas duas fontes (DC Itajaí 4,25 às 16:35; AlertaBlu 4,26 às 19:00). O relatório do navegador dizia 2,66 m às 18:00 — esse é o valor das 00:05 (2,64); conferir de onde veio. Registrar a crista amanhã.
@@ -60,3 +61,4 @@ régua da leitura.
 
 - 10/09/2026 · lista criada; medição 57% / 27%; C1 e C2 fechados.
 - 10/09/2026 19:50 BRT · evento real na bacia (bloco D); B7 reescopado em B7a/B7b/B7c, B7c feito; B11 adiado; PR #272.
+- 10/09/2026 20:05 BRT · CSV horário do evento e chuva/jusante/comportas fechadas no parser (D1, D7); PR #273.
