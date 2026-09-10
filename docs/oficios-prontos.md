@@ -156,3 +156,33 @@ Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+## C13 — Defesa Civil de Brusque: a régua do 8,96 m de 17/11/2023 e o zero da estação DCSC-00019 (RASCUNHO, aguarda "sim")
+
+> Por que: o histórico da rede estadual (`docs/DCSC-HISTORICO-2026-09-10.md`) mostra a DCSC-00019 lendo
+> ~0,30 m ABAIXO dos números da Defesa Civil/imprensa nas três cheias de 2023 — 6,50 vs 6,85 (05/10),
+> 6,63 vs 6,91 (13/10), 8,63 vs 8,96 (17/11) —, com deslocamento quase constante. Em 07/09/2026 o par
+> DCSC-00019 = "Ponte Estaiada – DCSC" (estação 79 do portal) foi provado com 1,27 / 1,27 / 1,28 m. As
+> duas coisas só fecham se houve ajuste de zero entre 2023 e 2026, ou se os números de 2023 vieram de outra
+> leitura. Importa porque o 8,96 m é a base das 357 cotas de rua da camada "Cotas de cheia 2023" (cota da
+> rua = 8,96 − lâmina medida no ponto) e porque o portal traz duas legendas para a mesma ponte (estação 4
+> "Ponte Estaiada – ANA": 4,00 / 7,00; estação 79 "Ponte Estaiada – DCSC": 3,00 / 5,00). Três perguntas
+> fechadas, cada uma com alternativas nomeadas.
+
+**Para:** defesacivil@brusque.sc.gov.br
+**Assunto:** Cotas da cheia de 17/11/2023 e estação de referência da Ponte Estaiada — pedido de esclarecimento
+
+Prezada Coordenadoria Municipal de Proteção e Defesa Civil de Brusque,
+
+Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí, que usa as cotas de rua publicadas pela Defesa Civil de Brusque e a leitura ao vivo da estação "Ponte Estaiada – DCSC" (DCSC-00019, rede estadual). Ao comparar as duas fontes encontrei uma diferença que não consigo resolver sozinho, e por isso peço três esclarecimentos:
+
+1. **Em qual régua foi lido o pico de 8,96 m de 17/11/2023** que consta na revisão das cotas de rua de 2024? A série da estação DCSC-00019 registra máximo de 8,63 m às 21:30 daquele dia, e diferenças parecidas (cerca de 0,30 m) aparecem nas cheias de 05/10/2023 (6,50 m na estação; 6,85 m divulgado) e 13/10/2023 (6,63 m; 6,91 m). A leitura de 8,96 m foi (a) na própria estação DCSC-00019, (b) em régua manual da Ponte Estaiada, ou (c) em outra estação?
+
+2. **Houve ajuste no zero (datum) da estação DCSC-00019 entre 2023 e 2026?** Em 07/09/2026 a leitura da estação e a da página "Ponte Estaiada – DCSC" do portal coincidiram ao centímetro; se em 2023 a mesma estação lia 0,30 m abaixo do valor oficial, um ajuste de zero explicaria as duas observações. Se houve, em que data e de quanto?
+
+3. **Qual das duas legendas vale para a Ponte Estaiada hoje?** O portal mostra a estação 4 "Ponte Estaiada – ANA" com normalidade abaixo de 4,00 m, atenção acima de 4,00 m ou chuva acima de 30 mm e emergência acima de 7,00 m; e a estação 79 "Ponte Estaiada – DCSC" com atenção em 3,00 m e emergência em 5,00 m. As duas estações medem a mesma régua? Qual legenda é a de acionamento vigente?
+
+Os dados que uso ficam públicos, com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. Se for mais prático, um contato telefônico resolve em poucos minutos.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
