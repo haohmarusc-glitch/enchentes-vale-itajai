@@ -186,3 +186,30 @@ Os dados que uso ficam públicos, com a fonte citada, e qualquer correção que 
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+
+## C14 — Defesa Civil de Blumenau / AlertaBlu: cache de 30 dias no `nivel_oficial.json` (RASCUNHO, aguarda "sim")
+
+> Por que: medido em 10/09/2026 (23:45Z, VPS): `static/data/nivel_oficial.json` é servido com
+> `Cache-Control: max-age=2592000` e `Expires` um mês à frente, enquanto o `Last-Modified` muda a
+> cada hora e a série `niveis` ganha um ponto por hora. Em plena cheia, um navegador comum recebeu
+> a série terminando em 09/09 21:00Z (2,66 m) enquanto o arquivo real já ia em 4,26 m. Qualquer
+> integrador que respeite o cabeçalho reproduz o mesmo atraso. Junto: `static/data/nivel.json`,
+> de 07/11/2013, ainda responde 200 e pode ser lido como atual. É um aviso técnico de cortesia,
+> não um pedido.
+
+**Para:** secretaria.defesacivil@blumenau.sc.gov.br
+**Assunto:** AlertaBlu — arquivo nivel_oficial.json servido com cache de 30 dias (aviso técnico)
+
+Prezada Diretoria de Proteção e Defesa Civil de Blumenau,
+
+Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí, que lê o nível do Itajaí-Açu no AlertaBlu. Escrevo para relatar um detalhe técnico observado na cheia de 10/09/2026, que pode afetar quem consome os dados de vocês.
+
+O arquivo `https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json` é atualizado a cada hora (`Last-Modified` de 10/09/2026 23:41 UTC, último ponto 23:00 UTC), mas é entregue com os cabeçalhos `Cache-Control: max-age=2592000` e `Expires` trinta dias à frente. Com isso, navegadores e sistemas que respeitam o cache guardam a cópia por até um mês: em 10/09, com o rio em 4,26 m, um navegador comum recebia a série terminando em 09/09 às 21:00 UTC, com 2,66 m. Um `Cache-Control: no-cache` ou `max-age` de poucos minutos nesse arquivo resolveria.
+
+Aproveito para apontar que `static/data/nivel.json`, com dados de 07/11/2013, continua respondendo normalmente e pode ser lido por engano como atual.
+
+Fico à disposição para qualquer esclarecimento, e agradeço pelo AlertaBlu, que é a fonte mais completa da bacia.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

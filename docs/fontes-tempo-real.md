@@ -30,6 +30,15 @@
 - `/p/enchentes` (HTML) — **tabela histórica oficial: 102 enchentes (1852–2024)** com ano/data/cota.
   Baixada em `data/brutos/blumenau-enchentes-registradas-alertablu.json`.
 - Coletor: `scripts/coleta_alertablu.py`.
+- ⚠️ **CACHE DE 30 DIAS num arquivo horário (medido em 10/09/2026, 23:45Z, na VPS):** o servidor
+  entrega `nivel_oficial.json` com `Cache-Control: max-age=2592000` e `Expires` um mês à frente,
+  enquanto `Last-Modified` muda a cada hora (23:41Z; último ponto de `niveis` 23:00Z = 20:00 BRT,
+  4,23 m). Navegador, proxy ou integrador que respeite o cabeçalho fica com a cópia velha por até
+  30 dias — foi assim que o navegador do Jefferson viu, em plena cheia, um `niveis` terminando em
+  2026-09-09T21:00Z (2,66 m) enquanto a VPS via 4,26 m. O nosso `requests` não tem cache, por isso o
+  site não foi afetado; qualquer coletor novo deve furar o cache (`?nc=<época>` ou
+  `Cache-Control: no-cache`). O `static/data/nivel.json` (fóssil de 07/11/2013) ainda responde 200.
+  Aviso rascunhado: C14 em `docs/oficios-prontos.md`.
 - Descoberta-chave: os valores históricos do AlertaBlu (2011=12,60; 1983=15,34; 1984=15,46; 1880=17,10)
   são idênticos à série IBGE de Cordero → confirma que a série popular está em referência IBGE. Ver
   `REGRA_REFERENCIA_BLUMENAU` em `data/enchentes.json`.
