@@ -493,6 +493,21 @@ o projeto.
   Vidal Ramos 8.747 leituras, `gauge_zero`). **`brusque-mymaps-cotas.json` (agosto) fica como
   registro histórico**; o próximo passo é apontar `analisar_kml_brusque.py` para o KML original,
   onde `obs`/`esquina`/UTM podem decidir a referência da camada 2011.
+- [x] **O histórico da rede estadual chegou: 13 estações, 10 min, desde fins de 2022 (10/09/2026).** Treze
+  zips baixados pelo Jefferson no PC (query GraphQL `historic` da DCSC, janelas de 14 dias desde 1980).
+  `scripts/consolidar_historico_dcsc.py` (5 testes) junta as janelas em `data/series/dcsc/DCSC-000NN.csv`
+  (129 MB, fora do git) e grava o resumo citável `data/brutos/dcsc-historico-resumo-2026-09-10.json`:
+  cobertura, buracos, sentinelas (`-35` em Ituporanga, 2^31/100 em Ibirama, 581 m em Ascurra) e as
+  maiores cristas de cada estação, com pico solto de sensor descartado (12,38 m em Brusque entre vizinhas
+  de 1,5 m). **Fuso provado**: `ts` é Brasília sem fuso (janela pedida às 00:00Z devolve 21:10 do dia
+  anterior; crista de 01/09/2026 em Rio do Sul às 05:20 na DCSC e 05:08 local na Asthon). **Taió veio
+  vazia**: o download parou em 31/05/2005. **Brusque pede pergunta**: a DCSC-00019 lê ~0,30 m abaixo dos
+  números da Defesa Civil nas três cheias de 2023 (8,63 vs 8,96 em 17/11), enquanto em 09/2026 o par é
+  idêntico — ou o zero mudou, ou o 8,96 é de outra leitura, e o 8,96 é a base das cotas de rua de 2023.
+  Nenhuma crista entrou em `enchentes.json`. Ver `docs/DCSC-HISTORICO-2026-09-10.md`.
+- [ ] **Histórico DCSC: retomar Taió e baixar as outras 16 estações da cadeia, a partir de 2022-06-01.**
+  Lista e ordem em `docs/DCSC-HISTORICO-2026-09-10.md`. O script de download do PC entra em `scripts/`.
+  Séries vivem na VPS (`data/series/dcsc/`), regeradas pelo consolidador a partir dos zips.
 - [x] **Os campos recuperados da camada 2011 de Brusque NÃO decidem a referência (10/09/2026).** Era
   a esperança de `docs/cotas-de-ruas.md` ("`obs`, `esquina` e UTM são justamente o que decidiria").
   Lidos no KML original: `obs` é número da casa ("N 440") ou distância ("100m", "final da rua"), em 654

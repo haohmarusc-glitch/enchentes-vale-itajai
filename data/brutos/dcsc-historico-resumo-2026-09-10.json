@@ -1,0 +1,1007 @@
+{
+  "_meta": {
+    "descricao": "Resumo do histórico da rede estadual (DCSC, GraphQL historic), consolidado por scripts/consolidar_historico_dcsc.py. As séries inteiras estão em data/series/dcsc/ (fora do git).",
+    "fuso": "medido_em e todos os carimbos são hora de Brasília SEM fuso (provado — ver docstring do script). coletado_entre_utc é UTC.",
+    "sentinela": "rio_nivel < -30.0 ou > 30.0 vira vazio e é contado (sentinelas_rio_nivel / implausiveis_acima_30m); leituras soltas (> 1.0 m acima das vizinhas de 10 min) saem das candidatas e ficam em descartadas_isoladas.",
+    "cristas": "CANDIDATAS, separadas por 3 dias; datum de cada estação é o bruto estadual (usar_para_cota=false no coletor). Nenhuma entra em enchentes.json sem decisão.",
+    "gerado_em": "2026-09-10"
+  },
+  "estacoes": [
+    {
+      "codigo": "DCSC-00003",
+      "cidade": "ascurra",
+      "janelas_baixadas": 1143,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:08:29.698Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:38:45.365Z",
+        "2026-09-10T02:23:08.581Z"
+      ],
+      "leituras": 156471,
+      "leituras_com_nivel": 155363,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 22,
+      "primeira": "2023-04-12T02:00",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 179551,
+      "buracos_maiores_que_6h": 1,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 156471,
+        "codigo": 156471,
+        "chuva_taxa_med": 156471,
+        "chuva_taxa_max": 156471,
+        "chuva_total": 156471,
+        "chuva_mm": 156471,
+        "bateria_v": 156471,
+        "timestamp": 156471,
+        "rio_variacao": 156469,
+        "rio_nivel": 156469
+      },
+      "nivel_min_m": 0.02,
+      "nivel_max_m": 11.27,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 11.27,
+          "quando": "2024-05-19T06:10",
+          "plato_inicio": "2024-05-19T05:30",
+          "plato_fim": "2024-05-19T06:50",
+          "plato_leituras": 9,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 10.13,
+          "quando": "2026-09-01T05:10",
+          "plato_inicio": "2026-09-01T04:50",
+          "plato_fim": "2026-09-01T06:20",
+          "plato_leituras": 10,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 9.68,
+          "quando": "2024-07-12T08:10",
+          "plato_inicio": "2024-07-12T07:10",
+          "plato_fim": "2024-07-12T10:50",
+          "plato_leituras": 23,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 9.63,
+          "quando": "2026-07-01T18:00",
+          "plato_inicio": "2026-07-01T17:50",
+          "plato_fim": "2026-07-01T18:20",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 9.31,
+          "quando": "2024-12-10T04:00",
+          "plato_inicio": "2024-12-10T03:20",
+          "plato_fim": "2024-12-10T05:20",
+          "plato_leituras": 13,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": [
+        {
+          "maximo_m": 10.87,
+          "quando": "2025-01-06T20:10",
+          "isolada": true
+        },
+        {
+          "maximo_m": 10.73,
+          "quando": "2025-12-15T20:30",
+          "isolada": true
+        }
+      ]
+    },
+    {
+      "codigo": "DCSC-00005",
+      "cidade": "gaspar",
+      "janelas_baixadas": 1080,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:09:36.143Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:39:40.774Z",
+        "2026-09-10T02:25:17.649Z"
+      ],
+      "leituras": 196662,
+      "leituras_com_nivel": 135969,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-12-09T16:00",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 197323,
+      "buracos_maiores_que_6h": 32,
+      "maior_buraco_h": 2390.5,
+      "campos": {
+        "ts": 196662,
+        "codigo": 196662,
+        "bateria_v": 196659,
+        "timestamp": 196662,
+        "rio_variacao": 150040,
+        "rio_nivel": 150040,
+        "chuva_taxa_med": 7404,
+        "chuva_taxa_max": 7404,
+        "chuva_total": 7404,
+        "chuva_mm": 7404
+      },
+      "nivel_min_m": 0.0,
+      "nivel_max_m": 0.84,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 0.84,
+          "quando": "2023-03-16T16:30",
+          "plato_inicio": "2023-03-16T16:30",
+          "plato_fim": "2023-03-16T16:30",
+          "plato_leituras": 1,
+          "na_borda": true,
+          "isolada": false
+        },
+        {
+          "maximo_m": 0.0,
+          "quando": "2023-03-30T07:50",
+          "plato_inicio": "2023-03-30T07:50",
+          "plato_fim": "2026-06-02T08:20",
+          "plato_leituras": 135968,
+          "na_borda": true,
+          "isolada": false
+        },
+        {
+          "maximo_m": 0.0,
+          "quando": "2023-04-02T08:00",
+          "plato_inicio": "2023-04-02T08:00",
+          "plato_fim": "2026-06-02T08:20",
+          "plato_leituras": 135886,
+          "na_borda": true,
+          "isolada": false
+        },
+        {
+          "maximo_m": 0.0,
+          "quando": "2023-04-12T19:50",
+          "plato_inicio": "2023-04-12T19:50",
+          "plato_fim": "2026-06-02T08:20",
+          "plato_leituras": 135876,
+          "na_borda": true,
+          "isolada": false
+        },
+        {
+          "maximo_m": 0.0,
+          "quando": "2023-04-17T17:00",
+          "plato_inicio": "2023-04-17T17:00",
+          "plato_fim": "2026-06-02T08:20",
+          "plato_leituras": 135872,
+          "na_borda": true,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00006",
+      "cidade": "indaial",
+      "janelas_baixadas": 1053,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:08:45.381Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:38:58.580Z",
+        "2026-09-10T02:24:14.644Z"
+      ],
+      "leituras": 200028,
+      "leituras_com_nivel": 198921,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-11-18T10:00",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 200383,
+      "buracos_maiores_que_6h": 3,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 200028,
+        "codigo": 200028,
+        "chuva_total": 200018,
+        "chuva_mm": 200018,
+        "rio_variacao": 200015,
+        "rio_nivel": 200015,
+        "bateria_v": 200024,
+        "timestamp": 200028,
+        "chuva_taxa_max": 200022,
+        "chuva_taxa_med": 187520
+      },
+      "nivel_min_m": -16.72,
+      "nivel_max_m": 8.83,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 8.83,
+          "quando": "2023-10-12T16:50",
+          "plato_inicio": "2023-10-12T16:00",
+          "plato_fim": "2023-10-12T19:50",
+          "plato_leituras": 24,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 8.75,
+          "quando": "2023-11-17T00:10",
+          "plato_inicio": "2023-11-16T23:50",
+          "plato_fim": "2023-11-17T03:00",
+          "plato_leituras": 20,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 8.68,
+          "quando": "2023-10-09T00:30",
+          "plato_inicio": "2023-10-08T23:10",
+          "plato_fim": "2023-10-09T03:00",
+          "plato_leituras": 24,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 8.14,
+          "quando": "2024-05-19T06:40",
+          "plato_inicio": "2024-05-19T06:20",
+          "plato_fim": "2024-05-19T08:20",
+          "plato_leituras": 13,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 8.01,
+          "quando": "2023-10-04T21:20",
+          "plato_inicio": "2023-10-04T20:10",
+          "plato_fim": "2023-10-04T23:30",
+          "plato_leituras": 21,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00013",
+      "cidade": "rio-do-sul",
+      "janelas_baixadas": 1033,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:07:40.446Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:37:56.905Z",
+        "2026-09-10T02:21:39.033Z"
+      ],
+      "leituras": 204313,
+      "leituras_com_nivel": 203198,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-10-20T11:10",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 204552,
+      "buracos_maiores_que_6h": 3,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 204313,
+        "codigo": 204313,
+        "chuva_taxa_max": 204310,
+        "chuva_total": 204304,
+        "chuva_mm": 204304,
+        "rio_variacao": 204309,
+        "rio_nivel": 204309,
+        "bateria_v": 204306,
+        "timestamp": 204313,
+        "chuva_taxa_med": 187599
+      },
+      "nivel_min_m": -9.31,
+      "nivel_max_m": 13.18,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 13.18,
+          "quando": "2023-11-18T00:20",
+          "plato_inicio": "2023-11-17T23:40",
+          "plato_fim": "2023-11-18T02:40",
+          "plato_leituras": 19,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 11.94,
+          "quando": "2023-10-13T04:30",
+          "plato_inicio": "2023-10-13T01:10",
+          "plato_fim": "2023-10-13T06:30",
+          "plato_leituras": 33,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 11.05,
+          "quando": "2023-10-09T13:20",
+          "plato_inicio": "2023-10-09T12:20",
+          "plato_fim": "2023-10-09T16:10",
+          "plato_leituras": 24,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 9.06,
+          "quando": "2024-05-19T06:30",
+          "plato_inicio": "2024-05-19T06:00",
+          "plato_fim": "2024-05-19T09:40",
+          "plato_leituras": 23,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 9.01,
+          "quando": "2023-10-17T06:20",
+          "plato_inicio": "2023-10-17T04:50",
+          "plato_fim": "2023-10-17T11:10",
+          "plato_leituras": 39,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00018",
+      "cidade": "botuvera",
+      "janelas_baixadas": 1011,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:10:08.798Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:40:10.178Z",
+        "2026-09-10T02:26:16.057Z"
+      ],
+      "leituras": 200889,
+      "leituras_com_nivel": 199781,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-11-14T11:00",
+      "ultima": "2026-09-09T23:10",
+      "esperadas_a_10_min": 200954,
+      "buracos_maiores_que_6h": 1,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 200889,
+        "codigo": 200889,
+        "chuva_total": 200887,
+        "chuva_mm": 200887,
+        "rio_variacao": 200888,
+        "rio_nivel": 200888,
+        "bateria_v": 200888,
+        "timestamp": 200889,
+        "chuva_taxa_max": 200887,
+        "chuva_taxa_med": 187641
+      },
+      "nivel_min_m": -11.01,
+      "nivel_max_m": 10.41,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 10.41,
+          "quando": "2023-11-17T13:40",
+          "plato_inicio": "2023-11-17T13:40",
+          "plato_fim": "2023-11-17T13:40",
+          "plato_leituras": 1,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 7.46,
+          "quando": "2024-05-19T02:20",
+          "plato_inicio": "2024-05-19T01:50",
+          "plato_fim": "2024-05-19T02:40",
+          "plato_leituras": 6,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 7.38,
+          "quando": "2023-10-04T17:40",
+          "plato_inicio": "2023-10-04T17:40",
+          "plato_fim": "2023-10-04T18:10",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 7.28,
+          "quando": "2023-10-07T17:50",
+          "plato_inicio": "2023-10-07T17:50",
+          "plato_fim": "2023-10-07T18:00",
+          "plato_leituras": 2,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 7.23,
+          "quando": "2023-10-12T14:50",
+          "plato_inicio": "2023-10-12T14:40",
+          "plato_fim": "2023-10-12T15:10",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00019",
+      "cidade": "brusque",
+      "janelas_baixadas": 1053,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:10:54.136Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:40:40.431Z",
+        "2026-09-10T02:27:47.287Z"
+      ],
+      "leituras": 200476,
+      "leituras_com_nivel": 199309,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-11-14T17:10",
+      "ultima": "2026-09-09T23:10",
+      "esperadas_a_10_min": 200917,
+      "buracos_maiores_que_6h": 5,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 200476,
+        "codigo": 200476,
+        "rio_variacao": 200476,
+        "rio_nivel": 200476,
+        "bateria_v": 200474,
+        "timestamp": 200476,
+        "chuva_taxa_med": 10116,
+        "chuva_taxa_max": 10116,
+        "chuva_total": 10116,
+        "chuva_mm": 10116
+      },
+      "nivel_min_m": -16.02,
+      "nivel_max_m": 12.38,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 8.63,
+          "quando": "2023-11-17T21:30",
+          "plato_inicio": "2023-11-17T21:10",
+          "plato_fim": "2023-11-17T21:40",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 7.27,
+          "quando": "2024-05-19T08:10",
+          "plato_inicio": "2024-05-19T06:50",
+          "plato_fim": "2024-05-19T08:40",
+          "plato_leituras": 12,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 6.63,
+          "quando": "2023-10-12T21:40",
+          "plato_inicio": "2023-10-12T21:20",
+          "plato_fim": "2023-10-12T22:40",
+          "plato_leituras": 9,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 6.57,
+          "quando": "2023-10-08T01:10",
+          "plato_inicio": "2023-10-08T01:10",
+          "plato_fim": "2023-10-08T01:40",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": [
+        {
+          "maximo_m": 12.38,
+          "quando": "2024-05-15T15:50",
+          "isolada": true
+        },
+        {
+          "maximo_m": 10.01,
+          "quando": "2025-04-01T15:00",
+          "isolada": true
+        },
+        {
+          "maximo_m": 9.9,
+          "quando": "2024-05-15T16:00",
+          "isolada": true
+        },
+        {
+          "maximo_m": 8.11,
+          "quando": "2024-05-15T15:20",
+          "isolada": true
+        }
+      ]
+    },
+    {
+      "codigo": "DCSC-00020",
+      "cidade": "ibirama",
+      "janelas_baixadas": 1148,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:07:57.597Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:38:32.457Z",
+        "2026-09-10T02:22:36.255Z"
+      ],
+      "leituras": 204210,
+      "leituras_com_nivel": 203105,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 1,
+      "primeira": "2022-10-20T17:40",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 204513,
+      "buracos_maiores_que_6h": 2,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 204210,
+        "codigo": 204210,
+        "rio_variacao": 204209,
+        "rio_nivel": 204209,
+        "bateria_v": 204208,
+        "timestamp": 204210,
+        "chuva_taxa_med": 4046,
+        "chuva_taxa_max": 4046,
+        "chuva_total": 4046,
+        "chuva_mm": 4046
+      },
+      "nivel_min_m": -11.21,
+      "nivel_max_m": 4.73,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 4.73,
+          "quando": "2023-10-07T17:50",
+          "plato_inicio": "2023-10-07T17:50",
+          "plato_fim": "2023-10-07T18:00",
+          "plato_leituras": 2,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 4.57,
+          "quando": "2023-11-16T23:00",
+          "plato_inicio": "2023-11-16T23:00",
+          "plato_fim": "2023-11-16T23:30",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 4.36,
+          "quando": "2023-10-12T17:10",
+          "plato_inicio": "2023-10-12T17:10",
+          "plato_fim": "2023-10-12T17:30",
+          "plato_leituras": 3,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 4.3,
+          "quando": "2023-10-29T09:20",
+          "plato_inicio": "2023-10-29T09:20",
+          "plato_fim": "2023-10-29T09:30",
+          "plato_leituras": 2,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 4.28,
+          "quando": "2023-10-04T17:30",
+          "plato_inicio": "2023-10-04T17:30",
+          "plato_fim": "2023-10-04T17:40",
+          "plato_leituras": 2,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00024",
+      "cidade": "vidal-ramos",
+      "janelas_baixadas": 1267,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T01:56:25.064Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:35:32.385Z",
+        "2026-09-10T02:05:44.776Z"
+      ],
+      "leituras": 199012,
+      "leituras_com_nivel": 197913,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-11-25T11:10",
+      "ultima": "2026-09-09T22:50",
+      "esperadas_a_10_min": 199367,
+      "buracos_maiores_que_6h": 1,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 199012,
+        "codigo": 199012,
+        "chuva_taxa_max": 199009,
+        "chuva_total": 199008,
+        "chuva_mm": 199008,
+        "rio_variacao": 199005,
+        "rio_nivel": 199005,
+        "bateria_v": 199008,
+        "timestamp": 199012,
+        "chuva_taxa_med": 187327
+      },
+      "nivel_min_m": -1.27,
+      "nivel_max_m": 9.23,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 4.94,
+          "quando": "2023-11-17T08:10",
+          "plato_inicio": "2023-11-17T08:10",
+          "plato_fim": "2023-11-17T08:10",
+          "plato_leituras": 1,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 4.01,
+          "quando": "2023-12-03T18:00",
+          "plato_inicio": "2023-12-03T18:00",
+          "plato_fim": "2023-12-03T18:00",
+          "plato_leituras": 1,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 3.91,
+          "quando": "2026-07-11T10:20",
+          "plato_inicio": "2026-07-11T10:20",
+          "plato_fim": "2026-07-11T10:20",
+          "plato_leituras": 1,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 3.89,
+          "quando": "2026-08-31T22:40",
+          "plato_inicio": "2026-08-31T22:20",
+          "plato_fim": "2026-08-31T22:50",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 3.78,
+          "quando": "2023-10-04T13:10",
+          "plato_inicio": "2023-10-04T13:10",
+          "plato_fim": "2023-10-04T13:30",
+          "plato_leituras": 3,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": [
+        {
+          "maximo_m": 9.23,
+          "quando": "2026-05-29T20:20",
+          "isolada": true
+        }
+      ]
+    },
+    {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "janelas_baixadas": 1106,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:09:04.344Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:39:29.749Z",
+        "2026-09-10T02:26:17.935Z"
+      ],
+      "leituras": 182237,
+      "leituras_com_nivel": 0,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-12-13T10:00",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 196783,
+      "buracos_maiores_que_6h": 8,
+      "maior_buraco_h": 11747.0,
+      "campos": {
+        "ts": 182237,
+        "codigo": 182237,
+        "vento_dir": 182172,
+        "vento_vel_med": 182172,
+        "vento_vel_max": 182167,
+        "pres_atmos": 182198,
+        "chuva_total": 182234,
+        "chuva_mm": 182234,
+        "timestamp": 182237,
+        "chuva_taxa_max": 182232,
+        "chuva_duracao": 182235,
+        "chuva_taxa_med": 173168,
+        "umid_rel": 11856,
+        "sens_termica": 11856,
+        "temp_media": 11856
+      },
+      "nivel_min_m": null,
+      "nivel_max_m": null,
+      "cristas_candidatas": [],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00029",
+      "cidade": "guabiruba",
+      "janelas_baixadas": 986,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:10:26.861Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:40:28.049Z",
+        "2026-09-10T02:26:58.836Z"
+      ],
+      "leituras": 199339,
+      "leituras_com_nivel": 198178,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 23,
+      "primeira": "2022-11-23T11:00",
+      "ultima": "2026-09-09T23:10",
+      "esperadas_a_10_min": 199658,
+      "buracos_maiores_que_6h": 5,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 199339,
+        "codigo": 199339,
+        "rio_variacao": 199336,
+        "rio_nivel": 199336,
+        "bateria_v": 199336,
+        "timestamp": 199339,
+        "chuva_taxa_med": 7280,
+        "chuva_taxa_max": 7280,
+        "chuva_total": 7280,
+        "chuva_mm": 7280
+      },
+      "nivel_min_m": -8.54,
+      "nivel_max_m": 28.700000762939453,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 28.700000762939453,
+          "quando": "2026-04-07T05:50",
+          "plato_inicio": "2026-04-07T05:40",
+          "plato_fim": "2026-04-07T06:00",
+          "plato_leituras": 3,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 26.3,
+          "quando": "2026-07-11T14:40",
+          "plato_inicio": "2026-07-11T14:40",
+          "plato_fim": "2026-07-11T15:00",
+          "plato_leituras": 3,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 26.2,
+          "quando": "2026-08-31T11:20",
+          "plato_inicio": "2026-08-31T11:10",
+          "plato_fim": "2026-08-31T11:40",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 25.8,
+          "quando": "2026-07-01T09:40",
+          "plato_inicio": "2026-07-01T09:30",
+          "plato_fim": "2026-07-01T10:00",
+          "plato_leituras": 4,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 25.77,
+          "quando": "2026-07-28T19:00",
+          "plato_inicio": "2026-07-28T18:50",
+          "plato_fim": "2026-07-28T19:00",
+          "plato_leituras": 2,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": []
+    },
+    {
+      "codigo": "DCSC-00030",
+      "cidade": "ilhota",
+      "janelas_baixadas": 1093,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:09:52.318Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:39:56.471Z",
+        "2026-09-10T02:26:17.425Z"
+      ],
+      "leituras": 196685,
+      "leituras_com_nivel": 194695,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2022-12-13T15:50",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 196748,
+      "buracos_maiores_que_6h": 3,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 196685,
+        "codigo": 196685,
+        "chuva_taxa_max": 196683,
+        "chuva_total": 196680,
+        "chuva_mm": 196680,
+        "rio_variacao": 196678,
+        "rio_nivel": 196678,
+        "bateria_v": 196684,
+        "timestamp": 196685,
+        "chuva_taxa_med": 187644
+      },
+      "nivel_min_m": -12.71,
+      "nivel_max_m": 17.98,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 13.31,
+          "quando": "2023-10-13T04:10",
+          "plato_inicio": "2023-10-13T03:30",
+          "plato_fim": "2023-10-13T05:50",
+          "plato_leituras": 15,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 13.02,
+          "quando": "2023-10-09T13:50",
+          "plato_inicio": "2023-10-09T13:10",
+          "plato_fim": "2023-10-09T14:50",
+          "plato_leituras": 11,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 12.61,
+          "quando": "2023-11-04T03:40",
+          "plato_inicio": "2023-11-04T01:00",
+          "plato_fim": "2023-11-04T04:50",
+          "plato_leituras": 24,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 12.39,
+          "quando": "2023-11-17T18:50",
+          "plato_inicio": "2023-11-17T18:40",
+          "plato_fim": "2023-11-17T21:00",
+          "plato_leituras": 15,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 12.12,
+          "quando": "2024-05-19T13:50",
+          "plato_inicio": "2024-05-19T13:10",
+          "plato_fim": "2024-05-19T15:50",
+          "plato_leituras": 17,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": [
+        {
+          "maximo_m": 17.98,
+          "quando": "2023-01-10T16:00",
+          "isolada": true
+        }
+      ]
+    },
+    {
+      "codigo": "DCSC-00039",
+      "cidade": "ituporanga",
+      "janelas_baixadas": 1195,
+      "ultima_janela_pedida_ate_utc": "2026-09-10T02:07:14.649Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:37:40.958Z",
+        "2026-09-10T02:21:07.467Z"
+      ],
+      "leituras": 185453,
+      "leituras_com_nivel": 183615,
+      "sentinelas_rio_nivel": 726,
+      "implausiveis_acima_30m": 0,
+      "primeira": "2023-02-28T10:40",
+      "ultima": "2026-09-09T23:00",
+      "esperadas_a_10_min": 185691,
+      "buracos_maiores_que_6h": 3,
+      "maior_buraco_h": 173.9,
+      "campos": {
+        "ts": 185453,
+        "codigo": 185453,
+        "chuva_taxa_max": 185453,
+        "chuva_total": 185453,
+        "chuva_mm": 185453,
+        "rio_variacao": 185433,
+        "rio_nivel": 185433,
+        "bateria_v": 185453,
+        "timestamp": 185453,
+        "chuva_taxa_med": 185432
+      },
+      "nivel_min_m": -4.34,
+      "nivel_max_m": 8.43,
+      "cristas_candidatas": [
+        {
+          "maximo_m": 8.43,
+          "quando": "2025-12-26T14:40",
+          "plato_inicio": "2025-12-26T14:40",
+          "plato_fim": "2025-12-26T14:40",
+          "plato_leituras": 1,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 6.92,
+          "quando": "2023-10-12T18:40",
+          "plato_inicio": "2023-10-12T17:30",
+          "plato_fim": "2023-10-12T19:10",
+          "plato_leituras": 11,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 6.5,
+          "quando": "2023-10-09T03:40",
+          "plato_inicio": "2023-10-09T02:40",
+          "plato_fim": "2023-10-09T05:30",
+          "plato_leituras": 18,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 5.25,
+          "quando": "2023-11-18T07:50",
+          "plato_inicio": "2023-11-18T06:50",
+          "plato_fim": "2023-11-18T11:40",
+          "plato_leituras": 30,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 4.75,
+          "quando": "2026-07-14T15:50",
+          "plato_inicio": "2026-07-14T15:40",
+          "plato_fim": "2026-07-14T16:00",
+          "plato_leituras": 3,
+          "na_borda": false,
+          "isolada": false
+        }
+      ],
+      "descartadas_isoladas": [
+        {
+          "maximo_m": 4.49,
+          "quando": "2025-09-09T02:30",
+          "isolada": true
+        }
+      ]
+    },
+    {
+      "codigo": "DCSC-00041",
+      "cidade": "taio",
+      "janelas_baixadas": 663,
+      "ultima_janela_pedida_ate_utc": "2005-05-31T00:00:00.000Z",
+      "coletado_entre_utc": [
+        "2026-09-10T01:37:06.388Z",
+        "2026-09-10T01:52:06.973Z"
+      ],
+      "leituras": 0,
+      "leituras_com_nivel": 0,
+      "sentinelas_rio_nivel": 0,
+      "implausiveis_acima_30m": 0,
+      "primeira": null,
+      "ultima": null,
+      "esperadas_a_10_min": 0,
+      "buracos_maiores_que_6h": 0,
+      "maior_buraco_h": 0.0,
+      "campos": {},
+      "nivel_min_m": null,
+      "nivel_max_m": null,
+      "cristas_candidatas": [],
+      "descartadas_isoladas": []
+    }
+  ]
+}
