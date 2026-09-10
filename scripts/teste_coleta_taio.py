@@ -290,8 +290,6 @@ class DiagnosticoDeTransporte(unittest.TestCase):
         self.assertEqual(vistos.get("Accept"), "application/json")
 
 
-if __name__ == "__main__":
-    unittest.main()
 
 
 class HistoricoAcumulado(unittest.TestCase):
@@ -330,3 +328,7 @@ class HistoricoAcumulado(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             bloqueio = Path(d, "eh-arquivo"); bloqueio.write_text("x", encoding="utf-8")
             self.assertEqual(ct.acumula_historico([{"medido_em": "2026-09-10T13:00:15"}], bloqueio / "y.ndjson"), 0)
+
+
+if __name__ == "__main__":
+    unittest.main()
