@@ -422,7 +422,9 @@ class LeituraDeCidade(unittest.TestCase):
         NORMALIDADE, abaixo da atenção. Se a régua lida fosse outra, este
         número não teria por que cair onde cai.
         """
-        d = json.loads((RAIZ / "data/tempo-real/ultimo_gaspar.json").read_text(encoding="utf-8"))
+        # A captura de 31/08 vive em data/brutos (evidência); data/tempo-real/ultimo_gaspar.json
+        # é o que a coleta REESCREVE a cada ciclo e por isso saiu do git em 10/09/2026.
+        d = json.loads((RAIZ / "data/brutos/gaspar-monitoramento-2026-08-31-analise.json").read_text(encoding="utf-8"))
         l = cg.leitura_da_cidade(d)
         self.assertIsNotNone(l, "a captura real deixou de produzir leitura de cidade")
         self.assertEqual(l["nivel_m"], 3.85)

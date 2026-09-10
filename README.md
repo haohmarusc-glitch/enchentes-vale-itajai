@@ -477,6 +477,14 @@ o projeto.
 
 ## Pendências
 
+- [x] **`kml_para_json.py` lê o formato REAL do export de Gaspar (10/09/2026).** A primeira rodada na VPS
+  deu 1.615 pontos sem campo nenhum e o guarda recusou gravar — o `<description>` real não usa
+  dois-pontos: nome e valor separados por corrida de espaços, rua no topo sem chave, quebra de linha
+  depois da chave. O Placemark verbatim virou fixture (4 testes). Junto: `data/tempo-real/ultimo_gaspar.json`
+  saiu do git (a coleta o reescreve a cada ciclo e ele sujava o `main` na VPS); a captura de 31/08 que um
+  teste lia foi para `data/brutos/gaspar-monitoramento-2026-08-31-analise.json`, e os instantâneos de
+  `data/tempo-real/` entraram no `.gitignore`. O acervo da Asthon rodou na VPS: Tito Buss 31.659 leituras
+  desde 26/07, Vidal Ramos 8.747 desde 28/07.
 - [x] **Dois scripts da sessão do Jefferson entram no repo (10/09/2026).** `baixar_historico_asthon.py`
   baixa a janela de ~6 semanas da API Asthon para `data/brutos/asthon-historico/` e mescla sem perder o
   antigo (fuso convertido pelo `coleta_asthon`, UA e turno do `comum`; 6 testes). `kml_para_json.py`
