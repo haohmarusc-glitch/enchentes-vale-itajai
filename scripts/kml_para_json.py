@@ -56,6 +56,8 @@ SINONIMOS = {
 
 RE_BR = re.compile(r"<br\s*/?>", re.I)
 RE_TAG = re.compile(r"<[^>]+>")
+#: Nome de campo como o My Maps exporta: identificador simples (FID, refer_1, longitu).
+RE_CHAVE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 def numero(texto) -> float | None:
@@ -81,19 +83,46 @@ def _local(tag: str) -> str:
 
 
 def campos_da_descricao(descricao: str | None) -> dict[str, str]:
-    """`FID: 1<br>sequencia: 1<br>cota: 8,25<br>…` -> {'FID': '1', 'sequencia': '1', 'cota': '8,25', …}."""
+    """Os campos do `<description>` do My Maps, nos dois jeitos que ele escreve.
+
+    O export real de Gaspar (lido na VPS em 10/09/2026) NÃO usa dois-pontos:
+    cada campo é um trecho entre `<br>`, com o NOME e o VALOR separados por
+    uma corrida de espaços, e o primeiro trecho é só o nome da rua, sem chave:
+
+        Rua Adriano Kormann    <br>   FID   0    <br>   cota   8,25    <br>   refer_2
+          Rua Nilton Cardoso    <br>   coord_x   698098,862749 …
+
+    O valor pode ter espaço simples ("Rua Nilton Cardoso") e quebra de linha
+    depois da chave; a quebra vira espaço antes de separar. `campo: valor` (o
+    formato descrito nos documentos de sessão) continua aceito. Trecho sem
+    chave reconhecível (a rua do topo) vai para `_titulo`.
+    """
     if not descricao:
         return {}
     texto = html.unescape(descricao)
     saida: dict[str, str] = {}
     for pedaco in RE_BR.split(texto):
         pedaco = RE_TAG.sub("", pedaco).strip()
-        if ":" not in pedaco:
+        if not pedaco:
             continue
-        chave, valor = pedaco.split(":", 1)
-        chave = chave.strip()
-        if chave:
-            saida[chave] = valor.strip()
+        chave, valor = None, None
+        if ":" in pedaco:
+            c, v = pedaco.split(":", 1)
+            if RE_CHAVE.match(c.strip()):
+                chave, valor = c.strip(), " ".join(v.split())
+        if chave is None:
+            # Nome e valor separados por CORRIDA de espaços (ou quebra de linha);
+            # o valor em si só tem espaços simples ("Rua Nilton Cardoso").
+            partes = [x for x in re.split(r"\s{2,}|\n", pedaco) if x.strip()]
+            if len(partes) >= 2 and RE_CHAVE.match(partes[0].strip()):
+                chave = partes[0].strip()
+                valor = " ".join(" ".join(x.split()) for x in partes[1:])
+            elif len(partes) == 1 and RE_CHAVE.match(partes[0].strip()) and saida:
+                chave, valor = partes[0].strip(), ""   # campo vazio, depois do primeiro
+        if chave is None:
+            saida.setdefault("_titulo", " ".join(pedaco.split()))
+            continue
+        saida[chave] = valor
     return saida
 
 
@@ -143,7 +172,7 @@ def ponto_de(placemark, pasta: str | None) -> dict:
     for origem, destino in SINONIMOS.items():
         if origem in brutos and destino not in ponto:
             ponto[destino] = brutos[origem].strip() or None
-    for chave in ("bairro", "sequencia", "obs", "esquina_co", "descrição", "coord_x", "coord_y"):
+    for chave in ("bairro", "sequencia", "obs", "esquina_co", "descrição", "coord_x", "coord_y", "_titulo"):
         if chave in brutos:
             ponto[chave] = brutos[chave].strip() or None
     ponto["lon"], ponto["lat"] = lon, lat

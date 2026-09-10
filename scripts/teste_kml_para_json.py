@@ -29,6 +29,27 @@ KML_GASPAR = """<?xml version="1.0" encoding="UTF-8"?>
 <Point><coordinates>-49.0,-26.9,0</coordinates></Point></Placemark>
 </Folder></Document></kml>"""
 
+# O export REAL de Gaspar, verbatim de um Placemark lido na VPS em 10/09/2026:
+# sem dois-pontos, nome e valor separados por corrida de espaços, rua no topo.
+KML_GASPAR_REAL = """<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"><Document>
+<Folder><name>cotas_enchente_gaspar_01042020</name>
+<Placemark>
+        <name>8,246</name>
+        <description><![CDATA[Rua Adriano Kormann    <br>
+   <br>   FID   0    <br>   sequencia   1    <br>   cota   8,25    <br>   refer_1   Rua Adriano Kormann    <br>   refer_2
+  Rua Nilton Cardoso    <br>   bairro   Bela Vista    <br>
+coord_x   698098,862749    <br>   coord_y   7023033,51756
+<br>   latitude   -26,90042    <br>   longitu   -49,005335]]></description>
+        <styleUrl>#icon-1899-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -49.005335,-26.90042,0
+          </coordinates>
+        </Point>
+      </Placemark>
+</Folder></Document></kml>"""
+
 KML_BRUSQUE = """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2"><Document>
 <Folder><name>Cotas de Cheia 2011</name>
@@ -90,6 +111,45 @@ class Gaspar(unittest.TestCase):
     def test_description_com_html_escapado(self):
         campos = campos_da_descricao("cota: 8,25&lt;br&gt;refer_1: Rua A")
         self.assertEqual(campos, {"cota": "8,25", "refer_1": "Rua A"})
+
+
+class GasparReal(unittest.TestCase):
+    """
+    A primeira rodada na VPS deu 1.615 pontos com `campos=[]`: o formato dos
+    documentos de sessão (campo: valor) não era o do arquivo. O guarda recusou
+    gravar — este é o formato de verdade, e o parser tem de lê-lo inteiro.
+    """
+
+    def setUp(self):
+        self.p = pontos_do_kml(KML_GASPAR_REAL)[0]
+
+    def test_le_todos_os_campos_sem_dois_pontos(self):
+        c = self.p["campos"]
+        self.assertEqual(c["FID"], "0")
+        self.assertEqual(c["sequencia"], "1")
+        self.assertEqual(c["cota"], "8,25")
+        self.assertEqual(c["refer_1"], "Rua Adriano Kormann")
+        self.assertEqual(c["refer_2"], "Rua Nilton Cardoso")   # quebra de linha depois da chave
+        self.assertEqual(c["bairro"], "Bela Vista")
+        self.assertEqual(c["coord_x"], "698098,862749")
+        self.assertEqual(c["coord_y"], "7023033,51756")
+        self.assertEqual(c["latitude"], "-26,90042")
+        self.assertEqual(c["longitu"], "-49,005335")
+
+    def test_a_rua_do_topo_nao_vira_chave_falsa(self):
+        self.assertEqual(self.p["campos"]["_titulo"], "Rua Adriano Kormann")
+        self.assertNotIn("Rua", self.p["campos"])
+
+    def test_chaves_normalizadas_como_o_importador_le(self):
+        self.assertEqual(self.p["cota"], 8.25)
+        self.assertEqual(self.p["cota_rotulo"], "8,25")
+        self.assertEqual(self.p["rua"], "Rua Adriano Kormann")
+        self.assertEqual(self.p["esquina"], "Rua Nilton Cardoso")
+        self.assertEqual(self.p["longitude"], "-49,005335")
+        self.assertEqual((self.p["lon"], self.p["lat"]), (-49.005335, -26.90042))
+
+    def test_o_kml_real_grava(self):
+        self.assertEqual(resumo(pontos_do_kml(KML_GASPAR_REAL))["com_cota"], 1)
 
 
 class Brusque(unittest.TestCase):
