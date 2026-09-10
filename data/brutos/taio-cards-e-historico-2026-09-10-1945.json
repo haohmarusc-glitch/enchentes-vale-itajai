@@ -1,0 +1,178 @@
+{
+  "fonte": "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/cards?v=1",
+  "coletado_em": "2026-09-10T22:45:06.858199+00:00",
+  "leituras": [
+    {
+      "estacao": "Taió — Rio Itajaí do Oeste, Centro",
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "nivel_m": 4.45,
+      "medido_em": "2026-09-10T19:43:59",
+      "usar_para_cota": true
+    }
+  ],
+  "barragem": {
+    "nome": "Barragem Oeste (Taió)",
+    "montante_m": 10.4,
+    "jusante_m": null,
+    "comportas": {
+      "abertas": 0,
+      "total": 7,
+      "todas_abertas": false,
+      "regime": "retendo"
+    },
+    "extravasor": "–",
+    "medido_em": "2026-09-10T19:43:59"
+  },
+  "chuva_mm": {
+    "h1": 0.0,
+    "h12": 3.1,
+    "h24": 86.3
+  },
+  "historico": [
+    {
+      "medido_em": "2026-09-09T20:00:17",
+      "nivel_m": 2.19,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-09T21:00:05",
+      "nivel_m": 2.18,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-09T22:02:11",
+      "nivel_m": 2.17,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-09T23:01:59",
+      "nivel_m": 2.18,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T00:01:47",
+      "nivel_m": 2.38,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T01:01:35",
+      "nivel_m": 2.5,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T02:01:23",
+      "nivel_m": 2.76,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T03:01:11",
+      "nivel_m": 3.08,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T04:00:59",
+      "nivel_m": 3.41,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T05:00:47",
+      "nivel_m": 3.7,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T06:00:35",
+      "nivel_m": 4.0,
+      "montante_m": 2.9,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T07:00:23",
+      "nivel_m": 4.3,
+      "montante_m": 7.0,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T08:00:11",
+      "nivel_m": 4.61,
+      "montante_m": 7.0,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T09:02:17",
+      "nivel_m": 4.91,
+      "montante_m": 7.0,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T10:02:05",
+      "nivel_m": 5.13,
+      "montante_m": 7.0,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T11:01:53",
+      "nivel_m": 5.28,
+      "montante_m": 7.0,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T12:01:41",
+      "nivel_m": 5.39,
+      "montante_m": 7.0,
+      "comportas_abertas": 7
+    },
+    {
+      "medido_em": "2026-09-10T13:01:29",
+      "nivel_m": 5.46,
+      "montante_m": 7.0,
+      "comportas_abertas": 0
+    },
+    {
+      "medido_em": "2026-09-10T14:01:17",
+      "nivel_m": 5.42,
+      "montante_m": 7.0,
+      "comportas_abertas": 0
+    },
+    {
+      "medido_em": "2026-09-10T15:01:05",
+      "nivel_m": 5.25,
+      "montante_m": 7.0,
+      "comportas_abertas": 0
+    },
+    {
+      "medido_em": "2026-09-10T16:00:53",
+      "nivel_m": 5.06,
+      "montante_m": 7.0,
+      "comportas_abertas": 0
+    },
+    {
+      "medido_em": "2026-09-10T17:00:41",
+      "nivel_m": 4.9,
+      "montante_m": 10.4,
+      "comportas_abertas": 0
+    },
+    {
+      "medido_em": "2026-09-10T18:00:29",
+      "nivel_m": 4.73,
+      "montante_m": 10.4,
+      "comportas_abertas": 0
+    },
+    {
+      "medido_em": "2026-09-10T19:00:17",
+      "nivel_m": 4.56,
+      "montante_m": 10.4,
+      "comportas_abertas": 0
+    }
+  ]
+}

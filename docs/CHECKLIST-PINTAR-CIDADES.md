@@ -32,11 +32,11 @@ régua da leitura.
 - [ ] B4 · Brusque pelo celular: legenda das estações 4 e 79 (`defesacivil.brusque.sc.gov.br/estacao/ver/4` e `/ver/79`).
 - [ ] B5 · VPS: `scp` da pasta `historico-dcsc` para `data/series/dcsc-zips/`, consolidador, checagem "IGUAL ao resumo do repo".
 - [ ] B6 · Anexar o script de download do histórico DCSC (PC).
-- [ ] B7 · Baixar de novo a partir de 2022-06-01: Taió `DCSC-00041` e as 16 da cadeia (00032, 00023, 00011, 00040, 00038, 00025, 00033, 00031, 00001, 00043, 00021, 00004, 00028, 00007, 00027, 00163).
+- [~] B7 · **REESCOPADO em 10/09/2026** (`docs/eventos/2026-09-10-B7-FONTES-E-EVENTO-TAIO.md`): a Asthon retém ~6 semanas e a API de Taió só 24 h — não há fonte para 2022. Vira três: B7a confirmar o código ANA da DCSC-00041 e puxar do Hidroweb; B7b listar quais das 16 estações da cadeia existem no portal de Brusque e baixar por `baixar-historico` (chunks anuais, 2018+); B7c ✅ acumular o `dados/historico` de Taió (feito: `coleta_taio.acumula_historico`, `data/tempo-real/taio-historico.ndjson`). O script de download da DCSC (B6) continua valendo para as janelas que a GraphQL `historic` responde.
 - [ ] B8 · "Sim" para os registros de Blumenau 2021/2022 (6,82 m em 21/01/2021 21:45; 9,41 m em 05/05/2022 02:45, régua).
 - [ ] B9 · Envio do C12 à EPAGRI (thread do C5).
 - [ ] B10 · Diagnóstico da VPS: `curl -v` da estação 79 de Brusque e as cinco URLs (é bloqueio dos portais ou da VPS?).
-- [ ] B11 · VPS: `apt upgrade` + `reboot` numa hora sem chuva (26 atualizações, "restart required").
+- [ ] B11 · VPS: `apt upgrade` + `reboot` numa hora sem chuva (26 atualizações, "restart required"). **Não em 10/09 à noite**: onda descendo a bacia, Blumenau em atenção.
 
 ## C. Claude — o que faz sozinho assim que puder
 
@@ -47,6 +47,16 @@ régua da leitura.
 - [ ] C5 · Cruzar `data/series/dcsc/` com `data/tempo-real/*.ndjson` da VPS (mesma rede, mesmo fuso) — depende de B5.
 - [ ] C6 · Com cada resposta de COMPDEC: gravar `cotas_m` + `regua_das_cotas_fonte`, teste do par, e medir o ganho em km com `conferir_cobertura.py`.
 
+## D. Evento de 10/09/2026 — onda descendo a bacia
+
+- [x] D1 · Evidências congeladas: os dois relatórios em `docs/eventos/`, o card + histórico de Taió com comportas (`data/brutos/taio-cards-e-historico-2026-09-10-1945.json`) e a série de 48 h publicada às 19:46 (`data/brutos/evento-2026-09-10-serie-recente-1946.json`).
+- [x] D2 · Taió: mínima 2,40 m 00:13 → crista **5,48 m às 13:29** → 4,45 m 19:43. Cruzou 5,00 m ~09:45. 86,3 mm/24 h. Comportas da Oeste 7→0 às 13h. Gravado em `estacoes.json` como evidência de campo da decisão de avisar em 5,00 m.
+- [ ] D3 · Rio do Sul (Tito Buss): 2,96 m 00:14 → 4,29 m às 16:57 → 4,20 m 19:44. Atenção em 4,50. Confirmar amanhã se 16:57 foi a crista ou só um patamar — a subida foi em paralelo com Taió (chuva na bacia inteira), não é a onda de Taió chegando, e a barragem fechou no pico: **não serve para calibrar trânsito**.
+- [ ] D4 · Blumenau: **4,26 m desde 15:35, acima da atenção (4,00)** nas duas fontes (DC Itajaí 4,25 às 16:35; AlertaBlu 4,26 às 19:00). O relatório do navegador dizia 2,66 m às 18:00 — esse é o valor das 00:05 (2,64); conferir de onde veio. Registrar a crista amanhã.
+- [ ] D5 · Gaspar: 1,74 m às 05:53 é a única leitura que a VPS conseguiu; o navegador viu 2,58 m às 19:07 (NORMALIDADE). Sem série.
+- [ ] D6 · Registrar as cristas do evento em `enchentes.json` só se o Jefferson decidir; por ora ficam nos brutos.
+
 ## Histórico
 
 - 10/09/2026 · lista criada; medição 57% / 27%; C1 e C2 fechados.
+- 10/09/2026 19:50 BRT · evento real na bacia (bloco D); B7 reescopado em B7a/B7b/B7c, B7c feito; B11 adiado; PR #272.
