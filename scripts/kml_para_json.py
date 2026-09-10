@@ -16,6 +16,19 @@ ninguém pode refazer. Este script é a conversão com teste, para os dois:
   `longitu` (truncado assim na fonte). Decimal com VÍRGULA (`8,25`). O
   `<name>` traz a cota com três casas (`8,246`) e o campo `cota` com duas
   (`8,25`) — não misturar.
+* **Brusque, camada "Cotas de cheia 2023"** (vista na VPS em 10/09/2026, 357
+  pontos) — `ExtendedData` com nomes por extenso: `descrição`, `Bairro`,
+  `Rua`, `Esquina`, `Nível registrado no local`, `Conferência`. A cota está
+  em "Nível registrado no local"; a busca de sinônimos ignora maiúsculas e
+  acentos. `cota_campo` diz de qual campo a cota saiu.
+* **Ituporanga, ruas** (60 pontos) — nem `ExtendedData` nem campos: o
+  `<name>` É a cota ("3,38 metros") e o `<description>` é a rua. Só quando
+  não há campo de cota o `<name>` vale como cota, e aí `cota_campo` é
+  `"nome_marcador"`.
+* **Ituporanga, manchas** — 25 polígonos em pastas "COTA - 3,00" … "COTA - 6,50".
+  Não são pontos de rua: este script os conta como "sem cota" e recusa o
+  arquivo. Precisam de um conversor de polígono (GeoJSON por cota), como as
+  manchas de Itajaí — pendência no README.
 
 ⚠️ FALHA SILENCIOSA É O INIMIGO. Um parser que só conhece um formato lê o
 outro e devolve 1.615 pontos com tudo vazio — arquivo válido, contagem certa,
@@ -39,6 +52,7 @@ import html
 import json
 import re
 import sys
+import unicodedata
 import xml.etree.ElementTree as ET
 from datetime import date
 from pathlib import Path
@@ -52,7 +66,14 @@ SINONIMOS = {
     "refer_1": "rua", "ruas": "rua", "rua": "rua",
     "refer_2": "esquina", "esquina": "esquina",
     "longitu": "longitude", "longitude": "longitude", "latitude": "latitude",
+    "bairro": "bairro", "conferencia": "conferencia",
 }
+#: Nomes de campo que carregam a cota, por ordem de preferência. Comparados
+#: sem maiúsculas nem acentos (ver `_norm`).
+CAMPOS_DE_COTA = ("cota", "nivel registrado no local")
+#: `<name>` que É a cota: "3,38 metros", "4,00 m", "8,246". Só vale quando
+#: não há campo de cota.
+RE_COTA_NO_NOME = re.compile(r"^(\d+[.,]\d+)\s*(m|metros)?$", re.I)
 
 RE_BR = re.compile(r"<br\s*/?>", re.I)
 RE_TAG = re.compile(r"<[^>]+>")
@@ -80,6 +101,12 @@ def numero(texto) -> float | None:
 
 def _local(tag: str) -> str:
     return tag.rsplit("}", 1)[-1]
+
+
+def _norm(chave: str) -> str:
+    """'Nível registrado no local' → 'nivel registrado no local'; 'Rua' → 'rua'."""
+    sem_acento = unicodedata.normalize("NFKD", chave).encode("ascii", "ignore").decode()
+    return " ".join(sem_acento.lower().split())
 
 
 def campos_da_descricao(descricao: str | None) -> dict[str, str]:
@@ -167,12 +194,20 @@ def ponto_de(placemark, pasta: str | None) -> dict:
         "campos": brutos,
     }
     # Chaves que os importadores leem — as mesmas do gaspar-cotas-2020.json.
-    ponto["cota_rotulo"] = brutos.get("cota")
-    ponto["cota"] = numero(brutos.get("cota"))
+    por_norm = {_norm(k): (k, v) for k, v in brutos.items()}
+    ponto["cota_rotulo"], ponto["cota"], ponto["cota_campo"] = None, None, None
+    for candidato in CAMPOS_DE_COTA:
+        if candidato in por_norm:
+            original, valor = por_norm[candidato]
+            ponto["cota_rotulo"], ponto["cota"], ponto["cota_campo"] = valor, numero(valor), original
+            break
+    if ponto["cota_campo"] is None and nome and RE_COTA_NO_NOME.match(nome.strip()):
+        m = RE_COTA_NO_NOME.match(nome.strip())
+        ponto["cota_rotulo"], ponto["cota"], ponto["cota_campo"] = nome.strip(), numero(m.group(1)), "nome_marcador"
     for origem, destino in SINONIMOS.items():
-        if origem in brutos and destino not in ponto:
-            ponto[destino] = brutos[origem].strip() or None
-    for chave in ("bairro", "sequencia", "obs", "esquina_co", "descrição", "coord_x", "coord_y", "_titulo"):
+        if origem in por_norm and destino not in ponto:
+            ponto[destino] = por_norm[origem][1].strip() or None
+    for chave in ("sequencia", "obs", "esquina_co", "descrição", "coord_x", "coord_y", "_titulo"):
         if chave in brutos:
             ponto[chave] = brutos[chave].strip() or None
     ponto["lon"], ponto["lat"] = lon, lat
@@ -220,7 +255,9 @@ def montar(pontos: list[dict], origem: Path, texto: str) -> dict:
             "pastas": r["pastas"], "formatos": r["formatos"],
             "o_que_e_cada_campo": {
                 "campos": "TODOS os campos da fonte, como vieram (ExtendedData ou linhas do <description>)",
-                "cota_rotulo": "o campo 'cota' da fonte, como texto; `cota` é o mesmo em número",
+                "cota_rotulo": "o campo de cota da fonte, como texto; `cota` é o mesmo em número",
+                "cota_campo": ("de onde a cota saiu: 'cota' (Gaspar, Brusque 2011), 'Nível registrado no local' "
+                               "(Brusque 2023) ou 'nome_marcador' (Ituporanga, onde o <name> é a cota)"),
                 "rua/esquina": "refer_1/refer_2 (Gaspar) ou ruas/esquina (Brusque)",
                 "nome_marcador": "o <name> do marcador — em Gaspar é a cota com três casas; não é a cota_rotulo",
                 "lon/lat": "do <coordinates> do ponto",
