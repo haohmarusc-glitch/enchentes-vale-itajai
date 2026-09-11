@@ -1,5 +1,6 @@
+import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCor } from '../logica/motivoSemCor'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   cidadesDoRio,
@@ -318,6 +319,12 @@ function centroAtual(cena: Cena, v: Vista): [number, number] {
  * inventa posição, e não se deixa a tela em branco.
  */
 export default function MonitorBacia() {
+  const camadaHistorica = useRef<CamadaDesenhada>(null)
+  const [rotuloCamada, setRotuloCamada] = useState<string | null>(null)
+  const receberCamada = useCallback((camada: CamadaDesenhada) => {
+    camadaHistorica.current = camada
+    setRotuloCamada(camada?.rotulo ?? null)
+  }, [])
   const navigate = useNavigate()
   const { cidadeId: cidadeFoco } = useParams()
   const divRef = useRef<HTMLDivElement | null>(null)
@@ -669,12 +676,38 @@ export default function MonitorBacia() {
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
+    let camadaPreparada: CamadaDesenhada = null
+    let caminhosCamada: Path2D[] = []
     let raf = 0
     const inicio = performance.now()
     const quadro = (t: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, cena.largura, cena.altura)
       ctx.drawImage(fundoCanvas, 0, 0, cena.largura, cena.altura)
+      if (camadaPreparada !== camadaHistorica.current) {
+        camadaPreparada = camadaHistorica.current
+        caminhosCamada = []
+        for (const f of camadaPreparada?.geo.features ?? []) {
+          const g = f.geometry
+          const poligonos = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : []
+          for (const poligono of poligonos) {
+            const path = new Path2D()
+            for (const anel of poligono) {
+              anel.forEach((p, i) => {
+                const [x, y] = projetar(cena.enq, [p[0]!, p[1]!])
+                if (i === 0) path.moveTo(x, y)
+                else path.lineTo(x, y)
+              })
+              path.closePath()
+            }
+            caminhosCamada.push(path)
+          }
+        }
+      }
+      ctx.save()
+      ctx.fillStyle = 'rgba(22,121,186,0.42)'
+      for (const path of caminhosCamada) ctx.fill(path, 'evenodd')
+      ctx.restore()
       const seg = reduz ? 0 : (t - inicio) / 1000
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
@@ -742,7 +775,7 @@ export default function MonitorBacia() {
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista])
+  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -1079,6 +1112,16 @@ export default function MonitorBacia() {
             Tela cheia
           </button>
         </div>
+
+        {rotuloCamada && <p className={estilos.rotuloCamada} data-tapa-mapa>
+          {rotuloCamada} · referência, não alagamento atual
+        </p>}
+        <details className={estilos.camadasControle} data-tapa-mapa>
+          <summary>Camadas de cheia</summary>
+          <CamadasMonitor key={cidadeFoco ?? sel?.cidade.id ?? 'itajai'} cidade={cidadeFoco ?? sel?.cidade.id ?? 'itajai'}
+            leituras={tempoReal.leituras} agora={agora} reproduzindo={idxRepro !== null}
+            onCamada={receberCamada} />
+        </details>
 
         {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
             Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga

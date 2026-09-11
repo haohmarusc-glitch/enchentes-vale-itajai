@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [ ] **Comparação de cheias no Monitor:** controle de camadas integrado ao mapa, com consulta histórica de Itajaí e cotas manuais de Ituporanga. A seleção por nível exige pico e régua documentados; os dados atuais ainda não permitem ativá-la. Faltam os acumulados completos de sete dias e a detecção de subida para o aviso durante uma cheia. Detalhes em [comparacao-cheias-monitor.md](docs/comparacao-cheias-monitor.md).
+
 - [x] Monitor: atalho direto às camadas de Ituporanga, com foco na seção de mapa; painéis de cidades cinzas explicam falta de faixas, ausência de horário, leitura antiga ou carimbo futuro.
 
 - [x] Ituporanga: consulta manual de oito camadas de inundação (3,00–6,50 m) na página da cidade. Falta confirmar a régua de referência para qualquer comparação automática com o nível atual.
