@@ -1,6 +1,6 @@
 # B1 — Oito ofícios complementares (C15–C22)
 
-Rascunhos redigidos em 10/09/2026. **Não enviados.** O destinatário institucional
+Rascunhos redigidos em 10/09/2026. **Não enviados. Enviar somente após aprovação explícita de Jefferson para cada ofício ou lote identificado.** O destinatário institucional
 está identificado; o endereço de e-mail deve ser confirmado no canal oficial antes
 do envio. Não foi inventado contato nem feita nova validação dos portais nesta redação.
 
@@ -233,4 +233,3 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
-
