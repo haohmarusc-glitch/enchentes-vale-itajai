@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] **Enquadramento municipal de Ascurra:** piloto compara a DCSC-00003 recente com o C18, preservando emergência estritamente acima de 10,76 m e a ambiguidade em 9,76 m. Não ativa manchas nem envia avisos.
+
 - [x] **Chuva de 24 horas no piloto de Ascurra:** exibe o acumulado estadual com estação, fonte e carimbo, preservando a diferença entre zero e dado ausente. A série de sete dias permanece pendente.
 
 - [~] **Piloto municipal de Ascurra:** rota `/#/municipal/ascurra` com dados locais e montante separados, horários e fontes governamentais. Sem abrigos, recomendações ou previsões. Mapa, chuva, cores verificadas e distribuição isolada ainda pendentes. [Escopo](docs/piloto-municipal.md).
