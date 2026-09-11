@@ -117,7 +117,7 @@ NAO_MEDE_NIVEL = {"DCSC-00005": "Gaspar: tem_nivel_do_rio=false na API estadual 
 #: Query validada por curl em 01/09/2026. Sempre funciona — é o fallback seguro de `buscar()`.
 QUERY = ('query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
          'codigo name { general local } timestamp position { bacia latitude longitude } '
-         'data { rio { rio_nivel { value } } chuva { acumulado { h024 { value } } } } } } }')
+         'data { rio { rio_nivel { value } } chuva { acumulado { h024 { value } h168 { value } } } } } } }')
 
 #: Tentativa (03/09/2026, docs/API-DCSC-CAMPOS-NOVOS.md) de pedir também `type`,
 #: `filter.relacao.tem_nivel_do_rio` e `data.rio.{rio_nome,rio_area_drenagem}`. Não validada contra
@@ -128,7 +128,7 @@ QUERY_CAMPOS_NOVOS = (
     'codigo name { general local } timestamp type position { bacia latitude longitude } '
     'filter { relacao { tem_nivel_do_rio tem_vazao_do_rio tem_chuva_acumulada } } '
     'data { rio { rio_nome rio_nivel { value } rio_area_drenagem } '
-    'chuva { acumulado { h024 { value } } } } } } }'
+    'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
 )
 
 
@@ -200,12 +200,15 @@ def converter(
         # nesse caso caímos nos dicionários hardcoded abaixo, como antes.
         tipo_estacao = s.get("type")
         declara_nivel = ((s.get("filter") or {}).get("relacao") or {}).get("tem_nivel_do_rio")
+        semanal = (((s.get("data") or {}).get("chuva") or {}).get("acumulado") or {}).get("h168") or {}
+        chuva7 = semanal.get("value")
         base = {
             "codigo": cod, "estacao": nome, "cidade": cidade,
             "origem": "estadual",
             "datum": "reservatorio" if cod in RESERVATORIOS else "bruto_estadual",
             "offset_datum": None, "usar_para_cota": False,
             "medido_em": hora_local(s.get("timestamp")),                # UTC (+00:00) -> Brasília (armadilha 5)
+            "chuva_168h_mm": chuva7 if e_numero(chuva7) and 0 <= chuva7 <= 3000 else None,
             "chuva_24h_mm": chuva.get("value") if e_numero(chuva.get("value")) else None,
             "lat": (s.get("position") or {}).get("latitude"),
             "lon": (s.get("position") or {}).get("longitude"),

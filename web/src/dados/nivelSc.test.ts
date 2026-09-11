@@ -63,3 +63,10 @@ test('acumulado acompanha a estação selecionada, sem somar janelas móveis', (
   assert.equal(mapa.get('ascurra')?.chuva24hMm, 2)
   assert.equal(mapa.get('ascurra')?.estacao, 'B')
 })
+
+test('semana vem do campo de 168h, sem inferir a partir de 24h', () => {
+  const base = {cidade:'ascurra',estacao:'A',nivel_bruto_m:8,chuva_24h_mm:20}
+  assert.equal(montarNivelSc({leituras:[base]}).get('ascurra')?.chuva168hMm, null)
+  for (const [valor, esperado] of [[127.84,127.84],[0,0],[null,null],[-1,null],[Infinity,null],['127',null]])
+    assert.equal(montarNivelSc({leituras:[{...base,chuva_168h_mm:valor}]}).get('ascurra')?.chuva168hMm, esperado)
+})

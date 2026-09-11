@@ -276,5 +276,19 @@ class TestENumero(unittest.TestCase):
         self.assertFalse(e_numero("6.86"))
 
 
+
+
+class TestChuvaSemanal(unittest.TestCase):
+    def test_semana_publicada_nao_e_soma_de_janelas(self):
+        s = estacao()
+        for valor, esperado in [(127.84, 127.84), (0, 0), (None, None), (-1, None), (True, None), (float('nan'), None), (float('inf'), None)]:
+            s['data']['chuva']['acumulado']['h168'] = {'value': valor}
+            leituras, *_ = converter([s])
+            self.assertEqual(leituras[0]['chuva_168h_mm'], esperado)
+    def test_arquivo_antigo_nao_inventa_semana(self):
+        leituras, *_ = converter([estacao()])
+        self.assertIsNone(leituras[0]['chuva_168h_mm'])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

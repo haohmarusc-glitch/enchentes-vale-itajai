@@ -31,6 +31,7 @@ export interface BrutoEstadual {
   nivelBrutoM: number
   /** Acumulado publicado pela estação; ausente não significa zero. */
   chuva24hMm?: number | null
+  chuva168hMm?: number | null
   /** Instante da medição, em hora de Brasília. Null quando a fonte não o publicou. */
   medidoEm: Date | null
 }
@@ -54,7 +55,9 @@ function brutoValido(bruta: unknown): BrutoEstadual | null {
   }
   const chuva = l.chuva_24h_mm
   const chuva24hMm = typeof chuva === 'number' && Number.isFinite(chuva) && chuva >= 0 && chuva <= 1000 ? chuva : null
-  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm }
+  const semanal = l.chuva_168h_mm
+  const chuva168hMm = typeof semanal === 'number' && Number.isFinite(semanal) && semanal >= 0 && semanal <= 3000 ? semanal : null
+  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm }
 }
 
 /** Constrói o mapa cidade → bruto mais fresco a partir do JSON cru. */
