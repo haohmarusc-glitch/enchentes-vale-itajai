@@ -406,7 +406,7 @@ def main() -> int:
         etiqueta = "[barragem] " if e_barragem(e["rotulo"]) else "           "
         print(f"  {etiqueta}{medida}  {e['medido_em'] or '-':<14} {e['rotulo'][:40]}{marca}")
     print(f"\nUser-Agent: {USER_AGENT}")
-    print("Enquanto Gaspar não tiver cota em estacoes.json, nada disto dispara aviso.")
+    print("A classificação depende das cotas cadastradas e de leitura recente da régua correspondente.")
 
     if args.cotas:
         propor_cotas(leitura)
