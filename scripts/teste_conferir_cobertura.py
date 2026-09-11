@@ -8,10 +8,14 @@ ordenar a quem pedir o quê. Confundir "sem leitura" com "sem cota" manda o
 ofício para a pessoa errada.
 """
 import json
+import tempfile
+from datetime import datetime, timezone
+from unittest.mock import patch
 import unittest
 from pathlib import Path
 
 import conferir_cobertura as cc
+cf = cc
 
 RAIZ = Path(__file__).resolve().parent.parent
 
@@ -34,7 +38,7 @@ class Causas(unittest.TestCase):
 
     def causa_de(self, cotas, tem_leitura, monkey_geo=True):
         est, ls = self.monta(cotas, tem_leitura)
-        r = cc.avaliar("r", est, ls)
+        r = cc.avaliar("r", est, ls, datetime(2026, 9, 4, 15, 0, tzinfo=timezone.utc))
         return {a["cidade"]: a for a in r["ancoras"]}["b"]
 
     def setUp(self):
@@ -69,7 +73,7 @@ class Causas(unittest.TestCase):
 
     def test_o_km_atribuido_soma_o_tracado_inteiro(self):
         est, ls = self.monta({"atencao": 5.0}, True)
-        r = cc.avaliar("r", est, ls)
+        r = cc.avaliar("r", est, ls, datetime(2026, 9, 4, 15, 0, tzinfo=timezone.utc))
         self.assertAlmostEqual(sum(a["km"] for a in r["ancoras"]), r["km_total"], places=6)
 
 
@@ -98,6 +102,46 @@ class ContraOsDadosReais(unittest.TestCase):
         if r is None:
             self.skipTest("traçado do Açu ausente neste checkout")
         self.assertNotIn("ituporanga", {a["cidade"] for a in r["ancoras"]})
+
+
+class Cobertura(unittest.TestCase):
+    def test_idade_e_valor(self):
+        agora = datetime(2026, 9, 11, 1, 11, tzinfo=timezone.utc)
+        for horario, nivel, esperado in [
+            ("2026-09-10T19:07:00", 2.58, "leitura antiga"),
+            ("2026-09-10T19:11:00", 2.58, None),
+            ("2026-09-10T22:26:00", 2.58, None),
+            ("2026-09-10T22:27:00", 2.58, "horário no futuro"),
+            (None, 2.58, "sem horário válido"),
+            ("2026-02-30T22:11:00", 2.58, "sem horário válido"),
+            ("2026-09-11T01:11:00Z", 2.58, "sem horário válido"),
+            ("2026-09-10T22:11:00", None, "nível inválido"),
+            ("2026-09-10T22:11:00", float("nan"), "nível inválido"),
+            ("2026-09-10T22:11:00", 25, "nível inválido"),
+        ]:
+            with self.subTest(horario=horario, nivel=nivel):
+                self.assertEqual(cf.motivo_leitura({"nivel_m": nivel, "medido_em": horario}, agora), esperado)
+
+    def test_gaspar_antiga_nao_conta_km_e_backup_recente_recupera(self):
+        cadastro = {"rios": {"teste": {"cidades": [
+            {"id": "gaspar", "coordenadas": [-27, -49], "cotas_m": {"atencao": 5}},
+            {"id": "fim", "coordenadas": [-27, -48.99], "cotas_m": {}},
+        ]}}}
+        antiga = {"cidade": "gaspar", "rio": "teste", "nivel_m": 2.58,
+                  "medido_em": "2026-09-10T19:07:00"}
+        agora = datetime(2026, 9, 11, 1, 11, tzinfo=timezone.utc)
+        with tempfile.TemporaryDirectory() as pasta, patch.object(cf, "RAIZ", Path(pasta)):
+            destino = Path(pasta) / "data/rios"
+            destino.mkdir(parents=True)
+            (destino / "teste.geojson").write_text(json.dumps({"geometry": {
+                "coordinates": [[[-49, -27], [-48.99, -27]]]}}), encoding="utf-8")
+            r = cf.avaliar("teste", cadastro, [antiga], agora)
+            self.assertEqual(r["km_vivo"], 0)
+            self.assertEqual(r["ancoras"][0]["causa"], "leitura antiga")
+            recente = {**antiga, "medido_em": "2026-09-10T22:00:00"}
+            self.assertGreater(cf.avaliar("teste", cadastro, [antiga, recente], agora)["km_vivo"], 0)
+            recusada = {**recente, "usar_para_cota": False}
+            self.assertEqual(cf.avaliar("teste", cadastro, [antiga, recusada], agora)["km_vivo"], 0)
 
 
 if __name__ == "__main__":

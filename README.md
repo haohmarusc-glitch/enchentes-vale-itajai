@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] O diagnóstico `conferir_cobertura.py` descarta níveis inválidos e leituras antigas, sem horário ou no futuro; `--agora` permite reproduzir a auditoria com instante e fuso explícitos. A geometria continua sendo uma estimativa dos trechos, não uma captura da tela.
+
 > **Checklist vivo do que falta para cada cidade pintar: `docs/CHECKLIST-PINTAR-CIDADES.md`** (10/09/2026).
 
 - [x] **O KML ORIGINAL de Brusque chegou — e a camada 2023 tem número (10/09/2026).** O que
