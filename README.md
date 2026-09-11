@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Ituporanga: consulta manual de oito camadas de inundação (3,00–6,50 m) na página da cidade. Falta confirmar a régua de referência para qualquer comparação automática com o nível atual.
+
 - [x] O diagnóstico `conferir_cobertura.py` descarta níveis inválidos e leituras antigas, sem horário ou no futuro; `--agora` permite reproduzir a auditoria com instante e fuso explícitos. A geometria continua sendo uma estimativa dos trechos, não uma captura da tela.
 
 > **Checklist vivo do que falta para cada cidade pintar: `docs/CHECKLIST-PINTAR-CIDADES.md`** (10/09/2026).
