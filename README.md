@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] **Chuva de 24 horas no piloto de Ascurra:** exibe o acumulado estadual com estação, fonte e carimbo, preservando a diferença entre zero e dado ausente. A série de sete dias permanece pendente.
+
 - [~] **Piloto municipal de Ascurra:** rota `/#/municipal/ascurra` com dados locais e montante separados, horários e fontes governamentais. Sem abrigos, recomendações ou previsões. Mapa, chuva, cores verificadas e distribuição isolada ainda pendentes. [Escopo](docs/piloto-municipal.md).
 
 - [~] **Ascurra — C18 respondido em 11/09/2026:** Ponte do Beber/DCSC-00003 e faixas municipais 8,50 / 9,76 / acima de 10,76 m cadastradas, com explicação na página da cidade. A régua não oficial do Ribeirão São Paulo fica separada. Falta integrar a leitura estadual ao fluxo operacional e respeitar os limites das faixas antes de ativar cores. [Resposta técnica](docs/resposta-ascurra-c18-2026-09-11.md).
