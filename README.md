@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [~] **Ascurra — fontes municipais examinadas:** link para mapa de risco CPRM/SGB e COMPDEC incluído no piloto. Coletor e tela preparados para `h168` (chuva de sete dias), confirmado na API estadual em 11/09/2026. Necessário atualizar o coletor na VPS para publicar o campo; faltam importação dos polígonos e chuva histórica comparável.
+
 - [x] **Enquadramento municipal de Ascurra:** piloto compara a DCSC-00003 recente com o C18, preservando emergência estritamente acima de 10,76 m e a ambiguidade em 9,76 m. Não ativa manchas nem envia avisos.
 
 - [x] **Chuva de 24 horas no piloto de Ascurra:** exibe o acumulado estadual com estação, fonte e carimbo, preservando a diferença entre zero e dado ausente. A série de sete dias permanece pendente.

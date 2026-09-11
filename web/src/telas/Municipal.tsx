@@ -58,7 +58,10 @@ export default function Municipal() {
           <p>Carimbo da estação: {dataHora(chuvaLocal.medidoEm)}. {!chuvaLocal.medidoEm || frescor(idadeMin(chuvaLocal.medidoEm, agora)) === 'velha' ? 'Atualidade não confirmada.' : 'Dentro da janela de atualização.'}</p>
           <p>Acumulado publicado pela estação; não é uma média de chuva de todo o município. A fonte não fornece um horário independente para este acumulado no arquivo utilizado.</p>
         </> : <p>Acumulado de 24 horas indisponível nesta consulta. Ausência de leitura não significa chuva zero.</p>}
-        <p>Fonte da chuva: <a href="https://monitoramento.defesacivil.sc.gov.br/mapa">Defesa Civil de Santa Catarina</a>. Sete dias: série completa ainda não disponível para comparação histórica.</p>
+        <h3>Chuva observada · últimas 168 horas (sete dias)</h3>
+        {chuvaLocal?.chuva168hMm != null ? <p><strong>{numero(chuvaLocal.chuva168hMm)} mm</strong> · {chuvaLocal.estacao}. Carimbo da estação: {dataHora(chuvaLocal.medidoEm)}. {!chuvaLocal.medidoEm || frescor(idadeMin(chuvaLocal.medidoEm, agora)) === 'velha' ? 'Atualidade não confirmada.' : 'Dentro da janela de atualização.'}</p> : <p>Acumulado de sete dias indisponível no arquivo consultado.</p>}
+        <p>Janela móvel publicada pela fonte, sem somar acumulados de 24 horas. Não é média municipal. Ainda faltam acumulados documentados das cheias históricas para comparar os eventos.</p>
+        <p>Fonte da chuva: <a href="https://monitoramento.defesacivil.sc.gov.br/estacao/DCSC-00003">Defesa Civil de Santa Catarina · DCSC-00003</a>.</p>
       </article>
     </section>
     <section id="montante"><h2>Água chegando · observações de montante</h2>
@@ -68,7 +71,10 @@ export default function Municipal() {
     {cidade('itajai-acu', PILOTO)?.coordenadas && <MapaMunicipal cidade={PILOTO} centro={cidade('itajai-acu', PILOTO)!.coordenadas!} leituras={operacional.leituras.filter((l) => l.cidade === PILOTO)} agora={agora} />}
     <section id="historico"><h2>Histórico de Ascurra</h2>
       {historico.length ? <div className={estilos.tabela}><table><thead><tr><th>Evento</th><th>Pico</th><th>Referência</th><th>Fonte</th></tr></thead><tbody>{historico.map((e) => <tr key={e.data + e.fonte}><td>{e.data}</td><td>{numero(e.pico_m)} m</td><td>{e.referencia ?? 'Não documentada'}{e.nota && <p>{e.nota}</p>}</td><td>{fontesGovernamentais(e.fonte).map((url) => <a href={url} key={url}>Consultar documento governamental</a>)}</td></tr>)}</tbody></table></div> : <p>Ainda não há picos de Ascurra com endereço de fonte governamental identificado no cadastro. Nenhuma comparação numérica foi calculada.</p>}
-      <p>Camadas históricas de inundação de Ascurra: não disponíveis no cadastro.</p>
+      <h3>Mapa oficial de áreas de risco</h3>
+      <p>A Prefeitura disponibiliza polígonos da CPRM/SGB (levantamento de 2015) e da Defesa Civil municipal. O setor SR-03, bairro Estação, registra risco de inundação e menciona o evento de 2011. Essas áreas não possuem vínculo com a altura atual da régua confirmado nesta integração.</p>
+      <p><a href="https://sites.google.com/view/prefeituramunicipaldeascurra-s/%C3%A1reas-de-risco" target="_blank" rel="noreferrer">Consultar mapa de áreas de risco na página da Defesa Civil de Ascurra</a></p>
+      <p>Mapa indicado pela própria Defesa Civil no C18. Consulta externa disponível; polígonos ainda não importados. Não representa alagamento observado agora.</p>
     </section>
     <footer><p>Última conferência da idade das leituras: {dataHora(agora)}. A hora da medição aparece em cada estação.</p>
       <p>Piloto dentro do site regional; ainda não é uma distribuição de código e arquivos exclusiva do município.</p><Link to="/">Voltar ao site regional</Link></footer>
