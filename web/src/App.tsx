@@ -20,7 +20,7 @@ const ABAS = [
 
 export default function App() {
   const local = useLocation()
-  if (local.pathname === '/municipal/ascurra') return <LimiteDeErro oQue="o monitor municipal"><Municipal /></LimiteDeErro>
+  const municipal = local.pathname === '/municipal/ascurra'
   return (
     <>
       {/* Primeiro elemento focável da página: quem navega por teclado ou leitor
@@ -29,8 +29,8 @@ export default function App() {
       <a href="#conteudo" className={estilos.pularParaConteudo}>
         Pular para o conteúdo
       </a>
-      <FaixaEmergencia />
-      <header className={estilos.cabecalho}>
+      {!municipal && <FaixaEmergencia />}
+      {!municipal && <header className={estilos.cabecalho}>
         <div className={estilos.faixa}>
           <NavLink to="/" className={estilos.marca}>
             Enchentes do Vale do Itajaí
@@ -53,7 +53,7 @@ export default function App() {
             </ul>
           </nav>
         </div>
-      </header>
+      </header>}
 
       <main className="conteudo" id="conteudo" tabIndex={-1}>
         {/* O limite fica AQUI, em volta do conteúdo — e não em volta do site
@@ -61,6 +61,7 @@ export default function App() {
             continua na tela com o 199, que é o motivo de ela existir. */}
         <LimiteDeErro oQue="esta tela">
           <Routes>
+            <Route path="/municipal/ascurra" element={<Municipal />} />
             <Route path="/" element={<Inicio />} />
             <Route path="/monitor" element={<MonitorBacia />} />
             {/* O mesmo Monitor, aberto numa cidade. Rota própria para ser um
@@ -78,7 +79,7 @@ export default function App() {
         </LimiteDeErro>
       </main>
 
-      <Rodape />
+      {!municipal && <Rodape />}
     </>
   )
 }

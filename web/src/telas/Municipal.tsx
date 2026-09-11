@@ -36,7 +36,7 @@ export default function Municipal() {
       <p>Fonte: {c.fontes_tempo_real.filter((url) => fontesGovernamentais(url).length > 0).map((url) => <a key={url} href={url} target="_blank" rel="noreferrer">Defesa Civil · consultar origem </a>)}</p>
     </article>
   }
-  return <main className={estilos.pagina} id="conteudo">
+  return <div className={estilos.pagina}>
     <header><p>Enchentes do Vale · piloto municipal</p><h1>Monitor de Ascurra</h1>
       <p>Dados observados e histórico com fontes governamentais. Não é um sistema oficial de alerta.</p>
       <nav aria-label="Seções municipais">{[['local', 'Minha cidade'], ['montante', 'Água chegando'], ['historico', 'Histórico']].map(([id, titulo]) => <button key={id} onClick={() => document.getElementById(id!)?.scrollIntoView()}>{titulo}</button>)}</nav>
@@ -58,5 +58,5 @@ export default function Municipal() {
     </section>
     <footer><p>Última conferência da idade das leituras: {dataHora(agora)}. A hora da medição aparece em cada estação.</p>
       <p>Piloto dentro do site regional; ainda não é uma distribuição de código e arquivos exclusiva do município.</p><Link to="/">Voltar ao site regional</Link></footer>
-  </main>
+  </div>
 }
