@@ -27,7 +27,7 @@ régua da leitura.
 ## B. Jefferson — pendências abertas
 
 - [ ] B1 · "Sim" para redigir os ofícios de A1, A2, A3, A5, A7, A8, A9, A10.
-- [ ] B2 · Envio de C10 (Gaspar), C11 (Ilhota), C13 (Brusque), C14 (AlertaBlu, cache de 30 dias) — um "sim" por ofício, ou "manda todos".
+- [~] B2 · Envio de C10 (Gaspar), C11 (Ilhota), C13 (Brusque) — um "sim" por ofício, ou "manda todos". **C14 (AlertaBlu) ENVIADO em 10/09/2026 20:58 BRT** pelo Gmail do Jefferson.
 - [ ] B3 · Gaspar pelo celular: situação, nível, chuva atual e legenda em `defesacivil.gaspar.sc.gov.br/estacao/ver/21`.
 - [ ] B4 · Brusque pelo celular: legenda das estações 4 e 79 (`defesacivil.brusque.sc.gov.br/estacao/ver/4` e `/ver/79`).
 - [ ] B5 · VPS: `scp` da pasta `historico-dcsc` para `data/series/dcsc-zips/`, consolidador, checagem "IGUAL ao resumo do repo".
@@ -63,6 +63,7 @@ régua da leitura.
 - 10/09/2026 19:50 BRT · evento real na bacia (bloco D); B7 reescopado em B7a/B7b/B7c, B7c feito; B11 adiado; PR #272.
 - 10/09/2026 20:05 BRT · CSV horário do evento e chuva/jusante/comportas fechadas no parser (D1, D7); PR #273.
 - 10/09/2026 20:10 BRT · Blumenau amarela no site e em atenção no site oficial (D4).
+- 10/09/2026 20:58 BRT · C14 enviado à Defesa Civil de Blumenau (B2).
 - 10/09/2026 21:00 BRT · causa do 2,66 m medida: cache de 30 dias no nivel_oficial.json; C14 rascunhado (D4, B2).
 - 10/09/2026 20:55 BRT · origem do 2,66 m explicada: cópia de 25 h do nivel_oficial.json no navegador; na VPS o mesmo arquivo está vivo (D4).
 - 10/09/2026 20:45 BRT · picos passados em Rio do Sul (4,29 m, 16:57) e Blumenau (4,26 m, 15:35–19:00), ambos caindo nos portais oficiais (D3, D4); acumulador de Taió provado na VPS (B7c).

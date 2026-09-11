@@ -46,7 +46,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 À Coordenadoria Municipal de Proteção e Defesa Civil de Ilhota,
 
-Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível do rio em cada cidade e as cotas de referência de cada município, sempre com a ressalva de que não substitui a Defesa Civil.
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível do rio em cada cidade e as cotas de referência de cada município, sempre com a ressalva de que não substitui a Defesa Civil.
 
 O Plano de Contingência 2025/2028 de Ilhota (versão 016), na seção "Condições sobre o nível do Rio Itajaí", define **9,20 m** (atenção), **10,00 m** (prontidão) e **10,50 m** (emergência), e cita a estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin. Em uma notícia de 2013 a Defesa Civil de Ilhota informava que não contava com régua própria e acompanhava a medição de Gaspar.
 
@@ -56,7 +56,7 @@ Tenho uma única dúvida, e ela decide se posso ou não mostrar essas cotas ao l
 
 Pergunto porque a conta não fecha sozinha: a cota de emergência de Gaspar é 7,00 m, e se as cotas de Ilhota estivessem na régua de Gaspar, Ilhota só entraria em atenção com o rio 2,20 m acima da emergência de Gaspar. É possível, mas precisa estar escrito para não ser suposto.
 
-Se a estação da Ponte Cadorin publicar leituras em algum endereço, agradeço a indicação.
+Se a estação da Ponte Cadorin publicar leituras em algum endereço, agradeço a indicação. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro.
 
 Muito obrigado pelo trabalho de vocês.
 
@@ -71,25 +71,23 @@ Jefferson
 
 À Superintendência Municipal de Proteção e Defesa Civil de Gaspar,
 
-Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que reúne o nível do rio em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados são públicos (github.com/haohmarusc-glitch/enchentes-vale-itajai), cada informação aparece com a fonte citada, e todas as páginas deixam claro que o site **não é sistema oficial de alerta** e não substitui a Defesa Civil — em emergência, 199.
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que reúne o nível do rio em cada cidade, as cotas de referência e uma estimativa do tempo de chegada da cheia. O código e os dados ficam no GitHub (github.com/haohmarusc-glitch/enchentes-vale-itajai), cada informação aparece com a fonte citada, e todas as páginas deixam claro que o site **não é sistema oficial de alerta** e não substitui a Defesa Civil — em emergência, 199.
 
 Escrevo porque o portal de vocês é, de longe, o material mais completo que encontrei para Gaspar: as 1.617 cotas de rua, o histórico de enchentes desde 1852 e a tabela de monitoramento não têm equivalente nos outros municípios da bacia. Justamente por usar esse material com cuidado, cheguei a três dúvidas que só vocês podem responder.
 
-> ✏️ **Antes de enviar (09/09/2026):** a régua NÃO saiu do portal — `/estacao/ver/21` está viva (1,12 m em 08/09 08:03, conferido no navegador). Reescrever a pergunta 1 como: *a estação saiu da listagem de `/monitoramento/tabela` mas continua na página própria; a tabela deixou de ser a referência? e qual é a cadência de atualização da leitura (às 21h ela era das 08:03)?* A pergunta 2 ganha um dado: em 08/09 a legenda já mostrava 5,00 m, não 6,00 — a legenda varia entre consultas?
+**1. A régua do Rio Itajaí-Açu saiu da tabela de monitoramento, mas continua na página própria.**
 
-**1. A régua do Rio Itajaí-Açu saiu da tabela de monitoramento.**
+Até 31/08/2026 a tabela em `/monitoramento/tabela` trazia a estação **"Rio Itajaí Açu Gaspar"** (naquele dia, 3,85 m às 22h59). Desde 07/09/2026 a tabela traz sete estações e nenhuma delas é o Itajaí-Açu: entraram as barragens Norte, Oeste e Sul, e a única estação de rio que restou é o Ribeirão Belchior Central. A página da estação, `/estacao/ver/21`, continua no ar e publicando (1,12 m em 08/09 às 08:03; 1,74 m em 10/09 às 05:53; 2,58 m em 10/09 às 19:07).
 
-Até 31/08/2026 a tabela em `/monitoramento/tabela` trazia a estação **"Rio Itajaí Açu Gaspar"** (naquele dia, 3,85 m às 22h59). Consultando em 07/09/2026, a tabela passou a trazer sete estações e nenhuma delas é o Itajaí-Açu: entraram as barragens Norte, Oeste e Sul, e a única estação de rio que restou é o Ribeirão Belchior Central.
-
-Gostaria de saber se **a régua do Açu continua ativa** — e, se sim, em que endereço, já que a página da estação que eu acompanhava era `/estacao/ver/21`. Pergunto porque essa é a **única fonte de nível do Itajaí-Açu em Gaspar** que existe: a rede estadual (DCSC-00005) informa não medir nível de rio no município, e a estação da ANA em Gaspar (83840000) encerrou a escala em dezembro de 2021 sem substituta. Sem ela, meu site simplesmente não consegue dizer a que nível o rio está em Gaspar, e mostra o município sem leitura — o que é o correto, mas é uma lacuna grande justamente na cidade para a qual eu tenho mais cotas de rua levantadas.
+Gostaria de saber duas coisas: **a tabela deixou de ser a referência para o Açu, e a página da estação é o endereço a acompanhar?** E **qual é a cadência de atualização da leitura** — em 08/09, às 21h, a leitura mais recente era das 08:03, treze horas antes. Pergunto porque essa é a **única fonte de nível do Itajaí-Açu em Gaspar** que existe: a rede estadual (DCSC-00005) informa não medir nível de rio no município, e a estação da ANA em Gaspar (83840000) encerrou a escala em dezembro de 2021 sem substituta.
 
 Aproveito para registrar uma observação técnica que pode ser útil: a série de 12 horas do Ribeirão Belchior Central publica **0,00 em todos os pontos** (consulta de 07/09/2026, das 03h28 às 15h18). Como 0,00 é um número válido, um sistema que leia essa página pode interpretá-lo como "ribeirão seco" em vez de "sem leitura".
 
-**2. Duas cotas de atenção diferentes, nas duas publicações de vocês.**
+**2. Cotas de atenção diferentes, nas publicações de vocês e entre consultas.**
 
-O Plano de Contingência (item 4.2.3, fluxograma "MONITORAMENTO RIO ITAJAÍ AÇU", p. 25) trabalha com **atenção a partir de 5,00 m**. A legenda da estação 21, no próprio portal, indica **normalidade abaixo de 6,00 m** e atenção acima disso.
+O Plano de Contingência (item 4.2.3, fluxograma "MONITORAMENTO RIO ITAJAÍ AÇU", p. 25) trabalha com **atenção a partir de 5,00 m**. A legenda da estação 21, no próprio portal, mostrou **6,00 m** em 03/09/2026 e **5,00 m** em 08/09/2026 (atenção acima de 5,00 m ou chuva acima de 6,00 mm; emergência acima de 7,00 m). E em 10/09/2026, às 05:53, com o rio em **1,74 m**, a página informava "situação de **ALERTA**" — uma faixa que não aparece na legenda.
 
-Adotei os 5,00 m, por ser o que avisa mais cedo, e deixei os 6,00 m registrados ao lado como divergência. Mas gostaria de confirmar **qual dos dois é o vigente**, porque a diferença é operacional: a primeira rua do cadastro de vocês alaga a 6,20 m, então a atenção a 5,00 m dá 1,20 m de margem e a 6,00 m dá 20 cm.
+Adotei os 5,00 m, por ser o que avisa mais cedo, e deixei os 6,00 m registrados ao lado como divergência. Gostaria de confirmar **qual é o gatilho vigente** e **o que significa "ALERTA" a 1,74 m** (o gatilho de chuva?), porque a diferença é operacional: a primeira rua do cadastro de vocês alaga a 6,20 m, então a atenção a 5,00 m dá 1,20 m de margem e a 6,00 m dá 20 cm.
 
 **3. A referência de nível do histórico de enchentes.**
 
@@ -125,7 +123,7 @@ Registro também, no mesmo espírito, que o registro de 20/11/1855 traz data de 
 
 Sei que são muitas perguntas de uma vez, e nenhuma delas é urgente. Se for mais prático responder só a primeira — se a régua do Açu voltou ou onde encontrá-la —, já ajuda muito. Se houver um endereço direto (um arquivo ou serviço) de onde eu possa ler o nível sem consultar a página, também agradeço a indicação: eu identifico todas as consultas com o nome do projeto e respeito qualquer limite que vocês indicarem.
 
-Todo dado de vocês que o site usa aparece com crédito à Defesa Civil de Gaspar.
+Todo dado de vocês que o site usa aparece com crédito à Defesa Civil de Gaspar. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro.
 
 Fico à disposição e agradeço a atenção.
 Atenciosamente,
@@ -148,11 +146,11 @@ Prezada Equipe de Hidrologia,
 
 Mais uma vez obrigado pela resposta de 09/09 e pela tabela de estações.
 
-Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí. Solicito os Avisos Hidrológicos nº 01, 02 e 03 do evento extremo de novembro de 2023 — em especial o de 19/11/2023, que no padrão de arquivos do portal seria `aviso_n03_19112023<id>.pdf` —, pelas leituras de Rio do Sul e Taió com horário e taxa de variação em cm/h.
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes no Vale do Itajaí. Solicito os Avisos Hidrológicos nº 01, 02 e 03 do evento extremo de novembro de 2023 — em especial o de 19/11/2023, que no padrão de arquivos do portal seria `aviso_n03_19112023<id>.pdf` —, pelas leituras de Rio do Sul e Taió com horário e taxa de variação em cm/h.
 
 Não os localizei no portal, que publica apenas os boletins mais recentes, nem no Internet Archive, cujo acervo do diretório se encerra em 2022. Aproveito para perguntar se há acesso programático ao acervo de boletins e avisos, ou listagem por período, o que evitaria novos pedidos como este.
 
-Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e-mail até a remoção das estações, peço também a inclusão do endereço haohmarusc@gmail.com nessa lista, enquanto ela existir.
+Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e-mail até a remoção das estações, peço também a inclusão do endereço haohmarusc@gmail.com nessa lista, enquanto ela existir. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro.
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
@@ -174,7 +172,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 Prezada Coordenadoria Municipal de Proteção e Defesa Civil de Brusque,
 
-Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí, que usa as cotas de rua publicadas pela Defesa Civil de Brusque e a leitura ao vivo da estação "Ponte Estaiada – DCSC" (DCSC-00019, rede estadual). Ao comparar as duas fontes encontrei uma diferença que não consigo resolver sozinho, e por isso peço três esclarecimentos:
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes no Vale do Itajaí, que usa as cotas de rua publicadas pela Defesa Civil de Brusque e a leitura ao vivo da estação "Ponte Estaiada – DCSC" (DCSC-00019, rede estadual). Ao comparar as duas fontes encontrei uma diferença que não consigo resolver sozinho, e por isso peço três esclarecimentos:
 
 1. **Em qual régua foi lido o pico de 8,96 m de 17/11/2023** que consta na revisão das cotas de rua de 2024? A série da estação DCSC-00019 registra máximo de 8,63 m às 21:30 daquele dia, e diferenças parecidas (cerca de 0,30 m) aparecem nas cheias de 05/10/2023 (6,50 m na estação; 6,85 m divulgado) e 13/10/2023 (6,63 m; 6,91 m). A leitura de 8,96 m foi (a) na própria estação DCSC-00019, (b) em régua manual da Ponte Estaiada, ou (c) em outra estação?
 
@@ -182,13 +180,13 @@ Mantenho um site público e sem fins comerciais com dados históricos de enchent
 
 3. **Qual das duas legendas vale para a Ponte Estaiada hoje?** O portal mostra a estação 4 "Ponte Estaiada – ANA" com normalidade abaixo de 4,00 m, atenção acima de 4,00 m ou chuva acima de 30 mm e emergência acima de 7,00 m; e a estação 79 "Ponte Estaiada – DCSC" com atenção em 3,00 m e emergência em 5,00 m. As duas estações medem a mesma régua? Qual legenda é a de acionamento vigente?
 
-Os dados que uso ficam públicos, com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. Se for mais prático, um contato telefônico resolve em poucos minutos.
+Os dados que uso serão publicados com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro. Se for mais prático, um contato telefônico resolve em poucos minutos.
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 
-## C14 — Defesa Civil de Blumenau / AlertaBlu: cache de 30 dias no `nivel_oficial.json` (RASCUNHO, aguarda "sim")
+## C14 — Defesa Civil de Blumenau / AlertaBlu: cache de 30 dias no `nivel_oficial.json` ✅ ENVIADO em 10/09/2026 20:58 BRT (Gmail, id 1a08dc0ec504818b)
 
 > Por que: medido em 10/09/2026 (23:45Z, VPS): `static/data/nivel_oficial.json` é servido com
 > `Cache-Control: max-age=2592000` e `Expires` um mês à frente, enquanto o `Last-Modified` muda a
@@ -203,7 +201,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 Prezada Diretoria de Proteção e Defesa Civil de Blumenau,
 
-Mantenho um site público e sem fins comerciais com dados históricos de enchentes no Vale do Itajaí, que lê o nível do Itajaí-Açu no AlertaBlu. Escrevo para relatar um detalhe técnico observado na cheia de 10/09/2026, que pode afetar quem consome os dados de vocês.
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes no Vale do Itajaí, que lê o nível do Itajaí-Açu no AlertaBlu. Escrevo para relatar um detalhe técnico observado na cheia de 10/09/2026, que pode afetar quem consome os dados de vocês.
 
 O arquivo `https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json` é atualizado a cada hora (`Last-Modified` de 10/09/2026 23:41 UTC, último ponto 23:00 UTC), mas é entregue com os cabeçalhos `Cache-Control: max-age=2592000` e `Expires` trinta dias à frente. Com isso, navegadores e sistemas que respeitam o cache guardam a cópia por até um mês: em 10/09, com o rio em 4,26 m, um navegador comum recebia a série terminando em 09/09 às 21:00 UTC, com 2,66 m. Um `Cache-Control: no-cache` ou `max-age` de poucos minutos nesse arquivo resolveria.
 
