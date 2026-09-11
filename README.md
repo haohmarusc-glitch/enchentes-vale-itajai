@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [~] **Ascurra — C18 respondido em 11/09/2026:** Ponte do Beber/DCSC-00003 e faixas municipais 8,50 / 9,76 / acima de 10,76 m cadastradas, com explicação na página da cidade. A régua não oficial do Ribeirão São Paulo fica separada. Falta integrar a leitura estadual ao fluxo operacional e respeitar os limites das faixas antes de ativar cores. [Resposta técnica](docs/resposta-ascurra-c18-2026-09-11.md).
+
 - [ ] **Comparação de cheias no Monitor:** controle de camadas integrado ao mapa, com consulta histórica de Itajaí e cotas manuais de Ituporanga. A seleção por nível exige pico e régua documentados; os dados atuais ainda não permitem ativá-la. Faltam os acumulados completos de sete dias e a detecção de subida para o aviso durante uma cheia. Detalhes em [comparacao-cheias-monitor.md](docs/comparacao-cheias-monitor.md).
 
 - [x] Monitor: atalho direto às camadas de Ituporanga, com foco na seção de mapa; painéis de cidades cinzas explicam falta de faixas, ausência de horário, leitura antiga ou carimbo futuro.

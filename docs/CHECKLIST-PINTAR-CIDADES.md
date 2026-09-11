@@ -15,7 +15,7 @@ régua da leitura.
 | A2 | Lontras | 52,4 | faixas amarradas à DCSC-00032, ou o zero dela | COMPDEC Lontras | [ ] **C16 enviado** em 10/09/2026; aguarda resposta |
 | A3 | Botuverá | 46,9 | faixas + régua nomeada (pistas de 09/09 não bastam) | COMPDEC Botuverá | [ ] **C17 enviado** em 10/09/2026; aguarda resposta |
 | A4 | Ilhota | 36,4 | em que régua estão 9,20 / 10,00 / 10,50 e o zero | COMPDEC Ilhota | [ ] **C11 enviado** em 10/09/2026; aguarda resposta |
-| A5 | Ascurra | 18,2 | faixas + régua nomeada (DCSC-00003 lê) | COMPDEC Ascurra | [ ] **C18 enviado** em 10/09/2026; aguarda resposta |
+| A5 | Ascurra | 18,2 | integrar leitura DCSC-00003 ao fluxo operacional e testar limites das faixas | implementação | [~] **C18 respondido** em 11/09/2026; faixas e Ponte do Beber cadastradas. [Evidência](resposta-ascurra-c18-2026-09-11.md). Cor ainda pendente |
 | A6 | Gaspar | 16,9 | regularizar cadência (portal acessível no PC, nível ainda de 19:07 às 22:11); esclarecer legenda e o "ALERTA a 1,74 m" de 10/09 | Jefferson (celular/PC) + C10 | [ ] **C10 enviado** em 10/09/2026; aguarda resposta |
 | A7 | Indaial | 16,0 | UM número: deslocamento régua COMPDEC (RN 1402-X) ↔ DCSC-00006 | COMPDEC Indaial | [ ] **C19 enviado** em 10/09/2026; aguarda resposta |
 | A8 | Guabiruba | 4,8 | faixas e curso d'água da régua (ribeirão, não o Mirim) | COMPDEC Guabiruba | [ ] **C20 aprovado**, envio pendente de destinatário confirmado |

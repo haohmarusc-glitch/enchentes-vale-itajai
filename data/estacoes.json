@@ -336,18 +336,28 @@
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00003",
-          "verificado": false,
-          "observacao": "No tronco do Açu, entre Rio do Sul e Indaial — Overpass 02/09/2026: 'Rio Itajaí-Açu' a menos de 1 km da estação. Entrou no eixo em 02/09/2026 (substitui Apiúna, que é estação de altitude, não régua de rio). Sem cota de referência levantada e sem nível ao vivo próprio por enquanto.",
-          "cotas_m": {},
+          "verificado": true,
+          "observacao": "Estação DCSC-00003 na Ponte do Beber sobre o Itajaí-Açu, identificada pela Defesa Civil municipal em resposta ao C18 de 11/09/2026. Coordenadas informadas: 26°57'40.7\"S 49°22'22.8\"W. Faixas municipais estabelecidas com base em elevações anteriores; não são faixas definidas pelo estado.",
+          "cotas_m": {
+            "atencao": 8.5,
+            "alerta": 9.76,
+            "emergencia": 10.76
+          },
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "coordenadas": [
-            -26.9613,
-            -49.3729
+            -26.9613056,
+            -49.373
           ],
-          "cotas_ressalva": "NÃO ASSOCIAR AS COTAS DOS BOLETINS AO ITAJAÍ-AÇU (registrado em 06/09/2026, da pesquisa do Jefferson). As cotas de Ascurra que aparecem em boletins municipais — e as quatro cotas de locais afetados do boletim de 04/05/2022 — têm por referência a régua da TRAVESSA ZONTA, no RIBEIRÃO SÃO PAULO, que é outro curso d'água. Ascurra está cadastrada aqui no tronco do Açu, e a leitura ao vivo que a tela mostra (bruto da rede estadual) é do Açu. Casar as duas seria aplicar a cota de uma régua à leitura de outra — a regra nº 1 do projeto. Por isso `cotas_m` segue VAZIO: sem cota é honesto, com cota errada não é. Para preencher, é preciso ou uma cota da COMPDEC referida ao Açu, ou o deslocamento provado entre a Travessa Zonta e a régua do Açu em Ascurra.",
-          "cotas_aviso_publico_nao_precisa": "Não precisa chegar à tela: a ressalva é instrução de CADASTRO — não importar para o Açu cotas que são da régua da Travessa Zonta, no Ribeirão São Paulo. Ascurra não tem cota nenhuma aqui, e a tela já diz isso com todas as letras; um aviso extra sobre um número que ela não mostra só ocuparia espaço."
+          "cotas_ressalva": "A resposta descreve: até 8,50 m monitoramento; 8,50 a 9,76 m atenção; 9,76 a 10,76 m alerta; acima de 10,76 m emergência. Os extremos compartilhados não foram explicitados para atenção/alerta. Não transferir cotas da Travessa Zonta/Ribeirão São Paulo para o Itajaí-Açu. A régua física do ribeirão não foi nivelada, não é oficial e deixou de ser usada para divulgação após a instalação da DCSC-00003.",
+          "regua": "Ponte do Beber — Itajaí-Açu (DCSC-00003)",
+          "referencia": "régua",
+          "cotas_verificado": true,
+          "fonte_cotas": "Defesa Civil de Ascurra, resposta ao ofício C18 em 11/09/2026, 08:48 BRT. Síntese: docs/resposta-ascurra-c18-2026-09-11.md.",
+          "regua_das_cotas": "DCSC-00003 — Ponte do Beber, rio Itajaí-Açu",
+          "regua_das_cotas_fonte": "Resposta da COMPDEC de Ascurra ao C18 em 11/09/2026: identifica a DCSC-00003 na Ponte do Beber e informa as faixas municipais. Não foi informado deslocamento; não aplicar conversões.",
+          "cotas_aviso_publico": "Faixas informadas pela Defesa Civil de Ascurra em 11/09/2026 para a estação da Ponte do Beber: até 8,50 m monitoramento; de 8,50 a 9,76 m atenção; de 9,76 a 10,76 m alerta; acima de 10,76 m emergência. A régua do Ribeirão São Paulo é outra referência, não oficial. A leitura estadual ainda aparece separada, sem acionar cores automaticamente."
         },
         {
           "id": "indaial",

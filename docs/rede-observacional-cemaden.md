@@ -5,6 +5,11 @@ fornecido pelo responsável pelo projeto. O JSON guarda o SHA-256 do arquivo e a
 linha original de cada registro. Não há data de referência do status na planilha;
 a data de modificação do arquivo não comprova a data de atualização das estações.
 
+Procedência conferida no Gmail em 11/09/2026: o aviso do Informa.BR recebido em
+10/09/2026 às 14:34 BRT, protocolo 01217.006547/2026-93, contém anexo com esse
+mesmo nome (39.647 bytes). O cadastro já estava importado; esta conferência não
+altera os status nem acrescenta medições.
+
 São 415 códigos únicos: 397 pluviométricas (245 operacionais e 152 inativas) e
 18 hidrológicas (6 operacionais e 12 inativas), conforme o cadastro.
 As 13 linhas vazias finais não são estações. O recorte é SC inteira, não a bacia.

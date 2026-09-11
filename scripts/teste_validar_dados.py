@@ -1600,6 +1600,8 @@ class RessalvaDasCotasChegaNaTela(unittest.TestCase):
         d = copy.deepcopy(self.real)
         c = _cidade(d, "itajai-acu", "ascurra")
         c.pop("cotas_ressalva")
+        c.pop("cotas_aviso_publico", None)
+        c["cotas_aviso_publico_nao_precisa"] = "Dispensa de teste que ficou sem ressalva."
         _, avisos = self.roda(d)
         self.assertTrue(any("ascurra" in a and "dispensar" in a for a in avisos))
 
