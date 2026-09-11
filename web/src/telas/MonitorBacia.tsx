@@ -1,3 +1,4 @@
+import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCor } from '../logica/motivoSemCor'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -318,7 +319,7 @@ function centroAtual(cena: Cena, v: Vista): [number, number] {
  * Cidade sem coordenada no cadastro abre na bacia inteira, como sempre. Não se
  * inventa posição, e não se deixa a tela em branco.
  */
-export default function MonitorBacia() {
+export default function MonitorBacia({ municipal = false }: { municipal?: boolean }) {
   const camadaHistorica = useRef<CamadaDesenhada>(null)
   const [rotuloCamada, setRotuloCamada] = useState<string | null>(null)
   const receberCamada = useCallback((camada: CamadaDesenhada) => {
@@ -326,7 +327,8 @@ export default function MonitorBacia() {
     setRotuloCamada(camada?.rotulo ?? null)
   }, [])
   const navigate = useNavigate()
-  const { cidadeId: cidadeFoco } = useParams()
+  const { cidadeId } = useParams()
+  const cidadeFoco = municipal ? 'ascurra' : cidadeId
   const divRef = useRef<HTMLDivElement | null>(null)
   /**
    * As réguas com coordenada própria, como pontos no mapa.
@@ -400,6 +402,7 @@ export default function MonitorBacia() {
    */
   const tilesRef = useRef<Map<string, HTMLImageElement | 'erro'>>(new Map())
   const [fundo, setFundo] = useState<ChaveFundo>(() => {
+    if (municipal) return 'satelite'
     // `localStorage` pode estourar (janela anônima, site data bloqueado): a tela
     // tem de abrir igual, no escuro, que é o padrão por função.
     try {
@@ -437,7 +440,10 @@ export default function MonitorBacia() {
   const nivelSc = useNivelSc()
   const mapaBarragens = useBarragens()
   const serie = useSerieRecente()
-  const agora = useMemo(() => new Date(), [tempoReal])
+  const [agora, setAgora] = useState(() => new Date())
+  useEffect(() => { const id = setInterval(() => setAgora(new Date()), 60_000); return () => clearInterval(id) }, [])
+  const leituraMunicipal = nivelSc.get('ascurra')
+  const faixaMunicipal = faixaAscurra(leituraMunicipal, agora)
 
   // O anel destaca a cidade em FOCO: a selecionada (clique) ou a sob o mouse.
   useEffect(() => {
@@ -447,8 +453,8 @@ export default function MonitorBacia() {
 
   // Todas as cidades da bacia, para casar a chuva com a coordenada.
   const cidadesBacia = useMemo(
-    () => RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)),
-    [],
+    () => RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)).filter((c) => !municipal || c.id === 'ascurra'),
+    [municipal],
   )
 
   /**
@@ -476,7 +482,7 @@ export default function MonitorBacia() {
     [tempoReal, agora],
   )
   const reguasRef = useRef(reguasDoMapa)
-  reguasRef.current = reguasDoMapa
+  reguasRef.current = municipal ? [] : reguasDoMapa
 
   /**
    * As barragens como marcadores, comporta a comporta. O Monitor é a bacia
@@ -489,7 +495,7 @@ export default function MonitorBacia() {
     [mapaBarragens, agora],
   )
   const barragensRef = useRef(barragensDoMapa)
-  barragensRef.current = barragensDoMapa
+  barragensRef.current = municipal ? [] : barragensDoMapa
   const reguaSelRef = useRef<string | null>(null)
 
   // Grade de instantes da REPRODUÇÃO (últimas ~24 h, passo de 30 min), a partir
@@ -605,6 +611,13 @@ export default function MonitorBacia() {
     const cena = construirCena(
       canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
     )
+    if (municipal) {
+      cena.pinos = cena.pinos.filter((p) => p.cidade.id === 'ascurra')
+      cena.mar = null
+      // Conserva a divisão geográfica regional; nunca estende a régua local
+      // por todo o rio ao remover as outras cidades.
+      cena.trechos = cena.trechos.map((t) => ({ ...t, faixa: 'sem-dado', cidadeId: null }))
+    }
     cenaRef.current = cena
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
     // num instante que não medimos).
@@ -657,7 +670,14 @@ export default function MonitorBacia() {
     redesenharFundo()
 
     for (const url of pedacos.flatMap(urls)) {
-      if (cache.has(url)) continue
+      const existente = cache.get(url)
+      if (existente === 'erro') continue
+      // O zoom inicial pode mudar enquanto o tile ainda carrega. O callback
+      // deve redesenhar a cena atual, não a cena anterior já desmontada.
+      if (existente) {
+        existente.onload = () => { if (vivo) redesenharFundo() }
+        continue
+      }
       const im = new Image()
       // Sem `crossOrigin`: nada aqui lê pixel de volta (não há getImageData nem
       // toDataURL), então "sujar" o canvas não custa nada — e exigir CORS só
@@ -775,7 +795,7 @@ export default function MonitorBacia() {
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada])
+  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -827,7 +847,7 @@ export default function MonitorBacia() {
     enquadrou.current = true
     if (!v) return
     setVista(v)
-    if (pino) setSel(pino)
+    if (pino && !municipal) setSel(pino)
   }, [cidadeFoco, tam, rios, tempoReal])
 
   /**
@@ -1055,8 +1075,8 @@ export default function MonitorBacia() {
   const rotaDoRio = (rioId: string) => (rioId === 'itajai-mirim' ? '/mirim' : '/acu')
 
   return (
-    <div className={estilos.pagina}>
-      <div ref={divRef} className={`${estilos.palco} ${!reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
+    <div className={`${estilos.pagina} ${municipal ? estilos.paginaMunicipal : ''}`}>
+      <div ref={divRef} className={`${estilos.palco} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
         <canvas
           ref={canvasRef}
           className={estilos.tela}
@@ -1070,7 +1090,7 @@ export default function MonitorBacia() {
           // do mapa: o gesto é do mapa, e a lupa do navegador borraria o rio.
           style={{ width: '100%', height: '100%', touchAction: 'none' }}
           role="img"
-          aria-label="Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"
+          aria-label={municipal ? "Monitor de Ascurra: mapa, régua e camadas de cheia" : "Monitoramento da bacia do Itajaí: Açu e Mirim, cada trecho na cor da faixa da cidade a montante, com correnteza, chuva e maré na foz"}
         />
 
 
@@ -1095,8 +1115,8 @@ export default function MonitorBacia() {
             direito para não colidir com o chip. */}
         <div className={estilos.cantoEsquerdo}>
         <div className={estilos.topo} data-tapa-mapa>
-          <strong>Monitoramento da bacia</strong>
-          <button
+          <strong>{municipal ? "Monitor de Ascurra" : "Monitoramento da bacia"}</strong>
+          {!municipal && <button
             type="button"
             className={estilos.botaoMenu}
             aria-expanded={menuAberto}
@@ -1104,15 +1124,23 @@ export default function MonitorBacia() {
             onClick={() => setMenuAberto((v) => !v)}
           >
             {menuAberto ? 'Fechar' : 'Cidades ▾'}
-          </button>
+          </button>}
           <span className={estilos.aviso}>
-            Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.
+            {municipal ? "Dados observados · não é alerta oficial." : <>Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.</>}
           </span>
           <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
             Tela cheia
           </button>
         </div>
 
+        {municipal && <div className={estilos.resumoMunicipal} data-tapa-mapa>
+          <strong>{leituraMunicipal ? metros(leituraMunicipal.nivelBrutoM) : 'Sem leitura'} · {faixaMunicipal.nome}</strong>
+          <span>{leituraMunicipal?.medidoEm ? dataHora(leituraMunicipal.medidoEm) + ' · ' + textoIdade(idadeMin(leituraMunicipal.medidoEm, agora)) : 'Horário indisponível'}</span>
+          <span>Chuva: {leituraMunicipal?.chuva24hMm?.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) ?? '—'} mm / 24 h · {leituraMunicipal?.chuva168hMm?.toLocaleString('pt-BR', { maximumFractionDigits: 1 }) ?? '—'} mm / 7 dias</span>
+          <a href="https://monitoramento.defesacivil.sc.gov.br/estacao/DCSC-00003" target="_blank" rel="noreferrer">Fonte: DCSC-00003 · Ponte do Beber</a>
+          <span>Faixa calculada conforme C18; não representa área alagada.</span>
+          <button type="button" onClick={() => navigate('/municipal/ascurra/dados')}>Dados e histórico</button>
+        </div>}
         {rotuloCamada && <p className={estilos.rotuloCamada} data-tapa-mapa>
           {rotuloCamada} · referência, não alagamento atual
         </p>}
@@ -1120,14 +1148,14 @@ export default function MonitorBacia() {
           <summary>Camadas de cheia</summary>
           <CamadasMonitor key={cidadeFoco ?? sel?.cidade.id ?? 'itajai'} cidade={cidadeFoco ?? sel?.cidade.id ?? 'itajai'}
             leituras={tempoReal.leituras} agora={agora} reproduzindo={idxRepro !== null}
-            onCamada={receberCamada} />
+            onCamada={receberCamada} somenteDados={municipal} />
         </details>
 
         {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
             Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
             → Rio do Sul" afirmaria uma sequência que não existe. Toque numa
             cidade abre o monitor DELA (o mesmo mapa, enquadrado nela). */}
-        {menuAberto ? (
+        {!municipal && menuAberto ? (
           <nav
             id="menu-cidades"
             className={estilos.menuCidades}
@@ -1199,7 +1227,7 @@ export default function MonitorBacia() {
           >
             −
           </button>
-          {vista.zoom > 1 ? (
+          {!municipal && vista.zoom > 1 ? (
             <button
               type="button"
               className={estilos.botaoVerTudo}
@@ -1426,7 +1454,7 @@ export default function MonitorBacia() {
 
         {/* Painel de dados da cidade em foco (mouse por cima ou toque), no canto
             superior direito, abaixo do chip da maré. Traz tudo o que temos dela. */}
-        {!reguaSel && (sel ?? hover) ? (() => {
+        {!municipal && !reguaSel && (sel ?? hover) ? (() => {
           const foco = (sel ?? hover)!
           const cid = foco.cidade
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})
@@ -1714,7 +1742,7 @@ export default function MonitorBacia() {
 
       {/* A árvore da bacia, embaixo do mapa: quem vê os pinos precisa saber
           QUEM ESTÁ ACIMA DE QUEM, e que a barragem não é o rio da cidade. */}
-      <ArvoreDaBacia />
+      {!municipal && <ArvoreDaBacia />}
 
       {/* Acesso por teclado/leitor: as cidades viram botões fora da vista. */}
       <ul className={estilos.foraDaVista}>

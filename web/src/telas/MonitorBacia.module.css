@@ -730,3 +730,12 @@
 .camadasControle h2 { font-size: 1rem; }
 .camadasControle p { font-size: 0.85rem; line-height: 1.4; }
 .rotuloCamada { background: #e6f3ff; color: #143d60; border-radius: 6px; padding: 8px; max-width: 360px; font-size: 0.85rem; }
+
+.municipal { height: 100dvh; min-height: 28rem; border-radius: 0; }
+.resumoMunicipal { pointer-events: auto; display: grid; gap: .3rem; padding: .6rem; border-radius: .5rem; background: rgba(6,16,26,.88); color: #eaf1f8; max-width: min(24rem, 100%); font-size: .8rem; }
+.resumoMunicipal strong { font-size: 1.1rem; }
+.resumoMunicipal a { color: #9edcff; }
+.resumoMunicipal button { justify-self: start; min-height: 2.5rem; }
+.municipal .cantoEsquerdo { max-height: 70%; overflow: auto; }
+
+.paginaMunicipal { width: 100%; left: 0; margin-left: 0; }
