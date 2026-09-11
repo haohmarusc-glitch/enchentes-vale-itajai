@@ -1,0 +1,72 @@
+{
+  "fonte": "https://www.google.com/maps/d/viewer?mid=19tpP2Tfsl58ue6GtY5ihBfK3MLkiUrA",
+  "sha256_kml": "38c4501c9c08242a00c772b9fab745eaa02bf254ba27c22d9625ec591ae9ba05",
+  "referencia_regua": null,
+  "comparar_com_tempo_real": false,
+  "camadas": [
+    {
+      "nivel_m": 3.0,
+      "nome": "COTA - 3,00",
+      "arquivo": "cota-3.00.geojson",
+      "poligonos": 7375,
+      "poligonos_apos_uniao": 207,
+      "linhas_nao_preenchidas": 96
+    },
+    {
+      "nivel_m": 3.5,
+      "nome": "COTA 3,50",
+      "arquivo": "cota-3.50.geojson",
+      "poligonos": 8317,
+      "poligonos_apos_uniao": 268,
+      "linhas_nao_preenchidas": 169
+    },
+    {
+      "nivel_m": 4.0,
+      "nome": "COTA - 4,00",
+      "arquivo": "cota-4.00.geojson",
+      "poligonos": 8449,
+      "poligonos_apos_uniao": 204,
+      "linhas_nao_preenchidas": 126
+    },
+    {
+      "nivel_m": 4.5,
+      "nome": "COTA - 4,50",
+      "arquivo": "cota-4.50.geojson",
+      "poligonos": 9238,
+      "poligonos_apos_uniao": 263,
+      "linhas_nao_preenchidas": 155
+    },
+    {
+      "nivel_m": 5.0,
+      "nome": "COTA - 5,00",
+      "arquivo": "cota-5.00.geojson",
+      "poligonos": 9688,
+      "poligonos_apos_uniao": 276,
+      "linhas_nao_preenchidas": 172
+    },
+    {
+      "nivel_m": 5.5,
+      "nome": "COTA - 5,50",
+      "arquivo": "cota-5.50.geojson",
+      "poligonos": 11190,
+      "poligonos_apos_uniao": 378,
+      "linhas_nao_preenchidas": 239
+    },
+    {
+      "nivel_m": 6.0,
+      "nome": "COTA - 6,00",
+      "arquivo": "cota-6.00.geojson",
+      "poligonos": 11811,
+      "poligonos_apos_uniao": 321,
+      "linhas_nao_preenchidas": 160
+    },
+    {
+      "nivel_m": 6.5,
+      "nome": "COTA - 6,50",
+      "arquivo": "cota-6.50.geojson",
+      "poligonos": 12479,
+      "poligonos_apos_uniao": 377,
+      "linhas_nao_preenchidas": 236
+    }
+  ]
+}

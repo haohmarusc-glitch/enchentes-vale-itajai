@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Instalar dependências dos scripts
-        run: python3 -m pip install beautifulsoup4 requests ruff
+        run: python3 -m pip install beautifulsoup4 requests ruff -r scripts/requirements-mapas.txt
 
       # Emprestado do repo Premercado, com a config junto. O conjunto é
       # estreito de propósito: só o que pega código que não faz o que parece

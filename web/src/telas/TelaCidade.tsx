@@ -28,6 +28,7 @@ import { reguasComCota } from '../logica/reguas'
 import { caminho, faixaHoras } from '../logica/transito'
 import estilos from './TelaCidade.module.css'
 
+const MapaCotasItuporanga = lazy(() => import('../componentes/MapaCotasItuporanga'))
 const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
 const LinhaDoTempo = lazy(() => import('../componentes/LinhaDoTempo'))
@@ -369,6 +370,12 @@ export default function TelaCidade() {
           agora={agora}
         />
       ) : null}
+
+      {cidade.id === 'ituporanga' && (
+        <Suspense fallback={<p>Carregando o mapa de áreas por nível…</p>}>
+          <MapaCotasItuporanga />
+        </Suspense>
+      )}
 
       <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
         <CotasDeRua cidade={cidade} leitura={leitura} agora={agora} />
