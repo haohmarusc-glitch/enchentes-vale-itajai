@@ -11,25 +11,25 @@ régua da leitura.
 
 | # | cidade | km cinza | o que falta | de quem | estado |
 |---|---|---:|---|---|---|
-| A1 | Vidal Ramos | 84,2 | faixas da régua Asthon = DCSC-00024 | COMPDEC Vidal Ramos | [ ] **C15 redigido**, destinatário a confirmar; aguarda envio |
-| A2 | Lontras | 52,4 | faixas amarradas à DCSC-00032, ou o zero dela | COMPDEC Lontras | [ ] **C16 redigido**, destinatário a confirmar; aguarda envio |
-| A3 | Botuverá | 46,9 | faixas + régua nomeada (pistas de 09/09 não bastam) | COMPDEC Botuverá | [ ] **C17 redigido**, destinatário a confirmar; aguarda envio |
+| A1 | Vidal Ramos | 84,2 | faixas da régua Asthon = DCSC-00024 | COMPDEC Vidal Ramos | [ ] **C15 enviado** em 10/09/2026; aguarda resposta |
+| A2 | Lontras | 52,4 | faixas amarradas à DCSC-00032, ou o zero dela | COMPDEC Lontras | [ ] **C16 enviado** em 10/09/2026; aguarda resposta |
+| A3 | Botuverá | 46,9 | faixas + régua nomeada (pistas de 09/09 não bastam) | COMPDEC Botuverá | [ ] **C17 enviado** em 10/09/2026; aguarda resposta |
 | A4 | Ilhota | 36,4 | em que régua estão 9,20 / 10,00 / 10,50 e o zero | COMPDEC Ilhota | [ ] **C11 enviado** em 10/09/2026; aguarda resposta |
-| A5 | Ascurra | 18,2 | faixas + régua nomeada (DCSC-00003 lê) | COMPDEC Ascurra | [ ] **C18 redigido**, destinatário a confirmar; aguarda envio |
-| A6 | Gaspar | 16,9 | leitura de IP brasileiro + cadência; e o "ALERTA a 1,74 m" de 10/09 | Jefferson (celular/PC) + C10 | [ ] **C10 enviado** em 10/09/2026; aguarda resposta |
-| A7 | Indaial | 16,0 | UM número: deslocamento régua COMPDEC (RN 1402-X) ↔ DCSC-00006 | COMPDEC Indaial | [ ] **C19 redigido**, destinatário a confirmar; aguarda envio |
-| A8 | Guabiruba | 4,8 | faixas e curso d'água da régua (ribeirão, não o Mirim) | COMPDEC Guabiruba | [ ] **C20 redigido**, destinatário a confirmar; aguarda envio |
-| A9 | Itajaí | pinos | faixas das réguas DC-01 a DC-11 | Defesa Civil de Itajaí | [ ] **C21 redigido**, destinatário a confirmar; aguarda envio |
-| A10 | Ituporanga | pino | leitura da 83250000, ou faixas da Ponte Vitório Sens amarradas à DCSC-00039 | Defesa Civil de Ituporanga / EPAGRI | [ ] **C22 redigido**, destinatário a confirmar; aguarda envio |
+| A5 | Ascurra | 18,2 | faixas + régua nomeada (DCSC-00003 lê) | COMPDEC Ascurra | [ ] **C18 enviado** em 10/09/2026; aguarda resposta |
+| A6 | Gaspar | 16,9 | regularizar cadência (portal acessível no PC, nível ainda de 19:07 às 22:11); esclarecer legenda e o "ALERTA a 1,74 m" de 10/09 | Jefferson (celular/PC) + C10 | [ ] **C10 enviado** em 10/09/2026; aguarda resposta |
+| A7 | Indaial | 16,0 | UM número: deslocamento régua COMPDEC (RN 1402-X) ↔ DCSC-00006 | COMPDEC Indaial | [ ] **C19 enviado** em 10/09/2026; aguarda resposta |
+| A8 | Guabiruba | 4,8 | faixas e curso d'água da régua (ribeirão, não o Mirim) | COMPDEC Guabiruba | [ ] **C20 aprovado**, envio pendente de destinatário confirmado |
+| A9 | Itajaí | pinos | critério de classificação sob influência da maré para DC-01 a DC-09; DC-10/DC-11 já têm cotas e cor habilitada | Defesa Civil de Itajaí | [ ] **C21 não enviar**, conforme instrução de Jefferson; cotas DC-01–DC-11 já cadastradas |
+| A10 | Ituporanga | pino | leitura da 83250000, ou faixas da Ponte Vitório Sens amarradas à DCSC-00039 | Defesa Civil de Ituporanga / EPAGRI | [ ] **C22 enviado** em 10/09/2026; aguarda resposta |
 | A11 | Brusque (já pinta) | — | régua do 8,96 m de 2023, zero da DCSC-00019, legenda vigente (4 ou 79) | Defesa Civil de Brusque | [ ] **C13 enviado** em 10/09/2026; aguarda resposta |
 | A12 | Ibirama, Timbó, Rio dos Cedros, Trombudo | pinos | cota não verificada + datum da leitura DCSC (mesma pergunta de Indaial) | COMPDEC de cada uma | [ ] depois de A1–A11 |
 
 ## B. Jefferson — pendências abertas
 
-- [x] B1 · Ofícios de A1, A2, A3, A5, A7, A8, A9, A10 redigidos: [C15–C22](oficios-b1-c15-c22.md). Endereços destinatários ainda a confirmar; não enviados.
+- [x] B1 · Ofícios de A1, A2, A3, A5, A7, A8, A9, A10 redigidos: [C15–C22](oficios-b1-c15-c22.md). C15, C16, C17, C18, C19 e C22 enviados; C20 aprovado, sem destinatário confirmado; C21 excluído do envio por Jefferson.
 - [x] B2 · C10 (Gaspar), C11 (Ilhota) e C13 (Brusque) enviados em 10/09/2026 às 21:05 BRT. Gmail IDs: `1a08dc8e84af8f57`, `1a08dc8ec15a69ae`, `1a08dc8f32758c36`. C14 (AlertaBlu) enviado em 10/09/2026 20:58 BRT, conforme registro anterior. Envio não encerra as dúvidas técnicas.
-- [ ] B3 · Gaspar pelo celular: situação, nível, chuva atual e legenda em `defesacivil.gaspar.sc.gov.br/estacao/ver/21`.
-- [ ] B4 · Brusque pelo celular: legenda das estações 4 e 79 (`defesacivil.brusque.sc.gov.br/estacao/ver/4` e `/ver/79`).
+- [x] B3 · Consultado pelo PC em 10/09/2026, aproximadamente 22:11 BRT: NORMALIDADE, 2,58 m de 19:07; chuva atual ausente (`---`). Legenda e diagnóstico em [verificação das réguas](verificacao-reguas-2026-09-10.md). Leitura antiga continua impedindo a cor; cadência e divergência de legendas seguem abertas.
+- [x] B4 · Consultado pelo PC em 10/09/2026 ~22:12 BRT: estação 4 (ANA) publica atenção >4 m/emergência >7 m; estação 79 (DCSC), atenção >3 m/emergência >5 m. São legendas diferentes; não transferir cotas entre elas. Ver [evidências](verificacao-reguas-2026-09-10.md). C13 continua aberto para confirmar a referência correta.
 - [ ] B5 · VPS: `scp` da pasta `historico-dcsc` para `data/series/dcsc-zips/`, consolidador, checagem "IGUAL ao resumo do repo".
 - [ ] B6 · Anexar o script de download do histórico DCSC (PC).
 - [~] B7 · **REESCOPADO em 10/09/2026** (`docs/eventos/2026-09-10-B7-FONTES-E-EVENTO-TAIO.md`): a Asthon retém ~6 semanas e a API de Taió só 24 h — não há fonte para 2022. Vira três: B7a confirmar o código ANA da DCSC-00041 e puxar do Hidroweb; B7b listar quais das 16 estações da cadeia existem no portal de Brusque e baixar por `baixar-historico` (chunks anuais, 2018+); B7c ✅ acumular o `dados/historico` de Taió (feito: `coleta_taio.acumula_historico`, `data/tempo-real/taio-historico.ndjson`; **provado na VPS às 20:30 BRT: 24 linhas no primeiro ciclo**). O script de download da DCSC (B6) continua valendo para as janelas que a GraphQL `historic` responde.
@@ -42,7 +42,7 @@ régua da leitura.
 
 - [x] C1 · Consolidador do histórico DCSC + resumo (PR #269).
 - [x] C2 · Ofício C13 rascunhado (PR #270).
-- [x] C3 · Oito ofícios redigidos em [C15–C22](oficios-b1-c15-c22.md), com perguntas específicas sobre régua, faixas e referência de nível. Confirmar destinatários antes de enviar.
+- [x] C3 · Oito ofícios redigidos em [C15–C22](oficios-b1-c15-c22.md), com perguntas específicas sobre régua, faixas e referência de nível. Seis enviados; C20 aguarda destinatário confirmado; C21 não deve ser enviado.
 - [ ] C4 · Script de download do DCSC no repo, com query e allowlist documentadas — depende de B6.
 - [ ] C5 · Cruzar `data/series/dcsc/` com `data/tempo-real/*.ndjson` da VPS (mesma rede, mesmo fuso) — depende de B5.
 - [ ] C6 · Com cada resposta de COMPDEC: gravar `cotas_m` + `regua_das_cotas_fonte`, teste do par, e medir o ganho em km com `conferir_cobertura.py`.
@@ -68,3 +68,5 @@ régua da leitura.
 - 10/09/2026 20:55 BRT · origem do 2,66 m explicada: cópia de 25 h do nivel_oficial.json no navegador; na VPS o mesmo arquivo está vivo (D4).
 - 10/09/2026 20:45 BRT · picos passados em Rio do Sul (4,29 m, 16:57) e Blumenau (4,26 m, 15:35–19:00), ambos caindo nos portais oficiais (D3, D4); acumulador de Taió provado na VPS (B7c).
 - 10/09/2026 · B1/C3 concluídos: oito rascunhos C15–C22. B2/B9 corrigidos com evidências de envio do Gmail; A4/A6/A11 aguardam resposta. Nenhuma cota alterada.
+
+- 10/09/2026 ~22:11 BRT · B3 conferido diretamente no PC; seis envios registrados; C21 excluído conforme orientação do usuário; A9 corrigido conforme cadastro e lógica de maré. Ver verificação das réguas.
