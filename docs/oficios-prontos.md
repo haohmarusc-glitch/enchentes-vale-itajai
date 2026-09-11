@@ -1,5 +1,7 @@
 # Ofício pronto para envio — EPAGRI/CIRAM
 
+Rascunhos complementares do bloco B1: [C15–C22](oficios-b1-c15-c22.md).
+
 Contato preenchido: **Jefferson — (47) 98405-6082 · haohmarusc@gmail.com**
 
 Pronto para copiar e colar no e-mail. O texto-fonte, com a justificativa técnica de
