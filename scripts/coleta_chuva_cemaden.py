@@ -62,6 +62,17 @@ URL_BASE = "https://resources.cemaden.gov.br/dados/{}.json"
 
 #: Catálogo conferido por coordenada. Referência (estação→coordenada→município).
 CATALOGO = DADOS / "cemaden-estacoes-bacia.json"
+REDE_OBSERVACIONAL = DADOS / "cemaden-rede-observacional-sc.json"
+
+
+def carregar_rede_observacional() -> dict:
+    """Cadastro complementar. Sua ausência não interrompe a coleta ao vivo."""
+    try:
+        dados = json.loads(REDE_OBSERVACIONAL.read_text(encoding="utf-8"))
+        return {e["codigo"]: e for e in dados["estacoes"]}
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        print(f"aviso: cadastro observacional indisponível ({exc})", file=sys.stderr)
+        return {}
 
 #: Município do CEMADEN (MAIÚSCULAS, SEM o `-UF`) -> id da cidade em
 #: `data/estacoes.json`. Só as cidades que o projeto sabe mostrar; Timbó de fora
@@ -138,7 +149,8 @@ def _campos(reg: dict) -> dict:
     return reg.get("attributes", reg) if isinstance(reg, dict) else {}
 
 
-def converter(estacoes: list[dict], momento: str | None = None) -> tuple[list[dict], list[str], int]:
+def converter(estacoes: list[dict], momento: str | None = None,
+              cadastro: dict | None = None) -> tuple[list[dict], list[str], int]:
     """
     As leituras de chuva utilizáveis, as recusas e quantas ficaram SEM DADO.
 
@@ -149,6 +161,8 @@ def converter(estacoes: list[dict], momento: str | None = None) -> tuple[list[di
         momento = (datetime.now(timezone.utc).astimezone(FUSO_BRASILIA)
                    .replace(tzinfo=None).isoformat(timespec="seconds"))
 
+    if cadastro is None:
+        cadastro = carregar_rede_observacional()
     leituras, recusadas, sem_dado = [], [], 0
     for reg in estacoes:
         a = _campos(reg)
@@ -159,6 +173,11 @@ def converter(estacoes: list[dict], momento: str | None = None) -> tuple[list[di
             continue  # fora das cidades do projeto — silencioso: o feed traz SC inteira
 
         codigo = a.get("estacao_cod")
+        registro = cadastro.get(codigo)
+        # O cadastro inclui hidrológicas, mas lbl delas não é chuva em mm.
+        if str(codigo or "").endswith("H") or (registro and registro["tipo_rede"] != "Pluviométrica"):
+            recusadas.append(f"{codigo}: estação hidrológica não é pluviômetro")
+            continue
         nome = str(a.get("estacao_nome") or codigo or "?").strip()
         rotulo = f"{codigo} {nome}".strip()
         inativa = "cinza" in str(a.get("icon") or "")
@@ -189,6 +208,18 @@ def converter(estacoes: list[dict], momento: str | None = None) -> tuple[list[di
             "incoerencias": problemas,
             "fonte": "CEMADEN — Mapa Interativo (pluviômetros automáticos)",
         })
+        # Vincular por código E município evita atribuir coordenadas de outra cidade.
+        # Status estático nunca substitui o ícone/valor recebido do feed.
+        if registro and _municipio_sem_uf(registro["municipio"]) == _municipio_sem_uf(a.get("estacao_munic")):
+            leituras[-1]["cadastro_observacional"] = {
+                "codigo": codigo,
+                "lat": registro["lat"],
+                "lon": registro["lon"],
+                "status_cadastro": registro["status_cadastro"],
+                "divergencia_status": registro["status_cadastro"] == "Inativa",
+                "fonte": "cemaden-rede-observacional-sc.json",
+                "linha_origem": registro["linha_origem"],
+            }
     return leituras, recusadas, sem_dado
 
 
