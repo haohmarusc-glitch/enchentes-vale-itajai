@@ -12,6 +12,8 @@ cidades do eixo (cada trecho pertence à cidade A MONTANTE, a mesma regra que o
 mapa usa para a cor) e diz, por cidade, quantos quilômetros ela pinta e por que
 não pinta quando é o caso:
 
+  leitura antiga / sem horário válido / horário no futuro — leitura não utilizável
+  nível inválido         — valor fora do contrato do frontend
   sem leitura            — tem cota cadastrada, a fonte não publica
   sem cota               — tem leitura ao vivo, falta o limiar
   sem leitura e sem cota — não há nem um nem outro
@@ -32,6 +34,9 @@ import argparse
 import json
 import math
 import sys
+import re
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -55,7 +60,32 @@ def dist2_seg(p, a, b):
     return (abx * t - apx) ** 2 + (aby * t - apy) ** 2
 
 
-def avaliar(rio_id: str, estacoes: dict, leituras: list[dict]) -> dict | None:
+def motivo_leitura(l: dict, agora: datetime) -> str | None:
+    """Contrato do frontend: nível plausível e horário local com idade utilizável."""
+    nivel = l.get("nivel_m")
+    if (isinstance(nivel, bool) or not isinstance(nivel, (int, float))
+            or not math.isfinite(nivel) or not 0 < nivel < 25):
+        return "nível inválido"
+    texto = l.get("medido_em")
+    if not isinstance(texto, str) or not re.fullmatch(
+            r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?", texto):
+        return "sem horário válido"
+    try:
+        instante = datetime.fromisoformat(texto).replace(tzinfo=ZoneInfo("America/Sao_Paulo"))
+    except ValueError:
+        return "sem horário válido"
+    # Math.round do JavaScript, inclusive no limite negativo.
+    idade = math.floor((agora - instante).total_seconds() / 60 + 0.5)
+    if idade < -15:
+        return "horário no futuro"
+    if idade > 180:
+        return "leitura antiga"
+    return None
+
+
+def avaliar(rio_id: str, estacoes: dict, leituras: list[dict],
+            agora: datetime | None = None) -> dict | None:
+    agora = agora or datetime.now(timezone.utc)
     caminho = RAIZ / "data" / "rios" / f"{rio_id}.geojson"
     if not caminho.exists():
         return None
@@ -86,11 +116,13 @@ def avaliar(rio_id: str, estacoes: dict, leituras: list[dict]) -> dict | None:
             continue  # cabeceira cujo rio não foi desenhado
         ls = por_cidade.get(c["id"]) or []
         cotas = {k: v for k, v in (c.get("cotas_m") or {}).items() if k in ORDEM}
-        pinta = bool(ls) and bool(cotas)
+        utilizaveis = [l for l in ls if motivo_leitura(l, agora) is None]
+        pinta = bool(utilizaveis) and bool(cotas)
         if pinta:
             causa = ""
         elif cotas:
-            causa = "sem leitura"
+            causa = ("sem leitura" if not ls else
+                     motivo_leitura(max(ls, key=lambda l: str(l.get("medido_em") or "")), agora))
         elif ls:
             causa = "sem cota"
         else:
@@ -119,7 +151,14 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--arquivo", required=True, help="ultimo.json (publicado ou local)")
+    ap.add_argument("--agora", help="Instante ISO com fuso para reproduzir uma auditoria")
     args = ap.parse_args()
+    try:
+        agora = datetime.fromisoformat(args.agora) if args.agora else datetime.now(timezone.utc)
+        if agora.tzinfo is None:
+            raise ValueError("informe o fuso em --agora")
+    except ValueError as erro:
+        ap.error(str(erro))
 
     caminho = Path(args.arquivo)
     if not caminho.exists():
@@ -128,15 +167,16 @@ def main() -> int:
     leituras = json.loads(caminho.read_text(encoding="utf-8")).get("leituras") or []
     estacoes = json.loads((RAIZ / "data" / "estacoes.json").read_text(encoding="utf-8"))
 
+    print(f"Referência temporal: {agora.isoformat()}")
     faltas: dict[str, float] = {}
     for rio_id in estacoes["rios"]:
-        r = avaliar(rio_id, estacoes, leituras)
+        r = avaliar(rio_id, estacoes, leituras, agora)
         if not r:
             continue
         print(f"=== {r['rio']}: {r['km_total']:.0f} km desenhados")
         for a in r["ancoras"]:
             marca = "" if a["pinta"] else f"   <- {a['causa']}"
-            print(f"   {a['cidade']:16} pinta {a['km']:6.1f} km{marca}")
+            print(f"   {a['cidade']:16} trecho {a['km']:6.1f} km{marca}")
             if not a["pinta"]:
                 faltas[a["causa"]] = faltas.get(a["causa"], 0.0) + a["km"]
         pct = r["km_vivo"] / r["km_total"] if r["km_total"] else 0
