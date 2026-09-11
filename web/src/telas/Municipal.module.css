@@ -1,0 +1,10 @@
+.pagina { max-width: 1080px; margin: auto; padding: 24px 16px; color: #17324a; }
+.pagina section { margin: 32px 0; scroll-margin-top: 20px; }
+.pagina a { color: #075c91; text-decoration: underline; overflow-wrap: anywhere; }
+.pagina nav { padding: 16px 0; line-height: 2; }
+.cartao { background: #fff; border: 1px solid #c5d7e2; border-radius: 12px; padding: 20px; margin: 12px 0; }
+.cartao p { line-height: 1.6; }
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 16px; }
+.tabela { overflow-x: auto; }
+.tabela th, .tabela td { padding: 12px; text-align: left; border-bottom: 1px solid #c5d7e2; }
+.pagina footer { border-top: 1px solid #c5d7e2; padding-top: 16px; font-size: .9rem; }

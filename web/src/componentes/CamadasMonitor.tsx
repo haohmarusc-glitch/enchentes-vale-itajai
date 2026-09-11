@@ -7,13 +7,14 @@ import { rotuloEvento } from '../logica/manchas'
 const urls = import.meta.glob('@dados/manchas/**/*.geojson', { query: '?url', import: 'default', eager: true }) as Record<string, string>
 export type CamadaDesenhada = { geo: GeoJSON.FeatureCollection; rotulo: string } | null
 interface Props {
+  somenteDados?: boolean
   cidade: string
   leituras: readonly MedicaoComparavel[]
   agora: Date
   reproduzindo: boolean
   onCamada: (camada: CamadaDesenhada) => void
 }
-export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada }: Props) {
+export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada, somenteDados = false }: Props) {
   const [modo, setModo] = useState('auto')
   const [estado, setEstado] = useState('')
   const [tentativa, setTentativa] = useState(0)
@@ -65,6 +66,6 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
     </>}
     <p role="status">{estado}</p>
     {estado.startsWith('Não foi possível') && <button onClick={() => setTentativa((n) => n + 1)}>Tentar novamente</button>}
-    <p>Selecione a cidade no menu Cidades do Monitor para consultar suas camadas. Ausência de área desenhada não significa ausência de risco. Siga a Defesa Civil, 199.</p>
+    {somenteDados ? <p>Exibição restrita às camadas cadastradas deste município. Sem geometria ou referência compatível, o mapa permanece sem mancha automática.</p> : <p>Selecione a cidade no menu Cidades do Monitor para consultar suas camadas. Ausência de área desenhada não significa ausência de risco. Siga a Defesa Civil, 199.</p>}
   </section>
 }

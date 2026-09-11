@@ -1,4 +1,5 @@
-import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import Municipal from './telas/Municipal'
 import estilos from './App.module.css'
 import FaixaEmergencia from './componentes/FaixaEmergencia'
 import LimiteDeErro from './componentes/LimiteDeErro'
@@ -18,6 +19,8 @@ const ABAS = [
 ]
 
 export default function App() {
+  const local = useLocation()
+  if (local.pathname === '/municipal/ascurra') return <LimiteDeErro oQue="o monitor municipal"><Municipal /></LimiteDeErro>
   return (
     <>
       {/* Primeiro elemento focável da página: quem navega por teclado ou leitor
