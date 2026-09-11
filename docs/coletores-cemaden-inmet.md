@@ -1,5 +1,9 @@
 # CEMADEN e INMET — investigação e estado dos coletores (02/09/2026)
 
+Complemento: o [cadastro observacional fornecido em setembro de 2026](rede-observacional-cemaden.md)
+adiciona coordenadas e status cadastral às leituras por código e município.
+As contagens abaixo pertencem ao retrato do Mapa Interativo de 02/09, não ao novo cadastro.
+
 Investigação feita pelo navegador (Chrome, Mapa Interativo do CEMADEN e API do
 INMET). Resumo do que ficou pronto, do que espera credencial e do que depende do
 usuário.

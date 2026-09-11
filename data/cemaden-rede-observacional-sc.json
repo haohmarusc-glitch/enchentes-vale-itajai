@@ -1,0 +1,4161 @@
+{
+  "_meta": {
+    "arquivo_origem": "Rede_Observacional_Santa_Catarina___SC.xlsx",
+    "aba": "Rede Cemaden SC",
+    "sha256": "b65ea0651e4c13cdf92312e733c9deb2bf86aee9e5a5c0cb79fac4f33cbe7dad",
+    "data_referencia_status": null,
+    "nota": "Cadastro fornecido pelo usuário. Status não comprova transmissão atual. Sem medições, cotas, datum ou data de atualização por estação."
+  },
+  "estacoes": [
+    {
+      "codigo": "420005101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Abdon Batista",
+      "lat": -27.607738,
+      "lon": -51.027716,
+      "status_cadastro": "Operacional",
+      "linha_origem": 2
+    },
+    {
+      "codigo": "420005102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Abdon Batista",
+      "lat": -27.616746,
+      "lon": -51.02217,
+      "status_cadastro": "Operacional",
+      "linha_origem": 3
+    },
+    {
+      "codigo": "420010101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Abelardo Luz",
+      "lat": -26.58667,
+      "lon": -52.10379,
+      "status_cadastro": "Inativa",
+      "linha_origem": 4
+    },
+    {
+      "codigo": "420010102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Abelardo Luz",
+      "lat": -26.565,
+      "lon": -52.326,
+      "status_cadastro": "Inativa",
+      "linha_origem": 5
+    },
+    {
+      "codigo": "420010103A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Abelardo Luz",
+      "lat": -26.6605,
+      "lon": -52.14494,
+      "status_cadastro": "Inativa",
+      "linha_origem": 6
+    },
+    {
+      "codigo": "420020001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Agrolândia",
+      "lat": -27.41311,
+      "lon": -49.830476,
+      "status_cadastro": "Operacional",
+      "linha_origem": 7
+    },
+    {
+      "codigo": "420020002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Agrolândia",
+      "lat": -27.431986,
+      "lon": -49.843888,
+      "status_cadastro": "Operacional",
+      "linha_origem": 8
+    },
+    {
+      "codigo": "420030901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Agronômica",
+      "lat": -27.264784,
+      "lon": -49.711858,
+      "status_cadastro": "Operacional",
+      "linha_origem": 9
+    },
+    {
+      "codigo": "420030902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Agronômica",
+      "lat": -27.266371,
+      "lon": -49.712327,
+      "status_cadastro": "Operacional",
+      "linha_origem": 10
+    },
+    {
+      "codigo": "420050701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Águas de Chapecó",
+      "lat": -27.07756,
+      "lon": -52.9848,
+      "status_cadastro": "Operacional",
+      "linha_origem": 11
+    },
+    {
+      "codigo": "420060601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Águas Mornas",
+      "lat": -27.70011,
+      "lon": -48.81745,
+      "status_cadastro": "Operacional",
+      "linha_origem": 12
+    },
+    {
+      "codigo": "420070502A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Alfredo Wagner",
+      "lat": -27.737,
+      "lon": -49.387,
+      "status_cadastro": "Inativa",
+      "linha_origem": 13
+    },
+    {
+      "codigo": "420070503A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Alfredo Wagner",
+      "lat": -27.701,
+      "lon": -49.334,
+      "status_cadastro": "Operacional",
+      "linha_origem": 14
+    },
+    {
+      "codigo": "420070504A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Alfredo Wagner",
+      "lat": -27.686,
+      "lon": -49.33,
+      "status_cadastro": "Inativa",
+      "linha_origem": 15
+    },
+    {
+      "codigo": "420090301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Angelina",
+      "lat": -27.5826,
+      "lon": -48.9822,
+      "status_cadastro": "Operacional",
+      "linha_origem": 16
+    },
+    {
+      "codigo": "420100001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Anita Garibaldi",
+      "lat": -27.698336,
+      "lon": -51.126588,
+      "status_cadastro": "Operacional",
+      "linha_origem": 17
+    },
+    {
+      "codigo": "420100002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Anita Garibaldi",
+      "lat": -27.68716,
+      "lon": -51.127206,
+      "status_cadastro": "Operacional",
+      "linha_origem": 18
+    },
+    {
+      "codigo": "420110901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Anitápolis",
+      "lat": -27.90547,
+      "lon": -49.13093,
+      "status_cadastro": "Inativa",
+      "linha_origem": 19
+    },
+    {
+      "codigo": "420120801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Antônio Carlos",
+      "lat": -27.517,
+      "lon": -48.768,
+      "status_cadastro": "Operacional",
+      "linha_origem": 20
+    },
+    {
+      "codigo": "420120802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Antônio Carlos",
+      "lat": -27.5028,
+      "lon": -48.78,
+      "status_cadastro": "Inativa",
+      "linha_origem": 21
+    },
+    {
+      "codigo": "420120813H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Antônio Carlos",
+      "lat": -27.5129,
+      "lon": -48.7587,
+      "status_cadastro": "Inativa",
+      "linha_origem": 22
+    },
+    {
+      "codigo": "420125701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Apiúna",
+      "lat": -27.033156,
+      "lon": -49.385021,
+      "status_cadastro": "Operacional",
+      "linha_origem": 23
+    },
+    {
+      "codigo": "420125702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Apiúna",
+      "lat": -27.10431,
+      "lon": -49.457566,
+      "status_cadastro": "Operacional",
+      "linha_origem": 24
+    },
+    {
+      "codigo": "420130701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Araquari",
+      "lat": -26.51683,
+      "lon": -48.71378,
+      "status_cadastro": "Operacional",
+      "linha_origem": 25
+    },
+    {
+      "codigo": "420130702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Araquari",
+      "lat": -26.41607,
+      "lon": -48.75515,
+      "status_cadastro": "Operacional",
+      "linha_origem": 26
+    },
+    {
+      "codigo": "420130703A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Araquari",
+      "lat": -26.39942,
+      "lon": -48.79885,
+      "status_cadastro": "Operacional",
+      "linha_origem": 27
+    },
+    {
+      "codigo": "420130704A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Araquari",
+      "lat": -26.37228,
+      "lon": -48.72337,
+      "status_cadastro": "Operacional",
+      "linha_origem": 28
+    },
+    {
+      "codigo": "420140601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Araranguá",
+      "lat": -28.93715,
+      "lon": -49.48683,
+      "status_cadastro": "Operacional",
+      "linha_origem": 29
+    },
+    {
+      "codigo": "420140602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Araranguá",
+      "lat": -28.9247,
+      "lon": -49.47978,
+      "status_cadastro": "Inativa",
+      "linha_origem": 30
+    },
+    {
+      "codigo": "420140614H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Araranguá",
+      "lat": -28.93003,
+      "lon": -49.48753,
+      "status_cadastro": "Operacional",
+      "linha_origem": 31
+    },
+    {
+      "codigo": "420150501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Armazém",
+      "lat": -28.26208,
+      "lon": -49.01585,
+      "status_cadastro": "Inativa",
+      "linha_origem": 32
+    },
+    {
+      "codigo": "420170301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ascurra",
+      "lat": -26.946052,
+      "lon": -49.386877,
+      "status_cadastro": "Operacional",
+      "linha_origem": 33
+    },
+    {
+      "codigo": "420170302A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ascurra",
+      "lat": -26.956982,
+      "lon": -49.37651,
+      "status_cadastro": "Operacional",
+      "linha_origem": 34
+    },
+    {
+      "codigo": "420180202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Atalanta",
+      "lat": -27.42093,
+      "lon": -49.78439,
+      "status_cadastro": "Operacional",
+      "linha_origem": 35
+    },
+    {
+      "codigo": "420190101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Aurora",
+      "lat": -27.292675,
+      "lon": -49.649024,
+      "status_cadastro": "Operacional",
+      "linha_origem": 36
+    },
+    {
+      "codigo": "420190103A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Aurora",
+      "lat": -27.376404,
+      "lon": -49.613852,
+      "status_cadastro": "Operacional",
+      "linha_origem": 37
+    },
+    {
+      "codigo": "420200801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Camboriú",
+      "lat": -26.986,
+      "lon": -48.643,
+      "status_cadastro": "Inativa",
+      "linha_origem": 38
+    },
+    {
+      "codigo": "420200802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Camboriú",
+      "lat": -27.007,
+      "lon": -48.596,
+      "status_cadastro": "Operacional",
+      "linha_origem": 39
+    },
+    {
+      "codigo": "420205701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Barra do Sul",
+      "lat": -26.463838,
+      "lon": -48.623498,
+      "status_cadastro": "Operacional",
+      "linha_origem": 40
+    },
+    {
+      "codigo": "420205702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Barra do Sul",
+      "lat": -26.452545,
+      "lon": -48.629595,
+      "status_cadastro": "Operacional",
+      "linha_origem": 41
+    },
+    {
+      "codigo": "420205703A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Barra do Sul",
+      "lat": -26.428833,
+      "lon": -48.638054,
+      "status_cadastro": "Operacional",
+      "linha_origem": 42
+    },
+    {
+      "codigo": "420207301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Gaivota",
+      "lat": -29.13328,
+      "lon": -49.60605,
+      "status_cadastro": "Operacional",
+      "linha_origem": 43
+    },
+    {
+      "codigo": "420210701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Barra Velha",
+      "lat": -26.642,
+      "lon": -48.698,
+      "status_cadastro": "Operacional",
+      "linha_origem": 44
+    },
+    {
+      "codigo": "420210702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Barra Velha",
+      "lat": -26.677,
+      "lon": -48.693,
+      "status_cadastro": "Operacional",
+      "linha_origem": 45
+    },
+    {
+      "codigo": "420220604A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Benedito Novo",
+      "lat": -26.781853,
+      "lon": -49.364889,
+      "status_cadastro": "Inativa",
+      "linha_origem": 46
+    },
+    {
+      "codigo": "420230501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Biguaçu",
+      "lat": -27.5421,
+      "lon": -48.65434,
+      "status_cadastro": "Inativa",
+      "linha_origem": 47
+    },
+    {
+      "codigo": "420240401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.905,
+      "lon": -49.034,
+      "status_cadastro": "Inativa",
+      "linha_origem": 48
+    },
+    {
+      "codigo": "420240404A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.951,
+      "lon": -49.133,
+      "status_cadastro": "Inativa",
+      "linha_origem": 49
+    },
+    {
+      "codigo": "420240405A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.857,
+      "lon": -49.154,
+      "status_cadastro": "Operacional",
+      "linha_origem": 50
+    },
+    {
+      "codigo": "420240406A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.891,
+      "lon": -49.055,
+      "status_cadastro": "Operacional",
+      "linha_origem": 51
+    },
+    {
+      "codigo": "420240407A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.883,
+      "lon": -49.14,
+      "status_cadastro": "Operacional",
+      "linha_origem": 52
+    },
+    {
+      "codigo": "420240408A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.897,
+      "lon": -49.08,
+      "status_cadastro": "Inativa",
+      "linha_origem": 53
+    },
+    {
+      "codigo": "420240409A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.904,
+      "lon": -49.103,
+      "status_cadastro": "Operacional",
+      "linha_origem": 54
+    },
+    {
+      "codigo": "420240410A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.877,
+      "lon": -49.066,
+      "status_cadastro": "Operacional",
+      "linha_origem": 55
+    },
+    {
+      "codigo": "420240411A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.995,
+      "lon": -49.099,
+      "status_cadastro": "Operacional",
+      "linha_origem": 56
+    },
+    {
+      "codigo": "420240412A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.902,
+      "lon": -49.048,
+      "status_cadastro": "Operacional",
+      "linha_origem": 57
+    },
+    {
+      "codigo": "420240413A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.767,
+      "lon": -49.08,
+      "status_cadastro": "Inativa",
+      "linha_origem": 58
+    },
+    {
+      "codigo": "420240414A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.852,
+      "lon": -49.047,
+      "status_cadastro": "Operacional",
+      "linha_origem": 59
+    },
+    {
+      "codigo": "420240415A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.938,
+      "lon": -49.057,
+      "status_cadastro": "Operacional",
+      "linha_origem": 60
+    },
+    {
+      "codigo": "420240416A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.833,
+      "lon": -49.108,
+      "status_cadastro": "Operacional",
+      "linha_origem": 61
+    },
+    {
+      "codigo": "420240417A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.723,
+      "lon": -49.066,
+      "status_cadastro": "Operacional",
+      "linha_origem": 62
+    },
+    {
+      "codigo": "420240418A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.872,
+      "lon": -49.086,
+      "status_cadastro": "Operacional",
+      "linha_origem": 63
+    },
+    {
+      "codigo": "420240419A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.965,
+      "lon": -49.06,
+      "status_cadastro": "Operacional",
+      "linha_origem": 64
+    },
+    {
+      "codigo": "420240420A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.937,
+      "lon": -49.15,
+      "status_cadastro": "Operacional",
+      "linha_origem": 65
+    },
+    {
+      "codigo": "420240421A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -27.0,
+      "lon": -49.068,
+      "status_cadastro": "Inativa",
+      "linha_origem": 66
+    },
+    {
+      "codigo": "420240422A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.999,
+      "lon": -49.1,
+      "status_cadastro": "Inativa",
+      "linha_origem": 67
+    },
+    {
+      "codigo": "420240423A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Blumenau",
+      "lat": -26.913,
+      "lon": -49.069,
+      "status_cadastro": "Operacional",
+      "linha_origem": 68
+    },
+    {
+      "codigo": "420243801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Bocaina do Sul",
+      "lat": -27.74404,
+      "lon": -49.94548,
+      "status_cadastro": "Operacional",
+      "linha_origem": 69
+    },
+    {
+      "codigo": "420245301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Bombinhas",
+      "lat": -27.14472,
+      "lon": -48.51068,
+      "status_cadastro": "Operacional",
+      "linha_origem": 70
+    },
+    {
+      "codigo": "420260201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Bom Retiro",
+      "lat": -27.791528,
+      "lon": -49.482944,
+      "status_cadastro": "Operacional",
+      "linha_origem": 71
+    },
+    {
+      "codigo": "420260202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Bom Retiro",
+      "lat": -27.647309,
+      "lon": -49.558735,
+      "status_cadastro": "Operacional",
+      "linha_origem": 72
+    },
+    {
+      "codigo": "420260203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Bom Retiro",
+      "lat": -27.805238,
+      "lon": -49.77546,
+      "status_cadastro": "Operacional",
+      "linha_origem": 73
+    },
+    {
+      "codigo": "420270101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Botuverá",
+      "lat": -27.197,
+      "lon": -49.073,
+      "status_cadastro": "Operacional",
+      "linha_origem": 74
+    },
+    {
+      "codigo": "420270102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Botuverá",
+      "lat": -27.203,
+      "lon": -49.029,
+      "status_cadastro": "Inativa",
+      "linha_origem": 75
+    },
+    {
+      "codigo": "420270103A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Botuverá",
+      "lat": -27.2034,
+      "lon": -49.15148,
+      "status_cadastro": "Inativa",
+      "linha_origem": 76
+    },
+    {
+      "codigo": "420280001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Braço do Norte",
+      "lat": -28.27112,
+      "lon": -49.1612,
+      "status_cadastro": "Inativa",
+      "linha_origem": 77
+    },
+    {
+      "codigo": "420290901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.097,
+      "lon": -48.918,
+      "status_cadastro": "Inativa",
+      "linha_origem": 78
+    },
+    {
+      "codigo": "420290901H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.08255,
+      "lon": -48.90837,
+      "status_cadastro": "Inativa",
+      "linha_origem": 79
+    },
+    {
+      "codigo": "420290902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.143,
+      "lon": -48.907,
+      "status_cadastro": "Inativa",
+      "linha_origem": 80
+    },
+    {
+      "codigo": "420290903A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.134,
+      "lon": -48.886,
+      "status_cadastro": "Inativa",
+      "linha_origem": 81
+    },
+    {
+      "codigo": "420290904A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.141,
+      "lon": -48.921,
+      "status_cadastro": "Inativa",
+      "linha_origem": 82
+    },
+    {
+      "codigo": "420290905A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.069,
+      "lon": -48.937,
+      "status_cadastro": "Inativa",
+      "linha_origem": 83
+    },
+    {
+      "codigo": "420290906A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.074,
+      "lon": -48.905,
+      "status_cadastro": "Inativa",
+      "linha_origem": 84
+    },
+    {
+      "codigo": "420290907A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.06,
+      "lon": -48.907,
+      "status_cadastro": "Operacional",
+      "linha_origem": 85
+    },
+    {
+      "codigo": "420290908A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.098,
+      "lon": -48.925,
+      "status_cadastro": "Operacional",
+      "linha_origem": 86
+    },
+    {
+      "codigo": "420290909A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.173,
+      "lon": -48.89,
+      "status_cadastro": "Operacional",
+      "linha_origem": 87
+    },
+    {
+      "codigo": "420290910A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.131,
+      "lon": -48.939,
+      "status_cadastro": "Operacional",
+      "linha_origem": 88
+    },
+    {
+      "codigo": "420290911A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.146,
+      "lon": -48.884,
+      "status_cadastro": "Inativa",
+      "linha_origem": 89
+    },
+    {
+      "codigo": "420290913A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Brusque",
+      "lat": -27.07,
+      "lon": -48.865,
+      "status_cadastro": "Operacional",
+      "linha_origem": 90
+    },
+    {
+      "codigo": "420300601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Caçador",
+      "lat": -26.77705,
+      "lon": -51.00946,
+      "status_cadastro": "Inativa",
+      "linha_origem": 91
+    },
+    {
+      "codigo": "420300616H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Caçador",
+      "lat": -26.77092,
+      "lon": -51.00976,
+      "status_cadastro": "Operacional",
+      "linha_origem": 92
+    },
+    {
+      "codigo": "420320402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Camboriú",
+      "lat": -27.002,
+      "lon": -48.665,
+      "status_cadastro": "Operacional",
+      "linha_origem": 93
+    },
+    {
+      "codigo": "420320405A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Camboriú",
+      "lat": -27.031,
+      "lon": -48.641,
+      "status_cadastro": "Operacional",
+      "linha_origem": 94
+    },
+    {
+      "codigo": "420320417H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Camboriú",
+      "lat": -27.0184,
+      "lon": -48.6524,
+      "status_cadastro": "Inativa",
+      "linha_origem": 95
+    },
+    {
+      "codigo": "420350101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Campo Erê",
+      "lat": -26.3985,
+      "lon": -53.0854,
+      "status_cadastro": "Inativa",
+      "linha_origem": 96
+    },
+    {
+      "codigo": "420370901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Canelinha",
+      "lat": -27.26681,
+      "lon": -48.76795,
+      "status_cadastro": "Inativa",
+      "linha_origem": 97
+    },
+    {
+      "codigo": "420370918H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Canelinha",
+      "lat": -27.2684,
+      "lon": -48.7763,
+      "status_cadastro": "Inativa",
+      "linha_origem": 98
+    },
+    {
+      "codigo": "420380802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Canoinhas",
+      "lat": -26.17522,
+      "lon": -50.39492,
+      "status_cadastro": "Inativa",
+      "linha_origem": 99
+    },
+    {
+      "codigo": "420390701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Capinzal",
+      "lat": -27.343,
+      "lon": -51.614,
+      "status_cadastro": "Inativa",
+      "linha_origem": 100
+    },
+    {
+      "codigo": "420410301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Caxambu do Sul",
+      "lat": -27.157989,
+      "lon": -52.881798,
+      "status_cadastro": "Operacional",
+      "linha_origem": 101
+    },
+    {
+      "codigo": "420410302A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Caxambu do Sul",
+      "lat": -27.150971,
+      "lon": -52.882503,
+      "status_cadastro": "Operacional",
+      "linha_origem": 102
+    },
+    {
+      "codigo": "420419401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Chapadão do Lageado",
+      "lat": -27.58463,
+      "lon": -49.54288,
+      "status_cadastro": "Operacional",
+      "linha_origem": 103
+    },
+    {
+      "codigo": "420420201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Chapecó",
+      "lat": -27.11325,
+      "lon": -52.61169,
+      "status_cadastro": "Operacional",
+      "linha_origem": 104
+    },
+    {
+      "codigo": "420420202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Chapecó",
+      "lat": -27.06972,
+      "lon": -52.60851,
+      "status_cadastro": "Inativa",
+      "linha_origem": 105
+    },
+    {
+      "codigo": "420425101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Cocal do Sul",
+      "lat": -28.5901,
+      "lon": -49.3294,
+      "status_cadastro": "Operacional",
+      "linha_origem": 106
+    },
+    {
+      "codigo": "420425102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Cocal do Sul",
+      "lat": -28.5887,
+      "lon": -49.3156,
+      "status_cadastro": "Operacional",
+      "linha_origem": 107
+    },
+    {
+      "codigo": "420425103A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Cocal do Sul",
+      "lat": -28.5996,
+      "lon": -49.317,
+      "status_cadastro": "Operacional",
+      "linha_origem": 108
+    },
+    {
+      "codigo": "420430101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Concórdia",
+      "lat": -27.2164,
+      "lon": -52.0149,
+      "status_cadastro": "Inativa",
+      "linha_origem": 109
+    },
+    {
+      "codigo": "420430102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Concórdia",
+      "lat": -27.2235,
+      "lon": -52.03517,
+      "status_cadastro": "Inativa",
+      "linha_origem": 110
+    },
+    {
+      "codigo": "420430103A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Concórdia",
+      "lat": -27.23612,
+      "lon": -52.02296,
+      "status_cadastro": "Inativa",
+      "linha_origem": 111
+    },
+    {
+      "codigo": "420430104A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Concórdia",
+      "lat": -27.2261,
+      "lon": -52.0004,
+      "status_cadastro": "Inativa",
+      "linha_origem": 112
+    },
+    {
+      "codigo": "420440001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Coronel Freitas",
+      "lat": -26.908005,
+      "lon": -52.701006,
+      "status_cadastro": "Operacional",
+      "linha_origem": 113
+    },
+    {
+      "codigo": "420440002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Coronel Freitas",
+      "lat": -26.908552,
+      "lon": -52.699017,
+      "status_cadastro": "Operacional",
+      "linha_origem": 114
+    },
+    {
+      "codigo": "420450901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Corupá",
+      "lat": -26.411,
+      "lon": -49.235,
+      "status_cadastro": "Operacional",
+      "linha_origem": 115
+    },
+    {
+      "codigo": "420450902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Corupá",
+      "lat": -26.43,
+      "lon": -49.259,
+      "status_cadastro": "Operacional",
+      "linha_origem": 116
+    },
+    {
+      "codigo": "420450902H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Corupá",
+      "lat": -26.429,
+      "lon": -49.2401,
+      "status_cadastro": "Inativa",
+      "linha_origem": 117
+    },
+    {
+      "codigo": "420450903A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Corupá",
+      "lat": -26.43862,
+      "lon": -49.22865,
+      "status_cadastro": "Operacional",
+      "linha_origem": 118
+    },
+    {
+      "codigo": "420455802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Correia Pinto",
+      "lat": -27.580594,
+      "lon": -50.358817,
+      "status_cadastro": "Inativa",
+      "linha_origem": 119
+    },
+    {
+      "codigo": "420460802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Criciúma",
+      "lat": -28.67737,
+      "lon": -49.32561,
+      "status_cadastro": "Inativa",
+      "linha_origem": 120
+    },
+    {
+      "codigo": "420460803A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Criciúma",
+      "lat": -28.67498,
+      "lon": -49.41612,
+      "status_cadastro": "Inativa",
+      "linha_origem": 121
+    },
+    {
+      "codigo": "420460803H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Criciúma",
+      "lat": -28.6807,
+      "lon": -49.38,
+      "status_cadastro": "Inativa",
+      "linha_origem": 122
+    },
+    {
+      "codigo": "420460804A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Criciúma",
+      "lat": -28.73562,
+      "lon": -49.40503,
+      "status_cadastro": "Operacional",
+      "linha_origem": 123
+    },
+    {
+      "codigo": "420460805A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Criciúma",
+      "lat": -28.77301,
+      "lon": -49.36763,
+      "status_cadastro": "Inativa",
+      "linha_origem": 124
+    },
+    {
+      "codigo": "420480601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Curitibanos",
+      "lat": -27.30408,
+      "lon": -50.56729,
+      "status_cadastro": "Inativa",
+      "linha_origem": 125
+    },
+    {
+      "codigo": "420500101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Dionísio Cerqueira",
+      "lat": -26.26219,
+      "lon": -53.63747,
+      "status_cadastro": "Inativa",
+      "linha_origem": 126
+    },
+    {
+      "codigo": "420510001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Dona Emma",
+      "lat": -26.986763,
+      "lon": -49.863845,
+      "status_cadastro": "Operacional",
+      "linha_origem": 127
+    },
+    {
+      "codigo": "420515901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Doutor Pedrinho",
+      "lat": -26.716153,
+      "lon": -49.483741,
+      "status_cadastro": "Operacional",
+      "linha_origem": 128
+    },
+    {
+      "codigo": "420515902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Doutor Pedrinho",
+      "lat": -26.720221,
+      "lon": -49.485082,
+      "status_cadastro": "Operacional",
+      "linha_origem": 129
+    },
+    {
+      "codigo": "420519101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ermo",
+      "lat": -28.9837,
+      "lon": -49.6453,
+      "status_cadastro": "Operacional",
+      "linha_origem": 130
+    },
+    {
+      "codigo": "420519102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ermo",
+      "lat": -28.9881,
+      "lon": -49.6615,
+      "status_cadastro": "Operacional",
+      "linha_origem": 131
+    },
+    {
+      "codigo": "420520901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Erval Velho",
+      "lat": -27.278192,
+      "lon": -51.440086,
+      "status_cadastro": "Operacional",
+      "linha_origem": 132
+    },
+    {
+      "codigo": "420530801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Faxinal dos Guedes",
+      "lat": -26.78493,
+      "lon": -52.196124,
+      "status_cadastro": "Operacional",
+      "linha_origem": 133
+    },
+    {
+      "codigo": "420530802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Faxinal dos Guedes",
+      "lat": -26.845868,
+      "lon": -52.26166,
+      "status_cadastro": "Operacional",
+      "linha_origem": 134
+    },
+    {
+      "codigo": "420540702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Florianópolis",
+      "lat": -27.599,
+      "lon": -48.573,
+      "status_cadastro": "Inativa",
+      "linha_origem": 135
+    },
+    {
+      "codigo": "420540703A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Florianópolis",
+      "lat": -27.706,
+      "lon": -48.5,
+      "status_cadastro": "Operacional",
+      "linha_origem": 136
+    },
+    {
+      "codigo": "420540704A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Florianópolis",
+      "lat": -27.582,
+      "lon": -48.533,
+      "status_cadastro": "Inativa",
+      "linha_origem": 137
+    },
+    {
+      "codigo": "420540705A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Florianópolis",
+      "lat": -27.754,
+      "lon": -48.51,
+      "status_cadastro": "Operacional",
+      "linha_origem": 138
+    },
+    {
+      "codigo": "420540707A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Florianópolis",
+      "lat": -27.432,
+      "lon": -48.458,
+      "status_cadastro": "Inativa",
+      "linha_origem": 139
+    },
+    {
+      "codigo": "420540708A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Florianópolis",
+      "lat": -27.491,
+      "lon": -48.418,
+      "status_cadastro": "Operacional",
+      "linha_origem": 140
+    },
+    {
+      "codigo": "420545601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Forquilhinha",
+      "lat": -28.75365,
+      "lon": -49.47339,
+      "status_cadastro": "Inativa",
+      "linha_origem": 141
+    },
+    {
+      "codigo": "420550601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Fraiburgo",
+      "lat": -27.03318,
+      "lon": -50.93099,
+      "status_cadastro": "Operacional",
+      "linha_origem": 142
+    },
+    {
+      "codigo": "420550602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Fraiburgo",
+      "lat": -27.049,
+      "lon": -50.934,
+      "status_cadastro": "Operacional",
+      "linha_origem": 143
+    },
+    {
+      "codigo": "420560501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Galvão",
+      "lat": -26.43919,
+      "lon": -52.68857,
+      "status_cadastro": "Inativa",
+      "linha_origem": 144
+    },
+    {
+      "codigo": "420560502A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Galvão",
+      "lat": -26.45139,
+      "lon": -52.68987,
+      "status_cadastro": "Inativa",
+      "linha_origem": 145
+    },
+    {
+      "codigo": "420570401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Garopaba",
+      "lat": -27.953,
+      "lon": -48.629,
+      "status_cadastro": "Inativa",
+      "linha_origem": 146
+    },
+    {
+      "codigo": "420570402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Garopaba",
+      "lat": -28.102,
+      "lon": -48.674,
+      "status_cadastro": "Operacional",
+      "linha_origem": 147
+    },
+    {
+      "codigo": "420570403A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Garopaba",
+      "lat": -28.0529,
+      "lon": -48.6479,
+      "status_cadastro": "Inativa",
+      "linha_origem": 148
+    },
+    {
+      "codigo": "420580301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Garuva",
+      "lat": -26.0324,
+      "lon": -48.85023,
+      "status_cadastro": "Inativa",
+      "linha_origem": 149
+    },
+    {
+      "codigo": "420580302A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Garuva",
+      "lat": -26.11388,
+      "lon": -49.00358,
+      "status_cadastro": "Inativa",
+      "linha_origem": 150
+    },
+    {
+      "codigo": "420590202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -27.0,
+      "lon": -48.91,
+      "status_cadastro": "Operacional",
+      "linha_origem": 151
+    },
+    {
+      "codigo": "420590203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.831,
+      "lon": -48.992,
+      "status_cadastro": "Operacional",
+      "linha_origem": 152
+    },
+    {
+      "codigo": "420590204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.915,
+      "lon": -48.989,
+      "status_cadastro": "Operacional",
+      "linha_origem": 153
+    },
+    {
+      "codigo": "420590205A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.906,
+      "lon": -48.935,
+      "status_cadastro": "Inativa",
+      "linha_origem": 154
+    },
+    {
+      "codigo": "420590206A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.914,
+      "lon": -48.908,
+      "status_cadastro": "Operacional",
+      "linha_origem": 155
+    },
+    {
+      "codigo": "420590207A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.931,
+      "lon": -48.957,
+      "status_cadastro": "Operacional",
+      "linha_origem": 156
+    },
+    {
+      "codigo": "420590208A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.80265,
+      "lon": -49.01268,
+      "status_cadastro": "Operacional",
+      "linha_origem": 157
+    },
+    {
+      "codigo": "420590209A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.953,
+      "lon": -48.988,
+      "status_cadastro": "Inativa",
+      "linha_origem": 158
+    },
+    {
+      "codigo": "420590210A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Gaspar",
+      "lat": -26.892,
+      "lon": -49.009,
+      "status_cadastro": "Operacional",
+      "linha_origem": 159
+    },
+    {
+      "codigo": "420600901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Governador Celso Ramos",
+      "lat": -27.36677,
+      "lon": -48.56375,
+      "status_cadastro": "Inativa",
+      "linha_origem": 160
+    },
+    {
+      "codigo": "420610801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Grão-Pará",
+      "lat": -28.1883,
+      "lon": -49.2137,
+      "status_cadastro": "Operacional",
+      "linha_origem": 161
+    },
+    {
+      "codigo": "420630601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guabiruba",
+      "lat": -27.08188,
+      "lon": -48.98972,
+      "status_cadastro": "Operacional",
+      "linha_origem": 162
+    },
+    {
+      "codigo": "420630602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guabiruba",
+      "lat": -27.12835,
+      "lon": -49.02327,
+      "status_cadastro": "Operacional",
+      "linha_origem": 163
+    },
+    {
+      "codigo": "420630603A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guabiruba",
+      "lat": -27.0679,
+      "lon": -48.96227,
+      "status_cadastro": "Operacional",
+      "linha_origem": 164
+    },
+    {
+      "codigo": "420650401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guaramirim",
+      "lat": -26.475,
+      "lon": -49.016,
+      "status_cadastro": "Operacional",
+      "linha_origem": 165
+    },
+    {
+      "codigo": "420650402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guaramirim",
+      "lat": -26.5405,
+      "lon": -49.0169,
+      "status_cadastro": "Inativa",
+      "linha_origem": 166
+    },
+    {
+      "codigo": "420650403A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guaramirim",
+      "lat": -26.47323,
+      "lon": -48.95957,
+      "status_cadastro": "Inativa",
+      "linha_origem": 167
+    },
+    {
+      "codigo": "420650404A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Guaramirim",
+      "lat": -26.46237,
+      "lon": -48.91975,
+      "status_cadastro": "Inativa",
+      "linha_origem": 168
+    },
+    {
+      "codigo": "420670202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Herval d'Oeste",
+      "lat": -27.172553,
+      "lon": -51.497377,
+      "status_cadastro": "Operacional",
+      "linha_origem": 169
+    },
+    {
+      "codigo": "420690001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ibirama",
+      "lat": -27.058733,
+      "lon": -49.504799,
+      "status_cadastro": "Operacional",
+      "linha_origem": 170
+    },
+    {
+      "codigo": "420690002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ibirama",
+      "lat": -27.060541,
+      "lon": -49.571696,
+      "status_cadastro": "Operacional",
+      "linha_origem": 171
+    },
+    {
+      "codigo": "420690003A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ibirama",
+      "lat": -27.084527,
+      "lon": -49.526098,
+      "status_cadastro": "Operacional",
+      "linha_origem": 172
+    },
+    {
+      "codigo": "420700701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Içara",
+      "lat": -28.72264,
+      "lon": -49.30026,
+      "status_cadastro": "Inativa",
+      "linha_origem": 173
+    },
+    {
+      "codigo": "420710601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.904,
+      "lon": -48.83,
+      "status_cadastro": "Operacional",
+      "linha_origem": 174
+    },
+    {
+      "codigo": "420710602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.876,
+      "lon": -48.84,
+      "status_cadastro": "Operacional",
+      "linha_origem": 175
+    },
+    {
+      "codigo": "420710603A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.939,
+      "lon": -48.845,
+      "status_cadastro": "Operacional",
+      "linha_origem": 176
+    },
+    {
+      "codigo": "420710604A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.906,
+      "lon": -48.86,
+      "status_cadastro": "Inativa",
+      "linha_origem": 177
+    },
+    {
+      "codigo": "420710605A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.911,
+      "lon": -48.815,
+      "status_cadastro": "Inativa",
+      "linha_origem": 178
+    },
+    {
+      "codigo": "420710606A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.852,
+      "lon": -48.771,
+      "status_cadastro": "Operacional",
+      "linha_origem": 179
+    },
+    {
+      "codigo": "420710607A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ilhota",
+      "lat": -26.932,
+      "lon": -48.776,
+      "status_cadastro": "Inativa",
+      "linha_origem": 180
+    },
+    {
+      "codigo": "420730401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Imbituba",
+      "lat": -28.15302,
+      "lon": -48.69196,
+      "status_cadastro": "Inativa",
+      "linha_origem": 181
+    },
+    {
+      "codigo": "420730402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Imbituba",
+      "lat": -28.23814,
+      "lon": -48.66014,
+      "status_cadastro": "Inativa",
+      "linha_origem": 182
+    },
+    {
+      "codigo": "420750202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Indaial",
+      "lat": -26.88128,
+      "lon": -49.23332,
+      "status_cadastro": "Operacional",
+      "linha_origem": 183
+    },
+    {
+      "codigo": "420750203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Indaial",
+      "lat": -26.87525,
+      "lon": -49.19488,
+      "status_cadastro": "Operacional",
+      "linha_origem": 184
+    },
+    {
+      "codigo": "420750204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Indaial",
+      "lat": -26.89003,
+      "lon": -49.19313,
+      "status_cadastro": "Inativa",
+      "linha_origem": 185
+    },
+    {
+      "codigo": "420770001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ipumirim",
+      "lat": -27.0757,
+      "lon": -52.13426,
+      "status_cadastro": "Inativa",
+      "linha_origem": 186
+    },
+    {
+      "codigo": "420780901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Irani",
+      "lat": -27.02329,
+      "lon": -51.8937,
+      "status_cadastro": "Operacional",
+      "linha_origem": 187
+    },
+    {
+      "codigo": "420790801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Irineópolis",
+      "lat": -26.23987,
+      "lon": -50.80416,
+      "status_cadastro": "Operacional",
+      "linha_origem": 188
+    },
+    {
+      "codigo": "420800501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itá",
+      "lat": -27.27476,
+      "lon": -52.34034,
+      "status_cadastro": "Operacional",
+      "linha_origem": 189
+    },
+    {
+      "codigo": "420810401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itaiópolis",
+      "lat": -26.3014,
+      "lon": -49.9066,
+      "status_cadastro": "Inativa",
+      "linha_origem": 190
+    },
+    {
+      "codigo": "420820302A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -27.036,
+      "lon": -48.856,
+      "status_cadastro": "Operacional",
+      "linha_origem": 191
+    },
+    {
+      "codigo": "420820303A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.956,
+      "lon": -48.644,
+      "status_cadastro": "Operacional",
+      "linha_origem": 192
+    },
+    {
+      "codigo": "420820304A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.91,
+      "lon": -48.653,
+      "status_cadastro": "Inativa",
+      "linha_origem": 193
+    },
+    {
+      "codigo": "420820305A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.927,
+      "lon": -48.649,
+      "status_cadastro": "Operacional",
+      "linha_origem": 194
+    },
+    {
+      "codigo": "420820306A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.909,
+      "lon": -48.677,
+      "status_cadastro": "Operacional",
+      "linha_origem": 195
+    },
+    {
+      "codigo": "420820307A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -27.031,
+      "lon": -48.801,
+      "status_cadastro": "Operacional",
+      "linha_origem": 196
+    },
+    {
+      "codigo": "420820309A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.925,
+      "lon": -48.686,
+      "status_cadastro": "Inativa",
+      "linha_origem": 197
+    },
+    {
+      "codigo": "420820310A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.968,
+      "lon": -48.749,
+      "status_cadastro": "Operacional",
+      "linha_origem": 198
+    },
+    {
+      "codigo": "420820311A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.911,
+      "lon": -48.719,
+      "status_cadastro": "Operacional",
+      "linha_origem": 199
+    },
+    {
+      "codigo": "420820312A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.94,
+      "lon": -48.747,
+      "status_cadastro": "Operacional",
+      "linha_origem": 200
+    },
+    {
+      "codigo": "420820313A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.921,
+      "lon": -48.655,
+      "status_cadastro": "Inativa",
+      "linha_origem": 201
+    },
+    {
+      "codigo": "420820314A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.871,
+      "lon": -48.699,
+      "status_cadastro": "Operacional",
+      "linha_origem": 202
+    },
+    {
+      "codigo": "420820315A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.919,
+      "lon": -48.668,
+      "status_cadastro": "Operacional",
+      "linha_origem": 203
+    },
+    {
+      "codigo": "420820316A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itajaí",
+      "lat": -26.894,
+      "lon": -48.688,
+      "status_cadastro": "Operacional",
+      "linha_origem": 204
+    },
+    {
+      "codigo": "420830201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itapema",
+      "lat": -27.133,
+      "lon": -48.61,
+      "status_cadastro": "Operacional",
+      "linha_origem": 205
+    },
+    {
+      "codigo": "420830203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itapema",
+      "lat": -27.116,
+      "lon": -48.616,
+      "status_cadastro": "Inativa",
+      "linha_origem": 206
+    },
+    {
+      "codigo": "420830204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itapema",
+      "lat": -27.085,
+      "lon": -48.618,
+      "status_cadastro": "Operacional",
+      "linha_origem": 207
+    },
+    {
+      "codigo": "420830205A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itapema",
+      "lat": -27.06,
+      "lon": -48.602,
+      "status_cadastro": "Operacional",
+      "linha_origem": 208
+    },
+    {
+      "codigo": "420840101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itapiranga",
+      "lat": -27.17259,
+      "lon": -53.71102,
+      "status_cadastro": "Inativa",
+      "linha_origem": 209
+    },
+    {
+      "codigo": "420845001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Itapoá",
+      "lat": -26.18108,
+      "lon": -48.60197,
+      "status_cadastro": "Inativa",
+      "linha_origem": 210
+    },
+    {
+      "codigo": "420850001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ituporanga",
+      "lat": -27.414,
+      "lon": -49.605,
+      "status_cadastro": "Operacional",
+      "linha_origem": 211
+    },
+    {
+      "codigo": "420850002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ituporanga",
+      "lat": -27.415,
+      "lon": -49.599,
+      "status_cadastro": "Operacional",
+      "linha_origem": 212
+    },
+    {
+      "codigo": "420850003A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ituporanga",
+      "lat": -27.417,
+      "lon": -49.583,
+      "status_cadastro": "Operacional",
+      "linha_origem": 213
+    },
+    {
+      "codigo": "420850004A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ituporanga",
+      "lat": -27.423,
+      "lon": -49.606,
+      "status_cadastro": "Inativa",
+      "linha_origem": 214
+    },
+    {
+      "codigo": "420850005A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ituporanga",
+      "lat": -27.447,
+      "lon": -49.502,
+      "status_cadastro": "Inativa",
+      "linha_origem": 215
+    },
+    {
+      "codigo": "420870801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jacinto Machado",
+      "lat": -28.99982,
+      "lon": -49.75406,
+      "status_cadastro": "Operacional",
+      "linha_origem": 216
+    },
+    {
+      "codigo": "420870810H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Jacinto Machado",
+      "lat": -28.9975,
+      "lon": -49.7621,
+      "status_cadastro": "Inativa",
+      "linha_origem": 217
+    },
+    {
+      "codigo": "420890601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.4799,
+      "lon": -49.082,
+      "status_cadastro": "Operacional",
+      "linha_origem": 218
+    },
+    {
+      "codigo": "420890602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.5051,
+      "lon": -49.0896,
+      "status_cadastro": "Operacional",
+      "linha_origem": 219
+    },
+    {
+      "codigo": "420890603A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.4548,
+      "lon": -49.1663,
+      "status_cadastro": "Inativa",
+      "linha_origem": 220
+    },
+    {
+      "codigo": "420890604A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.42641,
+      "lon": -49.07919,
+      "status_cadastro": "Operacional",
+      "linha_origem": 221
+    },
+    {
+      "codigo": "420890605A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.51601,
+      "lon": -49.12951,
+      "status_cadastro": "Inativa",
+      "linha_origem": 222
+    },
+    {
+      "codigo": "420890606A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.48459,
+      "lon": -49.04547,
+      "status_cadastro": "Operacional",
+      "linha_origem": 223
+    },
+    {
+      "codigo": "420890607A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Jaraguá do Sul",
+      "lat": -26.47651,
+      "lon": -49.10422,
+      "status_cadastro": "Operacional",
+      "linha_origem": 224
+    },
+    {
+      "codigo": "420900301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joaçaba",
+      "lat": -27.18104,
+      "lon": -51.51372,
+      "status_cadastro": "Operacional",
+      "linha_origem": 225
+    },
+    {
+      "codigo": "420910201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.383,
+      "lon": -48.82,
+      "status_cadastro": "Inativa",
+      "linha_origem": 226
+    },
+    {
+      "codigo": "420910202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.347,
+      "lon": -48.781,
+      "status_cadastro": "Operacional",
+      "linha_origem": 227
+    },
+    {
+      "codigo": "420910203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.249,
+      "lon": -48.797,
+      "status_cadastro": "Operacional",
+      "linha_origem": 228
+    },
+    {
+      "codigo": "420910204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.273,
+      "lon": -48.828,
+      "status_cadastro": "Inativa",
+      "linha_origem": 229
+    },
+    {
+      "codigo": "420910205A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.296,
+      "lon": -48.988,
+      "status_cadastro": "Inativa",
+      "linha_origem": 230
+    },
+    {
+      "codigo": "420910206A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.301,
+      "lon": -48.841,
+      "status_cadastro": "Operacional",
+      "linha_origem": 231
+    },
+    {
+      "codigo": "420910207A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.279,
+      "lon": -48.865,
+      "status_cadastro": "Inativa",
+      "linha_origem": 232
+    },
+    {
+      "codigo": "420910208A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Joinville",
+      "lat": -26.3309,
+      "lon": -48.875,
+      "status_cadastro": "Operacional",
+      "linha_origem": 233
+    },
+    {
+      "codigo": "420915104A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "José Boiteux",
+      "lat": -26.964653,
+      "lon": -49.621818,
+      "status_cadastro": "Operacional",
+      "linha_origem": 234
+    },
+    {
+      "codigo": "420930001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.807,
+      "lon": -50.305,
+      "status_cadastro": "Operacional",
+      "linha_origem": 235
+    },
+    {
+      "codigo": "420930002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.816,
+      "lon": -50.327,
+      "status_cadastro": "Operacional",
+      "linha_origem": 236
+    },
+    {
+      "codigo": "420930003A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.788,
+      "lon": -50.293,
+      "status_cadastro": "Operacional",
+      "linha_origem": 237
+    },
+    {
+      "codigo": "420930004A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.841,
+      "lon": -50.346,
+      "status_cadastro": "Operacional",
+      "linha_origem": 238
+    },
+    {
+      "codigo": "420930005A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.816,
+      "lon": -50.283,
+      "status_cadastro": "Operacional",
+      "linha_origem": 239
+    },
+    {
+      "codigo": "420930006A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.81348,
+      "lon": -50.37122,
+      "status_cadastro": "Operacional",
+      "linha_origem": 240
+    },
+    {
+      "codigo": "420930020H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Lages",
+      "lat": -27.8389,
+      "lon": -50.3224,
+      "status_cadastro": "Operacional",
+      "linha_origem": 241
+    },
+    {
+      "codigo": "420940902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Laguna",
+      "lat": -28.482491,
+      "lon": -48.883162,
+      "status_cadastro": "Inativa",
+      "linha_origem": 242
+    },
+    {
+      "codigo": "420940903A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Laguna",
+      "lat": -28.433452,
+      "lon": -48.850601,
+      "status_cadastro": "Inativa",
+      "linha_origem": 243
+    },
+    {
+      "codigo": "420940904A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Laguna",
+      "lat": -28.49195,
+      "lon": -48.77085,
+      "status_cadastro": "Inativa",
+      "linha_origem": 244
+    },
+    {
+      "codigo": "420940905A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Laguna",
+      "lat": -28.52268,
+      "lon": -48.8114,
+      "status_cadastro": "Inativa",
+      "linha_origem": 245
+    },
+    {
+      "codigo": "420950801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Laurentino",
+      "lat": -27.208128,
+      "lon": -49.724572,
+      "status_cadastro": "Operacional",
+      "linha_origem": 246
+    },
+    {
+      "codigo": "420950802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Laurentino",
+      "lat": -27.22312,
+      "lon": -49.733627,
+      "status_cadastro": "Operacional",
+      "linha_origem": 247
+    },
+    {
+      "codigo": "420960701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lauro Müller",
+      "lat": -28.3919,
+      "lon": -49.3881,
+      "status_cadastro": "Operacional",
+      "linha_origem": 248
+    },
+    {
+      "codigo": "420960702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lauro Müller",
+      "lat": -28.3952,
+      "lon": -49.3995,
+      "status_cadastro": "Operacional",
+      "linha_origem": 249
+    },
+    {
+      "codigo": "420960703A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lauro Müller",
+      "lat": -28.3803,
+      "lon": -49.4398,
+      "status_cadastro": "Operacional",
+      "linha_origem": 250
+    },
+    {
+      "codigo": "420980501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Leoberto Leal",
+      "lat": -27.50424,
+      "lon": -49.28839,
+      "status_cadastro": "Operacional",
+      "linha_origem": 251
+    },
+    {
+      "codigo": "420985401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lindóia do Sul",
+      "lat": -27.05239,
+      "lon": -52.08314,
+      "status_cadastro": "Operacional",
+      "linha_origem": 252
+    },
+    {
+      "codigo": "420990401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lontras",
+      "lat": -27.188887,
+      "lon": -49.523091,
+      "status_cadastro": "Operacional",
+      "linha_origem": 253
+    },
+    {
+      "codigo": "420990402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lontras",
+      "lat": -27.156598,
+      "lon": -49.53539,
+      "status_cadastro": "Operacional",
+      "linha_origem": 254
+    },
+    {
+      "codigo": "420990403A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Lontras",
+      "lat": -27.16701,
+      "lon": -49.54349,
+      "status_cadastro": "Operacional",
+      "linha_origem": 255
+    },
+    {
+      "codigo": "421000101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Luiz Alves",
+      "lat": -26.695,
+      "lon": -48.904,
+      "status_cadastro": "Inativa",
+      "linha_origem": 256
+    },
+    {
+      "codigo": "421000103A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Luiz Alves",
+      "lat": -26.67,
+      "lon": -48.845,
+      "status_cadastro": "Operacional",
+      "linha_origem": 257
+    },
+    {
+      "codigo": "421000104A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Luiz Alves",
+      "lat": -26.767,
+      "lon": -48.963,
+      "status_cadastro": "Operacional",
+      "linha_origem": 258
+    },
+    {
+      "codigo": "421000105A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Luiz Alves",
+      "lat": -26.766,
+      "lon": -48.987,
+      "status_cadastro": "Operacional",
+      "linha_origem": 259
+    },
+    {
+      "codigo": "421010001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Mafra",
+      "lat": -26.114,
+      "lon": -49.806,
+      "status_cadastro": "Inativa",
+      "linha_origem": 260
+    },
+    {
+      "codigo": "421020908H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Major Gercino",
+      "lat": -27.4219,
+      "lon": -48.9588,
+      "status_cadastro": "Inativa",
+      "linha_origem": 261
+    },
+    {
+      "codigo": "421040701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Maracajá",
+      "lat": -28.84704,
+      "lon": -49.45364,
+      "status_cadastro": "Inativa",
+      "linha_origem": 262
+    },
+    {
+      "codigo": "421050601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Maravilha",
+      "lat": -26.76057,
+      "lon": -53.17418,
+      "status_cadastro": "Inativa",
+      "linha_origem": 263
+    },
+    {
+      "codigo": "421060501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Massaranduba",
+      "lat": -26.6081,
+      "lon": -48.8948,
+      "status_cadastro": "Operacional",
+      "linha_origem": 264
+    },
+    {
+      "codigo": "421080301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Meleiro",
+      "lat": -28.82794,
+      "lon": -49.63469,
+      "status_cadastro": "Inativa",
+      "linha_origem": 265
+    },
+    {
+      "codigo": "421085201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Mirim Doce",
+      "lat": -27.213,
+      "lon": -50.122,
+      "status_cadastro": "Operacional",
+      "linha_origem": 266
+    },
+    {
+      "codigo": "421085202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Mirim Doce",
+      "lat": -27.192,
+      "lon": -50.177,
+      "status_cadastro": "Operacional",
+      "linha_origem": 267
+    },
+    {
+      "codigo": "421100901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Mondaí",
+      "lat": -27.10304,
+      "lon": -53.39507,
+      "status_cadastro": "Operacional",
+      "linha_origem": 268
+    },
+    {
+      "codigo": "421110801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Monte Castelo",
+      "lat": -26.45387,
+      "lon": -50.23787,
+      "status_cadastro": "Operacional",
+      "linha_origem": 269
+    },
+    {
+      "codigo": "421120701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Morro da Fumaça",
+      "lat": -28.65704,
+      "lon": -49.21527,
+      "status_cadastro": "Inativa",
+      "linha_origem": 270
+    },
+    {
+      "codigo": "421125601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Morro Grande",
+      "lat": -28.80268,
+      "lon": -49.71978,
+      "status_cadastro": "Operacional",
+      "linha_origem": 271
+    },
+    {
+      "codigo": "421130601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Navegantes",
+      "lat": -26.793,
+      "lon": -48.759,
+      "status_cadastro": "Operacional",
+      "linha_origem": 272
+    },
+    {
+      "codigo": "421130602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Navegantes",
+      "lat": -26.88,
+      "lon": -48.661,
+      "status_cadastro": "Operacional",
+      "linha_origem": 273
+    },
+    {
+      "codigo": "421130604A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Navegantes",
+      "lat": -26.835,
+      "lon": -48.63,
+      "status_cadastro": "Operacional",
+      "linha_origem": 274
+    },
+    {
+      "codigo": "421150401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Nova Trento",
+      "lat": -27.286,
+      "lon": -48.928,
+      "status_cadastro": "Operacional",
+      "linha_origem": 275
+    },
+    {
+      "codigo": "421150402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Nova Trento",
+      "lat": -27.297,
+      "lon": -48.947,
+      "status_cadastro": "Inativa",
+      "linha_origem": 276
+    },
+    {
+      "codigo": "421150407H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Nova Trento",
+      "lat": -27.2964,
+      "lon": -48.9706,
+      "status_cadastro": "Inativa",
+      "linha_origem": 277
+    },
+    {
+      "codigo": "421160302A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Nova Veneza",
+      "lat": -28.6324,
+      "lon": -49.5097,
+      "status_cadastro": "Operacional",
+      "linha_origem": 278
+    },
+    {
+      "codigo": "421160303A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Nova Veneza",
+      "lat": -28.6591,
+      "lon": -49.4631,
+      "status_cadastro": "Operacional",
+      "linha_origem": 279
+    },
+    {
+      "codigo": "421160304A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Nova Veneza",
+      "lat": -28.7076,
+      "lon": -49.484,
+      "status_cadastro": "Operacional",
+      "linha_origem": 280
+    },
+    {
+      "codigo": "421160306H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Nova Veneza",
+      "lat": -28.6371,
+      "lon": -49.5001,
+      "status_cadastro": "Inativa",
+      "linha_origem": 281
+    },
+    {
+      "codigo": "421170201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Orleans",
+      "lat": -28.3574,
+      "lon": -49.2908,
+      "status_cadastro": "Inativa",
+      "linha_origem": 282
+    },
+    {
+      "codigo": "421170202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Orleans",
+      "lat": -28.2156,
+      "lon": -49.45675,
+      "status_cadastro": "Operacional",
+      "linha_origem": 283
+    },
+    {
+      "codigo": "421175101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Otacílio Costa",
+      "lat": -27.48299,
+      "lon": -50.1188,
+      "status_cadastro": "Inativa",
+      "linha_origem": 284
+    },
+    {
+      "codigo": "421190001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Palhoça",
+      "lat": -27.64086,
+      "lon": -48.67921,
+      "status_cadastro": "Operacional",
+      "linha_origem": 285
+    },
+    {
+      "codigo": "421190002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Palhoça",
+      "lat": -27.63478,
+      "lon": -48.64643,
+      "status_cadastro": "Inativa",
+      "linha_origem": 286
+    },
+    {
+      "codigo": "421190003A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Palhoça",
+      "lat": -27.73015,
+      "lon": -48.6398,
+      "status_cadastro": "Operacional",
+      "linha_origem": 287
+    },
+    {
+      "codigo": "421190004A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Palhoça",
+      "lat": -27.67986,
+      "lon": -48.69472,
+      "status_cadastro": "Inativa",
+      "linha_origem": 288
+    },
+    {
+      "codigo": "421190005A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Palhoça",
+      "lat": -27.887418,
+      "lon": -48.585601,
+      "status_cadastro": "Operacional",
+      "linha_origem": 289
+    },
+    {
+      "codigo": "421210601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Palmitos",
+      "lat": -27.06812,
+      "lon": -53.15862,
+      "status_cadastro": "Inativa",
+      "linha_origem": 290
+    },
+    {
+      "codigo": "421220501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Papanduva",
+      "lat": -26.41128,
+      "lon": -50.14322,
+      "status_cadastro": "Operacional",
+      "linha_origem": 291
+    },
+    {
+      "codigo": "421220502A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Papanduva",
+      "lat": -26.6898,
+      "lon": -50.14341,
+      "status_cadastro": "Inativa",
+      "linha_origem": 292
+    },
+    {
+      "codigo": "421240312H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Pedras Grandes",
+      "lat": -28.4326,
+      "lon": -49.2096,
+      "status_cadastro": "Operacional",
+      "linha_origem": 293
+    },
+    {
+      "codigo": "421270001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Petrolândia",
+      "lat": -27.53274,
+      "lon": -49.69894,
+      "status_cadastro": "Operacional",
+      "linha_origem": 294
+    },
+    {
+      "codigo": "421280901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Piçarras",
+      "lat": -26.735,
+      "lon": -48.694,
+      "status_cadastro": "Operacional",
+      "linha_origem": 295
+    },
+    {
+      "codigo": "421280915H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Balneário Piçarras",
+      "lat": -26.7613,
+      "lon": -48.6831,
+      "status_cadastro": "Operacional",
+      "linha_origem": 296
+    },
+    {
+      "codigo": "421320301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.767,
+      "lon": -49.177,
+      "status_cadastro": "Operacional",
+      "linha_origem": 297
+    },
+    {
+      "codigo": "421320302A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.66602,
+      "lon": -49.15249,
+      "status_cadastro": "Inativa",
+      "linha_origem": 298
+    },
+    {
+      "codigo": "421320303A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.76697,
+      "lon": -49.17691,
+      "status_cadastro": "Operacional",
+      "linha_origem": 299
+    },
+    {
+      "codigo": "421320304A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.73,
+      "lon": -49.142,
+      "status_cadastro": "Inativa",
+      "linha_origem": 300
+    },
+    {
+      "codigo": "421320306A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.774,
+      "lon": -49.163,
+      "status_cadastro": "Operacional",
+      "linha_origem": 301
+    },
+    {
+      "codigo": "421320307A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.742,
+      "lon": -49.174,
+      "status_cadastro": "Operacional",
+      "linha_origem": 302
+    },
+    {
+      "codigo": "421320308A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.723,
+      "lon": -49.182,
+      "status_cadastro": "Inativa",
+      "linha_origem": 303
+    },
+    {
+      "codigo": "421320321H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Pomerode",
+      "lat": -26.7259,
+      "lon": -49.172,
+      "status_cadastro": "Operacional",
+      "linha_origem": 304
+    },
+    {
+      "codigo": "421330202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ponte Alta",
+      "lat": -27.481593,
+      "lon": -50.380142,
+      "status_cadastro": "Inativa",
+      "linha_origem": 305
+    },
+    {
+      "codigo": "421335101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ponte Alta do Norte",
+      "lat": -27.156,
+      "lon": -50.467,
+      "status_cadastro": "Inativa",
+      "linha_origem": 306
+    },
+    {
+      "codigo": "421340101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Ponte Serrada",
+      "lat": -26.85814,
+      "lon": -52.03214,
+      "status_cadastro": "Operacional",
+      "linha_origem": 307
+    },
+    {
+      "codigo": "421350001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Porto Belo",
+      "lat": -27.15488,
+      "lon": -48.54205,
+      "status_cadastro": "Inativa",
+      "linha_origem": 308
+    },
+    {
+      "codigo": "421360902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Porto União",
+      "lat": -26.236529,
+      "lon": -51.084179,
+      "status_cadastro": "Inativa",
+      "linha_origem": 309
+    },
+    {
+      "codigo": "421370801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pouso Redondo",
+      "lat": -27.328705,
+      "lon": -49.96229,
+      "status_cadastro": "Operacional",
+      "linha_origem": 310
+    },
+    {
+      "codigo": "421370802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Pouso Redondo",
+      "lat": -27.261285,
+      "lon": -49.93306,
+      "status_cadastro": "Operacional",
+      "linha_origem": 311
+    },
+    {
+      "codigo": "421380702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Praia Grande",
+      "lat": -29.14258,
+      "lon": -49.89252,
+      "status_cadastro": "Inativa",
+      "linha_origem": 312
+    },
+    {
+      "codigo": "421380703A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Praia Grande",
+      "lat": -29.195,
+      "lon": -49.963,
+      "status_cadastro": "Operacional",
+      "linha_origem": 313
+    },
+    {
+      "codigo": "421400301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Presidente Getúlio",
+      "lat": -27.073,
+      "lon": -49.678,
+      "status_cadastro": "Inativa",
+      "linha_origem": 314
+    },
+    {
+      "codigo": "421400303A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Presidente Getúlio",
+      "lat": -27.043,
+      "lon": -49.617,
+      "status_cadastro": "Inativa",
+      "linha_origem": 315
+    },
+    {
+      "codigo": "421410201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Presidente Nereu",
+      "lat": -27.27812,
+      "lon": -49.39028,
+      "status_cadastro": "Inativa",
+      "linha_origem": 316
+    },
+    {
+      "codigo": "421420101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Quilombo",
+      "lat": -26.72645,
+      "lon": -52.71834,
+      "status_cadastro": "Operacional",
+      "linha_origem": 317
+    },
+    {
+      "codigo": "421420102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Quilombo",
+      "lat": -26.68023,
+      "lon": -52.74678,
+      "status_cadastro": "Inativa",
+      "linha_origem": 318
+    },
+    {
+      "codigo": "421430001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rancho Queimado",
+      "lat": -27.6782,
+      "lon": -49.04174,
+      "status_cadastro": "Inativa",
+      "linha_origem": 319
+    },
+    {
+      "codigo": "421450801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio do Campo",
+      "lat": -26.821,
+      "lon": -50.011,
+      "status_cadastro": "Operacional",
+      "linha_origem": 320
+    },
+    {
+      "codigo": "421450802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio do Campo",
+      "lat": -26.942,
+      "lon": -50.194,
+      "status_cadastro": "Inativa",
+      "linha_origem": 321
+    },
+    {
+      "codigo": "421460701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio do Oeste",
+      "lat": -27.19567,
+      "lon": -49.79585,
+      "status_cadastro": "Operacional",
+      "linha_origem": 322
+    },
+    {
+      "codigo": "421470601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio dos Cedros",
+      "lat": -26.740682,
+      "lon": -49.271721,
+      "status_cadastro": "Operacional",
+      "linha_origem": 323
+    },
+    {
+      "codigo": "421470602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio dos Cedros",
+      "lat": -26.704908,
+      "lon": -49.27234,
+      "status_cadastro": "Operacional",
+      "linha_origem": 324
+    },
+    {
+      "codigo": "421480504A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio do Sul",
+      "lat": -27.198,
+      "lon": -49.674,
+      "status_cadastro": "Inativa",
+      "linha_origem": 325
+    },
+    {
+      "codigo": "421480506A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio do Sul",
+      "lat": -27.223,
+      "lon": -49.627,
+      "status_cadastro": "Inativa",
+      "linha_origem": 326
+    },
+    {
+      "codigo": "421490401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio Fortuna",
+      "lat": -28.136,
+      "lon": -49.108,
+      "status_cadastro": "Inativa",
+      "linha_origem": 327
+    },
+    {
+      "codigo": "421490402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio Fortuna",
+      "lat": -28.04433,
+      "lon": -49.28515,
+      "status_cadastro": "Inativa",
+      "linha_origem": 328
+    },
+    {
+      "codigo": "421500001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio Negrinho",
+      "lat": -26.229,
+      "lon": -49.496,
+      "status_cadastro": "Operacional",
+      "linha_origem": 329
+    },
+    {
+      "codigo": "421500002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio Negrinho",
+      "lat": -26.261,
+      "lon": -49.509,
+      "status_cadastro": "Operacional",
+      "linha_origem": 330
+    },
+    {
+      "codigo": "421500009H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "Rio Negrinho",
+      "lat": -26.2607,
+      "lon": -49.511,
+      "status_cadastro": "Inativa",
+      "linha_origem": 331
+    },
+    {
+      "codigo": "421505901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rio Rufino",
+      "lat": -27.8941,
+      "lon": -49.74887,
+      "status_cadastro": "Inativa",
+      "linha_origem": 332
+    },
+    {
+      "codigo": "421510901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rodeio",
+      "lat": -26.952,
+      "lon": -49.353,
+      "status_cadastro": "Inativa",
+      "linha_origem": 333
+    },
+    {
+      "codigo": "421510903A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rodeio",
+      "lat": -26.846,
+      "lon": -49.326,
+      "status_cadastro": "Operacional",
+      "linha_origem": 334
+    },
+    {
+      "codigo": "421510904A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Rodeio",
+      "lat": -26.924,
+      "lon": -49.369,
+      "status_cadastro": "Operacional",
+      "linha_origem": 335
+    },
+    {
+      "codigo": "421530701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Salete",
+      "lat": -26.89216,
+      "lon": -49.99184,
+      "status_cadastro": "Operacional",
+      "linha_origem": 336
+    },
+    {
+      "codigo": "421530703A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Salete",
+      "lat": -26.97143,
+      "lon": -50.00102,
+      "status_cadastro": "Operacional",
+      "linha_origem": 337
+    },
+    {
+      "codigo": "421530704A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Salete",
+      "lat": -26.9991,
+      "lon": -50.05146,
+      "status_cadastro": "Inativa",
+      "linha_origem": 338
+    },
+    {
+      "codigo": "421550501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Cecília",
+      "lat": -26.96205,
+      "lon": -50.423133,
+      "status_cadastro": "Operacional",
+      "linha_origem": 339
+    },
+    {
+      "codigo": "421550502A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Cecília",
+      "lat": -26.969735,
+      "lon": -50.412031,
+      "status_cadastro": "Operacional",
+      "linha_origem": 340
+    },
+    {
+      "codigo": "421560401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Rosa de Lima",
+      "lat": -28.0383,
+      "lon": -49.1278,
+      "status_cadastro": "Inativa",
+      "linha_origem": 341
+    },
+    {
+      "codigo": "421560402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Rosa de Lima",
+      "lat": -27.9857,
+      "lon": -49.2853,
+      "status_cadastro": "Inativa",
+      "linha_origem": 342
+    },
+    {
+      "codigo": "421565301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Rosa do Sul",
+      "lat": -29.09768,
+      "lon": -49.81655,
+      "status_cadastro": "Inativa",
+      "linha_origem": 343
+    },
+    {
+      "codigo": "421567901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Terezinha",
+      "lat": -26.65671,
+      "lon": -49.99276,
+      "status_cadastro": "Operacional",
+      "linha_origem": 344
+    },
+    {
+      "codigo": "421567902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santa Terezinha",
+      "lat": -26.77489,
+      "lon": -50.00846,
+      "status_cadastro": "Inativa",
+      "linha_origem": 345
+    },
+    {
+      "codigo": "421570301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Santo Amaro da Imperatriz",
+      "lat": -27.71627,
+      "lon": -48.80865,
+      "status_cadastro": "Inativa",
+      "linha_origem": 346
+    },
+    {
+      "codigo": "421580201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Bento do Sul",
+      "lat": -26.229,
+      "lon": -49.41,
+      "status_cadastro": "Inativa",
+      "linha_origem": 347
+    },
+    {
+      "codigo": "421600801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Carlos",
+      "lat": -27.079599,
+      "lon": -53.002743,
+      "status_cadastro": "Operacional",
+      "linha_origem": 348
+    },
+    {
+      "codigo": "421600802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Carlos",
+      "lat": -27.092199,
+      "lon": -53.00694,
+      "status_cadastro": "Operacional",
+      "linha_origem": 349
+    },
+    {
+      "codigo": "421610701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Domingos",
+      "lat": -26.55964,
+      "lon": -52.53216,
+      "status_cadastro": "Operacional",
+      "linha_origem": 350
+    },
+    {
+      "codigo": "421620601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Francisco do Sul",
+      "lat": -26.2426,
+      "lon": -48.6385,
+      "status_cadastro": "Operacional",
+      "linha_origem": 351
+    },
+    {
+      "codigo": "421620602A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Francisco do Sul",
+      "lat": -26.22188,
+      "lon": -48.50107,
+      "status_cadastro": "Operacional",
+      "linha_origem": 352
+    },
+    {
+      "codigo": "421620603A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Francisco do Sul",
+      "lat": -26.38688,
+      "lon": -48.5885,
+      "status_cadastro": "Operacional",
+      "linha_origem": 353
+    },
+    {
+      "codigo": "421630501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São João Batista",
+      "lat": -27.27716,
+      "lon": -48.85201,
+      "status_cadastro": "Inativa",
+      "linha_origem": 354
+    },
+    {
+      "codigo": "421630502A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São João Batista",
+      "lat": -27.284,
+      "lon": -48.853,
+      "status_cadastro": "Inativa",
+      "linha_origem": 355
+    },
+    {
+      "codigo": "421630503A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São João Batista",
+      "lat": -27.314,
+      "lon": -48.851,
+      "status_cadastro": "Inativa",
+      "linha_origem": 356
+    },
+    {
+      "codigo": "421630504A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São João Batista",
+      "lat": -27.265,
+      "lon": -48.834,
+      "status_cadastro": "Inativa",
+      "linha_origem": 357
+    },
+    {
+      "codigo": "421640401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São João do Sul",
+      "lat": -29.22411,
+      "lon": -49.80934,
+      "status_cadastro": "Inativa",
+      "linha_origem": 358
+    },
+    {
+      "codigo": "421660202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.583,
+      "lon": -48.681,
+      "status_cadastro": "Inativa",
+      "linha_origem": 359
+    },
+    {
+      "codigo": "421660203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.559,
+      "lon": -48.631,
+      "status_cadastro": "Operacional",
+      "linha_origem": 360
+    },
+    {
+      "codigo": "421660204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.614,
+      "lon": -48.654,
+      "status_cadastro": "Inativa",
+      "linha_origem": 361
+    },
+    {
+      "codigo": "421660205A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.594,
+      "lon": -48.607,
+      "status_cadastro": "Inativa",
+      "linha_origem": 362
+    },
+    {
+      "codigo": "421660207A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.546,
+      "lon": -48.643,
+      "status_cadastro": "Operacional",
+      "linha_origem": 363
+    },
+    {
+      "codigo": "421660209A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.561,
+      "lon": -48.673,
+      "status_cadastro": "Inativa",
+      "linha_origem": 364
+    },
+    {
+      "codigo": "421660210A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.618,
+      "lon": -48.642,
+      "status_cadastro": "Inativa",
+      "linha_origem": 365
+    },
+    {
+      "codigo": "421660211H",
+      "tipo_rede": "Hidrológica",
+      "uf": "SC",
+      "municipio": "São José",
+      "lat": -27.5984,
+      "lon": -48.6831,
+      "status_cadastro": "Inativa",
+      "linha_origem": 366
+    },
+    {
+      "codigo": "421670101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José do Cedro",
+      "lat": -26.45164,
+      "lon": -53.50752,
+      "status_cadastro": "Inativa",
+      "linha_origem": 367
+    },
+    {
+      "codigo": "421680001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São José do Cerrito",
+      "lat": -27.65962,
+      "lon": -50.57888,
+      "status_cadastro": "Inativa",
+      "linha_origem": 368
+    },
+    {
+      "codigo": "421710501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Martinho",
+      "lat": -28.16515,
+      "lon": -48.98225,
+      "status_cadastro": "Inativa",
+      "linha_origem": 369
+    },
+    {
+      "codigo": "421720401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Miguel do Oeste",
+      "lat": -26.73799,
+      "lon": -53.52583,
+      "status_cadastro": "Inativa",
+      "linha_origem": 370
+    },
+    {
+      "codigo": "421725301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "São Pedro de Alcântara",
+      "lat": -27.56629,
+      "lon": -48.8035,
+      "status_cadastro": "Operacional",
+      "linha_origem": 371
+    },
+    {
+      "codigo": "421740203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Schroeder",
+      "lat": -26.392,
+      "lon": -49.09,
+      "status_cadastro": "Operacional",
+      "linha_origem": 372
+    },
+    {
+      "codigo": "421740204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Schroeder",
+      "lat": -26.386,
+      "lon": -49.06,
+      "status_cadastro": "Operacional",
+      "linha_origem": 373
+    },
+    {
+      "codigo": "421740205A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Schroeder",
+      "lat": -26.412,
+      "lon": -49.077,
+      "status_cadastro": "Inativa",
+      "linha_origem": 374
+    },
+    {
+      "codigo": "421750102A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Seara",
+      "lat": -27.08402,
+      "lon": -52.28532,
+      "status_cadastro": "Inativa",
+      "linha_origem": 375
+    },
+    {
+      "codigo": "421760001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Siderópolis",
+      "lat": -28.6285,
+      "lon": -49.4043,
+      "status_cadastro": "Operacional",
+      "linha_origem": 376
+    },
+    {
+      "codigo": "421760002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Siderópolis",
+      "lat": -28.5807,
+      "lon": -49.4251,
+      "status_cadastro": "Operacional",
+      "linha_origem": 377
+    },
+    {
+      "codigo": "421770901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Sombrio",
+      "lat": -29.04585,
+      "lon": -49.71132,
+      "status_cadastro": "Inativa",
+      "linha_origem": 378
+    },
+    {
+      "codigo": "421770902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Sombrio",
+      "lat": -29.11587,
+      "lon": -49.63667,
+      "status_cadastro": "Operacional",
+      "linha_origem": 379
+    },
+    {
+      "codigo": "421770903A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Sombrio",
+      "lat": -29.0692,
+      "lon": -49.6267,
+      "status_cadastro": "Operacional",
+      "linha_origem": 380
+    },
+    {
+      "codigo": "421780801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Taió",
+      "lat": -27.067,
+      "lon": -50.034,
+      "status_cadastro": "Inativa",
+      "linha_origem": 381
+    },
+    {
+      "codigo": "421780802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Taió",
+      "lat": -27.157,
+      "lon": -50.037,
+      "status_cadastro": "Operacional",
+      "linha_origem": 382
+    },
+    {
+      "codigo": "421790701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Tangará",
+      "lat": -27.10531,
+      "lon": -51.24585,
+      "status_cadastro": "Operacional",
+      "linha_origem": 383
+    },
+    {
+      "codigo": "421800401A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Tijucas",
+      "lat": -27.28061,
+      "lon": -48.70088,
+      "status_cadastro": "Inativa",
+      "linha_origem": 384
+    },
+    {
+      "codigo": "421800402A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Tijucas",
+      "lat": -27.238,
+      "lon": -48.6427,
+      "status_cadastro": "Operacional",
+      "linha_origem": 385
+    },
+    {
+      "codigo": "421810301A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbé do Sul",
+      "lat": -28.8312,
+      "lon": -49.85072,
+      "status_cadastro": "Operacional",
+      "linha_origem": 386
+    },
+    {
+      "codigo": "421820201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbó",
+      "lat": -26.806,
+      "lon": -49.268,
+      "status_cadastro": "Operacional",
+      "linha_origem": 387
+    },
+    {
+      "codigo": "421820202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbó",
+      "lat": -26.816,
+      "lon": -49.251,
+      "status_cadastro": "Inativa",
+      "linha_origem": 388
+    },
+    {
+      "codigo": "421820204A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbó",
+      "lat": -26.799,
+      "lon": -49.299,
+      "status_cadastro": "Operacional",
+      "linha_origem": 389
+    },
+    {
+      "codigo": "421820205A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbó",
+      "lat": -26.842,
+      "lon": -49.253,
+      "status_cadastro": "Operacional",
+      "linha_origem": 390
+    },
+    {
+      "codigo": "421820206A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbó",
+      "lat": -26.83,
+      "lon": -49.287,
+      "status_cadastro": "Operacional",
+      "linha_origem": 391
+    },
+    {
+      "codigo": "421825101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Timbó Grande",
+      "lat": -26.61264,
+      "lon": -50.67652,
+      "status_cadastro": "Inativa",
+      "linha_origem": 392
+    },
+    {
+      "codigo": "421830101A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Três Barras",
+      "lat": -26.13026,
+      "lon": -50.30978,
+      "status_cadastro": "Operacional",
+      "linha_origem": 393
+    },
+    {
+      "codigo": "421860801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Trombudo Central",
+      "lat": -27.300619,
+      "lon": -49.791784,
+      "status_cadastro": "Operacional",
+      "linha_origem": 394
+    },
+    {
+      "codigo": "421870702A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Tubarão",
+      "lat": -28.4444,
+      "lon": -49.01939,
+      "status_cadastro": "Operacional",
+      "linha_origem": 395
+    },
+    {
+      "codigo": "421880601A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Turvo",
+      "lat": -28.92801,
+      "lon": -49.67958,
+      "status_cadastro": "Inativa",
+      "linha_origem": 396
+    },
+    {
+      "codigo": "421890501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Urubici",
+      "lat": -28.016,
+      "lon": -49.596,
+      "status_cadastro": "Operacional",
+      "linha_origem": 397
+    },
+    {
+      "codigo": "421890502A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Urubici",
+      "lat": -28.014,
+      "lon": -49.595,
+      "status_cadastro": "Operacional",
+      "linha_origem": 398
+    },
+    {
+      "codigo": "421890503A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Urubici",
+      "lat": -27.991,
+      "lon": -49.588,
+      "status_cadastro": "Operacional",
+      "linha_origem": 399
+    },
+    {
+      "codigo": "421900201A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Urussanga",
+      "lat": -28.5144,
+      "lon": -49.32,
+      "status_cadastro": "Operacional",
+      "linha_origem": 400
+    },
+    {
+      "codigo": "421900202A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Urussanga",
+      "lat": -28.511,
+      "lon": -49.3699,
+      "status_cadastro": "Inativa",
+      "linha_origem": 401
+    },
+    {
+      "codigo": "421900203A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Urussanga",
+      "lat": -28.5319,
+      "lon": -49.3214,
+      "status_cadastro": "Operacional",
+      "linha_origem": 402
+    },
+    {
+      "codigo": "421915001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Vargem",
+      "lat": -27.490782,
+      "lon": -50.977861,
+      "status_cadastro": "Operacional",
+      "linha_origem": 403
+    },
+    {
+      "codigo": "421915002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Vargem",
+      "lat": -27.491481,
+      "lon": -50.982786,
+      "status_cadastro": "Operacional",
+      "linha_origem": 404
+    },
+    {
+      "codigo": "421920002A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Vidal Ramos",
+      "lat": -27.391,
+      "lon": -49.362,
+      "status_cadastro": "Operacional",
+      "linha_origem": 405
+    },
+    {
+      "codigo": "421920003A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Vidal Ramos",
+      "lat": -27.409,
+      "lon": -49.463,
+      "status_cadastro": "Inativa",
+      "linha_origem": 406
+    },
+    {
+      "codigo": "421930901A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Videira",
+      "lat": -27.00377,
+      "lon": -51.16095,
+      "status_cadastro": "Operacional",
+      "linha_origem": 407
+    },
+    {
+      "codigo": "421930902A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Videira",
+      "lat": -27.02053,
+      "lon": -51.14116,
+      "status_cadastro": "Inativa",
+      "linha_origem": 408
+    },
+    {
+      "codigo": "421930903A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Videira",
+      "lat": -27.00089,
+      "lon": -51.14152,
+      "status_cadastro": "Operacional",
+      "linha_origem": 409
+    },
+    {
+      "codigo": "421930904A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Videira",
+      "lat": -27.00514,
+      "lon": -51.0703,
+      "status_cadastro": "Operacional",
+      "linha_origem": 410
+    },
+    {
+      "codigo": "421935801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Vitor Meireles",
+      "lat": -26.882113,
+      "lon": -49.834503,
+      "status_cadastro": "Operacional",
+      "linha_origem": 411
+    },
+    {
+      "codigo": "421935802A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Vitor Meireles",
+      "lat": -26.627742,
+      "lon": -49.659392,
+      "status_cadastro": "Operacional",
+      "linha_origem": 412
+    },
+    {
+      "codigo": "421940801A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Witmarsum",
+      "lat": -26.918,
+      "lon": -49.788,
+      "status_cadastro": "Operacional",
+      "linha_origem": 413
+    },
+    {
+      "codigo": "421950701A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Xanxerê",
+      "lat": -26.8394,
+      "lon": -52.4117,
+      "status_cadastro": "Operacional",
+      "linha_origem": 414
+    },
+    {
+      "codigo": "421970501A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Xaxim",
+      "lat": -26.95455,
+      "lon": -52.52973,
+      "status_cadastro": "Operacional",
+      "linha_origem": 415
+    },
+    {
+      "codigo": "422000001A",
+      "tipo_rede": "Pluviométrica",
+      "uf": "SC",
+      "municipio": "Balneário Rincão",
+      "lat": -28.8328,
+      "lon": -49.2374,
+      "status_cadastro": "Operacional",
+      "linha_origem": 416
+    }
+  ]
+}
