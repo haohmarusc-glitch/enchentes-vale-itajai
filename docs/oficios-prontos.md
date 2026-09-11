@@ -56,7 +56,7 @@ Tenho uma única dúvida, e ela decide se posso ou não mostrar essas cotas ao l
 
 Pergunto porque a conta não fecha sozinha: a cota de emergência de Gaspar é 7,00 m, e se as cotas de Ilhota estivessem na régua de Gaspar, Ilhota só entraria em atenção com o rio 2,20 m acima da emergência de Gaspar. É possível, mas precisa estar escrito para não ser suposto.
 
-Se a estação da Ponte Cadorin publicar leituras em algum endereço, agradeço a indicação.
+Se a estação da Ponte Cadorin publicar leituras em algum endereço, agradeço a indicação. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro.
 
 Muito obrigado pelo trabalho de vocês.
 
@@ -123,7 +123,7 @@ Registro também, no mesmo espírito, que o registro de 20/11/1855 traz data de 
 
 Sei que são muitas perguntas de uma vez, e nenhuma delas é urgente. Se for mais prático responder só a primeira — se a régua do Açu voltou ou onde encontrá-la —, já ajuda muito. Se houver um endereço direto (um arquivo ou serviço) de onde eu possa ler o nível sem consultar a página, também agradeço a indicação: eu identifico todas as consultas com o nome do projeto e respeito qualquer limite que vocês indicarem.
 
-Todo dado de vocês que o site usa aparece com crédito à Defesa Civil de Gaspar.
+Todo dado de vocês que o site usa aparece com crédito à Defesa Civil de Gaspar. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro.
 
 Fico à disposição e agradeço a atenção.
 Atenciosamente,
@@ -150,7 +150,7 @@ Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com d
 
 Não os localizei no portal, que publica apenas os boletins mais recentes, nem no Internet Archive, cujo acervo do diretório se encerra em 2022. Aproveito para perguntar se há acesso programático ao acervo de boletins e avisos, ou listagem por período, o que evitaria novos pedidos como este.
 
-Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e-mail até a remoção das estações, peço também a inclusão do endereço haohmarusc@gmail.com nessa lista, enquanto ela existir.
+Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e-mail até a remoção das estações, peço também a inclusão do endereço haohmarusc@gmail.com nessa lista, enquanto ela existir. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro.
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
@@ -180,7 +180,7 @@ Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com d
 
 3. **Qual das duas legendas vale para a Ponte Estaiada hoje?** O portal mostra a estação 4 "Ponte Estaiada – ANA" com normalidade abaixo de 4,00 m, atenção acima de 4,00 m ou chuva acima de 30 mm e emergência acima de 7,00 m; e a estação 79 "Ponte Estaiada – DCSC" com atenção em 3,00 m e emergência em 5,00 m. As duas estações medem a mesma régua? Qual legenda é a de acionamento vigente?
 
-Os dados que uso serão publicados com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. Se for mais prático, um contato telefônico resolve em poucos minutos.
+Os dados que uso serão publicados com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro. Se for mais prático, um contato telefônico resolve em poucos minutos.
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
