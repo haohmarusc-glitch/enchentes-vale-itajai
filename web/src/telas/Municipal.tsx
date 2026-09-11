@@ -39,7 +39,7 @@ export default function Municipal() {
     </article>
   }
   return <div className={estilos.pagina}>
-    <header><p>Enchentes do Vale · piloto municipal</p><h1>Monitor de Ascurra</h1>
+    <header><p>Enchentes do Vale · piloto municipal</p><h1>Dados e histórico de Ascurra</h1><Link to="/municipal/ascurra">Voltar ao monitor no mapa</Link>
       <p>Dados observados e histórico com fontes governamentais. Não é um sistema oficial de alerta.</p>
       <nav aria-label="Seções municipais">{[['local', 'Minha cidade'], ['montante', 'Água chegando'], ['historico', 'Histórico']].map(([id, titulo]) => <button key={id} onClick={() => document.getElementById(id!)?.scrollIntoView()}>{titulo}</button>)}</nav>
     </header>

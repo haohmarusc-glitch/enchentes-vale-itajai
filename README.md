@@ -1666,3 +1666,5 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - [x] Chuva acumulada por cidade (1 h / 12 h / 24 h / 48 h), agregando os pluviômetros e recusando leitura que não fecha.
 - [x] Aviso por Telegram quando um rio cruza cota, e vigia que percebe a coleta morrendo — ver **Avisos** abaixo.
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.
+
+- Monitor municipal de Ascurra: `/municipal/ascurra` abre o mesmo mapa canvas do monitor regional, com indicadores locais, zoom, fundos e tela cheia. Dados e fontes ficam em `/municipal/ascurra/dados`. Polígonos de Ascurra e correspondência entre mancha e régua continuam pendentes; o traçado não representa área inundada.
