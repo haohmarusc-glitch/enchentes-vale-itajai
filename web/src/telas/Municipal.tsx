@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { cidade, eventos } from '../dados/carregar'
 import { useNivelSc } from '../dados/nivelSc'
 import { useTempoReal } from '../dados/tempoReal'
-import { fontesGovernamentais, historicoMunicipal } from '../logica/municipal'
+import { fontesGovernamentais, historicoMunicipal, faixaAscurra } from '../logica/municipal'
 import { frescor, idadeMin } from '../logica/tempoReal'
 import estilos from './Municipal.module.css'
 import MapaMunicipal from '../componentes/MapaMunicipal'
@@ -19,6 +19,7 @@ export default function Municipal() {
   useEffect(() => { const id = setInterval(() => setAgora(new Date()), 60_000); return () => clearInterval(id) }, [])
   const historico = historicoMunicipal(eventos, PILOTO)
   const chuvaLocal = estadual.get(PILOTO)
+  const faixa = faixaAscurra(chuvaLocal, agora)
   function leitura(id: string) {
     const c = cidade('itajai-acu', id)!
     const bruto = estadual.get(id)
@@ -32,7 +33,7 @@ export default function Municipal() {
         <p><strong>{numero(l.nivel)} m</strong> · {l.nome}</p>
         <p>Medição: {dataHora(l.data)}</p>
         <p>{!l.data || frescor(idadeMin(l.data, agora)) === 'velha' ? 'Leitura sem atualidade confirmada.' : 'Leitura dentro da janela de atualização.'}</p>
-        <p>{l.bruto ? 'Referência própria da estação estadual. Classificação automática não disponível.' : 'Nível observado na régua identificada. Classificação não apresentada nesta etapa do piloto.'}</p>
+        <p>{l.bruto ? (id === PILOTO ? 'Referência da estação estadual; enquadramento municipal apresentado separadamente abaixo.' : 'Referência própria da estação estadual. Classificação automática não disponível.') : 'Nível observado na régua identificada. Classificação não apresentada nesta etapa do piloto.'}</p>
       </div>)}
       <p>Fonte: <a href={locais.length && id === 'rio-do-sul' ? 'https://defesacivil.riodosul.sc.gov.br/' : 'https://monitoramento.defesacivil.sc.gov.br/mapa'} target="_blank" rel="noreferrer">Defesa Civil · consultar origem</a></p>
     </article>
@@ -43,7 +44,13 @@ export default function Municipal() {
       <nav aria-label="Seções municipais">{[['local', 'Minha cidade'], ['montante', 'Água chegando'], ['historico', 'Histórico']].map(([id, titulo]) => <button key={id} onClick={() => document.getElementById(id!)?.scrollIntoView()}>{titulo}</button>)}</nav>
     </header>
     <section id="local"><h2>Minha cidade</h2>{leitura(PILOTO)}
-      <article className={estilos.cartao}><h3>Referências municipais</h3><p>{cidade('itajai-acu', PILOTO)?.cotas_aviso_publico}</p>
+      <article className={estilos.cartao} style={{borderLeft: `6px solid ${faixa.cor}`}}>
+        <h3>Enquadramento da leitura estadual nas faixas municipais</h3>
+        <p><strong style={{color: faixa.cor}}>{faixa.nome}</strong></p>
+        <p>Régua DCSC-00003 · Ponte do Beber. Aplicação das faixas recebidas no C18 à leitura desta estação. É uma classificação calculada pelo projeto, não um boletim emitido pela Defesa Civil. As cores identificam as faixas nesta tela.</p>
+        <p>A classificação não desenha área alagada: isso depende de polígonos oficiais associados à mesma régua.</p>
+      </article>
+      <article className={estilos.cartao}><h3>Referências municipais</h3><p>{cidade('itajai-acu', PILOTO)?.cotas_aviso_publico?.replace('A leitura estadual ainda aparece separada, sem acionar cores automaticamente.', 'O enquadramento no piloto é apresentado separadamente, sem enviar alertas.')}</p>
         <p>Fonte: Defesa Civil de Ascurra, resposta ao ofício C18, 11/09/2026. As faixas são referências; esta tela não emite alertas.</p>
         <h3>Chuva observada · últimas 24 horas</h3>
         {chuvaLocal?.chuva24hMm != null ? <>

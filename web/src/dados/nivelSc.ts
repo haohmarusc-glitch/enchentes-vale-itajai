@@ -25,6 +25,7 @@ const TEMPO_LIMITE_MS = 8000
 const RE_SEM_FUSO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/
 
 export interface BrutoEstadual {
+  codigo?: string | null
   cidade: string
   estacao: string
   nivelBrutoM: number
@@ -53,7 +54,7 @@ function brutoValido(bruta: unknown): BrutoEstadual | null {
   }
   const chuva = l.chuva_24h_mm
   const chuva24hMm = typeof chuva === 'number' && Number.isFinite(chuva) && chuva >= 0 && chuva <= 1000 ? chuva : null
-  return { cidade: l.cidade, estacao: l.estacao, nivelBrutoM: nivel, medidoEm, chuva24hMm }
+  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm }
 }
 
 /** Constrói o mapa cidade → bruto mais fresco a partir do JSON cru. */
