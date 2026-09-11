@@ -1,3 +1,4 @@
+import { motivoSemCor } from '../logica/motivoSemCor'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -1427,6 +1428,12 @@ export default function MonitorBacia() {
                 />
                 {ROTULO_FAIXA[foco.faixa]}
               </div>
+              {foco.faixa === 'sem-dado' && (
+                <p className={estilos.painelRessalva}>
+                  <strong>Por que está cinza?</strong>{' '}
+                  {motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
+                </p>
+              )}
               <p className={estilos.painelNivel}>
                 {foco.nivel != null ? (
                   <>
@@ -1629,6 +1636,12 @@ export default function MonitorBacia() {
                     </p>
                   )
                 })()
+              )}
+              {cid.id === 'ituporanga' && (
+                <button type="button" className={estilos.dicaDetalhe}
+                  onClick={() => navigate('/acu/ituporanga?camadas=inundacao')}>
+                  Ver áreas de inundação →
+                </button>
               )}
               {/* A cidade primeiro, o rio depois. Quem toca no pino de Gaspar
                   quer Gaspar — o rio inteiro e a segunda pergunta, nao a

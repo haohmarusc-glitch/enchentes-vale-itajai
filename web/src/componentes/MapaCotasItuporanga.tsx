@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -10,6 +11,14 @@ const arquivos = import.meta.glob('@dados/manchas/ituporanga/*.geojson', {
 
 /** Consulta manual das camadas publicadas; não recebe o nível ao vivo. */
 export default function MapaCotasItuporanga() {
+  const [busca] = useSearchParams()
+  const secao = useRef<HTMLElement>(null)
+  useEffect(() => {
+    if (busca.get('camadas') === 'inundacao') {
+      secao.current?.scrollIntoView({ block: 'start' })
+      secao.current?.focus({ preventScroll: true })
+    }
+  }, [busca])
   const [arquivo, setArquivo] = useState(indice.camadas[0]!.arquivo)
   const [visivel, setVisivel] = useState(true)
   const [estado, setEstado] = useState('Carregando camada…')
@@ -66,7 +75,7 @@ export default function MapaCotasItuporanga() {
     return () => { ativa = false; controller.abort() }
   }, [arquivo, visivel, tentativa, nivel])
 
-  return <section className="cartao">
+  return <section ref={secao} tabIndex={-1} className="cartao" aria-label="Áreas de inundação de Ituporanga">
     <h2>Áreas de inundação por nível — Ituporanga</h2>
     <p className={estilos.intro}>Explore as oito camadas do mapa divulgado pela Prefeitura.
       O nível abaixo é uma escolha para consulta, não uma medição atual.</p>
