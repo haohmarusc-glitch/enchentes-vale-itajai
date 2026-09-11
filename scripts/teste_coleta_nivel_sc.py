@@ -276,8 +276,7 @@ class TestENumero(unittest.TestCase):
         self.assertFalse(e_numero("6.86"))
 
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
+
 
 class TestChuvaSemanal(unittest.TestCase):
     def test_semana_publicada_nao_e_soma_de_janelas(self):
@@ -289,3 +288,7 @@ class TestChuvaSemanal(unittest.TestCase):
     def test_arquivo_antigo_nao_inventa_semana(self):
         leituras, *_ = converter([estacao()])
         self.assertIsNone(leituras[0]['chuva_168h_mm'])
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
