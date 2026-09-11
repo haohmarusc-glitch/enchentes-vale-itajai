@@ -47,3 +47,19 @@ test('arquivo ausente ou quebrado vira mapa vazio, nunca número inventado', () 
   assert.equal(montarNivelSc({}).size, 0)
   assert.equal(montarNivelSc({ leituras: 'nao-e-lista' }).size, 0)
 })
+
+test('chuva estadual distingue zero medido de acumulado ausente ou inválido', () => {
+  for (const [entrada, esperado] of [[0, 0], [12.4, 12.4], [null, null], [undefined, null], [-1, null], [NaN, null], [Infinity, null], ['12', null], [1001, null]]) {
+    const mapa = montarNivelSc({leituras:[{cidade:'ascurra',estacao:'DCSC Ascurra',nivel_bruto_m:8,chuva_24h_mm:entrada}]})
+    assert.equal(mapa.get('ascurra')?.chuva24hMm, esperado)
+  }
+})
+
+test('acumulado acompanha a estação selecionada, sem somar janelas móveis', () => {
+  const mapa = montarNivelSc({leituras:[
+    {cidade:'ascurra',estacao:'A',nivel_bruto_m:8,chuva_24h_mm:20,medido_em:'2026-09-11T08:00:00'},
+    {cidade:'ascurra',estacao:'B',nivel_bruto_m:8,chuva_24h_mm:2,medido_em:'2026-09-11T09:00:00'},
+  ]})
+  assert.equal(mapa.get('ascurra')?.chuva24hMm, 2)
+  assert.equal(mapa.get('ascurra')?.estacao, 'B')
+})
