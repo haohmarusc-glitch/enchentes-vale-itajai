@@ -1473,7 +1473,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   className={estilos.amostra}
                   style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
                 />
-                {ROTULO_FAIXA[foco.faixa]}
+                {foco.faixa === 'sem-dado' && brutoSc ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
               </div>
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
@@ -1507,7 +1507,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
-                  <span className={estilos.painelRotulo}>Cotas da régua</span>
+                  <span className={estilos.painelRotulo}>{cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>
                   <ul>
                     {cotas.map(([k, v]) => (
                       <li key={k}>
