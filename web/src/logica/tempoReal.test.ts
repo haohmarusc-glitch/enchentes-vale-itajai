@@ -303,3 +303,13 @@ test('a legenda mostra a faixa nova, na posição certa', () => {
 })
 
 // As cores vêm do CSS (fonte única); o teste lê de lá para não repetir literal.
+
+
+test('Gaspar usa limites estritos da estação 21, sem alerta a 6 m', () => {
+  const gaspar = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf8')).rios['itajai-acu'].cidades.find((c: Cidade) => c.id === 'gaspar')
+  const agora = new Date('2026-09-12T21:00:00Z')
+  for (const [nivel_m, faixa] of [[4.99,'normal'],[5,'sem-dado'],[5.01,'atencao'],[6,'atencao'],[7,'atencao'],[7.01,'emergencia']] as const) {
+    assert.equal(faixaDaCidade(gaspar,{nivel_m,medidoEm:agora},false,agora),faixa)
+  }
+  assert.equal(faixaDaCidade(gaspar,{nivel_m:7.1,medidoEm:new Date('2026-09-11T21:00:00Z')},false,agora),'sem-dado')
+})

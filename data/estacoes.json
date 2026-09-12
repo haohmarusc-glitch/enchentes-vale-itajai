@@ -490,14 +490,13 @@
           "codigo_ana": "83840000",
           "codigo_dcsc": "DCSC-00005",
           "verificado": false,
-          "regua": "Rio Itajaí-Açu em Gaspar (o Plano não nomeia o ponto nem publica o zero)",
+          "regua": "Rio Itajaí Açu Gaspar — estação municipal 21",
           "referencia": "régua",
           "cotas_verificado": true,
-          "fonte_cotas": "Plano de Contingência da Superintendência Municipal de Proteção e Defesa Civil de Gaspar, item 4.2.3 — fluxograma \"MONITORAMENTO RIO ITAJAÍ AÇU\", p. 25 — data/brutos/gaspar-plano-de-contingencia.pdf",
-          "observacao": "As faixas são as do fluxograma do Plano: 0 a 5 m NORMALIDADE, 5 a 6 m ATENÇÃO/ALERTA, 6 a 7 m ALERTA/ALARME e ACIMA DE 7 m RESPOSTA. Cada cota aqui é o PISO da faixa. 'emergencia' é a fase de RESPOSTA do Plano, não o nível em que Gaspar alaga: a primeira rua do cadastro alaga a 6,20 m, ou seja, 80 cm ANTES dela — por isso a faixa não entrou como 'inundacao'. Detalhe que muda o número: na p. 25 o fluxograma é uma imagem que escreve \"7 a 8 metros\", e o PDF pinta por cima uma caixa opaca com \"Acima de 7 metros\". Vale o que o PDF mostra — a faixa não tem teto. A margem é real: a atenção a 5,00 m fica 1,20 m abaixo da primeira rua, e a leitura da tabela do município em 31/08/2026 (3,85 m) cai dentro da normalidade do mesmo fluxograma. O Plano NÃO nomeia o zero da régua; o que sustenta tratá-la como a mesma das cotas de rua é a coerência entre três publicações da mesma Defesa Civil — 23 das 26 vias do quadro do Plano batem ao centavo com o cadastro vindo do KML. Confira com scripts/conferir_gaspar_plano.py. ATUALIZADO em 06/09/2026: o codigo_ana deixou de ser desconhecido — é a 83840000 GASPAR (MONTANTE ETA), a 10 m deste pino, FLUVIOMÉTRICA, com escala de 1927 a 12/2021. Isso dá a Gaspar 94 anos de série histórica na ANA e explica, com data, o `tem_nivel_do_rio: false` da estação estadual: a régua foi DESATIVADA, não é intermitência. O Plano continua sem nomear o zero, e é disso que o `verificado` desta cidade ainda fala.",
+          "fonte_cotas": "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21 — legenda conferida em 12/09/2026; normalidade abaixo de 5 m, atenção acima de 5 m OU chuva atual acima de 6 mm, emergência acima de 7 m.",
+          "observacao": "Monitor: classificação calculada somente pelo nível conforme legenda da estação 21. Não reproduz o estado oficial completo, que também considera chuva atual > 6 mm. Normal abaixo de 5 m; atenção acima de 5 m; emergência acima de 7 m. Em 5 m exatos a legenda não define inclusão; o mapa fica sem classificação. Em 7 m exatos permanece atenção. Não há faixa de alerta a 6 m nesta legenda. O Plano anterior e a legenda de 03/09/2026 estão preservados em cotas_divergencias. Cor de régua não representa ruas alagadas.",
           "cotas_m": {
             "atencao": 5.0,
-            "alerta": 6.0,
             "emergencia": 7.0
           },
           "cotas_divergencias": [
@@ -517,16 +516,25 @@
               },
               "fonte": "Legenda da estação 21 — https://defesacivil.gaspar.sc.gov.br/estacao/ver/21 — CONFIRMADA no navegador pelo Jefferson em 08/09/2026 ~21h: NORMALIDADE abaixo de 5,00 m · ATENÇÃO acima de 5,00 m OU chuva atual acima de 6,00 mm · EMERGÊNCIA acima de 7,00 m.",
               "o_que_muda": "A legenda passou a concordar com o Plano (5,00 m) na atenção; a leitura de 03/09 (6,00 m) era operacional e variável — mais um motivo para a cota fixa ser a do Plano. NÃO muda o adotado. A pergunta 2 do ofício C10 continua valendo, com a redação ajustada: a legenda varia entre consultas, e qual é o gatilho vigente?"
+            },
+            {
+              "cotas_m": {
+                "atencao": 5.0,
+                "alerta": 6.0,
+                "emergencia": 7.0
+              },
+              "fonte": "Plano de Contingência da Superintendência Municipal de Proteção e Defesa Civil de Gaspar, item 4.2.3 — fluxograma \"MONITORAMENTO RIO ITAJAÍ AÇU\", p. 25 — data/brutos/gaspar-plano-de-contingencia.pdf",
+              "por_que_nao_foi_adotada": "Preservada como referência do Plano. A cor do monitor usa a legenda específica da estação 21, conferida em 12/09/2026: sem faixa de alerta a 6 m."
             }
           ],
           "fontes_tempo_real": [
             "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela (Rio Itajaí Açu Gaspar)",
             "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21 (Rio Itajaí Açu Gaspar — página da estação; viva em 08/09/2026, host bloqueado para a VPS)"
           ],
-          "fonte_tempo_real_ressalva": "⛔ SEM FONTE DE NÍVEL AO VIVO DESDE 01/09/2026, e não é problema de rede nosso. Duas coisas aconteceram juntas, e a segunda é a que decide. (1) O host defesacivil.gaspar.sc.gov.br parou de responder à VPS: timeout de 30 s, medido em 07/09/2026, enquanto a mesma página abre normalmente de um celular no Brasil — é bloqueio de IP estrangeiro ou rota, não queda do site. (2) MAIS GRAVE: a página foi reformulada (o rodapé agora diz 'Desenvolvido por DEXTAK') e a régua 'Rio Itajaí Açu Gaspar' SAIU DELA. Em 31/08/2026 ela marcava 3,85 m; em 07/09/2026 a tabela tem sete linhas e nenhuma é o Açu — entraram três barragens estaduais (Norte, Oeste e Sul, cujos números são ALTITUDE de reservatório: 273,75 / 350,44 / 388,07 m) e saíram três pluviômetros locais. O Ribeirão Belchior Central, que restou, publica 0,00. Ou seja: mesmo com a rede funcionando, não há nível do Açu para coletar. CONSEQUÊNCIA: Gaspar não tem NENHUMA fonte de nível ao vivo. A API estadual declara tem_nivel_do_rio=false para a DCSC-00005, e a ANA 83840000 encerrou a escala em 12/2021 sem sucessora. A cidade tem 1.617 cotas de rua e 48 picos históricos, e o site não consegue dizer em que nível o rio está — por isso o pino fica CINZA, que é o honesto. O que resolve: perguntar à Superintendência de Proteção e Defesa Civil de Gaspar se a régua do Açu mudou de endereço na reformulação, ou pedir o endpoint que a página consome. Ver docs/GASPAR-SEM-NIVEL-AO-VIVO.md. ADENDO 09/09/2026 — A RÉGUA NÃO MORREU, CONFIRMADO NO NAVEGADOR pelo Jefferson em 08/09/2026 ~21h: a página da ESTAÇÃO, `/estacao/ver/21`, está no ar sob o site novo (rodapé DEXTAK): 'Rio Itajaí Açu Gaspar', NÍVEL DO RIO 1,12 m, FONTE: DC. GASPAR, última medição 08/09/2026 08:03. O que saiu em 07/09 foi a LINHA da tabela `/monitoramento/tabela` (sete linhas, nenhuma é o Açu) — aposentadoria da vitrine, não queda da fonte; o mesmo padrão da estação 31 (Salseiro) no portal de Brusque. A página oferece 'BAIXAR SÉRIE HISTÓRICA', provavelmente o mesmo POST de baixar-historico do portal de Brusque. DUAS RESSALVAS antes de reapontar o coletor: (1) às 21h a leitura era das 08:03 — 13 h de idade; com MIN_VELHA de 180 min ela não pintaria a maior parte do dia. Medir a cadência real primeiro (várias consultas ao longo de um dia): se for leitura manual por turno, Gaspar ganha número e continua cinza quase sempre, o que é diferente de 'voltou'. (2) O host segue sem responder à VPS (timeout), então mesmo a página viva não é coletável de fora; o caminho é `coleta_gaspar.py --arquivo` com o HTML salvo no celular, e o parser foi escrito para a TABELA — pode precisar de adaptação para a página da estação. Até lá o pino fica cinza, que é o honesto.",
+          "fonte_tempo_real_ressalva": "Conferido em 12/09/2026: a tabela voltou a publicar Rio Itajaí Açu Gaspar. A página /estacao/ver/21 publica o nível no HTML e funciona como alternativa quando a tabela falha ou omite a régua. O histórico do dia tem manual=1 em todas as linhas: atualização não é contínua; conservar carimbo original e recusar cor quando antiga. Acesso desde a VPS ainda precisa ser conferido após deploy.",
           "coordenadas": [
-            -26.9264,
-            -48.9643
+            -26.928034,
+            -48.958136
           ],
           "codigo_ana_nome": "GASPAR (MONTANTE ETA)",
           "codigo_ana_verificado": true,
@@ -536,7 +544,8 @@
           },
           "codigo_ana_verificacao": "Vinculado em 06/09/2026 por COORDENADA E POR TIPO, a regra emendada. Coordenada: a DCSC-00005 (que é este pino) fica a 10 m da 83840000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026. Tipo: a ANA a cadastra como FLUVIOMÉTRICA, com escala de 1927 a 12/2021. Não é vínculo por nome — há um pluviômetro a 348 m da régua de Indaial que teria 'batido' pelos mesmos critérios se o tipo não fosse conferido. ⚠️ A coordenada da estação da ANA não foi transcrita: a distância de 10 m foi medida por Jefferson contra o cadastro da ANA, e não pôde ser refeita aqui. Por isso a trava do validador confere o TIPO desta estação, mas não a geometria dela.",
           "codigo_ana_sucessor": null,
-          "codigo_ana_sucessor_nota": "A ANA NÃO tem estação sucessora em Gaspar — é a única das quatro que morreram em 12/2021 sem substituta. Por isso o campo é null com motivo, e não um código inventado. Consequência prática: para o presente, a ÚNICA fonte de nível de Gaspar é a municipal (/estacao/ver/21), a mesma régua das cotas de rua. O que era um dado solitário passa a ser um dado solitário POR UM MOTIVO CONHECIDO."
+          "codigo_ana_sucessor_nota": "A ANA NÃO tem estação sucessora em Gaspar — é a única das quatro que morreram em 12/2021 sem substituta. Por isso o campo é null com motivo, e não um código inventado. Consequência prática: para o presente, a ÚNICA fonte de nível de Gaspar é a municipal (/estacao/ver/21), a mesma régua das cotas de rua. O que era um dado solitário passa a ser um dado solitário POR UM MOTIVO CONHECIDO.",
+          "regua_das_cotas": "Rio Itajaí Açu Gaspar — estação municipal 21"
         },
         {
           "id": "ilhota",
