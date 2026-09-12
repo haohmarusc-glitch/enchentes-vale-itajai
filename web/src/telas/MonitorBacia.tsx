@@ -630,6 +630,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
     let camadaPreparada: CamadaDesenhada = null
     let caminhosCamada: Path2D[] = []
+    let linhasCamada: Path2D[] = []
     let raf = 0
     const inicio = performance.now()
     const quadro = (t: number) => {
@@ -639,8 +640,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       if (camadaPreparada !== camadaHistorica.current) {
         camadaPreparada = camadaHistorica.current
         caminhosCamada = []
+        linhasCamada = []
         for (const f of camadaPreparada?.geo.features ?? []) {
           const g = f.geometry
+          const linhas = g.type === 'LineString' ? [g.coordinates] : g.type === 'MultiLineString' ? g.coordinates : []
+          for (const linha of linhas) {
+            const path = new Path2D()
+            linha.forEach((p, i) => {
+              const [x, y] = projetar(cena.enq, [p[0]!, p[1]!])
+              if (i === 0) path.moveTo(x, y)
+              else path.lineTo(x, y)
+            })
+            linhasCamada.push(path)
+          }
           const poligonos = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : []
           for (const poligono of poligonos) {
             const path = new Path2D()
@@ -659,6 +671,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       ctx.save()
       ctx.fillStyle = 'rgba(22,121,186,0.42)'
       for (const path of caminhosCamada) ctx.fill(path, 'evenodd')
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
+      ctx.strokeStyle = '#062c43'
+      ctx.lineWidth = 5
+      for (const path of linhasCamada) ctx.stroke(path)
+      ctx.strokeStyle = '#43c9ff'
+      ctx.lineWidth = 3
+      for (const path of linhasCamada) ctx.stroke(path)
       ctx.restore()
       const seg = reduz ? 0 : (t - inicio) / 1000
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar

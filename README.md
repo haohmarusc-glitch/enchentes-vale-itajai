@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Monitor: camadas manuais de vias alagadas de Itajaí em outubro/novembro de 2023 (555/409 trechos), com fonte e indicação histórica. Sem vínculo automático com réguas. Ver `docs/vias-historicas-2023.md`.
+
 - [x] Busca de ruas no mapa histórico de Itajaí com 1.863 feições do GeoItajaí/SIE, fonte identificada e destaque do traçado. As manchas históricas existentes foram conferidas, sem duplicação. Ver [base viária](docs/vias-geoitajai.md).
 
 - [x] Falha da fonte de Itajaí: HTTP 200 sem réguas reconhecidas passa a ser marcado como indisponibilidade; falha de rede não interrompe fontes independentes. Bot e monitor exibem o motivo. Requer atualizar a VPS e reiniciar o bot pelo deploy.
