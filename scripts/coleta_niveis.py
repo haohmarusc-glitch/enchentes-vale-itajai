@@ -144,31 +144,12 @@ def baixar_chuva_cemaden() -> list[dict]:
 
 
 def baixar_nivel_alertablu(leituras: list[dict]) -> list[dict]:
-    """Resgata Blumenau quando a fonte de Itajai o publica vazio OU velho.
-    O AlertaBlu publica a serie oficial de Blumenau, independente da pagina de
-    Itajai. Se a primaria trouxe Blumenau com menos de 60 min, mantem. Se veio
-    vazio ou com carimbo antigo, busca o AlertaBlu e devolve para conviver na
-    lista (o site/bot ja mostram o mais recente da mesma cidade)."""
-    # `medido_em` é hora de Brasília SEM fuso; o "agora" tem de estar no MESMO
-    # relógio. Com `datetime.now()` naive numa VPS em UTC, a idade sai 3 h a mais
-    # e o resgate dispara na hora errada — é o mesmo erro de fuso que o projeto
-    # já padronizou em todo lugar (ver CLAUDE.md).
-    agora = datetime.now(FUSO_BRASILIA).replace(tzinfo=None)
-    def idade_min(m):
-        for _formato in ("%d/%m/%Y %H:%M", "%Y-%m-%dT%H:%M:%S"):
-            try:
-                dt = datetime.strptime(str(m)[:16].replace("T", " "), "%Y-%m-%d %H:%M")
-                return (agora - dt).total_seconds() / 60
-            except ValueError:
-                pass
-        try:
-            dt = datetime.strptime(str(m), "%d/%m/%Y %H:%M")
-            return (agora - dt).total_seconds() / 60
-        except ValueError:
-            return 9999
-    atual = [l for l in leituras if l.get("cidade") == "blumenau" and l.get("nivel_m") is not None]
-    if atual and min(idade_min(l.get("medido_em")) for l in atual) < 60:
-        return []
+    """Consulta a fonte municipal em toda coleta, sem esperar atraso de 60 min.
+
+    As duas fontes convivem: site e bot escolhem a medição mais recente da
+    mesma régua pelo horário original. Falha no AlertaBlu preserva a primária.
+    O argumento é mantido para compatibilidade com os chamadores.
+    """
     try:
         from coleta_alertablu import URL, baixar, parse
         return parse(baixar(URL))
