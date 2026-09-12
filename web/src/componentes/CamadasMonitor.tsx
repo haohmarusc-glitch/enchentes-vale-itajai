@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import historico from '@dados/manchas/index.json'
+import viasHistoricas from '@dados/manchas/itajai/vias-historicas.json'
 import ituporanga from '@dados/manchas/ituporanga/index.json'
 import { cheiaMaisProxima, type EventoComparavel, type MedicaoComparavel } from '../logica/compararCheias'
 import { rotuloEvento } from '../logica/manchas'
@@ -19,7 +20,7 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
   const [modo, setModo] = useState(cidade === 'ascurra' ? RISCO_ASCURRA : 'auto')
   const [estado, setEstado] = useState('')
   const [tentativa, setTentativa] = useState(0)
-  const eventos = useMemo(() => (historico.manchas as EventoComparavel[]).filter((m) => m.cidade === cidade), [cidade])
+  const eventos = useMemo(() => ([...historico.manchas, ...viasHistoricas.camadas] as EventoComparavel[]).filter((m) => m.cidade === cidade), [cidade])
   const opcoes = useMemo(() => cidade === 'ascurra'
     ? [{ arquivo: RISCO_ASCURRA, rotulo: 'Setores de risco de inundação — CPRM, 2015 (referência estática)' }]
     : cidade === 'ituporanga'
@@ -30,6 +31,7 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
   const escolha = opcoes.find((o) => o.arquivo === arquivo)
   const evento = eventos.find((e) => e.arquivo === arquivo)
   const chuva = evento?.chuva_7dias
+  const vias = viasHistoricas.camadas.find((c) => c.arquivo === arquivo)
   const risco = arquivo === RISCO_ASCURRA
   const rotulo = escolha?.rotulo
   useEffect(() => {
@@ -63,7 +65,8 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
       'Ainda não é possível escolher a cheia mais próxima: faltam pico e régua documentados ou leitura recente compatível. Você pode consultar uma camada manualmente.'}</p>)}
     {risco && <p>Quatro setores de risco de inundação levantados em 25/06/2015. A área azul é uma referência estática: não é a extensão de uma cheia específica nem alagamento observado agora. Não muda com o nível atual. <a href="https://rigeo.sgb.gov.br/handle/doc/18496" target="_blank" rel="noreferrer">Fonte: SGB/CPRM · levantamento de Ascurra</a>. Ainda falta a relação entre polígonos e cotas da régua para selecionar uma mancha conforme a cheia.</p>}
     {escolha && !risco && <>
-      <p><strong>{escolha.rotulo}</strong>. A área azul é a camada da fonte, não confirmação de alagamento agora.</p>
+      <p><strong>{escolha.rotulo}</strong>. {vias ? `${vias.feicoes} trechos de vias registrados naquele evento. As linhas azuis mostram ruas atingidas no passado, não alagamento atual. Uma rua pode ter vários trechos.` : 'A área azul é a camada da fonte, não confirmação de alagamento agora.'}</p>
+      {vias && <p><a href={vias.fonte} target="_blank" rel="noreferrer">Fonte: Prefeitura de Itajaí · mapa do evento</a>. Seleção manual: não há vínculo documentado com a régua atual.</p>}
       <p>Chuva nos sete dias da cheia passada:{' '}{chuva && Number.isFinite(chuva.mm) && chuva.mm >= 0
         ? <>{chuva.mm} mm, de {chuva.inicio} a {chuva.fim}, estação {chuva.estacao}. <a href={chuva.fonte}>Fonte</a></>
         : 'não documentada para esta camada.'}</p>
