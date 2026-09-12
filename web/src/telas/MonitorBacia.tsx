@@ -1,3 +1,4 @@
+import { linhasChuva } from '../logica/chuvaMonitor'
 import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
@@ -29,7 +30,6 @@ import {
   zoomPermiteRuas,
   type PontoDeRua,
 } from '../logica/cotasNoMapa'
-import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { useBarragens } from '../dados/barragens'
@@ -156,65 +156,6 @@ async function baixarTracado(rioId: string): Promise<LonLat[][] | null> {
     return geo.geometry.coordinates
   } catch {
     return null
-  }
-}
-
-interface MarcadorChuva {
-  x: number
-  y: number
-  mm: number
-  janela: string
-  cidade: string
-}
-
-/** Marcadores de chuva: a intensidade recente por cidade, projetada no mapa. */
-function marcadoresChuva(
-  cena: Cena,
-  cidades: Cidade[],
-  chuva: { cidade: string | null; mm: { h1: number | null; h24: number | null } }[],
-): MarcadorChuva[] {
-  const porId = new Map(cidades.filter((c) => c.coordenadas).map((c) => [c.id, c]))
-  const saida: MarcadorChuva[] = []
-  for (const c of chuva) {
-    if (!c.cidade) continue
-    const cidade = porId.get(c.cidade)
-    if (!cidade?.coordenadas) continue
-    // Prefere a última hora; sem ela, as últimas 24 h. Só mostra chuva medível.
-    const h1 = c.mm.h1
-    const h24 = c.mm.h24
-    const usa = h1 != null ? { mm: h1, janela: '1 h' } : h24 != null ? { mm: h24, janela: '24 h' } : null
-    if (!usa || usa.mm < 0.2) continue
-    const [x, y] = projetar(cena.enq, [cidade.coordenadas[1], cidade.coordenadas[0]])
-    saida.push({ x, y, mm: usa.mm, janela: usa.janela, cidade: cidade.nome })
-  }
-  return saida
-}
-
-/** Uma gota de chuva com o acumulado, deslocada do pino para não o cobrir. */
-function desenharChuva(ctx: CanvasRenderingContext2D, marcas: MarcadorChuva[], escala: number): void {
-  ctx.textAlign = 'left'
-  ctx.textBaseline = 'middle'
-  for (const m of marcas) {
-    const gx = m.x + 11 * escala
-    const gy = m.y - 11 * escala
-    const raio = Math.min(3 + m.mm * 0.5, 9) * escala
-    ctx.beginPath()
-    ctx.arc(gx, gy, raio, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(56,170,226,0.85)'
-    ctx.shadowColor = 'rgba(56,170,226,0.9)'
-    ctx.shadowBlur = 6 * escala
-    ctx.fill()
-    ctx.shadowBlur = 0
-    ctx.strokeStyle = 'rgba(210,238,252,0.9)'
-    ctx.lineWidth = 1 * escala
-    ctx.stroke()
-    const txt = `${m.mm.toFixed(m.mm < 10 ? 1 : 0)} mm`
-    ctx.font = `600 ${Math.round(10 * escala)}px system-ui, sans-serif`
-    ctx.lineWidth = 3 * escala
-    ctx.strokeStyle = 'rgba(4,12,20,0.9)'
-    ctx.strokeText(txt, gx + raio + 2 * escala, gy)
-    ctx.fillStyle = '#bfe6fb'
-    ctx.fillText(txt, gx + raio + 2 * escala, gy)
   }
 }
 
@@ -411,7 +352,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // guardar é conveniência; não guardar não quebra nada
     }
   }, [fundo])
-  const chuvaRef = useRef<MarcadorChuva[]>([])
+  const chuvaRef = useRef<Map<string, string[]>>(new Map())
   const selRef = useRef<string | null>(null)
 
   const [rios, setRios] = useState<RioParaCena[] | null>(null)
@@ -612,7 +553,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     cenaRef.current = cena
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
     // num instante que não medimos).
-    chuvaRef.current = emRepro ? [] : marcadoresChuva(cena, cidadesBacia, tempoReal.chuva)
+    chuvaRef.current = emRepro ? new Map() : new Map(cidadesBacia.map(c => [c.id, linhasChuva(tempoReal.chuva, c.id, agora)]))
 
     const fundoCanvas = document.createElement('canvas')
     fundoCanvas.width = canvas.width
@@ -722,7 +663,6 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       const seg = reduz ? 0 : (t - inicio) / 1000
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
-      desenharChuva(ctx, chuvaRef.current, escala)
       // Barragens antes das réguas e dos pinos: são estrutura no leito, ficam por baixo.
       // As ruas por BAIXO de tudo: são o fundo da cidade, e nenhum ponto de
       // rua pode cobrir o pino que traz o número do rio.
@@ -735,6 +675,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // são a âncora do mapa; barragem e régua cedem espaço a eles, nunca o
       // contrário.
       const opcoesPinos = {
+        chuva: chuvaRef.current,
         escala,
         mostrarIdade: true,
         agora: instante,
@@ -1142,7 +1083,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             onCamada={receberCamada} somenteDados={municipal} />
         </details>
 
-        {idxRepro === null && <details open className={`${estilos.camadasControle} ${estilos.chuvaControle}`} data-tapa-mapa>
+        {idxRepro === null && <details className={`${estilos.camadasControle} ${estilos.chuvaControle}`} data-tapa-mapa>
           <summary>Chuva · 1 h / 12 h / 24 h</summary>
           <ChuvaMonitor cidades={cidadeFoco ? cidadesBacia.filter(c => c.id === cidadeFoco) : cidadesBacia}
             chuva={tempoReal.chuva} agora={agora} />

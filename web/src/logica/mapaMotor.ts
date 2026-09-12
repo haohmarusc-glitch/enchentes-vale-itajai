@@ -718,6 +718,8 @@ export function desenharOnda(
 export type TemRegua = (cidadeId: string) => boolean
 
 export interface OpcoesPinos {
+  /** Acumulados observados que aparecem abaixo do pino da cidade. */
+  chuva?: Map<string, string[]>
   escala?: number
   /** Mostra a idade da leitura sob o nome (para a tela de monitoramento). */
   mostrarIdade?: boolean
@@ -755,6 +757,8 @@ export function medidorDe(ctx: CanvasRenderingContext2D): Medidor {
 
 /** Onde o rótulo de um pino fica, e o retângulo que ele ocupa. */
 export interface RotuloDoPino {
+  chuva?: string[]
+  chuvaY?: number
   cx: number
   baseY: number
   nome: string
@@ -884,15 +888,19 @@ export function planejarRotulosDosPinos(
     // preso na margem apontaria para o lugar errado do mesmo jeito.
     if (!pinoNaTela(p, cena, escala)) continue
     const { nome, sub } = textoDoPino(p, opcoes)
+    const chuva = opcoes.chuva?.get(p.cidade.id) ?? []
+    const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
     const { cx, baseY, caixa } = caixaDoRotuloDoPino(
       p,
-      { nome: medir(nome, fonte), sub: sub ? medir(sub, fonteSub) : 0 },
+      { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 },
       cena,
       escala,
     )
+    const chuvaY = p.y + 12 * escala
+    if (chuva.length) caixa.y1 = chuvaY + chuva.length * (fonteSub + 2 * escala)
     if (colide(caixa, caixas) && p.cidade.id !== selecionada) continue
     caixas.push(caixa)
-    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa })
+    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY })
   }
   return plano
 }
@@ -1285,6 +1293,18 @@ export function desenharPinos(
     ctx.strokeText(r.nome, r.cx, r.baseY)
     ctx.fillStyle = '#eaf1f8'
     ctx.fillText(r.nome, r.cx, r.baseY)
+    if (r.chuva?.length && r.chuvaY != null) {
+      const fonteChuva = Math.round(fonte * FATOR_SUB)
+      ctx.font = `600 ${fonteChuva}px system-ui, sans-serif`
+      ctx.textBaseline = 'top'
+      ctx.fillStyle = '#bfe6fb'
+      r.chuva.forEach((linha, i) => {
+        const y = r.chuvaY! + i * (fonteChuva + 2 * escala)
+        ctx.strokeText(linha, r.cx, y)
+        ctx.fillText(linha, r.cx, y)
+      })
+      ctx.textBaseline = 'bottom'
+    }
     if (r.sub) {
       const fy = r.baseY - fonte - 1 * escala
       ctx.font = `600 ${Math.round(fonte * FATOR_SUB)}px system-ui, sans-serif`
