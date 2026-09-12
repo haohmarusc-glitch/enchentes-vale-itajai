@@ -129,7 +129,7 @@ class TestSemRede(unittest.TestCase):
         codigo = (
             "import sys; sys.modules['requests'] = None\n"
             "import coleta_itajai, coleta_chuva\n"
-            "assert len(coleta_itajai.parse(open('/dev/stdin').read())) >= 1\n"
+            "assert len(coleta_itajai.parse(sys.stdin.read())) >= 1\n"
             "print('ok')\n"
         )
         r = subprocess.run(

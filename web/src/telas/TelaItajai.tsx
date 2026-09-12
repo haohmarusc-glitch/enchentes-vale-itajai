@@ -1,7 +1,5 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
-import PainelMare from '../componentes/PainelMare'
-import AbrigoMaisProximo from '../componentes/AbrigoMaisProximo'
 
 /**
  * O mapa carrega à parte, como o gráfico de picos.
@@ -12,27 +10,12 @@ import AbrigoMaisProximo from '../componentes/AbrigoMaisProximo'
  */
 const MapaManchas = lazy(() => import('../componentes/MapaManchas'))
 
-import SeloConfianca from '../componentes/SeloConfianca'
-import { cidade, estacoesTempoReal, fontesGerais, mareItajai, trechos } from '../dados/carregar'
+import { cidade, estacoesTempoReal, fontesGerais, mareItajai } from '../dados/carregar'
 import { separarFonte, todasAsReguas } from '../logica/reguas'
 import { leiturasDaCidadeEmTodosOsRios, useTempoReal } from '../dados/tempoReal'
 import VariasReguas from '../componentes/VariasReguas'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
-import { dataHora } from '../logica/formato'
-import { caminho, faixaHoras, janelaChegada } from '../logica/transito'
-import type { Caminho } from '../logica/transito'
 import estilos from './TelaItajai.module.css'
-
-interface Origem {
-  rioId: string
-  rioNome: string
-  cidadeId: string
-}
-
-const ORIGENS: Origem[] = [
-  { rioId: 'itajai-acu', rioNome: 'Itajaí-Açu', cidadeId: 'blumenau' },
-  { rioId: 'itajai-mirim', rioNome: 'Itajaí-Mirim', cidadeId: 'brusque' },
-]
 
 /**
  * Itajaí recebe os dois rios. O que a tela faz é somar o tempo que a cheia leva
@@ -41,7 +24,6 @@ const ORIGENS: Origem[] = [
  * Itajaí, e a maré, que muda tudo na foz, ainda não está integrada.
  */
 export default function TelaItajai() {
-  const [horarios, setHorarios] = useState<Record<string, string>>({})
   const [mapaAberto, setMapaAberto] = useState(false)
   const tempoReal = useTempoReal()
   // As onze réguas de Itajaí estão espalhadas por quatro cursos d'água (Açu,
@@ -57,58 +39,10 @@ export default function TelaItajai() {
     <>
       <h1>Itajaí — foz</h1>
       <p className={estilos.intro}>
-        Itajaí recebe o Itajaí-Açu e o Itajaí-Mirim, e ainda sofre com a maré. Informe o horário do
-        pico rio acima para ver quando a cheia costuma chegar.
+        Itajaí recebe o Itajaí-Açu e o Itajaí-Mirim, e ainda sofre com a maré. Consulte as medições de cada régua e as áreas atingidas em eventos históricos.
       </p>
 
       <AvisoLegal />
-
-      <div className={estilos.painel}>
-        {ORIGENS.map((origem) => {
-          const c = cidade(origem.rioId, origem.cidadeId)
-          const trecho = caminho(trechos, origem.rioId, origem.cidadeId, 'itajai')
-          const valor = horarios[origem.cidadeId] ?? ''
-          const partida = valor ? new Date(valor) : null
-          const valida = partida !== null && !Number.isNaN(partida.getTime())
-
-          return (
-            <section className="cartao" key={origem.cidadeId}>
-              <h2>
-                Pico de {c?.nome ?? origem.cidadeId} — rio {origem.rioNome}
-              </h2>
-
-              <label className={estilos.campo}>
-                <span>Data e hora do pico em {c?.nome ?? origem.cidadeId}</span>
-                <input
-                  type="datetime-local"
-                  value={valor}
-                  onChange={(e) =>
-                    setHorarios((atual) => ({ ...atual, [origem.cidadeId]: e.target.value }))
-                  }
-                />
-              </label>
-
-              <div aria-live="polite">
-                {!trecho ? (
-                  <p className={estilos.semDado}>
-                    O tempo que a cheia leva de {c?.nome ?? origem.cidadeId} até Itajaí ainda não está em{' '}
-                    <code>transito.json</code>. Sem esse dado, não há como estimar a chegada.
-                  </p>
-                ) : !valida ? (
-                  <p className={estilos.aguardando}>
-                    Trecho conhecido: <strong>{faixaHoras(trecho)}</strong>{' '}
-                    <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} tipo="trecho"
-                      />.
-                    Informe o horário do pico para ver a janela de chegada.
-                  </p>
-                ) : (
-                  <Chegada partida={partida} trecho={trecho} />
-                )}
-              </div>
-            </section>
-          )
-        })}
-      </div>
 
       <section className="cartao">
         <h2>Por que a maré pesa tanto aqui</h2>
@@ -201,17 +135,7 @@ export default function TelaItajai() {
         </p>
       </section>
 
-      <section className="cartao">
-        <h2>Por que não há previsão de altura nesta tela</h2>
-        <p>
-          A previsão do site nasce da comparação entre picos das mesmas enchentes em duas cidades.
-          Para Itajaí ainda <strong>não existem picos registrados</strong> em{' '}
-          <code>enchentes.json</code>: sem eles, qualquer altura mostrada aqui seria invenção.
-          Levantar esses picos, com data e hora, é a pendência mais importante do projeto.
-        </p>
-      </section>
       <ReguasDeItajai />
-      <AbrigoMaisProximo />
 
       {/*
         O mapa só é montado quando a pessoa pede. Antes ele era renderizado de
@@ -304,50 +228,5 @@ function ReguasDeItajai() {
         )
       })}
     </section>
-  )
-}
-
-function Chegada({ partida, trecho }: { partida: Date; trecho: Caminho }) {
-  const { inicio, fim } = janelaChegada(partida, trecho)
-  // Alguns trechos vêm da fonte com valor único, não com faixa. Mostrar
-  // "entre 15:30 e 15:30" daria a impressão de horário cravado; é o oposto
-  // do que o dado sustenta.
-  const valorUnico = trecho.horasMin === trecho.horasMax
-
-  return (
-    <div className={estilos.chegada}>
-      <p className={estilos.janela}>
-        {valorUnico ? (
-          <>
-            Chegada em Itajaí por volta de <strong>{dataHora(inicio)}</strong>
-          </>
-        ) : (
-          <>
-            Chegada estimada em Itajaí entre <strong>{dataHora(inicio)}</strong> e{' '}
-            <strong>{dataHora(fim)}</strong>
-          </>
-        )}
-      </p>
-      <p className={estilos.detalhe}>
-        Trecho de {faixaHoras(trecho)}{' '}
-        <SeloConfianca nivel={trecho.confianca} fonte={trecho.fontes.join(' · ')} tipo="trecho"
-                      />
-        {!trecho.direto ? ` — soma de ${trecho.trechos.length} trechos` : ''}. Horários no fuso do
-        seu aparelho.
-      </p>
-      {valorUnico ? (
-        <p className={estilos.detalhe}>
-          A fonte deste trecho traz <strong>um único valor</strong>, não uma faixa. O horário acima é
-          aproximação grosseira: a chegada real pode variar horas para mais ou para menos.
-        </p>
-      ) : null}
-      <p className={estilos.ressalva}>
-        A janela vale para a cheia que já está descendo. Chuva nova entre as duas cidades ou manobra
-        de barragem podem adiantar, atrasar ou aumentar a cheia.
-      </p>
-
-      <PainelMare inicio={inicio} fim={fim} />
-
-    </div>
   )
 }

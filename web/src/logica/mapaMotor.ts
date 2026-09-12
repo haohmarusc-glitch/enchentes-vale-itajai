@@ -325,7 +325,7 @@ export function construirCena(
           faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
-          nivelBruto: bruto,
+          nivelBruto: aoVivo ? null : bruto,
           ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
         }
       })

@@ -1,3 +1,4 @@
+import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { linhasChuva } from '../logica/chuvaMonitor'
 import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
@@ -384,8 +385,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
    */
   const [reguaSel, setReguaSel] = useState<string | null>(null)
 
-  const tempoReal = useTempoReal()
+  const original = useTempoReal()
   const nivelSc = useNivelSc()
+  const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
   const mapaBarragens = useBarragens()
   const serie = useSerieRecente()
   const [agora, setAgora] = useState(() => new Date())
@@ -401,7 +403,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
   // Todas as cidades da bacia, para casar a chuva com a coordenada.
   const cidadesBacia = useMemo(
-    () => RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)).filter((c) => !municipal || c.id === 'ascurra'),
+    () => [...new Map(RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)).filter((c) => !municipal || c.id === 'ascurra').map(c => [c.id, c])).values()],
     [municipal],
   )
 
@@ -564,9 +566,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       cena.mar = null
       // Conserva a divisão geográfica regional; nunca estende a régua local
       // por todo o rio ao remover as outras cidades.
-      cena.trechos = cena.trechos.map((t) => ({ ...t, faixa: 'sem-dado', cidadeId: null }))
+      cena.trechos = cena.trechos.map((t) => t.cidadeId === 'ascurra' ? t : ({ ...t, faixa: 'sem-dado', cidadeId: null }))
     }
     cenaRef.current = cena
+    // O painel guarda a seleção, mas os números devem acompanhar a nova coleta.
+    setSel(atual => atual ? cena.pinos.find(p => p.cidade.id === atual.cidade.id && p.rioId === atual.rioId) ?? null : null)
+    setHover(atual => atual ? cena.pinos.find(p => p.cidade.id === atual.cidade.id && p.rioId === atual.rioId) ?? null : null)
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
     // num instante que não medimos).
     chuvaRef.current = emRepro ? new Map() : new Map(cidadesBacia.map(c => [c.id, linhasChuva(tempoReal.chuva, c.id, agora)]))
@@ -1010,18 +1015,36 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     })
   }
 
+  const [ampliado, setAmpliado] = useState(false)
+  useEffect(() => {
+    if (!ampliado) return
+    const anterior = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const sair = (e: KeyboardEvent) => { if (e.key === 'Escape') setAmpliado(false) }
+    const mudou = () => { if (!document.fullscreenElement) setAmpliado(false) }
+    document.addEventListener('keydown', sair)
+    document.addEventListener('fullscreenchange', mudou)
+    return () => {
+      document.body.style.overflow = anterior
+      document.removeEventListener('keydown', sair)
+      document.removeEventListener('fullscreenchange', mudou)
+    }
+  }, [ampliado])
   function telaCheia() {
-    const el = divRef.current
-    if (!el) return
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {})
-    else el.requestFullscreen?.().catch(() => {})
+    if (ampliado) {
+      setAmpliado(false)
+      if (document.fullscreenElement) void document.exitFullscreen().catch(() => {})
+    } else {
+      setAmpliado(true) // A ampliação CSS funciona também quando a API nativa é recusada.
+      void divRef.current?.requestFullscreen?.().catch(() => {})
+    }
   }
 
   const rotaDoRio = (rioId: string) => (rioId === 'itajai-mirim' ? '/mirim' : '/acu')
 
   return (
     <div className={`${estilos.pagina} ${municipal ? estilos.paginaMunicipal : ''}`}>
-      <div ref={divRef} className={`${estilos.palco} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
+      <div ref={divRef} className={`${estilos.palco} ${ampliado ? estilos.ampliado : ''} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
         <canvas
           ref={canvasRef}
           className={estilos.tela}
@@ -1074,7 +1097,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             {municipal ? "Dados observados · não é alerta oficial." : <>Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.</>}
           </span>
           <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
-            Tela cheia
+            {ampliado ? 'Sair da tela cheia' : 'Tela cheia'}
           </button>
         </div>
 
@@ -1411,7 +1434,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           const foco = (sel ?? hover)!
           const cid = foco.cidade
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})
-          const brutoSc = nivelSc.get(cid.id) ?? null
+          const brutoSc = cid.id === 'ascurra' ? null : nivelSc.get(cid.id) ?? null
           // As réguas da cidade, quando são VÁRIAS. Itajaí tem onze, todas
           // publicadas e frescas, e o Monitor não mostrava nenhuma: o pino azul
           // dizia "várias réguas" e o painel dizia "sem leitura fresca" — falso,
@@ -1444,6 +1467,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
                 </span>
               </div>
+              {cid.id === 'ascurra' && <p>Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.</p>}
               <div className={estilos.painelFaixa}>
                 <span
                   className={estilos.amostra}
@@ -1513,7 +1537,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 </div>
               ) : null}
               <div className={estilos.painelChuva}>
-                <ChuvaMonitor cidades={[cid]} chuva={tempoReal.chuva} agora={agora} />
+                <ChuvaMonitor cidades={[cid]} chuva={tempoReal.chuva} agora={agora} situacao={original.situacao} chuvaOk={original.chuvaOk} />
               </div>
               {cid.sub_bacia ? (
                 <p className={estilos.painelExtra}>Sub-bacia: {cid.sub_bacia}</p>
@@ -1689,7 +1713,10 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           .filter((c) => c.coordenadas)
           .map((c) => (
             <li key={c.id}>
-              <button type="button" onClick={() => setSel(null)}>
+              <button type="button" onClick={() => {
+                const p = cenaRef.current?.pinos.find(p => p.cidade.id === c.id)
+                if (p && !municipal) navigate(`/monitor/${c.id}`)
+              }}>
                 {c.nome}
               </button>
             </li>

@@ -1,12 +1,10 @@
+import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { Suspense, lazy, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AvisoLegal from '../componentes/AvisoLegal'
 import DiagramaRio from '../componentes/DiagramaRio'
-import PainelPrevisao from '../componentes/PainelPrevisao'
 import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
-import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import { cidadesDoRio, eventosDoRio, mareItajai, rio, topologiaDoRio, trechos } from '../dados/carregar'
-import { parear } from '../logica/previsao'
 import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { serieDaCidade, useSerieRecente } from '../dados/serie'
@@ -54,8 +52,9 @@ export default function TelaRio({ rioId }: { rioId: string }) {
     ).id
   }, [cidades, registrosPorCidade])
 
-  const tempoReal = useTempoReal()
+  const original = useTempoReal()
   const nivelSc = useNivelSc()
+  const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
   const serie = useSerieRecente()
   // Um único "agora" por render: assim todos os cartões contam a idade das
   // leituras a partir do mesmo instante.
@@ -84,25 +83,6 @@ export default function TelaRio({ rioId }: { rioId: string }) {
 
   const cidadeId = selecionadaId ?? padrao
   const selecionada = cidades.find((c) => c.id === cidadeId)
-  const indice = cidades.findIndex((c) => c.id === cidadeId)
-
-  /**
-   * Cidade a jusante para a estimativa.
-   *
-   * A vizinha imediata quase sempre não tem pico levantado, e parear com ela só
-   * produz "dados insuficientes" — escondendo a comparação que existe mais
-   * abaixo. Procura a primeira cidade a jusante com algum evento em comum; se
-   * nenhuma tiver, cai na vizinha, e a tela explica o que falta.
-   */
-  const jusante = useMemo(() => {
-    if (indice < 0) return undefined
-    for (let j = indice + 1; j < cidades.length; j++) {
-      const alvo = cidades[j]!
-      if (parear(eventos, cidades[indice]!.id, alvo.id).length > 0) return alvo
-    }
-    return cidades[indice + 1]
-  }, [cidades, eventos, indice])
-
   if (!dadosRio) {
     return <p>Rio não encontrado em <code>estacoes.json</code>.</p>
   }
@@ -122,8 +102,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
       <section className="cartao">
         <h2>Curso do rio, de cima para baixo</h2>
         <p className={estilos.instrucao}>
-          A água desce nesta ordem. Toque numa cidade para ver o histórico dela e a estimativa para a
-          cidade seguinte.
+          A água desce nesta ordem. Toque numa cidade para ver o histórico e os dados observados dela.
         </p>
         <DiagramaRio
           rioId={rioId}
@@ -159,16 +138,6 @@ export default function TelaRio({ rioId }: { rioId: string }) {
         </section>
       ) : null}
 
-      {selecionada && leituraDaCidade(tempoReal, rioId, selecionada.id) ? (
-        <PainelSePicoAgora
-          rioId={rioId}
-          cidades={cidades}
-          trechos={trechos}
-          origem={selecionada}
-          leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)!}
-          agora={agora}
-        />
-      ) : null}
 
       {/* A porta para a página da cidade. O detalhe aqui é um recorte; lá está
           tudo dela — e o endereço pode ser mandado para o vizinho. */}
@@ -183,7 +152,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
       {selecionada ? (
         <div ref={detalheRef}>
           <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
-            <CotasDeRua
+            <CotasDeRua key={selecionada.id}
               cidade={selecionada}
               leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
               agora={agora}
@@ -231,24 +200,6 @@ export default function TelaRio({ rioId }: { rioId: string }) {
         />
       ) : null}
 
-      {selecionada && jusante ? (
-        <PainelPrevisao
-          rioId={rioId}
-          eventos={eventos}
-          trechos={trechos}
-          montante={selecionada}
-          jusante={jusante}
-        />
-      ) : selecionada ? (
-        <section className="cartao">
-          <h2>{selecionada.nome} é o fim do curso nesta tela</h2>
-          <p className={estilos.instrucao}>
-            Não há cidade a jusante para estimar. Para a chegada dos picos na foz, veja a tela de{' '}
-            Itajaí.
-          </p>
-        </section>
-      ) : null}
-
       </div>
 
       <div className={estilos.colunaMapa}>
@@ -269,8 +220,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
             <>
               <p className={estilos.instrucao}>
                 O rio no mapa, com cada trecho na cor da faixa da cidade a montante — a mesma do
-                diagrama. Aproxime para ver os nomes; toque numa cidade para as cotas de rua e o
-                abrigo dela. Carrega sob pedido para não pesar no celular.
+                diagrama. Aproxime para ver os nomes; toque numa cidade para as cotas de referência por rua. Carrega sob pedido para não pesar no celular.
               </p>
               <button type="button" className={estilos.botaoMapa} onClick={() => setVerMapa(true)}>
                 Ver mapa do rio

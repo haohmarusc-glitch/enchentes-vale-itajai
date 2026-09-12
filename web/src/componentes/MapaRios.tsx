@@ -36,11 +36,10 @@ function urlDoRio(rioId: string): string | undefined {
 /**
  * Mapa geográfico do rio em <canvas>, no espírito do Kikikuru: o traçado real
  * (OpenStreetMap) pintado por trecho — cada trecho na cor da faixa da cidade a
- * montante — com a correnteza animada descendo no sentido do rio, MAIS RÁPIDA
- * onde o nível está mais alto (a animação significa o nível, não enfeita).
+ * montante — com movimento ilustrativo constante, sem estimar escoamento.
  * Trecho sem cidade que o pinte fica cinza e PARADO — não fingimos conhecer uma
  * água que não medimos. Na foz, o mar é colorido pela maré (escala própria).
- * Toque numa cidade abre as cotas de rua e o abrigo dela.
+ * Toque numa cidade abre as cotas de rua.
  *
  * O desenho e a montagem da cena moram em `logica/mapaMotor.ts`, dividido com a
  * tela cheia da bacia (`MonitorBacia`). Aqui é só um rio.
@@ -284,7 +283,7 @@ export default function MapaRios({
                   setSel(null)
                 }}
               >
-                Ver as cotas de rua e o abrigo
+                Ver as cotas de rua
               </button>
             ) : null}
           </div>
@@ -309,12 +308,10 @@ export default function MapaRios({
 
       <p className={estilos.credito}>
         Cada trecho tem a cor da faixa da cidade a montante; a correnteza desce no
-        sentido do rio e corre mais rápido onde o nível está mais alto — nunca o
-        nível em metros. Trecho <strong>cinza</strong> é onde ainda não há régua
+        sentido do rio com velocidade visual constante. A animação é ilustrativa e não representa velocidade da água ou tempo de chegada. Trecho <strong>cinza</strong> é onde ainda não há régua
         que o pinte, e por isso fica parado. Na foz, a faixa <strong>azul</strong>{' '}
         é a <strong>maré</strong> (escala própria, não a de cheia): maré alta
-        trava o escoamento do rio. Toque numa cidade para as cotas de rua e o
-        abrigo dela. Traçado: © colaboradores do OpenStreetMap (ODbL).
+        trava o escoamento do rio. Toque numa cidade para consultar as cotas de rua. Traçado: © colaboradores do OpenStreetMap (ODbL).
       </p>
     </div>
   )

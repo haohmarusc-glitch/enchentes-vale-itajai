@@ -83,3 +83,7 @@ jobs:
       - name: Fumaça — o site monta num navegador?
         working-directory: web
         run: npm run fumaca
+
+      - name: Regressões da auditoria do navegador
+        working-directory: web
+        run: npm run auditoria

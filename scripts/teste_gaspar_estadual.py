@@ -145,7 +145,7 @@ class TestLadoDoMunicipio(unittest.TestCase):
         if not self.caminho().exists():
             self.skipTest("ultimo_gaspar.json ainda não coletado neste checkout")
         rotulos = [e.get("rotulo")
-                   for e in json.loads(self.caminho().read_text())["estacoes"]]
+                   for e in json.loads(self.caminho().read_text(encoding="utf-8"))["estacoes"]]
         self.assertIn(ROTULO_MUNICIPIO, rotulos)
 
     def test_ultimo_json_da_coleta_geral_nao_serve_de_fonte(self):
@@ -287,7 +287,7 @@ class TestEvidencia(unittest.TestCase):
         de valer, este teste cai e o raciocínio tem de ser refeito.
         """
         estacoes_json = json.loads(
-            (Path(__file__).resolve().parent.parent / "data/estacoes.json").read_text())
+            (Path(__file__).resolve().parent.parent / "data/estacoes.json").read_text(encoding="utf-8"))
         g = next(c for c in estacoes_json["rios"]["itajai-acu"]["cidades"]
                  if c["id"] == "gaspar")
         maior = max(g["cotas_m"].values())
@@ -303,7 +303,7 @@ class TestEvidencia(unittest.TestCase):
         """
         import json
         est = json.loads(
-            (Path(__file__).resolve().parent.parent / "data/estacoes.json").read_text())
+            (Path(__file__).resolve().parent.parent / "data/estacoes.json").read_text(encoding="utf-8"))
         dc11 = next(e for e in est["estacoes_tempo_real"] if e["codigo"] == "DC-11")
         self.assertEqual(dc11["cidade"], "itajai")
         self.assertNotIn("cidade_em_disputa", dc11)
@@ -315,7 +315,7 @@ class TestNaoAlimentaOAviso(unittest.TestCase):
         `alerta_cotas.py` lê data/tempo-real/ultimo.json. Este script não pode
         escrever lá — seria contornar o próprio portão por um caminho de trás.
         """
-        fonte = (Path(__file__).resolve().parent / "gaspar_estadual.py").read_text()
+        fonte = (Path(__file__).resolve().parent / "gaspar_estadual.py").read_text(encoding="utf-8")
         depois_do_docstring = fonte.split('"""', 2)[-1]
         self.assertNotIn("ultimo.json\", \"w", depois_do_docstring)
         for escrita in ("grava_json", "write_text"):
