@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Arquivo observacional do evento de setembro: preserva versões dos JSONs dos coletores e registra arquivos ausentes/inválidos a cada publicação. Ativação e backup na VPS em [registro do evento](docs/registro-evento.md). Não recupera lacunas anteriores nem soma acumulados de chuva sobrepostos.
+
 - [~] **Ascurra — fontes municipais examinadas:** link para mapa de risco CPRM/SGB e COMPDEC incluído no piloto. Coletor e tela preparados para `h168` (chuva de sete dias), confirmado na API estadual em 11/09/2026. Necessário atualizar o coletor na VPS para publicar o campo; faltam importação dos polígonos e chuva histórica comparável.
 
 - [x] **Enquadramento municipal de Ascurra:** piloto compara a DCSC-00003 recente com o C18, preservando emergência estritamente acima de 10,76 m e a ambiguidade em 9,76 m. Não ativa manchas nem envia avisos.
