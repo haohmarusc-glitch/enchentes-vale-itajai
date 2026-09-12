@@ -43,6 +43,17 @@ const pino = (id: string, x: number, y: number, extra: Partial<Pino> = {}): Pino
 const cena = (pinos: Pino[]): Cena =>
   ({ pinos, largura: CENA_LARGURA, altura: 300 }) as unknown as Cena
 
+test('chuva fica abaixo do pino e reserva espaço contra rótulos vizinhos', () => {
+  const c = cena([pino('A', 200, 100), pino('B', 200, 160)])
+  const chuva = new Map([['A', ['1 h: 0 mm', '12 h: 12 mm', '24 h: 20 mm', 'Chuva · há 5 min']]])
+  const plano = planejarRotulosDosPinos(medir, c, null, { chuva }, [])
+  const a = plano.get('A')!
+  assert.ok(a.chuvaY! > 107)
+  assert.ok(a.caixa.y1 >= a.chuvaY! + 4 * 11)
+  assert.deepEqual(a.chuva, chuva.get('A'))
+  assert.equal(plano.has('B'), false)
+})
+
 test('A CAIXA USA O TEXTO MAIS LARGO — o defeito que empilhava os rótulos', () => {
   /**
    * "Ilhota" mede 36 px; "≈9,77 m bruto · há 5 min" mede 111. A caixa era

@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Chuva no mapa: acumulados de 1 h, 12 h e 24 h abaixo do pino da cidade, com idade da chuva e espaço reservado contra sobreposição. Detalhes de estação continuam no painel recolhível. Na reprodução histórica, a chuva atual fica oculta.
+
 - [x] Monitor: painel de chuva com 1 h, 12 h e 24 h para as cidades, estação e horário. Usa um único pluviômetro válido mais recente por cidade e mantém janelas ausentes como indisponíveis, sem somar estações.
 
 - [x] Arquivo observacional do evento de setembro: preserva versões dos JSONs dos coletores e registra arquivos ausentes/inválidos a cada publicação. Ativação e backup na VPS em [registro do evento](docs/registro-evento.md). Não recupera lacunas anteriores nem soma acumulados de chuva sobrepostos.
