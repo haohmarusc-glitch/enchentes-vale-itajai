@@ -1699,3 +1699,4 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timbó, Rio dos Cedros e Lontras pelos códigos já conferidos no cadastro de nível. A API aceitou a consulta em 11/09/2026. Após merge, atualizar a VPS e executar coleta_niveis.py e publicar_tempo_real.sh para preencher as novas janelas. Não há estimativa de chuva onde não existe leitura.
 
 - Indaial: régua estadual DCSC-00006 identificada no monitor, separada da régua municipal dos fundos da Celesc; [conferência](docs/indaial-duas-reguas.md).
+- Gaspar: estação 21 como alternativa à tabela; legenda atual 5/7 m e histórico público extraídos. Ver [endpoints e limites](docs/gaspar-estacao21-endpoints.md). Requer deploy do coletor na VPS.
