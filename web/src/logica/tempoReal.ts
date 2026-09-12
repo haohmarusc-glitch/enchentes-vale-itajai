@@ -32,6 +32,11 @@ import { caminho, janelaChegada, type Caminho } from './transito'
 export const MIN_AGORA = 90
 /** Daqui em diante o número deixa de servir para decidir qualquer coisa. */
 export const MIN_VELHA = 180
+/** AlertaBlu publica série horária; após duas horas a cor fica indisponível. */
+export const MIN_VELHA_BLUMENAU = 120
+export function frescorDaCidade(idade: number, cidade: string | null): Frescor {
+  return cidade === 'blumenau' && idade > MIN_VELHA_BLUMENAU ? 'velha' : frescor(idade)
+}
 
 export type Frescor = 'agora' | 'atrasada' | 'velha'
 
@@ -363,7 +368,7 @@ export function faixaDaCidade(
   if (!aoVivo || !aoVivo.medidoEm) return 'sem-dado'
   // Leitura velha não pinta: um número de horas atrás não diz a faixa de agora,
   // e uma cor forte sobre dado velho é a mentira mais perigosa da tela.
-  if (frescor(idadeMin(aoVivo.medidoEm, agora)) === 'velha') return 'sem-dado'
+  if (frescorDaCidade(idadeMin(aoVivo.medidoEm, agora), cidade.id) === 'velha') return 'sem-dado'
   // Legenda da estação 21: maior que (não >=); 5 m exatos não estão definidos.
   // Classificação somente pelo nível. A condição alternativa de chuva é separada.
   if (cidade.id === 'gaspar') {

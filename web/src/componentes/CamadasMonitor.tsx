@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import historico from '@dados/manchas/index.json'
 import ituporanga from '@dados/manchas/ituporanga/index.json'
+import blumenau from '@dados/manchas/blumenau/index.json'
+import { camadaBlumenau } from '../logica/camadaBlumenau'
 import { cheiaMaisProxima, type EventoComparavel, type MedicaoComparavel } from '../logica/compararCheias'
 import { rotuloEvento } from '../logica/manchas'
 
@@ -22,11 +24,15 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
   const eventos = useMemo(() => (historico.manchas as EventoComparavel[]).filter((m) => m.cidade === cidade), [cidade])
   const opcoes = useMemo(() => cidade === 'ascurra'
     ? [{ arquivo: RISCO_ASCURRA, rotulo: 'Setores de risco de inundação — CPRM, 2015 (referência estática)' }]
+    : cidade === 'blumenau'
+    ? blumenau.camadas.map(c => ({ arquivo: 'manchas/blumenau/' + c.arquivo, rotulo: `Simulação ${c.nivel_m.toFixed(2).replace('.', ',')} m — FURB 2025` }))
     : cidade === 'ituporanga'
     ? ituporanga.camadas.map((c) => ({ arquivo: 'manchas/ituporanga/' + c.arquivo, rotulo: `Camada ${c.nivel_m.toFixed(2).replace('.', ',')} m — consulta manual` }))
     : eventos.map((e) => ({ arquivo: e.arquivo, rotulo: `${rotuloEvento(e.evento)} — ${e.tipo ?? 'mancha histórica'}` })), [cidade, eventos])
   const proxima = reproduzindo ? null : cheiaMaisProxima(eventos, leituras, agora)
-  const arquivo = modo === 'auto' ? proxima?.evento.arquivo : modo === 'off' ? undefined : modo
+  const blu = cidade === 'blumenau'
+  const cotaBlu = blu && !reproduzindo ? camadaBlumenau(blumenau.camadas, leituras, agora) : null
+  const arquivo = modo === 'auto' ? (blu ? cotaBlu ? 'manchas/blumenau/' + cotaBlu.arquivo : undefined : proxima?.evento.arquivo) : modo === 'off' ? undefined : modo
   const escolha = opcoes.find((o) => o.arquivo === arquivo)
   const evento = eventos.find((e) => e.arquivo === arquivo)
   const chuva = evento?.chuva_7dias
@@ -49,11 +55,13 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
     <h2>Camadas e comparação de cheias</h2>
     <label htmlFor="camada-monitor">Camada sobre o mapa</label>{' '}
     <select style={{ display: 'block', width: '100%', maxWidth: '100%', minWidth: 0, boxSizing: 'border-box' }} id="camada-monitor" value={modo} onChange={(e) => setModo(e.target.value)}>
-      <option value="auto">Automática — cheia histórica mais próxima</option>
+      <option value="auto">{blu ? 'Automática — referência por cota (FURB 2025)' : 'Automática — cheia histórica mais próxima'}</option>
       <option value="off">Ocultar camadas</option>
       {opcoes.map((o) => <option value={o.arquivo} key={o.arquivo}>{o.rotulo}</option>)}
     </select>
-    {modo === 'auto' && (proxima ? <p role="status">
+    {blu && <p>Cartas de enchente FURB 2025, publicadas pelo <a href={blumenau.pagina} target="_blank" rel="noreferrer">AlertaBlu</a>. Simulações de 8 a 18 m; não representam alagamento observado nem picos de eventos históricos. A cor de aviso da régua é independente destas áreas.</p>}
+    {blu && modo === 'auto' && <p role="status">{reproduzindo ? 'Camada automática pausada durante a reprodução.' : cotaBlu ? `Referência de ${cotaBlu.nivel_m.toFixed(2).replace('.', ',')} m: maior cota disponível que não supera a leitura recente. Sem interpolação; a área pode diferir da situação real.` : 'Sem camada automática: é necessária leitura compatível de pelo menos 8 m e de até duas horas. Você pode consultar as simulações manualmente.'}</p>}
+    {!blu && modo === 'auto' && (proxima ? <p role="status">
       Comparação mais próxima: <strong>{rotuloEvento(proxima.evento.evento)}</strong>.{' '}
       O rio está {Math.abs(proxima.diferencaM).toFixed(2).replace('.', ',')} m{' '}
       {proxima.diferencaM < 0 ? 'abaixo' : 'acima'} do pico registrado naquela cheia, na mesma régua.
@@ -64,10 +72,10 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
     {risco && <p>Quatro setores de risco de inundação levantados em 25/06/2015. A área azul é uma referência estática: não é a extensão de uma cheia específica nem alagamento observado agora. Não muda com o nível atual. <a href="https://rigeo.sgb.gov.br/handle/doc/18496" target="_blank" rel="noreferrer">Fonte: SGB/CPRM · levantamento de Ascurra</a>. Ainda falta a relação entre polígonos e cotas da régua para selecionar uma mancha conforme a cheia.</p>}
     {escolha && !risco && <>
       <p><strong>{escolha.rotulo}</strong>. A área azul é a camada da fonte, não confirmação de alagamento agora.</p>
-      <p>Chuva nos sete dias da cheia passada:{' '}{chuva && Number.isFinite(chuva.mm) && chuva.mm >= 0
+      {!blu && <><p>Chuva nos sete dias da cheia passada:{' '}{chuva && Number.isFinite(chuva.mm) && chuva.mm >= 0
         ? <>{chuva.mm} mm, de {chuva.inicio} a {chuva.fim}, estação {chuva.estacao}. <a href={chuva.fonte}>Fonte</a></>
         : 'não documentada para esta camada.'}</p>
-      <p>Chuva nos sete dias da cheia em andamento: acumulado de sete dias ainda não disponível nesta comparação. Valores de 24 ou 48 horas não substituem a semana.</p>
+      <p>Chuva nos sete dias da cheia em andamento: acumulado de sete dias ainda não disponível nesta comparação. Valores de 24 ou 48 horas não substituem a semana.</p></>}
     </>}
     <p role="status">{estado}</p>
     {estado.startsWith('Não foi possível') && <button onClick={() => setTentativa((n) => n + 1)}>Tentar novamente</button>}
