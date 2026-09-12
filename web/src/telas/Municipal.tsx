@@ -75,6 +75,10 @@ export default function Municipal() {
       <p>A Prefeitura disponibiliza polígonos da CPRM/SGB (levantamento de 2015) e da Defesa Civil municipal. O setor SR-03, bairro Estação, registra risco de inundação e menciona o evento de 2011. Essas áreas não possuem vínculo com a altura atual da régua confirmado nesta integração.</p>
       <p><a href="https://sites.google.com/view/prefeituramunicipaldeascurra-s/%C3%A1reas-de-risco" target="_blank" rel="noreferrer">Consultar mapa de áreas de risco na página da Defesa Civil de Ascurra</a></p>
       <p>Mapa indicado pela própria Defesa Civil no C18. Quatro setores de inundação da CPRM (2015) disponíveis no monitor. Os setores adicionais municipais ainda não foram importados. Não representa alagamento observado agora.</p>
+      <h3>Carta de suscetibilidade · SGB, março de 2026</h3>
+      <p>O levantamento distingue áreas de suscetibilidade alta, média e baixa à inundação. É uma referência territorial, não uma mancha da cheia em andamento.</p>
+      <p>As alturas de 1,5 m e 3 m citadas na legenda são relativas à lâmina de água regular do curso. Não correspondem às leituras da régua DCSC-00003 e não são usadas para escolher camadas neste monitor.</p>
+      <p><a href="https://rigeo.sgb.gov.br/handle/doc/25961" target="_blank" rel="noreferrer">Consultar carta e arquivos oficiais do SGB (2026)</a>. A cartografia não substitui estudos locais detalhados; seus polígonos ainda não foram integrados ao monitor.</p>
     </section>
     <footer><p>Última conferência da idade das leituras: {dataHora(agora)}. A hora da medição aparece em cada estação.</p>
       <p>Piloto dentro do site regional; ainda não é uma distribuição de código e arquivos exclusiva do município.</p><Link to="/">Voltar ao site regional</Link></footer>
