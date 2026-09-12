@@ -533,8 +533,8 @@
           ],
           "fonte_tempo_real_ressalva": "Conferido em 12/09/2026: a tabela voltou a publicar Rio Itajaí Açu Gaspar. A página /estacao/ver/21 publica o nível no HTML e funciona como alternativa quando a tabela falha ou omite a régua. O histórico do dia tem manual=1 em todas as linhas: atualização não é contínua; conservar carimbo original e recusar cor quando antiga. Acesso desde a VPS ainda precisa ser conferido após deploy.",
           "coordenadas": [
-            -26.928034,
-            -48.958136
+            -26.9264,
+            -48.9643
           ],
           "codigo_ana_nome": "GASPAR (MONTANTE ETA)",
           "codigo_ana_verificado": true,
@@ -545,7 +545,16 @@
           "codigo_ana_verificacao": "Vinculado em 06/09/2026 por COORDENADA E POR TIPO, a regra emendada. Coordenada: a DCSC-00005 (que é este pino) fica a 10 m da 83840000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026. Tipo: a ANA a cadastra como FLUVIOMÉTRICA, com escala de 1927 a 12/2021. Não é vínculo por nome — há um pluviômetro a 348 m da régua de Indaial que teria 'batido' pelos mesmos critérios se o tipo não fosse conferido. ⚠️ A coordenada da estação da ANA não foi transcrita: a distância de 10 m foi medida por Jefferson contra o cadastro da ANA, e não pôde ser refeita aqui. Por isso a trava do validador confere o TIPO desta estação, mas não a geometria dela.",
           "codigo_ana_sucessor": null,
           "codigo_ana_sucessor_nota": "A ANA NÃO tem estação sucessora em Gaspar — é a única das quatro que morreram em 12/2021 sem substituta. Por isso o campo é null com motivo, e não um código inventado. Consequência prática: para o presente, a ÚNICA fonte de nível de Gaspar é a municipal (/estacao/ver/21), a mesma régua das cotas de rua. O que era um dado solitário passa a ser um dado solitário POR UM MOTIVO CONHECIDO.",
-          "regua_das_cotas": "Rio Itajaí Açu Gaspar — estação municipal 21"
+          "regua_das_cotas": "Rio Itajaí Açu Gaspar — estação municipal 21",
+          "estacao_municipal": {
+            "id": 21,
+            "coordenadas": [
+              -26.928034,
+              -48.958136
+            ],
+            "fonte": "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21",
+            "nota": "Coordenadas do mapa da página municipal; distintas do pino regional/DCSC. Não altera distâncias do traçado regional."
+          }
         },
         {
           "id": "ilhota",

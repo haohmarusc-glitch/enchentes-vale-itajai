@@ -531,10 +531,10 @@ class GasparConfereComAPropriaFonte(unittest.TestCase):
         self.assertEqual(alerta_cotas.faixa_de(7.00, cotas), "emergencia")
 
     def test_o_degrau_de_alerta_do_plano_continua_existindo(self):
-        # A página não o tem; o Plano tem. Perdê-lo tiraria um aviso.
+        # Legenda atual da estação não tem alerta a 6 m; Plano preservado em divergências.
         cotas = self.cotas()
-        self.assertEqual(cotas["alerta"], 6.00)
-        self.assertEqual(alerta_cotas.faixa_de(6.00, cotas), "alerta")
+        self.assertNotIn("alerta", cotas)
+        self.assertEqual(alerta_cotas.faixa_de(6.00, cotas), "atencao")
 
     def test_a_atencao_fica_ABAIXO_da_primeira_rua_que_alaga(self):
         # 6,20 m é a primeira via do cadastro de ruas. A atenção a 5,00 m dá
