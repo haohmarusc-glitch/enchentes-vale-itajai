@@ -3,7 +3,7 @@
  * mapa de UM rio (`MapaRios`) e pela tela cheia da BACIA inteira (`MonitorBacia`).
  *
  * A geometria pura (projeção, encaixe no rio, orientação jusante, trecho,
- * movimento das setas) fica em `mapaCanvas.ts` e é testada lá. Aqui é a camada
+ * movimento das ondas) fica em `mapaCanvas.ts` e é testada lá. Aqui é a camada
  * que junta essa geometria com o dado ao vivo (faixa por cidade, maré na foz) e
  * pinta o fundo escuro com o leito luminoso.
  *
@@ -124,7 +124,7 @@ const GRAVIDADE: Record<Faixa, number> = {
 }
 
 export const MARGEM = 18
-const ESPACO_SETA = 22 // px entre setas de correnteza
+const ESPACO_ONDA = 22 // px entre ondas de correnteza
 const VEL_PX = 24 // px/s da correnteza na faixa de referência
 
 /** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
@@ -642,7 +642,7 @@ function desenharEtiquetaMare(ctx: CanvasRenderingContext2D, cena: Cena, escala:
   ctx.fillText(texto, x + padX, y + h / 2 + 0.5)
 }
 
-/** Setas da correnteza descendo o rio — o movimento que significa o nível. */
+/** Ondas arredondadas seguindo o curso do rio, da montante para a foz. */
 export function desenharCorrenteza(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
@@ -656,7 +656,7 @@ export function desenharCorrenteza(
       t.total,
       VEL_FAIXA[t.faixa],
       tempo,
-      ESPACO_SETA * escala,
+      ESPACO_ONDA * escala,
       VEL_PX * escala,
     )
     if (posicoes.length === 0) continue
@@ -670,9 +670,17 @@ export function desenharCorrenteza(
         const px = -a.dy
         const py = a.dx
         ctx.beginPath()
-        ctx.moveTo(a.x - a.dx * h + px * h, a.y - a.dy * h + py * h)
-        ctx.lineTo(a.x + a.dx * h, a.y + a.dy * h)
-        ctx.lineTo(a.x - a.dx * h - px * h, a.y - a.dy * h - py * h)
+        // Crista curva transversal ao leito: sem ponta de seta. O centro
+        // acompanha a tangente local, mantendo o movimento nas curvas do rio.
+        ctx.moveTo(a.x - a.dx * h * 0.35 + px * h, a.y - a.dy * h * 0.35 + py * h)
+        ctx.bezierCurveTo(
+          a.x + a.dx * h * 0.75 + px * h * 0.55,
+          a.y + a.dy * h * 0.75 + py * h * 0.55,
+          a.x + a.dx * h * 0.75 - px * h * 0.55,
+          a.y + a.dy * h * 0.75 - py * h * 0.55,
+          a.x - a.dx * h * 0.35 - px * h,
+          a.y - a.dy * h * 0.35 - py * h,
+        )
         ctx.stroke()
       }
     }
