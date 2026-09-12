@@ -306,6 +306,22 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
    * cobriam o mapa inteiro (visto em 06/09/2026) — e o mapa é o motivo de
    * alguém estar aqui.
    */
+  const [animacoesPausadas, setAnimacoesPausadas] = useState(false)
+  const [paginaOculta, setPaginaOculta] = useState(document.hidden)
+  const [movimentoReduzido, setMovimentoReduzido] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const atualizarMovimento = () => setMovimentoReduzido(media.matches)
+    const atualizarVisibilidade = () => setPaginaOculta(document.hidden)
+    media.addEventListener('change', atualizarMovimento)
+    document.addEventListener('visibilitychange', atualizarVisibilidade)
+    return () => {
+      media.removeEventListener('change', atualizarMovimento)
+      document.removeEventListener('visibilitychange', atualizarVisibilidade)
+    }
+  }, [])
   const [legendaAberta, setLegendaAberta] = useState<boolean>(
     () => !cidadeFoco && (typeof window === 'undefined' || window.innerWidth > 700),
   )
@@ -624,14 +640,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       cache.set(url, im)
     }
 
-    const reduz =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduz = animacoesPausadas || movimentoReduzido || paginaOculta
 
     let camadaPreparada: CamadaDesenhada = null
     let caminhosCamada: Path2D[] = []
     let raf = 0
-    const inicio = performance.now()
     const quadro = (t: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, cena.largura, cena.altura)
@@ -660,7 +673,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       ctx.fillStyle = 'rgba(22,121,186,0.42)'
       for (const path of caminhosCamada) ctx.fill(path, 'evenodd')
       ctx.restore()
-      const seg = reduz ? 0 : (t - inicio) / 1000
+      const seg = reduz ? 0 : t / 1000
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
       // Barragens antes das réguas e dos pinos: são estrutura no leito, ficam por baixo.
@@ -722,12 +735,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       desenharPinos(ctx, cena, selRef.current, { ...opcoesPinos, rotulos })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
-    raf = requestAnimationFrame(quadro)
+    if (!paginaOculta) raf = requestAnimationFrame(quadro)
     return () => {
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal])
+  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -1242,6 +1255,13 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </strong>
           {legendaAberta ? (
             <>
+          <p className={estilos.legendaNota}>Animação ilustrativa do sentido do curso até o mar. Não representa velocidade da água nem previsão de chegada. Na foz, a maré pode alterar o sentido real da corrente.</p>
+          <button type="button" className={estilos.botaoLegenda}
+            aria-pressed={animacoesPausadas}
+            onClick={() => setAnimacoesPausadas(v => !v)}>
+            {animacoesPausadas ? 'Retomar animações' : 'Pausar animações'}
+          </button>
+          {movimentoReduzido && <p className={estilos.legendaNota}>Movimento reduzido ativado nas preferências do dispositivo.</p>}
           <ul>
             {FAIXAS_LEGENDA.map((faixa) => (
               <li key={faixa}>
@@ -1291,9 +1311,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           <p className={estilos.legendaNota}>
             Ribeirões e canais (Murta, Canhanduba, canal do Mirim) ficam cinza e{' '}
             <strong>parados mesmo tendo régua com número</strong>: as réguas deles
-            são de estuário, a maré cruza a cota sem enchente, e a correnteza
-            animada significa a faixa — correr ali afirmaria um nível que a maré
-            não deixa ler. O metro aparece no pino; a cor, não.
+            são de estuário, onde a maré pode alterar a corrente. O metro aparece no pino; a cor, não.
           </p>
           {/* Sem esta linha, quem vê onze pontos e dois números em Itajaí não
               tem como saber por quê — e some do mapa é o que mais parece

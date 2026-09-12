@@ -32,7 +32,6 @@ import {
   projetar,
   trechoDoPonto,
   LARGURA_FAIXA,
-  VEL_FAIXA,
   aplicarVista,
   type Enquadramento,
   type LonLat,
@@ -125,7 +124,7 @@ const GRAVIDADE: Record<Faixa, number> = {
 
 export const MARGEM = 18
 const ESPACO_ONDA = 22 // px entre ondas de correnteza
-const VEL_PX = 24 // px/s da correnteza na faixa de referência
+const VEL_PX = 28 // px/s visuais, independentes de nível, chuva ou maré
 
 /** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
 export interface Trecho {
@@ -654,13 +653,13 @@ export function desenharCorrenteza(
   for (const t of cena.trechos) {
     const posicoes = posicoesCorrenteza(
       t.total,
-      VEL_FAIXA[t.faixa],
+      t.faixa === 'sem-dado' ? 0 : 1,
       tempo,
       ESPACO_ONDA * escala,
       VEL_PX * escala,
     )
     if (posicoes.length === 0) continue
-    const h = 4.6 * LARGURA_FAIXA[t.faixa] * escala
+    const h = 5 * escala
     for (let camada = 0; camada < 2; camada++) {
       ctx.strokeStyle = camada === 0 ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.97)'
       ctx.lineWidth = (camada === 0 ? 3.4 : 2.2) * escala

@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Ondas com velocidade visual constante, opção de pausa na legenda, respeito a movimento reduzido e suspensão do loop com a página oculta.
+
 - [x] Monitor no celular: caixa de chuva duplicada removida; cabeçalho, camadas, zoom e reprodução compactados para liberar o mapa.
 
 - [x] Correnteza no mapa: ondas curvas animadas substituem as setas; direção, velocidade por faixa e preferência por movimento reduzido preservadas.
