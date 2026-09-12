@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Fluxo ilustrativo do Monitor com traços luminosos na cor da faixa de cota ao longo da calha, conforme referência visual, mantendo pausa e velocidade constante.
+
 - [x] Ondas com velocidade visual constante, opção de pausa na legenda, respeito a movimento reduzido e suspensão do loop com a página oculta.
 
 - [x] Monitor no celular: caixa de chuva duplicada removida; cabeçalho, camadas, zoom e reprodução compactados para liberar o mapa.

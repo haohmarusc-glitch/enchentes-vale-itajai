@@ -27,7 +27,6 @@ import {
   kmEntre,
   limitesDe,
   maisProximoNoRio,
-  posicoesCorrenteza,
   progressoNaEspinha,
   projetar,
   trechoDoPonto,
@@ -123,7 +122,6 @@ const GRAVIDADE: Record<Faixa, number> = {
 }
 
 export const MARGEM = 18
-const ESPACO_ONDA = 22 // px entre ondas de correnteza
 const VEL_PX = 28 // px/s visuais, independentes de nível, chuva ou maré
 
 /** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
@@ -248,27 +246,6 @@ function acumularPixels(pts: [number, number][]): { cum: number[]; total: number
     cum.push(cum[i - 1]! + Math.hypot(dx, dy))
   }
   return { cum, total: cum[cum.length - 1] ?? 0 }
-}
-
-/** Ponto e direção a uma distância `pos` ao longo de um trecho já acumulado. */
-function amostrar(
-  t: Trecho,
-  pos: number,
-): { x: number; y: number; dx: number; dy: number } | null {
-  if (t.pts.length < 2) return null
-  let j = 0
-  while (j < t.cum.length - 1 && t.cum[j + 1]! < pos) j++
-  const a = t.pts[j]!
-  const b = t.pts[j + 1]!
-  const seg = t.cum[j + 1]! - t.cum[j]! || 1
-  const u = Math.max(0, Math.min(1, (pos - t.cum[j]!) / seg))
-  const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
-  return {
-    x: a[0] + (b[0] - a[0]) * u,
-    y: a[1] + (b[1] - a[1]) * u,
-    dx: (b[0] - a[0]) / len,
-    dy: (b[1] - a[1]) / len,
-  }
 }
 
 /**
@@ -641,49 +618,45 @@ function desenharEtiquetaMare(ctx: CanvasRenderingContext2D, cena: Cena, escala:
   ctx.fillText(texto, x + padX, y + h / 2 + 0.5)
 }
 
-/** Ondas arredondadas seguindo o curso do rio, da montante para a foz. */
+/** Caminhos projetados reutilizados enquanto o enquadramento não muda. */
+const caminhosFluxo = new WeakMap<Trecho, Path2D>()
+
+/** Fluxo ilustrativo na cor da faixa ao longo da calha, com fase baseada no tempo. */
 export function desenharCorrenteza(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
   tempo: number,
   escala = 1,
 ): void {
+  ctx.save()
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
+  ctx.setLineDash([14 * escala, 18 * escala])
+  ctx.lineDashOffset = -((tempo * VEL_PX * escala) % (32 * escala))
   for (const t of cena.trechos) {
-    const posicoes = posicoesCorrenteza(
-      t.total,
-      t.faixa === 'sem-dado' ? 0 : 1,
-      tempo,
-      ESPACO_ONDA * escala,
-      VEL_PX * escala,
-    )
-    if (posicoes.length === 0) continue
-    const h = 5 * escala
-    for (let camada = 0; camada < 2; camada++) {
-      ctx.strokeStyle = camada === 0 ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.97)'
-      ctx.lineWidth = (camada === 0 ? 3.4 : 2.2) * escala
-      for (const pos of posicoes) {
-        const a = amostrar(t, pos)
-        if (!a) continue
-        const px = -a.dy
-        const py = a.dx
-        ctx.beginPath()
-        // Crista curva transversal ao leito: sem ponta de seta. O centro
-        // acompanha a tangente local, mantendo o movimento nas curvas do rio.
-        ctx.moveTo(a.x - a.dx * h * 0.35 + px * h, a.y - a.dy * h * 0.35 + py * h)
-        ctx.bezierCurveTo(
-          a.x + a.dx * h * 0.75 + px * h * 0.55,
-          a.y + a.dy * h * 0.75 + py * h * 0.55,
-          a.x + a.dx * h * 0.75 - px * h * 0.55,
-          a.y + a.dy * h * 0.75 - py * h * 0.55,
-          a.x - a.dx * h * 0.35 - px * h,
-          a.y - a.dy * h * 0.35 - py * h,
-        )
-        ctx.stroke()
-      }
+    if (t.faixa === 'sem-dado' || t.pts.length < 2) continue
+    let path = caminhosFluxo.get(t)
+    if (!path) {
+      path = new Path2D()
+      t.pts.forEach(([x, y], i) => {
+        if (i === 0) path!.moveTo(x, y)
+        else path!.lineTo(x, y)
+      })
+      caminhosFluxo.set(t, path)
     }
+    // Halo em duas passadas, sem blur custoso por segmento no celular.
+    ctx.strokeStyle = cena.cores[t.faixa]
+    ctx.globalAlpha = 0.18
+    ctx.lineWidth = 8 * escala
+    ctx.stroke(path)
+    ctx.globalAlpha = 0.58
+    ctx.lineWidth = 4 * escala
+    ctx.stroke(path)
+    ctx.globalAlpha = 0.95
+    ctx.lineWidth = 1.8 * escala
+    ctx.stroke(path)
   }
+  ctx.restore()
 }
 
 /** Uma volta da onda (nascente → mar), em segundos. */
@@ -691,19 +664,14 @@ const PERIODO_ONDA = 5.5
 /** Largura da crista, em fração do curso (0..1). */
 const SIGMA_ONDA = 0.09
 
-/**
- * A ONDA descendo o rio até o mar: uma crista de luz (azul-água, NÃO a cor de
- * faixa) que varre cada rio da nascente à foz e repete. É o "a água desce para o
- * mar" que o mapa mostra por cima do leito colorido — direção e movimento, sem
- * afirmar nível (a faixa continua sendo o sinal honesto; a onda é o fluxo ao
- * mar). No trecho cinza a crista é mais fraca, para não competir com o dado.
- */
+/** Crista ilustrativa na mesma cor da faixa do trecho, sem estimar escoamento. */
 export function desenharOnda(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
   tempo: number,
   escala = 1,
 ): void {
+  ctx.save()
   const frente = ((tempo / PERIODO_ONDA) % 1 + 1) % 1
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
@@ -715,10 +683,12 @@ export function desenharOnda(
     const alpha = Math.exp(-((d / SIGMA_ONDA) ** 2)) * (t.faixa === 'sem-dado' ? 0.32 : 0.62)
     if (alpha < 0.03) continue
     caminhoTrecho(ctx, t.pts)
-    ctx.strokeStyle = `rgba(150,220,255,${alpha.toFixed(3)})`
+    ctx.strokeStyle = cena.cores[t.faixa]
+    ctx.globalAlpha = alpha
     ctx.lineWidth = (t.faixa === 'sem-dado' ? 2 : 3) * escala
     ctx.stroke()
   }
+  ctx.restore()
 }
 
 /** Há régua cadastrada para esta cidade? Ver `temReguaCadastrada` em `dados/carregar`. */

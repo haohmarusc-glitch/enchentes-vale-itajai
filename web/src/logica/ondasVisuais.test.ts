@@ -4,8 +4,9 @@ import { desenharCorrenteza, type Cena } from './mapaMotor'
 
 function ondas(faixa: string, tempo: number) {
   const pontos: number[][] = []
-  const ctx = { beginPath() {}, moveTo() {}, stroke() {}, bezierCurveTo(...p: number[]) { pontos.push(p) } } as unknown as CanvasRenderingContext2D
-  const cena = { trechos: [{ pts: [[0, 0], [200, 0]], cum: [0, 200], total: 200, faixa }] } as unknown as Cena
+  globalThis.Path2D = class { moveTo() {} lineTo() {} } as unknown as typeof Path2D
+  const ctx = { lineDashOffset: 0, lineWidth: 0, save() {}, restore() {}, setLineDash() {}, stroke(this: { lineDashOffset: number; lineWidth: number; strokeStyle: string }) { assert.equal(this.strokeStyle, '#abcdef'); pontos.push([this.lineDashOffset, this.lineWidth]) } } as unknown as CanvasRenderingContext2D
+  const cena = { cores: { [faixa]: '#abcdef' }, trechos: [{ pts: [[0, 0], [200, 0]], cum: [0, 200], total: 200, faixa }] } as unknown as Cena
   desenharCorrenteza(ctx, cena, tempo)
   return pontos
 }
