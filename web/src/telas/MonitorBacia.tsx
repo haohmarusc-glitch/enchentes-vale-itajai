@@ -1474,12 +1474,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   className={estilos.amostra}
                   style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
                 />
-                {ROTULO_FAIXA[foco.faixa]}
+                {foco.faixa === 'sem-dado' && brutoSc ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
               </div>
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
-                  {motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
+                  {brutoSc ? 'Há medição estadual abaixo, mas não há vínculo confirmado entre essa régua e as cotas municipais para calcular a cor.' : motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
                 </p>
               )}
               <p className={estilos.painelNivel}>
@@ -1488,7 +1488,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                     <strong>{metros(foco.nivel)}</strong>
                     {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))}</> : null}
                   </>
-                ) : daCidade.length > 1 ? null : (
+                ) : daCidade.length > 1 || brutoSc ? null : (
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>
                 )}
               </p>
@@ -1508,7 +1508,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
-                  <span className={estilos.painelRotulo}>Cotas da régua</span>
+                  <span className={estilos.painelRotulo}>{cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>
                   <ul>
                     {cotas.map(([k, v]) => (
                       <li key={k}>
@@ -1525,12 +1525,15 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               {brutoSc ? (
                 <div className={estilos.painelBloco}>
                   <span className={estilos.painelRotulo}>Nível bruto — rede estadual (DCSC)</span>
+                  {cid.id === 'indaial' && <p>SDC-SC Indaial · DCSC-00006 · terceira ponte. Esta é a régua do monitoramento estadual.</p>}
                   <p className={estilos.painelExtra}>
                     <strong>{metros(brutoSc.nivelBrutoM)}</strong>
                     {brutoSc.medidoEm ? <> · {textoIdade(idadeMin(brutoSc.medidoEm, agora))}</> : null}
                     {' — '}
                     {brutoSc.estacao}
                   </p>
+                  {brutoSc.codigo && <a href={`https://monitoramento.defesacivil.sc.gov.br/estacao/${brutoSc.codigo}`} target="_blank" rel="noreferrer">Consultar estação na Defesa Civil de SC</a>}
+                  {cid.id === 'indaial' && <p>As cotas municipais de 3 / 4 / 5,5 m são da régua dos fundos da Celesc, indicada no <a href="https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/edit" target="_blank" rel="noreferrer">documento de acompanhamento de Indaial</a>. Não são aplicadas à leitura da terceira ponte.</p>}
                   <p className={estilos.painelRessalva}>
                     Régua PRÓPRIA da estação estadual, zero diferente da régua municipal —
                     não comparável às cotas acima nem à faixa de cor deste pino.
