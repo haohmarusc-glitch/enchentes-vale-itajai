@@ -74,7 +74,7 @@ export default function Municipal() {
       <h3>Mapa oficial de áreas de risco</h3>
       <p>A Prefeitura disponibiliza polígonos da CPRM/SGB (levantamento de 2015) e da Defesa Civil municipal. O setor SR-03, bairro Estação, registra risco de inundação e menciona o evento de 2011. Essas áreas não possuem vínculo com a altura atual da régua confirmado nesta integração.</p>
       <p><a href="https://sites.google.com/view/prefeituramunicipaldeascurra-s/%C3%A1reas-de-risco" target="_blank" rel="noreferrer">Consultar mapa de áreas de risco na página da Defesa Civil de Ascurra</a></p>
-      <p>Mapa indicado pela própria Defesa Civil no C18. Consulta externa disponível; polígonos ainda não importados. Não representa alagamento observado agora.</p>
+      <p>Mapa indicado pela própria Defesa Civil no C18. Quatro setores de inundação da CPRM (2015) disponíveis no monitor. Os setores adicionais municipais ainda não foram importados. Não representa alagamento observado agora.</p>
     </section>
     <footer><p>Última conferência da idade das leituras: {dataHora(agora)}. A hora da medição aparece em cada estação.</p>
       <p>Piloto dentro do site regional; ainda não é uma distribuição de código e arquivos exclusiva do município.</p><Link to="/">Voltar ao site regional</Link></footer>

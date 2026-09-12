@@ -1668,3 +1668,5 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - [x] Caminho completo para registrar cheias novas: coleta acumulada em formato enxuto, extração de picos com data e hora, e calibração dos tempos de descida a partir deles.
 
 - Monitor municipal de Ascurra: `/municipal/ascurra` abre o mesmo mapa canvas do monitor regional, com indicadores locais, zoom, fundos e tela cheia. Dados e fontes ficam em `/municipal/ascurra/dados`. Polígonos de Ascurra e correspondência entre mancha e régua continuam pendentes; o traçado não representa área inundada.
+
+- Ascurra: quatro setores oficiais de risco de inundação CPRM/2015 integrados como referência estática ao monitor. A relação entre manchas e cotas atuais continua pendente.

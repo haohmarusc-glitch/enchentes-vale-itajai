@@ -4,6 +4,7 @@ import ituporanga from '@dados/manchas/ituporanga/index.json'
 import { cheiaMaisProxima, type EventoComparavel, type MedicaoComparavel } from '../logica/compararCheias'
 import { rotuloEvento } from '../logica/manchas'
 
+const RISCO_ASCURRA = 'manchas/ascurra/risco-inundacao-2015.geojson'
 const urls = import.meta.glob('@dados/manchas/**/*.geojson', { query: '?url', import: 'default', eager: true }) as Record<string, string>
 export type CamadaDesenhada = { geo: GeoJSON.FeatureCollection; rotulo: string } | null
 interface Props {
@@ -15,11 +16,13 @@ interface Props {
   onCamada: (camada: CamadaDesenhada) => void
 }
 export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada, somenteDados = false }: Props) {
-  const [modo, setModo] = useState('auto')
+  const [modo, setModo] = useState(cidade === 'ascurra' ? RISCO_ASCURRA : 'auto')
   const [estado, setEstado] = useState('')
   const [tentativa, setTentativa] = useState(0)
   const eventos = useMemo(() => (historico.manchas as EventoComparavel[]).filter((m) => m.cidade === cidade), [cidade])
-  const opcoes = useMemo(() => cidade === 'ituporanga'
+  const opcoes = useMemo(() => cidade === 'ascurra'
+    ? [{ arquivo: RISCO_ASCURRA, rotulo: 'Setores de risco de inundação — CPRM, 2015 (referência estática)' }]
+    : cidade === 'ituporanga'
     ? ituporanga.camadas.map((c) => ({ arquivo: 'manchas/ituporanga/' + c.arquivo, rotulo: `Camada ${c.nivel_m.toFixed(2).replace('.', ',')} m — consulta manual` }))
     : eventos.map((e) => ({ arquivo: e.arquivo, rotulo: `${rotuloEvento(e.evento)} — ${e.tipo ?? 'mancha histórica'}` })), [cidade, eventos])
   const proxima = reproduzindo ? null : cheiaMaisProxima(eventos, leituras, agora)
@@ -27,6 +30,7 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
   const escolha = opcoes.find((o) => o.arquivo === arquivo)
   const evento = eventos.find((e) => e.arquivo === arquivo)
   const chuva = evento?.chuva_7dias
+  const risco = arquivo === RISCO_ASCURRA
   const rotulo = escolha?.rotulo
   useEffect(() => {
     onCamada(null)
@@ -57,7 +61,8 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
     </p> : <p>{reproduzindo ? 'Comparação automática pausada durante a reprodução: não mistura nível atual com o passado.' :
       opcoes.length === 0 ? 'Ainda não há áreas de inundação cadastradas para esta cidade.' :
       'Ainda não é possível escolher a cheia mais próxima: faltam pico e régua documentados ou leitura recente compatível. Você pode consultar uma camada manualmente.'}</p>)}
-    {escolha && <>
+    {risco && <p>Quatro setores de risco de inundação levantados em 25/06/2015. A área azul é uma referência estática: não é a extensão de uma cheia específica nem alagamento observado agora. Não muda com o nível atual. <a href="https://rigeo.sgb.gov.br/handle/doc/18496" target="_blank" rel="noreferrer">Fonte: SGB/CPRM · levantamento de Ascurra</a>. Ainda falta a relação entre polígonos e cotas da régua para selecionar uma mancha conforme a cheia.</p>}
+    {escolha && !risco && <>
       <p><strong>{escolha.rotulo}</strong>. A área azul é a camada da fonte, não confirmação de alagamento agora.</p>
       <p>Chuva nos sete dias da cheia passada:{' '}{chuva && Number.isFinite(chuva.mm) && chuva.mm >= 0
         ? <>{chuva.mm} mm, de {chuva.inicio} a {chuva.fim}, estação {chuva.estacao}. <a href={chuva.fonte}>Fonte</a></>
