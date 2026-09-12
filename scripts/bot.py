@@ -448,6 +448,9 @@ def emergencia() -> str:
 
 def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
+    if cidade["id"] == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
+        linhas.append("\nFonte de Itajaí indisponível: não foi possível obter as medições das réguas municipais.")
+        return linhas
     leituras = base.leituras_da_cidade(cidade["id"], agora)
     if not leituras:
         bruto = base.bruto_da_cidade(cidade["id"])
@@ -985,6 +988,8 @@ BLOCOS_ARVORE = [
 def _linha_cidade(base: Base, c: dict, por_cidade: dict, agora: datetime, rio: str) -> list[str]:
     """As linhas de UMA cidade no panorama, com as réguas da foz filtradas por eixo."""
     cid = c["id"]
+    if cid == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
+        return ["Itajaí: fonte municipal indisponível"]
     ls = por_cidade.get(cid, [])
     if cid == FOZ:
         # Só as réguas cujo EIXO é este rio — cada ribeirão entra no rio em que

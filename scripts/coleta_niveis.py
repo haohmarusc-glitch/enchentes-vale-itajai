@@ -80,6 +80,18 @@ def baixar_niveis() -> list[dict]:
     return parse(baixar(URL))
 
 
+def coletar_fonte_itajai() -> tuple[list[dict], bool]:
+    """HTTP 200 sem réguas reconhecidas também é falha da fonte."""
+    try:
+        leituras = baixar_niveis()
+        if not any(l.get("cidade") == "itajai" and l.get("medido_em") for l in leituras):
+            raise ValueError("página sem réguas de Itajaí com horário reconhecível")
+        return leituras, True
+    except Exception as erro:
+        print(f"aviso: fonte de Itajaí indisponível ({erro}).", file=sys.stderr)
+        return [], False
+
+
 def baixar_chuva() -> tuple[list[dict], bool]:
     """
     Chuva acumulada, da segunda página da mesma fonte.
@@ -606,12 +618,8 @@ def main() -> int:
         print(f"{n} arquivo(s) compactado(s)." if n else "Nada a compactar.")
         return 0
 
-    try:
-        leituras = baixar_niveis()
-        leituras = leituras + baixar_nivel_alertablu(leituras)
-    except Exception as e:  # rede, HTTP, HTML inesperado
-        print(f"ERRO ao coletar: {e}", file=sys.stderr)
-        return 1
+    leituras, fonte_itajai_ok = coletar_fonte_itajai()
+    leituras = leituras + baixar_nivel_alertablu(leituras)
 
     # Vidal Ramos (Asthon) entra depois: fonte à parte, e a falha dela já é
     # engolida em baixar_nivel_asthon, então não pode derrubar a coleta acima.
@@ -702,6 +710,7 @@ def main() -> int:
                 "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
                 "leituras": leituras,
+                "fonte_itajai_ok": fonte_itajai_ok,
                 "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
                 "chuva": chuva,
                 # Falso só quando a coleta da chuva FALHOU. Lista vazia com
