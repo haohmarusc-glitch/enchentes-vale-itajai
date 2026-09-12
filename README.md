@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Monitor: painel de chuva com 1 h, 12 h e 24 h para as cidades, estação e horário. Usa um único pluviômetro válido mais recente por cidade e mantém janelas ausentes como indisponíveis, sem somar estações.
+
 - [x] Arquivo observacional do evento de setembro: preserva versões dos JSONs dos coletores e registra arquivos ausentes/inválidos a cada publicação. Ativação e backup na VPS em [registro do evento](docs/registro-evento.md). Não recupera lacunas anteriores nem soma acumulados de chuva sobrepostos.
 
 - [~] **Ascurra — fontes municipais examinadas:** link para mapa de risco CPRM/SGB e COMPDEC incluído no piloto. Coletor e tela preparados para `h168` (chuva de sete dias), confirmado na API estadual em 11/09/2026. Necessário atualizar o coletor na VPS para publicar o campo; faltam importação dos polígonos e chuva histórica comparável.
@@ -1676,3 +1678,5 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - Carta de suscetibilidade SGB/Ascurra (março de 2026) referenciada em Dados e histórico. Alturas da legenda relativas à água regular não são cotas da DCSC-00003; vínculo para seleção automática de manchas ainda pendente.
 
 - AlertaBlu: corrigida cadeia TLS com intermediário Sectigo e raízes padrão, mantendo validação de domínio e certificado. Após merge, atualizar a VPS e testar `python3 scripts/coleta_alertablu.py`; política de resgate e horários permanecem iguais.
+
+Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timbó, Rio dos Cedros e Lontras pelos códigos já conferidos no cadastro de nível. A API aceitou a consulta em 11/09/2026. Após merge, atualizar a VPS e executar coleta_niveis.py e publicar_tempo_real.sh para preencher as novas janelas. Não há estimativa de chuva onde não existe leitura.

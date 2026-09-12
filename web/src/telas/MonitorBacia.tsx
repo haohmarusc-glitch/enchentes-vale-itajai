@@ -1,3 +1,4 @@
+import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCor } from '../logica/motivoSemCor'
@@ -255,16 +256,6 @@ function cotasOrdenadas(cotas: Record<string, number>): [string, number][] {
     if (ia !== -1 && ib !== -1) return ia - ib
     return a[1] - b[1]
   })
-}
-
-/** Chuva recente da cidade (1 h e 24 h), da coleta ao vivo — null se não houver. */
-function chuvaDaCidade(
-  chuva: { rio: string | null; cidade: string | null; mm: { h1: number | null; h24: number | null } }[],
-  rioId: string,
-  cidadeId: string,
-): { h1: number | null; h24: number | null } | null {
-  const c = chuva.find((x) => x.rio === rioId && x.cidade === cidadeId)
-  return c ? { h1: c.mm.h1, h24: c.mm.h24 } : null
 }
 
 /**
@@ -1151,6 +1142,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             onCamada={receberCamada} somenteDados={municipal} />
         </details>
 
+        {idxRepro === null && <details open className={`${estilos.camadasControle} ${estilos.chuvaControle}`} data-tapa-mapa>
+          <summary>Chuva · 1 h / 12 h / 24 h</summary>
+          <ChuvaMonitor cidades={cidadeFoco ? cidadesBacia.filter(c => c.id === cidadeFoco) : cidadesBacia}
+            chuva={tempoReal.chuva} agora={agora} />
+        </details>}
+
         {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
             Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
             → Rio do Sul" afirmaria uma sequência que não existe. Toque numa
@@ -1458,7 +1455,6 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           const foco = (sel ?? hover)!
           const cid = foco.cidade
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})
-          const ch = chuvaDaCidade(tempoReal.chuva, foco.rioId, cid.id)
           const brutoSc = nivelSc.get(cid.id) ?? null
           // As réguas da cidade, quando são VÁRIAS. Itajaí tem onze, todas
           // publicadas e frescas, e o Monitor não mostrava nenhuma: o pino azul
@@ -1560,22 +1556,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   </p>
                 </div>
               ) : null}
-              <p className={estilos.painelChuva}>
-                {ch && (ch.h1 != null || ch.h24 != null) ? (
-                  <>
-                    Chuva:{' '}
-                    {ch.h1 != null ? (
-                      <>
-                        <strong>{ch.h1.toFixed(1)} mm</strong> (1 h)
-                      </>
-                    ) : null}
-                    {ch.h1 != null && ch.h24 != null ? ' · ' : ''}
-                    {ch.h24 != null ? <>{ch.h24.toFixed(0)} mm (24 h)</> : null}
-                  </>
-                ) : (
-                  'Sem chuva recente medida aqui.'
-                )}
-              </p>
+              <div className={estilos.painelChuva}>
+                <ChuvaMonitor cidades={[cid]} chuva={tempoReal.chuva} agora={agora} />
+              </div>
               {cid.sub_bacia ? (
                 <p className={estilos.painelExtra}>Sub-bacia: {cid.sub_bacia}</p>
               ) : null}

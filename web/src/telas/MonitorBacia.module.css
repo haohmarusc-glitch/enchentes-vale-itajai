@@ -726,6 +726,8 @@
 
 .camadasControle { background: #fff; color: #18334c; border-radius: 8px; padding: 10px; max-width: 360px; max-height: 45vh; overflow: auto; pointer-events: auto; }
 .camadasControle summary { cursor: pointer; min-height: 32px; font-weight: 700; }
+.chuvaControle { max-height: 28vh; width: min(360px, calc(100vw - 40px)); }
+.chuvaControle td { white-space: nowrap; text-align: right; }
 .camadasControle select { width: 100%; min-height: 44px; }
 .camadasControle h2 { font-size: 1rem; }
 .camadasControle p { font-size: 0.85rem; line-height: 1.4; }
