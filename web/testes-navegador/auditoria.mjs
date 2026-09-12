@@ -13,9 +13,11 @@ page.on('pageerror',e=>erros.push(e.message))
 const agora = new Date()
 const local = new Date(agora.getTime()-3*3600000).toISOString().slice(0,19)
 await context.route('**/*',route=>{
- const url=route.request().url()
+ const original=route.request().url()
+ if(original.startsWith('https://raw.githubusercontent.com/') && /\/ultimo(?:_nivel_sc)?\.json$/.test(original)) return route.fulfill({status:503,body:'Backend.max_conn reached'})
+ const url=original.split('?')[0]
  if(url.startsWith(base)) return route.continue()
- if(url.endsWith('/ultimo_nivel_sc.json')) return route.fulfill({json:{leituras:[{codigo:'DCSC-00003',cidade:'ascurra',estacao:'SDC-SC Ascurra',nivel_bruto_m:8.94,medido_em:local,chuva_24h_mm:15.1,chuva_168h_mm:134.9},{codigo:'DCSC-00006',cidade:'indaial',estacao:'SDC-SC Indaial',nivel_bruto_m:6.74,medido_em:local}]}})
+ if(url.endsWith('/ultimo_nivel_sc.json')) return route.fulfill({json:{leituras:[{codigo:'DCSC-00003',cidade:'ascurra',estacao:'SDC-SC Ascurra',nivel_bruto_m:8.94,medido_em:local,chuva_24h_mm:15.1,chuva_168h_mm:134.9},{codigo:'DCSC-00006',cidade:'indaial',estacao:'SDC-SC Indaial',nivel_bruto_m:6.74,medido_em:local},...[["ilhota",11.05],["ibirama",3.01],["botuvera",3.56],["vidal-ramos",2.62]].map(([cidade,nivel_bruto_m])=>({cidade,estacao:'SDC-SC '+cidade,nivel_bruto_m,medido_em:local}))]}})
  if(url.endsWith('/ultimo.json')) return route.fulfill({json:{coletado_em:agora.toISOString(),leituras:[{cidade:'blumenau',rio:'itajai-acu',estacao:'Blumenau (AlertaBlu)',resgate_de:'Blumenau',nivel_m:6.1,medido_em:local}],chuva:[],chuva_ok:true}})
  return route.abort()
 })
@@ -57,7 +59,12 @@ try {
  await page.getByText('SDC-SC Indaial · DCSC-00006 · terceira ponte. Esta é a régua do monitoramento estadual.',{exact:true}).waitFor()
  assert.equal(await page.getByText('sem leitura fresca',{exact:true}).count(),0)
  await page.getByText('Não são aplicadas à leitura da terceira ponte.',{exact:false}).waitFor()
- console.log('OK: Indaial mostra a régua estadual sem confundir cotas da Celesc')
+ console.log('OK: CDN em 503 recuperado pela API pública; Indaial mostra a régua estadual sem confundir cotas da Celesc')
+ for (const [cidade,valor] of [['ilhota','11,05 m'],['ibirama','3,01 m'],['botuvera','3,56 m'],['vidal-ramos','2,62 m']]) {
+   await abrir('/monitor/'+cidade)
+   await page.getByText(valor,{exact:true}).waitFor()
+ }
+ console.log('OK: Ilhota, Ibirama, Botuverá e Vidal Ramos recuperam nível com CDN em 503')
  await abrir('/monitor/blumenau')
  await page.getByText('6,10 m',{exact:true}).waitFor()
  await page.getByRole('button',{name:'Fechar o painel de Blumenau'}).click()

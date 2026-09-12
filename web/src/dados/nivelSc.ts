@@ -15,6 +15,7 @@
  */
 import { useEffect, useState } from 'react'
 import { deBrasilia } from '../logica/tempoReal'
+import { buscarPublicacao } from './publicacao'
 
 const PADRAO =
   'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo_nivel_sc.json'
@@ -85,22 +86,22 @@ export type Transporte = (url: string, init: RequestInit) => Promise<Response>
 export async function buscarNivelSc(
   sinal?: AbortSignal,
   transporte: Transporte = (url, init) => fetch(url, init),
+  anterior: NivelSc = new Map(),
 ): Promise<NivelSc> {
   try {
-    const resposta = await transporte(URL_NIVEL_SC, { cache: 'no-store', signal: sinal })
-    if (!resposta.ok) return new Map()
-    return montarNivelSc(await resposta.json())
+    return montarNivelSc(await buscarPublicacao(URL_NIVEL_SC, sinal, transporte))
   } catch {
-    return new Map()
+    return anterior
   }
 }
 
-/** Busca ao abrir a página e a cada `intervaloMin`. Falha vira mapa vazio. */
+/** Busca ao abrir a página e a cada `intervaloMin`. Falha mantém a leitura anterior com seu carimbo original. */
 export function useNivelSc(intervaloMin = 5): NivelSc {
   const [mapa, setMapa] = useState<NivelSc>(new Map())
 
   useEffect(() => {
     let vivo = true
+    let anterior: NivelSc = new Map()
     const emVoo = new Set<AbortController>()
 
     const buscar = async () => {
@@ -108,8 +109,8 @@ export function useNivelSc(intervaloMin = 5): NivelSc {
       emVoo.add(controle)
       const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS)
       try {
-        const novo = await buscarNivelSc(controle.signal)
-        if (vivo) setMapa(novo)
+        const novo = await buscarNivelSc(controle.signal, undefined, anterior)
+        if (vivo) { anterior = novo; setMapa(novo) }
       } finally {
         clearTimeout(limite)
         emVoo.delete(controle)

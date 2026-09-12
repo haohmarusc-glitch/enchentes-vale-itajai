@@ -801,6 +801,7 @@ export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; 
         ? idadeBruto
           ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
           : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
+        : p.faixa === 'varias' ? 'várias réguas · toque para ver'
         : (idade ?? semNumero(p.cidade, opcoes.temRegua))
   return { nome: p.cidade.nome, sub: sub ?? '' }
 }
@@ -1219,7 +1220,7 @@ export function semNumero(cidade: Cidade, temRegua: TemRegua = () => false): str
   // `conferir_mapa_e_alarme.py` teve. Quem sabe disso é quem carrega o cadastro,
   // então a resposta ENTRA por parâmetro: este módulo não importa `carregar`,
   // cujo alias `@dados` só existe no Vite (o runner dos testes é o node).
-  return cidade.regua || temRegua(cidade.id) ? 'sem leitura' : 'sem régua'
+  return cidade.regua || cidade.codigo_dcsc || temRegua(cidade.id) ? 'sem leitura' : 'sem régua'
 }
 
 export function desenharPinos(

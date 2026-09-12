@@ -8,7 +8,7 @@
  *  - GASPAR tem cota oficial (5/6/7 m), régua conhecida e estação cadastrada.
  *    O que falta é a fonte publicar — há ofício pendente. Pino mudo ali faz
  *    quem mora em Gaspar concluir que o site não cobre a cidade dele.
- *  - GUABIRUBA não tem régua no cadastro. Não há o que publicar.
+ *  - Cadastro municipal incompleto não significa ausência de instrumento estadual.
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -18,7 +18,8 @@ import { readFileSync } from 'node:fs'
 // dizia "sem régua" numa cidade com onze — a cópia olhava só `cidade.regua`, e
 // as réguas de Itajaí moram em `estacoes_tempo_real`. Teste que copia a regra
 // testa a cópia.
-import { semNumero } from './mapaMotor'
+import { semNumero, textoDoPino } from './mapaMotor'
+import type { Pino } from './mapaMotor'
 import type { Cidade } from '../dados/tipos'
 
 const g = globalThis as unknown as { getComputedStyle?: unknown }
@@ -100,17 +101,18 @@ test('ITAJAÍ diz "sem leitura" — tem ONZE réguas, não zero', () => {
   }
 })
 
-test('Guabiruba diz "sem régua" — não há instrumento cadastrado', () => {
+test('Guabiruba tem código estadual mesmo sem régua municipal', () => {
   const g = cidade('itajai-mirim', 'guabiruba')
   assert.ok(!g.regua, 'Guabiruba ganhou régua: revise o rótulo e este teste')
   assert.ok(!temRegua('guabiruba'), 'Guabiruba ganhou régua em estacoes_tempo_real')
-  assert.equal(semNumero(g, temRegua), 'sem régua')
+  assert.ok(g.codigo_dcsc)
+  assert.equal(semNumero(g, temRegua), 'sem leitura')
 })
 
 test('as duas frases são DIFERENTES — juntá-las apagaria a distinção', () => {
   assert.notEqual(
     semNumero(cidade('itajai-acu', 'gaspar'), temRegua),
-    semNumero(cidade('itajai-mirim', 'guabiruba'), temRegua),
+    semNumero({ ...cidade('itajai-mirim', 'guabiruba'), codigo_dcsc: null }, () => false),
   )
 })
 
@@ -119,4 +121,13 @@ test('nenhuma das frases é "normal" ou vazia — pino mudo lê-se como está tu
     assert.ok(f.trim().length > 0)
     assert.ok(!/normal|ok|seguro/i.test(f))
   }
+})
+
+test('Botuverá e Vidal Ramos têm instrumento estadual cadastrado', () => {
+  for (const id of ['botuvera', 'vidal-ramos']) assert.equal(semNumero(cidade('itajai-mirim',id),temRegua),'sem leitura')
+})
+
+test('Itajaí com várias leituras não diz sem leitura no pino', () => {
+  const p = {cidade:cidade('itajai-acu','itajai'),faixa:'varias',nivel:null,nivelBruto:null,medidoEm:null} as Pino
+  assert.equal(textoDoPino(p,{temRegua}).sub,'várias réguas · toque para ver')
 })
