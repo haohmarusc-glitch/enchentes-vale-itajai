@@ -62,19 +62,21 @@ class TestFaixasDoPlano(unittest.TestCase):
 
 
 class TestCadastro(unittest.TestCase):
-    """As cotas gravadas em estacoes.json são as do Plano."""
+    """Legenda atual difere do Plano, cuja divergência continua detectável."""
 
     def test_as_cotas_de_gaspar_batem_com_o_plano(self):
-        self.assertEqual(confere_faixas(), [])
+        self.assertEqual(confere_faixas(), ["estacoes.json: gaspar sem cota 'alerta' (Plano: 6.00 m)"])
 
     def test_gaspar_tem_as_tres_cotas(self):
         self.assertEqual(cotas_de_gaspar(),
-                         {"atencao": 5.0, "alerta": 6.0, "emergencia": 7.0})
+                         {"atencao": 5.0, "emergencia": 7.0})
 
     def test_a_fonte_das_cotas_esta_registrada(self):
         estacoes = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
         g = next(c for c in estacoes["rios"]["itajai-acu"]["cidades"] if c["id"] == "gaspar")
-        self.assertIn("Plano de Contingência", g["fonte_cotas"])
+        self.assertIn("/estacao/ver/21", g["fonte_cotas"])
+        self.assertTrue(any(d['cotas_m'] == {"atencao": 5.0, "alerta": 6.0, "emergencia": 7.0}
+                            and 'Plano de Contingência' in d['fonte'] for d in g['cotas_divergencias']))
         self.assertEqual(g["referencia"], "régua")
 
     def test_o_pdf_de_origem_esta_no_repositorio(self):

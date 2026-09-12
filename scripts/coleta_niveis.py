@@ -268,7 +268,13 @@ def baixar_nivel_gaspar(gravar: bool) -> list[dict]:
         if not cg.permitido():
             print("aviso: robots.txt de Gaspar não permite — pulado.", file=sys.stderr)
             return []
-        analise = cg.analisar(cg.baixar(cg.URL))
+        try:
+            analise = cg.analisar(cg.baixar(cg.URL))
+        except Exception as erro:
+            print(f"aviso: tabela de Gaspar indisponível ({erro}); tentando estação 21.", file=sys.stderr)
+            analise = {"estacoes": []}
+        if not cg.leitura_da_cidade(analise):
+            analise = cg.analisar_estacao(cg.baixar(cg.URL_ESTACAO))
         if gravar:
             from comum import DADOS
 

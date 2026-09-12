@@ -1468,6 +1468,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 </span>
               </div>
               {cid.id === 'ascurra' && <p>Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.</p>}
+              {cid.id === 'gaspar' && <p>Faixa calculada somente pelo nível, conforme a <a href="https://defesacivil.gaspar.sc.gov.br/estacao/ver/21" target="_blank" rel="noreferrer">legenda da estação 21</a>: normal abaixo de 5 m, atenção acima de 5 m, emergência acima de 7 m. Em 5 m exatos, inclusão não definida. O estado oficial também considera chuva; a cor não indica ruas alagadas.</p>}
               <div className={estilos.painelFaixa}>
                 <span
                   className={estilos.amostra}
