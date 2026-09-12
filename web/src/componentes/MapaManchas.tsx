@@ -8,6 +8,7 @@ import { dentroDaColecao } from '../logica/pontoNaMancha'
 import type { Coordenada } from '../logica/pontoNaMancha'
 import { metros } from '../logica/formato'
 import estilos from './MapaManchas.module.css'
+import BuscaViaItajai from './BuscaViaItajai'
 
 /**
  * Os GeoJSON entram como URL, não como import de dado.
@@ -144,6 +145,7 @@ export default function MapaManchas() {
   const fundoRef = useRef<ChaveFundo>(fundo)
   fundoRef.current = fundo
   const camadaRef = useRef<L.GeoJSON | null>(null)
+  const viaRef = useRef<L.GeoJSON | null>(null)
 
   // "Este ponto ficou dentro de quais manchas?"
   const [ponto, setPonto] = useState<Coordenada | null>(null)
@@ -359,6 +361,16 @@ export default function MapaManchas() {
         ))}
       </div>
 
+      <BuscaViaItajai onSelecionar={dados => {
+        const mapa = mapaRef.current
+        if (!mapa) return
+        viaRef.current?.remove()
+        viaRef.current = null
+        if (!dados) return
+        const via = L.geoJSON(dados, { style: { color: '#ffffff', weight: 5, dashArray: '8 5' }, interactive: false }).addTo(mapa)
+        viaRef.current = via
+        if (via.getBounds().isValid()) mapa.fitBounds(via.getBounds(), { padding: [30, 30], maxZoom: 17 })
+      }} />
       <div className={estilos.mapa} ref={divRef} role="img"
            aria-label={`Mapa das áreas atingidas em Itajaí na enchente de ${escolhida ? rotuloEvento(escolhida.evento) : ''}`} />
 
