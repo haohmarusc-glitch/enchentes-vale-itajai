@@ -5,7 +5,7 @@ https://sites.google.com/view/prefeituramunicipaldeascurra-s/in%C3%ADcio
 
 A página incorpora a estação DCSC-00003 e publica acumulados de 1, 12, 24 e 168 horas. A consulta GraphQL com `data.chuva.acumulado.h168.value` foi aceita pela API em 11/09/2026; para Ascurra retornou 127,83999633789062 mm na conferência. Esse retrato não é embutido como leitura atual no site.
 
-O coletor passa a gravar `chuva_168h_mm`. A tela aceita o campo quando disponível, sem inferir valores de arquivos antigos. Usa o carimbo da estação; não afirma possuir horário independente da chuva. **O coletor precisa ser atualizado na VPS** para o campo entrar no arquivo publicado. Esta alteração não realiza deploy na VPS.
+O coletor passa a gravar `chuva_168h_mm`. A tela aceita o campo quando disponível, sem inferir valores de arquivos antigos. Usa o carimbo da estação; não afirma possuir horário independente da chuva. O deploy na VPS foi confirmado pelo usuário em 11/09/2026: atualização até 28eafface, coleta e publicação concluídas, com chuva de 168 horas presente para Ascurra.
 
 ## Cartografia
 
@@ -30,3 +30,13 @@ O ZIP contém o KMZ `KML/ASCURRA_SC.kmz`. Foram preservadas as coordenadas dos q
 A camada estática aparece no monitor de Ascurra e pode ser ocultada no controle Camadas de cheia. Não participa da escolha automática por nível, não representa a cheia de 2011 nem alagamento atual. Não foram importadas recomendações de intervenção, estimativas de moradores ou setores de deslizamento, corrida de massa e erosão. Os setores adicionais da cartografia municipal do Google Earth continuam pendentes.
 
 SHA-256 do ZIP original: `3f70d1eea2089ae8462c36bae2e1b0747327f04d3df1f4caa6f5e87e4848edb1`. As quatro geometrias passaram pela validação Shapely; nenhum anel foi corrigido ou redesenhado.
+
+
+## Carta de suscetibilidade SGB, março de 2026
+
+Fonte: https://rigeo.sgb.gov.br/handle/doc/25961
+PDF: https://rigeo.sgb.gov.br/bitstreams/4c552f7f-74e4-4bf9-897d-6b18b0c76e86/download
+
+Conferência visual da página única, Quadro-legenda B e Notas 1 e 2. O quadro usa alturas relativas à lâmina de água regular do curso: alta suscetibilidade abaixo de 1,5 m; média entre 1,5 e 3 m; baixa a partir de 3 m. Isso NÃO documenta correspondência com DCSC-00003. Não converter esses valores em níveis da régua, nem tratá-los como cenários operacionais ou picos de cheias históricas.
+
+A Nota 1 exige atenção à escala e a estudos locais detalhados. A carta tem escala apresentada 1:30.000; as notas indicam base generalizada e compatibilidade do zoneamento em 1:50.000. O site oferece a fonte para consulta; não importa os polígonos nesta etapa. A carta de suscetibilidade de 2026 e os setores de risco de 2015 são produtos distintos, não versões intercambiáveis da mesma mancha.
