@@ -71,6 +71,8 @@ export interface ChuvaAoVivo {
 }
 
 export interface EstadoTempoReal {
+  fonteItajaiOk?: boolean
+
   situacao: 'carregando' | 'ok' | 'indisponivel'
   leituras: LeituraAoVivo[]
   chuva: ChuvaAoVivo[]
@@ -184,7 +186,7 @@ export async function buscarTempoReal(
     const leituras = Array.isArray(dados.leituras)
       ? dados.leituras.map(leituraValida).filter((l): l is LeituraAoVivo => l !== null)
       : []
-    if (leituras.length === 0) return vazio
+    if (leituras.length === 0) return { ...vazio, fonteItajaiOk: dados.fonte_itajai_ok !== false }
 
     const coletado =
       typeof dados.coletado_em === 'string' ? new Date(dados.coletado_em) : null
@@ -195,6 +197,7 @@ export async function buscarTempoReal(
 
     return {
       situacao: 'ok',
+      fonteItajaiOk: dados.fonte_itajai_ok !== false,
       leituras,
       chuva,
       // Ausente = arquivo antigo, de antes da marca existir. Nesses, lista

@@ -1065,6 +1065,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </button>
         </div>
 
+        {!municipal && tempoReal.fonteItajaiOk === false && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
+          Fonte de Itajaí indisponível: não foi possível obter as medições das réguas municipais.
+        </p>}
         {municipal && <div className={estilos.resumoMunicipal} data-tapa-mapa>
           <strong>{leituraMunicipal ? metros(leituraMunicipal.nivelBrutoM) : 'Sem leitura'} · {faixaMunicipal.nome}</strong>
           <span>{leituraMunicipal?.medidoEm ? dataHora(leituraMunicipal.medidoEm) + ' · ' + textoIdade(idadeMin(leituraMunicipal.medidoEm, agora)) : 'Horário indisponível'}</span>

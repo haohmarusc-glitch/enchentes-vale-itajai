@@ -22,6 +22,13 @@ const CORPO = {
   chuva: [],
 }
 
+test('falha de Itajaí permanece explícita com fontes parciais ou sem níveis', async () => {
+  for (const leituras of [CORPO.leituras, []]) {
+    const estado = await buscarComLimite(500, respondeCom({ ...CORPO, leituras, fonte_itajai_ok: false }))
+    assert.equal(estado.fonteItajaiOk, false)
+  }
+})
+
 function respondeCom(corpo: unknown, atrasoMs = 0): Transporte {
   return (_url, init) =>
     new Promise((resolve, reject) => {

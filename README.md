@@ -477,6 +477,9 @@ o projeto.
 
 ## Pendências
 
+- [x] Falha da fonte de Itajaí: HTTP 200 sem réguas reconhecidas passa a ser marcado como indisponibilidade; falha de rede não interrompe fontes independentes. Bot e monitor exibem o motivo. Requer atualizar a VPS e reiniciar o bot pelo deploy.
+- [ ] Restabelecer as leituras municipais DC-01 a DC-11: em 12/09/2026 o endereço oficial retornou conteúdo alheio ao monitoramento. Os links do Portal de Serviços apontam ao mesmo endereço; não foi confirmada fonte alternativa. Histórico já coletado permanece nas séries, separado de leitura atual.
+
 - [x] Chuva no mapa: acumulados de 1 h, 12 h e 24 h abaixo do pino da cidade, com idade da chuva e espaço reservado contra sobreposição. Detalhes de estação continuam no painel recolhível. Na reprodução histórica, a chuva atual fica oculta.
 
 - [x] Monitor: painel de chuva com 1 h, 12 h e 24 h para as cidades, estação e horário. Usa um único pluviômetro válido mais recente por cidade e mantém janelas ausentes como indisponíveis, sem somar estações.
