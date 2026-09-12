@@ -1479,7 +1479,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
-                  {brutoSc ? 'Há medição estadual abaixo, mas não há vínculo confirmado entre essa régua e as cotas municipais para calcular a cor.' : motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
+                  {cid.id === 'blumenau' && foco.medidoEm && idadeMin(foco.medidoEm, agora) > 120 ? 'A última medição tem mais de duas horas; Blumenau fica sem cor até receber leitura recente.' : brutoSc ? 'Há medição estadual abaixo, mas não há vínculo confirmado entre essa régua e as cotas municipais para calcular a cor.' : motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
                 </p>
               )}
               <p className={estilos.painelNivel}>

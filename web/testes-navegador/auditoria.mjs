@@ -1,5 +1,6 @@
 /** Regressões da auditoria, com fontes determinísticas e sem publicar dados. */
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { chromium } from 'playwright'
 import { preview } from 'vite'
 const servidor = await preview({preview:{port:4320,strictPort:true}})
@@ -15,7 +16,7 @@ await context.route('**/*',route=>{
  const url=route.request().url()
  if(url.startsWith(base)) return route.continue()
  if(url.endsWith('/ultimo_nivel_sc.json')) return route.fulfill({json:{leituras:[{codigo:'DCSC-00003',cidade:'ascurra',estacao:'SDC-SC Ascurra',nivel_bruto_m:8.94,medido_em:local,chuva_24h_mm:15.1,chuva_168h_mm:134.9},{codigo:'DCSC-00006',cidade:'indaial',estacao:'SDC-SC Indaial',nivel_bruto_m:6.74,medido_em:local}]}})
- if(url.endsWith('/ultimo.json')) return route.fulfill({json:{coletado_em:agora.toISOString(),leituras:[],chuva:[],chuva_ok:true}})
+ if(url.endsWith('/ultimo.json')) return route.fulfill({json:{coletado_em:agora.toISOString(),leituras:[{cidade:'blumenau',rio:'itajai-acu',estacao:'Blumenau (AlertaBlu)',resgate_de:'Blumenau',nivel_m:6.1,medido_em:local}],chuva:[],chuva_ok:true}})
  return route.abort()
 })
 async function abrir(rota){await page.goto(base+'/#'+rota);await page.locator('main').waitFor()}
@@ -57,6 +58,17 @@ try {
  assert.equal(await page.getByText('sem leitura fresca',{exact:true}).count(),0)
  await page.getByText('Não são aplicadas à leitura da terceira ponte.',{exact:false}).waitFor()
  console.log('OK: Indaial mostra a régua estadual sem confundir cotas da Celesc')
+ await abrir('/monitor/blumenau')
+ await page.getByText('6,10 m',{exact:true}).waitFor()
+ await page.getByRole('button',{name:'Fechar o painel de Blumenau'}).click()
+ await page.locator('summary').filter({hasText:'Camadas de cheia'}).click()
+ await page.getByText('Sem camada automática:',{exact:false}).waitFor()
+ const cartas=JSON.parse(readFileSync(new URL('../../data/manchas/blumenau/index.json',import.meta.url),'utf8'))
+ for (const c of cartas.camadas) {
+   await page.locator('#camada-monitor').selectOption('manchas/blumenau/'+c.arquivo)
+   await page.getByText('Camada desenhada no Monitor.',{exact:true}).waitFor()
+ }
+ console.log('OK: 16 cartas de Blumenau carregam; 6,10 m não desenha a carta de 8 m automaticamente')
  await abrir('/acu')
  await page.getByRole('searchbox',{name:'Procure a sua rua'}).fill('São Rafael')
  await page.getByRole('link',{name:'Itajaí-Mirim',exact:true}).click()

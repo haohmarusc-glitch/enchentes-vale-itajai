@@ -1700,3 +1700,5 @@ Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timb�
 
 - Indaial: régua estadual DCSC-00006 identificada no monitor, separada da régua municipal dos fundos da Celesc; [conferência](docs/indaial-duas-reguas.md).
 - Gaspar: estação 21 como alternativa à tabela; legenda atual 5/7 m e histórico público extraídos. Ver [endpoints e limites](docs/gaspar-estacao21-endpoints.md). Requer deploy do coletor na VPS.
+
+- Blumenau: cartas FURB 2025 de 8–18 m no monitor, separadas dos eventos históricos; pino sem cor após duas horas. Conferência em docs/fontes-cheias-2026-09-12.md.

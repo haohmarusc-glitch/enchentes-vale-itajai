@@ -1,0 +1,89 @@
+{
+  "fonte": "https://defesacivil.blumenau.sc.gov.br/static/mapas/inundacao/camadas_get_nivel.js",
+  "pagina": "https://defesacivil.blumenau.sc.gov.br/m/inundacao",
+  "sha256_js": "2003e037f8720a2dcbdde2be4212878d5b8d219bf72300eee7b1701661786f21",
+  "ano_cartografia": 2025,
+  "tipo": "simulação por cota; não é evento histórico nem alagamento observado",
+  "camadas": [
+    {
+      "nivel_m": 8,
+      "arquivo": "cota-8.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 8.5,
+      "arquivo": "cota-8.50.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 9,
+      "arquivo": "cota-9.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 9.5,
+      "arquivo": "cota-9.50.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 10,
+      "arquivo": "cota-10.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 10.5,
+      "arquivo": "cota-10.50.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 11,
+      "arquivo": "cota-11.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 11.5,
+      "arquivo": "cota-11.50.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 12,
+      "arquivo": "cota-12.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 12.5,
+      "arquivo": "cota-12.50.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 13,
+      "arquivo": "cota-13.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 14,
+      "arquivo": "cota-14.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 15,
+      "arquivo": "cota-15.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 16,
+      "arquivo": "cota-16.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 17,
+      "arquivo": "cota-17.00.geojson",
+      "feicoes": 1
+    },
+    {
+      "nivel_m": 18,
+      "arquivo": "cota-18.00.geojson",
+      "feicoes": 1
+    }
+  ]
+}
