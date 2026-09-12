@@ -1086,12 +1086,6 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             onCamada={receberCamada} somenteDados={municipal} />
         </details>
 
-        {idxRepro === null && <details className={`${estilos.camadasControle} ${estilos.chuvaControle}`} data-tapa-mapa>
-          <summary>Chuva · 1 h / 12 h / 24 h</summary>
-          <ChuvaMonitor cidades={cidadeFoco ? cidadesBacia.filter(c => c.id === cidadeFoco) : cidadesBacia}
-            chuva={tempoReal.chuva} agora={agora} />
-        </details>}
-
         {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
             Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
             → Rio do Sul" afirmaria uma sequência que não existe. Toque numa
