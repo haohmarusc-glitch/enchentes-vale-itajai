@@ -1697,3 +1697,5 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - AlertaBlu: corrigida cadeia TLS com intermediário Sectigo e raízes padrão, mantendo validação de domínio e certificado. Após merge, atualizar a VPS e testar `python3 scripts/coleta_alertablu.py`; política de resgate e horários permanecem iguais.
 
 Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timbó, Rio dos Cedros e Lontras pelos códigos já conferidos no cadastro de nível. A API aceitou a consulta em 11/09/2026. Após merge, atualizar a VPS e executar coleta_niveis.py e publicar_tempo_real.sh para preencher as novas janelas. Não há estimativa de chuva onde não existe leitura.
+
+- Indaial: régua estadual DCSC-00006 identificada no monitor, separada da régua municipal dos fundos da Celesc; [conferência](docs/indaial-duas-reguas.md).
