@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Busca de ruas no mapa histórico de Itajaí com 1.863 feições do GeoItajaí/SIE, fonte identificada e destaque do traçado. As manchas históricas existentes foram conferidas, sem duplicação. Ver [base viária](docs/vias-geoitajai.md).
+
 - [x] Falha da fonte de Itajaí: HTTP 200 sem réguas reconhecidas passa a ser marcado como indisponibilidade; falha de rede não interrompe fontes independentes. Bot e monitor exibem o motivo. Requer atualizar a VPS e reiniciar o bot pelo deploy.
 - [ ] Restabelecer as leituras municipais DC-01 a DC-11: em 12/09/2026 o endereço oficial retornou conteúdo alheio ao monitoramento. Os links do Portal de Serviços apontam ao mesmo endereço; não foi confirmada fonte alternativa. Histórico já coletado permanece nas séries, separado de leitura atual.
 
