@@ -39,6 +39,12 @@ SECO=0
 
 cd "$RAIZ"
 
+# Preserva os dados locais antes de substituir a publicação. Uma falha no
+# arquivo do evento fica no log, mas não impede a atualização do monitor.
+if [ "$SECO" -eq 0 ]; then
+  python3 scripts/registrar_evento.py || echo "ERRO: registro do evento falhou; conferir armazenamento." >&2
+fi
+
 if [ ! -f "$ARQUIVO" ]; then
   echo "ERRO: $ARQUIVO não existe. Rode scripts/coleta_niveis.py primeiro." >&2
   exit 1
