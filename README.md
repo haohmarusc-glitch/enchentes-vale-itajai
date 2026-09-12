@@ -1672,3 +1672,5 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - Ascurra: quatro setores oficiais de risco de inundação CPRM/2015 integrados como referência estática ao monitor. A relação entre manchas e cotas atuais continua pendente.
 
 - Carta de suscetibilidade SGB/Ascurra (março de 2026) referenciada em Dados e histórico. Alturas da legenda relativas à água regular não são cotas da DCSC-00003; vínculo para seleção automática de manchas ainda pendente.
+
+- AlertaBlu: corrigida cadeia TLS com intermediário Sectigo e raízes padrão, mantendo validação de domínio e certificado. Após merge, atualizar a VPS e testar `python3 scripts/coleta_alertablu.py`; política de resgate e horários permanecem iguais.

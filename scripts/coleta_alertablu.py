@@ -13,18 +13,35 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 import os
-import requests
+import ssl
 
-CA_BLUMENAU = os.path.join(os.path.dirname(__file__), "certs", "blumenau.pem")
+import requests
+from requests.adapters import HTTPAdapter
+
+CA_BLUMENAU = os.path.join(os.path.dirname(__file__), "certs", "sectigo-dv-r36.pem")
 
 URL = "https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json"
 UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
 
 
+class AdaptadorAlertaBlu(HTTPAdapter):
+    """Completa a cadeia ausente sem confiar no certificado final do servidor."""
+
+    def init_poolmanager(self, connections, maxsize, block=False, **kwargs):
+        contexto = ssl.create_default_context(cafile=requests.certs.where())
+        contexto.load_verify_locations(cafile=CA_BLUMENAU)
+        # O intermediário deve encadear até uma raiz confiável, nunca virar raiz.
+        contexto.verify_flags &= ~ssl.VERIFY_X509_PARTIAL_CHAIN
+        kwargs["ssl_context"] = contexto
+        return super().init_poolmanager(connections, maxsize, block=block, **kwargs)
+
+
 def baixar(url: str = URL) -> dict:
-    r = requests.get(url, headers={"User-Agent": UA}, timeout=30, verify=CA_BLUMENAU)
-    r.raise_for_status()
-    return r.json()
+    with requests.Session() as sessao:
+        sessao.mount("https://defesacivil.blumenau.sc.gov.br/", AdaptadorAlertaBlu())
+        r = sessao.get(url, headers={"User-Agent": UA}, timeout=30)
+        r.raise_for_status()
+        return r.json()
 
 
 def parse(dados: dict) -> list[dict]:
