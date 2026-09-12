@@ -783,3 +783,14 @@
   .legenda { max-height: 28dvh; font-size: .72rem; padding: .3rem .5rem; }
   .botaoLegenda { min-height: 44px; }
 }
+
+/* Alternativa à Fullscreen API para navegadores que a recusam. */
+.palco.ampliado {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 0;
+  border-radius: 0;
+}

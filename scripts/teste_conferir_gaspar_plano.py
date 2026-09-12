@@ -72,7 +72,7 @@ class TestCadastro(unittest.TestCase):
                          {"atencao": 5.0, "alerta": 6.0, "emergencia": 7.0})
 
     def test_a_fonte_das_cotas_esta_registrada(self):
-        estacoes = json.loads((RAIZ / "data/estacoes.json").read_text())
+        estacoes = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
         g = next(c for c in estacoes["rios"]["itajai-acu"]["cidades"] if c["id"] == "gaspar")
         self.assertIn("Plano de Contingência", g["fonte_cotas"])
         self.assertEqual(g["referencia"], "régua")
@@ -154,7 +154,7 @@ class TestQuadroDeRuas(unittest.TestCase):
         linhas, _ = confere_ruas()
         divergem = {l["rua"] for l in linhas if l["estado"] == "difere"}
         self.assertEqual(divergem, {"Rua Imaruí", "Rua Maria da Silva"})
-        cotas = json.loads((RAIZ / "data/cotas-ruas.json").read_text())["cotas"]
+        cotas = json.loads((RAIZ / "data/cotas-ruas.json").read_text(encoding="utf-8"))["cotas"]
         for nome in divergem:
             registros = [r for r in cotas if r["cidade"] == "gaspar" and r["rua"] == nome]
             self.assertTrue(registros, nome)

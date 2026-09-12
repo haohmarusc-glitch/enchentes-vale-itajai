@@ -1,11 +1,10 @@
+import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { Suspense, lazy, useMemo } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import AvisoLegal from '../componentes/AvisoLegal'
 import ChuvaAoVivo from '../componentes/ChuvaAoVivo'
 import NivelAoVivo from '../componentes/NivelAoVivo'
-import PainelPrevisao from '../componentes/PainelPrevisao'
 import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
-import PainelSePicoAgora from '../componentes/PainelSePicoAgora'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import SeloConfianca from '../componentes/SeloConfianca'
 import {
@@ -87,8 +86,9 @@ export default function TelaCidade() {
   const topologia = useMemo(() => topologiaDoRio(rioId), [rioId])
   const eventos = useMemo(() => eventosDoRio(rioId), [rioId])
 
-  const tempoReal = useTempoReal()
+  const original = useTempoReal()
   const nivelSc = useNivelSc()
+  const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
   const serie = useSerieRecente()
   // Antes de qualquer `return` condicional: hook depois de saída antecipada
   // quebra a ordem entre renderizações.
@@ -161,7 +161,7 @@ export default function TelaCidade() {
   const picos = eventos.filter((e) => e.cidade === cidade.id)
   const cotas = Object.entries(cidade.cotas_m ?? {}).filter(([, v]) => typeof v === 'number')
   const rotaDoRio = rioId === 'itajai-mirim' ? '/mirim' : '/acu'
-  const bruto = nivelSc.get(cidade.id) ?? null
+  const bruto = cidade.id === 'ascurra' && leitura?.codigo === 'DCSC-00003' ? null : nivelSc.get(cidade.id) ?? null
   const barragens = barragensDaCidade(mapaBarragens, cidade.id)
 
   return (
@@ -360,16 +360,6 @@ export default function TelaCidade() {
         </p>
       </section>
 
-      {leitura ? (
-        <PainelSePicoAgora
-          rioId={rioId}
-          cidades={cidades}
-          trechos={trechos}
-          origem={cidade}
-          leitura={leitura}
-          agora={agora}
-        />
-      ) : null}
 
       {cidade.id === 'ituporanga' && (
         <Suspense fallback={<p>Carregando o mapa de áreas por nível…</p>}>
@@ -378,7 +368,7 @@ export default function TelaCidade() {
       )}
 
       <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
-        <CotasDeRua cidade={cidade} leitura={leitura} agora={agora} />
+        <CotasDeRua key={cidade.id} cidade={cidade} leitura={leitura} agora={agora} />
       </Suspense>
 
       {serieDela.length > 0 && cotas.length > 0 ? (
@@ -409,15 +399,6 @@ export default function TelaCidade() {
           chega sem a pergunta. */}
       <PainelCenarioAnterior cidade={cidade} eventos={picos} leitura={leitura} agora={agora} />
 
-      {jusante ? (
-        <PainelPrevisao
-          rioId={rioId}
-          eventos={eventos}
-          trechos={trechos}
-          montante={cidade}
-          jusante={jusante}
-        />
-      ) : null}
 
       {cidade.observacao ? (
         <section className="cartao">

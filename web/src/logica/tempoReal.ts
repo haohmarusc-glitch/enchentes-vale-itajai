@@ -347,11 +347,12 @@ const CHAVES_QUE_PINTAM = new Set([
 
 export function faixaDaCidade(
   cidade: Cidade,
-  aoVivo: { nivel_m: number; medidoEm: Date | null } | null,
+  aoVivo: { nivel_m: number; medidoEm: Date | null; codigo?: string } | null,
   temVariasReguas: boolean,
   agora: Date,
 ): Faixa {
   if (temVariasReguas) return 'varias'
+  if (cidade.id === 'ascurra') return faixaC18(aoVivo, agora)
   const quePintam = Object.entries(cidade.cotas_m).filter(([chave]) =>
     CHAVES_QUE_PINTAM.has(chave),
   )
@@ -374,4 +375,15 @@ export function faixaDaCidade(
   }
   // 'inundacao', 'emergencia' e qualquer cota de topo caem na faixa vermelha.
   return cota.chave === 'inundacao' ? 'inundacao' : 'emergencia'
+}
+
+/** Limites do C18 para a DCSC-00003; não vale para outras réguas ou datums. */
+export function faixaC18(l: { nivel_m: number; codigo?: string; medidoEm: Date | null } | null, agora: Date): Faixa {
+  if (!l || l.codigo !== 'DCSC-00003' || !l.medidoEm || !Number.isFinite(l.nivel_m) ||
+      l.nivel_m <= 0 || l.nivel_m >= 30 || frescor(idadeMin(l.medidoEm, agora)) === 'velha') return 'sem-dado'
+  if (l.nivel_m <= 8.5) return 'monitoramento'
+  if (l.nivel_m < 9.76) return 'atencao'
+  if (l.nivel_m === 9.76) return 'sem-dado' // inclusão do extremo não definida no documento
+  if (l.nivel_m <= 10.76) return 'alerta'
+  return 'emergencia'
 }

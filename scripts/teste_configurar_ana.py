@@ -48,6 +48,7 @@ def _entregue(pasta: Path, chave: str) -> str:
     return r.stdout.rstrip("\n")
 
 
+@unittest.skipIf(os.name == "nt", "Script POSIX: verificado na CI Linux, não no shell Windows")
 class GravaSemDuplicar(unittest.TestCase):
     VAZIO = "TELEGRAM_BOT_TOKEN=abc\nANA_IDENTIFICADOR=\nANA_SENHA=\n"
 

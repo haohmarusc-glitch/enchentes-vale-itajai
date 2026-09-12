@@ -30,6 +30,8 @@ export const URL_TEMPO_REAL = import.meta.env?.VITE_URL_TEMPO_REAL || PADRAO
 const TEMPO_LIMITE_MS = 8000
 
 export interface LeituraAoVivo {
+  /** Código de estação com vínculo documental às cotas. */
+  codigo?: string
   estacao: string
   rio: string | null
   cidade: string | null

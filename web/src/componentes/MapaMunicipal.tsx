@@ -11,18 +11,18 @@ export default function MapaMunicipal({ cidade, centro, leituras, agora }: { cid
   const [lat, lon] = centro
   useEffect(() => {
     if (!div.current) return
-    const m = L.map(div.current, {scrollWheelZoom: false}).setView([lat, lon], 14)
+    const m = L.map(div.current, {scrollWheelZoom: false, zoomAnimation: false, fadeAnimation: false}).setView([lat, lon], 14)
     // Sem base de ruas externa neste piloto de fontes governamentais.
     L.circleMarker([lat, lon], {radius: 8, color: '#425466'}).bindTooltip('Localização cadastrada da régua').addTo(m)
     mapa.current = m
     const resize = new ResizeObserver(() => m.invalidateSize())
     resize.observe(div.current)
-    return () => { resize.disconnect(); m.remove(); mapa.current = null }
+    return () => { resize.disconnect(); m.stop(); m.remove(); mapa.current = null }
   }, [lat, lon])
   useEffect(() => {
     if (!mapa.current || !camada) return
     const layer = L.geoJSON(camada.geo, {style:{color:'#176ead',weight:1,fillOpacity:.4}}).addTo(mapa.current)
-    if (layer.getBounds().isValid()) mapa.current.fitBounds(layer.getBounds())
+    if (layer.getBounds().isValid()) mapa.current.fitBounds(layer.getBounds(), {animate:false})
     return () => { layer.remove() }
   }, [camada])
   return <section aria-label="Mapa de manchas municipal"><h2>Manchas e comparação histórica</h2>

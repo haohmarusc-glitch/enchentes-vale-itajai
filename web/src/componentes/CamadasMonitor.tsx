@@ -45,10 +45,10 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
       .catch(() => { if (vivo) setEstado('Não foi possível carregar a camada.') })
     return () => { vivo = false; controller.abort(); onCamada(null) }
   }, [arquivo, rotulo, onCamada, tentativa])
-  return <section className="cartao" aria-label="Camadas de cheia no Monitor">
+  return <section className="cartao" style={{ minWidth: 0, maxWidth: '100%' }} aria-label="Camadas de cheia no Monitor">
     <h2>Camadas e comparação de cheias</h2>
     <label htmlFor="camada-monitor">Camada sobre o mapa</label>{' '}
-    <select id="camada-monitor" value={modo} onChange={(e) => setModo(e.target.value)}>
+    <select style={{ display: 'block', width: '100%', maxWidth: '100%', minWidth: 0, boxSizing: 'border-box' }} id="camada-monitor" value={modo} onChange={(e) => setModo(e.target.value)}>
       <option value="auto">Automática — cheia histórica mais próxima</option>
       <option value="off">Ocultar camadas</option>
       {opcoes.map((o) => <option value={o.arquivo} key={o.arquivo}>{o.rotulo}</option>)}

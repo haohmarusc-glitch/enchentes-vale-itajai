@@ -357,7 +357,7 @@
           "fonte_cotas": "Defesa Civil de Ascurra, resposta ao ofício C18 em 11/09/2026, 08:48 BRT. Síntese: docs/resposta-ascurra-c18-2026-09-11.md.",
           "regua_das_cotas": "DCSC-00003 — Ponte do Beber, rio Itajaí-Açu",
           "regua_das_cotas_fonte": "Resposta da COMPDEC de Ascurra ao C18 em 11/09/2026: identifica a DCSC-00003 na Ponte do Beber e informa as faixas municipais. Não foi informado deslocamento; não aplicar conversões.",
-          "cotas_aviso_publico": "Faixas informadas pela Defesa Civil de Ascurra em 11/09/2026 para a estação da Ponte do Beber: até 8,50 m monitoramento; de 8,50 a 9,76 m atenção; de 9,76 a 10,76 m alerta; acima de 10,76 m emergência. A régua do Ribeirão São Paulo é outra referência, não oficial. A leitura estadual ainda aparece separada, sem acionar cores automaticamente."
+          "cotas_aviso_publico": "Faixas informadas pela Defesa Civil de Ascurra em 11/09/2026 para a estação da Ponte do Beber: até 8,50 m monitoramento; de 8,50 a 9,76 m atenção; de 9,76 a 10,76 m alerta; acima de 10,76 m emergência. A régua do Ribeirão São Paulo é outra referência, não oficial. A classificação calculada pelo projeto usa somente a DCSC-00003, conforme confirmação no C18; não é boletim oficial nem área alagada."
         },
         {
           "id": "indaial",

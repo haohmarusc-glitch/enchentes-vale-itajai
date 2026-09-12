@@ -3,10 +3,11 @@
  * `ultimo_nivel_sc.json` no branch `tempo-real`, ao lado do `ultimo.json`.
  *
  * É nível de régua PRÓPRIA da estação — datum diferente das cotas do projeto.
- * Por isso NUNCA vira cota nem pinta faixa: só preenche, rotulado, a lacuna das
+ * Sem vínculo documental não vira cota nem pinta faixa: só preenche, rotulado, a lacuna das
  * cidades sem fonte municipal (Ibirama, Indaial, Taió…). Quem decide usá-lo é a
  * tela, e só quando não há leitura municipal (a municipal manda). Espelha a
  * disciplina do coletor `coleta_nivel_sc.py` e do bot.
+ * Exceção documentada: referenciaAscurra.ts vincula DCSC-00003 às faixas do C18.
  *
  * Falhar aqui é inofensivo: sem o arquivo (ou com ele quebrado), o mapa fica
  * vazio e a tela volta a mostrar "sem dado" nas lacunas — nunca um número

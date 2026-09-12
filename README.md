@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] Auditoria do navegador: corrige atalho de teclado, seletor móvel, ampliação sem API nativa, encerramento do mapa municipal e atualização do painel; unifica Ascurra pelo C18; retira abrigos e previsão de chegada da interface. Regressões em `npm run auditoria` e na CI.
+- [ ] Conferir na fonte os 14 avisos do validador (referências de régua, códigos ANA, datas e trânsito); não são corrigíveis inventando valores. Ver `docs/auditoria-correcoes-2026-09-12.md`.
 - [x] Fluxo ilustrativo do Monitor com traços luminosos na cor da faixa de cota ao longo da calha, conforme referência visual, mantendo pausa e velocidade constante.
 
 - [x] Ondas com velocidade visual constante, opção de pausa na legenda, respeito a movimento reduzido e suspensão do loop com a página oculta.
