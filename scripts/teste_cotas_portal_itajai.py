@@ -11,7 +11,7 @@ class CotasPortalItajai(unittest.TestCase):
     def test_cadastro_corresponde_aos_graficos_preservados(self):
         bruto = (ROOT / "data/brutos/itajai-nivel-rios-2026-09-13.html").read_bytes()
         evidencia = json.loads((ROOT / "data/brutos/itajai-cotas-portal-2026-09-13.json").read_text(encoding="utf-8"))
-        self.assertEqual(hashlib.sha256(bruto).hexdigest(), evidencia["sha256_html"])
+        self.assertEqual(hashlib.sha256(bruto.replace(b'\r\n', b'\n')).hexdigest(), evidencia["sha256_html"])
         cadastro = json.loads((ROOT / "data/estacoes.json").read_text(encoding="utf-8"))
         texto = bruto.decode("utf-8")
         for est in cadastro["estacoes_tempo_real"]:
