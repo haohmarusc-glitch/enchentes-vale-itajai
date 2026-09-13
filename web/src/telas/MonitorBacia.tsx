@@ -560,6 +560,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
     const cena = construirCena(
       canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
+      municipal || emRepro ? undefined : reguasDoMapa.find(r => r.codigo === 'DC-11'),
     )
     if (municipal) {
       cena.pinos = cena.pinos.filter((p) => p.cidade.id === 'ascurra')
@@ -745,7 +746,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta])
+  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -1278,6 +1279,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </strong>
           {legendaAberta ? (
             <>
+          <p className={estilos.legendaNota}>No Itajaí-Açu, de Santa Regina até a foz, a cor do traçado é referência visual da DC-11. Não indica nível local, ruas alagadas nem classificação das outras réguas. Na reprodução histórica essa referência fica desativada.</p>
           <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Trechos sem orientação confirmada e a aproximação à foz ficam parados.</p>
           <button type="button" className={estilos.botaoLegenda}
             aria-pressed={animacoesPausadas}
