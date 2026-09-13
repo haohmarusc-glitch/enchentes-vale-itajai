@@ -1,2 +1,2 @@
 # Apenas para preparar as camadas; não é dependência dos coletores.
-shapely>=2.1,<3
+shapely>=2.1.2,<3
