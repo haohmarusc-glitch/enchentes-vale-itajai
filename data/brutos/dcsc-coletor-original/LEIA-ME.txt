@@ -1,0 +1,1 @@
+Script original do Jefferson (13/09/2026), guardado como veio. A versão do repo é scripts/baixar_historico_dcsc.py; a metade 'snapshot' já existia em scripts/coleta_nivel_sc.py. Não rodar daqui: escreve em data/estacoes.csv, ao lado do estacoes.json.
