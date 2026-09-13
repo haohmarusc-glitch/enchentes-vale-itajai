@@ -91,6 +91,14 @@ exatamente 02:00 + 3 h. A tabela lá em cima traz o horário como veio do repass
 
 ### ✅ CONFIRMADO em 13/09/2026, 20:22 BRT — o carimbo errado nasce fora do projeto
 
+> ⚠️ **Reaberto às 21:30 do mesmo dia, só quanto à DIREÇÃO.** O que segue prova (a) que o desvio é
+> de 3 h 00 exatas e (b) que não é o nosso coletor. A conclusão de que o relógio errado é o de Itajaí
+> ganhou um contra-indício com as séries da rede estadual (relógio DCSC, Brasília provado): Ascurra
+> cristou 00:00, Indaial 01:00 e **Ilhota 05:10** de 12/09. Pelo AlertaBlu, Blumenau crista às 05:00
+> — dez minutos antes de Ilhota, 45 km rio abaixo. Pelo repasse, 02:15, em ordem. A crista de Blumenau
+> é um platô de 2 h, então o máximo é frágil dos dois lados; decide-se pela forma das curvas
+> (item E12 do checklist). **Até lá, o ofício C23 não sai.**
+
 As duas fontes lidas no mesmo minuto, na VPS:
 
 ```

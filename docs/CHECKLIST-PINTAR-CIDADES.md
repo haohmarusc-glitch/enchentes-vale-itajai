@@ -101,16 +101,29 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
   cidade", e a cota de `estacoes.json` — que é por cidade — era recusada: a maior cheia já medida pelo
   projeto não gerava proposta nenhuma. Agora agrupa por `comum.regua_de`, a mesma resposta que o vigia,
   o bot e o site já usam. 3 testes novos.
-- [x] E9 · ✅ **FECHADO em 13/09/2026, 20:22 BRT — o desvio de 3 h de Blumenau é da página da Defesa
-  Civil de Itajaí, não do projeto.** As duas fontes lidas no mesmo minuto: 4,29 m carimbado **17:15**
+- [x] E9 · ✅ **FECHADO em 13/09/2026, 20:22 BRT quanto ao TAMANHO (3 h 00) e à INOCÊNCIA DO COLETOR.
+  A direção reabriu às 21:30 — ver E12.** As duas fontes lidas no mesmo minuto: 4,29 m carimbado **17:15**
   no repasse e os mesmos 4,29 m carimbado **20:00** (23:00Z) no AlertaBlu. Na mesma página, no mesmo
   `parse()`, o DC-10 saiu com 12 minutos de idade — se o coletor subtraísse 3 h, o DC-10 também sairia
   errado. Medida fina na cheia inteira: somando deslocamento ao carimbo do repasse, o desvio cai a
   **1 cm em 218 pares exatamente em +3 h 00** (contra 55 cm sem deslocar) — três horas redondas, cara de
   conversão de fuso aplicada duas vezes. O valor está certo; o relógio é que mente. Nada foi "corrigido"
   no dado de ninguém. Detalhe e tabela em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
-- [ ] E10 · **Enviar o ofício C23** à Defesa Civil de Itajaí (rascunho pronto em `oficios-prontos.md`) —
-  falta confirmar o e-mail do destinatário. Relata o desvio de 3 h com a medição junto.
+- [ ] E10 · ⛔ **C23 em espera.** O ofício acusa a página de Itajaí; se o relógio errado for o do
+  AlertaBlu, acusa a página certa. Só sai depois do E12.
+- [ ] E12 · 🔴 **Quem está certo, afinal?** O tamanho do desvio (3 h 00, 1 cm em 218 pares) e a
+  inocência do nosso coletor estão provados. A direção, não. Contra-indício de 13/09, relógio DCSC
+  (Brasília, provado): Ascurra 00:00 → Indaial 01:00 → **Ilhota 05:10**. Blumenau pelo AlertaBlu
+  crista às 05:00 (10 min antes de Ilhota, 45 km rio abaixo — a mesma onda não faz isso); pelo
+  repasse, 02:15 (em ordem). A favor do AlertaBlu continuam: o ponto mais novo nunca está no futuro
+  (na coleta das 23:45Z de 10/09 era 23:00Z), o que obrigaria o AlertaBlu a ter, ALÉM do rótulo +3 h,
+  uma latência de publicação de 3 h 41 — duas coincidências de 3 h; e o defeito mais comum
+  ("assumir UTC e converter" sobre fonte em hora local) dá exatamente −3 h no lado de Itajaí.
+  Contra: a física de Ilhota. Crista de Blumenau é um platô de 2 h (7,86–7,87), então o horário do
+  máximo é frágil dos dois lados. **Decide-se com a forma das curvas**: defasagem Indaial→Blumenau e
+  Blumenau→Ilhota pela subida inteira de 11/09, séries DCSC de 10 min. Enquanto isso, o site está
+  seguro nos dois cenários? NÃO — se o AlertaBlu estiver 3 h à frente, a leitura de resgate parece
+  22 min fresca quando tem 3 h 22. Esse é o cenário que importa para a segurança.
 - [ ] E11 · **Travar no código**: o extrator de picos não pode tirar horário de crista da linha repassada
   de Blumenau enquanto o desvio existir. O valor continua bom; o carimbo, não. Vale também rever a
   crista de 10/09, registrada com o relógio do repasse.
