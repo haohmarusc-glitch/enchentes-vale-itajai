@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- Indaial: coleta municipal dos fundos da Celesc integrada em `coleta_niveis.py` via exportação pública do documento divulgado pela Defesa Civil. Preserva o horário da medição; dados antigos continuam sujeitos ao bloqueio de cor por idade do monitor. Implantação na VPS pendente. A DCSC-00006 permanece independente, sem conversão. Ver `docs/indaial-duas-reguas.md`.
+
 - [x] Auditoria do navegador: corrige atalho de teclado, seletor móvel, ampliação sem API nativa, encerramento do mapa municipal e atualização do painel; unifica Ascurra pelo C18; retira abrigos e previsão de chegada da interface. Regressões em `npm run auditoria` e na CI.
 - [ ] Conferir na fonte os 14 avisos do validador (referências de régua, códigos ANA, datas e trânsito); não são corrigíveis inventando valores. Ver `docs/auditoria-correcoes-2026-09-12.md`.
 - [x] Fluxo ilustrativo do Monitor com traços luminosos na cor da faixa de cota ao longo da calha, conforme referência visual, mantendo pausa e velocidade constante.

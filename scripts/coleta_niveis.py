@@ -645,6 +645,8 @@ def main() -> int:
     # traz outra régua plausível, de outro curso, que não pode virar o nível da
     # cidade.
     leituras = leituras + baixar_nivel_gaspar(gravar=not args.no_save)
+    from coleta_indaial import coletar as coletar_indaial
+    leituras = leituras + coletar_indaial()
 
     for l in leituras:
         alvo = f"{l['cidade']} ({l['rio']})" if l.get("cidade") else "não mapeada"
