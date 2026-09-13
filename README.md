@@ -1704,3 +1704,5 @@ Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timb�
 - Blumenau: cartas FURB 2025 de 8–18 m no monitor, separadas dos eventos históricos; pino sem cor após duas horas. Conferência em docs/fontes-cheias-2026-09-12.md.
 
 - **Concluído (12/09/2026):** recuperação dos níveis municipal e estadual pela API pública do GitHub quando o CDN retorna erro; carimbos preservados durante falha temporária. Rótulos distinguem várias réguas e instrumentos estaduais. Diagnóstico e pendência de Gaspar: [docs/reguas-sem-leitura-2026-09-12.md](docs/reguas-sem-leitura-2026-09-12.md).
+
+- **Concluído (12/09/2026):** ponte de Gaspar pelo PC via SSH, com identidade e validade verificadas e integração à coleta normal da VPS. [Operação](docs/gaspar-ponte-pc.md). O transporte não renova a idade da medição municipal.
