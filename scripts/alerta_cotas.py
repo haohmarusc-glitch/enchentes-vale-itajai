@@ -52,7 +52,7 @@ import notificador
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
 ESTADO = DADOS / "tempo-real" / "estado_alertas.json"
 FUSO = ZoneInfo("America/Sao_Paulo")
-SITE = "https://haohmarusc-glitch.github.io/enchentes-vale-itajai/"
+SITE = "https://enchentes.premercadosc.com/"
 
 #: Da mais baixa para a mais alta. 'normal' é o rio abaixo de qualquer cota.
 FAIXAS = ["normal", "monitoramento", "atencao", "alerta", "emergencia", "inundacao"]
@@ -112,10 +112,9 @@ REPETE_H = 3
 #: ...e ainda assim só se o rio tiver subido pelo menos isto desde o último.
 SUBIDA_M = 0.30
 
-#: Acima desta idade a leitura entra no aviso com a ressalva de que é antiga.
-#: Não impede o aviso: uma leitura velha mostrando inundação continua sendo a
-#: melhor informação que existe naquele momento.
+#: Ressalva apenas dentro da janela válida. Dados antigos não disparam aviso.
 IDADE_RESSALVA_MIN = 90
+IDADE_MAXIMA_MIN = 180
 
 
 def faixa_de(nivel_m: float, cotas: dict) -> str:
@@ -240,7 +239,7 @@ def idade_min(medido_em: str | None, agora: datetime) -> float | None:
         return None
     try:
         bruto = datetime.fromisoformat(medido_em)
-    except ValueError:
+    except (ValueError, TypeError):
         return None
     if bruto.tzinfo is None:
         bruto = bruto.replace(tzinfo=FUSO)
@@ -389,6 +388,11 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         # antigo ficaria órfão — a travessia seria avisada de novo. Para toda
         # régua sem resgate, `regua_de` é o próprio título: nada muda.
         chave_estado = regua_de(leitura)
+        idade = idade_min(leitura.get("medido_em"), agora)
+        limite = 120 if leitura.get("cidade") == "blumenau" else IDADE_MAXIMA_MIN
+        if idade is None or idade < -15 or idade > limite:
+            recusas.append(f"{titulo}: horário ausente, inválido, futuro ou leitura antiga; aviso bloqueado")
+            continue  # Não transformar dado rejeitado em novo estado de faixa.
         nivel = leitura["nivel_m"]
         antes = novo.get(chave_estado) or {}
         faixa_antes = antes.get("faixa", "normal")
