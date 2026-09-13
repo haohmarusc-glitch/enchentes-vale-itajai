@@ -1738,4 +1738,6 @@ a espinha de cores, a referência DC-11 ou as réguas. Movimento ilustrativo
 constante: a corrente real pode variar com a maré. Canais sem orientação
 permanecem parados. Esta regra substitui o limite anterior em Ilhota.
 
+Auditoria de 13/09/2026: comparadores e monitor usam um vocabulário compartilhado de cotas operacionais, sem marcas históricas ou administrativas. As faixas de Ibirama ficam pendentes de vínculo com a régua; Apiúna está cadastrada sem fonte ao vivo ativada. Detalhes em `docs/auditoria-cotas-operacionais-2026-09-13.md`.
+
 O panorama de `alerta_cotas.py --seco` conta apenas leituras com horário válido e dentro da janela de atualização, usando a mesma seleção do disparador. Fontes antigas aparecem como aviso bloqueado, sem impedir a avaliação das demais réguas.

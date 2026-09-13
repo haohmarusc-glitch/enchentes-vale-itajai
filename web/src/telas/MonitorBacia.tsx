@@ -1,3 +1,4 @@
+import { cotasOperacionais as cotasOrdenadas } from '../logica/cotasOperacionais'
 import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { linhasChuva } from '../logica/chuvaMonitor'
 import ChuvaMonitor from '../componentes/ChuvaMonitor'
@@ -179,25 +180,6 @@ const VAR_LEGENDA: Record<Faixa, string> = {
   emergencia: '--faixa-emergencia',
   'sem-dado': '--faixa-sem-dado',
   varias: '--agua-clara',
-}
-
-/**
- * Ordem em que as cotas sobem, para o painel. `monitoramento` entrou em
- * 09/09/2026: sem ele aqui, Taió e Blumenau mostravam a chave crua
- * ("monitoramento: 3,00 m") e fora de ordem — o rótulo vinha de uma tabela
- * local que não o conhecia. O rótulo agora é o mesmo do resto do site
- * (`rotuloCota`), com o nome da fonte quando a cidade o declara.
- */
-const ORDEM_COTA = ['monitoramento', 'atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
-
-/** Cotas da régua da cidade, ordenadas de baixo para cima. */
-function cotasOrdenadas(cotas: Record<string, number>): [string, number][] {
-  return Object.entries(cotas).sort((a, b) => {
-    const ia = ORDEM_COTA.indexOf(a[0])
-    const ib = ORDEM_COTA.indexOf(b[0])
-    if (ia !== -1 && ib !== -1) return ia - ib
-    return a[1] - b[1]
-  })
 }
 
 /**

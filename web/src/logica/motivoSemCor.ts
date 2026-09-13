@@ -1,3 +1,4 @@
+import { cotasOperacionais } from './cotasOperacionais'
 import { idadeMin, MIN_VELHA } from './tempoReal'
 
 /** O bruto estadual não deve esconder o motivo de recusa da leitura municipal. */
@@ -15,8 +16,7 @@ export function motivoSemCorNoMonitor(cotas: Record<string, number>, medidoEm: D
 
 /** Explica a recusa da cor; usa as mesmas fases e limites do classificador. */
 export function motivoSemCor(cotas: Record<string, number>, medidoEm: Date | null, agora: Date): string {
-  const fases = ['monitoramento', 'atencao', 'alerta', 'inundacao', 'emergencia']
-  if (!Object.keys(cotas).some((k) => fases.includes(k))) {
+  if (cotasOperacionais(cotas).length === 0) {
     return 'Faltam faixas de acionamento vinculadas à régua utilizada nesta cidade.'
   }
   if (!medidoEm || !Number.isFinite(medidoEm.getTime())) {
