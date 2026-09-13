@@ -276,7 +276,7 @@ def avaliar(dados: dict | None, agora: datetime,
             if idade is None:
                 paradas.append(f"{regua} (sem horário)")
             elif idade > TOLERANCIA_FONTE_MIN:
-                paradas.append(f"{regua} (há {idade:.0f} min)")
+                paradas.append(f"{regua} (fonte sem atualização da medição há {idade:.0f} min)")
         if paradas:
             problemas.append(
                 f"{len(paradas)} de {len(leituras)} estação(ões) sem leitura nova: "
@@ -508,7 +508,7 @@ def texto(diag: Diagnostico, so_versao: bool = False) -> str:
     elif so_versao:
         cabeca = "🚚 <b>O código no ar está atrasado.</b>"
     else:
-        cabeca = "🛠 <b>A coleta de nível parou.</b>"
+        cabeca = "🛠 <b>Há problemas em uma ou mais fontes de nível.</b>"
     corpo = [cabeca, "", e(diag.motivo)]
     if diag.detalhes:
         corpo += ["", *[e(d) for d in diag.detalhes]]
@@ -526,7 +526,7 @@ def texto(diag: Diagnostico, so_versao: bool = False) -> str:
         corpo += [
             "",
             "Enquanto isso o site mostra a última leitura com a idade dela — "
-            "não inventa número. Mas ninguém recebe aviso de cota até a coleta voltar.",
+            "não inventa número. Fontes antigas ou indisponíveis não devem gerar aviso de cota com dados antigos. As demais estações com medições válidas continuam sendo avaliadas pelo disparador.",
         ]
     return "\n".join(corpo)
 

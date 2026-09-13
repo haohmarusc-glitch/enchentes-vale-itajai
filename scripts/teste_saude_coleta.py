@@ -453,7 +453,9 @@ class CodigoAtrasado(unittest.TestCase):
         self.assertIn("git pull", so_versao, "o aviso tem de trazer o conserto")
 
         parou = texto(d, so_versao=False)
-        self.assertIn("coleta de nível parou", parou)
+        self.assertIn("uma ou mais fontes", parou)
+        self.assertNotIn("ninguém recebe", parou)
+        self.assertIn("continuam sendo avaliadas", parou)
 
 
 class CorSemAlarme(unittest.TestCase):

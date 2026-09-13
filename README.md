@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- Saúde da coleta: aviso deixa de afirmar parada geral quando há problema em uma fonte; esclarece que as demais leituras válidas continuam sendo avaliadas. Em 13/09/2026, consulta direta ao painel Asthon retornou Rio do Sul, mas não o station_id cadastrado de Vidal Ramos. O coletor registra essa ausência explicitamente; causa da retirada na fonte ainda não confirmada. Indaial conserva o horário da medição municipal antiga.
+
 - Telegram: leituras com mais de 180 minutos (120 em Blumenau), sem horário válido ou mais de 15 minutos no futuro não disparam avisos nem atualizam o estado de faixa. Correção do aviso de Indaial com 1200 minutos de idade; requer deploy na VPS.
 
 - Monitor: explicação do cinza prioriza a leitura municipal existente (idade ou horário inválido), mesmo com régua estadual disponível. Corrige a mensagem de Indaial após ativação da coleta municipal; não altera cotas ou cores.
