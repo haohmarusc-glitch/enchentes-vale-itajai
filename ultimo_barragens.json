@@ -1,0 +1,108 @@
+{
+  "_meta": {
+    "descricao": "Estado das barragens Oeste (Taió) e Sul (Ituporanga), comporta a comporta.",
+    "fonte": [
+      "https://public.asthon.com.br/public/dams?city_id=4214805"
+    ],
+    "cobertura": "Oeste (Taió) e Sul (Ituporanga). A BARRAGEM NORTE (José Boiteux, Rio Hercílio) NÃO está aqui: a bacia tem três barragens de contenção, e a fonte devolveu lista vazia para Ibirama (4207106) e para Blumenau (4202404) em 05/09/2026 — o endpoint é cadastro do município cliente, não hidrologia. Quem lê 'todas as comportas abertas' neste arquivo está lendo DUAS das três.",
+    "coletado_em": "2026-09-13T08:31:41+00:00",
+    "fuso": "`medido_em` é Brasília sem fuso, convertido do `measured_at` da fonte, que vem em UTC com Z. `coletado_em` é UTC — campos diferentes, não confundir.",
+    "ALTITUDE_NAO_E_REGUA": "`altitude_montante_m` é metros acima do NÍVEL DO MAR (353,66 na Oeste); `nivel_na_regua_da_barragem_m` é a leitura da régua (14,66). A relação é exata: régua = altitude − zero. Comparar a altitude com régua de rio erra por centenas de metros. Atenção ao nome: docs/TAIO-E-BARRAGEM-OESTE.md chama de 'montante' o que aqui é `nivel_na_regua_da_barragem_m`.",
+    "percent_use": "Vale o valor PUBLICADO. Ele bate com capacidade_atual/capacidade_maxima na Oeste e diverge ~0,06 pp na Sul; a divergência fica em `percent_use_divergencia_pp` em vez de o script recalcular.",
+    "vertido": "Gravado cru como `vertido_bruto`. SIGNIFICADO DESCONHECIDO — veio 0 nas duas com 12 comportas abertas, então NÃO é a vazão de saída. O JICA aponta que a DEINFRA não publica essa vazão, e ela continua não publicada.",
+    "para_que_serve": "Comportas fechadas + rio subindo = a barragem está segurando, o pior pode vir. Comportas abertas + rio estável ou caindo = esvaziamento controlado, o pico já passou. O mesmo nível significa coisas opostas.",
+    "avisos_da_fonte": []
+  },
+  "barragens": [
+    {
+      "estacao": "d6e340c8-c1d6-441d-8fd0-4381ff17cb54",
+      "nome": "Barragem Oeste Taió",
+      "rio": "Itajaí do Oeste",
+      "lat": -27.09743881225586,
+      "lon": -50.03879165649414,
+      "medido_em": "2026-09-13T05:26:56",
+      "altitude_montante_m": 357.7900085449219,
+      "nivel_na_regua_da_barragem_m": 18.790008544921875,
+      "zero_da_regua_m": 339.0,
+      "jusante_m": 5.21999979019165,
+      "percent_use": 61.519195556640625,
+      "percent_use_divergencia_pp": 0.0,
+      "capacidade_atual": 61.49458694458008,
+      "capacidade_maxima": 99.95999908447266,
+      "comportas_abertas": 0,
+      "comportas_total": 7,
+      "comportas": [
+        {
+          "nome": "C1",
+          "aberta": false
+        },
+        {
+          "nome": "C2",
+          "aberta": false
+        },
+        {
+          "nome": "C3",
+          "aberta": false
+        },
+        {
+          "nome": "C4",
+          "aberta": false
+        },
+        {
+          "nome": "C5",
+          "aberta": false
+        },
+        {
+          "nome": "C6",
+          "aberta": false
+        },
+        {
+          "nome": "C7",
+          "aberta": false
+        }
+      ],
+      "vertido_bruto": 0
+    },
+    {
+      "estacao": "60c6cf33-0148-4c64-842d-5a118f53b6f4",
+      "nome": "Barragem Sul Ituporanga",
+      "rio": "Itajaí do Sul",
+      "lat": -27.503854751586914,
+      "lon": -49.55359649658203,
+      "medido_em": "2026-09-13T05:26:57",
+      "altitude_montante_m": 389.6400146484375,
+      "nivel_na_regua_da_barragem_m": 19.6400146484375,
+      "zero_da_regua_m": 370.0,
+      "jusante_m": 2.4000000953674316,
+      "percent_use": 21.126373291015625,
+      "percent_use_divergencia_pp": -0.0,
+      "capacidade_atual": 21.977766036987305,
+      "capacidade_maxima": 104.02999877929688,
+      "comportas_abertas": 2,
+      "comportas_total": 5,
+      "comportas": [
+        {
+          "nome": "C1",
+          "aberta": true
+        },
+        {
+          "nome": "C2",
+          "aberta": false
+        },
+        {
+          "nome": "C3",
+          "aberta": false
+        },
+        {
+          "nome": "C4",
+          "aberta": false
+        },
+        {
+          "nome": "C5",
+          "aberta": true
+        }
+      ],
+      "vertido_bruto": 0
+    }
+  ]
+}
