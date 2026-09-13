@@ -62,8 +62,20 @@ test('meandro do Mirim anima sem exigir projeção crescente em cada vértice', 
   const invertida=criar([[...curva].reverse(),foz])
   assert.ok(direta.trechos.some(t=>t.animacao==='direcional'))
   assert.deepEqual(direta.trechos.map(t=>[t.pts,t.animacao]),invertida.trechos.map(t=>[t.pts,t.animacao]))
-  assert.ok(direta.trechos.filter(t=>t.cidadeId==='brusque').every(t=>t.animacao==='parada'))
+  assert.ok(direta.trechos.some(t=>t.cidadeId==='brusque'&&t.animacao==='direcional'))
   // Se as extremidades não permitem determinar direção, não autorizar.
   const fechada=criar([[[-49,-27],[-48.995,-27.005],[-49,-27]],foz])
-  assert.ok(fechada.trechos.every(t=>t.animacao==='parada'))
+  assert.ok(fechada.trechos.filter(t=>t.cidadeId==='vidal-ramos').every(t=>t.animacao==='parada'))
+})
+
+
+test('Mirim anima trecho de Brusque e mantém cidade da foz parada', () => {
+  globalThis.getComputedStyle=(()=>({getPropertyValue:()=>''})) as unknown as typeof getComputedStyle
+  const cidades=['vidal-ramos','brusque','itajai'].map((id,i)=>({id,nome:id,coordenadas:[-27,-49+i*0.02],cotas_m:{}}))
+  const cena=construirCena({} as Element,[{rioId:'itajai-mirim',cidades,coords:[
+    [[-48.98,-27],[-48.97,-27],[-48.96,-27]],
+    [[-48.96,-27],[-48.95,-27]],
+  ]}] as never,{leituras:[]} as never,new Date(),800,600,null)
+  assert.ok(cena.trechos.some(t=>t.cidadeId==='brusque'&&t.animacao==='direcional'))
+  assert.equal(cena.trechos.at(-1)?.animacao,'parada')
 })

@@ -24,7 +24,7 @@ entre suas extremidades,
 usando a orientação montante–jusante já empregada pelo motor.
 
 Adotamos limites **conservadores de apresentação**, não limites oficiais do
-estuário: Ilhota no Açu e Brusque no Mirim. Linhas que ultrapassam essas âncoras
+estuário: Ilhota no Açu e a âncora de Itajaí no Mirim. Linhas que ultrapassam essas âncoras
 ficam inteiramente paradas. Não inferimos o sentido da corrente real pela maré.
 Se uma linha cruza o limite ou tem extremidades sem avanço na projeção, ela para;
 isso pode deixar lacunas na animação mesmo onde há calha desenhada.
@@ -68,4 +68,11 @@ inverte a ordem dos pontos da calha. A autorização agora usa o avanço
 das extremidades do way já orientado, mantendo todos os vértices aquém
 do limite conservador da foz. Ways sem avanço entre extremos continuam
 parados. A orientação ainda é uma aproximação geométrica, não medição
-da corrente. Teste cobre curva, way invertido e bloqueio após Brusque.
+da corrente. Teste cobre curva, way invertido e bloqueio na cidade da foz.
+
+## Trecho de Brusque — 13/09/2026
+
+O trecho associado a Brusque pode mostrar ondas ilustrativas até a âncora
+de Itajaí. Segmentos atribuídos a Itajaí continuam parados, assim como
+canais sem autorização. A cor permanece a faixa já calculada; não se
+infere corrente real, velocidade ou limite físico do estuário.
