@@ -1715,3 +1715,10 @@ Permanece o bloqueio conservador da foz; ver `docs/ondas-neutras.md`.
 
 - Ondas ilustrativas habilitadas no trecho de Brusque no Mirim; segmentos
   atribuídos à cidade da foz continuam parados (`docs/ondas-neutras.md`).
+
+### Referência visual DC-11 no monitor
+O traçado do Açu a jusante de Santa Regina usa a faixa da DC-11, sem
+transferir níveis ou cotas aos demais pinos. Limite cartográfico aproximado
+pela espinha do mapa; não é mancha de inundação. Sem faixa válida fica cinza;
+na reprodução histórica a referência não é aplicada. Mirim, canais e mar
+continuam independentes.

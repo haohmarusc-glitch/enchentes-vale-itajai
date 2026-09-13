@@ -14,6 +14,7 @@
  *  - o MAR na foz é colorido pela MARÉ, escala azul PRÓPRIA, jamais a de cheia
  *    (maré alta não é cheia; ela trava o escoamento).
  */
+import type { ReguaNoMapa } from './reguasNoMapa'
 import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
@@ -288,6 +289,7 @@ export function construirCena(
    * tiles do fundo crescem juntos — nada aqui é bitmap esticado.
    */
   vista?: Vista,
+  referenciaDc11?: ReguaNoMapa,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -348,6 +350,13 @@ export function construirCena(
     const limiteId = rio.rioId === 'itajai-acu' ? 'ilhota' : rio.rioId === 'itajai-mirim' ? 'itajai' : null
     const limiteIdx = ancorasQuePintam.findIndex(a => a.cidade.id === limiteId)
     const limiteFluxo = limiteIdx >= 0 ? cumEspinha[limiteIdx]! : -1
+    // Referência visual exclusiva do Açu: não transfere nível/cota aos pinos.
+    // Usa a mesma projeção da espinha do motor; limite cartográfico aproximado.
+    const dc11 = rio.rioId === 'itajai-acu' && !leituraNaHora &&
+      referenciaDc11?.codigo === 'DC-11' && referenciaDc11.cidade === 'itajai'
+      ? referenciaDc11 : undefined
+    const inicioDc11 = dc11 && espinha.length >= 2
+      ? progressoNaEspinha(espinha, cumEspinha, [dc11.lon, dc11.lat]) : Infinity
     const ancoraEm = (p: LonLat) =>
       ancorasQuePintam.length === 0 ? null : ancorasQuePintam[trechoDoPonto(espinha, p)]!
     const faixaEm = (p: LonLat): Faixa => ancoraEm(p)?.faixa ?? 'sem-dado' 
@@ -376,7 +385,13 @@ export function construirCena(
         (seq[i - 1]![0] + seq[i]![0]) / 2,
         (seq[i - 1]![1] + seq[i]![1]) / 2,
       ]
-      const faixaAresta = (i: number): Faixa => faixaEm(meioDaAresta(i))
+      const faixaAresta = (i: number): Faixa => {
+        const p = meioDaAresta(i)
+        if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) {
+          return dc11.faixa ?? 'sem-dado'
+        }
+        return faixaEm(p)
+      }
       const cidadeAresta = (i: number): string | null =>
         ancoraEm(meioDaAresta(i))?.cidade.id ?? null
       // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
