@@ -1280,7 +1280,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           {legendaAberta ? (
             <>
           <p className={estilos.legendaNota}>No Itajaí-Açu, de Santa Regina até a foz, a cor do traçado é referência visual da DC-11. Não indica nível local, ruas alagadas nem classificação das outras réguas. Na reprodução histórica essa referência fica desativada.</p>
-          <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Trechos sem orientação confirmada e a aproximação à foz ficam parados.</p>
+          <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Movimento ilustrativo em direção à foz; não representa a corrente real, que pode variar com a maré. Trechos sem orientação definida ficam parados.</p>
           <button type="button" className={estilos.botaoLegenda}
             aria-pressed={animacoesPausadas}
             onClick={() => setAnimacoesPausadas(v => !v)}>

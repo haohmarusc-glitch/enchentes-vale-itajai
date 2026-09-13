@@ -38,16 +38,17 @@ test('ambos os efeitos obedecem à mesma autorização, inclusive no cinza', () 
   }
 })
 
-test('cena neutra autoriza montante orientada, bloqueia foz e afluente sem âncoras', () => {
+test('Açu anima além de Ilhota até a extremidade do traçado, sem animar afluentes', () => {
   globalThis.getComputedStyle=(()=>({getPropertyValue:()=>''})) as unknown as typeof getComputedStyle
   const cidades=['taio','ilhota','itajai'].map((id,i)=>({id,nome:id,coordenadas:[-27,-49+i*0.01],cotas_m:{}}))
   const rios=[{rioId:'itajai-acu',cidades,coords:[
     [[-49,-27],[-48.995,-27],[-48.99,-27]],
     [[-48.99,-27],[-48.98,-27]],
+    [[-48.98,-27],[-48.97,-27]],
   ]},{rioId:'ribeirao-murta',cidades:[],coords:[[[-49,-27],[-48.98,-27]]]}]
   const cena=construirCena({} as Element,rios as never,{leituras:[]} as never,new Date(),800,600,null)
   assert.ok(cena.trechos.some(t=>t.faixa==='sem-dado'&&t.animacao==='direcional'))
-  assert.ok(cena.trechos.some(t=>t.rioId==='itajai-acu'&&t.animacao==='parada'))
+  assert.ok(cena.trechos.filter(t=>t.rioId==='itajai-acu').every(t=>t.animacao==='direcional'))
   assert.ok(cena.trechos.filter(t=>t.rioId==='ribeirao-murta').every(t=>t.animacao==='parada'))
 })
 

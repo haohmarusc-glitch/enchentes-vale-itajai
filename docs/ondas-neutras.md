@@ -76,3 +76,10 @@ O trecho associado a Brusque pode mostrar ondas ilustrativas até a âncora
 de Itajaí. Segmentos atribuídos a Itajaí continuam parados, assim como
 canais sem autorização. A cor permanece a faixa já calculada; não se
 infere corrente real, velocidade ou limite físico do estuário.
+
+### Açu até a foz — 13/09/2026
+Removido o bloqueio visual em Ilhota. A espinha de movimento do Açu
+se prolonga até a extremidade leste do traçado cadastrado, sem alterar
+a espinha de cores, a referência DC-11 ou as réguas. Movimento ilustrativo
+constante: a corrente real pode variar com a maré. Canais sem orientação
+permanecem parados. Esta regra substitui o limite anterior em Ilhota.
