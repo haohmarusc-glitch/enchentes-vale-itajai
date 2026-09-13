@@ -50,3 +50,20 @@ test('cena neutra autoriza montante orientada, bloqueia foz e afluente sem ânco
   assert.ok(cena.trechos.some(t=>t.rioId==='itajai-acu'&&t.animacao==='parada'))
   assert.ok(cena.trechos.filter(t=>t.rioId==='ribeirao-murta').every(t=>t.animacao==='parada'))
 })
+
+
+test('meandro do Mirim anima sem exigir projeção crescente em cada vértice', () => {
+  globalThis.getComputedStyle=(()=>({getPropertyValue:()=>''})) as unknown as typeof getComputedStyle
+  const cidades=['vidal-ramos','brusque','itajai'].map((id,i)=>({id,nome:id,coordenadas:[-27,-49+i*0.02],cotas_m:{}}))
+  const curva=[[-49,-27],[-48.99,-27.005],[-48.995,-27.007],[-48.98,-27]]
+  const foz=[[-48.98,-27],[-48.96,-27]]
+  const criar=(coords:number[][][])=>construirCena({} as Element,[{rioId:'itajai-mirim',cidades,coords}] as never,{leituras:[]} as never,new Date(),800,600,null)
+  const direta=criar([curva,foz])
+  const invertida=criar([[...curva].reverse(),foz])
+  assert.ok(direta.trechos.some(t=>t.animacao==='direcional'))
+  assert.deepEqual(direta.trechos.map(t=>[t.pts,t.animacao]),invertida.trechos.map(t=>[t.pts,t.animacao]))
+  assert.ok(direta.trechos.filter(t=>t.cidadeId==='brusque').every(t=>t.animacao==='parada'))
+  // Se as extremidades não permitem determinar direção, não autorizar.
+  const fechada=criar([[[-49,-27],[-48.995,-27.005],[-49,-27]],foz])
+  assert.ok(fechada.trechos.every(t=>t.animacao==='parada'))
+})

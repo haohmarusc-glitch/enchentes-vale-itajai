@@ -363,12 +363,15 @@ export function construirCena(
         const pb = progressoNaEspinha(espinha, cumEspinha, linha[linha.length - 1]!)
         if (pb < pa) seq = [...linha].reverse()
       }
+      // A orientação é do way inteiro: um meandro pode recuar na projeção
+      // da espinha sem inverter o sentido ao longo da calha. Exigir avanço
+      // em cada vértice interrompia ondas em curvas legítimas.
       // Uma linha inteira que cruza o limite fica parada. Não extrapolar direção
       // nos ways da foz nem nos afluentes ainda sem âncoras verificadas.
       const progresso = seq.map(p => progressoNaEspinha(espinha, cumEspinha, p))
       const orientada = espinha.length >= 2 && limiteFluxo > 0 &&
         progresso[progresso.length - 1]! > progresso[0]! + 1e-9 &&
-        progresso.every((p, i) => p <= limiteFluxo && (i === 0 || p >= progresso[i - 1]! - 1e-9))
+        progresso.every(p => p <= limiteFluxo)
       const meioDaAresta = (i: number): LonLat => [
         (seq[i - 1]![0] + seq[i]![0]) / 2,
         (seq[i - 1]![1] + seq[i]![1]) / 2,
