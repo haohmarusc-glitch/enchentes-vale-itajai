@@ -87,6 +87,58 @@ class TesteSuspeitos(unittest.TestCase):
         self.assertEqual(eventos[0].suspeitos, [])
 
 
+class TestePrimariaEResgateSaoUmaReguaSo(unittest.TestCase):
+    """
+    Blumenau chega DUAS vezes na série — Defesa Civil de Itajaí e, como resgate,
+    AlertaBlu com `resgate_de: "Blumenau"` — e é UMA régua (a ANA 83800002).
+
+    Contadas por título viram "duas réguas na cidade", o script recusa a cota de
+    `estacoes.json` (que é por cidade) e a maior cheia já medida pelo projeto
+    (7,87 m em 12/09/2026, faixa de alerta) não gera proposta nenhuma. Foi o que
+    aconteceu em 13/09/2026. `comum.regua_de` é a resposta única que o vigia, o
+    bot e o site já usam.
+    """
+
+    def setUp(self):
+        self.dir = tempfile.TemporaryDirectory()
+        caminho = Path(self.dir.name) / "2026-09.ndjson"
+        with open(caminho, "w", encoding="utf-8") as f:
+            for hora, nivel in (("01:05", 6.90), ("02:15", 7.87), ("03:05", 7.40)):
+                f.write(json.dumps({
+                    "estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+                    "medido_em": f"2026-09-12T{hora}:00", "nivel_m": nivel,
+                }, ensure_ascii=False) + "\n")
+            for hora, nivel in (("01:00", 6.88), ("02:00", 7.65)):
+                f.write(json.dumps({
+                    "estacao": "Blumenau (AlertaBlu)", "rio": "itajai-acu", "cidade": "blumenau",
+                    "medido_em": f"2026-09-12T{hora}:00", "nivel_m": nivel,
+                    "resgate_de": "Blumenau",
+                }, ensure_ascii=False) + "\n")
+        self.patch = unittest.mock.patch("extrair_picos.SERIE", Path(self.dir.name))
+        self.patch.start()
+
+    def tearDown(self):
+        self.patch.stop()
+        self.dir.cleanup()
+
+    def test_o_resgate_cai_na_regua_da_primaria(self):
+        grupos = ler_serie(None)
+        self.assertEqual(list(grupos), ["Blumenau"], "primária e resgate são uma régua só")
+        self.assertEqual(len(grupos["Blumenau"]["leituras"]), 5)
+
+    def test_a_cidade_conta_uma_regua_e_a_cota_dela_vale(self):
+        grupos = ler_serie(None)
+        limiar, _ = limiar_da_estacao("Blumenau", "itajai-acu", "blumenau", len(grupos))
+        self.assertIsNotNone(limiar, "com uma régua só, a cota da cidade se aplica")
+
+    def test_quem_publicou_nao_se_perde(self):
+        grupo = ler_serie(None)["Blumenau"]
+        self.assertEqual(
+            sorted({leitura.estacao for leitura in grupo["leituras"]}),
+            ["Blumenau", "Blumenau (AlertaBlu)"],
+        )
+
+
 class TesteAgrupamentoPorRegua(unittest.TestCase):
     """
     Leituras reais da Defesa Civil de Itajaí, colhidas em 30/08/2026 às 16h.

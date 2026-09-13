@@ -29,7 +29,7 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from comum import DADOS, cota_da_estacao, cota_de_referencia, grava_json, le_json
+from comum import DADOS, cota_da_estacao, cota_de_referencia, grava_json, le_json, regua_de
 
 SERIE = DADOS / "tempo-real"
 
@@ -198,13 +198,23 @@ def arquivos_da_serie(mes: str | None) -> list[Path]:
 
 def ler_serie(mes: str | None) -> dict[str, dict]:
     """
-    Leituras agrupadas por ESTAÇÃO — nunca por cidade.
+    Leituras agrupadas por RÉGUA — nunca por cidade, nunca por linha.
 
     Itajaí tem cinco réguas só no Itajaí-Mirim (DC-03 a DC-06 e DC-10), com
     zeros diferentes: numa mesma hora elas leem 0,92 m, 1,14 m, 1,07 m, 0,97 m
     e 4,82 m. Juntar isso num balde por cidade e chamar a maior de "pico" seria
     comparar réguas — exatamente o que este projeto avisa em toda tela para
     ninguém fazer.
+
+    Do outro lado está o erro oposto, e ele mordeu na cheia de 11–12/09/2026: a
+    régua de Blumenau chega DUAS vezes na série — pela Defesa Civil de Itajaí e,
+    como resgate, pelo AlertaBlu, que carrega `resgate_de: "Blumenau"`. Contadas
+    por título, viram "duas réguas na cidade" e o script RECUSA a cota de
+    `estacoes.json`, que é por cidade — então a maior cheia já medida pelo
+    projeto (7,87 m, faixa de alerta) não gerou proposta nenhuma. `comum.regua_de`
+    é a resposta única que o vigia, o bot e o site já usam; aqui também.
+    `Leitura.estacao` continua sendo o título de quem publicou, para
+    `Evento.estacoes` mostrar as duas fontes.
     """
     por_estacao: dict[str, dict] = {}
     for arquivo in arquivos_da_serie(mes):
@@ -225,7 +235,7 @@ def ler_serie(mes: str | None) -> dict[str, dict]:
                     continue  # estação não mapeada para uma cidade do projeto
                 estacao = d.get("estacao") or "?"
                 grupo = por_estacao.setdefault(
-                    estacao, {"rio": d["rio"], "cidade": d["cidade"], "leituras": []}
+                    regua_de(d) or estacao, {"rio": d["rio"], "cidade": d["cidade"], "leituras": []}
                 )
                 grupo["leituras"].append(Leitura(quando, nivel, estacao))
     for grupo in por_estacao.values():
