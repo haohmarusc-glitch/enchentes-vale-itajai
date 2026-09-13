@@ -9,8 +9,8 @@
  *
  * REGRAS que este módulo carrega (não são detalhe de desenho):
  *  - cor = faixa da régua da cidade, NUNCA metro entre cidades;
- *  - trecho sem régua que o pinte = cinza, apagado e PARADO (não se anima uma
- *    água que não se mede — `VEL_FAIXA['sem-dado'] = 0`);
+ *  - cinza não afirma nível; pode ter fluxo ilustrativo onde há orientação;
+ *  - direção incerta e aproximação ao estuário ficam paradas, em ambas as ondas;
  *  - o MAR na foz é colorido pela MARÉ, escala azul PRÓPRIA, jamais a de cheia
  *    (maré alta não é cheia; ela trava o escoamento).
  */
@@ -126,6 +126,8 @@ const VEL_PX = 28 // px/s visuais, independentes de nível, chuva ou maré
 
 /** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
 export interface Trecho {
+  /** Independente da faixa: ausência desta autorização mantém ambos os efeitos parados. */
+  animacao?: 'direcional' | 'parada'
   pts: [number, number][]
   faixa: Faixa
   cum: number[]
@@ -341,6 +343,11 @@ export function construirCena(
     })
     const espinha = ancorasQuePintam.map((a) => a.ponto)
     const cumEspinha = acumuladoEspinha(espinha)
+    // Limite conservador do desenho, NÃO delimitação hidrológica do estuário.
+    // Não representamos direção de corrente a jusante destas âncoras.
+    const limiteId = rio.rioId === 'itajai-acu' ? 'ilhota' : rio.rioId === 'itajai-mirim' ? 'brusque' : null
+    const limiteIdx = ancorasQuePintam.findIndex(a => a.cidade.id === limiteId)
+    const limiteFluxo = limiteIdx >= 0 ? cumEspinha[limiteIdx]! : -1
     const ancoraEm = (p: LonLat) =>
       ancorasQuePintam.length === 0 ? null : ancorasQuePintam[trechoDoPonto(espinha, p)]!
     const faixaEm = (p: LonLat): Faixa => ancoraEm(p)?.faixa ?? 'sem-dado' 
@@ -356,6 +363,12 @@ export function construirCena(
         const pb = progressoNaEspinha(espinha, cumEspinha, linha[linha.length - 1]!)
         if (pb < pa) seq = [...linha].reverse()
       }
+      // Uma linha inteira que cruza o limite fica parada. Não extrapolar direção
+      // nos ways da foz nem nos afluentes ainda sem âncoras verificadas.
+      const progresso = seq.map(p => progressoNaEspinha(espinha, cumEspinha, p))
+      const orientada = espinha.length >= 2 && limiteFluxo > 0 &&
+        progresso[progresso.length - 1]! > progresso[0]! + 1e-9 &&
+        progresso.every((p, i) => p <= limiteFluxo && (i === 0 || p >= progresso[i - 1]! - 1e-9))
       const meioDaAresta = (i: number): LonLat => [
         (seq[i - 1]![0] + seq[i]![0]) / 2,
         (seq[i - 1]![1] + seq[i]![1]) / 2,
@@ -378,6 +391,7 @@ export function construirCena(
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
         trechos.push({
+          animacao: orientada ? 'direcional' : 'parada',
           pts,
           faixa: cur,
           cum,
@@ -621,6 +635,11 @@ function desenharEtiquetaMare(ctx: CanvasRenderingContext2D, cena: Cena, escala:
 /** Caminhos projetados reutilizados enquanto o enquadramento não muda. */
 const caminhosFluxo = new WeakMap<Trecho, Path2D>()
 
+/** A mesma autorização vale para correnteza e crista; cor nunca autoriza movimento. */
+export function podeAnimarTrecho(t: Trecho): boolean {
+  return t.animacao === 'direcional' && t.pts.length >= 2
+}
+
 /** Fluxo ilustrativo na cor da faixa ao longo da calha, com fase baseada no tempo. */
 export function desenharCorrenteza(
   ctx: CanvasRenderingContext2D,
@@ -634,7 +653,7 @@ export function desenharCorrenteza(
   ctx.setLineDash([14 * escala, 18 * escala])
   ctx.lineDashOffset = -((tempo * VEL_PX * escala) % (32 * escala))
   for (const t of cena.trechos) {
-    if (t.faixa === 'sem-dado' || t.pts.length < 2) continue
+    if (!podeAnimarTrecho(t)) continue
     let path = caminhosFluxo.get(t)
     if (!path) {
       path = new Path2D()
@@ -646,13 +665,14 @@ export function desenharCorrenteza(
     }
     // Halo em duas passadas, sem blur custoso por segmento no celular.
     ctx.strokeStyle = cena.cores[t.faixa]
-    ctx.globalAlpha = 0.18
+    const neutro = t.faixa === 'sem-dado'
+    ctx.globalAlpha = neutro ? 0.08 : 0.18
     ctx.lineWidth = 8 * escala
     ctx.stroke(path)
-    ctx.globalAlpha = 0.58
+    ctx.globalAlpha = neutro ? 0.20 : 0.58
     ctx.lineWidth = 4 * escala
     ctx.stroke(path)
-    ctx.globalAlpha = 0.95
+    ctx.globalAlpha = neutro ? 0.48 : 0.95
     ctx.lineWidth = 1.8 * escala
     ctx.stroke(path)
   }
@@ -676,7 +696,7 @@ export function desenharOnda(
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
   for (const t of cena.trechos) {
-    if (t.pts.length < 2) continue
+    if (!podeAnimarTrecho(t)) continue
     let d = t.progMid - frente
     if (d > 0.5) d -= 1
     else if (d < -0.5) d += 1

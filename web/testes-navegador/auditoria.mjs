@@ -50,6 +50,25 @@ try {
  await page.keyboard.press('Escape')
  await page.getByRole('button',{name:'Tela cheia',exact:true}).waitFor()
  console.log('OK: referência C18 e ampliação mesmo sem Fullscreen API')
+ await page.getByRole('button',{name:'abrir',exact:true}).click()
+ await page.evaluate(()=>{
+   window.tracosAuditoria=0
+   const stroke=CanvasRenderingContext2D.prototype.stroke
+   CanvasRenderingContext2D.prototype.stroke=function(...args){
+     if(this.canvas.isConnected) window.tracosAuditoria++
+     return stroke.apply(this,args)
+   }
+ })
+ await page.getByRole('button',{name:'Pausar animações',exact:true}).click()
+ await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))))
+ const parado=await page.evaluate(()=>window.tracosAuditoria)
+ await page.waitForTimeout(200)
+ assert.equal(await page.evaluate(()=>window.tracosAuditoria),parado)
+ await page.getByRole('button',{name:'Retomar animações',exact:true}).click()
+ await page.waitForTimeout(200)
+ assert.ok(await page.evaluate(()=>window.tracosAuditoria)>parado)
+ console.log('OK: pausa interrompe os desenhos; retomar reativa as ondas')
+
  await abrir('/municipal/ascurra')
  assert.equal(await page.getByRole('button',{name:'Itajaí',exact:true}).count(),0)
  await page.getByText('8,94 m · Atenção',{exact:false}).waitFor()
