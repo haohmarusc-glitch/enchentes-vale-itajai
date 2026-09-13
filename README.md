@@ -1708,3 +1708,7 @@ Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timb�
 - **Concluído (12/09/2026):** ponte de Gaspar pelo PC via SSH, com identidade e validade verificadas e integração à coleta normal da VPS. [Operação](docs/gaspar-ponte-pc.md). O transporte não renova a idade da medição municipal.
 
 - **Concluído (12/09/2026):** ondas e correnteza compartilham autorização por trecho; cinza pode indicar apenas sentido ilustrativo, sem classificação. Direção incerta e aproximação ao estuário permanecem paradas. [Regras e limites](docs/ondas-neutras.md).
+
+### Ondas nos meandros (13/09/2026)
+A animação acompanha curvas sem exigir avanço de cada vértice na espinha.
+Permanece o bloqueio conservador da foz; ver `docs/ondas-neutras.md`.

@@ -20,13 +20,13 @@ Cor e movimento são independentes:
 
 Nesta versão, somente os traçados existentes do Açu e Mirim podem receber
 autorização. A linha precisa ter pelo menos duas âncoras no eixo, avanço positivo
-entre suas extremidades e progresso não decrescente ao longo dos pontos,
+entre suas extremidades,
 usando a orientação montante–jusante já empregada pelo motor.
 
 Adotamos limites **conservadores de apresentação**, não limites oficiais do
 estuário: Ilhota no Açu e Brusque no Mirim. Linhas que ultrapassam essas âncoras
 ficam inteiramente paradas. Não inferimos o sentido da corrente real pela maré.
-Se uma linha cruza o limite ou tem orientação ambígua na projeção, ela para;
+Se uma linha cruza o limite ou tem extremidades sem avanço na projeção, ela para;
 isso pode deixar lacunas na animação mesmo onde há calha desenhada.
 
 Esta verificação geométrica não é um modelo hidráulico. Sua finalidade é
@@ -60,3 +60,12 @@ tenha cobertura ou animação.
 - Build TypeScript/Vite e suíte de testes do site.
 
 Não houve medição de FPS; não se promete 60 FPS em todos os aparelhos.
+
+## Ajuste dos meandros — 13/09/2026
+
+A projeção intermediária na espinha pode recuar nas curvas; isso não
+inverte a ordem dos pontos da calha. A autorização agora usa o avanço
+das extremidades do way já orientado, mantendo todos os vértices aquém
+do limite conservador da foz. Ways sem avanço entre extremos continuam
+parados. A orientação ainda é uma aproximação geométrica, não medição
+da corrente. Teste cobre curva, way invertido e bloqueio após Brusque.
