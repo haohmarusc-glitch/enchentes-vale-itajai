@@ -262,11 +262,17 @@ def baixar_nivel_gaspar(gravar: bool) -> list[dict]:
     Respeita o `robots.txt` antes de buscar, como o coletor próprio faz.
     Falha nunca derruba a coleta — é uma cidade a mais, não a fonte principal.
     """
+    from gaspar_pc import ler
+
+    ponte = ler()
+    if ponte:
+        print('Gaspar: leitura municipal recebida pelo PC, com horário original.')
+        return [ponte]
     try:
         import coleta_gaspar as cg
 
         if not cg.permitido():
-            print("aviso: robots.txt de Gaspar não permite — pulado.", file=sys.stderr)
+            print("aviso: acesso ao robots.txt de Gaspar não confirmado ou não permitido — pulado.", file=sys.stderr)
             return []
         try:
             analise = cg.analisar(cg.baixar(cg.URL))
