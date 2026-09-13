@@ -1737,3 +1737,5 @@ se prolonga até a extremidade leste do traçado cadastrado, sem alterar
 a espinha de cores, a referência DC-11 ou as réguas. Movimento ilustrativo
 constante: a corrente real pode variar com a maré. Canais sem orientação
 permanecem parados. Esta regra substitui o limite anterior em Ilhota.
+
+O panorama de `alerta_cotas.py --seco` conta apenas leituras com horário válido e dentro da janela de atualização, usando a mesma seleção do disparador. Fontes antigas aparecem como aviso bloqueado, sem impedir a avaliação das demais réguas.

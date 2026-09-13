@@ -40,6 +40,28 @@ def payload(nivel, estacao="Rio do Sul Estação MKS", cidade="rio-do-sul",
     }
 
 
+class TestPanoramaAtual(unittest.TestCase):
+    def test_antiga_nao_conta_como_vigiada_e_preserva_estado(self):
+        dados = payload(5.8, medido="2026-08-29T00:00:00")
+        atuais, recusas = alerta_cotas.resolver_atuais(dados, AGORA)
+        self.assertEqual(atuais, [])
+        self.assertIn("leitura antiga", recusas[0])
+        anterior = {"Rio do Sul Estação MKS": {"faixa": "atencao"}}
+        avisos, estado, motivos = decidir(dados, anterior, AGORA)
+        self.assertEqual(avisos, [])
+        self.assertEqual(estado, anterior)
+        self.assertEqual(motivos, recusas)
+
+    def test_fonte_recente_continua_vigiada_com_outra_antiga(self):
+        dados = payload(5.8, medido="2026-08-29T00:00:00")
+        dados["leituras"] += payload(6.2, cidade="blumenau", estacao="Blumenau")["leituras"]
+        atuais, recusas = alerta_cotas.resolver_atuais(dados, AGORA)
+        self.assertEqual([x["leitura"]["cidade"] for x in atuais], ["blumenau"])
+        self.assertEqual(len(recusas), 1)
+        avisos, _, _ = decidir(dados, {}, AGORA)
+        self.assertEqual(len(avisos), 1)
+
+
 class TestFaixa(unittest.TestCase):
     def test_a_faixa_e_a_mais_alta_alcancada(self):
         self.assertEqual(faixa_de(3.0, COTAS), "normal")
