@@ -1712,3 +1712,6 @@ Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timb�
 ### Ondas nos meandros (13/09/2026)
 A animação acompanha curvas sem exigir avanço de cada vértice na espinha.
 Permanece o bloqueio conservador da foz; ver `docs/ondas-neutras.md`.
+
+- Ondas ilustrativas habilitadas no trecho de Brusque no Mirim; segmentos
+  atribuídos à cidade da foz continuam parados (`docs/ondas-neutras.md`).

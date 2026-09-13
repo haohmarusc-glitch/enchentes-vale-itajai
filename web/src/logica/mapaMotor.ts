@@ -345,7 +345,7 @@ export function construirCena(
     const cumEspinha = acumuladoEspinha(espinha)
     // Limite conservador do desenho, NÃO delimitação hidrológica do estuário.
     // Não representamos direção de corrente a jusante destas âncoras.
-    const limiteId = rio.rioId === 'itajai-acu' ? 'ilhota' : rio.rioId === 'itajai-mirim' ? 'brusque' : null
+    const limiteId = rio.rioId === 'itajai-acu' ? 'ilhota' : rio.rioId === 'itajai-mirim' ? 'itajai' : null
     const limiteIdx = ancorasQuePintam.findIndex(a => a.cidade.id === limiteId)
     const limiteFluxo = limiteIdx >= 0 ? cumEspinha[limiteIdx]! : -1
     const ancoraEm = (p: LonLat) =>
@@ -394,7 +394,7 @@ export function construirCena(
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
         trechos.push({
-          animacao: orientada ? 'direcional' : 'parada',
+          animacao: orientada && curCidade !== 'itajai' ? 'direcional' : 'parada',
           pts,
           faixa: cur,
           cum,
