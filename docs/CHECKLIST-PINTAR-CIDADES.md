@@ -57,6 +57,30 @@ régua da leitura.
 - [ ] D5 · Gaspar: 1,74 m às 05:53 é a única leitura que a VPS conseguiu; o navegador viu 2,58 m às 19:07 (NORMALIDADE). Sem série.
 - [ ] D6 · Registrar as cristas do evento em `enchentes.json` só se o Jefferson decidir; por ora ficam nos brutos.
 
+## E. Cheia de 11–12/09/2026 — a maior observada até aqui
+
+Registrada em 13/09/2026 19:00 BRT, três dias depois, porque ninguém a tinha registrado.
+Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; análise em
+`docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
+
+- [x] E1 · Cristas: **Blumenau 7,87 m** (12/09 02:15, ALERTA, 13 cm abaixo da emergência; AlertaBlu
+  7,86 m às 05:00 — 1 cm de diferença entre as duas fontes), **Rio do Sul 5,89 m** (11/09 23:12,
+  ALERTA), **Taió 6,95 m** (12/09 03:43, 5 cm abaixo da atenção), **Brusque 4,62 m** (12/09 01:35,
+  atenção), Itajaí DC-10 8,08 m e DC-11 4,37 m (sem cotas).
+- [x] E2 · Estado em 13/09 19:00: **Rio do Sul 5,31 m ainda em atenção** (197 de 197 leituras da
+  janela acima de 4,50); **Blumenau 4,34 m ainda em atenção**; Taió 4,46 m, Brusque 1,77 m e Gaspar
+  2,72 m abaixo das faixas.
+- [ ] E3 · **Extrair o evento inteiro do `data/tempo-real/2026-09.ndjson` da VPS** — a janela publicada
+  é de 48 h e já perdeu a subida. Comando em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
+- [ ] E4 · Decidir se as cristas entram em `enchentes.json` (picos de 2026 com régua nomeada nos dois
+  lados; decisão do Jefferson).
+- [ ] E5 · Conferir o `estado_alertas.json` da VPS: Blumenau em alerta é o caso que o bot existe para
+  cobrir.
+- [ ] E6 · Indaial: uma única leitura municipal no período (4,10 m em 12/09 22:00, acima do alerta
+  municipal de 4,00) e nada depois. Conferir se a coleta parou ou se a fonte publica esparso.
+- [x] E7 · NÃO serve para calibrar trânsito: a crista de Rio do Sul (11/09 23:12) vem ANTES da de Taió
+  (12/09 03:43), que é montante — chuva na bacia inteira, como em 10/09.
+
 ## Histórico
 
 - 10/09/2026 · lista criada; medição 57% / 27%; C1 e C2 fechados.
@@ -70,3 +94,4 @@ régua da leitura.
 - 10/09/2026 · B1/C3 concluídos: oito rascunhos C15–C22. B2/B9 corrigidos com evidências de envio do Gmail; A4/A6/A11 aguardam resposta. Nenhuma cota alterada.
 
 - 10/09/2026 ~22:11 BRT · B3 conferido diretamente no PC; seis envios registrados; C21 excluído conforme orientação do usuário; A9 corrigido conforme cadastro e lógica de maré. Ver verificação das réguas.
+- 13/09/2026 19:00 BRT · cheia de 11–12/09 registrada três dias depois (bloco E): Blumenau 7,87 m em alerta, Rio do Sul 5,89 m em alerta, ainda em atenção nos dois. Evidência congelada antes de a janela de 48 h rolar.
