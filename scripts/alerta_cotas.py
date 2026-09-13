@@ -369,6 +369,21 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
     return vigiadas, recusas
 
 
+def resolver_atuais(dados: dict, agora: datetime) -> tuple[list[dict], list[str]]:
+    """Mesma seleção temporal para o disparador e seu panorama de cobertura."""
+    candidatas, recusas = resolver(dados)
+    atuais = []
+    for item in candidatas:
+        leitura = item["leitura"]
+        idade = idade_min(leitura.get("medido_em"), agora)
+        limite = 120 if leitura.get("cidade") == "blumenau" else IDADE_MAXIMA_MIN
+        if idade is None or idade < -15 or idade > limite:
+            recusas.append(f"{leitura.get('estacao') or ''}: horário ausente, inválido, futuro ou leitura antiga; aviso bloqueado")
+        else:
+            atuais.append(item)
+    return atuais, recusas
+
+
 def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dict, list[str]]:
     """
     O que avisar agora. Função pura: recebe o relógio, não olha para ele.
@@ -376,7 +391,7 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
     Devolve (avisos, estado novo, recusas). Recusa é estação que ficou de fora
     e por quê — para aparecer no --seco em vez de sumir em silêncio.
     """
-    vigiadas, recusas = resolver(dados)
+    vigiadas, recusas = resolver_atuais(dados, agora)
     avisos: list[dict] = []
     novo = dict(estado)
 
@@ -388,11 +403,6 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         # antigo ficaria órfão — a travessia seria avisada de novo. Para toda
         # régua sem resgate, `regua_de` é o próprio título: nada muda.
         chave_estado = regua_de(leitura)
-        idade = idade_min(leitura.get("medido_em"), agora)
-        limite = 120 if leitura.get("cidade") == "blumenau" else IDADE_MAXIMA_MIN
-        if idade is None or idade < -15 or idade > limite:
-            recusas.append(f"{titulo}: horário ausente, inválido, futuro ou leitura antiga; aviso bloqueado")
-            continue  # Não transformar dado rejeitado em novo estado de faixa.
         nivel = leitura["nivel_m"]
         antes = novo.get(chave_estado) or {}
         faixa_antes = antes.get("faixa", "normal")
@@ -508,7 +518,7 @@ def main() -> int:
     # tinha como saber que Rio do Sul, Brusque e Blumenau estavam cobertos —
     # só que Itajaí não estava. Num aviso de cheia, saber o alcance do que se
     # vigia é tão importante quanto o aviso.
-    vigiadas, _ = resolver(dados)
+    vigiadas, _ = resolver_atuais(dados, agora)
     print(f"vigiando {len(vigiadas)} estação(ões); {len(recusas)} de fora.\n")
     for item in sorted(vigiadas, key=lambda i: str(i["leitura"].get("cidade"))):
         leitura, cotas, faixa = item["leitura"], item["cotas"], item["faixa"]
@@ -530,7 +540,7 @@ def main() -> int:
     if recusas:
         print()
     for r in recusas:
-        print(f"  sem cota, sem aviso — {r}")
+        print(f"  aviso bloqueado — {r}")
 
     if not avisos:
         print("\nnenhuma mudança de faixa.")
