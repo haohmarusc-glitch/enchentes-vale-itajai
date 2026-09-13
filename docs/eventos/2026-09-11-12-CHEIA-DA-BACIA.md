@@ -89,35 +89,61 @@ exatamente 02:00 + 3 h. A tabela lá em cima traz o horário como veio do repass
 - **Qualquer tempo de trânsito que use Blumenau** sai 3 h errado, e Blumenau é o meio do Açu.
 - **Cristas já registradas** com o relógio do repasse (esta e a de 10/09) carregam o mesmo desvio.
 
-### O teste que fecha isso em dois minutos
+### ✅ CONFIRMADO em 13/09/2026, 20:22 BRT — o carimbo errado nasce fora do projeto
 
-Ler as duas fontes no MESMO minuto e comparar valor e carimbo:
+As duas fontes lidas no mesmo minuto, na VPS:
 
 ```
-cd /opt/enchentes-vale-itajai
-date '+%Y-%m-%d %H:%M %Z'
-python3 -c "import json,requests;d=requests.get('https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json',headers={'User-Agent':'enchentes-vale-itajai'},verify='scripts/certs/blumenau.pem',timeout=30).json();print('AlertaBlu bruto:', d['niveis'][-1])"
-python3 scripts/coleta_itajai.py | grep -i blumenau
+2026-09-13 23:22 UTC                       (= 20:22 em Brasília)
+AlertaBlu bruto: {'nivel': 4.29, 'horaLeitura': '2026-09-13T23:00:00Z'}
+  4.29 m  2026-09-13T17:15:00  Blumenau
+  4.01 m  2026-09-13T20:10:00  DC-10 Rio Itajaí-Mirim – Bairro Limoeiro
 ```
 
-Se o AlertaBlu trouxer, por exemplo, `23:00Z = X` e o repasse disser `X` com carimbo de 20:00, a
-conclusão acima está confirmada e o conserto é no `coleta_itajai.py` (ou no pedido à Defesa Civil de
-Itajaí, se o carimbo vier errado da própria página).
+Três fatos em quatro linhas:
+
+1. **Mesmo valor, dois carimbos.** 4,29 m nas duas fontes. O AlertaBlu diz `23:00Z`, que é 20:00 de
+   Brasília — 22 minutos antes da coleta. O repasse diz **17:15**, três horas atrás.
+2. **Não é o nosso coletor.** A linha do DC-10 saiu da MESMA página, no MESMO `parse()`, com 12 minutos
+   de idade. Se o `coleta_itajai.py` subtraísse 3 h de alguma coisa, o DC-10 teria saído às 17:10.
+   Só a linha de Blumenau está fora de fase — como Brusque já havia mostrado em 10/09.
+3. **O valor está certo; o rótulo é que mente.** 4,29 m é o rio agora, não uma leitura velha de 3 h.
+
+**Medida fina do deslocamento.** Interpolando a série do AlertaBlu no instante de cada um dos 230
+pontos do repasse na cheia (10 a 12/09), e somando um deslocamento ao rótulo do repasse:
+
+| deslocamento somado ao repasse | pares | diferença média | desvio | maior |
+|---|---:|---:|---:|---:|
+| nenhum | 230 | +0,160 m | 0,550 m | 1,75 m |
+| +2 h 00 | 222 | +0,053 m | 0,179 m | 0,62 m |
+| +2 h 45 | 220 | +0,012 m | 0,045 m | 0,17 m |
+| **+3 h 00** | 218 | **−0,001 m** | **0,010 m** | **0,06 m** |
+| +3 h 15 | 218 | −0,014 m | 0,045 m | 0,17 m |
+| +4 h 00 | 214 | −0,052 m | 0,168 m | 0,62 m |
+
+O mínimo é agudo e cai **exatamente em 3 h 00**: 1 cm de desvio em 218 pares, contra 55 cm sem
+deslocamento. Não é "mais ou menos três horas" — são três horas redondas, o que tem a cara de uma
+conversão de fuso aplicada duas vezes (a hora UTC do AlertaBlu lida como se já fosse local e
+convertida outra vez) na integração que leva o dado de Blumenau para a página de Itajaí.
+
+**Consequência imediata para este documento:** a crista de Blumenau nesta cheia foi por volta das
+**05:00 de 12/09** (7,86 m, pelo relógio do AlertaBlu), não às 02:15. A tabela no alto traz o horário
+como veio do repasse.
+
+**Conserto.** Não é código nosso: o pedido de correção vai à Defesa Civil de Itajaí (ofício **C23**,
+em `docs/oficios-prontos.md`). Enquanto não for corrigido, vale a regra: **nenhum horário de crista de
+Blumenau sai da linha repassada** — sai do AlertaBlu. O valor do repasse continua bom; o relógio, não.
 
 ## O que falta
 
-1. **Extrair o evento completo do ndjson da VPS**, antes que alguém limpe a pasta:
-   ```
-   cd /opt/enchentes-vale-itajai
-   grep -h '"2026-09-1[012]' data/tempo-real/2026-09.ndjson > /tmp/cheia-2026-09-11-12.ndjson
-   wc -l /tmp/cheia-2026-09-11-12.ndjson
-   ```
-   e trazer o arquivo para `data/brutos/`. Com ele sai a subida, a taxa de variação em cm/h e o
-   horário real de cada crista.
+1. ~~**Extrair o evento completo do ndjson da VPS**~~ — feito em 13/09/2026: 4.028 leituras de 19
+   réguas estão em `data/brutos/cheia-2026-09-11-12.ndjson`.
 2. **Decidir se as cristas entram em `enchentes.json`.** São picos de 2026 medidos pela nossa coleta,
    com régua nomeada nos dois lados — o material mais limpo que o projeto tem. Decisão do Jefferson.
 3. **Conferir se o aviso saiu.** Blumenau em alerta é exatamente o caso que o bot existe para cobrir;
    `data/tempo-real/estado_alertas.json` na VPS diz o que ele fez.
-4. **Resolver o desvio de 3 h de Blumenau** (seção acima) antes de usar qualquer horário de crista dela.
+4. ~~**Resolver o desvio de 3 h de Blumenau**~~ — *diagnosticado e confirmado* em 13/09 (seção acima):
+   o carimbo errado vem da página da Defesa Civil de Itajaí, não do projeto. Falta **enviar o ofício
+   C15** e, no código, impedir que o extrator de picos tire horário de crista da linha repassada.
 5. **Indaial**: a leitura municipal de 12/09 22:00 (4,10 m, acima do alerta municipal) é a única que
    chegou. Conferir se a coleta parou ou se a fonte publica esparso.

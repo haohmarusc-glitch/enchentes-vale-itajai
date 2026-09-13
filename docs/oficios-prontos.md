@@ -213,3 +213,43 @@ Fico à disposição para qualquer esclarecimento, e agradeço pelo AlertaBlu, q
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C23 — Defesa Civil de Itajaí: o nível de Blumenau é publicado com carimbo de hora 3 h atrasado (RASCUNHO, falta confirmar o e-mail)
+
+> Por que: medido em 13/09/2026 na série do projeto. A página
+> `defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios` publica o nível de Blumenau com um
+> carimbo de hora exatamente 3 h 00 anterior ao instante real da leitura. O **valor está certo** —
+> o erro é só no horário. Confirmado de três formas: (1) leitura simultânea em 13/09 às 20:22, com
+> 4,29 m carimbado 17:15 na página e o mesmo 4,29 m carimbado 20:00 (23:00Z) no AlertaBlu;
+> (2) 218 pares da cheia de 11–12/09 concordam com desvio de 1 cm quando se soma 3 h ao carimbo da
+> página, contra 55 cm sem o deslocamento; (3) as demais estações da MESMA página (DC-01 a DC-11,
+> Brusque) têm carimbo correto no minuto — é específico da linha de Blumenau.
+> **Não enviar sem o endereço confirmado**: o e-mail da Defesa Civil de Itajaí ainda não foi
+> levantado. Vale procurar no portal da Prefeitura ou ligar para a Defesa Civil municipal.
+> **Relação com o C21** (`oficios-b1-c15-c22.md`), que também é para a Defesa Civil de Itajaí e que o
+> Jefferson decidiu não enviar: o C21 pede a tabela de cotas e faixas das DC-01 a DC-11 — um favor.
+> Este C23 relata um defeito concreto e verificável na página deles, com a medição junto — é outra
+> conversa, e não depende do C21. Se for enviado, dá para anexar as perguntas do C21 no mesmo e-mail;
+> decisão do Jefferson.
+
+**Para:** *(a confirmar — Defesa Civil de Itajaí)*
+**Assunto:** Monitoramento de níveis — horário da leitura de Blumenau está 3 h atrasado
+
+Prezada Defesa Civil de Itajaí,
+
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes nos rios Itajaí-Açu e Itajaí-Mirim, que lê a página de monitoramento de níveis de vocês. Escrevo para relatar um detalhe técnico que encontrei e que pode confundir quem acompanha a página durante uma cheia.
+
+A linha de **Blumenau** aparece com um horário de leitura exatamente **três horas anterior** ao instante real da medição. O valor do nível está correto — é só o horário que sai atrasado.
+
+Em 13/09/2026, às 20h22, a página mostrava para Blumenau **4,29 m com horário de 17h15**. No mesmo minuto, o AlertaBlu, de onde vem essa régua, publicava **os mesmos 4,29 m com horário de 20h00**. Comparando as duas fontes ao longo de toda a cheia de 11 e 12 de setembro, 218 leituras coincidem com diferença média de 1 cm quando se somam 3 horas ao horário da página — e divergem em até 1,75 m quando não se soma.
+
+O detalhe que ajuda a localizar a causa: **todas as outras estações da mesma página estão com o horário certo** — no mesmo instante, o DC-10 do Limoeiro marcava 20h10, doze minutos antes. O desvio aparece apenas na linha de Blumenau, o que sugere que a integração que traz esse dado converte o fuso duas vezes (o AlertaBlu publica em UTC, e uma hora UTC convertida para o horário de Brasília duas vezes fica exatamente 3 h atrás).
+
+O efeito prático é que, numa cheia, a leitura de Blumenau na página aparenta ser velha de três horas quando na verdade é recente — e um pico do rio parece ter acontecido três horas antes do que aconteceu.
+
+Fico à disposição para qualquer esclarecimento, e agradeço pela página, que é a única fonte pública que reúne o Açu, o Mirim e os ribeirões de Itajaí no mesmo lugar.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

@@ -31,7 +31,9 @@ régua da leitura.
 - [x] B3 · Consultado pelo PC em 10/09/2026, aproximadamente 22:11 BRT: NORMALIDADE, 2,58 m de 19:07; chuva atual ausente (`---`). Legenda e diagnóstico em [verificação das réguas](verificacao-reguas-2026-09-10.md). Leitura antiga continua impedindo a cor; cadência e divergência de legendas seguem abertas.
 - [x] B4 · Consultado pelo PC em 10/09/2026 ~22:12 BRT: estação 4 (ANA) publica atenção >4 m/emergência >7 m; estação 79 (DCSC), atenção >3 m/emergência >5 m. São legendas diferentes; não transferir cotas entre elas. Ver [evidências](verificacao-reguas-2026-09-10.md). C13 continua aberto para confirmar a referência correta.
 - [ ] B5 · VPS: `scp` da pasta `historico-dcsc` para `data/series/dcsc-zips/`, consolidador, checagem "IGUAL ao resumo do repo".
-- [ ] B6 · Anexar o script de download do histórico DCSC (PC).
+- [x] B6 · ✅ Script de download do histórico DCSC entregue em 13/09/2026, junto com o levantamento da
+  API (`coletar_dcsc.py`, catálogo das 66 estações do Vale e `docs/API-DEFESA-CIVIL-SC.md`). Destrava o
+  C4 e, com ele, o Indaial — a `historic` da DCSC-00006 responde normalmente.
 - [~] B7 · **REESCOPADO em 10/09/2026** (`docs/eventos/2026-09-10-B7-FONTES-E-EVENTO-TAIO.md`): a Asthon retém ~6 semanas e a API de Taió só 24 h — não há fonte para 2022. Vira três: B7a confirmar o código ANA da DCSC-00041 e puxar do Hidroweb; B7b listar quais das 16 estações da cadeia existem no portal de Brusque e baixar por `baixar-historico` (chunks anuais, 2018+); B7c ✅ acumular o `dados/historico` de Taió (feito: `coleta_taio.acumula_historico`, `data/tempo-real/taio-historico.ndjson`; **provado na VPS às 20:30 BRT: 24 linhas no primeiro ciclo**). O script de download da DCSC (B6) continua valendo para as janelas que a GraphQL `historic` responde.
 - [ ] B8 · "Sim" para os registros de Blumenau 2021/2022 (6,82 m em 21/01/2021 21:45; 9,41 m em 05/05/2022 02:45, régua).
 - [x] B9 · C12 enviado à EPAGRI em 10/09/2026 às 21:05 BRT, na thread do C5 (`1a06001cb0e0b6ce`). Gmail ID: `1a08dc8f1ad59701`. Aguarda resposta.
@@ -43,7 +45,19 @@ régua da leitura.
 - [x] C1 · Consolidador do histórico DCSC + resumo (PR #269).
 - [x] C2 · Ofício C13 rascunhado (PR #270).
 - [x] C3 · Oito ofícios redigidos em [C15–C22](oficios-b1-c15-c22.md), com perguntas específicas sobre régua, faixas e referência de nível. Seis enviados; C20 aguarda destinatário confirmado; C21 não deve ser enviado.
-- [ ] C4 · Script de download do DCSC no repo, com query e allowlist documentadas — depende de B6.
+- [~] C4 · Script de download do DCSC no repo — **B6 chegou em 13/09**. A API está documentada em
+  `docs/API-DEFESA-CIVIL-SC.md` e o catálogo em `data/brutos/dcsc-estacoes-2026-09-13.csv`. Falta portar
+  o coletor para as convenções do repo (`comum`, `data/series/dcsc/` do consolidador, fuso de Brasília)
+  com testes. **Este ambiente não alcança o host** (bloqueio de egresso) — validação só na VPS.
+- [ ] C7 · **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
+  `atencao`/`alerta`/`emergencia` já classificadas pela própria Defesa Civil de SC — no datum dela. É a
+  saída para pintar cidades onde não temos cota casada com a régua, sem comparar metro com metro e sem
+  inventar cota: mostra-se a faixa da fonte, dizendo de quem é. O `coleta_nivel_sc.py` ainda não lê esse
+  campo, e tem o mecanismo de "tenta a query enriquecida, cai para a validada" pronto para recebê-lo.
+- [ ] C8 · ⚠️ **Guarda de unidade da DCSC**: `rio_nivel` mistura régua (Indaial 6,39) com cota absoluta
+  em metros acima do mar (Rio do Campo 576,22; Atalanta 453,42). O `coleta_nivel_sc.py` já descarta acima
+  de 30 m. Antes de usar qualquer valor novo da rede estadual, conferir estação por estação — Ilhota
+  9,96 m e Guabiruba 24,83 m passam pelo filtro e não se sabe em que zero estão.
 - [ ] C5 · Cruzar `data/series/dcsc/` com `data/tempo-real/*.ndjson` da VPS (mesma rede, mesmo fuso) — depende de B5.
 - [ ] C6 · Com cada resposta de COMPDEC: gravar `cotas_m` + `regua_das_cotas_fonte`, teste do par, e medir o ganho em km com `conferir_cobertura.py`.
 
@@ -87,13 +101,19 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
   cidade", e a cota de `estacoes.json` — que é por cidade — era recusada: a maior cheia já medida pelo
   projeto não gerava proposta nenhuma. Agora agrupa por `comum.regua_de`, a mesma resposta que o vigia,
   o bot e o site já usam. 3 testes novos.
-- [ ] E9 · 🔴 **As duas fontes de Blumenau estão 3 h fora de fase.** Deslocando 3 h elas concordam com
-  desvio de 1,5 cm em 54 pares; sem deslocar, erram até 1,80 m. O lado do AlertaBlu está ancorado
-  (bruto em UTC, conversão conferida, página oficial); o repasse da Defesa Civil de Itajaí carrega
-  `medido_em` ~3 h atrasado, e só na linha de Blumenau — Brusque, da mesma página e do mesmo coletor,
-  bate no minuto com a tela de 10/09. **Consequências: a crista de Blumenau é ~05:15 e não 02:15; a
-  leitura primária nasce "velha" e a cidade fica dependendo do resgate; qualquer trânsito com Blumenau
-  sai 3 h errado.** Teste decisivo (dois minutos, na VPS) em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
+- [x] E9 · ✅ **FECHADO em 13/09/2026, 20:22 BRT — o desvio de 3 h de Blumenau é da página da Defesa
+  Civil de Itajaí, não do projeto.** As duas fontes lidas no mesmo minuto: 4,29 m carimbado **17:15**
+  no repasse e os mesmos 4,29 m carimbado **20:00** (23:00Z) no AlertaBlu. Na mesma página, no mesmo
+  `parse()`, o DC-10 saiu com 12 minutos de idade — se o coletor subtraísse 3 h, o DC-10 também sairia
+  errado. Medida fina na cheia inteira: somando deslocamento ao carimbo do repasse, o desvio cai a
+  **1 cm em 218 pares exatamente em +3 h 00** (contra 55 cm sem deslocar) — três horas redondas, cara de
+  conversão de fuso aplicada duas vezes. O valor está certo; o relógio é que mente. Nada foi "corrigido"
+  no dado de ninguém. Detalhe e tabela em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
+- [ ] E10 · **Enviar o ofício C23** à Defesa Civil de Itajaí (rascunho pronto em `oficios-prontos.md`) —
+  falta confirmar o e-mail do destinatário. Relata o desvio de 3 h com a medição junto.
+- [ ] E11 · **Travar no código**: o extrator de picos não pode tirar horário de crista da linha repassada
+  de Blumenau enquanto o desvio existir. O valor continua bom; o carimbo, não. Vale também rever a
+  crista de 10/09, registrada com o relógio do repasse.
 
 ## Histórico
 
@@ -110,3 +130,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 10/09/2026 ~22:11 BRT · B3 conferido diretamente no PC; seis envios registrados; C21 excluído conforme orientação do usuário; A9 corrigido conforme cadastro e lógica de maré. Ver verificação das réguas.
 - 13/09/2026 19:00 BRT · cheia de 11–12/09 registrada três dias depois (bloco E): Blumenau 7,87 m em alerta, Rio do Sul 5,89 m em alerta, ainda em atenção nos dois. Evidência congelada antes de a janela de 48 h rolar.
 - 13/09/2026 22:40 BRT · série completa da cheia trazida da VPS (E3); extrair_picos consertado para ver primária+resgate como uma régua (E8); achado 🔴 das 3 h de desvio em Blumenau (E9).
+- 13/09/2026 ~21:00 BRT · **E9 fechado**: teste das duas fontes no mesmo minuto na VPS confirma que o carimbo 3 h atrasado de Blumenau nasce na página da Defesa Civil de Itajaí (DC-10 da mesma página com 12 min de idade); medida fina dá +3 h 00 exatos, 1 cm em 218 pares. Ofício C23 rascunhado (E10); trava no código pendente (E11). **B6 chegou**: levantamento da API GraphQL da Defesa Civil de SC (`docs/API-DEFESA-CIVIL-SC.md`), catálogo das 66 estações do Vale e `scripts/baixar_historico_dcsc.py` (14 testes, formato casado com o consolidador). Novos: C7 (`rio_alarmes`, a faixa oficial sem cota) e C8 (guarda de unidade). PR #328 mesclado.
