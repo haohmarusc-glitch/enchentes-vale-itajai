@@ -131,7 +131,14 @@ def baixar(url: str = URL_PAINEL) -> dict:
 
 
 def coletar() -> list[dict]:
-    return parse(baixar())
+    dados = baixar()
+    estacoes = dados.get('stations', []) if isinstance(dados, dict) else dados
+    presentes = {e.get('station_id') for e in estacoes or [] if isinstance(e, dict)}
+    for codigo, (_, cidade) in POR_ESTACAO.items():
+        if codigo not in presentes:
+            print(f"aviso: Asthon respondeu, mas não incluiu {TITULO[cidade]} "
+                  f"(station_id={codigo}) no painel; não substituir por outra régua.", file=sys.stderr)
+    return parse(dados)
 
 
 def main() -> int:
