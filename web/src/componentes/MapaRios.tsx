@@ -309,7 +309,7 @@ export default function MapaRios({
       <p className={estilos.credito}>
         Cada trecho tem a cor da faixa da cidade a montante; a correnteza desce no
         sentido do rio com velocidade visual constante. A animação é ilustrativa e não representa velocidade da água ou tempo de chegada. Trecho <strong>cinza</strong> é onde ainda não há régua
-        que o pinte, e por isso fica parado. Na foz, a faixa <strong>azul</strong>{' '}
+        com classificação disponível; pode ter ondas neutras onde o sentido do curso está definido. Isso não indica nível atual nem segurança. Trechos sem orientação e a aproximação à foz ficam parados. Na foz, a faixa <strong>azul</strong>{' '}
         é a <strong>maré</strong> (escala própria, não a de cheia): maré alta
         trava o escoamento do rio. Toque numa cidade para consultar as cotas de rua. Traçado: © colaboradores do OpenStreetMap (ODbL).
       </p>

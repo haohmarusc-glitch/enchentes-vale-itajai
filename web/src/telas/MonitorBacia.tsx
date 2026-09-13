@@ -566,7 +566,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       cena.mar = null
       // Conserva a divisão geográfica regional; nunca estende a régua local
       // por todo o rio ao remover as outras cidades.
-      cena.trechos = cena.trechos.map((t) => t.cidadeId === 'ascurra' ? t : ({ ...t, faixa: 'sem-dado', cidadeId: null }))
+      cena.trechos = cena.trechos.map((t) => t.cidadeId === 'ascurra' ? t : ({ ...t, faixa: 'sem-dado', cidadeId: null, animacao: 'parada' }))
     }
     cenaRef.current = cena
     // O painel guarda a seleção, mas os números devem acompanhar a nova coleta.
@@ -1278,7 +1278,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </strong>
           {legendaAberta ? (
             <>
-          <p className={estilos.legendaNota}>Animação ilustrativa do sentido do curso até o mar. Não representa velocidade da água nem previsão de chegada. Na foz, a maré pode alterar o sentido real da corrente.</p>
+          <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Trechos sem orientação confirmada e a aproximação à foz ficam parados.</p>
           <button type="button" className={estilos.botaoLegenda}
             aria-pressed={animacoesPausadas}
             onClick={() => setAnimacoesPausadas(v => !v)}>
