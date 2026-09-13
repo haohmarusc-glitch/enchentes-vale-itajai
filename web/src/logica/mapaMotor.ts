@@ -10,7 +10,7 @@
  * REGRAS que este módulo carrega (não são detalhe de desenho):
  *  - cor = faixa da régua da cidade, NUNCA metro entre cidades;
  *  - cinza não afirma nível; pode ter fluxo ilustrativo onde há orientação;
- *  - direção incerta e aproximação ao estuário ficam paradas, em ambas as ondas;
+ *  - direção incerta fica parada; ondas são ilustrativas, não corrente medida;
  *  - o MAR na foz é colorido pela MARÉ, escala azul PRÓPRIA, jamais a de cheia
  *    (maré alta não é cheia; ela trava o escoamento).
  */
@@ -345,11 +345,18 @@ export function construirCena(
     })
     const espinha = ancorasQuePintam.map((a) => a.ponto)
     const cumEspinha = acumuladoEspinha(espinha)
-    // Limite conservador do desenho, NÃO delimitação hidrológica do estuário.
-    // Não representamos direção de corrente a jusante destas âncoras.
-    const limiteId = rio.rioId === 'itajai-acu' ? 'ilhota' : rio.rioId === 'itajai-mirim' ? 'itajai' : null
-    const limiteIdx = ancorasQuePintam.findIndex(a => a.cidade.id === limiteId)
-    const limiteFluxo = limiteIdx >= 0 ? cumEspinha[limiteIdx]! : -1
+    // Só a orientação visual do Açu é prolongada até a extremidade leste
+    // do traçado cadastrado (foz). A espinha de CORES permanece intacta.
+    const espinhaFluxo = [...espinha]
+    if (rio.rioId === 'itajai-acu' && espinha.length >= 2) {
+      const foz = rio.coords.flat().reduce((a, p) => p[0] > a[0] ? p : a)
+      if (foz[0] > espinha.at(-1)![0]) espinhaFluxo.push(foz)
+    }
+    const cumFluxo = acumuladoEspinha(espinhaFluxo)
+    const limiteIdx = rio.rioId === 'itajai-acu' ? espinhaFluxo.length - 1
+      : rio.rioId === 'itajai-mirim' ? ancorasQuePintam.findIndex(a => a.cidade.id === 'itajai') : -1
+    const limiteFluxo = limiteIdx >= 0 ? cumFluxo[limiteIdx]! : -1
+    const progressoFluxo = (p: LonLat) => progressoNaEspinha(espinhaFluxo, cumFluxo, p)
     // Referência visual exclusiva do Açu: não transfere nível/cota aos pinos.
     // Usa a mesma projeção da espinha do motor; limite cartográfico aproximado.
     const dc11 = rio.rioId === 'itajai-acu' && !leituraNaHora &&
@@ -368,8 +375,8 @@ export function construirCena(
       // precisa do sentido certo.
       let seq = linha
       if (espinha.length >= 2) {
-        const pa = progressoNaEspinha(espinha, cumEspinha, linha[0]!)
-        const pb = progressoNaEspinha(espinha, cumEspinha, linha[linha.length - 1]!)
+        const pa = progressoFluxo(linha[0]!)
+        const pb = progressoFluxo(linha[linha.length - 1]!)
         if (pb < pa) seq = [...linha].reverse()
       }
       // A orientação é do way inteiro: um meandro pode recuar na projeção
@@ -377,7 +384,7 @@ export function construirCena(
       // em cada vértice interrompia ondas em curvas legítimas.
       // Uma linha inteira que cruza o limite fica parada. Não extrapolar direção
       // nos ways da foz nem nos afluentes ainda sem âncoras verificadas.
-      const progresso = seq.map(p => progressoNaEspinha(espinha, cumEspinha, p))
+      const progresso = seq.map(progressoFluxo)
       const orientada = espinha.length >= 2 && limiteFluxo > 0 &&
         progresso[progresso.length - 1]! > progresso[0]! + 1e-9 &&
         progresso.every(p => p <= limiteFluxo)
@@ -409,7 +416,7 @@ export function construirCena(
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
         trechos.push({
-          animacao: orientada && curCidade !== 'itajai' ? 'direcional' : 'parada',
+          animacao: orientada && (rio.rioId === 'itajai-acu' || curCidade !== 'itajai') ? 'direcional' : 'parada',
           pts,
           faixa: cur,
           cum,

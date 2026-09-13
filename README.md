@@ -1722,3 +1722,10 @@ transferir níveis ou cotas aos demais pinos. Limite cartográfico aproximado
 pela espinha do mapa; não é mancha de inundação. Sem faixa válida fica cinza;
 na reprodução histórica a referência não é aplicada. Mirim, canais e mar
 continuam independentes.
+
+### Açu até a foz — 13/09/2026
+Removido o bloqueio visual em Ilhota. A espinha de movimento do Açu
+se prolonga até a extremidade leste do traçado cadastrado, sem alterar
+a espinha de cores, a referência DC-11 ou as réguas. Movimento ilustrativo
+constante: a corrente real pode variar com a maré. Canais sem orientação
+permanecem parados. Esta regra substitui o limite anterior em Ilhota.
