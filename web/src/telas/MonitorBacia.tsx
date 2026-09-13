@@ -3,7 +3,7 @@ import { linhasChuva } from '../logica/chuvaMonitor'
 import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
-import { motivoSemCor } from '../logica/motivoSemCor'
+import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -1476,12 +1476,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   className={estilos.amostra}
                   style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
                 />
-                {foco.faixa === 'sem-dado' && brutoSc ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
+                {foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
               </div>
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
-                  {cid.id === 'blumenau' && foco.medidoEm && idadeMin(foco.medidoEm, agora) > 120 ? 'A última medição tem mais de duas horas; Blumenau fica sem cor até receber leitura recente.' : brutoSc ? 'Há medição estadual abaixo, mas não há vínculo confirmado entre essa régua e as cotas municipais para calcular a cor.' : motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
+                  {motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id)}
                 </p>
               )}
               <p className={estilos.painelNivel}>
