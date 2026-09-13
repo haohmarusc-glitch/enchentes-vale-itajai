@@ -70,8 +70,9 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - [x] E2 · Estado em 13/09 19:00: **Rio do Sul 5,31 m ainda em atenção** (197 de 197 leituras da
   janela acima de 4,50); **Blumenau 4,34 m ainda em atenção**; Taió 4,46 m, Brusque 1,77 m e Gaspar
   2,72 m abaixo das faixas.
-- [ ] E3 · **Extrair o evento inteiro do `data/tempo-real/2026-09.ndjson` da VPS** — a janela publicada
-  é de 48 h e já perdeu a subida. Comando em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
+- [x] E3 · Evento inteiro extraído da VPS: **4.028 leituras de 19 réguas, 10/09 00:00 → 12/09 23:59**, em
+  `data/brutos/cheia-2026-09-11-12.ndjson`. Analisado com o `extrair_picos.py`, que precisou de um
+  conserto para enxergar Blumenau (E8) e revelou o desvio de 3 h (E9).
 - [ ] E4 · Decidir se as cristas entram em `enchentes.json` (picos de 2026 com régua nomeada nos dois
   lados; decisão do Jefferson).
 - [ ] E5 · Conferir o `estado_alertas.json` da VPS: Blumenau em alerta é o caso que o bot existe para
@@ -80,6 +81,19 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
   municipal de 4,00) e nada depois. Conferir se a coleta parou ou se a fonte publica esparso.
 - [x] E7 · NÃO serve para calibrar trânsito: a crista de Rio do Sul (11/09 23:12) vem ANTES da de Taió
   (12/09 03:43), que é montante — chuva na bacia inteira, como em 10/09.
+
+- [x] E8 · **`extrair_picos.py` contava réguas por título e recusava Blumenau.** A régua chega duas vezes
+  (Defesa Civil de Itajaí + AlertaBlu como resgate, ligados por `resgate_de`), virava "duas réguas na
+  cidade", e a cota de `estacoes.json` — que é por cidade — era recusada: a maior cheia já medida pelo
+  projeto não gerava proposta nenhuma. Agora agrupa por `comum.regua_de`, a mesma resposta que o vigia,
+  o bot e o site já usam. 3 testes novos.
+- [ ] E9 · 🔴 **As duas fontes de Blumenau estão 3 h fora de fase.** Deslocando 3 h elas concordam com
+  desvio de 1,5 cm em 54 pares; sem deslocar, erram até 1,80 m. O lado do AlertaBlu está ancorado
+  (bruto em UTC, conversão conferida, página oficial); o repasse da Defesa Civil de Itajaí carrega
+  `medido_em` ~3 h atrasado, e só na linha de Blumenau — Brusque, da mesma página e do mesmo coletor,
+  bate no minuto com a tela de 10/09. **Consequências: a crista de Blumenau é ~05:15 e não 02:15; a
+  leitura primária nasce "velha" e a cidade fica dependendo do resgate; qualquer trânsito com Blumenau
+  sai 3 h errado.** Teste decisivo (dois minutos, na VPS) em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
 
 ## Histórico
 
@@ -95,3 +109,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 
 - 10/09/2026 ~22:11 BRT · B3 conferido diretamente no PC; seis envios registrados; C21 excluído conforme orientação do usuário; A9 corrigido conforme cadastro e lógica de maré. Ver verificação das réguas.
 - 13/09/2026 19:00 BRT · cheia de 11–12/09 registrada três dias depois (bloco E): Blumenau 7,87 m em alerta, Rio do Sul 5,89 m em alerta, ainda em atenção nos dois. Evidência congelada antes de a janela de 48 h rolar.
+- 13/09/2026 22:40 BRT · série completa da cheia trazida da VPS (E3); extrair_picos consertado para ver primária+resgate como uma régua (E8); achado 🔴 das 3 h de desvio em Blumenau (E9).
