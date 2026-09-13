@@ -403,7 +403,6 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         # antigo ficaria órfão — a travessia seria avisada de novo. Para toda
         # régua sem resgate, `regua_de` é o próprio título: nada muda.
         chave_estado = regua_de(leitura)
-        idade = idade_min(leitura.get("medido_em"), agora)
         nivel = leitura["nivel_m"]
         antes = novo.get(chave_estado) or {}
         faixa_antes = antes.get("faixa", "normal")
