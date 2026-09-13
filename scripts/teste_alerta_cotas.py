@@ -124,7 +124,7 @@ class TestDecidir(unittest.TestCase):
         """Três da manhã é exatamente quando o aviso importa."""
         for hora in (3, 4, 23, 12):
             quando = AGORA.replace(hour=hora)
-            avisos, _, _ = decidir(payload(6.6), {}, quando)
+            avisos, _, _ = decidir(payload(6.6, medido=quando.isoformat()), {}, quando)
             self.assertEqual(len(avisos), 1, f"calou às {hora}h")
             self.assertEqual(avisos[0]["faixa"], "inundacao")
 
@@ -242,13 +242,13 @@ class TestTexto(unittest.TestCase):
         self.assertIn("não é alerta oficial", t)
         self.assertIn("própria régua", t)
 
-    def test_leitura_velha_entra_com_ressalva_mas_entra(self):
-        """Leitura antiga mostrando inundação continua sendo o melhor que há."""
-        dados = payload(6.6, medido="2026-08-29T20:00:00")
-        avisos, _, _ = decidir(dados, {}, AGORA)
-        self.assertEqual(len(avisos), 1)
-        self.assertIn("⚠️", avisos[0]["texto"])
-        self.assertIn("a fonte não atualiza", avisos[0]["texto"])
+    def test_leitura_velha_nao_avisa_nem_altera_estado(self):
+        for medido in ('2026-08-29T04:00:00', None, 'invalido', '2026-08-30T03:00:00'):
+            antes = {'outra': {'faixa': 'alerta'}}
+            avisos, estado, recusas = decidir(payload(6.6, medido=medido), antes, AGORA)
+            self.assertEqual(avisos, [])
+            self.assertEqual(estado, antes)
+            self.assertTrue(recusas)
 
     def test_escapa_html_do_nome_da_estacao(self):
         """Um & cru no nome faz o Telegram devolver 400 e o aviso não sai."""
@@ -405,8 +405,8 @@ class BlumenauComResgate(unittest.TestCase):
     #: vigia só carrega as chaves que disparam aviso.
     COTAS_BLU = {"atencao": 4.0, "alerta": 6.0, "emergencia": 8.0}
 
-    def dados(self, nivel_primaria, nivel_resgate, quando_p="2026-08-30T00:15:00",
-              quando_r="2026-08-30T02:00:00"):
+    def dados(self, nivel_primaria, nivel_resgate, quando_p="2026-08-29T22:15:00",
+              quando_r="2026-08-29T23:00:00"):
         return {
             "coletado_em": AGORA.isoformat(),
             "leituras": [
@@ -430,8 +430,8 @@ class BlumenauComResgate(unittest.TestCase):
         vig, _ = resolver(self.dados(6.9, 7.0))
         self.assertEqual(vig[0]["leitura"]["estacao"], "Blumenau (AlertaBlu)")
         # Invertendo os carimbos, ganha a primária.
-        vig, _ = resolver(self.dados(6.9, 7.0, quando_p="2026-08-30T02:00:00",
-                                     quando_r="2026-08-30T00:15:00"))
+        vig, _ = resolver(self.dados(6.9, 7.0, quando_p="2026-08-29T23:00:00",
+                                     quando_r="2026-08-29T22:15:00"))
         self.assertEqual(vig[0]["leitura"]["estacao"], "Blumenau")
 
     def test_leitura_sem_carimbo_nunca_ganha_da_que_tem(self):
@@ -452,7 +452,7 @@ class BlumenauComResgate(unittest.TestCase):
             "leituras": [
                 {"estacao": f"Régua {n} (teste)", "rio": "itajai-acu",
                  "cidade": "gaspar", "nivel_m": 1.0,
-                 "medido_em": "2026-08-30T02:00:00"}
+                 "medido_em": "2026-08-29T23:00:00"}
                 for n in ("A", "B")
             ],
         }
@@ -471,8 +471,8 @@ class BlumenauComResgate(unittest.TestCase):
         self.assertIn("Blumenau", estado, "o estado tem de ficar sob a RÉGUA")
         # Agora a primária é a mais nova, mesmo nível: nada novo a avisar.
         avisos2, _, _ = decidir(
-            self.dados(7.0, 6.9, quando_p="2026-08-30T02:30:00",
-                       quando_r="2026-08-30T02:00:00"),
+            self.dados(7.0, 6.9, quando_p="2026-08-29T23:30:00",
+                       quando_r="2026-08-29T23:00:00"),
             estado, AGORA)
         self.assertEqual(avisos2, [], "trocar de fonte reavisou a mesma travessia")
 
@@ -571,7 +571,7 @@ class TaioAvisaEmMonitoramento(unittest.TestCase):
     """
 
     def test_taio_avisa_a_5_m_e_o_texto_carrega_os_dois_rotulos(self):
-        dados = payload(5.20, estacao="Taió (teste)", cidade="taio", medido="2026-08-30T02:30:00")
+        dados = payload(5.20, estacao="Taió (teste)", cidade="taio", medido="2026-08-29T23:30:00")
         avisos, estado, recusas = decidir(dados, {}, AGORA)
         self.assertEqual(recusas, [])
         self.assertEqual(len(avisos), 1)
@@ -582,7 +582,7 @@ class TaioAvisaEmMonitoramento(unittest.TestCase):
 
     def test_taio_abaixo_de_5_m_continua_normal(self):
         avisos, _, _ = decidir(payload(4.80, estacao="Taió (teste)", cidade="taio",
-                                       medido="2026-08-30T02:30:00"), {}, AGORA)
+                                       medido="2026-08-29T23:30:00"), {}, AGORA)
         self.assertEqual(avisos, [])
 
     def test_blumenau_em_monitoramento_continua_calado(self):
