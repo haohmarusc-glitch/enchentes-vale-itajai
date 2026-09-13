@@ -1,3 +1,4 @@
+import { CHAVES_QUE_PINTAM, cotasOperacionais } from './cotasOperacionais'
 /**
  * Leitura de nível em tempo real: idade, frescor e chegada a jusante.
  *
@@ -231,7 +232,7 @@ export function cotaAlcancadaEntre(
 ): { chave: string; valor: number } | null {
   let maior: { chave: string; valor: number } | null = null
   for (const [chave, valor] of cotas) {
-    if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
+    if (!CHAVES_QUE_PINTAM.has(chave) || typeof valor !== 'number' || !Number.isFinite(valor)) continue
     if (nivel < valor) continue
     if (maior === null || valor > maior.valor) maior = { chave, valor }
   }
@@ -256,7 +257,7 @@ export function proximaCotaEntre(
 ): { chave: string; valor: number } | null {
   let menor: { chave: string; valor: number } | null = null
   for (const [chave, valor] of cotas) {
-    if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
+    if (!CHAVES_QUE_PINTAM.has(chave) || typeof valor !== 'number' || !Number.isFinite(valor)) continue
     if (valor <= nivel) continue
     if (menor === null || valor < menor.valor) menor = { chave, valor }
   }
@@ -264,15 +265,8 @@ export function proximaCotaEntre(
 }
 
 export function primeiraCota(cidade: Cidade): { chave: string; valor: number } | null {
-  const ordem = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
-  for (const chave of ordem) {
-    const valor = cidade.cotas_m[chave]
-    if (typeof valor === 'number') return { chave, valor }
-  }
-  const entradas = Object.entries(cidade.cotas_m)
-  if (entradas.length === 0) return null
-  const menor = entradas.reduce((a, b) => (b[1] < a[1] ? b : a))
-  return { chave: menor[0], valor: menor[1] }
+  const primeira = cotasOperacionais(cidade.cotas_m)[0]
+  return primeira ? { chave: primeira[0], valor: primeira[1] } : null
 }
 
 /**
@@ -342,13 +336,6 @@ export type Faixa =
  * nome que a fonte deu. Acrescentar uma chave nova aqui é decidir que ela é
  * fase de acionamento — só com documento da COMPDEC dizendo isso.
  */
-const CHAVES_QUE_PINTAM = new Set([
-  'monitoramento',
-  'atencao',
-  'alerta',
-  'inundacao',
-  'emergencia',
-])
 
 export function faixaDaCidade(
   cidade: Cidade,

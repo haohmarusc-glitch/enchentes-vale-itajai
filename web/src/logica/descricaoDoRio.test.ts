@@ -46,7 +46,7 @@ const mirim = descricaoDoRio(rioDoCadastro('itajai-mirim'), barragensDoCadastro(
 test('Açu: o tronco é a sequência canônica, na ordem em que a água desce — e começa em Rio do Sul', () => {
   assert.equal(
     acu.tronco,
-    'Rio do Sul → Lontras → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí',
+    'Rio do Sul → Lontras → Apiúna → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí',
   )
 })
 
