@@ -60,6 +60,16 @@ export default function LegendaFaixas() {
             </span>
           </li>
         ))}
+        <li className={estilos.item}>
+          <span className={`${estilos.amostra} ${estilos.estadual}`} aria-hidden="true" />
+          <span>
+            <strong>Faixa estadual</strong>
+            <span className={estilos.acao}>
+              {' '}— trecho tracejado: a cor é a classificação da Defesa Civil de SC para a
+              estação da cidade, na régua dela. Não é cota deste projeto e não aciona aviso.
+            </span>
+          </span>
+        </li>
       </ul>
     </div>
   )
