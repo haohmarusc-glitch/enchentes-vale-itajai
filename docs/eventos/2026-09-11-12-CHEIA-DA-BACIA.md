@@ -91,13 +91,9 @@ exatamente 02:00 + 3 h. A tabela lá em cima traz o horário como veio do repass
 
 ### ✅ CONFIRMADO em 13/09/2026, 20:22 BRT — o carimbo errado nasce fora do projeto
 
-> ⚠️ **Reaberto às 21:30 do mesmo dia, só quanto à DIREÇÃO.** O que segue prova (a) que o desvio é
-> de 3 h 00 exatas e (b) que não é o nosso coletor. A conclusão de que o relógio errado é o de Itajaí
-> ganhou um contra-indício com as séries da rede estadual (relógio DCSC, Brasília provado): Ascurra
-> cristou 00:00, Indaial 01:00 e **Ilhota 05:10** de 12/09. Pelo AlertaBlu, Blumenau crista às 05:00
-> — dez minutos antes de Ilhota, 45 km rio abaixo. Pelo repasse, 02:15, em ordem. A crista de Blumenau
-> é um platô de 2 h, então o máximo é frágil dos dois lados; decide-se pela forma das curvas
-> (item E12 do checklist). **Até lá, o ofício C23 não sai.**
+> ℹ️ A direção (quem está certo) ficou em dúvida entre 21:30 de 13/09 e a madrugada de 14/09, por
+> causa da crista de Ilhota (seção "E12" abaixo). Foi fechada a favor do AlertaBlu por prova
+> independente da física. O que segue continua válido.
 
 As duas fontes lidas no mesmo minuto, na VPS:
 
@@ -141,6 +137,58 @@ como veio do repasse.
 **Conserto.** Não é código nosso: o pedido de correção vai à Defesa Civil de Itajaí (ofício **C23**,
 em `docs/oficios-prontos.md`). Enquanto não for corrigido, vale a regra: **nenhum horário de crista de
 Blumenau sai da linha repassada** — sai do AlertaBlu. O valor do repasse continua bom; o relógio, não.
+
+### E12 — a direção do desvio, fechada em 14/09/2026
+
+**O que pôs em dúvida.** Com as séries de 10 min da rede estadual (relógio DCSC = Brasília, provado),
+as cristas de 12/09 saíram Ascurra 00:00 → Indaial 01:00 → Ilhota 05:10. Pelo AlertaBlu, Blumenau
+crista às 05:00–06:00, dez minutos antes de Ilhota, 45 km rio abaixo; pelo repasse, 02:15, em ordem.
+
+**Por que a física não decidiu.** Correlação da curva inteira (11/09 06:00 → 12/09 22:00):
+
+| trecho | lag pelo repasse | lag pelo AlertaBlu | r |
+|---|---:|---:|---:|
+| Ascurra → Indaial (~15 km, controle) | +1,17 h | — | 0,999 |
+| Indaial → Blumenau (~25–30 km) | **0,00 h** | **+3,00 h** | 0,989 |
+| Blumenau → Ilhota (~40 km) | +5,83 h | +2,00 h | 0,966 |
+| Blumenau → Ilhota-Arraial | +0,67 h | −2,17 h | 0,992 |
+
+0,00 h em 25–30 km é fisicamente impossível para a mesma onda; mas −2,17 h para Ilhota-Arraial
+também. A saída é que **Ilhota e Arraial sobem cedo por chuva local** (25 % da subida às 14:15 e
+14:38, uma hora depois da pancada das 13–14 h; Arraial é um ribeirão de 0,6→4 m) e não são âncora
+de roteamento. Restava Indaial→Blumenau: 3,00 h cabe na celeridade medida em Ascurra→Indaial
+(1,17 h em ~15 km → ~2–2,3 h em 25–30 km); 0,00 h não cabe. Forte, mas com ±1 h de folga contra
+uma pergunta de 3 h.
+
+**O que decidiu: a hora de parede.** A Defesa Civil de Blumenau emite boletim em hora de emissão,
+e a imprensa escreve em tempo real. Da noite de 11/09:
+
+| hora de parede | quem | o que disse | AlertaBlu (rótulo) | repasse (rótulo) |
+|---|---|---|---:|---:|
+| 20h | boletim da Defesa Civil de Blumenau | rio em **5,78 m**; pico de 9 m às 2h | 20:00 = **5,78** | 20:05 = 7,07 |
+| ~21h | O Blumenauense | "chegou a **6,32 m** às 21h"; 18→19h +62 cm, 19→20h +59, 20→21h +54 | 21:00 = **6,32**; +62/+59/+54 | 21:05 = 7,31 |
+| 22h28 | ND Mais | "**6,73 m** às 22h, +41 cm em 1 h"; nova projeção: 8 m às 4h | 22:00 = **6,73**, +41 | 22:05 = 7,50, ~+10/h |
+| 0h30 | secretário Menestrina | "taxa de subida caiu para **~20 cm/h**, ~15 na hora seguinte" | 23→00: **24**; 00→01: 18 | 22:45→00:35: 10; 00:05→00:35: 4 |
+| manhã | Jornal Razão | pico 7,86 às 5h e 6h; 7,82 às 7h; 7,73 às 8h | 05:00 = 7,86 … 08:00 = 7,73 | crista 02:15, 05:00 já em 7,69 |
+
+Cada número citado bate **ao centímetro** com o rótulo do AlertaBlu na mesma hora de parede — e
+os incrementos horários também. Para o repasse ser o relógio certo, a Defesa Civil de Blumenau, que
+lê a própria régua na Ponte Adolfo Konder em frente ao prédio, teria publicado 5,78 m com o rio a
+7,07 m, e o secretário teria falado em 20 cm/h com o rio praticamente parado. Não é crível.
+
+Fontes: [ND Mais — pode chegar a 9 m](https://ndmais.com.br/tempo/rio-itajai-acu-pode-chegar-a-9-metros-e-provocar-enchente-em-blumenau/),
+[ND Mais — nova projeção após subir 1,5 m em 3 h](https://ndmais.com.br/tempo/nova-projecao-mantem-blumenau-em-alerta-maximo-para-risco-de-enchente-apos-rio-subir-15-metro-em-apenas-tres-horas/),
+[ND Mais — sobe 2,7 m e estabiliza](https://ndmais.com.br/tempo/rio-itajai-acu-sobe-quase-27-metros-durante-a-madrugada-mas-estabiliza-antes-da-cota-de-enchente-em-blumenau/),
+[O Blumenauense — 6,32 m às 21h](https://oblumenauense.com.br/rio-itajai-acu-chegou-a-632-metros-as-21h-desta-sexta-feira-11-09-em-blumenau),
+[O Blumenauense — nova projeção perto de 8 m](https://oblumenauense.com.br/nova-projecao-indica-rio-itajai-acu-proximo-de-8-metros-e-cenario-sem-enchente-em-blumenau),
+[Jornal Razão — estabiliza e descarta enchente](https://jornalrazao.com/meio-ambiente/apos-noite-de-alerta-nivel-do-rio-itajai-acu-estabiliza-volta-a-baixar-e-defesa-civil-descarta-enchente-em-blumenau),
+[Mesorregional](https://www.mesorregional.com.br/defesa-civil-descarta-enchente-em-blumenau-apos-reducao-na-elevacao-do-rio/).
+Lidas por trechos de busca em 14/09/2026 (os sites não abrem deste ambiente); vale conferir a hora
+de publicação na própria página.
+
+**Conclusão.** O relógio do AlertaBlu é o real. O repasse da Defesa Civil de Itajaí publica Blumenau
+com carimbo 3 h atrás; o valor é bom. A crista de Blumenau foi **05:00–06:00 de 12/09, 7,86–7,87 m**.
+Trava no código: `extrair_picos.RELOGIO_DEFASADO` (E11). Ofício C23 liberado.
 
 ## O que falta
 

@@ -216,14 +216,15 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C23 — Defesa Civil de Itajaí: o nível de Blumenau é publicado com carimbo de hora 3 h atrasado (⛔ EM ESPERA — a direção do desvio ganhou contra-indício em 13/09; ver nota)
+## C23 — Defesa Civil de Itajaí: o nível de Blumenau é publicado com carimbo de hora 3 h atrasado (RASCUNHO LIBERADO em 14/09 — falta só confirmar o e-mail)
 
-> ⛔ **NÃO ENVIAR AINDA (13/09/2026, 21:30 BRT).** O tamanho do desvio (3 h 00) e o fato de não ser
-> do nosso coletor estão provados. A DIREÇÃO — quem está certo — ganhou um contra-indício: pelo
-> relógio da rede estadual (DCSC, Brasília provado), Indaial cristou 01:00 e Ilhota 05:10 de 12/09;
-> o AlertaBlu põe a crista de Blumenau às 05:00, dez minutos antes de Ilhota, 45 km rio abaixo; o
-> repasse a põe às 02:15, em ordem. Se o AlertaBlu for o relógio errado, este ofício acusaria a
-> página certa. Em reexame com as séries completas da DCSC. Só sai depois disso.
+> ✅ **LIBERADO em 14/09/2026 (madrugada).** A direção do desvio ficou em dúvida por algumas horas
+> em 13/09 (a crista de Ilhota parecia contradizer o AlertaBlu) e foi fechada por uma prova
+> independente da física: os boletins da Defesa Civil de Blumenau e as matérias da noite de 11/09,
+> em **hora de parede**, batem com o relógio do AlertaBlu e não com o do repasse — "5,78 m às 20h"
+> (repasse: 7,07), "6,32 m às 21h" (repasse: 7,31), taxa de ~20 cm/h à 0h30 (AlertaBlu: 24 cm/h;
+> repasse: 4–10 cm/h). A Defesa Civil de Blumenau lê a própria régua na ponte; não publicaria 5,78 m
+> com o rio a 7,07 m na frente dela. Ver E12 no checklist e o documento do evento.
 >
 > Por que: medido em 13/09/2026 na série do projeto. A página
 > `defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios` publica o nível de Blumenau com um
