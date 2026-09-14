@@ -356,5 +356,58 @@ class SerieEstadualNaoGrava(unittest.TestCase):
         self.assertIn("não grava", err)
 
 
+
+class TesteRelogioDefasadoNaoDaHorarioDeCrista(unittest.TestCase):
+    """
+    E11/E12 (13/09/2026): o repasse de Blumenau pela Defesa Civil de Itajaí carrega
+    `medido_em` 3 h ATRÁS do instante real. O VALOR é bom (mesma régua, 1 cm de desvio
+    em 218 pares); o RELÓGIO, não. Então a altura da crista pode vir dele, mas o
+    horário tem de vir do outro publicador da mesma régua — e, sem outro, a proposta
+    sai sem hora e não grava. Um horário 3 h errado em Blumenau, o meio do Açu,
+    envenena todo tempo de trânsito calibrado a partir dele.
+    """
+
+    def leituras(self, com_alertablu: bool):
+        L = ep.Leitura
+        base = [
+            L(datetime(2026, 9, 12, 1, 5), 6.90, "Blumenau"),
+            L(datetime(2026, 9, 12, 2, 15), 7.87, "Blumenau"),   # máximo: no relógio defasado
+            L(datetime(2026, 9, 12, 3, 5), 7.40, "Blumenau"),
+        ]
+        if com_alertablu:
+            base += [
+                L(datetime(2026, 9, 12, 2, 0), 7.65, "Blumenau (AlertaBlu)"),
+                L(datetime(2026, 9, 12, 5, 0), 7.86, "Blumenau (AlertaBlu)"),  # crista, relógio certo
+                L(datetime(2026, 9, 12, 6, 0), 7.86, "Blumenau (AlertaBlu)"),
+            ]
+        return sorted(base, key=lambda l: l.quando)
+
+    def test_valor_do_repasse_horario_do_alertablu(self):
+        ev = ep.Evento(self.leituras(com_alertablu=True))
+        self.assertEqual(ev.pico_m, 7.87, "a altura continua sendo o máximo de todas as leituras")
+        self.assertEqual(ev.quando, datetime(2026, 9, 12, 5, 0), "o horário vem do relógio certo")
+        self.assertEqual(ev.horario_de, "Blumenau (AlertaBlu)")
+        self.assertFalse(ev.relogio_defasado)
+
+    def test_so_o_repasse_marca_relogio_defasado(self):
+        ev = ep.Evento(self.leituras(com_alertablu=False))
+        self.assertEqual(ev.pico_m, 7.87)
+        self.assertTrue(ev.relogio_defasado, "sem outro publicador, não há horário confiável")
+        self.assertEqual(ev.horario_de, "Blumenau")
+
+    def test_publicador_fora_da_lista_nao_muda_nada(self):
+        L = ep.Leitura
+        ev = ep.Evento([
+            L(datetime(2026, 9, 11, 22, 0), 5.5, "Brusque"),
+            L(datetime(2026, 9, 11, 23, 0), 5.9, "Brusque"),
+        ])
+        self.assertEqual(ev.quando, datetime(2026, 9, 11, 23, 0))
+        self.assertEqual(ev.horario_de, "Brusque")
+        self.assertFalse(ev.relogio_defasado)
+
+    def test_a_lista_diz_o_motivo(self):
+        self.assertIn("Blumenau", ep.RELOGIO_DEFASADO)
+        self.assertIn("3 h", ep.RELOGIO_DEFASADO["Blumenau"])
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

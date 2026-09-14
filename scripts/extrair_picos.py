@@ -47,6 +47,21 @@ MIN_LEITURAS = 2
 #: 24 h, e jogar fora o extremo é justamente perder o que importa.
 SALTO_SUSPEITO_M_POR_H = 1.5
 
+#: Publicadores cujo `medido_em` está DESLOCADO do instante real da leitura, com o
+#: motivo. O VALOR deles é bom; o RELÓGIO, não. Por isso o pico continua contando
+#: para a altura, mas o HORÁRIO da crista sai de outro publicador da mesma régua
+#: quando houver — e, quando não houver, a proposta sai sem `hora` e não grava.
+#:
+#: "Blumenau" (repasse da Defesa Civil de Itajaí): carimbo 3 h 00 ATRÁS do instante
+#: real, provado em 13/09/2026 (E12): 218 pares da cheia de 11–12/09 concordam com o
+#: AlertaBlu com desvio de 1 cm ao somar 3 h; os boletins da Defesa Civil de Blumenau
+#: e a imprensa da noite de 11/09, em hora de parede, batem com o relógio do AlertaBlu
+#: (5,78 m "às 20h", 6,32 m "às 21h", taxa de ~20 cm/h à 0h30) e não com o do
+#: repasse (7,07 m, 7,31 m, ~4–10 cm/h). Ver docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md.
+RELOGIO_DEFASADO: dict[str, str] = {
+    "Blumenau": "repasse da Defesa Civil de Itajaí: carimbo 3 h atrás do real (E12, 13/09/2026)",
+}
+
 
 class Leitura:
     __slots__ = ("quando", "nivel_m", "estacao", "so_horario")
@@ -69,6 +84,20 @@ class Evento:
         pico = max(leituras, key=lambda l: l.nivel_m)
         self.pico_m = pico.nivel_m
         self.quando = pico.quando
+        #: De quem saiu o HORÁRIO da crista. Se o máximo caiu num publicador de
+        #: RELOGIO_DEFASADO e a mesma régua tem outro publicador, o horário vem do
+        #: máximo do outro — o valor não muda (mesma régua), o relógio sim.
+        self.horario_de = pico.estacao
+        #: True quando o único relógio disponível é um de RELOGIO_DEFASADO.
+        self.relogio_defasado = False
+        if pico.estacao in RELOGIO_DEFASADO:
+            confiaveis = [l for l in leituras if l.estacao not in RELOGIO_DEFASADO]
+            if confiaveis:
+                pico_confiavel = max(confiaveis, key=lambda l: l.nivel_m)
+                self.quando = pico_confiavel.quando
+                self.horario_de = pico_confiavel.estacao
+            else:
+                self.relogio_defasado = True
         self.inicio = leituras[0].quando
         self.fim = leituras[-1].quando
         self.estacoes = sorted({l.estacao for l in leituras})
@@ -396,6 +425,12 @@ def main() -> int:
                     f"     ATENÇÃO: salto grande até {s_.nivel_m:.2f} m em {s_.quando:%d/%m %H:%M}"
                     " — pode ser subida rápida real ou falha de sensor. Confira antes de aceitar."
                 )
+            if ev.horario_de != estacao and not ev.relogio_defasado:
+                print(f"     horário da crista pelo relógio de «{ev.horario_de}» — "
+                      f"o de «{estacao}» é defasado ({RELOGIO_DEFASADO.get(estacao, '')})")
+            if ev.relogio_defasado:
+                print(f"     ⚠️  RELÓGIO DEFASADO e sem outro publicador: {RELOGIO_DEFASADO[ev.horario_de]}."
+                      " A proposta sai SEM hora e não grava.")
             if marca:
                 continue
             proposta = {
@@ -407,6 +442,16 @@ def main() -> int:
                 "confianca": "alta",
                 "fonte": f"Defesa Civil de Itajaí, leitura automática ({estacao})",
             }
+            if ev.relogio_defasado:
+                # Sem hora: a única que existe está 3 h fora do lugar, e a data
+                # também pode virar (uma crista rotulada 22:30 é 01:30 do dia
+                # seguinte). Marcada para a trava de gravação lá embaixo.
+                del proposta["hora"]
+                proposta["nota"] = (f"horário não registrado: a única fonte ({ev.horario_de}) "
+                                    f"publica com {RELOGIO_DEFASADO[ev.horario_de]}")
+                proposta["_relogio_defasado"] = True
+            elif ev.horario_de != estacao:
+                proposta["fonte"] += f"; horário pelo relógio de {ev.horario_de}"
             if ev.so_horario:
                 # Sai marcada para a trava de gravação lá embaixo. O campo começa
                 # com `_` para nunca ser confundido com campo de dado.
@@ -436,6 +481,14 @@ def main() -> int:
         print(
             f"ERRO: {len(marcadas)} proposta(s) vêm de datum não calibrado e não podem ser "
             "gravadas.", file=sys.stderr,
+        )
+        return 2
+    sem_relogio = [p for p in propostas if p.get("_relogio_defasado")]
+    if sem_relogio:
+        print(
+            f"ERRO: {len(sem_relogio)} proposta(s) só têm horário de publicador com relógio "
+            "defasado (RELOGIO_DEFASADO) e não podem ser gravadas sem outra fonte de hora.",
+            file=sys.stderr,
         )
         return 2
 
