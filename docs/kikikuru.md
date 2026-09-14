@@ -366,14 +366,24 @@ causas, duas regras:
    municipal de mesma cor e perde o desempate: alerta estadual = atenção municipal, e o municipal
    vai primeiro. A prioridade continua sendo a selecionada, depois a faixa mais grave.
 2. **Pino vizinho é obstáculo.** Um rótulo em cima de outro pino é um nível escrito sobre a cidade
-   errada. A caixa do rótulo (nome + nível, sem a chuva, que fica abaixo do próprio pino) tenta
-   quatro posições nesta ordem — acima centrado, à direita, à esquerda, abaixo — e fica na primeira
-   livre de rótulos e de pinos. Se nenhuma existe, rótulo **com nível** pode cobrir pino **cinza**
-   (sem-dado), nunca um colorido; "sem leitura" não cobre pino nenhum. Sem lugar, some.
+   errada. A caixa do rótulo tenta seis posições nesta ordem — acima centrado, acima à direita,
+   acima à esquerda, abaixo centrado, abaixo à direita, abaixo à esquerda — primeiro COM as linhas
+   de chuva, depois SEM elas, e fica na primeira livre de rótulos e de pinos. Se nenhuma existe,
+   rótulo **com nível** pode cobrir pino **cinza** (sem-dado), nunca um colorido — nem com o nome,
+   nem com a chuva; "sem leitura" não cobre pino nenhum. Sem lugar, some.
+3. **Nas posições laterais o texto encosta no pino.** À direita o texto COMEÇA ao lado do pino;
+   à esquerda TERMINA ao lado dele (`alinhar` no `RotuloDoPino`). Centrado numa caixa de 300 px
+   ("≈3,42 m · faixa estadual · há 20 min"), o nome flutuaria a 150 px da cidade que nomeia.
+4. **Antes de esconder o nome, o rótulo abre mão da chuva.** São quatro linhas abaixo do pino, e
+   numa bacia apertada é a chuva que faz o rótulo cobrir o vizinho.
 
-Por que a segunda regra não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos
-outros, e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam —
-o contrário do que o morador precisa.
+Por que a regra 2 não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos outros,
+e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam — o
+contrário do que o morador precisa. Conferido no Chromium com os dados ao vivo de 14/09: no
+desktop 15 das 19 cidades com nome (somem Gaspar, Rio dos Cedros — mesmo ponto de Timbó —,
+Trombudo Central e Ituporanga, espremida entre Rio do Sul e a barra de reprodução); na bacia
+inteira no celular, o aglomerado Rio do Sul / Lontras / Ibirama / Ituporanga só se resolve com um
+toque no +.
 
 Os testes: `rotulosDoMapa.test.ts` (casos de brinquedo) e `rotulosDaBacia.test.ts`, que monta a
 cena pelo motor de verdade com as cidades e os traçados do repositório, em quatro telas, e confere

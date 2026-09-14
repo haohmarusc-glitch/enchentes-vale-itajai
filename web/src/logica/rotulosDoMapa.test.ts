@@ -44,20 +44,37 @@ const cena = (pinos: Pino[]): Cena =>
   ({ pinos, largura: CENA_LARGURA, altura: 300 }) as unknown as Cena
 
 test('chuva fica abaixo do pino e reserva espaço contra rótulos vizinhos', () => {
-  const c = cena([pino('A', 200, 100), pino('B', 200, 160)])
+  // B está a 70 px: a chuva de A (quatro linhas) desce até ~156 sem tocar o
+  // pino de B (163..177), e o rótulo de B tem de respeitar a chuva de A.
+  const c = cena([pino('A', 200, 100), pino('B', 200, 170)])
   const chuva = new Map([['A', ['1 h: 0 mm', '12 h: 12 mm', '24 h: 20 mm', 'Chuva · há 5 min']]])
   const plano = planejarRotulosDosPinos(medir, c, null, { chuva }, [])
   const a = plano.get('A')!
   assert.ok(a.chuvaY! > 107)
   assert.ok(a.caixa.y1 >= a.chuvaY! + 4 * 11)
   assert.deepEqual(a.chuva, chuva.get('A'))
-  // B não cabe acima (a chuva de A ocupa) e vai para BAIXO do próprio pino,
-  // sem cruzar a caixa de A (14/09/2026: o rótulo tenta outras posições antes
-  // de sumir).
+  // B acha lugar sem cruzar a caixa de A (14/09/2026: o rótulo tenta outras
+  // posições antes de sumir).
   const b = plano.get('B')!
   assert.ok(b, 'B ganha rótulo em outra posição')
-  assert.ok(b.caixa.y0 >= 160 + 7, 'o rótulo de B fica abaixo do pino de B')
   assert.equal(colide(a.caixa, [b.caixa]), false)
+})
+
+test('a chuva nunca cobre pino colorido: antes de esconder o nome, o rótulo abre mão da chuva', () => {
+  // B (colorido) está logo abaixo de A: as quatro linhas de chuva de A
+  // escreveriam por cima do pino de B. A fica com nome e nível, sem chuva.
+  const a = pino('A', 200, 100, { faixa: 'atencao', nivel: 4.6, medidoEm: new Date() })
+  const b = pino('B', 200, 150, { faixa: 'alerta', nivel: 6.1, medidoEm: new Date() })
+  const chuva = new Map([['A', ['1 h: 0 mm', '12 h: 12 mm', '24 h: 20 mm', 'Chuva · há 5 min']]])
+  const plano = planejarRotulosDosPinos(medir, cena([a, b]), null, { chuva, mostrarIdade: true, agora: new Date() }, [])
+  const ra = plano.get('A')!
+  assert.ok(ra, 'A mantém o rótulo')
+  assert.deepEqual(ra.chuva, [], 'sem a chuva, que cobriria o pino de B')
+  assert.equal(colide(ra.caixa, [{ x0: 193, y0: 143, x1: 207, y1: 157 }]), false)
+  // Com B cinza, a chuva pode ficar (regra 2: rótulo com nível cobre só pino cinza).
+  const cinza = pino('B', 200, 150, { faixa: 'sem-dado' })
+  const plano2 = planejarRotulosDosPinos(medir, cena([a, cinza]), null, { chuva, mostrarIdade: true, agora: new Date() }, [])
+  assert.deepEqual(plano2.get('A')!.chuva, chuva.get('A'))
 })
 
 test('A CAIXA USA O TEXTO MAIS LARGO — o defeito que empilhava os rótulos', () => {

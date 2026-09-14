@@ -852,6 +852,14 @@ export interface RotuloDoPino {
   chuvaY?: number
   cx: number
   baseY: number
+  /**
+   * Como o texto se ancora em `cx`: centrado (o de sempre), ou começando
+   * (`left`) / terminando (`right`) ali. Nas posições à direita e à esquerda
+   * do pino o texto encosta no pino em vez de ficar centrado numa caixa larga
+   * — "≈3,42 m · faixa estadual · há 20 min" tem 300 px, e centrado a 150 px
+   * do pino o nome flutuaria longe da cidade que nomeia.
+   */
+  alinhar?: CanvasTextAlign
   nome: string
   sub: string
   caixa: Caixa
@@ -878,8 +886,8 @@ export interface RotuloDoPino {
  * Ituporanga por cima de Rio do Sul). Em todos, a caixa encosta no pino: o
  * rótulo continua colado à cidade que nomeia.
  */
-export type PosicaoDoRotulo = 'centro' | 'direita' | 'esquerda' | 'abaixo'
-export const POSICOES_DO_ROTULO: readonly PosicaoDoRotulo[] = ['centro', 'direita', 'esquerda', 'abaixo']
+export type PosicaoDoRotulo = 'centro' | 'direita' | 'esquerda' | 'abaixo' | 'abaixo-direita' | 'abaixo-esquerda'
+export const POSICOES_DO_ROTULO: readonly PosicaoDoRotulo[] = ['centro', 'direita', 'esquerda', 'abaixo', 'abaixo-direita', 'abaixo-esquerda']
 
 export function caixaDoRotuloDoPino(
   ponto: { x: number; y: number },
@@ -887,22 +895,31 @@ export function caixaDoRotuloDoPino(
   cena: { largura: number },
   escala = 1,
   posicao: PosicaoDoRotulo = 'centro',
-): { cx: number; baseY: number; caixa: Caixa } {
+): { cx: number; baseY: number; caixa: Caixa; alinhar: CanvasTextAlign } {
   const fonte = Math.round(FONTE_PINO * escala)
   const raio = 7 * escala
   const pad = 3 * escala
   const larg = Math.max(larguras.nome, larguras.sub)
   const meia = larg / 2
-  const alvoX =
-    posicao === 'direita' ? ponto.x + raio + pad + meia
-    : posicao === 'esquerda' ? ponto.x - raio - pad - meia
-    : ponto.x
-  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, alvoX))
   const altTotal = larguras.sub > 0 ? ALT_NOME * escala + fonte * 0.95 : ALT_NOME * escala
-  const baseY = posicao === 'abaixo' ? ponto.y + raio + 2 * escala + altTotal : ponto.y - (raio + 2 * escala)
+  const embaixo = posicao.startsWith('abaixo')
+  const baseY = embaixo ? ponto.y + raio + 2 * escala + altTotal : ponto.y - (raio + 2 * escala)
+  // À direita o texto COMEÇA ao lado do pino; à esquerda TERMINA ao lado dele
+  // (em cima ou embaixo do pino). A trava na borda vale igual: a caixa inteira
+  // fica dentro da tela.
+  const lado = posicao.endsWith('direita') ? 'direita' : posicao.endsWith('esquerda') ? 'esquerda' : null
+  if (lado) {
+    const alinhar: CanvasTextAlign = lado === 'direita' ? 'left' : 'right'
+    const alvo = lado === 'direita' ? ponto.x + raio + pad : ponto.x - raio - pad
+    const cx = lado === 'direita' ? Math.max(pad, Math.min(cena.largura - pad - larg, alvo)) : Math.max(pad + larg, Math.min(cena.largura - pad, alvo))
+    const x0 = lado === 'direita' ? cx : cx - larg
+    return { cx, baseY, alinhar, caixa: { x0: x0 - 1, y0: baseY - altTotal, x1: x0 + larg + 1, y1: baseY + 1 } }
+  }
+  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, ponto.x))
   return {
     cx,
     baseY,
+    alinhar: 'center',
     caixa: { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 },
   }
 }
@@ -1020,43 +1037,49 @@ export function planejarRotulosDosPinos(
     // preso na margem apontaria para o lugar errado do mesmo jeito.
     if (!pinoNaTela(p, cena, escala)) continue
     const { nome, sub } = textoDoPino(p, opcoes)
-    const chuva = opcoes.chuva?.get(p.cidade.id) ?? []
-    const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
-    const larguras = { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 }
+    const chuvaDaCidade = opcoes.chuva?.get(p.cidade.id) ?? []
     const chuvaY = p.y + 12 * escala
     const outrosPinos = [...bolinhas].filter(([id]) => id !== p.cidade.id).map(([, b]) => b)
-    // Tenta as posições na ordem: acima centrado, à direita, à esquerda, abaixo.
-    // As linhas de chuva ficam SEMPRE abaixo do pino, então "abaixo" só serve a
-    // quem não tem chuva a mostrar. Cada candidata é medida duas vezes:
+    // Tenta as posições na ordem: acima centrado, acima à direita, acima à
+    // esquerda, abaixo centrado, abaixo à direita, abaixo à esquerda — primeiro
+    // COM as linhas de chuva, depois SEM elas. As linhas de chuva
+    // ficam sempre abaixo do pino (por isso "abaixo" só existe sem chuva), e
+    // são quatro linhas: numa bacia apertada é a chuva que faz o rótulo cobrir
+    // o pino vizinho. Antes de esconder o NOME e o NÍVEL de uma cidade, o
+    // planejador abre mão da chuva dela.
+    //
+    // Cada candidata é medida duas vezes:
     //   1. livre de rótulos E de pinos vizinhos — o lugar ideal;
     //   2. livre de rótulos, cobrindo só pinos CINZAS (sem-dado) — permitido
     //      apenas a rótulo que traz nível. Na bacia inteira no celular os pinos
     //      ficam a 10 px uns dos outros, e a regra dura deixava "Rio do Sul
     //      4,60 m · atenção" de fora enquanto três "sem leitura" cabiam. Um
-    //      pino colorido nunca é coberto: nível escrito sobre cidade de outra
-    //      faixa é o erro que este planejador existe para não cometer.
+    //      pino colorido nunca é coberto — nem pelo nome, nem pela chuva:
+    //      nível escrito sobre cidade de outra faixa é o erro que este
+    //      planejador existe para não cometer.
     // A selecionada fica no lugar de sempre, caiba ou não — ela é primeira na
     // fila e os outros é que cedem.
-    const candidatas = POSICOES_DO_ROTULO
-      .filter((posicao) => !(posicao === 'abaixo' && chuva.length))
-      .map((posicao) => {
-        const cand = caixaDoRotuloDoPino(p, larguras, cena, escala, posicao)
-        // O obstáculo dos pinos vizinhos vale para o RÓTULO (nome + nível),
-        // medido antes da extensão da chuva: a chuva só disputa com outros rótulos.
-        const caixaRotulo: Caixa = { ...cand.caixa }
-        if (chuva.length) cand.caixa.y1 = chuvaY + chuva.length * (fonteSub + 2 * escala)
-        const cobertos = outrosPinos.filter((b) => colide(caixaRotulo, [b.caixa]))
-        return { ...cand, livreDeRotulos: !colide(cand.caixa, caixas), cobertos }
-      })
+    const avaliar = (posicao: PosicaoDoRotulo, chuva: string[]) => {
+      const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
+      const larguras = { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 }
+      const cand = caixaDoRotuloDoPino(p, larguras, cena, escala, posicao)
+      if (chuva.length) cand.caixa.y1 = chuvaY + chuva.length * (fonteSub + 2 * escala)
+      const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
+      return { ...cand, chuva, livreDeRotulos: !colide(cand.caixa, caixas), cobertos }
+    }
+    const candidatas = [
+      ...(chuvaDaCidade.length ? POSICOES_DO_ROTULO.filter((pos) => !pos.startsWith('abaixo')).map((pos) => avaliar(pos, chuvaDaCidade)) : []),
+      ...POSICOES_DO_ROTULO.map((pos) => avaliar(pos, [])),
+    ]
     const temNivel = p.faixa !== 'sem-dado'
     const escolhido =
       candidatas.find((c) => c.livreDeRotulos && c.cobertos.length === 0) ??
       (temNivel ? candidatas.find((c) => c.livreDeRotulos && c.cobertos.every((b) => b.cinza)) : undefined) ??
       (p.cidade.id === selecionada ? candidatas[0] : undefined)
     if (!escolhido) continue
-    const { cx, baseY, caixa } = escolhido
+    const { cx, baseY, caixa, alinhar, chuva } = escolhido
     caixas.push(caixa)
-    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY })
+    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY, alinhar })
   }
   return plano
 }
@@ -1447,7 +1470,7 @@ export function desenharPinos(
     const r = rotulos.get(p.cidade.id)
     if (!r) continue
     const usaBruto = p.nivel == null && p.nivelBruto != null
-    ctx.textAlign = 'center'
+    ctx.textAlign = r.alinhar ?? 'center'
     ctx.lineWidth = 3.2 * escala
     ctx.strokeStyle = 'rgba(4,12,20,0.92)'
     ctx.font = `600 ${fonte}px system-ui, sans-serif`
