@@ -1301,6 +1301,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
               Faixa estadual (tracejado) — classificação da Defesa Civil de SC, não cota deste site
             </li>
+            {/* A linha-guia (14/09/2026): onde os pinos se amontoam, o nome vai
+                para um lugar livre e a seta aponta a cidade dele. */}
+            <li>
+              <span className={`${estilos.amostra} ${estilos.amostraSeta}`} aria-hidden="true">→</span>
+              Seta — o nome ficou afastado por falta de espaço; a ponta indica a cidade dele
+            </li>
             {/* As nove réguas de estuário de Itajaí. Mostram número e não
                 afirmam faixa: a maré cruza a cota sem enchente, e uma cor que
                 acende com a maré ensina a ignorar a cor. */}

@@ -129,14 +129,57 @@ test('dois pinos colados: o de faixa MAIS GRAVE fica com o rótulo', () => {
   if (outro) assert.equal(colide(outro.caixa, [grave.caixa]), false, 'o outro nunca cruza o do mais grave')
 })
 
-test('quando nenhuma posição cabe, o rótulo SOME — nunca escreve por cima', () => {
-  // Rótulos já colocados em cima, à direita, à esquerda e embaixo do pino.
+test('quando nenhuma posição cabe — nem afastada —, o rótulo SOME; nunca escreve por cima', () => {
+  // A tela inteira ocupada, menos a faixa de 18 px onde está o pino: nem as
+  // posições coladas nem os anéis afastados acham lugar.
   const cerco: Caixa[] = [
-    { x0: 0, y0: 100, x1: 400, y1: 141 }, // acima
-    { x0: 0, y0: 159, x1: 400, y1: 300 }, // abaixo
+    { x0: 0, y0: 0, x1: 400, y1: 141 },
+    { x0: 0, y0: 159, x1: 400, y1: 300 },
   ]
   const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, {}, cerco)
   assert.equal(plano.size, 0)
+})
+
+test('sem lugar colado ao pino, o rótulo vai para o lugar livre mais próximo e ganha a LINHA-GUIA', () => {
+  // Uma faixa ocupada de 60 px acima e abaixo do pino: as seis posições
+  // coladas não cabem; os anéis de 40 e 64 px esbarram no cerco; o de 92 px cabe.
+  const cerco: Caixa[] = [
+    { x0: 0, y0: 90, x1: 400, y1: 143 },
+    { x0: 0, y0: 157, x1: 400, y1: 210 },
+  ]
+  // Cópia: o planejador acrescenta a caixa escolhida à lista que recebe.
+  const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, {}, [...cerco])
+  const r = plano.get('x')!
+  assert.ok(r, 'o rótulo existe')
+  assert.ok(r.guia, 'e tem linha-guia')
+  assert.equal(colide(r.caixa, cerco), false, 'sem cruzar o que já estava lá')
+  // A guia sai da caixa e termina na borda do pino (raio 7 + 2), apontando para ele.
+  const { de, para } = r.guia!
+  assert.ok(de.x >= r.caixa.x0 - 0.01 && de.x <= r.caixa.x1 + 0.01 && de.y >= r.caixa.y0 - 0.01 && de.y <= r.caixa.y1 + 0.01, 'a guia nasce na caixa')
+  assert.ok(Math.abs(Math.hypot(para.x - 200, para.y - 150) - 9) < 0.01, 'e morre na borda do pino')
+  // Longe demais não vale: o mais perto que couber. Aqui, o anel de 92 px.
+  const distancia = Math.hypot(r.cx - 200, (r.caixa.y0 + r.caixa.y1) / 2 - 150)
+  assert.ok(distancia > 64 && distancia <= 92 + 1, `distância ${distancia.toFixed(1)}`)
+})
+
+test('rótulo colado ao pino não tem linha-guia', () => {
+  const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, {}, [])
+  assert.equal(plano.get('x')!.guia, undefined)
+})
+
+test('afastado com chuva: as linhas de chuva ficam logo abaixo do nome, não abaixo do pino', () => {
+  const cerco: Caixa[] = [
+    { x0: 0, y0: 90, x1: 400, y1: 143 },
+    { x0: 0, y0: 157, x1: 400, y1: 210 },
+  ]
+  const chuva = new Map([['x', ['1 h: 0 mm', '12 h: 12 mm', '24 h: 20 mm', 'Chuva · há 5 min']]])
+  const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, { chuva }, cerco)
+  const r = plano.get('x')!
+  assert.ok(r && r.guia)
+  if (r.chuva?.length) {
+    assert.ok(r.chuvaY! >= r.baseY, 'a chuva começa abaixo da linha do nome')
+    assert.ok(r.caixa.y1 >= r.chuvaY! + 4 * 11, 'e a caixa reserva as quatro linhas')
+  }
 })
 
 test('"sem leitura" nunca cobre pino; rótulo com nível cobre só pino CINZA, nunca colorido', () => {
@@ -326,4 +369,26 @@ test('estadual mais grave ainda ganha de municipal sem dado e de municipal menos
   // Longe um do outro, ambos aparecem — e a ordem de prioridade é a esperada.
   const longe = planejarRotulosDosPinos(medir, cena([cinza, pino('e2', 300, 250, { faixa: 'alerta', origemFaixa: 'estadual' })]), null, {}, [])
   assert.ok(longe.has('c') && longe.has('e2'))
+})
+
+test('a linha-guia prefere o caminho que não atravessa outro rótulo', () => {
+  // Dois blocos ocupados, um acima e um abaixo do pino, com 200 px de largura:
+  // as seis posições coladas e os anéis até 92 px esbarram neles. No anel de
+  // 124 px, a saída de CIMA cabe mas a guia teria de atravessar o bloco de
+  // cima; a saída LATERAL cabe e a guia passa pelo vão entre os blocos.
+  const ocupadas: Caixa[] = [
+    { x0: 100, y0: 60, x1: 300, y1: 143 },
+    { x0: 100, y0: 157, x1: 300, y1: 230 },
+  ]
+  const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, {}, [...ocupadas])
+  const r = plano.get('x')!
+  assert.ok(r && r.guia)
+  assert.equal(colide(r.caixa, ocupadas), false)
+  assert.ok(Math.abs(r.cx - 200) > 90, `foi para o lado, não para cima (cx=${r.cx.toFixed(0)})`)
+  const { de, para } = r.guia!
+  for (let t = 0; t <= 1; t += 0.05) {
+    const x = de.x + (para.x - de.x) * t
+    const y = de.y + (para.y - de.y) * t
+    assert.ok(!ocupadas.some((c) => x > c.x0 && x < c.x1 && y > c.y0 && y < c.y1), `a guia atravessa um rótulo em (${x.toFixed(0)},${y.toFixed(0)})`)
+  }
 })
