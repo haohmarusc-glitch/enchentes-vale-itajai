@@ -320,11 +320,11 @@ class TestClassificacaoEstadual(unittest.TestCase):
                 self.assertIsNone(c["motivo"])
                 self.assertIn("Defesa Civil de SC", c["fonte"])
 
-    def test_desativado_fica_cinza_mesmo_com_flag(self):
+    def test_sem_faixas_configuradas_fica_cinza_mesmo_com_flag(self):
         c = self.leitura(ativo=0, alerta=1)
         self.assertIsNone(c["faixa"])
         self.assertFalse(c["ativo"])
-        self.assertIn("desativado", c["motivo"])
+        self.assertIn("sem faixas configuradas", c["motivo"])
 
     def test_duas_flags_e_contraditorio_e_fica_cinza(self):
         c = self.leitura(atencao=1, emergencia=1)
@@ -332,10 +332,19 @@ class TestClassificacaoEstadual(unittest.TestCase):
         self.assertFalse(c["coerente"])
         self.assertIn("contraditório", c["motivo"])
 
-    def test_ativo_sem_flag_nao_vira_normal_ate_validar(self):
-        c = self.leitura()
-        self.assertIsNone(c["faixa"], "'normal' só depois de validar a semântica de ativo/status")
-        self.assertIn("não validada", c["motivo"])
+    def test_ativo_sem_flag_e_normal(self):
+        """Validado na VPS em 14/09/2026: Brusque 1,73 m veio ativo=true sem flag, status 0."""
+        c = self.leitura(status=0)
+        self.assertEqual(c["faixa"], "normal")
+        self.assertIsNone(c["motivo"])
+
+    def test_ascurra_sem_faixas_do_estado_e_o_que_a_compdec_disse(self):
+        """Ascurra 8,26 m veio ativo=false: o estado não tem faixas para ela — bate com o C18."""
+        leituras, *_ = converter([estacao(codigo="DCSC-00003", nome="SDC-SC Ascurra", nivel=8.26,
+                                          alarmes=alarme(ativo=0, status=0))])
+        c = leituras[0]["classificacao_estadual"]
+        self.assertIsNone(c["faixa"])
+        self.assertIn("ativo=false", c["motivo"])
 
     def test_sem_rio_alarmes_na_resposta_fica_none(self):
         leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46)])

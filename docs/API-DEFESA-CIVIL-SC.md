@@ -214,7 +214,24 @@ respondia **HTTP 400** e o coletor caía em silêncio para a query de 01/09 — 
 forma provada e o `filter` saiu. **Confirmar na próxima execução**: o aviso "query enriquecida …
 recusada" NÃO pode aparecer; se aparecer, o 400 tem outra causa e a `Historic` de introspecção decide.
 
-**Validação pendente na VPS (antes de pintar o mapa):** rodar `python3 scripts/coleta_nivel_sc.py`
+**✅ Semântica validada (VPS, 14/09/2026 22:10 BRT, 25 estações da bacia, query alinhada):**
+
+| padrão observado | estações | significado |
+|---|---|---|
+| `ativo=false`, sem flag, `status=0` | Agronômica 4,58 · **Ascurra 8,26** · Benedito Novo · Indaial 6,38 · Ilhota 9,76 · Arraial | **sem faixas configuradas pelo estado** — Ascurra é a prova: a COMPDEC escreveu que "não existe referência de faixa estabelecida pelo estado em cima de nossas cotas" |
+| `ativo=true`, sem flag, `status=0` | Brusque 1,73 · Timbó 2,42 · Vidal Ramos 2,54 · Taió 4,53 · Agrolândia 0,90 · Pouso Redondo · Trombudo · Dr. Pedrinho · Pres. Getúlio · R. Cedros · barragens (11) | **NORMAL** — Brusque abaixo da atenção estadual de 3 m confirma |
+| `ativo=true`, `atencao=1`, `status=2` | Rio do Sul 5,48 · Lontras 5,39 · Laurentino 5,39 · Ibirama 2,67 · Botuverá 3,19 | atenção — Rio do Sul 5,48 também é atenção na régua municipal (4,50–5,50) |
+| `ativo=true`, `alerta=1`, `status=1` | José Boiteux 3,05 · Ituporanga 3,44 | alerta |
+
+Conclusões gravadas em `coleta_nivel_sc.classificar_alarmes`: `ativo` = "tem faixas configuradas",
+não "alarme disparado"; `ativo=true` sem flag = **normal** (agora afirmado); `status` é rótulo
+(0 normal, 2 atenção, 1 alerta; emergência não observada), nunca decide. Nenhuma leitura
+contraditória na amostra.
+
+**Camada 2 (pintar o mapa pela classificação estadual)** — falta só o mock aprovado pelo Jefferson.
+Conferência opcional que ainda vale: a cor de duas ou três estações em NORMAL no mapa oficial.
+
+**Validação pendente na VPS (antes de pintar o mapa) — FEITA, acima:** rodar `python3 scripts/coleta_nivel_sc.py`
 e conferir em `ultimo_nivel_sc.json` (a) se estações em NORMAL no site oficial vêm com `ativo: true`
 e nenhuma flag (então "normal" pode ser afirmado) ou com `ativo: false`; (b) a tabela `status` ×
 flag em várias estações; (c) que nenhuma leitura veio `contraditório`.

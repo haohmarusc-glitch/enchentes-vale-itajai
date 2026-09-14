@@ -40,15 +40,16 @@ export interface BrutoEstadual {
    * Faixa que a PRÓPRIA Defesa Civil de SC publica para a estação (`rio_alarmes`),
    * no datum dela — C7. Não é a faixa deste projeto e não vem de cota nossa: é a
    * classificação da fonte, já validada pelo coletor (ativo=true, uma flag só).
-   * Null quando a fonte não classificou, está desativada ou é contraditória.
+   * Null quando a fonte não classificou, não tem faixas configuradas para a estação
+   * (ativo=false — o caso de Ascurra, Indaial, Ilhota) ou é contraditória.
    */
   faixaEstadual?: FaixaEstadual | null
   /** Por que não há faixa estadual, quando o coletor explicou. */
   motivoFaixaEstadual?: string | null
 }
 
-export type FaixaEstadual = 'atencao' | 'alerta' | 'emergencia'
-const FAIXAS_ESTADUAIS: readonly FaixaEstadual[] = ['atencao', 'alerta', 'emergencia']
+export type FaixaEstadual = 'normal' | 'atencao' | 'alerta' | 'emergencia'
+const FAIXAS_ESTADUAIS: readonly FaixaEstadual[] = ['normal', 'atencao', 'alerta', 'emergencia']
 
 /** Uma leitura bruta por cidade (a mais fresca). Só para EXIBIR, nunca cota. */
 export type NivelSc = Map<string, BrutoEstadual>
