@@ -85,7 +85,7 @@ import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
 import estilos from './MonitorBacia.module.css'
 
 /** Nomes das faixas que a Defesa Civil de SC publica (C7) — rotuladas como dela, nunca como nossas. */
-const NOME_FAIXA_ESTADUAL = { atencao: 'ATENÇÃO', alerta: 'ALERTA', emergencia: 'EMERGÊNCIA' } as const
+const NOME_FAIXA_ESTADUAL = { normal: 'NORMAL', atencao: 'ATENÇÃO', alerta: 'ALERTA', emergencia: 'EMERGÊNCIA' } as const
 
 // Traçados como URL (o Vite emite à parte). A bacia toda: Açu + Mirim, mais os
 // afluentes que existirem no pacote (Benedito, Luís Alves, Hercílio) — opcionais,

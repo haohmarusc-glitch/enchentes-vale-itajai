@@ -56,9 +56,13 @@ régua da leitura.
   aplica as condições (ativo=true; ≤ 1 flag; contraditório/desativado → `null` com motivo), publica
   `classificacao_estadual` no `ultimo_nivel_sc.json` e `faixa_estadual` na série; o site mostra a faixa no painel
   do bruto, rotulada "Classificação da Defesa Civil de SC", só com leitura recente. Nada entra em `leituras` → bot
-  intocado por construção (teste). "normal" NÃO é afirmado até validar `ativo`/`status` com dados reais.
-  ⏳ **Camada 2 (pintar o MAPA pela classificação estadual, com identidade visual própria):** depende da validação
-  na VPS (docs/API-DEFESA-CIVIL-SC.md) e de um mock aprovado pelo Jefferson. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
+  intocado por construção (teste). ✅ **Semântica validada na VPS em 14/09 (25 estações)**: `ativo` = "tem faixas
+  configuradas" (Ascurra veio `ativo=false`, exatamente como a COMPDEC disse); `ativo=true` sem flag = **normal**
+  (Brusque 1,73 m); `status` é rótulo (0/2/1), nunca decide. "Normal" passou a ser afirmado. Tabela em
+  `docs/API-DEFESA-CIVIL-SC.md`.
+  ⏳ **Camada 2 (pintar o MAPA pela classificação estadual, com identidade visual própria):** falta só o mock
+  aprovado pelo Jefferson. Candidatas hoje: Rio do Sul, Lontras, Laurentino, Ibirama, Botuverá (atenção), José
+  Boiteux e Ituporanga (alerta) — todas cinzas no mapa por falta de cota casada. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
   `atencao`/`alerta`/`emergencia` já classificadas pela própria Defesa Civil de SC — no datum dela. É a
   saída para pintar cidades onde não temos cota casada com a régua, sem comparar metro com metro e sem
   inventar cota: mostra-se a faixa da fonte, dizendo de quem é. O `coleta_nivel_sc.py` ainda não lê esse
@@ -186,3 +190,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 14/09/2026 ~03:30 BRT · **C7 camada 1**: classificação estadual coletada e validada (9 testes Python), exibida no painel do bruto (parser + 1 teste web); "normal" e o mapa esperam a validação de `ativo`/`status` na VPS.
 - 14/09/2026 ~04:00 BRT · #333 mesclado (E4, Ascurra no back-end, correção das duas réguas, C7 camada 1). **Jefferson: Ascurra fica no Telegram.** Falta a validação do C7 na VPS (`ativo`/`status`).
 - 14/09/2026 ~04:30 BRT · VPS confirma **Ascurra na coleta** (8,26 m, normal). Achado: a query enriquecida de 03/09 dava **HTTP 400** desde sempre (fallback silencioso), então `type`/`tem_nivel_do_rio`/`rio_alarmes` nunca chegaram; alinhada à forma que funcionou no script de 13/09 (`{ value }` nos objetos, sem `filter`). Validação do C7 espera a próxima execução sem o aviso.
+- 14/09/2026 ~04:50 BRT · **C7 validado na VPS**: query enriquecida aceita; 25 estações classificadas; semântica de `ativo`/`status` fechada; "normal" afirmado. Camada 2 (mapa) espera o mock.

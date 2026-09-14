@@ -141,7 +141,8 @@ QUERY_CAMPOS_NOVOS = (
     'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
 )
 
-#: As três faixas que a Defesa Civil de SC publica em `rio_alarmes.inundacao`, na ordem.
+#: As três flags que a Defesa Civil de SC publica em `rio_alarmes.inundacao`, na ordem; "normal"
+#: é a ausência das três com `ativo=true` (validado em 14/09/2026, ver classificar_alarmes).
 FAIXAS_ESTADUAIS = ("atencao", "alerta", "emergencia")
 
 
@@ -177,12 +178,18 @@ def classificar_alarmes(rio_bloco: dict) -> dict | None:
         e a `fonte` diz de quem é; nada disto entra em `leituras`, então o bot de cotas
         (que só lê `leituras`) não dispara por isto. Telegram continua fora.
 
-    O que este código NÃO afirma ainda: o significado de `ativo` quando nenhuma flag está
-    ligada (feature ligada e rio normal? ou "nenhum alarme ativo"?) e a numeração de
-    `status`, que parece invertida em relação à severidade (atencao=2, alerta=1 na amostra
-    de 13/09). Por isso `faixa` só assume atencao/alerta/emergencia — nunca "normal" — até a
-    semântica ser validada com dados reais na VPS (docs/API-DEFESA-CIVIL-SC.md). O bruto
-    inteiro fica no dicionário para essa auditoria.
+    SEMÂNTICA VALIDADA com dados reais (VPS, 14/09/2026 22:10 BRT, 25 estações — tabela em
+    docs/API-DEFESA-CIVIL-SC.md):
+      * `ativo` = "esta estação TEM faixas configuradas pela Defesa Civil de SC", não "alarme
+        disparado". Prova: Ascurra a 8,26 m veio `ativo=false` sem flag — e a COMPDEC de Ascurra
+        escreveu que "não existe referência de faixa estabelecida pelo estado em cima de nossas
+        cotas". Indaial, Ilhota, Agronômica, Benedito Novo e Arraial idem.
+      * `ativo=true` sem flag = NORMAL. Prova: Brusque 1,73 m (atenção estadual > 3 m), Timbó
+        2,42, Vidal Ramos 2,54, Taió 4,53 — onze estações, todas baixas.
+      * `status` é RÓTULO, não severidade: 0 normal, 2 atenção, 1 alerta (emergência não
+        observada). Continua só registrado; nunca decide.
+    Por isso `faixa` assume "normal" quando ativo e sem flag; `None` (cinza) só quando a estação
+    não tem faixas configuradas (ativo=false) ou é contraditória.
     """
     inund = ((rio_bloco.get("rio_alarmes") or {}).get("inundacao") or {})
     if not isinstance(inund, dict) or not inund:
@@ -196,11 +203,11 @@ def classificar_alarmes(rio_bloco: dict) -> dict | None:
     faixa = None
     motivo = None
     if not ativo_ok:
-        motivo = "desativado (ativo != true)"
+        motivo = "sem faixas configuradas pela Defesa Civil de SC para esta estação (ativo=false)"
     elif not coerente:
         motivo = "contraditório: " + " e ".join(ligadas) + " ligadas ao mesmo tempo"
     elif not ligadas:
-        motivo = "ativo sem faixa ligada — semântica de 'normal' ainda não validada"
+        faixa = "normal"
     else:
         faixa = ligadas[0]
     return {
