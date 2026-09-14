@@ -794,3 +794,11 @@
   min-height: 0;
   border-radius: 0;
 }
+
+/* Faixa estadual (C7): amostra tracejada, sem cor fixa — a cor no mapa é a da
+   faixa que o estado publicar; o que a distingue é o traço. */
+.amostraTracejada {
+  background: transparent !important;
+  border: 2px dashed rgba(234, 241, 248, 0.85);
+  box-shadow: none;
+}
