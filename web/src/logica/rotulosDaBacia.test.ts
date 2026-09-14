@@ -166,3 +166,15 @@ test('a cidade selecionada sempre tem rótulo e nenhum outro rótulo cobre o del
     for (const [tela, lista] of Object.entries(escondidos)) assert.ok(!lista.includes(sel), `${tela}: a selecionada ${sel} ficou sem rótulo`)
   }
 })
+
+test('Timbó e Rio dos Cedros caem no mesmo ponto do traçado e são postos lado a lado — os dois com nome', () => {
+  const tempoReal: EstadoTempoReal = { situacao: 'ok', chuva: [], chuvaOk: true, coletadoEm: agora, fonte: null, leituras: leiturasEmTodas() }
+  const cena = construirCena(el, rios, tempoReal, agora, 1400, 800, null)
+  const timbo = cena.pinos.find((p) => p.cidade.id === 'timbo')!
+  const cedros = cena.pinos.find((p) => p.cidade.id === 'rio-dos-cedros')!
+  assert.ok(timbo && cedros)
+  assert.ok(Math.abs(timbo.x - cedros.x) >= 20, `os pinos ficaram a ${Math.abs(timbo.x - cedros.x).toFixed(1)} px um do outro`)
+  assert.equal(timbo.y, cedros.y)
+  const plano = planejarRotulosDosPinos(medir, cena, null, { escala: escalaDe(1400), mostrarIdade: true, agora }, [])
+  assert.ok(plano.has('timbo') && plano.has('rio-dos-cedros'), 'os dois ganham nome na tela grande')
+})

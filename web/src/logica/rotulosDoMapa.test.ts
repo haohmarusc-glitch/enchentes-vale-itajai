@@ -69,7 +69,10 @@ test('a chuva nunca cobre pino colorido: antes de esconder o nome, o rótulo abr
   const plano = planejarRotulosDosPinos(medir, cena([a, b]), null, { chuva, mostrarIdade: true, agora: new Date() }, [])
   const ra = plano.get('A')!
   assert.ok(ra, 'A mantém o rótulo')
-  assert.deepEqual(ra.chuva, [], 'sem a chuva, que cobriria o pino de B')
+  // A chuva vem antes da distância: em vez de largar a chuva, o rótulo se
+  // afasta com ela e ganha a linha-guia — e nem assim cobre o pino de B.
+  assert.deepEqual(ra.chuva, chuva.get('A'), 'a chuva fica')
+  assert.ok(ra.guia, 'o rótulo se afastou com a chuva, com linha-guia')
   assert.equal(colide(ra.caixa, [{ x0: 193, y0: 143, x1: 207, y1: 157 }]), false)
   // Com B cinza, a chuva pode ficar (regra 2: rótulo com nível cobre só pino cinza).
   const cinza = pino('B', 200, 150, { faixa: 'sem-dado' })
@@ -130,11 +133,12 @@ test('dois pinos colados: o de faixa MAIS GRAVE fica com o rótulo', () => {
 })
 
 test('quando nenhuma posição cabe — nem afastada —, o rótulo SOME; nunca escreve por cima', () => {
-  // A tela inteira ocupada, menos a faixa de 18 px onde está o pino: nem as
-  // posições coladas nem os anéis afastados acham lugar.
+  // A tela inteira ocupada, menos a faixa de 10 px onde está o pino: nem as
+  // posições coladas nem os anéis afastados acham lugar — nem para o nome
+  // sozinho (14 px), que é o último degrau.
   const cerco: Caixa[] = [
-    { x0: 0, y0: 0, x1: 400, y1: 141 },
-    { x0: 0, y0: 159, x1: 400, y1: 300 },
+    { x0: 0, y0: 0, x1: 400, y1: 145 },
+    { x0: 0, y0: 155, x1: 400, y1: 300 },
   ]
   const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, {}, cerco)
   assert.equal(plano.size, 0)
@@ -391,4 +395,54 @@ test('a linha-guia prefere o caminho que não atravessa outro rótulo', () => {
     const y = de.y + (para.y - de.y) * t
     assert.ok(!ocupadas.some((c) => x > c.x0 && x < c.x1 && y > c.y0 && y < c.y1), `a guia atravessa um rótulo em (${x.toFixed(0)},${y.toFixed(0)})`)
   }
+})
+
+test('o rótulo existe INTEIRO dentro da tela: pino na borda de cima ganha o nome embaixo ou num anel', () => {
+  // A cidade colada na borda superior: acima não há tela. O nome cortado ao
+  // lado de outro inteiro era o que parecia "réguas sobrepondo" (14/09/2026).
+  const plano = planejarRotulosDosPinos(medir, cena([pino('borda', 200, 4)]), null, {}, [])
+  const r = plano.get('borda')!
+  assert.ok(r)
+  assert.ok(r.caixa.y0 >= 0 && r.caixa.y1 <= 300 && r.caixa.x0 >= 0 && r.caixa.x1 <= CENA_LARGURA, `caixa fora da tela: ${JSON.stringify(r.caixa)}`)
+  assert.ok(r.caixa.y0 > 4, 'o nome ficou abaixo do pino')
+})
+
+test('com chuva, o rótulo prefere afastar-se com ela a ficar colado sem ela', () => {
+  // Abaixo do pino, um rótulo já ocupa o lugar da chuva; à direita há espaço.
+  const ocupada: Caixa[] = [{ x0: 120, y0: 112, x1: 280, y1: 200 }]
+  const chuva = new Map([['x', ['1 h: 0 mm', '12 h: 12 mm', '24 h: 20 mm', 'Chuva · há 5 min']]])
+  const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 100)]), null, { chuva }, [...ocupada])
+  const r = plano.get('x')!
+  assert.ok(r)
+  assert.deepEqual(r.chuva, chuva.get('x'), 'a chuva fica')
+  assert.ok(r.guia, 'o rótulo se afastou com linha-guia')
+  assert.equal(colide(r.caixa, ocupada), false)
+})
+
+test('pino com o centro fora da tela não ganha nome, mesmo que a bolinha ainda apareça', () => {
+  // Timbó meio pixel acima da borda (14/09/2026): o nome nascia "abaixo",
+  // em cima do pino cinza de Indaial, e parecia o nome de Indaial.
+  const plano = planejarRotulosDosPinos(medir, cena([pino('timbo', 200, -3), pino('indaial', 200, 40)]), null, {}, [])
+  assert.equal(plano.has('timbo'), false)
+  assert.ok(plano.has('indaial'))
+})
+
+test('último degrau antes de sumir: só o nome, sem o nível, com a linha-guia', () => {
+  // Um corredor de 30 px de altura livre a 92 px acima do pino: o rótulo
+  // completo (nome + nível, ~25 px) não cabe junto com a margem das caixas
+  // vizinhas; só o nome (14 px) cabe.
+  // (o anel de 92 px põe o centro da caixa em y = 58: o corredor 48..68 cabe
+  // o nome sozinho, 14 px, e não cabe o rótulo completo, 25 px)
+  const ocupadas: Caixa[] = [
+    { x0: 0, y0: 0, x1: 400, y1: 48 },
+    { x0: 0, y0: 68, x1: 400, y1: 300 },
+  ]
+  const p = pino('x', 200, 150, { faixa: 'atencao', nivel: 4.6, medidoEm: new Date() })
+  const plano = planejarRotulosDosPinos(medir, cena([p]), null, { mostrarIdade: true, agora: new Date() }, [...ocupadas])
+  const r = plano.get('x')!
+  assert.ok(r, 'o nome aparece')
+  assert.equal(r.sub, '', 'sem a linha do nível')
+  assert.equal(r.nome, 'x')
+  assert.ok(r.guia, 'com a linha-guia')
+  assert.equal(colide(r.caixa, ocupadas), false)
 })

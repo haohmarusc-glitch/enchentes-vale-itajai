@@ -388,6 +388,18 @@ causas, duas regras:
    guia que atravessaria outro rótulo, ou uma caixa que cairia sobre uma guia já traçada, perde a
    vez para a candidata limpa; só entra se não houver outra. Sem lugar nem nos anéis, some.
    Na legenda do Monitor: "Seta — o nome ficou afastado por falta de espaço".
+6. **A chuva vem antes da distância** (Jefferson, 14/09/2026, segunda captura: "algumas cidades
+   ainda sem dados de chuva"). Todas as candidatas COM chuva — coladas e depois afastadas — vêm
+   antes de qualquer candidata sem chuva. Só quando a chuva não cabe em lugar nenhum ela é
+   abandonada; e o último degrau antes de esconder é **só o nome**, sem a linha do nível (a caixa
+   encolhe pela metade; o número fica no toque, a cor do pino continua dizendo a faixa).
+7. **Rótulo só existe inteiro dentro da tela, e só para pino com o centro na tela.** As posições
+   coladas não tinham trava vertical: com o pino de Timbó meio pixel acima da borda, o nome dele
+   nascia "abaixo" — em cima do pino cinza de Indaial, que ficou parecendo Timbó ("réguas
+   sobrepondo", na captura). O pino que só encosta na borda continua desenhado; o nome, não.
+8. **Pinos que caem no mesmo ponto são postos lado a lado** (`separarPinosCoincidentes`): Timbó e
+   Rio dos Cedros, afluentes sem traçado próprio, encaixavam no mesmo vértice do Açu, e o de baixo
+   nunca achava lugar para o nome. É deslocamento cartográfico, não posição.
 
 Por que a regra 2 não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos outros,
 e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam — o
