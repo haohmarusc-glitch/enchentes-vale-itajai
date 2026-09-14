@@ -56,6 +56,18 @@ export function cidadesComCotas(cotas: CotaRua[]): string[] {
  * Ordena as que têm cota primeiro, da mais baixa para a mais alta: a rua que
  * alaga antes é a que a pessoa precisa ver antes.
  */
+/**
+ * Quantas ruas a busca mostra de uma vez.
+ *
+ * POR QUE EXISTE (14/09/2026). Digitar "Rua" em Blumenau devolvia 1.894
+ * resultados numa página só — no celular, no meio da chuva, é rolagem que não
+ * acaba, e quem procura a própria rua desiste antes. O corte mantém as que
+ * alagam PRIMEIRO (a lista já vem ordenada pela cota mais baixa), que são as
+ * que importam a quem está decidindo sair de casa, e a tela diz quantas ficaram
+ * de fora e o que fazer para achar a sua.
+ */
+export const MAX_RESULTADOS_BUSCA = 12
+
 export function buscar(cotas: CotaRua[], cidadeId: string, termo: string): CotaRua[] {
   const alvo = normalizar(termo)
   if (alvo.length < 2) return []
