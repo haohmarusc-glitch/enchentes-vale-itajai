@@ -147,6 +147,25 @@ Os **textos** de cada faixa (rótulo + a frase que remete à Defesa Civil) vêm 
 `data/faixas.json` — fonte única — e o site nunca recomenda ação: as únicas
 chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
 
+### A exceção rotulada: a faixa ESTADUAL (C7, 14/09/2026)
+
+Onde a cidade **não tem** faixa municipal (`sem-dado`, e não `varias`), o mapa pode
+pintar com a classificação que a **própria Defesa Civil de SC** publica para a
+estação dela (`rio_alarmes`, no datum da estação — `ultimo_nivel_sc.json`,
+campo `classificacao_estadual`). Não é comparação de metro com metro nem cota
+inventada: é o veredito da fonte, mostrado como dela. Regras, todas em
+`mapaMotor.ts` (`faixaEstadualDe`, `OrigemFaixa`) e trancadas por
+`faixaEstadualNoMapa.test.ts`:
+
+- só entra onde a municipal é `sem-dado`; **a municipal manda** sempre;
+- mesma paleta, **traço tracejado** no trecho e **contorno tracejado** no pino
+  (miolo claro, sem brilho) — a bolinha cheia e o bloom são só da cota nossa;
+- rótulo "faixa estadual" no pino; no painel, "Classificação da Defesa Civil de SC";
+- "normal" também pinta (decisão do Jefferson, 14/09/2026);
+- leitura estadual velha (> 3 h) volta a cinza, como a municipal;
+- **correnteza parada**: animação = nível na régua nossa, e esta cor não é nossa;
+- nada disso entra em `leituras`: o bot de cotas não dispara por classificação estadual.
+
 ## Os componentes
 
 | O quê | Arquivo | Lê de |

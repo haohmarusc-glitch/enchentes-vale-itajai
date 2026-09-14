@@ -60,9 +60,12 @@ régua da leitura.
   configuradas" (Ascurra veio `ativo=false`, exatamente como a COMPDEC disse); `ativo=true` sem flag = **normal**
   (Brusque 1,73 m); `status` é rótulo (0/2/1), nunca decide. "Normal" passou a ser afirmado. Tabela em
   `docs/API-DEFESA-CIVIL-SC.md`.
-  ⏳ **Camada 2 (pintar o MAPA pela classificação estadual, com identidade visual própria):** falta só o mock
-  aprovado pelo Jefferson. Candidatas hoje: Rio do Sul, Lontras, Laurentino, Ibirama, Botuverá (atenção), José
-  Boiteux e Ituporanga (alerta) — todas cinzas no mapa por falta de cota casada. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
+  ✅ **Camada 2 feita em 14/09** (mock aprovado pelo Jefferson: tracejado + contorno tracejado no pino + rótulo;
+  "normal" também pinta; correnteza parada): `mapaMotor.ts` ganha `OrigemFaixa`/`faixaEstadualDe`; trecho e pino
+  tracejados, sem bloom; `textoDoPino` diz "faixa estadual"; legenda ganha a entrada. 6 testes pela cena real
+  (`faixaEstadualNoMapa.test.ts`). Ganham cor: Ituporanga (alerta), Lontras, Ibirama, Botuverá (atenção), Vidal
+  Ramos, Timbó, Rio dos Cedros (normal). Indaial e Ilhota seguem cinzas (o estado não tem faixas para elas).
+  Regra registrada em `docs/kikikuru.md`. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
   `atencao`/`alerta`/`emergencia` já classificadas pela própria Defesa Civil de SC — no datum dela. É a
   saída para pintar cidades onde não temos cota casada com a régua, sem comparar metro com metro e sem
   inventar cota: mostra-se a faixa da fonte, dizendo de quem é. O `coleta_nivel_sc.py` ainda não lê esse
@@ -191,3 +194,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 14/09/2026 ~04:00 BRT · #333 mesclado (E4, Ascurra no back-end, correção das duas réguas, C7 camada 1). **Jefferson: Ascurra fica no Telegram.** Falta a validação do C7 na VPS (`ativo`/`status`).
 - 14/09/2026 ~04:30 BRT · VPS confirma **Ascurra na coleta** (8,26 m, normal). Achado: a query enriquecida de 03/09 dava **HTTP 400** desde sempre (fallback silencioso), então `type`/`tem_nivel_do_rio`/`rio_alarmes` nunca chegaram; alinhada à forma que funcionou no script de 13/09 (`{ value }` nos objetos, sem `filter`). Validação do C7 espera a próxima execução sem o aviso.
 - 14/09/2026 ~04:50 BRT · **C7 validado na VPS**: query enriquecida aceita; 25 estações classificadas; semântica de `ativo`/`status` fechada; "normal" afirmado. Camada 2 (mapa) espera o mock.
+- 14/09/2026 ~05:40 BRT · **C7 camada 2** no mapa: faixa estadual tracejada, rotulada e parada, só onde não há faixa municipal. 557/557 no site.

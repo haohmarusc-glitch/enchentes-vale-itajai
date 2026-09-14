@@ -19,7 +19,7 @@ import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import type { BrutoEstadual, NivelSc } from '../dados/nivelSc'
-import { deBrasilia, faixaDaCidade, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
+import { deBrasilia, faixaDaCidade, frescor, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { estadoMareAgora, type EstadoMare } from '../logica/mare'
 import { metros } from '../logica/formato'
 import {
@@ -126,9 +126,23 @@ export const MARGEM = 18
 const VEL_PX = 28 // px/s visuais, independentes de nível, chuva ou maré
 
 /** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
+/**
+ * De onde veio a cor de um trecho ou pino (C7, camada 2 — 14/09/2026).
+ *
+ *  - `municipal`: cota do projeto na régua da própria cidade — o de sempre.
+ *  - `estadual`: a cidade NÃO tem faixa municipal e a Defesa Civil de SC publica,
+ *    para a estação dela, a classificação já pronta (`rio_alarmes`, no datum da
+ *    estação). Pinta com a MESMA paleta, mas TRACEJADO, com "faixa estadual" no
+ *    pino e correnteza parada — cor nunca autoriza movimento, e esta cor não é
+ *    nossa. Nunca sobrepõe a municipal: só entra onde a municipal é `sem-dado`.
+ */
+export type OrigemFaixa = 'municipal' | 'estadual'
+
 export interface Trecho {
   /** Independente da faixa: ausência desta autorização mantém ambos os efeitos parados. */
   animacao?: 'direcional' | 'parada'
+  /** Ausente = municipal (o de sempre). `estadual` desenha tracejado e não corre. */
+  origemFaixa?: OrigemFaixa
   pts: [number, number][]
   faixa: Faixa
   cum: number[]
@@ -156,6 +170,8 @@ export interface Pino {
   x: number
   y: number
   faixa: Faixa
+  /** De onde veio `faixa`. `estadual` só quando a municipal é `sem-dado`. */
+  origemFaixa?: OrigemFaixa
   nivel: number | null
   medidoEm: Date | null
   /**
@@ -267,6 +283,22 @@ export type LeituraNaHora = (
   cidadeId: string,
 ) => { nivel_m: number; medidoEm: Date | null } | null
 
+/** Traço tracejado da faixa estadual, em px de tela (antes da escala). */
+export const TRACEJADO_ESTADUAL: [number, number] = [10, 8]
+
+/**
+ * A faixa que a Defesa Civil de SC publica para a estação da cidade, quando dá
+ * para pintar com ela: precisa existir, ter carimbo e ser fresca (o mesmo
+ * limite de 3 h da leitura municipal). Puro, para o teste. Não decide se a
+ * municipal manda — isso é de quem chama.
+ */
+export function faixaEstadualDe(bruto: BrutoEstadual | null, agora: Date): Faixa | null {
+  if (!bruto?.faixaEstadual) return null
+  if (!bruto.medidoEm || !Number.isFinite(bruto.medidoEm.getTime())) return null
+  if (frescor(idadeMin(bruto.medidoEm, agora)) === 'velha') return null
+  return bruto.faixaEstadual
+}
+
 export function construirCena(
   el: Element,
   rios: RioParaCena[],
@@ -324,9 +356,16 @@ export function construirCena(
         // Bruto só entra AO VIVO (não em leituraNaHora/reprodução — ver o
         // parâmetro nivelBrutoSc).
         const bruto = !leituraNaHora ? (nivelBrutoSc?.get(cidade.id) ?? null) : null
+        const municipal = faixaDaCidade(cidade, aoVivo, temVarias, agora)
+        // C7, camada 2: sem faixa municipal (e sem o impasse de várias réguas),
+        // a classificação da própria Defesa Civil de SC pinta — tracejada e
+        // rotulada. Só com leitura fresca: velha fica cinza, como a municipal.
+        const estadual =
+          municipal === 'sem-dado' && !aoVivo ? faixaEstadualDe(bruto, agora) : null
         return {
           cidade,
-          faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
+          faixa: estadual ?? municipal,
+          origemFaixa: (estadual ? 'estadual' : 'municipal') as OrigemFaixa,
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
           nivelBruto: aoVivo ? null : bruto,
@@ -401,6 +440,13 @@ export function construirCena(
       }
       const cidadeAresta = (i: number): string | null =>
         ancoraEm(meioDaAresta(i))?.cidade.id ?? null
+      // A origem acompanha a âncora (o corte de trecho já é por âncora), e o
+      // DC-11 é referência municipal.
+      const origemAresta = (i: number): OrigemFaixa => {
+        const p = meioDaAresta(i)
+        if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) return 'municipal'
+        return ancoraEm(p)?.origemFaixa ?? 'municipal'
+      }
       // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
       const progMax = cumEspinha[cumEspinha.length - 1] || 1
       const progMidDe = (a: number, b: number): number => {
@@ -412,13 +458,18 @@ export function construirCena(
       let pts: [number, number][] = [projetar(enq, seq[0]!)]
       let cur = faixaAresta(1)
       let curCidade = cidadeAresta(1)
+      let curOrigem = origemAresta(1)
       let ini = 0
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
         trechos.push({
-          animacao: orientada && (rio.rioId === 'itajai-acu' || curCidade !== 'itajai') ? 'direcional' : 'parada',
+          // Faixa estadual não corre: a regra do Kikikuru é "animação = nível na
+          // régua nossa", e esta cor não é nossa (decisão do Jefferson, 14/09/2026).
+          animacao: curOrigem === 'estadual' ? 'parada'
+            : orientada && (rio.rioId === 'itajai-acu' || curCidade !== 'itajai') ? 'direcional' : 'parada',
           pts,
           faixa: cur,
+          origemFaixa: curOrigem,
           cum,
           total,
           progMid: progMidDe(ini, fim),
@@ -438,6 +489,7 @@ export function construirCena(
           pts = [projetar(enq, seq[i]!)]
           cur = prox!
           curCidade = proxCidade
+          curOrigem = origemAresta(i + 1)
           ini = i
         }
       }
@@ -456,6 +508,7 @@ export function construirCena(
         x,
         y,
         faixa: a.faixa,
+        origemFaixa: a.origemFaixa,
         nivel: a.nivel,
         medidoEm: a.medidoEm,
         nivelBruto: a.nivelBruto,
@@ -554,10 +607,12 @@ export function desenharBase(
     for (const t of cena.trechos) {
       if (t.pts.length < 2) continue
       caminhoTrecho(ctx, t.pts)
+      tracejadoSe(ctx, t, escala)
       const base = t.faixa === 'sem-dado' ? 2.4 : 3.4 * LARGURA_FAIXA[t.faixa]
       ctx.lineWidth = (base + 3.2) * escala
       ctx.stroke()
     }
+    ctx.setLineDash([])
     ctx.globalAlpha = 1
   }
 
@@ -565,13 +620,16 @@ export function desenharBase(
   for (const t of cena.trechos) {
     if (t.pts.length < 2 || t.faixa === 'sem-dado') continue
     caminhoTrecho(ctx, t.pts)
+    tracejadoSe(ctx, t, escala)
     ctx.strokeStyle = cena.cores[t.faixa]
     ctx.shadowColor = cena.cores[t.faixa]
-    ctx.shadowBlur = 12 * LARGURA_FAIXA[t.faixa] * escala
+    // Estadual: sem bloom — o brilho é a assinatura da cota nossa.
+    ctx.shadowBlur = t.origemFaixa === 'estadual' ? 0 : 12 * LARGURA_FAIXA[t.faixa] * escala
     ctx.globalAlpha = 0.9
     ctx.lineWidth = 3.4 * LARGURA_FAIXA[t.faixa] * escala
     ctx.stroke()
   }
+  ctx.setLineDash([])
   ctx.shadowBlur = 0
 
   // 2) O cinza (sem-dado), apagado e sem brilho.
@@ -588,14 +646,25 @@ export function desenharBase(
   for (const t of cena.trechos) {
     if (t.pts.length < 2 || t.faixa === 'sem-dado') continue
     caminhoTrecho(ctx, t.pts)
+    tracejadoSe(ctx, t, escala)
     ctx.strokeStyle = 'rgba(255,255,255,0.5)'
     ctx.globalAlpha = 1
     ctx.lineWidth = 1.4 * LARGURA_FAIXA[t.faixa] * escala
     ctx.stroke()
   }
+  ctx.setLineDash([])
   ctx.globalAlpha = 1
 
   desenharEtiquetaMare(ctx, cena, escala)
+}
+
+/** Tracejado só na faixa estadual; o resto volta ao traço cheio. */
+function tracejadoSe(ctx: CanvasRenderingContext2D, t: Trecho, escala: number): void {
+  ctx.setLineDash(
+    t.origemFaixa === 'estadual'
+      ? [TRACEJADO_ESTADUAL[0] * escala, TRACEJADO_ESTADUAL[1] * escala]
+      : [],
+  )
 }
 
 function desenharMar(ctx: CanvasRenderingContext2D, cena: Cena): void {
@@ -843,9 +912,15 @@ export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; 
         ? `${metros(p.nivel)} · ${idade}`
         : metros(p.nivel)
       : usaBruto
-        ? idadeBruto
-          ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
-          : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
+        ? p.origemFaixa === 'estadual'
+          // A cor deste pino é a classificação da Defesa Civil de SC: o rótulo
+          // diz isso ao lado do número, para ninguém ler como cota nossa.
+          ? idadeBruto
+            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} · faixa estadual · ${idadeBruto}`
+            : `≈${metros(p.nivelBruto!.nivelBrutoM)} · faixa estadual`
+          : idadeBruto
+            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
+            : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
         : p.faixa === 'varias' ? 'várias réguas · toque para ver'
         : (idade ?? semNumero(p.cidade, opcoes.temRegua))
   return { nome: p.cidade.nome, sub: sub ?? '' }
@@ -1286,16 +1361,21 @@ export function desenharPinos(
       ctx.lineWidth = 2 * escala
       ctx.stroke()
     }
+    const estadual = p.origemFaixa === 'estadual'
     ctx.beginPath()
     ctx.arc(p.x, p.y, sel ? raio + 1 * escala : raio, 0, Math.PI * 2)
-    ctx.fillStyle = cena.cores[p.faixa]
-    ctx.shadowColor = cinza ? 'transparent' : cena.cores[p.faixa]
-    ctx.shadowBlur = cinza ? 0 : 10 * escala
+    // Faixa estadual: miolo claro e contorno TRACEJADO na cor — a mesma
+    // assinatura do trecho; a bolinha cheia e brilhante é só da cota nossa.
+    ctx.fillStyle = estadual ? 'rgba(255,255,255,0.92)' : cena.cores[p.faixa]
+    ctx.shadowColor = cinza || estadual ? 'transparent' : cena.cores[p.faixa]
+    ctx.shadowBlur = cinza || estadual ? 0 : 10 * escala
     ctx.fill()
     ctx.shadowBlur = 0
-    ctx.lineWidth = 2 * escala
-    ctx.strokeStyle = cinza ? 'rgba(180,195,210,0.8)' : 'rgba(255,255,255,0.92)'
+    ctx.lineWidth = (estadual ? 2.5 : 2) * escala
+    ctx.setLineDash(estadual ? [3 * escala, 2 * escala] : [])
+    ctx.strokeStyle = estadual ? cena.cores[p.faixa] : cinza ? 'rgba(180,195,210,0.8)' : 'rgba(255,255,255,0.92)'
     ctx.stroke()
+    ctx.setLineDash([])
   }
 
   // Os rótulos: quem cabe foi decidido em `planejarRotulosDosPinos`, que é
