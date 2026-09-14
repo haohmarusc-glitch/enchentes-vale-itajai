@@ -15,7 +15,7 @@ régua da leitura.
 | A2 | Lontras | 52,4 | faixas amarradas à DCSC-00032, ou o zero dela | COMPDEC Lontras | [ ] **C16 enviado** em 10/09/2026; aguarda resposta |
 | A3 | Botuverá | 46,9 | faixas + régua nomeada (pistas de 09/09 não bastam) | COMPDEC Botuverá | [ ] **C17 enviado** em 10/09/2026; aguarda resposta |
 | A4 | Ilhota | 36,4 | em que régua estão 9,20 / 10,00 / 10,50 e o zero | COMPDEC Ilhota | [ ] **C11 enviado** em 10/09/2026; aguarda resposta |
-| A5 | Ascurra | 18,2 | integrar leitura DCSC-00003 ao fluxo operacional e testar limites das faixas | implementação | [~] **C18 respondido** em 11/09/2026; faixas e Ponte do Beber cadastradas. [Evidência](resposta-ascurra-c18-2026-09-11.md). Cor ainda pendente |
+| A5 | Ascurra | 18,2 | — | — | [x] ✅ **PINTA**: no site desde 12/09 (`referenciaAscurra.ts`, exceção do front pelo bruto); no back-end desde 14/09 — a leitura da DCSC-00003 entra em `leituras` por `scripts/coleta_estadual_com_cota.py` com `codigo`, e bot, extrator, vigia e `conferir_cobertura` passam a vê-la (allowlist trancada por teste contra o `estacoes.json`; o front deduplica por `codigo`). Ganho medido no `ultimo.json`: Açu 62 % → 68 % (+18,2 km). [Evidência](resposta-ascurra-c18-2026-09-11.md) |
 | A6 | Gaspar | 16,9 | regularizar cadência (portal acessível no PC, nível ainda de 19:07 às 22:11); esclarecer legenda e o "ALERTA a 1,74 m" de 10/09 | Jefferson (celular/PC) + C10 | [ ] **C10 enviado** em 10/09/2026; aguarda resposta |
 | A7 | Indaial | 16,0 | UM número: deslocamento régua COMPDEC (RN 1402-X) ↔ DCSC-00006 | COMPDEC Indaial | [ ] **C19 enviado** em 10/09/2026; aguarda resposta |
 | A8 | Guabiruba | 4,8 | faixas e curso d'água da régua (ribeirão, não o Mirim) | COMPDEC Guabiruba | [ ] **C20 aprovado**, envio pendente de destinatário confirmado |
@@ -49,7 +49,16 @@ régua da leitura.
   `docs/API-DEFESA-CIVIL-SC.md` e o catálogo em `data/brutos/dcsc-estacoes-2026-09-13.csv`. Falta portar
   o coletor para as convenções do repo (`comum`, `data/series/dcsc/` do consolidador, fuso de Brasília)
   com testes. **Este ambiente não alcança o host** (bloqueio de egresso) — validação só na VPS.
-- [ ] C7 · **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
+- [ ] C7 · ✅ **APROVADO em 14/09/2026, com condições** (Jefferson): exigir `ativo = true`, carimbo recente e
+  indicadores coerentes entre si; estação desativada ou contraditória **permanece cinza**; a tela identifica
+  como **classificação estadual** (não como faixa do projeto); **não libera Telegram** automaticamente.
+  ✅ **Camada 1 feita em 14/09 (PR próprio):** `coleta_nivel_sc.classificar_alarmes` lê `rio_alarmes.inundacao`,
+  aplica as condições (ativo=true; ≤ 1 flag; contraditório/desativado → `null` com motivo), publica
+  `classificacao_estadual` no `ultimo_nivel_sc.json` e `faixa_estadual` na série; o site mostra a faixa no painel
+  do bruto, rotulada "Classificação da Defesa Civil de SC", só com leitura recente. Nada entra em `leituras` → bot
+  intocado por construção (teste). "normal" NÃO é afirmado até validar `ativo`/`status` com dados reais.
+  ⏳ **Camada 2 (pintar o MAPA pela classificação estadual, com identidade visual própria):** depende da validação
+  na VPS (docs/API-DEFESA-CIVIL-SC.md) e de um mock aprovado pelo Jefferson. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
   `atencao`/`alerta`/`emergencia` já classificadas pela própria Defesa Civil de SC — no datum dela. É a
   saída para pintar cidades onde não temos cota casada com a régua, sem comparar metro com metro e sem
   inventar cota: mostra-se a faixa da fonte, dizendo de quem é. O `coleta_nivel_sc.py` ainda não lê esse
@@ -59,7 +68,15 @@ régua da leitura.
   de 30 m. Antes de usar qualquer valor novo da rede estadual, conferir estação por estação — Ilhota
   9,96 m e Guabiruba 24,83 m passam pelo filtro e não se sabe em que zero estão.
 - [ ] C5 · Cruzar `data/series/dcsc/` com `data/tempo-real/*.ndjson` da VPS (mesma rede, mesmo fuso) — depende de B5.
-- [ ] C6 · Com cada resposta de COMPDEC: gravar `cotas_m` + `regua_das_cotas_fonte`, teste do par, e medir o ganho em km com `conferir_cobertura.py`.
+- [~] C6 · Com cada resposta de COMPDEC: gravar `cotas_m` + `regua_das_cotas_fonte`, teste do par, e medir o ganho em km com `conferir_cobertura.py`.
+  ✅ **Ascurra (14/09/2026)**: cotas já estavam gravadas e o SITE já pintava pelo bruto (`referenciaAscurra.ts`, 12/09); faltava
+  o elo no back-end — o bruto estadual sai com `usar_para_cota=False` para todas e nunca entrava no `ultimo.json`, então bot,
+  extrator, vigia e `conferir_cobertura` não viam Ascurra. Achado no caminho: sem `codigo` na leitura o site veria DUAS réguas
+  e apagaria a cor — o `tempoReal.ts` passou a ler `codigo` e a exceção do front virou fallback (3 testes web). Novo `coleta_estadual_com_cota.py`: allowlist por estação, só com prova ESCRITA da COMPDEC de que as
+  faixas estão na escala da própria estação; `TesteOParEstaTrancadoNoEstacoesJson` cobra `codigo_dcsc`, `cotas_m.atencao`
+  e `regua_das_cotas_fonte`. Ganho: +18,2 km (Açu 62 % → 68 %). Consequência a saber: Ascurra passa a valer para o
+  bot de cotas como qualquer cidade com cota própria (atenção 8,50 m) — é cota municipal na régua municipal, não
+  classificação estadual (C7). Se quiser Ascurra fora do Telegram por ora, é uma linha.
 
 ## D. Evento de 10/09/2026 — onda descendo a bacia
 
@@ -87,8 +104,13 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - [x] E3 · Evento inteiro extraído da VPS: **4.028 leituras de 19 réguas, 10/09 00:00 → 12/09 23:59**, em
   `data/brutos/cheia-2026-09-11-12.ndjson`. Analisado com o `extrair_picos.py`, que precisou de um
   conserto para enxergar Blumenau (E8) e revelou o desvio de 3 h (E9).
-- [ ] E4 · Decidir se as cristas entram em `enchentes.json` (picos de 2026 com régua nomeada nos dois
-  lados; decisão do Jefferson).
+- [x] E4 · ✅ **Decidido em 14/09/2026: entram como MÁXIMOS OBSERVADOS, não como pico definitivo.** Gravados em
+  `enchentes.json` os dois de Blumenau — **7,58 m às 09:00 de 01/09** e **7,87 m às 05:15 de 12/09** — com fonte
+  (AlertaBlu + repasse, mesma régua ANA 83800002), horário pelo relógio do AlertaBlu, `referencia: "régua"` e
+  `nota` dizendo que só viram pico depois de confirmada a cobertura do evento contra o registro oficial
+  ("Enchentes Registradas" da Defesa Civil de Blumenau). Ressalva gravada no de 01/09: a série do AlertaBlu
+  começa exatamente às 09:00 daquele dia. Os demais máximos que o extrator propôs (Brusque 4,88 e 4,62;
+  réguas de Itajaí) ficam para a mesma regra, quando o Jefferson quiser.
 - [ ] E5 · Conferir o `estado_alertas.json` da VPS: Blumenau em alerta é o caso que o bot existe para
   cobrir.
 - [ ] E6 · Indaial: uma única leitura municipal no período (4,10 m em 12/09 22:00, acima do alerta
@@ -109,8 +131,9 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
   **1 cm em 218 pares exatamente em +3 h 00** (contra 55 cm sem deslocar) — três horas redondas, cara de
   conversão de fuso aplicada duas vezes. O valor está certo; o relógio é que mente. Nada foi "corrigido"
   no dado de ninguém. Detalhe e tabela em `docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md`.
-- [ ] E10 · **Enviar o ofício C23** à Defesa Civil de Itajaí — liberado em 14/09 (E12 fechado). Falta
-  confirmar o e-mail do destinatário.
+- [x] E10 · ⛔ **C23 não sai** — decisão do Jefferson em 14/09/2026: mantida a orientação de não enviar ofício ao
+  município de Itajaí (mesma do C21). O contato é por telefone (47 3228-7700). O achado do desvio de 3 h fica
+  registrado (E12) e pode ser dito na ligação.
 - [x] E12 · ✅ **FECHADO em 14/09/2026: o relógio certo é o do AlertaBlu; o repasse da Defesa Civil de
   Itajaí está 3 h atrás.** A física sozinha era ambígua (Indaial→Blumenau dá 0,00 h pelo repasse ou
   3,00 h pelo AlertaBlu; Blumenau→Ilhota 5,8 h ou 2,0 h; Ascurra→Indaial mede 1,17 h em ~15 km, o que
@@ -158,3 +181,6 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 13/09/2026 ~21:00 BRT · **E9 fechado**: teste das duas fontes no mesmo minuto na VPS confirma que o carimbo 3 h atrasado de Blumenau nasce na página da Defesa Civil de Itajaí (DC-10 da mesma página com 12 min de idade); medida fina dá +3 h 00 exatos, 1 cm em 218 pares. Ofício C23 rascunhado (E10); trava no código pendente (E11). **B6 chegou**: levantamento da API GraphQL da Defesa Civil de SC (`docs/API-DEFESA-CIVIL-SC.md`), catálogo das 66 estações do Vale e `scripts/baixar_historico_dcsc.py` (14 testes, formato casado com o consolidador). Novos: C7 (`rio_alarmes`, a faixa oficial sem cota) e C8 (guarda de unidade). PR #328 mesclado.
 - 14/09/2026 ~00:40 BRT · **E12 fechado a favor do AlertaBlu** pela hora de parede dos boletins e da imprensa de 11/09 (a física era ambígua). **E11 travado** no extrator. **C23 liberado** (falta o e-mail). Séries DCSC de 10 min da cheia (10 estações) trazidas para `data/brutos/dcsc-cheia-2026-09-11-12/` — primeira execução real do `baixar_historico_dcsc.py` na VPS, sem falha. Luiz Alves (DCSC-00062) vem 100 % em cota absoluta (686 implausíveis): confirma o C8.
 - 14/09/2026 ~01:20 BRT · **E13**: 75 leituras órfãs do AlertaBlu (01–04/09, sem `resgate_de`) corrigidas na VPS com backup; extrator passa a ver Blumenau como uma régua e propõe 7,58 m (01/09 09:00) e 7,87 m (12/09 05:00), ambos pelo relógio do AlertaBlu. VPS em `0605166`.
+- 14/09/2026 ~02:00 BRT · Caixa de e-mail conferida: nada novo desde 11/09 (Ascurra respondeu em 11/09, já incorporada; Itajaí pediu ligação em 02/09; LAI Cemaden respondida em 10/09, já documentada; sem resposta de outros 12 destinatários). **Decisões do Jefferson**: E4 sim, como máximos observados (gravados); C7 sim, com condições; **C23 não sai** (nenhum ofício ao município de Itajaí; contato por telefone); O Blumenauense e SGB/SACE são consultas que o Claude pode fazer.
+- 14/09/2026 ~02:40 BRT · **Ascurra no back-end** (C6): `coleta_estadual_com_cota.py` + 7 testes; `coleta_niveis` soma a leitura da DCSC-00003 com `usar_para_cota=True` e `codigo`; site lê `codigo` e a exceção `referenciaAscurra.ts` vira fallback (550/550). Cobertura medida no `ultimo` congelado de 13/09: Açu 200 → 219 km vivos.
+- 14/09/2026 ~03:30 BRT · **C7 camada 1**: classificação estadual coletada e validada (9 testes Python), exibida no painel do bruto (parser + 1 teste web); "normal" e o mapa esperam a validação de `ativo`/`status` na VPS.

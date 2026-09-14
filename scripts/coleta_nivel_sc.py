@@ -127,9 +127,80 @@ QUERY_CAMPOS_NOVOS = (
     'query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
     'codigo name { general local } timestamp type position { bacia latitude longitude } '
     'filter { relacao { tem_nivel_do_rio tem_vazao_do_rio tem_chuva_acumulada } } '
-    'data { rio { rio_nome rio_nivel { value } rio_area_drenagem } '
+    'data { rio { rio_nome rio_nivel { value } rio_area_drenagem '
+    'rio_alarmes { inundacao { ativo { value } status { value } '
+    'atencao { value } alerta { value } emergencia { value } } } } '
     'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
 )
+
+#: As três faixas que a Defesa Civil de SC publica em `rio_alarmes.inundacao`, na ordem.
+FAIXAS_ESTADUAIS = ("atencao", "alerta", "emergencia")
+
+
+def _flag(bloco: dict, chave: str):
+    x = bloco.get(chave)
+    return x.get("value") if isinstance(x, dict) else None
+
+
+def _ligada(v) -> bool:
+    return v in (1, True, "1")
+
+
+def classificar_alarmes(rio_bloco: dict) -> dict | None:
+    """`rio_alarmes.inundacao` -> classificação ESTADUAL validada, ou None quando a API não trouxe.
+
+    C7 (aprovado pelo Jefferson em 14/09/2026, com condições): a API publica, por estação,
+    as flags atencao/alerta/emergencia JÁ CLASSIFICADAS pela Defesa Civil de SC, no datum
+    dela. Isso contorna o problema do zero sem violá-lo: não se compara metro com metro nem
+    se inventa cota — mostra-se a faixa que a fonte declara, dizendo de quem é.
+
+    Condições, e o que cada uma vira aqui:
+      * `ativo = true` obrigatório — desativado fica `faixa: None` (cinza);
+      * indicadores coerentes — no máximo UMA das três flags ligada; duas ou mais é
+        contraditório e fica `faixa: None`, com o motivo escrito;
+      * horário recente — é o `medido_em` da leitura, julgado por quem exibe (o site já
+        recusa leitura velha); aqui só se registra;
+      * identificado como classificação ESTADUAL — o campo chama `classificacao_estadual`
+        e a `fonte` diz de quem é; nada disto entra em `leituras`, então o bot de cotas
+        (que só lê `leituras`) não dispara por isto. Telegram continua fora.
+
+    O que este código NÃO afirma ainda: o significado de `ativo` quando nenhuma flag está
+    ligada (feature ligada e rio normal? ou "nenhum alarme ativo"?) e a numeração de
+    `status`, que parece invertida em relação à severidade (atencao=2, alerta=1 na amostra
+    de 13/09). Por isso `faixa` só assume atencao/alerta/emergencia — nunca "normal" — até a
+    semântica ser validada com dados reais na VPS (docs/API-DEFESA-CIVIL-SC.md). O bruto
+    inteiro fica no dicionário para essa auditoria.
+    """
+    inund = ((rio_bloco.get("rio_alarmes") or {}).get("inundacao") or {})
+    if not isinstance(inund, dict) or not inund:
+        return None
+    ativo = _flag(inund, "ativo")
+    status = _flag(inund, "status")
+    flags = {f: _flag(inund, f) for f in FAIXAS_ESTADUAIS}
+    ligadas = [f for f in FAIXAS_ESTADUAIS if _ligada(flags[f])]
+    ativo_ok = _ligada(ativo)
+    coerente = len(ligadas) <= 1
+    faixa = None
+    motivo = None
+    if not ativo_ok:
+        motivo = "desativado (ativo != true)"
+    elif not coerente:
+        motivo = "contraditório: " + " e ".join(ligadas) + " ligadas ao mesmo tempo"
+    elif not ligadas:
+        motivo = "ativo sem faixa ligada — semântica de 'normal' ainda não validada"
+    else:
+        faixa = ligadas[0]
+    return {
+        "faixa": faixa,
+        "ativo": ativo_ok,
+        "coerente": coerente,
+        "atencao": _ligada(flags["atencao"]),
+        "alerta": _ligada(flags["alerta"]),
+        "emergencia": _ligada(flags["emergencia"]),
+        "status": status if e_numero(status) else None,
+        "motivo": motivo,
+        "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+    }
 
 
 def e_numero(valor) -> bool:
@@ -238,7 +309,8 @@ def converter(
         if v > LIMITE_M and cod not in RESERVATORIOS:                  # armadilha 3 (valor absurdo)
             suspeitas.append({**base, "nivel_bruto_m": round(v, 2), "motivo": f"> {LIMITE_M} m: altitude/grandeza errada"})
             continue
-        leituras.append({**base, "nivel_bruto_m": round(v, 2)})
+        leituras.append({**base, "nivel_bruto_m": round(v, 2),
+                         "classificacao_estadual": classificar_alarmes(rio_bloco)})
     return leituras, sem_leitura, suspeitas, nao_mede_nivel
 
 
@@ -247,6 +319,7 @@ def _linha_serie(l: dict) -> dict:
     return {
         "codigo": l.get("codigo"), "cidade": l.get("cidade"), "estacao": l.get("estacao"),
         "datum": l.get("datum"), "nivel_bruto_m": l.get("nivel_bruto_m"), "medido_em": l.get("medido_em"),
+        "faixa_estadual": (l.get("classificacao_estadual") or {}).get("faixa"),
     }
 
 

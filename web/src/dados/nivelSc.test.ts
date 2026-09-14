@@ -70,3 +70,17 @@ test('semana vem do campo de 168h, sem inferir a partir de 24h', () => {
   for (const [valor, esperado] of [[127.84,127.84],[0,0],[null,null],[-1,null],[Infinity,null],['127',null]])
     assert.equal(montarNivelSc({leituras:[{...base,chuva_168h_mm:valor}]}).get('ascurra')?.chuva168hMm, esperado)
 })
+
+test('lê a classificação estadual (C7) só quando o coletor a validou; senão null', () => {
+  const base = { cidade: 'rio-do-sul', estacao: 'SDC-SC Rio do Sul', codigo: 'DCSC-00013', nivel_bruto_m: 5.46, medido_em: '2026-09-13T20:05:00' }
+  const ok = montarNivelSc({ leituras: [{ ...base, classificacao_estadual: { faixa: 'atencao', ativo: true, coerente: true, motivo: null } }] })
+  assert.equal(ok.get('rio-do-sul')?.faixaEstadual, 'atencao')
+  const cinza = montarNivelSc({ leituras: [{ ...base, classificacao_estadual: { faixa: null, ativo: false, motivo: 'desativado (ativo != true)' } }] })
+  assert.equal(cinza.get('rio-do-sul')?.faixaEstadual, null)
+  assert.equal(cinza.get('rio-do-sul')?.motivoFaixaEstadual, 'desativado (ativo != true)')
+  const lixo = montarNivelSc({ leituras: [{ ...base, classificacao_estadual: { faixa: 'normal' } }, { ...base, cidade: 'x', classificacao_estadual: 'atencao' }] })
+  assert.equal(lixo.get('rio-do-sul')?.faixaEstadual, null, "'normal' e strings soltas não viram faixa")
+  assert.equal(lixo.get('x')?.faixaEstadual, null)
+  const sem = montarNivelSc({ leituras: [base] })
+  assert.equal(sem.get('rio-do-sul')?.faixaEstadual, null)
+})

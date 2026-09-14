@@ -1106,6 +1106,28 @@
     },
     {
       "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2026-09-01",
+      "hora": "09:00",
+      "pico_m": 7.58,
+      "confianca": "alta",
+      "fonte": "Coleta automática do projeto — AlertaBlu (Defesa Civil de Blumenau), régua da Ponte Adolfo Konder (ANA 83800002); valor conferido no repasse da Defesa Civil de Itajaí (mesma régua)",
+      "referencia": "régua",
+      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. Ressalva de cobertura: a série do AlertaBlu começa exatamente às 09:00 de 01/09 (primeira leitura do resgate), então o máximo real pode ter sido um pouco antes; o repasse, 3 h atrasado (E12), cobre a manhã e não mostra valor maior. Acima da cota de atenção (4,00 m) de 01/09 00:05 a 03/09 01:00. Horário pelo relógio do AlertaBlu."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2026-09-12",
+      "hora": "05:15",
+      "pico_m": 7.87,
+      "confianca": "alta",
+      "fonte": "Coleta automática do projeto — repasse da Defesa Civil de Itajaí e AlertaBlu (Defesa Civil de Blumenau), régua da Ponte Adolfo Konder (ANA 83800002); imprensa de 12/09 (ND Mais, O Blumenauense, Jornal Razão) cita 7,87 m às 5h20",
+      "referencia": "régua",
+      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. O 7,87 m veio do repasse com rótulo 02:15, que está 3 h atrás do real (E12: 05:15); o AlertaBlu horário registra 7,86 m às 05:00 e 06:00 — platô de ~2 h. Acima da cota de atenção (4,00 m) de 10/09 11:35 a 13/09 21:00, 260 leituras. A maior cheia medida pela coleta do projeto; ficou 1 cm abaixo da primeira cota de rua (7,88 m, Rua São Rafael). Série completa em data/brutos/cheia-2026-09-11-12.ndjson; análise em docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md."
+    },
+    {
+      "rio": "itajai-acu",
       "cidade": "rio-do-sul",
       "data": "1911-05",
       "pico_m": 12.2,

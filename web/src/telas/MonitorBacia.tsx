@@ -37,7 +37,7 @@ import { useNivelSc } from '../dados/nivelSc'
 import { useBarragens } from '../dados/barragens'
 import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
-import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
+import { idadeMin, textoIdade, type Faixa, frescor } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
 import { dataHora, metros, rotuloCota } from '../logica/formato'
 import {
@@ -83,6 +83,9 @@ import {
 import VariasReguas from '../componentes/VariasReguas'
 import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
 import estilos from './MonitorBacia.module.css'
+
+/** Nomes das faixas que a Defesa Civil de SC publica (C7) — rotuladas como dela, nunca como nossas. */
+const NOME_FAIXA_ESTADUAL = { atencao: 'ATENÇÃO', alerta: 'ALERTA', emergencia: 'EMERGÊNCIA' } as const
 
 // Traçados como URL (o Vite emite à parte). A bacia toda: Açu + Mirim, mais os
 // afluentes que existirem no pacote (Benedito, Luís Alves, Hercílio) — opcionais,
@@ -1516,6 +1519,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                     {' — '}
                     {brutoSc.estacao}
                   </p>
+                  {brutoSc.faixaEstadual && brutoSc.medidoEm && frescor(idadeMin(brutoSc.medidoEm, agora)) !== 'velha' ? (
+                    <p className={estilos.painelExtra}>
+                      <strong>Classificação da Defesa Civil de SC: {NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual]}</strong>
+                      {' — '}faixa declarada pela própria rede estadual, no datum desta estação. Não é a faixa de cor deste pino e não aciona aviso.
+                    </p>
+                  ) : null}
                   {brutoSc.codigo && <a href={`https://monitoramento.defesacivil.sc.gov.br/estacao/${brutoSc.codigo}`} target="_blank" rel="noreferrer">Consultar estação na Defesa Civil de SC</a>}
                   {cid.id === 'indaial' && <p>As cotas municipais de 3 / 4 / 5,5 m são da régua dos fundos da Celesc, indicada no <a href="https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/edit" target="_blank" rel="noreferrer">documento de acompanhamento de Indaial</a>. Não são aplicadas à leitura da terceira ponte.</p>}
                   <p className={estilos.painelRessalva}>

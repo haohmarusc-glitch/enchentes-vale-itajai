@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { comReferenciaAscurra } from './referenciaAscurra'
+import { leituraDaCidade } from './tempoReal'
 import { faixaDaCidade } from '../logica/tempoReal'
 import { faixaAscurra } from '../logica/municipal'
 import type { EstadoTempoReal } from './tempoReal'
@@ -35,4 +36,17 @@ test('não substitui nem mistura régua desconhecida com a documentada', () => {
   assert.equal(dados.leituras.length,2)
   assert.equal(dados.leituras[0],outra)
   assert.equal(faixaDaCidade(cidade,outra,false,agora),'sem-dado')
+})
+test('quando o ultimo.json já traz a DCSC-00003 (back-end), a exceção não duplica e a cidade elege a leitura', () => {
+  const doBackend = {codigo:'DCSC-00003',cidade:'ascurra',rio:'itajai-acu',estacao:'Ascurra — Ponte do Beber (DCSC-00003)',nivel_m:8.94,medidoEm:agora,resgateDe:null}
+  const dados = comReferenciaAscurra({...estado,leituras:[doBackend]},new Map([['ascurra',bruto]]))
+  assert.equal(dados.leituras.length,1)
+  assert.equal(dados.leituras[0],doBackend)
+  assert.equal(leituraDaCidade(dados,'itajai-acu','ascurra'),doBackend)
+  assert.equal(faixaDaCidade(cidade,doBackend,false,agora),'atencao')
+})
+test('sem a DCSC-00003 no ultimo.json, o fallback pelo bruto continua valendo', () => {
+  const dados = comReferenciaAscurra(estado,new Map([['ascurra',bruto]]))
+  assert.equal(dados.leituras.length,1)
+  assert.equal(leituraDaCidade(dados,'itajai-acu','ascurra')?.codigo,'DCSC-00003')
 })

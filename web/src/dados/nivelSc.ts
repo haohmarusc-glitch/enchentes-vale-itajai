@@ -36,7 +36,19 @@ export interface BrutoEstadual {
   chuva168hMm?: number | null
   /** Instante da medição, em hora de Brasília. Null quando a fonte não o publicou. */
   medidoEm: Date | null
+  /**
+   * Faixa que a PRÓPRIA Defesa Civil de SC publica para a estação (`rio_alarmes`),
+   * no datum dela — C7. Não é a faixa deste projeto e não vem de cota nossa: é a
+   * classificação da fonte, já validada pelo coletor (ativo=true, uma flag só).
+   * Null quando a fonte não classificou, está desativada ou é contraditória.
+   */
+  faixaEstadual?: FaixaEstadual | null
+  /** Por que não há faixa estadual, quando o coletor explicou. */
+  motivoFaixaEstadual?: string | null
 }
+
+export type FaixaEstadual = 'atencao' | 'alerta' | 'emergencia'
+const FAIXAS_ESTADUAIS: readonly FaixaEstadual[] = ['atencao', 'alerta', 'emergencia']
 
 /** Uma leitura bruta por cidade (a mais fresca). Só para EXIBIR, nunca cota. */
 export type NivelSc = Map<string, BrutoEstadual>
@@ -59,7 +71,12 @@ function brutoValido(bruta: unknown): BrutoEstadual | null {
   const chuva24hMm = typeof chuva === 'number' && Number.isFinite(chuva) && chuva >= 0 && chuva <= 1000 ? chuva : null
   const semanal = l.chuva_168h_mm
   const chuva168hMm = typeof semanal === 'number' && Number.isFinite(semanal) && semanal >= 0 && semanal <= 3000 ? semanal : null
-  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm }
+  const cls = typeof l.classificacao_estadual === 'object' && l.classificacao_estadual !== null
+    ? (l.classificacao_estadual as Record<string, unknown>) : null
+  const faixaCrua = cls?.faixa
+  const faixaEstadual = FAIXAS_ESTADUAIS.find((f) => f === faixaCrua) ?? null
+  const motivoFaixaEstadual = typeof cls?.motivo === 'string' && cls.motivo.trim() !== '' ? cls.motivo : null
+  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm, faixaEstadual, motivoFaixaEstadual }
 }
 
 /** Constrói o mapa cidade → bruto mais fresco a partir do JSON cru. */

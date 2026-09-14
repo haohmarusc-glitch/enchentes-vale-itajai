@@ -216,9 +216,14 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C23 — Defesa Civil de Itajaí: o nível de Blumenau é publicado com carimbo de hora 3 h atrasado (RASCUNHO LIBERADO em 14/09 — falta só confirmar o e-mail)
+## C23 — Defesa Civil de Itajaí: o nível de Blumenau é publicado com carimbo de hora 3 h atrasado (⛔ NÃO ENVIAR — decisão do Jefferson em 14/09/2026: mantida a orientação de não enviar ofício ao município de Itajaí)
 
-> ✅ **LIBERADO em 14/09/2026 (madrugada).** A direção do desvio ficou em dúvida por algumas horas
+> ⛔ **NÃO ENVIAR (decisão do Jefferson, 14/09/2026).** Vale a mesma orientação do C21: nenhum ofício ao
+> município de Itajaí; o contato com a Defesa Civil de Itajaí é por telefone (47 3228-7700, como o
+> próprio dcoperacoes@itajai.sc.gov.br pediu em 02/09). O texto fica aqui como registro técnico do
+> achado — o desvio de 3 h continua real e documentado (E12) — e pode ser dito na ligação.
+>
+> ✅ Direção do desvio confirmada em 14/09/2026 (madrugada). A direção do desvio ficou em dúvida por algumas horas
 > em 13/09 (a crista de Ilhota parecia contradizer o AlertaBlu) e foi fechada por uma prova
 > independente da física: os boletins da Defesa Civil de Blumenau e as matérias da noite de 11/09,
 > em **hora de parede**, batem com o relógio do AlertaBlu e não com o do repasse — "5,78 m às 20h"

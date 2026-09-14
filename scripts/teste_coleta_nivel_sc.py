@@ -26,7 +26,8 @@ from coleta_nivel_sc import acumular_serie, buscar, converter, e_numero, hora_lo
 def estacao(codigo="DCSC-00006", nome="SDC-SC Indaial", local="",
             bacia="SC - Rio Itajaí-Açu", nivel=6.86, chuva24=13.5,
             carimbo="2026-09-01T23:42:54+00:00",
-            tipo=None, tem_nivel_do_rio=None, rio_nome=None, rio_area_drenagem=None):
+            tipo=None, tem_nivel_do_rio=None, rio_nome=None, rio_area_drenagem=None,
+            alarmes=None):
     d = {
         "codigo": codigo,
         "name": {"general": nome, "local": local},
@@ -42,7 +43,15 @@ def estacao(codigo="DCSC-00006", nome="SDC-SC Indaial", local="",
         d["type"] = tipo
     if tem_nivel_do_rio is not None:
         d["filter"] = {"relacao": {"tem_nivel_do_rio": tem_nivel_do_rio}}
+    if alarmes is not None:
+        d["data"]["rio"]["rio_alarmes"] = {"inundacao": alarmes}
     return d
+
+
+def alarme(ativo=1, atencao=0, alerta=0, emergencia=0, status=None):
+    """O bloco `rio_alarmes.inundacao` como a API o publica: cada campo em {value}."""
+    return {"ativo": {"value": ativo}, "status": {"value": status},
+            "atencao": {"value": atencao}, "alerta": {"value": alerta}, "emergencia": {"value": emergencia}}
 
 
 class TestFuso(unittest.TestCase):
@@ -289,6 +298,67 @@ class TestChuvaSemanal(unittest.TestCase):
         leituras, *_ = converter([estacao()])
         self.assertIsNone(leituras[0]['chuva_168h_mm'])
 
+
+
+class TestClassificacaoEstadual(unittest.TestCase):
+    """C7: a faixa que a Defesa Civil de SC publica, com as condições do Jefferson (14/09/2026)."""
+
+    def leitura(self, **alarmes):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nome="SDC-SC Rio do Sul",
+                                          nivel=5.46, alarmes=alarme(**alarmes))])
+        self.assertEqual(len(leituras), 1)
+        return leituras[0]["classificacao_estadual"]
+
+    def test_uma_flag_ligada_e_ativo_vira_faixa(self):
+        for nome, kw in (("atencao", {"atencao": 1, "status": 2}),
+                         ("alerta", {"alerta": 1, "status": 1}),
+                         ("emergencia", {"emergencia": 1})):
+            with self.subTest(nome):
+                c = self.leitura(**kw)
+                self.assertEqual(c["faixa"], nome)
+                self.assertTrue(c["ativo"] and c["coerente"])
+                self.assertIsNone(c["motivo"])
+                self.assertIn("Defesa Civil de SC", c["fonte"])
+
+    def test_desativado_fica_cinza_mesmo_com_flag(self):
+        c = self.leitura(ativo=0, alerta=1)
+        self.assertIsNone(c["faixa"])
+        self.assertFalse(c["ativo"])
+        self.assertIn("desativado", c["motivo"])
+
+    def test_duas_flags_e_contraditorio_e_fica_cinza(self):
+        c = self.leitura(atencao=1, emergencia=1)
+        self.assertIsNone(c["faixa"])
+        self.assertFalse(c["coerente"])
+        self.assertIn("contraditório", c["motivo"])
+
+    def test_ativo_sem_flag_nao_vira_normal_ate_validar(self):
+        c = self.leitura()
+        self.assertIsNone(c["faixa"], "'normal' só depois de validar a semântica de ativo/status")
+        self.assertIn("não validada", c["motivo"])
+
+    def test_sem_rio_alarmes_na_resposta_fica_none(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46)])
+        self.assertIsNone(leituras[0]["classificacao_estadual"], "query antiga (fallback) não traz alarmes")
+
+    def test_status_so_registrado_nunca_decide(self):
+        c = self.leitura(alerta=1, status=99)
+        self.assertEqual(c["faixa"], "alerta")
+        self.assertEqual(c["status"], 99)
+
+    def test_serie_guarda_a_faixa(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46, alarmes=alarme(atencao=1))])
+        self.assertEqual(coleta_nivel_sc._linha_serie(leituras[0])["faixa_estadual"], "atencao")
+
+    def test_query_enriquecida_pede_alarmes_e_a_antiga_nao(self):
+        self.assertIn("rio_alarmes", coleta_nivel_sc.QUERY_CAMPOS_NOVOS)
+        self.assertNotIn("rio_alarmes", coleta_nivel_sc.QUERY, "o fallback validado em 01/09 não muda")
+
+    def test_nada_disto_entra_em_leituras_do_site(self):
+        """O bot só lê `leituras` do ultimo.json; a classificação vive no ultimo_nivel_sc.json."""
+        import coleta_estadual_com_cota as cec
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46, alarmes=alarme(emergencia=1))])
+        self.assertEqual(cec.montar(leituras), [], "Rio do Sul não tem cota na própria régua estadual")
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
