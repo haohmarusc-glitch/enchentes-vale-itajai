@@ -516,7 +516,7 @@ export function construirCena(
     }
   }
 
-  const pinos = [...pinosPorId.values()]
+  const pinos = separarPinosCoincidentes([...pinosPorId.values()], largura)
 
   // O MAR na foz (pino mais a leste).
   let mar: MarVis | null = null
@@ -877,7 +877,7 @@ export interface RotuloDoPino {
  * Os anéis de posições AFASTADAS, em px (vezes a escala), tentados nesta
  * ordem depois das seis posições coladas ao pino. Oito direções por anel.
  */
-export const ANEIS_DO_ROTULO: readonly number[] = [40, 64, 92, 124]
+export const ANEIS_DO_ROTULO: readonly number[] = [40, 64, 92, 124, 160, 200]
 const DIRECOES_DO_ROTULO: readonly [number, number][] = [
   [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1],
 ]
@@ -1096,8 +1096,13 @@ export function planejarRotulosDosPinos(
   }
   for (const p of ordem) {
     // Fora da tela não ganha rótulo — nem a cidade selecionada: o nome dela
-    // preso na margem apontaria para o lugar errado do mesmo jeito.
+    // preso na margem apontaria para o lugar errado do mesmo jeito. E o CENTRO
+    // do pino tem de estar na tela (14/09/2026): com o pino de Timbó meio
+    // pixel acima da borda, o nome dele nascia "abaixo" — em cima do pino
+    // cinza de Indaial, que ficou parecendo Timbó. O pino que só encosta na
+    // borda continua desenhado; o nome, não.
     if (!pinoNaTela(p, cena, escala)) continue
+    if (p.x < 0 || p.y < 0 || p.x > cena.largura || p.y > cena.altura) continue
     const { nome, sub } = textoDoPino(p, opcoes)
     const chuvaDaCidade = opcoes.chuva?.get(p.cidade.id) ?? []
     const chuvaY = p.y + 12 * escala
@@ -1121,17 +1126,23 @@ export function planejarRotulosDosPinos(
     //      planejador existe para não cometer.
     // A selecionada fica no lugar de sempre, caiba ou não — ela é primeira na
     // fila e os outros é que cedem.
-    const larguras = (chuva: string[]) => {
+    const larguras = (chuva: string[], comSub = true) => {
       const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
-      return { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 }
+      return { nome: Math.max(medir(nome, fonte), larguraChuva), sub: comSub && sub ? medir(sub, fonteSub) : 0 }
     }
     const alturaChuva = (chuva: string[]) => chuva.length * (fonteSub + 2 * escala)
-    const avaliar = (posicao: PosicaoDoRotulo, chuva: string[]) => {
-      const cand = caixaDoRotuloDoPino(p, larguras(chuva), cena, escala, posicao)
+    // RÓTULO SÓ EXISTE INTEIRO DENTRO DA TELA (14/09/2026). As posições coladas
+    // não têm trava vertical: com o pino encostado na borda de cima, o nome
+    // saía cortado — e um rótulo cortado ao lado de outro inteiro é o que
+    // parecia "réguas sobrepondo" na captura do Jefferson. Caixa fora da tela
+    // não é candidata; o pino da borda ganha o nome embaixo ou num anel.
+    const dentroDaTela = (c: Caixa) => c.x0 >= 0 && c.y0 >= 0 && c.x1 <= cena.largura && c.y1 <= cena.altura
+    const avaliar = (posicao: PosicaoDoRotulo, chuva: string[], comSub = true) => {
+      const cand = caixaDoRotuloDoPino(p, larguras(chuva, comSub), cena, escala, posicao)
       if (chuva.length) cand.caixa.y1 = chuvaY + alturaChuva(chuva)
       const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
       const guiaCruza = guias.some((g) => segmentoCruza(g.de, g.para, [cand.caixa]))
-      return { ...cand, chuva, chuvaY, guia: undefined as RotuloDoPino['guia'], guiaCruza, livreDeRotulos: !colide(cand.caixa, caixas), cobertos }
+      return { ...cand, sub: comSub ? sub : '', chuva, chuvaY, guia: undefined as RotuloDoPino['guia'], guiaCruza, livreDeRotulos: dentroDaTela(cand.caixa) && !colide(cand.caixa, caixas), cobertos }
     }
     // AFASTADAS (14/09/2026): quando nada colado ao pino cabe, o rótulo vai
     // para o lugar livre mais próximo — anéis de 40 a 124 px, oito direções —
@@ -1139,8 +1150,8 @@ export function planejarRotulosDosPinos(
     // (não abaixo do pino, que está longe). O próprio pino vira obstáculo: a
     // caixa presa na borda da tela não pode voltar para cima dele.
     const proprio = bolinhas.get(p.cidade.id)
-    const avaliarAfastada = (dx: number, dy: number, chuva: string[]) => {
-      const cand = caixaDoRotuloAfastado(p, larguras(chuva), cena, escala, dx, dy)
+    const avaliarAfastada = (dx: number, dy: number, chuva: string[], comSub = true) => {
+      const cand = caixaDoRotuloAfastado(p, larguras(chuva, comSub), cena, escala, dx, dy)
       const chuvaYCand = cand.baseY + 2 * escala
       if (chuva.length) cand.caixa.y1 = chuvaYCand + alturaChuva(chuva)
       const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
@@ -1149,15 +1160,24 @@ export function planejarRotulosDosPinos(
       // A guia que atravessa outro rótulo escreve uma seta por cima de texto:
       // conta como cruzamento, e a candidata cai para depois das limpas.
       const guiaCruza = segmentoCruza(guia.de, guia.para, caixas) || guias.some((g) => segmentoCruza(g.de, g.para, [cand.caixa]))
-      return { ...cand, chuva, chuvaY: chuvaYCand, guia, guiaCruza, livreDeRotulos: !sobreOProprio && !colide(cand.caixa, caixas), cobertos }
+      return { ...cand, sub: comSub ? sub : '', chuva, chuvaY: chuvaYCand, guia, guiaCruza, livreDeRotulos: dentroDaTela(cand.caixa) && !sobreOProprio && !colide(cand.caixa, caixas), cobertos }
     }
+    // A CHUVA VEM ANTES DA DISTÂNCIA (Jefferson, 14/09/2026: "algumas cidades
+    // ainda sem dados de chuva"). Todas as candidatas COM chuva — coladas e
+    // depois afastadas — vêm antes de qualquer candidata sem chuva: entre um
+    // nome colado sem a chuva e um nome a 60 px com a chuva e a seta, fica o
+    // segundo. Só quando a chuva não cabe em lugar nenhum ela é abandonada.
+    const afastadas = (chuva: string[], comSub = true) =>
+      ANEIS_DO_ROTULO.flatMap((anel) => DIRECOES_DO_ROTULO.map(([ux, uy]) => avaliarAfastada(ux * anel * escala, uy * anel * escala, chuva, comSub)))
+    // O ÚLTIMO DEGRAU antes de esconder: só o NOME, sem a linha do nível — a
+    // caixa encolhe pela metade e cabe onde a completa não cabia. O número
+    // continua no toque (painel), e a cor do pino continua dizendo a faixa.
     const candidatas = [
       ...(chuvaDaCidade.length ? POSICOES_DO_ROTULO.filter((pos) => !pos.startsWith('abaixo')).map((pos) => avaliar(pos, chuvaDaCidade)) : []),
+      ...(chuvaDaCidade.length ? afastadas(chuvaDaCidade) : []),
       ...POSICOES_DO_ROTULO.map((pos) => avaliar(pos, [])),
-      ...ANEIS_DO_ROTULO.flatMap((anel) => [
-        ...(chuvaDaCidade.length ? DIRECOES_DO_ROTULO.map(([ux, uy]) => avaliarAfastada(ux * anel * escala, uy * anel * escala, chuvaDaCidade)) : []),
-        ...DIRECOES_DO_ROTULO.map(([ux, uy]) => avaliarAfastada(ux * anel * escala, uy * anel * escala, [])),
-      ]),
+      ...afastadas([]),
+      ...(sub ? [...POSICOES_DO_ROTULO.map((pos) => avaliar(pos, [], false)), ...afastadas([], false)] : []),
     ]
     const temNivel = p.faixa !== 'sem-dado'
     const escolhido =
@@ -1167,10 +1187,10 @@ export function planejarRotulosDosPinos(
       (temNivel ? candidatas.find((c) => c.livreDeRotulos && c.cobertos.every((b) => b.cinza)) : undefined) ??
       (p.cidade.id === selecionada ? candidatas[0] : undefined)
     if (!escolhido) continue
-    const { cx, baseY, caixa, alinhar, chuva, chuvaY: chuvaYEscolhido, guia } = escolhido
+    const { cx, baseY, caixa, alinhar, chuva, chuvaY: chuvaYEscolhido, guia, sub: subEscolhido } = escolhido
     caixas.push(caixa)
     if (guia) guias.push(guia)
-    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY: chuvaYEscolhido, alinhar, ...(guia ? { guia } : {}) })
+    plano.set(p.cidade.id, { cx, baseY, nome, sub: subEscolhido, caixa, chuva, chuvaY: chuvaYEscolhido, alinhar, ...(guia ? { guia } : {}) })
   }
   return plano
 }
@@ -1216,6 +1236,32 @@ export function desenharGuia(
   ctx.lineWidth = 1.4 * escala
   traco()
   ctx.restore()
+}
+
+/**
+ * Pinos que caem no MESMO ponto da tela são postos lado a lado (14/09/2026).
+ *
+ * Timbó (Rio Benedito) e Rio dos Cedros (Rio dos Cedros) são afluentes
+ * laterais sem traçado próprio, e os dois se encaixam no mesmo vértice do Açu:
+ * um pino em cima do outro, e o de baixo — Rio dos Cedros — nunca achava lugar
+ * para o nome, porque qualquer caixa perto cobria o pino colorido do vizinho.
+ * Afastados ~2,3 raios um do outro, na horizontal, os dois aparecem e os dois
+ * ganham nome. É deslocamento cartográfico, não posição: os dois já estão fora
+ * do rio deles de qualquer jeito.
+ */
+export function separarPinosCoincidentes(pinos: Pino[], largura: number): Pino[] {
+  const escala = Math.max(1, Math.min(1.7, largura / 820))
+  const passo = 16 * escala
+  const grupos = new Map<string, Pino[]>()
+  for (const p of pinos) {
+    const chave = `${Math.round(p.x)}:${Math.round(p.y)}`
+    grupos.set(chave, [...(grupos.get(chave) ?? []), p])
+  }
+  for (const grupo of grupos.values()) {
+    if (grupo.length < 2) continue
+    grupo.forEach((p, i) => { p.x += (i - (grupo.length - 1) / 2) * passo })
+  }
+  return pinos
 }
 
 /** Cor da parede da barragem — aço, deliberadamente FORA da paleta de faixa. */
