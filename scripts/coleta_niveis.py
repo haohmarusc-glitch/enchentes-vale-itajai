@@ -648,6 +648,12 @@ def main() -> int:
     from coleta_indaial import coletar as coletar_indaial
     leituras = leituras + coletar_indaial()
 
+    # Rede estadual QUE PODE PINTAR: só as estações cuja COMPDEC declarou, por
+    # escrito, que as faixas municipais estão na escala da própria estação
+    # (Ascurra, DCSC-00003). O resto do bruto estadual continua fora daqui.
+    from coleta_estadual_com_cota import coletar as coletar_estadual_com_cota
+    leituras = leituras + coletar_estadual_com_cota()
+
     for l in leituras:
         alvo = f"{l['cidade']} ({l['rio']})" if l.get("cidade") else "não mapeada"
         print(f"{l['nivel_m']:6.2f} m  {l.get('medido_em') or '   -   '}  {l['estacao']}  [{alvo}]")
