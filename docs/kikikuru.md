@@ -380,6 +380,14 @@ causas, duas regras:
    ("≈3,42 m · faixa estadual · há 20 min"), o nome flutuaria a 150 px da cidade que nomeia.
 4. **Antes de esconder o nome, o rótulo abre mão da chuva.** São quatro linhas abaixo do pino, e
    numa bacia apertada é a chuva que faz o rótulo cobrir o vizinho.
+5. **Sem lugar colado ao pino, o rótulo vai para o lugar livre mais próximo e ganha a LINHA-GUIA**
+   (pedido do Jefferson, 14/09/2026: "use setas em direção aos dados para indicar a cidade").
+   Anéis de 40, 64, 92 e 124 px ao redor do pino, oito direções, o mais perto que couber; a chuva
+   fica logo abaixo do nome. A guia sai do ponto da caixa mais perto do pino e termina na borda do
+   pino com uma ponta de seta — branca, nunca cor de faixa: a linha aponta, não classifica. Uma
+   guia que atravessaria outro rótulo, ou uma caixa que cairia sobre uma guia já traçada, perde a
+   vez para a candidata limpa; só entra se não houver outra. Sem lugar nem nos anéis, some.
+   Na legenda do Monitor: "Seta — o nome ficou afastado por falta de espaço".
 
 Por que a regra 2 não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos outros,
 e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam — o
@@ -389,10 +397,13 @@ Trombudo Central e Ituporanga, espremida entre Rio do Sul e a barra de reproduç
 inteira no celular, o aglomerado Rio do Sul / Lontras / Ibirama / Ituporanga só se resolve com um
 toque no +.
 
-Os testes: `rotulosDoMapa.test.ts` (casos de brinquedo) e `rotulosDaBacia.test.ts`, que monta a
-cena pelo motor de verdade com as cidades e os traçados do repositório, em quatro telas, e confere
-que nenhum rótulo cruza outro nem cobre pino colorido. Quem some no celular são só vizinhos colados
-(Timbó e Rio dos Cedros caem no MESMO ponto do traçado; Guabiruba a 20 px de Brusque).
+Os testes: `rotulosDoMapa.test.ts` (casos de brinquedo, inclusive os da linha-guia) e
+`rotulosDaBacia.test.ts`, que monta a cena pelo motor de verdade com as cidades e os traçados do
+repositório, em quatro telas, e confere que nenhum rótulo cruza outro nem cobre pino colorido.
+Com os anéis e a guia, conferido no Chromium com os dados ao vivo de 14/09: no desktop as 19
+cidades têm nome (sete com seta: Rio do Sul, Ituporanga, Trombudo Central, Lontras, Rio dos
+Cedros, Ilhota, Guabiruba); no celular, na bacia inteira, todas também — o aglomerado de Rio do
+Sul se resolve com setas, e a legibilidade volta ao normal com um toque no +.
 
 ### Quantos rótulos de régua o zoom comporta — 06/09/2026
 

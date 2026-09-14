@@ -860,9 +860,68 @@ export interface RotuloDoPino {
    * do pino o nome flutuaria longe da cidade que nomeia.
    */
   alinhar?: CanvasTextAlign
+  /**
+   * A LINHA-GUIA (14/09/2026): quando nenhuma posição colada ao pino cabe, o
+   * rótulo vai para o lugar livre mais próximo e uma linha com seta o liga ao
+   * pino — `de` é o ponto da caixa mais perto do pino, `para` é a borda do
+   * pino. Sem guia, rótulo longe do pino é nome escrito sobre a cidade errada;
+   * com guia, a cidade que ele nomeia está na ponta da seta.
+   */
+  guia?: { de: { x: number; y: number }; para: { x: number; y: number } }
   nome: string
   sub: string
   caixa: Caixa
+}
+
+/**
+ * Os anéis de posições AFASTADAS, em px (vezes a escala), tentados nesta
+ * ordem depois das seis posições coladas ao pino. Oito direções por anel.
+ */
+export const ANEIS_DO_ROTULO: readonly number[] = [40, 64, 92, 124]
+const DIRECOES_DO_ROTULO: readonly [number, number][] = [
+  [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1],
+]
+
+/** A caixa de um rótulo AFASTADO: centrada em (pino + deslocamento), presa dentro da tela. */
+export function caixaDoRotuloAfastado(
+  ponto: { x: number; y: number },
+  larguras: { nome: number; sub: number },
+  cena: { largura: number; altura: number },
+  escala: number,
+  dx: number,
+  dy: number,
+): { cx: number; baseY: number; caixa: Caixa; alinhar: CanvasTextAlign } {
+  const fonte = Math.round(FONTE_PINO * escala)
+  const pad = 3 * escala
+  const larg = Math.max(larguras.nome, larguras.sub)
+  const meia = larg / 2
+  const altTotal = larguras.sub > 0 ? ALT_NOME * escala + fonte * 0.95 : ALT_NOME * escala
+  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, ponto.x + dx))
+  const centroY = Math.max(pad + altTotal / 2, Math.min(cena.altura - pad - altTotal / 2, ponto.y + dy))
+  const baseY = centroY + altTotal / 2
+  return { cx, baseY, alinhar: 'center', caixa: { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 } }
+}
+
+/** O segmento entre dois pontos passa por dentro de alguma das caixas? (amostrado a cada 4 px) */
+export function segmentoCruza(a: { x: number; y: number }, b: { x: number; y: number }, caixas: readonly Caixa[]): boolean {
+  const n = Math.max(2, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 4))
+  for (let i = 1; i < n; i++) {
+    const t = i / n
+    const x = a.x + (b.x - a.x) * t
+    const y = a.y + (b.y - a.y) * t
+    if (caixas.some((c) => x > c.x0 && x < c.x1 && y > c.y0 && y < c.y1)) return true
+  }
+  return false
+}
+
+/** A linha-guia entre uma caixa e o pino: do ponto da caixa mais perto do pino até a borda do pino. */
+export function guiaAtePino(caixa: Caixa, pino: { x: number; y: number }, raio: number): { de: { x: number; y: number }; para: { x: number; y: number } } {
+  const de = { x: Math.max(caixa.x0, Math.min(caixa.x1, pino.x)), y: Math.max(caixa.y0, Math.min(caixa.y1, pino.y)) }
+  const vx = pino.x - de.x
+  const vy = pino.y - de.y
+  const d = Math.hypot(vx, vy) || 1
+  const para = { x: pino.x - (vx / d) * (raio + 2), y: pino.y - (vy / d) * (raio + 2) }
+  return { de, para }
 }
 
 /**
@@ -1024,6 +1083,9 @@ export function planejarRotulosDosPinos(
   // vizinho é um nível escrito sobre a cidade errada (a mesma lição do
   // `pinoNaTela`). O próprio pino não entra — o rótulo nasce acima dele.
   const raioPino = 7 * escala
+  // As linhas-guia já desenhadas: uma caixa nova por cima de uma seta antiga é
+  // tão ruim quanto uma seta nova por cima de um texto antigo.
+  const guias: NonNullable<RotuloDoPino['guia']>[] = []
   const bolinhas = new Map<string, { caixa: Caixa; cinza: boolean }>()
   for (const q of cena.pinos) {
     if (!pinoNaTela(q, cena, escala)) continue
@@ -1059,31 +1121,102 @@ export function planejarRotulosDosPinos(
     //      planejador existe para não cometer.
     // A selecionada fica no lugar de sempre, caiba ou não — ela é primeira na
     // fila e os outros é que cedem.
-    const avaliar = (posicao: PosicaoDoRotulo, chuva: string[]) => {
+    const larguras = (chuva: string[]) => {
       const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
-      const larguras = { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 }
-      const cand = caixaDoRotuloDoPino(p, larguras, cena, escala, posicao)
-      if (chuva.length) cand.caixa.y1 = chuvaY + chuva.length * (fonteSub + 2 * escala)
+      return { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 }
+    }
+    const alturaChuva = (chuva: string[]) => chuva.length * (fonteSub + 2 * escala)
+    const avaliar = (posicao: PosicaoDoRotulo, chuva: string[]) => {
+      const cand = caixaDoRotuloDoPino(p, larguras(chuva), cena, escala, posicao)
+      if (chuva.length) cand.caixa.y1 = chuvaY + alturaChuva(chuva)
       const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
-      return { ...cand, chuva, livreDeRotulos: !colide(cand.caixa, caixas), cobertos }
+      const guiaCruza = guias.some((g) => segmentoCruza(g.de, g.para, [cand.caixa]))
+      return { ...cand, chuva, chuvaY, guia: undefined as RotuloDoPino['guia'], guiaCruza, livreDeRotulos: !colide(cand.caixa, caixas), cobertos }
+    }
+    // AFASTADAS (14/09/2026): quando nada colado ao pino cabe, o rótulo vai
+    // para o lugar livre mais próximo — anéis de 40 a 124 px, oito direções —
+    // e ganha a linha-guia até o pino. A chuva, aqui, fica logo abaixo do nome
+    // (não abaixo do pino, que está longe). O próprio pino vira obstáculo: a
+    // caixa presa na borda da tela não pode voltar para cima dele.
+    const proprio = bolinhas.get(p.cidade.id)
+    const avaliarAfastada = (dx: number, dy: number, chuva: string[]) => {
+      const cand = caixaDoRotuloAfastado(p, larguras(chuva), cena, escala, dx, dy)
+      const chuvaYCand = cand.baseY + 2 * escala
+      if (chuva.length) cand.caixa.y1 = chuvaYCand + alturaChuva(chuva)
+      const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
+      const sobreOProprio = proprio ? colide(cand.caixa, [proprio.caixa]) : false
+      const guia = guiaAtePino(cand.caixa, p, raioPino)
+      // A guia que atravessa outro rótulo escreve uma seta por cima de texto:
+      // conta como cruzamento, e a candidata cai para depois das limpas.
+      const guiaCruza = segmentoCruza(guia.de, guia.para, caixas) || guias.some((g) => segmentoCruza(g.de, g.para, [cand.caixa]))
+      return { ...cand, chuva, chuvaY: chuvaYCand, guia, guiaCruza, livreDeRotulos: !sobreOProprio && !colide(cand.caixa, caixas), cobertos }
     }
     const candidatas = [
       ...(chuvaDaCidade.length ? POSICOES_DO_ROTULO.filter((pos) => !pos.startsWith('abaixo')).map((pos) => avaliar(pos, chuvaDaCidade)) : []),
       ...POSICOES_DO_ROTULO.map((pos) => avaliar(pos, [])),
+      ...ANEIS_DO_ROTULO.flatMap((anel) => [
+        ...(chuvaDaCidade.length ? DIRECOES_DO_ROTULO.map(([ux, uy]) => avaliarAfastada(ux * anel * escala, uy * anel * escala, chuvaDaCidade)) : []),
+        ...DIRECOES_DO_ROTULO.map(([ux, uy]) => avaliarAfastada(ux * anel * escala, uy * anel * escala, [])),
+      ]),
     ]
     const temNivel = p.faixa !== 'sem-dado'
     const escolhido =
+      candidatas.find((c) => c.livreDeRotulos && !c.guiaCruza && c.cobertos.length === 0) ??
       candidatas.find((c) => c.livreDeRotulos && c.cobertos.length === 0) ??
+      (temNivel ? candidatas.find((c) => c.livreDeRotulos && !c.guiaCruza && c.cobertos.every((b) => b.cinza)) : undefined) ??
       (temNivel ? candidatas.find((c) => c.livreDeRotulos && c.cobertos.every((b) => b.cinza)) : undefined) ??
       (p.cidade.id === selecionada ? candidatas[0] : undefined)
     if (!escolhido) continue
-    const { cx, baseY, caixa, alinhar, chuva } = escolhido
+    const { cx, baseY, caixa, alinhar, chuva, chuvaY: chuvaYEscolhido, guia } = escolhido
     caixas.push(caixa)
-    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY, alinhar })
+    if (guia) guias.push(guia)
+    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY: chuvaYEscolhido, alinhar, ...(guia ? { guia } : {}) })
   }
   return plano
 }
 
+
+/**
+ * A linha-guia do rótulo afastado: traço fino com halo escuro (o mesmo do
+ * texto) e uma ponta de seta na borda do pino. Branca, nunca cor de faixa —
+ * a linha aponta, não classifica.
+ */
+export function desenharGuia(
+  ctx: CanvasRenderingContext2D,
+  guia: NonNullable<RotuloDoPino['guia']>,
+  escala: number,
+): void {
+  const { de, para } = guia
+  const ang = Math.atan2(para.y - de.y, para.x - de.x)
+  const ponta = 5 * escala
+  const asa = Math.PI / 7
+  const traco = () => {
+    ctx.beginPath()
+    ctx.moveTo(de.x, de.y)
+    ctx.lineTo(para.x, para.y)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(para.x, para.y)
+    ctx.lineTo(para.x - ponta * Math.cos(ang - asa), para.y - ponta * Math.sin(ang - asa))
+    ctx.lineTo(para.x - ponta * Math.cos(ang + asa), para.y - ponta * Math.sin(ang + asa))
+    ctx.closePath()
+    ctx.fill()
+    ctx.stroke()
+  }
+  ctx.save()
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.setLineDash([])
+  ctx.strokeStyle = 'rgba(4,12,20,0.92)'
+  ctx.fillStyle = 'rgba(4,12,20,0.92)'
+  ctx.lineWidth = 3.4 * escala
+  traco()
+  ctx.strokeStyle = 'rgba(234,241,248,0.95)'
+  ctx.fillStyle = 'rgba(234,241,248,0.95)'
+  ctx.lineWidth = 1.4 * escala
+  traco()
+  ctx.restore()
+}
 
 /** Cor da parede da barragem — aço, deliberadamente FORA da paleta de faixa. */
 export const COR_BARRAGEM = '#6c7c8c'
@@ -1470,6 +1603,7 @@ export function desenharPinos(
     const r = rotulos.get(p.cidade.id)
     if (!r) continue
     const usaBruto = p.nivel == null && p.nivelBruto != null
+    if (r.guia) desenharGuia(ctx, r.guia, escala)
     ctx.textAlign = r.alinhar ?? 'center'
     ctx.lineWidth = 3.2 * escala
     ctx.strokeStyle = 'rgba(4,12,20,0.92)'
