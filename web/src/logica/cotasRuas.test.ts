@@ -2,6 +2,7 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import {
+  MAX_RESULTADOS_BUSCA,
   atingidas,
   buscar,
   cidadesComCotas,
@@ -222,4 +223,29 @@ test('o arquivo real não tem cota sem referência declarada', () => {
   const d = JSON.parse(readFileSync(new URL('../../../data/cotas-ruas.json', import.meta.url), 'utf-8'))
   const semCampo = (d.cotas as CotaRua[]).filter((c) => !('referencia' in c))
   assert.equal(semCampo.length, 0, `${semCampo.length} cota(s) sem o campo 'referencia'`)
+})
+
+/*
+ * O CORTE DA BUSCA (14/09/2026). Digitar "Rua" em Blumenau devolvia 1.894
+ * resultados numa página só: no celular, no meio da chuva, é rolagem que não
+ * acaba. A tela mostra as primeiras — e a lista já vem da que alaga com o rio
+ * MAIS BAIXO para a que alaga por último, então o corte preserva quem está em
+ * risco antes. Estes testes travam as duas metades: que o corte é pequeno o
+ * bastante para caber numa tela, e que a ordem (a que importa) não mudou.
+ */
+test('o corte da busca é pequeno o bastante para caber numa tela de celular', () => {
+  assert.ok(MAX_RESULTADOS_BUSCA >= 5 && MAX_RESULTADOS_BUSCA <= 20, `${MAX_RESULTADOS_BUSCA} não cabe numa tela`)
+})
+
+test('no arquivo real, "Rua" em Blumenau estoura muitas vezes o corte — é o caso que ele existe para resolver', () => {
+  const reais = (arquivoReal as { cotas: CotaRua[] }).cotas.filter(cotaRuaValida)
+  const achadas = buscar(reais, 'blumenau', 'Rua')
+  assert.ok(achadas.length > MAX_RESULTADOS_BUSCA * 10, `só ${achadas.length} resultados — o caso mudou?`)
+  // As que sobrevivem ao corte são as que alagam primeiro, em ordem.
+  const mostradas = achadas.slice(0, MAX_RESULTADOS_BUSCA)
+  const cortadas = achadas.slice(MAX_RESULTADOS_BUSCA)
+  const maiorMostrada = Math.max(...mostradas.map((c) => c.cota_m ?? Infinity))
+  for (const c of cortadas) {
+    assert.ok((c.cota_m ?? Infinity) >= maiorMostrada, `${c.rua} alaga antes de uma das mostradas`)
+  }
 })
