@@ -212,7 +212,7 @@ class TestBuscarFallback(unittest.TestCase):
             est = buscar()
         self.assertEqual(est, [{"codigo": "X"}])
         self.assertEqual(m.call_count, 1, "aceitou de primeira, não devia tentar a original")
-        self.assertIn("tem_nivel_do_rio", m.call_args.kwargs["json"]["query"])
+        self.assertIn("rio_alarmes", m.call_args.kwargs["json"]["query"])
 
     def test_cai_para_a_original_quando_a_api_recusa_a_enriquecida(self):
         with unittest.mock.patch.object(
@@ -223,7 +223,7 @@ class TestBuscarFallback(unittest.TestCase):
         self.assertEqual(est, [{"codigo": "X"}])
         self.assertEqual(m.call_count, 2)
         primeira, segunda = m.call_args_list
-        self.assertIn("tem_nivel_do_rio", primeira.kwargs["json"]["query"])
+        self.assertIn("rio_alarmes", primeira.kwargs["json"]["query"])
         self.assertNotIn("tem_nivel_do_rio", segunda.kwargs["json"]["query"])
 
     def test_propaga_erro_se_as_duas_falharem(self):
@@ -353,6 +353,24 @@ class TestClassificacaoEstadual(unittest.TestCase):
     def test_query_enriquecida_pede_alarmes_e_a_antiga_nao(self):
         self.assertIn("rio_alarmes", coleta_nivel_sc.QUERY_CAMPOS_NOVOS)
         self.assertNotIn("rio_alarmes", coleta_nivel_sc.QUERY, "o fallback validado em 01/09 não muda")
+
+    def test_query_enriquecida_tem_a_forma_que_passou_no_host_em_13_09(self):
+        """HTTP 400 em 14/09: `rio_nome`/`rio_area_drenagem` são objetos e exigem `{ value }`;
+        `filter { relacao }` não existe no levantamento por introspecção."""
+        q = coleta_nivel_sc.QUERY_CAMPOS_NOVOS
+        self.assertIn("rio_nome { value }", q)
+        self.assertIn("rio_area_drenagem { value }", q)
+        self.assertNotIn("filter", q)
+        self.assertIn("rio_alarmes { inundacao { ativo { value } status { value } "
+                      "atencao { value } alerta { value } emergencia { value } } }", q)
+
+    def test_rio_nome_como_objeto_ou_cru(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.0, rio_nome={"value": "Rio Itajaí-Açu"},
+                                          rio_area_drenagem={"value": 5100})])
+        self.assertEqual(leituras[0]["rio_nome"], "Rio Itajaí-Açu")
+        self.assertEqual(leituras[0]["rio_area_drenagem_km2"], 5100)
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.0, rio_nome="cru")])
+        self.assertEqual(leituras[0]["rio_nome"], "cru")
 
     def test_nada_disto_entra_em_leituras_do_site(self):
         """O bot só lê `leituras` do ultimo.json; a classificação vive no ultimo_nivel_sc.json."""
