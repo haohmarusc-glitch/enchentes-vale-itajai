@@ -1294,6 +1294,13 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
               ≈ nível bruto (rede estadual)
             </li>
+            {/* C7, camada 2: a cor tracejada é a classificação da própria Defesa
+                Civil de SC, na régua da estação — só onde não há faixa municipal.
+                A amostra é tracejada e neutra porque a cor varia com a faixa. */}
+            <li>
+              <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
+              Faixa estadual (tracejado) — classificação da Defesa Civil de SC, não cota deste site
+            </li>
             {/* As nove réguas de estuário de Itajaí. Mostram número e não
                 afirmam faixa: a maré cruza a cota sem enchente, e uma cor que
                 acende com a maré ensina a ignorar a cor. */}
