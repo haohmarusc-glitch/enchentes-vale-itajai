@@ -205,6 +205,15 @@ estadual", rotulada como **classificação da Defesa Civil de SC**, só com leit
 entra em `leituras`, então o bot de cotas não dispara por isto. A série `nivel-sc-AAAA-MM.ndjson`
 guarda `faixa_estadual` por leitura — é com ela que se valida a semântica.
 
+**Achado da primeira execução real (14/09/2026, 22:03 BRT, VPS):** a query enriquecida de 03/09
+respondia **HTTP 400** e o coletor caía em silêncio para a query de 01/09 — ou seja, `type`,
+`tem_nivel_do_rio` e agora `rio_alarmes` nunca tinham chegado; a classificação por dicionário
+(`NAO_MEDE_NIVEL`/`SUSPEITAS`) foi o que valeu o tempo todo. Causa de forma: `rio_nome` e
+`rio_area_drenagem` são objetos e exigem `{ value }` (é assim no script de 13/09, que funcionou), e
+`filter { relacao { … } }` não existe no levantamento por introspecção. A query foi alinhada à
+forma provada e o `filter` saiu. **Confirmar na próxima execução**: o aviso "query enriquecida …
+recusada" NÃO pode aparecer; se aparecer, o 400 tem outra causa e a `Historic` de introspecção decide.
+
 **Validação pendente na VPS (antes de pintar o mapa):** rodar `python3 scripts/coleta_nivel_sc.py`
 e conferir em `ultimo_nivel_sc.json` (a) se estações em NORMAL no site oficial vêm com `ativo: true`
 e nenhuma flag (então "normal" pode ser afirmado) ou com `ativo: false`; (b) a tabela `status` ×

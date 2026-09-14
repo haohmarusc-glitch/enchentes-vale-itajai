@@ -119,15 +119,23 @@ QUERY = ('query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) {
          'codigo name { general local } timestamp position { bacia latitude longitude } '
          'data { rio { rio_nivel { value } } chuva { acumulado { h024 { value } h168 { value } } } } } } }')
 
-#: Tentativa (03/09/2026, docs/API-DCSC-CAMPOS-NOVOS.md) de pedir também `type`,
-#: `filter.relacao.tem_nivel_do_rio` e `data.rio.{rio_nome,rio_area_drenagem}`. Não validada contra
-#: o host real por este ambiente (allowlist de query persistida — ver armadilha 9 no docstring).
-#: `buscar()` tenta esta primeiro e cai para `QUERY` se a API recusar.
+#: Query enriquecida: `type`, `data.rio.{rio_nome,rio_area_drenagem}` e, desde 14/09/2026 (C7),
+#: `rio_alarmes.inundacao`. `buscar()` tenta esta primeiro e cai para `QUERY` se a API recusar.
+#:
+#: HISTÓRICO QUE IMPORTA (14/09/2026). A versão de 03/09 foi "reconstruída por nome de campo, não
+#: copiada do bundle" e NUNCA passou no host: na primeira execução real com o aviso visível, a API
+#: devolveu HTTP 400 e o coletor caiu para `QUERY` — logo `type`/`tem_nivel_do_rio` sempre vieram
+#: None e a classificação por dicionário (NAO_MEDE_NIVEL/SUSPEITAS) foi o que valeu o tempo todo.
+#: Dois defeitos de forma explicam o 400: `rio_nome` e `rio_area_drenagem` são OBJETOS na API e
+#: exigem subseleção `{ value }` (o script do Jefferson de 13/09, que funcionou, pede assim); e
+#: `filter { relacao { … } }` não aparece no levantamento por introspecção de 13/09
+#: (docs/API-DEFESA-CIVIL-SC.md). Esta versão copia a FORMA provada do script de 13/09 e deixa o
+#: `filter` de fora — `declara_nivel` passa a ser None e a rede de segurança por dicionário decide,
+#: como já decidia na prática. Se a API voltar a recusar, o aviso em `buscar()` diz, e nada regride.
 QUERY_CAMPOS_NOVOS = (
     'query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
     'codigo name { general local } timestamp type position { bacia latitude longitude } '
-    'filter { relacao { tem_nivel_do_rio tem_vazao_do_rio tem_chuva_acumulada } } '
-    'data { rio { rio_nome rio_nivel { value } rio_area_drenagem '
+    'data { rio { rio_nome { value } rio_nivel { value } rio_area_drenagem { value } '
     'rio_alarmes { inundacao { ativo { value } status { value } '
     'atencao { value } alerta { value } emergencia { value } } } } '
     'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
@@ -135,6 +143,11 @@ QUERY_CAMPOS_NOVOS = (
 
 #: As três faixas que a Defesa Civil de SC publica em `rio_alarmes.inundacao`, na ordem.
 FAIXAS_ESTADUAIS = ("atencao", "alerta", "emergencia")
+
+
+def _valor(x):
+    """Campo que a API manda como objeto `{ value }` — ou cru, nos fixtures antigos."""
+    return x.get("value") if isinstance(x, dict) else x
 
 
 def _flag(bloco: dict, chave: str):
@@ -239,8 +252,8 @@ def buscar() -> list[dict]:
         if j.get("errors"):
             raise RuntimeError(j["errors"])
     except Exception as e:
-        print(f"aviso: query com campos novos (type/tem_nivel_do_rio/rio_area_drenagem) recusada "
-              f"({e}); caindo para a query original de 01/09", file=sys.stderr)
+        print(f"aviso: query enriquecida (type/rio_nome/rio_area_drenagem/rio_alarmes) recusada "
+              f"({e}); caindo para a query original de 01/09 — sem classificação estadual", file=sys.stderr)
         j = _post(QUERY)
         if j.get("errors"):
             raise RuntimeError(j["errors"])
@@ -284,8 +297,8 @@ def converter(
             "lat": (s.get("position") or {}).get("latitude"),
             "lon": (s.get("position") or {}).get("longitude"),
             "tipo_estacao": tipo_estacao,
-            "rio_nome": rio_bloco.get("rio_nome"),
-            "rio_area_drenagem_km2": rio_bloco.get("rio_area_drenagem"),
+            "rio_nome": _valor(rio_bloco.get("rio_nome")),
+            "rio_area_drenagem_km2": _valor(rio_bloco.get("rio_area_drenagem")),
         }
         if declara_nivel is False:                                     # armadilha 9: a API declara
             motivo = "API declara tem_nivel_do_rio=false"
