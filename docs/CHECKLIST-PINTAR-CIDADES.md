@@ -76,7 +76,7 @@ régua da leitura.
   faixas estão na escala da própria estação; `TesteOParEstaTrancadoNoEstacoesJson` cobra `codigo_dcsc`, `cotas_m.atencao`
   e `regua_das_cotas_fonte`. Ganho: +18,2 km (Açu 62 % → 68 %). Consequência a saber: Ascurra passa a valer para o
   bot de cotas como qualquer cidade com cota própria (atenção 8,50 m) — é cota municipal na régua municipal, não
-  classificação estadual (C7). Se quiser Ascurra fora do Telegram por ora, é uma linha.
+  classificação estadual (C7). **Decidido em 14/09/2026 (Jefferson): Ascurra fica no Telegram**, como qualquer cidade com cota própria.
 
 ## D. Evento de 10/09/2026 — onda descendo a bacia
 
@@ -184,3 +184,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 14/09/2026 ~02:00 BRT · Caixa de e-mail conferida: nada novo desde 11/09 (Ascurra respondeu em 11/09, já incorporada; Itajaí pediu ligação em 02/09; LAI Cemaden respondida em 10/09, já documentada; sem resposta de outros 12 destinatários). **Decisões do Jefferson**: E4 sim, como máximos observados (gravados); C7 sim, com condições; **C23 não sai** (nenhum ofício ao município de Itajaí; contato por telefone); O Blumenauense e SGB/SACE são consultas que o Claude pode fazer.
 - 14/09/2026 ~02:40 BRT · **Ascurra no back-end** (C6): `coleta_estadual_com_cota.py` + 7 testes; `coleta_niveis` soma a leitura da DCSC-00003 com `usar_para_cota=True` e `codigo`; site lê `codigo` e a exceção `referenciaAscurra.ts` vira fallback (550/550). Cobertura medida no `ultimo` congelado de 13/09: Açu 200 → 219 km vivos.
 - 14/09/2026 ~03:30 BRT · **C7 camada 1**: classificação estadual coletada e validada (9 testes Python), exibida no painel do bruto (parser + 1 teste web); "normal" e o mapa esperam a validação de `ativo`/`status` na VPS.
+- 14/09/2026 ~04:00 BRT · #333 mesclado (E4, Ascurra no back-end, correção das duas réguas, C7 camada 1). **Jefferson: Ascurra fica no Telegram.** Falta a validação do C7 na VPS (`ativo`/`status`).
