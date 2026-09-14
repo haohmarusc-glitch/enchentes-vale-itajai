@@ -51,7 +51,13 @@ test('chuva fica abaixo do pino e reserva espaço contra rótulos vizinhos', () 
   assert.ok(a.chuvaY! > 107)
   assert.ok(a.caixa.y1 >= a.chuvaY! + 4 * 11)
   assert.deepEqual(a.chuva, chuva.get('A'))
-  assert.equal(plano.has('B'), false)
+  // B não cabe acima (a chuva de A ocupa) e vai para BAIXO do próprio pino,
+  // sem cruzar a caixa de A (14/09/2026: o rótulo tenta outras posições antes
+  // de sumir).
+  const b = plano.get('B')!
+  assert.ok(b, 'B ganha rótulo em outra posição')
+  assert.ok(b.caixa.y0 >= 160 + 7, 'o rótulo de B fica abaixo do pino de B')
+  assert.equal(colide(a.caixa, [b.caixa]), false)
 })
 
 test('A CAIXA USA O TEXTO MAIS LARGO — o defeito que empilhava os rótulos', () => {
@@ -97,7 +103,47 @@ test('dois pinos colados: o de faixa MAIS GRAVE fica com o rótulo', () => {
     pino('inundacao', 205, 150, { faixa: 'inundacao' }),
   ])
   const plano = planejarRotulosDosPinos(medir, c, null, {}, [])
-  assert.deepEqual([...plano.keys()], ['inundacao'])
+  // O mais grave fica no lugar de sempre (acima, centrado); o outro tenta as
+  // demais posições e, cabendo sem cruzar, também aparece.
+  const grave = plano.get('inundacao')!
+  assert.ok(grave)
+  assert.equal(grave.baseY, 150 - 9, 'o mais grave fica acima do pino')
+  const outro = plano.get('normal')
+  if (outro) assert.equal(colide(outro.caixa, [grave.caixa]), false, 'o outro nunca cruza o do mais grave')
+})
+
+test('quando nenhuma posição cabe, o rótulo SOME — nunca escreve por cima', () => {
+  // Rótulos já colocados em cima, à direita, à esquerda e embaixo do pino.
+  const cerco: Caixa[] = [
+    { x0: 0, y0: 100, x1: 400, y1: 141 }, // acima
+    { x0: 0, y0: 159, x1: 400, y1: 300 }, // abaixo
+  ]
+  const plano = planejarRotulosDosPinos(medir, cena([pino('x', 200, 150)]), null, {}, cerco)
+  assert.equal(plano.size, 0)
+})
+
+test('"sem leitura" nunca cobre pino; rótulo com nível cobre só pino CINZA, nunca colorido', () => {
+  // Dois pinos cinzas colados à cidade em atenção, um de cada lado e acima.
+  const atencao = pino('a', 200, 150, { faixa: 'atencao', nivel: 4.6, medidoEm: new Date() })
+  const cinzaEsq = pino('c1', 170, 135, { faixa: 'sem-dado' })
+  const cinzaDir = pino('c2', 230, 135, { faixa: 'sem-dado' })
+  const bolinha = (p: Pino): Caixa => ({ x0: p.x - 7, y0: p.y - 7, x1: p.x + 7, y1: p.y + 7 })
+  const plano = planejarRotulosDosPinos(medir, cena([atencao, cinzaEsq, cinzaDir]), null, { mostrarIdade: true, agora: new Date() }, [])
+  const a = plano.get('a')!
+  assert.ok(a, 'a cidade em atenção tem rótulo mesmo cercada de pinos cinzas')
+  for (const id of ['c1', 'c2']) {
+    const r = plano.get(id)
+    if (r) assert.equal(colide(r.caixa, [bolinha(atencao), bolinha(id === 'c1' ? cinzaDir : cinzaEsq)]), false, `"sem leitura" de ${id} cobriu um pino`)
+  }
+  // Com um pino COLORIDO no mesmo lugar, o rótulo não pode cobri-lo: procura outra posição.
+  const alerta = pino('b', 230, 135, { faixa: 'alerta', nivel: 6.1, medidoEm: new Date() })
+  const plano2 = planejarRotulosDosPinos(medir, cena([atencao, cinzaEsq, alerta]), null, { mostrarIdade: true, agora: new Date() }, [])
+  for (const [id, r] of plano2) {
+    for (const q of [atencao, cinzaEsq, alerta]) {
+      if (q.cidade.id === id || q.faixa === 'sem-dado') continue
+      assert.equal(colide(r.caixa, [bolinha(q)]), false, `o rótulo de ${id} cobre o pino colorido de ${q.cidade.id}`)
+    }
+  }
 })
 
 test('a cidade SELECIONADA nunca perde o rótulo', () => {
@@ -117,9 +163,13 @@ test('A LISTA É COMPARTILHADA: o rótulo da barragem já colocado tira o da cid
    */
   const ocupada: Caixa[] = [{ x0: 180, y0: 120, x1: 320, y1: 150 }]
   const c = cena([pino('taio', 200, 150)])
-  assert.equal(planejarRotulosDosPinos(medir, c, null, {}, ocupada).size, 0)
-  // Longe do rótulo já colocado, cabe.
-  assert.equal(planejarRotulosDosPinos(medir, cena([pino('taio', 60, 280)]), null, {}, ocupada).size, 1)
+  const plano = planejarRotulosDosPinos(medir, c, null, {}, ocupada)
+  // A cidade cede o lugar de cima e vai para baixo do pino — nunca por cima da barragem.
+  const taio = plano.get('taio')
+  if (taio) assert.equal(colide(taio.caixa, [ocupada[0]!]), false, '"Taió" por cima da barragem de novo')
+  // Longe do rótulo já colocado, cabe no lugar de sempre.
+  const longe = planejarRotulosDosPinos(medir, cena([pino('taio', 60, 280)]), null, {}, [ocupada[0]!]).get('taio')!
+  assert.equal(longe.baseY, 280 - 9)
 })
 
 test('o plano ACRESCENTA à lista — quem vier depois enxerga as cidades', () => {
@@ -159,9 +209,10 @@ test('o chip da maré reserva o canto e o rótulo da cidade se acomoda', () => {
   assert.ok(chip.x1 <= CENA_LARGURA, 'o chip fica dentro da tela')
   assert.ok(chip.y0 >= 0)
 
-  // Um pino colado no chip perde o rótulo; longe dele, mantém.
+  // Um pino colado no chip não escreve por cima dele: acha outra posição ou some.
   const colado = cena([pino('itajai', CENA_LARGURA - 40, chip.y1 + 12)])
-  assert.equal(planejarRotulosDosPinos(medir, colado, null, {}, [chip]).size, 0)
+  const r = planejarRotulosDosPinos(medir, colado, null, {}, [chip]).get('itajai')
+  if (r) assert.equal(colide(r.caixa, [chip]), false, 'rótulo de Itajaí por baixo do chip da maré')
   const longe = cena([pino('itajai', 100, 250)])
   assert.equal(planejarRotulosDosPinos(medir, longe, null, {}, [chip]).size, 1)
 })
@@ -209,4 +260,53 @@ test('nem a cidade SELECIONADA ganha rótulo estando fora da tela', () => {
   // número dela). Furar a borda é outra coisa: apontaria para o lugar errado.
   const plano = planejarRotulosDosPinos(medir, cena([pino('blumenau', -300, 100)]), 'blumenau', {}, [])
   assert.equal(plano.size, 0)
+})
+
+/**
+ * 14/09/2026, captura do Jefferson: o rótulo de Ituporanga (alerta, FAIXA
+ * ESTADUAL) tomou o lugar do de Rio do Sul (atenção, COTA MUNICIPAL) e ainda
+ * ficou em cima do pino de Rio do Sul. Duas regras nascem daqui.
+ */
+test('municipal manda também na disputa por espaço: estadual perde para a municipal vizinha', () => {
+  const rioDoSul = pino('rio-do-sul', 300, 100, { faixa: 'atencao', origemFaixa: 'municipal', nivel: 5.33, medidoEm: new Date() })
+  const ituporanga = pino('ituporanga', 300, 118, { faixa: 'alerta', origemFaixa: 'estadual',
+    nivelBruto: { cidade: 'ituporanga', estacao: 'SDC-SC Ituporanga', nivelBrutoM: 3.44, medidoEm: new Date(), faixaEstadual: 'alerta' } })
+  const plano = planejarRotulosDosPinos(medir, cena([ituporanga, rioDoSul]), null, {}, [])
+  const rds = plano.get('rio-do-sul')!
+  assert.ok(rds, 'a cidade com cota municipal ganha o rótulo')
+  assert.equal(rds.baseY, 100 - 9, 'e fica no lugar de sempre, acima do pino')
+  const itu = plano.get('ituporanga')
+  const bolinhaRds: Caixa = { x0: 293, y0: 93, x1: 307, y1: 107 }
+  if (itu) {
+    assert.equal(colide(itu.caixa, [bolinhaRds]), false, 'o rótulo estadual nunca cobre o pino de Rio do Sul')
+    assert.equal(colide(itu.caixa, [rds.caixa]), false, 'nem o rótulo de Rio do Sul')
+  }
+})
+
+test('um rótulo nunca cobre a bolinha de OUTRO pino, seja qual for a gravidade', () => {
+  const emergencia = pino('a', 300, 118, { faixa: 'emergencia' })
+  const normal = pino('b', 300, 100, { faixa: 'normal' })
+  const plano = planejarRotulosDosPinos(medir, cena([emergencia, normal]), null, {}, [])
+  const a = plano.get('a')!
+  const bolinhaB = { x0: 293, y0: 93, x1: 307, y1: 107 }
+  assert.ok(a, 'a emergência ganha rótulo')
+  // O lugar de sempre cobriria o pino de B: o rótulo vai para o lado.
+  assert.equal(colide(a.caixa, [bolinhaB]), false, 'rótulo de A em cima do pino de B')
+  const b = plano.get('b')
+  if (b) assert.equal(colide(a.caixa, [b.caixa]), false)
+})
+
+test('estadual mais grave ainda ganha de municipal sem dado e de municipal menos grave', () => {
+  const cinza = pino('c', 100, 100, { faixa: 'sem-dado', origemFaixa: 'municipal' })
+  const estadualAlerta = pino('e', 100, 118, { faixa: 'alerta', origemFaixa: 'estadual' })
+  const plano = planejarRotulosDosPinos(medir, cena([cinza, estadualAlerta]), null, {}, [])
+  // 'e' vem primeiro na ordem; o lugar de sempre cobriria o pino cinza de 'c',
+  // então vai para o lado, e 'c' ainda acha lugar.
+  const e = plano.get('e')!
+  assert.ok(e)
+  assert.equal(colide(e.caixa, [{ x0: 93, y0: 93, x1: 107, y1: 107 }]), false)
+  assert.ok(plano.has('c'))
+  // Longe um do outro, ambos aparecem — e a ordem de prioridade é a esperada.
+  const longe = planejarRotulosDosPinos(medir, cena([cinza, pino('e2', 300, 250, { faixa: 'alerta', origemFaixa: 'estadual' })]), null, {}, [])
+  assert.ok(longe.has('c') && longe.has('e2'))
 })

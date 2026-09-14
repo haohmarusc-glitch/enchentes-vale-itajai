@@ -356,6 +356,30 @@ como dispensar a folha que cobre metade do mapa. O bloco do topo encolheu no cel
 continua, menor), a barra "Reproduzir 24 h" saiu de cima do seletor de fundo, e a legenda deixou de
 subir até os botões + e −.
 
+### O rótulo tenta outro lugar antes de sumir, e nunca cobre pino colorido — 14/09/2026
+
+A captura do celular do Jefferson: **"Ituporanga"** (alerta na classificação ESTADUAL, tracejado)
+escrito por cima do **pino de Rio do Sul** (atenção na cota MUNICIPAL), e Rio do Sul sem nome. Duas
+causas, duas regras:
+
+1. **A municipal manda também na disputa por espaço.** A faixa estadual entra um degrau abaixo da
+   municipal de mesma cor e perde o desempate: alerta estadual = atenção municipal, e o municipal
+   vai primeiro. A prioridade continua sendo a selecionada, depois a faixa mais grave.
+2. **Pino vizinho é obstáculo.** Um rótulo em cima de outro pino é um nível escrito sobre a cidade
+   errada. A caixa do rótulo (nome + nível, sem a chuva, que fica abaixo do próprio pino) tenta
+   quatro posições nesta ordem — acima centrado, à direita, à esquerda, abaixo — e fica na primeira
+   livre de rótulos e de pinos. Se nenhuma existe, rótulo **com nível** pode cobrir pino **cinza**
+   (sem-dado), nunca um colorido; "sem leitura" não cobre pino nenhum. Sem lugar, some.
+
+Por que a segunda regra não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos
+outros, e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam —
+o contrário do que o morador precisa.
+
+Os testes: `rotulosDoMapa.test.ts` (casos de brinquedo) e `rotulosDaBacia.test.ts`, que monta a
+cena pelo motor de verdade com as cidades e os traçados do repositório, em quatro telas, e confere
+que nenhum rótulo cruza outro nem cobre pino colorido. Quem some no celular são só vizinhos colados
+(Timbó e Rio dos Cedros caem no MESMO ponto do traçado; Guabiruba a 20 px de Brusque).
+
 ### Quantos rótulos de régua o zoom comporta — 06/09/2026
 
 A anticolisão sozinha não bastou para Itajaí. Ela decide **quem some**, e quem some é quem chegou
