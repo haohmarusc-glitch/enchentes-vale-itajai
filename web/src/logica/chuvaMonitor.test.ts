@@ -30,3 +30,12 @@ test('rótulo identifica cada janela, zero e horário da chuva', () => {
   assert.deepEqual(linhas.slice(0, 3), ['1 h: 0 mm', '12 h: — mm', '24 h: 20 mm'])
   assert.match(linhas[3]!, /5 min/)
 })
+
+test('a última linha diz que é a idade da MEDIÇÃO de chuva, não que choveu há X min', () => {
+  const agora = new Date('2026-09-13T22:10:00-03:00')
+  const c = { cidade: 'rio-do-sul', estacao: 'A', coerente: true, medidoEm: new Date(agora.getTime() - 10 * 60_000),
+    mm: { h1: 0, h12: 0, h24: 0.1 } } as unknown as Parameters<typeof linhasChuva>[0][number]
+  const linhas = linhasChuva([c], 'rio-do-sul', agora)
+  assert.equal(linhas[3], 'Chuva atualizada há 10 min')
+  assert.equal(linhasChuva([], 'rio-do-sul', agora)[3], 'Chuva indisponível')
+})
