@@ -160,7 +160,11 @@ inventada: é o veredito da fonte, mostrado como dela. Regras, todas em
 - só entra onde a municipal é `sem-dado`; **a municipal manda** sempre;
 - mesma paleta, **traço tracejado** no trecho e **contorno tracejado** no pino
   (miolo claro, sem brilho) — a bolinha cheia e o bloom são só da cota nossa;
-- rótulo "faixa estadual" no pino; no painel, "Classificação da Defesa Civil de SC";
+- rótulo "faixa estadual" no pino; no painel, "Classificação da Defesa Civil de SC".
+  DECIDIDO (Jefferson, 14/09/2026): fica "faixa estadual", não "régua estadual". São coisas
+  diferentes — o número é lido na régua estadual (zero próprio), a cor tracejada é a faixa que a
+  rede declara —, mas "faixa" é a palavra que o site inteiro usa para cor, e "≈5,20 m na régua
+  estadual · faixa estadual" alargaria um rótulo que já disputa espaço;
 - "normal" também pinta (decisão do Jefferson, 14/09/2026);
 - leitura estadual velha (> 3 h) volta a cinza, como a municipal;
 - **correnteza parada**: animação = nível na régua nossa, e esta cor não é nossa;
