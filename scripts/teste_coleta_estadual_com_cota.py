@@ -30,6 +30,8 @@ class TesteMontar(unittest.TestCase):
         self.assertTrue(l["usar_para_cota"])
         self.assertEqual(l["origem"], "estadual")
         self.assertIn("DCSC-00003", l["estacao"])
+        self.assertEqual(l["codigo"], "DCSC-00003",
+                         "o site deduplica pela chave `codigo`; sem ela Ascurra vira duas réguas e apaga")
         self.assertIn("C18", l["fonte"])
 
     def teste_estacao_fora_da_lista_nao_entra(self):

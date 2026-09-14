@@ -69,7 +69,10 @@ def montar(leituras_estaduais: list[dict]) -> list[dict]:
             "nivel_m": float(nivel),
             "medido_em": quando,           # já em hora de Brasília, sem fuso (coleta_nivel_sc.hora_local)
             "fonte": cfg["fonte"],
-            "codigo_dcsc": l["codigo"],
+            # `codigo` é o que o site usa para saber que esta leitura e a exceção
+            # dele (referenciaAscurra.ts) são a MESMA régua — sem ele, o site veria
+            # duas réguas em Ascurra e apagaria a cor.
+            "codigo": l["codigo"],
             "origem": "estadual",
             "datum": "regua_das_cotas",    # a régua das cotas É esta estação, por declaração da COMPDEC
             "usar_para_cota": True,

@@ -113,6 +113,10 @@ function leituraValida(bruta: unknown): LeituraAoVivo | null {
   }
 
   return {
+    // `codigo` (ex.: DCSC-00003) identifica a régua quando a leitura vem da rede
+    // estadual com cota própria; é por ele que referenciaAscurra.ts sabe que o
+    // back-end já mandou a mesma régua e não a duplica.
+    ...(typeof l.codigo === 'string' && l.codigo.trim() !== '' ? { codigo: l.codigo } : {}),
     estacao: l.estacao,
     rio: typeof l.rio === 'string' ? l.rio : null,
     cidade: typeof l.cidade === 'string' ? l.cidade : null,
