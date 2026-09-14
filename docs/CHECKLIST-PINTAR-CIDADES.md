@@ -124,6 +124,18 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
   o rio a 7,07 m na régua da ponte em frente ao prédio dela. **A crista de Ilhota às 05:10 não era a
   onda de Blumenau** (Ilhota sobe cedo por chuva local e Luiz Alves; r=0,96 contra 0,99 de Indaial).
   Trava no código: E11.
+- [x] E13 · ✅ **Órfãs do resgate corrigidas na VPS (14/09/2026).** Mesmo depois do E8, o extrator na VPS
+  ainda via "Blumenau tem 2 réguas": 75 leituras horárias do AlertaBlu, de **01/09 09:00 a 04/09 12:00**,
+  estavam sem `resgate_de` — o resgate nasceu em 01/09 (`4b96096`), mas o `coleta_niveis.py` só passou a
+  gravar a marca no ndjson em 04/09 (`a5c96c3`). Correção de DADO, não de código: as 75 linhas receberam
+  `resgate_de: "Blumenau"` (a relação que o `coleta_alertablu.py` sempre escreveu), com backup
+  `data/tempo-real/2026-09.ndjson.bak-<carimbo>` e escrita atômica. Resultado: Blumenau é UMA régua
+  (1.411 leituras), cota de atenção 4,00 m, dois eventos — **7,58 m às 09:00 de 01/09** e **7,87 m às
+  05:00 de 12/09**, ambos com horário pelo relógio do AlertaBlu (E11 funcionando). Nenhum em
+  `enchentes.json`: E4.
+  Efeito colateral honesto: onde as duas fontes se sobrepõem, a série mesclada ziguezagueia (o repasse
+  está 3 h atrás) e o extrator marca dezenas de "salto grande" em 01/09. É o desvio visto de dentro,
+  marcado e não descartado; some quando a Defesa Civil de Itajaí corrigir o carimbo (C23).
 - [x] E11 · ✅ `extrair_picos.RELOGIO_DEFASADO`: o horário da crista de uma régua com publicador de
   relógio defasado vem do OUTRO publicador (valor continua o máximo de todos); sem outro, a proposta
   sai sem `hora`, com `nota`, e `--escrever` recusa. 4 testes.
@@ -145,3 +157,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 13/09/2026 22:40 BRT · série completa da cheia trazida da VPS (E3); extrair_picos consertado para ver primária+resgate como uma régua (E8); achado 🔴 das 3 h de desvio em Blumenau (E9).
 - 13/09/2026 ~21:00 BRT · **E9 fechado**: teste das duas fontes no mesmo minuto na VPS confirma que o carimbo 3 h atrasado de Blumenau nasce na página da Defesa Civil de Itajaí (DC-10 da mesma página com 12 min de idade); medida fina dá +3 h 00 exatos, 1 cm em 218 pares. Ofício C23 rascunhado (E10); trava no código pendente (E11). **B6 chegou**: levantamento da API GraphQL da Defesa Civil de SC (`docs/API-DEFESA-CIVIL-SC.md`), catálogo das 66 estações do Vale e `scripts/baixar_historico_dcsc.py` (14 testes, formato casado com o consolidador). Novos: C7 (`rio_alarmes`, a faixa oficial sem cota) e C8 (guarda de unidade). PR #328 mesclado.
 - 14/09/2026 ~00:40 BRT · **E12 fechado a favor do AlertaBlu** pela hora de parede dos boletins e da imprensa de 11/09 (a física era ambígua). **E11 travado** no extrator. **C23 liberado** (falta o e-mail). Séries DCSC de 10 min da cheia (10 estações) trazidas para `data/brutos/dcsc-cheia-2026-09-11-12/` — primeira execução real do `baixar_historico_dcsc.py` na VPS, sem falha. Luiz Alves (DCSC-00062) vem 100 % em cota absoluta (686 implausíveis): confirma o C8.
+- 14/09/2026 ~01:20 BRT · **E13**: 75 leituras órfãs do AlertaBlu (01–04/09, sem `resgate_de`) corrigidas na VPS com backup; extrator passa a ver Blumenau como uma régua e propõe 7,58 m (01/09 09:00) e 7,87 m (12/09 05:00), ambos pelo relógio do AlertaBlu. VPS em `0605166`.
