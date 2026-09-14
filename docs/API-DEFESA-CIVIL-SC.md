@@ -193,7 +193,22 @@ O campo publica, por estação, as flags `atencao`/`alerta`/`emergencia` **já c
 Defesa Civil de SC, no datum dela**. Isso contorna o problema acima sem violá-lo: não se compara
 metro com metro nem se inventa cota — mostra-se a faixa que a fonte declara, dizendo de quem é.
 É a rota mais curta para as cidades que hoje ficam cinzas por falta de cota casada com a régua.
-Ainda não coletado (item C7 do checklist).
+
+**Coletado desde 14/09/2026** (`coleta_nivel_sc.classificar_alarmes`, aprovado pelo Jefferson com
+condições): a `QUERY_CAMPOS_NOVOS` pede `rio_alarmes.inundacao`; cada leitura de
+`ultimo_nivel_sc.json` ganha `classificacao_estadual` com `faixa` ∈ {atencao, alerta, emergencia}
+ou `null`, mais o bruto (`ativo`, as três flags, `status`) e um `motivo` quando não há faixa.
+Regras: `ativo = true` obrigatório; no máximo UMA flag ligada (duas = contraditório = `null`);
+**"normal" não é afirmado** enquanto a semântica de `ativo` sem flag e a numeração de `status` não
+forem validadas com dados reais na VPS. O site mostra a faixa no painel "Nível bruto — rede
+estadual", rotulada como **classificação da Defesa Civil de SC**, só com leitura recente; nada disto
+entra em `leituras`, então o bot de cotas não dispara por isto. A série `nivel-sc-AAAA-MM.ndjson`
+guarda `faixa_estadual` por leitura — é com ela que se valida a semântica.
+
+**Validação pendente na VPS (antes de pintar o mapa):** rodar `python3 scripts/coleta_nivel_sc.py`
+e conferir em `ultimo_nivel_sc.json` (a) se estações em NORMAL no site oficial vêm com `ativo: true`
+e nenhuma flag (então "normal" pode ser afirmado) ou com `ativo: false`; (b) a tabela `status` ×
+flag em várias estações; (c) que nenhuma leitura veio `contraditório`.
 
 Uma ressalva antes de usar: o campo `status` acompanha a faixa mas parece numerado ao contrário
 da severidade. Ler as três flags, nunca o `status` sozinho.

@@ -52,7 +52,13 @@ régua da leitura.
 - [ ] C7 · ✅ **APROVADO em 14/09/2026, com condições** (Jefferson): exigir `ativo = true`, carimbo recente e
   indicadores coerentes entre si; estação desativada ou contraditória **permanece cinza**; a tela identifica
   como **classificação estadual** (não como faixa do projeto); **não libera Telegram** automaticamente.
-  Em construção. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
+  ✅ **Camada 1 feita em 14/09 (PR próprio):** `coleta_nivel_sc.classificar_alarmes` lê `rio_alarmes.inundacao`,
+  aplica as condições (ativo=true; ≤ 1 flag; contraditório/desativado → `null` com motivo), publica
+  `classificacao_estadual` no `ultimo_nivel_sc.json` e `faixa_estadual` na série; o site mostra a faixa no painel
+  do bruto, rotulada "Classificação da Defesa Civil de SC", só com leitura recente. Nada entra em `leituras` → bot
+  intocado por construção (teste). "normal" NÃO é afirmado até validar `ativo`/`status` com dados reais.
+  ⏳ **Camada 2 (pintar o MAPA pela classificação estadual, com identidade visual própria):** depende da validação
+  na VPS (docs/API-DEFESA-CIVIL-SC.md) e de um mock aprovado pelo Jefferson. — **`rio_alarmes`: a faixa oficial sem precisar da cota.** A API publica, por estação, as flags
   `atencao`/`alerta`/`emergencia` já classificadas pela própria Defesa Civil de SC — no datum dela. É a
   saída para pintar cidades onde não temos cota casada com a régua, sem comparar metro com metro e sem
   inventar cota: mostra-se a faixa da fonte, dizendo de quem é. O `coleta_nivel_sc.py` ainda não lê esse
@@ -177,3 +183,4 @@ Evidência congelada em `data/brutos/evento-2026-09-11-12-*-2200Z.json`; anális
 - 14/09/2026 ~01:20 BRT · **E13**: 75 leituras órfãs do AlertaBlu (01–04/09, sem `resgate_de`) corrigidas na VPS com backup; extrator passa a ver Blumenau como uma régua e propõe 7,58 m (01/09 09:00) e 7,87 m (12/09 05:00), ambos pelo relógio do AlertaBlu. VPS em `0605166`.
 - 14/09/2026 ~02:00 BRT · Caixa de e-mail conferida: nada novo desde 11/09 (Ascurra respondeu em 11/09, já incorporada; Itajaí pediu ligação em 02/09; LAI Cemaden respondida em 10/09, já documentada; sem resposta de outros 12 destinatários). **Decisões do Jefferson**: E4 sim, como máximos observados (gravados); C7 sim, com condições; **C23 não sai** (nenhum ofício ao município de Itajaí; contato por telefone); O Blumenauense e SGB/SACE são consultas que o Claude pode fazer.
 - 14/09/2026 ~02:40 BRT · **Ascurra no back-end** (C6): `coleta_estadual_com_cota.py` + 7 testes; `coleta_niveis` soma a leitura da DCSC-00003 com `usar_para_cota=True` e `codigo`; site lê `codigo` e a exceção `referenciaAscurra.ts` vira fallback (550/550). Cobertura medida no `ultimo` congelado de 13/09: Açu 200 → 219 km vivos.
+- 14/09/2026 ~03:30 BRT · **C7 camada 1**: classificação estadual coletada e validada (9 testes Python), exibida no painel do bruto (parser + 1 teste web); "normal" e o mapa esperam a validação de `ativo`/`status` na VPS.
