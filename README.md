@@ -477,6 +477,11 @@ o projeto.
 
 ## Pendências
 
+- [x] Varredura do navegador (`npm run varredura`, na CI): descobre as rotas a partir do início e abre cada uma no celular e no desktop, sem rede externa; mexe em zoom, menu de cidades, painel, reprodução, fundos, camadas, toque e arrasto do Monitor; nas telas, "Ver detalhe" por teclado, busca "minha rua", réguas e mapa de manchas de Itajaí, Ascurra municipal, rota inexistente. Com `DADOS=` aponta para os JSONs do `tempo-real` e exercita mapa colorido e reprodução de 24 h.
+- [ ] Gráfico de picos: ao trocar de cidade sem recarregar (por exemplo, de Gaspar para Blumenau pelo menu), o console registra sete erros transitórios de atributo `NaN` em `<rect>`/`<line>`; some no quadro seguinte e não aparece na tela. Reproduzir com `page.goto('#/acu/gaspar')` seguido de `'#/acu/blumenau'` na mesma página. A varredura abre cada rota em página nova, então não trava isso.
+- [ ] `web/src/componentes/PainelPrevisao.tsx` não é usado por nenhuma tela desde que a previsão de chegada saiu da interface. Decidir: apagar ou religar quando a previsão v1 voltar.
+- [ ] Busca "minha rua": o termo "Rua" lista 1.894 vias em Blumenau numa página só. Funciona, mas pesa no celular; um limite com "refine a busca" resolveria.
+
 - Saúde da coleta: aviso deixa de afirmar parada geral quando há problema em uma fonte; esclarece que as demais leituras válidas continuam sendo avaliadas. Em 13/09/2026, consulta direta ao painel Asthon retornou Rio do Sul, mas não o station_id cadastrado de Vidal Ramos. O coletor registra essa ausência explicitamente; causa da retirada na fonte ainda não confirmada. Indaial conserva o horário da medição municipal antiga.
 
 - Telegram: leituras com mais de 180 minutos (120 em Blumenau), sem horário válido ou mais de 15 minutos no futuro não disparam avisos nem atualizam o estado de faixa. Correção do aviso de Indaial com 1200 minutos de idade; requer deploy na VPS.
