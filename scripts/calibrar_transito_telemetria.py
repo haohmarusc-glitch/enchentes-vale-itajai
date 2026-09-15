@@ -42,27 +42,6 @@ Trecho que passa por barragem operada (Sul, Oeste, Norte) nunca sobe de `media`,
 qualquer que seja o número de eventos: o lag medido vale para o regime de
 operação que estava valendo na série, não para outro.
 
-## ⛔ BURACO CONHECIDO, achado em 15/09/2026 — não rode `--escrever` sem ler
-
-A concordância entre os dois métodos é testada em horas ABSOLUTAS (≤ 2 h para
-alta). Num trecho longo isso é exigente; num trecho de 1 h é tolerância de
-200 %, e não filtra nada.
-
-O caso concreto: `ascurra -> indaial` passa como **alta** com 5 cristas
-pareadas, TODAS em exatamente 1,0 h, enquanto a correlação diz 2 h. Cinco pares
-idênticos não são precisão — são QUANTIZAÇÃO: `PASSO_H = 1` joga fora os 10 min
-nativos da DCSC, e nessa grade não há como distinguir 0,6 h de 1,4 h. A faixa
-publicada sairia "1,0–1,0 h", que além de tudo contraria a regra do projeto de
-mostrar trânsito sempre como intervalo, nunca como número exato.
-
-O que falta, e ainda não foi feito:
-  1. tolerância RELATIVA entre os métodos (uma fração do lag), não fixa em 2 h;
-  2. recusar o trecho cujo lag encosta no passo da grade;
-  3. ou reamostrar em 10 min nos trechos curtos, já que o dado bruto tem isso.
-
-Até lá, `vidal-ramos -> botuvera` (28 cristas de 3 a 11 h, concentração 86 %,
-correlação em 5 h) é medição de verdade; `ascurra -> indaial` não é.
-
 Uso:
 
     python3 scripts/calibrar_transito_telemetria.py            # só relata
@@ -124,6 +103,27 @@ MAX_DESVIO_ENTRE_METADES_H = 2
 MIN_CONCENTRACAO = 0.70
 #: Raio, em horas, do "perto da mediana" acima.
 RAIO_CONCENTRACAO_H = 3
+#: Tolerância entre os dois métodos, como FRAÇÃO do lag — nunca em horas fixas.
+#:
+#: "≤ 2 h de diferença" é exigente num trecho de 20 h e é tolerância de 200 %
+#: num trecho de 1 h. Era por isso que `ascurra -> indaial` passava como alta
+#: com a correlação dizendo 2 h e as cristas dizendo 1 h.
+TOLERANCIA_ALTA = 0.25
+TOLERANCIA_MEDIA = 0.50
+#: Piso absoluto da tolerância: abaixo disto a própria grade já não resolve.
+TOLERANCIA_MINIMA_H = 1.0
+#: Lag abaixo disto não é medível nesta grade e o trecho é recusado.
+#:
+#: MEDIDO em 15/09/2026. Na grade de 1 h, `ascurra -> indaial` dava r = 0,105
+#: em 2 h e parecia bom. Reamostrando no passo NATIVO da DCSC, de 10 min, o
+#: mesmo trecho dá r = 0,009 com a curva PLANA (0,008 a 0,009 em toda a
+#: vizinhança de ±40 min): não há pico nenhum. A correlação de 1 h era artefato
+#: da agregação — a média horária apagava ruído e fabricava sinal.
+#: O mesmo teste CONFIRMA `vidal-ramos -> botuvera`: 5,17 h no passo de 10 min
+#: contra 5 h no de 1 h, com pico de verdade. Por isso a regra recusa o lag
+#: curto em vez de tentar resgatá-lo: nos trechos curtos desta bacia o sinal
+#: não está lá para ser recuperado.
+MIN_LAG_RESOLVIVEL_H = 2 * PASSO_H
 
 #: Cidades cujo trecho a jusante passa por barragem operada durante a cheia.
 COM_BARRAGEM = {"taio", "ituporanga", "ibirama"}
@@ -395,14 +395,22 @@ def classificar(m: dict, com_barragem: bool) -> tuple[str | None, str]:
         return None, (f"{len(lags)} crista(s), mas só {conc:.0%} dos pares caem a "
                       f"±{RAIO_CONCENTRACAO_H} h da mediana — mais de uma população")
 
-    diferenca = abs(percentil(lags, 0.5) - corr)
-    if len(lags) >= MIN_EVENTOS and diferenca <= 2:
+    mediana = percentil(lags, 0.5)
+    if mediana < MIN_LAG_RESOLVIVEL_H:
+        return None, (f"lag de {mediana:.1f} h encosta no passo da grade "
+                      f"({PASSO_H} h) — quantização, não medição")
+
+    diferenca = abs(mediana - corr)
+    tol_alta = max(TOLERANCIA_MINIMA_H, TOLERANCIA_ALTA * mediana)
+    tol_media = max(TOLERANCIA_MINIMA_H, TOLERANCIA_MEDIA * mediana)
+    if len(lags) >= MIN_EVENTOS and diferenca <= tol_alta:
         conf = "alta"
-    elif len(lags) >= 2 and diferenca <= 4:
+    elif len(lags) >= 2 and diferenca <= tol_media:
         conf = "media"
     else:
         return None, (f"{len(lags)} crista(s), métodos a {diferenca:.1f} h "
-                      f"um do outro — abaixo do mínimo")
+                      f"um do outro — mais que os {tol_media:.1f} h que um lag "
+                      f"de {mediana:.1f} h admite")
     if com_barragem and conf == "alta":
         conf = "media"
     return conf, (f"{len(lags)} crista(s), correlação em {corr} h "

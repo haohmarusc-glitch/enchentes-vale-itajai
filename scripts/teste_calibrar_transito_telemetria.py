@@ -14,10 +14,10 @@ import unittest
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from calibrar_transito_telemetria import (COLUNAS_MINIMAS, MIN_PROEMINENCIA_M, classificar,
-                                          concentracao, cristas, grade, lag_estavel,
-                                          lag_por_correlacao, ler_serie, medir_trecho,
-                                          parear_cristas, percentil)
+from calibrar_transito_telemetria import (COLUNAS_MINIMAS, MIN_LAG_RESOLVIVEL_H,
+                                          MIN_PROEMINENCIA_M, classificar, concentracao,
+                                          cristas, grade, lag_estavel, lag_por_correlacao,
+                                          ler_serie, medir_trecho, parear_cristas, percentil)
 
 INICIO = datetime(2026, 6, 1, 0, 0)
 
@@ -252,6 +252,49 @@ class GuardasNaClassificacao(unittest.TestCase):
     def test_tudo_em_ordem_ainda_publica(self):
         """As guardas novas não podem reprovar o trecho que sempre foi bom."""
         self.assertEqual(classificar(self.base(), False)[0], "alta")
+
+
+class ToleranciaRelativa(unittest.TestCase):
+    """Duas horas de diferença significam coisas diferentes em 20 h e em 3 h."""
+
+    def base(self, lags: list[float], corr: int) -> dict:
+        return {"lag_correlacao_h": corr, "r": 0.9, "lags_cristas_h": lags,
+                "concentracao": 1.0, "lag_estavel": True, "lag_metades_h": [corr, corr],
+                "horas_comuns": 2000}
+
+    def test_duas_horas_de_erro_em_vinte_ainda_e_alta(self):
+        self.assertEqual(classificar(self.base([20.0] * 5, 18), False)[0], "alta")
+
+    def test_duas_horas_de_erro_em_quatro_nao_e_mais_alta(self):
+        """Antes passava: 2 h fixas em cima de um lag de 4 h é 50 % de erro."""
+        conf, _ = classificar(self.base([4.0] * 5, 6), False)
+        self.assertNotEqual(conf, "alta")
+
+    def test_o_piso_absoluto_protege_o_lag_pequeno(self):
+        """25 % de 4 h é 1 h, mas a tolerância nunca cai abaixo de 1 h."""
+        self.assertEqual(classificar(self.base([4.0] * 5, 5), False)[0], "alta")
+
+
+class LagNaResolucaoDaGrade(unittest.TestCase):
+    """O caso ascurra → indaial: cinco pares idênticos em 1,0 h não é precisão."""
+
+    def base(self, lags: list[float], corr: int) -> dict:
+        return {"lag_correlacao_h": corr, "r": 0.9, "lags_cristas_h": lags,
+                "concentracao": 1.0, "lag_estavel": True, "lag_metades_h": [corr, corr],
+                "horas_comuns": 2000}
+
+    def test_lag_no_piso_da_grade_nao_publica(self):
+        conf, porque = classificar(self.base([1.0] * 5, 2), False)
+        self.assertIsNone(conf)
+        self.assertIn("quantização", porque)
+
+    def test_lag_acima_do_piso_publica(self):
+        self.assertIsNotNone(classificar(self.base([6.0] * 5, 6), False)[0])
+
+    def test_o_piso_acompanha_o_passo_da_grade(self):
+        """Se um dia a grade ficar mais fina, o piso desce junto — não é número solto."""
+        from calibrar_transito_telemetria import PASSO_H
+        self.assertEqual(MIN_LAG_RESOLVIVEL_H, 2 * PASSO_H)
 
 
 class Percentil(unittest.TestCase):
