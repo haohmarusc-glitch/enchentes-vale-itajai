@@ -1064,6 +1064,28 @@
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
+      "data": "2021-01-21",
+      "hora": "21:45",
+      "pico_m": 6.82,
+      "confianca": "alta",
+      "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2021-01-24-DIAS_7.json",
+      "nota": "Crista às 21:45; platô 6,77–6,82 m das 19:30 de 21/01 às 00:45 de 22/01 (22 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima da cota de alerta (6,00 m). Veio 18 h 30 ANTES da crista de Taió (6,91 m às 16:15 de 22/01, que não é registro pela decisão (b) do Jefferson de 09/09/2026): a chuva caiu perto de Blumenau, não desceu de Taió — ver transito.json._meta.medicoes.taio_e_blumenau_2021_2022. O Aviso 02/2021 da CIRAM dava 6,59 m às 05:00 de 22/01 já descendo, 23 cm abaixo da crista; aviso é instantâneo do horário da coleta, não pico (EPAGRI, 15/09/2026).",
+      "referencia": "régua"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2022-05-05",
+      "hora": "02:45",
+      "pico_m": 9.41,
+      "confianca": "alta",
+      "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2022-05-06-DIAS_7.json",
+      "nota": "Crista às 02:45; platô 9,36–9,41 m das 00:00 às 04:30 (19 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima do Alerta Máximo (8,00 m). Veio 1 h 15 ANTES da crista de Taió (9,49 m às 04:00, que não é registro pela decisão (b)); Indaial pica em 04/05 (6,00 m), já no repo. O Aviso 03/2022 da CIRAM dava 6,39 m às 08:00 de 06/05 já descendo — três metros abaixo da crista, que é o tamanho do erro de tomar aviso por pico. Conferir contra a tabela /p/enchentes da Defesa Civil de Blumenau quando ela chegar.",
+      "referencia": "régua"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
       "data": "2023-10-13",
       "pico_m": 10.61,
       "confianca": "media",

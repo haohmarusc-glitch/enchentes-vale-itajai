@@ -179,10 +179,28 @@ Taió fecha; Rio do Sul não. Fica como divergência anotada. Não escolher uma 
   **83300200**. Nada a mudar no cadastro — a dúvida é que sai.
 - Em 2023 a EPAGRI chamava a 83050000 de **"Taió"**; na tabela do C5 (2026) ela aparece como
   **"Saltinho"**. Mesmo código, rótulo diferente em épocas diferentes.
-- **83360000 "Jose Boiteux"** (José Boiteux, Rio Itajaí do Norte/Hercílio) **não está no
-  cadastro**. Mesmo ramo do Ibirama, que está com `codigo_ana: null`. É pista para
-  investigar, não estação para cadastrar de afogadilho: José Boiteux fica a montante de
-  Ibirama e é outro município.
+### 83360000 "Jose Boiteux" — investigado em 15/09/2026, e não é lacuna
+
+A primeira leitura ("estação nos avisos que falta no cadastro") estava errada. O que os
+dados do repo dizem:
+
+- **A cidade já é lida ao vivo.** `scripts/coleta_nivel_sc.py` mapeia **`DCSC-00021` →
+  `jose-boiteux`** desde antes; a rede estadual entrega a leitura (3,06 m em 13/09/2026,
+  −26,95484 / −49,63359). Não falta fonte.
+- **O que falta é outra coisa:** José Boiteux não é cidade do `rios['itajai-acu'].cidades`
+  (são 15). Aparece como régua estadual no Monitor, não como elo da árvore. Fica a montante
+  do Ibirama no ramo `itajai_do_norte`, e entrar na árvore é decisão de topologia, não de
+  cadastro de estação — `docs/TOPOLOGIA-CANONICA.md` manda a fonte dizer a confluência.
+- **A estação da ANA está morta.** A tabela do C5 diz `83360000 · José Boiteux ·
+  Desativada · 01/01/2012 → 04/12/2024`. Estava viva em nov/2023, então serve para a
+  telemetria histórica — e **não** como fonte ao vivo.
+
+**Terceiro caso da mesma armadilha.** O inventário da ANA de 08/09/2026
+(`data/brutos/ana-inventario-api-2026-09-08.json`) diz `Operando: "1"` e
+`Tipo_Estacao_Telemetrica: "1"` para a 83360000, com `Data_Periodo_Telemetrica_Fim: null` —
+e a operadora (EPAGRI-SC) diz desativada desde 04/12/2024. É o mesmo padrão já registrado em
+`docs/RESPOSTA-EPAGRI-C5-2026-09-09.md` para Brusque (83900000) e Blumenau (83800002).
+**O campo `Operando` do inventário não prova estação viva**; quem sabe é a operadora.
 
 ## ⛔ O que NÃO fazer com estes arquivos
 
