@@ -1,0 +1,108 @@
+{
+  "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+  "consultado_em": "2026-09-13T23:07:24.276920+00:00",
+  "sha256_html": "125c9bb107bebb5a054da18bcba5f43d311aea207d236f92e39b19efb2aec80e",
+  "estacoes": {
+    "DC-01": {
+      "titulo": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL",
+      "canvas": "chart-2-tel",
+      "cotas_m": {
+        "atencao": 1.21,
+        "alerta": 1.61,
+        "emergencia": 1.75
+      }
+    },
+    "DC-02": {
+      "titulo": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+      "canvas": "chart-3-tel",
+      "cotas_m": {
+        "atencao": 1.6,
+        "alerta": 2.0,
+        "emergencia": 2.5
+      }
+    },
+    "DC-03": {
+      "titulo": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "canvas": "chart-4-tel",
+      "cotas_m": {
+        "atencao": 1.48,
+        "alerta": 1.85,
+        "emergencia": 2.5
+      }
+    },
+    "DC-04": {
+      "titulo": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados",
+      "canvas": "chart-5-tel",
+      "cotas_m": {
+        "atencao": 1.5,
+        "alerta": 1.85,
+        "emergencia": 2.25
+      }
+    },
+    "DC-05": {
+      "titulo": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "canvas": "chart-6-tel",
+      "cotas_m": {
+        "atencao": 1.6,
+        "alerta": 2.2,
+        "emergencia": 3.0
+      }
+    },
+    "DC-06": {
+      "titulo": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo",
+      "canvas": "chart-7-tel",
+      "cotas_m": {
+        "atencao": 1.5,
+        "alerta": 1.85,
+        "emergencia": 2.55
+      }
+    },
+    "DC-07": {
+      "titulo": "DC-07 Ribeirão da Murta - Portal",
+      "canvas": "chart-8-tel",
+      "cotas_m": {
+        "atencao": 1.0,
+        "alerta": 1.4,
+        "emergencia": 1.5
+      }
+    },
+    "DC-08": {
+      "titulo": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "canvas": "chart-9-tel",
+      "cotas_m": {
+        "atencao": 1.7,
+        "alerta": 2.3,
+        "emergencia": 2.89
+      }
+    },
+    "DC-09": {
+      "titulo": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer",
+      "canvas": "chart-10-tel",
+      "cotas_m": {
+        "atencao": 1.22,
+        "alerta": 1.42,
+        "emergencia": 1.62
+      }
+    },
+    "DC-10": {
+      "titulo": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro",
+      "canvas": "chart-14-tel",
+      "cotas_m": {
+        "atencao": 8.0,
+        "alerta": 9.0,
+        "emergencia": 10.0
+      }
+    },
+    "DC-11": {
+      "titulo": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
+      "canvas": "chart-15-tel",
+      "cotas_m": {
+        "atencao": 3.0,
+        "alerta": 4.0,
+        "emergencia": 5.0
+      }
+    }
+  },
+  "sha256_resposta_http": "5d4b17311b4e60b3cd5cbebb4609df69c398fba6de7ec0c0381bcb7868cd4c65",
+  "normalizacao_html": "CRLF para LF para conferir o arquivo versionado em Windows e Linux; resposta HTTP original identificada separadamente."
+}
