@@ -122,13 +122,41 @@ ESTACOES_APOSENTADAS = {
 
 
 class Diagnostico:
-    def __init__(self, ok: bool, motivo: str, detalhes: list[str]):
+    """Veredito de UMA checagem, ou a soma delas.
+
+    `chaves` diz QUAIS checagens estão falhando agora, por nome estável —
+    "coleta", "bruto", "mapa_alarme", "versao". Não é enfeite: é o que permite
+    ao `deve_avisar` distinguir "o mesmo problema de sempre" de "um problema
+    NOVO entrou", e essa distinção é a diferença entre avisar e ficar mudo.
+
+    O nome é estável de propósito: o `motivo` carrega minutos e contagens que
+    mudam a cada rodada ("há 3871 min"), e usá-lo como identidade faria toda
+    rodada parecer novidade — que é o extremo oposto, e igualmente inútil.
+    """
+
+    def __init__(self, ok: bool, motivo: str, detalhes: list[str], chave: str | None = None):
         self.ok = ok
         self.motivo = motivo
         self.detalhes = detalhes
+        #: vazio quando ok; senão, os nomes das checagens que falharam.
+        self.chaves: set[str] = set() if ok else ({chave} if chave else set())
 
     def __str__(self) -> str:
         return "\n".join([("ok: " if self.ok else "FALHA: ") + self.motivo, *self.detalhes])
+
+    def somar(self, outro: "Diagnostico") -> "Diagnostico":
+        """Junta o veredito de outra checagem a este, preservando as chaves.
+
+        Detalhe de checagem que passou continua entrando: quem lê o aviso quer
+        ver o que foi conferido, não só o que quebrou.
+        """
+        if outro.ok:
+            self.detalhes.extend(outro.detalhes)
+            return self
+        motivo = outro.motivo if self.ok else f"{self.motivo}; {outro.motivo}"
+        junto = Diagnostico(False, motivo, self.detalhes + outro.detalhes)
+        junto.chaves = self.chaves | outro.chaves
+        return junto
 
 
 def _idade_min(quando: datetime, agora: datetime) -> float:
@@ -197,7 +225,7 @@ def avaliar(dados: dict | None, agora: datetime,
     dias. Sem memória não há comparação: é o que acontece na primeira rodada.
     """
     if dados is None:
-        return Diagnostico(False, "não há arquivo de coleta", [])
+        return Diagnostico(False, "não há arquivo de coleta", [], "coleta")
 
     detalhes: list[str] = []
     problemas: list[str] = []
@@ -306,7 +334,7 @@ def avaliar(dados: dict | None, agora: datetime,
             )
 
     if problemas:
-        return Diagnostico(False, "; ".join(problemas), detalhes)
+        return Diagnostico(False, "; ".join(problemas), detalhes, "coleta")
     return Diagnostico(True, "coleta e fonte em dia", detalhes)
 
 
@@ -320,7 +348,7 @@ def avaliar_bruto(dados: dict | None, agora: datetime) -> Diagnostico:
     uma deixaria o vigia permanentemente vermelho — que é o mesmo que mudo.
     """
     if dados is None:
-        return Diagnostico(False, "o nível estadual (cabeceiras) não tem arquivo de coleta", [])
+        return Diagnostico(False, "o nível estadual (cabeceiras) não tem arquivo de coleta", [], "bruto")
 
     detalhes: list[str] = []
     problemas: list[str] = []
@@ -357,7 +385,7 @@ def avaliar_bruto(dados: dict | None, agora: datetime) -> Diagnostico:
             problemas.append(f"o nível estadual não tem leitura nova há {idade:.0f} min")
 
     if problemas:
-        return Diagnostico(False, "; ".join(problemas), detalhes)
+        return Diagnostico(False, "; ".join(problemas), detalhes, "bruto")
     return Diagnostico(True, "nível estadual em dia", detalhes)
 
 
@@ -423,6 +451,7 @@ def avaliar_versao(rodar=_rodar_git) -> Diagnostico:
         f"o código em {onde} está {atras} {plural} atrás de origin/{RAMO_PRODUCAO} — "
         "o cron está rodando versão antiga",
         [f"código: {atras} {plural} atrás em {onde}"],
+        "versao",
     )
 
 
@@ -472,19 +501,51 @@ def avaliar_mapa_e_alarme(dados: dict | None) -> Diagnostico:
         "não vigia a cidade",
         [f"mapa×alarme: {r['cidade']} pinta com {r['cotas']} e não é vigiada"
          for r in buracos],
+        "mapa_alarme",
     )
 
 
 def deve_avisar(diag: Diagnostico, estado: dict, agora: datetime) -> bool:
     """
-    Manda aviso de falha no máximo uma vez a cada SILENCIO_H — e manda a
-    recuperação assim que ela acontece, sem esperar silêncio nenhum.
+    Avisa quando: a coleta VOLTA; um problema NOVO aparece; ou o silêncio de
+    SILENCIO_H venceu sobre os que já estavam abertos.
+
+    POR QUE O "PROBLEMA NOVO" (15/09/2026). Antes, o estado era um booleano só
+    para o vigia inteiro — `falhando` — e a regra era "já falhava? então só de 6
+    em 6 horas". A consequência não estava prevista: **um problema novo que
+    chega enquanto outro está aberto entra MUDO**, porque não houve transição
+    ok -> falha.
+
+    Foi assim que a VPS ficou dois PRs atrás sem ninguém ser avisado: o
+    `avaliar_versao` viu e escreveu a linha certa, mas o vigia já estava
+    vermelho por causa de Indaial parada e Gaspar sumida, e o aviso do código
+    atrasado virou mais uma linha no detalhe de um alerta sobre outra coisa. Uma
+    falha crônica mascarando uma falha nova é a maneira mais silenciosa de um
+    alarme falhar: ele continua tocando, só que sobre o assunto errado.
+
+    A identidade é a CHAVE da checagem, não o texto do motivo — "coleta",
+    "bruto", "mapa_alarme", "versao". Usar o motivo faria cada rodada parecer
+    novidade, porque ele carrega minutos que mudam sempre; e o silêncio de 6 h
+    existe justamente para que coleta morta não avise de 15 em 15 minutos.
+
+    A granularidade para DENTRO da coleta (por estação) fica de fora de
+    propósito: numa cheia as estações entram e saem, e avisar a cada troca é a
+    receita de ensinar quem opera a ignorar o vigia.
     """
     falhava = bool(estado.get("falhando"))
     if diag.ok:
         return falhava  # avisa que voltou, uma vez só
     if not falhava:
         return True  # primeira falha: avisa na hora
+
+    # Problema que não estava aberto na última vez avisa na hora, mesmo com
+    # outro já aberto. `avisadas` ausente = estado de uma versão anterior do
+    # vigia: não sabemos o que já foi avisado, e inventar "tudo novo" geraria um
+    # aviso por nada na primeira rodada depois do deploy. Cai no silêncio.
+    avisadas = estado.get("chaves_avisadas")
+    if avisadas is not None and diag.chaves - set(avisadas):
+        return True
+
     desde = estado.get("avisado_em")
     if not desde:
         return True
@@ -501,6 +562,13 @@ def texto(diag: Diagnostico, so_versao: bool = False) -> str:
     A manchete muda porque a antiga seria falsa. "A coleta de nível parou" com a
     coleta rodando normalmente é a pior espécie de aviso: manda procurar defeito
     onde não há, e ensina a duvidar do próximo — que pode ser o da cheia.
+
+    O CONSERTO SAI SEMPRE (15/09/2026). A linha do `git pull` era presa ao
+    `so_versao`, então ela aparecia com um problema e sumia com dois — some
+    justamente quando a pessoa tem mais coisa na cabeça. A manchete continua
+    escolhida por prioridade (coleta ganha do deploy, e isso está certo), mas a
+    instrução do conserto passa a depender só de o código estar atrasado, que é
+    o fato que ela conserta.
     """
     e = notificador.esc
     if diag.ok:
@@ -519,14 +587,19 @@ def texto(diag: Diagnostico, so_versao: bool = False) -> str:
             "",
             "A coleta está rodando e o site tem dado fresco — o que não chegou "
             "foi o código novo. Um conserto já mesclado pode não estar valendo aqui.",
-            "",
-            f"Na VPS: <code>cd {e(str(RAIZ))} && git pull origin {RAMO_PRODUCAO}</code>",
         ]
     else:
         corpo += [
             "",
             "Enquanto isso o site mostra a última leitura com a idade dela — "
             "não inventa número. Fontes antigas ou indisponíveis não devem gerar aviso de cota com dados antigos. As demais estações com medições válidas continuam sendo avaliadas pelo disparador.",
+        ]
+    # Fora do if/else de propósito: o conserto do código sai sempre que o código
+    # está atrasado, com um problema ou com quatro.
+    if "versao" in diag.chaves:
+        corpo += [
+            "",
+            f"Na VPS: <code>cd {e(str(RAIZ))} && git pull origin {RAMO_PRODUCAO}</code>",
         ]
     return "\n".join(corpo)
 
@@ -587,41 +660,31 @@ def main() -> int:
                 bruto_dados = json.loads(ULTIMO_NIVEL_SC.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, OSError, UnicodeDecodeError):
                 bruto_dados = None  # ilegível cai no "sem arquivo" do avaliar_bruto
-        diag_bruto = avaliar_bruto(bruto_dados, agora)
-        if not diag_bruto.ok:
-            motivo = diag_bruto.motivo if diag.ok else f"{diag.motivo}; {diag_bruto.motivo}"
-            diag = Diagnostico(False, motivo, diag.detalhes + diag_bruto.detalhes)
-        else:
-            diag.detalhes.extend(diag_bruto.detalhes)
+        diag = diag.somar(avaliar_bruto(bruto_dados, agora))
 
-        # E o código deste checkout está em dia com o que foi mesclado? Entra
-        # por último e guarda se ele é o ÚNICO problema: com a coleta viva, a
-        # manchete do aviso tem de ser outra.
         # Cor sem alarme: a discordância entre os dois caminhos, que nenhum
         # teste unitário pega porque cada lado, sozinho, é coerente.
-        diag_cma = avaliar_mapa_e_alarme(dados)
-        if not diag_cma.ok:
-            motivo = diag_cma.motivo if diag.ok else f"{diag.motivo}; {diag_cma.motivo}"
-            diag = Diagnostico(False, motivo, diag.detalhes + diag_cma.detalhes)
-        else:
-            diag.detalhes.extend(diag_cma.detalhes)
+        diag = diag.somar(avaliar_mapa_e_alarme(dados))
 
+        # E o código deste checkout está em dia com o que foi mesclado? Entra
+        # por último, depois de `coleta_viva` estar decidido: com a coleta viva
+        # e só o código atrasado, a manchete do aviso tem de ser outra.
         coleta_viva = diag.ok
-        diag_versao = avaliar_versao()
-        if not diag_versao.ok:
-            motivo = (diag_versao.motivo if diag.ok
-                      else f"{diag.motivo}; {diag_versao.motivo}")
-            diag = Diagnostico(False, motivo, diag.detalhes + diag_versao.detalhes)
-            so_versao = coleta_viva
-        else:
-            diag.detalhes.extend(diag_versao.detalhes)
+        diag = diag.somar(avaliar_versao())
+        so_versao = coleta_viva and "versao" in diag.chaves
 
     print(diag)
 
     if args.avisar:
         if deve_avisar(diag, estado, agora):
             notificador.enviar(texto(diag, so_versao))
-            estado = {"falhando": not diag.ok, "avisado_em": agora.isoformat()}
+            # `chaves_avisadas` é "o que estava aberto no ÚLTIMO AVISO", não "o
+            # que está aberto agora" — só se grava quando se avisa. Um problema
+            # que fecha e reabre entre dois avisos não conta como novo, e isso é
+            # escolha: numa cheia as fontes piscam, e avisar a cada piscada
+            # ensina quem opera a ignorar o vigia.
+            estado = {"falhando": not diag.ok, "avisado_em": agora.isoformat(),
+                      "chaves_avisadas": sorted(diag.chaves)}
 
         # A memória é gravada em TODA rodada, e não só quando há aviso: é ela
         # que faz a comparação da próxima. Guardada só junto do aviso, uma
