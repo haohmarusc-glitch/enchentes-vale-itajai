@@ -116,6 +116,92 @@ class TestQuandoAvisar(unittest.TestCase):
         self.assertFalse(deve_avisar(d, {"falhando": False}, AGORA))
 
 
+class ProblemaNovoNaoEntraMudo(unittest.TestCase):
+    """O defeito de 15/09/2026: falha crônica mascarando falha nova.
+
+    A VPS ficou dois PRs atrás e ninguém foi avisado. O `avaliar_versao` viu e
+    escreveu a linha certa — mas o vigia já estava vermelho por Indaial parada e
+    Gaspar sumida, não houve transição ok -> falha, e o aviso do código atrasado
+    virou mais uma linha no detalhe de um alerta sobre outro assunto.
+
+    Um alarme que continua tocando sobre o assunto errado é a maneira mais
+    silenciosa de falhar: ninguém percebe que ele parou de cobrir alguma coisa.
+    """
+
+    def falha(self, *chaves) -> Diagnostico:
+        d = Diagnostico(False, "x", [], chaves[0])
+        for c in chaves[1:]:
+            d = d.somar(Diagnostico(False, "y", [], c))
+        return d
+
+    def aberto(self, *chaves, horas=1) -> dict:
+        return {"falhando": True,
+                "avisado_em": (AGORA - timedelta(hours=horas)).isoformat(),
+                "chaves_avisadas": sorted(chaves)}
+
+    def test_problema_NOVO_com_outro_aberto_avisa_na_hora(self):
+        """O caso real: coleta já doente, código fica atrasado."""
+        self.assertTrue(deve_avisar(self.falha("coleta", "versao"),
+                                    self.aberto("coleta"), AGORA))
+
+    def test_os_MESMOS_problemas_continuam_respeitando_o_silencio(self):
+        """Sem isto o conserto viraria spam de 15 em 15 minutos."""
+        self.assertFalse(deve_avisar(self.falha("coleta", "versao"),
+                                     self.aberto("coleta", "versao"), AGORA))
+
+    def test_os_mesmos_problemas_repetem_depois_do_silencio(self):
+        self.assertTrue(deve_avisar(self.falha("coleta"),
+                                    self.aberto("coleta", horas=SILENCIO_H + 1), AGORA))
+
+    def test_um_problema_que_FECHA_nao_dispara_aviso(self):
+        """Sobrou só a coleta, das duas que havia: não é novidade, é melhora
+        parcial. Quem ainda está vermelho não merece aviso novo por isso."""
+        self.assertFalse(deve_avisar(self.falha("coleta"),
+                                     self.aberto("coleta", "versao"), AGORA))
+
+    def test_estado_de_versao_ANTERIOR_do_vigia_cai_no_silencio(self):
+        """Sem `chaves_avisadas` não dá para saber o que já foi avisado.
+
+        Tratar como "tudo novo" dispararia um aviso por nada na primeira rodada
+        depois do deploy — e o primeiro aviso depois de um deploy é exatamente o
+        que ensina a ignorar os próximos."""
+        estado_velho = {"falhando": True,
+                        "avisado_em": (AGORA - timedelta(hours=1)).isoformat()}
+        self.assertFalse(deve_avisar(self.falha("coleta", "versao"), estado_velho, AGORA))
+
+    def test_primeira_falha_de_todas_continua_avisando_na_hora(self):
+        self.assertTrue(deve_avisar(self.falha("versao"), {}, AGORA))
+
+    def test_recuperacao_avisa_e_zera_as_chaves(self):
+        d = avaliar(coleta(), AGORA)
+        self.assertEqual(d.chaves, set())
+        self.assertTrue(deve_avisar(d, self.aberto("coleta", "versao"), AGORA))
+
+
+class SomarPreservaAsChaves(unittest.TestCase):
+    def test_duas_falhas_somam_as_duas_chaves(self):
+        d = Diagnostico(False, "a", ["d1"], "coleta").somar(
+            Diagnostico(False, "b", ["d2"], "versao"))
+        self.assertEqual(d.chaves, {"coleta", "versao"})
+        self.assertEqual(d.motivo, "a; b")
+        self.assertEqual(d.detalhes, ["d1", "d2"])
+
+    def test_checagem_que_passa_entra_no_detalhe_sem_virar_chave(self):
+        """Quem lê o aviso quer ver o que foi CONFERIDO, não só o que quebrou."""
+        d = Diagnostico(False, "a", ["d1"], "coleta").somar(
+            Diagnostico(True, "ok", ["código: em dia"]))
+        self.assertEqual(d.chaves, {"coleta"})
+        self.assertIn("código: em dia", d.detalhes)
+        self.assertFalse(d.ok)
+
+    def test_primeira_falha_sobre_um_ok_assume_o_motivo_dela(self):
+        d = Diagnostico(True, "tudo bem", ["d0"]).somar(
+            Diagnostico(False, "código atrasado", ["d1"], "versao"))
+        self.assertFalse(d.ok)
+        self.assertEqual(d.motivo, "código atrasado")
+        self.assertEqual(d.chaves, {"versao"})
+
+
 class TestTexto(unittest.TestCase):
     def test_falha_diz_o_que_para_de_funcionar(self):
         t = texto(avaliar(None, AGORA))
@@ -446,7 +532,7 @@ class CodigoAtrasado(unittest.TestCase):
         procurar defeito onde não há — e ensina a duvidar do próximo aviso, que
         pode ser o da cheia.
         """
-        d = Diagnostico(False, "o código em /opt está 3 commits atrás", [])
+        d = Diagnostico(False, "o código em /opt está 3 commits atrás", [], "versao")
         so_versao = texto(d, so_versao=True)
         self.assertIn("código no ar está atrasado", so_versao)
         self.assertNotIn("coleta de nível parou", so_versao)
@@ -456,6 +542,20 @@ class CodigoAtrasado(unittest.TestCase):
         self.assertIn("uma ou mais fontes", parou)
         self.assertNotIn("ninguém recebe", parou)
         self.assertIn("continuam sendo avaliadas", parou)
+
+    def test_o_conserto_do_codigo_sai_MESMO_com_outro_problema_aberto(self):
+        """A linha do `git pull` era presa ao `so_versao`: aparecia com um
+        problema e sumia com dois — some justamente quando a pessoa tem mais
+        coisa na cabeça. A manchete continua a da coleta; a instrução fica."""
+        d = Diagnostico(False, "coleta parada", [], "coleta")
+        d = d.somar(Diagnostico(False, "código 3 commits atrás", [], "versao"))
+        aviso = texto(d, so_versao=False)          # coleta doente E código atrasado
+        self.assertIn("uma ou mais fontes", aviso, "a manchete continua a da coleta")
+        self.assertIn("git pull", aviso, "o conserto do código não pode sumir")
+
+    def test_sem_codigo_atrasado_nao_manda_dar_git_pull(self):
+        d = Diagnostico(False, "coleta parada", [], "coleta")
+        self.assertNotIn("git pull", texto(d, so_versao=False))
 
 
 class CorSemAlarme(unittest.TestCase):
