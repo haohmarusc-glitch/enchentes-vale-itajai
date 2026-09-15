@@ -131,7 +131,8 @@ def quebra_de(codigo: str) -> dict | None:
     return QUEBRAS_DE_SERIE.get(codigo)
 
 
-def _quando_da_quebra(codigo: str) -> datetime | None:
+def quando_da_quebra(codigo: str) -> datetime | None:
+    """O instante da quebra da estação, já como datetime, ou None."""
     q = QUEBRAS_DE_SERIE.get(codigo)
     return datetime.fromisoformat(q["desde"]) if q else None
 
@@ -142,5 +143,5 @@ def apos_a_quebra(codigo: str, quando: datetime | None) -> bool:
     Inclusivo no instante da quebra. Sem quebra cadastrada, ou sem carimbo, é sempre False —
     "não sei quando foi" nunca vira "descarta".
     """
-    corte = _quando_da_quebra(codigo)
+    corte = quando_da_quebra(codigo)
     return bool(corte and quando is not None and quando >= corte)

@@ -585,6 +585,16 @@ o projeto.
   por baixo dele. Régua de plausibilidade por valor absoluto é rede de segurança, não primeira linha.
   ⚠️ **A próxima rodada do `conferir_resumo_dcsc.py` na VPS vai acusar estas três estações, e só elas** —
   é esperado, está escrito na docstring do script, e o resumo novo substitui o de 10/09.
+  **Conferido na VPS em 15/09/2026**, sobre os treze zips reais: as três estações previstas e nenhuma
+  quarta. A rodada achou um defeito que os testes não pegavam — o trecho cortado virava **buraco de
+  coleta**, e Guabiruba saía com `maior_buraco_h: 3869.5`, os 161 dias entre a quebra e o fim da série.
+  Está certo de mais e verdadeiro de menos: quem lesse concluiria que a estação ficou cinco meses fora
+  do ar, e ela transmitiu o tempo todo. Buraco nesse resumo é sinal de **saúde da coleta**, então o
+  cálculo passou a parar na quebra. Os vãos de carimbo de verdade em Guabiruba são três — 13,0 h
+  (29/08/2024), 9,2 h (21/07/2026) e 8,8 h (09/02/2025) —, e o buraco de 173,9 h que o resumo antigo
+  lhe atribuía era um trecho de sete dias **depois** da quebra em que ela mandou linha com o nível
+  vazio: diz respeito à série de altitude, descartada, não à régua que ficou. Nenhuma falha real de
+  coleta foi escondida, e há teste travando que buraco **antes** da quebra continua contando.
 - [ ] **Ofício C13 a Brusque, rascunhado, aguarda o "sim" (10/09/2026).** Três perguntas fechadas em
   `docs/oficios-prontos.md`: em que régua foi lido o 8,96 m de 17/11/2023 (a DCSC-00019 registra 8,63 m às
   21:30, e ~0,30 m a menos também em 05/10 e 13/10); se houve ajuste de zero na DCSC-00019 entre 2023 e
