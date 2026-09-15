@@ -222,8 +222,19 @@ python3 scripts/sonda_ana_api.py --estacoes 83300200,83800002,83360000 --data 20
 ```
 
 É o único caminho que dá **pico** para Rio do Sul e Blumenau em nov/2023 — e o único que a
-própria EPAGRI reconhece como fonte de pico. Enquanto não rodar, o evento de nov/2023
-continua **sem nenhum registro** em `enchentes.json`, que é o estado correto hoje.
+própria EPAGRI reconhece como fonte de pico.
+
+> ### ✅ Rodou na VPS em 15/09/2026 — e corrige um erro desta página
+>
+> A frase original dizia que o evento de nov/2023 continuava "sem nenhum registro" em
+> `enchentes.json`. **Falso**: tem seis (Blumenau 9,14 m, Rio do Sul 13,04 m e quatro de
+> Brusque). A verificação que produziu a frase lia uma chave que não existe no arquivo.
+>
+> O que as seis janelas trouxeram está em `docs/ANA-API-2026-09-08.md`, "Quinta rodada".
+> Em resumo: **José Boiteux** com pico limpo de **4,93 m** (16/11 16:45) — o Aviso 01 dava
+> 4,35 m, **58 cm** abaixo, quarta confirmação da ressalva da Mariane; **Rio do Sul** com a
+> crista dentro de um apagão de telemetria, onde 13,14 m é **piso**; e **Blumenau sem uma
+> única cota** na janela inteira, apesar de estar viva mandando chuva.
 
 ## Arquivos
 
