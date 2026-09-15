@@ -15,9 +15,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from calibrar_transito_telemetria import (COLUNAS_MINIMAS, MIN_LAG_RESOLVIVEL_H,
-                                          MIN_PROEMINENCIA_M, classificar, concentracao,
-                                          cristas, grade, lag_estavel, lag_por_correlacao,
-                                          ler_serie, medir_trecho, parear_cristas, percentil)
+                                          MIN_PROEMINENCIA_M, aviso_do_cadastro, classificar,
+                                          concentracao, cristas, grade, lag_estavel,
+                                          lag_por_correlacao, ler_serie, medir_trecho,
+                                          parear_cristas, percentil, recusa_do_cadastro)
 
 INICIO = datetime(2026, 6, 1, 0, 0)
 
@@ -306,6 +307,54 @@ class Percentil(unittest.TestCase):
 class Correlacao(unittest.TestCase):
     def test_serie_curta_demais_nao_devolve_lag(self):
         self.assertIsNone(lag_por_correlacao([1.0] * 10, [1.0] * 10))
+
+
+class Cadastro(unittest.TestCase):
+    """O que o cadastro da rede recusa aqui — e, tão importante quanto, o que ele NÃO recusa."""
+
+    BLUMENAU, GASPAR = "DCSC-00026", "DCSC-00005"
+    GUABIRUBA, BOTUVERA = "DCSC-00029", "DCSC-00018"
+    RIO_DO_SUL, INDAIAL = "DCSC-00013", "DCSC-00006"
+
+    def teste_par_normal_passa(self):
+        self.assertIsNone(recusa_do_cadastro(self.RIO_DO_SUL, self.INDAIAL))
+        self.assertIsNone(aviso_do_cadastro(self.RIO_DO_SUL, self.INDAIAL))
+
+    def teste_estacao_que_nao_mede_rio_recusa_dos_dois_lados(self):
+        """`blumenau -> gaspar` tem as duas pontas em `estacoes.json` e nenhum rio medido."""
+        self.assertIn("não mede nível de rio", recusa_do_cadastro(self.BLUMENAU, self.GASPAR))
+        self.assertIn("montante", recusa_do_cadastro(self.BLUMENAU, self.INDAIAL))
+        self.assertIn("jusante", recusa_do_cadastro(self.INDAIAL, self.BLUMENAU))
+
+    def teste_datum_nao_calibrado_NAO_impede_medir_o_lag(self):
+        """Trânsito é diferença entre horários, e a correlação é da VARIAÇÃO: o zero da régua não
+        entra na conta. Recusar Guabiruba por datum seria recusar por motivo que não se aplica."""
+        self.assertIsNone(recusa_do_cadastro(self.BOTUVERA, self.GUABIRUBA))
+
+    def teste_mas_o_datum_e_a_quebra_saem_como_aviso(self):
+        aviso = aviso_do_cadastro(self.BOTUVERA, self.GUABIRUBA)
+        self.assertIn("SUSPEITAS", aviso)
+        self.assertIn("2026-04-01T17:40", aviso)
+
+    def teste_leitura_depois_da_quebra_nao_entra_na_serie(self):
+        """Defesa em profundidade: CSV antigo ainda traz altitude misturada na mesma coluna."""
+        with tempfile.TemporaryDirectory() as d:
+            pasta = Path(d)
+            caminho = pasta / f"{self.GUABIRUBA}.csv"
+            with caminho.open("w", newline="", encoding="utf-8") as f:
+                w = csv.writer(f)
+                w.writerow(COLUNAS_MINIMAS)
+                w.writerow(["2026-04-01T17:30:00", 0.51])
+                w.writerow(["2026-04-01T17:40:00", 16.21])
+                w.writerow(["2026-04-01T17:50:00", 24.68])
+            serie = ler_serie(self.GUABIRUBA, pasta)
+        self.assertEqual([v for _, v in serie], [0.51])
+
+    def teste_a_quebra_so_vale_para_a_estacao_dela(self):
+        with tempfile.TemporaryDirectory() as d:
+            pasta = Path(d)
+            escrever(pasta, self.RIO_DO_SUL, [1.0, 2.0, 3.0])
+            self.assertEqual(len(ler_serie(self.RIO_DO_SUL, pasta)), 3)
 
 
 if __name__ == "__main__":

@@ -15,6 +15,22 @@ contagens de sentinela, buracos e cristas candidatas. **Divergência aqui é sin
 entrada não é a mesma** (zip faltando, cópia truncada) ou de que o consolidador mudou de
 comportamento. Nos dois casos, não commitar antes de entender.
 
+UMA DIVERGÊNCIA ESPERADA, DE UMA VEZ SÓ (15/09/2026). O resumo commitado
+`dcsc-historico-resumo-2026-09-10.json` é ANTERIOR ao `scripts/cadastro_dcsc.py`. A primeira
+rodada depois dele vai acusar exatamente três estações, e só estas:
+
+  * `DCSC-00029` (Guabiruba) — quebra de série em 01/04/2026 17:40. `leituras_com_nivel` cai de
+    198.178 para 176.124, `nivel_max_m` de 28,70 m para 4,19 m e as cinco cristas candidatas
+    trocam: as antigas eram altitude (cota ao nível do mar), as novas são régua.
+  * `DCSC-00005` (Gaspar) — `nao_mede_nivel` preenchido e `cristas_candidatas` esvaziado (eram
+    0,84 m e quatro platôs de zero). As contagens não mudam.
+  * `DCSC-00026` (Blumenau) — `nao_mede_nivel` preenchido. Nada mais muda: já tinha zero nível.
+
+Nas outras dez estações NADA pode mudar — os campos novos saem `None` e comparam iguais a campo
+ausente. Se alguma outra divergir, aí é a entrada que está diferente, e a regra acima vale.
+Conferido isso, o resumo novo SUBSTITUI o de 10/09 no repo, e daí em diante divergência volta a
+ser sinal de problema.
+
 Uso:
     python3 scripts/conferir_resumo_dcsc.py <resumo-novo.json> [<resumo-de-referência.json>]
 

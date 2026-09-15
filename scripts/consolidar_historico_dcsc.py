@@ -32,6 +32,20 @@ não é régua de rio urbano) vira vazio e é contado. Crista cujo máximo é um
 (mais de SALTO_ISOLADO_M acima das vizinhas de 10 min dos dois lados) é marcada
 `isolada: true` — é pico de sensor até prova em contrário, e não vira candidata.
 
+O CADASTRO DA REDE (desde 15/09/2026). Régua de plausibilidade por valor absoluto é rede de
+segurança, não primeira linha, e este script tinha só ela. O que ela não pega:
+  * **quebra de datum** — Guabiruba (DCSC-00029) trocou para cota referenciada ao nível do mar
+    em 01/04/2026 às 17:40, num passo de 10 min (0,51 m -> 16,21 m -> 24,68 m). Os 28,70 m que
+    o resumo de 10/09 listava como maior CRISTA CANDIDATA da estação eram altitude. 24 m passa
+    por baixo do limite de 30 m, então nada acusou;
+  * **estação que não mede o rio** — Gaspar (DCSC-00005) devolve 135.969 valores de `rio_nivel`
+    pelo endpoint `historic` mesmo sem medir nível de rio nesta rede, e o resumo listava cinco
+    "cristas" dela: 0,84 m e quatro platôs de zero.
+As duas coisas são fato sobre a ESTAÇÃO, e o coletor de tempo real (`coleta_nivel_sc.py`) já
+sabia das duas desde 07/09. Por isso passaram a morar em `scripts/cadastro_dcsc.py`, que os dois lados
+importam. Quebra de série corta a COLUNA de nível na data (chuva e bateria seguem); estação que
+não mede nível fica sem crista candidata, com as contagens preservadas e o motivo no resumo.
+
 O QUE GRAVA
   * `data/series/dcsc/DCSC-000NN.csv` — a série inteira, uma linha por carimbo (fora do
     git: 129 MB em 13 estações; `data/series/` é ignorado, reproduzível por este script);
@@ -57,12 +71,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analisar_telemetria_ana import buracos, crista  # noqa: E402
+from cadastro_dcsc import CADEIA, NAO_MEDE_NIVEL, apos_a_quebra, mede_nivel, quebra_de  # noqa: E402
 from comum import DADOS  # noqa: E402
-
-try:
-    from coleta_nivel_sc import CADEIA
-except Exception:  # pragma: no cover — só para o resumo ficar legível sem o coletor
-    CADEIA = {}
 
 COLUNAS = ["medido_em", "rio_nivel", "rio_variacao", "chuva_mm", "chuva_total",
            "chuva_taxa_med", "chuva_taxa_max", "bateria_v"]
@@ -74,7 +84,17 @@ BURACO_MINIMO = timedelta(hours=6)
 CADENCIA = timedelta(minutes=10)
 
 
-def nivel(item: dict) -> float | None:
+def nivel(item: dict, cod: str | None = None) -> float | None:
+    """Nível utilizável da leitura, ou None.
+
+    `cod` é opcional só para não quebrar quem chama sem estação (testes de unidade da régua de
+    plausibilidade). Passando o código, aplica também a QUEBRA DE SÉRIE do cadastro: a partir do
+    instante da quebra a coluna `rio_nivel` da estação é OUTRA GRANDEZA, e juntar as duas daria
+    uma "cheia" de 24 m num ribeirão que corre a meio metro (Guabiruba, 01/04/2026).
+
+    O corte é na COLUNA, não na linha: chuva, bateria e variação continuam valendo depois da
+    quebra — o pluviômetro não mudou de datum, o medidor de nível mudou.
+    """
     v = item.get("rio_nivel")
     if v is None or v == "":
         return None
@@ -82,7 +102,11 @@ def nivel(item: dict) -> float | None:
         v = float(v)
     except (TypeError, ValueError):
         return None
-    return None if v < LIMITE_SENTINELA or v > LIMITE_PLAUSIVEL else v
+    if v < LIMITE_SENTINELA or v > LIMITE_PLAUSIVEL:
+        return None
+    if cod and apos_a_quebra(cod, quando(item)):
+        return None
+    return v
 
 
 def quando(item: dict) -> datetime | None:
@@ -136,12 +160,12 @@ def ler_pasta(origem: Path) -> dict[str, dict]:
     return por_estacao
 
 
-def serie_de(itens: dict[str, dict]) -> list[tuple[datetime, float | None]]:
+def serie_de(itens: dict[str, dict], cod: str | None = None) -> list[tuple[datetime, float | None]]:
     saida = []
     for ts in sorted(itens):
         t = quando(itens[ts])
         if t is not None:
-            saida.append((t, nivel(itens[ts])))
+            saida.append((t, nivel(itens[ts], cod)))
     return saida
 
 
@@ -184,14 +208,27 @@ def cristas(serie: list[tuple[datetime, float | None]], n: int = 5,
     return saida
 
 
+def cortadas_na_quebra(cod: str, itens: dict[str, dict]) -> int:
+    """Quantas leituras tinham nível dentro dos limites e caíram por estarem do lado novo da quebra."""
+    if not quebra_de(cod):
+        return 0
+    return sum(1 for it in itens.values() if nivel(it) is not None and nivel(it, cod) is None)
+
+
 def resumo_da_estacao(cod: str, e: dict) -> dict:
-    serie = serie_de(e["itens"])
+    serie = serie_de(e["itens"], cod)
     com_nivel = [(t, c) for t, c in serie if c is not None]
     brutos = [float(it["rio_nivel"]) for it in e["itens"].values()
               if it.get("rio_nivel") is not None and it.get("rio_nivel") != ""]
     sentinelas = sum(1 for v in brutos if v < LIMITE_SENTINELA)
     implausiveis = sum(1 for v in brutos if v > LIMITE_PLAUSIVEL)
-    todas = cristas(serie, n=8)
+    # Estação que não mede nível de rio nesta rede ainda pode devolver uma coluna `rio_nivel` —
+    # Gaspar devolve 135.969 valores, máximo 0,84 m. As contagens ficam (descrevem o que veio),
+    # mas crista candidata NÃO sai: candidata é afirmação de pico de cheia, e essa afirmação a
+    # estação não pode sustentar. As cinco de Gaspar eram uma leitura de 0,84 m e quatro platôs
+    # de zero com 135 mil leituras cada.
+    todas = cristas(serie, n=8) if mede_nivel(cod) else []
+    q = quebra_de(cod)
     bur = [(a, b, tipo) for a, b, tipo in buracos(serie, BURACO_MINIMO)] if serie else []
     esperadas = int((serie[-1][0] - serie[0][0]) / CADENCIA) + 1 if len(serie) > 1 else len(serie)
     campos = Counter(k for it in e["itens"].values() for k in it)
@@ -216,10 +253,19 @@ def resumo_da_estacao(cod: str, e: dict) -> dict:
         "nivel_max_m": max((c for _, c in com_nivel), default=None),
         "cristas_candidatas": [c for c in todas if not c["isolada"]][:5],
         "descartadas_isoladas": [c for c in todas if c["isolada"]],
+        # Os dois campos abaixo são None na esmagadora maioria das estações — e é assim que o
+        # `conferir_resumo_dcsc.py` não acusa resumo antigo: chave ausente e chave None comparam
+        # iguais. Quando não são None, dizem por que esta estação é diferente das outras.
+        "nao_mede_nivel": NAO_MEDE_NIVEL.get(cod),
+        "quebra_de_serie": {**q, "leituras_de_nivel_cortadas": cortadas_na_quebra(cod, e["itens"])}
+                           if q else None,
     }
 
 
-def gravar_csv(destino: Path, itens: dict[str, dict]) -> int:
+def gravar_csv(destino: Path, itens: dict[str, dict], cod: str | None = None) -> int:
+    """Grava a série inteira. `rio_nivel` sai vazio depois da quebra de série da estação — o
+    `calibrar_transito_telemetria.py`, que lê estes CSVs, pula célula vazia e assim não pareia
+    régua com altitude sem precisar conhecer o cadastro."""
     destino.parent.mkdir(parents=True, exist_ok=True)
     n = 0
     with destino.open("w", newline="", encoding="utf-8") as f:
@@ -231,7 +277,7 @@ def gravar_csv(destino: Path, itens: dict[str, dict]) -> int:
             for c in COLUNAS[1:]:
                 v = it.get(c)
                 if c == "rio_nivel":
-                    v = nivel(it)
+                    v = nivel(it, cod)
                 linha.append("" if v is None else v)
             w.writerow(linha)
             n += 1
@@ -253,7 +299,7 @@ def main() -> int:
     resumos = []
     for cod in sorted(por_estacao):
         e = por_estacao[cod]
-        n = gravar_csv(args.series / f"{cod}.csv", e["itens"])
+        n = gravar_csv(args.series / f"{cod}.csv", e["itens"], cod)
         r = resumo_da_estacao(cod, e)
         resumos.append(r)
         topo = r["cristas_candidatas"][0] if r["cristas_candidatas"] else None
@@ -261,6 +307,16 @@ def main() -> int:
               f"{r['ultima'] or '—':16s}  sentinelas {r['sentinelas_rio_nivel']:4d}  "
               f"implausíveis {r['implausiveis_acima_30m']:3d}  isoladas {len(r['descartadas_isoladas'])}  "
               f"maior crista {topo['maximo_m'] if topo else '—'} em {topo['quando'] if topo else '—'}")
+        # O que o cadastro tirou sai NA TELA, não só no JSON: corte silencioso é como uma estação
+        # some do resumo sem ninguém perceber.
+        if r["quebra_de_serie"]:
+            qs = r["quebra_de_serie"]
+            print(f"{'':11s}↳ quebra de série desde {qs['desde']}: {qs['leituras_de_nivel_cortadas']} "
+                  f"leitura(s) de nível cortadas ({qs['grandeza_depois']}); "
+                  f"chuva e bateria seguem na série")
+        if r["nao_mede_nivel"]:
+            print(f"{'':11s}↳ não mede nível de rio nesta rede — sem crista candidata. "
+                  f"{r['nao_mede_nivel']}")
     corpo = {
         "_meta": {
             "descricao": "Resumo do histórico da rede estadual (DCSC, GraphQL historic), consolidado por "
@@ -273,7 +329,13 @@ def main() -> int:
                          f"{SALTO_ISOLADO_M} m acima das vizinhas de 10 min) saem das candidatas e ficam em "
                          "descartadas_isoladas.",
             "cristas": "CANDIDATAS, separadas por 3 dias; datum de cada estação é o bruto estadual "
-                       "(usar_para_cota=false no coletor). Nenhuma entra em enchentes.json sem decisão.",
+                       "(usar_para_cota=false no coletor). Nenhuma entra em enchentes.json sem decisão. "
+                       "Estação de NAO_MEDE_NIVEL (scripts/cadastro_dcsc.py) não tem candidata, mesmo "
+                       "quando o endpoint devolve uma coluna rio_nivel.",
+            "cadastro": "As quebras de série e as estações que não medem nível vêm de "
+                        "scripts/cadastro_dcsc.py — o MESMO cadastro que o coletor de tempo real "
+                        "(coleta_nivel_sc.py) usa. Depois da quebra, o nível da estação sai vazio "
+                        "aqui e no CSV; o resto da linha (chuva, bateria) continua.",
             "gerado_em": date.today().isoformat(),
         },
         "estacoes": resumos,

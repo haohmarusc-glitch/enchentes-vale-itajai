@@ -566,6 +566,25 @@ o projeto.
   números da Defesa Civil nas três cheias de 2023 (8,63 vs 8,96 em 17/11), enquanto em 09/2026 o par é
   idêntico — ou o zero mudou, ou o 8,96 é de outra leitura, e o 8,96 é a base das cotas de rua de 2023.
   Nenhuma crista entrou em `enchentes.json`. Ver `docs/DCSC-HISTORICO-2026-09-10.md`.
+- [x] **Um cadastro da rede estadual, lido pelos dois lados (15/09/2026).** As listas que dizem o que
+  cada estação da DCSC É — quem é quem (`CADEIA`), reservatório, datum não calibrado (`SUSPEITAS`) e
+  estação que não mede nível de rio (`NAO_MEDE_NIVEL`) — moravam dentro do coletor de **tempo real**.
+  O lado do **histórico** lia as mesmas estações e não as via. O resultado estava no repo: o coletor
+  mandava Guabiruba para `suspeitas` desde 07/09 e o resumo commitado listava **28,70 m como maior
+  crista candidata da mesma estação**. Agora são um módulo só, `scripts/cadastro_dcsc.py` (14 testes),
+  que o coletor, o consolidador e o calibrador de trânsito importam — e um teste compara com `is`, não
+  `==`, porque cópia igual hoje é cópia diferente depois da próxima descoberta. Duas coisas novas saem
+  disso: **quebra de série** (`QUEBRAS_DE_SERIE`) — Guabiruba trocou para cota referenciada ao nível do
+  mar em **01/04/2026 às 17:40**, num passo de 10 min (0,51 m → 16,21 m → 24,68 m), e depois desse
+  instante **nenhuma** das 22.054 leituras fica abaixo de 10 m, então o corte é limpo; o consolidador
+  corta a **coluna** de nível na data e mantém o resto da linha, porque o pluviômetro não mudou de datum.
+  E **estação que não mede o rio não publica crista candidata**: Gaspar devolve 135.969 valores de
+  `rio_nivel` pelo endpoint `historic` mesmo sem medir nível nesta rede, e as cinco "cristas" dela eram
+  0,84 m e quatro platôs de zero. Depois do corte, as cristas de Guabiruba passam a ser 4,19 m (20/12/2022)
+  e 3,58 m — régua de ribeirão, não altitude. ⚠️ **O limite de 30 m não pegava nada disso**: 24 m passa
+  por baixo dele. Régua de plausibilidade por valor absoluto é rede de segurança, não primeira linha.
+  ⚠️ **A próxima rodada do `conferir_resumo_dcsc.py` na VPS vai acusar estas três estações, e só elas** —
+  é esperado, está escrito na docstring do script, e o resumo novo substitui o de 10/09.
 - [ ] **Ofício C13 a Brusque, rascunhado, aguarda o "sim" (10/09/2026).** Três perguntas fechadas em
   `docs/oficios-prontos.md`: em que régua foi lido o 8,96 m de 17/11/2023 (a DCSC-00019 registra 8,63 m às
   21:30, e ~0,30 m a menos também em 05/10 e 13/10); se houve ajuste de zero na DCSC-00019 entre 2023 e

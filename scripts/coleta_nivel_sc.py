@@ -14,7 +14,7 @@ instante (o caso Brusque, 17h "offset ~0" -> 23h diferença de 1,9 m, mostra que
 ARMADILHAS que este coletor já trata (todas vistas em 01/09):
   1. `rio_nivel.value` é o NÚMERO; `rio_nivel.show.value` é só flag de exibição (booleano). Lê-se .value,
      e ainda assim com guarda `e_numero` (um booleano não é metro).
-  2. `value` null = "sem leitura agora", NÃO "sem sensor" — EXCETO as estações de NAO_MEDE_NIVEL (abaixo),
+  2. `value` null = "sem leitura agora", NÃO "sem sensor" — EXCETO as estações de NAO_MEDE_NIVEL (em `cadastro_dcsc.py`),
      que a própria API declara sem `tem_nivel_do_rio`: nessas, null é estrutural, não pontual.
   3. Estações "(H)" reportam ALTITUDE/cota absoluta (Salete 399 m, Petrolândia 876 m…). Descartadas.
      Também descarta qualquer valor > LIMITE_M (30 m) — nenhum rio urbano da bacia chega perto disso.
@@ -30,7 +30,7 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
      CORREÇÃO (03/09/2026, ver docs/API-DCSC-CAMPOS-NOVOS.md): a investigação dos campos `type` e
      `filter.relacao.tem_nivel_do_rio` da API confirma que as DUAS são estações Hidro reais que DECLARAM
      medir nível de rio — o problema é datum/escala do valor bruto, não sensor ou grandeza errada. A lista
-     SUSPEITAS abaixo foi reescrita para não sugerir mais "sensor errado".
+     SUSPEITAS (em `cadastro_dcsc.py`) foi reescrita para não sugerir mais "sensor errado".
   8. Gaspar (DCSC-00005) e Blumenau (DCSC-00026) NÃO medem nível de rio nesta rede — confirmado pela mesma
      investigação (`tem_nivel_do_rio = false`; Blumenau é `type = "Meteo"`). Antes deste coletor tratava as
      duas como "sensor de rio que às vezes fica mudo" (armadilha 2); estava errado — é ausência estrutural
@@ -43,7 +43,7 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
      às cegas qual string funciona; é a resposta real, na primeira execução na VPS, que decide. Quando
      a enriquecida funciona, `converter()` usa `tem_nivel_do_rio` da própria resposta para classificar
      (substituindo NAO_MEDE_NIVEL); quando não funciona (campo ausente = None), cai para os dicionários
-     hardcoded abaixo, que continuam servindo de rede de segurança.
+     de `cadastro_dcsc.py`, que continuam servindo de rede de segurança.
 
 Uso:
     python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
@@ -58,6 +58,18 @@ from pathlib import Path
 
 import requests
 
+# Quem é quem na rede estadual (CADEIA, RESERVATORIOS, SUSPEITAS, NAO_MEDE_NIVEL) mora em
+# `cadastro_dcsc.py` desde 15/09/2026. Não é gosto de arrumação: o lado do HISTÓRICO
+# (consolidar_historico_dcsc.py) lê as MESMAS estações, e enquanto a lista morava só aqui ele
+# não sabia que Guabiruba trocou de datum — o resumo commitado listava 28,70 m como crista
+# candidata da estação que este coletor já mandava para `suspeitas`. Um cadastro, dois leitores.
+from cadastro_dcsc import (  # noqa: F401  (re-exportados: quem já importava daqui continua importando)
+    CADEIA,
+    NAO_MEDE_NIVEL,
+    RESERVATORIOS,
+    SUSPEITAS,
+)
+
 URL = "https://monitoramento.defesacivil.sc.gov.br/graphql"
 UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
 SAIDA = Path(__file__).resolve().parent.parent / "data" / "tempo-real"
@@ -68,51 +80,6 @@ BACIA_RE = "Itaja"       # filtro em position.bacia (case-insensitive)
 #: com fuso. Converter errado desloca a idade de toda leitura em três horas — e a idade é o que diz se o
 #: número serve. Idêntico ao `coleta_chuva_sc.py`.
 FUSO_BRASILIA = timezone(timedelta(hours=-3))
-
-# Estações que interessam à cadeia (código → cidade/slug). Fora daqui ainda é coletado, só sem 'cidade'.
-CADEIA = {
-    "DCSC-00025": "agrolandia", "DCSC-00039": "ituporanga", "DCSC-00033": "pouso-redondo",
-    "DCSC-00041": "taio", "DCSC-00031": "laurentino", "DCSC-00001": "agronomica",
-    "DCSC-00013": "rio-do-sul", "DCSC-00032": "lontras", "DCSC-00020": "ibirama",
-    "DCSC-00043": "presidente-getulio", "DCSC-00021": "jose-boiteux", "DCSC-00003": "ascurra",
-    "DCSC-00006": "indaial", "DCSC-00023": "timbo", "DCSC-00004": "benedito-novo",
-    "DCSC-00011": "rio-dos-cedros", "DCSC-00028": "doutor-pedrinho", "DCSC-00007": "pomerode",
-    "DCSC-00026": "blumenau", "DCSC-00005": "gaspar", "DCSC-00030": "ilhota",
-    "DCSC-00163": "ilhota-arraial-dos-cunhas",
-    # Mirim
-    "DCSC-00024": "vidal-ramos", "DCSC-00018": "botuvera", "DCSC-00027": "botuvera-2",
-    "DCSC-00019": "brusque", "DCSC-00029": "guabiruba",
-    # barragens (reservatório, datum próprio — nunca cota urbana)
-    "DCSC-00040": "barragem-oeste-taio", "DCSC-00038": "barragem-sul-ituporanga",
-}
-RESERVATORIOS = {"DCSC-00040", "DCSC-00038"}
-# Estações Hidro que a API confirma medir nível de rio (`tem_nivel_do_rio=true`, investigação de
-# 03/09/2026, docs/API-DCSC-CAMPOS-NOVOS.md), mas cujo valor bruto é implausível para o rio local —
-# problema de DATUM/ESCALA da estação, não sensor ou grandeza errada. Vão para 'suspeitas': o valor
-# não é usável cru, mas a estação é real e mede a grandeza certa.
-SUSPEITAS = {"DCSC-00029": "Guabiruba ~24,8 m: estação Hidro real (tem_nivel_do_rio=true), mas o valor "
-                           "bruto é implausível para o ribeirão — datum/escala própria não calibrada. "
-                           "CAUSA ENCONTRADA em 07/09/2026, e ela confirma a suspeita: a Prefeitura de "
-                           "Brusque informou em ABRIL DE 2026 que o sistema de medição de Guabiruba "
-                           "mudou para 'cota automática', referenciada ao NÍVEL DO MAR — na ocasião a "
-                           "leitura aparecia como 28,4 m com o rio a cerca de 4 m. Não é sensor "
-                           "quebrado nem escala desconhecida: é OUTRA GRANDEZA, altitude em vez de "
-                           "régua. CONSEQUÊNCIA: a série anterior de Guabiruba e a atual NÃO podem ser "
-                           "juntadas sem reconciliar o datum, e há uma quebra de série datada em "
-                           "04/2026 para marcar. ⚠️ O LIMITE_M de 30 m NÃO teria pego isto: 28,4 m "
-                           "passa por baixo dele. Quem pegou foi esta lista, escrita à mão — o que diz "
-                           "que a régua de plausibilidade por valor absoluto é rede de segurança, não "
-                           "a primeira linha. Fonte: Prefeitura de Brusque, abril de 2026, via "
-                           "levantamento externo de 07/09/2026.",
-             "DCSC-00007": "Pomerode: estação Hidro real (tem_nivel_do_rio=true), mas oscila de forma "
-                           "implausível entre leituras — datum/escala própria não calibrada"}
-# Estações que a mesma investigação confirma NÃO medirem nível de rio nesta rede
-# (`tem_nivel_do_rio=false`; Blumenau é `type="Meteo"`). `value` vem null sempre — não é "sensor mudo
-# agora" (armadilha 2), é ausência estrutural. Vão para 'nao_mede_nivel', não para 'sem_leitura'.
-NAO_MEDE_NIVEL = {"DCSC-00005": "Gaspar: tem_nivel_do_rio=false na API estadual — não mede nível de rio "
-                                 "nesta rede (cota de Gaspar vem da Defesa Civil municipal, não da DCSC)",
-                  "DCSC-00026": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, "
-                                 "não mede nível de rio (cota de Blumenau vem do AlertaBlu, não da DCSC)"}
 
 #: Query validada por curl em 01/09/2026. Sempre funciona — é o fallback seguro de `buscar()`.
 QUERY = ('query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
@@ -288,7 +255,7 @@ def converter(
         val = rio.get("value")                                         # armadilha 1 (NÃO show.value)
         chuva = (((s.get("data") or {}).get("chuva") or {}).get("acumulado") or {}).get("h024") or {}
         # Campos novos (armadilha 9): None quando QUERY_CAMPOS_NOVOS não foi aceita pela API —
-        # nesse caso caímos nos dicionários hardcoded abaixo, como antes.
+        # nesse caso caímos nos dicionários de `cadastro_dcsc.py`, como antes.
         tipo_estacao = s.get("type")
         declara_nivel = ((s.get("filter") or {}).get("relacao") or {}).get("tem_nivel_do_rio")
         semanal = (((s.get("data") or {}).get("chuva") or {}).get("acumulado") or {}).get("h168") or {}
