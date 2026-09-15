@@ -3,8 +3,9 @@
     "descricao": "Resumo do histórico da rede estadual (DCSC, GraphQL historic), consolidado por scripts/consolidar_historico_dcsc.py. As séries inteiras estão em data/series/dcsc/ (fora do git).",
     "fuso": "medido_em e todos os carimbos são hora de Brasília SEM fuso (provado — ver docstring do script). coletado_entre_utc é UTC.",
     "sentinela": "rio_nivel < -30.0 ou > 30.0 vira vazio e é contado (sentinelas_rio_nivel / implausiveis_acima_30m); leituras soltas (> 1.0 m acima das vizinhas de 10 min) saem das candidatas e ficam em descartadas_isoladas.",
-    "cristas": "CANDIDATAS, separadas por 3 dias; datum de cada estação é o bruto estadual (usar_para_cota=false no coletor). Nenhuma entra em enchentes.json sem decisão.",
-    "gerado_em": "2026-09-10"
+    "cristas": "CANDIDATAS, separadas por 3 dias; datum de cada estação é o bruto estadual (usar_para_cota=false no coletor). Nenhuma entra em enchentes.json sem decisão. Estação de NAO_MEDE_NIVEL (scripts/cadastro_dcsc.py) não tem candidata, mesmo quando o endpoint devolve uma coluna rio_nivel.",
+    "cadastro": "As quebras de série e as estações que não medem nível vêm de scripts/cadastro_dcsc.py — o MESMO cadastro que o coletor de tempo real (coleta_nivel_sc.py) usa. Depois da quebra, o nível da estação sai vazio aqui e no CSV; o resto da linha (chuva, bateria) continua.",
+    "gerado_em": "2026-09-15"
   },
   "estacoes": [
     {
@@ -97,7 +98,9 @@
           "quando": "2025-12-15T20:30",
           "isolada": true
         }
-      ]
+      ],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00005",
@@ -131,54 +134,10 @@
       },
       "nivel_min_m": 0.0,
       "nivel_max_m": 0.84,
-      "cristas_candidatas": [
-        {
-          "maximo_m": 0.84,
-          "quando": "2023-03-16T16:30",
-          "plato_inicio": "2023-03-16T16:30",
-          "plato_fim": "2023-03-16T16:30",
-          "plato_leituras": 1,
-          "na_borda": true,
-          "isolada": false
-        },
-        {
-          "maximo_m": 0.0,
-          "quando": "2023-03-30T07:50",
-          "plato_inicio": "2023-03-30T07:50",
-          "plato_fim": "2026-06-02T08:20",
-          "plato_leituras": 135968,
-          "na_borda": true,
-          "isolada": false
-        },
-        {
-          "maximo_m": 0.0,
-          "quando": "2023-04-02T08:00",
-          "plato_inicio": "2023-04-02T08:00",
-          "plato_fim": "2026-06-02T08:20",
-          "plato_leituras": 135886,
-          "na_borda": true,
-          "isolada": false
-        },
-        {
-          "maximo_m": 0.0,
-          "quando": "2023-04-12T19:50",
-          "plato_inicio": "2023-04-12T19:50",
-          "plato_fim": "2026-06-02T08:20",
-          "plato_leituras": 135876,
-          "na_borda": true,
-          "isolada": false
-        },
-        {
-          "maximo_m": 0.0,
-          "quando": "2023-04-17T17:00",
-          "plato_inicio": "2023-04-17T17:00",
-          "plato_fim": "2026-06-02T08:20",
-          "plato_leituras": 135872,
-          "na_borda": true,
-          "isolada": false
-        }
-      ],
-      "descartadas_isoladas": []
+      "cristas_candidatas": [],
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": "Gaspar: tem_nivel_do_rio=false na API estadual — não mede nível de rio nesta rede (cota de Gaspar vem da Defesa Civil municipal, não da DCSC)",
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00006",
@@ -259,7 +218,9 @@
           "isolada": false
         }
       ],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00013",
@@ -340,7 +301,9 @@
           "isolada": false
         }
       ],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00018",
@@ -421,7 +384,9 @@
           "isolada": false
         }
       ],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00019",
@@ -514,7 +479,9 @@
           "quando": "2024-05-15T15:20",
           "isolada": true
         }
-      ]
+      ],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00020",
@@ -595,7 +562,9 @@
           "isolada": false
         }
       ],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00024",
@@ -682,7 +651,9 @@
           "quando": "2026-05-29T20:20",
           "isolada": true
         }
-      ]
+      ],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00026",
@@ -722,7 +693,9 @@
       "nivel_min_m": null,
       "nivel_max_m": null,
       "cristas_candidatas": [],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio (cota de Blumenau vem do AlertaBlu, não da DCSC)",
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00029",
@@ -734,14 +707,14 @@
         "2026-09-10T02:26:58.836Z"
       ],
       "leituras": 199339,
-      "leituras_com_nivel": 198178,
+      "leituras_com_nivel": 176124,
       "sentinelas_rio_nivel": 0,
       "implausiveis_acima_30m": 23,
       "primeira": "2022-11-23T11:00",
       "ultima": "2026-09-09T23:10",
       "esperadas_a_10_min": 199658,
-      "buracos_maiores_que_6h": 5,
-      "maior_buraco_h": 173.9,
+      "buracos_maiores_que_6h": 3,
+      "maior_buraco_h": 12.5,
       "campos": {
         "ts": 199339,
         "codigo": 199339,
@@ -755,55 +728,65 @@
         "chuva_mm": 7280
       },
       "nivel_min_m": -8.54,
-      "nivel_max_m": 28.700000762939453,
+      "nivel_max_m": 4.19,
       "cristas_candidatas": [
         {
-          "maximo_m": 28.700000762939453,
-          "quando": "2026-04-07T05:50",
-          "plato_inicio": "2026-04-07T05:40",
-          "plato_fim": "2026-04-07T06:00",
+          "maximo_m": 4.19,
+          "quando": "2022-12-20T06:50",
+          "plato_inicio": "2022-12-20T06:50",
+          "plato_fim": "2022-12-20T07:10",
           "plato_leituras": 3,
           "na_borda": false,
           "isolada": false
         },
         {
-          "maximo_m": 26.3,
-          "quando": "2026-07-11T14:40",
-          "plato_inicio": "2026-07-11T14:40",
-          "plato_fim": "2026-07-11T15:00",
+          "maximo_m": 3.58,
+          "quando": "2025-01-17T02:10",
+          "plato_inicio": "2025-01-17T01:40",
+          "plato_fim": "2025-01-17T02:30",
+          "plato_leituras": 6,
+          "na_borda": false,
+          "isolada": false
+        },
+        {
+          "maximo_m": 3.55,
+          "quando": "2023-01-29T18:20",
+          "plato_inicio": "2023-01-29T18:10",
+          "plato_fim": "2023-01-29T18:30",
           "plato_leituras": 3,
           "na_borda": false,
           "isolada": false
         },
         {
-          "maximo_m": 26.2,
-          "quando": "2026-08-31T11:20",
-          "plato_inicio": "2026-08-31T11:10",
-          "plato_fim": "2026-08-31T11:40",
-          "plato_leituras": 4,
+          "maximo_m": 3.54,
+          "quando": "2024-02-24T19:50",
+          "plato_inicio": "2024-02-24T19:40",
+          "plato_fim": "2024-02-24T20:00",
+          "plato_leituras": 3,
           "na_borda": false,
           "isolada": false
         },
         {
-          "maximo_m": 25.8,
-          "quando": "2026-07-01T09:40",
-          "plato_inicio": "2026-07-01T09:30",
-          "plato_fim": "2026-07-01T10:00",
-          "plato_leituras": 4,
-          "na_borda": false,
-          "isolada": false
-        },
-        {
-          "maximo_m": 25.77,
-          "quando": "2026-07-28T19:00",
-          "plato_inicio": "2026-07-28T18:50",
-          "plato_fim": "2026-07-28T19:00",
-          "plato_leituras": 2,
+          "maximo_m": 3.26,
+          "quando": "2024-04-14T08:20",
+          "plato_inicio": "2024-04-14T08:20",
+          "plato_fim": "2024-04-14T08:40",
+          "plato_leituras": 3,
           "na_borda": false,
           "isolada": false
         }
       ],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": {
+        "desde": "2026-04-01T17:40",
+        "grandeza_antes": "régua do ribeirão (bruto estadual, zero próprio da estação)",
+        "grandeza_depois": "cota automática referenciada ao NÍVEL DO MAR (altitude)",
+        "mantem": "antes",
+        "motivo": "Guabiruba: a Prefeitura de Brusque informou em abril de 2026 a troca para 'cota automática' referenciada ao nível do mar. A troca é visível na série de 10 em 10 minutos, em UM passo: 17:30 = 0,51 m, 17:40 = 16,21 m, 17:50 = 24,68 m, e daí em diante o valor fica na casa dos 24 m. MEDIDO em 15/09/2026 sobre data/series/dcsc/DCSC-00029.csv: das 22.054 leituras com nível a partir desse instante, NENHUMA fica abaixo de 10 m — não há mistura das duas grandezas depois da quebra, o corte é limpo. Junta-las daria uma 'cheia' de 24 m num ribeirão que corre a meio metro.",
+        "fonte": "Prefeitura de Brusque, abril de 2026, via levantamento externo de 07/09/2026; degrau conferido na série DCSC (endpoint historic) em 15/09/2026.",
+        "leituras_de_nivel_cortadas": 22054
+      }
     },
     {
       "codigo": "DCSC-00030",
@@ -890,7 +873,9 @@
           "quando": "2023-01-10T16:00",
           "isolada": true
         }
-      ]
+      ],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00039",
@@ -977,7 +962,9 @@
           "quando": "2025-09-09T02:30",
           "isolada": true
         }
-      ]
+      ],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     },
     {
       "codigo": "DCSC-00041",
@@ -1001,7 +988,9 @@
       "nivel_min_m": null,
       "nivel_max_m": null,
       "cristas_candidatas": [],
-      "descartadas_isoladas": []
+      "descartadas_isoladas": [],
+      "nao_mede_nivel": null,
+      "quebra_de_serie": null
     }
   ]
 }
