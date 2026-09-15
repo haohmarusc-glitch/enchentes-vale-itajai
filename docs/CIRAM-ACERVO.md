@@ -2,11 +2,29 @@
 
 Garimpagem feita pelo Jefferson na VPS em 09/09/2026, atrás do **Aviso Hidrológico 03 de
 19/11/2023** (leituras de Rio do Sul e Taió com hora e cm/h, item 2 da pendência A4 em
-`docs/pendencias-navegador-e-oficios.md`). O aviso **não existe em lugar nenhum acessível**;
+`docs/pendencias-navegador-e-oficios.md`). O aviso **não está em nenhuma via pública**;
 o que sobrou foi conhecimento sobre o acervo, e é isso que este arquivo guarda para ninguém
 repetir a busca.
 
-## Veredito sobre o Aviso 03 de nov/2023
+> ## ✅ RESOLVIDO em 15/09/2026 — o aviso chegou por e-mail
+>
+> A EPAGRI respondeu ao ofício C12 em **15/09/2026 08:34 BRT** e mandou os três avisos de
+> nov/2023 em anexo, mais cinco notas hidrometeorológicas. Transcrição, ressalva da fonte e
+> confronto com a telemetria da ANA em **`docs/RESPOSTA-EPAGRI-C12-2026-09-15.md`**.
+> Arquivos em `data/brutos/ciram-avisos-enchente/` e `data/brutos/ciram-notas-hidro/`.
+>
+> A garimpagem abaixo **continua válida** e a carta a confirma pelo lado deles: os PDFs
+> ficam só temporariamente no portal e depois vão para servidor interno, e eles não
+> compartilham os diretórios "por motivos de segurança". **Raspar o acervo está morto como
+> estratégia; pedir por e-mail funciona** — e a Mariane deixou o canal aberto para pedidos
+> futuros, sem ofício formal.
+>
+> ⚠️ E veio com uma ressalva que muda a leitura de **todo** aviso deste arquivo, os de
+> 2021 e 2022 da tabela abaixo inclusive: o aviso é um **instantâneo do horário da coleta**,
+> não o pico do dia. Comprovado em Taió/nov-2023 — maior valor nos avisos 10,18 m, pico real
+> na série telemétrica **10,32 m**, nove horas antes. **Nível de aviso é piso, nunca pico.**
+
+## Veredito sobre o Aviso 03 de nov/2023 — as vias públicas
 
 Quatro vias, todas fechadas **com prova, não suposição**:
 
@@ -19,8 +37,9 @@ Quatro vias, todas fechadas **com prova, não suposição**:
 4. **Internet Archive**: o diretório está coberto **só em 2020, 2021 e 2022**. 178 URLs no
    CDX, 84 avisos, **4 de enchente**. 2023 não existe no acervo.
 
-**O Aviso 03 sai por e-mail** — ofício C12 em `docs/oficios-prontos.md`, na mesma thread em
+**O Aviso 03 saiu por e-mail** — ofício C12 em `docs/oficios-prontos.md`, na mesma thread em
 que a Equipe de Hidrologia respondeu ao C5 (Mariane Souza Melo de Liz, 09/09/2026).
+Enviado em 11/09/2026, **respondido em 15/09/2026 com os três avisos em anexo**.
 
 ## Como o acervo funciona
 
@@ -52,8 +71,12 @@ antes de casar as datas.
 Os 70 MB (84 PDFs) ficam **na VPS**, como o KML das manchas de Ituporanga. O repositório
 recebe:
 
-- `data/brutos/ciram-avisos-enchente/` — os 4 avisos de enchente;
-- `data/brutos/ciram-avisos.sha256` — o sha256 dos 84;
+- `data/brutos/ciram-avisos-enchente/` — os avisos de enchente (4 do raspão + **3 de
+  nov/2023 que vieram por e-mail** em 15/09/2026);
+- `data/brutos/ciram-notas-hidro/` — as **5 notas hidrometeorológicas** de nov/2023, também
+  por e-mail, com o manifesto próprio `ciram-notas-hidro.sha256`;
+- `data/brutos/ciram-avisos.sha256` — o sha256 dos 84 do raspão, mais os 3 de nov/2023
+  (estes pelo caminho real em `ciram-avisos-enchente/`, porque a procedência é outra);
 - `data/brutos/ciram-avisos-tipos.txt` — a classificação enchente/estiagem por arquivo.
 
 Comandos que o Jefferson roda na VPS para fechar o material (a classificação está em
@@ -91,9 +114,11 @@ O que se tira daí, e o que não:
   8,00; o PLANCON de Taió, 8,00 / 9,00. Registrado em `estacoes.json` (Taió,
   `avisos_epagri_2021_2022`), sem mexer nas cotas em uso.
 - **Nenhuma dessas leituras é pico.** Em 06/05/2022 o rio já descia às 08:00: a crista foi
-  antes e foi ≥ 8,37 m. A crista exata está na telemetria da ANA, ainda não pedida:
-  `sonda_ana_api.py --sem-inventario --estacoes 83050000,83800002 --data 2022-05-06
-  --intervalo DIAS_7 --gravar` e o mesmo com `--data 2021-01-24`.
+  antes e foi ≥ 8,37 m.
+
+  ✅ **A telemetria já foi pedida e está no repo** — a linha que mandava pedi-la estava
+  vencida. Cristas, ordem Blumenau→Taió e os quatro candidatos a `enchentes.json` estão em
+  `docs/ANA-API-2026-09-08.md`, "Quarta rodada". Reconferidas em 15/09/2026, batem.
 - Para Blumenau, 6,59 m descendo às 05:00 de 22/01/2021 e 6,39 m descendo às 08:00 de
   06/05/2022 são pontos da descida da **régua da ANA (83800002)**, que não é a da Defesa
   Civil — vale a regra de referência de Blumenau.
@@ -102,4 +127,10 @@ O que se tira daí, e o que não:
 
 - ✅ Os 4 avisos foram lidos (tabela acima). Nada entrou em `enchentes.json`.
 - ✅ Janelas de jan/2021 e mai/2022 pedidas à ANA (09/09/2026): as cristas conferem com os avisos e estão em `docs/ANA-API-2026-09-08.md`, "Quarta rodada". Em mai/2022 a crista de Taió foi 9,49 m, 1,12 m acima da leitura do aviso.
-- Mandar o ofício C12 (avisos de nov/2023 + lista dos boletins diários).
+- ✅ Ofício C12 enviado em 11/09/2026 e **respondido em 15/09/2026**: os três avisos de
+  nov/2023 e cinco notas hidrometeorológicas vieram em anexo. Ver
+  `docs/RESPOSTA-EPAGRI-C12-2026-09-15.md`. Jefferson foi inscrito na lista dos boletins
+  diários; o primeiro chegou no mesmo dia.
+- Pedir à ANA a telemetria de **nov/2023** para 83300200 (Rio do Sul), 83800002 (Blumenau) e
+  83360000 (José Boiteux) — é o único caminho para o **pico** desse evento, e as três
+  estações ainda transmitiam em 2023. Nenhuma cidade tem registro de nov/2023 hoje.
