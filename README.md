@@ -557,7 +557,7 @@ o projeto.
 - [x] **O histórico da rede estadual chegou: 13 estações, 10 min, desde fins de 2022 (10/09/2026).** Treze
   zips baixados pelo Jefferson no PC (query GraphQL `historic` da DCSC, janelas de 14 dias desde 1980).
   `scripts/consolidar_historico_dcsc.py` (5 testes) junta as janelas em `data/series/dcsc/DCSC-000NN.csv`
-  (129 MB, fora do git) e grava o resumo citável `data/brutos/dcsc-historico-resumo-2026-09-10.json`:
+  (129 MB, fora do git) e grava o resumo citável `data/brutos/dcsc-historico-resumo-2026-09-15.json`:
   cobertura, buracos, sentinelas (`-35` em Ituporanga, 2^31/100 em Ibirama, 581 m em Ascurra) e as
   maiores cristas de cada estação, com pico solto de sensor descartado (12,38 m em Brusque entre vizinhas
   de 1,5 m). **Fuso provado**: `ts` é Brasília sem fuso (janela pedida às 00:00Z devolve 21:10 do dia
@@ -595,6 +595,19 @@ o projeto.
   lhe atribuía era um trecho de sete dias **depois** da quebra em que ela mandou linha com o nível
   vazio: diz respeito à série de altitude, descartada, não à régua que ficou. Nenhuma falha real de
   coleta foi escondida, e há teste travando que buraco **antes** da quebra continua contando.
+- [x] **B5 fechado: o histórico consolidado na VPS bate com o do repo (15/09/2026).** Os treze zips
+  foram para a VPS e o `consolidar_historico_dcsc.py` rodou lá, contra o `conferir_resumo_dcsc.py`.
+  Resultado: **onze divergências, em três estações e só três**, todas com causa nomeada — Guabiruba
+  (`nivel_max_m` 28,70 → 4,19, `leituras_com_nivel` 198.178 → 176.124, 22.054 cortadas na quebra),
+  Gaspar e Blumenau (sem crista candidata, `nao_mede_nivel` preenchido), mais duas linhas de `_meta`.
+  Nas outras dez, nada. O resumo de 15/09 substitui o de 10/09, que listava os 28,70 m como maior
+  crista de Guabiruba. ⚠️ **Duas armadilhas que a rodada revelou, e valem para a próxima:** a primeira
+  tentativa deu **✓ falso** porque a VPS estava dois PRs atrasada (em `4d0992a`) e porque havia um
+  `dcsc-historico-resumo-2026-09-15.json` **não rastreado** solto em `data/brutos/` — o
+  `referencia_mais_recente()` escolhe o mais novo por nome e pegou a sobra, comparando duas rodadas do
+  mesmo código velho. Confira o `git log` antes de consolidar, e **passe a referência na mão** como
+  segundo argumento. Arquivo não rastreado com nome citável dentro da pasta dos dados citáveis é
+  armadilha: transformou uma conferência feita para acusar diferença num ✓ que não queria dizer nada.
 - [ ] **Ofício C13 a Brusque, rascunhado, aguarda o "sim" (10/09/2026).** Três perguntas fechadas em
   `docs/oficios-prontos.md`: em que régua foi lido o 8,96 m de 17/11/2023 (a DCSC-00019 registra 8,63 m às
   21:30, e ~0,30 m a menos também em 05/10 e 13/10); se houve ajuste de zero na DCSC-00019 entre 2023 e
