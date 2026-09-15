@@ -56,6 +56,7 @@ import math
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from cadastro_dcsc import NAO_MEDE_NIVEL, SUSPEITAS, apos_a_quebra, quebra_de
 from calibrar_transito import MIN_EVENTOS, pares_para_calibrar
 from comum import DADOS, grava_json, le_json
 
@@ -154,6 +155,12 @@ def ler_serie(codigo: str, origem: Path = SERIES) -> list[tuple[datetime, float]
             except (ValueError, KeyError):
                 continue
             if valor <= LIMITE_SENTINELA or abs(valor) > LIMITE_PLAUSIVEL:
+                continue
+            if apos_a_quebra(codigo, quando):
+                # Defesa em profundidade: o consolidador já esvazia o nível depois da quebra ao
+                # gravar o CSV, mas um CSV gerado ANTES de 15/09/2026 ainda traz a grandeza nova
+                # misturada. Correlacionar régua com altitude produz um lag com aparência de
+                # medida — e este script grava `transito.json`, que vai para a tela.
                 continue
             fora.append((quando, valor))
     fora.sort(key=lambda t: t[0])
@@ -419,6 +426,45 @@ def classificar(m: dict, com_barragem: bool) -> tuple[str | None, str]:
                   f"da mediana de {percentil(lags, 0.5):.1f} h")
 
 
+def recusa_do_cadastro(cod_montante: str, cod_jusante: str) -> str | None:
+    """Motivo pelo qual este par NÃO pode ser medido, pelo cadastro da rede — ou None.
+
+    Vem antes de qualquer conta, e recusa UMA coisa só: estação que não mede nível de rio nesta
+    rede. Gaspar (DCSC-00005) e Blumenau (DCSC-00026) estão em `estacoes.json` com `codigo_dcsc`
+    e nenhuma das duas mede — Blumenau é `type=Meteo`. Sem esta checagem o script tentaria
+    cronometrar `blumenau -> gaspar`; os guardas estatísticos até recusariam, mas pela razão
+    errada ("sem crista pareada"), que é a razão que faz alguém tentar de novo amanhã com mais
+    série. Não é falta de série: não há rio medido ali.
+
+    O QUE NÃO SE RECUSA AQUI, e por quê:
+      * **datum/escala não calibrada** (`SUSPEITAS`) — trânsito é diferença entre dois HORÁRIOS,
+        e este script correlaciona a VARIAÇÃO justamente para o zero de cada régua não entrar na
+        conta. Recusar por datum seria recusar por um motivo que não se aplica à medida. Sai
+        como aviso, em `aviso_do_cadastro`.
+      * **quebra de série** — essa sim mistura duas grandezas DENTRO da mesma série, mas o corte
+        já é feito leitura a leitura em `ler_serie`, e o que sobra antes da quebra é régua de
+        verdade, medível.
+    """
+    for papel, cod in (("montante", cod_montante), ("jusante", cod_jusante)):
+        if cod in NAO_MEDE_NIVEL:
+            return f"{cod} ({papel}) não mede nível de rio nesta rede — {NAO_MEDE_NIVEL[cod]}"
+    return None
+
+
+def aviso_do_cadastro(cod_montante: str, cod_jusante: str) -> str | None:
+    """O que o leitor precisa saber sobre este par, sem que isso impeça a medida."""
+    recados = []
+    for papel, cod in (("montante", cod_montante), ("jusante", cod_jusante)):
+        if cod in SUSPEITAS:
+            recados.append(f"{cod} ({papel}) tem datum/escala não calibrada (cadastro_dcsc.SUSPEITAS) "
+                           "— não atrapalha o lag, mas o NÍVEL desta estação não é publicável")
+        q = quebra_de(cod)
+        if q:
+            recados.append(f"{cod} ({papel}) tem quebra de série em {q['desde']}: só a parte "
+                           "anterior entra na conta")
+    return "; ".join(recados) or None
+
+
 # --------------------------------------------------------------------------- #
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0],
@@ -451,6 +497,14 @@ def main() -> int:
             falta = ", ".join(c for c in (de, para) if c not in dcsc)
             print(f"{rotulo}: sem codigo_dcsc em {falta}")
             continue
+
+        impedimento = recusa_do_cadastro(dcsc[de], dcsc[para])
+        if impedimento:
+            print(f"{rotulo}: não medível — {impedimento}")
+            continue
+        aviso = aviso_do_cadastro(dcsc[de], dcsc[para])
+        if aviso:
+            print(f"{rotulo}: atenção — {aviso}")
 
         m = medir_trecho(dcsc[de], dcsc[para], args.series)
         if m is None:
