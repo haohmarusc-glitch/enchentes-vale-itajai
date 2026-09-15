@@ -880,7 +880,10 @@ o projeto.
   (07/09/2026).** Diagnóstico fechado com o Jefferson, cruzando a VPS, este ambiente e o navegador
   do celular dele. **Duas coisas juntas, e a segunda decide:** (1) o host
   `defesacivil.gaspar.sc.gov.br` dá **timeout de 30 s** na VPS enquanto a mesma página abre normal
-  num celular no Brasil — bloqueio de IP estrangeiro ou rota, não queda; (2) **a página foi
+  num celular no Brasil — **medido em 15/09/2026 (B10): é filtro, não rota.** Do mesmo servidor e
+  nos mesmos minutos, `monitoramento.defesacivil.sc.gov.br` (200 em 0,69 s),
+  `defesacivil.itajai.sc.gov.br` (200 em 4,35 s) e `www.ana.gov.br` (302 em 0,74 s) respondem
+  normalmente. O Brasil é alcançável da VPS; Gaspar e Brusque não são; (2) **a página foi
   reformulada** (rodapé: *"Desenvolvido por DEXTAK"*) e a régua **"Rio Itajaí Açu Gaspar" SAIU
   DELA**. Em 31/08 marcava **3,85 m**; hoje a tabela tem sete linhas e nenhuma é o Açu — entraram
   três barragens estaduais (números de **altitude de reservatório**: 273,75 / 350,44 / 388,07) e
