@@ -1,0 +1,647 @@
+{
+  "coletado_em": "2026-09-15T23:31:27+00:00",
+  "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+  "leituras": [
+    {
+      "estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "nivel_m": 0.63,
+      "medido_em": "2026-09-15T20:21:00"
+    },
+    {
+      "estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "nivel_m": 0.65,
+      "medido_em": "2026-09-15T20:21:00"
+    },
+    {
+      "estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "nivel_m": 0.13,
+      "medido_em": "2026-09-15T20:20:00"
+    },
+    {
+      "estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "nivel_m": 0.9,
+      "medido_em": "2026-09-15T20:21:00"
+    },
+    {
+      "estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "nivel_m": 1.18,
+      "medido_em": "2026-09-15T20:21:00"
+    },
+    {
+      "estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "nivel_m": 0.5,
+      "medido_em": "2026-09-15T20:20:00"
+    },
+    {
+      "estacao": "DC-07 Ribeirão da Murta - Portal",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "nivel_m": 0.33,
+      "medido_em": "2026-09-15T20:20:00"
+    },
+    {
+      "estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "nivel_m": 0.98,
+      "medido_em": "2026-09-15T20:20:00"
+    },
+    {
+      "estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "nivel_m": 0.81,
+      "medido_em": "2026-09-15T20:20:00"
+    },
+    {
+      "estacao": "Brusque",
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "nivel_m": 1.47,
+      "medido_em": "2026-09-15T20:25:00"
+    },
+    {
+      "estacao": "Blumenau",
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "nivel_m": 3.46,
+      "medido_em": "2026-09-15T17:15:00"
+    },
+    {
+      "estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "nivel_m": 3.44,
+      "medido_em": "2026-09-15T20:10:00"
+    },
+    {
+      "estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "nivel_m": 2.58,
+      "medido_em": "2026-09-15T20:10:00"
+    },
+    {
+      "estacao": "Blumenau (AlertaBlu)",
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "nivel_m": 3.45,
+      "medido_em": "2026-09-15T20:00:00",
+      "resgate_de": "Blumenau"
+    },
+    {
+      "estacao": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "nivel_m": 5.0,
+      "medido_em": "2026-09-15T20:28:20"
+    },
+    {
+      "estacao": "Taió — Rio Itajaí do Oeste, Centro",
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "nivel_m": 6.07,
+      "medido_em": "2026-09-15T20:28:13",
+      "usar_para_cota": true
+    },
+    {
+      "estacao": "Indaial — fundos da Celesc (Defesa Civil)",
+      "cidade": "indaial",
+      "rio": "itajai-acu",
+      "nivel_m": 4.1,
+      "medido_em": "2026-09-12T22:00:00",
+      "fonte": "https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/edit"
+    },
+    {
+      "estacao": "Ascurra — Ponte do Beber (DCSC-00003)",
+      "cidade": "ascurra",
+      "rio": "itajai-acu",
+      "nivel_m": 7.97,
+      "medido_em": "2026-09-15T20:30:58",
+      "fonte": "Rede estadual (Defesa Civil de SC), estação DCSC-00003, Ponte do Beber. Faixas definidas pela COMPDEC de Ascurra NESTA escala — resposta ao C18 em 11/09/2026 (docs/resposta-ascurra-c18-2026-09-11.md).",
+      "codigo": "DCSC-00003",
+      "origem": "estadual",
+      "datum": "regua_das_cotas",
+      "usar_para_cota": true
+    }
+  ],
+  "fonte_itajai_ok": true,
+  "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
+  "chuva": [
+    {
+      "estacao": "DC-00 Defesa Civil de Itajaí",
+      "rio": null,
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:21:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:21:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:21:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:21:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-07 Ribeirão da Murta - Portal",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "Brusque Estação Guarani",
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:25:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "Blumenau",
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T17:25:00",
+      "coerente": false,
+      "incoerencias": [
+        "zero em todas as janelas enquanto outra estação da cidade mede chuva — possível sensor parado"
+      ]
+    },
+    {
+      "estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:20:00",
+      "coerente": true,
+      "incoerencias": []
+    },
+    {
+      "estacao": "Rio do Sul Estação MKS",
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "mm": {
+        "min10": 0.0,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": 0.0
+      },
+      "medido_em": "2026-09-15T20:25:00",
+      "coerente": false,
+      "incoerencias": [
+        "zero em todas as janelas enquanto outra estação da cidade mede chuva — possível sensor parado"
+      ]
+    },
+    {
+      "estacao": "DCSC-00026 SDC-SC Blumenau",
+      "rio": null,
+      "cidade": "blumenau",
+      "mm": {
+        "min10": null,
+        "h1": 0.26,
+        "h12": 1.16,
+        "h24": 4.46,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:03",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00018 SDC-SC Botuverá 1",
+      "rio": null,
+      "cidade": "botuvera",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.01,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:01",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00023 SDC-SC Timbó 1",
+      "rio": null,
+      "cidade": "timbo",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.02,
+        "h24": 0.04,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:15",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00011 SDC-SC Rio dos Cedros 1",
+      "rio": null,
+      "cidade": "rio-dos-cedros",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.01,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:01",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00006 SDC-SC Indaial",
+      "rio": null,
+      "cidade": "indaial",
+      "mm": {
+        "min10": null,
+        "h1": 0.01,
+        "h12": 0.72,
+        "h24": 0.88,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:04",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00039 SDC-SC Ituporanga",
+      "rio": null,
+      "cidade": "ituporanga",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:12",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00019 SDC-SC Brusque",
+      "rio": null,
+      "cidade": "brusque",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:01",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00005 SDC-SC Gaspar",
+      "rio": null,
+      "cidade": "gaspar",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:01",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00013 SDC-SC Rio do Sul",
+      "rio": null,
+      "cidade": "rio-do-sul",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.39,
+        "h24": 0.49,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:13",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00027 SDC-SC Botuverá 2",
+      "rio": null,
+      "cidade": "botuvera",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.03,
+        "h24": 0.07,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:15",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00030 SDC-SC Ilhota",
+      "rio": null,
+      "cidade": "ilhota",
+      "mm": {
+        "min10": null,
+        "h1": 0.01,
+        "h12": 0.44,
+        "h24": 0.58,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:13",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00020 SDC-SC Ibirama",
+      "rio": null,
+      "cidade": "ibirama",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:11",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00032 SDC-SC Lontras",
+      "rio": null,
+      "cidade": "lontras",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:14",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00024 SDC-SC Vidal Ramos",
+      "rio": null,
+      "cidade": "vidal-ramos",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T16:27:00",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00029 SDC-SC Guabiruba",
+      "rio": null,
+      "cidade": "guabiruba",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:09",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00003 SDC-SC Ascurra",
+      "rio": null,
+      "cidade": "ascurra",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:13",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    },
+    {
+      "estacao": "DCSC-00041 SDC-SC Taió",
+      "rio": null,
+      "cidade": "taio",
+      "mm": {
+        "min10": null,
+        "h1": 0.0,
+        "h12": 0.0,
+        "h24": 0.0,
+        "h48": null
+      },
+      "medido_em": "2026-09-15T20:31:10",
+      "coerente": true,
+      "incoerencias": [],
+      "fonte": "Defesa Civil de SC — Rede Integrada (GraphQL)"
+    }
+  ],
+  "chuva_ok": true,
+  "estacoes_ausentes": []
+}

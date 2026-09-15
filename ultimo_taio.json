@@ -1,0 +1,250 @@
+{
+  "fonte": "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/cards?v=1",
+  "coletado_em": "2026-09-15T23:30:09.148354+00:00",
+  "leituras": [
+    {
+      "estacao": "Taió — Rio Itajaí do Oeste, Centro",
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "nivel_m": 6.07,
+      "medido_em": "2026-09-15T20:28:13",
+      "usar_para_cota": true
+    }
+  ],
+  "barragem": {
+    "nome": "Barragem Oeste (Taió)",
+    "montante_m": 17.82,
+    "jusante_m": null,
+    "comportas": {
+      "abertas": 7,
+      "total": 7,
+      "todas_abertas": true,
+      "regime": "vertendo"
+    },
+    "extravasor": "–",
+    "medido_em": "2026-09-15T20:28:13"
+  },
+  "chuva_mm": {
+    "h1": 0.0,
+    "h12": 0.0,
+    "h24": 0.0
+  },
+  "historico": [
+    {
+      "medido_em": "2026-09-14T21:00:37",
+      "nivel_m": 5.48,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-14T22:00:25",
+      "nivel_m": 5.56,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-14T23:00:13",
+      "nivel_m": 5.63,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T00:00:01",
+      "nivel_m": 5.71,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T01:02:07",
+      "nivel_m": 5.77,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T02:01:55",
+      "nivel_m": 5.82,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T03:01:43",
+      "nivel_m": 5.86,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T04:01:31",
+      "nivel_m": 5.9,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T05:01:19",
+      "nivel_m": 5.93,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T06:01:07",
+      "nivel_m": 5.96,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T07:00:55",
+      "nivel_m": 5.98,
+      "chuva_mm": 0.0,
+      "montante_m": 19.08,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T08:00:43",
+      "nivel_m": 6.01,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T09:00:31",
+      "nivel_m": 6.02,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T10:00:19",
+      "nivel_m": 6.03,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T11:00:07",
+      "nivel_m": 6.04,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T12:02:13",
+      "nivel_m": 6.05,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T13:02:01",
+      "nivel_m": 6.06,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T14:01:49",
+      "nivel_m": 6.07,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T15:01:37",
+      "nivel_m": 6.07,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T16:01:25",
+      "nivel_m": 6.08,
+      "chuva_mm": 0.0,
+      "montante_m": 18.39,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T17:01:13",
+      "nivel_m": 6.07,
+      "chuva_mm": 0.0,
+      "montante_m": 17.82,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T18:01:01",
+      "nivel_m": 6.08,
+      "chuva_mm": 0.0,
+      "montante_m": 17.82,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T19:00:49",
+      "nivel_m": 6.08,
+      "chuva_mm": 0.0,
+      "montante_m": 17.82,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    },
+    {
+      "medido_em": "2026-09-15T20:00:37",
+      "nivel_m": 6.08,
+      "chuva_mm": 0.0,
+      "montante_m": 17.82,
+      "jusante_m": null,
+      "comportas_abertas": 7,
+      "comportas_fechadas": 0
+    }
+  ]
+}
