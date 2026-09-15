@@ -206,12 +206,47 @@ for (const [nomeTela, tela] of Object.entries(TELAS)) {
   await ctx.close()
 }
 
-// 4. As telas de rio, cidade e Itajaí (desktop). Cada passo abre a rota numa
-//    página nova: é como o link chega ao morador, e evita um `NaN` transitório
-//    do gráfico de picos ao trocar de cidade sem recarregar (pendência).
+// 4. As telas de rio, cidade e Itajaí (desktop). Quase todo passo abre a rota
+//    numa página nova, que é como o link chega ao morador — e por isso mesmo
+//    não exercita a troca de cidade SEM recarregar, que tem armadilha própria:
+//    o passo "trocar de cidade sem recarregar" abaixo cobre exatamente isso.
 {
   console.log('\nTelas de rio, cidade e Itajaí')
   const ctx = await contexto(TELAS.desktop)
+  await passo('trocar de cidade sem recarregar não escreve NaN no gráfico', async () => {
+    // Estado interno de componente que sobrevive à troca de cidade vira
+    // atributo NaN no SVG — foi o que o <Brush> da linha do tempo fez até
+    // 15/09/2026, com o endIndex da cidade anterior. Não aparece na tela e
+    // some no quadro seguinte, então só um vigia no setAttribute o pega.
+    const page = await ctx.newPage()
+    await page.addInitScript(() => {
+      window.__nan = []
+      const original = Element.prototype.setAttribute
+      Element.prototype.setAttribute = function (nome, valor) {
+        if (String(valor) === 'NaN') {
+          window.__nan.push(`<${this.tagName}> ${nome} em .${this.parentElement?.getAttribute('class') || '?'}`)
+        }
+        return original.call(this, nome, valor)
+      }
+    })
+    const reg = vigiar(page)
+    // Gaspar → Blumenau é o par que quebrava: séries de tamanhos diferentes,
+    // as duas com cotas, então os dois gráficos montam nas duas cidades.
+    await page.goto(`${base}/#/acu/gaspar`, { waitUntil: 'load' })
+    await espera(page, 2000)
+    await page.evaluate(() => { window.__nan = [] })
+    const link = page.locator('a[href="#/acu/blumenau"]').first()
+    if (await link.count()) await link.click()
+    else await page.evaluate(() => { window.location.hash = '#/acu/blumenau' })
+    await espera(page, 2200)
+    const nan = await page.evaluate(() => window.__nan)
+    if (nan.length) throw new Error(`${nan.length} atributo(s) NaN — ${nan[0]}`)
+    if (reg.pageerrors.length) throw new Error(reg.pageerrors[0])
+    const graficos = await page.locator('.recharts-surface').count()
+    await page.close()
+    if (graficos === 0) return 'sem gráfico na tela (esperado sem DADOS)'
+    return `${graficos} gráfico(s) redesenhado(s), nenhum NaN`
+  })
   await passo('/acu: "Ver detalhe" por teclado seleciona a cidade no mapa do rio', async () => {
     const { page, reg } = await abrir(ctx, '/acu', 2000)
     // Os botões "Ver detalhe de …" ficam fora da vista de propósito: são o
