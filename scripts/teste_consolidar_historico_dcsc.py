@@ -200,6 +200,38 @@ class Cadastro(unittest.TestCase):
         self.assertEqual(r["leituras_com_nivel"], 300)
         self.assertEqual(r["nivel_max_m"], 0.84)
 
+    def test_o_trecho_cortado_NAO_conta_como_buraco_de_coleta(self):
+        """Buraco é "a estação parou de mandar". Guabiruba não parou — mudou de grandeza.
+
+        Sem esta regra o resumo saía com `maior_buraco_h: 3869.5`, os 161 dias entre a quebra e
+        o fim da série, e quem lesse concluiria cinco meses fora do ar. Verdadeiro de menos.
+        """
+        itens = self.serie_com_quebra()
+        e = {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""}
+        r = resumo_da_estacao(self.GUABIRUBA, e)
+        self.assertEqual(r["buracos_maiores_que_6h"], 0)
+        self.assertEqual(r["maior_buraco_h"], 0)
+        # e a série inteira continua descrita — `ultima` é DEPOIS da quebra, porque a estação
+        # seguiu mandando linha; o que foi cortado tem campo próprio
+        self.assertGreater(r["ultima"], "2026-04-01T17:40")
+        self.assertGreater(r["quebra_de_serie"]["leituras_de_nivel_cortadas"], 0)
+
+    def test_buraco_ANTES_da_quebra_continua_contando(self):
+        """A regra não pode virar desculpa para esconder falha real de coleta."""
+        from datetime import timedelta
+        itens = {}
+        base = datetime(2026, 3, 20, 0, 0)
+        for i in range(400):
+            t = base + timedelta(minutes=10 * i)
+            if datetime(2026, 3, 21) <= t < datetime(2026, 3, 21, 12):
+                continue                          # 12 h sem mandar nada, antes da quebra
+            it = item(t.isoformat(timespec="seconds") + ".000", 0.51, codigo=self.GUABIRUBA)
+            itens[it["ts"]] = it
+        r = resumo_da_estacao(self.GUABIRUBA, {"itens": itens, "janelas": 1, "coletas": [],
+                                               "fim_janelas": ""})
+        self.assertEqual(r["buracos_maiores_que_6h"], 1)
+        self.assertGreaterEqual(r["maior_buraco_h"], 11)
+
     def test_estacao_comum_nao_ganha_campo_nenhum(self):
         """Campo novo tem que ser None nas outras 10 estações, senão o conferir_resumo_dcsc.py
         acusa divergência em todas elas e vira alarme que ninguém lê."""

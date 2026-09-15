@@ -71,7 +71,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analisar_telemetria_ana import buracos, crista  # noqa: E402
-from cadastro_dcsc import CADEIA, NAO_MEDE_NIVEL, apos_a_quebra, mede_nivel, quebra_de  # noqa: E402
+from cadastro_dcsc import (CADEIA, NAO_MEDE_NIVEL, apos_a_quebra,  # noqa: E402
+                           mede_nivel, quando_da_quebra, quebra_de)
 from comum import DADOS  # noqa: E402
 
 COLUNAS = ["medido_em", "rio_nivel", "rio_variacao", "chuva_mm", "chuva_total",
@@ -229,7 +230,15 @@ def resumo_da_estacao(cod: str, e: dict) -> dict:
     # de zero com 135 mil leituras cada.
     todas = cristas(serie, n=8) if mede_nivel(cod) else []
     q = quebra_de(cod)
-    bur = [(a, b, tipo) for a, b, tipo in buracos(serie, BURACO_MINIMO)] if serie else []
+    # Buraco aqui é sinal de SAÚDE DA COLETA — "a estação parou de mandar". O trecho cortado
+    # pela quebra não é isso: a estação seguiu transmitindo, o que mudou foi a grandeza. Sem
+    # esta linha, Guabiruba sai com `maior_buraco_h: 3869.5` — os 161 dias entre a quebra e o
+    # fim da série —, e quem lesse concluiria que ela ficou cinco meses fora do ar. Está certo
+    # de mais e verdadeiro de menos. Quem conta o que foi cortado é o campo próprio disso,
+    # `quebra_de_serie.leituras_de_nivel_cortadas`.
+    corte = quando_da_quebra(cod)
+    serie_sadia = [(t, v) for t, v in serie if corte is None or t < corte]
+    bur = [(a, b, tipo) for a, b, tipo in buracos(serie_sadia, BURACO_MINIMO)] if serie_sadia else []
     esperadas = int((serie[-1][0] - serie[0][0]) / CADENCIA) + 1 if len(serie) > 1 else len(serie)
     campos = Counter(k for it in e["itens"].values() for k in it)
     return {
