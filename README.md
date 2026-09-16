@@ -1678,6 +1678,26 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 
 - [x] **O Monitor da bacia ganhou fundo de mapa: Escuro, Satélite e Mapa.** A pendência estava aberta desde 03/09 como opção (b) do `docs/CAMADAS-DE-MAPA.md` — "exige desenhar tiles no canvas **ou** trocar o motor por Leaflet". Resolvida por um terceiro caminho, mais barato: **tiles no próprio canvas, sem Leaflet e sem mexer na projeção**. O que destravou foi medir em vez de supor: a dúvida era se tile Mercator alinharia com a projeção equirretangular do canvas, e alinha — na latitude central as duas têm a **mesma proporção** (o `cos(27°) = 0,89101` do enquadramento é o fator que o Mercator aplica ali), sobrando só a curvatura: **1,20 px de erro máximo num canvas de 900 px** (0,13%), medido na bacia inteira. Cada tile é desenhado na caixa que a própria `projetar` devolve para os cantos dele. **O teste que sustenta é de alinhamento**, não de forma: o pixel onde o mapa desenha Blumenau, Itajaí, Rio do Sul e Brusque tem de cair dentro do tile que geograficamente as contém — e falha se o Mercator virar conta linear (conferido: 14.848 px de desvio). **Escuro continua padrão por função, não por estética:** fundo com textura concorre com as faixas de alerta, e o satélite degrada justamente o dado mais delicado — o cinza "sem leitura" some contra a mata. Por isso sobre imagem entra **contorno escuro sob todos os traços, o cinza inclusive**, e a mancha do mar sai (a imagem já diz onde é água). **Atribuição é condição de licença:** fica visível e troca com a camada, com teste travando que ela vem de `FUNDOS[fundo]` e não de texto fixo; outro teste recusa qualquer URL do Google, cuja licença não permite embutir tiles. Tile que falha some sem derrubar nada (o chão escuro aparece), o cache vive entre renders para não repedir o mosaico a cada tique, e janela absurda devolve zero tiles em vez de travar o navegador numa noite de chuva. **Não foi possível ver com os olhos:** o ambiente de desenvolvimento bloqueia os três hosts de tile, então a verificação visual fica para o GitHub Pages.
 
+- [x] **A régua manual de Indaial parou de ser cobrada como sensor — 15/09/2026.** Era a falha crônica
+  que mascarava as outras. A régua dos **fundos da Celesc** não vem de sensor: vem de um **Google Docs
+  que a Defesa Civil de Indaial preenche à mão** (vínculo institucional confirmado em 13/09, ver
+  `docs/indaial-duas-reguas.md`). A última leitura que chegou é de **12/09 às 22h — o fim da cheia de
+  11 e 12/09**: alimentaram durante o evento e pararam quando ele passou, que é como um registro de mão
+  se comporta. Só que o `TOLERANCIA_FONTE_MIN` de 120 min foi calibrado na fonte **automática** mais
+  lenta que já acompanhamos, então a régua ficava vermelha **duas horas depois de a chuva passar** e
+  assim seguia até a cheia seguinte. E vigia sempre vermelho não é só ruído: foi esse vermelho que
+  escondeu o aviso de código atrasado e deixou a VPS dois PRs atrás. Agora há `FONTES_MANUAIS`: a fonte
+  não é cobrada por frescor, **mas a idade dela sai nos detalhes em toda rodada** — não cobrar não é
+  esconder, e quem abre o vigia numa cheia precisa ver que a régua municipal está três dias atrás.
+  Quatro coisas **não** mudaram, com teste cada uma: leitura sem horário continua falha (é defeito de
+  formato, não silêncio normal); a fonte **sumir** do arquivo continua falha, pela memória rolante; a
+  fonte automática parada continua falha; e o site segue recusando pintar leitura com mais de 180 min,
+  então ninguém vê os 4,10 m de 12/09 como se fossem de agora. Há teto: acima de
+  `TOLERANCIA_MANUAL_DIAS` (30) a fonte não está quieta, está abandonada, e volta a ser falha — a
+  escala municipal de Indaial (3 / 4 / 5,5 m) não existe em nenhuma outra fonte da cidade. ⚠️ **Os 30
+  dias são escolha, não medida**, e está escrito assim no código: o que os firmaria é o histórico do
+  próprio documento. **Indaial não fica cega**: a DCSC-00006 (estadual, automática) publica normalmente
+  — outro lugar e outro zero, nunca convertida.
 - [x] **Falha crônica não mascara mais falha nova no vigia — 15/09/2026.** Investigando por que a VPS
   ficou dois PRs atrás sem ninguém ser avisado, a resposta foi outra: **não existe deploy automático**
   (o `deploy.sh` é comando manual e o cron roda os coletores de `/opt` sem `git pull`), e o
