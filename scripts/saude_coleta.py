@@ -125,18 +125,34 @@ FONTES_MANUAIS = {
         "é a DCSC-00006, no nível estadual — outro lugar e outro zero, nunca convertida.",
 }
 
-#: Teto do silêncio de uma fonte manual: acima disto ela não está quieta, está
-#: abandonada — e é preciso saber, porque a escala municipal de Indaial (3 / 4 /
-#: 5,5 m) não existe em nenhuma outra fonte da cidade.
+#: NÃO HÁ TETO DE SILÊNCIO PARA FONTE MANUAL, e isso foi MEDIDO (16/09/2026).
 #:
-#: ⚠️ ESTE NÚMERO É ESCOLHA, NÃO MEDIDA. Foi posto largo de propósito, para
-#: separar "não choveu" de "pararam de usar o documento", e não para vigiar
-#: cadência. O que o firmaria é o histórico do próprio documento — quantos dias
-#: ele costuma passar entre um evento e o seguinte. Enquanto isso não for
-#: levantado, um mês é generoso o bastante para não gritar por nada e curto o
-#: bastante para a próxima temporada de chuva não nos pegar com uma fonte morta.
-TOLERANCIA_MANUAL_DIAS = 30
-
+#: A primeira versão desta mudança pôs um teto de 30 dias — "acima disto não está
+#: quieta, está abandonada". O documento de Indaial foi lido inteiro e o número
+#: estava errado, mas o estrago era maior que a calibragem. As 57 datas que ele
+#: guarda mostram registro de evento, com os intervalos:
+#:
+#:     15/08/2026 <- 02/07/2026      44 dias
+#:     11/07/2024 <- 27/05/2024      45 dias
+#:     09/12/2024 <- 15/07/2024     147 dias
+#:     18/05/2024 <- 28/11/2023     172 dias
+#:     01/07/2026 <- 10/12/2024     568 dias
+#:
+#: Os 30 dias teriam gritado CINCO vezes só nesse trecho. Pior: o documento
+#: passou DEZOITO MESES parado e voltou a ser alimentado. Ou seja, o silêncio
+#: dele não diz nada sobre ele estar vivo — não existe limiar de idade que
+#: separe "quieto" de "abandonado" nesta fonte. Um teto qualquer seria um número
+#: inventado com cara de medida.
+#:
+#: O QUE FICA DESCOBERTO, e é preciso dizer: se a Defesa Civil de Indaial parar
+#: de usar o documento, nada aqui vai acusar. O prejuízo é limitado — a régua
+#: automática da cidade (DCSC-00006) segue publicando, e o site recusa pintar
+#: leitura velha —, mas a escala municipal (3 / 4 / 5,5 m) só existe nesta fonte.
+#:
+#: O MECANISMO CERTO, não construído: cobrar a fonte manual apenas QUANDO IMPORTA,
+#: isto é, com o rio alto. "Está subindo e ninguém alimentou o documento" é sinal;
+#: "não choveu e ninguém digitou" não é. Isso precisa de um limiar de nível, e
+#: portanto de decisão sobre qual régua o dispara — trabalho de outra sessão.
 #: Estações que sumiram e que a gente DECIDIU não cobrar mais, cada uma com o
 #: motivo e o que a tira daqui. Sem esta saída, a memória rolante viraria o
 #: vigia permanentemente vermelho que a versão anterior evitava — com a
@@ -349,13 +365,12 @@ def avaliar(dados: dict | None, agora: datetime,
                 # julgar idade nenhuma.
                 paradas.append(f"{regua} (sem horário)")
                 continue
-            manual = FONTES_MANUAIS.get(regua)
-            if manual:
+            if regua in FONTES_MANUAIS:
+                # Informa, não julga: a idade sai sempre, e não vira falha em
+                # idade nenhuma. Ver o bloco de FONTES_MANUAIS para a medição que
+                # descartou o teto que existia aqui.
                 dias = idade / 60 / 24
                 detalhes.append(f"{regua}: fonte manual, última leitura há {dias:.1f} dia(s)")
-                if dias > TOLERANCIA_MANUAL_DIAS:
-                    paradas.append(f"{regua} (fonte MANUAL sem leitura há {dias:.0f} dias — "
-                                   f"mais de {TOLERANCIA_MANUAL_DIAS}: parece abandonada, não quieta)")
                 continue
             if idade > TOLERANCIA_FONTE_MIN:
                 paradas.append(f"{regua} (fonte sem atualização da medição há {idade:.0f} min)")
