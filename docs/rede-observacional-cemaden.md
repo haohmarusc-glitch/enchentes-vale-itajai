@@ -34,6 +34,11 @@ Nenhum nível, previsão, alerta ou novo marcador no mapa é criado por esta imp
 - Ilhota: 4 de 7 pluviômetros operacionais no cadastro.
 - Pomerode: hidrológica `421320321H`, operacional, lat -26.7259, lon -49.172.
   Confirmar curso d'água, variável, acesso às leituras e zero antes de integrar nível.
+  Fica a **860 m** da DCSC-00007 (-26.73285, -49.17579), que está em `SUSPEITAS` por oscilação
+  implausível: perto demais para ignorar, longe demais para supor mesma régua (lição do Salseiro,
+  C5). Perguntado no rascunho **C24** (`oficios-prontos.md`) — pedido NOVO na LAI, não recurso:
+  o protocolo 01217.006547/2026-93 pediu a relação com coordenadas e foi respondido; medições,
+  cotas, datum e endpoint nunca foram pedidos.
 - Brusque: hidrológica `420290901H` inativa no cadastro. Esse código não identifica
   a estação DCSC-00019; não transferir status entre redes.
 

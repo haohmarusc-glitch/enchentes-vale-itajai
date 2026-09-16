@@ -266,3 +266,61 @@ Fico à disposição para qualquer esclarecimento, e agradeço pela página, que
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C24 — Cemaden: o que são as estações HIDROLÓGICAS do cadastro (pedido NOVO na LAI, não recurso)
+
+> 📌 **Por que é pedido novo e não recurso** (16/09/2026). O pedido anterior,
+> protocolo **01217.006547/2026-93**, pediu a *relação das estações com coordenadas* e **foi
+> respondido em 10/09/2026** com a planilha `Rede_Observacional_Santa_Catarina___SC.xlsx`
+> (415 códigos, já importada — ver `docs/rede-observacional-cemaden.md`). Ou seja: entregaram o
+> que foi perguntado, e não há indeferimento a contestar.
+> O e-mail de resposta do Fala.BR traz a frase *"No caso de indeferimento... A data limite é:
+> 21/09/2026"* — é **texto automático**, vai em toda resposta, deferida ou não, e **não** é um
+> prazo a cumprir aqui. Esse 21/09 chegou a ser anotado como pendência por leitura equivocada
+> dessa linha; fica desfeito.
+> O que falta (medições, cotas, datum, endpoint) **nunca foi pedido** — por isso entra como
+> **pedido novo** no mesmo sistema, referenciando o protocolo anterior.
+>
+> **Motivo técnico**, medido no próprio cadastro: das 18 hidrológicas de SC, só **duas** ficam na
+> bacia — `421320321H` em **Pomerode**, *operacional* (-26,7259 / -49,1720), e `420290901H` em
+> **Brusque**, *inativa*. A de Pomerode fica a **860 m** da nossa DCSC-00007
+> (-26,73285 / -49,17579), que está em `SUSPEITAS` por oscilar de forma implausível. 860 m é perto
+> o bastante para ser a mesma estrutura e longe o bastante para não ser — e a lição do "Salseiro"
+> (C5) é exatamente essa: coordenada próxima não prova mesma régua, só a fonte diz. Se for outra
+> régua, é uma segunda leitura independente no Rio do Testo; se for a mesma, o datum pedido aqui
+> pode explicar a oscilação.
+> ⚠️ `420290901H` **não** identifica a DCSC-00019 de Brusque — são redes diferentes, e o status
+> "inativa" de uma não se transfere para a outra.
+>
+> **Como registrar:** falabr.cgu.gov.br → "Registrar pedido de acesso à informação" → órgão
+> **Cemaden**. Decisão de enviar é do Jefferson.
+
+**Para:** Fala.BR — Cemaden (pedido de acesso à informação, Lei 12.527/2011)
+**Assunto:** Estações hidrológicas do Cemaden em Santa Catarina — curso d'água, variável, referência de nível e acesso às leituras
+
+Ao Serviço de Informação ao Cidadão do Cemaden,
+
+Meu nome é Jefferson, sou morador do Vale do Itajaí e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível do rio em cada cidade com a fonte citada em cada dado (github.com/haohmarusc-glitch/enchentes-vale-itajai).
+
+Agradeço a resposta ao pedido **01217.006547/2026-93**, de 10/09/2026: a relação da rede observacional de Santa Catarina com coordenadas foi recebida e já está em uso para vincular corretamente cada pluviômetro ao município. Este é um pedido novo, sobre as estações **hidrológicas** daquele mesmo cadastro, cujas leituras eu não sei interpretar sem as informações abaixo.
+
+Solicito, na medida do que estiver disponível:
+
+1. Para a estação **421320321H**, em Pomerode (SC), registrada como operacional nas coordenadas -26,7259 / -49,1720: **em que curso d'água ela está instalada**, **que variável ela mede** e **em que unidade**; e, se for nível, **em relação a que referência** — zero de régua próprio da estação, altitude (datum, por exemplo SIRGAS 2000 / Imbituba) ou outra. Pergunto porque há, a cerca de 860 m dela, uma régua de outra rede em Pomerode; sem saber a referência de cada uma, qualquer comparação entre as duas seria indevida, e eu prefiro não exibir o dado a exibi-lo com o significado errado.
+
+2. **A forma adequada de acessar as leituras dessa estação de maneira programática** — endereço do serviço, formato, frequência de atualização e eventual necessidade de cadastro. Respeito integralmente qualquer limite de requisições ou termo de uso que for indicado, e identifico todas as requisições com o nome do projeto.
+
+3. Se existirem, os **limiares ou cotas de acionamento** adotados para essa estação (os valores de nível a partir dos quais o Cemaden considera situação de atenção, alerta ou emergência), e a referência em que estão expressos.
+
+4. Se houver **série histórica** dessa estação disponível ao público, como obtê-la.
+
+5. Para a estação **420290901H**, em Brusque (SC), registrada como inativa: **desde quando está inativa** e se a série do período em que operou permanece disponível. Registro, para evitar confusão, que não estou tratando esse código como equivalente a nenhuma estação da rede estadual de Santa Catarina no mesmo município.
+
+O site deixa claro em todas as páginas que **não é sistema oficial de alerta**, que não substitui a Defesa Civil nem os órgãos oficiais de monitoramento, e que em emergência se deve ligar 199. Os dados do Cemaden que já utilizo (chuva acumulada dos pluviômetros) são exibidos como contexto, nunca como cota ou aviso, com crédito ao Cemaden. Qualquer dado de nível obtido por este pedido receberia o mesmo tratamento, com a referência altimétrica declarada na tela.
+
+Fico à disposição para qualquer esclarecimento e agradeço desde já a atenção.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
