@@ -19,6 +19,8 @@ export function linhasChuva(chuvas: ChuvaAoVivo[], cidade: string, agora: Date):
     `1 h: ${mmChuva(c?.mm.h1)} mm`,
     `12 h: ${mmChuva(c?.mm.h12)} mm`,
     `24 h: ${mmChuva(c?.mm.h24)} mm`,
-    c?.medidoEm ? `Chuva · ${textoIdade(idadeMin(c.medidoEm, agora))}` : 'Chuva indisponível',
+    // A idade é a da MEDIÇÃO do pluviômetro (medidoEm), não a da coleta — e o
+    // texto diz isso, senão "Chuva · há 10 min" lê como "choveu há 10 min".
+    c?.medidoEm ? `Chuva atualizada ${textoIdade(idadeMin(c.medidoEm, agora))}` : 'Chuva indisponível',
   ]
 }

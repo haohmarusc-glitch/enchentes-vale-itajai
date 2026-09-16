@@ -17,6 +17,7 @@
  */
 import { useEffect, useState } from 'react'
 import { deBrasilia } from '../logica/tempoReal'
+import { buscarPublicacao } from './publicacao'
 
 const PADRAO =
   'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo.json'
@@ -30,6 +31,8 @@ export const URL_TEMPO_REAL = import.meta.env?.VITE_URL_TEMPO_REAL || PADRAO
 const TEMPO_LIMITE_MS = 8000
 
 export interface LeituraAoVivo {
+  /** Código de estação com vínculo documental às cotas. */
+  codigo?: string
   estacao: string
   rio: string | null
   cidade: string | null
@@ -71,6 +74,8 @@ export interface ChuvaAoVivo {
 }
 
 export interface EstadoTempoReal {
+  /** Falha de transporte/JSON; permite conservar o último dado sem renovar carimbos. */
+  falhaEntrega?: boolean
   fonteItajaiOk?: boolean
 
   situacao: 'carregando' | 'ok' | 'indisponivel'
@@ -108,6 +113,10 @@ function leituraValida(bruta: unknown): LeituraAoVivo | null {
   }
 
   return {
+    // `codigo` (ex.: DCSC-00003) identifica a régua quando a leitura vem da rede
+    // estadual com cota própria; é por ele que referenciaAscurra.ts sabe que o
+    // back-end já mandou a mesma régua e não a duplica.
+    ...(typeof l.codigo === 'string' && l.codigo.trim() !== '' ? { codigo: l.codigo } : {}),
     estacao: l.estacao,
     rio: typeof l.rio === 'string' ? l.rio : null,
     cidade: typeof l.cidade === 'string' ? l.cidade : null,
@@ -177,9 +186,7 @@ export async function buscarTempoReal(
   }
 
   try {
-    const resposta = await transporte(URL_TEMPO_REAL, { cache: 'no-store', signal: sinal })
-    if (!resposta.ok) return vazio
-    const corpo: unknown = await resposta.json()
+    const corpo: unknown = await buscarPublicacao(URL_TEMPO_REAL, sinal, transporte)
     if (typeof corpo !== 'object' || corpo === null) return vazio
 
     const dados = corpo as Record<string, unknown>
@@ -209,7 +216,7 @@ export async function buscarTempoReal(
     }
   } catch {
     // Rede fora, CORS, JSON quebrado: a tela segue sem nível ao vivo.
-    return vazio
+    return { ...vazio, falhaEntrega: true }
   }
 }
 
@@ -269,7 +276,9 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
         emVoo.add(c)
       })
       if (meu) emVoo.delete(meu)
-      if (vivo) setEstado(novo)
+      if (vivo) setEstado(anterior => novo.falhaEntrega
+        ? { ...anterior, situacao: 'indisponivel', falhaEntrega: true }
+        : novo)
     }
 
     void buscar()

@@ -68,3 +68,12 @@
     var(--faixa-normal) 0
   );
 }
+
+/* Faixa estadual (C7): mesma paleta, mas tracejada — a amostra é um traço
+   tracejado neutro, porque a cor varia com a faixa que o estado publicar. */
+.estadual {
+  background: none;
+  box-shadow: none;
+  border: 2px dashed currentColor;
+  opacity: 0.75;
+}

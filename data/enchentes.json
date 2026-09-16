@@ -1064,6 +1064,28 @@
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
+      "data": "2021-01-21",
+      "hora": "21:45",
+      "pico_m": 6.82,
+      "confianca": "alta",
+      "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2021-01-24-DIAS_7.json",
+      "nota": "Crista às 21:45; platô 6,77–6,82 m das 19:30 de 21/01 às 00:45 de 22/01 (22 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima da cota de alerta (6,00 m). Veio 18 h 30 ANTES da crista de Taió (6,91 m às 16:15 de 22/01, que não é registro pela decisão (b) do Jefferson de 09/09/2026): a chuva caiu perto de Blumenau, não desceu de Taió — ver transito.json._meta.medicoes.taio_e_blumenau_2021_2022. O Aviso 02/2021 da CIRAM dava 6,59 m às 05:00 de 22/01 já descendo, 23 cm abaixo da crista; aviso é instantâneo do horário da coleta, não pico (EPAGRI, 15/09/2026).",
+      "referencia": "régua"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2022-05-05",
+      "hora": "02:45",
+      "pico_m": 9.41,
+      "confianca": "alta",
+      "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2022-05-06-DIAS_7.json",
+      "nota": "Crista às 02:45; platô 9,36–9,41 m das 00:00 às 04:30 (19 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima do Alerta Máximo (8,00 m). Veio 1 h 15 ANTES da crista de Taió (9,49 m às 04:00, que não é registro pela decisão (b)); Indaial pica em 04/05 (6,00 m), já no repo. O Aviso 03/2022 da CIRAM dava 6,39 m às 08:00 de 06/05 já descendo — três metros abaixo da crista, que é o tamanho do erro de tomar aviso por pico. Conferir contra a tabela /p/enchentes da Defesa Civil de Blumenau quando ela chegar.",
+      "referencia": "régua"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
       "data": "2023-10-13",
       "pico_m": 10.61,
       "confianca": "media",
@@ -1103,6 +1125,28 @@
       "confianca": "media",
       "fonte": "Imprensa (monitoramento estadual); subiu >4 m em <24 h",
       "referencia": null
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2026-09-01",
+      "hora": "09:00",
+      "pico_m": 7.58,
+      "confianca": "alta",
+      "fonte": "Coleta automática do projeto — AlertaBlu (Defesa Civil de Blumenau), régua da Ponte Adolfo Konder (ANA 83800002); valor conferido no repasse da Defesa Civil de Itajaí (mesma régua)",
+      "referencia": "régua",
+      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. Ressalva de cobertura: a série do AlertaBlu começa exatamente às 09:00 de 01/09 (primeira leitura do resgate), então o máximo real pode ter sido um pouco antes; o repasse, 3 h atrasado (E12), cobre a manhã e não mostra valor maior. Acima da cota de atenção (4,00 m) de 01/09 00:05 a 03/09 01:00. Horário pelo relógio do AlertaBlu."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2026-09-12",
+      "hora": "05:15",
+      "pico_m": 7.87,
+      "confianca": "alta",
+      "fonte": "Coleta automática do projeto — repasse da Defesa Civil de Itajaí e AlertaBlu (Defesa Civil de Blumenau), régua da Ponte Adolfo Konder (ANA 83800002); imprensa de 12/09 (ND Mais, O Blumenauense, Jornal Razão) cita 7,87 m às 5h20",
+      "referencia": "régua",
+      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. O 7,87 m veio do repasse com rótulo 02:15, que está 3 h atrás do real (E12: 05:15); o AlertaBlu horário registra 7,86 m às 05:00 e 06:00 — platô de ~2 h. Acima da cota de atenção (4,00 m) de 10/09 11:35 a 13/09 21:00, 260 leituras. A maior cheia medida pela coleta do projeto; ficou 1 cm abaixo da primeira cota de rua (7,88 m, Rua São Rafael). Série completa em data/brutos/cheia-2026-09-11-12.ndjson; análise em docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md."
     },
     {
       "rio": "itajai-acu",
@@ -1176,7 +1220,14 @@
       "pico_m": 13.04,
       "confianca": "media",
       "fonte": "Portal GCD — série histórica de Rio do Sul",
-      "nota": "Segunda maior (ou a maior recente) da série local. Calamidade pública."
+      "nota": "Segunda maior (ou a maior recente) da série local. Calamidade pública. Decisão do Jefferson em 15/09/2026: os 13,04 m do Portal GCD (régua do município) continuam adotados; a amostra da estação da ANA fica em divergencias e não substitui — mesmo mecanismo da decisão (b) em Taió/out-2023, porque o zero das duas réguas não foi conferido.",
+      "divergencias": [
+        {
+          "pico_m": 13.14,
+          "fonte": "ANA, série telemétrica da estação 83300200 'Rio do Sul – Novo' (HidroinfoanaSerieTelemetricaAdotada), amostra das 01:45 de 18/11/2023 — brutos data/brutos/ana-telemetria-83300200-2023-11-17-DIAS_7.json e -2023-11-24-DIAS_7.json, baixados na VPS em 15/09/2026",
+          "nota": "PISO, NÃO CRISTA. A telemetria apagou das 22:00 de 17/11 às 01:45 de 18/11 (carimbos ausentes 22:15–23:00 e cotas nulas até 01:30), e de novo das 02:15 às 05:15. A última leitura antes do apagão foi 13,06 m ainda subindo; a de 02:00, logo depois desta amostra, já marcava 13,09 m descendo. A crista real está nesse intervalo de 3 h 45 e é ≥ 13,14 m. RÉGUA DA ANA, não a do Portal GCD: os 10 cm de diferença para os 13,04 m adotados não provam o mesmo zero."
+        }
+      ]
     },
     {
       "rio": "itajai-acu",

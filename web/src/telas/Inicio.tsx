@@ -113,7 +113,7 @@ export default function Inicio() {
             <span className={estilos.descricao}>
               Onde os dois rios se encontram, com influência da maré
             </span>
-            <span className={estilos.contagem}>chegada dos dois picos</span>
+            <span className={estilos.contagem}>réguas e camadas históricas</span>
           </Link>
         </li>
       </ul>
@@ -151,9 +151,7 @@ export default function Inicio() {
           não existe dado, a tela diz que não existe — não preenchemos buraco com estimativa.
         </p>
         <p>
-          <strong>Tempo de chegada é sempre faixa.</strong> "14–17 h" quer dizer que a cheia costumou
-          levar entre 14 e 17 horas naquele trecho. Não é horário marcado, e chuva no meio do
-          caminho muda a conta.
+          <strong>Histórico não é previsão.</strong> As camadas mostram eventos passados. A comparação com a mesma régua não confirma alagamento atual nem prevê chegada.
         </p>
       </section>
     </>

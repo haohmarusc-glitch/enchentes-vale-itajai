@@ -83,3 +83,13 @@ jobs:
       - name: Fumaça — o site monta num navegador?
         working-directory: web
         run: npm run fumaca
+
+      - name: Regressões da auditoria do navegador
+        working-directory: web
+        run: npm run auditoria
+
+      # Todas as rotas (descobertas a partir do início) e todos os controles
+      # do Monitor e das telas, no celular e no desktop, com a rede cortada.
+      - name: Varredura — todas as rotas e controles
+        working-directory: web
+        run: npm run varredura

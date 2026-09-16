@@ -440,5 +440,23 @@ class LeituraDeCidade(unittest.TestCase):
         self.assertIs(cg.leitura_da_cidade(d)["usar_para_cota"], True)
 
 
+class PaginaEstacao21(unittest.TestCase):
+    HTML = '''<h3>Detalhes da Estação <b>Rio Itajaí Açu Gaspar</b></h3>
+    <div>Última Medição 12/09/2026 17:02</div>
+    <p>NORMALIDADE (Nível menor que 5,00 m) ATENÇÃO acima de 5,00 m</p>
+    <h5>Nivel do Rio: <b>4,26 m</b></h5><h5>Chuva atual: <b>---</b></h5>'''
+
+    def test_le_campo_sem_capturar_limiar_ou_chuva(self):
+        l = cg.leitura_da_cidade(cg.analisar_estacao(self.HTML))
+        self.assertEqual(l['nivel_m'], 4.26)
+        self.assertEqual(l['medido_em'], '2026-09-12T17:02:00')
+
+    def test_recusa_outra_regua_sem_horario_e_sem_nivel(self):
+        for html in [self.HTML.replace('Rio Itajaí Açu Gaspar', 'RIBEIRÃO BELCHIOR CENTRAL'),
+                     self.HTML.replace('Última Medição', 'Atualização'),
+                     self.HTML.replace('4,26 m', '---')]:
+            self.assertIsNone(cg.leitura_da_cidade(cg.analisar_estacao(html)))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

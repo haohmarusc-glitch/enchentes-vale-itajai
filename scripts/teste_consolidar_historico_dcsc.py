@@ -9,12 +9,12 @@ import unittest
 from datetime import datetime
 from pathlib import Path
 
-from consolidar_historico_dcsc import (COLUNAS, cristas, gravar_csv, isolada, ler_pasta, nivel,
-                                       resumo_da_estacao, serie_de)
+from consolidar_historico_dcsc import (COLUNAS, cortadas_na_quebra, cristas, gravar_csv, isolada,
+                                       ler_pasta, nivel, resumo_da_estacao, serie_de)
 
 
-def item(ts: str, rio: float | None, **extra) -> dict:
-    d = {"ts": ts, "codigo": "DCSC-00099", "timestamp": ts, "bateria_v": 12.5}
+def item(ts: str, rio: float | None, codigo: str = "DCSC-00099", **extra) -> dict:
+    d = {"ts": ts, "codigo": codigo, "timestamp": ts, "bateria_v": 12.5}
     if rio is not None:
         d["rio_nivel"] = rio
     d.update(extra)
@@ -113,6 +113,132 @@ class Resumo(unittest.TestCase):
         self.assertEqual(r["leituras_com_nivel"], 145)
         self.assertIsNone(r["cidade"])                       # 00099 não está na CADEIA
         self.assertLess(r["nivel_max_m"], 30)
+
+
+class Cadastro(unittest.TestCase):
+    """As duas coisas que a régua de plausibilidade por valor absoluto NÃO pega.
+
+    Guabiruba passou de régua para cota referenciada ao nível do mar em 01/04/2026 às 17:40 e o
+    valor novo (24 m) passa por baixo do limite de 30 m: o resumo commitado listava 28,70 m como
+    a maior CRISTA CANDIDATA da estação. Gaspar não mede nível de rio nesta rede e ainda assim o
+    endpoint devolve uma coluna `rio_nivel` — cinco "cristas" de 0,84 m e zero.
+    """
+
+    GUABIRUBA = "DCSC-00029"
+    GASPAR = "DCSC-00005"
+
+    def serie_com_quebra(self) -> dict:
+        """Três dias de régua (0,5 m), depois o degrau para altitude (24 m), como na série real."""
+        from datetime import timedelta
+        base = datetime(2026, 3, 29, 17, 40)
+        itens = {}
+        for i in range(600):
+            t = base + timedelta(minutes=10 * i)
+            v = 0.51 if t < datetime(2026, 4, 1, 17, 40) else 24.68
+            it = item(t.isoformat(timespec="seconds") + ".000", v, codigo=self.GUABIRUBA)
+            itens[it["ts"]] = it
+        return itens
+
+    def test_nivel_sem_codigo_nao_corta_nada(self):
+        """Quem chama sem estação (teste de unidade da régua) continua vendo o valor cru."""
+        it = item("2026-09-01T10:00:00.000", 24.68, codigo=self.GUABIRUBA)
+        self.assertEqual(nivel(it), 24.68)
+
+    def test_nivel_com_codigo_corta_depois_da_quebra(self):
+        antes = item("2026-04-01T17:30:00.000", 0.51, codigo=self.GUABIRUBA)
+        depois = item("2026-04-01T17:40:00.000", 16.21, codigo=self.GUABIRUBA)
+        self.assertEqual(nivel(antes, self.GUABIRUBA), 0.51)
+        self.assertIsNone(nivel(depois, self.GUABIRUBA))
+
+    def test_a_crista_de_24_m_nao_sobrevive_a_quebra(self):
+        itens = self.serie_com_quebra()
+        e = {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""}
+        r = resumo_da_estacao(self.GUABIRUBA, e)
+        for c in r["cristas_candidatas"] + r["descartadas_isoladas"]:
+            self.assertLess(c["maximo_m"], 10, "altitude virou crista candidata de novo")
+        self.assertLess(r["nivel_max_m"], 10)
+
+    def test_o_resumo_DIZ_o_que_cortou(self):
+        """Corte silencioso é como uma série some sem ninguém ver."""
+        itens = self.serie_com_quebra()
+        e = {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""}
+        r = resumo_da_estacao(self.GUABIRUBA, e)
+        q = r["quebra_de_serie"]
+        self.assertEqual(q["desde"], "2026-04-01T17:40")
+        self.assertEqual(q["leituras_de_nivel_cortadas"], cortadas_na_quebra(self.GUABIRUBA, itens))
+        self.assertGreater(q["leituras_de_nivel_cortadas"], 0)
+        self.assertIn("NÍVEL DO MAR", q["grandeza_depois"])
+
+    def test_a_linha_continua_no_csv_sem_o_nivel(self):
+        """O pluviômetro não mudou de datum: só a coluna de nível é cortada."""
+        itens = self.serie_com_quebra()
+        with tempfile.TemporaryDirectory() as d:
+            destino = Path(d) / "x.csv"
+            n = gravar_csv(destino, itens, self.GUABIRUBA)
+            linhas = list(csv.DictReader(destino.open(encoding="utf-8")))
+        self.assertEqual(n, len(itens))                      # nenhuma LINHA sumiu
+        depois = [l for l in linhas if l["medido_em"] >= "2026-04-01T17:40"]
+        self.assertTrue(depois)
+        self.assertTrue(all(l["rio_nivel"] == "" for l in depois))
+        self.assertTrue(all(l["bateria_v"] == "12.5" for l in depois))
+
+    def test_estacao_que_nao_mede_nivel_nao_publica_crista(self):
+        from datetime import timedelta
+        base = datetime(2023, 3, 16, 0, 0)
+        itens = {}
+        for i in range(300):
+            t = base + timedelta(minutes=10 * i)
+            v = 0.84 if i == 99 else 0.0
+            it = item(t.isoformat(timespec="seconds") + ".000", v, codigo=self.GASPAR)
+            itens[it["ts"]] = it
+        e = {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""}
+        r = resumo_da_estacao(self.GASPAR, e)
+        self.assertEqual(r["cristas_candidatas"], [])
+        self.assertEqual(r["descartadas_isoladas"], [])
+        self.assertIn("tem_nivel_do_rio=false", r["nao_mede_nivel"])
+        # as contagens ficam: descrevem o que a fonte devolveu, e sumir com elas seria outra mentira
+        self.assertEqual(r["leituras_com_nivel"], 300)
+        self.assertEqual(r["nivel_max_m"], 0.84)
+
+    def test_o_trecho_cortado_NAO_conta_como_buraco_de_coleta(self):
+        """Buraco é "a estação parou de mandar". Guabiruba não parou — mudou de grandeza.
+
+        Sem esta regra o resumo saía com `maior_buraco_h: 3869.5`, os 161 dias entre a quebra e
+        o fim da série, e quem lesse concluiria cinco meses fora do ar. Verdadeiro de menos.
+        """
+        itens = self.serie_com_quebra()
+        e = {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""}
+        r = resumo_da_estacao(self.GUABIRUBA, e)
+        self.assertEqual(r["buracos_maiores_que_6h"], 0)
+        self.assertEqual(r["maior_buraco_h"], 0)
+        # e a série inteira continua descrita — `ultima` é DEPOIS da quebra, porque a estação
+        # seguiu mandando linha; o que foi cortado tem campo próprio
+        self.assertGreater(r["ultima"], "2026-04-01T17:40")
+        self.assertGreater(r["quebra_de_serie"]["leituras_de_nivel_cortadas"], 0)
+
+    def test_buraco_ANTES_da_quebra_continua_contando(self):
+        """A regra não pode virar desculpa para esconder falha real de coleta."""
+        from datetime import timedelta
+        itens = {}
+        base = datetime(2026, 3, 20, 0, 0)
+        for i in range(400):
+            t = base + timedelta(minutes=10 * i)
+            if datetime(2026, 3, 21) <= t < datetime(2026, 3, 21, 12):
+                continue                          # 12 h sem mandar nada, antes da quebra
+            it = item(t.isoformat(timespec="seconds") + ".000", 0.51, codigo=self.GUABIRUBA)
+            itens[it["ts"]] = it
+        r = resumo_da_estacao(self.GUABIRUBA, {"itens": itens, "janelas": 1, "coletas": [],
+                                               "fim_janelas": ""})
+        self.assertEqual(r["buracos_maiores_que_6h"], 1)
+        self.assertGreaterEqual(r["maior_buraco_h"], 11)
+
+    def test_estacao_comum_nao_ganha_campo_nenhum(self):
+        """Campo novo tem que ser None nas outras 10 estações, senão o conferir_resumo_dcsc.py
+        acusa divergência em todas elas e vira alarme que ninguém lê."""
+        itens = {i["ts"]: i for i in [item("2023-03-16T00:00:00.000", 1.0)]}
+        r = resumo_da_estacao("DCSC-00013", {"itens": itens, "janelas": 1, "coletas": [], "fim_janelas": ""})
+        self.assertIsNone(r["nao_mede_nivel"])
+        self.assertIsNone(r["quebra_de_serie"])
 
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+import { CHAVES_QUE_PINTAM, cotasOperacionais } from './cotasOperacionais'
 /**
  * Leitura de nível em tempo real: idade, frescor e chegada a jusante.
  *
@@ -32,6 +33,11 @@ import { caminho, janelaChegada, type Caminho } from './transito'
 export const MIN_AGORA = 90
 /** Daqui em diante o número deixa de servir para decidir qualquer coisa. */
 export const MIN_VELHA = 180
+/** AlertaBlu publica série horária; após duas horas a cor fica indisponível. */
+export const MIN_VELHA_BLUMENAU = 120
+export function frescorDaCidade(idade: number, cidade: string | null): Frescor {
+  return cidade === 'blumenau' && idade > MIN_VELHA_BLUMENAU ? 'velha' : frescor(idade)
+}
 
 export type Frescor = 'agora' | 'atrasada' | 'velha'
 
@@ -226,7 +232,7 @@ export function cotaAlcancadaEntre(
 ): { chave: string; valor: number } | null {
   let maior: { chave: string; valor: number } | null = null
   for (const [chave, valor] of cotas) {
-    if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
+    if (!CHAVES_QUE_PINTAM.has(chave) || typeof valor !== 'number' || !Number.isFinite(valor)) continue
     if (nivel < valor) continue
     if (maior === null || valor > maior.valor) maior = { chave, valor }
   }
@@ -251,7 +257,7 @@ export function proximaCotaEntre(
 ): { chave: string; valor: number } | null {
   let menor: { chave: string; valor: number } | null = null
   for (const [chave, valor] of cotas) {
-    if (typeof valor !== 'number' || !Number.isFinite(valor)) continue
+    if (!CHAVES_QUE_PINTAM.has(chave) || typeof valor !== 'number' || !Number.isFinite(valor)) continue
     if (valor <= nivel) continue
     if (menor === null || valor < menor.valor) menor = { chave, valor }
   }
@@ -259,15 +265,8 @@ export function proximaCotaEntre(
 }
 
 export function primeiraCota(cidade: Cidade): { chave: string; valor: number } | null {
-  const ordem = ['atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
-  for (const chave of ordem) {
-    const valor = cidade.cotas_m[chave]
-    if (typeof valor === 'number') return { chave, valor }
-  }
-  const entradas = Object.entries(cidade.cotas_m)
-  if (entradas.length === 0) return null
-  const menor = entradas.reduce((a, b) => (b[1] < a[1] ? b : a))
-  return { chave: menor[0], valor: menor[1] }
+  const primeira = cotasOperacionais(cidade.cotas_m)[0]
+  return primeira ? { chave: primeira[0], valor: primeira[1] } : null
 }
 
 /**
@@ -337,21 +336,15 @@ export type Faixa =
  * nome que a fonte deu. Acrescentar uma chave nova aqui é decidir que ela é
  * fase de acionamento — só com documento da COMPDEC dizendo isso.
  */
-const CHAVES_QUE_PINTAM = new Set([
-  'monitoramento',
-  'atencao',
-  'alerta',
-  'inundacao',
-  'emergencia',
-])
 
 export function faixaDaCidade(
   cidade: Cidade,
-  aoVivo: { nivel_m: number; medidoEm: Date | null } | null,
+  aoVivo: { nivel_m: number; medidoEm: Date | null; codigo?: string } | null,
   temVariasReguas: boolean,
   agora: Date,
 ): Faixa {
   if (temVariasReguas) return 'varias'
+  if (cidade.id === 'ascurra') return faixaC18(aoVivo, agora)
   const quePintam = Object.entries(cidade.cotas_m).filter(([chave]) =>
     CHAVES_QUE_PINTAM.has(chave),
   )
@@ -362,7 +355,14 @@ export function faixaDaCidade(
   if (!aoVivo || !aoVivo.medidoEm) return 'sem-dado'
   // Leitura velha não pinta: um número de horas atrás não diz a faixa de agora,
   // e uma cor forte sobre dado velho é a mentira mais perigosa da tela.
-  if (frescor(idadeMin(aoVivo.medidoEm, agora)) === 'velha') return 'sem-dado'
+  if (frescorDaCidade(idadeMin(aoVivo.medidoEm, agora), cidade.id) === 'velha') return 'sem-dado'
+  // Legenda da estação 21: maior que (não >=); 5 m exatos não estão definidos.
+  // Classificação somente pelo nível. A condição alternativa de chuva é separada.
+  if (cidade.id === 'gaspar') {
+    const n = aoVivo.nivel_m
+    if (!Number.isFinite(n) || n <= 0 || n >= 25 || n === 5) return 'sem-dado'
+    return n > 7 ? 'emergencia' : n > 5 ? 'atencao' : 'normal'
+  }
   const cota = cotaAlcancadaEntre(quePintam, aoVivo.nivel_m)
   if (cota === null) return 'normal'
   if (
@@ -374,4 +374,15 @@ export function faixaDaCidade(
   }
   // 'inundacao', 'emergencia' e qualquer cota de topo caem na faixa vermelha.
   return cota.chave === 'inundacao' ? 'inundacao' : 'emergencia'
+}
+
+/** Limites do C18 para a DCSC-00003; não vale para outras réguas ou datums. */
+export function faixaC18(l: { nivel_m: number; codigo?: string; medidoEm: Date | null } | null, agora: Date): Faixa {
+  if (!l || l.codigo !== 'DCSC-00003' || !l.medidoEm || !Number.isFinite(l.nivel_m) ||
+      l.nivel_m <= 0 || l.nivel_m >= 30 || frescor(idadeMin(l.medidoEm, agora)) === 'velha') return 'sem-dado'
+  if (l.nivel_m <= 8.5) return 'monitoramento'
+  if (l.nivel_m < 9.76) return 'atencao'
+  if (l.nivel_m === 9.76) return 'sem-dado' // inclusão do extremo não definida no documento
+  if (l.nivel_m <= 10.76) return 'alerta'
+  return 'emergencia'
 }

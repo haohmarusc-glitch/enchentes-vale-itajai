@@ -262,13 +262,25 @@ def baixar_nivel_gaspar(gravar: bool) -> list[dict]:
     Respeita o `robots.txt` antes de buscar, como o coletor próprio faz.
     Falha nunca derruba a coleta — é uma cidade a mais, não a fonte principal.
     """
+    from gaspar_pc import ler
+
+    ponte = ler()
+    if ponte:
+        print('Gaspar: leitura municipal recebida pelo PC, com horário original.')
+        return [ponte]
     try:
         import coleta_gaspar as cg
 
         if not cg.permitido():
-            print("aviso: robots.txt de Gaspar não permite — pulado.", file=sys.stderr)
+            print("aviso: acesso ao robots.txt de Gaspar não confirmado ou não permitido — pulado.", file=sys.stderr)
             return []
-        analise = cg.analisar(cg.baixar(cg.URL))
+        try:
+            analise = cg.analisar(cg.baixar(cg.URL))
+        except Exception as erro:
+            print(f"aviso: tabela de Gaspar indisponível ({erro}); tentando estação 21.", file=sys.stderr)
+            analise = {"estacoes": []}
+        if not cg.leitura_da_cidade(analise):
+            analise = cg.analisar_estacao(cg.baixar(cg.URL_ESTACAO))
         if gravar:
             from comum import DADOS
 
@@ -633,6 +645,14 @@ def main() -> int:
     # traz outra régua plausível, de outro curso, que não pode virar o nível da
     # cidade.
     leituras = leituras + baixar_nivel_gaspar(gravar=not args.no_save)
+    from coleta_indaial import coletar as coletar_indaial
+    leituras = leituras + coletar_indaial()
+
+    # Rede estadual QUE PODE PINTAR: só as estações cuja COMPDEC declarou, por
+    # escrito, que as faixas municipais estão na escala da própria estação
+    # (Ascurra, DCSC-00003). O resto do bruto estadual continua fora daqui.
+    from coleta_estadual_com_cota import coletar as coletar_estadual_com_cota
+    leituras = leituras + coletar_estadual_com_cota()
 
     for l in leituras:
         alvo = f"{l['cidade']} ({l['rio']})" if l.get("cidade") else "não mapeada"

@@ -129,7 +129,7 @@ class TestSemRede(unittest.TestCase):
         codigo = (
             "import sys; sys.modules['requests'] = None\n"
             "import coleta_itajai, coleta_chuva\n"
-            "assert len(coleta_itajai.parse(open('/dev/stdin').read())) >= 1\n"
+            "assert len(coleta_itajai.parse(sys.stdin.read())) >= 1\n"
             "print('ok')\n"
         )
         r = subprocess.run(
@@ -551,6 +551,14 @@ class GasparFiadaNaColeta(unittest.TestCase):
     A leitura ia só para `ultimo_gaspar.json`, que o site não lê. É o mesmo elo
     que faltava a Taió: o coletor existia, o caminho não.
     """
+
+    def test_estacao_resgata_tabela_fora_do_ar(self):
+        import coleta_gaspar as cg
+        from teste_coleta_gaspar import PaginaEstacao21
+        with mock.patch.object(cg, 'permitido', return_value=True), mock.patch.object(
+                cg, 'baixar', side_effect=[RuntimeError('tabela fora'), PaginaEstacao21.HTML]):
+            ls = coleta_niveis.baixar_nivel_gaspar(False)
+        self.assertEqual(ls[0]['nivel_m'], 4.26)
 
     def _cg(self, analise, permitido=True, explode=False):
         import coleta_gaspar as cg

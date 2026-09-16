@@ -28,9 +28,9 @@ class VocabularioSincronizado(unittest.TestCase):
         cobrir o que promete — passaria a ignorar justamente a cidade cuja cota
         o mapa pinta e ele não conhece.
         """
-        ts = (RAIZ / "web/src/logica/tempoReal.ts").read_text(encoding="utf-8")
-        i = ts.index("const CHAVES_QUE_PINTAM")
-        trecho = ts[i:ts.index("])", i)]
+        ts = (RAIZ / "web/src/logica/cotasOperacionais.ts").read_text(encoding="utf-8")
+        i = ts.index("const ORDEM_COTAS")
+        trecho = ts[i:ts.index("]", i)]
         do_site = {c.strip().strip("',\"") for c in trecho.split("[", 1)[1].split(",")}
         do_site = {c for c in do_site if c}
         self.assertEqual(do_site, cf.CHAVES_QUE_PINTAM,

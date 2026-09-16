@@ -3,7 +3,8 @@ import { chuvaMonitor, mmChuva } from '../logica/chuvaMonitor'
 import { dataHora } from '../logica/formato'
 import { idadeMin, textoIdade } from '../logica/tempoReal'
 
-export default function ChuvaMonitor({ cidades, chuva, agora }: {
+export default function ChuvaMonitor({ cidades, chuva, agora, situacao = 'ok', chuvaOk = true }: {
+  situacao?: 'carregando' | 'ok' | 'indisponivel'; chuvaOk?: boolean
   cidades: { id: string; nome: string }[]; chuva: ChuvaAoVivo[]; agora: Date
 }) {
   return <>
@@ -15,7 +16,7 @@ export default function ChuvaMonitor({ cidades, chuva, agora }: {
         return <tr key={cidade.id}>
           <th scope="row" style={{ textAlign: 'left', fontWeight: 400 }}>
             <strong>{cidade.nome}</strong>
-            <small style={{ display: 'block' }}>{c?.estacao ?? 'Sem leitura válida'}</small>
+            <small style={{ display: 'block' }}>{c?.estacao ?? (situacao === 'carregando' ? 'Carregando chuva…' : situacao === 'indisponivel' || !chuvaOk ? 'Não foi possível atualizar a chuva' : 'Sem leitura válida')}</small>
             {c?.medidoEm && <small style={{ display: 'block' }}>{dataHora(c.medidoEm)} · {textoIdade(idadeMin(c.medidoEm, agora))}</small>}
           </th>
           <td>{mmChuva(c?.mm.h1)}</td><td>{mmChuva(c?.mm.h12)}</td><td>{mmChuva(c?.mm.h24)}</td>

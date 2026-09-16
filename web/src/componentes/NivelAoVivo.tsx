@@ -1,8 +1,9 @@
+import { faixaAscurra } from '../logica/municipal'
 import type { Cidade } from '../dados/tipos'
 import type { LeituraAoVivo } from '../dados/tempoReal'
 import type { Tendencia } from '../dados/serie'
 import { metros, rotuloCota } from '../logica/formato'
-import { cotaAlcancada, frescor, idadeMin, textoIdade } from '../logica/tempoReal'
+import { cotaAlcancada, frescorDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import estilos from './NivelAoVivo.module.css'
 
 /**
@@ -43,12 +44,13 @@ export default function NivelAoVivo({
   }
 
   const idade = idadeMin(leitura.medidoEm, agora)
-  const estado = frescor(idade)
+  const estado = frescorDaCidade(idade, cidade.id)
   // A cota mais alta já passada, não a primeira da lista: com o rio dois
   // patamares acima, anunciar "atenção" é a frase mais fraca possível na hora
   // em que se precisa da mais forte.
   const cota = cotaAlcancada(cidade, leitura.nivel_m)
   const acimaDaCota = cota !== null
+  const c18 = cidade.id === 'ascurra' ? faixaAscurra({cidade:'ascurra', codigo:leitura.codigo, estacao:leitura.estacao, nivelBrutoM:leitura.nivel_m, medidoEm:leitura.medidoEm}, agora) : null
 
   const classe =
     estado === 'velha' ? estilos.velha : acimaDaCota ? estilos.acima : estilos.normal
@@ -68,14 +70,15 @@ export default function NivelAoVivo({
       </span>
       {estado === 'velha' ? (
         <span className={estilos.aviso}>não use como nível atual</span>
+      ) : c18 ? (
+        <span className={estilos.aviso}>{c18.nome} · enquadramento C18, DCSC-00003</span>
       ) : acimaDaCota && cota ? (
         <span className={estilos.aviso}>acima da cota de {rotuloCota(cota.chave, cidade.cotas_nomes_na_fonte)}</span>
       ) : null}
       {subiaQuandoMediu ? (
         <span className={estilos.subindo}>
           e <strong>subindo</strong>
-          {tendencia && tendencia.cmh !== 0 ? ` ${Math.abs(tendencia.cmh)} cm/h` : ''} quando mediu —
-          o rio deve estar mais alto agora
+          {tendencia && tendencia.cmh !== 0 ? ` ${Math.abs(tendencia.cmh)} cm/h` : ''} quando mediu
         </span>
       ) : null}
     </span>

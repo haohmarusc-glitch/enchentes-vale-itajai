@@ -275,3 +275,5 @@
   font-size: 0.8rem;
   margin-top: 0.1rem;
 }
+
+.marcador.monitoramento, .selo.monitoramento { background: var(--faixa-monitoramento); color: #17210a; }

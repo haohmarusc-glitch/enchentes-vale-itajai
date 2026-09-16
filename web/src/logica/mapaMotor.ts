@@ -3,22 +3,23 @@
  * mapa de UM rio (`MapaRios`) e pela tela cheia da BACIA inteira (`MonitorBacia`).
  *
  * A geometria pura (projeção, encaixe no rio, orientação jusante, trecho,
- * movimento das setas) fica em `mapaCanvas.ts` e é testada lá. Aqui é a camada
+ * movimento das ondas) fica em `mapaCanvas.ts` e é testada lá. Aqui é a camada
  * que junta essa geometria com o dado ao vivo (faixa por cidade, maré na foz) e
  * pinta o fundo escuro com o leito luminoso.
  *
  * REGRAS que este módulo carrega (não são detalhe de desenho):
  *  - cor = faixa da régua da cidade, NUNCA metro entre cidades;
- *  - trecho sem régua que o pinte = cinza, apagado e PARADO (não se anima uma
- *    água que não se mede — `VEL_FAIXA['sem-dado'] = 0`);
+ *  - cinza não afirma nível; pode ter fluxo ilustrativo onde há orientação;
+ *  - direção incerta fica parada; ondas são ilustrativas, não corrente medida;
  *  - o MAR na foz é colorido pela MARÉ, escala azul PRÓPRIA, jamais a de cheia
  *    (maré alta não é cheia; ela trava o escoamento).
  */
+import type { ReguaNoMapa } from './reguasNoMapa'
 import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import type { BrutoEstadual, NivelSc } from '../dados/nivelSc'
-import { deBrasilia, faixaDaCidade, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
+import { deBrasilia, faixaDaCidade, frescor, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { estadoMareAgora, type EstadoMare } from '../logica/mare'
 import { metros } from '../logica/formato'
 import {
@@ -27,12 +28,10 @@ import {
   kmEntre,
   limitesDe,
   maisProximoNoRio,
-  posicoesCorrenteza,
   progressoNaEspinha,
   projetar,
   trechoDoPonto,
   LARGURA_FAIXA,
-  VEL_FAIXA,
   aplicarVista,
   type Enquadramento,
   type LonLat,
@@ -124,11 +123,26 @@ const GRAVIDADE: Record<Faixa, number> = {
 }
 
 export const MARGEM = 18
-const ESPACO_SETA = 22 // px entre setas de correnteza
-const VEL_PX = 24 // px/s da correnteza na faixa de referência
+const VEL_PX = 28 // px/s visuais, independentes de nível, chuva ou maré
 
 /** Um pedaço contínuo do rio de uma só faixa, já projetado em pixels. */
+/**
+ * De onde veio a cor de um trecho ou pino (C7, camada 2 — 14/09/2026).
+ *
+ *  - `municipal`: cota do projeto na régua da própria cidade — o de sempre.
+ *  - `estadual`: a cidade NÃO tem faixa municipal e a Defesa Civil de SC publica,
+ *    para a estação dela, a classificação já pronta (`rio_alarmes`, no datum da
+ *    estação). Pinta com a MESMA paleta, mas TRACEJADO, com "faixa estadual" no
+ *    pino e correnteza parada — cor nunca autoriza movimento, e esta cor não é
+ *    nossa. Nunca sobrepõe a municipal: só entra onde a municipal é `sem-dado`.
+ */
+export type OrigemFaixa = 'municipal' | 'estadual'
+
 export interface Trecho {
+  /** Independente da faixa: ausência desta autorização mantém ambos os efeitos parados. */
+  animacao?: 'direcional' | 'parada'
+  /** Ausente = municipal (o de sempre). `estadual` desenha tracejado e não corre. */
+  origemFaixa?: OrigemFaixa
   pts: [number, number][]
   faixa: Faixa
   cum: number[]
@@ -156,6 +170,8 @@ export interface Pino {
   x: number
   y: number
   faixa: Faixa
+  /** De onde veio `faixa`. `estadual` só quando a municipal é `sem-dado`. */
+  origemFaixa?: OrigemFaixa
   nivel: number | null
   medidoEm: Date | null
   /**
@@ -251,27 +267,6 @@ function acumularPixels(pts: [number, number][]): { cum: number[]; total: number
   return { cum, total: cum[cum.length - 1] ?? 0 }
 }
 
-/** Ponto e direção a uma distância `pos` ao longo de um trecho já acumulado. */
-function amostrar(
-  t: Trecho,
-  pos: number,
-): { x: number; y: number; dx: number; dy: number } | null {
-  if (t.pts.length < 2) return null
-  let j = 0
-  while (j < t.cum.length - 1 && t.cum[j + 1]! < pos) j++
-  const a = t.pts[j]!
-  const b = t.pts[j + 1]!
-  const seg = t.cum[j + 1]! - t.cum[j]! || 1
-  const u = Math.max(0, Math.min(1, (pos - t.cum[j]!) / seg))
-  const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
-  return {
-    x: a[0] + (b[0] - a[0]) * u,
-    y: a[1] + (b[1] - a[1]) * u,
-    dx: (b[0] - a[0]) / len,
-    dy: (b[1] - a[1]) / len,
-  }
-}
-
 /**
  * Monta a cena de UM OU VÁRIOS rios sobre um enquadramento comum. Cada rio é
  * colorido pelas SUAS cidades (espinha própria, montante→jusante); os traçados e
@@ -287,6 +282,22 @@ export type LeituraNaHora = (
   rioId: string,
   cidadeId: string,
 ) => { nivel_m: number; medidoEm: Date | null } | null
+
+/** Traço tracejado da faixa estadual, em px de tela (antes da escala). */
+export const TRACEJADO_ESTADUAL: [number, number] = [10, 8]
+
+/**
+ * A faixa que a Defesa Civil de SC publica para a estação da cidade, quando dá
+ * para pintar com ela: precisa existir, ter carimbo e ser fresca (o mesmo
+ * limite de 3 h da leitura municipal). Puro, para o teste. Não decide se a
+ * municipal manda — isso é de quem chama.
+ */
+export function faixaEstadualDe(bruto: BrutoEstadual | null, agora: Date): Faixa | null {
+  if (!bruto?.faixaEstadual) return null
+  if (!bruto.medidoEm || !Number.isFinite(bruto.medidoEm.getTime())) return null
+  if (frescor(idadeMin(bruto.medidoEm, agora)) === 'velha') return null
+  return bruto.faixaEstadual
+}
 
 export function construirCena(
   el: Element,
@@ -310,6 +321,7 @@ export function construirCena(
    * tiles do fundo crescem juntos — nada aqui é bitmap esticado.
    */
   vista?: Vista,
+  referenciaDc11?: ReguaNoMapa,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -344,12 +356,19 @@ export function construirCena(
         // Bruto só entra AO VIVO (não em leituraNaHora/reprodução — ver o
         // parâmetro nivelBrutoSc).
         const bruto = !leituraNaHora ? (nivelBrutoSc?.get(cidade.id) ?? null) : null
+        const municipal = faixaDaCidade(cidade, aoVivo, temVarias, agora)
+        // C7, camada 2: sem faixa municipal (e sem o impasse de várias réguas),
+        // a classificação da própria Defesa Civil de SC pinta — tracejada e
+        // rotulada. Só com leitura fresca: velha fica cinza, como a municipal.
+        const estadual =
+          municipal === 'sem-dado' && !aoVivo ? faixaEstadualDe(bruto, agora) : null
         return {
           cidade,
-          faixa: faixaDaCidade(cidade, aoVivo, temVarias, agora),
+          faixa: estadual ?? municipal,
+          origemFaixa: (estadual ? 'estadual' : 'municipal') as OrigemFaixa,
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
-          nivelBruto: bruto,
+          nivelBruto: aoVivo ? null : bruto,
           ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
         }
       })
@@ -365,6 +384,25 @@ export function construirCena(
     })
     const espinha = ancorasQuePintam.map((a) => a.ponto)
     const cumEspinha = acumuladoEspinha(espinha)
+    // Só a orientação visual do Açu é prolongada até a extremidade leste
+    // do traçado cadastrado (foz). A espinha de CORES permanece intacta.
+    const espinhaFluxo = [...espinha]
+    if (rio.rioId === 'itajai-acu' && espinha.length >= 2) {
+      const foz = rio.coords.flat().reduce((a, p) => p[0] > a[0] ? p : a)
+      if (foz[0] > espinha.at(-1)![0]) espinhaFluxo.push(foz)
+    }
+    const cumFluxo = acumuladoEspinha(espinhaFluxo)
+    const limiteIdx = rio.rioId === 'itajai-acu' ? espinhaFluxo.length - 1
+      : rio.rioId === 'itajai-mirim' ? ancorasQuePintam.findIndex(a => a.cidade.id === 'itajai') : -1
+    const limiteFluxo = limiteIdx >= 0 ? cumFluxo[limiteIdx]! : -1
+    const progressoFluxo = (p: LonLat) => progressoNaEspinha(espinhaFluxo, cumFluxo, p)
+    // Referência visual exclusiva do Açu: não transfere nível/cota aos pinos.
+    // Usa a mesma projeção da espinha do motor; limite cartográfico aproximado.
+    const dc11 = rio.rioId === 'itajai-acu' && !leituraNaHora &&
+      referenciaDc11?.codigo === 'DC-11' && referenciaDc11.cidade === 'itajai'
+      ? referenciaDc11 : undefined
+    const inicioDc11 = dc11 && espinha.length >= 2
+      ? progressoNaEspinha(espinha, cumEspinha, [dc11.lon, dc11.lat]) : Infinity
     const ancoraEm = (p: LonLat) =>
       ancorasQuePintam.length === 0 ? null : ancorasQuePintam[trechoDoPonto(espinha, p)]!
     const faixaEm = (p: LonLat): Faixa => ancoraEm(p)?.faixa ?? 'sem-dado' 
@@ -376,17 +414,39 @@ export function construirCena(
       // precisa do sentido certo.
       let seq = linha
       if (espinha.length >= 2) {
-        const pa = progressoNaEspinha(espinha, cumEspinha, linha[0]!)
-        const pb = progressoNaEspinha(espinha, cumEspinha, linha[linha.length - 1]!)
+        const pa = progressoFluxo(linha[0]!)
+        const pb = progressoFluxo(linha[linha.length - 1]!)
         if (pb < pa) seq = [...linha].reverse()
       }
+      // A orientação é do way inteiro: um meandro pode recuar na projeção
+      // da espinha sem inverter o sentido ao longo da calha. Exigir avanço
+      // em cada vértice interrompia ondas em curvas legítimas.
+      // Uma linha inteira que cruza o limite fica parada. Não extrapolar direção
+      // nos ways da foz nem nos afluentes ainda sem âncoras verificadas.
+      const progresso = seq.map(progressoFluxo)
+      const orientada = espinha.length >= 2 && limiteFluxo > 0 &&
+        progresso[progresso.length - 1]! > progresso[0]! + 1e-9 &&
+        progresso.every(p => p <= limiteFluxo)
       const meioDaAresta = (i: number): LonLat => [
         (seq[i - 1]![0] + seq[i]![0]) / 2,
         (seq[i - 1]![1] + seq[i]![1]) / 2,
       ]
-      const faixaAresta = (i: number): Faixa => faixaEm(meioDaAresta(i))
+      const faixaAresta = (i: number): Faixa => {
+        const p = meioDaAresta(i)
+        if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) {
+          return dc11.faixa ?? 'sem-dado'
+        }
+        return faixaEm(p)
+      }
       const cidadeAresta = (i: number): string | null =>
         ancoraEm(meioDaAresta(i))?.cidade.id ?? null
+      // A origem acompanha a âncora (o corte de trecho já é por âncora), e o
+      // DC-11 é referência municipal.
+      const origemAresta = (i: number): OrigemFaixa => {
+        const p = meioDaAresta(i)
+        if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) return 'municipal'
+        return ancoraEm(p)?.origemFaixa ?? 'municipal'
+      }
       // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
       const progMax = cumEspinha[cumEspinha.length - 1] || 1
       const progMidDe = (a: number, b: number): number => {
@@ -398,12 +458,18 @@ export function construirCena(
       let pts: [number, number][] = [projetar(enq, seq[0]!)]
       let cur = faixaAresta(1)
       let curCidade = cidadeAresta(1)
+      let curOrigem = origemAresta(1)
       let ini = 0
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
         trechos.push({
+          // Faixa estadual não corre: a regra do Kikikuru é "animação = nível na
+          // régua nossa", e esta cor não é nossa (decisão do Jefferson, 14/09/2026).
+          animacao: curOrigem === 'estadual' ? 'parada'
+            : orientada && (rio.rioId === 'itajai-acu' || curCidade !== 'itajai') ? 'direcional' : 'parada',
           pts,
           faixa: cur,
+          origemFaixa: curOrigem,
           cum,
           total,
           progMid: progMidDe(ini, fim),
@@ -423,6 +489,7 @@ export function construirCena(
           pts = [projetar(enq, seq[i]!)]
           cur = prox!
           curCidade = proxCidade
+          curOrigem = origemAresta(i + 1)
           ini = i
         }
       }
@@ -441,6 +508,7 @@ export function construirCena(
         x,
         y,
         faixa: a.faixa,
+        origemFaixa: a.origemFaixa,
         nivel: a.nivel,
         medidoEm: a.medidoEm,
         nivelBruto: a.nivelBruto,
@@ -448,7 +516,7 @@ export function construirCena(
     }
   }
 
-  const pinos = [...pinosPorId.values()]
+  const pinos = separarPinosCoincidentes([...pinosPorId.values()], largura)
 
   // O MAR na foz (pino mais a leste).
   let mar: MarVis | null = null
@@ -539,10 +607,12 @@ export function desenharBase(
     for (const t of cena.trechos) {
       if (t.pts.length < 2) continue
       caminhoTrecho(ctx, t.pts)
+      tracejadoSe(ctx, t, escala)
       const base = t.faixa === 'sem-dado' ? 2.4 : 3.4 * LARGURA_FAIXA[t.faixa]
       ctx.lineWidth = (base + 3.2) * escala
       ctx.stroke()
     }
+    ctx.setLineDash([])
     ctx.globalAlpha = 1
   }
 
@@ -550,13 +620,16 @@ export function desenharBase(
   for (const t of cena.trechos) {
     if (t.pts.length < 2 || t.faixa === 'sem-dado') continue
     caminhoTrecho(ctx, t.pts)
+    tracejadoSe(ctx, t, escala)
     ctx.strokeStyle = cena.cores[t.faixa]
     ctx.shadowColor = cena.cores[t.faixa]
-    ctx.shadowBlur = 12 * LARGURA_FAIXA[t.faixa] * escala
+    // Estadual: sem bloom — o brilho é a assinatura da cota nossa.
+    ctx.shadowBlur = t.origemFaixa === 'estadual' ? 0 : 12 * LARGURA_FAIXA[t.faixa] * escala
     ctx.globalAlpha = 0.9
     ctx.lineWidth = 3.4 * LARGURA_FAIXA[t.faixa] * escala
     ctx.stroke()
   }
+  ctx.setLineDash([])
   ctx.shadowBlur = 0
 
   // 2) O cinza (sem-dado), apagado e sem brilho.
@@ -573,14 +646,25 @@ export function desenharBase(
   for (const t of cena.trechos) {
     if (t.pts.length < 2 || t.faixa === 'sem-dado') continue
     caminhoTrecho(ctx, t.pts)
+    tracejadoSe(ctx, t, escala)
     ctx.strokeStyle = 'rgba(255,255,255,0.5)'
     ctx.globalAlpha = 1
     ctx.lineWidth = 1.4 * LARGURA_FAIXA[t.faixa] * escala
     ctx.stroke()
   }
+  ctx.setLineDash([])
   ctx.globalAlpha = 1
 
   desenharEtiquetaMare(ctx, cena, escala)
+}
+
+/** Tracejado só na faixa estadual; o resto volta ao traço cheio. */
+function tracejadoSe(ctx: CanvasRenderingContext2D, t: Trecho, escala: number): void {
+  ctx.setLineDash(
+    t.origemFaixa === 'estadual'
+      ? [TRACEJADO_ESTADUAL[0] * escala, TRACEJADO_ESTADUAL[1] * escala]
+      : [],
+  )
 }
 
 function desenharMar(ctx: CanvasRenderingContext2D, cena: Cena): void {
@@ -642,41 +726,51 @@ function desenharEtiquetaMare(ctx: CanvasRenderingContext2D, cena: Cena, escala:
   ctx.fillText(texto, x + padX, y + h / 2 + 0.5)
 }
 
-/** Setas da correnteza descendo o rio — o movimento que significa o nível. */
+/** Caminhos projetados reutilizados enquanto o enquadramento não muda. */
+const caminhosFluxo = new WeakMap<Trecho, Path2D>()
+
+/** A mesma autorização vale para correnteza e crista; cor nunca autoriza movimento. */
+export function podeAnimarTrecho(t: Trecho): boolean {
+  return t.animacao === 'direcional' && t.pts.length >= 2
+}
+
+/** Fluxo ilustrativo na cor da faixa ao longo da calha, com fase baseada no tempo. */
 export function desenharCorrenteza(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
   tempo: number,
   escala = 1,
 ): void {
+  ctx.save()
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
+  ctx.setLineDash([14 * escala, 18 * escala])
+  ctx.lineDashOffset = -((tempo * VEL_PX * escala) % (32 * escala))
   for (const t of cena.trechos) {
-    const posicoes = posicoesCorrenteza(
-      t.total,
-      VEL_FAIXA[t.faixa],
-      tempo,
-      ESPACO_SETA * escala,
-      VEL_PX * escala,
-    )
-    if (posicoes.length === 0) continue
-    const h = 4.6 * LARGURA_FAIXA[t.faixa] * escala
-    for (let camada = 0; camada < 2; camada++) {
-      ctx.strokeStyle = camada === 0 ? 'rgba(0,0,0,0.28)' : 'rgba(255,255,255,0.97)'
-      ctx.lineWidth = (camada === 0 ? 3.4 : 2.2) * escala
-      for (const pos of posicoes) {
-        const a = amostrar(t, pos)
-        if (!a) continue
-        const px = -a.dy
-        const py = a.dx
-        ctx.beginPath()
-        ctx.moveTo(a.x - a.dx * h + px * h, a.y - a.dy * h + py * h)
-        ctx.lineTo(a.x + a.dx * h, a.y + a.dy * h)
-        ctx.lineTo(a.x - a.dx * h - px * h, a.y - a.dy * h - py * h)
-        ctx.stroke()
-      }
+    if (!podeAnimarTrecho(t)) continue
+    let path = caminhosFluxo.get(t)
+    if (!path) {
+      path = new Path2D()
+      t.pts.forEach(([x, y], i) => {
+        if (i === 0) path!.moveTo(x, y)
+        else path!.lineTo(x, y)
+      })
+      caminhosFluxo.set(t, path)
     }
+    // Halo em duas passadas, sem blur custoso por segmento no celular.
+    ctx.strokeStyle = cena.cores[t.faixa]
+    const neutro = t.faixa === 'sem-dado'
+    ctx.globalAlpha = neutro ? 0.08 : 0.18
+    ctx.lineWidth = 8 * escala
+    ctx.stroke(path)
+    ctx.globalAlpha = neutro ? 0.20 : 0.58
+    ctx.lineWidth = 4 * escala
+    ctx.stroke(path)
+    ctx.globalAlpha = neutro ? 0.48 : 0.95
+    ctx.lineWidth = 1.8 * escala
+    ctx.stroke(path)
   }
+  ctx.restore()
 }
 
 /** Uma volta da onda (nascente → mar), em segundos. */
@@ -684,34 +778,31 @@ const PERIODO_ONDA = 5.5
 /** Largura da crista, em fração do curso (0..1). */
 const SIGMA_ONDA = 0.09
 
-/**
- * A ONDA descendo o rio até o mar: uma crista de luz (azul-água, NÃO a cor de
- * faixa) que varre cada rio da nascente à foz e repete. É o "a água desce para o
- * mar" que o mapa mostra por cima do leito colorido — direção e movimento, sem
- * afirmar nível (a faixa continua sendo o sinal honesto; a onda é o fluxo ao
- * mar). No trecho cinza a crista é mais fraca, para não competir com o dado.
- */
+/** Crista ilustrativa na mesma cor da faixa do trecho, sem estimar escoamento. */
 export function desenharOnda(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
   tempo: number,
   escala = 1,
 ): void {
+  ctx.save()
   const frente = ((tempo / PERIODO_ONDA) % 1 + 1) % 1
   ctx.lineJoin = 'round'
   ctx.lineCap = 'round'
   for (const t of cena.trechos) {
-    if (t.pts.length < 2) continue
+    if (!podeAnimarTrecho(t)) continue
     let d = t.progMid - frente
     if (d > 0.5) d -= 1
     else if (d < -0.5) d += 1
     const alpha = Math.exp(-((d / SIGMA_ONDA) ** 2)) * (t.faixa === 'sem-dado' ? 0.32 : 0.62)
     if (alpha < 0.03) continue
     caminhoTrecho(ctx, t.pts)
-    ctx.strokeStyle = `rgba(150,220,255,${alpha.toFixed(3)})`
+    ctx.strokeStyle = cena.cores[t.faixa]
+    ctx.globalAlpha = alpha
     ctx.lineWidth = (t.faixa === 'sem-dado' ? 2 : 3) * escala
     ctx.stroke()
   }
+  ctx.restore()
 }
 
 /** Há régua cadastrada para esta cidade? Ver `temReguaCadastrada` em `dados/carregar`. */
@@ -761,9 +852,76 @@ export interface RotuloDoPino {
   chuvaY?: number
   cx: number
   baseY: number
+  /**
+   * Como o texto se ancora em `cx`: centrado (o de sempre), ou começando
+   * (`left`) / terminando (`right`) ali. Nas posições à direita e à esquerda
+   * do pino o texto encosta no pino em vez de ficar centrado numa caixa larga
+   * — "≈3,42 m · faixa estadual · há 20 min" tem 300 px, e centrado a 150 px
+   * do pino o nome flutuaria longe da cidade que nomeia.
+   */
+  alinhar?: CanvasTextAlign
+  /**
+   * A LINHA-GUIA (14/09/2026): quando nenhuma posição colada ao pino cabe, o
+   * rótulo vai para o lugar livre mais próximo e uma linha com seta o liga ao
+   * pino — `de` é o ponto da caixa mais perto do pino, `para` é a borda do
+   * pino. Sem guia, rótulo longe do pino é nome escrito sobre a cidade errada;
+   * com guia, a cidade que ele nomeia está na ponta da seta.
+   */
+  guia?: { de: { x: number; y: number }; para: { x: number; y: number } }
   nome: string
   sub: string
   caixa: Caixa
+}
+
+/**
+ * Os anéis de posições AFASTADAS, em px (vezes a escala), tentados nesta
+ * ordem depois das seis posições coladas ao pino. Oito direções por anel.
+ */
+export const ANEIS_DO_ROTULO: readonly number[] = [40, 64, 92, 124, 160, 200]
+const DIRECOES_DO_ROTULO: readonly [number, number][] = [
+  [0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1],
+]
+
+/** A caixa de um rótulo AFASTADO: centrada em (pino + deslocamento), presa dentro da tela. */
+export function caixaDoRotuloAfastado(
+  ponto: { x: number; y: number },
+  larguras: { nome: number; sub: number },
+  cena: { largura: number; altura: number },
+  escala: number,
+  dx: number,
+  dy: number,
+): { cx: number; baseY: number; caixa: Caixa; alinhar: CanvasTextAlign } {
+  const fonte = Math.round(FONTE_PINO * escala)
+  const pad = 3 * escala
+  const larg = Math.max(larguras.nome, larguras.sub)
+  const meia = larg / 2
+  const altTotal = larguras.sub > 0 ? ALT_NOME * escala + fonte * 0.95 : ALT_NOME * escala
+  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, ponto.x + dx))
+  const centroY = Math.max(pad + altTotal / 2, Math.min(cena.altura - pad - altTotal / 2, ponto.y + dy))
+  const baseY = centroY + altTotal / 2
+  return { cx, baseY, alinhar: 'center', caixa: { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 } }
+}
+
+/** O segmento entre dois pontos passa por dentro de alguma das caixas? (amostrado a cada 4 px) */
+export function segmentoCruza(a: { x: number; y: number }, b: { x: number; y: number }, caixas: readonly Caixa[]): boolean {
+  const n = Math.max(2, Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 4))
+  for (let i = 1; i < n; i++) {
+    const t = i / n
+    const x = a.x + (b.x - a.x) * t
+    const y = a.y + (b.y - a.y) * t
+    if (caixas.some((c) => x > c.x0 && x < c.x1 && y > c.y0 && y < c.y1)) return true
+  }
+  return false
+}
+
+/** A linha-guia entre uma caixa e o pino: do ponto da caixa mais perto do pino até a borda do pino. */
+export function guiaAtePino(caixa: Caixa, pino: { x: number; y: number }, raio: number): { de: { x: number; y: number }; para: { x: number; y: number } } {
+  const de = { x: Math.max(caixa.x0, Math.min(caixa.x1, pino.x)), y: Math.max(caixa.y0, Math.min(caixa.y1, pino.y)) }
+  const vx = pino.x - de.x
+  const vy = pino.y - de.y
+  const d = Math.hypot(vx, vy) || 1
+  const para = { x: pino.x - (vx / d) * (raio + 2), y: pino.y - (vy / d) * (raio + 2) }
+  return { de, para }
 }
 
 /**
@@ -780,23 +938,47 @@ export interface RotuloDoPino {
  * "Brusque" tinham o nome dentro da tela e o nível CORTADO no lado direito.
  * Num mapa de cheia, um número cortado pela metade é pior que número nenhum.
  */
+/**
+ * Onde o rótulo pode ficar em relação ao pino. `centro` (acima, centrado) é o
+ * lugar de sempre; os outros são as saídas que o planejador tenta, NESTA ordem,
+ * quando o lugar de sempre cobriria outro pino ou outro rótulo (14/09/2026 —
+ * Ituporanga por cima de Rio do Sul). Em todos, a caixa encosta no pino: o
+ * rótulo continua colado à cidade que nomeia.
+ */
+export type PosicaoDoRotulo = 'centro' | 'direita' | 'esquerda' | 'abaixo' | 'abaixo-direita' | 'abaixo-esquerda'
+export const POSICOES_DO_ROTULO: readonly PosicaoDoRotulo[] = ['centro', 'direita', 'esquerda', 'abaixo', 'abaixo-direita', 'abaixo-esquerda']
+
 export function caixaDoRotuloDoPino(
   ponto: { x: number; y: number },
   larguras: { nome: number; sub: number },
   cena: { largura: number },
   escala = 1,
-): { cx: number; baseY: number; caixa: Caixa } {
+  posicao: PosicaoDoRotulo = 'centro',
+): { cx: number; baseY: number; caixa: Caixa; alinhar: CanvasTextAlign } {
   const fonte = Math.round(FONTE_PINO * escala)
   const raio = 7 * escala
   const pad = 3 * escala
   const larg = Math.max(larguras.nome, larguras.sub)
   const meia = larg / 2
-  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, ponto.x))
-  const baseY = ponto.y - (raio + 2 * escala)
   const altTotal = larguras.sub > 0 ? ALT_NOME * escala + fonte * 0.95 : ALT_NOME * escala
+  const embaixo = posicao.startsWith('abaixo')
+  const baseY = embaixo ? ponto.y + raio + 2 * escala + altTotal : ponto.y - (raio + 2 * escala)
+  // À direita o texto COMEÇA ao lado do pino; à esquerda TERMINA ao lado dele
+  // (em cima ou embaixo do pino). A trava na borda vale igual: a caixa inteira
+  // fica dentro da tela.
+  const lado = posicao.endsWith('direita') ? 'direita' : posicao.endsWith('esquerda') ? 'esquerda' : null
+  if (lado) {
+    const alinhar: CanvasTextAlign = lado === 'direita' ? 'left' : 'right'
+    const alvo = lado === 'direita' ? ponto.x + raio + pad : ponto.x - raio - pad
+    const cx = lado === 'direita' ? Math.max(pad, Math.min(cena.largura - pad - larg, alvo)) : Math.max(pad + larg, Math.min(cena.largura - pad, alvo))
+    const x0 = lado === 'direita' ? cx : cx - larg
+    return { cx, baseY, alinhar, caixa: { x0: x0 - 1, y0: baseY - altTotal, x1: x0 + larg + 1, y1: baseY + 1 } }
+  }
+  const cx = Math.max(pad + meia, Math.min(cena.largura - pad - meia, ponto.x))
   return {
     cx,
     baseY,
+    alinhar: 'center',
     caixa: { x0: cx - meia - 1, y0: baseY - altTotal, x1: cx + meia + 1, y1: baseY + 1 },
   }
 }
@@ -821,9 +1003,16 @@ export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; 
         ? `${metros(p.nivel)} · ${idade}`
         : metros(p.nivel)
       : usaBruto
-        ? idadeBruto
-          ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
-          : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
+        ? p.origemFaixa === 'estadual'
+          // A cor deste pino é a classificação da Defesa Civil de SC: o rótulo
+          // diz isso ao lado do número, para ninguém ler como cota nossa.
+          ? idadeBruto
+            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} · faixa estadual · ${idadeBruto}`
+            : `≈${metros(p.nivelBruto!.nivelBrutoM)} · faixa estadual`
+          : idadeBruto
+            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
+            : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`
+        : p.faixa === 'varias' ? 'várias réguas · toque para ver'
         : (idade ?? semNumero(p.cidade, opcoes.temRegua))
   return { nome: p.cidade.nome, sub: sub ?? '' }
 }
@@ -878,33 +1067,202 @@ export function planejarRotulosDosPinos(
   const fonte = Math.round(FONTE_PINO * escala)
   const fonteSub = Math.round(fonte * FATOR_SUB)
   const plano = new Map<string, RotuloDoPino>()
+  // Quem ganha espaço: a selecionada; depois a faixa mais grave. A faixa
+  // ESTADUAL entra um degrau abaixo da municipal de mesma cor e perde o
+  // desempate — "a municipal manda" vale também aqui (14/09/2026: o rótulo de
+  // Ituporanga, alerta estadual, tomou o lugar do de Rio do Sul, atenção na
+  // cota municipal).
+  const prioridade = (p: Pino): number =>
+    p.cidade.id === selecionada ? 100 : GRAVIDADE[p.faixa] - (p.origemFaixa === 'estadual' ? 1 : 0)
   const ordem = [...cena.pinos].sort((a, b) => {
-    const sa = a.cidade.id === selecionada ? 100 : GRAVIDADE[a.faixa]
-    const sb = b.cidade.id === selecionada ? 100 : GRAVIDADE[b.faixa]
-    return sb - sa
+    const d = prioridade(b) - prioridade(a)
+    if (d !== 0) return d
+    return (a.origemFaixa === 'estadual' ? 1 : 0) - (b.origemFaixa === 'estadual' ? 1 : 0)
   })
+  // As bolinhas dos OUTROS pinos são obstáculo: um rótulo em cima de um pino
+  // vizinho é um nível escrito sobre a cidade errada (a mesma lição do
+  // `pinoNaTela`). O próprio pino não entra — o rótulo nasce acima dele.
+  const raioPino = 7 * escala
+  // As linhas-guia já desenhadas: uma caixa nova por cima de uma seta antiga é
+  // tão ruim quanto uma seta nova por cima de um texto antigo.
+  const guias: NonNullable<RotuloDoPino['guia']>[] = []
+  const bolinhas = new Map<string, { caixa: Caixa; cinza: boolean }>()
+  for (const q of cena.pinos) {
+    if (!pinoNaTela(q, cena, escala)) continue
+    bolinhas.set(q.cidade.id, {
+      caixa: { x0: q.x - raioPino, y0: q.y - raioPino, x1: q.x + raioPino, y1: q.y + raioPino },
+      cinza: q.faixa === 'sem-dado',
+    })
+  }
   for (const p of ordem) {
     // Fora da tela não ganha rótulo — nem a cidade selecionada: o nome dela
-    // preso na margem apontaria para o lugar errado do mesmo jeito.
+    // preso na margem apontaria para o lugar errado do mesmo jeito. E o CENTRO
+    // do pino tem de estar na tela (14/09/2026): com o pino de Timbó meio
+    // pixel acima da borda, o nome dele nascia "abaixo" — em cima do pino
+    // cinza de Indaial, que ficou parecendo Timbó. O pino que só encosta na
+    // borda continua desenhado; o nome, não.
     if (!pinoNaTela(p, cena, escala)) continue
+    if (p.x < 0 || p.y < 0 || p.x > cena.largura || p.y > cena.altura) continue
     const { nome, sub } = textoDoPino(p, opcoes)
-    const chuva = opcoes.chuva?.get(p.cidade.id) ?? []
-    const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
-    const { cx, baseY, caixa } = caixaDoRotuloDoPino(
-      p,
-      { nome: Math.max(medir(nome, fonte), larguraChuva), sub: sub ? medir(sub, fonteSub) : 0 },
-      cena,
-      escala,
-    )
+    const chuvaDaCidade = opcoes.chuva?.get(p.cidade.id) ?? []
     const chuvaY = p.y + 12 * escala
-    if (chuva.length) caixa.y1 = chuvaY + chuva.length * (fonteSub + 2 * escala)
-    if (colide(caixa, caixas) && p.cidade.id !== selecionada) continue
+    const outrosPinos = [...bolinhas].filter(([id]) => id !== p.cidade.id).map(([, b]) => b)
+    // Tenta as posições na ordem: acima centrado, acima à direita, acima à
+    // esquerda, abaixo centrado, abaixo à direita, abaixo à esquerda — primeiro
+    // COM as linhas de chuva, depois SEM elas. As linhas de chuva
+    // ficam sempre abaixo do pino (por isso "abaixo" só existe sem chuva), e
+    // são quatro linhas: numa bacia apertada é a chuva que faz o rótulo cobrir
+    // o pino vizinho. Antes de esconder o NOME e o NÍVEL de uma cidade, o
+    // planejador abre mão da chuva dela.
+    //
+    // Cada candidata é medida duas vezes:
+    //   1. livre de rótulos E de pinos vizinhos — o lugar ideal;
+    //   2. livre de rótulos, cobrindo só pinos CINZAS (sem-dado) — permitido
+    //      apenas a rótulo que traz nível. Na bacia inteira no celular os pinos
+    //      ficam a 10 px uns dos outros, e a regra dura deixava "Rio do Sul
+    //      4,60 m · atenção" de fora enquanto três "sem leitura" cabiam. Um
+    //      pino colorido nunca é coberto — nem pelo nome, nem pela chuva:
+    //      nível escrito sobre cidade de outra faixa é o erro que este
+    //      planejador existe para não cometer.
+    // A selecionada fica no lugar de sempre, caiba ou não — ela é primeira na
+    // fila e os outros é que cedem.
+    const larguras = (chuva: string[], comSub = true) => {
+      const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
+      return { nome: Math.max(medir(nome, fonte), larguraChuva), sub: comSub && sub ? medir(sub, fonteSub) : 0 }
+    }
+    const alturaChuva = (chuva: string[]) => chuva.length * (fonteSub + 2 * escala)
+    // RÓTULO SÓ EXISTE INTEIRO DENTRO DA TELA (14/09/2026). As posições coladas
+    // não têm trava vertical: com o pino encostado na borda de cima, o nome
+    // saía cortado — e um rótulo cortado ao lado de outro inteiro é o que
+    // parecia "réguas sobrepondo" na captura do Jefferson. Caixa fora da tela
+    // não é candidata; o pino da borda ganha o nome embaixo ou num anel.
+    const dentroDaTela = (c: Caixa) => c.x0 >= 0 && c.y0 >= 0 && c.x1 <= cena.largura && c.y1 <= cena.altura
+    const avaliar = (posicao: PosicaoDoRotulo, chuva: string[], comSub = true) => {
+      const cand = caixaDoRotuloDoPino(p, larguras(chuva, comSub), cena, escala, posicao)
+      if (chuva.length) cand.caixa.y1 = chuvaY + alturaChuva(chuva)
+      const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
+      const guiaCruza = guias.some((g) => segmentoCruza(g.de, g.para, [cand.caixa]))
+      return { ...cand, sub: comSub ? sub : '', chuva, chuvaY, guia: undefined as RotuloDoPino['guia'], guiaCruza, livreDeRotulos: dentroDaTela(cand.caixa) && !colide(cand.caixa, caixas), cobertos }
+    }
+    // AFASTADAS (14/09/2026): quando nada colado ao pino cabe, o rótulo vai
+    // para o lugar livre mais próximo — anéis de 40 a 124 px, oito direções —
+    // e ganha a linha-guia até o pino. A chuva, aqui, fica logo abaixo do nome
+    // (não abaixo do pino, que está longe). O próprio pino vira obstáculo: a
+    // caixa presa na borda da tela não pode voltar para cima dele.
+    const proprio = bolinhas.get(p.cidade.id)
+    const avaliarAfastada = (dx: number, dy: number, chuva: string[], comSub = true) => {
+      const cand = caixaDoRotuloAfastado(p, larguras(chuva, comSub), cena, escala, dx, dy)
+      const chuvaYCand = cand.baseY + 2 * escala
+      if (chuva.length) cand.caixa.y1 = chuvaYCand + alturaChuva(chuva)
+      const cobertos = outrosPinos.filter((b) => colide(cand.caixa, [b.caixa]))
+      const sobreOProprio = proprio ? colide(cand.caixa, [proprio.caixa]) : false
+      const guia = guiaAtePino(cand.caixa, p, raioPino)
+      // A guia que atravessa outro rótulo escreve uma seta por cima de texto:
+      // conta como cruzamento, e a candidata cai para depois das limpas.
+      const guiaCruza = segmentoCruza(guia.de, guia.para, caixas) || guias.some((g) => segmentoCruza(g.de, g.para, [cand.caixa]))
+      return { ...cand, sub: comSub ? sub : '', chuva, chuvaY: chuvaYCand, guia, guiaCruza, livreDeRotulos: dentroDaTela(cand.caixa) && !sobreOProprio && !colide(cand.caixa, caixas), cobertos }
+    }
+    // A CHUVA VEM ANTES DA DISTÂNCIA (Jefferson, 14/09/2026: "algumas cidades
+    // ainda sem dados de chuva"). Todas as candidatas COM chuva — coladas e
+    // depois afastadas — vêm antes de qualquer candidata sem chuva: entre um
+    // nome colado sem a chuva e um nome a 60 px com a chuva e a seta, fica o
+    // segundo. Só quando a chuva não cabe em lugar nenhum ela é abandonada.
+    const afastadas = (chuva: string[], comSub = true) =>
+      ANEIS_DO_ROTULO.flatMap((anel) => DIRECOES_DO_ROTULO.map(([ux, uy]) => avaliarAfastada(ux * anel * escala, uy * anel * escala, chuva, comSub)))
+    // O ÚLTIMO DEGRAU antes de esconder: só o NOME, sem a linha do nível — a
+    // caixa encolhe pela metade e cabe onde a completa não cabia. O número
+    // continua no toque (painel), e a cor do pino continua dizendo a faixa.
+    const candidatas = [
+      ...(chuvaDaCidade.length ? POSICOES_DO_ROTULO.filter((pos) => !pos.startsWith('abaixo')).map((pos) => avaliar(pos, chuvaDaCidade)) : []),
+      ...(chuvaDaCidade.length ? afastadas(chuvaDaCidade) : []),
+      ...POSICOES_DO_ROTULO.map((pos) => avaliar(pos, [])),
+      ...afastadas([]),
+      ...(sub ? [...POSICOES_DO_ROTULO.map((pos) => avaliar(pos, [], false)), ...afastadas([], false)] : []),
+    ]
+    const temNivel = p.faixa !== 'sem-dado'
+    const escolhido =
+      candidatas.find((c) => c.livreDeRotulos && !c.guiaCruza && c.cobertos.length === 0) ??
+      candidatas.find((c) => c.livreDeRotulos && c.cobertos.length === 0) ??
+      (temNivel ? candidatas.find((c) => c.livreDeRotulos && !c.guiaCruza && c.cobertos.every((b) => b.cinza)) : undefined) ??
+      (temNivel ? candidatas.find((c) => c.livreDeRotulos && c.cobertos.every((b) => b.cinza)) : undefined) ??
+      (p.cidade.id === selecionada ? candidatas[0] : undefined)
+    if (!escolhido) continue
+    const { cx, baseY, caixa, alinhar, chuva, chuvaY: chuvaYEscolhido, guia, sub: subEscolhido } = escolhido
     caixas.push(caixa)
-    plano.set(p.cidade.id, { cx, baseY, nome, sub, caixa, chuva, chuvaY })
+    if (guia) guias.push(guia)
+    plano.set(p.cidade.id, { cx, baseY, nome, sub: subEscolhido, caixa, chuva, chuvaY: chuvaYEscolhido, alinhar, ...(guia ? { guia } : {}) })
   }
   return plano
 }
 
+
+/**
+ * A linha-guia do rótulo afastado: traço fino com halo escuro (o mesmo do
+ * texto) e uma ponta de seta na borda do pino. Branca, nunca cor de faixa —
+ * a linha aponta, não classifica.
+ */
+export function desenharGuia(
+  ctx: CanvasRenderingContext2D,
+  guia: NonNullable<RotuloDoPino['guia']>,
+  escala: number,
+): void {
+  const { de, para } = guia
+  const ang = Math.atan2(para.y - de.y, para.x - de.x)
+  const ponta = 5 * escala
+  const asa = Math.PI / 7
+  const traco = () => {
+    ctx.beginPath()
+    ctx.moveTo(de.x, de.y)
+    ctx.lineTo(para.x, para.y)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(para.x, para.y)
+    ctx.lineTo(para.x - ponta * Math.cos(ang - asa), para.y - ponta * Math.sin(ang - asa))
+    ctx.lineTo(para.x - ponta * Math.cos(ang + asa), para.y - ponta * Math.sin(ang + asa))
+    ctx.closePath()
+    ctx.fill()
+    ctx.stroke()
+  }
+  ctx.save()
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.setLineDash([])
+  ctx.strokeStyle = 'rgba(4,12,20,0.92)'
+  ctx.fillStyle = 'rgba(4,12,20,0.92)'
+  ctx.lineWidth = 3.4 * escala
+  traco()
+  ctx.strokeStyle = 'rgba(234,241,248,0.95)'
+  ctx.fillStyle = 'rgba(234,241,248,0.95)'
+  ctx.lineWidth = 1.4 * escala
+  traco()
+  ctx.restore()
+}
+
+/**
+ * Pinos que caem no MESMO ponto da tela são postos lado a lado (14/09/2026).
+ *
+ * Timbó (Rio Benedito) e Rio dos Cedros (Rio dos Cedros) são afluentes
+ * laterais sem traçado próprio, e os dois se encaixam no mesmo vértice do Açu:
+ * um pino em cima do outro, e o de baixo — Rio dos Cedros — nunca achava lugar
+ * para o nome, porque qualquer caixa perto cobria o pino colorido do vizinho.
+ * Afastados ~2,3 raios um do outro, na horizontal, os dois aparecem e os dois
+ * ganham nome. É deslocamento cartográfico, não posição: os dois já estão fora
+ * do rio deles de qualquer jeito.
+ */
+export function separarPinosCoincidentes(pinos: Pino[], largura: number): Pino[] {
+  const escala = Math.max(1, Math.min(1.7, largura / 820))
+  const passo = 16 * escala
+  const grupos = new Map<string, Pino[]>()
+  for (const p of pinos) {
+    const chave = `${Math.round(p.x)}:${Math.round(p.y)}`
+    grupos.set(chave, [...(grupos.get(chave) ?? []), p])
+  }
+  for (const grupo of grupos.values()) {
+    if (grupo.length < 2) continue
+    grupo.forEach((p, i) => { p.x += (i - (grupo.length - 1) / 2) * passo })
+  }
+  return pinos
+}
 
 /** Cor da parede da barragem — aço, deliberadamente FORA da paleta de faixa. */
 export const COR_BARRAGEM = '#6c7c8c'
@@ -1242,7 +1600,7 @@ export function semNumero(cidade: Cidade, temRegua: TemRegua = () => false): str
   // `conferir_mapa_e_alarme.py` teve. Quem sabe disso é quem carrega o cadastro,
   // então a resposta ENTRA por parâmetro: este módulo não importa `carregar`,
   // cujo alias `@dados` só existe no Vite (o runner dos testes é o node).
-  return cidade.regua || temRegua(cidade.id) ? 'sem leitura' : 'sem régua'
+  return cidade.regua || cidade.codigo_dcsc || temRegua(cidade.id) ? 'sem leitura' : 'sem régua'
 }
 
 export function desenharPinos(
@@ -1263,16 +1621,21 @@ export function desenharPinos(
       ctx.lineWidth = 2 * escala
       ctx.stroke()
     }
+    const estadual = p.origemFaixa === 'estadual'
     ctx.beginPath()
     ctx.arc(p.x, p.y, sel ? raio + 1 * escala : raio, 0, Math.PI * 2)
-    ctx.fillStyle = cena.cores[p.faixa]
-    ctx.shadowColor = cinza ? 'transparent' : cena.cores[p.faixa]
-    ctx.shadowBlur = cinza ? 0 : 10 * escala
+    // Faixa estadual: miolo claro e contorno TRACEJADO na cor — a mesma
+    // assinatura do trecho; a bolinha cheia e brilhante é só da cota nossa.
+    ctx.fillStyle = estadual ? 'rgba(255,255,255,0.92)' : cena.cores[p.faixa]
+    ctx.shadowColor = cinza || estadual ? 'transparent' : cena.cores[p.faixa]
+    ctx.shadowBlur = cinza || estadual ? 0 : 10 * escala
     ctx.fill()
     ctx.shadowBlur = 0
-    ctx.lineWidth = 2 * escala
-    ctx.strokeStyle = cinza ? 'rgba(180,195,210,0.8)' : 'rgba(255,255,255,0.92)'
+    ctx.lineWidth = (estadual ? 2.5 : 2) * escala
+    ctx.setLineDash(estadual ? [3 * escala, 2 * escala] : [])
+    ctx.strokeStyle = estadual ? cena.cores[p.faixa] : cinza ? 'rgba(180,195,210,0.8)' : 'rgba(255,255,255,0.92)'
     ctx.stroke()
+    ctx.setLineDash([])
   }
 
   // Os rótulos: quem cabe foi decidido em `planejarRotulosDosPinos`, que é
@@ -1286,7 +1649,8 @@ export function desenharPinos(
     const r = rotulos.get(p.cidade.id)
     if (!r) continue
     const usaBruto = p.nivel == null && p.nivelBruto != null
-    ctx.textAlign = 'center'
+    if (r.guia) desenharGuia(ctx, r.guia, escala)
+    ctx.textAlign = r.alinhar ?? 'center'
     ctx.lineWidth = 3.2 * escala
     ctx.strokeStyle = 'rgba(4,12,20,0.92)'
     ctx.font = `600 ${fonte}px system-ui, sans-serif`

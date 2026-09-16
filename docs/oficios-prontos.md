@@ -213,3 +213,114 @@ Fico à disposição para qualquer esclarecimento, e agradeço pelo AlertaBlu, q
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C23 — Defesa Civil de Itajaí: o nível de Blumenau é publicado com carimbo de hora 3 h atrasado (⛔ NÃO ENVIAR — decisão do Jefferson em 14/09/2026: mantida a orientação de não enviar ofício ao município de Itajaí)
+
+> ⛔ **NÃO ENVIAR (decisão do Jefferson, 14/09/2026).** Vale a mesma orientação do C21: nenhum ofício ao
+> município de Itajaí; o contato com a Defesa Civil de Itajaí é por telefone (47 3228-7700, como o
+> próprio dcoperacoes@itajai.sc.gov.br pediu em 02/09). O texto fica aqui como registro técnico do
+> achado — o desvio de 3 h continua real e documentado (E12) — e pode ser dito na ligação.
+>
+> ✅ Direção do desvio confirmada em 14/09/2026 (madrugada). A direção do desvio ficou em dúvida por algumas horas
+> em 13/09 (a crista de Ilhota parecia contradizer o AlertaBlu) e foi fechada por uma prova
+> independente da física: os boletins da Defesa Civil de Blumenau e as matérias da noite de 11/09,
+> em **hora de parede**, batem com o relógio do AlertaBlu e não com o do repasse — "5,78 m às 20h"
+> (repasse: 7,07), "6,32 m às 21h" (repasse: 7,31), taxa de ~20 cm/h à 0h30 (AlertaBlu: 24 cm/h;
+> repasse: 4–10 cm/h). A Defesa Civil de Blumenau lê a própria régua na ponte; não publicaria 5,78 m
+> com o rio a 7,07 m na frente dela. Ver E12 no checklist e o documento do evento.
+>
+> Por que: medido em 13/09/2026 na série do projeto. A página
+> `defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios` publica o nível de Blumenau com um
+> carimbo de hora exatamente 3 h 00 anterior ao instante real da leitura. O **valor está certo** —
+> o erro é só no horário. Confirmado de três formas: (1) leitura simultânea em 13/09 às 20:22, com
+> 4,29 m carimbado 17:15 na página e o mesmo 4,29 m carimbado 20:00 (23:00Z) no AlertaBlu;
+> (2) 218 pares da cheia de 11–12/09 concordam com desvio de 1 cm quando se soma 3 h ao carimbo da
+> página, contra 55 cm sem o deslocamento; (3) as demais estações da MESMA página (DC-01 a DC-11,
+> Brusque) têm carimbo correto no minuto — é específico da linha de Blumenau.
+> **Não enviar sem o endereço confirmado**: o e-mail da Defesa Civil de Itajaí ainda não foi
+> levantado. Vale procurar no portal da Prefeitura ou ligar para a Defesa Civil municipal.
+> **Relação com o C21** (`oficios-b1-c15-c22.md`), que também é para a Defesa Civil de Itajaí e que o
+> Jefferson decidiu não enviar: o C21 pede a tabela de cotas e faixas das DC-01 a DC-11 — um favor.
+> Este C23 relata um defeito concreto e verificável na página deles, com a medição junto — é outra
+> conversa, e não depende do C21. Se for enviado, dá para anexar as perguntas do C21 no mesmo e-mail;
+> decisão do Jefferson.
+
+**Para:** *(a confirmar — Defesa Civil de Itajaí)*
+**Assunto:** Monitoramento de níveis — horário da leitura de Blumenau está 3 h atrasado
+
+Prezada Defesa Civil de Itajaí,
+
+Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com dados históricos de enchentes nos rios Itajaí-Açu e Itajaí-Mirim, que lê a página de monitoramento de níveis de vocês. Escrevo para relatar um detalhe técnico que encontrei e que pode confundir quem acompanha a página durante uma cheia.
+
+A linha de **Blumenau** aparece com um horário de leitura exatamente **três horas anterior** ao instante real da medição. O valor do nível está correto — é só o horário que sai atrasado.
+
+Em 13/09/2026, às 20h22, a página mostrava para Blumenau **4,29 m com horário de 17h15**. No mesmo minuto, o AlertaBlu, de onde vem essa régua, publicava **os mesmos 4,29 m com horário de 20h00**. Comparando as duas fontes ao longo de toda a cheia de 11 e 12 de setembro, 218 leituras coincidem com diferença média de 1 cm quando se somam 3 horas ao horário da página — e divergem em até 1,75 m quando não se soma.
+
+O detalhe que ajuda a localizar a causa: **todas as outras estações da mesma página estão com o horário certo** — no mesmo instante, o DC-10 do Limoeiro marcava 20h10, doze minutos antes. O desvio aparece apenas na linha de Blumenau, o que sugere que a integração que traz esse dado converte o fuso duas vezes (o AlertaBlu publica em UTC, e uma hora UTC convertida para o horário de Brasília duas vezes fica exatamente 3 h atrás).
+
+O efeito prático é que, numa cheia, a leitura de Blumenau na página aparenta ser velha de três horas quando na verdade é recente — e um pico do rio parece ter acontecido três horas antes do que aconteceu.
+
+Fico à disposição para qualquer esclarecimento, e agradeço pela página, que é a única fonte pública que reúne o Açu, o Mirim e os ribeirões de Itajaí no mesmo lugar.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C24 — Cemaden: o que são as estações HIDROLÓGICAS do cadastro (pedido NOVO na LAI, não recurso)
+
+> 📌 **Por que é pedido novo e não recurso** (16/09/2026). O pedido anterior,
+> protocolo **01217.006547/2026-93**, pediu a *relação das estações com coordenadas* e **foi
+> respondido em 10/09/2026** com a planilha `Rede_Observacional_Santa_Catarina___SC.xlsx`
+> (415 códigos, já importada — ver `docs/rede-observacional-cemaden.md`). Ou seja: entregaram o
+> que foi perguntado, e não há indeferimento a contestar.
+> O e-mail de resposta do Fala.BR traz a frase *"No caso de indeferimento... A data limite é:
+> 21/09/2026"* — é **texto automático**, vai em toda resposta, deferida ou não, e **não** é um
+> prazo a cumprir aqui. Esse 21/09 chegou a ser anotado como pendência por leitura equivocada
+> dessa linha; fica desfeito.
+> O que falta (medições, cotas, datum, endpoint) **nunca foi pedido** — por isso entra como
+> **pedido novo** no mesmo sistema, referenciando o protocolo anterior.
+>
+> **Motivo técnico**, medido no próprio cadastro: das 18 hidrológicas de SC, só **duas** ficam na
+> bacia — `421320321H` em **Pomerode**, *operacional* (-26,7259 / -49,1720), e `420290901H` em
+> **Brusque**, *inativa*. A de Pomerode fica a **860 m** da nossa DCSC-00007
+> (-26,73285 / -49,17579), que está em `SUSPEITAS` por oscilar de forma implausível. 860 m é perto
+> o bastante para ser a mesma estrutura e longe o bastante para não ser — e a lição do "Salseiro"
+> (C5) é exatamente essa: coordenada próxima não prova mesma régua, só a fonte diz. Se for outra
+> régua, é uma segunda leitura independente no Rio do Testo; se for a mesma, o datum pedido aqui
+> pode explicar a oscilação.
+> ⚠️ `420290901H` **não** identifica a DCSC-00019 de Brusque — são redes diferentes, e o status
+> "inativa" de uma não se transfere para a outra.
+>
+> **Como registrar:** falabr.cgu.gov.br → "Registrar pedido de acesso à informação" → órgão
+> **Cemaden**. Decisão de enviar é do Jefferson.
+
+**Para:** Fala.BR — Cemaden (pedido de acesso à informação, Lei 12.527/2011)
+**Assunto:** Estações hidrológicas do Cemaden em Santa Catarina — curso d'água, variável, referência de nível e acesso às leituras
+
+Ao Serviço de Informação ao Cidadão do Cemaden,
+
+Meu nome é Jefferson, sou morador do Vale do Itajaí e estudante de Engenharia de Software. Desenvolvo um site aberto e sem fins comerciais sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim, que mostra o nível do rio em cada cidade com a fonte citada em cada dado (github.com/haohmarusc-glitch/enchentes-vale-itajai).
+
+Agradeço a resposta ao pedido **01217.006547/2026-93**, de 10/09/2026: a relação da rede observacional de Santa Catarina com coordenadas foi recebida e já está em uso para vincular corretamente cada pluviômetro ao município. Este é um pedido novo, sobre as estações **hidrológicas** daquele mesmo cadastro, cujas leituras eu não sei interpretar sem as informações abaixo.
+
+Solicito, na medida do que estiver disponível:
+
+1. Para a estação **421320321H**, em Pomerode (SC), registrada como operacional nas coordenadas -26,7259 / -49,1720: **em que curso d'água ela está instalada**, **que variável ela mede** e **em que unidade**; e, se for nível, **em relação a que referência** — zero de régua próprio da estação, altitude (datum, por exemplo SIRGAS 2000 / Imbituba) ou outra. Pergunto porque há, a cerca de 860 m dela, uma régua de outra rede em Pomerode; sem saber a referência de cada uma, qualquer comparação entre as duas seria indevida, e eu prefiro não exibir o dado a exibi-lo com o significado errado.
+
+2. **A forma adequada de acessar as leituras dessa estação de maneira programática** — endereço do serviço, formato, frequência de atualização e eventual necessidade de cadastro. Respeito integralmente qualquer limite de requisições ou termo de uso que for indicado, e identifico todas as requisições com o nome do projeto.
+
+3. Se existirem, os **limiares ou cotas de acionamento** adotados para essa estação (os valores de nível a partir dos quais o Cemaden considera situação de atenção, alerta ou emergência), e a referência em que estão expressos.
+
+4. Se houver **série histórica** dessa estação disponível ao público, como obtê-la.
+
+5. Para a estação **420290901H**, em Brusque (SC), registrada como inativa: **desde quando está inativa** e se a série do período em que operou permanece disponível. Registro, para evitar confusão, que não estou tratando esse código como equivalente a nenhuma estação da rede estadual de Santa Catarina no mesmo município.
+
+O site deixa claro em todas as páginas que **não é sistema oficial de alerta**, que não substitui a Defesa Civil nem os órgãos oficiais de monitoramento, e que em emergência se deve ligar 199. Os dados do Cemaden que já utilizo (chuva acumulada dos pluviômetros) são exibidos como contexto, nunca como cota ou aviso, com crédito ao Cemaden. Qualquer dado de nível obtido por este pedido receberia o mesmo tratamento, com a referência altimétrica declarada na tela.
+
+Fico à disposição para qualquer esclarecimento e agradeço desde já a atenção.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

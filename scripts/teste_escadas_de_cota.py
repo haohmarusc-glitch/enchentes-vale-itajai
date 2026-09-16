@@ -16,7 +16,7 @@ tela e o que decide se o bot toca. Ela é calculada em QUATRO lugares:
     scripts/alerta_cotas.py   FAIXAS               decide se o bot AVISA
     scripts/bot.py            ORDEM_COTAS          ordem em que o bot LISTA
     scripts/validar_dados.py  ORDEM_DAS_FAIXAS     ordem que o validador COBRA
-    web/.../tempoReal.ts      CHAVES_QUE_PINTAM    o que a tela PINTA
+    web/.../cotasOperacionais.ts      CHAVES_QUE_PINTAM    o que a tela PINTA
 
 E elas não concordavam. Duas divergências, achadas ao escrever este arquivo:
 
@@ -46,14 +46,14 @@ import validar_dados as vd
 from comum import DADOS
 
 RAIZ = Path(__file__).resolve().parent.parent
-TEMPO_REAL_TS = RAIZ / "web" / "src" / "logica" / "tempoReal.ts"
+TEMPO_REAL_TS = RAIZ / "web" / "src" / "logica" / "cotasOperacionais.ts"
 
 
 def chaves_que_pintam_do_site() -> set[str]:
     """Lê o conjunto do TypeScript. Sem isto, o lado do site fica de fora."""
     texto = TEMPO_REAL_TS.read_text(encoding="utf-8")
-    bloco = re.search(r"CHAVES_QUE_PINTAM\s*=\s*new Set\(\[(.*?)\]\)", texto, re.S)
-    assert bloco, "CHAVES_QUE_PINTAM sumiu ou mudou de forma em tempoReal.ts"
+    bloco = re.search(r"ORDEM_COTAS\s*=\s*\[(.*?)\]", texto, re.S)
+    assert bloco, "CHAVES_QUE_PINTAM sumiu ou mudou de forma em cotasOperacionais.ts"
     return set(re.findall(r"'([^']+)'", bloco.group(1)))
 
 

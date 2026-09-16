@@ -172,3 +172,12 @@ test('reguaDe: o resgate herda a identidade da primária que socorre', async () 
   assert.equal(reguaDe(a!), 'Blumenau')
   assert.equal(reguaDe(b!), 'Blumenau') // o (AlertaBlu) aponta para a primária
 })
+
+test('lê `codigo` da leitura quando o JSON o traz (rede estadual com cota própria)', async () => {
+  const estado = await estadoCom([
+    {estacao:'Ascurra — Ponte do Beber (DCSC-00003)',codigo:'DCSC-00003',cidade:'ascurra',rio:'itajai-acu',nivel_m:8.94,medido_em:'2026-09-12T17:00:00'},
+    {estacao:'DC-10 Rio Itajaí-Mirim – Bairro Limoeiro',cidade:'itajai',rio:'itajai-mirim',nivel_m:4.01,medido_em:'2026-09-12T17:00:00'},
+  ])
+  assert.equal(estado.leituras.find((l) => l.cidade === 'ascurra')?.codigo,'DCSC-00003')
+  assert.equal(estado.leituras.find((l) => l.cidade === 'itajai')?.codigo,undefined)
+})

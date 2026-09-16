@@ -1,3 +1,4 @@
+import { CHAVES_QUE_PINTAM } from './cotasOperacionais'
 /**
  * As réguas individuais de uma cidade como PONTOS no mapa — a decisão de cor.
  *
@@ -26,13 +27,6 @@ import type { EstacaoTempoReal } from '../dados/tipos'
 import { cotaAlcancadaEntre, frescor, idadeMin, type Faixa } from './tempoReal'
 
 /** As chaves que pintam faixa — o mesmo vocabulário fechado do `faixaDaCidade`. */
-const CHAVES_QUE_PINTAM = new Set([
-  'monitoramento',
-  'atencao',
-  'alerta',
-  'inundacao',
-  'emergencia',
-])
 
 export type ReguaNoMapa = {
   codigo: string
