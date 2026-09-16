@@ -24,6 +24,8 @@ from saude_coleta import (
     avaliar_mapa_e_alarme,
     avaliar_versao,
     deve_avisar,
+    FONTES_MANUAIS,
+    TOLERANCIA_MANUAL_DIAS,
     regua_de,
     texto,
 )
@@ -605,6 +607,81 @@ class CorSemAlarme(unittest.TestCase):
 
     def test_sem_coleta_nao_ha_o_que_conferir(self):
         self.assertTrue(avaliar_mapa_e_alarme(None).ok)
+
+
+class FonteManual(unittest.TestCase):
+    """Fonte que uma PESSOA alimenta não pode ser cobrada como sensor.
+
+    A régua de Indaial (fundos da Celesc) vem de um Google Docs que a Defesa
+    Civil preenche à mão. O limite de 120 min foi calibrado em fonte automática:
+    aplicado a ela, dá vermelho duas horas depois de a chuva passar e fica
+    vermelho até a próxima cheia.
+
+    E vigia sempre vermelho não é só ruído — foi esse vermelho crônico que
+    escondeu o aviso de "código atrasado" e deixou a VPS dois PRs atrás.
+    """
+
+    INDAIAL = "Indaial — fundos da Celesc (Defesa Civil)"
+
+    def com_indaial(self, dias_atras: float, outras_frescas=True) -> dict:
+        d = coleta(medido_minutos_atras=5 if outras_frescas else 5)
+        medido = (AGORA - timedelta(days=dias_atras)).astimezone(
+            timezone(timedelta(hours=-3))).replace(tzinfo=None)
+        d["leituras"].append({"estacao": self.INDAIAL, "rio": "itajai-acu",
+                              "cidade": "indaial", "nivel_m": 4.1,
+                              "medido_em": medido.isoformat()})
+        return d
+
+    def test_indaial_esta_cadastrada_como_manual(self):
+        self.assertIn(self.INDAIAL, FONTES_MANUAIS)
+        self.assertIn("mão", FONTES_MANUAIS[self.INDAIAL])
+
+    def test_tres_dias_parada_NAO_e_falha(self):
+        """O caso real de 15/09/2026: última leitura em 12/09 às 22h, fim da
+        cheia de 11-12/09. Antes disto, 70 h de vermelho por nada."""
+        d = avaliar(self.com_indaial(dias_atras=3), AGORA)
+        self.assertTrue(d.ok, f"não devia falhar: {d.motivo}")
+
+    def test_mas_a_IDADE_dela_continua_à_vista(self):
+        """Não cobrar não é esconder: quem abre o vigia durante uma cheia
+        precisa ver que a régua municipal está três dias atrás."""
+        d = avaliar(self.com_indaial(dias_atras=3), AGORA)
+        linha = [x for x in d.detalhes if self.INDAIAL in x]
+        self.assertTrue(linha, "a fonte manual sumiu dos detalhes")
+        self.assertIn("fonte manual", linha[0])
+        self.assertIn("3.0 dia", linha[0])
+
+    def test_abandonada_VOLTA_a_ser_falha(self):
+        """Quieta entre cheias é uma coisa; parada há mais de um mês é outra —
+        e a escala municipal de Indaial (3 / 4 / 5,5 m) não existe em mais
+        nenhuma fonte da cidade."""
+        d = avaliar(self.com_indaial(dias_atras=TOLERANCIA_MANUAL_DIAS + 1), AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("abandonada", d.motivo)
+
+    def test_fonte_manual_SEM_HORARIO_continua_sendo_falha(self):
+        """Isso é defeito de formato, não silêncio normal — e sem horário não
+        dá para julgar idade nenhuma."""
+        d = coleta()
+        d["leituras"].append({"estacao": self.INDAIAL, "rio": "itajai-acu",
+                              "cidade": "indaial", "nivel_m": 4.1})
+        diag = avaliar(d, AGORA)
+        self.assertFalse(diag.ok)
+        self.assertIn("sem horário", diag.motivo)
+
+    def test_fonte_manual_que_SOME_do_arquivo_continua_sendo_falha(self):
+        """A memória rolante não é afrouxada: a fonte parar de existir é outro
+        problema, e é o que aconteceu com Gaspar."""
+        lembradas = {self.INDAIAL: (AGORA - timedelta(days=1)).isoformat()}
+        d = avaliar(coleta(), AGORA, lembradas)      # Indaial NÃO está no arquivo
+        self.assertFalse(d.ok)
+        self.assertIn(self.INDAIAL, d.motivo)
+
+    def test_fonte_AUTOMATICA_parada_continua_sendo_falha(self):
+        """O conserto vale para a lista, não para todo mundo."""
+        d = avaliar(coleta(medido_minutos_atras=60 * 24), AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("sem leitura nova", d.motivo)
 
 
 if __name__ == "__main__":

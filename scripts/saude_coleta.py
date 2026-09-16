@@ -95,6 +95,48 @@ SILENCIO_H = 6
 #: o tempo passar.
 MEMORIA_DIAS = 3
 
+#: Fontes que uma PESSOA alimenta à mão, não um sensor.
+#:
+#: POR QUE EXISTE (15/09/2026). O `TOLERANCIA_FONTE_MIN` de 120 min foi calibrado
+#: na fonte automática mais lenta que já acompanhamos. Aplicado a um documento que
+#: alguém digita, ele dá vermelho DUAS HORAS depois de a chuva passar — e fica
+#: vermelho até a próxima cheia.
+#:
+#: Indaial é o caso. A régua dos fundos da Celesc vem de um Google Docs que a
+#: Defesa Civil de Indaial preenche à mão (vínculo institucional confirmado em
+#: 13/09/2026, ver docs/indaial-duas-reguas.md). A última leitura que chegou é de
+#: **12/09 às 22h — o fim da cheia de 11 e 12/09**. Alimentaram durante o evento e
+#: pararam quando ele passou, que é como um registro de mão se comporta.
+#:
+#: O ESTRAGO não era o vermelho em si: foi ele ter MASCARADO outra coisa. Com o
+#: vigia permanentemente em falha por Indaial, o aviso de "código atrasado" entrou
+#: mudo e a VPS ficou dois PRs atrás sem ninguém saber (ver `deve_avisar`). Vigia
+#: sempre vermelho não é só ruído — é esconderijo.
+#:
+#: O QUE NÃO MUDA: a idade continua saindo nos detalhes, sempre; leitura sem
+#: horário continua sendo falha (isso é defeito de formato, não silêncio normal);
+#: a fonte SUMIR do arquivo continua sendo falha, pela memória rolante; e o site
+#: segue recusando pintar leitura com mais de 180 min. O morador não vê os 4,10 m
+#: de 12/09 como se fossem de agora.
+FONTES_MANUAIS = {
+    "Indaial — fundos da Celesc (Defesa Civil)":
+        "documento público que a Defesa Civil de Indaial preenche à mão, alimentado "
+        "durante os eventos (docs/indaial-duas-reguas.md). A régua automática da cidade "
+        "é a DCSC-00006, no nível estadual — outro lugar e outro zero, nunca convertida.",
+}
+
+#: Teto do silêncio de uma fonte manual: acima disto ela não está quieta, está
+#: abandonada — e é preciso saber, porque a escala municipal de Indaial (3 / 4 /
+#: 5,5 m) não existe em nenhuma outra fonte da cidade.
+#:
+#: ⚠️ ESTE NÚMERO É ESCOLHA, NÃO MEDIDA. Foi posto largo de propósito, para
+#: separar "não choveu" de "pararam de usar o documento", e não para vigiar
+#: cadência. O que o firmaria é o histórico do próprio documento — quantos dias
+#: ele costuma passar entre um evento e o seguinte. Enquanto isso não for
+#: levantado, um mês é generoso o bastante para não gritar por nada e curto o
+#: bastante para a próxima temporada de chuva não nos pegar com uma fonte morta.
+TOLERANCIA_MANUAL_DIAS = 30
+
 #: Estações que sumiram e que a gente DECIDIU não cobrar mais, cada uma com o
 #: motivo e o que a tira daqui. Sem esta saída, a memória rolante viraria o
 #: vigia permanentemente vermelho que a versão anterior evitava — com a
@@ -302,8 +344,20 @@ def avaliar(dados: dict | None, agora: datetime,
         for regua in sorted(idade_da_regua):
             idade = idade_da_regua[regua]
             if idade is None:
+                # Vale para manual também: leitura sem horário é defeito de
+                # formato, não silêncio normal — e sem horário não dá para
+                # julgar idade nenhuma.
                 paradas.append(f"{regua} (sem horário)")
-            elif idade > TOLERANCIA_FONTE_MIN:
+                continue
+            manual = FONTES_MANUAIS.get(regua)
+            if manual:
+                dias = idade / 60 / 24
+                detalhes.append(f"{regua}: fonte manual, última leitura há {dias:.1f} dia(s)")
+                if dias > TOLERANCIA_MANUAL_DIAS:
+                    paradas.append(f"{regua} (fonte MANUAL sem leitura há {dias:.0f} dias — "
+                                   f"mais de {TOLERANCIA_MANUAL_DIAS}: parece abandonada, não quieta)")
+                continue
+            if idade > TOLERANCIA_FONTE_MIN:
                 paradas.append(f"{regua} (fonte sem atualização da medição há {idade:.0f} min)")
         if paradas:
             problemas.append(
