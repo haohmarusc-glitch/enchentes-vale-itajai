@@ -70,3 +70,30 @@ de 6,34 m a **10,32 m e ainda subia** na última linha — piso, não pico; Itup
 nas duas pontas; Salseiro 1,67 m no início e `null` no fim. Formato, limites e a próxima rodada
 (janela seguinte, `--gravar`, comparação com a leitura ao vivo de Taió) estão em
 `docs/ANA-API-2026-09-08.md`, seção de 09/09. **Nada foi gravado em `enchentes.json`.**
+
+## Acompanhamento: onde está a contagem regressiva (16/09/2026)
+
+A carta de 09/09 diz que o Rios On-line e os boletins diários seguem **só até as estações serem
+removidas**, com remoção de equipamentos "ainda em setembro de 2026". O **Boletim n° 161/2026, de
+16/09/2026**, chegou normalmente por e-mail: o serviço continua de pé nesta data. Os boletins vêm
+da lista `boletimhidro@epagri.sc.gov.br` (Grupos do Google) e trazem no corpo só o resumo; a tabela
+de níveis fica num PDF em `ciram.epagri.sc.gov.br`.
+
+**NÃO USAR OS NÍVEIS DESSE BOLETIM**, e o próprio boletim diz por quê. O de 16/09 classifica
+**Rio do Sul – Novo** em `ATENÇÃO` e, na mesma linha, ressalva:
+
+> "a estação Rio do Sul - Novo não passa por manutenção desde junho de 2025, portanto, os valores
+> de atenção podem não refletir adequadamente os níveis reais de cotas."
+
+É o mesmo junho de 2025 do item 1 acima — a parada de manutenção da rede inteira, a pedido da ANA.
+A armadilha é de leitura: **quem vê "ATENÇÃO: Rio do Sul" e não lê o parêntese conclui que o Açu
+está subindo lá**. A nossa coleta da DCSC-00013, de 10 em 10 minutos, não acusava nada nesse dia.
+
+⚠️ **E a ressalva NÃO foi pendurada em nenhum registro nosso**, de propósito: a EPAGRI chama de
+"Rio do Sul – Novo" a estação **83270000**, e `estacoes.json` usa a **83300200** com o mesmo nome
+(ver `codigo_ana_divergencia_epagri`). Dois códigos, um nome — atribuir o aviso a uma delas seria
+escolher sem saber. A divergência de nov/2023 gravada em `enchentes.json` também não é afetada:
+é anterior a junho de 2025.
+
+**O que o boletim serve, então:** sinal de que o serviço ainda está vivo, e registro datado de que
+a EPAGRI segue publicando classificação que ela mesma desautoriza. Não é fonte de nível para o site.

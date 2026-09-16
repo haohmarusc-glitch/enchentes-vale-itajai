@@ -1694,6 +1694,21 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
   fonte automática parada continua falha; e o site segue recusando pintar leitura com mais de 180 min,
   então ninguém vê os 4,10 m de 12/09 como se fossem de agora. **Indaial não fica cega**: a
   DCSC-00006 (estadual, automática) publica normalmente — outro lugar e outro zero, nunca convertida.
+- [x] **Boletim da EPAGRI conferido e RECUSADO como fonte de nível — 16/09/2026.** Chega por e-mail
+  todo dia (n° 161 em 16/09) com o resumo dos níveis da bacia. Não entra: o corpo não traz números
+  (a tabela fica num PDF em `ciram.epagri.sc.gov.br`), a cadência é diária contra os 10 min que já
+  temos, e — o que decide — **a própria EPAGRI desautoriza os valores**. O de 16/09 classifica
+  **Rio do Sul – Novo** em `ATENÇÃO` e ressalva na mesma linha que a estação *"não passa por
+  manutenção desde junho de 2025, portanto, os valores de atenção podem não refletir adequadamente
+  os níveis reais de cotas"*. É o mesmo junho de 2025 da resposta ao ofício C5: a manutenção da rede
+  telemétrica inteira parou a pedido da ANA e ela está sendo desmobilizada. **A armadilha é de
+  leitura** — quem vê "ATENÇÃO: Rio do Sul" e não lê o parêntese conclui que o Açu está subindo lá,
+  e a nossa DCSC-00013 não acusava nada naquele dia. ⚠️ A ressalva **não** foi pendurada em registro
+  nenhum nosso: a EPAGRI chama de "Rio do Sul – Novo" a estação **83270000** e o cadastro usa a
+  **83300200** com o mesmo nome — dois códigos, um nome, e escolher seria inventar. A divergência de
+  nov/2023 em `enchentes.json` segue intacta, por ser anterior a junho de 2025. O que fica é o
+  relógio: o boletim ainda estava vivo em 16/09, e a carta C5 diz que ele acaba quando as estações
+  forem removidas. Ver `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`.
 - [x] **O teto de 30 dias da fonte manual foi MEDIDO e descartado — 16/09/2026.** A versão anterior
   punha um limite: "acima de 30 dias não está quieta, está abandonada". O documento de Indaial foi lido
   inteiro (57 datas) e o número não sobreviveu: os intervalos entre eventos são de **44, 45, 147, 172 e
