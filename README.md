@@ -1692,12 +1692,24 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
   Quatro coisas **não** mudaram, com teste cada uma: leitura sem horário continua falha (é defeito de
   formato, não silêncio normal); a fonte **sumir** do arquivo continua falha, pela memória rolante; a
   fonte automática parada continua falha; e o site segue recusando pintar leitura com mais de 180 min,
-  então ninguém vê os 4,10 m de 12/09 como se fossem de agora. Há teto: acima de
-  `TOLERANCIA_MANUAL_DIAS` (30) a fonte não está quieta, está abandonada, e volta a ser falha — a
-  escala municipal de Indaial (3 / 4 / 5,5 m) não existe em nenhuma outra fonte da cidade. ⚠️ **Os 30
-  dias são escolha, não medida**, e está escrito assim no código: o que os firmaria é o histórico do
-  próprio documento. **Indaial não fica cega**: a DCSC-00006 (estadual, automática) publica normalmente
-  — outro lugar e outro zero, nunca convertida.
+  então ninguém vê os 4,10 m de 12/09 como se fossem de agora. **Indaial não fica cega**: a
+  DCSC-00006 (estadual, automática) publica normalmente — outro lugar e outro zero, nunca convertida.
+- [x] **O teto de 30 dias da fonte manual foi MEDIDO e descartado — 16/09/2026.** A versão anterior
+  punha um limite: "acima de 30 dias não está quieta, está abandonada". O documento de Indaial foi lido
+  inteiro (57 datas) e o número não sobreviveu: os intervalos entre eventos são de **44, 45, 147, 172 e
+  568 dias**. Trinta dias teriam gritado **cinco vezes** só nesse trecho — alarme falso, que é o que a
+  mudança existia para evitar. E o buraco de **568 dias** diz mais que "o número está baixo": o
+  documento passou **dezoito meses parado e voltou a ser alimentado**, então o silêncio dele não informa
+  nada sobre ele estar vivo. Não existe limiar de idade que separe "quieta" de "abandonada" nesta fonte,
+  e um teto qualquer seria número inventado com cara de medida. O teto saiu; a idade continua saindo nos
+  detalhes, por maior que seja. ⚠️ **O que fica descoberto, dito com todas as letras:** se a Defesa
+  Civil de Indaial parar de usar o documento, nada acusa. O prejuízo é limitado — a régua automática da
+  cidade segue publicando e o site recusa pintar leitura velha —, mas a escala municipal (3 / 4 / 5,5 m)
+  só existe nessa fonte. **O mecanismo certo, não construído:** cobrar a fonte manual apenas **quando o
+  rio está alto**. "Está subindo e ninguém alimentou o documento" é sinal; "não choveu e ninguém
+  digitou" não é. Isso precisa de um limiar de nível, e portanto de decisão sobre qual régua o dispara.
+  Achado de brinde: o documento tem erros de digitação no acervo antigo (`03/11/2033`, `30/10/2033`), o
+  que confirma a decisão de 12/09 de **não importar o histórico inteiro** dele.
 - [x] **Falha crônica não mascara mais falha nova no vigia — 15/09/2026.** Investigando por que a VPS
   ficou dois PRs atrás sem ninguém ser avisado, a resposta foi outra: **não existe deploy automático**
   (o `deploy.sh` é comando manual e o cron roda os coletores de `/opt` sem `git pull`), e o

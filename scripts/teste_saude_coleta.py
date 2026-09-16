@@ -25,7 +25,6 @@ from saude_coleta import (
     avaliar_versao,
     deve_avisar,
     FONTES_MANUAIS,
-    TOLERANCIA_MANUAL_DIAS,
     regua_de,
     texto,
 )
@@ -651,13 +650,19 @@ class FonteManual(unittest.TestCase):
         self.assertIn("fonte manual", linha[0])
         self.assertIn("3.0 dia", linha[0])
 
-    def test_abandonada_VOLTA_a_ser_falha(self):
-        """Quieta entre cheias é uma coisa; parada há mais de um mês é outra —
-        e a escala municipal de Indaial (3 / 4 / 5,5 m) não existe em mais
-        nenhuma fonte da cidade."""
-        d = avaliar(self.com_indaial(dias_atras=TOLERANCIA_MANUAL_DIAS + 1), AGORA)
-        self.assertFalse(d.ok)
-        self.assertIn("abandonada", d.motivo)
+    def test_nem_DEZOITO_MESES_parada_vira_falha(self):
+        """MEDIDO em 16/09/2026, lendo as 57 datas do documento: os intervalos
+        entre eventos chegam a 44, 45, 147, 172 e **568 dias** — o documento
+        passou dezoito meses parado e voltou a ser alimentado.
+
+        O teto de 30 dias que esta mudança trazia teria gritado cinco vezes só
+        nesse trecho. E o buraco de 568 dias diz mais que "o número está baixo":
+        o silêncio desta fonte não informa nada sobre ela estar viva, então
+        limiar de idade nenhum separa "quieta" de "abandonada" aqui."""
+        d = avaliar(self.com_indaial(dias_atras=568), AGORA)
+        self.assertTrue(d.ok, f"não devia falhar: {d.motivo}")
+        self.assertTrue(any("568.0 dia" in x for x in d.detalhes),
+                        "a idade tem de continuar à vista, por maior que seja")
 
     def test_fonte_manual_SEM_HORARIO_continua_sendo_falha(self):
         """Isso é defeito de formato, não silêncio normal — e sem horário não
