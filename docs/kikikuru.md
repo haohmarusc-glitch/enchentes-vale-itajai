@@ -147,6 +147,29 @@ Os **textos** de cada faixa (rótulo + a frase que remete à Defesa Civil) vêm 
 `data/faixas.json` — fonte única — e o site nunca recomenda ação: as únicas
 chamadas permitidas são "Siga a Defesa Civil" e "ligue 199".
 
+### A exceção rotulada: a faixa ESTADUAL (C7, 14/09/2026)
+
+Onde a cidade **não tem** faixa municipal (`sem-dado`, e não `varias`), o mapa pode
+pintar com a classificação que a **própria Defesa Civil de SC** publica para a
+estação dela (`rio_alarmes`, no datum da estação — `ultimo_nivel_sc.json`,
+campo `classificacao_estadual`). Não é comparação de metro com metro nem cota
+inventada: é o veredito da fonte, mostrado como dela. Regras, todas em
+`mapaMotor.ts` (`faixaEstadualDe`, `OrigemFaixa`) e trancadas por
+`faixaEstadualNoMapa.test.ts`:
+
+- só entra onde a municipal é `sem-dado`; **a municipal manda** sempre;
+- mesma paleta, **traço tracejado** no trecho e **contorno tracejado** no pino
+  (miolo claro, sem brilho) — a bolinha cheia e o bloom são só da cota nossa;
+- rótulo "faixa estadual" no pino; no painel, "Classificação da Defesa Civil de SC".
+  DECIDIDO (Jefferson, 14/09/2026): fica "faixa estadual", não "régua estadual". São coisas
+  diferentes — o número é lido na régua estadual (zero próprio), a cor tracejada é a faixa que a
+  rede declara —, mas "faixa" é a palavra que o site inteiro usa para cor, e "≈5,20 m na régua
+  estadual · faixa estadual" alargaria um rótulo que já disputa espaço;
+- "normal" também pinta (decisão do Jefferson, 14/09/2026);
+- leitura estadual velha (> 3 h) volta a cinza, como a municipal;
+- **correnteza parada**: animação = nível na régua nossa, e esta cor não é nossa;
+- nada disso entra em `leituras`: o bot de cotas não dispara por classificação estadual.
+
 ## Os componentes
 
 | O quê | Arquivo | Lê de |
@@ -336,6 +359,63 @@ opaco, fica por cima dos botões de zoom e da barra de reprodução, e ganhou um
 como dispensar a folha que cobre metade do mapa. O bloco do topo encolheu no celular (o aviso legal
 continua, menor), a barra "Reproduzir 24 h" saiu de cima do seletor de fundo, e a legenda deixou de
 subir até os botões + e −.
+
+### O rótulo tenta outro lugar antes de sumir, e nunca cobre pino colorido — 14/09/2026
+
+A captura do celular do Jefferson: **"Ituporanga"** (alerta na classificação ESTADUAL, tracejado)
+escrito por cima do **pino de Rio do Sul** (atenção na cota MUNICIPAL), e Rio do Sul sem nome. Duas
+causas, duas regras:
+
+1. **A municipal manda também na disputa por espaço.** A faixa estadual entra um degrau abaixo da
+   municipal de mesma cor e perde o desempate: alerta estadual = atenção municipal, e o municipal
+   vai primeiro. A prioridade continua sendo a selecionada, depois a faixa mais grave.
+2. **Pino vizinho é obstáculo.** Um rótulo em cima de outro pino é um nível escrito sobre a cidade
+   errada. A caixa do rótulo tenta seis posições nesta ordem — acima centrado, acima à direita,
+   acima à esquerda, abaixo centrado, abaixo à direita, abaixo à esquerda — primeiro COM as linhas
+   de chuva, depois SEM elas, e fica na primeira livre de rótulos e de pinos. Se nenhuma existe,
+   rótulo **com nível** pode cobrir pino **cinza** (sem-dado), nunca um colorido — nem com o nome,
+   nem com a chuva; "sem leitura" não cobre pino nenhum. Sem lugar, some.
+3. **Nas posições laterais o texto encosta no pino.** À direita o texto COMEÇA ao lado do pino;
+   à esquerda TERMINA ao lado dele (`alinhar` no `RotuloDoPino`). Centrado numa caixa de 300 px
+   ("≈3,42 m · faixa estadual · há 20 min"), o nome flutuaria a 150 px da cidade que nomeia.
+4. **Antes de esconder o nome, o rótulo abre mão da chuva.** São quatro linhas abaixo do pino, e
+   numa bacia apertada é a chuva que faz o rótulo cobrir o vizinho.
+5. **Sem lugar colado ao pino, o rótulo vai para o lugar livre mais próximo e ganha a LINHA-GUIA**
+   (pedido do Jefferson, 14/09/2026: "use setas em direção aos dados para indicar a cidade").
+   Anéis de 40, 64, 92 e 124 px ao redor do pino, oito direções, o mais perto que couber; a chuva
+   fica logo abaixo do nome. A guia sai do ponto da caixa mais perto do pino e termina na borda do
+   pino com uma ponta de seta — branca, nunca cor de faixa: a linha aponta, não classifica. Uma
+   guia que atravessaria outro rótulo, ou uma caixa que cairia sobre uma guia já traçada, perde a
+   vez para a candidata limpa; só entra se não houver outra. Sem lugar nem nos anéis, some.
+   Na legenda do Monitor: "Seta — o nome ficou afastado por falta de espaço".
+6. **A chuva vem antes da distância** (Jefferson, 14/09/2026, segunda captura: "algumas cidades
+   ainda sem dados de chuva"). Todas as candidatas COM chuva — coladas e depois afastadas — vêm
+   antes de qualquer candidata sem chuva. Só quando a chuva não cabe em lugar nenhum ela é
+   abandonada; e o último degrau antes de esconder é **só o nome**, sem a linha do nível (a caixa
+   encolhe pela metade; o número fica no toque, a cor do pino continua dizendo a faixa).
+7. **Rótulo só existe inteiro dentro da tela, e só para pino com o centro na tela.** As posições
+   coladas não tinham trava vertical: com o pino de Timbó meio pixel acima da borda, o nome dele
+   nascia "abaixo" — em cima do pino cinza de Indaial, que ficou parecendo Timbó ("réguas
+   sobrepondo", na captura). O pino que só encosta na borda continua desenhado; o nome, não.
+8. **Pinos que caem no mesmo ponto são postos lado a lado** (`separarPinosCoincidentes`): Timbó e
+   Rio dos Cedros, afluentes sem traçado próprio, encaixavam no mesmo vértice do Açu, e o de baixo
+   nunca achava lugar para o nome. É deslocamento cartográfico, não posição.
+
+Por que a regra 2 não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos outros,
+e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam — o
+contrário do que o morador precisa. Conferido no Chromium com os dados ao vivo de 14/09: no
+desktop 15 das 19 cidades com nome (somem Gaspar, Rio dos Cedros — mesmo ponto de Timbó —,
+Trombudo Central e Ituporanga, espremida entre Rio do Sul e a barra de reprodução); na bacia
+inteira no celular, o aglomerado Rio do Sul / Lontras / Ibirama / Ituporanga só se resolve com um
+toque no +.
+
+Os testes: `rotulosDoMapa.test.ts` (casos de brinquedo, inclusive os da linha-guia) e
+`rotulosDaBacia.test.ts`, que monta a cena pelo motor de verdade com as cidades e os traçados do
+repositório, em quatro telas, e confere que nenhum rótulo cruza outro nem cobre pino colorido.
+Com os anéis e a guia, conferido no Chromium com os dados ao vivo de 14/09: no desktop as 19
+cidades têm nome (sete com seta: Rio do Sul, Ituporanga, Trombudo Central, Lontras, Rio dos
+Cedros, Ilhota, Guabiruba); no celular, na bacia inteira, todas também — o aglomerado de Rio do
+Sul se resolve com setas, e a legibilidade volta ao normal com um toque no +.
 
 ### Quantos rótulos de régua o zoom comporta — 06/09/2026
 

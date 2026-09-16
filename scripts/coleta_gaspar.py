@@ -66,6 +66,7 @@ JANELAS_GASPAR = [
 ]
 
 URL = "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela"
+URL_ESTACAO = "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21"
 ROBOTS = "https://defesacivil.gaspar.sc.gov.br/robots.txt"
 SAIDA = "tempo-real/ultimo_gaspar.json"
 
@@ -324,6 +325,33 @@ def analisar(html: str) -> dict:
     for cels in linhas:
         leitura["faixas_propostas"].update(faixas_da_linha(cels, nivel_gaspar))
     return leitura
+
+
+def analisar_estacao(html: str) -> dict:
+    """Página 21: campos rotulados, sem confundir legenda ou gráfico com nível."""
+    from bs4 import BeautifulSoup
+
+    sopa = BeautifulSoup(html, "html.parser")
+    resultado = {"fonte": URL_ESTACAO, "coletado_em": datetime.now(timezone.utc).isoformat(),
+                 "estacoes": [], "barragens": [], "faixas_propostas": {}}
+    titulo = sopa.find("h3")
+    identidade = titulo.find("b") if titulo else None
+    if not identidade or not e_a_regua_do_acu(identidade.get_text(" ", strip=True)):
+        return resultado
+    texto = sopa.get_text(" ", strip=True)
+    horario = re.search(r"Última Medição\s+(\d{2}/\d{2}/\d{4}\s+\d{2}:\d{2})", texto)
+    campo = next((h for h in sopa.find_all("h5")
+                  if sem_acento(h.get_text(" ", strip=True)).startswith("nivel do rio:")), None)
+    valor = numero(campo.b.get_text(" ", strip=True)) if campo and campo.b else None
+    if not horario or valor is None or not nivel_plausivel(valor):
+        return resultado
+    _, iso = quando_de(horario[1])
+    if not iso:
+        return resultado
+    resultado["estacoes"].append({"rotulo": identidade.get_text(" ", strip=True),
+                                  "nivel_m": valor, "nivel_plausivel": True,
+                                  "medido_em_iso": iso, "chuva_mm": {}})
+    return resultado
 
 
 def permitido(buscar=baixar) -> bool:

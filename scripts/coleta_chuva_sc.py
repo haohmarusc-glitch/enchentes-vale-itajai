@@ -61,7 +61,7 @@ CLIENTE = "secretaria-de-defesa-civil"
 CONSULTA = """query Tags_data { tags_data(clients: ["%s"]) { qualle_meteorologia {
   codigo name { prefix general local } timestamp
   position { bacia }
-  data { chuva { acumulado { h001 { value } h024 { value } } } } } } }""" % CLIENTE
+  data { chuva { acumulado { h001 { value } h012 { value } h024 { value } } } } } } }""" % CLIENTE
 
 #: Fuso das medições no resto do projeto: `medido_em` é hora de Brasília SEM
 #: fuso, e o GraphQL devolve UTC com fuso. Converter errado desloca a idade de
@@ -74,15 +74,12 @@ FUSO_BRASILIA = timezone(timedelta(hours=-3))
 #: As numeradas (Botuverá 1/2) entram as duas: são pluviômetros distintos da
 #: mesma cidade, e o site já mostra o maior de vários.
 #:
-#: TIMBÓ FICA DE FORA, de propósito, e não por engano. Ela é cidade do projeto,
-#: mas mora em `afluentes_monitorados`, não na sequência dos rios: fica no Rio
-#: Benedito e tem relógio próprio, então `comum.cidades()` não a devolve e nem
-#: o site nem o bot conseguem mostrá-la. Coletar a chuva dela agora seria
-#: encher o arquivo com número que ninguém vê — cobertura aparente, que é pior
-#: do que buraco declarado. As estações existem e estão anotadas aqui para o
-#: dia em que os afluentes ganharem tela: DCSC-00023 (Timbó 1) e DCSC-00034
-#: (Timbó 2).
+#: Afluentes também têm monitor; códigos conferidos no cadastro estadual.
 POR_CIDADE = {
+    "DCSC-00003": "ascurra",
+    "DCSC-00023": "timbo",
+    "DCSC-00011": "rio-dos-cedros",
+    "DCSC-00032": "lontras",
     "DCSC-00005": "gaspar",
     "DCSC-00006": "indaial",
     "DCSC-00013": "rio-do-sul",
@@ -155,7 +152,7 @@ def converter(estacoes: list[dict]) -> tuple[list[dict], list[str]]:
         mm = {
             "min10": None,
             "h1": valor_de(acumulado.get("h001")),
-            "h12": None,
+            "h12": valor_de(acumulado.get("h012")),
             "h24": valor_de(acumulado.get("h024")),
             "h48": None,
         }
@@ -163,7 +160,7 @@ def converter(estacoes: list[dict]) -> tuple[list[dict], list[str]]:
             recusadas.append(f"{nome}: sem nenhuma janela de chuva")
             continue
 
-        fora = [f"{j}={mm[j]:g} mm" for j in ("h1", "h24")
+        fora = [f"{j}={mm[j]:g} mm" for j in ("h1", "h12", "h24")
                 if mm[j] is not None and not (0 <= mm[j] <= CHUVA_MAXIMA_MM)]
         if fora:
             recusadas.append(f"{nome}: {', '.join(fora)} fora da faixa plausível")

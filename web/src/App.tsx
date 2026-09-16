@@ -26,7 +26,11 @@ export default function App() {
       {/* Primeiro elemento focável da página: quem navega por teclado ou leitor
           de tela pula o cabeçalho e as cinco abas de uma vez. Fica invisível
           até receber foco. */}
-      <a href="#conteudo" className={estilos.pularParaConteudo}>
+      <a href="#conteudo" className={estilos.pularParaConteudo} onClick={(e) => {
+          e.preventDefault()
+          document.getElementById('conteudo')?.focus()
+          document.getElementById('conteudo')?.scrollIntoView({ block: 'start' })
+        }}>
         Pular para o conteúdo
       </a>
       {!municipal && <FaixaEmergencia />}
@@ -68,12 +72,12 @@ export default function App() {
             {/* O mesmo Monitor, aberto numa cidade. Rota própria para ser um
                 endereço que se dita por telefone durante a chuva. */}
             <Route path="/monitor/:cidadeId" element={<MonitorBacia />} />
-            <Route path="/acu" element={<TelaRio rioId="itajai-acu" />} />
+            <Route path="/acu" element={<TelaRio key="acu" rioId="itajai-acu" />} />
             {/* Uma página por cidade. `rioId` vem na URL para o endereço ser
                 compartilhável: `/acu/gaspar` é um endereço; "abra o Açu e toque
                 em Gaspar" não é. */}
             <Route path="/:rioId/:cidadeId" element={<TelaCidade />} />
-            <Route path="/mirim" element={<TelaRio rioId="itajai-mirim" />} />
+            <Route path="/mirim" element={<TelaRio key="mirim" rioId="itajai-mirim" />} />
             <Route path="/itajai" element={<TelaItajai />} />
               <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

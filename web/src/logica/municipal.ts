@@ -15,19 +15,15 @@ export function historicoMunicipal(eventos: readonly Evento[], cidade: string) {
 }
 
 import type { BrutoEstadual } from '../dados/nivelSc'
-import { frescor, idadeMin } from './tempoReal'
+import { faixaC18 } from './tempoReal'
 
 /** C18, 11/09/2026: aplica somente à DCSC-00003, sem converter datum. */
 export function faixaAscurra(l: BrutoEstadual | undefined, agora: Date) {
-  const sem = { nome: 'Classificação indisponível', cor: '#596773' }
-  if (!l || l.cidade !== 'ascurra' || l.codigo !== 'DCSC-00003' || !l.medidoEm ||
-      !Number.isFinite(l.nivelBrutoM) || l.nivelBrutoM <= 0 || l.nivelBrutoM >= 30 ||
-      frescor(idadeMin(l.medidoEm, agora)) === 'velha') return sem
-  const n = l.nivelBrutoM
-  if (n <= 8.50) return { nome: 'Monitoramento', cor: '#22648a' }
-  if (n < 9.76) return { nome: 'Atenção', cor: '#806100' }
-  // A fonte compartilha este extremo entre dois intervalos; não escolhe um.
-  if (n === 9.76) return { nome: 'Limite entre atenção e alerta — inclusão não definida na fonte', cor: '#596773' }
-  if (n <= 10.76) return { nome: 'Alerta', cor: '#a74400' }
-  return { nome: 'Emergência', cor: '#ae2028' }
+  const faixa = l?.cidade === 'ascurra' ? faixaC18({nivel_m:l.nivelBrutoM, codigo:l.codigo ?? undefined, medidoEm:l.medidoEm}, agora) : 'sem-dado'
+  const nomes: Record<string, string> = {monitoramento:'Monitoramento',atencao:'Atenção',alerta:'Alerta',emergencia:'Emergência'}
+  if (faixa === 'sem-dado') {
+    const limite = l?.nivelBrutoM === 9.76 && faixaC18({...l, nivel_m:9.75, codigo:l.codigo ?? undefined, medidoEm:l.medidoEm},agora) === 'atencao'
+    return {nome: limite ? 'Limite entre atenção e alerta — inclusão não definida na fonte' : 'Classificação indisponível', cor:'var(--faixa-sem-dado, #9aa7b2)'}
+  }
+  return {nome:nomes[faixa]!, cor:`var(--faixa-${faixa})`}
 }

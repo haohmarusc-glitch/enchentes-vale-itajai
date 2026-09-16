@@ -29,7 +29,7 @@ test('o Açu é uma árvore: tem _topologia e o tronco é a única sequência', 
   // Lontras" e "Lontras -> Rio do Sul", e o levantamento municipal a descreve
   // como jusante imediato de Rio do Sul. A obra estadual leva o nome do trecho.
   assert.deepEqual(acu._topologia!.tronco_sequencia, [
-    'rio-do-sul', 'lontras', 'ascurra', 'indaial', 'blumenau', 'gaspar', 'ilhota', 'itajai',
+    'rio-do-sul', 'lontras', 'apiuna', 'ascurra', 'indaial', 'blumenau', 'gaspar', 'ilhota', 'itajai',
   ])
   assert.deepEqual(acu._topologia!.cabeceiras_paralelas, ['taio', 'ituporanga'])
   assert.equal(acu._topologia!.afluentes_laterais[0]!.id, 'ibirama')
@@ -42,12 +42,13 @@ test('nenhuma cidade do Açu tem ordem global; todas têm ramo', () => {
   }
 })
 
-test('Ibirama não está no tronco (é afluente do Hercílio); Apiúna saiu do eixo', () => {
+test('Ibirama não está no tronco (é afluente do Hercílio); Apiúna é cidade distinta da estação de altitude', () => {
   const acu = estacoes.rios['itajai-acu']!
   const ids = acu.cidades.map((c) => c.id)
   assert.ok(!acu._topologia!.tronco_sequencia.includes('ibirama'), 'Ibirama é afluente, não tronco')
   assert.equal(acu.cidades.find((c) => c.id === 'ibirama')!.ramo, 'itajai_do_norte')
-  assert.ok(!ids.includes('apiuna'), 'Apiúna (estação de altitude) não é mais cidade do eixo')
+  assert.ok(ids.includes('apiuna'))
+  assert.equal(acu.cidades.find(c => c.id === 'apiuna')!.codigo_dcsc, null, 'não ativar DCSC-00178')
   assert.ok(ids.includes('ascurra'), 'Ascurra entrou no tronco')
 })
 

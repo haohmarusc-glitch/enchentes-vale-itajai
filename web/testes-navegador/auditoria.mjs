@@ -1,0 +1,107 @@
+/** Regressões da auditoria, com fontes determinísticas e sem publicar dados. */
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { chromium } from 'playwright'
+import { preview } from 'vite'
+const servidor = await preview({preview:{port:4320,strictPort:true}})
+const base = servidor.resolvedUrls.local[0].replace(/\/$/,'')
+const browser = await chromium.launch({headless:true})
+const context = await browser.newContext({viewport:{width:390,height:844}})
+const erros=[]
+const page=await context.newPage()
+page.on('pageerror',e=>erros.push(e.message))
+const agora = new Date()
+const local = new Date(agora.getTime()-3*3600000).toISOString().slice(0,19)
+await context.route('**/*',route=>{
+ const original=route.request().url()
+ if(original.startsWith('https://raw.githubusercontent.com/') && /\/ultimo(?:_nivel_sc)?\.json$/.test(original)) return route.fulfill({status:503,body:'Backend.max_conn reached'})
+ const url=original.split('?')[0]
+ if(url.startsWith(base)) return route.continue()
+ if(url.endsWith('/ultimo_nivel_sc.json')) return route.fulfill({json:{leituras:[{codigo:'DCSC-00003',cidade:'ascurra',estacao:'SDC-SC Ascurra',nivel_bruto_m:8.94,medido_em:local,chuva_24h_mm:15.1,chuva_168h_mm:134.9},{codigo:'DCSC-00006',cidade:'indaial',estacao:'SDC-SC Indaial',nivel_bruto_m:6.74,medido_em:local},...[["ilhota",11.05],["ibirama",3.01],["botuvera",3.56],["vidal-ramos",2.62]].map(([cidade,nivel_bruto_m])=>({cidade,estacao:'SDC-SC '+cidade,nivel_bruto_m,medido_em:local}))]}})
+ if(url.endsWith('/ultimo.json')) return route.fulfill({json:{coletado_em:agora.toISOString(),leituras:[{cidade:'blumenau',rio:'itajai-acu',estacao:'Blumenau (AlertaBlu)',resgate_de:'Blumenau',nivel_m:6.1,medido_em:local}],chuva:[],chuva_ok:true}})
+ return route.abort()
+})
+async function abrir(rota){await page.goto(base+'/#'+rota);await page.locator('main').waitFor()}
+try {
+ await abrir('/itajai')
+ await page.getByRole('heading',{name:'Itajaí — foz',exact:true}).waitFor()
+ assert.equal(await page.getByText('Abrigo cadastrado mais próximo',{exact:true}).count(),0)
+ assert.equal(await page.locator('input[type="datetime-local"]').count(),0)
+ await page.getByRole('link',{name:'Pular para o conteúdo'}).focus()
+ await page.keyboard.press('Enter')
+ assert.ok(page.url().endsWith('#/itajai'))
+ assert.equal(await page.locator('main').evaluate(e=>e===document.activeElement),true)
+ console.log('OK: escopo de Itajaí e atalho sem perder a rota')
+ await abrir('/municipal/ascurra/dados')
+ await page.getByRole('combobox',{name:'Camada sobre o mapa'}).waitFor()
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1))
+ console.log('OK: seletor municipal sem overflow em 390 px')
+ await abrir('/monitor/ascurra')
+ await page.getByText('Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.').waitFor()
+ await page.getByText('8,94 m',{exact:true}).waitFor()
+ assert.equal(await page.getByText('Por que está cinza?',{exact:true}).count(),0)
+ await page.getByRole('button',{name:'Fechar o painel de Ascurra'}).click()
+ // Força recusa da API nativa para verificar a alternativa CSS.
+ await page.evaluate(()=>{Element.prototype.requestFullscreen=()=>Promise.reject(new Error('indisponível no teste'))})
+ await page.getByRole('button',{name:'Tela cheia',exact:true}).click()
+ await page.getByRole('button',{name:'Sair da tela cheia',exact:true}).waitFor()
+ const h=await page.locator('canvas').evaluate(e=>e.getBoundingClientRect().height)
+ assert.ok(h>=840)
+ await page.keyboard.press('Escape')
+ await page.getByRole('button',{name:'Tela cheia',exact:true}).waitFor()
+ console.log('OK: referência C18 e ampliação mesmo sem Fullscreen API')
+ await page.getByRole('button',{name:'abrir',exact:true}).click()
+ await page.evaluate(()=>{
+   window.tracosAuditoria=0
+   const stroke=CanvasRenderingContext2D.prototype.stroke
+   CanvasRenderingContext2D.prototype.stroke=function(...args){
+     if(this.canvas.isConnected) window.tracosAuditoria++
+     return stroke.apply(this,args)
+   }
+ })
+ await page.getByRole('button',{name:'Pausar animações',exact:true}).click()
+ await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))))
+ const parado=await page.evaluate(()=>window.tracosAuditoria)
+ await page.waitForTimeout(200)
+ assert.equal(await page.evaluate(()=>window.tracosAuditoria),parado)
+ await page.getByRole('button',{name:'Retomar animações',exact:true}).click()
+ await page.waitForTimeout(200)
+ assert.ok(await page.evaluate(()=>window.tracosAuditoria)>parado)
+ console.log('OK: pausa interrompe os desenhos; retomar reativa as ondas')
+
+ await abrir('/municipal/ascurra')
+ assert.equal(await page.getByRole('button',{name:'Itajaí',exact:true}).count(),0)
+ await page.getByText('8,94 m · Atenção',{exact:false}).waitFor()
+ console.log('OK: piloto municipal sem botão de outra cidade')
+ await abrir('/monitor/indaial')
+ await page.getByText('6,74 m',{exact:true}).waitFor()
+ await page.getByText('SDC-SC Indaial · DCSC-00006 · terceira ponte. Esta é a régua do monitoramento estadual.',{exact:true}).waitFor()
+ assert.equal(await page.getByText('sem leitura fresca',{exact:true}).count(),0)
+ await page.getByText('Não são aplicadas à leitura da terceira ponte.',{exact:false}).waitFor()
+ console.log('OK: CDN em 503 recuperado pela API pública; Indaial mostra a régua estadual sem confundir cotas da Celesc')
+ for (const [cidade,valor] of [['ilhota','11,05 m'],['ibirama','3,01 m'],['botuvera','3,56 m'],['vidal-ramos','2,62 m']]) {
+   await abrir('/monitor/'+cidade)
+   await page.getByText(valor,{exact:true}).waitFor()
+ }
+ console.log('OK: Ilhota, Ibirama, Botuverá e Vidal Ramos recuperam nível com CDN em 503')
+ await abrir('/monitor/blumenau')
+ await page.getByText('6,10 m',{exact:true}).waitFor()
+ await page.getByRole('button',{name:'Fechar o painel de Blumenau'}).click()
+ await page.locator('summary').filter({hasText:'Camadas de cheia'}).click()
+ await page.getByText('Sem camada automática:',{exact:false}).waitFor()
+ const cartas=JSON.parse(readFileSync(new URL('../../data/manchas/blumenau/index.json',import.meta.url),'utf8'))
+ for (const c of cartas.camadas) {
+   await page.locator('#camada-monitor').selectOption('manchas/blumenau/'+c.arquivo)
+   await page.getByText('Camada desenhada no Monitor.',{exact:true}).waitFor()
+ }
+ console.log('OK: 16 cartas de Blumenau carregam; 6,10 m não desenha a carta de 8 m automaticamente')
+ await abrir('/acu')
+ await page.getByRole('searchbox',{name:'Procure a sua rua'}).fill('São Rafael')
+ await page.getByRole('link',{name:'Itajaí-Mirim',exact:true}).click()
+ await page.getByRole('heading',{name:'Rio Itajaí-Mirim',exact:true}).waitFor()
+ assert.equal(await page.getByRole('searchbox',{name:'Procure a sua rua'}).inputValue(),'')
+ assert.equal(await page.getByRole('textbox',{name:/Nível agora/}).count(),0)
+ console.log('OK: filtros não vazam entre rios; sem painel de previsão')
+ assert.deepEqual(erros,[])
+ console.log('Auditoria de regressão aprovada')
+} finally {await browser.close();await servidor.httpServer.close()}

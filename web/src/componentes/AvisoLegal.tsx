@@ -12,7 +12,7 @@ export default function AvisoLegal() {
       </h2>
       <ul className={estilos.lista}>
         <li>
-          Este site mostra <strong>dados históricos</strong> e estimativas empíricas. Ele{' '}
+          Este site mostra <strong>medições observadas e referências históricas</strong>. Ele{' '}
           <strong>não substitui</strong> o{' '}
           <a href="https://alertablu.blumenau.sc.gov.br/" target="_blank" rel="noreferrer">
             AlertaBlu
@@ -29,12 +29,10 @@ export default function AvisoLegal() {
           cidade com os de outra.
         </li>
         <li>
-          Tempos de chegada da cheia são <strong>faixas estimadas</strong>, não horários.
-          Chuva forte a jusante, maré alta e barragens mudam tudo.
+          Camadas históricas são referências de eventos passados; não confirmam alagamento atual.
         </li>
         <li>
-          Em emergência, <strong>ligue 199</strong>. Não espere a confirmação de nenhum número desta
-          tela para sair de área de risco.
+          Em emergência, <strong>ligue 199</strong>. Consulte os comunicados da Defesa Civil.
         </li>
       </ul>
     </section>

@@ -98,16 +98,21 @@ class TestMapa(unittest.TestCase):
         self.assertEqual([l["cidade"] for l in leituras], ["botuvera", "botuvera"])
         self.assertEqual(len({l["estacao"] for l in leituras}), 2, "nomes têm de ser distintos")
 
-    def test_timbo_fica_de_fora_porque_nao_tem_tela(self):
-        """
-        Timbó é cidade do projeto, mas mora em `afluentes_monitorados` e não na
-        sequência dos rios: nem o site nem o bot a mostram. Coletar a chuva dela
-        seria cobertura aparente — número gravado que ninguém vê.
-        """
-        leituras, recusadas = converter([
-            estacao(codigo="DCSC-00023", nome="SDC-SC Timbó 1", h24=90.6)])
-        self.assertEqual(leituras, [])
-        self.assertIn("fora do mapa", recusadas[0])
+    def test_cidades_com_monitor_recebem_chuva(self):
+        for codigo, cidade in [("DCSC-00023", "timbo"), ("DCSC-00003", "ascurra"),
+                               ("DCSC-00011", "rio-dos-cedros"), ("DCSC-00032", "lontras")]:
+            leituras, _ = converter([estacao(codigo=codigo)])
+            self.assertEqual(leituras[0]["cidade"], cidade)
+
+    def test_chuva_12h_publicada_e_coerencia(self):
+        e = estacao(h1=1, h24=20)
+        e["data"]["chuva"]["acumulado"]["h012"] = {"value": 12.34}
+        leituras, _ = converter([e])
+        self.assertEqual(leituras[0]["mm"]["h12"], 12.34)
+        self.assertTrue(leituras[0]["coerente"])
+        e["data"]["chuva"]["acumulado"]["h012"] = {"value": 30}
+        leituras, _ = converter([e])
+        self.assertFalse(leituras[0]["coerente"])
 
     def test_o_codigo_entra_no_nome_da_estacao(self):
         """Sem o código, 'SDC-SC Timbó 1' e 'Timbó 2' viram nomes parecidos demais."""

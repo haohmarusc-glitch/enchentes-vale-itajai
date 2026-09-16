@@ -478,6 +478,46 @@ o projeto.
 ## Pendências
 
 - [x] Blumenau: consultar o AlertaBlu em cada coleta, eliminando a espera de 60 minutos pela fonte intermediária. Preservar horários e escolher a leitura mais recente da mesma régua. Requer atualizar a VPS após merge; a cadência da fonte e do cron ainda limita a atualização.
+- [x] Varredura do navegador (`npm run varredura`, na CI): descobre as rotas a partir do início e abre cada uma no celular e no desktop, sem rede externa; mexe em zoom, menu de cidades, painel, reprodução, fundos, camadas, toque e arrasto do Monitor; nas telas, "Ver detalhe" por teclado, busca "minha rua", réguas e mapa de manchas de Itajaí, Ascurra municipal, rota inexistente. Com `DADOS=` aponta para os JSONs do `tempo-real` e exercita mapa colorido e reprodução de 24 h.
+- [x] **Os sete `NaN` ao trocar de cidade eram do `<Brush>` da linha do tempo, não do gráfico de picos.** A pendência culpava o componente errado. O `<Brush>` recebe só `startIndex` por prop e guarda o `endIndex` em estado interno; trocando de cidade sem recarregar, o React reaproveita a instância e o `endIndex` da cidade anterior sobrevive — incoerente com a série nova, o intervalo vira negativo e o recharts escreve `NaN` em `x`/`width` do slide e `x1`/`x2` das alças. Conserto: `key={cidade.id}` no `LineChart`, que remonta ao trocar de cidade e deixa o arraste do morador de pé nas re-renderizações normais. A varredura ganhou o passo **"trocar de cidade sem recarregar não escreve NaN no gráfico"**, que vigia o `setAttribute` (o defeito some no quadro seguinte e nenhum teste de DOM o pegaria): sem o `key` ele acusa os 7 atributos e nomeia o `recharts-brush`.
+- [ ] `web/src/componentes/PainelPrevisao.tsx` não é usado por nenhuma tela desde que a previsão de chegada saiu da interface. Decidir: apagar ou religar quando a previsão v1 voltar.
+- [x] Busca "minha rua": mostra as 12 que alagam com o rio mais baixo e diz quantas ficaram de fora ("de 1.848 encontradas. Escreva mais do nome…"). A lista já vinha ordenada pela cota mais baixa, então o corte preserva quem está em risco antes. No celular, a lista de "Rua" em Blumenau caiu de ~520 telas de rolagem para 4. Teste trava o corte e a ordem (`cotasRuas.test.ts`).
+- [x] Ofício C12 respondido pela EPAGRI/CIRAM em 15/09/2026: chegaram os **três Avisos Hidrológicos de nov/2023** (o 03 de 19/11 era o que faltava) e cinco notas hidrometeorológicas. A fonte declara por escrito que **aviso é instantâneo do horário da coleta, não pico do dia** — comprovado no repo: em Taió/nov-2023 o maior valor dos avisos é 10,18 m e o pico da telemetria é **10,32 m**, nove horas antes; em Taió/mai-2022 a diferença chega a **1,12 m**. Os três valores de Taió nos avisos batem **ao centímetro** com a série da ANA, o que confirma a procedência. Nada entrou em `enchentes.json`. Ver `docs/RESPOSTA-EPAGRI-C12-2026-09-15.md`.
+- [x] Telemetria da ANA de **nov/2023** baixada na VPS em 15/09/2026 (83300200, 83800002, 83360000, duas janelas cada). ⚠️ **Correção:** eu havia escrito aqui que nov/2023 "não tem nenhum registro" — **falso**, tem seis (Blumenau 9,14 m, Rio do Sul 13,04 m e quatro de Brusque); a verificação que gerou a frase lia uma chave que não existe no JSON. O que a telemetria trouxe está em `docs/ANA-API-2026-09-08.md`, "Quinta rodada": Rio do Sul com crista **dentro de um apagão** (13,14 m é piso), José Boiteux com pico limpo de **4,93 m**, e Blumenau **sem uma única cota** na janela.
+- [x] **Rio do Sul, nov/2023 — decisão do Jefferson em 15/09/2026: aplicado.** Os **13,04 m** do Portal GCD (régua do município) continuam adotados; os **13,14 m** da estação da ANA entraram em `divergencias`, com a ressalva escrita de que são **piso, não crista** — a telemetria apagou por 3 h 45 em volta do pico. Mesmo mecanismo da decisão (b) em Taió/out-2023, porque o zero das duas réguas não foi conferido.
+- [ ] **Blumenau parou de transmitir NÍVEL entre mai/2022 e nov/2023**, muito antes da desativação de 04/04/2026 que a tabela da EPAGRI informa. Na janela de nov/2023 a 83800002 mandou **982 leituras de chuva** (104 mm no total, pico de 15,4 mm/15 min) e **zero cotas** — estava viva, só sem nível. Consequência prática: os 9,14 m de Blumenau em 17/11/2023, hoje `confianca: media` de imprensa, **não têm como ser confirmados pela ANA**. Achar quando o sensor calou ajuda a saber de quais eventos ainda dá para tirar crista.
+- [x] **83360000 "Jose Boiteux"** investigado em 15/09/2026: **não era lacuna de cadastro**. A cidade já é lida ao vivo pela rede estadual (`coleta_nivel_sc.py` mapeia `DCSC-00021` → `jose-boiteux`), e a estação da ANA está **desativada desde 04/12/2024** pela tabela do C5 — servia só para telemetria histórica. De quebra, é o **terceiro caso** em que o inventário da ANA diz `Operando: "1"` para estação que a operadora dá como morta (os outros dois são Brusque e Blumenau): o campo `Operando` não prova estação viva.
+- [ ] José Boiteux aparece no Monitor como régua estadual, mas **não é cidade** do `rios['itajai-acu'].cidades` (são 15). Fica a montante do Ibirama no ramo `itajai_do_norte`. Entrar na árvore é decisão de topologia — `docs/TOPOLOGIA-CANONICA.md` exige que a fonte diga a confluência, e ela ainda não disse.
+- [ ] Busca "minha rua", segundo ato: cada resultado repete a linha de fonte inteira (6 linhas iguais em Blumenau — três fontes distintas entre os 12 resultados), e isso responde por quase toda a altura de 281 px por item. Uma linha curta por resultado com a fonte completa em nota de rodapé da lista manteria a regra "todo número mostra de onde veio" e cortaria a rolagem pela metade. Decisão do Jefferson: mexe em como a fonte aparece, que é princípio do projeto.
+
+- Saúde da coleta: aviso deixa de afirmar parada geral quando há problema em uma fonte; esclarece que as demais leituras válidas continuam sendo avaliadas. Em 13/09/2026, consulta direta ao painel Asthon retornou Rio do Sul, mas não o station_id cadastrado de Vidal Ramos. O coletor registra essa ausência explicitamente; causa da retirada na fonte ainda não confirmada. Indaial conserva o horário da medição municipal antiga.
+
+- Telegram: leituras com mais de 180 minutos (120 em Blumenau), sem horário válido ou mais de 15 minutos no futuro não disparam avisos nem atualizam o estado de faixa. Correção do aviso de Indaial com 1200 minutos de idade; requer deploy na VPS.
+
+- Monitor: explicação do cinza prioriza a leitura municipal existente (idade ou horário inválido), mesmo com régua estadual disponível. Corrige a mensagem de Indaial após ativação da coleta municipal; não altera cotas ou cores.
+
+- Indaial: coleta municipal dos fundos da Celesc integrada em `coleta_niveis.py` via exportação pública do documento divulgado pela Defesa Civil. Preserva o horário da medição; dados antigos continuam sujeitos ao bloqueio de cor por idade do monitor. Implantação na VPS pendente. A DCSC-00006 permanece independente, sem conversão. Ver `docs/indaial-duas-reguas.md`.
+
+- [x] Auditoria do navegador: corrige atalho de teclado, seletor móvel, ampliação sem API nativa, encerramento do mapa municipal e atualização do painel; unifica Ascurra pelo C18; retira abrigos e previsão de chegada da interface. Regressões em `npm run auditoria` e na CI.
+- [ ] Conferir na fonte os 14 avisos do validador (referências de régua, códigos ANA, datas e trânsito); não são corrigíveis inventando valores. Ver `docs/auditoria-correcoes-2026-09-12.md`.
+- [x] Fluxo ilustrativo do Monitor com traços luminosos na cor da faixa de cota ao longo da calha, conforme referência visual, mantendo pausa e velocidade constante.
+
+- [x] Ondas com velocidade visual constante, opção de pausa na legenda, respeito a movimento reduzido e suspensão do loop com a página oculta.
+
+- [x] Monitor no celular: caixa de chuva duplicada removida; cabeçalho, camadas, zoom e reprodução compactados para liberar o mapa.
+
+- [x] Correnteza no mapa: ondas curvas animadas substituem as setas; direção, velocidade por faixa e preferência por movimento reduzido preservadas.
+
+- [x] Busca de ruas no mapa histórico de Itajaí com 1.863 feições do GeoItajaí/SIE, fonte identificada e destaque do traçado. As manchas históricas existentes foram conferidas, sem duplicação. Ver [base viária](docs/vias-geoitajai.md).
+
+- [x] Falha da fonte de Itajaí: HTTP 200 sem réguas reconhecidas passa a ser marcado como indisponibilidade; falha de rede não interrompe fontes independentes. Bot e monitor exibem o motivo. Requer atualizar a VPS e reiniciar o bot pelo deploy.
+- [ ] Restabelecer as leituras municipais DC-01 a DC-11: em 12/09/2026 o endereço oficial retornou conteúdo alheio ao monitoramento. Os links do Portal de Serviços apontam ao mesmo endereço; não foi confirmada fonte alternativa. Histórico já coletado permanece nas séries, separado de leitura atual.
+
+- [x] Chuva no mapa: acumulados de 1 h, 12 h e 24 h abaixo do pino da cidade, com idade da chuva e espaço reservado contra sobreposição. Detalhes de estação continuam no painel recolhível. Na reprodução histórica, a chuva atual fica oculta.
+
+- [x] Monitor: painel de chuva com 1 h, 12 h e 24 h para as cidades, estação e horário. Usa um único pluviômetro válido mais recente por cidade e mantém janelas ausentes como indisponíveis, sem somar estações.
+
+- [x] Arquivo observacional do evento de setembro: preserva versões dos JSONs dos coletores e registra arquivos ausentes/inválidos a cada publicação. Ativação e backup na VPS em [registro do evento](docs/registro-evento.md). Não recupera lacunas anteriores nem soma acumulados de chuva sobrepostos.
 
 - [~] **Ascurra — fontes municipais examinadas:** link para mapa de risco CPRM/SGB e COMPDEC incluído no piloto. Coletor e tela preparados para `h168` (chuva de sete dias), confirmado na API estadual em 11/09/2026. Necessário atualizar o coletor na VPS para publicar o campo; faltam importação dos polígonos e chuva histórica comparável.
 
@@ -518,7 +558,7 @@ o projeto.
 - [x] **O histórico da rede estadual chegou: 13 estações, 10 min, desde fins de 2022 (10/09/2026).** Treze
   zips baixados pelo Jefferson no PC (query GraphQL `historic` da DCSC, janelas de 14 dias desde 1980).
   `scripts/consolidar_historico_dcsc.py` (5 testes) junta as janelas em `data/series/dcsc/DCSC-000NN.csv`
-  (129 MB, fora do git) e grava o resumo citável `data/brutos/dcsc-historico-resumo-2026-09-10.json`:
+  (129 MB, fora do git) e grava o resumo citável `data/brutos/dcsc-historico-resumo-2026-09-15.json`:
   cobertura, buracos, sentinelas (`-35` em Ituporanga, 2^31/100 em Ibirama, 581 m em Ascurra) e as
   maiores cristas de cada estação, com pico solto de sensor descartado (12,38 m em Brusque entre vizinhas
   de 1,5 m). **Fuso provado**: `ts` é Brasília sem fuso (janela pedida às 00:00Z devolve 21:10 do dia
@@ -527,6 +567,48 @@ o projeto.
   números da Defesa Civil nas três cheias de 2023 (8,63 vs 8,96 em 17/11), enquanto em 09/2026 o par é
   idêntico — ou o zero mudou, ou o 8,96 é de outra leitura, e o 8,96 é a base das cotas de rua de 2023.
   Nenhuma crista entrou em `enchentes.json`. Ver `docs/DCSC-HISTORICO-2026-09-10.md`.
+- [x] **Um cadastro da rede estadual, lido pelos dois lados (15/09/2026).** As listas que dizem o que
+  cada estação da DCSC É — quem é quem (`CADEIA`), reservatório, datum não calibrado (`SUSPEITAS`) e
+  estação que não mede nível de rio (`NAO_MEDE_NIVEL`) — moravam dentro do coletor de **tempo real**.
+  O lado do **histórico** lia as mesmas estações e não as via. O resultado estava no repo: o coletor
+  mandava Guabiruba para `suspeitas` desde 07/09 e o resumo commitado listava **28,70 m como maior
+  crista candidata da mesma estação**. Agora são um módulo só, `scripts/cadastro_dcsc.py` (14 testes),
+  que o coletor, o consolidador e o calibrador de trânsito importam — e um teste compara com `is`, não
+  `==`, porque cópia igual hoje é cópia diferente depois da próxima descoberta. Duas coisas novas saem
+  disso: **quebra de série** (`QUEBRAS_DE_SERIE`) — Guabiruba trocou para cota referenciada ao nível do
+  mar em **01/04/2026 às 17:40**, num passo de 10 min (0,51 m → 16,21 m → 24,68 m), e depois desse
+  instante **nenhuma** das 22.054 leituras fica abaixo de 10 m, então o corte é limpo; o consolidador
+  corta a **coluna** de nível na data e mantém o resto da linha, porque o pluviômetro não mudou de datum.
+  E **estação que não mede o rio não publica crista candidata**: Gaspar devolve 135.969 valores de
+  `rio_nivel` pelo endpoint `historic` mesmo sem medir nível nesta rede, e as cinco "cristas" dela eram
+  0,84 m e quatro platôs de zero. Depois do corte, as cristas de Guabiruba passam a ser 4,19 m (20/12/2022)
+  e 3,58 m — régua de ribeirão, não altitude. ⚠️ **O limite de 30 m não pegava nada disso**: 24 m passa
+  por baixo dele. Régua de plausibilidade por valor absoluto é rede de segurança, não primeira linha.
+  ⚠️ **A próxima rodada do `conferir_resumo_dcsc.py` na VPS vai acusar estas três estações, e só elas** —
+  é esperado, está escrito na docstring do script, e o resumo novo substitui o de 10/09.
+  **Conferido na VPS em 15/09/2026**, sobre os treze zips reais: as três estações previstas e nenhuma
+  quarta. A rodada achou um defeito que os testes não pegavam — o trecho cortado virava **buraco de
+  coleta**, e Guabiruba saía com `maior_buraco_h: 3869.5`, os 161 dias entre a quebra e o fim da série.
+  Está certo de mais e verdadeiro de menos: quem lesse concluiria que a estação ficou cinco meses fora
+  do ar, e ela transmitiu o tempo todo. Buraco nesse resumo é sinal de **saúde da coleta**, então o
+  cálculo passou a parar na quebra. Os vãos de carimbo de verdade em Guabiruba são três — 13,0 h
+  (29/08/2024), 9,2 h (21/07/2026) e 8,8 h (09/02/2025) —, e o buraco de 173,9 h que o resumo antigo
+  lhe atribuía era um trecho de sete dias **depois** da quebra em que ela mandou linha com o nível
+  vazio: diz respeito à série de altitude, descartada, não à régua que ficou. Nenhuma falha real de
+  coleta foi escondida, e há teste travando que buraco **antes** da quebra continua contando.
+- [x] **B5 fechado: o histórico consolidado na VPS bate com o do repo (15/09/2026).** Os treze zips
+  foram para a VPS e o `consolidar_historico_dcsc.py` rodou lá, contra o `conferir_resumo_dcsc.py`.
+  Resultado: **onze divergências, em três estações e só três**, todas com causa nomeada — Guabiruba
+  (`nivel_max_m` 28,70 → 4,19, `leituras_com_nivel` 198.178 → 176.124, 22.054 cortadas na quebra),
+  Gaspar e Blumenau (sem crista candidata, `nao_mede_nivel` preenchido), mais duas linhas de `_meta`.
+  Nas outras dez, nada. O resumo de 15/09 substitui o de 10/09, que listava os 28,70 m como maior
+  crista de Guabiruba. ⚠️ **Duas armadilhas que a rodada revelou, e valem para a próxima:** a primeira
+  tentativa deu **✓ falso** porque a VPS estava dois PRs atrasada (em `4d0992a`) e porque havia um
+  `dcsc-historico-resumo-2026-09-15.json` **não rastreado** solto em `data/brutos/` — o
+  `referencia_mais_recente()` escolhe o mais novo por nome e pegou a sobra, comparando duas rodadas do
+  mesmo código velho. Confira o `git log` antes de consolidar, e **passe a referência na mão** como
+  segundo argumento. Arquivo não rastreado com nome citável dentro da pasta dos dados citáveis é
+  armadilha: transformou uma conferência feita para acusar diferença num ✓ que não queria dizer nada.
 - [ ] **Ofício C13 a Brusque, rascunhado, aguarda o "sim" (10/09/2026).** Três perguntas fechadas em
   `docs/oficios-prontos.md`: em que régua foi lido o 8,96 m de 17/11/2023 (a DCSC-00019 registra 8,63 m às
   21:30, e ~0,30 m a menos também em 05/10 e 13/10); se houve ajuste de zero na DCSC-00019 entre 2023 e
@@ -841,7 +923,10 @@ o projeto.
   (07/09/2026).** Diagnóstico fechado com o Jefferson, cruzando a VPS, este ambiente e o navegador
   do celular dele. **Duas coisas juntas, e a segunda decide:** (1) o host
   `defesacivil.gaspar.sc.gov.br` dá **timeout de 30 s** na VPS enquanto a mesma página abre normal
-  num celular no Brasil — bloqueio de IP estrangeiro ou rota, não queda; (2) **a página foi
+  num celular no Brasil — **medido em 15/09/2026 (B10): é filtro, não rota.** Do mesmo servidor e
+  nos mesmos minutos, `monitoramento.defesacivil.sc.gov.br` (200 em 0,69 s),
+  `defesacivil.itajai.sc.gov.br` (200 em 4,35 s) e `www.ana.gov.br` (302 em 0,74 s) respondem
+  normalmente. O Brasil é alcançável da VPS; Gaspar e Brusque não são; (2) **a página foi
   reformulada** (rodapé: *"Desenvolvido por DEXTAK"*) e a régua **"Rio Itajaí Açu Gaspar" SAIU
   DELA**. Em 31/08 marcava **3,85 m**; hoje a tabela tem sete linhas e nenhuma é o Açu — entraram
   três barragens estaduais (números de **altitude de reservatório**: 273,75 / 350,44 / 388,07) e
@@ -1594,6 +1679,93 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 
 - [x] **O Monitor da bacia ganhou fundo de mapa: Escuro, Satélite e Mapa.** A pendência estava aberta desde 03/09 como opção (b) do `docs/CAMADAS-DE-MAPA.md` — "exige desenhar tiles no canvas **ou** trocar o motor por Leaflet". Resolvida por um terceiro caminho, mais barato: **tiles no próprio canvas, sem Leaflet e sem mexer na projeção**. O que destravou foi medir em vez de supor: a dúvida era se tile Mercator alinharia com a projeção equirretangular do canvas, e alinha — na latitude central as duas têm a **mesma proporção** (o `cos(27°) = 0,89101` do enquadramento é o fator que o Mercator aplica ali), sobrando só a curvatura: **1,20 px de erro máximo num canvas de 900 px** (0,13%), medido na bacia inteira. Cada tile é desenhado na caixa que a própria `projetar` devolve para os cantos dele. **O teste que sustenta é de alinhamento**, não de forma: o pixel onde o mapa desenha Blumenau, Itajaí, Rio do Sul e Brusque tem de cair dentro do tile que geograficamente as contém — e falha se o Mercator virar conta linear (conferido: 14.848 px de desvio). **Escuro continua padrão por função, não por estética:** fundo com textura concorre com as faixas de alerta, e o satélite degrada justamente o dado mais delicado — o cinza "sem leitura" some contra a mata. Por isso sobre imagem entra **contorno escuro sob todos os traços, o cinza inclusive**, e a mancha do mar sai (a imagem já diz onde é água). **Atribuição é condição de licença:** fica visível e troca com a camada, com teste travando que ela vem de `FUNDOS[fundo]` e não de texto fixo; outro teste recusa qualquer URL do Google, cuja licença não permite embutir tiles. Tile que falha some sem derrubar nada (o chão escuro aparece), o cache vive entre renders para não repedir o mosaico a cada tique, e janela absurda devolve zero tiles em vez de travar o navegador numa noite de chuva. **Não foi possível ver com os olhos:** o ambiente de desenvolvimento bloqueia os três hosts de tile, então a verificação visual fica para o GitHub Pages.
 
+- [x] **A régua manual de Indaial parou de ser cobrada como sensor — 15/09/2026.** Era a falha crônica
+  que mascarava as outras. A régua dos **fundos da Celesc** não vem de sensor: vem de um **Google Docs
+  que a Defesa Civil de Indaial preenche à mão** (vínculo institucional confirmado em 13/09, ver
+  `docs/indaial-duas-reguas.md`). A última leitura que chegou é de **12/09 às 22h — o fim da cheia de
+  11 e 12/09**: alimentaram durante o evento e pararam quando ele passou, que é como um registro de mão
+  se comporta. Só que o `TOLERANCIA_FONTE_MIN` de 120 min foi calibrado na fonte **automática** mais
+  lenta que já acompanhamos, então a régua ficava vermelha **duas horas depois de a chuva passar** e
+  assim seguia até a cheia seguinte. E vigia sempre vermelho não é só ruído: foi esse vermelho que
+  escondeu o aviso de código atrasado e deixou a VPS dois PRs atrás. Agora há `FONTES_MANUAIS`: a fonte
+  não é cobrada por frescor, **mas a idade dela sai nos detalhes em toda rodada** — não cobrar não é
+  esconder, e quem abre o vigia numa cheia precisa ver que a régua municipal está três dias atrás.
+  Quatro coisas **não** mudaram, com teste cada uma: leitura sem horário continua falha (é defeito de
+  formato, não silêncio normal); a fonte **sumir** do arquivo continua falha, pela memória rolante; a
+  fonte automática parada continua falha; e o site segue recusando pintar leitura com mais de 180 min,
+  então ninguém vê os 4,10 m de 12/09 como se fossem de agora. **Indaial não fica cega**: a
+  DCSC-00006 (estadual, automática) publica normalmente — outro lugar e outro zero, nunca convertida.
+- [x] **O bot responde ao PINO do Telegram, em duas camadas — 16/09/2026.** A pessoa manda a
+  localização e recebe, quando existe cota levantada a menos de **300 m**, o ponto mais próximo
+  (*"Bartolomeu Pruner — alaga a partir de 7,65 m"*) e, **sempre**, a régua da cidade mais próxima
+  dentro de **25 km**, com a mesma resposta do `/nivel`. As duas juntas quando as duas existem: a de
+  rua responde o que importa — *a água chega em mim?* —, a da cidade responde a pergunta seguinte,
+  que é sempre *e onde está o rio agora*. **O pino era descartado em silêncio**: o laço exigia `text`
+  e uma localização não tem `text`, então quem mandava onde estava não recebia nada. **Os 25 km saem
+  da bacia**, não de gosto: as 20 cidades distam de 6,2 km (Brusque–Guabiruba) a 29,4 km
+  (Taió–Trombudo Central) da vizinha mais próxima; com 25 km o miolo fica coberto e as isoladas não
+  fingem cobrir quem está no meio do caminho. Fora do raio a resposta é **"você está fora da área que
+  este projeto cobre"** — a régua de uma cidade a 66 km não diz nada sobre o rio ao lado de quem
+  perguntou, e oferecê-la seria pior que o silêncio. ⚠️ **A resposta nunca diz "a sua rua"**: diz "o
+  ponto levantado mais perto de você", com a distância em metros e a data do levantamento, porque a
+  cota é de um **ponto** e quem julga se aquele ponto é a esquina de quem perguntou é quem perguntou.
+  Hoje a camada de rua só acende em **Brusque** (348 cotas com coordenada, nov/2023) e **Gaspar**
+  (1.615, abr/2020); nas outras 18 cidades não há cota com coordenada e sai só a camada da cidade.
+  **O bloco de uma cota foi EXTRAÍDO do `/rua`** (`linhas_de_uma_cota`) em vez de copiado — as quatro
+  ressalvas que ele carrega (cota nula, cota máxima, abrigo, `usar_para_aviso: false`) são o que
+  impede uma frase assustadora de sair de um número não conferido, e duplicá-las seria repetir na mão
+  o erro que o cadastro da rede estadual acabou de custar. A regra do `/rua` de **só comparar cidade
+  de UMA régua** vale igual aqui. **Privacidade:** a coordenada é usada e não é gravada — o bot não
+  registra conteúdo de mensagem, e localização não podia inaugurar um log. 17 testes.
+- [x] **Boletim da EPAGRI conferido e RECUSADO como fonte de nível — 16/09/2026.** Chega por e-mail
+  todo dia (n° 161 em 16/09) com o resumo dos níveis da bacia. Não entra: o corpo não traz números
+  (a tabela fica num PDF em `ciram.epagri.sc.gov.br`), a cadência é diária contra os 10 min que já
+  temos, e — o que decide — **a própria EPAGRI desautoriza os valores**. O de 16/09 classifica
+  **Rio do Sul – Novo** em `ATENÇÃO` e ressalva na mesma linha que a estação *"não passa por
+  manutenção desde junho de 2025, portanto, os valores de atenção podem não refletir adequadamente
+  os níveis reais de cotas"*. É o mesmo junho de 2025 da resposta ao ofício C5: a manutenção da rede
+  telemétrica inteira parou a pedido da ANA e ela está sendo desmobilizada. **A armadilha é de
+  leitura** — quem vê "ATENÇÃO: Rio do Sul" e não lê o parêntese conclui que o Açu está subindo lá,
+  e a nossa DCSC-00013 não acusava nada naquele dia. ⚠️ A ressalva **não** foi pendurada em registro
+  nenhum nosso: a EPAGRI chama de "Rio do Sul – Novo" a estação **83270000** e o cadastro usa a
+  **83300200** com o mesmo nome — dois códigos, um nome, e escolher seria inventar. A divergência de
+  nov/2023 em `enchentes.json` segue intacta, por ser anterior a junho de 2025. O que fica é o
+  relógio: o boletim ainda estava vivo em 16/09, e a carta C5 diz que ele acaba quando as estações
+  forem removidas. Ver `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`.
+- [x] **O teto de 30 dias da fonte manual foi MEDIDO e descartado — 16/09/2026.** A versão anterior
+  punha um limite: "acima de 30 dias não está quieta, está abandonada". O documento de Indaial foi lido
+  inteiro (57 datas) e o número não sobreviveu: os intervalos entre eventos são de **44, 45, 147, 172 e
+  568 dias**. Trinta dias teriam gritado **cinco vezes** só nesse trecho — alarme falso, que é o que a
+  mudança existia para evitar. E o buraco de **568 dias** diz mais que "o número está baixo": o
+  documento passou **dezoito meses parado e voltou a ser alimentado**, então o silêncio dele não informa
+  nada sobre ele estar vivo. Não existe limiar de idade que separe "quieta" de "abandonada" nesta fonte,
+  e um teto qualquer seria número inventado com cara de medida. O teto saiu; a idade continua saindo nos
+  detalhes, por maior que seja. ⚠️ **O que fica descoberto, dito com todas as letras:** se a Defesa
+  Civil de Indaial parar de usar o documento, nada acusa. O prejuízo é limitado — a régua automática da
+  cidade segue publicando e o site recusa pintar leitura velha —, mas a escala municipal (3 / 4 / 5,5 m)
+  só existe nessa fonte. **O mecanismo certo, não construído:** cobrar a fonte manual apenas **quando o
+  rio está alto**. "Está subindo e ninguém alimentou o documento" é sinal; "não choveu e ninguém
+  digitou" não é. Isso precisa de um limiar de nível, e portanto de decisão sobre qual régua o dispara.
+  Achado de brinde: o documento tem erros de digitação no acervo antigo (`03/11/2033`, `30/10/2033`), o
+  que confirma a decisão de 12/09 de **não importar o histórico inteiro** dele.
+- [x] **Falha crônica não mascara mais falha nova no vigia — 15/09/2026.** Investigando por que a VPS
+  ficou dois PRs atrás sem ninguém ser avisado, a resposta foi outra: **não existe deploy automático**
+  (o `deploy.sh` é comando manual e o cron roda os coletores de `/opt` sem `git pull`), e o
+  `avaliar_versao` **viu** e escreveu a linha certa. Quem falhou foi o aviso. O estado era **um
+  booleano só para o vigia inteiro** (`falhando`), e a regra era "já falhava? só de 6 em 6 horas" —
+  então um problema NOVO que chega com outro aberto **entra mudo**, porque não houve transição
+  `ok → falha`. O vigia já estava vermelho por Indaial parada e Gaspar sumida, e o código atrasado
+  virou mais uma linha no detalhe de um alerta sobre outro assunto. Agora o `Diagnostico` carrega a
+  **chave** da checagem (`coleta`, `bruto`, `mapa_alarme`, `versao`) e o `deve_avisar` avisa na hora
+  quando uma chave nova aparece, mantendo o silêncio de 6 h para as que já estavam abertas. A
+  identidade é a chave, não o motivo: o motivo carrega minutos que mudam a cada rodada, e usá-lo
+  faria toda rodada parecer novidade. **Segundo defeito no mesmo caminho:** a linha do `git pull`
+  era presa ao `so_versao`, então aparecia com um problema e sumia com dois — some justamente quando
+  a pessoa tem mais coisa na cabeça. A manchete continua escolhida por prioridade (coleta ganha do
+  deploy), mas o conserto sai sempre que o código está atrasado. Granularidade por estação dentro da
+  coleta ficou **de fora de propósito**: numa cheia as fontes piscam, e avisar a cada piscada ensina
+  quem opera a ignorar o vigia. Doze testes novos, e a regra antiga foi rodada lado a lado com a
+  nova sobre o cenário real para provar a diferença (antiga: não avisa; nova: avisa).
 - [x] **O vigia passou a ver o deploy que não desembarcou.** Achado em 04/09/2026: o fio de Taió funcionava na mão e nunca chegava ao site. A causa não era o código — a VPS tem **dois checkouts**, e `crontab -l` mostra o cron da coleta rodando de **`/opt/enchentes-vale-itajai`** enquanto o trabalho manual acontecia em `/root`. Um `git pull` no segundo não muda nada no primeiro, e o teste feito à mão passa, dando a impressão de que o conserto está no ar. **O vigia não pegava, e não por bug:** ele compara cada coleta com a ANTERIOR, então enxerga régua que **sumiu** e é cego para régua que **nunca chegou** — um deploy que não desembarcou não perde nada, logo não acusa nada. Já tinha acontecido antes: o comentário do `ULTIMO_NIVEL_SC` registra o vigia cego por 13 h "na migração pro /opt". Agora `saude_coleta.avaliar_versao()` mede a distância do checkout até `origin/main` e **falha quando está atrás**, dizendo quantos commits e em qual diretório. **Falhar em CONFERIR nunca vira "atrasado"**: sem rede, sem git ou fora de um checkout, o veredito é ok com a ressalva no detalhe — alarme falso de deploy ensina a ignorar o alarme verdadeiro de cheia. E a **manchete do aviso muda**: com a coleta viva e só o código atrasado, o Telegram diz "🚚 O código no ar está atrasado" com o `git pull` do diretório certo, em vez de "🛠 A coleta de nível parou", que mandaria procurar defeito onde não há. Sete testes, com um git de mentira. **Atenção ao ler o README:** a linha do cron do vigia aqui embaixo cita `/root`, e a da coleta na VPS usa `/opt` — conferir sempre com `crontab -l`, que é a fonte de verdade.
 
 - [x] **Taió chegou à tela: nível da cidade e o estado das comportas da Barragem Oeste.** O coletor existia desde 03/09 e **não tinha caminho até o site** — não estava no cron, não era importado pelo `coleta_niveis.py` e não era levado pelo `publicar_tempo_real.sh`. Agora o `coleta_niveis.py` o chama no molde do Asthon (fonte à parte, falha engolida: uma API municipal fora do ar **não pode** derrubar a publicação de todas as cidades, porque o cron encadeia com `&&`), e o publicador leva o `ultimo_taio.json` junto. O **nível** entra no `ultimo.json` e vira faixa de verdade — a régua do Centro é a que as cotas do Plano da COMPDEC descrevem, então sai com `usar_para_cota: true`, ao contrário do bruto estadual. As **comportas** não cabem em `leituras` (não são nível de rio) e vão no arquivo próprio: é o único dado de **operação de barragem** da bacia, e o JICA aponta a ausência dele como a causa de a previsão de Rio do Sul não funcionar. **Dois defeitos achados no caminho:** (1) com `set -euo pipefail`, um `[ -n "$X" ] && …` com X vazio na ÚLTIMA linha do grupo que monta a árvore faz o publicador **morrer antes de publicar, calado** — `bash -n` não pega, porque a sintaxe está correta; era risco latente com o `ultimo_nivel_sc.json` (que existe sempre na VPS) e viraria pane real com o de Taió, que só passa a existir depois da primeira coleta boa; (2) o `--seco` anunciava só o `serie-recente.json`, então o ensaio calava sobre três dos quatro arquivos. O novo `scripts/teste_publicar_tempo_real.py` roda o publicador de verdade num repositório de mentira, com e sem os opcionais, e **falha** se o `:` sumir. O `alerta_cotas.py` foi conferido e **já estava certo**: o `faixa_de` dele percorre um vocabulário fechado, então `monitoramento` não dispara Telegram — o lado Python já fazia o que o TypeScript passou a fazer no conserto anterior. **Falta a UI das comportas:** o arquivo vai ao ar e ninguém o lê ainda.
@@ -1676,3 +1848,41 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
 - Carta de suscetibilidade SGB/Ascurra (março de 2026) referenciada em Dados e histórico. Alturas da legenda relativas à água regular não são cotas da DCSC-00003; vínculo para seleção automática de manchas ainda pendente.
 
 - AlertaBlu: corrigida cadeia TLS com intermediário Sectigo e raízes padrão, mantendo validação de domínio e certificado. Após merge, atualizar a VPS e testar `python3 scripts/coleta_alertablu.py`; política de resgate e horários permanecem iguais.
+
+Chuva no monitor: o coletor estadual agora solicita h012 e inclui Ascurra, Timbó, Rio dos Cedros e Lontras pelos códigos já conferidos no cadastro de nível. A API aceitou a consulta em 11/09/2026. Após merge, atualizar a VPS e executar coleta_niveis.py e publicar_tempo_real.sh para preencher as novas janelas. Não há estimativa de chuva onde não existe leitura.
+
+- Indaial: régua estadual DCSC-00006 identificada no monitor, separada da régua municipal dos fundos da Celesc; [conferência](docs/indaial-duas-reguas.md).
+- Gaspar: estação 21 como alternativa à tabela; legenda atual 5/7 m e histórico público extraídos. Ver [endpoints e limites](docs/gaspar-estacao21-endpoints.md). Requer deploy do coletor na VPS.
+
+- Blumenau: cartas FURB 2025 de 8–18 m no monitor, separadas dos eventos históricos; pino sem cor após duas horas. Conferência em docs/fontes-cheias-2026-09-12.md.
+
+- **Concluído (12/09/2026):** recuperação dos níveis municipal e estadual pela API pública do GitHub quando o CDN retorna erro; carimbos preservados durante falha temporária. Rótulos distinguem várias réguas e instrumentos estaduais. Diagnóstico e pendência de Gaspar: [docs/reguas-sem-leitura-2026-09-12.md](docs/reguas-sem-leitura-2026-09-12.md).
+
+- **Concluído (12/09/2026):** ponte de Gaspar pelo PC via SSH, com identidade e validade verificadas e integração à coleta normal da VPS. [Operação](docs/gaspar-ponte-pc.md). O transporte não renova a idade da medição municipal.
+
+- **Concluído (12/09/2026):** ondas e correnteza compartilham autorização por trecho; cinza pode indicar apenas sentido ilustrativo, sem classificação. Direção incerta e aproximação ao estuário permanecem paradas. [Regras e limites](docs/ondas-neutras.md).
+
+### Ondas nos meandros (13/09/2026)
+A animação acompanha curvas sem exigir avanço de cada vértice na espinha.
+Permanece o bloqueio conservador da foz; ver `docs/ondas-neutras.md`.
+
+- Ondas ilustrativas habilitadas no trecho de Brusque no Mirim; segmentos
+  atribuídos à cidade da foz continuam parados (`docs/ondas-neutras.md`).
+
+### Referência visual DC-11 no monitor
+O traçado do Açu a jusante de Santa Regina usa a faixa da DC-11, sem
+transferir níveis ou cotas aos demais pinos. Limite cartográfico aproximado
+pela espinha do mapa; não é mancha de inundação. Sem faixa válida fica cinza;
+na reprodução histórica a referência não é aplicada. Mirim, canais e mar
+continuam independentes.
+
+### Açu até a foz — 13/09/2026
+Removido o bloqueio visual em Ilhota. A espinha de movimento do Açu
+se prolonga até a extremidade leste do traçado cadastrado, sem alterar
+a espinha de cores, a referência DC-11 ou as réguas. Movimento ilustrativo
+constante: a corrente real pode variar com a maré. Canais sem orientação
+permanecem parados. Esta regra substitui o limite anterior em Ilhota.
+
+Auditoria de 13/09/2026: comparadores e monitor usam um vocabulário compartilhado de cotas operacionais, sem marcas históricas ou administrativas. As faixas de Ibirama ficam pendentes de vínculo com a régua; Apiúna está cadastrada sem fonte ao vivo ativada. Detalhes em `docs/auditoria-cotas-operacionais-2026-09-13.md`.
+
+O panorama de `alerta_cotas.py --seco` conta apenas leituras com horário válido e dentro da janela de atualização, usando a mesma seleção do disparador. Fontes antigas aparecem como aviso bloqueado, sem impedir a avaliação das demais réguas.

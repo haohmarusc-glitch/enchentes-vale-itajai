@@ -24,6 +24,7 @@ from saude_coleta import (
     avaliar_mapa_e_alarme,
     avaliar_versao,
     deve_avisar,
+    FONTES_MANUAIS,
     regua_de,
     texto,
 )
@@ -114,6 +115,92 @@ class TestQuandoAvisar(unittest.TestCase):
     def test_tudo_bem_seguido_de_tudo_bem_nao_avisa(self):
         d = avaliar(coleta(), AGORA)
         self.assertFalse(deve_avisar(d, {"falhando": False}, AGORA))
+
+
+class ProblemaNovoNaoEntraMudo(unittest.TestCase):
+    """O defeito de 15/09/2026: falha crônica mascarando falha nova.
+
+    A VPS ficou dois PRs atrás e ninguém foi avisado. O `avaliar_versao` viu e
+    escreveu a linha certa — mas o vigia já estava vermelho por Indaial parada e
+    Gaspar sumida, não houve transição ok -> falha, e o aviso do código atrasado
+    virou mais uma linha no detalhe de um alerta sobre outro assunto.
+
+    Um alarme que continua tocando sobre o assunto errado é a maneira mais
+    silenciosa de falhar: ninguém percebe que ele parou de cobrir alguma coisa.
+    """
+
+    def falha(self, *chaves) -> Diagnostico:
+        d = Diagnostico(False, "x", [], chaves[0])
+        for c in chaves[1:]:
+            d = d.somar(Diagnostico(False, "y", [], c))
+        return d
+
+    def aberto(self, *chaves, horas=1) -> dict:
+        return {"falhando": True,
+                "avisado_em": (AGORA - timedelta(hours=horas)).isoformat(),
+                "chaves_avisadas": sorted(chaves)}
+
+    def test_problema_NOVO_com_outro_aberto_avisa_na_hora(self):
+        """O caso real: coleta já doente, código fica atrasado."""
+        self.assertTrue(deve_avisar(self.falha("coleta", "versao"),
+                                    self.aberto("coleta"), AGORA))
+
+    def test_os_MESMOS_problemas_continuam_respeitando_o_silencio(self):
+        """Sem isto o conserto viraria spam de 15 em 15 minutos."""
+        self.assertFalse(deve_avisar(self.falha("coleta", "versao"),
+                                     self.aberto("coleta", "versao"), AGORA))
+
+    def test_os_mesmos_problemas_repetem_depois_do_silencio(self):
+        self.assertTrue(deve_avisar(self.falha("coleta"),
+                                    self.aberto("coleta", horas=SILENCIO_H + 1), AGORA))
+
+    def test_um_problema_que_FECHA_nao_dispara_aviso(self):
+        """Sobrou só a coleta, das duas que havia: não é novidade, é melhora
+        parcial. Quem ainda está vermelho não merece aviso novo por isso."""
+        self.assertFalse(deve_avisar(self.falha("coleta"),
+                                     self.aberto("coleta", "versao"), AGORA))
+
+    def test_estado_de_versao_ANTERIOR_do_vigia_cai_no_silencio(self):
+        """Sem `chaves_avisadas` não dá para saber o que já foi avisado.
+
+        Tratar como "tudo novo" dispararia um aviso por nada na primeira rodada
+        depois do deploy — e o primeiro aviso depois de um deploy é exatamente o
+        que ensina a ignorar os próximos."""
+        estado_velho = {"falhando": True,
+                        "avisado_em": (AGORA - timedelta(hours=1)).isoformat()}
+        self.assertFalse(deve_avisar(self.falha("coleta", "versao"), estado_velho, AGORA))
+
+    def test_primeira_falha_de_todas_continua_avisando_na_hora(self):
+        self.assertTrue(deve_avisar(self.falha("versao"), {}, AGORA))
+
+    def test_recuperacao_avisa_e_zera_as_chaves(self):
+        d = avaliar(coleta(), AGORA)
+        self.assertEqual(d.chaves, set())
+        self.assertTrue(deve_avisar(d, self.aberto("coleta", "versao"), AGORA))
+
+
+class SomarPreservaAsChaves(unittest.TestCase):
+    def test_duas_falhas_somam_as_duas_chaves(self):
+        d = Diagnostico(False, "a", ["d1"], "coleta").somar(
+            Diagnostico(False, "b", ["d2"], "versao"))
+        self.assertEqual(d.chaves, {"coleta", "versao"})
+        self.assertEqual(d.motivo, "a; b")
+        self.assertEqual(d.detalhes, ["d1", "d2"])
+
+    def test_checagem_que_passa_entra_no_detalhe_sem_virar_chave(self):
+        """Quem lê o aviso quer ver o que foi CONFERIDO, não só o que quebrou."""
+        d = Diagnostico(False, "a", ["d1"], "coleta").somar(
+            Diagnostico(True, "ok", ["código: em dia"]))
+        self.assertEqual(d.chaves, {"coleta"})
+        self.assertIn("código: em dia", d.detalhes)
+        self.assertFalse(d.ok)
+
+    def test_primeira_falha_sobre_um_ok_assume_o_motivo_dela(self):
+        d = Diagnostico(True, "tudo bem", ["d0"]).somar(
+            Diagnostico(False, "código atrasado", ["d1"], "versao"))
+        self.assertFalse(d.ok)
+        self.assertEqual(d.motivo, "código atrasado")
+        self.assertEqual(d.chaves, {"versao"})
 
 
 class TestTexto(unittest.TestCase):
@@ -446,14 +533,30 @@ class CodigoAtrasado(unittest.TestCase):
         procurar defeito onde não há — e ensina a duvidar do próximo aviso, que
         pode ser o da cheia.
         """
-        d = Diagnostico(False, "o código em /opt está 3 commits atrás", [])
+        d = Diagnostico(False, "o código em /opt está 3 commits atrás", [], "versao")
         so_versao = texto(d, so_versao=True)
         self.assertIn("código no ar está atrasado", so_versao)
         self.assertNotIn("coleta de nível parou", so_versao)
         self.assertIn("git pull", so_versao, "o aviso tem de trazer o conserto")
 
         parou = texto(d, so_versao=False)
-        self.assertIn("coleta de nível parou", parou)
+        self.assertIn("uma ou mais fontes", parou)
+        self.assertNotIn("ninguém recebe", parou)
+        self.assertIn("continuam sendo avaliadas", parou)
+
+    def test_o_conserto_do_codigo_sai_MESMO_com_outro_problema_aberto(self):
+        """A linha do `git pull` era presa ao `so_versao`: aparecia com um
+        problema e sumia com dois — some justamente quando a pessoa tem mais
+        coisa na cabeça. A manchete continua a da coleta; a instrução fica."""
+        d = Diagnostico(False, "coleta parada", [], "coleta")
+        d = d.somar(Diagnostico(False, "código 3 commits atrás", [], "versao"))
+        aviso = texto(d, so_versao=False)          # coleta doente E código atrasado
+        self.assertIn("uma ou mais fontes", aviso, "a manchete continua a da coleta")
+        self.assertIn("git pull", aviso, "o conserto do código não pode sumir")
+
+    def test_sem_codigo_atrasado_nao_manda_dar_git_pull(self):
+        d = Diagnostico(False, "coleta parada", [], "coleta")
+        self.assertNotIn("git pull", texto(d, so_versao=False))
 
 
 class CorSemAlarme(unittest.TestCase):
@@ -503,6 +606,87 @@ class CorSemAlarme(unittest.TestCase):
 
     def test_sem_coleta_nao_ha_o_que_conferir(self):
         self.assertTrue(avaliar_mapa_e_alarme(None).ok)
+
+
+class FonteManual(unittest.TestCase):
+    """Fonte que uma PESSOA alimenta não pode ser cobrada como sensor.
+
+    A régua de Indaial (fundos da Celesc) vem de um Google Docs que a Defesa
+    Civil preenche à mão. O limite de 120 min foi calibrado em fonte automática:
+    aplicado a ela, dá vermelho duas horas depois de a chuva passar e fica
+    vermelho até a próxima cheia.
+
+    E vigia sempre vermelho não é só ruído — foi esse vermelho crônico que
+    escondeu o aviso de "código atrasado" e deixou a VPS dois PRs atrás.
+    """
+
+    INDAIAL = "Indaial — fundos da Celesc (Defesa Civil)"
+
+    def com_indaial(self, dias_atras: float, outras_frescas=True) -> dict:
+        d = coleta(medido_minutos_atras=5 if outras_frescas else 5)
+        medido = (AGORA - timedelta(days=dias_atras)).astimezone(
+            timezone(timedelta(hours=-3))).replace(tzinfo=None)
+        d["leituras"].append({"estacao": self.INDAIAL, "rio": "itajai-acu",
+                              "cidade": "indaial", "nivel_m": 4.1,
+                              "medido_em": medido.isoformat()})
+        return d
+
+    def test_indaial_esta_cadastrada_como_manual(self):
+        self.assertIn(self.INDAIAL, FONTES_MANUAIS)
+        self.assertIn("mão", FONTES_MANUAIS[self.INDAIAL])
+
+    def test_tres_dias_parada_NAO_e_falha(self):
+        """O caso real de 15/09/2026: última leitura em 12/09 às 22h, fim da
+        cheia de 11-12/09. Antes disto, 70 h de vermelho por nada."""
+        d = avaliar(self.com_indaial(dias_atras=3), AGORA)
+        self.assertTrue(d.ok, f"não devia falhar: {d.motivo}")
+
+    def test_mas_a_IDADE_dela_continua_à_vista(self):
+        """Não cobrar não é esconder: quem abre o vigia durante uma cheia
+        precisa ver que a régua municipal está três dias atrás."""
+        d = avaliar(self.com_indaial(dias_atras=3), AGORA)
+        linha = [x for x in d.detalhes if self.INDAIAL in x]
+        self.assertTrue(linha, "a fonte manual sumiu dos detalhes")
+        self.assertIn("fonte manual", linha[0])
+        self.assertIn("3.0 dia", linha[0])
+
+    def test_nem_DEZOITO_MESES_parada_vira_falha(self):
+        """MEDIDO em 16/09/2026, lendo as 57 datas do documento: os intervalos
+        entre eventos chegam a 44, 45, 147, 172 e **568 dias** — o documento
+        passou dezoito meses parado e voltou a ser alimentado.
+
+        O teto de 30 dias que esta mudança trazia teria gritado cinco vezes só
+        nesse trecho. E o buraco de 568 dias diz mais que "o número está baixo":
+        o silêncio desta fonte não informa nada sobre ela estar viva, então
+        limiar de idade nenhum separa "quieta" de "abandonada" aqui."""
+        d = avaliar(self.com_indaial(dias_atras=568), AGORA)
+        self.assertTrue(d.ok, f"não devia falhar: {d.motivo}")
+        self.assertTrue(any("568.0 dia" in x for x in d.detalhes),
+                        "a idade tem de continuar à vista, por maior que seja")
+
+    def test_fonte_manual_SEM_HORARIO_continua_sendo_falha(self):
+        """Isso é defeito de formato, não silêncio normal — e sem horário não
+        dá para julgar idade nenhuma."""
+        d = coleta()
+        d["leituras"].append({"estacao": self.INDAIAL, "rio": "itajai-acu",
+                              "cidade": "indaial", "nivel_m": 4.1})
+        diag = avaliar(d, AGORA)
+        self.assertFalse(diag.ok)
+        self.assertIn("sem horário", diag.motivo)
+
+    def test_fonte_manual_que_SOME_do_arquivo_continua_sendo_falha(self):
+        """A memória rolante não é afrouxada: a fonte parar de existir é outro
+        problema, e é o que aconteceu com Gaspar."""
+        lembradas = {self.INDAIAL: (AGORA - timedelta(days=1)).isoformat()}
+        d = avaliar(coleta(), AGORA, lembradas)      # Indaial NÃO está no arquivo
+        self.assertFalse(d.ok)
+        self.assertIn(self.INDAIAL, d.motivo)
+
+    def test_fonte_AUTOMATICA_parada_continua_sendo_falha(self):
+        """O conserto vale para a lista, não para todo mundo."""
+        d = avaliar(coleta(medido_minutos_atras=60 * 24), AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("sem leitura nova", d.motivo)
 
 
 if __name__ == "__main__":

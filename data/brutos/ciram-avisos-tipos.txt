@@ -82,3 +82,6 @@ aviso_n61_100320221631.pdf :: ESTIAGEM
 aviso_n62_110320221634.pdf :: ESTIAGEM
 aviso_n63_140320221653.pdf :: ESTIAGEM
 Site-aviso_estiagem_46_150220221547.pdf :: indefinido
+aviso_n01_17112023.pdf :: ENCHENTE
+aviso_n02_18112023.pdf :: ENCHENTE
+aviso_n03_19112023.pdf :: ENCHENTE

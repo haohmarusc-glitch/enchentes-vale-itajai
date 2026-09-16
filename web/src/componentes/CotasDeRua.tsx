@@ -7,6 +7,7 @@ import { avisosCotasRuas, cotasRuas } from '../dados/cotasRuas'
 import { nomeDeCidade } from '../dados/carregar'
 import { frescor, idadeMin, textoIdade } from '../logica/tempoReal'
 import {
+  MAX_RESULTADOS_BUSCA,
   atingidas,
   buscar,
   cidadesComCotas,
@@ -96,6 +97,10 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   const semNivel = nivelAtual === null
   const nivel = simulado ?? nivelAtual ?? faixa?.min ?? 0
   const achadas = buscar(cotas, cidade.id, termo)
+  // Só as primeiras cabem na tela; a lista já vem da que alaga com o rio mais
+  // baixo para a que alaga por último, então o corte preserva as mais urgentes.
+  const mostradas = achadas.slice(0, MAX_RESULTADOS_BUSCA)
+  const ocultas = achadas.length - mostradas.length
   const jaAlagam = atingidas(cotas, cidade.id, nivel)
   const seguintes = proximas(cotas, cidade.id, nivel, 4)
   const semCota = dela.filter((c) => c.cota_m === null)
@@ -130,8 +135,9 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
 
       {termo.trim().length >= 2 ? (
         achadas.length > 0 ? (
+          <>
           <ul className={estilos.resultados}>
-            {achadas.map((c, i) => (
+            {mostradas.map((c, i) => (
               <li key={`${c.rua}-${c.ponto ?? i}`} className={estilos.resultado}>
                 <span className={estilos.nomeRua}>{nomeCompleto(c)}</span>
                 {c.bairro ? <span className={estilos.bairro}>{c.bairro}</span> : null}
@@ -180,6 +186,16 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
               </li>
             ))}
           </ul>
+          {/* Corte honesto: diz QUAIS ficaram (as que alagam primeiro), quantas
+              sobraram e o que fazer. Nunca some com resultado em silêncio. */}
+          {ocultas > 0 ? (
+            <p className={estilos.corte}>
+              Mostrando as <strong>{mostradas.length} que alagam com o rio mais baixo</strong>, de{' '}
+              {achadas.length.toLocaleString('pt-BR')} encontradas. Escreva mais do nome da rua ou
+              do bairro para achar a sua.
+            </p>
+          ) : null}
+          </>
         ) : (
           <p className={estilos.vazio}>
             Nenhuma rua com esse nome entre as {dela.length} levantadas em {cidade.nome}.{' '}

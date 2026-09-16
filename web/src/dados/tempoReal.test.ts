@@ -22,6 +22,13 @@ const CORPO = {
   chuva: [],
 }
 
+test('falha de Itajaí permanece explícita com fontes parciais ou sem níveis', async () => {
+  for (const leituras of [CORPO.leituras, []]) {
+    const estado = await buscarComLimite(500, respondeCom({ ...CORPO, leituras, fonte_itajai_ok: false }))
+    assert.equal(estado.fonteItajaiOk, false)
+  }
+})
+
 function respondeCom(corpo: unknown, atrasoMs = 0): Transporte {
   return (_url, init) =>
     new Promise((resolve, reject) => {
@@ -164,4 +171,13 @@ test('reguaDe: o resgate herda a identidade da primária que socorre', async () 
   const [a, b] = leiturasDaCidade(estado, 'itajai-acu', 'blumenau')
   assert.equal(reguaDe(a!), 'Blumenau')
   assert.equal(reguaDe(b!), 'Blumenau') // o (AlertaBlu) aponta para a primária
+})
+
+test('lê `codigo` da leitura quando o JSON o traz (rede estadual com cota própria)', async () => {
+  const estado = await estadoCom([
+    {estacao:'Ascurra — Ponte do Beber (DCSC-00003)',codigo:'DCSC-00003',cidade:'ascurra',rio:'itajai-acu',nivel_m:8.94,medido_em:'2026-09-12T17:00:00'},
+    {estacao:'DC-10 Rio Itajaí-Mirim – Bairro Limoeiro',cidade:'itajai',rio:'itajai-mirim',nivel_m:4.01,medido_em:'2026-09-12T17:00:00'},
+  ])
+  assert.equal(estado.leituras.find((l) => l.cidade === 'ascurra')?.codigo,'DCSC-00003')
+  assert.equal(estado.leituras.find((l) => l.cidade === 'itajai')?.codigo,undefined)
 })

@@ -30,6 +30,7 @@ ULTIMO = {"leituras": [{"estacao": "X", "rio": "itajai-acu", "cidade": "taio",
                         "nivel_m": 5.25, "medido_em": "2026-09-04T01:00:00"}]}
 
 
+@unittest.skipIf(os.name == "nt", "Script POSIX: verificado na CI Linux, não no shell Windows")
 class Publicador(unittest.TestCase):
     def monta(self, opcionais: dict[str, object]) -> Path:
         """Um repositório de mentira com o script e os arquivos pedidos."""

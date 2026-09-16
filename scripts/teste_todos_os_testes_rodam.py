@@ -18,6 +18,7 @@ um teste que não existe no dia em que alguém apontar um importador para o
 arquivo errado". Este arquivo passa a fazer valer.
 """
 import re
+import os
 import subprocess
 import sys
 import unittest
@@ -76,7 +77,8 @@ class TodoTesteRoda(unittest.TestCase):
 
 
 def _quantos(comando: list[str]) -> int | None:
-    r = subprocess.run(comando, cwd=AQUI, capture_output=True, text=True)
+    r = subprocess.run(comando, cwd=AQUI, capture_output=True, text=True, encoding="utf-8",
+                       env={**os.environ, "PYTHONUTF8": "1", "PYTHONIOENCODING": "utf-8"})
     m = RE_RAN.search(r.stderr + r.stdout)
     return int(m.group(1)) if m else None
 

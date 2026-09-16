@@ -8,6 +8,8 @@ site, com internet ruim. Uma mensagem de texto passa onde uma página não passa
 
 Comandos:
     /rua [cidade] [rua]  a partir de quantos metros aquela rua alaga
+    (localização)        mande o pino: a régua mais próxima e, onde houver,
+                         a cota da rua mais perto do ponto
     /nivel [cidade]      nível agora, cota e idade da leitura
     /chuva [cidade]      acumulado de 1 h, 12 h, 24 h e 48 h
     /previsao [cidade]   se o pico fosse agora, quando chega a jusante
@@ -59,6 +61,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 import time
 import unicodedata
@@ -105,6 +108,26 @@ INTERVALO_POR_CHAT_S = 2
 #: com uma de 30 h, o bot anunciava chegada em Apiúna para o dia anterior, com
 #: cara de previsão. Três horas é o mesmo limite que o site usa para marcar
 #: leitura como velha (MIN_VELHA).
+#: Até onde o bot aceita dizer "a régua mais próxima de você é X" (km, linha reta).
+#:
+#: 25 km, e o número sai da própria bacia: as 20 cidades do cadastro distam de
+#: 6,2 km (Brusque-Guabiruba) a 29,4 km (Taió-Trombudo Central) da vizinha mais
+#: próxima. Com 25 km o miolo fica coberto e as isoladas — Taió, Vidal Ramos,
+#: Ituporanga — não fingem cobrir quem está no meio do caminho.
+#:
+#: Além do raio a resposta é "não sei", e isso é resposta: a régua de uma cidade
+#: a 40 km não diz nada sobre o rio ao lado de quem perguntou.
+LIMITE_LOCALIZACAO_KM = 25.0
+
+#: Até onde uma cota de rua pode ser oferecida como "o ponto mais próximo" (metros).
+#:
+#: 300 m é curto de propósito. A cota é de um PONTO, não de uma rua inteira (o
+#: `_meta` de cotas-ruas.json diz isso), e terreno muda rápido: um ponto a 800 m
+#: pode estar dois metros mais alto que a esquina de quem perguntou. Passando
+#: disto, a resposta cai para a camada da cidade — que é menos específica e
+#: continua verdadeira.
+LIMITE_COTA_RUA_M = 300
+
 IDADE_MAXIMA_PREVISAO_MIN = 180
 
 #: A partir de quantos minutos de diferença entre o pluviômetro mais velho e o
@@ -196,6 +219,34 @@ def idade_min(medido_em: str | None, agora: datetime) -> float | None:
 
 def quando(d: datetime) -> str:
     return d.astimezone(FUSO).strftime("%d/%m às %H:%M")
+
+
+def distancia_km(a: tuple[float, float], b: tuple[float, float]) -> float:
+    """Distância em linha reta entre dois pontos (lat, lon), em km.
+
+    Linha reta, não distância de rio — e a diferença importa para quem lê a
+    resposta. Duas cidades a 8 km em linha reta podem ter 20 km de rio entre
+    elas, e a água não anda em linha reta. Serve para escolher o ponto MAIS
+    PERTO, nunca para estimar tempo de chegada, que sai de `transito.json`.
+    """
+    raio = 6371.0
+    la1, lo1 = math.radians(a[0]), math.radians(a[1])
+    la2, lo2 = math.radians(b[0]), math.radians(b[1])
+    h = (math.sin((la2 - la1) / 2) ** 2
+         + math.cos(la1) * math.cos(la2) * math.sin((lo2 - lo1) / 2) ** 2)
+    return 2 * raio * math.asin(math.sqrt(h))
+
+
+def quilometros(v: float) -> str:
+    """`1,6 km` — vírgula decimal, como todo número que este bot mostra."""
+    return f"{v:.1f} km".replace(".", ",")
+
+
+def coordenada_valida(lat, lon) -> bool:
+    """Par utilizável? Telegram manda números, mas um `null` no cadastro não avisa."""
+    return (isinstance(lat, (int, float)) and isinstance(lon, (int, float))
+            and not isinstance(lat, bool) and not isinstance(lon, bool)
+            and -90 <= lat <= 90 and -180 <= lon <= 180)
 
 
 def regua_de(leitura: dict) -> str:
@@ -377,6 +428,44 @@ class Base:
                 saida.append(c)
         return saida
 
+    def cidade_mais_proxima(self, lat: float, lon: float) -> tuple[dict, float] | None:
+        """(cidade, km) mais próxima do ponto, ou None se nenhuma tiver coordenada.
+
+        NÃO filtra por "tem fonte ao vivo": Apiúna, Ilhota e Guabiruba estão no
+        cadastro sem fonte, e pular a mais perto para oferecer a segunda seria
+        responder sobre outro lugar sem dizer. Quem trata a ausência é o
+        `resposta_nivel`, que já sabe dizer "sem leitura ao vivo desta cidade".
+        """
+        melhor = None
+        for c in self.cidades():
+            co = c.get("coordenadas")
+            if not (isinstance(co, (list, tuple)) and len(co) == 2 and coordenada_valida(*co)):
+                continue
+            d = distancia_km((lat, lon), (co[0], co[1]))
+            if melhor is None or d < melhor[1]:
+                melhor = (c, d)
+        return melhor
+
+    def cota_mais_proxima(self, lat: float, lon: float) -> tuple[dict, float] | None:
+        """(cota de rua, METROS) mais próxima do ponto, ou None.
+
+        Só as cotas que já passaram pelo filtro de `referencia == "régua"` do
+        construtor — a comparação com o nível ao vivo exige a mesma referência
+        (REGRA BLOQUEANTE do CLAUDE.md, item 4). Cota sem número (`cota_m` nulo)
+        fica de fora: ela é resposta legítima no /rua, onde a pessoa perguntou
+        pela rua, mas aqui ela não responderia nada.
+        """
+        melhor = None
+        for c in self.cotas_ruas:
+            if not isinstance(c.get("cota_m"), (int, float)):
+                continue
+            if not coordenada_valida(c.get("lat"), c.get("lon")):
+                continue
+            d = distancia_km((lat, lon), (c["lat"], c["lon"])) * 1000
+            if melhor is None or d < melhor[1]:
+                melhor = (c, d)
+        return melhor
+
     def separar_cidade(self, argumento: str) -> tuple[dict | None, str]:
         """
         Reparte "Blumenau São Rafael" em (cidade, "São Rafael").
@@ -421,6 +510,8 @@ class Base:
 def ajuda() -> str:
     return (
         "<b>Cheias do Vale do Itajaí</b>\n\n"
+        "📍 <b>Mande a sua localização</b> — a régua mais próxima e, onde houver, "
+        "a cota do ponto levantado mais perto de você\n\n"
         "/rua <i>cidade rua</i> — a partir de quantos metros a sua rua alaga\n"
         "/nivel <i>cidade</i> — nível do rio agora\n"
         "/chuva <i>cidade</i> — quanto choveu em 1 h, 12 h, 24 h e 48 h\n"
@@ -448,6 +539,9 @@ def emergencia() -> str:
 
 def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
+    if cidade["id"] == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
+        linhas.append("\nFonte de Itajaí indisponível: não foi possível obter as medições das réguas municipais.")
+        return linhas
     leituras = base.leituras_da_cidade(cidade["id"], agora)
     if not leituras:
         bruto = base.bruto_da_cidade(cidade["id"])
@@ -643,6 +737,60 @@ def nome_do_ponto(c: dict) -> str:
     return f"{c['rua']} ({ponto})" if ponto and ponto != c["rua"] else c["rua"]
 
 
+def linhas_de_uma_cota(c: dict, cidade_nome: str,
+                      atual: tuple[float, float | None] | None) -> list[str]:
+    """Uma cota de rua renderizada, com as ressalvas que ela carrega.
+
+    EXTRAÍDA do `resposta_rua` em 16/09/2026, quando a resposta por LOCALIZAÇÃO
+    passou a precisar do mesmo bloco. Não foi arrumação: duplicar as quatro
+    guardas daqui — cota nula, `cota_max_m`, abrigo, `usar_para_aviso` — era
+    repetir na mão o erro que o cadastro da rede estadual acabou de custar, com
+    a diferença de que aqui a lista que envelheceria sozinha é a das ressalvas
+    que impedem uma frase assustadora de sair de um número não conferido.
+
+    `atual` é (nível, idade em min) da cidade, ou None quando não há comparação
+    possível — quem decide isso é o chamador, porque a regra ("só compara cidade
+    de UMA régua") vale para a cidade inteira, não para a cota.
+    """
+    e = notificador.esc
+    rotulo = e(nome_do_ponto(c))
+    cidade_nome = e(cidade_nome)
+    if c["cota_m"] is None:
+        return [f"\n\n<b>{rotulo}</b> — {cidade_nome}"
+                f"\n<i>{e(c.get('nota') or 'a fonte não publica a cota exata')}</i>"]
+    linhas = [f"\n\n<b>{rotulo}</b> — {cidade_nome}"
+              f"\nAlaga a partir de <b>{metros(c['cota_m'])}</b>"]
+    # A máxima é informação, não gatilho: quem decide sair de casa decide
+    # pela mínima, que é quando a água chega à rua.
+    if isinstance(c.get("cota_max_m"), (int, float)):
+        linhas.append(f" · toda a rua a {metros(c['cota_max_m'])}")
+    # O abrigo vem logo abaixo da cota porque é a outra metade da mesma
+    # decisão: a cota diz que é hora de sair, o abrigo diz para onde. Só
+    # Blumenau tem, por enquanto, e é do PDF oficial da Defesa Civil.
+    if c.get("abrigo"):
+        codigo = f" ({e(c['abrigo_codigo'])})" if c.get("abrigo_codigo") else ""
+        linhas.append(f"\nAbrigo: <b>{e(c['abrigo'])}</b>{codigo}")
+    # A ressalva sai JUNTO do número, e não só quando ele falta: Rio do Sul
+    # publica ruas alagando abaixo da menor cota da cidade, e sem isto o bot
+    # diria "já foi alcançado" com tempo bom.
+    if c.get("nota"):
+        linhas.append(f"\n<i>{e(c['nota'])}</i>")
+    # Registro marcado para não mover aviso não vira "já foi alcançado":
+    # a comparação daria uma frase assustadora a partir de um número que o
+    # próprio registro diz não estar conferido. A nota, acima, explica.
+    if c.get("usar_para_aviso") is False:
+        atual = None
+    if atual:
+        falta = round(c["cota_m"] - atual[0], 2)
+        if falta > 0:
+            linhas.append(f"\nO rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
+                          f"faltam <b>{metros(falta)}</b> de subida.")
+        else:
+            linhas.append(f"\n⚠️ O rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
+                          "este nível <b>já foi alcançado</b>.")
+    return linhas
+
+
 def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -> list[str]:
     """
     "A partir de quantos metros a minha rua alaga?"
@@ -698,43 +846,8 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     linhas = [f"<b>Cotas de rua</b> — “{e(termo)}”{onde}"]
 
     for c in achadas[:MAX_RUAS]:
-        rotulo = e(nome_do_ponto(c))
-        cidade_nome = e(nomes_cidade.get(c["cidade"], c["cidade"]))
-        if c["cota_m"] is None:
-            linhas.append(f"\n\n<b>{rotulo}</b> — {cidade_nome}"
-                          f"\n<i>{e(c.get('nota') or 'a fonte não publica a cota exata')}</i>")
-            continue
-        linhas.append(f"\n\n<b>{rotulo}</b> — {cidade_nome}"
-                      f"\nAlaga a partir de <b>{metros(c['cota_m'])}</b>")
-        # A máxima é informação, não gatilho: quem decide sair de casa decide
-        # pela mínima, que é quando a água chega à rua.
-        if isinstance(c.get("cota_max_m"), (int, float)):
-            linhas.append(f" · toda a rua a {metros(c['cota_max_m'])}")
-        # O abrigo vem logo abaixo da cota porque é a outra metade da mesma
-        # decisão: a cota diz que é hora de sair, o abrigo diz para onde. Só
-        # Blumenau tem, por enquanto, e é do PDF oficial da Defesa Civil.
-        if c.get("abrigo"):
-            codigo = f" ({e(c['abrigo_codigo'])})" if c.get("abrigo_codigo") else ""
-            linhas.append(f"\nAbrigo: <b>{e(c['abrigo'])}</b>{codigo}")
-        # A ressalva sai JUNTO do número, e não só quando ele falta: Rio do Sul
-        # publica ruas alagando abaixo da menor cota da cidade, e sem isto o bot
-        # diria "já foi alcançado" com tempo bom.
-        if c.get("nota"):
-            linhas.append(f"\n<i>{e(c['nota'])}</i>")
-        atual = niveis.get(c["cidade"])
-        # Registro marcado para não mover aviso não vira "já foi alcançado":
-        # a comparação daria uma frase assustadora a partir de um número que o
-        # próprio registro diz não estar conferido. A nota, acima, explica.
-        if c.get("usar_para_aviso") is False:
-            atual = None
-        if atual:
-            falta = round(c["cota_m"] - atual[0], 2)
-            if falta > 0:
-                linhas.append(f"\nO rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
-                              f"faltam <b>{metros(falta)}</b> de subida.")
-            else:
-                linhas.append(f"\n⚠️ O rio está em {metros(atual[0])} ({texto_idade(atual[1])}) — "
-                              "este nível <b>já foi alcançado</b>.")
+        linhas.extend(linhas_de_uma_cota(c, nomes_cidade.get(c["cidade"], c["cidade"]),
+                                         niveis.get(c["cidade"])))
 
     # A explicação sai UMA vez por cidade, no fim: repetida em cada rua ocupava
     # metade da mensagem. Mas sai — silêncio aqui parece esquecimento, e a
@@ -756,6 +869,87 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     linhas.append("\n\n<i>Cotas são aproximadas e envelhecem: obra e enchente nova mudam os "
                   "valores. Isto é leitura de tabela, não previsão — não diz se o rio vai "
                   "chegar nesse nível.</i>")
+    return linhas
+
+
+def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
+    """A pessoa mandou o pino. Duas camadas, a melhor que os dados sustentam.
+
+    **Camada da rua**, onde há cota levantada a menos de LIMITE_COTA_RUA_M: é a
+    pergunta que a pessoa realmente tem — "a água chega em mim?". Hoje só existe
+    em Brusque e Gaspar; nas outras 18 cidades não há cota com coordenada.
+
+    **Camada da cidade**, sempre: a régua mais próxima dentro de
+    LIMITE_LOCALIZACAO_KM, com a mesma resposta do /nivel. É o piso, e é o que
+    sobra quando não há cota perto.
+
+    As duas saem juntas quando as duas existem. A de rua responde o que importa;
+    a da cidade diz onde o rio está, que é a pergunta seguinte, sempre.
+
+    O QUE ESTA FUNÇÃO NUNCA DIZ: "a sua rua". Ela diz "o ponto levantado mais
+    perto de você", com a distância, porque é isso que ela sabe — a cota é de um
+    PONTO, não de uma rua inteira, e quem julga se aquele ponto representa a
+    esquina de quem perguntou é quem perguntou.
+
+    PRIVACIDADE: a coordenada entra, é usada e não é gravada em lugar nenhum. O
+    bot já não registra conteúdo de mensagem (só `offset` e o instante da última
+    resposta por chat); localização é dado pessoal e não pode inaugurar um log.
+    """
+    e = notificador.esc
+    if not coordenada_valida(lat, lon):
+        return ["Não consegui ler essa localização." + RODAPE]
+
+    perto = base.cidade_mais_proxima(lat, lon)
+    if perto is None or perto[1] > LIMITE_LOCALIZACAO_KM:
+        # "Não sei" é resposta. A régua de uma cidade a 40 km não diz nada sobre
+        # o rio ao lado de quem perguntou, e oferecê-la seria pior que o silêncio.
+        onde = f" A mais próxima fica a {quilometros(perto[1])}." if perto else ""
+        return [
+            "📍 <b>Você está fora da área que este projeto cobre.</b>\n\n"
+            f"Ele acompanha os rios Itajaí-Açu e Itajaí-Mirim, e nenhuma das réguas "
+            f"está a menos de {LIMITE_LOCALIZACAO_KM:.0f} km daí.{onde}\n\n"
+            "Procure a Defesa Civil do seu município." + RODAPE
+        ]
+    cidade, km = perto
+    linhas: list[str] = []
+
+    cota = base.cota_mais_proxima(lat, lon)
+    if cota is not None and cota[1] <= LIMITE_COTA_RUA_M:
+        c, dist_m = cota
+        nomes = {x["id"]: x["nome"] for x in base.cidades()}
+        # A MESMA regra do /rua: só compara com o nível ao vivo a cidade que tem
+        # UMA régua. Com várias, nenhuma delas sozinha é "o nível da cidade", e
+        # "faltam 2,30 m" sairia medido contra a régua errada.
+        atual = None
+        leituras = base.leituras_da_cidade(c["cidade"], agora)
+        if len(leituras) == 1 and isinstance(leituras[0].get("nivel_m"), (int, float)):
+            atual = (float(leituras[0]["nivel_m"]),
+                     idade_min(leituras[0].get("medido_em"), agora))
+        linhas.append(f"📍 <b>Ponto levantado mais perto de você</b> — a {dist_m:.0f} m daqui")
+        linhas.extend(linhas_de_uma_cota(c, nomes.get(c["cidade"], c["cidade"]), atual))
+        if c.get("data_fonte"):
+            # `2023-11` é como o dado guarda; `11/2023` é como se lê. A idade da
+            # cota sai sempre: uma de 2020 e uma de 2023 não podem chegar com a
+            # mesma cara de "é assim".
+            partes = str(c["data_fonte"]).split("-")
+            quando_cota = f"{partes[1]}/{partes[0]}" if len(partes) >= 2 else str(c["data_fonte"])
+            linhas.append(f"\n<i>Cota levantada em {e(quando_cota)}.</i>")
+        if atual is None and len(leituras) > 1:
+            linhas.append(f"\n<i>Quanto falta subir não dá para dizer: "
+                          f"{e(nomes.get(c['cidade'], c['cidade']))} tem {len(leituras)} réguas "
+                          "com zeros diferentes.</i>")
+        linhas.append("\n\n<i>A cota é de um PONTO, não da rua inteira — terreno muda de uma "
+                      "esquina para a outra. Isto é leitura de tabela, não previsão: diz o que "
+                      "acontece SE o rio chegar nesse nível, não se vai chegar.</i>")
+        linhas.append("\n\n———")
+
+    # O separador só sai se já houver a camada da rua acima: sem isto, a
+    # resposta sem cota perto começava com duas linhas em branco.
+    cabeca = "\n\n" if linhas else ""
+    linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(cidade['nome'])}</b>, "
+                  f"a {quilometros(km)} em linha reta.\n\n")
+    linhas.extend(resposta_nivel(base, cidade, agora))
+    linhas.append(RODAPE)
     return linhas
 
 
@@ -985,6 +1179,8 @@ BLOCOS_ARVORE = [
 def _linha_cidade(base: Base, c: dict, por_cidade: dict, agora: datetime, rio: str) -> list[str]:
     """As linhas de UMA cidade no panorama, com as réguas da foz filtradas por eixo."""
     cid = c["id"]
+    if cid == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
+        return ["Itajaí: fonte municipal indisponível"]
     ls = por_cidade.get(cid, [])
     if cid == FOZ:
         # Só as réguas cujo EIXO é este rio — cada ribeirão entra no rio em que
@@ -1128,6 +1324,21 @@ def responder(texto: str, base: Base, agora: datetime) -> str | None:
 
 # --- laço -------------------------------------------------------------------
 
+def saida_para(mensagem: dict, base: Base, agora: datetime) -> str | None:
+    """A resposta a UMA mensagem do Telegram, ou None para não responder nada.
+
+    Função pura, como o `responder`: existe separada do laço de rede para poder
+    ser testada sem Telegram. É aqui que se decide o TIPO da mensagem, e foi
+    justamente esse ponto que engoliu a localização em silêncio até 16/09/2026 —
+    o laço exigia `text`, e um pino não tem `text`.
+    """
+    local = mensagem.get("location") or {}
+    if local:
+        return "".join(resposta_localizacao(
+            base, local.get("latitude"), local.get("longitude"), agora))
+    return responder(mensagem.get("text") or "", base, agora)
+
+
 def le_estado() -> dict:
     if not ESTADO.exists():
         return {}
@@ -1232,14 +1443,20 @@ def rodada(estado: dict, espera: int) -> dict:
         mensagem = u.get("message") or u.get("edited_message") or {}
         chat = str((mensagem.get("chat") or {}).get("id") or "")
         texto = mensagem.get("text") or ""
-        if not chat or not texto:
+        # `location` é o pino do Telegram, e `edited_message` traz a localização
+        # AO VIVO, que o app atualiza sozinho — as duas caem aqui porque o laço
+        # já lia os dois tipos de mensagem. Até 16/09/2026 a linha abaixo exigia
+        # `texto` e o pino era descartado em silêncio: a pessoa mandava onde
+        # estava e o bot não respondia nada.
+        local = mensagem.get("location") or {}
+        if not chat or not (texto or local):
             continue
 
         agora_s = time.time()
         if agora_s - float(ultima_por_chat.get(chat, 0)) < INTERVALO_POR_CHAT_S:
             continue
 
-        saida = responder(texto, base, agora)
+        saida = saida_para(mensagem, base, agora)
         if saida is None:
             continue
         ultima_por_chat[chat] = agora_s

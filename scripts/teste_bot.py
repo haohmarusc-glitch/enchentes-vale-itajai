@@ -20,8 +20,10 @@ import unittest.mock
 from pathlib import Path
 
 import notificador
-from bot import (IDADE_MAXIMA_PREVISAO_MIN, MAX_RUAS, REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha,
-                 eh_timeout, nome_curto, responder, resposta_rua, sem_acento, texto_idade)
+from bot import (IDADE_MAXIMA_PREVISAO_MIN, LIMITE_COTA_RUA_M, LIMITE_LOCALIZACAO_KM, MAX_RUAS,
+                 REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, distancia_km,
+                 eh_timeout, nome_curto, responder, resposta_localizacao, resposta_rua, saida_para,
+                 sem_acento, texto_idade)
 from comum import le_json
 
 AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
@@ -728,6 +730,140 @@ ULTIMO_BLUMENAU = {
 def base_blumenau() -> Base:
     return Base(ULTIMO_BLUMENAU, le_json("estacoes.json"), le_json("transito.json"),
                 le_json("enchentes.json"), le_json("cotas-ruas.json"))
+
+
+class TestDistancia(unittest.TestCase):
+    def test_mesmo_ponto_da_zero(self):
+        self.assertAlmostEqual(distancia_km((-27.1, -48.9), (-27.1, -48.9)), 0, places=6)
+
+    def test_brusque_guabiruba_sao_os_6_km_medidos(self):
+        """Par mais próximo da bacia; o número calibrou o raio de 25 km."""
+        d = distancia_km((-27.1007, -48.9172), (-27.0847, -48.9789))
+        self.assertAlmostEqual(d, 6.2, delta=0.3)
+
+    def test_um_grau_de_latitude_da_111_km(self):
+        self.assertAlmostEqual(distancia_km((-27.0, -49.0), (-28.0, -49.0)), 111.2, delta=0.5)
+
+
+class TestLocalizacao(unittest.TestCase):
+    """Duas camadas: a cota do ponto mais perto, onde houver, e a régua da cidade.
+
+    O que estes testes travam é sobretudo o que a resposta NÃO pode dizer. Um pino
+    é a pergunta mais direta que o bot recebe — "a água chega em mim?" — e a
+    tentação de responder com precisão que o dado não tem é proporcional.
+    """
+
+    # Pontos reais: um colado numa cota levantada de Brusque, um em Blumenau
+    # (que não tem cota com coordenada) e um fora da bacia.
+    BRUSQUE_COM_COTA = (-27.100666, -48.932929)
+    BLUMENAU = (-26.9194, -49.0661)
+    FLORIPA = (-27.5954, -48.5480)
+
+    def loc(self, ponto, b=None) -> str:
+        return "".join(resposta_localizacao(b or base(), ponto[0], ponto[1], AGORA))
+
+    def test_camada_da_rua_sai_quando_ha_cota_perto(self):
+        t = self.loc(self.BRUSQUE_COM_COTA)
+        self.assertIn("Bartolomeu Pruner", t)
+        self.assertIn("Alaga a partir de", t)
+        self.assertIn("7,65 m", t)
+
+    def test_diz_a_DISTANCIA_e_nunca_diz_a_sua_rua(self):
+        """A cota é de um PONTO. Chamar de "a sua rua" seria afirmar que o ponto
+        levantado é a esquina de quem perguntou — e disso o bot não sabe nada."""
+        t = self.loc(self.BRUSQUE_COM_COTA)
+        self.assertIn("mais perto de você", t)
+        self.assertRegex(t, r"a \d+ m daqui")
+        self.assertNotIn("sua rua", t.lower())
+
+    def test_a_IDADE_da_cota_sai_junto(self):
+        """Uma cota de 2020 e uma de 2023 não podem chegar com a mesma cara."""
+        self.assertIn("Cota levantada em 11/2023", self.loc(self.BRUSQUE_COM_COTA))
+
+    def test_camada_da_cidade_sai_SEMPRE(self):
+        """É o piso: onde não há cota perto, ela é a resposta inteira."""
+        for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU):
+            t = self.loc(ponto)
+            self.assertIn("Régua mais próxima", t)
+            self.assertIn("nível do rio", t)
+
+    def test_sem_cota_perto_responde_so_a_cidade_sem_linha_em_branco(self):
+        t = self.loc(self.BLUMENAU)
+        self.assertIn("Blumenau", t)
+        self.assertNotIn("Alaga a partir de", t)
+        self.assertFalse(t.startswith("\n"), "a resposta não pode abrir com linha em branco")
+
+    def test_fora_do_raio_diz_NAO_SEI_e_nao_oferece_regua_distante(self):
+        """A régua de uma cidade a 66 km não diz nada sobre o rio ao lado de quem
+        perguntou. Oferecê-la seria pior que o silêncio."""
+        t = self.loc(self.FLORIPA)
+        self.assertIn("fora da área", t)
+        self.assertIn("Defesa Civil do seu município", t)
+        self.assertNotIn("Régua mais próxima", t)
+        self.assertNotIn("Alaga a partir de", t)
+
+    def test_o_raio_da_cidade_e_o_constante_declarado(self):
+        b = base()
+        perto = b.cidade_mais_proxima(*self.FLORIPA)
+        self.assertGreater(perto[1], LIMITE_LOCALIZACAO_KM)
+        perto_br = b.cidade_mais_proxima(*self.BRUSQUE_COM_COTA)
+        self.assertLess(perto_br[1], LIMITE_LOCALIZACAO_KM)
+
+    def test_cota_longe_demais_NAO_e_oferecida(self):
+        """Ponto a mais de LIMITE_COTA_RUA_M cai para a camada da cidade, que é
+        menos específica e continua verdadeira."""
+        b = base()
+        c = b.cota_mais_proxima(*self.BLUMENAU)
+        if c is not None:
+            self.assertGreater(c[1], LIMITE_COTA_RUA_M)
+        self.assertNotIn("Alaga a partir de", self.loc(self.BLUMENAU))
+
+    def test_coordenada_invalida_nao_estoura(self):
+        for lat, lon in ((None, None), ("x", "y"), (999, 999), (True, False)):
+            t = "".join(resposta_localizacao(base(), lat, lon, AGORA))
+            self.assertIn("Não consegui ler", t)
+
+    def test_toda_resposta_traz_o_rodape_e_o_199(self):
+        for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU, self.FLORIPA):
+            self.assertIn("199", self.loc(ponto))
+
+    def test_nenhuma_resposta_estoura_o_limite_do_telegram(self):
+        """Mensagem recusada pelo Telegram é silêncio, que é o pior resultado."""
+        for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU, self.FLORIPA):
+            self.assertLess(len(self.loc(ponto)), 4096)
+
+    def test_cidade_com_VARIAS_reguas_nao_diz_quanto_falta(self):
+        """Mesma regra do /rua: com zeros diferentes, nenhuma régua sozinha é "o
+        nível da cidade", e "faltam 2,30 m" sairia medido contra a errada."""
+        b = base()
+        itajai = [c for c in b.cidades() if c["id"] == "itajai"][0]
+        self.assertGreater(len(b.leituras_da_cidade("itajai", AGORA)), 1)
+        t = "".join(resposta_localizacao(b, *itajai["coordenadas"], AGORA))
+        self.assertNotIn("faltam", t)
+
+
+    def test_o_PINO_do_telegram_chega_a_resposta(self):
+        """Até 16/09/2026 o laço exigia `text` e a localização caía fora em
+        silêncio: a pessoa mandava onde estava e o bot não respondia nada."""
+        msg = {"chat": {"id": 1},
+               "location": {"latitude": self.BRUSQUE_COM_COTA[0],
+                            "longitude": self.BRUSQUE_COM_COTA[1]}}
+        saida = saida_para(msg, base(), AGORA)
+        self.assertIsNotNone(saida)
+        self.assertIn("Bartolomeu Pruner", saida)
+
+    def test_localizacao_AO_VIVO_tambem_responde(self):
+        """O app manda a localização ao vivo como `edited_message`, que o laço já
+        lia — o tipo da mensagem é o mesmo, então nada extra é preciso."""
+        msg = {"chat": {"id": 1}, "location": {"latitude": self.BLUMENAU[0],
+                                               "longitude": self.BLUMENAU[1]}}
+        self.assertIn("Blumenau", saida_para(msg, base(), AGORA))
+
+    def test_mensagem_de_texto_continua_indo_para_o_responder(self):
+        self.assertIn("Cotas de rua", saida_para({"text": "/rua"}, base(), AGORA))
+
+    def test_mensagem_sem_texto_e_sem_pino_nao_responde(self):
+        self.assertIsNone(saida_para({"chat": {"id": 1}}, base(), AGORA))
 
 
 class TestReguaDeResgate(unittest.TestCase):

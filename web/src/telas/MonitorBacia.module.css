@@ -739,3 +739,75 @@
 .municipal .cantoEsquerdo { max-height: 70%; overflow: auto; }
 
 .paginaMunicipal { width: 100%; left: 0; margin-left: 0; }
+
+/* Controles compactos no celular: mantém o centro livre para os rios. */
+@media (max-width: 700px) {
+  .palco { height: 85dvh; min-height: 34rem; }
+  .palco:fullscreen, .municipal { height: 100dvh; }
+  .colunaEsquerda { inset: .4rem; }
+  .cantoEsquerdo {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .35rem;
+    width: 100%;
+    padding-top: 1.6rem;
+  }
+  .topo {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .25rem .5rem;
+    max-width: 100%;
+    padding: .3rem .4rem;
+  }
+  .topo > strong { font-size: .75rem; flex: 1; }
+  .topo .botaoMenu, .topo .botaoCheia {
+    margin: 0;
+    min-height: 44px;
+    padding: .25rem .5rem;
+    font-size: .75rem;
+  }
+  .topo .aviso { order: 3; width: 100%; font-size: .65rem; margin: 0; }
+  .camadasControle { padding: 0 .55rem; max-width: 100%; font-size: .8rem; }
+  .camadasControle summary { min-height: 44px; display: flex; align-items: center; }
+  .camadasControle[open] { grid-column: 1 / -1; max-height: 38dvh; }
+  .zoom { display: flex; flex-direction: row; gap: .3rem; justify-self: end; }
+  .zoom button { width: 44px; height: 44px; min-height: 44px; padding: 0; }
+  .menuCidades, .resumoMunicipal, .rotuloCamada { grid-column: 1 / -1; }
+  .menuCidades { max-height: 42dvh; overflow-y: auto; }
+  .controles { padding: .25rem .4rem; gap: .35rem; flex-wrap: nowrap; }
+  .botaoPlay { font-size: .72rem; padding: .3rem .4rem; min-height: 44px; }
+  .barra { min-width: 2.5rem; width: 0; }
+  .instante { min-width: 3.5rem; font-size: .65rem; }
+  .legenda { max-height: 28dvh; font-size: .72rem; padding: .3rem .5rem; }
+  .botaoLegenda { min-height: 44px; }
+}
+
+/* Alternativa à Fullscreen API para navegadores que a recusam. */
+.palco.ampliado {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 0;
+  border-radius: 0;
+}
+
+/* Faixa estadual (C7): amostra tracejada, sem cor fixa — a cor no mapa é a da
+   faixa que o estado publicar; o que a distingue é o traço. */
+.amostraSeta {
+  background: transparent !important;
+  box-shadow: none;
+  color: rgba(234,241,248,0.95);
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.amostraTracejada {
+  background: transparent !important;
+  border: 2px dashed rgba(234, 241, 248, 0.85);
+  box-shadow: none;
+}

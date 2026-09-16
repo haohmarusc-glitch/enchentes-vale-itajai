@@ -175,7 +175,20 @@ export default function LinhaDoTempo({
 
       <div className={estilos.grafico}>
         <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={dados} margin={{ top: 16, right: 12, left: -18, bottom: 4 }}>
+          {/*
+            `key` pela cidade: o <Brush> guarda o endIndex em estado interno e só
+            recebe startIndex por prop. Sem o key, trocar de cidade sem recarregar
+            reaproveita a mesma instância e o endIndex da cidade anterior sobrevive
+            — incoerente com a série nova, o intervalo do Brush vira negativo e o
+            recharts escreve NaN em x/width do slide e x1/x2 das alças. Remontar ao
+            trocar de cidade zera esse estado; nas re-renderizações normais (o
+            relógio de `agora`) o key não muda, então o arraste do morador fica de pé.
+          */}
+          <LineChart
+            key={cidade.id}
+            data={dados}
+            margin={{ top: 16, right: 12, left: -18, bottom: 4 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="var(--borda)" />
             <XAxis
               dataKey="t"

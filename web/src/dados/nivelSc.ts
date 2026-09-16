@@ -3,10 +3,11 @@
  * `ultimo_nivel_sc.json` no branch `tempo-real`, ao lado do `ultimo.json`.
  *
  * É nível de régua PRÓPRIA da estação — datum diferente das cotas do projeto.
- * Por isso NUNCA vira cota nem pinta faixa: só preenche, rotulado, a lacuna das
+ * Sem vínculo documental não vira cota nem pinta faixa: só preenche, rotulado, a lacuna das
  * cidades sem fonte municipal (Ibirama, Indaial, Taió…). Quem decide usá-lo é a
  * tela, e só quando não há leitura municipal (a municipal manda). Espelha a
  * disciplina do coletor `coleta_nivel_sc.py` e do bot.
+ * Exceção documentada: referenciaAscurra.ts vincula DCSC-00003 às faixas do C18.
  *
  * Falhar aqui é inofensivo: sem o arquivo (ou com ele quebrado), o mapa fica
  * vazio e a tela volta a mostrar "sem dado" nas lacunas — nunca um número
@@ -14,6 +15,7 @@
  */
 import { useEffect, useState } from 'react'
 import { deBrasilia } from '../logica/tempoReal'
+import { buscarPublicacao } from './publicacao'
 
 const PADRAO =
   'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo_nivel_sc.json'
@@ -34,7 +36,20 @@ export interface BrutoEstadual {
   chuva168hMm?: number | null
   /** Instante da medição, em hora de Brasília. Null quando a fonte não o publicou. */
   medidoEm: Date | null
+  /**
+   * Faixa que a PRÓPRIA Defesa Civil de SC publica para a estação (`rio_alarmes`),
+   * no datum dela — C7. Não é a faixa deste projeto e não vem de cota nossa: é a
+   * classificação da fonte, já validada pelo coletor (ativo=true, uma flag só).
+   * Null quando a fonte não classificou, não tem faixas configuradas para a estação
+   * (ativo=false — o caso de Ascurra, Indaial, Ilhota) ou é contraditória.
+   */
+  faixaEstadual?: FaixaEstadual | null
+  /** Por que não há faixa estadual, quando o coletor explicou. */
+  motivoFaixaEstadual?: string | null
 }
+
+export type FaixaEstadual = 'normal' | 'atencao' | 'alerta' | 'emergencia'
+const FAIXAS_ESTADUAIS: readonly FaixaEstadual[] = ['normal', 'atencao', 'alerta', 'emergencia']
 
 /** Uma leitura bruta por cidade (a mais fresca). Só para EXIBIR, nunca cota. */
 export type NivelSc = Map<string, BrutoEstadual>
@@ -57,7 +72,12 @@ function brutoValido(bruta: unknown): BrutoEstadual | null {
   const chuva24hMm = typeof chuva === 'number' && Number.isFinite(chuva) && chuva >= 0 && chuva <= 1000 ? chuva : null
   const semanal = l.chuva_168h_mm
   const chuva168hMm = typeof semanal === 'number' && Number.isFinite(semanal) && semanal >= 0 && semanal <= 3000 ? semanal : null
-  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm }
+  const cls = typeof l.classificacao_estadual === 'object' && l.classificacao_estadual !== null
+    ? (l.classificacao_estadual as Record<string, unknown>) : null
+  const faixaCrua = cls?.faixa
+  const faixaEstadual = FAIXAS_ESTADUAIS.find((f) => f === faixaCrua) ?? null
+  const motivoFaixaEstadual = typeof cls?.motivo === 'string' && cls.motivo.trim() !== '' ? cls.motivo : null
+  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm, faixaEstadual, motivoFaixaEstadual }
 }
 
 /** Constrói o mapa cidade → bruto mais fresco a partir do JSON cru. */
@@ -84,22 +104,22 @@ export type Transporte = (url: string, init: RequestInit) => Promise<Response>
 export async function buscarNivelSc(
   sinal?: AbortSignal,
   transporte: Transporte = (url, init) => fetch(url, init),
+  anterior: NivelSc = new Map(),
 ): Promise<NivelSc> {
   try {
-    const resposta = await transporte(URL_NIVEL_SC, { cache: 'no-store', signal: sinal })
-    if (!resposta.ok) return new Map()
-    return montarNivelSc(await resposta.json())
+    return montarNivelSc(await buscarPublicacao(URL_NIVEL_SC, sinal, transporte))
   } catch {
-    return new Map()
+    return anterior
   }
 }
 
-/** Busca ao abrir a página e a cada `intervaloMin`. Falha vira mapa vazio. */
+/** Busca ao abrir a página e a cada `intervaloMin`. Falha mantém a leitura anterior com seu carimbo original. */
 export function useNivelSc(intervaloMin = 5): NivelSc {
   const [mapa, setMapa] = useState<NivelSc>(new Map())
 
   useEffect(() => {
     let vivo = true
+    let anterior: NivelSc = new Map()
     const emVoo = new Set<AbortController>()
 
     const buscar = async () => {
@@ -107,8 +127,8 @@ export function useNivelSc(intervaloMin = 5): NivelSc {
       emVoo.add(controle)
       const limite = setTimeout(() => controle.abort(), TEMPO_LIMITE_MS)
       try {
-        const novo = await buscarNivelSc(controle.signal)
-        if (vivo) setMapa(novo)
+        const novo = await buscarNivelSc(controle.signal, undefined, anterior)
+        if (vivo) { anterior = novo; setMapa(novo) }
       } finally {
         clearTimeout(limite)
         emVoo.delete(controle)

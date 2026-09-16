@@ -173,3 +173,12 @@
   color: #1f5f3f;
   font-size: 0.9rem;
 }
+
+/* O aviso do corte da busca: informação de serviço, não alarme — por isso
+   discreto, e nunca na cor de faixa. */
+.corte {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--texto-fraco, #9fb2c4);
+}

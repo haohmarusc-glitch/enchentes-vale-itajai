@@ -1,6 +1,10 @@
+import { cotasOperacionais as cotasOrdenadas } from '../logica/cotasOperacionais'
+import { comReferenciaAscurra } from '../dados/referenciaAscurra'
+import { linhasChuva } from '../logica/chuvaMonitor'
+import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
-import { motivoSemCor } from '../logica/motivoSemCor'
+import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -28,13 +32,12 @@ import {
   zoomPermiteRuas,
   type PontoDeRua,
 } from '../logica/cotasNoMapa'
-import type { Cidade } from '../dados/tipos'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { useBarragens } from '../dados/barragens'
 import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
-import { idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
+import { idadeMin, textoIdade, type Faixa, frescor } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
 import { dataHora, metros, rotuloCota } from '../logica/formato'
 import {
@@ -80,6 +83,9 @@ import {
 import VariasReguas from '../componentes/VariasReguas'
 import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
 import estilos from './MonitorBacia.module.css'
+
+/** Nomes das faixas que a Defesa Civil de SC publica (C7) — rotuladas como dela, nunca como nossas. */
+const NOME_FAIXA_ESTADUAL = { normal: 'NORMAL', atencao: 'ATENÇÃO', alerta: 'ALERTA', emergencia: 'EMERGÊNCIA' } as const
 
 // Traçados como URL (o Vite emite à parte). A bacia toda: Açu + Mirim, mais os
 // afluentes que existirem no pacote (Benedito, Luís Alves, Hercílio) — opcionais,
@@ -158,65 +164,6 @@ async function baixarTracado(rioId: string): Promise<LonLat[][] | null> {
   }
 }
 
-interface MarcadorChuva {
-  x: number
-  y: number
-  mm: number
-  janela: string
-  cidade: string
-}
-
-/** Marcadores de chuva: a intensidade recente por cidade, projetada no mapa. */
-function marcadoresChuva(
-  cena: Cena,
-  cidades: Cidade[],
-  chuva: { cidade: string | null; mm: { h1: number | null; h24: number | null } }[],
-): MarcadorChuva[] {
-  const porId = new Map(cidades.filter((c) => c.coordenadas).map((c) => [c.id, c]))
-  const saida: MarcadorChuva[] = []
-  for (const c of chuva) {
-    if (!c.cidade) continue
-    const cidade = porId.get(c.cidade)
-    if (!cidade?.coordenadas) continue
-    // Prefere a última hora; sem ela, as últimas 24 h. Só mostra chuva medível.
-    const h1 = c.mm.h1
-    const h24 = c.mm.h24
-    const usa = h1 != null ? { mm: h1, janela: '1 h' } : h24 != null ? { mm: h24, janela: '24 h' } : null
-    if (!usa || usa.mm < 0.2) continue
-    const [x, y] = projetar(cena.enq, [cidade.coordenadas[1], cidade.coordenadas[0]])
-    saida.push({ x, y, mm: usa.mm, janela: usa.janela, cidade: cidade.nome })
-  }
-  return saida
-}
-
-/** Uma gota de chuva com o acumulado, deslocada do pino para não o cobrir. */
-function desenharChuva(ctx: CanvasRenderingContext2D, marcas: MarcadorChuva[], escala: number): void {
-  ctx.textAlign = 'left'
-  ctx.textBaseline = 'middle'
-  for (const m of marcas) {
-    const gx = m.x + 11 * escala
-    const gy = m.y - 11 * escala
-    const raio = Math.min(3 + m.mm * 0.5, 9) * escala
-    ctx.beginPath()
-    ctx.arc(gx, gy, raio, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(56,170,226,0.85)'
-    ctx.shadowColor = 'rgba(56,170,226,0.9)'
-    ctx.shadowBlur = 6 * escala
-    ctx.fill()
-    ctx.shadowBlur = 0
-    ctx.strokeStyle = 'rgba(210,238,252,0.9)'
-    ctx.lineWidth = 1 * escala
-    ctx.stroke()
-    const txt = `${m.mm.toFixed(m.mm < 10 ? 1 : 0)} mm`
-    ctx.font = `600 ${Math.round(10 * escala)}px system-ui, sans-serif`
-    ctx.lineWidth = 3 * escala
-    ctx.strokeStyle = 'rgba(4,12,20,0.9)'
-    ctx.strokeText(txt, gx + raio + 2 * escala, gy)
-    ctx.fillStyle = '#bfe6fb'
-    ctx.fillText(txt, gx + raio + 2 * escala, gy)
-  }
-}
-
 const FAIXAS_LEGENDA: Faixa[] = [
   'normal',
   'monitoramento',
@@ -236,35 +183,6 @@ const VAR_LEGENDA: Record<Faixa, string> = {
   emergencia: '--faixa-emergencia',
   'sem-dado': '--faixa-sem-dado',
   varias: '--agua-clara',
-}
-
-/**
- * Ordem em que as cotas sobem, para o painel. `monitoramento` entrou em
- * 09/09/2026: sem ele aqui, Taió e Blumenau mostravam a chave crua
- * ("monitoramento: 3,00 m") e fora de ordem — o rótulo vinha de uma tabela
- * local que não o conhecia. O rótulo agora é o mesmo do resto do site
- * (`rotuloCota`), com o nome da fonte quando a cidade o declara.
- */
-const ORDEM_COTA = ['monitoramento', 'atencao', 'alerta', 'emergencia', 'inundacao', 'inundacao_historica']
-
-/** Cotas da régua da cidade, ordenadas de baixo para cima. */
-function cotasOrdenadas(cotas: Record<string, number>): [string, number][] {
-  return Object.entries(cotas).sort((a, b) => {
-    const ia = ORDEM_COTA.indexOf(a[0])
-    const ib = ORDEM_COTA.indexOf(b[0])
-    if (ia !== -1 && ib !== -1) return ia - ib
-    return a[1] - b[1]
-  })
-}
-
-/** Chuva recente da cidade (1 h e 24 h), da coleta ao vivo — null se não houver. */
-function chuvaDaCidade(
-  chuva: { rio: string | null; cidade: string | null; mm: { h1: number | null; h24: number | null } }[],
-  rioId: string,
-  cidadeId: string,
-): { h1: number | null; h24: number | null } | null {
-  const c = chuva.find((x) => x.rio === rioId && x.cidade === cidadeId)
-  return c ? { h1: c.mm.h1, h24: c.mm.h24 } : null
 }
 
 /**
@@ -374,6 +292,22 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
    * cobriam o mapa inteiro (visto em 06/09/2026) — e o mapa é o motivo de
    * alguém estar aqui.
    */
+  const [animacoesPausadas, setAnimacoesPausadas] = useState(false)
+  const [paginaOculta, setPaginaOculta] = useState(document.hidden)
+  const [movimentoReduzido, setMovimentoReduzido] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const atualizarMovimento = () => setMovimentoReduzido(media.matches)
+    const atualizarVisibilidade = () => setPaginaOculta(document.hidden)
+    media.addEventListener('change', atualizarMovimento)
+    document.addEventListener('visibilitychange', atualizarVisibilidade)
+    return () => {
+      media.removeEventListener('change', atualizarMovimento)
+      document.removeEventListener('visibilitychange', atualizarVisibilidade)
+    }
+  }, [])
   const [legendaAberta, setLegendaAberta] = useState<boolean>(
     () => !cidadeFoco && (typeof window === 'undefined' || window.innerWidth > 700),
   )
@@ -420,7 +354,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // guardar é conveniência; não guardar não quebra nada
     }
   }, [fundo])
-  const chuvaRef = useRef<MarcadorChuva[]>([])
+  const chuvaRef = useRef<Map<string, string[]>>(new Map())
   const selRef = useRef<string | null>(null)
 
   const [rios, setRios] = useState<RioParaCena[] | null>(null)
@@ -436,8 +370,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
    */
   const [reguaSel, setReguaSel] = useState<string | null>(null)
 
-  const tempoReal = useTempoReal()
+  const original = useTempoReal()
   const nivelSc = useNivelSc()
+  const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
   const mapaBarragens = useBarragens()
   const serie = useSerieRecente()
   const [agora, setAgora] = useState(() => new Date())
@@ -453,7 +388,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
   // Todas as cidades da bacia, para casar a chuva com a coordenada.
   const cidadesBacia = useMemo(
-    () => RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)).filter((c) => !municipal || c.id === 'ascurra'),
+    () => [...new Map(RIOS_TRONCO.flatMap((r) => cidadesDoRio(r)).filter((c) => !municipal || c.id === 'ascurra').map(c => [c.id, c])).values()],
     [municipal],
   )
 
@@ -610,18 +545,22 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
     const cena = construirCena(
       canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
+      municipal || emRepro ? undefined : reguasDoMapa.find(r => r.codigo === 'DC-11'),
     )
     if (municipal) {
       cena.pinos = cena.pinos.filter((p) => p.cidade.id === 'ascurra')
       cena.mar = null
       // Conserva a divisão geográfica regional; nunca estende a régua local
       // por todo o rio ao remover as outras cidades.
-      cena.trechos = cena.trechos.map((t) => ({ ...t, faixa: 'sem-dado', cidadeId: null }))
+      cena.trechos = cena.trechos.map((t) => t.cidadeId === 'ascurra' ? t : ({ ...t, faixa: 'sem-dado', cidadeId: null, animacao: 'parada' }))
     }
     cenaRef.current = cena
+    // O painel guarda a seleção, mas os números devem acompanhar a nova coleta.
+    setSel(atual => atual ? cena.pinos.find(p => p.cidade.id === atual.cidade.id && p.rioId === atual.rioId) ?? null : null)
+    setHover(atual => atual ? cena.pinos.find(p => p.cidade.id === atual.cidade.id && p.rioId === atual.rioId) ?? null : null)
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
     // num instante que não medimos).
-    chuvaRef.current = emRepro ? [] : marcadoresChuva(cena, cidadesBacia, tempoReal.chuva)
+    chuvaRef.current = emRepro ? new Map() : new Map(cidadesBacia.map(c => [c.id, linhasChuva(tempoReal.chuva, c.id, agora)]))
 
     const fundoCanvas = document.createElement('canvas')
     fundoCanvas.width = canvas.width
@@ -692,14 +631,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       cache.set(url, im)
     }
 
-    const reduz =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduz = animacoesPausadas || movimentoReduzido || paginaOculta
 
     let camadaPreparada: CamadaDesenhada = null
     let caminhosCamada: Path2D[] = []
     let raf = 0
-    const inicio = performance.now()
     const quadro = (t: number) => {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, cena.largura, cena.altura)
@@ -728,10 +664,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       ctx.fillStyle = 'rgba(22,121,186,0.42)'
       for (const path of caminhosCamada) ctx.fill(path, 'evenodd')
       ctx.restore()
-      const seg = reduz ? 0 : (t - inicio) / 1000
+      const seg = reduz ? 0 : t / 1000
       desenharOnda(ctx, cena, seg, escala) // a onda descendo até o mar
       desenharCorrenteza(ctx, cena, seg, escala)
-      desenharChuva(ctx, chuvaRef.current, escala)
       // Barragens antes das réguas e dos pinos: são estrutura no leito, ficam por baixo.
       // As ruas por BAIXO de tudo: são o fundo da cidade, e nenhum ponto de
       // rua pode cobrir o pino que traz o número do rio.
@@ -744,6 +679,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // são a âncora do mapa; barragem e régua cedem espaço a eles, nunca o
       // contrário.
       const opcoesPinos = {
+        chuva: chuvaRef.current,
         escala,
         mostrarIdade: true,
         agora: instante,
@@ -790,12 +726,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       desenharPinos(ctx, cena, selRef.current, { ...opcoesPinos, rotulos })
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
-    raf = requestAnimationFrame(quadro)
+    if (!paginaOculta) raf = requestAnimationFrame(quadro)
     return () => {
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal])
+  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -1065,18 +1001,36 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     })
   }
 
+  const [ampliado, setAmpliado] = useState(false)
+  useEffect(() => {
+    if (!ampliado) return
+    const anterior = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const sair = (e: KeyboardEvent) => { if (e.key === 'Escape') setAmpliado(false) }
+    const mudou = () => { if (!document.fullscreenElement) setAmpliado(false) }
+    document.addEventListener('keydown', sair)
+    document.addEventListener('fullscreenchange', mudou)
+    return () => {
+      document.body.style.overflow = anterior
+      document.removeEventListener('keydown', sair)
+      document.removeEventListener('fullscreenchange', mudou)
+    }
+  }, [ampliado])
   function telaCheia() {
-    const el = divRef.current
-    if (!el) return
-    if (document.fullscreenElement) document.exitFullscreen().catch(() => {})
-    else el.requestFullscreen?.().catch(() => {})
+    if (ampliado) {
+      setAmpliado(false)
+      if (document.fullscreenElement) void document.exitFullscreen().catch(() => {})
+    } else {
+      setAmpliado(true) // A ampliação CSS funciona também quando a API nativa é recusada.
+      void divRef.current?.requestFullscreen?.().catch(() => {})
+    }
   }
 
   const rotaDoRio = (rioId: string) => (rioId === 'itajai-mirim' ? '/mirim' : '/acu')
 
   return (
     <div className={`${estilos.pagina} ${municipal ? estilos.paginaMunicipal : ''}`}>
-      <div ref={divRef} className={`${estilos.palco} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
+      <div ref={divRef} className={`${estilos.palco} ${ampliado ? estilos.ampliado : ''} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
         <canvas
           ref={canvasRef}
           className={estilos.tela}
@@ -1129,10 +1083,13 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             {municipal ? "Dados observados · não é alerta oficial." : <>Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.</>}
           </span>
           <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
-            Tela cheia
+            {ampliado ? 'Sair da tela cheia' : 'Tela cheia'}
           </button>
         </div>
 
+        {!municipal && tempoReal.fonteItajaiOk === false && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
+          Fonte de Itajaí indisponível: não foi possível obter as medições das réguas municipais.
+        </p>}
         {municipal && <div className={estilos.resumoMunicipal} data-tapa-mapa>
           <strong>{leituraMunicipal ? metros(leituraMunicipal.nivelBrutoM) : 'Sem leitura'} · {faixaMunicipal.nome}</strong>
           <span>{leituraMunicipal?.medidoEm ? dataHora(leituraMunicipal.medidoEm) + ' · ' + textoIdade(idadeMin(leituraMunicipal.medidoEm, agora)) : 'Horário indisponível'}</span>
@@ -1307,6 +1264,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </strong>
           {legendaAberta ? (
             <>
+          <p className={estilos.legendaNota}>No Itajaí-Açu, de Santa Regina até a foz, a cor do traçado é referência visual da DC-11. Não indica nível local, ruas alagadas nem classificação das outras réguas. Na reprodução histórica essa referência fica desativada.</p>
+          <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Movimento ilustrativo em direção à foz; não representa a corrente real, que pode variar com a maré. Trechos sem orientação definida ficam parados.</p>
+          <button type="button" className={estilos.botaoLegenda}
+            aria-pressed={animacoesPausadas}
+            onClick={() => setAnimacoesPausadas(v => !v)}>
+            {animacoesPausadas ? 'Retomar animações' : 'Pausar animações'}
+          </button>
+          {movimentoReduzido && <p className={estilos.legendaNota}>Movimento reduzido ativado nas preferências do dispositivo.</p>}
           <ul>
             {FAIXAS_LEGENDA.map((faixa) => (
               <li key={faixa}>
@@ -1328,6 +1293,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             <li>
               <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
               ≈ nível bruto (rede estadual)
+            </li>
+            {/* C7, camada 2: a cor tracejada é a classificação da própria Defesa
+                Civil de SC, na régua da estação — só onde não há faixa municipal.
+                A amostra é tracejada e neutra porque a cor varia com a faixa. */}
+            <li>
+              <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
+              Faixa estadual (tracejado) — classificação da Defesa Civil de SC, não cota deste site
+            </li>
+            {/* A linha-guia (14/09/2026): onde os pinos se amontoam, o nome vai
+                para um lugar livre e a seta aponta a cidade dele. */}
+            <li>
+              <span className={`${estilos.amostra} ${estilos.amostraSeta}`} aria-hidden="true">→</span>
+              Seta — o nome ficou afastado por falta de espaço; a ponta indica a cidade dele
             </li>
             {/* As nove réguas de estuário de Itajaí. Mostram número e não
                 afirmam faixa: a maré cruza a cota sem enchente, e uma cor que
@@ -1356,9 +1334,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           <p className={estilos.legendaNota}>
             Ribeirões e canais (Murta, Canhanduba, canal do Mirim) ficam cinza e{' '}
             <strong>parados mesmo tendo régua com número</strong>: as réguas deles
-            são de estuário, a maré cruza a cota sem enchente, e a correnteza
-            animada significa a faixa — correr ali afirmaria um nível que a maré
-            não deixa ler. O metro aparece no pino; a cor, não.
+            são de estuário, onde a maré pode alterar a corrente. O metro aparece no pino; a cor, não.
           </p>
           {/* Sem esta linha, quem vê onze pontos e dois números em Itajaí não
               tem como saber por quê — e some do mapa é o que mais parece
@@ -1458,8 +1434,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           const foco = (sel ?? hover)!
           const cid = foco.cidade
           const cotas = cotasOrdenadas(cid.cotas_m ?? {})
-          const ch = chuvaDaCidade(tempoReal.chuva, foco.rioId, cid.id)
-          const brutoSc = nivelSc.get(cid.id) ?? null
+          const brutoSc = cid.id === 'ascurra' ? null : nivelSc.get(cid.id) ?? null
           // As réguas da cidade, quando são VÁRIAS. Itajaí tem onze, todas
           // publicadas e frescas, e o Monitor não mostrava nenhuma: o pino azul
           // dizia "várias réguas" e o painel dizia "sem leitura fresca" — falso,
@@ -1492,17 +1467,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
                 </span>
               </div>
+              {cid.id === 'ascurra' && <p>Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.</p>}
+              {cid.id === 'gaspar' && <p>Faixa calculada somente pelo nível, conforme a <a href="https://defesacivil.gaspar.sc.gov.br/estacao/ver/21" target="_blank" rel="noreferrer">legenda da estação 21</a>: normal abaixo de 5 m, atenção acima de 5 m, emergência acima de 7 m. Em 5 m exatos, inclusão não definida. O estado oficial também considera chuva; a cor não indica ruas alagadas.</p>}
               <div className={estilos.painelFaixa}>
                 <span
                   className={estilos.amostra}
                   style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
                 />
-                {ROTULO_FAIXA[foco.faixa]}
+                {foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
               </div>
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
-                  {motivoSemCor(cid.cotas_m, foco.medidoEm, agora)}
+                  {motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id)}
                 </p>
               )}
               <p className={estilos.painelNivel}>
@@ -1511,7 +1488,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                     <strong>{metros(foco.nivel)}</strong>
                     {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))}</> : null}
                   </>
-                ) : daCidade.length > 1 ? null : (
+                ) : daCidade.length > 1 || brutoSc ? null : (
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>
                 )}
               </p>
@@ -1531,7 +1508,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
-                  <span className={estilos.painelRotulo}>Cotas da régua</span>
+                  <span className={estilos.painelRotulo}>{cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>
                   <ul>
                     {cotas.map(([k, v]) => (
                       <li key={k}>
@@ -1548,34 +1525,30 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               {brutoSc ? (
                 <div className={estilos.painelBloco}>
                   <span className={estilos.painelRotulo}>Nível bruto — rede estadual (DCSC)</span>
+                  {cid.id === 'indaial' && <p>SDC-SC Indaial · DCSC-00006 · terceira ponte. Esta é a régua do monitoramento estadual.</p>}
                   <p className={estilos.painelExtra}>
                     <strong>{metros(brutoSc.nivelBrutoM)}</strong>
                     {brutoSc.medidoEm ? <> · {textoIdade(idadeMin(brutoSc.medidoEm, agora))}</> : null}
                     {' — '}
                     {brutoSc.estacao}
                   </p>
+                  {brutoSc.faixaEstadual && brutoSc.medidoEm && frescor(idadeMin(brutoSc.medidoEm, agora)) !== 'velha' ? (
+                    <p className={estilos.painelExtra}>
+                      <strong>Classificação da Defesa Civil de SC: {NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual]}</strong>
+                      {' — '}faixa declarada pela própria rede estadual, no datum desta estação. Não é a faixa de cor deste pino e não aciona aviso.
+                    </p>
+                  ) : null}
+                  {brutoSc.codigo && <a href={`https://monitoramento.defesacivil.sc.gov.br/estacao/${brutoSc.codigo}`} target="_blank" rel="noreferrer">Consultar estação na Defesa Civil de SC</a>}
+                  {cid.id === 'indaial' && <p>As cotas municipais de 3 / 4 / 5,5 m são da régua dos fundos da Celesc, indicada no <a href="https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/edit" target="_blank" rel="noreferrer">documento de acompanhamento de Indaial</a>. Não são aplicadas à leitura da terceira ponte.</p>}
                   <p className={estilos.painelRessalva}>
                     Régua PRÓPRIA da estação estadual, zero diferente da régua municipal —
                     não comparável às cotas acima nem à faixa de cor deste pino.
                   </p>
                 </div>
               ) : null}
-              <p className={estilos.painelChuva}>
-                {ch && (ch.h1 != null || ch.h24 != null) ? (
-                  <>
-                    Chuva:{' '}
-                    {ch.h1 != null ? (
-                      <>
-                        <strong>{ch.h1.toFixed(1)} mm</strong> (1 h)
-                      </>
-                    ) : null}
-                    {ch.h1 != null && ch.h24 != null ? ' · ' : ''}
-                    {ch.h24 != null ? <>{ch.h24.toFixed(0)} mm (24 h)</> : null}
-                  </>
-                ) : (
-                  'Sem chuva recente medida aqui.'
-                )}
-              </p>
+              <div className={estilos.painelChuva}>
+                <ChuvaMonitor cidades={[cid]} chuva={tempoReal.chuva} agora={agora} situacao={original.situacao} chuvaOk={original.chuvaOk} />
+              </div>
               {cid.sub_bacia ? (
                 <p className={estilos.painelExtra}>Sub-bacia: {cid.sub_bacia}</p>
               ) : null}
@@ -1750,7 +1723,10 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           .filter((c) => c.coordenadas)
           .map((c) => (
             <li key={c.id}>
-              <button type="button" onClick={() => setSel(null)}>
+              <button type="button" onClick={() => {
+                const p = cenaRef.current?.pinos.find(p => p.cidade.id === c.id)
+                if (p && !municipal) navigate(`/monitor/${c.id}`)
+              }}>
                 {c.nome}
               </button>
             </li>
