@@ -58,6 +58,18 @@ from datetime import date
 
 from comum import DADOS
 
+
+def m_br(v: float) -> str:
+    """Metro em português: vírgula decimal.
+
+    A `nota` não é log — ela sai na tela do morador e no Telegram, ao lado de
+    cotas que o resto do sistema já escreve com vírgula. Uma nota dizendo
+    "chegou a 8.96 m" ao lado de "alaga a partir de 8,69 m" é a mesma grandeza
+    escrita de dois jeitos na mesma frase. Vale só para texto que o usuário lê;
+    o que é impresso no terminal para conferência continua como está.
+    """
+    return f"{v:.2f}".replace(".", ",")
+
 CIDADE = "brusque"
 RIO = "itajai-mirim"
 BRUTO = "brutos/brusque-cotas-2023.json"
@@ -205,20 +217,20 @@ def como_registro(p: dict, piso: float | None = None) -> dict | None:
     if lamina is not None:
         # A lâmina medida é a evidência da cota, e guardá-la deixa a conta
         # refazível sem voltar ao bruto.
-        notas.append(f"Na cheia de 17/11/2023, que chegou a {PICO_2023_M:.2f} m, a água "
-                     f"cobriu {lamina:.2f} m neste ponto.")
+        notas.append(f"Na cheia de 17/11/2023, que chegou a {m_br(PICO_2023_M)} m, a água "
+                     f"cobriu {m_br(lamina)} m neste ponto.")
     else:
         notas.append("A fonte não publica a lâmina d'água medida neste ponto, "
                      "então a conferência aritmética da cota não pôde ser refeita aqui.")
 
     if cota > MAIOR_PICO_CONHECIDO_M:
         notas.append(f"A cota fica acima do maior pico já registrado em Brusque "
-                     f"({MAIOR_PICO_CONHECIDO_M:.2f} m): este ponto não alagou "
+                     f"({m_br(MAIOR_PICO_CONHECIDO_M)} m): este ponto não alagou "
                      "em nenhuma cheia da série conhecida.")
 
     if piso is not None and cota < piso:
-        notas.append(f"Esta cota ({cota:.2f} m) fica ABAIXO da menor cota de referência "
-                     f"de Brusque ({piso:.2f} m): o ponto alagaria com o rio em nível "
+        notas.append(f"Esta cota ({m_br(cota)} m) fica ABAIXO da menor cota de referência "
+                     f"de Brusque ({m_br(piso)} m): o ponto alagaria com o rio em nível "
                      "quase normal. Vem assim da fonte e ainda não foi conferida com a "
                      "Defesa Civil — não use como aviso sozinha.")
         # Mesmo conceito do `alerta_automatico: false` das réguas de estuário e

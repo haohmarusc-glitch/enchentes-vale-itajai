@@ -222,6 +222,26 @@ class TestCotasRuas(unittest.TestCase):
         for r in comparaveis:
             self.assertEqual(r["referencia"], "régua")
 
+    def test_a_nota_escreve_metro_em_portugues(self):
+        """A `nota` é texto que o morador lê, não log: número dela vai com VÍRGULA.
+
+        ENCONTRADO em 16/09/2026, testando a resposta do pino do Telegram em Brusque.
+        A resposta saía com "alaga a partir de 8,69 m" e, duas linhas abaixo, a nota
+        do MESMO ponto dizendo "chegou a 8.96 m, a água cobriu 0.27 m". Nada quebra —
+        e é justamente por isso que passou despercebido: eram 556 registros, em
+        Brusque e Rio do Sul, escritos assim desde a importação. Os importadores
+        agora formatam com `m_br`; este teste é o que impede a volta, porque a
+        próxima importação não passa por ninguém que vá reparar.
+        """
+        import re
+        ponto = re.compile(r"\d+\.\d")
+        for r in self.cotas:
+            nota = r.get("nota")
+            if isinstance(nota, str):
+                self.assertIsNone(ponto.search(nota),
+                                  f"nota com ponto decimal em {r.get('cidade')} / "
+                                  f"{r.get('rua')}: {nota}")
+
 
 class TestManchas(unittest.TestCase):
     @classmethod
