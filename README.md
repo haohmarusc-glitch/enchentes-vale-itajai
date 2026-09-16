@@ -1694,6 +1694,28 @@ Se a DC-11 for de maré, hoje é a única régua que pode tocar o alarme à toa:
   fonte automática parada continua falha; e o site segue recusando pintar leitura com mais de 180 min,
   então ninguém vê os 4,10 m de 12/09 como se fossem de agora. **Indaial não fica cega**: a
   DCSC-00006 (estadual, automática) publica normalmente — outro lugar e outro zero, nunca convertida.
+- [x] **O bot responde ao PINO do Telegram, em duas camadas — 16/09/2026.** A pessoa manda a
+  localização e recebe, quando existe cota levantada a menos de **300 m**, o ponto mais próximo
+  (*"Bartolomeu Pruner — alaga a partir de 7,65 m"*) e, **sempre**, a régua da cidade mais próxima
+  dentro de **25 km**, com a mesma resposta do `/nivel`. As duas juntas quando as duas existem: a de
+  rua responde o que importa — *a água chega em mim?* —, a da cidade responde a pergunta seguinte,
+  que é sempre *e onde está o rio agora*. **O pino era descartado em silêncio**: o laço exigia `text`
+  e uma localização não tem `text`, então quem mandava onde estava não recebia nada. **Os 25 km saem
+  da bacia**, não de gosto: as 20 cidades distam de 6,2 km (Brusque–Guabiruba) a 29,4 km
+  (Taió–Trombudo Central) da vizinha mais próxima; com 25 km o miolo fica coberto e as isoladas não
+  fingem cobrir quem está no meio do caminho. Fora do raio a resposta é **"você está fora da área que
+  este projeto cobre"** — a régua de uma cidade a 66 km não diz nada sobre o rio ao lado de quem
+  perguntou, e oferecê-la seria pior que o silêncio. ⚠️ **A resposta nunca diz "a sua rua"**: diz "o
+  ponto levantado mais perto de você", com a distância em metros e a data do levantamento, porque a
+  cota é de um **ponto** e quem julga se aquele ponto é a esquina de quem perguntou é quem perguntou.
+  Hoje a camada de rua só acende em **Brusque** (348 cotas com coordenada, nov/2023) e **Gaspar**
+  (1.615, abr/2020); nas outras 18 cidades não há cota com coordenada e sai só a camada da cidade.
+  **O bloco de uma cota foi EXTRAÍDO do `/rua`** (`linhas_de_uma_cota`) em vez de copiado — as quatro
+  ressalvas que ele carrega (cota nula, cota máxima, abrigo, `usar_para_aviso: false`) são o que
+  impede uma frase assustadora de sair de um número não conferido, e duplicá-las seria repetir na mão
+  o erro que o cadastro da rede estadual acabou de custar. A regra do `/rua` de **só comparar cidade
+  de UMA régua** vale igual aqui. **Privacidade:** a coordenada é usada e não é gravada — o bot não
+  registra conteúdo de mensagem, e localização não podia inaugurar um log. 17 testes.
 - [x] **Boletim da EPAGRI conferido e RECUSADO como fonte de nível — 16/09/2026.** Chega por e-mail
   todo dia (n° 161 em 16/09) com o resumo dos níveis da bacia. Não entra: o corpo não traz números
   (a tabela fica num PDF em `ciram.epagri.sc.gov.br`), a cadência é diária contra os 10 min que já
