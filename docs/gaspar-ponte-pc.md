@@ -47,7 +47,13 @@ que antes se confundiam.
 O que está de pé, medido: a **tarefa agendada** no PC (Agendador do Windows, de
 15 em 15 min) rodou a noite inteira sem falhar uma vez; o **portal responde** ao
 PC; o **SSH** entrega. O que parou é a estação: a leitura mais recente que o
-portal publica é de **16/09/2026 às 18h20**, e não avançou desde então.
+portal publica é de **16/09/2026 às 17h24**, e não avançou desde então — em
+17/09 às 18h48 o envio a recusou com **25,4 h** de idade.
+
+É exatamente a leitura que a ponte entregou na primeira execução, em 16/09 às
+19h28 (1,75 m). Ou seja: a estação publicou aquele valor e **não publicou mais
+nada**; o único dado de Gaspar que este projeto chegou a ter ao vivo foi o
+último que ela produziu antes de parar.
 
 Consequência, e ela é a projetada: o `gaspar_pc.validar` recusa medição com mais
 de 3 h, então a VPS parou de aceitar o arquivo, Gaspar saiu do `ultimo.json` e o
