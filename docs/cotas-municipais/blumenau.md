@@ -3,7 +3,7 @@
 **Portal / app:** [AlertaBlu](https://alertablu.blumenau.sc.gov.br/) (bloqueia robô; app Android/iOS)  
 **SEDECI:** secretaria.defesacivil@blumenau.sc.gov.br · 199  
 **Régua:** Ponte Adolfo Konder · ANA 83800002 · DCSC-00026  
-**Já no monitor (desde 09/09/2026):** Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8 (+ histórica 8,50)
+**Já no monitor (desde 09/09/2026):** Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8
 
 ---
 
@@ -19,7 +19,7 @@ em 09/09/2026 — bruto `data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-
 | Atenção | **4,00 m** | `atencao` |
 | Alerta | **6,00 m** | `alerta` |
 | Alerta Máximo | **8,00 m** | `emergencia` (a tela escreve "Alerta Máximo", via `cotas_nomes_na_fonte`) |
-| Inundação histórica (cadastro) | **8,50 m** | `inundacao_historica` |
+| ~~Inundação histórica (cadastro)~~ | ~~8,50 m~~ | **retirada em 17/09/2026 — ver abaixo** |
 
 Até 09/09/2026 o cadastro trazia **6,00 / 6,50 / 7,40**, rotulados "AlertaBlu" sem bruto —
 origem desconhecida (7,40 coincide com a menor cota de rua, Rua São Rafael). A tela pintava
@@ -36,10 +36,32 @@ Revisão de cotas de rua contratada com a FURB (R$ 580 mil, dez/2024, 8 meses). 
   "monitoramento": 3.0,
   "atencao": 4.0,
   "alerta": 6.0,
-  "emergencia": 8.0,
-  "inundacao_historica": 8.5
+  "emergencia": 8.0
 }
 ```
+
+### 17/09/2026 — a "inundação histórica" de 8,50 m saiu do cadastro
+
+A tela e o bot escreviam **"Inundação histórica: 8,50 m"** para o morador de Blumenau.
+Medido contra o `enchentes.json` deste repositório: dos **117 registros** de Blumenau com pico,
+**101 (86%) ficam acima de 8,50 m**, e o maior é **17,10 m** (1880). 1983 deu 15,34 m; 2011,
+12,80 m; 2023, 9,14 m.
+
+O número não é o pico histórico — é a **cota de inundação urbana** da régua da Ponte Adolfo
+Konder, que `docs/cotas-de-ruas.md` registra como **faixa de 8,00 a 8,50 m**. Grandeza diferente,
+e faixa, não ponto.
+
+O sentido do erro é o que pesa: dizer que o pior já visto fica logo acima da emergência de
+8,00 m **tranquiliza** quem lê. Quem viu 2011 sabe que é falso e deixa de acreditar na tela;
+quem não viu, acredita.
+
+Foi retirada de `cotas_m` e guardada em `cotas_divergencias`, com a medição, para não voltar por
+memória. **Não** virou `inundacao` (a faixa que pinta), porque a Defesa Civil de Blumenau publica
+cinco estágios e nenhum deles é este — cor que a fonte não declarou é o erro que este projeto
+não comete.
+
+Trava: `valida_marca_historica`, em `scripts/validar_dados.py`, avisa sempre que uma
+`inundacao_historica` ficar abaixo de algum pico já registrado para a mesma cidade.
 
 ---
 

@@ -53,5 +53,44 @@ class Ponte(unittest.TestCase):
             rede.assert_not_called()
 
 
+
+class PorqueNaoEnviou(unittest.TestCase):
+    """O log da tarefa agendada tem de responder sozinho de quem é o problema.
+
+    Numa madrugada inteira o log repetiu "sem leitura municipal recente e válida",
+    frase verdadeira e inútil: não distingue portal mudo, número implausível e
+    leitura velha — três problemas com três donos diferentes. Num dia de chuva,
+    essa diferença é o que decide se vale correr atrás.
+    """
+
+    AGORA = datetime(2026, 9, 17, 11, 40, tzinfo=timezone.utc)  # 08:40 em Brasília
+
+    def porque(self, leitura):
+        from enviar_gaspar_pc import porque_recusou
+        return porque_recusou(leitura, self.AGORA)
+
+    def test_sem_regua_na_tabela_diz_que_e_a_TABELA(self):
+        texto = self.porque(None)
+        self.assertIn("tabela", texto)
+        self.assertIn("Açu", texto)
+
+    def test_leitura_velha_diz_a_IDADE_e_aponta_o_municipio(self):
+        texto = self.porque({'medido_em': '2026-09-16T18:20:00', 'nivel_m': 1.75})
+        self.assertIn("14.3 h", texto)
+        self.assertIn("teto é 3 h", texto)
+        self.assertIn("município parou de atualizar, não o envio", texto)
+        self.assertIn("1.75", texto, "o último valor visto entra no log")
+
+    def test_horario_ilegivel_nao_vira_idade_inventada(self):
+        texto = self.porque({'medido_em': 'ontem', 'nivel_m': 1.75})
+        self.assertIn("ilegível", texto)
+        self.assertNotIn(" h atrás", texto)
+
+    def test_leitura_no_futuro_tem_frase_propria(self):
+        texto = self.porque({'medido_em': '2026-09-17T12:40:00', 'nivel_m': 1.75})
+        self.assertIn("futuro", texto)
+        self.assertIn("relógio", texto)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -441,8 +441,7 @@
             "monitoramento": 3.0,
             "atencao": 4.0,
             "alerta": 6.0,
-            "emergencia": 8.0,
-            "inundacao_historica": 8.5
+            "emergencia": 8.0
           },
           "fontes_tempo_real": [
             "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios (Blumenau)",
@@ -497,6 +496,13 @@
                 "emergencia": 8.0
               },
               "fonte": "Legenda de Blumenau no portal da Defesa Civil de GASPAR (/estacao/ver/3), lida em 01/09/2026 — docs/GASPAR-DADOS-NOVOS.md: normalidade < 6,00 · atenção > 6,00 ou chuva > 30 mm · emergência > 8,00. Outra instituição resumindo a régua de Blumenau em dois degraus, que coincidem com Alerta (6) e Alerta Máximo (8) da escala oficial. Referência cruzada, não fonte."
+            },
+            {
+              "cotas_m": {
+                "inundacao_historica": 8.5
+              },
+              "fonte": "Estava em `cotas_m` como marca histórica de Blumenau, sem bruto e sem página citada, desde antes da correção de 09/09/2026 — a escala oficial do AlertaBlu (Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8) não tem este degrau. O número em si aparece em docs/cotas-de-ruas.md como referência da régua da Ponte Adolfo Konder: 'cota de inundação urbana 8,00–8,50 m'. É outra grandeza, e uma FAIXA, não um ponto.",
+              "por_que_foi_substituida": "MEDIDO em 17/09/2026 contra enchentes.json: dos 117 registros de Blumenau com pico, 101 (86%) ficam ACIMA de 8,50 m, e o maior é 17,10 m (1880) — 1983 deu 15,34 m e 2011, 12,80 m. Chamar 8,50 m de 'inundação histórica' na tela e no bot era afirmação falsa, e falsa para o lado que tranquiliza: sugere que o pior já visto está logo acima da emergência de 8,00 m. Retirada de `cotas_m` em 17/09/2026. NÃO foi promovida a `inundacao` (faixa que pinta) porque a Defesa Civil de Blumenau não declara esse degrau, e cor que a fonte não declarou é o erro que este projeto não comete."
             }
           ],
           "cotas_verificado": true,
