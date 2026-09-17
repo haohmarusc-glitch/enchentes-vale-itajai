@@ -834,7 +834,7 @@
           "codigo_ana_area_drenagem_km2": 1240,
           "codigo_ana_verificacao": "Vinculado em 07/09/2026 por COORDENADA E POR TIPO, a regra emendada — mesmo padrão de Gaspar. Coordenada: a DCSC-00019 (que é este pino, 3,5 m medidos contra data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json) fica a 51 m da 83900000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026 — logo a estação da ANA fica a no máximo ~55 m deste pino, por desigualdade triangular. É um LIMITE, não um ponto: a coordenada da 83900000 não foi transcrita para cá, então a trava de distância ao traçado não roda sobre ela. Tipo: a ANA a cadastra como FLUVIOMÉTRICA no Itajaí-Mirim, 1.240 km², escala desde 1929, sem fim declarado. O que faltava não era prova da ANA e sim do NOSSO lado: o codigo_dcsc de Brusque era null, e por isso os 51 m mediam até uma estação que este repositório nunca tinha afirmado ser este pino. Duas evidências independentes fecharam isso: a coincidência de coordenada (3,5 m) e o coletor scripts/coleta_nivel_sc.py, que já lia DCSC-00019 como 'brusque' para publicar a leitura ao vivo do site — a ligação existia em código e não estava no dado.",
           "verificado": false,
-          "regua": "Ponte Estaiada",
+          "regua": "Ponte Estaiada – DCSC",
           "afluentes": [
             "rio Guabiruba"
           ],
@@ -853,7 +853,7 @@
             -27.1007,
             -48.9172
           ],
-          "regua_das_cotas": "Ponte Estaiada",
+          "regua_das_cotas": "Ponte Estaiada – DCSC",
           "regua_das_cotas_fonte": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'.",
           "fonte_cotas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
           "cotas_substituidas_em_2026_09_07": {
@@ -879,7 +879,8 @@
               "fonte": "Legenda da estação 4 'Ponte Estaiada – ANA' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/4), levantada pelo Jefferson em 09/09/2026 (docs/sessoes/2026-09-09-SESSAO.md §1): normalidade < 4,00; atenção > 4,00 ou chuva > 30 mm; emergência > 7,00. Na mesma tabela, a estação 79 'Ponte Estaiada – DCSC' aparece SEM legenda.",
               "por_que_nao_adotada": "Conflita com a legenda de 3,00 / 5,00 lida na estação 79 em 07/09/2026 (fonte_cotas). Duas leituras do mesmo portal, dois dias, dois números — uma delas mudou ou uma delas foi lida da estação errada. A régua que o site lê é a Ponte Estaiada (par provado com a DCSC em 07/09: 1,27 / 1,27 / 1,28 m); qual das duas legendas é a dela é o que falta saber. Conferir as DUAS páginas de novo (a VPS alcança Brusque): curl -sA enchentes-vale-itajai https://defesacivil.brusque.sc.gov.br/estacao/ver/79 e …/ver/4, e colar a legenda de cada uma. Enquanto isso fica 3,00 / 5,00: pinta mais cedo, que é o erro menos grave."
             }
-          ]
+          ],
+          "regua_nota": "O nome 'Ponte Estaiada' identifica DUAS réguas no portal da Defesa Civil de Brusque, com escalas diferentes: a estação 79, 'Ponte Estaiada – DCSC' (a DCSC-00019, atenção 3,00 m e emergência 5,00 m), e a estação 4, 'Ponte Estaiada – ANA' (atenção 4,00 m e emergência 7,00 m, zero próprio, provavelmente a 83900000 BRUSQUE PCD). É a 79 que pareia com a nossa leitura — provado em 07/09/2026 com três leituras do mesmo minuto: 1,27 m na página, 1,27 m na rede estadual e 1,28 m na nossa coleta. O sufixo entrou no rótulo em 17/09/2026 porque a ambiguidade já custou um erro: o PR #241 rotulou a 4 como 'par provado' (ver teste_sonda_brusque_historico.py). Vínculo por NOME é o mesmo risco que o Salseiro trouxe em Vidal Ramos."
         },
         {
           "id": "itajai",
