@@ -472,6 +472,15 @@ def _rodar_git(args: list[str]) -> tuple[int, str]:
         return 127, ""
 
 
+#: Caminhos que a VPS nunca executa. `docs/` e qualquer `.md` são texto para
+#: quem lê o repositório; o que roda aqui é `scripts/` sobre `data/`. Na dúvida,
+#: um caminho novo NÃO entra nesta lista — é melhor um aviso a mais do que um
+#: deploy de verdade passando calado.
+def so_documentacao(caminho: str) -> bool:
+    """Este arquivo é documentação, isto é, não muda nada do que executa aqui?"""
+    return caminho.startswith("docs/") or caminho.endswith(".md")
+
+
 def avaliar_versao(rodar=_rodar_git) -> Diagnostico:
     """
     O código que roda aqui é o código que foi mesclado?
@@ -511,10 +520,29 @@ def avaliar_versao(rodar=_rodar_git) -> Diagnostico:
                            [f"código: não deu para contar a distância até origin/{RAMO_PRODUCAO}"])
 
     atras = int(saida)
+    plural = "commit" if atras == 1 else "commits"
     if atras == 0:
         return Diagnostico(True, "código em dia",
                            [f"código: {onde} em dia com origin/{RAMO_PRODUCAO}"])
-    plural = "commit" if atras == 1 else "commits"
+
+    # SÓ DOCUMENTAÇÃO NÃO É "VERSÃO ANTIGA" (17/09/2026). Um PR de docs deixava o
+    # vigia 🛠 dizendo "o cron está rodando versão antiga" — e o cron estava
+    # rodando exatamente o mesmo código. A frase era falsa e o alarme, crônico:
+    # é o mesmo mecanismo que já custou caro aqui, com Indaial servindo de
+    # esconderijo para um vermelho novo. Então a distância continua sendo dita,
+    # mas não vira problema quando nada do que está pendente executa nesta
+    # máquina. Não saber quais arquivos mudaram mantém o alarme: a dúvida cai
+    # para o lado de avisar.
+    cod, lista = rodar(["diff", "--name-only", f"HEAD..origin/{RAMO_PRODUCAO}"])
+    arquivos = [a.strip() for a in lista.splitlines() if a.strip()] if cod == 0 else []
+    if arquivos and all(so_documentacao(a) for a in arquivos):
+        quantos = len(arquivos)
+        return Diagnostico(
+            True, "código em dia no que executa",
+            [f"código: {atras} {plural} atrás em {onde}, {quantos} arquivo(s) e "
+             "só documentação — nada que o cron ou o bot executem"],
+        )
+
     return Diagnostico(
         False,
         f"o código em {onde} está {atras} {plural} atrás de origin/{RAMO_PRODUCAO} — "

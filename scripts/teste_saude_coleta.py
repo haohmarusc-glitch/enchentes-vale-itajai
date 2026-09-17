@@ -506,6 +506,49 @@ class CodigoAtrasado(unittest.TestCase):
         self.assertIn("1 commit atrás", d.motivo)
         self.assertNotIn("commits", d.motivo)
 
+    def test_so_documentacao_atrasada_NAO_e_versao_antiga(self):
+        """PR de docs deixava o vigia 🛠 dizendo que o cron roda versão antiga.
+
+        A frase era falsa — o cron rodava exatamente o mesmo código — e o alarme,
+        crônico. Alarme crônico não é só ruído: é esconderijo, como Indaial já
+        provou aqui. A distância continua sendo dita no detalhe; o que sai é o
+        problema.
+        """
+        d = avaliar_versao(self._git({
+            "rev-list": (0, "2"),
+            "diff": (0, "docs/oficios-prontos.md\nREADME.md\ndocs/x/y.md"),
+        }))
+        self.assertTrue(d.ok, "documentação não faz o cron rodar versão antiga")
+        self.assertNotIn("versao", d.chaves)
+        self.assertTrue(any("só documentação" in x for x in d.detalhes))
+        self.assertTrue(any("2 commits atrás" in x for x in d.detalhes),
+                        "a distância tem de continuar visível")
+
+    def test_um_arquivo_de_codigo_no_meio_da_documentacao_AINDA_e_alarme(self):
+        """Basta um arquivo que executa para o aviso valer — o resto é irrelevante."""
+        d = avaliar_versao(self._git({
+            "rev-list": (0, "2"),
+            "diff": (0, "docs/nota.md\nscripts/coleta_niveis.py\nREADME.md"),
+        }))
+        self.assertFalse(d.ok)
+        self.assertIn("versão antiga", d.motivo)
+
+    def test_dado_atrasado_e_alarme_como_codigo(self):
+        """`data/` não é executável, mas é o que o coletor e o bot LEEM."""
+        d = avaliar_versao(self._git({
+            "rev-list": (0, "1"),
+            "diff": (0, "data/estacoes.json"),
+        }))
+        self.assertFalse(d.ok)
+
+    def test_nao_saber_quais_arquivos_mudaram_MANTEM_o_alarme(self):
+        """A dúvida cai para o lado de avisar: sem a lista, é versão antiga."""
+        for resposta in ((0, ""), (128, "")):
+            with self.subTest(resposta=resposta):
+                d = avaliar_versao(self._git({"rev-list": (0, "4"), "diff": resposta}))
+                self.assertFalse(d.ok)
+                self.assertIn("4 commits atrás", d.motivo)
+
     def test_sem_rede_NAO_vira_alarme(self):
         """
         Falhar em conferir não é o mesmo que estar atrasado.
