@@ -1655,6 +1655,51 @@ def valida_ordem_das_cotas() -> None:
                 )
 
 
+def valida_marca_historica() -> None:
+    """
+    A `inundacao_historica` de uma cidade é mesmo o maior nível que ela já viu?
+
+    POR QUE EXISTE (17/09/2026). Blumenau estava com `inundacao_historica: 8,50`
+    dentro de `cotas_m`, e a tela e o bot escreviam "Inundação histórica: 8,50 m"
+    para o morador. MEDIDO contra o próprio `enchentes.json`: dos 117 registros
+    de Blumenau com pico, **101 ficam acima de 8,50 m**, e o maior é 17,10 m —
+    1983 deu 15,34 m e 2011 deu 12,80 m. O número não era o pico histórico; é a
+    cota de inundação urbana da régua da Ponte Adolfo Konder (8,00–8,50 m, outra
+    grandeza), que foi parar na chave errada e virou afirmação falsa na tela.
+
+    O sentido do erro é o que importa: dizer que o pior já visto fica logo acima
+    da emergência TRANQUILIZA quem lê. Quem viu 2011 sabe que não é verdade e
+    para de acreditar na tela; quem não viu, acredita — e é o pior dos dois.
+
+    Nada disto precisava de fonte externa para ser pego: a contradição estava
+    entre dois arquivos do próprio repositório. É aviso, não erro, porque o caso
+    legítimo existe e é o dia ruim — uma cheia nova SUPERA a marca, e o cadastro
+    fica atrasado até alguém atualizar. Reprovar a CI no meio de uma cheia seria
+    trocar um defeito por outro.
+    """
+    estacoes = le_json("estacoes.json")
+    enchentes = le_json("enchentes.json")
+    picos: dict[str, list[float]] = {}
+    for registro in enchentes.get("eventos", []):
+        pico = registro.get("pico_m")
+        if isinstance(pico, (int, float)):
+            picos.setdefault(registro.get("cidade"), []).append(float(pico))
+    for rio_id, rio in estacoes.get("rios", {}).items():
+        for cidade in rio.get("cidades", []):
+            marca = (cidade.get("cotas_m") or {}).get("inundacao_historica")
+            if not isinstance(marca, (int, float)):
+                continue
+            acima = sorted((p for p in picos.get(cidade["id"], []) if p > marca), reverse=True)
+            if not acima:
+                continue
+            aviso(
+                f"estacoes.json: {rio_id}/{cidade['id']}: `inundacao_historica` é {marca} m, mas "
+                f"enchentes.json tem {len(acima)} registro(s) ACIMA dela — o maior é {acima[0]} m. "
+                "A tela e o bot escrevem 'Inundação histórica' com esse número: ou ele é outra "
+                "grandeza e sai de `cotas_m`, ou a marca envelheceu e precisa subir."
+            )
+
+
 def valida_nomes_na_fonte() -> None:
     """
     `cotas_nomes_na_fonte` nomeia só faixas que existem em `cotas_m`?
@@ -1947,6 +1992,7 @@ def main() -> int:
     valida_referencia_das_cotas_de_rua()
     valida_cota_de_rua_duplicada()
     valida_ordem_das_cotas()
+    valida_marca_historica()
     valida_brutos_citados()
     valida_ressalva_chega_na_tela()
     valida_nomes_na_fonte()

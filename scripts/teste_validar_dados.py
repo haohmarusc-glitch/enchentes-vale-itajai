@@ -115,6 +115,74 @@ def _monotonia(estacoes_dict, transito_dict) -> tuple[list[str], list[str]]:
     return list(vd.erros), list(vd.avisos)
 
 
+def _marca_historica(estacoes_dict, enchentes_dict) -> list[str]:
+    """Roda só `valida_marca_historica` sobre dois JSONs em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    def falso(nome):
+        if nome == "estacoes.json":
+            return estacoes_dict
+        if nome == "enchentes.json":
+            return enchentes_dict
+        return orig(nome)
+    vd.le_json = falso
+    try:
+        vd.valida_marca_historica()
+    finally:
+        vd.le_json = orig
+    return list(vd.avisos)
+
+
+class MarcaHistorica(unittest.TestCase):
+    """
+    "Inundação histórica" que 86% da história supera.
+
+    Blumenau carregava `inundacao_historica: 8,50` e a tela escrevia isso para o
+    morador, enquanto o `enchentes.json` do mesmo repositório guardava 101
+    registros acima — o maior, 17,10 m. Era contradição entre dois arquivos
+    nossos, sem precisar de fonte externa para ser vista.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.estacoes = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+        cls.enchentes = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))
+
+    def base(self):
+        return copy.deepcopy(self.estacoes), copy.deepcopy(self.enchentes)
+
+    def test_os_dados_reais_passam_limpos(self):
+        self.assertEqual(_marca_historica(*self.base()), [],
+                         "nenhuma cidade deveria declarar marca histórica que a série supera")
+
+    def test_o_caso_de_blumenau_seria_pego(self):
+        """O defeito real, recolocado: 8,50 m com 1983 e 2011 acima."""
+        estacoes, enchentes = self.base()
+        _cidade(estacoes, "itajai-acu", "blumenau")["cotas_m"]["inundacao_historica"] = 8.5
+        avisos = _marca_historica(estacoes, enchentes)
+        self.assertTrue(any("blumenau" in a for a in avisos), avisos)
+        self.assertTrue(any("17.1 m" in a for a in avisos), "o aviso tem de dizer o maior pico")
+
+    def test_marca_acima_de_toda_a_serie_nao_avisa(self):
+        estacoes, enchentes = self.base()
+        _cidade(estacoes, "itajai-acu", "blumenau")["cotas_m"]["inundacao_historica"] = 20.0
+        self.assertEqual(_marca_historica(estacoes, enchentes), [])
+
+    def test_cidade_sem_registro_nao_avisa(self):
+        """Trombudo Central tem marca e ZERO registros: silêncio, não palpite."""
+        estacoes, enchentes = self.base()
+        enchentes["eventos"] = [e for e in enchentes["eventos"] if e.get("cidade") != "trombudo-central"]
+        self.assertEqual(_marca_historica(estacoes, enchentes), [])
+
+    def test_nunca_vira_erro(self):
+        """Uma cheia nova supera a marca; reprovar a CI durante a cheia seria pior."""
+        estacoes, enchentes = self.base()
+        _cidade(estacoes, "itajai-acu", "blumenau")["cotas_m"]["inundacao_historica"] = 8.5
+        _marca_historica(estacoes, enchentes)
+        self.assertEqual(vd.erros, [])
+
+
 class MonotoniaDaJanela(unittest.TestCase):
     """
     A janela de chegada contra a ordem do rio.
