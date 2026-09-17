@@ -10,10 +10,18 @@ import type { CotaRua } from '../dados/tipos'
  1. **A COMPARAÇÃO só onde o par cota↔leitura foi PROVADO.** A cota de rua
  *    descreve UMA régua; o nível ao vivo vem de OUTRA fonte. Se não forem a
  *    mesma, dizer "a sua rua alagou" usaria o metro de outro lugar — a regra
- *    nº 1 do projeto. O cadastro separa: Gaspar tem `cotas_verificado: true`;
- *    **Brusque tem `false`**, porque as cotas dela são da Ponte Estaiada
- *    (provado: cota + lâmina = 8,96 m, o pico de 17/11/2023, em 183 dos 184
- *    pontos) e as duas estações ao vivo dela têm `regua: null`.
+ *    nº 1 do projeto. O cadastro separa: Gaspar e Blumenau têm
+ *    `cotas_verificado: true`; **Rio do Sul tem `false`**, e por isso as 555
+ *    cotas dele aparecem sem estado.
+ *
+ *    ⚠️ ATUALIZADO em 17/09/2026: este bloco dava **Brusque** como o exemplo do
+ *    `false`, e isso deixou de ser verdade em 07/09/2026 (commit b3cd56b). O
+ *    par de Brusque FOI provado — três leituras do mesmo minuto, 1,27 m na
+ *    página da Ponte Estaiada, 1,27 m na rede estadual (DCSC-00019) e 1,28 m
+ *    na nossa coleta: a Ponte Estaiada é repasse do DCSC, Brusque não opera
+ *    régua própria de rio. O comentário velho ensinava o contrário do que o
+ *    dado diz, que é a pior espécie de comentário num módulo cuja função é
+ *    impedir comparação indevida.
  *
  *    Mas a cidade não comparável **não some do mapa**: os pontos aparecem com a
  *    cota de cada rua e **sem estado** — que é informação boa ("esta rua alaga
