@@ -44,6 +44,18 @@ from urllib.parse import urlparse
 
 from comum import DADOS
 
+
+def m_br(v: float) -> str:
+    """Metro em português: vírgula decimal.
+
+    A `nota` não é log — ela sai na tela do morador e no Telegram, ao lado de
+    cotas que o resto do sistema já escreve com vírgula. Uma nota dizendo
+    "chegou a 8.96 m" ao lado de "alaga a partir de 8,69 m" é a mesma grandeza
+    escrita de dois jeitos na mesma frase. Vale só para texto que o usuário lê;
+    o que é impresso no terminal para conferência continua como está.
+    """
+    return f"{v:.2f}".replace(".", ",")
+
 UA = "enchentes-vale-itajai/0.1 (+https://github.com/haohmarusc-glitch/enchentes-vale-itajai)"
 
 PORTAL = "https://defesacivil.riodosul.sc.gov.br/"
@@ -178,12 +190,12 @@ def como_registro(rua: dict, fonte: str, quando: str,
     if rua["max"] is not None and rua["max"] < TETO_DA_FONTE:
         registro["cota_max_m"] = rua["max"]
     elif rua["max"] is not None:
-        notas.append(f"A fonte publica máxima {rua['max']:.2f} m, que é o teto da escala "
+        notas.append(f"A fonte publica máxima {m_br(rua['max'])} m, que é o teto da escala "
                      "dela — não a cota em que a rua alaga inteira.")
 
     if piso_da_cidade is not None and rua["min"] < piso_da_cidade:
-        notas.append(f"Esta cota ({rua['min']:.2f} m) fica ABAIXO da menor cota de "
-                     f"referência de Rio do Sul ({piso_da_cidade:.2f} m): a rua alagaria "
+        notas.append(f"Esta cota ({m_br(rua['min'])} m) fica ABAIXO da menor cota de "
+                     f"referência de Rio do Sul ({m_br(piso_da_cidade)} m): a rua alagaria "
                      "com o rio em nível quase normal. Vem assim da fonte e ainda não foi "
                      "conferida com a Defesa Civil — não use como aviso sozinha.")
         # Mesmo conceito do `alerta_automatico: false` das réguas de estuário:
