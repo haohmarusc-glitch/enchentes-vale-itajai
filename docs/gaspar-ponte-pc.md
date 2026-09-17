@@ -36,3 +36,41 @@ não renovar a medição, a ponte para de aceitá-la ao ultrapassar três horas.
 
 Testes verificam identidade, carimbos, expiração, valores inválidos, arquivo
 ausente/corrompido e uso pelo coletor sem tentar o host inacessível.
+
+---
+
+## 17/09/2026 — a ponte funciona; quem parou foi a estação do município
+
+Primeiro caso real de silêncio com a ponte montada, e ele separou as duas coisas
+que antes se confundiam.
+
+O que está de pé, medido: a **tarefa agendada** no PC (Agendador do Windows, de
+15 em 15 min) rodou a noite inteira sem falhar uma vez; o **portal responde** ao
+PC; o **SSH** entrega. O que parou é a estação: a leitura mais recente que o
+portal publica é de **16/09/2026 às 17h24**, e não avançou desde então — em
+17/09 às 18h48 o envio a recusou com **25,4 h** de idade.
+
+É exatamente a leitura que a ponte entregou na primeira execução, em 16/09 às
+19h28 (1,75 m). Ou seja: a estação publicou aquele valor e **não publicou mais
+nada**; o único dado de Gaspar que este projeto chegou a ter ao vivo foi o
+último que ela produziu antes de parar.
+
+Consequência, e ela é a projetada: o `gaspar_pc.validar` recusa medição com mais
+de 3 h, então a VPS parou de aceitar o arquivo, Gaspar saiu do `ultimo.json` e o
+mapa devolveu a cidade ao **cinza** — em vez de mostrar 1,75 m como se fosse
+agora. O vigia passou a citá-la entre as que sumiram, e essa cobrança expira
+sozinha em `MEMORIA_DIAS` (3 dias) depois da última vez que ela publicou.
+
+Como se soube de que lado estava o problema: até 17/09 o envio recusava com uma
+frase só — *"Sem leitura municipal recente e válida"* —, que serve para portal
+mudo, número implausível e leitura velha. Agora ele escreve o motivo e a idade
+(PR #363). O log respondeu na primeira execução.
+
+**Não afrouxar o teto de 3 h para Gaspar voltar ao mapa.** O teto é o que impede
+um número de ontem de virar cor hoje; Gaspar cinza é a informação correta
+enquanto a estação estiver parada.
+
+O que destrava de verdade continua sendo institucional: a Defesa Civil de Gaspar
+liberar o IP `65.108.154.111` (tira o PC do caminho) e responder se a régua do
+Açu tem cadência declarada — hoje não se sabe se 22 h parada é defeito ou rotina
+de rio baixo.
