@@ -249,3 +249,19 @@ test('no arquivo real, "Rua" em Blumenau estoura muitas vezes o corte — é o c
     assert.ok((c.cota_m ?? Infinity) >= maiorMostrada, `${c.rua} alaga antes de uma das mostradas`)
   }
 })
+
+test('transversal sai como esquina; número e referência ficam no parêntese', () => {
+  // 454 dos 1.615 pontos de Gaspar trazem rua em `ponto` (medido em 17/09/2026).
+  // "Rua A (Rua B)" se lê como se B fosse outro nome de A — é a esquina.
+  assert.equal(nomeCompleto({ rua: 'Rua Luiz Franzói', ponto: 'Rua Gertrudes Seberino da Silva' } as never),
+    'Rua Luiz Franzói — esquina com Rua Gertrudes Seberino da Silva')
+  assert.equal(nomeCompleto({ rua: 'Rua X', ponto: 'Av. Beira Rio' } as never),
+    'Rua X — esquina com Av. Beira Rio')
+  // A fonte diz que o campo traz transversal, número da casa OU referência:
+  // escrever "nº 47" afirmaria número de casa, e a fonte não garante.
+  assert.equal(nomeCompleto({ rua: 'Rua Alvorada', ponto: '47' } as never), 'Rua Alvorada (47)')
+  assert.equal(nomeCompleto({ rua: 'Rua São Rafael', ponto: 'final da rua' } as never),
+    'Rua São Rafael (final da rua)')
+  assert.equal(nomeCompleto({ rua: 'Rua Ruazinha', ponto: 'Ruazinha do Meio' } as never),
+    'Rua Ruazinha (Ruazinha do Meio)')
+})

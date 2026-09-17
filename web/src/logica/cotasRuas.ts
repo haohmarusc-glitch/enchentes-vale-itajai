@@ -137,9 +137,30 @@ export function faltaPara(cotaM: number, nivelM: number): number {
   return Math.round((cotaM - nivelM) * 100) / 100
 }
 
+/**
+ * O `ponto` que é NOME DE RUA é uma transversal, e o parêntese escondia isso.
+ *
+ * MEDIDO em 17/09/2026 sobre `cotas-ruas.json`: dos 1.615 pontos de Gaspar, 454
+ * (28%) trazem um nome de rua em `ponto`. Saía "Rua Luiz Franzói (Rua Gertrudes
+ * Seberino da Silva)", que se lê como se a segunda fosse outro nome da primeira
+ * — quando é a esquina. Quem procura a própria rua precisa reconhecer o lugar.
+ *
+ * A fonte diz o que o campo é: no KML de Gaspar ele se chama `esquina`, e o
+ * `importar_cotas_gaspar.py` registra que traz "a transversal, o número da casa
+ * ou o ponto de referência". Por isso só o caso de RUA muda de forma — "47"
+ * continua entre parênteses, porque escrever "nº 47" afirmaria que é número de
+ * casa, e a fonte não garante isso.
+ *
+ * Blumenau e Rio do Sul não mudam (0% de nomes de rua em `ponto`).
+ * O `bot.py` tem a mesma regra, em `nome_do_ponto`.
+ */
+const RUA_NO_PONTO = /^(rua|r\.|av\.|avenida|travessa|tv\.|estrada|rod\.|rodovia|servidão)(\s|$)/i
+
 /** `Rua São Rafael (final da rua)` — o ponto faz parte da identidade. */
 export function nomeCompleto(c: CotaRua): string {
-  return c.ponto && c.ponto !== c.rua ? `${c.rua} (${c.ponto})` : c.rua
+  const ponto = c.ponto?.trim()
+  if (!ponto || ponto === c.rua) return c.rua
+  return RUA_NO_PONTO.test(ponto) ? `${c.rua} — esquina com ${ponto}` : `${c.rua} (${ponto})`
 }
 
 /* -------------------------------------------------------------------------- *
