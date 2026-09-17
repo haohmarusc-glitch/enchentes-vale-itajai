@@ -128,6 +128,16 @@ LIMITE_LOCALIZACAO_KM = 25.0
 #: continua verdadeira.
 LIMITE_COTA_RUA_M = 300
 
+#: Até onde ainda vale DIZER que existe levantamento por perto, sem usá-lo (metros).
+#:
+#: O silêncio mentia por omissão. Um pino no centro de Brusque não trazia camada
+#: de rua nenhuma — o ponto levantado mais próximo estava a 330 m, e o limite é
+#: 300 —, e a resposta ficava idêntica à de uma cidade sem levantamento algum.
+#: Quem lê conclui "não tem cota para cá"; o certo é "tem, mas não perto o
+#: bastante de você". 2 km porque além disso o ponto já é de outro bairro ou de
+#: outra cidade, e a frase viraria ruído em vez de informação.
+LIMITE_AVISO_COTA_M = 2000
+
 IDADE_MAXIMA_PREVISAO_MIN = 180
 
 #: A partir de quantos minutos de diferença entre o pluviômetro mais velho e o
@@ -942,6 +952,14 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
                       "esquina para a outra. Isto é leitura de tabela, não previsão: diz o que "
                       "acontece SE o rio chegar nesse nível, não se vai chegar.</i>")
         linhas.append("\n\n———")
+    elif cota is not None and cota[1] <= LIMITE_AVISO_COTA_M:
+        # Existe levantamento na região, só não na esquina de quem perguntou.
+        # Omitir isso em silêncio dá a MESMA resposta de uma cidade sem cota
+        # nenhuma, e as duas situações pedem decisões diferentes de quem lê.
+        linhas.append(f"📍 <b>Nenhum ponto levantado na sua esquina.</b>\n\n"
+                      f"O mais próximo fica a {cota[1]:.0f} m — longe demais para dizer o que "
+                      "acontece aí, porque a cota é de um PONTO e o terreno muda de uma esquina "
+                      "para a outra.\n\n———")
 
     # O separador só sai se já houver a camada da rua acima: sem isto, a
     # resposta sem cota perto começava com duas linhas em branco.

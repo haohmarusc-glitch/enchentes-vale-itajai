@@ -793,6 +793,32 @@ class TestLocalizacao(unittest.TestCase):
         self.assertNotIn("Alaga a partir de", t)
         self.assertFalse(t.startswith("\n"), "a resposta não pode abrir com linha em branco")
 
+    # Centro de Brusque: o ponto levantado mais próximo está a 330 m — fora dos
+    # 300 m de uso, dentro dos 2 km de aviso. Medido no cadastro em 17/09/2026.
+    BRUSQUE_CENTRO = (-27.0977, -48.9177)
+
+    def test_cota_perto_mas_longe_demais_DIZ_que_existe(self):
+        """O silêncio mentia por omissão.
+
+        Antes, um pino aqui saía igualzinho ao de uma cidade sem levantamento
+        nenhum — e as duas situações pedem decisões diferentes de quem lê. Agora
+        a resposta diz que há ponto levantado na região e a que distância, sem
+        usar a cota dele.
+        """
+        t = self.loc(self.BRUSQUE_CENTRO)
+        self.assertIn("Nenhum ponto levantado na sua esquina", t)
+        self.assertRegex(t, r"fica a \d+ m")
+        self.assertNotIn("Alaga a partir de", t, "a cota de 330 m não pode ser usada")
+        self.assertNotIn("faltam", t.lower())
+        self.assertIn("Régua mais próxima", t, "a camada da cidade continua saindo")
+
+    def test_sem_levantamento_na_regiao_nao_inventa_o_aviso(self):
+        """Em Blumenau a cota com coordenada mais próxima está a dezenas de km.
+
+        Dizer "o mais próximo fica a 23.000 m" seria ruído, não informação.
+        """
+        self.assertNotIn("Nenhum ponto levantado na sua esquina", self.loc(self.BLUMENAU))
+
     def test_fora_do_raio_diz_NAO_SEI_e_nao_oferece_regua_distante(self):
         """A régua de uma cidade a 66 km não diz nada sobre o rio ao lado de quem
         perguntou. Oferecê-la seria pior que o silêncio."""
