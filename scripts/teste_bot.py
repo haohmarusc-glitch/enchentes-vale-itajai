@@ -819,6 +819,34 @@ class TestLocalizacao(unittest.TestCase):
         """
         self.assertNotIn("Nenhum ponto levantado na sua esquina", self.loc(self.BLUMENAU))
 
+    def test_transversal_sai_como_ESQUINA_e_nao_entre_parenteses(self):
+        """"Rua A (Rua B)" se lê como se B fosse outro nome de A. É a esquina.
+
+        São 454 dos 1.615 pontos de Gaspar (medido em 17/09/2026). Quem recebe o
+        pino precisa reconhecer o lugar para julgar se aquele ponto é a esquina
+        dele — é a única pergunta que a camada de rua responde.
+        """
+        from bot import nome_do_ponto
+        self.assertEqual(
+            nome_do_ponto({"rua": "Rua Luiz Franzói", "ponto": "Rua Gertrudes Seberino da Silva"}),
+            "Rua Luiz Franzói — esquina com Rua Gertrudes Seberino da Silva")
+        self.assertEqual(nome_do_ponto({"rua": "Rua X", "ponto": "Av. Beira Rio"}),
+                         "Rua X — esquina com Av. Beira Rio")
+
+    def test_numero_e_referencia_continuam_no_parentese(self):
+        """A fonte diz que o campo traz transversal, número da casa OU referência.
+
+        Escrever "nº 47" afirmaria número de casa, e a fonte não garante isso.
+        """
+        from bot import nome_do_ponto
+        self.assertEqual(nome_do_ponto({"rua": "Rua Alvorada", "ponto": "47"}),
+                         "Rua Alvorada (47)")
+        self.assertEqual(nome_do_ponto({"rua": "Rua São Rafael", "ponto": "final da rua"}),
+                         "Rua São Rafael (final da rua)")
+        self.assertEqual(nome_do_ponto({"rua": "Rua Y", "ponto": "Esquina - Rua Amazonas"}),
+                         "Rua Y (Esquina - Rua Amazonas)")
+        self.assertEqual(nome_do_ponto({"rua": "Rua Z", "ponto": None}), "Rua Z")
+
     def test_fora_do_raio_diz_NAO_SEI_e_nao_oferece_regua_distante(self):
         """A régua de uma cidade a 66 km não diz nada sobre o rio ao lado de quem
         perguntou. Oferecê-la seria pior que o silêncio."""

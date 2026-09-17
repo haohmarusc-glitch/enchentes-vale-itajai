@@ -62,6 +62,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import sys
 import time
 import unicodedata
@@ -741,10 +742,38 @@ def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
 MAX_RUAS = 10
 
 
+#: O `ponto` que é NOME DE RUA é uma transversal, e o parêntese escondia isso.
+#:
+#: MEDIDO em 17/09/2026 sobre cotas-ruas.json: dos 1.615 pontos de Gaspar, 454
+#: (28%) têm em `ponto` um nome de rua. Saía "Rua Luiz Franzói (Rua Gertrudes
+#: Seberino da Silva)", que se lê como se a segunda fosse outro nome da primeira
+#: — quando é a esquina. Quem recebe o pino precisa reconhecer o lugar para
+#: julgar se aquele ponto é a esquina DELE, e é essa a única pergunta que a
+#: camada de rua responde.
+#:
+#: A fonte diz o que o campo é: no KML de Gaspar ele se chama `esquina`, e o
+#: comentário do `importar_cotas_gaspar.py` registra que traz "a transversal, o
+#: número da casa ou o ponto de referência". Por isso só o caso de RUA muda de
+#: forma: "47" continua entre parênteses, porque transformá-lo em "nº 47" seria
+#: afirmar que é número de casa, e a fonte não garante isso.
+#:
+#: Blumenau e Rio do Sul não são afetados (0% de nomes de rua em `ponto`);
+#: Brusque tem dois casos.
+RUA_NO_PONTO = re.compile(r"^(rua|r\.|av\.|avenida|travessa|tv\.|estrada|rod\.|rodovia|servidão)(\s|$)",
+                          re.IGNORECASE)
+
+
 def nome_do_ponto(c: dict) -> str:
-    """`Rua São Rafael (final da rua)` — o ponto faz parte da identidade."""
-    ponto = c.get("ponto")
-    return f"{c['rua']} ({ponto})" if ponto and ponto != c["rua"] else c["rua"]
+    """`Rua São Rafael (final da rua)` — o ponto faz parte da identidade.
+
+    Quando o ponto é uma transversal, sai "— esquina com", não entre parênteses.
+    """
+    ponto = (c.get("ponto") or "").strip()
+    if not ponto or ponto == c["rua"]:
+        return c["rua"]
+    if RUA_NO_PONTO.match(ponto):
+        return f"{c['rua']} — esquina com {ponto}"
+    return f"{c['rua']} ({ponto})"
 
 
 def linhas_de_uma_cota(c: dict, cidade_nome: str,
