@@ -1,0 +1,22 @@
+{
+  "camadas": [
+    {
+      "cidade": "itajai",
+      "evento": "2023-10",
+      "tipo": "trechos de vias alagadas (histórico)",
+      "arquivo": "manchas/itajai/vias-alagadas-2023-10.geojson",
+      "pico_registrado": null,
+      "fonte": "https://arcgis.itajai.sc.gov.br/portal/home/item.html?id=4738ff026336465ca3f6d77a3b5767a0",
+      "feicoes": 555
+    },
+    {
+      "cidade": "itajai",
+      "evento": "2023-11",
+      "tipo": "trechos de vias alagadas (histórico)",
+      "arquivo": "manchas/itajai/vias-alagadas-2023-11.geojson",
+      "pico_registrado": null,
+      "fonte": "https://arcgis.itajai.sc.gov.br/portal/home/item.html?id=f1423d9afd3a4e74b97b4cad91f81a67",
+      "feicoes": 409
+    }
+  ]
+}
