@@ -2,7 +2,19 @@
 
 **Portal / app:** [AlertaBlu](https://alertablu.blumenau.sc.gov.br/) (bloqueia robô; app Android/iOS)  
 **SEDECI:** secretaria.defesacivil@blumenau.sc.gov.br · 199  
-**Régua:** Ponte Adolfo Konder · ANA 83800002 · DCSC-00026  
+**Régua:** a fonte não a nomeia — o `nivel_oficial.json` publica UMA escala e UMA série, sem
+identificar o ponto. Ver `regua_nota` de Blumenau em `data/estacoes.json`.  
+
+> ⚠️ **CORRIGIDO em 18/09/2026.** Esta linha dizia "Ponte Adolfo Konder · ANA 83800002 ·
+> DCSC-00026", empilhando três identificadores como se fossem a mesma coisa. Dois problemas.
+> **A DCSC-00026 não mede nível de rio**: é do tipo `Meteo`, com `tem_nivel_do_rio: false`
+> (inventário da ANA, lido em 06/09/2026) — é a estação de CHUVA cuja coordenada o cadastro usa
+> como pino da cidade. E **"Ponte Adolfo Konder" não tem fonte**: entrou no primeiro commit do
+> projeto, e no repositório o nome aparece ligado à série do CEOPS/FURB, que está na referência
+> IBGE — o outro lado da REGRA BLOQUEANTE. O que ESTÁ provado, por medição e não por nome, é que
+> a cota e a leitura são da mesma régua: as duas publicações de Blumenau divergem em mediana
+> +0,065 m (`conferir_par_regua.py`). O título deste arquivo guarda o nome antigo de propósito,
+> para o caminho continuar achável; ele não é declaração de fonte.
 **Já no monitor (desde 09/09/2026):** Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8
 
 ---
