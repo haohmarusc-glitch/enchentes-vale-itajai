@@ -70,7 +70,8 @@ from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 import notificador
-from comum import DADOS, chave_montante, le_json
+from alerta_cotas import faixa_de
+from comum import DADOS, chave_montante, le_json, nivel_plausivel
 from transito import caminho, faixa_horas, janela_chegada
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
@@ -548,6 +549,71 @@ def emergencia() -> str:
     )
 
 
+#: Ícone por faixa, o MESMO do caminho do aviso (`alerta_cotas.texto_aviso`).
+#: `normal` não ganha bolinha verde de propósito: a bolinha verde do aviso diz
+#: "BAIXOU para abaixo das cotas", que é uma notícia; aqui seria um selo de
+#: segurança colado num número, e o rio abaixo da primeira cota não é promessa
+#: de nada — a chuva que vai enchê-lo pode já ter caído lá em cima.
+ICONE_FAIXA = {"monitoramento": "🟡", "atencao": "🟡", "alerta": "🟠",
+               "emergencia": "🔴", "inundacao": "🔴"}
+
+
+def faixa_da_leitura(cidade: dict, leituras: list[dict]) -> tuple[str, str, float] | None:
+    """(faixa, rótulo, cota) do nível ao vivo desta cidade, ou None.
+
+    ACHADO em 18/09/2026, testando o pino de Blumenau: com o rio em 8,40 m — 40
+    cm acima do <b>Alerta Máximo</b> —, o pino respondia "8,40 m — Blumenau, há
+    10 min" e mais nada. O número sozinho só informa quem já sabe de cor que
+    8,00 m é Alerta Máximo em Blumenau; quem não sabe lê um número. O caminho do
+    AVISO do mesmo bot já dizia a faixa ("🔴 Blumenau chegou à cota de Alerta
+    Máximo") e o site já pinta por faixa desde sempre: quem PERGUNTAVA recebia
+    menos que quem esperava sentado.
+
+    QUATRO TRAVAS, cada uma por um caso real deste repositório:
+
+    1. **`cotas_verificado`** — só cidade cujo par cota↔leitura foi PROVADO. É a
+       trava nº 1 de `web/src/logica/cotasNoMapa.ts`, que o mapa já aplicava e o
+       bot não tinha. Sem ela, **Rio do Sul** — cota da Ponte Dom Tito Buss,
+       leitura da Estação MKS, réguas diferentes — diria "acima da cota de
+       Atenção" com tempo bom, 88 de 88 leituras, que é o alarme que ensina a
+       pessoa a ignorar o próximo. Passam cinco: Ascurra, Indaial, Blumenau,
+       Gaspar e Brusque.
+    2. **UMA régua.** Com duas, `cotas_m` é da CIDADE e não se sabe de qual
+       delas — a mesma regra que a camada de rua do pino já aplica. Blumenau
+       tem primária + AlertaBlu, que `por_regua` junta como uma só; Itajaí tem
+       onze e nenhuma `cotas_m`.
+    3. **Nível plausível.** Um sensor devolvendo 0,00 m no meio da cheia cairia
+       em "abaixo da primeira cota" — a frase mais perigosa que este bot pode
+       escrever. `alerta_cotas` já trava isso no caminho do aviso; aqui é a
+       mesma trava, pelo mesmo motivo.
+    4. **Cotas existindo.** Sem escada não há degrau para ler.
+
+    `inundacao_historica` não entra: `faixa_de` só percorre `FAIXAS`, e marca
+    histórica é registro do passado, não faixa de operação.
+    """
+    if cidade.get("cotas_verificado") is not True:
+        return None
+    if len(leituras) != 1:
+        return None
+    nivel = leituras[0].get("nivel_m")
+    if not nivel_plausivel(nivel):
+        return None
+    cotas = {k: float(v) for k, v in (cidade.get("cotas_m") or {}).items()
+             if isinstance(v, (int, float)) and not isinstance(v, bool)}
+    if not cotas:
+        return None
+    nomes = cidade.get("cotas_nomes_na_fonte")
+    faixa = faixa_de(float(nivel), cotas)
+    if faixa == "normal":
+        # A PRIMEIRA cota da escada, que é o próximo degrau — não "cotas.get
+        # ('normal')", que não existe. Dizer qual é ela transforma "1,42 m" em
+        # "1,42 m, e a escada começa em 3,00 m", que é o que dá tamanho ao
+        # número sem prometer que ele vai ficar aí.
+        chave = min(cotas, key=lambda k: cotas[k])
+        return ("normal", rotulo_cota(chave, nomes), cotas[chave])
+    return (faixa, rotulo_cota(faixa, nomes), cotas[faixa])
+
+
 def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
     if cidade["id"] == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
@@ -570,12 +636,21 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
             linhas.append(f"Fonte oficial: {notificador.esc(cidade['fonte_tempo_real'])}")
         return linhas
 
+    faixa = faixa_da_leitura(cidade, leituras)
     for l in sorted(leituras, key=lambda x: x.get("estacao", "")):
         idade = idade_min(l.get("medido_em"), agora)
         linhas.append(
             f"\n<b>{metros(l['nivel_m'])}</b> — {notificador.esc(l.get('estacao', ''))}"
-            f"\n<i>{texto_idade(idade)}</i>"
         )
+        if faixa is not None:
+            nome, rot, cota = faixa
+            if nome == "normal":
+                linhas.append(f"\nAbaixo da primeira cota "
+                              f"({notificador.esc(rot)}: {metros(cota)})")
+            else:
+                linhas.append(f"\n{ICONE_FAIXA[nome]} Acima da cota de "
+                              f"<b>{notificador.esc(rot)}</b> ({metros(cota)})")
+        linhas.append(f"\n<i>{texto_idade(idade)}</i>")
     if len(leituras) > 1:
         linhas.append(
             "\n⚠️ Esta cidade tem mais de uma régua, com zeros diferentes: "

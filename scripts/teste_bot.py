@@ -22,7 +22,7 @@ from pathlib import Path
 import notificador
 from bot import (IDADE_MAXIMA_PREVISAO_MIN, LIMITE_COTA_RUA_M, LIMITE_LOCALIZACAO_KM, MAX_RUAS,
                  REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, distancia_km,
-                 eh_timeout, nome_curto, responder, resposta_localizacao, resposta_rua, saida_para,
+                 eh_timeout, nome_curto, responder, resposta_localizacao, resposta_nivel, resposta_rua, saida_para,
                  sem_acento, texto_idade)
 from comum import le_json
 
@@ -1415,6 +1415,96 @@ class NomesDaFonteNoBot(unittest.TestCase):
         self.assertIn("Observação", linhas[0])
         self.assertIn("Alerta Máximo", linhas[-1])
         self.assertNotIn("Emergência", "".join(linhas))
+
+
+class TestFaixaJuntoDoNivel(unittest.TestCase):
+    """A faixa sai junto do número — e SÓ onde o par cota↔leitura foi provado.
+
+    Achado em 18/09/2026 testando o pino de Blumenau: 8,40 m, 40 cm acima do
+    Alerta Máximo, e a resposta era o número puro. O caminho do aviso do mesmo
+    bot já dizia a faixa; quem perguntava recebia menos que quem esperava.
+    """
+
+    def com(self, cidade_id: str, rio: str, estacao: str, nivel: float,
+            extra: list[dict] | None = None) -> str:
+        leituras = [{"estacao": estacao, "rio": rio, "cidade": cidade_id,
+                     "nivel_m": nivel, "medido_em": "2026-08-30T18:20:00"}]
+        leituras += extra or []
+        b = Base({"leituras": leituras}, le_json("estacoes.json"),
+                 le_json("transito.json"), le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == cidade_id and c["rio"] == rio][0]
+        return "".join(resposta_nivel(b, cidade, AGORA))
+
+    def test_blumenau_acima_do_alerta_maximo_diz_o_nome_da_fonte(self):
+        saida = self.com("blumenau", "itajai-acu", "Blumenau", 8.40)
+        self.assertIn("8,40 m", saida)
+        # O nome é o da COMPDEC ("Alerta Máximo"), não o nosso ("Emergência").
+        self.assertIn("Alerta Máximo", saida)
+        self.assertNotIn("Emergência", saida)
+        self.assertIn("8,00 m", saida)
+
+    def test_blumenau_abaixo_de_tudo_nomeia_o_primeiro_degrau(self):
+        saida = self.com("blumenau", "itajai-acu", "Blumenau", 1.42)
+        self.assertIn("Abaixo da primeira cota", saida)
+        self.assertIn("3,00 m", saida)
+        # Sem bolinha verde: selo de segurança colado num número, não.
+        self.assertNotIn("🟢", saida)
+
+    def test_rio_do_sul_nao_ganha_faixa_a_cota_e_de_outra_regua(self):
+        """A trava que importa. Cota da Ponte Dom Tito Buss, leitura da Estação
+        MKS: 88 de 88 leituras acima da 'atenção' com tempo bom. `cotas_verificado`
+        é False, e sem esta guarda o bot soaria alarme permanente."""
+        saida = self.com("rio-do-sul", "itajai-acu", "Rio do Sul Estação MKS", 6.90)
+        self.assertIn("6,90 m", saida)
+        self.assertNotIn("Acima da cota", saida)
+        self.assertNotIn("Abaixo da primeira cota", saida)
+
+    def test_duas_reguas_na_cidade_calam_a_faixa(self):
+        """`cotas_m` é da CIDADE; com duas réguas não se sabe de qual delas."""
+        saida = self.com("blumenau", "itajai-acu", "Blumenau", 8.40, extra=[
+            {"estacao": "Blumenau — outra régua", "rio": "itajai-acu",
+             "cidade": "blumenau", "nivel_m": 2.10, "medido_em": "2026-08-30T18:20:00"}])
+        self.assertNotIn("Acima da cota", saida)
+
+    def test_resgate_do_alertablu_continua_uma_regua_e_ganha_faixa(self):
+        """Primária + AlertaBlu são a MESMA régua (`resgate_de`): `por_regua`
+        junta as duas, então a faixa sai — o oposto do teste acima."""
+        saida = self.com("blumenau", "itajai-acu", "Blumenau", 3.90, extra=[
+            {"estacao": "Blumenau (AlertaBlu)", "rio": "itajai-acu", "cidade": "blumenau",
+             "nivel_m": 8.40, "medido_em": "2026-08-30T18:28:00",
+             "resgate_de": "Blumenau"}])
+        self.assertIn("8,40 m", saida)
+        self.assertIn("Alerta Máximo", saida)
+
+    def test_nivel_implausivel_nao_vira_abaixo_da_primeira_cota(self):
+        """Sensor mudo devolvendo 0,00 m na cheia é a frase mais perigosa que
+        este bot poderia escrever. Mesma trava de `alerta_cotas`."""
+        saida = self.com("blumenau", "itajai-acu", "Blumenau", 0.0)
+        self.assertNotIn("Abaixo da primeira cota", saida)
+        self.assertNotIn("Acima da cota", saida)
+
+    def test_so_as_cinco_cidades_com_par_provado(self):
+        """Trava de cadastro: se alguém marcar `cotas_verificado: true` sem
+        provar o par, este teste cai junto — e é para cair."""
+        b = base()
+        com_faixa = {c["id"] for c in b.cidades() if c.get("cotas_verificado") is True}
+        self.assertEqual(com_faixa,
+                         {"ascurra", "indaial", "blumenau", "gaspar", "brusque"})
+
+    def test_o_pino_de_blumenau_carrega_a_faixa(self):
+        """Fecha o caminho inteiro: pino -> camada da cidade -> faixa."""
+        leituras = [{"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+                     "nivel_m": 8.40, "medido_em": "2026-08-30T18:20:00"}]
+        b = Base({"leituras": leituras}, le_json("estacoes.json"),
+                 le_json("transito.json"), le_json("enchentes.json"),
+                 le_json("cotas-ruas.json"))
+        saida = "".join(resposta_localizacao(b, -26.9194, -49.0661, AGORA))
+        self.assertIn("Alerta Máximo", saida)
+        # Blumenau não tem cota de rua com coordenada: a camada de rua não abre,
+        # e o aviso de "nenhum ponto na sua esquina" também não (a mais próxima
+        # fica a dezenas de km). A resposta não pode começar em branco.
+        self.assertNotIn("Nenhum ponto levantado", saida)
+        self.assertTrue(saida.startswith("📍 Régua mais próxima"))
 
 
 if __name__ == "__main__":
