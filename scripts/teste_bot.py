@@ -881,6 +881,60 @@ class TestLocalizacao(unittest.TestCase):
         for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU, self.FLORIPA):
             self.assertIn("199", self.loc(ponto))
 
+    #: Coordenada a 31 m de uma cota levantada de Brusque — dentro do limite de
+    #: 300 m, então a camada de rua abre. Achada no cadastro real, não chutada.
+    BRUSQUE_PERTO_DE_COTA = (-27.10267, -48.917600)
+
+    def _base_brusque(self, leituras, sc=None):
+        return Base({"leituras": leituras}, le_json("estacoes.json"),
+                    le_json("transito.json"), le_json("enchentes.json"),
+                    le_json("cotas-ruas.json"), sc)
+
+    def test_so_o_bruto_estadual_diz_por_que_nao_da_para_comparar(self):
+        """ACHADO no teste de campo de 18/09/2026: a fonte municipal de Brusque
+        parou, o bot caiu no BRUTO da rede estadual, e a linha "faltam X m"
+        sumiu do bloco da rua SEM UMA PALAVRA. A guarda que existia só cobria a
+        cidade de várias réguas; com ZERO leituras municipais não disparava."""
+        b = self._base_brusque([], {"leituras": [
+            {"cidade": "brusque", "rio": "itajai-mirim", "estacao": "SDC-SC Brusque",
+             "nivel_bruto_m": 1.31, "medido_em": "2026-08-30T18:20:00"}]})
+        t = "".join(resposta_localizacao(b, *self.BRUSQUE_PERTO_DE_COTA, AGORA))
+        self.assertIn("Alaga a partir de", t)
+        self.assertNotIn("faltam", t)
+        self.assertIn("Quanto falta subir não dá para dizer", t)
+        self.assertIn("BRUTO da rede estadual", t)
+        # E NÃO pode dizer que a cidade some da fonte: o número está na tela.
+        self.assertNotIn("não aparece na fonte de tempo real", t)
+
+    def test_sem_leitura_nenhuma_e_outro_motivo_que_o_bruto(self):
+        """"Não há leitura" e "há leitura, com outro zero" são situações
+        diferentes e pedem decisões diferentes de quem lê."""
+        b = self._base_brusque([])
+        t = "".join(resposta_localizacao(b, *self.BRUSQUE_PERTO_DE_COTA, AGORA))
+        self.assertIn("não aparece na fonte de tempo real", t)
+        self.assertNotIn("BRUTO da rede estadual", t)
+
+    def test_com_leitura_municipal_a_comparacao_volta(self):
+        b = self._base_brusque([{"estacao": "Brusque", "rio": "itajai-mirim",
+                                 "cidade": "brusque", "nivel_m": 1.94,
+                                 "medido_em": "2026-08-30T18:20:00"}])
+        t = "".join(resposta_localizacao(b, *self.BRUSQUE_PERTO_DE_COTA, AGORA))
+        self.assertIn("faltam", t)
+        self.assertNotIn("Quanto falta subir não dá para dizer", t)
+
+    def test_a_rua_nao_desmente_o_proprio_bot(self):
+        """O `/rua` dizia "a cidade não aparece na fonte de tempo real que
+        coletamos" enquanto o bot TINHA o número e o exibia no pino, na mesma
+        sessão. Frase falsa é pior que silêncio: ensina que o projeto não cobre
+        Brusque. Os dois caminhos saem da MESMA função agora."""
+        b = self._base_brusque([], {"leituras": [
+            {"cidade": "brusque", "rio": "itajai-mirim", "estacao": "SDC-SC Brusque",
+             "nivel_bruto_m": 1.31, "medido_em": "2026-08-30T18:20:00"}]})
+        brusque = [c for c in b.cidades() if c["id"] == "brusque"][0]
+        t = "".join(resposta_rua(b, brusque, "Bepe Rosa", AGORA))
+        self.assertNotIn("não aparece na fonte de tempo real", t)
+        self.assertIn("BRUTO da rede estadual", t)
+
     def test_blumenau_nao_publica_distancia_ate_uma_estacao_de_chuva(self):
         """A `coordenadas` de Blumenau é a da DCSC-00026, estação de CHUVA — não
         é a régua. O "a 6,9 km em linha reta" saía medido até ela, e era dito a
