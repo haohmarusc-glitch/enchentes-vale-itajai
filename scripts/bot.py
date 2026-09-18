@@ -152,6 +152,20 @@ RODAPE = (
     "a Defesa Civil de SC e o AlertaBlu. Emergência: <b>199</b>.</i>"
 )
 
+#: O rodapé de quem está FORA da bacia. Acrescentado em 18/09/2026, no teste de
+#: campo do pino: a 60,1 km da régua mais próxima, o bot recusava dar número
+#: (certo) e em seguida mandava a pessoa seguir o **AlertaBlu**, que é o sistema
+#: de Blumenau, e a **Defesa Civil de SC**, que pode não ser nem o estado dela.
+#: Fora da bacia essas duas indicações não são ressalva, são ruído — e vinham
+#: logo depois de o corpo já ter dito "Procure a Defesa Civil do seu município",
+#: repetindo a frase e alongando justamente a resposta que devia ser a mais
+#: curta de todas.
+#:
+#: O que NÃO sai, e por quê: o **199** é nacional e vale onde a pessoa estiver;
+#: e "não é alerta oficial" é a frase que o projeto inteiro carrega — encurtar
+#: nunca pode virar tirar a ressalva. O que sai é só o que é local.
+RODAPE_FORA_DA_BACIA = "\n\n<i>Isto não é alerta oficial. Emergência: <b>199</b>.</i>"
+
 ROTULO_COTA = {
     # Fases que alguns planos municipais põem ABAIXO da atenção. O rótulo é o
     # nome que o próprio plano usa — não se rebatiza para caber no nosso
@@ -1022,7 +1036,7 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
             "📍 <b>Você está fora da área que este projeto cobre.</b>\n\n"
             f"Ele acompanha os rios Itajaí-Açu e Itajaí-Mirim, e nenhuma das réguas "
             f"está a menos de {LIMITE_LOCALIZACAO_KM:.0f} km daí.{onde}\n\n"
-            "Procure a Defesa Civil do seu município." + RODAPE
+            "Procure a Defesa Civil do seu município." + RODAPE_FORA_DA_BACIA
         ]
     cidade, km = perto
     linhas: list[str] = []
