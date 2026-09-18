@@ -1082,8 +1082,32 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
     # O separador só sai se já houver a camada da rua acima: sem isto, a
     # resposta sem cota perto começava com duas linhas em branco.
     cabeca = "\n\n" if linhas else ""
-    linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(cidade['nome'])}</b>, "
-                  f"a {quilometros(km)} em linha reta.\n\n")
+    # A DISTÂNCIA SÓ SAI DE QUEM PODE MEDI-LA. `coordenadas_sao_da_regua: false`
+    # é a cidade que declara, por escrito no cadastro, que o pino dela NÃO é a
+    # régua. Hoje só Blumenau: a coordenada de lá é a da DCSC-00026, estação de
+    # CHUVA, e o "a 6,9 km em linha reta" saía medido até ela — dito a um morador
+    # do Centro que está a algumas centenas de metros da régua que deu o número
+    # da linha seguinte (medido no pino real em 18/09/2026).
+    #
+    # A omissão é DITA, não silenciosa: sumir com a distância sem explicar é o
+    # mesmo defeito do aviso de cota que o pino tinha em 17/09 — a ausência
+    # parece esquecimento, e quem lê não sabe se é "perto" ou "não medimos".
+    #
+    # AUSÊNCIA DO CAMPO MANTÉM A DISTÂNCIA. Nas outras cidades não há prova de
+    # que o pino não seja a régua, e tirar de todas removeria informação boa
+    # ("a régua fica a 1,8 km de mim" é o que a pessoa quer saber).
+    #
+    # O QUE ISTO NÃO CONSERTA, e precisa estar escrito: a ESCOLHA da cidade
+    # continua saindo da mesma coordenada errada (`cidade_mais_proxima`). Em
+    # Ponta Aguda a margem para o bot responder GASPAR a um morador de Blumenau
+    # é de 700 m. Isto tira a afirmação falsa da tela; não tira o risco.
+    if cidade.get("coordenadas_sao_da_regua") is False:
+        linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(cidade['nome'])}</b>."
+                      "\n<i>A distância não sai: o projeto ainda não tem a coordenada "
+                      "desta régua.</i>\n\n")
+    else:
+        linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(cidade['nome'])}</b>, "
+                      f"a {quilometros(km)} em linha reta.\n\n")
     linhas.extend(resposta_nivel(base, cidade, agora))
     linhas.append(RODAPE)
     return linhas

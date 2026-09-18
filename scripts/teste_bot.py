@@ -881,6 +881,39 @@ class TestLocalizacao(unittest.TestCase):
         for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU, self.FLORIPA):
             self.assertIn("199", self.loc(ponto))
 
+    def test_blumenau_nao_publica_distancia_ate_uma_estacao_de_chuva(self):
+        """A `coordenadas` de Blumenau é a da DCSC-00026, estação de CHUVA — não
+        é a régua. O "a 6,9 km em linha reta" saía medido até ela, e era dito a
+        quem está a algumas centenas de metros da régua que deu o número da
+        linha seguinte (pino real, 18/09/2026)."""
+        t = self.loc(self.BLUMENAU)
+        self.assertIn("Régua mais próxima", t)
+        self.assertNotIn("em linha reta", t)
+        # A omissão é DITA. Sumir calado é o defeito que o aviso de cota tinha.
+        self.assertIn("A distância não sai", t)
+
+    def test_quem_tem_coordenada_de_regua_mantem_a_distancia(self):
+        """Ausência do campo mantém a distância: nas outras cidades não há prova
+        de que o pino não seja a régua, e tirar de todas removeria informação
+        boa — "a régua fica a 1,6 km de mim" é o que a pessoa quer saber."""
+        t = self.loc(self.BRUSQUE_COM_COTA)
+        self.assertIn("em linha reta", t)
+        self.assertNotIn("A distância não sai", t)
+
+    def test_so_blumenau_declara_que_o_pino_nao_e_a_regua(self):
+        """Trava de cadastro: cidade nova com o campo `false` cai aqui, e é para
+        cair — quem o põe tem de saber que está tirando número da tela."""
+        sem = {c["id"] for c in base().cidades()
+               if c.get("coordenadas_sao_da_regua") is False}
+        self.assertEqual(sem, {"blumenau"})
+
+    def test_fora_da_bacia_ainda_diz_a_distancia(self):
+        """Lá o número continua: a 60 km, os ~7 km de erro do pino de Blumenau
+        não mudam decisão nenhuma, e a distância é o que dá à pessoa o tamanho
+        do "não sei" em vez de só um "não"."""
+        t = self.loc(self.FLORIPA)
+        self.assertIn("A mais próxima fica a", t)
+
     def test_fora_da_bacia_tem_rodape_curto_sem_alertablu_nem_sc(self):
         """Achado no teste de campo de 18/09/2026, com o pino a 60,1 km.
 
