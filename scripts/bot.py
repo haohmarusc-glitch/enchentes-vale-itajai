@@ -919,6 +919,44 @@ def linhas_de_uma_cota(c: dict, cidade_nome: str,
     return linhas
 
 
+def porque_sem_comparacao(base: Base, cidade_id: str, agora: datetime) -> str | None:
+    """Por que não dá para dizer "faltam X m" nesta cidade — ou None quando dá.
+
+    ACHADO em 18/09/2026, no teste de campo do pino em Brusque. A fonte
+    municipal da cidade tinha parado e o bot caiu no BRUTO da rede estadual
+    (1,31 m). Duas coisas apareceram, e as duas são da mesma raiz — ninguém
+    distinguia "não há leitura" de "há leitura, com OUTRO zero":
+
+    * **O pino calava.** A linha "O rio está em X m — faltam Y m" sumia do bloco
+      da rua sem uma palavra. A guarda que existia lá só cobria a cidade com
+      MAIS DE UMA régua; com ZERO leituras municipais ela não disparava. Some o
+      que mais importa na resposta, e a ausência parece esquecimento — o mesmo
+      defeito do aviso de cota (17/09) e da distância (18/09).
+    * **O `/rua` mentia.** Dizia "a cidade não aparece na fonte de tempo real
+      que coletamos" enquanto o bot TINHA o número e o exibia no pino, na mesma
+      sessão. Frase falsa é pior que silêncio: ensina que o projeto não cobre
+      Brusque.
+
+    Os motivos saem daqui para os dois caminhos não voltarem a divergir. Cada um
+    compõe como "a cidade …" ou "{Cidade} …", então o texto começa por verbo.
+    """
+    leituras = base.leituras_da_cidade(cidade_id, agora)
+    if len(leituras) > 1:
+        return (f"tem {len(leituras)} réguas com zeros diferentes, e nenhuma "
+                "delas sozinha é “o nível da cidade”")
+    if len(leituras) == 1:
+        if isinstance(leituras[0].get("nivel_m"), (int, float)):
+            return None
+        return "teve leitura ao vivo agora, mas sem número de nível"
+    if base.bruto_da_cidade(cidade_id) is not None:
+        # O número existe e está na tela logo abaixo — o que não existe é a
+        # COMPARAÇÃO. Dizer "não aparece" aqui seria desmentir a própria
+        # mensagem.
+        return ("só tem, agora, o nível BRUTO da rede estadual, que é de outra "
+                "régua e tem zero próprio — não se compara com esta cota")
+    return "não aparece na fonte de tempo real que coletamos"
+
+
 def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -> list[str]:
     """
     "A partir de quantos metros a minha rua alaga?"
@@ -960,15 +998,13 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     #: seguinte é sempre "e onde está o rio agora".
     sem_nivel: dict[str, str] = {}
     for c in {x["cidade"] for x in achadas}:
-        leituras = base.leituras_da_cidade(c, agora)
-        if len(leituras) == 1 and isinstance(leituras[0].get("nivel_m"), (int, float)):
+        motivo = porque_sem_comparacao(base, c, agora)
+        if motivo is None:
+            leituras = base.leituras_da_cidade(c, agora)
             niveis[c] = (float(leituras[0]["nivel_m"]),
                          idade_min(leituras[0].get("medido_em"), agora))
-        elif len(leituras) > 1:
-            sem_nivel[c] = (f"tem {len(leituras)} réguas com zeros diferentes, e nenhuma "
-                            "delas sozinha é “o nível da cidade”")
         else:
-            sem_nivel[c] = "não aparece na fonte de tempo real que coletamos"
+            sem_nivel[c] = motivo
 
     nomes_cidade = {c["id"]: c["nome"] for c in base.cidades()}
     linhas = [f"<b>Cotas de rua</b> — “{e(termo)}”{onde}"]
@@ -1049,8 +1085,9 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
         # UMA régua. Com várias, nenhuma delas sozinha é "o nível da cidade", e
         # "faltam 2,30 m" sairia medido contra a régua errada.
         atual = None
-        leituras = base.leituras_da_cidade(c["cidade"], agora)
-        if len(leituras) == 1 and isinstance(leituras[0].get("nivel_m"), (int, float)):
+        motivo = porque_sem_comparacao(base, c["cidade"], agora)
+        if motivo is None:
+            leituras = base.leituras_da_cidade(c["cidade"], agora)
             atual = (float(leituras[0]["nivel_m"]),
                      idade_min(leituras[0].get("medido_em"), agora))
         linhas.append(f"📍 <b>Ponto levantado mais perto de você</b> — a {dist_m:.0f} m daqui")
@@ -1062,10 +1099,11 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
             partes = str(c["data_fonte"]).split("-")
             quando_cota = f"{partes[1]}/{partes[0]}" if len(partes) >= 2 else str(c["data_fonte"])
             linhas.append(f"\n<i>Cota levantada em {e(quando_cota)}.</i>")
-        if atual is None and len(leituras) > 1:
+        # O motivo sai SEMPRE que a comparação não pôde ser feita, não só na
+        # cidade de várias réguas. Era aí que o pino calava.
+        if motivo is not None:
             linhas.append(f"\n<i>Quanto falta subir não dá para dizer: "
-                          f"{e(nomes.get(c['cidade'], c['cidade']))} tem {len(leituras)} réguas "
-                          "com zeros diferentes.</i>")
+                          f"{e(nomes.get(c['cidade'], c['cidade']))} {e(motivo)}.</i>")
         linhas.append("\n\n<i>A cota é de um PONTO, não da rua inteira — terreno muda de uma "
                       "esquina para a outra. Isto é leitura de tabela, não previsão: diz o que "
                       "acontece SE o rio chegar nesse nível, não se vai chegar.</i>")
