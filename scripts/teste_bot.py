@@ -881,6 +881,41 @@ class TestLocalizacao(unittest.TestCase):
         for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU, self.FLORIPA):
             self.assertIn("199", self.loc(ponto))
 
+    def test_fora_da_bacia_tem_rodape_curto_sem_alertablu_nem_sc(self):
+        """Achado no teste de campo de 18/09/2026, com o pino a 60,1 km.
+
+        O bot recusava dar número — certo — e logo abaixo mandava seguir o
+        AlertaBlu (sistema de Blumenau) e a Defesa Civil de SC (que pode não ser
+        nem o estado da pessoa). Fora da bacia as duas viram ruído, e vinham
+        DEPOIS de o corpo já ter dito "Procure a Defesa Civil do seu município".
+        """
+        t = self.loc(self.FLORIPA)
+        self.assertIn("fora da área", t)
+        self.assertNotIn("AlertaBlu", t)
+        self.assertNotIn("Defesa Civil de SC", t)
+        # Encurtar não pode virar tirar a ressalva nem o telefone.
+        self.assertIn("não é alerta oficial", t)
+        self.assertIn("199", t)
+        # E a frase do município sai UMA vez, não duas.
+        self.assertEqual(t.count("Defesa Civil do seu município"), 1)
+
+    def test_dentro_da_bacia_mantem_o_rodape_inteiro(self):
+        """A outra metade: o rodapé curto não pode vazar para quem está dentro,
+        que é justamente quem precisa saber do AlertaBlu e da Defesa Civil de SC."""
+        for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU):
+            t = self.loc(ponto)
+            self.assertNotIn("fora da área", t)
+            self.assertIn("AlertaBlu", t)
+            self.assertIn("Defesa Civil de SC", t)
+
+    def test_coordenada_ilegivel_mantem_o_rodape_inteiro(self):
+        """Não é o mesmo caso: a pessoa pode estar DENTRO da bacia e o que
+        falhou foi a leitura do pino. Sem saber onde ela está, não se pode
+        decidir que o AlertaBlu não serve para ela."""
+        t = "".join(resposta_localizacao(base(), None, None, AGORA))
+        self.assertIn("Não consegui ler", t)
+        self.assertIn("AlertaBlu", t)
+
     def test_nenhuma_resposta_estoura_o_limite_do_telegram(self):
         """Mensagem recusada pelo Telegram é silêncio, que é o pior resultado."""
         for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU, self.FLORIPA):
