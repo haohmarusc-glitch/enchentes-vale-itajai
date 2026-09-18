@@ -906,6 +906,30 @@ class TestLocalizacao(unittest.TestCase):
         # E NÃO pode dizer que a cidade some da fonte: o número está na tela.
         self.assertNotIn("não aparece na fonte de tempo real", t)
 
+    def test_o_bruto_nao_e_explicado_duas_vezes_na_mesma_mensagem(self):
+        """ENXUGADO em 18/09/2026, depois do teste de campo. Os dois blocos
+        diziam a mesma coisa em dez linhas: "zero próprio, não se compara com
+        esta cota" na camada de rua e "zero próprio, não comparável com as
+        cotas desta cidade" na da régua. Ficou uma vez em cada lugar, sem
+        repetir as palavras — 93 caracteres a menos.
+
+        As duas frases CONTINUAM existindo, e é de propósito: o `/rua` sai sem
+        o bloco da régua, e o `/nivel` sai sem o da rua. Cada uma tem de se
+        bastar sozinha; o que não pode é as duas juntas dizerem o mesmo.
+        """
+        b = self._base_brusque([], {"leituras": [
+            {"cidade": "brusque", "rio": "itajai-mirim", "estacao": "SDC-SC Brusque",
+             "nivel_bruto_m": 1.31, "medido_em": "2026-08-30T18:20:00"}]})
+        t = "".join(resposta_localizacao(b, *self.BRUSQUE_PERTO_DE_COTA, AGORA))
+        self.assertEqual(t.count("zero próprio"), 1)
+        # A abertura "Quanto falta subir não dá para dizer" já diz que não se
+        # compara; repetir isso no fim da mesma frase era o pleonasmo.
+        self.assertNotIn("não se compara com esta cota", t)
+        self.assertNotIn("não para dizer quanto falta para uma cota", t)
+        # E nenhuma das duas perdeu o que a torna suficiente sozinha.
+        self.assertIn("outra régua, com outro zero", t)
+        self.assertIn("não comparável", t)
+
     def test_sem_leitura_nenhuma_e_outro_motivo_que_o_bruto(self):
         """"Não há leitura" e "há leitura, com outro zero" são situações
         diferentes e pedem decisões diferentes de quem lê."""

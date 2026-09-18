@@ -641,9 +641,9 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
             linhas.append(f"\n<b>{metros(bruto['nivel_bruto_m'])}</b> — "
                           f"{notificador.esc(bruto.get('estacao', ''))} (rede estadual)"
                           f"\n<i>{texto_idade(idade)}</i>")
-            linhas.append("\n<i>Nível BRUTO da régua da estação estadual: zero próprio, "
-                          "<b>não comparável</b> com as cotas desta cidade. Serve para ver o "
-                          "rio subir ou descer, não para dizer quanto falta para uma cota.</i>")
+            linhas.append("\n<i>Nível BRUTO da régua estadual: zero próprio, "
+                          "<b>não comparável</b> com as cotas desta cidade. "
+                          "Serve para ver o rio subir ou descer.</i>")
             return linhas
         linhas.append("\nSem leitura ao vivo desta cidade na fonte que coletamos.")
         if cidade.get("fonte_tempo_real"):
@@ -952,8 +952,7 @@ def porque_sem_comparacao(base: Base, cidade_id: str, agora: datetime) -> str | 
         # O número existe e está na tela logo abaixo — o que não existe é a
         # COMPARAÇÃO. Dizer "não aparece" aqui seria desmentir a própria
         # mensagem.
-        return ("só tem, agora, o nível BRUTO da rede estadual, que é de outra "
-                "régua e tem zero próprio — não se compara com esta cota")
+        return "só tem agora o nível BRUTO da rede estadual, que é outra régua, com outro zero"
     return "não aparece na fonte de tempo real que coletamos"
 
 
