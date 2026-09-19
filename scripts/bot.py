@@ -221,6 +221,26 @@ def milimetros(v: float) -> str:
 
 
 def texto_idade(minutos: float | None) -> str:
+    """A idade da leitura em minutos, horas ou DIAS.
+
+    ACHADO em 19/09/2026, montando o pino de Indaial: a leitura de 12/09 saía
+    como **"há 163 h 30"**. Não estava errado — eram 163 horas e 30 minutos —,
+    e ninguém lê isso como "seis dias e meio". A idade existe para a pessoa
+    saber se o número serve; escrita assim, não serve para nada.
+
+    NÃO É CASO RARO. A régua de Indaial é `FONTES_MANUAIS`: um documento que a
+    Defesa Civil preenche À MÃO durante os eventos, com intervalos medidos de
+    até **568 dias** entre registros (ver o bloco de `FONTES_MANUAIS` em
+    `saude_coleta.py`). Lá a leitura velha é o normal, não a exceção — e o
+    próprio vigia já escreve "última leitura há X dia(s)" para essa fonte. O bot
+    é que falava outra língua na mesma casa.
+
+    Acima de 48 h sai em dias, com uma casa até 10 dias ("há 6,8 dias") e
+    inteiro depois ("há 568 dias"): a fração importa quando se decide se a
+    leitura ainda vale para hoje, e deixa de importar quando a resposta já é
+    "isto é de outro mês". Entre 1 h e 48 h fica em horas, que é a unidade da
+    cheia — numa subida, "há 30 h" diz mais do que "há 1,3 dias".
+    """
     if minutos is None:
         return "sem horário de medição"
     m = int(minutos)
@@ -228,8 +248,16 @@ def texto_idade(minutos: float | None) -> str:
         return "agora mesmo"
     if m < 60:
         return f"há {m} min"
-    h, resto = divmod(m, 60)
-    return f"há {h} h {resto:02d}" if resto else f"há {h} h"
+    if m < 48 * 60:
+        h, resto = divmod(m, 60)
+        return f"há {h} h {resto:02d}" if resto else f"há {h} h"
+    dias = m / 1440
+    if dias >= 10:
+        return f"há {round(dias)} dias"
+    # "há 2,0 dias" tem cara de número gerado; a casa decimal só sai quando
+    # diz alguma coisa.
+    texto = f"{dias:.1f}".rstrip("0").rstrip(".").replace(".", ",")
+    return f"há {texto} dias"
 
 
 def idade_min(medido_em: str | None, agora: datetime) -> float | None:

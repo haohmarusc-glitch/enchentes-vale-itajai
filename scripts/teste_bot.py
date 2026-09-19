@@ -1204,6 +1204,33 @@ class TestAuxiliares(unittest.TestCase):
         self.assertEqual(texto_idade(155), "há 2 h 35")
         self.assertEqual(texto_idade(None), "sem horário de medição")
 
+    def test_acima_de_dois_dias_sai_em_dias(self):
+        """ACHADO em 19/09/2026 montando o pino de Indaial: a leitura de 12/09
+        saía como "há 163 h 30". Não estava errado — eram 163 horas e 30
+        minutos — e ninguém lê isso como "seis dias e meio". A idade existe para
+        a pessoa saber se o número serve; escrita assim, não serve para nada."""
+        self.assertEqual(texto_idade(9810), "há 6,8 dias")   # o caso real
+        self.assertEqual(texto_idade(2880), "há 2 dias")
+        self.assertEqual(texto_idade(4320), "há 3 dias")
+
+    def test_ate_48_h_fica_em_horas(self):
+        """A hora é a unidade da cheia: numa subida, "há 30 h" diz mais do que
+        "há 1,3 dias"."""
+        self.assertEqual(texto_idade(1440), "há 24 h")
+        self.assertEqual(texto_idade(2879), "há 47 h 59")
+
+    def test_acima_de_dez_dias_a_fracao_deixa_de_importar(self):
+        """Quando a resposta já é "isto é de outro mês", a casa decimal é ruído.
+        568 dias é o maior intervalo medido no documento de Indaial."""
+        self.assertEqual(texto_idade(14400), "há 10 dias")
+        self.assertEqual(texto_idade(817920), "há 568 dias")
+
+    def test_nao_sai_virgula_zero(self):
+        """"há 2,0 dias" tem cara de número gerado."""
+        for m in (2880, 4320, 5760):
+            with self.subTest(m=m):
+                self.assertNotIn(",0 dias", texto_idade(m))
+
 
 class TestLogDoLaco(unittest.TestCase):
     """
