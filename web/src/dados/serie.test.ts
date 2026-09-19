@@ -280,3 +280,47 @@ test('arquivo ANTIGO, sem reguas nem r, não quebra o site', async () => {
   // Um grupo só (todos "sem régua"), então a tendência continua saindo.
   assert.equal(tendencia(serie)?.cmh, 20)
 })
+
+// ---------------------------------------------------------------------------
+// `resgates`: quais FONTES cobrem a mesma régua (achado 5 da auditoria,
+// 19/09/2026). As séries continuam separadas — o que muda é a tela saber que
+// duas publicações do mesmo instrumento não são duas réguas com zeros
+// diferentes.
+
+const CORPO_BLUMENAU = {
+  gerado_em: '2026-09-19T16:00:00+00:00',
+  janela_horas: 48,
+  reguas: { 'itajai-acu': { blumenau: ['Blumenau', 'Blumenau (AlertaBlu)'] } },
+  resgates: { 'Blumenau (AlertaBlu)': 'Blumenau' },
+  series: {
+    'itajai-acu': {
+      blumenau: [
+        { medido_em: '2026-09-19T12:00:00', nivel_m: 2.6, r: 0 },
+        { medido_em: '2026-09-19T12:00:00', nivel_m: 2.66, r: 1 },
+      ],
+    },
+  },
+}
+
+test('resgates chega ao estado, e as séries continuam separadas', async () => {
+  const estado = await buscarSerie(undefined, responde(CORPO_BLUMENAU))
+  assert.equal(estado.situacao, 'ok')
+  assert.equal(estado.resgates['Blumenau (AlertaBlu)'], 'Blumenau')
+  // Separadas: duas réguas distintas na série, que é a decisão de 04/09/2026.
+  const serie = serieDaCidade(estado, 'itajai-acu', 'blumenau')
+  assert.equal(porRegua(serie).size, 2)
+})
+
+test('arquivo antigo sem resgates vira mapa vazio, não quebra', async () => {
+  const semCampo = { ...CORPO_BLUMENAU } as Record<string, unknown>
+  delete semCampo.resgates
+  const estado = await buscarSerie(undefined, responde(semCampo))
+  assert.equal(estado.situacao, 'ok')
+  assert.deepEqual(estado.resgates, {})
+})
+
+test('resgates com valor não-texto é descartado', async () => {
+  const sujo = { ...CORPO_BLUMENAU, resgates: { a: 1, 'Blumenau (AlertaBlu)': 'Blumenau' } }
+  const estado = await buscarSerie(undefined, responde(sujo))
+  assert.deepEqual(estado.resgates, { 'Blumenau (AlertaBlu)': 'Blumenau' })
+})

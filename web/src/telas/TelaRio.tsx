@@ -173,6 +173,7 @@ export default function TelaRio({ rioId }: { rioId: string }) {
               cidade={selecionada}
               serie={serieDaCidade(serie, rioId, selecionada.id)}
               agora={agora}
+              resgates={serie.resgates}
             />
           </Suspense>
         </section>

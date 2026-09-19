@@ -30,8 +30,17 @@ export interface PontoSerie {
    *
    * Existe porque uma cidade pode ter várias réguas com ZEROS DIFERENTES —
    * Itajaí tem onze —, e sem isto a série da cidade sai com todas
-   * intercaladas. Ver o comentário de `tendencia`. Primária e resgate contam
-   * como UMA régua: o publicador já resolve isso por `resgate_de`.
+   * intercaladas. Ver o comentário de `tendencia`.
+   *
+   * ⚠️ CORRIGIDO em 19/09/2026. Esta linha dizia "primária e resgate contam
+   * como UMA régua: o publicador já resolve isso por `resgate_de`". Era a
+   * PRIMEIRA versão do publicador, revertida em 04/09/2026 com medição: fundir
+   * as duas publicações de Blumenau produzia um serrilhado de ±6 cm e uma
+   * tendência de 300 cm/h. Aqui a chave é a FONTE, e cada publicação vira uma
+   * série. Comentário que ensina o contrário do que o código faz é o pior tipo,
+   * e este ensinou a tela a chamar duas fontes de duas réguas.
+   *
+   * Quem cobre a mesma régua está em `resgates`, publicado ao lado.
    */
   regua: string | null
 }
@@ -42,6 +51,14 @@ export interface EstadoSerie {
   situacao: SituacaoSerie
   /** rio -> cidade -> pontos ordenados no tempo. */
   series: Record<string, Record<string, PontoSerie[]>>
+  /**
+   * Título da fonte de RESGATE -> título da PRIMÁRIA que ela cobre.
+   *
+   * Duas entradas aqui são duas PUBLICAÇÕES da mesma régua, não duas réguas.
+   * Blumenau é o caso: "Blumenau" (Defesa Civil de Itajaí) e "Blumenau
+   * (AlertaBlu)" medem a estação ANA 83800002. Vazio é o normal.
+   */
+  resgates: Record<string, string>
   janelaHoras: number | null
   geradoEm: Date | null
 }
@@ -49,6 +66,7 @@ export interface EstadoSerie {
 const VAZIO: EstadoSerie = {
   situacao: 'indisponivel',
   series: {},
+  resgates: {},
   janelaHoras: null,
   geradoEm: null,
 }
@@ -111,6 +129,12 @@ export async function buscarSerie(
     return {
       situacao: 'ok',
       series,
+      // Ausente num arquivo antigo: vira {}, e a tela volta ao texto genérico.
+      resgates: Object.fromEntries(
+        Object.entries((dados.resgates ?? {}) as Record<string, unknown>).filter(
+          (par): par is [string, string] => typeof par[1] === 'string',
+        ),
+      ),
       janelaHoras: typeof dados.janela_horas === 'number' ? dados.janela_horas : null,
       geradoEm: gerado && !Number.isNaN(gerado.getTime()) ? gerado : null,
     }
@@ -139,6 +163,7 @@ export function useSerieRecente(intervaloMin = 5): EstadoSerie {
   const [estado, setEstado] = useState<EstadoSerie>({
     situacao: 'carregando',
     series: {},
+    resgates: {},
     janelaHoras: null,
     geradoEm: null,
   })

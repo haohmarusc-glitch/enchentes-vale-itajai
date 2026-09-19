@@ -62,6 +62,46 @@ class SerieRecente(unittest.TestCase):
         self.assertEqual(serie[0]["nivel_m"], 6.6)
         self.assertEqual(pontos, 1)
 
+    def test_resgates_diz_quais_fontes_cobrem_a_mesma_regua(self):
+        """ACHADO 5 da auditoria de 19/09/2026.
+
+        As séries continuam SEPARADAS por fonte — decisão medida em 04/09, pelos
+        ~6 cm sistemáticos entre as duas publicações de Blumenau. O que faltava
+        era o site saber que as duas cobrem a MESMA régua: sem isso ele escrevia
+        "Blumenau tem 2 réguas, cada uma com o seu próprio zero", que é confundir
+        FONTE com RÉGUA — a regra nº 1 do projeto ao contrário.
+        """
+        self.escrever_mes([
+            {"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+             "medido_em": carimbo(1), "nivel_m": 2.60},
+            {"estacao": "Blumenau (AlertaBlu)", "rio": "itajai-acu", "cidade": "blumenau",
+             "medido_em": carimbo(1), "nivel_m": 2.66, "resgate_de": "Blumenau"},
+            # Itajaí: duas réguas DE VERDADE, sem resgate entre elas.
+            {"estacao": "DC-01", "rio": "itajai-acu", "cidade": "itajai",
+             "medido_em": carimbo(1), "nivel_m": 1.00},
+            {"estacao": "DC-02", "rio": "itajai-acu", "cidade": "itajai",
+             "medido_em": carimbo(1), "nivel_m": 0.54},
+        ])
+        coleta_niveis.escrever_serie_recente(horas=48)
+        d = self.ler()
+        # As séries seguem separadas por fonte: duas em Blumenau.
+        self.assertEqual(len(d["reguas"]["itajai-acu"]["blumenau"]), 2)
+        # E o mapa diz qual cobre qual.
+        self.assertEqual(d["resgates"], {"Blumenau (AlertaBlu)": "Blumenau"})
+        # Itajaí não ganha entrada nenhuma: ali são réguas mesmo.
+        self.assertNotIn("DC-01", d["resgates"])
+        self.assertNotIn("DC-02", d["resgates"])
+
+    def test_sem_resgate_o_mapa_sai_vazio_e_nao_ausente(self):
+        """Campo sempre presente: o site trata `{}` como "nada a dizer", e um
+        arquivo sem a chave voltaria ao texto genérico sem avisar."""
+        self.escrever_mes([
+            {"estacao": "a", "rio": "itajai-acu", "cidade": "rio-do-sul",
+             "medido_em": carimbo(1), "nivel_m": 6.6},
+        ])
+        coleta_niveis.escrever_serie_recente(horas=48)
+        self.assertEqual(self.ler()["resgates"], {})
+
     def test_so_nivel_nunca_chuva(self):
         self.escrever_mes([
             {"estacao": "a", "rio": "itajai-acu", "cidade": "blumenau",

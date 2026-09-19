@@ -17,6 +17,7 @@ import {
   trechos,
 } from '../dados/carregar'
 import { leituraDaCidade, leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
+import { idadeMin, textoIdade } from '../logica/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { serieDaCidade, useSerieRecente } from '../dados/serie'
 import { chuvaDaCidade } from '../logica/chuva'
@@ -184,10 +185,24 @@ export default function TelaCidade() {
             <NivelAoVivo leitura={leitura} cidade={cidade} agora={agora} />
           </p>
         ) : bruto ? (
+          /* A IDADE SAI JUNTO DO NÚMERO (achado 4 da auditoria de 19/09/2026).
+             Este caminho mostrava o nível estadual sem o horário da medição — a
+             única idade visível logo abaixo é a da CHUVA, e quem lê a toma pela
+             do nível. O monitor regional e o diagrama já mostram; só esta tela
+             não mostrava. Pesa mais aqui do que parece: `nivelSc.ts` PRESERVA a
+             leitura anterior quando o transporte falha, o que é útil justamente
+             porque a tela carrega a idade — sem ela, um número velho fica na
+             cara de atual por tempo indeterminado. */
           <p className={estilos.semDado}>
             Sem régua municipal aqui. A rede estadual publica{' '}
-            <strong>{metros(bruto.nivelBrutoM)}</strong>, numa régua com{' '}
-            <strong>zero próprio</strong> — serve para ver o rio subir ou baixar,{' '}
+            <strong>{metros(bruto.nivelBrutoM)}</strong>
+            {bruto.medidoEm ? <> · {textoIdade(idadeMin(bruto.medidoEm, agora))}</> : (
+              <> · <strong>sem horário de medição</strong></>
+            )}
+            {' — '}
+            {bruto.estacao}
+            {bruto.codigo ? ` (${bruto.codigo})` : ''}. É uma régua com{' '}
+            <strong>zero próprio</strong>: serve para ver o rio subir ou baixar,{' '}
             <strong>não</strong> para comparar com as cotas desta cidade.
           </p>
         ) : (
@@ -375,7 +390,7 @@ export default function TelaCidade() {
         <section className="cartao">
           <h2>Últimas horas em {cidade.nome}</h2>
           <Suspense fallback={<p className={estilos.instrucao}>Carregando a linha do tempo…</p>}>
-            <LinhaDoTempo cidade={cidade} serie={serieDela} agora={agora} />
+            <LinhaDoTempo cidade={cidade} serie={serieDela} agora={agora} resgates={serie.resgates} />
           </Suspense>
         </section>
       ) : null}
