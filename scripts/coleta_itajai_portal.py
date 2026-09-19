@@ -64,10 +64,28 @@ O QUE ESTE COLETOR NÃO FAZ
   número a número. São duas fontes oficiais do MESMO município discordando, e
   em DC-07 e DC-08 o portal é MAIS BAIXO, não mais alto. Trocar cota é decisão
   do Jefferson, com o documento na mão; ver as Pendências do README.
-* **Não busca os outros municípios.** `props.municipios` lista Itajaí (1),
-  Brusque (2), Blumenau (3) e Rio do Sul (4), mas o seletor é client-side e o
-  corpo capturado não revela o parâmetro da requisição. Adivinhar `?municipio_id=2`
-  seria chutar. Falta uma captura com outro município selecionado.
+* **Não busca os outros municípios — e agora o parâmetro é conhecido.**
+  `props.municipios` lista Itajaí (1), Brusque (2), Blumenau (3) e Rio do Sul (4).
+  Em 19/09/2026, às 20h, uma auditoria externa abriu no navegador
+  `…/monitoramento/rios?municipio_id=2` e a página respondeu com Brusque:
+  "Estação MKS DCSC-00019", 1,96 m, medido em 19/09/2026 20:00. O parâmetro que
+  o corpo capturado não revelava é esse, e não foi adivinhado — foi aberto.
+  **Continua não ligado**, e por regra, não por preguiça: o que existe é uma
+  captura VISUAL, e este coletor é escrito contra o CORPO. Sem o
+  `data-page` de `?municipio_id=2` não se sabe se a lista de Brusque traz
+  coordenada (a identidade aqui é por coordenada, item 1) nem se o carimbo da
+  grandeza tem a mesma forma. Ligar às cegas repetiria o vínculo por nome.
+  Falta a captura do corpo com `?municipio_id=2` em `data/brutos/`.
+  ⚠️ **A captura já revelou uma armadilha desta página com outro município:**
+  o cabeçalho verde continuou dizendo "Situação atual em Itajaí" com data de
+  18/09/2026 17h35 enquanto o cartão da estação de Brusque trazia 19/09 20:00.
+  O carimbo bom é o do cartão — que é o que a regra 4 já manda ler
+  (`qualidade.nivel_rio_m.medido_em`), e o cabeçalho é exatamente o tipo de
+  data que rejuvenesceria leitura velha.
+  ⚠️ E revelou uma TERCEIRA escala de cotas para a DCSC-00019 (3,50/5,00/6,00),
+  que **não entra**: ver `cotas_divergencia.nao_adotada_portal_itajai` no
+  cadastro de Brusque. Mais um motivo para este coletor não adotar cota do
+  portal — o portal de Itajaí publica escala de estação que não é dele.
 
 Uso:
     python3 scripts/coleta_itajai_portal.py --arquivo pagina.html   # sem rede

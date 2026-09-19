@@ -294,8 +294,21 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 > ⚠️ `420290901H` **não** identifica a DCSC-00019 de Brusque — são redes diferentes, e o status
 > "inativa" de uma não se transfere para a outra.
 >
-> **Como registrar:** falabr.cgu.gov.br → "Registrar pedido de acesso à informação" → órgão
-> **Cemaden**. Decisão de enviar é do Jefferson.
+> **Como registrar:** o Fala.BR avisa que pedidos e histórico migraram para o
+> **[Informa.BR](https://informabr.cgu.gov.br/)** — é lá que o pedido novo se registra e que os
+> dois protocolos aparecem. Decisão de enviar é do Jefferson.
+>
+> 🔁 **REESCRITO em 19/09/2026, e o motivo é um erro deste rascunho.** A auditoria abriu a
+> resposta ao 01217.006547/2026-93 (Concluída, *Acesso Concedido*, 10/09/2026 às 14h34) e ela
+> declara mais do que a planilha: as PCDs hidrológicas **têm sensor de chuva e de nível**,
+> transmitem a cada **10 min com chuva** e **1 h sem chuva**, em **UTC**, com dados brutos
+> sujeitos a falhas, e o acesso programático ao histórico se pede por **ped@cemaden.gov.br**.
+> A versão anterior dos itens 1 e 2 perguntava *que variável ela mede* e *a frequência de
+> atualização* como se nunca tivessem sido respondidas — perguntar de novo o que já
+> responderam queima a boa vontade de quem respondeu em nove dias. Os itens passam a
+> perguntar a **aplicação àquela estação**, que é o que de fato falta. A orientação do
+> webservice veio no contexto de dados **pluviométricos**; não presumir que ela valha para o
+> nível. Ver `docs/rede-observacional-cemaden.md`.
 
 **Para:** Fala.BR — Cemaden (pedido de acesso à informação, Lei 12.527/2011)
 **Assunto:** Estações hidrológicas do Cemaden em Santa Catarina — curso d'água, variável, referência de nível e acesso às leituras
@@ -308,9 +321,9 @@ Agradeço a resposta ao pedido **01217.006547/2026-93**, de 10/09/2026: a relaç
 
 Solicito, na medida do que estiver disponível:
 
-1. Para a estação **421320321H**, em Pomerode (SC), registrada como operacional nas coordenadas -26,7259 / -49,1720: **em que curso d'água ela está instalada**, **que variável ela mede** e **em que unidade**; e, se for nível, **em relação a que referência** — zero de régua próprio da estação, altitude (datum, por exemplo SIRGAS 2000 / Imbituba) ou outra. Pergunto porque há, a cerca de 860 m dela, uma régua de outra rede em Pomerode; sem saber a referência de cada uma, qualquer comparação entre as duas seria indevida, e eu prefiro não exibir o dado a exibi-lo com o significado errado.
+1. Para a estação **421320321H**, em Pomerode (SC), registrada como operacional nas coordenadas -26,7259 / -49,1720: **em que curso d'água ela está instalada** e, quanto ao sensor de nível, **em que unidade a medida é expressa** e **em relação a que referência** — zero de régua próprio da estação, altitude (datum, por exemplo SIRGAS 2000 / Imbituba) ou outra. A resposta ao pedido anterior já me informou que as PCDs hidrológicas possuem sensor de chuva e de nível, que a transmissão ocorre a cada 10 minutos com chuva e a cada 1 hora sem chuva, e que os horários estão em UTC; **peço a confirmação de que essas regras se aplicam a esta estação**, e não volto a perguntar o que já me foi respondido. Insisto na referência porque há, a cerca de 860 m dela, uma régua de outra rede em Pomerode; sem saber a referência de cada uma, qualquer comparação entre as duas seria indevida, e eu prefiro não exibir o dado a exibi-lo com o significado errado.
 
-2. **A forma adequada de acessar as leituras dessa estação de maneira programática** — endereço do serviço, formato, frequência de atualização e eventual necessidade de cadastro. Respeito integralmente qualquer limite de requisições ou termo de uso que for indicado, e identifico todas as requisições com o nome do projeto.
+2. **A forma adequada de acessar as leituras de NÍVEL dessa estação de maneira programática** — endereço do serviço, formato e eventual necessidade de cadastro. A orientação que recebi para solicitar acesso programático ao histórico pelo endereço ped@cemaden.gov.br veio no contexto dos dados pluviométricos, e não sei se ela vale também para as leituras hidrológicas; é isso que pergunto. Respeito integralmente qualquer limite de requisições ou termo de uso que for indicado, e identifico todas as requisições com o nome do projeto.
 
 3. Se existirem, os **limiares ou cotas de acionamento** adotados para essa estação (os valores de nível a partir dos quais o Cemaden considera situação de atenção, alerta ou emergência), e a referência em que estão expressos.
 

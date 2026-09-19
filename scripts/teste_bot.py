@@ -2201,11 +2201,13 @@ class TestContagemDasReferencias(unittest.TestCase):
     def test_a_conta_fecha(self):
         from collections import Counter
         refs = Counter(str(r.get("referencia")) for r in self.ev)
-        self.assertEqual(len(self.ev), 215)
+        # 19/09/2026, noite: entraram os quatro de Rio do Sul (1983 ×3 e
+        # set/2013) da tabela municipal — 215 → 219, 75 → 79 sem referência.
+        self.assertEqual(len(self.ev), 219)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 75)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 147)
+        self.assertEqual(refs["None"], 79)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 151)
 
     def test_a_maioria_dos_sem_referencia_e_de_blumenau(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
@@ -2215,7 +2217,7 @@ class TestContagemDasReferencias(unittest.TestCase):
         sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
         self.assertEqual(sem["blumenau"], 41)
         self.assertEqual(sem["brusque"], 23)
-        self.assertEqual(sem["rio-do-sul"], 9)
+        self.assertEqual(sem["rio-do-sul"], 13)
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
         self.assertEqual(len(blu), 117)
         self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 113)
@@ -2247,6 +2249,40 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertIn("NÃO aplicar", div["nao_adotada"]["_regra"])
         self.assertIn("não conferido por mim", div["_estado"].lower())
 
+    def test_a_terceira_escala_esta_registrada_e_nao_adotada(self):
+        """19/09/2026, noite: o portal de ITAJAÍ, com Brusque selecionada,
+        publica 3,5/5/6 para a MESMA DCSC-00019. Adotar atrasaria o aviso em
+        50 cm num rio de resposta rápida."""
+        c = self.cidade()
+        terceira = c["cotas_divergencia"]["nao_adotada_portal_itajai"]
+        self.assertEqual(terceira["atencao"], 3.5)
+        self.assertEqual(terceira["alerta"], 5.0)
+        self.assertEqual(terceira["emergencia"], 6.0)
+        self.assertIn("NÃO adotar", terceira["_regra"])
+        # A cidade não se mexeu: segue com a escala mais baixa das três.
+        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+
+    def test_o_boletim_de_2023_segue_discriminando_contra_as_TRES(self):
+        """Com uma terceira escala na mesa, a pergunta é se a evidência ainda
+        aponta para alguma. Aponta: 3,18 m chamado de 'atenção' é incompatível
+        com 3,50 e com 4,00, e só a escala do cadastro (3,00) o explica."""
+        div = self.cidade()["cotas_divergencia"]
+        nivel = div["evidencia_reunida"]["boletim_2023_10_30"]["nivel_m"]
+        self.assertGreater(nivel, div["adotada"]["atencao"])
+        for outra in (div["nao_adotada"], div["nao_adotada_portal_itajai"]):
+            self.assertLess(nivel, outra["atencao"])
+
+    def test_o_alerta_de_5_m_colide_com_a_emergencia_do_cadastro(self):
+        """O detalhe que faz desta divergência mais que um número: 5,00 m é
+        ALERTA na escala do portal de Itajaí e EMERGÊNCIA na do cadastro. O
+        mesmo número com dois nomes é pior que dois números diferentes."""
+        c = self.cidade()
+        self.assertEqual(c["cotas_divergencia"]["nao_adotada_portal_itajai"]["alerta"],
+                         c["cotas_m"]["emergencia"])
+        # E o cadastro afirma que faixa de alerta não existe nesta fonte.
+        self.assertNotIn("alerta", c["cotas_m"])
+        self.assertIn("Não há faixa de alerta", c["fonte_cotas"])
+
     def test_a_evidencia_que_discrimina_esta_registrada_e_nao_fecha(self):
         """30/10/2023: 3,18 m chamado de 'atenção'. Entre as duas atenções (3,00
         DCSC · 4,00 ANA), só a DCSC daria esse nome. É evidência a favor do
@@ -2259,6 +2295,82 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertGreater(b["nivel_m"], div["adotada"]["atencao"])
         self.assertLess(b["nivel_m"], div["nao_adotada"]["atencao"])
         self.assertIn("ABERTO", div["_estado"])
+
+
+class FonteDeRioDoSul:
+    """A fonte dos picos de Rio do Sul, identificada em 19/09/2026."""
+
+    FONTE = ("Defesa Civil de Rio do Sul — Histórico de Cheias "
+             "(defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'")
+    ROTULO_ANTIGO = "Portal GCD — série histórica de Rio do Sul"
+
+    @staticmethod
+    def registros() -> list[dict]:
+        ev = le_json("enchentes.json")["eventos"]
+        return [r for r in ev if r.get("cidade") == "rio-do-sul"]
+
+
+class TestFonteDeRioDoSul(unittest.TestCase):
+    """Os nove registros de Rio do Sul diziam 'Portal GCD' desde 30/08/2026 —
+    um rótulo sem URL, sem sigla expandida, que ninguém conseguia reabrir. Em
+    19/09/2026 o Jefferson abriu o Histórico de Cheias da Defesa Civil de Rio
+    do Sul e conferiu: 9 de 9 níveis iguais, 3 datas diferentes. A fonte é
+    essa tabela; o rótulo antigo fica gravado, não apagado.
+    """
+
+    def test_nenhum_registro_diz_mais_portal_gcd(self):
+        ev = le_json("enchentes.json")["eventos"]
+        self.assertEqual([r for r in ev if "GCD" in str(r.get("fonte"))], [])
+
+    def test_os_treze_apontam_para_a_tabela_municipal(self):
+        rs = FonteDeRioDoSul.registros()
+        self.assertEqual(len(rs), 13)
+        for r in rs:
+            self.assertEqual(r["fonte"], FonteDeRioDoSul.FONTE)
+            self.assertEqual(r["confianca"], "media")
+            # A tabela não nomeia a régua: `null` explícito, não campo ausente
+            # (ausente a tela lê como "régua local", que ninguém provou).
+            self.assertIn("referencia", r)
+            self.assertIsNone(r["referencia"])
+
+    def test_os_nove_antigos_guardam_o_rotulo_que_tinham(self):
+        antigos = [r for r in FonteDeRioDoSul.registros() if "fonte_rotulo_anterior" in r]
+        self.assertEqual(len(antigos), 9)
+        for r in antigos:
+            self.assertEqual(r["fonte_rotulo_anterior"], FonteDeRioDoSul.ROTULO_ANTIGO)
+
+    def test_1911_e_outubro_como_na_tabela_e_em_blumenau(self):
+        """'Maio' era erro da transcrição à mão de 30/08/2026 — o único dos
+        oito anos compartilhados com Blumenau que desalinhava o mês."""
+        rs = {r["data"]: r for r in FonteDeRioDoSul.registros()}
+        self.assertNotIn("1911-05", rs)
+        self.assertEqual(rs["1911-10"]["pico_m"], 12.2)
+        self.assertIn("outubro", rs["1911-10"]["nota"].lower())
+
+    def test_out_2023_e_dia_13_tabela_e_dcsc_concordam(self):
+        """O 'dia 07' não tinha fonte, e a própria nota dizia que 9,5 m no dia
+        7 era leitura de subida. Tabela municipal e crista da DCSC-00013
+        (04:30 de 13/10) apontam o 13."""
+        rs = {r["data"]: r for r in FonteDeRioDoSul.registros()}
+        self.assertNotIn("2023-10-07", rs)
+        self.assertEqual(rs["2023-10-13"]["pico_m"], 11.86)
+
+    def test_nov_2023_fica_no_dia_18_com_a_data_da_tabela_guardada(self):
+        """Aqui a tabela diz 17/11 e o registro fica em 18/11 — NÃO por teimosia:
+        a crista foi na virada da noite (DCSC 13,18 m às 00:20 de 18/11; ANA
+        13,06 m subindo às 22:00 de 17/11 e 13,09 m descendo às 02:00 de
+        18/11). As duas datas descrevem a mesma cheia; a da fonte fica em
+        `data_na_fonte`, e a divergência de valor com a ANA continua."""
+        rs = {r["data"]: r for r in FonteDeRioDoSul.registros()}
+        self.assertNotIn("2023-11-17", rs)
+        r = rs["2023-11-18"]
+        self.assertEqual(r["pico_m"], 13.04)
+        self.assertEqual(r["data_na_fonte"], "2023-11-17")
+        self.assertEqual([d["pico_m"] for d in r["divergencias"]], [13.14])
+
+    def test_a_pendencia_de_1911_saiu_do_meta(self):
+        pend = le_json("enchentes.json")["_meta"]["pendencias"]
+        self.assertFalse(any("1911" in p for p in pend))
 
 
 class TestDivergenciasDaTerceiraAuditoria(unittest.TestCase):
@@ -2301,16 +2413,24 @@ class TestDivergenciasDaTerceiraAuditoria(unittest.TestCase):
         ev = le_json("enchentes.json")["eventos"]
         self.assertEqual([r for r in ev if r.get("cidade") == "itajai"], [])
 
-    def test_rio_do_sul_ainda_nao_tem_1983_nem_2013(self):
-        """Quarta auditoria (Wikipédia): 1983 = 13,58 m e set/2013 = 10,39 m não
-        estão na nossa série, e seis de seis em comum batem ao centímetro com o
-        GCD — indício de que pulamos duas linhas na importação. Entram por
-        decisão do Jefferson; este teste cai no dia em que entrarem, para a nota
-        do README ser reescrita junto."""
-        ev = le_json("enchentes.json")["eventos"]
-        anos = {str(r.get("data", ""))[:4] for r in ev if r.get("cidade") == "rio-do-sul"}
-        self.assertNotIn("1983", anos)
-        self.assertNotIn("2013", anos)
+    def test_rio_do_sul_tem_1983_e_2013_pela_tabela_municipal(self):
+        """Até 19/09/2026 este teste travava a AUSÊNCIA de 1983 e 2013, e caiu
+        de propósito no dia em que o Jefferson conferiu a tabela do Histórico
+        de Cheias da Defesa Civil de Rio do Sul linha a linha (9 de 9 níveis
+        iguais) e decidiu a entrada. Agora trava a PRESENÇA, com os valores da
+        tabela: mês sem dia, porque a fonte não dá o dia."""
+        rs = {r["data"]: r for r in FonteDeRioDoSul.registros()}
+        for data, pico in (("1983-05", 7.35), ("1983-07", 13.58),
+                           ("1983-09", 7.60), ("2013-09", 10.39)):
+            self.assertIn(data, rs)
+            self.assertEqual(rs[data]["pico_m"], pico)
+            self.assertEqual(rs[data]["confianca"], "media")
+            self.assertIsNone(rs[data]["referencia"])
+            self.assertNotIn("fonte_rotulo_anterior", rs[data])
+        # Julho de 1983 passa a ser o maior pico de Rio do Sul — acima dos
+        # 13,04 m de nov/2023, como em Blumenau (15,34 m em 09/07/1983).
+        maior = max(rs.values(), key=lambda r: r["pico_m"])
+        self.assertEqual(maior["data"], "1983-07")
 
     def test_rio_do_sul_2017_segue_com_o_pico_e_nao_com_a_leitura_das_10h(self):
         ev = le_json("enchentes.json")["eventos"]

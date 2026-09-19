@@ -8,10 +8,11 @@
       "confianca": "alta = fonte oficial/acadêmica; media = imprensa; baixa = compilação informal ou dado disputado.",
       "nota": "Ressalva sobre o registro, exibida junto do número.",
       "divergencias": "Outros valores publicados para o MESMO pico, com a fonte de cada um. O campo pico_m é o adotado; nada aqui é descartado em silêncio.",
-      "referencia": "Em que referência o nível foi medido. Ausente = régua local. 'IBGE (régua + 0,20 m)' = série acadêmica de Blumenau referenciada ao zero do IBGE. null = a fonte não declara, e para Blumenau isso importa porque as duas circulam."
+      "referencia": "Em que referência o nível foi medido. Ausente = régua local. 'IBGE (régua + 0,20 m)' = série acadêmica de Blumenau referenciada ao zero do IBGE. null = a fonte não declara, e para Blumenau isso importa porque as duas circulam.",
+      "fonte_rotulo_anterior": "Rótulo que o registro carregava antes de a fonte ser identificada. Os treze de Rio do Sul diziam 'Portal GCD' de 30/08 a 19/09/2026; a tabela é o Histórico de Cheias da Defesa Civil municipal, conferida pelo Jefferson linha a linha.",
+      "data_na_fonte": "Data que a fonte publica quando o registro adota outra, com o motivo na nota. Só existe onde as duas descrevem o mesmo pico (crista na virada do dia)."
     },
     "pendencias": [
-      "Conferir o mês do pico de 1911 em Rio do Sul: a série local indica maio, mas o grande pico de Blumenau foi em 02/10.",
       "Levantar picos de Itajaí (foz) — nenhum registro até agora; sem eles a tela da foz não estima altura.",
       "Registrar o horário do pico (campo 'hora') para calibrar os tempos de descida com medição, não com hidrograma de projeto.",
       "Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama."
@@ -1151,10 +1152,13 @@
     {
       "rio": "itajai-acu",
       "cidade": "rio-do-sul",
-      "data": "1911-05",
+      "data": "1911-10",
       "pico_m": 12.2,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null,
+      "nota": "Mês corrigido de maio para OUTUBRO em 19/09/2026: a tabela municipal diz outubro; o 'maio' era erro da transcrição de 30/08/2026, feita à mão. Bate com Blumenau, 16,90 m em 02/10/1911."
     },
     {
       "rio": "itajai-acu",
@@ -1162,7 +1166,9 @@
       "data": "1954-10",
       "pico_m": 10.7,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
@@ -1170,7 +1176,37 @@
       "data": "1957-08",
       "pico_m": 10.65,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1983-05",
+      "pico_m": 7.35,
+      "confianca": "media",
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "referencia": null
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1983-07",
+      "pico_m": 13.58,
+      "confianca": "media",
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "nota": "Maior pico da tabela municipal (1911–2024). Mesma cheia de 09/07/1983 em Blumenau (15,34 m). Sem dia nem hora na fonte.",
+      "referencia": null
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "1983-09",
+      "pico_m": 7.6,
+      "confianca": "media",
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
@@ -1178,7 +1214,9 @@
       "data": "1984-08",
       "pico_m": 12.8,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
@@ -1186,7 +1224,18 @@
       "data": "2011-09",
       "pico_m": 12.96,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "data": "2013-09",
+      "pico_m": 10.39,
+      "confianca": "media",
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
@@ -1194,7 +1243,9 @@
       "data": "2015-10",
       "pico_m": 10.71,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
@@ -1202,16 +1253,20 @@
       "data": "2017-06",
       "pico_m": 10.89,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul"
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
       "cidade": "rio-do-sul",
-      "data": "2023-10-07",
+      "data": "2023-10-13",
       "pico_m": 11.86,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul",
-      "nota": "Pico de outubro; 9,5 m já caracterizava enchente no dia 7."
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "nota": "Dia corrigido de 07 para 13/10 em 19/09/2026: a tabela municipal dá 13 de outubro, e a crista da DCSC-00013 foi às 04:30 de 13/10 (11,94 m; docs/DCSC-HISTORICO-2026-09-10.md). O 'dia 7' da transcrição de 30/08/2026 não tinha fonte — os 9,5 m daquele dia eram leitura de subida, não pico.",
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null
     },
     {
       "rio": "itajai-acu",
@@ -1219,15 +1274,18 @@
       "data": "2023-11-18",
       "pico_m": 13.04,
       "confianca": "media",
-      "fonte": "Portal GCD — série histórica de Rio do Sul",
-      "nota": "Segunda maior (ou a maior recente) da série local. Calamidade pública. Decisão do Jefferson em 15/09/2026: os 13,04 m do Portal GCD (régua do município) continuam adotados; a amostra da estação da ANA fica em divergencias e não substitui — mesmo mecanismo da decisão (b) em Taió/out-2023, porque o zero das duas réguas não foi conferido.",
+      "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+      "nota": "Segunda maior (ou a maior recente) da série local. Calamidade pública. Decisão do Jefferson em 15/09/2026: os 13,04 m do Portal GCD (régua do município) continuam adotados; a amostra da estação da ANA fica em divergencias e não substitui — mesmo mecanismo da decisão (b) em Taió/out-2023, porque o zero das duas réguas não foi conferido. DATA: a tabela municipal registra 17/11; fica 18/11 porque a crista física foi na virada da noite — DCSC-00013 13,18 m às 00:20 de 18/11, e a telemetria da ANA mostra 13,06 m ainda subindo às 22:00 de 17/11 e 13,09 m já descendo às 02:00 de 18/11. Ambas as datas descrevem a mesma cheia; a da tabela fica em data_na_fonte.",
       "divergencias": [
         {
           "pico_m": 13.14,
           "fonte": "ANA, série telemétrica da estação 83300200 'Rio do Sul – Novo' (HidroinfoanaSerieTelemetricaAdotada), amostra das 01:45 de 18/11/2023 — brutos data/brutos/ana-telemetria-83300200-2023-11-17-DIAS_7.json e -2023-11-24-DIAS_7.json, baixados na VPS em 15/09/2026",
           "nota": "PISO, NÃO CRISTA. A telemetria apagou das 22:00 de 17/11 às 01:45 de 18/11 (carimbos ausentes 22:15–23:00 e cotas nulas até 01:30), e de novo das 02:15 às 05:15. A última leitura antes do apagão foi 13,06 m ainda subindo; a de 02:00, logo depois desta amostra, já marcava 13,09 m descendo. A crista real está nesse intervalo de 3 h 45 e é ≥ 13,14 m. RÉGUA DA ANA, não a do Portal GCD: os 10 cm de diferença para os 13,04 m adotados não provam o mesmo zero."
         }
-      ]
+      ],
+      "fonte_rotulo_anterior": "Portal GCD — série histórica de Rio do Sul",
+      "referencia": null,
+      "data_na_fonte": "2023-11-17"
     },
     {
       "rio": "itajai-acu",

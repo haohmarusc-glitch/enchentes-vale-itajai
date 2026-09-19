@@ -104,19 +104,49 @@ class RegistrosMontados(unittest.TestCase):
     def test_a_nota_avisa_que_nao_calibra_transito(self):
         self.assertIn("trânsito", self.por_data["2008-11-24"]["nota"])
 
-    def test_seis_dos_oito_controles_pareiam(self):
-        """Conferido em 07/09/2026 contra a base: 0 ou 1 dia de vão."""
+    def test_cinco_dos_oito_controles_pareiam(self):
+        """Conferido em 07/09/2026 contra a base: 0 ou 1 dia de vão. Eram SEIS
+        até 19/09/2026 — ver o teste de 1911 abaixo."""
         for d in ("2023-10-12", "2008-11-24", "1984-08-07",
-                  "1911-05-29", "1880-09-23", "1852-10-29"):
+                  "1880-09-23", "1852-10-29"):
             self.assertEqual(self.por_data[d]["pareamento"], "confere", d)
 
-    def test_os_dois_que_nao_pareiam_saem_marcados_e_nao_consertados(self):
+    def test_1911_de_gaspar_PERDEU_o_par_quando_rio_do_sul_foi_corrigido(self):
+        """
+        O achado de 19/09/2026, e ele é de espécie feia: DOIS ERROS QUE SE
+        CONFIRMAVAM.
+
+        O 29/05/1911 de Gaspar pareava "confere" com o `rio-do-sul 1911-05` —
+        que era erro de transcrição à mão de 30/08/2026. A tabela do Histórico
+        de Cheias da Defesa Civil de Rio do Sul diz OUTUBRO, e Blumenau e
+        Indaial também registram 02/10/1911. Corrigido Rio do Sul, o par de
+        Gaspar caiu: o mais perto agora está a 125 dias.
+
+        Por que isso pesa mais do que um aviso a mais: a linha de 1911 de
+        Gaspar está DENTRO de um dos dois trechos que o próprio importador já
+        documenta como suspeitos de coluna escorregada (as linhas de 1927 a
+        1911). O "confere" que ela exibia vinha de um dado errado do nosso
+        lado, e escondia isso.
+
+        NÃO se conserta a data de Gaspar aqui: o valor de 12,42 m está em
+        `enchentes.json` e mexer nele é decisão do Jefferson, com a fonte na
+        mão. O que o código faz é parar de afirmar um par que não existe.
+        """
+        r = self.por_data["1911-05-29"]
+        self.assertEqual(r["pareamento"], "sem par")
+        self.assertEqual(r["pico_m"], 12.42, "o valor não pode ser mexido")
+        self.assertIn("rio-do-sul 1911-10", r["nota"])
+        self.assertIn("125 dias", r["nota"])
+
+    def test_os_tres_que_nao_pareiam_saem_marcados_e_nao_consertados(self):
         """
         09/11/2011 e 09/06/1983: o DIA bate com um pico conhecido de Blumenau e
         o MÊS não. Pode ser erro da fonte, pode ser evento local. Nem conserta
-        nem descarta — marca, e diz qual era o candidato.
+        nem descarta — marca, e diz qual era o candidato. 29/05/1911 entrou no
+        grupo em 19/09/2026, pelo motivo do teste acima.
         """
-        for d, pico in (("2011-11-09", 9.42), ("1983-06-09", 11.5)):
+        for d, pico in (("2011-11-09", 9.42), ("1983-06-09", 11.5),
+                        ("1911-05-29", 12.42)):
             r = self.por_data[d]
             self.assertEqual(r["pareamento"], "sem par", d)
             self.assertEqual(r["pico_m"], pico, "o valor não pode ser mexido")

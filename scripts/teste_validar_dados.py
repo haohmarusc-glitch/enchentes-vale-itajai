@@ -311,10 +311,22 @@ class MesesPareados(unittest.TestCase):
     #: Enumerar em vez de contar é o que faz um desalinhamento NOVO reprovar:
     #: "pelo menos N" aceitaria qualquer coisa que entrasse depois.
     DESALINHADOS_CONHECIDOS = {
-        # A data de 1911 de Rio do Sul (05) não bate com nenhuma de jusante no
-        # mesmo mês. Pendência antiga, anterior a Indaial.
-        ("rio-do-sul 1911-05", "indaial"),
-        ("rio-do-sul 1911-05", "blumenau"),
+        # 1911 SAIU daqui em 19/09/2026: a data era maio, não batia com nenhuma
+        # de jusante, e a tabela do Histórico de Cheias da Defesa Civil de Rio
+        # do Sul diz OUTUBRO. Corrigida na fonte, o aviso sumiu sozinho — que é
+        # como um desalinhamento deve sair desta lista.
+        #
+        # Entrou no lugar, no mesmo dia e pela mesma tabela: setembro de 1983.
+        # Aqui NÃO há erro de data — Blumenau tem o par (24/09/1983, 11,75 m), e
+        # é só contra INDAIAL que falta. A lista de Indaial vem do PDF da
+        # COMPDEC e traz de 1983 apenas as duas cheias grandes (20/05 e 03/07);
+        # a de setembro, menor, não está lá. É limiar de magnitude da fonte,
+        # exatamente como em Gaspar — mas Indaial não entra em
+        # LISTAS_SO_COM_CHEIA_GRANDE por isso: lá a exceção foi MEDIDA (nenhum
+        # evento de Blumenau abaixo de 8,50 m tem par em Gaspar), e aqui seria
+        # suposição a partir de um ano só. Fica como aviso nomeado, que é o
+        # estado honesto.
+        ("rio-do-sul 1983-09", "indaial"),
         # Entraram com os 16 picos de Indaial em 06/09/2026, do PDF da COMPDEC.
         # São sinal para conferir na fonte, NÃO para trocar a data: corrigir por
         # plausibilidade seria inventar medição.
