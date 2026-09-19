@@ -2247,6 +2247,19 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertIn("NÃO aplicar", div["nao_adotada"]["_regra"])
         self.assertIn("não conferido por mim", div["_estado"].lower())
 
+    def test_a_evidencia_que_discrimina_esta_registrada_e_nao_fecha(self):
+        """30/10/2023: 3,18 m chamado de 'atenção'. Entre as duas atenções (3,00
+        DCSC · 4,00 ANA), só a DCSC daria esse nome. É evidência a favor do
+        cadastro — e o cadastro continua ABERTO, porque um boletim de 2023 não
+        prova a regra de 2026 nem nomeia a régua física."""
+        div = self.cidade()["cotas_divergencia"]
+        b = div["evidencia_reunida"]["boletim_2023_10_30"]
+        self.assertEqual(b["nivel_m"], 3.18)
+        self.assertEqual(b["estado_declarado"], "atenção")
+        self.assertGreater(b["nivel_m"], div["adotada"]["atencao"])
+        self.assertLess(b["nivel_m"], div["nao_adotada"]["atencao"])
+        self.assertIn("ABERTO", div["_estado"])
+
 
 class TestDivergenciasDaTerceiraAuditoria(unittest.TestCase):
     """Pesquisa no Facebook das Defesas Civis (19/09/2026). O que ela achou fica
