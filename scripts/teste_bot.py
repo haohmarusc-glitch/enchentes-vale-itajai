@@ -2049,8 +2049,52 @@ class TestCheiasAntigas(unittest.TestCase):
         a mesma tela de uma cidade cuja referência não foi conferida, e são
         coisas diferentes."""
         t = self.pino("itajai", DC06, "itajai-mirim", 0.48, -26.9217, -48.6858)
-        self.assertIn("não temos cheia registrada desta cidade", t)
+        self.assertIn("não temos cheia registrada de Itajaí", t)
         self.assertNotIn("Cheias já registradas", t)
+
+    def test_a_falta_do_registro_vem_antes_do_motivo_das_onze_reguas(self):
+        """VISTO EM CAMPO no pino de Itajaí (19/09/2026). A cidade cai nos dois
+        motivos ao mesmo tempo, e o das réguas saía na frente:
+
+            "Itajaí tem 11 réguas com zeros diferentes, e nenhuma delas sozinha
+             é o nível da cidade"
+
+        Verdade, e dá a entender uma coisa falsa: que temos cheias de Itajaí e
+        não sabemos a qual régua pertencem. Não temos NENHUMA. O motivo das
+        várias réguas é sobre ATRIBUIR o que existe; sem registro não há o que
+        atribuir, e a frase manda quem lê procurar um problema que não é o dele.
+        """
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": t, "rio": "itajai-mirim", "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"}
+            for t, n in [(DC06, 0.40), (DC10, 4.06)]]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == "itajai"][0]
+        t = "".join(linhas_das_cheias(b, cidade, AGORA))
+        self.assertIn("não temos cheia registrada de Itajaí", t)
+        self.assertNotIn("réguas com zeros diferentes", t)
+
+    def test_com_registro_o_motivo_das_varias_reguas_volta_a_valer(self):
+        """A ordem não engole o outro motivo: onde HÁ cheia registrada e a
+        cidade tem várias réguas, o que falta é atribuir — e é isso que sai.
+
+        SUBSTITUI o teste que afirmava a mesma regra usando Itajaí como exemplo.
+        Itajaí deixou de servir de exemplo justamente por ser o caso que o
+        conserto separou: lá os dois motivos valem, e o que sai agora é o
+        primeiro deles.
+        """
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": t, "rio": "itajai-mirim", "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"}
+            for t, n in [(DC06, 0.40), (DC10, 4.06)]]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 {"eventos": [{"cidade": "itajai", "pico_m": 3.0, "data": "2008-11-23",
+                               "referencia": "régua", "confianca": "alta"}]})
+        cidade = [c for c in b.cidades() if c["id"] == "itajai"][0]
+        t = "".join(linhas_das_cheias(b, cidade, AGORA))
+        self.assertIn("réguas com zeros diferentes", t)
+        self.assertNotIn("não temos cheia registrada", t)
 
     def test_brusque_cala_pela_referencia_e_diz_por_que(self):
         """REGRA BLOQUEANTE do CLAUDE.md, item 4. As 23 de Brusque estão sem
@@ -2078,20 +2122,6 @@ class TestCheiasAntigas(unittest.TestCase):
                 cheias, _, _ = cheias_perto_do_nivel(b, cidade, 5.0)
                 for r in cheias:
                     self.assertEqual(r.get("referencia"), "régua", r.get("data"))
-
-    def test_cidade_de_varias_reguas_nao_compara(self):
-        """Mesma regra do bloco de rua: com onze réguas, o pico não diz de qual
-        delas é. O motivo sai com o nome da cidade."""
-        u = {"fonte_itajai_ok": True, "leituras": [
-            {"estacao": t, "rio": "itajai-mirim", "cidade": "itajai", "nivel_m": n,
-             "medido_em": "2026-08-30T18:20:00"}
-            for t, n in [(DC06, 0.48), (DC10, 3.93)]]}
-        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
-                 le_json("enchentes.json"))
-        t = "".join(linhas_das_cheias(b, [c for c in b.cidades()
-                                          if c["id"] == "itajai"][0], AGORA))
-        self.assertIn("réguas com zeros diferentes", t)
-        self.assertNotIn("Cheias já registradas", t)
 
     def test_compilacao_informal_nao_chega_com_cara_de_oficial(self):
         b = Base({"leituras": []}, le_json("estacoes.json"), le_json("transito.json"),
