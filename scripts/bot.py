@@ -1164,6 +1164,27 @@ def linhas_das_cheias(base: Base, cidade: dict, agora: datetime) -> list[str]:
     trocar uma proteção real por comodidade de estilo.
     """
     esc = notificador.esc
+
+    # A FALTA DO REGISTRO VEM PRIMEIRO, e isso foi visto em campo no pino de
+    # Itajaí (19/09/2026). A cidade cai nos dois motivos ao mesmo tempo — tem
+    # onze réguas E não tem registro nenhum —, e o das réguas, saindo na frente,
+    # dizia:
+    #
+    #     "Itajaí tem 11 réguas com zeros diferentes, e nenhuma delas sozinha
+    #      é o nível da cidade"
+    #
+    # que é verdade e dá a entender uma coisa falsa: que temos cheias de Itajaí
+    # e não sabemos a qual régua pertencem. Não temos NENHUMA. O motivo das
+    # várias réguas é sobre ATRIBUIR o que existe; sem registro não há o que
+    # atribuir, e a frase manda quem lê procurar um problema que não é o dele.
+    #
+    # A ordem certa é a do que falta primeiro: sem dado não há comparação a
+    # discutir. Com dado, aí sim a régua decide.
+    sem_registro = not any(r.get("cidade") == cidade["id"] for r in base.enchentes)
+    if sem_registro:
+        return ["\n\n<i>Cheias antigas não entram aqui: não temos cheia registrada "
+                f"de {esc(cidade['nome'])}.</i>"]
+
     motivo_cidade = porque_sem_comparacao(base, cidade["id"], agora)
     if motivo_cidade is not None:
         return ["\n\n<i>Cheias antigas não entram aqui: "
