@@ -2184,5 +2184,69 @@ class TestDataDaCheia(unittest.TestCase):
                 self.assertIsNone(data_da_cheia(v))
 
 
+class TestContagemDasReferencias(unittest.TestCase):
+    """Os números que o bloco de cheias afirma no docstring, medidos no arquivo.
+
+    CORRIGIDO em 19/09/2026 por auditoria externa: eu tinha escrito "98 sem
+    referência em Brusque e Rio do Sul". Errado duas vezes — o número é 75, e o
+    meu nem fechava a conta (72 + 98 = 170, não 147). E a maioria dos sem
+    referência é de BLUMENAU, a mesma cidade dos 72 do IBGE.
+
+    Número escrito em comentário envelhece calado; medido em teste, não.
+    """
+
+    def setUp(self):
+        self.ev = le_json("enchentes.json")["eventos"]
+
+    def test_a_conta_fecha(self):
+        from collections import Counter
+        refs = Counter(str(r.get("referencia")) for r in self.ev)
+        self.assertEqual(len(self.ev), 215)
+        self.assertEqual(refs["régua"], 68)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
+        self.assertEqual(refs["None"], 75)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 147)
+
+    def test_a_maioria_dos_sem_referencia_e_de_blumenau(self):
+        """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
+        Sul. Blumenau sozinha tem 41 — e 113 calados de 117, por duas causas
+        diferentes ao mesmo tempo."""
+        from collections import Counter
+        sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
+        self.assertEqual(sem["blumenau"], 41)
+        self.assertEqual(sem["brusque"], 23)
+        self.assertEqual(sem["rio-do-sul"], 9)
+        blu = [r for r in self.ev if r["cidade"] == "blumenau"]
+        self.assertEqual(len(blu), 117)
+        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 113)
+
+
+class TestDivergenciaDeBrusque(unittest.TestCase):
+    """O portal municipal de Brusque serve DUAS estações com o mesmo nome de
+    ponte e cotas diferentes — DCSC 3/5 e ANA 4/7. Relatado por auditoria
+    externa em 19/09/2026.
+
+    Aplicar o limite da ANA à leitura da DCSC faria o aviso sair 1 m TARDE
+    DEMAIS, num rio de resposta rápida. A trava é o registro das duas.
+    """
+
+    def cidade(self) -> dict:
+        return [c for c in base().cidades() if c["id"] == "brusque"][0]
+
+    def test_a_cidade_segue_com_as_cotas_da_dcsc(self):
+        c = self.cidade()
+        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+        self.assertEqual(c["regua"], "Ponte Estaiada – DCSC")
+        self.assertEqual(c["regua_das_cotas"], "Ponte Estaiada – DCSC")
+
+    def test_o_par_da_ana_esta_registrado_e_nao_adotado(self):
+        div = self.cidade()["cotas_divergencia"]
+        self.assertEqual(div["adotada"]["atencao"], 3.0)
+        self.assertEqual(div["nao_adotada"]["atencao"], 4.0)
+        self.assertEqual(div["nao_adotada"]["emergencia"], 7.0)
+        self.assertIn("NÃO aplicar", div["nao_adotada"]["_regra"])
+        self.assertIn("não conferido por mim", div["_estado"].lower())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
