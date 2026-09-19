@@ -23,10 +23,12 @@ import notificador
 from bot import (IDADE_MAXIMA_PREVISAO_MIN, LIMITE_COTA_RUA_M, LIMITE_LOCALIZACAO_KM, MAX_RUAS,
                  REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, distancia_km,
                  eh_timeout, faixa_da_regua, nome_curto, responder, resposta_localizacao,
-                 resposta_nivel, resposta_rua, saida_para, sem_acento, texto_idade)
+                 quilometros, resposta_nivel, resposta_rua, saida_para, sem_acento,
+                 texto_idade)
 from comum import estacao_por_titulo, estacoes_tempo_real, le_json
 
 #: As duas réguas de Itajaí cujo par cota↔leitura foi provado (19/09/2026).
+DC06 = "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo"
 DC10 = "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
 DC11 = "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
 
@@ -788,7 +790,11 @@ class TestLocalizacao(unittest.TestCase):
         """É o piso: onde não há cota perto, ela é a resposta inteira."""
         for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU):
             t = self.loc(ponto)
-            self.assertIn("Régua mais próxima", t)
+            # Brusque e Blumenau não têm coordenada de régua no cadastro: o
+            # cabeçalho diz CIDADE. Chamá-lo de "régua" era a afirmação falsa
+            # corrigida em 19/09/2026.
+            self.assertIn("Cidade mais próxima", t)
+            self.assertNotIn("Régua mais próxima", t)
             self.assertIn("nível do rio", t)
 
     def test_sem_cota_perto_responde_so_a_cidade_sem_linha_em_branco(self):
@@ -814,7 +820,7 @@ class TestLocalizacao(unittest.TestCase):
         self.assertRegex(t, r"fica a \d+ m")
         self.assertNotIn("Alaga a partir de", t, "a cota de 330 m não pode ser usada")
         self.assertNotIn("faltam", t.lower())
-        self.assertIn("Régua mais próxima", t, "a camada da cidade continua saindo")
+        self.assertIn("Cidade mais próxima", t, "a camada da cidade continua saindo")
 
     def test_sem_levantamento_na_regiao_nao_inventa_o_aviso(self):
         """Em Blumenau a cota com coordenada mais próxima está a dezenas de km.
@@ -969,17 +975,25 @@ class TestLocalizacao(unittest.TestCase):
         quem está a algumas centenas de metros da régua que deu o número da
         linha seguinte (pino real, 18/09/2026)."""
         t = self.loc(self.BLUMENAU)
-        self.assertIn("Régua mais próxima", t)
+        self.assertIn("Cidade mais próxima", t)
+        self.assertNotIn("Régua mais próxima", t)
         self.assertNotIn("em linha reta", t)
         # A omissão é DITA. Sumir calado é o defeito que o aviso de cota tinha.
         self.assertIn("A distância não sai", t)
 
-    def test_quem_tem_coordenada_de_regua_mantem_a_distancia(self):
-        """Ausência do campo mantém a distância: nas outras cidades não há prova
-        de que o pino não seja a régua, e tirar de todas removeria informação
-        boa — "a régua fica a 1,6 km de mim" é o que a pessoa quer saber."""
+    def test_sem_coordenada_de_regua_a_distancia_fica_mas_diz_ate_onde(self):
+        """REESCRITO em 19/09/2026. Antes dizia "ausência do campo mantém a
+        distância", e mantinha — só que anunciada como distância até a RÉGUA.
+        Ausência de prova nunca foi prova: em Brusque a coordenada é o ponto de
+        referência da cidade, e o cadastro não tem a da régua.
+
+        O número não some, porque some informação boa junto. O que some é a
+        afirmação falsa: agora a linha diz até ONDE ela mede.
+        """
         t = self.loc(self.BRUSQUE_COM_COTA)
         self.assertIn("em linha reta", t)
+        self.assertIn("ponto de referência da cidade", t)
+        self.assertNotIn("Régua mais próxima", t)
         self.assertNotIn("A distância não sai", t)
 
     def test_so_blumenau_declara_que_o_pino_nao_e_a_regua(self):
@@ -1653,7 +1667,8 @@ class TestFaixaJuntoDoNivel(unittest.TestCase):
         # e o aviso de "nenhum ponto na sua esquina" também não (a mais próxima
         # fica a dezenas de km). A resposta não pode começar em branco.
         self.assertNotIn("Nenhum ponto levantado", saida)
-        self.assertTrue(saida.startswith("📍 Régua mais próxima"))
+        # Blumenau não tem coordenada de régua: o cabeçalho diz CIDADE.
+        self.assertTrue(saida.startswith("📍 Cidade mais próxima"))
 
 
 class TestFaixaPorRegua(unittest.TestCase):
@@ -1809,6 +1824,181 @@ class TestDC10NaoEDeEstuario(unittest.TestCase):
         self.assertNotIn("É a única das onze réguas de Itajaí que fica acima da maré",
                          dc11["nota_cidade"])
         self.assertIn("DUAS", dc11["nota_cidade"])
+
+
+class TestReguaMaisProxima(unittest.TestCase):
+    """A distância tem de ser até uma RÉGUA, e a régua tem de ter nome.
+
+    ACHADO em 19/09/2026, num pino real em Itajaí. O bot respondia
+    "Régua mais próxima: Itajaí, a 3,7 km" — e os 3,7 km eram até o PONTO
+    MUNICIPAL de Itajaí. A régua mais perto daquele pino era a DC-06, a 813 m:
+    quatro vezes e meia mais perto, e com nome. O número estava certo e o
+    rótulo, errado.
+
+    O PINO DO JEFFERSON NÃO ENTRA AQUI. A coordenada de quem pergunta é dado
+    pessoal e o bot nem a registra; guardá-la em fixture seria inaugurar pelo
+    teste o log que o código recusa. Os pontos abaixo são SINTÉTICOS, calculados
+    a partir das coordenadas das próprias réguas, e reproduzem a mesma geometria:
+    perto de uma DC e longe do ponto municipal.
+    """
+
+    def base_itajai(self, leituras=None) -> Base:
+        leituras = leituras if leituras is not None else [
+            {"estacao": t, "rio": r, "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"}
+            for t, r, n in [
+                ("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "itajai-acu", 0.88),
+                (DC06, "itajai-mirim", 0.48),
+                (DC11, "itajai-acu", 2.39),
+            ]]
+        return Base({"fonte_itajai_ok": True, "leituras": leituras},
+                    le_json("estacoes.json"), le_json("transito.json"),
+                    le_json("enchentes.json"), le_json("cotas-ruas.json"))
+
+    def perto_da(self, titulo: str, metros_norte: float = 300.0) -> tuple[float, float]:
+        """Um ponto sintético a ~N metros ao norte da régua."""
+        e = estacao_por_titulo(titulo)
+        return (e["lat"] + metros_norte / 111_320.0, e["lon"])
+
+    def test_escolhe_a_regua_fisica_e_nao_o_ponto_municipal(self):
+        b = self.base_itajai()
+        ponto = self.perto_da(DC06)
+        est, km = b.regua_mais_proxima(*ponto)
+        self.assertEqual(est["codigo"], "DC-06")
+        self.assertLess(km, 0.4)
+        # E o ponto municipal de Itajaí está MUITO mais longe: é a distância
+        # que o bot anunciava como sendo da régua.
+        _, km_cidade = b.cidade_mais_proxima(*ponto)
+        self.assertGreater(km_cidade, 2.0)
+
+    def test_o_cabecalho_nomeia_a_regua_e_da_a_distancia_dela(self):
+        saida = "".join(resposta_localizacao(self.base_itajai(),
+                                             *self.perto_da(DC06), AGORA))
+        self.assertIn("Régua mais próxima", saida)
+        self.assertIn("Itamirim Clube de Campo", saida)
+        self.assertIn("300 m", saida)
+        self.assertNotIn("3,7 km", saida)
+
+    def test_o_destaque_carrega_o_numero_DELA(self):
+        """A distância sai NA LINHA da régua escolhida, ao lado do número dela.
+        Se saísse à parte, casar 0,48 m com DC-06 ficaria por conta de quem lê —
+        e numa lista de onze, com 0,88 m em cima, casar errado é fácil."""
+        saida = "".join(resposta_localizacao(self.base_itajai(),
+                                             *self.perto_da(DC06), AGORA))
+        linha = [x for x in saida.split("\n") if "Itamirim" in x and "0,48" in x]
+        self.assertTrue(linha, saida)
+        self.assertIn("daqui", linha[0])
+        self.assertNotIn("0,88", linha[0])
+
+    def test_a_ordem_do_cadastro_nao_muda_a_resposta(self):
+        """Embaralhar leituras não pode trocar a régua escolhida."""
+        leituras = [
+            {"estacao": t, "rio": r, "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"}
+            for t, r, n in [(DC11, "itajai-acu", 2.39), (DC06, "itajai-mirim", 0.48),
+                            ("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "itajai-acu", 0.88)]]
+        for ordem in (leituras, list(reversed(leituras))):
+            with self.subTest(primeira=ordem[0]["estacao"][:6]):
+                b = self.base_itajai(ordem)
+                self.assertEqual(b.regua_mais_proxima(*self.perto_da(DC06))[0]["codigo"],
+                                 "DC-06")
+
+    def test_empate_sai_pelo_codigo_nao_pela_ordem_do_json(self):
+        """Duas réguas exatamente à mesma distância: a resposta tem de ser
+        estável. Reordenar o JSON não pode trocar o que o morador recebe."""
+        b = self.base_itajai()
+        gemeas = [
+            {"codigo": "DC-99", "titulo": "Z", "rio": "itajai-acu", "cidade": "itajai",
+             "lat": -26.9, "lon": -48.7},
+            {"codigo": "DC-98", "titulo": "A", "rio": "itajai-acu", "cidade": "itajai",
+             "lat": -26.9, "lon": -48.7},
+        ]
+        for ordem in (gemeas, list(reversed(gemeas))):
+            with self.subTest(primeira=ordem[0]["codigo"]):
+                b.estacoes = dict(b.estacoes, estacoes_tempo_real=ordem)
+                self.assertEqual(b.regua_mais_proxima(-26.9, -48.7)[0]["codigo"], "DC-98")
+
+    def test_pluviometro_nao_concorre_como_regua(self):
+        """A DC-00 é a própria Defesa Civil, pluviômetro puro (`rio` nulo).
+        Anunciá-la como régua mandaria a pessoa olhar um aparelho que não mede
+        rio. Hoje ela nem tem coordenada; a guarda é para quando tiver."""
+        b = self.base_itajai()
+        dc00 = [dict(e, lat=-26.9, lon=-48.7) for e in estacoes_tempo_real()
+                if e.get("codigo") == "DC-00"]
+        self.assertTrue(dc00)
+        self.assertIsNone(dc00[0].get("rio"))
+        b.estacoes = dict(b.estacoes, estacoes_tempo_real=dc00)
+        self.assertIsNone(b.regua_mais_proxima(-26.9, -48.7))
+
+    def test_coordenada_invalida_nao_vira_zero(self):
+        """`(0, 0)` fica no golfo da Guiné e ganharia de qualquer régua real se
+        entrasse como número; `None` não pode estourar."""
+        b = self.base_itajai()
+        b.estacoes = dict(b.estacoes, estacoes_tempo_real=[
+            {"codigo": "DC-97", "titulo": "sem coordenada", "rio": "itajai-acu",
+             "cidade": "itajai", "lat": None, "lon": None},
+            {"codigo": "DC-96", "titulo": "fora do planeta", "rio": "itajai-acu",
+             "cidade": "itajai", "lat": 999.0, "lon": 999.0},
+        ])
+        self.assertIsNone(b.regua_mais_proxima(-26.9, -48.7))
+
+    def test_regua_muda_continua_sendo_a_mais_proxima(self):
+        """Proximidade é geografia. Pular a régua calada para anunciar a segunda
+        responderia sobre outro lugar; quem diz que falta leitura é o bloco de
+        nível, que já sabe fazer isso."""
+        b = self.base_itajai(leituras=[])
+        saida = "".join(resposta_localizacao(b, *self.perto_da(DC06), AGORA))
+        self.assertIn("Itamirim Clube de Campo", saida)
+        self.assertIn("Sem leitura ao vivo", saida)
+
+    def test_regua_dentro_do_limite_salva_o_ponto_municipal_fora(self):
+        """A recusa "nenhuma das réguas está a menos de 40 km" era medida contra
+        pontos MUNICIPAIS. Quem estivesse perto de uma régua e longe do centro
+        da cidade dela ouvia que está fora da bacia."""
+        b = self.base_itajai()
+        ponto = self.perto_da(DC10)  # Limoeiro, a 20 km do ponto municipal
+        _, km_cidade = b.cidade_mais_proxima(*ponto)
+        _, km_regua = b.regua_mais_proxima(*ponto)
+        self.assertLess(km_regua, 1.0)
+        self.assertGreater(km_cidade, km_regua)
+        self.assertNotIn("fora da área", "".join(resposta_localizacao(b, *ponto, AGORA)))
+
+    def test_fora_da_bacia_continua_recusando(self):
+        """Floripa não passa a entrar porque a conta mudou."""
+        saida = "".join(resposta_localizacao(self.base_itajai(), -27.5954, -48.5480, AGORA))
+        self.assertIn("fora da área", saida)
+        self.assertIn("A mais próxima fica a", saida)
+
+    def test_cota_de_rua_nao_muda_por_causa_da_proximidade(self):
+        """Régua perto não autoriza subtrair o nível dela da cota de uma rua:
+        Itajaí tem onze zeros diferentes, e a recusa continua."""
+        b = self.base_itajai()
+        saida = "".join(resposta_localizacao(b, *self.perto_da(DC06), AGORA))
+        self.assertNotIn("faltam", saida.lower())
+        self.assertIn("não se comparam entre si", saida)
+
+
+class TestDistanciaEmMetros(unittest.TestCase):
+    """Abaixo de 1 km o morador pensa em metros — e a camada de rua, na mesma
+    mensagem, já falava em metros enquanto a régua falava em km."""
+
+    def test_abaixo_de_um_km_sai_em_metros(self):
+        self.assertEqual(quilometros(0.813), "810 m")
+        self.assertEqual(quilometros(0.08), "80 m")
+
+    def test_em_cima_da_regua_nao_diz_zero_nem_finge_precisao(self):
+        """"a 0,0 km" lê-se como quebrado (visto em campo em Brusque); "a 10 m"
+        prometeria uma precisão que o GPS do celular não tem."""
+        self.assertEqual(quilometros(0.0), "menos de 50 m")
+        self.assertEqual(quilometros(0.004), "menos de 50 m")
+
+    def test_acima_de_um_km_continua_em_km_com_virgula(self):
+        self.assertEqual(quilometros(1.64), "1,6 km")
+        self.assertEqual(quilometros(60.1), "60,1 km")
+
+    def test_a_fronteira_nao_produz_mil_metros(self):
+        self.assertEqual(quilometros(0.999), "1,0 km")
+        self.assertEqual(quilometros(0.994), "990 m")
 
 
 if __name__ == "__main__":
