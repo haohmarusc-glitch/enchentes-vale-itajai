@@ -5,6 +5,17 @@ Coleta os níveis de rio publicados pela Defesa Civil de Itajaí e salva em JSON
 Fonte: https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios
 Inclui também Brusque, Blumenau e Rio do Sul.
 
+APOSENTADO PARA NÍVEL EM 19/09/2026. Este endereço passou a devolver uma página
+de ERRO 404, com corpo sem régua nenhuma — uma auditoria externa deu pela falta.
+A coleta de nível de Itajaí migrou para `coleta_itajai_portal.py` (portal novo,
+app Inertia), que responde SÓ com Itajaí: Brusque e a régua de Rio do Sul desta
+página não têm substituto (Rio do Sul lê a Ponte Dom Tito Buss pela Asthon e
+Blumenau tem o AlertaBlu como resgate). Ver as Pendências do README.
+
+O módulo continua aqui, e não é código morto: `REGUAS_NAO_COLETADAS` é a decisão
+escrita sobre a Estação MKS de Rio do Sul, e a página de CHUVAS (`coleta_chuva.py`)
+tem a mesma estrutura e ainda a usa. Só o caminho de NÍVEL saiu do ar.
+
 Estrutura da página, conferida contra o site no ar:
 
     <li class="card point ...">
