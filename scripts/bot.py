@@ -1068,6 +1068,135 @@ def linhas_de_uma_cota(c: dict, cidade_nome: str,
     return linhas
 
 
+#: Quantas cheias antigas o pino mostra ao lado do nível de agora.
+#:
+#: Duas de cada lado, e não a lista inteira: a que está logo ACIMA do nível de
+#: hoje e a que está logo ABAIXO. É o que responde "isto que estou vendo é
+#: grande?" sem virar uma parede de números no celular de quem está com chuva na
+#: rua. A maior de todas entra à parte, quando não for nenhuma dessas, porque
+#: ela é a régua mental da cidade — em Gaspar, "12,56 m em 1880" diz mais do que
+#: qualquer adjetivo.
+CHEIAS_VIZINHAS = 2
+
+
+def data_da_cheia(data: str | None) -> str | None:
+    """`2008-11-23` -> `23/11/2008`; `1984-08` -> `08/1984`; `1852` -> `1852`.
+
+    O dado guarda o que a fonte sabia: dia quando há dia, só o ano quando o dia
+    se perdeu. Completar com `01/01` daria precisão que a fonte não tem — e numa
+    cheia de 1852 essa precisão seria ficção.
+    """
+    if not isinstance(data, str) or not data.strip():
+        return None
+    partes = data.strip().split("-")
+    if len(partes) >= 3:
+        return f"{partes[2][:2]}/{partes[1]}/{partes[0]}"
+    if len(partes) == 2:
+        return f"{partes[1]}/{partes[0]}"
+    return partes[0]
+
+
+def cheias_perto_do_nivel(base: Base, cidade_id: str,
+                          nivel_m: float) -> tuple[list[dict], str | None, int]:
+    """(cheias comparáveis, motivo quando não há, quantas a referência calou).
+
+    Pedido em 19/09/2026. A pergunta que isto responde é a que vem depois de
+    "quanto está o rio": **e isso é muito?**. Um número sozinho só informa quem
+    já tem a escala na cabeça; ao lado de "a cheia de 23/09/1880 chegou a
+    12,56 m aqui", ele passa a ter tamanho.
+
+    DUAS TRAVAS, as duas de regra escrita neste repositório:
+
+    1. **Só `referencia == "régua"`** — REGRA BLOQUEANTE do CLAUDE.md, item 4, a
+       mesma que já governa a busca "minha rua" e o simulador. O nível ao vivo é
+       régua; um pico na referência do **IBGE** está 20 cm acima do mesmo rio, e
+       um pico com referência **nula** é "ainda não conferido", não
+       "provavelmente régua". Qualquer um dos dois ao lado do nível de agora
+       seria régua diferente com cara de comparação. Isso cala **147 dos 215**
+       registros — 72 do IBGE em Blumenau, 98 sem referência em Brusque e Rio do
+       Sul — e calar é o certo enquanto a referência não for conferida.
+    2. **Só cidade de UMA régua**, pela mesma `porque_sem_comparacao` do bloco de
+       rua: com várias, o pico não diz de qual delas é. (Quem aplica é o
+       `linhas_das_cheias`, antes de chamar aqui, porque é ele que tem o nome da
+       cidade para compor a frase.)
+
+    Devolve MOTIVO em vez de lista vazia porque sumir em silêncio dá a mesma tela
+    de uma cidade sem história nenhuma — e são coisas diferentes: Itajaí não tem
+    registro nenhum, Brusque tem 23 que ninguém conferiu a referência.
+
+    Devolve também QUANTAS a referência calou, para o bloco poder dizer. Em
+    Blumenau são 113 de 117: mostrar quatro e calar as outras daria a tela de
+    uma cidade com quatro cheias na história, e ela tem a série mais longa da
+    bacia.
+    """
+    regs = [r for r in base.enchentes
+            if r.get("cidade") == cidade_id
+            and isinstance(r.get("pico_m"), (int, float))
+            and not isinstance(r.get("pico_m"), bool)]
+    if not regs:
+        return [], "não temos cheia registrada desta cidade", 0
+
+    na_regua = [r for r in regs if r.get("referencia") == "régua"]
+    fora = len(regs) - len(na_regua)
+    if not na_regua:
+        return [], (f"as {len(regs)} cheias que temos desta cidade estão em outra "
+                    "referência de régua, ou sem referência conferida — pô-las ao lado do "
+                    "nível de agora daria diferença de régua com cara de diferença de rio"), fora
+
+    ordenadas = sorted(na_regua, key=lambda r: (float(r["pico_m"]), str(r.get("data") or "")))
+    abaixo = [r for r in ordenadas if float(r["pico_m"]) <= nivel_m][-CHEIAS_VIZINHAS:]
+    acima = [r for r in ordenadas if float(r["pico_m"]) > nivel_m][:CHEIAS_VIZINHAS]
+    escolhidas = abaixo + acima
+    if ordenadas[-1] not in escolhidas:
+        escolhidas.append(ordenadas[-1])
+    # De cima para baixo, como a água sobe na memória de quem lembra da cheia.
+    return sorted(escolhidas, key=lambda r: -float(r["pico_m"])), None, fora
+
+
+def linhas_das_cheias(base: Base, cidade: dict, agora: datetime) -> list[str]:
+    """O bloco "cheias já registradas nesta régua", para o pino.
+
+    O escapador entra aqui como `esc`, e não como o `e` que o resto do arquivo
+    usa, de propósito: a guarda de `TestNenhumLogNovoVazaSegredo` vigia `{e...}`
+    dentro de `return` e `print` porque foi assim que o texto de uma exceção
+    vazou uma vez. Um `{e(` de escapador num `return` dispara a guarda sem haver
+    erro nenhum — e afrouxar a guarda para caber um nome de variável seria
+    trocar uma proteção real por comodidade de estilo.
+    """
+    esc = notificador.esc
+    motivo_cidade = porque_sem_comparacao(base, cidade["id"], agora)
+    if motivo_cidade is not None:
+        return ["\n\n<i>Cheias antigas não entram aqui: "
+                f"{esc(cidade['nome'])} {esc(motivo_cidade)}.</i>"]
+
+    leituras = base.leituras_da_cidade(cidade["id"], agora)
+    nivel = float(leituras[0]["nivel_m"])
+    cheias, motivo, fora = cheias_perto_do_nivel(base, cidade["id"], nivel)
+    if motivo is not None:
+        return [f"\n\n<i>Cheias antigas não entram aqui: {esc(motivo)}.</i>"]
+
+    linhas = ["\n\n<b>Cheias já registradas nesta régua</b>"]
+    for r in cheias:
+        quando = data_da_cheia(r.get("data")) or "data não registrada"
+        pico = float(r["pico_m"])
+        dif = round(pico - nivel, 2)
+        # A diferença sai SEMPRE, por extenso: "4,56 m acima do nível de agora"
+        # é o que dá tamanho ao número; o número sozinho, não.
+        onde = (f"{metros(abs(dif))} acima do nível de agora" if dif > 0
+                else f"{metros(abs(dif))} abaixo do nível de agora" if dif < 0
+                else "exatamente o nível de agora")
+        linhas.append(f"\n<b>{metros(pico)}</b> — {esc(quando)} <i>({onde})</i>")
+        if r.get("confianca") == "baixa":
+            # Compilação informal sai, porque é o que existe, mas não pode
+            # chegar com a mesma cara de um registro oficial.
+            linhas.append("\n<i>valor de compilação informal, não conferido em fonte oficial</i>")
+    if fora:
+        linhas.append(f"\n<i>Outras {fora} cheias desta cidade não entram na conta: estão em "
+                      "outra referência de régua, ou sem referência conferida.</i>")
+    linhas.append("\n<i>Alturas na régua desta cidade — não se comparam com as de outra.</i>")
+    return linhas
+
+
 def porque_sem_comparacao(base: Base, cidade_id: str, agora: datetime) -> str | None:
     """Por que não dá para dizer "faltam X m" nesta cidade — ou None quando dá.
 
@@ -1333,6 +1462,9 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
                       "\n<i>Distância até o ponto de referência da cidade: o projeto "
                       "ainda não tem a coordenada da régua.</i>\n\n")
     linhas.extend(resposta_nivel(base, cidade, agora, destaque=destaque))
+    # Depois do nível, porque é a pergunta seguinte: "e isso é muito?". Antes do
+    # rodapé, porque o rodapé fecha a mensagem.
+    linhas.extend(linhas_das_cheias(base, cidade, agora))
     linhas.append(RODAPE)
     return linhas
 

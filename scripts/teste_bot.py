@@ -22,7 +22,8 @@ from pathlib import Path
 import notificador
 from bot import (IDADE_MAXIMA_PREVISAO_MIN, LIMITE_COTA_RUA_M, LIMITE_LOCALIZACAO_KM, MAX_RUAS,
                  REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, distancia_km,
-                 eh_timeout, faixa_da_regua, nome_curto, responder, resposta_localizacao,
+                 cheias_perto_do_nivel, data_da_cheia, eh_timeout, faixa_da_regua,
+                 linhas_das_cheias, nome_curto, responder, resposta_localizacao,
                  quilometros, resposta_nivel, resposta_rua, saida_para, sem_acento,
                  texto_idade)
 from comum import estacao_por_titulo, estacoes_tempo_real, le_json
@@ -1999,6 +2000,131 @@ class TestDistanciaEmMetros(unittest.TestCase):
     def test_a_fronteira_nao_produz_mil_metros(self):
         self.assertEqual(quilometros(0.999), "1,0 km")
         self.assertEqual(quilometros(0.994), "990 m")
+
+
+class TestCheiasAntigas(unittest.TestCase):
+    """"E isso é muito?" — a pergunta que vem depois de "quanto está o rio".
+
+    Pedido em 19/09/2026. Um número sozinho só informa quem já tem a escala na
+    cabeça; ao lado de "23/09/1880 chegou a 12,56 m aqui", ele ganha tamanho.
+    """
+
+    def pino(self, cidade_id: str, estacao: str, rio: str, nivel: float,
+             lat: float, lon: float) -> str:
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": estacao, "rio": rio, "cidade": cidade_id, "nivel_m": nivel,
+             "medido_em": "2026-08-30T18:20:00"}]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"), le_json("cotas-ruas.json"))
+        return "".join(resposta_localizacao(b, lat, lon, AGORA))
+
+    def gaspar(self, nivel: float) -> str:
+        return self.pino("gaspar", "Gaspar — Ponte Municipal", "itajai-acu",
+                         nivel, -26.9316, -48.9586)
+
+    def test_mostra_a_de_cima_e_a_de_baixo_com_data(self):
+        """Com o rio a 8,00 m em Gaspar, o que situa é 1957 logo abaixo e 2001
+        logo acima — não a lista das 48."""
+        t = self.gaspar(8.00)
+        self.assertIn("Cheias já registradas nesta régua", t)
+        self.assertIn("01/10/2001", t)
+        self.assertIn("02/08/1957", t)
+        self.assertIn("acima do nível de agora", t)
+        self.assertIn("abaixo do nível de agora", t)
+
+    def test_a_maior_de_todas_entra_sempre(self):
+        """É a régua mental da cidade: 12,56 m em 1880 diz mais que adjetivo."""
+        for nivel in (1.0, 8.0):
+            with self.subTest(nivel=nivel):
+                self.assertIn("12,56 m", self.gaspar(nivel))
+
+    def test_nao_vira_parede_de_numeros(self):
+        """48 registros, no máximo cinco linhas de cheia."""
+        linhas = [x for x in self.gaspar(8.00).split("\n")
+                  if "do nível de agora" in x]
+        self.assertLessEqual(len(linhas), 2 * 2 + 1)
+
+    def test_itajai_diz_que_nao_tem_registro(self):
+        """Zero registros de Itajaí em `enchentes.json`. Sumir em silêncio daria
+        a mesma tela de uma cidade cuja referência não foi conferida, e são
+        coisas diferentes."""
+        t = self.pino("itajai", DC06, "itajai-mirim", 0.48, -26.9217, -48.6858)
+        self.assertIn("não temos cheia registrada desta cidade", t)
+        self.assertNotIn("Cheias já registradas", t)
+
+    def test_brusque_cala_pela_referencia_e_diz_por_que(self):
+        """REGRA BLOQUEANTE do CLAUDE.md, item 4. As 23 de Brusque estão sem
+        referência conferida: ao lado do nível ao vivo dariam diferença de régua
+        com cara de diferença de rio."""
+        t = self.pino("brusque", "Brusque", "itajai-mirim", 1.94, -27.098, -48.917)
+        self.assertIn("sem referência conferida", t)
+        self.assertNotIn("Cheias já registradas", t)
+
+    def test_blumenau_mostra_as_de_regua_e_conta_as_que_calou(self):
+        """117 registros, 4 em régua e 113 em IBGE ou sem referência. Mostrar
+        quatro e calar as outras daria a tela de uma cidade com quatro cheias na
+        história — e ela tem a série mais longa da bacia."""
+        t = self.pino("blumenau", "Blumenau", "itajai-acu", 7.60, -26.9194, -49.0661)
+        self.assertIn("05/05/2022", t)
+        self.assertIn("Outras 113 cheias", t)
+        self.assertIn("outra referência de régua", t)
+
+    def test_nenhum_pico_do_ibge_entra(self):
+        """A trava, medida: nenhum valor devolvido pode vir de registro em IBGE."""
+        b = Base({"leituras": []}, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"))
+        for cidade in ("blumenau", "gaspar", "indaial", "brusque", "rio-do-sul"):
+            with self.subTest(cidade):
+                cheias, _, _ = cheias_perto_do_nivel(b, cidade, 5.0)
+                for r in cheias:
+                    self.assertEqual(r.get("referencia"), "régua", r.get("data"))
+
+    def test_cidade_de_varias_reguas_nao_compara(self):
+        """Mesma regra do bloco de rua: com onze réguas, o pico não diz de qual
+        delas é. O motivo sai com o nome da cidade."""
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": t, "rio": "itajai-mirim", "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"}
+            for t, n in [(DC06, 0.48), (DC10, 3.93)]]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"))
+        t = "".join(linhas_das_cheias(b, [c for c in b.cidades()
+                                          if c["id"] == "itajai"][0], AGORA))
+        self.assertIn("réguas com zeros diferentes", t)
+        self.assertNotIn("Cheias já registradas", t)
+
+    def test_compilacao_informal_nao_chega_com_cara_de_oficial(self):
+        b = Base({"leituras": []}, le_json("estacoes.json"), le_json("transito.json"),
+                 {"eventos": [
+                     {"cidade": "gaspar", "pico_m": 9.0, "data": "1984-08",
+                      "referencia": "régua", "confianca": "baixa"},
+                 ]})
+        cidade = [c for c in b.cidades() if c["id"] == "gaspar"][0]
+        b.ultimo = {"leituras": [{"estacao": "Gaspar — Ponte Municipal",
+                                  "rio": "itajai-acu", "cidade": "gaspar",
+                                  "nivel_m": 2.0, "medido_em": "2026-08-30T18:20:00"}]}
+        t = "".join(linhas_das_cheias(b, cidade, AGORA))
+        self.assertIn("08/1984", t)
+        self.assertIn("compilação informal", t)
+
+
+class TestDataDaCheia(unittest.TestCase):
+    """O dado guarda o que a fonte sabia. Completar com 01/01 daria precisão que
+    a fonte não tem — e numa cheia de 1852 isso seria ficção."""
+
+    def test_dia_mes_ano(self):
+        self.assertEqual(data_da_cheia("2008-11-23"), "23/11/2008")
+
+    def test_so_mes_e_ano(self):
+        self.assertEqual(data_da_cheia("1984-08"), "08/1984")
+
+    def test_so_ano(self):
+        self.assertEqual(data_da_cheia("1852"), "1852")
+
+    def test_vazio_ou_ausente(self):
+        for v in (None, "", "   ", 2008):
+            with self.subTest(v=v):
+                self.assertIsNone(data_da_cheia(v))
 
 
 if __name__ == "__main__":
