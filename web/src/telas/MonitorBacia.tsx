@@ -37,7 +37,7 @@ import { useNivelSc } from '../dados/nivelSc'
 import { useBarragens } from '../dados/barragens'
 import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
-import { idadeMin, textoIdade, type Faixa, frescor } from '../logica/tempoReal'
+import { idadeMin, textoIdade, type Faixa, frescor, frescorDaCidade } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
 import { dataHora, metros, rotuloCota } from '../logica/formato'
 import {
@@ -1494,7 +1494,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   className={estilos.amostra}
                   style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
                 />
-                {foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
+                {foco.origemFaixa === 'estadual'
+                  ? `Classificação estadual: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
+                  : foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
               </div>
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
@@ -1555,7 +1557,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {brutoSc.faixaEstadual && brutoSc.medidoEm && frescor(idadeMin(brutoSc.medidoEm, agora)) !== 'velha' ? (
                     <p className={estilos.painelExtra}>
                       <strong>Classificação da Defesa Civil de SC: {NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual]}</strong>
-                      {' — '}faixa declarada pela própria rede estadual, no datum desta estação. Não é a faixa de cor deste pino e não aciona aviso.
+                      {' — '}faixa declarada pela própria rede estadual, no datum desta estação. {foco.origemFaixa === 'estadual' ? 'É a classificação estadual do pino; não é comparação com as cotas municipais e não aciona aviso.' : 'Não é a faixa de cor deste pino e não aciona aviso.'}
                     </p>
                   ) : null}
                   {brutoSc.codigo && <a href={`https://monitoramento.defesacivil.sc.gov.br/estacao/${brutoSc.codigo}`} target="_blank" rel="noreferrer">Consultar estação na Defesa Civil de SC</a>}
@@ -1629,7 +1631,13 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   quando a série mistura réguas (Itajaí tem onze). */}
               {ultimas.resumo ? (
                 <div className={estilos.painelBloco}>
-                  <span className={estilos.painelRotulo}>Últimas 24 h nesta régua</span>
+                  <span className={estilos.painelRotulo}>Resumo da série nesta régua</span>
+                  <p className={estilos.painelRessalva}>
+                    Até {dataHora(ultimas.resumo.ate)} · {textoIdade(idadeMin(ultimas.resumo.ate, agora))}.
+                    {frescorDaCidade(idadeMin(ultimas.resumo.ate, agora), cid.id) === 'velha'
+                      ? ' Série parada: a variação abaixo descreve o período até essa leitura, não o rio agora.'
+                      : null}
+                  </p>
                   <p className={estilos.painelExtra}>
                     mín <strong>{metros(ultimas.resumo.min)}</strong> · máx{' '}
                     <strong>{metros(ultimas.resumo.max)}</strong> ·{' '}
@@ -1644,7 +1652,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   diferentes, e um mínimo e um máximo misturariam duas réguas.
                 </p>
               ) : null}
-              <p className={estilos.painelAcao}>{ACAO_FAIXA[foco.faixa]}</p>
+              <p className={estilos.painelAcao}>{foco.origemFaixa === 'estadual'
+                ? 'Sem leitura municipal compatível para comparar com as cotas locais. A classificação acima é a publicada pela Defesa Civil de SC; não informa quais ruas estão alagadas.'
+                : ACAO_FAIXA[foco.faixa]}</p>
               {/* As cotas de rua, quando esta cidade as tem e o zoom permite.
                   A conta é aritmética pura — cota levantada menos nível medido
                   —, e por isso pode ser dita com todas as letras. */}

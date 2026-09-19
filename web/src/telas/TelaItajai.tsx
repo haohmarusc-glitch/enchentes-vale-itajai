@@ -110,7 +110,7 @@ export default function TelaItajai() {
             Sem leitura ao vivo neste momento. As cotas de cada régua continuam na tabela
             abaixo, e a fonte é a{' '}
             <a
-              href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
+              href="https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios"
               target="_blank"
               rel="noreferrer"
             >
@@ -125,7 +125,7 @@ export default function TelaItajai() {
           Cada número acima é comparado com a cota <em>daquela</em> régua — nunca com a de
           outra, nem com a de outra cidade. Fonte:{' '}
           <a
-            href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios"
+            href="https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios"
             target="_blank"
             rel="noreferrer"
           >
