@@ -1143,7 +1143,7 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
         for cod in emconflito:
             div = self.dc[cod]["cotas_divergencia"]
             with self.subTest(regua=cod):
-                self.assertEqual(div["adotado_tabela_11_v17"], self.dc[cod]["cotas_m"],
+                self.assertEqual(div["adotado_tabela_11_v17"], self.dc[cod].get("cotas_conferencia_2026_09_13", {}).get("plano_v17", self.dc[cod]["cotas_m"]),
                                  "o adotado tem de ser igual ao que está valendo")
                 for faixa in ("atencao", "alerta", "emergencia"):
                     self.assertIn(faixa, div["outra_leitura_de_outra_edicao"])
@@ -1175,10 +1175,10 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
             atual = e["cotas_m"]
             with self.subTest(regua=cod):
                 self.assertTrue(
-                    atual == a or atual == b,
+                    atual == a or atual == b or atual == e.get("cotas_conferencia_2026_09_13", {}).get("portal"),
                     f"{cod} não bate com nenhuma das duas leituras inteiras: {atual}")
 
-    def test_o_que_vale_e_a_v17_inteira(self):
+    def test_v17_preservada_e_portal_adotado_somente_com_evidencia(self):
         """Não é "a nossa ganhou": é que a v17 foi lida na fonte e as onze
         linhas conferem. Se alguém trocar uma cota por um valor da outra
         edição, isto cai."""
@@ -1187,7 +1187,13 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
             if not div:
                 continue
             with self.subTest(regua=cod):
-                self.assertEqual(e["cotas_m"], div["adotado_tabela_11_v17"])
+                conf = e.get("cotas_conferencia_2026_09_13")
+                if conf:
+                    self.assertEqual(conf["plano_v17"], div["adotado_tabela_11_v17"])
+                    self.assertEqual(e["cotas_m"], conf["portal"])
+                    self.assertIs(e["alerta_automatico"], False)
+                else:
+                    self.assertEqual(e["cotas_m"], div["adotado_tabela_11_v17"])
 
 
 class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):
