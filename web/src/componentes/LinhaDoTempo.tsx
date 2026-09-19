@@ -12,7 +12,7 @@ import {
 import type { Cidade } from '../dados/tipos'
 import type { PontoSerie } from '../dados/serie'
 import { porRegua, tendencia } from '../dados/serie'
-import { faixaDaCidade } from '../logica/tempoReal'
+import { faixaDaCidade, frescorDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import { dataHora, metros, numero, rotuloCota } from '../logica/formato'
 import { ROTULO_FAIXA } from './LegendaFaixas'
 import estilos from './LinhaDoTempo.module.css'
@@ -53,10 +53,13 @@ export default function LinhaDoTempo({
   cidade,
   serie,
   agora,
+  resgates = {},
 }: {
   cidade: Cidade
   serie: PontoSerie[]
   agora: Date
+  /** Ver `EstadoSerie.resgates`. Ausente = trata tudo como régua distinta. */
+  resgates?: Record<string, string>
 }) {
   if (serie.length === 0) {
     return (
@@ -73,6 +76,27 @@ export default function LinhaDoTempo({
   // régua, não movimento do rio.
   const grupos = [...porRegua(serie)]
   const varias = grupos.length > 1
+  /**
+   * DUAS FONTES OU DUAS RÉGUAS? (achado 5 da auditoria de 19/09/2026)
+   *
+   * A tela dizia, para toda série múltipla, que a cidade "tem N réguas, cada
+   * uma com o seu próprio zero". Em Itajaí é verdade: são onze réguas, zeros
+   * diferentes. Em Blumenau é FALSO: são duas PUBLICAÇÕES da mesma régua (a
+   * estação ANA 83800002, pela Defesa Civil de Itajaí e pelo AlertaBlu), que
+   * discordam ~6 cm de forma sistemática — medido em 04/09/2026, e é por isso
+   * que as séries ficam separadas, decisão deliberada e correta.
+   *
+   * Separar as séries: certo. Chamar isso de duas réguas físicas: a regra nº 1
+   * do projeto ao contrário — confundir FONTE com RÉGUA. E o bot já acertava
+   * (junta pelo `resgate_de`), então as duas telas se contradiziam.
+   *
+   * Aqui a conta é sobre a régua COBERTA por cada fonte: se todas as séries
+   * caem na mesma, são publicações do mesmo instrumento.
+   */
+  const reguaCoberta = (titulo: string | null) =>
+    titulo === null ? null : (resgates[titulo] ?? titulo)
+  const cobertas = new Set(grupos.map(([chave]) => reguaCoberta(chave || null)))
+  const mesmaRegua = varias && cobertas.size === 1 && !cobertas.has(null)
   const chaveDe = (i: number) => `n${i}`
   const porInstante = new Map<number, Record<string, number>>()
   grupos.forEach(([, pontos], i) => {
@@ -104,6 +128,21 @@ export default function LinhaDoTempo({
     tend: tendencia(pontos),
   }))
   const ultimo = serie[serie.length - 1]!
+  /**
+   * A série está VENCIDA? (achado 3 da auditoria de 19/09/2026)
+   *
+   * Em Gaspar o gráfico dizia "Agora: 1,32 m", medido 18/09 às 18:03 — DEZENOVE
+   * horas antes —, seguido de "descendo (3 cm/h)". O número e o horário estavam
+   * certos, e o topo da página já avisava "sem leitura ao vivo": o que mentia
+   * era o RÓTULO, que chamava de "agora" uma medição de ontem, e a tendência,
+   * que soava como o que o rio está fazendo neste momento.
+   *
+   * O mesmo teto do resto do site (`frescorDaCidade`: 180 min, 120 em
+   * Blumenau), para a série não ter uma noção de "velho" própria.
+   */
+  const vencida = (p: { medidoEm: Date }) =>
+    frescorDaCidade(idadeMin(p.medidoEm, agora), cidade.id) === 'velha'
+  const serieVencida = vencida(ultimo)
   const faixaAgora = faixaDaCidade(
     cidade,
     { nivel_m: ultimo.nivel_m, medidoEm: ultimo.medidoEm },
@@ -128,12 +167,23 @@ export default function LinhaDoTempo({
     <div>
       {varias ? (
         <div className={estilos.resumo}>
-          <p>
-            {cidade.nome} tem <strong>{grupos.length} réguas</strong> nesta série, e cada
-            uma tem o seu próprio zero — os metros de uma não se comparam com os da
-            outra, nem entre si. Por isso não há um "nível da cidade" aqui, e sim a
-            última leitura de cada régua:
-          </p>
+          {mesmaRegua ? (
+            <p>
+              {cidade.nome} tem <strong>uma régua</strong>, publicada por{' '}
+              <strong>{grupos.length} fontes</strong> diferentes. É o mesmo instrumento,
+              mas as publicações <strong>discordam entre si</strong> em alguns centímetros,
+              de forma sistemática — por isso cada uma aparece como uma linha, em vez de
+              virarem uma série costurada que inventaria subidas e descidas. A última
+              leitura de cada fonte:
+            </p>
+          ) : (
+            <p>
+              {cidade.nome} tem <strong>{grupos.length} réguas</strong> nesta série, e cada
+              uma tem o seu próprio zero — os metros de uma não se comparam com os da
+              outra, nem entre si. Por isso não há um "nível da cidade" aqui, e sim a
+              última leitura de cada régua:
+            </p>
+          )}
           <ul className={estilos.listaReguas}>
             {ultimos.map((u, i) => (
               <li key={u.regua || `sem-${i}`}>
@@ -142,13 +192,20 @@ export default function LinhaDoTempo({
                   style={{ background: CORES_REGUA[i % CORES_REGUA.length] }}
                   aria-hidden="true"
                 />
-                {u.regua || 'régua não identificada'}: <strong>{metros(u.ponto.nivel_m)}</strong>,
+                {u.regua || (mesmaRegua ? 'fonte não identificada' : 'régua não identificada')}: <strong>{metros(u.ponto.nivel_m)}</strong>,
                 medido {dataHora(u.ponto.medidoEm)}
+                {vencida(u.ponto) ? (
+                  <>
+                    {' '}
+                    ({textoIdade(idadeMin(u.ponto.medidoEm, agora))} — <strong>parada</strong>)
+                  </>
+                ) : null}
                 {u.tend ? (
                   <>
                     {' — '}
                     {u.tend.rotulo}
                     {u.tend.cmh !== 0 ? ` (${Math.abs(u.tend.cmh)} cm/h)` : ''}
+                    {vencida(u.ponto) ? ' até ali' : ''}
                   </>
                 ) : null}
               </li>
@@ -157,17 +214,27 @@ export default function LinhaDoTempo({
         </div>
       ) : (
         <p className={estilos.resumo}>
-          Agora: <strong>{metros(ultimo.nivel_m)}</strong> ({ROTULO_FAIXA[faixaAgora]}), medido{' '}
-          {dataHora(ultimo.medidoEm)}.
+          {serieVencida ? (
+            <>
+              <strong>Esta série está parada.</strong> A última leitura é de{' '}
+              {dataHora(ultimo.medidoEm)} — {textoIdade(idadeMin(ultimo.medidoEm, agora))} —, e
+              marcava <strong>{metros(ultimo.nivel_m)}</strong>.
+            </>
+          ) : (
+            <>
+              Agora: <strong>{metros(ultimo.nivel_m)}</strong> ({ROTULO_FAIXA[faixaAgora]}), medido{' '}
+              {dataHora(ultimo.medidoEm)}.
+            </>
+          )}
           {tend ? (
             <>
               {' '}
-              Nas últimas horas:{' '}
+              {serieVencida ? 'No período até ali' : 'Nas últimas horas'}:{' '}
               <strong>
                 {tend.rotulo}
                 {tend.cmh !== 0 ? ` (${Math.abs(tend.cmh)} cm/h)` : ''}
               </strong>
-              .
+              {serieVencida ? ' — é o que o rio fazia até parar de publicar, não agora' : ''}.
             </>
           ) : null}
         </p>

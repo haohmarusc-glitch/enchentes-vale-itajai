@@ -474,6 +474,10 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
 
     series: dict[str, dict[str, list[dict]]] = {}
     reguas: dict[str, dict[str, list[str]]] = {}
+    #: título da fonte de resgate -> título da primária. Mesma RÉGUA, dois
+    #: publicadores. Só para a tela saber o que está olhando; a série continua
+    #: separada por fonte, pelos ~6 cm sistemáticos medidos em 04/09/2026.
+    resgates: dict[str, str] = {}
     pontos = 0
     for arquivo in arquivos:
         for d in _ler_ndjson(arquivo):
@@ -523,6 +527,18 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
             titulo = d.get("estacao")
             if titulo:
                 ponto["_regua"] = str(titulo)
+                # E QUAL RÉGUA CADA FONTE COBRE (19/09/2026, achado 5 da
+                # auditoria). Separar as séries por fonte é a decisão certa,
+                # medida acima — mas o SITE não tinha como saber que "Blumenau"
+                # e "Blumenau (AlertaBlu)" são a MESMA régua publicada duas
+                # vezes, e por isso escrevia "Blumenau tem 2 réguas, cada uma
+                # com o seu próprio zero". É falso, e é a regra nº 1 do projeto
+                # ao contrário: confundir FONTE com RÉGUA.
+                #
+                # `resgate_de` já estava no ndjson "para quem precisar saber que
+                # as duas cobrem a mesma régua". O site é quem precisa.
+                if d.get("resgate_de"):
+                    resgates[str(titulo)] = str(d["resgate_de"])
             series.setdefault(rio, {}).setdefault(cidade, []).append(ponto)
             pontos += 1
 
@@ -555,10 +571,18 @@ def escrever_serie_recente(horas: int = HORAS_SERIE_RECENTE) -> int:
                         "Ponto sem 'r' é ponto de régua desconhecida: trate como "
                         "não comparável, nunca como 'a mesma de antes'."
                     ),
+                    "resgates": (
+                        "título da fonte de RESGATE -> título da PRIMÁRIA que ela "
+                        "cobre. As duas medem a MESMA régua e aparecem como séries "
+                        "separadas de propósito (discordam ~6 cm de forma "
+                        "sistemática); isto existe para a tela não chamar duas "
+                        "FONTES de duas RÉGUAS com zeros diferentes."
+                    ),
                 },
                 "gerado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "janela_horas": horas,
                 "reguas": reguas,
+                "resgates": resgates,
                 "series": series,
             },
             ensure_ascii=False,
