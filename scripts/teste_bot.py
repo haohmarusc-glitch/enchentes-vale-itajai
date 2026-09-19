@@ -1495,38 +1495,39 @@ class TestObservacaoNasCotas(unittest.TestCase):
     conta. O site já a mostrava; o bot, que é o canal de quem consulta às três
     da manhã, mostrava só os números.
 
-    O caso que motivou: em Brusque a cota de 4,80 m é a Av. Beira-Rio, marginal
-    ao rio, JÁ alagando — a fonte a chama de "cota de inundação da via". Ela
-    está como atenção porque é o primeiro sinal, mas quem lê "Atenção 4,80 m"
-    sem a ressalva não tem como saber que ali a água já está numa via, e que
-    NÃO existe faixa de aviso antes disso.
+    Em Brusque, a referência histórica de alagamento da Av. Beira-Rio (4,80 m)
+    não é a atenção cadastrada (3,00 m). A mensagem precisa conservar essa
+    distinção e a ressalva sobre a referência das cotas de rua.
     """
 
     def test_a_observacao_sai_junto_das_cotas(self):
         r = responder("/cotas Brusque", base(), AGORA)
         self.assertIn("Av. Beira-Rio", r)
-        self.assertIn("não existe faixa de aviso antes do primeiro alagamento".lower(),
-                      r.lower())
+        self.assertIn("não é o limiar de atenção vigente no cadastro", r.lower())
+        self.assertNotIn("não existe faixa de aviso antes do primeiro alagamento", r.lower())
 
     def test_os_numeros_continuam_vindo_primeiro(self):
         """A ressalva é depois do número, não no lugar dele."""
         r = responder("/cotas Brusque", base(), AGORA)
-        self.assertLess(r.index("4,80 m"), r.index("Av. Beira-Rio"))
+        self.assertLess(r.index("Atenção: <b>3,00 m</b>"), r.index("Av. Beira-Rio"))
+        self.assertLess(r.index("Emergência: <b>5,00 m</b>"), r.index("Av. Beira-Rio"))
 
     def test_cidade_sem_observacao_nao_ganha_bloco_vazio(self):
         b = base()
-        for c in b.cidades():
+        for c in b.estacoes["rios"]["itajai-mirim"]["cidades"]:
             if c["id"] == "brusque":
                 c["observacao"] = ""
         r = responder("/cotas Brusque", b, AGORA)
         self.assertNotIn("<i></i>", r)
+        self.assertNotIn("Av. Beira-Rio", r)
 
     def test_observacao_comprida_e_cortada_com_ponteiro_para_o_site(self):
         b = base()
-        for c in b.cidades():
+        for c in b.estacoes["rios"]["itajai-mirim"]["cidades"]:
             if c["id"] == "brusque":
                 c["observacao"] = "palavra " * 400
         r = responder("/cotas Brusque", b, AGORA)
+        self.assertIn("palavra palavra", r)
         self.assertIn("(o resto no site)", r)
         self.assertLess(len(r), 4096, "a mensagem tem de caber no limite do Telegram")
 
@@ -1537,14 +1538,12 @@ class TestObservacaoNasCotas(unittest.TestCase):
             r = responder(f"/cotas {cidade['nome']}", b, AGORA) or ""
             self.assertLessEqual(len(r), 4096, cidade["nome"])
 
-    def test_a_ressalva_de_brusque_diz_que_a_agua_ja_esta_na_via(self):
-        """
-        O ponto todo: a diferença entre "prepare-se" e "já começou". Trocar uma
-        pela outra é errar para o lado de quem se sente seguro.
-        """
+    def test_a_ressalva_de_brusque_nao_promove_a_regua_estadual(self):
+        """O nome da ponte não autoriza subtrair nível estadual de cota de rua."""
         r = responder("/cotas Brusque", base(), AGORA).lower()
-        self.assertIn("já está", r)
-        self.assertNotIn("aviso prévio, é o começo".replace("é o começo", "ZZZ"), r)
+        self.assertIn("não use o nível bruto estadual", r)
+        self.assertIn("enquanto esse vínculo não estiver comprovado", r)
+        self.assertNotIn("atenção: <b>4,80 m</b>", r)
 
 
 class NomesDaFonteNoBot(unittest.TestCase):
