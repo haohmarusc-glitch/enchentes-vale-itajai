@@ -2288,6 +2288,17 @@ class TestDivergenciasDaTerceiraAuditoria(unittest.TestCase):
         ev = le_json("enchentes.json")["eventos"]
         self.assertEqual([r for r in ev if r.get("cidade") == "itajai"], [])
 
+    def test_rio_do_sul_ainda_nao_tem_1983_nem_2013(self):
+        """Quarta auditoria (Wikipédia): 1983 = 13,58 m e set/2013 = 10,39 m não
+        estão na nossa série, e seis de seis em comum batem ao centímetro com o
+        GCD — indício de que pulamos duas linhas na importação. Entram por
+        decisão do Jefferson; este teste cai no dia em que entrarem, para a nota
+        do README ser reescrita junto."""
+        ev = le_json("enchentes.json")["eventos"]
+        anos = {str(r.get("data", ""))[:4] for r in ev if r.get("cidade") == "rio-do-sul"}
+        self.assertNotIn("1983", anos)
+        self.assertNotIn("2013", anos)
+
     def test_rio_do_sul_2017_segue_com_o_pico_e_nao_com_a_leitura_das_10h(self):
         ev = le_json("enchentes.json")["eventos"]
         jun17 = [r for r in ev if r.get("cidade") == "rio-do-sul"
