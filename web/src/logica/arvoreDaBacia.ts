@@ -37,6 +37,7 @@ export interface BarragemBruta {
   a_montante_de?: string
   ano?: number
   armazenamento_Mm3?: number
+  capacidade_maxima_hm3_api_estadual?: number
   area_drenagem_km2_jica?: number
   area_drenagem_km2_api_estadual?: number
   condutos_com_comporta?: number
@@ -52,6 +53,7 @@ export interface BarragemNaArvore {
   acimaDe: string
   ano: number | null
   volumeMm3: number | null
+  volumeEstadualHm3: number | null
   comportas: number | null
   semComporta: number | null
   chuvaEquivalenteMm: number | null
@@ -148,6 +150,7 @@ export function barragemDaBacia(
     acimaDe: nomeDaCidade(b.a_montante_de),
     ano: numero(b.ano),
     volumeMm3: numero(b.armazenamento_Mm3),
+    volumeEstadualHm3: numero(b.capacidade_maxima_hm3_api_estadual),
     comportas: numero(b.condutos_com_comporta),
     semComporta: numero(b.condutos_sem_comporta),
     chuvaEquivalenteMm: numero(b.chuva_equivalente_mm),
@@ -205,6 +208,50 @@ export function areaEmTexto(b: {
   }
   const so = b.areaEstadualKm2 ?? b.areaJicaKm2
   return so != null ? `drena ${km(so)}` : null
+}
+
+/**
+ * O volume do reservatório em texto — as DUAS fontes quando divergem.
+ *
+ * Mesmo caso de `areaEmTexto`, e apontado pela auditoria externa de
+ * 19/09/2026: a ficha mostrava só os 83 hm³ do JICA 2011, enquanto a API
+ * estadual publica 99,96 (+20,4%). Não se sabe se medem a mesma grandeza —
+ * volume ÚTIL de amortecimento contra capacidade TOTAL é hipótese plausível e
+ * não verificada —, então trocar um pelo outro seria escolher em silêncio.
+ * `hidraulica.json._capacidade_divergente` guarda o porquê.
+ *
+ * Mora aqui, e não no `.tsx`, pela mesma razão: no componente nenhum teste
+ * alcança, e uma fusão silenciosa não quebraria nada.
+ */
+export function volumeEmTexto(b: {
+  volumeMm3: number | null
+  volumeEstadualHm3: number | null
+}): string | null {
+  const hm = (v: number) => `${v.toLocaleString('pt-BR')} hm³`
+  if (b.volumeMm3 != null && b.volumeEstadualHm3 != null) {
+    return b.volumeMm3 === b.volumeEstadualHm3
+      ? hm(b.volumeMm3)
+      : `${hm(b.volumeEstadualHm3)} (rede estadual) ou ${hm(b.volumeMm3)} (JICA 2011) — medidas diferentes`
+  }
+  const so = b.volumeEstadualHm3 ?? b.volumeMm3
+  return so != null ? hm(so) : null
+}
+
+/**
+ * A chuva equivalente, dita como EQUIVALÊNCIA e não como limiar.
+ *
+ * A ficha dizia "enche com ~80 mm de chuva sobre a bacia dela". O número é o do
+ * JICA e está certo; a frase é que transformava uma divisão (armazenamento ÷
+ * área de drenagem) em previsão de enchimento. Chuva não vira armazenamento na
+ * proporção de 1 para 1: o coeficiente de escoamento, o quanto o reservatório
+ * já tinha e a operação das comportas ficam todos de fora da conta.
+ *
+ * O que a divisão SERVE para dizer continua valendo, e é o que a tela passa a
+ * dizer: comparar as três entre si.
+ */
+export function chuvaEquivalenteEmTexto(b: { chuvaEquivalenteMm: number | null }): string | null {
+  if (b.chuvaEquivalenteMm == null) return null
+  return `o volume dela equivale a ~${b.chuvaEquivalenteMm} mm de chuva sobre a bacia que a alimenta`
 }
 
 export function arvoreDaBacia(

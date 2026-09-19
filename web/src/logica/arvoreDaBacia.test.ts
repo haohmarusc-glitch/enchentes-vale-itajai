@@ -6,7 +6,14 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { areaEmTexto, arvoreDaBacia, barragemDaBacia, type RioParaArvore } from './arvoreDaBacia'
+import {
+  areaEmTexto,
+  arvoreDaBacia,
+  barragemDaBacia,
+  chuvaEquivalenteEmTexto,
+  volumeEmTexto,
+  type RioParaArvore,
+} from './arvoreDaBacia'
 
 const estacoes = JSON.parse(
   readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf8'),
@@ -188,4 +195,52 @@ test('barragem de outro rio não entra nesta árvore', () => {
   })
   assert.equal(arv?.cabeceiras[0]?.barragem, null)
   assert.deepEqual(arv?.barragensSoltas, [])
+})
+
+// ---------------------------------------------------------------------------
+// Achado 6 da auditoria externa de 19/09/2026.
+
+test('a chuva equivalente é dita como equivalência, não como limiar', () => {
+  const t = chuvaEquivalenteEmTexto({ chuvaEquivalenteMm: 80 })
+  assert.ok(t?.includes('80'), t ?? '')
+  assert.ok(t?.includes('equivale'), t ?? '')
+  // "enche com" lia a divisão (armazenamento ÷ área) como previsão: chuva não
+  // vira armazenamento 1 para 1 — escoamento, estado inicial e operação das
+  // comportas ficam todos de fora da conta.
+  assert.ok(!t?.includes('enche'), t ?? '')
+})
+
+test('sem o número, a frase não sai', () => {
+  assert.equal(chuvaEquivalenteEmTexto({ chuvaEquivalenteMm: null }), null)
+})
+
+test('volume divergente mostra as DUAS fontes, e não a média', () => {
+  const t = volumeEmTexto({ volumeMm3: 83, volumeEstadualHm3: 99.96 })
+  assert.ok(t?.includes('83'), t ?? '')
+  assert.ok(t?.includes('99,96'), t ?? '')
+  assert.ok(t?.includes('JICA'), t ?? '')
+  // 91,48 é a média: número que fonte nenhuma publica.
+  assert.ok(!t?.includes('91'), t ?? '')
+})
+
+test('volume de uma fonte só não inventa a outra', () => {
+  assert.equal(volumeEmTexto({ volumeMm3: 357, volumeEstadualHm3: null }), '357 hm³')
+  assert.equal(volumeEmTexto({ volumeMm3: null, volumeEstadualHm3: null }), null)
+  // Iguais: uma vez só, sem "medidas diferentes".
+  assert.equal(volumeEmTexto({ volumeMm3: 83, volumeEstadualHm3: 83 }), '83 hm³')
+})
+
+test('no cadastro REAL, Oeste e Sul carregam as duas capacidades', () => {
+  const nome = (id: string) => id
+  for (const [chave, jica, estadual] of [['oeste', 83, 99.96], ['sul', 93.5, 104.03]] as const) {
+    const b = barragemDaBacia(hidraulica.barragens[chave] as never, nome)
+    assert.ok(b, chave)
+    assert.equal(b!.volumeMm3, jica)
+    assert.equal(b!.volumeEstadualHm3, estadual)
+    assert.ok(volumeEmTexto(b!)?.includes('medidas diferentes'), chave)
+  }
+  // A Norte não tem valor estadual publicado: segue com um número só.
+  const norte = barragemDaBacia(hidraulica.barragens.norte as never, nome)
+  assert.equal(norte!.volumeEstadualHm3, null)
+  assert.ok(!volumeEmTexto(norte!)?.includes('medidas diferentes'))
 })

@@ -1,5 +1,11 @@
 import { useMemo } from 'react'
-import { areaEmTexto, arvoreDaBacia, type BarragemNaArvore } from '../logica/arvoreDaBacia'
+import {
+  areaEmTexto,
+  arvoreDaBacia,
+  chuvaEquivalenteEmTexto,
+  volumeEmTexto,
+  type BarragemNaArvore,
+} from '../logica/arvoreDaBacia'
 import { barragensBrutas, rio as rioDoCadastro } from '../dados/carregar'
 import estilos from './ArvoreDaBacia.module.css'
 
@@ -17,7 +23,7 @@ import estilos from './ArvoreDaBacia.module.css'
 function Barragem({ b }: { b: BarragemNaArvore }) {
   const ficha = [
     b.ano ? `${b.ano}` : null,
-    b.volumeMm3 != null ? `${b.volumeMm3} hm³` : null,
+    volumeEmTexto(b),
     b.comportas != null
       ? `${b.comportas} ${b.comportas === 1 ? 'comporta' : 'comportas'}` +
         (b.semComporta ? ` + ${b.semComporta} sem comporta` : '')
@@ -31,10 +37,8 @@ function Barragem({ b }: { b: BarragemNaArvore }) {
         <strong>{b.nome}</strong> · {b.municipio}
         {ficha.length ? <div className={estilos.ficha}>{ficha.join(' · ')}</div> : null}
         {area ? <div className={estilos.ficha}>{area}</div> : null}
-        {b.chuvaEquivalenteMm != null ? (
-          <div className={estilos.ficha}>
-            enche com ~{b.chuvaEquivalenteMm} mm de chuva sobre a bacia dela
-          </div>
+        {chuvaEquivalenteEmTexto(b) ? (
+          <div className={estilos.ficha}>{chuvaEquivalenteEmTexto(b)}</div>
         ) : null}
         <div className={estilos.ficha}>a régua de {b.acimaDe} fica abaixo dela</div>
       </div>
