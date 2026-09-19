@@ -46,3 +46,8 @@ data/tempo-real/gaspar-cadencia.csv
 # Não são polígonos: MultiGeometry de milhares de LineStrings minúsculas
 # (hachura de CAD), em pastas "COTA - 3,00" … "COTA - 6,50".
 data/brutos/ituporanga-mymaps-manchas-2026-09-09.kml
+
+# Base consolidada do Atlas Digital de Desastres (S2ID), baixada por
+# scripts/atlas_desastres.py: dezenas de MB, pública e reproduzível pelo script.
+# O que vale versionar é o recorte da bacia em data/desastres/.
+data/brutos/BD_Atlas_*_Consolidado.csv
