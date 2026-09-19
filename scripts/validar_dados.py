@@ -711,7 +711,7 @@ def valida_meses_pareados() -> None:
     eventos distintos, ou uma das datas está errada.
 
     A comparação é por MÊS, e não por dia, porque a série de Rio do Sul é quase
-    toda de precisão mensal (7 de 9 registros). Exigir o dia recusaria dado bom.
+    toda de precisão mensal (11 de 13 registros). Exigir o dia recusaria dado bom.
 
     O teste é "existe ALGUM evento de jusante no mesmo mês", não "o evento de
     jusante mais próximo bate": Blumenau tem 113 registros, vários no mesmo ano,
