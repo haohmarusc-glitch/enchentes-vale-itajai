@@ -71,7 +71,8 @@ from zoneinfo import ZoneInfo
 
 import notificador
 from alerta_cotas import faixa_de
-from comum import DADOS, chave_montante, le_json, nivel_plausivel
+from comum import (DADOS, chave_montante, estacao_por_titulo, le_json,
+                   nivel_plausivel)
 from transito import caminho, faixa_horas, janela_chegada
 
 ULTIMO = DADOS / "tempo-real" / "ultimo.json"
@@ -628,6 +629,69 @@ def faixa_da_leitura(cidade: dict, leituras: list[dict]) -> tuple[str, str, floa
     return (faixa, rotulo_cota(faixa, nomes), cotas[faixa])
 
 
+def faixa_da_regua(leitura: dict) -> tuple[str, str, float] | None:
+    """(faixa, rótulo, cota) desta RÉGUA contra a cota DELA MESMA, ou None.
+
+    ACHADO em 19/09/2026, no teste de campo do pino em Itajaí, logo depois de o
+    coletor do portal novo devolver as onze réguas. A <b>DC-11 Santa Regina</b>
+    saiu em <b>2,39 m</b> e a primeira cota dela é <b>3,00 m</b>: o pino mandou o
+    número pelado, e quem mora na Volta de Cima não tinha como saber se aquilo
+    era tranquilo ou se faltavam 61 cm. É o MESMO defeito que `faixa_da_leitura`
+    consertou em Blumenau no dia anterior — só que por um caminho que aquela
+    função não alcança.
+
+    POR QUE `faixa_da_leitura` NÃO SERVE AQUI, e continua certa onde está: ela
+    trabalha no nível da CIDADE, e a trava nº 2 dela exige UMA régua, porque
+    `cidade.cotas_m` é da cidade e com duas não se sabe de qual delas é. Em
+    Itajaí isso é verdade e vai continuar sendo: são onze zeros diferentes e
+    **não existe "o nível de Itajaí"**. Só que cada DC tem a cota DELA, do Plano
+    de Contingência v17 — e comparar a leitura da DC-11 com a cota da DC-11 não
+    mistura zero nenhum: é a mesma régua dos dois lados.
+
+    QUATRO TRAVAS, as mesmas de `faixa_da_leitura`, lidas na RÉGUA:
+
+    1. **`cotas_verificado` DA ESTAÇÃO** — campo novo, e escrito hoje em duas
+       estações só, cada uma com a prova no `cotas_verificado_nota`: DC-10 e
+       DC-11. Nas outras nove ele não existe, e sem ele esta função devolve
+       None. É a trava que mantém FORA as quatro cujas cotas estão em disputa
+       entre o Plano v17 e o portal novo (DC-01, DC-07, DC-08, DC-09): ali o par
+       cota↔leitura é justamente o que ninguém provou ainda.
+    2. **`alerta_automatico: false` cala a régua** — as nove de estuário. Nelas
+       o que sobe é MARÉ, não cheia, e cruzar a cota é rotina de todo dia; dizer
+       "acima da cota de Alerta" ali é o alarme que ensina a ignorar o próximo.
+       A trava é redundante hoje (nenhuma delas tem `cotas_verificado`) e fica
+       assim de propósito: as duas condições são independentes, e quem no futuro
+       marcar uma de estuário como verificada não abre a torneira sem querer.
+    3. **Nível plausível.** Um sensor devolvendo 0,00 m no meio da cheia cairia
+       em "abaixo da primeira cota" — a frase mais perigosa que este bot escreve.
+    4. **Cotas existindo.** Sem escada não há degrau para ler.
+
+    O QUE ISTO NÃO FAZ: não dá faixa à CIDADE de Itajaí, não muda o caminho do
+    AVISO (quem dispara notificação é `alerta_cotas`, pelo `alerta_automatico`,
+    e nada aqui toca nisso) e não afrouxa nada nas nove de estuário.
+    """
+    estacao = estacao_por_titulo(leitura.get("estacao") or "")
+    if estacao is None:
+        return None
+    if estacao.get("cotas_verificado") is not True:
+        return None
+    if estacao.get("alerta_automatico") is False:
+        return None
+    nivel = leitura.get("nivel_m")
+    if not nivel_plausivel(nivel):
+        return None
+    cotas = {k: float(v) for k, v in (estacao.get("cotas_m") or {}).items()
+             if isinstance(v, (int, float)) and not isinstance(v, bool)}
+    if not cotas:
+        return None
+    nomes = estacao.get("cotas_nomes_na_fonte")
+    faixa = faixa_de(float(nivel), cotas)
+    if faixa == "normal":
+        chave = min(cotas, key=lambda k: cotas[k])
+        return ("normal", rotulo_cota(chave, nomes), cotas[chave])
+    return (faixa, rotulo_cota(faixa, nomes), cotas[faixa])
+
+
 def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
     if cidade["id"] == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
@@ -656,8 +720,12 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
         linhas.append(
             f"\n<b>{metros(l['nivel_m'])}</b> — {notificador.esc(l.get('estacao', ''))}"
         )
-        if faixa is not None:
-            nome, rot, cota = faixa
+        # A da CIDADE vence onde existe: nas cinco cidades que hoje passam, a
+        # mensagem não muda uma vírgula. A da RÉGUA é o que sobra para a cidade
+        # de várias, onde a da cidade nunca pôde sair.
+        desta = faixa if faixa is not None else faixa_da_regua(l)
+        if desta is not None:
+            nome, rot, cota = desta
             if nome == "normal":
                 linhas.append(f"\nAbaixo da primeira cota "
                               f"({notificador.esc(rot)}: {metros(cota)})")

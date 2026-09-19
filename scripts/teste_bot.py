@@ -22,9 +22,13 @@ from pathlib import Path
 import notificador
 from bot import (IDADE_MAXIMA_PREVISAO_MIN, LIMITE_COTA_RUA_M, LIMITE_LOCALIZACAO_KM, MAX_RUAS,
                  REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, distancia_km,
-                 eh_timeout, nome_curto, responder, resposta_localizacao, resposta_nivel, resposta_rua, saida_para,
-                 sem_acento, texto_idade)
-from comum import le_json
+                 eh_timeout, faixa_da_regua, nome_curto, responder, resposta_localizacao,
+                 resposta_nivel, resposta_rua, saida_para, sem_acento, texto_idade)
+from comum import estacao_por_titulo, estacoes_tempo_real, le_json
+
+#: As duas réguas de Itajaí cujo par cota↔leitura foi provado (19/09/2026).
+DC10 = "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
+DC11 = "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
 
 AGORA = datetime(2026, 8, 30, 21, 30, tzinfo=timezone.utc)  # 18:30 em Brasília
 
@@ -1651,6 +1655,161 @@ class TestFaixaJuntoDoNivel(unittest.TestCase):
         # fica a dezenas de km). A resposta não pode começar em branco.
         self.assertNotIn("Nenhum ponto levantado", saida)
         self.assertTrue(saida.startswith("📍 Régua mais próxima"))
+
+
+class TestFaixaPorRegua(unittest.TestCase):
+    """Itajaí tem onze réguas e nenhum "nível da cidade" — mas cada régua tem a
+    cota DELA, e comparar uma com a própria não mistura zero nenhum.
+
+    Achado em 19/09/2026, no teste de campo do pino em Itajaí, logo depois de o
+    coletor do portal novo devolver as onze: a DC-11 Santa Regina saiu em
+    2,39 m, com a primeira cota dela em 3,00 m, e o pino mandou o número pelado.
+    Quem mora na Volta de Cima não tinha como saber se faltavam 61 cm.
+    """
+
+    def itajai(self, leituras: list[tuple[str, str, float]]) -> str:
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": t, "rio": r, "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"} for t, r, n in leituras]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == "itajai"][0]
+        return "".join(resposta_nivel(b, cidade, AGORA))
+
+    def test_dc11_abaixo_de_tudo_nomeia_o_primeiro_degrau(self):
+        saida = self.itajai([(DC11, "itajai-acu", 2.39)])
+        self.assertIn("2,39 m", saida)
+        self.assertIn("Abaixo da primeira cota", saida)
+        self.assertIn("3,00 m", saida)
+        self.assertNotIn("🟢", saida)  # nada de selo de segurança num número
+
+    def test_dc11_acima_da_emergencia(self):
+        saida = self.itajai([(DC11, "itajai-acu", 5.20)])
+        self.assertIn("Acima da cota", saida)
+        self.assertIn("Emergência", saida)
+        self.assertIn("5,00 m", saida)
+
+    def test_dc10_usa_a_escada_dela_nao_a_da_dc11(self):
+        """8,00 m contra 3,00 m: se a cota viesse da outra régua, 3,93 m sairia
+        como 'acima da Emergência' numa régua que está tranquila."""
+        saida = self.itajai([(DC10, "itajai-mirim", 3.93)])
+        self.assertIn("Abaixo da primeira cota", saida)
+        self.assertIn("8,00 m", saida)
+        self.assertNotIn("Acima da cota", saida)
+
+    def test_as_nove_de_estuario_continuam_mudas(self):
+        """O que sobe nelas é MARÉ: cruzar a cota é rotina de todo dia, e o
+        aviso que toca com a maré ensina a ignorar o próximo."""
+        estuario = [
+            ("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "itajai-acu", 1.40),
+            ("DC-07 Ribeirão da Murta - Portal", "ribeirao-murta", 1.70),
+            ("DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+             "ribeirao-canhanduba", 2.95),
+        ]
+        for titulo, rio, nivel in estuario:
+            with self.subTest(titulo):
+                saida = self.itajai([(titulo, rio, nivel)])
+                self.assertNotIn("Acima da cota", saida)
+                self.assertNotIn("Abaixo da primeira cota", saida)
+
+    def test_as_onze_juntas_so_duas_falam(self):
+        """Como sai de verdade: o aviso dos zeros diferentes continua, e só as
+        duas provadas ganham faixa."""
+        saida = self.itajai([
+            ("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "itajai-acu", 0.88),
+            (DC10, "itajai-mirim", 3.93),
+            (DC11, "itajai-acu", 2.39),
+        ])
+        self.assertEqual(saida.count("Abaixo da primeira cota"), 2)
+        self.assertIn("não se comparam entre si", saida)
+
+    def test_nivel_implausivel_nao_vira_abaixo_da_primeira_cota(self):
+        saida = self.itajai([(DC11, "itajai-acu", 0.0)])
+        self.assertNotIn("Abaixo da primeira cota", saida)
+        self.assertNotIn("Acima da cota", saida)
+
+    def test_so_estas_duas_estacoes_tem_o_par_provado(self):
+        """Trava de cadastro, igual à das cidades: marcar `cotas_verificado` numa
+        estação sem provar o par derruba este teste — e é para derrubar.
+
+        As quatro cujas cotas estão em disputa entre o Plano v17 e o portal novo
+        (DC-01, DC-07, DC-08, DC-09) ficam de fora por este campo não existir
+        nelas: ali o par cota↔leitura é justamente o que ninguém provou ainda.
+        """
+        provadas = {e.get("codigo") for e in estacoes_tempo_real()
+                    if e.get("cotas_verificado") is True}
+        self.assertEqual(provadas, {"DC-10", "DC-11"})
+
+    def test_estuario_calada_mesmo_se_marcarem_como_verificada(self):
+        """As duas condições são independentes de propósito: quem um dia marcar
+        uma régua de estuário como verificada não abre a torneira sem querer."""
+        e = dict(estacao_por_titulo("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL"),
+                 cotas_verificado=True)
+        self.assertIs(e["alerta_automatico"], False)
+        with unittest.mock.patch("bot.estacao_por_titulo", return_value=e):
+            self.assertIsNone(faixa_da_regua(
+                {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "nivel_m": 1.40}))
+
+    def test_a_faixa_da_cidade_continua_vencendo(self):
+        """Nas cinco cidades que já passavam, a mensagem não muda uma vírgula:
+        `faixa_da_regua` só entra onde a da cidade não pôde sair."""
+        leituras = [{"estacao": "Blumenau", "rio": "itajai-acu", "cidade": "blumenau",
+                     "nivel_m": 8.40, "medido_em": "2026-08-30T18:20:00"}]
+        b = Base({"leituras": leituras}, le_json("estacoes.json"),
+                 le_json("transito.json"), le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == "blumenau"][0]
+        saida = "".join(resposta_nivel(b, cidade, AGORA))
+        self.assertIn("Alerta Máximo", saida)
+        # E a estação de Blumenau NÃO tem o campo: a faixa veio da cidade.
+        self.assertIsNone(faixa_da_regua({"estacao": "Blumenau", "nivel_m": 8.40}))
+
+    def test_o_pino_de_itajai_carrega_a_faixa(self):
+        """Fecha o caminho inteiro: pino -> camada da cidade -> faixa da régua.
+
+        O pino sai do Centro de Itajaí, não de cima da DC-11: Santa Regina fica
+        na divisa e `cidade_mais_proxima` responde ILHOTA de lá — o risco que o
+        `resposta_localizacao` já registra. Ali a recusa é o comportamento certo,
+        e a nota da própria DC-11 diz por quê: a leitura é de Itajaí e não pode
+        ser lida como o nível de Ilhota.
+        """
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": DC11, "rio": "itajai-acu", "cidade": "itajai",
+             "nivel_m": 2.39, "medido_em": "2026-08-30T18:20:00"}]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"), le_json("cotas-ruas.json"))
+        saida = "".join(resposta_localizacao(b, -26.9077, -48.6620, AGORA))
+        self.assertIn("Abaixo da primeira cota", saida)
+        self.assertIn("3,00 m", saida)
+
+
+class TestDC10NaoEDeEstuario(unittest.TestCase):
+    """A nota da DC-11 dizia "a única das onze réguas acima da maré". Não fecha:
+    são nove com `alerta_automatico: false`, e nove mais uma dão dez, não onze.
+    A DC-10 é a que faltava — e chamá-la de maré seria calar a régua mais a
+    montante do Mirim em Itajaí bem quando ela é a que avisa.
+    """
+
+    def test_sao_nove_as_de_estuario(self):
+        mudas = {e.get("codigo") for e in estacoes_tempo_real()
+                 if e.get("alerta_automatico") is False}
+        self.assertEqual(len(mudas), 9)
+        self.assertNotIn("DC-10", mudas)
+        self.assertNotIn("DC-11", mudas)
+
+    def test_as_cotas_da_dc10_sao_escala_de_rio(self):
+        """8/9/10 m. As de estuário ficam entre 1 e 3 m — a maré não sobe oito
+        metros em Itajaí."""
+        dc10 = estacao_por_titulo(DC10)
+        self.assertGreaterEqual(min(dc10["cotas_m"].values()), 5.0)
+        for e in estacoes_tempo_real():
+            if e.get("alerta_automatico") is False and e.get("cotas_m"):
+                self.assertLess(max(e["cotas_m"].values()), 5.0, e["codigo"])
+
+    def test_a_nota_nao_diz_mais_unica(self):
+        dc11 = estacao_por_titulo(DC11)
+        self.assertNotIn("É a única das onze réguas de Itajaí que fica acima da maré",
+                         dc11["nota_cidade"])
+        self.assertIn("DUAS", dc11["nota_cidade"])
 
 
 if __name__ == "__main__":
