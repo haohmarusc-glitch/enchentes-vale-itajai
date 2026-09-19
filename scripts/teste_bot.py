@@ -2248,5 +2248,53 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertIn("não conferido por mim", div["_estado"].lower())
 
 
+class TestDivergenciasDaTerceiraAuditoria(unittest.TestCase):
+    """Pesquisa no Facebook das Defesas Civis (19/09/2026). O que ela achou fica
+    REGISTRADO como divergência ou nota; nenhum valor do cadastro muda.
+
+    Os testes travam justamente isso: que a escala não adotada continue não
+    adotada, e que a corroborada continue igual.
+    """
+
+    def cidade(self, cid: str) -> dict:
+        return [c for c in base().cidades() if c["id"] == cid][0]
+
+    def test_taio_segue_com_as_quatro_cotas_do_plancon(self):
+        """O Facebook de 13/10/2022 publica 5/7/8/9 — as mesmas do PLANCON de
+        2026. Corroboração, não mudança."""
+        c = self.cidade("taio")
+        self.assertEqual(c["cotas_m"], {"monitoramento": 5.0, "atencao": 7.0,
+                                        "alerta": 8.0, "emergencia": 9.0})
+        self.assertIn("nova passarela", c["regua_nota"])
+        # O campo continua vazio de propósito: "régua do Centro" (PLANCON) e
+        # "nova passarela" (post) só se juntam por nome, e nome não é prova.
+        self.assertFalse(str(c.get("regua_das_cotas") or "").strip())
+
+    def test_timbo_nao_adota_a_escala_do_facebook(self):
+        """2,01 m como atenção faria o aviso soar 3 m antes do que o plano manda."""
+        c = self.cidade("timbo")
+        self.assertEqual(c["cotas_m"], {"ativacao_plancon": 5.0, "ruas_alerta_citadas": 6.0})
+        div = c["cotas_divergencia"]
+        self.assertEqual(div["nao_adotada"]["atencao"], 3.0)
+        self.assertEqual(div["nao_adotada"]["alto_risco_a_partir_de"], 4.3)
+        self.assertIn("NÃO adotar", div["nao_adotada"]["_regra"])
+        self.assertIn("não conferido por mim", div["_estado"].lower())
+
+    def test_itajai_continua_sem_registro_de_cheia(self):
+        """As oito leituras de 10/09/2011 são de UM horário, não o pico, e a
+        identidade com as DC de hoje é por nome. Entram só por decisão do
+        Jefferson — este teste cai no dia em que entrarem, e é para cair, para
+        a nota do README ser reescrita junto."""
+        ev = le_json("enchentes.json")["eventos"]
+        self.assertEqual([r for r in ev if r.get("cidade") == "itajai"], [])
+
+    def test_rio_do_sul_2017_segue_com_o_pico_e_nao_com_a_leitura_das_10h(self):
+        ev = le_json("enchentes.json")["eventos"]
+        jun17 = [r for r in ev if r.get("cidade") == "rio-do-sul"
+                 and str(r.get("data", "")).startswith("2017-06")]
+        self.assertEqual(len(jun17), 1)
+        self.assertEqual(jun17[0]["pico_m"], 10.89)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
