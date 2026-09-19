@@ -57,7 +57,7 @@ export default class LimiteDeErro extends Component<Props, Estado> {
             AlertaBlu
           </a>
           ,{' '}
-          <a href="https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios" target="_blank" rel="noreferrer">
+          <a href="https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios" target="_blank" rel="noreferrer">
             Defesa Civil de Itajaí
           </a>{' '}
           ou{' '}

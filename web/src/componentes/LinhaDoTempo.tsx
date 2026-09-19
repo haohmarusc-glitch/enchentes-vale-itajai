@@ -313,7 +313,9 @@ export default function LinhaDoTempo({
       </div>
 
       <p className={estilos.nota}>
-        {varias
+        {mesmaRegua
+          ? `Uma linha por fonte da mesma régua de ${cidade.nome}. As publicações podem divergir; não compare estes metros com os de outra cidade.`
+          : varias
           ? `Uma linha por régua de ${cidade.nome} — cada régua tem seu próprio zero, então não compare os metros de uma com os da outra, nem com os de outra cidade.`
           : `Nível na régua de ${cidade.nome} — cada cidade tem seu próprio zero, então não compare estes metros com os de outra cidade.`} Arraste as alças embaixo
         do gráfico para ver mais horas. A cor de cada linha tracejada é a faixa
