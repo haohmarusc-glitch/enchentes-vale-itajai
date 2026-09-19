@@ -81,9 +81,27 @@ export function buscar(cotas: CotaRua[], cidadeId: string, termo: string): CotaR
     })
 }
 
+/**
+ * Um ponto pode virar afirmação de alcance ("já alagou")?
+ *
+ * `usar_para_aviso: false` é o cadastro dizendo que aquele número NÃO está
+ * conferido o bastante para mover aviso. Em Rio do Sul são dois — Pouso Redondo
+ * (3,11 m) e SD 1604 (3,26 m) —, publicados ABAIXO do nível normal do rio: com
+ * tempo bom eles já estão "alagados" pela aritmética, e nunca deixam de estar.
+ *
+ * ACHADO por auditoria externa em 19/09/2026: a busca individual já respeitava
+ * o bloqueio para a frase "este nível já foi alcançado", mas o RESUMO não. Com
+ * o rio em 3,76 m, o cartão afirmava "2 de 555 ruas já estariam alagadas" e
+ * listava exatamente esses dois. O produto transformava em afirmação de água na
+ * rua dois números que ele próprio marca como não conferidos.
+ */
+export function podeAfirmarAlcance(c: CotaRua): boolean {
+  return c.usar_para_aviso !== false
+}
+
 /** Ruas já alagadas com o rio neste nível, da mais funda para a mais rasa. */
 /**
- * As ruas da cidade que TÊM cota — as únicas que podem ser contadas.
+ * As ruas da cidade que TÊM cota E podem ser afirmadas — as únicas contáveis.
  *
  * O cartão dizia "3 de 23 ruas conhecidas já estariam alagadas" usando o total
  * da cidade no denominador. Em Gaspar, 18 das 23 ruas não têm cota: a fonte as
@@ -91,14 +109,36 @@ export function buscar(cotas: CotaRua[], cidadeId: string, termo: string): CotaR
  * embaixo faz o alagamento parecer quase cinco vezes menos espalhado do que o
  * próprio dado diz — e erra para o lado de quem lê achando que está seguro.
  * As sem cota continuam na tela, contadas à parte.
+ *
+ * A MESMA razão vale para os bloqueados (`usar_para_aviso: false`), e é por isso
+ * que eles saem daqui também: nunca podem entrar no numerador, então mantê-los
+ * no denominador afundaria a proporção com pontos que jamais a compõem. Saem da
+ * conta e continuam na tela, com a ressalva deles.
  */
 export function comCota(cotas: CotaRua[], cidadeId: string): CotaRua[] {
-  return daCidade(cotas, cidadeId).filter((c) => c.cota_m !== null)
+  return daCidade(cotas, cidadeId).filter((c) => c.cota_m !== null && podeAfirmarAlcance(c))
 }
 
 export function atingidas(cotas: CotaRua[], cidadeId: string, nivelM: number): CotaRua[] {
   return daCidade(cotas, cidadeId)
-    .filter((c) => c.cota_m !== null && c.cota_m <= nivelM)
+    .filter((c) => c.cota_m !== null && c.cota_m <= nivelM && podeAfirmarAlcance(c))
+    .sort((a, b) => (a.cota_m ?? 0) - (b.cota_m ?? 0))
+}
+
+/**
+ * Os pontos BLOQUEADOS cuja cota o nível já passou. Não entram na contagem nem
+ * em nenhuma frase de alcance — existem para a tela poder dizer que eles estão
+ * ali, em vez de sumir com eles em silêncio. Sumir calado daria a MESMA tela de
+ * uma cidade sem pendência nenhuma, e as duas situações pedem decisões
+ * diferentes de quem lê.
+ */
+export function pendentesAbaixoDoNivel(
+  cotas: CotaRua[],
+  cidadeId: string,
+  nivelM: number,
+): CotaRua[] {
+  return daCidade(cotas, cidadeId)
+    .filter((c) => c.cota_m !== null && c.cota_m <= nivelM && !podeAfirmarAlcance(c))
     .sort((a, b) => (a.cota_m ?? 0) - (b.cota_m ?? 0))
 }
 

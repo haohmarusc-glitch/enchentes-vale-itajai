@@ -426,6 +426,60 @@ class TestItajaiNaoMascara(unittest.TestCase):
         self.assertFalse(d.ok)
         self.assertIn("10 de 11", d.motivo)
 
+class TestFonteDeItajaiCaidaNaoFicaEmSilencio(unittest.TestCase):
+    """
+    ACHADO por auditoria EXTERNA em 19/09/2026 — e o que interessa não é o
+    defeito, é por que precisou vir de fora.
+
+    O portal de Itajaí mudou de endereço, as onze réguas municipais sumiram do
+    arquivo, e o vigia ficou calado. Não por falta de trava: a de estações
+    sumidas existe e pegou tudo nos primeiros dias. Só que ela ESQUECE em
+    MEMORIA_DIAS, de propósito, para não ficar vermelha para sempre por estação
+    aposentada — então uma queda PERMANENTE vira invisível justamente depois de
+    durar demais. Quanto mais grave, mais silenciosa.
+
+    `fonte_itajai_ok` não envelhece: o coletor o reescreve a cada ciclo.
+    """
+
+    def _coleta(self, agora, fonte_ok):
+        medido = (agora - timedelta(minutes=10)).astimezone(
+            timezone(timedelta(hours=-3))).replace(tzinfo=None).isoformat()
+        return {"coletado_em": (agora - timedelta(minutes=3)).isoformat(),
+                "fonte_itajai_ok": fonte_ok,
+                "leituras": [{"estacao": "Blumenau", "cidade": "blumenau",
+                              "nivel_m": 2.6, "medido_em": medido}]}
+
+    def test_fonte_caida_reprova(self):
+        d = avaliar(self._coleta(AGORA, False), AGORA)
+        self.assertFalse(d.ok)
+        self.assertIn("Itajaí", d.motivo)
+        self.assertIn("onze réguas", d.motivo)
+
+    def test_fonte_ok_nao_inventa_problema(self):
+        self.assertTrue(avaliar(self._coleta(AGORA, True), AGORA).ok)
+
+    def test_ausencia_do_campo_nao_reprova(self):
+        """Arquivo antigo, sem o campo, não pode virar alarme retroativo."""
+        dados = self._coleta(AGORA, True)
+        del dados["fonte_itajai_ok"]
+        self.assertTrue(avaliar(dados, AGORA).ok)
+
+    def test_queda_VELHA_continua_falando_quando_a_memoria_ja_esqueceu(self):
+        """O caso que deixou Itajaí no escuro: a memória das estações sumidas
+        já expirou, e antes deste sinal nada mais denunciava a queda."""
+        velho = {t: (AGORA - timedelta(days=sc.MEMORIA_DIAS + 1)).isoformat()
+                 for t in [f"DC-{i:02d}" for i in range(1, 12)]}
+        # Sem o sinal: a memória esqueceu as onze e o vigia aprova.
+        sem = self._coleta(AGORA, True)
+        self.assertTrue(avaliar(sem, AGORA, velho).ok,
+                        "a memória deveria ter esquecido — é o comportamento que "
+                        "deixou a queda invisível")
+        # Com o sinal: fala, por mais antiga que seja a queda.
+        d = avaliar(self._coleta(AGORA, False), AGORA, velho)
+        self.assertFalse(d.ok)
+        self.assertIn("Itajaí", d.motivo)
+
+
 def bruto(minutos_atras=5, medido_minutos_atras=30, com_silenciosas=True):
     """
     Um ultimo_nivel_sc.json com as idades pedidas. Espelha o real: uma estação

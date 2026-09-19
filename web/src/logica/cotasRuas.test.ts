@@ -13,6 +13,8 @@ import {
   faltaPara,
   nomeCompleto,
   normalizar,
+  pendentesAbaixoDoNivel,
+  podeAfirmarAlcance,
   proximas,
 } from './cotasRuas'
 import type { CotaRua } from '../dados/tipos'
@@ -264,4 +266,45 @@ test('transversal sai como esquina; número e referência ficam no parêntese', 
     'Rua São Rafael (final da rua)')
   assert.equal(nomeCompleto({ rua: 'Rua Ruazinha', ponto: 'Ruazinha do Meio' } as never),
     'Rua Ruazinha (Ruazinha do Meio)')
+})
+
+// ---------------------------------------------------------------------------
+// Pontos bloqueados para aviso (`usar_para_aviso: false`).
+//
+// ACHADO por auditoria externa em 19/09/2026: a busca individual já respeitava
+// o bloqueio para a frase "este nível já foi alcançado", mas o RESUMO não. Com
+// Rio do Sul em 3,76 m o cartão afirmava "2 de 555 ruas já estariam alagadas" e
+// listava POUSO REDONDO (3,11 m) e SD 1604 (3,26 m) — dois pontos que o próprio
+// cadastro marca como não conferidos, publicados ABAIXO do nível normal do rio.
+
+const bloqueada = c({ cidade: 'rio-do-sul', rua: 'Bloqueada', cota_m: 3.1,
+                      usar_para_aviso: false })
+const normal = c({ cidade: 'rio-do-sul', rua: 'Normal', cota_m: 3.2 })
+
+test('ponto bloqueado não vira afirmação de que a água chegou', () => {
+  assert.equal(podeAfirmarAlcance(bloqueada), false)
+  assert.equal(podeAfirmarAlcance(normal), true)
+  const ja = atingidas([bloqueada, normal], 'rio-do-sul', 3.76)
+  assert.deepEqual(ja.map((x) => x.rua), ['Normal'])
+})
+
+test('bloqueado sai do denominador, porque nunca entra no numerador', () => {
+  assert.equal(comCota([bloqueada, normal], 'rio-do-sul').length, 1)
+})
+
+test('bloqueado abaixo do nível não some: sai listado à parte', () => {
+  const pend = pendentesAbaixoDoNivel([bloqueada, normal], 'rio-do-sul', 3.76)
+  assert.deepEqual(pend.map((x) => x.rua), ['Bloqueada'])
+  // Acima do nível não é "pendente abaixo": é só uma cota que o rio não passou.
+  assert.equal(pendentesAbaixoDoNivel([bloqueada], 'rio-do-sul', 2.0).length, 0)
+})
+
+test('no cadastro REAL, Rio do Sul a 3,76 m não afirma nenhuma rua alagada', () => {
+  // O caso exato da auditoria, contra o arquivo de produção.
+  const cotas = (arquivoReal as { cotas: CotaRua[] }).cotas
+  const ja = atingidas(cotas, 'rio-do-sul', 3.76)
+  const pend = pendentesAbaixoDoNivel(cotas, 'rio-do-sul', 3.76)
+  assert.equal(ja.length, 0, 'os dois que apareciam eram os bloqueados')
+  assert.equal(pend.length, 2)
+  assert.deepEqual(pend.map((x) => x.cota_m), [3.11, 3.26])
 })
