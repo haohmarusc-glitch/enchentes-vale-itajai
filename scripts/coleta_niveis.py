@@ -72,8 +72,12 @@ def baixar_niveis() -> list[dict]:
     except ImportError:  # pragma: no cover
         sys.exit("Para baixar é preciso o requests: pip install -r scripts/requirements.txt")
 
-    # Reaproveita o analisador de coleta_itajai.py — é a mesma página.
-    from coleta_itajai import URL, parse
+    # Portal NOVO (app Inertia), desde 19/09/2026. O endereço antigo
+    # (`coleta_itajai.py`) devolve uma página de ERRO 404 com corpo sem régua
+    # nenhuma — uma auditoria externa deu pela falta. Aquela página servia
+    # TAMBÉM Brusque, Blumenau e Rio do Sul, e o portal novo respondeu só com
+    # Itajaí: ver as Pendências do README.
+    from coleta_itajai_portal import URL, parse
     from comum import baixar
 
     espera_turno()
@@ -733,7 +737,7 @@ def main() -> int:
         json.dumps(
             {
                 "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                "fonte": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+                "fonte": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
                 "leituras": leituras,
                 "fonte_itajai_ok": fonte_itajai_ok,
                 "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
