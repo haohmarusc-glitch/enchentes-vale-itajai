@@ -28,6 +28,35 @@ Registros hidrológicos não são aceitos como chuva. A planilha não fornece me
 nomes de bairros, rios, cotas de acionamento, datum, horários ou endpoints.
 Nenhum nível, previsão, alerta ou novo marcador no mapa é criado por esta importação.
 
+## O que a resposta ao 01217.006547/2026-93 declara, ALÉM da planilha
+
+Registrado em 19/09/2026, a partir do fechamento da auditoria externa, que abriu
+a resposta no navegador. **Não conferido por mim** — este ambiente não alcança o
+Informa.BR, e a conferência de 11/09 aqui no repositório só tinha olhado o anexo.
+Até hoje o repositório tratava a resposta como se fosse a planilha e nada mais; era
+falso, e a diferença importa para o C24.
+
+A resposta declara, sobre as PCDs hidrológicas do Cemaden:
+
+- têm **sensor de chuva e sensor de nível** — não são pluviômetro só;
+- transmitem a cada **10 minutos com chuva** e a cada **1 hora sem chuva**;
+- os horários são em **UTC**;
+- os dados são **brutos**, sujeitos a falhas e lacunas;
+- o acesso programático ao histórico se pede por **ped@cemaden.gov.br**.
+
+Três consequências, e a terceira é a que muda o rascunho:
+
+1. **Não afirmar que variável e cadência nunca foram respondidas.** Foram, em
+   regra geral. O que falta é a aplicação à estação específica.
+2. **A orientação do webservice veio no contexto de dados PLUVIOMÉTRICOS.** Não
+   presumir que ela assegure acesso às leituras de NÍVEL.
+3. **UTC.** Se um dia entrar leitura de nível do Cemaden, ela chega em UTC e o
+   projeto grava `medido_em` em horário de Brasília sem fuso (CLAUDE.md). É a
+   mesma conversão do portal de Itajaí — e é o erro que já custou uma sessão
+   quando uma fonte gravou UTC "para honrar o contrato".
+
+Nada disso foi importado para JSON nenhum: são metadados de fonte, não medição.
+
 ## Pontos para investigação
 
 - Gaspar: 7 de 9 pluviômetros operacionais no cadastro.

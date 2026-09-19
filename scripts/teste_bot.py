@@ -2249,6 +2249,40 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertIn("NÃO aplicar", div["nao_adotada"]["_regra"])
         self.assertIn("não conferido por mim", div["_estado"].lower())
 
+    def test_a_terceira_escala_esta_registrada_e_nao_adotada(self):
+        """19/09/2026, noite: o portal de ITAJAÍ, com Brusque selecionada,
+        publica 3,5/5/6 para a MESMA DCSC-00019. Adotar atrasaria o aviso em
+        50 cm num rio de resposta rápida."""
+        c = self.cidade()
+        terceira = c["cotas_divergencia"]["nao_adotada_portal_itajai"]
+        self.assertEqual(terceira["atencao"], 3.5)
+        self.assertEqual(terceira["alerta"], 5.0)
+        self.assertEqual(terceira["emergencia"], 6.0)
+        self.assertIn("NÃO adotar", terceira["_regra"])
+        # A cidade não se mexeu: segue com a escala mais baixa das três.
+        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+
+    def test_o_boletim_de_2023_segue_discriminando_contra_as_TRES(self):
+        """Com uma terceira escala na mesa, a pergunta é se a evidência ainda
+        aponta para alguma. Aponta: 3,18 m chamado de 'atenção' é incompatível
+        com 3,50 e com 4,00, e só a escala do cadastro (3,00) o explica."""
+        div = self.cidade()["cotas_divergencia"]
+        nivel = div["evidencia_reunida"]["boletim_2023_10_30"]["nivel_m"]
+        self.assertGreater(nivel, div["adotada"]["atencao"])
+        for outra in (div["nao_adotada"], div["nao_adotada_portal_itajai"]):
+            self.assertLess(nivel, outra["atencao"])
+
+    def test_o_alerta_de_5_m_colide_com_a_emergencia_do_cadastro(self):
+        """O detalhe que faz desta divergência mais que um número: 5,00 m é
+        ALERTA na escala do portal de Itajaí e EMERGÊNCIA na do cadastro. O
+        mesmo número com dois nomes é pior que dois números diferentes."""
+        c = self.cidade()
+        self.assertEqual(c["cotas_divergencia"]["nao_adotada_portal_itajai"]["alerta"],
+                         c["cotas_m"]["emergencia"])
+        # E o cadastro afirma que faixa de alerta não existe nesta fonte.
+        self.assertNotIn("alerta", c["cotas_m"])
+        self.assertIn("Não há faixa de alerta", c["fonte_cotas"])
+
     def test_a_evidencia_que_discrimina_esta_registrada_e_nao_fecha(self):
         """30/10/2023: 3,18 m chamado de 'atenção'. Entre as duas atenções (3,00
         DCSC · 4,00 ANA), só a DCSC daria esse nome. É evidência a favor do
