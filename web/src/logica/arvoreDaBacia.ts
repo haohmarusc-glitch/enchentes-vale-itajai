@@ -251,7 +251,15 @@ export function volumeEmTexto(b: {
  */
 export function chuvaEquivalenteEmTexto(b: { chuvaEquivalenteMm: number | null }): string | null {
   if (b.chuvaEquivalenteMm == null) return null
-  return `o volume dela equivale a ~${b.chuvaEquivalenteMm} mm de chuva sobre a bacia que a alimenta`
+  // A NEGAÇÃO É EXPLÍCITA, e a atribuição vai junto. Tirar o "enche com" removeu
+  // a afirmação falsa; o auditor pediu mais — que a frase DIGA que não é limiar,
+  // porque "equivale a 80 mm de chuva" ainda se lê como "80 mm e ela enche" por
+  // quem passa o olho. A redação abaixo segue a que ele sugeriu, encurtada para
+  // caber na ficha.
+  return (
+    `volume equivalente a ~${b.chuvaEquivalenteMm} mm de chuva sobre a bacia (JICA 2011)` +
+    ' — não é o tanto de chuva que a enche'
+  )
 }
 
 export function arvoreDaBacia(

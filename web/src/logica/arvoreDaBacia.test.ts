@@ -203,11 +203,14 @@ test('barragem de outro rio não entra nesta árvore', () => {
 test('a chuva equivalente é dita como equivalência, não como limiar', () => {
   const t = chuvaEquivalenteEmTexto({ chuvaEquivalenteMm: 80 })
   assert.ok(t?.includes('80'), t ?? '')
-  assert.ok(t?.includes('equivale'), t ?? '')
-  // "enche com" lia a divisão (armazenamento ÷ área) como previsão: chuva não
-  // vira armazenamento 1 para 1 — escoamento, estado inicial e operação das
-  // comportas ficam todos de fora da conta.
-  assert.ok(!t?.includes('enche'), t ?? '')
+  assert.ok(t?.includes('equivalente'), t ?? '')
+  // A atribuição e a ÉPOCA vão junto: a ficha é de 2011.
+  assert.ok(t?.includes('JICA 2011'), t ?? '')
+  // E a negação é explícita. Tirar o "enche com" removeu a afirmação falsa;
+  // "equivale a 80 mm de chuva" ainda se lê como limiar por quem passa o olho,
+  // então a frase diz o que NÃO é — encaminhamento do auditor, 19/09/2026.
+  assert.ok(t?.includes('não é o tanto de chuva que a enche'), t ?? '')
+  assert.ok(!t?.startsWith('enche com'), t ?? '')
 })
 
 test('sem o número, a frase não sai', () => {
