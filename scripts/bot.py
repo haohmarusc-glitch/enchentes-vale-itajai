@@ -265,7 +265,28 @@ def distancia_km(a: tuple[float, float], b: tuple[float, float]) -> float:
 
 
 def quilometros(v: float) -> str:
-    """`1,6 km` — vírgula decimal, como todo número que este bot mostra."""
+    """`810 m` abaixo de 1 km, `1,6 km` acima — vírgula decimal, como tudo aqui.
+
+    ERA só km com uma casa, e isso produzia duas frases ruins na mesma mensagem:
+
+    * **"a 0,0 km em linha reta"** para quem está em cima da régua — visto em
+      campo em Brusque. Nenhum número está errado e mesmo assim lê-se como
+      quebrado.
+    * **"a 0,8 km"** para a régua a 813 m, enquanto a camada de rua, três
+      linhas acima, fala em metros ("a 128 m"). Duas unidades para a mesma
+      pergunta, na mesma tela.
+
+    Abaixo de 1 km o metro é a unidade que a pessoa usa para julgar se aquilo é
+    do lado dela. Arredonda a 10 m: o pino do celular não tem precisão melhor, e
+    "a 813 m" prometeria uma exatidão que a medida não tem.
+    """
+    metros_ = round(v * 1000 / 10) * 10
+    if metros_ < 50:
+        # Nem "0 m", que lê como quebrado, nem "10 m", que promete uma precisão
+        # que o GPS do celular não tem (o erro típico já é de 5 a 20 m).
+        return "menos de 50 m"
+    if metros_ < 1000:
+        return f"{metros_:.0f} m"
     return f"{v:.1f} km".replace(".", ",")
 
 
@@ -471,6 +492,52 @@ class Base:
             d = distancia_km((lat, lon), (co[0], co[1]))
             if melhor is None or d < melhor[1]:
                 melhor = (c, d)
+        return melhor
+
+    def regua_mais_proxima(self, lat: float, lon: float) -> tuple[dict, float] | None:
+        """(estação, km) da RÉGUA FÍSICA mais perto, ou None quando não há coordenada.
+
+        ACHADO em 19/09/2026, num pino real em Itajaí. O bot respondia
+        <b>"Régua mais próxima: Itajaí, a 3,7 km"</b> — e os 3,7 km eram até o
+        ponto municipal de Itajaí (-26.9078, -48.6619), não até régua nenhuma.
+        A régua mais próxima daquele pino era a <b>DC-06 (Itamirim Clube de
+        Campo), a 813 m</b>: quatro vezes e meia mais perto, e com nome. O
+        número estava certo e o rótulo, errado — que é o defeito que este
+        projeto mais persegue.
+
+        `cidade_mais_proxima` continua existindo e continua certa no que faz:
+        escolher a CIDADE cujo bloco de nível sai abaixo. Ela só não sabe dizer
+        onde fica uma régua, porque a coordenada que ela usa é a da cidade.
+
+        DUAS EXCLUSÕES, escritas porque a lista é do cadastro inteiro:
+
+        * **Estação sem `rio` não é régua de nível.** A DC-00 é a própria
+          Defesa Civil de Itajaí, pluviômetro puro — anunciá-la como "régua
+          mais próxima" mandaria a pessoa olhar um aparelho que não mede rio.
+          (Hoje ela nem tem coordenada; a guarda é para quando tiver.)
+        * **Coordenada inválida** não entra, e não vira zero — `(0, 0)` fica no
+          golfo da Guiné e ganharia de qualquer régua de verdade.
+
+        EMPATE SAI PELO CÓDIGO, não pela ordem do JSON: reordenar o cadastro não
+        pode trocar a resposta que o morador recebe.
+
+        NÃO filtra por leitura fresca. Proximidade é geografia; que a régua
+        esteja muda é outra informação, e quem a dá é o bloco de nível.
+        """
+        melhor = None
+        for e in self.estacoes.get("estacoes_tempo_real", []):
+            if not e.get("rio"):
+                continue
+            lat_e, lon_e = e.get("lat"), e.get("lon")
+            if not (isinstance(lat_e, (int, float)) and isinstance(lon_e, (int, float))):
+                continue
+            if not coordenada_valida(lat_e, lon_e):
+                continue
+            d = distancia_km((lat, lon), (lat_e, lon_e))
+            chave = (d, str(e.get("codigo") or e.get("titulo") or ""))
+            if melhor is None or chave < (melhor[1], str(melhor[0].get("codigo")
+                                                         or melhor[0].get("titulo") or "")):
+                melhor = (e, d)
         return melhor
 
     def cota_mais_proxima(self, lat: float, lon: float) -> tuple[dict, float] | None:
@@ -692,7 +759,17 @@ def faixa_da_regua(leitura: dict) -> tuple[str, str, float] | None:
     return (faixa, rotulo_cota(faixa, nomes), cotas[faixa])
 
 
-def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
+def resposta_nivel(base: Base, cidade: dict, agora: datetime,
+                   destaque: tuple[str, float] | None = None) -> list[str]:
+    """As réguas da cidade, com nível e idade.
+
+    `destaque` é `(título, km)` da régua que o PINO escolheu por distância. Ela
+    ganha a distância na própria linha, ao lado do número DELA — não no fim nem
+    num bloco à parte, porque numa cidade de onze réguas "a mais próxima fica a
+    810 m" no cabeçalho e o número onze linhas abaixo obriga quem lê a procurar,
+    e procurar na chuva é o momento errado. O `/nivel` não passa `destaque`:
+    sem pino não há "mais próxima".
+    """
     linhas = [f"<b>{notificador.esc(cidade['nome'])}</b> — nível do rio"]
     if cidade["id"] == "itajai" and base.ultimo.get("fonte_itajai_ok") is False:
         linhas.append("\nFonte de Itajaí indisponível: não foi possível obter as medições das réguas municipais.")
@@ -723,6 +800,10 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime) -> list[str]:
         # A da CIDADE vence onde existe: nas cinco cidades que hoje passam, a
         # mensagem não muda uma vírgula. A da RÉGUA é o que sobra para a cidade
         # de várias, onde a da cidade nunca pôde sair.
+        if destaque is not None and l.get("estacao") == destaque[0]:
+            # Na linha DELA: o número ao lado é o dela, e não há como casar
+            # errado depois.
+            linhas.append(f" — <i>a {quilometros(destaque[1])} daqui</i>")
         desta = faixa if faixa is not None else faixa_da_regua(l)
         if desta is not None:
             nome, rot, cota = desta
@@ -987,6 +1068,135 @@ def linhas_de_uma_cota(c: dict, cidade_nome: str,
     return linhas
 
 
+#: Quantas cheias antigas o pino mostra ao lado do nível de agora.
+#:
+#: Duas de cada lado, e não a lista inteira: a que está logo ACIMA do nível de
+#: hoje e a que está logo ABAIXO. É o que responde "isto que estou vendo é
+#: grande?" sem virar uma parede de números no celular de quem está com chuva na
+#: rua. A maior de todas entra à parte, quando não for nenhuma dessas, porque
+#: ela é a régua mental da cidade — em Gaspar, "12,56 m em 1880" diz mais do que
+#: qualquer adjetivo.
+CHEIAS_VIZINHAS = 2
+
+
+def data_da_cheia(data: str | None) -> str | None:
+    """`2008-11-23` -> `23/11/2008`; `1984-08` -> `08/1984`; `1852` -> `1852`.
+
+    O dado guarda o que a fonte sabia: dia quando há dia, só o ano quando o dia
+    se perdeu. Completar com `01/01` daria precisão que a fonte não tem — e numa
+    cheia de 1852 essa precisão seria ficção.
+    """
+    if not isinstance(data, str) or not data.strip():
+        return None
+    partes = data.strip().split("-")
+    if len(partes) >= 3:
+        return f"{partes[2][:2]}/{partes[1]}/{partes[0]}"
+    if len(partes) == 2:
+        return f"{partes[1]}/{partes[0]}"
+    return partes[0]
+
+
+def cheias_perto_do_nivel(base: Base, cidade_id: str,
+                          nivel_m: float) -> tuple[list[dict], str | None, int]:
+    """(cheias comparáveis, motivo quando não há, quantas a referência calou).
+
+    Pedido em 19/09/2026. A pergunta que isto responde é a que vem depois de
+    "quanto está o rio": **e isso é muito?**. Um número sozinho só informa quem
+    já tem a escala na cabeça; ao lado de "a cheia de 23/09/1880 chegou a
+    12,56 m aqui", ele passa a ter tamanho.
+
+    DUAS TRAVAS, as duas de regra escrita neste repositório:
+
+    1. **Só `referencia == "régua"`** — REGRA BLOQUEANTE do CLAUDE.md, item 4, a
+       mesma que já governa a busca "minha rua" e o simulador. O nível ao vivo é
+       régua; um pico na referência do **IBGE** está 20 cm acima do mesmo rio, e
+       um pico com referência **nula** é "ainda não conferido", não
+       "provavelmente régua". Qualquer um dos dois ao lado do nível de agora
+       seria régua diferente com cara de comparação. Isso cala **147 dos 215**
+       registros — 72 do IBGE em Blumenau, 98 sem referência em Brusque e Rio do
+       Sul — e calar é o certo enquanto a referência não for conferida.
+    2. **Só cidade de UMA régua**, pela mesma `porque_sem_comparacao` do bloco de
+       rua: com várias, o pico não diz de qual delas é. (Quem aplica é o
+       `linhas_das_cheias`, antes de chamar aqui, porque é ele que tem o nome da
+       cidade para compor a frase.)
+
+    Devolve MOTIVO em vez de lista vazia porque sumir em silêncio dá a mesma tela
+    de uma cidade sem história nenhuma — e são coisas diferentes: Itajaí não tem
+    registro nenhum, Brusque tem 23 que ninguém conferiu a referência.
+
+    Devolve também QUANTAS a referência calou, para o bloco poder dizer. Em
+    Blumenau são 113 de 117: mostrar quatro e calar as outras daria a tela de
+    uma cidade com quatro cheias na história, e ela tem a série mais longa da
+    bacia.
+    """
+    regs = [r for r in base.enchentes
+            if r.get("cidade") == cidade_id
+            and isinstance(r.get("pico_m"), (int, float))
+            and not isinstance(r.get("pico_m"), bool)]
+    if not regs:
+        return [], "não temos cheia registrada desta cidade", 0
+
+    na_regua = [r for r in regs if r.get("referencia") == "régua"]
+    fora = len(regs) - len(na_regua)
+    if not na_regua:
+        return [], (f"as {len(regs)} cheias que temos desta cidade estão em outra "
+                    "referência de régua, ou sem referência conferida — pô-las ao lado do "
+                    "nível de agora daria diferença de régua com cara de diferença de rio"), fora
+
+    ordenadas = sorted(na_regua, key=lambda r: (float(r["pico_m"]), str(r.get("data") or "")))
+    abaixo = [r for r in ordenadas if float(r["pico_m"]) <= nivel_m][-CHEIAS_VIZINHAS:]
+    acima = [r for r in ordenadas if float(r["pico_m"]) > nivel_m][:CHEIAS_VIZINHAS]
+    escolhidas = abaixo + acima
+    if ordenadas[-1] not in escolhidas:
+        escolhidas.append(ordenadas[-1])
+    # De cima para baixo, como a água sobe na memória de quem lembra da cheia.
+    return sorted(escolhidas, key=lambda r: -float(r["pico_m"])), None, fora
+
+
+def linhas_das_cheias(base: Base, cidade: dict, agora: datetime) -> list[str]:
+    """O bloco "cheias já registradas nesta régua", para o pino.
+
+    O escapador entra aqui como `esc`, e não como o `e` que o resto do arquivo
+    usa, de propósito: a guarda de `TestNenhumLogNovoVazaSegredo` vigia `{e...}`
+    dentro de `return` e `print` porque foi assim que o texto de uma exceção
+    vazou uma vez. Um `{e(` de escapador num `return` dispara a guarda sem haver
+    erro nenhum — e afrouxar a guarda para caber um nome de variável seria
+    trocar uma proteção real por comodidade de estilo.
+    """
+    esc = notificador.esc
+    motivo_cidade = porque_sem_comparacao(base, cidade["id"], agora)
+    if motivo_cidade is not None:
+        return ["\n\n<i>Cheias antigas não entram aqui: "
+                f"{esc(cidade['nome'])} {esc(motivo_cidade)}.</i>"]
+
+    leituras = base.leituras_da_cidade(cidade["id"], agora)
+    nivel = float(leituras[0]["nivel_m"])
+    cheias, motivo, fora = cheias_perto_do_nivel(base, cidade["id"], nivel)
+    if motivo is not None:
+        return [f"\n\n<i>Cheias antigas não entram aqui: {esc(motivo)}.</i>"]
+
+    linhas = ["\n\n<b>Cheias já registradas nesta régua</b>"]
+    for r in cheias:
+        quando = data_da_cheia(r.get("data")) or "data não registrada"
+        pico = float(r["pico_m"])
+        dif = round(pico - nivel, 2)
+        # A diferença sai SEMPRE, por extenso: "4,56 m acima do nível de agora"
+        # é o que dá tamanho ao número; o número sozinho, não.
+        onde = (f"{metros(abs(dif))} acima do nível de agora" if dif > 0
+                else f"{metros(abs(dif))} abaixo do nível de agora" if dif < 0
+                else "exatamente o nível de agora")
+        linhas.append(f"\n<b>{metros(pico)}</b> — {esc(quando)} <i>({onde})</i>")
+        if r.get("confianca") == "baixa":
+            # Compilação informal sai, porque é o que existe, mas não pode
+            # chegar com a mesma cara de um registro oficial.
+            linhas.append("\n<i>valor de compilação informal, não conferido em fonte oficial</i>")
+    if fora:
+        linhas.append(f"\n<i>Outras {fora} cheias desta cidade não entram na conta: estão em "
+                      "outra referência de régua, ou sem referência conferida.</i>")
+    linhas.append("\n<i>Alturas na régua desta cidade — não se comparam com as de outra.</i>")
+    return linhas
+
+
 def porque_sem_comparacao(base: Base, cidade_id: str, agora: datetime) -> str | None:
     """Por que não dá para dizer "faltam X m" nesta cidade — ou None quando dá.
 
@@ -1131,14 +1341,30 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
         return ["Não consegui ler essa localização." + RODAPE]
 
     perto = base.cidade_mais_proxima(lat, lon)
-    if perto is None or perto[1] > LIMITE_LOCALIZACAO_KM:
+    regua = base.regua_mais_proxima(lat, lon)
+
+    # A RECUSA TAMBÉM PASSOU A OLHAR A RÉGUA FÍSICA. A frase "nenhuma das réguas
+    # está a menos de 40 km daí" era medida contra pontos MUNICIPAIS: quem
+    # estivesse perto de uma régua e longe do centro da cidade dela ouvia que
+    # está fora da bacia. Agora vale a menor das duas distâncias, e a que aparece
+    # no texto é a que fundamenta a recusa.
+    distancias = [d for d in (perto[1] if perto else None,
+                              regua[1] if regua else None) if d is not None]
+    if not distancias or min(distancias) > LIMITE_LOCALIZACAO_KM:
         # "Não sei" é resposta. A régua de uma cidade a 40 km não diz nada sobre
         # o rio ao lado de quem perguntou, e oferecê-la seria pior que o silêncio.
-        onde = f" A mais próxima fica a {quilometros(perto[1])}." if perto else ""
+        onde = f" A mais próxima fica a {quilometros(min(distancias))}." if distancias else ""
         return [
             "📍 <b>Você está fora da área que este projeto cobre.</b>\n\n"
             f"Ele acompanha os rios Itajaí-Açu e Itajaí-Mirim, e nenhuma das réguas "
             f"está a menos de {LIMITE_LOCALIZACAO_KM:.0f} km daí.{onde}\n\n"
+            "Procure a Defesa Civil do seu município." + RODAPE_FORA_DA_BACIA
+        ]
+    if perto is None:
+        # Régua perto e nenhuma cidade com coordenada: sem cidade não há bloco de
+        # nível para montar, e inventar uma seria pior.
+        return [
+            "📍 <b>Não consigo dizer de que cidade é este ponto.</b>\n\n"
             "Procure a Defesa Civil do seu município." + RODAPE_FORA_DA_BACIA
         ]
     cidade, km = perto
@@ -1206,14 +1432,39 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
     # continua saindo da mesma coordenada errada (`cidade_mais_proxima`). Em
     # Ponta Aguda a margem para o bot responder GASPAR a um morador de Blumenau
     # é de 700 m. Isto tira a afirmação falsa da tela; não tira o risco.
-    if cidade.get("coordenadas_sao_da_regua") is False:
-        linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(cidade['nome'])}</b>."
+    #
+    # CORRIGIDO EM 19/09/2026, num pino real: o cabeçalho dizia "Régua mais
+    # próxima: Itajaí, a 3,7 km" e os 3,7 km eram até o PONTO MUNICIPAL. A régua
+    # mais perto daquele pino era a DC-06, a 813 m. Agora, quando a régua tem
+    # coordenada, é ELA que o cabeçalho nomeia, com a distância até ela; a régua
+    # nomeada é destacada na lista abaixo, para o número ao lado ser o dela.
+    #
+    # Quando não há coordenada de régua, a distância NÃO some — some a
+    # afirmação falsa. O texto passa a dizer que mede até o ponto de referência
+    # da cidade, e que a coordenada da régua o projeto não tem. Era esse o furo:
+    # "ausência de `coordenadas_sao_da_regua: false`" nunca foi prova de que o
+    # pino da cidade É a régua; hoje só Itajaí tem coordenada de régua no
+    # cadastro, e nas outras a distância era do centro de referência o tempo
+    # todo, anunciada como se fosse da régua.
+    destaque = None
+    if regua is not None and regua[0].get("cidade") == cidade["id"]:
+        est, km_regua = regua
+        destaque = (est["titulo"], km_regua)
+        linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(est['titulo'])}</b>, "
+                      f"em {e(cidade['nome'])}, a {quilometros(km_regua)} em linha reta.\n\n")
+    elif cidade.get("coordenadas_sao_da_regua") is False:
+        linhas.append(f"{cabeca}📍 Cidade mais próxima: <b>{e(cidade['nome'])}</b>."
                       "\n<i>A distância não sai: o projeto ainda não tem a coordenada "
                       "desta régua.</i>\n\n")
     else:
-        linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(cidade['nome'])}</b>, "
-                      f"a {quilometros(km)} em linha reta.\n\n")
-    linhas.extend(resposta_nivel(base, cidade, agora))
+        linhas.append(f"{cabeca}📍 Cidade mais próxima: <b>{e(cidade['nome'])}</b>, "
+                      f"a {quilometros(km)} em linha reta."
+                      "\n<i>Distância até o ponto de referência da cidade: o projeto "
+                      "ainda não tem a coordenada da régua.</i>\n\n")
+    linhas.extend(resposta_nivel(base, cidade, agora, destaque=destaque))
+    # Depois do nível, porque é a pergunta seguinte: "e isso é muito?". Antes do
+    # rodapé, porque o rodapé fecha a mensagem.
+    linhas.extend(linhas_das_cheias(base, cidade, agora))
     linhas.append(RODAPE)
     return linhas
 
