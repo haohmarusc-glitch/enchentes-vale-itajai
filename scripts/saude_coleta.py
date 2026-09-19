@@ -303,6 +303,24 @@ def avaliar(dados: dict | None, agora: datetime,
         except ValueError:
             problemas.append(f"coletado_em ilegível: {bruto!r}")
 
+    # A FONTE DE ITAJAÍ, que o coletor marca a cada rodada e o vigia nunca lia.
+    #
+    # ACHADO em 19/09/2026, por auditoria EXTERNA — e o que importa aqui não é o
+    # defeito, é por que precisou vir de fora. O portal de Itajaí mudou de
+    # endereço, as ONZE réguas municipais sumiram do arquivo, e o vigia ficou
+    # calado. Não por falta de trava: a de estações sumidas existe e pegou tudo
+    # nos primeiros dias — só que ela esquece em MEMORIA_DIAS, de propósito, para
+    # não ficar vermelha para sempre por estação aposentada. Combinada com este
+    # sinal nunca lido, uma queda PERMANENTE vira invisível justamente depois de
+    # durar demais: quanto mais grave, mais silenciosa.
+    #
+    # `fonte_itajai_ok` não envelhece — o coletor o reescreve a cada ciclo. Por
+    # isso ele entra aqui, e não na memória: enquanto a fonte estiver caída, o
+    # vigia fala. É a cidade da FOZ, com onze réguas e o painel de maré.
+    if dados.get("fonte_itajai_ok") is False:
+        problemas.append("a fonte de Itajaí não respondeu: as onze réguas municipais "
+                         "(DC-01 a DC-11) estão fora do arquivo")
+
     leituras = dados.get("leituras") or []
     if not leituras:
         problemas.append("a coleta rodou mas não trouxe nenhuma leitura")

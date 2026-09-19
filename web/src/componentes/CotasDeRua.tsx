@@ -15,6 +15,8 @@ import {
   faixaDaCidade,
   faltaPara,
   nomeCompleto,
+  pendentesAbaixoDoNivel,
+  podeAfirmarAlcance,
   proximas,
 } from '../logica/cotasRuas'
 import { metros } from '../logica/formato'
@@ -104,8 +106,16 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   const jaAlagam = atingidas(cotas, cidade.id, nivel)
   const seguintes = proximas(cotas, cidade.id, nivel, 4)
   const semCota = dela.filter((c) => c.cota_m === null)
-  // O denominador é só quem tem cota: rua sem número nunca entra no numerador.
-  const contaveis = dela.length - semCota.length
+  // Os pontos que o cadastro marca como não conferidos para aviso. Ficam FORA
+  // da contagem e de qualquer frase de alcance, e aparecem abaixo com a
+  // ressalva — sumir com eles em silêncio daria a mesma tela de uma cidade sem
+  // pendência nenhuma.
+  const pendentes = pendentesAbaixoDoNivel(cotas, cidade.id, nivel)
+  const bloqueados = dela.filter((c) => c.cota_m !== null && !podeAfirmarAlcance(c))
+  // O denominador é só quem tem cota E pode ser afirmado: nem rua sem número
+  // nem ponto bloqueado entram no numerador, então nenhum dos dois pode afundar
+  // a proporção por baixo.
+  const contaveis = dela.length - semCota.length - bloqueados.length
 
   const piso = faixa ? Math.max(0, Math.floor((faixa.min - 1) * 10) / 10) : 0
   const teto = faixa ? Math.ceil((faixa.max + 1) * 10) / 10 : 10
@@ -255,6 +265,30 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
             </li>
           ))}
         </ul>
+      ) : null}
+
+      {/* Fora da conta, mas na tela. O cadastro diz que estes números não estão
+          conferidos o bastante para mover aviso — em Rio do Sul são dois pontos
+          publicados ABAIXO do nível normal do rio, que com tempo bom já estariam
+          "alagados" pela aritmética e nunca deixariam de estar. */}
+      {pendentes.length > 0 ? (
+        <div className={estilos.semNumeroBloco}>
+          <p>
+            {pendentes.length === 1
+              ? 'Outro ponto tem cota abaixo deste nível'
+              : `Outros ${pendentes.length} pontos têm cota abaixo deste nível`}
+            , e <strong>não</strong> entram na conta acima: a fonte os publica com número
+            ainda não conferido, e por isso não dá para dizer que a água chegou neles.
+          </p>
+          <ul className={estilos.lista}>
+            {pendentes.map((c, i) => (
+              <li key={`p-${c.rua}-${c.ponto ?? i}`}>
+                <span className={estilos.nomeRua}>{nomeCompleto(c)}</span>
+                <span className={estilos.cota}>{metros(c.cota_m!)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : null}
 
       {seguintes.length > 0 ? (
