@@ -1141,8 +1141,13 @@ def cheias_perto_do_nivel(base: Base, cidade_id: str,
        um pico com referência **nula** é "ainda não conferido", não
        "provavelmente régua". Qualquer um dos dois ao lado do nível de agora
        seria régua diferente com cara de comparação. Isso cala **147 dos 215**
-       registros — 72 do IBGE em Blumenau, 98 sem referência em Brusque e Rio do
-       Sul — e calar é o certo enquanto a referência não for conferida.
+       registros: **72** no IBGE e **75 sem referência nenhuma**. (CORRIGIDO em
+       19/09/2026, por auditoria externa: eu tinha escrito "98 sem referência em
+       Brusque e Rio do Sul", e estava errado duas vezes. O número é 75 — o meu
+       nem fechava a conta, porque 72 + 98 dá 170, não 147. E a maioria dos sem
+       referência é de **Blumenau**, 41 de 75, a MESMA cidade dos 72 do IBGE;
+       Brusque tem 23, Rio do Sul 9, Taió e Timbó 1 cada. Blumenau tem 117
+       registros e **113 calados**, de duas causas diferentes ao mesmo tempo.)
     2. **Só cidade de UMA régua**, pela mesma `porque_sem_comparacao` do bloco de
        rua: com várias, o pico não diz de qual delas é. (Quem aplica é o
        `linhas_das_cheias`, antes de chamar aqui, porque é ele que tem o nome da
