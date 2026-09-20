@@ -477,6 +477,14 @@ o projeto.
 
 ## Pendências
 
+- **Chegada Blumenau → Itajaí e maré (19/09/2026):** a pesquisa recuperou o resumo
+  original da UNIVALI com atraso relatado de **19 h no evento de 2011**. A série
+  original e os pares de picos ainda faltam; não existe média histórica calibrada.
+  A tela `/itajai` oferece um **cenário experimental** com faixa de estudo JICA
+  ou intervalo hipotético e extremos da tábua, sem previsão de altura. Evidências,
+  limites e próximos dados necessários em [docs/PESQUISA-CHEGADA-MARE-2026-09-19.md](docs/PESQUISA-CHEGADA-MARE-2026-09-19.md).
+  Auditoria somente leitura: `python scripts/calibrar_chegada_itajai.py`.
+
 **Complemento da quinta auditoria, 19/09/2026** (`docs/AUDITORIA-2026-09-19-quatro-pendencias-complemento.md`): nova rodada pelo Chrome. Duas coisas mudam de fato.
 
 - [x] **🔴 Rio do Sul: a fonte dos picos é o Histórico de Cheias da DEFESA CIVIL MUNICIPAL — e o "Portal GCD" não é. FEITO na noite de 19/09/2026, por decisão do Jefferson depois de conferir a tabela linha a linha.** São **nove, não seis**, e os **níveis batem 9 de 9**; **três datas não batiam** (1911, out/2023, nov/2023 — ver abaixo). Aplicado: **(a)** o `fonte` dos nove passou a ser *Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'*, e o rótulo antigo ficou gravado em `fonte_rotulo_anterior` (campo novo, documentado em `_meta.campos`) — apagar seria esconder que o arquivo carregou um rótulo errado por vinte dias; **(b)** entraram **quatro** registros — `1983-05` 7,35 · `1983-07` **13,58** · `1983-09` 7,60 · `2013-09` 10,39 —, `media`, `referencia: null`, mês sem dia; **julho de 1983 é agora o maior pico de Rio do Sul**, acima dos 13,04 de nov/2023, como em Blumenau (15,34 m em 09/07/1983); **(c)** 1911 corrigido de maio para **outubro** (ver o item de 1911 nas pendências antigas); **(d)** out/2023 corrigido de 07 para **13/10**, e nov/2023 **ficou em 18/11** com a data da tabela (17/11) guardada em `data_na_fonte` — o porquê está no item de Concluído. Os **treze** ficaram com `referencia: null` **explícito** (os nove tinham o campo AUSENTE, que a tela lê como "régua local" e ninguém provou; a tabela não nomeia régua nenhuma, e o painel da Ponte Dom Tito Buss NÃO herda esses picos). Contagens: **219** registros, **79** sem referência, **151** calados no bloco de cheias do bot — teste atualizado. O validador ganhou um aviso honesto — `rio-do-sul 1983-09` não tem par em **Indaial**, cuja lista só traz as duas cheias grandes de 1983 (20/05 e 03/07); em Blumenau o par existe (24/09/1983). Ficou de fora, de propósito: o segundo pico de ago/1957 (9,65 m, mesmo mês) — a regra é um registro por (evento, cidade). ⚠️ Continua valendo: **não atribuir** esses picos à Ponte Dom Tito Buss.
