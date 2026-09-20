@@ -1,0 +1,141 @@
+{
+  "fonte": "Balsanelli (2014), Tabela 8, pagina 101; atribui dados a ANA (2011)",
+  "arquivo_fonte": "data/brutos/balsanelli-2014-completo.pdf",
+  "url": "https://biblioteca.univali.br/pergamumweb/download/5086AA4AABCF7886E06318C9010AF340.pdf",
+  "natureza": "transcricao_de_tabela_publicada_de_condicao_de_contorno",
+  "conferido_visualmente": true,
+  "fuso_declarado_na_tabela": null,
+  "referencia_vertical_confirmada": false,
+  "usar_para_calibracao": false,
+  "nota": "16 amostras espacadas em 10 e 14 horas; nao representam telemetria completa nem comprovam horario do pico instantaneo. Tres vazoes marcadas com asterisco sao estimadas por linha de tendencia exponencial (R2 0,9984). Horarios preservados como publicados, sem inventar fuso.",
+  "registros": [
+    {
+      "data": "2011-09-07",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 4.86,
+      "vazao_m3_s": 1161.2,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 0
+    },
+    {
+      "data": "2011-09-07",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 5.8,
+      "vazao_m3_s": 1488.0,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 10
+    },
+    {
+      "data": "2011-09-08",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 7.3,
+      "vazao_m3_s": 1977.5,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 24
+    },
+    {
+      "data": "2011-09-08",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 10.4,
+      "vazao_m3_s": 3430.0,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 34
+    },
+    {
+      "data": "2011-09-09",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 12.48,
+      "vazao_m3_s": 5140.6,
+      "vazao_marcada_como_estimada": true,
+      "horas_acumuladas": 48
+    },
+    {
+      "data": "2011-09-09",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 11.85,
+      "vazao_m3_s": 4569.0,
+      "vazao_marcada_como_estimada": true,
+      "horas_acumuladas": 58
+    },
+    {
+      "data": "2011-09-10",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 11.1,
+      "vazao_m3_s": 3970.8,
+      "vazao_marcada_como_estimada": true,
+      "horas_acumuladas": 72
+    },
+    {
+      "data": "2011-09-10",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 10.04,
+      "vazao_m3_s": 3230.0,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 82
+    },
+    {
+      "data": "2011-09-11",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 8.75,
+      "vazao_m3_s": 2566.0,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 96
+    },
+    {
+      "data": "2011-09-11",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 8.0,
+      "vazao_m3_s": 2218.0,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 106
+    },
+    {
+      "data": "2011-09-12",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 6.9,
+      "vazao_m3_s": 1835.5,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 120
+    },
+    {
+      "data": "2011-09-12",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 6.54,
+      "vazao_m3_s": 1714.5,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 130
+    },
+    {
+      "data": "2011-09-13",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 6.2,
+      "vazao_m3_s": 1608.0,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 144
+    },
+    {
+      "data": "2011-09-13",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 6.09,
+      "vazao_m3_s": 1574.45,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 154
+    },
+    {
+      "data": "2011-09-14",
+      "hora_publicada": "07:00:00",
+      "nivel_m": 5.33,
+      "vazao_m3_s": 1357.1,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 168
+    },
+    {
+      "data": "2011-09-14",
+      "hora_publicada": "17:00:00",
+      "nivel_m": 5.33,
+      "vazao_m3_s": 1357.1,
+      "vazao_marcada_como_estimada": false,
+      "horas_acumuladas": 178
+    }
+  ]
+}

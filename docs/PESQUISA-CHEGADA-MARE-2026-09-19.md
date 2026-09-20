@@ -2,6 +2,10 @@
 
 Consulta: 19/09/2026. Base do trabalho: `cdd4035` do repositório.
 
+> Atualização da varredura: o trabalho completo foi recuperado pelo catálogo
+> atual da UNIVALI. Veja [a nova pesquisa](VARREDURA-HISTORICOS-2026-09-19.md).
+> A calibração continua pendente; a tabela recuperada tem baixa resolução temporal.
+
 ## Resultado
 
 Encontrada uma evidência histórica nova para o projeto: **19 horas no evento de

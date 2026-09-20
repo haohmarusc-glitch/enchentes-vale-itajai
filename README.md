@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] **Varredura de chegada e mare (19/09):** recuperado no Chrome o trabalho completo de Balsanelli e transcritas 16 amostras de Blumenau. Sem novos pares aprovados; veja [fontes, limites e proximas aquisicoes](docs/VARREDURA-HISTORICOS-2026-09-19.md).
+
 - **Chegada Blumenau → Itajaí e maré (19/09/2026):** a pesquisa recuperou o resumo
   original da UNIVALI com atraso relatado de **19 h no evento de 2011**. A série
   original e os pares de picos ainda faltam; não existe média histórica calibrada.

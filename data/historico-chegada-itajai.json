@@ -28,7 +28,7 @@
       "arquivo_fonte": "data/brutos/balsanelli-2014-resumo.pdf",
       "sha256": "6fa91a0856cba401300adda12a12a7116cf61d10d4388841d8877559479e27f1",
       "url": "https://www.univali.br/Lists/TrabalhosGraduacao/Attachments/3791/Resumo%20TICT%20Roberto%20Balsanelli.pdf",
-      "nota": "O resumo distingue 19 h nos dados reais dos tempos simulados. Falta recuperar as séries e conferir horários, identificação das estações e tratamento da maré. A versão indexada do trabalho completo contém divergência de data; não corrigida por inferência."
+      "nota": "O resumo e a Tabela 6 do trabalho completo distinguem 19 h relatadas dos tempos simulados. PDF recuperado pelo catalogo atual. Tabela 8 tem somente 16 amostras de Blumenau, espacadas em 10 e 14 h; nao comprova horario do pico instantaneo. Para Itajai ha grafico, sem tabela numerica recuperada. Divergencia de data entre paginas 65 e 77 confirmada no original. Faltam series e metadados para pareamento."
     }
   ],
   "fontes_consultadas": [
@@ -39,8 +39,11 @@
     },
     {
       "rotulo": "Trabalho completo de Balsanelli (2014)",
-      "url": "https://biblioteca.univali.br/pergamumweb/vinculos/pdf/Roberto%20Balsanelli.pdf",
-      "resultado": "Texto indexado localizado; download direto retornou HTTP 404. Tabela 6 distingue 19 h da Defesa Civil de 23 h e 28 h simuladas. Há divergência de data entre o texto da comparação e a discussão anterior."
+      "url": "https://biblioteca.univali.br/pergamumweb/download/5086AA4AABCF7886E06318C9010AF340.pdf",
+      "resultado": "PDF completo recuperado com HTTP 200 pelo acervo 214799 no Chrome. 113 paginas; Tabela 8 transcrita e conferida, 16 amostras de Blumenau. Tabela 6 relata 19 h, mas datas divergem nas paginas 65/77. Nao constitui par de picos validado.",
+      "url_anterior": "https://biblioteca.univali.br/pergamumweb/vinculos/pdf/Roberto%20Balsanelli.pdf",
+      "arquivo": "data/brutos/balsanelli-2014-completo.pdf",
+      "sha256": "bec9e84fcf1e623996d8aba0b33b2f37d6cabdfe3bba9a74ddec2c5eb86c18f2"
     },
     {
       "rotulo": "Portal de monitoramento de Itajaí",
