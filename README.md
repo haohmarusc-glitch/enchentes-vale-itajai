@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] **Fonte da chuva equivalente:** a ficha das barragens identifica armazenamento e área do **JICA 2011, volume II**, distinguindo a equivalência das capacidades e áreas alternativas exibidas ao lado.
+
 - **Chegada Blumenau → Itajaí e maré (19/09/2026):** a pesquisa recuperou o resumo
   original da UNIVALI com atraso relatado de **19 h no evento de 2011**. A série
   original e os pares de picos ainda faltam; não existe média histórica calibrada.

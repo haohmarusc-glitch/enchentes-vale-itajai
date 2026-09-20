@@ -205,7 +205,9 @@ test('a chuva equivalente é dita como equivalência, não como limiar', () => {
   assert.ok(t?.includes('80'), t ?? '')
   assert.ok(t?.includes('equivalente'), t ?? '')
   // A atribuição e a ÉPOCA vão junto: a ficha é de 2011.
-  assert.ok(t?.includes('JICA 2011'), t ?? '')
+  assert.ok(t?.includes('JICA 2011, volume II'), t ?? '')
+  assert.ok(t?.includes('armazenamento equivalente'), t ?? '')
+  assert.ok(t?.includes('área considerada no JICA'), t ?? '')
   // E a negação é explícita. Tirar o "enche com" removeu a afirmação falsa;
   // "equivale a 80 mm de chuva" ainda se lê como limiar por quem passa o olho,
   // então a frase diz o que NÃO é — encaminhamento do auditor, 19/09/2026.
