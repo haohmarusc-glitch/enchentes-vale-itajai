@@ -1029,7 +1029,7 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-01 Rio Itajaí-Açu - CEPSUL",
       "cotas_divergencia": {
-        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_estado": "Histórico da conferência do PLANCON em 08/09/2026; nova divergência com o portal registrada em cotas_conferencia_2026_09_13.",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
         "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
         "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
@@ -1043,6 +1043,24 @@
           "alerta": 1.44,
           "emergencia": 1.75
         }
+      },
+      "cotas_conferencia_2026_09_13": {
+        "estado": "Divergência entre portal atual e PLANCON v17; data de alteração e motivo não publicados.",
+        "plano_v17": {
+          "atencao": 1.16,
+          "alerta": 1.36,
+          "emergencia": 1.56
+        },
+        "fonte_plano": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+        "portal": {
+          "atencao": 1.21,
+          "alerta": 1.61,
+          "emergencia": 1.75
+        },
+        "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+        "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
@@ -1260,7 +1278,7 @@
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
-        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_estado": "Histórico da conferência do PLANCON em 08/09/2026; nova divergência com o portal registrada em cotas_conferencia_2026_09_13.",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
         "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
         "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
@@ -1274,6 +1292,24 @@
           "alerta": 1.23,
           "emergencia": 1.6
         }
+      },
+      "cotas_conferencia_2026_09_13": {
+        "estado": "Divergência entre portal atual e PLANCON v17; data de alteração e motivo não publicados.",
+        "plano_v17": {
+          "atencao": 1.0,
+          "alerta": 1.35,
+          "emergencia": 1.65
+        },
+        "fonte_plano": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+        "portal": {
+          "atencao": 1.0,
+          "alerta": 1.4,
+          "emergencia": 1.5
+        },
+        "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+        "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
@@ -1299,7 +1335,7 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-08 Ribeirão da Canhanduba - Rio do Meio",
       "cotas_divergencia": {
-        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_estado": "Histórico da conferência do PLANCON em 08/09/2026; nova divergência com o portal registrada em cotas_conferencia_2026_09_13.",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
         "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
         "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
@@ -1313,6 +1349,24 @@
           "alerta": 2.8,
           "emergencia": 3.2
         }
+      },
+      "cotas_conferencia_2026_09_13": {
+        "estado": "Divergência entre portal atual e PLANCON v17; data de alteração e motivo não publicados.",
+        "plano_v17": {
+          "atencao": 1.8,
+          "alerta": 2.3,
+          "emergencia": 2.89
+        },
+        "fonte_plano": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+        "portal": {
+          "atencao": 1.7,
+          "alerta": 2.3,
+          "emergencia": 2.89
+        },
+        "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+        "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
@@ -1338,7 +1392,7 @@
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "nome_anterior": "DC-09 Ribeirão da Murta - Bairro Murta",
       "cotas_divergencia": {
-        "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
+        "_estado": "Histórico da conferência do PLANCON em 08/09/2026; nova divergência com o portal registrada em cotas_conferencia_2026_09_13.",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
         "_o_que_era_a_outra_leitura": "Outra EDIÇÃO do documento, não uma transcrição errada desta. E a diferença não é só de valores: naquela leitura a DC-09 é 'Ribeirão Ariribá — Clube Ariribá', enquanto na v17 é 'Ribeirão da Murta – Bairro Murta' — RIO DIFERENTE. Estações foram remanejadas entre edições, o que é mais grave que número trocado: significa que uma cota de uma edição antiga pode estar amarrada a outro curso d'água.",
         "_regra_que_fica": "Valor do PLANCON de Itajaí só entra com a VERSÃO do documento junto. Sem versão, não dá para saber a que estação o número pertencia.",
@@ -1352,6 +1406,24 @@
           "alerta": 1.23,
           "emergencia": 1.6
         }
+      },
+      "cotas_conferencia_2026_09_13": {
+        "estado": "Divergência entre portal atual e PLANCON v17; data de alteração e motivo não publicados.",
+        "plano_v17": {
+          "atencao": 1.12,
+          "alerta": 1.32,
+          "emergencia": 1.52
+        },
+        "fonte_plano": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+        "portal": {
+          "atencao": 1.22,
+          "alerta": 1.42,
+          "emergencia": 1.62
+        },
+        "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
+        "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
