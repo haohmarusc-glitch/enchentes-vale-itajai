@@ -257,7 +257,7 @@ export function chuvaEquivalenteEmTexto(b: { chuvaEquivalenteMm: number | null }
   // quem passa o olho. A redação abaixo segue a que ele sugeriu, encurtada para
   // caber na ficha.
   return (
-    `volume equivalente a ~${b.chuvaEquivalenteMm} mm de chuva sobre a bacia (JICA 2011)` +
+    `armazenamento equivalente a ~${b.chuvaEquivalenteMm} mm de chuva sobre a área considerada no JICA 2011, volume II` +
     ' — não é o tanto de chuva que a enche'
   )
 }
