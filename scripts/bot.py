@@ -134,6 +134,26 @@ INTERVALO_POR_CHAT_S = 2
 #: 568 dias entre registros.
 IDADE_VELHA_MIN = 180
 
+#: Blumenau tem limite PRÓPRIO, e menor: 120 min.
+#:
+#: Não é rigor extra — é a cadência da fonte. O AlertaBlu publica de hora em
+#: hora, então uma leitura de 2 h já é a segunda que deixou de chegar, enquanto
+#: nas fontes de 15 em 15 min as mesmas 2 h são oito perdidas e o mesmo limite
+#: de 3 h ainda faz sentido. O site já separava os dois (`MIN_VELHA_BLUMENAU`
+#: em `web/src/logica/tempoReal.ts`); o bot não, e ficava 1 h mais permissivo
+#: justamente na cidade de série mais longa da bacia.
+#:
+#: ⚠️ O próprio site não aplica isto em todo lugar: `camadaBlumenau.ts` e a cor
+#: do mapa usam `frescorDaCidade` (120), mas `compararCheias.ts` usa `frescor`
+#: (180). Aqui o bot fica com o limite MAIS ESTRITO nos dois usos, que é o lado
+#: seguro: o erro passa a ser calar cedo demais, não falar tarde demais.
+IDADE_VELHA_BLUMENAU_MIN = 120
+
+
+def limite_de_idade(cidade_id: str | None) -> int:
+    """Quantos minutos esta cidade aceita antes de a leitura parar de valer."""
+    return IDADE_VELHA_BLUMENAU_MIN if cidade_id == "blumenau" else IDADE_VELHA_MIN
+
 #: Até onde o bot aceita dizer "a régua mais próxima de você é X" (km, linha reta).
 #:
 #: 25 km, e o número sai da própria bacia: as 20 cidades do cadastro distam de
@@ -318,7 +338,7 @@ def leitura_velha(leitura: dict, agora: datetime) -> bool:
     `l.medidoEm` antes de comparar.
     """
     idade = idade_min(leitura.get("medido_em"), agora)
-    return idade is None or idade > IDADE_VELHA_MIN
+    return idade is None or idade > limite_de_idade(leitura.get("cidade"))
 
 
 def quando(d: datetime) -> str:

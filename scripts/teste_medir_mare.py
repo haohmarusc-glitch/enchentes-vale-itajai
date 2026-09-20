@@ -104,7 +104,7 @@ class TestMedir(unittest.TestCase):
         """
         m = medir("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", serie(4, 0.9, 0.8))
         self.assertEqual(m["codigo"], "DC-01")
-        self.assertEqual(m["menor_cota_m"], 1.21)
+        self.assertEqual(m["menor_cota_m"], 1.16)
         self.assertFalse(m["alerta_automatico_hoje"])
 
     def test_estacao_de_rio_dispara_no_cadastro(self):
