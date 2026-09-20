@@ -88,6 +88,10 @@ jobs:
         working-directory: web
         run: npm run auditoria
 
+      - name: Simulação de chegada e maré — celular e fusos
+        working-directory: web
+        run: node testes-navegador/simulacao-chegada.mjs
+
       # Todas as rotas (descobertas a partir do início) e todos os controles
       # do Monitor e das telas, no celular e no desktop, com a rede cortada.
       - name: Varredura — todas as rotas e controles

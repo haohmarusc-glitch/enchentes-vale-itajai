@@ -1,5 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
 import AvisoLegal from '../componentes/AvisoLegal'
+import SimulacaoChegada from '../componentes/SimulacaoChegada'
 
 /**
  * O mapa carrega à parte, como o gráfico de picos.
@@ -18,10 +19,9 @@ import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import estilos from './TelaItajai.module.css'
 
 /**
- * Itajaí recebe os dois rios. O que a tela faz é somar o tempo que a cheia leva
- * para descer ao horário do pico informado rio acima — nada mais. Não há previsão de altura
- * aqui: não existem pares históricos suficientes entre as cidades de montante e
- * Itajaí, e a maré, que muda tudo na foz, ainda não está integrada.
+ * Medições por régua e cenário condicional Blumenau → Itajaí, cruzado com
+ * extremos astronômicos. A calibração histórica permanece pendente; o painel
+ * não prevê altura de inundação nem transforma a leitura atual em horário de pico.
  */
 export default function TelaItajai() {
   const [mapaAberto, setMapaAberto] = useState(false)
@@ -43,6 +43,8 @@ export default function TelaItajai() {
       </p>
 
       <AvisoLegal />
+
+      <SimulacaoChegada />
 
       <section className="cartao">
         <h2>Por que a maré pesa tanto aqui</h2>

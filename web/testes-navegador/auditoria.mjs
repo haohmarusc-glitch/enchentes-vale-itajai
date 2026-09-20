@@ -21,12 +21,18 @@ await context.route('**/*',route=>{
  if(url.endsWith('/ultimo.json')) return route.fulfill({json:{coletado_em:agora.toISOString(),leituras:[{cidade:'blumenau',rio:'itajai-acu',estacao:'Blumenau (AlertaBlu)',resgate_de:'Blumenau',nivel_m:6.1,medido_em:local}],chuva:[],chuva_ok:true}})
  return route.abort()
 })
-async function abrir(rota){await page.goto(base+'/#'+rota);await page.locator('main').waitFor()}
+async function abrir(rota){
+ await page.goto(base+'/#'+rota)
+ try { await page.locator('main').waitFor() }
+ catch (erro) { console.error('Falha ao abrir',rota,'Erros de página:',erros,'Corpo:',await page.locator('body').innerText()); throw erro }
+}
 try {
  await abrir('/itajai')
  await page.getByRole('heading',{name:'Itajaí — foz',exact:true}).waitFor()
  assert.equal(await page.getByText('Abrigo cadastrado mais próximo',{exact:true}).count(),0)
- assert.equal(await page.locator('input[type="datetime-local"]').count(),0)
+ // O cenário autorizado voltou como entrada explícita, sem preencher um pico automaticamente.
+ assert.equal(await page.locator('input[type="datetime-local"]').count(),1)
+ assert.equal(await page.getByLabel('Data e hora do pico em Blumenau — Brasília').inputValue(),'')
  await page.getByRole('link',{name:'Pular para o conteúdo'}).focus()
  await page.keyboard.press('Enter')
  assert.ok(page.url().endsWith('#/itajai'))
