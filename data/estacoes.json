@@ -1017,13 +1017,13 @@
       "rio": "itajai-acu",
       "cidade": "itajai",
       "cotas_m": {
-        "atencao": 1.21,
-        "alerta": 1.61,
-        "emergencia": 1.75
+        "atencao": 1.16,
+        "alerta": 1.36,
+        "emergencia": 1.56
       },
       "verificado": true,
       "referencia": "régua",
-      "fonte_cotas": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios — gráfico chart-2-tel; conferido em 13/09/2026. Divergência com PLANCON v17 preservada em cotas_conferencia_2026_09_13.",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Açu - CEPSUL",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
@@ -1059,7 +1059,8 @@
         },
         "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
         "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
-        "criterio": "Exibir os limiares publicados no gráfico da própria estação, sem afirmar revisão formal do PLANCON. Avisos automáticos permanecem bloqueados."
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
@@ -1267,12 +1268,12 @@
       "cidade": "itajai",
       "cotas_m": {
         "atencao": 1.0,
-        "alerta": 1.4,
-        "emergencia": 1.5
+        "alerta": 1.35,
+        "emergencia": 1.65
       },
       "verificado": true,
       "referencia": "régua",
-      "fonte_cotas": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios — gráfico chart-8-tel; conferido em 13/09/2026. Divergência com PLANCON v17 preservada em cotas_conferencia_2026_09_13.",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Murta - Portal I",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
@@ -1307,7 +1308,8 @@
         },
         "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
         "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
-        "criterio": "Exibir os limiares publicados no gráfico da própria estação, sem afirmar revisão formal do PLANCON. Avisos automáticos permanecem bloqueados."
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
@@ -1321,13 +1323,13 @@
       "rio": "ribeirao-canhanduba",
       "cidade": "itajai",
       "cotas_m": {
-        "atencao": 1.7,
+        "atencao": 1.8,
         "alerta": 2.3,
         "emergencia": 2.89
       },
       "verificado": true,
       "referencia": "régua",
-      "fonte_cotas": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios — gráfico chart-9-tel; conferido em 13/09/2026. Divergência com PLANCON v17 preservada em cotas_conferencia_2026_09_13.",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Canhanduba - Rio do Meio",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
@@ -1363,7 +1365,8 @@
         },
         "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
         "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
-        "criterio": "Exibir os limiares publicados no gráfico da própria estação, sem afirmar revisão formal do PLANCON. Avisos automáticos permanecem bloqueados."
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {
@@ -1377,13 +1380,13 @@
       "rio": "ribeirao-murta",
       "cidade": "itajai",
       "cotas_m": {
-        "atencao": 1.22,
-        "alerta": 1.42,
-        "emergencia": 1.62
+        "atencao": 1.12,
+        "alerta": 1.32,
+        "emergencia": 1.52
       },
       "verificado": true,
       "referencia": "régua",
-      "fonte_cotas": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios — gráfico chart-10-tel; conferido em 13/09/2026. Divergência com PLANCON v17 preservada em cotas_conferencia_2026_09_13.",
+      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Murta - Bairro Murta",
       "alerta_automatico": false,
       "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
@@ -1419,7 +1422,8 @@
         },
         "fonte_portal": "https://defesacivil.itajai.sc.gov.br/monitoramento/nivel-rios",
         "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
-        "criterio": "Exibir os limiares publicados no gráfico da própria estação, sem afirmar revisão formal do PLANCON. Avisos automáticos permanecem bloqueados."
+        "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
+        "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
       }
     },
     {

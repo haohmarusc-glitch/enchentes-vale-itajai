@@ -2014,4 +2014,4 @@ Auditoria de 13/09/2026: comparadores e monitor usam um vocabulário compartilha
 
 O panorama de `alerta_cotas.py --seco` conta apenas leituras com horário válido e dentro da janela de atualização, usando a mesma seleção do disparador. Fontes antigas aparecem como aviso bloqueado, sem impedir a avaliação das demais réguas.
 
-Cotas de Itajaí reconferidas no portal em 13/09/2026: DC-01, DC-07, DC-08 e DC-09 atualizadas para exibição, mantendo as divergências com o PLANCON e o bloqueio de avisos automáticos. Ver `docs/cotas-itajai-portal-2026-09-13.md`.
+Correção da PR #327: DC-01, DC-07, DC-08 e DC-09 voltam às cotas adotadas do PLANCON v17, conforme a auditoria de 19/09/2026. Os valores capturados no portal em 13/09 ficam como divergência documental; avisos automáticos continuam bloqueados. Ver `docs/cotas-itajai-portal-2026-09-13.md`.
