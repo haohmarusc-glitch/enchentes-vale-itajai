@@ -2013,3 +2013,5 @@ permanecem parados. Esta regra substitui o limite anterior em Ilhota.
 Auditoria de 13/09/2026: comparadores e monitor usam um vocabulário compartilhado de cotas operacionais, sem marcas históricas ou administrativas. As faixas de Ibirama ficam pendentes de vínculo com a régua; Apiúna está cadastrada sem fonte ao vivo ativada. Detalhes em `docs/auditoria-cotas-operacionais-2026-09-13.md`.
 
 O panorama de `alerta_cotas.py --seco` conta apenas leituras com horário válido e dentro da janela de atualização, usando a mesma seleção do disparador. Fontes antigas aparecem como aviso bloqueado, sem impedir a avaliação das demais réguas.
+
+Cotas de Itajaí reconferidas no portal em 13/09/2026: DC-01, DC-07, DC-08 e DC-09 atualizadas para exibição, mantendo as divergências com o PLANCON e o bloqueio de avisos automáticos. Ver `docs/cotas-itajai-portal-2026-09-13.md`.
