@@ -1,0 +1,56 @@
+{
+  "consultado_em": "2026-09-19",
+  "trecho": "Blumenau → Itajaí (Itajaí-Açu)",
+  "estado": "calibracao_pendente",
+  "min_eventos": 5,
+  "nota": "Nenhum par de picos com horários e estações conferidos está disponível nesta base. O caso de 2011 é evidência histórica publicada, mas não constitui média nem validação para uma cheia futura.",
+  "referencia_estudo": {
+    "horas_min": 14,
+    "horas_max": 17,
+    "rotulo": "JICA (2011), seção 3.5.4 — resumo de hidrogramas de projeto",
+    "url": "https://openjicareport.jica.go.jp/pdf/12043659_02.pdf",
+    "nota": "Faixa de um estudo, não intervalo de confiança, limites universais ou média de cheias observadas. Não foi recalibrada com o caso de 2011."
+  },
+  "eventos": [
+    {
+      "id": "2011-09-balsanelli",
+      "evento": "Setembro de 2011",
+      "natureza": "observacao_relatada_em_estudo",
+      "status": "pendente",
+      "atraso_relatado_h": 19,
+      "estacao_montante": "Blumenau, seção 30 do estudo; identificação operacional a confirmar",
+      "estacao_jusante": "TEPORTI/DC02 histórica, seção 01 do estudo; não equivale automaticamente à DC02 atual",
+      "pico_montante": null,
+      "pico_jusante": null,
+      "serie_original_conferida": false,
+      "efeito_mare_conferido": false,
+      "fonte": "Balsanelli, Roberto. UNIVALI, 2014. Resumo do trabalho de graduação, página única.",
+      "arquivo_fonte": "data/brutos/balsanelli-2014-resumo.pdf",
+      "sha256": "6fa91a0856cba401300adda12a12a7116cf61d10d4388841d8877559479e27f1",
+      "url": "https://www.univali.br/Lists/TrabalhosGraduacao/Attachments/3791/Resumo%20TICT%20Roberto%20Balsanelli.pdf",
+      "nota": "O resumo distingue 19 h nos dados reais dos tempos simulados. Falta recuperar as séries e conferir horários, identificação das estações e tratamento da maré. A versão indexada do trabalho completo contém divergência de data; não corrigida por inferência."
+    }
+  ],
+  "fontes_consultadas": [
+    {
+      "rotulo": "Resumo original da UNIVALI — Balsanelli (2014)",
+      "url": "https://www.univali.br/Lists/TrabalhosGraduacao/Attachments/3791/Resumo%20TICT%20Roberto%20Balsanelli.pdf",
+      "resultado": "PDF recuperado: um evento real com atraso relatado de 19 h. Não contém a série numérica nem os horários necessários ao pareamento."
+    },
+    {
+      "rotulo": "Trabalho completo de Balsanelli (2014)",
+      "url": "https://biblioteca.univali.br/pergamumweb/vinculos/pdf/Roberto%20Balsanelli.pdf",
+      "resultado": "Texto indexado localizado; download direto retornou HTTP 404. Tabela 6 distingue 19 h da Defesa Civil de 23 h e 28 h simuladas. Há divergência de data entre o texto da comparação e a discussão anterior."
+    },
+    {
+      "rotulo": "Portal de monitoramento de Itajaí",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
+      "resultado": "Resposta HTML pública com 11 estações DC e serie_12_h. Consulta histórica por período não localizada nessa tela nem no código público consultado. Isso não prova inexistência de acervo interno."
+    },
+    {
+      "rotulo": "Lemfers e Pacheco Tena — evento de 2011 no Itajaí-Mirim",
+      "url": "https://files.abrhidro.org.br/Eventos/Trabalhos/60/PAP022601.pdf",
+      "resultado": "PDF recuperado: relata uso de séries da Defesa Civil/ANA e filtragem de maré. Mesmo evento de 2011; não conta como segunda cheia independente."
+    }
+  ]
+}

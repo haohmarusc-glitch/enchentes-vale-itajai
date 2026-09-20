@@ -1,0 +1,21 @@
+.painel { margin-block: 1rem; }
+.etiqueta { color: #655219; font-size: .85rem; font-weight: 700; margin-bottom: .35rem; }
+.aviso { background: #fff8e5; border-left: 4px solid #ae822c; padding: .8rem 1rem; }
+.campo { display: grid; gap: .4rem; margin-top: 1rem; font-weight: 600; }
+.campo input, .campo select { font: inherit; font-weight: 400; padding: .65rem; border: 1px solid var(--borda); border-radius: 6px; background: white; color: var(--tinta); min-width: 0; width: 100%; box-sizing: border-box; min-height: 44px; }
+.intervalo { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+.intervalo p { grid-column: 1 / -1; }
+.detalhe { font-size: .86rem; color: var(--tinta-fraca); line-height: 1.6; }
+.botao { font: inherit; font-weight: 700; color: white; background: #17577b; border: 0; border-radius: 6px; padding: .8rem 1rem; min-height: 44px; cursor: pointer; margin-block: .5rem; }
+.botao:hover { background: #103d57; }
+.campo input:focus-visible, .campo select:focus-visible, .botao:focus-visible, .pesquisa summary:focus-visible { outline: 3px solid #2180b3; outline-offset: 3px; }
+.resultado { margin-top: 1rem; padding: 1rem; border: 1px solid #bfd8e6; border-radius: 8px; background: #f3f9fc; }
+.janela { font-size: 1.12rem; font-weight: 700; }
+.tabela { overflow-x: auto; }
+.tabela table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.tabela caption { text-align: left; margin-bottom: .6rem; }
+.tabela td, .tabela th { text-align: left; padding: .65rem .4rem; border-bottom: 1px solid #cddde6; vertical-align: top; }
+.pesquisa { margin-top: 1rem; }
+.pesquisa summary { cursor: pointer; font-weight: 600; padding-block: .6rem; }
+.pesquisa li { margin-bottom: .8rem; }
+@media (max-width: 420px) { .intervalo { grid-template-columns: 1fr; } .resultado { padding: .7rem; } }
