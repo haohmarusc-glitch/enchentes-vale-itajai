@@ -19,14 +19,17 @@ import sys
 import unittest.mock
 from pathlib import Path
 
+import bot
 import notificador
 from bot import (IDADE_MAXIMA_PREVISAO_MIN, LIMITE_COTA_RUA_M, LIMITE_LOCALIZACAO_KM, MAX_RUAS,
                  REPETE_AVISO, TIMEOUTS_TOLERADOS, Base, aviso_de_falha, distancia_km,
-                 cheias_perto_do_nivel, data_da_cheia, eh_timeout, faixa_da_regua,
-                 linhas_das_cheias, nome_curto, responder, resposta_localizacao,
-                 quilometros, resposta_nivel, resposta_rua, saida_para, sem_acento,
-                 texto_idade)
+                 cheias_perto_do_nivel, data_da_cheia, eh_timeout, faixa_da_leitura,
+                 faixa_da_regua, linhas_das_cheias, nome_curto, responder,
+                 resposta_localizacao, quilometros, resposta_nivel, resposta_rua,
+                 saida_para, sem_acento, texto_idade)
 from comum import estacao_por_titulo, estacoes_tempo_real, le_json
+
+RAIZ = Path(__file__).resolve().parent.parent
 
 #: As duas réguas de Itajaí cujo par cota↔leitura foi provado (19/09/2026).
 DC06 = "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo"
@@ -1790,7 +1793,8 @@ class TestFaixaPorRegua(unittest.TestCase):
         self.assertIs(e["alerta_automatico"], False)
         with unittest.mock.patch("bot.estacao_por_titulo", return_value=e):
             self.assertIsNone(faixa_da_regua(
-                {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "nivel_m": 1.40}))
+                {"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "nivel_m": 1.40},
+                AGORA))
 
     def test_a_faixa_da_cidade_continua_vencendo(self):
         """Nas cinco cidades que já passavam, a mensagem não muda uma vírgula:
@@ -1803,7 +1807,9 @@ class TestFaixaPorRegua(unittest.TestCase):
         saida = "".join(resposta_nivel(b, cidade, AGORA))
         self.assertIn("Alerta Máximo", saida)
         # E a estação de Blumenau NÃO tem o campo: a faixa veio da cidade.
-        self.assertIsNone(faixa_da_regua({"estacao": "Blumenau", "nivel_m": 8.40}))
+        # `None`, não a sentinela de idade: a trava do `cotas_verificado` recusa
+        # antes, e é essa a ordem — quem nunca teve faixa não a "perde por idade".
+        self.assertIsNone(faixa_da_regua({"estacao": "Blumenau", "nivel_m": 8.40}, AGORA))
 
     def test_o_pino_de_itajai_carrega_a_faixa(self):
         """Fecha o caminho inteiro: pino -> camada da cidade -> faixa da régua.
@@ -2221,6 +2227,106 @@ class TestContagemDasReferencias(unittest.TestCase):
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
         self.assertEqual(len(blu), 117)
         self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 113)
+
+
+class TestLeituraVelhaNaoFalaNoPresente(unittest.TestCase):
+    """O pino de Indaial de 19/09/2026, e o que ele mostrou.
+
+    A leitura tinha **6,9 dias** e o pino afirmava, no presente, duas coisas:
+
+        🟠 Acima da cota de Alerta (4,00 m)
+        8,70 m — 23/09/1880 (4,60 m acima do nível de agora)
+
+    As duas dizem onde o rio está AGORA a partir de um número de quase uma
+    semana. Se ele subiu desde a medição, a segunda promete 4,60 m de folga que
+    ninguém mediu — e prometer folga inexistente é o erro que este projeto
+    existe para não cometer.
+
+    O bot já sabia a regra: a /previsao recusa a conta com leitura velha, e
+    escreve que "o 'agora' é falso". O site também: `compararCheias.ts` descarta
+    leitura `velha` e `reguasNoMapa.ts` tira a cor. Faltava aqui.
+    """
+
+    INDAIAL = "Indaial — fundos da Celesc (Defesa Civil)"
+
+    def base_indaial(self, minutos_atras: float):
+        medido = (AGORA - timedelta(minutes=minutos_atras)).astimezone(
+            bot.FUSO).replace(tzinfo=None).isoformat(timespec="seconds")
+        leituras = [{"estacao": self.INDAIAL, "rio": "itajai-acu", "cidade": "indaial",
+                     "nivel_m": 4.10, "medido_em": medido}]
+        b = Base({"leituras": leituras}, le_json("estacoes.json"),
+                 le_json("transito.json"), le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == "indaial"][0]
+        return b, cidade
+
+    def pino(self, minutos_atras: float) -> str:
+        b, cidade = self.base_indaial(minutos_atras)
+        return "".join(resposta_nivel(b, cidade, AGORA)
+                       + linhas_das_cheias(b, cidade, AGORA))
+
+    def test_com_leitura_fresca_nada_muda(self):
+        """A trava não pode custar a resposta boa: com leitura de 30 min, o pino
+        segue dizendo a faixa e comparando com as cheias."""
+        saida = self.pino(30)
+        self.assertIn("Acima da cota de <b>Alerta</b>", saida)
+        self.assertIn("acima do nível de agora", saida)
+        self.assertIn("8,70 m", saida)
+
+    def test_com_leitura_de_69_dias_a_faixa_sai_e_o_motivo_entra(self):
+        saida = self.pino(6.9 * 24 * 60)
+        self.assertNotIn("Acima da cota de", saida)
+        self.assertIn("velha demais para dizer em que cota o rio está", saida)
+        # A idade continua na tela, que é de onde a pessoa julga o número.
+        self.assertIn("há 6,9 dias", saida)
+
+    def test_com_leitura_de_69_dias_as_cheias_nao_viram_comparacao(self):
+        saida = self.pino(6.9 * 24 * 60)
+        self.assertNotIn("acima do nível de agora", saida)
+        self.assertNotIn("Cheias já registradas nesta régua", saida)
+        self.assertIn("velha demais para dizer onde o rio está agora", saida)
+
+    def test_o_limiar_e_o_mesmo_do_site_e_o_mesmo_da_previsao(self):
+        """Um número só. O bot já o aplicava na /previsao e não aqui."""
+        self.assertEqual(bot.IDADE_VELHA_MIN, 180)
+        self.assertEqual(bot.IDADE_MAXIMA_PREVISAO_MIN, bot.IDADE_VELHA_MIN)
+        site = (RAIZ / "web" / "src" / "logica" / "tempoReal.ts").read_text(encoding="utf-8")
+        self.assertIn("export const MIN_VELHA = 180", site)
+
+    def test_a_virada_e_nos_180_minutos(self):
+        self.assertIn("Acima da cota de <b>Alerta</b>", self.pino(180))
+        self.assertNotIn("Acima da cota de", self.pino(181))
+
+    def test_sem_carimbo_de_hora_tambem_e_velha(self):
+        """"Não sei quando isto foi medido" não pode virar "é o nível de agora"."""
+        self.assertTrue(bot.leitura_velha({"nivel_m": 4.10}, AGORA))
+        self.assertTrue(bot.leitura_velha({"nivel_m": 4.10, "medido_em": "coisa"}, AGORA))
+        self.assertFalse(bot.leitura_velha(
+            {"nivel_m": 4.10, "medido_em": "2026-08-30T18:20:00"}, AGORA))
+
+    def test_quem_nunca_teve_faixa_nao_a_perde_por_idade(self):
+        """A ordem das travas, e é o ponto mais fácil de errar. Rio do Sul não
+        tem `cotas_verificado` — cota da Ponte Dom Tito Buss, leitura da Estação
+        MKS. Com leitura velha ela devolve `None`, como sempre devolveu, e NÃO a
+        sentinela: anunciar que perdeu a faixa por idade mandaria quem lê
+        procurar um problema que não é o dela."""
+        velha = {"estacao": "Rio do Sul Estação MKS", "rio": "itajai-acu",
+                 "cidade": "rio-do-sul", "nivel_m": 3.52,
+                 "medido_em": "2026-08-20T18:20:00"}
+        b = Base({"leituras": [velha]}, le_json("estacoes.json"),
+                 le_json("transito.json"), le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == "rio-do-sul"][0]
+        self.assertIsNone(faixa_da_leitura(cidade, [velha], AGORA))
+        self.assertNotIn("velha demais para dizer em que cota",
+                         "".join(resposta_nivel(b, cidade, AGORA)))
+
+    def test_a_rua_cala_pelo_mesmo_motivo_e_com_a_mesma_frase(self):
+        """Os dois blocos saem de `porque_sem_comparacao` justamente para não
+        voltarem a divergir."""
+        b, cidade = self.base_indaial(6.9 * 24 * 60)
+        motivo = bot.porque_sem_comparacao(b, "indaial", AGORA)
+        self.assertIsNotNone(motivo)
+        self.assertIn("velha demais para dizer onde o rio está agora", motivo)
+        self.assertIn("há 6,9 dias", motivo)
 
 
 class TestDivergenciaDeBrusque(unittest.TestCase):

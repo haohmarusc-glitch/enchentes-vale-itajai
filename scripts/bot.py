@@ -104,13 +104,36 @@ REPETE_AVISO = 20
 #: pergunta ao mesmo tempo — que é justamente a hora da cheia.
 INTERVALO_POR_CHAT_S = 2
 
-#: Idade máxima da leitura para /previsao responder com horário.
+#: A partir de quantos minutos a leitura deixa de poder falar no PRESENTE.
 #:
-#: A conta é "se o pico fosse AGORA": ela usa o instante da medição como
-#: partida. Com leitura velha, "agora" é mentira e os horários saem no passado —
-#: com uma de 30 h, o bot anunciava chegada em Apiúna para o dia anterior, com
-#: cara de previsão. Três horas é o mesmo limite que o site usa para marcar
-#: leitura como velha (MIN_VELHA).
+#: Três horas, o mesmo `MIN_VELHA` de `web/src/logica/tempoReal.ts`. O número
+#: não é o ponto; o ponto é ser UM só, porque o bot já o aplicava num lugar e
+#: não nos outros.
+#:
+#: Onde ele já valia: a /previsao. A conta é "se o pico fosse AGORA", e com
+#: leitura velha o "agora" é mentira — com uma de 30 h o bot anunciava chegada
+#: em Apiúna para o dia anterior, com cara de previsão. Ali ele recusa a conta e
+#: escreve o motivo.
+#:
+#: ONDE ELE FALTAVA, e é o conserto de 19/09/2026, achado num pino real de
+#: Indaial. A leitura tinha 6,9 DIAS e o pino dizia, no presente, duas coisas:
+#:
+#:     🟠 Acima da cota de Alerta (4,00 m)
+#:     8,70 m — 23/09/1880 (4,60 m acima do nível de agora)
+#:
+#: As duas afirmam onde o rio está AGORA a partir de um número de quase uma
+#: semana. Se ele subiu desde então, a segunda promete 4,60 m de folga que
+#: ninguém mediu — e folga que não existe é o erro que este projeto não pode
+#: cometer. O site já recusava as duas: `compararCheias.ts` descarta leitura
+#: `velha`, e `reguasNoMapa.ts` tira a cor com `motivoSemCor: 'leitura velha
+#: demais para dizer a faixa'`. Quem discordava era o bot, que é o que chega no
+#: celular durante a chuva.
+#:
+#: Em Indaial isso é o normal, não a exceção: a régua dos fundos da Celesc é
+#: `FONTES_MANUAIS`, um documento preenchido à mão durante os eventos, com até
+#: 568 dias entre registros.
+IDADE_VELHA_MIN = 180
+
 #: Até onde o bot aceita dizer "a régua mais próxima de você é X" (km, linha reta).
 #:
 #: 25 km, e o número sai da própria bacia: as 20 cidades do cadastro distam de
@@ -141,7 +164,9 @@ LIMITE_COTA_RUA_M = 300
 #: outra cidade, e a frase viraria ruído em vez de informação.
 LIMITE_AVISO_COTA_M = 2000
 
-IDADE_MAXIMA_PREVISAO_MIN = 180
+#: A /previsao usa o mesmo limite, pelo mesmo motivo. O nome fica porque o
+#: texto de recusa dela é próprio ("os horários sairiam no passado").
+IDADE_MAXIMA_PREVISAO_MIN = IDADE_VELHA_MIN
 
 #: A partir de quantos minutos de diferença entre o pluviômetro mais velho e o
 #: mais novo vale dizer as duas idades. Abaixo disso, a do mais velho já conta a
@@ -270,6 +295,30 @@ def idade_min(medido_em: str | None, agora: datetime) -> float | None:
     if q.tzinfo is None:
         q = q.replace(tzinfo=FUSO)
     return (agora - q).total_seconds() / 60
+
+
+#: Devolvido pelas funções de faixa quando a cidade TEM escada de cotas e a
+#: leitura é velha demais para dizer em que degrau o rio está.
+#:
+#: É sentinela e não `None` de propósito: as duas situações levam a telas
+#: diferentes. "Não há escada" (Rio do Sul, cujo par cota↔leitura ninguém
+#: provou) é silêncio, e está certo — nunca houve faixa ali. "Há escada, mas a
+#: leitura não serve" é uma ausência que precisa ser DITA, senão some sem
+#: explicação e quem lê acha que é esquecimento. Devolver `None` para as duas
+#: apagaria justamente a diferença que este conserto existe para mostrar.
+SEM_FAIXA_POR_IDADE = "sem faixa por idade"
+
+
+def leitura_velha(leitura: dict, agora: datetime) -> bool:
+    """A leitura é velha demais para falar no presente?
+
+    Sem horário de medição TAMBÉM é velha. Não é rigor: é que sem carimbo não
+    há como afirmar que o número é de agora, e "não sei quando isto foi medido"
+    não pode virar "é o nível de agora". Mesma regra do site, que exige
+    `l.medidoEm` antes de comparar.
+    """
+    idade = idade_min(leitura.get("medido_em"), agora)
+    return idade is None or idade > IDADE_VELHA_MIN
 
 
 def quando(d: datetime) -> str:
@@ -668,7 +717,8 @@ ICONE_FAIXA = {"monitoramento": "🟡", "atencao": "🟡", "alerta": "🟠",
                "emergencia": "🔴", "inundacao": "🔴"}
 
 
-def faixa_da_leitura(cidade: dict, leituras: list[dict]) -> tuple[str, str, float] | None:
+def faixa_da_leitura(cidade: dict, leituras: list[dict],
+                     agora: datetime) -> tuple[str, str, float] | str | None:
     """(faixa, rótulo, cota) do nível ao vivo desta cidade, ou None.
 
     ACHADO em 18/09/2026, testando o pino de Blumenau: com o rio em 8,40 m — 40
@@ -698,6 +748,16 @@ def faixa_da_leitura(cidade: dict, leituras: list[dict]) -> tuple[str, str, floa
        mesma trava, pelo mesmo motivo.
     4. **Cotas existindo.** Sem escada não há degrau para ler.
 
+    5. **Idade da leitura** — a quinta, de 19/09/2026. As quatro de cima
+       perguntam se a ESCADA é confiável; esta pergunta se o NÚMERO ainda é do
+       rio de agora. Sem ela o pino de Indaial pintou 🟠 "Acima da cota de
+       Alerta" sobre uma leitura de 6,9 DIAS. Ver `IDADE_VELHA_MIN`.
+
+       Ela vem por ÚLTIMO, e a ordem importa: cidade sem escada devolve `None`
+       como sempre devolveu, e só quem teria faixa cai na sentinela. Testar a
+       idade antes faria Rio do Sul, que nunca teve faixa, anunciar que a
+       perdeu por idade — e apontar para um problema que não é o dela.
+
     `inundacao_historica` não entra: `faixa_de` só percorre `FAIXAS`, e marca
     histórica é registro do passado, não faixa de operação.
     """
@@ -712,6 +772,8 @@ def faixa_da_leitura(cidade: dict, leituras: list[dict]) -> tuple[str, str, floa
              if isinstance(v, (int, float)) and not isinstance(v, bool)}
     if not cotas:
         return None
+    if leitura_velha(leituras[0], agora):
+        return SEM_FAIXA_POR_IDADE
     nomes = cidade.get("cotas_nomes_na_fonte")
     faixa = faixa_de(float(nivel), cotas)
     if faixa == "normal":
@@ -724,7 +786,7 @@ def faixa_da_leitura(cidade: dict, leituras: list[dict]) -> tuple[str, str, floa
     return (faixa, rotulo_cota(faixa, nomes), cotas[faixa])
 
 
-def faixa_da_regua(leitura: dict) -> tuple[str, str, float] | None:
+def faixa_da_regua(leitura: dict, agora: datetime) -> tuple[str, str, float] | str | None:
     """(faixa, rótulo, cota) desta RÉGUA contra a cota DELA MESMA, ou None.
 
     ACHADO em 19/09/2026, no teste de campo do pino em Itajaí, logo depois de o
@@ -761,6 +823,11 @@ def faixa_da_regua(leitura: dict) -> tuple[str, str, float] | None:
        em "abaixo da primeira cota" — a frase mais perigosa que este bot escreve.
     4. **Cotas existindo.** Sem escada não há degrau para ler.
 
+    5. **Idade da leitura**, de 19/09/2026 — a mesma quinta trava de
+       `faixa_da_leitura`, pelo mesmo motivo e na mesma posição (por último, só
+       para quem teria faixa). Uma DC com cota provada e carimbo de ontem não
+       pode dizer em que degrau o rio está hoje.
+
     O QUE ISTO NÃO FAZ: não dá faixa à CIDADE de Itajaí, não muda o caminho do
     AVISO (quem dispara notificação é `alerta_cotas`, pelo `alerta_automatico`,
     e nada aqui toca nisso) e não afrouxa nada nas nove de estuário.
@@ -779,6 +846,8 @@ def faixa_da_regua(leitura: dict) -> tuple[str, str, float] | None:
              if isinstance(v, (int, float)) and not isinstance(v, bool)}
     if not cotas:
         return None
+    if leitura_velha(leitura, agora):
+        return SEM_FAIXA_POR_IDADE
     nomes = estacao.get("cotas_nomes_na_fonte")
     faixa = faixa_de(float(nivel), cotas)
     if faixa == "normal":
@@ -819,7 +888,7 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime,
             linhas.append(f"Fonte oficial: {notificador.esc(cidade['fonte_tempo_real'])}")
         return linhas
 
-    faixa = faixa_da_leitura(cidade, leituras)
+    faixa = faixa_da_leitura(cidade, leituras, agora)
     for l in sorted(leituras, key=lambda x: x.get("estacao", "")):
         idade = idade_min(l.get("medido_em"), agora)
         linhas.append(
@@ -832,8 +901,14 @@ def resposta_nivel(base: Base, cidade: dict, agora: datetime,
             # Na linha DELA: o número ao lado é o dela, e não há como casar
             # errado depois.
             linhas.append(f" — <i>a {quilometros(destaque[1])} daqui</i>")
-        desta = faixa if faixa is not None else faixa_da_regua(l)
-        if desta is not None:
+        desta = faixa if faixa is not None else faixa_da_regua(l, agora)
+        if desta == SEM_FAIXA_POR_IDADE:
+            # A ausência é DITA. Sumir com a faixa em silêncio deixaria a linha
+            # idêntica à de uma régua sem cota conferida, e quem lê não saberia
+            # se o projeto não sabe a cota ou se o número é que está velho.
+            linhas.append("\n<i>Sem faixa: esta leitura é velha demais para dizer "
+                          "em que cota o rio está.</i>")
+        elif desta is not None:
             nome, rot, cota = desta
             if nome == "normal":
                 linhas.append(f"\nAbaixo da primeira cota "
@@ -1280,6 +1355,22 @@ def porque_sem_comparacao(base: Base, cidade_id: str, agora: datetime) -> str | 
                 "delas sozinha é “o nível da cidade”")
     if len(leituras) == 1:
         if isinstance(leituras[0].get("nivel_m"), (int, float)):
+            # IDADE, acrescentada em 19/09/2026 pelo pino de Indaial. Toda
+            # comparação que sai daqui é uma frase no PRESENTE — "faltam 2,30 m
+            # para a sua rua", "4,60 m acima do nível de agora" —, e com leitura
+            # velha o presente é inventado. Pior: se o rio subiu desde a
+            # medição, a frase promete uma folga que ninguém mediu, e errar para
+            # o lado de quem lê achando que está seguro é o único erro que este
+            # projeto não pode cometer.
+            #
+            # A guarda mora AQUI, e não nos dois blocos, porque os dois motivos
+            # já saem deste lugar justamente para não voltarem a divergir: o
+            # bloco de cheias e o de rua passam a calar pela mesma razão, com a
+            # mesma frase.
+            if leitura_velha(leituras[0], agora):
+                idade = idade_min(leituras[0].get("medido_em"), agora)
+                return (f"só tem leitura de {texto_idade(idade)}, velha demais "
+                        "para dizer onde o rio está agora")
             return None
         return "teve leitura ao vivo agora, mas sem número de nível"
     if base.bruto_da_cidade(cidade_id) is not None:
