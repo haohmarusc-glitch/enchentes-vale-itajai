@@ -2292,6 +2292,43 @@ class TestLeituraVelhaNaoFalaNoPresente(unittest.TestCase):
         site = (RAIZ / "web" / "src" / "logica" / "tempoReal.ts").read_text(encoding="utf-8")
         self.assertIn("export const MIN_VELHA = 180", site)
 
+    def test_blumenau_tem_limite_proprio_de_120_minutos(self):
+        """A cadência da fonte é que manda. O AlertaBlu publica de hora em hora,
+        então 2 h já é a segunda leitura que não chegou; numa fonte de 15 em 15
+        min as mesmas 2 h são oito perdidas e as 3 h ainda fazem sentido. O site
+        já separava os dois; o bot ficava 1 h mais permissivo justamente na
+        cidade de série mais longa da bacia."""
+        self.assertEqual(bot.IDADE_VELHA_BLUMENAU_MIN, 120)
+        self.assertEqual(bot.limite_de_idade("blumenau"), 120)
+        self.assertEqual(bot.limite_de_idade("gaspar"), bot.IDADE_VELHA_MIN)
+        self.assertEqual(bot.limite_de_idade(None), bot.IDADE_VELHA_MIN)
+
+    def test_o_mesmo_numero_de_minutos_decide_diferente_nas_duas_cidades(self):
+        """150 min: velha em Blumenau, fresca em Indaial. É o ponto da mudança."""
+        for cidade, velha_aos_150 in (("blumenau", True), ("indaial", False)):
+            leitura = {"cidade": cidade, "nivel_m": 3.06,
+                       "medido_em": (AGORA - timedelta(minutes=150)).astimezone(
+                           bot.FUSO).replace(tzinfo=None).isoformat(timespec="seconds")}
+            self.assertEqual(bot.leitura_velha(leitura, AGORA), velha_aos_150, cidade)
+
+    def test_a_virada_de_blumenau_e_nos_120(self):
+        def pino(minutos: float) -> str:
+            medido = (AGORA - timedelta(minutes=minutos)).astimezone(
+                bot.FUSO).replace(tzinfo=None).isoformat(timespec="seconds")
+            leituras = [{"estacao": "Blumenau", "rio": "itajai-acu",
+                         "cidade": "blumenau", "nivel_m": 8.40, "medido_em": medido}]
+            b = Base({"leituras": leituras}, le_json("estacoes.json"),
+                     le_json("transito.json"), le_json("enchentes.json"))
+            cidade = [c for c in b.cidades() if c["id"] == "blumenau"][0]
+            return "".join(resposta_nivel(b, cidade, AGORA)
+                           + linhas_das_cheias(b, cidade, AGORA))
+
+        self.assertIn("Alerta Máximo", pino(120))
+        self.assertNotIn("Alerta Máximo", pino(121))
+        # E aos 150 min, que antes desta mudança ainda pintaria:
+        self.assertIn("velha demais para dizer em que cota o rio está", pino(150))
+        self.assertIn("velha demais para dizer onde o rio está agora", pino(150))
+
     def test_a_virada_e_nos_180_minutos(self):
         self.assertIn("Acima da cota de <b>Alerta</b>", self.pino(180))
         self.assertNotIn("Acima da cota de", self.pino(181))
