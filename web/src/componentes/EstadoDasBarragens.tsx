@@ -1,4 +1,6 @@
 import type { Barragem } from '../dados/barragens'
+import type { Tendencia } from '../dados/serie'
+import { estadoDeEsvaziamento } from '../logica/esvaziamento'
 import { frescor, idadeMin, textoIdade } from '../logica/tempoReal'
 import estilos from './EstadoDasBarragens.module.css'
 
@@ -21,14 +23,23 @@ import estilos from './EstadoDasBarragens.module.css'
  *   (339 m de altitude na Oeste). Pôr "14,66 m" ao lado dos "5,24 m" do rio
  *   convidaria a comparação que é o erro central do projeto.
  *
+ * * **Não tira a cor do nível.** Decisão do Jefferson (21/09/2026): com
+ *   comportas abertas e o rio parado ou baixando, o bloco acrescenta o estado
+ *   "esvaziando" — e a cor do nível continua a do nível, porque retirá-la
+ *   poderia transmitir segurança antes de a água baixar. Com o rio subindo, o
+ *   estado é "vertendo com o rio subindo". Ver `logica/esvaziamento.ts`.
+ *
  * Isto não é aviso oficial. Quem decide evacuação é a Defesa Civil (199).
  */
 export default function EstadoDasBarragens({
   barragens,
   agora,
+  tendencia = null,
 }: {
   barragens: Barragem[]
   agora: Date
+  /** Tendência do rio a jusante (de UMA régua); null quando não se sabe. */
+  tendencia?: Tendencia | null
 }) {
   if (barragens.length === 0) return null
 
@@ -43,6 +54,7 @@ export default function EstadoDasBarragens({
         const todasFechadas = b.abertas === 0
         const idade = b.medidoEm ? idadeMin(b.medidoEm, agora) : null
         const estado = idade === null ? 'velha' : frescor(idade)
+        const esvaziamento = estado === 'velha' ? null : estadoDeEsvaziamento(b.abertas, b.total, tendencia)
 
         return (
           <div key={b.nome} className={estilos.barragem}>
@@ -65,6 +77,16 @@ export default function EstadoDasBarragens({
                     : '— a barragem está soltando água por parte das comportas'}
               </span>
             </div>
+
+            {esvaziamento ? (
+              <span
+                className={`${estilos.esvaziamento} ${
+                  esvaziamento.rotulo === 'esvaziando' ? estilos.esvaziando : estilos.vertendo
+                }`}
+              >
+                <strong>{esvaziamento.rotulo}</strong> — {esvaziamento.frase}
+              </span>
+            ) : null}
 
             {b.fechadas.length > 0 && b.fechadas.length < b.total ? (
               <span className={estilos.quais}>fechadas: {b.fechadas.join(', ')}</span>

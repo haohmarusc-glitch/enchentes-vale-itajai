@@ -19,7 +19,7 @@ import {
 import { leituraDaCidade, leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { idadeMin, textoIdade } from '../logica/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
-import { serieDaCidade, useSerieRecente } from '../dados/serie'
+import { serieDaCidade, tendencia, useSerieRecente } from '../dados/serie'
 import { chuvaDaCidade } from '../logica/chuva'
 import { metros } from '../logica/formato'
 import { barragensDaCidade, useBarragens } from '../dados/barragens'
@@ -228,7 +228,9 @@ export default function TelaCidade() {
         {/* O estado da barragem fica JUNTO do nível, no mesmo cartão. Separado,
             viraria curiosidade; aqui é o que explica por que o número está onde
             está. Só aparece nas três cidades que têm barragem acima. */}
-        <EstadoDasBarragens barragens={barragens} agora={agora} />
+        {/* A tendência só existe para série de UMA régua; misturada, vem null e
+            o bloco mostra só o fato da comporta. */}
+        <EstadoDasBarragens barragens={barragens} agora={agora} tendencia={tendencia(serieDela)} />
 
         {/* A ressalva vem ANTES dos números. Depois deles, seria rodapé — e o
             que ela diz é justamente que os números podem não bater com o que a
