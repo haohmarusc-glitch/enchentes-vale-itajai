@@ -28,6 +28,21 @@ O QUE ESTE SCRIPT FAZ, E O QUE NÃO FAZ
   ele decidir com a comparação na mão (inclusões, alterações, divergências),
   como o "Plano seguro" de 21/09/2026 manda.
 
+A DECISÃO DE INCLUSÃO (Jefferson, 21/09/2026) — `plano_de_inclusao()`
+------------------------------------------------------------------------
+* Opção (a): entram os 57 candidatos, sem corte em 1992 nem em 8 m — cortes
+  seriam artificiais; a tabela apresenta as 77 linhas como ocorrências
+  históricas, e ausência de chuva antiga não invalida o pico.
+* Os 7 segundos picos em meses já cadastrados NÃO entram: quase todos só têm
+  mês, e `enchentes.json` exige unicidade por (rio, cidade, data). Incluí-los
+  criaria registro duplicado ou exigiria inventar dia. Ficam preservados na
+  conversão bruta, nunca como `divergencias` (são cristas diferentes).
+* Entre os próprios 57 há 5 colisões de mês: entra o MAIOR pico do mês; o
+  menor fica na camada bruta até existir dia exato ou identificador próprio.
+* Resultado: 52 registros novos, Rio do Sul de 13 para 65; 12 cristas
+  preservadas e explicitamente pendentes, sem perda nem data inventada.
+Quem grava é `importar_riodosul_historico.py`, que lê o plano daqui.
+
 DUAS ARMADILHAS DA TABELA
 -------------------------
 1. A mesma coluna traz "12 de julho" e "Julho": a precisão varia linha a linha,
@@ -274,6 +289,65 @@ def reconciliar(registros: list[dict], cadastrados: list[dict]) -> dict:
     }
 
 
+RIO = "itajai-acu"
+
+
+def _registro_novo(r: dict, colisao: dict | None) -> dict:
+    """Uma linha da tabela no formato de `enchentes.json`, como os 13 já cadastrados."""
+    nota = (f"Tabela municipal 'Histórico de Cheias', linha {r['linha']} da captura de "
+            "21/09/2026 (data/brutos/riodosul-historico-cheias-2026-09-21.html). Incluído por "
+            "script em 21/09/2026 por decisão do Jefferson (opção a: os 57 candidatos, o maior "
+            "de cada mês).")
+    if colisao is not None:
+        nota += (f" A tabela tem outro pico em {r['data'][:7]}, {colisao['nivel_m']:.2f} m "
+                 f"({colisao['data_na_fonte']}); fica na conversão bruta até existir dia exato.")
+    novo = {"rio": RIO, "cidade": CIDADE, "data": r["data"], "pico_m": r["nivel_m"],
+            "confianca": "media", "fonte": FONTE, "referencia": None, "nota": nota}
+    if r["volume_mm"] is not None:
+        novo["chuva_mm"] = r["volume_mm"]
+    if r["dias_chuva"] is not None:
+        novo["dias_de_chuva"] = r["dias_chuva"]
+    return novo
+
+
+def plano_de_inclusao(rec: dict) -> dict:
+    """
+    Aplica a decisão de 21/09/2026 à reconciliação: {entram, pendentes}.
+
+    `entram` são registros prontos para `enchentes.json`; `pendentes` são as
+    cristas preservadas na camada bruta, cada uma com o motivo. Não grava nada.
+    """
+    por_mes: dict[str, list[dict]] = {}
+    for r in rec["candidatas_a_inclusao"]:
+        por_mes.setdefault(_mes(r["data"]), []).append(r)
+
+    entram, pendentes = [], []
+    for mes, grupo in sorted(por_mes.items()):
+        grupo = sorted(grupo, key=lambda r: -r["nivel_m"])
+        maior, menores = grupo[0], grupo[1:]
+        entram.append(_registro_novo(maior, menores[0] if menores else None))
+        for m in menores:
+            pendentes.append({**{k: m[k] for k in ("linha", "ano", "data", "precisao",
+                                                    "data_na_fonte", "nivel_m", "volume_mm",
+                                                    "dias_chuva")},
+                              "motivo": f"colisão de mês: entrou o maior de {mes} "
+                                        f"({maior['nivel_m']:.2f} m); este espera dia exato ou "
+                                        "identificador próprio de ocorrência"})
+    for r in rec["segundo_pico_no_mesmo_mes"]:
+        pendentes.append({**{k: r[k] for k in ("linha", "ano", "data", "precisao",
+                                                "data_na_fonte", "nivel_m", "volume_mm",
+                                                "dias_chuva")},
+                          "motivo": "segundo pico no mesmo mês de um cadastrado: unicidade por "
+                                    "(rio, cidade, data) e só há mês; não é divergência, é outra "
+                                    "crista"})
+    entram.sort(key=lambda e: e["data"])
+    pendentes.sort(key=lambda p: (p["data"] or "", -p["nivel_m"]))
+    return {"decisao": "Jefferson, 21/09/2026: opção (a), maior pico por mês, segundos picos "
+                       "preservados na camada bruta",
+            "entram": entram, "pendentes": pendentes,
+            "resumo": {"entram": len(entram), "pendentes": len(pendentes)}}
+
+
 def carregar_cadastrados() -> list[dict]:
     from comum import le_json
     return [e for e in le_json("enchentes.json")["eventos"] if e.get("cidade") == CIDADE]
@@ -320,6 +394,9 @@ def main() -> None:
     avisos = validar(registros)
     rec = reconciliar(registros, carregar_cadastrados())
     imprimir(registros, avisos, rec)
+    plano = plano_de_inclusao(rec)
+    print(f"\nPlano de inclusão ({plano['decisao']}): entram {plano['resumo']['entram']}, "
+          f"pendentes {plano['resumo']['pendentes']}")
 
     if args.escrever:
         DIR_BRUTOS.mkdir(parents=True, exist_ok=True)
@@ -338,6 +415,7 @@ def main() -> None:
             },
             "registros": registros,
             "reconciliacao": rec,
+            "plano_de_inclusao": plano,
         }
         destino.write_text(json.dumps(conteudo, ensure_ascii=False, indent=1) + "\n",
                            encoding="utf-8")

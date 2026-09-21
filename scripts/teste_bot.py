@@ -2209,21 +2209,26 @@ class TestContagemDasReferencias(unittest.TestCase):
         refs = Counter(str(r.get("referencia")) for r in self.ev)
         # 19/09/2026, noite: entraram os quatro de Rio do Sul (1983 ×3 e
         # set/2013) da tabela municipal — 215 → 219, 75 → 79 sem referência.
-        self.assertEqual(len(self.ev), 219)
+        # 21/09/2026: entraram os 52 da tabela inteira (decisão do Jefferson,
+        # opção a) — 219 → 271, 79 → 131 sem referência. A tabela não nomeia a
+        # régua, então os 52 entram com `referencia: null`, como os 13.
+        self.assertEqual(len(self.ev), 271)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 79)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 151)
+        self.assertEqual(refs["None"], 131)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 203)
 
-    def test_a_maioria_dos_sem_referencia_e_de_blumenau(self):
+    def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
-        Sul. Blumenau sozinha tem 41 — e 113 calados de 117, por duas causas
-        diferentes ao mesmo tempo."""
+        Sul. Até 21/09/2026 a maioria era de BLUMENAU (41, com 113 calados de
+        117 por duas causas ao mesmo tempo). Com os 52 da tabela municipal, Rio
+        do Sul passou a ser a maior fatia (65) — e por UMA causa só: a tabela
+        não nomeia a régua. Blumenau não mudou."""
         from collections import Counter
         sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
         self.assertEqual(sem["blumenau"], 41)
         self.assertEqual(sem["brusque"], 23)
-        self.assertEqual(sem["rio-do-sul"], 13)
+        self.assertEqual(sem["rio-do-sul"], 65)
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
         self.assertEqual(len(blu), 117)
         self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 113)
@@ -2465,9 +2470,11 @@ class TestFonteDeRioDoSul(unittest.TestCase):
         ev = le_json("enchentes.json")["eventos"]
         self.assertEqual([r for r in ev if "GCD" in str(r.get("fonte"))], [])
 
-    def test_os_treze_apontam_para_a_tabela_municipal(self):
+    def test_os_sessenta_e_cinco_apontam_para_a_tabela_municipal(self):
+        # 13 até 21/09/2026; 65 depois da importação dos 52 (opção a). Os 12
+        # restantes da tabela ficam na conversão bruta, pendentes de dia.
         rs = FonteDeRioDoSul.registros()
-        self.assertEqual(len(rs), 13)
+        self.assertEqual(len(rs), 65)
         for r in rs:
             self.assertEqual(r["fonte"], FonteDeRioDoSul.FONTE)
             self.assertEqual(r["confianca"], "media")
