@@ -41,7 +41,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C11 — Defesa Civil de Ilhota (COMPDEC) (✅ APROVADO pelo Jefferson em 21/09/2026 — o envio externo exige confirmação dele no momento de enviar)
+## C11 — Defesa Civil de Ilhota (COMPDEC) ✅ ENVIADO em 21/09/2026 09:16 BRT (Gmail, id 1a0c3e5126b896dd, para dpo@ilhota.sc.gov.br)
 
 **Para:** dpo@ilhota.sc.gov.br · (47) 3343-8800 / 3343-0181 · Rua Leoberto Leal, 160, Centro, Ilhota-SC, 88320-438
 **Assunto:** Em que régua estão as cotas do Plano de Contingência 2025/2028?
@@ -157,7 +157,7 @@ Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
-## C13 — Defesa Civil de Brusque: a régua do 8,96 m de 17/11/2023, o zero e a COORDENADA da estação DCSC-00019 (✅ APROVADO pelo Jefferson em 21/09/2026 — o envio externo exige confirmação dele no momento de enviar)
+## C13 — Defesa Civil de Brusque: a régua do 8,96 m de 17/11/2023, o zero e a COORDENADA da estação DCSC-00019 ✅ ENVIADO em 21/09/2026 09:16 BRT (Gmail, id 1a0c3e4f5ea7825b, para defesacivil@brusque.sc.gov.br, com as quatro perguntas)
 
 > Por que: o histórico da rede estadual (`docs/DCSC-HISTORICO-2026-09-10.md`) mostra a DCSC-00019 lendo
 > ~0,30 m ABAIXO dos números da Defesa Civil/imprensa nas três cheias de 2023 — 6,50 vs 6,85 (05/10),
@@ -277,7 +277,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C24 — Cemaden: o que são as estações HIDROLÓGICAS do cadastro (pedido NOVO na LAI, não recurso) (✅ APROVADO pelo Jefferson em 21/09/2026 — o envio externo exige confirmação dele no momento de enviar)
+## C24 — Cemaden: o que são as estações HIDROLÓGICAS do cadastro (pedido NOVO na LAI, não recurso) (✅ APROVADO pelo Jefferson em 21/09/2026 — NÃO é e-mail: registra-se no Informa.BR, com o login do Jefferson; o texto abaixo está pronto para colar)
 
 > 📌 **Por que é pedido novo e não recurso** (16/09/2026). O pedido anterior,
 > protocolo **01217.006547/2026-93**, pediu a *relação das estações com coordenadas* e **foi
