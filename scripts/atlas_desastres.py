@@ -200,13 +200,68 @@ def descobrir_url() -> str:
     return urljoin(PAGINA_DOWNLOADS, achados[0])
 
 
+#: O que o firewall do Atlas devolve no lugar do CSV, com HTTP 200. Visto na
+#: VPS em 21/09/2026: "The requested URL was rejected. Please consult with your
+#: administrator." — 0 bytes de dado, e o script de então guardou ISSO como se
+#: fosse a base e passaria a dizer "Usando cache" em cima de lixo.
+MARCAS_DE_BLOQUEIO = ("<html", "<!doctype", "requested url was rejected", "support id")
+
+
+def parece_a_base(caminho: Path) -> str | None:
+    """Por que este arquivo NÃO é o CSV do Atlas — ou None quando é.
+
+    Um download com HTTP 200 não prova nada: o firewall responde 200 com uma
+    página de bloqueio. A prova é o CONTEÚDO: nada de HTML no começo e o
+    cabeçalho com as colunas que o dicionário COLUNAS espera.
+    """
+    try:
+        tamanho = caminho.stat().st_size
+    except OSError as exc:
+        return f"não deu para ler: {exc}"
+    if tamanho == 0:
+        return "arquivo vazio"
+    with open(caminho, encoding="latin-1", newline="") as f:
+        inicio = f.read(4096)
+    baixo = inicio.lower()
+    for marca in MARCAS_DE_BLOQUEIO:
+        if marca in baixo:
+            return f"é HTML, não CSV — contém {marca!r}; parece a página de bloqueio do firewall"
+    cabecalho = [normalizar(c) for c in inicio.splitlines()[0].split(";")] if inicio else []
+    faltando = [c for c in COLUNAS if c not in cabecalho]
+    if faltando:
+        return f"o cabeçalho não tem as colunas esperadas: {faltando[:4]}…"
+    return None
+
+
+COMO_BAIXAR_A_MAO = (
+    "O Atlas recusou este cliente. Baixe o CSV no NAVEGADOR (a página de downloads é\n"
+    f"  {PAGINA_DOWNLOADS}\n"
+    "  e o arquivo é o *Consolidado.csv), copie-o para data/brutos/ e rode:\n"
+    "  python3 scripts/atlas_desastres.py --arquivo data/brutos/<nome>.csv"
+)
+
+
+def _nome(caminho: Path) -> str:
+    """Caminho relativo à raiz do projeto quando está dentro dela; absoluto se não."""
+    try:
+        return str(caminho.relative_to(RAIZ))
+    except ValueError:
+        return str(caminho)
+
+
 def baixar(force: bool) -> Path:
     import requests
 
     url = descobrir_url()
     destino = DIR_BRUTOS / Path(url).name
     if destino.exists() and not force:
-        print(f"Usando cache: {destino.relative_to(RAIZ)}")
+        motivo = parece_a_base(destino)
+        if motivo:
+            # Cache envenenado: um bloqueio guardado como base. Recusar é o
+            # mínimo; apagar sem avisar esconderia que aconteceu.
+            sys.exit(f"{_nome(destino)} está em cache mas NÃO é a base do Atlas "
+                     f"({motivo}). Apague o arquivo ou rode com --force.\n{COMO_BAIXAR_A_MAO}")
+        print(f"Usando cache: {_nome(destino)}")
         return destino
     DIR_BRUTOS.mkdir(parents=True, exist_ok=True)
     print(f"Baixando {url}")
@@ -218,6 +273,11 @@ def baixar(force: bool) -> Path:
         with open(parcial, "wb") as f:
             for bloco in r.iter_content(1 << 20):
                 f.write(bloco)
+    motivo = parece_a_base(parcial)
+    if motivo:
+        parcial.unlink(missing_ok=True)
+        sys.exit(f"O download veio com HTTP {r.status_code}, mas o corpo não é a base do Atlas "
+                 f"({motivo}). Nada foi guardado.\n{COMO_BAIXAR_A_MAO}")
     parcial.rename(destino)
     print(f"  {destino.stat().st_size / 1e6:.1f} MB")
     return destino

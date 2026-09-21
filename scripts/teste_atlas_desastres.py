@@ -13,6 +13,7 @@ import json
 import sys
 import tempfile
 import unittest
+import unittest.mock
 import unicodedata
 from pathlib import Path
 
@@ -87,6 +88,81 @@ class NaoEscreveNoProjeto(unittest.TestCase):
             if despido.startswith("#") or "open(" not in ln or '"w"' not in ln:
                 continue
             self.assertTrue("DIR_SAIDA" in ln, f"escrita fora de data/desastres: {despido}")
+
+
+class ODownloadNaoConfiaNoHTTP200(unittest.TestCase):
+    """Visto na VPS em 21/09/2026: o firewall do Atlas respondeu HTTP 200 com
+    'The requested URL was rejected', 0 bytes de dado, e o script guardou isso
+    como base. A prova de que é a base é o CONTEÚDO, nunca o status."""
+
+    BLOQUEIO = ("<html><head><title>Request Rejected</title></head><body>The requested URL "
+                "was rejected. Please consult with your administrator.<br><br>Your support ID "
+                "is: 1523995220010480399<br><br><a href='javascript:history.back();'>[Go Back]"
+                "</a></body></html>")
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.dir = Path(self.tmp.name)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_pagina_de_bloqueio_e_recusada_com_o_motivo(self):
+        p = self.dir / "atlas.csv"
+        p.write_text(self.BLOQUEIO, encoding="latin-1")
+        motivo = atlas.parece_a_base(p)
+        self.assertIsNotNone(motivo)
+        self.assertIn("HTML", motivo)
+
+    def test_arquivo_vazio_e_recusado(self):
+        p = self.dir / "atlas.csv"
+        p.write_bytes(b"")
+        self.assertEqual(atlas.parece_a_base(p), "arquivo vazio")
+
+    def test_csv_com_outro_cabecalho_e_recusado(self):
+        p = self.dir / "atlas.csv"
+        p.write_text("a;b;c\n1;2;3\n", encoding="latin-1")
+        self.assertIn("cabeçalho", atlas.parece_a_base(p))
+
+    def test_o_csv_de_verdade_passa(self):
+        self.assertIsNone(atlas.parece_a_base(escreve_csv(self.dir / "atlas.csv")))
+
+    def test_cache_envenenado_nao_e_usado_em_silencio(self):
+        """Um bloqueio guardado ontem não pode virar 'Usando cache' hoje."""
+        anterior = atlas.DIR_BRUTOS
+        try:
+            atlas.DIR_BRUTOS = self.dir
+            (self.dir / Path(atlas.URL_PADRAO).name).write_text(self.BLOQUEIO, encoding="latin-1")
+            with unittest.mock.patch.object(atlas, "descobrir_url", return_value=atlas.URL_PADRAO):
+                with self.assertRaises(SystemExit) as cm:
+                    atlas.baixar(force=False)
+            self.assertIn("NÃO é a base", str(cm.exception))
+            self.assertIn("--arquivo", str(cm.exception))
+        finally:
+            atlas.DIR_BRUTOS = anterior
+
+    def test_download_bloqueado_nao_deixa_arquivo_para_tras(self):
+        anterior = atlas.DIR_BRUTOS
+        try:
+            atlas.DIR_BRUTOS = self.dir
+
+            class Resposta:
+                status_code = 200
+                def raise_for_status(self): pass
+                def iter_content(self, _): yield self.corpo
+                def __enter__(self): return self
+                def __exit__(self, *a): return False
+            Resposta.corpo = self.BLOQUEIO.encode("latin-1")
+            fake_requests = unittest.mock.MagicMock(get=lambda *a, **k: Resposta())
+            with unittest.mock.patch.dict(sys.modules, {"requests": fake_requests}), \
+                 unittest.mock.patch.object(atlas, "descobrir_url", return_value=atlas.URL_PADRAO), \
+                 unittest.mock.patch.object(atlas, "espera_turno", lambda: None):
+                with self.assertRaises(SystemExit) as cm:
+                    atlas.baixar(force=True)
+            self.assertIn("não é a base", str(cm.exception))
+            self.assertEqual(list(self.dir.iterdir()), [], "nem .part nem .csv podem sobrar")
+        finally:
+            atlas.DIR_BRUTOS = anterior
 
 
 class LeituraDoCsv(unittest.TestCase):
