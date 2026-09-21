@@ -1,0 +1,4702 @@
+{
+ "rio": "Itajaí-Açu",
+ "slug": "itajai-acu",
+ "fonte": "Atlas Digital de Desastres no Brasil (MIDR), BD_Atlas_1991_2025_v1.1 de 2026-08-06",
+ "filtro": "Cobrade 12xxx (inundações, enxurradas, alagamentos)",
+ "periodo": "1991-2025",
+ "municipios_ordem_montante_jusante": [
+  "Rio do Sul",
+  "Lontras",
+  "Apiúna",
+  "Ibirama",
+  "Ascurra",
+  "Rodeio",
+  "Indaial",
+  "Blumenau",
+  "Gaspar",
+  "Ilhota",
+  "Navegantes",
+  "Itajaí"
+ ],
+ "n_eventos": 93,
+ "eventos": [
+  {
+   "id": "itajai-acu-1991-10",
+   "mes": "1991-10",
+   "inicio": "1991-10-15",
+   "fim": "1991-10-15",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "1991-10-15",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4202404-12200-19911015",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1991-11",
+   "mes": "1991-11",
+   "inicio": "1991-11-12",
+   "fim": "1991-11-13",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "1991-11-12",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4205902-12200-19911112",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "1991-11-13",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4207106-12200-19911113",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1992-02",
+   "mes": "1992-02",
+   "inicio": "1992-02-21",
+   "fim": "1992-02-21",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "1992-02-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4202404-12200-19920221",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1992-03",
+   "mes": "1992-03",
+   "inicio": "1992-03-04",
+   "fim": "1992-03-04",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "1992-03-04",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-D-4211306-12100-19920304",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1992-05",
+   "mes": "1992-05",
+   "inicio": "1992-05-29",
+   "fim": "1992-05-29",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 69,
+    "desabrigados": 300,
+    "desalojados": 2530,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "1992-05-29",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-R-4205902-12100-19920529",
+     "mortos": 0,
+     "feridos": 69,
+     "desabrigados": 300,
+     "desalojados": 2530,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1992-06",
+   "mes": "1992-06",
+   "inicio": "1992-06-08",
+   "fim": "1992-06-08",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "1992-06-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4201703-12200-19920608",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1993-02",
+   "mes": "1993-02",
+   "inicio": "1993-02-08",
+   "fim": "1993-02-08",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 1,
+    "feridos": 0,
+    "desabrigados": 7,
+    "desalojados": 1,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "1993-02-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-R-4202404-12200-19930208",
+     "mortos": 1,
+     "feridos": 0,
+     "desabrigados": 7,
+     "desalojados": 1,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1994-02",
+   "mes": "1994-02",
+   "inicio": "1994-02-28",
+   "fim": "1994-02-28",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "1994-02-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4202404-12200-19940228",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1995-01",
+   "mes": "1995-01",
+   "inicio": "1995-01-09",
+   "fim": "1995-01-12",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 4,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 19,
+    "desalojados": 148,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "1995-01-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-R-4201257-12200-19950109",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 98,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "1995-01-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-R-4206900-12200-19950109",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 19,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "1995-01-10",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-R-4215109-12200-19950110",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 50,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "1995-01-12",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4207502-12200-19950112",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1995-02",
+   "mes": "1995-02",
+   "inicio": "1995-02-01",
+   "fim": "1995-02-11",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "1995-02-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4214805-12200-19950201",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "1995-02-11",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4202404-12200-19950211",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "1995-02-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4208203-12200-19950201",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1997-01",
+   "mes": "1997-01",
+   "inicio": "1997-01-23",
+   "fim": "1997-01-23",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "1997-01-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4215109-12200-19970123",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1997-02",
+   "mes": "1997-02",
+   "inicio": "1997-02-01",
+   "fim": "1997-02-03",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 6,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "1997-02-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-D-4214805-12100-19970201",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "1997-02-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4209904-12200-19970203",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "1997-02-02",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201257-12200-19970202",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "1997-02-02",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201703-12200-19970202",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "1997-02-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4202404-12200-19970203",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "1997-02-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4205902-12200-19970201",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1997-10",
+   "mes": "1997-10",
+   "inicio": "1997-10-11",
+   "fim": "1997-10-11",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 362,
+    "desalojados": 6,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "1997-10-11",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12100-19971011",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 362,
+     "desalojados": 6,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1998-04",
+   "mes": "1998-04",
+   "inicio": "1998-04-28",
+   "fim": "1998-04-28",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 763,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "1998-04-28",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12100-19980428",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 763,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1999-01",
+   "mes": "1999-01",
+   "inicio": "1999-01-23",
+   "fim": "1999-01-23",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 350,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "1999-01-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4208203-12200-19990123",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 350,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1999-02",
+   "mes": "1999-02",
+   "inicio": "1999-02-26",
+   "fim": "1999-02-26",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 2,
+    "feridos": 2,
+    "desabrigados": 6,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "1999-02-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4215109-12200-19990226",
+     "mortos": 2,
+     "feridos": 2,
+     "desabrigados": 6,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-1999-07",
+   "mes": "1999-07",
+   "inicio": "1999-07-03",
+   "fim": "1999-07-29",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 206,
+    "desalojados": 15,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "1999-07-03",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12100-19990703",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 201,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "1999-07-29",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4205902-12200-19990729",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 5,
+     "desalojados": 15,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2000-01",
+   "mes": "2000-01",
+   "inicio": "2000-01-16",
+   "fim": "2000-01-16",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 60,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2000-01-16",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201257-12200-20000116",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 60,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2000-03",
+   "mes": "2000-03",
+   "inicio": "2000-03-05",
+   "fim": "2000-03-09",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 22,
+    "desalojados": 8,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2000-03-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4202404-12200-20000309",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2000-03-05",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4205902-12200-20000305",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 22,
+     "desalojados": 8,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2001-02",
+   "mes": "2001-02",
+   "inicio": "2001-02-12",
+   "fim": "2001-02-12",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 13,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2001-02-12",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12200-20010212",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 13,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2001-09",
+   "mes": "2001-09",
+   "inicio": "2001-09-04",
+   "fim": "2001-09-30",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 58,
+    "desalojados": 177,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2001-09-04",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12200-20010904",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 21,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2001-09-30",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207106-12200-20010930",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 37,
+     "desalojados": 177,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2001-10",
+   "mes": "2001-10",
+   "inicio": "2001-10-01",
+   "fim": "2001-10-02",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 8,
+   "totais": {
+    "mortos": 1,
+    "feridos": 6,
+    "desabrigados": 3986,
+    "desalojados": 1110,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2001-10-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12200-20011001",
+     "mortos": 1,
+     "feridos": 6,
+     "desabrigados": 2885,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2001-10-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4209904-12100-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 144,
+     "desalojados": 95,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "2001-10-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4206900-12200-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 34,
+     "desalojados": 4,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2001-10-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4215109-12200-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2001-10-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4207502-12100-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 144,
+     "desalojados": 224,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2001-10-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4202404-12100-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 396,
+     "desalojados": 516,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2001-10-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4211306-12100-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 261,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2001-10-02",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4208203-12100-20011002",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 383,
+     "desalojados": 10,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2002-02",
+   "mes": "2002-02",
+   "inicio": "2002-02-28",
+   "fim": "2002-02-28",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2002-02-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4205902-12200-20020228",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2002-03",
+   "mes": "2002-03",
+   "inicio": "2002-03-27",
+   "fim": "2002-03-27",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2002-03-27",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4211306-12200-20020327",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2002-09",
+   "mes": "2002-09",
+   "inicio": "2002-09-18",
+   "fim": "2002-09-18",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2002-09-18",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207106-12200-20020918",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2002-10",
+   "mes": "2002-10",
+   "inicio": "2002-10-01",
+   "fim": "2002-10-01",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 175,
+    "desalojados": 250,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2002-10-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4215109-12200-20021001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 175,
+     "desalojados": 250,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2002-11",
+   "mes": "2002-11",
+   "inicio": "2002-11-21",
+   "fim": "2002-11-21",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 16,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2002-11-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12200-20021121",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 16,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2003-11",
+   "mes": "2003-11",
+   "inicio": "2003-11-06",
+   "fim": "2003-11-07",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 1,
+    "feridos": 0,
+    "desabrigados": 16,
+    "desalojados": 16,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2003-11-07",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4211306-12200-20031107",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2003-11-06",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4208203-12200-20031106",
+     "mortos": 1,
+     "feridos": 0,
+     "desabrigados": 16,
+     "desalojados": 16,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2004-09",
+   "mes": "2004-09",
+   "inicio": "2004-09-14",
+   "fim": "2004-09-14",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2004-09-14",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201257-12200-20040914",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2004-11",
+   "mes": "2004-11",
+   "inicio": "2004-11-28",
+   "fim": "2004-11-28",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2004-11-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12200-20041128",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2005-01",
+   "mes": "2005-01",
+   "inicio": "2005-01-06",
+   "fim": "2005-01-06",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2005-01-06",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4215109-12200-20050106",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2005-07",
+   "mes": "2005-07",
+   "inicio": "2005-07-16",
+   "fim": "2005-07-16",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 396,
+    "desalojados": 516,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2005-07-16",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-N-4202404-12100-20050716",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 396,
+     "desalojados": 516,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2008-01",
+   "mes": "2008-01",
+   "inicio": "2008-01-31",
+   "fim": "2008-01-31",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 344,
+    "desalojados": 3992,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2008-01-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207106-12200-20080131",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 118,
+     "desalojados": 56,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2008-01-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4211306-12200-20080131",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 8,
+     "desalojados": 136,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2008-01-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4208203-12200-20080131",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 218,
+     "desalojados": 3800,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2008-02",
+   "mes": "2008-02",
+   "inicio": "2008-02-20",
+   "fim": "2008-02-20",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 25511,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2008-02-20",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4208203-12200-20080220",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 25511,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2008-11",
+   "mes": "2008-11",
+   "inicio": "2008-11-10",
+   "fim": "2008-11-24",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 12,
+   "totais": {
+    "mortos": 72,
+    "feridos": 4574,
+    "desabrigados": 29753,
+    "desalojados": 42622,
+    "desaparecidos": 34
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2008-11-24",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4214805-12200-20081124",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2008-11-10",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4209904-12200-20081110",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2008-11-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201257-12200-20081122",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 6,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "2008-11-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4206900-12200-20081121",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 42,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2008-11-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201703-12200-20081122",
+     "mortos": 1,
+     "feridos": 31,
+     "desabrigados": 0,
+     "desalojados": 110,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2008-11-24",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4215109-12200-20081124",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2008-11-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207502-12200-20081122",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 80,
+     "desalojados": 761,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2008-11-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4202404-12200-20081123",
+     "mortos": 24,
+     "feridos": 2383,
+     "desabrigados": 5209,
+     "desalojados": 25000,
+     "desaparecidos": 6
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2008-11-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4205902-12200-20081122",
+     "mortos": 16,
+     "feridos": 281,
+     "desabrigados": 4305,
+     "desalojados": 7153,
+     "desaparecidos": 5
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2008-11-24",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207106-12200-20081124",
+     "mortos": 26,
+     "feridos": 67,
+     "desabrigados": 1300,
+     "desalojados": 3500,
+     "desaparecidos": 18
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2008-11-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4211306-12200-20081121",
+     "mortos": 0,
+     "feridos": 6,
+     "desabrigados": 651,
+     "desalojados": 4121,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2008-11-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4208203-12200-20081123",
+     "mortos": 5,
+     "feridos": 1806,
+     "desabrigados": 18208,
+     "desalojados": 1929,
+     "desaparecidos": 5
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2009-02",
+   "mes": "2009-02",
+   "inicio": "2009-02-26",
+   "fim": "2009-02-26",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2009-02-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4214805-12200-20090226",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2009-04",
+   "mes": "2009-04",
+   "inicio": "2009-04-24",
+   "fim": "2009-04-24",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2009-04-24",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4211306-12200-20090424",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2009-07",
+   "mes": "2009-07",
+   "inicio": "2009-07-23",
+   "fim": "2009-07-31",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2009-07-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4207106-12200-20090731",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2009-07-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4208203-12200-20090723",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2009-08",
+   "mes": "2009-08",
+   "inicio": "2009-08-20",
+   "fim": "2009-08-20",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 17,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2009-08-20",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4201703-12200-20090820",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 17,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2009-09",
+   "mes": "2009-09",
+   "inicio": "2009-09-28",
+   "fim": "2009-09-29",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 5,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2009-09-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4214805-12200-20090928",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2009-09-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4209904-12200-20090928",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "2009-09-29",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4206900-12200-20090929",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2009-09-29",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4205902-12200-20090929",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2009-09-29",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4211306-12200-20090929",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2009-11",
+   "mes": "2009-11",
+   "inicio": "2009-11-27",
+   "fim": "2009-11-27",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2009-11-27",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4202404-12200-20091127",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2010-01",
+   "mes": "2010-01",
+   "inicio": "2010-01-13",
+   "fim": "2010-01-14",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 12,
+    "desalojados": 41,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2010-01-14",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4207502-12200-20100114",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2010-01-13",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4207106-12200-20100113",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 12,
+     "desalojados": 41,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2010-02",
+   "mes": "2010-02",
+   "inicio": "2010-02-26",
+   "fim": "2010-02-26",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 14,
+    "desalojados": 50,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2010-02-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207106-12200-20100226",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 14,
+     "desalojados": 50,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2010-03",
+   "mes": "2010-03",
+   "inicio": "2010-03-25",
+   "fim": "2010-03-25",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 1,
+    "desalojados": 320,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2010-03-25",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4205902-12200-20100325",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 1,
+     "desalojados": 320,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2010-04",
+   "mes": "2010-04",
+   "inicio": "2010-04-26",
+   "fim": "2010-04-27",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 5,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 170,
+    "desalojados": 1188,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2010-04-27",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-J-4214805-12200-20100427",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 147,
+     "desalojados": 453,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2010-04-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4201703-12200-20100426",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 46,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2010-04-26",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-J-4202404-12100-20100426",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 16,
+     "desalojados": 104,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2010-04-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4211306-12200-20100426",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 135,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2010-04-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-C-4208203-12200-20100426",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 7,
+     "desalojados": 450,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2010-05",
+   "mes": "2010-05",
+   "inicio": "2010-05-15",
+   "fim": "2010-05-15",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 15,
+    "desalojados": 426,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2010-05-15",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4205902-12200-20100515",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 15,
+     "desalojados": 426,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2011-01",
+   "mes": "2011-01",
+   "inicio": "2011-01-21",
+   "fim": "2011-01-30",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 5,
+   "totais": {
+    "mortos": 1,
+    "feridos": 5,
+    "desabrigados": 68,
+    "desalojados": 571,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2011-01-30",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4201257-12200-20110130",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 2,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2011-01-29",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4207502-12200-20110129",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2011-01-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202404-12200-20110128",
+     "mortos": 1,
+     "feridos": 1,
+     "desabrigados": 68,
+     "desalojados": 260,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2011-01-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4205902-12200-20110121",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2011-01-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4207106-12200-20110122",
+     "mortos": 0,
+     "feridos": 4,
+     "desabrigados": 0,
+     "desalojados": 309,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2011-02",
+   "mes": "2011-02",
+   "inicio": "2011-02-11",
+   "fim": "2011-02-14",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 18,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2011-02-14",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4201703-12200-20110214",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 18,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2011-02-11",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4215109-12200-20110211",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2011-03",
+   "mes": "2011-03",
+   "inicio": "2011-03-10",
+   "fim": "2011-03-24",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 1,
+    "feridos": 2,
+    "desabrigados": 0,
+    "desalojados": 1720,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2011-03-24",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4209904-12200-20110324",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2011-03-10",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202404-12200-20110310",
+     "mortos": 1,
+     "feridos": 2,
+     "desabrigados": 0,
+     "desalojados": 1720,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2011-08",
+   "mes": "2011-08",
+   "inicio": "2011-08-09",
+   "fim": "2011-08-30",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 0,
+    "feridos": 1,
+    "desabrigados": 0,
+    "desalojados": 440,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2011-08-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4214805-12200-20110809",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2011-08-09",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4209904-12100-20110809",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 32,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2011-08-30",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207106-12200-20110830",
+     "mortos": 0,
+     "feridos": 1,
+     "desabrigados": 0,
+     "desalojados": 408,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2011-09",
+   "mes": "2011-09",
+   "inicio": "2011-09-08",
+   "fim": "2011-09-12",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 12,
+   "totais": {
+    "mortos": 3,
+    "feridos": 148,
+    "desabrigados": 7475,
+    "desalojados": 175187,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2011-09-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4214805-12200-20110908",
+     "mortos": 2,
+     "feridos": 0,
+     "desabrigados": 2580,
+     "desalojados": 10320,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4214805-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-P-4209904-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2011-09-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201257-12200-20110908",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 11,
+     "desalojados": 160,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2011-09-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4201257-12200-20110909",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "2011-09-08",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4206900-12100-20110908",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 33,
+     "desalojados": 184,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2011-09-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4201703-12200-20110908",
+     "mortos": 0,
+     "feridos": 2,
+     "desabrigados": 112,
+     "desalojados": 730,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4201703-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2011-09-09",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4215109-12100-20110909",
+     "mortos": 0,
+     "feridos": 8,
+     "desabrigados": 102,
+     "desalojados": 576,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4215109-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2011-09-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4207502-12200-20110908",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 11,
+     "desalojados": 435,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4207502-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2011-09-11",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202404-12100-20110911",
+     "mortos": 0,
+     "feridos": 138,
+     "desabrigados": 668,
+     "desalojados": 90000,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2011-09-08",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4205902-12100-20110908",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 558,
+     "desalojados": 23039,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4205902-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4207106-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2011-09-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4211306-12200-20110908",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 185,
+     "desalojados": 4113,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2011-09-09",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4208203-12100-20110909",
+     "mortos": 1,
+     "feridos": 0,
+     "desabrigados": 3215,
+     "desalojados": 45630,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4208203-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2012-05",
+   "mes": "2012-05",
+   "inicio": "2012-05-21",
+   "fim": "2012-05-21",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 1,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2012-05-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-C-4208203-12200-20120521",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 1,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2013-03",
+   "mes": "2013-03",
+   "inicio": "2013-03-27",
+   "fim": "2013-03-27",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 10,
+    "desalojados": 1704,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2013-03-27",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12200-20130309",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 10,
+     "desalojados": 1704,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2013-05",
+   "mes": "2013-05",
+   "inicio": "2013-05-13",
+   "fim": "2013-05-13",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 1,
+    "desalojados": 40,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2013-05-13",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12200-20130410",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 1,
+     "desalojados": 40,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2013-05-13",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12200-20130403",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2013-09",
+   "mes": "2013-09",
+   "inicio": "2013-09-25",
+   "fim": "2013-09-27",
+   "tipologias": [
+    "Alagamentos",
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 5,
+   "totais": {
+    "mortos": 0,
+    "feridos": 1,
+    "desabrigados": 1000,
+    "desalojados": 8761,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2013-09-26",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4214805-12100-20130923",
+     "mortos": 0,
+     "feridos": 1,
+     "desabrigados": 690,
+     "desalojados": 8010,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2013-09-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4201257-12200-20130922",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 10,
+     "desalojados": 243,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2013-09-27",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4201703-12100-20130922",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 84,
+     "desalojados": 128,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2013-09-25",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4215109-12300-20130922",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 44,
+     "desalojados": 48,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2013-09-27",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4207502-12300-20130922",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 172,
+     "desalojados": 332,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2013-10",
+   "mes": "2013-10",
+   "inicio": "2013-10-01",
+   "fim": "2013-10-17",
+   "tipologias": [
+    "Alagamentos",
+    "Inundações"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 821,
+    "desalojados": 13080,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2013-10-02",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4202404-12100-20130922",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 281,
+     "desalojados": 12340,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2013-10-01",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4207106-12300-20130922",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 293,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2013-10-17",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12100-20130920",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 247,
+     "desalojados": 740,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2013-12",
+   "mes": "2013-12",
+   "inicio": "2013-12-05",
+   "fim": "2013-12-05",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2013-12-05",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20131205",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2014-02",
+   "mes": "2014-02",
+   "inicio": "2014-02-07",
+   "fim": "2014-02-07",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 60,
+    "desalojados": 102,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2014-02-07",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4215109-12200-20140112",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 60,
+     "desalojados": 102,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2014-06",
+   "mes": "2014-06",
+   "inicio": "2014-06-11",
+   "fim": "2014-06-11",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 151,
+    "desalojados": 1016,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2014-06-11",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12100-20140609",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 151,
+     "desalojados": 1016,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2014-07",
+   "mes": "2014-07",
+   "inicio": "2014-07-21",
+   "fim": "2014-07-21",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 1,
+    "feridos": 0,
+    "desabrigados": 508,
+    "desalojados": 6498,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2014-07-21",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4214805-12100-20140629",
+     "mortos": 1,
+     "feridos": 0,
+     "desabrigados": 508,
+     "desalojados": 6498,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2014-10",
+   "mes": "2014-10",
+   "inicio": "2014-10-10",
+   "fim": "2014-10-10",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 88,
+    "desalojados": 678,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2014-10-10",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12100-20141001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 88,
+     "desalojados": 678,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2015-10",
+   "mes": "2015-10",
+   "inicio": "2015-10-20",
+   "fim": "2015-10-26",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 4,
+   "totais": {
+    "mortos": 1,
+    "feridos": 2,
+    "desabrigados": 870,
+    "desalojados": 17807,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2015-10-23",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4214805-12100-20151023",
+     "mortos": 1,
+     "feridos": 2,
+     "desabrigados": 866,
+     "desalojados": 17636,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2015-10-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20151022",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 115,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2015-10-22",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4201703-12100-20151022",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 4,
+     "desalojados": 56,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2015-10-20",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12100-20151013",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2015-10-26",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12100-20151022",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2016-03",
+   "mes": "2016-03",
+   "inicio": "2016-03-03",
+   "fim": "2016-03-03",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "2016-03-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4206900-12200-20160303",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2016-04",
+   "mes": "2016-04",
+   "inicio": "2016-04-10",
+   "fim": "2016-04-13",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 26,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2016-04-10",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201703-12200-20160410",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 11,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2016-04-13",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12200-20160413",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 15,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2016-08",
+   "mes": "2016-08",
+   "inicio": "2016-08-20",
+   "fim": "2016-08-20",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 4,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2016-08-20",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20160820",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 4,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2016-12",
+   "mes": "2016-12",
+   "inicio": "2016-12-31",
+   "fim": "2016-12-31",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 13,
+    "desalojados": 25,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2016-12-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20161231",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 13,
+     "desalojados": 25,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2017-01",
+   "mes": "2017-01",
+   "inicio": "2017-01-31",
+   "fim": "2017-01-31",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 6,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ilhota",
+     "cod_ibge": 4207106,
+     "ordem_rio": 9,
+     "data_evento": "2017-01-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4207106-12200-20170131",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 6,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2017-05",
+   "mes": "2017-05",
+   "inicio": "2017-05-27",
+   "fim": "2017-05-31",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2017-05-27",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201703-12200-20170527",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2017-05-31",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4201703-12100-20170531",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2017-06",
+   "mes": "2017-06",
+   "inicio": "2017-06-01",
+   "fim": "2017-06-06",
+   "tipologias": [
+    "Alagamentos",
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 4,
+   "totais": {
+    "mortos": 0,
+    "feridos": 11,
+    "desabrigados": 1149,
+    "desalojados": 14740,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2017-06-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4214805-12100-20170601",
+     "mortos": 0,
+     "feridos": 11,
+     "desabrigados": 1090,
+     "desalojados": 14632,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2017-06-04",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20170604",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 58,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2017-06-06",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4207502-12300-20170606",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2017-06-05",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12100-20170605",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 59,
+     "desalojados": 50,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2017-11",
+   "mes": "2017-11",
+   "inicio": "2017-11-17",
+   "fim": "2017-11-17",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2017-11-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20171117",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2018-01",
+   "mes": "2018-01",
+   "inicio": "2018-01-11",
+   "fim": "2018-01-23",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 42,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2018-01-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202404-12200-20180123",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 30,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2018-01-11",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4211306-12200-20180111",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 12,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2018-03",
+   "mes": "2018-03",
+   "inicio": "2018-03-31",
+   "fim": "2018-03-31",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 2,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2018-03-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202404-12200-20180331",
+     "mortos": 2,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2018-09",
+   "mes": "2018-09",
+   "inicio": "2018-09-04",
+   "fim": "2018-09-04",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 19,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2018-09-04",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12100-20180904",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 19,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2019-01",
+   "mes": "2019-01",
+   "inicio": "2019-01-13",
+   "fim": "2019-01-13",
+   "tipologias": [
+    "Alagamentos"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 16,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2019-01-13",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4211306-12300-20190113",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 16,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2019-05",
+   "mes": "2019-05",
+   "inicio": "2019-05-31",
+   "fim": "2019-05-31",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 158,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2019-05-31",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12100-20190531",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 158,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2020-02",
+   "mes": "2020-02",
+   "inicio": "2020-02-03",
+   "fim": "2020-02-11",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2020-02-11",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4201703-12100-20200209",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2020-02-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4215109-12200-20200202",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2020-02-07",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4211306-12200-20200206",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2020-12",
+   "mes": "2020-12",
+   "inicio": "2020-12-17",
+   "fim": "2020-12-20",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 5,
+   "totais": {
+    "mortos": 3,
+    "feridos": 24,
+    "desabrigados": 56,
+    "desalojados": 247,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2020-12-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4214805-12200-20201216",
+     "mortos": 2,
+     "feridos": 1,
+     "desabrigados": 52,
+     "desalojados": 76,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2020-12-20",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4209904-12200-20201216",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 6,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2020-12-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20201216",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 64,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ibirama",
+     "cod_ibge": 4206900,
+     "ordem_rio": 3,
+     "data_evento": "2020-12-18",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4206900-12200-20201217",
+     "mortos": 1,
+     "feridos": 23,
+     "desabrigados": 4,
+     "desalojados": 86,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2020-12-19",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201703-12200-20201217",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 15,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2021-01",
+   "mes": "2021-01",
+   "inicio": "2021-01-25",
+   "fim": "2021-01-25",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Ascurra",
+     "cod_ibge": 4201703,
+     "ordem_rio": 4,
+     "data_evento": "2021-01-25",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201703-12200-20210124",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2021-09",
+   "mes": "2021-09",
+   "inicio": "2021-09-22",
+   "fim": "2021-09-22",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2021-09-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12200-20210917",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2022-03",
+   "mes": "2022-03",
+   "inicio": "2022-03-07",
+   "fim": "2022-03-08",
+   "tipologias": [
+    "Alagamentos",
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 20,
+    "desalojados": 1,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2022-03-08",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12300-20220308",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 20,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2022-03-07",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4207502-12200-20220307",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 1,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2022-05",
+   "mes": "2022-05",
+   "inicio": "2022-05-03",
+   "fim": "2022-05-04",
+   "tipologias": [
+    "Alagamentos",
+    "Inundações"
+   ],
+   "n_municipios": 4,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 447,
+    "desalojados": 2329,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2022-05-03",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4214805-12100-20220503",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 447,
+     "desalojados": 2300,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Lontras",
+     "cod_ibge": 4209904,
+     "ordem_rio": 1,
+     "data_evento": "2022-05-03",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4209904-12100-20220503",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2022-05-04",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12300-20220504",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 26,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Indaial",
+     "cod_ibge": 4207502,
+     "ordem_rio": 6,
+     "data_evento": "2022-05-04",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4207502-12100-20220504",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 3,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2022-10",
+   "mes": "2022-10",
+   "inicio": "2022-10-10",
+   "fim": "2022-10-10",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 84,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2022-10-10",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12100-20221010",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 84,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2022-11",
+   "mes": "2022-11",
+   "inicio": "2022-11-27",
+   "fim": "2022-11-27",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 250,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2022-11-27",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4215109-12100-20221127",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 250,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2023-02",
+   "mes": "2023-02",
+   "inicio": "2023-02-02",
+   "fim": "2023-02-10",
+   "tipologias": [
+    "Alagamentos"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2023-02-02",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12300-20230202",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2023-02-10",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12300-20230210",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2023-03",
+   "mes": "2023-03",
+   "inicio": "2023-03-08",
+   "fim": "2023-03-13",
+   "tipologias": [
+    "Alagamentos"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 130,
+    "desalojados": 75,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2023-03-08",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12300-20230308",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2023-03-13",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4208203-12300-20230313",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 130,
+     "desalojados": 75,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2023-07",
+   "mes": "2023-07",
+   "inicio": "2023-07-13",
+   "fim": "2023-07-13",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 9,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rio do Sul",
+     "cod_ibge": 4214805,
+     "ordem_rio": 0,
+     "data_evento": "2023-07-13",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4214805-12100-20230713",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 9,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2023-10",
+   "mes": "2023-10",
+   "inicio": "2023-10-09",
+   "fim": "2023-10-09",
+   "tipologias": [
+    "Alagamentos"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 65,
+    "desalojados": 200,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Navegantes",
+     "cod_ibge": 4211306,
+     "ordem_rio": 10,
+     "data_evento": "2023-10-09",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4211306-12300-20231009",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 65,
+     "desalojados": 200,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2023-11",
+   "mes": "2023-11",
+   "inicio": "2023-11-17",
+   "fim": "2023-11-17",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 88,
+    "desalojados": 99,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Itajaí",
+     "cod_ibge": 4208203,
+     "ordem_rio": 11,
+     "data_evento": "2023-11-17",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4208203-12100-20231117",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 88,
+     "desalojados": 99,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2024-02",
+   "mes": "2024-02",
+   "inicio": "2024-02-28",
+   "fim": "2024-02-28",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 4,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Apiúna",
+     "cod_ibge": 4201257,
+     "ordem_rio": 2,
+     "data_evento": "2024-02-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4201257-12200-20240228",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 4,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2024-05",
+   "mes": "2024-05",
+   "inicio": "2024-05-19",
+   "fim": "2024-05-19",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 4,
+    "desalojados": 350,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Blumenau",
+     "cod_ibge": 4202404,
+     "ordem_rio": 7,
+     "data_evento": "2024-05-19",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4202404-12100-20240519",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 4,
+     "desalojados": 350,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2025-01",
+   "mes": "2025-01",
+   "inicio": "2025-01-17",
+   "fim": "2025-01-17",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Rodeio",
+     "cod_ibge": 4215109,
+     "ordem_rio": 5,
+     "data_evento": "2025-01-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4215109-12200-20250117",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2025-02",
+   "mes": "2025-02",
+   "inicio": "2025-02-17",
+   "fim": "2025-02-17",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 1,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2025-02-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4205902-12200-20250217",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 1,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-acu-2025-10",
+   "mes": "2025-10",
+   "inicio": "2025-10-01",
+   "fim": "2025-10-01",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 11,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Gaspar",
+     "cod_ibge": 4205902,
+     "ordem_rio": 8,
+     "data_evento": "2025-10-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4205902-12200-20251001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 11,
+     "desaparecidos": 0
+    }
+   ]
+  }
+ ]
+}

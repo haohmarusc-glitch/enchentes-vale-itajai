@@ -1,0 +1,1390 @@
+{
+ "rio": "Itajaí-Mirim",
+ "slug": "itajai-mirim",
+ "fonte": "Atlas Digital de Desastres no Brasil (MIDR), BD_Atlas_1991_2025_v1.1 de 2026-08-06",
+ "filtro": "Cobrade 12xxx (inundações, enxurradas, alagamentos)",
+ "periodo": "1991-2025",
+ "municipios_ordem_montante_jusante": [
+  "Vidal Ramos",
+  "Botuverá",
+  "Guabiruba",
+  "Brusque"
+ ],
+ "n_eventos": 31,
+ "eventos": [
+  {
+   "id": "itajai-mirim-1991-11",
+   "mes": "1991-11",
+   "inicio": "1991-11-13",
+   "fim": "1991-11-13",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "1991-11-13",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4206306-12200-19911113",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-1995-01",
+   "mes": "1995-01",
+   "inicio": "1995-01-09",
+   "fim": "1995-01-10",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "1995-01-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-R-4219200-12200-19950109",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "1995-01-10",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4202701-12200-19950110",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-1996-01",
+   "mes": "1996-01",
+   "inicio": "1996-01-08",
+   "fim": "1996-01-09",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 3,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "1996-01-09",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-P-4206306-12200-19960109",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "1996-01-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4202909-12200-19960108",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 3,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-1997-02",
+   "mes": "1997-02",
+   "inicio": "1997-02-03",
+   "fim": "1997-02-03",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "1997-02-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4202909-12200-19970203",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2000-02",
+   "mes": "2000-02",
+   "inicio": "2000-02-14",
+   "fim": "2000-02-14",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 39,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2000-02-14",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4202909-12200-20000214",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 39,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2001-03",
+   "mes": "2001-03",
+   "inicio": "2001-03-17",
+   "fim": "2001-03-24",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 1,
+    "desabrigados": 53,
+    "desalojados": 67,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2001-03-24",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4219200-12200-20010324",
+     "mortos": 0,
+     "feridos": 1,
+     "desabrigados": 53,
+     "desalojados": 67,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2001-03-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4206306-12200-20010317",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2001-10",
+   "mes": "2001-10",
+   "inicio": "2001-10-01",
+   "fim": "2001-10-08",
+   "tipologias": [
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 4,
+   "totais": {
+    "mortos": 1,
+    "feridos": 1,
+    "desabrigados": 20,
+    "desalojados": 101,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2001-10-01",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-D-4219200-12200-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2001-10-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4202701-12100-20011001",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2001-10-08",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4206306-12100-20011008",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2001-10-01",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4202909-12100-20011001",
+     "mortos": 1,
+     "feridos": 1,
+     "desabrigados": 20,
+     "desalojados": 101,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2002-03",
+   "mes": "2002-03",
+   "inicio": "2002-03-15",
+   "fim": "2002-03-15",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2002-03-15",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4206306-12200-20020315",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2002-11",
+   "mes": "2002-11",
+   "inicio": "2002-11-21",
+   "fim": "2002-11-21",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2002-11-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4219200-12200-20021121",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2003-12",
+   "mes": "2003-12",
+   "inicio": "2003-12-11",
+   "fim": "2003-12-15",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 57,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2003-12-11",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4219200-12200-20031211",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2003-12-15",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4202909-12200-20031215",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 57,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2005-11",
+   "mes": "2005-11",
+   "inicio": "2005-11-16",
+   "fim": "2005-11-16",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 10,
+    "desalojados": 5,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2005-11-16",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4219200-12200-20051116",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 10,
+     "desalojados": 5,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2007-01",
+   "mes": "2007-01",
+   "inicio": "2007-01-05",
+   "fim": "2007-01-05",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 16,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2007-01-05",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202701-12200-20070105",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 16,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2007-03",
+   "mes": "2007-03",
+   "inicio": "2007-03-02",
+   "fim": "2007-03-02",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 16,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2007-03-02",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202701-12200-20070302",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 16,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2008-01",
+   "mes": "2008-01",
+   "inicio": "2008-01-31",
+   "fim": "2008-01-31",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 36,
+    "desalojados": 1945,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2008-01-31",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4202909-12200-20080131",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 36,
+     "desalojados": 1945,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2008-11",
+   "mes": "2008-11",
+   "inicio": "2008-11-21",
+   "fim": "2008-11-23",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 1,
+    "feridos": 81,
+    "desabrigados": 1308,
+    "desalojados": 8066,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2008-11-23",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4202701-12200-20081123",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 8,
+     "desalojados": 6,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2008-11-22",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4206306-12200-20081122",
+     "mortos": 0,
+     "feridos": 15,
+     "desabrigados": 100,
+     "desalojados": 60,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2008-11-21",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202909-12200-20081121",
+     "mortos": 1,
+     "feridos": 66,
+     "desabrigados": 1200,
+     "desalojados": 8000,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2010-04",
+   "mes": "2010-04",
+   "inicio": "2010-04-26",
+   "fim": "2010-04-28",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 48,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2010-04-26",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4206306-12200-20100426",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2010-04-28",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4202909-12200-20100428",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 48,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2011-03",
+   "mes": "2011-03",
+   "inicio": "2011-03-12",
+   "fim": "2011-03-18",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 3,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 90,
+    "desalojados": 210,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2011-03-18",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4202701-12200-20110318",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 20,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2011-03-12",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4206306-12200-20110312",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 10,
+     "desalojados": 90,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2011-03-12",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4202909-12200-20110312",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 80,
+     "desalojados": 100,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2011-09",
+   "mes": "2011-09",
+   "inicio": "2011-09-08",
+   "fim": "2011-09-12",
+   "tipologias": [
+    "Alagamentos",
+    "Enxurradas",
+    "Inundações"
+   ],
+   "n_municipios": 4,
+   "totais": {
+    "mortos": 1,
+    "feridos": 2,
+    "desabrigados": 40,
+    "desalojados": 648,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2011-09-08",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-A-4219200-12200-20110908",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 28,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2011-09-09",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-A-4202701-12100-20110909",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 22,
+     "desalojados": 235,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2011-09-09",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-A-4206306-12300-20110909",
+     "mortos": 1,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 35,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Guabiruba",
+     "cod_ibge": 4206306,
+     "ordem_rio": 2,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4206306-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2011-09-09",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-A-4202909-12100-20110909",
+     "mortos": 0,
+     "feridos": 2,
+     "desabrigados": 18,
+     "desalojados": 350,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2011-09-12",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-P-4202909-12100-20110912",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2013-09",
+   "mes": "2013-09",
+   "inicio": "2013-09-23",
+   "fim": "2013-09-23",
+   "tipologias": [
+    "Inundações"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2013-09-23",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4202909-12100-20130923",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2013-10",
+   "mes": "2013-10",
+   "inicio": "2013-10-04",
+   "fim": "2013-10-07",
+   "tipologias": [
+    "Alagamentos",
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 13,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2013-10-04",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4219200-12200-20130920",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2013-10-07",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4202701-12300-20130919",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 13,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2015-09",
+   "mes": "2015-09",
+   "inicio": "2015-09-29",
+   "fim": "2015-09-29",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Vidal Ramos",
+     "cod_ibge": 4219200,
+     "ordem_rio": 0,
+     "data_evento": "2015-09-29",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4219200-12200-20150918",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2015-10",
+   "mes": "2015-10",
+   "inicio": "2015-10-13",
+   "fim": "2015-10-22",
+   "tipologias": [
+    "Alagamentos",
+    "Inundações"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 30,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2015-10-13",
+     "tipologia": "Alagamentos",
+     "cobrade": 12300,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12300-20151009",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2015-10-22",
+     "tipologia": "Inundações",
+     "cobrade": 12100,
+     "status": "Registro",
+     "protocolo": "SC-F-4202909-12100-20151021",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 30,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2016-01",
+   "mes": "2016-01",
+   "inicio": "2016-01-12",
+   "fim": "2016-01-12",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2016-01-12",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20151224",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2016-03",
+   "mes": "2016-03",
+   "inicio": "2016-03-03",
+   "fim": "2016-03-03",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2016-03-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20160303",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2017-01",
+   "mes": "2017-01",
+   "inicio": "2017-01-05",
+   "fim": "2017-01-05",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 24,
+    "desalojados": 1800,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2017-01-05",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20170105",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 4,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2017-01-05",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Reconhecido",
+     "protocolo": "SC-F-4202909-12200-20170105",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 20,
+     "desalojados": 1800,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2017-03",
+   "mes": "2017-03",
+   "inicio": "2017-03-03",
+   "fim": "2017-03-03",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2017-03-03",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202909-12200-20170303",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2017-06",
+   "mes": "2017-06",
+   "inicio": "2017-06-04",
+   "fim": "2017-06-04",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 1,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2017-06-04",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20170604",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 1,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2017-10",
+   "mes": "2017-10",
+   "inicio": "2017-10-06",
+   "fim": "2017-10-06",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2017-10-06",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202909-12200-20171006",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2018-01",
+   "mes": "2018-01",
+   "inicio": "2018-01-16",
+   "fim": "2018-01-16",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 2,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 4,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2018-01-16",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20180116",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 4,
+     "desalojados": 0,
+     "desaparecidos": 0
+    },
+    {
+     "municipio": "Brusque",
+     "cod_ibge": 4202909,
+     "ordem_rio": 3,
+     "data_evento": "2018-01-16",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202909-12200-20180116",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2018-03",
+   "mes": "2018-03",
+   "inicio": "2018-03-25",
+   "fim": "2018-03-25",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2018-03-25",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20180325",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  },
+  {
+   "id": "itajai-mirim-2019-01",
+   "mes": "2019-01",
+   "inicio": "2019-01-17",
+   "fim": "2019-01-17",
+   "tipologias": [
+    "Enxurradas"
+   ],
+   "n_municipios": 1,
+   "totais": {
+    "mortos": 0,
+    "feridos": 0,
+    "desabrigados": 0,
+    "desalojados": 0,
+    "desaparecidos": 0
+   },
+   "registros": [
+    {
+     "municipio": "Botuverá",
+     "cod_ibge": 4202701,
+     "ordem_rio": 1,
+     "data_evento": "2019-01-17",
+     "tipologia": "Enxurradas",
+     "cobrade": 12200,
+     "status": "Registro",
+     "protocolo": "SC-F-4202701-12200-20190117",
+     "mortos": 0,
+     "feridos": 0,
+     "desabrigados": 0,
+     "desalojados": 0,
+     "desaparecidos": 0
+    }
+   ]
+  }
+ ]
+}
