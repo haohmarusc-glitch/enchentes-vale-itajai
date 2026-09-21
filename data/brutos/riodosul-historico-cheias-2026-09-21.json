@@ -1,0 +1,1714 @@
+{
+ "_meta": {
+  "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
+  "cidade": "rio-do-sul",
+  "arquivo_html": "riodosul-historico-cheias-2026-09-21.html",
+  "sha256_html": "522a847ac414fcfe6f931de6156629317d0324a77d33f2efb1a5e3c3ba50e675",
+  "convertido_em": "2026-09-21T11:21:41+00:00",
+  "regra": "cópia fiel da tabela municipal; NÃO é enchentes.json e não altera registro nenhum — inclusão só por decisão explícita",
+  "referencia": null,
+  "avisos": []
+ },
+ "registros": [
+  {
+   "linha": 2,
+   "ano": 2024,
+   "data": "2024-07-12",
+   "precisao": "dia",
+   "data_na_fonte": "12 de julho",
+   "nivel_m": 7.49,
+   "volume_mm": 51.4,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 3,
+   "ano": 2024,
+   "data": "2024-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 7.39,
+   "volume_mm": 70.8,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 4,
+   "ano": 2024,
+   "data": "2024-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 7.34,
+   "volume_mm": 46.8,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 5,
+   "ano": 2024,
+   "data": "2024-05-18",
+   "precisao": "dia",
+   "data_na_fonte": "18 de maio",
+   "nivel_m": 8.97,
+   "volume_mm": 175.4,
+   "dias_chuva": 3
+  },
+  {
+   "linha": 6,
+   "ano": 2023,
+   "data": "2023-11",
+   "precisao": "mes",
+   "data_na_fonte": "Novembro",
+   "nivel_m": 8.33,
+   "volume_mm": 83.2,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 7,
+   "ano": 2023,
+   "data": "2023-11",
+   "precisao": "mes",
+   "data_na_fonte": "Novembro",
+   "nivel_m": 6.77,
+   "volume_mm": 22.4,
+   "dias_chuva": 1
+  },
+  {
+   "linha": 8,
+   "ano": 2023,
+   "data": "2023-11-17",
+   "precisao": "dia",
+   "data_na_fonte": "17 de novembro",
+   "nivel_m": 13.04,
+   "volume_mm": 185.0,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 9,
+   "ano": 2023,
+   "data": "2023-11",
+   "precisao": "mes",
+   "data_na_fonte": "Novembro",
+   "nivel_m": 8.2,
+   "volume_mm": 65.2,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 10,
+   "ano": 2023,
+   "data": "2023-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 7.78,
+   "volume_mm": 101.0,
+   "dias_chuva": 1
+  },
+  {
+   "linha": 11,
+   "ano": 2023,
+   "data": "2023-10-13",
+   "precisao": "dia",
+   "data_na_fonte": "13 de outubro",
+   "nivel_m": 11.86,
+   "volume_mm": 393.2,
+   "dias_chuva": 9
+  },
+  {
+   "linha": 12,
+   "ano": 2023,
+   "data": "2023-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 7.3,
+   "volume_mm": 92.2,
+   "dias_chuva": 3
+  },
+  {
+   "linha": 13,
+   "ano": 2022,
+   "data": "2022-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 6.42,
+   "volume_mm": 27.3,
+   "dias_chuva": 1
+  },
+  {
+   "linha": 14,
+   "ano": 2022,
+   "data": "2022-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 7.47,
+   "volume_mm": 76.8,
+   "dias_chuva": 3
+  },
+  {
+   "linha": 15,
+   "ano": 2022,
+   "data": "2022-06",
+   "precisao": "mes",
+   "data_na_fonte": "Junho",
+   "nivel_m": 6.72,
+   "volume_mm": 84.2,
+   "dias_chuva": 3
+  },
+  {
+   "linha": 16,
+   "ano": 2022,
+   "data": "2022-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 9.34,
+   "volume_mm": 165.0,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 17,
+   "ano": 2020,
+   "data": "2020-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 6.46,
+   "volume_mm": 50.2,
+   "dias_chuva": 1
+  },
+  {
+   "linha": 18,
+   "ano": 2019,
+   "data": "2019-12",
+   "precisao": "mes",
+   "data_na_fonte": "Dezembro",
+   "nivel_m": 6.89,
+   "volume_mm": 85.6,
+   "dias_chuva": 1
+  },
+  {
+   "linha": 19,
+   "ano": 2018,
+   "data": "2018-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 7.55,
+   "volume_mm": 114.6,
+   "dias_chuva": 4
+  },
+  {
+   "linha": 20,
+   "ano": 2017,
+   "data": "2017-06",
+   "precisao": "mes",
+   "data_na_fonte": "Junho",
+   "nivel_m": 10.89,
+   "volume_mm": 328.8,
+   "dias_chuva": 9
+  },
+  {
+   "linha": 21,
+   "ano": 2016,
+   "data": "2016-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 6.68,
+   "volume_mm": 131.0,
+   "dias_chuva": 4
+  },
+  {
+   "linha": 22,
+   "ano": 2015,
+   "data": "2015-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 10.71,
+   "volume_mm": 109.0,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 23,
+   "ano": 2015,
+   "data": "2015-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 8.75,
+   "volume_mm": 41.0,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 24,
+   "ano": 2015,
+   "data": "2015-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 7.24,
+   "volume_mm": 44.0,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 25,
+   "ano": 2015,
+   "data": "2015-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 7.23,
+   "volume_mm": 70.4,
+   "dias_chuva": 2
+  },
+  {
+   "linha": 26,
+   "ano": 2014,
+   "data": "2014-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 8.16,
+   "volume_mm": 147.4,
+   "dias_chuva": 8
+  },
+  {
+   "linha": 27,
+   "ano": 2014,
+   "data": "2014-06",
+   "precisao": "mes",
+   "data_na_fonte": "Junho",
+   "nivel_m": 9.42,
+   "volume_mm": 152.6,
+   "dias_chuva": 6
+  },
+  {
+   "linha": 28,
+   "ano": 2014,
+   "data": "2014-06",
+   "precisao": "mes",
+   "data_na_fonte": "Junho",
+   "nivel_m": 7.76,
+   "volume_mm": 147.5,
+   "dias_chuva": 4
+  },
+  {
+   "linha": 29,
+   "ano": 2013,
+   "data": "2013-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 10.39,
+   "volume_mm": 131.1,
+   "dias_chuva": 4
+  },
+  {
+   "linha": 30,
+   "ano": 2011,
+   "data": "2011-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 12.96,
+   "volume_mm": 300.6,
+   "dias_chuva": 6
+  },
+  {
+   "linha": 31,
+   "ano": 2011,
+   "data": "2011-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 8.76,
+   "volume_mm": 344.2,
+   "dias_chuva": 17
+  },
+  {
+   "linha": 32,
+   "ano": 2011,
+   "data": "2011-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 8.83,
+   "volume_mm": 143.4,
+   "dias_chuva": 5
+  },
+  {
+   "linha": 33,
+   "ano": 2011,
+   "data": "2011-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 6.5,
+   "volume_mm": 72.2,
+   "dias_chuva": 3
+  },
+  {
+   "linha": 34,
+   "ano": 2010,
+   "data": "2010-04",
+   "precisao": "mes",
+   "data_na_fonte": "Abril",
+   "nivel_m": 7.53,
+   "volume_mm": 254.0,
+   "dias_chuva": 7
+  },
+  {
+   "linha": 35,
+   "ano": 2009,
+   "data": "2009-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 8.55,
+   "volume_mm": 292.0,
+   "dias_chuva": 13
+  },
+  {
+   "linha": 36,
+   "ano": 2007,
+   "data": "2007-11",
+   "precisao": "mes",
+   "data_na_fonte": "Novembro",
+   "nivel_m": 6.76,
+   "volume_mm": 142.9,
+   "dias_chuva": 12
+  },
+  {
+   "linha": 37,
+   "ano": 2005,
+   "data": "2005-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 7.64,
+   "volume_mm": 234.3,
+   "dias_chuva": 19
+  },
+  {
+   "linha": 38,
+   "ano": 2005,
+   "data": "2005-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 6.87,
+   "volume_mm": 187.5,
+   "dias_chuva": 9
+  },
+  {
+   "linha": 39,
+   "ano": 2004,
+   "data": "2004-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 6.89,
+   "volume_mm": 110.3,
+   "dias_chuva": 4
+  },
+  {
+   "linha": 40,
+   "ano": 2002,
+   "data": "2002-11",
+   "precisao": "mes",
+   "data_na_fonte": "Novembro",
+   "nivel_m": 7.15,
+   "volume_mm": 225.3,
+   "dias_chuva": 14
+  },
+  {
+   "linha": 41,
+   "ano": 2001,
+   "data": "2001-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 9.1,
+   "volume_mm": 159.5,
+   "dias_chuva": 12
+  },
+  {
+   "linha": 42,
+   "ano": 1999,
+   "data": "1999-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 7.0,
+   "volume_mm": 183.0,
+   "dias_chuva": 15
+  },
+  {
+   "linha": 43,
+   "ano": 1998,
+   "data": "1998-04",
+   "precisao": "mes",
+   "data_na_fonte": "Abril",
+   "nivel_m": 7.96,
+   "volume_mm": 198.0,
+   "dias_chuva": 10
+  },
+  {
+   "linha": 44,
+   "ano": 1997,
+   "data": "1997-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 7.33,
+   "volume_mm": 247.0,
+   "dias_chuva": 22
+  },
+  {
+   "linha": 45,
+   "ano": 1997,
+   "data": "1997-02",
+   "precisao": "mes",
+   "data_na_fonte": "Fevereiro",
+   "nivel_m": 8.72,
+   "volume_mm": 297.0,
+   "dias_chuva": 16
+  },
+  {
+   "linha": 46,
+   "ano": 1992,
+   "data": "1992-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 8.52,
+   "volume_mm": 295.1,
+   "dias_chuva": 12
+  },
+  {
+   "linha": 47,
+   "ano": 1984,
+   "data": "1984-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 12.8,
+   "volume_mm": 324.6,
+   "dias_chuva": 14
+  },
+  {
+   "linha": 48,
+   "ano": 1983,
+   "data": "1983-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 7.6,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 49,
+   "ano": 1983,
+   "data": "1983-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 13.58,
+   "volume_mm": 606.7,
+   "dias_chuva": 20
+  },
+  {
+   "linha": 50,
+   "ano": 1983,
+   "data": "1983-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 7.35,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 51,
+   "ano": 1980,
+   "data": "1980-12",
+   "precisao": "mes",
+   "data_na_fonte": "Dezembro",
+   "nivel_m": 7.2,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 52,
+   "ano": 1977,
+   "data": "1977-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 8.85,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 53,
+   "ano": 1975,
+   "data": "1975-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 7.88,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 54,
+   "ano": 1973,
+   "data": "1973-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 8.1,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 55,
+   "ano": 1973,
+   "data": "1973-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 7.15,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 56,
+   "ano": 1972,
+   "data": "1972-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 9.15,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 57,
+   "ano": 1971,
+   "data": "1971-06",
+   "precisao": "mes",
+   "data_na_fonte": "Junho",
+   "nivel_m": 7.0,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 58,
+   "ano": 1969,
+   "data": "1969-04",
+   "precisao": "mes",
+   "data_na_fonte": "Abril",
+   "nivel_m": 7.45,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 59,
+   "ano": 1966,
+   "data": "1966-02",
+   "precisao": "mes",
+   "data_na_fonte": "Fevereiro",
+   "nivel_m": 10.0,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 60,
+   "ano": 1961,
+   "data": "1961-11",
+   "precisao": "mes",
+   "data_na_fonte": "Novembro",
+   "nivel_m": 9.75,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 61,
+   "ano": 1961,
+   "data": "1961-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 8.2,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 62,
+   "ano": 1957,
+   "data": "1957-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 7.2,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 63,
+   "ano": 1957,
+   "data": "1957-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 10.65,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 64,
+   "ano": 1957,
+   "data": "1957-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 9.65,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 65,
+   "ano": 1957,
+   "data": "1957-07",
+   "precisao": "mes",
+   "data_na_fonte": "Julho",
+   "nivel_m": 7.37,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 66,
+   "ano": 1955,
+   "data": "1955-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 8.3,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 67,
+   "ano": 1954,
+   "data": "1954-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 10.7,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 68,
+   "ano": 1953,
+   "data": "1953-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 8.25,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 69,
+   "ano": 1950,
+   "data": "1950-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 8.75,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 70,
+   "ano": 1948,
+   "data": "1948-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 9.0,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 71,
+   "ano": 1939,
+   "data": "1939-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 8.8,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 72,
+   "ano": 1933,
+   "data": "1933-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 9.12,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 73,
+   "ano": 1931,
+   "data": "1931-09",
+   "precisao": "mes",
+   "data_na_fonte": "Setembro",
+   "nivel_m": 7.54,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 74,
+   "ano": 1931,
+   "data": "1931-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 10.18,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 75,
+   "ano": 1928,
+   "data": "1928-08",
+   "precisao": "mes",
+   "data_na_fonte": "Agosto",
+   "nivel_m": 8.13,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 76,
+   "ano": 1928,
+   "data": "1928-05",
+   "precisao": "mes",
+   "data_na_fonte": "Maio",
+   "nivel_m": 8.63,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 77,
+   "ano": 1927,
+   "data": "1927-06",
+   "precisao": "mes",
+   "data_na_fonte": "Junho",
+   "nivel_m": 10.0,
+   "volume_mm": null,
+   "dias_chuva": null
+  },
+  {
+   "linha": 78,
+   "ano": 1911,
+   "data": "1911-10",
+   "precisao": "mes",
+   "data_na_fonte": "Outubro",
+   "nivel_m": 12.2,
+   "volume_mm": null,
+   "dias_chuva": null
+  }
+ ],
+ "reconciliacao": {
+  "resumo": {
+   "linhas_validas": 77,
+   "ja_cadastradas": 13,
+   "candidatas_a_inclusao": 57,
+   "segundo_pico_no_mesmo_mes": 7,
+   "com_dia_diferente_ou_novo": 0,
+   "cadastrados_sem_linha_na_tabela": 0
+  },
+  "ja_cadastradas": [
+   {
+    "linha": 8,
+    "ano": 2023,
+    "data": "2023-11-17",
+    "precisao": "dia",
+    "data_na_fonte": "17 de novembro",
+    "nivel_m": 13.04,
+    "volume_mm": 185.0,
+    "dias_chuva": 2,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "2023-11-18",
+     "pico_m": 13.04,
+     "data_na_fonte": "2023-11-17"
+    }
+   },
+   {
+    "linha": 11,
+    "ano": 2023,
+    "data": "2023-10-13",
+    "precisao": "dia",
+    "data_na_fonte": "13 de outubro",
+    "nivel_m": 11.86,
+    "volume_mm": 393.2,
+    "dias_chuva": 9,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "2023-10-13",
+     "pico_m": 11.86,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 20,
+    "ano": 2017,
+    "data": "2017-06",
+    "precisao": "mes",
+    "data_na_fonte": "Junho",
+    "nivel_m": 10.89,
+    "volume_mm": 328.8,
+    "dias_chuva": 9,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "2017-06",
+     "pico_m": 10.89,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 22,
+    "ano": 2015,
+    "data": "2015-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 10.71,
+    "volume_mm": 109.0,
+    "dias_chuva": 2,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "2015-10",
+     "pico_m": 10.71,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 29,
+    "ano": 2013,
+    "data": "2013-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 10.39,
+    "volume_mm": 131.1,
+    "dias_chuva": 4,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "2013-09",
+     "pico_m": 10.39,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 30,
+    "ano": 2011,
+    "data": "2011-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 12.96,
+    "volume_mm": 300.6,
+    "dias_chuva": 6,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "2011-09",
+     "pico_m": 12.96,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 47,
+    "ano": 1984,
+    "data": "1984-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 12.8,
+    "volume_mm": 324.6,
+    "dias_chuva": 14,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1984-08",
+     "pico_m": 12.8,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 48,
+    "ano": 1983,
+    "data": "1983-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 7.6,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1983-09",
+     "pico_m": 7.6,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 49,
+    "ano": 1983,
+    "data": "1983-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 13.58,
+    "volume_mm": 606.7,
+    "dias_chuva": 20,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1983-07",
+     "pico_m": 13.58,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 50,
+    "ano": 1983,
+    "data": "1983-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 7.35,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1983-05",
+     "pico_m": 7.35,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 63,
+    "ano": 1957,
+    "data": "1957-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 10.65,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1957-08",
+     "pico_m": 10.65,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 67,
+    "ano": 1954,
+    "data": "1954-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 10.7,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1954-10",
+     "pico_m": 10.7,
+     "data_na_fonte": null
+    }
+   },
+   {
+    "linha": 78,
+    "ano": 1911,
+    "data": "1911-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 12.2,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "já cadastrada",
+    "cadastrado": {
+     "data": "1911-10",
+     "pico_m": 12.2,
+     "data_na_fonte": null
+    }
+   }
+  ],
+  "candidatas_a_inclusao": [
+   {
+    "linha": 2,
+    "ano": 2024,
+    "data": "2024-07-12",
+    "precisao": "dia",
+    "data_na_fonte": "12 de julho",
+    "nivel_m": 7.49,
+    "volume_mm": 51.4,
+    "dias_chuva": 2,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 3,
+    "ano": 2024,
+    "data": "2024-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 7.39,
+    "volume_mm": 70.8,
+    "dias_chuva": 2,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 4,
+    "ano": 2024,
+    "data": "2024-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 7.34,
+    "volume_mm": 46.8,
+    "dias_chuva": 2,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 5,
+    "ano": 2024,
+    "data": "2024-05-18",
+    "precisao": "dia",
+    "data_na_fonte": "18 de maio",
+    "nivel_m": 8.97,
+    "volume_mm": 175.4,
+    "dias_chuva": 3,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 12,
+    "ano": 2023,
+    "data": "2023-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 7.3,
+    "volume_mm": 92.2,
+    "dias_chuva": 3,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 13,
+    "ano": 2022,
+    "data": "2022-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 6.42,
+    "volume_mm": 27.3,
+    "dias_chuva": 1,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 14,
+    "ano": 2022,
+    "data": "2022-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 7.47,
+    "volume_mm": 76.8,
+    "dias_chuva": 3,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 15,
+    "ano": 2022,
+    "data": "2022-06",
+    "precisao": "mes",
+    "data_na_fonte": "Junho",
+    "nivel_m": 6.72,
+    "volume_mm": 84.2,
+    "dias_chuva": 3,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 16,
+    "ano": 2022,
+    "data": "2022-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 9.34,
+    "volume_mm": 165.0,
+    "dias_chuva": 2,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 17,
+    "ano": 2020,
+    "data": "2020-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 6.46,
+    "volume_mm": 50.2,
+    "dias_chuva": 1,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 18,
+    "ano": 2019,
+    "data": "2019-12",
+    "precisao": "mes",
+    "data_na_fonte": "Dezembro",
+    "nivel_m": 6.89,
+    "volume_mm": 85.6,
+    "dias_chuva": 1,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 19,
+    "ano": 2018,
+    "data": "2018-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 7.55,
+    "volume_mm": 114.6,
+    "dias_chuva": 4,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 21,
+    "ano": 2016,
+    "data": "2016-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 6.68,
+    "volume_mm": 131.0,
+    "dias_chuva": 4,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 25,
+    "ano": 2015,
+    "data": "2015-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 7.23,
+    "volume_mm": 70.4,
+    "dias_chuva": 2,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 26,
+    "ano": 2014,
+    "data": "2014-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 8.16,
+    "volume_mm": 147.4,
+    "dias_chuva": 8,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 27,
+    "ano": 2014,
+    "data": "2014-06",
+    "precisao": "mes",
+    "data_na_fonte": "Junho",
+    "nivel_m": 9.42,
+    "volume_mm": 152.6,
+    "dias_chuva": 6,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 28,
+    "ano": 2014,
+    "data": "2014-06",
+    "precisao": "mes",
+    "data_na_fonte": "Junho",
+    "nivel_m": 7.76,
+    "volume_mm": 147.5,
+    "dias_chuva": 4,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 31,
+    "ano": 2011,
+    "data": "2011-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 8.76,
+    "volume_mm": 344.2,
+    "dias_chuva": 17,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 32,
+    "ano": 2011,
+    "data": "2011-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 8.83,
+    "volume_mm": 143.4,
+    "dias_chuva": 5,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 33,
+    "ano": 2011,
+    "data": "2011-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 6.5,
+    "volume_mm": 72.2,
+    "dias_chuva": 3,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 34,
+    "ano": 2010,
+    "data": "2010-04",
+    "precisao": "mes",
+    "data_na_fonte": "Abril",
+    "nivel_m": 7.53,
+    "volume_mm": 254.0,
+    "dias_chuva": 7,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 35,
+    "ano": 2009,
+    "data": "2009-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 8.55,
+    "volume_mm": 292.0,
+    "dias_chuva": 13,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 36,
+    "ano": 2007,
+    "data": "2007-11",
+    "precisao": "mes",
+    "data_na_fonte": "Novembro",
+    "nivel_m": 6.76,
+    "volume_mm": 142.9,
+    "dias_chuva": 12,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 37,
+    "ano": 2005,
+    "data": "2005-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 7.64,
+    "volume_mm": 234.3,
+    "dias_chuva": 19,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 38,
+    "ano": 2005,
+    "data": "2005-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 6.87,
+    "volume_mm": 187.5,
+    "dias_chuva": 9,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 39,
+    "ano": 2004,
+    "data": "2004-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 6.89,
+    "volume_mm": 110.3,
+    "dias_chuva": 4,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 40,
+    "ano": 2002,
+    "data": "2002-11",
+    "precisao": "mes",
+    "data_na_fonte": "Novembro",
+    "nivel_m": 7.15,
+    "volume_mm": 225.3,
+    "dias_chuva": 14,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 41,
+    "ano": 2001,
+    "data": "2001-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 9.1,
+    "volume_mm": 159.5,
+    "dias_chuva": 12,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 42,
+    "ano": 1999,
+    "data": "1999-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 7.0,
+    "volume_mm": 183.0,
+    "dias_chuva": 15,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 43,
+    "ano": 1998,
+    "data": "1998-04",
+    "precisao": "mes",
+    "data_na_fonte": "Abril",
+    "nivel_m": 7.96,
+    "volume_mm": 198.0,
+    "dias_chuva": 10,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 44,
+    "ano": 1997,
+    "data": "1997-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 7.33,
+    "volume_mm": 247.0,
+    "dias_chuva": 22,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 45,
+    "ano": 1997,
+    "data": "1997-02",
+    "precisao": "mes",
+    "data_na_fonte": "Fevereiro",
+    "nivel_m": 8.72,
+    "volume_mm": 297.0,
+    "dias_chuva": 16,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 46,
+    "ano": 1992,
+    "data": "1992-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 8.52,
+    "volume_mm": 295.1,
+    "dias_chuva": 12,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 51,
+    "ano": 1980,
+    "data": "1980-12",
+    "precisao": "mes",
+    "data_na_fonte": "Dezembro",
+    "nivel_m": 7.2,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 52,
+    "ano": 1977,
+    "data": "1977-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 8.85,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 53,
+    "ano": 1975,
+    "data": "1975-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 7.88,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 54,
+    "ano": 1973,
+    "data": "1973-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 8.1,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 55,
+    "ano": 1973,
+    "data": "1973-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 7.15,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 56,
+    "ano": 1972,
+    "data": "1972-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 9.15,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 57,
+    "ano": 1971,
+    "data": "1971-06",
+    "precisao": "mes",
+    "data_na_fonte": "Junho",
+    "nivel_m": 7.0,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 58,
+    "ano": 1969,
+    "data": "1969-04",
+    "precisao": "mes",
+    "data_na_fonte": "Abril",
+    "nivel_m": 7.45,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 59,
+    "ano": 1966,
+    "data": "1966-02",
+    "precisao": "mes",
+    "data_na_fonte": "Fevereiro",
+    "nivel_m": 10.0,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 60,
+    "ano": 1961,
+    "data": "1961-11",
+    "precisao": "mes",
+    "data_na_fonte": "Novembro",
+    "nivel_m": 9.75,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 61,
+    "ano": 1961,
+    "data": "1961-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 8.2,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 62,
+    "ano": 1957,
+    "data": "1957-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 7.2,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 65,
+    "ano": 1957,
+    "data": "1957-07",
+    "precisao": "mes",
+    "data_na_fonte": "Julho",
+    "nivel_m": 7.37,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 66,
+    "ano": 1955,
+    "data": "1955-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 8.3,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 68,
+    "ano": 1953,
+    "data": "1953-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 8.25,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 69,
+    "ano": 1950,
+    "data": "1950-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 8.75,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 70,
+    "ano": 1948,
+    "data": "1948-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 9.0,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 71,
+    "ano": 1939,
+    "data": "1939-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 8.8,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 72,
+    "ano": 1933,
+    "data": "1933-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 9.12,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 73,
+    "ano": 1931,
+    "data": "1931-09",
+    "precisao": "mes",
+    "data_na_fonte": "Setembro",
+    "nivel_m": 7.54,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 74,
+    "ano": 1931,
+    "data": "1931-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 10.18,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 75,
+    "ano": 1928,
+    "data": "1928-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 8.13,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 76,
+    "ano": 1928,
+    "data": "1928-05",
+    "precisao": "mes",
+    "data_na_fonte": "Maio",
+    "nivel_m": 8.63,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   },
+   {
+    "linha": 77,
+    "ano": 1927,
+    "data": "1927-06",
+    "precisao": "mes",
+    "data_na_fonte": "Junho",
+    "nivel_m": 10.0,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "candidata a inclusão"
+   }
+  ],
+  "segundo_pico_no_mesmo_mes": [
+   {
+    "linha": 6,
+    "ano": 2023,
+    "data": "2023-11",
+    "precisao": "mes",
+    "data_na_fonte": "Novembro",
+    "nivel_m": 8.33,
+    "volume_mm": 83.2,
+    "dias_chuva": 2,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   },
+   {
+    "linha": 7,
+    "ano": 2023,
+    "data": "2023-11",
+    "precisao": "mes",
+    "data_na_fonte": "Novembro",
+    "nivel_m": 6.77,
+    "volume_mm": 22.4,
+    "dias_chuva": 1,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   },
+   {
+    "linha": 9,
+    "ano": 2023,
+    "data": "2023-11",
+    "precisao": "mes",
+    "data_na_fonte": "Novembro",
+    "nivel_m": 8.2,
+    "volume_mm": 65.2,
+    "dias_chuva": 2,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   },
+   {
+    "linha": 10,
+    "ano": 2023,
+    "data": "2023-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 7.78,
+    "volume_mm": 101.0,
+    "dias_chuva": 1,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   },
+   {
+    "linha": 23,
+    "ano": 2015,
+    "data": "2015-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 8.75,
+    "volume_mm": 41.0,
+    "dias_chuva": 2,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   },
+   {
+    "linha": 24,
+    "ano": 2015,
+    "data": "2015-10",
+    "precisao": "mes",
+    "data_na_fonte": "Outubro",
+    "nivel_m": 7.24,
+    "volume_mm": 44.0,
+    "dias_chuva": 2,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   },
+   {
+    "linha": 64,
+    "ano": 1957,
+    "data": "1957-08",
+    "precisao": "mes",
+    "data_na_fonte": "Agosto",
+    "nivel_m": 9.65,
+    "volume_mm": null,
+    "dias_chuva": null,
+    "situacao": "segundo pico no mesmo mês de um cadastrado"
+   }
+  ],
+  "cadastrados_sem_linha_na_tabela": [],
+  "regra": "nada daqui entra em enchentes.json sem decisão explícita; o relatório é para decidir"
+ }
+}

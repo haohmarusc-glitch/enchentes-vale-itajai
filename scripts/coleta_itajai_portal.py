@@ -64,28 +64,41 @@ O QUE ESTE COLETOR NÃO FAZ
   número a número. São duas fontes oficiais do MESMO município discordando, e
   em DC-07 e DC-08 o portal é MAIS BAIXO, não mais alto. Trocar cota é decisão
   do Jefferson, com o documento na mão; ver as Pendências do README.
-* **Não busca os outros municípios — e agora o parâmetro é conhecido.**
+* **Não busca os outros municípios — e agora o CORPO de `?municipio_id=2` foi lido.**
   `props.municipios` lista Itajaí (1), Brusque (2), Blumenau (3) e Rio do Sul (4).
-  Em 19/09/2026, às 20h, uma auditoria externa abriu no navegador
-  `…/monitoramento/rios?municipio_id=2` e a página respondeu com Brusque:
-  "Estação MKS DCSC-00019", 1,96 m, medido em 19/09/2026 20:00. O parâmetro que
-  o corpo capturado não revelava é esse, e não foi adivinhado — foi aberto.
-  **Continua não ligado**, e por regra, não por preguiça: o que existe é uma
-  captura VISUAL, e este coletor é escrito contra o CORPO. Sem o
-  `data-page` de `?municipio_id=2` não se sabe se a lista de Brusque traz
-  coordenada (a identidade aqui é por coordenada, item 1) nem se o carimbo da
-  grandeza tem a mesma forma. Ligar às cegas repetiria o vínculo por nome.
-  Falta a captura do corpo com `?municipio_id=2` em `data/brutos/`.
-  ⚠️ **A captura já revelou uma armadilha desta página com outro município:**
-  o cabeçalho verde continuou dizendo "Situação atual em Itajaí" com data de
-  18/09/2026 17h35 enquanto o cartão da estação de Brusque trazia 19/09 20:00.
-  O carimbo bom é o do cartão — que é o que a regra 4 já manda ler
-  (`qualidade.nivel_rio_m.medido_em`), e o cabeçalho é exatamente o tipo de
-  data que rejuvenesceria leitura velha.
-  ⚠️ E revelou uma TERCEIRA escala de cotas para a DCSC-00019 (3,50/5,00/6,00),
-  que **não entra**: ver `cotas_divergencia.nao_adotada_portal_itajai` no
-  cadastro de Brusque. Mais um motivo para este coletor não adotar cota do
-  portal — o portal de Itajaí publica escala de estação que não é dele.
+  Em 19/09/2026 uma auditoria externa abriu `…/rios?municipio_id=2` no navegador
+  e viu Brusque; em 21/09/2026 o Jefferson salvou o corpo
+  (`data/brutos/itajai-portal-rios-municipio-2-brusque-2026-09-21.html`, 44.334
+  bytes, `consultadoEm` 2026-09-21T11:12:48Z), e o corpo diz:
+
+      props.municipioId = 2; UMA estação: codigo "DCSC-00019", nome "Estação MKS
+      DCSC-00019", municipio_id 2, fonte "Brusque", **latitude e longitude NULL**,
+      atualizacao_esperada_segundos 600, nivel_rio_m 1.97, medido_em
+      "2026-09-21T11:00:00+00:00" (UTC com offset, SEM microssegundos — a forma
+      varia), qualidade.nivel_rio_m.{estado "atual", medido_em idem}, tendencia
+      "descendo", situacao "monitoramento", atencao_m 3.5, alerta_m 5,
+      emergencia_m 6, serie_12_h com 145 pontos de 5 em 5 minutos.
+
+  **Continua não ligado, e agora por um motivo medido, não por falta de captura:**
+  a estação vem SEM coordenada, e a identidade neste coletor é provada pela
+  coordenada (regra 1). Ligar seria vínculo por nome: "DCSC-00019" é o código
+  que o cadastro de Brusque cita como `identificada_pelo_monitor_de_itajai_como`,
+  e código igual não prova régua igual (foi assim com o Salseiro). Fecha com a
+  coordenada da DCSC-00019 vinda da própria DCSC, ou com o operador dizendo que
+  ponto o portal de Itajaí republica.
+  ⚠️ **A armadilha do cabeçalho está confirmada NO CORPO:** a página de Brusque
+  traz "Situação atual em Itajaí — Normalidade — Atualizado em 18/09/2026,
+  17:35" (HTML da moldura, fora do `data-page`) enquanto o cartão da estação diz
+  21/09/2026 08:00. Quem lê o cabeçalho lê a situação de OUTRA cidade, com data
+  de três dias antes. Por isso existem `municipio_da_carga()` e
+  `conferir_municipio()`: o município pedido, o `props.municipioId`, o
+  `municipio_id` de cada estação e a `fonte` têm que concordar, e `parse()`
+  recusa a página inteira quando `props.municipioId` não é o de Itajaí. Nunca
+  inferir a cidade pelo domínio do portal.
+  ⚠️ E a TERCEIRA escala de cotas da DCSC-00019 (3,50/5,00/6,00) agora está
+  lida no corpo, não só na tela: ver `cotas_divergencia.nao_adotada_portal_itajai`
+  no cadastro de Brusque. Continua não entrando: o portal de Itajaí publica
+  escala de estação que não é dele.
 
 Uso:
     python3 scripts/coleta_itajai_portal.py --arquivo pagina.html   # sem rede
@@ -116,6 +129,10 @@ TOLERANCIA_COORD_M = 50.0
 
 RE_DATA_PAGE = re.compile(r'<div[^>]*\bid="app"[^>]*\bdata-page="([^"]*)"', re.I)
 
+#: `props.municipioId` da página que este coletor lê. Os outros três (Brusque 2,
+#: Blumenau 3, Rio do Sul 4) existem no mesmo portal e NÃO são lidos aqui.
+MUNICIPIO_ITAJAI = 1
+
 
 def carga(pagina: str) -> dict:
     """O JSON do `data-page`, ou {} quando a página não é a esperada."""
@@ -126,6 +143,52 @@ def carga(pagina: str) -> dict:
         return json.loads(_html.unescape(m.group(1)))
     except json.JSONDecodeError:
         return {}
+
+
+def _sem_acento(texto: str) -> str:
+    import unicodedata
+    t = unicodedata.normalize("NFD", texto)
+    return "".join(c for c in t if unicodedata.category(c) != "Mn").lower()
+
+
+def municipio_da_carga(dados: dict) -> dict | None:
+    """{id, nome} do município que a PÁGINA diz servir, ou None se ela não diz.
+
+    Vem de `props.municipioId` cruzado com `props.municipios`. Nunca do domínio:
+    o portal é de Itajaí e serve quatro cidades."""
+    props = dados.get("props") or {}
+    mid = props.get("municipioId")
+    if not isinstance(mid, int):
+        return None
+    nome = next((m.get("nome") for m in (props.get("municipios") or [])
+                 if isinstance(m, dict) and m.get("id") == mid), None)
+    return {"id": mid, "nome": nome}
+
+
+def conferir_municipio(dados: dict, esperado: int) -> str | None:
+    """None quando pedido, página, estações e fonte concordam; senão, o motivo.
+
+    Quatro coisas têm que apontar para a mesma cidade: o `municipio_id` pedido,
+    o `props.municipioId` respondido, o `municipio_id` de cada estação e a
+    `fonte` que ela declara. A página de Brusque com cabeçalho "Situação atual
+    em Itajaí" (21/09/2026) é o motivo de conferir os quatro, e não um."""
+    m = municipio_da_carga(dados)
+    if m is None:
+        return "a página não diz de que município é (sem props.municipioId)"
+    if m["id"] != esperado:
+        return f"pedido municipio_id={esperado}; a página respondeu {m['id']} ({m['nome']!r})"
+    for e in (dados.get("props") or {}).get("estacoes") or []:
+        if not isinstance(e, dict):
+            continue
+        if e.get("municipio_id") not in (None, esperado):
+            return (f"estação {e.get('codigo')!r} é do município {e.get('municipio_id')}, "
+                    f"não de {esperado}")
+        fonte, nome = e.get("fonte"), m["nome"]
+        if isinstance(fonte, str) and isinstance(nome, str) \
+                and _sem_acento(nome) not in _sem_acento(fonte):
+            return (f"estação {e.get('codigo')!r} declara fonte {fonte!r}, e o município da "
+                    f"página é {nome!r}")
+    return None
 
 
 def distancia_m(a: tuple[float, float], b: tuple[float, float]) -> float:
@@ -163,6 +226,12 @@ def parse(pagina: str) -> list[dict]:
     dados = carga(pagina)
     estacoes = ((dados.get("props") or {}).get("estacoes")) or []
     if not isinstance(estacoes, list):
+        return []
+    # A página de OUTRO município tem a mesma moldura e o mesmo cabeçalho
+    # "Situação atual em Itajaí". Nada dela pode virar leitura de Itajaí.
+    motivo = conferir_municipio(dados, MUNICIPIO_ITAJAI)
+    if motivo is not None:
+        print(f"recusada a página inteira — {motivo}", file=sys.stderr)
         return []
 
     cadastro = _por_codigo()
