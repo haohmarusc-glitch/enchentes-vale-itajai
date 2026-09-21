@@ -289,3 +289,36 @@ onde procurar, e continua sem número.
 | 8. Lacunas nos dois sentidos | **feito**: `lacunas` no JSON; pico sem Atlas segue pico, com "sem correspondência" |
 
 Regra que não mudou: nunca inventar altura usando danos ou COBRADE.
+
+## `--dry-run` e as três verificações que faltavam (21/09/2026, noite)
+
+Do "Plano seguro" do Jefferson, seção 1 e ponto 7 do plano de oito pontos.
+Tudo em `atlas_desastres.py`; nenhum dado mudou.
+
+- **`--dry-run`**: lê, filtra, verifica e imprime o resumo inteiro (fonte,
+  versão, cobertura, contagem por tipo, maiores episódios) **sem gravar nada**
+  em `data/desastres/`. Teste trava que o diretório nem é criado. É a rodada
+  que o plano pede antes da importação de verdade:
+
+  ```
+  python3 scripts/atlas_desastres.py --arquivo data/brutos/BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv --dry-run
+  ```
+
+- **Evento fora da cobertura declarada**: a cobertura sai do nome do arquivo
+  (`BD_Atlas_1991_2025_…` → 1991–2025; sem nome no padrão, 1991–2025 por
+  constante). Registro com `data_evento` fora dela é erro de dado ou base
+  diferente da declarada: **descartado com aviso** que lista os protocolos,
+  como já era com data inválida. Não entra em silêncio.
+- **Valor negativo**: `numero()` falha alto. Dano negativo não existe; aceitar
+  esconderia arquivo corrompido ou coluna trocada. Mesmo espírito do "texto não
+  vira 0".
+- **Versão diferente da anterior**: `versao_mudou()` compara a ficha nova com
+  o `fonte.json` gravado (nome, versão, publicação e sha256) e avisa alto o
+  que mudou, para que ninguém compare saída de v1.1 com v1.2 achando que é a
+  mesma coisa. Mesmo nome com conteúdo diferente também avisa (sha256). Não
+  bloqueia: base nova é esperada. Primeira rodada e mesma base ficam caladas.
+
+Já existiam e continuam: protocolo duplicado (entra uma vez), município fora
+do recorte, data inválida, quebra de codificação (latin-1 fixo, `csv` com
+aspas e quebra interna). **Nove testes novos**, incluindo o `main()` rodado
+de ponta a ponta com e sem `--dry-run`.
