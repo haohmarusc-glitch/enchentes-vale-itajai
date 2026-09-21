@@ -4,6 +4,20 @@
   "regra": "o Atlas comprova ocorrência, COBRADE, danos e reconhecimento; NÃO informa nível, hora do pico nem estação, e não altera pico nenhum",
   "janela_dias": 5,
   "confirmado_ate_dias": 1,
+  "divergente_ate_dias": 30,
+  "cobertura": {
+   "inicio": 1991,
+   "fim": 2025
+  },
+  "classificacoes": [
+   "confirmado",
+   "provável",
+   "provável (mês)",
+   "divergente",
+   "sem correspondência",
+   "fora da cobertura",
+   "sem base"
+  ],
   "cobrades": [
    "12100",
    "12200",
@@ -14,7 +28,10 @@
    "data/brutos/atlas-desastres-recorte-itajai-acu-2026-09-21.json",
    "data/brutos/atlas-desastres-recorte-itajai-mirim-2026-09-21.json"
   ],
-  "gerado_em": "2026-09-21T02:52:50+00:00"
+  "filtro_das_entradas": [
+   "Cobrade 12xxx (inundações, enxurradas, alagamentos)"
+  ],
+  "gerado_em": "2026-09-21T03:30:42+00:00"
  },
  "correspondencias": [
   {
@@ -23,7 +40,7 @@
    "pico_m": 16.3,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -32,7 +49,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -40,7 +58,7 @@
    "pico_m": 13.3,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -49,7 +67,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -57,7 +76,7 @@
    "pico_m": 9.0,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -66,7 +85,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -74,7 +94,7 @@
    "pico_m": 9.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -83,7 +103,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -91,7 +112,7 @@
    "pico_m": 10.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -100,7 +121,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -108,7 +130,7 @@
    "pico_m": 13.3,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -117,7 +139,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -125,7 +148,7 @@
    "pico_m": 11.0,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -134,7 +157,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -142,7 +166,7 @@
    "pico_m": 10.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -151,7 +175,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -159,7 +184,7 @@
    "pico_m": 17.1,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -168,7 +193,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -176,7 +202,7 @@
    "pico_m": 12.8,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -185,7 +211,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -193,7 +220,7 @@
    "pico_m": 12.8,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -202,7 +229,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -210,7 +238,7 @@
    "pico_m": 13.8,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -219,7 +247,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -227,7 +256,7 @@
    "pico_m": 12.8,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -236,7 +265,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -244,7 +274,7 @@
    "pico_m": 11.3,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -253,7 +283,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -261,7 +292,7 @@
    "pico_m": 12.8,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -270,7 +301,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -278,7 +310,7 @@
    "pico_m": 16.9,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -287,7 +319,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -295,7 +328,7 @@
    "pico_m": 9.86,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -304,7 +337,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -312,7 +346,7 @@
    "pico_m": 9.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -321,7 +355,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -329,7 +364,7 @@
    "pico_m": 10.3,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -338,7 +373,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -346,7 +382,7 @@
    "pico_m": 9.5,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -355,7 +391,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -363,7 +400,7 @@
    "pico_m": 12.3,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -372,7 +409,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -380,7 +418,7 @@
    "pico_m": 8.2,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -389,7 +427,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -397,7 +436,7 @@
    "pico_m": 11.76,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -406,7 +445,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -414,7 +454,7 @@
    "pico_m": 11.76,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -423,7 +463,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -431,7 +472,7 @@
    "pico_m": 10.82,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -440,7 +481,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -448,7 +490,7 @@
    "pico_m": 10.3,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -457,7 +499,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -465,7 +508,7 @@
    "pico_m": 11.05,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -474,7 +517,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -482,7 +526,7 @@
    "pico_m": 11.25,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -491,7 +535,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -499,7 +544,7 @@
    "pico_m": 11.53,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -508,7 +553,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -516,7 +562,7 @@
    "pico_m": 9.75,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -525,7 +571,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -533,7 +580,7 @@
    "pico_m": 11.85,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -542,7 +589,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -550,7 +598,7 @@
    "pico_m": 11.65,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -559,7 +607,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -567,7 +616,7 @@
    "pico_m": 10.4,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -576,7 +625,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -584,7 +634,7 @@
    "pico_m": 11.45,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -593,7 +643,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -601,7 +652,7 @@
    "pico_m": 8.55,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -610,7 +661,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -618,7 +670,7 @@
    "pico_m": 10.5,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -627,7 +679,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -635,7 +688,7 @@
    "pico_m": 9.45,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -644,7 +697,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -652,7 +706,7 @@
    "pico_m": 11.85,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -661,7 +715,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -669,7 +724,7 @@
    "pico_m": 9.45,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -678,7 +733,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -686,7 +742,7 @@
    "pico_m": 9.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -695,7 +751,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -703,7 +760,7 @@
    "pico_m": 9.65,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -712,7 +769,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -720,7 +778,7 @@
    "pico_m": 9.56,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -729,7 +787,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -737,7 +796,7 @@
    "pico_m": 12.53,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -746,7 +805,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -754,7 +814,7 @@
    "pico_m": 12.53,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -763,7 +823,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -771,7 +832,7 @@
    "pico_m": 10.61,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -780,7 +841,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -788,7 +850,7 @@
    "pico_m": 9.28,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -797,7 +859,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -805,7 +868,7 @@
    "pico_m": 10.6,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -814,7 +877,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -822,7 +886,7 @@
    "pico_m": 13.07,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -831,7 +895,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -839,7 +904,7 @@
    "pico_m": 9.44,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -848,7 +913,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -856,7 +922,7 @@
    "pico_m": 9.31,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -865,7 +931,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -873,7 +940,7 @@
    "pico_m": 8.29,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -882,7 +949,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -890,7 +958,7 @@
    "pico_m": 10.35,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -899,7 +967,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -907,7 +976,7 @@
    "pico_m": 9.63,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -916,7 +985,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -924,7 +994,7 @@
    "pico_m": 12.49,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -933,7 +1003,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -941,7 +1012,7 @@
    "pico_m": 8.94,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -950,7 +1021,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -958,7 +1030,7 @@
    "pico_m": 9.29,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -967,7 +1039,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -975,7 +1048,7 @@
    "pico_m": 9.67,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -984,7 +1057,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -992,7 +1066,7 @@
    "pico_m": 9.22,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1001,7 +1075,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1009,7 +1084,7 @@
    "pico_m": 10.07,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1018,7 +1093,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1026,7 +1102,7 @@
    "pico_m": 10.5,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1035,7 +1111,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1043,7 +1120,7 @@
    "pico_m": 10.14,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1052,7 +1129,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1060,7 +1138,7 @@
    "pico_m": 10.35,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1069,7 +1147,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1077,7 +1156,7 @@
    "pico_m": 10.7,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1086,7 +1165,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1094,7 +1174,7 @@
    "pico_m": 11.35,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1103,7 +1183,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1111,7 +1192,7 @@
    "pico_m": 11.3,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1120,7 +1201,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1128,7 +1210,7 @@
    "pico_m": 9.35,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1137,7 +1219,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1145,7 +1228,7 @@
    "pico_m": 9.0,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1154,7 +1237,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1162,7 +1246,7 @@
    "pico_m": 9.3,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1171,7 +1255,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1179,7 +1264,7 @@
    "pico_m": 9.35,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1188,7 +1273,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1196,7 +1282,7 @@
    "pico_m": 12.35,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1205,7 +1291,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1213,7 +1300,7 @@
    "pico_m": 9.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1222,7 +1309,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1230,7 +1318,7 @@
    "pico_m": 12.63,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1239,7 +1327,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1247,7 +1336,7 @@
    "pico_m": 8.5,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1256,7 +1345,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1264,7 +1354,7 @@
    "pico_m": 8.3,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1273,7 +1363,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1281,7 +1372,7 @@
    "pico_m": 10.85,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1290,7 +1381,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1298,7 +1390,7 @@
    "pico_m": 9.0,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1307,7 +1399,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1315,7 +1408,7 @@
    "pico_m": 9.25,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1324,7 +1417,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1332,7 +1426,7 @@
    "pico_m": 11.5,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1341,7 +1435,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1349,7 +1444,7 @@
    "pico_m": 9.45,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1358,7 +1453,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1366,7 +1462,7 @@
    "pico_m": 10.45,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1375,7 +1471,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1383,7 +1480,7 @@
    "pico_m": 8.4,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1392,7 +1489,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1400,7 +1498,7 @@
    "pico_m": 13.27,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1409,7 +1507,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1417,7 +1516,7 @@
    "pico_m": 8.65,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1426,7 +1525,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1434,7 +1534,7 @@
    "pico_m": 8.15,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1443,7 +1543,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1451,7 +1552,7 @@
    "pico_m": 10.6,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1460,7 +1561,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1468,7 +1570,7 @@
    "pico_m": 12.52,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1477,7 +1579,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1485,7 +1588,7 @@
    "pico_m": 15.34,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1494,7 +1597,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1502,7 +1606,7 @@
    "pico_m": 11.75,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1511,7 +1615,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1519,7 +1624,7 @@
    "pico_m": 15.46,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1528,7 +1633,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1536,7 +1642,7 @@
    "pico_m": 8.82,
    "referencia": "IBGE (régua + 0,20 m)",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1545,7 +1651,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1562,7 +1669,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1579,7 +1687,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1596,7 +1705,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1613,7 +1723,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1630,7 +1741,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 0,
-   "desalojados": 0
+   "desalojados": 0,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1647,7 +1759,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1664,7 +1777,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1681,7 +1795,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 396,
-   "desalojados": 516
+   "desalojados": 516,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1698,7 +1813,8 @@
    "status": "Registro",
    "mortos": 24,
    "desabrigados": 5209,
-   "desalojados": 25000
+   "desalojados": 25000,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1715,7 +1831,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1732,7 +1849,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 16,
-   "desalojados": 104
+   "desalojados": 104,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1740,16 +1858,17 @@
    "pico_m": 8.5,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
-   "data_atlas": null,
-   "diferenca_dias": null,
-   "protocolo": null,
-   "cobrade": null,
-   "tipo": null,
-   "status": null,
+   "classificacao": "divergente",
+   "data_atlas": "2011-09-11",
+   "diferenca_dias": 11,
+   "protocolo": "SC-A-4202404-12100-20110911",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1766,7 +1885,8 @@
    "status": "Reconhecido",
    "mortos": 0,
    "desabrigados": 668,
-   "desalojados": 90000
+   "desalojados": 90000,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1783,7 +1903,8 @@
    "status": "Reconhecido",
    "mortos": 0,
    "desabrigados": 668,
-   "desalojados": 90000
+   "desalojados": 90000,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1800,7 +1921,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1808,16 +1930,17 @@
    "pico_m": 10.51,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
-   "data_atlas": null,
-   "diferenca_dias": null,
-   "protocolo": null,
-   "cobrade": null,
-   "tipo": null,
-   "status": null,
+   "classificacao": "divergente",
+   "data_atlas": "2013-10-02",
+   "diferenca_dias": 9,
+   "protocolo": "SC-F-4202404-12100-20130922",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1834,7 +1957,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1851,7 +1975,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1868,7 +1993,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1885,7 +2011,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1902,7 +2029,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1919,7 +2047,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1936,7 +2065,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1953,7 +2083,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 4,
-   "desalojados": 350
+   "desalojados": 350,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1961,7 +2092,7 @@
    "pico_m": 5.65,
    "referencia": null,
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1970,7 +2101,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1978,7 +2110,7 @@
    "pico_m": 7.58,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -1987,7 +2119,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "blumenau",
@@ -1995,7 +2128,7 @@
    "pico_m": 7.87,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2004,7 +2137,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2012,7 +2146,7 @@
    "pico_m": 12.2,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2021,7 +2155,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2029,7 +2164,7 @@
    "pico_m": 10.7,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2038,7 +2173,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2046,7 +2182,7 @@
    "pico_m": 10.65,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2055,7 +2191,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2063,7 +2200,7 @@
    "pico_m": 7.35,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2072,7 +2209,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2080,7 +2218,7 @@
    "pico_m": 13.58,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2089,7 +2227,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2097,7 +2236,7 @@
    "pico_m": 7.6,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2106,7 +2245,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2114,7 +2254,7 @@
    "pico_m": 12.8,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2123,7 +2263,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2140,7 +2281,16 @@
    "status": "Registro",
    "mortos": 2,
    "desabrigados": 2580,
-   "desalojados": 10320
+   "desalojados": 10320,
+   "outras_no_periodo": [
+    {
+     "data_atlas": "2011-09-12",
+     "protocolo": "SC-P-4214805-12100-20110912",
+     "cobrade": "12100",
+     "tipo": "Inundações",
+     "status": "Reconhecido"
+    }
+   ]
   },
   {
    "cidade": "rio-do-sul",
@@ -2157,7 +2307,8 @@
    "status": "Reconhecido",
    "mortos": 0,
    "desabrigados": 690,
-   "desalojados": 8010
+   "desalojados": 8010,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2174,7 +2325,8 @@
    "status": "Reconhecido",
    "mortos": 1,
    "desabrigados": 866,
-   "desalojados": 17636
+   "desalojados": 17636,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2191,7 +2343,8 @@
    "status": "Reconhecido",
    "mortos": 0,
    "desabrigados": 1090,
-   "desalojados": 14632
+   "desalojados": 14632,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2208,7 +2361,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "rio-do-sul",
@@ -2225,7 +2379,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "taio",
@@ -2242,7 +2397,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "timbo",
@@ -2259,7 +2415,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2267,7 +2424,7 @@
    "pico_m": 10.5,
    "referencia": null,
    "precisao_do_pico": "mes",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2276,7 +2433,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2293,7 +2451,8 @@
    "status": "Reconhecido",
    "mortos": 1,
    "desabrigados": 1200,
-   "desalojados": 8000
+   "desalojados": 8000,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2310,7 +2469,16 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 18,
-   "desalojados": 350
+   "desalojados": 350,
+   "outras_no_periodo": [
+    {
+     "data_atlas": "2011-09-12",
+     "protocolo": "SC-P-4202909-12100-20110912",
+     "cobrade": "12100",
+     "tipo": "Inundações",
+     "status": "Reconhecido"
+    }
+   ]
   },
   {
    "cidade": "brusque",
@@ -2327,7 +2495,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2344,7 +2513,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2361,7 +2531,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2378,7 +2549,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -2395,7 +2567,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2403,7 +2576,7 @@
    "pico_m": 8.3,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2412,7 +2585,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2420,7 +2594,7 @@
    "pico_m": 8.7,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2429,7 +2603,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2437,7 +2612,7 @@
    "pico_m": 8.5,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2446,7 +2621,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2454,7 +2630,7 @@
    "pico_m": 6.55,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2463,7 +2639,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2471,7 +2648,7 @@
    "pico_m": 6.48,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2480,7 +2657,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2488,7 +2666,7 @@
    "pico_m": 7.1,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2497,7 +2675,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2505,7 +2684,7 @@
    "pico_m": 6.72,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2514,7 +2693,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2522,7 +2702,7 @@
    "pico_m": 7.76,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2531,7 +2711,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2539,7 +2720,7 @@
    "pico_m": 8.04,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2548,7 +2729,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2565,7 +2747,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2582,7 +2765,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 80,
-   "desalojados": 761
+   "desalojados": 761,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2599,7 +2783,16 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 11,
-   "desalojados": 435
+   "desalojados": 435,
+   "outras_no_periodo": [
+    {
+     "data_atlas": "2011-09-12",
+     "protocolo": "SC-P-4207502-12100-20110912",
+     "cobrade": "12100",
+     "tipo": "Inundações",
+     "status": "Reconhecido"
+    }
+   ]
   },
   {
    "cidade": "indaial",
@@ -2616,7 +2809,8 @@
    "status": "Reconhecido",
    "mortos": 0,
    "desabrigados": 172,
-   "desalojados": 332
+   "desalojados": 332,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2633,7 +2827,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2650,7 +2845,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "indaial",
@@ -2667,7 +2863,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 0,
-   "desalojados": 3
+   "desalojados": 3,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2684,7 +2881,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2701,7 +2899,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2718,7 +2917,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2735,7 +2935,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2743,16 +2944,17 @@
    "pico_m": 6.75,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
-   "data_atlas": null,
-   "diferenca_dias": null,
-   "protocolo": null,
-   "cobrade": null,
-   "tipo": null,
-   "status": null,
+   "classificacao": "divergente",
+   "data_atlas": "2011-09-08",
+   "diferenca_dias": 8,
+   "protocolo": "SC-A-4205902-12100-20110908",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2769,7 +2971,8 @@
    "status": "Registro",
    "mortos": 16,
    "desabrigados": 4305,
-   "desalojados": 7153
+   "desalojados": 7153,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2786,7 +2989,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2803,7 +3007,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 0,
-   "desalojados": 0
+   "desalojados": 0,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2820,7 +3025,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2837,7 +3043,8 @@
    "status": "Registro",
    "mortos": 0,
    "desabrigados": 300,
-   "desalojados": 2530
+   "desalojados": 2530,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2845,7 +3052,7 @@
    "pico_m": 11.4,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2854,7 +3061,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2862,7 +3070,7 @@
    "pico_m": 8.6,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2871,7 +3079,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2879,7 +3088,7 @@
    "pico_m": 9.31,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2888,7 +3097,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2896,7 +3106,7 @@
    "pico_m": 7.84,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2905,7 +3115,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2913,7 +3124,7 @@
    "pico_m": 9.7,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2922,7 +3133,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2930,7 +3142,7 @@
    "pico_m": 7.73,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2939,7 +3151,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2947,7 +3160,7 @@
    "pico_m": 7.42,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2956,7 +3169,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2964,7 +3178,7 @@
    "pico_m": 8.61,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2973,7 +3187,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2981,7 +3196,7 @@
    "pico_m": 7.07,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -2990,7 +3205,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -2998,7 +3214,7 @@
    "pico_m": 9.27,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3007,7 +3223,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3015,7 +3232,7 @@
    "pico_m": 9.16,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3024,7 +3241,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3032,7 +3250,7 @@
    "pico_m": 8.33,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3041,7 +3259,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3049,7 +3268,7 @@
    "pico_m": 6.96,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3058,7 +3277,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3066,7 +3286,7 @@
    "pico_m": 8.34,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3075,7 +3295,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3083,7 +3304,7 @@
    "pico_m": 7.66,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3092,7 +3313,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3100,7 +3322,7 @@
    "pico_m": 7.46,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3109,7 +3331,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3117,7 +3340,7 @@
    "pico_m": 9.12,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3126,7 +3349,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3134,7 +3358,7 @@
    "pico_m": 7.06,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3143,7 +3367,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3151,7 +3376,7 @@
    "pico_m": 9.59,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3160,7 +3385,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3168,7 +3394,7 @@
    "pico_m": 7.87,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3177,7 +3403,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3185,7 +3412,7 @@
    "pico_m": 6.96,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3194,7 +3421,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3202,7 +3430,7 @@
    "pico_m": 7.84,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3211,7 +3439,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3219,7 +3448,7 @@
    "pico_m": 9.61,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3228,7 +3457,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3236,7 +3466,7 @@
    "pico_m": 7.17,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3245,7 +3475,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3253,7 +3484,7 @@
    "pico_m": 8.75,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3262,7 +3493,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3270,7 +3502,7 @@
    "pico_m": 8.15,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3279,7 +3511,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3287,7 +3520,7 @@
    "pico_m": 8.82,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3296,7 +3529,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3304,7 +3538,7 @@
    "pico_m": 12.42,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3313,7 +3547,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3321,7 +3556,7 @@
    "pico_m": 9.55,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3330,7 +3565,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3338,7 +3574,7 @@
    "pico_m": 9.55,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3347,7 +3583,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3355,7 +3592,7 @@
    "pico_m": 10.25,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3364,7 +3601,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3372,7 +3610,7 @@
    "pico_m": 9.55,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3381,7 +3619,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3389,7 +3628,7 @@
    "pico_m": 12.56,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3398,7 +3637,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3406,7 +3646,7 @@
    "pico_m": 7.59,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3415,7 +3655,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3423,7 +3664,7 @@
    "pico_m": 9.9,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3432,7 +3673,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3440,7 +3682,7 @@
    "pico_m": 6.89,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3449,7 +3691,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3457,7 +3700,7 @@
    "pico_m": 9.9,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3466,7 +3709,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "gaspar",
@@ -3474,7 +3718,7 @@
    "pico_m": 12.0,
    "referencia": "régua",
    "precisao_do_pico": "dia",
-   "classificacao": "sem correspondência",
+   "classificacao": "fora da cobertura",
    "data_atlas": null,
    "diferenca_dias": null,
    "protocolo": null,
@@ -3483,7 +3727,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3500,7 +3745,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3517,7 +3763,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3534,7 +3781,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3551,7 +3799,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3568,7 +3817,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3585,7 +3835,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3602,7 +3853,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3619,7 +3871,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3636,7 +3889,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3653,7 +3907,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3670,7 +3925,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3687,7 +3943,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3704,7 +3961,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3721,7 +3979,8 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
   },
   {
    "cidade": "brusque",
@@ -3738,7 +3997,2314 @@
    "status": null,
    "mortos": null,
    "desabrigados": null,
-   "desalojados": null
+   "desalojados": null,
+   "outras_no_periodo": []
+  }
+ ],
+ "lacunas": [
+  {
+   "cidade": "apiuna",
+   "data_atlas": "1995-01-09",
+   "protocolo": "SC-R-4201257-12200-19950109",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 98,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "1997-02-02",
+   "protocolo": "SC-A-4201257-12200-19970202",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2000-01-16",
+   "protocolo": "SC-A-4201257-12200-20000116",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 60,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2004-09-14",
+   "protocolo": "SC-A-4201257-12200-20040914",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2008-11-22",
+   "protocolo": "SC-A-4201257-12200-20081122",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 6,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2011-01-30",
+   "protocolo": "SC-A-4201257-12200-20110130",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 2,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2011-09-08",
+   "protocolo": "SC-A-4201257-12200-20110908",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 11,
+   "desalojados": 160,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2011-09-09",
+   "protocolo": "SC-P-4201257-12200-20110909",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2013-09-26",
+   "protocolo": "SC-F-4201257-12200-20130922",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 10,
+   "desalojados": 243,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2013-12-05",
+   "protocolo": "SC-F-4201257-12200-20131205",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2015-10-26",
+   "protocolo": "SC-F-4201257-12200-20151022",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 115,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2016-08-20",
+   "protocolo": "SC-F-4201257-12200-20160820",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 4,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2016-12-31",
+   "protocolo": "SC-F-4201257-12200-20161231",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 13,
+   "desalojados": 25,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2017-06-04",
+   "protocolo": "SC-F-4201257-12200-20170604",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 58,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2017-11-17",
+   "protocolo": "SC-F-4201257-12200-20171117",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2020-12-17",
+   "protocolo": "SC-F-4201257-12200-20201216",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 64,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2022-05-04",
+   "protocolo": "SC-F-4201257-12300-20220504",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 26,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "apiuna",
+   "data_atlas": "2024-02-28",
+   "protocolo": "SC-F-4201257-12200-20240228",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 4,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "1992-06-08",
+   "protocolo": "SC-P-4201703-12200-19920608",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "1997-02-02",
+   "protocolo": "SC-A-4201703-12200-19970202",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2008-11-22",
+   "protocolo": "SC-A-4201703-12200-20081122",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 0,
+   "desalojados": 110,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2009-08-20",
+   "protocolo": "SC-P-4201703-12200-20090820",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 17,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2010-04-26",
+   "protocolo": "SC-P-4201703-12200-20100426",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 46,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2011-02-14",
+   "protocolo": "SC-A-4201703-12200-20110214",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 18,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2011-09-08",
+   "protocolo": "SC-A-4201703-12200-20110908",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 112,
+   "desalojados": 730,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2011-09-12",
+   "protocolo": "SC-P-4201703-12100-20110912",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2013-09-27",
+   "protocolo": "SC-F-4201703-12100-20130922",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 84,
+   "desalojados": 128,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2015-10-22",
+   "protocolo": "SC-F-4201703-12100-20151022",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 4,
+   "desalojados": 56,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2016-04-10",
+   "protocolo": "SC-F-4201703-12200-20160410",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 11,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2017-05-27",
+   "protocolo": "SC-F-4201703-12200-20170527",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2017-05-31",
+   "protocolo": "SC-F-4201703-12100-20170531",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2020-02-11",
+   "protocolo": "SC-F-4201703-12100-20200209",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2020-12-19",
+   "protocolo": "SC-F-4201703-12200-20201217",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 15,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ascurra",
+   "data_atlas": "2021-01-25",
+   "protocolo": "SC-F-4201703-12200-20210124",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "1991-10-15",
+   "protocolo": "SC-D-4202404-12200-19911015",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "1992-02-21",
+   "protocolo": "SC-P-4202404-12200-19920221",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "1993-02-08",
+   "protocolo": "SC-R-4202404-12200-19930208",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 7,
+   "desalojados": 1,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "1994-02-28",
+   "protocolo": "SC-P-4202404-12200-19940228",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "1995-02-11",
+   "protocolo": "SC-D-4202404-12200-19950211",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2000-03-09",
+   "protocolo": "SC-P-4202404-12200-20000309",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2005-07-16",
+   "protocolo": "SC-N-4202404-12100-20050716",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 396,
+   "desalojados": 516,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2009-11-27",
+   "protocolo": "SC-P-4202404-12200-20091127",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2011-01-28",
+   "protocolo": "SC-A-4202404-12200-20110128",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 1,
+   "desabrigados": 68,
+   "desalojados": 260,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2011-03-10",
+   "protocolo": "SC-A-4202404-12200-20110310",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 1,
+   "desabrigados": 0,
+   "desalojados": 1720,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2018-01-23",
+   "protocolo": "SC-F-4202404-12200-20180123",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 30,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "blumenau",
+   "data_atlas": "2018-03-31",
+   "protocolo": "SC-F-4202404-12200-20180331",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 2,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "1995-01-10",
+   "protocolo": "SC-D-4202701-12200-19950110",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-A-4202701-12100-20011001",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2007-01-05",
+   "protocolo": "SC-A-4202701-12200-20070105",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 16,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2007-03-02",
+   "protocolo": "SC-A-4202701-12200-20070302",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 16,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2008-11-23",
+   "protocolo": "SC-A-4202701-12200-20081123",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 8,
+   "desalojados": 6,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2011-03-18",
+   "protocolo": "SC-P-4202701-12200-20110318",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 20,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2011-09-09",
+   "protocolo": "SC-A-4202701-12100-20110909",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 22,
+   "desalojados": 235,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2013-10-07",
+   "protocolo": "SC-F-4202701-12300-20130919",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 13,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2015-10-13",
+   "protocolo": "SC-F-4202701-12300-20151009",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2016-01-12",
+   "protocolo": "SC-F-4202701-12200-20151224",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2016-03-03",
+   "protocolo": "SC-F-4202701-12200-20160303",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2017-01-05",
+   "protocolo": "SC-F-4202701-12200-20170105",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 4,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2017-06-04",
+   "protocolo": "SC-F-4202701-12200-20170604",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 1,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2018-01-16",
+   "protocolo": "SC-F-4202701-12200-20180116",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 4,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2018-03-25",
+   "protocolo": "SC-F-4202701-12200-20180325",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "botuvera",
+   "data_atlas": "2019-01-17",
+   "protocolo": "SC-F-4202701-12200-20190117",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "1996-01-08",
+   "protocolo": "SC-A-4202909-12200-19960108",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 3,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "1997-02-03",
+   "protocolo": "SC-D-4202909-12200-19970203",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2000-02-14",
+   "protocolo": "SC-A-4202909-12200-20000214",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 39,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-A-4202909-12100-20011001",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 20,
+   "desalojados": 101,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2003-12-15",
+   "protocolo": "SC-A-4202909-12200-20031215",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 57,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2008-01-31",
+   "protocolo": "SC-A-4202909-12200-20080131",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 36,
+   "desalojados": 1945,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2010-04-28",
+   "protocolo": "SC-P-4202909-12200-20100428",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 48,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2011-03-12",
+   "protocolo": "SC-P-4202909-12200-20110312",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 80,
+   "desalojados": 100,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2015-10-22",
+   "protocolo": "SC-F-4202909-12100-20151021",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 30,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2017-01-05",
+   "protocolo": "SC-F-4202909-12200-20170105",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 20,
+   "desalojados": 1800,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2017-03-03",
+   "protocolo": "SC-F-4202909-12200-20170303",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2017-10-06",
+   "protocolo": "SC-F-4202909-12200-20171006",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "brusque",
+   "data_atlas": "2018-01-16",
+   "protocolo": "SC-F-4202909-12200-20180116",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "1991-11-12",
+   "protocolo": "SC-D-4205902-12200-19911112",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "1999-07-29",
+   "protocolo": "SC-A-4205902-12200-19990729",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 5,
+   "desalojados": 15,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2000-03-05",
+   "protocolo": "SC-A-4205902-12200-20000305",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 22,
+   "desalojados": 8,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2002-02-28",
+   "protocolo": "SC-P-4205902-12200-20020228",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2009-09-29",
+   "protocolo": "SC-P-4205902-12200-20090929",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2010-03-25",
+   "protocolo": "SC-P-4205902-12200-20100325",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 1,
+   "desalojados": 320,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2010-05-15",
+   "protocolo": "SC-A-4205902-12200-20100515",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 15,
+   "desalojados": 426,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2011-01-21",
+   "protocolo": "SC-A-4205902-12200-20110121",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2011-09-08",
+   "protocolo": "SC-A-4205902-12100-20110908",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 558,
+   "desalojados": 23039,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2011-09-12",
+   "protocolo": "SC-P-4205902-12100-20110912",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2025-02-17",
+   "protocolo": "SC-F-4205902-12200-20250217",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 1,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "gaspar",
+   "data_atlas": "2025-10-01",
+   "protocolo": "SC-F-4205902-12200-20251001",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 11,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "1991-11-13",
+   "protocolo": "SC-D-4206306-12200-19911113",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "1996-01-09",
+   "protocolo": "SC-P-4206306-12200-19960109",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2001-03-17",
+   "protocolo": "SC-A-4206306-12200-20010317",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2001-10-08",
+   "protocolo": "SC-A-4206306-12100-20011008",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2002-03-15",
+   "protocolo": "SC-A-4206306-12200-20020315",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2008-11-22",
+   "protocolo": "SC-A-4206306-12200-20081122",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 100,
+   "desalojados": 60,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2010-04-26",
+   "protocolo": "SC-P-4206306-12200-20100426",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2011-03-12",
+   "protocolo": "SC-P-4206306-12200-20110312",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 10,
+   "desalojados": 90,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2011-09-09",
+   "protocolo": "SC-A-4206306-12300-20110909",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 0,
+   "desalojados": 35,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "guabiruba",
+   "data_atlas": "2011-09-12",
+   "protocolo": "SC-P-4206306-12100-20110912",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "1995-01-09",
+   "protocolo": "SC-R-4206900-12200-19950109",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 19,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-A-4206900-12200-20011001",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 34,
+   "desalojados": 4,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "2008-11-21",
+   "protocolo": "SC-A-4206900-12200-20081121",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 42,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "2009-09-29",
+   "protocolo": "SC-P-4206900-12200-20090929",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "2011-09-08",
+   "protocolo": "SC-A-4206900-12100-20110908",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 33,
+   "desalojados": 184,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "2016-03-03",
+   "protocolo": "SC-F-4206900-12200-20160303",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ibirama",
+   "data_atlas": "2020-12-18",
+   "protocolo": "SC-F-4206900-12200-20201217",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 1,
+   "desabrigados": 4,
+   "desalojados": 86,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "1991-11-13",
+   "protocolo": "SC-D-4207106-12200-19911113",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2001-09-30",
+   "protocolo": "SC-A-4207106-12200-20010930",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 37,
+   "desalojados": 177,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2002-09-18",
+   "protocolo": "SC-A-4207106-12200-20020918",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2008-01-31",
+   "protocolo": "SC-A-4207106-12200-20080131",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 118,
+   "desalojados": 56,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2008-11-24",
+   "protocolo": "SC-A-4207106-12200-20081124",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 26,
+   "desabrigados": 1300,
+   "desalojados": 3500,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2009-07-31",
+   "protocolo": "SC-P-4207106-12200-20090731",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2010-01-13",
+   "protocolo": "SC-P-4207106-12200-20100113",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 12,
+   "desalojados": 41,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2010-02-26",
+   "protocolo": "SC-A-4207106-12200-20100226",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 14,
+   "desalojados": 50,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2011-01-22",
+   "protocolo": "SC-P-4207106-12200-20110122",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 309,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2011-08-30",
+   "protocolo": "SC-A-4207106-12200-20110830",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 408,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2011-09-12",
+   "protocolo": "SC-P-4207106-12100-20110912",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2013-10-01",
+   "protocolo": "SC-F-4207106-12300-20130922",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 293,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "ilhota",
+   "data_atlas": "2017-01-31",
+   "protocolo": "SC-F-4207106-12200-20170131",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 6,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "indaial",
+   "data_atlas": "1995-01-12",
+   "protocolo": "SC-P-4207502-12200-19950112",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "indaial",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-A-4207502-12100-20011001",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 144,
+   "desalojados": 224,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "indaial",
+   "data_atlas": "2010-01-14",
+   "protocolo": "SC-P-4207502-12200-20100114",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "indaial",
+   "data_atlas": "2011-01-29",
+   "protocolo": "SC-A-4207502-12200-20110129",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "indaial",
+   "data_atlas": "2017-06-06",
+   "protocolo": "SC-F-4207502-12300-20170606",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "indaial",
+   "data_atlas": "2022-03-07",
+   "protocolo": "SC-F-4207502-12200-20220307",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 1,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "1995-02-01",
+   "protocolo": "SC-D-4208203-12200-19950201",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "1999-01-23",
+   "protocolo": "SC-A-4208203-12200-19990123",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 350,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2001-10-02",
+   "protocolo": "SC-A-4208203-12100-20011002",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 383,
+   "desalojados": 10,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2003-11-06",
+   "protocolo": "SC-A-4208203-12200-20031106",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 16,
+   "desalojados": 16,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2008-01-31",
+   "protocolo": "SC-A-4208203-12200-20080131",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 218,
+   "desalojados": 3800,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2008-02-20",
+   "protocolo": "SC-A-4208203-12200-20080220",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 25511,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2008-11-23",
+   "protocolo": "SC-A-4208203-12200-20081123",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 5,
+   "desabrigados": 18208,
+   "desalojados": 1929,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2009-07-23",
+   "protocolo": "SC-P-4208203-12200-20090723",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2010-04-26",
+   "protocolo": "SC-C-4208203-12200-20100426",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 7,
+   "desalojados": 450,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2011-09-09",
+   "protocolo": "SC-A-4208203-12100-20110909",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 3215,
+   "desalojados": 45630,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2011-09-12",
+   "protocolo": "SC-P-4208203-12100-20110912",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2012-05-21",
+   "protocolo": "SC-C-4208203-12200-20120521",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 1,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2013-03-27",
+   "protocolo": "SC-F-4208203-12200-20130309",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 10,
+   "desalojados": 1704,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2013-05-13",
+   "protocolo": "SC-F-4208203-12200-20130410",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 1,
+   "desalojados": 40,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2013-05-13",
+   "protocolo": "SC-F-4208203-12200-20130403",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2013-10-17",
+   "protocolo": "SC-F-4208203-12100-20130920",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 247,
+   "desalojados": 740,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2015-10-20",
+   "protocolo": "SC-F-4208203-12100-20151013",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2015-10-26",
+   "protocolo": "SC-F-4208203-12100-20151022",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2016-04-13",
+   "protocolo": "SC-F-4208203-12200-20160413",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 15,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2017-06-05",
+   "protocolo": "SC-F-4208203-12100-20170605",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 59,
+   "desalojados": 50,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2023-03-13",
+   "protocolo": "SC-F-4208203-12300-20230313",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 130,
+   "desalojados": 75,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "itajai",
+   "data_atlas": "2023-11-17",
+   "protocolo": "SC-F-4208203-12100-20231117",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 88,
+   "desalojados": 99,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "1997-02-03",
+   "protocolo": "SC-D-4209904-12200-19970203",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-A-4209904-12100-20011001",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 144,
+   "desalojados": 95,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2008-11-10",
+   "protocolo": "SC-A-4209904-12200-20081110",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2009-09-28",
+   "protocolo": "SC-P-4209904-12200-20090928",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2011-03-24",
+   "protocolo": "SC-A-4209904-12200-20110324",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2011-08-09",
+   "protocolo": "SC-A-4209904-12100-20110809",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 32,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2011-09-12",
+   "protocolo": "SC-P-4209904-12100-20110912",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2020-12-20",
+   "protocolo": "SC-F-4209904-12200-20201216",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 6,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "lontras",
+   "data_atlas": "2022-05-03",
+   "protocolo": "SC-F-4209904-12100-20220503",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "1995-02-01",
+   "protocolo": "SC-D-4214805-12200-19950201",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "1997-02-01",
+   "protocolo": "SC-D-4214805-12100-19970201",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "1997-10-11",
+   "protocolo": "SC-A-4214805-12100-19971011",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 362,
+   "desalojados": 6,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "1998-04-28",
+   "protocolo": "SC-A-4214805-12100-19980428",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 763,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "1999-07-03",
+   "protocolo": "SC-A-4214805-12100-19990703",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 201,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2001-02-12",
+   "protocolo": "SC-A-4214805-12200-20010212",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 13,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2001-09-04",
+   "protocolo": "SC-A-4214805-12200-20010904",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 21,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-A-4214805-12200-20011001",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 1,
+   "desabrigados": 2885,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2002-11-21",
+   "protocolo": "SC-A-4214805-12200-20021121",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 16,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2004-11-28",
+   "protocolo": "SC-A-4214805-12200-20041128",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2008-11-24",
+   "protocolo": "SC-A-4214805-12200-20081124",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2009-02-26",
+   "protocolo": "SC-P-4214805-12200-20090226",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2009-09-28",
+   "protocolo": "SC-P-4214805-12200-20090928",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2010-04-27",
+   "protocolo": "SC-J-4214805-12200-20100427",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 147,
+   "desalojados": 453,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2011-08-09",
+   "protocolo": "SC-A-4214805-12200-20110809",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2014-06-11",
+   "protocolo": "SC-F-4214805-12100-20140609",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 151,
+   "desalojados": 1016,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2014-07-21",
+   "protocolo": "SC-F-4214805-12100-20140629",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 1,
+   "desabrigados": 508,
+   "desalojados": 6498,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2014-10-10",
+   "protocolo": "SC-F-4214805-12100-20141001",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 88,
+   "desalojados": 678,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2018-09-04",
+   "protocolo": "SC-F-4214805-12100-20180904",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 19,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2019-05-31",
+   "protocolo": "SC-F-4214805-12100-20190531",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 158,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2020-12-17",
+   "protocolo": "SC-F-4214805-12200-20201216",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 2,
+   "desabrigados": 52,
+   "desalojados": 76,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2021-09-22",
+   "protocolo": "SC-F-4214805-12200-20210917",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2022-03-08",
+   "protocolo": "SC-F-4214805-12300-20220308",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 20,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2022-05-03",
+   "protocolo": "SC-F-4214805-12100-20220503",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 447,
+   "desalojados": 2300,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2022-10-10",
+   "protocolo": "SC-F-4214805-12100-20221010",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 84,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2023-02-02",
+   "protocolo": "SC-F-4214805-12300-20230202",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2023-02-10",
+   "protocolo": "SC-F-4214805-12300-20230210",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2023-03-08",
+   "protocolo": "SC-F-4214805-12300-20230308",
+   "cobrade": "12300",
+   "tipo": "Alagamentos",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "rio-do-sul",
+   "data_atlas": "2023-07-13",
+   "protocolo": "SC-F-4214805-12100-20230713",
+   "cobrade": "12100",
+   "tipo": "Inundações",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 9,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "1995-01-09",
+   "protocolo": "SC-R-4219200-12200-19950109",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2001-03-24",
+   "protocolo": "SC-A-4219200-12200-20010324",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 53,
+   "desalojados": 67,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2001-10-01",
+   "protocolo": "SC-D-4219200-12200-20011001",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2002-11-21",
+   "protocolo": "SC-A-4219200-12200-20021121",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2003-12-11",
+   "protocolo": "SC-A-4219200-12200-20031211",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2005-11-16",
+   "protocolo": "SC-A-4219200-12200-20051116",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 10,
+   "desalojados": 5,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2011-09-08",
+   "protocolo": "SC-A-4219200-12200-20110908",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Registro",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 28,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2013-10-04",
+   "protocolo": "SC-F-4219200-12200-20130920",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
+  },
+  {
+   "cidade": "vidal-ramos",
+   "data_atlas": "2015-09-29",
+   "protocolo": "SC-F-4219200-12200-20150918",
+   "cobrade": "12200",
+   "tipo": "Enxurradas",
+   "status": "Reconhecido",
+   "mortos": 0,
+   "desabrigados": 0,
+   "desalojados": 0,
+   "leitura": "ocorrência oficial sem pico cadastrado por perto: onde procurar boletim com régua, não registro"
   }
  ]
 }
