@@ -187,3 +187,138 @@ dia; os três episódios de 2023–2024 com dia (17/11/2023, 18/05/2024,
 12/07/2024) esperam a importação da tabela municipal inteira.
 
 Comando: `python3 scripts/atlas_correspondencias.py <recortes...> --escrever`.
+
+## Os 13 picos de Rio do Sul, um a um, contra o Atlas (21/09/2026, noite)
+
+Pedido do Jefferson: cruzar cada pico municipal com o Atlas numa janela de
+±5 dias e classificar como **confirmado, provável, divergente ou fora da
+cobertura**, com julho de 1983 fora da cobertura porque o Atlas começa em 1991.
+Feito em `atlas_correspondencias.py`; a saída é `data/desastres/correspondencias.json`.
+Nenhuma altura mudou.
+
+| pico (Rio do Sul) | m | classificação | Atlas | leitura |
+|---|---|---|---|---|
+| 1911-10 | 12,20 | fora da cobertura | — | anterior a 1991 |
+| 1954-10 | 10,70 | fora da cobertura | — | idem |
+| 1957-08 | 10,65 | fora da cobertura | — | idem |
+| 1983-05 | 7,35 | fora da cobertura | — | idem |
+| **1983-07** | **13,58** | **fora da cobertura** | — | o Atlas não confirma nem nega a maior cheia da série |
+| 1983-09 | 7,60 | fora da cobertura | — | idem |
+| 1984-08 | 12,80 | fora da cobertura | — | idem |
+| 2011-09 | 12,96 | provável (mês) | 08/09 enxurrada (Registro) **e** 12/09 inundação (Reconhecido) | duas ocorrências no mês; as duas ficam na linha |
+| 2013-09 | 10,39 | provável (mês) | 26/09 inundação, Reconhecido | 690 desabrigados, 8 010 desalojados |
+| 2015-10 | 10,71 | provável (mês) | 23/10 inundação, Reconhecido | 866 desabrigados, 17 636 desalojados |
+| 2017-06 | 10,89 | provável (mês) | 01/06 inundação, Reconhecido | 1 090 desabrigados, 14 632 desalojados |
+| 2023-10-13 | 11,86 | sem correspondência **no recorte** | — | ver abaixo |
+| 2023-11-18 | 13,04 | sem correspondência **no recorte** | — | ver abaixo |
+
+**Por que nenhum "confirmado" nem "divergente" em Rio do Sul:** os picos até
+2017 só têm mês em `enchentes.json` (a fonte municipal deu o mês), então a
+melhor classe possível é "provável (mês)". Os dois de 2023 têm dia, mas os
+recortes recebidos **excluem o COBRADE 13214**, e é como chuvas intensas que o
+S2ID registrou nov/2023 em Rio do Sul (a rodada contra a base inteira viu o
+16/11/2023). Com o CSV bruto, 18/11/2023 vira **provável, diferença −2 dias**.
+Out/2023 não apareceu para Rio do Sul nem na base inteira; fica como está.
+
+**O que mudou no cruzamento por causa deste pedido**
+
+- Classe **fora da cobertura**: pico anterior ao início da base (ou posterior
+  ao fim), lido do `periodo` que o recorte declara; sem declaração, 1991–2025.
+  Deixa de se chamar "sem correspondência", porque não é. Em Blumenau, 93 dos
+  109 "sem correspondência" de antes eram isto.
+- Classe **divergente**: há ocorrência na mesma cidade entre 6 e 30 dias do
+  pico. Não vira par; a linha diz qual e a quantos dias. Três casos:
+  Blumenau 31/08/2011 (8,50 m) × Atlas 11/09/2011, +11 dias; Blumenau
+  23/09/2013 (10,51 m) × 02/10/2013, +9; Gaspar 31/08/2011 (6,75 m) ×
+  08/09/2011, +8. Os dois de ago/2011 são o mesmo padrão: o decreto veio com a
+  cheia de setembro, e o pico de fim de agosto ficou sem decreto próprio.
+- **Mais de uma ocorrência na janela:** a linha leva a mais próxima e guarda as
+  outras em `outras_no_periodo`. Set/2011 em Rio do Sul é o caso.
+- **Lacunas**, o caminho inverso: ocorrência oficial sem pico cadastrado por
+  perto. É onde procurar boletim com régua, nunca registro.
+
+### Resultado geral, com as classes novas (219 picos × 245 ocorrências)
+
+| cidade | confirmado | provável | provável (mês) | divergente | sem corresp. | fora da cobertura | sem base |
+|---|---|---|---|---|---|---|---|
+| Blumenau | 4 | 3 | 0 | 2 | 14 | 93 | 1 |
+| Gaspar | 2 | 1 | 0 | 1 | 6 | 38 | 0 |
+| Indaial | 3 | 1 | 0 | 0 | 3 | 9 | 0 |
+| Rio do Sul | 0 | 0 | 4 | 0 | 2 | 7 | 0 |
+| Brusque | 0 | 0 | 2 | 0 | 19 | 1 | 1 |
+| Taió, Timbó | 0 | 0 | 0 | 0 | 1 + 1 | 0 | 0 |
+
+Os 19 de Brusque sem correspondência são quase todos de 2019–2024, do portal
+municipal; o recorte do Mirim para em 2019. Nada a concluir deles ainda.
+
+### Lacunas: 192 ocorrências sem pico por perto, 29 em Rio do Sul
+
+As de Rio do Sul com mais gente afetada, e portanto as primeiras a procurar na
+tabela municipal inteira (~70 linhas, que ainda não foi importada):
+
+| Atlas | tipo | status | desabrigados | desalojados |
+|---|---|---|---|---|
+| 2014-07-21 | inundação | Reconhecido | 508 | 6 498 |
+| 2001-10-01 | enxurrada | Registro | 2 885 | 0 |
+| 2022-05-03 | inundação | Reconhecido | 447 | 2 300 |
+| 2014-06-11 | inundação | Registro | 151 | 1 016 |
+| 1998-04-28 | inundação | Registro | 0 | 763 |
+| 2014-10-10 | inundação | Registro | 88 | 678 |
+| 2010-04-27 | enxurrada | Registro | 147 | 453 |
+| 1997-10-11 | inundação | Registro | 362 | 6 |
+
+Mai/2022 já está na tabela municipal (a rodada contra a base inteira anotou),
+e não em `enchentes.json`: é a prova de que o importador da tabela inteira
+fecha lacunas de verdade. Jul/2014, com 6 498 desalojados, não estava na lista
+de picos que a Defesa Civil municipal deu por mês: procurar na tabela.
+
+Itajaí tem 22 lacunas, todas, porque tem zero picos. Continua sendo o lugar
+onde procurar, e continua sem número.
+
+### O plano de oito pontos do Jefferson, e o estado de cada um
+
+| ponto | estado |
+|---|---|
+| 1. Cruzar os 13 picos de Rio do Sul, ±5 dias, quatro classes | **feito**, tabela acima |
+| 2. Importador seguro (latin-1, `;`, multilinha, só SC/Vale, protocolo único, dry-run) | `atlas_desastres.py` já faz tudo menos o dry-run; o `--dry-run` fica para a rodada com o CSV bruto, que é quando ele importa |
+| 3. Tabela separada de ocorrências | o projeto não tem banco: é `data/desastres/eventos.json` (saída do script, com protocolo, IBGE, data, COBRADE, status, danos humanos, danos materiais e prejuízos) mais `fonte.json` com versão e data. Ainda não gerado: depende do CSV bruto |
+| 4. Enriquecer a página de cada enchente | pendente; `correspondencias.json` já tem o que a tela precisa ("Atlas: chuva intensa em 16/11/2023, reconhecida, provável, −2 dias") |
+| 5. Linha do tempo regional | pendente; o recorte já agrupa por mês com `municipios_ordem_montante_jusante` |
+| 6. Estatísticas históricas | pendente; só com a base inteira faz sentido |
+| 7. Verificações automáticas | protocolo duplicado, município desconhecido, data inválida e quebra de codificação já travam; **faltam** evento fora de 1991–2025, valor negativo e versão diferente da anterior |
+| 8. Lacunas nos dois sentidos | **feito**: `lacunas` no JSON; pico sem Atlas segue pico, com "sem correspondência" |
+
+Regra que não mudou: nunca inventar altura usando danos ou COBRADE.
+
+## `--dry-run` e as três verificações que faltavam (21/09/2026, noite)
+
+Do "Plano seguro" do Jefferson, seção 1 e ponto 7 do plano de oito pontos.
+Tudo em `atlas_desastres.py`; nenhum dado mudou.
+
+- **`--dry-run`**: lê, filtra, verifica e imprime o resumo inteiro (fonte,
+  versão, cobertura, contagem por tipo, maiores episódios) **sem gravar nada**
+  em `data/desastres/`. Teste trava que o diretório nem é criado. É a rodada
+  que o plano pede antes da importação de verdade:
+
+  ```
+  python3 scripts/atlas_desastres.py --arquivo data/brutos/BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv --dry-run
+  ```
+
+- **Evento fora da cobertura declarada**: a cobertura sai do nome do arquivo
+  (`BD_Atlas_1991_2025_…` → 1991–2025; sem nome no padrão, 1991–2025 por
+  constante). Registro com `data_evento` fora dela é erro de dado ou base
+  diferente da declarada: **descartado com aviso** que lista os protocolos,
+  como já era com data inválida. Não entra em silêncio.
+- **Valor negativo**: `numero()` falha alto. Dano negativo não existe; aceitar
+  esconderia arquivo corrompido ou coluna trocada. Mesmo espírito do "texto não
+  vira 0".
+- **Versão diferente da anterior**: `versao_mudou()` compara a ficha nova com
+  o `fonte.json` gravado (nome, versão, publicação e sha256) e avisa alto o
+  que mudou, para que ninguém compare saída de v1.1 com v1.2 achando que é a
+  mesma coisa. Mesmo nome com conteúdo diferente também avisa (sha256). Não
+  bloqueia: base nova é esperada. Primeira rodada e mesma base ficam caladas.
+
+Já existiam e continuam: protocolo duplicado (entra uma vez), município fora
+do recorte, data inválida, quebra de codificação (latin-1 fixo, `csv` com
+aspas e quebra interna). **Nove testes novos**, incluindo o `main()` rodado
+de ponta a ponta com e sem `--dry-run`.

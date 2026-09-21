@@ -155,6 +155,10 @@ NUMERICAS = INTEIRAS + REAIS
 #: registros a menos de N dias do anterior (em qualquer cidade) caem no mesmo episódio
 JANELA_EPISODIO_DIAS = 7
 
+#: Cobertura da base consolidada. O nome do arquivo declara a dele
+#: (BD_Atlas_1991_2025_...); sem nome no padrão, vale esta.
+COBERTURA_PADRAO = (1991, 2025)
+
 
 def normalizar(nome: str) -> str:
     s = unicodedata.normalize("NFD", nome)
@@ -173,7 +177,11 @@ def numero(bruto: str) -> float:
     bruto = (bruto or "").strip()
     if not bruto:
         return 0.0
-    return float(bruto.replace(",", "."))
+    valor = float(bruto.replace(",", "."))
+    if valor < 0:
+        raise ValueError(f"valor negativo na fonte: {bruto!r} — dano negativo não existe; "
+                         "conferir o arquivo antes de importar")
+    return valor
 
 
 def data_br(bruto: str) -> date | None:
@@ -315,7 +323,8 @@ def carregar(caminho: Path) -> list[dict[str, str]]:
     return linhas
 
 
-def filtrar(linhas: list[dict[str, str]], incluir_chuvas: bool) -> list[dict]:
+def filtrar(linhas: list[dict[str, str]], incluir_chuvas: bool,
+            cobertura: tuple[int, int] = COBERTURA_PADRAO) -> list[dict]:
     codigos = dict(COBRADE_HIDRO)
     if incluir_chuvas:
         codigos.update(COBRADE_CHUVA)
@@ -323,6 +332,7 @@ def filtrar(linhas: list[dict[str, str]], incluir_chuvas: bool) -> list[dict]:
     eventos: list[dict] = []
     vistos: set[str] = set()
     sem_data = 0
+    fora_da_cobertura: list[str] = []
     for linha in linhas:
         cobrade = re.sub(r"\.0$", "", linha["cobrade"])
         if linha["uf"] != "SC" or linha["cod_ibge"] not in MUNICIPIOS:
@@ -332,6 +342,11 @@ def filtrar(linhas: list[dict[str, str]], incluir_chuvas: bool) -> list[dict]:
         quando = data_br(linha["data_evento"])
         if quando is None:
             sem_data += 1
+            continue
+        if not cobertura[0] <= quando.year <= cobertura[1]:
+            # a base diz cobrir 1991–2025; um registro fora disso é erro de
+            # dado ou base diferente da declarada, e não entra em silêncio
+            fora_da_cobertura.append(f"{linha['protocolo']} ({quando.isoformat()})")
             continue
         if linha["protocolo"] in vistos:
             continue
@@ -359,6 +374,11 @@ def filtrar(linhas: list[dict[str, str]], incluir_chuvas: bool) -> list[dict]:
     if sem_data:
         print(f"[aviso] {sem_data} registro(s) sem data_evento válida foram descartados",
               file=sys.stderr)
+    if fora_da_cobertura:
+        print(f"[aviso] {len(fora_da_cobertura)} registro(s) fora da cobertura declarada "
+              f"{cobertura[0]}–{cobertura[1]} foram descartados: "
+              + ", ".join(fora_da_cobertura[:10])
+              + (" …" if len(fora_da_cobertura) > 10 else ""), file=sys.stderr)
     eventos.sort(key=lambda r: (r["data_evento"], r["municipio"]))
     return eventos
 
@@ -435,6 +455,38 @@ def ficha_da_fonte(caminho: Path) -> dict:
     }
 
 
+def cobertura_do_nome(caminho: Path) -> tuple[int, int]:
+    """Anos (início, fim) que o nome do arquivo declara; o padrão se não declarar."""
+    m = RE_NOME_ATLAS.search(caminho.name)
+    return (int(m.group("inicio")), int(m.group("fim"))) if m else COBERTURA_PADRAO
+
+
+CHAVES_DE_VERSAO = ("arquivo_original", "versao", "publicacao", "sha256")
+
+
+def versao_mudou(ficha_nova: dict) -> str | None:
+    """
+    Compara a ficha nova com a gravada em `fonte.json`.
+
+    Uma base nova é esperada de tempos em tempos, então isto não bloqueia: diz
+    alto o que mudou, para que ninguém compare saída de v1.1 com saída de v1.2
+    achando que é a mesma coisa. None quando é a primeira rodada ou nada mudou.
+    """
+    destino = DIR_SAIDA / "fonte.json"
+    if not destino.exists():
+        return None
+    try:
+        anterior = json.loads(destino.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return f"{destino.name} anterior ilegível; a saída anterior não pode ser comparada"
+    mudou = [f"{k}: {anterior.get(k)!r} -> {ficha_nova.get(k)!r}"
+             for k in CHAVES_DE_VERSAO if anterior.get(k) != ficha_nova.get(k)]
+    if not mudou:
+        return None
+    return ("a base mudou desde a última importação (" + "; ".join(mudou) + "); "
+            "a saída anterior em data/desastres/ foi gerada com outra versão")
+
+
 def salvar_fonte(caminho: Path) -> None:
     DIR_SAIDA.mkdir(parents=True, exist_ok=True)
     with open(DIR_SAIDA / "fonte.json", "w", encoding="utf-8") as f:
@@ -463,17 +515,27 @@ def main() -> None:
     ap.add_argument("--force", action="store_true", help="rebaixar mesmo com cache")
     ap.add_argument("--sem-chuvas", action="store_true",
                     help="excluir COBRADE 13214 (chuvas intensas)")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="lê, filtra, verifica e mostra o resumo SEM gravar em data/desastres/")
     args = ap.parse_args()
 
     caminho = args.arquivo or baixar(args.force)
-    eventos = filtrar(carregar(caminho), not args.sem_chuvas)
+    ficha = ficha_da_fonte(caminho)
+    print(f"Fonte: {ficha['arquivo_original']}  versão {ficha['versao'] or '?'}  "
+          f"cobertura {ficha['cobertura'] or '?'}  publicação {ficha['publicacao'] or '?'}")
+    if (aviso := versao_mudou(ficha)):
+        print(f"[aviso] {aviso}", file=sys.stderr)
+    eventos = filtrar(carregar(caminho), not args.sem_chuvas, cobertura_do_nome(caminho))
     if not eventos:
         sys.exit("Nenhum evento encontrado — confira o arquivo e os filtros.")
     episodios = agrupar_episodios(eventos)
 
-    salvar(eventos, "eventos")
-    salvar(episodios, "episodios")
-    salvar_fonte(caminho)
+    if args.dry_run:
+        print("[dry-run] nada foi gravado em data/desastres/")
+    else:
+        salvar(eventos, "eventos")
+        salvar(episodios, "episodios")
+        salvar_fonte(caminho)
 
     cidades = {r["cod_ibge"] for r in eventos}
     anos = [r["ano"] for r in eventos]
@@ -493,7 +555,11 @@ def main() -> None:
     if FORA_DO_RECORTE:
         print("\nFora do recorte (não é ausência de desastre, é recorte): "
               + ", ".join(sorted(FORA_DO_RECORTE)))
-    print(f"\nArquivos em {DIR_SAIDA.relative_to(RAIZ)}/")
+    if args.dry_run:
+        print("\n[dry-run] nada foi gravado; rode sem --dry-run para escrever em "
+              f"{_nome(DIR_SAIDA)}/")
+    else:
+        print(f"\nArquivos em {_nome(DIR_SAIDA)}/")
 
 
 if __name__ == "__main__":

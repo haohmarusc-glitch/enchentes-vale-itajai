@@ -62,6 +62,8 @@ LINHAS = [
     linha("SC-2008-01", "23/11/2008", "4202404", "SC", "12100", desabrigados="999"),
     # Data inválida — descartada com aviso, não convertida em nada.
     linha("SC-XXXX-01", "sem data", "4202404", "SC", "12100"),
+    # Fora da cobertura declarada (1991–2025): erro de dado ou base diferente.
+    linha("SC-1985-01", "09/07/1985", "4202404", "SC", "12100", desabrigados="5"),
 ]
 
 
@@ -207,6 +209,29 @@ class LeituraDoCsv(unittest.TestCase):
     def test_data_invalida_e_descartada_e_nao_vira_zero(self):
         ids = {e["protocolo"] for e in self.eventos()}
         self.assertNotIn("SC-XXXX-01", ids)
+
+    def test_evento_fora_da_cobertura_e_descartado_e_dentro_dela_entra(self):
+        """A base diz cobrir 1991–2025. Um registro de 1985 é erro de dado ou
+        base diferente da declarada, e não entra em silêncio."""
+        self.assertNotIn("SC-1985-01", {e["protocolo"] for e in self.eventos()})
+        largo = atlas.filtrar(atlas.carregar(self.csv), True, cobertura=(1980, 2025))
+        self.assertIn("SC-1985-01", {e["protocolo"] for e in largo})
+
+    def test_a_cobertura_vem_do_nome_do_arquivo(self):
+        self.assertEqual(atlas.cobertura_do_nome(
+            Path("BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv")), (1991, 2025))
+        self.assertEqual(atlas.cobertura_do_nome(
+            Path("BD_Atlas_2000_2030_v2.0_2031.01.01_Consolidado.csv")), (2000, 2030))
+        self.assertEqual(atlas.cobertura_do_nome(Path("qualquer.csv")), atlas.COBERTURA_PADRAO)
+
+    def test_valor_negativo_falha_alto(self):
+        """Dano negativo não existe. Aceitar em silêncio esconderia um arquivo
+        corrompido ou uma coluna trocada."""
+        with self.assertRaises(ValueError):
+            atlas.numero("-5")
+        with self.assertRaises(ValueError):
+            atlas.numero("-1000,50")
+        self.assertEqual(atlas.numero("0"), 0.0)
 
     def test_numeros_nao_sao_adivinhados(self):
         """Texto que não é número falha alto. Virar 0 transformaria dano
@@ -355,6 +380,81 @@ class FichaDaFonte(unittest.TestCase):
         finally:
             atlas.DIR_SAIDA = anterior
             tmp.cleanup()
+
+
+class VersaoDaBase(unittest.TestCase):
+    """Base nova é esperada; comparar saída de v1.1 com v1.2 sem saber, não."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.anterior = atlas.DIR_SAIDA
+        atlas.DIR_SAIDA = Path(self.tmp.name)
+        self.v11 = escreve_csv(Path(self.tmp.name) / "BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv")
+        self.v12 = escreve_csv(Path(self.tmp.name) / "BD_Atlas_1991_2026_v1.2_2027.02.01_Consolidado.csv",
+                               LINHAS + [linha("SC-2026-01", "01/02/2026", "4202404", "SC", "12100")])
+
+    def tearDown(self):
+        atlas.DIR_SAIDA = self.anterior
+        self.tmp.cleanup()
+
+    def test_primeira_rodada_e_mesma_base_nao_avisam(self):
+        self.assertIsNone(atlas.versao_mudou(atlas.ficha_da_fonte(self.v11)))
+        atlas.salvar_fonte(self.v11)
+        self.assertIsNone(atlas.versao_mudou(atlas.ficha_da_fonte(self.v11)))
+
+    def test_base_diferente_avisa_o_que_mudou(self):
+        atlas.salvar_fonte(self.v11)
+        aviso = atlas.versao_mudou(atlas.ficha_da_fonte(self.v12))
+        self.assertIsNotNone(aviso)
+        self.assertIn("versao: '1.1' -> '1.2'", aviso)
+        self.assertIn("sha256", aviso)
+        self.assertIn("outra versão", aviso)
+
+    def test_mesmo_nome_com_conteudo_diferente_tambem_avisa(self):
+        atlas.salvar_fonte(self.v11)
+        outro = escreve_csv(Path(self.tmp.name) / "BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv",
+                            LINHAS[:3])
+        aviso = atlas.versao_mudou(atlas.ficha_da_fonte(outro))
+        self.assertIsNotNone(aviso)
+        self.assertIn("sha256", aviso)
+        self.assertNotIn("versao:", aviso)
+
+
+class DryRun(unittest.TestCase):
+    """`--dry-run` lê, filtra, verifica e resume, e não grava NADA em data/desastres/."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.anterior = atlas.DIR_SAIDA
+        atlas.DIR_SAIDA = Path(self.tmp.name) / "desastres"
+        self.csv = escreve_csv(Path(self.tmp.name) / "BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv")
+
+    def tearDown(self):
+        atlas.DIR_SAIDA = self.anterior
+        self.tmp.cleanup()
+
+    def roda(self, *flags):
+        import contextlib
+        import io
+        saida = io.StringIO()
+        with unittest.mock.patch.object(sys, "argv", ["atlas_desastres.py", "--arquivo",
+                                                      str(self.csv), *flags]):
+            with contextlib.redirect_stdout(saida), contextlib.redirect_stderr(io.StringIO()):
+                atlas.main()
+        return saida.getvalue()
+
+    def test_dry_run_nao_grava_e_diz_isso(self):
+        texto = self.roda("--dry-run")
+        self.assertFalse(atlas.DIR_SAIDA.exists(), "dry-run criou data/desastres/")
+        self.assertIn("[dry-run] nada foi gravado", texto)
+        self.assertIn("registros em", texto, "o resumo tem que sair mesmo sem gravar")
+        self.assertIn("versão 1.1", texto)
+
+    def test_sem_dry_run_grava_os_tres_arquivos(self):
+        texto = self.roda()
+        for nome in ("eventos.json", "episodios.json", "fonte.json"):
+            self.assertTrue((atlas.DIR_SAIDA / nome).exists(), nome)
+        self.assertNotIn("[dry-run]", texto)
 
 
 class RespeitaAFonte(unittest.TestCase):

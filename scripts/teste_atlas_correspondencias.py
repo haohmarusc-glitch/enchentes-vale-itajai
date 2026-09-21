@@ -63,8 +63,51 @@ class Classificacao(unittest.TestCase):
 
     def test_cinco_dias_e_provavel_e_seis_nao(self):
         self.assertEqual(self.parear("2024-05-18", ["2024-05-23"])["classificacao"], "provável")
-        self.assertEqual(self.parear("2024-05-18", ["2024-05-24"])["classificacao"],
+        self.assertNotEqual(self.parear("2024-05-18", ["2024-05-24"])["classificacao"], "provável")
+
+    def test_entre_seis_e_trinta_dias_e_divergente_e_guarda_a_data(self):
+        """Perto demais para ignorar, longe demais para afirmar: a linha diz
+        qual ocorrência está perto e a quantos dias, e não vira par."""
+        l = self.parear("2024-05-18", ["2024-05-24"])
+        self.assertEqual(l["classificacao"], "divergente")
+        self.assertEqual((l["data_atlas"], l["diferenca_dias"]), ("2024-05-24", 6))
+        self.assertIsNone(l["mortos"], "divergente não traz danos como se fosse par")
+        l = self.parear("2024-05-18", ["2024-04-20"])
+        self.assertEqual(l["classificacao"], "divergente")
+        self.assertEqual(l["diferenca_dias"], -28)
+        self.assertEqual(self.parear("2024-05-18", ["2024-06-18"])["classificacao"],
                          "sem correspondência")
+
+    def test_antes_de_1991_e_fora_da_cobertura_e_nao_sem_correspondencia(self):
+        """Jul/1983 (13,58 m) não é 'sem correspondência': o Atlas não existia.
+        Vale para pico com dia, com mês e só com ano."""
+        for data in ("1983-07-09", "1983-07", "1983", "1911-10"):
+            self.assertEqual(self.parear(data, [])["classificacao"], "fora da cobertura", data)
+        self.assertEqual(self.parear("2026-01-05", [])["classificacao"], "fora da cobertura")
+
+    def test_a_cobertura_declarada_pela_entrada_vale(self):
+        picos = [{"cidade": "rio-do-sul", "data": "1995-02-01", "pico_m": 9.0, "referencia": None}]
+        l = ac.parear(picos, [], NOMES, cobertura=(2000, 2025))[0]
+        self.assertEqual(l["classificacao"], "fora da cobertura")
+
+    def test_evidencia_vence_a_cobertura_declarada(self):
+        """Se a entrada diz 1991 mas tem ocorrência em 1990, o par é feito: o
+        dado vale mais do que o rótulo."""
+        picos = [{"cidade": "rio-do-sul", "data": "1990-07-09", "pico_m": 9.0, "referencia": None}]
+        l = ac.parear(picos, [ocorrencia("Rio do Sul", "1990-07-09")], NOMES)[0]
+        self.assertEqual(l["classificacao"], "confirmado")
+
+    def test_mais_de_uma_na_janela_guarda_as_outras(self):
+        """Set/2011 em Rio do Sul: enxurrada em 08/09 (Registro) e inundação
+        reconhecida em 12/09. Nenhuma é descartada."""
+        picos = [{"cidade": "rio-do-sul", "data": "2011-09", "pico_m": 12.96, "referencia": None}]
+        regs = [ocorrencia("Rio do Sul", "2011-09-08", cobrade="12200", protocolo="A"),
+                ocorrencia("Rio do Sul", "2011-09-12", cobrade="12100", protocolo="B")]
+        l = ac.parear(picos, regs, NOMES)[0]
+        self.assertEqual(l["classificacao"], "provável (mês)")
+        self.assertEqual(l["protocolo"], "A")
+        self.assertEqual([o["protocolo"] for o in l["outras_no_periodo"]], ["B"])
+        self.assertEqual(l["outras_no_periodo"][0]["data_atlas"], "2011-09-12")
 
     def test_escolhe_a_ocorrencia_mais_proxima(self):
         l = self.parear("2024-07-12", ["2024-07-08", "2024-07-11", "2024-07-30"])
@@ -77,7 +120,7 @@ class Classificacao(unittest.TestCase):
         self.assertEqual(l["classificacao"], "provável (mês)")
         self.assertIsNone(l["diferenca_dias"])
         self.assertEqual(l["precisao_do_pico"], "mes")
-        self.assertEqual(self.parear("1983-07", ["1983-08-01"])["classificacao"],
+        self.assertEqual(self.parear("2013-07", ["2013-08-01"])["classificacao"],
                          "sem correspondência")
 
     def test_pico_so_com_ano_nao_compara(self):
@@ -107,6 +150,33 @@ class Classificacao(unittest.TestCase):
         self.assertEqual((l["desabrigados"], l["desalojados"], l["mortos"]), (3215, 45630, 1))
 
 
+class Lacunas(unittest.TestCase):
+    """O caminho inverso: ocorrência oficial sem pico por perto é onde
+    procurar nível, nunca nível."""
+
+    PICOS = [{"cidade": "rio-do-sul", "data": "2013-09", "pico_m": 10.39, "referencia": None},
+             {"cidade": "rio-do-sul", "data": "2023-11-18", "pico_m": 13.04, "referencia": None},
+             {"cidade": "blumenau", "data": "2014", "pico_m": 9.0, "referencia": None}]
+
+    def test_ocorrencia_sem_pico_e_lacuna_e_com_pico_nao(self):
+        regs = [ocorrencia("Rio do Sul", "2013-09-26"),        # mês do pico: coberta
+                ocorrencia("Rio do Sul", "2023-11-16"),        # 2 dias do pico: coberta
+                ocorrencia("Rio do Sul", "2015-10-23"),        # nada perto: lacuna
+                ocorrencia("Blumenau", "2014-06-11"),          # pico só com ano 2014: coberta
+                ocorrencia("Blumenau", "2015-06-11"),          # lacuna
+                ocorrencia("Itajaí", "2011-09-08")]            # cidade sem pico nenhum: lacuna
+        faltam = ac.lacunas(self.PICOS, regs, NOMES)
+        self.assertEqual([(l["cidade"], l["data_atlas"]) for l in faltam],
+                         [("blumenau", "2015-06-11"), ("itajai", "2011-09-08"),
+                          ("rio-do-sul", "2015-10-23")])
+        self.assertIn("não registro", faltam[0]["leitura"])
+
+    def test_lacuna_nao_altera_os_picos(self):
+        antes = json.dumps(self.PICOS)
+        ac.lacunas(self.PICOS, [ocorrencia("Rio do Sul", "2015-10-23")], NOMES)
+        self.assertEqual(json.dumps(self.PICOS), antes)
+
+
 class Entrada(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -134,6 +204,18 @@ class Entrada(unittest.TestCase):
         self.assertEqual(len(regs), 1)
         self.assertEqual(regs[0]["tipo"], "Enxurradas")
         self.assertEqual(regs[0]["cobrade"], "12200")
+
+    def test_a_cobertura_e_o_filtro_vem_do_recorte_e_a_lista_plana_usa_o_padrao(self):
+        p = self.dir / "recorte2.json"
+        p.write_text(json.dumps({"periodo": "2000-2020", "filtro": "Cobrade 12xxx",
+                                 "eventos": []}), encoding="utf-8")
+        self.assertEqual(ac.cobertura_de(p), (2000, 2020))
+        self.assertEqual(ac.filtro_de(p), "Cobrade 12xxx")
+        q = self.dir / "plana.json"
+        q.write_text("[]", encoding="utf-8")
+        self.assertEqual(ac.cobertura_de(q), ac.COBERTURA_PADRAO)
+        self.assertIsNone(ac.filtro_de(q))
+        self.assertEqual(ac.COBERTURA_PADRAO, (1991, 2025))
 
     def test_so_entram_os_quatro_cobrades_de_enchente(self):
         """Vendaval, granizo, estiagem: fora da camada de enchentes."""
