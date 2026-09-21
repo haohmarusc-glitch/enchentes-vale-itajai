@@ -133,3 +133,57 @@ do que registros. `atlas_desastres.py` já lê pelo módulo `csv`, com `;`,
 aspas e latin-1, e `newline=""` na abertura, exatamente por isso. Ler linha a
 linha partiria os registros, e o cabeçalho do script diz isso desde o
 primeiro commit.
+
+## A camada "ocorrências oficiais" — os cinco pontos do Jefferson, em código (21/09/2026)
+
+Decisão do Jefferson antes de integrar o Atlas, e onde cada ponto vive:
+
+1. **Não misturar desastre com pico.** O Atlas é **evidência complementar,
+   fora da série de cotas**. `atlas_correspondencias.py` lê `enchentes.json` e
+   escreve só em `data/desastres/correspondencias.json`; há teste que trava
+   que ele não toca `enchentes.json`, `estacoes.json` nem `transito.json`.
+   Nenhuma altura mudou, nenhuma lacuna de nível foi preenchida.
+2. **Correspondência por janela de ±5 dias**, guardando para cada par a data
+   do pico, a data registrada no Atlas, a diferença em dias e a classificação:
+   `confirmado` (|diferença| ≤ 1 dia), `provável` (≤ 5 dias), `provável (mês)`
+   quando o pico só tem mês, `sem correspondência` quando nada cai na janela,
+   `sem base` quando o pico só tem ano. Nunca correspondência automática.
+3. **Filtro de COBRADE:** só 12100 (inundação), 12200 (enxurrada), 12300
+   (alagamento) e 13214 (chuvas intensas). Vendaval, granizo e estiagem ficam
+   fora da camada de enchentes.
+4. **Importador robusto** — já era o do `atlas_desastres.py`: módulo `csv`
+   com `;`, aspas, latin-1, quebra de linha dentro do campo, decimal com
+   ponto, `DD/MM/AAAA`, protocolo único. `wc -l` engana: ~211 mil linhas
+   físicas para 76.190 registros.
+5. **Ficha da fonte:** `ficha_da_fonte()` grava em `data/desastres/fonte.json`
+   a versão (v1.1), a cobertura (1991–2025), a data de publicação
+   (06/08/2026), o nome original do arquivo e a data da importação. Só nasce
+   na rodada canônica com o CSV bruto; os recortes recebidos não trazem isso.
+
+### Resultado contra os recortes recebidos (219 picos × 245 ocorrências)
+
+| cidade | confirmado | provável | provável (mês) | sem correspondência |
+|---|---|---|---|---|
+| Blumenau | 4 | 3 | 0 | 109 |
+| Gaspar | 2 | 1 | 0 | 45 |
+| Indaial | 3 | 1 | 0 | 12 |
+| Rio do Sul | 0 | 0 | 4 | 9 |
+| Brusque | 0 | 0 | 2 | 20 |
+
+Blumenau e Brusque têm ainda um pico só com ano (`sem base`). Taió e Timbó,
+um pico cada, sem correspondência.
+
+**Confirmados:** nov/2008 em Blumenau, Gaspar e Indaial; out/2001, abr/2010 e
+mai/2024 em Blumenau; mai/1992 e fev/1997 em Gaspar; set/2011 e mai/2022 em
+Indaial.
+
+**Por que 109 "sem correspondência" em Blumenau é o esperado, não um erro:**
+a série de Blumenau começa em 1852 e o Atlas em 1991; a maior parte dos picos
+é anterior à base. E os recortes recebidos **excluem 13214**, então out/2023
+e outras cheias registradas como *chuvas intensas* não pareiam — a rodada
+canônica com o CSV bruto (que inclui 13214 por padrão) deve subir esses
+números. Rio do Sul só pareia por mês porque os picos antigos de lá estão sem
+dia; os três episódios de 2023–2024 com dia (17/11/2023, 18/05/2024,
+12/07/2024) esperam a importação da tabela municipal inteira.
+
+Comando: `python3 scripts/atlas_correspondencias.py <recortes...> --escrever`.

@@ -315,6 +315,48 @@ class Saida(unittest.TestCase):
             tmp.cleanup()
 
 
+class FichaDaFonte(unittest.TestCase):
+    """Versão, cobertura e publicação saem do NOME do arquivo, que é onde o
+    Atlas as põe. Sem isto ninguém sabe de qual base saiu o recorte."""
+
+    def test_le_versao_cobertura_e_publicacao_do_nome(self):
+        tmp = tempfile.TemporaryDirectory()
+        try:
+            p = escreve_csv(Path(tmp.name) / "BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv")
+            f = atlas.ficha_da_fonte(p)
+            self.assertEqual(f["versao"], "1.1")
+            self.assertEqual(f["cobertura"], "1991–2025")
+            self.assertEqual(f["publicacao"], "2026-08-06")
+            self.assertEqual(f["arquivo_original"], p.name)
+            self.assertEqual(len(f["sha256"]), 64)
+            self.assertIn("13214", f["cobrades"])
+            self.assertIn("não altera enchentes.json", f["camada"])
+        finally:
+            tmp.cleanup()
+
+    def test_nome_fora_do_padrao_nao_inventa_versao(self):
+        tmp = tempfile.TemporaryDirectory()
+        try:
+            f = atlas.ficha_da_fonte(escreve_csv(Path(tmp.name) / "qualquer.csv"))
+            self.assertIsNone(f["versao"])
+            self.assertIsNone(f["publicacao"])
+            self.assertEqual(len(f["sha256"]), 64)
+        finally:
+            tmp.cleanup()
+
+    def test_a_ficha_e_gravada_junto_dos_dados(self):
+        tmp = tempfile.TemporaryDirectory()
+        anterior = atlas.DIR_SAIDA
+        try:
+            atlas.DIR_SAIDA = Path(tmp.name)
+            atlas.salvar_fonte(escreve_csv(Path(tmp.name) / "BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv"))
+            f = json.loads((Path(tmp.name) / "fonte.json").read_text(encoding="utf-8"))
+            self.assertEqual(f["versao"], "1.1")
+        finally:
+            atlas.DIR_SAIDA = anterior
+            tmp.cleanup()
+
+
 class RespeitaAFonte(unittest.TestCase):
     def test_identifica_o_projeto_no_user_agent(self):
         """CLAUDE.md: todo script identifica o User-Agent com o nome do projeto."""

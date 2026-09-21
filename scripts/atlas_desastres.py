@@ -62,7 +62,7 @@ import json
 import re
 import sys
 import unicodedata
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 from comum import USER_AGENT, baixar as baixar_pagina, espera_turno
@@ -403,6 +403,45 @@ def agrupar_episodios(eventos: list[dict]) -> list[dict]:
     return episodios
 
 
+#: O nome do arquivo do Atlas carrega a versão: BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv
+RE_NOME_ATLAS = re.compile(
+    r"BD_Atlas_(?P<inicio>\d{4})_(?P<fim>\d{4})_v(?P<versao>[\d.]+?)_(?P<pub>\d{4}\.\d{2}\.\d{2})")
+
+
+def ficha_da_fonte(caminho: Path) -> dict:
+    """Versão, cobertura, publicação, nome original, sha256 e data da importação.
+
+    Fica junto dos dados (`data/desastres/fonte.json`) porque o Atlas troca de
+    versão e o arquivo muda de nome; sem isto ninguém sabe de qual base saiu
+    o recorte. Decisão do Jefferson de 21/09/2026.
+    """
+    import hashlib
+    m = RE_NOME_ATLAS.search(caminho.name)
+    h = hashlib.sha256()
+    with open(caminho, "rb") as f:
+        for bloco in iter(lambda: f.read(1 << 20), b""):
+            h.update(bloco)
+    return {
+        "fonte": "Atlas Digital de Desastres no Brasil (Sedec/MIDR + Ceped/UFSC), base consolidada do S2ID",
+        "arquivo_original": caminho.name,
+        "versao": m.group("versao") if m else None,
+        "cobertura": f"{m.group('inicio')}–{m.group('fim')}" if m else None,
+        "publicacao": m.group("pub").replace(".", "-") if m else None,
+        "sha256": h.hexdigest(),
+        "bytes": caminho.stat().st_size,
+        "importado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "cobrades": sorted({**COBRADE_HIDRO, **COBRADE_CHUVA}),
+        "camada": "ocorrências oficiais — não é série de cotas e não altera enchentes.json",
+    }
+
+
+def salvar_fonte(caminho: Path) -> None:
+    DIR_SAIDA.mkdir(parents=True, exist_ok=True)
+    with open(DIR_SAIDA / "fonte.json", "w", encoding="utf-8") as f:
+        json.dump(ficha_da_fonte(caminho), f, ensure_ascii=False, indent=1)
+        f.write("\n")
+
+
 def salvar(registros: list[dict], nome: str) -> None:
     if not registros:
         return
@@ -434,6 +473,7 @@ def main() -> None:
 
     salvar(eventos, "eventos")
     salvar(episodios, "episodios")
+    salvar_fonte(caminho)
 
     cidades = {r["cod_ibge"] for r in eventos}
     anos = [r["ano"] for r in eventos]
