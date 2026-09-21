@@ -265,7 +265,27 @@
           "cotas_pendencia": "As faixas 4,50 / 5,50 / 6,50 são da API municipal (band_thresholds, lidas em 03/09/2026), mas a Defesa Civil de Rio do Sul REVISA a cota de alerta em reunião técnica com a estadual: em 15/08/2026 fixou alerta em 5,50 e 6,50 m (ND Mais); em 31/08/2026 o Jornal Razão registrava 'cota de alerta em vigor de 6,50 a 7,50 m' (RELATADO pelo levantamento externo entregue pelo Jefferson em 09/09/2026 — docs/COTAS-11-MUNICIPIOS-2026-09-09.md — NÃO CONFERIDO daqui: o host está bloqueado neste ambiente; imprensa). Não é mudança de régua, é de gatilho operacional. Datar sempre a versão usada; a API é a fonte que se pode reler, e `coleta_asthon.py` passa pelo painel a cada coleta — vale um guarda que avise quando os três números de band_thresholds mudarem, ainda não feito.",
           "cotas_aviso_publico": "As faixas de Rio do Sul (4,50 / 5,50 / 6,50 m) são da régua da Ponte Dom Tito Buss, como publicadas pela Defesa Civil municipal em 03/09/2026. A cota de alerta é revista em reuniões técnicas ao longo da cheia, e a imprensa noticiou versões diferentes em agosto de 2026. Em cheia, siga a Defesa Civil de Rio do Sul (199).",
           "codigo_ana_divergencia_epagri": "A EPAGRI/CIRAM lista 83270000 'Rio do Sul – Novo' (Em Manutenção, desde 31/12/1996, −27,2075 / −49,6300); o cadastro usa 83300200 com o MESMO nome. Dois códigos, um nome: conferir no inventário da ANA qual é qual antes de citar qualquer um como 'a' estação. docs/RESPOSTA-EPAGRI-C5-2026-09-09.md",
-          "fonte_cotas": "API Asthon, stations/live, band_thresholds da estação f6360951-219f-4859-935f-b2e2d13962f1 (Ponte Dom Tito Buss, reference_station_id da cidade 4214805): 4,50 / 5,50 / 6,50 m. Lidas em 03/09/2026 (data/brutos/rio-do-sul-asthon-2026-08-31.json) e reconferidas em 09/09/2026."
+          "fonte_cotas": "API Asthon, stations/live, band_thresholds da estação f6360951-219f-4859-935f-b2e2d13962f1 (Ponte Dom Tito Buss, reference_station_id da cidade 4214805): 4,50 / 5,50 / 6,50 m. Lidas em 03/09/2026 (data/brutos/rio-do-sul-asthon-2026-08-31.json) e reconferidas em 09/09/2026.",
+          "cotas_divergencia": {
+            "_estado": "⚠️ ABERTO desde 21/09/2026: uma QUARTA escala para a cidade apareceu no portal de Itajaí (5,00 / 6,00 / 7,00 para a DCSC-00013), além das três já anotadas em `cotas_pendencia` (4,50/5,50/6,50 da API Asthon, adotada; 5,50/6,50 de 15/08/2026; 6,50–7,50 de 31/08/2026, imprensa). Nenhuma foi conferida com a COMPDEC de Rio do Sul. A adotada continua sendo a que se pode reler na API municipal, e é a mais baixa: pinta mais cedo, que é o erro menos grave.",
+            "adotada": {
+              "estacao": "Ponte Dom Tito Buss",
+              "atencao": 4.5,
+              "alerta": 5.5,
+              "inundacao": 6.5,
+              "fonte": "API Asthon, band_thresholds, lidas em 03/09/2026 (ver `fonte_cotas`)"
+            },
+            "nao_adotada_portal_itajai": {
+              "estacao": "DCSC-00013 ('Estação MKS DCSC-00013'), como o portal de Itajaí a nomeia com Rio do Sul selecionada",
+              "atencao": 5.0,
+              "alerta": 6.0,
+              "emergencia": 7.0,
+              "coordenada_no_portal": null,
+              "fonte": "Portal de monitoramento da Defesa Civil de Itajaí, ?municipio_id=4, corpo salvo pelo Jefferson em 21/09/2026 (data/brutos/itajai-portal-rios-municipio-4-rio-do-sul-2026-09-21.html), lido por mim no data-page: fonte 'Rio do Sul', municipio_id 4, SEM latitude nem longitude; leitura 4,39 m em 2026-09-21T12:25:00+00:00; o campo `tendencia` dizia 'estavel' com a série caindo 69 cm em 12 h.",
+              "_regra": "NÃO adotar. É escala de estação estadual republicada por outro município, sem coordenada e sem dizer de quem é o gatilho. Trocar para cá atrasaria o aviso em 50 cm. Entra na pergunta à COMPDEC de Rio do Sul junto com as outras três."
+            },
+            "_para_fechar": "Perguntar à COMPDEC de Rio do Sul qual escala vale hoje para a Ponte Dom Tito Buss / DCSC-00013 e desde quando; a pendência da faixa MÓVEL (README) é a mesma pergunta."
+          }
         },
         {
           "id": "ibirama",
@@ -508,6 +528,15 @@
               },
               "fonte": "Estava em `cotas_m` como marca histórica de Blumenau, sem bruto e sem página citada, desde antes da correção de 09/09/2026 — a escala oficial do AlertaBlu (Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8) não tem este degrau. O número em si aparece em docs/cotas-de-ruas.md como referência da régua da Ponte Adolfo Konder: 'cota de inundação urbana 8,00–8,50 m'. É outra grandeza, e uma FAIXA, não um ponto.",
               "por_que_foi_substituida": "MEDIDO em 17/09/2026 contra enchentes.json: dos 117 registros de Blumenau com pico, 101 (86%) ficam ACIMA de 8,50 m, e o maior é 17,10 m (1880) — 1983 deu 15,34 m e 2011, 12,80 m. Chamar 8,50 m de 'inundação histórica' na tela e no bot era afirmação falsa, e falsa para o lado que tranquiliza: sugere que o pior já visto está logo acima da emergência de 8,00 m. Retirada de `cotas_m` em 17/09/2026. NÃO foi promovida a `inundacao` (faixa que pinta) porque a Defesa Civil de Blumenau não declara esse degrau, e cor que a fonte não declarou é o erro que este projeto não comete."
+            },
+            {
+              "cotas_m": {
+                "atencao": 4.0,
+                "alerta": 6.0,
+                "emergencia": 8.0
+              },
+              "fonte": "Portal de monitoramento da Defesa Civil de ITAJAÍ com Blumenau selecionada (monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=3), corpo salvo pelo Jefferson em 21/09/2026 (data/brutos/itajai-portal-rios-municipio-3-blumenau-2026-09-21.html), lido por mim no data-page: estação codigo 'PADKND', nome 'Estação AlertaBlu PADKND', fonte 'AlertaBlu PADKND — Nível do rio', SEM latitude nem longitude; atencao_m 4, alerta_m 6, emergencia_m 8.",
+              "_o_que_prova": "Que outra instituição republica a escala do AlertaBlu com os MESMOS três degraus do cadastro (4 / 6 / 8) — referência cruzada que confirma, não fonte nova. 'PADKND' é nome (Ponte Adolfo Konder, provavelmente) e nome não prova régua; o par cota↔leitura de Blumenau segue provado por medição, como `regua_das_cotas` diz. A série republicada tinha um buraco de 03:05Z a 06:00Z."
             }
           ],
           "cotas_verificado": true,

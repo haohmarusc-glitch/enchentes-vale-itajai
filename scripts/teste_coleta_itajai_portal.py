@@ -35,6 +35,16 @@ from comum import classificar_estacao, estacoes_tempo_real
 RAIZ = Path(__file__).resolve().parent.parent
 PAGINA_REAL = RAIZ / "data" / "brutos" / "itajai-portal-novo-2026-09-19.html"
 PAGINA_BRUSQUE = RAIZ / "data" / "brutos" / "itajai-portal-rios-municipio-2-brusque-2026-09-21.html"
+#: Os três municípios que o portal serve além de Itajaí, capturados pelo
+#: Jefferson em 21/09/2026: (arquivo, municipioId, nome, código, fonte, cotas).
+OUTROS_MUNICIPIOS = [
+    ("itajai-portal-rios-municipio-2-brusque-2026-09-21.html", 2, "Brusque",
+     "DCSC-00019", "Brusque", (3.5, 5, 6)),
+    ("itajai-portal-rios-municipio-3-blumenau-2026-09-21.html", 3, "Blumenau",
+     "PADKND", "AlertaBlu PADKND — Nível do rio", (4, 6, 8)),
+    ("itajai-portal-rios-municipio-4-rio-do-sul-2026-09-21.html", 4, "Rio do Sul",
+     "DCSC-00013", "Rio do Sul", (5, 6, 7)),
+]
 
 #: A DC-01 como o portal a publicou em 19/09/2026 13h38 (captura real).
 DC01 = {
@@ -300,13 +310,49 @@ class TestPaginaDeOutroMunicipio(unittest.TestCase):
         self.assertIsNone(municipio_da_carga(dados))
         self.assertIn("não diz", conferir_municipio(dados, MUNICIPIO_ITAJAI))
 
-    def test_estacao_de_outro_municipio_ou_outra_fonte_e_apanhada(self):
+    def test_os_tres_outros_municipios_seguem_o_mesmo_padrao(self):
+        """Blumenau (3) e Rio do Sul (4) chegaram em 21/09/2026 e confirmam o
+        que Brusque mostrou: UMA estação por município, SEM coordenada, com a
+        moldura de Itajaí por cima. Nenhum dos três pode ser ligado por este
+        coletor, e nenhum vira leitura de Itajaí."""
+        for arquivo, mid, nome, codigo, fonte, cotas in OUTROS_MUNICIPIOS:
+            with self.subTest(municipio=nome):
+                html = (RAIZ / "data" / "brutos" / arquivo).read_text(encoding="utf-8")
+                dados = carga(html)
+                self.assertEqual(municipio_da_carga(dados), {"id": mid, "nome": nome})
+                est = dados["props"]["estacoes"]
+                self.assertEqual(len(est), 1)
+                self.assertEqual(est[0]["codigo"], codigo)
+                self.assertEqual(est[0]["fonte"], fonte)
+                self.assertEqual(est[0]["municipio_id"], mid)
+                self.assertIsNone(est[0]["latitude"])
+                self.assertIsNone(est[0]["longitude"])
+                self.assertEqual((est[0]["atencao_m"], est[0]["alerta_m"], est[0]["emergencia_m"]), cotas)
+                self.assertIn("Situação atual em Itajaí", html)
+                self.assertIsNone(conferir_municipio(dados, mid))
+                self.assertIsNotNone(conferir_municipio(dados, MUNICIPIO_ITAJAI))
+                self.assertEqual(parse(html), [])
+
+    def test_a_tendencia_do_portal_nao_e_de_confianca(self):
+        """Rio do Sul, 21/09/2026: o portal diz `tendencia: "estavel"` com a
+        própria série dele caindo 69 cm em 12 h (5,08 → 4,39). O campo não
+        descreve a série; este coletor nunca o lê, e o teste trava o motivo."""
+        html = (RAIZ / "data" / "brutos" / OUTROS_MUNICIPIOS[2][0]).read_text(encoding="utf-8")
+        est = carga(html)["props"]["estacoes"][0]
+        serie = est["serie_12_h"]
+        self.assertEqual(est["tendencia"], "estavel")
+        self.assertLess(serie[-1]["nivel_rio_m"] - serie[0]["nivel_rio_m"], -0.6)
+
+    def test_estacao_de_outro_municipio_e_apanhada_e_a_fonte_nao_decide(self):
+        """`municipio_id` da estação decide; `fonte` NÃO. A primeira versão
+        exigia que a fonte citasse a cidade e a captura de Blumenau derrubou
+        isso: a fonte lá é "AlertaBlu PADKND — Nível do rio", o provedor."""
         base = {"props": {"municipioId": 1, "municipios": [{"id": 1, "nome": "Itajaí"}]}}
         d = {**base, "props": {**base["props"], "estacoes": [{"codigo": "DC01", "municipio_id": 2}]}}
         self.assertIn("município 2", conferir_municipio(d, 1))
         d = {**base, "props": {**base["props"], "estacoes": [{"codigo": "DC01", "municipio_id": 1,
-                                                              "fonte": "Brusque"}]}}
-        self.assertIn("fonte 'Brusque'", conferir_municipio(d, 1))
+                                                              "fonte": "AlertaBlu PADKND — Nível do rio"}]}}
+        self.assertIsNone(conferir_municipio(d, 1))
         d = {**base, "props": {**base["props"], "estacoes": [{"codigo": "DC01", "municipio_id": 1,
                                                               "fonte": "Telemetria Itajaí"}]}}
         self.assertIsNone(conferir_municipio(d, 1))
