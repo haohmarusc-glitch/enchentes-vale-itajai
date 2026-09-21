@@ -429,3 +429,21 @@ artefato da janela de cinco dias, e a leitura humana resolve. Não alargar a
 janela por causa disto: alargar mistura episódios em Brusque.
 
 Regra que não mudou: nunca inventar altura usando danos ou COBRADE.
+
+## Refeito com os 65 de Rio do Sul (21/09/2026, meio-dia)
+
+Depois da importação dos 52 picos da tabela municipal (decisão do Jefferson),
+o cruzamento foi refeito: **271 picos × 507 ocorrências**. Só Rio do Sul mudou:
+
+| | antes (13 picos) | depois (65 picos) |
+|---|---|---|
+| confirmado | 0 | 1 (18/05/2024 × 19/05, chuvas intensas reconhecida) |
+| provável | 1 | 2 (18/11/2023; 12/07/2024 × 08/07) |
+| provável (mês) | 4 | 19 |
+| sem correspondência | 1 | 12 (1992-05, 2004-09, 2005-05, 2005-09, 2007-11, 2011-07, 2015-09, 2016-10, 2018-05, 2019-12, 2020-09, 13/10/2023) |
+| fora da cobertura | 7 | 31 |
+| lacunas de Rio do Sul | 33 | 16 |
+
+**Jul/2014 continua lacuna** (6 498 desalojados): a tabela municipal não tem
+julho de 2014. Fev/2018, set/2018, mai/2019 e dez/2020 são lacunas novas de se
+olhar: têm decreto e não têm linha na tabela. Nada disso vira pico.

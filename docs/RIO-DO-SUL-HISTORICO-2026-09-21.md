@@ -138,3 +138,62 @@ ele pode escolher: (a) os 57 inteiros; (b) só os com chuva, de 1992 em diante,
 que são os que a fonte parece ter medido em vez de compilado; (c) só os
 ≥ 8,00 m. Os 7 segundos picos podem entrar como registros próprios ou ficar
 fora; a série do site mostra um pico por evento.
+
+## A decisão, e a importação (21/09/2026, meio-dia)
+
+Decisão do Jefferson, na íntegra:
+
+- **Opção (a): os 57 candidatos entram**, sem corte em 1992 nem em 8 m. Os
+  cortes seriam artificiais: a tabela municipal apresenta as 77 linhas como
+  ocorrências históricas, e ausência de chuva antiga não invalida o pico.
+- **Os 7 segundos picos não entram** agora. São ocorrências legítimas, mas
+  quase todos só têm mês; `enchentes.json` exige unicidade por (rio, cidade,
+  data), e incluí-los criaria registro duplicado ou exigiria inventar dia.
+  Ficam preservados na conversão bruta, **nunca como `divergencias`**, porque
+  são cristas diferentes.
+- **Cinco colisões de mês dentro dos 57**: entra o maior pico do mês; o menor
+  fica na camada bruta até existir dia exato ou identificador próprio.
+- Resultado: **52 registros novos, Rio do Sul de 13 para 65**; **12 cristas
+  preservadas e explicitamente pendentes**, sem perda nem data inventada.
+
+### Como entrou
+
+`riodosul_historico.plano_de_inclusao()` aplica a decisão à reconciliação e
+grava o plano no JSON convertido (`plano_de_inclusao.entram` = 52,
+`.pendentes` = 12, cada pendente com o motivo). `importar_riodosul_historico.py`
+lê o plano e grava em `enchentes.json`: ensaio sem `--escrever`; idempotente
+(rodar de novo diz "nada a gravar"); conflito de `pico_m` na mesma chave
+aborta sem tocar em nada; nunca apaga. Cada registro novo diz na `nota` a
+linha da tabela e a decisão; os cinco vencedores de colisão dizem qual foi o
+outro pico do mês. Campos novos, registrados em `_meta.campos`: `chuva_mm` e
+`dias_de_chuva`, só onde a fonte deu (de 1992 em diante).
+
+| colisão | entrou | ficou pendente |
+|---|---|---|
+| jun/2014 | 9,42 m | 7,76 m |
+| ago/2011 | 8,83 m | 8,76 m (344,2 mm em 17 dias) |
+| out/2022 | 7,47 m | 6,42 m |
+| mai/2024 | 8,97 m (18/05) | 7,34 m |
+| jul/2024 | 7,49 m (12/07) | 7,39 m |
+
+Os 12 pendentes: estes 5 e os 7 segundos picos (nov/2023 ×3, out/2023,
+out/2015 ×2, ago/1957).
+
+### O que mudou nos guardas do repositório
+
+- **Validador:** 24 avisos novos, todos "rio-do-sul X não tem evento de
+  indaial/blumenau no mesmo mês". Não é erro de data: a tabela municipal
+  registra cheias de 6,4 m para cima, e as listas de Indaial (PDF da COMPDEC)
+  e de Blumenau só trazem as grandes. Um pico de 7 m em Rio do Sul que não
+  passou de "normal" a jusante não tem par. Cada um foi **nomeado** em
+  `DESALINHADOS_CONHECIDOS` (`teste_validar_dados.py`), com esse motivo, para
+  que um desalinhamento novo continue reprovando. Total: 13 → 37 avisos, 0
+  erros.
+- **Contagem de referências:** 219 → 271 registros; 131 sem referência
+  (eram 79), e a maior fatia passou de Blumenau (41) para Rio do Sul (65), por
+  uma causa só: a tabela não nomeia a régua.
+- **Atlas:** o cruzamento foi refeito com 271 picos. Rio do Sul passou a ter
+  1 confirmado (18/05/2024 × 19/05), 2 prováveis (18/11/2023; 12/07/2024 ×
+  08/07), 19 prováveis por mês, 12 sem correspondência e 31 fora da cobertura.
+  As lacunas de Rio do Sul caíram de 33 para 16; **jul/2014 (6 498
+  desalojados) continua lacuna**, porque a tabela não tem julho de 2014.

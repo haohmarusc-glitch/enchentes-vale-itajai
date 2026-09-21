@@ -163,6 +163,56 @@ class Reconciliacao(unittest.TestCase):
         self.assertEqual(json.dumps(self.CADASTRADOS), antes)
 
 
+class PlanoDeInclusao(unittest.TestCase):
+    """A decisão de 21/09/2026 em código: o maior de cada mês entra, o resto
+    fica preservado e pendente, com motivo."""
+
+    LINHAS = [
+        ("2014", "Junho", "9,42m", "152,6", "6"),
+        ("2014", "Junho", "7,76m", "147,5", "4"),      # colisão: fica pendente
+        ("2024", "18 de maio", "8,97m", "175,4", "3"),
+        ("2024", "Maio", "7,34m", "46,8", "2"),        # colisão: fica pendente
+        ("1931", "Maio", "10,18m", "-", "-"),
+        ("2023", "Novembro", "8,33m", "83,2", "2"),    # segundo pico: fica pendente
+        ("2023", "17 de novembro", "13,04m", "185", "2"),  # já cadastrado
+    ]
+    CADASTRADOS = [{"data": "2023-11-18", "pico_m": 13.04, "data_na_fonte": "2023-11-17"}]
+
+    def setUp(self):
+        _, linhas = rs.ler_tabela(pagina(self.LINHAS))
+        self.plano = rs.plano_de_inclusao(rs.reconciliar(rs.converter(linhas), self.CADASTRADOS))
+
+    def test_entra_o_maior_de_cada_mes_e_o_menor_fica_pendente(self):
+        self.assertEqual([(e["data"], e["pico_m"]) for e in self.plano["entram"]],
+                         [("1931-05", 10.18), ("2014-06", 9.42), ("2024-05-18", 8.97)])
+        pend = {(p["data"], p["nivel_m"]): p["motivo"] for p in self.plano["pendentes"]}
+        self.assertIn("colisão de mês", pend[("2014-06", 7.76)])
+        self.assertIn("colisão de mês", pend[("2024-05", 7.34)])
+        self.assertIn("segundo pico", pend[("2023-11", 8.33)])
+        self.assertEqual(self.plano["resumo"], {"entram": 3, "pendentes": 3})
+
+    def test_o_registro_novo_tem_a_forma_dos_treze(self):
+        e = next(e for e in self.plano["entram"] if e["data"] == "2014-06")
+        self.assertEqual((e["rio"], e["cidade"], e["confianca"], e["referencia"]),
+                         ("itajai-acu", "rio-do-sul", "media", None))
+        self.assertEqual(e["fonte"], rs.FONTE)
+        self.assertEqual((e["chuva_mm"], e["dias_de_chuva"]), (152.6, 6))
+        self.assertIn("linha 2", e["nota"])
+        self.assertIn("7.76 m", e["nota"])          # a colisão está dita na nota
+        self.assertNotIn("divergencias", e)          # crista diferente não é divergência
+
+    def test_sem_chuva_nao_inventa_zero(self):
+        e = next(e for e in self.plano["entram"] if e["data"] == "1931-05")
+        self.assertNotIn("chuva_mm", e)
+        self.assertNotIn("dias_de_chuva", e)
+
+    def test_nenhuma_data_e_inventada(self):
+        for e in self.plano["entram"]:
+            self.assertIn(len(e["data"]), (7, 10))
+        for p in self.plano["pendentes"]:
+            self.assertEqual(p["precisao"], "mes")
+
+
 @unittest.skipUnless(CAPTURA.exists(), "captura de 21/09/2026 ausente")
 class CapturaReal(unittest.TestCase):
     """Contra o HTML que o Jefferson salvou em 21/09/2026."""
@@ -194,6 +244,19 @@ class CapturaReal(unittest.TestCase):
         self.assertEqual(rec["resumo"]["cadastrados_sem_linha_na_tabela"], 0)
         self.assertEqual(rec["resumo"]["candidatas_a_inclusao"]
                          + rec["resumo"]["segundo_pico_no_mesmo_mes"], 77 - len(cad))
+
+    def test_o_plano_da_decisao_e_52_entram_e_12_pendentes(self):
+        """13 cadastrados + 57 candidatos + 7 segundos picos = 77. Dos 57, cinco
+        colisões de mês: 52 entram, 5 + 7 = 12 ficam pendentes. Depois da
+        importação os 52 já estão cadastrados e o plano fica vazio de
+        entradas — o teste aceita as duas situações e trava a soma."""
+        from comum import le_json
+        cad = [e for e in le_json("enchentes.json")["eventos"] if e["cidade"] == "rio-do-sul"]
+        plano = rs.plano_de_inclusao(rs.reconciliar(self.regs, cad))
+        self.assertIn(len(cad), (13, 65))
+        self.assertEqual(plano["resumo"]["entram"], 65 - len(cad))
+        self.assertEqual(len(cad) + plano["resumo"]["entram"] + plano["resumo"]["pendentes"], 77)
+        self.assertEqual(plano["resumo"]["pendentes"], 12)
 
 
 if __name__ == "__main__":

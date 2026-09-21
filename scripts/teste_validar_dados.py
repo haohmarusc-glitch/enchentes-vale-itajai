@@ -333,6 +333,38 @@ class MesesPareados(unittest.TestCase):
         ("indaial 1927-11-09", "blumenau"),
         # Esta é a que a própria fonte pediu para conferir. Mantida literal.
         ("indaial 2014-09-08", "blumenau"),
+        # Entraram em 21/09/2026 com os 52 picos da tabela inteira de Rio do
+        # Sul (decisão do Jefferson, opção a). A tabela municipal registra
+        # cheias de 6,4 m para cima; as listas de Indaial (PDF da COMPDEC) e de
+        # Blumenau (série CEOPS/AlertaBlu) só trazem as grandes. Um pico de 7 m
+        # em Rio do Sul que não passou de "normal" a jusante NÃO tem par, e não
+        # é erro de data: é limiar de magnitude da fonte de jusante, como o de
+        # set/1983 acima. Cada um fica nomeado aqui até alguém conferir na
+        # fonte de jusante; nenhum foi "corrigido" por plausibilidade.
+        ("rio-do-sul 1927-06", "indaial"),
+        ("rio-do-sul 1957-07", "indaial"),
+        ("rio-do-sul 1957-09", "indaial"),
+        ("rio-do-sul 2011-07", "indaial"),
+        ("rio-do-sul 2011-08", "indaial"),
+        ("rio-do-sul 2014-06", "indaial"),
+        ("rio-do-sul 2014-10", "indaial"),
+        ("rio-do-sul 2015-09", "indaial"),
+        ("rio-do-sul 2022-06", "indaial"),
+        ("rio-do-sul 2022-10", "indaial"),
+        ("rio-do-sul 1927-06", "blumenau"),
+        ("rio-do-sul 1933-09", "blumenau"),
+        ("rio-do-sul 1939-08", "blumenau"),
+        ("rio-do-sul 1948-10", "blumenau"),
+        ("rio-do-sul 1953-10", "blumenau"),
+        ("rio-do-sul 1997-10", "blumenau"),
+        ("rio-do-sul 2009-09", "blumenau"),
+        ("rio-do-sul 2011-07", "blumenau"),
+        ("rio-do-sul 2014-10", "blumenau"),
+        ("rio-do-sul 2015-09", "blumenau"),
+        ("rio-do-sul 2022-06", "blumenau"),
+        ("rio-do-sul 2022-10", "blumenau"),
+        ("rio-do-sul 2023-07", "blumenau"),
+        ("rio-do-sul 2024-07-12", "blumenau"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):
