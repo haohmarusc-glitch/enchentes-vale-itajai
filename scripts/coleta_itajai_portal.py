@@ -100,6 +100,28 @@ O QUE ESTE COLETOR NÃO FAZ
   no cadastro de Brusque. Continua não entrando: o portal de Itajaí publica
   escala de estação que não é dele.
 
+  **Blumenau (3) e Rio do Sul (4) chegaram na mesma tarde e confirmam o padrão**
+  (`data/brutos/itajai-portal-rios-municipio-{3-blumenau,4-rio-do-sul}-2026-09-21.html`,
+  `consultadoEm` 2026-09-21T12:27Z):
+
+      3  Blumenau    UMA estação: codigo "PADKND", nome "Estação AlertaBlu PADKND",
+                     fonte "AlertaBlu PADKND — Nível do rio", capacidades só ["rios"],
+                     lat/long NULL, cotas 4 / 6 / 8 (iguais às do cadastro, que
+                     vêm do próprio AlertaBlu), 3,61 m às 12:15Z; a serie_12_h tem
+                     um BURACO de 03:05Z a 06:00Z.
+      4  Rio do Sul  UMA estação: codigo "DCSC-00013", fonte "Rio do Sul",
+                     lat/long NULL, cotas 5 / 6 / 7 — uma QUARTA escala para a
+                     cidade (cadastro: 4,50/5,50/6,50 da API Asthon; e a Defesa
+                     Civil municipal revisa o gatilho em reunião), 4,39 m às 12:25Z.
+
+  Três municípios, três estações, ZERO coordenadas. O portal republica
+  estações de outras redes e não diz onde ficam. Nenhuma das três pode ser
+  ligada por aqui, e este coletor não lê o campo `tendencia` do portal: em Rio
+  do Sul ele dizia "estavel" com a própria série caindo 69 cm em 12 h.
+  "PADKND" é NOME (Ponte Adolfo Konder, provavelmente) — e nome não prova
+  régua; o cadastro de Blumenau já diz que o AlertaBlu não nomeia o ponto e
+  que o par cota↔leitura foi provado por medição.
+
 Uso:
     python3 scripts/coleta_itajai_portal.py --arquivo pagina.html   # sem rede
     python3 scripts/coleta_itajai_portal.py
@@ -145,12 +167,6 @@ def carga(pagina: str) -> dict:
         return {}
 
 
-def _sem_acento(texto: str) -> str:
-    import unicodedata
-    t = unicodedata.normalize("NFD", texto)
-    return "".join(c for c in t if unicodedata.category(c) != "Mn").lower()
-
-
 def municipio_da_carga(dados: dict) -> dict | None:
     """{id, nome} do município que a PÁGINA diz servir, ou None se ela não diz.
 
@@ -166,12 +182,19 @@ def municipio_da_carga(dados: dict) -> dict | None:
 
 
 def conferir_municipio(dados: dict, esperado: int) -> str | None:
-    """None quando pedido, página, estações e fonte concordam; senão, o motivo.
+    """None quando pedido, página e estações concordam; senão, o motivo.
 
-    Quatro coisas têm que apontar para a mesma cidade: o `municipio_id` pedido,
-    o `props.municipioId` respondido, o `municipio_id` de cada estação e a
-    `fonte` que ela declara. A página de Brusque com cabeçalho "Situação atual
-    em Itajaí" (21/09/2026) é o motivo de conferir os quatro, e não um."""
+    Três coisas têm que apontar para a mesma cidade: o `municipio_id` pedido,
+    o `props.municipioId` respondido e o `municipio_id` de cada estação. A
+    página de Brusque com cabeçalho "Situação atual em Itajaí" (21/09/2026) é
+    o motivo de conferir os três, e não um.
+
+    A `fonte` da estação NÃO entra na conferência, e isso foi medido, não
+    escolhido: a primeira versão exigia que a fonte citasse a cidade, e a
+    captura de Blumenau (21/09/2026) veio com fonte "AlertaBlu PADKND — Nível
+    do rio" — o PROVEDOR, não o município. Uma regra que recusasse Blumenau
+    por isso estaria inventando um contrato que o portal não tem. A fonte fica
+    guardada na leitura, para quem lê; não decide identidade."""
     m = municipio_da_carga(dados)
     if m is None:
         return "a página não diz de que município é (sem props.municipioId)"
@@ -183,11 +206,6 @@ def conferir_municipio(dados: dict, esperado: int) -> str | None:
         if e.get("municipio_id") not in (None, esperado):
             return (f"estação {e.get('codigo')!r} é do município {e.get('municipio_id')}, "
                     f"não de {esperado}")
-        fonte, nome = e.get("fonte"), m["nome"]
-        if isinstance(fonte, str) and isinstance(nome, str) \
-                and _sem_acento(nome) not in _sem_acento(fonte):
-            return (f"estação {e.get('codigo')!r} declara fonte {fonte!r}, e o município da "
-                    f"página é {nome!r}")
     return None
 
 
