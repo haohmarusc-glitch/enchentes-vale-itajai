@@ -83,3 +83,53 @@ de rio, e as listas municipais só trazem as grandes. É lista de conferência.
   canônica com 13214 e com teste. Os dois JSONs de hoje são de outra ferramenta
   e não se reproduzem daqui.
 - Os boletins de Itajaí das datas acima, para virarem pico com régua.
+
+## Rodada contra a base real, do lado do Jefferson (21/09/2026)
+
+O CSV completo foi lido fora daqui, com leitor CSV de verdade. Números
+relatados:
+
+| | |
+|---|---:|
+| registros nacionais | 76.190 |
+| colunas | 70 |
+| linhas físicas | mais de 210 mil, por quebras de linha dentro de campos |
+| registros de Santa Catarina | 9.108 |
+| registros de Rio do Sul | 50, dos quais 39 hidrológicos |
+
+Os 39 de Rio do Sul: 16 inundações, 14 enxurradas, 5 chuvas intensas, 4
+alagamentos. Nenhum protocolo duplicado, nenhuma data inválida, nenhum IBGE
+ausente. A soma do CSV reproduziu os totais que o painel do Atlas exibe para
+Santa Catarina (349 óbitos; 1.298.936 desalojados e desabrigados; danos
+materiais de R$ 16,36 bilhões), o que prova que a leitura pegou o arquivo
+inteiro.
+
+**Veredito, que é o mesmo deste documento:** o Atlas confirma ocorrência,
+classificação COBRADE, danos e reconhecimento oficial. **Não contém altura de
+rio e começa em 1991.** Não valida julho de 1983 (13,58 m) nem pico antigo
+nenhum. Os treze picos de Rio do Sul continuam vindo da Exportação de Dados da
+Defesa Civil municipal, e os ~70 da tabela inteira também virão de lá.
+
+**Rio do Sul, episódios confirmados pelo Atlas:** set/2011, set/2013, out/2015,
+jun/2017, mai e out/2022, jul e nov/2023, mai e jul/2024. Os de 2022 e 2024
+estão na tabela municipal e ainda não em `enchentes.json`, o que reforça a
+importação da tabela inteira.
+
+**Datas que não batem ao dia, e não devem bater:** a `data_evento` do S2ID é
+o começo do desastre decretado, não a crista.
+
+| pico (tabela municipal) | Atlas | leitura |
+|---|---|---|
+| 17/11/2023 | 16/11/2023 | mesmo episódio; a crista foi na virada de 17 para 18 (DCSC 00:20) |
+| 18/05/2024 | 19/05/2024 | mesmo episódio provável |
+| 12/07/2024 | 08/07/2024 | mesmo episódio provável |
+
+Tratar como "mesmo episódio provável", nunca como correspondência automática.
+Em `enchentes.json` nov/2023 está em 18/11 com `data_na_fonte: 2023-11-17`;
+o 16/11 do Atlas é anterior aos dois e não muda nada.
+
+**O cuidado técnico que a rodada confirmou:** o arquivo tem mais linhas físicas
+do que registros. `atlas_desastres.py` já lê pelo módulo `csv`, com `;`,
+aspas e latin-1, e `newline=""` na abertura, exatamente por isso. Ler linha a
+linha partiria os registros, e o cabeçalho do script diz isso desde o
+primeiro commit.
