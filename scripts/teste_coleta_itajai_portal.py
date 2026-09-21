@@ -27,12 +27,14 @@ import json
 import unittest
 from pathlib import Path
 
-from coleta_itajai_portal import (TOLERANCIA_COORD_M, carga, coletar,
+from coleta_itajai_portal import (MUNICIPIO_ITAJAI, TOLERANCIA_COORD_M, carga, coletar,
+                                  conferir_municipio, municipio_da_carga,
                                   distancia_m, para_brasilia, parse)
 from comum import classificar_estacao, estacoes_tempo_real
 
 RAIZ = Path(__file__).resolve().parent.parent
 PAGINA_REAL = RAIZ / "data" / "brutos" / "itajai-portal-novo-2026-09-19.html"
+PAGINA_BRUSQUE = RAIZ / "data" / "brutos" / "itajai-portal-rios-municipio-2-brusque-2026-09-21.html"
 
 #: A DC-01 como o portal a publicou em 19/09/2026 13h38 (captura real).
 DC01 = {
@@ -242,6 +244,72 @@ class TestPaginaReal(unittest.TestCase):
         self.assertEqual(d["fonte"].startswith("https://monitoramento.defesacivil"), True)
         self.assertEqual(len(d["leituras"]), 11)
 
+
+
+
+class TestPaginaDeOutroMunicipio(unittest.TestCase):
+    """O corpo de `?municipio_id=2`, capturado pelo Jefferson em 21/09/2026.
+
+    O portal é de Itajaí e serve quatro cidades com a MESMA moldura; a página
+    de Brusque traz o cabeçalho "Situação atual em Itajaí". Cidade nunca se
+    infere pelo domínio: vem do `props.municipioId`, e as estações e a fonte
+    têm que concordar com ele."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.html = PAGINA_BRUSQUE.read_text(encoding="utf-8")
+        cls.dados = carga(cls.html)
+
+    def test_a_pagina_diz_que_e_brusque(self):
+        self.assertEqual(municipio_da_carga(self.dados), {"id": 2, "nome": "Brusque"})
+
+    def test_a_moldura_diz_itajai_e_o_corpo_diz_brusque(self):
+        """A armadilha, preservada: o cabeçalho é de outra cidade e de três
+        dias antes."""
+        self.assertIn("Situação atual em Itajaí", self.html)
+        self.assertIn("18/09/2026, 17:35", self.html)
+        est = self.dados["props"]["estacoes"][0]
+        self.assertEqual(est["medido_em"], "2026-09-21T11:00:00+00:00")
+
+    def test_pedido_e_resposta_conferem_para_brusque_e_nao_para_itajai(self):
+        self.assertIsNone(conferir_municipio(self.dados, 2))
+        motivo = conferir_municipio(self.dados, MUNICIPIO_ITAJAI)
+        self.assertIsNotNone(motivo)
+        self.assertIn("respondeu 2", motivo)
+
+    def test_a_unica_estacao_vem_sem_coordenada(self):
+        """É o motivo medido de Brusque continuar desligada: a identidade aqui
+        é provada por coordenada, e o portal não a publica."""
+        est = self.dados["props"]["estacoes"]
+        self.assertEqual(len(est), 1)
+        self.assertEqual(est[0]["codigo"], "DCSC-00019")
+        self.assertEqual(est[0]["fonte"], "Brusque")
+        self.assertIsNone(est[0]["latitude"])
+        self.assertIsNone(est[0]["longitude"])
+
+    def test_parse_recusa_a_pagina_inteira(self):
+        """Nada de Brusque vira leitura de Itajaí, nem por engano de código."""
+        self.assertEqual(parse(self.html), [])
+
+    def test_a_terceira_escala_esta_no_corpo(self):
+        est = self.dados["props"]["estacoes"][0]
+        self.assertEqual((est["atencao_m"], est["alerta_m"], est["emergencia_m"]), (3.5, 5, 6))
+
+    def test_pagina_sem_municipio_nao_vira_itajai(self):
+        dados = {"props": {"estacoes": []}}
+        self.assertIsNone(municipio_da_carga(dados))
+        self.assertIn("não diz", conferir_municipio(dados, MUNICIPIO_ITAJAI))
+
+    def test_estacao_de_outro_municipio_ou_outra_fonte_e_apanhada(self):
+        base = {"props": {"municipioId": 1, "municipios": [{"id": 1, "nome": "Itajaí"}]}}
+        d = {**base, "props": {**base["props"], "estacoes": [{"codigo": "DC01", "municipio_id": 2}]}}
+        self.assertIn("município 2", conferir_municipio(d, 1))
+        d = {**base, "props": {**base["props"], "estacoes": [{"codigo": "DC01", "municipio_id": 1,
+                                                              "fonte": "Brusque"}]}}
+        self.assertIn("fonte 'Brusque'", conferir_municipio(d, 1))
+        d = {**base, "props": {**base["props"], "estacoes": [{"codigo": "DC01", "municipio_id": 1,
+                                                              "fonte": "Telemetria Itajaí"}]}}
+        self.assertIsNone(conferir_municipio(d, 1))
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

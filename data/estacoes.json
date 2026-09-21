@@ -908,7 +908,7 @@
           ],
           "regua_nota": "O nome 'Ponte Estaiada' identifica DUAS réguas no portal da Defesa Civil de Brusque, com escalas diferentes: a estação 79, 'Ponte Estaiada – DCSC' (a DCSC-00019, atenção 3,00 m e emergência 5,00 m), e a estação 4, 'Ponte Estaiada – ANA' (atenção 4,00 m e emergência 7,00 m, zero próprio, provavelmente a 83900000 BRUSQUE PCD). É a 79 que pareia com a nossa leitura — provado em 07/09/2026 com três leituras do mesmo minuto: 1,27 m na página, 1,27 m na rede estadual e 1,28 m na nossa coleta. O sufixo entrou no rótulo em 17/09/2026 porque a ambiguidade já custou um erro: o PR #241 rotulou a 4 como 'par provado' (ver teste_sonda_brusque_historico.py). Vínculo por NOME é o mesmo risco que o Salseiro trouxe em Vidal Ramos.",
           "cotas_divergencia": {
-            "_estado": "⚠️ ABERTO, e ficou MAIOR em 19/09/2026 à noite: são TRÊS escalas publicadas para a mesma DCSC-00019, não duas — 3,00/5,00 (cadastro, portal de Brusque estação 79), 4,00/7,00 (portal de Brusque estação 4, ANA) e 3,50/5,00/6,00 (portal de Itajaí com Brusque selecionada). A escolha do cadastro (DCSC 3/5) segue com evidência a favor: o boletim de 30/10/2023 chama 3,18 m de 'atenção', o que nem a escala da ANA nem a do portal de Itajaí fariam. Nenhuma das três foi conferida por mim — as três chegaram por navegador de outra pessoa, e não conferido por mim é o estado de todas. Fecha com documento do operador que ligue ponto/código a limite numérico e à vigência.",
+            "_estado": "⚠️ ABERTO, e ficou MAIOR em 19/09/2026 à noite: são TRÊS escalas publicadas para a mesma DCSC-00019, não duas — 3,00/5,00 (cadastro, portal de Brusque estação 79), 4,00/7,00 (portal de Brusque estação 4, ANA) e 3,50/5,00/6,00 (portal de Itajaí com Brusque selecionada). A escolha do cadastro (DCSC 3/5) segue com evidência a favor: o boletim de 30/10/2023 chama 3,18 m de 'atenção', o que nem a escala da ANA nem a do portal de Itajaí fariam. Nenhuma das três foi conferida por mim — as três chegaram por navegador de outra pessoa, e não conferido por mim é o estado de todas. Fecha com documento do operador que ligue ponto/código a limite numérico e à vigência. Atualização 21/09/2026: a terceira escala (portal de Itajaí) foi conferida por mim no corpo bruto, e o corpo mostra a estação SEM coordenada; as duas escalas do portal de Brusque seguem não conferidas por mim.",
             "_por_que_esta_aqui": "O portal municipal de Brusque serve DUAS estações com o mesmo nome de ponte e cotas diferentes. Sem isto escrito, a próxima pessoa que abrir o portal pode ler a linha errada e trocar as cotas da cidade — e a troca seria para CIMA, fazendo o aviso sair 1 m tarde demais num rio de resposta rápida. É a mesma espécie de registro das quatro divergências de Itajaí: guarda as duas leituras, não escolhe por magnitude.",
             "adotada": {
               "estacao": "Ponte Estaiada – DCSC",
@@ -947,6 +947,21 @@
                 "nivel_m": 3.0,
                 "estado_declarado": "normalidade",
                 "_o_que_prova": "Pouco, e com ressalva: 3,00 m chamado de 'normalidade' bate com a borda da escala DCSC ('normalidade < 3,00; atenção 3,00') só se a leitura real era 2,99x arredondado — ou a escala de 2022 era outra. NÃO combinar publicações de anos diferentes como se fossem uma escala estável."
+              },
+              "corpo_portal_itajai_2026_09_21": {
+                "fonte": "data/brutos/itajai-portal-rios-municipio-2-brusque-2026-09-21.html — corpo de monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=2 salvo pelo Jefferson em 21/09/2026 (consultadoEm 2026-09-21T11:12:48Z); lido por mim no data-page",
+                "estacao": "DCSC-00019 ('Estação MKS DCSC-00019'), municipio_id 2, fonte 'Brusque'",
+                "atencao_m": 3.5,
+                "alerta_m": 5.0,
+                "emergencia_m": 6.0,
+                "latitude": null,
+                "longitude": null,
+                "nivel_m": 1.97,
+                "medido_em_utc": "2026-09-21T11:00:00+00:00",
+                "situacao_declarada": "monitoramento",
+                "tendencia": "descendo",
+                "atualizacao_esperada_segundos": 600,
+                "_o_que_prova": "Que a terceira escala existe no corpo, não só na tela, e que o portal de Itajaí não diz ONDE fica a régua que a escala descreve. NÃO decide DCSC × ANA × portal de Itajaí: 1,97 m está abaixo das três atenções. E prova a armadilha da moldura: o cabeçalho 'Situação atual em Itajaí — Normalidade — 18/09/2026, 17:35' aparece na página de Brusque."
               }
             },
             "nao_adotada_portal_itajai": {
@@ -954,10 +969,12 @@
               "atencao": 3.5,
               "alerta": 5.0,
               "emergencia": 6.0,
-              "fonte": "Legenda do gráfico no portal da Defesa Civil de Itajaí com o município de Brusque selecionado (monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=2), capturado no navegador pela auditoria externa em 19/09/2026 às 20h, junto da leitura de 1,96 m medida em 19/09/2026 20:00. Não conferido por mim: este ambiente não alcança o host.",
+              "fonte": "Legenda do gráfico no portal da Defesa Civil de Itajaí com o município de Brusque selecionado (monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=2), capturado no navegador pela auditoria externa em 19/09/2026 às 20h, junto da leitura de 1,96 m medida em 19/09/2026 20:00. CONFERIDO POR MIM NO CORPO BRUTO em 21/09/2026: o Jefferson salvou a resposta (data/brutos/itajai-portal-rios-municipio-2-brusque-2026-09-21.html), e o data-page traz atencao_m 3.5, alerta_m 5, emergencia_m 6 para a estação codigo 'DCSC-00019', fonte 'Brusque', municipio_id 2 — SEM latitude nem longitude (null). Leitura no corpo: 1,97 m medida em 2026-09-21T11:00:00+00:00, tendência descendo.",
               "_regra": "NÃO adotar. É a TERCEIRA escala publicada para a MESMA DCSC-00019 — 3,00/5,00 (portal de Brusque, estação 79), 4,00/7,00 (portal de Brusque, estação 4, ANA) e agora 3,50/5,00/6,00 (portal de Itajaí). Trocar para cá atrasaria o aviso em 50 cm num rio de resposta rápida, que é o lado que machuca.",
               "_o_que_ela_muda_no_quadro": "Duas coisas, e as duas em direções opostas. (1) Ela NÃO desmancha a evidência que discrimina: os 3,18 m chamados de 'atenção' em 30/10/2023 continuam incompatíveis com 3,50 e com 4,00, e compatíveis só com 3,00 — das três escalas, a do cadastro segue sendo a única que explica aquele boletim. (2) Ela desmente a forma da escala que o cadastro afirma: `fonte_cotas` diz que 'não há faixa de alerta intermediária — a fonte pula de atenção para emergência', e aqui o alerta existe, a 5,00 m, que é justamente a EMERGÊNCIA do cadastro. O mesmo número com dois nomes é pior que dois números: se esta escala for a vigente, os 5,00 m em que hoje o site diria emergência seriam alerta.",
-              "_para_fechar": "Perguntar ao operador — e agora há a quem perguntar com precisão: a pergunta do C13 à Defesa Civil de Brusque ganha um terceiro par de números para citar, e o portal de Itajaí publica escala de estação que não é dele."
+              "_para_fechar": "Perguntar ao operador — e agora há a quem perguntar com precisão: a pergunta do C13 à Defesa Civil de Brusque ganha um terceiro par de números para citar, e o portal de Itajaí publica escala de estação que não é dele.",
+              "coordenada_no_portal": null,
+              "_por_que_a_coordenada_importa": "O portal de Itajaí não publica coordenada da DCSC-00019. Sem ela, não há como provar que a escala 3,5/5/6 é da mesma régua que o cadastro chama de 'Ponte Estaiada – DCSC' — e o coletor de Itajaí, que prova identidade por coordenada, não pode ligar Brusque por este caminho."
             }
           }
         },
