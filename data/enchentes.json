@@ -12,7 +12,8 @@
       "fonte_rotulo_anterior": "Rótulo que o registro carregava antes de a fonte ser identificada. Os treze de Rio do Sul diziam 'Portal GCD' de 30/08 a 19/09/2026; a tabela é o Histórico de Cheias da Defesa Civil municipal, conferida pelo Jefferson linha a linha.",
       "data_na_fonte": "Data que a fonte publica quando o registro adota outra, com o motivo na nota. Só existe onde as duas descrevem o mesmo pico (crista na virada do dia).",
       "chuva_mm": "Volume de chuva (mm) que a fonte associa ao pico, quando publica. Só Rio do Sul, da tabela municipal, de 1992 em diante. Ausente = a fonte não deu.",
-      "dias_de_chuva": "Dias de chuva que a fonte associa ao pico, quando publica. Só Rio do Sul, da tabela municipal. Ausente = a fonte não deu."
+      "dias_de_chuva": "Dias de chuva que a fonte associa ao pico, quando publica. Só Rio do Sul, da tabela municipal. Ausente = a fonte não deu.",
+      "pendencia": "Pendência aberta sobre o registro, com a decisão de quem a abriu: o que falta conferir e o que NÃO fazer enquanto isso. Não altera pico nem data; a tela mostra junto do número."
     },
     "pendencias": [
       "Levantar picos de Itajaí (foz) — nenhum registro até agora; sem eles a tela da foz não estima altura.",
@@ -1006,7 +1007,7 @@
       "pico_m": 12.8,
       "confianca": "alta",
       "fonte": "Cotas-enchente de Blumenau (ABRH / CEOPS-FURB)",
-      "nota": "Imprensa: 12,6 m. CEOPS/FURB na Ponte Adolfo Konder: 13,00 m. Adotamos 12,80 m como pico da série municipal. Adotada a cota da série municipal. As três leituras publicadas para o mesmo pico estão em 'divergencias'.",
+      "nota": "Tabela oficial da Defesa Civil de Blumenau: 12,60 m. CEOPS/FURB na Ponte Adolfo Konder: 13,00 m (referência IBGE). Adotamos 12,80 m como pico da série municipal. Decisão do Jefferson (21/09/2026): 12,80 m segue adotado — é coerente com os 13,00 m do CEOPS/IBGE pela diferença documentada de 0,20 m entre régua e IBGE. As três leituras publicadas para o mesmo pico estão em 'divergencias'.",
       "divergencias": [
         {
           "pico_m": 13.0,
@@ -1014,7 +1015,7 @@
         },
         {
           "pico_m": 12.6,
-          "fonte": "Imprensa"
+          "fonte": "Tabela oficial da Defesa Civil de Blumenau (defesacivil.blumenau.sc.gov.br/p/enchentes) — relatada por auditoria externa em 19/09/2026, não conferida por mim; atribuição decidida pelo Jefferson em 21/09/2026 (antes constava 'Imprensa')"
         }
       ],
       "referencia": null
@@ -2188,7 +2189,8 @@
       "fonte": "Histórico de enchentes publicado pela Defesa Civil de Gaspar (https://defesacivil.gaspar.sc.gov.br/enchentes), lido em 2026-09-07 por scripts/importar_gaspar_enchentes.py. Dados atribuídos ao CEOPS.",
       "data_e_do_inicio_do_evento": true,
       "pareamento": "confere",
-      "nota": "A data é a de INÍCIO do evento publicada pela fonte, não a do pico. Serve para parear eventos (a tolerância do site é de sete dias); NÃO serve para calibrar tempo de trânsito."
+      "nota": "A data é a de INÍCIO do evento publicada pela fonte, não a do pico. Serve para parear eventos (a tolerância do site é de sete dias); NÃO serve para calibrar tempo de trânsito.",
+      "pendencia": "Set/2011: o Atlas de Desastres registra decreto em Gaspar em 08/09/2011 (inundação, 558 desabrigados e 23 039 desalojados) e não há pico de setembro no cadastro. Decisão do Jefferson (21/09/2026): NÃO associar ao pico de 31/08; manter os 6,75 m de agosto e tratar setembro como possível segundo evento, pendente da tabela oficial de Gaspar (71 registros)."
     },
     {
       "rio": "itajai-acu",
@@ -2583,8 +2585,9 @@
       "referencia": "régua",
       "fonte": "Histórico de enchentes publicado pela Defesa Civil de Gaspar (https://defesacivil.gaspar.sc.gov.br/enchentes), lido em 2026-09-07 por scripts/importar_gaspar_enchentes.py. Dados atribuídos ao CEOPS.",
       "data_e_do_inicio_do_evento": true,
-      "pareamento": "confere",
-      "nota": "A data é a de INÍCIO do evento publicada pela fonte, não a do pico. Serve para parear eventos (a tolerância do site é de sete dias); NÃO serve para calibrar tempo de trânsito."
+      "pareamento": "sem par",
+      "nota": "A data é a de INÍCIO do evento publicada pela fonte, não a do pico. Serve para parear eventos (a tolerância do site é de sete dias); NÃO serve para calibrar tempo de trânsito. Pareamento refeito em 21/09/2026: SEM PAR — o 'confere' anterior vinha do rio-do-sul 1911-05, que era erro de transcrição; corrigido para 1911-10, o mais perto está a 125 dias.",
+      "pendencia": "Conferir na fonte. A linha está no trecho que o importador marca como suspeito de coluna escorregada (1927–1911). Decisão do Jefferson (21/09/2026): NÃO corrigir nem reforçar a data enquanto a linha da tabela municipal não for capturada; o registro fica como está, pendente."
     },
     {
       "rio": "itajai-acu",

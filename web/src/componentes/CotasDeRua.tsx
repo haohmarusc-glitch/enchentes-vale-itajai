@@ -102,6 +102,14 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   // Só as primeiras cabem na tela; a lista já vem da que alaga com o rio mais
   // baixo para a que alaga por último, então o corte preserva as mais urgentes.
   const mostradas = achadas.slice(0, MAX_RESULTADOS_BUSCA)
+  // Fontes únicas na ordem em que aparecem, para numerar as citações.
+  const chaveDaFonte = (c: { fonte: string; data_fonte: string; confianca: string }) =>
+    `${c.fonte}|${c.data_fonte}|${c.confianca}`
+  const fontes = mostradas.filter(
+    (c, i, arr) => arr.findIndex((o) => chaveDaFonte(o) === chaveDaFonte(c)) === i,
+  )
+  const numeroDaFonte = (c: { fonte: string; data_fonte: string; confianca: string }) =>
+    fontes.findIndex((f) => chaveDaFonte(f) === chaveDaFonte(c)) + 1
   const ocultas = achadas.length - mostradas.length
   const jaAlagam = atingidas(cotas, cidade.id, nivel)
   const seguintes = proximas(cotas, cidade.id, nivel, 4)
@@ -190,12 +198,30 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
                 ) : (
                   <span className={estilos.semNumero}>{c.nota ?? 'cota não publicada'}</span>
                 )}
+                {/* Fonte CURTA por resultado (decisão do Jefferson, 21/09/2026):
+                    a linha inteira repetida em cada rua respondia por quase
+                    toda a altura da lista. A identificação completa continua
+                    logo abaixo, numerada — todo número segue dizendo de onde
+                    veio, só que uma vez por fonte. A confiança fica na linha
+                    porque é o aviso, não a citação. */}
                 <span className={estilos.fonte}>
-                  {c.fonte} · {c.data_fonte} · confiança {c.confianca}
+                  fonte {numeroDaFonte(c)} · confiança {c.confianca}
                 </span>
               </li>
             ))}
           </ul>
+          <details className={estilos.fontes}>
+            <summary>
+              {fontes.length === 1 ? 'Fonte destes resultados' : `Fontes destes resultados (${fontes.length})`}
+            </summary>
+            <ol>
+              {fontes.map((f, i) => (
+                <li key={i}>
+                  {f.fonte} · {f.data_fonte} · confiança {f.confianca}
+                </li>
+              ))}
+            </ol>
+          </details>
           {/* Corte honesto: diz QUAIS ficaram (as que alagam primeiro), quantas
               sobraram e o que fazer. Nunca some com resultado em silêncio. */}
           {ocultas > 0 ? (

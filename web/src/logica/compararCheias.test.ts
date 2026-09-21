@@ -15,3 +15,14 @@ test('recusa outra régua, leitura antiga e pico sem referência', () => {
   assert.equal(cheiaMaisProxima([e(5, '1983')], [{ ...l, medidoEm: new Date('2026-09-10T20:00:00Z') }], agora), null)
   assert.equal(cheiaMaisProxima([{ ...e(5, '1983'), pico_registrado: null }], [l], agora), null)
 })
+
+test('Blumenau fica velha aos 120 min, as outras cidades aos 180 — como o bot', () => {
+  const ha150min = new Date(agora.getTime() - 150 * 60_000)
+  const blu = { cidade: 'blumenau', estacao: 'Ponte Adolfo Konder', nivel_m: 9.5, medidoEm: ha150min }
+  const ita = { ...l, medidoEm: ha150min }
+  const evBlu = { ...e(9, '2011'), cidade: 'blumenau', pico_registrado: { pico_m: 9, regua: 'Ponte Adolfo Konder', fonte: 'x' } }
+  assert.equal(cheiaMaisProxima([evBlu], [blu], agora), null)
+  assert.ok(cheiaMaisProxima([e(5, '1983')], [ita], agora))
+  const ha100min = new Date(agora.getTime() - 100 * 60_000)
+  assert.ok(cheiaMaisProxima([evBlu], [{ ...blu, medidoEm: ha100min }], agora))
+})

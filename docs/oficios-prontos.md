@@ -41,7 +41,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C11 — Defesa Civil de Ilhota (COMPDEC)
+## C11 — Defesa Civil de Ilhota (COMPDEC) (✅ APROVADO pelo Jefferson em 21/09/2026 — o envio externo exige confirmação dele no momento de enviar)
 
 **Para:** dpo@ilhota.sc.gov.br · (47) 3343-8800 / 3343-0181 · Rua Leoberto Leal, 160, Centro, Ilhota-SC, 88320-438
 **Assunto:** Em que régua estão as cotas do Plano de Contingência 2025/2028?
@@ -157,7 +157,7 @@ Como a mensagem de 09/09 diz que os boletins hidrológicos diários seguem por e
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
-## C13 — Defesa Civil de Brusque: a régua do 8,96 m de 17/11/2023 e o zero da estação DCSC-00019 (RASCUNHO, aguarda "sim")
+## C13 — Defesa Civil de Brusque: a régua do 8,96 m de 17/11/2023, o zero e a COORDENADA da estação DCSC-00019 (✅ APROVADO pelo Jefferson em 21/09/2026 — o envio externo exige confirmação dele no momento de enviar)
 
 > Por que: o histórico da rede estadual (`docs/DCSC-HISTORICO-2026-09-10.md`) mostra a DCSC-00019 lendo
 > ~0,30 m ABAIXO dos números da Defesa Civil/imprensa nas três cheias de 2023 — 6,50 vs 6,85 (05/10),
@@ -168,6 +168,12 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 > rua = 8,96 − lâmina medida no ponto) e porque o portal traz duas legendas para a mesma ponte (estação 4
 > "Ponte Estaiada – ANA": 4,00 / 7,00; estação 79 "Ponte Estaiada – DCSC": 3,00 / 5,00). Três perguntas
 > fechadas, cada uma com alternativas nomeadas.
+>
+> **Acrescentado em 21/09/2026, por decisão do Jefferson:** a quarta pergunta, sobre a COORDENADA da
+> DCSC-00019. O corpo de `monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=2`
+> (capturado em 21/09/2026) publica a estação com latitude e longitude nulas e uma TERCEIRA escala
+> (3,50 / 5,00 / 6,00). Sem coordenada não há como provar que as três escalas descrevem a mesma régua,
+> e o coletor do projeto, que prova identidade por coordenada, não pode ligar Brusque por aquele portal.
 
 **Para:** defesacivil@brusque.sc.gov.br
 **Assunto:** Cotas da cheia de 17/11/2023 e estação de referência da Ponte Estaiada — pedido de esclarecimento
@@ -180,7 +186,9 @@ Estou desenvolvendo, sem fins comerciais e ainda sem publicação, um site com d
 
 2. **Houve ajuste no zero (datum) da estação DCSC-00019 entre 2023 e 2026?** Em 07/09/2026 a leitura da estação e a da página "Ponte Estaiada – DCSC" do portal coincidiram ao centímetro; se em 2023 a mesma estação lia 0,30 m abaixo do valor oficial, um ajuste de zero explicaria as duas observações. Se houve, em que data e de quanto?
 
-3. **Qual das duas legendas vale para a Ponte Estaiada hoje?** O portal mostra a estação 4 "Ponte Estaiada – ANA" com normalidade abaixo de 4,00 m, atenção acima de 4,00 m ou chuva acima de 30 mm e emergência acima de 7,00 m; e a estação 79 "Ponte Estaiada – DCSC" com atenção em 3,00 m e emergência em 5,00 m. As duas estações medem a mesma régua? Qual legenda é a de acionamento vigente?
+3. **Qual das duas legendas vale para a Ponte Estaiada hoje?** O portal mostra a estação 4 "Ponte Estaiada – ANA" com normalidade abaixo de 4,00 m, atenção acima de 4,00 m ou chuva acima de 30 mm e emergência acima de 7,00 m; e a estação 79 "Ponte Estaiada – DCSC" com atenção em 3,00 m e emergência em 5,00 m. As duas estações medem a mesma régua? Qual legenda é a de acionamento vigente? Registro que o portal de monitoramento da Defesa Civil de Itajaí, com o município de Brusque selecionado, publica para a mesma estação DCSC-00019 uma terceira escala (atenção 3,50 m, alerta 5,00 m, emergência 6,00 m).
+
+4. **Qual é a coordenada geográfica (latitude e longitude) da estação DCSC-00019 e da régua da Ponte Estaiada?** O portal da Defesa Civil de Itajaí republica a estação sem coordenada, e sem ela não consigo comprovar que as três escalas acima descrevem o mesmo ponto de medição. Se a estação e a régua manual estiverem em pontos distintos, peço as duas coordenadas.
 
 Os dados que uso serão publicados com a fonte citada, e qualquer correção que a Defesa Civil indicar será aplicada. O site está em desenvolvimento e com acesso restrito; se desejarem acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro. Se for mais prático, um contato telefônico resolve em poucos minutos.
 
@@ -269,7 +277,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C24 — Cemaden: o que são as estações HIDROLÓGICAS do cadastro (pedido NOVO na LAI, não recurso)
+## C24 — Cemaden: o que são as estações HIDROLÓGICAS do cadastro (pedido NOVO na LAI, não recurso) (✅ APROVADO pelo Jefferson em 21/09/2026 — o envio externo exige confirmação dele no momento de enviar)
 
 > 📌 **Por que é pedido novo e não recurso** (16/09/2026). O pedido anterior,
 > protocolo **01217.006547/2026-93**, pediu a *relação das estações com coordenadas* e **foi

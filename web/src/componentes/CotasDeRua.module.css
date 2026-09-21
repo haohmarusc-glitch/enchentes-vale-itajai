@@ -99,6 +99,23 @@
   font-size: 0.78rem;
 }
 
+/* A identificação completa das fontes, uma vez por fonte, fechada por padrão. */
+.fontes {
+  margin: 0.5rem 0 0;
+  color: #7a8899;
+  font-size: 0.78rem;
+}
+.fontes summary {
+  cursor: pointer;
+}
+.fontes ol {
+  margin: 0.3rem 0 0;
+  padding-left: 1.4rem;
+}
+.fontes li {
+  overflow-wrap: anywhere;
+}
+
 .vazio {
   margin: 0.7rem 0 0;
   padding: 0.6rem 0.7rem;
