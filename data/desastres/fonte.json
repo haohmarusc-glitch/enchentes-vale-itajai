@@ -1,0 +1,17 @@
+{
+ "fonte": "Atlas Digital de Desastres no Brasil (Sedec/MIDR + Ceped/UFSC), base consolidada do S2ID",
+ "arquivo_original": "BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv",
+ "versao": "1.1",
+ "cobertura": "1991–2025",
+ "publicacao": "2026-08-06",
+ "sha256": "78f7efd2d853021678ff4af891e938375b9fd0ce77026cbe052a53dae12bf425",
+ "bytes": 86134318,
+ "importado_em": "2026-09-21T10:53:15+00:00",
+ "cobrades": [
+  "12100",
+  "12200",
+  "12300",
+  "13214"
+ ],
+ "camada": "ocorrências oficiais — não é série de cotas e não altera enchentes.json"
+}
