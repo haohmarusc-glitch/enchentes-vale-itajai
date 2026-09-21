@@ -322,3 +322,110 @@ Já existiam e continuam: protocolo duplicado (entra uma vez), município fora
 do recorte, data inválida, quebra de codificação (latin-1 fixo, `csv` com
 aspas e quebra interna). **Nove testes novos**, incluindo o `main()` rodado
 de ponta a ponta com e sem `--dry-run`.
+
+## A rodada canônica: o CSV bruto na VPS, e o cruzamento com a base inteira (21/09/2026, manhã)
+
+O Jefferson baixou o CSV no navegador e rodou `atlas_desastres.py --arquivo`
+na VPS, com 13214 incluído. O que saiu, e está commitado em `data/desastres/`:
+
+| arquivo | conteúdo |
+|---|---|
+| `fonte.json` | `BD_Atlas_1991_2025_v1.1_2026.08.06_Consolidado.csv`, versão 1.1, cobertura 1991–2025, publicação 2026-08-06, 86 134 318 bytes, sha256, importado em 2026-09-21T10:53Z |
+| `eventos.json` / `.csv` | **507 ocorrências** nas vinte cidades: 215 enxurradas, 193 chuvas intensas, 81 inundações, 18 alagamentos; de 15/10/1991 a 31/12/2025 |
+| `episodios.json` / `.csv` | 166 episódios (janela de 7 dias entre cidades) |
+
+O recorte recebido antes tinha 245 ocorrências em 16 cidades, sem 13214. A
+base inteira dobra a contagem, e a diferença é quase toda *chuvas intensas*
+mais cinco cidades que entram (Benedito Novo, Ituporanga, Pomerode, Taió e
+Timbó). Ibirama estava no recorte recebido e fica fora do nosso, por
+`FORA_DO_RECORTE`: ausência ali é recorte, não ausência de desastre.
+
+### Cruzamento: 219 picos × 507 ocorrências
+
+| cidade | confirmado | provável | provável (mês) | divergente | sem corresp. | fora da cobertura | sem base |
+|---|---|---|---|---|---|---|---|
+| Blumenau | 4 | 3 | 0 | 4 | 12 | 93 | 1 |
+| Brusque | 8 | 5 | 2 | 5 | 1 | 1 | 1 |
+| Gaspar | 2 | 1 | 0 | 2 | 5 | 38 | 0 |
+| Indaial | 3 | 1 | 0 | 0 | 3 | 9 | 0 |
+| Rio do Sul | 0 | 1 | 4 | 0 | 1 | 7 | 0 |
+| Taió | 0 | 1 | 0 | 0 | 0 | 0 | 0 |
+| Timbó | 1 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+**O que o 13214 mudou, como previsto:**
+
+- **Rio do Sul 18/11/2023 (13,04 m)** saiu de "sem correspondência no recorte"
+  para **provável, −2 dias**: chuvas intensas reconhecida em 16/11/2023, 1 838
+  desabrigados e 18 969 desalojados. Era o que a rodada anterior tinha anotado
+  à mão.
+- **Brusque** saiu de 19 "sem correspondência" para 1: 8 confirmados e 5
+  prováveis, quase todos chuvas intensas de 2019–2024. O recorte do Mirim
+  parava em 2019.
+- **Taió 09/10/2023 (12,40 m)** → provável, −5 dias, chuvas intensas
+  reconhecida em 04/10. **Timbó 09/09/2011 (9,86 m)** → confirmado.
+
+**O que o 13214 NÃO mudou, e é achado:**
+
+- **Rio do Sul 13/10/2023 (11,86 m) continua sem correspondência.** A base
+  inteira não tem registro nenhum de Rio do Sul em out/2023, embora Taió,
+  Blumenau, Gaspar, Indaial e Brusque tenham decreto de 03 e 04/10. Um pico de
+  11,86 m sem decreto no S2ID é dado sobre o município, não sobre o rio. O pico
+  fica.
+- **Blumenau 17/11/2023 (9,14 m) também sem correspondência**: Blumenau não tem
+  registro de nov/2023 no Atlas, e Itajaí tem (inundação reconhecida em 17/11).
+- **Blumenau 13/10/2023 (10,61 m) é divergente**: o decreto de Blumenau é de
+  04/10 e a crista foi em 13/10, nove dias depois. É o exemplo mais limpo de
+  que a `data_evento` do S2ID é o começo do desastre, não o pico. Gaspar
+  (12/10 × 03/10) e Brusque (13/10 × 04/10) mostram a mesma coisa: **out/2023
+  é um episódio de nove dias entre decreto e crista** no vale inteiro.
+- **Blumenau 29/05/1992 (12,80 m, IBGE) sem correspondência**, e Gaspar
+  29/05/1992 confirmado. Subnotificação da base nos anos 1990: o cabeçalho do
+  script já avisa (29% dos municípios em 2013).
+
+**Divergentes: 11.** Além dos três de antes, entraram oito, todos chuvas
+intensas de 2021–2023 em Blumenau, Brusque e Gaspar, com diferença de 6 a 21
+dias. Nenhum vira par. Brusque 23/06/2022 (5,46 m) × 02/06 tem 21 dias: pode
+ser o segundo pico de um junho chuvoso, ou outro episódio. Fica para olho.
+
+### Lacunas: 378 ocorrências oficiais sem pico por perto
+
+| cidade | lacunas | | cidade | lacunas |
+|---|---|---|---|---|
+| Brusque | 37 | | Ilhota | 20 |
+| Ascurra | 36 | | Indaial | 18 |
+| Rio do Sul | 33 | | Timbó | 16 |
+| Gaspar | 31 | | Lontras | 15 |
+| Itajaí | 30 | | Vidal Ramos | 14 |
+| Ituporanga | 25 | | Guabiruba | 12 |
+| Taió | 23 | | | |
+| Apiúna | 21 | | | |
+| Blumenau | 21 | | | |
+
+As maiores, por gente afetada:
+
+| cidade | Atlas | tipo | status | desabrigados | desalojados |
+|---|---|---|---|---|---|
+| **Itajaí** | 2011-09-09 | inundação | Registro | 3 215 | 45 630 |
+| **Itajaí** | 2008-02-20 | enxurrada | Registro | 0 | 25 511 |
+| Gaspar | 2011-09-08 | inundação | Registro | 558 | 23 039 |
+| **Itajaí** | 2008-11-23 | enxurrada | Registro | 18 208 | 1 929 |
+| Blumenau | 2023-10-04 | chuvas intensas | Reconhecido | 239 | 14 929 |
+| Rio do Sul | 2014-07-21 | inundação | Reconhecido | 508 | 6 498 |
+| Ilhota | 2008-11-24 | enxurrada | Registro | 1 300 | 3 500 |
+
+**Itajaí tem 30 ocorrências e zero picos.** As três maiores lacunas do vale
+são de Itajaí. Continua sendo o lugar onde procurar boletim com régua
+nomeada, e continua sem número: nada disto vira pico.
+
+**Gaspar set/2011 é lacuna com 23 039 desalojados** porque o pico de Gaspar em
+`enchentes.json` é 31/08/2011 (6,75 m, divergente, +8 dias) e não há pico de
+setembro. Ou a fonte de Gaspar registrou a crista de agosto e não a de
+setembro, ou são duas cheias. Conferir na página oficial de Gaspar (71
+registros), que já está na fila.
+
+**Blumenau 04/10/2023 é lacuna com 14 929 desalojados** só porque o pico de
+13/10 caiu em "divergente" (nove dias): é o mesmo episódio. A lacuna aqui é
+artefato da janela de cinco dias, e a leitura humana resolve. Não alargar a
+janela por causa disto: alargar mistura episódios em Brusque.
+
+Regra que não mudou: nunca inventar altura usando danos ou COBRADE.
