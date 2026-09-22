@@ -1733,10 +1733,10 @@
       "cidade": "rio-do-sul",
       "data": "2018-05",
       "pico_m": 7.55,
-      "confianca": "media",
+      "confianca": "baixa",
       "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
       "referencia": null,
-      "nota": "Tabela municipal 'Histórico de Cheias', linha 19 da captura de 21/09/2026 (data/brutos/riodosul-historico-cheias-2026-09-21.html). Incluído por script em 21/09/2026 por decisão do Jefferson (opção a: os 57 candidatos, o maior de cada mês).",
+      "nota": "Tabela municipal 'Histórico de Cheias', linha 19 da captura de 21/09/2026 (data/brutos/riodosul-historico-cheias-2026-09-21.html). Incluído por script em 21/09/2026 por decisão do Jefferson (opção a: os 57 candidatos, o maior de cada mês). MÊS DUVIDOSO (decisão do Jefferson em 22/09/2026: mantém maio, confiança baixa): em maio de 2018 as 4 estações automáticas do INMET (A817, A861, A863, A868) estavam completas e marcaram 29–69 mm no mês, nenhum dia acima de 28 mm — não sustentam os 114,6 mm em 4 dias desta linha. Candidato forte: set/2018 (31/08–03/09: 133 mm em Ituporanga, 81 mm em Indaial; Atlas registra inundação em Rio do Sul em 04/09/2018; a tabela municipal não tem linha de set/2018). Confirmar com a série da ANA em Rio do Sul ou com a Defesa Civil municipal.",
       "chuva_mm": 114.6,
       "dias_de_chuva": 4
     },

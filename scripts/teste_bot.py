@@ -2479,9 +2479,16 @@ class TestFonteDeRioDoSul(unittest.TestCase):
         # restantes da tabela ficam na conversão bruta, pendentes de dia.
         rs = FonteDeRioDoSul.registros()
         self.assertEqual(len(rs), 65)
+        # 22/09/2026: mai/2018 desceu para `baixa` por decisão do Jefferson — as
+        # quatro estações do INMET não sustentam 114,6 mm em 4 dias naquele mês,
+        # e o candidato é set/2018. É a ÚNICA exceção; a nota do registro diz
+        # "MÊS DUVIDOSO" e a decisão. Ver docs/CHAT-LOCAL.md, L5.
+        excecoes = {"2018-05": "baixa"}
         for r in rs:
             self.assertEqual(r["fonte"], FonteDeRioDoSul.FONTE)
-            self.assertEqual(r["confianca"], "media")
+            self.assertEqual(r["confianca"], excecoes.get(r["data"], "media"), r["data"])
+            if r["data"] in excecoes:
+                self.assertIn("MÊS DUVIDOSO", r["nota"])
             # A tabela não nomeia a régua: `null` explícito, não campo ausente
             # (ausente a tela lê como "régua local", que ninguém provou).
             self.assertIn("referencia", r)

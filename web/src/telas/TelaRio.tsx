@@ -30,6 +30,11 @@ const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 const MapaRios = lazy(() => import('../componentes/MapaRios'))
 const LinhaDoTempo = lazy(() => import('../componentes/LinhaDoTempo'))
 const AnimacaoOnda = lazy(() => import('../componentes/AnimacaoOnda'))
+/**
+ * O chat do histórico (sem IA, sem API) carrega à parte: o código e os JSONs
+ * dele só chegam quando a caixa entra na tela — ver `chat-local/ChatLocal.tsx`.
+ */
+const ChatLocal = lazy(() => import('../chat-local/ChatLocal'))
 
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
@@ -199,6 +204,14 @@ export default function TelaRio({ rioId }: { rioId: string }) {
           leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
           agora={agora}
         />
+      ) : null}
+
+      {/* Perguntas sobre o histórico, respondidas só com os JSONs de data/. Abaixo
+          de tudo, de propósito: quem veio ver o nível do rio não passa por ele. */}
+      {rioId === 'itajai-acu' || rioId === 'itajai-mirim' ? (
+        <Suspense fallback={<p className={estilos.instrucao}>Carregando as perguntas sobre o histórico…</p>}>
+          <ChatLocal rio={rioId} />
+        </Suspense>
       ) : null}
 
       </div>

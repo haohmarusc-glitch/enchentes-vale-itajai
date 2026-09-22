@@ -1,0 +1,100 @@
+/* Caixa de perguntas do histórico. Nomes de classe da especificação
+   (docs/CHAT-LOCAL.md, L3), com escopo de módulo. */
+.chat-aviso {
+  font-size: 0.92rem;
+  color: var(--tinta-fraca);
+  margin: 0 0 0.75rem;
+}
+
+.chat-erro {
+  color: var(--alerta);
+  background: var(--alerta-fundo);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  margin: 0 0 0.75rem;
+}
+
+/* As mensagens rolam DENTRO da caixa; a página não rola junto. */
+.chat-mensagens {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.25rem 0;
+}
+
+.chat-msg {
+  max-width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--raio);
+  line-height: 1.5;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.chat-usuario {
+  align-self: flex-end;
+  background: var(--agua);
+  color: var(--papel);
+}
+
+.chat-assistente {
+  align-self: flex-start;
+  background: var(--agua-fundo);
+  color: var(--tinta);
+  border: 1px solid var(--borda);
+}
+
+.chat-sugestoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chat-sugestoes button {
+  text-align: left;
+  white-space: normal;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--agua-clara);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--agua);
+  cursor: pointer;
+}
+
+.chat-sugestoes button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.chat-entrada {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.chat-entrada input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.7rem;
+  font-size: 1rem; /* 16px+: o iOS não dá zoom ao focar */
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+}
+
+.chat-entrada button {
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--agua);
+  color: var(--papel);
+  cursor: pointer;
+}
+
+.chat-entrada button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

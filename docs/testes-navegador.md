@@ -472,3 +472,50 @@ Um morador de Indaial vendo 5,6 m lia "abaixo da atenção". Corrigido.
 meio da chuva vê um mapa quase todo apagado e pode concluir que o site não
 funciona, em vez de que o site não sabe. É honesto e é a decisão certa — mas o
 custo de compreensão existe e não está resolvido.
+
+---
+
+## Chat local do histórico (acrescentado em 22/09/2026)
+
+A caixa **"Pergunte sobre o histórico"** fica no fim da coluna de dados de `#/acu` e `#/mirim`.
+Responde só com os JSONs do site, sem IA e sem rede além dos próprios JSONs. Em cada teste, a
+regra de sempre: número sem fonte é falha; número de "agora" é falha grave.
+
+### 20. A maior cheia de Rio do Sul
+`#/acu`, rolar até a caixa, digitar **Qual foi a maior cheia de Rio do Sul?** e Enter.
+
+- ✅ Resposta com **13,58 m**, **julho de 1983** e uma linha começando por **Fonte:**.
+- ❌ Outro número, outra data, ou resposta sem fonte.
+
+### 21. Pergunta de "agora" não recebe número
+Mesma caixa, digitar **vai encher hoje?**
+
+- ✅ Texto fixo que manda para a Defesa Civil com o **199** e as réguas ao vivo; **nenhum nível em
+  metros** na resposta.
+- ❌ Qualquer número de nível, ou qualquer frase sobre o rio hoje.
+
+### 22. Fora do tema: "não entendi" e exemplos clicáveis
+Digitar **me conta uma piada**.
+
+- ✅ "Não entendi" com botões de exemplo; tocar num deles produz uma resposta com fonte.
+- ❌ Uma resposta inventada, ou botões que não fazem nada.
+
+### 23. Cota da ANA logo ao abrir a página
+Abrir `#/mirim`, rolar direto até a caixa e, **assim que ela liberar**, digitar
+**Cota da ANA em Brusque em novembro de 2008**.
+
+- ✅ Ou **507 cm** com o aviso de que é a régua da ANA, ou "carregando" e, ao perguntar de novo
+  em instantes, **507 cm**.
+- ❌ Um número diferente de 507, ou um número sem o aviso da régua.
+
+### 24. Sem os JSONs, a página continua de pé
+Nas ferramentas do navegador, bloquear as requisições que contenham `atlas-desastres` ou
+`inmet-chuva` (aba Rede → bloquear URL) e recarregar `#/acu`.
+
+- ✅ A caixa mostra **"Não foi possível carregar os dados do chat"**; o resto da página (diagrama,
+  níveis, gráfico) funciona normalmente.
+- ❌ Página em branco, erro que derruba a tela, ou a caixa fingindo que carregou.
+
+Os cinco passam no desktop e no celular — no celular, conferir ainda que as mensagens rolam
+**dentro** da caixa (a página não rola junto) e que os botões de sugestão quebram linha.
+
