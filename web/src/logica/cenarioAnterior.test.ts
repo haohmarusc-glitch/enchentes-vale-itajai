@@ -128,8 +128,11 @@ test('Brusque compara, e sai marcada como referência não conferida', () => {
   assert.ok(cenario)
   assert.equal(cenario.referenciaConferida, false)
   // 23 desde 09/09/2026: a lista SECOM/Rádio Cidade trouxe 15 registros de
-  // 2019–2024 (eram 8). Uma marca por registro; o pódio não mudou.
-  assert.equal(cenario.marcas.length, 23)
+  // 2019–2024 (eram 8). 28 desde 22/09/2026: cinco leituras de 07h/17h da
+  // régua da ANA (83900000, HidroWeb), por decisão do Jefferson — sem a chave
+  // `referencia`, como os outros 23, senão a cidade viraria duas escalas e
+  // pararia de comparar. Uma marca por registro; o pódio não mudou.
+  assert.equal(cenario.marcas.length, 28)
   assert.equal(cenario.marcas[0]!.pico, 10.5)
 })
 

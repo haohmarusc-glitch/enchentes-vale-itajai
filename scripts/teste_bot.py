@@ -2212,11 +2212,15 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 21/09/2026: entraram os 52 da tabela inteira (decisão do Jefferson,
         # opção a) — 219 → 271, 79 → 131 sem referência. A tabela não nomeia a
         # régua, então os 52 entram com `referencia: null`, como os 13.
-        self.assertEqual(len(self.ev), 271)
+        # 22/09/2026: entraram as cinco cheias de Brusque da régua da ANA
+        # (83900000, HidroWeb; decisão do Jefferson) — 271 → 276, 131 → 136
+        # sem referência: zero da ANA, que coincide com o municipal em
+        # 2019–2021 e não se sabe desde quando.
+        self.assertEqual(len(self.ev), 276)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 131)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 203)
+        self.assertEqual(refs["None"], 136)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 208)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
@@ -2227,7 +2231,7 @@ class TestContagemDasReferencias(unittest.TestCase):
         from collections import Counter
         sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
         self.assertEqual(sem["blumenau"], 41)
-        self.assertEqual(sem["brusque"], 23)
+        self.assertEqual(sem["brusque"], 28)  # 23 + 5 da régua da ANA (22/09/2026)
         self.assertEqual(sem["rio-do-sul"], 65)
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
         self.assertEqual(len(blu), 117)

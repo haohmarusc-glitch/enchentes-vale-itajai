@@ -120,7 +120,7 @@ Com isso dito, corridas de ≥ 600 cm na 83900000 (sem as implausíveis), contra
 | **22/10/2015 07h** | **772** | **756** | — |
 | 01/06/2017 07h | 684 | 573 | — |
 
-**Candidatos para o Jefferson decidir**, e só ele: out/2015 (≥ 7,72 m, média do dia 7,56 — uma
+**Decisão do Jefferson, 22/09/2026: "Sim, entram as cinco cheias de Brusque."** Entraram em `enchentes.json` como registros de Brusque com a leitura das 07h/17h em `pico_m`, `confianca: alta` (fonte oficial), **sem a chave `referencia`** como os outros 23 de Brusque (o site trata chave ausente e `null` como escalas distintas e pararia de comparar a cidade; o zero da ANA fica dito na `nota`), e uma `pendencia` que a tela mostra junto do número: **crista não medida, leitura é piso**. Os cinco: out/2015 (≥ 7,72 m, média do dia 7,56 — uma
 cheia maior que a de nov/2023 no cadastro, e ausente), out/2001 (≥ 7,45), dez/1978 (≥ 8,00),
 nov/1961 (≥ 7,89), jul/1983 (≥ 7,54). Todos com a ressalva de sempre: leitura de 07h/17h é piso
 da crista, o zero é o da ANA (que coincide com o municipal em 2019–2021, e não se sabe desde
