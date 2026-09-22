@@ -38,6 +38,10 @@ localizada em Blumenau, média de bacia pequena. Os dois números não são a me
 texto pode estar citando outra sub-bacia ou outra janela) e **nenhum foi reconciliado**. Fica
 como pendência de leitura do JICA, não como erro de ninguém.
 
+**Medida, em 22/09/2026** (`docs/INMET-CHUVA-2026-09-22.md`): Indaial (INMET A817) 246,6 mm em
+21–24/11, 145,2 mm no dia 23, 567,4 mm no mês; Ituporanga 46,4 mm nos quatro dias. Os 236 mm
+cabem num ponto do médio vale; os 121–144, numa média de bacia com cabeceira seca.
+
 ### Vítimas e afetados: o texto (imprensa e JICA) contra o Atlas de Desastres (S2ID)
 
 O Atlas é o registro oficial dos decretos, com o cuidado que ele mesmo pede: é o que o
