@@ -44,7 +44,19 @@ inativas ou fora do Açu/Mirim; Acqua na bacia = 0. Só chuva. E chuva é
   fontes na mesma lista (o site já mostra o maior de vários por cidade). Falha
   isolada: uma coleta do CEMADEN fora do ar não derruba o nível.
 
-## INMET — ⚠️ catálogo aberto, DADOS fechados (esperar a LAI C8)
+## INMET — ✅ LAI C8 respondida em 22/09/2026: API só com ACT; portal e BDMEP públicos
+
+**Resposta integral e leitura em `docs/LAI-INMET-2026-09-22.md`.** Em resumo: o INMET conta
+**quatro** EMAs na bacia (A817 Indaial em **pane**, A861 Rio do Campo, A863 Ituporanga,
+A868 Itajaí — a caixa de 02/09 abaixo incluía A870 e A806, que o INMET não considera da bacia);
+a API passou a exigir **Acordo de Cooperação Técnica** entre instituições (ofício à Direção,
+`diretor@inmet.gov.br`, depois reunião); os dados são **brutos, sem flag** — dado suspeito é
+isolado antes de publicar, e falha vem como `9999`, `Null` ou branco. Caminhos sem ACT: a
+Tabela de Dados do portal (uma estação, 180 dias, consulta de tela) e o **BDMEP** para
+histórico. Recomendação: **não pedir ACT** (projeto sem pessoa jurídica, quatro estações,
+CEMADEN já cobre chuva ao vivo); usar o BDMEP para **nov/2008** e para os eventos recentes
+de Rio do Sul. Decisão do Jefferson. O que segue é o registro de 02/09, mantido como histórico.
+
 
 - **Catálogo público, sem token:** `https://apitempo.inmet.gov.br/estacoes/T` →
   674 estações automáticas (código, nome, UF, lat/lon, altitude, início,
@@ -61,6 +73,9 @@ inativas ou fora do Açu/Mirim; Acqua na bacia = 0. Só chuva. E chuva é
   22/09. Até lá, **INMET não entra no tempo real** — o coletor é trivial quando o
   token vier (a rota já está mapeada). Ressalva a exibir: "dados brutos, sem
   validação" (declarado pelo INMET).
+- **Respondido em 22/09/2026:** não há token para uso não comercial; há ACT ou
+  nada. O 204 vazio era política, não falha. **INMET não entra no tempo real** —
+  agora por decisão informada, não por espera.
 
 ## Maré da EPAGRI — depende do usuário
 
@@ -72,5 +87,5 @@ baixar 1 mês → aí o coletor é escrito e a maré medida entra na tela do Ita
 ## Placar do que rende agora
 
 1. **CEMADEN** → ligado ao cron. Chuva por bairro em 137 pontos. Pronto.
-2. **INMET** → esperar a LAI C8. Nada a codar até o token.
+2. **INMET** → LAI C8 respondida: API só com ACT. Nada a codar; histórico pelo BDMEP, se o Jefferson baixar.
 3. **Maré EPAGRI** → depende do usuário abrir o portal logado.
