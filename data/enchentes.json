@@ -1892,6 +1892,36 @@
     {
       "rio": "itajai-mirim",
       "cidade": "brusque",
+      "data": "1961-11-01",
+      "pico_m": 7.89,
+      "confianca": "alta",
+      "fonte": "ANA/HidroWeb, estação convencional 83900000 Brusque (PCD), leitura de régua do observador às 07:00 (nível bruto, status real) — bruto data/brutos/hidroweb-mirim-2026-09-22/83900000_csv.zip",
+      "nota": "PISO, não crista: é a leitura das 07:00; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Média diária consistida do dia 7,80 m; do dia seguinte 7,55 m. Referência não declarada (como os demais registros de Brusque): zero da ANA — a 83900000 coincide com a régua municipal (DCSC-00019, ~51 m) ao centímetro em 2019–2021 (590 × 5,90; 568 × 5,68), e não se sabe desde quando. Maior leitura plausível da série 1929–2022 depois de 2011. Entrou por decisão do Jefferson em 22/09/2026 — docs/HIDROWEB-MIRIM-2026-09-22.md.",
+      "pendencia": "Crista não medida: leitura de régua às 07h/17h. Não usar como pico exato nem parear com precisão de horas; procurar boletim da época na Defesa Civil de Brusque para a crista e a hora."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "1978-12-26",
+      "pico_m": 8.0,
+      "confianca": "alta",
+      "fonte": "ANA/HidroWeb, estação convencional 83900000 Brusque (PCD), leitura de régua do observador às 17:00 (nível bruto, status real) — bruto data/brutos/hidroweb-mirim-2026-09-22/83900000_csv.zip",
+      "nota": "PISO, não crista: é a leitura das 17:00; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Média diária consistida do dia 6,50 m; do dia seguinte 4,05 m. Referência não declarada (como os demais registros de Brusque): zero da ANA — a 83900000 coincide com a régua municipal (DCSC-00019, ~51 m) ao centímetro em 2019–2021 (590 × 5,90; 568 × 5,68), e não se sabe desde quando. Entrou por decisão do Jefferson em 22/09/2026 — docs/HIDROWEB-MIRIM-2026-09-22.md.",
+      "pendencia": "Crista não medida: leitura de régua às 07h/17h. Não usar como pico exato nem parear com precisão de horas; procurar boletim da época na Defesa Civil de Brusque para a crista e a hora."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "1983-07-12",
+      "pico_m": 7.54,
+      "confianca": "alta",
+      "fonte": "ANA/HidroWeb, estação convencional 83900000 Brusque (PCD), leitura de régua do observador às 07:00 (nível bruto, status real) — bruto data/brutos/hidroweb-mirim-2026-09-22/83900000_csv.zip",
+      "nota": "PISO, não crista: é a leitura das 07:00; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Média diária consistida do dia 7,04 m; do dia seguinte (em branco). Referência não declarada (como os demais registros de Brusque): zero da ANA — a 83900000 coincide com a régua municipal (DCSC-00019, ~51 m) ao centímetro em 2019–2021 (590 × 5,90; 568 × 5,68), e não se sabe desde quando. A cheia de julho de 1983 do Açu, também no Mirim. Entrou por decisão do Jefferson em 22/09/2026 — docs/HIDROWEB-MIRIM-2026-09-22.md.",
+      "pendencia": "Crista não medida: leitura de régua às 07h/17h. Não usar como pico exato nem parear com precisão de horas; procurar boletim da época na Defesa Civil de Brusque para a crista e a hora."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
       "data": "1984-08",
       "pico_m": 10.5,
       "confianca": "baixa",
@@ -1903,6 +1933,16 @@
           "fonte": "Compilação informal (valor anterior deste repositório)"
         }
       ]
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2001-10-01",
+      "pico_m": 7.45,
+      "confianca": "alta",
+      "fonte": "ANA/HidroWeb, estação convencional 83900000 Brusque (PCD), leitura de régua do observador às 07:00 (nível bruto, status real) — bruto data/brutos/hidroweb-mirim-2026-09-22/83900000_csv.zip",
+      "nota": "PISO, não crista: é a leitura das 07:00; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Média diária consistida do dia 6,09 m; do dia seguinte (em branco). Referência não declarada (como os demais registros de Brusque): zero da ANA — a 83900000 coincide com a régua municipal (DCSC-00019, ~51 m) ao centímetro em 2019–2021 (590 × 5,90; 568 × 5,68), e não se sabe desde quando. Entrou por decisão do Jefferson em 22/09/2026 — docs/HIDROWEB-MIRIM-2026-09-22.md.",
+      "pendencia": "Crista não medida: leitura de régua às 07h/17h. Não usar como pico exato nem parear com precisão de horas; procurar boletim da época na Defesa Civil de Brusque para a crista e a hora."
     },
     {
       "rio": "itajai-mirim",
@@ -1935,6 +1975,16 @@
       "pico_m": 7.61,
       "confianca": "baixa",
       "fonte": "Compilação informal"
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "brusque",
+      "data": "2015-10-22",
+      "pico_m": 7.72,
+      "confianca": "alta",
+      "fonte": "ANA/HidroWeb, estação convencional 83900000 Brusque (PCD), leitura de régua do observador às 07:00 (nível bruto, status real) — bruto data/brutos/hidroweb-mirim-2026-09-22/83900000_csv.zip",
+      "nota": "PISO, não crista: é a leitura das 07:00; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Média diária consistida do dia 7,56 m; do dia seguinte 4,99 m. Referência não declarada (como os demais registros de Brusque): zero da ANA — a 83900000 coincide com a régua municipal (DCSC-00019, ~51 m) ao centímetro em 2019–2021 (590 × 5,90; 568 × 5,68), e não se sabe desde quando. Maior que 17/11/2023 (8,96 m municipal) não é: 7,72 é piso; mas maior que qualquer outro pico de Brusque no cadastro depois de 2011. Entrou por decisão do Jefferson em 22/09/2026 — docs/HIDROWEB-MIRIM-2026-09-22.md.",
+      "pendencia": "Crista não medida: leitura de régua às 07h/17h. Não usar como pico exato nem parear com precisão de horas; procurar boletim da época na Defesa Civil de Brusque para a crista e a hora."
     },
     {
       "rio": "itajai-mirim",
