@@ -1,0 +1,488 @@
+{
+ "fonte": "ANA/HidroWeb, estações convencionais (leituras de régua às 07h e 17h)",
+ "estacoes": {
+  "83892990": "Salseiro",
+  "83892998": "Botuverá-Montante",
+  "83900000": "Brusque (PCD)"
+ },
+ "criterio": "picos de Brusque >= 450 cm separados por mais de 5 dias; pico a montante = maior leitura nas 72 h anteriores",
+ "limite": "resolução de 10/14 h (07h e 17h); antecedência 0 significa que o pico chegou entre duas leituras",
+ "eventos": [
+  {
+   "pico_brusque": "1997-01-27T07:00-03:00",
+   "cota_brusque_cm": 503,
+   "salseiro": {
+    "pico": "1997-01-27T07:00-03:00",
+    "cota_cm": 190,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "1997-01-24T07:00-03:00",
+    "cota_cm": 92,
+    "antecedencia_h": 72
+   }
+  },
+  {
+   "pico_brusque": "1997-02-01T17:00-03:00",
+   "cota_brusque_cm": 664,
+   "salseiro": {
+    "pico": "1997-02-01T07:00-03:00",
+    "cota_cm": 320,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "1997-02-01T07:00-03:00",
+    "cota_cm": 478,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "1997-10-10T17:00-03:00",
+   "cota_brusque_cm": 510,
+   "salseiro": {
+    "pico": "1997-10-10T07:00-03:00",
+    "cota_cm": 275,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "1997-10-10T07:00-03:00",
+    "cota_cm": 400,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "1997-11-27T17:00-03:00",
+   "cota_brusque_cm": 652,
+   "salseiro": {
+    "pico": "1997-11-27T07:00-03:00",
+    "cota_cm": 280,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "1997-11-27T17:00-03:00",
+    "cota_cm": 290,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "1998-01-27T07:00-03:00",
+   "cota_brusque_cm": 501,
+   "salseiro": {
+    "pico": "1998-01-27T07:00-03:00",
+    "cota_cm": 198,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "1998-01-27T07:00-03:00",
+    "cota_cm": 272,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "1998-04-28T17:00-03:00",
+   "cota_brusque_cm": 646,
+   "salseiro": {
+    "pico": "1998-04-27T17:00-03:00",
+    "cota_cm": 283,
+    "antecedencia_h": 24
+   },
+   "botuvera_mont": {
+    "pico": "1998-04-28T07:00-03:00",
+    "cota_cm": 526,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "1998-12-11T07:00-03:00",
+   "cota_brusque_cm": 564,
+   "salseiro": {
+    "pico": "1998-12-11T07:00-03:00",
+    "cota_cm": 204,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "1998-12-11T07:00-03:00",
+    "cota_cm": 160,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2001-05-04T17:00-03:00",
+   "cota_brusque_cm": 570,
+   "salseiro": {
+    "pico": "2001-05-04T07:00-03:00",
+    "cota_cm": 348,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2001-05-04T07:00-03:00",
+    "cota_cm": 428,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "2001-10-01T07:00-03:00",
+   "cota_brusque_cm": 745,
+   "salseiro": {
+    "pico": "2001-10-01T07:00-03:00",
+    "cota_cm": 390,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2001-10-01T07:00-03:00",
+    "cota_cm": 620,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2002-04-20T07:00-03:00",
+   "cota_brusque_cm": 475,
+   "salseiro": {
+    "pico": "2002-04-20T07:00-03:00",
+    "cota_cm": 242,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2002-04-20T07:00-03:00",
+    "cota_cm": 346,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2005-05-19T07:00-03:00",
+   "cota_brusque_cm": 466,
+   "salseiro": {
+    "pico": "2005-05-19T07:00-03:00",
+    "cota_cm": 273,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2005-05-19T07:00-03:00",
+    "cota_cm": 242,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2005-09-05T07:00-03:00",
+   "cota_brusque_cm": 513,
+   "salseiro": {
+    "pico": "2005-09-05T07:00-03:00",
+    "cota_cm": 245,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2005-09-04T17:00-03:00",
+    "cota_cm": 340,
+    "antecedencia_h": 14
+   }
+  },
+  {
+   "pico_brusque": "2005-11-17T07:00-03:00",
+   "cota_brusque_cm": 450,
+   "salseiro": {
+    "pico": "2005-11-17T07:00-03:00",
+    "cota_cm": 218,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2005-11-17T07:00-03:00",
+    "cota_cm": 200,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2008-11-25T07:00-03:00",
+   "cota_brusque_cm": 518,
+   "salseiro": {
+    "pico": "2008-11-24T07:00-03:00",
+    "cota_cm": 255,
+    "antecedencia_h": 24
+   },
+   "botuvera_mont": {
+    "pico": "2008-11-23T17:00-03:00",
+    "cota_cm": 484,
+    "antecedencia_h": 38
+   }
+  },
+  {
+   "pico_brusque": "2009-09-28T17:00-03:00",
+   "cota_brusque_cm": 568,
+   "salseiro": {
+    "pico": "2009-09-28T07:00-03:00",
+    "cota_cm": 324,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2009-09-28T17:00-03:00",
+    "cota_cm": 634,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2010-04-26T07:00-03:00",
+   "cota_brusque_cm": 560,
+   "salseiro": {
+    "pico": "2010-04-26T07:00-03:00",
+    "cota_cm": 240,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2010-04-25T17:00-03:00",
+    "cota_cm": 396,
+    "antecedencia_h": 14
+   }
+  },
+  {
+   "pico_brusque": "2011-03-12T17:00-03:00",
+   "cota_brusque_cm": 628,
+   "salseiro": {
+    "pico": "2011-03-11T07:00-03:00",
+    "cota_cm": 163,
+    "antecedencia_h": 34
+   },
+   "botuvera_mont": {
+    "pico": "2011-03-12T17:00-03:00",
+    "cota_cm": 152,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2011-08-10T07:00-03:00",
+   "cota_brusque_cm": 650,
+   "salseiro": {
+    "pico": "2011-08-08T07:00-03:00",
+    "cota_cm": 380,
+    "antecedencia_h": 48
+   },
+   "botuvera_mont": {
+    "pico": "2011-08-09T17:00-03:00",
+    "cota_cm": 586,
+    "antecedencia_h": 14
+   }
+  },
+  {
+   "pico_brusque": "2011-08-30T17:00-03:00",
+   "cota_brusque_cm": 618,
+   "salseiro": {
+    "pico": "2011-08-30T07:00-03:00",
+    "cota_cm": 340,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2011-08-30T17:00-03:00",
+    "cota_cm": 604,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2011-09-09T17:00-03:00",
+   "cota_brusque_cm": 890,
+   "salseiro": {
+    "pico": "2011-09-09T07:00-03:00",
+    "cota_cm": 453,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2011-09-09T07:00-03:00",
+    "cota_cm": 696,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "2012-01-14T17:00-03:00",
+   "cota_brusque_cm": 580,
+   "salseiro": {
+    "pico": "2012-01-14T07:00-03:00",
+    "cota_cm": 290,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2012-01-14T17:00-03:00",
+    "cota_cm": 486,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2013-03-21T07:00-03:00",
+   "cota_brusque_cm": 568,
+   "salseiro": {
+    "pico": "2013-03-21T07:00-03:00",
+    "cota_cm": 240,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2013-03-21T07:00-03:00",
+    "cota_cm": 340,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2013-09-22T17:00-03:00",
+   "cota_brusque_cm": 572,
+   "salseiro": {
+    "pico": "2013-09-20T17:00-03:00",
+    "cota_cm": 410,
+    "antecedencia_h": 48
+   },
+   "botuvera_mont": {
+    "pico": "2013-09-22T17:00-03:00",
+    "cota_cm": 620,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2014-06-09T07:00-03:00",
+   "cota_brusque_cm": 630,
+   "salseiro": {
+    "pico": "2014-06-08T17:00-03:00",
+    "cota_cm": 390,
+    "antecedencia_h": 14
+   },
+   "botuvera_mont": {
+    "pico": "2014-06-08T17:00-03:00",
+    "cota_cm": 358,
+    "antecedencia_h": 14
+   }
+  },
+  {
+   "pico_brusque": "2014-06-28T17:00-03:00",
+   "cota_brusque_cm": 570,
+   "salseiro": {
+    "pico": "2014-06-28T17:00-03:00",
+    "cota_cm": 310,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2014-06-28T07:00-03:00",
+    "cota_cm": 390,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "2014-10-01T17:00-03:00",
+   "cota_brusque_cm": 528,
+   "salseiro": {
+    "pico": "2014-09-29T07:00-03:00",
+    "cota_cm": 340,
+    "antecedencia_h": 58
+   },
+   "botuvera_mont": {
+    "pico": "2014-10-01T07:00-03:00",
+    "cota_cm": 380,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "2015-10-16T17:00-03:00",
+   "cota_brusque_cm": 462,
+   "salseiro": {
+    "pico": "2015-10-14T07:00-03:00",
+    "cota_cm": 270,
+    "antecedencia_h": 58
+   },
+   "botuvera_mont": {
+    "pico": "2015-10-16T17:00-03:00",
+    "cota_cm": 572,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2015-10-22T07:00-03:00",
+   "cota_brusque_cm": 772,
+   "salseiro": {
+    "pico": "2015-10-21T17:00-03:00",
+    "cota_cm": 420,
+    "antecedencia_h": 14
+   },
+   "botuvera_mont": {
+    "pico": "2015-10-21T17:00-03:00",
+    "cota_cm": 570,
+    "antecedencia_h": 14
+   }
+  },
+  {
+   "pico_brusque": "2016-03-03T17:00-03:00",
+   "cota_brusque_cm": 458,
+   "salseiro": {
+    "pico": "2016-03-03T17:00-03:00",
+    "cota_cm": 218,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2016-03-03T17:00-03:00",
+    "cota_cm": 200,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2017-06-01T07:00-03:00",
+   "cota_brusque_cm": 684,
+   "salseiro": {
+    "pico": "2017-05-31T17:00-03:00",
+    "cota_cm": 370,
+    "antecedencia_h": 14
+   },
+   "botuvera_mont": {
+    "pico": "2017-05-31T17:00-03:00",
+    "cota_cm": 490,
+    "antecedencia_h": 14
+   }
+  },
+  {
+   "pico_brusque": "2018-01-17T07:00-03:00",
+   "cota_brusque_cm": 494,
+   "salseiro": {
+    "pico": "2018-01-17T07:00-03:00",
+    "cota_cm": 224,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2018-01-17T07:00-03:00",
+    "cota_cm": 266,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2019-05-31T17:00-03:00",
+   "cota_brusque_cm": 590,
+   "salseiro": {
+    "pico": "2019-05-31T07:00-03:00",
+    "cota_cm": 328,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2019-05-31T17:00-03:00",
+    "cota_cm": 344,
+    "antecedencia_h": 0
+   }
+  },
+  {
+   "pico_brusque": "2020-12-17T17:00-03:00",
+   "cota_brusque_cm": 530,
+   "salseiro": {
+    "pico": "2020-12-17T07:00-03:00",
+    "cota_cm": 340,
+    "antecedencia_h": 10
+   },
+   "botuvera_mont": {
+    "pico": "2020-12-17T07:00-03:00",
+    "cota_cm": 600,
+    "antecedencia_h": 10
+   }
+  },
+  {
+   "pico_brusque": "2021-10-12T17:00-03:00",
+   "cota_brusque_cm": 568,
+   "salseiro": {
+    "pico": "2021-10-12T17:00-03:00",
+    "cota_cm": 200,
+    "antecedencia_h": 0
+   },
+   "botuvera_mont": {
+    "pico": "2021-10-12T17:00-03:00",
+    "cota_cm": 126,
+    "antecedencia_h": 0
+   }
+  }
+ ]
+}

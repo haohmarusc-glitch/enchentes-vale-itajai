@@ -41,6 +41,9 @@ como pendência de leitura do JICA, não como erro de ninguém.
 **Medida, em 22/09/2026** (`docs/INMET-CHUVA-2026-09-22.md`): Indaial (INMET A817) 246,6 mm em
 21–24/11, 145,2 mm no dia 23, 567,4 mm no mês; Ituporanga 46,4 mm nos quatro dias. Os 236 mm
 cabem num ponto do médio vale; os 121–144, numa média de bacia com cabeceira seca.
+No Mirim, com os pluviômetros da ANA (`docs/HIDROWEB-MIRIM-2026-09-22.md`): Botuverá-Montante
+334 mm e Brusque 287 mm em 21–24/11, Vidal Ramos 54 — os 160 mm do JICA cabem numa média com a
+cabeceira seca.
 
 ### Vítimas e afetados: o texto (imprensa e JICA) contra o Atlas de Desastres (S2ID)
 
