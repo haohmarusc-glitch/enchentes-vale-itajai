@@ -87,5 +87,5 @@ baixar 1 mês → aí o coletor é escrito e a maré medida entra na tela do Ita
 ## Placar do que rende agora
 
 1. **CEMADEN** → ligado ao cron. Chuva por bairro em 137 pontos. Pronto.
-2. **INMET** → LAI C8 respondida: API só com ACT. Nada a codar; histórico pelo BDMEP, se o Jefferson baixar.
+2. **INMET** → LAI C8 respondida: API só com ACT. Histórico 2006–2026 baixado e conferido em 22/09 (`docs/INMET-CHUVA-2026-09-22.md`, `scripts/inmet_chuva.py`). Nada a codar para o tempo real.
 3. **Maré EPAGRI** → depende do usuário abrir o portal logado.
