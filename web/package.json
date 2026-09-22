@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "tsx --test src/logica/*.test.ts src/dados/*.test.ts",
+    "test": "tsx --test src/logica/*.test.ts src/dados/*.test.ts src/chat-local/*.test.ts",
     "gabarito": "tsx ferramentas/gerar-gabarito-transito.ts",
     "fumaca": "node testes-navegador/fumaca.mjs",
     "auditoria": "node testes-navegador/auditoria.mjs",
