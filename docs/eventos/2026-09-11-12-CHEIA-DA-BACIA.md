@@ -190,6 +190,73 @@ de publicação na própria página.
 com carimbo 3 h atrás; o valor é bom. A crista de Blumenau foi **05:00–06:00 de 12/09, 7,86–7,87 m**.
 Trava no código: `extrair_picos.RELOGIO_DEFASADO` (E11). Ofício C23 liberado.
 
+## Velocidade de subida, em cm/h (calculada em 23/09/2026)
+
+Pedido do Jefferson em 23/09. `scripts/subida_cheia.py` lê o ndjson desta cheia e calcula, por
+régua: a **base** (menor leitura antes do meio-dia de 10/09), a **crista**, a **subida total** e a
+**maior subida em 1 h e em 3 h** — para cada leitura, o nível exatamente N horas depois vem por
+interpolação linear entre as leituras vizinhas (nunca por cima de buraco maior que 3 h). É a taxa
+que alguém lendo a régua de hora em hora teria visto. Saltos de ≥ 60 cm em ≤ 20 min ficam
+**listados**, não apagados. 13 testes (`teste_subida_cheia.py`) travam estes números.
+
+**Réguas de rio** (cada uma na própria régua; cm/h é diferença na mesma régua, comparável entre
+cidades só como descrição do evento):
+
+| régua | base | crista | subida | **maior 1 h** | quando começou | maior 3 h |
+|---|---|---|---|---|---|---|
+| Taió, Centro | 2,40 | 6,95 (12/09 03:43) | 455 cm | **50 cm/h** | 11/09 14:59 | 47 cm/h |
+| Rio do Sul, Ponte Dom Tito Buss | 2,96 | 5,89 (11/09 23:12) | 293 cm | **35 cm/h** | 11/09 14:27 | 28 cm/h |
+| Blumenau (AlertaBlu, horária) | 2,38 | 7,86 (12/09 05:00) | 548 cm | **62 cm/h** | 11/09 18:00 | 58 cm/h |
+| Blumenau (repasse DC Itajaí, carimbo 3 h atrasado) | 2,64 | 7,87 (12/09 02:15) | 523 cm | 63 cm/h | 11/09 15:45 (= ~18:45 real) | 57 cm/h |
+| Vidal Ramos (Asthon) | 2,43 | 3,39 (11/09 14:37) | 96 cm | **56 cm/h** | 11/09 12:56 | 24 cm/h |
+| Brusque, Ponte Estaiada | 1,26 | 4,62 (12/09 01:35) | 336 cm | **62 cm/h** | 11/09 13:15 | 42 cm/h |
+| Itajaí · DC-10 Mirim, Limoeiro | 2,98 | 8,08 (12/09 03:30) | 510 cm | **95 cm/h** | 11/09 14:00 | 69 cm/h |
+| Itajaí · DC-11 Açu, Santa Regina | 2,24 | 4,37 (12/09 04:00) | 213 cm | 46 cm/h | 11/09 13:30 | 28 cm/h |
+
+O que a tabela diz:
+
+- **A hora mais rápida foi a mesma em quase toda a bacia: o começo da tarde de 11/09**, entre
+  13h e 15h (Vidal Ramos, Brusque, Taió, Rio do Sul, DC-10, DC-11). Chuva na bacia inteira ao
+  mesmo tempo, não uma onda descendo.
+- **Blumenau subiu mais rápido às 18h**, três a quatro horas depois das cabeceiras — o que se
+  espera de quem recebe a água de Rio do Sul (7–10 h de trânsito) somada à chuva local. As duas
+  fontes de Blumenau dão a mesma taxa (62–63 cm/h); a diferença de horário é o carimbo atrasado
+  do repasse, já diagnosticado acima (E12).
+- **Rio do Sul foi a régua mais lenta** (35 cm/h) e a primeira a cristar (23h12 de 11/09), com
+  um ramo de subida longo: 293 cm em ~9 h. Taió, a montante, subiu mais rápido e cristou 4 h e
+  meia depois — a régua de Taió mede o Itajaí do Oeste, que não passa por Rio do Sul antes.
+- **DC-10 (Limoeiro) é a maior taxa da bacia, 95 cm/h**, e a maior subida absoluta (5,10 m). É a
+  régua do Mirim em Itajaí, sem cotas cadastradas: o número descreve o evento, não diz o que
+  ele significa para a rua.
+- Vidal Ramos cristou às 14h37 de 11/09, **11 h antes de Brusque** (01h35 de 12/09) — coerente
+  com a antecedência "até ~14 h" medida na ANA (`docs/HIDROWEB-MIRIM-2026-09-22.md`). A régua é
+  a Asthon da cidade, não a Salseiro.
+
+**Réguas de estuário e ribeirões de Itajaí** (DC-01 a DC-09): a maré cruza a cota sem enchente
+nenhuma, e aqui a "subida" **mistura maré e cheia**. Os números ficam pelo registro, com essa
+etiqueta, e **não** são velocidade de cheia:
+
+| régua | crista | maior 1 h | observação |
+|---|---|---|---|
+| DC-01 Açu, ICMBio | 2,00 (12/09 03:01) | 58 cm/h (11/09 23:01) | |
+| DC-02 Açu, Praça Celso Pereira | 1,90 (12/09 02:31) | 86 cm/h (11/09 14:31) | **salto de 0,95 → 1,57 m em ≤ 20 min às 15:01 de 11/09**: leitura suspeita, e o 86 cm/h é dela |
+| DC-03 Mirim, canal, Captação SEMASA | 1,97 (12/09 03:30) | 49 cm/h | |
+| DC-04 Mirim, Vitalmar | 2,18 (12/09 03:11) | 43 cm/h | |
+| DC-05 Mirim, curso antigo | 2,42 (12/09 04:41) | 16 cm/h | |
+| DC-06 Mirim, Itamirim | 1,48 (12/09 02:40) | 36 cm/h | |
+| DC-07 Ribeirão da Murta, Portal | 1,08 (**10/09 05:40**) | 45 cm/h | a "crista" é maré da véspera, não a cheia |
+| DC-08 Canhanduba | 2,41 (11/09 23:00) | 43 cm/h | |
+| DC-09 Murta, Ponte Lidia Puel | 1,93 (12/09 03:30) | 41 cm/h | |
+
+Indaial e Gaspar têm uma leitura só na janela e ficam de fora. Nada disto entra em
+`enchentes.json` nem em `transito.json`: é descrição de um evento, e as cristas continuam sendo a
+decisão pendente do item 2 abaixo.
+
+**Sobre a branch `vps/cheia-2026-09-11-12`** (23/09): o ndjson que ela adiciona é **byte a byte o
+mesmo** que já está no `main` desde 13/09 (`c8e4bfc`), e a branch nasceu de um `main` antigo —
+mesclá-la apagaria 74 arquivos de dados (126 mil linhas). Não há PR a abrir; a branch pode ser
+apagada.
+
 ## O que falta
 
 1. ~~**Extrair o evento completo do ndjson da VPS**~~ — feito em 13/09/2026: 4.028 leituras de 19
