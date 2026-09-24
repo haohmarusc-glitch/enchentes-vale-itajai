@@ -11,15 +11,23 @@ outra IA** (ChatGPT, Gemini, Perplexity…) e buscar os números.
 
 ## 1. O que já temos
 
-| Cidade | Rio | Registros |
-|---|---|---|
-| Blumenau | Itajaí-Açu | 117 |
-| Rio do Sul | Itajaí-Açu | 65 |
-| Gaspar | Itajaí-Açu | 48 |
-| Brusque | Itajaí-Mirim | 28 |
-| Indaial | Itajaí-Açu | 16 |
-| Taió | Itajaí-Açu | **1** (12,40 m em 09/10/2023) |
-| Timbó | Itajaí-Açu (Rio Benedito) | **1** (9,86 m em 09/09/2011) |
+Atualizado em 24/09/2026, depois dos PRs #410 e #411: **310 registros em 14 cidades**.
+
+| Cidade | Rio | Registros | Régua |
+|---|---|---|---|
+| Blumenau | Itajaí-Açu | 117 | municipal / IBGE |
+| Rio do Sul | Itajaí-Açu | 65 | municipal |
+| Gaspar | Itajaí-Açu | 48 | municipal |
+| Brusque | Itajaí-Mirim | 28 | municipal (5 da ANA) |
+| Indaial | Itajaí-Açu | 16 | municipal |
+| Taió | Itajaí do Oeste | 10 | municipal |
+| Ituporanga · Ibirama · Apiúna · Ilhota | Açu e afluentes | 5 cada | **só ANA** (zero próprio) |
+| Timbó | Benedito | 3 | não declarada |
+| Trombudo Central · Botuverá · Rio dos Cedros | — | 1 cada | não declarada |
+| **Itajaí · Ascurra · Lontras · Vidal Ramos · Guabiruba** | — | **0** | — |
+
+A seção 2 abaixo é o levantamento original de 24/09 e continua valendo como referência de régua e
+de datas-alvo. **O que ainda falta está no prompt da seção 6.**
 
 ## 2. O que falta, por cidade
 
@@ -90,33 +98,72 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
+Versão 2, de 24/09/2026. Já não pede o que foi cadastrado e avisa das armadilhas que as duas
+primeiras rodadas encontraram.
+
 ```text
 Preciso de níveis máximos (picos) históricos de cheias de rios em cidades da bacia do
-rio Itajaí, Santa Catarina, Brasil. Responda em português.
+rio Itajaí, Santa Catarina, Brasil. Responda em português. Só quero números que estejam
+escritos numa página que você abriu e pode citar com URL.
 
-Cidades e eventos-alvo:
-- Itajaí (foz dos rios Itajaí-Açu e Itajaí-Mirim): cheias de jul/1983, ago/1984, out/2001,
-  jan–fev/2008, nov/2008, set/2011, set–out/2013, jun/2014, out/2015, out e nov/2023.
-  ATENÇÃO: Itajaí tem várias réguas (CEPSUL, Praça da Murta, Santa Regina/Volta de Cima,
-  SEMASA, Vitalmar, Itamirim, Limoeiro, e nomes antigos como Teporti). Para cada número,
-  diga QUAL régua. Boletins de Itajaí às vezes citam o nível de Blumenau — não confunda.
-- Ilhota, Ascurra, Apiúna, Lontras, Ibirama, Ituporanga, Trombudo Central, Rio dos Cedros,
-  Timbó e Taió (Itajaí-Açu e afluentes): cheias de 1983, 1984, 2001, 2008, 2011, 2013,
-  2015, 2020 e 2023.
-- Vidal Ramos, Botuverá e Guabiruba (Itajaí-Mirim): cheias de 2001, 2008, 2011 e 2023.
+PRIORIDADE 1 — cidades sem NENHUM pico no meu cadastro:
 
-Para CADA número, devolva uma linha de tabela com:
-cidade | data (AAAA-MM-DD) | hora (se houver) | nível em metros | régua/estação/ponte citada
-(ou "não declarada") | é o PICO ou leitura de um horário? | título da fonte | veículo/órgão |
-URL exata | trecho literal da fonte que traz o número.
+1. Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim). Cheias: jul/1983, ago/1984, out/2001,
+   jan–fev/2008, nov/2008, set/2011, set–out/2013, jun/2014, out/2015, out/2023 e nov/2023.
+   Itajaí tem várias réguas com zeros diferentes: CEPSUL, Praça da Murta (Celso Pereira da
+   Silva), Santa Regina/Volta de Cima, Captação SEMASA/São Roque, Vitalmar, Itamirim Clube de
+   Campo, Limoeiro, e nomes antigos como Teporti, Início Rio e AMP Logística. Para cada número,
+   diga QUAL régua. Quero o MÁXIMO do evento por régua: boletim final, relatório pós-evento,
+   AVADAN/FIDE ou estudo acadêmico (UNIVALI, JICA, UDESC). Leitura de um horário qualquer não
+   serve. Por exemplo, a tabela de 09/09/2011 17h30 já tenho, e ela não é o pico.
+   Página que vale tentar: https://defesacivil.itajai.sc.gov.br/historico/
+2. Ascurra: régua do Itajaí-Açu na Ponte do Beber. Cheias: 2008, 2011, 2013, 2015, 2023.
+   O Ribeirão Braço São Paulo é outro curso d'água e não serve.
+3. Lontras: régua do Itajaí-Açu em Lontras. Cheias: 1983, 1984, 2001, 2011, 2020, 2023.
+4. Vidal Ramos: rio Itajaí-Mirim. Cheias: mar/2001, nov/2005, set/2011, 2023.
+5. Guabiruba: rio Guabiruba. Cheias: nov/2008, mar/2011, set/2011, 2023. Boletins de
+   Brusque mostram a estação de Guabiruba em cota ortométrica (~25 m); isso NÃO é régua de
+   cheia, não mande.
 
-Regras:
-- Só números que estão escritos numa página que você consegue citar com URL. Não estime,
-  não interpole, não converta entre réguas, não use memória sem fonte.
-- Se não achar nada para uma cidade, escreva "nada encontrado" — isso também é resposta útil.
+PRIORIDADE 2 — tenho só a régua da ANA; quero a régua da DEFESA CIVIL municipal:
+
+6. Ituporanga (rio Itajaí do Sul), Ibirama (rio Hercílio/Itajaí do Norte), Apiúna (Itajaí-Açu)
+   e Ilhota (Itajaí-Açu). Cheias: 1983, 1984, 2008, 2011, 2013, 2015, out e nov/2023.
+   Diga o nome da régua ou ponte. Em Ilhota a Defesa Civil às vezes usa a medição de Gaspar,
+   e o PLANCON de Ilhota traz uma tabela com os números de BLUMENAU (15,34 / 15,46 / 12,60):
+   não mande esses.
+
+PRIORIDADE 3 — lacunas pontuais:
+
+7. Rio dos Cedros (régua da Praça Matriz?): maio/1992 (recorde, citado 9,25 m), nov/2008
+   (7,94 m?), set/2011 (7,73 m?), jun/2014 (8,96 m?). Tenho só 5,77 m em 12/10/2023. Quero a
+   página que confirma cada um.
+8. Trombudo Central (rio Trombudo): 1983 (citado 6,22 m) e outras cheias. Tenho só 8,71 m em
+   17/11/2023.
+9. Botuverá (Itajaí-Mirim): 2008, 2011 e out/2023. Tenho só 8,61 m em 17/11/2023. O
+   "10,03 m em 2011" que aparece nas buscas é de BRUSQUE.
+10. Timbó (rio Benedito, régua da Rua Equador): dia e mês do pico de 9,58 m de 2014 (junho?);
+    1992 (citado 10,42 m); e se 2011 foi 9,86 m ou 10,01 m, porque há duas versões.
+11. Taió (rio Itajaí do Oeste): o MÊS da cheia de 1983 de 11,85 m (a tabela da prefeitura diz
+    setembro, mas a cheia do Vale foi em julho); o mês da de 9,38 m de 2013 (a tabela diz junho,
+    mas a ANA indica setembro); e o dia da de 10,37 m de nov/2023.
+
+FORMATO — uma linha de tabela por número:
+cidade | data (AAAA-MM-DD) | hora | nível (m) | régua/estação/ponte (ou "não declarada") |
+PICO ou leitura de um horário? | título da fonte | veículo/órgão | URL exata |
+trecho literal da página que traz o número
+
+REGRAS:
+- Não estime, não interpole, não converta entre réguas, não use memória sem fonte.
+- Não confunda cidades: boletins de Itajaí, Ilhota e Gaspar citam muito o nível de BLUMENAU
+  (15,34 m em 1983, 15,46 m em 1984, 11,52 m em 2008, 12,60 m em 2011, 9,49 m em 2023).
+  Esses números NÃO são daquelas cidades.
+- Se não achar nada para uma cidade, escreva "nada encontrado".
 - Se fontes diferentes dão valores diferentes para o mesmo evento, liste todas.
-- Prefira: Defesa Civil (municipal ou SC), CEOPS/FURB, ANA/HidroWeb, Epagri/CIRAM, artigos
-  acadêmicos; depois imprensa regional (NSC, g1 SC, Diarinho, O Município, Jornal de SC).
+- Se só achar o resumo do buscador e não conseguir abrir a página, diga isso na linha.
+- Prefira Defesa Civil (municipal ou de SC), prefeituras, CEOPS/FURB, Epagri/CIRAM e artigos
+  acadêmicos; depois a imprensa regional (NSC Total, g1 SC, ND+, Diarinho, O Município, Jornal
+  do Médio Vale, Misturebas).
 ```
 
 ## 7. Pistas da pesquisa de 24/09/2026 — NÃO CONFERIDAS
