@@ -119,8 +119,52 @@ Regras:
   acadêmicos; depois imprensa regional (NSC, g1 SC, Diarinho, O Município, Jornal de SC).
 ```
 
-## 7. Estado
+## 7. Pistas da pesquisa de 24/09/2026 — NÃO CONFERIDAS
+
+A busca achou os números abaixo, mas **nenhuma página pôde ser aberta**: a rede do ambiente
+recusou todos os domínios de fonte (`connect_rejected`). Cada valor veio só do resumo do
+buscador — por isso **nada entrou em `enchentes.json`**. Para cadastrar: abrir a URL, copiar o
+trecho literal, confirmar data e régua.
+
+| Cidade | Data | Metros | Régua | Pico? | URL |
+|---|---|---|---|---|---|
+| Rio dos Cedros | 1992-05 | 9,25 | não declarada (recorde) | pico | https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf |
+| Rio dos Cedros | 2008-11 | 7,94 | não declarada | pico | https://www.nsctotal.com.br/noticias/nivel-do-rio-dos-cedros-supera-a-terceira-maior-marca-historica |
+| Rio dos Cedros | 2011-09 | 7,73 | não declarada | pico | idem |
+| Rio dos Cedros | 2014-06-08 | 8,96 | não declarada | pico (2.º maior) | https://ndmais.com.br/noticias/rio-dos-cedros-enfrenta-a-segunda-maior-enchente-ja-registrada-desde-1992/ |
+| Trombudo Central | 1983 | 6,22 | não declarada | pico | https://ndmais.com.br/tempo/atingiu-metade-da-cidade-diz-prefeita-de-trombudo-central-sobre-maior-enchente-da-historia/ |
+| Trombudo Central | 2023-11-17 | 8,71 | não declarada | provável pico, ~17h | idem (é o 8,71 de `inundacao_historica` em `estacoes.json`) |
+| Timbó | 1992 | 10,42 | Rua Equador | pico | https://www.jornaldomediovale.com.br/on-line/cotidiano/cheia_de_2011_foi_a_maior_de_todas_no_rio_benedito.112538 |
+| Timbó | 2011 | 10,01 | Rua Equador | pico — **diverge** dos 9,86 do cadastro | idem |
+| Timbó | 2014-06 (seg., ~3h) | 9,40 | não declarada | máximo citado | https://www.nsctotal.com.br/noticias/rio-benedito-atinge-94-metros-e-12-pessoas-sao-removidas-para-abrigos-em-timbo |
+| Timbó | 2023-10-12 21h | 7,46 | não declarada | pico | https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/ |
+| Taió | 2011 | 11,65 | não declarada | pico | https://www.nsctotal.com.br/noticias/taio-preve-enchente-pior-do-que-em-2011-e-agua-ja-atinge-2o-piso-das-casas-fotos |
+| Taió | 2023-10-09 | 12,33 | não declarada | **diverge** dos 12,40 do cadastro | https://www.nsctotal.com.br/noticias/rio-itajai-do-oeste-ultrapassa-recorde-de-elevacao-dos-ultimos-12-anos-apos-chuvas-fortes-em-sc |
+| Ascurra | 2026-09-01 (?) ~6h | 10,13 | Ponte do Beber | máximo citado; confirmar data | https://ndmais.com.br/tempo/rio-avanca-ultrapassa-10-metros-bloqueia-rua-em-ascurra/ |
+| Botuverá / Vidal Ramos | data ? | 5,85 / 3,87 | não declarada | pico | https://ndmais.com.br/tempo/avenida-e-interditada-apos-rio-atingir-51-metros-acima-do-nivel-e-sair-da-calha-em-cidade-de-sc/ |
+
+**Itajaí: nenhum pico por régua achado** para os eventos históricos. Só leituras de 2023, que
+não entram em `pico_m`: 08/10/2023 Açu/Murta 2,52 m e Itamirim ~2,28 m (boletim 05 da DC de
+Itajaí, https://defesacivil.itajai.sc.gov.br/noticia/5705/boletim-05-08-10-23); 19/11/2023
+Vitalmar 2,05 m e Itamirim 2,72 m (NDmais). Números que circulam como "de Itajaí" e **não são**:
+9,49 m (08/10/2023, Diplomata FM — régua de Blumenau), 15,34/15,46 m (Itajaipédia — Blumenau
+1983/1984), 11,52 m (Wikipédia, 2008 — Blumenau).
+
+**Achados que mudam o cadastro:**
+- **Ilhota não tem régua própria**: a Defesa Civil de Ilhota usa a medição de Gaspar
+  (https://ilhota.sc.gov.br/noticia-100533/). Confirmar e, se for, Ilhota não terá pico próprio.
+- **Guabiruba** aparece em boletins de Brusque em **cota ortométrica** (~25 m), não em régua de zero local.
+- O "10,03 m em 2011" que surge nas buscas de Botuverá é de **Brusque**.
+- Ibirama, Apiúna, Lontras e Ituporanga: nada utilizável.
+
+**Melhores alvos para Itajaí** (não abriram daqui): https://defesacivil.itajai.sc.gov.br/historico/ ·
+Avisos Hidrológicos de out/2015 · JICA com tabelas por estação
+(https://openjicareport.jica.go.jp/pdf/12043683_02.pdf) · dissertação UDESC de Caio Floriano dos
+Santos (https://www.faed.udesc.br/arquivos/id_submenu/866/caio_floriano_dos_santos.pdf).
+
+## 8. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
-- [ ] Pesquisa web desta sessão (em andamento) — resultados entram em `enchentes.json` e aqui.
+- [x] Pesquisa web desta sessão — pistas na §7, nenhuma conferida (rede bloqueada).
+- [ ] Conferir as pistas da §7 abrindo cada página (PC, VPS ou sessão com rede liberada).
 - [ ] Respostas de outras IAs: conferir URL e trecho de cada número antes de cadastrar.
