@@ -162,9 +162,44 @@ Avisos Hidrológicos de out/2015 · JICA com tabelas por estação
 (https://openjicareport.jica.go.jp/pdf/12043683_02.pdf) · dissertação UDESC de Caio Floriano dos
 Santos (https://www.faed.udesc.br/arquivos/id_submenu/866/caio_floriano_dos_santos.pdf).
 
-## 8. Estado
+## 8. Cadastrado em 24/09/2026 (segunda rodada, páginas abertas no Chrome)
+
+Pesquisa externa com as páginas abertas e salvas; cada trecho foi conferido de novo no arquivo
+original, em `data/brutos/pesquisa-picos-2026-09-24/` (fontes, 17 séries da ANA e os relatórios).
+**14 registros novos, todos `confianca: baixa`**, porque nenhuma fonte declara a régua:
+
+| Cidade | Data | Pico | Fonte |
+|---|---|---|---|
+| Trombudo Central | 17/11/2023 17h | 8,71 m | Prefeitura |
+| Botuverá | 17/11/2023 (tarde) | 8,61 m | O Município, citando o prefeito |
+| Timbó | 12/10/2023 21h | 7,46 m | O Auditório |
+| Timbó | 2014 | 9,58 m | Câmara de Timbó (fala da Defesa Civil) |
+| Rio dos Cedros | 12/10/2023 15h | 5,77 m | O Auditório |
+| Taió | 1983, set/2011, jun/2013, jun/2014, out/2015, jun/2017, mai/2022, 04/11/2023, nov/2023 | 11,85 · 11,65 · 9,38 · 8,91 · 10,75 · 8,18 · 9,70 · 10,36 · 10,37 m | Estudo Socioambiental de Taió, p. 343 (+ Misturebas para 04/11) |
+
+Decisões tomadas no cadastro:
+- **Taió 1983:** a tabela diz setembro, a ANA tem a máxima do ano em 12/07/1983. O registro fica
+  só com o ano, e o mês da fonte vai em `data_na_fonte`.
+- **Taió nov/2023:** duas linhas sem dia (10,36 e 10,37). A de 10,36 é a de 04/11 (imprensa); a
+  outra fica como `2023-11` com `pendencia`. Não usei a crista da ANA de 17/11 para datar, porque é outra régua.
+- **Taió out/2023:** a tabela confirma os 12,40 m já cadastrados. Não criei um registro duplicado.
+- **Timbó 2011:** a Câmara cita 9,86 m, o mesmo valor do cadastro. Isso confirma o registro.
+
+**Itajaí continua com zero picos.** A segunda rodada achou a tabela de 09/09/2011 17h30 (a
+candidata da pendência do README): CEPSUL 0,93 · Teporti 3,03 · SEMASA 3,65 · Vitalmar 2,68 ·
+Início Rio 2,62 · Itamirim 3,21 · Teporti/Murta 2,16 · AMP Logística 2,78 (unidade inferida).
+É **leitura**, e o próprio boletim prevê piora na maré das 00h30. A Folha de 11/09/2011 põe o
+máximo no dia 10, sem cota. Nada disso é pico, e nada entrou.
+
+Outros achados: 83145140 é **Barragem Sul / Ituporanga Jusante**, não a régua do centro. O
+PLANCON de Ilhota traz uma tabela com os números de Blumenau (15,34/15,46/12,60). As leituras
+de Apiúna em 04–05/05/2022 não dizem a unidade. Nenhum desses achados virou registro.
+
+## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
-- [x] Pesquisa web desta sessão — pistas na §7, nenhuma conferida (rede bloqueada).
-- [ ] Conferir as pistas da §7 abrindo cada página (PC, VPS ou sessão com rede liberada).
-- [ ] Respostas de outras IAs: conferir URL e trecho de cada número antes de cadastrar.
+- [x] Pesquisa web, primeira rodada: pistas na §7, nenhuma conferida (rede bloqueada).
+- [x] Segunda rodada conferida nos originais: 14 registros (§8).
+- [ ] Itajaí: pico por régua — boletim final da Defesa Civil de 2011, ou relatório com máximo por estação.
+- [ ] Ilhota, Ascurra, Apiúna, Lontras, Ibirama, Ituporanga, Vidal Ramos, Guabiruba: sem pico ainda.
+- [ ] Séries da ANA baixadas (Apiúna 83500000, Ibirama 83440000, Ituporanga 83250000, Timbó 83677000/83680000, Ilhota 83860000/83870000): extrair picos por script, como foi feito no Itajaí-Mirim — são réguas da ANA, com zero próprio.

@@ -2887,6 +2887,137 @@
       "pico_m": 7.58,
       "confianca": "media",
       "fonte": "Lista de cheias 2019–2024 da Rádio Cidade (rc.fm.br/web/page_noticia/id_981258/, 21/05/2024), crédito SECOM/Prefeitura de Brusque, dados da Defesa Civil — Bruto: data/brutos/brusque-rc-fm-cheias-2019-2024-transcricao.tsv"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "trombudo-central",
+      "data": "2023-11-17",
+      "hora": "17:00",
+      "pico_m": 8.71,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Trombudo Central, \"Trombudo Central registra a maior enchente da sua história\", 27/11/2023 (https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/) — trecho: \"Às 17h o Rio Trombudo atingiu 8,71 metros.\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/trombudo-evidencia.txt",
+      "nota": "Maior enchente da história do município, segundo a prefeitura. A notícia não usa a palavra \"pico\". Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "botuvera",
+      "data": "2023-11-17",
+      "pico_m": 8.61,
+      "confianca": "baixa",
+      "fonte": "O Município, \"A água baixou e os problemas dobraram: prefeito de Botuverá comenta situação após enchente\", 18/11/2023 (https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/) — trecho: \"o pico máximo registrado no município foi de 8,61 metros, na tarde de sexta\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/botuvera-2023.html",
+      "nota": "Número dito pelo prefeito Alcir Merizio; pico \"na tarde de sexta\" (17/11), sem hora exata. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2023-10-12",
+      "hora": "21:00",
+      "pico_m": 7.46,
+      "confianca": "baixa",
+      "fonte": "O Auditório, \"Rio Benedito começa a baixar na região de Timbó\", 13/10/2023 (https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/) — trecho: \"O nível do Rio Benedito em Timbó atingiu o pico de 7,46m às 21h desta quinta-feira (12)\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/timbo-cedros-2023.html",
+      "nota": "Rio Benedito. A notícia não diz se é a régua da Rua Equador. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2023-10-12",
+      "hora": "15:00",
+      "pico_m": 5.77,
+      "confianca": "baixa",
+      "fonte": "O Auditório, \"Rio Benedito começa a baixar na região de Timbó\", 13/10/2023 (https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/) — trecho: \"Em Rio dos Cedros, o Rio dos Cedros marcava 4,20m no mesmo horário, mas chegou ao pico de 5,77m às 15h de quinta-feira\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/timbo-cedros-2023.html",
+      "nota": "A notícia não diz se é a régua da Praça Matriz. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2014",
+      "pico_m": 9.58,
+      "confianca": "baixa",
+      "fonte": "Timbó Net, \"Sessão Ordinária ocorre com participação em Tribuna da Defesa Civil Municipal e Rede Feminina\" (texto da Comunicação da Câmara de Timbó), relato da fala do coordenador da Defesa Civil (https://timbonet.com.br/noticia/sessao-ordinaria-ocorre-com-participacao-em-tribuna-da-defesa-civil-municipal-e-rede-feminina) — trecho: \"em 2014, aconteceu a segunda maior, com o pico de 9m58cm\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/timbo-camara-2014.html",
+      "nota": "Segunda maior cheia de Timbó, segundo a Defesa Civil municipal. Sem dia, mês nem rio no trecho; o mesmo texto dá 9,86 m para 2011, igual ao registro de 09/09/2011, o que sugere a mesma régua — sugere, não prova. Não preencher o mês por inferência. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1983",
+      "pico_m": 11.85,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela diz SETEMBRO de 1983, mas a grande cheia de 1983 no Vale foi em julho, e a série da ANA em Taió (83050000) tem a máxima do ano em 12/07/1983 (bruto data/brutos/pesquisa-picos-2026-09-24/ana/, arquivo Cotas). Por isso o registro fica só com o ano. O mesmo 11,85 m aparece na Misturebas (13/10/2023), atribuído às medições de Aldo Bogo usadas pela prefeitura. A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
+      "data_na_fonte": "1983-09"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2011-09",
+      "pico_m": 11.65,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2013-06",
+      "pico_m": 9.38,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2014-06",
+      "pico_m": 8.91,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2015-10",
+      "pico_m": 10.75,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2017-06",
+      "pico_m": 8.18,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2022-05",
+      "pico_m": 9.7,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. A crista da ANA em 05/05/2022 (9,49 m) é de outra régua e continua fora do cadastro pela decisão (b)."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2023-11-04",
+      "pico_m": 10.36,
+      "confianca": "baixa",
+      "fonte": "Misturebas, \"Taió enfrenta quarta enchente em menos de um mês\", 06/11/2023 (https://misturebas.com.br/2023/11/06/taio-equarta-enchente-em-um-mes/) — trecho: \"o pico mais alto ocorreu no sábado, 4, quando o rio atingiu a marca de 10,36 metros\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-nov-evidencia.txt; o mesmo valor está na tabela da p. 343 do Estudo Socioambiental de Taió",
+      "nota": "A tabela municipal tem DUAS linhas em nov/2023 (10,36 e 10,37 m), sem dia. Esta é a de 04/11, pela data da imprensa. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2023-11",
+      "pico_m": 10.37,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Segunda linha de nov/2023 da tabela; a outra (10,36 m) é a de 04/11. O dia desta não está na fonte. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
+      "pendencia": "Dia desconhecido. Candidato: a cheia de 17/11/2023, quando a ANA 83050000 marcou crista de 10,32 m — mas é outra régua, então NÃO preencher o dia por isso. Fecha com boletim da Defesa Civil de Taió de nov/2023."
     }
   ]
 }

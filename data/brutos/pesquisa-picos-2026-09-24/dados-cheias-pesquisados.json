@@ -1,0 +1,1818 @@
+{
+  "levantamento": "2026-09-24",
+  "escopo": "Pesquisa e aquisição de fontes; nenhuma alteração em enchentes.json ou repositório de produção.",
+  "criterios": {
+    "pico": "Máximo explicitamente publicado; ausência de régua rebaixa confiança do registro.",
+    "datas": "null quando falta dia/mês; nenhum dia foi inventado.",
+    "confianca_fonte": "alta: oficial/acadêmica; media: imprensa; baixa: compilação informal.",
+    "confianca": "Pode ser baixa mesmo com fonte oficial quando a referência da medição não é declarada.",
+    "leituras": "pico_m sempre null; não promover máximo amostrado a pico do evento."
+  },
+  "picos_com_data_completa": [
+    {
+      "cidade": "Trombudo Central",
+      "rio": "Rio Trombudo",
+      "data": "2023-11-17",
+      "ano": 2023,
+      "hora": "17:00",
+      "pico_m": 8.71,
+      "tipo": "pico_publicado",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "alta",
+      "fonte": {
+        "titulo": "Trombudo Central registra a maior enchente da sua história",
+        "orgao": "Prefeitura de Trombudo Central",
+        "url": "https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; texto do artigo conferido",
+        "arquivo": "fontes/trombudo-evidencia.txt"
+      },
+      "trecho_literal": "Às 17h o Rio Trombudo atingiu 8,71 metros.",
+      "nota": "Régua/estação não declarada pela fonte. Fonte caracteriza o evento como a maior enchente registrada. Confirma a data que faltava no anexo.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    },
+    {
+      "cidade": "Timbó",
+      "rio": "Rio Benedito",
+      "data": "2023-10-12",
+      "ano": 2023,
+      "hora": "21:00",
+      "pico_m": 7.46,
+      "tipo": "pico_publicado",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "media",
+      "fonte": {
+        "titulo": "Rio Benedito começa a baixar na região de Timbó",
+        "orgao": "O Auditório",
+        "url": "https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/",
+        "tipo": "imprensa",
+        "verificacao": "Página aberta pela ferramenta web; HTML baixado",
+        "arquivo": "fontes/timbo-cedros-2023.html"
+      },
+      "trecho_literal": "pico de 7,46m às 21h",
+      "nota": "Régua/estação não declarada pela fonte. Não atribuir à Rua Equador sem confirmação adicional.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    },
+    {
+      "cidade": "Rio dos Cedros",
+      "rio": "Rio dos Cedros",
+      "data": "2023-10-12",
+      "ano": 2023,
+      "hora": "15:00",
+      "pico_m": 5.77,
+      "tipo": "pico_publicado",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "media",
+      "fonte": {
+        "titulo": "Rio Benedito começa a baixar na região de Timbó",
+        "orgao": "O Auditório",
+        "url": "https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/",
+        "tipo": "imprensa",
+        "verificacao": "Página aberta pela ferramenta web; HTML baixado",
+        "arquivo": "fontes/timbo-cedros-2023.html"
+      },
+      "trecho_literal": "pico de 5,77m às 15h",
+      "nota": "Régua/estação não declarada pela fonte. Não atribuir à Praça Matriz sem confirmação adicional.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    },
+    {
+      "cidade": "Taió",
+      "rio": "Rio Itajaí do Oeste",
+      "data": "2023-11-04",
+      "ano": 2023,
+      "hora": null,
+      "pico_m": 10.36,
+      "tipo": "pico_publicado",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "media",
+      "fonte": {
+        "titulo": "Taió enfrenta quarta enchente em menos de um mês, com mais de 60% da cidade inundada",
+        "orgao": "Misturebas News",
+        "url": "https://misturebas.com.br/2023/11/06/taio-equarta-enchente-em-um-mes/",
+        "tipo": "imprensa",
+        "verificacao": "Conteúdo conferido por abertura na ferramenta web; download direto falhou",
+        "arquivo": "fontes/taio-nov-evidencia.txt"
+      },
+      "trecho_literal": "o pico mais alto ocorreu no sábado, 4, quando o rio atingiu a marca de 10,36 metros.",
+      "nota": "Régua/estação não declarada pela fonte. Notícia atribui o dado à Prefeitura; falta identificação explícita da régua do centro.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    },
+    {
+      "cidade": "Botuverá",
+      "rio": "Rio Itajaí-Mirim",
+      "data": "2023-11-17",
+      "ano": 2023,
+      "hora": null,
+      "pico_m": 8.61,
+      "tipo": "pico_publicado",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "media",
+      "fonte": {
+        "titulo": "“A água baixou e os problemas dobraram”: prefeito de Botuverá comenta situação após enchente",
+        "orgao": "O Município",
+        "url": "https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/",
+        "tipo": "imprensa",
+        "verificacao": "Página aberta pela ferramenta web; HTML baixado",
+        "arquivo": "fontes/botuvera-2023.html"
+      },
+      "trecho_literal": "o pico máximo registrado no município foi de 8,61 metros",
+      "nota": "Régua/estação não declarada pela fonte. Horário descrito apenas como tarde. Não presumir estação ou ponte.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    }
+  ],
+  "registros_com_data_incompleta": [
+    {
+      "cidade": "Timbó",
+      "rio": "não declarado no trecho do pico",
+      "data": null,
+      "ano": 2014,
+      "hora": null,
+      "pico_m": 9.58,
+      "tipo": "pico_publicado",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "media",
+      "fonte": {
+        "titulo": "Câmara de Timbó – Sessão Ordinária ocorre com participação em Tribuna da Defesa Civil Municipal e Rede Feminina",
+        "orgao": "Timbó Net",
+        "url": "https://timbonet.com.br/noticia/sessao-ordinaria-ocorre-com-participacao-em-tribuna-da-defesa-civil-municipal-e-rede-feminina",
+        "tipo": "imprensa",
+        "verificacao": "HTML baixado e texto conferido",
+        "arquivo": "fontes/timbo-camara-2014.html"
+      },
+      "trecho_literal": "em 2014, aconteceu a segunda maior, com o pico de 9m58cm.",
+      "nota": "Régua/estação não declarada pela fonte. Dia e mês ausentes. Rio Benedito é hipótese a confirmar; não preencher data artificialmente.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    },
+    {
+      "cidade": "Taió",
+      "rio": "Rio Itajaí do Oeste",
+      "data": null,
+      "ano": 1983,
+      "hora": null,
+      "pico_m": 11.85,
+      "tipo": "altura_historica_relatada",
+      "regua": "não declarada",
+      "confianca": "baixa",
+      "confianca_fonte": "media",
+      "fonte": {
+        "titulo": "Maior enchente da história de Taió inunda mais de 2,5 mil imóveis",
+        "orgao": "Misturebas News",
+        "url": "https://misturebas.com.br/2023/10/13/maior-enchente-de-taio/",
+        "tipo": "imprensa",
+        "verificacao": "Conteúdo conferido por abertura na ferramenta web; download direto falhou",
+        "arquivo": "fontes/taio-1983-evidencia.txt"
+      },
+      "trecho_literal": "em 1983, durante a maior enchente do Vale, o rio atingiu 11,85 metros.",
+      "nota": "Régua/estação não declarada pela fonte. Relato retrospectivo baseado em medições de Aldo Bogo; fonte não fornece dia, mês ou referência da régua. Valor de cheia histórica, sem série para reconstituir máximo.",
+      "apto_importacao_automatica": false,
+      "divergencias": []
+    }
+  ],
+  "leituras_auxiliares": [
+    {
+      "cidade": "Itajaí",
+      "rio": "Itajaí-Açu",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 0.93,
+      "pico_m": null,
+      "regua": "Telemetria CEPSUL",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "0.93m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Itajaí-Açu",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 3.03,
+      "pico_m": null,
+      "regua": "Telemetria Teporti",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "3.03m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Itajaí-Mirim — canal retificado",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 3.65,
+      "pico_m": null,
+      "regua": "Telemetria SEMASA São Roque",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "3.65m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Itajaí-Mirim — canal retificado",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 2.68,
+      "pico_m": null,
+      "regua": "Telemetria VITALMAR",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "2.68m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Itajaí-Mirim — curso antigo",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 2.62,
+      "pico_m": null,
+      "regua": "Telemetria Início Rio",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "2.62m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Itajaí-Mirim — curso antigo",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 3.21,
+      "pico_m": null,
+      "regua": "Telemetria Itamirim",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "3.21m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Ribeirão da Murta",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 2.16,
+      "pico_m": null,
+      "regua": "Telemetria TEPORTI",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "2.16m",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte."
+    },
+    {
+      "cidade": "Itajaí",
+      "rio": "Ribeirão Canhanduba",
+      "data": "2011-09-09",
+      "hora": "17:30",
+      "nivel_m": 2.78,
+      "pico_m": null,
+      "regua": "Telemetria AMP Logística",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+        "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+        "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+        "tipo": "compilacao_informal",
+        "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+        "arquivo": "fontes/itajai-2011-09-09.html"
+      },
+      "trecho_literal": "2.78",
+      "nota": "Boletim não declara máximo; prevê agravamento na maré seguinte. Unidade do Canhanduba não é impressa nessa linha, inferida do contexto dos níveis em metros."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "06:00",
+      "nivel_publicado": 5.23,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "08:00",
+      "nivel_publicado": 5.33,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "09:00",
+      "nivel_publicado": 5.38,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "10:00",
+      "nivel_publicado": 5.44,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "11:00",
+      "nivel_publicado": 5.5,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "13:00",
+      "nivel_publicado": 5.85,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "14:00",
+      "nivel_publicado": 6.03,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "15:00",
+      "nivel_publicado": 6.16,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "16:00",
+      "nivel_publicado": 6.36,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "17:00",
+      "nivel_publicado": 6.43,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "18:00",
+      "nivel_publicado": 6.5,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "19:00",
+      "nivel_publicado": 6.5,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "20:00",
+      "nivel_publicado": 6.5,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "21:00",
+      "nivel_publicado": 6.5,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "22:00",
+      "nivel_publicado": 6.5,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-04",
+      "hora": "23:00",
+      "nivel_publicado": 6.45,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    },
+    {
+      "cidade": "Apiúna",
+      "rio": "Itajaí-Açu",
+      "data": "2022-05-05",
+      "hora": "06:00",
+      "nivel_publicado": 6.1,
+      "unidade": "não explicitada no corpo do boletim",
+      "pico_m": null,
+      "regua": "não declarada",
+      "tipo": "leitura_horaria",
+      "confianca": "baixa",
+      "fonte": {
+        "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+        "orgao": "Prefeitura de Apiúna",
+        "url": "https://apiuna.sc.gov.br/noticia-733008/",
+        "tipo": "oficial",
+        "verificacao": "Página aberta no Chrome; tabela conferida",
+        "arquivo": "fontes/apiuna-evidencia.txt"
+      },
+      "nota": "Série auxiliar de 2022, fora das datas-alvo; o máximo das linhas publicadas não é confirmação do pico do evento."
+    }
+  ],
+  "divergencias": [
+    {
+      "cidade": "Taió",
+      "data": "2023-10-09",
+      "valor_no_anexo_m": 12.4,
+      "valor_academico_m": 12.39,
+      "estacao_academica": "ANA 83050000",
+      "fonte": {
+        "titulo": "Caracterização do evento hidrológico ocorrido em Santa Catarina nos meses de outubro e novembro de 2023",
+        "orgao": "Giacomelli et al., IV Encontro Nacional de Desastres / ABRHidro",
+        "url": "https://files.abrhidro.org.br/Eventos/Trabalhos/241/IV-END0065-1-0-20240819-122719.pdf",
+        "tipo": "academica",
+        "verificacao": "PDF baixado; páginas 2–3 extraídas e página 3 conferida visualmente",
+        "arquivo": "fontes/abrh-2023.pdf"
+      },
+      "pagina": 3,
+      "trecho_literal": "atingindo 12,39m no dia 09/10",
+      "decisao": "Referências não reconciliadas. Não substituir 12,40, não converter réguas e não gerar segundo registro do mesmo evento. A figura 2 tem também rótulos 10,36 e 10,35; não foram extraídas datas exatas visualmente."
+    }
+  ],
+  "cobertura_cidades": [
+    {
+      "cidade": "Itajaí",
+      "status": "Sem pico numérico admissível por régua",
+      "detalhe": "8 leituras recuperadas em 09/09/2011. Folha de 11/09/2011 situa máximo no dia anterior, mas apenas descreve elevação superior a três metros sobre o normal. Não é cota exata de uma régua. Contradiz tratar 09/09 às 17h30 como pico confirmado. Consulte ANA-inventario.md para os arquivos adicionais por estação; vínculo com régua municipal não presumido.",
+      "fonte": {
+        "titulo": "Moradores de Itajaí temem onda de saques",
+        "orgao": "Folha de S.Paulo, 11/09/2011",
+        "url": "https://www1.folha.uol.com.br/fsp/poder/po1109201116.htm",
+        "tipo": "imprensa",
+        "verificacao": "Página aberta e texto conferido pela ferramenta web",
+        "arquivo": null
+      }
+    },
+    {
+      "cidade": "Ilhota",
+      "status": "Sem pico local confirmado",
+      "detalhe": "PLANCON baixado. Cotas 9,20/10,00/10,50 são limiares, não picos. Tabela da página 18 tem valores coincidentes com o histórico de Blumenau (1983:15,34;1984:15,46;2011:12,60), sem explicitar régua na própria tabela. Não atribuída a Ilhota. Consulte ANA-inventario.md para os arquivos adicionais por estação; vínculo com régua municipal não presumido.",
+      "fonte": {
+        "titulo": "Plano de Contingência 2025/2028, versão 016",
+        "orgao": "Prefeitura de Ilhota",
+        "url": "https://ilhota.sc.gov.br/wp-content/uploads/2025/08/Plano_de_Contingencia_Defesa_Civil_Ilhota.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF baixado a partir do Chrome; texto pesquisado e página 18 conferida visualmente",
+        "arquivo": "fontes/ilhota-plancon-2025.pdf"
+      }
+    },
+    {
+      "cidade": "Ascurra",
+      "status": "Pista de outro curso de água, acesso direto falhou",
+      "detalhe": "Busca indexada informa pico de 6,65 m às 01h de 09/10/2023 no Ribeirão Braço São Paulo. Não é a régua do Açu na Ponte do Beber. Página falhou por timeout no Chrome e na abertura web; não incluído nos resultados conferidos.",
+      "url": "https://misturebas.com.br/2023/10/09/chuvas-causam-obstrucoes-em-vias-e-alerta-na-defesa-civil-de-ascurra/"
+    },
+    {
+      "cidade": "Apiúna",
+      "status": "Sem pico confirmado nas datas-alvo",
+      "detalhe": "Boletim municipal de maio/2022 recuperado como leituras auxiliares. JICA apresenta vazões e curvas; não convertidas para metros. Vínculo da régua municipal com ANA 83500000 não confirmado. Série convencional ANA 83500000 APIÚNA - RÉGUA NOVA baixada integralmente."
+    },
+    {
+      "cidade": "Lontras",
+      "status": "Sem pico local confirmado",
+      "detalhe": "PMSB recuperado pelo Chrome após falha HTTP direta; sem pico local identificado. ANA 83301000 retornou ZIP vazio e 83302000 apenas perfil transversal, sem série de cotas.",
+      "url": "https://servicos.lontras.sc.gov.br/uploads/sites/609/2023/08/1227149_VOLUME_1___PMSB_LONTRAS_R01.pdf"
+    },
+    {
+      "cidade": "Ibirama",
+      "status": "Sem pico em metros confirmado",
+      "detalhe": "Relatos históricos e JICA localizados; simulações de rompimento e vazões em m³/s não são cotas históricas do Hercílio. Consulte ANA-inventario.md para os arquivos adicionais por estação; vínculo com régua municipal não presumido."
+    },
+    {
+      "cidade": "Ituporanga",
+      "status": "Identidade do código do anexo corrigida; séries alternativas baixadas",
+      "detalhe": "HidroWeb identifica 83145140 como DCSC BARRAGEMSUL ITUPORANGA JUSANTE; ZIP convencional vazio. Séries 83250000 e 83250001 baixadas. Equivalência com régua do centro não confirmada.",
+      "url": "https://www.ituporanga.sc.gov.br/nivel-rio"
+    },
+    {
+      "cidade": "Trombudo Central",
+      "status": "Data e altura histórica confirmadas; régua pendente",
+      "detalhe": "8,71 m em 17/11/2023 às 17h, fonte municipal. Consulte ANA-inventario.md para os arquivos adicionais por estação; vínculo com régua municipal não presumido."
+    },
+    {
+      "cidade": "Rio dos Cedros",
+      "status": "Pico publicado; régua pendente",
+      "detalhe": "5,77 m em 12/10/2023 às 15h."
+    },
+    {
+      "cidade": "Vidal Ramos",
+      "status": "Evento confirmado, sem cota",
+      "detalhe": "Reportagem sobre 24/03/2001 aberta e baixada; não informa nível medido em metros.",
+      "url": "https://omunicipio.com.br/clima/video-vidal-ramos-sob-o-diluvio-relembre-a-enchente-que-imergiu-a-cidade/"
+    },
+    {
+      "cidade": "Botuverá",
+      "status": "Pico publicado; régua pendente",
+      "detalhe": "8,61 m em 17/11/2023, à tarde."
+    },
+    {
+      "cidade": "Guabiruba",
+      "status": "Sem pico local confirmado",
+      "detalhe": "Buscas por histórico, 2008/2011 e nível do rio não retornaram cota verificável local. Valores de Brusque e Blumenau descartados."
+    },
+    {
+      "cidade": "Taió",
+      "status": "Tabela histórica oficial e série ANA baixadas; referências de régua pendentes",
+      "detalhe": "Estudo municipal: dez linhas históricas na p. 343 e 12,40 m às 13h de 09/10/2023 na p. 304. ANA 83050000 preservada separadamente."
+    },
+    {
+      "cidade": "Timbó",
+      "status": "Pico de 12/10/2023 e pico de 2014 publicados; régua pendente",
+      "detalhe": "7,46 m; 9,58 m sem dia/mês. Tabela histórica do projeto da ponte aparece no índice, mas as duas URLs municipais retornam 404. Nenhum número dessa tabela foi promovido a dado conferido. Consulte ANA-inventario.md para os arquivos adicionais por estação; vínculo com régua municipal não presumido.",
+      "urls": [
+        "https://www.timbo.sc.gov.br/wp-content/uploads/2018/10/Projeto%20da%20Ponte%20sobre%20o%20Rio%20Benedito.pdf",
+        "https://www.timbo.sc.gov.br/upload/licitacoes/Projeto%20da%20Ponte%20sobre%20o%20Rio%20Benedito.pdf"
+      ]
+    }
+  ],
+  "fontes": {
+    "trombudo": {
+      "titulo": "Trombudo Central registra a maior enchente da sua história",
+      "orgao": "Prefeitura de Trombudo Central",
+      "url": "https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/",
+      "tipo": "oficial",
+      "verificacao": "Página aberta no Chrome; texto do artigo conferido",
+      "arquivo": "fontes/trombudo-evidencia.txt"
+    },
+    "timbo_cedros": {
+      "titulo": "Rio Benedito começa a baixar na região de Timbó",
+      "orgao": "O Auditório",
+      "url": "https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/",
+      "tipo": "imprensa",
+      "verificacao": "Página aberta pela ferramenta web; HTML baixado",
+      "arquivo": "fontes/timbo-cedros-2023.html"
+    },
+    "taio_nov": {
+      "titulo": "Taió enfrenta quarta enchente em menos de um mês, com mais de 60% da cidade inundada",
+      "orgao": "Misturebas News",
+      "url": "https://misturebas.com.br/2023/11/06/taio-equarta-enchente-em-um-mes/",
+      "tipo": "imprensa",
+      "verificacao": "Conteúdo conferido por abertura na ferramenta web; download direto falhou",
+      "arquivo": "fontes/taio-nov-evidencia.txt"
+    },
+    "taio_1983": {
+      "titulo": "Maior enchente da história de Taió inunda mais de 2,5 mil imóveis",
+      "orgao": "Misturebas News",
+      "url": "https://misturebas.com.br/2023/10/13/maior-enchente-de-taio/",
+      "tipo": "imprensa",
+      "verificacao": "Conteúdo conferido por abertura na ferramenta web; download direto falhou",
+      "arquivo": "fontes/taio-1983-evidencia.txt"
+    },
+    "botuvera": {
+      "titulo": "“A água baixou e os problemas dobraram”: prefeito de Botuverá comenta situação após enchente",
+      "orgao": "O Município",
+      "url": "https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/",
+      "tipo": "imprensa",
+      "verificacao": "Página aberta pela ferramenta web; HTML baixado",
+      "arquivo": "fontes/botuvera-2023.html"
+    },
+    "timbo_2014": {
+      "titulo": "Câmara de Timbó – Sessão Ordinária ocorre com participação em Tribuna da Defesa Civil Municipal e Rede Feminina",
+      "orgao": "Timbó Net",
+      "url": "https://timbonet.com.br/noticia/sessao-ordinaria-ocorre-com-participacao-em-tribuna-da-defesa-civil-municipal-e-rede-feminina",
+      "tipo": "imprensa",
+      "verificacao": "HTML baixado e texto conferido",
+      "arquivo": "fontes/timbo-camara-2014.html"
+    },
+    "itajai": {
+      "titulo": "Nível dos rios em Itajaí — boletim de 09/09/2011, 17h30",
+      "orgao": "Alcatéia GEMAT 61 SC, reprodução informal de boletim",
+      "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+      "tipo": "compilacao_informal",
+      "verificacao": "Página aberta e conferida no Chrome; HTML baixado",
+      "arquivo": "fontes/itajai-2011-09-09.html"
+    },
+    "apiuna": {
+      "titulo": "Atualizações do nível do Rio Itajaí-Açu em Apiúna",
+      "orgao": "Prefeitura de Apiúna",
+      "url": "https://apiuna.sc.gov.br/noticia-733008/",
+      "tipo": "oficial",
+      "verificacao": "Página aberta no Chrome; tabela conferida",
+      "arquivo": "fontes/apiuna-evidencia.txt"
+    },
+    "abrh": {
+      "titulo": "Caracterização do evento hidrológico ocorrido em Santa Catarina nos meses de outubro e novembro de 2023",
+      "orgao": "Giacomelli et al., IV Encontro Nacional de Desastres / ABRHidro",
+      "url": "https://files.abrhidro.org.br/Eventos/Trabalhos/241/IV-END0065-1-0-20240819-122719.pdf",
+      "tipo": "academica",
+      "verificacao": "PDF baixado; páginas 2–3 extraídas e página 3 conferida visualmente",
+      "arquivo": "fontes/abrh-2023.pdf"
+    },
+    "ilhota": {
+      "titulo": "Plano de Contingência 2025/2028, versão 016",
+      "orgao": "Prefeitura de Ilhota",
+      "url": "https://ilhota.sc.gov.br/wp-content/uploads/2025/08/Plano_de_Contingencia_Defesa_Civil_Ilhota.pdf",
+      "tipo": "oficial",
+      "verificacao": "PDF baixado a partir do Chrome; texto pesquisado e página 18 conferida visualmente",
+      "arquivo": "fontes/ilhota-plancon-2025.pdf"
+    },
+    "jica": {
+      "titulo": "Estudo preparatório para prevenção e mitigação de desastres na bacia do Rio Itajaí — Relatório Final, Principal Parte I, capítulos 3 e seguintes",
+      "orgao": "JICA / Nippon Koei, novembro de 2011",
+      "url": "https://openjicareport.jica.go.jp/pdf/12043683_02.pdf",
+      "tipo": "oficial_tecnica",
+      "verificacao": "PDF de 186 páginas baixado a partir do Chrome; busca textual nas seções hidrológicas",
+      "arquivo": "fontes/jica-2011-capitulo-3.pdf"
+    },
+    "folha": {
+      "titulo": "Moradores de Itajaí temem onda de saques",
+      "orgao": "Folha de S.Paulo, 11/09/2011",
+      "url": "https://www1.folha.uol.com.br/fsp/poder/po1109201116.htm",
+      "tipo": "imprensa",
+      "verificacao": "Página aberta e texto conferido pela ferramenta web",
+      "arquivo": null
+    },
+    "taio_estudo": {
+      "titulo": "Estudo Socioambiental do Município de Taió",
+      "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+      "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+      "tipo": "oficial",
+      "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+      "arquivo": "fontes/taio-socioambiental.pdf"
+    },
+    "lontras_pmsb": {
+      "titulo": "Plano Municipal de Saneamento Básico de Lontras — volume 1",
+      "orgao": "Prefeitura de Lontras",
+      "url": "https://servicos.lontras.sc.gov.br/uploads/sites/609/2023/08/1227149_VOLUME_1___PMSB_LONTRAS_R01.pdf",
+      "tipo": "oficial",
+      "verificacao": "PDF integral de 233 páginas baixado pelo Chrome; pesquisa textual das seções de inundação, sem pico local identificado",
+      "arquivo": "fontes/lontras-pmsb.pdf"
+    },
+    "ana": {
+      "titulo": "HidroWeb — séries históricas",
+      "orgao": "Agência Nacional de Águas e Saneamento Básico",
+      "url": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "arquivo": "ANA-inventario.md",
+      "verificacao": "Consulta e exportação TXT por estação no Chrome"
+    }
+  },
+  "taio_tabela_historica": [
+    {
+      "ano": 1983,
+      "mes_publicado": "Setembro",
+      "nivel_m": 11.85,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2011,
+      "mes_publicado": "Setembro",
+      "nivel_m": 11.65,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2013,
+      "mes_publicado": "Junho",
+      "nivel_m": 9.38,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2014,
+      "mes_publicado": "Junho",
+      "nivel_m": 8.91,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2015,
+      "mes_publicado": "Outubro",
+      "nivel_m": 10.75,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2017,
+      "mes_publicado": "Junho",
+      "nivel_m": 8.18,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2022,
+      "mes_publicado": "Maio",
+      "nivel_m": 9.7,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2023,
+      "mes_publicado": "Outubro",
+      "nivel_m": 12.4,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2023,
+      "mes_publicado": "Novembro",
+      "nivel_m": 10.36,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    },
+    {
+      "ano": 2023,
+      "mes_publicado": "Novembro",
+      "nivel_m": 10.37,
+      "data": null,
+      "regua": "não declarada",
+      "fonte": {
+        "titulo": "Estudo Socioambiental do Município de Taió",
+        "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+        "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+        "tipo": "oficial",
+        "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+        "arquivo": "fontes/taio-socioambiental.pdf"
+      },
+      "pagina_pdf": 343,
+      "apto_importacao_automatica": false
+    }
+  ],
+  "taio_complemento_existente": {
+    "data": "2023-10-09",
+    "hora": "13:00",
+    "nivel_m": 12.4,
+    "pagina_pdf": 304,
+    "fonte": {
+      "titulo": "Estudo Socioambiental do Município de Taió",
+      "orgao": "Prefeitura de Taió / Integral Gestão Pública",
+      "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+      "tipo": "oficial",
+      "verificacao": "PDF integral baixado pelo Chrome; tabela da página 343 conferida visualmente; informação de 09/10/2023 na página 304",
+      "arquivo": "fontes/taio-socioambiental.pdf"
+    },
+    "nota": "Complementa registro existente no anexo; não criar duplicata. Régua não declarada."
+  },
+  "downloads_ana": [
+    {
+      "codigo": "83050000",
+      "nome": "TAIÓ",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83050000/83050000_Sedimentos.txt",
+          "markdown": "ana/83050000/83050000_Sedimentos.md",
+          "bytes": 11230,
+          "linhas_de_dados": 80,
+          "data_inicial": "1997-03-31",
+          "data_final": "2026-04-22"
+        },
+        {
+          "arquivo": "ana/83050000/83050000_CurvaDescarga.txt",
+          "markdown": "ana/83050000/83050000_CurvaDescarga.md",
+          "bytes": 3087,
+          "linhas_de_dados": 26
+        },
+        {
+          "arquivo": "ana/83050000/83050000_ResumoDescarga.txt",
+          "markdown": "ana/83050000/83050000_ResumoDescarga.md",
+          "bytes": 81286,
+          "linhas_de_dados": 890,
+          "data_inicial": "1934-12-17",
+          "data_final": "2026-04-22"
+        },
+        {
+          "arquivo": "ana/83050000/83050000_PerfilTransversal.txt",
+          "markdown": "ana/83050000/83050000_PerfilTransversal.md",
+          "bytes": 15627,
+          "linhas_de_dados": 26,
+          "data_inicial": "1975-11-04",
+          "data_final": "2025-08-07"
+        },
+        {
+          "arquivo": "ana/83050000/83050000_Vazoes.txt",
+          "markdown": "ana/83050000/83050000_Vazoes.md",
+          "bytes": 503564,
+          "linhas_de_dados": 1161,
+          "data_inicial": "1929-04-01",
+          "data_final": "2026-04-01"
+        },
+        {
+          "arquivo": "ana/83050000/83050000_QualAgua.txt",
+          "markdown": "ana/83050000/83050000_QualAgua.md",
+          "bytes": 54098,
+          "linhas_de_dados": 105,
+          "data_inicial": "1986-04-09",
+          "data_final": "2026-04-22"
+        },
+        {
+          "arquivo": "ana/83050000/83050000_Cotas.txt",
+          "markdown": "ana/83050000/83050000_Cotas.md",
+          "bytes": 766646,
+          "linhas_de_dados": 3498,
+          "data_inicial": "1929-04-01",
+          "data_final": "2026-04-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83070000",
+      "nome": "TROMBUDO CENTRAL",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83070000_TXT_2026-09-24T15_33_25.655Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83070000/83070000_ResumoDescarga.txt",
+          "markdown": "ana/83070000/83070000_ResumoDescarga.md",
+          "bytes": 14863,
+          "linhas_de_dados": 155,
+          "data_inicial": "1942-06-03",
+          "data_final": "1966-08-24"
+        },
+        {
+          "arquivo": "ana/83070000/83070000_Cotas.txt",
+          "markdown": "ana/83070000/83070000_Cotas.md",
+          "bytes": 72493,
+          "linhas_de_dados": 303,
+          "data_inicial": "1942-06-01",
+          "data_final": "1967-08-01",
+          "tipo": "cotas"
+        },
+        {
+          "arquivo": "ana/83070000/83070000_PerfilTransversal.txt",
+          "markdown": "ana/83070000/83070000_PerfilTransversal.md",
+          "bytes": 899,
+          "linhas_de_dados": 1,
+          "data_inicial": "1951-04-11",
+          "data_final": "1951-04-11"
+        },
+        {
+          "arquivo": "ana/83070000/83070000_Vazoes.txt",
+          "markdown": "ana/83070000/83070000_Vazoes.md",
+          "bytes": 96580,
+          "linhas_de_dados": 282,
+          "data_inicial": "1942-06-01",
+          "data_final": "1966-12-01"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83145140",
+      "nome": "DCSC BARRAGEMSUL ITUPORANGA JUSANTE",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83145140_TXT_2026-09-24T15_29_40.404Z.zip",
+      "arquivos": [],
+      "status": "ZIP vazio"
+    },
+    {
+      "codigo": "83250000",
+      "nome": "ITUPORANGA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83250000_TXT_2026-09-24T15_32_50.949Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83250000/83250000_Sedimentos.txt",
+          "markdown": "ana/83250000/83250000_Sedimentos.md",
+          "bytes": 10552,
+          "linhas_de_dados": 76,
+          "data_inicial": "1997-03-24",
+          "data_final": "2026-04-29"
+        },
+        {
+          "arquivo": "ana/83250000/83250000_ResumoDescarga.txt",
+          "markdown": "ana/83250000/83250000_ResumoDescarga.md",
+          "bytes": 70709,
+          "linhas_de_dados": 775,
+          "data_inicial": "1934-12-18",
+          "data_final": "2026-04-29"
+        },
+        {
+          "arquivo": "ana/83250000/83250000_CurvaDescarga.txt",
+          "markdown": "ana/83250000/83250000_CurvaDescarga.md",
+          "bytes": 4515,
+          "linhas_de_dados": 42
+        },
+        {
+          "arquivo": "ana/83250000/83250000_PerfilTransversal.txt",
+          "markdown": "ana/83250000/83250000_PerfilTransversal.md",
+          "bytes": 18260,
+          "linhas_de_dados": 27,
+          "data_inicial": "1977-04-23",
+          "data_final": "2025-08-06"
+        },
+        {
+          "arquivo": "ana/83250000/83250000_Vazoes.txt",
+          "markdown": "ana/83250000/83250000_Vazoes.md",
+          "bytes": 499823,
+          "linhas_de_dados": 1164,
+          "data_inicial": "1929-04-01",
+          "data_final": "2026-04-01"
+        },
+        {
+          "arquivo": "ana/83250000/83250000_QualAgua.txt",
+          "markdown": "ana/83250000/83250000_QualAgua.md",
+          "bytes": 48646,
+          "linhas_de_dados": 94,
+          "data_inicial": "1986-04-08",
+          "data_final": "2026-04-29"
+        },
+        {
+          "arquivo": "ana/83250000/83250000_Cotas.txt",
+          "markdown": "ana/83250000/83250000_Cotas.md",
+          "bytes": 636884,
+          "linhas_de_dados": 3065,
+          "data_inicial": "1929-04-01",
+          "data_final": "2026-04-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83250001",
+      "nome": "ITUPORANGA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83250001_TXT_2026-09-24T15_32_51.831Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83250001/83250001_QualAgua.txt",
+          "markdown": "ana/83250001/83250001_QualAgua.md",
+          "bytes": 12375,
+          "linhas_de_dados": 16,
+          "data_inicial": "2019-03-05",
+          "data_final": "2022-12-19"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83301000",
+      "nome": "LONTRAS",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83301000_TXT_2026-09-24T15_32_30.501Z.zip",
+      "arquivos": [],
+      "status": "ZIP vazio"
+    },
+    {
+      "codigo": "83302000",
+      "nome": "LONTRAS",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83302000_TXT_2026-09-24T15_32_33.250Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83302000/83302000_PerfilTransversal.txt",
+          "markdown": "ana/83302000/83302000_PerfilTransversal.md",
+          "bytes": 843,
+          "linhas_de_dados": 1,
+          "data_inicial": "1982-09-09",
+          "data_final": "1982-09-09"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83380010",
+      "nome": "IBIRAMA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83380010_TXT_2026-09-24T15_32_02.631Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83380010/83380010_QualAgua.txt",
+          "markdown": "ana/83380010/83380010_QualAgua.md",
+          "bytes": 9963,
+          "linhas_de_dados": 12,
+          "data_inicial": "2020-03-09",
+          "data_final": "2022-12-19"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83440000",
+      "nome": "IBIRAMA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83440000_TXT_2026-09-24T15_32_04.982Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83440000/83440000_Sedimentos.txt",
+          "markdown": "ana/83440000/83440000_Sedimentos.md",
+          "bytes": 11454,
+          "linhas_de_dados": 81,
+          "data_inicial": "1997-04-23",
+          "data_final": "2026-04-15"
+        },
+        {
+          "arquivo": "ana/83440000/83440000_CurvaDescarga.txt",
+          "markdown": "ana/83440000/83440000_CurvaDescarga.md",
+          "bytes": 5471,
+          "linhas_de_dados": 52
+        },
+        {
+          "arquivo": "ana/83440000/83440000_ResumoDescarga.txt",
+          "markdown": "ana/83440000/83440000_ResumoDescarga.md",
+          "bytes": 65931,
+          "linhas_de_dados": 711,
+          "data_inicial": "1934-12-11",
+          "data_final": "2026-04-15"
+        },
+        {
+          "arquivo": "ana/83440000/83440000_PerfilTransversal.txt",
+          "markdown": "ana/83440000/83440000_PerfilTransversal.md",
+          "bytes": 15411,
+          "linhas_de_dados": 24,
+          "data_inicial": "1977-04-24",
+          "data_final": "2025-08-21"
+        },
+        {
+          "arquivo": "ana/83440000/83440000_Vazoes.txt",
+          "markdown": "ana/83440000/83440000_Vazoes.md",
+          "bytes": 488099,
+          "linhas_de_dados": 1117,
+          "data_inicial": "1928-12-01",
+          "data_final": "2021-12-01"
+        },
+        {
+          "arquivo": "ana/83440000/83440000_QualAgua.txt",
+          "markdown": "ana/83440000/83440000_QualAgua.md",
+          "bytes": 55580,
+          "linhas_de_dados": 110,
+          "data_inicial": "1986-04-02",
+          "data_final": "2026-04-15"
+        },
+        {
+          "arquivo": "ana/83440000/83440000_Cotas.txt",
+          "markdown": "ana/83440000/83440000_Cotas.md",
+          "bytes": 655923,
+          "linhas_de_dados": 2942,
+          "data_inicial": "1928-12-01",
+          "data_final": "2021-12-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83448000",
+      "nome": "IBIRAMA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83448000_TXT_2026-09-24T15_32_07.891Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83448000/83448000_QualAgua.txt",
+          "markdown": "ana/83448000/83448000_QualAgua.md",
+          "bytes": 12355,
+          "linhas_de_dados": 16,
+          "data_inicial": "2019-03-05",
+          "data_final": "2022-12-19"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83500000",
+      "nome": "APIÚNA - RÉGUA NOVA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83500000/83500000_ResumoDescarga.txt",
+          "markdown": "ana/83500000/83500000_ResumoDescarga.md",
+          "bytes": 17692,
+          "linhas_de_dados": 175,
+          "data_inicial": "1997-07-14",
+          "data_final": "2026-04-16"
+        },
+        {
+          "arquivo": "ana/83500000/83500000_PerfilTransversal.txt",
+          "markdown": "ana/83500000/83500000_PerfilTransversal.md",
+          "bytes": 9699,
+          "linhas_de_dados": 14,
+          "data_inicial": "2001-12-13",
+          "data_final": "2025-09-04"
+        },
+        {
+          "arquivo": "ana/83500000/83500000_CurvaDescarga.txt",
+          "markdown": "ana/83500000/83500000_CurvaDescarga.md",
+          "bytes": 2084,
+          "linhas_de_dados": 15
+        },
+        {
+          "arquivo": "ana/83500000/83500000_Sedimentos.txt",
+          "markdown": "ana/83500000/83500000_Sedimentos.md",
+          "bytes": 9995,
+          "linhas_de_dados": 70,
+          "data_inicial": "1998-01-26",
+          "data_final": "2026-04-16"
+        },
+        {
+          "arquivo": "ana/83500000/83500000_Vazoes.txt",
+          "markdown": "ana/83500000/83500000_Vazoes.md",
+          "bytes": 162367,
+          "linhas_de_dados": 359,
+          "data_inicial": "1995-10-01",
+          "data_final": "2026-04-01"
+        },
+        {
+          "arquivo": "ana/83500000/83500000_QualAgua.txt",
+          "markdown": "ana/83500000/83500000_QualAgua.md",
+          "bytes": 41049,
+          "linhas_de_dados": 80,
+          "data_inicial": "1997-07-15",
+          "data_final": "2026-04-16"
+        },
+        {
+          "arquivo": "ana/83500000/83500000_Cotas.txt",
+          "markdown": "ana/83500000/83500000_Cotas.md",
+          "bytes": 317838,
+          "linhas_de_dados": 1400,
+          "data_inicial": "1946-01-01",
+          "data_final": "2026-04-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83664000",
+      "nome": "TIMBÓ",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83664000_TXT_2026-09-24T15_31_26.483Z.zip",
+      "arquivos": [],
+      "status": "ZIP vazio"
+    },
+    {
+      "codigo": "83677000",
+      "nome": "TIMBÓ NOVO",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83677000/83677000_Sedimentos.txt",
+          "markdown": "ana/83677000/83677000_Sedimentos.md",
+          "bytes": 11235,
+          "linhas_de_dados": 81,
+          "data_inicial": "1998-07-22",
+          "data_final": "2026-04-09"
+        },
+        {
+          "arquivo": "ana/83677000/83677000_ResumoDescarga.txt",
+          "markdown": "ana/83677000/83677000_ResumoDescarga.md",
+          "bytes": 20164,
+          "linhas_de_dados": 205,
+          "data_inicial": "1992-11-23",
+          "data_final": "2026-04-09"
+        },
+        {
+          "arquivo": "ana/83677000/83677000_CurvaDescarga.txt",
+          "markdown": "ana/83677000/83677000_CurvaDescarga.md",
+          "bytes": 2695,
+          "linhas_de_dados": 22
+        },
+        {
+          "arquivo": "ana/83677000/83677000_Vazoes.txt",
+          "markdown": "ana/83677000/83677000_Vazoes.md",
+          "bytes": 189628,
+          "linhas_de_dados": 438,
+          "data_inicial": "1989-09-01",
+          "data_final": "2026-03-01"
+        },
+        {
+          "arquivo": "ana/83677000/83677000_PerfilTransversal.txt",
+          "markdown": "ana/83677000/83677000_PerfilTransversal.md",
+          "bytes": 11760,
+          "linhas_de_dados": 18,
+          "data_inicial": "1999-07-24",
+          "data_final": "2025-07-17"
+        },
+        {
+          "arquivo": "ana/83677000/83677000_Cotas.txt",
+          "markdown": "ana/83677000/83677000_Cotas.md",
+          "bytes": 358128,
+          "linhas_de_dados": 1687,
+          "data_inicial": "1989-09-01",
+          "data_final": "2026-03-01",
+          "tipo": "cotas"
+        },
+        {
+          "arquivo": "ana/83677000/83677000_QualAgua.txt",
+          "markdown": "ana/83677000/83677000_QualAgua.md",
+          "bytes": 40825,
+          "linhas_de_dados": 80,
+          "data_inicial": "1997-04-17",
+          "data_final": "2026-04-09"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83677001",
+      "nome": "TIMBÓ NOVO",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83677001_TXT_2026-09-24T15_31_31.196Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83677001/83677001_QualAgua.txt",
+          "markdown": "ana/83677001/83677001_QualAgua.md",
+          "bytes": 16602,
+          "linhas_de_dados": 23,
+          "data_inicial": "2019-03-04",
+          "data_final": "2022-12-21"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83680000",
+      "nome": "TIMBÓ",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83680000/83680000_CurvaDescarga.txt",
+          "markdown": "ana/83680000/83680000_CurvaDescarga.md",
+          "bytes": 2734,
+          "linhas_de_dados": 22
+        },
+        {
+          "arquivo": "ana/83680000/83680000_PerfilTransversal.txt",
+          "markdown": "ana/83680000/83680000_PerfilTransversal.md",
+          "bytes": 4695,
+          "linhas_de_dados": 7,
+          "data_inicial": "1976-10-27",
+          "data_final": "1998-04-18"
+        },
+        {
+          "arquivo": "ana/83680000/83680000_ResumoDescarga.txt",
+          "markdown": "ana/83680000/83680000_ResumoDescarga.md",
+          "bytes": 70094,
+          "linhas_de_dados": 774,
+          "data_inicial": "1934-11-17",
+          "data_final": "1989-04-16"
+        },
+        {
+          "arquivo": "ana/83680000/83680000_Vazoes.txt",
+          "markdown": "ana/83680000/83680000_Vazoes.md",
+          "bytes": 294389,
+          "linhas_de_dados": 670,
+          "data_inicial": "1934-10-01",
+          "data_final": "1999-01-01"
+        },
+        {
+          "arquivo": "ana/83680000/83680000_Cotas.txt",
+          "markdown": "ana/83680000/83680000_Cotas.md",
+          "bytes": 319536,
+          "linhas_de_dados": 1469,
+          "data_inicial": "1929-01-01",
+          "data_final": "1999-01-01",
+          "tipo": "cotas"
+        },
+        {
+          "arquivo": "ana/83680000/83680000_QualAgua.txt",
+          "markdown": "ana/83680000/83680000_QualAgua.md",
+          "bytes": 12945,
+          "linhas_de_dados": 23,
+          "data_inicial": "1986-03-19",
+          "data_final": "1998-04-18"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83859998",
+      "nome": "ILHOTA - MONTANTE",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83859998_TXT_2026-09-24T15_35_01.881Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83859998/83859998_ResumoDescarga.txt",
+          "markdown": "ana/83859998/83859998_ResumoDescarga.md",
+          "bytes": 2402,
+          "linhas_de_dados": 16,
+          "data_inicial": "1987-12-10",
+          "data_final": "1990-08-18"
+        },
+        {
+          "arquivo": "ana/83859998/83859998_Cotas.txt",
+          "markdown": "ana/83859998/83859998_Cotas.md",
+          "bytes": 6463,
+          "linhas_de_dados": 22,
+          "data_inicial": "1987-12-01",
+          "data_final": "1989-06-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83860000",
+      "nome": "ILHOTA",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83860000/83860000_Cotas.txt",
+          "markdown": "ana/83860000/83860000_Cotas.md",
+          "bytes": 348855,
+          "linhas_de_dados": 1448,
+          "data_inicial": "1927-10-01",
+          "data_final": "1988-01-01",
+          "tipo": "cotas"
+        },
+        {
+          "arquivo": "ana/83860000/83860000_QualAgua.txt",
+          "markdown": "ana/83860000/83860000_QualAgua.md",
+          "bytes": 4667,
+          "linhas_de_dados": 4,
+          "data_inicial": "1987-02-23",
+          "data_final": "1987-11-25"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83870000",
+      "nome": "ILHOTA-JUSANTE",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83870000_TXT_2026-09-24T15_35_02.793Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83870000/83870000_CurvaDescarga.txt",
+          "markdown": "ana/83870000/83870000_CurvaDescarga.md",
+          "bytes": 1156,
+          "linhas_de_dados": 5
+        },
+        {
+          "arquivo": "ana/83870000/83870000_ResumoDescarga.txt",
+          "markdown": "ana/83870000/83870000_ResumoDescarga.md",
+          "bytes": 5252,
+          "linhas_de_dados": 47,
+          "data_inicial": "1988-02-24",
+          "data_final": "2010-06-07"
+        },
+        {
+          "arquivo": "ana/83870000/83870000_Vazoes.txt",
+          "markdown": "ana/83870000/83870000_Vazoes.md",
+          "bytes": 108037,
+          "linhas_de_dados": 228,
+          "data_inicial": "1989-01-01",
+          "data_final": "2014-11-01"
+        },
+        {
+          "arquivo": "ana/83870000/83870000_PerfilTransversal.txt",
+          "markdown": "ana/83870000/83870000_PerfilTransversal.md",
+          "bytes": 3451,
+          "linhas_de_dados": 5,
+          "data_inicial": "1988-08-19",
+          "data_final": "2010-06-07"
+        },
+        {
+          "arquivo": "ana/83870000/83870000_Cotas.txt",
+          "markdown": "ana/83870000/83870000_Cotas.md",
+          "bytes": 196722,
+          "linhas_de_dados": 823,
+          "data_inicial": "1989-01-01",
+          "data_final": "2007-10-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83870001",
+      "nome": "ILHOTA-JUSANTE",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83870001_TXT_2026-09-24T15_35_03.718Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83870001/83870001_QualAgua.txt",
+          "markdown": "ana/83870001/83870001_QualAgua.md",
+          "bytes": 12378,
+          "linhas_de_dados": 16,
+          "data_inicial": "2019-03-04",
+          "data_final": "2022-12-21"
+        }
+      ],
+      "status": "baixado"
+    },
+    {
+      "codigo": "83920000",
+      "nome": "PORTO ITAJAÍ",
+      "fonte": "https://www.snirh.gov.br/hidroweb/serieshistoricas",
+      "acesso": "2026-09-24",
+      "zip": "ana/Estacao_83920000_TXT_2026-09-24T15_35_24.888Z.zip",
+      "arquivos": [
+        {
+          "arquivo": "ana/83920000/83920000_Cotas.txt",
+          "markdown": "ana/83920000/83920000_Cotas.md",
+          "bytes": 29577,
+          "linhas_de_dados": 121,
+          "data_inicial": "1927-09-01",
+          "data_final": "1937-11-01",
+          "tipo": "cotas"
+        }
+      ],
+      "status": "baixado"
+    }
+  ]
+}
