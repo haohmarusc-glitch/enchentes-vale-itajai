@@ -2216,11 +2216,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # (83900000, HidroWeb; decisão do Jefferson) — 271 → 276, 131 → 136
         # sem referência: zero da ANA, que coincide com o municipal em
         # 2019–2021 e não se sabe desde quando.
-        self.assertEqual(len(self.ev), 276)
+        # 24/09/2026: entraram 14 picos de Taió (tabela do Estudo
+        # Socioambiental), Timbó, Rio dos Cedros, Trombudo Central e Botuverá,
+        # todos sem régua declarada na fonte — 276 → 290, 136 → 150.
+        self.assertEqual(len(self.ev), 290)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 136)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 208)
+        self.assertEqual(refs["None"], 150)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 222)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

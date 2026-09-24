@@ -1,0 +1,104 @@
+[
+  {
+    "id": "itajai-2011-09-09",
+    "url": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+    "url_final": "https://alcateiagemat.blogspot.com/2011/09/nivel-dos-rios-em-itajai.html",
+    "arquivo": "outputs\\fontes\\itajai-2011-09-09.html",
+    "bytes": 51367,
+    "sha256": "f1a52651cf859d3977baff096a6e0140c3aa842e0798a98d0e42da81f2093b83",
+    "status": "baixado",
+    "acesso": "2026-09-24"
+  },
+  {
+    "id": "trombudo-2023",
+    "url": "https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/",
+    "status": "falhou",
+    "erro": "488 Client Error:  for url: https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/"
+  },
+  {
+    "id": "timbo-cedros-2023",
+    "url": "https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/",
+    "url_final": "https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/",
+    "arquivo": "outputs\\fontes\\timbo-cedros-2023.html",
+    "bytes": 477590,
+    "sha256": "986d567033f2498bfb331090d92610b6556b59fdaf88b844aa65699c41b59fe4",
+    "status": "baixado",
+    "acesso": "2026-09-24"
+  },
+  {
+    "id": "taio-2023-11",
+    "url": "https://misturebas.com.br/2023/11/06/taio-equarta-enchente-em-um-mes/",
+    "status": "falhou",
+    "erro": "HTTPSConnectionPool(host='misturebas.com.br', port=443): Max retries exceeded with url: /2023/11/06/taio-equarta-enchente-em-um-mes/ (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x0000011767930470>, 'Connection to misturebas.com.br timed out. (connect timeout=45)'))"
+  },
+  {
+    "id": "taio-1983-2023",
+    "url": "https://misturebas.com.br/2023/10/13/maior-enchente-de-taio/",
+    "status": "falhou",
+    "erro": "HTTPSConnectionPool(host='misturebas.com.br', port=443): Max retries exceeded with url: /2023/10/13/maior-enchente-de-taio/ (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x00000117679307A0>, 'Connection to misturebas.com.br timed out. (connect timeout=45)'))"
+  },
+  {
+    "id": "ascurra-2023",
+    "url": "https://misturebas.com.br/2023/10/09/chuvas-causam-obstrucoes-em-vias-e-alerta-na-defesa-civil-de-ascurra/",
+    "status": "falhou",
+    "erro": "HTTPSConnectionPool(host='misturebas.com.br', port=443): Max retries exceeded with url: /2023/10/09/chuvas-causam-obstrucoes-em-vias-e-alerta-na-defesa-civil-de-ascurra/ (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x000001176792D760>, 'Connection to misturebas.com.br timed out. (connect timeout=45)'))"
+  },
+  {
+    "id": "botuvera-2023",
+    "url": "https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/",
+    "url_final": "https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/",
+    "arquivo": "outputs\\fontes\\botuvera-2023.html",
+    "bytes": 240992,
+    "sha256": "e42b36f945fb42b6df6ebd50ddd1672bac2a3a7ab029592fc0e3ccffd3b83406",
+    "status": "baixado",
+    "acesso": "2026-09-24"
+  },
+  {
+    "id": "vidal-ramos-2001",
+    "url": "https://omunicipio.com.br/clima/video-vidal-ramos-sob-o-diluvio-relembre-a-enchente-que-imergiu-a-cidade/",
+    "url_final": "https://omunicipio.com.br/clima/video-vidal-ramos-sob-o-diluvio-relembre-a-enchente-que-imergiu-a-cidade/",
+    "arquivo": "outputs\\fontes\\vidal-ramos-2001.html",
+    "bytes": 255544,
+    "sha256": "5334babc8ce69299310b22c78310095bd3c79bc1ab7459790bb92a3ccd155aa0",
+    "status": "baixado",
+    "acesso": "2026-09-24"
+  },
+  {
+    "id": "timbo-camara-2014",
+    "url": "https://timbonet.com.br/noticia/sessao-ordinaria-ocorre-com-participacao-em-tribuna-da-defesa-civil-municipal-e-rede-feminina",
+    "url_final": "https://timbonet.com.br/noticia/sessao-ordinaria-ocorre-com-participacao-em-tribuna-da-defesa-civil-municipal-e-rede-feminina",
+    "arquivo": "outputs\\fontes\\timbo-camara-2014.html",
+    "bytes": 212216,
+    "sha256": "d9c85ff2134c392e13358f34a4f14814b9e97e8021ec0437eacae5e1aa14258a",
+    "status": "baixado",
+    "acesso": "2026-09-24"
+  },
+  {
+    "id": "apiuna-boletim",
+    "url": "https://apiuna.sc.gov.br/noticia-733008/",
+    "status": "falhou",
+    "erro": "488 Client Error:  for url: https://apiuna.sc.gov.br/noticia-733008/"
+  },
+  {
+    "id": "lontras-pmsb",
+    "url": "https://servicos.lontras.sc.gov.br/uploads/sites/609/2023/08/1227149_VOLUME_1___PMSB_LONTRAS_R01.pdf",
+    "status": "falhou",
+    "erro": "488 Client Error:  for url: https://servicos.lontras.sc.gov.br/uploads/sites/609/2023/08/1227149_VOLUME_1___PMSB_LONTRAS_R01.pdf"
+  },
+  {
+    "id": "taio-socioambiental",
+    "url": "https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf",
+    "status": "falhou",
+    "erro": "488 Client Error:  for url: https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf"
+  },
+  {
+    "id": "abrh-2023",
+    "url": "https://files.abrhidro.org.br/Eventos/Trabalhos/241/IV-END0065-1-0-20240819-122719.pdf",
+    "url_final": "https://files.abrhidro.org.br/Eventos/Trabalhos/241/IV-END0065-1-0-20240819-122719.pdf",
+    "arquivo": "outputs\\fontes\\abrh-2023.pdf",
+    "bytes": 527369,
+    "sha256": "6b63af761871719f8bf74b4e76db83ea309389077f9e79efd94f32072ce6a35f",
+    "status": "baixado",
+    "acesso": "2026-09-24"
+  }
+]

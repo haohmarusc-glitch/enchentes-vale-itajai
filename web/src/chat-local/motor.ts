@@ -278,7 +278,7 @@ function maioresCheias(e: Extraido, d: Dados): Resposta {
     texto: [
       cab,
       n > 1 ? top.map(linhaCheia).join('\n') : `(${conf(primeiro.confianca)}${primeiro.referencia ? `; referência: ${primeiro.referencia}` : ''})`,
-      `São ${regs.length} picos registrados para ${cidade.nome}, em metros na régua local.`,
+      regs.length === 1 ? `É o único pico registrado para ${cidade.nome}, em metros na régua local.` : `São ${regs.length} picos registrados para ${cidade.nome}, em metros na régua local.`,
       ressalvas(top),
       fonteDe(top),
     ]
