@@ -30,8 +30,18 @@ test('contagem acima de nível', () => assert.match(r('Quantas cheias passaram d
 
 test('cidade sem dados diz que não tem', () => {
   const x = r('qual a maior cheia de Ilhota?')
-  assert.match(x.texto, /não tem picos/)
+  assert.match(x.texto, /não tem o nível do rio/)
   assert.doesNotMatch(x.texto, /\d+,\d+ m/)
+})
+
+test('Itajaí sem pico: diz por quê e responde pelo impacto do Atlas, sem metro', () => {
+  const x = r('qual maior cheia de itajai ?')
+  assert.equal(x.intencao, 'maiores_cheias')
+  assert.match(x.texto, /onze réguas/)
+  assert.match(x.texto, /23\/11\/2008.*18\.208 desabrigados/)
+  assert.match(x.texto, /09\/09\/2011/)
+  assert.match(x.texto, /não a altura do rio/)
+  assert.doesNotMatch(x.texto, /\d+,\d+ m\b/)
 })
 
 test('chuva de 2008 mostra sensor sem dado em vez de zero', () => {

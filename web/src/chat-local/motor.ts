@@ -215,11 +215,56 @@ const semCidade = (d: Dados) => {
   return `Tenho picos históricos para: ${nomes.join(', ')}. Diga a cidade.`
 }
 
+// Por que a cidade não tem pico, quando o motivo é conhecido e não é só "falta fonte".
+const MOTIVO_SEM_PICO: Record<string, string> = {
+  itajai:
+    'Itajaí tem onze réguas da Defesa Civil, cada uma com seu zero, e as mais perto da foz sobem e descem com a maré. Um número só não é "o nível de Itajaí": cada pico precisa dizer de qual régua é, e ainda não há fonte que dê isso para as cheias antigas.',
+}
+
+/** Registros do Atlas da cidade, sem repetir protocolo (Itajaí está no recorte dos dois rios). */
+function atlasDaCidade(cidade: CidadeConhecida, d: Dados): RegistroAtlas[] {
+  const vistos = new Map<string, RegistroAtlas>()
+  for (const r of Object.values(d.atlas))
+    for (const ev of r.eventos)
+      for (const x of ev.registros ?? [])
+        if (norm(x.municipio) === cidade.chave) vistos.set(`${x.data_evento}|${x.tipologia}|${x.desabrigados}|${x.desalojados}`, x)
+  return [...vistos.values()]
+}
+const atingidos = (x: RegistroAtlas) => (x.desabrigados ?? 0) + (x.desalojados ?? 0)
+
+function semPicoNaCidade(cidade: CidadeConhecida, d: Dados): Resposta {
+  const top = atlasDaCidade(cidade, d)
+    .filter((x) => atingidos(x) > 0 || (x.mortos ?? 0) > 0)
+    .sort((a, b) => atingidos(b) - atingidos(a) || (b.mortos ?? 0) - (a.mortos ?? 0))
+    .slice(0, 5)
+  const linhas = top.map((x) => {
+    const danos = [x.mortos ? `${x.mortos} morto(s)` : '', x.desabrigados ? `${num(x.desabrigados)} desabrigados` : '', x.desalojados ? `${num(x.desalojados)} desalojados` : ''].filter(Boolean)
+    return `• ${dataBR(x.data_evento)}, ${x.tipologia.toLowerCase()}: ${danos.join(', ')}`
+  })
+  return {
+    intencao: 'maiores_cheias',
+    texto: [
+      `O site ainda não tem o nível do rio (em metros) registrado para as cheias de ${cidade.nome}.`,
+      MOTIVO_SEM_PICO[cidade.id] ?? '',
+      top.length
+        ? `O que dá para dizer é pelo tamanho do estrago. Pelo Atlas Digital de Desastres (1991–2025), as ocorrências de ${cidade.nome} com mais gente fora de casa foram:`
+        : '',
+      linhas.join('\n'),
+      top.length
+        ? 'Isso mede o impacto, não a altura do rio: a tipologia é a que o município declarou (novembro de 2008 aparece como enxurrada), e cheias de antes de 1991, como as de 1983 e 1984, não estão no Atlas.\nFonte: Atlas Digital de Desastres no Brasil (MIDR), v1.1 de 06/08/2026.'
+        : '',
+      semCidade(d),
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  }
+}
+
 function maioresCheias(e: Extraido, d: Dados): Resposta {
   if (!e.cidade) return { intencao: 'maiores_cheias', texto: semCidade(d) }
   const cidade = e.cidade
   const regs = d.enchentes.eventos.filter((r) => r.cidade === cidade.id)
-  if (!regs.length) return { intencao: 'maiores_cheias', texto: `O site não tem picos de cheia registrados para ${cidade.nome}. ${semCidade(d)}` }
+  if (!regs.length) return semPicoNaCidade(cidade, d)
   const n = Math.min(e.n ?? (/\bmaiores|piores\b/.test(e.t) ? 5 : 1), 10)
   const top = [...regs].sort((a, b) => b.pico_m - a.pico_m).slice(0, n)
   const primeiro = top[0]
