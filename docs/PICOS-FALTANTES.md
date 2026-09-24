@@ -201,5 +201,5 @@ de Apiúna em 04–05/05/2022 não dizem a unidade. Nenhum desses achados virou 
 - [x] Pesquisa web, primeira rodada: pistas na §7, nenhuma conferida (rede bloqueada).
 - [x] Segunda rodada conferida nos originais: 14 registros (§8).
 - [ ] Itajaí: pico por régua — boletim final da Defesa Civil de 2011, ou relatório com máximo por estação.
-- [ ] Ilhota, Ascurra, Apiúna, Lontras, Ibirama, Ituporanga, Vidal Ramos, Guabiruba: sem pico ainda.
-- [ ] Séries da ANA baixadas (Apiúna 83500000, Ibirama 83440000, Ituporanga 83250000, Timbó 83677000/83680000, Ilhota 83860000/83870000): extrair picos por script, como foi feito no Itajaí-Mirim — são réguas da ANA, com zero próprio.
+- [x] Séries da ANA baixadas: picos extraídos por `scripts/picos_ana_vale.py`, e os 5 maiores de Ituporanga, Ibirama, Apiúna e Ilhota entraram marcados como régua da ANA (confiança baixa) — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
+- [ ] Ascurra, Lontras, Vidal Ramos, Guabiruba e Itajaí: ainda sem pico (sem série da ANA útil).

@@ -2962,7 +2962,8 @@
       "pico_m": 9.38,
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
+      "pendencia": "MÊS DUVIDOSO: a tabela municipal diz junho, mas a série da ANA 83050000 tem máxima de 6,80 m em junho/2013 e 9,70 m em 23/09/2013 (leitura das 17h) — a cheia grande de 2013 no Vale foi em setembro. Provavelmente é a de setembro. NÃO mudar a data sem boletim da Defesa Civil de Taió. Ver docs/HIDROWEB-VALE-2026-09-24.md."
     },
     {
       "rio": "itajai-acu",
@@ -3018,6 +3019,215 @@
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
       "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Segunda linha de nov/2023 da tabela; a outra (10,36 m) é a de 04/11. O dia desta não está na fonte. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
       "pendencia": "Dia desconhecido. Candidato: a cheia de 17/11/2023, quando a ANA 83050000 marcou crista de 10,32 m — mas é outra régua, então NÃO preencher o dia por isso. Fecha com boletim da Defesa Civil de Taió de nov/2023."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ituporanga",
+      "data": "2011-09-09",
+      "pico_m": 7.63,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83250000 ITUPORANGA, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83250000_TXT_2026-09-24T15_32_50.949Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83250000 ITUPORANGA (rio Itajaí do Sul), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1929–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ituporanga",
+      "data": "2023-11-17",
+      "pico_m": 6.88,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83250000 ITUPORANGA, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83250000_TXT_2026-09-24T15_32_50.949Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83250000 ITUPORANGA (rio Itajaí do Sul), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1929–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ituporanga",
+      "data": "1983-07-11",
+      "pico_m": 6.65,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83250000 ITUPORANGA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83250000_TXT_2026-09-24T15_32_50.949Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83250000 ITUPORANGA (rio Itajaí do Sul), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1929–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ituporanga",
+      "data": "1984-08-07",
+      "pico_m": 5.74,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83250000 ITUPORANGA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83250000_TXT_2026-09-24T15_32_50.949Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83250000 ITUPORANGA (rio Itajaí do Sul), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1929–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ituporanga",
+      "data": "1963-09-27",
+      "pico_m": 5.65,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83250000 ITUPORANGA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83250000_TXT_2026-09-24T15_32_50.949Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83250000 ITUPORANGA (rio Itajaí do Sul), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1929–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ibirama",
+      "data": "1983-07-08",
+      "pico_m": 6.9,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83440000 IBIRAMA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83440000_TXT_2026-09-24T15_32_04.982Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83440000 IBIRAMA (rio Itajaí do Norte (Hercílio)), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1928–2021). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ibirama",
+      "data": "1980-12-21",
+      "pico_m": 6.41,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83440000 IBIRAMA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83440000_TXT_2026-09-24T15_32_04.982Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83440000 IBIRAMA (rio Itajaí do Norte (Hercílio)), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1928–2021). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ibirama",
+      "data": "1992-05-29",
+      "pico_m": 5.85,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83440000 IBIRAMA, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83440000_TXT_2026-09-24T15_32_04.982Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83440000 IBIRAMA (rio Itajaí do Norte (Hercílio)), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1928–2021). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ibirama",
+      "data": "1983-05-20",
+      "pico_m": 5.65,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83440000 IBIRAMA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83440000_TXT_2026-09-24T15_32_04.982Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83440000 IBIRAMA (rio Itajaí do Norte (Hercílio)), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1928–2021). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ibirama",
+      "data": "1989-03-28",
+      "pico_m": 5.54,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83440000 IBIRAMA, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83440000_TXT_2026-09-24T15_32_04.982Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83440000 IBIRAMA (rio Itajaí do Norte (Hercílio)), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1928–2021). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "apiuna",
+      "data": "2011-09-09",
+      "pico_m": 8.08,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83500000 APIÚNA - RÉGUA NOVA, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "apiuna",
+      "data": "2023-10-12",
+      "pico_m": 7.26,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83500000 APIÚNA - RÉGUA NOVA, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "apiuna",
+      "data": "2023-11-17",
+      "pico_m": 7.18,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83500000 APIÚNA - RÉGUA NOVA, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "apiuna",
+      "data": "2013-09-22",
+      "pico_m": 7.14,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83500000 APIÚNA - RÉGUA NOVA, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "apiuna",
+      "data": "1946-08-29",
+      "pico_m": 6.99,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83500000 APIÚNA - RÉGUA NOVA, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ilhota",
+      "data": "1983-07-10",
+      "pico_m": 10.45,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83860000 ILHOTA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83860000 ILHOTA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1927–1988). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte. Ilhota tem mais duas estações da ANA (83859998 Montante 1987–1989, 83870000 Jusante 1989–2007, com 11,52 m em 30/05/1992) que ficam FORA: são outros zeros, e misturá-los numa cidade só faria a série saltar sem cheia."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ilhota",
+      "data": "1984-08-08",
+      "pico_m": 10.06,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83860000 ILHOTA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83860000 ILHOTA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1927–1988). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte. Ilhota tem mais duas estações da ANA (83859998 Montante 1987–1989, 83870000 Jusante 1989–2007, com 11,52 m em 30/05/1992) que ficam FORA: são outros zeros, e misturá-los numa cidade só faria a série saltar sem cheia."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ilhota",
+      "data": "1943-08-03",
+      "pico_m": 8.62,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83860000 ILHOTA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83860000 ILHOTA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1927–1988). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte. Ilhota tem mais duas estações da ANA (83859998 Montante 1987–1989, 83870000 Jusante 1989–2007, com 11,52 m em 30/05/1992) que ficam FORA: são outros zeros, e misturá-los numa cidade só faria a série saltar sem cheia."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ilhota",
+      "data": "1954-10-23",
+      "pico_m": 8.62,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83860000 ILHOTA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83860000 ILHOTA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1927–1988). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte. Ilhota tem mais duas estações da ANA (83859998 Montante 1987–1989, 83870000 Jusante 1989–2007, com 11,52 m em 30/05/1992) que ficam FORA: são outros zeros, e misturá-los numa cidade só faria a série saltar sem cheia."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ilhota",
+      "data": "1961-11-03",
+      "pico_m": 8.6,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83860000 ILHOTA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83860000 ILHOTA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1927–1988). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte. Ilhota tem mais duas estações da ANA (83859998 Montante 1987–1989, 83870000 Jusante 1989–2007, com 11,52 m em 30/05/1992) que ficam FORA: são outros zeros, e misturá-los numa cidade só faria a série saltar sem cheia."
     }
   ]
 }

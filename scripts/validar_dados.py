@@ -698,6 +698,12 @@ LISTAS_SO_COM_CHEIA_GRANDE = {
     "gaspar": "a lista publicada pela Defesa Civil de Gaspar tem limiar de magnitude "
               "(menor pico 6,19 m; a primeira rua alaga a 6,20 m). Medido em 07/09/2026: "
               "nenhum evento de Blumenau abaixo de 8,50 m tem par em Gaspar.",
+    # 24/09/2026: as duas únicas listas destas cidades são os 5 MAIORES eventos da série
+    # da ANA (scripts/picos_ana_vale.py) — esparsas por construção, não por data errada.
+    "apiuna": "só os 5 maiores eventos da estação ANA 83500000 (1946–2026), escolhidos por "
+              "magnitude em picos_ana_vale.py; cheia média de montante não tem par por construção.",
+    "ilhota": "só os 5 maiores eventos da estação ANA 83860000 (1927–1988, médias diárias), "
+              "escolhidos por magnitude em picos_ana_vale.py; cheia média de montante não tem par.",
 }
 
 

@@ -2219,11 +2219,13 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 24/09/2026: entraram 14 picos de Taió (tabela do Estudo
         # Socioambiental), Timbó, Rio dos Cedros, Trombudo Central e Botuverá,
         # todos sem régua declarada na fonte — 276 → 290, 136 → 150.
-        self.assertEqual(len(self.ev), 290)
+        # 24/09/2026, depois: os 5 maiores da ANA em Ituporanga, Ibirama, Apiúna
+        # e Ilhota (decisão do Jefferson), no zero da ANA — 290 → 310, 150 → 170.
+        self.assertEqual(len(self.ev), 310)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 150)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 222)
+        self.assertEqual(refs["None"], 170)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 242)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
