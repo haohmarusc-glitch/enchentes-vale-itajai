@@ -29,7 +29,7 @@ test('maior cheia de Rio do Sul', () => {
 test('contagem acima de nível', () => assert.match(r('Quantas cheias passaram de 10 m em Rio do Sul?').texto, /14 pico/))
 
 test('cidade sem dados diz que não tem', () => {
-  const x = r('qual a maior cheia de Ilhota?')
+  const x = r('qual a maior cheia de Lontras?')
   assert.match(x.texto, /não tem o nível do rio/)
   assert.doesNotMatch(x.texto, /\d+,\d+ m/)
 })
@@ -86,4 +86,11 @@ test('Rio do Sul 2018: o mês duvidoso sai com a confiança baixa e a nota (deci
   assert.match(x.texto, /7,55 m/)
   assert.match(x.texto, /confiança BAIXA/)
   assert.match(x.texto, /MÊS DUVIDOSO/)
+})
+
+test('pico da série da ANA diz que é a régua da ANA, não a local (24/09/2026)', () => {
+  const x = r('maior cheia de Ilhota')
+  assert.match(x.texto, /10,45 m/)
+  assert.match(x.texto, /régua da ANA, que tem zero próprio/)
+  assert.doesNotMatch(x.texto, /na régua local/)
 })

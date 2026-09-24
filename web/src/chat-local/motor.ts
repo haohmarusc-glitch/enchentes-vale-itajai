@@ -260,6 +260,14 @@ function semPicoNaCidade(cidade: CidadeConhecida, d: Dados): Resposta {
   }
 }
 
+/** Picos tirados da série da ANA estão no zero da ANA, não na régua da Defesa Civil. */
+function reguaDosPicos(regs: RegistroCheia[]): string {
+  const ana = regs.filter((r) => r.fonte.startsWith('ANA/HidroWeb')).length
+  if (!ana) return ', em metros na régua local.'
+  if (ana === regs.length) return ', em metros na régua da ANA, que tem zero próprio: não compare com as cotas da Defesa Civil.'
+  return `, em metros; ${ana} deles na régua da ANA, que tem zero próprio.`
+}
+
 function maioresCheias(e: Extraido, d: Dados): Resposta {
   if (!e.cidade) return { intencao: 'maiores_cheias', texto: semCidade(d) }
   const cidade = e.cidade
@@ -278,7 +286,7 @@ function maioresCheias(e: Extraido, d: Dados): Resposta {
     texto: [
       cab,
       n > 1 ? top.map(linhaCheia).join('\n') : `(${conf(primeiro.confianca)}${primeiro.referencia ? `; referência: ${primeiro.referencia}` : ''})`,
-      regs.length === 1 ? `É o único pico registrado para ${cidade.nome}, em metros na régua local.` : `São ${regs.length} picos registrados para ${cidade.nome}, em metros na régua local.`,
+      (regs.length === 1 ? `É o único pico registrado para ${cidade.nome}` : `São ${regs.length} picos registrados para ${cidade.nome}`) + reguaDosPicos(regs),
       ressalvas(top),
       fonteDe(top),
     ]

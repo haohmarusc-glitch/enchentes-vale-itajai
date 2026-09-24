@@ -365,6 +365,10 @@ class MesesPareados(unittest.TestCase):
         ("rio-do-sul 2022-10", "blumenau"),
         ("rio-do-sul 2023-07", "blumenau"),
         ("rio-do-sul 2024-07-12", "blumenau"),
+        # Entrou em 24/09/2026 com os 5 maiores da ANA 83500000 Apiúna (decisão do
+        # Jefferson): 6,99 m às 17h de 29/08/1946, e Blumenau só tem 02/02/1946.
+        # A série de Blumenau não traz todas as cheias médias; nada foi corrigido.
+        ("apiuna 1946-08-29", "blumenau"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):

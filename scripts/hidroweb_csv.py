@@ -122,8 +122,9 @@ def _dias(ano: int, mes: int) -> int:
     return (prox - date(ano, mes, 1)).days
 
 
-def ler_cotas(caminho: Path) -> list[Leitura]:
-    texto = _texto(caminho, "_Cotas.csv")
+def ler_cotas(caminho: Path, sufixo: str = "_Cotas.csv") -> list[Leitura]:
+    """`sufixo="_Cotas.txt"` para a exportação TXT do HidroWeb: mesmo miolo, outra extensão."""
+    texto = _texto(caminho, sufixo)
     if not texto:
         return []
     cab, corpo = _tabela(texto)
