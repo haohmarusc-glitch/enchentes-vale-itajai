@@ -102,7 +102,7 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
-Versão 3.2, de 25/09/2026, escrita depois da quinta rodada (§12). O que funcionou foi receber **os
+Versão 3.3, de 25/09/2026, escrita depois do merge da quinta rodada (§12). O que funcionou foi receber **os
 arquivos originais** (PDF ou página salva): sem eles nada entra. Os boletins da SDE/SC com a tabela
 "Níveis máximos atingidos" foram a fonte mais produtiva até agora.
 
@@ -116,21 +116,32 @@ sem o arquivo original não entra no meu cadastro. Se não conseguir baixar, dig
 
 PRIORIDADE 1 — cidades sem NENHUM pico no meu cadastro:
 
-1. Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim). Só tenho set/2011, das estações telemétricas nº 1
-   (Açu) e nº 3 (Mirim, curso antigo) da tese de Valdeir Demetrio da Silva (UEM, 2017). Quero: (a) as
-   outras cheias — jul/1983, ago/1984, out/2001, nov/2008, set/2013, out/2015, out/2023 e nov/2023;
-   (b) um documento que diga QUAL régua de hoje (DC-01 a DC-11) é cada estação telemétrica de 2011.
-   Itajaí tem várias réguas com zeros diferentes:
-   CEPSUL, Praça da Murta (Celso Pereira da Silva), Santa Regina/Volta de Cima, Captação SEMASA/São
-   Roque, Vitalmar, Itamirim Clube de Campo, Limoeiro, e nomes antigos como Teporti, Início Rio e AMP
-   Logística. Quero o MÁXIMO de cada evento POR RÉGUA: relatório pós-evento da Defesa Civil de Itajaí,
-   AVADAN/FIDE, plano de contingência antigo ou trabalho acadêmico (UNIVALI, UDESC) com tabela por
-   estação. Não quero leitura de um horário qualquer (a de 09/09/2011 17h30 já tenho), nem limite do
-   tipo "mais de 3 m acima do normal".
-2. Ascurra: régua do Itajaí-Açu na Ponte do Beber. Cheias: nov/2008, set/2011, set/2013, out/2015,
-   out/2023, nov/2023, mai/2024. O Ribeirão Braço São Paulo é outro rio e não serve.
-3. Guabiruba: rio Guabiruba. Cheias: nov/2008, mar/2011, set/2011, out e nov/2023. A estação de
-   Guabiruba nos boletins de Brusque está em cota ortométrica (~25 m) e não serve.
+1. Ascurra: régua do Itajaí-Açu na Ponte do Beber (estação DCSC-00003). Cheias: nov/2008, set/2011,
+   set/2013, out/2015, out/2023, nov/2023, mai/2024. O Ribeirão Braço São Paulo é outro rio e não
+   serve.
+2. Guabiruba: rio Guabiruba. Cheias: nov/2008, mar/2011, set/2011, out e nov/2023. A estação de
+   Guabiruba nos boletins de Brusque está em cota ortométrica (~25 m) e não serve. A notícia
+   guabiruba.sc.gov.br/noticia-46906/ deu erro 403 na última busca: tente de novo ou ache cópia.
+
+PRIORIDADE 1B — Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim), a cidade mais difícil:
+
+3. Só tenho set/2011, das estações telemétricas nº 1 (Açu, 3,20 m) e nº 3 (Mirim, curso antigo,
+   4,29 m) da tese de Valdeir Demetrio da Silva (UEM, 2017). Quero:
+   (a) um documento que diga QUAL régua de hoje (DC-01 a DC-11) é cada estação telemétrica de 2011
+       — sem isso os números não se comparam com nada;
+   (b) a série telemétrica de set/2011 que a tese usou ("Fonte: Defesa Civil, 2015"), ou o máximo
+       da estação nº 2 (Mirim, canal retificado): a tese dá 3,21 m na tabela e o gráfico chega a
+       ~4,5 m;
+   (c) o máximo POR RÉGUA das outras cheias: jul/1983, ago/1984, out/2001, nov/2008, set/2013,
+       out/2015, out/2023 e nov/2023.
+   Itajaí tem várias réguas com zeros diferentes: CEPSUL, Praça da Murta (Celso Pereira da Silva),
+   Santa Regina/Volta de Cima, Captação SEMASA/São Roque, Vitalmar, Itamirim Clube de Campo,
+   Limoeiro, e nomes antigos como Teporti, Início Rio e AMP Logística. Fontes boas: relatório
+   pós-evento da Defesa Civil de Itajaí, AVADAN/FIDE, plano de contingência antigo, trabalho
+   acadêmico (UNIVALI, UDESC) com tabela por estação. A monografia de Anderson Ficagna Passos
+   (biblioteca.univali.br/pergamumweb/vinculos/pdf/Anderson%20Ficagna%20Passos.pdf) deu 404: ache
+   outra cópia. Não quero leitura de um horário qualquer (as de 09/09/2011 17h30 e 10/09/2011 13h30
+   já tenho), nem limite do tipo "mais de 3 m acima do normal".
 
 PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos eventos de inundação":
 
@@ -150,20 +161,23 @@ PRIORIDADE 3 — cidades com poucos picos:
    série da ANA. Quero a régua da DEFESA CIVIL de cada cidade, com o nome da ponte ou do local. Em
    Ituporanga, a régua municipal fica na Ponte Vitório Sens (centro), e a estação da Defesa Civil
    de SC não é a da ANA: quero a SÉRIE ou os máximos históricos da régua da Ponte Vitório Sens (o
-   2,95 m de 05/06/2017 do Jornal de Pomerode já tenho). Em Ilhota, a Defesa Civil às vezes usa a medição de Gaspar, e o PLANCON
-   de Ilhota traz os números de BLUMENAU (15,34 / 15,46 / 12,60): não mande esses.
+   2,95 m de 05/06/2017 do Jornal de Pomerode já tenho). Em Ilhota, a Defesa Civil às vezes usa a
+   medição de Gaspar, e o PLANCON de Ilhota traz os números de BLUMENAU (15,34 / 15,46 / 12,60):
+   não mande esses.
 
 PRIORIDADE 4 — lacunas pontuais:
 
 7. Timbó (rio Benedito, régua da Rua Equador): o dia e o mês do pico de 9,58 m de 2014.
 8. Taió (rio Itajaí do Oeste): o MÊS da cheia de 1983 de 11,85 m (a tabela da prefeitura diz
    setembro, a ANA indica julho) e da de 9,38 m de 2013 (a tabela diz junho, a ANA indica setembro).
+   A notícia taio.sc.gov.br/noticia-75219/ (24/09/2013) deu erro 403: tente de novo ou ache cópia.
 9. Rio dos Cedros: cheias depois de nov/2022 (tenho a tabela do PLANCON 10.7 até 27/11/2022 e
    12/10/2023) e o dia da crista de 8,96 m de 2014 (08 ou 09/06; o artigo da ND de 08/06 não resolve).
 
 JÁ TENHO, NÃO PRECISA MANDAR: os boletins SDE 010/2023, 011/2023, 001/2024 e 006/2024 (e a
 auditoria dos 87 boletins do índice); os PLANCON de Rio dos Cedros v1.07 e 10.7 e o de Ilhota; a tese
-de Valdeir D. da Silva (UEM, 2017); o manual "Operação de Barragens" (2024); o Estudo Socioambiental
+de Valdeir D. da Silva (UEM, 2017); o manual "Operação de Barragens" (2024); o relatório de
+vulnerabilidade costeira da UFSC (2017); o plano de saúde de Rio dos Cedros; o Estudo Socioambiental
 de Taió; as séries da ANA do HidroWeb; e as notícias de Trombudo Central (8,71 m e 6,22 m em 1983),
 O Auditório (Timbó e Rio dos Cedros, out/2023), Jornal do Médio Vale (Timbó 1992/2011), OCP News
 (Timbó 2021), ND+ (Botuverá e Vidal Ramos, set/2026; Rio dos Cedros, jun/2014) e Jornal de Pomerode
