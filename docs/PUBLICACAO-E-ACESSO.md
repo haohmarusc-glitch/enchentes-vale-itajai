@@ -60,9 +60,32 @@ tudo carrega, dando a impressão de que o site está liberado para todo mundo.
 - **Antes de publicar de vez.** Remover a política é um clique, e é irreversível na prática: o endereço
   já terá sido visto.
 
-### Como AUTORIZAR uma autoridade que pedir### Como AUTORIZAR uma autoridade que pedir
-Zero Trust → **Access controls → Applications → `enchentes` → política "Só eu"** → em *Include / Emails*,
-acrescentar o e-mail. Ela recebe um código por e-mail e entra. **Revogar é apagar a linha.**
+### Como AUTORIZAR uma autoridade que pedir
+**Pelo terminal da VPS (desde 25/09/2026), um comando:**
+
+```bash
+python3 scripts/autorizar_email.py fulano@gmail.com            # autoriza
+python3 scripts/autorizar_email.py --revogar fulano@gmail.com  # revoga
+python3 scripts/autorizar_email.py --listar                    # quem entra hoje
+python3 scripts/autorizar_email.py --renomear Autorizados      # renomeia a política "Só eu"
+```
+
+O script lê a política, muda **só** a lista de e-mails (decisão, exclusões e duração da sessão ficam
+como estão) e **relê para conferir** — resposta 200 da API não é prova. Recusa revogar o **último**
+e-mail (trancaria o site para todo mundo) e não mexe em regra que não seja e-mail. A pessoa entra
+digitando o e-mail no site e recebendo o código; sessão já aberta de quem foi revogado dura até expirar.
+
+**Configuração, uma vez só**, no `.env` da VPS (modelo no `.env.example`): `CLOUDFLARE_API_TOKEN` —
+painel da Cloudflare → *My Profile → API Tokens → Create Token → Custom*, com **uma** permissão de conta,
+*Access: Apps and Policies — Edit*, e nada mais — e `CLOUDFLARE_ACCOUNT_ID`. Opcional:
+`CLOUDFLARE_ACCESS_POLICY_ID`, se o script não achar a política pelo nome ("Autorizados" ou "Só eu").
+⚠️ Não conferido contra a conta real deste ambiente (a API da Cloudflare é bloqueada daqui): na primeira
+vez, rode `--listar` e veja se a lista bate com o painel antes de autorizar alguém.
+
+**Pelo painel**, se preferir: Zero Trust → **Access controls → Applications → `enchentes` → política
+"Só eu"** (ou "Autorizados", se já renomeada) → em *Include / Emails*, acrescentar o e-mail. Ela recebe
+um código por e-mail e entra. **Revogar é apagar a linha.** As pré-visualizações (`*.pages.dev`) têm
+política própria em *Pages → Settings → General → Preview access*; o script não mexe nelas.
 
 ### Como PUBLICAR de vez, quando decidir
 Remover a política da aplicação (ou apagar a aplicação). O site fica aberto **no mesmo endereço**, sem
