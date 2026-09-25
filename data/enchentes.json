@@ -3233,6 +3233,16 @@
     },
     {
       "rio": "itajai-acu",
+      "cidade": "itajai",
+      "data": "2011-09-09",
+      "pico_m": 3.2,
+      "referencia": null,
+      "confianca": "baixa",
+      "fonte": "Silva, Valdeir Demetrio da. \"Sistema de alerta à inundação, utilizando modelo HEC-RAS e técnicas de geoprocessamento para o município de Itajaí-SC\", tese, Programa de Pós-Graduação em Geografia, Universidade Estadual de Maringá, 2017, Quadro 11 e Figura 46, pp. 99–100 (pp. 116–117 do PDF); localização no Quadro 10 e Figura 45, p. 98, com dados telemétricos da Defesa Civil de Itajaí (leitura a cada 10 min) — https://drive.google.com/file/d/1VN0OJljSYh9J8foI69p_VrWAqAUMeYMu/view — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada5/tese_valdeir_itajai.pdf",
+      "nota": "Máximo de setembro de 2011 na estação telemétrica nº 1 da tese, no rio Itajaí-Açu, cerca de 14.165 m da foz medidos ao longo do rio (cota mínima do mês −0,49 m). O gráfico da Figura 46 põe a crista em 09/09, e a tese diz que 09/09 foi o dia de maior pico. A tese não diz qual das réguas de hoje (DC-01 a DC-11) é esta estação, e ligar por distância ou nome de lugar seria vínculo por lugar, que o cadastro não aceita: o número não se compara com cota de nenhuma DC atual, nem com a outra estação de Itajaí deste mesmo evento, nem com outra cidade. Perto da foz a maré também mexe na régua. Confiança baixa pela régua não identificada, não pela fonte (acadêmica, com dado da Defesa Civil). Só setembro de 2011 tem nível nesta estação; a cheia de novembro de 2008, a de mais estrago em Itajaí pelo Atlas, não tem."
+    },
+    {
+      "rio": "itajai-acu",
       "cidade": "taio",
       "data": "2024-05-19",
       "hora": "13:00",
@@ -3401,6 +3411,16 @@
       "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
       "data_na_fonte": "2020-01-20",
       "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa. DATA: a tabela da p. 9 diz 20/01/2020, mas o Anexo I (p. 52) tem o título \"20/01/2021 – 6,49\" e o registro corre de 20/01/2021 23:45 a 21/01/2021, com 6,49 m às 15:00. A ANA 83677000 (Timbó Novo, rio vizinho) tem um dos maiores eventos da série em 21/01/2021. Adotado 21/01/2021; o ano da tabela fica em data_na_fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2022-11-27",
+      "hora": "22:15",
+      "pico_m": 7.29,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 10.7 (histórico acrescentado em 01/12/2022), tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, e anexo da p. 55 \"27/11/2022 - 7,29 - 22h15min\" (https://riodoscedros.sc.gov.br/uploads/sites/444/2022/11/plano_de_contingencia-versao-10.7.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada5/cedros_plancon_2022.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa. Hora do anexo (p. 55): a captura de tela da leitura mostra 7,29 m parado de 22:15 a 23:00 de 27/11 e depois descida (7,28 às 23:15 … 6,92 às 03:00 de 28/11). A captura não mostra as leituras antes de 22:15, então 22:15 é o início visível do patamar, não necessariamente o primeiro minuto nos 7,29 m."
     },
     {
       "rio": "itajai-acu",
@@ -3786,6 +3806,16 @@
       "confianca": "baixa",
       "fonte": "ND+, \"Avenida é interditada após rio atingir 5,1 metros acima do nível e sair da calha em cidade de SC\", 01/09/2026 (https://ndmais.com.br/tempo/avenida-e-interditada-apos-rio-atingir-51-metros-acima-do-nivel-e-sair-da-calha-em-cidade-de-sc/) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/botuvera_vidal_2026.html — trecho: \"Durante a madrugada, o Rio Itajaí-Mirim registrou novos picos em municípios do Alto Vale. Em Vidal Ramos, o nível chegou a 3,87 metros.\"",
       "nota": "Na madrugada, sem hora. Régua não declarada. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "data": "2011-09-09",
+      "pico_m": 4.29,
+      "referencia": null,
+      "confianca": "baixa",
+      "fonte": "Silva, Valdeir Demetrio da. \"Sistema de alerta à inundação, utilizando modelo HEC-RAS e técnicas de geoprocessamento para o município de Itajaí-SC\", tese, Programa de Pós-Graduação em Geografia, Universidade Estadual de Maringá, 2017, Quadro 13 e Figura 48, p. 102 (p. 119 do PDF); localização no Quadro 10 e Figura 45, p. 98, com dados telemétricos da Defesa Civil de Itajaí (leitura a cada 10 min) — https://drive.google.com/file/d/1VN0OJljSYh9J8foI69p_VrWAqAUMeYMu/view — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada5/tese_valdeir_itajai.pdf",
+      "nota": "Máximo de setembro de 2011 na estação telemétrica nº 3 da tese, no CURSO ANTIGO (não retificado) do Itajaí-Mirim, cerca de 6.078 m a montante da foz do Mirim no Açu (cota mínima do mês −0,28 m); o gráfico da Figura 48 põe a crista em 09/09. A estação nº 2, no canal retificado (cerca de 4.544 m da foz), ficou fora: o Quadro 12 diz 3,21 m e o gráfico da Figura 47 chega perto de 4,5 m — a tese se contradiz. A tese não diz qual das réguas de hoje (DC-01 a DC-11) é esta estação, e ligar por distância ou nome de lugar seria vínculo por lugar, que o cadastro não aceita: o número não se compara com cota de nenhuma DC atual, nem com a outra estação de Itajaí deste mesmo evento, nem com outra cidade. Perto da foz a maré também mexe na régua. Confiança baixa pela régua não identificada, não pela fonte (acadêmica, com dado da Defesa Civil). Só setembro de 2011 tem nível nesta estação; a cheia de novembro de 2008, a de mais estrago em Itajaí pelo Atlas, não tem."
     },
     {
       "rio": "itajai-acu",

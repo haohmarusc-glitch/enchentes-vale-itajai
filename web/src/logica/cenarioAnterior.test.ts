@@ -154,3 +154,19 @@ test('nenhuma cidade produz cenário com pico em IBGE, hoje ou depois', () => {
     assert.equal(cenarioDaCidade(5, daCidade(c)).cenario, null, `${c} comparou com pico em IBGE`)
   }
 })
+
+test('Itajaí: os picos da tese da UEM não viram distância para a régua de agora (25/09/2026)', async () => {
+  // As estações nº 1 e nº 3 de 2011 não estão ligadas a nenhuma DC de hoje:
+  // `referencia: null` é o que faz o painel recusar em vez de subtrair.
+  const { readFileSync } = await import('node:fs')
+  const { eventos } = JSON.parse(
+    readFileSync(new URL('../../../data/enchentes.json', import.meta.url), 'utf8'),
+  ) as { eventos: Evento[] }
+  for (const rio of ['itajai-acu', 'itajai-mirim']) {
+    const deItajai = eventos.filter((e) => e.cidade === 'itajai' && e.rio === rio)
+    assert.equal(deItajai.length, 1, rio)
+    const r = cenarioDaCidade(1.0, deItajai)
+    assert.equal(r.cenario, null, rio)
+    assert.equal(r.motivo, 'referencia-de-outra-escala', rio)
+  }
+})

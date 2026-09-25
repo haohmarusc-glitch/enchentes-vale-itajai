@@ -10,6 +10,7 @@
  */
 
 export interface RegistroCheia {
+  rio?: string
   cidade: string
   data: string
   pico_m: number
@@ -215,10 +216,11 @@ const semCidade = (d: Dados) => {
   return `Tenho picos históricos para: ${nomes.join(', ')}. Diga a cidade.`
 }
 
-// Por que a cidade não tem pico, quando o motivo é conhecido e não é só "falta fonte".
-const MOTIVO_SEM_PICO: Record<string, string> = {
+// Cidade de várias réguas: um número só não é "o nível" dela, e a maior cheia não sai de
+// comparar picos de estações diferentes.
+const VARIAS_REGUAS: Record<string, string> = {
   itajai:
-    'Itajaí tem onze réguas da Defesa Civil, cada uma com seu zero, e as mais perto da foz sobem e descem com a maré. Um número só não é "o nível de Itajaí": cada pico precisa dizer de qual régua é, e ainda não há fonte que dê isso para as cheias antigas.',
+    'Itajaí tem onze réguas da Defesa Civil, cada uma com seu zero, e as mais perto da foz sobem e descem com a maré. Um número só não é "o nível de Itajaí"',
 }
 
 /** Registros do Atlas da cidade, sem repetir protocolo (Itajaí está no recorte dos dois rios). */
@@ -245,7 +247,7 @@ function semPicoNaCidade(cidade: CidadeConhecida, d: Dados): Resposta {
     intencao: 'maiores_cheias',
     texto: [
       `O site ainda não tem o nível do rio (em metros) registrado para as cheias de ${cidade.nome}.`,
-      MOTIVO_SEM_PICO[cidade.id] ?? '',
+      VARIAS_REGUAS[cidade.id] ? `${VARIAS_REGUAS[cidade.id]}: cada pico precisa dizer de qual régua é.` : '',
       top.length
         ? `O que dá para dizer é pelo tamanho do estrago. Pelo Atlas Digital de Desastres (1991–2025), as ocorrências de ${cidade.nome} com mais gente fora de casa foram:`
         : '',
@@ -268,11 +270,28 @@ function reguaDosPicos(regs: RegistroCheia[]): string {
   return `, em metros; ${ana} deles na régua da ANA, que tem zero próprio.`
 }
 
+/** Picos de estações diferentes da mesma cidade: lista cada um com o rio, sem eleger "a maior". */
+function picosPorEstacao(cidade: CidadeConhecida, regs: RegistroCheia[], d: Dados): Resposta {
+  const ord = [...regs].sort((a, b) => a.data.localeCompare(b.data) || (a.rio ?? '').localeCompare(b.rio ?? ''))
+  return {
+    intencao: 'maiores_cheias',
+    texto: [
+      `${VARIAS_REGUAS[cidade.id]}: por isso o site não diz qual foi "a maior cheia" de ${cidade.nome}. Os picos que tem são de estações diferentes, e números de estações diferentes não se comparam — nem entre si, nem com as réguas de hoje:`,
+      ord.map((r) => `• ${dataBR(r.data)}, ${r.rio ? nomeRio(d, r.rio) : 'rio não informado'}: ${m(r.pico_m)} (${conf(r.confianca)})`).join('\n'),
+      ressalvas(ord),
+      fonteDe(ord),
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  }
+}
+
 function maioresCheias(e: Extraido, d: Dados): Resposta {
   if (!e.cidade) return { intencao: 'maiores_cheias', texto: semCidade(d) }
   const cidade = e.cidade
   const regs = d.enchentes.eventos.filter((r) => r.cidade === cidade.id)
   if (!regs.length) return semPicoNaCidade(cidade, d)
+  if (VARIAS_REGUAS[cidade.id]) return picosPorEstacao(cidade, regs, d)
   const n = Math.min(e.n ?? (/\bmaiores|piores\b/.test(e.t) ? 5 : 1), 10)
   const top = [...regs].sort((a, b) => b.pico_m - a.pico_m).slice(0, n)
   const primeiro = top[0]

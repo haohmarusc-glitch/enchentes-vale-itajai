@@ -372,6 +372,14 @@ class MesesPareados(unittest.TestCase):
         # Entrou em 25/09/2026: Lontras só tem o máximo de mai/2024 do boletim estadual
         # (SDE 006/2024). A lista dela é de um evento só; nada foi corrigido.
         ("rio-do-sul 2024-07-12", "lontras"),
+        # Entraram em 25/09/2026 com os máximos de set/2011 da tese da UEM (decisão do
+        # Jefferson): Itajaí só tem 09/09/2011, e as cheias de jul/ago de 2011 acima
+        # (Rio do Sul, e Blumenau e Gaspar em 31/08) são eventos distintos, sem nível
+        # em Itajaí. A lista dela é de um evento só; nada foi corrigido.
+        ("rio-do-sul 2011-07", "itajai"),
+        ("rio-do-sul 2011-08", "itajai"),
+        ("blumenau 2011-08-31", "itajai"),
+        ("gaspar 2011-08-31", "itajai"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):

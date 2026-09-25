@@ -11,7 +11,7 @@ outra IA** (ChatGPT, Gemini, Perplexity…) e buscar os números.
 
 ## 1. O que já temos
 
-Atualizado em 25/09/2026, depois da terceira rodada (§10), da remoção de Botuverá e das cheias da ANA em Taió e Timbó: **360 registros em 15 cidades**.
+Atualizado em 25/09/2026, depois da quinta rodada (§12): **368 registros em 17 cidades**.
 
 | Cidade | Rio | Registros | Régua |
 |---|---|---|---|
@@ -21,12 +21,14 @@ Atualizado em 25/09/2026, depois da terceira rodada (§10), da remoção de Botu
 | Brusque | Itajaí-Mirim | 28 | municipal (5 da ANA) |
 | Indaial | Itajaí-Açu | 16 | municipal |
 | Ituporanga · Ibirama · Apiúna · Ilhota | Açu e afluentes | 5 cada | **só ANA** (zero próprio) |
-| Rio dos Cedros | Rio dos Cedros | 14 | não declarada (PLANCON) |
-| Taió | Itajaí do Oeste | 18 | municipal / DCSC (+7 da ANA) |
-| Timbó | Benedito | 30 | Rua Equador (1992) / não declarada / DCSC (+24 da ANA, 1935–2022) |
-| Vidal Ramos | Itajaí-Mirim | 2 | estação DCSC |
-| Trombudo Central · Lontras | — | 1 cada | não declarada / DCSC |
-| **Itajaí · Ascurra · Guabiruba · Botuverá** | — | **0** | — |
+| Rio dos Cedros | Rio dos Cedros | 15 | não declarada (PLANCON) |
+| Taió | Itajaí do Oeste | 19 | municipal / DCSC (7 deles da ANA) |
+| Timbó | Benedito | 30 | Rua Equador (1992) / não declarada / DCSC (24 deles da ANA, 1935–2022) |
+| Vidal Ramos | Itajaí-Mirim | 3 | estação DCSC / não declarada |
+| Trombudo Central · Botuverá | — | 2 cada | não declarada / DCSC |
+| **Itajaí** | Açu e Mirim | 2 | estações nº 1 e nº 3 da tese UEM (set/2011), **não ligadas a nenhuma DC de hoje** |
+| Lontras | Itajaí-Açu | 1 | DCSC |
+| **Ascurra · Guabiruba** | — | **0** | — |
 
 A seção 2 abaixo é o levantamento original de 24/09 e continua valendo como referência de régua e
 de datas-alvo. **O que ainda falta está no prompt da seção 6.**
@@ -100,7 +102,7 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
-Versão 3.1, de 25/09/2026, escrita depois da terceira rodada (§10) e da remoção de Botuverá. O que funcionou foi receber **os
+Versão 3.2, de 25/09/2026, escrita depois da quinta rodada (§12). O que funcionou foi receber **os
 arquivos originais** (PDF ou página salva): sem eles nada entra. Os boletins da SDE/SC com a tabela
 "Níveis máximos atingidos" foram a fonte mais produtiva até agora.
 
@@ -114,8 +116,11 @@ sem o arquivo original não entra no meu cadastro. Se não conseguir baixar, dig
 
 PRIORIDADE 1 — cidades sem NENHUM pico no meu cadastro:
 
-1. Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim). Cheias: jul/1983, ago/1984, out/2001, nov/2008,
-   set/2011, set/2013, out/2015, out/2023 e nov/2023. Itajaí tem várias réguas com zeros diferentes:
+1. Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim). Só tenho set/2011, das estações telemétricas nº 1
+   (Açu) e nº 3 (Mirim, curso antigo) da tese de Valdeir Demetrio da Silva (UEM, 2017). Quero: (a) as
+   outras cheias — jul/1983, ago/1984, out/2001, nov/2008, set/2013, out/2015, out/2023 e nov/2023;
+   (b) um documento que diga QUAL régua de hoje (DC-01 a DC-11) é cada estação telemétrica de 2011.
+   Itajaí tem várias réguas com zeros diferentes:
    CEPSUL, Praça da Murta (Celso Pereira da Silva), Santa Regina/Volta de Cima, Captação SEMASA/São
    Roque, Vitalmar, Itamirim Clube de Campo, Limoeiro, e nomes antigos como Teporti, Início Rio e AMP
    Logística. Quero o MÁXIMO de cada evento POR RÉGUA: relatório pós-evento da Defesa Civil de Itajaí,
@@ -126,41 +131,43 @@ PRIORIDADE 1 — cidades sem NENHUM pico no meu cadastro:
    out/2023, nov/2023, mai/2024. O Ribeirão Braço São Paulo é outro rio e não serve.
 3. Guabiruba: rio Guabiruba. Cheias: nov/2008, mar/2011, set/2011, out e nov/2023. A estação de
    Guabiruba nos boletins de Brusque está em cota ortométrica (~25 m) e não serve.
-4. Botuverá (Itajaí-Mirim). Os 8,61 m de 17/11/2023 que o prefeito citou
-   foram descartados, porque são o máximo da estação de BRUSQUE no boletim estadual. Quero o pico
-   de Botuverá pela Defesa Civil do município, em nov/2008, set/2011, out/2023 e nov/2023.
 
 PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos eventos de inundação":
 
-5. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023
-   (outubro), 011/2023 (novembro) e 006/2024 (maio). Quero TODAS as outras edições de 2020 a 2026
-   que tenham essa tabela para o Vale do Itajaí, especialmente as de eventos de mai/2022, jan/2021,
-   jun/2017, out/2015 e set/2026. Mande o PDF de cada uma.
+4. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023,
+   011/2023, 001/2024 e 006/2024, e a auditoria das 87 edições do índice (2020 a 07/2026) não achou
+   outra com a tabela. Quero: a edição de set/2026, quando sair; a de ago/2023, que falta no índice;
+   e edições ou relatórios equivalentes de ANTES de 2020 (out/2015, jun/2017), que o índice não cobre.
 
 PRIORIDADE 3 — cidades com poucos picos:
 
-6. Lontras (Itajaí-Açu; só tenho mai/2024), Vidal Ramos (Itajaí-Mirim; só tenho nov/2023 e mai/2024)
-   e Trombudo Central (rio Trombudo; só tenho 17/11/2023). Cheias: 1983, 1984, 2001, 2008, 2011, 2013,
-   2015, 2017, mai/2022 e out/2023. Para Trombudo, 1983 aparece como 6,22 m na ND+, mas preciso do original.
-7. Ituporanga (rio Itajaí do Sul), Ibirama (rio Hercílio), Apiúna e Ilhota (Itajaí-Açu): tenho só a
+5. Lontras (Itajaí-Açu; só tenho mai/2024), Vidal Ramos (Itajaí-Mirim; só tenho nov/2023, mai/2024
+   e set/2026), Trombudo Central (rio Trombudo; só tenho 1983 e 17/11/2023) e Botuverá (Itajaí-Mirim;
+   só tenho dez/2023 e set/2026 — os 8,61 m de 17/11/2023 que o prefeito citou foram descartados,
+   porque são o máximo da estação de BRUSQUE no boletim estadual). Cheias: 1983, 1984, 2001, 2008,
+   2011, 2013, 2015, 2017, mai/2022, out/2023 e nov/2023.
+6. Ituporanga (rio Itajaí do Sul), Ibirama (rio Hercílio), Apiúna e Ilhota (Itajaí-Açu): tenho só a
    série da ANA. Quero a régua da DEFESA CIVIL de cada cidade, com o nome da ponte ou do local. Em
-   Ituporanga, a estação da Defesa Civil de SC não é a da ANA (fica a jusante da Barragem Sul?):
-   diga onde fica cada uma. Em Ilhota, a Defesa Civil às vezes usa a medição de Gaspar, e o PLANCON
+   Ituporanga, a régua municipal fica na Ponte Vitório Sens (centro), e a estação da Defesa Civil
+   de SC não é a da ANA: quero a SÉRIE ou os máximos históricos da régua da Ponte Vitório Sens (o
+   2,95 m de 05/06/2017 do Jornal de Pomerode já tenho). Em Ilhota, a Defesa Civil às vezes usa a medição de Gaspar, e o PLANCON
    de Ilhota traz os números de BLUMENAU (15,34 / 15,46 / 12,60): não mande esses.
 
 PRIORIDADE 4 — lacunas pontuais:
 
-8. Timbó (rio Benedito, régua da Rua Equador): o original do Jornal do Médio Vale de 13/09/2011
-   (cita 10,42 m em 1992 e 10,01 m em 2011; tenho 9,86 m para 2011 pela Defesa Civil) e o dia e mês
-   do pico de 9,58 m de 2014.
-9. Taió (rio Itajaí do Oeste): o MÊS da cheia de 1983 de 11,85 m (a tabela da prefeitura diz
+7. Timbó (rio Benedito, régua da Rua Equador): o dia e o mês do pico de 9,58 m de 2014.
+8. Taió (rio Itajaí do Oeste): o MÊS da cheia de 1983 de 11,85 m (a tabela da prefeitura diz
    setembro, a ANA indica julho) e da de 9,38 m de 2013 (a tabela diz junho, a ANA indica setembro).
-10. Rio dos Cedros: cheias depois de jan/2021 (tenho a tabela do PLANCON de 1992 a 2021 e 12/10/2023)
-    e o dia da crista de 8,96 m de 2014 (08 ou 09/06).
+9. Rio dos Cedros: cheias depois de nov/2022 (tenho a tabela do PLANCON 10.7 até 27/11/2022 e
+   12/10/2023) e o dia da crista de 8,96 m de 2014 (08 ou 09/06; o artigo da ND de 08/06 não resolve).
 
-JÁ TENHO, NÃO PRECISA MANDAR: os boletins SDE 010/2023, 011/2023 e 006/2024; o PLANCON de Rio dos
-Cedros v1.07; o Estudo Socioambiental de Taió; as séries da ANA do HidroWeb; e as notícias de
-Trombudo Central (8,71 m) e O Auditório (Timbó e Rio dos Cedros, out/2023).
+JÁ TENHO, NÃO PRECISA MANDAR: os boletins SDE 010/2023, 011/2023, 001/2024 e 006/2024 (e a
+auditoria dos 87 boletins do índice); os PLANCON de Rio dos Cedros v1.07 e 10.7 e o de Ilhota; a tese
+de Valdeir D. da Silva (UEM, 2017); o manual "Operação de Barragens" (2024); o Estudo Socioambiental
+de Taió; as séries da ANA do HidroWeb; e as notícias de Trombudo Central (8,71 m e 6,22 m em 1983),
+O Auditório (Timbó e Rio dos Cedros, out/2023), Jornal do Médio Vale (Timbó 1992/2011), OCP News
+(Timbó 2021), ND+ (Botuverá e Vidal Ramos, set/2026; Rio dos Cedros, jun/2014) e Jornal de Pomerode
+(Ituporanga, jun/2017).
 
 FORMATO — uma linha de tabela por número:
 cidade | data (AAAA-MM-DD) | hora | nível (m) | régua/estação/ponte (ou "não declarada") |
@@ -322,19 +329,61 @@ a observação de que a notícia avisava que a medida seria revista.
   a cauda da cheia de novembro, e não máximos de dezembro.
 - **Duas notícias de Timbó 2014:** não trazem nível.
 
-**Ainda esperando o original:**
-- **Rio dos Cedros 27/11/2022, 7,29 m:** falta `cedros_plancon_2022.pdf`.
-- **Itajaí, set/2011, estações nº 1 a 3 da tese UEM (3,20 · 3,21 · 4,29 m):** falta
-  `tese_valdeir_itajai.pdf`, e além disso é preciso decidir a régua.
+**Ainda esperando o original:** Rio dos Cedros 27/11/2022 e a tese UEM de Itajaí chegaram na quinta
+rodada (§12).
+
+## 12. Quinta rodada (25/09/2026), conferida nos originais
+
+Dois zips (`Picos_20260925_094511_parte_01_de_02` e `_02_de_02`), com os 25 arquivos batendo com o
+manifesto SHA-256. O relatório, as evidências e a auditoria são os mesmos da quarta rodada, byte a byte;
+o que é novo são nove originais. Os usados estão em `data/brutos/pesquisa-picos-2026-09-24/rodada5/`, com o
+manifesto.
+
+**Cadastrado:**
+
+| Cidade | Rio | Data | Pico | Fonte |
+|---|---|---|---|---|
+| Rio dos Cedros | Rio dos Cedros | 27/11/2022 22h15 | 7,29 m | PLANCON 10.7, tabela da p. 9 e anexo da p. 55 |
+| Itajaí | Itajaí-Açu | 09/09/2011 | 3,20 m | Tese UEM (2017), estação telemétrica nº 1, Quadro 11 e Figura 46 |
+| Itajaí | Itajaí-Mirim | 09/09/2011 | 4,29 m | Tese UEM (2017), estação nº 3 (curso antigo), Quadro 13 e Figura 48 |
+
+- **Rio dos Cedros:** o anexo da p. 55 é a captura de tela da leitura: 7,29 m parado de 22:15 a 23:00 e
+  depois a descida (6,92 m às 03:00 de 28/11). As leituras antes de 22:15 não aparecem, então a hora é o
+  início visível do patamar. Mesma régua não declarada e confiança baixa dos outros 14 do PLANCON. A
+  tabela da versão 10.7 repete a da 1.07 para os anos anteriores, inclusive o "20/01/2020" que o anexo
+  mostra ser 2021.
+- **Itajaí, decisão do Jefferson:** entram as estações nº 1 e nº 3, com `referencia: null` e confiança
+  baixa. A tese não diz qual DC de hoje é cada estação, e ligar por distância seria vínculo por lugar. Por
+  isso a mancha de Itajaí continua sem acender, e o painel "quanto falta" recusa a comparação (há teste
+  para os dois). A estação nº 2 (canal retificado) fica fora porque a tese se contradiz: o Quadro 12 diz
+  3,21 m e a Figura 47 chega perto de 4,5 m.
+- **Chat do site:** para Itajaí, deixa de eleger "a maior cheia". Lista cada pico com o rio e avisa que
+  estações diferentes não se comparam. O bot do Telegram passa do motivo "não temos cheia registrada" para
+  o das réguas com zeros diferentes, que é o motivo certo quando há registro.
+- **Validador:** 4 desalinhamentos novos e nomeados, porque Itajaí só tem 09/09/2011 e as cheias de
+  jul/ago de 2011 a montante são outros eventos.
+
+**Conferido, mas fora do cadastro:**
+- **Ituporanga 05/06/2017, 2,95 m às 5h** (Jornal de Pomerode): é a régua do centro, a municipal (a
+  mesma notícia diz que o rio "sai da calha com 3,20 m"). A ANA 83250000, régua dos 5 registros de
+  Ituporanga, marcou 4,66 m às 07h do mesmo dia. São réguas diferentes, e cadastrar misturaria as duas
+  na mesma cidade. Entra quando Ituporanga tiver a série da régua da Ponte Vitório Sens.
+- **Rio dos Cedros 2014 (ND+, 08/06):** é da subida e traz previsão, não o máximo. Não resolve 08 × 09/06.
+- **PLANCON de Ilhota, plano de saúde de Rio dos Cedros, "Operação de Barragens" e relatório da UFSC
+  (2017):** nenhum pico novo. O plano de saúde repete os 9,25 m de 1992, e o da UFSC fala de maré e de
+  nível do mar.
 
 ## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
 - [x] Pesquisa web, primeira rodada: pistas na §7, nenhuma conferida (rede bloqueada).
 - [x] Segunda rodada conferida nos originais: 14 registros (§8).
-- [ ] Itajaí: pico por régua — boletim final da Defesa Civil de 2011, ou relatório com máximo por estação.
+- [x] Itajaí: máximos de set/2011 por estação (tese UEM, estações nº 1 e nº 3), em 25/09/2026 (§12).
+- [ ] Itajaí: qual DC de hoje é cada estação telemétrica de 2011, e as outras cheias (1983, 1984, 2008, 2013…).
 - [x] Séries da ANA baixadas: picos extraídos por `scripts/picos_ana_vale.py`, e os 5 maiores de Ituporanga, Ibirama, Apiúna e Ilhota entraram marcados como régua da ANA (confiança baixa) — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
 - [x] Terceira rodada conferida nos originais: 18 registros (§10).
 - [x] Taió e Timbó: cheias da ANA que a série municipal não tem (7 + 26), em 25/09/2026 — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
-- [ ] Itajaí, Ascurra, Guabiruba e Botuverá: ainda sem pico.
+- [x] Quarta rodada conferida nos originais (§11).
+- [x] Quinta rodada conferida nos originais: Rio dos Cedros nov/2022 e Itajaí set/2011 (§12).
+- [ ] Ascurra e Guabiruba: ainda sem pico. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.

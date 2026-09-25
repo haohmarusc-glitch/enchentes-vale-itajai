@@ -69,9 +69,9 @@ test('as frases falam no passado e mostram os dois números', () => {
   assert.ok(fraseFalta(r.proximo!, '2008-11').startsWith('Faltam 0,70 m'))
 })
 
-test('⛔ HOJE não acende: as manchas de Itajaí não têm pico registrado', () => {
-  // Não é opinião: é o cadastro. Se um dia entrar pico de Itajaí, este teste
-  // cai — e cair é a NOTÍCIA BOA: quer dizer que o recurso pode acender.
+test('⛔ HOJE não acende: nenhum pico de Itajaí está numa régua DC', () => {
+  // Não é opinião: é o cadastro. Se um dia entrar pico de Itajaí NUMA RÉGUA DC,
+  // este teste cai — e cair é a NOTÍCIA BOA: quer dizer que o recurso pode acender.
   const indice = JSON.parse(
     readFileSync(new URL('../../../data/manchas/index.json', import.meta.url), 'utf8'),
   ) as { manchas: { cidade: string; pico_registrado: unknown }[] }
@@ -82,12 +82,17 @@ test('⛔ HOJE não acende: as manchas de Itajaí não têm pico registrado', ()
     'nenhuma tem pico — a ligação com o nível está bloqueada por DADO, não por código',
   )
 
+  // A causa. Até 25/09/2026 era "Itajaí não tem pico nenhum". Desde então tem os
+  // dois máximos de set/2011 da tese da UEM — em estações que a tese NÃO liga a
+  // nenhuma DC de hoje, e a mancha é desenhada por régua DC. Pico sem régua não
+  // acende mancha; ligar por distância seria vínculo por lugar.
   const enchentes = JSON.parse(
     readFileSync(new URL('../../../data/enchentes.json', import.meta.url), 'utf8'),
-  ) as { eventos: { cidade: string }[] }
-  assert.equal(
-    enchentes.eventos.filter((e) => e.cidade === 'itajai').length,
-    0,
-    'a causa: Itajaí não tem nenhum pico histórico no cadastro',
+  ) as { eventos: { cidade: string; nota?: string }[] }
+  const picos = enchentes.eventos.filter((e) => e.cidade === 'itajai')
+  assert.equal(picos.length, 2, 'só os dois da tese')
+  assert.ok(
+    picos.every((e) => e.nota?.includes('não diz qual das réguas de hoje (DC-01 a DC-11)')),
+    'a causa: nenhum pico de Itajaí está ligado a uma régua DC',
   )
 })
