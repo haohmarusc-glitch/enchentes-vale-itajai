@@ -2229,11 +2229,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 25/09/2026, depois: as cheias da ANA que a série municipal de Taió (7) e
         # de Timbó (26) não tem, no zero da ANA (decisão do Jefferson) — 327 → 360,
         # 187 → 220.
-        self.assertEqual(len(self.ev), 360)
+        # 25/09/2026, quarta rodada: Timbó 1992 e 2021 municipais no lugar dos da
+        # ANA, e Taió e Botuverá (dez/2023), Trombudo Central 1983, Botuverá e
+        # Vidal Ramos (set/2026) — 360 → 365, 220 → 225.
+        self.assertEqual(len(self.ev), 365)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 220)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 292)
+        self.assertEqual(refs["None"], 225)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 297)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

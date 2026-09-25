@@ -1,0 +1,127 @@
+[
+  {
+    "arquivo": "Auditoria_87_boletins.json",
+    "bytes": 50881,
+    "sha256": "2a5cbc885f1f10bc8545c226bcdf44ab50058f0853c4cb363cdb51a4bfc33789"
+  },
+  {
+    "arquivo": "Evidencias_rodada4.json",
+    "bytes": 31650,
+    "sha256": "dddcc6e382881241dfb7444657553b02cb813f722ec0490ef801c3f29e91f8db"
+  },
+  {
+    "arquivo": "Relatorio_rodada4.md",
+    "bytes": 23155,
+    "sha256": "a819d6cd5fbe16756658b7c0cd05e86411ba0737b3fd045aef00bdd32c2f26f2"
+  },
+  {
+    "arquivo": "originais/ascurra_outro_rio.html",
+    "bytes": 225436,
+    "sha256": "c5bd9a1053266e9a94a460ba802c16aaf4ae13ae9781759781d1745a55b6cf98"
+  },
+  {
+    "arquivo": "originais/Boletim_Hidrometeorologico_001_2024.pdf",
+    "bytes": 4123959,
+    "sha256": "53ea34b3115b1d1a8cc61055fa326bfba0b3e822b31482343bf84e21b2aad8c5"
+  },
+  {
+    "arquivo": "originais/botuvera_divergencia.html",
+    "bytes": 241661,
+    "sha256": "12199796bb7a63595f4afb8e5fd135ca6f4ec251f41d8bb2f1be332b903d2a47"
+  },
+  {
+    "arquivo": "originais/botuvera_vidal_2026.html",
+    "bytes": 201599,
+    "sha256": "893c68dccfadc4bbafc115d927c1d210c045ee1e10898bff92d0004c9e057d06"
+  },
+  {
+    "arquivo": "originais/cedros_2014.html",
+    "bytes": 148741,
+    "sha256": "274306e5c8423323ef636e7f2fa08f9367a0fc43c3d54c77cf98e69c936e47bb"
+  },
+  {
+    "arquivo": "originais/cedros_plancon_2022.pdf",
+    "bytes": 5208479,
+    "sha256": "67f7616d5c0413a625f3000a66e1d7ba76f0313cbe76bdba13f75f66af7c538c"
+  },
+  {
+    "arquivo": "originais/cedros_saude.pdf",
+    "bytes": 2444498,
+    "sha256": "8a137ba5f015c1031be7345a8957db7e59d3af722026649da835c88f75d0157a"
+  },
+  {
+    "arquivo": "originais/ilhota_plancon.pdf",
+    "bytes": 528598,
+    "sha256": "faf05d6786ee2c60566e483d320b071345dbc2d952f38cb4dc4ccadc24fe57f4"
+  },
+  {
+    "arquivo": "originais/indice_original.html",
+    "bytes": 115862,
+    "sha256": "3136dd53b8ab56cba9cf87d669a0a1e56f545795595c359bd36a71faa9d29058"
+  },
+  {
+    "arquivo": "originais/ituporanga_2017.html",
+    "bytes": 133982,
+    "sha256": "5226cb52cfe20e9f973019be4beef68e233776c53282c221be11a36a3e14773c"
+  },
+  {
+    "arquivo": "originais/ituporanga_cotas.html",
+    "bytes": 107330,
+    "sha256": "2273ee8a2d044d67bac7b70bd47f9c207ac6573c00674f1a3006fda3fa12e6e6"
+  },
+  {
+    "arquivo": "originais/ituporanga_estacoes.html",
+    "bytes": 80285,
+    "sha256": "16d614118fef199e92f6771d88b69ed1551695c4fafbca6a3779a60c1d85a565"
+  },
+  {
+    "arquivo": "originais/operacao_barragens.pdf",
+    "bytes": 18056687,
+    "sha256": "d8ebf2374bc5c3f956be964fba2dc962065ae9acd4a0c43499e10771d919c393"
+  },
+  {
+    "arquivo": "originais/taio_1983_contexto.html",
+    "bytes": 277163,
+    "sha256": "ec16c1ca14069e85b26e4d6a2f43727cc64a4de0e3bf20bfad6feac1f4270da8"
+  },
+  {
+    "arquivo": "originais/tese_valdeir_itajai.pdf",
+    "bytes": 7746546,
+    "sha256": "5005ee12d3f09b4a361bf543390943f1437ebfa52474f194693ff6f5bcf8e57d"
+  },
+  {
+    "arquivo": "originais/timbo_1992_2011.html",
+    "bytes": 465268,
+    "sha256": "4cfcf3da605f826bfbcf5b6b5befe164503bddf8bef2aca8b1b4d6f3b4012e4b"
+  },
+  {
+    "arquivo": "originais/timbo_2014.html",
+    "bytes": 127597,
+    "sha256": "c768283e4676dd6013f6b28a562d946af8a77a05e2bb929f60a713c65b2e0fe8"
+  },
+  {
+    "arquivo": "originais/timbo_2014_pos.html",
+    "bytes": 467904,
+    "sha256": "9272d02debda40ab5db08cf6fca3887f1fd8a9863a5121a6718b4a8b5069846f"
+  },
+  {
+    "arquivo": "originais/timbo_2021.html",
+    "bytes": 64744,
+    "sha256": "b9162bbd17abcb6e1767bfc4149aa1d4454d8d2e67a258baa241528ece99bafe"
+  },
+  {
+    "arquivo": "originais/trombudo_1983.html",
+    "bytes": 286504,
+    "sha256": "e19bb8c3bf33bf07e4cd94e1131b503db2898f25743cda33b48ca861b87538e2"
+  },
+  {
+    "arquivo": "originais/uem_indice.html",
+    "bytes": 54066,
+    "sha256": "38107412765aaf08448dd0c9305abfe8364d1eabb43f2053fa46183c59764a54"
+  },
+  {
+    "arquivo": "originais/ufsc_itajai_2017.pdf",
+    "bytes": 11387447,
+    "sha256": "34cbb1b2b0ccca3167ee511a05a0c8c4c8a4b31ba50b43bf89119733280d826f"
+  }
+]
