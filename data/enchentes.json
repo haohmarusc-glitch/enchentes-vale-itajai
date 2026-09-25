@@ -3395,6 +3395,350 @@
       "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
       "data_na_fonte": "2020-01-20",
       "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa. DATA: a tabela da p. 9 diz 20/01/2020, mas o Anexo I (p. 52) tem o título \"20/01/2021 – 6,49\" e o registro corre de 20/01/2021 23:45 a 21/01/2021, com 6,49 m às 15:00. A ANA 83677000 (Timbó Novo, rio vizinho) tem um dos maiores eventos da série em 21/01/2021. Adotado 21/01/2021; o ano da tabela fica em data_na_fonte."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1933-10-04",
+      "pico_m": 12.37,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1963-02-01",
+      "pico_m": 11.25,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1954-10-22",
+      "pico_m": 10.65,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1957-08-19",
+      "pico_m": 10.25,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2010-04-27",
+      "pico_m": 9.78,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1931-05-02",
+      "pico_m": 9.6,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "1984-08-09",
+      "pico_m": 9.57,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83050000 TAIÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83050000_TXT_2026-09-24T15_30_00.280Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83050000 TAIÓ (rio Itajaí do Oeste), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. De 2015 a 2024, a régua municipal e esta ficam a menos de 10 cm uma da outra em sete eventos (ver docs/HIDROWEB-VALE-2026-09-24.md) — indício, não prova, de mesmo zero. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1984-08-07",
+      "pico_m": 7.97,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1983-07-12",
+      "pico_m": 7.48,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1974-03-23",
+      "pico_m": 7.24,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1980-12-21",
+      "pico_m": 7.03,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1983-05-20",
+      "pico_m": 7.0,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1965-05-15",
+      "pico_m": 6.83,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1948-05-17",
+      "pico_m": 6.7,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1998-08-14",
+      "pico_m": 6.65,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1948-02-15",
+      "pico_m": 6.61,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1961-11-01",
+      "pico_m": 6.59,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1978-12-26",
+      "pico_m": 6.42,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1935-09-24",
+      "pico_m": 6.34,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1973-08-28",
+      "pico_m": 6.33,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1960-11-28",
+      "pico_m": 6.15,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1946-02-02",
+      "pico_m": 6.1,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83680000 TIMBÓ, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83680000_TXT_2026-09-24T15_31_33.066Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83680000 TIMBÓ (rio Benedito), NÃO a da Defesa Civil. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1992-05-29",
+      "pico_m": 9.1,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2008-11-23",
+      "pico_m": 8.15,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2001-10-01",
+      "pico_m": 7.95,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2021-01-21",
+      "pico_m": 7.59,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2015-10-23",
+      "pico_m": 7.2,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2022-05-04",
+      "pico_m": 7.1,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2000-02-16",
+      "pico_m": 6.99,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1994-05-12",
+      "pico_m": 6.95,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2010-04-26",
+      "pico_m": 6.9,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "17:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2011-03-11",
+      "pico_m": 6.84,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2013-09-23",
+      "pico_m": 6.72,
+      "confianca": "baixa",
+      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 07:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
+      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
+      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
+      "hora": "07:00"
     }
   ]
 }

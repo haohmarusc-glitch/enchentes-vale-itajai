@@ -2226,11 +2226,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 25/09/2026, depois: saiu Botuverá 8,61 m de 17/11/2023 (decisão do
         # Jefferson) — era o máximo da estação de Brusque no boletim estadual.
         # 328 → 327, 188 → 187.
-        self.assertEqual(len(self.ev), 327)
+        # 25/09/2026, depois: as cheias da ANA que a série municipal de Taió (7) e
+        # de Timbó (26) não tem, no zero da ANA (decisão do Jefferson) — 327 → 360,
+        # 187 → 220.
+        self.assertEqual(len(self.ev), 360)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 187)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 259)
+        self.assertEqual(refs["None"], 220)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 292)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

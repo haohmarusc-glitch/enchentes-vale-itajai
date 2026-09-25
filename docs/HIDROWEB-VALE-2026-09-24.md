@@ -53,7 +53,13 @@ Brusque (22/09/2026), com uma diferença: lá o zero da ANA tinha sido provado i
 - **Ilhota: só a 83860000 "ILHOTA"** (1927–1988, só médias diárias, com 1983 e 1984). A Ilhota-Jusante
   (83870000, 1989–2007, com 11,52 m em 30/05/1992) e a Ilhota-Montante ficam fora. São outros zeros, e
   misturá-los numa cidade só faria a série saltar sem cheia.
-- **Taió e Timbó ficam fora:** já têm série municipal, e em Taió vale a decisão (b).
+- **Taió e Timbó (atualizado em 25/09/2026):** por decisão do Jefferson, entraram as cheias da ANA
+  que a série municipal **não tem**. São 7 em Taió (1931, 1933, 1954, 1957, 1963, 1984 e abr/2010) e 26 em
+  Timbó, com as duas estações, que têm o mesmo zero: 0 cm de diferença nos 31 dias comuns de 1998–1999.
+  Todas estão marcadas como régua da ANA, com confiança baixa. Onde já havia registro municipal do mesmo
+  evento, a ANA ficou fora: foram 12 casos, entre eles Taió jul/1983 (registro "1983"), Taió set/2013
+  (provavelmente o "junho de 2013" da tabela) e Timbó jun/2014 (registro "2014"). A decisão (b) continua
+  valendo para esses eventos, porque o valor adotado é o municipal.
 - **Trombudo Central fica fora:** a série vai só até 1967 e só tem médias diárias brutas.
 - **Porto Itajaí fica fora:** é régua de estuário.
 - **Validador:** Apiúna e Ilhota entraram em `LISTAS_SO_COM_CHEIA_GRANDE`, porque uma lista feita só

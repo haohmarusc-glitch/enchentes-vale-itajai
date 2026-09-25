@@ -11,7 +11,7 @@ outra IA** (ChatGPT, Gemini, Perplexity…) e buscar os números.
 
 ## 1. O que já temos
 
-Atualizado em 25/09/2026, depois da terceira rodada (§10) e da remoção de Botuverá: **327 registros em 15 cidades**.
+Atualizado em 25/09/2026, depois da terceira rodada (§10), da remoção de Botuverá e das cheias da ANA em Taió e Timbó: **360 registros em 15 cidades**.
 
 | Cidade | Rio | Registros | Régua |
 |---|---|---|---|
@@ -22,8 +22,8 @@ Atualizado em 25/09/2026, depois da terceira rodada (§10) e da remoção de Bot
 | Indaial | Itajaí-Açu | 16 | municipal |
 | Ituporanga · Ibirama · Apiúna · Ilhota | Açu e afluentes | 5 cada | **só ANA** (zero próprio) |
 | Rio dos Cedros | Rio dos Cedros | 14 | não declarada (PLANCON) |
-| Taió | Itajaí do Oeste | +1 (11 no total) | municipal / DCSC |
-| Timbó | Benedito | 4 | não declarada / DCSC |
+| Taió | Itajaí do Oeste | 18 | municipal / DCSC (+7 da ANA) |
+| Timbó | Benedito | 30 | não declarada / DCSC (+26 da ANA, 1935–2022) |
 | Vidal Ramos | Itajaí-Mirim | 2 | estação DCSC |
 | Trombudo Central · Lontras | — | 1 cada | não declarada / DCSC |
 | **Itajaí · Ascurra · Guabiruba · Botuverá** | — | **0** | — |
@@ -298,5 +298,6 @@ meia-noite. A data da tabela foi mantida, com pendência.
 - [ ] Itajaí: pico por régua — boletim final da Defesa Civil de 2011, ou relatório com máximo por estação.
 - [x] Séries da ANA baixadas: picos extraídos por `scripts/picos_ana_vale.py`, e os 5 maiores de Ituporanga, Ibirama, Apiúna e Ilhota entraram marcados como régua da ANA (confiança baixa) — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
 - [x] Terceira rodada conferida nos originais: 18 registros (§10).
-- [ ] Itajaí, Ascurra e Guabiruba: ainda sem pico.
+- [x] Taió e Timbó: cheias da ANA que a série municipal não tem (7 + 26), em 25/09/2026 — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
+- [ ] Itajaí, Ascurra, Guabiruba e Botuverá: ainda sem pico.
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.
