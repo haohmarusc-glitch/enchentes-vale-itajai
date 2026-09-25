@@ -1878,6 +1878,10 @@
         {
           "pico_m": 12.13,
           "fonte": "ANA, série telemétrica da estação 83050000 'TAIÓ'/Saltinho (HidroinfoanaSerieTelemetricaAdotada), crista às 12:30 de 09/10/2023, platô 12,11–12,13 m das 12:15 às 15:45 — bruto data/brutos/ana-telemetria-83050000-2023-10-12-DIAS_7.json, lido por scripts/analisar_telemetria_ana.py. RÉGUA DA ANA, a 0,56 km do pino da cidade: mesmo dia e mesma ordem de grandeza que os 12,40 m, 0,27 m de diferença que não provam o mesmo zero."
+        },
+        {
+          "pico_m": 12.39,
+          "fonte": "Boletim SDE 010/2023, p. 17, estação DCSC de Taió, máximo em 09/10/2023 13:00 — bruto data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_010_2023_outubro.pdf. Mesma hora que o Estudo Socioambiental dá para os 12,40 m (p. 304); 1 cm não decide régua."
         }
       ]
     },
@@ -2895,8 +2899,8 @@
       "hora": "17:00",
       "pico_m": 8.71,
       "confianca": "baixa",
-      "fonte": "Prefeitura de Trombudo Central, \"Trombudo Central registra a maior enchente da sua história\", 27/11/2023 (https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/) — trecho: \"Às 17h o Rio Trombudo atingiu 8,71 metros.\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/trombudo-evidencia.txt",
-      "nota": "Maior enchente da história do município, segundo a prefeitura. A notícia não usa a palavra \"pico\". Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "fonte": "Prefeitura de Trombudo Central, \"Trombudo Central registra a maior enchente da sua história\", 27/11/2023 (https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/) — trecho: \"Às 17h o Rio Trombudo atingiu 8,71 metros.\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/trombudo-evidencia.txt · confirmado por: Boletim Hidrometeorológico 011/2023 (SDE/SC), Tabela 3 \"Níveis máximos registrados nos municípios das bacias do Vale do Itajaí\", p. 18 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_011_2023.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_011_2023_novembro.pdf",
+      "nota": "Maior enchente da história do município, segundo a prefeitura. A notícia não usa a palavra \"pico\". Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. O Boletim SDE 011/2023 publica os mesmos 8,71 m às 18:00; a prefeitura diz 17h. Hora adotada: a da prefeitura."
     },
     {
       "rio": "itajai-mirim",
@@ -2905,7 +2909,8 @@
       "pico_m": 8.61,
       "confianca": "baixa",
       "fonte": "O Município, \"A água baixou e os problemas dobraram: prefeito de Botuverá comenta situação após enchente\", 18/11/2023 (https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/) — trecho: \"o pico máximo registrado no município foi de 8,61 metros, na tarde de sexta\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/botuvera-2023.html",
-      "nota": "Número dito pelo prefeito Alcir Merizio; pico \"na tarde de sexta\" (17/11), sem hora exata. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "nota": "Número dito pelo prefeito Alcir Merizio; pico \"na tarde de sexta\" (17/11), sem hora exata. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
+      "pendencia": "SUSPEITA DE NÚMERO DE OUTRA CIDADE: o Boletim SDE 011/2023 (p. 18) dá exatamente 8,61 m como máximo da estação DCSC de BRUSQUE, em 17/11/2023 21:00, e Botuverá não aparece na tabela. O prefeito pode ter citado o número de Brusque. NÃO usar em comparação até a Defesa Civil de Botuverá confirmar — decisão de remover é do Jefferson."
     },
     {
       "rio": "itajai-acu",
@@ -2914,7 +2919,7 @@
       "hora": "21:00",
       "pico_m": 7.46,
       "confianca": "baixa",
-      "fonte": "O Auditório, \"Rio Benedito começa a baixar na região de Timbó\", 13/10/2023 (https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/) — trecho: \"O nível do Rio Benedito em Timbó atingiu o pico de 7,46m às 21h desta quinta-feira (12)\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/timbo-cedros-2023.html",
+      "fonte": "O Auditório, \"Rio Benedito começa a baixar na região de Timbó\", 13/10/2023 (https://oauditorio.com/noticias/geral-noticias/10/2023/rio-benedito-comeca-a-baixar-na-regiao-de-timbo/) — trecho: \"O nível do Rio Benedito em Timbó atingiu o pico de 7,46m às 21h desta quinta-feira (12)\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/timbo-cedros-2023.html · confirmado por: Boletim Hidrometeorológico 010/2023 (SDE/SC), Tabela 1 \"Níveis máximos registrados nos municípios do Vale do Itajaí\", p. 17 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_010_2023.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_010_2023_outubro.pdf (7,46 m em 12/10/2023 21:00)",
       "nota": "Rio Benedito. A notícia não diz se é a régua da Rua Equador. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
     },
     {
@@ -3013,12 +3018,13 @@
     {
       "rio": "itajai-acu",
       "cidade": "taio",
-      "data": "2023-11",
+      "data": "2023-11-17",
       "pico_m": 10.37,
       "confianca": "baixa",
-      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Segunda linha de nov/2023 da tabela; a outra (10,36 m) é a de 04/11. O dia desta não está na fonte. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
-      "pendencia": "Dia desconhecido. Candidato: a cheia de 17/11/2023, quando a ANA 83050000 marcou crista de 10,32 m — mas é outra régua, então NÃO preencher o dia por isso. Fecha com boletim da Defesa Civil de Taió de nov/2023."
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf · dia e hora: Boletim Hidrometeorológico 011/2023 (SDE/SC), Tabela 3 \"Níveis máximos registrados nos municípios das bacias do Vale do Itajaí\", p. 18 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_011_2023.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_011_2023_novembro.pdf",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Segunda linha de nov/2023 da tabela; a outra (10,36 m) é a de 04/11. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. Dia e hora vêm do Boletim SDE 011/2023, que publica os mesmos 10,37 m em 17/11/2023 21:00 (a tabela municipal só dá o mês); a ANA 83050000 leu 10,30 m às 17h do mesmo dia.",
+      "hora": "21:00",
+      "data_na_fonte": "2023-11"
     },
     {
       "rio": "itajai-acu",
@@ -3228,6 +3234,177 @@
       "fonte": "ANA/HidroWeb, estação convencional 83860000 ILHOTA, média diária consistida — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83860000_TXT_2026-09-24T15_35_03.016Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
       "nota": "Régua da ANA 83860000 ILHOTA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO BAIXO, não crista: é a MÉDIA do dia — neste período a estação não tem as leituras das 07h/17h no HidroWeb, e a média de um dia de cheia fica bem abaixo da crista. Um dos 5 maiores eventos da série (1927–1988). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
       "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte. Ilhota tem mais duas estações da ANA (83859998 Montante 1987–1989, 83870000 Jusante 1989–2007, com 11,52 m em 30/05/1992) que ficam FORA: são outros zeros, e misturá-los numa cidade só faria a série saltar sem cheia."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2024-05-19",
+      "hora": "13:00",
+      "pico_m": 8.47,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 006/2024 (ed. 62, SDE/SC), Tabela 1 \"Níveis máximos atingidos nos municípios das Bacias dos rios Itajaí, Tijucas e Uruguai\", p. 16 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/Diretoria%20de%20Recursos%20Hidricos/Relatorios/Boletim_Hidrometeorologico_62.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_006_2024_maio.pdf",
+      "nota": "Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2023-11-03",
+      "hora": "21:00",
+      "pico_m": 7.61,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 011/2023 (SDE/SC), Tabela 3 \"Níveis máximos registrados nos municípios das bacias do Vale do Itajaí\", p. 18 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_011_2023.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_011_2023_novembro.pdf",
+      "nota": "Rio Benedito. Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "vidal-ramos",
+      "data": "2023-11-17",
+      "hora": "08:00",
+      "pico_m": 4.86,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 011/2023 (SDE/SC), Tabela 3 \"Níveis máximos registrados nos municípios das bacias do Vale do Itajaí\", p. 18 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_011_2023.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_011_2023_novembro.pdf",
+      "nota": "Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "vidal-ramos",
+      "data": "2024-05-18",
+      "hora": "22:00",
+      "pico_m": 3.43,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 006/2024 (ed. 62, SDE/SC), Tabela 1 \"Níveis máximos atingidos nos municípios das Bacias dos rios Itajaí, Tijucas e Uruguai\", p. 16 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/Diretoria%20de%20Recursos%20Hidricos/Relatorios/Boletim_Hidrometeorologico_62.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_006_2024_maio.pdf",
+      "nota": "O boletim classifica o nível como \"Atenção\". Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "lontras",
+      "data": "2024-05-19",
+      "hora": "09:00",
+      "pico_m": 7.09,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 006/2024 (ed. 62, SDE/SC), Tabela 1 \"Níveis máximos atingidos nos municípios das Bacias dos rios Itajaí, Tijucas e Uruguai\", p. 16 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/Diretoria%20de%20Recursos%20Hidricos/Relatorios/Boletim_Hidrometeorologico_62.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_006_2024_maio.pdf",
+      "nota": "Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "1992-05-28",
+      "pico_m": 9.25,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Maior cheia do registro; o texto do plano destaca \"maio de 1992 (9,25 metros)\". Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2008-11-12",
+      "pico_m": 6.43,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2008-11-22",
+      "pico_m": 7.94,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2009-09-28",
+      "pico_m": 6.42,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2010-04-26",
+      "pico_m": 6.98,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2010-05-08",
+      "pico_m": 6.19,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2011-02-14",
+      "pico_m": 6.18,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2011-03-11",
+      "pico_m": 7.27,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2011-08-30",
+      "pico_m": 6.5,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2011-09-08",
+      "pico_m": 7.73,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2014-06-08",
+      "pico_m": 8.96,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa.",
+      "pendencia": "Dia da crista: a tabela diz 08/06/2014, mas o registro do Anexo I (pp. 49–50) começa às 18:30 de 08/06 e os 8,96 m aparecem às 00:45, depois da meia-noite — provavelmente madrugada de 09/06. Data da tabela mantida."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2015-10-22",
+      "hora": "22:45",
+      "pico_m": 7.69,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa. Hora do Anexo I (p. 51): o registro começa às 08:00 de 22/10 e chega aos 7,69 m às 22:45."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "rio-dos-cedros",
+      "data": "2021-01-21",
+      "hora": "15:00",
+      "pico_m": 6.49,
+      "confianca": "baixa",
+      "fonte": "PLANCON de Rio dos Cedros, versão 1.07, tabela \"Enchentes — Nível do Rio dos Cedros (metros)\", p. 9, com o registro detalhado no Anexo I, pp. 40–52 (https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/PLANCON_Rio_dos_Cedros_original.pdf",
+      "data_na_fonte": "2020-01-20",
+      "nota": "Nível da tabela de enchentes do PLANCON municipal. A tabela não nomeia a régua; o mesmo plano monitora o rio na sede da prefeitura e fixa as cotas de 4,50/5,00 m, então é provável — não provado — que seja a mesma régua das cotas em estacoes.json. Por isso confiança baixa. DATA: a tabela da p. 9 diz 20/01/2020, mas o Anexo I (p. 52) tem o título \"20/01/2021 – 6,49\" e o registro corre de 20/01/2021 23:45 a 21/01/2021, com 6,49 m às 15:00. A ANA 83677000 (Timbó Novo, rio vizinho) tem um dos maiores eventos da série em 21/01/2021. Adotado 21/01/2021; o ano da tabela fica em data_na_fonte."
     }
   ]
 }

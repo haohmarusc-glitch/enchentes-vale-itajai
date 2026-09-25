@@ -2221,11 +2221,13 @@ class TestContagemDasReferencias(unittest.TestCase):
         # todos sem régua declarada na fonte — 276 → 290, 136 → 150.
         # 24/09/2026, depois: os 5 maiores da ANA em Ituporanga, Ibirama, Apiúna
         # e Ilhota (decisão do Jefferson), no zero da ANA — 290 → 310, 150 → 170.
-        self.assertEqual(len(self.ev), 310)
+        # 25/09/2026: 13 da tabela do PLANCON de Rio dos Cedros e 5 máximos dos
+        # boletins estaduais (SDE/SC), sem régua declarada — 310 → 328, 170 → 188.
+        self.assertEqual(len(self.ev), 328)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 170)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 242)
+        self.assertEqual(refs["None"], 188)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 260)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

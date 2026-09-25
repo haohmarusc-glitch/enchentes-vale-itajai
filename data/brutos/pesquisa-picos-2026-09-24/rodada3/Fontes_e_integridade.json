@@ -1,0 +1,26 @@
+[
+  {
+    "arquivo": "originais/Boletim_SDE_SC_010_2023_outubro.pdf",
+    "url": "https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_010_2023.pdf",
+    "sha256": "40b3219b1c766906c7c74ab059f94548dda13dadb8e3dadcb3bc34fa5c5ec55a",
+    "bytes": 5762699
+  },
+  {
+    "arquivo": "originais/Boletim_SDE_SC_011_2023_novembro.pdf",
+    "url": "https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_011_2023.pdf",
+    "sha256": "1203a4e99721dd6de0f7a25fba15dfe057a20bb9aee3d264a44b10b858963fd9",
+    "bytes": 4162257
+  },
+  {
+    "arquivo": "originais/Boletim_SDE_SC_006_2024_maio.pdf",
+    "url": "https://www.aguas.sc.gov.br/jsmallfib_top/Diretoria%20de%20Recursos%20Hidricos/Relatorios/Boletim_Hidrometeorologico_62.pdf",
+    "sha256": "d0f9fcdf95a1153612b03010312ac9579ebc0a0b3856a7543f1cda3e18a34fef",
+    "bytes": 5462053
+  },
+  {
+    "arquivo": "originais/PLANCON_Rio_dos_Cedros_original.pdf",
+    "url": "https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/2056430_plano_de_contingencia_versao_107.pdf",
+    "sha256": "fdefc2d7e0368fd8b8b9f33d607509e863f6cccb22cf06412eec112924dcdc0a",
+    "bytes": 4000830
+  }
+]
