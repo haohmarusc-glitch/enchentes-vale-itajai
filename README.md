@@ -477,6 +477,8 @@ o projeto.
 
 ## Pendências
 
+- [x] **Autorizar e-mail no site com um comando (25/09/2026).** `python3 scripts/autorizar_email.py fulano@gmail.com` (e `--revogar`, `--listar`, `--renomear Autorizados`) mexe na política do Cloudflare Access pela API, muda só a lista de e-mails e relê para conferir; recusa tirar o último e-mail. Precisa de `CLOUDFLARE_API_TOKEN` (só *Access: Apps and Policies — Edit*) e `CLOUDFLARE_ACCOUNT_ID` no `.env`. 17 testes contra uma Cloudflare de mentira; **não rodado contra a conta real** (a API é bloqueada neste ambiente) — na primeira vez, `--listar` e comparar com o painel. Ver `docs/PUBLICACAO-E-ACESSO.md`.
+
 - [x] **Fonte da chuva equivalente:** a ficha das barragens identifica armazenamento e área do **JICA 2011, volume II**, distinguindo a equivalência das capacidades e áreas alternativas exibidas ao lado.
 
 - **Chegada Blumenau → Itajaí e maré (19/09/2026):** a pesquisa recuperou o resumo
