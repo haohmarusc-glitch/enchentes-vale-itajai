@@ -34,14 +34,14 @@ test('cidade sem dados diz que não tem', () => {
   assert.doesNotMatch(x.texto, /\d+,\d+ m/)
 })
 
-test('Itajaí sem pico: diz por quê e responde pelo impacto do Atlas, sem metro', () => {
+test('Itajaí: lista os picos por estação e não elege a maior (tese da UEM, 25/09/2026)', () => {
   const x = r('qual maior cheia de itajai ?')
   assert.equal(x.intencao, 'maiores_cheias')
   assert.match(x.texto, /onze réguas/)
-  assert.match(x.texto, /23\/11\/2008.*18\.208 desabrigados/)
-  assert.match(x.texto, /09\/09\/2011/)
-  assert.match(x.texto, /não a altura do rio/)
-  assert.doesNotMatch(x.texto, /\d+,\d+ m\b/)
+  assert.match(x.texto, /09\/09\/2011, Rio Itajaí-Açu: 3,2 m/)
+  assert.match(x.texto, /09\/09\/2011, Rio Itajaí-Mirim: 4,29 m/)
+  assert.match(x.texto, /não se comparam/)
+  assert.doesNotMatch(x.texto, /A maior cheia registrada de Itajaí/)
 })
 
 test('chuva de 2008 mostra sensor sem dado em vez de zero', () => {

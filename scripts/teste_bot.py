@@ -2077,13 +2077,15 @@ class TestCheiasAntigas(unittest.TestCase):
                   if "do nível de agora" in x]
         self.assertLessEqual(len(linhas), 2 * 2 + 1)
 
-    def test_itajai_diz_que_nao_tem_registro(self):
-        """Zero registros de Itajaí em `enchentes.json`. Sumir em silêncio daria
-        a mesma tela de uma cidade cuja referência não foi conferida, e são
-        coisas diferentes."""
+    def test_itajai_diz_por_que_os_picos_nao_entram(self):
+        """Até 25/09/2026 eram zero registros de Itajaí e o pino dizia isso. Com os
+        dois picos de set/2011 da tese da UEM (estações sem DC-xx de hoje, sem
+        `referencia`), o pino não pode comparar — e tem de dizer por quê, não
+        sumir e nem voltar a dizer que não há registro."""
         t = self.pino("itajai", DC06, "itajai-mirim", 0.48, -26.9217, -48.6858)
-        self.assertIn("não temos cheia registrada de Itajaí", t)
+        self.assertNotIn("não temos cheia registrada de Itajaí", t)
         self.assertNotIn("Cheias já registradas", t)
+        self.assertIn("sem referência conferida", t)
 
     def test_a_falta_do_registro_vem_antes_do_motivo_das_onze_reguas(self):
         """VISTO EM CAMPO no pino de Itajaí (19/09/2026). A cidade cai nos dois
@@ -2101,12 +2103,29 @@ class TestCheiasAntigas(unittest.TestCase):
             {"estacao": t, "rio": "itajai-mirim", "cidade": "itajai", "nivel_m": n,
              "medido_em": "2026-08-30T18:20:00"}
             for t, n in [(DC06, 0.40), (DC10, 4.06)]]}
-        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
-                 le_json("enchentes.json"))
+        # Desde 25/09/2026 Itajaí TEM registro (tese da UEM, set/2011); a regra de
+        # ordem continua valendo para cidade sem nenhum, então o teste a exercita
+        # tirando os de Itajaí do cadastro.
+        ench = le_json("enchentes.json")
+        ench["eventos"] = [r for r in ench["eventos"] if r["cidade"] != "itajai"]
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"), ench)
         cidade = [c for c in b.cidades() if c["id"] == "itajai"][0]
         t = "".join(linhas_das_cheias(b, cidade, AGORA))
         self.assertIn("não temos cheia registrada de Itajaí", t)
         self.assertNotIn("réguas com zeros diferentes", t)
+
+    def test_com_registro_o_motivo_das_onze_reguas_volta(self):
+        """A outra metade da mesma regra: com registro, aí sim a régua decide."""
+        u = {"fonte_itajai_ok": True, "leituras": [
+            {"estacao": t, "rio": "itajai-mirim", "cidade": "itajai", "nivel_m": n,
+             "medido_em": "2026-08-30T18:20:00"}
+            for t, n in [(DC06, 0.40), (DC10, 4.06)]]}
+        b = Base(u, le_json("estacoes.json"), le_json("transito.json"),
+                 le_json("enchentes.json"))
+        cidade = [c for c in b.cidades() if c["id"] == "itajai"][0]
+        t = "".join(linhas_das_cheias(b, cidade, AGORA))
+        self.assertNotIn("não temos cheia registrada", t)
+        self.assertIn("réguas com zeros diferentes", t)
 
     def test_com_registro_o_motivo_das_varias_reguas_volta_a_valer(self):
         """A ordem não engole o outro motivo: onde HÁ cheia registrada e a
@@ -2232,11 +2251,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 25/09/2026, quarta rodada: Timbó 1992 e 2021 municipais no lugar dos da
         # ANA, e Taió e Botuverá (dez/2023), Trombudo Central 1983, Botuverá e
         # Vidal Ramos (set/2026) — 360 → 365, 220 → 225.
-        self.assertEqual(len(self.ev), 365)
+        # 25/09/2026, quinta rodada: Rio dos Cedros nov/2022 (PLANCON 10.7) e Itajaí
+        # set/2011 no Açu e no Mirim (tese da UEM, decisão do Jefferson) — 365 → 368,
+        # 225 → 228.
+        self.assertEqual(len(self.ev), 368)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 225)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 297)
+        self.assertEqual(refs["None"], 228)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 300)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
@@ -2582,13 +2604,16 @@ class TestDivergenciasDaTerceiraAuditoria(unittest.TestCase):
         self.assertIn("NÃO adotar", div["nao_adotada"]["_regra"])
         self.assertIn("não conferido por mim", div["_estado"].lower())
 
-    def test_itajai_continua_sem_registro_de_cheia(self):
-        """As oito leituras de 10/09/2011 são de UM horário, não o pico, e a
-        identidade com as DC de hoje é por nome. Entram só por decisão do
-        Jefferson — este teste cai no dia em que entrarem, e é para cair, para
-        a nota do README ser reescrita junto."""
+    def test_itajai_so_tem_os_maximos_da_tese(self):
+        """Caiu de propósito em 25/09/2026, quando o Jefferson decidiu a entrada
+        dos máximos de set/2011 da tese da UEM (estações nº 1 e nº 3; a nº 2 fica
+        fora, a tese se contradiz). As oito leituras de 10/09/2011 13h30 seguem
+        FORA: são de UM horário, não o pico. Trava que só esses dois entraram."""
         ev = le_json("enchentes.json")["eventos"]
-        self.assertEqual([r for r in ev if r.get("cidade") == "itajai"], [])
+        it = sorted((r["rio"], r["data"], r["pico_m"], r["confianca"])
+                    for r in ev if r.get("cidade") == "itajai")
+        self.assertEqual(it, [("itajai-acu", "2011-09-09", 3.2, "baixa"),
+                              ("itajai-mirim", "2011-09-09", 4.29, "baixa")])
 
     def test_rio_do_sul_tem_1983_e_2013_pela_tabela_municipal(self):
         """Até 19/09/2026 este teste travava a AUSÊNCIA de 1983 e 2013, e caiu
