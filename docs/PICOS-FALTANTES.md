@@ -100,7 +100,7 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
-Versão 3, de 25/09/2026, escrita depois da terceira rodada (§10). O que funcionou foi receber **os
+Versão 3.1, de 25/09/2026, escrita depois da terceira rodada (§10) e da remoção de Botuverá. O que funcionou foi receber **os
 arquivos originais** (PDF ou página salva): sem eles nada entra. Os boletins da SDE/SC com a tabela
 "Níveis máximos atingidos" foram a fonte mais produtiva até agora.
 
@@ -126,19 +126,19 @@ PRIORIDADE 1 — cidades sem NENHUM pico no meu cadastro:
    out/2023, nov/2023, mai/2024. O Ribeirão Braço São Paulo é outro rio e não serve.
 3. Guabiruba: rio Guabiruba. Cheias: nov/2008, mar/2011, set/2011, out e nov/2023. A estação de
    Guabiruba nos boletins de Brusque está em cota ortométrica (~25 m) e não serve.
+4. Botuverá (Itajaí-Mirim). Os 8,61 m de 17/11/2023 que o prefeito citou
+   foram descartados, porque são o máximo da estação de BRUSQUE no boletim estadual. Quero o pico
+   de Botuverá pela Defesa Civil do município, em nov/2008, set/2011, out/2023 e nov/2023.
 
 PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos eventos de inundação":
 
-4. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023
+5. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023
    (outubro), 011/2023 (novembro) e 006/2024 (maio). Quero TODAS as outras edições de 2020 a 2026
    que tenham essa tabela para o Vale do Itajaí, especialmente as de eventos de mai/2022, jan/2021,
    jun/2017, out/2015 e set/2026. Mande o PDF de cada uma.
 
 PRIORIDADE 3 — cidades com poucos picos:
 
-5. Botuverá (Itajaí-Mirim): hoje não tenho NENHUM pico. Os 8,61 m de 17/11/2023 que o prefeito citou
-   foram descartados, porque são o máximo da estação de BRUSQUE no boletim estadual. Quero o pico
-   de Botuverá pela Defesa Civil do município, em nov/2008, set/2011, out/2023 e nov/2023.
 6. Lontras (Itajaí-Açu; só tenho mai/2024), Vidal Ramos (Itajaí-Mirim; só tenho nov/2023 e mai/2024)
    e Trombudo Central (rio Trombudo; só tenho 17/11/2023). Cheias: 1983, 1984, 2001, 2008, 2011, 2013,
    2015, 2017, mai/2022 e out/2023. Para Trombudo, 1983 aparece como 6,22 m na ND+, mas preciso do original.
