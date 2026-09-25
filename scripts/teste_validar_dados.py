@@ -369,6 +369,9 @@ class MesesPareados(unittest.TestCase):
         # Jefferson): 6,99 m às 17h de 29/08/1946, e Blumenau só tem 02/02/1946.
         # A série de Blumenau não traz todas as cheias médias; nada foi corrigido.
         ("apiuna 1946-08-29", "blumenau"),
+        # Entrou em 25/09/2026: Lontras só tem o máximo de mai/2024 do boletim estadual
+        # (SDE 006/2024). A lista dela é de um evento só; nada foi corrigido.
+        ("rio-do-sul 2024-07-12", "lontras"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):

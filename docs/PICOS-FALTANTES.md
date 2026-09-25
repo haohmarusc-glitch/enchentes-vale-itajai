@@ -11,7 +11,7 @@ outra IA** (ChatGPT, Gemini, Perplexity…) e buscar os números.
 
 ## 1. O que já temos
 
-Atualizado em 24/09/2026, depois dos PRs #410 e #411: **310 registros em 14 cidades**.
+Atualizado em 25/09/2026, depois da terceira rodada (§10): **328 registros em 16 cidades**.
 
 | Cidade | Rio | Registros | Régua |
 |---|---|---|---|
@@ -20,11 +20,13 @@ Atualizado em 24/09/2026, depois dos PRs #410 e #411: **310 registros em 14 cida
 | Gaspar | Itajaí-Açu | 48 | municipal |
 | Brusque | Itajaí-Mirim | 28 | municipal (5 da ANA) |
 | Indaial | Itajaí-Açu | 16 | municipal |
-| Taió | Itajaí do Oeste | 10 | municipal |
 | Ituporanga · Ibirama · Apiúna · Ilhota | Açu e afluentes | 5 cada | **só ANA** (zero próprio) |
-| Timbó | Benedito | 3 | não declarada |
-| Trombudo Central · Botuverá · Rio dos Cedros | — | 1 cada | não declarada |
-| **Itajaí · Ascurra · Lontras · Vidal Ramos · Guabiruba** | — | **0** | — |
+| Rio dos Cedros | Rio dos Cedros | 14 | não declarada (PLANCON) |
+| Taió | Itajaí do Oeste | +1 (11 no total) | municipal / DCSC |
+| Timbó | Benedito | 4 | não declarada / DCSC |
+| Vidal Ramos | Itajaí-Mirim | 2 | estação DCSC |
+| Trombudo Central · Botuverá · Lontras | — | 1 cada | não declarada / DCSC |
+| **Itajaí · Ascurra · Guabiruba** | — | **0** | — |
 
 A seção 2 abaixo é o levantamento original de 24/09 e continua valendo como referência de régua e
 de datas-alvo. **O que ainda falta está no prompt da seção 6.**
@@ -242,6 +244,41 @@ Outros achados: 83145140 é **Barragem Sul / Ituporanga Jusante**, não a régua
 PLANCON de Ilhota traz uma tabela com os números de Blumenau (15,34/15,46/12,60). As leituras
 de Apiúna em 04–05/05/2022 não dizem a unidade. Nenhum desses achados virou registro.
 
+## 10. Terceira rodada (25/09/2026), conferida nos originais
+
+A pesquisa externa trouxe os PDFs, e os quatro estão em `data/brutos/pesquisa-picos-2026-09-24/rodada3/`
+com SHA-256. Cada número foi lido de novo no PDF. A tabela de outubro/2023 é imagem e foi lida
+renderizando a página.
+
+**Entraram 18 registros, todos `confianca: baixa`:**
+
+| Cidade | Data | Pico | Fonte |
+|---|---|---|---|
+| Rio dos Cedros | 13 cheias, 28/05/1992 a 21/01/2021 | 9,25 (1992) · 8,96 (2014) · 7,94 (2008) · 7,73 (2011)… | PLANCON municipal v1.07, p. 9 + Anexo I |
+| Taió | 19/05/2024 13h | 8,47 m | Boletim SDE 006/2024 |
+| Timbó | 03/11/2023 21h | 7,61 m | Boletim SDE 011/2023 |
+| Vidal Ramos | 17/11/2023 08h · 18/05/2024 22h | 4,86 · 3,43 m | Boletins SDE 011/2023 e 006/2024 |
+| Lontras | 19/05/2024 09h | 7,09 m | Boletim SDE 006/2024 |
+
+**Ajustes em registros que já existiam:**
+- **Taió 10,37 m:** a linha que estava sem dia é de 17/11/2023, às 21h, pelo boletim de novembro. A ANA leu 10,30 m às 17h do mesmo dia. A pendência foi fechada.
+- **Taió 09/10/2023:** o boletim dá 12,39 m às 13h e entrou em `divergencias`. O valor adotado continua 12,40 m.
+- **Timbó 12/10/2023 e Trombudo Central 17/11/2023:** os dois foram confirmados pelos boletins. Em Trombudo, o boletim dá 18h e a prefeitura 17h.
+- **Botuverá 8,61 m:** o boletim de novembro dá exatamente 8,61 m como máximo da estação de **Brusque** em 17/11/2023, e Botuverá não aparece na tabela. O registro ganhou uma `pendencia`, e decidir se ele sai é do Jefferson.
+
+**Rio dos Cedros, 2020 ou 2021:** a tabela diz 20/01/2020, e o anexo diz 20–21/01/2021, com a
+crista às 15h de 21/01. A ANA de Timbó tem um grande evento em 21/01/2021. Ficou 2021, e o ano da
+tabela está em `data_na_fonte`. Em 2014, a tabela diz 08/06, mas a crista do anexo cai depois da
+meia-noite. A data da tabela foi mantida, com pendência.
+
+**Ficou fora:**
+- **Ituporanga, pelo boletim:** 6,92 m em out/2023, 5,25 m em nov/2023 e 3,54 m em mai/2024. A estação
+  do boletim não é a série da ANA do cadastro: em out/2023 a ANA marca 5,10 m, e em nov/2023, 6,88 m, a
+  ordem inversa. Misturar os dois zeros faria a série saltar sem cheia.
+- **Sem original aberto:** Trombudo Central 1983 (6,22 m), Timbó 1992 (10,42 m) e 2011 (10,01 m),
+  Ituporanga 2017, e Botuverá e Vidal Ramos em set/2026.
+- **Leituras que não são pico:** Itajaí, Ascurra e Apiúna.
+
 ## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
@@ -249,4 +286,6 @@ de Apiúna em 04–05/05/2022 não dizem a unidade. Nenhum desses achados virou 
 - [x] Segunda rodada conferida nos originais: 14 registros (§8).
 - [ ] Itajaí: pico por régua — boletim final da Defesa Civil de 2011, ou relatório com máximo por estação.
 - [x] Séries da ANA baixadas: picos extraídos por `scripts/picos_ana_vale.py`, e os 5 maiores de Ituporanga, Ibirama, Apiúna e Ilhota entraram marcados como régua da ANA (confiança baixa) — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
-- [ ] Ascurra, Lontras, Vidal Ramos, Guabiruba e Itajaí: ainda sem pico (sem série da ANA útil).
+- [x] Terceira rodada conferida nos originais: 18 registros (§10).
+- [ ] Itajaí, Ascurra e Guabiruba: ainda sem pico.
+- [ ] Botuverá 8,61 m: confirmar com a Defesa Civil de Botuverá (suspeita de ser o número de Brusque).

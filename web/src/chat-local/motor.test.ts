@@ -29,7 +29,7 @@ test('maior cheia de Rio do Sul', () => {
 test('contagem acima de nível', () => assert.match(r('Quantas cheias passaram de 10 m em Rio do Sul?').texto, /14 pico/))
 
 test('cidade sem dados diz que não tem', () => {
-  const x = r('qual a maior cheia de Lontras?')
+  const x = r('qual a maior cheia de Guabiruba?')
   assert.match(x.texto, /não tem o nível do rio/)
   assert.doesNotMatch(x.texto, /\d+,\d+ m/)
 })

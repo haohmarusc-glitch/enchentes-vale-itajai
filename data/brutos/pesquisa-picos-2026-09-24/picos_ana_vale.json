@@ -168,15 +168,6 @@
           "diferenca_m": 0.08
         },
         {
-          "cadastro_data": "2023-11",
-          "cadastro_m": 10.37,
-          "granularidade": "mes",
-          "ana_data": "2023-11-04",
-          "ana_m": 10.32,
-          "ana_origem": "17:00",
-          "diferenca_m": 0.05
-        },
-        {
           "cadastro_data": "2023-11-04",
           "cadastro_m": 10.36,
           "granularidade": "dia",
@@ -184,6 +175,24 @@
           "ana_m": 10.32,
           "ana_origem": "17:00",
           "diferenca_m": 0.04
+        },
+        {
+          "cadastro_data": "2023-11-17",
+          "cadastro_m": 10.37,
+          "granularidade": "dia",
+          "ana_data": "2023-11-17",
+          "ana_m": 10.3,
+          "ana_origem": "17:00",
+          "diferenca_m": 0.07
+        },
+        {
+          "cadastro_data": "2024-05-19",
+          "cadastro_m": 8.47,
+          "granularidade": "dia",
+          "ana_data": "2024-05-19",
+          "ana_m": 8.46,
+          "ana_origem": "17:00",
+          "diferenca_m": 0.01
         }
       ]
     },
@@ -764,6 +773,15 @@
           "ana_m": 7.3,
           "ana_origem": "17:00",
           "diferenca_m": 0.16
+        },
+        {
+          "cadastro_data": "2023-11-03",
+          "cadastro_m": 7.61,
+          "granularidade": "dia",
+          "ana_data": "2023-11-03",
+          "ana_m": 7.46,
+          "ana_origem": "17:00",
+          "diferenca_m": 0.15
         }
       ]
     },
