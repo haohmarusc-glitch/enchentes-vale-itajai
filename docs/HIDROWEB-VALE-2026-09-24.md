@@ -56,7 +56,8 @@ Brusque (22/09/2026), com uma diferença: lá o zero da ANA tinha sido provado i
 - **Taió e Timbó (atualizado em 25/09/2026):** por decisão do Jefferson, entraram as cheias da ANA
   que a série municipal **não tem**. São 7 em Taió (1931, 1933, 1954, 1957, 1963, 1984 e abr/2010) e 26 em
   Timbó, com as duas estações, que têm o mesmo zero: 0 cm de diferença nos 31 dias comuns de 1998–1999.
-  Todas estão marcadas como régua da ANA, com confiança baixa. Onde já havia registro municipal do mesmo
+  Todas estão marcadas como régua da ANA, com confiança baixa. Depois, Timbó 29/05/1992 saiu, porque
+  entrou o municipal de 1992 (10,42 m, régua da Rua Equador), e a ANA ficou nas divergências dele. Onde já havia registro municipal do mesmo
   evento, a ANA ficou fora: foram 12 casos, entre eles Taió jul/1983 (registro "1983"), Taió set/2013
   (provavelmente o "junho de 2013" da tabela) e Timbó jun/2014 (registro "2014"). A decisão (b) continua
   valendo para esses eventos, porque o valor adotado é o municipal.

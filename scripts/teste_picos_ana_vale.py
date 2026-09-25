@@ -79,7 +79,9 @@ class Derivado(unittest.TestCase):
         der = {e["codigo"]: e for e in json.loads(pv.SAIDA.read_text(encoding="utf-8"))["estacoes"]}
         pulados = {("taio", "1983-07-12"), ("taio", "2023-10-09"), ("taio", "2015-10-23"), ("taio", "2011-09-10"),
                    ("taio", "2023-11-04"), ("taio", "2023-11-17"), ("taio", "2013-09-23"), ("taio", "2022-05-05"),
-                   ("timbo", "2014-06-09"), ("timbo", "2011-09-08"), ("timbo", "2023-11-03"), ("timbo", "2023-10-12")}
+                   ("timbo", "2014-06-09"), ("timbo", "2011-09-08"), ("timbo", "2023-11-03"), ("timbo", "2023-10-12"),
+                   ("timbo", "1992-05-29"),  # saiu quando o municipal de 1992 (10,42 m, JMV) entrou
+                   ("timbo", "2021-01-21")}  # idem, municipal 7,62 m às 20h (OCP News)
         esperado = [(der[c]["cidade"], ev["data"], round(ev["cm"] / 100, 2))
                     for c in ("83250000", "83440000", "83500000", "83860000") for ev in der[c]["eventos"][:5]]
         esperado += [(der[c]["cidade"], ev["data"], round(ev["cm"] / 100, 2))

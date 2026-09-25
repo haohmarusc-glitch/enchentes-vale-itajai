@@ -1891,7 +1891,13 @@
       "data": "2011-09-09",
       "pico_m": 9.86,
       "confianca": "alta",
-      "fonte": "Artigo ABRH (CEOPS/FURB)"
+      "fonte": "Artigo ABRH (CEOPS/FURB)",
+      "divergencias": [
+        {
+          "pico_m": 10.01,
+          "fonte": "Jornal do Médio Vale, 13/09/2011, régua dos fundos da Rua Equador — bruto data/brutos/pesquisa-picos-2026-09-24/rodada4/timbo_1992_2011.html. A mesma notícia diz que \"a medida exata do rio Benedito (no encontro com o Cedros) será revista\"; os 9,86 m adotados são os que a Defesa Civil cita em 2023."
+        }
+      ]
     },
     {
       "rio": "itajai-mirim",
@@ -3622,17 +3628,6 @@
     {
       "rio": "itajai-acu",
       "cidade": "timbo",
-      "data": "1992-05-29",
-      "pico_m": 9.1,
-      "confianca": "baixa",
-      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
-      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
-      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
-      "hora": "17:00"
-    },
-    {
-      "rio": "itajai-acu",
-      "cidade": "timbo",
       "data": "2008-11-23",
       "pico_m": 8.15,
       "confianca": "baixa",
@@ -3646,17 +3641,6 @@
       "cidade": "timbo",
       "data": "2001-10-01",
       "pico_m": 7.95,
-      "confianca": "baixa",
-      "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
-      "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
-      "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
-      "hora": "17:00"
-    },
-    {
-      "rio": "itajai-acu",
-      "cidade": "timbo",
-      "data": "2021-01-21",
-      "pico_m": 7.59,
       "confianca": "baixa",
       "fonte": "ANA/HidroWeb, estação convencional 83677000 TIMBÓ NOVO, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83677000_TXT_2026-09-24T15_31_28.345Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
       "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
@@ -3739,6 +3723,85 @@
       "nota": "Régua da ANA 83677000 TIMBÓ NOVO (rio Benedito), NÃO a da Defesa Civil. PISO, não crista: é a leitura das 07h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. As duas estações da ANA em Timbó (83680000, 1929–1999, e 83677000 Timbó Novo, desde 1989) têm o mesmo zero (0 cm de diferença nos 31 dias comuns). Nas cheias de 2023 a régua municipal ficou ~0,15 m acima da leitura das 17h da ANA, o esperado para crista × leitura — mas em 2011 a diferença foi 1,36 m (sem leitura no dia da crista). Zero municipal = ANA não provado. Entrou por decisão do Jefferson em 25/09/2026: só as cheias que a série municipal não tem, revendo a decisão (b) de 09/09/2026 para esses eventos.",
       "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não provado igual ao municipal: não comparar este número com as cotas da Defesa Civil nem com os registros municipais da cidade.",
       "hora": "07:00"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "1992",
+      "pico_m": 10.42,
+      "confianca": "media",
+      "fonte": "Jornal do Médio Vale, \"Cheia de 2011 foi a maior de todas no Rio Benedito\", 13/09/2011 (https://jornaldomediovale.com.br/geral/cheia_de_2011_foi_a_maior_de_todas_no_rio_benedito-112538/) — trecho: \"em 1992 a régua instalada nos fundos da rua Equador registrou a marca de 10,42 metros, em 2011 o nível atingiu 10,01 metros\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/timbo_1992_2011.html",
+      "nota": "Régua dos fundos da Rua Equador, a mesma de estacoes.json para Timbó — primeiro pico de Timbó com a régua declarada na fonte. Só o ano: a notícia não dá o dia. A série da ANA tem a cheia em 29/05/1992, e o PLANCON de Rio dos Cedros em 28/05/1992 — não preencher o dia por isso.",
+      "divergencias": [
+        {
+          "pico_m": 9.1,
+          "fonte": "ANA/HidroWeb 83677000 TIMBÓ NOVO, leitura das 17:00 de 29/05/1992 (piso da crista, zero da ANA) — era registro próprio de 25/09/2026 e passou a divergência quando o municipal entrou (regra: o municipal prevalece no mesmo evento)."
+        }
+      ]
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "taio",
+      "data": "2023-12-02",
+      "hora": "05:00",
+      "pico_m": 6.54,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 001/2024 (ed. 57, SDE/SC), Tabela 1 \"Níveis máximos registrados nos municípios das bacias hidrográficas do Planalto Sul e Vale do Itajaí\", dezembro/2023, p. 14 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_001_2024.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/Boletim_Hidrometeorologico_001_2024.pdf",
+      "nota": "O boletim classifica o nível como \"Atenção\". Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "botuvera",
+      "data": "2023-12-03",
+      "hora": "23:00",
+      "pico_m": 3.58,
+      "confianca": "baixa",
+      "fonte": "Boletim Hidrometeorológico 001/2024 (ed. 57, SDE/SC), Tabela 1 \"Níveis máximos registrados nos municípios das bacias hidrográficas do Planalto Sul e Vale do Itajaí\", dezembro/2023, p. 14 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_001_2024.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/Boletim_Hidrometeorologico_001_2024.pdf",
+      "nota": "O boletim classifica o nível como \"Emergência\" — a cota de emergência é da estação estadual, não de uma régua municipal conhecida. Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua. Por isso confiança baixa, mesmo com a fonte oficial. É o primeiro pico de Botuverá no cadastro depois da remoção dos 8,61 m (que eram de Brusque)."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "trombudo-central",
+      "data": "1983",
+      "pico_m": 6.22,
+      "confianca": "baixa",
+      "fonte": "ND+, \"'Atingiu metade da cidade', diz prefeita de Trombudo Central sobre maior enchente da história\", 21/11/2023 (https://ndmais.com.br/tempo/atingiu-metade-da-cidade-diz-prefeita-de-trombudo-central-sobre-maior-enchente-da-historia/) — trecho: \"A maior enchente pela qual Trombudo Central já havia passado foi no ano de 1983, quando o nível do rio Trombudo chegou a 6,22 metros.\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/trombudo_1983.html",
+      "nota": "Recorde anterior a 2023, segundo a reportagem. Só o ano, sem régua declarada; não preencher o mês pela cheia de jul/1983 do Vale. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "botuvera",
+      "data": "2026-09-01",
+      "hora": "02:00",
+      "pico_m": 5.85,
+      "confianca": "baixa",
+      "fonte": "ND+, \"Avenida é interditada após rio atingir 5,1 metros acima do nível e sair da calha em cidade de SC\", 01/09/2026 (https://ndmais.com.br/tempo/avenida-e-interditada-apos-rio-atingir-51-metros-acima-do-nivel-e-sair-da-calha-em-cidade-de-sc/) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/botuvera_vidal_2026.html — trecho: \"Já em Botuverá, por volta das 2h, o pico foi de 5,85 metros. Os dados foram utilizados pela Defesa Civil de Brusque para projetar a elevação do rio no município.\"",
+      "nota": "Hora \"por volta das 2h\". Número divulgado pela Defesa Civil de Brusque sobre a estação a montante; régua não declarada. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "vidal-ramos",
+      "data": "2026-09-01",
+      "pico_m": 3.87,
+      "confianca": "baixa",
+      "fonte": "ND+, \"Avenida é interditada após rio atingir 5,1 metros acima do nível e sair da calha em cidade de SC\", 01/09/2026 (https://ndmais.com.br/tempo/avenida-e-interditada-apos-rio-atingir-51-metros-acima-do-nivel-e-sair-da-calha-em-cidade-de-sc/) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/botuvera_vidal_2026.html — trecho: \"Durante a madrugada, o Rio Itajaí-Mirim registrou novos picos em municípios do Alto Vale. Em Vidal Ramos, o nível chegou a 3,87 metros.\"",
+      "nota": "Na madrugada, sem hora. Régua não declarada. Por isso confiança baixa."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "timbo",
+      "data": "2021-01-21",
+      "hora": "20:00",
+      "pico_m": 7.62,
+      "confianca": "baixa",
+      "fonte": "OCP News, \"Mais de mil pessoas foram diretamente afetadas pela enchente em Timbó, afirma Defesa Civil\", 25/01/2021 (https://ocp.news/seguranca/mais-de-mil-pessoas-foram-diretamente-afetadas-pela-enchente-em-timbo-afirma-defesa-civil) — trecho: \"O pico foi registrado às 20h do mesmo dia, quando o rio chegou a 7,62 metros\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada4/timbo_2021.html",
+      "nota": "Rio Benedito, balanço da Defesa Civil de Timbó. Régua não declarada na notícia. Por isso confiança baixa.",
+      "divergencias": [
+        {
+          "pico_m": 7.59,
+          "fonte": "ANA/HidroWeb 83677000 TIMBÓ NOVO, leitura das 17:00 de 21/01/2021 (piso da crista, zero da ANA) — era registro próprio de 25/09/2026 e passou a divergência quando o municipal entrou. 7,59 m às 17h × 7,62 m às 20h: coerente com a mesma régua e a crista depois da leitura."
+        }
+      ]
     }
   ]
 }

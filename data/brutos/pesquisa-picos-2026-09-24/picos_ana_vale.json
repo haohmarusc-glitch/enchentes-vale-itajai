@@ -186,6 +186,15 @@
           "diferenca_m": 0.07
         },
         {
+          "cadastro_data": "2023-12-02",
+          "cadastro_m": 6.54,
+          "granularidade": "dia",
+          "ana_data": "2023-11-29",
+          "ana_m": 6.84,
+          "ana_origem": "07:00",
+          "diferenca_m": -0.3
+        },
+        {
           "cadastro_data": "2024-05-19",
           "cadastro_m": 8.47,
           "granularidade": "dia",
@@ -748,6 +757,15 @@
       ],
       "comparacao_com_cadastro": [
         {
+          "cadastro_data": "1992",
+          "cadastro_m": 10.42,
+          "granularidade": "ano",
+          "ana_data": "1992-05-29",
+          "ana_m": 9.1,
+          "ana_origem": "17:00",
+          "diferenca_m": 1.32
+        },
+        {
           "cadastro_data": "2011-09-09",
           "cadastro_m": 9.86,
           "granularidade": "dia",
@@ -764,6 +782,15 @@
           "ana_m": 9.0,
           "ana_origem": "07:00",
           "diferenca_m": 0.58
+        },
+        {
+          "cadastro_data": "2021-01-21",
+          "cadastro_m": 7.62,
+          "granularidade": "dia",
+          "ana_data": "2021-01-21",
+          "ana_m": 7.59,
+          "ana_origem": "17:00",
+          "diferenca_m": 0.03
         },
         {
           "cadastro_data": "2023-10-12",

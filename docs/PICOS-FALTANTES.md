@@ -23,7 +23,7 @@ Atualizado em 25/09/2026, depois da terceira rodada (§10), da remoção de Botu
 | Ituporanga · Ibirama · Apiúna · Ilhota | Açu e afluentes | 5 cada | **só ANA** (zero próprio) |
 | Rio dos Cedros | Rio dos Cedros | 14 | não declarada (PLANCON) |
 | Taió | Itajaí do Oeste | 18 | municipal / DCSC (+7 da ANA) |
-| Timbó | Benedito | 30 | não declarada / DCSC (+26 da ANA, 1935–2022) |
+| Timbó | Benedito | 30 | Rua Equador (1992) / não declarada / DCSC (+24 da ANA, 1935–2022) |
 | Vidal Ramos | Itajaí-Mirim | 2 | estação DCSC |
 | Trombudo Central · Lontras | — | 1 cada | não declarada / DCSC |
 | **Itajaí · Ascurra · Guabiruba · Botuverá** | — | **0** | — |
@@ -289,6 +289,43 @@ meia-noite. A data da tabela foi mantida, com pendência.
 - **Sem original aberto:** Trombudo Central 1983 (6,22 m), Timbó 1992 (10,42 m) e 2011 (10,01 m),
   Ituporanga 2017, e Botuverá e Vidal Ramos em set/2026.
 - **Leituras que não são pico:** Itajaí, Ascurra e Apiúna.
+
+## 11. Quarta rodada (25/09/2026), conferida nos originais
+
+Os originais chegaram em duas levas de anexos soltos e estão em `data/brutos/pesquisa-picos-2026-09-24/rodada4/`,
+junto com o relatório, o JSON de evidências, a auditoria dos 87 boletins da SDE/SC e o manifesto SHA-256.
+Todos os arquivos usados batem com o manifesto, e cada número foi lido de novo no original.
+
+**Cadastrado:**
+
+| Cidade | Data | Pico | Fonte |
+|---|---|---|---|
+| Timbó | 1992 | 10,42 m | Jornal do Médio Vale, régua dos **fundos da Rua Equador** (a de `estacoes.json`). Confiança média |
+| Timbó | 21/01/2021 20h | 7,62 m | OCP News, com balanço da Defesa Civil |
+| Taió | 02/12/2023 05h | 6,54 m | Boletim SDE 001/2024 (nível "Atenção") |
+| Botuverá | 03/12/2023 23h | 3,58 m | Boletim SDE 001/2024: primeiro pico de Botuverá desde a remoção dos 8,61 m |
+| Trombudo Central | 1983 | 6,22 m | ND+ (recorde anterior a 2023) |
+| Botuverá | 01/09/2026 ~02h | 5,85 m | ND+, dados da Defesa Civil de Brusque |
+| Vidal Ramos | 01/09/2026 madrugada | 3,87 m | ND+ |
+
+**Trocas pela regra de que o municipal prevalece:** em Timbó, os registros da ANA de 29/05/1992 (9,10 m) e
+de 21/01/2021 (7,59 m às 17h) saíram do cadastro e viraram `divergencias` dos municipais. A dupla de 2021,
+com 7,59 m às 17h na ANA e 7,62 m às 20h na régua municipal, é coerente com a mesma régua e a crista
+depois da leitura. Em Timbó 2011 também entrou uma divergência: os 10,01 m do Jornal do Médio Vale, com
+a observação de que a notícia avisava que a medida seria revista.
+
+**Conferido, mas fora do cadastro:**
+- **Ituporanga:** 3,72 m em dez/2023. É a mesma estação estadual que não bate com a série da ANA. A régua
+  municipal fica na **Ponte Vitório Sens** (primeira cota de alagamento: 3,25 m, na antiga Lanchonete São
+  Jorge, segundo a Rádio Sintonia de 17/06/2026). Isso é cadastro de régua para `estacoes.json` e fica pendente.
+- **Boletim de dez/2023:** as linhas com hora "01/12/2023 00:00" são o início da janela do mês, ou seja,
+  a cauda da cheia de novembro, e não máximos de dezembro.
+- **Duas notícias de Timbó 2014:** não trazem nível.
+
+**Ainda esperando o original:**
+- **Rio dos Cedros 27/11/2022, 7,29 m:** falta `cedros_plancon_2022.pdf`.
+- **Itajaí, set/2011, estações nº 1 a 3 da tese UEM (3,20 · 3,21 · 4,29 m):** falta
+  `tese_valdeir_itajai.pdf`, e além disso é preciso decidir a régua.
 
 ## 9. Estado
 
