@@ -2223,11 +2223,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # e Ilhota (decisão do Jefferson), no zero da ANA — 290 → 310, 150 → 170.
         # 25/09/2026: 13 da tabela do PLANCON de Rio dos Cedros e 5 máximos dos
         # boletins estaduais (SDE/SC), sem régua declarada — 310 → 328, 170 → 188.
-        self.assertEqual(len(self.ev), 328)
+        # 25/09/2026, depois: saiu Botuverá 8,61 m de 17/11/2023 (decisão do
+        # Jefferson) — era o máximo da estação de Brusque no boletim estadual.
+        # 328 → 327, 188 → 187.
+        self.assertEqual(len(self.ev), 327)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 188)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 260)
+        self.assertEqual(refs["None"], 187)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 259)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

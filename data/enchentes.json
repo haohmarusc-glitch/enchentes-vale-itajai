@@ -2903,16 +2903,6 @@
       "nota": "Maior enchente da história do município, segundo a prefeitura. A notícia não usa a palavra \"pico\". Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. O Boletim SDE 011/2023 publica os mesmos 8,71 m às 18:00; a prefeitura diz 17h. Hora adotada: a da prefeitura."
     },
     {
-      "rio": "itajai-mirim",
-      "cidade": "botuvera",
-      "data": "2023-11-17",
-      "pico_m": 8.61,
-      "confianca": "baixa",
-      "fonte": "O Município, \"A água baixou e os problemas dobraram: prefeito de Botuverá comenta situação após enchente\", 18/11/2023 (https://omunicipio.com.br/clima/a-agua-baixou-e-os-problemas-dobraram-prefeito-de-botuvera-comenta-situacao-apos-enchente/) — trecho: \"o pico máximo registrado no município foi de 8,61 metros, na tarde de sexta\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/botuvera-2023.html",
-      "nota": "Número dito pelo prefeito Alcir Merizio; pico \"na tarde de sexta\" (17/11), sem hora exata. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
-      "pendencia": "SUSPEITA DE NÚMERO DE OUTRA CIDADE: o Boletim SDE 011/2023 (p. 18) dá exatamente 8,61 m como máximo da estação DCSC de BRUSQUE, em 17/11/2023 21:00, e Botuverá não aparece na tabela. O prefeito pode ter citado o número de Brusque. NÃO usar em comparação até a Defesa Civil de Botuverá confirmar — decisão de remover é do Jefferson."
-    },
-    {
       "rio": "itajai-acu",
       "cidade": "timbo",
       "data": "2023-10-12",
