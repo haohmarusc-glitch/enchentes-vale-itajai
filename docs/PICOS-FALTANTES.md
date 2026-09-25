@@ -11,7 +11,7 @@ outra IA** (ChatGPT, Gemini, Perplexity…) e buscar os números.
 
 ## 1. O que já temos
 
-Atualizado em 25/09/2026, depois da terceira rodada (§10): **328 registros em 16 cidades**.
+Atualizado em 25/09/2026, depois da terceira rodada (§10) e da remoção de Botuverá: **327 registros em 15 cidades**.
 
 | Cidade | Rio | Registros | Régua |
 |---|---|---|---|
@@ -25,8 +25,8 @@ Atualizado em 25/09/2026, depois da terceira rodada (§10): **328 registros em 1
 | Taió | Itajaí do Oeste | +1 (11 no total) | municipal / DCSC |
 | Timbó | Benedito | 4 | não declarada / DCSC |
 | Vidal Ramos | Itajaí-Mirim | 2 | estação DCSC |
-| Trombudo Central · Botuverá · Lontras | — | 1 cada | não declarada / DCSC |
-| **Itajaí · Ascurra · Guabiruba** | — | **0** | — |
+| Trombudo Central · Lontras | — | 1 cada | não declarada / DCSC |
+| **Itajaí · Ascurra · Guabiruba · Botuverá** | — | **0** | — |
 
 A seção 2 abaixo é o levantamento original de 24/09 e continua valendo como referência de régua e
 de datas-alvo. **O que ainda falta está no prompt da seção 6.**
@@ -136,9 +136,9 @@ PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos
 
 PRIORIDADE 3 — cidades com poucos picos:
 
-5. Botuverá (Itajaí-Mirim). Tenho 8,61 m em 17/11/2023, citado pelo prefeito, mas o boletim estadual
-   dá exatamente 8,61 m para BRUSQUE no mesmo dia. Preciso que a Defesa Civil de Botuverá confirme o
-   pico da cidade, e quero também as cheias de 2008, 2011 e out/2023.
+5. Botuverá (Itajaí-Mirim): hoje não tenho NENHUM pico. Os 8,61 m de 17/11/2023 que o prefeito citou
+   foram descartados, porque são o máximo da estação de BRUSQUE no boletim estadual. Quero o pico
+   de Botuverá pela Defesa Civil do município, em nov/2008, set/2011, out/2023 e nov/2023.
 6. Lontras (Itajaí-Açu; só tenho mai/2024), Vidal Ramos (Itajaí-Mirim; só tenho nov/2023 e mai/2024)
    e Trombudo Central (rio Trombudo; só tenho 17/11/2023). Cheias: 1983, 1984, 2001, 2008, 2011, 2013,
    2015, 2017, mai/2022 e out/2023. Para Trombudo, 1983 aparece como 6,22 m na ND+, mas preciso do original.
@@ -160,7 +160,7 @@ PRIORIDADE 4 — lacunas pontuais:
 
 JÁ TENHO, NÃO PRECISA MANDAR: os boletins SDE 010/2023, 011/2023 e 006/2024; o PLANCON de Rio dos
 Cedros v1.07; o Estudo Socioambiental de Taió; as séries da ANA do HidroWeb; e as notícias de
-Trombudo Central (8,71 m), O Auditório (Timbó e Rio dos Cedros, out/2023) e O Município (Botuverá).
+Trombudo Central (8,71 m) e O Auditório (Timbó e Rio dos Cedros, out/2023).
 
 FORMATO — uma linha de tabela por número:
 cidade | data (AAAA-MM-DD) | hora | nível (m) | régua/estação/ponte (ou "não declarada") |
@@ -299,4 +299,4 @@ meia-noite. A data da tabela foi mantida, com pendência.
 - [x] Séries da ANA baixadas: picos extraídos por `scripts/picos_ana_vale.py`, e os 5 maiores de Ituporanga, Ibirama, Apiúna e Ilhota entraram marcados como régua da ANA (confiança baixa) — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
 - [x] Terceira rodada conferida nos originais: 18 registros (§10).
 - [ ] Itajaí, Ascurra e Guabiruba: ainda sem pico.
-- [ ] Botuverá 8,61 m: confirmar com a Defesa Civil de Botuverá (suspeita de ser o número de Brusque).
+- [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.
