@@ -559,8 +559,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     setSel(atual => atual ? cena.pinos.find(p => p.cidade.id === atual.cidade.id && p.rioId === atual.rioId) ?? null : null)
     setHover(atual => atual ? cena.pinos.find(p => p.cidade.id === atual.cidade.id && p.rioId === atual.rioId) ?? null : null)
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
-    // num instante que não medimos).
-    chuvaRef.current = emRepro ? new Map() : new Map(cidadesBacia.map(c => [c.id, linhasChuva(tempoReal.chuva, c.id, agora)]))
+    // num instante que não medimos). Na bacia larga some do pino (só 24 h
+    // aparece na região; 1 h / 12 h ficam no painel). Ver `linhasChuva`.
+    const kmNaTela = kmDaVista(cena.limitesBase, vistaRef.current.zoom)
+    chuvaRef.current = emRepro
+      ? new Map()
+      : new Map(cidadesBacia.map(c => [c.id, linhasChuva(tempoReal.chuva, c.id, agora, kmNaTela)]))
 
     const fundoCanvas = document.createElement('canvas')
     fundoCanvas.width = canvas.width
