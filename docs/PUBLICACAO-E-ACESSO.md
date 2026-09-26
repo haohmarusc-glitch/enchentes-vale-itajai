@@ -14,7 +14,7 @@ cada uma custa — para a escolha ser feita com os números na mesa, não por im
 |---|---|
 | endereço | **`enchentes.premercadosc.com`** |
 | quem serve | **Cloudflare Pages**, projeto `enchentes-vale-itajai`, build automático do `main` |
-| quem protege | **Cloudflare Access**, aplicação `enchentes`, política **"Só eu"** (Action: Allow → Emails) |
+| quem protege | **Cloudflare Access**, aplicação `enchentes`, política **"Autorizados"** (Action: Allow → Emails; chamava-se "Só eu" até 26/09/2026) |
 | plano | **Zero Trust Free** (equipe `orange-glade-ea3f`) — sem custo |
 | login | **código de uso único por e-mail**. Quem entra NÃO precisa de conta na Cloudflare |
 | GitHub Pages | **despublicado**, e o fluxo `pages.yml` virou **só manual** |
@@ -67,7 +67,7 @@ tudo carrega, dando a impressão de que o site está liberado para todo mundo.
 python3 scripts/autorizar_email.py fulano@gmail.com            # autoriza
 python3 scripts/autorizar_email.py --revogar fulano@gmail.com  # revoga
 python3 scripts/autorizar_email.py --listar                    # quem entra hoje
-python3 scripts/autorizar_email.py --renomear Autorizados      # renomeia a política "Só eu"
+python3 scripts/autorizar_email.py --renomear NOVO_NOME        # renomeia a política
 ```
 
 O script lê a política, muda **só** a lista de e-mails (decisão, exclusões e duração da sessão ficam
@@ -77,13 +77,16 @@ digitando o e-mail no site e recebendo o código; sessão já aberta de quem foi
 
 **Configuração, uma vez só**, no `.env` da VPS (modelo no `.env.example`): `CLOUDFLARE_API_TOKEN` —
 painel da Cloudflare → *My Profile → API Tokens → Create Token → Custom*, com **uma** permissão de conta,
-*Access: Apps and Policies — Edit*, e nada mais — e `CLOUDFLARE_ACCOUNT_ID`. Opcional:
+*Access: Apps and Policies — Edit*, e nada mais — e `CLOUDFLARE_ACCOUNT_ID`. O Account ID é o bloco de
+32 caracteres que aparece no link do painel que o bot da Cloudflare Pages comenta em todo PR
+(`dash.cloudflare.com/?to=/<account-id>/pages/view/...`). Opcional:
 `CLOUDFLARE_ACCESS_POLICY_ID`, se o script não achar a política pelo nome ("Autorizados" ou "Só eu").
-⚠️ Não conferido contra a conta real deste ambiente (a API da Cloudflare é bloqueada daqui): na primeira
-vez, rode `--listar` e veja se a lista bate com o painel antes de autorizar alguém.
+✅ **Conferido na conta real em 26/09/2026**, na VPS: `--listar` devolveu a política com o e-mail do
+Jefferson, igual ao painel, e `--renomear Autorizados` trocou o nome de "Só eu" (relido pelo script).
+A política é **reutilizável** (achada em `/access/policies`, não dentro da aplicação).
 
 **Pelo painel**, se preferir: Zero Trust → **Access controls → Applications → `enchentes` → política
-"Só eu"** (ou "Autorizados", se já renomeada) → em *Include / Emails*, acrescentar o e-mail. Ela recebe
+"Autorizados"** → em *Include / Emails*, acrescentar o e-mail. Ela recebe
 um código por e-mail e entra. **Revogar é apagar a linha.** As pré-visualizações (`*.pages.dev`) têm
 política própria em *Pages → Settings → General → Preview access*; o script não mexe nelas.
 
