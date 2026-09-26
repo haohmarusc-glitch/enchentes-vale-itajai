@@ -50,6 +50,21 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Campos com `verificado: false` ou `null` significam "ainda não conferido na fonte oficial" — não inventar valores.
 - Datas em ISO (`AAAA-MM-DD`); só o ano quando o dia é desconhecido.
 
+### Picos históricos faltantes
+- O inventário e o prompt para pesquisa externa ficam em `docs/PICOS-FALTANTES.md` (não inventar número; só cadastrar com original aberto).
+- Em **26/09/2026** a busca das prioridades 1 (Ascurra e Guabiruba) achou candidatos **ainda fora** de `enchentes.json`. Originais/CSV em evidência local; nada entra no JSON sem abrir a fonte de novo e seguir as regras da §5 do doc.
+
+| Cidade | Data | Pico | Régua | Fonte | Confiança |
+|---|---|---|---|---|---|
+| Ascurra | 01/09/2026 ~05:10–06:00 | 10,13 m | DCSC-00003 Ponte do Beber | API `historic` DCSC + ND+ | alta / média |
+| Ascurra | 12/09/2026 00:00 | 10,46 m | DCSC-00003 | API `historic` DCSC | alta |
+| Guabiruba | 11/07/2026 14:40 | 2,14 m | DCSC-00029 | API `historic` DCSC | alta |
+| Guabiruba | 31/08/2026 11:20 | 2,04 m | DCSC-00029 | API `historic` DCSC | alta |
+| Guabiruba | 20/09/2026 06:30 | 1,96 m | DCSC-00029 | API DCSC + O Município | alta |
+
+- **Não cadastrar ainda** as datas-alvo antigas (2008–2024) dessas cidades: a API não as cobre; `guabiruba.sc.gov.br/noticia-46906/` deu 403; SDE 006/2024 não lista Ascurra nem Guabiruba.
+- Descartar: Travessa Zonta / Ribeirão São Paulo em Ascurra; Guabiruba em ~25 m ortométrica; lâmina d'água na rua.
+
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
   Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`
@@ -115,7 +130,7 @@ Cada tela de rio mostra: diagrama linear com as cidades; para cada cidade, níve
 | Fonte | Uso | Observação |
 |---|---|---|
 | ANA / HidroWeb (SNIRH) | séries históricas de cota | API nova exige cadastro por e-mail (hidro@ana.gov.br) |
-| Defesa Civil SC — monitoramento.defesacivil.sc.gov.br | tempo real | site em JS; endpoint JSON ainda a descobrir |
+| Defesa Civil SC — monitoramento.defesacivil.sc.gov.br | tempo real + histórico curto | GraphQL `historic` (MIN_10 / HOUR_1); janela móvel ~89 dias. Ascurra = DCSC-00003 (Ponte do Beber); Guabiruba = DCSC-00029 (zero local, **não** a cota ortométrica ~25 m dos boletins de Brusque). |
 | AlertaBlu (Blumenau) | tempo real + cotas de ruas | |
 | Defesa Civil de Itajaí | tempo real Açu, Mirim e ribeirões | |
 | CEOPS/FURB (ceops.furb.br) | acervo histórico de picos | centro desativado em 2022; só acervo |
