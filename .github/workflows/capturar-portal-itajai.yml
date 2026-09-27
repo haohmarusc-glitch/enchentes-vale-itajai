@@ -1,0 +1,74 @@
+# Captura o CORPO BRUTO do portal de monitoramento da Defesa Civil de Itajaí
+# e o guarda num branch, sem tocar no main.
+#
+# POR QUE EXISTE. Conferir o portal exige o HTML como o servidor o entrega
+# (o JSON da página vive no atributo `data-page`, ver docs/ITAJAI-PORTAL-NOVO-
+# CONTRATO.md). Até 27/09/2026 esse corpo só chegava ao repositório salvo à
+# mão pelo Jefferson, porque o ambiente das sessões de código não alcança o
+# host. Este fluxo faz a mesma coisa de forma reprodutível: baixa as quatro
+# páginas (Itajaí, Brusque, Blumenau, Rio do Sul), registra código HTTP,
+# tamanho e hash, e empurra tudo para `captura/portal-itajai-<run>`.
+#
+# O QUE ELE NÃO FAZ. Não muda cadastro, cota nem coletor. Não roda sozinho:
+# é só manual (workflow_dispatch). Quatro pedidos por execução, identificados
+# pelo mesmo User-Agent dos scripts (comum.USER_AGENT), com 2 s entre eles.
+name: Capturar portal de Itajaí
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capturar:
+    name: Baixar as quatro páginas e guardar no branch de captura
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Baixar
+        id: baixar
+        run: |
+          set -u
+          UA="enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)"
+          BASE="https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios"
+          DATA="$(date -u +%Y-%m-%d)"
+          HORA="$(date -u +%H%M)"
+          DIR="data/brutos/captura-portal-itajai/${DATA}T${HORA}Z"
+          mkdir -p "$DIR"
+          echo "dir=$DIR" >> "$GITHUB_OUTPUT"
+          {
+            echo "# Captura do portal de Itajaí — ${DATA} ${HORA}Z (UTC)"
+            echo
+            echo "Fluxo: .github/workflows/capturar-portal-itajai.yml, run ${GITHUB_RUN_ID}."
+            echo
+            echo "| municipio_id | cidade | URL | HTTP | bytes | sha256 |"
+            echo "|---|---|---|---|---|---|"
+          } > "$DIR/README.md"
+          i=0
+          for par in "1:itajai" "2:brusque" "3:blumenau" "4:rio-do-sul"; do
+            mid="${par%%:*}"; cid="${par##*:}"
+            if [ "$mid" = "1" ]; then url="$BASE"; else url="$BASE?municipio_id=$mid"; fi
+            [ "$i" -gt 0 ] && sleep 2
+            i=$((i+1))
+            arq="$DIR/rios-municipio-${mid}-${cid}.html"
+            http="$(curl -sS -L -m 60 -A "$UA" -o "$arq" -w '%{http_code}' "$url" || echo "000")"
+            bytes="$(wc -c < "$arq" | tr -d ' ')"
+            sha="$(sha256sum "$arq" | cut -d' ' -f1)"
+            echo "| $mid | $cid | $url | $http | $bytes | $sha |" >> "$DIR/README.md"
+            echo "municipio $mid ($cid): HTTP $http, $bytes bytes"
+          done
+
+      - name: Guardar no branch de captura
+        env:
+          DIR: ${{ steps.baixar.outputs.dir }}
+        run: |
+          set -u
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "captura/portal-itajai-${GITHUB_RUN_ID}"
+          git add "$DIR"
+          git commit -m "Captura o portal de Itajaí (run ${GITHUB_RUN_ID}) [skip ci]"
+          git push -u origin "captura/portal-itajai-${GITHUB_RUN_ID}"
+          echo "branch: captura/portal-itajai-${GITHUB_RUN_ID}"
