@@ -1,0 +1,51 @@
+{
+  "descricao": "Corpos brutos do portal de monitoramento da Defesa Civil de Itajaí, capturados pelo GitHub Actions porque o ambiente das sessões de código não alcança o host.",
+  "fluxo": ".github/workflows/capturar-portal-itajai.yml",
+  "run": "https://github.com/haohmarusc-glitch/enchentes-vale-itajai/actions/runs/36350320996",
+  "commit_do_fluxo": "17ed90e4a30961433b97af509b9b136535de8109",
+  "capturado_em_utc": "2026-09-27T21:04Z",
+  "transporte": "HTML em gzip+base64 fatiado no log do job; remontado na sessão e conferido contra o sha256 calculado no runner antes de gravar (4 de 4 conferem).",
+  "user_agent": "enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)",
+  "arquivos": [
+    {
+      "arquivo": "itajai-portal-rios-municipio-1-itajai-2026-09-27.html",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
+      "http": 200,
+      "bytes": 179632,
+      "sha256": "db24f8d9f7ae2c66a0a409ab1497f94db01e81a572a5d187df7301054582b0fa",
+      "municipioId": 1,
+      "consultadoEm": "2026-09-27T21:04:10+00:00",
+      "estacoes": 11
+    },
+    {
+      "arquivo": "itajai-portal-rios-municipio-2-brusque-2026-09-27.html",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=2",
+      "http": 200,
+      "bytes": 15469,
+      "sha256": "6ce392d3b9b00afe87731a9f74abc318a061f87942121e09266e1c8b8b0a802f",
+      "municipioId": 2,
+      "consultadoEm": "2026-09-27T21:04:14+00:00",
+      "estacoes": 1
+    },
+    {
+      "arquivo": "itajai-portal-rios-municipio-3-blumenau-2026-09-27.html",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=3",
+      "http": 200,
+      "bytes": 15463,
+      "sha256": "899650776ff3521d4d5c8b7a52c3063e16a79d79782a0ad45166a60593b4e1c1",
+      "municipioId": 3,
+      "consultadoEm": "2026-09-27T21:04:17+00:00",
+      "estacoes": 1
+    },
+    {
+      "arquivo": "itajai-portal-rios-municipio-4-rio-do-sul-2026-09-27.html",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=4",
+      "http": 200,
+      "bytes": 15430,
+      "sha256": "38d3d727ec72b7619155b28aaa83b421a85895df548d4a6ca02f901556323384",
+      "municipioId": 4,
+      "consultadoEm": "2026-09-27T21:04:20+00:00",
+      "estacoes": 1
+    }
+  ]
+}
