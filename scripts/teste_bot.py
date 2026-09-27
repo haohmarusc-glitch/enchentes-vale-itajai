@@ -2254,11 +2254,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 25/09/2026, quinta rodada: Rio dos Cedros nov/2022 (PLANCON 10.7) e Itajaí
         # set/2011 no Açu e no Mirim (tese da UEM, decisão do Jefferson) — 365 → 368,
         # 225 → 228.
-        self.assertEqual(len(self.ev), 368)
+        # 27/09/2026, sexta rodada conferida nos originais: +8 sem referência
+        # (Trombudo Central 2011/2013/2022, Lontras 2023, Vidal Ramos 2013,
+        # Rio dos Cedros 1911/1983/1984) — 368 → 376, 228 → 236.
+        self.assertEqual(len(self.ev), 376)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 228)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 300)
+        self.assertEqual(refs["None"], 236)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 308)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

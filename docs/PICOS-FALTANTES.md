@@ -391,6 +391,82 @@ manifesto.
   (2017):** nenhum pico novo. O plano de saúde repete os 9,25 m de 1992, e o da UFSC fala de maré e de
   nível do mar.
 
+## 13. Sexta rodada (27/09/2026), conferida nos originais
+
+Pacote `fontes-originais-leve.zip` + `resultado.md` ("pesquisa v3.4, somente leitura", 26/09/2026): 33
+originais e um relatório com 30 linhas de leitura, cada uma com o trecho literal. Os originais estão em
+`data/brutos/pesquisa-picos-2026-09-24/rodada6/` com manifesto SHA-256 (34 guardados; o boletim SDE
+008/2023, 3,8 MB e sem tabela de máximos, ficou só com o hash; a pasta dos boletins de Itajaí de 2013
+veio vazia na versão "leve"). **Dezoito dos dezoito trechos que dependem de arquivo presente batem
+letra a letra** com o original; o PDF do Orli (Taió) foi lido com pypdf, Tabela 1 e texto das pp. 12–13.
+
+Antes de cadastrar, cada número foi cruzado com o que o repositório já tem: HidroWeb do Mirim
+(Salseiro, Botuverá-Montante, Brusque), a série de 15 min da Salseiro pela DC de Brusque, e as séries
+da ANA do Vale (Ituporanga, Apiúna, Taió, Timbó Novo).
+
+**Cadastrado (8 registros, todos `confianca: baixa` por régua não declarada):**
+
+| Cidade | Rio | Data | Pico | Fonte |
+|---|---|---|---|---|
+| Trombudo Central | Açu | 09/09/2011 06h | 5,58 m | Prefeitura ("5,58 cm" no original; lido como metros, ver nota) |
+| Trombudo Central | Açu | 22/09/2013 | 3,10 m | Prefeitura |
+| Trombudo Central | Açu | 11/10/2022 (tarde) | 3,00 m | Prefeitura |
+| Lontras | Açu | 29/11/2023 01h | 6,41 m | ND+, atribuído à Defesa Civil |
+| Vidal Ramos | Mirim | 22/09/2013 | 4,32 m | Revista Portuária (nota da Autoridade Portuária de Itajaí) |
+| Rio dos Cedros | Rio dos Cedros | 02/01/1911* · 09/07/1983 · 07/08/1984 | 9,00 · 7,90 · 7,65 m | Defesa Civil de Rio dos Cedros, tabela em imagem (o PLANCON só cita os anos) |
+
+**Divergências e complementos em registros existentes (nada adotado mudou de valor):**
+
+- **Rio do Sul 2013-09** (10,39 municipal): + 10,47 m em 23/09 (Autoridade Portuária).
+- **Indaial 22/09/2013** (6,46 COMPDEC): + 6,52 m (Autoridade Portuária).
+- **Apiúna 22/09/2013** (7,14 ANA 17h): + 7,23 m — provável máximo entre leituras da mesma estação.
+- **Brusque 2013** → **22/09/2013**: mesmo 7,61 m, agora com dia e fonte (Autoridade Portuária) no lugar de
+  "Compilação informal" (guardado em `fonte_rotulo_anterior`).
+- **Blumenau 23/09/2013** e **Taió 1983**: "confirmado por" (Autoridade Portuária 10,51 m; Rádio Mirador 11,85 m).
+- **Taió 2013/2014/2015/2017** (tabela do Estudo Socioambiental): + os valores do Orli (2017; SED/SC, citando a
+  Defesa Civil): 9,53 · 9,38 · 10,39 · 8,15 m, e uma **pendência** no registro de 2013.
+- **Taió 09/10/2023** (12,40 g1): nota com o 11,86 m às 02h21 da Rádio Mirador e os 12,25/12,32 m da ANA.
+- **Timbó 2014** (9,58 Câmara): + 9,12 m às 22h (AMVE); nota com a ND (8,61 e 8,95 m, régua da Rua
+  Equador) e a ANA (9,00 m às 07h e 17h de 09/06). Nenhuma fonte confirma 9,58; decisão do Jefferson se o
+  adotado muda.
+
+**O que os cruzamentos mostraram:**
+
+- **Os dois "picos de Vidal Ramos" de 2023 são a Salseiro, não a régua da cidade.** O 3,47 m às 05h15 de
+  29/10/2023 é, ao centímetro e ao minuto, o máximo da série de 15 min da estação 31 da DC de Brusque
+  (SALSEIRO); o 4,0 m às 14h45 de 07/10 a própria matéria atribui à "estação ANA/Epagri". A Salseiro fica
+  6,8 km da sede, em `codigo_ana_nao_e`. **Não cadastrados.** Já o 4,32 m de 22/09/2013 **não** é a Salseiro
+  (ANA: 3,10/3,38 m no dia; crista dela em 20/09, 4,10 m) — entrou como régua não declarada.
+- **A nota da Autoridade Portuária de 2013 lista as réguas das cidades, não as da ANA:** Brusque 7,61 m contra
+  5,68/5,72 m na ANA 83900000 no mesmo dia. Isso diz que **em 2013 a régua municipal de Brusque e a
+  83900000 não coincidiam** como coincidem em 2019–2021 (`docs/HIDROWEB-MIRIM-2026-09-22.md`) — zero ou
+  régua diferentes, o motivo fica em aberto. Consequência: os cinco picos de Brusque da ANA que entraram
+  em 22/09/2026 (1961–2015) são piso **na régua da ANA**, e a coincidência com o municipal só vale onde foi
+  medida.
+- **Ituporanga 22/09/2013, 5,82 m: não é a ANA 83250000** (2,68/3,54 m no dia). É outra régua, provavelmente
+  a municipal manual da Ponte Vitório Sens. Como os cinco registros de Ituporanga são da ANA, cadastrar
+  misturaria as duas — mesma razão do 2,95 m de 2017 (§12). **Fora**, até haver a série municipal.
+- **Taió: a tabela do Estudo Socioambiental deslocou um ano.** O Orli dá 9,38 m para **2014**, e a ANA
+  83050000 marcou 9,37 m às 17h de 09/06/2014; a tabela do Estudo põe 9,38 m em "jun/2013", quando a ANA
+  marcou 6,80 m, e a ANA de set/2013 chega a 9,70 m (17h), perto dos 9,53 m que o Orli dá para 2013. Fica
+  como pendência no registro; corrigir só com a Defesa Civil de Taió.
+- **Timbó 2014: a régua da Rua Equador e a ANA 83677000 andam juntas** (8,95 m às 14h × 9,00 m às 07h/17h
+  de 09/06). Pista para o vínculo, não prova.
+- **Gaspar 23/09/2013, 8,03 m (Autoridade Portuária): fora do cadastro por decisão técnica.** A tabela oficial de
+  Gaspar (48 registros, `referencia: régua`) não tem 2013. Um registro novo sem `referencia` faria o site tratar
+  Gaspar como duas escalas e parar de comparar o nível atual com o histórico (`cenarioAnterior`), e afirmar
+  `referencia: régua` seria vínculo por nome. **Entra só por decisão do Jefferson**, com a referência que ele
+  decidir declarar.
+
+**Conferido, fora do cadastro (regra 3 da §5: leitura não é pico):** Itajaí, boletins de set/2013 (1,67 m,
+estação não declarada; a pasta veio vazia), 08/09/2011 (1,23/1,94/1,19 m às 08h) e out/nov de 2023 (2,89 m
+às 02h20 na DC-02, 2,22 m na DC-04, 2,46 m na DC-06, a lista das 13h10 de 09/10 — as primeiras leituras
+de Itajaí **com régua nomeada** depois de 2011, guardadas na §3 como pista); Botuverá 22/10/2015 (5,15 m às
+14h30) e 29/10/2023 (4,52 m "subindo"); Taió 22/10/2015 (8,73 m às 14h, subida). Contexto guardado:
+Plano de Contingência de Itajaí v17 (22/12/2025) em PDF, telemetria de Itajaí no Wayback de 2017 (nomes
+antigos das réguas: DC02 = TEPORTI), estação da DCSC em Ascurra instalada em 12/12/2023 (se for a
+DCSC-00003, não há leitura dela para 2008–2023).
+
 ## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
@@ -403,5 +479,6 @@ manifesto.
 - [x] Taió e Timbó: cheias da ANA que a série municipal não tem (7 + 26), em 25/09/2026 — ver `docs/HIDROWEB-VALE-2026-09-24.md`.
 - [x] Quarta rodada conferida nos originais (§11).
 - [x] Quinta rodada conferida nos originais: Rio dos Cedros nov/2022 e Itajaí set/2011 (§12).
+- [x] Sexta rodada conferida nos originais: 8 registros (Trombudo ×3, Lontras, Vidal Ramos 2013, Rio dos Cedros ×3) e as divergências de 2013 da Autoridade Portuária, do Orli (Taió) e da AMVE (Timbó), em 27/09/2026 (§13). Gaspar 2013 e Ituporanga 2013 ficam para decisão.
 - [ ] Ascurra e Guabiruba: ainda sem pico. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.
