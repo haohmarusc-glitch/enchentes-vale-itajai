@@ -102,7 +102,7 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
-Versão 3.3, de 25/09/2026, escrita depois do merge da quinta rodada (§12). O que funcionou foi receber **os
+Versão 3.4, de 26/09/2026: Ascurra e Guabiruba já têm candidatos de 2026 pela API da Defesa Civil de SC (ver CLAUDE.md, "Picos históricos faltantes"); o prompt passa a pedir só as cheias antigas delas. O que funcionou foi receber **os
 arquivos originais** (PDF ou página salva): sem eles nada entra. Os boletins da SDE/SC com a tabela
 "Níveis máximos atingidos" foram a fonte mais produtiva até agora.
 
@@ -114,14 +114,18 @@ MUITO IMPORTANTE: junto com a resposta, me entregue os ARQUIVOS ORIGINAIS de cad
 o PDF baixado, ou a página salva como HTML. Não resuma nem transcreva no lugar do original. Número
 sem o arquivo original não entra no meu cadastro. Se não conseguir baixar, diga isso na linha.
 
-PRIORIDADE 1 — cidades sem NENHUM pico no meu cadastro:
+PRIORIDADE 1 — cidades sem pico ANTIGO (de 2026 já tenho, pela API da Defesa Civil de SC, que só
+guarda ~89 dias):
 
-1. Ascurra: régua do Itajaí-Açu na Ponte do Beber (estação DCSC-00003). Cheias: nov/2008, set/2011,
-   set/2013, out/2015, out/2023, nov/2023, mai/2024. O Ribeirão Braço São Paulo é outro rio e não
-   serve.
-2. Guabiruba: rio Guabiruba. Cheias: nov/2008, mar/2011, set/2011, out e nov/2023. A estação de
-   Guabiruba nos boletins de Brusque está em cota ortométrica (~25 m) e não serve. A notícia
-   guabiruba.sc.gov.br/noticia-46906/ deu erro 403 na última busca: tente de novo ou ache cópia.
+1. Ascurra: régua do Itajaí-Açu na Ponte do Beber (estação DCSC-00003). Já tenho 01/09/2026 (10,13 m)
+   e 12/09/2026 (10,46 m). Quero as cheias antigas: nov/2008, set/2011, set/2013, out/2015, out/2023,
+   nov/2023, mai/2024. O Ribeirão Braço São Paulo (Travessa Zonta) é outro rio e não serve.
+2. Guabiruba: rio Guabiruba, estação DCSC-00029 (zero local). Já tenho jul, ago e set/2026 (1,96 a
+   2,14 m). Quero as cheias antigas: nov/2008, mar/2011, set/2011, out e nov/2023, NA MESMA régua
+   (DCSC-00029 ou régua municipal que diga o zero). A estação de Guabiruba nos boletins de Brusque
+   está em cota ortométrica (~25 m) e não serve; lâmina d'água na rua também não. A notícia
+   guabiruba.sc.gov.br/noticia-46906/ deu erro 403: tente de novo ou ache cópia. O boletim SDE
+   006/2024 não lista Ascurra nem Guabiruba.
 
 PRIORIDADE 1B — Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim), a cidade mais difícil:
 
