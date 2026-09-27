@@ -1035,7 +1035,7 @@
       "data": "2013-09-23",
       "pico_m": 10.51,
       "confianca": "media",
-      "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
+      "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confirmado por: Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Blumenau: 23/09 = 10,51 m\"",
       "referencia": null
     },
     {
@@ -1658,7 +1658,14 @@
       "pico_m": 10.39,
       "confianca": "media",
       "fonte": "Defesa Civil de Rio do Sul — Histórico de Cheias (defesacivil.riodosul.sc.gov.br), tabela 'Exportação de Dados'",
-      "referencia": null
+      "referencia": null,
+      "divergencias": [
+        {
+          "pico_m": 10.47,
+          "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Rio do Sul: 23/09 = 10,47 m\""
+        }
+      ],
+      "nota": "Sexta rodada (27/09/2026): a nota da Autoridade Portuária dá 10,47 m em 23/09/2013; a tabela municipal, 10,39 m em setembro. Régua não declarada na nota."
     },
     {
       "rio": "itajai-acu",
@@ -1873,7 +1880,7 @@
       "pico_m": 12.4,
       "confianca": "media",
       "fonte": "g1 SC — cobertura das cheias de 2023",
-      "nota": "Maior enchente da história do município, a jusante da Barragem Oeste. Decisão (b) do Jefferson em 09/09/2026: a régua histórica de Taió continua sendo a da imprensa/Defesa Civil (12,40 m adotado); a crista da estação da ANA fica em divergencias, não substitui. As demais cristas da ANA em Taió (6,91 m em 22/01/2021, 9,49 m em 05/05/2022, 10,32 m em 17/11/2023) NÃO viram registro por essa mesma decisão — ficam em estacoes.json e em docs/ANA-API-2026-09-08.md como cristas daquela régua.",
+      "nota": "Maior enchente da história do município, a jusante da Barragem Oeste. Decisão (b) do Jefferson em 09/09/2026: a régua histórica de Taió continua sendo a da imprensa/Defesa Civil (12,40 m adotado); a crista da estação da ANA fica em divergencias, não substitui. As demais cristas da ANA em Taió (6,91 m em 22/01/2021, 9,49 m em 05/05/2022, 10,32 m em 17/11/2023) NÃO viram registro por essa mesma decisão — ficam em estacoes.json e em docs/ANA-API-2026-09-08.md como cristas daquela régua. Sexta rodada (27/09/2026): a Rádio Mirador registra 11,86 m às 02h21 de 09/10, já acima de 1983 (\"ultrapassou\", não é a crista); a ANA 83050000 marcou 12,25/12,32 m às 07h/17h do mesmo dia.",
       "divergencias": [
         {
           "pico_m": 12.13,
@@ -1981,10 +1988,12 @@
     {
       "rio": "itajai-mirim",
       "cidade": "brusque",
-      "data": "2013",
+      "data": "2013-09-22",
       "pico_m": 7.61,
       "confianca": "baixa",
-      "fonte": "Compilação informal"
+      "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Brusque: 22/09 = 7,61 m\"",
+      "fonte_rotulo_anterior": "Compilação informal",
+      "nota": "Até 27/09/2026 o registro trazia só o ano e o rótulo \"Compilação informal\"; a nota da Autoridade Portuária de Itajaí (set/2013) dá o mesmo 7,61 m com o dia 22/09. Régua não declarada na nota; a ANA 83900000 marcou 5,68/5,72 m às 07h/17h do mesmo dia — 1,9 m abaixo, diferença grande demais para crista entre leituras. Em 2013 a régua municipal e a da ANA NÃO coincidem como coincidem em 2019–2021 (docs/HIDROWEB-MIRIM-2026-09-22.md); o motivo (zero ou régua) fica em aberto. Confiança baixa."
     },
     {
       "rio": "itajai-mirim",
@@ -2161,7 +2170,13 @@
       "pico_m": 6.46,
       "confianca": "alta",
       "fonte": "PDF \"Indaial - cotas de enchente\", Defesa Civil de Indaial (aba Arquivos de https://indaial.atende.net/cidadao/pagina/cotas-de-enchente) — dados históricos analisados pelo engenheiro hidrólogo Ademar Cordeiro, projeto Crise / FURB. Lido na fonte em 06/09/2026.",
-      "referencia": "régua"
+      "referencia": "régua",
+      "divergencias": [
+        {
+          "pico_m": 6.52,
+          "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Indaial: 22/09= 6,52 m\""
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -2901,6 +2916,34 @@
     {
       "rio": "itajai-acu",
       "cidade": "trombudo-central",
+      "data": "2011-09-09",
+      "hora": "06:00",
+      "pico_m": 5.58,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Trombudo Central, \"Enchentes\", 12/09/2011 (https://www.trombudocentral.sc.gov.br/noticia-194345/) — trecho: \"Trombudo Central foi atingida pela maior cheia desde 1984. O nivel do rio atingiu seu ponto maximo as 6 horas do dia 09, onde marcou 5,58 cm\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/Trombudo_noticia-194345_Enchentes_2011-09-12.html",
+      "nota": "O original escreve \"5,58 cm\"; lido como 5,58 m (a cheia de 2023, na mesma cidade, é 8,71 m; \"maior cheia desde 1984\" não cabe em 5,58 cm). Régua não declarada pela fonte; por isso confiança baixa. Sexta rodada, 27/09/2026."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "trombudo-central",
+      "data": "2013-09-22",
+      "pico_m": 3.1,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Trombudo Central, \"ENCHENTES\", set/2013 (https://www.trombudocentral.sc.gov.br/noticia-194667/) — trecho: \"No domingo (22), o nível do rio chegou a 3,10 metros\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/Trombudo_noticia-194667_ENCHENTES.html",
+      "nota": "Régua não declarada pela fonte; confiança baixa. Sexta rodada, 27/09/2026."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "trombudo-central",
+      "data": "2022-10-11",
+      "pico_m": 3.0,
+      "confianca": "baixa",
+      "fonte": "Prefeitura de Trombudo Central, \"Trombudo Central segue em alerta devido às chuvas\", 13/10/2022 (https://www.trombudocentral.sc.gov.br/trombudo-central-segue-em-alerta-devido-as-chuvas/) — trechos: \"Após atingir um pico de 3 metros na tarde do dia 11 de outubro\" / \"atingiu o nível máximo de 3 metros\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/Trombudo_segue-em-alerta_2022-10-13.html",
+      "nota": "\"Na tarde\", sem hora. Régua não declarada pela fonte; confiança baixa. Sexta rodada, 27/09/2026."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "trombudo-central",
       "data": "2023-11-17",
       "hora": "17:00",
       "pico_m": 8.71,
@@ -2919,6 +2962,33 @@
       "nota": "Rio Benedito. A notícia não diz se é a régua da Rua Equador. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
     },
     {
+      "rio": "rio-dos-cedros",
+      "cidade": "rio-dos-cedros",
+      "data": "1911-01-02",
+      "pico_m": 9.0,
+      "confianca": "baixa",
+      "fonte": "Defesa Civil de Rio dos Cedros, página \"Dados históricos\" (https://defesa-civil-rdc.webnode.page/dados-historicos/), tabela em imagem \"Data / Nível do Rio Metros\" — linha \"02/01/1911* ... 9,00\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RioDosCedros_DefesaCivilRDC_historico-defesacivil.png (e RioDosCedros_DefesaCivilRDC_dados-historicos.html)",
+      "nota": "A data traz um asterisco na tabela, sem legenda visível na imagem. O PLANCON (v1.07 e 10.7) só cita 1911 numa frase de anos, sem valor; a tabela municipal em imagem é a única fonte do número. Régua não declarada; confiança baixa. Sexta rodada, 27/09/2026."
+    },
+    {
+      "rio": "rio-dos-cedros",
+      "cidade": "rio-dos-cedros",
+      "data": "1983-07-09",
+      "pico_m": 7.9,
+      "confianca": "baixa",
+      "fonte": "Defesa Civil de Rio dos Cedros, página \"Dados históricos\" (https://defesa-civil-rdc.webnode.page/dados-historicos/), tabela em imagem — linha \"09/07/1983 ... 7,90\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RioDosCedros_DefesaCivilRDC_historico-defesacivil.png",
+      "nota": "O PLANCON só cita 1983 numa frase de anos, sem valor. Régua não declarada; confiança baixa. Sexta rodada, 27/09/2026."
+    },
+    {
+      "rio": "rio-dos-cedros",
+      "cidade": "rio-dos-cedros",
+      "data": "1984-08-07",
+      "pico_m": 7.65,
+      "confianca": "baixa",
+      "fonte": "Defesa Civil de Rio dos Cedros, página \"Dados históricos\" (https://defesa-civil-rdc.webnode.page/dados-historicos/), tabela em imagem — linha \"07/08/1984 ... 7,65\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RioDosCedros_DefesaCivilRDC_historico-defesacivil.png",
+      "nota": "O PLANCON só cita 1984 numa frase de anos, sem valor. Régua não declarada; confiança baixa. Sexta rodada, 27/09/2026."
+    },
+    {
       "rio": "itajai-acu",
       "cidade": "rio-dos-cedros",
       "data": "2023-10-12",
@@ -2935,7 +3005,13 @@
       "pico_m": 9.58,
       "confianca": "baixa",
       "fonte": "Timbó Net, \"Sessão Ordinária ocorre com participação em Tribuna da Defesa Civil Municipal e Rede Feminina\" (texto da Comunicação da Câmara de Timbó), relato da fala do coordenador da Defesa Civil (https://timbonet.com.br/noticia/sessao-ordinaria-ocorre-com-participacao-em-tribuna-da-defesa-civil-municipal-e-rede-feminina) — trecho: \"em 2014, aconteceu a segunda maior, com o pico de 9m58cm\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/timbo-camara-2014.html",
-      "nota": "Segunda maior cheia de Timbó, segundo a Defesa Civil municipal. Sem dia, mês nem rio no trecho; o mesmo texto dá 9,86 m para 2011, igual ao registro de 09/09/2011, o que sugere a mesma régua — sugere, não prova. Não preencher o mês por inferência. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "nota": "Segunda maior cheia de Timbó, segundo a Defesa Civil municipal. Sem dia, mês nem rio no trecho; o mesmo texto dá 9,86 m para 2011, igual ao registro de 09/09/2011, o que sugere a mesma régua — sugere, não prova. Não preencher o mês por inferência. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. Sexta rodada (27/09/2026): a AMVE dá 9,12 m às 22h (notícia de 09/06/2014, provavelmente a noite de 08/06); a ND dá 8,61 m no início da noite de 08/06 e 8,95 m às 14h de 09/06 \"na régua da Rua Equador\"; a ANA 83677000 (Timbó Novo) marcou 8,50 m às 17h de 08/06 e 9,00 m às 07h e 17h de 09/06. Nenhuma fonte confirma 9,58 m; a data provável do pico é 08–09/06/2014 e não está escrita em fonte nenhuma. Decisão do Jefferson se o adotado muda.",
+      "divergencias": [
+        {
+          "pico_m": 9.12,
+          "fonte": "AMVE, \"Timbó registra alagamentos\", 09/06/2014 (https://amve.org.br/noticia-389455/) — trecho: \"Os rios Benedito – que chegou a 9,12 metros às 22h\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/AMVE_noticia-389455_Timbo-registra-alagamentos.html"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -2943,7 +3019,7 @@
       "data": "1983",
       "pico_m": 11.85,
       "confianca": "baixa",
-      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
+      "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf · confirmado por: Rádio Mirador, \"Histórico: 40 anos depois, medição da enchente de 1983 é superada em Taió\", out/2023 (https://radiomirador.com.br/historico-40-anos-depois-medicao-da-enchente-de-1983-e-superada-em-taio/) — \"atingiu a medida de 11,85m em Taió, segundo antigas anotações\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/Taio_historico-40-anos-depois-medicao-da-enchente-de-1983-e-super.html",
       "nota": "A tabela diz SETEMBRO de 1983, mas a grande cheia de 1983 no Vale foi em julho, e a série da ANA em Taió (83050000) tem a máxima do ano em 12/07/1983 (bruto data/brutos/pesquisa-picos-2026-09-24/ana/, arquivo Cotas). Por isso o registro fica só com o ano. O mesmo 11,85 m aparece na Misturebas (13/10/2023), atribuído às medições de Aldo Bogo usadas pela prefeitura. A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
       "data_na_fonte": "1983-09"
     },
@@ -2964,7 +3040,13 @@
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
       "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
-      "pendencia": "MÊS DUVIDOSO: a tabela municipal diz junho, mas a série da ANA 83050000 tem máxima de 6,80 m em junho/2013 e 9,70 m em 23/09/2013 (leitura das 17h) — a cheia grande de 2013 no Vale foi em setembro. Provavelmente é a de setembro. NÃO mudar a data sem boletim da Defesa Civil de Taió. Ver docs/HIDROWEB-VALE-2026-09-24.md."
+      "pendencia": "MÊS DUVIDOSO: a tabela municipal diz junho, mas a série da ANA 83050000 tem máxima de 6,80 m em junho/2013 e 9,70 m em 23/09/2013 (leitura das 17h) — a cheia grande de 2013 no Vale foi em setembro. Provavelmente é a de setembro. NÃO mudar a data sem boletim da Defesa Civil de Taió. Ver docs/HIDROWEB-VALE-2026-09-24.md. Sexta rodada (27/09/2026): o Orli (2017) dá 9,53 m para o evento de 2013 e 9,38 m para o de 2014; a tabela do Estudo Socioambiental dá 9,38 m para \"jun/2013\" e 8,91 m para 2014. A ANA 83050000 marcou 6,80 m em 22/06/2013 e 9,70 m às 17h de 23/09/2013, e 9,37 m às 17h de 09/06/2014 — o 9,38 \"de 2013\" da tabela é o valor de 2014 do Orli e da ANA. Hipótese: a tabela do Estudo deslocou um ano. Não mudar mês nem valor sem a Defesa Civil de Taió; decisão do Jefferson.",
+      "divergencias": [
+        {
+          "pico_m": 9.53,
+          "fonte": "Machado, Orli José. \"Medidas estruturais e não estruturais implementadas para minimizar impactos com as inundações no município de Taió\", 2017, SED/SC (Ensino Superior), Tabela 1 (p. 12) e texto (pp. 12–13), citando a Defesa Civil (https://www.ensinosuperior.sed.sc.gov.br/wp-content/uploads/2017/09/Orli-Jos%C3%A9-Machado.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/SED_Orli-Jose-Machado_Taio_2017.pdf — \"Evento de 2013 ... de 9,53 m\" (nível máximo do rio no centro da cidade)"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -2973,7 +3055,13 @@
       "pico_m": 8.91,
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. Sexta rodada (27/09/2026): o Orli dá 9,38 m para 2014, e a ANA 83050000 marcou 9,18/9,37 m às 07h/17h de 09/06/2014 — os 8,91 m da tabela do Estudo ficam abaixo das duas; ver pendência do registro de 2013.",
+      "divergencias": [
+        {
+          "pico_m": 9.38,
+          "fonte": "Machado, Orli José. \"Medidas estruturais e não estruturais implementadas para minimizar impactos com as inundações no município de Taió\", 2017, SED/SC (Ensino Superior), Tabela 1 (p. 12) e texto (pp. 12–13), citando a Defesa Civil (https://www.ensinosuperior.sed.sc.gov.br/wp-content/uploads/2017/09/Orli-Jos%C3%A9-Machado.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/SED_Orli-Jose-Machado_Taio_2017.pdf — \"Evento de 2014 ... foi de 9,38 m\" / \"chegou ao pico de 9,38 m\""
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -2982,7 +3070,13 @@
       "pico_m": 10.75,
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. Sexta rodada (27/09/2026): o Orli dá 10,39 m; a ANA 83050000 marcou 10,58/10,85 m às 07h/17h de 23/10/2015; a ND registrou 8,73 m às 14h de 22/10, leitura da subida.",
+      "divergencias": [
+        {
+          "pico_m": 10.39,
+          "fonte": "Machado, Orli José. \"Medidas estruturais e não estruturais implementadas para minimizar impactos com as inundações no município de Taió\", 2017, SED/SC (Ensino Superior), Tabela 1 (p. 12) e texto (pp. 12–13), citando a Defesa Civil (https://www.ensinosuperior.sed.sc.gov.br/wp-content/uploads/2017/09/Orli-Jos%C3%A9-Machado.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/SED_Orli-Jose-Machado_Taio_2017.pdf — \"Evento de 2015 ... 10,39 m\""
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -2991,7 +3085,13 @@
       "pico_m": 8.18,
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
+      "divergencias": [
+        {
+          "pico_m": 8.15,
+          "fonte": "Machado, Orli José. \"Medidas estruturais e não estruturais implementadas para minimizar impactos com as inundações no município de Taió\", 2017, SED/SC (Ensino Superior), Tabela 1 (p. 12) e texto (pp. 12–13), citando a Defesa Civil (https://www.ensinosuperior.sed.sc.gov.br/wp-content/uploads/2017/09/Orli-Jos%C3%A9-Machado.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/SED_Orli-Jose-Machado_Taio_2017.pdf — \"Evento de 2017 ... o nível máximo do rio no centro da cidade chegou a 8,15 m\""
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -3166,9 +3266,15 @@
       "pico_m": 7.14,
       "confianca": "baixa",
       "fonte": "ANA/HidroWeb, estação convencional 83500000 APIÚNA - RÉGUA NOVA, leitura de régua do observador às 17:00 (nível bruto) — bruto data/brutos/pesquisa-picos-2026-09-24/ana/Estacao_83500000_TXT_2026-09-24T15_29_25.463Z.zip, extraído por scripts/picos_ana_vale.py (data/brutos/pesquisa-picos-2026-09-24/picos_ana_vale.json)",
-      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md.",
+      "nota": "Régua da ANA 83500000 APIÚNA - RÉGUA NOVA (rio Itajaí-Açu), NÃO a da Defesa Civil: zero próprio, que nunca foi comparado com a régua municipal. PISO, não crista: é a leitura das 17h; a régua só é lida às 07h e às 17h, e a crista fica entre leituras. Um dos 5 maiores eventos da série (1946–2026). Decisão do Jefferson em 24/09/2026: entram marcados como ANA, confiança baixa pelo zero não provado. Ver docs/HIDROWEB-VALE-2026-09-24.md. Sexta rodada (27/09/2026): a nota da Autoridade Portuária dá 7,23 m em 22/09; a leitura da ANA às 17h é 7,14 m — provável máximo entre leituras da mesma estação, não outra régua. Fica como divergência.",
       "pendencia": "Crista não medida (a leitura é piso) e zero da ANA não comparado com a régua municipal: não comparar este número com as cotas da Defesa Civil da cidade nem com pico de outra fonte.",
-      "hora": "17:00"
+      "hora": "17:00",
+      "divergencias": [
+        {
+          "pico_m": 7.23,
+          "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Apiuna: 22/09= 7,23 m\""
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -3264,6 +3370,15 @@
     {
       "rio": "itajai-mirim",
       "cidade": "vidal-ramos",
+      "data": "2013-09-22",
+      "pico_m": 4.32,
+      "confianca": "baixa",
+      "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — trecho: \"Os picos máximos verificados no rio Itajaí-Mirim entre os dias 19 e 23 de setembro foram: Brusque: 22/09 = 7,61 m Vidal Ramos: 22/09= 4,32 m\"",
+      "nota": "Régua não declarada; confiança baixa. NÃO é a Salseiro (ANA 83892990): no HidroWeb ela marcou 3,10 m às 07h e 3,38 m às 17h de 22/09/2013, e o máximo dela foi 4,10 m às 17h de 20/09 — a nota do porto dá o dia 22. A mesma nota dá para Brusque o 7,61 m municipal, não os 5,72 m da ANA 83900000: a lista vem das réguas das cidades, não da ANA. Sexta rodada, 27/09/2026."
+    },
+    {
+      "rio": "itajai-mirim",
+      "cidade": "vidal-ramos",
       "data": "2023-11-17",
       "hora": "08:00",
       "pico_m": 4.86,
@@ -3280,6 +3395,16 @@
       "confianca": "baixa",
       "fonte": "Boletim Hidrometeorológico 006/2024 (ed. 62, SDE/SC), Tabela 1 \"Níveis máximos atingidos nos municípios das Bacias dos rios Itajaí, Tijucas e Uruguai\", p. 16 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/Diretoria%20de%20Recursos%20Hidricos/Relatorios/Boletim_Hidrometeorologico_62.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_006_2024_maio.pdf",
       "nota": "O boletim classifica o nível como \"Atenção\". Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "lontras",
+      "data": "2023-11-29",
+      "hora": "01:00",
+      "pico_m": 6.41,
+      "confianca": "baixa",
+      "fonte": "ND+, \"Homem é resgatado em cima de carro que ficou preso em rua alagada pela chuva em Lontras\", 29/11/2023 (https://ndmais.com.br/seguranca/homem-e-resgatado-em-cima-de-carro-que-ficou-preso-em-rua-alagada-pela-chuva-em-lontras/) — trecho: \"cheias do rio Itajaí-Açu, que chegou ao seu pico à 01h da manhã desta quarta (29), no nível de 6,41 metros, em Lontras\" — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/ND_lontras_homem-resgatado-carro_2023-11-29.html",
+      "nota": "Imprensa, atribuído ao chefe da Defesa Civil no texto. Régua não declarada; confiança baixa. Único pico de Lontras fora dos boletins da SDE. Sexta rodada, 27/09/2026."
     },
     {
       "rio": "itajai-acu",

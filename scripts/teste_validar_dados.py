@@ -380,6 +380,13 @@ class MesesPareados(unittest.TestCase):
         ("rio-do-sul 2011-08", "itajai"),
         ("blumenau 2011-08-31", "itajai"),
         ("gaspar 2011-08-31", "itajai"),
+        # 27/09/2026, sexta rodada: Lontras ganhou o primeiro pico fora dos
+        # boletins da SDE — 29/11/2023, 6,41 m, ND+ (o único de 2023). Rio do
+        # Sul tem picos em jul/2023 e em 13/10/2023 sem par em Lontras porque a
+        # imprensa não noticiou Lontras nesses meses, não porque as datas estejam
+        # erradas: lacuna de cobertura da fonte, como em Gaspar e Indaial.
+        ("rio-do-sul 2023-07", "lontras"),
+        ("rio-do-sul 2023-10-13", "lontras"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):

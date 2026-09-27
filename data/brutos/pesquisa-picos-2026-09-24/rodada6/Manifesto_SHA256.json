@@ -1,0 +1,219 @@
+[
+  {
+    "arquivo": "originais/AMVE_noticia-389455_Timbo-registra-alagamentos.html",
+    "bytes": 93430,
+    "sha256": "0aaed2f483430725784511a61627d572bb0990d65db33151caf440b5ee81fbb1",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/GCD_prefeitura-de-ituporanga-intensifica-acoes-apos-fortes-chuvas.html",
+    "bytes": 108593,
+    "sha256": "2df97a6881e7f74158c3283481754b70111d6a6b1a9af85108abd8cf42f55a68",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/GCD_transito-em-meia-pista-na-ponte-vitorio-sens-em-ituporanga-nesta-quinta-e-sexta-feira.html",
+    "bytes": 106160,
+    "sha256": "641786a55d4e27a28198081fad91699252ceca6f93eecccbf1e6b5ce49395029",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Guabiruba_wpjson_noticia-46324.json",
+    "bytes": 116070,
+    "sha256": "f47394cc841d2a4bdcb5d2257a9716cc2621fa43642cb44424c5a95797ffb330",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Guabiruba_wpjson_noticia-46906.json",
+    "bytes": 15232,
+    "sha256": "5b7e7467ee082cbfd67fcabc452b571768477cfae8d641db75c618be8b8566cc",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Guabiruba_wpjson_noticia-47039.json",
+    "bytes": 18898,
+    "sha256": "a9aa8839d69a6f61d4e07323c0d72da6018dc0c598f225177086ee25ccf7400d",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Itajai_DC_Plano-de-Contingencia-de-Inundacao_2025-12-22.pdf",
+    "bytes": 1393330,
+    "sha256": "60d4a9dbebafbfd54a8c167af513e61d6e0775681f59863b4ad6588774d871e9",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Itajai_DC_historico_wayback.html",
+    "bytes": 32823,
+    "sha256": "cfa9d8067677f1748c06182fa32cb113c47d2e048fe35db36eb31a9f997b9055",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Itajai_DC_telemetria_wayback_2017-02-07.html",
+    "bytes": 37499,
+    "sha256": "cbb71c85ac2b1991614c2d7c8f44033875bf2844f17320aa7fa5043d63053390",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Itajai_portal_boletins_2013-09/",
+    "guardado_no_repo": false,
+    "motivo": "pasta vazia no zip 'leve' (0 arquivos); o Relatorio_v3.4.md cita cod_noticia_6371/6351/6399.json aqui"
+  },
+  {
+    "arquivo": "originais/Itajai_portal_cod_noticia_485_2011-09-08.json",
+    "bytes": 2241,
+    "sha256": "9fcd21b0835294f88fb02554f0bfdb18280ca48c4e855366b5aaa63bccd6330e",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Metropoles_chuvas-atingem-91-cidades-sc.html",
+    "bytes": 177037,
+    "sha256": "9167978b125c1fdf135d1685130955a4fe4c39b8048c0ea8137efd90892f5687",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_ascurra_br-470-siga-e-pare-ponte-ascurra_2023-12-12.html",
+    "bytes": 167910,
+    "sha256": "04aa9be63759e590420bcfdd3a722664f761d1639bf180f1ac0f6c1cad4bcdf9",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_itajai_abre-abrigo-tratamento-agua-interrompido_2023-11.html",
+    "bytes": 184606,
+    "sha256": "7fbf11994eb943b2d40b0633aa350e2892b2c33128fea9b167d1cff9239bd32d",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_itajai_niveis-seguem-emergencia-centreventos_2023-10.html",
+    "bytes": 167571,
+    "sha256": "0a3524eccd34c8631eb50369d3b8cb478dd35c367d6910c581af6a0d22d41404",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_itajai_rios-emergencia-madrugada-sabado_2023-10.html",
+    "bytes": 174076,
+    "sha256": "52ddc41ed407fa0e412c4572ef2508ea18895377ae12a85a41767ea31f1fbde0",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_lontras_homem-resgatado-carro_2023-11-29.html",
+    "bytes": 169064,
+    "sha256": "aa506854eb0246fbdea3c0f753aa93c508c625a362965887c1840a42519876f5",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_mais-de-18-mil-catarinenses-prejudicados-chuva.html",
+    "bytes": 157268,
+    "sha256": "713d42c53ac56a788584e0d0b6d42c214574e43549fcd909bfb4c9e1b2114fc3",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_timbo_enchente-suspende-aulas-e-fecha-postos-de-saude-em-timbo.html",
+    "bytes": 147285,
+    "sha256": "0a1c95250015f4fc5a65d6e1d333b8c3a406ac8f7915110bae3343ab230f24bd",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/ND_timbo_timbo-continua-isolada-e-sem-ligacao-entre-os-bairros-por-causa-da-enchente.html",
+    "bytes": 146241,
+    "sha256": "c37ff6dfdd9ee212871c64f2fcb604c0d9a2307c12c258d51dddbb3ded5dafe8",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/OMunicipio_rio-itajai-mirim-comeca-a-baixar-em-brusque-confira-cota-atual-e-imagens-da-manha-deste-domingo.html",
+    "bytes": 251285,
+    "sha256": "bbb29c9ed40fffec5c832f05f1a2c86b9caf3d359fcc77e3c6da74593c97b764",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/OMunicipio_rio-itajai-mirim-retorna-para-a-calha-mas-deve-voltar-a-subir-neste-domingo-em-brusque.html",
+    "bytes": 240120,
+    "sha256": "8b10186c0c5fd4ddbf0570d3045f72582625f3f38e57061e72f99fc980bbd473",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html",
+    "bytes": 17119,
+    "sha256": "6448f286b2bfedc1700c690ce386af9172afbab94b1650fd14860792d658db4d",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/RioDosCedros_DefesaCivilRDC_dados-historicos.html",
+    "bytes": 59044,
+    "sha256": "732fcdbf4531a5c1d161d3de9e7b11f14768fab300c55330f95eeeb7be6f5280",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/RioDosCedros_DefesaCivilRDC_historico-defesacivil.png",
+    "bytes": 23686,
+    "sha256": "39dfcc7206c1bda09242884ae31bfcce54f12bf7dd290dfe07b97084ec0a20a1",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/SDE_Boletim_Hidrometeorologico_008_2023.pdf",
+    "bytes": 3838122,
+    "sha256": "52ebae61076153e80d866c247af694dbf2699c35c1441e07691e96fa4bc4763d",
+    "guardado_no_repo": false,
+    "motivo": "3,8 MB sobre a estiagem de jul/2023, sem tabela de níveis máximos (Relatorio_v3.4.md); só o hash fica"
+  },
+  {
+    "arquivo": "originais/SED_Orli-Jose-Machado_Taio_2017.pdf",
+    "bytes": 621885,
+    "sha256": "c604dde1612a7f9493804ea4523e592fb64ecaa27e9c9e4fd7ecf1f8edffcece",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Taio_atingidos_relembram_enchente_de_julho_de_1983_em_taio.150757.html",
+    "bytes": 44644,
+    "sha256": "f2d48ce0245eb596a3acd63f653d24d00aa7397e0f3df984b5bd56ba645c5cab",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Taio_historico-40-anos-depois-medicao-da-enchente-de-1983-e-super.html",
+    "bytes": 119768,
+    "sha256": "c6ec6f04abdf78ad3a949cb745fee65466033651e406db969ae9233cdd5b94ad",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Trombudo_chuva-intensa-enchente_2022-05-10.html",
+    "bytes": 143384,
+    "sha256": "12722d0830a614f62e60f9ee83a0e3781443279ff81e32a53e38cbc92a9ef62d",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Trombudo_maior-enchente-historia_2023-11-27.html",
+    "bytes": 143778,
+    "sha256": "7d57770a0b4ae436c546ce038516d5be8ab6d976179a3a236e69a189c8a9eaf2",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Trombudo_noticia-194345_Enchentes_2011-09-12.html",
+    "bytes": 158275,
+    "sha256": "d37409cd7de60f6d69dfd20eccaaa541ccd91693f8509372df715924d31c60ec",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Trombudo_noticia-194667_ENCHENTES.html",
+    "bytes": 142045,
+    "sha256": "edfcff26a2148b0f9e075cd1756808a8316784a8b14ef3ce1891ec2b24a50a4f",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/Trombudo_segue-em-alerta_2022-10-13.html",
+    "bytes": 144181,
+    "sha256": "4b9ed08bb65a4eba3235bbe52b050a5ed56dc932ac890fa91576a84a8d94a1e1",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "originais/taio_noticia-75219_2013-09-24.html",
+    "bytes": 149489,
+    "sha256": "267332ad98e8199812fad6376d0adfc93b47efa895dc7dbc3214f942357cfde0",
+    "guardado_no_repo": true
+  },
+  {
+    "arquivo": "Relatorio_v3.4.md",
+    "bytes": 20491,
+    "sha256": "f52bd61f640327cfcb158f91f4919f6369ed156207b4e146512cd1f92ed11a6c",
+    "guardado_no_repo": true,
+    "nota": "resultado.md do pacote 'fontes-originais-leve.zip' entregue pelo Jefferson em 27/09/2026"
+  }
+]
