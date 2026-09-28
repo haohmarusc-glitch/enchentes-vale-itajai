@@ -171,6 +171,74 @@ class TestAlvos(unittest.TestCase):
         self.assertTrue(a.ca_extra and a.ca_extra.exists())
 
 
+CAPTURA_28_09 = Path(cf.__file__).resolve().parent.parent / "data" / "brutos" / "captura-fontes-2026-09-28"
+
+
+class TestCapturaDe28DeSetembro(unittest.TestCase):
+    """A primeira captura das fontes das cidades (run 36374094642, 03h32 UTC).
+    Cada corpo passa pelo coletor DELE: se a fonte mudar de formato, o teste
+    aponta qual coletor deixou de ler o que o servidor entrega."""
+
+    @staticmethod
+    def ler(nome):
+        return (CAPTURA_28_09 / nome).read_text(encoding="utf-8")
+
+    def test_manifesto_bate_com_os_arquivos(self):
+        import hashlib
+        import json
+        man = json.loads(self.ler("manifesto.json"))
+        ok = [a for a in man["alvos"] if a["estado"] == "ok"]
+        self.assertEqual(len(ok), 12)
+        for a in ok:
+            corpo = (CAPTURA_28_09 / a["arquivo"]).read_bytes()
+            self.assertEqual(hashlib.sha256(corpo).hexdigest(), a["sha256"], a["arquivo"])
+
+    def test_indaial_foi_recusado_pelo_robots_e_nao_pedido(self):
+        import json
+        man = json.loads(self.ler("manifesto.json"))
+        indaial = [a for a in man["alvos"] if a["cidade"] == "indaial"]
+        self.assertEqual([a["estado"] for a in indaial], ["recusado_robots"])
+        self.assertFalse(any("indaial" in p.name for p in CAPTURA_28_09.iterdir()))
+
+    def test_taio_le_o_centro_e_a_barragem(self):
+        import json
+        import coleta_taio
+        r = coleta_taio.parse(json.loads(self.ler("taio-uniparking-cards.json")))
+        self.assertEqual([(l["nivel_m"], l["medido_em"]) for l in r["leituras"]],
+                         [(5.24, "2026-09-28T00:31:04")])
+        self.assertEqual(r["barragem"]["comportas"]["abertas"], 7)
+        self.assertEqual(len(coleta_taio.parse_historico(
+            json.loads(self.ler("taio-uniparking-historico.json")))), 24)
+
+    def test_rio_do_sul_le_a_ponte_dom_tito_buss(self):
+        import json
+        import coleta_asthon
+        r = coleta_asthon.parse(json.loads(self.ler("rio-do-sul-asthon-panel.json")))
+        self.assertEqual([(l["cidade"], l["nivel_m"]) for l in r], [("rio-do-sul", 5.19)])
+
+    def test_alertablu_le_blumenau(self):
+        import json
+        import coleta_alertablu
+        r = coleta_alertablu.parse(json.loads(self.ler("blumenau-alertablu-nivel-oficial.json")))
+        self.assertEqual([(l["cidade"], l["nivel_m"], l["medido_em"]) for l in r],
+                         [("blumenau", 3.2, "2026-09-28T00:00:00")])
+
+    def test_gaspar_responde_fora_da_vps_e_o_coletor_le(self):
+        """O host de Gaspar dá timeout na VPS desde 31/08; do runner do
+        GitHub respondeu 200 às duas páginas, com robots.txt permitindo."""
+        import coleta_gaspar
+        estacao = coleta_gaspar.analisar_estacao(self.ler("gaspar-estacao-21.html"))
+        self.assertEqual([(e["rotulo"], e["nivel_m"], e["medido_em_iso"]) for e in estacao["estacoes"]],
+                         [("Rio Itajaí Açu Gaspar", 1.84, "2026-09-27T19:28:00")])
+        tabela = coleta_gaspar.analisar(self.ler("gaspar-monitoramento-tabela.html"))
+        rio = [e for e in tabela["estacoes"] if e["rotulo"] == "Rio Itajaí Açu Gaspar"]
+        self.assertEqual([(e["nivel_m"], e["medido_em_iso"]) for e in rio], [(1.84, "2026-09-27T19:28:00")])
+
+    def test_portal_de_itajai_segue_com_as_onze(self):
+        from coleta_itajai_portal import parse
+        self.assertEqual(len(parse(self.ler("itajai-portal-rios-municipio-1-itajai.html"))), 11)
+
+
 class TestSemAtalhos(unittest.TestCase):
     def test_tls_nunca_desligado(self):
         fonte = Path(cf.__file__).read_text(encoding="utf-8")
