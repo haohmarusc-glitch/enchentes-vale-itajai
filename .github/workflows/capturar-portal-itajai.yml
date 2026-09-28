@@ -1,106 +1,51 @@
-# Captura o CORPO BRUTO do portal de monitoramento da Defesa Civil de Itajaí.
+# Captura o CORPO BRUTO das fontes de tempo real das cidades, para conferência.
 #
-# POR QUE EXISTE. Conferir o portal exige o HTML como o servidor o entrega
-# (o JSON da página vive no atributo `data-page`, ver docs/ITAJAI-PORTAL-NOVO-
-# CONTRATO.md). Até 27/09/2026 esse corpo só chegava ao repositório salvo à
-# mão pelo Jefferson, porque o ambiente das sessões de código não alcança o
-# host. Este fluxo baixa as quatro páginas (Itajaí, Brusque, Blumenau, Rio do
-# Sul) de forma reprodutível e devolve:
+# POR QUE EXISTE. O ambiente das sessões de código recebe 403 do proxy para as
+# fontes municipais, e até 27/09/2026 o corpo só chegava salvo à mão. A lógica
+# fica em scripts/capturar_fontes.py, com testes: robots.txt antes de cada host,
+# User-Agent do projeto, TLS sempre verificado, um pedido por alvo sem insistir.
+# Alvos: o portal de Itajaí (municípios 1 a 4), Taió, Rio do Sul (Asthon e
+# barragens), Gaspar, Ituporanga, AlertaBlu e o documento de Indaial.
 #
-#   * um artefato do run com os HTML, o README com HTTP/bytes/sha256;
-#   * no LOG, um resumo por estação e o corpo em gzip+base64 fatiado, com o
-#     sha256 do HTML, para que uma sessão sem acesso ao artefato possa
-#     remontar o arquivo e conferir o hash antes de guardá-lo em data/brutos/.
+# O QUE DEVOLVE. Um artefato com os corpos e o manifesto, e no LOG o resumo por
+# alvo e o corpo em gzip+base64 fatiado com o sha256, para uma sessão sem
+# acesso ao host remontar com `capturar_fontes.py --remontar`.
 #
-# O QUE ELE NÃO FAZ. Não muda cadastro, cota nem coletor, e não empurra nada
-# para o repositório. Quatro pedidos por execução, com o User-Agent dos
-# scripts (comum.USER_AGENT) e 2 s entre eles.
+# O QUE NÃO FAZ. Não muda cadastro, cota nem coletor, e não empurra nada.
 #
-# QUANDO RODA. Manualmente (workflow_dispatch, depois que o arquivo estiver no
-# main) ou no push que altera este próprio arquivo — é assim que uma sessão
-# pede uma captura nova antes do merge.
-name: Capturar portal de Itajaí
+# QUANDO RODA. Manualmente (workflow_dispatch) ou no push que altera este
+# arquivo ou o script — é assim que uma sessão pede uma captura nova antes do
+# merge.
+name: Capturar fontes das cidades
 
 on:
   workflow_dispatch:
   push:
     paths:
       - .github/workflows/capturar-portal-itajai.yml
+      - scripts/capturar_fontes.py
 
 permissions:
   contents: read
 
 jobs:
   capturar:
-    name: Baixar as quatro páginas do portal
+    name: Baixar as fontes de tempo real
     runs-on: ubuntu-latest
     steps:
-      - name: Baixar
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+      - name: Capturar
+        working-directory: scripts
         run: |
-          set -u
-          UA="enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)"
-          BASE="https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios"
-          CARIMBO="$(date -u +%Y-%m-%dT%H%MZ)"
-          mkdir -p captura
-          {
-            echo "# Captura do portal de Itajaí — ${CARIMBO} (UTC)"
-            echo
-            echo "Fluxo: .github/workflows/capturar-portal-itajai.yml, run ${GITHUB_RUN_ID}, commit ${GITHUB_SHA}."
-            echo
-            echo "| municipio_id | cidade | URL | HTTP | bytes | sha256 |"
-            echo "|---|---|---|---|---|---|"
-          } > captura/README.md
-          i=0
-          for par in "1:itajai" "2:brusque" "3:blumenau" "4:rio-do-sul"; do
-            mid="${par%%:*}"; cid="${par##*:}"
-            if [ "$mid" = "1" ]; then url="$BASE"; else url="$BASE?municipio_id=$mid"; fi
-            [ "$i" -gt 0 ] && sleep 2
-            i=$((i+1))
-            arq="captura/rios-municipio-${mid}-${cid}.html"
-            http="$(curl -sS -L -m 60 -A "$UA" -o "$arq" -w '%{http_code}' "$url" || echo "000")"
-            [ -f "$arq" ] || : > "$arq"
-            bytes="$(wc -c < "$arq" | tr -d ' ')"
-            sha="$(sha256sum "$arq" | cut -d' ' -f1)"
-            echo "| $mid | $cid | $url | $http | $bytes | $sha |" >> captura/README.md
-          done
-          echo "CARIMBO=${CARIMBO}" >> "$GITHUB_ENV"
-          cat captura/README.md
-
-      - name: Resumo por estação (lido do data-page)
-        run: |
-          python3 - <<'PY'
-          import glob, html, json, re
-          for arq in sorted(glob.glob("captura/*.html")):
-              s = open(arq, encoding="utf-8", errors="replace").read()
-              m = re.search(r'<div[^>]*\bid="app"[^>]*\bdata-page="([^"]*)"', s, re.I)
-              if not m:
-                  print(f"RESUMO {arq}: sem div#app[data-page] ({len(s)} bytes)")
-                  continue
-              p = json.loads(html.unescape(m.group(1))).get("props", {})
-              print(f"RESUMO {arq}: municipioId={p.get('municipioId')} consultadoEm={p.get('consultadoEm')} "
-                    f"municipios={[(x.get('id'), x.get('nome')) for x in p.get('municipios', [])]}")
-              for e in p.get("estacoes") or []:
-                  e = dict(e)
-                  e["serie_12_h"] = f"<{len(e.get('serie_12_h') or [])} pontos>"
-                  print("ESTACAO " + json.dumps(e, ensure_ascii=False, sort_keys=True))
-          PY
-
-      - name: Corpo em gzip+base64 no log
-        run: |
-          for arq in captura/*.html; do
-            nome="$(basename "$arq")"
-            sha="$(sha256sum "$arq" | cut -d' ' -f1)"
-            gzip -9 -n -c "$arq" | base64 -w 3500 > /tmp/b64
-            total="$(wc -l < /tmp/b64 | tr -d ' ')"
-            n=0
-            while IFS= read -r linha; do
-              n=$((n+1))
-              echo "BRUTO ${nome} ${sha} ${n}/${total} ${linha}"
-            done < /tmp/b64
-          done
-
+          echo "CARIMBO=$(date -u +%Y-%m-%dT%H%MZ)" >> "$GITHUB_ENV"
+          python3 capturar_fontes.py --saida ../captura
       - uses: actions/upload-artifact@v4
         with:
-          name: portal-itajai-${{ env.CARIMBO }}
+          name: fontes-${{ env.CARIMBO }}
           path: captura/
           retention-days: 30

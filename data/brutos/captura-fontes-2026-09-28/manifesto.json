@@ -1,0 +1,127 @@
+{
+  "descricao": "Corpos brutos das fontes de tempo real das cidades, capturados pelo GitHub Actions (scripts/capturar_fontes.py), porque o ambiente das sessões de código não alcança os hosts.",
+  "fluxo": ".github/workflows/capturar-portal-itajai.yml",
+  "run": "https://github.com/haohmarusc-glitch/enchentes-vale-itajai/actions/runs/36374094642",
+  "commit_do_fluxo": "13b1c78431f4b6421a9cf4efdac3184803ea8d03",
+  "capturado_em_utc": "2026-09-28T03:32:54Z",
+  "transporte": "gzip+base64 fatiado no log do job; remontado com capturar_fontes.py --remontar, 12 de 12 conferem com o sha256 do runner.",
+  "user_agent": "enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)",
+  "alvos": [
+    {
+      "cidade": "itajai",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 179539,
+      "arquivo": "itajai-portal-rios-municipio-1-itajai.html",
+      "sha256": "b5316b4cf9d12c139d7505b82bc0bb4c322db521a36a695903ca15119582edbd"
+    },
+    {
+      "cidade": "brusque",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=2",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 15469,
+      "arquivo": "itajai-portal-rios-municipio-2-brusque.html",
+      "sha256": "7bd0de165718a245dac68b01ce66b9480ec06f57613f2d2afde2675d1dde6569"
+    },
+    {
+      "cidade": "blumenau",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=3",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 15452,
+      "arquivo": "itajai-portal-rios-municipio-3-blumenau.html",
+      "sha256": "ef4001f7be3c45b68a4933bee0bd84f229ecdf1b59c0dca8d80b9a28f15ba1f5"
+    },
+    {
+      "cidade": "rio-do-sul",
+      "url": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios?municipio_id=4",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 15274,
+      "arquivo": "itajai-portal-rios-municipio-4-rio-do-sul.html",
+      "sha256": "edaaf838a471da9156761f5508d84f3f0f472cfe9c1292c18b4b3f9249bb61ab"
+    },
+    {
+      "cidade": "taio",
+      "url": "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/cards?v=1",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 368,
+      "arquivo": "taio-uniparking-cards.json",
+      "sha256": "9fa4e13c3f7cbc585ea1460b1df92750a1a599d7f85f27668d547969bb1c275d"
+    },
+    {
+      "cidade": "taio",
+      "url": "https://api-scr.uniparking.com.br/v1/defesa-civil-taio/dados/historico?v=1",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 4936,
+      "arquivo": "taio-uniparking-historico.json",
+      "sha256": "01b74318e9413a5042e2a7f9f77e4c11f4b889d727c41a67ef5425475442b792"
+    },
+    {
+      "cidade": "rio-do-sul",
+      "url": "https://public.asthon.com.br/public/panel?city_id=4214805",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 68803,
+      "arquivo": "rio-do-sul-asthon-panel.json",
+      "sha256": "b8683287f73de690ea73158e5abf49f19e7929184cb77971a228b41137da424f"
+    },
+    {
+      "cidade": "rio-do-sul",
+      "url": "https://public.asthon.com.br/public/dams?city_id=4214805",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 1608,
+      "arquivo": "rio-do-sul-asthon-dams.json",
+      "sha256": "f96a0f592a029d62021fc71cb119b42d90a00003adf0738d85298ce64ac8a3ff"
+    },
+    {
+      "cidade": "gaspar",
+      "url": "https://defesacivil.gaspar.sc.gov.br/monitoramento/tabela",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 36994,
+      "arquivo": "gaspar-monitoramento-tabela.html",
+      "sha256": "8995e535d6327a0160d57278384f1d746d23f0a9ef036fc8f09ed1efee90fc4b"
+    },
+    {
+      "cidade": "gaspar",
+      "url": "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 29961,
+      "arquivo": "gaspar-estacao-21.html",
+      "sha256": "919132f0f88de43937ade28e79dfab2446a3e0ef24c3122df7a1dc5085d60aa6"
+    },
+    {
+      "cidade": "ituporanga",
+      "url": "https://www.ituporanga.sc.gov.br/nivel-rio",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 83808,
+      "arquivo": "ituporanga-nivel-rio.html",
+      "sha256": "585d73e353931b4faab708cfa875ce9be65987914baffebe3bc5fe2fc054503a"
+    },
+    {
+      "cidade": "blumenau",
+      "url": "https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json",
+      "estado": "ok",
+      "http": 200,
+      "bytes": 1943,
+      "arquivo": "blumenau-alertablu-nivel-oficial.json",
+      "sha256": "6195919cb8187bd4f2f51d6e90d62fd5dc6c94971a4589eab77f0c50667ecbca"
+    },
+    {
+      "cidade": "indaial",
+      "url": "https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/export?format=txt",
+      "estado": "recusado_robots",
+      "http": null,
+      "bytes": 0,
+      "arquivo": null
+    }
+  ]
+}
