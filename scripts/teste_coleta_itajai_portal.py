@@ -357,5 +357,106 @@ class TestPaginaDeOutroMunicipio(unittest.TestCase):
                                                               "fonte": "Telemetria Itajaí"}]}}
         self.assertIsNone(conferir_municipio(d, 1))
 
+
+#: A captura de 27/09/2026 21h04Z, feita pelo fluxo
+#: .github/workflows/capturar-portal-itajai.yml (run 36350320996) e remontada
+#: com o sha256 conferido — ver data/brutos/itajai-portal-captura-2026-09-27.json.
+PAGINA_27_09 = RAIZ / "data" / "brutos" / "itajai-portal-rios-municipio-1-itajai-2026-09-27.html"
+OUTROS_27_09 = [
+    ("itajai-portal-rios-municipio-2-brusque-2026-09-27.html", 2, "Brusque",
+     "DCSC-00019", "Brusque", (3.5, 5, 6)),
+    ("itajai-portal-rios-municipio-3-blumenau-2026-09-27.html", 3, "Blumenau",
+     "PADKND", "AlertaBlu PADKND — Nível do rio", (4, 6, 8)),
+    ("itajai-portal-rios-municipio-4-rio-do-sul-2026-09-27.html", 4, "Rio do Sul",
+     "DCSC-00013", "Rio do Sul", (5, 6, 7)),
+]
+
+
+class TestCapturaDe27DeSetembro(unittest.TestCase):
+    """Oito dias depois da primeira captura, o portal mudou a FORMA, não o
+    conteúdo que o projeto usa. Este bloco trava as duas metades: o que tem
+    que continuar igual, e o que mudou sem poder vazar para a leitura."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.html = PAGINA_27_09.read_text(encoding="utf-8")
+        cls.dados = carga(cls.html)
+        cls.leituras = parse(cls.html)
+        cls.antes = carga(PAGINA_REAL.read_text(encoding="utf-8"))
+
+    def test_as_onze_reguas_saem_sem_ajuste_no_coletor(self):
+        self.assertEqual(len(self.leituras), 11)
+        self.assertEqual({l["cidade"] for l in self.leituras}, {"itajai"})
+
+    def test_os_mesmos_onze_codigos_de_19_09(self):
+        cod = lambda d: sorted(e["codigo"] for e in d["props"]["estacoes"])
+        self.assertEqual(cod(self.dados), cod(self.antes))
+
+    def test_as_onze_seguem_a_zero_metro_do_cadastro(self):
+        """Nenhuma régua saiu do lugar entre 19/09 e 27/09."""
+        cadastro = {e["codigo"]: e for e in estacoes_tempo_real()
+                    if str(e.get("codigo", "")).startswith("DC-")}
+        for e in self.dados["props"]["estacoes"]:
+            nossa = cadastro[f"DC-{e['codigo'][2:]}"]
+            self.assertLessEqual(
+                distancia_m((nossa["lat"], nossa["lon"]),
+                            (e["latitude"], e["longitude"])), 1.0, e["codigo"])
+
+    def test_carimbos_em_brasilia(self):
+        """O portal publicou 20h50–20h51 UTC; o repositório grava 17h50–17h51."""
+        for l in self.leituras:
+            self.assertNotIn("+", l["medido_em"])
+            self.assertTrue(l["medido_em"].startswith("2026-09-27T17:5"), l["medido_em"])
+
+    def test_campo_novo_historico_existe_e_nao_vaza(self):
+        """`historico_monitoramento` apareceu em 27/09: vinte registros por
+        estação, com nível, variação, tendência e SEIS janelas de chuva, em
+        UTC. É o que dobrou o tamanho da página (87 KB → 180 KB). O coletor
+        não o lê — a leitura continua com as mesmas chaves de antes."""
+        for e in self.dados["props"]["estacoes"]:
+            h = e["historico_monitoramento"]
+            self.assertEqual(len(h), 20, e["codigo"])
+            self.assertIn("chuva_24_h_mm", h[0])
+            self.assertIn("+00:00", h[0]["medido_em"])
+        for l in self.leituras:
+            self.assertEqual(set(l), {"estacao", "rio", "cidade", "nivel_m", "medido_em"})
+
+    def test_cotas_do_portal_iguais_as_de_19_09_e_o_cadastro_no_plano(self):
+        """As quatro divergências com o Plano de Contingência v17 (DC-01, DC-07,
+        DC-08, DC-09) persistem idênticas oito dias depois. O cadastro segue no
+        v17: trocar cota continua sendo decisão do Jefferson."""
+        trinca = lambda e: (e["atencao_m"], e["alerta_m"], e["emergencia_m"])
+        antes = {e["codigo"]: trinca(e) for e in self.antes["props"]["estacoes"]}
+        agora = {e["codigo"]: trinca(e) for e in self.dados["props"]["estacoes"]}
+        self.assertEqual(agora, antes)
+        cadastro = {e["codigo"]: e["cotas_m"] for e in estacoes_tempo_real()
+                    if str(e.get("codigo", "")).startswith("DC-")}
+        divergem = sorted(
+            f"DC-{c[2:]}" for c, t in agora.items()
+            if t != tuple(cadastro[f"DC-{c[2:]}"][k] for k in ("atencao", "alerta", "emergencia")))
+        self.assertEqual(divergem, ["DC-01", "DC-07", "DC-08", "DC-09"])
+
+    def test_os_outros_tres_seguem_sem_coordenada_e_sem_moldura(self):
+        """Brusque, Blumenau e Rio do Sul: mesma estação, mesma fonte, mesmas
+        cotas, e ainda SEM coordenada — continuam fora. O que mudou: a moldura
+        "Situação atual em Itajaí" não vem mais no HTML servido (páginas de
+        ~44 KB para ~15 KB). A armadilha passou para o navegador; a regra de
+        conferir `props.municipioId` continua valendo igual."""
+        for arquivo, mid, nome, codigo, fonte, cotas in OUTROS_27_09:
+            with self.subTest(municipio=nome):
+                html = (RAIZ / "data" / "brutos" / arquivo).read_text(encoding="utf-8")
+                dados = carga(html)
+                self.assertEqual(municipio_da_carga(dados), {"id": mid, "nome": nome})
+                est = dados["props"]["estacoes"]
+                self.assertEqual(len(est), 1)
+                self.assertEqual((est[0]["codigo"], est[0]["fonte"]), (codigo, fonte))
+                self.assertIsNone(est[0]["latitude"])
+                self.assertIsNone(est[0]["longitude"])
+                self.assertEqual((est[0]["atencao_m"], est[0]["alerta_m"], est[0]["emergencia_m"]), cotas)
+                self.assertNotIn("Situação atual em Itajaí", html)
+                self.assertIsNotNone(conferir_municipio(dados, MUNICIPIO_ITAJAI))
+                self.assertEqual(parse(html), [])
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
