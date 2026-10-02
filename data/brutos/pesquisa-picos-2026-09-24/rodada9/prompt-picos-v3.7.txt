@@ -1,0 +1,201 @@
+Preciso de dados históricos de cheias de rios em cidades da bacia do rio Itajaí, Santa Catarina,
+Brasil: níveis máximos (picos), a hora das cristas, as cotas de alerta e alguns documentos técnicos.
+Responda em português.
+
+MUITO IMPORTANTE: junto com a resposta, me entregue os ARQUIVOS ORIGINAIS de cada fonte, num zip:
+o PDF baixado, ou a página salva como HTML. Não resuma nem transcreva no lugar do original. Número
+sem o arquivo original não entra no meu cadastro — inclusive número que você só viu no resumo de um
+buscador. Se não conseguir baixar, diga isso na linha.
+
+PRIORIDADE 1 — cidades sem pico ANTIGO (a série da Defesa Civil de SC eu já tenho):
+
+1. Ascurra: régua do Itajaí-Açu na Ponte do Beber (estação DCSC-00003). Já tenho a série dessa estação
+   de abr/2023 em diante (inclusive 01/09/2026, 10,13 m). Quero as cheias de ANTES: nov/2008, set/2011,
+   set/2013, out/2015, numa régua municipal com nome ou local. Quero também um documento que ligue a
+   DCSC-00003 a um local: uma matéria do ND (12/12/2023) fala de "uma nova Estação Hidrológica da Defesa
+   Civil ... sob a ponte conhecida como Irineu Bornhausen" (BR-470, km 88), e a série da DCSC-00003
+   começa em abr/2023 — são a mesma estação? A Ponte do Beber é a Irineu Bornhausen? O Ribeirão Braço
+   São Paulo (Travessa Zonta) é outro rio e não serve.
+2. Guabiruba: rio Guabiruba, estação DCSC-00029. Já tenho a série dela de nov/2022 a mar/2026. Quero as
+   cheias de ANTES: nov/2008, mar/2011, set/2011, set/2013, out/2015, numa régua com zero declarado.
+   Desde abr/2026 a estação mede em altitude (~24–25 m): esse número não serve, nem lâmina d'água na
+   rua. A notícia guabiruba.sc.gov.br/noticia-46906/ deu 403 e não está no Wayback: ache outra cópia.
+   O boletim SDE 006/2024 não lista Ascurra nem Guabiruba.
+
+PRIORIDADE 1B — Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim), a cidade mais difícil:
+
+3. Só tenho set/2011, das estações telemétricas nº 1 (Açu, 3,20 m) e nº 3 (Mirim, curso antigo,
+   4,29 m) da tese de Valdeir Demetrio da Silva (UEM, 2017). Quero:
+   (a) um documento que diga QUAL régua de hoje (DC-01 a DC-11) é cada estação telemétrica de 2011
+       — sem isso os números não se comparam com nada;
+   (b) a série telemétrica de set/2011 que a tese usou ("Fonte: Defesa Civil, 2015"), ou o máximo
+       da estação nº 2 (Mirim, canal retificado): a tese dá 3,21 m na tabela e o gráfico chega a
+       ~4,5 m;
+   (c) o máximo POR RÉGUA das outras cheias: jul/1983, ago/1984, out/2001, nov/2008, set/2013,
+       out/2015, out/2023 e nov/2023.
+   Itajaí tem várias réguas com zeros diferentes: CEPSUL, Praça da Murta (Celso Pereira da Silva),
+   Santa Regina/Volta de Cima, Captação SEMASA/São Roque, Vitalmar, Itamirim Clube de Campo,
+   Limoeiro, e nomes antigos como Teporti, Início Rio e AMP Logística. Fontes boas: relatório
+   pós-evento da Defesa Civil de Itajaí, AVADAN/FIDE, plano de contingência antigo, trabalho
+   acadêmico (UNIVALI, UDESC) com tabela por estação. A monografia de Anderson Ficagna Passos
+   (biblioteca.univali.br/pergamumweb/vinculos/pdf/Anderson%20Ficagna%20Passos.pdf) deu 404 e ainda
+   não foi procurada em outro lugar: ache outra cópia. Não quero leitura de um horário qualquer (as de
+   09/09/2011 17h30 e 10/09/2011 13h30 já tenho), nem limite do tipo "mais de 3 m acima do normal".
+
+PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos eventos de inundação":
+
+4. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023,
+   011/2023, 001/2024, 006/2024 e 087 (007/2026, sem cheia), e a auditoria do índice até 07/2026. Quero:
+   a edição de set/2026, verificando se já foi publicada na data da execução (até 01/10/2026 não
+   existia); se ainda não existir, registrar data/hora da consulta e a URL oficial; e relatório equivalente de
+   ANTES de 2020 (out/2015, jun/2017) de outro órgão (Defesa Civil de SC, Epagri/CIRAM), porque o
+   índice da SDE não cobre esse período.
+
+PRIORIDADE 3 — cidades com poucos picos:
+
+5. Lontras (Itajaí-Açu; só tenho 29/11/2023 e mai/2024), Vidal Ramos (Itajaí-Mirim; só tenho
+   set/2013, nov/2023, mai/2024 e set/2026), Trombudo Central (rio Trombudo; só tenho 1983, set/2011,
+   set/2013, out/2022 e 17/11/2023) e Botuverá (Itajaí-Mirim; só tenho dez/2023, 22/07/2026 e
+   set/2026 — os 8,61 m de 17/11/2023 que o prefeito citou foram descartados, porque são o máximo da
+   estação de BRUSQUE no boletim estadual). Cheias: 1983, 1984, 2001, 2008, 2011, 2013, 2015, 2017,
+   mai/2022, out/2023 e nov/2023. Em Vidal Ramos, a estação "Salseiro" (ANA 83892990, estação 31 da
+   Defesa Civil de Brusque) é OUTRA régua, a 6,8 km: não mande números dela como se fossem de Vidal
+   Ramos.
+6. Ituporanga (rio Itajaí do Sul), Ibirama (rio Hercílio), Apiúna e Ilhota (Itajaí-Açu): tenho só a
+   série da ANA. Quero a régua da DEFESA CIVIL de cada cidade, com o nome da ponte ou do local. Em
+   Ituporanga, a régua municipal fica na Ponte Vitório Sens (centro), e a estação da Defesa Civil
+   de SC não é a da ANA: quero a SÉRIE ou os máximos históricos da régua da Ponte Vitório Sens (o
+   2,95 m de 05/06/2017 do Jornal de Pomerode e o 3,58 m de 22/09/2013 15h já tenho). Em Ilhota, a
+   Defesa Civil às vezes usa a medição de Gaspar, e o PLANCON de Ilhota traz os números de BLUMENAU
+   (15,34 / 15,46 / 12,60): não mande esses.
+
+PRIORIDADE 4 — lacunas pontuais:
+
+7. Timbó (rio Benedito, régua da Rua Equador): o dia e o mês do pico de 9,58 m de 2014, e uma fonte
+   que confirme esse valor (a AMVE dá 9,12 m às 22h; nenhuma fonte que tenho confirma os 9,58 m).
+8. Taió (rio Itajaí do Oeste): o MÊS da cheia de 1983 de 11,85 m (a tabela da prefeitura diz
+   setembro, a ANA indica julho). E o PICO de Taió em SETEMBRO de 2013 na régua do Centro — já tenho as
+   leituras de 20/09 17h (5,46 m) e 22/09 15h (8,78 m), que não são o pico; a notícia
+   taio.sc.gov.br/noticia-75219/ não traz número.
+9. Rio dos Cedros: cheias depois de nov/2022 (tenho a tabela do PLANCON 10.7 até 27/11/2022 e
+   12/10/2023) e o dia da crista de 8,96 m de 2014. Há conflito documental: o resumo histórico do
+   PLANCON v10.4 imprime 08/06/2014, mas a sequência da tabela de 15 minutos pode levar a 10/06/2014
+   porque a data não é repetida após a meia-noite. Verificar expressamente 08, 09 e 10/06 e apresentar
+   a página/tabela original; não transformar a sequência em data certa sem fonte explícita. Dois valores apareceram só em resumo
+   de busca e PRECISAM da página salva: Misturebas, 4,80 m em 04/10/2023, e Testo, 5,32 m em 03/11/2023
+   (as duas páginas deram desafio do Cloudflare ou 404 no Wayback).
+
+PRIORIDADE 5 — de que régua é cada série (sem isso, os números não se comparam entre cidades):
+
+10. Rio do Sul: a página "Histórico de Cheias" da Defesa Civil de Rio do Sul (defesacivil.riodosul.sc.gov.br)
+    lista picos desde 1911 sem dizer a régua. O artigo de Cordero, Momo e Severo (XIX SBRH, ARMAX) diz que
+    os 12,20 m de 1911 estão "referenciada na régua da atual estação fluviométrica localizada naquela
+    cidade", e a aba "Cotas de Cheia por Rua" do mesmo portal usa a "régua da Ponte Dom Tito Buss". Quero
+    um documento que diga QUAL estação é essa "atual estação fluviométrica" (código ANA ou nome da ponte)
+    e se o Histórico de Cheias usa a mesma régua, ou se a régua mudou de lugar (quando). A estação "MKS"
+    da Defesa Civil de SC (DCSC-00013) tem zero ~0,17 m acima da Ponte Dom Tito Buss, então "Rio do Sul"
+    sozinho não basta.
+11. Blumenau, a troca de régua de 2011: a FURB (Prof. Ademar Cordero) me confirmou que a Tabela 4 de
+    Cordero & Medeiros está na referência IBGE (régua antiga + 0,20 m), que set/2011 foi 12,60 m na
+    régua, 12,80 m no IBGE e 13,00 m no GPS, e que depois de 2011 "a régua nova tem que somar 40 cm aos
+    níveis da régua antiga". Falta o SENTIDO e a DATA dessa troca. Quero um documento da ANA (ficha ou
+    histórico da estação 83800002, alteração de referência de nível/RN), do CEOPS ou da Defesa Civil de
+    Blumenau que diga: (a) em que data a régua da Ponte Adolfo Konder mudou de referência; (b) se a
+    mesma água passou a ser lida 0,40 m mais BAIXA ou mais ALTA. E a referência da lista "Enchentes
+    Registradas" do AlertaBlu a partir de 2008 (régua antiga, régua nova ou IBGE). Não converta nada:
+    mande o número como a fonte publica.
+12. Gaspar e Indaial — eventos que tenho, mas sem régua (estão FORA da minha série até isso se
+    resolver):
+    (a) Gaspar: de que régua e de que zero é o "metros acima da normalidade" dos boletins da Defesa
+        Civil de Gaspar de out/2023 (pico de 7,09 m às 7h50 de 09/10/2023); é a mesma régua da tabela
+        oficial "histórico de enchentes" da Defesa Civil de Gaspar?
+    (b) Gaspar: qual estação/régua o CEOPS usava em Gaspar (9,42 m em 09/09/2011, Tabela 3 da revista
+        Esboços), e o zero dela em relação à régua municipal.
+    (c) Indaial: em que régua a Defesa Civil de Indaial leu os 5,75 m de 20h de 04/10/2023 — na régua
+        da COMPDEC ou na estação DCSC-00006 —, e o deslocamento entre as duas, se houver documento.
+13. A HORA da crista nas grandes cheias, para calcular quanto tempo a cheia leva de uma cidade à outra.
+    JÁ TENHO hora de: Blumenau 24/11/2008 (0h), 09/09/2011 (12,60 m às 11h), 23/09/2013 (2h),
+    23/10/2015 (1h), 09/10/2023 (6h), 17/11/2023 (9h45); Rio do Sul 09/09/2011 (22h), 13/10/2023 (3h10)
+    e 18/11/2023 (0h40); Brusque 17/11/2023 (~21h); Ascurra 01/09/2026 (05:10); Taió 09/10/2023 (11,86 m às 02h21, Rádio Mirador — a hora do pico
+    de 12,40 m não tenho).
+    FALTAM, com data E hora da crista na régua de cada cidade: Ituporanga, Lontras, Ibirama, Apiúna,
+    Indaial, Ilhota, Itajaí e Timbó (todas as cheias: nov/2008, set/2011, set/2013, out/2015, out/2023,
+    nov/2023, mai/2024); Blumenau mai/2024 (8,67 m às 12h eu tenho, mas a fonte não diz que é o pico) e
+    12–13/10/2023 (só "meia-noite"); Rio do Sul out/2015 e mai/2024; Brusque nov/2008 e set/2011; Vidal
+    Ramos e Botuverá antes de 2026. Serve boletim de hora em hora ou relatório que diga "o pico ocorreu
+    às 14h de 23/11"; hora de uma leitura qualquer não serve.
+
+PRIORIDADE 6 — cotas de atenção, alerta e emergência que faltam:
+
+14. As cotas oficiais (atenção / alerta / emergência ou inundação), com o NOME da régua a que
+    pertencem, para: Ibirama (régua do rio Hercílio), Apiúna (Itajaí-Açu; um boletim de 2013 a põe "com
+    cota de Alerta", sem o número da cota), Botuverá (Itajaí-Mirim; a Defesa Civil de Brusque publica
+    TRÊS estações em Botuverá — 18 "Botuverá", 2 "CEOPS – Botuverá" e 32 "Botuverá – Prefeitura" —,
+    então diga de qual é a cota), Guabiruba (DCSC-00029), Vidal Ramos (não a do Salseiro; uma frase
+    "3,54 m, nível de atenção" apareceu só em resumo de busca — quero a página) e Lontras (tenho só uma
+    "segurança observada" de 9,20 m, que não é cota de alerta). Fontes boas: PLANCON municipal, plano de
+    contingência da Defesa Civil, decreto, boletim com a tabela de cotas. Cota sem o nome da régua não
+    serve, e cota de uma régua não pode ir para outra, mesmo que as duas tenham o nome da cidade.
+
+PRIORIDADE 7 — documentos técnicos:
+
+15. Tábua de marés de 2027 do porto de Itajaí (SC), da Marinha do Brasil (Centro de Hidrografia da
+    Marinha, DHN): verificar se a publicação já saiu na data da execução e, se disponível, baixar o PDF
+    anual com as páginas do porto de Itajaí. Se ainda não estiver disponível, registrar data/hora da
+    consulta, URL oficial e status de acesso (nas capturas de 21 e 28/09/2026 só havia a de 2026).
+    Já tenho a de 2026.
+16. Barragem Oeste (Taió): o painel público da Asthon dá 99,96 hm³ de capacidade, e esse número não
+    aparece em nenhum documento que tenho. Já sei que 83 hm³ (JICA) é o volume até a cota 360 m e que o
+    alteamento de 2 m aumentou a capacidade. Quero o documento do operador (Defesa Civil de SC, SDE/SC)
+    com a curva cota × volume DEPOIS do alteamento, que diga a que cota correspondem os 99,96 hm³. Para
+    a Barragem Sul já tenho 104,03 hm³ de capacidade total. Não calcule percentuais.
+
+JÁ TENHO, NÃO PRECISA MANDAR: os boletins SDE 010/2023, 011/2023, 001/2024, 006/2024 e 087/2026 (e a
+auditoria do índice); os PLANCON de Rio dos Cedros v1.07 e 10.7, o de Ilhota e o de Itajaí v17
+(22/12/2025); a tese de Valdeir D. da Silva (UEM, 2017); o manual "Operação de Barragens" (2024); o
+relatório de vulnerabilidade costeira da UFSC (2017); o plano de saúde de Rio dos Cedros; o Estudo
+Socioambiental de Taió; o trabalho de Orli sobre Taió (SED/SC, 2017); a nota da Autoridade Portuária de
+Itajaí sobre set/2013; a tabela de cheias da Defesa Civil de Rio dos Cedros (1911–1984); as séries da ANA
+do HidroWeb e o serviço HidroSerieHistorica da estação 83800002 (1983–1984); os Volumes II, III-A
+(inclusive a Tabela 7.5.1, p. A-80) e III-B do JICA 2011; a revista Esboços (UFSC, 2013, Tabelas 2 e 3);
+os artigos "Cotas-enchente do município de Blumenau" (XX SBRH) e ARMAX de Rio do Sul (XIX SBRH); o TCC da
+UFSC sobre o rompimento hipotético da Barragem Oeste; a página do DEINFRA sobre as barragens (Wayback
+2013); a lista "Enchentes Registradas" do AlertaBlu (102 enchentes); os boletins da Defesa Civil de
+Gaspar de 10 a 13/10/2023; a tábua de marés de 2026; a notícia 75218 de Taió; e as notícias já usadas: G1,
+ND+, NSC, Rádio Mirador, GCD, Jornal Universo, MetSul, Diarinho, O Município, SCC10, O Blumenauense, O
+Auditório, Mesorregional, Clicrbs (2008), Acaert (2008), Diplomata FM, RWTV, Portal Educadora, Vale do
+Itajaí Notícias (Indaial 2023), os blogs Adalberto Day, Dalva Day e Monique Becker (Blumenau) e o
+SOS Rios do Brasil (Wayback, set/2013); e as da rodada anterior (Trombudo Central, Timbó, Rio dos
+Cedros, Lontras, Botuverá, Vidal Ramos, Ituporanga).
+
+FORMATO — para os itens com nível, cota, data ou hora (itens 1 a 9 e 13 a 14), uma linha por número:
+cidade | data (AAAA-MM-DD) | hora | nível (m) | régua/estação/ponte (ou "não declarada") |
+PICO, leitura de um horário ou COTA de alerta? | título da fonte | órgão/veículo | URL exata |
+página do PDF | trecho literal | nome do arquivo no zip
+Para identificação da régua/referência (itens 10 a 12) e documentos técnicos (itens 15 e 16), uma linha por documento:
+o que se pediu | título | órgão | URL exata | página | trecho literal que responde | nome do arquivo.
+
+REGRAS:
+- Não estime, não interpole, não converta entre réguas nem entre régua, zero do IBGE e GPS, não use
+  memória sem fonte.
+- Não confunda cidades: boletins de Itajaí, Ilhota e Gaspar citam o nível de BLUMENAU (15,34 m em
+  1983, 15,46 m em 1984, 11,52 m em 2008, 12,60 m em 2011, 9,49 m em 2023), e o "10,03 m em 2011"
+  de Botuverá é de BRUSQUE.
+- Em Blumenau, o mesmo pico aparece em referências diferentes: em set/2011, 12,60 (régua), 12,80
+  (IBGE) e 13,00 (GPS); em 2008, 11,52 (Defesa Civil) e 11,72 (CEOPS). Diga sempre de qual fonte veio
+  cada número; não troque um pelo outro.
+- Hora sempre com o fuso que a fonte usar; se ela não disser, escreva "fuso não declarado".
+- Se não achar nada para um item, escreva "nada encontrado".
+- Se fontes diferentes dão valores diferentes para o mesmo evento, liste todas.
+- Número sem o arquivo original não entra no cadastro: marque a linha como "original não obtido" e não
+  a apresente como dado validado. Para PDF, guarde o PDF baixado; para página web, salve a página como
+  HTML completo. Se houver apenas espelho, cache, captura ou resumo de busca, identifique isso claramente.
+- Registre para cada arquivo a data/hora de coleta, o status HTTP quando disponível e o SHA-256. Preserve
+  o nome original quando possível e mantenha correspondência inequívoca entre a linha da tabela e o arquivo.
+- Entregue os arquivos em ZIPs comuns, cada um com menos de 30 MB e extraível de forma independente;
+  não use partes de um único ZIP que dependam umas das outras para abrir.
+- Correspondências particulares (por exemplo, e-mail de pesquisador) podem orientar a busca, mas não devem
+  ser incluídas no ZIP público nem substituir documento técnico/publicado sem autorização expressa.
+- Prefira Defesa Civil (municipal ou de SC), SDE/SC, ANA, Marinha, prefeituras, CEOPS/FURB,
+  Epagri/CIRAM e artigos acadêmicos; depois imprensa regional (NSC Total, g1 SC, ND+, Diarinho,
+  O Município, Jornal do Médio Vale, Misturebas).

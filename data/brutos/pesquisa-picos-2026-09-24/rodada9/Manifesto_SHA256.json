@@ -1,0 +1,26 @@
+[
+ {
+  "arquivo": "comparacao-v3.6-v3.7.md",
+  "bytes": 3548,
+  "sha256": "254454a8f779e2d1ae0f57dc8cc5d9f8b503effe9256db9351af09494504bcda",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "prompt-picos-v3.7.txt",
+  "bytes": 16820,
+  "sha256": "a39e15f07b219deba479def82842ab3d6cda081058d39b4f0fa0b16cb7c82898",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "resultado-pesquisa-v3.7-rodada-1.md",
+  "bytes": 3229,
+  "sha256": "fb0c27b925cfba701bb255f9caa56b213386d2f316a613fa6d1a0e0380c316af",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "pesquisa_cheias_itajai_v3.7_rodada1.zip",
+  "sha256": "a80f63276cd16f97d7b40cebe6444b376b86592bcdca05c88ef5b50aeb90c500",
+  "guardado_no_repo": false,
+  "motivo": "o zip em si; o conteúdo está nesta pasta"
+ }
+]
