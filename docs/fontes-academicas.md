@@ -221,3 +221,23 @@ régua (em relação a régua antiga tem 40 cm). A partir desta data não precis
   São **candidatos**, não registros: entram só por decisão do Jefferson.
 * **Nada foi convertido e a regra bloqueante fica**, até decisão do Jefferson sobre como aplicar a resposta,
   em um único commit.
+
+### A régua de hoje está em GPS: confirmado pela fonte (02/10/2026, 19:33)
+
+Resposta do Prof. Cordero à pergunta direta ("As leituras de hoje … já estão nessa régua nova, ou seja, na referência
+GPS?"): **"A régua atual já está na referência gps !"** (texto literal em `docs/oficios-prontos.md`, C25). Ele acrescenta
+por que houve troca: na cheia de set/2011 o talude do rio deslizou e levou as réguas. A nova foi instalada no pilar da
+ponte, já em GPS, e depois as réguas a montante da ponte, na mesma referência. **Ele não lembra a data**; a planilha
+marca 2013. Janela da troca: set/2011 a set/2013, sem nenhum registro de Blumenau dentro dela.
+
+**O que fica estabelecido, com fonte:**
+
+| Referência | Relação | Exemplo set/2011 | Exemplo jul/1983 |
+|---|---|---|---|
+| Régua antiga (até 2011) | — | 12,60 m | 15,14 m |
+| IBGE (Tabela 4, 1852–2001) | régua antiga + 0,20 m | 12,80 m | 15,34 m |
+| GPS = régua de hoje | IBGE + 0,20 m = régua antiga + 0,40 m | 13,00 m | 15,54 m |
+
+É a "resposta da FURB" que a REGRA BLOQUEANTE prevê para ser removida. **A remoção e a conversão continuam sendo
+decisão do Jefferson**, em um único commit registrado aqui. Até lá nada é convertido. Ficam abertos: a data exata da troca
+e a divergência da planilha com a Tabela 4 publicada em 1931–1983 (vale a Tabela 4).
