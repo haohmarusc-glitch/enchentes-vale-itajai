@@ -4,6 +4,9 @@ Rascunhos complementares do bloco B1: [C15–C22](oficios-b1-c15-c22.md).
 
 Contato preenchido: **Jefferson — (47) 98405-6082 · haohmarusc@gmail.com**
 
+> **REGRA (02/10/2026): nunca pôr link do site em e-mail ou ofício.** O site só abre para e-mail cadastrado.
+> Escrever, no lugar: "se quiser ver o site, basta me mandar o seu e-mail para cadastro". Ver `CLAUDE.md`.
+
 Pronto para copiar e colar no e-mail. O texto-fonte, com a justificativa técnica de
 cada pedido, e os demais ofícios (C1–C4) ficam em `docs/pendencias-navegador-e-oficios.md`.
 
@@ -455,5 +458,6 @@ na linha de 2013. A análise linha a linha está em `docs/fontes-academicas.md`,
 
 Resposta ao e-mail da tabela, a pedido do Jefferson: agradece ("foi de enorme importância para o projeto"), avisa
 que a série de Blumenau no site citará o Prof. Cordero e o CEOPS/FURB como fonte da conversão, manda o link do site
-e faz duas perguntas: (1) a data de instalação da régua nova; (2) se as leituras de hoje (ANA 83800002 e AlertaBlu)
+(**erro**: o site tem acesso restrito e não abriu para ele; daqui em diante, sem link, ver a regra no topo) e faz
+duas perguntas: (1) a data de instalação da régua nova; (2) se as leituras de hoje (ANA 83800002 e AlertaBlu)
 já estão na régua nova/GPS, ou seja, se 15,34 m de 1983 (IBGE) = 15,54 m na régua atual. **Aguardando resposta.**
