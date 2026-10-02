@@ -345,3 +345,48 @@ Fico à disposição para qualquer esclarecimento e agradeço desde já a atenç
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson)
+
+> Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
+> HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
+> juntou três números para a mesma pergunta, e nenhum deles fecha a conta sozinho:
+> **0,20 m** (a regra; e o CEOPS na Tabela 3 do Esboços, +0,20 sobre o AlertaBlu em 31/08 e 09/09/2011),
+> **≤ 0,15 m em 1983** (o valor diário 1519 da ANA 83800002 em 09/07/1983, se for cm na régua da época) e
+> **0,40 m depois de 2011** (o próprio artigo do Prof. Cordero no XX SBRH). A lista oficial do AlertaBlu
+> reproduz a Tabela 4 de Cordero & Medeiros ao centímetro até 2001 (58 eventos) e não diz a régua.
+> Destinatário: **cordero@furb.br** — o endereço publicado no artigo "Cotas-enchente do município de Blumenau"
+> (XX SBRH) e no artigo ARMAX de Rio do Sul (XIX SBRH; coautores momo@furb.br e severo@furb.br, em cópia se o
+> Jefferson quiser). O CEOPS foi desativado em 2022, então o endereço pode estar inativo: se voltar, tentar a
+> secretaria do departamento de Engenharia Civil da FURB. Cinco perguntas fechadas, cada uma com alternativas
+> nomeadas; a 4 é o "teste no HidroWeb" que a regra pede, feito por quem tem a série.
+
+**Para:** cordero@furb.br
+**Assunto:** Referência (régua ANA ou zero IBGE) da série histórica de enchentes de Blumenau — pedido de esclarecimento
+
+Prezado Prof. Ademar Cordero,
+
+Estou desenvolvendo, sem fins comerciais, um site com dados históricos de enchentes no Vale do Itajaí, voltado a moradores, que usa a série de picos de Blumenau publicada pelo senhor e por Medeiros (Tabela 4, XV SBRH, 1852–2001), a lista "Enchentes Registradas" da Defesa Civil de Blumenau e as leituras ao vivo da estação ANA 83800002. Para não exibir números de referências diferentes como se fossem comparáveis, preciso saber em que referência está cada trecho da série, e encontrei três indicações que não consigo conciliar sozinho:
+
+- No artigo "Cotas-enchente do município de Blumenau" (Cordero, Salvador e Refosco, XX SBRH), consta que, depois da enchente de setembro de 2011, a ANA aceitou alterar a referência da régua para a do IBGE levantada por GPS, "que deu 40 cm. Assim a referência da régua da ANA ficou 40 cm a menos do que as enchentes anteriores". O mesmo artigo dá 13,0 m para o pico de setembro de 2011.
+- A Tabela 3 da revista Esboços (UFSC, 2013), com fonte CEOPS, dá 12,8 m para 09/09/2011 e 8,7 m para 31/08/2011, enquanto a lista da Defesa Civil dá 12,6 m e 8,5 m — diferença de 0,20 m. Em 01/10/2001 as duas dão 11,02 m.
+- O serviço HidroSerieHistorica da ANA (estação 83800002, dados consistidos) traz 1519 como valor diário de 09/07/1983 e 1485 para 07/08/1984, sem unidade declarada. A Tabela 4 dá 15,34 m e 15,46 m para essas cheias.
+
+Por isso peço, se possível, cinco esclarecimentos:
+
+1. **Em que referência estão os valores da Tabela 4 (1852–2001)?** (a) na régua da estação fluviométrica de Blumenau como era lida na época de cada cheia; (b) no zero do IBGE; ou (c) outra. Se for o IBGE, qual a diferença para a régua — 0,20 m, 0,40 m ou outra — e ela é a mesma para todo o período?
+
+2. **O que significa, em leitura de régua, "ficou 40 cm a menos"?** (a) depois da mudança, uma mesma altura da água passou a ser lida 0,40 m mais baixa do que antes; (b) passou a ser lida 0,40 m mais alta; ou (c) outra coisa. Em que data a mudança entrou em vigor?
+
+3. **O valor diário 1519 da ANA para 09/07/1983 está em centímetros e na régua da época?** Se estiver, a crista daquele dia na mesma régua foi de pelo menos 15,19 m, o que não cabe com 15,34 m em IBGE e uma diferença de 0,20 m (a crista na régua seria 15,14 m). Há algo nessa leitura que eu esteja deixando passar — por exemplo, a série consistida ter sido ajustada depois?
+
+4. **O senhor dispõe das cotas de pico na régua (com hora) de 09/07/1983 e 07/08/1984** na estação 83800002? São a comparação que permitiria fechar a questão.
+
+5. **A partir de que ano a lista "Enchentes Registradas" da Defesa Civil de Blumenau deixa de reproduzir a Tabela 4** e passa a publicar a leitura da régua operacional? Os valores coincidem ao centímetro até 2001, e de 2008 em diante diferem dos do CEOPS.
+
+Nenhuma conversão será aplicada aos dados antes da sua resposta, e a fonte será citada no site. O site está em desenvolvimento e com acesso restrito; se desejar acompanhá-lo, basta indicar um e-mail e eu libero o acesso, sem custo e sem cadastro. Se for mais prático, um contato telefônico resolve em poucos minutos.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

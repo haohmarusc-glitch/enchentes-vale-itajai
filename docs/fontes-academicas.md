@@ -144,7 +144,7 @@ Somam-se a eles o ND de 26/09/2013 ("A diferença entre a régua do Ceops, que f
 da Prefeitura, na Ponte de Ferro chegou a 20 centímetros") e o JSC de 2011, sobre as cotas de enchente ("Os
 níveis usados atualmente foram calculados em 1984 e revisados em 1992, quando se percebeu diferença de 10
 centímetros entre o previsto e o real"). **Nada foi convertido; a regra fica.**
-A pergunta à FURB ganha três itens: a unidade e o zero da série da ANA em 1983; o que "40 cm a menos"
+A pergunta à FURB (C25, enviado em 02/10/2026 12:30 BRT a cordero@furb.br) ganha três itens: a unidade e o zero da série da ANA em 1983; o que "40 cm a menos"
 significa em leitura de régua; e desde quando a lista do AlertaBlu deixa de ser a Tabela 4.
 
 Até lá a regra fica de pé, e o campo `referencia` do registro de 2011 continua `null` — que é o
