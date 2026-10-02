@@ -22,6 +22,7 @@ data/
   estacoes.json   cidades por rio, ordem, códigos ANA, cotas de referência, URLs de tempo real
   enchentes.json  picos históricos: um registro por (evento, cidade), com fonte e confiança
   transito.json   tempo que a cheia leva para descer entre cidades
+  eventos-pendentes-regua.json  números sem régua declarada — fora da série (ver regra abaixo)
 scripts/          Python 3.11+ — coleta (ANA, Defesa Civil) e cálculo de correlações
 web/              React + Vite + TypeScript — o site
 ```
@@ -52,11 +53,11 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 
 ### Picos históricos faltantes
 - O inventário e o prompt para pesquisa externa ficam em `docs/PICOS-FALTANTES.md` (não inventar número; só cadastrar com original aberto).
-- Em **26/09/2026** a busca das prioridades 1 (Ascurra e Guabiruba) achou candidatos **ainda fora** de `enchentes.json`. Originais/CSV em evidência local; nada entra no JSON sem abrir a fonte de novo e seguir as regras da §5 do doc.
+- Em **26/09/2026** a busca das prioridades 1 (Ascurra e Guabiruba) achou candidatos **ainda fora** de `enchentes.json`. Originais/CSV em evidência local; nada entra no JSON sem abrir a fonte de novo e seguir as regras da §5 do doc. **Exceção, 02/10/2026:** Ascurra 01/09/2026 **entrou** (10,13 m às 05:10, hora de Brasília, `referencia: régua` = DCSC-00003) por decisão do Jefferson — a ND e a crista da DCSC concordam. Os outros quatro continuam fora.
 
 | Cidade | Data | Pico | Régua | Fonte | Confiança |
 |---|---|---|---|---|---|
-| Ascurra | 01/09/2026 ~05:10–06:00 | 10,13 m | DCSC-00003 Ponte do Beber | API `historic` DCSC + ND+ | alta / média |
+| Ascurra | 01/09/2026 05:10 — **cadastrado 02/10/2026** | 10,13 m | DCSC-00003 Ponte do Beber | API `historic` DCSC + ND+ | alta |
 | Ascurra | 12/09/2026 00:00 | 10,46 m | DCSC-00003 | API `historic` DCSC | alta |
 | Guabiruba | 11/07/2026 14:40 | 2,14 m | DCSC-00029 | API `historic` DCSC | alta |
 | Guabiruba | 31/08/2026 11:20 | 2,04 m | DCSC-00029 | API `historic` DCSC | alta |
@@ -64,6 +65,14 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 
 - **Não cadastrar ainda** as datas-alvo antigas (2008–2024) dessas cidades: a API não as cobre; `guabiruba.sc.gov.br/noticia-46906/` deu 403; SDE 006/2024 não lista Ascurra nem Guabiruba.
 - Descartar: Travessa Zonta / Ribeirão São Paulo em Ascurra; Guabiruba em ~25 m ortométrica; lâmina d'água na rua.
+
+### Eventos pendentes de identificação da régua — REGRA (decisão de 02/10/2026)
+- `data/eventos-pendentes-regua.json` guarda números com fonte mas **sem régua declarada** em cidade cuja série tem referência
+  conhecida (hoje: Gaspar 09/10/2023 e 09/09/2011; Indaial 04/10/2023, que **não** se vincula sozinho à DCSC-00006).
+- Ficam **fora** de recordes, comparação com o nível atual, gráficos contínuos, modelos de propagação e calibração de trânsito.
+  A garantia é ninguém ler o arquivo: site e bot não o importam, e `teste_validar_dados.py` trava isso.
+- Migram para `enchentes.json` só quando a fonte identificar a régua ou permitir reconciliar os zeros, por decisão do Jefferson;
+  migrar é **mover** (o validador acusa o mesmo evento nos dois arquivos).
 
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da

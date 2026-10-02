@@ -1331,11 +1331,14 @@ class DivergenciaQueVirouRegistro(unittest.TestCase):
         soltos = [e for e in self.brusque if e.get("data") == "1984"]
         self.assertEqual(soltos, [], "o 10,30 m de 1984 é divergência, não registro")
 
-    def test_o_valor_continua_guardado_como_divergencia(self):
-        """Apagar o registro não podia apagar o número: ele é a leitura antiga."""
+    def test_os_dois_valores_de_1984_continuam_guardados(self):
+        """Apagar o registro não podia apagar o número. Desde 02/10/2026 (decisão
+        do Jefferson) o 10,30 m é o ADOTADO — tem fonte da Defesa Civil — e o
+        10,5 m adotado antes ficou em divergências. Nenhum dos dois some."""
         oitenta_e_quatro = next(e for e in self.brusque if e.get("data") == "1984-08")
+        self.assertEqual(oitenta_e_quatro["pico_m"], 10.3)
         valores = [d["pico_m"] for d in oitenta_e_quatro["divergencias"]]
-        self.assertIn(10.3, valores)
+        self.assertIn(10.5, valores)
 
     def test_a_ordem_das_cheias_de_brusque(self):
         """
@@ -1895,6 +1898,95 @@ class AvisaEmMonitoramento(unittest.TestCase):
         erros = erros_de_monitoramento(d)
         self.assertEqual(len(erros), 1)
         self.assertIn("não aponta para nada", erros[0])
+
+
+class EventosPendentesDeRegua(unittest.TestCase):
+    """`eventos-pendentes-regua.json` (decisão do Jefferson, 02/10/2026).
+
+    Gaspar 09/10/2023 e 09/09/2011 e Indaial 04/10/2023 têm número e fonte, mas
+    não a régua. A decisão: guardar, e deixar FORA de recordes, da comparação
+    com o nível atual, dos gráficos e dos modelos de propagação. A exclusão é
+    garantida por ninguém ler o arquivo — e é isso que se trava aqui.
+    """
+
+    ARQUIVO = "eventos-pendentes-regua.json"
+
+    def setUp(self):
+        self.real = json.loads((DADOS / self.ARQUIVO).read_text(encoding="utf-8"))
+
+    def rodar(self, pendentes, serie=None):
+        vd.erros.clear()
+        orig = vd.le_json
+
+        def falso(nome):
+            if str(nome).endswith(self.ARQUIVO):
+                return {"eventos": pendentes}
+            if nome == "enchentes.json" and serie is not None:
+                return {"eventos": serie}
+            return orig(nome)
+        vd.le_json = falso
+        try:
+            vd.valida_eventos_pendentes({("itajai-acu", "gaspar"), ("itajai-acu", "indaial")})
+        finally:
+            vd.le_json = orig
+        return list(vd.erros)
+
+    def evento(self, **mudar):
+        e = {"rio": "itajai-acu", "cidade": "gaspar", "data": "2023-10-09", "pico_m": 7.09,
+             "confianca": "baixa", "referencia": None, "fonte": "boletim", "motivo": "sem régua",
+             "para_migrar": "a régua"}
+        e.update(mudar)
+        return e
+
+    def test_os_tres_da_decisao_estao_la_e_sem_referencia(self):
+        chaves = {(e["cidade"], e["data"]) for e in self.real["eventos"]}
+        self.assertEqual(chaves, {("gaspar", "2023-10-09"), ("gaspar", "2011-09-09"),
+                                  ("indaial", "2023-10-04")})
+        self.assertTrue(all("referencia" in e and e["referencia"] is None
+                            for e in self.real["eventos"]))
+
+    def test_o_arquivo_real_passa(self):
+        vd.erros.clear()
+        vd.valida_eventos_pendentes(vd.valida_estacoes())
+        self.assertEqual([x for x in vd.erros if "eventos-pendentes" in x], [])
+
+    def test_nenhum_esta_tambem_na_serie(self):
+        serie = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))["eventos"]
+        na_serie = {(e["cidade"], e["data"]) for e in serie}
+        for e in self.real["eventos"]:
+            self.assertNotIn((e["cidade"], e["data"]), na_serie)
+
+    def test_copiar_para_a_serie_sem_apagar_daqui_e_erro(self):
+        copia = {k: v for k, v in self.evento().items() if k in ("rio", "cidade", "data", "pico_m")}
+        erros = self.rodar([self.evento()], serie=[copia])
+        self.assertTrue(any("Migrar é mover" in x for x in erros), erros)
+
+    def test_evento_com_regua_declarada_nao_e_pendente(self):
+        self.assertTrue(any("'referencia'" in x for x in self.rodar([self.evento(referencia="régua")], [])))
+        sem_chave = self.evento()
+        del sem_chave["referencia"]
+        self.assertTrue(any("'referencia'" in x for x in self.rodar([sem_chave], [])))
+
+    def test_motivo_e_condicao_de_migrar_sao_obrigatorios(self):
+        erros = self.rodar([self.evento(motivo="", para_migrar=None)], [])
+        self.assertTrue(any("'motivo'" in x for x in erros))
+        self.assertTrue(any("'para_migrar'" in x for x in erros))
+
+    def test_site_e_bot_nao_leem_o_arquivo(self):
+        """A exclusão de recordes, comparação, gráficos e propagação vale porque
+        nenhum código de tela, de aviso ou de previsão abre este arquivo. Só o
+        validador e os testes podem citá-lo."""
+        raiz = DADOS.parent
+        permitidos = {"validar_dados.py", "teste_validar_dados.py"}
+        leitores = []
+        arquivos = [*(raiz / "web" / "src").rglob("*.ts"), *(raiz / "web" / "src").rglob("*.tsx"),
+                    *(raiz / "web").glob("*.ts"), *(raiz / "scripts").rglob("*.py")]
+        for f in arquivos:
+            if f.name in permitidos:
+                continue
+            if "eventos-pendentes-regua" in f.read_text(encoding="utf-8", errors="replace"):
+                leitores.append(str(f.relative_to(raiz)))
+        self.assertEqual(leitores, [])
 
 
 if __name__ == "__main__":

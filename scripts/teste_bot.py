@@ -2260,8 +2260,10 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 02/10/2026, sétima rodada: +7 de Blumenau que a lista oficial do AlertaBlu
         # tem e o repositório não tinha (referencia null: a lista não declara régua)
         # e Botuverá 22/07/2026 — 376 → 384, 236 → 244.
-        self.assertEqual(len(self.ev), 384)
-        self.assertEqual(refs["régua"], 68)
+        # 02/10/2026, decisão do Jefferson: Ascurra 01/09/2026 (10,13 m, DCSC-00003,
+        # a régua das cotas da cidade) — 384 → 385, régua 68 → 69.
+        self.assertEqual(len(self.ev), 385)
+        self.assertEqual(refs["régua"], 69)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
         self.assertEqual(refs["None"], 244)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 316)

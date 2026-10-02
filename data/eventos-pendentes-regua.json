@@ -1,0 +1,60 @@
+{
+  "_meta": {
+    "descricao": "Eventos pendentes de identificação da régua. Números publicados por fonte identificável, mas sem a régua (ou o zero) declarada, numa cidade cuja série em enchentes.json tem referência conhecida. Guardados aqui para não se perderem, FORA da série.",
+    "decisao": "Jefferson, 02/10/2026: \"ainda não cadastrar como picos comparáveis. Sem referência inequívoca da régua, esses números podem contaminar a série.\" Ficam com referencia = null (não declarada).",
+    "excluidos_de": [
+      "recordes e rankings de cheias",
+      "comparação com o nível atual",
+      "gráficos contínuos da série histórica",
+      "modelos de propagação e previsão a jusante",
+      "calibração de tempo de trânsito"
+    ],
+    "como_a_exclusao_e_garantida": "Este arquivo NÃO é lido pelo site (web/) nem pelo bot: nenhum deles importa este nome, e scripts/teste_validar_dados.py trava isso. scripts/validar_dados.py confere a estrutura e que nenhum evento daqui aparece também em enchentes.json.",
+    "para_migrar": "Um evento só sai daqui para enchentes.json quando a fonte identificar a régua, ou quando houver dado para reconciliar os zeros — e por decisão do Jefferson, em PR. Ao migrar, apagar daqui no mesmo commit.",
+    "campos": {
+      "pico_m": "O valor como a fonte publica, sem conversão.",
+      "referencia": "Sempre null aqui: régua não declarada.",
+      "motivo": "Por que não entrou na série.",
+      "para_migrar": "O que precisa aparecer para o evento poder entrar."
+    }
+  },
+  "eventos": [
+    {
+      "rio": "itajai-acu",
+      "cidade": "gaspar",
+      "data": "2023-10-09",
+      "hora": "07:50",
+      "pico_m": 7.09,
+      "confianca": "baixa",
+      "referencia": null,
+      "fonte": "Prefeitura de Gaspar, \"Boletim Defesa Civil – 10/10 – 17h\" (https://www.gaspar.sc.gov.br/boletim-defesa-civil-10-10-17h/) — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Gaspar_boletim_10-10-17h.html — trecho: \"O nível do rio atingiu seu pico às 7h50 de segunda-feira (9) com 7,09 metros acima da normalidade\"",
+      "motivo": "O boletim mede em \"metros acima da normalidade\" e não nomeia a régua. A série de Gaspar em enchentes.json é toda `régua` (tabela oficial da Defesa Civil de Gaspar); afirmar a mesma régua seria vínculo por nome. Referência ainda não confirmada.",
+      "para_migrar": "A Defesa Civil de Gaspar dizer de que régua e de que zero é o \"acima da normalidade\" dos boletins de 2023, ou a tabela oficial trazer este evento.",
+      "nota": "Hora sem fuso declarado. Os boletins de 13/10/2023 marcam 7,48 m às 3h (leitura, não pico), acima dos 7,45 m da tabela oficial para o evento de 12/10 — mesma pergunta de régua."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "gaspar",
+      "data": "2011-09-09",
+      "pico_m": 9.42,
+      "confianca": "baixa",
+      "referencia": null,
+      "fonte": "Revista Esboços (UFSC), v. 20, n. 30, 2013, Tabela 3 \"Picos de enchentes registrados na bacia do rio Itajaí-Açu no século XXI\", fonte CEOPS/FURB, PDF p. 12, linha \"2011 9/09\" (completa, sete valores para sete colunas) — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Esbocos_Rio-do-Sul_vulnerabilidades.pdf",
+      "motivo": "O CEOPS não declara a régua de Gaspar, e a série de Gaspar em enchentes.json é toda `régua` da Defesa Civil municipal. Referência ainda não confirmada.",
+      "para_migrar": "Documento que identifique a estação/régua do CEOPS em Gaspar e o zero dela em relação à régua municipal."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "indaial",
+      "data": "2023-10-04",
+      "hora": "20:00",
+      "pico_m": 5.75,
+      "confianca": "baixa",
+      "referencia": null,
+      "fonte": "Vale do Itajaí Notícias, \"Indaial em estado de alerta: 13 bairros atingidos\", 05/10/2023 (https://valedoitajainoticias.com.br/indaial-em-estado-de-alerta-sao-13-bairros-atingidos-e-es/) — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Indaial_valedoitajai_2023-10.html — trecho: \"A máxima registrada às 20h de ontem (04), foi de 5,75 metros, sinalizando um estado de emergência\"; \"conforme informou a Defesa Civil\"",
+      "motivo": "A matéria não nomeia a régua. NÃO vincular automaticamente à DCSC-00006: o deslocamento entre ela e a régua da COMPDEC de Indaial continua pendente. A série de Indaial em enchentes.json é `régua` (PDF da Defesa Civil de Indaial).",
+      "para_migrar": "A Defesa Civil de Indaial dizer em que régua leu os 5,75 m, ou o deslocamento DCSC-00006 × régua COMPDEC ficar medido.",
+      "nota": "Hora sem fuso declarado."
+    }
+  ]
+}

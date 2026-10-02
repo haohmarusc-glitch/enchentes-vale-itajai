@@ -1103,6 +1103,54 @@ def valida_divergencia_que_virou_registro() -> None:
 
 
 
+#: Campos obrigatórios de um evento pendente de identificação da régua.
+CAMPOS_PENDENTE = ("rio", "cidade", "data", "pico_m", "confianca", "fonte", "motivo", "para_migrar")
+
+
+def valida_eventos_pendentes(conhecidas: set[tuple[str, str]]) -> None:
+    """`eventos-pendentes-regua.json`: guardados FORA da série, e só fora.
+
+    POR QUE EXISTE (02/10/2026, decisão do Jefferson). Gaspar 09/10/2023 e
+    09/09/2011 e Indaial 04/10/2023 têm número e fonte, mas não a régua, em
+    cidades cuja série é toda `régua`. Entrar em `enchentes.json` com
+    `referencia: null` partiria a cidade em duas escalas; entrar como `régua`
+    seria vínculo por nome. Ficam num arquivo que nem o site nem o bot leem.
+
+    Esta guarda cobra três coisas: (1) a estrutura — motivo e condição de
+    migração escritos, não implícitos; (2) `referencia` null, porque um
+    evento com régua declarada não tem por que estar aqui; (3) que nenhum deles
+    exista TAMBÉM em `enchentes.json` — migrar é mover, não copiar.
+    """
+    caminho = RAIZ / "data" / "eventos-pendentes-regua.json"
+    if not caminho.exists():
+        return
+    eventos = le_json(caminho).get("eventos", [])
+    serie = le_json("enchentes.json")["eventos"]
+    for i, e in enumerate(eventos):
+        onde = f"eventos-pendentes-regua.json[{i}] ({e.get('cidade')} {e.get('data')})"
+        for campo in CAMPOS_PENDENTE:
+            if e.get(campo) in (None, ""):
+                erro(f"{onde}: falta '{campo}'")
+        if "referencia" not in e or e["referencia"] is not None:
+            erro(f"{onde}: 'referencia' tem de existir e ser null — evento com régua "
+                 "declarada não é pendente; vai para enchentes.json por decisão do Jefferson")
+        if e.get("confianca") not in ("alta", "media", "baixa"):
+            erro(f"{onde}: confianca inválida {e.get('confianca')!r}")
+        valida_data(str(e.get("data", "")), onde)
+        if (e.get("rio"), e.get("cidade")) not in conhecidas:
+            erro(f"{onde}: cidade não está em estacoes.json no rio {e.get('rio')!r}")
+        for s in serie:
+            if s.get("cidade") != e.get("cidade"):
+                continue
+            mesma_data = s.get("data") == e.get("data")
+            mesmo_valor = (isinstance(s.get("pico_m"), (int, float))
+                           and round(float(s["pico_m"]), 2) == round(float(e.get("pico_m") or -1), 2)
+                           and str(s.get("data", ""))[:4] == str(e.get("data", ""))[:4])
+            if mesma_data or mesmo_valor:
+                erro(f"{onde}: o mesmo evento está em enchentes.json ({s.get('data')}, "
+                     f"{s.get('pico_m')} m). Migrar é mover: apague daqui no mesmo commit.")
+
+
 def valida_regua_das_cotas() -> None:
     """
     Cidade que PINTA cor no mapa declara de qual régua são as cotas?
@@ -1506,7 +1554,8 @@ BRUTOS_PENDENTES: dict[str, str] = {
 
 #: Onde procurar citação de bruto. Só os JSONs de dados: é ali que a citação
 #: vira evidência de um número que a tela mostra.
-JSONS_QUE_CITAM = ("data/estacoes.json", "data/enchentes.json", "data/transito.json")
+JSONS_QUE_CITAM = ("data/estacoes.json", "data/enchentes.json", "data/transito.json",
+                   "data/eventos-pendentes-regua.json")
 
 RE_CAMINHO_BRUTO = re.compile(r"data/brutos/[A-Za-z0-9_.-]+\.[A-Za-z0-9]{2,10}")
 
@@ -1982,6 +2031,7 @@ def nome_de_rua_comparavel(rua: str) -> str:
 def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
+    valida_eventos_pendentes(conhecidas)
     valida_transito(conhecidas)
     valida_monotonia_transito()
     valida_meses_pareados()
