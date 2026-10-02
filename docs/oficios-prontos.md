@@ -351,7 +351,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44 · 📎 tabela recebida em 02/10/2026 18:10 BRT · agradecimento enviado em 02/10/2026
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44 · 📎 tabela recebida em 02/10/2026 18:10 BRT · agradecimento enviado em 02/10/2026 · ✅ RESPONDIDO 19:33 BRT (régua de hoje = GPS) · nota de correção do link enviada
 
 > Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
 > HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
@@ -460,4 +460,29 @@ Resposta ao e-mail da tabela, a pedido do Jefferson: agradece ("foi de enorme im
 que a série de Blumenau no site citará o Prof. Cordero e o CEOPS/FURB como fonte da conversão, manda o link do site
 (**erro**: o site tem acesso restrito e não abriu para ele; daqui em diante, sem link, ver a regra no topo) e faz
 duas perguntas: (1) a data de instalação da régua nova; (2) se as leituras de hoje (ANA 83800002 e AlertaBlu)
-já estão na régua nova/GPS, ou seja, se 15,34 m de 1983 (IBGE) = 15,54 m na régua atual. **Aguardando resposta.**
+já estão na régua nova/GPS, ou seja, se 15,34 m de 1983 (IBGE) = 15,54 m na régua atual. Respondido abaixo.
+
+### Resposta ao agradecimento (02/10/2026, 19:33 BRT, mesmo fio, id 1a0fec01dcba5a96)
+
+Transcrição literal:
+
+> "A régua atual já está na referência gps ! Olha que depois de 2011 não somei os 20 cm ! Não lembro bem a data mas
+> foi depois da enchente de 2011! Porque na referida enchente o talude do rio deslizou e levou as réguas juntos !
+> Então após da enchente de 2011 foi instalada no pilar da ponte com referência GPS ! Depois foram montadas as réguas
+> a montante da ponte com a mesma referência GPS"
+
+**Leitura:**
+* **Pergunta 2, respondida: sim.** A régua de hoje está em GPS (IBGE + 0,20 m). Os 15,34 m de 1983 (IBGE)
+  equivalem a 15,54 m na régua atual.
+* **Pergunta 1, sem dia.** A troca veio depois da cheia de set/2011, porque o talude deslizou e levou as réguas.
+  Primeiro foi instalada uma régua no pilar da ponte, já em GPS; depois, as réguas a montante da ponte, na mesma
+  referência. A planilha marca a mudança em 2013. Janela: set/2011 a set/2013. O cadastro de Blumenau não tem
+  leitura nesse intervalo.
+* "Depois de 2011 não somei os 20 cm" explica por que as colunas IBGE e GPS da planilha são iguais de 2013 em diante.
+* A divergência da planilha com a Tabela 4 em 1931–1983 não foi comentada.
+
+### Segundo agradecimento e correção do link (02/10/2026, mesmo fio, id 1a0fec884d39d16b)
+
+A pedido do Jefferson: agradece de novo a explicação e a rapidez, e corrige o e-mail anterior. O site tem acesso
+restrito e o link não abre sem cadastro; se ele quiser acompanhar, basta indicar o e-mail para cadastro. **Sem
+link**, conforme a regra do `CLAUDE.md`.
