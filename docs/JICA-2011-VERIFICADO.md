@@ -40,10 +40,28 @@ regime das barragens e com a magnitude — a própria tabela mostra o tempo ENCU
   coluna de 10 anos.
 - Ponderar por declividade **e por vazão** — declividade sozinha não explica a variação entre 5 e 50 anos.
 
-## Pendente de verificação direta
-Eu confirmei que a tabela **existe** (sumário do Vol. III-A). **Não consegui ler as células** — a extração
-do PDF truncou por volta da página A-50. Os valores da matriz neste documento vêm da auditoria, não da
-minha leitura. **Confirmar na página A-80 antes de gravar em `transito.json`.**
+## ~~Pendente de verificação direta~~ — LIDA na p. A-80 em 02/10/2026
+Em 03/09 eu só tinha confirmado que a tabela **existe** (sumário do Vol. III-A); a extração truncava por volta
+da A-50. A sétima rodada de pesquisa trouxe a página: `data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/`
+`JICA_VolIII-A_pdf-p91_A-80_Tabela-7.5.1.pdf` (PDF p. 91, impressa "A - 80") e o render
+`JICA_VolIII-A_pdf-p91_A-80_render-91.png`; o PDF inteiro (`openjicareport.jica.go.jp/pdf/12043584_01.pdf`)
+ficou só com o sha256 no manifesto. Lida no render, célula a célula, com Rio do Sul às 08/06 22:00 em todas
+as colunas:
+
+| Horas após Rio do Sul | 5 anos | 10 anos | 25 anos | 50 anos |
+|---|---|---|---|---|
+| Indaial | +10 (08/07 08:00) | +9 | +8 | +8 |
+| Blumenau | +10 (08/07 08:00) | +9 | +7 | +7 |
+| Gaspar | +12 (08/07 10:00) | +11 | +9 | +8 |
+| Ilhota ("IIHOTA" no original) | +17 (08/07 15:00) | +15 | +14 | +12 |
+| Itajaí | +27 (08/08 01:00) | +24 | +21 | +19 |
+
+Coluna de 5 anos inteira: Taió −6, Ibirama −5, Rio do Sul 0, Timbó 0, Ituporanga +1, Brusque +6, Apiúna +9,
+Indaial +10, Blumenau +10, Gaspar +12, Ilhota +17, Itajaí +27. **Tudo bate com o que a auditoria tinha
+passado e com `transito.json._meta`.** Nenhum `horas_min`/`horas_max` mudou: a leitura confirma de onde os
+trechos gravados vieram, e as regras acima (uma coluna por vez, rótulo de hidrograma de projeto) continuam.
+A p. A-79 repete o resumo: "between Rio do Sul and Blumenau city is from 7 to 10 hours; between Blumenau and
+Itajaí is from 14 to 17 hours".
 
 ---
 

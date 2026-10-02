@@ -357,7 +357,8 @@ class MesesPareados(unittest.TestCase):
         ("rio-do-sul 1948-10", "blumenau"),
         ("rio-do-sul 1953-10", "blumenau"),
         ("rio-do-sul 1997-10", "blumenau"),
-        ("rio-do-sul 2009-09", "blumenau"),
+        # ("rio-do-sul 2009-09", "blumenau") saiu em 02/10/2026: a lista oficial do
+        # AlertaBlu (sétima rodada, original salvo) tem Blumenau em 29/09/2009, 8,06 m.
         ("rio-do-sul 2011-07", "blumenau"),
         ("rio-do-sul 2014-10", "blumenau"),
         ("rio-do-sul 2015-09", "blumenau"),

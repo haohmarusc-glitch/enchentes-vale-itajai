@@ -34,14 +34,16 @@ grupos, em vez de tirar uma mediana só.
 
 O ARQUIVO
 ---------
-`data/brutos/blumenau-enchentes-registradas-alertablu.json`, da página
-`/p/enchentes` do AlertaBlu. Ele **ainda não chegou ao repositório** — quando
-chegar, este script roda sozinho.
+O HTML da página `/p/enchentes` do AlertaBlu, salvo na sétima rodada de pesquisa
+(01/10/2026) e guardado com sha256 no manifesto dela (`BRUTO_HTML`). O script lê
+o original, sem JSON intermediário: a tabela é a evidência. Se um dia o coletor
+gravar `blumenau-enchentes-registradas-alertablu.json`, ele tem precedência.
 
 Uso:
     python3 scripts/conferir_blumenau_alertablu.py
 """
 
+import html
 import json
 import re
 import statistics
@@ -52,6 +54,11 @@ from comum import DADOS
 
 CIDADE = "blumenau"
 BRUTO = "brutos/blumenau-enchentes-registradas-alertablu.json"
+BRUTO_HTML = ("brutos/pesquisa-picos-2026-09-24/rodada7/originais/"
+              "AlertaBlu_enchentes-registradas.html")
+
+#: Uma linha da tabela, depois de tirar as tags: "2011 09/09 12,6".
+RE_LINHA_HTML = re.compile(r"\b(\d{4}) (\d{2})/(\d{2}) (\d+(?:,\d+)?)\b")
 ROTULO_IBGE = "IBGE (régua + 0,20 m)"
 
 #: Dois valores "iguais" ao centavo.
@@ -127,6 +134,25 @@ def eventos_do_alertablu(dados: Any) -> list[dict]:
     return saida
 
 
+def eventos_do_html(texto: str) -> list[dict]:
+    """
+    As linhas "Ano Data Cota" da página `/p/enchentes`, como a página escreve.
+
+    Lê só depois do cabeçalho da tabela, para nenhum número do menu ou do rodapé
+    virar enchente. A cota sai como a página publica (`12,6`), e quem a lê como
+    número é `eventos_do_alertablu`, o mesmo caminho do JSON.
+    """
+    limpo = re.sub(r"<script.*?</script>|<style.*?</style>", " ", texto, flags=re.S | re.I)
+    limpo = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", limpo)))
+    inicio = limpo.find("Ano Data Cota")
+    if inicio < 0:
+        return []
+    return eventos_do_alertablu([
+        {"data": f"{ano}-{mes}-{dia}", "cota": cota}
+        for ano, dia, mes, cota in RE_LINHA_HTML.findall(limpo[inicio:])
+    ])
+
+
 def nossos_eventos() -> list[dict]:
     eventos = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))["eventos"]
     saida = []
@@ -159,12 +185,16 @@ def parear(deles: list[dict], nossos: list[dict]) -> tuple[list[dict], list[str]
         candidatos = por_ano.get(d["ano"], [])
         if not candidatos:
             continue
+        # Mês diferente, ou dia diferente no mesmo mês, é OUTRA enchente: o
+        # AlertaBlu lista 05, 09, 12 e 29/10/2023 como quatro. Só o registro
+        # nosso que não traz o mês (ou o dia) casa com qualquer um.
         if d["mes"]:
-            candidatos = [c for c in candidatos if c["mes"] == d["mes"]] or candidatos
+            candidatos = [c for c in candidatos if c["mes"] in (d["mes"], None)]
         if d["dia"]:
             exatos = [c for c in candidatos if c["dia"] == d["dia"]]
-            if exatos:
-                candidatos = exatos
+            candidatos = exatos or [c for c in candidatos if c["dia"] is None]
+        if not candidatos:
+            continue
         if len(candidatos) != 1:
             ambiguos.append(f"{d['data']}: {len(candidatos)} eventos nossos no mesmo período")
             continue
@@ -226,6 +256,20 @@ def veredito(pares: list[dict]) -> tuple[str, str]:
             f"{b['mediana']:+.2f} m. Não é diferença de referência: é mudança no meio "
             "da série. NÃO converter — nenhum número serve para os dois trechos")
 
+    # O rótulo IBGE só diz alguma coisa sobre os anos em que ele existe. Os
+    # rotulados vêm da Tabela 4 de Cordero & Medeiros, que termina em 2001; um
+    # par sem rótulo depois disso não foi julgado por régua nenhuma — compara o
+    # AlertaBlu com registros que vieram da mesma régua dele. Concluir para a
+    # série inteira seria estender a medida a um trecho que ela não mediu.
+    ultimo = max(p["ano"] for p in rotulados)
+    depois = [p for p in sem_rotulo if p["ano"] > ultimo]
+    if depois:
+        return "so_ate_o_ultimo_rotulado", (
+            f"o deslocamento dos rotulados ({a['mediana']:+.2f} m em {a['n']} pares) só "
+            f"vale até {ultimo}, o último ano com rótulo IBGE; {len(depois)} pares "
+            f"depois disso ({min(p['ano'] for p in depois)}–{max(p['ano'] for p in depois)}) "
+            "não têm como ser julgados por ele. NÃO converter a série")
+
     if abs(a["mediana"]) <= TOLERANCIA_M:
         return "alertablu_em_ibge", (
             f"o AlertaBlu bate com o rótulo IBGE ({a['mediana']:+.2f} m em {a['n']} "
@@ -242,15 +286,17 @@ def veredito(pares: list[dict]) -> tuple[str, str]:
 
 
 def main() -> int:
-    caminho = DADOS / BRUTO
-    if not caminho.exists():
-        print(f"{caminho} não está aqui.\n\n"
+    caminho, caminho_html = DADOS / BRUTO, DADOS / BRUTO_HTML
+    if caminho.exists():
+        deles = eventos_do_alertablu(json.loads(caminho.read_text(encoding="utf-8")))
+    elif caminho_html.exists():
+        deles = eventos_do_html(caminho_html.read_text(encoding="utf-8"))
+    else:
+        print(f"Nem {caminho} nem {caminho_html} estão aqui.\n\n"
               "A tabela vem da página /p/enchentes do AlertaBlu (102 enchentes,\n"
               "1852–2024). Sem ela esta conferência não roda — e é ela que decide\n"
               "a referência da série de Blumenau.", file=sys.stderr)
         return 1
-
-    deles = eventos_do_alertablu(json.loads(caminho.read_text(encoding="utf-8")))
     nossos = nossos_eventos()
     pares, ambiguos = parear(deles, nossos)
     rotulados = [p for p in pares if p["rotulado_ibge"]]

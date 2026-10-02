@@ -108,5 +108,44 @@ partir de um resumo de segunda mão seria exatamente o erro que a regra existe p
 2. O teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984) ou a resposta da FURB,
    que continuam sendo as duas saídas que a própria regra prevê para ser removida.
 
+### A tabela chegou (02/10/2026) — e diz "muda com a época"
+
+A sétima rodada de pesquisa salvou o HTML de `/p/enchentes`
+(`data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html`, sha256 no
+manifesto), e o script passou a lê-lo direto. 102 enchentes, 1852–2024; **a lista não declara régua nem
+zero**. O que o cruzamento mostra, e o que não mostra:
+
+* **Até 2001, a lista reproduz a Tabela 4 de Cordero & Medeiros ao centavo** — 58 pares com o rótulo IBGE,
+  mediana +0,00 m, 98% exatos (a exceção é 18/08/1977: 9,25 nosso × 9,15 dela).
+* **De 2008 em diante, nada a julga.** Os nossos registros desse trecho vieram da própria lista ou da
+  imprensa, na mesma régua dela; compará-los com ela dá +0,00 m e não prova nada. O que existe de fora é o
+  CEOPS na Tabela 3 do Esboços (UFSC, 2013): **+0,20 m** sobre a lista em 31/08/2011 (8,7 × 8,5) e
+  09/09/2011 (12,8 × 12,6), e igual a ela em 2001 (11,02).
+* O primeiro veredito do script foi "AlertaBlu em IBGE — subtrair 0,20 m" na série inteira. **Estava
+  errado**: casava enchentes diferentes do mesmo mês e estendia ao trecho recente uma medida feita só até
+  2001. As duas coisas foram corrigidas com teste; o veredito agora é `so_ate_o_ultimo_rotulado` e a saída
+  é 2 — **não converter**.
+
+**Três números para a mesma pergunta, e nenhum é o teste da regra:**
+
+1. **0,20 m** — a regra (CEOPS 13,00 × Defesa Civil 12,80 em set/2011) e o padrão do Esboços em 2011.
+2. **≤ 0,15 m em 1983, se** a unidade do XML da ANA é cm e o zero é o da régua daquele ano. O serviço
+   `HidroSerieHistorica` (83800002, consistido) dá 1519 como valor **diário** de 09/07/1983 (régua lida pelo
+   observador, `TipoMedicaoCotas` 1). Um valor diário não passa da crista; se a régua ficasse 0,20 m abaixo
+   dos 15,34 m, a crista nela seria 15,14 m. Agosto de 1984 (1485 no dia 7) cabe em qualquer hipótese. O XML
+   não declara unidade e o significado do status não foi confirmado: é **pista**, não teste — o teste pede a
+   crista.
+3. **0,40 m depois de 2011** — Cordero, Salvador e Refosco ("Cotas-enchente do município de Blumenau", XX
+   SBRH, p. 2): a ANA aceitou mudar a referência da régua para a do IBGE levantada por GPS, "que deu 40 cm.
+   Assim a referência da régua da ANA ficou 40 cm a menos do que as enchentes anteriores". O mesmo artigo dá
+   13,0 m para set/2011.
+
+Somam-se a eles o ND de 26/09/2013 ("A diferença entre a régua do Ceops, que fica na Ponte Adolfo Konder e
+da Prefeitura, na Ponte de Ferro chegou a 20 centímetros") e o JSC de 2011, sobre as cotas de enchente ("Os
+níveis usados atualmente foram calculados em 1984 e revisados em 1992, quando se percebeu diferença de 10
+centímetros entre o previsto e o real"). **Nada foi convertido; a regra fica.**
+A pergunta à FURB ganha três itens: a unidade e o zero da série da ANA em 1983; o que "40 cm a menos"
+significa em leitura de régua; e desde quando a lista do AlertaBlu deixa de ser a Tabela 4.
+
 Até lá a regra fica de pé, e o campo `referencia` do registro de 2011 continua `null` — que é o
 rótulo honesto para "não se sabe", e não um problema a ser preenchido no chute.

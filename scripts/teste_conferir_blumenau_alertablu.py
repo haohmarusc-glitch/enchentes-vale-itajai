@@ -17,9 +17,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from conferir_blumenau_alertablu import (DESLOCAMENTO_IBGE_M, MINIMO_POR_GRUPO,
-                                         ROTULO_IBGE, chave_de_data,
-                                         eventos_do_alertablu, numero, parear,
+from comum import DADOS
+from conferir_blumenau_alertablu import (BRUTO_HTML, DESLOCAMENTO_IBGE_M,
+                                         MINIMO_POR_GRUPO, ROTULO_IBGE,
+                                         chave_de_data, eventos_do_alertablu,
+                                         eventos_do_html, numero, parear,
                                          resumo, veredito)
 
 
@@ -70,6 +72,38 @@ class TestLeituraDoArquivo(unittest.TestCase):
         self.assertEqual(eventos_do_alertablu([{"cota": 12.6}, {"data": "2011"}]), [])
 
 
+class TestLeituraDoHtml(unittest.TestCase):
+    """A página /p/enchentes, como a sétima rodada a salvou."""
+
+    PAGINA = ("<nav>Ligue 199 · 2024 19/05 menu</nav><table><tr><th>Ano</th><th>Data</th>"
+              "<th>Cota</th></tr><tr><td>2011</td><td>09/09</td><td>12,6</td></tr>"
+              "<tr><td>1983</td><td>09/07</td><td>15,34</td></tr>"
+              "<tr><td>1852</td><td>29/10</td><td>16,3</td></tr></table>")
+
+    def test_le_ano_dia_mes_e_cota_como_a_pagina_escreve(self):
+        lido = eventos_do_html(self.PAGINA)
+        self.assertEqual([(e["ano"], e["mes"], e["dia"], e["cota_m"]) for e in lido],
+                         [("2011", "09", "09", 12.6), ("1983", "07", "09", 15.34),
+                          ("1852", "10", "29", 16.3)])
+
+    def test_nada_antes_do_cabecalho_vira_enchente(self):
+        self.assertNotIn("2024", [e["ano"] for e in eventos_do_html(self.PAGINA)])
+
+    def test_pagina_sem_a_tabela_nao_inventa_linha(self):
+        self.assertEqual(eventos_do_html("<p>2011 09/09 12,6</p>"), [])
+
+    def test_o_original_da_setima_rodada_tem_as_102_enchentes(self):
+        caminho = DADOS / BRUTO_HTML
+        if not caminho.exists():
+            self.skipTest("original da sétima rodada ausente")
+        lido = eventos_do_html(caminho.read_text(encoding="utf-8"))
+        self.assertEqual(len(lido), 102)
+        por_data = {e["data"]: e["cota_m"] for e in lido}
+        self.assertEqual(por_data["2011-09-09"], 12.6)
+        self.assertEqual(por_data["2008-11-24"], 11.52)
+        self.assertEqual(por_data["1983-07-09"], 15.34)
+
+
 class TestPareamento(unittest.TestCase):
     def nossos(self):
         return [
@@ -105,6 +139,32 @@ class TestPareamento(unittest.TestCase):
     def test_evento_que_so_uma_fonte_tem_nao_vira_par(self):
         p, _ = parear([{"data": "1852-10-29", "ano": "1852", "mes": "10", "dia": "29",
                         "cota_m": 16.30}], self.nossos())
+        self.assertEqual(p, [])
+
+    def test_dia_diferente_no_mesmo_mes_e_outra_enchente(self):
+        """
+        O AlertaBlu lista 05, 09, 12 e 29/10/2023 como quatro enchentes. Antes,
+        as quatro casavam com o nosso único registro de outubro e a maior
+        "diferença" da série (−2,23 m) era a de duas cheias distintas.
+        """
+        nossos = [{"data": "2023-10-13", "ano": "2023", "mes": "10", "dia": "13",
+                   "pico_m": 10.61, "referencia": None}]
+        deles = [{"data": f"2023-10-{d}", "ano": "2023", "mes": "10", "dia": d,
+                  "cota_m": v} for d, v in (("05", 8.78), ("29", 8.38))]
+        self.assertEqual(parear(deles, nossos), ([], []))
+
+    def test_registro_nosso_so_com_o_mes_casa_com_o_dia_do_mes(self):
+        nossos = [{"data": "1984-08", "ano": "1984", "mes": "08", "dia": None,
+                   "pico_m": 15.46, "referencia": ROTULO_IBGE}]
+        p, _ = parear([{"data": "1984-08-07", "ano": "1984", "mes": "08", "dia": "07",
+                        "cota_m": 15.46}], nossos)
+        self.assertEqual(len(p), 1)
+
+    def test_mes_diferente_nao_casa(self):
+        nossos = [{"data": "1911-10", "ano": "1911", "mes": "10", "dia": None,
+                   "pico_m": 16.90, "referencia": ROTULO_IBGE}]
+        p, _ = parear([{"data": "1911-05-29", "ano": "1911", "mes": "05", "dia": "29",
+                        "cota_m": 16.90}], nossos)
         self.assertEqual(p, [])
 
     def test_a_diferenca_e_deles_menos_o_nosso(self):
@@ -162,6 +222,25 @@ class TestVeredito(unittest.TestCase):
         chave, porque = veredito(mistura)
         self.assertEqual(chave, "muda_com_a_epoca")
         self.assertIn("NÃO converter", porque)
+
+    def test_conclusao_nao_passa_do_ultimo_ano_rotulado(self):
+        """
+        O caso real de 01/10/2026: 58 rotulados batem ao centavo com o AlertaBlu,
+        mas o rótulo só existe até 2001. Os pares de 2008 em diante comparam o
+        AlertaBlu com registros tirados da mesma régua dele — também dão +0,00 m
+        e não provam nada. O CEOPS publica 11,72 (2008) e 12,8 m (2011) contra
+        11,52 e 12,6 do AlertaBlu. Mandar "subtrair 0,20 m" na série inteira
+        deslocaria justamente as cheias que já estão na régua.
+        """
+        mistura = pares(20, 0.0, rotulado=True, ano=1950) + pares(10, 0.0, rotulado=False, ano=2008)
+        chave, porque = veredito(mistura)
+        self.assertEqual(chave, "so_ate_o_ultimo_rotulado")
+        self.assertIn("NÃO converter", porque)
+        self.assertIn("1969", porque)
+
+    def test_sem_rotulo_dentro_do_periodo_rotulado_nao_trava(self):
+        mistura = pares(20, 0.0, rotulado=True, ano=1950) + pares(3, 0.0, rotulado=False, ano=1960)
+        self.assertEqual(veredito(mistura)[0], "alertablu_em_ibge")
 
     def test_so_os_dois_casos_conclusivos_saem_com_sucesso(self):
         """
