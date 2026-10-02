@@ -4,6 +4,9 @@ Rascunhos complementares do bloco B1: [C15–C22](oficios-b1-c15-c22.md).
 
 Contato preenchido: **Jefferson — (47) 98405-6082 · haohmarusc@gmail.com**
 
+> **REGRA (02/10/2026): nunca pôr link do site em e-mail ou ofício.** O site só abre para e-mail cadastrado.
+> Escrever, no lugar: "se quiser ver o site, basta me mandar o seu e-mail para cadastro". Ver `CLAUDE.md`.
+
 Pronto para copiar e colar no e-mail. O texto-fonte, com a justificativa técnica de
 cada pedido, e os demais ofícios (C1–C4) ficam em `docs/pendencias-navegador-e-oficios.md`.
 
@@ -348,7 +351,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44; tabela prometida
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44 · 📎 tabela recebida em 02/10/2026 18:10 BRT · agradecimento enviado em 02/10/2026
 
 > Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
 > HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
@@ -435,3 +438,26 @@ Transcrição literal:
 registros já diz. A pergunta 1 do seguimento (10,00 m na régua antiga = 9,60 ou 10,40 na nova, e a data da troca)
 **ficou sem resposta**. A tabela ainda não chegou.
 
+### A tabela (02/10/2026, 18:10 BRT, mesmo fio, id 1a0fe741b3d6fddf)
+
+Transcrição literal:
+
+> "Olá! Encaminho os picos com as enchentes com as duas referências (Régua antiga +0,2 = IBGE) a outra
+> (IBGE+0,2=GPS)
+> Após enchente de 2011 foi instalada nova régua (em relação a régua antiga tem 40 cm). A partir desta data não
+> precisa somar nem o 20 cm nem o 40 cm."
+
+Anexo `Picos-Blumenau-1888-2024-IBGE-GPS.xls`, guardado como veio em `data/brutos/furb-cordero-2026-10-02/`
+(sha256 e transcrição no `LEIAME.md` da pasta).
+
+**Leitura:** responde à pergunta 1 do seguimento. A régua nova lê **0,40 m mais alto** que a antiga (10,00 m na
+antiga = 10,40 m na nova) e já está na referência GPS = IBGE + 0,20 m. A planilha marca "Mudança da regua nova"
+na linha de 2013. A análise linha a linha está em `docs/fontes-academicas.md`, seção "A planilha do Prof. Cordero".
+
+### Agradecimento enviado (02/10/2026, mesmo fio, id 1a0feb75f94f4b3b)
+
+Resposta ao e-mail da tabela, a pedido do Jefferson: agradece ("foi de enorme importância para o projeto"), avisa
+que a série de Blumenau no site citará o Prof. Cordero e o CEOPS/FURB como fonte da conversão, manda o link do site
+(**erro**: o site tem acesso restrito e não abriu para ele; daqui em diante, sem link, ver a regra no topo) e faz
+duas perguntas: (1) a data de instalação da régua nova; (2) se as leituras de hoje (ANA 83800002 e AlertaBlu)
+já estão na régua nova/GPS, ou seja, se 15,34 m de 1983 (IBGE) = 15,54 m na régua atual. **Aguardando resposta.**

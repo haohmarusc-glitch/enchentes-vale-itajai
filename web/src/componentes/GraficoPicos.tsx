@@ -11,7 +11,12 @@ import {
 } from 'recharts'
 import type { Cidade, Confianca, Evento } from '../dados/tipos'
 import { comparaData, dataCurta, dataLegivel } from '../logica/datas'
-import { legendaDaEscala, misturaReferencias as misturaDeReferencias } from '../logica/referencias'
+import {
+  ehIBGE,
+  legendaDaEscala,
+  misturaReferencias as misturaDeReferencias,
+  textoDaReferencia,
+} from '../logica/referencias'
 import { avisoDeEncosta } from '../logica/encosta'
 import { metros, numero, rotuloCota } from '../logica/formato'
 import estilos from './GraficoPicos.module.css'
@@ -61,10 +66,12 @@ export default function GraficoPicos({
     }))
 
   // Referências diferentes na mesma cidade não são detalhe de nota de rodapé:
-  // a série longa de Blumenau está 20 cm acima da régua, e as cotas de atenção
-  // e alerta estão NA RÉGUA. Quem olha o gráfico precisa saber que os pontos
-  // não estão todos na mesma escala.
+  // a série longa de Blumenau está no zero do IBGE, 20 cm ABAIXO da régua de
+  // hoje (e 20 cm acima da antiga, trocada depois de 2011), e as cotas de
+  // atenção e alerta estão na régua de hoje. Quem olha o gráfico precisa saber
+  // que os pontos não estão todos na mesma escala.
   const misturaReferencias = misturaDeReferencias(dados.map((d) => d.referencia))
+  const temIBGE = dados.some((d) => ehIBGE(d.referencia))
   const legendaEscala = legendaDaEscala(nomeCidade, cidade?.regua, dados.map((d) => d.referencia))
 
   // O gráfico ordena por metro de rio, e há um contraexemplo enorme no Vale:
@@ -171,12 +178,19 @@ export default function GraficoPicos({
 
       {misturaReferencias ? (
         <p className={estilos.referencias} role="note">
-          <strong>Atenção: estes pontos não estão todos na mesma referência.</strong> A série longa
-          de {nomeCidade} vem da tabela de Cordero &amp; Medeiros e está em referência IBGE, 20 cm
-          acima da régua; outros registros não declaram a referência. As cotas de atenção, alerta e
-          inundação estão <em>na régua</em>. A conversão não foi aplicada de propósito: a imprensa
-          parece usar IBGE também, e converter sem confirmar com a FURB trocaria um erro conhecido
-          por um erro escondido. Cada linha da tabela abaixo diz a sua referência.
+          <strong>Atenção: estes pontos não estão todos na mesma referência.</strong>{' '}
+          {temIBGE ? (
+            <>
+              A série longa de {nomeCidade} vem da tabela de Cordero &amp; Medeiros e está no zero do
+              IBGE, que fica <strong>20 cm abaixo da régua de hoje</strong>. A régua foi trocada depois
+              da cheia de 2011, e a nova lê 40 cm acima da antiga (FURB). Por isso a cheia de 1983,
+              15,34 m nessa tabela, daria cerca de 15,54 m na régua atual.{' '}
+            </>
+          ) : null}
+          Alguns registros não declaram a referência. As cotas de atenção, alerta e inundação e o
+          nível de agora estão <em>na régua de hoje</em>. Nenhum valor foi convertido: a data exata
+          da troca de régua ainda está sendo confirmada com a FURB. Cada linha da tabela abaixo diz
+          a sua referência.
         </p>
       ) : null}
 
@@ -207,11 +221,7 @@ export default function GraficoPicos({
                     ) : null}
                   </td>
                   <td className={estilos.referenciaCelula}>
-                    {d.referencia === undefined
-                      ? 'régua'
-                      : d.referencia === null
-                        ? 'não declarada'
-                        : d.referencia}
+                    {textoDaReferencia(d.referencia)}
                   </td>
                   <td>
                     {d.fonte}

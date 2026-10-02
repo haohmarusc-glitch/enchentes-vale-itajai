@@ -146,6 +146,12 @@ Cada tela de rio mostra: diagrama linear com as cidades; para cada cidade, níve
 
 Respeitar rate limits e identificar o `User-Agent` com o nome do projeto em todos os scripts.
 
+### E-mails e ofícios — REGRA (decisão de 02/10/2026)
+- **Nunca colocar link do site** (GitHub Pages, `pages.dev` ou pré-visualização) em e-mail ou ofício. O site tem
+  acesso restrito e só abre para e-mail cadastrado. Quem recebe um link sem cadastro encontra a tela fechada.
+- No lugar do link, escrever que, **se a pessoa quiser ver o site, basta mandar o e-mail dela para cadastro**.
+- Origem: o agradecimento ao Prof. Cordero (C25, 02/10/2026) saiu com o link, e o site não abriu para ele.
+
 ## Ordem de trabalho sugerida
 
 1. `web/`: scaffold Vite + rotas + leitura dos JSONs + tela `/acu` com diagrama linear e gráfico de picos.

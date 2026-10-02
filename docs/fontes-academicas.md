@@ -176,3 +176,48 @@ referência.
 **Consequência:** é resposta da FURB, mas não fecha a regra — e mostra que ela não se resolve com um número só,
 porque há duas réguas (antes e depois de 2011). Nada foi convertido. O site continua seguro do jeito que está:
 em Blumenau, a comparação com o nível atual só usa os registros rotulados `régua`, que são leituras recentes.
+
+### A planilha do Prof. Cordero (02/10/2026, 18:10) — fecha o sentido da troca, abre 1931–1983
+
+Anexo `Picos-Blumenau-1888-2024-IBGE-GPS.xls` (83 cheias, 1852–2024), guardado como veio em
+`data/brutos/furb-cordero-2026-10-02/` com transcrição e sha256. Colunas: **IBGE** e **"IBGE-GPS (Régua
+Nova)"**. A célula de data guarda só dia e mês (o ano gravado nela é o da digitação); o ano vem da coluna B.
+E-mail que a acompanha: "Régua antiga +0,2 = IBGE … IBGE+0,2=GPS. Após enchente de 2011 foi instalada nova
+régua (em relação a régua antiga tem 40 cm). A partir desta data não precisa somar nem o 20 cm nem o 40 cm."
+
+**O que fica respondido:**
+
+* **O sentido da troca.** A régua nova lê **0,40 m mais alto** que a antiga, e já está em GPS = IBGE + 0,20 m:
+  set/2011 = 12,60 (régua antiga) = 12,80 (IBGE) = 13,00 (GPS = régua nova). Até 2011 a coluna GPS é sempre
+  IBGE + 0,20; **de 2013 em diante as duas colunas são iguais**, e a linha de 2013 traz a anotação
+  "Mudança da regua nova". A data exata da instalação continua sem dia: entre set/2011 e set/2013.
+* **A lista do AlertaBlu muda de régua no meio.** Comparada com o HTML guardado na sétima rodada:
+  - 1852–1900, 09/07/1983, 1984, 1990, 1992, 1997 e 2001: **iguais ao centavo** (planilha IBGE = lista = Tabela 4);
+  - 2008, 31/08/2011 e 09/09/2011: a lista dá **0,20 m a menos** que a coluna IBGE. Nesse trecho a lista está na
+    **régua antiga**, como o Esboços já sugeria;
+  - 2014, 2015, 2017 e as seis de out–nov/2023 e 2024: **iguais**. A lista está na **régua nova**, que é a
+    mesma das leituras de hoje.
+* **Consequência para o que o site compara.** A leitura ao vivo e as cotas de atenção, alerta e inundação
+  estão na régua nova, ou seja, **0,20 m acima do IBGE** e **0,40 m acima da régua antiga**. Os 15,34 m de
+  1983 da Tabela 4 equivalem a **15,54 m** na régua de hoje. O site não converte nada e, em Blumenau, compara
+  o nível atual só com registros rotulados `régua`, todos de 2021 em diante (régua nova). Isso continua
+  seguro. Mas o texto de `GraficoPicos.tsx` ("está em referência IBGE, 20 cm acima da régua") vale só para a
+  régua antiga: para a régua de hoje, o IBGE fica 20 cm **abaixo**.
+
+**O que a planilha NÃO autoriza, e por quê:**
+
+* **1911–1928, datas trocadas de linha.** Os valores são os da Tabela 4, mas o dia/mês de cada linha é o da
+  cheia anterior (ex.: 1911 = 16,90 m com data 29/05, que na Tabela 4 e na lista é 02/10; a data 02/10 está
+  na linha de 1900). Erro de digitação da planilha, não dado novo.
+* **1931–1983, valores diferentes da Tabela 4 publicada e da lista.** Das 22 linhas com a mesma data, em 16 a
+  lista do AlertaBlu (= Tabela 4) fica acima da planilha por **+0,20 a +0,31 m**, metade delas exatamente
+  +0,25 m (ex.: 1980, 13,27 × 13,02; 1961, 10,35 × 10,10). As outras seis fogem do padrão (1931 +0,73;
+  1973-08 +0,11; 1978 +0,05; 1983-05 +0,06; 1977 −0,10; 1979-05 −0,30), e de 1931 a 1955 a maioria das datas
+  nem casa. A planilha foi criada em 1997, antes do artigo do XV SBRH (2003), e a
+  coluna "IBGE" pode ter ficado com valores de uma versão anterior nesse trecho. **Fica valendo a Tabela 4
+  publicada**, que é revisada e é a que os 72 registros já citam. A diferença vai ao Prof. Cordero.
+* **Linhas que o cadastro não tem:** 18/07, 27/07, 29/07 e 02/08/1983 (10,95 / 10,38 / 11,08 / 11,20 m IBGE),
+  08/10/2023 (9,49 m, régua nova) e 26/05/2010 (8,64 m; a lista dá 26/04 e 8,46, possível troca de dígitos).
+  São **candidatos**, não registros: entram só por decisão do Jefferson.
+* **Nada foi convertido e a regra bloqueante fica**, até decisão do Jefferson sobre como aplicar a resposta,
+  em um único commit.

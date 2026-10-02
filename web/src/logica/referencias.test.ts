@@ -1,6 +1,12 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { legendaDaEscala, misturaReferencias, referenciasDistintas } from './referencias'
+import {
+  ehIBGE,
+  legendaDaEscala,
+  misturaReferencias,
+  referenciasDistintas,
+  textoDaReferencia,
+} from './referencias'
 
 test('campo ausente e campo nulo não são a mesma referência', () => {
   // Ausente = registro antigo, assumido na régua. Nulo = ninguém conferiu.
@@ -48,4 +54,20 @@ test('o aviso de não comparar entre cidades vale nos dois casos', () => {
   for (const refs of [['régua'], ['régua', 'IBGE (régua + 0,20 m)']]) {
     assert.ok(legendaDaEscala('X', null, refs).texto.includes('Não compare com outra cidade'))
   }
+})
+
+test('rótulo IBGE na tela diz de QUAL régua são os 20 cm (planilha Cordero, 02/10/2026)', () => {
+  // A régua de hoje lê 0,40 m acima da antiga: o IBGE fica 20 cm ABAIXO dela.
+  // O rótulo cru "régua + 0,20 m" faria somar onde é preciso subtrair.
+  const t = textoDaReferencia('IBGE (régua + 0,20 m)')
+  assert.match(t, /régua antiga \+ 0,20 m/)
+  assert.match(t, /régua de hoje − 0,20 m/)
+  assert.ok(ehIBGE('IBGE (régua + 0,20 m)'))
+  assert.ok(!ehIBGE('régua') && !ehIBGE(null) && !ehIBGE(undefined))
+})
+
+test('rótulos sem IBGE não mudam', () => {
+  assert.equal(textoDaReferencia(undefined), 'régua')
+  assert.equal(textoDaReferencia(null), 'não declarada')
+  assert.equal(textoDaReferencia('régua'), 'régua')
 })
