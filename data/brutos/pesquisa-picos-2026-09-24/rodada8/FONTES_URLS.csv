@@ -1,0 +1,17 @@
+arquivo;URL exata;observação
+JICA_2011_Vol_III-A_Hydrology.pdf;https://openjicareport.jica.go.jp/pdf/12043584_01.pdf;original integral
+JICA_Tabela_7_5_1_pagina_A80.pdf;https://openjicareport.jica.go.jp/pdf/12043584_01.pdf;recorte da página física 91 criado a partir do original
+JICA_Tabela_7_5_1_pagina_A80.png;https://openjicareport.jica.go.jp/pdf/12043584_01.pdf;renderização da página física 91 criada a partir do original
+Plano_Bacia_Itajai_Cap_A2.pdf;https://www.aguas.sc.gov.br/jsmallfib_top/DHRI/Planos%20de%20Bacias/Plano%20da%20Bacia%20Hidrografica%20do%20Rio%20Itajai/cap-A2-secoes-2.1_2.2.pdf;original integral
+Rio_dos_Cedros_PLANCON_v1.04.pdf;https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/975401_plano_de_contingencia_versao_104.pdf;original integral
+Rio_dos_Cedros_RELATORIO_FINAL.pdf;https://riodoscedros.sc.gov.br/uploads/sites/444/2021/12/881687_RELATORIO_FINAL_RIO_DOS_CEDROS.pdf;original integral
+ABRH_Cota_Enchente_Blumenau_2013.pdf;https://files.abrhidro.org.br/Sumarios/155/97a206c1b1ad37424e0fbf557d9cfd26_c081107e6d21fbbcc1b378241a2c984f.pdf;original integral
+EPAGRI_Manual_Sala_Situacao.pdf;https://progestao.ana.gov.br/progestao-1/acompanhamento-programa/aplicacao-dos-recursos/acompanhamento-das-metas-de-cooperacao-federativa/manuais-de-salas-de-situacao/manual-de-operacao-da-sala-de-situacao_epagri_sc.pdf;original integral
+Boletim_Hidrometeorologico_008_2023.pdf;https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_008_2023.pdf;original integral encontrado por URL direta
+Boletim_Hidrometeorologico_indice.html;https://www.aguas.sc.gov.br/instrumentos/ferramentas-de-gestao/monitoramento-instrumentos/boletim-hidrometeorologico;página original salva; documenta o link incorreto de 08/2023 para o PDF 009/2023
+Guabiruba_noticia_46906.html;https://guabiruba.sc.gov.br/noticia-46906/;página original salva; não contém nível de régua
+Rio_do_Sul_metragem_Ponte_Dom_Tito_Buss.html;https://defesacivil.riodosul.sc.gov.br/index.php?r=externo%2Fmetragem;página original salva
+Rio_do_Sul_novo_sistema_monitoramento.html;https://www.riodosul.sc.gov.br/cidadao/noticia/rio-do-sul-inaugura-novo-sistema-de-monitoramento-hidrometeorologico;página original salva
+Itajai_monitoramento_chuvas.html;https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas;página original salva da aplicação atual; auxiliar
+Itajai_API_rios.json;https://monitoramento.defesacivil.itajai.sc.gov.br/api/v1/rios;resposta original JSON; auxiliar, não substitui PDF/HTML
+Itajai_current_app.json;https://monitoramento.defesacivil.itajai.sc.gov.br/data/current/app.json;resposta original JSON; auxiliar, não substitui PDF/HTML
