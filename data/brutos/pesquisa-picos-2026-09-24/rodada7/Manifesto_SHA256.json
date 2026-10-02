@@ -1,0 +1,517 @@
+[
+ {
+  "arquivo": "originais/ABRH_ARMA_RioDoSul_2011.pdf",
+  "bytes": 291212,
+  "sha256": "a06e367927a496016c15882c04e192f0f56bcb1ea31e600416a1b050b32ed408",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ABRH_Cotas-enchente-Blumenau.pdf",
+  "bytes": 511001,
+  "sha256": "48cbcd0abce57dbe6dcd1aae0bb47053c7a9acf55c73fb8bb10311f389322a12",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ABRH_barragem-norte_cheia2008.pdf",
+  "bytes": 304540,
+  "sha256": "c98ef15f917cbb555188fb66bc27e1aa4fcfe87db2e7078d4a83f393f8ae0c0e",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ANA_ws_HidroSerieHistorica_83800002_1983-1984_nc1-bruto.xml",
+  "bytes": 64056,
+  "sha256": "5abe34122a1d3d5c7420d5b25b4c999baded75cd52b80d87eed41571235ed068",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ANA_ws_HidroSerieHistorica_83800002_1983-1984_nc2-consistido.xml",
+  "bytes": 76376,
+  "sha256": "de50c207d1472a79d9fd47d6b1dc847e295606260f2f9256a15190e8189d5641",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Acaert_2008-11-23.html",
+  "bytes": 108689,
+  "sha256": "2bf8fa51d6a1a826b0e5ae3929fd87a03490475ba09ffe6ec31414aac7c471f7",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/AlertaBlu_enchentes-registradas.html",
+  "bytes": 75158,
+  "sha256": "6d4788455efee7a504acf1d11ec2f0ef9d2c0f2bfaf59dd8e55099ac98ea58a8",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Blumenau_adalbertoday_2011-09.html",
+  "bytes": 226001,
+  "sha256": "713fdb61edce5008157589cab87ca811a3a0e462a40632a5f91e8aa33b0f6739",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Blumenau_clicrbs_calamidade_2008-11-24.html",
+  "bytes": 21772,
+  "sha256": "3be0eb41e15f77a88e719049bd40a08d185b8be788c1a2f46119671daec8264f",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Blumenau_dalvaday_2013-09.html",
+  "bytes": 149579,
+  "sha256": "5b6471edcc57c9aff6ec2da084b1f6b87994bb9ef5307f0f0e789c645dad1be7",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Blumenau_moniquebecker_2011-09.html",
+  "bytes": 115202,
+  "sha256": "c095f7ea7f1ae03dd3e6c4b8144d920be8784d10afa40bc881de27b3e4219b1f",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/CBMSC_TCC_Laurentino_RioDoSul.pdf",
+  "bytes": 4929,
+  "sha256": "45ec46a109ba456036391338e8b0d4418c07f8a6db55965feb7cdcc0994f812e",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/CHM_wayback_tabuas-das-mares.html",
+  "bytes": 68826,
+  "sha256": "415ce3f1219b4bc707f6442134a160eb82421e4508365fdfdd6a76340063ee7f",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/CHM_wayback_tabuas-de-mare_20260921.html",
+  "bytes": 137563,
+  "sha256": "3d241aa428ed26d9eb8dc1a84d8fe0ff4d1717521194d3076c15b9cd0f9ac90e",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/DCRioDoSul_home.html",
+  "bytes": 2133,
+  "sha256": "7b16e2dacfb563baf3578299ef59d4e3b707bd789cbb97bbb2f832d4489378f9",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/DCRioDoSul_portal_bundle_index-DyPsDK0O.js",
+  "bytes": 360669,
+  "sha256": "b77ba54f5a13290ec2b334b0b837502734547ecb2ec579632c13f3a91658dd4d",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/DEINFRA_wayback_barragens.html",
+  "bytes": 38924,
+  "sha256": "59f05ba9eed4f6c52f0e6319ac825e4f3f9b4e0c54987722178fca626ea19595",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/DefesaCivilBlumenau_c_meteorologia_legenda_nivel_rio.html",
+  "bytes": 53126,
+  "sha256": "f001b5bca9ebeb635b360c280715c779d0501aa43eb24224df50fb27451fdbf7",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/DefesaCivilBlumenau_d_nivel-do-rio.html",
+  "bytes": 83988,
+  "sha256": "ead0645231cdddbfad65b191db5ad06cc449011b84c3f4817de8a7ab11a67145",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Diarinho_altovale_2023.html",
+  "bytes": 134852,
+  "sha256": "863e0b151df81405cfbc71f801808d3e38aadec7fe2e73ff332d7761de499d79",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Diplomata_pico550.html",
+  "bytes": 465771,
+  "sha256": "f53bd393e9e8c0576b59bb0eeaac9d7e119669a25e38dff1b3046ef857b08a33",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Educadora_barragem-taio-segura.html",
+  "bytes": 63408,
+  "sha256": "9eb6d56b476dee8450a51bf72380fcf9c72e116485c25091894f9db8f9db1b55",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Esbocos_Rio-do-Sul_vulnerabilidades.pdf",
+  "bytes": 1075514,
+  "sha256": "45ab3b9a9c5b97b81d25a7a846afc70f87c69d9c0f3be3fd17c3bafbf4ac431c",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/FURB_contrato-cotas.html",
+  "bytes": 39496,
+  "sha256": "0eaed36ee85ce3e344b9e2dead0630911eb46c23e1e90d83c69a0f980805d0d1",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/G1_2015-10_nivel-segue-emergencia.html",
+  "bytes": 54426,
+  "sha256": "04bfeb906113b8919b88823c120ff6ecfa160df364a96c5387cf0efe4d47a23b",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/G1_blumenau_2013-09-23.html",
+  "bytes": 51185,
+  "sha256": "56a554385bb29fc0dd12f10f5e6d1181511fbf6538e556b5917571e0ce9c5308",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/G1_blumenau_2015-10-23.html",
+  "bytes": 56388,
+  "sha256": "c1670bfa29545ee8e7a15572b9f6ae9320182841aa81d8244753815fcb6bdd01",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/G1_riodosul_2023-11-18.html",
+  "bytes": 1375464,
+  "sha256": "e2b5b834fa441a9758c8e7ba3515d22e17338f837988db9652709bc51720df9e",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/G1_taio_2023-10-09.html",
+  "bytes": 1240636,
+  "sha256": "312f2269c02ee313dea7ca9a298d4ae5bdf96839b59d2de0e99fa754b93e2515",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/GCD_riodosul_segunda-maior.html",
+  "bytes": 97611,
+  "sha256": "dd51881be86b38191ad813854acaf1cf5428ac82c191ea6bc87743f00ab9001f",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_10-10-17h.html",
+  "bytes": 119083,
+  "sha256": "d2e610f4e14f0a809418091e54a594dd614dee4afeff68914ece5e2eeafe6610",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_12-10-0h.html",
+  "bytes": 121795,
+  "sha256": "266233012186392dc405667d7f5db8cd0e440084341dff5e0a5cd5b06a771866",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_12-10-18h.html",
+  "bytes": 141019,
+  "sha256": "09ce42b229596e6a7b8f8ee3c43de41aae61d4355882e68bc5efc0c34918508f",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_12-10-21h.html",
+  "bytes": 121359,
+  "sha256": "396ef30ecb701f8a9c9d6a96b1d4b9465fd3b324b9ffef77eb9fa9fbc20e749b",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_13-10-3h.html",
+  "bytes": 121776,
+  "sha256": "f8b33746fc6c2047c7517d73bf80a7096a9582963b97caae7f692940eef73155",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_13-10-6h.html",
+  "bytes": 121108,
+  "sha256": "ef097cfd42e332e4e84380e74dbc752a2a35ff9171ccf7a878d66510ca390356",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Gaspar_boletim_13-10-9h.html",
+  "bytes": 121394,
+  "sha256": "0cc6b4dc1690e15f96a33e120549da717c44196980283c9208b4b8559c6ee3f2",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Indaial_valedoitajai_2023-10.html",
+  "bytes": 121416,
+  "sha256": "a51df6e0aec262fe8d37ed48983ace43ffab414f21f572c386bf0b24de70477f",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/JICA_2011_VolIII-A_Hydrology_12043584_01.pdf",
+  "bytes": 2302379,
+  "sha256": "0bca5f513683e653a47b28ba93bfa01b8fd9e4770da42aa7bdf8ff5cdaafd9af",
+  "guardado_no_repo": false,
+  "motivo": "2.3 MB; a página citada (PDF p. 91, impressa A-80) já veio extraída pela pesquisa em JICA_VolIII-A_pdf-p91_A-80_Tabela-7.5.1.pdf e renderizada em JICA_VolIII-A_pdf-p91_A-80_render-91.png."
+ },
+ {
+  "arquivo": "originais/JICA_2011_VolIII-B_FloodMitigation_12043584_02.pdf",
+  "bytes": 3749767,
+  "sha256": "3bee493d5ec147c894461f9a0b57e628f8656bba272514a9aca43045ff712eb9",
+  "guardado_no_repo": false,
+  "motivo": "3.7 MB e só as páginas citadas sustentam o relatório; elas ficam em originais/JICA_VolIII-B_paginas-citadas_p18-43-48-57-62-80.pdf (páginas do PDF 18, 43, 48, 57, 62, 80, extraídas com pypdf)."
+ },
+ {
+  "arquivo": "originais/JICA_VolIII-A_pdf-p91_A-80_Tabela-7.5.1.pdf",
+  "bytes": 136125,
+  "sha256": "dda59091196ffe0d795fee9f3d84ef97b8b17b9c6d5c069bfa954902b136096d",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/JICA_VolIII-A_pdf-p91_A-80_render-91.png",
+  "bytes": 237173,
+  "sha256": "3b3bb0c1ec082ee5b851db9dc17a2434accb957325f3eda08e1ab094d3dd49cb",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/JornalMetas_2023-10.html",
+  "bytes": 56884,
+  "sha256": "549ceb252ddf606420b7fb4d84af34dd55682adc3519df14e903a62633281b35",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Mesorregional_blumenau_2023-10-13.html",
+  "bytes": 166827,
+  "sha256": "55cb26a9564e2f69e978e10bcaa0e28020092cd01745f10a3c3b9d146913c072",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/MetSul_taio_2023.html",
+  "bytes": 306374,
+  "sha256": "98087cb4e15c670d2508588d08b2316707ac50a751ccf7445e4a168e664dc3fc",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Mirador_riodosul_pico-1186.html",
+  "bytes": 138196,
+  "sha256": "ca743b5008652a56081f10be9dac22a4f5a52124ac11a76787a5661eba9f2dd1",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_ascurra_rio-avanca-ultrapassa-10m.html",
+  "bytes": 197842,
+  "sha256": "da91fcae00c9b5203828c76b5a2094076af89f7433aceedf30543a1dc59858b4",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_ascurra_siga-e-pare-2.html",
+  "bytes": 169532,
+  "sha256": "995236a2d66d2b8eb53ad1a6630354c7ca7381e677e3ba22a515973867e4bce0",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_blumenau_amanhece-acima-10m_2023-10-09.html",
+  "bytes": 191677,
+  "sha256": "ba5a3a92368d0dc226420826f52182dcf325a3e453bfb3f5cad1899b81c67881",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_blumenau_pico-949_2023-10-08.html",
+  "bytes": 163991,
+  "sha256": "99911011b4db506c05763b4777a8280c43da2368e282948e635f41299f63125d",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_riodosul_2011_caotica.html",
+  "bytes": 150188,
+  "sha256": "1d87bb5791b68a2e006a0077cbe34639564180b4cec18207526c4095cdeb5f9d",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_riodosul_2011_estabilizado.html",
+  "bytes": 149473,
+  "sha256": "72e98c0216be2e4a4fdbde369426e174a8696850e799ff85eb70fb87dd102f58",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/ND_sistema-cotas-falhas.html",
+  "bytes": 147583,
+  "sha256": "a7e4ae6f80c1fa09930f6539c99dedcab21bb6ed15402b7dbdaf60d07f943124",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/NSC_barragens-taio-ituporanga-verter.html",
+  "bytes": 317602,
+  "sha256": "d6ab78cd34ee561c3f3e5c027846de256dad078938679e5248770a663e45a201",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/NSC_blumenau_deve-passar-10m_2023-10-08.html",
+  "bytes": 326558,
+  "sha256": "861f9d3b27ee60a38cf230c12b812942881ea1f1f7a7bed2cd377994675980f6",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/NSC_blumenau_sai-enchente_2023-10-10.html",
+  "bytes": 323025,
+  "sha256": "dce0423961f6b566667fe04b1f0f6a74c4ed401bbefb63def22b68c4c5af9e02",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/NSC_novas-reguas-ponte-blumenau.html",
+  "bytes": 316660,
+  "sha256": "bce4f88501fc4d05b405c3d5607ac26b83524525be438ef22d55f0e78f2e8e56",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OBlumenauense_2023-11-17.html",
+  "bytes": 245770,
+  "sha256": "d24cfd23b9e02a5e7caf81dd7c55b5b758ae93dbe45fe398adce7e184399dadb",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OBlumenauense_2024-05-19.html",
+  "bytes": 247303,
+  "sha256": "6f21866cd0b028c0433675f091a4ef7abfa9d868b76666d9d260d06e556e31d6",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OM_botuvera_alerta.html",
+  "bytes": 246109,
+  "sha256": "3db7d0df841fef7cc97d6f85b3e855ac7ffaf6c59db083d9b25dd904d36e58f7",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OM_botuvera_pontes.html",
+  "bytes": 252576,
+  "sha256": "96915d39c5fcb865d85468129b5a885d4c43f715538f57c7fe7b4cc777aba34c",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OMunicipio_brusque-mais-agua-menos-danos.html",
+  "bytes": 239829,
+  "sha256": "fd8c14ebcb4e6c7350b26340d5a5d005278bea301a7f9d19f78502e28f67c435",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OMunicipio_brusque-terceira-maior.html",
+  "bytes": 239923,
+  "sha256": "b03f43f09edf6fb8a18ba1a96e03dfb3b564dfe72282f226e173d2b1dd31c41a",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/OMunicipio_brusque_2011-15anos.html",
+  "bytes": 289411,
+  "sha256": "1eb9361de2f685c1cc8f810502bb0d1fa3f593f261a2927a1161e10deaa96e5d",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Oauditorio_blumenau_2024-05-19.html",
+  "bytes": 481760,
+  "sha256": "558e0ad9234bec84fef0413ee23b0373f191e6a848b5df0598db6a5ad9bdf8a4",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/RWTV_barragem-sul-59pct.html",
+  "bytes": 141632,
+  "sha256": "d6dcd4b48109500c81bfa8f90b481b740334cb6dd3ea7933f5fda314011452dc",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/SCC10_brusque-12-cheias.html",
+  "bytes": 161490,
+  "sha256": "891ef360a930dd82bb0064eb20e2f968666e6a728980583560c87ed17ed69121",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/SDE_Boletim_Hidrometeorologico_87_007-2026.pdf",
+  "bytes": 3525586,
+  "sha256": "618f11e6dae3e85ce25132a6d7881e2a35148430966e580e00aa9862f3b28f6e",
+  "guardado_no_repo": false,
+  "motivo": "3.5 MB e só as páginas citadas sustentam o relatório; elas ficam em originais/SDE_Boletim_Hidrometeorologico_87_007-2026_p13.pdf (páginas do PDF 13, extraídas com pypdf)."
+ },
+ {
+  "arquivo": "originais/SDE_pagina_boletim-hidrometeorologico.html",
+  "bytes": 116354,
+  "sha256": "7ae76620636339523d8fc0302e97b9b762f066ac19e1e1181483eabe966a3d83",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/SDE_tag-boletim_lista.html",
+  "bytes": 202749,
+  "sha256": "25a673125083f76dacf78d77c5d24a3966aba5c9368579faafd61e06271bd482",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/SOSRios_wayback_2013-09.html",
+  "bytes": 261113,
+  "sha256": "14aae265f062fe185d0ce9cde14a026daa8ee0ef4a30867974c5e050d91d81ee",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Taio_noticia-75218.html",
+  "bytes": 149378,
+  "sha256": "5a34a74157b49697abb848c4400a9abbb16ffef56bacdf186ff8e0303f3d2954",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/UFSC_TCC_render_pdf-p42.png",
+  "bytes": 53810,
+  "sha256": "d84b04b898b0789e854531fcd09688fcf302d9a60e2917019c9d084230c881fd",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/UFSC_TCC_render_pdf-p49.png",
+  "bytes": 64947,
+  "sha256": "3c8a7afef2a38ecb07d3c639aee4e425ea8acd8809cf3b967deaf702023c2ad5",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/UFSC_TCC_rompimento-hipotetico-barragem-oeste.pdf",
+  "bytes": 7024242,
+  "sha256": "7af1f1b8b53f0019d2e141a326f2c8c04a59d02869491cef532eb040bf1913b1",
+  "guardado_no_repo": false,
+  "motivo": "7.0 MB e só as páginas citadas sustentam o relatório; elas ficam em originais/UFSC_TCC_rompimento-barragem-oeste_paginas-citadas_p42-49-51.pdf (páginas do PDF 42, 49, 51, extraídas com pypdf)."
+ },
+ {
+  "arquivo": "originais/UFSC_repo_rompimento-barragem-oeste_handle.html",
+  "bytes": 21518,
+  "sha256": "c3e2d4645a2e2619a974772047933fe71dc62e1b030f689184a618c683cb5e91",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/Universo_riodosul_segunda-maior.html",
+  "bytes": 91036,
+  "sha256": "bb4c5119835efac48d9727c52c4ff28e15deb680609018d27c6e0360cb687960",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "originais/UFSC_TCC_rompimento-barragem-oeste_paginas-citadas_p42-49-51.pdf",
+  "bytes": 95111,
+  "sha256": "3588d2e19b38a82ad31c5e28159c57f0352f33b4bc2242e40ceb5b2249dada24",
+  "guardado_no_repo": true,
+  "derivado_de": "originais/UFSC_TCC_rompimento-hipotetico-barragem-oeste.pdf",
+  "paginas_do_pdf": [
+   42,
+   49,
+   51
+  ]
+ },
+ {
+  "arquivo": "originais/JICA_VolIII-B_paginas-citadas_p18-43-48-57-62-80.pdf",
+  "bytes": 148572,
+  "sha256": "a69205b5c1764b9a3d14225e4a54ac39f531f55312d95ca9ac5e8b4b4665731f",
+  "guardado_no_repo": true,
+  "derivado_de": "originais/JICA_2011_VolIII-B_FloodMitigation_12043584_02.pdf",
+  "paginas_do_pdf": [
+   18,
+   43,
+   48,
+   57,
+   62,
+   80
+  ]
+ },
+ {
+  "arquivo": "originais/SDE_Boletim_Hidrometeorologico_87_007-2026_p13.pdf",
+  "bytes": 231706,
+  "sha256": "789fdf3b789637c43443d8f17563f909451c9f0ad95f3c1b0fbe88a6c9e3bc37",
+  "guardado_no_repo": true,
+  "derivado_de": "originais/SDE_Boletim_Hidrometeorologico_87_007-2026.pdf",
+  "paginas_do_pdf": [
+   13
+  ]
+ },
+ {
+  "arquivo": "Relatorio_rodada7.md",
+  "bytes": 50167,
+  "sha256": "d8ce71b86d14721bb7e1d4f4fad3e07a0715c4111ba2f723d01eb897dbc210bc",
+  "guardado_no_repo": true
+ },
+ {
+  "arquivo": "Relatorio_rodada7.pdf",
+  "bytes": 587074,
+  "sha256": "9c6af957350845a7fdb66efa555441ee6ef4b73035344424df49c0f7727986d2",
+  "guardado_no_repo": true
+ }
+]

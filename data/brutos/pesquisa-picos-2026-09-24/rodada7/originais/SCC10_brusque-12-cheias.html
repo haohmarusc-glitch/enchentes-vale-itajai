@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head><meta charset="UTF-8"><script>if(navigator.userAgent.match(/MSIE|Internet Explorer/i)||navigator.userAgent.match(/Trident\/7\..*?rv:11/i)){var href=document.location.href;if(!href.match(/[?&]nowprocket/)){if(href.indexOf("?")==-1){if(href.indexOf("#")==-1){document.location.href=href+"?nowprocket=1"}else{document.location.href=href.replace("#","?nowprocket=1#")}}else{if(href.indexOf("#")==-1){document.location.href=href+"&nowprocket=1"}else{document.location.href=href.replace("#","&nowprocket=1#")}}}}</script><script>(()=>{class RocketLazyLoadScripts{constructor(){this.v="2.0.5",this.userEvents=["keydown","keyup","mousedown","mouseup","mousemove","mouseover","mouseout","touchmove","touchstart","touchend","touchcancel","wheel","click","dblclick","input"],this.attributeEvents=["onblur","onclick","oncontextmenu","ondblclick","onfocus","onmousedown","onmouseenter","onmouseleave","onmousemove","onmouseout","onmouseover","onmouseup","onmousewheel","onscroll","onsubmit"]}async t(){this.i(),this.o(),/iP(ad|hone)/.test(navigator.userAgent)&&this.h(),this.u(),this.l(this),this.m(),this.k(this),this.p(this),this._(),await Promise.all([this.R(),this.L()]),this.lastBreath=Date.now(),this.S(this),this.P(),this.D(),this.O(),this.M(),await this.C(this.delayedScripts.normal),await this.C(this.delayedScripts.defer),await this.C(this.delayedScripts.async),await this.T(),await this.F(),await this.j(),await this.A(),window.dispatchEvent(new Event("rocket-allScriptsLoaded")),this.everythingLoaded=!0,this.lastTouchEnd&&await new Promise(t=>setTimeout(t,500-Date.now()+this.lastTouchEnd)),this.I(),this.H(),this.U(),this.W()}i(){this.CSPIssue=sessionStorage.getItem("rocketCSPIssue"),document.addEventListener("securitypolicyviolation",t=>{this.CSPIssue||"script-src-elem"!==t.violatedDirective||"data"!==t.blockedURI||(this.CSPIssue=!0,sessionStorage.setItem("rocketCSPIssue",!0))},{isRocket:!0})}o(){window.addEventListener("pageshow",t=>{this.persisted=t.persisted,this.realWindowLoadedFired=!0},{isRocket:!0}),window.addEventListener("pagehide",()=>{this.onFirstUserAction=null},{isRocket:!0})}h(){let t;function e(e){t=e}window.addEventListener("touchstart",e,{isRocket:!0}),window.addEventListener("touchend",function i(o){o.changedTouches[0]&&t.changedTouches[0]&&Math.abs(o.changedTouches[0].pageX-t.changedTouches[0].pageX)<10&&Math.abs(o.changedTouches[0].pageY-t.changedTouches[0].pageY)<10&&o.timeStamp-t.timeStamp<200&&(window.removeEventListener("touchstart",e,{isRocket:!0}),window.removeEventListener("touchend",i,{isRocket:!0}),"INPUT"===o.target.tagName&&"text"===o.target.type||(o.target.dispatchEvent(new TouchEvent("touchend",{target:o.target,bubbles:!0})),o.target.dispatchEvent(new MouseEvent("mouseover",{target:o.target,bubbles:!0})),o.target.dispatchEvent(new PointerEvent("click",{target:o.target,bubbles:!0,cancelable:!0,detail:1,clientX:o.changedTouches[0].clientX,clientY:o.changedTouches[0].clientY})),event.preventDefault()))},{isRocket:!0})}q(t){this.userActionTriggered||("mousemove"!==t.type||this.firstMousemoveIgnored?"keyup"===t.type||"mouseover"===t.type||"mouseout"===t.type||(this.userActionTriggered=!0,this.onFirstUserAction&&this.onFirstUserAction()):this.firstMousemoveIgnored=!0),"click"===t.type&&t.preventDefault(),t.stopPropagation(),t.stopImmediatePropagation(),"touchstart"===this.lastEvent&&"touchend"===t.type&&(this.lastTouchEnd=Date.now()),"click"===t.type&&(this.lastTouchEnd=0),this.lastEvent=t.type,t.composedPath&&t.composedPath()[0].getRootNode()instanceof ShadowRoot&&(t.rocketTarget=t.composedPath()[0]),this.savedUserEvents.push(t)}u(){this.savedUserEvents=[],this.userEventHandler=this.q.bind(this),this.userEvents.forEach(t=>window.addEventListener(t,this.userEventHandler,{passive:!1,isRocket:!0})),document.addEventListener("visibilitychange",this.userEventHandler,{isRocket:!0})}U(){this.userEvents.forEach(t=>window.removeEventListener(t,this.userEventHandler,{passive:!1,isRocket:!0})),document.removeEventListener("visibilitychange",this.userEventHandler,{isRocket:!0}),this.savedUserEvents.forEach(t=>{(t.rocketTarget||t.target).dispatchEvent(new window[t.constructor.name](t.type,t))})}m(){const t="return false",e=Array.from(this.attributeEvents,t=>"data-rocket-"+t),i="["+this.attributeEvents.join("],[")+"]",o="[data-rocket-"+this.attributeEvents.join("],[data-rocket-")+"]",s=(e,i,o)=>{o&&o!==t&&(e.setAttribute("data-rocket-"+i,o),e["rocket"+i]=new Function("event",o),e.setAttribute(i,t))};new MutationObserver(t=>{for(const n of t)"attributes"===n.type&&(n.attributeName.startsWith("data-rocket-")||this.everythingLoaded?n.attributeName.startsWith("data-rocket-")&&this.everythingLoaded&&this.N(n.target,n.attributeName.substring(12)):s(n.target,n.attributeName,n.target.getAttribute(n.attributeName))),"childList"===n.type&&n.addedNodes.forEach(t=>{if(t.nodeType===Node.ELEMENT_NODE)if(this.everythingLoaded)for(const i of[t,...t.querySelectorAll(o)])for(const t of i.getAttributeNames())e.includes(t)&&this.N(i,t.substring(12));else for(const e of[t,...t.querySelectorAll(i)])for(const t of e.getAttributeNames())this.attributeEvents.includes(t)&&s(e,t,e.getAttribute(t))})}).observe(document,{subtree:!0,childList:!0,attributeFilter:[...this.attributeEvents,...e]})}I(){this.attributeEvents.forEach(t=>{document.querySelectorAll("[data-rocket-"+t+"]").forEach(e=>{this.N(e,t)})})}N(t,e){const i=t.getAttribute("data-rocket-"+e);i&&(t.setAttribute(e,i),t.removeAttribute("data-rocket-"+e))}k(t){Object.defineProperty(HTMLElement.prototype,"onclick",{get(){return this.rocketonclick||null},set(e){this.rocketonclick=e,this.setAttribute(t.everythingLoaded?"onclick":"data-rocket-onclick","this.rocketonclick(event)")}})}S(t){function e(e,i){let o=e[i];e[i]=null,Object.defineProperty(e,i,{get:()=>o,set(s){t.everythingLoaded?o=s:e["rocket"+i]=o=s}})}e(document,"onreadystatechange"),e(window,"onload"),e(window,"onpageshow");try{Object.defineProperty(document,"readyState",{get:()=>t.rocketReadyState,set(e){t.rocketReadyState=e},configurable:!0}),document.readyState="loading"}catch(t){console.log("WPRocket DJE readyState conflict, bypassing")}}l(t){this.originalAddEventListener=EventTarget.prototype.addEventListener,this.originalRemoveEventListener=EventTarget.prototype.removeEventListener,this.savedEventListeners=[],EventTarget.prototype.addEventListener=function(e,i,o){o&&o.isRocket||!t.B(e,this)&&!t.userEvents.includes(e)||t.B(e,this)&&!t.userActionTriggered||e.startsWith("rocket-")||t.everythingLoaded?t.originalAddEventListener.call(this,e,i,o):(t.savedEventListeners.push({target:this,remove:!1,type:e,func:i,options:o}),"mouseenter"!==e&&"mouseleave"!==e||t.originalAddEventListener.call(this,e,t.savedUserEvents.push,o))},EventTarget.prototype.removeEventListener=function(e,i,o){o&&o.isRocket||!t.B(e,this)&&!t.userEvents.includes(e)||t.B(e,this)&&!t.userActionTriggered||e.startsWith("rocket-")||t.everythingLoaded?t.originalRemoveEventListener.call(this,e,i,o):t.savedEventListeners.push({target:this,remove:!0,type:e,func:i,options:o})}}J(t,e){this.savedEventListeners=this.savedEventListeners.filter(i=>{let o=i.type,s=i.target||window;return e!==o||t!==s||(this.B(o,s)&&(i.type="rocket-"+o),this.$(i),!1)})}H(){EventTarget.prototype.addEventListener=this.originalAddEventListener,EventTarget.prototype.removeEventListener=this.originalRemoveEventListener,this.savedEventListeners.forEach(t=>this.$(t))}$(t){t.remove?this.originalRemoveEventListener.call(t.target,t.type,t.func,t.options):this.originalAddEventListener.call(t.target,t.type,t.func,t.options)}p(t){let e;function i(e){return t.everythingLoaded?e:e.split(" ").map(t=>"load"===t||t.startsWith("load.")?"rocket-jquery-load":t).join(" ")}function o(o){function s(e){const s=o.fn[e];o.fn[e]=o.fn.init.prototype[e]=function(){return this[0]===window&&t.userActionTriggered&&("string"==typeof arguments[0]||arguments[0]instanceof String?arguments[0]=i(arguments[0]):"object"==typeof arguments[0]&&Object.keys(arguments[0]).forEach(t=>{const e=arguments[0][t];delete arguments[0][t],arguments[0][i(t)]=e})),s.apply(this,arguments),this}}if(o&&o.fn&&!t.allJQueries.includes(o)){const e={DOMContentLoaded:[],"rocket-DOMContentLoaded":[]};for(const t in e)document.addEventListener(t,()=>{e[t].forEach(t=>t())},{isRocket:!0});o.fn.ready=o.fn.init.prototype.ready=function(i){function s(){parseInt(o.fn.jquery)>2?setTimeout(()=>i.bind(document)(o)):i.bind(document)(o)}return"function"==typeof i&&(t.realDomReadyFired?!t.userActionTriggered||t.fauxDomReadyFired?s():e["rocket-DOMContentLoaded"].push(s):e.DOMContentLoaded.push(s)),this},s("on"),s("one"),s("off"),t.allJQueries.push(o)}e=o}t.allJQueries=[],o(window.jQuery),Object.defineProperty(window,"jQuery",{get:()=>e,set(t){o(t)}})}P(){const t=new Map;document.write=document.writeln=function(e){const i=document.currentScript,o=document.createRange(),s=i.parentElement;let n=t.get(i);void 0===n&&(n=i.nextSibling,t.set(i,n));const c=document.createDocumentFragment();o.setStart(c,0),c.appendChild(o.createContextualFragment(e)),s.insertBefore(c,n)}}async R(){return new Promise(t=>{this.userActionTriggered?t():this.onFirstUserAction=t})}async L(){return new Promise(t=>{document.addEventListener("DOMContentLoaded",()=>{this.realDomReadyFired=!0,t()},{isRocket:!0})})}async j(){return this.realWindowLoadedFired?Promise.resolve():new Promise(t=>{window.addEventListener("load",t,{isRocket:!0})})}M(){this.pendingScripts=[];this.scriptsMutationObserver=new MutationObserver(t=>{for(const e of t)e.addedNodes.forEach(t=>{"SCRIPT"!==t.tagName||!t.src||t.noModule||t.isWPRocket||this.pendingScripts.push({script:t,promise:new Promise(e=>{const i=()=>{const i=this.pendingScripts.findIndex(e=>e.script===t);i>=0&&this.pendingScripts.splice(i,1),e()};t.addEventListener("load",i,{isRocket:!0}),t.addEventListener("error",i,{isRocket:!0}),setTimeout(i,1e3)})})})}),this.scriptsMutationObserver.observe(document,{childList:!0,subtree:!0})}async F(){await this.X(),this.pendingScripts.length?(await this.pendingScripts[0].promise,await this.F()):this.scriptsMutationObserver.disconnect()}D(){this.delayedScripts={normal:[],async:[],defer:[]},document.querySelectorAll("script[type$=rocketlazyloadscript]").forEach(t=>{t.hasAttribute("data-rocket-src")?t.hasAttribute("async")&&!1!==t.async?this.delayedScripts.async.push(t):t.hasAttribute("defer")&&!1!==t.defer||"module"===t.getAttribute("data-rocket-type")?this.delayedScripts.defer.push(t):this.delayedScripts.normal.push(t):this.delayedScripts.normal.push(t)})}async _(){await this.L();let t=[];document.querySelectorAll("script[type$=rocketlazyloadscript][data-rocket-src]").forEach(e=>{let i=e.getAttribute("data-rocket-src");if(i&&!i.startsWith("data:")){i.startsWith("//")&&(i=location.protocol+i);try{const o=new URL(i).origin;o!==location.origin&&t.push({src:o,crossOrigin:e.crossOrigin||"module"===e.getAttribute("data-rocket-type")})}catch(t){}}}),t=[...new Map(t.map(t=>[JSON.stringify(t),t])).values()],this.Y(t,"preconnect")}async G(t){if(await this.K(),!0!==t.noModule||!("noModule"in HTMLScriptElement.prototype))return new Promise(e=>{let i;function o(){(i||t).setAttribute("data-rocket-status","executed"),e()}try{if(navigator.userAgent.includes("Firefox/")||""===navigator.vendor||this.CSPIssue)i=document.createElement("script"),[...t.attributes].forEach(t=>{let e=t.nodeName;"type"!==e&&("data-rocket-type"===e&&(e="type"),"data-rocket-src"===e&&(e="src"),i.setAttribute(e,t.nodeValue))}),t.text&&(i.text=t.text),t.nonce&&(i.nonce=t.nonce),i.hasAttribute("src")?(i.addEventListener("load",o,{isRocket:!0}),i.addEventListener("error",()=>{i.setAttribute("data-rocket-status","failed-network"),e()},{isRocket:!0}),setTimeout(()=>{i.isConnected||e()},1)):(i.text=t.text,o()),i.isWPRocket=!0,t.parentNode.replaceChild(i,t);else{const i=t.getAttribute("data-rocket-type"),s=t.getAttribute("data-rocket-src");i?(t.type=i,t.removeAttribute("data-rocket-type")):t.removeAttribute("type"),t.addEventListener("load",o,{isRocket:!0}),t.addEventListener("error",i=>{this.CSPIssue&&i.target.src.startsWith("data:")?(console.log("WPRocket: CSP fallback activated"),t.removeAttribute("src"),this.G(t).then(e)):(t.setAttribute("data-rocket-status","failed-network"),e())},{isRocket:!0}),s?(t.fetchPriority="high",t.removeAttribute("data-rocket-src"),t.src=s):t.src="data:text/javascript;base64,"+window.btoa(unescape(encodeURIComponent(t.text)))}}catch(i){t.setAttribute("data-rocket-status","failed-transform"),e()}});t.setAttribute("data-rocket-status","skipped")}async C(t){const e=t.shift();return e?(e.isConnected&&await this.G(e),this.C(t)):Promise.resolve()}O(){this.Y([...this.delayedScripts.normal,...this.delayedScripts.defer,...this.delayedScripts.async],"preload")}Y(t,e){this.trash=this.trash||[];let i=!0;var o=document.createDocumentFragment();t.forEach(t=>{const s=t.getAttribute&&t.getAttribute("data-rocket-src")||t.src;if(s&&!s.startsWith("data:")){const n=document.createElement("link");n.href=s,n.rel=e,"preconnect"!==e&&(n.as="script",n.fetchPriority=i?"high":"low"),t.getAttribute&&"module"===t.getAttribute("data-rocket-type")&&(n.crossOrigin=!0),t.crossOrigin&&(n.crossOrigin=t.crossOrigin),t.integrity&&(n.integrity=t.integrity),t.nonce&&(n.nonce=t.nonce),o.appendChild(n),this.trash.push(n),i=!1}}),document.head.appendChild(o)}W(){this.trash.forEach(t=>t.remove())}async T(){try{document.readyState="interactive"}catch(t){}this.fauxDomReadyFired=!0;try{await this.K(),this.J(document,"readystatechange"),document.dispatchEvent(new Event("rocket-readystatechange")),await this.K(),document.rocketonreadystatechange&&document.rocketonreadystatechange(),await this.K(),this.J(document,"DOMContentLoaded"),document.dispatchEvent(new Event("rocket-DOMContentLoaded")),await this.K(),this.J(window,"DOMContentLoaded"),window.dispatchEvent(new Event("rocket-DOMContentLoaded"))}catch(t){console.error(t)}}async A(){try{document.readyState="complete"}catch(t){}try{await this.K(),this.J(document,"readystatechange"),document.dispatchEvent(new Event("rocket-readystatechange")),await this.K(),document.rocketonreadystatechange&&document.rocketonreadystatechange(),await this.K(),this.J(window,"load"),window.dispatchEvent(new Event("rocket-load")),await this.K(),window.rocketonload&&window.rocketonload(),await this.K(),this.allJQueries.forEach(t=>t(window).trigger("rocket-jquery-load")),await this.K(),this.J(window,"pageshow");const t=new Event("rocket-pageshow");t.persisted=this.persisted,window.dispatchEvent(t),await this.K(),window.rocketonpageshow&&window.rocketonpageshow({persisted:this.persisted})}catch(t){console.error(t)}}async K(){Date.now()-this.lastBreath>45&&(await this.X(),this.lastBreath=Date.now())}async X(){return document.hidden?new Promise(t=>setTimeout(t)):new Promise(t=>requestAnimationFrame(t))}B(t,e=window){return e===document&&"readystatechange"===t||(e===document&&"DOMContentLoaded"===t||(e===window&&"DOMContentLoaded"===t||(e===window&&"load"===t||e===window&&"pageshow"===t)))}static run(){(new RocketLazyLoadScripts).t()}}RocketLazyLoadScripts.run()})();
+</script>
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="profile" href="https://gmpg.org/xfn/11" />
+	<link rel="pingback" href="https://scc10.com.br/xmlrpc.php" />
+
+	<link rel='preload' as='image' href='https://scc10.com.br/wp-content/uploads/2024/05/Modelo-imagens-portal-Scc10-54.jpg'>	
+	<script type="text/rocketlazyloadscript" async data-rocket-src="https://t.seedtag.com/t/6476-5334-01.js"></script><!-- Manifest added by SuperPWA - Progressive Web Apps Plugin For WordPress -->
+<link rel="manifest" href="/superpwa-manifest.json">
+<meta name="theme-color" content="#1464c7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="apple-mobile-web-app-title" content="SCC10">
+<meta name="application-name" content="SCC10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon"  href="https://scc10.com.br/wp-content/uploads/2019/10/favicon-scc10-e1652983106275.png">
+<link rel="apple-touch-icon" sizes="192x192" href="https://scc10.com.br/wp-content/uploads/2019/10/favicon-scc10-e1652983106275.png">
+<!-- / SuperPWA.com -->
+<meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+
+	<!-- This site is optimized with the Yoast SEO Premium plugin v28.4 (Yoast SEO v28.4) - https://yoast.com/product/yoast-seo-premium-wordpress/ -->
+	<title>Brusque registra 12 cheias em seis meses; veja histórico</title>
+	<meta name="description" content="Brusque, localizada no Vale do Itajaí, enfrentou 12 cheias nos últimos seis meses, revelou a prefeitura do município." />
+	<link rel="canonical" href="https://scc10.com.br/geral/brusque-registra-12-cheias-em-seis-meses-veja-historico/" />
+	<meta property="og:locale" content="pt_BR" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Brusque registra 12 cheias em seis meses; veja histórico" />
+	<meta property="og:description" content="Brusque, localizada no Vale do Itajaí, enfrentou 12 cheias nos últimos seis meses, revelou a prefeitura do município." />
+	<meta property="og:url" content="https://scc10.com.br/geral/brusque-registra-12-cheias-em-seis-meses-veja-historico/" />
+	<meta property="og:site_name" content="SCC10" />
+	<meta property="article:publisher" content="https://www.facebook.com/portalscc10/" />
+	<meta property="article:published_time" content="2024-05-21T19:31:51+00:00" />
+	<meta property="article:modified_time" content="2024-05-21T19:31:54+00:00" />
+	<meta property="og:image" content="https://scc10.com.br/wp-content/uploads/2024/05/Modelo-imagens-portal-Scc10-54.jpg.webp" />
+	<meta property="og:image:width" content="650" />
+	<meta property="og:image:height" content="450" />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta name="author" content="Olga Helena de Paula" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:creator" content="@scc10oficial" />
+	<meta name="twitter:site" content="@scc10oficial" />
+	<meta name="twitter:label1" content="Escrito por" />
+	<meta name="twitter:data1" content="Olga Helena de Paula" />
+	<meta name="twitter:label2" content="Est. tempo de leitura" />
+	<meta name="twitter:data2" content="5 minutos" />
+	<meta name="twitter:label3" content="Written by" />
+	<meta name="twitter:data3" content="Olga Helena de Paula" />
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https:\/\/schema.org","@graph":[{"@type":"NewsArticle","@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#article","isPartOf":{"@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/"},"author":[{"@id":"https:\/\/controle.scc10.com.br\/#\/schema\/person\/95ec7ec70021e0871cd48f2b86073b72"}],"headline":"Brusque registra 12 cheias em seis meses; veja histórico","datePublished":"2024-05-21T19:31:51+00:00","dateModified":"2024-05-21T19:31:54+00:00","mainEntityOfPage":{"@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/"},"wordCount":681,"publisher":{"@id":"https:\/\/controle.scc10.com.br\/#organization"},"image":{"@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#primaryimage"},"thumbnailUrl":"https:\/\/scc10.com.br\/wp-content\/uploads\/2024\/05\/Modelo-imagens-portal-Scc10-54.jpg","keywords":["Brusque","chuvas em SC","Defesa Civil","Enchente","Santa Catarina","Vale do Itajaí"],"articleSection":["Cotidiano","Tempo"],"inLanguage":"pt-BR","copyrightYear":"2024","copyrightHolder":{"@id":"https:\/\/scc10.com.br\/#organization"},"contentLocation":{"@type":"Place","name":"Brusque"}},{"@type":"WebPage","@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/","url":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/","name":"Brusque registra 12 cheias em seis meses; veja histórico","isPartOf":{"@id":"https:\/\/controle.scc10.com.br\/#website"},"primaryImageOfPage":{"@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#primaryimage"},"image":{"@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#primaryimage"},"thumbnailUrl":"https:\/\/scc10.com.br\/wp-content\/uploads\/2024\/05\/Modelo-imagens-portal-Scc10-54.jpg","datePublished":"2024-05-21T19:31:51+00:00","dateModified":"2024-05-21T19:31:54+00:00","description":"Brusque, localizada no Vale do Itajaí, enfrentou 12 cheias nos últimos seis meses, revelou a prefeitura do município.","breadcrumb":{"@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#breadcrumb"},"inLanguage":"pt-BR","potentialAction":[{"@type":"ReadAction","target":["https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/"]}]},{"@type":"ImageObject","inLanguage":"pt-BR","@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#primaryimage","url":"https:\/\/scc10.com.br\/wp-content\/uploads\/2024\/05\/Modelo-imagens-portal-Scc10-54.jpg","contentUrl":"https:\/\/scc10.com.br\/wp-content\/uploads\/2024\/05\/Modelo-imagens-portal-Scc10-54.jpg","width":650,"height":450,"caption":"Fotos: José Carlos Paulini\/Secom Brusque."},{"@type":"BreadcrumbList","@id":"https:\/\/scc10.com.br\/geral\/brusque-registra-12-cheias-em-seis-meses-veja-historico\/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https:\/\/scc10.com.br\/"},{"@type":"ListItem","position":2,"name":"Últimas Notícias","item":"https:\/\/scc10.com.br\/ultimas-noticias\/"},{"@type":"ListItem","position":3,"name":"Cotidiano","item":"https:\/\/scc10.com.br\/cotidiano\/"},{"@type":"ListItem","position":4,"name":"Brusque registra 12 cheias em seis meses; veja histórico"}]},{"@type":"WebSite","@id":"https:\/\/controle.scc10.com.br\/#website","url":"https:\/\/controle.scc10.com.br\/","name":"SCC10","description":"O portal da notícia em Santa Catarina","publisher":{"@id":"https:\/\/controle.scc10.com.br\/#organization"},"potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https:\/\/controle.scc10.com.br\/?s={search_term_string}"},"query-input":{"@type":"PropertyValueSpecification","valueRequired":true,"valueName":"search_term_string"}}],"inLanguage":"pt-BR"},{"@type":"Organization","@id":"https:\/\/controle.scc10.com.br\/#organization","name":"SCC10","alternateName":"Portal SCC10","url":"https:\/\/controle.scc10.com.br\/","logo":{"@type":"ImageObject","inLanguage":"pt-BR","@id":"https:\/\/controle.scc10.com.br\/#\/schema\/logo\/image\/","url":"https:\/\/scc10.com.br\/wp-content\/uploads\/2019\/09\/scc10-logo-oficial.webp","contentUrl":"https:\/\/scc10.com.br\/wp-content\/uploads\/2019\/09\/scc10-logo-oficial.webp","width":228,"height":61,"caption":"SCC10"},"image":{"@id":"https:\/\/controle.scc10.com.br\/#\/schema\/logo\/image\/"},"sameAs":["https:\/\/www.facebook.com\/portalscc10\/","https:\/\/x.com\/scc10oficial","https:\/\/www.instagram.com\/portalscc10\/","https:\/\/www.linkedin.com\/company\/portal-scc-10","https:\/\/www.youtube.com\/channel\/UCof3X_LosODbkrOR55Dpbiw"],"description":"Portal SCC10 — site de notícias e entretenimento de Santa Catarina, afiliado ao SBT, com informações sobre política, economia, esportes e cultura.","email":"ti@scc.com.br","telephone":"(48) 3231-9700","legalName":"Portal SCC10","foundingDate":"2020-09-10"},{"@type":"Person","@id":"https:\/\/controle.scc10.com.br\/#\/schema\/person\/95ec7ec70021e0871cd48f2b86073b72","name":"Olga Helena de Paula","description":"Olga Helena de Paula é produtora de conteúdo no SCC10, onde escreve sobre justiça, política, economia, segurança, cotidiano, além de outros assuntos de interesse público, com olhar voltado para Blumenau e a região do Vale do Itajaí, em Santa Catarina. Estudou Comunicação Social com habilitação em Jornalismo na Unisociesc (Sociedade Educacional de Santa Catarina) e atua na área desde 2017. Tem experiência em jornalismo web em portais de notícias catarinenses, bem como em rádio e assessoria de imprensa em órgãos públicos. Produz conteúdos sobre os principais acontecimentos do estado, com foco em informação clara e apuração precisa. Já cobriu as Eleições 2022 e 2024, e estará na cobertura das Eleições 2026.","url":"https:\/\/scc10.com.br\/author\/olgahelena\/"}]}</script>
+	<!-- / Yoast SEO Premium plugin. -->
+
+
+<link rel='dns-prefetch' href='//challenges.cloudflare.com' />
+<link rel='dns-prefetch' href='//vlibras.gov.br' />
+<link rel='dns-prefetch' href='//imasdk.googleapis.com' />
+<link rel='dns-prefetch' href='//securepubads.g.doubleclick.net' />
+<link rel='dns-prefetch' href='//use.fontawesome.com' />
+
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="https://scc10.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fscc10.com.br%2Fcotidiano%2Fbrusque-registra-12-cheias-em-seis-meses-veja-historico%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="https://scc10.com.br/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fscc10.com.br%2Fcotidiano%2Fbrusque-registra-12-cheias-em-seis-meses-veja-historico%2F&#038;format=xml" />
+<style id="wp-img-auto-sizes-contain-inline-css">
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<link rel='stylesheet' id='bootstrap-css' href='https://scc10.com.br/wp-content/themes/scc10/assets/styles/css/vendors/bootstrap/bootstrap.min.css?ver=5.3.3' media='all' />
+<link data-minify="1" rel='stylesheet' id='swiperjs-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/themes/scc10/assets/styles/css/vendors/swiperjs/swiper-bundle.min.css?ver=1790827534' media='all' />
+<link rel='stylesheet' id='style-css' href='https://scc10.com.br/wp-content/themes/scc10/assets/styles/css/post.min.css?ver=1789186609' media='all' />
+<style id="wp-block-library-inline-css">
+:root{--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223;--wp-bound-block-color:var(--wp-block-synced-color);--wp-editor-canvas-background:#ddd;--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,160.5;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}:root .has-text-align-center{text-align:center}:root .has-text-align-left{text-align:left}:root .has-text-align-right{text-align:right}.has-fit-text{white-space:nowrap!important}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{word-wrap:normal!important;border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-break:normal!important}.screen-reader-text:focus{background-color:#ddd;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style^=border-color],[style*=";border-color"],[style*="; border-color"]){border-style:solid}html :where([style^=border-top-color],[style*=";border-top-color"],[style*="; border-top-color"]){border-top-style:solid}html :where([style^=border-right-color],[style*=";border-right-color"],[style*="; border-right-color"]){border-right-style:solid}html :where([style^=border-bottom-color],[style*=";border-bottom-color"],[style*="; border-bottom-color"]){border-bottom-style:solid}html :where([style^=border-left-color],[style*=";border-left-color"],[style*="; border-left-color"]){border-left-style:solid}html :where([style^=border-width],[style*=";border-width"],[style*="; border-width"]){border-style:solid}html :where([style^=border-top-width],[style*=";border-top-width"],[style*="; border-top-width"]){border-top-style:solid}html :where([style^=border-right-width],[style*=";border-right-width"],[style*="; border-right-width"]){border-right-style:solid}html :where([style^=border-bottom-width],[style*=";border-bottom-width"],[style*="; border-bottom-width"]){border-bottom-style:solid}html :where([style^=border-left-width],[style*=";border-left-width"],[style*="; border-left-width"]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+
+/*# sourceURL=/wp-includes/css/dist/block-library/common.min.css */
+</style>
+<style id="wp-block-heading-inline-css">
+h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-background,h3:where(.wp-block-heading).has-background,h4:where(.wp-block-heading).has-background,h5:where(.wp-block-heading).has-background,h6:where(.wp-block-heading).has-background{padding:1.25em 2.375em}h1.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h1.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h2.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h2.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h3.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h3.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h4.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h4.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h5.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h5.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h6.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h6.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]){rotate:180deg}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/heading/style.min.css */
+</style>
+<style id="wp-block-image-inline-css">
+.wp-block-image>a,.wp-block-image>figure>a{display:inline-block}.wp-block-image img{box-sizing:border-box;height:auto;max-width:100%;vertical-align:bottom}@media not (prefers-reduced-motion){.wp-block-image img.hide{visibility:hidden}.wp-block-image img.show{animation:show-content-image .4s}}.wp-block-image[style*=border-radius] img,.wp-block-image[style*=border-radius]>a{border-radius:inherit}.wp-block-image.has-custom-border img{box-sizing:border-box}.wp-block-image.aligncenter{text-align:center}.wp-block-image.alignfull>a,.wp-block-image.alignwide>a{width:100%}.wp-block-image.alignfull img,.wp-block-image.alignwide img{height:auto;width:100%}.wp-block-image .aligncenter,.wp-block-image .alignleft,.wp-block-image .alignright,.wp-block-image.aligncenter,.wp-block-image.alignleft,.wp-block-image.alignright{display:table}.wp-block-image .aligncenter>figcaption,.wp-block-image .alignleft>figcaption,.wp-block-image .alignright>figcaption,.wp-block-image.aligncenter>figcaption,.wp-block-image.alignleft>figcaption,.wp-block-image.alignright>figcaption{caption-side:bottom;display:table-caption}.wp-block-image .alignleft{float:left;margin:.5em 1em .5em 0}.wp-block-image .alignright{float:right;margin:.5em 0 .5em 1em}.wp-block-image .aligncenter{margin-left:auto;margin-right:auto}.wp-block-image :where(figcaption){margin-bottom:1em;margin-top:.5em}.wp-block-image.is-style-circle-mask img{border-radius:9999px}@supports ((-webkit-mask-image:none) or (mask-image:none)) or (-webkit-mask-image:none){.wp-block-image.is-style-circle-mask img{border-radius:0;-webkit-mask-image:url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50"/></svg>');mask-image:url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="50"/></svg>');mask-mode:alpha;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain}}:root :where(.wp-block-image.is-style-rounded img,.wp-block-image .is-style-rounded img){border-radius:9999px}.wp-block-image figure{margin:0}.wp-lightbox-container{display:flex;flex-direction:column;position:relative}.wp-lightbox-container img{cursor:zoom-in}.wp-lightbox-container img:hover+button{opacity:1}.wp-lightbox-container button{align-items:center;backdrop-filter:blur(16px) saturate(180%);background-color:rgba(90,90,90,.25);border:none;border-radius:4px;cursor:zoom-in;display:flex;height:20px;justify-content:center;opacity:0;padding:0;position:absolute;right:16px;text-align:center;top:16px;width:20px;z-index:100}@media not (prefers-reduced-motion){.wp-lightbox-container button{transition:opacity .2s ease}}.wp-lightbox-container button:focus-visible{outline:3px auto rgba(90,90,90,.25);outline:3px auto -webkit-focus-ring-color;outline-offset:3px}.wp-lightbox-container button:hover{cursor:pointer;opacity:1}.wp-lightbox-container button:focus{opacity:1}.wp-lightbox-container button:focus,.wp-lightbox-container button:hover,.wp-lightbox-container button:not(:hover):not(:active):not(.has-background){background-color:rgba(90,90,90,.25);border:none}.wp-lightbox-overlay{box-sizing:border-box;cursor:zoom-out;height:100vh;left:0;overflow:hidden;position:fixed;top:0;visibility:hidden;width:100%;z-index:100000}.wp-lightbox-overlay .wp-lightbox-close-button{align-items:center;cursor:pointer;display:flex;font-family:inherit;gap:8px;justify-content:center;line-height:1;min-height:40px;min-width:40px;padding:0 4px;position:absolute;right:calc(env(safe-area-inset-right) + 16px);top:calc(env(safe-area-inset-top) + 16px);z-index:5000000}.wp-lightbox-overlay .wp-lightbox-close-button:focus,.wp-lightbox-overlay .wp-lightbox-close-button:hover,.wp-lightbox-overlay .wp-lightbox-close-button:not(:hover):not(:active):not(.has-background){background:none;border:none}.wp-lightbox-overlay .wp-lightbox-close-button:has(.wp-lightbox-close-text:not([hidden])) .wp-lightbox-close-icon svg{height:1em;width:1em}.wp-lightbox-overlay .wp-lightbox-close-icon svg{display:block}.wp-lightbox-overlay .wp-lightbox-navigation-button-next,.wp-lightbox-overlay .wp-lightbox-navigation-button-prev{align-items:center;bottom:16px;cursor:pointer;display:flex;font-family:inherit;gap:4px;justify-content:center;line-height:1;min-height:40px;min-width:40px;padding:0 8px;position:absolute;z-index:2000002}.wp-lightbox-overlay .wp-lightbox-navigation-button-next[hidden],.wp-lightbox-overlay .wp-lightbox-navigation-button-prev[hidden]{display:none}@media (min-width:960px){.wp-lightbox-overlay .wp-lightbox-navigation-button-next,.wp-lightbox-overlay .wp-lightbox-navigation-button-prev{bottom:50%;transform:translateY(-50%)}}.wp-lightbox-overlay .wp-lightbox-navigation-button-next:focus,.wp-lightbox-overlay .wp-lightbox-navigation-button-next:hover,.wp-lightbox-overlay .wp-lightbox-navigation-button-next:not(:hover):not(:active):not(.has-background),.wp-lightbox-overlay .wp-lightbox-navigation-button-prev:focus,.wp-lightbox-overlay .wp-lightbox-navigation-button-prev:hover,.wp-lightbox-overlay .wp-lightbox-navigation-button-prev:not(:hover):not(:active):not(.has-background){background:none;border:none;padding:0 8px}.wp-lightbox-overlay .wp-lightbox-navigation-button-next:has(.wp-lightbox-navigation-text:not([hidden])) .wp-lightbox-navigation-icon svg,.wp-lightbox-overlay .wp-lightbox-navigation-button-prev:has(.wp-lightbox-navigation-text:not([hidden])) .wp-lightbox-navigation-icon svg{display:block;height:1.5em;width:1.5em}.wp-lightbox-overlay .wp-lightbox-navigation-button-prev{left:calc(env(safe-area-inset-left) + 16px)}.wp-lightbox-overlay .wp-lightbox-navigation-button-next{right:calc(env(safe-area-inset-right) + 16px)}.wp-lightbox-overlay .wp-lightbox-navigation-icon svg{vertical-align:middle}.wp-lightbox-overlay .lightbox-image-container{height:var(--wp--lightbox-container-height);left:50%;overflow:hidden;position:absolute;top:50%;transform:translate(-50%,-50%);transform-origin:top left;width:var(--wp--lightbox-container-width);z-index:2000001}.wp-lightbox-overlay .wp-block-image{align-items:center;box-sizing:border-box;display:flex;height:100%;justify-content:center;margin:0;position:relative;transform-origin:0 0;width:100%;z-index:3000000}.wp-lightbox-overlay .wp-block-image img{height:var(--wp--lightbox-image-height);min-height:var(--wp--lightbox-image-height);min-width:var(--wp--lightbox-image-width);width:var(--wp--lightbox-image-width)}.wp-lightbox-overlay .wp-block-image figcaption{display:none}.wp-lightbox-overlay button{background:none;border:none}.wp-lightbox-overlay .scrim{background-color:#fff;height:100%;opacity:.9;position:absolute;width:100%;z-index:2000000}.wp-lightbox-overlay.active{visibility:visible}@media not (prefers-reduced-motion){.wp-lightbox-overlay.active{animation:turn-on-visibility .25s both}.wp-lightbox-overlay.active img{animation:turn-on-visibility .35s both}.wp-lightbox-overlay.show-closing-animation:not(.active){animation:turn-off-visibility .35s both}.wp-lightbox-overlay.show-closing-animation:not(.active) img{animation:turn-off-visibility .25s both}.wp-lightbox-overlay.zoom.active{animation:none;opacity:1;visibility:visible}.wp-lightbox-overlay.zoom.active .lightbox-image-container{animation:lightbox-zoom-in .4s}.wp-lightbox-overlay.zoom.active .lightbox-image-container img{animation:none}.wp-lightbox-overlay.zoom.active .scrim{animation:turn-on-visibility .4s forwards}.wp-lightbox-overlay.zoom.show-closing-animation:not(.active){animation:none}.wp-lightbox-overlay.zoom.show-closing-animation:not(.active) .lightbox-image-container{animation:lightbox-zoom-out .4s}.wp-lightbox-overlay.zoom.show-closing-animation:not(.active) .lightbox-image-container img{animation:none}.wp-lightbox-overlay.zoom.show-closing-animation:not(.active) .scrim{animation:turn-off-visibility .4s forwards}}@keyframes show-content-image{0%{visibility:hidden}99%{visibility:hidden}to{visibility:visible}}@keyframes turn-on-visibility{0%{opacity:0}to{opacity:1}}@keyframes turn-off-visibility{0%{opacity:1;visibility:visible}99%{opacity:0;visibility:visible}to{opacity:0;visibility:hidden}}@keyframes lightbox-zoom-in{0%{transform:translate(calc((-100vw + var(--wp--lightbox-scrollbar-width))/2 + var(--wp--lightbox-initial-left-position)),calc(-50vh + var(--wp--lightbox-initial-top-position))) scale(var(--wp--lightbox-scale))}to{transform:translate(-50%,-50%) scale(1)}}@keyframes lightbox-zoom-out{0%{transform:translate(-50%,-50%) scale(1);visibility:visible}99%{visibility:visible}to{transform:translate(calc((-100vw + var(--wp--lightbox-scrollbar-width))/2 + var(--wp--lightbox-initial-left-position)),calc(-50vh + var(--wp--lightbox-initial-top-position))) scale(var(--wp--lightbox-scale));visibility:hidden}}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/image/style.min.css */
+</style>
+<style id="wp-block-image-theme-inline-css">
+:root :where(.wp-block-image figcaption){color:#555;font-size:13px;text-align:center}.is-dark-theme :root :where(.wp-block-image figcaption){color:hsla(0,0%,100%,.65)}.wp-block-image{margin:0 0 1em}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/image/theme.min.css */
+</style>
+<style id="wp-block-list-inline-css">
+ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:1.25em 2.375em}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/list/style.min.css */
+</style>
+<style id="wp-block-paragraph-inline-css">
+.is-small-text{font-size:.875em}.is-regular-text{font-size:1em}.is-large-text{font-size:2.25em}.is-larger-text{font-size:3em}.has-drop-cap:not(:focus):first-letter{float:left;font-size:8.4em;font-style:normal;font-weight:100;line-height:.68;margin:.05em .1em 0 0;text-transform:uppercase}body.rtl .has-drop-cap:not(:focus):first-letter{float:none;margin-left:.1em}p.has-drop-cap.has-background{overflow:hidden}:root :where(p.has-background){padding:1.25em 2.375em}:where(p.has-text-color:not(.has-link-color)) a{color:inherit}p.has-text-align-left[style*="writing-mode:vertical-lr"],p.has-text-align-right[style*="writing-mode:vertical-rl"]{rotate:180deg}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/paragraph/style.min.css */
+</style>
+<style id="wp-block-quote-inline-css">
+.wp-block-quote{box-sizing:border-box;overflow-wrap:break-word}.wp-block-quote.is-large:where(:not(.is-style-plain)),.wp-block-quote.is-style-large:where(:not(.is-style-plain)){margin-bottom:1em;padding:0 1em}.wp-block-quote.is-large:where(:not(.is-style-plain)) p,.wp-block-quote.is-style-large:where(:not(.is-style-plain)) p{font-size:1.5em;font-style:italic;line-height:1.6}.wp-block-quote.is-large:where(:not(.is-style-plain)) cite,.wp-block-quote.is-large:where(:not(.is-style-plain)) footer,.wp-block-quote.is-style-large:where(:not(.is-style-plain)) cite,.wp-block-quote.is-style-large:where(:not(.is-style-plain)) footer{font-size:1.125em;text-align:right}.wp-block-quote>cite{display:block}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/quote/style.min.css */
+</style>
+<style id="wp-block-quote-theme-inline-css">
+.wp-block-quote{border-left:.25em solid;margin:0 0 1.75em;padding-left:1em}.wp-block-quote cite,.wp-block-quote footer{color:currentColor;font-size:.8125em;font-style:normal;position:relative}.wp-block-quote:where(.has-text-align-right){border-left:none;border-right:.25em solid;padding-left:0;padding-right:1em}.wp-block-quote:where(.has-text-align-center){border:none;padding-left:0}.wp-block-quote.is-large,.wp-block-quote.is-style-large,.wp-block-quote:where(.is-style-plain){border:none}
+/*# sourceURL=https://scc10.com.br/wp-includes/blocks/quote/theme.min.css */
+</style>
+
+<style id="classic-theme-styles-inline-css">
+/*! This file is auto-generated */
+.wp-block-button__link{color:#fff;background-color:#32373c;border-radius:9999px;box-shadow:none;text-decoration:none;padding:calc(.667em + 2px) calc(1.333em + 2px);font-size:1.125em}.wp-block-file__button{background:#32373c;color:#fff;text-decoration:none}
+/*# sourceURL=/wp-includes/css/classic-themes.min.css */
+</style>
+
+<style id="font-awesome-svg-styles-default-inline-css">
+.svg-inline--fa {
+  display: inline-block;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -.125em;
+}
+/*# sourceURL=font-awesome-svg-styles-default-inline-css */
+</style>
+<link data-minify="1" rel='stylesheet' id='font-awesome-svg-styles-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/uploads/font-awesome/v7.1.0/css/svg-with-js.css?ver=1790827534' media='all' />
+<style id="font-awesome-svg-styles-inline-css">
+   .wp-block-font-awesome-icon svg::before,
+   .wp-rich-text-font-awesome-icon svg::before {content: unset;}
+/*# sourceURL=font-awesome-svg-styles-inline-css */
+</style>
+<link data-minify="1" rel='stylesheet' id='font-awesome-official-css' href='https://scc10.com.br/wp-content/cache/min/1/releases/v7.1.0/css/all.css?ver=1790827534' media='all' crossorigin="anonymous" />
+<link data-minify="1" rel='stylesheet' id='font-awesome-official-v4shim-css' href='https://scc10.com.br/wp-content/cache/min/1/releases/v7.1.0/css/v4-shims.css?ver=1790827535' media='all' crossorigin="anonymous" />
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}.wp-block-button{--wp--preset--dimension--25: 25%;--wp--preset--dimension--50: 50%;--wp--preset--dimension--75: 75%;--wp--preset--dimension--100: 100%;}:where(body) { margin: 0; }:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}body{padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;}:root :where(.wp-element-button, .wp-block-button__link){background-color: #32373c;border-width: 0;color: #fff;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;letter-spacing: inherit;line-height: inherit;padding-top: calc(0.667em + 2px);padding-right: calc(1.333em + 2px);padding-bottom: calc(0.667em + 2px);padding-left: calc(1.333em + 2px);text-decoration: none;text-transform: inherit;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<style id="dominant-color-styles-inline-css">
+img[data-dominant-color]:not(.has-transparency) { background-color: var(--dominant-color); }
+/*# sourceURL=dominant-color-styles-inline-css */
+</style>
+<link data-minify="1" rel='stylesheet' id='hind-font-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/themes/scc10/assets/styles/css/vendors/fonts-google/Hind.css?ver=1790827535' media='all' />
+<link data-minify="1" rel='stylesheet' id='video-js-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/themes/scc10/assets/styles/css/vendors/videojs/video-js.min.css?ver=1790827535' media='all' />
+<link data-minify="1" rel='stylesheet' id='videojs-contrib-ads-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/themes/scc10/assets/styles/css/vendors/videojs/videojs-contrib-ads.css?ver=1790827535' media='all' />
+<link data-minify="1" rel='stylesheet' id='videojs-ima-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/themes/scc10/assets/styles/css/vendors/videojs/videojs.ima.css?ver=1790827535' media='all' />
+<meta name="generator" content="dominant-color-images 1.3.0">
+<meta name="onesignal-plugin" content="wordpress-3.9.2">
+  <script type="text/rocketlazyloadscript" data-rocket-src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script type="text/rocketlazyloadscript">
+          window.OneSignalDeferred = window.OneSignalDeferred || [];
+          OneSignalDeferred.push(async function(OneSignal) {
+            await OneSignal.init({
+              appId: "98b5b8e0-c2f9-410b-8615-8c2b4ab83d57",
+              serviceWorkerOverrideForTypical: true,
+              path: "https://scc10.com.br/wp-content/plugins/onesignal-free-web-push-notifications/sdk_files/",
+              serviceWorkerParam: { scope: "/wp-content/plugins/onesignal-free-web-push-notifications/sdk_files/push/onesignal/" },
+              serviceWorkerPath: "OneSignalSDKWorker.js",
+            });
+          });
+
+          // Unregister the legacy OneSignal service worker to prevent scope conflicts
+          if (navigator.serviceWorker) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+              // Iterate through all registered service workers
+              registrations.forEach((registration) => {
+                // Check the script URL to identify the specific service worker
+                if (registration.active && registration.active.scriptURL.includes('OneSignalSDKWorker.js.php')) {
+                  // Unregister the service worker
+                  registration.unregister().then((success) => {
+                    if (success) {
+                      console.log('OneSignalSW: Successfully unregistered:', registration.active.scriptURL);
+                    } else {
+                      console.log('OneSignalSW: Failed to unregister:', registration.active.scriptURL);
+                    }
+                  });
+                }
+              });
+            }).catch((error) => {
+              console.error('Error fetching service worker registrations:', error);
+            });
+        }
+        </script>
+<meta name="generator" content="performance-lab 4.2.0; plugins: dominant-color-images, webp-uploads">
+<meta name="generator" content="webp-uploads 2.7.1">
+	<style>img#wpstats{display:none}</style>
+		<meta name="og:url" content="https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" /><meta property="mrf:authors" content="Olga Helena de Paula">
+<meta property="mrf:sections" content="Cotidiano">
+<link rel="icon" href="https://scc10.com.br/wp-content/uploads/2019/09/cropped-favicon-SSC10-150x-32x32.webp" sizes="32x32" />
+<link rel="icon" href="https://scc10.com.br/wp-content/uploads/2019/09/cropped-favicon-SSC10-150x-192x192.webp" sizes="192x192" />
+<meta name="msapplication-TileImage" content="https://scc10.com.br/wp-content/uploads/2019/09/cropped-favicon-SSC10-150x-270x270.webp" />
+<style id="kirki-inline-styles"></style><noscript><style id="rocket-lazyload-nojs-css">.rll-youtube-player, [data-lazy-src]{display:none !important;}</style></noscript><link data-minify="1" rel="stylesheet" href="https://scc10.com.br/wp-content/cache/min/1/npm/flipdown@0.3.2/dist/flipdown.min.css?ver=1790827535">
+<link href="https://fonts.cdnfonts.com/css/ostrich-sans-2" rel="stylesheet">
+<script type="text/rocketlazyloadscript" data-rocket-src="https://cdn.jsdelivr.net/npm/flipdown@0.3.2/src/flipdown.min.js" data-rocket-defer defer></script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MZB76PQ');</script>
+<!-- End Google Tag Manager -->
+<style id="jetpack-block-slideshow-inline-css">
+.wp-block-jetpack-slideshow{margin-bottom:1.5em;min-width:0;position:relative}.wp-block-jetpack-slideshow [tabindex="-1"]:focus{outline:0}.wp-block-jetpack-slideshow.wp-amp-block>.wp-block-jetpack-slideshow_container{opacity:1}.wp-block-jetpack-slideshow.wp-amp-block.wp-block-jetpack-slideshow__autoplay .wp-block-jetpack-slideshow_button-play,.wp-block-jetpack-slideshow.wp-amp-block.wp-block-jetpack-slideshow__autoplay.wp-block-jetpack-slideshow__autoplay-playing .wp-block-jetpack-slideshow_button-pause{display:block}.wp-block-jetpack-slideshow.wp-amp-block.wp-block-jetpack-slideshow__autoplay.wp-block-jetpack-slideshow__autoplay-playing .wp-block-jetpack-slideshow_button-play{display:none}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container{opacity:0;overflow:hidden;width:100%}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container.wp-swiper-initialized{opacity:1}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container:not(.wp-swiper-initialized) .wp-block-jetpack-slideshow_swiper-wrapper{aspect-ratio:max(min(var(--aspect-ratio),1.7777777778),1);max-height:80vh}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container:not(.wp-swiper-initialized) .wp-block-jetpack-slideshow_slide:not(:first-of-type){height:1px}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container.swiper-container{display:block}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container :is(.wp-block-jetpack-slideshow_slide,.wp-block-jetpack-slideshow_swiper-wrapper){line-height:normal;margin:0;padding:0}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container ul.wp-block-jetpack-slideshow_swiper-wrapper{display:flex}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide{display:flex;height:100%;width:100%}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide figure{align-items:center;display:flex;height:100%;justify-content:center;margin:0;position:relative;width:100%}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide figure .wp-block-jetpack-slideshow_image{pointer-events:none;-webkit-user-select:none;user-select:none}:is(.wp-block-jetpack-slideshow.alignfull,.wp-block-jetpack-slideshow.alignwide) .wp-block-jetpack-slideshow_image{max-width:unset;object-fit:cover;width:100vw}.wp-block-jetpack-slideshow .swiper-fade .wp-block-jetpack-slideshow_slide:not(.swiper-slide-active){opacity:0!important}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_image{display:block;height:auto;max-height:100%;max-width:100%;object-fit:contain;width:auto}.wp-block-jetpack-slideshow :is(.amp-carousel-button,.wp-block-jetpack-slideshow_button-next,.wp-block-jetpack-slideshow_button-pause,.wp-block-jetpack-slideshow_button-play,.wp-block-jetpack-slideshow_button-prev){background-color:#fff;background-position:50%;background-repeat:no-repeat;background-size:contain;border:0;border-radius:4px;box-shadow:none;height:30px;margin:-14px 0 0;opacity:.5;padding:0;transition:opacity .5s ease-out;width:28px}.wp-block-jetpack-slideshow :is(.amp-carousel-button:focus,.amp-carousel-button:hover,.wp-block-jetpack-slideshow_button-next:focus,.wp-block-jetpack-slideshow_button-next:hover,.wp-block-jetpack-slideshow_button-pause:focus,.wp-block-jetpack-slideshow_button-pause:hover,.wp-block-jetpack-slideshow_button-play:focus,.wp-block-jetpack-slideshow_button-play:hover,.wp-block-jetpack-slideshow_button-prev:focus,.wp-block-jetpack-slideshow_button-prev:hover){background-color:#fff;opacity:1}.wp-block-jetpack-slideshow :is(.amp-carousel-button:focus,.wp-block-jetpack-slideshow_button-next:focus,.wp-block-jetpack-slideshow_button-pause:focus,.wp-block-jetpack-slideshow_button-play:focus,.wp-block-jetpack-slideshow_button-prev:focus){outline:thin dotted #fff;outline-offset:-4px}.wp-block-jetpack-slideshow .amp-carousel-button{margin:0}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_button-next,.wp-block-jetpack-slideshow_button-prev){display:none}.wp-block-jetpack-slideshow .swiper-button-next:after,.wp-block-jetpack-slideshow .swiper-button-prev:after,.wp-block-jetpack-slideshow .swiper-rtl .swiper-button-next:after,.wp-block-jetpack-slideshow .swiper-rtl .swiper-button-prev:after{content:""}.wp-block-jetpack-slideshow .amp-carousel-button-next,.wp-block-jetpack-slideshow .swiper-button-next.swiper-button-white,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-next,.wp-block-jetpack-slideshow.swiper-rtl .swiper-button-prev.swiper-button-white,.wp-block-jetpack-slideshow.swiper-rtl .wp-block-jetpack-slideshow_button-prev{background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDI1IDI0Ij48bWFzayBpZD0iYSIgd2lkdGg9IjgiIGhlaWdodD0iMTIiIHg9IjgiIHk9IjYiIG1hc2stdHlwZT0iYWxwaGEiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik04LjU5OCAxNi41OSAxMy4xNTYgMTIgOC41OTggNy40MSAxMC4wMDEgNmw1Ljk3IDYtNS45NyA2eiIvPjwvbWFzaz48ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjMDAwIiBkPSJNLjM0NCAwaDIzLjg4MnYyNEguMzQ0eiIvPjwvZz48L3N2Zz4=)}.wp-block-jetpack-slideshow .amp-carousel-button-next>svg,.wp-block-jetpack-slideshow .swiper-button-next.swiper-button-white>svg,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-next>svg,.wp-block-jetpack-slideshow.swiper-rtl .swiper-button-prev.swiper-button-white>svg,.wp-block-jetpack-slideshow.swiper-rtl .wp-block-jetpack-slideshow_button-prev>svg{visibility:hidden}.wp-block-jetpack-slideshow .amp-carousel-button-prev,.wp-block-jetpack-slideshow .swiper-button-prev.swiper-button-white,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-prev,.wp-block-jetpack-slideshow.swiper-rtl .swiper-button-next.swiper-button-white,.wp-block-jetpack-slideshow.swiper-rtl .wp-block-jetpack-slideshow_button-next{background-image:url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNSIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgdmlld0JveD0iMCAwIDI1IDI0Ij48bWFzayBpZD0iYSIgd2lkdGg9IjkiIGhlaWdodD0iMTIiIHg9IjgiIHk9IjYiIG1hc2stdHlwZT0iYWxwaGEiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xNi4yMDcgMTYuNTkgMTEuNjUgMTJsNC41NTctNC41OUwxNC44MDQgNmwtNS45NyA2IDUuOTcgNnoiLz48L21hc2s+PGcgbWFzaz0idXJsKCNhKSI+PHBhdGggZmlsbD0iIzAwMCIgZD0iTS41NzkgMGgyMy44ODJ2MjRILjU3OXoiLz48L2c+PC9zdmc+)}.wp-block-jetpack-slideshow .amp-carousel-button-prev>svg,.wp-block-jetpack-slideshow .swiper-button-prev.swiper-button-white>svg,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-prev>svg,.wp-block-jetpack-slideshow.swiper-rtl .swiper-button-next.swiper-button-white>svg,.wp-block-jetpack-slideshow.swiper-rtl .wp-block-jetpack-slideshow_button-next>svg{visibility:hidden}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_button-pause,.wp-block-jetpack-slideshow_button-play){background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M6 19h4V5H6zm8-14v14h4V5z'/%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3C/svg%3E");display:none;inset-inline-end:10px;margin-top:0;position:absolute;top:10px;z-index:1}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_autoplay-paused .wp-block-jetpack-slideshow_button-pause,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_button-play{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3C/svg%3E")}.wp-block-jetpack-slideshow:has(>div[data-autoplay=true]) .wp-block-jetpack-slideshow_button-pause,.wp-block-jetpack-slideshow[data-autoplay=true] .wp-block-jetpack-slideshow_button-pause{display:block}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_caption.gallery-caption{background-color:#00000080;bottom:0;box-sizing:border-box;color:#fff;cursor:text;left:0;margin:0!important;max-height:100%;opacity:1;padding:.75em;position:absolute;right:0;text-align:initial;z-index:1}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_caption.gallery-caption a{color:inherit}.wp-block-jetpack-slideshow[data-autoplay=true] .wp-block-jetpack-slideshow_caption.gallery-caption{max-height:calc(100% - 68px)}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets,.wp-block-jetpack-slideshow_pagination.swiper-pagination-custom){bottom:0;display:flex;gap:8px;justify-content:flex-start;line-height:24px;padding:10px 0 2px;position:relative}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets,.wp-block-jetpack-slideshow_pagination.swiper-pagination-custom) .swiper-pagination-bullet{background:currentColor;color:currentColor;height:8px;opacity:.5;transform:scale(.75);transition:opacity .25s,transform .25s;vertical-align:top;width:8px}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets .swiper-pagination-bullet:focus,.wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets .swiper-pagination-bullet:hover,.wp-block-jetpack-slideshow_pagination.swiper-pagination-custom .swiper-pagination-bullet:focus,.wp-block-jetpack-slideshow_pagination.swiper-pagination-custom .swiper-pagination-bullet:hover){opacity:1}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets,.wp-block-jetpack-slideshow_pagination.swiper-pagination-custom) .swiper-pagination-bullet:focus{outline:thin dotted;outline-offset:0}.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets .swiper-pagination-bullet-active,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets .swiper-pagination-bullet[selected],.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_pagination.swiper-pagination-custom .swiper-pagination-bullet-active,.wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_pagination.swiper-pagination-custom .swiper-pagination-bullet[selected]{background-color:currentColor;opacity:1;transform:scale(1)}.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_pagination.swiper-pagination-bullets,.wp-block-jetpack-slideshow_pagination.swiper-pagination-custom) .swiper-pagination-simple{font-size:14px;line-height:16px;text-align:start;width:100%}.wp-block-jetpack-slideshow_pagination.amp-pagination{text-align:center}.wp-block-jetpack-slideshow_pagination.amp-pagination .swiper-pagination-bullet{border:0;border-radius:100%;display:inline-block;margin:0 4px;padding:0}@media(min-width:600px){.wp-block-jetpack-slideshow :is(.wp-block-jetpack-slideshow_button-next,.wp-block-jetpack-slideshow_button-prev){display:block}}.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container{height:auto;opacity:1;overflow:visible;width:auto}.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container ul.wp-block-jetpack-slideshow_swiper-wrapper,.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide figure{display:block;margin-bottom:12px}.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_container ul.wp-block-jetpack-slideshow_swiper-wrapper,.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide{list-style:none;margin-left:auto;margin-right:auto}.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_slide{display:inline-block;height:auto;margin-left:2%!important;margin-right:2%!important;vertical-align:top;width:42%}.is-email .wp-block-jetpack-slideshow .wp-block-jetpack-slideshow_caption.gallery-caption{background-color:#0000;bottom:auto;color:inherit;inset-inline-end:auto;padding-top:0;position:relative}#editor:has(.wp-block-group.is-vertical:not(.is-layout-constrained)) .wp-block-group.is-vertical:not(.is-layout-constrained) .wp-block-jetpack-slideshow,.entry-content:has(.wp-block-group.is-vertical:not(.is-layout-constrained)) .wp-block-group.is-vertical:not(.is-layout-constrained) .wp-block-jetpack-slideshow{max-width:inherit}div:not(.entry-content):not(.block-editor__container)>.wp-block-group.is-vertical:not(.is-layout-constrained) .wp-block-jetpack-slideshow{max-width:100vw}
+/*# sourceURL=https://scc10.com.br/wp-content/plugins/jetpack/_inc/blocks/slideshow/view.css?minify=false */
+</style>
+<link data-minify="1" rel='stylesheet' id='jetpack-swiper-library-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/plugins/jetpack/_inc/blocks/swiper.css?ver=1790827564' media='all' />
+<link data-minify="1" rel='stylesheet' id='contact-form-7-css' href='https://scc10.com.br/wp-content/cache/min/1/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=1790827535' media='all' />
+
+<meta name="generator" content="WP Rocket 3.23.3.3" data-wpr-features="wpr_delay_js wpr_defer_js wpr_lazyload_images wpr_lazyload_iframes wpr_image_dimensions wpr_minify_css wpr_host_fonts_locally wpr_desktop" /></head>
+
+
+<body class="wp-singular post-template-default single single-post postid-802580 single-format-standard wp-embed-responsive wp-theme-scc10 post">
+	<script type="text/rocketlazyloadscript" data-rocket-type="text/javascript">
+!function(){"use strict";function e(e){var t=!(arguments.length>1&&void 0!==arguments[1])||arguments[1],c=document.createElement("script");c.src=e,t?c.type="module":(c.async=!0,c.type="text/javascript",c.setAttribute("nomodule",""));var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(c,n)}!function(t,c){!function(t,c,n){var a,o,r;n.accountId=c,null!==(a=t.marfeel)&&void 0!==a||(t.marfeel={}),null!==(o=(r=t.marfeel).cmd)&&void 0!==o||(r.cmd=[]),t.marfeel.config=n;var i="https://sdk.mrf.io/statics";e("".concat(i,"/marfeel-sdk.js?id=").concat(c),!0),e("".concat(i,"/marfeel-sdk.es5.js?id=").concat(c),!1)}(t,c,arguments.length>2&&void 0!==arguments[2]?arguments[2]:{})}(window,11594,{} /* Config */)}();
+</script><!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MZB76PQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<header data-rocket-location-hash="a1ba72e3e7e8adaa02422d4a9dfe5325" class="container-fluid header">
+	<div data-rocket-location-hash="1e4f7857bfff133ff10633f6b7a765c6" class="header-status">
+					<div data-rocket-location-hash="c7761146ee359088efcf54238c65fe77" class="d-flex align-items-center">
+						<button class="navbar-toggle collapsed header-btn" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false" style="display:flex;color: white;">
+				<!-- <span class="sr-only">Toggle navigation</span> -->
+				<i class="fas fa-bars"></i>
+			</button>
+						<div class="status-date" style="padding: 5px 10px;"><span id="date"></span></div>
+			<div class="status-hour"><span id="hour"></span></div>
+			<div id="weather-status" style="padding: 5px 10px;"></div>
+		</div>
+		<ul class="no-list list-social d-flex" style="gap: 10px">
+				<li><a target="_blank" href="https://www.facebook.com/portalscc10/" aria-label="Acesse nosso Facebook"> <i class="fab fa-facebook-f"></i></a></li><li><a target="_blank" href="https://x.com/scc10oficial" aria-label="Acesse nosso X"> <i class="fab fa-x-twitter"></i></a></li><li><a target="_blank" href="https://www.instagram.com/portalscc10/" aria-label="Acesse nosso Instagram"> <i class="fab fa-instagram"></i></a></li><li><a target="_blank" href="https://www.threads.com/@portalscc10" aria-label="Acesse nosso Threads"> <i class="fa-brands fa-threads"></i></a></li><li><a target="_blank" href="https://www.youtube.com/channel/UCof3X_LosODbkrOR55Dpbiw" aria-label="Acesse nosso Youtube"> <i class="fab fa-youtube"></i></a></li>			</ul>
+		
+					
+			
+
+	</div>
+	<div data-rocket-location-hash="ce74a7993fbf014a81bfb8e1b06c02e5" class="container header-content">
+
+		<div data-rocket-location-hash="6e32fd787cfa429ab8bd000441ff8f34" class="text-center">
+			<a class="logo" href="https://scc10.com.br" class="text-decoration-none">
+				<img src="https://scc10.com.br/wp-content/uploads/2019/09/Logo-SCC10-1.png" class="logo-img" width="113" height="50" alt="Logo" loading="eager" />
+			</a>
+		</div>
+
+<nav class="navbar-pill d-flex align-items-center">
+	<ul id="menu-acesso-rapido-scc10" class="nav-links-list d-flex align-items-center list-unstyled mb-0"><li id="menu-item-932695" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-932695"><a href="#">regiões</a>
+<ul class="sub-menu">
+	<li id="menu-item-932696" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932696"><a href="https://scc10.com.br/regiao/grande-florianopolis/">grande florianópolis</a></li>
+	<li id="menu-item-932700" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932700"><a href="https://scc10.com.br/regiao/litoral-norte/">litoral norte</a></li>
+	<li id="menu-item-932704" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932704"><a href="https://scc10.com.br/regiao/vale-do-itajai/">vale do itajaí</a></li>
+	<li id="menu-item-932698" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932698"><a href="https://scc10.com.br/regiao/sul/">sul</a></li>
+	<li id="menu-item-932699" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932699"><a href="https://scc10.com.br/regiao/serra/">serra</a></li>
+	<li id="menu-item-932718" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932718"><a href="https://scc10.com.br/regiao/oeste/">oeste</a></li>
+	<li id="menu-item-932697" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932697"><a href="https://scc10.com.br/regiao/norte/">norte</a></li>
+	<li id="menu-item-932701" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932701"><a href="https://scc10.com.br/regiao/santa-catarina/">santa catarina</a></li>
+	<li id="menu-item-932702" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932702"><a href="https://scc10.com.br/regiao/brasil/">brasil</a></li>
+	<li id="menu-item-932703" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932703"><a href="https://scc10.com.br/regiao/mundo/">mundo</a></li>
+</ul>
+</li>
+<li id="menu-item-932705" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-932705"><a href="https://scc10.com.br/ultimas-noticias/">Últimas Notícias</a></li>
+<li id="menu-item-932706" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-932706"><a href="https://scc10.com.br/esporte/">Esporte</a></li>
+<li id="menu-item-932708" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-932708"><a href="https://scc10.com.br/radioclube/">Rádio Clube</a></li>
+<li id="menu-item-932709" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-932709"><a href="https://gruposcc.com.br">grupo scc</a></li>
+</ul>  <button title="Pesquisar" class="bt-search-pill bt-search">
+    <i class="fas fa-search"></i>
+  </button>
+</nav>
+
+	</div>
+
+	<form class="bar-search" action="https://scc10.com.br" style="display: none;">
+		<div id="inputsearch">
+			<label for="s" class="sr-only form-label d-none">Pesquisar</label>
+			<input type="text" name="s" placeholder="Pesquisar">
+			<button type="submit" class="btn btn-primary">
+				<i class="fas fa-search"></i>
+			</button>
+		</div>
+		<button type="button" class="btn bt-close">
+			<i class="fas fa-xmark"></i>
+		</button>
+	</form>
+
+		<div data-rocket-location-hash="aad3fcaf23b410a8ef5e3445941c8e08" class="menu-header">
+
+		<span class="navbar-close"><i class="fas fa-times"></i></span>
+
+		<span class="title text-center">Categorias</span>
+		<nav>
+			<ul id="menu-principal" class="menu"><li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/aovivo/sccsbt/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">AO VIVO – SCC SBT</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/aovivo/clube/">AO VIVO – RÁDIO CLUBE</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/aovivo/massalages/">AO VIVO – RÁDIO MASSA LAGES</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/aovivo/massagramado/">AO VIVO – RÁDIO MASSA SERRA RS</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/aovivo/gralha/">AO VIVO – RÁDIO GRALHA</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/aovivo/nevasca/">AO VIVO – RÁDIO NEVASCA</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/cotidiano/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Cotidiano</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/seguranca/" data-color="#233496" data-bgcolor="#233496">Segurança</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/saude/" data-color="#233496" data-bgcolor="#233496">Saúde</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/educacao/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Educação</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/transito/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Trânsito</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/entretenimento/" data-color="#90278d" data-bgcolor="#90278d">Entretenimento</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/cultura/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Cultura</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/cotidiano/tempo/" data-color="#1e73be" data-bgcolor="#1e73be">Tempo</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#8bc43f"><a href="https://scc10.com.br/esporte/" data-color="#8bc43f" data-bgcolor="#8bc43f">Esporte</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/esporte/torcida-amarelinha/" data-color="#d6b200" data-bgcolor="#d6b200">Torcida Amarelinha</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/esporte/futebol/" data-color="#8bc43f" data-bgcolor="#8bc43f">Futebol</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/esporte/copa-santa-catarina/" data-color="#81d742" data-bgcolor="#81d742">Copa Santa Catarina</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/esporte/futebol/a-liberta-e-delas/" data-color="#8bc43f" data-bgcolor="#8bc43f">A Liberta é delas!</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/esporte/boletim-surf/" data-color="#8bc43f" data-bgcolor="#8bc43f">Boletim.surf</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/esporte/olimpiadas/" data-color="#8bc43f" data-bgcolor="#8bc43f">Olimpíadas</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/politica/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Política</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/politica/eleicoes/">Eleições</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1e73be"><a href="https://scc10.com.br/economia/negocios/" data-color="#1e73be" data-bgcolor="#1e73be">Economia</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/economia/tecnologia-e-inovacao/" data-color="#ffca30" data-bgcolor="#ffca30">Tecnologia e Inovação</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/economia/agro/" data-color="#ffca30" data-bgcolor="#ffca30">Agronegócio</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/economia/empreendedorismo/" data-color="#ffca30" data-bgcolor="#ffca30">Empreendedorismo</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/economia/emprego-e-carreira/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Emprego e Carreira</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/opiniao/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Opinião</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/" data-color="#ffca30" data-bgcolor="#ffca30">Colunistas</a></li>
+	<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/beatriz-agnes/">Beatriz Agnes</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/cinthia-massa/">Cinthia Massa</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/joao-victor-da-silva/" data-color="#ffca30" data-bgcolor="#ffca30">João Victor da Silva</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/juan-garcia/" data-color="#ffca30" data-bgcolor="#ffca30">Juan Garcia</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/luis-felipe-melo/" data-color="#ffca30" data-bgcolor="#ffca30">Luis Felipe Melo</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/julia-weiss/" data-color="#eeee22" data-bgcolor="#eeee22">Júlia Weiss</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/laercio-botega/" data-color="#ffca30" data-bgcolor="#ffca30">Laércio Botega</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/maria-ester/" data-color="#ffca30" data-bgcolor="#ffca30">Maria Ester</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/melissa-amaral/" data-color="#ffca30" data-bgcolor="#ffca30">Melissa Amaral</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/opiniao/colunistas/um-noob/" data-color="#ffca30" data-bgcolor="#ffca30">Um Noob</a></li></li>
+	</ul>
+</li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/coberturas/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Coberturas</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/arenafarofa/" data-color="#000000" data-bgcolor="#000000">Arena Farofa</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/estacao-pinhao/">Estação Pinhão</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/oktoberfest/" data-color="#1e73be" data-bgcolor="#1e73be">Oktoberfest</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/fenaostra/" data-color="#dd9933" data-bgcolor="#dd9933">Fenaostra</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/efapi/" data-color="#1e73be" data-bgcolor="#1e73be">Efapi</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/a-industria-que-alimenta-exposuper/" data-color="#90278d" data-bgcolor="#90278d">Exposuper</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/delas-summit/">Delas Summit</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/summit-cidades/" data-color="#90278d" data-bgcolor="#90278d">Summit Cidades</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/coberturas/the-ocean-race-2023/" data-color="#90278d" data-bgcolor="#90278d">The Ocean Race 2023</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/especiais/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Conteúdos Especiais</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/acaert/">Acaert</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/cidade-pedra-branca/" data-color="#90278d" data-bgcolor="#90278d">Cidade Pedra Branca</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/conexao-senac/" data-color="#90278d" data-bgcolor="#90278d">Conexão Senac</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/da-gosto-saber-de-onde-vem-o-seu-leite-aurora/" data-color="#90278d" data-bgcolor="#90278d">Dá gosto saber de onde vem o seu leite Aurora</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/a-industria-que-alimenta/" data-color="#90278d" data-bgcolor="#90278d">A indústria que alimenta</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/brde-60-anos-credito-para-inovar-e-desenvolver/" data-color="#90278d" data-bgcolor="#90278d">BRDE 60 anos: crédito para inovar e desenvolver</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/conectadocomvoce/" data-color="#90278d" data-bgcolor="#90278d">Conectado com você</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/creasc-transformando-vidas/">Crea-SC transformando vidas</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/governo-de-santa-catarina/">Governo do Estado de Santa Catarina</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/intelbras/">Intelbras</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/menvie/" data-color="#90278d" data-bgcolor="#90278d">Menvie</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/movimento-sba/" data-color="#90278d" data-bgcolor="#90278d">Movimento SBA</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/nossa-serra/">Nossa Serra</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/o-melhor-de-bc/">O melhor de BC</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/odontotop-hospital-do-dente/" data-color="#90278d" data-bgcolor="#90278d">OdontoTop Hospital do dente</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/por-elas/" data-color="#90278d" data-bgcolor="#90278d">Por Elas</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/prefeitura-de-florianopolis/">Prefeitura de Florianópolis</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/saneamento/">Saneamento</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/sebrae-impulsiona/" data-color="#90278d" data-bgcolor="#90278d">Sebrae Impulsiona</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/seu-futuro-esta-na-industria/">Seu futuro está na indústria</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/stz-calcados-e-acessorios/" data-color="#90278d" data-bgcolor="#90278d">STZ &#8211; calçados e acessórios</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/sua-saude-em-dia/">Sua saúde em dia</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/invista-no-que-te-faz-bem/" data-color="#90278d" data-bgcolor="#90278d">Tempo de Valor &#8211; Invista no que te faz bem</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/especiais/voce-sabia-brde/">Você sabia? BRDE</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/parcerias/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Parcerias</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/parcerias/sua-saude/">Sua Saúde</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/parcerias/lide-talks/">Lide Talks</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#233496"><a href="https://scc10.com.br/scc-sbt/programas/" data-color="#233496" data-bgcolor="#233496">Programas</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/programas/scc-meio-dia/" data-color="#90278d" data-bgcolor="#90278d">SCC Meio-Dia</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/programas/sccesporte/" data-color="#8bc43f" data-bgcolor="#8bc43f">SCC Esporte</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/programas/a-tarde-e-nossa/" data-color="#90278d" data-bgcolor="#90278d">A Tarde é Nossa</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/programas/ta-na-hora-sc/" data-color="#8224e3" data-bgcolor="#8224e3">Tá na Hora SC</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/programas/ponto-e-contraponto/" data-color="#90278d" data-bgcolor="#90278d">Ponto e Contraponto</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1e73be"><a href="https://scc10.com.br/scc-sbt/reality-show/" data-color="#1e73be" data-bgcolor="#1e73be">Reality Show</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/reality-show/desafio-show/" data-color="#1e73be" data-bgcolor="#1e73be">Desafio Show</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/reality-show/desejos-de-mae/" data-color="#1e73be" data-bgcolor="#1e73be">Desejos de Mãe</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/reality-show/receita-de-familia/" data-color="#1e73be" data-bgcolor="#1e73be">Receita de Família</a></li></li>
+</ul>
+</li>
+<li class="title " style="color:#1f6bd4"><a href="https://scc10.com.br/scc-sbt/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">SCC SBT</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/original/" data-color="#fc2d8c" data-bgcolor="#fc2d8c">Originais SCC</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/videos/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Vídeos</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/scc-sbt/scc-cast/" data-color="#1e73be" data-bgcolor="#1e73be">SCC Cast</a></li></li>
+</ul>
+</li>
+<li class="title mb-4 mt-3" style="color:#1f6bd4"><a href="https://scc10.com.br/publicidade-legal/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Publicidade Legal</a></li></li>
+</ul>			<ul id="menu-empresas-grupo-scc" class="menu"><li class="title " style="color:"><a href="https://scc10.com.br/">SCC</a></li>
+<ul class="sub-menu">
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://www.gruposcc.com.br/" data-color="#000000" data-bgcolor="#000000">SCC SBT</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/radioclube/" data-color="#1f6bd4" data-bgcolor="#1f6bd4">Rádio Clube</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://massa.com.br/massa-fm-lages/" data-color="#000000" data-bgcolor="#000000">Rádio Massa Lages</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://massa.com.br/massa-fm-gramado/" data-color="#000000" data-bgcolor="#000000">Rádio Massa Serra RS</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://www.gruposcc.com.br/gralhafm" data-color="#000000" data-bgcolor="#000000">Rádio Gralha</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://nevascafm.com.br/" data-color="#000000" data-bgcolor="#000000">Rádio Nevasca</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://ditecbr.com/" data-color="#000000" data-bgcolor="#000000">Ditec</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="http://fcja.com.br" data-color="#000000" data-bgcolor="#000000">Fundação Carlos Joffre</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://gruposcc.enlizt.me/" data-color="#000000" data-bgcolor="#000000">Trabalhe conosco</a></li></li>
+<li class="col-6 col-md-4 py-2 pe-4"><a href="https://scc10.com.br/ouvidoria/">Ouvidoria</a></li></li>
+</ul>
+</li>
+</ul>		</nav>
+	</div>
+
+</header><div data-rocket-location-hash="7ea2b0058623b3691ef59cfd5681b7ad" class="main">
+    <div data-rocket-location-hash="53a9a5d12b958c8a3d4445fe848006e2" id="banner-ad-billboard-1" class="banner-ad banner-ad-billboard" data-adunit="billboard"></div>    <article data-rocket-location-hash="6991e45759c7a58d40abf3909da7208d">
+        <header data-rocket-location-hash="e6019ed4f813b9496d6c3ce3c487b7a8" class="container py-4 post__header">
+    	<div class="article__compartilhar d-flex align-items-center justify-content-start p-0 py-1">
+		<a href="https://scc10.com.br/cotidiano/" class="compartilhar__link">Cotidiano</a>
+		<a href="javascript:void(0)" onclick="openShared(this)" class="compartilhar__img-text d-flex align-items-center jsCompartilhar">
+			<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" style="margin-right:5px;" fill="currentColor" viewBox="0 0 16 16">
+				<path d="M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5z" />
+			</svg>
+			<span>Compartilhar</span>
+		</a>
+		<div class="share">
+			<a href="https://www.facebook.com/sharer/sharer.php?u=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" target="_blank" rel="noopener noreferrer" class="share__item fab fa-facebook-f facebook"></a>
+			<a href="https://www.linkedin.com/shareArticle?mini=true&#038;url=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" target="_blank" rel="noopener noreferrer" class="share__item fab fa-linkedin-in linkedin"></a>
+			<a href="https://twitter.com/intent/tweet?text=Brusque%20registra%2012%20cheias%20em%20seis%20meses;%20veja%20histórico%20%23SCC10&#038;url=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/&#038;via=portal_scc10" target="_blank" rel="noopener noreferrer" class="share__item fab fa-x-twitter twitter"></a>
+			<a href="https://api.whatsapp.com/send?text=*Brusque%20registra%2012%20cheias%20em%20seis%20meses;%20veja%20histórico*%20%23SCC10%20https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" target="_blank" rel="noopener noreferrer" class="share__item fab fa-whatsapp whatsapp"></a>
+			<a href="javascript:void(0)" onclick="closeShared(this)" class="share__item fa fa-times close"></a>
+		</div>
+	</div>
+    <span class="post__hat">preocupante</span>
+    <h1 class="post__title">Brusque registra 12 cheias em seis meses; veja histórico</h1>
+    <p class="post__excerpt">Município convive anualmente com eventos climáticos</p>
+    <div class="post__data">
+        <p class="post__data__published"><time datetime="2024-05-21T16:31:51-03:00" itemprop="datePublished">21/05/2024 16h31</time>
+                            <span class="post__data__updated">• Atualizado <time datetime="2024-05-21T16:31:54-03:00">há 2 anos</time></span>
+        </p>
+        </div>
+            <section class="author__content mt-3">
+                            <figure class="author__image">
+                    <a href="https://scc10.com.br/author/olgahelena/">
+                        <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2052%2062'%3E%3C/svg%3E" width="52" height="62" alt="Olga Helena de Paula" data-lazy-src="https://scc10.com.br/wp-content/uploads/2019/09/colunista_site-1.png"><noscript><img src="https://scc10.com.br/wp-content/uploads/2019/09/colunista_site-1.png" width="52" height="62" alt="Olga Helena de Paula"></noscript>
+                    </a>
+                    <figcaption class="author__info">
+                        <p class="author__name">Por <a href="https://scc10.com.br/author/olgahelena/">Olga Helena de Paula</a></p>
+                        <span class="author__email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1976757e78376b78777e7c75596a7a7a377a7674377b6b">[email&#160;protected]</a></span>
+                    </figcaption>
+                </figure>
+                    </section>
+    </header><div data-rocket-location-hash="10017a60d5b54df8db389962be2f1bee" class="container-fluid py-2">
+    <div data-rocket-location-hash="50499df24e9a1bf174c625cb8cc56798" class="container">
+        <div class="post__social-network">
+            <hr class="flex-grow-1" />
+            <a href="https://api.whatsapp.com/send?text=*Brusque registra 12 cheias em seis meses; veja histórico* %23SCC10 https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" class="post__social-network__button whatsapp" aria-label="Compartilhe no WhatsApp">
+                <i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i>
+                <div class="text">
+                    Enviar pelo Whatsapp
+                </div>
+            </a>
+            <a href="https://t.me/share/url?url=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/&text=Brusque registra 12 cheias em seis meses; veja histórico" class="post__social-network__button telegram" aria-label="Compartilhe no Telegram">
+                <i class="fas fa-paper-plane fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" class="post__social-network__button facebook" aria-label="Compartilhe no Facebook">
+                <i class="fab fa-facebook-f fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.tiktok.com/@portal.scc10" class="post__social-network__button tiktok" aria-label="Acesse nosso TikTok">
+                <i class="fab fa-tiktok fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" class="post__social-network__button linkedin" aria-label="Compartilhe no Linkedin">
+                <i class="fab fa-linkedin-in fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</div><div data-rocket-location-hash="8996d66b1eaa5d7c154d77ac9e7e98f2" class="container py-4">
+	<div data-rocket-location-hash="5c7a3f4df9ee25de3f9aea3fb78666a9" class="row">
+		<div class="col-md-8 col-12 media-right">
+			<figure class="post__thumbnail">
+	<img width="650" height="450" src="https://scc10.com.br/wp-content/uploads/2024/05/Modelo-imagens-portal-Scc10-54.jpg" title="Fotos: José Carlos Paulini/Secom Brusque." alt="Fotos: José Carlos Paulini/Secom Brusque." class="post__thumbnail__image">
+	<figcaption class="post__thumbnail__subtitle"> Fotos: José Carlos Paulini/Secom Brusque.</figcaption>
+</figure>			<div class="post__content">
+				
+<p class="wp-block-paragraph">Brusque, localizada no Vale do Itajaí, enfrentou 12 cheias nos últimos seis meses, revelou a prefeitura do município. Conforme os dados divulgados, em cinco anos foram 19 enchentes na cidade. Em 2023, o município foi particularmente castigado, registrando 11 eventos significativos em um curto período de tempo, o que afetou profundamente a vida dos moradores e a infraestrutura local.</p>
+
+
+
+<p class="wp-block-paragraph">De acordo com a Defesa Civil, em 2023, as cheias ocorreram principalmente entre outubro e novembro, com o Rio Itajaí-Mirim atingindo picos preocupantes. O mais alto deles foi registrado em 17 de novembro, quando o curso fluvial alcançou 8,96 metros, o terceiro maior nível da história da cidade, desde o início dos registros históricos.</p>
+
+
+
+<figure class="wp-block-image size-large"><img fetchpriority="high" decoding="async" width="1280" height="960" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-image-802592" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1280x960.jpeg" /><noscript><img fetchpriority="high" decoding="async" width="1280" height="960" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1280x960.jpeg" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-image-802592" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-element-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure>
+
+
+
+<h3 class="wp-block-heading" id="h-impacto-economico-e-social">Impacto Econômico e Social</h3>
+
+
+
+<p class="wp-block-paragraph">As consequências das enchentes são significativas, causando prejuízos estimados em quase R$ 30 milhões. Áreas críticas da cidade, como a Avenida Bepe Rosa e a Avenida Luiz Henrique da Silveira, sofreram danos de grande monta, somando mais de R$ 15 milhões em estragos. Outros pontos, como a Ponte Arthur Schlosser e a Rua Francisco Sassi, também foram afetados, gerando custos não planejados pelo poder público.</p>
+
+
+
+<h3 class="wp-block-heading" id="h-perspectivas-da-defesa-civil">Perspectivas da Defesa Civil</h3>
+
+
+
+<p class="wp-block-paragraph">Em entrevista, Edevilson Cugiki, agente e coordenador da Defesa Civil em Brusque, destacou que o Rio Itajaí-Mirim tem ultrapassado regularmente a marca de seis metros nos últimos anos. Ele atribui essas enchentes não apenas aos fenômenos climáticos como o El Niño, mas também a fatores ambientais e à forma como a população interage com o seu entorno natural. Segundo Cugiki, a ocorrência de enchentes não está necessariamente vinculada apenas aos ciclos climáticos, mas também à urbanização e ao uso do solo.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">“Neste final de semana, embora estivéssemos em um período de neutralidade climática, sem El Niño ou La Niña, tivemos uma enchente significativa. Isso mostra que os níveis do rio estão mais relacionados às questões ambientais e ao uso do meio ambiente do que aos fenômenos climáticos em si”, concluiu.</p>
+</blockquote>
+
+
+
+<p class="wp-block-paragraph">Conforme a prefeitura, a cidade está constantemente buscando formas de mitigar os impactos dessas cheias, aprimorando medidas de prevenção e resposta a desastres naturais. Medidas em andamento incluem a atualização da carta de cotas de enchente, bem como a formulação do Plano Municipal de Defesa Civil.</p>
+
+
+
+<p class="wp-block-paragraph">Na área da infraestrutura, além da execução de diversas obras de macrodrenagem, também destaca-se a ampliação do canal extravasor (Beira Rio) sentido Dom Joaquim, uma obra cujo valor ultrapassa os R$ 59 milhões.</p>
+
+
+
+<p class="wp-block-paragraph">A resposta da cidade às enchentes tem sido rápida e contínua. Após as intempéries de 2023, a prefeitura iniciou reparos emergenciais, investindo em maquinário, equipamentos e materiais necessários para a recuperação. Além disso, o município recebeu recursos adicionais do Governo do Estado para complementar os esforços de reconstrução.</p>
+
+
+
+<blockquote class="wp-block-quote is-layout-flow wp-block-quote-is-layout-flow">
+<p class="wp-block-paragraph">“As enchentes em Brusque são um lembrete da necessidade de medidas preventivas e de adaptação às mudanças climáticas. A cidade continua a trabalhar arduamente para mitigar os impactos futuros e garantir a segurança e o bem-estar de seus moradores”, ressalta o prefeito de Brusque, André Vechi. “Continuamos em alerta, trabalhando para aumentar a resiliência da cidade frente às adversidades climáticas e garantir a segurança da população”, finaliza.</p>
+</blockquote>
+
+
+
+<h2 class="wp-block-heading" id="h-historico-das-enchentes-em-brusque">Histórico das enchentes em Brusque:</h2>
+
+
+
+<ul class="wp-block-list">
+<li>31/05/2019 &#8211; 5,90 metros</li>
+
+
+
+<li>15/12/2020 &#8211; 5,08 metros</li>
+
+
+
+<li>12/12/2020 &#8211; 5,30 metros</li>
+
+
+
+<li>24/01/2021 &#8211; 4,82 metros</li>
+
+
+
+<li>12/10/2021 &#8211; 5,68 metros</li>
+
+
+
+<li>01/12/2022 &#8211; 5,03 metros</li>
+
+
+
+<li>20/12/2022 &#8211; 5,14 metros</li>
+
+
+
+<li>05/10/2023 &#8211; 6,85 metros</li>
+
+
+
+<li>08/10/2023 &#8211; 6,76 metros</li>
+
+
+
+<li>09/10/2023 &#8211; 6,70 metros</li>
+
+
+
+<li>13/10/2023 &#8211; 6,91 metros</li>
+
+
+
+<li>17/10/2023 &#8211; 4,79 metros</li>
+
+
+
+<li>29/10/2023 &#8211; 5,09 metros</li>
+
+
+
+<li>29/10/2023 &#8211; 5,66 metros</li>
+
+
+
+<li>03/11/2023 &#8211; 5,62 metros</li>
+
+
+
+<li>16/11/2023 &#8211; 7,92 metros</li>
+
+
+
+<li>17/11/2023 &#8211; 8,96 metros</li>
+
+
+
+<li>29/11/2023 &#8211; 5,39 metros</li>
+
+
+
+<li>19/05/2024 &#8211; 7,58 metros</li>
+</ul>
+
+
+
+<p class="wp-block-paragraph"><strong><em>Veja fotos.</em></strong></p>
+
+
+
+<div class="wp-block-jetpack-slideshow aligncenter"><div data-effect="slide"><div class="wp-block-jetpack-slideshow_container swiper-container"><ul class="wp-block-jetpack-slideshow_swiper-wrapper swiper-wrapper"><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="958" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802593" data-id="802593" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20958'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-1280x958.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-640x479.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-768x575.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-1536x1150.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-1280x958.jpeg" /><noscript><img decoding="async" width="1280" height="958" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802593" data-id="802593" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-1280x958.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-1280x958.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-640x479.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-768x575.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28-1536x1150.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.28.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802594" data-id="802594" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-1280x960.jpeg" /><noscript><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802594" data-id="802594" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-1280x960.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-2.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802595" data-id="802595" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-1280x960.jpeg" /><noscript><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802595" data-id="802595" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-1280x960.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802596" data-id="802596" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1280x960.jpeg" /><noscript><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802596" data-id="802596" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1280x960.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.18.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802597" data-id="802597" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-1280x960.jpeg" /><noscript><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802597" data-id="802597" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-1280x960.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-2.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802598" data-id="802598" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-1280x960.jpeg" /><noscript><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802598" data-id="802598" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-1280x960.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1-1.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li><li class="wp-block-jetpack-slideshow_slide swiper-slide"><figure><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802599" data-id="802599" src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201280%20960'%3E%3C/svg%3E" data-lazy-srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17.jpeg 1600w" data-lazy-sizes="(max-width: 1280px) 100vw, 1280px" data-lazy-src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1280x960.jpeg" /><noscript><img decoding="async" width="1280" height="960" alt="Brusque registra 12 cheias em seis meses; veja histórico" class="wp-block-jetpack-slideshow_image wp-image-802599" data-id="802599" src="https://controle.scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1280x960.jpeg" srcset="https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1280x960.jpeg 1280w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-640x480.jpeg 640w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-768x576.jpeg 768w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17-1536x1152.jpeg 1536w, https://scc10.com.br/wp-content/uploads/2024/05/WhatsApp-Image-2024-05-21-at-14.34.17.jpeg 1600w" sizes="(max-width: 1280px) 100vw, 1280px" /></noscript><figcaption class="wp-block-jetpack-slideshow_caption gallery-caption">Fotos: José Carlos Paulini/Secom Brusque.</figcaption></figure></li></ul><a class="wp-block-jetpack-slideshow_button-prev swiper-button-prev swiper-button-white" role="button"></a><a class="wp-block-jetpack-slideshow_button-next swiper-button-next swiper-button-white" role="button"></a><a aria-label="Pause Slideshow" class="wp-block-jetpack-slideshow_button-pause" role="button"></a><div class="wp-block-jetpack-slideshow_pagination swiper-pagination swiper-pagination-white"></div></div></div></div>
+
+
+
+<p class="wp-block-paragraph"><em><strong>>> Para mais notícias</strong></em><a href="https://scc10.com.br/mundo/galeria-de-imagens-ultima-lua-cheia-de-2023-vista-do-espaco-e-divulgada/"><strong>,</strong></a><em><strong> siga o </strong></em><a href="https://scc10.com.br/" target="_blank" rel="noreferrer noopener"><strong>SCC10</strong></a><em><strong> no </strong></em><a href="https://twitter.com/portal_scc10" target="_blank" rel="noreferrer noopener"><strong>Twitter</strong></a><em><strong>, </strong></em><a href="https://www.instagram.com/portalscc10/" target="_blank" rel="noreferrer noopener"><strong>Instagram</strong></a><em><strong> e </strong></em><a href="https://www.facebook.com/portalscc10/" target="_blank" rel="noreferrer noopener"><strong>Facebook</strong></a><a href="https://controle.scc10.com.br/"><strong>.</strong></a></p>
+				<div class="post__whatsapp">
+	<div class="post__whatsapp__content">
+		<i class="post__whatsapp__icon fa-brands fa-whatsapp"></i>
+		<div>
+			<p class="post__whatsapp__text">Quer receber notícias  no seu whatsapp?</p>
+			<a href="/WhatsApp Vale do Itajaí" target="_blank" class="post__whatsapp__btn">EU QUERO</a>
+		</div>
+	</div>
+	<p class="post__whatsapp__consent">Ao entrar você esta ciente e de acordo com os <a href="https://www.whatsapp.com/legal/terms-of-service" rel="nofollow" target="_blank">termos de uso</a> e <a href="https://www.whatsapp.com/legal/privacy-policy" rel="nofollow" target="_blank">privacidade</a> do WhatsApp.</p>
+</div>			</div>
+			<div class="post__tags my-4">
+	<ul class="post__tags__list">
+			<li class="post__tags__list__item">
+			<a href="https://scc10.com.br/tag/brusque/">
+				<i class="fa fa-tag me-1" aria-hidden="true"></i>Brusque			</a>
+		</li>
+				<li class="post__tags__list__item">
+			<a href="https://scc10.com.br/tag/chuvas-em-sc/">
+				<i class="fa fa-tag me-1" aria-hidden="true"></i>chuvas em SC			</a>
+		</li>
+				<li class="post__tags__list__item">
+			<a href="https://scc10.com.br/tag/defesa-civil/">
+				<i class="fa fa-tag me-1" aria-hidden="true"></i>Defesa Civil			</a>
+		</li>
+				<li class="post__tags__list__item">
+			<a href="https://scc10.com.br/tag/enchente/">
+				<i class="fa fa-tag me-1" aria-hidden="true"></i>Enchente			</a>
+		</li>
+				<li class="post__tags__list__item">
+			<a href="https://scc10.com.br/tag/santa-catarina/">
+				<i class="fa fa-tag me-1" aria-hidden="true"></i>Santa Catarina			</a>
+		</li>
+				<li class="post__tags__list__item">
+			<a href="https://scc10.com.br/tag/vale-do-itajai/">
+				<i class="fa fa-tag me-1" aria-hidden="true"></i>Vale do Itajaí			</a>
+		</li>
+			</ul>
+</div>		</div>
+		<div class="col-md-4 col-12">
+			<div id="banner-ad-halfpage-1" class="banner-ad banner-ad-halfpage" data-adunit="halfpage"></div><div class="col">
+  <h2 class="title-grey m-0 ms-4">Mais LIDAS</h2>
+  <div class="mb-4">
+    <div class="">
+      <div class="swiper-slide">
+    <div class="box-tipos" style="border-color:#1e76e3;">
+        <div class="text">
+            <a href="">
+                <h2 class="category-title" style="background-color:#1e76e3;">SCC10</h2>
+            </a>
+            <ul class="no-list">
+                <li>
+    <span class="list-number" style="color: #1e76e3;">1</span>
+    <a href="https://scc10.com.br/cotidiano/terra-de-quem-quer-trabalhar-luciano-hang-elogia-jovem-que-deixou-a-vida-no-nordeste-para-recomecar-em-santa-catarina/" class="text-dark" title="&#8216;Terra de quem quer trabalhar&#8217;: Luciano Hang elogia jovem que deixou a vida no Nordeste para recomeçar em Santa Catarina">
+        &#8216;Terra de quem quer trabalhar&#8217;: Luciano Hang elogia jovem que deixou a vida no Nordeste para recomeçar em Santa Catarina    </a>
+</li><li>
+    <span class="list-number" style="color: #1e76e3;">2</span>
+    <a href="https://scc10.com.br/cotidiano/tres-apostas-acertam-15-numeros-e-levam-r-510-mil-no-concurso-3792-da-lotofacil/" class="text-dark" title="Três apostas acertam 15 números e levam R$ 510 mil no concurso 3792 da Lotofácil">
+        Três apostas acertam 15 números e levam R$ 510 mil no concurso 3792 da Lotofácil    </a>
+</li><li>
+    <span class="list-number" style="color: #1e76e3;">3</span>
+    <a href="https://scc10.com.br/central-el-nino/el-nino-atinge-intensidade-muito-forte-e-defesa-civil-alerta-para-chuva-acima-da-media-em-sc/" class="text-dark" title="El Niño atinge intensidade &#8216;muito forte&#8217; e Defesa Civil alerta para chuva acima da média em SC">
+        El Niño atinge intensidade &#8216;muito forte&#8217; e Defesa Civil alerta para chuva acima da média em SC    </a>
+</li><li>
+    <span class="list-number" style="color: #1e76e3;">4</span>
+    <a href="https://scc10.com.br/diretoaovoto/candidatos-joinville-deputado-federal-2026/" class="text-dark" title="Veja quem são os 13 candidatos de Joinville a deputado federal">
+        Veja quem são os 13 candidatos de Joinville a deputado federal    </a>
+</li><li>
+    <span class="list-number" style="color: #1e76e3;">5</span>
+    <a href="https://scc10.com.br/cotidiano/tempo/chuva-intensa-granizo-e-ventos-de-100-km-h-inmet-coloca-sc-sob-alerta-de-tempestade-nesta-quarta-feira-30/" class="text-dark" title="Chuva intensa, granizo e ventos de 100 km/h: Inmet coloca SC sob alerta de tempestade nesta quarta-feira (30)">
+        Chuva intensa, granizo e ventos de 100 km/h: Inmet coloca SC sob alerta de tempestade nesta quarta-feira (30)    </a>
+</li>            </ul>
+        </div>
+    </div>
+</div>    </div>
+  </div>
+</div>
+<div id="banner-ad-medium-rectangle-1" class="banner-ad banner-ad-medium-rectangle" data-adunit="medium_rectangle"></div>		</div>
+	</div>
+</div><div data-rocket-location-hash="1beae70700ee0ce260b250687922c314" class="container-fluid py-2">
+    <div class="container">
+        <div class="post__social-network">
+            <hr class="flex-grow-1" />
+            <a href="https://api.whatsapp.com/send?text=*Brusque registra 12 cheias em seis meses; veja histórico* %23SCC10 https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" class="post__social-network__button whatsapp" aria-label="Compartilhe no WhatsApp">
+                <i class="fab fa-whatsapp fa-fw" aria-hidden="true"></i>
+                <div class="text">
+                    Enviar pelo Whatsapp
+                </div>
+            </a>
+            <a href="https://t.me/share/url?url=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/&text=Brusque registra 12 cheias em seis meses; veja histórico" class="post__social-network__button telegram" aria-label="Compartilhe no Telegram">
+                <i class="fas fa-paper-plane fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" class="post__social-network__button facebook" aria-label="Compartilhe no Facebook">
+                <i class="fab fa-facebook-f fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.tiktok.com/@portal.scc10" class="post__social-network__button tiktok" aria-label="Acesse nosso TikTok">
+                <i class="fab fa-tiktok fa-fw" aria-hidden="true"></i>
+            </a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/" class="post__social-network__button linkedin" aria-label="Compartilhe no Linkedin">
+                <i class="fab fa-linkedin-in fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</div>    </article>
+</div>
+    <div data-rocket-location-hash="4c892fbef2fc3bd29ccceb14e8ebd0be" class="related-posts">
+        	<header data-rocket-location-hash="9606fca3e00848d96d0f2851ee9d7940" class="mb-4">
+		<div data-rocket-location-hash="4ef4f550bf025463dce3d77dc8f83e24" class="switch__category" style="background-color: #1E76E3; width:160px;">
+			<h2 class="switch__title">Veja também</h2>
+			<span class="switch__ball"></span>
+		</div>
+	</header>
+        <ul class="related-posts__list">
+                            <li>
+                    <a href="https://scc10.com.br/diretoaovoto/lei-seca-eleicoes-2026-restricao-bebidas/" title="Regras para venda e consumo de bebidas alcoólicas variam entre os estados durante as eleições">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Lei-Seca-nas-eleicoes-2026-veja-onde-havera-restricao-capa-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Lei Seca nas eleições: veja onde há restrição e como fica SC</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/diretoaovoto/eleicoes-2026-onibus-sera-gratuito-em-chapeco-neste-domingo-4/" title="Transporte coletivo irá circular com os horários de dias úteis">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Onibus-sera-gratuito-em-Chapeco-no-domingo-de-eleicao-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Eleições 2026: ônibus será gratuito em Chapecó neste domingo (4)</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/cotidiano/saude/encontro-de-hospitais-debate-inovacao-na-saude-em-sc/" title="O evento é promovido pela Federação dos Hospitais e Estabelecimentos de Serviços de Saúde de Santa Catarina (FEHOESC) e pelo Instituto Santé">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Encontro-de-Hospitais-debate-inovacao-e-sustentabilidade-na-saude-em-SC-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Encontro de Hospitais debate inovação e sustentabilidade na saúde em SC</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/cotidiano/seguranca/vistoria-revela-fundo-falso-em-onibus-de-turismo-com-submetralhadora-e-r-16-milhao-em-mercadorias/" title="Receita Federal encontrou armas, munições, haxixe, medicamentos e eletrônicos durante fiscalização em veículo que seguia de Foz do Iguaçu para Indaial">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Vistoria-revela-fundo-falso-em-onibus-de-turismo-com-submetralhadora-e-R-16-milhao-em-mercadorias-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Vistoria revela fundo falso em ônibus de turismo com submetralhadora e R$ 1,6 milhão em mercadorias</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/cotidiano/seguranca/filho-diz-ter-matado-pai-faca-machado-corpo-canoinhas/" title="Crime ocorreu em Canoinhas; vítima foi encontrado com diversos ferimentos na área externa de uma residência; filho foi levado à delegacia e afirmou ter usado uma faca, que não foi localizada ">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Homem-e-morto-em-SC-e-filho-confessa-a-policia-que-matou-o-pai-capa-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Filho diz ter matado o próprio pai com faca, mas machado é encontrado ao lado do corpo em SC</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/cotidiano/seguranca/movimentacao-suspeita-em-casa-de-bairro-tradicional-de-blumenau-revela-18-maquinas-caca-niqueis/" title="Polícia Civil encontrou equipamentos, dinheiro e cadernos de anotações durante ação contra jogos de azar no bairro Escola Agrícola">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Movimentacao-suspeita-em-casa-de-bairro-tradicional-de-Blumenau-revela-18-maquinas-caca-niqueis-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Movimentação suspeita em casa de bairro tradicional de Blumenau revela 18 máquinas caça-níqueis</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/cotidiano/casal-associacao-surdos-condenado-54-anos-crimes-sexuais-sc/" title="Penas dos dois condenados somam 54 anos, seis meses e 20 dias; decisão da Justiça de Jaraguá do Sul envolve crimes contra dois adolescentes">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Casal-ligado-a-Associacao-de-Surdos-e-condenado-por-crimes-sexuais-em-SC-capa-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Casal ligado à Associação de Surdos é condenado a mais de 50 anos por crimes sexuais em SC</h4>
+                    </a>
+                </li>
+                            <li>
+                    <a href="https://scc10.com.br/cotidiano/seguranca/familia-estranha-demora-de-parente-voltar-do-trabalho-e-buscas-revelam-destino-fatal-no-vale-do-itajai/" title="Familiares de um homem de 64 anos chamaram as autoridades após ele demorar para voltar das atividades rurais, em Guabiruba; vítima foi encontrada já sem vida">
+                        <div data-bg="https://scc10.com.br/wp-content/uploads/2026/10/Familia-estranha-demora-de-parente-voltar-do-trabalho-e-buscas-revelam-destino-fatal-no-Vale-do-Itajai-547x352.webp" class="related-posts__thumb rocket-lazyload" style="">
+                        </div>
+                        <h4 class="related-posts__title">Família estranha demora de parente voltar do trabalho e buscas revelam destino fatal no Vale do Itajaí</h4>
+                    </a>
+                </li>
+                    </ul>
+    </div>
+
+
+<div data-rocket-location-hash="472a8bf83671c33b16ed6c133a710f2e" id="float-btns">
+    <div data-rocket-location-hash="dc457c9dab97f6f134bcc58974e6071c" class="faleconosco-float-button">
+        <a href="javascript:;" class="bt-contact" aria-label="Fale Conosco">
+            <img src="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2070%2056'%3E%3C/svg%3E" width="70" height="56" alt="Fale Conosco" title="Fale Conosco" data-lazy-src="https://scc10.com.br/wp-content/themes/scc10/assets/images/fale-conosco.webp"><noscript><img src="https://scc10.com.br/wp-content/themes/scc10/assets/images/fale-conosco.webp" width="70" height="56" loading="lazy" alt="Fale Conosco" title="Fale Conosco"></noscript>
+        </a>
+    </div>
+
+    <div data-rocket-location-hash="1b55b3fb59523054589254b411a5514a" class="whatsapp-float-button">
+        <a href="/Lista WhatsApp SCC10" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+            <div>
+                <span>Receba</span>
+                <span>NOTÍCIAS</span>
+            </div>
+        </a>
+    </div>
+</div>
+
+<div data-rocket-location-hash="5de9d5fa881f9982bcd34cd065a44d3b" class="chat-popup">
+    <div data-rocket-location-hash="1f79066d483f871272e0a57b5d039ba8" class="chat-header">
+        <span class="chat-header-title">Posso Ajudar?</span>
+        <span class="chat-header-close-button">×</span>
+    </div>
+    
+<div data-rocket-location-hash="a9a8ea3ea74a3623e2a39815641dc8aa" class="wpcf7 no-js" id="wpcf7-f555981-o1" lang="pt-BR" dir="ltr" data-wpcf7-id="555981">
+<div data-rocket-location-hash="5fd076c7198f5acb4df9946114f39feb" class="screen-reader-response"><p role="status" aria-live="polite" aria-atomic="true"></p> <ul></ul></div>
+<form action="/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/#wpcf7-f555981-o1" method="post" class="wpcf7-form init" aria-label="Formulários de contato" novalidate="novalidate" data-status="init">
+<fieldset class="hidden-fields-container"><input type="hidden" name="_wpcf7" value="555981" /><input type="hidden" name="_wpcf7_version" value="6.1.7" /><input type="hidden" name="_wpcf7_locale" value="pt_BR" /><input type="hidden" name="_wpcf7_unit_tag" value="wpcf7-f555981-o1" /><input type="hidden" name="_wpcf7_container_post" value="0" /><input type="hidden" name="_wpcf7_posted_data_hash" value="" />
+</fieldset>
+<p><span class="wpcf7-form-control-wrap" data-name="Nome"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text campos-form-contato" aria-invalid="false" placeholder="Nome completo" value="" type="text" name="Nome" /></span>
+</p>
+<p><span class="wpcf7-form-control-wrap" data-name="E-mail"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-email wpcf7-validates-as-required wpcf7-text wpcf7-validates-as-email campos-form-contato" aria-required="true" aria-invalid="false" placeholder="E-mail" value="" type="email" name="E-mail" /></span>
+</p>
+<p><span class="wpcf7-form-control-wrap" data-name="Telefone"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-tel wpcf7-text wpcf7-validates-as-tel campos-form-contato" aria-invalid="false" placeholder="Telefone/WhatsApp" value="" type="tel" name="Telefone" /></span>
+</p>
+<p><span class="wpcf7-form-control-wrap" data-name="Cidade"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text campos-form-contato" aria-invalid="false" placeholder="Cidade" value="" type="text" name="Cidade" /></span>
+</p>
+<p><span class="wpcf7-form-control-wrap" data-name="Assunto"><input size="40" maxlength="400" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required campos-form-contato" aria-required="true" aria-invalid="false" placeholder="Assunto" value="" type="text" name="Assunto" /></span>
+</p>
+<p><span class="wpcf7-form-control-wrap" data-name="Mensagem"><textarea cols="40" rows="10" maxlength="2000" class="wpcf7-form-control wpcf7-textarea campos-form-contato" id="campo-area-de-texto-form-contato" aria-invalid="false" placeholder="Mensagem" name="Mensagem"></textarea></span>
+</p>
+<div class="wpcf7-turnstile cf-turnstile" data-sitekey="0x4AAAAAADNa6TmZVPZZWwaG" data-response-field-name="_wpcf7_turnstile_response" data-appearance="interaction-only" data-theme="light" data-language="pt"></div>
+<p><input class="wpcf7-form-control wpcf7-submit has-spinner campos-form-contato" id="btn-enviar-form-contato" type="submit" value="Enviar" />
+</p><div class="wpcf7-response-output" aria-hidden="true"></div>
+</form>
+</div>
+</div>
+
+<div data-rocket-location-hash="ddbc1eee916d6ae1495266acb5748fb8" vw class="enabled">
+    <div data-rocket-location-hash="a9749e7fd627659413d8d3fa469cb408" vw-access-button class="active"></div>
+    <div data-rocket-location-hash="042ef1dc0e8f8503d786aba49026ce1d" vw-plugin-wrapper>
+        <div data-rocket-location-hash="269a42c719e6f2ea2c1bb213931ff30e" class="vw-plugin-top-wrapper"></div>
+    </div>
+</div><footer data-rocket-location-hash="82c438a99e39e090f4172d0078419d2c" class="container-fluid footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div data-bg="https://scc10.com.br/wp-content/uploads/2020/08/Logo-Portal-SCC10-branco-01.png" class="logo-img rocket-lazyload" style=""></div>
+                <nav class="box-social">
+                                            <h3 class="title">Siga nas Redes Sociais</h3>
+                                        <ul class="no-list list-social">
+                        <li><a target="_blank" href="https://www.facebook.com/portalscc10/" aria-label="Acesse nosso Facebook"> <i class="fab fa-facebook-f"></i></a></li><li><a target="_blank" href="https://x.com/scc10oficial" aria-label="Acesse nosso X"> <i class="fab fa-x-twitter"></i></a></li><li><a target="_blank" href="https://www.instagram.com/portalscc10/" aria-label="Acesse nosso Instagram"> <i class="fab fa-instagram"></i></a></li><li><a target="_blank" href="https://www.threads.com/@portalscc10" aria-label="Acesse nosso Threads"> <i class="fa-brands fa-threads"></i></a></li><li><a target="_blank" href="https://www.youtube.com/channel/UCof3X_LosODbkrOR55Dpbiw" aria-label="Acesse nosso Youtube"> <i class="fab fa-youtube"></i></a></li>                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div data-rocket-location-hash="103632743ad5ea13e8040327778970e9" id="banner-anchor">
+    <div data-rocket-location-hash="a6fee45c6b42033671059ec721abdb4a" id="banner-ad-anchor" class="banner-ad" data-adunit="anchor"></div>
+    <div data-rocket-location-hash="c93edef62b5d3e02a5f9fb82bde354d4" id="adClose">×</div>
+</div></footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="text/rocketlazyloadscript" data-rocket-type="text/javascript">
+    // Google AdSense
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({
+        "event": 'page_targeting',
+        "data-publicacao": "2024-05-21",
+        "hora-publicacao": "16:31",
+        "data-atualizacao": "2024-05-21",
+        "hora-atualizacao": "16:31",
+        "idMateria": 802580,
+        "pagepath": "/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/",
+        "titulo": "Brusque registra 12 cheias em seis meses; veja histórico",
+        "tipo": "Materia",
+        "termo_busca": "",
+        "url": "https://scc10.com.br/cotidiano/brusque-registra-12-cheias-em-seis-meses-veja-historico/",
+        "midia": "texto",
+        "tags": ["Brusque","chuvas em SC","Defesa Civil","Enchente","Santa Catarina","Vale do Itaja\u00ed"],
+        "autor": ["Olga Helena de Paula"],
+        "categoria": ["cotidiano","tempo"]    });
+</script>
+<!-- <script type="text/rocketlazyloadscript" data-rocket-type="module" data-rocket-src="https://richinfo.co/richpartners/push/js/rp-cl-ob.js?pubid=977156&siteid=364865&niche=33" async data-cfasync="false"></script> -->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/scc10/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<script type="text/rocketlazyloadscript" id='kirki-viewport-lists'>var kirkiViewports = {"md":{"value":1200,"scale":1,"minWidth":1200,"maxWidth":1200,"title":"Desktop","icon":"desktop","activeIcon":"desktop-hover","id":"md","type":"max"},"tablet":{"value":991,"scale":1,"minWidth":991,"maxWidth":991,"title":"Tablet","icon":"tablet-default","activeIcon":"tablet-hover","type":"max","id":"tablet"},"mobileLandscape":{"value":767,"scale":1,"minWidth":767,"maxWidth":767,"title":"Landscape","icon":"phone-hr-default","activeIcon":"phone-hr-hover","type":"max","id":"mobileLandscape"},"mobile":{"value":575,"scale":1,"minWidth":575,"maxWidth":575,"title":"Mobile","icon":"phone-vr-default","activeIcon":"phone-vr-hover","type":"max","id":"mobile"}};</script><script type="text/rocketlazyloadscript" id='kirki-variable-lists'>var kirkiCSSVariable = {"data":[{"title":"Colors","key":"color","modes":[{"title":"Default","key":"default"}],"variables":[]},{"title":"Numbers","key":"size","modes":[{"title":"Default","key":"default"}],"variables":[]},{"title":"Text Styles","key":"text-style","modes":[{"title":"Default","key":"default"}],"variables":[]},{"title":"Font Family","key":"font-family","modes":[{"title":"Default","key":"default"}],"variables":[]}]};</script><script type="text/rocketlazyloadscript" id="kirki-api-and-nonce">
+    window.wp_kirki = {
+        ajaxUrl: "https://scc10.com.br/wp-admin/admin-ajax.php",
+        restUrl: "https://scc10.com.br/wp-json/",
+        siteUrl: "https://scc10.com.br",
+        apiVersion: "v1",
+        postId: "802580",
+        nonce: "0c052a7134",
+        call_from: "",
+        templateId: "",
+        context: {"id":802580,"type":"post"}
+    };
+    </script><script id="superpwa-register-sw-js-extra">
+var superpwa_sw = {"url":"/superpwa-sw.js?2.2.36","disable_addtohome":"0","enableOnDesktop":"","offline_form_addon_active":"","ajax_url":"https://scc10.com.br/wp-admin/admin-ajax.php","offline_message":"0","offline_message_txt":"You are currently offline.","online_message_txt":"You're back online . \u003Ca href=\"javascript:location.reload()\"\u003Erefresh\u003C/a\u003E","manifest_name":"superpwa-manifest.json","script_debug":""};
+//# sourceURL=superpwa-register-sw-js-extra
+</script>
+<script type="text/rocketlazyloadscript" id="superpwa-register-sw-js" data-rocket-src="https://scc10.com.br/wp-content/plugins/super-progressive-web-apps/public/js/register-sw.js?ver=2.2.47" data-rocket-defer defer></script>
+<script data-wp-strategy="async" id="cloudflare-turnstile-js" src="https://challenges.cloudflare.com/turnstile/v0/api.js" data-rocket-defer defer></script>
+<script type="text/rocketlazyloadscript" id="cloudflare-turnstile-js-after">
+document.addEventListener( 'wpcf7submit', e => turnstile.reset() );
+//# sourceURL=cloudflare-turnstile-js-after
+</script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="vlibras-js" data-rocket-src="//vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="jquery-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/jquery/jquery.min.js?ver=3.7.1"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="swiperjs-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/swiperjs/swiper-bundle.min.js?ver=11.1.12"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="jquery-maskedinput-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/jquery/jquery.maskedinput.min.js?ver=1.3.1"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="modernizr-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/modernizr/modernizr-2.8.3.min.js?ver=2.8.3"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="respond-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/respond/respond-1.4.2.min.js?ver=1.4.2"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="bootstrap-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/bootstrap/bootstrap.min.js?ver=5.3.3"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="ima3-js" data-rocket-src="//imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="videojs-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/videojs/video.min.js?ver=8.16.1"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="videojs-contrib-ads-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/videojs/videojs-contrib-ads.min.js?ver=7.5.2"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="videojs-ima-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/videojs/videojs.ima.min.js"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="videojs-http-streaming-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/videojs/videojs-http-streaming.min.js?ver=3.10.0"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="can-autoplay-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/vendors/videojs/can-autoplay.min.js"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="gpt-js" data-rocket-src="//securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="ads-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/ads.min.js?ver=1781535347"></script>
+<script type="text/rocketlazyloadscript" async data-wp-strategy="async" id="script-js" data-rocket-src="https://scc10.com.br/wp-content/themes/scc10/assets/js/main.js?ver=1790103484"></script>
+<script type="text/rocketlazyloadscript" id="page-links-to-js" data-rocket-src="https://scc10.com.br/wp-content/plugins/page-links-to/dist/new-tab.js?ver=3.4.1" data-rocket-defer defer></script>
+<script id="jetpack-stats-js-before">
+_stq = window._stq || [];
+_stq.push([ "view", {"v":"ext","blog":"235330151","post":"802580","tz":"-3","srv":"scc10.com.br","j":"1:16.1.3"} ]);
+_stq.push([ "clickTrackerInit", "235330151", "802580" ]);
+//# sourceURL=jetpack-stats-js-before
+</script>
+<script data-wp-strategy="defer" defer fetchpriority="low" id="jetpack-stats-js" src="https://stats.wp.com/e-202640.js"></script>
+<script type="text/rocketlazyloadscript" id="jetpack-blocks-assets-base-url-js-before">
+var Jetpack_Block_Assets_Base_Url="https://scc10.com.br/wp-content/plugins/jetpack/_inc/blocks/";
+//# sourceURL=jetpack-blocks-assets-base-url-js-before
+</script>
+<script type="text/rocketlazyloadscript" id="wp-dom-ready-js" data-rocket-src="https://scc10.com.br/wp-includes/js/dist/dom-ready.min.js?ver=3fe927cab37bf38d6a23" data-rocket-defer defer></script>
+<script type="text/rocketlazyloadscript" id="wp-escape-html-js" data-rocket-src="https://scc10.com.br/wp-includes/js/dist/escape-html.min.js?ver=87ebe53e97bba59805a5" data-rocket-defer defer></script>
+<script type="text/rocketlazyloadscript" id="wp-hooks-js" data-rocket-src="https://scc10.com.br/wp-includes/js/dist/hooks.min.js?ver=f0f188028580e8dc1255"></script>
+<script type="text/rocketlazyloadscript" id="wp-i18n-js" data-rocket-src="https://scc10.com.br/wp-includes/js/dist/i18n.min.js?ver=1dfe7db3940c23ea9216"></script>
+<script type="text/rocketlazyloadscript" id="wp-i18n-js-after">
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
+//# sourceURL=wp-i18n-js-after
+</script>
+<script type="text/rocketlazyloadscript" id="wp-polyfill-js" data-rocket-src="https://scc10.com.br/wp-includes/js/dist/vendor/wp-polyfill.min.js?ver=3.15.0"></script>
+<script type="text/rocketlazyloadscript" data-wp-strategy="defer" defer id="jetpack-block-slideshow-js" data-rocket-src="https://scc10.com.br/wp-content/plugins/jetpack/_inc/blocks/slideshow/view.js?minify=false&#038;ver=16.1.3"></script>
+<script type="text/rocketlazyloadscript" id="jetpack-swiper-library-js" data-rocket-src="https://scc10.com.br/wp-content/plugins/jetpack/_inc/blocks/swiper.js?ver=16.1.3" data-rocket-defer defer></script>
+<script type="text/rocketlazyloadscript" id="swv-js" data-rocket-src="https://scc10.com.br/wp-content/plugins/contact-form-7/includes/swv/js/index.js?ver=6.1.7" data-rocket-defer defer></script>
+<script type="text/rocketlazyloadscript" id="contact-form-7-js-translations">
+( function( domain, translations ) {
+	var localeData = translations.locale_data[ domain ] || translations.locale_data.messages;
+	localeData[""].domain = domain;
+	wp.i18n.setLocaleData( localeData, domain );
+} )( "contact-form-7", {"translation-revision-date":"2025-05-19 13:41:20+0000","generator":"GlotPress\/4.0.1","domain":"messages","locale_data":{"messages":{"":{"domain":"messages","plural-forms":"nplurals=2; plural=n > 1;","lang":"pt_BR"},"Error:":["Erro:"]}},"comment":{"reference":"includes\/js\/index.js"}} );
+//# sourceURL=contact-form-7-js-translations
+</script>
+<script type="text/rocketlazyloadscript" id="contact-form-7-js-before">
+var wpcf7 = {
+    "api": {
+        "root": "https:\/\/scc10.com.br\/wp-json\/",
+        "namespace": "contact-form-7\/v1"
+    },
+    "cached": 1
+};
+//# sourceURL=contact-form-7-js-before
+</script>
+<script type="text/rocketlazyloadscript" id="contact-form-7-js" data-rocket-src="https://scc10.com.br/wp-content/plugins/contact-form-7/includes/js/index.js?ver=6.1.7" data-rocket-defer defer></script>
+<script>window.lazyLoadOptions=[{elements_selector:"img[data-lazy-src],.rocket-lazyload,iframe[data-lazy-src]",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,callback_loaded:function(element){if(element.tagName==="IFRAME"&&element.dataset.rocketLazyload=="fitvidscompatible"){if(element.classList.contains("lazyloaded")){if(typeof window.jQuery!="undefined"){if(jQuery.fn.fitVids){jQuery(element).parent().fitVids()}}}}}},{elements_selector:".rocket-lazyload",data_src:"lazy-src",data_srcset:"lazy-srcset",data_sizes:"lazy-sizes",class_loading:"lazyloading",class_loaded:"lazyloaded",threshold:300,}];window.addEventListener('LazyLoad::Initialized',function(e){var lazyLoadInstance=e.detail.instance;if(window.MutationObserver){var observer=new MutationObserver(function(mutations){var image_count=0;var iframe_count=0;var rocketlazy_count=0;mutations.forEach(function(mutation){for(var i=0;i<mutation.addedNodes.length;i++){if(typeof mutation.addedNodes[i].getElementsByTagName!=='function'){continue}
+if(typeof mutation.addedNodes[i].getElementsByClassName!=='function'){continue}
+images=mutation.addedNodes[i].getElementsByTagName('img');is_image=mutation.addedNodes[i].tagName=="IMG";iframes=mutation.addedNodes[i].getElementsByTagName('iframe');is_iframe=mutation.addedNodes[i].tagName=="IFRAME";rocket_lazy=mutation.addedNodes[i].getElementsByClassName('rocket-lazyload');image_count+=images.length;iframe_count+=iframes.length;rocketlazy_count+=rocket_lazy.length;if(is_image){image_count+=1}
+if(is_iframe){iframe_count+=1}}});if(image_count>0||iframe_count>0||rocketlazy_count>0){lazyLoadInstance.update()}});var b=document.getElementsByTagName("body")[0];var config={childList:!0,subtree:!0};observer.observe(b,config)}},!1)</script><script data-no-minify="1" async src="https://scc10.com.br/wp-content/plugins/wp-rocket/assets/js/lazyload/17.8.3/lazyload.min.js"></script><script>var rocket_beacon_data = {"ajax_url":"https:\/\/scc10.com.br\/wp-admin\/admin-ajax.php","nonce":"35f60d8c2e","url":"https:\/\/scc10.com.br\/cotidiano\/brusque-registra-12-cheias-em-seis-meses-veja-historico","is_mobile":false,"width_threshold":1600,"height_threshold":700,"delay":500,"debug":null,"status":{"atf":true,"lrc":true,"preload_fonts":true,"preconnect_external_domain":true},"elements":"img, video, picture, p, main, div, li, svg, section, header, span","lrc_threshold":1800,"preload_fonts_exclusions":["api.fontshare.com","cdn.fontshare.com"],"processed_extensions":["woff2","woff","ttf"],"external_font_exclusions":[],"preconnect_external_domain_elements":["link","script","iframe"],"preconnect_external_domain_exclusions":["static.cloudflareinsights.com","rel=\"profile\"","rel=\"preconnect\"","rel=\"dns-prefetch\"","rel=\"icon\""]}</script><script data-name="wpr-wpr-beacon" src='https://scc10.com.br/wp-content/plugins/wp-rocket/assets/js/wpr-beacon.min.js' async></script></body>
+
+</html>
+<!-- This website is like a Rocket, isn't it? Performance optimized by WP Rocket. Learn more: https://wp-rocket.me -->

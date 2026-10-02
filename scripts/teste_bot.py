@@ -2157,12 +2157,12 @@ class TestCheiasAntigas(unittest.TestCase):
         self.assertNotIn("Cheias já registradas", t)
 
     def test_blumenau_mostra_as_de_regua_e_conta_as_que_calou(self):
-        """117 registros, 4 em régua e 113 em IBGE ou sem referência. Mostrar
+        """124 registros, 4 em régua e 120 em IBGE ou sem referência. Mostrar
         quatro e calar as outras daria a tela de uma cidade com quatro cheias na
         história — e ela tem a série mais longa da bacia."""
         t = self.pino("blumenau", "Blumenau", "itajai-acu", 7.60, -26.9194, -49.0661)
         self.assertIn("05/05/2022", t)
-        self.assertIn("Outras 113 cheias", t)
+        self.assertIn("Outras 120 cheias", t)
         self.assertIn("outra referência de régua", t)
 
     def test_nenhum_pico_do_ibge_entra(self):
@@ -2257,26 +2257,30 @@ class TestContagemDasReferencias(unittest.TestCase):
         # 27/09/2026, sexta rodada conferida nos originais: +8 sem referência
         # (Trombudo Central 2011/2013/2022, Lontras 2023, Vidal Ramos 2013,
         # Rio dos Cedros 1911/1983/1984) — 368 → 376, 228 → 236.
-        self.assertEqual(len(self.ev), 376)
+        # 02/10/2026, sétima rodada: +7 de Blumenau que a lista oficial do AlertaBlu
+        # tem e o repositório não tinha (referencia null: a lista não declara régua)
+        # e Botuverá 22/07/2026 — 376 → 384, 236 → 244.
+        self.assertEqual(len(self.ev), 384)
         self.assertEqual(refs["régua"], 68)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 236)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 308)
+        self.assertEqual(refs["None"], 244)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 316)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
         Sul. Até 21/09/2026 a maioria era de BLUMENAU (41, com 113 calados de
         117 por duas causas ao mesmo tempo). Com os 52 da tabela municipal, Rio
         do Sul passou a ser a maior fatia (65) — e por UMA causa só: a tabela
-        não nomeia a régua. Blumenau não mudou."""
+        não nomeia a régua. Blumenau não mudou até 02/10/2026, quando entraram as
+        sete enchentes da lista oficial que faltavam (41 → 48; 117 → 124)."""
         from collections import Counter
         sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
-        self.assertEqual(sem["blumenau"], 41)
+        self.assertEqual(sem["blumenau"], 48)
         self.assertEqual(sem["brusque"], 28)  # 23 + 5 da régua da ANA (22/09/2026)
         self.assertEqual(sem["rio-do-sul"], 65)
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
-        self.assertEqual(len(blu), 117)
-        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 113)
+        self.assertEqual(len(blu), 124)
+        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 120)
 
 
 class TestLeituraVelhaNaoFalaNoPresente(unittest.TestCase):
@@ -2562,13 +2566,14 @@ class TestFonteDeRioDoSul(unittest.TestCase):
         a crista foi na virada da noite (DCSC 13,18 m às 00:20 de 18/11; ANA
         13,06 m subindo às 22:00 de 17/11 e 13,09 m descendo às 02:00 de
         18/11). As duas datas descrevem a mesma cheia; a da fonte fica em
-        `data_na_fonte`, e a divergência de valor com a ANA continua."""
+        `data_na_fonte`, e a divergência de valor com a ANA continua. O 13,02 m
+        à 1h do Jornal Nacional entrou na sétima rodada (02/10/2026)."""
         rs = {r["data"]: r for r in FonteDeRioDoSul.registros()}
         self.assertNotIn("2023-11-17", rs)
         r = rs["2023-11-18"]
         self.assertEqual(r["pico_m"], 13.04)
         self.assertEqual(r["data_na_fonte"], "2023-11-17")
-        self.assertEqual([d["pico_m"] for d in r["divergencias"]], [13.14])
+        self.assertEqual([d["pico_m"] for d in r["divergencias"]], [13.14, 13.02])
 
     def test_a_pendencia_de_1911_saiu_do_meta(self):
         pend = le_json("enchentes.json")["_meta"]["pendencias"]

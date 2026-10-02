@@ -531,6 +531,104 @@ Plano de Contingência de Itajaí v17 (22/12/2025) em PDF, telemetria de Itajaí
 antigos das réguas: DC02 = TEPORTI), estação da DCSC em Ascurra instalada em 12/12/2023 (se for a
 DCSC-00003, não há leitura dela para 2008–2023).
 
+## 14. Sétima rodada (02/10/2026), conferida nos originais
+
+Pacote `fontes-rodada3.zip` + `resultado.md`/`.pdf` ("Rodada 3", pesquisa v3.5, 01/10/2026): 77 originais
+e um relatório com o trecho literal de cada número. Tudo em `data/brutos/pesquisa-picos-2026-09-24/rodada7/`
+com manifesto SHA-256. Quatro PDFs grandes (TCC da UFSC 7 MB, JICA Vol. III-B 3,7 MB, Boletim SDE 87
+3,5 MB, JICA Vol. III-A inteiro 2,3 MB) ficaram só com o hash; as páginas citadas de cada um estão em
+`originais/` como extrato (`derivado_de` no manifesto). **Todos os trechos usados batem letra a letra com
+o original.** Três correções ao relatório: o ARMAX de Rio do Sul está na p. 2 do PDF (não na 1); a frase
+do Boletim SDE 87 está na p. 13 (não na 1); e O Município de 18/11/2023 dá os 10,30 m a **1984**, não a
+2011.
+
+**Registros novos (8):**
+
+| Cidade | Data | Pico | Fonte | Confiança |
+|---|---|---|---|---|
+| Blumenau | 29/09/2009 · 29/06/2014 · 06/06/2017 · 05/10/2023 · 09/10/2023 06h · 29/10/2023 · 03/11/2023 | 8,06 · 8,13 · 8,52 · 8,78 · 10,19 · 8,38 · 9,50 m | Lista oficial "Enchentes Registradas" do AlertaBlu (original salvo) | alta, `referencia: null` |
+| Botuverá | 22/07/2026 13h | 4,80 m | O Município ("Defesa Civil detalha cenário") | baixa |
+
+As sete de Blumenau são as que a lista oficial tem e o repositório não tinha — o "dez datas ausentes" de
+`docs/PESQUISA-2026-09-06-CRUZAMENTO.md`, conferido agora no original. O site agrupa 05, 09 e 13/10/2023 num
+evento só (mesma referência, sete dias) e fica com o maior, então a tela daquele outubro não muda. A de
+29/09/2009 dá par à cheia de Rio do Sul de set/2009, e o aviso do validador sobre ela sumiu.
+
+**Hora da crista em registros existentes** (só onde a fonte diz pico/máximo e o valor é o adotado; fuso
+não declarado em todas): Blumenau 24/11/2008 0h, 23/09/2013 2h, 23/10/2015 1h, 17/11/2023 9h45; Rio do
+Sul 13/10/2023 3h10 e 18/11/2023 0h40; Brusque 17/11/2023 ~21h. Blumenau 19/05/2024 ficou sem hora: O
+Auditório dá 8,67 m às 12h, mas não chama de pico.
+
+**Divergências e confirmações (nenhum valor adotado mudou):** Blumenau 2011 — o 12,60 da Defesa Civil,
+que estava "não conferido", agora tem original, e a hora (11h); o 12,8 adotado aparece na Tabela 3 do
+Esboços (CEOPS), e a nota diz que o artigo ABRH citado como fonte dá 13,0. Blumenau out/2023 — +10,76 m
+(lista oficial, 12/10); o 10,75 ganhou fonte (Mesorregional, meia-noite). Rio do Sul 2011 — +12,91 (ND,
+22h de 09/09) e +12,98 (CEOPS); ago/2011 +8,76 (CEOPS); 1983 +13,53 (GCD); nov/2023 +13,02 à 1h (Jornal
+Nacional). Taió 09/10/2023 — +12,11 (Diarinho, "marca histórica"; MetSul, leitura das 5h). Brusque 2011 —
++10,21 (CEOPS) e +10,3 (O Município 2026, sem atribuição, provável troca com 1984); 2008 +8,88 (Defesa
+Civil via O Município); o 10,30 de 1984 que já era divergência ganhou fonte da Defesa Civil. Indaial
+09/09/2011 +7,6 (CEOPS). Confirmados: Timbó 2011 (9,86, CEOPS), Rio do Sul 1911, 1983 e 2001 (ARMAX e
+Esboços).
+
+**Esboços, Tabela 3 (CEOPS): só a linha de 09/09/2011 tem os sete valores.** Nela a coluna é lida. Nas
+outras a linha sai do PDF numa tira só, e a coluna é inferida — por isso os 11,72 m de "2008 24/11" ficaram
+fora de `divergencias`, só na nota. O padrão que essa tabela mostra é o que importa para Blumenau: o CEOPS
+fica **+0,20 m** acima do AlertaBlu em 31/08/2011 (8,7 × 8,5) e 09/09/2011 (12,8 × 12,6), e talvez em 2008
+(11,72 × 11,52), mas **igual** em 2001 (11,02), 1992 (12,8) e 1983 (15,34).
+
+**Blumenau, referência — a lista do AlertaBlu chegou, e não autoriza converter nada.**
+`scripts/conferir_blumenau_alertablu.py` roda pela primeira vez, agora lendo o HTML original. O primeiro
+resultado foi "AlertaBlu em IBGE, subtrair 0,20 m" — e estava errado por dois motivos, corrigidos com
+teste: (1) o pareamento casava enchentes diferentes do mesmo mês (29/10/2023 com 13/10/2023, dando
+−2,23 m); (2) os 58 pares rotulados IBGE vêm da Tabela 4 de Cordero & Medeiros, que **termina em 2001**,
+e o veredito estendia a série inteira uma medida feita só até lá. Agora o veredito é
+`so_ate_o_ultimo_rotulado` (saída 2): a lista reproduz a Tabela 4 ao centavo até 2001; de 2008 em diante
+nada a julga, e o CEOPS diz +0,20 m. É o caso 3 do script — **muda com a época — não converter.**
+
+**ANA 83800002, 1983 e 1984 (serviço `HidroSerieHistorica`, XML original).** Valores **diários** de régua
+(`TipoMedicaoCotas` 1), sem unidade declarada: julho/1983 máximo 1519 no dia 9 (consistido); agosto/1984
+1485 no dia 7 (bruto e consistido). Não é a crista, então **não é o teste que a regra pede**. Mas há uma
+pista: se a unidade é cm e o zero é o da régua de 1983, um valor diário de 15,19 m não cabe abaixo de uma
+crista de 15,14 m (15,34 − 0,20) — naquele ano o deslocamento seria de no máximo 0,15 m. 1984 (14,85 m)
+não decide nada. O artigo da FURB (Cordero, Salvador, Refosco, XX SBRH) ainda diz que, depois de 2011, a
+referência da régua da ANA "ficou 40 cm a menos do que as enchentes anteriores". Três números para a
+mesma pergunta (0,20; ≤ 0,15 em 1983; 0,40 depois de 2011) — **a regra bloqueante fica**, e a pergunta à
+FURB ganha três itens. Ver `docs/fontes-academicas.md`.
+
+**JICA 2011, Tabela 7.5.1 (p. A-80) — lida na página.** As 20 células da matriz de
+`transito.json._meta` (Indaial, Blumenau, Gaspar, Ilhota e Itajaí × 5/10/25/50 anos) e as 12 horas da coluna
+de 5 anos em `hidrograma_de_projeto` batem uma a uma com a página renderizada (Rio do Sul às 08/06 22:00 em
+todas as colunas). A pendência "confirmar na p. A-80" fecha; `horas_min`/`horas_max` não mudaram, porque nada aqui
+pede isso. Ver `docs/JICA-2011-VERIFICADO.md`.
+
+**Barragens, o que cada número mede.** 83 e 93,5 hm³ são a "gross/total storage capacity" da JICA
+(Vol. III-B, Tabelas 2.2.1 e 7.1.1). O TCC da UFSC (Tabela 4.4, "adaptado de JICA 2011") mostra que 83,00 é
+o volume acumulado até a cota **360,00 m** (crista do vertedouro), e 101,84 até 362,30 m; a JICA propôs
+alteamento de 2 m (+16,2 hm³ na Oeste; Sul para 110 hm³). 100/110 (NSC 2023) e 104,03 (RWTV, Sul, 2026) são
+números pós-alteamento. O 99,96 do painel Asthon não está em nenhum original. Nada muda no site: os
+percentuais seguem os publicados pela Asthon.
+
+**Maré:** a tábua de 2027 não está publicada nas capturas da CHM de 21 e 28/09/2026 (só 2026, 63ª ed.).
+
+**Para decisão do Jefferson (fora do cadastro):**
+- Blumenau out/2023: adotar 10,76 m (lista oficial, 12/10) no lugar de 10,61 (g1, sem original)?
+- Brusque 1984: o 10,30 m agora tem fonte da Defesa Civil (O Município, duas matérias); o adotado é 10,5.
+- Ascurra 01/09/2026: a ND (10,13 m "por volta das 6h", Ponte do Beber) bate com a crista da DCSC-00003
+  (10,13 m às 05:10, platô 04:50–06:20). Segue fora, como o `CLAUDE.md` manda, até a sua decisão.
+- Gaspar 09/10/2023 (pico 7,09 m às 7h50, boletim municipal, "acima da normalidade") e Gaspar 09/09/2011
+  (9,42 m, CEOPS): Gaspar é toda `régua`; um registro sem referência para a comparação (mesmo caso de 2013).
+  Os boletins de 13/10/2023 também marcam 7,48 m às 3h, acima dos 7,45 da tabela oficial — leitura, não pico.
+- Indaial 04/10/2023 (5,75 m "máxima registrada", Defesa Civil via imprensa): mesmo motivo.
+- Rio do Sul: o ARMAX (CEOPS) diz que 12,20 m de 1911 está "referenciada na régua da atual estação
+  fluviométrica" — pista para a régua do Histórico de Cheias, não prova.
+
+**Conferido, fora do cadastro:** Blumenau 08/10/2023 9,49 m (1º ciclo, AlertaBlu via ND; a lista oficial
+não traz como enchente separada); Taió set/2013 (leituras: 5,46 m e 8,78 m) e a primeira cota de enchente,
+7,5 m, região da antiga Apae (régua do Centro); cotas de Ascurra (8,50 / 9,76 / 10,76 m) — as mesmas de
+`estacoes.json`, que vieram da resposta da Defesa Civil municipal (C18); Ituporanga 3,58 m e Apiúna 7,94 m
+em 22/09/2013 15h (leituras, "cota de Alerta"). Ibirama, Botuverá, Guabiruba, Vidal Ramos e Lontras: nenhuma
+cota oficial com nome de régua.
+
 ## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
@@ -544,5 +642,6 @@ DCSC-00003, não há leitura dela para 2008–2023).
 - [x] Quarta rodada conferida nos originais (§11).
 - [x] Quinta rodada conferida nos originais: Rio dos Cedros nov/2022 e Itajaí set/2011 (§12).
 - [x] Sexta rodada conferida nos originais: 8 registros (Trombudo ×3, Lontras, Vidal Ramos 2013, Rio dos Cedros ×3) e as divergências de 2013 da Autoridade Portuária, do Orli (Taió) e da AMVE (Timbó), em 27/09/2026 (§13). Gaspar 2013 e Ituporanga 2013 ficam para decisão.
+- [x] Sétima rodada conferida nos originais: 8 registros (7 de Blumenau da lista oficial do AlertaBlu, Botuverá 22/07/2026), horas de crista, divergências do CEOPS/imprensa, Tabela 7.5.1 da JICA lida, e a lista do AlertaBlu cruzada com a série — não converter (§14), em 02/10/2026.
 - [ ] Ascurra e Guabiruba: ainda sem pico. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.

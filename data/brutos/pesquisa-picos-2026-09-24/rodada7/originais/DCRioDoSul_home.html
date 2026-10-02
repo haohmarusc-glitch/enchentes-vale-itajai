@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo-defesa-civil.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Portal Defesa Civil de Rio do Sul</title>
+    <script type="module" crossorigin src="/assets/index-DyPsDK0O.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-Dw2cE7zH.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-CW8qKZL-.js">
+    <link rel="stylesheet" crossorigin href="/assets/vendor-CKRTiAqP.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-Bo6WsjOO.css">
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- VLibras - tradutor de Português para LIBRAS (acessibilidade em todas as páginas) -->
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+    <!-- `defer` de propósito: sem ele esta tag BLOQUEIA o parser no meio do
+         <body>, e o React (que é um módulo, portanto adiado) só monta depois
+         que vlibras.gov.br responder ou estourar o tempo. Num aplicativo recém
+         instalado não há cache nenhum, e numa rede saturada de dia de cheia
+         isso é a tela branca durando segundos — no site que a pessoa abriu
+         justamente para ver o rio. Com `defer` o script continua executando
+         antes do `window.onload` abaixo, então o widget não muda em nada. -->
+    <script defer src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+      window.onload = function () {
+        if (window.VLibras) {
+          new window.VLibras.Widget('https://vlibras.gov.br/app');
+        }
+      };
+    </script>
+  </body>
+</html>
