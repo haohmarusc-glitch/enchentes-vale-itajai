@@ -102,7 +102,9 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
-Versão 3.6, de 02/10/2026. Atualizada com a sétima rodada (§14), as decisões do Jefferson de 02/10/2026 e a
+Versão 3.7, de 02/10/2026. Junta à 3.6 as melhorias da revisão feita pela pesquisa externa (§16): numeração do
+FORMATO sem ambiguidade, registro datado do que ainda não foi publicado, espelho/cache identificado, SHA-256
+por arquivo, ZIPs independentes e privacidade. A 3.6 tinha sido atualizada com a sétima rodada (§14), as decisões do Jefferson de 02/10/2026 e a
 resposta da FURB ao ofício C25 e, no mesmo dia, com a oitava rodada (§15): sai a Tabela 7.5.1 do JICA (lida), sai a referência da Tabela 4 de Blumenau
 (a FURB respondeu "IBGE"), Ascurra e Guabiruba passam a pedir só o que a série da Defesa Civil de SC não cobre,
 e entram Gaspar/Indaial (eventos pendentes de régua) e a troca de régua de 2011 em Blumenau. O que funcionou
@@ -158,7 +160,8 @@ PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos
 
 4. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023,
    011/2023, 001/2024, 006/2024 e 087 (007/2026, sem cheia), e a auditoria do índice até 07/2026. Quero:
-   a edição de set/2026 quando for publicada (até 01/10/2026 não existia); e relatório equivalente de
+   a edição de set/2026, verificando se já foi publicada na data da execução (até 01/10/2026 não
+   existia; se ainda não existir, registre data/hora da consulta e a URL oficial); e relatório equivalente de
    ANTES de 2020 (out/2015, jun/2017) de outro órgão (Defesa Civil de SC, Epagri/CIRAM), porque o
    índice da SDE não cobre esse período.
 
@@ -189,9 +192,11 @@ PRIORIDADE 4 — lacunas pontuais:
    leituras de 20/09 17h (5,46 m) e 22/09 15h (8,78 m), que não são o pico; a notícia
    taio.sc.gov.br/noticia-75219/ não traz número.
 9. Rio dos Cedros: cheias depois de nov/2022 (tenho a tabela do PLANCON 10.7 até 27/11/2022 e
-   12/10/2023) e uma fonte que ESCREVA o dia da crista de 8,96 m de 2014 (o registro de 15 em 15 min do
-   PLANCON começa em 08/06 18:30 e chega aos 8,96 m depois de duas meias-noites, isto é, na madrugada de
-   10/06, mas a página não repete a data). Dois valores apareceram só em resumo
+   12/10/2023) e uma fonte que ESCREVA o dia da crista de 8,96 m de 2014. Há conflito documental: o resumo
+   do PLANCON imprime 08/06/2014, e o registro de 15 em 15 min começa em 08/06 18:30 e chega aos 8,96 m
+   depois de duas meias-noites (madrugada de 10/06), mas a página não repete a data. Verifique 08, 09 e
+   10/06 e mande a página original; não transforme a sequência em data certa sem fonte explícita. Dois
+   valores apareceram só em resumo
    de busca e PRECISAM da página salva: Misturebas, 4,80 m em 04/10/2023, e Testo, 5,32 m em 03/11/2023
    (as duas páginas deram desafio do Cloudflare ou 404 no Wayback).
 
@@ -253,13 +258,17 @@ PRIORIDADE 6 — cotas de atenção, alerta e emergência que faltam:
 PRIORIDADE 7 — documentos técnicos:
 
 15. Tábua de marés de 2027 do porto de Itajaí (SC), da Marinha do Brasil (Centro de Hidrografia da
-    Marinha, DHN): o PDF da publicação anual, com as páginas do porto de Itajaí, quando sair (nas
-    capturas de 21 e 28/09/2026 só havia a de 2026). Já tenho a de 2026.
+    Marinha, DHN): verifique se a publicação já saiu na data da execução e, se sim, baixe o PDF anual
+    com as páginas do porto de Itajaí. Se ainda não estiver disponível, registre data/hora da consulta,
+    URL oficial e status de acesso (nas capturas de 21 e 28/09/2026 só havia a de 2026). Já tenho a de 2026.
 16. Barragem Oeste (Taió): o painel público da Asthon dá 99,96 hm³ de capacidade, e esse número não
     aparece em nenhum documento que tenho. Já sei que 83 hm³ (JICA) é o volume até a cota 360 m e que o
     alteamento de 2 m aumentou a capacidade; o Plano de Recursos Hídricos da bacia (cap. A2, Tabela A2.4,
     dados do DEOH) dá "Volume do reservatório" de 83,00 (Oeste) e 93,50 (Sul) — e o mesmo texto diz 97 para
-    a Sul. Quero o documento do operador (Defesa Civil de SC, SDE/SC)
+    a Sul. Já vi, sem original: 99,3 hm³ (espelho no Slideshare de uma apresentação atribuída à Defesa Civil
+    de SC: vertedouro de 360,30 para 362,30 m, coroamento de 363,15 para 365,55 m) e 100 hm³ (artigo no
+    ResearchGate, "Impacto hidrológico da Barragem Oeste em Taió na mitigação de cheias", Tabela 1: vertedouro
+    362,3 m, coroamento 364,9 m). Quero o documento do operador (Defesa Civil de SC, SDE/SC)
     com a curva cota × volume DEPOIS do alteamento, que diga a que cota correspondem os 99,96 hm³. Para
     a Barragem Sul já tenho 104,03 hm³ de capacidade total. Não calcule percentuais.
 
@@ -285,11 +294,12 @@ os blogs Adalberto Day, Dalva Day e Monique Becker (Blumenau) e o
 SOS Rios do Brasil (Wayback, set/2013); e as da rodada anterior (Trombudo Central, Timbó, Rio dos
 Cedros, Lontras, Botuverá, Vidal Ramos, Ituporanga).
 
-FORMATO — para as prioridades 1 a 6, uma linha de tabela por número:
+FORMATO — para os itens com nível, cota, data ou hora (itens 1 a 9, 13 e 14), uma linha por número:
 cidade | data (AAAA-MM-DD) | hora | nível (m) | régua/estação/ponte (ou "não declarada") |
 PICO, leitura de um horário ou COTA de alerta? | título da fonte | órgão/veículo | URL exata |
 página do PDF | trecho literal | nome do arquivo no zip
-Para a prioridade 5 (qual régua) e a prioridade 7 (documentos), uma linha por documento:
+Para identificação de régua/referência (itens 10 a 12) e documentos técnicos (itens 15 e 16), uma linha por
+documento:
 o que se pediu | título | órgão | URL exata | página | trecho literal que responde | nome do arquivo.
 
 REGRAS:
@@ -307,6 +317,16 @@ REGRAS:
 - Prefira Defesa Civil (municipal ou de SC), SDE/SC, ANA, Marinha, prefeituras, CEOPS/FURB,
   Epagri/CIRAM e artigos acadêmicos; depois imprensa regional (NSC Total, g1 SC, ND+, Diarinho,
   O Município, Jornal do Médio Vale, Misturebas).
+- Número sem o arquivo original não entra no cadastro: marque a linha como "original não obtido" e não a
+  apresente como dado validado. Para PDF, guarde o PDF baixado; para página web, salve a página como HTML
+  completo. Espelho (Slideshare, ResearchGate, Scribd), cache, captura do Wayback ou resumo de busca:
+  diga claramente que é isso, e não o confunda com o original do órgão.
+- Para cada arquivo, registre a data/hora da coleta, o status HTTP quando houver e o SHA-256; mantenha o
+  nome original quando possível e uma correspondência inequívoca entre a linha da tabela e o arquivo.
+- Entregue ZIPs comuns, cada um com menos de 30 MB e que abra sozinho; não divida um ZIP em partes que
+  dependam umas das outras.
+- Correspondência particular (por exemplo, e-mail de pesquisador) pode orientar a busca, mas não entra no
+  ZIP nem substitui documento publicado.
 ```
 
 ## 7. Pistas da pesquisa de 24/09/2026 — NÃO CONFERIDAS
@@ -727,6 +747,28 @@ pesquisa é quase toda de resultados negativos, e o que ela traz de novo é cont
 
 O prompt v3.6 (§6) já sai com esses ajustes. Nenhum pico novo, nenhum valor adotado mudou.
 
+## 16. Nona rodada (02/10/2026): revisão do prompt, sem originais
+
+Pacote `pesquisa_cheias_itajai_v3.7_rodada1.zip` (três arquivos de texto, 12 KB), guardado em
+`data/brutos/pesquisa-picos-2026-09-24/rodada9/` com manifesto. A pesquisa revisou o prompt e fez uma checagem
+dirigida, mas **não conseguiu transferir nenhum original** — ela mesma marca tudo como "original não obtido".
+Nada entra no cadastro.
+
+- **A v3.7 dela foi feita sobre o arquivo v3.6 enviado antes da oitava rodada**, e por isso devolvia itens já
+  resolvidos (a notícia 46906 de Guabiruba) e perdia ajustes (sistema novo de Rio do Sul, Plano de Bacia, faixas
+  da Sala de Situação). As melhorias dela foram trazidas para a nossa v3.6 atualizada, que vira a **v3.7** (§6):
+  numeração do FORMATO, registro datado do que ainda não saiu, espelho/cache identificado, SHA-256 e status
+  HTTP por arquivo, ZIPs que abram sozinhos, privacidade de correspondência.
+- **Barragem Oeste, pistas sem original:** 99,96 hm³ no painel de barragens da Defesa Civil de SC; 99,3 hm³ num
+  espelho no Slideshare de apresentação atribuída à Defesa Civil de SC (vertedouro 360,30 → 362,30 m, coroamento
+  363,15 → 365,55 m); 100 hm³ num artigo no ResearchGate (Tabela 1: vertedouro 362,3 m, coroamento 364,9 m). A
+  pesquisa conclui, com razão, que os três são o mesmo volume arredondado em fontes diferentes e que nenhum diz a
+  que cota correspondem os 99,96. O item 16 do prompt continua.
+- **Negativos:** Ascurra e Guabiruba antigos, Itajaí 2011 × DC-01–DC-11, Blumenau (nada além do já registrado),
+  régua histórica de Rio do Sul, tábua de marés de 2027.
+- As "decisões de cadastro sugeridas" do arquivo de comparação já foram tomadas pelo Jefferson em 02/10/2026 e
+  aplicadas (Blumenau 10,76 m; Brusque 1984 10,30 m; Ascurra 01/09/2026; Gaspar e Indaial fora da série).
+
 ## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
@@ -744,5 +786,6 @@ O prompt v3.6 (§6) já sai com esses ajustes. Nenhum pico novo, nenhum valor ad
 - [x] Decisões da sétima rodada aplicadas em 02/10/2026: Blumenau 12/10/2023 = 10,76 m; Brusque 1984 = 10,30 m; Ascurra 01/09/2026 = 10,13 m (primeiro pico da cidade); Gaspar e Indaial em `data/eventos-pendentes-regua.json`.
 - [x] Prompt da §6 na versão 3.6 (02/10/2026): sai o que a sétima rodada e a FURB resolveram (JICA A-80, referência da Tabela 4), Ascurra e Guabiruba pedem só o que a série da DCSC não cobre, e entram a troca de régua de 2011 em Blumenau, Gaspar/Indaial sem régua e as páginas vistas só em resumo de busca.
 - [x] Oitava rodada conferida nos originais (02/10/2026, §15): nenhum pico novo; Rio dos Cedros 2014 ganhou a régua (relatório CEOPS/FURB 2016) e a pendência do dia foi corrigida para 10/06 por contagem; faixas da Sala de Situação ANA/Epagri por estação, em cm, documentadas.
+- [x] Nona rodada (02/10/2026, §16): revisão do prompt sem originais; melhorias trazidas para a v3.7 da §6.
 - [ ] Guabiruba: ainda sem pico. Ascurra: só 01/09/2026; o 10,46 m de 12/09/2026 continua candidato fora. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.
