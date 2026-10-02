@@ -348,7 +348,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson)
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44; tabela prometida
 
 > Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
 > HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
@@ -390,3 +390,48 @@ Nenhuma conversão será aplicada aos dados antes da sua resposta, e a fonte ser
 
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+### Resposta do Prof. Cordero (02/10/2026, três e-mails, 12:38, 12:39 e 12:40 BRT, mesmo fio)
+
+Transcrição literal, sem correção:
+
+> "Ola Jefferson ! Existe três referências! 12,60m na régua 12,80 (IBGE) 13,00(GPS) isto relativo a enchente
+> de 2011! A régua nova tem que somar 40 cm aos níveis da régua antiga !"
+>
+> "Antes era somas o 20 cm para a referência do IBGE"
+>
+> "Tenho a séria ! Pode enviar um e-mail cordero @furb.br"
+
+**O que responde:** set/2011 em três referências — régua 12,60 m, IBGE 12,80 m (régua + 0,20), GPS 13,00 m
+(régua + 0,40); "antes" (da troca de régua) somavam-se 0,20 m para o IBGE; ele tem a série e oferece enviá-la
+(pergunta 4). **O que não responde:** a pergunta 1 (Tabela 4 em IBGE?), a data e o sentido da troca (a frase dos
+40 cm admite as duas leituras), a 3 (unidade do 1519 da ANA) e a 5 (desde quando a lista do AlertaBlu muda).
+
+### Seguimento ✅ ENVIADO em 02/10/2026 12:44 BRT (Gmail, id 1a0fd4978880e449, mesmo fio, a pedido do Jefferson)
+
+Prezado Prof. Ademar,
+
+Muito obrigado pela resposta rápida! Aceito com gratidão a série — pode enviar para este e-mail (haohmarusc@gmail.com).
+
+Só para eu não interpretar errado, dois pontos curtos:
+
+1. Uma água que marcava 10,00 m na régua antiga passou a marcar quanto na régua nova: 9,60 m ou 10,40 m? E a troca valeu a partir de que data?
+
+2. Os valores da Tabela 4 (1852–2001), como 15,34 m em 1983, estão na referência IBGE, ou seja, régua antiga + 0,20 m?
+
+Abraço,
+Jefferson
+
+### Resposta ao seguimento (02/10/2026, 12:44 e 12:45 BRT, mesmo fio)
+
+Transcrição literal:
+
+> "IBGE" (12:44:47, id 1a0fd4a2daca6570)
+>
+> "Quando chegar e casa envio a tabela" (12:45:18, id 1a0fd4aa30f89c4d)
+
+**Leitura:** o "IBGE" responde à pergunta 2 do seguimento — os valores da Tabela 4 (1852–2001), como 15,34 m em
+1983, estão na referência IBGE (régua antiga + 0,20 m), que é o que o rótulo `IBGE (régua + 0,20 m)` dos 72
+registros já diz. A pergunta 1 do seguimento (10,00 m na régua antiga = 9,60 ou 10,40 na nova, e a data da troca)
+**ficou sem resposta**. A tabela ainda não chegou.
+
