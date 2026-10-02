@@ -1147,20 +1147,20 @@
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
-      "data": "2023-10-13",
-      "pico_m": 10.61,
-      "confianca": "media",
-      "fonte": "g1 SC — cobertura das cheias de 2023",
-      "nota": "Maior nível em Blumenau desde 2011. Cota de enchente vigente: 8 m (à época).",
+      "data": "2023-10-12",
+      "pico_m": 10.76,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2023 12/10 10,76\"",
+      "nota": "Maior nível em Blumenau desde 2011. Cota de enchente vigente: 8 m (à época). Decisão do Jefferson (02/10/2026): adotado o 10,76 m da lista oficial do AlertaBlu, com a data dela (12/10); o registro dizia 13/10 e 10,61 m (g1), que ficam em divergencias. A crista foi na virada de 12 para 13/10 (Mesorregional: 10,75 m à meia-noite, 10,73 m à 1h).",
       "divergencias": [
+        {
+          "pico_m": 10.61,
+          "fonte": "g1 SC — cobertura das cheias de 2023",
+          "nota": "Valor adotado até 02/10/2026, com data 13/10/2023; sem original no repositório. Passou a divergência por decisão do Jefferson (02/10/2026): a lista oficial tem valor e data definidos."
+        },
         {
           "pico_m": 10.75,
           "fonte": "Imprensa/compilação (valor anterior deste repositório) · Mesorregional, 13/10/2023 — \"atingiu um pico de 10,75 metros à meia-noite\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Mesorregional_blumenau_2023-10-13.html)"
-        },
-        {
-          "pico_m": 10.76,
-          "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2023 12/10 10,76\"",
-          "nota": "Lista oficial, com data de 12/10: a crista foi na virada de 12 para 13/10 (Mesorregional: 10,75 m à meia-noite, 10,73 m à 1h). O valor adotado (10,61 m, g1, sem original no repositório) não mudou nesta rodada: trocar é decisão do Jefferson."
         }
       ],
       "referencia": null
@@ -2063,16 +2063,18 @@
       "rio": "itajai-mirim",
       "cidade": "brusque",
       "data": "1984-08",
-      "pico_m": 10.5,
-      "confianca": "baixa",
-      "fonte": "Defesa Civil de Brusque — cotas do Itajaí-Mirim",
-      "nota": "Marco histórico no Itajaí-Mirim; cota exata varia conforme a régua. Ordem de grandeza das cheias de 1984. A própria fonte avisa que a cota exata varia conforme a régua usada.",
+      "pico_m": 10.3,
+      "confianca": "media",
+      "fonte": "O Município, \"Enchente desta sexta-feira é terceira maior registrada em Brusque\", 18/11/2023 — \"As enchentes de 1984 e 2011 são as maiores registradas na cidade. Na primeira, o rio chegou a 10,30 m\"; \"Os dados são da Defesa Civil\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OMunicipio_brusque-terceira-maior.html) · O Município, 20/11/2023, \"ocorreu em 1984, quando o rio chegou a 10,30 m\", segundo dados da Defesa Civil (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OMunicipio_brusque-mais-agua-menos-danos.html)",
+      "nota": "Marco histórico no Itajaí-Mirim; cota exata varia conforme a régua. Ordem de grandeza das cheias de 1984. A própria fonte avisa que a cota exata varia conforme a régua usada. Decisão do Jefferson (02/10/2026): adotado o 10,30 m, que tem fonte da Defesa Civil (via imprensa, daí confiança média); o 10,5 m adotado antes fica em divergencias. A compilação informal que já trazia 10,30 m continua citada lá. Atribuição anterior do 10,30 m: Compilação informal (valor anterior deste repositório) · também em O Município, \"Enchente desta sexta-feira é terceira maior registrada em Brusque\", 18/11/2023, \"Os dados são da Defesa Civil\" — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OMunicipio_brusque-terceira-maior.html (\"Na primeira, o rio chegou a 10,30 m\") e em O Município, 20/11/2023 (\"ocorreu em 1984, quando o rio chegou a 10,30 m\", bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OMunicipio_brusque-mais-agua-menos-danos.html).",
       "divergencias": [
         {
-          "pico_m": 10.3,
-          "fonte": "Compilação informal (valor anterior deste repositório) · também em O Município, \"Enchente desta sexta-feira é terceira maior registrada em Brusque\", 18/11/2023, \"Os dados são da Defesa Civil\" — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OMunicipio_brusque-terceira-maior.html (\"Na primeira, o rio chegou a 10,30 m\") e em O Município, 20/11/2023 (\"ocorreu em 1984, quando o rio chegou a 10,30 m\", bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OMunicipio_brusque-mais-agua-menos-danos.html)"
+          "pico_m": 10.5,
+          "fonte": "Defesa Civil de Brusque — cotas do Itajaí-Mirim",
+          "nota": "Valor adotado até 02/10/2026. Passou a divergência por decisão do Jefferson (02/10/2026): o 10,30 m tem fonte da Defesa Civil."
         }
-      ]
+      ],
+      "fonte_rotulo_anterior": "Defesa Civil de Brusque — cotas do Itajaí-Mirim"
     },
     {
       "rio": "itajai-mirim",
@@ -3563,6 +3565,17 @@
       "confianca": "baixa",
       "fonte": "Boletim Hidrometeorológico 006/2024 (ed. 62, SDE/SC), Tabela 1 \"Níveis máximos atingidos nos municípios das Bacias dos rios Itajaí, Tijucas e Uruguai\", p. 16 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/Diretoria%20de%20Recursos%20Hidricos/Relatorios/Boletim_Hidrometeorologico_62.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_006_2024_maio.pdf",
       "nota": "Máximo da estação telemétrica da Defesa Civil de SC no município, como o boletim estadual publica: a tabela não nomeia o ponto nem o zero da régua, e ninguém comparou com a régua da Defesa Civil municipal. Por isso confiança baixa, mesmo com a fonte oficial."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ascurra",
+      "data": "2026-09-01",
+      "hora": "05:10",
+      "pico_m": 10.13,
+      "confianca": "alta",
+      "fonte": "Defesa Civil de SC, API GraphQL historic, estação DCSC-00003 — Ponte do Beber, rio Itajaí-Açu: crista candidata de 10,13 m às 05:10, platô 04:50–06:20 (10 leituras) — resumo data/brutos/dcsc-historico-resumo-2026-09-15.json, gerado por scripts/consolidar_historico_dcsc.py · confirmado por: ND Mais, \"Rio avança, ultrapassa 10 metros, bloqueia rua e coloca cidade de SC em alerta\", 01/09/2026 — \"O rio atingiu 10,13 metros por volta das 6h, na medição da Ponte do Beber\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ND_ascurra_rio-avanca-ultrapassa-10m.html)",
+      "nota": "Cadastrado por decisão do Jefferson (02/10/2026): as duas fontes dão o mesmo valor na mesma régua. Hora 05:10 em horário de Brasília: o carimbo da API historic não traz fuso e é hora de Brasília (provado na docstring de consolidar_historico_dcsc.py). A ND dá \"por volta das 6h\", fuso não declarado — dentro do platô. Régua: a DCSC-00003 é a régua das cotas de Ascurra, confirmada pela COMPDEC no C18 (11/09/2026); nenhuma conversão aplicada. Acima do alerta (9,76 m) e abaixo da emergência (10,76 m) das faixas municipais.",
+      "referencia": "régua"
     },
     {
       "rio": "itajai-acu",

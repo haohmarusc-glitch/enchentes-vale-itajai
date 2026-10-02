@@ -610,7 +610,19 @@ percentuais seguem os publicados pela Asthon.
 
 **Maré:** a tábua de 2027 não está publicada nas capturas da CHM de 21 e 28/09/2026 (só 2026, 63ª ed.).
 
-**Para decisão do Jefferson (fora do cadastro):**
+**Decidido pelo Jefferson em 02/10/2026** (aplicado no PR seguinte ao desta rodada):
+- Blumenau: adotado **10,76 m em 12/10/2023** (lista oficial, data definida); o registro de 13/10 com 10,61 m (g1)
+  virou divergência, com o 10,75 m do Mesorregional.
+- Brusque 1984: adotado **10,30 m** (Defesa Civil via O Município, confiança média); o 10,5 m adotado antes ficou
+  em divergências, com a fonte antiga.
+- Ascurra: **cadastrado 01/09/2026, 10,13 m às 05:10** (hora de Brasília, carimbo da API historic), DCSC-00003 —
+  Ponte do Beber, `referencia: régua`; a ND ("por volta das 6h", fuso não declarado) confirma.
+- Gaspar 09/10/2023 e 09/09/2011 e Indaial 04/10/2023: **não** entram na série. Ficam em
+  `data/eventos-pendentes-regua.json` (referência não declarada), fora de recordes, comparação com o nível atual,
+  gráficos e modelos de propagação, até a fonte identificar a régua ou permitir reconciliar os zeros. Indaial não
+  se vincula sozinho à DCSC-00006: o deslocamento dela para a régua da COMPDEC continua pendente.
+
+**O que estava para decisão (registro de como a rodada foi entregue):**
 - Blumenau out/2023: adotar 10,76 m (lista oficial, 12/10) no lugar de 10,61 (g1, sem original)?
 - Brusque 1984: o 10,30 m agora tem fonte da Defesa Civil (O Município, duas matérias); o adotado é 10,5.
 - Ascurra 01/09/2026: a ND (10,13 m "por volta das 6h", Ponte do Beber) bate com a crista da DCSC-00003
@@ -643,5 +655,6 @@ cota oficial com nome de régua.
 - [x] Quinta rodada conferida nos originais: Rio dos Cedros nov/2022 e Itajaí set/2011 (§12).
 - [x] Sexta rodada conferida nos originais: 8 registros (Trombudo ×3, Lontras, Vidal Ramos 2013, Rio dos Cedros ×3) e as divergências de 2013 da Autoridade Portuária, do Orli (Taió) e da AMVE (Timbó), em 27/09/2026 (§13). Gaspar 2013 e Ituporanga 2013 ficam para decisão.
 - [x] Sétima rodada conferida nos originais: 8 registros (7 de Blumenau da lista oficial do AlertaBlu, Botuverá 22/07/2026), horas de crista, divergências do CEOPS/imprensa, Tabela 7.5.1 da JICA lida, e a lista do AlertaBlu cruzada com a série — não converter (§14), em 02/10/2026.
-- [ ] Ascurra e Guabiruba: ainda sem pico. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
+- [x] Decisões da sétima rodada aplicadas em 02/10/2026: Blumenau 12/10/2023 = 10,76 m; Brusque 1984 = 10,30 m; Ascurra 01/09/2026 = 10,13 m (primeiro pico da cidade); Gaspar e Indaial em `data/eventos-pendentes-regua.json`.
+- [ ] Guabiruba: ainda sem pico. Ascurra: só 01/09/2026; o 10,46 m de 12/09/2026 continua candidato fora. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.

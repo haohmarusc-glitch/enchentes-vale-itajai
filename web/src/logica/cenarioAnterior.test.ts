@@ -132,8 +132,10 @@ test('Brusque compara, e sai marcada como referência não conferida', () => {
   // régua da ANA (83900000, HidroWeb), por decisão do Jefferson — sem a chave
   // `referencia`, como os outros 23, senão a cidade viraria duas escalas e
   // pararia de comparar. Uma marca por registro; o pódio não mudou.
+  // 02/10/2026, decisão do Jefferson: 1984 passa a 10,30 m (Defesa Civil via
+  // O Município); o 10,5 m antigo é divergência e não vira marca.
   assert.equal(cenario.marcas.length, 28)
-  assert.equal(cenario.marcas[0]!.pico, 10.5)
+  assert.equal(cenario.marcas[0]!.pico, 10.3)
 })
 
 test('a marca mais alta de Brusque é a de 1984, e ela é única', () => {
