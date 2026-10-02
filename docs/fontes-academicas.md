@@ -149,3 +149,25 @@ significa em leitura de régua; e desde quando a lista do AlertaBlu deixa de ser
 
 Até lá a regra fica de pé, e o campo `referencia` do registro de 2011 continua `null` — que é o
 rótulo honesto para "não se sabe", e não um problema a ser preenchido no chute.
+
+### A resposta do Prof. Cordero (02/10/2026) — parcial, e a regra fica
+
+Três e-mails curtos, minutos depois do C25 (texto literal em `docs/oficios-prontos.md`, C25):
+
+* **Set/2011 em três referências, pela própria fonte:** "12,60m na régua 12,80 (IBGE) 13,00(GPS)". Os três
+  números que circulavam (Defesa Civil 12,60; Esboços/CEOPS 12,80; artigo do XX SBRH 13,0) são a **mesma cheia**,
+  não três leituras em conflito: IBGE = régua + 0,20; GPS = régua + 0,40.
+* **"Antes era somar 20 cm para a referência do IBGE"** — confirma, para a régua de antes da troca, o
+  deslocamento que a regra bloqueante usa.
+* **"A régua nova tem que somar 40 cm aos níveis da régua antiga"** — confirma que houve troca de régua depois
+  de 2011, mas a frase admite os dois sentidos (a mesma água lida 0,40 m mais baixa ou mais alta). Isso mexe
+  com comparar a leitura de hoje com cheias antigas, então **não se interpreta no chute**: o seguimento enviado
+  em 02/10/2026 pergunta com um exemplo (10,00 m na antiga = 9,60 ou 10,40 na nova?) e a data.
+* **Ele tem a série** e ofereceu enviá-la; o seguimento aceitou.
+
+Ficaram sem resposta: se a Tabela 4 (1852–2001) está em IBGE (régua antiga + 0,20) — perguntado de novo no
+seguimento —, a unidade do 1519 da ANA e desde quando a lista do AlertaBlu muda de referência.
+
+**Consequência:** é resposta da FURB, mas não fecha a regra — e mostra que ela não se resolve com um número só,
+porque há duas réguas (antes e depois de 2011). Nada foi convertido. O site continua seguro do jeito que está:
+em Blumenau, a comparação com o nível atual só usa os registros rotulados `régua`, que são leituras recentes.
