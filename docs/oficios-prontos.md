@@ -348,7 +348,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44; tabela prometida
 
 > Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
 > HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
@@ -421,3 +421,17 @@ Só para eu não interpretar errado, dois pontos curtos:
 
 Abraço,
 Jefferson
+
+### Resposta ao seguimento (02/10/2026, 12:44 e 12:45 BRT, mesmo fio)
+
+Transcrição literal:
+
+> "IBGE" (12:44:47, id 1a0fd4a2daca6570)
+>
+> "Quando chegar e casa envio a tabela" (12:45:18, id 1a0fd4aa30f89c4d)
+
+**Leitura:** o "IBGE" responde à pergunta 2 do seguimento — os valores da Tabela 4 (1852–2001), como 15,34 m em
+1983, estão na referência IBGE (régua antiga + 0,20 m), que é o que o rótulo `IBGE (régua + 0,20 m)` dos 72
+registros já diz. A pergunta 1 do seguimento (10,00 m na régua antiga = 9,60 ou 10,40 na nova, e a data da troca)
+**ficou sem resposta**. A tabela ainda não chegou.
+

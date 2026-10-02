@@ -163,10 +163,15 @@ Três e-mails curtos, minutos depois do C25 (texto literal em `docs/oficios-pron
   de 2011, mas a frase admite os dois sentidos (a mesma água lida 0,40 m mais baixa ou mais alta). Isso mexe
   com comparar a leitura de hoje com cheias antigas, então **não se interpreta no chute**: o seguimento enviado
   em 02/10/2026 pergunta com um exemplo (10,00 m na antiga = 9,60 ou 10,40 na nova?) e a data.
-* **Ele tem a série** e ofereceu enviá-la; o seguimento aceitou.
+* **Ele tem a série** e ofereceu enviá-la; o seguimento aceitou. Ele respondeu que envia "quando chegar em
+  casa" — a tabela ainda não chegou.
+* **A Tabela 4 está em IBGE.** Ao seguimento ("Os valores da Tabela 4 (1852–2001), como 15,34 m em 1983, estão na
+  referência IBGE, ou seja, régua antiga + 0,20 m?"), a resposta foi uma palavra: "IBGE". É a **premissa da regra
+  bloqueante confirmada pela fonte**: o rótulo `IBGE (régua + 0,20 m)` dos 72 registros da série longa está certo.
 
-Ficaram sem resposta: se a Tabela 4 (1852–2001) está em IBGE (régua antiga + 0,20) — perguntado de novo no
-seguimento —, a unidade do 1519 da ANA e desde quando a lista do AlertaBlu muda de referência.
+Ficaram sem resposta: o sentido e a data da troca de régua de 40 cm (perguntado de novo no seguimento, com o
+exemplo 10,00 m = 9,60 ou 10,40), a unidade do 1519 da ANA e desde quando a lista do AlertaBlu muda de
+referência.
 
 **Consequência:** é resposta da FURB, mas não fecha a regra — e mostra que ela não se resolve com um número só,
 porque há duas réguas (antes e depois de 2011). Nada foi convertido. O site continua seguro do jeito que está:
