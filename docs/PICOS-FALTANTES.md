@@ -103,7 +103,7 @@ Armadilhas conhecidas:
 ## 6. Prompt para colar em outra IA
 
 Versão 3.6, de 02/10/2026. Atualizada com a sétima rodada (§14), as decisões do Jefferson de 02/10/2026 e a
-resposta da FURB ao ofício C25: sai a Tabela 7.5.1 do JICA (lida), sai a referência da Tabela 4 de Blumenau
+resposta da FURB ao ofício C25 e, no mesmo dia, com a oitava rodada (§15): sai a Tabela 7.5.1 do JICA (lida), sai a referência da Tabela 4 de Blumenau
 (a FURB respondeu "IBGE"), Ascurra e Guabiruba passam a pedir só o que a série da Defesa Civil de SC não cobre,
 e entram Gaspar/Indaial (eventos pendentes de régua) e a troca de régua de 2011 em Blumenau. O que funcionou
 foi receber **os arquivos originais** (PDF ou página salva): sem eles nada entra. Número visto só em resumo
@@ -131,8 +131,8 @@ PRIORIDADE 1 — cidades sem pico ANTIGO (a série da Defesa Civil de SC eu já 
 2. Guabiruba: rio Guabiruba, estação DCSC-00029. Já tenho a série dela de nov/2022 a mar/2026. Quero as
    cheias de ANTES: nov/2008, mar/2011, set/2011, set/2013, out/2015, numa régua com zero declarado.
    Desde abr/2026 a estação mede em altitude (~24–25 m): esse número não serve, nem lâmina d'água na
-   rua. A notícia guabiruba.sc.gov.br/noticia-46906/ deu 403 e não está no Wayback: ache outra cópia.
-   O boletim SDE 006/2024 não lista Ascurra nem Guabiruba.
+   rua. A notícia guabiruba.sc.gov.br/noticia-46906/ já tenho e não traz nível. O boletim SDE 006/2024
+   não lista Ascurra nem Guabiruba.
 
 PRIORIDADE 1B — Itajaí (foz do Itajaí-Açu e do Itajaí-Mirim), a cidade mais difícil:
 
@@ -189,7 +189,9 @@ PRIORIDADE 4 — lacunas pontuais:
    leituras de 20/09 17h (5,46 m) e 22/09 15h (8,78 m), que não são o pico; a notícia
    taio.sc.gov.br/noticia-75219/ não traz número.
 9. Rio dos Cedros: cheias depois de nov/2022 (tenho a tabela do PLANCON 10.7 até 27/11/2022 e
-   12/10/2023) e o dia da crista de 8,96 m de 2014 (08 ou 09/06). Dois valores apareceram só em resumo
+   12/10/2023) e uma fonte que ESCREVA o dia da crista de 8,96 m de 2014 (o registro de 15 em 15 min do
+   PLANCON começa em 08/06 18:30 e chega aos 8,96 m depois de duas meias-noites, isto é, na madrugada de
+   10/06, mas a página não repete a data). Dois valores apareceram só em resumo
    de busca e PRECISAM da página salva: Misturebas, 4,80 m em 04/10/2023, e Testo, 5,32 m em 03/11/2023
    (as duas páginas deram desafio do Cloudflare ou 404 no Wayback).
 
@@ -202,7 +204,10 @@ PRIORIDADE 5 — de que régua é cada série (sem isso, os números não se com
     um documento que diga QUAL estação é essa "atual estação fluviométrica" (código ANA ou nome da ponte)
     e se o Histórico de Cheias usa a mesma régua, ou se a régua mudou de lugar (quando). A estação "MKS"
     da Defesa Civil de SC (DCSC-00013) tem zero ~0,17 m acima da Ponte Dom Tito Buss, então "Rio do Sul"
-    sozinho não basta.
+    sozinho não basta. Atenção: a estação de hoje na Ponte Dom Tito Buss é NOVA (sistema inaugurado em
+    jul/2026, oito estações fluviométricas), e a prefeitura diz que o histórico de níveis "faz parte do
+    sistema antigo de monitoramento". Quero saber a régua e o zero do sistema ANTIGO, e se a estação nova
+    manteve o mesmo zero.
 11. Blumenau, a troca de régua de 2011: a FURB (Prof. Ademar Cordero) me confirmou que a Tabela 4 de
     Cordero & Medeiros está na referência IBGE (régua antiga + 0,20 m), que set/2011 foi 12,60 m na
     régua, 12,80 m no IBGE e 13,00 m no GPS, e que depois de 2011 "a régua nova tem que somar 40 cm aos
@@ -236,8 +241,8 @@ PRIORIDADE 5 — de que régua é cada série (sem isso, os números não se com
 PRIORIDADE 6 — cotas de atenção, alerta e emergência que faltam:
 
 14. As cotas oficiais (atenção / alerta / emergência ou inundação), com o NOME da régua a que
-    pertencem, para: Ibirama (régua do rio Hercílio), Apiúna (Itajaí-Açu; um boletim de 2013 a põe "com
-    cota de Alerta", sem o número da cota), Botuverá (Itajaí-Mirim; a Defesa Civil de Brusque publica
+    pertencem, para: Ibirama (régua do rio Hercílio), Apiúna (Itajaí-Açu, régua da Defesa Civil; as faixas
+    da estação ANA 83500000 "Apiúna - Régua Nova" no manual da Sala de Situação ANA/Epagri eu já tenho), Botuverá (Itajaí-Mirim; a Defesa Civil de Brusque publica
     TRÊS estações em Botuverá — 18 "Botuverá", 2 "CEOPS – Botuverá" e 32 "Botuverá – Prefeitura" —,
     então diga de qual é a cota), Guabiruba (DCSC-00029), Vidal Ramos (não a do Salseiro; uma frase
     "3,54 m, nível de atenção" apareceu só em resumo de busca — quero a página) e Lontras (tenho só uma
@@ -252,7 +257,9 @@ PRIORIDADE 7 — documentos técnicos:
     capturas de 21 e 28/09/2026 só havia a de 2026). Já tenho a de 2026.
 16. Barragem Oeste (Taió): o painel público da Asthon dá 99,96 hm³ de capacidade, e esse número não
     aparece em nenhum documento que tenho. Já sei que 83 hm³ (JICA) é o volume até a cota 360 m e que o
-    alteamento de 2 m aumentou a capacidade. Quero o documento do operador (Defesa Civil de SC, SDE/SC)
+    alteamento de 2 m aumentou a capacidade; o Plano de Recursos Hídricos da bacia (cap. A2, Tabela A2.4,
+    dados do DEOH) dá "Volume do reservatório" de 83,00 (Oeste) e 93,50 (Sul) — e o mesmo texto diz 97 para
+    a Sul. Quero o documento do operador (Defesa Civil de SC, SDE/SC)
     com a curva cota × volume DEPOIS do alteamento, que diga a que cota correspondem os 99,96 hm³. Para
     a Barragem Sul já tenho 104,03 hm³ de capacidade total. Não calcule percentuais.
 
@@ -270,7 +277,11 @@ UFSC sobre o rompimento hipotético da Barragem Oeste; a página do DEINFRA sobr
 Gaspar de 10 a 13/10/2023; a tábua de marés de 2026; a notícia 75218 de Taió; e as notícias já usadas: G1,
 ND+, NSC, Rádio Mirador, GCD, Jornal Universo, MetSul, Diarinho, O Município, SCC10, O Blumenauense, O
 Auditório, Mesorregional, Clicrbs (2008), Acaert (2008), Diplomata FM, RWTV, Portal Educadora, Vale do
-Itajaí Notícias (Indaial 2023), os blogs Adalberto Day, Dalva Day e Monique Becker (Blumenau) e o
+Itajaí Notícias (Indaial 2023); o Plano de Recursos Hídricos da bacia do Itajaí (cap. A2, Tabelas A2.3 e
+A2.4); o Manual de Operação da Sala de Situação ANA/Epagri/Ciram (faixas por estação ANA, em cm); o relatório
+do CEOPS/FURB de 2016 sobre Rio dos Cedros; o PLANCON de Rio dos Cedros v10.4 (2017); a notícia do novo
+sistema de monitoramento de Rio do Sul (jul/2026); a notícia 46906 de Guabiruba; o boletim SDE 008/2023;
+os blogs Adalberto Day, Dalva Day e Monique Becker (Blumenau) e o
 SOS Rios do Brasil (Wayback, set/2013); e as da rodada anterior (Trombudo Central, Timbó, Rio dos
 Cedros, Lontras, Botuverá, Vidal Ramos, Ituporanga).
 
@@ -671,6 +682,51 @@ não traz como enchente separada); Taió set/2013 (leituras: 5,46 m e 8,78 m) e 
 em 22/09/2013 15h (leituras, "cota de Alerta"). Ibirama, Botuverá, Guabiruba, Vidal Ramos e Lontras: nenhuma
 cota oficial com nome de régua.
 
+## 15. Oitava rodada (02/10/2026), conferida nos originais
+
+Pacote `cheias_itajai_fontes_2026-10-01` em duas partes (21 arquivos + `README_resultados.md`, pesquisa de
+01/10/2026 feita com o prompt v3.5). Todos os sha256 batem com o manifesto da pesquisa. Ficaram em
+`data/brutos/pesquisa-picos-2026-09-24/rodada8/` com manifesto próprio; quatro arquivos são **duplicatas**
+de rodadas anteriores (artigo ABRH de Blumenau, página de metragem de Rio do Sul, JICA Vol. III-A, boletim
+SDE 008/2023) e entraram só com o hash; quatro PDFs grandes entraram como extrato das páginas citadas. A
+pesquisa é quase toda de resultados negativos, e o que ela traz de novo é contexto, não pico:
+
+- **Rio dos Cedros, 8,96 m de jun/2014.** (1) O relatório do CEOPS/FURB de dez/2016 (estudo hidrológico e
+  mapeamento de Rio dos Cedros) diz que o evento "alcançou 8,96 m na régua de referência", que a cota
+  topográfica foi tirada "na estação telemétrica" ("8,96 m na régua limnimétrica, atingindo a altura
+  topográfica de 72,408 m") e que a recorrência é de cerca de 50 anos — entrou como "confirmado por" no
+  registro. (2) **A pendência do registro estava errada:** dizia que a crista foi "provavelmente madrugada
+  de 09/06". O registro do Anexo I (pp. 49–50), igual nas versões v1.07 e v10.4, tem 142 leituras sem salto
+  e passa por DUAS meias-noites antes dos 8,96 m: a crista seria na madrugada de **10/06**, 00:45–02:00 —
+  por contagem, porque a página não repete a data. Corrigido na pendência; a data do registro continua a
+  da tabela (08/06).
+- **Faixas por estação da ANA, em centímetros** — Manual de Operação da Sala de Situação ANA/Epagri/Ciram,
+  pp. 63–67: atenção/alerta/emergência por código e nome de estação (ex.: 83800002 Blumenau 400/600/850 cm;
+  83500000 "Apiúna - Régua Nova" 400/600/850; 83677000 Timbó Novo 300/500/700; 83050000 Taió 400/600/750;
+  83250000 Ituporanga 200/300/400; 83300200 Rio do Sul - Novo 400/500/650; 83892990 Salseiro 300/400/500;
+  83900000 Brusque 300/400/500). São faixas **operacionais da Sala de Situação para a régua da ANA**, não
+  cotas da Defesa Civil municipal, e não entram em `estacoes.json` sem decisão. Servem, porém, a duas
+  coisas: dão cotas com nome de régua para as estações da ANA que já estão no cadastro (Apiúna, Timbó Novo,
+  Ituporanga), e mostram que a ANA trabalha com essas cotas **em cm** — apoio, não prova, à leitura do
+  "1519" de 09/07/1983 como 15,19 m (§14).
+- **Plano de Recursos Hídricos da bacia (cap. A2).** Tabela A2.3 (fonte CEOPS/FURB): as faixas normal/atenção/
+  alerta/emergência por município, sem nome de régua — não servem para o cadastro, como a própria pesquisa
+  marcou. Tabela A2.4 (fonte DEOH): "Volume do reservatório" Oeste 83,00 e Sul 93,50 × 10⁶ m³, níveis
+  mínimo/máximo e cotas do vertedor; o texto da mesma página dá 97 × 10⁶ m³ para a Sul. Divergência
+  guardada aqui; nada muda no site.
+- **Rio do Sul, sistema novo.** A prefeitura inaugurou em jul/2026 oito estações fluviométricas novas, entre
+  elas a da Ponte Dom Tito Buss, e diz que o histórico de níveis "faz parte do sistema antigo de
+  monitoramento". Isso explica por que a régua do Histórico de Cheias não se resolve olhando a estação de
+  hoje. Os registros históricos de Rio do Sul seguem com `referencia: null`, então o site não os compara
+  com o nível ao vivo.
+- **Guabiruba, notícia 46906:** finalmente baixada; não traz nível de rio. O item sai do prompt.
+- **Negativos** (nada encontrado com original e régua): Ascurra e Guabiruba antigos, Itajaí por régua,
+  boletim SDE de set/2026 (ainda não publicado em 01/10), Lontras, Vidal Ramos, Trombudo Central, Botuverá,
+  réguas municipais de Ituporanga/Ibirama/Apiúna/Ilhota, Timbó 9,58 m, Taió 1983 e set/2013, Rio dos Cedros
+  depois de 2022, tábua de marés de 2027.
+
+O prompt v3.6 (§6) já sai com esses ajustes. Nenhum pico novo, nenhum valor adotado mudou.
+
 ## 9. Estado
 
 - [x] Chat: cidade sem pico passa a dizer o motivo e mostrar o impacto do Atlas, sem metro (PR #409).
@@ -687,5 +743,6 @@ cota oficial com nome de régua.
 - [x] Sétima rodada conferida nos originais: 8 registros (7 de Blumenau da lista oficial do AlertaBlu, Botuverá 22/07/2026), horas de crista, divergências do CEOPS/imprensa, Tabela 7.5.1 da JICA lida, e a lista do AlertaBlu cruzada com a série — não converter (§14), em 02/10/2026.
 - [x] Decisões da sétima rodada aplicadas em 02/10/2026: Blumenau 12/10/2023 = 10,76 m; Brusque 1984 = 10,30 m; Ascurra 01/09/2026 = 10,13 m (primeiro pico da cidade); Gaspar e Indaial em `data/eventos-pendentes-regua.json`.
 - [x] Prompt da §6 na versão 3.6 (02/10/2026): sai o que a sétima rodada e a FURB resolveram (JICA A-80, referência da Tabela 4), Ascurra e Guabiruba pedem só o que a série da DCSC não cobre, e entram a troca de régua de 2011 em Blumenau, Gaspar/Indaial sem régua e as páginas vistas só em resumo de busca.
+- [x] Oitava rodada conferida nos originais (02/10/2026, §15): nenhum pico novo; Rio dos Cedros 2014 ganhou a régua (relatório CEOPS/FURB 2016) e a pendência do dia foi corrigida para 10/06 por contagem; faixas da Sala de Situação ANA/Epagri por estação, em cm, documentadas.
 - [ ] Guabiruba: ainda sem pico. Ascurra: só 01/09/2026; o 10,46 m de 12/09/2026 continua candidato fora. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.
