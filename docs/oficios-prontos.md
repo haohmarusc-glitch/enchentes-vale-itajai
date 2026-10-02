@@ -348,7 +348,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau (📝 RASCUNHO de 02/10/2026 — enviar só com aprovação do Jefferson)
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson)
 
 > Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
 > HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
