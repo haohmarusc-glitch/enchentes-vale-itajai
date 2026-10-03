@@ -48,7 +48,7 @@ const RAW = 'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-
 /** Serve à página o MESMO dado do branch tempo-real, baixado com curl. */
 export async function abrir(rota, { largura = 1280, altura = 900, semRede = false } = {}) {
   const b = await chromium.launch(CHROMIUM ? { executablePath: CHROMIUM } : {})
-  const pg = await b.newPage({ viewport: { width: largura, height: altura }, deviceScaleFactor: 2 })
+  const pg = await b.newPage({ viewport: { width: largura, height: altura }, deviceScaleFactor: 2, serviceWorkers: 'block' })
   const erros = []
   pg.on('console', m => { if (m.type() === 'error') erros.push(m.text().slice(0, 200)) })
   pg.on('pageerror', e => erros.push('PAGEERROR ' + e.message.slice(0, 200)))

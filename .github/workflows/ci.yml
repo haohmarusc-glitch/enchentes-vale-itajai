@@ -105,6 +105,12 @@ jobs:
         working-directory: web
         run: npm run trava-monitor
 
+      # Modo aplicativo (D5): sem rede o site abre com a cópia guardada, o
+      # login do Cloudflare Access nunca é guardado e o interruptor desliga.
+      - name: Modo aplicativo — sem rede, login e interruptor
+        working-directory: web
+        run: npm run pwa
+
       # Os arquivos do Monitor só mudam com autorização do Jefferson, marcada
       # no PR com o rótulo `monitor-autorizado`.
       - name: Trava do Monitor — arquivos intocados

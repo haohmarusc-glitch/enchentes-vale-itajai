@@ -79,7 +79,8 @@ const navegador = await chromium.launch({ executablePath, args: ['--no-sandbox']
 
 /** Abre uma rota com a rede externa cortada e devolve o que a tela mostra. */
 async function abrir(rota) {
-  const pagina = await navegador.newPage()
+  // O service worker (modo aplicativo) tem teste próprio, pwa.mjs.
+  const pagina = await navegador.newPage({ serviceWorkers: 'block' })
   const erros = []
   pagina.on('pageerror', (e) => erros.push(`pageerror: ${e.message}`))
   pagina.on('console', (m) => {
@@ -143,7 +144,7 @@ console.log('\nversão 2: aviso completo na primeira visita e faixa do 199 em to
   // Decisão D1 (03/10/2026): a regra do CLAUDE.md fica. A faixa curta diz que o
   // site não substitui a Defesa Civil; o texto completo abre sozinho na
   // primeira visita e só sai com "Entendi".
-  const ctx = await navegador.newContext()
+  const ctx = await navegador.newContext({ serviceWorkers: 'block' })
   await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
   const pagina = await ctx.newPage()
   await pagina.goto(`${base}/#/`, { waitUntil: 'load' })

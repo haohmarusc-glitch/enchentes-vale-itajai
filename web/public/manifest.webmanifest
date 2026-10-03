@@ -1,0 +1,20 @@
+{
+  "id": "./",
+  "name": "Enchentes do Vale do Itajaí",
+  "short_name": "Enchentes",
+  "description": "Nível dos rios Itajaí-Açu e Itajaí-Mirim na régua de cada cidade, com a hora da medição. Não substitui a Defesa Civil. Emergência: 199.",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "start_url": "./#/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0b3a5b",
+  "categories": ["weather", "utilities"],
+  "icons": [
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -148,6 +148,13 @@ Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em c
 - **Frases do cartão "Agora"** (`logica/agora.ts`): só com leitura de agora e cota de acionamento; nunca em Gaspar (legenda "maior que"), Ascurra (C18) nem Itajaí (várias réguas). Sem dado, a frase não aparece.
 - **Tema escuro e letra maior** só dentro de `:root[data-app]`, que o App liga fora do Monitor. Cores novas vão como token em `global.css`, com o valor claro igual ao antigo.
 - **Preferências** (minha cidade, aviso lido, letra) só no aparelho, por `logica/preferencias.ts`, sempre em try/catch.
+- **D5 — modo aplicativo (PWA):** `web/public/sw.js` + `sw-regras.js` (testado em `src/logica/swRegras.test.ts`
+  e no navegador por `testes-navegador/pwa.mjs`). Rede primeiro para a página e o nível ao vivo; a cópia
+  guardada só sem rede, e o número guardado sai com a hora da medição. **Nunca guardar** desvio, resposta
+  opaca, `*.cloudflareaccess.com` nem HTML no lugar de JS/JSON (é a tela de login do Access). Manifesto com
+  `crossorigin="use-credentials"`. Interruptor em `web/public/pwa.json` (`"ativo": false` desliga e apaga
+  tudo nos aparelhos). Os outros testes de navegador rodam com `serviceWorkers: 'block'`. Operação em
+  `docs/PUBLICACAO-E-ACESSO.md`, "Modo aplicativo".
 
 ## Lógica de previsão (v1 — empírica)
 

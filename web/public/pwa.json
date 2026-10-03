@@ -1,0 +1,1 @@
+{ "ativo": true, "_comentario": "Interruptor do modo aplicativo. Trocar para false e publicar desliga o service worker e apaga o que ele guardou em todos os aparelhos. Ver docs/PUBLICACAO-E-ACESSO.md." }
