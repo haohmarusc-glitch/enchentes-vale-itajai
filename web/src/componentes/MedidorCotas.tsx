@@ -13,10 +13,24 @@ function curto(v: number): string {
  * marcado. É a escala da própria cidade — o texto ao lado diz que os metros não
  * se comparam com os de outra.
  */
-export default function MedidorCotas({ cidade, nivel }: { cidade: Cidade; nivel: number | null }) {
-  const escala = escalaDoMedidor(cidade.cotas_m ?? {}, nivel)
+export default function MedidorCotas({
+  cidade,
+  nivel,
+  cotas,
+  rotulo,
+}: {
+  cidade: Cidade
+  nivel: number | null
+  /** As cotas de UMA régua, quando a cidade tem várias (Itajaí). Sem isto, as da cidade. */
+  cotas?: Record<string, number>
+  /** Como a régua é chamada na descrição para leitor de tela. */
+  rotulo?: string
+}) {
+  const escala = escalaDoMedidor(cotas ?? cidade.cotas_m ?? {}, nivel)
   if (!escala) return null
-  const nomes = cidade.cotas_nomes_na_fonte
+  // Os nomes da Defesa Civil da cidade (D6) valem para as cotas DA CIDADE, não
+  // para as de uma régua com escala própria.
+  const nomes = cotas ? undefined : cidade.cotas_nomes_na_fonte
   // Números de cotas muito próximas descem para uma segunda linha, alternando.
   const linhas: number[] = []
   escala.marcas.forEach((m, i) => {
@@ -24,7 +38,7 @@ export default function MedidorCotas({ cidade, nivel }: { cidade: Cidade; nivel:
     linhas.push(anterior && m.pos - anterior.pos < 0.1 && linhas[i - 1] === 0 ? 1 : 0)
   })
   const descricao =
-    `Régua de ${cidade.nome}` +
+    (rotulo ?? `Régua de ${cidade.nome}`) +
     (nivel !== null ? `: nível ${numero(nivel)} m` : '') +
     '; cotas: ' +
     escala.marcas.map((m) => `${rotuloCota(m.chave, nomes)} ${numero(m.valor)} m`).join(', ')

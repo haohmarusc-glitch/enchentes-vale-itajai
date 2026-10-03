@@ -13,7 +13,7 @@ const MapaManchas = lazy(() => import('../componentes/MapaManchas'))
 import { cidade, estacoesTempoReal, fontesGerais, mareItajai } from '../dados/carregar'
 import { separarFonte, todasAsReguas } from '../logica/reguas'
 import { leiturasDaCidadeEmTodosOsRios, useTempoReal } from '../dados/tempoReal'
-import VariasReguas from '../componentes/VariasReguas'
+import ReguasAgora from '../componentes/ReguasAgora'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import estilos from './TelaItajai.module.css'
 
@@ -99,12 +99,7 @@ export default function TelaItajai() {
       <section className="cartao">
         <h2>Como estão as réguas de Itajaí agora</h2>
         {leiturasDeItajai.length > 0 && cidadeItajai ? (
-          <VariasReguas
-            leituras={leiturasDeItajai}
-            reguas={reguas}
-            cidade={cidadeItajai}
-            agora={agora}
-          />
+          <ReguasAgora cidade={cidadeItajai} reguas={reguas} leituras={leiturasDeItajai} agora={agora} />
         ) : (
           <p>
             Sem leitura ao vivo neste momento. As cotas de cada régua continuam na tabela

@@ -1,0 +1,173 @@
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 0.6rem;
+}
+
+.aviso {
+  margin: 0;
+  padding: 0.55rem 0.7rem;
+  border-left: 4px solid var(--atencao);
+  background: var(--atencao-fundo);
+  border-radius: 0.3rem;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.curso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.nomeCurso {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.sentido {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.braco {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--borda);
+}
+
+.nomeBraco {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--tinta-fraca);
+}
+
+.nota {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+/* Uma régua: o cartão "Agora" em miniatura. */
+.regua {
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  padding: 0.7rem 0.8rem 0.75rem;
+  background: var(--papel);
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.nome {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--tinta);
+}
+
+.linhaNumero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  margin: 0.45rem 0 0.25rem;
+}
+
+.numero {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+}
+
+.numeroVelho {
+  color: var(--tinta-fraca);
+}
+
+.unidade {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--tinta-fraca);
+  margin-left: -0.35rem;
+}
+
+.medido {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.frescor {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--faixa-sem-dado);
+}
+
+.frescor_agora {
+  background: var(--faixa-normal);
+}
+
+.frescor_atrasada {
+  background: var(--faixa-atencao);
+}
+
+.semLeitura {
+  margin: 0.5rem 0 0.3rem;
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+}
+
+.alerta {
+  margin: 0.2rem 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--alerta);
+}
+
+.falta {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+}
+
+.mare {
+  margin: 0.35rem 0 0;
+  font-size: 0.84rem;
+  color: var(--tinta-fraca);
+}
+
+.selo {
+  display: inline-block;
+  padding: 0 0.4rem;
+  margin-right: 0.25rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.explicacao {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--tinta-fraca);
+  line-height: 1.45;
+}

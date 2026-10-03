@@ -154,9 +154,15 @@ function MinhaCidade({
 }) {
   const { cidade, rioId } = item
   const estado = estadoDaCidade(cidade, rioId, aoVivo)
-  const cidadesRio = cidadesDoRio(rioId)
-  const { acima } = vizinhasNoEixo(eixoDoRio(cidadesRio, topologiaDoRio(rioId)), cidade.id)
-  const deCima = cidadesRio.find((c) => c.id === acima)
+  // Itajaí, na foz, recebe os DOIS rios: a água vem de Ilhota pelo Açu e de
+  // Brusque pelo Mirim. As outras cidades têm um rio só.
+  const rios = cidade.id === 'itajai' ? ['itajai-acu', 'itajai-mirim'] : [rioId]
+  const deCima = rios.flatMap((r) => {
+    const cidadesRio = cidadesDoRio(r)
+    const { acima } = vizinhasNoEixo(eixoDoRio(cidadesRio, topologiaDoRio(r)), cidade.id)
+    const c = cidadesRio.find((x) => x.id === acima)
+    return c ? [{ rio: r, cidade: c }] : []
+  })
   const para = cidade.id === 'itajai' ? '/itajai' : `/${rioDaUrl(rioId)}/${cidade.id}`
   return (
     <>
@@ -175,11 +181,19 @@ function MinhaCidade({
         </div>
       </div>
 
-      <CartaoAgora cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado}>
+      <CartaoAgora cidade={cidade} aoVivo={aoVivo} estado={estado}>
         <AcoesDaCidade cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado} />
       </CartaoAgora>
 
-      {deCima ? <LinhaDeCidade rotulo="Rio acima" cidade={deCima} rioId={rioId} aoVivo={aoVivo} /> : null}
+      {deCima.map((d) => (
+        <LinhaDeCidade
+          key={d.rio}
+          rotulo={deCima.length > 1 ? (d.rio === 'itajai-mirim' ? 'Mirim acima' : 'Açu acima') : 'Rio acima'}
+          cidade={d.cidade}
+          rioId={d.rio}
+          aoVivo={aoVivo}
+        />
+      ))}
 
       {outras.length > 0 ? (
         <>

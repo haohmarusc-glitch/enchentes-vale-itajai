@@ -188,7 +188,7 @@ export default function TelaCidade() {
       >
         {aba === 'agora' ? (
           <>
-            <CartaoAgora cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado}>
+            <CartaoAgora cidade={cidade} aoVivo={aoVivo} estado={estado}>
               <AcoesDaCidade cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado} />
             </CartaoAgora>
 

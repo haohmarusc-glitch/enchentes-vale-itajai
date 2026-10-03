@@ -8,9 +8,10 @@ import { faixaAscurra } from '../logica/municipal'
 import { frescorDaCidade, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { ROTULO_FAIXA } from './LegendaFaixas'
 import MedidorCotas from './MedidorCotas'
-import ReguasDaCidade from './ReguasDaCidade'
-import { reguasComCota } from '../logica/reguas'
+import ReguasAgora from './ReguasAgora'
+import { todasAsReguas } from '../logica/reguas'
 import { estacoesTempoReal } from '../dados/carregar'
+import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
 import estilos from './CartaoAgora.module.css'
 
 /** A classe do chip: inundação e emergência são o mesmo vermelho; sem leitura e várias réguas, cinza. */
@@ -53,14 +54,12 @@ export function ChipFaixa({ faixa, cidade, compacto = false }: { faixa: Faixa; c
  */
 export default function CartaoAgora({
   cidade,
-  rioId,
   aoVivo,
   estado,
   titulo,
   children,
 }: {
   cidade: Cidade
-  rioId: string
   aoVivo: AoVivo
   estado: EstadoDaCidade
   /** Título visível acima do número (no Início, o nome da cidade já está fora). */
@@ -89,7 +88,9 @@ export default function CartaoAgora({
   }
 
   if (!leitura) {
-    const reguas = varias ? reguasComCota(estacoesTempoReal, rioId, cidade.id) : []
+    // Várias réguas (Itajaí): TODAS as da cidade, em qualquer curso — o Mirim e
+    // os ribeirões também, não só as do rio por onde a cidade foi escolhida.
+    const reguas = varias ? todasAsReguas(estacoesTempoReal, cidade.id) : []
     return (
       <section className={`${estilos.cartao} surge`} aria-label={`Agora em ${cidade.nome}`}>
         {titulo}
@@ -98,11 +99,19 @@ export default function CartaoAgora({
         </div>
         {varias ? (
           <>
-            <p className={estilos.semLeitura}>
-              {todas.length} réguas nesta cidade, cada uma com o seu zero — os metros não se
-              comparam entre elas. A cor sai de cada régua.
-            </p>
-            {reguas.length > 0 ? <ReguasDaCidade reguas={reguas} cidade={cidade.nome} agrupadoPorCurso /> : null}
+            {reguas.length > 0 ? (
+              <ReguasAgora
+                cidade={cidade}
+                reguas={reguas}
+                leituras={leiturasDaCidadeEmTodosOsRios(tempoReal, cidade.id)}
+                agora={agora}
+              />
+            ) : (
+              <p className={estilos.semLeitura}>
+                {todas.length} réguas nesta cidade, cada uma com o seu zero — os metros não se
+                comparam entre elas.
+              </p>
+            )}
           </>
         ) : bruto ? (
           <p className={estilos.semLeitura}>
