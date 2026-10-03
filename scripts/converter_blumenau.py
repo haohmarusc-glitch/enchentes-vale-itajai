@@ -1,8 +1,9 @@
-"""Proposta de conversão da série de Blumenau para a régua de hoje (SIMULAÇÃO).
+"""Conversão da série de Blumenau para a régua de hoje.
 
-Não grava nada em `data/enchentes.json`. Lê os registros de Blumenau, decide em
-que referência cada um foi PUBLICADO e quanto somar para chegar à régua de hoje,
-e escreve o relatório `docs/CONVERSAO-BLUMENAU.md` para o Jefferson decidir.
+Sem argumento, é simulação: não grava nada em `data/enchentes.json`. Lê os
+registros de Blumenau, decide em que referência cada um foi PUBLICADO e quanto
+somar para chegar à régua de hoje, e escreve o relatório `docs/CONVERSAO-BLUMENAU.md`.
+Com `--aplicar`, grava só os de certeza alta (ver o fim desta docstring).
 
 As três referências, pela fonte (Prof. Ademar Cordero, FURB, e-mails e planilha
 de 02/10/2026; `docs/fontes-academicas.md`):
@@ -36,7 +37,15 @@ Como cada registro é classificado — e com que certeza:
   - de 2014 em diante, sem par (imprensa, monitoramento estadual) → PENDENTE:
     a fonte não diz de qual régua é.
 
-Uso: python3 converter_blumenau.py   (escreve o relatório e imprime o resumo)
+Uso:
+    python3 converter_blumenau.py            simulação: escreve o relatório e imprime o resumo
+    python3 converter_blumenau.py --aplicar  grava em enchentes.json SÓ os de certeza `alta`
+
+APLICADO em 03/10/2026, por decisão do Jefferson, aos 57 registros de certeza alta. Os
+outros 67 (60 em disputa, 4 inferidos, 3 pendentes) ficam como estavam. O registro
+convertido guarda o valor como foi publicado (`pico_publicado_m`) e em que referência
+(`referencia_publicada`); `pico_m` passa a ser a régua de hoje e `referencia`, "régua".
+Rodar de novo não soma duas vezes: registro com `referencia_publicada` é pulado.
 """
 
 from __future__ import annotations
@@ -59,6 +68,21 @@ ROTULO_IBGE = "IBGE (régua + 0,20 m)"
 SOMA = {"IBGE": 0.20, "régua antiga": 0.40, "régua de hoje": 0.0}
 FIM_REGUA_ANTIGA = "2011-09-30"  # depois da cheia de 09/09/2011
 INICIO_REGUA_NOVA = "2014-01-01"  # 2013 inteiro fica na janela da troca
+
+#: Como `referencia_publicada` fica gravado. Conjunto fechado (o validador confere).
+ROTULO_PUBLICADO = {"IBGE": ROTULO_IBGE, "régua antiga": "régua antiga", "régua de hoje": "régua de hoje"}
+DE_ROTULO = {v: k for k, v in ROTULO_PUBLICADO.items()}
+
+#: Referência de cada divergência guardada nos registros convertidos, quando a fonte
+#: permite dizer. As demais ficam `null` (não declarada) e são mostradas como publicadas.
+REFERENCIA_DA_DIVERGENCIA = {
+    ("1977-08-18", 9.15): ROTULO_IBGE,         # lista do AlertaBlu, que até 2001 é a Tabela 4
+    ("2011-09-09", 13.0): "régua de hoje",     # CEOPS/ABRH, 13,00 m = GPS (FURB)
+    ("2011-09-09", 12.6): "régua antiga",      # Defesa Civil, 12,60 m "na régua" (FURB)
+}
+
+DATA_DA_CONVERSAO = "03/10/2026"
+NOME_DA_REFERENCIA = {"IBGE": "referência do IBGE", "régua antiga": "régua antiga", "régua de hoje": "régua de hoje"}
 
 
 def lista_alertablu() -> dict[str, float]:
@@ -84,6 +108,8 @@ def classificar(e: dict, lista: dict[str, float]) -> dict:
     certeza ('alta' | 'inferida' | 'pendente') e o motivo, em português.
     """
     data, ref, v = e["data"], e.get("referencia", "<ausente>"), e["pico_m"]
+    if "referencia_publicada" in e:
+        return _r(DE_ROTULO.get(e["referencia_publicada"]), "convertido", f"já convertido em {DATA_DA_CONVERSAO}")
     na_lista = lista.get(data)
     bate = na_lista is not None and abs(na_lista - v) < 0.005
 
@@ -123,6 +149,12 @@ def proposta(eventos: list[dict], lista: dict[str, float], gps: dict[str, float]
     for e in sorted((x for x in eventos if x["cidade"] == "blumenau"), key=lambda x: x["data"]):
         c = classificar(e, lista)
         ref = c["referencia_publicada"]
+        if c["certeza"] == "convertido":
+            linhas.append({"data": e["data"], "publicado": e.get("pico_publicado_m", e["pico_m"]),
+                           "rotulo_atual": e["referencia"], "na_lista": lista.get(e["data"]),
+                           "na_planilha": gps.get(e["data"]), "novo": e["pico_m"], **c,
+                           "divergencias": [d["pico_m"] for d in e.get("divergencias", [])], "fonte": e["fonte"]})
+            continue
         novo = None if ref is None else round(e["pico_m"] + SOMA[ref], 2)
         na_planilha = gps.get(e["data"])
         confirma = na_planilha is not None and novo is not None and abs(na_planilha - novo) < 0.005
@@ -143,11 +175,24 @@ def _m(v: float | None) -> str:
 def relatorio(linhas: list[dict]) -> str:
     from collections import Counter
     n = Counter((l["referencia_publicada"] or "pendente", l["certeza"]) for l in linhas)
+    convertidos = sum(1 for l in linhas if l["certeza"] == "convertido")
+    if convertidos:
+        cabecalho = [
+            "# Conversão da série de Blumenau para a régua de hoje",
+            "",
+            f"> **Aplicada em {DATA_DA_CONVERSAO} a {convertidos} registros** (certeza alta), por decisão do Jefferson,",
+            "> com `scripts/converter_blumenau.py --aplicar`. Os demais ficam como publicados e fora da comparação",
+            "> com o nível de agora. A regra bloqueante continua para eles.",
+        ]
+    else:
+        cabecalho = [
+            "# Conversão da série de Blumenau para a régua de hoje — PROPOSTA",
+            "",
+            "> **Simulação. Nada foi gravado em `data/enchentes.json`.** Gerado por `scripts/converter_blumenau.py`.",
+            "> A regra bloqueante continua valendo até o Jefferson aprovar a conversão.",
+        ]
     out = [
-        "# Conversão da série de Blumenau para a régua de hoje — PROPOSTA",
-        "",
-        "> **Simulação. Nada foi gravado em `data/enchentes.json`.** Gerado por `scripts/converter_blumenau.py`.",
-        "> A regra bloqueante continua valendo até o Jefferson aprovar a conversão.",
+        *cabecalho,
         "",
         "Régua de hoje = GPS = IBGE + 0,20 m = régua antiga + 0,40 m (Prof. Cordero, FURB, 02/10/2026).",
         "",
@@ -203,9 +248,78 @@ def relatorio(linhas: list[dict]) -> str:
     return "\n".join(out) + "\n"
 
 
+def _texto_conversao(publicado: float, ref: str, ja_regua: bool = False) -> str:
+    soma = SOMA[ref]
+    fonte = ("Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; "
+             "IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.")
+    if ja_regua:
+        return (f"Rótulo conferido em {DATA_DA_CONVERSAO}: leitura posterior à troca de régua, logo já na régua de "
+                f"hoje; nada somado. {fonte}")
+    if soma == 0:
+        return (f"Rótulo definido em {DATA_DA_CONVERSAO}, por decisão do Jefferson: o valor já está na régua de hoje "
+                f"(a lista do AlertaBlu de 2014 em diante está na régua nova). {fonte}")
+    return (f"Convertido em {DATA_DA_CONVERSAO} para a régua de hoje, por decisão do Jefferson: publicado como "
+            f"{_m(publicado)} m na {NOME_DA_REFERENCIA[ref]}, + {_m(soma)} m. {fonte}")
+
+
+def converter_registro(e: dict, ref: str) -> dict:
+    """Devolve o registro na régua de hoje, guardando o valor como foi publicado."""
+    soma = SOMA[ref]
+    novo: dict = {}
+    confirmam: list[dict] = []
+    for k, v in e.items():
+        if k == "pico_m":
+            novo["pico_m"] = round(v + soma, 2)
+            if soma:
+                novo["pico_publicado_m"] = v
+        elif k == "referencia":
+            novo["referencia"] = "régua"
+            novo["referencia_publicada"] = ROTULO_PUBLICADO[ref]
+        elif k == "divergencias":
+            # Uma divergência que, convertido o adotado, ficou IGUAL a ele deixa de ser
+            # divergência: é outra fonte confirmando o mesmo número na régua de hoje.
+            novo_pico = round(e["pico_m"] + soma, 2)
+            restam = [d for d in v if abs(d["pico_m"] - novo_pico) >= 0.005]
+            confirmam.extend(d for d in v if abs(d["pico_m"] - novo_pico) < 0.005)
+            if restam:
+                novo["divergencias"] = [
+                    {**d, "referencia_publicada": REFERENCIA_DA_DIVERGENCIA.get((e["data"], d["pico_m"]))}
+                    for d in restam]
+        else:
+            novo[k] = v
+    texto = _texto_conversao(e["pico_m"], ref, ja_regua=e.get("referencia") == "régua")
+    for d in confirmam:
+        texto += (f" Confere com {_m(d['pico_m'])} m de outra fonte (antes guardado como divergência): "
+                  f"{d['fonte']}.")
+    novo["conversao"] = texto
+    return novo
+
+
+def aplicar(dados: dict, lista: dict[str, float], gps: dict[str, float]) -> int:
+    """Converte em `dados` (no lugar) só os registros de certeza `alta`. Devolve quantos."""
+    alvo = {(l["data"], l["publicado"]): l["referencia_publicada"]
+            for l in proposta(dados["eventos"], lista, gps) if l["certeza"] == "alta"}
+    n = 0
+    for i, e in enumerate(dados["eventos"]):
+        if e.get("cidade") != "blumenau" or "referencia_publicada" in e:
+            continue
+        ref = alvo.get((e["data"], e["pico_m"]))
+        if ref is not None:
+            dados["eventos"][i] = converter_registro(e, ref)
+            n += 1
+    return n
+
+
 def main() -> int:
-    eventos = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))["eventos"]
-    linhas = proposta(eventos, lista_alertablu(), planilha_gps())
+    caminho = DADOS / "enchentes.json"
+    dados = json.loads(caminho.read_text(encoding="utf-8"))
+    lista, gps = lista_alertablu(), planilha_gps()
+    if "--aplicar" in sys.argv[1:]:
+        n = aplicar(dados, lista, gps)
+        caminho.write_text(json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(f"convertidos agora: {n}")
+    eventos = dados["eventos"]
+    linhas = proposta(eventos, lista, gps)
     RELATORIO.write_text(relatorio(linhas), encoding="utf-8")
     from collections import Counter
     print(Counter((l["referencia_publicada"] or "pendente", l["certeza"]) for l in linhas))

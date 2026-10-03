@@ -15,7 +15,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from converter_blumenau import ROTULO_IBGE, SOMA, classificar, proposta
+import validar_dados as vd
+from converter_blumenau import ROTULO_IBGE, SOMA, aplicar, classificar, converter_registro, proposta
 
 
 def ev(data, pico, **extra):
@@ -85,6 +86,59 @@ class TesteProposta(unittest.TestCase):
         antes = (cb.DADOS / "enchentes.json").read_bytes()
         cb.proposta(__import__("json").loads(antes)["eventos"], cb.lista_alertablu(), cb.planilha_gps())
         self.assertEqual((cb.DADOS / "enchentes.json").read_bytes(), antes)
+
+
+def erros_de_conversao(eventos):
+    vd.erros.clear()
+    vd.valida_conversoes(eventos)
+    return list(vd.erros)
+
+
+class TesteAplicar(unittest.TestCase):
+    def test_registro_convertido_guarda_o_publicado(self):
+        e = converter_registro(ev("1983-07-09", 15.34, referencia=ROTULO_IBGE), "IBGE")
+        self.assertEqual((e["pico_m"], e["pico_publicado_m"], e["referencia"]), (15.54, 15.34, "régua"))
+        self.assertEqual(e["referencia_publicada"], ROTULO_IBGE)
+        self.assertIn("+ 0,20 m", e["conversao"])
+
+    def test_regua_antiga_soma_040(self):
+        e = converter_registro(ev("2008-11-24", 11.52, referencia=None), "régua antiga")
+        self.assertEqual(e["pico_m"], 11.92)
+
+    def test_divergencia_igual_ao_convertido_vira_confirmacao(self):
+        # set/2011: 13,00 m do CEOPS já era GPS; depois da conversão não diverge mais.
+        e = converter_registro(ev("2011-09-09", 12.80, referencia=None, divergencias=[
+            {"pico_m": 13.0, "fonte": "CEOPS"}, {"pico_m": 12.6, "fonte": "Defesa Civil"}]), "IBGE")
+        self.assertEqual([d["pico_m"] for d in e["divergencias"]], [12.6])
+        self.assertEqual(e["divergencias"][0]["referencia_publicada"], "régua antiga")
+        self.assertIn("Confere com 13,00 m", e["conversao"])
+
+    def test_validador_aceita_o_convertido_e_pega_a_mao(self):
+        e = converter_registro(ev("1983-07-09", 15.34, referencia=ROTULO_IBGE), "IBGE")
+        self.assertEqual(erros_de_conversao([e]), [])
+        self.assertTrue(erros_de_conversao([{**e, "pico_m": 15.74}]), "soma errada passou")
+        self.assertTrue(erros_de_conversao([{**e, "referencia": ROTULO_IBGE}]), "rótulo velho passou")
+        self.assertTrue(erros_de_conversao([{**e, "conversao": ""}]), "sem justificativa passou")
+
+    def test_aplicar_duas_vezes_nao_soma_duas_vezes(self):
+        dados = {"eventos": [ev("1983-07-09", 15.34, referencia=ROTULO_IBGE)]}
+        self.assertEqual(aplicar(dados, {}, {"1983-07-09": 15.54}), 1)
+        self.assertEqual(aplicar(dados, {}, {"1983-07-09": 15.54}), 0)
+        self.assertEqual(dados["eventos"][0]["pico_m"], 15.54)
+
+    def test_disputado_nao_e_aplicado(self):
+        dados = {"eventos": [ev("1980-12-22", 13.27, referencia=ROTULO_IBGE)]}
+        self.assertEqual(aplicar(dados, {}, {"1980-12-22": 13.22}), 0)
+        self.assertEqual(dados["eventos"][0]["pico_m"], 13.27)
+
+    def test_dado_real_tem_57_convertidos_e_passa_no_validador(self):
+        import json
+        from converter_blumenau import DADOS
+        eventos = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))["eventos"]
+        convertidos = [e for e in eventos if "referencia_publicada" in e]
+        self.assertEqual(len(convertidos), 57)
+        self.assertTrue(all(e["cidade"] == "blumenau" for e in convertidos))
+        self.assertEqual(erros_de_conversao(eventos), [])
 
 
 if __name__ == "__main__":

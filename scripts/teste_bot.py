@@ -2157,12 +2157,13 @@ class TestCheiasAntigas(unittest.TestCase):
         self.assertNotIn("Cheias já registradas", t)
 
     def test_blumenau_mostra_as_de_regua_e_conta_as_que_calou(self):
-        """124 registros, 4 em régua e 120 em IBGE ou sem referência. Mostrar
-        quatro e calar as outras daria a tela de uma cidade com quatro cheias na
-        história — e ela tem a série mais longa da bacia."""
+        """124 registros. Até 02/10/2026, 4 em régua e 120 calados. Desde a
+        conversão de 03/10/2026 (FURB; decisão do Jefferson), 57 na régua de hoje
+        e 67 calados: 60 em disputa (1929–1983), 4 inferidos e 3 pendentes. A
+        maior de todas volta a ser 1880, já na régua de hoje: 17,10 + 0,20."""
         t = self.pino("blumenau", "Blumenau", "itajai-acu", 7.60, -26.9194, -49.0661)
-        self.assertIn("05/05/2022", t)
-        self.assertIn("Outras 120 cheias", t)
+        self.assertIn("17,30 m</b> — 23/09/1880", t)
+        self.assertIn("Outras 67 cheias", t)
         self.assertIn("outra referência de régua", t)
 
     def test_nenhum_pico_do_ibge_entra(self):
@@ -2262,11 +2263,15 @@ class TestContagemDasReferencias(unittest.TestCase):
         # e Botuverá 22/07/2026 — 376 → 384, 236 → 244.
         # 02/10/2026, decisão do Jefferson: Ascurra 01/09/2026 (10,13 m, DCSC-00003,
         # a régua das cotas da cidade) — 384 → 385, régua 68 → 69.
+        # 03/10/2026, conversão de Blumenau para a régua de hoje (FURB; decisão do
+        # Jefferson, só os 57 de certeza alta): 28 saíram do IBGE e 25 do null para
+        # a régua (os outros 4 já eram régua) — régua 69 → 122, IBGE 72 → 44,
+        # null 244 → 219. O total não muda.
         self.assertEqual(len(self.ev), 385)
-        self.assertEqual(refs["régua"], 69)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"], 72)
-        self.assertEqual(refs["None"], 244)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 316)
+        self.assertEqual(refs["régua"], 122)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"], 44)
+        self.assertEqual(refs["None"], 219)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 263)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
@@ -2274,15 +2279,16 @@ class TestContagemDasReferencias(unittest.TestCase):
         117 por duas causas ao mesmo tempo). Com os 52 da tabela municipal, Rio
         do Sul passou a ser a maior fatia (65) — e por UMA causa só: a tabela
         não nomeia a régua. Blumenau não mudou até 02/10/2026, quando entraram as
-        sete enchentes da lista oficial que faltavam (41 → 48; 117 → 124)."""
+        sete enchentes da lista oficial que faltavam (41 → 48; 117 → 124). Em
+        03/10/2026 a conversão levou 25 deles para a régua de hoje (48 → 23)."""
         from collections import Counter
         sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
-        self.assertEqual(sem["blumenau"], 48)
+        self.assertEqual(sem["blumenau"], 23)
         self.assertEqual(sem["brusque"], 28)  # 23 + 5 da régua da ANA (22/09/2026)
         self.assertEqual(sem["rio-do-sul"], 65)
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
         self.assertEqual(len(blu), 124)
-        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 120)
+        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 67)
 
 
 class TestLeituraVelhaNaoFalaNoPresente(unittest.TestCase):

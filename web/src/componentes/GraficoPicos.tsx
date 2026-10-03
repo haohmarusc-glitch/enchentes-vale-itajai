@@ -15,6 +15,8 @@ import {
   ehIBGE,
   legendaDaEscala,
   misturaReferencias as misturaDeReferencias,
+  nomeDaReferenciaPublicada,
+  textoDaConversao,
   textoDaReferencia,
 } from '../logica/referencias'
 import { avisoDeEncosta } from '../logica/encosta'
@@ -39,8 +41,10 @@ interface Ponto {
   confianca: Confianca
   fonte: string
   nota?: string
-  divergencias?: { pico_m: number; fonte: string }[]
+  divergencias?: { pico_m: number; fonte: string; referencia_publicada?: string | null }[]
   referencia?: string | null
+  /** Só em registro convertido para a régua de hoje: como foi publicado. */
+  conversao?: string
 }
 
 export default function GraficoPicos({
@@ -63,6 +67,7 @@ export default function GraficoPicos({
       ...(e.nota ? { nota: e.nota } : {}),
       ...(e.divergencias ? { divergencias: e.divergencias } : {}),
       ...('referencia' in e ? { referencia: e.referencia } : {}),
+      ...(e.referencia_publicada ? { conversao: textoDaConversao(e.pico_publicado_m, e.referencia_publicada) } : {}),
     }))
 
   // Referências diferentes na mesma cidade não são detalhe de nota de rodapé:
@@ -75,7 +80,7 @@ export default function GraficoPicos({
   const legendaEscala = legendaDaEscala(nomeCidade, cidade?.regua, dados.map((d) => d.referencia))
 
   // O gráfico ordena por metro de rio, e há um contraexemplo enorme no Vale:
-  // novembro de 2008 é a 32ª maior cota de Blumenau e foi o evento mais letal
+  // novembro de 2008 tem dezenas de cotas acima dele em Blumenau e foi o evento mais letal
   // da região, porque o que matou foi encosta, não régua. Sem este aviso, a
   // altura da barra diz "evento médio" — a conclusão exata que este projeto
   // existe para não deixar acontecer.
@@ -181,16 +186,19 @@ export default function GraficoPicos({
           <strong>Atenção: estes pontos não estão todos na mesma referência.</strong>{' '}
           {temIBGE ? (
             <>
-              A série longa de {nomeCidade} vem da tabela de Cordero &amp; Medeiros e está no zero do
-              IBGE, que fica <strong>20 cm abaixo da régua de hoje</strong>. A régua foi trocada depois
-              da cheia de 2011, e a nova lê 40 cm acima da antiga (FURB). Por isso a cheia de 1983,
-              15,34 m nessa tabela, daria cerca de 15,54 m na régua atual.{' '}
+              Desde 03/10/2026 os picos de {nomeCidade} que puderam ser conferidos estão{' '}
+              <strong>na régua de hoje</strong>: a FURB confirmou que a régua instalada depois da cheia de
+              2011 lê 40 cm acima da antiga, e o zero do IBGE fica no meio. A cheia de 1983, publicada como
+              15,34 m na tabela de Cordero &amp; Medeiros, aparece como 15,54 m. Os que continuam no IBGE
+              (20 cm abaixo da régua de hoje) ou sem referência têm conflito entre fontes e não foram
+              convertidos.{' '}
             </>
-          ) : null}
-          Alguns registros não declaram a referência. As cotas de atenção, alerta e inundação e o
-          nível de agora estão <em>na régua de hoje</em>. Nenhum valor foi convertido: a data exata
-          da troca de régua ainda está sendo confirmada com a FURB. Cada linha da tabela abaixo diz
-          a sua referência.
+          ) : (
+            <>Alguns registros não declaram a referência. </>
+          )}
+          As cotas de atenção, alerta e inundação e o nível de agora estão <em>na régua de hoje</em>, e só
+          os pontos na régua entram na comparação com o nível de agora. Cada linha da tabela abaixo diz a
+          sua referência e, quando foi convertida, como foi publicada.
         </p>
       ) : null}
 
@@ -216,12 +224,19 @@ export default function GraficoPicos({
                       <span className={estilos.divergencia}>
                         {' '}
                         outras fontes:{' '}
-                        {d.divergencias.map((x) => metros(x.pico_m)).join(', ')}
+                        {d.divergencias
+                          .map((x) =>
+                            'referencia_publicada' in x
+                              ? `${metros(x.pico_m)} (${nomeDaReferenciaPublicada(x.referencia_publicada)}, como publicado)`
+                              : metros(x.pico_m),
+                          )
+                          .join(', ')}
                       </span>
                     ) : null}
                   </td>
                   <td className={estilos.referenciaCelula}>
                     {textoDaReferencia(d.referencia)}
+                    {d.conversao ? <span className={estilos.nota}> {d.conversao}</span> : null}
                   </td>
                   <td>
                     {d.fonte}

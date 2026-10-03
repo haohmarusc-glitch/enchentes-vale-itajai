@@ -91,32 +91,40 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   régua por esse campo — viva se qualquer das duas está fresca —, sem mascarar as réguas
   distintas de uma cidade com várias (Itajaí tem onze).
 
-### Referência altimétrica de Blumenau — REGRA BLOQUEANTE
-- Duas referências coexistem: **régua** da estação ANA 83800002 (Defesa Civil/AlertaBlu,
-  leituras operacionais) e **zero do IBGE** = régua + 0,20 m (série CEOPS/FURB,
-  Cordero & Medeiros, Tabela 4, 1852–2001).
-- Evidência: set/2011 = 13,00 m (CEOPS) vs 12,80 m (Defesa Civil), diferença exata de 0,20 m.
-  Os valores históricos populares (15,34 m em 1983, 15,46 m em 1984) coincidem com a tabela IBGE.
+### Referência altimétrica de Blumenau — REGRA BLOQUEANTE (conversão parcial em 03/10/2026)
+- Três referências para a régua da Ponte Adolfo Konder, pela FURB (Prof. Ademar Cordero, e-mails e
+  planilha de 02/10/2026): **régua antiga** (até a troca, depois da cheia de set/2011); **zero do IBGE**
+  = régua antiga + 0,20 m (Tabela 4 de Cordero & Medeiros, 1852–2001); **GPS = régua de hoje** =
+  IBGE + 0,20 m = régua antiga + 0,40 m. A régua de hoje é a da Defesa Civil/AlertaBlu e da leitura
+  ao vivo. Set/2011 nas três: 12,60 · 12,80 · 13,00 m. No rótulo `"IBGE (régua + 0,20 m)"`, "régua"
+  é a ANTIGA.
+- **Conversão parcial aplicada em 03/10/2026, por decisão do Jefferson** (`scripts/converter_blumenau.py
+  --aplicar`, relatório em `docs/CONVERSAO-BLUMENAU.md`): os **57** registros de certeza alta estão na
+  régua de hoje, com `pico_publicado_m`, `referencia_publicada` e `conversao` guardando como foram
+  publicados. Ficaram como estavam **67**: 60 de 1929–1983 em que a Tabela 4 e a planilha do Cordero
+  discordam em ~0,20–0,30 m, 4 inferidos sem par na lista do AlertaBlu e 3 pendentes (janela da troca
+  em 2013; 12/07/2026 sem régua). **Sem mais perguntas ao Prof. Cordero** (decisão de 03/10/2026).
 - Enquanto `data/enchentes.json._meta.REGRA_REFERENCIA_BLUMENAU` existir:
-  1. `referencia` é rótulo do registro, com conjunto fechado: `"régua"`,
+  1. `referencia` é rótulo do registro, com conjunto fechado: `"régua"` (a de hoje),
      `"IBGE (régua + 0,20 m)"` ou `null`. Hipóteses vão em `referencia_hipotese` ou `nota`,
      nunca no campo `referencia`. O validador rejeita registro sem o campo.
   2. Conflito de valor para o mesmo (cidade, evento) usa o mecanismo `divergencias`:
      um valor adotado, os demais guardados com fonte e referência. Não criar dois registros
-     para o mesmo evento; `agruparEmEventos` não deve escolher por magnitude.
-  3. Nenhuma conversão entre referências é gravada no JSON. A UI **exibe a referência de cada
-     ponto e avisa quando o gráfico mistura referências** — feito. Um seletor régua/IBGE que
-     aplique ±0,20 m só para visualização fica como pendência OPCIONAL, a fazer apenas se a
-     verificação no HidroWeb demorar: enquanto a ambiguidade não for resolvida ele ajuda, e
-     depois dela nasce e morre em dias.
-  4. Busca "minha rua" e simulador usam somente nível em `régua` (cotas de rua e tempo real
-     são régua). Há teste que trava isso.
+     para o mesmo evento; `agruparEmEventos` não deve escolher por magnitude. Em registro
+     convertido, as divergências ficam **como publicadas**, com `referencia_publicada`.
+  3. Conversão só pelo `converter_blumenau.py`, que guarda o valor publicado e não converte o que
+     estiver em disputa, inferido ou pendente. **Nenhuma conversão à mão.** O validador refaz a conta
+     de todo registro convertido (`valida_conversoes`). A UI exibe a referência de cada ponto, o valor
+     como foi publicado e avisa quando o gráfico mistura referências.
+  4. Busca "minha rua", simulador, painel "quanto falta" e bot usam somente nível em `régua`. Numa
+     cidade com mistura, entram só os picos de régua e a tela diz quantos ficaram de fora — o IBGE e o
+     `null` nunca entram na conta. Há teste que trava isso.
   5. Previsão a jusante pareia igual com igual: montante e jusante na mesma referência.
      Se só houver série IBGE no montante, documentar o deslocamento e não parear com
      jusante em régua.
-- Remoção da regra: teste no HidroWeb (estação 83800002, cotas de 09/07/1983 e 07/08/1984)
-  ou resposta da FURB. Conversão para `régua` em um único commit, decisão registrada em
-  `docs/fontes-academicas.md`.
+- Remoção da regra: quando os 67 restantes forem resolvidos (desempate da Tabela 4 × planilha em
+  1929–1983, data da troca para 2013, régua de 12/07/2026). Pelo lado da ANA, só uma fonte com o pico
+  instantâneo da régua da 83800002 — a média diária não decide.
 
 ## Telas
 

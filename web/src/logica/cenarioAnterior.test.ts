@@ -70,11 +70,25 @@ test('pico com referencia null não entra: ninguém conferiu a escala', () => {
   assert.equal(r.motivo, 'referencia-de-outra-escala')
 })
 
-test('escala misturada não entra, mesmo que uma das duas sirva', () => {
+test('escala misturada: só o que está na régua entra, e o resto é contado como excluído', () => {
+  // Até 02/10/2026 a mistura recusava a cidade inteira. Desde a conversão de
+  // Blumenau, entra o pico de régua e o do IBGE fica FORA — nunca na conta.
   const r = cenarioDaCidade(2.43, [
-    ev('1983-07', 15.34, { referencia: 'régua' }),
-    ev('2011-09', 13.0, { referencia: 'IBGE (régua + 0,20 m)' }),
+    ev('1983-07', 15.54, { referencia: 'régua' }),
+    ev('2011-09', 12.8, { referencia: 'IBGE (régua + 0,20 m)' }),
+    ev('1931-09', 11.53, { referencia: null }),
   ])
+  assert.ok(r.cenario)
+  assert.deepEqual(r.cenario.marcas.map((m) => m.pico), [15.54])
+  assert.equal(r.cenario.excluidas, 2)
+})
+
+test('mistura sem nenhum pico de régua continua recusada', () => {
+  const r = cenarioDaCidade(2.43, [
+    ev('2011-09', 12.8, { referencia: 'IBGE (régua + 0,20 m)' }),
+    ev('1931-09', 11.53, { referencia: null }),
+  ])
+  assert.equal(r.cenario, null)
   assert.equal(r.motivo, 'referencia-misturada')
 })
 
@@ -112,14 +126,31 @@ import enchentes from '../../../data/enchentes.json'
 const reais = (enchentes as { eventos: Evento[] }).eventos
 const daCidade = (id: string) => reais.filter((e) => e.cidade === id)
 
-test('REGRA BLOQUEANTE: Blumenau nunca produz distância, em nenhum nível', () => {
-  // 113 picos e mesmo assim recusa: 72 em IBGE e 41 sem conferência, contra
-  // uma leitura de régua. Se alguém "arrumar" as referências sem resolver os
-  // 20 cm no HidroWeb, este teste cai — e tem de cair.
+test('Blumenau compara SÓ com os 57 picos na régua de hoje (conversão de 03/10/2026)', () => {
+  // A garantia que importa continua sendo da REGRA BLOQUEANTE: nenhum pico no
+  // IBGE ou sem referência entra na distância. O que mudou é que, convertidos
+  // pela FURB, 57 picos agora estão na mesma régua da leitura ao vivo.
   for (const nivel of [0.5, 2.43, 8, 12.8, 15.5]) {
-    const r = cenarioDaCidade(nivel, daCidade('blumenau'))
-    assert.equal(r.cenario, null, `Blumenau produziu cenário em ${nivel} m`)
-    assert.equal(r.motivo, 'referencia-misturada')
+    const { cenario } = cenarioDaCidade(nivel, daCidade('blumenau'))
+    assert.ok(cenario, `Blumenau não produziu cenário em ${nivel} m`)
+    assert.equal(cenario.marcas.length, 57)
+    assert.equal(cenario.excluidas, 67)
+    assert.equal(cenario.referenciaConferida, true)
+  }
+  const { cenario } = cenarioDaCidade(8, daCidade('blumenau'))
+  assert.equal(cenario!.marcas[0]!.pico, 17.3) // 1880: 17,10 m publicado no IBGE + 0,20
+})
+
+test('nenhum pico no IBGE ou sem referência entra na distância, em cidade nenhuma', () => {
+  const porData = new Map(reais.map((e) => [`${e.cidade}|${e.data}|${e.pico_m}`, e]))
+  const cidades = [...new Set(reais.map((e) => e.cidade))]
+  for (const c of cidades) {
+    const { cenario } = cenarioDaCidade(5, daCidade(c))
+    for (const m of cenario?.marcas ?? []) {
+      const e = porData.get(`${c}|${m.data}|${m.pico}`)
+      assert.ok(e, `${c} ${m.data}`)
+      assert.ok(!('referencia' in e) || e.referencia === 'régua', `${c} ${m.data} entrou com ${e.referencia}`)
+    }
   }
 })
 
@@ -146,15 +177,6 @@ test('a marca mais alta de Brusque é a de 1984, e ela é única', () => {
     cenario!.marcas.slice(0, 3).map((m) => m.data),
     ['1984-08', '2011-09', '2023-11-17'],
   )
-})
-
-test('nenhuma cidade produz cenário com pico em IBGE, hoje ou depois', () => {
-  const cidades = [...new Set(reais.map((e) => e.cidade))]
-  for (const c of cidades) {
-    const temIBGE = daCidade(c).some((e) => typeof e.referencia === 'string' && e.referencia.includes('IBGE'))
-    if (!temIBGE) continue
-    assert.equal(cenarioDaCidade(5, daCidade(c)).cenario, null, `${c} comparou com pico em IBGE`)
-  }
 })
 
 test('Itajaí: os picos da tese da UEM não viram distância para a régua de agora (25/09/2026)', async () => {

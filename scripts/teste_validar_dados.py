@@ -157,12 +157,14 @@ class MarcaHistorica(unittest.TestCase):
                          "nenhuma cidade deveria declarar marca histórica que a série supera")
 
     def test_o_caso_de_blumenau_seria_pego(self):
-        """O defeito real, recolocado: 8,50 m com 1983 e 2011 acima."""
+        """O defeito real, recolocado: 8,50 m com 1983 e 2011 acima. O maior pico é
+        1880 — 17,10 m publicado no IBGE, 17,30 m na régua de hoje desde a
+        conversão de 03/10/2026."""
         estacoes, enchentes = self.base()
         _cidade(estacoes, "itajai-acu", "blumenau")["cotas_m"]["inundacao_historica"] = 8.5
         avisos = _marca_historica(estacoes, enchentes)
         self.assertTrue(any("blumenau" in a for a in avisos), avisos)
-        self.assertTrue(any("17.1 m" in a for a in avisos), "o aviso tem de dizer o maior pico")
+        self.assertTrue(any("17.3 m" in a for a in avisos), "o aviso tem de dizer o maior pico")
 
     def test_marca_acima_de_toda_a_serie_nao_avisa(self):
         estacoes, enchentes = self.base()
