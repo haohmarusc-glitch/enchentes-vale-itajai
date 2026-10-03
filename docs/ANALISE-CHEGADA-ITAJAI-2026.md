@@ -206,7 +206,72 @@ Hoje não dá para medir, porque nada está na mesma referência:
 - **Limite:** a série atual tem poucas horas de rio alto, e essa comparação ainda é fraca. Melhora a cada
   cheia que o coletor guarda.
 
-## 6. O que isto muda no site, e o que não muda
+## 6. Altitude do zero das réguas — estimada pela maré e cruzada com o terreno (03/10/2026)
+
+Pedido do Jefferson: *"busca a altitude do zero das réguas e cruza com o terreno"*.
+
+### O que se mede, e o que não se mede
+
+- **Não é a altitude oficial do zero.** O número oficial só vem de levantamento a partir de uma RN do IBGE,
+  publicado por quem instalou a régua. A busca por ele está mais abaixo.
+- **O que se mede é a leitura de cada régua quando a água ali está no nível médio do mar.**
+  - Vale só para as réguas que sentem a maré (correlação ≥ 0,8).
+  - Conta: com o rio baixo (Blumenau < 3,5 m), régua = c0 + c1 · maré + c2 · Blumenau.
+  - Avaliada com a maré em 0,60 m sobre o NR, que é o "nível médio" da tábua da Marinha, e Blumenau em 2,5 m.
+- **A diferença "cota − essa leitura" é um LIMITE INFERIOR da altura da cota acima do nível médio do mar.**
+  - Motivo: com o rio baixo a água ainda fica um pouco acima do mar, porque o rio empilha água para escoar.
+  - Esse empilhamento é quase nada perto da foz. Na DC-11, que fica rio acima, entre Ilhota e o centro, pode chegar a dezenas de cm.
+- **Terreno:** os 5.237 pontos cotados do ArcGIS de Itajaí (`data/brutos/itajai-pontos-cotados-altimetricos.geojson.json`),
+  num raio de 300 m de cada régua.
+  - O datum vertical deles não é declarado. Se for o do IBGE, fica perto do nível médio do mar, com
+    incerteza de ±0,3 m.
+  - Pontos de ~0,6 m junto ao rio parecem ser a lâmina d'água no dia do levantamento, não a margem.
+- **Script:** `scripts/estimar_zero_reguas_itajai.py <pasta>`. **Teste:** `teste_estimar_zero_reguas_itajai.py`.
+
+### Tabela 3 — régua, nível médio do mar e terreno
+
+| régua | leitura com a água no nível médio do mar | emergência (Tabela 11, PLANCON v17) | emergência acima do mar (no mínimo) | terreno ≤ 300 m: mín · p25 · mediana |
+|---|---|---|---|---|
+| DC-01 (foz, CEPSUL) | 1,03 m | 1,56 m | **+0,53 m** | 0,60 · 1,79 · 1,92 |
+| DC-03 (Mirim canal, SEMASA) | 0,37 m | 2,50 m | +2,13 m | 1,20 · 2,77 · 4,20 |
+| DC-04 (Mirim, Vitalmar) | 1,15 m | 2,25 m | +1,10 m | 0,60 · 2,58 · 5,03 |
+| DC-06 (Mirim antigo, Itamirim) | 0,58 m | 2,55 m | **+1,97 m** | 0,56 · 0,62 · 1,81 |
+| DC-09 (Rib. da Murta, ponte) | 0,90 m | 1,52 m | **+0,62 m** | 0,92 · 1,14 · 2,07 |
+| DC-11 (Santa Regina) | 2,47 m | 5,00 m | +2,53 m (pode ser mais) | 2,69 · 3,84 · 3,88 |
+| DC-02, DC-05, DC-07, DC-08, DC-10 | não estimável: a régua não sente a maré | — | — | — |
+
+### O que a tabela 3 diz
+
+- **DC-01:** a cota de emergência fica só ~0,5 m acima do nível médio do mar.
+  - A maior preamar da tábua de 2026 é 1,23 m no NR, ou 0,63 m acima do nível médio. Com o fator 0,90, ela
+    sobe a régua ~0,57 m: chega ao limite da emergência só com a maré astronômica.
+  - Com um pouco de maré meteorológica, passa. Por isso a DC-01 cruza as cotas sem enchente: cruzou 26 vezes em
+    5 dias (`MEDICAO-MARE-2026-09-05.md`).
+  - O terreno perto dela está em ~1,8–1,9 m. A emergência fica ~1,3 m abaixo do chão ao lado.
+  - A cota não marca "água na rua" ali. A trava do aviso automático nessa régua continua certa.
+- **DC-09 (Ribeirão da Murta):** o caso se parece com o da DC-01. A emergência fica ~0,6 m acima do mar e o
+  terreno em volta, em 1,1–2,1 m.
+- **DC-06 (Itamirim, curso antigo):** a emergência (~2,0 m acima do mar) **passa da mediana do terreno**
+  (1,8 m). Na emergência dessa régua, a água já está no nível do chão em volta. É o trecho mais baixo dos
+  medidos. Isso combina com a sua observação: o curso antigo, com pouca saída, é onde o rio represa sobre
+  terreno baixo.
+- **DC-03, DC-04 e DC-11:** a emergência fica de 0,6 a 1,5 m abaixo do terreno típico em volta.
+  - Lembrete: o terreno a 300 m não é a rua mais baixa do bairro.
+- **O mesmo número de régua quer dizer coisas diferentes em cada ponto.**
+  - Exemplo: 1,5 m na DC-01 é ~0,5 m acima do mar; 1,5 m na DC-03 é ~1,1 m acima do mar.
+  - Por isso o site nunca soma, compara nem faz média de réguas de Itajaí.
+
+### O que fecharia a conta
+
+1. **A altitude oficial do zero de cada régua, ou da RN dela.** Sem ofício ao município (regra do projeto).
+   Serve documento público já existente: plano, edital ou relatório de instalação.
+2. **O datum dos pontos cotados do ArcGIS.**
+3. **A ligação entre o NR da tábua e o IBGE no porto de Itajaí** (ficha da estação maregráfica da DHN).
+4. **Maré observada em Itajaí**, para tirar a maré meteorológica da conta. O CIRAM não publica a observada de
+   Itajaí; a de Balneário Camboriú existe.
+5. **O MDT de 1 m da SDS**, para achar a rua mais baixa junto a cada régua, e não só os pontos cotados.
+
+## 7. O que isto muda no site, e o que não muda
 
 - **Não muda:** a faixa de chegada (14–17 h, JICA), o `transito.json` e o `historico-chegada-itajai.json` (só
   ganhou a nota da fonte).

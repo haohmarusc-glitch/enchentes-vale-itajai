@@ -500,6 +500,11 @@ o projeto.
       subindo junto, com a mesma chuva. A faixa de 14–17 h não muda.
   - A publicação "Blumenau" da página de Itajaí carimbava **3 h atrasada**. Saiu do ar em 19/09. Se voltar, o
     coletor precisa corrigir o fuso.
+  - **Zero das réguas × terreno (estimativa, não oficial):** a leitura de cada régua com a água no nível médio
+    do mar sai da regressão na maré (`scripts/estimar_zero_reguas_itajai.py`).
+    - A emergência da DC-01 fica só ~0,5 m acima do mar, e a da DC-09 ~0,6 m; as duas abaixo do terreno em volta.
+    - A da DC-06 (Itamirim) fica ~2,0 m acima do mar, já no nível do chão em volta.
+    - Falta a altitude oficial do zero, o datum dos pontos cotados e a ligação NR → IBGE (seção 6 do doc).
   - [ ] Decidir se o painel mostra "quanto do nível é maré" nas réguas com correlação ≥ 0,8.
 
 **Complemento da quinta auditoria, 19/09/2026** (`docs/AUDITORIA-2026-09-19-quatro-pendencias-complemento.md`): nova rodada pelo Chrome. Duas coisas mudam de fato.
