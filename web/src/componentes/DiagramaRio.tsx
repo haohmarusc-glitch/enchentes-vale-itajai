@@ -230,112 +230,121 @@ function ItemCidade({
 
   return (
     <li className={estilos.item}>
-      <button
-        type="button"
-        onClick={() => aoSelecionar(cidade.id)}
-        aria-pressed={selecionada}
-        className={`${estilos.cidade} ${selecionada ? estilos.selecionada : ''}`}
-      >
-        <span
-          className={`${estilos.marcador} ${estilos[faixa]}`}
-          aria-label={`faixa: ${ROTULO_FAIXA[faixa]}`}
-          title={ROTULO_FAIXA[faixa]}
-        />
-        <span className={estilos.corpo}>
-          <span className={estilos.nome}>
-            {cidade.nome}
-            <span className={`${estilos.selo} ${estilos[faixa]}`}>{ROTULO_FAIXA[faixa]}</span>
-            {papel ? <span className={estilos.papel}>{ROTULO_PAPEL[papel]}</span> : null}
-            {cidade.regua ? <span className={estilos.regua}> — régua: {cidade.regua}</span> : null}
-          </span>
-
-          {faixa === 'atencao' || faixa === 'alerta' || faixa === 'inundacao' || faixa === 'emergencia' ? (
-            <span className={`${estilos.acao} ${estilos[`acao_${faixa}`] ?? ''}`}>
-              {ACAO_FAIXA[faixa]}
+      {/* O cartão é um bloco com DOIS filhos: o botão que seleciona a cidade e,
+          fora dele, os links e os detalhes técnicos. Link dentro de botão é HTML
+          inválido e o leitor de tela não chega ao link (axe: nested-interactive). */}
+      <div className={`${estilos.cidade} ${selecionada ? estilos.selecionada : ''}`}>
+        <button
+          type="button"
+          onClick={() => aoSelecionar(cidade.id)}
+          aria-pressed={selecionada}
+          className={estilos.botaoCidade}
+        >
+          <span
+            className={`${estilos.marcador} ${estilos[faixa]}`}
+            aria-label={`faixa: ${ROTULO_FAIXA[faixa]}`}
+            title={ROTULO_FAIXA[faixa]}
+          />
+          <span className={estilos.corpo}>
+            <span className={estilos.nome}>
+              {cidade.nome}
+              <span className={`${estilos.selo} ${estilos[faixa]}`}>{ROTULO_FAIXA[faixa]}</span>
+              {papel ? <span className={estilos.papel}>{ROTULO_PAPEL[papel]}</span> : null}
+              {cidade.regua ? <span className={estilos.regua}> — régua: {cidade.regua}</span> : null}
             </span>
-          ) : null}
 
-          <span className={estilos.detalhes}>
-            {aoVivo ? (
-              <span className={estilos.aoVivo}>
-                <NivelAoVivo
-                  leitura={aoVivo}
-                  cidade={cidade}
-                  agora={agora}
-                  tendencia={serie ? tendencia(serieDaCidade(serie, rioId, cidade.id)) : null}
-                />
+            {faixa === 'atencao' || faixa === 'alerta' || faixa === 'inundacao' || faixa === 'emergencia' ? (
+              <span className={`${estilos.acao} ${estilos[`acao_${faixa}`] ?? ''}`}>
+                {ACAO_FAIXA[faixa]}
               </span>
-            ) : todasAsLeituras.length > 1 ? (
-              <VariasReguas leituras={todasAsLeituras} reguas={reguas} cidade={cidade} agora={agora} />
-            ) : bruto ? (
-              <span className={estilos.brutoEstadual}>
-                <strong>{metros(bruto.nivelBrutoM)}</strong> — {bruto.estacao} (rede estadual)
-                {bruto.medidoEm ? <> · {textoIdade(idadeMin(bruto.medidoEm, agora))}</> : null}
-                <span className={estilos.brutoNota}>
-                  nível bruto — régua própria da estação, não comparável com as cotas desta cidade
+            ) : null}
+
+            <span className={estilos.detalhes}>
+              {aoVivo ? (
+                <span className={estilos.aoVivo}>
+                  <NivelAoVivo
+                    leitura={aoVivo}
+                    cidade={cidade}
+                    agora={agora}
+                    faixa={faixa}
+                    tendencia={serie ? tendencia(serieDaCidade(serie, rioId, cidade.id)) : null}
+                  />
                 </span>
-              </span>
-            ) : null}
-
-            {chuva ? (
-              <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} />
-            ) : tempoReal.chuvaOk ? null : (
-              <span className={estilos.chuvaFalhou}>🌧 chuva: não foi possível coletar agora</span>
-            )}
-
-            {cotas.length > 0 ? (
-              <span className={estilos.cotas}>
-                {cotas.map(([chave, valor]) => (
-                  <span key={chave} className={estilos.cota}>
-                    {rotuloCota(chave, cidade.cotas_nomes_na_fonte)}: <strong>{metros(valor)}</strong>
+              ) : todasAsLeituras.length > 1 ? (
+                <VariasReguas leituras={todasAsLeituras} reguas={reguas} cidade={cidade} agora={agora} />
+              ) : bruto ? (
+                <span className={estilos.brutoEstadual}>
+                  <strong>{metros(bruto.nivelBrutoM)}</strong> — {bruto.estacao} (rede estadual)
+                  {bruto.medidoEm ? <> · {textoIdade(idadeMin(bruto.medidoEm, agora))}</> : null}
+                  <span className={estilos.brutoNota}>
+                    nível bruto — régua própria da estação, não comparável com as cotas desta cidade
                   </span>
-                ))}
-              </span>
-            ) : reguas.length === 0 ? (
-              <span className={estilos.semDado}>cotas de referência não levantadas</span>
-            ) : null}
+                </span>
+              ) : null}
 
-            {/* `agrupadoPorCurso` aqui não agrupa nada — `reguasComCota` já filtrou
-                por este rio, então há um curso só e o subtítulo não aparece. O que
-                ele traz é a SEQUÊNCIA: montante → foz pela `ordemDescida`, os dois
-                braços paralelos do Mirim em Itajaí separados (curso antigo × canal
-                retificado) e o par co-locado sem fila. Antes as réguas saíam numa
-                lista achatada, em que a de Limoeiro, 26 km rio acima, encostava na
-                do estuário. */}
-            {reguas.length > 0 ? (
-              <ReguasDaCidade reguas={reguas} cidade={cidade.nome} agrupadoPorCurso />
-            ) : null}
+              {chuva ? (
+                <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} />
+              ) : tempoReal.chuvaOk ? null : (
+                <span className={estilos.chuvaFalhou}>🌧 chuva: não foi possível coletar agora</span>
+              )}
 
-            {cidade.sub_bacia || cidade.km_da_foz !== undefined ? (
+              {cotas.length > 0 ? (
+                <span className={estilos.cotas}>
+                  {cotas.map(([chave, valor]) => (
+                    <span key={chave} className={estilos.cota}>
+                      {rotuloCota(chave, cidade.cotas_nomes_na_fonte)}: <strong>{metros(valor)}</strong>
+                    </span>
+                  ))}
+                </span>
+              ) : reguas.length === 0 ? (
+                <span className={estilos.semDado}>cotas de referência não levantadas</span>
+              ) : null}
+
+              {/* `agrupadoPorCurso` aqui não agrupa nada — `reguasComCota` já filtrou
+                  por este rio, então há um curso só e o subtítulo não aparece. O que
+                  ele traz é a SEQUÊNCIA: montante → foz pela `ordemDescida`, os dois
+                  braços paralelos do Mirim em Itajaí separados (curso antigo × canal
+                  retificado) e o par co-locado sem fila. Antes as réguas saíam numa
+                  lista achatada, em que a de Limoeiro, 26 km rio acima, encostava na
+                  do estuário. */}
+              {reguas.length > 0 ? (
+                <ReguasDaCidade reguas={reguas} cidade={cidade.nome} agrupadoPorCurso />
+              ) : null}
+
+              {cidade.sub_bacia || cidade.km_da_foz !== undefined ? (
+                <span className={estilos.linhaMeta}>
+                  {cidade.sub_bacia ? `Sub-bacia: ${cidade.sub_bacia}` : ''}
+                  {cidade.sub_bacia && cidade.km_da_foz !== undefined ? ' · ' : ''}
+                  {cidade.km_da_foz !== undefined ? `${cidade.km_da_foz} km da foz` : ''}
+                </span>
+              ) : null}
+
               <span className={estilos.linhaMeta}>
-                {cidade.sub_bacia ? `Sub-bacia: ${cidade.sub_bacia}` : ''}
-                {cidade.sub_bacia && cidade.km_da_foz !== undefined ? ' · ' : ''}
-                {cidade.km_da_foz !== undefined ? `${cidade.km_da_foz} km da foz` : ''}
+                {registros > 0 ? (
+                  <>
+                    {registros} pico{registros > 1 ? 's' : ''} no histórico
+                  </>
+                ) : (
+                  <span className={estilos.semDado}>sem picos registrados</span>
+                )}
+                {cidade.codigo_ana ? (
+                  <>
+                    {' · '}estação ANA {cidade.codigo_ana}
+                    {!cidade.verificado ? ' (não conferida)' : ''}
+                  </>
+                ) : (
+                  <>{' · '}sem estação ANA localizada</>
+                )}
               </span>
-            ) : null}
-
-            <span className={estilos.linhaMeta}>
-              {registros > 0 ? (
-                <>
-                  {registros} pico{registros > 1 ? 's' : ''} no histórico
-                </>
-              ) : (
-                <span className={estilos.semDado}>sem picos registrados</span>
-              )}
-              {cidade.codigo_ana ? (
-                <>
-                  {' · '}estação ANA {cidade.codigo_ana}
-                  {!cidade.verificado ? ' (não conferida)' : ''}
-                </>
-              ) : (
-                <>{' · '}sem estação ANA localizada</>
-              )}
             </span>
-
-            {cidade.observacao ? (
-              <span className={estilos.observacao}>{cidade.observacao}</span>
-            ) : null}
-
+          </span>
+        </button>
+        <div className={estilos.extras}>
+          {/* Recolhido: os rótulos das fontes e a observação são notas de
+              pesquisa (estação, script, conferência), úteis a quem confere o dado
+              e ruído para quem quer saber do rio agora. */}
+          <details className={estilos.tecnico}>
+            <summary>Fontes e detalhes técnicos</summary>
             {cidade.fontes_tempo_real.length > 0 ? (
               <span className={estilos.linhaMeta}>
                 Tempo real oficial:{' '}
@@ -344,12 +353,7 @@ function ItemCidade({
                   return (
                     <span key={bruto}>
                       {k > 0 ? ' · ' : ''}
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                      >
+                      <a href={url} target="_blank" rel="noreferrer">
                         {rotulo}
                       </a>
                     </span>
@@ -359,9 +363,12 @@ function ItemCidade({
             ) : (
               <span className={estilos.semDado}>sem fonte de tempo real cadastrada</span>
             )}
-          </span>
-        </span>
-      </button>
+            {cidade.observacao ? (
+              <span className={estilos.observacao}>{cidade.observacao}</span>
+            ) : null}
+          </details>
+        </div>
+      </div>
       {conector}
     </li>
   )

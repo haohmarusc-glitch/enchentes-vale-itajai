@@ -17,11 +17,11 @@ import {
   trechos,
 } from '../dados/carregar'
 import { leituraDaCidade, leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
-import { idadeMin, textoIdade } from '../logica/tempoReal'
+import { faixaDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { serieDaCidade, tendencia, useSerieRecente } from '../dados/serie'
 import { chuvaDaCidade } from '../logica/chuva'
-import { metros } from '../logica/formato'
+import { metros, rotuloCota } from '../logica/formato'
 import { barragensDaCidade, useBarragens } from '../dados/barragens'
 import EstadoDasBarragens from '../componentes/EstadoDasBarragens'
 import { reguasComCota } from '../logica/reguas'
@@ -182,7 +182,12 @@ export default function TelaCidade() {
         <h2>Agora</h2>
         {leitura ? (
           <p className={estilos.agora}>
-            <NivelAoVivo leitura={leitura} cidade={cidade} agora={agora} />
+            <NivelAoVivo
+              leitura={leitura}
+              cidade={cidade}
+              agora={agora}
+              faixa={faixaDaCidade(cidade, leitura, false, agora)}
+            />
           </p>
         ) : bruto ? (
           /* A IDADE SAI JUNTO DO NÚMERO (achado 4 da auditoria de 19/09/2026).
@@ -248,7 +253,7 @@ export default function TelaCidade() {
             <ul className={estilos.cotas}>
               {cotas.map(([chave, valor]) => (
                 <li key={chave}>
-                  <span className={estilos.cotaNome}>{chave.replace(/_/g, ' ')}</span>
+                  <span className={estilos.cotaNome}>{rotuloCota(chave, cidade.cotas_nomes_na_fonte)}</span>
                   <strong>{metros(valor)}</strong>
                 </li>
               ))}
@@ -417,10 +422,14 @@ export default function TelaCidade() {
       <PainelCenarioAnterior cidade={cidade} eventos={picos} leitura={leitura} agora={agora} />
 
 
+      {/* Recolhida: é nota de pesquisa (fontes, conferências, pendências), útil
+          a quem confere o dado e ruído para quem quer saber do rio agora. */}
       {cidade.observacao ? (
         <section className="cartao">
-          <h2>Observação sobre esta régua</h2>
-          <p>{cidade.observacao}</p>
+          <details className={estilos.tecnico}>
+            <summary>Detalhes técnicos desta régua</summary>
+            <p>{cidade.observacao}</p>
+          </details>
         </section>
       ) : null}
     </>

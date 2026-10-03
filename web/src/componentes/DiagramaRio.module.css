@@ -49,19 +49,45 @@
 }
 
 .cidade {
-  display: block;
-  width: 100%;
-  text-align: left;
   background: var(--papel);
   border: 1px solid var(--borda);
   border-radius: var(--raio);
-  padding: 0.85rem 0.85rem 0.85rem 2.4rem;
-  cursor: pointer;
-  position: relative;
 }
 
 .cidade:hover {
   border-color: var(--agua-clara);
+}
+
+/* O botão ocupa o cartão até a última linha de dados; os links e os detalhes
+   técnicos ficam no bloco irmão `.extras`, com o mesmo recuo. */
+.botaoCidade {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--raio);
+  color: inherit;
+  font: inherit;
+  padding: 0.85rem 0.85rem 0.35rem 2.4rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.extras {
+  padding: 0 0.85rem 0.85rem 2.4rem;
+  overflow-wrap: anywhere;
+}
+
+.tecnico summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--agua-clara);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
 .selecionada {
@@ -277,3 +303,17 @@
 }
 
 .marcador.monitoramento, .selo.monitoramento { background: var(--faixa-monitoramento); color: #17210a; }
+
+.tecnico summary::-webkit-details-marker {
+  display: none;
+}
+
+.tecnico summary::before {
+  content: '▸';
+  display: inline-block;
+  width: 1.1em;
+}
+
+.tecnico[open] summary::before {
+  content: '▾';
+}
