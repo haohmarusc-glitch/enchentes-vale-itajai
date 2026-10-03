@@ -83,6 +83,21 @@ class TesteOParEstaTrancadoNoEstacoesJson(unittest.TestCase):
     def teste_ascurra_esta_na_lista(self):
         self.assertIn("DCSC-00003", cec.REGUAS_COM_COTA_PROPRIA)
 
+    def teste_brusque_esta_na_lista_no_mirim(self):
+        cfg = cec.REGUAS_COM_COTA_PROPRIA["DCSC-00019"]
+        self.assertEqual((cfg["cidade"], cfg["rio"]), ("brusque", "itajai-mirim"))
+
+
+class TesteBrusque(unittest.TestCase):
+    def teste_brusque_entra_no_mirim_com_codigo_e_pode_pintar(self):
+        leituras, _, _, _ = converter([estacao(codigo="DCSC-00019", nome="SDC-SC Brusque", nivel=1.73,
+                                               carimbo="2026-10-03T19:01:00+00:00")], so_cadeia=False)
+        (l,) = cec.montar(leituras)
+        self.assertEqual((l["cidade"], l["rio"]), ("brusque", "itajai-mirim"))
+        self.assertEqual(l["codigo"], "DCSC-00019")
+        self.assertEqual(l["medido_em"], "2026-10-03T16:01:00", "hora de Brasília, sem fuso")
+        self.assertTrue(l["usar_para_cota"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -26,11 +26,36 @@ export function nomeDaFaixa(faixa: Faixa, cidade: Cidade): string {
   return rotuloDaFaixa(faixa, cidade, ROTULO_FAIXA[faixa])
 }
 
-export function ChipFaixa({ faixa, cidade, compacto = false }: { faixa: Faixa; cidade: Cidade; compacto?: boolean }) {
+/** Os nomes da escala da Defesa Civil de SC (`rio_alarmes`), como ela publica. */
+const NOME_ESTADUAL: Partial<Record<Faixa, string>> = {
+  normal: 'Normal',
+  atencao: 'Atenção',
+  alerta: 'Alerta',
+  emergencia: 'Emergência',
+}
+
+/**
+ * O chip da faixa. Com `estadual`, a faixa é a que a Defesa Civil de SC publica
+ * para a estação dela — o chip diz isso no próprio texto e tem borda tracejada,
+ * como o pino estadual do Monitor, para não passar por faixa da cidade.
+ */
+export function ChipFaixa({
+  faixa,
+  cidade,
+  compacto = false,
+  estadual = false,
+}: {
+  faixa: Faixa
+  cidade: Cidade
+  compacto?: boolean
+  estadual?: boolean
+}) {
   return (
-    <span className={`${estilos.chip} ${classeDoChip(faixa)} ${compacto ? estilos.chipCompacto : ''}`}>
+    <span
+      className={`${estilos.chip} ${classeDoChip(faixa)} ${compacto ? estilos.chipCompacto : ''} ${estadual ? estilos.chipEstadual : ''}`}
+    >
       <span className={estilos.ponto} aria-hidden="true" />
-      {nomeDaFaixa(faixa, cidade)}
+      {estadual ? `${NOME_ESTADUAL[faixa] ?? ROTULO_FAIXA[faixa]} · Defesa Civil SC` : nomeDaFaixa(faixa, cidade)}
     </span>
   )
 }
@@ -67,7 +92,7 @@ export default function CartaoAgora({
   children?: ReactNode
 }) {
   const { agora, tempoReal } = aoVivo
-  const { leitura, faixa, bruto, varias, todas, serie } = estado
+  const { leitura, faixa, bruto, varias, todas, serie, estadual, faixaEstadual } = estado
   const carregando = tempoReal.situacao === 'carregando' && !leitura && !bruto && todas.length === 0
 
   if (carregando) {
@@ -95,7 +120,18 @@ export default function CartaoAgora({
       <section className={`${estilos.cartao} surge`} aria-label={`Agora em ${cidade.nome}`}>
         {titulo}
         <div className={estilos.topo}>
-          <ChipFaixa faixa={faixa} cidade={cidade} />
+          {bruto && faixaEstadual ? (
+            <ChipFaixa faixa={faixaEstadual} cidade={cidade} estadual />
+          ) : (
+            <ChipFaixa faixa={faixa} cidade={cidade} />
+          )}
+          {bruto ? (
+            <span className={estilos.medido}>
+              {bruto.medidoEm ? `medido ${textoIdade(idadeMin(bruto.medidoEm, agora))}` : 'sem horário de medição'}
+              {' · '}
+              {bruto.codigo ?? bruto.estacao}
+            </span>
+          ) : null}
         </div>
         {varias ? (
           <>
@@ -114,18 +150,29 @@ export default function CartaoAgora({
             )}
           </>
         ) : bruto ? (
-          <p className={estilos.semLeitura}>
-            Sem régua municipal aqui. A rede estadual publica{' '}
-            <strong>{metros(bruto.nivelBrutoM)}</strong>
-            {bruto.medidoEm ? <> · {textoIdade(idadeMin(bruto.medidoEm, agora))}</> : (
-              <> · <strong>sem horário de medição</strong></>
-            )}
-            {' — '}
-            {bruto.estacao}
-            {bruto.codigo ? ` (${bruto.codigo})` : ''}. É uma régua com <strong>zero próprio</strong>:
-            serve para ver o rio subir ou baixar, <strong>não</strong> para comparar com as cotas
-            desta cidade.
-          </p>
+          <>
+            <p className={estilos.linhaNumero} aria-live="polite">
+              <span
+                className={`${estilos.numero} ${
+                  !bruto.medidoEm || frescorDaCidade(idadeMin(bruto.medidoEm, agora), cidade.id) === 'velha'
+                    ? estilos.numeroVelho
+                    : ''
+                }`}
+              >
+                {numero(bruto.nivelBrutoM)}
+              </span>
+              <span className={estilos.unidade}>m</span>
+            </p>
+            <p className={estilos.estadual}>
+              Nível da <strong>rede estadual</strong> ({bruto.estacao}), numa régua de{' '}
+              <strong>zero próprio</strong>: não se compara com as cotas desta cidade.{' '}
+              {faixaEstadual ? (
+                <>A cor é a faixa que a própria Defesa Civil de SC publica para a estação.</>
+              ) : (
+                <>A Defesa Civil de SC não publica faixa para esta estação agora.</>
+              )}
+            </p>
+          </>
         ) : (
           <p className={estilos.semLeitura}>
             <strong>Sem leitura ao vivo.</strong> Isto não quer dizer que o rio esteja baixo: quer
@@ -181,6 +228,21 @@ export default function CartaoAgora({
 
       {estadoIdade === 'velha' ? (
         <p className={estilos.alertaLeitura}>Leitura antiga — não use como nível atual.</p>
+      ) : null}
+      {estadoIdade === 'velha' && estadual?.medidoEm &&
+      frescorDaCidade(idadeMin(estadual.medidoEm, agora), cidade.id) !== 'velha' ? (
+        <p className={estilos.estadual}>
+          Agora, a <strong>rede estadual</strong> ({estadual.codigo ?? estadual.estacao}) marca{' '}
+          <strong>{metros(estadual.nivelBrutoM)}</strong>, medido{' '}
+          {textoIdade(idadeMin(estadual.medidoEm, agora))}. É outra régua, de zero próprio: mostra se o
+          rio sobe ou desce, <strong>não</strong> se compara com as cotas abaixo.
+          {faixaEstadual ? (
+            <>
+              {' '}Faixa da Defesa Civil de SC para essa estação:{' '}
+              <ChipFaixa faixa={faixaEstadual} cidade={cidade} compacto estadual />
+            </>
+          ) : null}
+        </p>
       ) : null}
       {subia ? (
         <p className={estilos.alertaLeitura}>

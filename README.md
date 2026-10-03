@@ -477,6 +477,16 @@ o projeto.
 
 ## Pendências
 
+- [x] **As cidades no cartão "Agora" (03/10/2026, `docs/CIDADES-CARTAO-AGORA-2026-10-03.md`).**
+  - **Brusque** volta a ter faixa e régua: a leitura vem da DCSC-00019, que é a mesma régua (1.287 pares, no
+    máximo 3 cm; `docs/BRUSQUE-DCSC-00019.md`). **Falta o deploy na VPS** (`scripts/deploy.sh`).
+  - **As cidades sem régua municipal ao vivo** mostram a faixa que a Defesa Civil de SC publica para a estação
+    delas, com o chip "… · Defesa Civil SC" tracejado. Nunca vira aviso nem frase.
+  - [ ] **Gaspar:** a estação 21 da Defesa Civil de Gaspar não publica o Açu desde 02/10 às 06h04.
+  - [ ] **Vidal Ramos:** a estação saiu do painel da Asthon. A última leitura é de 11/09.
+  - [ ] **Indaial:** o documento municipal parou em 12/09 às 22h. As três são falhas na fonte, não no coletor.
+
+
 - [x] **Autorizar e-mail no site com um comando (25/09/2026).** `python3 scripts/autorizar_email.py fulano@gmail.com` (e `--revogar`, `--listar`, `--renomear Autorizados`) mexe na política do Cloudflare Access pela API, muda só a lista de e-mails e relê para conferir; recusa tirar o último e-mail. Precisa de `CLOUDFLARE_API_TOKEN` (só *Access: Apps and Policies — Edit*) e `CLOUDFLARE_ACCOUNT_ID` no `.env`. 17 testes contra uma Cloudflare de mentira. **Conferido na conta real em 26/09/2026**: `--listar` bateu com o painel e `--renomear` trocou a política de "Só eu" para **"Autorizados"**. Ver `docs/PUBLICACAO-E-ACESSO.md`.
 
 - [x] **Fonte da chuva equivalente:** a ficha das barragens identifica armazenamento e área do **JICA 2011, volume II**, distinguindo a equivalência das capacidades e áreas alternativas exibidas ao lado.
@@ -497,7 +507,7 @@ o projeto.
       sente 70%, 1 h depois; a DC-02 e a DC-10 quase nada.
     - Nos quatro eventos moderados medidos, a crista sem maré em Itajaí veio **+1,5 a +5 h** depois do platô de
       Blumenau. Blumenau fica a ~70 km pelo rio, então **não é a água de Blumenau chegando**: é o baixo vale
-      subindo junto, com a mesma chuva. A faixa de 14–17 h não muda.
+      subindo junto, com a mesma chuva. A faixa da JICA não muda por isso.
   - A publicação "Blumenau" da página de Itajaí carimbava **3 h atrasada**. Saiu do ar em 19/09. Se voltar, o
     coletor precisa corrigir o fuso.
   - **Zero das réguas × terreno (estimativa, não oficial):** a leitura de cada régua com a água no nível médio

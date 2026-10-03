@@ -899,8 +899,8 @@
             "emergencia": 5.0
           },
           "fontes_tempo_real": [
-            "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios (Brusque)",
-            "https://monitoramento.defesacivil.sc.gov.br/mapa"
+            "https://monitoramento.defesacivil.sc.gov.br/mapa (DCSC-00019 — a leitura ao vivo desde 03/10/2026)",
+            "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios (Brusque — fora do ar desde 19/09/2026)"
           ],
           "cotas_verificado": true,
           "cotas_ressalva": "O QUE AINDA VALE DA RESSALVA DE 07/09/2026, reescrita em 08/09/2026. ⚠️ A versão anterior deste campo citava 'a nossa atenção de 4,80 m' e concluía que o site pintava MAIS CALMO que a Defesa Civil. As duas coisas VENCERAM no mesmo dia em que foram escritas: os 4,80 m saíram de `cotas_m` (eram cota de alagamento da Av. Beira-Rio, não limiar de aviso) e a escala municipal de 3,00/5,00 m entrou. Com 3,00 m, os 3,49 m da cheia de 31/08 passam a pintar atenção — que é o que a Defesa Civil declarou. O histórico inteiro está em `cotas_substituidas_em_2026_09_07`; ler aquele campo junto com este é obrigatório, e foi por não reler este que ele ficou desatualizado por um dia. O QUE CONTINUA DE PÉ, e é o motivo deste campo existir: a Defesa Civil de Brusque decide olhando VIDAL RAMOS → BOTUVERÁ → BRUSQUE e a TENDÊNCIA, não a régua daqui sozinha — pode declarar atenção ANTES de o número de Brusque subir, porque sabe que a água está descendo. A escala municipal não substitui essa leitura de bacia, e os elos `vidal-ramos → botuvera` e `botuvera → brusque` continuam faltando em transito.json. NÃO EXISTE `alerta` porque a fonte pula de atenção para emergência — não se inventa um. Fonte do evento: Olhar do Vale e Diplomata FM, levantamento de 07/09/2026; não lido na fonte por este ambiente. Ver docs/PESQUISA-2026-09-07-TERCEIRA-RODADA.md.",
@@ -909,7 +909,7 @@
             -48.9172
           ],
           "regua_das_cotas": "Ponte Estaiada – DCSC",
-          "regua_das_cotas_fonte": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'.",
+          "regua_das_cotas_fonte": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
           "fonte_cotas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
           "cotas_substituidas_em_2026_09_07": {
             "_o_que_saiu": {

@@ -148,6 +148,15 @@ Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em c
 - **Frases do cartão "Agora"** (`logica/agora.ts`): só com leitura de agora e cota de acionamento; nunca em Gaspar (legenda "maior que"), Ascurra (C18) nem Itajaí (várias réguas). Sem dado, a frase não aparece.
 - **Tema escuro e letra maior** só dentro de `:root[data-app]`, que o App liga fora do Monitor. Cores novas vão como token em `global.css`, com o valor claro igual ao antigo.
 - **Preferências** (minha cidade, aviso lido, letra) só no aparelho, por `logica/preferencias.ts`, sempre em try/catch.
+- **Faixa da Defesa Civil de SC (03/10/2026):**
+  - **Quando aparece:** só na cidade sem leitura municipal de agora, e só a faixa que a própria DCSC publica para
+    a estação (`rio_alarmes`). Vale no cartão, nas listas e nas linhas de cidade.
+  - **Como aparece:** chip tracejado "Atenção · Defesa Civil SC" e o número da rede estadual, com "zero
+    próprio" escrito.
+  - **Onde fica:** em `EstadoDaCidade.faixaEstadual`, nunca em `faixa`. Frase, WhatsApp e aviso não a leem.
+    Teste em `dados/usarAoVivo.test.ts`.
+  - **Réguas estaduais que pintam com as cotas da cidade:** só as de `REGUAS_COM_COTA_PROPRIA` em
+    `scripts/coleta_estadual_com_cota.py`. Hoje são DCSC-00003 (Ascurra) e DCSC-00019 (Brusque).
 - **D5 — modo aplicativo (PWA):** `web/public/sw.js` + `sw-regras.js` (testado em `src/logica/swRegras.test.ts`
   e no navegador por `testes-navegador/pwa.mjs`). Rede primeiro para a página e o nível ao vivo; a cópia
   guardada só sem rede, e o número guardado sai com a hora da medição. **Nunca guardar** desvio, resposta

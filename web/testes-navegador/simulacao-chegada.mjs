@@ -25,7 +25,7 @@ try {
     assert.match(await painel.innerText(), /Média histórica indisponível/)
     await pagina.getByLabel('Data e hora do pico em Blumenau — Brasília').fill('2026-09-11T10:00')
     await pagina.getByRole('button', { name: 'Simular coincidência com a maré' }).click()
-    assert.match(await painel.innerText(), /12\/09\/2026, 00:00 até 12\/09\/2026, 03:00/)
+    assert.match(await painel.innerText(), /11\/09\/2026, 22:00 até 12\/09\/2026, 03:00/)
     assert.match(await painel.innerText(), /Há preamar dentro da janela simulada/)
     assert.equal(await painel.locator('table tbody tr').count(), 3)
     assert.equal(await pagina.evaluate(() => document.documentElement.scrollWidth > innerWidth), false)

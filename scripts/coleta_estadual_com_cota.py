@@ -16,6 +16,15 @@ alerta, acima de 10,76 emergência, estabelecidas por mim a partir de dados das
 elevações anteriores [...] não existe referência de faixa estabelecida pelo estado
 em cima de nossas cotas."
 
+O SEGUNDO CASO, Brusque (03/10/2026, decisão do Jefferson): a Defesa Civil de
+Brusque publica as faixas (atenção 3,00 · emergência 5,00) na LEGENDA da estação
+"Ponte Estaiada – DCSC" do portal dela, e essa estação é repasse da DCSC-00019 —
+Brusque não opera régua de rio própria. O par foi provado por leitura simultânea
+em 07/09/2026 e, em 03/10/2026, por 1.287 pares de 02/09 a 19/09 (com as cheias
+de 10–12/09 no meio): a régua "Brusque" que o site lia e a DCSC-00019 diferiram
+no máximo 3 cm, mediana zero (`docs/BRUSQUE-DCSC-00019.md`). A régua municipal
+saiu do ar com o portal novo de Itajaí em 19/09; a estadual continua.
+
 Cada entrada de REGUAS_COM_COTA_PROPRIA precisa de TRÊS coisas casando, e o teste
 `TesteOParEstaTrancadoNoEstacoesJson` cobra: (1) a cidade em `estacoes.json` tem
 `codigo_dcsc` igual ao código; (2) tem `cotas_m` com `atencao`; (3) tem
@@ -47,6 +56,15 @@ REGUAS_COM_COTA_PROPRIA: dict[str, dict[str, str]] = {
         "fonte": ("Rede estadual (Defesa Civil de SC), estação DCSC-00003, Ponte do Beber. "
                   "Faixas definidas pela COMPDEC de Ascurra NESTA escala — resposta ao C18 em "
                   "11/09/2026 (docs/resposta-ascurra-c18-2026-09-11.md)."),
+    },
+    "DCSC-00019": {
+        "cidade": "brusque",
+        "rio": "itajai-mirim",
+        "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "fonte": ("Rede estadual (Defesa Civil de SC), estação DCSC-00019, Ponte Estaiada. "
+                  "Faixas da legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil "
+                  "de Brusque, que republica esta estação; par provado em 07/09/2026 e em 1.287 "
+                  "leituras de 02 a 19/09/2026 (docs/BRUSQUE-DCSC-00019.md)."),
     },
 }
 
