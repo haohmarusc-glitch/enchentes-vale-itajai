@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import type { PontoSerie } from '../dados/serie'
 import { porRegua } from '../dados/serie'
-import { publicacaoMaisRecente, situacaoDoPico } from './picoBlumenau'
+import { PUBLICACAO_ATRASADA, publicacaoMaisRecente, situacaoDoPico } from './picoBlumenau'
 import { deBrasilia } from './tempoReal'
 
 const ponto = (iso: string, nivel: number, regua: string | null = 'Blumenau'): PontoSerie => ({
@@ -95,4 +95,15 @@ test('usa a publicação com a leitura mais recente, sem misturar as duas fontes
   ]
   const escolhida = publicacaoMaisRecente(porRegua(pontos))
   assert.ok(escolhida.every((p) => p.regua === 'Blumenau (AlertaBlu)'))
+})
+
+test('a publicação atrasada da página de Itajaí nunca é usada, nem quando é a mais recente', () => {
+  const pontos = [
+    ponto('2026-10-03T08:00:00', 5.0, 'Blumenau (AlertaBlu)'),
+    ponto('2026-10-03T11:00:00', 5.4, PUBLICACAO_ATRASADA),
+  ]
+  const escolhida = publicacaoMaisRecente(porRegua(pontos))
+  assert.ok(escolhida.length > 0 && escolhida.every((p) => p.regua === 'Blumenau (AlertaBlu)'))
+  // Só ela: nada, em vez da hora errada.
+  assert.deepEqual(publicacaoMaisRecente(porRegua([ponto('2026-10-03T11:00:00', 5.4, PUBLICACAO_ATRASADA)])), [])
 })

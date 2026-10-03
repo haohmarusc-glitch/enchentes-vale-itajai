@@ -505,9 +505,17 @@ o projeto.
     (`scripts/analisar_chegada_itajai.py`).
     - **Cada régua de Itajaí tem o seu atraso e o seu fator de maré.** A DC-01 sente 90% da maré; a DC-11
       sente 70%, 1 h depois; a DC-02 e a DC-10 quase nada.
-    - Nos quatro eventos moderados medidos, a crista sem maré em Itajaí veio **+1,5 a +5 h** depois do platô de
-      Blumenau. Blumenau fica a ~70 km pelo rio, então **não é a água de Blumenau chegando**: é o baixo vale
+    - Nos eventos moderados com série completa, as cristas locais sem maré na DC-11 e em Ilhota vieram **~2 a 6 h**
+      depois do meio do platô de Blumenau. Em 12/09 e 01/09, a DC-11 tem lacuna e o horário fica indeterminado.
+      A referência da JICA é 12–17 h entre picos, então **não é a água de Blumenau chegando**: é o baixo vale
       subindo junto, com a mesma chuva. A faixa da JICA não muda por isso.
+    - Recorte da série versionado em `data/brutos/serie-2026-itajai/`: as tabelas são reproduzíveis sem a VPS.
+    - Auditoria do #449 (03/10/2026): textos corrigidos.
+      - "~70 km" agora marcado sem fonte; a auditoria mediu ~81–83 km no OSM, só para conferência.
+      - Saiu a velocidade sem fonte e a "cheia grande".
+      - O "ombro" passou de "0,3 a 1 m" para ~1,6–2,4 m.
+      - A nota da DC-02 em `historico-chegada-itajai.json` foi corrigida.
+      - Os pares de 2011 e 2023 entraram como candidatos não conferidos.
   - A publicação "Blumenau" da página de Itajaí carimbava **3 h atrasada**. Saiu do ar em 19/09. Se voltar, o
     coletor precisa corrigir o fuso.
   - **Zero das réguas × terreno (estimativa, não oficial):** a leitura de cada régua com a água no nível médio

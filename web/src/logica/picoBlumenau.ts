@@ -87,16 +87,26 @@ export function situacaoDoPico(pontos: PontoSerie[], agora: Date): SituacaoPico 
 }
 
 /**
- * A publicação de Blumenau a usar: a que tem a leitura mais recente. Blumenau
- * chegou por duas fontes da mesma régua (Defesa Civil de Itajaí e AlertaBlu);
- * misturá-las faria serrilhado (ver `PontoSerie.regua`). A da página de Itajaí
- * tinha os horários 3 h atrasados e saiu do ar em 19/09/2026; quando as duas
- * existiam, a do AlertaBlu era sempre a mais recente — e a certa.
+ * A publicação "Blumenau" da página da Defesa Civil de Itajaí: carimbava os
+ * horários 3 h ATRASADOS (docs/ANALISE-CHEGADA-ITAJAI-2026.md, seção 3) e saiu
+ * do ar em 19/09/2026. Nunca serve para dizer a hora do pico.
+ */
+export const PUBLICACAO_ATRASADA = 'Blumenau'
+
+/**
+ * A publicação de Blumenau a usar: a que tem a leitura mais recente, fora a da
+ * página de Itajaí. Blumenau chegou por duas fontes da mesma régua (Defesa
+ * Civil de Itajaí e AlertaBlu); misturá-las faria serrilhado (ver
+ * `PontoSerie.regua`). A da página de Itajaí fica de fora SEMPRE — e não só
+ * por ser a menos recente: se o AlertaBlu parasse por mais de 3 h e ela
+ * voltasse, ela ganharia a disputa com a hora errada (auditoria do PR #449,
+ * B5). Sem outra publicação, o painel diz "sem dado" em vez de usar a errada.
  */
 export function publicacaoMaisRecente(porRegua: Map<string, PontoSerie[]>): PontoSerie[] {
   let melhor: PontoSerie[] = []
   let quando = -Infinity
-  for (const pontos of porRegua.values()) {
+  for (const [regua, pontos] of porRegua) {
+    if (regua === PUBLICACAO_ATRASADA) continue
     const ultimo = pontos[pontos.length - 1]
     if (ultimo && ultimo.medidoEm.getTime() > quando) {
       quando = ultimo.medidoEm.getTime()

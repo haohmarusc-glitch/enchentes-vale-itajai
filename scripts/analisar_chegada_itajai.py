@@ -26,6 +26,7 @@ corrigida.
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import math
 import statistics
@@ -171,8 +172,11 @@ def crista(serie: Serie, ini: int, fim: int, bruta: Serie | None = None) -> tupl
 def ler(pasta: Path):
     niveis: dict[str, dict[datetime, list[float]]] = defaultdict(lambda: defaultdict(list))
     chuva: dict[datetime, list[float]] = defaultdict(list)
-    for arq in sorted(pasta.glob("*.ndjson")):
-        with arq.open(encoding="utf-8") as f:
+    # `.ndjson` (a pasta do coletor) ou `.ndjson.gz` (o recorte versionado em
+    # data/brutos/serie-2026-itajai/, que reproduz as tabelas sem o servidor).
+    for arq in sorted([*pasta.glob("*.ndjson"), *pasta.glob("*.ndjson.gz")]):
+        abrir = gzip.open if arq.suffix == ".gz" else open
+        with abrir(arq, "rt", encoding="utf-8") as f:
             linhas = list(f)
         for linha in linhas:
             try:

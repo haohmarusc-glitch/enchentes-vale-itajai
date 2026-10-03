@@ -5,8 +5,11 @@ todos os dados históricos, analisar e simular"*. Também perguntou: *"cada rég
 diferentes para cálculo?"*. **Tem.** A tabela 1 mostra os parâmetros.
 
 - **Dados:** a série que o coletor guardou na VPS (`data/tempo-real/*.ndjson`, 30/08 a 03/10/2026, ~750 h por
-  régua), copiada em `series-2026.tar.gz`, mais a tábua da Marinha (`data/mare-itajai.json`).
-- **Script:** `scripts/analisar_chegada_itajai.py <pasta>`. É somente leitura e reproduz as tabelas abaixo.
+  régua), copiada em `series-2026.tar.gz`, mais a tábua da Marinha (`data/mare-itajai.json`). O recorte que a
+  análise usa está **versionado em `data/brutos/serie-2026-itajai/`** (284 KB, com `LEIAME.md` e o sha256 do
+  pacote original).
+- **Script:** `scripts/analisar_chegada_itajai.py data/brutos/serie-2026-itajai`. É somente leitura e reproduz
+  as tabelas abaixo; `scripts/estimar_zero_reguas_itajai.py` reproduz a tabela 3.
 - **Teste:** `scripts/teste_analisar_chegada_itajai.py`.
 
 > **Isto é descritivo, não calibração.** A faixa de chegada do site (JICA) e o `transito.json` **não
@@ -47,8 +50,9 @@ diferentes para cálculo?"*. **Tem.** A tabela 1 mostra os parâmetros.
 ### O que a tabela diz
 
 - **Não existe um "número de maré" único para Itajaí.**
-  - Na DC-01, uma preamar de 1,2 m na tábua move a régua ~1,1 m.
-  - Na DC-11, a mesma preamar move a régua ~0,8 m, e uma hora depois.
+  - Na DC-01, uma maré com 1,2 m entre a baixa-mar e a preamar na tábua move a régua ~1,1 m entre o mínimo e o
+    máximo (amplitude, não altura sobre o nível médio).
+  - Na DC-11, a mesma maré move a régua ~0,8 m, uma hora depois.
   - Na DC-10, a régua não se move.
   - Qualquer conta que use a maré tem de usar o atraso e o fator **da régua**.
 - **Os números batem com a medição de 05/09/2026** (`docs/MEDICAO-MARE-2026-09-05.md`, 6 dias, pela componente
@@ -66,8 +70,11 @@ diferentes para cálculo?"*. **Tem.** A tabela 1 mostra os parâmetros.
 > **Leia antes da tabela (correção de 03/10/2026, pergunta do Jefferson: "Itajaí fica a quantos km de
 > Blumenau? Esses dados estão corretos?").**
 >
-> - **Distância:** Blumenau fica a **~70 km da foz pelo rio** (`estacoes.json`, `km_da_foz`). A DC-11 está entre
->   Ilhota e o centro de Itajaí. Ilhota fica a 33 km da foz (`transito.json`).
+> - **Distância:** o cadastro diz que Blumenau fica a **~70 km da foz** (`estacoes.json`, `km_da_foz`), mas esse
+>   número **não tem fonte nem método** declarados; `docs/TOPOLOGIA-CANONICA.md` registra que Blumenau ficou fora
+>   da medição de `km_rio`. A auditoria de 03/10/2026, no mesmo traçado OSM do repositório, mediu ~81–83 km.
+>   **Nenhum dos dois vai para o site.** A DC-11 está entre Ilhota e o centro de Itajaí; de Ilhota até o ponto de
+>   Itajaí no traçado são 33,2 km (`transito.json`, `km_rio`), e esse ponto fica ~2 km acima da foz.
 > - **Referência de propagação:** a Tabela 7.5.1 da JICA (Vol. III-A, p. A-80, lida no original — ver
 >   `docs/JICA-2011-VERIFICADO.md`) dá, entre os picos de vazão em Blumenau e em Itajaí, **17 / 15 / 14 / 12 h**
 >   para as cheias de projeto de 5 / 10 / 25 / 50 anos. O texto do Vol. II resume como "14–17 h", mas a tabela
@@ -83,17 +90,20 @@ diferentes para cálculo?"*. **Tem.** A tabela 1 mostra os parâmetros.
 > - **O que a tabela mostra:** o baixo vale **sobe junto** com Blumenau. Isso vem da mesma chuva, dos ribeirões
 >   próximos e da maré meteorológica. Pode vir também do represamento: no trecho de maré, uma mudança de nível
 >   corre muito mais rápido que a onda de cheia — a própria maré chega a Ilhota em 1 h.
-> - **O provável sinal da água de Blumenau:** um "ombro". Entre **+12 e +18 h**, a DC-11 sem maré para de descer
->   (12/09: 3,82–3,85 m; 22/09: 3,52–3,54 m), enquanto Blumenau já caiu 0,3 a 1 m. Isso é compatível com a onda
->   de cima chegando, mas não está provado.
+> - **Um possível sinal da água de Blumenau:** um "ombro". Entre **+12 e +18 h**, a série da DC-11 **sem maré**
+>   (calculada pelo script, não a leitura bruta) para de descer: 3,82–3,85 m em 12/09 e 3,52–3,54 m em 22/09.
+>   No mesmo intervalo, Blumenau já caiu **~1,6 a 2,4 m** em 12/09 (de 7,86 para 6,26–5,46 m) e ~1,1 a 1,6 m em
+>   22/09. *Correção de 03/10/2026 (auditoria): a versão anterior dizia "0,3 a 1 m", que a série não sustenta.*
+>   Na leitura bruta, a DC-11 ainda descia às 18h30 de 12/09 (3,85 m). É compatível com a onda de cima
+>   chegando, mas **não está provado**.
 
 ### Como a diferença foi medida
 
 - Cada régua teve a maré tirada com os seus parâmetros: régua − fator × maré, com o atraso dela, e média de 5 h.
 - Na série que sobrou, a crista em Itajaí foi procurada até 36 h depois do pico de Blumenau, e nunca dentro da
   subida do evento seguinte.
-- A diferença conta a partir do **meio do platô** de Blumenau. É o mesmo critério do site
-  (`web/src/logica/picoBlumenau.ts`: a menos de 5 cm do máximo).
+- A diferença conta a partir do **meio do platô** de Blumenau, não da hora do pico (a tabela mostra as duas). O
+  platô é o mesmo critério do site (`web/src/logica/picoBlumenau.ts`: a menos de 5 cm do máximo).
 - A crista só pode cair numa hora **com leitura bruta**. A média móvel preenche buracos, e um máximo dentro de um
   buraco não é crista.
 - Se a janela tem **2 h seguidas ou mais sem leitura**, a crista sai como "primeira crista detectada", com
@@ -101,13 +111,15 @@ diferentes para cálculo?"*. **Tem.** A tabela 1 mostra os parâmetros.
 
 ### Tabela 2 — eventos
 
-| pico em Blumenau (AlertaBlu) | nível | platô | chuva em Itajaí, 24 h antes | crista local DC-11 sem maré | crista local Ilhota sem maré |
-|---|---|---|---|---|---|
-| 01/09 09h | 7,57 m | 08h–12h | 20 mm | primeira crista detectada em +2,0 h; **horário indeterminado por lacuna** | sem série |
-| 12/09 05h | 7,86 m | 04h–07h | 35 mm | primeira crista detectada em +0,5 h (06h); **horário indeterminado por lacuna** | **+3,5 h** (série completa) |
-| 20/09 21h | 4,29 m | 20h–00h | — | não achada | não achada |
-| 22/09 12h | 6,62 m | 11h–13h | — | **+5,0 h** | +6,0 h |
-| 01/10 20h | 4,53 m | 16h–22h | — | **+3,0 h** | +3,0 h |
+Horas contadas do **meio do platô** (coluna "meio").
+
+| pico em Blumenau (AlertaBlu) | nível | platô | meio | chuva em Itajaí, 24 h antes | crista local DC-11 sem maré | crista local Ilhota sem maré |
+|---|---|---|---|---|---|---|
+| 01/09 09h | 7,57 m | 08h–12h | 10h | 20 mm | primeira crista detectada em +2,0 h; **horário indeterminado por lacuna** | sem série |
+| 12/09 05h | 7,86 m | 04h–07h | 05h30 | 35 mm | primeira crista detectada em +0,5 h (06h); **horário indeterminado por lacuna** | **+3,5 h** (série completa) |
+| 20/09 21h | 4,29 m | 20h–00h | 22h | — | não achada | não achada |
+| 22/09 12h | 6,62 m | 11h–13h | 12h | — | **+5,0 h** | +6,0 h |
+| 01/10 20h | 4,53 m | 16h–22h | 19h | — | **+3,0 h** | +3,0 h |
 
 Notas da tabela:
 
@@ -125,20 +137,24 @@ Notas da tabela:
 ### O que os eventos dizem
 
 1. **Nestes eventos, Itajaí sobe quase junto com Blumenau.** As cristas locais sem maré ficaram de **~2 a 6 h**
-   depois do platô de Blumenau, contando as de série completa (22/09 e 01/10 nas duas réguas, 12/09 em Ilhota). A correlação cruzada de Blumenau com a DC-11 sem maré dá o mesmo: o
-   melhor atraso fica entre 0 e 4 h, com r de 0,93 a 0,99. Pela distância (~70 km), **não é a água de Blumenau**.
-   É o baixo vale reagindo ao mesmo tempo.
+   depois do meio do platô de Blumenau, contando as de série completa (22/09 e 01/10 nas duas réguas, 12/09 em
+   Ilhota). A correlação cruzada de Blumenau com a DC-11 sem maré dá o mesmo: o melhor atraso fica entre 0 e 4 h,
+   com r de 0,93 a 0,99. Para a água de Blumenau, a referência é 12–17 h entre picos (JICA); 2 a 6 h está bem
+   abaixo disso, e por isso **não é a água de Blumenau**: é o baixo vale reagindo ao mesmo tempo.
 2. **A crista de 12/09 na DC-11 está num buraco da série** (ver as notas da tabela). Ilhota, com a série completa,
    marca +3,5 h. Em 01/09 só há a DC-11, também com lacuna: Ilhota ainda não era coletada.
-3. **Isso não desmente os 12–17 h da JICA.** Quatro explicações para a subida simultânea, não conferidas:
+3. **Isso não desmente nem confirma os 12–17 h da JICA**, e os poucos pares históricos também não (seção 4).
+   Quatro explicações para a subida simultânea, não conferidas:
    - **Chuva no baixo vale:** a mesma chuva cai em Blumenau, Gaspar, Ilhota e Itajaí, e o rio sobe em toda
      parte ao mesmo tempo. Em 01/09 e 12/09 choveu 20–35 mm em Itajaí nas 24 h antes.
    - **Maré meteorológica:** vento sul e ressaca levantam o nível no estuário por horas. A tábua astronômica não
      a enxerga, e ela fica no "sem maré". Na DC-01, a crista que sobra varia de +4 a +21 h, sem padrão. É a
      assinatura dela.
-   - **A régua da cheia grande ainda não passou por esta série.** Os 12–17 h são de cheias de projeto de 5 a 50 anos
-     (JICA, 2011), em que o volume de cima domina. Num evento de 7–8 m em Blumenau, o que se vê em Itajaí pode ser mais
-     a chuva local e a maré do que a onda que desce.
+   - **Escala diferente.** Os 12–17 h são de hidrogramas calculados para cheias de projeto de 5 a 50 anos, e na
+     própria tabela o intervalo **encurta** quando a cheia cresce: 17 h em 5 anos, 12 h em 50 anos. *Correção de
+     03/10/2026 (auditoria): uma versão anterior atribuía os 14–17 h à "cheia grande", o que a tabela contradiz.*
+     Num evento moderado de 7–8 m em Blumenau, o que se vê em Itajaí pode ser mais a chuva local e a maré do que a
+     onda que desce.
    - **Cheias de Blumenau seguidas** (10→12/09, 20→22/09) se somam, e a crista de Itajaí fica entre as duas.
 4. **A maré astronômica é a maior parte do sobe-e-desce das réguas do estuário.** Ela é previsível pela tábua.
    O que ela não explica é o rio, a chuva e a maré meteorológica.
@@ -164,7 +180,9 @@ Notas da tabela:
 
 - **A publicação da página de Itajaí carimbava 3 h antes da hora certa.** A do AlertaBlu está certa.
 - A publicação "Blumenau" saiu do ar depois de 19/09/2026.
-- O site já usava a publicação mais recente, que era sempre a do AlertaBlu.
+- O site já usava a publicação mais recente, que era sempre a do AlertaBlu. Desde a auditoria do #449, o painel
+  de Itajaí **nunca** usa a publicação atrasada, nem se ela voltar e o AlertaBlu parar (`PUBLICACAO_ATRASADA` em
+  `web/src/logica/picoBlumenau.ts`, com teste).
 - O gabarito de `picoBlumenau.test.ts` passou a usar só o AlertaBlu: pico de 7,86 m às 05h de 12/09, platô das
   04h às 07h.
 - Este script usa a publicação da página de Itajaí só onde falta o AlertaBlu, somando 3 h.
@@ -181,8 +199,20 @@ Notas da tabela:
 - **Mirim:** as réguas do Mirim estão na tabela 1, mas o cruzamento com Brusque não foi feito. A série de Brusque
   vai só até 19/09.
 - **Tábua:** só 2026 (`mare-itajai.json`). Eventos antigos não têm maré astronômica nesta conta.
-- **Pares históricos:** a busca externa de 03/10 não achou nenhum par completo de hora de pico Blumenau ×
-  Itajaí. Os horários de Blumenau de 2011, 2013, 2015 e 2023 existem, mas não os de Itajaí.
+- **Pares históricos: nenhum conferido, mas há candidatos.** *Correção de 03/10/2026 (auditoria): a versão
+  anterior dizia que não havia nenhum par e não citava estes.* Nenhum entra em calibração; ficam registrados para
+  conferir.
+
+  | evento | Blumenau | Itajaí | diferença | estado |
+  |---|---|---|---|---|
+  | set/2011 | — | — | **19 h** relatadas | Balsanelli/UNIVALI 2014, em `data/historico-chegada-itajai.json`, `pendente` |
+  | out/2023 (1ª onda) | 09/10 06h, 10,19 m (ND+) | DC-02 09/10 13h10, 2,92 m — **leitura, não crista** (ND) | 7 h 10 min | conta da auditoria, sem conferir fuso nem estação |
+  | out/2023 (2ª onda) | 12/10 23h30, 10,76 m (NSC, Jornal Razão) | DC-02 14/10 ~02h20, "pico" de 2,89 m (ND) | 26 h 50 min | idem |
+  | out/2023, Gaspar | 09/10 06h | Gaspar 09/10 07h50, "pico" do boletim municipal | 1 h 50 min | idem; bate com os 2 h da JICA para Blumenau→Gaspar |
+
+  Os dois de 2023 em Itajaí caem fora de 12–17 h, um para cada lado, e são da **DC-02**, a régua do Açu que quase
+  não sente a maré (tabela 1). Os horários de Blumenau de 2008, 2013, 2015, nov/2023 e 2024 existem na pesquisa,
+  sem par em Itajaí.
 
 ## 5. Terreno e escape da maré — observação do Jefferson (03/10/2026)
 
@@ -273,7 +303,8 @@ Pedido do Jefferson: *"busca a altitude do zero das réguas e cruza com o terren
   (1,8 m). Na emergência dessa régua, a água já está no nível do chão em volta. É o trecho mais baixo dos
   medidos. Isso combina com a sua observação: o curso antigo, com pouca saída, é onde o rio represa sobre
   terreno baixo.
-- **DC-03, DC-04 e DC-11:** a emergência fica de 0,6 a 1,5 m abaixo do terreno típico em volta.
+- **DC-03, DC-04 e DC-11:** a emergência fica de 0,6 a 1,5 m abaixo do p25 do terreno em volta, e de 1,3 a 3,9 m
+  abaixo da mediana.
   - Lembrete: o terreno a 300 m não é a rua mais baixa do bairro.
 - **O mesmo número de régua quer dizer coisas diferentes em cada ponto.**
   - Exemplo: 1,5 m na DC-01 é ~0,5 m acima do mar; 1,5 m na DC-03 é ~1,1 m acima do mar.

@@ -120,5 +120,33 @@ class Leitura(unittest.TestCase):
             self.assertEqual([e["pico"] for e in r["eventos"]], [T0 + timedelta(hours=200)])
 
 
+class TesteRecorteVersionado(unittest.TestCase):
+    """O recorte em data/brutos/serie-2026-itajai/ reproduz as tabelas do documento.
+
+    Auditoria do PR #449 (03/10/2026, item A2): as tabelas só rodavam com um
+    pacote que não estava no repositório. Este teste trava os números.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        from comum import DADOS
+        cls.r = analisar(DADOS / "brutos" / "serie-2026-itajai", DADOS / "mare-itajai.json")
+
+    def test_fatores_de_mare(self):
+        reg = self.r["reguas"]
+        self.assertEqual((reg["DC-01"]["atraso_h"], round(reg["DC-01"]["fator"], 2)), (0, 0.90))
+        self.assertEqual((reg["DC-11"]["atraso_h"], round(reg["DC-11"]["fator"], 2)), (1, 0.70))
+        self.assertEqual((reg["ilhota"]["atraso_h"], round(reg["ilhota"]["fator"], 2)), (1, 0.57))
+        self.assertLess(reg["DC-02"]["fator"], 0.1)
+
+    def test_12_09_dc11_tem_lacuna_e_ilhota_mais_3_5_h(self):
+        (e,) = [e for e in self.r["eventos"] if e["pico"] == datetime(2026, 9, 12, 5)]
+        self.assertEqual(e["nivel_m"], 7.86)
+        self.assertTrue(e["cristas"]["DC-11"]["lacuna"])
+        self.assertEqual(e["cristas"]["DC-11"]["horas"], 0.5)
+        self.assertFalse(e["cristas"]["ilhota"]["lacuna"])
+        self.assertEqual(e["cristas"]["ilhota"]["horas"], 3.5)
+
+
 if __name__ == "__main__":
     unittest.main()
