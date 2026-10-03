@@ -4,7 +4,7 @@ import type { Cidade, Topologia } from '../dados/tipos'
 import { trechos } from '../dados/carregar'
 import { estadoDaCidade, type AoVivo } from '../dados/usarAoVivo'
 import { tendenciaDaLeitura, textoTendencia } from '../logica/agora'
-import { numero } from '../logica/formato'
+import { metros, numero } from '../logica/formato'
 import { frescorDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import { caminho, faixaHoras } from '../logica/transito'
 import { ChipFaixa } from './CartaoAgora'
@@ -141,6 +141,11 @@ function Linha({ cidade, rioId, aoVivo }: { cidade: Cidade; rioId: string; aoViv
             </>
           ) : estado.varias ? (
             <>{estado.todas.length} réguas, uma por uma</>
+          ) : estado.faixaEstadual && estado.estadual?.medidoEm ? (
+            <>
+              rede estadual: {metros(estado.estadual.nivelBrutoM)} ·{' '}
+              {textoIdade(idadeMin(estado.estadual.medidoEm, aoVivo.agora))}
+            </>
           ) : (
             <>sem leitura recente</>
           )}
@@ -149,7 +154,11 @@ function Linha({ cidade, rioId, aoVivo }: { cidade: Cidade; rioId: string; aoViv
       {/* Sem leitura, o marcador tracejado e o "sem leitura recente" já dizem
           tudo; o chip repetiria a frase em cada linha. Com leitura e sem cota,
           o chip fica — é ele que diz "sem cota". */}
-      {valida || estado.varias || faixa !== 'sem-dado' ? <ChipFaixa faixa={faixa} cidade={cidade} compacto /> : null}
+      {valida || estado.varias || faixa !== 'sem-dado' ? (
+        <ChipFaixa faixa={faixa} cidade={cidade} compacto />
+      ) : estado.faixaEstadual ? (
+        <ChipFaixa faixa={estado.faixaEstadual} cidade={cidade} compacto estadual />
+      ) : null}
       <span className={estilos.valor}>
         {valida ? (
           <>

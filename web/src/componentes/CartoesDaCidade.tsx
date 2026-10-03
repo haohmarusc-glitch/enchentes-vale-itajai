@@ -188,6 +188,11 @@ export function LinhaDeCidade({
             </>
           ) : estado.varias ? (
             <>{estado.todas.length} réguas, uma por uma</>
+          ) : estado.faixaEstadual && estado.estadual?.medidoEm ? (
+            <>
+              rede estadual: {metros(estado.estadual.nivelBrutoM)} · medido{' '}
+              {textoIdade(idadeMin(estado.estadual.medidoEm, aoVivo.agora))}
+            </>
           ) : (
             <>sem leitura recente · não conclua que está seguro</>
           )}
@@ -195,6 +200,8 @@ export function LinhaDeCidade({
       </span>
       {(leitura && !velha) || estado.varias || estado.faixa !== 'sem-dado' ? (
         <ChipFaixa faixa={estado.faixa} cidade={cidade} compacto />
+      ) : estado.faixaEstadual ? (
+        <ChipFaixa faixa={estado.faixaEstadual} cidade={cidade} compacto estadual />
       ) : null}
       <span className={estilos.abrir} aria-hidden="true">›</span>
     </Link>
