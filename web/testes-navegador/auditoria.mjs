@@ -6,7 +6,9 @@ import { preview } from 'vite'
 const servidor = await preview({preview:{port:4320,strictPort:true}})
 const base = servidor.resolvedUrls.local[0].replace(/\/$/,'')
 const browser = await chromium.launch({headless:true})
-const context = await browser.newContext({viewport:{width:390,height:844}})
+// O service worker (modo aplicativo) tem teste próprio, pwa.mjs; aqui ele
+// tiraria a rede da página do alcance do route().
+const context = await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'})
 const erros=[]
 const page=await context.newPage()
 page.on('pageerror',e=>erros.push(e.message))

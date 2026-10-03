@@ -4,6 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <!--
+      Modo aplicativo (D5, 03/10/2026). crossorigin="use-credentials" é
+      obrigatório atrás do Cloudflare Access: sem ele o navegador pede o
+      manifesto SEM o cookie da sessão, recebe o desvio para o login e o site
+      não instala.
+    -->
+    <link rel="manifest" href="./manifest.webmanifest" crossorigin="use-credentials" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Enchentes" />
+    <!--
       viewport-fit=cover: no iPhone com notch, sem isto o mapa em tela cheia
       fica com faixa branca nas laterais em paisagem. O CSS usa env(safe-area-*)
       para não esconder legenda atrás do notch.

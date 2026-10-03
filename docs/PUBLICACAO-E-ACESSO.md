@@ -109,6 +109,33 @@ mexer em build, DNS ou código.
 O **repositório** e o branch **`tempo-real`**. Fechá-los quebraria o nível ao vivo (ver opção D abaixo),
 e o dado vem de fontes públicas — Defesa Civil e rede estadual. O pedido é sobre o site.
 
+### Modo aplicativo (instalar no celular) — decisão D5, 03/10/2026
+O site instala como aplicativo (manifesto `web/public/manifest.webmanifest`) e guarda uma cópia no
+aparelho por um *service worker* (`web/public/sw.js`, regras em `web/public/sw-regras.js`).
+
+- **Rede primeiro.** Com internet, tudo vem da rede, como antes; só os arquivos com hash no nome
+  (`assets/…-AbC123.js`), que nunca mudam, vêm do aparelho. **Sem internet**, abre a última cópia
+  guardada e mostra o último nível guardado, com a hora da medição — o site já marca leitura velha como
+  "não use como nível atual" — e o aviso "Sem conexão". O nível ao vivo espera a rede 2,5 s antes de
+  cair na cópia (o site desiste aos 3 s).
+- **Atrás do Access, dois cuidados já no código:** o manifesto é pedido com
+  `crossorigin="use-credentials"` (sem isso o navegador o pede sem o cookie, recebe o desvio para o
+  login e o site não instala); e o service worker **nunca guarda** desvio, resposta opaca, nada de
+  `*.cloudflareaccess.com`, nem HTML no lugar de JS/JSON — senão a tela de login viraria "o site" naquele
+  aparelho. O teste `web/testes-navegador/pwa.mjs` (na CI) simula a sessão vencida e confere isso.
+- **Sessão vencida:** com internet, a pessoa vê o login do Access como sempre; sem internet, vê a cópia
+  guardada (que ela já tinha visto com sessão válida).
+- **Versão nova:** o service worker novo assume na hora; a aba aberta mostra "Há uma versão nova do site
+  · Atualizar agora". Abas abertas conferem a cada 30 min.
+- **INTERRUPTOR — se algo der errado:** trocar `"ativo": true` por `"ativo": false` em
+  `web/public/pwa.json` e publicar. Na próxima abertura de cada aparelho com internet, o service worker
+  apaga tudo o que guardou, se desregistra e recarrega a página; o site volta a funcionar como antes do
+  modo aplicativo. Para religar, voltar a `true`.
+- **Conferir em produção:** em janela anônima (sessão nova do Access), abrir o site, entrar, e no
+  Chrome do Android ver "Instalar app"/"Adicionar à tela inicial"; depois, em modo avião, abrir o ícone.
+  No iPhone a instalação é por Compartilhar → Adicionar à Tela de Início.
+- O **Monitor** funciona sem internet pela mesma cópia, mas não ganhou avisos nem barra nova (D2).
+
 ---
 
 ## O estado de hoje (conferido em 05/09/2026)## O estado de hoje (conferido em 05/09/2026)

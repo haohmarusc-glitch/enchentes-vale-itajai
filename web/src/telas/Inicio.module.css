@@ -243,3 +243,22 @@
 .comoLer p {
   margin-top: 0.6rem;
 }
+
+.instalar {
+  border-radius: var(--raio-g);
+}
+
+.tituloInstalar {
+  font-size: 1.1rem;
+  margin: 0 0 0.3rem;
+}
+
+.botaoInstalar {
+  border: 0;
+  border-radius: 12px;
+  background: var(--acao-fundo);
+  color: var(--acao-tinta);
+  font-weight: 700;
+  padding: 0 1.1rem;
+  cursor: pointer;
+}

@@ -3,7 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import Municipal from './telas/Municipal'
 import estilos from './App.module.css'
 import AvisoLegal from './componentes/AvisoLegal'
-import { FaixaTopo, FolhaAviso, NavPrincipal, useEscopoApp } from './componentes/Casca'
+import { AvisosDoAplicativo, FaixaTopo, FolhaAviso, NavPrincipal, useEscopoApp } from './componentes/Casca'
 import FaixaEmergencia from './componentes/FaixaEmergencia'
 import { useAvisoLido, useLetra } from './dados/usarPreferencias'
 import LimiteDeErro from './componentes/LimiteDeErro'
@@ -55,6 +55,7 @@ export default function App() {
         </a>
         <FaixaTopo aoSaberMais={() => setFolhaPedida(true)} />
         <NavPrincipal />
+        <AvisosDoAplicativo />
         <main className="conteudo" id="conteudo" tabIndex={-1}>
           <LimiteDeErro oQue="esta tela">
             <Rotas />

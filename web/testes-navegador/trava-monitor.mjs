@@ -58,7 +58,7 @@ const falhas = []
 const medidas = {}
 
 for (const [largura, altura] of TELAS) {
-  const ctx = await navegador.newContext({ viewport: { width: largura, height: altura }, locale: 'pt-BR' })
+  const ctx = await navegador.newContext({ viewport: { width: largura, height: altura }, locale: 'pt-BR', serviceWorkers: 'block' })
   // Rede externa cortada: a geometria não pode depender do dado do dia.
   await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
   for (const rota of ROTAS) {
@@ -100,7 +100,7 @@ for (const [largura, altura] of TELAS) {
 
 // A barra nova, fora do Monitor, fica abaixo do modo ampliado (z-index 10000).
 {
-  const ctx = await navegador.newContext({ viewport: { width: 390, height: 844 } })
+  const ctx = await navegador.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' })
   await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
   const page = await ctx.newPage()
   await page.goto(`${base}/#/acu`, { waitUntil: 'load' })

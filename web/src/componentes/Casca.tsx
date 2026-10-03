@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import AvisoLegal from './AvisoLegal'
+import { useConexao, useNovaVersao } from '../dados/modoAplicativo'
 import estilos from './Casca.module.css'
 
 /**
@@ -203,4 +204,36 @@ export function useEscopoApp(ligado: boolean, letra: string) {
       delete raiz.dataset.letra
     }
   }, [ligado, letra])
+}
+
+/**
+ * Os dois avisos do modo aplicativo (D5), logo abaixo da faixa do 199:
+ *  - SEM CONEXÃO: o que está na tela é o que o aparelho guardou. Cada número
+ *    continua com a hora da medição, e o site já marca o que é velho — o aviso
+ *    diz por que pode estar velho.
+ *  - VERSÃO NOVA: o service worker mudou; esta aba roda o código anterior até
+ *    recarregar, e regra de segurança velha não fica na tela sem aviso.
+ */
+export function AvisosDoAplicativo() {
+  const online = useConexao()
+  const nova = useNovaVersao()
+  if (online && !nova) return null
+  return (
+    <div className={estilos.avisos}>
+      {!online ? (
+        <p className={estilos.semConexao} role="status">
+          <strong>Sem conexão.</strong> Você está vendo o que este aparelho guardou — confira a hora de
+          cada medição. Ligar para o 199 funciona sem internet.
+        </p>
+      ) : null}
+      {nova ? (
+        <p className={estilos.novaVersao} role="status">
+          Há uma versão nova do site.{' '}
+          <button type="button" className={estilos.atualizar} onClick={() => window.location.reload()}>
+            Atualizar agora
+          </button>
+        </p>
+      ) : null}
+    </div>
+  )
 }

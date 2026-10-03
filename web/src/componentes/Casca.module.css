@@ -203,3 +203,43 @@
   color: var(--tinta-fraca);
   text-align: center;
 }
+
+/* Avisos do modo aplicativo: no fluxo da página, nunca por cima do conteúdo. */
+.avisos {
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 0.6rem 1rem 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.semConexao,
+.novaVersao {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+}
+
+.semConexao {
+  background: var(--chip-sem-dado-fundo);
+  color: var(--tinta);
+  border-left: 4px solid var(--faixa-sem-dado);
+}
+
+.novaVersao {
+  background: var(--agua-fundo);
+  color: var(--tinta);
+  border-left: 4px solid var(--agua-clara);
+}
+
+.atualizar {
+  background: var(--acao-fundo);
+  color: var(--acao-tinta);
+  border: 0;
+  border-radius: 8px;
+  padding: 0 0.8rem;
+  font-weight: 700;
+  margin-left: 0.25rem;
+  cursor: pointer;
+}

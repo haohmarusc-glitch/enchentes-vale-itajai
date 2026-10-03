@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
+import { registrarModoAplicativo } from './dados/modoAplicativo'
 import './estilos/global.css'
 
 const raiz = document.getElementById('root')
@@ -15,3 +16,6 @@ createRoot(raiz).render(
     </HashRouter>
   </StrictMode>,
 )
+
+// Modo aplicativo (D5): só na versão publicada, e o site funciona igual sem ele.
+registrarModoAplicativo()

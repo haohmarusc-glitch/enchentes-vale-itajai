@@ -10,7 +10,7 @@ const base = servidor.resolvedUrls.local[0].replace(/\/$/, '')
 mkdirSync('../tmp/pesquisa-chegada', { recursive: true })
 try {
   for (const [largura, fuso] of [[390, 'Asia/Tokyo'], [1280, 'America/Sao_Paulo']]) {
-    const pagina = await navegador.newPage({ viewport: { width: largura, height: 950 }, timezoneId: fuso })
+    const pagina = await navegador.newPage({ viewport: { width: largura, height: 950 }, timezoneId: fuso, serviceWorkers: 'block' })
     const erros = []
     pagina.on('pageerror', (e) => erros.push(e.message))
     // A folha do aviso da primeira visita (testada na fumaça) tamparia o formulário.

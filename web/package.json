@@ -12,7 +12,8 @@
     "fumaca": "node testes-navegador/fumaca.mjs",
     "auditoria": "node testes-navegador/auditoria.mjs",
     "varredura": "node testes-navegador/varredura.mjs",
-    "trava-monitor": "node testes-navegador/trava-monitor.mjs"
+    "trava-monitor": "node testes-navegador/trava-monitor.mjs",
+    "pwa": "node testes-navegador/pwa.mjs"
   },
   "dependencies": {
     "@types/leaflet": "^1.9.22",

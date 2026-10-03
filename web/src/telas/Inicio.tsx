@@ -7,6 +7,7 @@ import { barragensDoRio, cidadesDoRio, eventosDoRio, rio as rioDoCadastro, topol
 import type { Cidade } from '../dados/tipos'
 import { estadoDaCidade, useAoVivo, type AoVivo } from '../dados/usarAoVivo'
 import { useCidadesSeguidas } from '../dados/usarPreferencias'
+import { useInstalar } from '../dados/modoAplicativo'
 import { vizinhasNoEixo } from '../logica/agora'
 import { descricaoDoRio } from '../logica/descricaoDoRio'
 import estilos from './Inicio.module.css'
@@ -112,6 +113,8 @@ export default function Inicio() {
           </Link>
         </li>
       </ul>
+
+      <Instalar />
 
       <details className={`cartao ${estilos.comoLer}`}>
         <summary>Como ler este site</summary>
@@ -300,5 +303,34 @@ function CartaoRio({ rioId, para, titulo, aoVivo }: { rioId: string; para: strin
         {cidades.length} cidades · {registros} picos históricos registrados
       </span>
     </Link>
+  )
+}
+
+/**
+ * O convite para ter o site como aplicativo (D5). Só aparece quando o navegador
+ * oferece a instalação, ou no iPhone, onde ela é pelo menu Compartilhar. Sem
+ * nenhum dos dois, não ocupa espaço.
+ */
+function Instalar() {
+  const { pode, iphone, instalar } = useInstalar()
+  if (!pode && !iphone) return null
+  return (
+    <section className={`cartao ${estilos.instalar}`}>
+      <h2 className={estilos.tituloInstalar}>Ter o site como aplicativo</h2>
+      <p className={estilos.instrucao}>
+        Abre com um toque, direto na sua cidade, e mostra a última leitura guardada mesmo sem
+        internet — sempre com a hora da medição.
+      </p>
+      {pode ? (
+        <button type="button" className={estilos.botaoInstalar} onClick={instalar}>
+          Instalar no celular
+        </button>
+      ) : (
+        <p className={estilos.instrucao}>
+          No iPhone: toque em <strong>Compartilhar</strong> (o quadrado com a seta) e depois em{' '}
+          <strong>Adicionar à Tela de Início</strong>.
+        </p>
+      )}
+    </section>
   )
 }

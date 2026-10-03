@@ -71,6 +71,8 @@ async function contexto(tela) {
   const ctx = await navegador.newContext({
     viewport: { width: tela.width, height: tela.height },
     isMobile: !!tela.isMobile, hasTouch: !!tela.hasTouch, locale: 'pt-BR',
+    // O service worker (modo aplicativo) tem teste próprio, pwa.mjs.
+    serviceWorkers: 'block',
   })
   // A folha do aviso completo da primeira visita é testada na fumaça; aqui ela
   // tamparia os controles que a varredura precisa tocar.
