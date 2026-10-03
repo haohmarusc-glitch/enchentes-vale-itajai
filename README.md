@@ -505,6 +505,14 @@ o projeto.
     - A emergência da DC-01 fica só ~0,5 m acima do mar, e a da DC-09 ~0,6 m; as duas abaixo do terreno em volta.
     - A da DC-06 (Itamirim) fica ~2,0 m acima do mar, já no nível do chão em volta.
     - Falta a altitude oficial do zero, o datum dos pontos cotados e a ligação NR → IBGE (seção 6 do doc).
+  - **A cidade Itajaí mostra as onze réguas (03/10/2026).** O cartão "Agora" e a tela `/itajai` mostram cada
+    régua do Açu, do Mirim (com os dois braços) e dos ribeirões como um cartão "Agora" em miniatura: faixa nas
+    cotas dela, número, idade e régua colorida. Antes, a cidade escolhida pelo Açu mostrava só as cotas das três
+    réguas do Açu. O início mostra também "Mirim acima: Brusque".
+  - [ ] **O selo "maré" vem do cadastro (`alerta_automatico: false`) e está errado em quatro réguas.** A medição
+    diz que DC-02, DC-05, DC-07 e DC-08 quase não sentem a maré. A trava do aviso pode continuar, mas o texto
+    "sobe e desce com a maré" não vale para elas. Decisão do Jefferson: trocar o motivo dessas quatro no
+    `estacoes.json`.
   - [ ] Decidir se o painel mostra "quanto do nível é maré" nas réguas com correlação ≥ 0,8.
 
 **Complemento da quinta auditoria, 19/09/2026** (`docs/AUDITORIA-2026-09-19-quatro-pendencias-complemento.md`): nova rodada pelo Chrome. Duas coisas mudam de fato.

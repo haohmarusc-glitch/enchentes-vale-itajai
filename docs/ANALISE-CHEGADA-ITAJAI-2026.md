@@ -261,6 +261,27 @@ Pedido do Jefferson: *"busca a altitude do zero das réguas e cruza com o terren
   - Exemplo: 1,5 m na DC-01 é ~0,5 m acima do mar; 1,5 m na DC-03 é ~1,1 m acima do mar.
   - Por isso o site nunca soma, compara nem faz média de réguas de Itajaí.
 
+### Busca da altitude oficial (03/10/2026)
+
+**A altitude do zero não foi achada para nenhuma régua**: nem DC-01 a DC-11, nem DCSC-00030 (Ilhota).
+
+A rede deste ambiente bloqueou os originais: o PLANCON v17, a JICA, a Marinha e o IBGE. Os números abaixo vêm
+de **trechos devolvidos pela busca**, não de documento aberto, e **nenhum entra em `data/`** antes de alguém
+abrir o original.
+
+| achado | valor | fonte | confiança |
+|---|---|---|---|
+| Conversão da maré da Marinha para o IBGE na foz | **IBGE = DHN − 0,463 m** (maré dos Práticos, ~1 km da foz, nov/2009–mai/2010) | JICA 2011, Anexo B (`openjicareport.jica.go.jp/pdf/12043618_02.pdf`) | média: a mesma fórmula voltou em 4 buscas; não está no repositório |
+| Maré alta de projeto na foz | 1,49 m IBGE (média das máximas mensais) | JICA 2011, Anexo B | média |
+| Ficha F-41 da estação 60235 (Capitania dos Portos, Itajaí) | NR = zero do marégrafo + 189,6 cm; nível médio = NR + 59,4 cm | Marinha, F-41 60235 v1/2012 | média-alta: os três números fecham entre si, e os 59,4 cm batem com o "Nível Médio 0,6 m" da tábua |
+| ANA, campo "altitude" das estações de Ilhota/Itajaí | 0,0 ou vazio | `data/brutos/ana-inventario-api-2026-09-08.json` | o campo é marcador; não é o zero |
+
+**Conta minha, não publicada:** nível médio do mar no porto ≈ 0,594 − 0,463 ≈ **+0,13 m IBGE**.
+
+- Só vale se o NR da JICA (2009–10) for o mesmo da F-41 (2010–11). Nada confirma isso.
+- Se valer, os pontos cotados do ArcGIS, se estiverem no IBGE, ficam uns 13 cm acima do "nível médio do mar" da
+  tabela 3.
+
 ### O que fecharia a conta
 
 1. **A altitude oficial do zero de cada régua, ou da RN dela.** Sem ofício ao município (regra do projeto).
