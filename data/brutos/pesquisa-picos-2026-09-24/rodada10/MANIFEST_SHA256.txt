@@ -1,0 +1,7 @@
+dc4fea49e518438b650e698eac5a1e138ed4ae54ac50323f1d552bb16f03cbca  ./README_resultados.md
+0a33df8b19aba02363e609ae245eb42d53ab1bd2b35f3012fda8be822d90c494  ./fontes/boletim_hidrometeorologico.html
+3c4de8650f657f0f924417f2996c815a9574d34ac7395ca1a34f20fbbf775714  ./fontes/chm_headers.txt
+788bd6ccb5aab5762cfabc7b7798fd33a22240f52d0a7fa0fc993968c83af8ed  ./fontes/chm_tabuas.html
+d88a3a2a5d63a38d12dfba8ad70e1ed00b43f5f60ecc1b729143851a38acf6bf  ./fontes/headers.txt
+e0955209ef7911de7b9858f8c867fbdc11110b63372a12377fce10df3477dff6  ./instrucoes/prompt-picos-v3.7.txt
+3216cdb472d7a5a22407f99588e3630530c4a7a99120c28d2ffbb851f7762f29  ./resultados_documentos.csv

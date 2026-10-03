@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+date: Sat, 03 Oct 2026 03:04:48 GMT
+
+HTTP/2 200 
+server: openresty
+date: Sat, 03 Oct 2026 03:05:15 GMT
+content-type: text/html; charset=utf-8
+x-logged-in: False
+p3p: CP="NOI ADM DEV PSAi COM NAV OUR OTRo STP IND DEM"
+cache-control: max-age=60, public, must-revalidate
+expires: 1791000291.717
+x-served-by: www.aguas.sc.gov.br
+

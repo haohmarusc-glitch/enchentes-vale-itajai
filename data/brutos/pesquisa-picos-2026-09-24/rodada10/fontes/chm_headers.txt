@@ -1,0 +1,27 @@
+HTTP/1.1 200 OK
+date: Sat, 03 Oct 2026 03:05:16 GMT
+
+HTTP/2 403 
+date: Sat, 03 Oct 2026 03:05:16 GMT
+content-type: text/html; charset=UTF-8
+content-length: 6107
+accept-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cf-mitigated: challenge
+content-security-policy: default-src 'none'; script-src 'nonce-CisWrK4wwr24jCO7cGV0DU' 'unsafe-eval' https://challenges.cloudflare.com; script-src-attr 'none'; style-src 'unsafe-inline'; img-src 'self' https://challenges.cloudflare.com; connect-src 'self' https://challenges.cloudflare.com; frame-src 'self' https://challenges.cloudflare.com blob:; child-src 'self' https://challenges.cloudflare.com blob:; worker-src blob:; form-action http: https:; base-uri 'self'
+server: cloudflare
+critical-ch: Sec-CH-UA-Bitness, Sec-CH-UA-Arch, Sec-CH-UA-Full-Version, Sec-CH-UA-Mobile, Sec-CH-UA-Model, Sec-CH-UA-Platform-Version, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Platform, Sec-CH-UA, UA-Bitness, UA-Arch, UA-Full-Version, UA-Mobile, UA-Model, UA-Platform-Version, UA-Platform, UA
+cross-origin-embedder-policy: require-corp
+cross-origin-opener-policy: same-origin
+cross-origin-resource-policy: same-origin
+origin-agent-cluster: ?1
+permissions-policy: accelerometer=(),camera=(),clipboard-read=(),clipboard-write=(),geolocation=(),gyroscope=(),hid=(),magnetometer=(),microphone=(),payment=(),publickey-credentials-get=(),screen-wake-lock=(),serial=(),sync-xhr=(),usb=(),xr-spatial-tracking=*
+referrer-policy: same-origin
+server-timing: chlray;desc="a448b96619034606"
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+strict-transport-security: max-age=31536000; includeSubDomains
+set-cookie: __cf_bm=5R_vaZAxirkudGxWvRKrrDtGzqET9Cw4URCiD.PTlgE-1790996716.4945753-1.0.1.1-OIwwGZT0GKJr8h.04P.28mNRCiBl9wbVdtl2FzAMIiX.W333McreV7rANyFysjVL5pK1NyXfgQlf2yJUQ2xj.AdcgtNMFgk9jU1KZ5k18Y9m7PXFSvA0eiP42iVse.Cp; HttpOnly; SameSite=None; Secure; Path=/; Domain=marinha.mil.br; Expires=Sat, 03 Oct 2026 03:35:16 GMT
+expect-ct: max-age=86400, enforce
+x-xss-protection: 1; mode=block
+cf-ray: a448b96619034606-DFW
+
