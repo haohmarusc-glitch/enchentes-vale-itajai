@@ -102,7 +102,12 @@ Armadilhas conhecidas:
 
 ## 6. Prompt para colar em outra IA
 
-Versão 3.7, de 02/10/2026. Junta à 3.6 as melhorias da revisão feita pela pesquisa externa (§16): numeração do
+Versão 3.8, de 03/10/2026. Atualiza a 3.7 com o que chegou depois dela: as respostas e a planilha do Prof.
+Cordero (FURB) e a conversão parcial de Blumenau (`docs/fontes-academicas.md`), e a décima rodada (§17). Muda o
+item 11: a troca de régua de Blumenau está respondida, e o que falta é uma terceira fonte para 1929–1983, onde a
+Tabela 4 e a planilha da FURB discordam. O item 4 registra a consulta de 03/10/2026 (setembro ainda não saiu), o
+item 15 registra o 403 da Marinha, e a lista "já tenho" ganha a planilha e o boletim capturado. A 3.7, de 02/10/2026,
+juntou à 3.6 as melhorias da revisão feita pela pesquisa externa (§16): numeração do
 FORMATO sem ambiguidade, registro datado do que ainda não foi publicado, espelho/cache identificado, SHA-256
 por arquivo, ZIPs independentes e privacidade. A 3.6 tinha sido atualizada com a sétima rodada (§14), as decisões do Jefferson de 02/10/2026 e a
 resposta da FURB ao ofício C25 e, no mesmo dia, com a oitava rodada (§15): sai a Tabela 7.5.1 do JICA (lida), sai a referência da Tabela 4 de Blumenau
@@ -160,8 +165,9 @@ PRIORIDADE 2 — boletins estaduais com a tabela "Níveis máximos atingidos nos
 
 4. A SDE/SC publica o "Boletim Hidrometeorológico" em aguas.sc.gov.br. Já tenho as edições 010/2023,
    011/2023, 001/2024, 006/2024 e 087 (007/2026, sem cheia), e a auditoria do índice até 07/2026. Quero:
-   a edição de set/2026, verificando se já foi publicada na data da execução (até 01/10/2026 não
-   existia; se ainda não existir, registre data/hora da consulta e a URL oficial); e relatório equivalente de
+   a edição de set/2026, verificando se já foi publicada na data da execução (em 03/10/2026 a página
+   listava, em 2026, só 01, 02, 03, 06 e 07/2026; faltavam 04, 05, 08 e 09/2026 — se alguma dessas já
+   tiver saído, mande; se não, registre data/hora da consulta e a URL oficial); e relatório equivalente de
    ANTES de 2020 (out/2015, jun/2017) de outro órgão (Defesa Civil de SC, Epagri/CIRAM), porque o
    índice da SDE não cobre esse período.
 
@@ -213,15 +219,19 @@ PRIORIDADE 5 — de que régua é cada série (sem isso, os números não se com
     jul/2026, oito estações fluviométricas), e a prefeitura diz que o histórico de níveis "faz parte do
     sistema antigo de monitoramento". Quero saber a régua e o zero do sistema ANTIGO, e se a estação nova
     manteve o mesmo zero.
-11. Blumenau, a troca de régua de 2011: a FURB (Prof. Ademar Cordero) me confirmou que a Tabela 4 de
-    Cordero & Medeiros está na referência IBGE (régua antiga + 0,20 m), que set/2011 foi 12,60 m na
-    régua, 12,80 m no IBGE e 13,00 m no GPS, e que depois de 2011 "a régua nova tem que somar 40 cm aos
-    níveis da régua antiga". Falta o SENTIDO e a DATA dessa troca. Quero um documento da ANA (ficha ou
-    histórico da estação 83800002, alteração de referência de nível/RN), do CEOPS ou da Defesa Civil de
-    Blumenau que diga: (a) em que data a régua da Ponte Adolfo Konder mudou de referência; (b) se a
-    mesma água passou a ser lida 0,40 m mais BAIXA ou mais ALTA. E a referência da lista "Enchentes
-    Registradas" do AlertaBlu a partir de 2008 (régua antiga, régua nova ou IBGE). Não converta nada:
-    mande o número como a fonte publica.
+11. Blumenau, picos de 1929 a 1983. JÁ ESTÁ RESOLVIDO, não pesquise: as três referências da régua da
+    Ponte Adolfo Konder (régua antiga, até a cheia de set/2011; zero do IBGE = régua antiga + 0,20 m;
+    GPS = régua de hoje = régua antiga + 0,40 m, régua nova instalada no pilar da ponte depois de 2011)
+    e a referência da lista "Enchentes Registradas" do AlertaBlu (régua antiga em 2008–2011, régua nova
+    de 2014 em diante). O QUE FALTA: de 1929 a 1983, a Tabela 4 de Cordero & Medeiros (XV SBRH, 2003,
+    referência IBGE) e uma planilha de trabalho da FURB, que eu já tenho, discordam em 0,20 a 0,30 m para
+    a mesma cheia — por exemplo 22/12/1980 (13,27 × 13,02 m), 12/09/1961 (10,35 × 10,10 m), 04/03/1983
+    (10,60 × 10,35 m) e 24/09/1983 (11,75 × 11,50 m). Quero uma TERCEIRA fonte publicada, de antes de
+    2003, com os picos de Blumenau desse período E a referência que ela declara: relatório ou boletim
+    do CEOPS/FURB, do DNOS ou do DNAEE, anuário fluviométrico ou ficha da estação 83800002 (ANA/DNAEE),
+    livro ou relatório técnico sobre as enchentes de Blumenau. Mande o número como a fonte publica, com
+    a referência que ela diz (régua, IBGE ou "não declarada"). Se aparecer, também serve a data exata de
+    instalação da régua nova (entre set/2011 e set/2013), mas é prioridade baixa.
 12. Gaspar e Indaial — eventos que tenho, mas sem régua (estão FORA da minha série até isso se
     resolver):
     (a) Gaspar: de que régua e de que zero é o "metros acima da normalidade" dos boletins da Defesa
@@ -260,7 +270,9 @@ PRIORIDADE 7 — documentos técnicos:
 15. Tábua de marés de 2027 do porto de Itajaí (SC), da Marinha do Brasil (Centro de Hidrografia da
     Marinha, DHN): verifique se a publicação já saiu na data da execução e, se sim, baixe o PDF anual
     com as páginas do porto de Itajaí. Se ainda não estiver disponível, registre data/hora da consulta,
-    URL oficial e status de acesso (nas capturas de 21 e 28/09/2026 só havia a de 2026). Já tenho a de 2026.
+    URL oficial e status de acesso (nas capturas de 21 e 28/09/2026 só havia a de 2026; em 03/10/2026 a
+    página da Marinha respondeu HTTP 403, com desafio do Cloudflare — se acontecer de novo, registre e
+    procure o PDF por outro endereço oficial da Marinha). Já tenho a de 2026.
 16. Barragem Oeste (Taió): o painel público da Asthon dá 99,96 hm³ de capacidade, e esse número não
     aparece em nenhum documento que tenho. Já sei que 83 hm³ (JICA) é o volume até a cota 360 m e que o
     alteamento de 2 m aumentou a capacidade; o Plano de Recursos Hídricos da bacia (cap. A2, Tabela A2.4,
@@ -273,7 +285,9 @@ PRIORIDADE 7 — documentos técnicos:
     a Barragem Sul já tenho 104,03 hm³ de capacidade total. Não calcule percentuais.
 
 JÁ TENHO, NÃO PRECISA MANDAR: os boletins SDE 010/2023, 011/2023, 001/2024, 006/2024 e 087/2026 (e a
-auditoria do índice); os PLANCON de Rio dos Cedros v1.07 e 10.7, o de Ilhota e o de Itajaí v17
+auditoria do índice) e a página do Boletim Hidrometeorológico capturada em 03/10/2026; a planilha "Picos
+de Enchentes Registrados" de Blumenau, 1852–2024, com as colunas IBGE e régua nova (FURB, 02/10/2026);
+os PLANCON de Rio dos Cedros v1.07 e 10.7, o de Ilhota e o de Itajaí v17
 (22/12/2025); a tese de Valdeir D. da Silva (UEM, 2017); o manual "Operação de Barragens" (2024); o
 relatório de vulnerabilidade costeira da UFSC (2017); o plano de saúde de Rio dos Cedros; o Estudo
 Socioambiental de Taió; o trabalho de Orli sobre Taió (SED/SC, 2017); a nota da Autoridade Portuária de
@@ -294,11 +308,11 @@ os blogs Adalberto Day, Dalva Day e Monique Becker (Blumenau) e o
 SOS Rios do Brasil (Wayback, set/2013); e as da rodada anterior (Trombudo Central, Timbó, Rio dos
 Cedros, Lontras, Botuverá, Vidal Ramos, Ituporanga).
 
-FORMATO — para os itens com nível, cota, data ou hora (itens 1 a 9, 13 e 14), uma linha por número:
+FORMATO — para os itens com nível, cota, data ou hora (itens 1 a 9, 11, 13 e 14), uma linha por número:
 cidade | data (AAAA-MM-DD) | hora | nível (m) | régua/estação/ponte (ou "não declarada") |
 PICO, leitura de um horário ou COTA de alerta? | título da fonte | órgão/veículo | URL exata |
 página do PDF | trecho literal | nome do arquivo no zip
-Para identificação de régua/referência (itens 10 a 12) e documentos técnicos (itens 15 e 16), uma linha por
+Para identificação de régua/referência (itens 10 e 12) e documentos técnicos (itens 15 e 16), uma linha por
 documento:
 o que se pediu | título | órgão | URL exata | página | trecho literal que responde | nome do arquivo.
 
@@ -308,9 +322,10 @@ REGRAS:
 - Não confunda cidades: boletins de Itajaí, Ilhota e Gaspar citam o nível de BLUMENAU (15,34 m em
   1983, 15,46 m em 1984, 11,52 m em 2008, 12,60 m em 2011, 9,49 m em 2023), e o "10,03 m em 2011"
   de Botuverá é de BRUSQUE.
-- Em Blumenau, o mesmo pico aparece em referências diferentes: em set/2011, 12,60 (régua), 12,80
-  (IBGE) e 13,00 (GPS); em 2008, 11,52 (Defesa Civil) e 11,72 (CEOPS). Diga sempre de qual fonte veio
-  cada número; não troque um pelo outro.
+- Em Blumenau, o mesmo pico aparece em três referências: régua antiga, IBGE (+0,20 m) e GPS = régua de
+  hoje (+0,40 m). Em set/2011, 12,60 (régua antiga), 12,80 (IBGE) e 13,00 (GPS); em 2008, 11,52 (Defesa
+  Civil, régua antiga) e 11,72 (CEOPS, IBGE). Diga sempre de qual fonte veio cada número e em que
+  referência ELA diz que está; não troque um pelo outro e não converta.
 - Hora sempre com o fuso que a fonte usar; se ela não disser, escreva "fuso não declarado".
 - Se não achar nada para um item, escreva "nada encontrado".
 - Se fontes diferentes dão valores diferentes para o mesmo evento, liste todas.
