@@ -265,3 +265,18 @@ certeza alta**. Feito em um único commit por `scripts/converter_blumenau.py --a
 * **A regra bloqueante continua**, para os 67 restantes. `data/desastres/correspondencias.json` é uma foto de
   21/09/2026 e não foi regerado.
 
+### As seis cheias da planilha que faltavam no cadastro (03/10/2026, decisão do Jefferson)
+
+* **Quatro de jul–ago/1983** (18/07 10,95 m; 27/07 10,38 m; 29/07 11,08 m; 02/08 11,20 m, valores da coluna IBGE da
+  planilha): picos secundários da cheia longa de 1983, que não estão na Tabela 4 publicada nem na lista do AlertaBlu.
+  Entraram com `referencia: null` e `referencia_hipotese` "IBGE", porque em 1929–1983 a coluna IBGE da planilha discorda
+  da Tabela 4. Ficam fora da comparação com o nível de agora. Confiança `media`: planilha pessoal, não publicada, com
+  erros de transcrição conhecidos em outros trechos.
+* **08/10/2023, 9,49 m**, na régua de hoje: de 2013 em diante as colunas da planilha são iguais e batem com a lista
+  oficial nas outras seis cheias de out–nov/2023. Fica um dia antes da crista de 09/10/2023 (10,19 m); a planilha a conta
+  como cheia separada. Confiança `media`.
+* **26/05/2010** (8,64 m IBGE = 8,84 m na régua de hoje) **não virou registro novo**: é quase certamente a cheia de
+  26/04/2010 já cadastrada (8,46 m na régua antiga = 8,86 m na de hoje) — mesmo dia, 2 cm de diferença, mês e dígitos
+  trocados. Ficou como divergência desse registro, para não contar a mesma cheia duas vezes.
+* Cadastro de Blumenau: 124 → 129 registros (58 na régua de hoje, 71 fora da comparação).
+

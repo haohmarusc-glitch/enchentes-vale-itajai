@@ -104,6 +104,8 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   publicados. Ficaram como estavam **67**: 60 de 1929–1983 em que a Tabela 4 e a planilha do Cordero
   discordam em ~0,20–0,30 m, 4 inferidos sem par na lista do AlertaBlu e 3 pendentes (janela da troca
   em 2013; 12/07/2026 sem régua). **Sem mais perguntas ao Prof. Cordero** (decisão de 03/10/2026).
+  Depois, também em 03/10/2026, entraram cinco cheias da planilha: quatro de jul–ago/1983 com `referencia: null`
+  (trecho em disputa) e 08/10/2023 na régua; 26/05/2010 virou divergência de 26/04/2010.
 - Enquanto `data/enchentes.json._meta.REGRA_REFERENCIA_BLUMENAU` existir:
   1. `referencia` é rótulo do registro, com conjunto fechado: `"régua"` (a de hoje),
      `"IBGE (régua + 0,20 m)"` ou `null`. Hipóteses vão em `referencia_hipotese` ou `nota`,

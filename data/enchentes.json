@@ -933,6 +933,50 @@
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
+      "data": "1983-07-18",
+      "pico_m": 10.95,
+      "confianca": "media",
+      "fonte": "Prof. Ademar Cordero (FURB), planilha \"Picos de Enchentes Registrados\" enviada por e-mail em 02/10/2026, linha 56 — bruto data/brutos/furb-cordero-2026-10-02/Picos-Blumenau-1888-2024-IBGE-GPS.xls (transcrição em data/brutos/furb-cordero-2026-10-02/transcricao.tsv)",
+      "nota": "Cheia da planilha do Prof. Cordero que não está na Tabela 4 publicada nem na lista do AlertaBlu: pico secundário da cheia longa de julho–agosto de 1983 (a crista foi 09/07/1983). A planilha dá 10,95 m na coluna \"IBGE\" e 11,15 m na \"régua nova\". Fica com referencia null porque, em 1929–1983, a coluna IBGE da planilha discorda da Tabela 4 em ~0,20–0,30 m (docs/fontes-academicas.md): sem saber qual vale, não entra na comparação com o nível de agora. Cadastrada em 03/10/2026 por decisão do Jefferson.",
+      "referencia": null,
+      "referencia_hipotese": "IBGE (régua + 0,20 m), pela coluna da planilha; trecho 1929–1983 em disputa com a Tabela 4"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-07-27",
+      "pico_m": 10.38,
+      "confianca": "media",
+      "fonte": "Prof. Ademar Cordero (FURB), planilha \"Picos de Enchentes Registrados\" enviada por e-mail em 02/10/2026, linha 57 — bruto data/brutos/furb-cordero-2026-10-02/Picos-Blumenau-1888-2024-IBGE-GPS.xls (transcrição em data/brutos/furb-cordero-2026-10-02/transcricao.tsv)",
+      "nota": "Cheia da planilha do Prof. Cordero que não está na Tabela 4 publicada nem na lista do AlertaBlu: pico secundário da cheia longa de julho–agosto de 1983 (a crista foi 09/07/1983). A planilha dá 10,38 m na coluna \"IBGE\" e 10,58 m na \"régua nova\". Fica com referencia null porque, em 1929–1983, a coluna IBGE da planilha discorda da Tabela 4 em ~0,20–0,30 m (docs/fontes-academicas.md): sem saber qual vale, não entra na comparação com o nível de agora. Cadastrada em 03/10/2026 por decisão do Jefferson.",
+      "referencia": null,
+      "referencia_hipotese": "IBGE (régua + 0,20 m), pela coluna da planilha; trecho 1929–1983 em disputa com a Tabela 4"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-07-29",
+      "pico_m": 11.08,
+      "confianca": "media",
+      "fonte": "Prof. Ademar Cordero (FURB), planilha \"Picos de Enchentes Registrados\" enviada por e-mail em 02/10/2026, linha 58 — bruto data/brutos/furb-cordero-2026-10-02/Picos-Blumenau-1888-2024-IBGE-GPS.xls (transcrição em data/brutos/furb-cordero-2026-10-02/transcricao.tsv)",
+      "nota": "Cheia da planilha do Prof. Cordero que não está na Tabela 4 publicada nem na lista do AlertaBlu: pico secundário da cheia longa de julho–agosto de 1983 (a crista foi 09/07/1983). A planilha dá 11,08 m na coluna \"IBGE\" e 11,28 m na \"régua nova\". Fica com referencia null porque, em 1929–1983, a coluna IBGE da planilha discorda da Tabela 4 em ~0,20–0,30 m (docs/fontes-academicas.md): sem saber qual vale, não entra na comparação com o nível de agora. Cadastrada em 03/10/2026 por decisão do Jefferson.",
+      "referencia": null,
+      "referencia_hipotese": "IBGE (régua + 0,20 m), pela coluna da planilha; trecho 1929–1983 em disputa com a Tabela 4"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "1983-08-02",
+      "pico_m": 11.2,
+      "confianca": "media",
+      "fonte": "Prof. Ademar Cordero (FURB), planilha \"Picos de Enchentes Registrados\" enviada por e-mail em 02/10/2026, linha 59 — bruto data/brutos/furb-cordero-2026-10-02/Picos-Blumenau-1888-2024-IBGE-GPS.xls (transcrição em data/brutos/furb-cordero-2026-10-02/transcricao.tsv)",
+      "nota": "Cheia da planilha do Prof. Cordero que não está na Tabela 4 publicada nem na lista do AlertaBlu: pico secundário da cheia longa de julho–agosto de 1983 (a crista foi 09/07/1983). A planilha dá 11,20 m na coluna \"IBGE\" e 11,40 m na \"régua nova\". Fica com referencia null porque, em 1929–1983, a coluna IBGE da planilha discorda da Tabela 4 em ~0,20–0,30 m (docs/fontes-academicas.md): sem saber qual vale, não entra na comparação com o nível de agora. Cadastrada em 03/10/2026 por decisão do Jefferson.",
+      "referencia": null,
+      "referencia_hipotese": "IBGE (régua + 0,20 m), pela coluna da planilha; trecho 1929–1983 em disputa com a Tabela 4"
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
       "data": "1983-09-24",
       "pico_m": 11.75,
       "confianca": "alta",
@@ -1107,7 +1151,15 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "régua antiga",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,46 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,46 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "divergencias": [
+        {
+          "pico_m": 8.84,
+          "fonte": "Prof. Ademar Cordero (FURB), planilha \"Picos de Enchentes Registrados\" enviada por e-mail em 02/10/2026, linha 68 — bruto data/brutos/furb-cordero-2026-10-02/Picos-Blumenau-1888-2024-IBGE-GPS.xls (transcrição em data/brutos/furb-cordero-2026-10-02/transcricao.tsv)",
+          "referencia_publicada": "régua de hoje",
+          "nota": "A planilha dá 26/05/2010, com 8,64 m na coluna IBGE e 8,84 m na régua nova. Tratada como a MESMA cheia deste registro (26/04/2010, 8,46 m na régua antiga = 8,86 m na de hoje): o dia é o mesmo, a diferença é de 2 cm, e mês e dígitos parecem trocados na digitação. Não virou registro novo para não contar a cheia duas vezes. 03/10/2026, pedido do Jefferson."
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1267,6 +1319,16 @@
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
       "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "data": "2023-10-08",
+      "pico_m": 9.49,
+      "confianca": "media",
+      "fonte": "Prof. Ademar Cordero (FURB), planilha \"Picos de Enchentes Registrados\" enviada por e-mail em 02/10/2026, linha 77 — bruto data/brutos/furb-cordero-2026-10-02/Picos-Blumenau-1888-2024-IBGE-GPS.xls (transcrição em data/brutos/furb-cordero-2026-10-02/transcricao.tsv)",
+      "nota": "Cheia da planilha do Prof. Cordero que não está na lista do AlertaBlu. Na planilha, de 2013 em diante as colunas IBGE e régua nova são iguais e batem com a lista oficial nas outras seis cheias de out–nov/2023: está na régua de hoje. Fica um dia antes da crista de 09/10/2023 (10,19 m); a planilha a conta como cheia separada. Cadastrada em 03/10/2026 por decisão do Jefferson.",
+      "referencia": "régua"
     },
     {
       "rio": "itajai-acu",
