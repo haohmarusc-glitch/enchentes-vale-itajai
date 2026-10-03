@@ -73,9 +73,22 @@ class Eventos(unittest.TestCase):
         self.assertEqual(eventos(blu, [T0] * len(blu)), [])
 
     def test_crista_na_ponta_da_janela_nao_vale_como_crista(self):
-        self.assertEqual(crista([1, 2, 3, 4, 5], 0, 4), (4, True))
-        self.assertEqual(crista([1, 3, 2, 1, 1], 0, 4), (1, False))
+        self.assertEqual(crista([1, 2, 3, 4, 5], 0, 4), (4, True, False))
+        self.assertEqual(crista([1, 3, 2, 1, 1], 0, 4), (1, False, False))
         self.assertIsNone(crista([1, None, None, None, 2], 0, 4))
+
+    def test_crista_nunca_cai_em_hora_sem_leitura_bruta(self):
+        # 12/09/2026, DC-11: a média móvel deu o máximo às 07h, hora sem leitura.
+        suave = [4.0, 4.2, 4.3, 4.35, 4.2, 4.1, 4.0, 3.9, 3.8, 3.7]
+        bruta = [4.0, 4.2, 4.3, None, 4.2, 4.1, 4.0, 3.9, 3.8, 3.7]
+        k, _, lacuna = crista(suave, 0, 9, bruta)
+        self.assertEqual(k, 2)
+        self.assertFalse(lacuna, "uma hora só faltando não é lacuna")
+
+    def test_lacuna_de_duas_horas_deixa_o_horario_indeterminado(self):
+        suave = [4.0, 4.2, 4.3, 4.2, 4.1, 4.1, 4.0, 3.9, 3.8, 3.7]
+        bruta = [4.0, 4.2, 4.3, 4.2, None, None, 4.0, 3.9, 3.8, 3.7]
+        self.assertTrue(crista(suave, 0, 9, bruta)[2])
 
 
 class Leitura(unittest.TestCase):

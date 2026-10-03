@@ -507,7 +507,7 @@ o projeto.
       sente 70%, 1 h depois; a DC-02 e a DC-10 quase nada.
     - Nos quatro eventos moderados medidos, a crista sem maré em Itajaí veio **+1,5 a +5 h** depois do platô de
       Blumenau. Blumenau fica a ~70 km pelo rio, então **não é a água de Blumenau chegando**: é o baixo vale
-      subindo junto, com a mesma chuva. A faixa de 14–17 h não muda.
+      subindo junto, com a mesma chuva. A faixa da JICA não muda por isso.
   - A publicação "Blumenau" da página de Itajaí carimbava **3 h atrasada**. Saiu do ar em 19/09. Se voltar, o
     coletor precisa corrigir o fuso.
   - **Zero das réguas × terreno (estimativa, não oficial):** a leitura de cada régua com a água no nível médio

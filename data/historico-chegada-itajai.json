@@ -5,11 +5,11 @@
   "min_eventos": 5,
   "nota": "Nenhum par de picos com horários e estações conferidos está disponível nesta base. O caso de 2011 é evidência histórica publicada, mas não constitui média nem validação para uma cheia futura.",
   "referencia_estudo": {
-    "horas_min": 14,
+    "horas_min": 12,
     "horas_max": 17,
-    "rotulo": "JICA (2011), seção 3.5.4 — resumo de hidrogramas de projeto",
-    "url": "https://openjicareport.jica.go.jp/pdf/12043659_02.pdf",
-    "nota": "Faixa de um estudo, não intervalo de confiança, limites universais ou média de cheias observadas. Não foi recalibrada com o caso de 2011."
+    "rotulo": "JICA (2011), Tabela 7.5.1 — intervalo entre os picos de hidrogramas de projeto em Blumenau e em Itajaí (cheias de 5 a 50 anos)",
+    "url": "https://openjicareport.jica.go.jp/pdf/12043584_01.pdf",
+    "nota": "Faixa de um estudo, não intervalo de confiança, limites universais ou média de cheias observadas. A Tabela 7.5.1 (Vol. III-A, p. A-80) dá 17 / 15 / 14 / 12 h para 5 / 10 / 25 / 50 anos; o resumo do Vol. II (seção 3.5.4) diz 14–17 h e era a faixa usada até 03/10/2026. É intervalo entre picos de vazão calculados, não o tempo de viagem de uma mesma parcela de água. Não foi recalibrada com o caso de 2011 nem com os eventos de 2026."
   },
   "eventos": [
     {

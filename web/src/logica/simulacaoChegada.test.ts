@@ -73,5 +73,5 @@ test('caso de 2011 não se transforma em média nem altera a referência JICA', 
   assert.equal(historico.estado, 'calibracao_pendente')
   assert.equal(historico.eventos[0]!.status, 'pendente')
   assert.equal(historico.eventos[0]!.pico_jusante, null)
-  assert.deepEqual([historico.referencia_estudo.horas_min, historico.referencia_estudo.horas_max], [14, 17])
+  assert.deepEqual([historico.referencia_estudo.horas_min, historico.referencia_estudo.horas_max], [12, 17])
 })

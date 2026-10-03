@@ -192,10 +192,11 @@
       "rio": "itajai-acu",
       "de": "blumenau",
       "para": "itajai",
-      "horas_min": 14,
+      "horas_min": 12,
       "horas_max": 17,
       "confianca": "alta",
-      "fonte": "Estudo JICA, Preparatory Survey 2011, seções 7.5.3-7.5.4 (faixa afirmada pelo estudo)"
+      "fonte": "Estudo JICA 2011, Tabela 7.5.1 (Vol. III-A, p. A-80): 17 / 15 / 14 / 12 h entre os picos de vazão em Blumenau e em Itajaí nas cheias de projeto de 5 / 10 / 25 / 50 anos",
+      "nota": "Envelope da Tabela 7.5.1 inteira, adotado em 03/10/2026 depois de revisão externa. Até então a faixa era 14–17 h, o resumo do texto do Vol. II (seção 3.5.4), que deixa de fora o cenário de 50 anos. São intervalos entre picos de hidrogramas CALCULADOS, não o tempo de viagem de uma mesma parcela de água. Cada coluna é um período de retorno: não empilhar com trechos de outra coluna."
     },
     {
       "rio": "itajai-mirim",

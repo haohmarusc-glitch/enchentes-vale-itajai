@@ -142,13 +142,30 @@ def plato(blu: Serie, i: int) -> tuple[int, int]:
     return a, b
 
 
-def crista(serie: Serie, ini: int, fim: int) -> tuple[int, bool] | None:
-    """O máximo na janela, e se ele caiu na ponta final (aí a crista não foi achada)."""
-    janela = [(v, k) for k, v in enumerate(serie[ini: fim + 1]) if v is not None]
+LACUNA_H = 2  # horas seguidas sem leitura bruta que deixam a crista indeterminada
+
+
+def crista(serie: Serie, ini: int, fim: int, bruta: Serie | None = None) -> tuple[int, bool, bool] | None:
+    """O máximo na janela: (índice, caiu na ponta final, há lacuna na janela).
+
+    Com `bruta`, a crista só pode cair numa hora que TEM leitura bruta — a média
+    móvel preenche buracos, e um máximo inventado dentro de um buraco não é
+    crista (12/09/2026, DC-11: o "máximo das 07h" era uma hora sem leitura). E
+    uma lacuna de `LACUNA_H` horas ou mais em qualquer ponto da janela deixa o
+    horário indeterminado: a crista de verdade pode ter caído dentro dela.
+    """
+    janela = [(v, k) for k, v in enumerate(serie[ini: fim + 1])
+              if v is not None and (bruta is None or bruta[ini + k] is not None)]
     if len(janela) < 0.75 * (fim - ini + 1):
-        return None  # janela com buraco: o máximo dela pode não ser a crista
+        return None  # janela com buraco demais: o máximo dela pode não ser a crista
     _, k = max(janela)
-    return ini + k, k == fim - ini
+    lacuna = False
+    if bruta is not None:
+        seguidas = 0
+        for v in bruta[ini: fim + 1]:
+            seguidas = seguidas + 1 if v is None else 0
+            lacuna = lacuna or seguidas >= LACUNA_H
+    return ini + k, k == fim - ini, lacuna
 
 
 def ler(pasta: Path):
@@ -217,11 +234,12 @@ def analisar(pasta: Path, mare_json: Path) -> dict:
         for nome in ("DC-11", "ilhota"):
             if nome not in reguas:
                 continue
-            c = crista(sem_mare(reguas[nome]["serie"], mare, reguas[nome]), max(0, a - 3), fim)
+            serie_bruta = reguas[nome]["serie"]
+            c = crista(sem_mare(serie_bruta, mare, reguas[nome]), max(0, a - 3), fim, serie_bruta)
             if c:
-                k, borda = c
+                k, borda, lacuna = c
                 ev["cristas"][nome] = {"quando": eixo[k], "horas": (eixo[k] - meio).total_seconds() / 3600,
-                                       "borda": borda}
+                                       "borda": borda, "lacuna": lacuna}
         lista.append(ev)
     return {"inicio": eixo[0], "fim": eixo[-1], "reguas": reguas, "eventos": lista}
 
@@ -232,14 +250,19 @@ def relatorio(r: dict) -> str:
            "| régua | correlação | atraso | fator | horas |", "|---|---|---|---|---|"]
     for nome, a in r["reguas"].items():
         out.append(f"| {nome} | {a['r']:.2f} | {a['atraso_h']} h | {a['fator']:.2f} | {a['horas']} |")
-    out += ["", "Eventos de Blumenau e a crista sem maré em Itajaí (horas depois do meio do platô)",
+    out += ["", "Crista local sem maré astronômica, em horas depois do meio do platô de Blumenau",
+            "(NÃO é o tempo de chegada da água de Blumenau: ver docs/ANALISE-CHEGADA-ITAJAI-2026.md)",
             "| pico Blumenau | nível | platô | chuva Itajaí 24 h | DC-11 | Ilhota |", "|---|---|---|---|---|---|"]
     for e in r["eventos"]:
         def c(n):
             x = e["cristas"].get(n)
             if not x:
                 return "sem série"
-            return "não achada (sobe até o fim)" if x["borda"] else f"{x['horas']:+.1f} h"
+            if x["borda"]:
+                return "não achada (sobe até o fim)"
+            if x["lacuna"]:
+                return f"primeira crista detectada em {x['horas']:+.1f} h; horário indeterminado (lacuna)"
+            return f"{x['horas']:+.1f} h"
         chuva = "—" if e["chuva_itajai_24h_mm"] is None else f"{e['chuva_itajai_24h_mm']:.0f} mm"
         out.append(f"| {e['pico']:%d/%m %Hh} | {e['nivel_m']:.2f} m | {e['plato'][0]:%Hh}–{e['plato'][1]:%Hh} "
                    f"| {chuva} | {c('DC-11')} | {c('ilhota')} |")

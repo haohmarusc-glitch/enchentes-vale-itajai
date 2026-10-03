@@ -36,6 +36,18 @@
     {
       "rio": "itajai-acu",
       "de": "taio",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
       "para": "ascurra",
       "resultado": null
     },
@@ -140,7 +152,7 @@
       "de": "taio",
       "para": "itajai",
       "resultado": {
-        "horas_min": 27,
+        "horas_min": 25,
         "horas_max": 35,
         "direto": false,
         "confianca": "media",
@@ -159,6 +171,24 @@
           ]
         ]
       }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "taio",
+      "para": "trombudo-central",
+      "resultado": null
     },
     {
       "rio": "itajai-acu",
@@ -187,6 +217,18 @@
       "rio": "itajai-acu",
       "de": "ituporanga",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -296,7 +338,7 @@
       "de": "ituporanga",
       "para": "itajai",
       "resultado": {
-        "horas_min": 27,
+        "horas_min": 25,
         "horas_max": 33,
         "direto": false,
         "confianca": "baixa",
@@ -318,6 +360,24 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ituporanga",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "rio-do-sul",
       "para": "taio",
       "resultado": null
@@ -332,6 +392,18 @@
       "rio": "itajai-acu",
       "de": "rio-do-sul",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -425,7 +497,7 @@
       "de": "rio-do-sul",
       "para": "itajai",
       "resultado": {
-        "horas_min": 21,
+        "horas_min": 19,
         "horas_max": 27,
         "direto": false,
         "confianca": "alta",
@@ -443,6 +515,24 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-do-sul",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "ibirama",
       "para": "taio",
       "resultado": null
@@ -457,6 +547,18 @@
       "rio": "itajai-acu",
       "de": "ibirama",
       "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -497,6 +599,192 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ibirama",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "ascurra",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "lontras",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ascurra",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "apiuna",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "ascurra",
       "para": "taio",
       "resultado": null
@@ -517,6 +805,18 @@
       "rio": "itajai-acu",
       "de": "ascurra",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ascurra",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ascurra",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -551,6 +851,24 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "ascurra",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ascurra",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ascurra",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "indaial",
       "para": "taio",
       "resultado": null
@@ -571,6 +889,18 @@
       "rio": "itajai-acu",
       "de": "indaial",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -605,6 +935,24 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "indaial",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "blumenau",
       "para": "taio",
       "resultado": null
@@ -625,6 +973,18 @@
       "rio": "itajai-acu",
       "de": "blumenau",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -682,7 +1042,7 @@
       "de": "blumenau",
       "para": "itajai",
       "resultado": {
-        "horas_min": 14,
+        "horas_min": 12,
         "horas_max": 17,
         "direto": true,
         "confianca": "alta",
@@ -693,6 +1053,24 @@
           ]
         ]
       }
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "blumenau",
+      "para": "trombudo-central",
+      "resultado": null
     },
     {
       "rio": "itajai-acu",
@@ -716,6 +1094,18 @@
       "rio": "itajai-acu",
       "de": "gaspar",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -776,6 +1166,24 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "gaspar",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "ilhota",
       "para": "taio",
       "resultado": null
@@ -796,6 +1204,18 @@
       "rio": "itajai-acu",
       "de": "ilhota",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -841,6 +1261,24 @@
     },
     {
       "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "ilhota",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
       "de": "itajai",
       "para": "taio",
       "resultado": null
@@ -861,6 +1299,18 @@
       "rio": "itajai-acu",
       "de": "itajai",
       "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "apiuna",
       "resultado": null
     },
     {
@@ -891,6 +1341,276 @@
       "rio": "itajai-acu",
       "de": "itajai",
       "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "itajai",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "ascurra",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "rio-dos-cedros",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "timbo",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "ascurra",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "rio-dos-cedros",
+      "para": "trombudo-central",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "taio",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "ituporanga",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "rio-do-sul",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "ibirama",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "lontras",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "apiuna",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "ascurra",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "indaial",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "blumenau",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "gaspar",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "ilhota",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "itajai",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "timbo",
+      "resultado": null
+    },
+    {
+      "rio": "itajai-acu",
+      "de": "trombudo-central",
+      "para": "rio-dos-cedros",
       "resultado": null
     },
     {

@@ -40,10 +40,17 @@ export default function SimulacaoChegada() {
 
     <Hoje />
 
-    <p className={estilos.aviso}><strong>Média histórica indisponível.</strong> O intervalo usado é o do estudo da
-      JICA ({referencia.horas_min} a {referencia.horas_max} h), não uma média de cheias observadas. A pesquisa achou
-      um atraso de 19 h relatado em setembro de 2011, mas ainda faltam pares de picos conferidos nas duas cidades
-      para calibrar o trecho — e em Itajaí o nível sobe e desce com a maré, o que esconde o pico da cheia.</p>
+    <p className={estilos.aviso}><strong>Média histórica indisponível.</strong> O intervalo usado é a referência de
+      propagação da JICA: {referencia.horas_min} a {referencia.horas_max} h entre os picos de vazão calculados em
+      Blumenau e em Itajaí, nas cheias de projeto de 5 a 50 anos. Não é média de cheias observadas nem o tempo de
+      viagem de uma mesma água. A pesquisa achou um atraso de 19 h relatado em setembro de 2011, mas ainda faltam
+      pares de picos conferidos nas duas cidades para calibrar o trecho — e em Itajaí o nível sobe e desce com a
+      maré, o que esconde o pico da cheia.</p>
+    <p className={estilos.detalhe}><strong>O que se viu em 2026.</strong> Nas cheias moderadas de setembro e outubro,
+      o nível de Ilhota e Itajaí, tirada a maré astronômica, teve cristas locais cerca de 2 a 6 h depois do platô de
+      Blumenau. <strong>Isso não é a chegada da água de Blumenau:</strong> é o baixo vale reagindo à mesma chuva, aos
+      afluentes, ao represamento e à maré de vento. Por isso a maré alta pesa em Itajaí antes de o pico de cima
+      chegar.</p>
 
     <Manual />
 
@@ -144,7 +151,7 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota }: {
 function Manual() {
   const [partida, setPartida] = useState('')
   const [modo, setModo] = useState('estudo')
-  const [minimo, setMinimo] = useState('14')
+  const [minimo, setMinimo] = useState('12')
   const [maximo, setMaximo] = useState('17')
   const [resultado, setResultado] = useState<ResultadoSimulacao | null>(null)
   const referencia = historico.referencia_estudo
