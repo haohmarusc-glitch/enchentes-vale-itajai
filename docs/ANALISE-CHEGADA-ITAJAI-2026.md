@@ -147,7 +147,47 @@ Notas da tabela:
 - **Pares históricos:** a busca externa de 03/10 não achou nenhum par completo de hora de pico Blumenau ×
   Itajaí. Os horários de Blumenau de 2011, 2013, 2015 e 2023 existem, mas não os de Itajaí.
 
-## 5. O que isto muda no site, e o que não muda
+## 5. Terreno e escape da maré — observação do Jefferson (03/10/2026)
+
+> *"O que influencia muito é o nível do terreno perto do rio em relação ao nível do mar. E partes do rio com
+> escape de maré também mudam muito: partes sem escape de maré represam mais o rio."*
+
+### O que a tabela 1 já mostra nessa direção
+
+- **Mirim, canal retificado:** as réguas DC-03 e DC-04 sentem 78–81% da maré. O canal leva direto ao estuário,
+  e a maré entra e sai por ele.
+- **Mirim, curso antigo, DC-05:** a régua quase não sente a maré (fator 0,04). Ainda assim, varia 1,5 m na
+  série. É água que fica, não água que oscila. É o comportamento de um trecho represado.
+- **Exceção, DC-06:** está no mesmo curso antigo e sente 77%. A diferença entre a DC-05 e a DC-06 precisa da
+  geometria de cada trecho (ligação, comportas, largura) para ser explicada. Os números sozinhos não explicam.
+- **Açu, DC-02:** sente quase nada, entre duas réguas que sentem forte. Também pede a geometria do lugar.
+
+### O que falta para medir isso
+
+Hoje não dá para medir, porque nada está na mesma referência:
+
+1. **Zero de cada régua em altitude (IBGE).**
+   - Cada régua tem o seu zero.
+   - O `estacoes.json` não tem a altitude do zero das réguas DC-01 a DC-11.
+2. **Altura do terreno junto a cada régua.**
+   - Fonte: o MDT de 1 m da SDS (`docs/MDT-SC-E-CARTA-ENCHENTE.md`), que dá a altitude da margem e da rua mais
+     baixa perto da régua.
+3. **Tábua de maré na mesma referência.**
+   - A tábua está no Nível de Redução da carta 1841, não no IBGE.
+   - Converter exige o deslocamento NR → IBGE do porto de Itajaí, com fonte. Não se inventa.
+
+### O que se pode fazer com isso
+
+- **Por régua:** com as três coisas acima, sai "a preamar de hoje + o rio de agora chegam a X cm da margem
+  aqui". Esse número vale para a régua, não para a cidade inteira.
+- **Represamento:** pode ser medido nos dados de hoje.
+  1. Comparar o fator de maré de cada régua com o rio baixo e com o rio alto.
+  2. Nos trechos com escape, o fator deve cair na cheia, porque o rio empurra a maré.
+  3. Nos trechos sem escape, o nível deve ficar alto por mais tempo depois que Blumenau desce.
+- **Limite:** a série atual tem poucas horas de rio alto, e essa comparação ainda é fraca. Melhora a cada
+  cheia que o coletor guarda.
+
+## 6. O que isto muda no site, e o que não muda
 
 - **Não muda:** a faixa de chegada (14–17 h, JICA), o `transito.json` e o `historico-chegada-itajai.json` (só
   ganhou a nota da fonte).
