@@ -241,3 +241,27 @@ marca 2013. Janela da troca: set/2011 a set/2013, sem nenhum registro de Blumena
 É a "resposta da FURB" que a REGRA BLOQUEANTE prevê para ser removida. **A remoção e a conversão continuam sendo
 decisão do Jefferson**, em um único commit registrado aqui. Até lá nada é convertido. Ficam abertos: a data exata da troca
 e a divergência da planilha com a Tabela 4 publicada em 1931–1983 (vale a Tabela 4).
+
+### Decisão: conversão parcial de Blumenau para a régua de hoje (03/10/2026)
+
+**Decisão do Jefferson, 03/10/2026:** sem mais perguntas ao Prof. Cordero; converter **só os 57 registros de
+certeza alta**. Feito em um único commit por `scripts/converter_blumenau.py --aplicar`, com o relatório em
+`docs/CONVERSAO-BLUMENAU.md`.
+
+* **O que somou:** IBGE + 0,20 m (37 registros); régua antiga + 0,40 m (4: 2008, 2010, 31/08/2011 e 2009-09-29
+  conferidos na lista); régua de hoje + 0 (16, só o rótulo). Exemplos: 1880 17,10 → 17,30 m; 1983 15,34 → 15,54 m;
+  1984 15,46 → 15,66 m; 2008 11,52 → 11,92 m; set/2011 12,80 → 13,00 m.
+* **O que ficou guardado:** `pico_publicado_m`, `referencia_publicada` e `conversao` em cada registro. As
+  divergências ficam como publicadas, cada uma com a sua referência. Duas que, convertido o adotado, ficaram
+  iguais a ele (1852, 16,50 m; set/2011, 13,00 m do CEOPS) viraram confirmação no texto da conversão.
+* **O que NÃO foi convertido (67):** 60 de 1929–1983 em que a Tabela 4 publicada e a planilha do Cordero
+  discordam; 4 inferidos sem par na lista do AlertaBlu (1862-11, 1888-01, 2009-10-06, 2011-09-08); 3 pendentes
+  (2013 e 23/09/2013, na janela da troca; 12/07/2026, sem régua declarada). Continuam com o rótulo que tinham
+  e **fora da comparação com o nível de agora**.
+* **O que mudou no site e no bot:** o painel "quanto falta" e o bot passam a comparar Blumenau com os 57 picos
+  na régua de hoje e dizem quantos ficaram de fora. O validador refaz a conta de cada registro convertido.
+* **O que não mudou:** `_meta.periodos_retorno_blumenau_m` e `_meta.curva_chave_blumenau` (Tabela 5 e curva de
+  Cordero & Medeiros, "na régua" da época) não são lidos pelo site e ficam como estão.
+* **A regra bloqueante continua**, para os 67 restantes. `data/desastres/correspondencias.json` é uma foto de
+  21/09/2026 e não foi regerado.
+

@@ -19,9 +19,17 @@ import type { Confianca, Evento } from '../dados/tipos'
  * nenhum significado — o erro que este projeto já cometeu em Ilhota, em Brusque
  * e na série de Blumenau. Por isso `cenarioDaCidade` devolve `pode: false` com
  * o motivo em vez de calcular, sempre que não puder provar que a escala é uma
- * só. Hoje isso exclui Blumenau inteira: 72 dos 113 picos dela estão em
- * `IBGE (régua + 0,20 m)` e 41 em `null`, e a leitura ao vivo é da régua — são
- * os 20 cm da REGRA BLOQUEANTE do CLAUDE.md, que só o HidroWeb resolve.
+ * só.
+ *
+ * MISTURA: USA SÓ O QUE ESTÁ NA RÉGUA, E DIZ QUANTOS DEIXOU DE FORA. Até
+ * 02/10/2026 uma cidade com picos em mais de uma referência era recusada
+ * inteira. Desde a conversão de Blumenau (03/10/2026; FURB, decisão do
+ * Jefferson), 57 picos dela estão na régua de hoje e 67 continuam no IBGE ou
+ * sem referência conferida. Recusar a cidade inteira por causa desses 67
+ * jogaria fora 57 comparações corretas; usá-los entraria 20 cm de régua na
+ * conta. Então entram só os de régua (declarada ou, em registro antigo, campo
+ * ausente), e `excluidas` diz quantos ficaram fora — o bot faz o mesmo. Os que
+ * ficaram fora NUNCA entram: IBGE e `null` não são régua.
  */
 
 /** Referências que convivem com a leitura ao vivo, que é sempre de régua. */
@@ -57,6 +65,8 @@ export interface Cenario {
    * convenção "campo ausente = régua local". A tela precisa dizer isso.
    */
   referenciaConferida: boolean
+  /** Picos da cidade que ficaram FORA da conta por estarem em outra referência ou sem referência. */
+  excluidas: number
 }
 
 export function cenarioDaCidade(
@@ -74,24 +84,28 @@ export function cenarioDaCidade(
   // diferente: o campo existe e ninguém conferiu, e aí a escala é uma
   // incógnita, não uma suposição. Achatar os dois aqui seria repetir, num
   // simulador, o erro que `referenciasDistintas` existe para impedir.
-  const escalas = new Set(
-    comPico.map((e) => ('referencia' in e ? (e.referencia === null ? 'nao-declarada' : e.referencia) : 'ausente')),
-  )
-  if (escalas.size > 1) return { cenario: null, motivo: 'referencia-misturada' }
-  const escala = [...escalas][0]!
-  if (escala !== 'ausente' && !REFERENCIAS_DE_REGUA.has(escala)) {
-    return { cenario: null, motivo: 'referencia-de-outra-escala' }
+  const escalaDe = (e: Evento) =>
+    'referencia' in e ? (e.referencia === null ? 'nao-declarada' : e.referencia!) : 'ausente'
+  const naRegua = comPico.filter((e) => {
+    const escala = escalaDe(e)
+    return escala === 'ausente' || REFERENCIAS_DE_REGUA.has(escala)
+  })
+  const excluidas = comPico.length - naRegua.length
+  if (naRegua.length === 0) {
+    const escalas = new Set(comPico.map(escalaDe))
+    return { cenario: null, motivo: escalas.size > 1 ? 'referencia-misturada' : 'referencia-de-outra-escala' }
   }
-
-  const referenciaConferida = escala !== 'ausente'
-  const marcas: Marca[] = comPico
+  // Régua declarada e campo ausente juntos não é "mistura de escala": os dois
+  // são a régua local. Mas um ausente é suposição, e a tela tem de saber disso.
+  const referenciaConferida = naRegua.every((e) => escalaDe(e) !== 'ausente')
+  const marcas: Marca[] = naRegua
     .map((e) => ({
       data: e.data,
       pico: e.pico_m,
       diferenca: Number((e.pico_m - nivel).toFixed(2)),
       passou: e.pico_m <= nivel,
       confianca: e.confianca,
-      referenciaConferida,
+      referenciaConferida: escalaDe(e) !== 'ausente',
     }))
     .sort((a, b) => b.pico - a.pico)
 
@@ -106,6 +120,7 @@ export function cenarioDaCidade(
       proxima: acima.length ? acima[acima.length - 1]! : null,
       ultimaPassada: marcas.find((m) => m.passou) ?? null,
       referenciaConferida,
+      excluidas,
     },
     motivo: null,
   }

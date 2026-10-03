@@ -3,9 +3,10 @@
  *
  * O gráfico ordena enchentes por METRO DE RIO. É a única grandeza que temos, e
  * para quase tudo ela serve. Mas o Vale tem um contraexemplo enorme: **novembro
- * de 2008**. Em Blumenau ele marcou 11,52 m — a 32ª maior cota dos nossos 113
- * registros, com trinta e uma enchentes acima dela, entre elas 1880 (17,10 m) e
- * 1984 (15,46 m). E foi o evento mais letal da história da região.
+ * de 2008**. Em Blumenau ele marcou 11,52 m na régua antiga (11,92 m na de hoje,
+ * desde a conversão de 03/10/2026), com dezenas de enchentes acima dele na série,
+ * entre elas 1880 (17,30 m) e 1984 (15,66 m). E foi o evento mais letal da
+ * história da região. A posição exata é contada nos dados, não escrita aqui.
  *
  * O motivo está no próprio registro, na palavra da Defesa Civil de Blumenau:
  * "as mortes vieram sobretudo dos deslizamentos". Encosta não sobe régua. Quem

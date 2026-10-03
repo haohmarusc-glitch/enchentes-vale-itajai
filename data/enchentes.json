@@ -9,6 +9,9 @@
       "nota": "Ressalva sobre o registro, exibida junto do número.",
       "divergencias": "Outros valores publicados para o MESMO pico, com a fonte de cada um. O campo pico_m é o adotado; nada aqui é descartado em silêncio.",
       "referencia": "Em que referência o nível foi medido. Ausente = régua local. 'IBGE (régua + 0,20 m)' = série acadêmica de Blumenau referenciada ao zero do IBGE. null = a fonte não declara, e para Blumenau isso importa porque as duas circulam.",
+      "pico_publicado_m": "Só em registro convertido: o valor como a fonte publicou, antes da conversão para a régua de hoje. pico_m passa a ser a régua de hoje. Hoje só Blumenau (03/10/2026).",
+      "referencia_publicada": "Só em registro convertido: a referência em que o valor foi publicado. Conjunto fechado: 'IBGE (régua + 0,20 m)' (aqui 'régua' = régua antiga), 'régua antiga' ou 'régua de hoje'. Em divergências de registro convertido também aparece, com null quando a fonte não diz.",
+      "conversao": "Só em registro convertido: o que foi somado, quando, por decisão de quem e com que fonte.",
       "fonte_rotulo_anterior": "Rótulo que o registro carregava antes de a fonte ser identificada. Os treze de Rio do Sul diziam 'Portal GCD' de 30/08 a 19/09/2026; a tabela é o Histórico de Cheias da Defesa Civil municipal, conferida pelo Jefferson linha a linha.",
       "data_na_fonte": "Data que a fonte publica quando o registro adota outra, com o motivo na nota. Só existe onde as duas descrevem o mesmo pico (crista na virada do dia).",
       "chuva_mm": "Volume de chuva (mm) que a fonte associa ao pico, quando publica. Só Rio do Sul, da tabela municipal, de 1992 em diante. Ausente = a fonte não deu.",
@@ -20,7 +23,7 @@
       "Registrar o horário do pico (campo 'hora') para calibrar os tempos de descida com medição, não com hidrograma de projeto.",
       "Levantar picos de Gaspar, Ilhota, Indaial, Apiúna e Ibirama."
     ],
-    "aviso_blumenau": "A série longa de Blumenau vem da Tabela 4 de Cordero & Medeiros e está em referência IBGE, 20 cm acima da régua. As cotas de atenção, alerta e inundação de estacoes.json estão na RÉGUA. Comparar os dois sem converter superestima o pico em 20 cm. A conversão NÃO foi aplicada: a imprensa parece usar IBGE também (15,34 m em 1983 bate com a tabela), e converter sem confirmar com a FURB trocaria um erro conhecido por um erro escondido.",
+    "aviso_blumenau": "Desde 03/10/2026, 57 registros de Blumenau estão na régua de hoje (convertidos, com o valor publicado guardado). Os outros 67 continuam como publicados: no zero do IBGE, que fica 0,20 m ABAIXO da régua de hoje, ou sem referência conferida. Esses não se comparam com o nível de agora nem com as cotas de atenção, alerta e inundação.",
     "curva_chave_blumenau": {
       "ate_1988": "Q = 63 * (H + 0,50)^1,59",
       "a_partir_de_1989": "Q = 68 * (H + 0,60)^1,59",
@@ -40,16 +43,17 @@
       "fonte": "Cordero & Medeiros, XV SBRH, Tabela 5"
     },
     "REGRA_REFERENCIA_BLUMENAU": {
-      "por_que": "Duas referências coexistem para Blumenau: a régua da estação ANA 83800002 (Defesa Civil/AlertaBlu, leituras operacionais) e o zero do IBGE, que é a régua + 0,20 m (série CEOPS/FURB, Cordero & Medeiros, Tabela 4, 1852-2001). Evidência de que as duas circulam: set/2011 = 13,00 m (CEOPS) contra 12,80 m (Defesa Civil), diferença exata de 0,20 m.",
+      "por_que": "Três referências para a mesma régua da Ponte Adolfo Konder, pela FURB (Prof. Ademar Cordero, 02/10/2026): régua antiga (até a troca, depois da cheia de set/2011); zero do IBGE = régua antiga + 0,20 m (Tabela 4 de Cordero & Medeiros, 1852–2001); GPS = IBGE + 0,20 m = régua de hoje (a da Defesa Civil/AlertaBlu e da leitura ao vivo). Set/2011 nas três: 12,60 · 12,80 · 13,00 m. No rótulo 'IBGE (régua + 0,20 m)', 'régua' é a ANTIGA.",
       "enquanto_existir": [
         "referencia é rótulo, com conjunto fechado: 'régua', 'IBGE (régua + 0,20 m)' ou null. Hipótese vai em referencia_hipotese ou nota, nunca no campo referencia.",
         "Conflito de valor no mesmo (cidade, evento) usa divergencias: um adotado, os demais guardados com fonte. Não criar dois registros para o mesmo evento.",
-        "Nenhuma conversão é gravada no JSON. O seletor da tela aplica ±0,20 m só para ver.",
+        "Conversão só pelo script converter_blumenau.py, que guarda o valor publicado e não converte o que estiver em disputa, inferido ou pendente. Nenhuma conversão à mão.",
         "Busca 'minha rua' e simulador usam somente régua.",
         "Previsão pareia igual com igual; sem referência declarada, não pareia."
       ],
-      "como_remover": "Resposta da FURB, ou fonte com o pico INSTANTÂNEO da régua da 83800002. ⚠️ NÃO é mais 'teste no HidroWeb': isso foi feito em 08/09/2026 e não resolve — ver tentado_e_NAO_resolve. Quando resolver, converte-se tudo para régua num único commit, com a decisão registrada em docs/fontes-academicas.md.",
-      "tentado_e_NAO_resolve": "❌ A API DA ANA FOI TENTADA EM 08/09/2026 E NÃO RESOLVE — resultado negativo guardado para ninguém refazer a busca. O acesso saiu neste dia e a estação 83800002 respondeu os dois eventos que o 'como_remover' nomeia. MAS: para jul/1983 a API devolve UMA linha e para ago/1984 DUAS, e todas são de MÉDIA DIÁRIA (Mediadiaria=1). Não há linha de leitura da régua naqueles meses. Média diária não decide 0,20 m de datum: em set/2011, na mesma estação, a média diária consistida marcou 8,85 m no dia 8 enquanto a leitura das 07h do dia 9 marcou 12,48 m — QUATRO METROS de diferença entre as duas séries do mesmo mês. As lacunas contra a nossa base confirmam amostragem e não datum, porque não são iguais: 15,34 - 15,19 = 0,15 m em 1983 (cheia de semanas, média perto do pico) e 15,46 - 14,85 = 0,61 m em 1984 (cheia rápida). Um deslocamento de datum seria o mesmo nos dois. O QUE AINDA REMOVERIA A REGRA: resposta da FURB, ou uma fonte com o pico INSTANTÂNEO da régua da ANA — a série de duas leituras por dia subestima pico por construção, e a das 17h do dia 9 de set/2011 está ausente. Detalhe completo em docs/ANA-API-2026-09-08.md."
+      "como_remover": "A FURB já respondeu (02/10/2026) e a conversão parcial foi feita (03/10/2026). A regra sai quando os 67 restantes forem resolvidos: desempate entre Tabela 4 e planilha em 1929–1983, data da troca de régua para 2013, régua de 12/07/2026. O Jefferson decidiu não fazer mais perguntas ao Prof. Cordero (03/10/2026). Pelo lado da ANA, só resolveria uma fonte com o pico INSTANTÂNEO da régua da 83800002: a média diária não decide (ver tentado_e_NAO_resolve).",
+      "tentado_e_NAO_resolve": "❌ A API DA ANA FOI TENTADA EM 08/09/2026 E NÃO RESOLVE — resultado negativo guardado para ninguém refazer a busca. O acesso saiu neste dia e a estação 83800002 respondeu os dois eventos que o 'como_remover' nomeia. MAS: para jul/1983 a API devolve UMA linha e para ago/1984 DUAS, e todas são de MÉDIA DIÁRIA (Mediadiaria=1). Não há linha de leitura da régua naqueles meses. Média diária não decide 0,20 m de datum: em set/2011, na mesma estação, a média diária consistida marcou 8,85 m no dia 8 enquanto a leitura das 07h do dia 9 marcou 12,48 m — QUATRO METROS de diferença entre as duas séries do mesmo mês. As lacunas contra a nossa base confirmam amostragem e não datum, porque não são iguais: 15,34 - 15,19 = 0,15 m em 1983 (cheia de semanas, média perto do pico) e 15,46 - 14,85 = 0,61 m em 1984 (cheia rápida). Um deslocamento de datum seria o mesmo nos dois. O QUE AINDA REMOVERIA A REGRA: resposta da FURB, ou uma fonte com o pico INSTANTÂNEO da régua da ANA — a série de duas leituras por dia subestima pico por construção, e a das 17h do dia 9 de set/2011 está ausente. Detalhe completo em docs/ANA-API-2026-09-08.md.",
+      "conversao_parcial": "Aplicada em 03/10/2026 por decisão do Jefferson, por scripts/converter_blumenau.py --aplicar: 57 registros de certeza alta passaram para a régua de hoje (pico_m convertido, referencia 'régua', valor publicado em pico_publicado_m). Ficaram como estavam 67: 60 de 1929–1983 em que a Tabela 4 e a planilha do Prof. Cordero discordam em ~0,20–0,30 m, 4 inferidos sem par na lista do AlertaBlu e 3 pendentes (janela da troca de régua em 2013; 12/07/2026 sem régua). Esses 67 continuam fora da comparação com o nível de agora. Relatório: docs/CONVERSAO-BLUMENAU.md."
     }
   },
   "eventos": [
@@ -57,27 +61,27 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1852-10-29",
-      "pico_m": 16.3,
+      "pico_m": 16.5,
+      "pico_publicado_m": 16.3,
       "confianca": "baixa",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "Primeiro grande registro após a colonização. Algumas fontes citam 16,50 m. Valor contestado por historiadores locais.",
-      "divergencias": [
-        {
-          "pico_m": 16.5,
-          "fonte": "Outras compilações históricas"
-        }
-      ],
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 16,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md. Confere com 16,50 m de outra fonte (antes guardado como divergência): Outras compilações históricas."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1855-11-20",
-      "pico_m": 13.3,
+      "pico_m": 13.5,
+      "pico_publicado_m": 13.3,
       "confianca": "baixa",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "Relato histórico (Avé-Lallemant); dia confirmado pela compilação 1852–2017.",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -92,56 +96,74 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1862-11-08",
-      "pico_m": 9.0,
-      "referencia": "IBGE (régua + 0,20 m)",
+      "pico_m": 9.2,
+      "pico_publicado_m": 9.0,
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
       "confianca": "alta",
-      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf"
+      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1864-09-17",
-      "pico_m": 10.0,
+      "pico_m": 10.2,
+      "pico_publicado_m": 10.0,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1868-11-27",
-      "pico_m": 13.3,
+      "pico_m": 13.5,
+      "pico_publicado_m": 13.3,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1869-10-21",
-      "pico_m": 11.0,
+      "pico_m": 11.2,
+      "pico_publicado_m": 11.0,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1870-10-11",
-      "pico_m": 10.0,
+      "pico_m": 10.2,
+      "pico_publicado_m": 10.0,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1880-09-23",
-      "pico_m": 17.1,
+      "pico_m": 17.3,
+      "pico_publicado_m": 17.1,
       "confianca": "alta",
       "fonte": "Águas de SC / Comitê do Itajaí — bacia do rio Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "Maior cota de que se tem registro na bacia (Comitê do Itajaí / Águas SC).",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 17,10 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -156,146 +178,194 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1888-09-23",
-      "pico_m": 12.8,
-      "referencia": "IBGE (régua + 0,20 m)",
+      "pico_m": 13.0,
+      "pico_publicado_m": 12.8,
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
       "confianca": "alta",
-      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf"
+      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1891-06-18",
-      "pico_m": 13.8,
+      "pico_m": 14.0,
+      "pico_publicado_m": 13.8,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1898-05-01",
-      "pico_m": 12.8,
+      "pico_m": 13.0,
+      "pico_publicado_m": 12.8,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1898-12-25",
-      "pico_m": 11.3,
+      "pico_m": 11.5,
+      "pico_publicado_m": 11.3,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1900-10-02",
-      "pico_m": 12.8,
+      "pico_m": 13.0,
+      "pico_publicado_m": 12.8,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1911-10-02",
-      "pico_m": 16.9,
+      "pico_m": 17.1,
+      "pico_publicado_m": 16.9,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "Segunda maior cota da série. Quase toda a área urbana histórica submersa.",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 16,90 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1911-10-29",
-      "pico_m": 9.86,
+      "pico_m": 10.06,
+      "pico_publicado_m": 9.86,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,86 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1923-06-20",
-      "pico_m": 9.0,
+      "pico_m": 9.2,
+      "pico_publicado_m": 9.0,
       "confianca": "media",
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1925-05-14",
-      "pico_m": 10.3,
+      "pico_m": 10.5,
+      "pico_publicado_m": 10.3,
       "confianca": "media",
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1926-01-14",
-      "pico_m": 9.5,
+      "pico_m": 9.7,
+      "pico_publicado_m": 9.5,
       "confianca": "media",
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,50 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1927-10-09",
-      "pico_m": 12.3,
+      "pico_m": 12.5,
+      "pico_publicado_m": 12.3,
       "confianca": "media",
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1928-05-31",
-      "pico_m": 8.2,
+      "pico_m": 8.4,
+      "pico_publicado_m": 8.2,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,20 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1928-06-18",
-      "pico_m": 11.76,
+      "pico_m": 11.96,
+      "pico_publicado_m": 11.76,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,76 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1928-07-18",
-      "pico_m": 11.76,
-      "referencia": "IBGE (régua + 0,20 m)",
+      "pico_m": 11.96,
+      "pico_publicado_m": 11.76,
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
       "confianca": "alta",
-      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf"
+      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,76 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1928-08-15",
-      "pico_m": 10.82,
+      "pico_m": 11.02,
+      "pico_publicado_m": 10.82,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,82 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1928-09-17",
-      "pico_m": 10.3,
+      "pico_m": 10.5,
+      "pico_publicado_m": 10.3,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -751,16 +821,20 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1977-08-18",
-      "pico_m": 9.25,
+      "pico_m": 9.45,
+      "pico_publicado_m": 9.25,
       "confianca": "alta",
       "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
       "divergencias": [
         {
           "pico_m": 9.15,
-          "fonte": "Compilação da série histórica de Blumenau, 1852–2017"
+          "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
+          "referencia_publicada": "IBGE (régua + 0,20 m)"
         }
       ],
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,25 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -847,11 +921,14 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1983-07-09",
-      "pico_m": 15.34,
+      "pico_m": 15.54,
+      "pico_publicado_m": 15.34,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "A cheia mais longa da história recente. A cidade ficou semanas debaixo d'água.",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 15,34 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -866,114 +943,150 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1984-08-07",
-      "pico_m": 15.46,
+      "pico_m": 15.66,
+      "pico_publicado_m": 15.46,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "Maior cota do século XX depois de 1911. Quarto evento em dois anos.",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 15,46 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1990-07-21",
-      "pico_m": 8.82,
+      "pico_m": 9.02,
+      "pico_publicado_m": 8.82,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "nota": "No mesmo ano, a enxurrada da Rua Belo Horizonte matou 21 pessoas — desastre de encosta, não de cota do rio principal.",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,82 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1992-05-29",
-      "pico_m": 12.8,
+      "pico_m": 13.0,
+      "pico_publicado_m": 12.8,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1992-06-01",
-      "pico_m": 10.62,
-      "referencia": "IBGE (régua + 0,20 m)",
+      "pico_m": 10.82,
+      "pico_publicado_m": 10.62,
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
       "confianca": "alta",
-      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf"
+      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,62 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1992-07-01",
-      "pico_m": 10.62,
+      "pico_m": 10.82,
+      "pico_publicado_m": 10.62,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,62 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1995-01-10",
-      "pico_m": 8.31,
-      "referencia": "IBGE (régua + 0,20 m)",
+      "pico_m": 8.51,
+      "pico_publicado_m": 8.31,
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
       "confianca": "alta",
-      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf"
+      "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,31 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1997-02-01",
-      "pico_m": 9.44,
+      "pico_m": 9.64,
+      "pico_publicado_m": 9.44,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,44 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1998-04-28",
-      "pico_m": 8.24,
+      "pico_m": 8.44,
+      "pico_publicado_m": 8.24,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,24 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "1999-07-03",
-      "pico_m": 8.26,
+      "pico_m": 8.46,
+      "pico_publicado_m": 8.26,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,26 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "2001-10-01",
-      "pico_m": 11.02,
+      "pico_m": 11.22,
+      "pico_publicado_m": 11.02,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,02 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "2008-11-24",
       "hora": "00:00",
-      "pico_m": 11.52,
+      "pico_m": 11.92,
+      "pico_publicado_m": 11.52,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html",
       "nota": "A cota do rio não foi recorde. As mortes vieram sobretudo dos deslizamentos. Hora: 0h de 24/11/2008, Clicrbs/RBS 24/11/2008 02h41 — \"O nível do rio Itajaí-Açu chegou a 11,52 metros à 0h desta segunda e baixou 5 centímetros até as 2h\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_clicrbs_calamidade_2008-11-24.html); fuso não declarado. A Tabela 3 do Esboços (CEOPS) traz a linha \"2008 24/11 11,72m 8,22m\", mas ela sai do PDF numa tira só e a coluna de cada número é inferida, não lida — por isso os 11,72 m NÃO estão em divergencias. Se forem de Blumenau, são 11,52 + 0,20 exatos, o mesmo padrão do CEOPS sobre o AlertaBlu em 31/08 e 09/09/2011 (8,7 × 8,5; 12,8 × 12,6).",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua antiga",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,52 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "2009-09-29",
-      "pico_m": 8.06,
+      "pico_m": 8.46,
+      "pico_publicado_m": 8.06,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2009 29/09 8,06\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua antiga",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,06 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -988,19 +1101,25 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "2010-04-26",
-      "pico_m": 8.46,
+      "pico_m": 8.86,
+      "pico_publicado_m": 8.46,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua antiga",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,46 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "2011-08-31",
-      "pico_m": 8.5,
+      "pico_m": 8.9,
+      "pico_publicado_m": 8.5,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua antiga",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,50 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1015,22 +1134,22 @@
       "rio": "itajai-acu",
       "cidade": "blumenau",
       "data": "2011-09-09",
-      "pico_m": 12.8,
+      "pico_m": 13.0,
+      "pico_publicado_m": 12.8,
       "confianca": "alta",
       "fonte": "Cotas-enchente de Blumenau (ABRH / CEOPS-FURB) · confirmado por: Revista Esboços (UFSC), v. 20, n. 30, 2013, Tabela 3 \"Picos de enchentes registrados na bacia do rio Itajaí-Açu no século XXI\", fonte CEOPS/FURB, PDF p. 12 — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Esbocos_Rio-do-Sul_vulnerabilidades.pdf — linha \"2011 9/09 12,8m\"",
-      "nota": "Três referências para o mesmo pico, segundo o Prof. Ademar Cordero (FURB, e-mails de 02/10/2026 e planilha em data/brutos/furb-cordero-2026-10-02/): 12,60 m na régua antiga (tabela oficial da Defesa Civil de Blumenau), 12,80 m no zero do IBGE (régua antiga + 0,20 m; Tabela 3 do Esboços, CEOPS) e 13,00 m em GPS, que é a régua nova instalada depois de 2011 e a das leituras de hoje (régua antiga + 0,40 m; artigo ABRH, p. 1, \"atingiu o valor de 13,0 metros\"). Adotamos 12,80 m (decisão do Jefferson, 21/09/2026). Até 02/10/2026 esta nota dizia que os 13,00 m estavam no IBGE e que a diferença de 0,20 m entre régua e IBGE explicava o par; pela fonte, 13,00 m é a régua nova. As outras duas leituras estão em 'divergencias'; nenhum valor foi convertido. Bruto do artigo: data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ABRH_Cotas-enchente-Blumenau.pdf.",
+      "nota": "Três referências para o mesmo pico, segundo o Prof. Ademar Cordero (FURB, e-mails de 02/10/2026 e planilha em data/brutos/furb-cordero-2026-10-02/): 12,60 m na régua antiga (tabela oficial da Defesa Civil de Blumenau), 12,80 m no zero do IBGE (Tabela 3 do Esboços, CEOPS) e 13,00 m na régua de hoje (GPS; artigo ABRH, p. 1, \"atingiu o valor de 13,0 metros\"). Desde 03/10/2026 o pico está na régua de hoje: 13,00 m (12,80 m do IBGE + 0,20 m). O 12,60 m continua em 'divergencias', como publicado, na régua antiga. Bruto do artigo: data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ABRH_Cotas-enchente-Blumenau.pdf.",
       "divergencias": [
-        {
-          "pico_m": 13.0,
-          "fonte": "CEOPS/FURB — Ponte Adolfo Konder — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ABRH_Cotas-enchente-Blumenau.pdf, p. 1"
-        },
         {
           "pico_m": 12.6,
           "fonte": "Tabela oficial da Defesa Civil de Blumenau (defesacivil.blumenau.sc.gov.br/p/enchentes) — relatada por auditoria externa em 19/09/2026 e conferida no original em 02/10/2026, linha \"2011 09/09 12,6\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html); atribuição decidida pelo Jefferson em 21/09/2026 (antes constava 'Imprensa')",
-          "nota": "Hora: 11h de 09/09/2011 — \"atingiram o pico de 12,60 metros às 11h de sexta-feira\" (JSC, reproduzido no blog Novo Plantão Blumenau, bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_moniquebecker_2011-09.html); a série horária do blog Adalberto Day, citando o CEOPS, dá 12,56 / 12,60 / 12,55 m às 10h, 11h e 12h (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_adalbertoday_2011-09.html). Fuso não declarado."
+          "nota": "Hora: 11h de 09/09/2011 — \"atingiram o pico de 12,60 metros às 11h de sexta-feira\" (JSC, reproduzido no blog Novo Plantão Blumenau, bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_moniquebecker_2011-09.html); a série horária do blog Adalberto Day, citando o CEOPS, dá 12,56 / 12,60 / 12,55 m às 10h, 11h e 12h (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_adalbertoday_2011-09.html). Fuso não declarado.",
+          "referencia_publicada": "régua antiga"
         }
       ],
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "IBGE (régua + 0,20 m)",
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md. Confere com 13,00 m de outra fonte (antes guardado como divergência): CEOPS/FURB — Ponte Adolfo Konder — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ABRH_Cotas-enchente-Blumenau.pdf, p. 1."
     },
     {
       "rio": "itajai-acu",
@@ -1059,7 +1178,9 @@
       "pico_m": 10.18,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1069,7 +1190,9 @@
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2014 29/06 8,13\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1079,8 +1202,10 @@
       "pico_m": 10.03,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confirmado por: Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html",
-      "referencia": null,
-      "nota": "Hora: 1h, G1 SC 23/10/2015 — \"depois de atingir um pico de 10,03m, à 1h, o Rio Itajaí-Açú baixou para 8,92 metros às 14h\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/G1_blumenau_2015-10-23.html). Fuso não declarado."
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "nota": "Hora: 1h, G1 SC 23/10/2015 — \"depois de atingir um pico de 10,03m, à 1h, o Rio Itajaí-Açú baixou para 8,92 metros às 14h\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/G1_blumenau_2015-10-23.html). Fuso não declarado.",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1089,7 +1214,9 @@
       "pico_m": 8.71,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1099,7 +1226,9 @@
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2017 06/06 8,52\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1110,7 +1239,9 @@
       "confianca": "alta",
       "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2021-01-24-DIAS_7.json",
       "nota": "Crista às 21:45; platô 6,77–6,82 m das 19:30 de 21/01 às 00:45 de 22/01 (22 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima da cota de alerta (6,00 m). Veio 18 h 30 ANTES da crista de Taió (6,91 m às 16:15 de 22/01, que não é registro pela decisão (b) do Jefferson de 09/09/2026): a chuva caiu perto de Blumenau, não desceu de Taió — ver transito.json._meta.medicoes.taio_e_blumenau_2021_2022. O Aviso 02/2021 da CIRAM dava 6,59 m às 05:00 de 22/01 já descendo, 23 cm abaixo da crista; aviso é instantâneo do horário da coleta, não pico (EPAGRI, 15/09/2026).",
-      "referencia": "régua"
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1121,7 +1252,9 @@
       "confianca": "alta",
       "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2022-05-06-DIAS_7.json",
       "nota": "Crista às 02:45; platô 9,36–9,41 m das 00:00 às 04:30 (19 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima do Alerta Máximo (8,00 m). Veio 1 h 15 ANTES da crista de Taió (9,49 m às 04:00, que não é registro pela decisão (b)); Indaial pica em 04/05 (6,00 m), já no repo. O Aviso 03/2022 da CIRAM dava 6,39 m às 08:00 de 06/05 já descendo — três metros abaixo da crista, que é o tamanho do erro de tomar aviso por pico. Conferir contra a tabela /p/enchentes da Defesa Civil de Blumenau quando ela chegar.",
-      "referencia": "régua"
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1131,7 +1264,9 @@
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2023 05/10 8,78\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1142,7 +1277,9 @@
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2023 09/10 10,19\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha. Hora: 6h, ND Mais 09/10/2023 — \"a marca mais alta alcançada nas últimas horas foi às 06h da manhã, de 10,19 metros\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ND_blumenau_amanhece-acima-10m_2023-10-09.html); fuso não declarado. A NSC (10/10/2023) põe os 10,19 m na madrugada de domingo, 08/10 — dia diferente da lista e da ND. O primeiro ciclo da cheia teve crista de 9,49 m por volta das 2h15 de 08/10 (ND, medição do AlertaBlu), que a lista oficial não traz como enchente separada.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1156,14 +1293,18 @@
         {
           "pico_m": 10.61,
           "fonte": "g1 SC — cobertura das cheias de 2023",
-          "nota": "Valor adotado até 02/10/2026, com data 13/10/2023; sem original no repositório. Passou a divergência por decisão do Jefferson (02/10/2026): a lista oficial tem valor e data definidos."
+          "nota": "Valor adotado até 02/10/2026, com data 13/10/2023; sem original no repositório. Passou a divergência por decisão do Jefferson (02/10/2026): a lista oficial tem valor e data definidos.",
+          "referencia_publicada": null
         },
         {
           "pico_m": 10.75,
-          "fonte": "Imprensa/compilação (valor anterior deste repositório) · Mesorregional, 13/10/2023 — \"atingiu um pico de 10,75 metros à meia-noite\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Mesorregional_blumenau_2023-10-13.html)"
+          "fonte": "Imprensa/compilação (valor anterior deste repositório) · Mesorregional, 13/10/2023 — \"atingiu um pico de 10,75 metros à meia-noite\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Mesorregional_blumenau_2023-10-13.html)",
+          "referencia_publicada": null
         }
       ],
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1173,7 +1314,9 @@
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2023 29/10 8,38\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1183,7 +1326,9 @@
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html — linha \"2023 03/11 9,5\"",
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
-      "referencia": null
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1193,8 +1338,10 @@
       "pico_m": 9.14,
       "confianca": "media",
       "fonte": "Imprensa/compilação · confirmado por: Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html",
-      "referencia": null,
-      "nota": "Hora: 9h45, O Blumenauense — \"A Defesa Civil confirmou que o pico momentâneo do rio Itajaí-Açu em Blumenau foi de 9,14 metros às 9h45\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OBlumenauense_2023-11-17.html). Fuso não declarado."
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "nota": "Hora: 9h45, O Blumenauense — \"A Defesa Civil confirmou que o pico momentâneo do rio Itajaí-Açu em Blumenau foi de 9,14 metros às 9h45\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OBlumenauense_2023-11-17.html). Fuso não declarado.",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1203,8 +1350,10 @@
       "pico_m": 8.67,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html",
-      "referencia": null,
-      "nota": "O Auditório (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Oauditorio_blumenau_2024-05-19.html) dá 8,67 m às 12h e 8,65 m às 13h, mas não chama a leitura das 12h de pico — por isso o campo hora ficou vazio."
+      "referencia": "régua",
+      "referencia_publicada": "régua de hoje",
+      "nota": "O Auditório (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Oauditorio_blumenau_2024-05-19.html) dá 8,67 m às 12h e 8,65 m às 13h, mas não chama a leitura das 12h de pico — por isso o campo hora ficou vazio.",
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1224,7 +1373,9 @@
       "confianca": "alta",
       "fonte": "Coleta automática do projeto — AlertaBlu (Defesa Civil de Blumenau), régua da Ponte Adolfo Konder (ANA 83800002); valor conferido no repasse da Defesa Civil de Itajaí (mesma régua)",
       "referencia": "régua",
-      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. Ressalva de cobertura: a série do AlertaBlu começa exatamente às 09:00 de 01/09 (primeira leitura do resgate), então o máximo real pode ter sido um pouco antes; o repasse, 3 h atrasado (E12), cobre a manhã e não mostra valor maior. Acima da cota de atenção (4,00 m) de 01/09 00:05 a 03/09 01:00. Horário pelo relógio do AlertaBlu."
+      "referencia_publicada": "régua de hoje",
+      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. Ressalva de cobertura: a série do AlertaBlu começa exatamente às 09:00 de 01/09 (primeira leitura do resgate), então o máximo real pode ter sido um pouco antes; o repasse, 3 h atrasado (E12), cobre a manhã e não mostra valor maior. Acima da cota de atenção (4,00 m) de 01/09 00:05 a 03/09 01:00. Horário pelo relógio do AlertaBlu.",
+      "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",
@@ -1235,7 +1386,9 @@
       "confianca": "alta",
       "fonte": "Coleta automática do projeto — repasse da Defesa Civil de Itajaí e AlertaBlu (Defesa Civil de Blumenau), régua da Ponte Adolfo Konder (ANA 83800002); imprensa de 12/09 (ND Mais, O Blumenauense, Jornal Razão) cita 7,87 m às 5h20",
       "referencia": "régua",
-      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. O 7,87 m veio do repasse com rótulo 02:15, que está 3 h atrás do real (E12: 05:15); o AlertaBlu horário registra 7,86 m às 05:00 e 06:00 — platô de ~2 h. Acima da cota de atenção (4,00 m) de 10/09 11:35 a 13/09 21:00, 260 leituras. A maior cheia medida pela coleta do projeto; ficou 1 cm abaixo da primeira cota de rua (7,88 m, Rua São Rafael). Série completa em data/brutos/cheia-2026-09-11-12.ndjson; análise em docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md."
+      "referencia_publicada": "régua de hoje",
+      "nota": "MÁXIMO OBSERVADO pela coleta do projeto, não pico definitivo (decisão do Jefferson, 14/09/2026): só vira pico depois de confirmada a cobertura do evento contra o registro oficial. O 7,87 m veio do repasse com rótulo 02:15, que está 3 h atrás do real (E12: 05:15); o AlertaBlu horário registra 7,86 m às 05:00 e 06:00 — platô de ~2 h. Acima da cota de atenção (4,00 m) de 10/09 11:35 a 13/09 21:00, 260 leituras. A maior cheia medida pela coleta do projeto; ficou 1 cm abaixo da primeira cota de rua (7,88 m, Rua São Rafael). Série completa em data/brutos/cheia-2026-09-11-12.ndjson; análise em docs/eventos/2026-09-11-12-CHEIA-DA-BACIA.md.",
+      "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
     },
     {
       "rio": "itajai-acu",

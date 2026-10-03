@@ -1,3 +1,5 @@
+import { metros } from './formato'
+
 /**
  * O que a legenda do gráfico pode afirmar sobre a régua.
  *
@@ -83,4 +85,25 @@ export function textoDaReferencia(r: Referencia): string {
   if (r === null) return 'não declarada'
   if (ehIBGE(r)) return 'IBGE (régua antiga + 0,20 m = régua de hoje − 0,20 m)'
   return r
+}
+
+/** Nome curto da referência em que um valor foi PUBLICADO (registro convertido e suas divergências). */
+export function nomeDaReferenciaPublicada(r: string | null | undefined): string {
+  if (r === null || r === undefined) return 'referência não declarada'
+  if (ehIBGE(r)) return 'IBGE'
+  return r
+}
+
+/**
+ * A linha "como foi publicado" de um registro convertido para a régua de hoje.
+ *
+ * Existe porque, desde 03/10/2026, 57 picos de Blumenau têm na tela um número
+ * que nenhuma fonte publicou: 15,54 m em 1983 é a conversão dos 15,34 m da
+ * tabela. Quem conhece o 15,34 precisa ver que é o mesmo pico, e de onde vem a
+ * diferença. Vazio quando nada mudou de valor.
+ */
+export function textoDaConversao(publicado: number | undefined, referenciaPublicada: string | undefined): string {
+  if (referenciaPublicada === undefined) return ''
+  if (publicado === undefined) return `já na régua de hoje (conferido em 03/10/2026)`
+  return `convertido: publicado como ${metros(publicado)} na ${nomeDaReferenciaPublicada(referenciaPublicada) === 'IBGE' ? 'referência do IBGE' : nomeDaReferenciaPublicada(referenciaPublicada)}`
 }

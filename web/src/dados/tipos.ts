@@ -184,6 +184,12 @@ export interface Estacoes {
 export interface Divergencia {
   pico_m: number
   fonte: string
+  /**
+   * Só em divergência de registro convertido (Blumenau, 03/10/2026): em que
+   * referência ESTE valor foi publicado. `null` = a fonte não diz. O valor fica
+   * como publicado — não é convertido.
+   */
+  referencia_publicada?: string | null
 }
 
 export interface Evento {
@@ -208,12 +214,21 @@ export interface Evento {
    * Em que referência o nível foi medido.
    *
    * Ausente = régua local. `IBGE (régua + 0,20 m)` = a série longa de Blumenau,
-   * que vem da tabela de Cordero & Medeiros e está 20 cm acima da régua. `null`
-   * = a fonte não declara — e para Blumenau isso importa, porque as duas
-   * referências circulam e a diferença entra direto na comparação com as cotas,
-   * que estão na régua.
+   * da tabela de Cordero & Medeiros: 20 cm acima da régua ANTIGA e 20 cm abaixo
+   * da régua de hoje (FURB, 02/10/2026). `null` = a fonte não declara — e para
+   * Blumenau isso importa, porque a diferença entra direto na comparação com as
+   * cotas, que estão na régua de hoje.
    */
   referencia?: string | null
+  /**
+   * Só em registro CONVERTIDO para a régua de hoje (Blumenau, 03/10/2026): o
+   * valor como a fonte publicou. `pico_m` já é a régua de hoje.
+   */
+  pico_publicado_m?: number
+  /** Em que referência `pico_publicado_m` foi publicado (`IBGE (régua + 0,20 m)`, `régua antiga`, `régua de hoje`). */
+  referencia_publicada?: string
+  /** O que foi somado, quando, por decisão de quem e com que fonte. */
+  conversao?: string
 }
 
 export interface Enchentes {

@@ -287,6 +287,49 @@ def valida_estacoes() -> set[tuple[str, str]]:
 REFERENCIAS_VALIDAS = ("régua", "IBGE (régua + 0,20 m)")
 
 
+#: Referência em que um valor convertido foi PUBLICADO, e quanto se somou para a régua de
+#: hoje (FURB, 02/10/2026). Mesmo conjunto de `scripts/converter_blumenau.py`.
+SOMA_DA_CONVERSAO = {"IBGE (régua + 0,20 m)": 0.20, "régua antiga": 0.40, "régua de hoje": 0.0}
+CAMPOS_DE_CONVERSAO = ("pico_publicado_m", "referencia_publicada", "conversao")
+
+
+def valida_conversoes(eventos: list[dict]) -> None:
+    """
+    Registro convertido para a régua de hoje tem de provar a conta que fez.
+
+    A conversão de Blumenau (03/10/2026) guarda o valor publicado e a referência
+    dele. Se alguém editar `pico_m` à mão, ou converter duas vezes, a soma deixa
+    de bater e a cheia aparece 20 ou 40 cm fora do lugar na tela — sem nada que
+    denuncie. Aqui a conta é refeita.
+    """
+    for e in eventos:
+        presentes = [c for c in CAMPOS_DE_CONVERSAO if c in e]
+        if not presentes:
+            continue
+        onde = f"enchentes.json: {e.get('cidade')} {e.get('data')}"
+        ref_pub = e.get("referencia_publicada")
+        if ref_pub not in SOMA_DA_CONVERSAO:
+            erro(f"{onde}: referencia_publicada {ref_pub!r} fora de {tuple(SOMA_DA_CONVERSAO)}.")
+            continue
+        if not str(e.get("conversao") or "").strip():
+            erro(f"{onde}: registro convertido sem 'conversao' (o que foi somado, quando e com que fonte).")
+        if e.get("referencia") != "régua":
+            erro(f"{onde}: registro convertido precisa de referencia 'régua' (a de hoje), tem {e.get('referencia')!r}.")
+        soma = SOMA_DA_CONVERSAO[ref_pub]
+        publicado = e.get("pico_publicado_m")
+        if soma == 0:
+            if publicado is not None and abs(publicado - e["pico_m"]) >= 0.005:
+                erro(f"{onde}: publicado já na régua de hoje, mas pico_m ({e['pico_m']}) ≠ publicado ({publicado}).")
+        elif not isinstance(publicado, (int, float)) or abs(publicado + soma - e["pico_m"]) >= 0.005:
+            erro(f"{onde}: pico_m {e.get('pico_m')} não é o publicado {publicado} + {soma} m ({ref_pub}).")
+        for i, dv in enumerate(e.get("divergencias") or []):
+            if "referencia_publicada" not in dv:
+                erro(f"{onde}: divergencias[{i}] de registro convertido não diz em que referência foi publicada "
+                     "(null quando a fonte não diz).")
+            elif dv["referencia_publicada"] is not None and dv["referencia_publicada"] not in SOMA_DA_CONVERSAO:
+                erro(f"{onde}: divergencias[{i}].referencia_publicada {dv['referencia_publicada']!r} inválida.")
+
+
 def valida_referencias() -> None:
     """
     Todo registro de Blumenau tem de DECLARAR sua referência.
@@ -327,6 +370,8 @@ def valida_referencias() -> None:
                 f"{ref!r}, fora do conjunto fechado {REFERENCIAS_VALIDAS}. "
                 "Hipótese vai em 'referencia_hipotese' ou 'nota'."
             )
+
+    valida_conversoes(eventos)
 
     # Item 2 da regra: conflito é divergência, não registro duplicado.
     vistos: dict[tuple, int] = {}

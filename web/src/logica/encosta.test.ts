@@ -31,7 +31,8 @@ test('2008 em Blumenau vira o exemplo, com a posição contada nos dados reais',
   const a = avisoDeEncosta(pontos('blumenau'))
   assert.ok(a?.exemplo, 'Blumenau deveria produzir exemplo')
   assert.equal(a.exemplo.data, '2008-11-24')
-  assert.equal(a.exemplo.pico, 11.52)
+  // 11,52 m publicados na régua antiga = 11,92 m na régua de hoje (conversão de 03/10/2026).
+  assert.equal(a.exemplo.pico, 11.92)
   // O número que dá o susto: dezenas de enchentes marcaram MAIS ALTO que a
   // mais letal da história do Vale. Se a série mudar, este teste muda junto —
   // o que se trava é que existem muitas acima, não o valor exato.

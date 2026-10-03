@@ -61,7 +61,7 @@ export default function PainelCenarioAnterior({
     )
   }
 
-  const { nivel, marcas, proxima, ultimaPassada, referenciaConferida } = cenario
+  const { nivel, marcas, proxima, ultimaPassada, referenciaConferida, excluidas } = cenario
 
   return (
     <section className="cartao" aria-labelledby="cenario-titulo">
@@ -101,6 +101,17 @@ export default function PainelCenarioAnterior({
           </li>
         ))}
       </ul>
+
+      {excluidas > 0 ? (
+        <p className={estilos.ressalva} role="note">
+          <strong>
+            {excluidas === 1 ? 'Uma cheia antiga não entra' : `Outras ${excluidas} cheias antigas não entram`} nesta
+            conta.
+          </strong>{' '}
+          Estão em outra referência ou sem referência conferida, e somar uma régua diferente daria diferença de régua
+          com cara de diferença de rio. Continuam no gráfico acima, cada uma com a sua fonte.
+        </p>
+      ) : null}
 
       {!referenciaConferida ? (
         <p className={estilos.ressalva} role="note">
