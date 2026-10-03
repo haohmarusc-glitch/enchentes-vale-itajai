@@ -215,7 +215,7 @@ régua (em relação a régua antiga tem 40 cm). A partir desta data não precis
   1973-08 +0,11; 1978 +0,05; 1983-05 +0,06; 1977 −0,10; 1979-05 −0,30), e de 1931 a 1955 a maioria das datas
   nem casa. A planilha foi criada em 1997, antes do artigo do XV SBRH (2003), e a
   coluna "IBGE" pode ter ficado com valores de uma versão anterior nesse trecho. **Fica valendo a Tabela 4
-  publicada**, que é revisada e é a que os 72 registros já citam. A diferença vai ao Prof. Cordero.
+  publicada**, que é revisada e é a que os 72 registros já citam. A diferença iria ao Prof. Cordero. (Cancelado em 03/10/2026, decisão do Jefferson: **sem mais perguntas ao Prof. Cordero**.) O desempate passa a ser pedido a fontes publicadas (prompt v3.8, item 11).
 * **Linhas que o cadastro não tem:** 18/07, 27/07, 29/07 e 02/08/1983 (10,95 / 10,38 / 11,08 / 11,20 m IBGE),
   08/10/2023 (9,49 m, régua nova) e 26/05/2010 (8,64 m; a lista dá 26/04 e 8,46, possível troca de dígitos).
   São **candidatos**, não registros: entram só por decisão do Jefferson.

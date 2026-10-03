@@ -3,7 +3,7 @@ import type { Cidade } from '../dados/tipos'
 import type { LeituraAoVivo } from '../dados/tempoReal'
 import type { Tendencia } from '../dados/serie'
 import { metros, rotuloCota } from '../logica/formato'
-import { cotaAlcancada, frescorDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
+import { cotaAlcancada, frescorDaCidade, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import estilos from './NivelAoVivo.module.css'
 
 /**
@@ -27,10 +27,18 @@ export default function NivelAoVivo({
   cidade,
   agora,
   tendencia,
+  faixa,
 }: {
   leitura: LeituraAoVivo
   cidade: Cidade
   agora: Date
+  /**
+   * A faixa da cidade AGORA, a mesma que pinta a bolinha e o selo ao lado.
+   * Sem ela o selo ficava vermelho a partir de qualquer cota alcançada: Blumenau
+   * a 3,72 m aparecia com a bolinha de monitoramento e o número em vermelho, e a
+   * tela dizia duas coisas ao mesmo tempo.
+   */
+  faixa?: Faixa
   /** Para onde o nível ia na última hora medida. Ausente sem série publicada. */
   tendencia?: Tendencia | null
 }) {
@@ -53,7 +61,13 @@ export default function NivelAoVivo({
   const c18 = cidade.id === 'ascurra' ? faixaAscurra({cidade:'ascurra', codigo:leitura.codigo, estacao:leitura.estacao, nivelBrutoM:leitura.nivel_m, medidoEm:leitura.medidoEm}, agora) : null
 
   const classe =
-    estado === 'velha' ? estilos.velha : acimaDaCota ? estilos.acima : estilos.normal
+    estado === 'velha'
+      ? estilos.velha
+      : faixa !== undefined
+        ? classeDaFaixa(faixa, acimaDaCota)
+        : acimaDaCota
+          ? estilos.acima
+          : estilos.normal
 
   // Só avisa quando a combinação muda a leitura do número: a medição não é do
   // agora E o rio vinha subindo. Com a leitura fresca, o número já é o estado
@@ -83,4 +97,27 @@ export default function NivelAoVivo({
       ) : null}
     </span>
   )
+}
+
+/**
+ * Cor do selo = cor da faixa. Vermelho só em inundação e emergência; sem faixa
+ * definida (cinza no mapa) o selo também não ganha cor de perigo, mas o texto
+ * "acima da cota de …" continua, com o nome que a fonte deu.
+ */
+function classeDaFaixa(faixa: Faixa, acimaDaCota: boolean): string | undefined {
+  switch (faixa) {
+    case 'monitoramento':
+      return estilos.monitoramento
+    case 'atencao':
+      return estilos.atencao
+    case 'alerta':
+      return estilos.alerta
+    case 'inundacao':
+    case 'emergencia':
+      return estilos.acima
+    case 'normal':
+      return estilos.normal
+    default:
+      return acimaDaCota ? estilos.neutra : estilos.normal
+  }
 }

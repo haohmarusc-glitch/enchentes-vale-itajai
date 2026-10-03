@@ -1,0 +1,74 @@
+{
+  "360x740 /monitor": {
+    "x": 0,
+    "y": 197,
+    "largura": 360,
+    "altura": 629
+  },
+  "360x740 /monitor/blumenau": {
+    "x": 0,
+    "y": 197,
+    "largura": 360,
+    "altura": 629
+  },
+  "360x740 /municipal/ascurra": {
+    "x": 0,
+    "y": 0,
+    "largura": 360,
+    "altura": 740
+  },
+  "390x844 /monitor": {
+    "x": 0,
+    "y": 197,
+    "largura": 390,
+    "altura": 717
+  },
+  "390x844 /monitor/blumenau": {
+    "x": 0,
+    "y": 197,
+    "largura": 390,
+    "altura": 717
+  },
+  "390x844 /municipal/ascurra": {
+    "x": 0,
+    "y": 0,
+    "largura": 390,
+    "altura": 844
+  },
+  "1280x800 /monitor": {
+    "x": 0,
+    "y": 150,
+    "largura": 1280,
+    "altura": 664
+  },
+  "1280x800 /monitor/blumenau": {
+    "x": 0,
+    "y": 150,
+    "largura": 1280,
+    "altura": 664
+  },
+  "1280x800 /municipal/ascurra": {
+    "x": 0,
+    "y": 0,
+    "largura": 1280,
+    "altura": 800
+  },
+  "1366x768 /monitor": {
+    "x": 0,
+    "y": 150,
+    "largura": 1366,
+    "altura": 632
+  },
+  "1366x768 /monitor/blumenau": {
+    "x": 0,
+    "y": 150,
+    "largura": 1366,
+    "altura": 632
+  },
+  "1366x768 /municipal/ascurra": {
+    "x": 0,
+    "y": 0,
+    "largura": 1366,
+    "altura": 768
+  }
+}

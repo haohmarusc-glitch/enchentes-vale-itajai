@@ -1,7 +1,7 @@
 .migalha {
   margin: 0 0 0.25rem;
   font-size: 0.85rem;
-  opacity: 0.85;
+  color: var(--tinta-fraca);
 }
 
 .agora {
@@ -83,4 +83,33 @@
   border-left: 4px solid #c8901a;
   background: rgba(200, 144, 26, 0.12);
   border-radius: 0.3rem;
+}
+
+.tecnico summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.tecnico p {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--tinta-fraca);
+}
+
+.tecnico summary::-webkit-details-marker {
+  display: none;
+}
+
+.tecnico summary::before {
+  content: '▸';
+  display: inline-block;
+  width: 1.1em;
+}
+
+.tecnico[open] summary::before {
+  content: '▾';
 }
