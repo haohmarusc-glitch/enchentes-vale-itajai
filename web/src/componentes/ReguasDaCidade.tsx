@@ -41,7 +41,7 @@ export default function ReguasDaCidade({
 }) {
   if (reguas.length === 0) return null
 
-  const comMare = reguas.filter((r) => !r.alertaAutomatico)
+  const comMare = reguas.filter((r) => !r.alertaAutomatico && r.senteMare)
   // O SUBTÍTULO do curso só aparece com mais de um curso — com um só, ele é
   // ruído. Mas a ORDEM (montante → foz), os braços paralelos e o par co-locado
   // valem sempre: é o que a tela de rio precisa, onde as réguas já vêm filtradas
@@ -173,8 +173,10 @@ function Regua({ regua }: { regua: ReguaComCota }) {
           </span>
         ))}
       </span>
-      {!regua.alertaAutomatico ? (
+      {!regua.alertaAutomatico && regua.senteMare ? (
         <span className={estilos.mare}>sobe e desce com a maré — ver abaixo</span>
+      ) : !regua.alertaAutomatico ? (
+        <span className={estilos.mare}>sem aviso automático: cota em conferência</span>
       ) : null}
     </span>
   )

@@ -43,6 +43,12 @@ export interface ReguaComCota {
    */
   alertaAutomatico: boolean
   motivoSemAlerta: string | null
+  /**
+   * `false` quando a medição mostrou que a régua não sente a maré: sem aviso
+   * automático por outro motivo (cota em conferência), e a tela não pode dizer
+   * "sobe e desce com a maré" dela.
+   */
+  senteMare: boolean
   referencia: string | null
   /** Calha que a régua mede — inclui os ribeirões, que não têm tela própria. */
   rio: string | null
@@ -300,6 +306,7 @@ export function todasAsReguas(
       // dizer régua comum de rio, como a de Ilhota.
       alertaAutomatico: e.alerta_automatico !== false,
       motivoSemAlerta: e.motivo_sem_alerta ?? null,
+      senteMare: e.sente_mare !== false,
       referencia: e.referencia ?? null,
       rio: e.rio,
       fonteCotas: e.fonte_cotas ?? null,

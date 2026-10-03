@@ -75,7 +75,9 @@ export default function VariasReguas({
               ) : null}
               {regua && !regua.alertaAutomatico ? (
                 <span className={estilos.semAlerta} title={regua.motivoSemAlerta ?? undefined}>
-                  sobe e desce com a maré — não dispara aviso sozinha
+                  {regua.senteMare
+                    ? 'sobe e desce com a maré — não dispara aviso sozinha'
+                    : 'não sente a maré; cota em conferência — não dispara aviso sozinha'}
                 </span>
               ) : null}
             </span>

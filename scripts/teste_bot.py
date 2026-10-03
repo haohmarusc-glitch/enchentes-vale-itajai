@@ -567,6 +567,18 @@ class TestCotas(unittest.TestCase):
         limoeiro = t.split("DC-10")[1].split("\n")[0]
         self.assertNotIn("*", limoeiro)
 
+    def test_regua_que_nao_sente_a_mare_nao_leva_a_marca_de_mare(self):
+        """03/10/2026: a medição mostrou que DC-02, DC-05, DC-07 e DC-08 não
+        sentem a maré. Continuam sem aviso automático, mas com a marca †."""
+        t = resp("/cotas Itajaí")
+        for codigo in ("DC-02", "DC-05", "DC-07", "DC-08"):
+            linha = t.split(codigo)[1].split("\n")[0]
+            self.assertIn("†", linha, codigo)
+            self.assertNotIn("*", linha, codigo)
+        dc01 = t.split("DC-01")[1].split("\n")[0]
+        self.assertIn("*", dc01)
+        self.assertIn("cota ainda está em conferência", t)
+
     def test_resposta_de_itajai_cabe_no_telegram(self):
         """Onze réguas com bloco cada uma estouravam o limite de 4096."""
         self.assertLess(len(resp("/cotas Itajaí")), 4096)

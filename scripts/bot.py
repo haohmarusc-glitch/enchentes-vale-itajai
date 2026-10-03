@@ -545,6 +545,9 @@ class Base:
                 # Só `false` explícito tira do aviso automático; ausente é
                 # régua comum de rio, como a de Ilhota.
                 "alerta_automatico": e.get("alerta_automatico") is not False,
+                # `sente_mare: false` = sem aviso automático por OUTRO motivo
+                # (cota em conferência); a mensagem não pode chamá-la de maré.
+                "sente_mare": e.get("sente_mare") is not False,
                 "fonte": e.get("fonte_cotas"),
             })
         return saida
@@ -1695,7 +1698,7 @@ def resposta_cotas(base: Base, cidade: dict) -> list[str]:
             plural = "s" if len(reguas) > 1 else ""
             linhas.append(f"\n\n{len(reguas)} régua{plural} com cota oficial cadastrada:")
         for r in reguas:
-            marca = "" if r["alerta_automatico"] else " *"
+            marca = "" if r["alerta_automatico"] else (" *" if r.get("sente_mare", True) else " †")
             valores = " · ".join(
                 f"{ROTULO_COTA.get(k, k)} {metros(v)}"
                 for k, v in ordenar_cotas(r["cotas"])
@@ -1714,13 +1717,16 @@ def resposta_cotas(base: Base, cidade: dict) -> list[str]:
         for f in fontes:
             linhas.append(f"\n\n<i>Fonte: {notificador.esc(f)}</i>")
 
-        if any(not r["alerta_automatico"] for r in reguas):
+        if any(not r["alerta_automatico"] and r.get("sente_mare", True) for r in reguas):
             # A explicação sai UMA vez, no fim: repetida em cada régua ela
             # ocupava metade da mensagem.
             linhas.append("\n\n<i>* Régua no estuário: sobe e desce com a maré, e passa da "
                           "cota de atenção em dia de sol. A cota é oficial, mas cruzá-la nessas "
                           "réguas, sozinha, não quer dizer que há cheia — por isso o bot não "
                           "dispara aviso automático por elas.</i>")
+        if any(not r["alerta_automatico"] and not r.get("sente_mare", True) for r in reguas):
+            linhas.append("\n\n<i>† Régua que não sente a maré, mas cuja cota ainda está em "
+                          "conferência: o bot não dispara aviso automático por ela.</i>")
 
     linhas.append("\n\n<i>Cada régua tem seu próprio zero: estes metros não se "
                   "comparam com os de outra régua nem com os de outra cidade.</i>")

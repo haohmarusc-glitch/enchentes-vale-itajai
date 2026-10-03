@@ -40,7 +40,7 @@ export default function ReguasAgora({
     const x = porTitulo.get(r.titulo)
     return x ? <CartaoRegua key={r.id} x={x} cidade={cidade} /> : null
   }
-  const comMare = reguas.filter((r) => !r.alertaAutomatico).length
+  const comMare = reguas.filter((r) => !r.alertaAutomatico && r.senteMare).length
 
   return (
     <div className={estilos.bloco}>
@@ -138,9 +138,14 @@ function CartaoRegua({ x, cidade }: { x: ReguaAgora; cidade: Cidade }) {
           régua ({metros(proxima.valor)}).
         </p>
       ) : null}
-      {!regua.alertaAutomatico ? (
+      {!regua.alertaAutomatico && regua.senteMare ? (
         <p className={estilos.mare} title={regua.motivoSemAlerta ?? undefined}>
           <span className={estilos.selo}>maré</span> sobe e desce com a maré — não dispara aviso sozinha
+        </p>
+      ) : !regua.alertaAutomatico ? (
+        <p className={estilos.mare} title={regua.motivoSemAlerta ?? undefined}>
+          <span className={estilos.selo}>sem aviso</span> não sente a maré; a cota desta régua ainda está em
+          conferência, por isso não dispara aviso sozinha
         </p>
       ) : null}
     </article>

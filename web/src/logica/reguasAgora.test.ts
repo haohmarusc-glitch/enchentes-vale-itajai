@@ -57,3 +57,17 @@ test('régua sem leitura continua na lista, sem número e sem cor', () => {
   assert.equal(r!.faixa, 'sem-dado')
   assert.equal(r!.proxima, null)
 })
+
+test('selo "maré" só nas réguas que sentem a maré (medição de 03/10/2026)', () => {
+  const naoSentem = reguas.filter((r) => !r.senteMare).map((r) => r.id).sort()
+  assert.deepEqual(naoSentem, ['DC-02', 'DC-05', 'DC-07', 'DC-08'])
+  // As quatro continuam sem aviso automático: o motivo mudou, a trava não.
+  for (const id of naoSentem) {
+    const r = reguas.find((x) => x.id === id)!
+    assert.equal(r.alertaAutomatico, false, id)
+    assert.match(r.motivoSemAlerta ?? '', /NÃO é régua de maré/, id)
+  }
+  for (const id of ['DC-01', 'DC-03', 'DC-04', 'DC-06', 'DC-09']) {
+    assert.equal(reguas.find((x) => x.id === id)!.senteMare, true, id)
+  }
+})
