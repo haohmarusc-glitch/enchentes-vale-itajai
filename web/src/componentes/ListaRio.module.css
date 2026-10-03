@@ -1,0 +1,132 @@
+.grupo {
+  margin-bottom: 1.1rem;
+}
+
+.tituloGrupo {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tinta-fraca);
+  margin: 0 0 0.25rem;
+}
+
+.nota {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.fila {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.fila > li + li {
+  border-top: 1px solid var(--borda);
+}
+
+.linha {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 62px;
+  padding: 0.55rem 0.85rem;
+  color: var(--tinta);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.linha:hover {
+  background: var(--agua-fundo);
+}
+
+.marcador {
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px dashed var(--faixa-sem-dado);
+}
+
+.m_normal,
+.m_monitoramento,
+.m_atencao,
+.m_alerta,
+.m_inundacao,
+.m_emergencia {
+  border: 0;
+}
+.m_normal {
+  background: var(--faixa-normal);
+}
+.m_monitoramento {
+  background: var(--faixa-monitoramento);
+}
+.m_atencao {
+  background: var(--faixa-atencao);
+}
+.m_alerta {
+  background: var(--faixa-alerta);
+}
+.m_inundacao,
+.m_emergencia {
+  background: var(--faixa-emergencia);
+}
+.m_varias {
+  background: conic-gradient(var(--agua-clara) 0 50%, transparent 50% 100%);
+  border: 2px solid var(--agua-clara);
+}
+
+.corpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nome {
+  font-weight: 700;
+  font-size: 1.02rem;
+}
+
+.sub {
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+
+.valor {
+  flex: none;
+  min-width: 3.4rem;
+  text-align: right;
+  font-weight: 800;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.valor small {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--tinta-fraca);
+}
+
+/* O tempo de descida entre duas cidades do tronco. */
+.tempo {
+  padding: 0.25rem 0.85rem 0.25rem 2.25rem;
+  font-size: 0.8rem;
+  color: var(--tinta-fraca);
+  background: var(--fundo);
+}
+
+@media (max-width: 380px) {
+  .linha {
+    flex-wrap: wrap;
+  }
+}

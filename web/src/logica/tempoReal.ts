@@ -332,7 +332,7 @@ export type Faixa =
  * na tela, e não acredita no dia em que ela estiver certa.
  *
  * Fora daqui não é rebaixamento de risco, é recusa de INVENTAR aviso: o número
- * continua na tela pelo `NivelAoVivo` ("acima da cota de monitoramento"), com o
+ * continua na tela pelo cartão "Agora" (`CartaoAgora`, com a frase da cota), com o
  * nome que a fonte deu. Acrescentar uma chave nova aqui é decidir que ela é
  * fase de acionamento — só com documento da COMPDEC dizendo isso.
  */

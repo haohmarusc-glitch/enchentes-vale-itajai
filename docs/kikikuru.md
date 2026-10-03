@@ -174,7 +174,7 @@ inventada: é o veredito da fonte, mostrado como dela. Regras, todas em
 
 | O quê | Arquivo | Lê de |
 |---|---|---|
-| Diagrama linear, colorido por trecho | `web/src/componentes/DiagramaRio.tsx` | `ultimo.json` (via `useTempoReal`) |
+| Lista do rio (versão 2): cabeceiras, tronco e afluentes, uma linha por cidade com faixa e número | `web/src/componentes/ListaRio.tsx` (substituiu o `DiagramaRio.tsx` em 03/10/2026) | `ultimo.json` (via `useAoVivo`) |
 | Mapa do rio em `<canvas>`, colorido por trecho + correnteza + onda | `web/src/componentes/MapaRios.tsx` (motor em `web/src/logica/mapaMotor.ts`; geometria pura em `mapaCanvas.ts`) | `data/rios/*.geojson` + `ultimo.json` |
 | Monitor da bacia em tela cheia (Açu + Mirim juntos) + reprodução 24 h | `web/src/telas/MonitorBacia.tsx` (mesmo motor `mapaMotor.ts`) | `data/rios/*.geojson` + `ultimo.json` + `serie-recente.json` + `mare-itajai.json` |
 | Linha do tempo de 24 h por cidade | `web/src/componentes/LinhaDoTempo.tsx` | `serie-recente.json` (via `useSerieRecente`) |

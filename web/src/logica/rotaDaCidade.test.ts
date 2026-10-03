@@ -119,7 +119,7 @@ const INICIO = readFileSync(new URL('../telas/Inicio.tsx', import.meta.url), 'ut
 
 test('o índice da tela inicial monta o endereço no mesmo formato das rotas', () => {
   // `/acu/gaspar` e `/mirim/brusque`: apelido do rio + id da cidade.
-  assert.match(INICIO, /\$\{apelido\}\/\$\{c\.id\}/, 'o índice deixou de montar /<rio>/<cidade>')
+  assert.match(INICIO, /\$\{rioDaUrl\(rioId\)\}\/\$\{cidade\.id\}/, 'o índice deixou de montar /<rio>/<cidade>')
   assert.match(INICIO, /'\/itajai'/, 'Itajaí precisa ir para a tela da foz, não para a genérica')
 })
 

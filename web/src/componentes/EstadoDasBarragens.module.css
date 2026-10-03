@@ -31,8 +31,8 @@
 .nome { font-size: 0.9rem; font-weight: 600; }
 
 .idade { font-size: 0.78rem; font-style: italic; color: var(--tinta-fraca); }
-.atrasada { color: #8a6d1f; }
-.velha { color: #a8360a; font-style: normal; font-weight: 600; }
+.atrasada { color: var(--ambar-tinta); }
+.velha { color: var(--laranja-tinta); font-style: normal; font-weight: 600; }
 
 .comportas {
   display: flex;
@@ -44,8 +44,8 @@
 
 /* Nenhuma das duas é cor de alarme: as duas são estados normais de operação.
    Pintar "soltando" de vermelho faria a manobra correta parecer emergência. */
-.soltando { color: #1d5e8a; }
-.segurando { color: #6b4f14; }
+.soltando { color: var(--azul-tinta); }
+.segurando { color: var(--nota-tinta); }
 
 .oQueSignifica { color: var(--tinta-fraca); }
 
@@ -58,9 +58,9 @@
 .ressalva {
   font-size: 0.76rem;
   line-height: 1.35;
-  color: #6b4f14;
-  background: #fdf3e3;
-  border: 1px solid #edd6a8;
+  color: var(--nota-tinta);
+  background: var(--nota-fundo);
+  border: 1px solid var(--nota-borda);
   border-radius: 6px;
   padding: 0.3rem 0.45rem;
 }
@@ -73,7 +73,7 @@
   margin-top: 0.2rem;
 }
 .esvaziando strong {
-  color: #2f6f4f;
+  color: var(--verde-tinta-2);
 }
 .vertendo strong {
   color: #b3261e;

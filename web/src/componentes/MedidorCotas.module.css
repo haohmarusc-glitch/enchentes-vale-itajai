@@ -1,0 +1,128 @@
+.medidor {
+  margin: 2.1rem 0 0.4rem;
+}
+
+.trilho {
+  position: relative;
+  height: 14px;
+  border-radius: 999px;
+  overflow: visible;
+}
+
+.segmento {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.segmento:first-child {
+  border-radius: 999px 0 0 999px;
+}
+
+.segmento:last-of-type {
+  border-radius: 0 999px 999px 0;
+}
+
+.normal {
+  background: var(--faixa-normal);
+}
+.monitoramento {
+  background: var(--faixa-monitoramento);
+}
+.atencao {
+  background: var(--faixa-atencao);
+}
+.alerta {
+  background: var(--faixa-alerta);
+}
+.inundacao,
+.emergencia {
+  background: var(--faixa-emergencia);
+}
+
+/* O nível: um traço que atravessa a barra e a bolha com o número em cima. */
+.marcador {
+  position: absolute;
+  top: -6px;
+  bottom: -6px;
+  width: 3px;
+  margin-left: -1.5px;
+  background: var(--tinta);
+  border-radius: 2px;
+}
+
+.bolha {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--tinta);
+  color: var(--papel);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.12rem 0.45rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.rotulos {
+  position: relative;
+  height: 1.25rem;
+  margin-top: 0.3rem;
+}
+
+.duasLinhas {
+  height: 2.3rem;
+}
+
+.rotulo {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--tinta-fraca);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.linha2 {
+  top: 1.1rem;
+}
+
+.legenda {
+  list-style: none;
+  margin: 0.15rem 0 0.4rem;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.9rem;
+  font-size: 0.8rem;
+  color: var(--tinta-fraca);
+}
+
+.legenda li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.legenda strong {
+  color: var(--tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+.amostra {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 3px;
+}
+
+.aEsquerda {
+  transform: none;
+}
+
+.aDireita {
+  transform: translateX(-100%);
+}

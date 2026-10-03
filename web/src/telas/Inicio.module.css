@@ -1,76 +1,103 @@
-.entrada {
-  font-size: 1.05rem;
-}
-
-.lista {
-  list-style: none;
-  margin: 0 0 1.5rem;
-  padding: 0;
-  display: grid;
+.cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
   gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.cartaoRio {
-  display: block;
-  background: var(--papel);
-  border: 1px solid var(--borda);
-  border-left: 6px solid var(--agua-clara);
-  border-radius: var(--raio);
-  padding: 0.9rem 1rem;
-  text-decoration: none;
-  color: var(--tinta);
-}
-
-.cartaoRio:hover {
-  background: var(--agua-fundo);
-}
-
-.tituloRio {
-  display: block;
-  font-weight: 700;
-  font-size: 1.15rem;
-  color: var(--agua);
-}
-
-.descricao {
-  display: block;
-  font-size: 0.92rem;
-  margin: 0.2rem 0;
-}
-
-/* Cabeceiras e afluentes laterais: menor e mais claro que o tronco, para não
-   ler como continuação da seta. O rótulo diz o que cada linha É. */
-.laterais {
-  display: block;
-  font-size: 0.82rem;
-  color: #4b5563;
-  margin: 0 0 0.2rem;
-}
-
-.rotulo {
-  font-weight: 600;
-  color: #374151;
-}
-
-.contagem {
-  display: block;
-  font-size: 0.85rem;
+.rotuloMinha {
+  margin: 0;
+  font-size: 0.9rem;
   color: var(--tinta-fraca);
 }
 
-.instrucaoCidades {
-  margin: 0 0 0.7rem;
-  font-size: 0.9rem;
-  opacity: 0.9;
+.nomeMinha {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+.nomeMinha a {
+  color: var(--tinta);
+  text-decoration: none;
+}
+
+.botoes {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.trocar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--botao-borda);
+  background: var(--botao-fundo);
+  color: var(--tinta);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.trocar:hover {
+  border-color: var(--agua-clara);
+}
+
+.secao {
+  margin: 1.5rem 0 0.6rem;
+  font-size: 1.15rem;
+}
+
+.dica {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+}
+
+/* Seletor da primeira visita. */
+.seletor {
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra);
+  padding: 1.1rem 1rem;
+}
+
+.tituloSeletor {
+  font-size: 1.45rem;
+  margin: 0 0 0.3rem;
+}
+
+.instrucao {
+  margin: 0 0 0.8rem;
+  font-size: 0.95rem;
+  color: var(--tinta-fraca);
+}
+
+.rotuloBusca {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.busca {
+  width: 100%;
+  padding: 0 0.9rem;
+  border-radius: 12px;
+  border: 1px solid var(--botao-borda);
+  background: var(--fundo);
+  color: var(--tinta);
+  margin-bottom: 0.9rem;
 }
 
 .listaCidades {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.5rem;
 }
 
 /* Alvos generosos de propósito: quem usa isto está com uma mão só, no
@@ -78,28 +105,141 @@
 .chipCidade {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.1rem;
-  min-width: 7.5rem;
-  padding: 0.55rem 0.7rem;
-  border: 1px solid rgba(128, 128, 128, 0.32);
-  border-radius: 0.5rem;
-  text-decoration: none;
-  color: inherit;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--botao-borda);
+  border-radius: 12px;
+  background: var(--botao-fundo);
+  color: var(--tinta);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.1s ease;
 }
 
 .chipCidade:hover,
 .chipCidade:focus-visible {
-  border-color: #1c6ea4;
-  background: rgba(28, 110, 164, 0.08);
+  border-color: var(--agua-clara);
+}
+
+.chipCidade:active {
+  transform: scale(0.98);
 }
 
 .nomeCidade {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .rioCidade {
   font-size: 0.74rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  opacity: 0.7;
+  color: var(--tinta-fraca);
+}
+
+.cancelar {
+  margin-top: 0.9rem;
+  background: none;
+  border: 0;
+  color: var(--agua-clara);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Rios. */
+.lista {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.cartaoRio {
+  display: block;
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  padding: 0.85rem 1rem;
+  text-decoration: none;
+  color: var(--tinta);
+  transition: border-color 0.15s ease;
+}
+
+.cartaoRio:hover {
+  border-color: var(--agua-clara);
+}
+
+.tituloRio {
+  display: block;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.descricao {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+  margin: 0.15rem 0 0.4rem;
+}
+
+.rotulo {
+  font-weight: 600;
+}
+
+.bolinhas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.2rem 0 0.35rem;
+}
+
+.bolinha {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--faixa-sem-dado);
+}
+
+.b_normal {
+  background: var(--faixa-normal);
+}
+.b_monitoramento {
+  background: var(--faixa-monitoramento);
+}
+.b_atencao {
+  background: var(--faixa-atencao);
+}
+.b_alerta {
+  background: var(--faixa-alerta);
+}
+.b_inundacao,
+.b_emergencia {
+  background: var(--faixa-emergencia);
+}
+.b_sem-dado,
+.b_varias {
+  background: transparent;
+  border: 2px dashed var(--faixa-sem-dado);
+}
+
+.contagem {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+}
+
+.comoLer summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.comoLer p {
+  margin-top: 0.6rem;
 }

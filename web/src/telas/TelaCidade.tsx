@@ -1,60 +1,51 @@
-import { comReferenciaAscurra } from '../dados/referenciaAscurra'
-import { Suspense, lazy, useMemo } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
-import AvisoLegal from '../componentes/AvisoLegal'
+import { Suspense, lazy, useMemo, useRef, type KeyboardEvent } from 'react'
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
+import { BotaoLetra, BotaoMinhaCidade } from '../componentes/BotoesPreferencia'
+import CartaoAgora from '../componentes/CartaoAgora'
+import { AcoesDaCidade, CartaoDescida } from '../componentes/CartoesDaCidade'
 import ChuvaAoVivo from '../componentes/ChuvaAoVivo'
-import NivelAoVivo from '../componentes/NivelAoVivo'
+import EstadoDasBarragens from '../componentes/EstadoDasBarragens'
+import LegendaFaixas from '../componentes/LegendaFaixas'
 import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
-import SeloConfianca from '../componentes/SeloConfianca'
-import {
-  cidadesDoRio,
-  eventosDoRio,
-  estacoesTempoReal,
-  mareItajai,
-  rio,
-  topologiaDoRio,
-  trechos,
-} from '../dados/carregar'
-import { leituraDaCidade, leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
-import { faixaDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
-import { useNivelSc } from '../dados/nivelSc'
-import { serieDaCidade, tendencia, useSerieRecente } from '../dados/serie'
-import { chuvaDaCidade } from '../logica/chuva'
-import { metros, rotuloCota } from '../logica/formato'
+import { cidadesDoRio, eventosDoRio, estacoesTempoReal, rio, topologiaDoRio } from '../dados/carregar'
 import { barragensDaCidade, useBarragens } from '../dados/barragens'
-import EstadoDasBarragens from '../componentes/EstadoDasBarragens'
+import { tendencia } from '../dados/serie'
+import { estadoDaCidade, useAoVivo } from '../dados/usarAoVivo'
+import { chuvaDaCidade } from '../logica/chuva'
+import { ROTULO_CONFIANCA, fonteTempoReal, metros, rotuloCota } from '../logica/formato'
 import { reguasComCota } from '../logica/reguas'
-import { caminho, faixaHoras } from '../logica/transito'
 import estilos from './TelaCidade.module.css'
 
 const MapaCotasItuporanga = lazy(() => import('../componentes/MapaCotasItuporanga'))
 const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
 const LinhaDoTempo = lazy(() => import('../componentes/LinhaDoTempo'))
-const MapaRios = lazy(() => import('../componentes/MapaRios'))
+/** O chat do histórico (sem IA, sem API) carrega à parte — ver `chat-local/ChatLocal.tsx`. */
+const ChatLocal = lazy(() => import('../chat-local/ChatLocal'))
 
 /**
  * A página de UMA cidade.
  *
  * POR QUE EXISTE
- * A tela do rio mostra as doze cidades e o detalhe da que estiver selecionada.
- * Quem mora em Gaspar não quer as doze: quer Gaspar, com o mapa já no trecho
- * dela, o nível na régua dela, as ruas dela e de onde a água vem. E quer poder
- * mandar o endereço para o vizinho — `/acu/gaspar` é um endereço; "abra o Açu e
- * toque em Gaspar" não é.
+ * Quem mora em Gaspar não quer as doze cidades: quer Gaspar, com o nível na
+ * régua dela, as ruas dela e de onde a água vem. E quer poder mandar o endereço
+ * para o vizinho — `/acu/gaspar` é um endereço; "abra o Açu e toque em Gaspar"
+ * não é.
+ *
+ * VERSÃO 2 (03/10/2026): quatro abas, porque a página tinha dez cartões
+ * empilhados e "minha rua", a pergunta mais provável, ficava no meio.
+ *  - **Agora**: o cartão do nível, as ações, de onde a água vem e para onde
+ *    vai, chuva, barragem, últimas horas e as cotas;
+ *  - **Minha rua**: a busca das cotas de rua;
+ *  - **Histórico**: os picos, a marca antiga mais próxima acima (D3: só aqui,
+ *    para não soar previsão ao lado do nível) e as perguntas sobre o histórico;
+ *  - **Fontes**: de onde vem cada número, a estação, e as notas técnicas.
+ * A aba vai na URL (`?aba=rua`) para o endereço levar direto a ela.
  *
  * O QUE ELA NÃO FAZ
  * Não inventa vizinha. O Açu é uma ÁRVORE (ver `docs/TOPOLOGIA-CANONICA.md`):
- * "a cidade de cima" só existe ao longo do TRONCO. Para quem está numa
- * cabeceira paralela ou num afluente lateral, a página diz isso com todas as
- * letras em vez de encadear um tempo de descida que a geografia não sustenta —
- * que é o erro que faria alguém esperar a água por um caminho que ela não faz.
- */
-/**
- * O pedaço da URL para o id do rio no cadastro. A URL usa a mesma palavra que
- * as telas de rio já usam (`/acu`, `/mirim`) — trocar por `itajai-acu` no
- * endereço só dificultaria ditar o link por telefone.
+ * "a cidade de cima" só existe ao longo do TRONCO.
  */
 const RIO_DA_URL: Record<string, string> = {
   acu: 'itajai-acu',
@@ -62,69 +53,57 @@ const RIO_DA_URL: Record<string, string> = {
 }
 
 /**
- * Cidades que já têm tela PRÓPRIA, mais rica que esta — e que por isso não
- * podem cair na página genérica.
- *
- * Itajaí é o caso: a tela da foz existe para explicar a maré e, sobretudo,
- * **por que não se mostra "o nível de Itajaí" ao vivo** — são onze réguas com
- * zeros diferentes, que numa mesma hora marcam 0,92 m e 4,82 m, e escolher uma
- * delas seria justamente o erro que aquela tela avisa para ninguém cometer.
- *
- * Uma página genérica ao lado dela mostraria uma versão mais pobre da mesma
- * cidade e, pior, CONTRADIRIA essa explicação — duas telas do mesmo lugar
- * dizendo coisas diferentes é como se perde a confiança de quem lê. Então esta
- * aqui encaminha para lá em vez de competir.
+ * Cidades que já têm tela PRÓPRIA, mais rica que esta. Itajaí: a tela da foz
+ * explica por que não existe "o nível de Itajaí" (onze réguas, zeros
+ * diferentes); uma página genérica ao lado a contradiria.
  */
 const TELA_PROPRIA: Record<string, string> = {
   itajai: '/itajai',
 }
 
+const ABAS = [
+  { id: 'agora', rotulo: 'Agora' },
+  { id: 'rua', rotulo: 'Minha rua' },
+  { id: 'historico', rotulo: 'Histórico' },
+  { id: 'fontes', rotulo: 'Fontes' },
+] as const
+type Aba = (typeof ABAS)[number]['id']
+
 export default function TelaCidade() {
   const { rioId: apelido = '', cidadeId = '' } = useParams()
+  const [busca, setBusca] = useSearchParams()
   const rioId = RIO_DA_URL[apelido] ?? ''
   const dadosRio = rio(rioId)
   const cidades = useMemo(() => cidadesDoRio(rioId), [rioId])
   const topologia = useMemo(() => topologiaDoRio(rioId), [rioId])
   const eventos = useMemo(() => eventosDoRio(rioId), [rioId])
-
-  const original = useTempoReal()
-  const nivelSc = useNivelSc()
-  const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
-  const serie = useSerieRecente()
+  const aoVivo = useAoVivo()
   // Antes de qualquer `return` condicional: hook depois de saída antecipada
   // quebra a ordem entre renderizações.
   const mapaBarragens = useBarragens()
-  const agora = useMemo(() => new Date(), [tempoReal])
+  const abasRef = useRef<(HTMLButtonElement | null)[]>([])
+
+  const pedida = busca.get('aba')
+  const aba: Aba = ABAS.some((a) => a.id === pedida) ? (pedida as Aba) : 'agora'
+  const irPara = (nova: Aba, focar = false) => {
+    const proxima = new URLSearchParams(busca)
+    if (nova === 'agora') proxima.delete('aba')
+    else proxima.set('aba', nova)
+    setBusca(proxima, { replace: true })
+    if (focar) abasRef.current[ABAS.findIndex((a) => a.id === nova)]?.focus()
+  }
+  // Setas trocam de aba, como o leitor de tela espera de um `tablist`.
+  const teclaNasAbas = (e: KeyboardEvent) => {
+    const i = ABAS.findIndex((a) => a.id === aba)
+    if (e.key === 'ArrowRight') irPara(ABAS[(i + 1) % ABAS.length]!.id, true)
+    else if (e.key === 'ArrowLeft') irPara(ABAS[(i - 1 + ABAS.length) % ABAS.length]!.id, true)
+    else return
+    e.preventDefault()
+  }
 
   const cidade = cidades.find((c) => c.id === cidadeId)
   const telaPropria = TELA_PROPRIA[cidadeId]
 
-  /**
-   * A sequência que a água realmente segue. No Açu é o tronco; no Mirim, onde
-   * não há ramificação, é a própria ordem das cidades. Fora dela não se afirma
-   * montante nem jusante.
-   */
-  const eixo = useMemo(() => {
-    if (topologia?.tronco_sequencia?.length) return topologia.tronco_sequencia
-    return cidades.map((c) => c.id)
-  }, [topologia, cidades])
-
-  const iEixo = eixo.indexOf(cidadeId)
-  const montante = iEixo > 0 ? cidades.find((c) => c.id === eixo[iEixo - 1]) : undefined
-  const jusante =
-    iEixo >= 0 && iEixo < eixo.length - 1 ? cidades.find((c) => c.id === eixo[iEixo + 1]) : undefined
-
-  const doMontante = useMemo(
-    () => (montante && cidade ? caminho(trechos, rioId, montante.id, cidade.id) : null),
-    [montante, cidade, rioId],
-  )
-  const paraJusante = useMemo(
-    () => (cidade && jusante ? caminho(trechos, rioId, cidade.id, jusante.id) : null),
-    [cidade, jusante, rioId],
-  )
-
-  // Depois dos hooks (a ordem deles não pode variar entre renders), antes de
-  // qualquer conteúdo: a cidade com tela própria vai para lá.
   if (telaPropria && dadosRio) return <Navigate to={telaPropria} replace />
 
   if (!dadosRio) {
@@ -154,284 +133,232 @@ export default function TelaCidade() {
     )
   }
 
-  const leitura = leituraDaCidade(tempoReal, rioId, cidade.id)
-  const daCidade = leiturasDaCidade(tempoReal, rioId, cidade.id)
-  const reguas = reguasComCota(estacoesTempoReal, rioId, cidade.id)
+  const rioUrl = apelido === 'mirim' ? 'mirim' : 'acu'
+  const estado = estadoDaCidade(cidade, rioId, aoVivo)
+  const { leitura } = estado
+  const { agora, tempoReal, serie } = aoVivo
   const chuva = chuvaDaCidade(tempoReal.chuva, cidade.id)
-  const serieDela = serieDaCidade(serie, rioId, cidade.id)
   const picos = eventos.filter((e) => e.cidade === cidade.id)
-  const cotas = Object.entries(cidade.cotas_m ?? {}).filter(([, v]) => typeof v === 'number')
-  const rotaDoRio = rioId === 'itajai-mirim' ? '/mirim' : '/acu'
-  const bruto = cidade.id === 'ascurra' && leitura?.codigo === 'DCSC-00003' ? null : nivelSc.get(cidade.id) ?? null
+  const cotas = Object.entries(cidade.cotas_m ?? {}).filter(([, v]) => typeof v === 'number') as [string, number][]
+  const reguas = reguasComCota(estacoesTempoReal, rioId, cidade.id)
   const barragens = barragensDaCidade(mapaBarragens, cidade.id)
 
   return (
     <>
-      <p className={estilos.migalha}>
-        <Link to={rotaDoRio}>{dadosRio.nome}</Link> → <strong>{cidade.nome}</strong>
-      </p>
-      <h1>{cidade.nome}</h1>
-
-      <AvisoLegal />
-
-      {/* AGORA — o cartão que a pessoa abriu a página para ver. Vem primeiro, e
-          diz "sem dado" com todas as letras quando é o caso: cartão vazio
-          parece normalidade, e normalidade é a afirmação mais perigosa que
-          este site pode fazer sem medir. */}
-      <section className="cartao">
-        <h2>Agora</h2>
-        {leitura ? (
-          <p className={estilos.agora}>
-            <NivelAoVivo
-              leitura={leitura}
-              cidade={cidade}
-              agora={agora}
-              faixa={faixaDaCidade(cidade, leitura, false, agora)}
-            />
+      <div className={estilos.cabeca}>
+        <div className={estilos.titulos}>
+          <p className={estilos.migalha}>
+            <Link to={`/${rioUrl}`}>{dadosRio.nome}</Link> ›
           </p>
-        ) : bruto ? (
-          /* A IDADE SAI JUNTO DO NÚMERO (achado 4 da auditoria de 19/09/2026).
-             Este caminho mostrava o nível estadual sem o horário da medição — a
-             única idade visível logo abaixo é a da CHUVA, e quem lê a toma pela
-             do nível. O monitor regional e o diagrama já mostram; só esta tela
-             não mostrava. Pesa mais aqui do que parece: `nivelSc.ts` PRESERVA a
-             leitura anterior quando o transporte falha, o que é útil justamente
-             porque a tela carrega a idade — sem ela, um número velho fica na
-             cara de atual por tempo indeterminado. */
-          <p className={estilos.semDado}>
-            Sem régua municipal aqui. A rede estadual publica{' '}
-            <strong>{metros(bruto.nivelBrutoM)}</strong>
-            {bruto.medidoEm ? <> · {textoIdade(idadeMin(bruto.medidoEm, agora))}</> : (
-              <> · <strong>sem horário de medição</strong></>
-            )}
-            {' — '}
-            {bruto.estacao}
-            {bruto.codigo ? ` (${bruto.codigo})` : ''}. É uma régua com{' '}
-            <strong>zero próprio</strong>: serve para ver o rio subir ou baixar,{' '}
-            <strong>não</strong> para comparar com as cotas desta cidade.
-          </p>
-        ) : (
-          <p className={estilos.semDado}>
-            <strong>Sem leitura ao vivo.</strong> Isto não quer dizer que o rio esteja
-            baixo: quer dizer que não estamos medindo. Acompanhe pela Defesa Civil.
-          </p>
-        )}
+          <h1 className={estilos.nome}>{cidade.nome}</h1>
+        </div>
+        <div className={estilos.preferencias}>
+          <BotaoMinhaCidade cidade={cidade} rio={rioUrl} />
+          <BotaoLetra />
+        </div>
+      </div>
 
-        {reguas.length > 0 ? (
-          <ReguasDaCidade reguas={reguas} cidade={cidade.nome} agrupadoPorCurso />
-        ) : null}
+      <div className={estilos.abas} role="tablist" aria-label={`Seções de ${cidade.nome}`} onKeyDown={teclaNasAbas}>
+        {ABAS.map((a, i) => (
+          <button
+            key={a.id}
+            ref={(el) => {
+              abasRef.current[i] = el
+            }}
+            type="button"
+            role="tab"
+            id={`aba-${a.id}`}
+            aria-selected={aba === a.id}
+            aria-controls={`painel-${a.id}`}
+            tabIndex={aba === a.id ? 0 : -1}
+            className={`${estilos.aba} ${aba === a.id ? estilos.abaAtiva : ''}`}
+            onClick={() => irPara(a.id)}
+          >
+            {a.rotulo}
+          </button>
+        ))}
+      </div>
 
-        {daCidade.length > 1 && reguas.length === 0 ? (
-          <p className={estilos.instrucao}>
-            {daCidade.length} réguas nesta cidade, cada uma com o seu zero — os metros
-            não se comparam entre elas.
-          </p>
-        ) : null}
-
-        {chuva ? <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} /> : null}
-
-        {/* O estado da barragem fica JUNTO do nível, no mesmo cartão. Separado,
-            viraria curiosidade; aqui é o que explica por que o número está onde
-            está. Só aparece nas três cidades que têm barragem acima. */}
-        {/* A tendência só existe para série de UMA régua; misturada, vem null e
-            o bloco mostra só o fato da comporta. */}
-        <EstadoDasBarragens barragens={barragens} agora={agora} tendencia={tendencia(serieDela)} />
-
-        {/* A ressalva vem ANTES dos números. Depois deles, seria rodapé — e o
-            que ela diz é justamente que os números podem não bater com o que a
-            Defesa Civil do município declara. Ler a cota sem isso é ler errado. */}
-        {cidade.cotas_aviso_publico ? (
-          <p className={estilos.avisoCotas}>
-            <strong>Atenção ao ler as cotas desta cidade.</strong>{' '}
-            {cidade.cotas_aviso_publico}
-          </p>
-        ) : null}
-
-        {cotas.length > 0 ? (
+      <div
+        key={aba}
+        role="tabpanel"
+        id={`painel-${aba}`}
+        aria-labelledby={`aba-${aba}`}
+        className={estilos.painel}
+      >
+        {aba === 'agora' ? (
           <>
-            <h3 className={estilos.subtitulo}>Cotas de referência, na régua daqui</h3>
-            <ul className={estilos.cotas}>
-              {cotas.map(([chave, valor]) => (
-                <li key={chave}>
-                  <span className={estilos.cotaNome}>{rotuloCota(chave, cidade.cotas_nomes_na_fonte)}</span>
-                  <strong>{metros(valor)}</strong>
-                </li>
-              ))}
-            </ul>
-            <p className={estilos.instrucao}>
-              Cada cidade tem a sua régua, com zero próprio.{' '}
-              <strong>Estes metros não se comparam</strong> com os de outra cidade.
-            </p>
+            <CartaoAgora cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado}>
+              <AcoesDaCidade cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado} />
+            </CartaoAgora>
+
+            <CartaoDescida cidade={cidade} rioId={rioId} cidades={cidades} topologia={topologia} />
+
+            {chuva ? (
+              <section className="cartao">
+                <h2>Chuva em {cidade.nome}</h2>
+                <ChuvaAoVivo resumo={chuva} agora={agora} cidade={cidade.nome} />
+              </section>
+            ) : tempoReal.chuvaOk ? null : (
+              <p className={estilos.instrucao}>🌧 Chuva: não foi possível coletar agora.</p>
+            )}
+
+            {/* O estado da barragem junto do nível: é o que explica por que o
+                número está onde está. Só nas cidades com barragem acima. */}
+            {barragens.length > 0 ? (
+              <section className="cartao">
+                <EstadoDasBarragens barragens={barragens} agora={agora} tendencia={tendencia(estado.serie)} />
+              </section>
+            ) : null}
+
+            {estado.serie.length > 0 && cotas.length > 0 ? (
+              <section className="cartao">
+                <h2>Últimas horas em {cidade.nome}</h2>
+                <Suspense fallback={<span className={`esqueleto ${estilos.esqGrafico}`} />}>
+                  <LinhaDoTempo cidade={cidade} serie={estado.serie} agora={agora} resgates={serie.resgates} />
+                </Suspense>
+              </section>
+            ) : null}
+
+            <details className={`cartao ${estilos.detalhes}`}>
+              <summary>Cotas de referência, na régua daqui</summary>
+              {cotas.length > 0 ? (
+                <>
+                  <ul className={estilos.cotas}>
+                    {cotas.map(([chave, valor]) => (
+                      <li key={chave}>
+                        <span className={estilos.cotaNome}>{rotuloCota(chave, cidade.cotas_nomes_na_fonte)}</span>
+                        <strong>{metros(valor)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className={estilos.instrucao}>
+                    Nomes como a Defesa Civil da cidade escreve. Cada cidade tem a sua régua, com
+                    zero próprio: <strong>estes metros não se comparam</strong> com os de outra
+                    cidade.
+                    {cidade.regua ? <> Régua: {cidade.regua}.</> : null}
+                  </p>
+                </>
+              ) : reguas.length > 0 ? (
+                /* Cidade de várias réguas: a escala não está NA CIDADE, está em
+                   cada régua, com zeros diferentes. Um número só seria mentira. */
+                <>
+                  <p className={estilos.instrucao}>
+                    As cotas desta cidade estão <strong>em cada régua</strong> — não numa escala
+                    única. Elas têm zeros diferentes entre si. <strong>A cor sai da régua</strong>,
+                    não daqui.
+                  </p>
+                  <ReguasDaCidade reguas={reguas} cidade={cidade.nome} agrupadoPorCurso />
+                </>
+              ) : (
+                <p className={estilos.instrucao}>
+                  Esta cidade ainda não tem cota de acionamento no cadastro. Sem ela, um número na
+                  régua não vira faixa — e o site não a pinta nem dispara aviso por ela.
+                </p>
+              )}
+            </details>
           </>
-        ) : reguas.length > 0 ? (
-          /* Itajaí. A escala não está NA CIDADE porque ela tem VÁRIAS — uma por
-             régua, com zeros diferentes (a DC-01 usa 1,16/1,36/1,56 e a DC-10
-             usa 8/9/10). Um número só aqui seria mentira. Até 08/09/2026 esta
-             tela dizia "esta cidade ainda não tem cota" logo abaixo do painel
-             que mostrava as onze escalas — a própria página se desmentia, e
-             ainda afirmava que o site não pinta, quando pinta por régua. */
-          <p className={estilos.instrucao}>
-            As cotas desta cidade estão <strong>em cada régua</strong>, acima — não numa
-            escala única. Elas têm zeros diferentes entre si, e um número só para a cidade
-            inteira seria falso. <strong>A cor sai da régua</strong>, não daqui.
-          </p>
-        ) : (
-          <p className={estilos.instrucao}>
-            Esta cidade ainda não tem cota de acionamento no cadastro. Sem ela, um número
-            na régua não vira faixa — e o site não a pinta nem dispara aviso por ela.
-          </p>
-        )}
-      </section>
+        ) : null}
 
-      {/* MAPA já no trecho desta cidade — é o que o zoom do Monitor destravou.
-          O rio inteiro continua desenhado; só a janela é menor, então rolar
-          para os lados ainda mostra de onde a água vem. */}
-      <section className="cartao">
-        <h2>O rio em {cidade.nome}</h2>
-        {cidade.coordenadas ? (
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa…</p>}>
-            <MapaRios
-              rioId={rioId}
-              cidades={cidades}
-              tempoReal={tempoReal}
-              agora={agora}
-              mare={mareItajai}
-              focarEm={cidade}
-              barragens={[...mapaBarragens.values()]}
-            />
-            {/* O mapa daqui é uma janela fixa. Quem quer aproximar, arrastar,
-                trocar para satélite ou tocar no rio para ver o vizinho vai ao
-                Monitor — que é o MESMO mapa, já enquadrado nesta cidade. */}
-            <p className={estilos.instrucao}>
-              <Link to={`/monitor/${cidade.id}`}>
-                Abrir no monitor ao vivo, com zoom e satélite →
-              </Link>
-            </p>
-          </Suspense>
-        ) : (
-          <p className={estilos.instrucao}>
-            Ainda não temos a coordenada da régua desta cidade, então não há onde
-            aproximar o mapa. Chutar a posição num mapa de enchente é pior que não
-            aproximar. <Link to={rotaDoRio}>Ver o rio inteiro</Link>.
-          </p>
-        )}
-      </section>
+        {aba === 'rua' ? (
+          <>
+            <Suspense fallback={<span className={`esqueleto ${estilos.esqGrafico}`} />}>
+              <CotasDeRua key={cidade.id} cidade={cidade} leitura={leitura} agora={agora} />
+            </Suspense>
+            {cidade.id === 'ituporanga' ? (
+              <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa de áreas por nível…</p>}>
+                <MapaCotasItuporanga />
+              </Suspense>
+            ) : null}
+          </>
+        ) : null}
 
-      {/* DE ONDE VEM / PARA ONDE VAI — só ao longo do eixo. */}
-      <section className="cartao">
-        <h2>De onde a água vem, para onde vai</h2>
-        {iEixo < 0 ? (
-          <p className={estilos.instrucao}>
-            {cidade.nome} não está na sequência do tronco — é{' '}
-            {cidade.ramo ? <>uma cabeceira ou afluente ({cidade.ramo.replace(/_/g, ' ')})</> : 'um ponto fora do eixo'}
-            . A cheia daqui <strong>não é a mesma</strong> que desce o rio principal, então
-            encadear um tempo de descida por esta cidade daria resultado errado. Ver a{' '}
-            <Link to={rotaDoRio}>tela do rio</Link> para a árvore inteira.
-          </p>
-        ) : (
-          <ul className={estilos.vizinhas}>
-            <li>
-              <span className={estilos.rotuloVizinha}>Acima (a água vem de)</span>
-              {montante ? (
+        {aba === 'historico' ? (
+          <>
+            <section className="cartao">
+              <h2>Picos históricos em {cidade.nome}</h2>
+              {picos.length > 0 ? (
+                <Suspense fallback={<span className={`esqueleto ${estilos.esqGrafico}`} />}>
+                  <GraficoPicos eventos={picos} cidade={cidade} nomeCidade={cidade.nome} />
+                </Suspense>
+              ) : (
+                <p className={estilos.instrucao}>
+                  Nenhum pico histórico levantado para {cidade.nome} ainda. A ausência é do{' '}
+                  <strong>nosso levantamento</strong>, não da história da cidade.
+                </p>
+              )}
+            </section>
+            {/* D3: a marca antiga mais próxima acima do nível fica AQUI, depois
+                das barras — longe do número de agora, para não soar previsão. */}
+            <PainelCenarioAnterior cidade={cidade} eventos={picos} leitura={leitura} agora={agora} />
+            {rioId === 'itajai-acu' || rioId === 'itajai-mirim' ? (
+              <Suspense fallback={<p className={estilos.instrucao}>Carregando as perguntas sobre o histórico…</p>}>
+                <ChatLocal rio={rioId} />
+              </Suspense>
+            ) : null}
+          </>
+        ) : null}
+
+        {aba === 'fontes' ? (
+          <>
+            <section className="cartao">
+              <h2>De onde vêm estes números</h2>
+              {cidade.fontes_tempo_real.length > 0 ? (
                 <>
-                  <Link to={`${rotaDoRio}/${montante.id}`}>{montante.nome}</Link>
-                  {doMontante ? (
-                    <>
-                      {' '}— leva <strong>{faixaHoras(doMontante)}</strong> para chegar aqui{' '}
-                      <SeloConfianca
-                        nivel={doMontante.confianca}
-                        fonte={doMontante.fontes.join('; ')}
-                        tipo="trecho"
-                      />
-                    </>
-                  ) : (
-                    <> — tempo de descida ainda não levantado para este trecho</>
-                  )}
+                  <h3 className={estilos.subtitulo}>Nível e chuva ao vivo</h3>
+                  <ul className={estilos.fontes}>
+                    {cidade.fontes_tempo_real.map((bruto) => {
+                      const { url, rotulo } = fonteTempoReal(bruto)
+                      return (
+                        <li key={bruto}>
+                          <a href={url} target="_blank" rel="noreferrer">
+                            {rotulo}
+                          </a>
+                        </li>
+                      )
+                    })}
+                  </ul>
                 </>
               ) : (
-                <>é o início do tronco nesta tela</>
+                <p className={estilos.instrucao}>Sem fonte de tempo real cadastrada para {cidade.nome}.</p>
               )}
-            </li>
-            <li>
-              <span className={estilos.rotuloVizinha}>Abaixo (a água segue para)</span>
-              {jusante ? (
-                <>
-                  <Link to={`${rotaDoRio}/${jusante.id}`}>{jusante.nome}</Link>
-                  {paraJusante ? (
-                    <>
-                      {' '}— leva <strong>{faixaHoras(paraJusante)}</strong> daqui até lá{' '}
-                      <SeloConfianca
-                        nivel={paraJusante.confianca}
-                        fonte={paraJusante.fontes.join('; ')}
-                        tipo="trecho"
-                      />
-                    </>
-                  ) : (
-                    <> — tempo de descida ainda não levantado para este trecho</>
-                  )}
-                </>
-              ) : (
-                <>é o fim do curso nesta tela</>
-              )}
-            </li>
-          </ul>
-        )}
-        <p className={estilos.instrucao}>
-          O tempo é sempre um <strong>intervalo</strong>, nunca um horário exato: depende
-          de quanto choveu, de onde e de quanto o solo já está encharcado.
-        </p>
-      </section>
-
-
-      {cidade.id === 'ituporanga' && (
-        <Suspense fallback={<p>Carregando o mapa de áreas por nível…</p>}>
-          <MapaCotasItuporanga />
-        </Suspense>
-      )}
-
-      <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
-        <CotasDeRua key={cidade.id} cidade={cidade} leitura={leitura} agora={agora} />
-      </Suspense>
-
-      {serieDela.length > 0 && cotas.length > 0 ? (
-        <section className="cartao">
-          <h2>Últimas horas em {cidade.nome}</h2>
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando a linha do tempo…</p>}>
-            <LinhaDoTempo cidade={cidade} serie={serieDela} agora={agora} resgates={serie.resgates} />
-          </Suspense>
-        </section>
-      ) : null}
-
-      <section className="cartao">
-        <h2>Picos históricos em {cidade.nome}</h2>
-        {picos.length > 0 ? (
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando o gráfico…</p>}>
-            <GraficoPicos eventos={picos} cidade={cidade} nomeCidade={cidade.nome} />
-          </Suspense>
-        ) : (
-          <p className={estilos.instrucao}>
-            Nenhum pico histórico levantado para {cidade.nome} ainda. A ausência é do{' '}
-            <strong>nosso levantamento</strong>, não da história da cidade.
-          </p>
-        )}
-      </section>
-
-      {/* Logo abaixo do gráfico, de propósito: quem acabou de ver as barras é
-          quem pergunta "e agora, onde estamos nisso?". Longe dali a resposta
-          chega sem a pergunta. */}
-      <PainelCenarioAnterior cidade={cidade} eventos={picos} leitura={leitura} agora={agora} />
-
-
-      {/* Recolhida: é nota de pesquisa (fontes, conferências, pendências), útil
-          a quem confere o dado e ruído para quem quer saber do rio agora. */}
-      {cidade.observacao ? (
-        <section className="cartao">
-          <details className={estilos.tecnico}>
-            <summary>Detalhes técnicos desta régua</summary>
-            <p>{cidade.observacao}</p>
-          </details>
-        </section>
-      ) : null}
+              <h3 className={estilos.subtitulo}>A régua</h3>
+              <ul className={estilos.fontes}>
+                {cidade.regua ? <li>Régua: {cidade.regua}</li> : null}
+                <li>
+                  {cidade.codigo_ana
+                    ? `Estação ANA ${cidade.codigo_ana}${cidade.verificado ? '' : ' (não conferida)'}`
+                    : 'Sem estação ANA localizada'}
+                </li>
+                {cidade.sub_bacia ? <li>Sub-bacia: {cidade.sub_bacia}</li> : null}
+                {cidade.km_da_foz !== undefined ? <li>{cidade.km_da_foz} km da foz</li> : null}
+                <li>{picos.length} pico{picos.length === 1 ? '' : 's'} no histórico</li>
+              </ul>
+              <h3 className={estilos.subtitulo}>O que os selos de confiança querem dizer</h3>
+              <ul className={estilos.fontes}>
+                <li><strong>Confiança alta</strong> — {ROTULO_CONFIANCA.alta}</li>
+                <li><strong>Confiança média</strong> — {ROTULO_CONFIANCA.media}</li>
+                <li><strong>Confiança baixa</strong> — {ROTULO_CONFIANCA.baixa}</li>
+              </ul>
+              <p className={estilos.instrucao}>
+                <Link to={`/monitor/${cidade.id}`}>Abrir no Monitor, com zoom e satélite →</Link>
+              </p>
+            </section>
+            <details className={`cartao ${estilos.detalhes}`}>
+              <summary>O que as cores querem dizer</summary>
+              <LegendaFaixas />
+            </details>
+            {/* Nota de pesquisa (fontes, conferências, pendências): útil a quem
+                confere o dado, ruído para quem quer saber do rio agora. */}
+            {cidade.observacao ? (
+              <details className={`cartao ${estilos.detalhes}`}>
+                <summary>Detalhes técnicos desta régua</summary>
+                <p className={estilos.observacao}>{cidade.observacao}</p>
+              </details>
+            ) : null}
+          </>
+        ) : null}
+      </div>
     </>
   )
 }

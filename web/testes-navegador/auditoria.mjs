@@ -12,6 +12,8 @@ const page=await context.newPage()
 page.on('pageerror',e=>erros.push(e.message))
 const agora = new Date()
 const local = new Date(agora.getTime()-3*3600000).toISOString().slice(0,19)
+// A folha do aviso da primeira visita (fumaça) tamparia o atalho e os campos.
+await context.addInitScript(()=>{try{localStorage.setItem('enchentes:aviso-lido','2026-10-03')}catch{}})
 await context.route('**/*',route=>{
  const original=route.request().url()
  if(original.startsWith('https://raw.githubusercontent.com/') && /\/ultimo(?:_nivel_sc)?\.json$/.test(original)) return route.fulfill({status:503,body:'Backend.max_conn reached'})

@@ -1,0 +1,137 @@
+.cartao {
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.titulo {
+  font-size: 1.15rem;
+  margin: 0 0 0.25rem;
+}
+
+.horas {
+  font-size: 1.7rem;
+  font-weight: 800;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.01em;
+}
+
+.texto {
+  font-size: 0.9rem;
+  color: var(--tinta-fraca);
+  margin: 0;
+}
+
+.vem {
+  margin: 0.7rem 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--borda);
+  font-size: 0.95rem;
+}
+
+.acoes {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.zap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 52px;
+  border-radius: 12px;
+  background: var(--zap);
+  color: var(--zap-tinta);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.duas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.6rem;
+}
+
+.botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 0.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--botao-borda);
+  background: var(--botao-fundo);
+  color: var(--tinta);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+
+.zap:active,
+.botao:active {
+  transform: scale(0.98);
+}
+
+.zap:hover {
+  filter: brightness(1.06);
+}
+
+.botao:hover {
+  border-color: var(--agua-clara);
+}
+
+/* Linha de outra cidade (Rio acima, Outras que sigo, lista do rio). */
+.linha {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.9rem;
+  min-height: 60px;
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  color: var(--tinta);
+  text-decoration: none;
+  margin-bottom: 0.6rem;
+  transition: border-color 0.15s ease;
+}
+
+.linha:hover {
+  border-color: var(--agua-clara);
+}
+
+.linhaCorpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.linhaNome {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.linhaRotulo {
+  font-weight: 700;
+}
+
+.linhaSub {
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.abrir {
+  font-size: 1.4rem;
+  color: var(--tinta-fraca);
+  line-height: 1;
+}

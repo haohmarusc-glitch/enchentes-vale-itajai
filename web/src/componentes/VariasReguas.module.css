@@ -10,9 +10,9 @@
 .aviso {
   font-size: 0.8rem;
   line-height: 1.35;
-  color: #6b4f14;
-  background: #fdf3e3;
-  border: 1px solid #edd6a8;
+  color: var(--nota-tinta);
+  background: var(--nota-fundo);
+  border: 1px solid var(--nota-borda);
   border-radius: 6px;
   padding: 0.35rem 0.5rem;
 }
@@ -36,7 +36,7 @@
 }
 
 .acima {
-  color: #a8360a;
+  color: var(--laranja-tinta);
 }
 
 .nome {
@@ -50,8 +50,8 @@
   color: var(--tinta-fraca);
 }
 
-.atrasada { color: #8a6d1f; }
-.velha { color: #a8360a; font-style: normal; font-weight: 600; }
+.atrasada { color: var(--ambar-tinta); }
+.velha { color: var(--laranja-tinta); font-style: normal; font-weight: 600; }
 
 .cota,
 .abaixo,

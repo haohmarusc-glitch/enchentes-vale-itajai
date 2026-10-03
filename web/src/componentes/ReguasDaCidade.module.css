@@ -113,7 +113,7 @@
   display: block;
   font-size: 0.8rem;
   font-style: italic;
-  color: #6a6a72;
+  color: var(--texto-cinza);
 }
 
 .explicacao {

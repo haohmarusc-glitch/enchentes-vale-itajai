@@ -32,6 +32,154 @@
   --faixa-sem-dado: #9aa7b2;
   --raio: 10px;
   --largura: 56rem;
+  /* Versão 2 (03/10/2026): tokens das telas fora do Monitor. Os valores daqui
+     são os do tema claro; o escuro só existe dentro de `:root[data-app]`, que o
+     App liga fora das rotas do Monitor — o Monitor nunca muda de cor nem de
+     tamanho de letra por causa deles. */
+  --raio-g: 16px;
+  --sombra: 0 1px 2px rgba(11, 58, 91, 0.06), 0 6px 18px rgba(11, 58, 91, 0.06);
+  --emergencia-fundo: #a8211a;
+  --emergencia-tinta: #ffffff;
+  --exemplo-fundo: #14202b;
+  --nav-fundo: #ffffff;
+  --nav-tinta: #485a6b;
+  --nav-ativa: #1c6ea4;
+  --esqueleto: #e3e9ef;
+  --esqueleto-brilho: #f1f5f8;
+  --botao-fundo: #ffffff;
+  --botao-borda: #cfd8e0;
+  --acao-fundo: #1c6ea4;
+  --acao-tinta: #ffffff;
+  --zap: #1f9d55;
+  --zap-tinta: #ffffff;
+  /* Chips de faixa: fundo claro + tinta escura da mesma família, sempre com o
+     nome escrito (cor nunca sozinha). */
+  --chip-normal-fundo: #e6f2e7;
+  --chip-normal-tinta: #1b5e20;
+  --chip-monitoramento-fundo: #f1f7df;
+  --chip-monitoramento-tinta: #46590c;
+  --chip-atencao-fundo: #fff4d6;
+  --chip-atencao-tinta: #6f4f00;
+  --chip-alerta-fundo: #fde9dc;
+  --chip-alerta-tinta: #933a06;
+  --chip-perigo-fundo: #fdecea;
+  --chip-perigo-tinta: #a1201a;
+  --chip-sem-dado-fundo: #eef1f4;
+  --chip-sem-dado-tinta: #485a6b;
+  --rodape-fundo: #0b3a5b;
+  /* Cores que os componentes usavam soltas, agora com nome. O valor claro é o
+     mesmo de antes, então nada muda fora do tema escuro (nem no Monitor). */
+  --nota-tinta: #6b4f14;
+  --nota-fundo: #fdf3e3;
+  --nota-borda: #edd6a8;
+  --texto-azul: #17457a;
+  --texto-azul-cinza: #40587a;
+  --texto-suave: #5c6b7f;
+  --texto-apagado: #7a8899;
+  --linha-suave: #e6ebf1;
+  --linha-mais-suave: #f0f3f7;
+  --borda-azulada: #b9c8da;
+  --fundo-suave: #f6f8fa;
+  --chuva-fundo: #eef4fb;
+  --chuva-borda: #cfe0f2;
+  --laranja-tinta: #a8360a;
+  --ambar-tinta: #8a6d1f;
+  --perigo-borda: #e6a49c;
+  --perigo-tinta: #6b1d16;
+  --verde-tinta: #1f5f3f;
+  --verde-tinta-2: #2f6f4f;
+  --azul-tinta: #1d5e8a;
+  --neutro-fundo: #f2f2f2;
+  --neutro-borda: #dcdcdc;
+  --neutro-tinta: #555;
+  --selo-alta-fundo: #e7f4e8;
+  --selo-alta-borda: #9fc9a3;
+  --selo-media-borda: #e0c48a;
+  --selo-baixa-fundo: #f0f0f2;
+  --selo-baixa-borda: #c8c8cd;
+  --selo-baixa-tinta: #55555e;
+  --texto-cinza: #6a6a72;
+  --erro-fundo: #fff8e6;
+  --erro-tinta: #3a2c00;
+}
+
+/*
+ * TEMA ESCURO — só nas telas da versão 2 (`data-app`), e por escolha do
+ * sistema. Mesma família de cores, sem inverter ingenuamente: o vermelho e o
+ * laranja ficam mais claros para manter contraste sobre o fundo escuro.
+ */
+@media (prefers-color-scheme: dark) {
+  :root[data-app]:not([data-tema='claro']) {
+    color-scheme: dark;
+    --agua: #cfe6f7;
+    --agua-clara: #7cc0f0;
+    --agua-fundo: #12304a;
+    --papel: #13202d;
+    --fundo: #0b1520;
+    --tinta: #e8eef4;
+    --tinta-fraca: #a9b8c6;
+    --borda: #2a3d50;
+    --alerta: #ff8f85;
+    --alerta-fundo: #3b1916;
+    --atencao: #f2bc5c;
+    --atencao-fundo: #392a10;
+    --ok: #86c98a;
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.3), 0 6px 18px rgba(0, 0, 0, 0.25);
+    --nav-fundo: #101c28;
+    --nav-tinta: #a9b8c6;
+    --nav-ativa: #7cc0f0;
+    --esqueleto: #1d2d3d;
+    --esqueleto-brilho: #26394c;
+    --acao-fundo: #7cc0f0;
+    --acao-tinta: #0b1520;
+    --botao-fundo: #13202d;
+    --botao-borda: #2f4458;
+    --chip-normal-fundo: #16301a;
+    --chip-normal-tinta: #9bd5a0;
+    --chip-monitoramento-fundo: #263010;
+    --chip-monitoramento-tinta: #c9e27a;
+    --chip-atencao-fundo: #392c0b;
+    --chip-atencao-tinta: #f5cd6a;
+    --chip-alerta-fundo: #3d2210;
+    --chip-alerta-tinta: #ffb07a;
+    --chip-perigo-fundo: #3d1714;
+    --chip-perigo-tinta: #ff9d94;
+    --chip-sem-dado-fundo: #1f2c39;
+    --chip-sem-dado-tinta: #b7c4d0;
+    --rodape-fundo: #08131d;
+    --nota-tinta: #f0cf8a;
+    --nota-fundo: #33270f;
+    --nota-borda: #5e4a22;
+    --texto-azul: #9cc8ef;
+    --texto-azul-cinza: #b3c4d8;
+    --texto-suave: #a9b8c6;
+    --texto-apagado: #8d9cab;
+    --linha-suave: #24364a;
+    --linha-mais-suave: #1c2c3c;
+    --borda-azulada: #34495f;
+    --fundo-suave: #172535;
+    --chuva-fundo: #132a40;
+    --chuva-borda: #24405c;
+    --laranja-tinta: #ffb07a;
+    --ambar-tinta: #f2bc5c;
+    --perigo-borda: #7a3530;
+    --perigo-tinta: #ffb4ab;
+    --verde-tinta: #86c98a;
+    --verde-tinta-2: #86c98a;
+    --azul-tinta: #7cc0f0;
+    --neutro-fundo: #1f2c39;
+    --neutro-borda: #33465a;
+    --neutro-tinta: #b7c4d0;
+    --selo-alta-fundo: #16301a;
+    --selo-alta-borda: #3d6b42;
+    --selo-media-borda: #6b5426;
+    --selo-baixa-fundo: #1f2c39;
+    --selo-baixa-borda: #3a4b5c;
+    --selo-baixa-tinta: #b7c4d0;
+    --texto-cinza: #a9b8c6;
+    --erro-fundo: #33270f;
+    --erro-tinta: #f5dfa8;
+  }
 }
 
 * {
@@ -124,6 +272,64 @@ code {
 
 .rolagem-h {
   overflow-x: auto;
+}
+
+/* Versão 2: letra um pouco maior no corpo e, com "A A", maior ainda. Só dentro
+   de `data-app` — o Monitor mede em rem e tem a altura do mapa somada à mão. */
+:root[data-app] body {
+  font-size: 1.0625rem;
+}
+
+:root[data-app][data-letra='grande'] {
+  font-size: 118%;
+}
+
+:root[data-app] {
+  /* A faixa do 199 fica presa no topo: âncoras e rolagens param abaixo dela. */
+  scroll-padding-top: calc(var(--altura-faixa, 2.5rem) + 3.5rem);
+}
+
+/* No celular a navegação fica fixa embaixo: o fim da página não pode ficar
+   escondido atrás dela. */
+@media (max-width: 899px) {
+  :root[data-app] body {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Esqueleto de carregamento: um bloco cinza que respira enquanto a leitura não
+   chega. Parado com movimento reduzido (regra global abaixo). */
+.esqueleto {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--esqueleto) 0%, var(--esqueleto-brilho) 50%, var(--esqueleto) 100%);
+  background-size: 200% 100%;
+  animation: esqueleto-brilho 1.4s ease-in-out infinite;
+}
+
+@keyframes esqueleto-brilho {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+/* Entrada discreta de um cartão novo na tela (não de um número atualizado). */
+.surge {
+  animation: surge 0.28s ease-out both;
+}
+
+@keyframes surge {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

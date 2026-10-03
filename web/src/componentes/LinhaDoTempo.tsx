@@ -263,10 +263,10 @@ export default function LinhaDoTempo({
               scale="time"
               domain={['dataMin', 'dataMax']}
               tickFormatter={horaMin}
-              tick={{ fontSize: 11 }}
+              tick={{ fontSize: 11, fill: 'var(--tinta-fraca)' }}
               minTickGap={40}
             />
-            <YAxis domain={[0, teto]} tick={{ fontSize: 11 }} unit=" m" width={56} />
+            <YAxis domain={[0, teto]} tick={{ fontSize: 11, fill: 'var(--tinta-fraca)' }} unit=" m" width={56} />
             <Tooltip
               formatter={(v, nome) => [metros(Number(v)), varias ? String(nome) : 'Nível']}
               labelFormatter={(t) => dataHora(new Date(Number(t)))}
@@ -281,7 +281,7 @@ export default function LinhaDoTempo({
                   value: `${rotuloCota(chave, cidade.cotas_nomes_na_fonte)} ${numero(valor)} m`,
                   position: 'insideTopLeft',
                   fontSize: 11,
-                  fill: COR_COTA[chave] ?? '#b3261e',
+                  fill: COR_COTA[chave] ?? 'var(--alerta)',
                 }}
               />
             ))}
@@ -305,7 +305,7 @@ export default function LinhaDoTempo({
               height={22}
               startIndex={inicio}
               tickFormatter={horaMin}
-              stroke="#1c6ea4"
+              stroke="var(--agua-clara)"
               travellerWidth={8}
             />
           </LineChart>
