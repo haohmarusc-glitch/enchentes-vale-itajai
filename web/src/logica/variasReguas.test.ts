@@ -15,7 +15,7 @@ function leitura(estacao: string, nivel: number): LeituraAoVivo {
 function regua(titulo: string, cotas: [string, number][]): ReguaComCota {
   return {
     id: titulo.split(' ')[0]!, titulo, nome: titulo, nomeNoPlano: null, cotas,
-    alertaAutomatico: true, motivoSemAlerta: null, referencia: 'régua',
+    alertaAutomatico: true, motivoSemAlerta: null, senteMare: true, referencia: 'régua',
     rio: 'itajai-mirim', fonteCotas: null, ordemDescida: null, ordemNota: null,
   }
 }

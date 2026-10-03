@@ -1129,7 +1129,9 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Açu - Praça da Murta",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "motivo_sem_alerta": "NÃO é régua de maré (medido duas vezes: 05/09/2026, 6 dias, oscilação diária de 0,07 m; 03/10/2026, cinco semanas, fator de maré 0,07, correlação 0,24). O aviso automático continua desligado porque a cota (PLANCON v17) ainda não foi conferida contra a série desta régua; destravar é decisão do Jefferson (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sente_mare": false,
+      "motivo_sem_alerta_ate_2026_10_03": "Régua no estuário, com oscilação de maré maior que a distância até a cota (texto comum às nove réguas DC-01 a DC-09, trocado nesta régua em 03/10/2026 por decisão do Jefferson: a medição mostrou que ela não sente a maré).",
       "nome_anterior": "DC-02 Rio Itajaí-Açu - Praça da Murta",
       "cotas_divergencia": {
         "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
@@ -1245,7 +1247,9 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim Curso Antigo - Sítio Sr. Hilário",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "motivo_sem_alerta": "NÃO é régua de maré (curso antigo do Mirim; fator de maré 0,04 em 03/10/2026). O aviso automático continua desligado por outro motivo: em 05/09/2026 ela ficou 46,8 h seguidas acima da cota de atenção sem cheia — a cota parece baixa demais para esta régua e precisa ser conferida com a COMPDEC (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sente_mare": false,
+      "motivo_sem_alerta_ate_2026_10_03": "Régua no estuário, com oscilação de maré maior que a distância até a cota (texto comum às nove réguas DC-01 a DC-09, trocado nesta régua em 03/10/2026 por decisão do Jefferson: a medição mostrou que ela não sente a maré).",
       "cotas_divergencia": {
         "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
@@ -1322,7 +1326,9 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Murta - Portal I",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "motivo_sem_alerta": "NÃO é régua de maré (medido duas vezes: 05/09/2026, oscilação diária de 0,09 m; 03/10/2026, fator de maré 0,01). O aviso automático continua desligado porque a cota (PLANCON v17) ainda não foi conferida contra a série desta régua; destravar é decisão do Jefferson (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sente_mare": false,
+      "motivo_sem_alerta_ate_2026_10_03": "Régua no estuário, com oscilação de maré maior que a distância até a cota (texto comum às nove réguas DC-01 a DC-09, trocado nesta régua em 03/10/2026 por decisão do Jefferson: a medição mostrou que ela não sente a maré).",
       "cotas_divergencia": {
         "_estado": "Histórico da conferência do PLANCON em 08/09/2026; nova divergência com o portal registrada em cotas_conferencia_2026_09_13.",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
@@ -1378,7 +1384,9 @@
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Canhanduba - Rio do Meio",
       "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "motivo_sem_alerta": "NÃO é régua de maré (fator de maré ≈ 0 em 03/10/2026). O aviso automático continua desligado por outro motivo: em 05/09/2026 ela ficou 25,5 h seguidas acima da cota de atenção sem cheia — a cota parece baixa demais para esta régua e precisa ser conferida com a COMPDEC (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sente_mare": false,
+      "motivo_sem_alerta_ate_2026_10_03": "Régua no estuário, com oscilação de maré maior que a distância até a cota (texto comum às nove réguas DC-01 a DC-09, trocado nesta régua em 03/10/2026 por decisão do Jefferson: a medição mostrou que ela não sente a maré).",
       "nome_anterior": "DC-08 Ribeirão da Canhanduba - Rio do Meio",
       "cotas_divergencia": {
         "_estado": "Histórico da conferência do PLANCON em 08/09/2026; nova divergência com o portal registrada em cotas_conferencia_2026_09_13.",

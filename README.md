@@ -519,10 +519,14 @@ o projeto.
     régua do Açu, do Mirim (com os dois braços) e dos ribeirões como um cartão "Agora" em miniatura: faixa nas
     cotas dela, número, idade e régua colorida. Antes, a cidade escolhida pelo Açu mostrava só as cotas das três
     réguas do Açu. O início mostra também "Mirim acima: Brusque".
-  - [ ] **O selo "maré" vem do cadastro (`alerta_automatico: false`) e está errado em quatro réguas.** A medição
-    diz que DC-02, DC-05, DC-07 e DC-08 quase não sentem a maré. A trava do aviso pode continuar, mas o texto
-    "sobe e desce com a maré" não vale para elas. Decisão do Jefferson: trocar o motivo dessas quatro no
-    `estacoes.json`.
+  - [x] **Selo "maré" corrigido em quatro réguas (03/10/2026, decisão do Jefferson).**
+    - Medição: DC-02, DC-05, DC-07 e DC-08 quase não sentem a maré.
+    - Cadastro: as quatro ganharam `sente_mare: false` e um `motivo_sem_alerta` com o motivo real. DC-02 e DC-07 têm
+      cota ainda não conferida contra a série; DC-05 e DC-08 ficaram 46,8 h e 25,5 h acima da atenção sem cheia, o
+      que indica cota baixa demais a conferir com a COMPDEC. O texto antigo fica em
+      `motivo_sem_alerta_ate_2026_10_03`.
+    - O aviso automático continua desligado nas quatro.
+    - Tela e bot: as quatro aparecem como "sem aviso — cota em conferência" (no bot, marca †), não como "maré".
   - [ ] Decidir se o painel mostra "quanto do nível é maré" nas réguas com correlação ≥ 0,8.
 
 **Complemento da quinta auditoria, 19/09/2026** (`docs/AUDITORIA-2026-09-19-quatro-pendencias-complemento.md`): nova rodada pelo Chrome. Duas coisas mudam de fato.

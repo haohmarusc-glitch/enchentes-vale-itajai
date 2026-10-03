@@ -141,6 +141,12 @@ export interface EstacaoTempoReal {
   fonte_cotas?: string
   alerta_automatico?: boolean
   motivo_sem_alerta?: string
+  /**
+   * `false` quando a medição mostrou que a régua NÃO sente a maré (DC-02,
+   * DC-05, DC-07, DC-08, em 03/10/2026). O aviso automático pode continuar
+   * desligado por outro motivo, mas a tela não diz "maré". Ausente = sente.
+   */
+  sente_mare?: boolean
   /** [lat, lon] da régua, quando a fonte publica — hoje as 11 réguas DC de
    *  Itajaí (marcadores da página Mapa.php da Defesa Civil). */
   lat?: number
