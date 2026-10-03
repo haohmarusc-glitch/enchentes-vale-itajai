@@ -789,3 +789,19 @@ Nada entra no cadastro.
 - [x] Nona rodada (02/10/2026, §16): revisão do prompt sem originais; melhorias trazidas para a v3.7 da §6.
 - [ ] Guabiruba: ainda sem pico. Ascurra: só 01/09/2026; o 10,46 m de 12/09/2026 continua candidato fora. (Botuverá ganhou dez/2023 e set/2026 na quarta rodada; Itajaí, set/2011 na quinta.)
 - [x] Botuverá 8,61 m: **removido em 25/09/2026 por decisão do Jefferson**. Era exatamente o máximo da estação DCSC de Brusque em 17/11/2023 (Boletim SDE 011/2023, p. 18), e Botuverá não aparece na tabela. A cidade volta a zero pico.
+
+## 17. Décima rodada (03/10/2026): incremental, sem picos
+
+Pacote `cheias_itajai_fontes_v3.7_incremental_2026-10-03.zip`, guardado em
+`data/brutos/pesquisa-picos-2026-09-24/rodada10/` com o `LEIAME.md`. A pesquisa usou o prompt v3.7 (idêntico ao
+da nona rodada) e respondeu só dois itens, com o original salvo:
+
+* **Item 4, Boletim Hidrometeorológico da SEMAE/SDC-SC:** a página oficial (HTTP 200) lista em 2026 só as
+  edições 01, 02, 03, 06 e 07/2026; a última é de 07/07/2026. **Setembro/2026 não está publicado**, e
+  agosto também não. Conferido no HTML. Faltam também 04 e 05/2026.
+* **Item 15, tábua de marés de 2027 (Porto de Itajaí):** a Marinha respondeu HTTP 403, com desafio do
+  Cloudflare. Não confirma nem nega a publicação; continua valendo a captura de 28/09/2026 (só 2026).
+
+Os outros itens voltaram sem nada novo. **Nada entra em `enchentes.json`.** O pacote anterior não estava
+disponível para a pesquisa, então ela não pôde comparar com o que já foi entregue.
+

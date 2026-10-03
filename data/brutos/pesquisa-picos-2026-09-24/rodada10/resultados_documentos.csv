@@ -1,0 +1,3 @@
+o que se pediu,título,órgão,URL exata,página,trecho literal que responde,nome do arquivo,status
+"Item 4 — edição setembro/2026","Boletim Hidrometeorológico","SEMAE/SDC-SC","https://www.aguas.sc.gov.br/instrumentos/ferramentas-de-gestao/monitoramento-instrumentos/boletim-hidrometeorologico","HTML","07/07/2026 | Boletim Hidrometeorológico 07/2026","fontes/boletim_hidrometeorologico.html","HTTP 200; 09/2026 não consta"
+"Item 15 — tábua de marés 2027, Porto de Itajaí","Tábuas das Marés","CHM/Marinha do Brasil","https://www.marinha.mil.br/chm/dados-do-segnav-publicacoes/tabuas-das-mares","HTML de bloqueio","cf-mitigated: challenge","fontes/chm_tabuas.html","HTTP 403; original não obtido"
