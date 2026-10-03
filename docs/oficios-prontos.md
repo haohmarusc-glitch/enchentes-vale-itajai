@@ -351,7 +351,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44 · 📎 tabela recebida em 02/10/2026 18:10 BRT · agradecimento enviado em 02/10/2026 · ✅ RESPONDIDO 19:33 BRT (régua de hoje = GPS) · nota de correção do link enviada
+## C25 — FURB (Prof. Ademar Cordero): a referência da série histórica de Blumenau ✅ ENVIADO em 02/10/2026 12:30 BRT (Gmail, id 1a0fd3d22a8cd3f4, para cordero@furb.br, sem cópia, a pedido do Jefferson) · 💬 RESPONDIDO PARCIALMENTE em 02/10/2026 12:38–12:40 BRT · seguimento enviado em 02/10/2026 12:44 BRT · respondido "IBGE" às 12:44 · 📎 tabela recebida em 02/10/2026 18:10 BRT · agradecimento enviado em 02/10/2026 · ✅ RESPONDIDO 19:33 BRT (régua de hoje = GPS) · nota de correção do link enviada · 💬 resposta 02/10/2026 21:06 BRT: quer o link mais adiante · ⏳ cadastrar cordero@furb.br no acesso do site
 
 > Por que: é a saída que a **REGRA BLOQUEANTE** de Blumenau (`CLAUDE.md`) prevê para ser removida — "teste no
 > HidroWeb ... ou resposta da FURB". A sétima rodada (`docs/PICOS-FALTANTES.md` §14, `docs/fontes-academicas.md`)
@@ -486,3 +486,20 @@ Transcrição literal:
 A pedido do Jefferson: agradece de novo a explicação e a rapidez, e corrige o e-mail anterior. O site tem acesso
 restrito e o link não abre sem cadastro; se ele quiser acompanhar, basta indicar o e-mail para cadastro. **Sem
 link**, conforme a regra do `CLAUDE.md`.
+
+### Resposta à correção do link (02/10/2026, 21:06 BRT, mesmo fio, id 1a0ff1550a08beb7)
+
+Transcrição literal:
+
+> "Olá Jefferson
+> Quando estiver num estágio mais avançado você manda o link
+> Meu e_mail é este que está enviando estas mensagens."
+
+**Leitura:** ele quer acompanhar o site e indicou o próprio e-mail, `cordero@furb.br`. Não pede resposta agora.
+
+**Pendências (Jefferson):**
+* **Cadastrar `cordero@furb.br`** na lista de acesso do site (Cloudflare Access). Não se faz pelo repositório.
+* **Mandar o link quando o site estiver mais avançado**, só depois do cadastro feito, para não repetir o erro de
+  02/10/2026 (regra do `CLAUDE.md`: link sem cadastro abre a tela fechada). Sem mais perguntas técnicas ao Prof.
+  Cordero (decisão de 03/10/2026).
+
