@@ -60,7 +60,23 @@ diferentes para cálculo?"*. **Tem.** A tabela 1 mostra os parâmetros.
   maré. A régua pode estar num remanso ou ter outra instalação. Isso não está resolvido.
 - **Ilhota ainda sente 57% da maré.** A maré entra rio acima além de Itajaí.
 
-## 2. Os eventos de 2026: quando a cheia de Blumenau aparece em Itajaí
+## 2. Os eventos de 2026: quando Itajaí chega ao máximo, contado do pico de Blumenau
+
+> **Leia antes da tabela (correção de 03/10/2026, pergunta do Jefferson: "Itajaí fica a quantos km de
+> Blumenau? Esses dados estão corretos?").**
+>
+> - **Distância:** Blumenau fica a **~70 km da foz pelo rio** (`estacoes.json`, `km_da_foz`). A DC-11 está entre
+>   Ilhota e o centro de Itajaí. Ilhota fica a 33 km da foz (`transito.json`).
+> - **Tempo de viagem:** a água que passou em Blumenau leva **~13–20 h** para percorrer 70 km, na velocidade
+>   habitual de uma onda de cheia (1 a 1,5 m/s). É a ordem dos 14–17 h da JICA.
+> - **Um atraso de 1,5 a 5 h não é a água de Blumenau chegando.** As horas da tabela estão medidas certo. O que
+>   estava errado era o rótulo "a cheia de Blumenau aparece em Itajaí".
+> - **O que a tabela mostra:** o baixo vale **sobe junto** com Blumenau. Isso vem da mesma chuva, dos ribeirões
+>   próximos e da maré meteorológica. Pode vir também do represamento: no trecho de maré, uma mudança de nível
+>   corre muito mais rápido que a onda de cheia — a própria maré chega a Ilhota em 1 h.
+> - **O provável sinal da água de Blumenau:** um "ombro". Entre **+12 e +18 h**, a DC-11 sem maré para de descer
+>   (12/09: 3,82–3,85 m; 22/09: 3,52–3,54 m), enquanto Blumenau já caiu 0,3 a 1 m. Isso é compatível com a onda
+>   de cima chegando, mas não está provado.
 
 ### Como o atraso foi medido
 
@@ -90,10 +106,13 @@ Notas da tabela:
 
 ### O que os eventos dizem
 
-1. **Nestes eventos, a água sobe em Itajaí quase junto com Blumenau, não 14–17 h depois.** O atraso da crista
-   sem maré ficou entre +1,5 e +5 h nos quatro eventos medidos. A correlação cruzada de Blumenau com a DC-11
-   sem maré dá o mesmo: o melhor atraso fica entre 0 e 4 h, com r de 0,93 a 0,99.
-2. **Isso não desmente os 14–17 h.** Quatro hipóteses, não conferidas:
+1. **Nestes eventos, Itajaí sobe quase junto com Blumenau.** A crista sem maré ficou entre +1,5 e +5 h depois
+   de Blumenau nos quatro eventos medidos. A correlação cruzada de Blumenau com a DC-11 sem maré dá o mesmo: o
+   melhor atraso fica entre 0 e 4 h, com r de 0,93 a 0,99. Pela distância (~70 km), **não é a água de Blumenau**.
+   É o baixo vale reagindo ao mesmo tempo.
+2. **A crista de 12/09 na DC-11 está num buraco da série.** Faltam leituras de +4 a +8 h. A crista pode ter sido
+   nesse intervalo, e Ilhota marca +3,5 h. Em 01/09 só há a DC-11: Ilhota ainda não era coletada.
+3. **Isso não desmente os 14–17 h.** Quatro explicações para a subida simultânea, não conferidas:
    - **Chuva no baixo vale:** a mesma chuva cai em Blumenau, Gaspar, Ilhota e Itajaí, e o rio sobe em toda
      parte ao mesmo tempo. Em 01/09 e 12/09 choveu 20–35 mm em Itajaí nas 24 h antes.
    - **Maré meteorológica:** vento sul e ressaca levantam o nível no estuário por horas. A tábua astronômica não
@@ -103,7 +122,7 @@ Notas da tabela:
      2011), em que o volume de cima domina. Num evento de 7–8 m em Blumenau, o que se vê em Itajaí pode ser mais
      a chuva local e a maré do que a onda que desce.
    - **Cheias de Blumenau seguidas** (10→12/09, 20→22/09) se somam, e a crista de Itajaí fica entre as duas.
-3. **A maré astronômica é a maior parte do sobe-e-desce das réguas do estuário.** Ela é previsível pela tábua.
+4. **A maré astronômica é a maior parte do sobe-e-desce das réguas do estuário.** Ela é previsível pela tábua.
    O que ela não explica é o rio, a chuva e a maré meteorológica.
 
 ## 3. A publicação "Blumenau" da página de Itajaí estava 3 h atrasada
