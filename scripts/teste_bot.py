@@ -2160,10 +2160,13 @@ class TestCheiasAntigas(unittest.TestCase):
         """124 registros. Até 02/10/2026, 4 em régua e 120 calados. Desde a
         conversão de 03/10/2026 (FURB; decisão do Jefferson), 57 na régua de hoje
         e 67 calados: 60 em disputa (1929–1983), 4 inferidos e 3 pendentes. A
-        maior de todas volta a ser 1880, já na régua de hoje: 17,10 + 0,20."""
+        maior de todas volta a ser 1880, já na régua de hoje: 17,10 + 0,20.
+        Também em 03/10/2026 entraram cinco cheias da planilha do Cordero: as
+        quatro de jul–ago/1983 sem referência (calados 67 → 71) e 08/10/2023 na
+        régua (na conta, 57 → 58)."""
         t = self.pino("blumenau", "Blumenau", "itajai-acu", 7.60, -26.9194, -49.0661)
         self.assertIn("17,30 m</b> — 23/09/1880", t)
-        self.assertIn("Outras 67 cheias", t)
+        self.assertIn("Outras 71 cheias", t)
         self.assertIn("outra referência de régua", t)
 
     def test_nenhum_pico_do_ibge_entra(self):
@@ -2267,11 +2270,15 @@ class TestContagemDasReferencias(unittest.TestCase):
         # Jefferson, só os 57 de certeza alta): 28 saíram do IBGE e 25 do null para
         # a régua (os outros 4 já eram régua) — régua 69 → 122, IBGE 72 → 44,
         # null 244 → 219. O total não muda.
-        self.assertEqual(len(self.ev), 385)
-        self.assertEqual(refs["régua"], 122)
+        # 03/10/2026, depois: cinco cheias da planilha do Cordero (decisão do
+        # Jefferson) — quatro de jul–ago/1983 com referencia null (trecho em
+        # disputa) e 08/10/2023 na régua; a sexta (26/05/2010) virou divergência
+        # de 26/04/2010. 385 → 390, régua 122 → 123, null 219 → 223.
+        self.assertEqual(len(self.ev), 390)
+        self.assertEqual(refs["régua"], 123)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 44)
-        self.assertEqual(refs["None"], 219)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 263)
+        self.assertEqual(refs["None"], 223)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 267)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do
@@ -2280,15 +2287,17 @@ class TestContagemDasReferencias(unittest.TestCase):
         do Sul passou a ser a maior fatia (65) — e por UMA causa só: a tabela
         não nomeia a régua. Blumenau não mudou até 02/10/2026, quando entraram as
         sete enchentes da lista oficial que faltavam (41 → 48; 117 → 124). Em
-        03/10/2026 a conversão levou 25 deles para a régua de hoje (48 → 23)."""
+        03/10/2026 a conversão levou 25 deles para a régua de hoje (48 → 23), e
+        as quatro cheias de 1983 da planilha do Cordero entraram sem referência
+        (23 → 27; 124 → 129 com a de 08/10/2023)."""
         from collections import Counter
         sem = Counter(r["cidade"] for r in self.ev if r.get("referencia") is None)
-        self.assertEqual(sem["blumenau"], 23)
+        self.assertEqual(sem["blumenau"], 27)
         self.assertEqual(sem["brusque"], 28)  # 23 + 5 da régua da ANA (22/09/2026)
         self.assertEqual(sem["rio-do-sul"], 65)
         blu = [r for r in self.ev if r["cidade"] == "blumenau"]
-        self.assertEqual(len(blu), 124)
-        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 67)
+        self.assertEqual(len(blu), 129)
+        self.assertEqual(sum(1 for r in blu if r.get("referencia") != "régua"), 71)
 
 
 class TestLeituraVelhaNaoFalaNoPresente(unittest.TestCase):

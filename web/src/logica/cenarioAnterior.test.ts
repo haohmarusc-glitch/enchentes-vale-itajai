@@ -126,15 +126,17 @@ import enchentes from '../../../data/enchentes.json'
 const reais = (enchentes as { eventos: Evento[] }).eventos
 const daCidade = (id: string) => reais.filter((e) => e.cidade === id)
 
-test('Blumenau compara SÓ com os 57 picos na régua de hoje (conversão de 03/10/2026)', () => {
+test('Blumenau compara SÓ com os picos na régua de hoje (conversão de 03/10/2026)', () => {
   // A garantia que importa continua sendo da REGRA BLOQUEANTE: nenhum pico no
   // IBGE ou sem referência entra na distância. O que mudou é que, convertidos
   // pela FURB, 57 picos agora estão na mesma régua da leitura ao vivo.
   for (const nivel of [0.5, 2.43, 8, 12.8, 15.5]) {
     const { cenario } = cenarioDaCidade(nivel, daCidade('blumenau'))
     assert.ok(cenario, `Blumenau não produziu cenário em ${nivel} m`)
-    assert.equal(cenario.marcas.length, 57)
-    assert.equal(cenario.excluidas, 67)
+    // 57 convertidos + 08/10/2023 da planilha do Cordero, na régua (58). Fora: os
+    // 67 não convertidos + as quatro de 1983 da planilha, sem referência (71).
+    assert.equal(cenario.marcas.length, 58)
+    assert.equal(cenario.excluidas, 71)
     assert.equal(cenario.referenciaConferida, true)
   }
   const { cenario } = cenarioDaCidade(8, daCidade('blumenau'))
