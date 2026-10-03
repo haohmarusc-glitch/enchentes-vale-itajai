@@ -14,9 +14,11 @@ const ponto = (iso: string, nivel: number, regua: string | null = 'Blumenau'): P
 
 /**
  * A cheia de 11–12/09/2026, como o coletor publicou (registro em data/brutos),
- * pela publicação da Defesa Civil de Itajaí. A do AlertaBlu, nesse registro,
- * tem os horários 3 h adiantados (UTC gravado como hora de Brasília — o defeito
- * do CLAUDE.md, já corrigido na coleta): não serve de gabarito.
+ * pela publicação do AlertaBlu. A outra publicação ("Blumenau", lida na página da
+ * Defesa Civil de Itajaí) tinha os horários 3 h ATRASADOS até sair do ar em
+ * 19/09/2026: na mesma coleta das 15h10 de 01/09, as réguas de Itajaí marcavam
+ * 15h00, o AlertaBlu 15h00 e ela 12h05. Conferido em 03/10/2026 com a série
+ * guardada no servidor (docs/ANALISE-CHEGADA-ITAJAI-2026.md).
  */
 function cheia1209(): PontoSerie[] {
   const d = JSON.parse(
@@ -25,18 +27,18 @@ function cheia1209(): PontoSerie[] {
   const nomes: string[] = d.reguas['itajai-acu'].blumenau
   return (d.series['itajai-acu'].blumenau as { medido_em: string; nivel_m: number; r: number }[])
     .map((p) => ponto(p.medido_em, p.nivel_m, nomes[p.r] ?? null))
-    .filter((p) => p.regua === 'Blumenau')
+    .filter((p) => p.regua === 'Blumenau (AlertaBlu)')
 }
 
-test('12/09/2026, 14h: o pico já passou, num platô de quase três horas', () => {
-  const s = situacaoDoPico(cheia1209(), deBrasilia('2026-09-12T14:00:00'))
+test('12/09/2026, meio-dia: o pico já passou, num platô das 04h às 07h', () => {
+  const s = situacaoDoPico(cheia1209(), deBrasilia('2026-09-12T12:00:00'))
   assert.equal(s.tipo, 'passou')
   if (s.tipo !== 'passou') return
-  assert.equal(s.pico.nivel_m, 7.87)
-  assert.equal(s.pico.medidoEm.getTime(), deBrasilia('2026-09-12T02:15:00').getTime())
-  // A menos de 5 cm do máximo das 00h45 às 03h35: a janela usa o platô inteiro.
-  assert.equal(s.platoInicio.getTime(), deBrasilia('2026-09-12T00:45:00').getTime())
-  assert.equal(s.platoFim.getTime(), deBrasilia('2026-09-12T03:35:00').getTime())
+  assert.equal(s.pico.nivel_m, 7.86)
+  assert.equal(s.pico.medidoEm.getTime(), deBrasilia('2026-09-12T05:00:00').getTime())
+  // A menos de 5 cm do máximo das 04h às 07h: a janela usa o platô inteiro.
+  assert.equal(s.platoInicio.getTime(), deBrasilia('2026-09-12T04:00:00').getTime())
+  assert.equal(s.platoFim.getTime(), deBrasilia('2026-09-12T07:00:00').getTime())
 })
 
 test('12/09/2026, 01h: o rio ainda sobe — o pico não aconteceu', () => {

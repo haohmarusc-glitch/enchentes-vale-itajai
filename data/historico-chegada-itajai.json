@@ -55,7 +55,7 @@
     {
       "rotulo": "Registros do próprio coletor — cheias de 10/09 e 11–12/09/2026 (data/brutos/evento-2026-09-*-serie-recente-*.json)",
       "url": "https://github.com/haohmarusc-glitch/enchentes-vale-itajai/tree/main/data/brutos",
-      "resultado": "Analisados em 03/10/2026. Blumenau teve pico de 7,87 m às 02h15 de 12/09 (platô a menos de 5 cm das 00h45 às 03h35), pela publicação da Defesa Civil de Itajaí. Em Itajaí, os máximos de DC-01 e DC-02 caem nos horários das preamares (02h17, 15h08, 02h59): a maré domina a régua e esconde a crista da cheia. A série de Itajaí tem buraco das 07h às 15h de 12/09. A publicação do AlertaBlu nesse registro tem horários 3 h adiantados (UTC gravado como hora de Brasília, defeito já corrigido na coleta). Não resulta em par conferido."
+      "resultado": "Analisados em 03/10/2026, conferidos com a série completa guardada no servidor de coleta. Pelo AlertaBlu, Blumenau teve pico de 7,86 m às 05h de 12/09 (platô a menos de 5 cm das 04h às 07h). A outra publicação de Blumenau, lida na página da Defesa Civil de Itajaí, tinha os horários 3 h ATRASADOS (na mesma coleta das 15h10 de 01/09: réguas de Itajaí 15h00, AlertaBlu 15h00, ela 12h05) e saiu do ar em 19/09. Em Itajaí, os máximos de DC-01 e DC-02 caem nos horários das preamares (DC-02 às 02h31 de 12/09, antes do pico de Blumenau): a maré domina a régua e esconde a crista da cheia. A série de Itajaí tem buraco das 07h às 15h de 12/09 no registro de 48 h. Análise completa em docs/ANALISE-CHEGADA-ITAJAI-2026.md."
     }
   ]
 }
