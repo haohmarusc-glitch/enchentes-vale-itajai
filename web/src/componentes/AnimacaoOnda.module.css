@@ -12,7 +12,7 @@
   font-weight: 700;
   border: 1px solid var(--borda);
   border-radius: 0.4rem;
-  background: var(--fundo-cartao, #fff);
+  background: var(--papel);
   cursor: pointer;
 }
 .barra {

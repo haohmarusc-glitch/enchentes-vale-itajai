@@ -72,6 +72,11 @@ async function contexto(tela) {
     viewport: { width: tela.width, height: tela.height },
     isMobile: !!tela.isMobile, hasTouch: !!tela.hasTouch, locale: 'pt-BR',
   })
+  // A folha do aviso completo da primeira visita é testada na fumaça; aqui ela
+  // tamparia os controles que a varredura precisa tocar.
+  await ctx.addInitScript(() => {
+    try { localStorage.setItem('enchentes:aviso-lido', '2026-10-03') } catch {}
+  })
   await ctx.route('**/*', (route) => {
     const url = route.request().url()
     if (url.startsWith(base)) return route.continue()
@@ -265,7 +270,8 @@ for (const [nomeTela, tela] of Object.entries(TELAS)) {
   })
   for (const rota of ['/acu/blumenau', '/acu/gaspar', '/mirim/brusque']) {
     await passo(`${rota}: busca "minha rua" e simulador de nível`, async () => {
-      const { page, reg } = await abrir(ctx, rota, 2000)
+      // Versão 2: a busca da rua fica na aba "Minha rua" da cidade.
+      const { page, reg } = await abrir(ctx, `${rota}?aba=rua`, 2000)
       const rua = page.getByPlaceholder('Nome da rua')
       if (!(await rua.count())) throw new Error('sem campo "Nome da rua"')
       await rua.first().fill('Rua'); await espera(page, 800)

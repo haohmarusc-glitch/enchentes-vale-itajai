@@ -17,20 +17,33 @@ import test from 'node:test'
 const APP = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8')
 const LIMITE = readFileSync(new URL('../componentes/LimiteDeErro.tsx', import.meta.url), 'utf8')
 
-test('a FaixaEmergencia fica FORA do limite de erro', () => {
+/** Cada abertura do limite, com o trecho da casca que vem antes dela no mesmo `return`. */
+function limites(): { antes: string; dentro: string }[] {
+  const saida: { antes: string; dentro: string }[] = []
+  for (let i = APP.indexOf('<LimiteDeErro'); i >= 0; i = APP.indexOf('<LimiteDeErro', i + 1)) {
+    const inicio = APP.lastIndexOf('return (', i)
+    const fim = APP.indexOf('</LimiteDeErro>', i)
+    saida.push({ antes: APP.slice(inicio, i), dentro: APP.slice(i, fim) })
+  }
+  return saida
+}
+
+test('a faixa do 199 fica FORA do limite de erro, nas duas cascas', () => {
   // Se ela estivesse dentro, um erro no conteúdo a levaria junto — que é
-  // exatamente o problema que o limite existe para resolver.
-  const faixa = APP.indexOf('<FaixaEmergencia />')
-  const abre = APP.indexOf('<LimiteDeErro')
-  assert.ok(faixa >= 0 && abre >= 0)
-  assert.ok(faixa < abre, 'a FaixaEmergencia tem de vir ANTES do limite, nunca dentro dele')
+  // exatamente o problema que o limite existe para resolver. Desde a versão 2
+  // há duas cascas (a antiga, do Monitor, e a nova): as duas valem.
+  const todos = limites()
+  assert.equal(todos.length, 2, 'esperava um limite em cada casca')
+  for (const { antes, dentro } of todos) {
+    assert.match(antes, /<FaixaEmergencia \/>|<FaixaTopo /, 'a faixa do 199 tem de vir ANTES do limite')
+    assert.doesNotMatch(dentro, /<FaixaEmergencia|<FaixaTopo/, 'a faixa do 199 nunca dentro do limite')
+  }
 })
 
 test('as rotas ficam DENTRO do limite', () => {
-  const abre = APP.indexOf('<LimiteDeErro')
-  const rotas = APP.indexOf('<Routes>')
-  const fecha = APP.indexOf('</LimiteDeErro>')
-  assert.ok(abre < rotas && rotas < fecha, 'toda tela tem de estar protegida')
+  for (const { dentro } of limites()) assert.match(dentro, /<Rotas \/>/, 'toda tela tem de estar protegida')
+  const rotas = APP.slice(APP.indexOf('function Rotas'))
+  assert.match(rotas, /<Routes>/)
 })
 
 test('a tela de erro manda para a fonte oficial, não só pede desculpa', () => {

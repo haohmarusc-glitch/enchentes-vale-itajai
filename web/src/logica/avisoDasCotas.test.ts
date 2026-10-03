@@ -19,6 +19,8 @@ import test from 'node:test'
 import estacoes from '../../../data/estacoes.json'
 
 const TELA = readFileSync(new URL('../telas/TelaCidade.tsx', import.meta.url), 'utf8')
+/** Desde a versão 2 (03/10/2026) o nível e a régua desenhada moram no cartão "Agora". */
+const CARTAO = readFileSync(new URL('../componentes/CartaoAgora.tsx', import.meta.url), 'utf8')
 
 type Cidade = { id: string; cotas_aviso_publico?: string; cotas_m?: Record<string, unknown> }
 
@@ -29,14 +31,21 @@ const cidades: Cidade[] = Object.values(
 const comAviso = cidades.filter((c) => typeof c.cotas_aviso_publico === 'string')
 
 test('a tela renderiza o aviso — sem isto o campo é decoração no JSON', () => {
-  assert.match(TELA, /cidade\.cotas_aviso_publico/)
+  assert.match(CARTAO, /cidade\.cotas_aviso_publico/)
+  assert.match(TELA, /<CartaoAgora/)
 })
 
-test('o aviso vem ANTES da lista de cotas, não como rodapé', () => {
-  const iAviso = TELA.indexOf('cotas_aviso_publico')
+test('o aviso vem ANTES dos números das cotas, não como rodapé', () => {
+  // No cartão com leitura (o último `return`): antes da régua desenhada.
+  const iAviso = CARTAO.lastIndexOf('cidade.cotas_aviso_publico')
+  const iRegua = CARTAO.lastIndexOf('<MedidorCotas')
+  assert.ok(iAviso > 0 && iRegua > 0)
+  assert.ok(iAviso < iRegua, 'o aviso ficou depois da régua desenhada — vira rodapé')
+  // Na página: o cartão (com o aviso) vem antes da lista de cotas.
+  const iCartao = TELA.indexOf('<CartaoAgora')
   const iLista = TELA.indexOf('Cotas de referência, na régua daqui')
-  assert.ok(iAviso > 0 && iLista > 0)
-  assert.ok(iAviso < iLista, 'o aviso ficou depois dos números — vira rodapé')
+  assert.ok(iCartao > 0 && iLista > 0)
+  assert.ok(iCartao < iLista, 'a lista de cotas subiu para antes do cartão com o aviso')
 })
 
 test('Brusque tem o aviso, e ele diz que a decisão olha rio acima', () => {

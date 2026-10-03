@@ -1,0 +1,39 @@
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--botao-borda);
+  background: var(--botao-fundo);
+  color: var(--tinta);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.botao:hover {
+  border-color: var(--agua-clara);
+}
+
+.ligado {
+  border-color: var(--agua-clara);
+  background: var(--agua-fundo);
+}
+
+.letra {
+  gap: 0.15rem;
+  padding: 0 0.75rem;
+}
+
+.aPequeno {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.aGrande {
+  font-size: 1.15rem;
+  font-weight: 700;
+}

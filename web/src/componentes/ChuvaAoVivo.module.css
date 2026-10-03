@@ -6,17 +6,17 @@
   margin-top: 0.35rem;
   padding: 0.35rem 0.5rem;
   border-radius: 6px;
-  background: #eef4fb;
-  border: 1px solid #cfe0f2;
+  background: var(--chuva-fundo);
+  border: 1px solid var(--chuva-borda);
   font-size: 0.85rem;
   line-height: 1.35;
 }
 
 /* Cinza quando a medição já não representa o momento — mesma regra do nível. */
 .velha {
-  background: #f2f2f2;
-  border-color: #dcdcdc;
-  color: #555;
+  background: var(--neutro-fundo);
+  border-color: var(--neutro-borda);
+  color: var(--neutro-tinta);
 }
 
 .icone {
@@ -32,22 +32,22 @@
 .valor {
   font-weight: 700;
   font-size: 1rem;
-  color: #17457a;
+  color: var(--texto-azul);
 }
 
 .velha .valor {
-  color: #555;
+  color: var(--neutro-tinta);
 }
 
 .janela {
-  color: #40587a;
+  color: var(--texto-azul-cinza);
 }
 
 .outras {
   display: flex;
   flex-wrap: wrap;
   gap: 0.15rem 0.6rem;
-  color: #40587a;
+  color: var(--texto-azul-cinza);
 }
 
 .outra {
@@ -56,7 +56,7 @@
 
 .meta {
   flex-basis: 100%;
-  color: #5c6b7f;
+  color: var(--texto-suave);
   font-size: 0.78rem;
 }
 
@@ -65,8 +65,8 @@
   margin-top: 0.35rem;
   padding: 0.35rem 0.5rem;
   border-radius: 6px;
-  background: #fdf3e3;
-  border: 1px solid #edd6a8;
-  color: #6b4f14;
+  background: var(--nota-fundo);
+  border: 1px solid var(--nota-borda);
+  color: var(--nota-tinta);
   font-size: 0.82rem;
 }

@@ -1,5 +1,4 @@
 import { lazy, Suspense, useMemo, useState } from 'react'
-import AvisoLegal from '../componentes/AvisoLegal'
 import SimulacaoChegada from '../componentes/SimulacaoChegada'
 
 /**
@@ -42,7 +41,6 @@ export default function TelaItajai() {
         Itajaí recebe o Itajaí-Açu e o Itajaí-Mirim, e ainda sofre com a maré. Consulte as medições de cada régua e as áreas atingidas em eventos históricos.
       </p>
 
-      <AvisoLegal />
 
       <SimulacaoChegada />
 

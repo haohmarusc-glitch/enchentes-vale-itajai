@@ -112,10 +112,10 @@ export default function GraficoPicos({
       <div className={estilos.grafico}>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={dados} margin={{ top: 16, right: 8, left: -18, bottom: 4 }}>
-            <XAxis dataKey="rotulo" tick={{ fontSize: 11 }} interval={0} angle={-40} height={64} textAnchor="end" />
+            <XAxis dataKey="rotulo" tick={{ fontSize: 11, fill: 'var(--tinta-fraca)' }} interval={0} angle={-40} height={64} textAnchor="end" />
             <YAxis
               domain={[0, teto]}
-              tick={{ fontSize: 11 }}
+              tick={{ fontSize: 11, fill: 'var(--tinta-fraca)' }}
               unit=" m"
               width={64}
             />
@@ -136,12 +136,12 @@ export default function GraficoPicos({
                   value: `${rotuloCota(chave, cidade?.cotas_nomes_na_fonte)} ${numero(valor)} m`,
                   position: 'insideTopLeft',
                   fontSize: 11,
-                  fill: '#b3261e',
+                  fill: 'var(--alerta)',
                 }}
               />
             ))}
             <Bar dataKey="pico" isAnimationActive={false}>
-              <LabelList dataKey="pico" position="top" fontSize={11} formatter={(v) => numero(Number(v))} />
+              <LabelList dataKey="pico" position="top" fontSize={11} fill="var(--tinta)" formatter={(v) => numero(Number(v))} />
               {dados.map((d) => (
                 <Cell key={`${d.data}-${d.pico}`} fill={COR[d.confianca]} />
               ))}

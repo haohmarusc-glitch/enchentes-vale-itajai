@@ -2,7 +2,7 @@
   margin: 0 0 0.7rem;
   padding: 0.6rem 0.7rem;
   border-left: 3px solid var(--faixa-alerta, #e0a500);
-  background: #fff8e6;
+  background: var(--erro-fundo);
   border-radius: 0 6px 6px 0;
   font-size: 0.9rem;
   line-height: 1.5;

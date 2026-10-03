@@ -1,0 +1,224 @@
+.cartao {
+  background: var(--papel);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-g);
+  box-shadow: var(--sombra);
+  padding: 1rem 1rem 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.topo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 0.75rem;
+}
+
+/* Chip da faixa: cor + nome, sempre os dois. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.chipCompacto {
+  font-size: 0.76rem;
+  padding: 0.15rem 0.5rem;
+  white-space: normal;
+  max-width: 7.6rem;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.chipCompacto .ponto {
+  display: none;
+}
+
+.ponto {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.chip_normal {
+  background: var(--chip-normal-fundo);
+  color: var(--chip-normal-tinta);
+}
+.chip_monitoramento {
+  background: var(--chip-monitoramento-fundo);
+  color: var(--chip-monitoramento-tinta);
+}
+.chip_atencao {
+  background: var(--chip-atencao-fundo);
+  color: var(--chip-atencao-tinta);
+}
+.chip_alerta {
+  background: var(--chip-alerta-fundo);
+  color: var(--chip-alerta-tinta);
+}
+.chip_perigo {
+  background: var(--chip-perigo-fundo);
+  color: var(--chip-perigo-tinta);
+}
+.chip_semDado {
+  background: var(--chip-sem-dado-fundo);
+  color: var(--chip-sem-dado-tinta);
+  border-style: dashed;
+}
+
+.medido {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.frescor {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--faixa-sem-dado);
+}
+
+.frescor_agora {
+  background: var(--faixa-normal);
+  animation: pulsa 2.4s ease-in-out infinite;
+}
+
+.frescor_atrasada {
+  background: var(--faixa-atencao);
+}
+
+@keyframes pulsa {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--faixa-normal) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 5px transparent;
+  }
+}
+
+.linhaNumero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  margin: 0.55rem 0 0.35rem;
+}
+
+.numero {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+}
+
+.numeroVelho {
+  color: var(--tinta-fraca);
+}
+
+.unidade {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--tinta-fraca);
+  margin-left: -0.35rem;
+}
+
+.tendencia {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--tinta-fraca);
+}
+
+.t_subindo {
+  color: var(--chip-alerta-tinta);
+}
+
+.t_descendo {
+  color: var(--chip-normal-tinta);
+}
+
+/* A seta pulsa uma vez quando aparece — chama o olho para a direção, não para o número. */
+.seta {
+  display: inline-block;
+  animation: seta 0.9s ease-out 2;
+}
+
+@keyframes seta {
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+.frase {
+  font-size: 1.08rem;
+  line-height: 1.45;
+  margin: 0.35rem 0 0.2rem;
+}
+
+.alertaLeitura {
+  margin: 0.25rem 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--alerta);
+}
+
+.nota {
+  margin: 0.25rem 0;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.avisoCotas {
+  margin: 0.6rem 0 0;
+  padding: 0.55rem 0.7rem;
+  border-left: 4px solid var(--atencao);
+  background: var(--atencao-fundo);
+  border-radius: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.regua {
+  margin: 0.2rem 0 0;
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+}
+
+.semLeitura {
+  margin: 0.75rem 0 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 4px solid var(--faixa-sem-dado);
+  background: color-mix(in srgb, var(--faixa-sem-dado) 14%, transparent);
+  border-radius: 0.3rem;
+}
+
+.esqChip {
+  width: 6.5rem;
+  height: 1.8rem;
+  border-radius: 999px;
+}
+
+.esqNumero {
+  width: 10rem;
+  height: 3.2rem;
+  margin: 0.7rem 0 0.5rem;
+}
+
+.esqFrase {
+  width: 100%;
+  height: 2.6rem;
+}

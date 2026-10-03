@@ -133,9 +133,21 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 1. `/acu` — **Itajaí-Açu** (ÁRVORE, não fila — ver `docs/TOPOLOGIA-CANONICA.md`): cabeceiras paralelas **Taió** (Oeste) ‖ **Ituporanga** (Sul) → tronco **Rio do Sul → Lontras → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí**; **Ibirama** (Rio Hercílio), **Timbó** (Rio Benedito) e **Rio dos Cedros** são afluentes laterais, não elos do tronco. **Trombudo Central** entrou sem posição na árvore (a fonte diz o rio, não a confluência) e a tela a mostra em "Outros pontos". `ordem` é `null` no Açu; a posição vem de `ramo` + `ordem_no_ramo`. O validador (`scripts/validar_dados.py`) aborta se a fila global voltar.
 2. `/mirim` — **Itajaí-Mirim**: Vidal Ramos → Botuverá → Brusque → Itajaí
 3. `/itajai` — **Itajaí (foz)**: chegada dos dois picos + maré
-4. `/` — início: escolha do rio + aviso legal
+4. `/` — início: **Minha cidade** (escolhida no aparelho) com o cartão "Agora", a cidade de cima do rio e as outras que a pessoa segue; abaixo, a escolha do rio.
+5. `/:rio/:cidade` — página da cidade em abas: **Agora · Minha rua · Histórico · Fontes** (`?aba=rua|historico|fontes`).
 
-Cada tela de rio mostra: diagrama linear com as cidades; para cada cidade, nível atual (quando houver fonte), cotas de referência, seta para a próxima cidade com o tempo de trânsito; gráfico dos picos históricos daquele rio, com filtro por cidade.
+Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em cabeceiras, tronco e afluentes, com faixa, número, tendência e idade; o tempo de descida só entre cidades do tronco; o mapa do rio sob pedido no celular; a reprodução das últimas horas; a busca "minha rua" por cidade. Os picos históricos de cada cidade ficam na aba Histórico dela.
+
+### Versão 2 das telas — REGRAS (decisões D1–D7 de 03/10/2026)
+- **O Monitor não muda.** `/monitor*` e `/municipal/ascurra*` mantêm a casca antiga (`cascaAntiga` em `App.tsx`, opção ③ da D2): o mapa soma à mão a altura dessa casca (`calc(100vh - 8.5rem)`). `testes-navegador/trava-monitor.mjs` compara a geometria do mapa com `baseline-monitor.json`, e a CI reprova PR que altere arquivos do Monitor sem o rótulo `monitor-autorizado`. Refazer o baseline é decisão do Jefferson.
+- **D1 — aviso:** a regra de "toda tela traz o aviso" continua. A faixa presa no topo diz *"Emergência: 199 · não substitui a Defesa Civil"*; o texto completo (`AvisoLegal`) abre numa folha na primeira visita (sai só com "Entendi"; volta se o aparelho não lembrar) e fica no fim de toda página.
+- **D3:** a "marca antiga mais próxima acima" (`PainelCenarioAnterior`) fica só na aba Histórico — perto do nível de agora, soaria previsão.
+- **D4:** o texto do WhatsApp não leva endereço do site (está atrás do Cloudflare Access); só monta com leitura que não é velha, com a hora da medição, sem ordem de ação.
+- **D6:** o chip da faixa usa o nome da Defesa Civil da cidade (`cotas_nomes_na_fonte`: "Alerta Máximo" em Blumenau, "Prontidão" em Ilhota). Muda o nome, nunca a cor nem a posição na escada.
+- **D7:** a seta de tendência só aparece quando o último ponto da série É a leitura mostrada e é de agora (`tendenciaDaLeitura`); senão some.
+- **Frases do cartão "Agora"** (`logica/agora.ts`): só com leitura de agora e cota de acionamento; nunca em Gaspar (legenda "maior que"), Ascurra (C18) nem Itajaí (várias réguas). Sem dado, a frase não aparece.
+- **Tema escuro e letra maior** só dentro de `:root[data-app]`, que o App liga fora do Monitor. Cores novas vão como token em `global.css`, com o valor claro igual ao antigo.
+- **Preferências** (minha cidade, aviso lido, letra) só no aparelho, por `logica/preferencias.ts`, sempre em try/catch.
 
 ## Lógica de previsão (v1 — empírica)
 

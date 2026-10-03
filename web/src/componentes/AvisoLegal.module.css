@@ -1,6 +1,6 @@
 .aviso {
   background: var(--atencao-fundo);
-  border: 1px solid #e0c48a;
+  border: 1px solid color-mix(in srgb, var(--atencao) 40%, transparent);
   border-left: 6px solid var(--atencao);
   border-radius: var(--raio);
   padding: 1rem;
@@ -24,4 +24,9 @@
 
 .lista li:last-child {
   margin-bottom: 0;
+}
+
+.plano .titulo {
+  font-size: 1.15rem;
+  color: var(--tinta);
 }

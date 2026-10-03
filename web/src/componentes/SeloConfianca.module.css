@@ -9,19 +9,19 @@
 }
 
 .alta {
-  background: #e7f4e8;
-  border-color: #9fc9a3;
+  background: var(--selo-alta-fundo);
+  border-color: var(--selo-alta-borda);
   color: var(--ok);
 }
 
 .media {
   background: var(--atencao-fundo);
-  border-color: #e0c48a;
+  border-color: var(--selo-media-borda);
   color: var(--atencao);
 }
 
 .baixa {
-  background: #f0f0f2;
-  border-color: #c8c8cd;
-  color: #55555e;
+  background: var(--selo-baixa-fundo);
+  border-color: var(--selo-baixa-borda);
+  color: var(--selo-baixa-tinta);
 }

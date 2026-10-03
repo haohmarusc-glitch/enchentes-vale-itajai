@@ -4,10 +4,18 @@ import estilos from './AvisoLegal.module.css'
  * Aviso obrigatório em toda tela (CLAUDE.md). O público não é técnico: o texto
  * precisa dizer, sem rodeio, o que o site é e o que ele não é.
  */
-export default function AvisoLegal() {
+export default function AvisoLegal({
+  idTitulo = 'aviso-titulo',
+  plano = false,
+}: {
+  /** O texto aparece em dois lugares (fim da página e folha da 1ª visita): ids distintos. */
+  idTitulo?: string
+  /** Sem a caixa amarela — dentro da folha, que já é a moldura. */
+  plano?: boolean
+}) {
   return (
-    <section className={estilos.aviso} aria-labelledby="aviso-titulo">
-      <h2 id="aviso-titulo" className={estilos.titulo}>
+    <section className={plano ? estilos.plano : estilos.aviso} aria-labelledby={idTitulo}>
+      <h2 id={idTitulo} className={estilos.titulo}>
         Leia antes de usar
       </h2>
       <ul className={estilos.lista}>

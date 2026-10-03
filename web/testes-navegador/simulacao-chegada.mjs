@@ -13,6 +13,10 @@ try {
     const pagina = await navegador.newPage({ viewport: { width: largura, height: 950 }, timezoneId: fuso })
     const erros = []
     pagina.on('pageerror', (e) => erros.push(e.message))
+    // A folha do aviso da primeira visita (testada na fumaça) tamparia o formulário.
+    await pagina.addInitScript(() => {
+      try { localStorage.setItem('enchentes:aviso-lido', '2026-10-03') } catch {}
+    })
     await pagina.route('**/*', (rota) => new URL(rota.request().url()).origin === new URL(base).origin
       ? rota.continue() : rota.abort())
     await pagina.goto(`${base}/#/itajai`)

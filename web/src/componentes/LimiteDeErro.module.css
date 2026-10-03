@@ -3,8 +3,8 @@
   padding: 1rem;
   border: 2px solid var(--atencao, #b8860b);
   border-radius: 8px;
-  background: #fff8e6;
-  color: #3a2c00;
+  background: var(--erro-fundo);
+  color: var(--erro-tinta);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -19,7 +19,7 @@
 }
 
 .oficial a {
-  color: #0b3a5b;
+  color: var(--agua);
 }
 
 /* 44px de alvo de toque, como o resto do site. */
@@ -27,14 +27,14 @@
   min-height: 44px;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid #0b3a5b;
+  border: 1px solid var(--agua);
   border-radius: 6px;
-  background: #fff;
-  color: #0b3a5b;
+  background: var(--papel);
+  color: var(--agua);
   cursor: pointer;
 }
 
 .botao:focus-visible {
-  outline: 3px solid #0b3a5b;
+  outline: 3px solid var(--agua);
   outline-offset: 2px;
 }

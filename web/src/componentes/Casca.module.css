@@ -1,0 +1,205 @@
+/* A faixa do 199: presa no topo de toda tela da versão 2. */
+.faixa {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: var(--emergencia-fundo);
+  color: var(--emergencia-tinta);
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.35;
+  padding: 0.45rem 1rem;
+  padding-top: max(0.45rem, env(safe-area-inset-top));
+}
+
+.numero {
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.naoSubstitui {
+  white-space: nowrap;
+}
+
+.saibaMais {
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0 0.15rem;
+  min-height: 0;
+  cursor: pointer;
+}
+
+.saibaMais:focus-visible {
+  outline-color: #fff;
+}
+
+/* Navegação: embaixo no celular, no alcance do polegar; em cima no desktop. */
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  background: var(--nav-fundo);
+  border-top: 1px solid var(--borda);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.marca {
+  display: none;
+}
+
+.itens {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 34rem;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 60px;
+  padding: 0.35rem 0.25rem;
+  color: var(--nav-tinta);
+  text-decoration: none;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.itemAtivo {
+  color: var(--nav-ativa);
+}
+
+.icone {
+  transition: transform 0.18s ease;
+}
+
+.itemAtivo .icone {
+  transform: translateY(-1px) scale(1.06);
+}
+
+@media (min-width: 900px) {
+  .nav {
+    position: static;
+    border-top: 0;
+    border-bottom: 1px solid var(--borda);
+    padding-bottom: 0;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: none;
+  }
+
+  .marca {
+    display: block;
+    font-weight: 700;
+    color: var(--tinta);
+    padding-left: max(1rem, calc((100vw - var(--largura)) / 2 + 1rem));
+    white-space: nowrap;
+  }
+
+  .itens {
+    display: flex;
+    margin: 0;
+    max-width: none;
+    gap: 0.25rem;
+  }
+
+  .item {
+    flex-direction: row;
+    gap: 0.45rem;
+    min-height: 52px;
+    padding: 0 0.9rem;
+    font-size: 0.95rem;
+    border-bottom: 3px solid transparent;
+  }
+
+  .itemAtivo {
+    border-bottom-color: var(--nav-ativa);
+  }
+}
+
+/* A folha do aviso completo: sobe de baixo, sobre o fundo escurecido. */
+.folha {
+  margin: auto auto 0;
+  width: 100%;
+  max-width: 34rem;
+  max-height: 88vh;
+  overflow-y: auto;
+  border: 0;
+  border-radius: var(--raio-g) var(--raio-g) 0 0;
+  background: var(--papel);
+  color: var(--tinta);
+  padding: 0.6rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.folha[open] {
+  animation: sobe 0.25s ease-out both;
+}
+
+.folha::backdrop {
+  background: rgba(8, 18, 28, 0.55);
+}
+
+@keyframes sobe {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@media (min-width: 900px) {
+  .folha {
+    margin: auto;
+    border-radius: var(--raio-g);
+  }
+}
+
+.alca {
+  width: 2.5rem;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: var(--borda);
+  margin: 0 auto 0.75rem;
+}
+
+.entendi {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--acao-fundo);
+  color: var(--acao-tinta);
+  font-weight: 700;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.notaFolha {
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--tinta-fraca);
+  text-align: center;
+}

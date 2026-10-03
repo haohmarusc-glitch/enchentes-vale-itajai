@@ -1,249 +1,170 @@
-import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { Suspense, lazy, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import AvisoLegal from '../componentes/AvisoLegal'
-import DiagramaRio from '../componentes/DiagramaRio'
-import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
-import { cidadesDoRio, eventosDoRio, mareItajai, rio, topologiaDoRio, trechos } from '../dados/carregar'
-import { leituraDaCidade, useTempoReal } from '../dados/tempoReal'
-import { useNivelSc } from '../dados/nivelSc'
-import { serieDaCidade, useSerieRecente } from '../dados/serie'
+import { Link, NavLink } from 'react-router-dom'
+import LegendaFaixas from '../componentes/LegendaFaixas'
+import ListaRio from '../componentes/ListaRio'
+import { cidadesDoRio, eventosDoRio, mareItajai, rio, topologiaDoRio } from '../dados/carregar'
+import { leituraDaCidade } from '../dados/tempoReal'
+import { serieDaCidade } from '../dados/serie'
+import { useAoVivo } from '../dados/usarAoVivo'
 import estilos from './TelaRio.module.css'
 
 /**
- * O gráfico carrega a biblioteca recharts, que sozinha pesa mais que o resto do
- * site inteiro. Fica em carregamento sob demanda para que o diagrama do rio, os
- * tempos de trânsito e os avisos apareçam primeiro — numa noite de chuva, com
- * rede ruim, é essa informação que precisa chegar.
- */
-const GraficoPicos = lazy(() => import('../componentes/GraficoPicos'))
-
-/**
- * A busca "minha rua" carrega à parte, e leva a tabela junto.
- *
- * São 611 cotas e crescendo — Rio do Sul sozinha publica 554 logradouros. No
- * pacote inicial isso é um quarto de megabyte que todo mundo baixa e
- * interpreta, inclusive quem abriu o site no celular, no meio da chuva, só
- * para ver o nível do rio.
+ * A busca "minha rua" carrega à parte, e leva a tabela junto: são centenas de
+ * cotas (Rio do Sul sozinha publica 554 logradouros), um quarto de megabyte
+ * que não pode atrasar o nível do rio no celular, no meio da chuva.
  */
 const CotasDeRua = lazy(() => import('../componentes/CotasDeRua'))
 const MapaRios = lazy(() => import('../componentes/MapaRios'))
-const LinhaDoTempo = lazy(() => import('../componentes/LinhaDoTempo'))
 const AnimacaoOnda = lazy(() => import('../componentes/AnimacaoOnda'))
-/**
- * O chat do histórico (sem IA, sem API) carrega à parte: o código e os JSONs
- * dele só chegam quando a caixa entra na tela — ver `chat-local/ChatLocal.tsx`.
- */
-const ChatLocal = lazy(() => import('../chat-local/ChatLocal'))
 
+/**
+ * A TELA DO RIO, versão 2 (03/10/2026): a lista compacta de cidades, de cima
+ * para baixo, com a faixa e o número de cada uma — o detalhe fica na página da
+ * cidade, a um toque. Picos históricos e perguntas sobre o histórico foram para
+ * a aba Histórico de cada cidade.
+ *
+ * Continuam aqui: o mapa do rio (sob pedido no celular, aberto no desktop), a
+ * reprodução das últimas horas e a busca "minha rua" por cidade — tocar numa
+ * cidade no mapa escolhe a cidade da busca.
+ */
 export default function TelaRio({ rioId }: { rioId: string }) {
   const dadosRio = rio(rioId)
   const cidades = useMemo(() => cidadesDoRio(rioId), [rioId])
   const topologia = useMemo(() => topologiaDoRio(rioId), [rioId])
   const eventos = useMemo(() => eventosDoRio(rioId), [rioId])
+  const aoVivo = useAoVivo()
+  const { tempoReal, serie, agora } = aoVivo
 
-  const registrosPorCidade = useMemo(() => {
+  /** A cidade da busca começa na com mais histórico — é a que tem cota de rua para mostrar. */
+  const padrao = useMemo(() => {
     const contagem: Record<string, number> = {}
     for (const e of eventos) contagem[e.cidade] = (contagem[e.cidade] ?? 0) + 1
-    return contagem
-  }, [eventos])
-
-  /** Começa na cidade com mais histórico — é a que tem algo para mostrar. */
-  const padrao = useMemo(() => {
-    const comDados = cidades.filter((c) => (registrosPorCidade[c.id] ?? 0) > 0)
+    const comDados = cidades.filter((c) => (contagem[c.id] ?? 0) > 0)
     if (comDados.length === 0) return cidades[0]?.id ?? null
-    return comDados.reduce((melhor, c) =>
-      (registrosPorCidade[c.id] ?? 0) > (registrosPorCidade[melhor.id] ?? 0) ? c : melhor,
-    ).id
-  }, [cidades, registrosPorCidade])
+    return comDados.reduce((melhor, c) => ((contagem[c.id] ?? 0) > (contagem[melhor.id] ?? 0) ? c : melhor)).id
+  }, [cidades, eventos])
 
-  const original = useTempoReal()
-  const nivelSc = useNivelSc()
-  const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
-  const serie = useSerieRecente()
-  // Um único "agora" por render: assim todos os cartões contam a idade das
-  // leituras a partir do mesmo instante.
-  const agora = useMemo(() => new Date(), [tempoReal])
   // No desktop o mapa fica na coluna da esquerda, então já abre; no celular
-  // continua sob o botão, para não puxar Leaflet numa rede ruim no meio da chuva.
+  // continua sob o botão, para não puxar o mapa numa rede ruim no meio da chuva.
   const [verMapa, setVerMapa] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches,
   )
-
   const [selecionadaId, setSelecionadaId] = useState<string | null>(null)
-
-  // Âncora para o detalhe da cidade (cotas de rua e abrigo). No celular o mapa é
-  // o último cartão da página; ao tocar numa cidade nele, o detalhe muda lá em
-  // cima, fora da tela — e para quem está com o dedo no mapa "não abre nada".
-  // Por isso a seleção VINDA DO MAPA rola o detalhe até a vista. A seleção pelo
-  // diagrama não precisa: o detalhe já vem logo abaixo dele.
-  const detalheRef = useRef<HTMLDivElement | null>(null)
+  const ruaRef = useRef<HTMLDivElement | null>(null)
+  // Tocar numa cidade no mapa escolhe a cidade da busca e rola até ela: no
+  // celular o detalhe fica fora da tela, e "não abre nada" é o que a pessoa vê.
   const selecionarERolar = (id: string) => {
     setSelecionadaId(id)
-    // Espera o React repintar o detalhe da nova cidade antes de rolar.
-    requestAnimationFrame(() =>
-      detalheRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-    )
+    requestAnimationFrame(() => ruaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
   }
 
-  const cidadeId = selecionadaId ?? padrao
-  const selecionada = cidades.find((c) => c.id === cidadeId)
   if (!dadosRio) {
     return <p>Rio não encontrado em <code>estacoes.json</code>.</p>
   }
-
-  const semCobertura = cidades.filter((c) => (registrosPorCidade[c.id] ?? 0) === 0).length
+  const cidadeId = selecionadaId ?? padrao
+  const selecionada = cidades.find((c) => c.id === cidadeId)
+  const comSerie = cidades.some((c) => serieDaCidade(serie, rioId, c.id).length > 0)
+  const rotaDoRio = rioId === 'itajai-mirim' ? '/mirim' : '/acu'
 
   return (
     <>
-      <h1>{dadosRio.nome}</h1>
-      <p className={estilos.foz}>Deságua em: {dadosRio.foz}</p>
+      <nav className={estilos.trocaRio} aria-label="Escolha o rio">
+        <NavLink to="/acu" className={({ isActive }) => (isActive ? `${estilos.rio} ${estilos.rioAtivo}` : estilos.rio)}>
+          Itajaí-Açu
+        </NavLink>
+        <NavLink to="/mirim" className={({ isActive }) => (isActive ? `${estilos.rio} ${estilos.rioAtivo}` : estilos.rio)}>
+          Itajaí-Mirim
+        </NavLink>
+      </nav>
 
-      <AvisoLegal />
+      <div className={estilos.cabeca}>
+        <div>
+          <p className={estilos.rotulo}>De cima para baixo</p>
+          <h1 className={estilos.titulo}>{dadosRio.nome}</h1>
+          <p className={estilos.foz}>Deságua em: {dadosRio.foz}</p>
+        </div>
+        <button
+          type="button"
+          className={`${estilos.botaoMapa} ${estilos.soCelular}`}
+          aria-expanded={verMapa}
+          onClick={() => setVerMapa((v) => !v)}
+        >
+          {verMapa ? 'Esconder mapa' : 'Mapa ▸'}
+        </button>
+      </div>
+
+      <details className={`cartao ${estilos.cores}`}>
+        <summary>O que as cores querem dizer?</summary>
+        <LegendaFaixas />
+      </details>
 
       <div className={estilos.layout}>
-      <div className={estilos.colunaDados}>
+        <div className={estilos.colunaDados}>
+          <ListaRio rioId={rioId} cidades={cidades} topologia={topologia} aoVivo={aoVivo} />
 
-      <section className="cartao">
-        <h2>Curso do rio, de cima para baixo</h2>
-        <p className={estilos.instrucao}>
-          A água desce nesta ordem. Toque numa cidade para ver o histórico e os dados observados dela.
-        </p>
-        <DiagramaRio
-          rioId={rioId}
-          cidades={cidades}
-          trechos={trechos}
-          registrosPorCidade={registrosPorCidade}
-          cidadeSelecionada={cidadeId}
-          aoSelecionar={setSelecionadaId}
-          tempoReal={tempoReal}
-          nivelSc={nivelSc}
-          serie={serie}
-          topologia={topologia}
-          agora={agora}
-        />
-        {semCobertura > 0 ? (
-          <p className={estilos.cobertura}>
-            {semCobertura} de {cidades.length} cidades ainda não têm pico histórico levantado. Elas
-            aparecem no diagrama para deixar claro o que falta, não para sugerir que há dado.
-          </p>
-        ) : null}
-      </section>
-
-      {cidades.some((c) => serieDaCidade(serie, rioId, c.id).length > 0) ? (
-        <section className="cartao">
-          <h2>Reprodução das últimas horas</h2>
-          <p className={estilos.instrucao}>
-            Toque em reproduzir para ver a cheia caminhar de cima para baixo — cada cidade na cor
-            da faixa dela naquele instante. É o que foi medido, não previsão.
-          </p>
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando a reprodução…</p>}>
-            <AnimacaoOnda rioId={rioId} cidades={cidades} serie={serie} leituras={tempoReal.leituras} />
-          </Suspense>
-        </section>
-      ) : null}
-
-
-      {/* A porta para a página da cidade. O detalhe aqui é um recorte; lá está
-          tudo dela — e o endereço pode ser mandado para o vizinho. */}
-      {selecionada ? (
-        <p className={estilos.abrirCidade}>
-          <Link to={`${rioId === 'itajai-mirim' ? '/mirim' : '/acu'}/${selecionada.id}`}>
-            Abrir a página de {selecionada.nome} →
-          </Link>
-        </p>
-      ) : null}
-
-      {selecionada ? (
-        <div ref={detalheRef}>
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando as cotas de rua…</p>}>
-            <CotasDeRua key={selecionada.id}
-              cidade={selecionada}
-              leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
-              agora={agora}
-            />
-          </Suspense>
-        </div>
-      ) : null}
-
-      {selecionada && selecionada.cotas_m && Object.keys(selecionada.cotas_m).length > 0 ? (
-        <section className="cartao">
-          <h2>Últimas horas em {selecionada.nome}</h2>
-          <p className={estilos.instrucao}>
-            Como o nível vem se comportando na régua desta cidade. A linha cruza as
-            faixas de cota — é a cheia subindo ou baixando.
-          </p>
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando a linha do tempo…</p>}>
-            <LinhaDoTempo
-              cidade={selecionada}
-              serie={serieDaCidade(serie, rioId, selecionada.id)}
-              agora={agora}
-              resgates={serie.resgates}
-            />
-          </Suspense>
-        </section>
-      ) : null}
-
-      {selecionada ? (
-        <section className="cartao">
-          <h2>Picos históricos em {selecionada.nome}</h2>
-          <Suspense fallback={<p className={estilos.instrucao}>Carregando o gráfico…</p>}>
-            <GraficoPicos
-              eventos={eventos.filter((e) => e.cidade === selecionada.id)}
-              cidade={selecionada}
-              nomeCidade={selecionada.nome}
-            />
-          </Suspense>
-        </section>
-      ) : null}
-
-      {selecionada ? (
-        <PainelCenarioAnterior
-          cidade={selecionada}
-          eventos={eventos.filter((e) => e.cidade === selecionada.id)}
-          leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
-          agora={agora}
-        />
-      ) : null}
-
-      {/* Perguntas sobre o histórico, respondidas só com os JSONs de data/. Abaixo
-          de tudo, de propósito: quem veio ver o nível do rio não passa por ele. */}
-      {rioId === 'itajai-acu' || rioId === 'itajai-mirim' ? (
-        <Suspense fallback={<p className={estilos.instrucao}>Carregando as perguntas sobre o histórico…</p>}>
-          <ChatLocal rio={rioId} />
-        </Suspense>
-      ) : null}
-
-      </div>
-
-      <div className={estilos.colunaMapa}>
-        <section className="cartao">
-          <h2>Mapa do rio</h2>
-          {verMapa ? (
-            <Suspense fallback={<p className={estilos.instrucao}>Carregando o mapa…</p>}>
-              <MapaRios
-                rioId={rioId}
-                cidades={cidades}
-                tempoReal={tempoReal}
-                agora={agora}
-                aoSelecionar={selecionarERolar}
-                mare={mareItajai}
-              />
-            </Suspense>
-          ) : (
-            <>
+          {comSerie ? (
+            <details className={`cartao ${estilos.cores}`}>
+              <summary>Reprodução das últimas horas</summary>
               <p className={estilos.instrucao}>
-                O rio no mapa, com cada trecho na cor da faixa da cidade a montante — a mesma do
-                diagrama. Aproxime para ver os nomes; toque numa cidade para as cotas de referência por rua. Carrega sob pedido para não pesar no celular.
+                A cheia caminhando de cima para baixo — cada cidade na cor da faixa dela naquele
+                instante. É o que foi medido, não previsão.
               </p>
-              <button type="button" className={estilos.botaoMapa} onClick={() => setVerMapa(true)}>
-                Ver mapa do rio
-              </button>
-            </>
-          )}
-        </section>
-      </div>
+              <Suspense fallback={<span className={`esqueleto ${estilos.esq}`} />}>
+                <AnimacaoOnda rioId={rioId} cidades={cidades} serie={serie} leituras={tempoReal.leituras} />
+              </Suspense>
+            </details>
+          ) : null}
 
+          {selecionada ? (
+            <div ref={ruaRef}>
+              <div className={estilos.escolhaRua}>
+                <label htmlFor="cidade-da-rua">Minha rua alaga? Cidade:</label>
+                <select
+                  id="cidade-da-rua"
+                  value={selecionada.id}
+                  onChange={(e) => setSelecionadaId(e.target.value)}
+                >
+                  {cidades.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <Suspense fallback={<span className={`esqueleto ${estilos.esq}`} />}>
+                <CotasDeRua
+                  key={selecionada.id}
+                  cidade={selecionada}
+                  leitura={leituraDaCidade(tempoReal, rioId, selecionada.id)}
+                  agora={agora}
+                />
+              </Suspense>
+              <p className={estilos.abrirCidade}>
+                <Link to={selecionada.id === 'itajai' ? '/itajai' : `${rotaDoRio}/${selecionada.id}`}>
+                  Abrir a página de {selecionada.nome} →
+                </Link>
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        <div className={`${estilos.colunaMapa} ${verMapa ? '' : estilos.mapaFechado}`}>
+          {verMapa ? (
+            <section className="cartao">
+              <h2>Mapa do rio</h2>
+              <Suspense fallback={<span className={`esqueleto ${estilos.esq}`} />}>
+                <MapaRios
+                  rioId={rioId}
+                  cidades={cidades}
+                  tempoReal={tempoReal}
+                  agora={agora}
+                  aoSelecionar={selecionarERolar}
+                  mare={mareItajai}
+                />
+              </Suspense>
+            </section>
+          ) : null}
+        </div>
       </div>
     </>
   )

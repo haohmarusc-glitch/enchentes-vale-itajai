@@ -138,6 +138,42 @@ console.log('\nrota profunda (/#/mirim/brusque) — o link que se compartilha')
   erros.length ? falhou(`erros no navegador: ${erros.join(' | ')}`) : ok('sem erro de página nem de console')
 }
 
+console.log('\nversão 2: aviso completo na primeira visita e faixa do 199 em toda tela')
+{
+  // Decisão D1 (03/10/2026): a regra do CLAUDE.md fica. A faixa curta diz que o
+  // site não substitui a Defesa Civil; o texto completo abre sozinho na
+  // primeira visita e só sai com "Entendi".
+  const ctx = await navegador.newContext()
+  await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
+  const pagina = await ctx.newPage()
+  await pagina.goto(`${base}/#/`, { waitUntil: 'load' })
+  const folha = pagina.locator('dialog[open]')
+  await folha.waitFor({ timeout: 10_000 }).catch(() => {})
+  const textoFolha = (await folha.count()) ? await folha.innerText() : ''
+  textoFolha.includes('não substitui') && textoFolha.includes('199')
+    ? ok('a folha do aviso completo abre na primeira visita')
+    : falhou('a folha do aviso completo NÃO abriu na primeira visita')
+  const faixa = await pagina.locator('[role="note"]').first().innerText().catch(() => '')
+  ;/199/.test(faixa) && /não substitui a Defesa Civil/.test(faixa)
+    ? ok('a faixa do topo tem o 199 e diz que não substitui a Defesa Civil')
+    : falhou(`a faixa do topo perdeu o 199 ou o "não substitui" (${faixa})`)
+  await pagina.getByRole('button', { name: 'Entendi' }).click().catch(() => {})
+  await pagina.reload({ waitUntil: 'load' })
+  await pagina.waitForTimeout(800)
+  ;(await pagina.locator('dialog[open]').count()) === 0
+    ? ok('depois do "Entendi", a folha não volta sozinha')
+    : falhou('a folha voltou depois do "Entendi"')
+  const corpo = await pagina.locator('#root').innerText()
+  corpo.includes('Leia antes de usar') ? ok('o aviso completo continua no fim da página') : falhou('o aviso completo sumiu da página')
+  await pagina.goto(`${base}/#/monitor`, { waitUntil: 'load' })
+  await pagina.waitForTimeout(800)
+  ;(await pagina.getByText('Emergência: ligue 199').count()) > 0 &&
+  (await pagina.locator('nav[aria-label="Principal"]').count()) === 0
+    ? ok('o Monitor mantém a casca antiga, sem a barra nova (D2)')
+    : falhou('o Monitor perdeu a casca antiga ou ganhou a barra nova')
+  await ctx.close()
+}
+
 await navegador.close()
 await servidor.close()
 

@@ -1,32 +1,93 @@
-.foz {
-  color: var(--tinta-fraca);
-  margin-top: -0.25rem;
+/* Açu | Mirim: a troca de rio no topo da tela, como um interruptor. */
+.trocaRio {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  margin-bottom: 0.9rem;
+  border-radius: 12px;
+  background: var(--agua-fundo);
 }
 
-/*
- * No celular: coluna única, empilhada (o mapa é o último cartão, sob o botão,
- * para não puxar Leaflet numa rede ruim). No desktop, layout do Kikikuru: o
- * mapa numa coluna à esquerda, fixa (sticky), e os dados rolando à direita.
- */
-@media (min-width: 1024px) {
-  .layout {
-    display: grid;
-    grid-template-columns: minmax(22rem, 40%) 1fr;
-    gap: 1.25rem;
-    align-items: start;
-  }
-  /* O mapa vem por último no DOM (para ficar no fim no celular); aqui ele volta
-     para a esquerda e gruda no topo enquanto os dados rolam. */
-  .colunaMapa {
-    order: -1;
-    position: sticky;
-    top: 0.75rem;
-    align-self: start;
-  }
-  .colunaMapa :global(.leaflet-container),
-  .colunaMapa :global(.cartao) {
-    margin-top: 0;
-  }
+.rio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 9px;
+  color: var(--tinta-fraca);
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.rioAtivo {
+  background: var(--papel);
+  color: var(--tinta);
+  box-shadow: var(--sombra);
+}
+
+.cabeca {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.rotulo {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--tinta-fraca);
+}
+
+.titulo {
+  margin: 0;
+}
+
+.foz {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+}
+
+.botaoMapa {
+  flex: none;
+  border: 1px solid var(--botao-borda);
+  background: var(--botao-fundo);
+  color: var(--tinta);
+  font-weight: 700;
+  padding: 0 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.botaoMapa:hover {
+  border-color: var(--agua-clara);
+}
+
+.cores summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.cores summary::-webkit-details-marker {
+  display: none;
+}
+
+.cores summary::after {
+  content: '▸';
+  color: var(--tinta-fraca);
+  transition: transform 0.15s ease;
+}
+
+.cores[open] summary::after {
+  transform: rotate(90deg);
 }
 
 .instrucao {
@@ -34,29 +95,65 @@
   color: var(--tinta-fraca);
 }
 
-.cobertura {
-  font-size: 0.88rem;
-  color: var(--tinta-fraca);
-  border-top: 1px solid var(--borda);
-  padding-top: 0.75rem;
-  margin: 0.75rem 0 0;
+.escolhaRua {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.4rem 0 0.6rem;
+  font-weight: 700;
 }
 
-.botaoMapa {
-  appearance: none;
-  border: 1px solid var(--agua-clara);
-  background: var(--agua-clara);
-  color: #fff;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 0.6rem 1rem;
-  border-radius: var(--raio);
-  cursor: pointer;
+.escolhaRua select {
+  padding: 0 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--botao-borda);
+  background: var(--botao-fundo);
+  color: var(--tinta);
 }
-.botaoMapa:hover { background: var(--agua); }
 
 .abrirCidade {
-  margin: 0 0 0.9rem;
-  font-size: 1rem;
+  margin: 0 0 1rem;
   font-weight: 600;
+}
+
+.esq {
+  height: 14rem;
+}
+
+/*
+ * No celular: coluna única, e o mapa só depois do botão. No desktop, layout do
+ * Kikikuru: o mapa numa coluna à esquerda, fixa (sticky), e a lista rolando à
+ * direita.
+ */
+.mapaFechado {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .soCelular {
+    display: none;
+  }
+
+  .mapaFechado {
+    display: block;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(22rem, 42%) 1fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .colunaMapa {
+    order: -1;
+    position: sticky;
+    top: calc(var(--altura-faixa, 2.5rem) + 0.75rem);
+    align-self: start;
+  }
+
+  .colunaMapa :global(.cartao) {
+    margin-top: 0;
+  }
 }
