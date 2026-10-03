@@ -488,6 +488,24 @@ o projeto.
   ou intervalo hipotético e extremos da tábua, sem previsão de altura. Evidências,
   limites e próximos dados necessários em [docs/PESQUISA-CHEGADA-MARE-2026-09-19.md](docs/PESQUISA-CHEGADA-MARE-2026-09-19.md).
   Auditoria somente leitura: `python scripts/calibrar_chegada_itajai.py`.
+  **03/10/2026:**
+  - O painel "Hoje" do `/itajai` cruza a maré com o pico de Blumenau **do dia**, lido da série.
+  - A série do coletor (ago–out/2026) foi cruzada com a maré e a chuva em
+    [docs/ANALISE-CHEGADA-ITAJAI-2026.md](docs/ANALISE-CHEGADA-ITAJAI-2026.md)
+    (`scripts/analisar_chegada_itajai.py`).
+    - **Cada régua de Itajaí tem o seu atraso e o seu fator de maré.** A DC-01 sente 90% da maré; a DC-11
+      sente 70%, 1 h depois; a DC-02 e a DC-10 quase nada.
+    - Nos quatro eventos moderados medidos, a crista sem maré em Itajaí veio **+1,5 a +5 h** depois do platô de
+      Blumenau. Blumenau fica a ~70 km pelo rio, então **não é a água de Blumenau chegando**: é o baixo vale
+      subindo junto, com a mesma chuva. A faixa de 14–17 h não muda.
+  - A publicação "Blumenau" da página de Itajaí carimbava **3 h atrasada**. Saiu do ar em 19/09. Se voltar, o
+    coletor precisa corrigir o fuso.
+  - **Zero das réguas × terreno (estimativa, não oficial):** a leitura de cada régua com a água no nível médio
+    do mar sai da regressão na maré (`scripts/estimar_zero_reguas_itajai.py`).
+    - A emergência da DC-01 fica só ~0,5 m acima do mar, e a da DC-09 ~0,6 m; as duas abaixo do terreno em volta.
+    - A da DC-06 (Itamirim) fica ~2,0 m acima do mar, já no nível do chão em volta.
+    - Falta a altitude oficial do zero, o datum dos pontos cotados e a ligação NR → IBGE (seção 6 do doc).
+  - [ ] Decidir se o painel mostra "quanto do nível é maré" nas réguas com correlação ≥ 0,8.
 
 **Complemento da quinta auditoria, 19/09/2026** (`docs/AUDITORIA-2026-09-19-quatro-pendencias-complemento.md`): nova rodada pelo Chrome. Duas coisas mudam de fato.
 

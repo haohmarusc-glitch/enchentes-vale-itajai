@@ -11,7 +11,7 @@
  * mostra é um "se o pico fosse agora", rotulado assim. O pico só é dado como
  * PASSADO quando o rio já desceu claramente abaixo do máximo, em mais de uma
  * leitura. E um pico de Blumenau costuma ser um PLATÔ de horas (em 12/09/2026 o
- * rio ficou a menos de 5 cm do máximo das 00h às 06h): a janela de chegada usa o
+ * rio ficou a menos de 5 cm do máximo das 04h às 07h): a janela de chegada usa o
  * platô inteiro, não um minuto escolhido nele.
  */
 import type { PontoSerie } from '../dados/serie'
@@ -88,8 +88,10 @@ export function situacaoDoPico(pontos: PontoSerie[], agora: Date): SituacaoPico 
 
 /**
  * A publicação de Blumenau a usar: a que tem a leitura mais recente. Blumenau
- * chega por duas fontes da mesma régua (Defesa Civil de Itajaí e AlertaBlu);
- * misturá-las faria serrilhado (ver `PontoSerie.regua`).
+ * chegou por duas fontes da mesma régua (Defesa Civil de Itajaí e AlertaBlu);
+ * misturá-las faria serrilhado (ver `PontoSerie.regua`). A da página de Itajaí
+ * tinha os horários 3 h atrasados e saiu do ar em 19/09/2026; quando as duas
+ * existiam, a do AlertaBlu era sempre a mais recente — e a certa.
  */
 export function publicacaoMaisRecente(porRegua: Map<string, PontoSerie[]>): PontoSerie[] {
   let melhor: PontoSerie[] = []
