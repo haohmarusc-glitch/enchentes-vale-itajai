@@ -51,6 +51,11 @@
       "rotulo": "Lemfers e Pacheco Tena — evento de 2011 no Itajaí-Mirim",
       "url": "https://files.abrhidro.org.br/Eventos/Trabalhos/60/PAP022601.pdf",
       "resultado": "PDF recuperado: relata uso de séries da Defesa Civil/ANA e filtragem de maré. Mesmo evento de 2011; não conta como segunda cheia independente."
+    },
+    {
+      "rotulo": "Registros do próprio coletor — cheias de 10/09 e 11–12/09/2026 (data/brutos/evento-2026-09-*-serie-recente-*.json)",
+      "url": "https://github.com/haohmarusc-glitch/enchentes-vale-itajai/tree/main/data/brutos",
+      "resultado": "Analisados em 03/10/2026. Blumenau teve pico de 7,87 m às 02h15 de 12/09 (platô a menos de 5 cm das 00h45 às 03h35), pela publicação da Defesa Civil de Itajaí. Em Itajaí, os máximos de DC-01 e DC-02 caem nos horários das preamares (02h17, 15h08, 02h59): a maré domina a régua e esconde a crista da cheia. A série de Itajaí tem buraco das 07h às 15h de 12/09. A publicação do AlertaBlu nesse registro tem horários 3 h adiantados (UTC gravado como hora de Brasília, defeito já corrigido na coleta). Não resulta em par conferido."
     }
   ]
 }
