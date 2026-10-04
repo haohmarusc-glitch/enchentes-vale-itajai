@@ -2294,11 +2294,14 @@ class TestContagemDasReferencias(unittest.TestCase):
         # Jefferson) — quatro de jul–ago/1983 com referencia null (trecho em
         # disputa) e 08/10/2023 na régua; a sexta (26/05/2010) virou divergência
         # de 26/04/2010. 385 → 390, régua 122 → 123, null 219 → 223.
-        self.assertEqual(len(self.ev), 390)
+        # 04/10/2026, decisão do Jefferson: Gaspar 23/09/2013 (8,03 m) e Ituporanga
+        # 22/09/2013 (5,82 m), da nota da Autoridade Portuária, com referencia null
+        # (a nota não declara régua) — 390 → 392, null 223 → 225.
+        self.assertEqual(len(self.ev), 392)
         self.assertEqual(refs["régua"], 123)
         self.assertEqual(refs["IBGE (régua + 0,20 m)"], 44)
-        self.assertEqual(refs["None"], 223)
-        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 267)
+        self.assertEqual(refs["None"], 225)
+        self.assertEqual(refs["IBGE (régua + 0,20 m)"] + refs["None"], 269)
 
     def test_de_onde_vem_os_sem_referencia(self):
         """Era o segundo erro: eu atribuía os sem referência a Brusque e Rio do

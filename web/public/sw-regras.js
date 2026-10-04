@@ -41,7 +41,7 @@
    *  - 'site'        → rede primeiro (demais arquivos do próprio site);
    *  - 'tempo-real'  → rede primeiro, com prazo curto, cópia guardada sem rede;
    *  - 'ignorar'     → o service worker não se mete (mapas, outros sites,
-   *                    pedidos que não são GET).
+   *                    pedidos que não são GET, `/api/…` do próprio site).
    */
   function estrategia(pedido, origemDoSite) {
     if (pedido.method !== 'GET') return 'ignorar'
@@ -56,6 +56,9 @@
     if (url.indexOf(origemDoSite + '/') !== 0) return 'ignorar'
     // O interruptor de desligar nunca vem do aparelho.
     if (/\/pwa\.json(?:\?|$)/.test(url)) return 'ignorar'
+    // Funções do servidor (`/api/…`, ex.: a contagem do chat): resposta viva,
+    // nunca guardada — nem o GET, que diz se a contagem está ligada.
+    if (url.indexOf(origemDoSite + '/api/') === 0) return 'ignorar'
     if (ASSET_COM_HASH.test(url.split('?')[0])) return 'imutavel'
     return 'site'
   }

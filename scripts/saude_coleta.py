@@ -176,6 +176,15 @@ ESTACOES_APOSENTADAS = {
         "estação f6360951…). A MKS continua publicada pela Defesa Civil de Itajaí "
         "e pode ser coletada de novo como régua própria se um dia tiver cota "
         "própria. SAI DAQUI se voltar a ser mapeada em comum._FALLBACK.",
+    "Indaial — fundos da Celesc (Defesa Civil)":
+        "Desde 04/10/2026, por decisão do Jefferson, o coletor consulta o "
+        "robots.txt de docs.google.com antes de pedir o documento da Defesa Civil, "
+        "e o robots.txt recusa o caminho de exportação (captura de 28/09/2026). "
+        "Bloqueado por robots.txt, a régua deixa de vir: não é falha de rede nem "
+        "do coletor, e cobrar todo dia só ensinaria a ignorar o vigia. A régua "
+        "automática da cidade continua sendo a DCSC-00006, no nível estadual. "
+        "SAI DAQUI quando houver captura manual autorizada ou outra fonte pública "
+        "que o robots.txt libere (`coleta_indaial.py`).",
 }
 
 

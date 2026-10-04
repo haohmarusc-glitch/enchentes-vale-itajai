@@ -46,6 +46,13 @@
   vertical-align: -1px;
 }
 
+/* Pico antes da régua declarada (Brusque antes de 2019): clara e tracejada,
+   como a barra do gráfico. Sem cor nova: a cor continua sendo a da confiança. */
+.amostraForaDaRegua {
+  background: transparent;
+  border: 1px dashed var(--tinta-fraca);
+}
+
 .tabela summary {
   cursor: pointer;
   font-size: 0.9rem;

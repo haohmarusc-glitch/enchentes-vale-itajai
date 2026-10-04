@@ -70,9 +70,33 @@ SUSPEITAS = {"DCSC-00029": "Guabiruba ~24,8 m: estação Hidro real (tem_nivel_d
                            "teria pego isto: 28,4 m passa por baixo dele. Quem pegou foi esta lista, "
                            "escrita à mão — o que diz que a régua de plausibilidade por valor absoluto "
                            "é rede de segurança, não a primeira linha. Fonte: Prefeitura de Brusque, "
-                           "abril de 2026, via levantamento externo de 07/09/2026.",
+                           "abril de 2026, via levantamento externo de 07/09/2026. "
+                           "VOLTA AO ZERO LOCAL (decisão do Jefferson de 04/10/2026): entre "
+                           "09/09/2026 23:10 e 03/10/2026 23:01 a estação voltou a publicar ~0,6 m, "
+                           "régua do ribeirão com zero próprio. Desde então só o valor ≥ 10 m cai "
+                           "aqui (ver SUSPEITA_SO_ACIMA_DE_M); abaixo disso a leitura vale como zero "
+                           "local — nunca como a cota ortométrica ~25–28 m dos boletins de Brusque.",
              "DCSC-00007": "Pomerode: estação Hidro real (tem_nivel_do_rio=true), mas oscila de forma "
                            "implausível entre leituras — datum/escala própria não calibrada"}
+
+#: Estação de SUSPEITAS que só é suspeita ACIMA de um valor. É o caso de Guabiruba depois da volta
+#: ao zero local: abaixo de 10 m a leitura é régua do ribeirão (zero próprio da estação, ~0,5–2 m
+#: com o ribeirão normal); de 10 m para cima é a altitude (~25 m) que a estação publicou de abril a
+#: setembro de 2026, e continua suspeita — se a estação trocar de novo, a trava pega. Nenhum ribeirão
+#: da região chegou perto de 10 m na régua local, e a cota ortométrica fica longe dele.
+#: NÃO junta a série de antes de 01/04/2026 com a de depois da volta: que o zero seja o mesmo não foi
+#: conferido (0,51 m antes do degrau, 0,63 m em 03/10). O histórico continua cortado em
+#: QUEBRAS_DE_SERIE até a data da volta ser conferida no servidor.
+SUSPEITA_SO_ACIMA_DE_M = {"DCSC-00029": 10.0}
+
+
+def e_suspeita(codigo: str, valor_m: float) -> bool:
+    """A leitura desta estação vai para 'suspeitas'? (SUSPEITAS, com o limite por valor quando houver)"""
+    if codigo not in SUSPEITAS:
+        return False
+    limite = SUSPEITA_SO_ACIMA_DE_M.get(codigo)
+    return limite is None or valor_m >= limite
+
 
 # Estações que a mesma investigação confirma NÃO medirem nível de rio nesta rede
 # (`tem_nivel_do_rio=false`; Blumenau é `type="Meteo"`). Ao vivo, `value` vem null sempre — não é

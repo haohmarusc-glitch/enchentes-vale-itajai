@@ -1,0 +1,140 @@
+# Coleta o nível do Itajaí-Açu em GASPAR (estação 21 da Defesa Civil do
+# município) a partir do GitHub Actions, de 15 em 15 minutos.
+#
+# POR QUE EXISTE (decisão do Jefferson, 04/10/2026). O portal de Gaspar dá
+# timeout na VPS (Hetzner, Helsinque) desde 31/08/2026 e responde ao runner do
+# GitHub (captura de 28/09: docs/CAPTURA-FONTES-2026-09-28.md). A lógica e os
+# testes ficam em scripts/gaspar_actions.py e scripts/teste_gaspar_actions.py.
+#
+# O QUE FAZ. robots.txt antes; um pedido à estação 21 com o User-Agent do
+# projeto e timeout; se a leitura MUDOU, publica gaspar.json + o HTML bruto no
+# branch `coleta-gaspar` (órfão, um commit só, substituído a cada leitura nova,
+# como o `tempo-real`). Se não mudou, não grava nada. A VPS lê esse arquivo pelo
+# raw.githubusercontent.com no cron dela (coleta_niveis.py) e o publica no
+# `tempo-real` junto com as outras cidades. Não muda cota, faixa nem cadastro.
+#
+# ALERTA. Falha (robots.txt recusando, timeout, HTTP, página sem a régua) deixa
+# o job VERMELHO, guarda o diagnóstico como artefato e abre — ou atualiza, sem
+# notificar de novo — a issue "Coleta de Gaspar pelo Actions falhando". Quando a
+# coleta volta, a issue é fechada com um comentário. Leitura velha (estação
+# parada há mais de 3 h) NÃO é falha da coleta: sai como aviso amarelo no run.
+#
+# LIMITES DO AGENDAMENTO. O GitHub pode atrasar ou pular execuções agendadas em
+# horário de pico, e o agendamento só vale no branch padrão (main).
+name: Coletar Gaspar
+
+on:
+  schedule:
+    # Minutos 7, 22, 37 e 52: fora do :00, quando o GitHub atrasa mais.
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # publicar no branch coleta-gaspar
+  issues: write     # abrir, atualizar e fechar o aviso de falha
+
+concurrency:
+  group: coletar-gaspar
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    name: Estação 21 de Gaspar
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TITULO_ISSUE: Coleta de Gaspar pelo Actions falhando
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+
+      - name: Ler a publicação anterior
+        run: |
+          mkdir -p anterior
+          if git fetch --depth=1 origin coleta-gaspar 2>/dev/null; then
+            git show FETCH_HEAD:gaspar.json > anterior/gaspar.json 2>/dev/null \
+              || rm -f anterior/gaspar.json
+          fi
+
+      - name: Coletar
+        id: coleta
+        working-directory: scripts
+        run: python3 gaspar_actions.py --anterior ../anterior/gaspar.json --saida ../saida
+
+      - name: Publicar no branch coleta-gaspar
+        if: steps.coleta.outputs.mudou == 'true'
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          MOTIVO: ${{ steps.coleta.outputs.motivo }}
+        run: |
+          set -euo pipefail
+          json=$(git hash-object -w saida/gaspar.json)
+          bruto=$(git hash-object -w saida/gaspar-estacao-21.html)
+          arvore=$(printf '100644 blob %s\tgaspar.json\n100644 blob %s\tgaspar-estacao-21.html\n' \
+            "$json" "$bruto" | git mktree)
+          commit=$(git commit-tree "$arvore" -m "Gaspar: $MOTIVO")
+          git push --force --quiet origin "$commit:refs/heads/coleta-gaspar"
+          echo "publicado em coleta-gaspar: $MOTIVO"
+
+      - name: Guardar o diagnóstico da falha
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gaspar-falha-${{ github.run_id }}
+          path: saida/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Abrir ou atualizar a issue de falha
+        if: failure()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ESTADO: ${{ steps.coleta.outputs.estado }}
+          MOTIVO: ${{ steps.coleta.outputs.motivo }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          {
+            echo "A coleta de Gaspar pelo GitHub Actions falhou. Última falha: **$(date -u +%Y-%m-%dT%H:%MZ)** (UTC)."
+            echo
+            echo "- estado: \`${ESTADO:-passo do fluxo}\`"
+            echo "- motivo: ${MOTIVO:-ver o log do run}"
+            echo "- run: ${RUN}"
+            echo
+            echo "Sem esta coleta, a VPS fica só com a ponte do PC (se estiver ligada), e Gaspar volta ao cinza quando a última medição passar de 3 h. Lógica em \`scripts/gaspar_actions.py\`; operação em \`docs/gaspar-ponte-pc.md\`."
+            echo
+            echo "Esta issue é atualizada a cada falha (sem nova notificação) e fecha sozinha quando a coleta voltar."
+          } > "$RUNNER_TEMP/issue-gaspar.md"
+          numero=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 50 \
+            --json number,title --jq ".[] | select(.title == env.TITULO_ISSUE) | .number" | head -1)
+          if [ -z "$numero" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITULO_ISSUE" --body-file "$RUNNER_TEMP/issue-gaspar.md"
+          else
+            gh issue edit "$numero" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/issue-gaspar.md"
+          fi
+
+      - name: Fechar a issue de falha, se a coleta voltou
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MOTIVO: ${{ steps.coleta.outputs.motivo }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          numero=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 50 \
+            --json number,title --jq ".[] | select(.title == env.TITULO_ISSUE) | .number" | head -1)
+          if [ -n "$numero" ]; then
+            gh issue close "$numero" --repo "$GITHUB_REPOSITORY" \
+              --comment "A coleta voltou em $(date -u +%Y-%m-%dT%H:%MZ) (UTC): ${MOTIVO}. Run: ${RUN}"
+          fi

@@ -56,10 +56,34 @@ class TopologiaArvore(unittest.TestCase):
         self.assertTrue(any("ramo' ausente" in e for e in erros_de(d)))
 
     def test_ramo_em_rio_em_fila_aborta(self):
-        # Mirim é fila: pôr ramo nele mistura árvore e fila.
+        # Desde 04/10/2026 os dois rios são árvore; a trava continua valendo para
+        # um rio em fila. Monta-se um Mirim em fila (sem _topologia, ordem 1..N)
+        # e põe-se ramo numa cidade: isso mistura árvore e fila.
         d = self.base()
+        mirim = d["rios"]["itajai-mirim"]
+        mirim.pop("_topologia")
+        for i, c in enumerate(mirim["cidades"], start=1):
+            c["ordem"] = i
+            c.pop("ramo", None)
+            c.pop("ordem_no_ramo", None)
+        self.assertFalse(any("não se misturam" in e for e in erros_de(d)), "a fila montada deveria passar")
         _cidade(d, "itajai-mirim", "brusque")["ramo"] = "tronco_acu"
         self.assertTrue(any("não se misturam" in e for e in erros_de(d)))
+
+    def test_o_mirim_e_arvore_com_guabiruba_afluente(self):
+        # Decisão do Jefferson de 04/10/2026: Guabiruba fica no ribeirão, entra
+        # no Mirim de lado perto de Brusque e não é elo do tronco.
+        d = self.base()
+        topo = d["rios"]["itajai-mirim"]["_topologia"]
+        self.assertEqual(topo["tronco_sequencia"], ["vidal-ramos", "botuvera", "brusque", "itajai"])
+        self.assertEqual([a["id"] for a in topo["afluentes_laterais"]], ["guabiruba"])
+        self.assertEqual(_cidade(d, "itajai-mirim", "guabiruba")["ramo"], "ribeirao_guabiruba")
+
+    def test_mirim_com_guabiruba_no_tronco_aborta(self):
+        d = self.base()
+        _cidade(d, "itajai-mirim", "guabiruba")["ramo"] = "mirim_tronco"
+        _cidade(d, "itajai-mirim", "guabiruba")["ordem_no_ramo"] = 5
+        self.assertTrue(any("tronco_sequencia" in e and "mirim_tronco" in e for e in erros_de(d)))
 
     def test_codigo_dcsc_trocado_aborta(self):
         d = self.base()
@@ -113,6 +137,54 @@ def _monotonia(estacoes_dict, transito_dict) -> tuple[list[str], list[str]]:
     finally:
         vd.le_json = orig
     return list(vd.erros), list(vd.avisos)
+
+
+def _experimentais(transito_dict) -> tuple[list[str], list[str]]:
+    """Roda só `valida_trechos_experimentais` sobre um transito.json em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: transito_dict if nome == "transito.json" else orig(nome)
+    try:
+        conhecidas = {(r, c["id"]) for r, rio in orig("estacoes.json")["rios"].items() for c in rio["cidades"]}
+        vd.valida_trechos_experimentais(conhecidas)
+    finally:
+        vd.le_json = orig
+    return list(vd.erros), list(vd.avisos)
+
+
+class TrechosExperimentais(unittest.TestCase):
+    """Decisão do Jefferson de 04/10/2026: Vidal Ramos → Brusque e Botuverá → Brusque
+    ficam EM ESTUDO — medição e evidência guardadas, nenhuma faixa operacional."""
+
+    def setUp(self):
+        self.real = json.loads((DADOS / "transito.json").read_text(encoding="utf-8"))
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(_experimentais(copy.deepcopy(self.real))[0], [])
+
+    def test_os_dois_do_mirim_estao_em_estudo_e_fora_dos_operacionais(self):
+        pares = {(t["de"], t["para"]) for t in self.real["trechos_experimentais"]}
+        self.assertEqual(pares, {("vidal-ramos", "brusque"), ("botuvera", "brusque")})
+        operacionais = {(t["de"], t["para"]) for t in self.real["trechos"]}
+        self.assertFalse(pares & operacionais)
+
+    def test_faixa_operacional_em_trecho_experimental_aborta(self):
+        d = copy.deepcopy(self.real)
+        d["trechos_experimentais"][0]["horas_min"] = 6
+        d["trechos_experimentais"][0]["horas_max"] = 8
+        self.assertTrue(any("horas_min" in e for e in _experimentais(d)[0]))
+
+    def test_mesmo_par_nos_dois_lugares_aborta(self):
+        d = copy.deepcopy(self.real)
+        d["trechos"].append({"rio": "itajai-mirim", "de": "botuvera", "para": "brusque",
+                             "horas_min": 6, "horas_max": 8, "confianca": "baixa", "fonte": "x"})
+        self.assertTrue(any("o mesmo par" in e for e in _experimentais(d)[0]))
+
+    def test_contagem_de_pares_tem_de_bater_com_as_medicoes(self):
+        d = copy.deepcopy(self.real)
+        d["trechos_experimentais"][1]["eventos_pareados_com_hora"] = 2
+        self.assertTrue(any("não bate" in e for e in _experimentais(d)[0]))
 
 
 def _marca_historica(estacoes_dict, enchentes_dict) -> list[str]:
@@ -390,6 +462,13 @@ class MesesPareados(unittest.TestCase):
         # erradas: lacuna de cobertura da fonte, como em Gaspar e Indaial.
         ("rio-do-sul 2023-07", "lontras"),
         ("rio-do-sul 2023-10-13", "lontras"),
+        # 04/10/2026: o Mirim virou árvore e a conferência passou a cobrir o
+        # tronco dele. Os dois avisos são de boletins estaduais DIFERENTES (SDE
+        # 011/2023 dá Vidal Ramos em 17/11; SDE 001/2024 dá Botuverá em 03/12),
+        # cada um com só a cidade que listou: eventos distintos, lacuna de
+        # cobertura da fonte. Nada foi corrigido.
+        ("vidal-ramos 2023-11-17", "botuvera"),
+        ("botuvera 2023-12-03", "brusque"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):
@@ -573,14 +652,17 @@ class Hidraulica(unittest.TestCase):
         """
         Trava a decisão, não só o dado.
 
-        Gravar 2/3–1/3 em `estacoes.json._topologia` do Mirim parece natural e
-        quebraria o rio inteiro: é a presença desse campo que faz o validador
-        tratar o rio como RAMIFICADO, passando a exigir ramo/ordem_no_ramo em
-        todas as cidades — e o Mirim é fila, com `ordem` 1..N.
+        A divisão 2/3–1/3 (canal retificado × curso antigo) é hidráulica da foz,
+        não topologia das cidades. Desde 04/10/2026 o Mirim tem `_topologia`
+        (Guabiruba é afluente lateral), mas a divisão continua fora dela: os
+        braços existem só entre as réguas DC de Itajaí, e pô-los na árvore
+        criaria elos de cidade que não existem.
         """
         est = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
-        self.assertNotIn("_topologia", est["rios"]["itajai-mirim"],
-                         "o Mirim é fila; _topologia o tornaria ramificado")
+        topo = est["rios"]["itajai-mirim"].get("_topologia", {})
+        texto = json.dumps({k: v for k, v in topo.items() if k != "nota"}, ensure_ascii=False)
+        for proibido in ("divisao", "2/3", "canal_retificado", "curso_antigo"):
+            self.assertNotIn(proibido, texto, f"a divisão do Mirim entrou na _topologia ({proibido})")
         self.assertIn("divisao_do_mirim", self.real)
 
 

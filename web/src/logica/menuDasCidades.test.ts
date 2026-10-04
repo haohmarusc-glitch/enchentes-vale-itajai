@@ -47,10 +47,14 @@ test('toda cidade do Açu aparece uma vez, e só uma', () => {
   assert.deepEqual(new Set(todos), new Set(real.rios['itajai-acu'].cidades.map((c: { id: string }) => c.id)))
 })
 
-test('o Mirim, que é fila, sai na ordem do cadastro', () => {
-  const [fila] = mirim().grupos
-  assert.equal(fila?.titulo, 'Montante → jusante')
-  assert.deepEqual(ids(fila), ['vidal-ramos', 'botuvera', 'guabiruba', 'brusque', 'itajai'])
+test('o Mirim sai em tronco e afluentes: Guabiruba não é elo da fila (04/10/2026)', () => {
+  const [tronco, afl, ...resto] = mirim().grupos
+  assert.equal(tronco?.titulo, 'Tronco')
+  assert.deepEqual(ids(tronco), ['vidal-ramos', 'botuvera', 'brusque', 'itajai'])
+  assert.equal(afl?.titulo, 'Afluentes')
+  assert.deepEqual(ids(afl), ['guabiruba'])
+  assert.match(afl!.itens[0]!.detalhe ?? '', /Brusque/)
+  assert.deepEqual(resto, [])
 })
 
 test('numa fila, cidade sem `ordem` não ganha posição inventada', () => {

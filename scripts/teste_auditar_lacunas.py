@@ -303,10 +303,12 @@ class TipoDoElo(unittest.TestCase):
         self.assertIn("Benedito", porque)
         self.assertIn("coincidência", porque)
 
-    def test_rio_em_fila_nao_tem_confluencia_a_declarar(self):
-        """O Mirim não tem `_topologia`: sem afluente lateral declarado, todo elo é viagem."""
+    def test_no_mirim_so_guabiruba_e_confluencia(self):
+        """Desde 04/10/2026 o Mirim é árvore: o tronco é viagem, e Guabiruba (ribeirão,
+        afluente lateral) entra em Brusque de lado — não há viagem a medir."""
         self.assertEqual(self.tipo("vidal-ramos", "botuvera", rio="itajai-mirim"), "roteamento")
-        self.assertEqual(self.tipo("guabiruba", "brusque", rio="itajai-mirim"), "roteamento")
+        self.assertEqual(self.tipo("botuvera", "brusque", rio="itajai-mirim"), "roteamento")
+        self.assertEqual(self.tipo("guabiruba", "brusque", rio="itajai-mirim"), "confluencia")
 
 
 class RelogioProprioNaoEMotivoDeEloDoMesmoCurso(unittest.TestCase):

@@ -147,3 +147,13 @@ Conferido no original (`data/brutos/varredura-pintar-2026-10-03/Ibirama_Decreto-
 - **Nomes:** "Observação" fica "Observação". Não vira "atenção".
 - **Enviado em 04/10/2026 o C26** (lembrete do pedido de 13/09). Ele pergunta se as faixas são lidas na
   DCSC-00020 e qual tabela vale.
+
+---
+
+## 04/10/2026 — decisão do Jefferson: a tabela de 2024 fica só como histórico
+
+A tabela do PLAMCON 2024 (observação 3,00 · atenção 3,50 · emergência 4,00 m, Decreto nº 5.431/2024, p. 11) saiu
+de `cotas_pendentes_de_vinculo` e foi para `cotas_historicas_plancon_2024` em `estacoes.json`, com a validade
+encerrada (até 07/08/2025, p. 32). Não colore a leitura atual: a validade acabou, o PLAMCON 2025 não tem texto
+público, e o boletim de 11/09/2026 chamou 4,04 m de "atenção". Ibirama continua com a leitura da DCSC-00020 e a
+faixa da própria Defesa Civil de SC, quando houver. Volta a ser considerada só com a tabela vigente (C26).

@@ -74,3 +74,70 @@ O que destrava de verdade continua sendo institucional: a Defesa Civil de Gaspar
 liberar o IP `65.108.154.111` (tira o PC do caminho) e responder se a régua do
 Açu tem cadência declarada — hoje não se sabe se 22 h parada é defeito ou rotina
 de rio baixo.
+
+---
+
+## 04/10/2026 — coleta pelo GitHub Actions (decisão do Jefferson)
+
+O portal de Gaspar dá timeout na VPS e responde ao runner do GitHub (captura de
+28/09, `docs/CAPTURA-FONTES-2026-09-28.md`). A coleta passou a rodar também no
+Actions, sem depender do PC ligado.
+
+**Caminho do dado.** `.github/workflows/coletar-gaspar.yml` roda nos minutos 7, 22,
+37 e 52 de cada hora (e à mão, por *Run workflow*). Ele chama
+`scripts/gaspar_actions.py`, que:
+
+1. pede o `robots.txt` de `defesacivil.gaspar.sc.gov.br`. Se o caminho
+   `/estacao/ver/21` for recusado, ou se o robots.txt responder 5xx ou não
+   responder, a página **não é pedida** e a rodada falha. Só 4xx conta como
+   "sem regras" (RFC 9309);
+2. pede a estação 21 uma vez, com o User-Agent do projeto, 1,5 s depois do
+   robots.txt, e com timeout de 10 s para conectar e 30 s para ler. Não insiste:
+   a próxima rodada, 15 min depois, é a nova tentativa;
+3. lê a régua do Açu com o mesmo parser da ponte (`coleta_gaspar.analisar_estacao`
+   e `leitura_da_cidade`, por igualdade de rótulo);
+4. compara com o `gaspar.json` publicado na rodada anterior. Se a régua, o nível e
+   o horário da medição forem os mesmos, **não grava nada**. Se mudou, grava
+   `gaspar.json` e o HTML bruto (`gaspar-estacao-21.html`, com o sha256 dentro do
+   JSON) num commit órfão no branch **`coleta-gaspar`**, que substitui o anterior,
+   como no `tempo-real`.
+
+A VPS lê `https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/coleta-gaspar/gaspar.json`
+em cada rodada do `coleta_niveis.py`. A validação é a da ponte
+(`gaspar_pc.validar`: estação, cidade, rio, fonte, número plausível, medição com
+até 3 h e fora do futuro), sem o teto de 30 min da consulta. Esse teto não se
+aplica porque o arquivo só muda quando a leitura muda. Com a ponte do PC e o
+Actions válidos ao mesmo tempo, vale a medição mais recente. Sem nenhum dos dois,
+a VPS ainda tenta o portal direto, como antes.
+
+**Fuso.** `leitura.medido_em` é horário de Brasília sem fuso, como a página
+publica. `coletado_em` é UTC com offset e marca a hora em que essa leitura foi
+vista pela primeira vez. Nenhum dos dois é renovado quando a leitura se repete.
+
+**Leitura velha.** Quando a medição passa de 3 h, o run sai com um aviso amarelo
+("a estação do município parou de atualizar, não a coleta"), mas o job continua
+verde. A VPS recusa a leitura pela idade e Gaspar volta ao cinza, como já
+acontecia com a ponte. **Não afrouxar o teto.**
+
+**Falha.** Robots.txt recusando, timeout, HTTP diferente de 200, página sem a
+régua do Açu ou medição no futuro deixam o job **vermelho**. Nesse caso:
+
+- o motivo vai para o log e para o resumo do run;
+- o diagnóstico (`falha.json` e o corpo, se chegou) fica como artefato por 7 dias;
+- o fluxo abre a issue **"Coleta de Gaspar pelo Actions falhando"**. Nas falhas
+  seguintes ele só reescreve o corpo da issue, sem notificar de novo, e fecha a
+  issue com um comentário quando uma rodada volta a dar certo.
+
+A falha do Actions sozinha não pinta nada de errado no site. Sem leitura válida,
+Gaspar fica cinza, e o vigia da VPS cobra o sumiço da régua pela memória rolante.
+
+**O que precisa estar ligado no GitHub.** O fluxo declara `contents: write`, para
+empurrar o branch `coleta-gaspar`, e `issues: write`, para o aviso. Se em
+*Settings → Actions → General → Workflow permissions* o repositório ou a conta
+restringirem o token a leitura, o empurrão falha e o run fica vermelho. O
+agendamento só vale depois do merge no `main`. O GitHub pode atrasar ou pular
+execuções agendadas em horário de pico. Ele também desliga o agendamento de
+repositório público depois de 60 dias sem atividade, o que hoje não é risco.
+
+**A ponte do PC continua funcionando** e pode ficar ligada como reserva. Desligar
+a tarefa agendada do PC é decisão do Jefferson, depois de ver o Actions publicando.

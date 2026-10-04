@@ -387,7 +387,17 @@
           "origem": "07:00"
         }
       ],
-      "comparacao_com_cadastro": []
+      "comparacao_com_cadastro": [
+        {
+          "cadastro_data": "2013-09-22",
+          "cadastro_m": 5.82,
+          "granularidade": "dia",
+          "ana_data": "2013-09-22",
+          "ana_m": 3.54,
+          "ana_origem": "17:00",
+          "diferenca_m": 2.28
+        }
+      ]
     },
     {
       "codigo": "83440000",

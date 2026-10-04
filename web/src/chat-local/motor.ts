@@ -8,6 +8,7 @@
  * Funções puras: recebem `Dados` e a pergunta. Testáveis em Node, rodam no
  * navegador. Especificação e regras do produto em `docs/CHAT-LOCAL.md`.
  */
+import type { FalhaDoMotor } from '../logica/telemetriaChat'
 
 export interface RegistroCheia {
   rio?: string
@@ -73,7 +74,17 @@ export interface Resposta {
   intencao: string
   texto: string
   sugestoes?: string[]
+  /**
+   * Preenchido só quando a pergunta NÃO foi entendida: o motivo (enum fechado) e,
+   * se a pergunta citou, o id da cidade. Nunca o texto. É o que a contagem
+   * agregada lê (`logica/telemetriaChat.ts`, decisão de 04/10/2026).
+   */
+  falha?: FalhaDoMotor
 }
+
+/** Falha por falta de dado na pergunta: cidade (se citada) e motivo. */
+const faltou = (motivo: FalhaDoMotor['motivo'], e: Extraido): FalhaDoMotor =>
+  e.cidade ? { motivo, cidade: e.cidade.id } : { motivo }
 
 // ---------------------------------------------------------------- utilidades
 export function norm(s: string): string {
@@ -287,7 +298,7 @@ function picosPorEstacao(cidade: CidadeConhecida, regs: RegistroCheia[], d: Dado
 }
 
 function maioresCheias(e: Extraido, d: Dados): Resposta {
-  if (!e.cidade) return { intencao: 'maiores_cheias', texto: semCidade(d) }
+  if (!e.cidade) return { intencao: 'maiores_cheias', texto: semCidade(d), falha: faltou('faltou_cidade', e) }
   const cidade = e.cidade
   const regs = d.enchentes.eventos.filter((r) => r.cidade === cidade.id)
   if (!regs.length) return semPicoNaCidade(cidade, d)
@@ -315,7 +326,8 @@ function maioresCheias(e: Extraido, d: Dados): Resposta {
 }
 
 function cheiasDoPeriodo(e: Extraido, d: Dados): Resposta {
-  if (!e.cidade || e.ano == null) return { intencao: 'cheias_periodo', texto: semCidade(d) }
+  if (!e.cidade || e.ano == null)
+    return { intencao: 'cheias_periodo', texto: semCidade(d), falha: faltou(e.cidade ? 'faltou_ano' : 'faltou_cidade', e) }
   const cidade = e.cidade
   const ano = e.ano
   const fim = e.ano2 ?? ano
@@ -335,7 +347,12 @@ function cheiasDoPeriodo(e: Extraido, d: Dados): Resposta {
 }
 
 function contarAcima(e: Extraido, d: Dados): Resposta {
-  if (!e.cidade || e.nivel == null) return { intencao: 'contar_acima', texto: 'Diga a cidade e o nível, por exemplo: "quantas cheias passaram de 10 m em Rio do Sul?"' }
+  if (!e.cidade || e.nivel == null)
+    return {
+      intencao: 'contar_acima',
+      texto: 'Diga a cidade e o nível, por exemplo: "quantas cheias passaram de 10 m em Rio do Sul?"',
+      ...(e.cidade ? {} : { falha: faltou('faltou_cidade', e) }),
+    }
   const cidade = e.cidade
   const nivel = e.nivel
   const regs = d.enchentes.eventos.filter((r) => r.cidade === cidade.id && r.pico_m >= nivel).sort((a, b) => a.data.localeCompare(b.data))
@@ -358,7 +375,12 @@ const nomeRio = (d: Dados, rio: string) => d.estacoes.rios[rio]?.nome ?? rio
 const mesBR = (ym: string) => dataBR(ym)
 
 function danosAtlas(e: Extraido, d: Dados): Resposta {
-  if (!e.ano) return { intencao: 'atlas', texto: 'Diga o ano (e, se souber, o mês). Ex.: "quais cidades tiveram desastre em setembro de 2011?"' }
+  if (!e.ano)
+    return {
+      intencao: 'atlas',
+      texto: 'Diga o ano (e, se souber, o mês). Ex.: "quais cidades tiveram desastre em setembro de 2011?"',
+      falha: faltou('faltou_ano', e),
+    }
   const { rio, ev, outros } = eventoAtlas(e, d)
   if (!ev)
     return {
@@ -389,7 +411,12 @@ function danosAtlas(e: Extraido, d: Dados): Resposta {
 }
 
 function chuvaAntes(e: Extraido, d: Dados): Resposta {
-  if (!e.ano) return { intencao: 'chuva', texto: 'Diga o ano (e o mês, se souber) da enchente. Ex.: "quanto choveu antes da enchente de novembro de 2008?"' }
+  if (!e.ano)
+    return {
+      intencao: 'chuva',
+      texto: 'Diga o ano (e o mês, se souber) da enchente. Ex.: "quanto choveu antes da enchente de novembro de 2008?"',
+      falha: faltou('faltou_ano', e),
+    }
   if (e.ano < 2006) return { intencao: 'chuva', texto: 'Os dados de chuva do site (estações automáticas do INMET) começam em 2006. Para antes disso não há dado de chuva no site.' }
   const { rio, ev, outros } = eventoAtlas(e, d)
   const c = ev && d.chuvaEventos.eventos[ev.id]
@@ -427,7 +454,8 @@ function chuvaAntes(e: Extraido, d: Dados): Resposta {
 }
 
 function transito(e: Extraido, d: Dados): Resposta {
-  if (!e.cidade || !e.cidade2) return { intencao: 'transito', texto: 'Diga as duas cidades. Ex.: "quanto tempo a cheia leva de Rio do Sul até Blumenau?"' }
+  if (!e.cidade || !e.cidade2)
+    return { intencao: 'transito', texto: 'Diga as duas cidades. Ex.: "quanto tempo a cheia leva de Rio do Sul até Blumenau?"', falha: faltou('faltou_cidade', e) }
   const a = e.cidade
   const b = e.cidade2
   const tr = d.transito.trechos.find((x) => x.de === a.id && x.para === b.id) ?? d.transito.trechos.find((x) => x.de === b.id && x.para === a.id)
@@ -452,7 +480,11 @@ const ANA_MIRIM: Record<string, string> = { salseiro: '83892990', 'vidal ramos':
 function cotaAna(e: Extraido, d: Dados): Resposta {
   const est = Object.entries(ANA_MIRIM).find(([k]) => e.t.includes(k))
   if (!est || !e.ano)
-    return { intencao: 'cota_ana', texto: 'Tenho cota diária da ANA no Itajaí-Mirim para Salseiro, Botuverá-Montante e Brusque. Diga a estação e o ano (e o mês). Ex.: "cota da ANA em Brusque em novembro de 2008".' }
+    return {
+      intencao: 'cota_ana',
+      texto: 'Tenho cota diária da ANA no Itajaí-Mirim para Salseiro, Botuverá-Montante e Brusque. Diga a estação e o ano (e o mês). Ex.: "cota da ANA em Brusque em novembro de 2008".',
+      falha: faltou(est ? 'faltou_ano' : 'faltou_cidade', e),
+    }
   const codigo = est[1]
   const s = d.cotasAna?.estacoes[codigo]
   if (!s) return { intencao: 'cota_ana', texto: 'As cotas da ANA ainda estão carregando. Tente de novo em instantes.' }
@@ -525,5 +557,10 @@ export function responder(pergunta: string, d: Dados): Resposta {
   if (e.ano && e.cidade) return cheiasDoPeriodo(e, d)
   if (e.cidade) return maioresCheias({ ...e, n: e.n ?? 5 }, d)
   if (e.ano) return danosAtlas(e, d)
-  return { intencao: 'nao_entendi', texto: 'Não entendi a pergunta. Eu respondo só sobre o histórico, usando os dados do site. Tente um destes formatos:', sugestoes: EXEMPLOS }
+  return {
+    intencao: 'nao_entendi',
+    texto: 'Não entendi a pergunta. Eu respondo só sobre o histórico, usando os dados do site. Tente um destes formatos:',
+    sugestoes: EXEMPLOS,
+    falha: { motivo: 'sem_intencao' },
+  }
 }

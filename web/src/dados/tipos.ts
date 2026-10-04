@@ -28,6 +28,10 @@ export interface Cidade {
   codigo_ana: string | null
   verificado: boolean
   regua?: string
+  /** Declaração da referência do histórico de picos, quando só parte dele está na
+   *  régua da cidade (Brusque, decisão de 04/10/2026). Picos antes de `desde`
+   *  aparecem à parte no gráfico, com a referência dita como não conferida. */
+  historico_referencia?: HistoricoReferencia
   barragem?: string
   observacao?: string
   afluentes?: string[]
@@ -87,10 +91,23 @@ export interface AfluenteMonitorado {
 }
 
 /**
- * A árvore de um rio ramificado (hoje só o Açu). Diz qual é a ÚNICA sequência
+ * A árvore de um rio ramificado (Açu e Mirim). Diz qual é a ÚNICA sequência
  * que a tela pode afirmar (o tronco), quais cidades são cabeceiras paralelas e
  * quais são afluentes laterais — que entram no tronco, não são elos da fila.
  */
+/** Ver `Cidade.historico_referencia`. */
+export interface HistoricoReferencia {
+  /** O título do gráfico, que declara a referência ("Histórico na régua da Ponte Estaiada"). */
+  rotulo: string
+  /** Data ISO a partir da qual os picos estão nessa régua (inclusiva). */
+  desde: string
+  /** De onde vêm os picos desde `desde`. */
+  fonte_desde: string
+  /** De onde vêm os anteriores, e o que se sabe da referência deles. */
+  antes: string
+  nota?: string
+}
+
 export interface Topologia {
   tipo: 'arvore'
   /** A sequência montante → jusante que a água realmente segue. */
@@ -115,7 +132,7 @@ export interface Rio {
   nome: string
   foz: string
   cidades: Cidade[]
-  /** Presente só em rio ramificado. Ausente = rio em fila (Mirim). */
+  /** Presente só em rio ramificado (hoje os dois). Ausente = rio em fila. */
   _topologia?: Topologia
 }
 
@@ -252,9 +269,24 @@ export interface Trecho {
   fonte: string
 }
 
+/**
+ * Trecho EM ESTUDO (decisão de 04/10/2026): tem medição e evidência, mas não tem
+ * faixa operacional — nunca vira tempo de descida na tela. A tela diz "dados
+ * insuficientes" no lugar.
+ */
+export interface TrechoExperimental {
+  rio: string
+  de: string
+  para: string
+  status: 'experimental'
+  eventos_pareados_com_hora: number
+  minimo_eventos_pareados: number
+}
+
 export interface Transito {
   _meta: unknown
   trechos: Trecho[]
+  trechos_experimentais?: TrechoExperimental[]
 }
 
 /** Uma preamar ou baixa-mar da tábua oficial. `quando` é horário local, sem fuso. */

@@ -37,3 +37,18 @@ comparam. Qualquer cota futura daqui é do ribeirão.
 - **Leitura de 01/10/2026** (DC de Brusque, Araguaia FM): "Já em Guabiruba, o rio está em 1,02 metro, após pico
   de 1,27 metro." Não está escrito que é a DCSC-00029, nem que é o mesmo curso d'água.
 - C20 com o canal da Ouvidoria em `docs/oficios-b1-c15-c22.md`. Não enviado.
+
+---
+
+## 04/10/2026 — afluente lateral e zero local (decisão do Jefferson)
+
+- **Topologia:** Guabiruba saiu da fila do Mirim. A régua fica no ribeirão Guabiruba, que entra no Mirim
+  perto de Brusque; o tronco é Vidal Ramos → Botuverá → Brusque → Itajaí. Não há tempo de descida
+  Guabiruba → Brusque.
+- **DCSC-00029 no zero local:** leitura abaixo de 10 m vale como régua do ribeirão, com zero próprio da
+  estação (0,63 m em 03/10). Não é a cota ortométrica (~25–28 m) que a estação publicou de 01/04/2026 até
+  a volta, nem a dos boletins de Brusque. Valor ≥ 10 m continua em `suspeitas`.
+- **O que não muda:** sem cota, sem faixa, `usar_para_cota: false`. A série anterior a 01/04/2026 não é
+  juntada à de depois da volta sem conferir o zero, e a data da volta ainda precisa ser conferida no
+  servidor (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`, item 3). Os picos de 2026 continuam fora de
+  `enchentes.json`.

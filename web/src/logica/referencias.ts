@@ -51,8 +51,24 @@ export function legendaDaEscala(
   nomeCidade: string,
   regua: string | null | undefined,
   referencias: Referencia[],
+  historico?: { declaracao: DeclaracaoDoHistorico; datas: string[] },
 ): LegendaDaEscala {
   const nomeDaRegua = regua ? ` (${regua})` : ''
+  if (historico && !misturaReferencias(referencias)) {
+    // Brusque (04/10/2026): o título DECLARA a referência e diz quantos picos
+    // ficam de fora dela, em vez de chamar tudo de "alturas na régua".
+    const h = historico.declaracao
+    const antes = historico.datas.filter((d) => antesDaReguaDeclarada(d, h)).length
+    const ano = h.desde.slice(0, 4)
+    const resto = antes > 0
+      ? ` ${antes === 1 ? 'O pico anterior vem' : `Os ${antes} picos anteriores vêm`} ${h.antes} e`
+        + ` ${antes === 1 ? 'aparece' : 'aparecem'} à parte, em barra clara tracejada.`
+      : ''
+    return {
+      texto: `${h.rotulo}: picos desde ${ano}, de ${h.fonte_desde}.${resto} Não compare com outra cidade.`,
+      ehAviso: false,
+    }
+  }
   if (misturaReferencias(referencias)) {
     return {
       texto: `Alturas de ${nomeCidade} em mais de uma referência — não estão todas na mesma escala. `
@@ -64,6 +80,23 @@ export function legendaDaEscala(
     texto: `Alturas na régua de ${nomeCidade}${nomeDaRegua}. Não compare com outra cidade.`,
     ehAviso: false,
   }
+}
+
+/** O que `estacoes.json` declara sobre a referência do histórico de uma cidade. */
+export interface DeclaracaoDoHistorico {
+  rotulo: string
+  desde: string
+  fonte_desde: string
+  antes: string
+}
+
+/**
+ * O pico é anterior ao trecho do histórico que a cidade declara estar na régua?
+ * Compara datas ISO como texto, que vale também para "AAAA" e "AAAA-MM": "1984-08"
+ * vem antes de "2019-01-01"; "2019-05-31" não.
+ */
+export function antesDaReguaDeclarada(data: string, h: DeclaracaoDoHistorico | undefined): boolean {
+  return h != null && data < h.desde
 }
 
 /** O ponto está no zero do IBGE (a série longa de Blumenau, Tabela 4 de Cordero & Medeiros). */

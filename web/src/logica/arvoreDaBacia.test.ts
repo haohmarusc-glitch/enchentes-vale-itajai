@@ -185,8 +185,13 @@ test('barragem cuja cidade não é cabeceira nem lateral fica SOLTA, não some c
   assert.equal(arv?.barragensSoltas[0]?.acimaDe, 'Z')
 })
 
-test('rio em fila (Mirim) não tem árvore, e nenhuma barragem é inventada para ele', () => {
-  assert.equal(arvoreDaBacia('itajai-mirim', rioDoCadastro('itajai-mirim'), hidraulica.barragens), null)
+test('Mirim (árvore desde 04/10/2026): sem cabeceiras, Guabiruba de lado, nenhuma barragem inventada', () => {
+  const arv = arvoreDaBacia('itajai-mirim', rioDoCadastro('itajai-mirim'), hidraulica.barragens)
+  assert.ok(arv, 'o Mirim tem _topologia desde 04/10/2026')
+  assert.deepEqual(arv.cabeceiras, [])
+  assert.deepEqual(arv.laterais.map((l) => [l.cidade, l.entraPertoDe]), [['Guabiruba', 'Brusque']])
+  assert.ok(arv.laterais.every((l) => l.barragem === null))
+  assert.deepEqual(arv.barragensSoltas, [])
 })
 
 test('barragem de outro rio não entra nesta árvore', () => {

@@ -1032,15 +1032,16 @@ def resposta_previsao(base: Base, cidade: dict, agora: datetime) -> list[str]:
     rio_id = cidade["rio"]
     ordem = [c for c in base.cidades() if c["rio"] == rio_id]
     # "Depois" = a jusante. Em rio em fila, é `ordem` maior. Em rio ramificado (o
-    # Açu), `ordem` é null: a jusante é o TRONCO abaixo da cidade — cabeceiras e
-    # afluentes ficam ANTES do tronco (posição -1) e o `caminho` ainda filtra os
-    # pares sem trecho. Um afluente sem trecho (Ibirama) simplesmente não prevê.
+    # Açu e, desde 04/10/2026, o Mirim), `ordem` é null: a jusante é o TRONCO
+    # abaixo da cidade — cabeceiras e afluentes ficam ANTES do tronco (posição -1)
+    # e o `caminho` ainda filtra os pares sem trecho. Um afluente sem trecho
+    # (Ibirama, Guabiruba) simplesmente não prevê.
     def _pos(c: dict) -> float:
         o = c.get("ordem")
         if isinstance(o, (int, float)):
             return o
         onr = c.get("ordem_no_ramo")
-        return onr if c.get("ramo") == "tronco_acu" and isinstance(onr, (int, float)) else -1
+        return onr if c.get("ramo") in RAMOS_DE_TRONCO and isinstance(onr, (int, float)) else -1
 
     depois = [c for c in ordem if _pos(c) > _pos(cidade)]
 
@@ -1855,6 +1856,10 @@ def _reguas_agrupadas(ls: list[dict], agora: datetime) -> list[str]:
     return out
 
 
+#: O ramo do tronco de cada rio ramificado (a única fila afirmável). Mesmo
+#: conjunto de `validar_dados.TRONCO_DO_RIO`.
+RAMOS_DE_TRONCO = {"tronco_acu", "mirim_tronco"}
+
 #: Rótulos dos blocos da árvore no /rios, na ordem de exibição. Mesmo desenho da
 #: tela /acu: cabeceiras paralelas, tronco (a única fila real) e afluentes que
 #: entram de lado — para o morador não ler a lista como uma descida em fila.
@@ -1890,7 +1895,8 @@ def resposta_rios(base: Base, agora: datetime) -> list[str]:
     # Segue o MAPA do rio: o Açu inteiro (até a foz, Itajaí) e depois o Mirim. O
     # Açu é uma ÁRVORE (ver _topologia): sai em blocos — cabeceiras paralelas,
     # tronco e afluentes laterais —, não numa fila que afirmaria Taió -> Ibirama
-    # -> Indaial. O Mirim é fila. Itajaí é foz DOS DOIS: fecha cada rio, com só as
+    # -> Indaial. O Mirim também é árvore desde 04/10/2026 (Guabiruba é afluente
+    # lateral; o Mirim não tem cabeceiras paralelas). Itajaí é foz DOS DOIS: fecha cada rio, com só as
     # réguas daquele rio (ribeirão vai para o rio em que deságua).
     mostradas: set[str] = set()
     for rio_id, rio in base.estacoes["rios"].items():

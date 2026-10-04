@@ -32,6 +32,10 @@ PICO_MAXIMO_M = 25.0
 #: A cheia de 1852 é o registro mais antigo citado na bibliografia local.
 ANO_MINIMO = 1850
 
+#: O ramo que forma o TRONCO de cada rio ramificado — a única fila que a tela
+#: pode afirmar. O Mirim virou árvore em 04/10/2026 (Guabiruba é afluente).
+TRONCO_DO_RIO = {"itajai-acu": "tronco_acu", "itajai-mirim": "mirim_tronco"}
+
 #: Braços válidos de um rio ramificado. Só se compara posição DENTRO do ramo.
 RAMOS_VALIDOS = {
     "itajai_do_oeste", "itajai_do_sul", "itajai_do_norte", "tronco_acu",
@@ -43,6 +47,9 @@ RAMOS_VALIDOS = {
     # não se sabe, a cidade fica fora daquela lista e a tela a mostra em
     # "Outros pontos", que é o honesto.
     "rio_dos_cedros", "trombudo",
+    # Entrou em 04/10/2026, quando o Mirim virou árvore: a régua de Guabiruba
+    # fica no ribeirão, afluente que entra no Mirim perto de Brusque.
+    "ribeirao_guabiruba",
 }
 RE_DCSC = re.compile(r"^DCSC-\d{5}$")
 
@@ -113,12 +120,16 @@ def valida_topologia(rio_id: str, rio: dict, ids: set[str]) -> None:
     for cid in tronco:
         if cid not in ids:
             erro(f"{onde}: tronco_sequencia cita '{cid}', que não está em cidades")
-    # O tronco_sequencia tem de ser EXATAMENTE as cidades de ramo tronco_acu, na
+    # O tronco_sequencia tem de ser EXATAMENTE as cidades do ramo do tronco, na
     # ordem de ordem_no_ramo — senão a fila da tela discordaria dos dados.
-    tronco_cidades = [c for c in rio["cidades"] if c.get("ramo") == "tronco_acu"]
+    ramo_tronco = TRONCO_DO_RIO.get(rio_id)
+    if ramo_tronco is None:
+        erro(f"{onde}: rio ramificado sem ramo de tronco em TRONCO_DO_RIO")
+        return
+    tronco_cidades = [c for c in rio["cidades"] if c.get("ramo") == ramo_tronco]
     ordenadas = [c["id"] for c in sorted(tronco_cidades, key=lambda c: c.get("ordem_no_ramo") or 0)]
     if ordenadas != tronco:
-        erro(f"{onde}: tronco_sequencia {tronco} não bate com as cidades de ramo tronco_acu "
+        erro(f"{onde}: tronco_sequencia {tronco} não bate com as cidades de ramo {ramo_tronco} "
              f"por ordem_no_ramo {ordenadas}")
     for cid in topo.get("cabeceiras_paralelas", []):
         if cid not in ids:
@@ -143,7 +154,8 @@ def valida_estacoes() -> set[tuple[str, str]]:
         # Árvore x fila. Rio ramificado (tem _topologia) NÃO usa ordem global:
         # ela afirmaria uma sequência que não existe (Taió antes de Ibirama). A
         # posição vem de ramo + ordem_no_ramo, e a única fila é o tronco. Rio em
-        # fila (o Mirim) segue com ordem 1..N. As duas coisas nunca no mesmo rio.
+        # fila segue com ordem 1..N (nenhum desde 04/10/2026, quando o Mirim virou
+        # árvore com Guabiruba de afluente). As duas coisas nunca no mesmo rio.
         ramificado = "_topologia" in rio
         ordens: list = []
         por_ramo: dict[str, list[int]] = defaultdict(list)
@@ -575,6 +587,42 @@ def valida_enchentes(conhecidas: set[tuple[str, str]]) -> None:
             )
 
 
+def valida_trechos_experimentais(conhecidas: set[tuple[str, str]]) -> None:
+    """
+    Trechos EM ESTUDO (decisão do Jefferson, 04/10/2026): guardam medição e
+    evidência, mas não podem ter faixa operacional. A garantia de que ninguém
+    os use como previsão é dupla: ficam fora de `trechos` (o que site, bot e
+    chat leem) e não têm horas_min/horas_max. Migrar para `trechos` exige ao
+    menos `minimo_eventos_pareados` cheias com hora nas duas pontas.
+    """
+    transito = le_json("transito.json")
+    operacionais = {(t.get("rio"), t.get("de"), t.get("para")) for t in transito["trechos"]}
+    for i, t in enumerate(transito.get("trechos_experimentais", [])):
+        onde = f"transito.json/trechos_experimentais[{i}] ({t.get('de', '???')} -> {t.get('para', '???')})"
+        for campo in ("rio", "de", "para", "status", "eventos_pareados_com_hora",
+                      "minimo_eventos_pareados", "medicoes", "fonte"):
+            if campo not in t:
+                erro(f"{onde}: falta o campo '{campo}'")
+                return
+        if t["status"] != "experimental":
+            erro(f"{onde}: status deve ser 'experimental', veio {t['status']!r}")
+        for proibido in ("horas_min", "horas_max", "confianca"):
+            if proibido in t:
+                erro(f"{onde}: trecho experimental não tem '{proibido}' — faixa operacional "
+                     "só em 'trechos', e só com cheias pareadas suficientes")
+        for ponta in ("de", "para"):
+            if (t["rio"], t[ponta]) not in conhecidas:
+                erro(f"{onde}: '{t[ponta]}' não está em estacoes.json")
+        if (t["rio"], t["de"], t["para"]) in operacionais:
+            erro(f"{onde}: o mesmo par está em 'trechos' — ou é experimental, ou é operacional")
+        if len(t["medicoes"]) != t["eventos_pareados_com_hora"]:
+            erro(f"{onde}: eventos_pareados_com_hora ({t['eventos_pareados_com_hora']}) não bate "
+                 f"com as {len(t['medicoes'])} medições guardadas")
+        if t["eventos_pareados_com_hora"] >= t["minimo_eventos_pareados"]:
+            aviso(f"{onde}: já tem {t['eventos_pareados_com_hora']} cheias pareadas com hora — "
+                  "pode ir para decisão de migrar para 'trechos'")
+
+
 def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
     trechos = le_json("transito.json")["trechos"]
     # Posição comparável para pegar trecho que sobe o rio. Em rio em fila é a
@@ -587,7 +635,8 @@ def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
         ramificado = "_topologia" in rio
         for cidade in rio["cidades"]:
             if ramificado:
-                if cidade.get("ramo") == "tronco_acu" and isinstance(cidade.get("ordem_no_ramo"), int):
+                if (cidade.get("ramo") == TRONCO_DO_RIO.get(rio_id)
+                        and isinstance(cidade.get("ordem_no_ramo"), int)):
                     ordem[(rio_id, cidade["id"])] = cidade["ordem_no_ramo"]
             elif isinstance(cidade.get("ordem"), int):
                 ordem[(rio_id, cidade["id"])] = cidade["ordem"]
@@ -821,6 +870,10 @@ def valida_meses_pareados() -> None:
 #: checado — é o caso de quem não tem rio desenhado nenhum (Benedito, Hercílio).
 TRACADO_DO_RAMO = {
     "tronco_acu": "itajai-acu",
+    "mirim_tronco": "itajai-mirim",
+    # Guabiruba fica no ribeirão, sem traçado próprio; confere-se contra o Mirim
+    # com a exceção de LONGE_ACEITO, que diz por que o pino fica a 4,24 km.
+    "ribeirao_guabiruba": "itajai-mirim",
     "itajai_do_oeste": "itajai-acu",   # o Oeste vem DENTRO do arquivo do Açu (OSM)
     "itajai_do_sul": "itajai-do-sul",
 }
@@ -2082,6 +2135,7 @@ def main() -> int:
     valida_enchentes(conhecidas)
     valida_eventos_pendentes(conhecidas)
     valida_transito(conhecidas)
+    valida_trechos_experimentais(conhecidas)
     valida_monotonia_transito()
     valida_meses_pareados()
     valida_hidraulica()

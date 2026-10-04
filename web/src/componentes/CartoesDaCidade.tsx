@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
 import type { Cidade, Topologia } from '../dados/tipos'
-import { trechos } from '../dados/carregar'
+import { trechos, trechosExperimentais } from '../dados/carregar'
 import type { AoVivo, EstadoDaCidade } from '../dados/usarAoVivo'
 import { estadoDaCidade } from '../dados/usarAoVivo'
 import { rotuloDaFaixa, tendenciaDaLeitura, textoParaCompartilhar, vizinhasNoEixo } from '../logica/agora'
 import { metros } from '../logica/formato'
 import { frescorDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
-import { caminho, faixaHoras } from '../logica/transito'
+import { caminho, faixaHoras, trechoEmEstudo } from '../logica/transito'
 import { ChipFaixa } from './CartaoAgora'
 import { ROTULO_FAIXA } from './LegendaFaixas'
 import SeloConfianca from './SeloConfianca'
@@ -18,7 +18,7 @@ export function rioDaUrl(rioId: string): 'acu' | 'mirim' {
   return rioId === 'itajai-mirim' ? 'mirim' : 'acu'
 }
 
-/** A sequência que a água realmente segue: o tronco no Açu, a fila no Mirim. */
+/** A sequência que a água realmente segue: o tronco de cada rio (Açu e Mirim). */
 export function eixoDoRio(cidades: Cidade[], topologia?: Topologia): string[] {
   if (topologia?.tronco_sequencia?.length) return topologia.tronco_sequencia
   return cidades.map((c) => c.id)
@@ -99,6 +99,10 @@ export function CartaoDescida({
   const deBaixo = nome(abaixo)
   const paraBaixo = deBaixo ? caminho(trechos, rioId, cidade.id, deBaixo.id) : null
   const doAlto = deCima ? caminho(trechos, rioId, deCima.id, cidade.id) : null
+  // Trecho em estudo (Botuverá → Brusque, 04/10/2026): há medição, mas não cheias
+  // pareadas suficientes. A tela diz "dados insuficientes", sem número.
+  const paraBaixoEmEstudo = !!deBaixo && trechoEmEstudo(trechosExperimentais, rioId, cidade.id, deBaixo.id)
+  const doAltoEmEstudo = !!deCima && trechoEmEstudo(trechosExperimentais, rioId, deCima.id, cidade.id)
 
   if (eixo.indexOf(cidade.id) < 0) {
     return (
@@ -130,6 +134,11 @@ export function CartaoDescida({
                 <strong>não é previsão</strong> para esta cheia.
               </p>
             </>
+          ) : paraBaixoEmEstudo ? (
+            <p className={estilos.texto}>
+              <strong>Dados insuficientes</strong> para estimar o tempo de descida: o trecho está em
+              estudo e ainda não tem cheias medidas com hora nas duas pontas em número suficiente.
+            </p>
           ) : (
             <p className={estilos.texto}>Tempo de descida ainda não levantado para este trecho.</p>
           )}
@@ -144,6 +153,8 @@ export function CartaoDescida({
             <>
               {' '}— leva <strong>{faixaHoras(doAlto)}</strong> até aqui
             </>
+          ) : doAltoEmEstudo ? (
+            <> — dados insuficientes para estimar o tempo (trecho em estudo)</>
           ) : (
             <> — tempo ainda não levantado</>
           )}

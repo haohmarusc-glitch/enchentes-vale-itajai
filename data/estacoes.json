@@ -1,13 +1,13 @@
 {
   "_meta": {
-    "descricao": "Estações e cidades dos rios Itajaí-Açu e Itajaí-Mirim. O Itajaí-Açu é uma ÁRVORE (cabeceiras paralelas + tronco + afluentes laterais), não uma fila: ver rios['itajai-acu']._topologia. O Itajaí-Mirim segue como sequência montante -> jusante nas cidades, com os braços (canal retificado / curso antigo) só entre as réguas DC de Itajaí.",
+    "descricao": "Estações e cidades dos rios Itajaí-Açu e Itajaí-Mirim. O Itajaí-Açu é uma ÁRVORE (cabeceiras paralelas + tronco + afluentes laterais), não uma fila: ver rios['itajai-acu']._topologia. O Itajaí-Mirim também é árvore desde 04/10/2026 (tronco Vidal Ramos → Botuverá → Brusque → Itajaí, com Guabiruba como afluente lateral): ver rios['itajai-mirim']._topologia. Os braços do Mirim (canal retificado / curso antigo) ficam só entre as réguas DC de Itajaí.",
     "convencoes": {
       "codigo_ana": "Código da estação FLUVIOMÉTRICA no HidroWeb/SNIRH. null = ainda não localizado. REGRA (emendada em 06/09/2026): o vínculo cidade<->estação é por coordenada E POR TIPO. No cruzamento com o inventário da ANA, cinco estações caíram a menos de 750 m de uma régua nossa e QUATRO eram PLUVIÔMETROS — a 2750017 TAIÓ fica a 53 m da nossa régua e não mede rio. Coordenada é condição necessária, não suficiente. `scripts/validar_dados.py::valida_codigo_ana` reprova código pluviométrico conhecido e estação fluviométrica cuja coordenada caia fora do traçado.",
       "codigo_dcsc": "Código da estação na rede estadual (Defesa Civil de SC), formato DCSC-NNNNN. Liga a cidade à estação por coordenada. null quando a cidade não tem estação estadual (a foz usa as réguas DC de Itajaí).",
       "cotas_m": "Cotas de referência em metros na régua local. Cada cidade tem seu próprio zero; NÃO comparar entre cidades. 'inundacao_historica' é a cota clássica de inundação, mantida ao lado da cota atual quando as duas circulam.",
       "verificado": "true só depois de conferir o dado na fonte oficial.",
-      "ordem": "Sequência montante -> jusante ao longo do eixo, SOMENTE em rio não ramificado (hoje só o Itajaí-Mirim). Em rio ramificado (Itajaí-Açu) é null: a bacia é árvore, não fila, e usar ordem global afirmaria uma sequência que não existe. Ver _topologia e ordem_no_ramo.",
-      "ramo": "Em rio ramificado, o braço a que a cidade pertence: itajai_do_oeste | itajai_do_sul | itajai_do_norte | tronco_acu. Só se comparam posições DENTRO do mesmo ramo (ordem_no_ramo). A única sequência que a UI pode afirmar é o tronco (_topologia.tronco_sequencia).",
+      "ordem": "Sequência montante -> jusante ao longo do eixo, SOMENTE em rio não ramificado. Desde 04/10/2026 os dois rios são ramificados (Itajaí-Açu e Itajaí-Mirim) e todas as cidades têm 'ordem' null: a bacia é árvore, não fila, e usar ordem global afirmaria uma sequência que não existe. Ver _topologia e ordem_no_ramo.",
+      "ramo": "Em rio ramificado, o braço a que a cidade pertence: itajai_do_oeste | itajai_do_sul | itajai_do_norte | tronco_acu (Açu); mirim_tronco | ribeirao_guabiruba (Mirim). Só se comparam posições DENTRO do mesmo ramo (ordem_no_ramo). A única sequência que a UI pode afirmar é o tronco de cada rio (_topologia.tronco_sequencia).",
       "ordem_no_ramo": "Posição montante -> jusante DENTRO do ramo (1 = mais a montante). Só comparável entre cidades do MESMO ramo.",
       "afluentes_monitorados": "Cidades com régua própria que NÃO estão na sequência do eixo: a cheia delas não é a mesma que desce o rio principal, e encadear tempos de descida por elas daria resultado errado.",
       "estacoes_tempo_real": "Estações que a Defesa Civil de Itajaí publica em tempo real, com o título EXATO da página — é por ele que o coletor liga a leitura a uma cidade. Cada estação tem sua própria régua: em 30/08/2026, no mesmo instante, DC-03 marcava 0,92 m e DC-10 marcava 4,82 m. Por isso a cota fica aqui, por estação, e não na cidade: sem ela, extrair_picos.py se recusa a analisar a estação em vez de aplicar a cota de outra régua.",
@@ -318,13 +318,23 @@
             -27.057,
             -49.52
           ],
-          "cotas_pendentes_de_vinculo": {
-            "observacao_cota": 3.0,
-            "atencao": 3.5,
-            "emergencia": 4.0
+          "cotas_historicas_plancon_2024": {
+            "faixas_m": {
+              "observacao_cota": 3.0,
+              "atencao": 3.5,
+              "emergencia": 4.0
+            },
+            "nomes_na_fonte": {
+              "observacao_cota": "Observação",
+              "atencao": "Atenção",
+              "emergencia": "Emergência"
+            },
+            "fonte": "PLAMCON de Ibirama, Decreto nº 5.431/2024, p. 11 (tabela e nota 1: nível da estação da Defesa Civil de SC na ponte Beltramini)",
+            "validade": "até 07/08/2025 (p. 32: 'Este plano tem validade até 07/08/2025') — ENCERRADA",
+            "uso": "SÓ TABELA HISTÓRICA (decisão do Jefferson de 04/10/2026). Não classifica a leitura atual: a validade acabou, o PLAMCON 2025 (Decreto nº 5.824/2025) não tem texto público, e o boletim municipal de 11/09/2026 chamou 4,04 m de 'atenção', quando esta tabela diria emergência."
           },
-          "cotas_pendencia": "Faixas municipais preservadas em cotas_pendentes_de_vinculo. Equivalência com DCSC-00020 não confirmada; não classificar a leitura estadual com essas cotas.",
-          "cotas_aviso_publico": "As faixas municipais ainda não têm vínculo confirmado com a régua estadual DCSC-00020. O nível estadual não recebe classificação por essas cotas."
+          "cotas_pendencia": "A tabela do PLAMCON 2024 (3,00 / 3,50 / 4,00 m) fica em cotas_historicas_plancon_2024, só como histórico, com validade encerrada em 07/08/2025 (decisão do Jefferson de 04/10/2026). Não entra em cotas_m nem colore a leitura atual. Volta a ser considerada só com a tabela vigente da COMPDEC (PLAMCON 2025 ou resposta ao C26).",
+          "cotas_aviso_publico": "A tabela de faixas do Plano de Contingência de 2024 venceu em 07/08/2025 e não é usada para colorir o nível de agora. Ibirama aparece com a leitura da rede estadual, sem faixa municipal."
         },
         {
           "id": "lontras",
@@ -790,18 +800,40 @@
           "coordenadas": [
             -27.3053,
             -49.7919
-          ]
+          ],
+          "cotas_ressalva": "O 8,71 m de inundacao_historica (17/11/2023) é o pico PUBLICADO PELA ESTAÇÃO ESTADUAL (DCSC-00035), segundo o Boletim SDE 011/2023 — não uma marca da régua municipal, que 'só mede até 6,15 m' (rodada 6, 04/10/2026). Horário divergente: prefeitura 17h, boletim estadual 18h. É marca histórica, não gatilho; não comparar com leitura da régua municipal.",
+          "cotas_aviso_publico": "A marca de 8,71 m (17/11/2023) foi publicada pela estação da Defesa Civil de SC, não pela régua da prefeitura. Não compare com a régua municipal."
         }
       ]
     },
     "itajai-mirim": {
       "nome": "Rio Itajaí-Mirim",
       "foz": "Rio Itajaí-Açu, em Itajaí",
+      "_topologia": {
+        "tipo": "arvore",
+        "tronco_sequencia": [
+          "vidal-ramos",
+          "botuvera",
+          "brusque",
+          "itajai"
+        ],
+        "cabeceiras_paralelas": [],
+        "afluentes_laterais": [
+          {
+            "id": "guabiruba",
+            "entra_perto_de": "brusque",
+            "rio": "Ribeirão Guabiruba"
+          }
+        ],
+        "nota": "Decisão do Jefferson de 04/10/2026: o Itajaí-Mirim também é ÁRVORE. A estação de Guabiruba (DCSC-00029) fica no ribeirão Guabiruba, afluente que entra no Mirim de lado, perto de Brusque (o cadastro de Brusque lista 'rio Guabiruba' entre os afluentes; o pino fica a 4,24 km do Mirim). A água de Botuverá não passa por Guabiruba: o tronco é Vidal Ramos → Botuverá → Brusque → Itajaí. O ponto exato da confluência não tem fonte, por isso 'entra_perto_de: brusque', como o Açu faz com Ibirama e Timbó. Proposta em docs/PROPOSTAS-AUDITORIA-2026-10-03.md, item 2."
+      },
       "cidades": [
         {
           "id": "vidal-ramos",
           "nome": "Vidal Ramos",
-          "ordem": 1,
+          "ordem": null,
+          "ramo": "mirim_tronco",
+          "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00024",
@@ -835,7 +867,9 @@
         {
           "id": "botuvera",
           "nome": "Botuverá",
-          "ordem": 2,
+          "ordem": null,
+          "ramo": "mirim_tronco",
+          "ordem_no_ramo": 2,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00018",
@@ -858,12 +892,14 @@
         {
           "id": "guabiruba",
           "nome": "Guabiruba",
-          "ordem": 3,
+          "ordem": null,
+          "ramo": "ribeirao_guabiruba",
+          "ordem_no_ramo": 1,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": null,
           "codigo_dcsc": "DCSC-00029",
           "verificado": false,
-          "observacao": "O relatório-fonte descreve o eixo Botuverá → Guabiruba → Brusque → Itajaí. Posição na sequência ainda não conferida em carta oficial.",
+          "observacao": "AFLUENTE LATERAL desde 04/10/2026 (decisão do Jefferson): a régua fica no ribeirão Guabiruba, que entra no Itajaí-Mirim perto de Brusque. Não é elo da sequência Vidal Ramos → Botuverá → Brusque: a água de Botuverá não passa por aqui, e não há tempo de descida Guabiruba → Brusque. ZERO LOCAL (decisão de 04/10/2026): a DCSC-00029 é lida como régua do ribeirão com zero próprio da estação — ~0,5–2 m com o ribeirão normal. NÃO é a cota ortométrica (~25–28 m, referida ao nível do mar) que a estação publicou entre 01/04/2026 e a volta ao zero local (data ainda a conferir no servidor), nem a dos boletins de Brusque que citam Guabiruba em ~25 m. Valor ≥ 10 m continua em 'suspeitas' (cadastro_dcsc.SUSPEITA_SO_ACIMA_DE_M). Nunca comparar com o nível do Mirim em Brusque.",
           "cotas_m": {},
           "fontes_tempo_real": [],
           "coordenadas": [
@@ -871,12 +907,14 @@
             -48.9774
           ],
           "cotas_ressalva": "Confirmado por dois lados independentes: o validador (05/09/2026, LONGE_ACEITO: pino a 4,24 km do Mirim) e o levantamento externo entregue pelo Jefferson em 09/09/2026 — docs/COTAS-11-MUNICIPIOS-2026-09-09.md — NÃO CONFERIDO daqui: o host está bloqueado neste ambiente (TV Brusque, Araguaia 104,5 FM). A estação de Guabiruba fica no RIO/RIBEIRÃO GUABIRUBA, afluente, não no Itajaí-Mirim, e é recente ('em operação há pouco tempo, dificultando projeções'). Leitura noticiada: 3,48 m no Guabiruba enquanto o Mirim em Brusque marcava ~4 m — números que NÃO se comparam. A DCSC-00029 publica nivel_agora ~24,85 m, que não é metro de régua de cidade. Consequência de cadastro: qualquer cota futura de Guabiruba será do ribeirão; nunca pintar com ela uma leitura do Mirim, nem o contrário. Sem cota oficial: ofício à COMPDEC (guabiruba.sc.gov.br) pedindo curso d'água da régua, faixas e zero.",
-          "cotas_aviso_publico_nao_precisa": "Não precisa chegar à tela: Guabiruba não tem cota nem leitura ao vivo aqui, e a tela já diz que não há dado. A ressalva é instrução de cadastro sobre a régua do ribeirão."
+          "cotas_aviso_publico_nao_precisa": "Não precisa chegar à tela como aviso: Guabiruba não tem cota. Desde 04/10/2026 a leitura da DCSC-00029 abaixo de 10 m pode aparecer como 'rede estadual (zero próprio)', sem faixa, e a tela já diz isso. A ressalva é instrução de cadastro sobre a régua do ribeirão."
         },
         {
           "id": "brusque",
           "nome": "Brusque",
-          "ordem": 4,
+          "ordem": null,
+          "ramo": "mirim_tronco",
+          "ordem_no_ramo": 3,
           "sub_bacia": "Itajaí-Mirim",
           "codigo_ana": "83900000",
           "codigo_dcsc": "DCSC-00019",
@@ -890,6 +928,13 @@
           "codigo_ana_verificacao": "Vinculado em 07/09/2026 por COORDENADA E POR TIPO, a regra emendada — mesmo padrão de Gaspar. Coordenada: a DCSC-00019 (que é este pino, 3,5 m medidos contra data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json) fica a 51 m da 83900000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026 — logo a estação da ANA fica a no máximo ~55 m deste pino, por desigualdade triangular. É um LIMITE, não um ponto: a coordenada da 83900000 não foi transcrita para cá, então a trava de distância ao traçado não roda sobre ela. Tipo: a ANA a cadastra como FLUVIOMÉTRICA no Itajaí-Mirim, 1.240 km², escala desde 1929, sem fim declarado. O que faltava não era prova da ANA e sim do NOSSO lado: o codigo_dcsc de Brusque era null, e por isso os 51 m mediam até uma estação que este repositório nunca tinha afirmado ser este pino. Duas evidências independentes fecharam isso: a coincidência de coordenada (3,5 m) e o coletor scripts/coleta_nivel_sc.py, que já lia DCSC-00019 como 'brusque' para publicar a leitura ao vivo do site — a ligação existia em código e não estava no dado.",
           "verificado": false,
           "regua": "Ponte Estaiada – DCSC",
+          "historico_referencia": {
+            "rotulo": "Histórico na régua da Ponte Estaiada",
+            "desde": "2019-01-01",
+            "fonte_desde": "boletins da Defesa Civil de Brusque, Prefeitura e a lista de cheias 2019–2024",
+            "antes": "da ANA (estação 83900000), da imprensa e de estudos, com referência não conferida",
+            "nota": "Decisão do Jefferson de 04/10/2026 (opção B do item 4 da auditoria de 03/10): o gráfico declara a referência em vez de chamar tudo de 'nível histórico de Brusque'. Os picos desde 2019 são lidos na régua da Ponte Estaiada (a ANA 83900000 coincide com ela ao centímetro em 2019–2021: 590 × 5,90; 568 × 5,68). Antes de 2019 a referência não foi conferida, e esses picos aparecem à parte. Nenhum registro de enchentes.json foi alterado e nenhum deslocamento foi estimado."
+          },
           "afluentes": [
             "rio Guabiruba"
           ],
@@ -1010,7 +1055,9 @@
         {
           "id": "itajai",
           "nome": "Itajaí",
-          "ordem": 5,
+          "ordem": null,
+          "ramo": "mirim_tronco",
+          "ordem_no_ramo": 4,
           "sub_bacia": "Itajaí-Açu",
           "km_da_foz": 0,
           "codigo_ana": null,

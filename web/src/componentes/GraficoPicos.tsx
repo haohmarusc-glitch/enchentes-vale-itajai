@@ -12,6 +12,7 @@ import {
 import type { Cidade, Confianca, Evento } from '../dados/tipos'
 import { comparaData, dataCurta, dataLegivel } from '../logica/datas'
 import {
+  antesDaReguaDeclarada,
   ehIBGE,
   legendaDaEscala,
   misturaReferencias as misturaDeReferencias,
@@ -45,6 +46,8 @@ interface Ponto {
   referencia?: string | null
   /** Só em registro convertido para a régua de hoje: como foi publicado. */
   conversao?: string
+  /** Pico anterior ao trecho que a cidade declara na régua (Brusque antes de 2019). */
+  foraDaRegua?: boolean
 }
 
 export default function GraficoPicos({
@@ -68,6 +71,7 @@ export default function GraficoPicos({
       ...(e.divergencias ? { divergencias: e.divergencias } : {}),
       ...('referencia' in e ? { referencia: e.referencia } : {}),
       ...(e.referencia_publicada ? { conversao: textoDaConversao(e.pico_publicado_m, e.referencia_publicada) } : {}),
+      ...(antesDaReguaDeclarada(e.data, cidade?.historico_referencia) ? { foraDaRegua: true } : {}),
     }))
 
   // Referências diferentes na mesma cidade não são detalhe de nota de rodapé:
@@ -77,7 +81,14 @@ export default function GraficoPicos({
   // que os pontos não estão todos na mesma escala.
   const misturaReferencias = misturaDeReferencias(dados.map((d) => d.referencia))
   const temIBGE = dados.some((d) => ehIBGE(d.referencia))
-  const legendaEscala = legendaDaEscala(nomeCidade, cidade?.regua, dados.map((d) => d.referencia))
+  const declaracao = cidade?.historico_referencia
+  const legendaEscala = legendaDaEscala(
+    nomeCidade,
+    cidade?.regua,
+    dados.map((d) => d.referencia),
+    declaracao ? { declaracao, datas: dados.map((d) => d.data) } : undefined,
+  )
+  const temForaDaRegua = dados.some((d) => d.foraDaRegua)
 
   // O gráfico ordena por metro de rio, e há um contraexemplo enorme no Vale:
   // novembro de 2008 tem dezenas de cotas acima dele em Blumenau e foi o evento mais letal
@@ -143,7 +154,15 @@ export default function GraficoPicos({
             <Bar dataKey="pico" isAnimationActive={false}>
               <LabelList dataKey="pico" position="top" fontSize={11} fill="var(--tinta)" formatter={(v) => numero(Number(v))} />
               {dados.map((d) => (
-                <Cell key={`${d.data}-${d.pico}`} fill={COR[d.confianca]} />
+                <Cell
+                  key={`${d.data}-${d.pico}`}
+                  fill={COR[d.confianca]}
+                  // Fora da régua declarada: mesma cor (confiança), mas clara e
+                  // tracejada, para não ler como a mesma escala dos de depois.
+                  fillOpacity={d.foraDaRegua ? 0.35 : 1}
+                  stroke={d.foraDaRegua ? COR[d.confianca] : undefined}
+                  strokeDasharray={d.foraDaRegua ? '3 2' : undefined}
+                />
               ))}
             </Bar>
           </BarChart>
@@ -179,6 +198,12 @@ export default function GraficoPicos({
           <span className={estilos.amostra} style={{ background: COR.baixa }} /> compilação informal
           ou dado disputado
         </li>
+        {temForaDaRegua && declaracao ? (
+          <li>
+            <span className={`${estilos.amostra} ${estilos.amostraForaDaRegua}`} /> antes de{' '}
+            {declaracao.desde.slice(0, 4)}: fora da régua declarada (referência não conferida)
+          </li>
+        ) : null}
       </ul>
 
       {misturaReferencias ? (
@@ -235,7 +260,7 @@ export default function GraficoPicos({
                     ) : null}
                   </td>
                   <td className={estilos.referenciaCelula}>
-                    {textoDaReferencia(d.referencia)}
+                    {d.foraDaRegua ? 'não conferida (antes da régua declarada)' : textoDaReferencia(d.referencia)}
                     {d.conversao ? <span className={estilos.nota}> {d.conversao}</span> : null}
                   </td>
                   <td>

@@ -100,11 +100,24 @@ Fora dela:
   Fica em `_topologia.nao_e_regua_de_rio`. Ascurra (DCSC-00003, confirmada no
   tronco por Overpass) ocupa o lugar dela na sequência.
 
-## Itajaí-Mirim — fila no eixo, árvore só nas réguas de Itajaí
+## Itajaí-Mirim — árvore desde 04/10/2026 (Guabiruba é afluente lateral)
 
-As cidades do Mirim (Vidal Ramos → Botuverá → Guabiruba → Brusque → Itajaí) são
-uma **fila** (`ordem` 1..N). A ramificação do Mirim aparece só entre as **réguas
-DC de Itajaí**, na foz:
+Até 04/10/2026 as cidades do Mirim eram uma fila (`ordem` 1..N), com Guabiruba entre
+Botuverá e Brusque. Estava errado: a régua de Guabiruba (DCSC-00029) fica no
+**ribeirão Guabiruba**, afluente que entra no Mirim perto de Brusque, e a água de
+Botuverá não passa por ela. Por decisão do Jefferson (04/10/2026), o Mirim ganhou
+`_topologia`:
+
+- **tronco:** Vidal Ramos → Botuverá → Brusque → Itajaí (`ramo: mirim_tronco`);
+- **cabeceiras paralelas:** nenhuma;
+- **afluente lateral:** Guabiruba, pelo Ribeirão Guabiruba, "entra perto de Brusque"
+  (`ramo: ribeirao_guabiruba`). O ponto exato da confluência não tem fonte.
+
+Proposta e efeitos em `docs/PROPOSTAS-AUDITORIA-2026-10-03.md`, item 2. O Monitor
+passa a mostrar o Mirim em Tronco e Afluentes; nenhum arquivo protegido mudou.
+
+Além dessa árvore das cidades, a ramificação do Mirim aparece entre as **réguas
+DC de Itajaí**, na foz (hidráulica, fora da `_topologia`):
 
 - **DC-10 Limoeiro** (tronco do Mirim) → divide-se em dois braços paralelos que se
   reencontram perto da foz:
@@ -116,10 +129,13 @@ Isso já está em `estacoes_tempo_real` (campo do título: "(curso antigo)" /
 
 ## Contrato no `estacoes.json` (vocabulário do `main`)
 
-- `ordem`: sequência montante→jusante **só em rio não ramificado** (Mirim). Em rio
-  ramificado (Açu) é **`null`** — usar ordem global afirmaria uma fila inexistente.
-- `ramo`: em rio ramificado, o braço da cidade — `itajai_do_oeste | itajai_do_sul
-  | itajai_do_norte | tronco_acu`. Só se compara posição DENTRO do mesmo ramo.
+- `ordem`: sequência montante→jusante **só em rio não ramificado**. Desde 04/10/2026
+  os dois rios são ramificados, e `ordem` é **`null`** em todas as cidades — usar
+  ordem global afirmaria uma fila inexistente.
+- `ramo`: em rio ramificado, o braço da cidade — Açu: `itajai_do_oeste | itajai_do_sul
+  | itajai_do_norte | tronco_acu | …`; Mirim: `mirim_tronco | ribeirao_guabiruba`.
+  O ramo do tronco de cada rio está em `validar_dados.TRONCO_DO_RIO`. Só se compara
+  posição DENTRO do mesmo ramo.
 - `ordem_no_ramo`: posição montante→jusante dentro do ramo (1 = mais a montante).
 - `codigo_dcsc`: liga a cidade à estação estadual (por coordenada), `DCSC-NNNNN`.
 - `_topologia`: `tronco_sequencia`, `cabeceiras_paralelas`, `afluentes_laterais`,
