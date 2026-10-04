@@ -552,6 +552,14 @@ class GasparFiadaNaColeta(unittest.TestCase):
     que faltava a Taió: o coletor existia, o caminho não.
     """
 
+    def setUp(self):
+        # Sem rede no teste: a leitura publicada pelo GitHub Actions (04/10/2026)
+        # e a ponte do PC ficam ausentes, e o caminho direto é o que se testa aqui.
+        for alvo in ("gaspar_actions.ler_publicado", "gaspar_pc.ler"):
+            p = mock.patch(alvo, return_value=None)
+            p.start()
+            self.addCleanup(p.stop)
+
     def test_estacao_resgata_tabela_fora_do_ar(self):
         import coleta_gaspar as cg
         from teste_coleta_gaspar import PaginaEstacao21

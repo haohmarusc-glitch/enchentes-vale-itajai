@@ -48,9 +48,24 @@ class Ponte(unittest.TestCase):
 
     def test_coleta_usa_ponte_sem_tentar_rede_bloqueada(self):
         l = gaspar_pc.validar(self.corpo, self.agora)
-        with patch('gaspar_pc.ler', return_value=l), patch('coleta_gaspar.permitido') as rede:
+        with patch('gaspar_pc.ler', return_value=l), patch('coleta_gaspar.permitido') as rede, \
+                patch('gaspar_actions.ler_publicado', return_value=None):
             self.assertEqual(coleta_niveis.baixar_nivel_gaspar(False), [l])
             rede.assert_not_called()
+
+    def test_teto_da_consulta_e_so_da_ponte(self):
+        """O Actions só regrava quando a leitura muda: `teto_consulta_s=None` aceita
+        consulta antiga, mas nunca consulta no futuro nem sem fuso — e a medição
+        continua presa às 3 h."""
+        antigo = {**self.corpo, 'coletado_em': '2026-09-12T22:00:00+00:00'}
+        self.assertIsNone(gaspar_pc.validar(antigo, self.agora))
+        self.assertEqual(gaspar_pc.validar(antigo, self.agora, teto_consulta_s=None)['nivel_m'], 4.09)
+        for coleta in ['2026-09-13T01:00:00+00:00', '2026-09-12T22:00:00']:
+            self.assertIsNone(gaspar_pc.validar({**self.corpo, 'coletado_em': coleta},
+                                                self.agora, teto_consulta_s=None))
+        velha = copy.deepcopy(antigo)
+        velha['leitura']['medido_em'] = '2026-09-12T17:00:00'
+        self.assertIsNone(gaspar_pc.validar(velha, self.agora, teto_consulta_s=None))
 
 
 

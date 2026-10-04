@@ -109,6 +109,11 @@ mexer em build, DNS ou código.
 O **repositório** e o branch **`tempo-real`**. Fechá-los quebraria o nível ao vivo (ver opção D abaixo),
 e o dado vem de fontes públicas — Defesa Civil e rede estadual. O pedido é sobre o site.
 
+O branch **`coleta-gaspar`** (desde 04/10/2026) também fica público, pelo mesmo motivo: o GitHub Actions
+grava ali a leitura da estação 21 de Gaspar e o HTML público de onde ela saiu, e a VPS lê o arquivo por
+`raw.githubusercontent.com` (`scripts/gaspar_actions.py`, `.github/workflows/coletar-gaspar.yml`). Não
+há credencial nem dado pessoal nele. Operação em `docs/gaspar-ponte-pc.md`.
+
 ### Modo aplicativo (instalar no celular) — decisão D5, 03/10/2026
 O site instala como aplicativo (manifesto `web/public/manifest.webmanifest`) e guarda uma cópia no
 aparelho por um *service worker* (`web/public/sw.js`, regras em `web/public/sw-regras.js`).

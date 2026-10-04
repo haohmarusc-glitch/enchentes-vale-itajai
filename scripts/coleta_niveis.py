@@ -248,11 +248,20 @@ def baixar_nivel_gaspar(gravar: bool) -> list[dict]:
     Falha nunca derruba a coleta — é uma cidade a mais, não a fonte principal.
     """
     from gaspar_pc import ler
+    import gaspar_actions
 
-    ponte = ler()
-    if ponte:
-        print('Gaspar: leitura municipal recebida pelo PC, com horário original.')
-        return [ponte]
+    # Dois transportes da MESMA leitura municipal (estação 21), nenhum dos dois
+    # renova a medição: a ponte do PC e a coleta pelo GitHub Actions (decisão de
+    # 04/10/2026, `gaspar_actions.py`). Com os dois válidos, vale a medição mais
+    # recente. A tentativa direta abaixo só roda sem nenhum deles — da VPS ela
+    # dá timeout desde 31/08/2026.
+    candidatas = [(origem, l) for origem, l in
+                  (("pelo PC", ler()), ("pelo GitHub Actions", gaspar_actions.ler_publicado()))
+                  if l]
+    if candidatas:
+        origem, escolhida = max(candidatas, key=lambda par: par[1]["medido_em"])
+        print(f"Gaspar: leitura municipal recebida {origem}, com horário original.")
+        return [escolhida]
     try:
         import coleta_gaspar as cg
 
