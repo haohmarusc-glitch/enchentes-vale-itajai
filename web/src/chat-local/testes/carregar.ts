@@ -2,9 +2,22 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import type { Dados } from '../motor'
+import type { CotaRua } from '../../dados/tipos'
+import { cotaRuaValida } from '../../logica/cotasRuas'
 
 const D = fileURLToPath(new URL('../../../../data/', import.meta.url)) // repo/data/
 const j = (p: string) => JSON.parse(readFileSync(D + p, 'utf-8'))
+
+/** As cotas de rua com o MESMO filtro do site (só régua), sem o aviso de descarte no console. */
+function cotasRuasDoDisco(): CotaRua[] {
+  const avisar = console.warn
+  console.warn = () => {}
+  try {
+    return (j('cotas-ruas.json').cotas as CotaRua[]).filter(cotaRuaValida)
+  } finally {
+    console.warn = avisar
+  }
+}
 
 export const dados: Dados = {
   enchentes: j('enchentes.json'),
@@ -17,4 +30,5 @@ export const dados: Dados = {
   chuvaEventos: j('brutos/inmet-chuva-eventos-atlas-2026-09-22.json'),
   cotasAna: j('brutos/hidroweb-mirim-2026-09-22/cotas_itajai_mirim_diaria.json'),
   picosMirim: j('brutos/hidroweb-mirim-2026-09-22/picos_itajai_mirim_1997_2021.json'),
+  cotasRuas: cotasRuasDoDisco(),
 }

@@ -10,8 +10,8 @@
  * pessoa não desmarcou. Vai um evento agregado, nunca o texto digitado.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { responder, type Dados } from './motor'
-import { carregarBase, carregarCotasAna } from './carregar'
+import { citaRua, responder, type Dados } from './motor'
+import { carregarBase, carregarCotasAna, carregarCotasRuas } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
 import { RETENCAO_DIAS, criarEnviador, idsDoCadastro, montarEvento, servidorContando } from '../logica/telemetriaChat'
 import estilos from './ChatLocal.module.css'
@@ -100,10 +100,21 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     }
   }, [visivel])
 
-  function perguntar(p: string) {
+  async function perguntar(p: string) {
     const q = p.trim()
     if (!q || !dados) return
-    const r = responder(q, dados)
+    // Pergunta sobre rua: baixa as cotas (~3 MB) só agora, e responde quando chegam.
+    let base = dados
+    if (citaRua(q) && !base.cotasRuas) {
+      try {
+        const cotasRuas = await carregarCotasRuas()
+        base = { ...base, cotasRuas }
+        setDados((atual) => (atual ? { ...atual, cotasRuas } : atual))
+      } catch {
+        /* sem as cotas o motor responde "carregando" */
+      }
+    }
+    const r = responder(q, base)
     if (contando && permitido) {
       // O texto `q` não entra aqui: só a intenção e o motivo que o motor classificou.
       const evento = montarEvento({ intencao: r.intencao, falha: r.falha, agora: new Date(), versao: VERSAO_SITE, cidadesDoCadastro: cadastro })

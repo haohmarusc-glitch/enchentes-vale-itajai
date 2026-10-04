@@ -38,3 +38,12 @@ export async function carregarCotasAna(): Promise<NonNullable<Dados['cotasAna']>
   const mod = await import('@dados/brutos/hidroweb-mirim-2026-09-22/cotas_itajai_mirim_diaria.json')
   return mod.default as unknown as NonNullable<Dados['cotasAna']>
 }
+
+/**
+ * Cotas de rua (~3 MB): só quando a pergunta cita uma rua. É o mesmo pedaço que a
+ * aba "Minha rua" já baixa, e chega filtrado (só cotas na régua, `cotaRuaValida`).
+ */
+export async function carregarCotasRuas(): Promise<NonNullable<Dados['cotasRuas']>> {
+  const mod = await import('../dados/cotasRuas')
+  return mod.cotasRuas
+}

@@ -9,6 +9,8 @@
  * navegador. Especificação e regras do produto em `docs/CHAT-LOCAL.md`.
  */
 import type { FalhaDoMotor } from '../logica/telemetriaChat'
+import type { CotaRua } from '../dados/tipos'
+import { buscar, cidadesComCotas, nomeCompleto, podeAfirmarAlcance } from '../logica/cotasRuas'
 
 export interface RegistroCheia {
   rio?: string
@@ -62,12 +64,27 @@ export interface EventoChuva {
 export interface Dados {
   enchentes: { eventos: RegistroCheia[] }
   transito: { trechos: TrechoTransito[] }
-  estacoes: { rios: Record<string, { nome: string; cidades: { id: string; nome: string }[] }> }
+  estacoes: {
+    rios: Record<
+      string,
+      {
+        nome: string
+        cidades: {
+          id: string
+          nome: string
+          /** Brusque: só os picos desde `desde` estão na régua declarada (decisão de 04/10/2026). */
+          historico_referencia?: { desde: string }
+        }[]
+      }
+    >
+  }
   /** "itajai-acu" | "itajai-mirim" → recorte do Atlas de Desastres. */
   atlas: Record<string, { eventos: EventoAtlas[] }>
   chuvaEventos: { estacoes: Record<string, { nome: string }>; eventos: Record<string, EventoChuva> }
   cotasAna?: { estacoes: Record<string, { nome: string; datas: string[]; cm: number[] }> }
   picosMirim?: { eventos: { botuvera_mont?: { antecedencia_h: number } }[] }
+  /** Cotas de rua já filtradas (só régua). Baixadas quando a pergunta cita uma rua. */
+  cotasRuas?: CotaRua[]
 }
 
 export interface Resposta {
@@ -346,6 +363,89 @@ function cheiasDoPeriodo(e: Extraido, d: Dados): Resposta {
   return { intencao: 'cheias_periodo', texto: [`Picos registrados em ${cidade.nome} em ${quando}:`, regs.map(linhaCheia).join('\n'), ressalvas(regs), fonteDe(regs)].filter(Boolean).join('\n') }
 }
 
+// ---------------------------------------------------------------- escala de cada pico
+// Um pico só se compara com um nível na MESMA escala. A contagem "quantas cheias
+// passaram de 10 m" juntava régua de hoje, zero do IBGE e pico sem referência e
+// dizia "na régua local" — em Blumenau, 72 picos quando só 32 estão na régua
+// (achado em 04/10/2026). A regra é a do CLAUDE.md (Blumenau, item 4): conta só
+// o que está na régua e diz quantos ficaram de fora e por quê.
+
+/** A escala de um pico, para não somar metros de referências diferentes. */
+export type Escala = 'regua' | 'ibge' | 'ana' | 'nao-declarada' | 'antes-da-regua'
+
+const NOME_ESCALA: Record<Escala, string> = {
+  regua: 'na régua da cidade',
+  ibge: 'no zero do IBGE (20 cm abaixo da régua de hoje)',
+  ana: 'no zero da estação da ANA, que é próprio',
+  'nao-declarada': 'sem referência declarada pela fonte',
+  'antes-da-regua': 'antes do trecho que a cidade declara na régua (referência não conferida)',
+}
+
+function declaracaoDaCidade(cidadeId: string, d: Dados): { desde: string } | undefined {
+  for (const r of Object.values(d.estacoes.rios)) {
+    const c = r.cidades.find((x) => x.id === cidadeId)
+    if (c?.historico_referencia) return c.historico_referencia
+  }
+  return undefined
+}
+
+export function escalaDoPico(r: RegistroCheia, d: Dados): Escala {
+  if (r.referencia === null) return 'nao-declarada'
+  if (r.referencia && r.referencia !== 'régua') return /IBGE/i.test(r.referencia) ? 'ibge' : 'nao-declarada'
+  const decl = declaracaoDaCidade(r.cidade, d)
+  if (decl && r.data < decl.desde) return 'antes-da-regua'
+  // Campo ausente = registro antigo, assumido na régua — salvo quando o pico saiu
+  // da série da ANA, que tem zero próprio (ver `reguaDosPicos`).
+  if (r.referencia === undefined && r.fonte.startsWith('ANA/HidroWeb')) return 'ana'
+  return 'regua'
+}
+
+interface Contagem {
+  /** A escala em que a conta foi feita, ou null quando não dá para contar. */
+  escala: Escala | null
+  /** Picos da cidade nessa escala (o denominador). */
+  base: RegistroCheia[]
+  /** Os que passaram do nível, nessa escala. */
+  acima: RegistroCheia[]
+  /** Os que passaram do nível em OUTRA escala: fora da conta, ditos à parte. */
+  fora: Map<Escala, number>
+}
+
+/**
+ * Quantos picos da cidade chegaram a `nivel`, sem misturar escalas.
+ *
+ * `exigirRegua`: a cota de rua está na régua de hoje, então só os picos na régua
+ * podem ser comparados com ela. Na pergunta sem rua, se a cidade não tem pico na
+ * régua mas tem uma escala só (Rio do Sul: todos sem referência declarada), conta
+ * nela e diz qual é.
+ */
+function contarNaEscala(regs: RegistroCheia[], nivel: number, d: Dados, exigirRegua: boolean): Contagem {
+  const porEscala = new Map<Escala, RegistroCheia[]>()
+  for (const r of regs) {
+    const e = escalaDoPico(r, d)
+    porEscala.set(e, [...(porEscala.get(e) ?? []), r])
+  }
+  let escala: Escala | null = null
+  if (porEscala.has('regua')) escala = 'regua'
+  else if (!exigirRegua && porEscala.size === 1) escala = [...porEscala.keys()][0] ?? null
+  const base = escala ? (porEscala.get(escala) ?? []) : []
+  const acima = base.filter((r) => r.pico_m >= nivel).sort((a, b) => a.data.localeCompare(b.data))
+  const fora = new Map<Escala, number>()
+  for (const [e, lista] of porEscala) {
+    if (e === escala) continue
+    const n = lista.filter((r) => r.pico_m >= nivel).length
+    if (n) fora.set(e, n)
+  }
+  return { escala, base, acima, fora }
+}
+
+function textoFora(fora: Map<Escala, number>): string {
+  if (!fora.size) return ''
+  const total = [...fora.values()].reduce((a, b) => a + b, 0)
+  const partes = [...fora].map(([e, n]) => `${n} ${NOME_ESCALA[e]}`)
+  return `Fora da conta: ${total} pico(s) que também passaram desse número, mas em outra escala — ${partes.join('; ')}. A mesma altura em escalas diferentes não é a mesma água, então eles não entram na soma.`
+}
+
 function contarAcima(e: Extraido, d: Dados): Resposta {
   if (!e.cidade || e.nivel == null)
     return {
@@ -355,10 +455,142 @@ function contarAcima(e: Extraido, d: Dados): Resposta {
     }
   const cidade = e.cidade
   const nivel = e.nivel
-  const regs = d.enchentes.eventos.filter((r) => r.cidade === cidade.id && r.pico_m >= nivel).sort((a, b) => a.data.localeCompare(b.data))
+  if (VARIAS_REGUAS[cidade.id])
+    return {
+      intencao: 'contar_acima',
+      texto: `${VARIAS_REGUAS[cidade.id]}: por isso o site não conta quantas cheias de ${cidade.nome} passaram de ${m(nivel)}. Cada estação tem o seu zero.`,
+    }
+  const daCidade = d.enchentes.eventos.filter((r) => r.cidade === cidade.id)
+  if (!daCidade.length) return semPicoNaCidade(cidade, d)
+  const c = contarNaEscala(daCidade, nivel, d, false)
+  if (!c.escala)
+    return {
+      intencao: 'contar_acima',
+      texto: [
+        `Os picos de ${cidade.nome} estão em escalas diferentes e nenhum na régua de hoje. Contar juntos misturaria metros que não se comparam, então o site não soma.`,
+        textoFora(c.fora),
+      ]
+        .filter(Boolean)
+        .join('\n'),
+    }
+  const onde =
+    c.escala === 'regua'
+      ? `na régua de ${cidade.nome}`
+      : `${NOME_ESCALA[c.escala]} — não compare com o nível de hoje`
   return {
     intencao: 'contar_acima',
-    texto: [`${cidade.nome} tem ${regs.length} pico(s) registrado(s) de ${m(nivel)} ou mais, na régua local.`, regs.map(linhaCheia).join('\n'), ressalvas(regs), regs.length ? fonteDe(regs) : '']
+    texto: [
+      `${cidade.nome} tem ${c.acima.length} pico(s) registrado(s) de ${m(nivel)} ou mais, ${onde} (de ${c.base.length} nessa escala).`,
+      c.acima.map(linhaCheia).join('\n'),
+      textoFora(c.fora),
+      ressalvas(c.acima),
+      c.acima.length ? fonteDe(c.acima) : '',
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  }
+}
+
+// ---------------------------------------------------------------- rua
+// "Quantas cheias passaram da cota da Rua X?" — decisão do Jefferson de 04/10/2026.
+// A frase nunca é "a sua rua alagou N vezes": a cota é de hoje, é de um ponto, e a
+// lista de cheias é incompleta. É "o rio passou da cota deste ponto em N das cheias
+// registradas na régua".
+
+const PALAVRA_RUA = /\b(rua|avenida|av|travessa|tv|servidao|estrada|rodovia|alameda)\b/
+
+/** A pergunta cita uma rua? Serve também para o componente baixar as cotas antes. */
+export function citaRua(pergunta: string): boolean {
+  return PALAVRA_RUA.test(norm(pergunta))
+}
+
+/** O nome da rua dentro da pergunta: o que vem depois de "rua", até a cidade ou o verbo. */
+export function termoDaRua(e: Extraido): string | null {
+  const t = ` ${e.t} `
+  const mt = t.match(PALAVRA_RUA)
+  if (!mt || mt.index == null) return null
+  let resto = t.slice(mt.index + mt[0].length)
+  if (e.cidade) resto = resto.replace(` ${e.cidade.chave} `, ' | ')
+  const corte = resto.search(/\s(\||em|ja|alag|quant|passou|passaram|pegou|teve|foi|enche|inund|na cheia|nas cheias)\b/)
+  if (corte >= 0) resto = resto.slice(0, corte)
+  resto = resto.replace(/\b(da|de|do|dos|das)\s*$/, '').replace(/[?.,]/g, ' ').trim()
+  return resto.length >= 2 ? resto : null
+}
+
+const MAX_RUAS_CHAT = 4
+
+const NOTA_LISTA_ESPARSA: Record<string, string> = {
+  gaspar: 'A lista de Gaspar só traz as cheias grandes (a menor tem 6,19 m): cheias médias que passaram desta cota podem não estar nela.',
+}
+
+function ruaHistorico(e: Extraido, d: Dados): Resposta {
+  const termo = termoDaRua(e)
+  if (!e.cidade)
+    return {
+      intencao: 'rua_historico',
+      texto: 'Diga a rua e a cidade, por exemplo: "quantas cheias passaram da cota da Rua São Rafael em Blumenau?"',
+      falha: faltou('faltou_cidade', e),
+    }
+  if (!d.cotasRuas) return { intencao: 'rua_historico', texto: 'As cotas de rua ainda estão carregando. Tente de novo em instantes.' }
+  const cidade = e.cidade
+  const comCotas = cidadesComCotas(d.cotasRuas)
+  if (!comCotas.includes(cidade.id)) {
+    const nomes = comCotas.map((id) => cidadesConhecidas(d).find((c) => c.id === id)?.nome ?? id)
+    return {
+      intencao: 'rua_historico',
+      texto: `Ainda não há cota de rua levantada para ${cidade.nome}. Isso não quer dizer que as ruas de lá não alagam. As cidades com cotas são: ${nomes.join(', ')}.`,
+    }
+  }
+  if (!termo)
+    return { intencao: 'rua_historico', texto: `Diga o nome da rua em ${cidade.nome}, por exemplo: "quantas cheias passaram da cota da Rua São Rafael em Blumenau?"` }
+  // A busca do site casa por pedaço ("lino" acha "Wandelino"). Se algum ponto casa
+  // pela palavra inteira, o chat mostra só esses; senão, os de pedaço.
+  const todas = buscar(d.cotasRuas, cidade.id, termo)
+  const inteira = new RegExp(`(^|\\s)${termo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|$)`)
+  const exatas = todas.filter((c) => inteira.test(norm(c.rua)))
+  const achadas = exatas.length ? exatas : todas
+  if (!achadas.length)
+    return {
+      intencao: 'rua_historico',
+      texto: `Nenhuma rua com "${termo}" entre as levantadas em ${cidade.nome}. Isso não quer dizer que ela não alaga: a lista é das cotas que a Defesa Civil publicou, e não é completa.`,
+    }
+
+  const daCidade = d.enchentes.eventos.filter((r) => r.cidade === cidade.id)
+  const linhas: string[] = []
+  for (const c of achadas.slice(0, MAX_RUAS_CHAT)) {
+    const nome = `${nomeCompleto(c)}${c.bairro ? `, ${c.bairro}` : ''}`
+    if (c.cota_m === null) {
+      linhas.push(`• ${nome}: a fonte cita o ponto, mas não publica a cota.`)
+      continue
+    }
+    if (!podeAfirmarAlcance(c)) {
+      linhas.push(`• ${nome}: cota ${m(c.cota_m)}, marcada como não conferida — fica fora da conta.`)
+      continue
+    }
+    const k = contarNaEscala(daCidade, c.cota_m, d, true)
+    if (!k.escala) {
+      linhas.push(`• ${nome}: cota ${m(c.cota_m)}. Os picos de ${cidade.nome} não estão na régua de hoje, que é a régua da cota, então não dá para contar.`)
+      continue
+    }
+    const ultima = k.acima[k.acima.length - 1]
+    linhas.push(
+      `• ${nome}: cota ${m(c.cota_m)}. O rio chegou a essa cota em ${k.acima.length} das ${k.base.length} cheias registradas na régua de ${cidade.nome}` +
+        (ultima ? `; a mais recente, ${dataBR(ultima.data)} (${m(ultima.pico_m)}).` : '.') +
+        (k.fora.size ? ` ${[...k.fora.values()].reduce((a, b) => a + b, 0)} pico(s) em outra escala ficaram fora da conta.` : ''),
+    )
+  }
+  if (achadas.length > MAX_RUAS_CHAT)
+    linhas.push(`Mais ${achadas.length - MAX_RUAS_CHAT} ponto(s) casaram com "${termo}". Escreva o nome com mais letras para reduzir.`)
+
+  return {
+    intencao: 'rua_historico',
+    texto: [
+      `Cotas de rua em ${cidade.nome}, comparadas com os picos registrados na régua da cidade:`,
+      linhas.join('\n'),
+      'Isso NÃO quer dizer que a rua alagou todas essas vezes: a cota é de hoje (obra e aterro mudam o número com o tempo), é de um ponto e não da rua inteira, e a lista de cheias do site não é completa.',
+      NOTA_LISTA_ESPARSA[cidade.id] ?? '',
+      'Fonte: cotas de rua da Defesa Civil do município (aba "Minha rua" da cidade) e picos de enchentes.json.',
+    ]
       .filter(Boolean)
       .join('\n'),
   }
@@ -530,6 +762,7 @@ export const EXEMPLOS = [
   'As 5 maiores cheias de Blumenau',
   'Cheias de Gaspar em 2011',
   'Quantas cheias passaram de 10 m em Rio do Sul?',
+  'Quantas cheias chegaram à cota da Rua São Rafael em Blumenau?',
   'Quais cidades tiveram desastre em setembro de 2011?',
   'Quanto choveu antes da enchente de novembro de 2008?',
   'Quanto tempo a cheia leva de Rio do Sul até Blumenau?',
@@ -547,6 +780,7 @@ export function responder(pergunta: string, d: Dados): Resposta {
 
   const e = extrair(pergunta, d)
   const t = e.t
+  if (PALAVRA_RUA.test(t) && (e.cidade || /\b(quantas|quantos|alag|cheia|enchente|cota)/.test(t))) return ruaHistorico(e, d)
   if (/\b(quanto tempo|demora|leva|chega|chegar|transito)\b/.test(t) && e.cidade2) return transito(e, d)
   if (/\bchov|chuva/.test(t)) return chuvaAntes(e, d)
   if (/\b(antecedencia|antes de brusque|chega em brusque)\b/.test(t) || (t.includes('botuvera') && t.includes('brusque') && /\bpico/.test(t))) return antecedenciaMirim(e, d)

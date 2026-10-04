@@ -64,6 +64,7 @@ Usa também, do repo: `data/enchentes.json`, `data/transito.json` e `data/estaco
 
 | Ordem | Intenção | Gatilho | Lê | Exemplo |
 |---|---|---|---|---|
+| 0 | `rua_historico` | rua, avenida, travessa, servidão, estrada… + cidade (ou "quantas / alag / cheia / cota") | `cotas-ruas.json` (só régua) + `enchentes.json` | Quantas cheias chegaram à cota da Rua São Rafael em Blumenau? |
 | 1 | `transito` | "quanto tempo / demora / leva / chega" + 2 cidades | `transito.json` | Quanto tempo a cheia leva de Rio do Sul até Blumenau? |
 | 2 | `chuva` | "chov" / "chuva" + ano | `atlas/*` + `chuva_eventos_atlas.json` | Quanto choveu antes da enchente de novembro de 2008? |
 | 3 | `antecedencia_mirim` | "antecedência", ou Botuverá + Brusque + "pico" | `picos_itajai_mirim…` | Qual a antecedência do pico em Botuverá antes de Brusque? |
@@ -74,7 +75,7 @@ Usa também, do repo: `data/enchentes.json`, `data/transito.json` e `data/estaco
 | 8 | `cheias_periodo` | cidade + ano | `enchentes.json` | Cheias de Gaspar em 2011 |
 | 9 | `maiores_cheias` (5) | só a cidade | `enchentes.json` | brusque |
 | 10 | `atlas` | só o ano | `atlas/*` | 2008 |
-| — | `ajuda` / `nao_entendi` | "oi", "ajuda", ou nada casou | — | devolve 8 exemplos clicáveis |
+| — | `ajuda` / `nao_entendi` | "oi", "ajuda", ou nada casou | — | devolve 9 exemplos clicáveis |
 
 Comportamentos que foram checados com os dados reais em 22/09/2026:
 
@@ -82,6 +83,24 @@ Comportamentos que foram checados com os dados reais em 22/09/2026:
 - **Chuva em cidade sem estação do INMET** (ex.: Brusque): avisa que as estações servem só como referência regional.
 - **Chuva antes de 2006:** diz que o site não tem dado de chuva.
 - **Cota da ANA antes do fim do carregamento:** as cotas (~1,2 MB) chegam por último. Se a pergunta vier antes, a resposta é "carregando, tente em instantes".
+
+### Contagem sem misturar escalas, e a pergunta da rua (04/10/2026, decisão do Jefferson)
+
+- **`contar_acima` conta só uma escala.** Cada pico tem a sua (`escalaDoPico`): régua da cidade, zero do IBGE,
+  zero da ANA (pico tirado da série da ANA sem `referencia`), sem referência declarada (`null`) ou antes do trecho
+  que a cidade declara na régua (`historico_referencia`, hoje Brusque antes de 2019). A conta é feita na régua
+  quando a cidade tem pico na régua; senão, na escala única da cidade, dizendo qual (Rio do Sul: "sem referência
+  declarada — não compare com o nível de hoje"). Os picos de outra escala que passaram do número saem numa linha
+  "Fora da conta", com quantos e em qual escala. Cidade com várias réguas (Itajaí) não é contada.
+  - Antes, a resposta somava tudo e dizia "na régua local": em Blumenau, ≥ 10 m davam 72, e só 32 estão na régua.
+- **`rua_historico`** ("quantas cheias chegaram à cota da Rua X em Cidade?"): acha o ponto com a mesma busca da aba
+  "Minha rua" (palavra inteira vence pedaço: "Lino" não traz "Wandelino") e conta os picos **na régua** que chegaram à
+  cota. A frase é "o rio chegou a essa cota em N das M cheias registradas na régua", nunca "a rua alagou N vezes",
+  e vem sempre com a ressalva: a cota é de hoje, é de um ponto, e a lista de cheias é incompleta (Gaspar: só cheias
+  grandes). Cota sem número, ponto não conferido (`usar_para_aviso: false`) e cidade sem pico na régua (Rio do Sul)
+  não são contados, e a resposta diz por quê.
+- As cotas de rua (~3 MB) só são baixadas quando a pergunta cita uma rua (`citaRua`): é o mesmo pedaço da aba
+  "Minha rua", já filtrado por `cotaRuaValida`.
 
 ---
 

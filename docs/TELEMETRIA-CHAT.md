@@ -16,7 +16,7 @@ exatamente estas cinco chaves, e nenhuma outra:
 
 | chave | o que é | exemplo |
 |---|---|---|
-| `categoria` | a intenção que o chat reconheceu, ou `desconhecida` | `atlas`, `maiores_cheias`, `desconhecida` |
+| `categoria` | a intenção que o chat reconheceu, ou `desconhecida` | `atlas`, `maiores_cheias`, `rua_historico`, `desconhecida` |
 | `motivo` | por que não respondeu (lista fechada) | `sem_intencao`, `faltou_cidade`, `faltou_ano` |
 | `cidade` | id da cidade no cadastro (`data/estacoes.json`), **só se a pergunta citou**; senão `null` | `blumenau` |
 | `dia` | o dia em Brasília, sem hora | `2026-10-04` |
