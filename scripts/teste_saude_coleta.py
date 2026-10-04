@@ -773,11 +773,25 @@ class FonteManual(unittest.TestCase):
 
     def test_fonte_manual_que_SOME_do_arquivo_continua_sendo_falha(self):
         """A memória rolante não é afrouxada: a fonte parar de existir é outro
-        problema, e é o que aconteceu com Gaspar."""
-        lembradas = {self.INDAIAL: (AGORA - timedelta(days=1)).isoformat()}
-        d = avaliar(coleta(), AGORA, lembradas)      # Indaial NÃO está no arquivo
+        problema, e é o que aconteceu com Gaspar.
+
+        Desde 04/10/2026 a própria Indaial está em ESTACOES_APOSENTADAS (o
+        robots.txt do Google Docs recusa o documento), então a regra é travada
+        com uma fonte manual de mentira."""
+        outra = "Cidade X — régua de mão (Defesa Civil)"
+        with mock.patch.dict(sc.FONTES_MANUAIS, {outra: "documento preenchido à mão"}):
+            lembradas = {outra: (AGORA - timedelta(days=1)).isoformat()}
+            d = avaliar(coleta(), AGORA, lembradas)  # a fonte NÃO está no arquivo
         self.assertFalse(d.ok)
-        self.assertIn(self.INDAIAL, d.motivo)
+        self.assertIn(outra, d.motivo)
+
+    def test_indaial_bloqueada_por_robots_nao_e_cobrada(self):
+        """Decisão de 04/10/2026: robots.txt recusa, o coletor não pede, a régua
+        some — e o vigia não fica vermelho por isso."""
+        self.assertIn(self.INDAIAL, sc.ESTACOES_APOSENTADAS)
+        self.assertIn("robots.txt", sc.ESTACOES_APOSENTADAS[self.INDAIAL])
+        lembradas = {self.INDAIAL: (AGORA - timedelta(days=1)).isoformat()}
+        self.assertTrue(avaliar(coleta(), AGORA, lembradas).ok)
 
     def test_fonte_AUTOMATICA_parada_continua_sendo_falha(self):
         """O conserto vale para a lista, não para todo mundo."""
