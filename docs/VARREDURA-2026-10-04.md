@@ -285,7 +285,8 @@ Nenhuma mudança de cadastro. A DCSC-00006 continua com `usar_para_cota: false`.
   O teste das três leituras no mesmo minuto, usado em Brusque, não é possível para elas.
 - **Ibirama:** o site da Defesa Civil não publica nível nem cota. O contato da varredura, não conferido
   daqui, é defesacivil@ibirama.sc.gov.br e (47) 98838-5645. O C26 foi rascunhado em
-  `docs/oficios-prontos.md`.
+  `docs/oficios-prontos.md`, mas Ibirama já recebeu pedido mais completo em 13/09/2026, sem resposta:
+  o C26 vale como lembrete daquele e-mail, não como pedido novo.
 - **Lontras, Apiúna, Trombudo Central, Guabiruba e Ituporanga:** nada encontrado.
 - **Rótulo do painel de Ilhota:** a varredura registra que o segundo cartão do painel dos bombeiros diz
   "Rio Itajaí-Mirim" para a DCSC-00163 (Ilhota – Arraial dos Cunhas). O rótulo parece errado. Fica só

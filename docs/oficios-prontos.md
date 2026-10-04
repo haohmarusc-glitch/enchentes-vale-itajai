@@ -568,7 +568,13 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C26 — Defesa Civil de Ibirama (rascunho de 04/10/2026, NÃO enviado)
+## C26 — Defesa Civil de Ibirama (rascunho de 04/10/2026, NÃO enviado) — ⚠️ É LEMBRETE, não pedido novo
+
+**Já houve pedido:** em 13/09/2026 às 17h14 BRT foi enviado e-mail mais completo a defesacivil@ibirama.sc.gov.br
+("Régua e cotas de referência para o monitoramento de enchentes em Ibirama", Gmail, thread `1a09c686c39f1996`).
+Ele comparava quatro boletins com a DCSC-00020 (1,73 × 1,73 m em 14/08; 3,57 × 3,56 m em 01/09) e perguntava a
+régua, as faixas vigentes (o plano de 2024 dá 3,00 / 3,50 / 4,00 m) e as cotas de rua. Sem resposta até 04/10/2026.
+Se for mandar, mandar como resposta naquela conversa, encurtando o texto abaixo para "retomo a mensagem de 13/09".
 
 **Para:** defesacivil@ibirama.sc.gov.br · (47) 98838-5645 (contato da varredura de 04/10, não conferido daqui)
 **Assunto:** Faixas do Rio Itajaí do Norte e a estação estadual DCSC-00020
