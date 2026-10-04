@@ -3,7 +3,7 @@ import historico from '@dados/historico-chegada-itajai.json'
 import { cidadesDoRio, mareItajai } from '../dados/carregar'
 import { porRegua, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { publicacaoMaisRecente, situacaoDoPico, type SituacaoPico } from '../logica/picoBlumenau'
-import { entradaBrasilia, simularChegada, type ResultadoSimulacao } from '../logica/simulacaoChegada'
+import { entradaBrasilia, janelaJaPassou, simularChegada, type ResultadoSimulacao } from '../logica/simulacaoChegada'
 import { primeiraCota } from '../logica/tempoReal'
 import { rotuloCota, metros } from '../logica/formato'
 import estilos from './SimulacaoChegada.module.css'
@@ -89,13 +89,14 @@ function Hoje() {
     {serie.situacao === 'carregando' && situacao.tipo === 'sem-dado' ? (
       <p className={estilos.detalhe}>Buscando as últimas horas de Blumenau…</p>
     ) : (
-      <ConteudoHoje situacao={situacao} referencia={referencia} cota={cota} nomeCota={nomeCota} />
+      <ConteudoHoje situacao={situacao} referencia={referencia} cota={cota} nomeCota={nomeCota} agora={agora} />
     )}
   </div>
 }
 
-function ConteudoHoje({ situacao, referencia, cota, nomeCota }: {
+function ConteudoHoje({ situacao, referencia, cota, nomeCota, agora }: {
   situacao: SituacaoPico
+  agora: Date
   referencia: { horas_min: number; horas_max: number }
   cota: { valor: number } | null
   nomeCota: string | null
@@ -123,8 +124,11 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota }: {
         {metros(situacao.pico.nivel_m)}, às {hora(situacao.pico.medidoEm)} — e é a primeira da janela: o rio já
         estava alto quando ela começa, então o pico de verdade pode ter sido <strong>antes</strong>. Agora está em{' '}
         {metros(situacao.ultimo.nivel_m)}, descendo.</p>
+      {janelaJaPassou(resultado, agora) ? <JanelaPassada resultado={resultado} /> : null}
       <Resultado resultado={resultado} hipotese qual="desta hipótese"
-        rotulo={`Se o pico tivesse sido nessa leitura, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), chegaria a Itajaí entre`} />
+        rotulo={janelaJaPassou(resultado, agora)
+          ? `Se o pico tivesse sido nessa leitura, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), teria chegado a Itajaí entre`
+          : `Se o pico tivesse sido nessa leitura, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), chegaria a Itajaí entre`} />
       <p className={estilos.detalhe}>Se a Defesa Civil ou o AlertaBlu informar o horário do pico, use a simulação
         abaixo com ele.</p>
     </>
@@ -140,7 +144,10 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota }: {
         {horasPlato >= 0.5 ? <> (o rio ficou a menos de 5 cm disso de {mesmoDia(situacao.platoInicio, situacao.pico.medidoEm)
           ? soHora(situacao.platoInicio) : hora(situacao.platoInicio)} até {mesmoDia(situacao.platoFim, situacao.pico.medidoEm)
           ? soHora(situacao.platoFim) : hora(situacao.platoFim)})</> : null}. Agora está em {metros(situacao.ultimo.nivel_m)}, descendo.</p>
-      <Resultado resultado={resultado} rotulo={`Pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), o pico chegaria a Itajaí entre`} />
+      {janelaJaPassou(resultado, agora) ? <JanelaPassada resultado={resultado} /> : null}
+      <Resultado resultado={resultado} rotulo={janelaJaPassou(resultado, agora)
+        ? `Pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), o pico teria chegado a Itajaí entre`
+        : `Pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), o pico chegaria a Itajaí entre`} />
     </>
   }
 
@@ -214,6 +221,13 @@ function Manual() {
         nota={modo === 'estudo' ? 'Referência de estudo, sem calibração histórica.' : 'Intervalo hipotético informado por você.'} /> : null}
     </div>
   </div>
+}
+
+/** A janela inteira já passou: diz isso antes do quadro, para ninguém ler como previsão. */
+function JanelaPassada({ resultado }: { resultado: ResultadoSimulacao }) {
+  if ('erro' in resultado) return null
+  return <p className={estilos.janelaPassada}><strong>Essa janela já terminou</strong>, às {hora(resultado.fim)}. Ela
+    não diz nada sobre as próximas horas; para o nível de agora, veja as réguas de Itajaí nesta página.</p>
 }
 
 /** A janela de chegada e as marés dentro dela — o mesmo quadro no "Hoje" e na simulação. */

@@ -477,6 +477,15 @@ o projeto.
 
 ## Pendências
 
+- [ ] **Auditoria de 03/10/2026 (segunda rodada), à espera de decisão** — `docs/PROPOSTAS-AUDITORIA-2026-10-03.md`.
+  - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
+    "sem leitura" de leitura estadual sem faixa; o "Hoje" de Itajaí diz quando a janela já terminou.
+  - [ ] Guabiruba como afluente lateral do Mirim: proposta pronta; muda o comportamento do Monitor sem
+    tocar arquivo protegido.
+  - [ ] DCSC-00029 voltou à régua local entre 09/09 e 03/10/2026: falta a data, com o comando de conferência
+    no servidor; depois, a segunda quebra de série.
+  - [ ] Rótulo do histórico de Brusque: proposta A (`referencia` por registro) ou B (só texto).
+
 - Auditoria de 03/10/2026: vinculada localmente DCSC-00035 a Trombudo Central, conforme identidade na API oficial. Trombudo tem leitura bruta recente (1,18 m às 20:50), sem equivalência comprovada com cotas municipais. Apiúna (DCSC-00178, nome com H) retorna 81,57 m e segue excluída pelo filtro de altitude; Lontras retorna 21.474.836 e Indaial retorna null. Guabiruba retorna 0,63 m, mas permanece bloqueada até reconciliar a mudança de referência. Não liberar alertas municipais nem converter essas grandezas por suposição. A `inundacao_historica` de Trombudo Central não pinta faixa: a leitura aparece só como número bruto da rede estadual. **Falta o deploy na VPS** (`scripts/deploy.sh`).
 
 - [x] **Auditorias de código, dados e cálculos (03/10/2026).**

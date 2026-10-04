@@ -5,7 +5,9 @@ import { chromium } from 'playwright'
 import { preview } from 'vite'
 const servidor = await preview({preview:{port:4320,strictPort:true}})
 const base = servidor.resolvedUrls.local[0].replace(/\/$/,'')
-const browser = await chromium.launch({headless:true})
+// Mesmo padrão de base.mjs: CHROMIUM aponta para um navegador já instalado.
+const CHROMIUM = process.env.CHROMIUM || undefined
+const browser = await chromium.launch(CHROMIUM ? { headless: true, executablePath: CHROMIUM } : { headless: true })
 // O service worker (modo aplicativo) tem teste próprio, pwa.mjs; aqui ele
 // tiraria a rede da página do alcance do route().
 const context = await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'})

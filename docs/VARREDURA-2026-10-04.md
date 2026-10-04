@@ -1,0 +1,304 @@
+# Varredura de 04/10/2026 — Ilhota, Timbó e Indaial
+
+O Jefferson fez uma varredura externa na web em 03–04/10/2026 e a cruzou com a série estadual que já está
+no repositório. Este documento registra o que foi conferido daqui, o que não pôde ser, e a proposta para
+cada cidade.
+
+**Nada entrou em `data/` nem no coletor.** Cada proposta espera a aprovação do Jefferson, cidade por cidade.
+A regra nº 1 continua: cota só pinta amarrada à mesma régua da leitura.
+
+## O que deu para reabrir daqui
+
+**Fontes da web: nenhuma.** O proxy deste ambiente bloqueou todos os hosts em 04/10/2026:
+- `bombeiroilhota.com`, `ilhota.sc.gov.br` (PLANCON);
+- `misturebas.com.br`, `104fmpomerode.com.br`, `ndmais.com.br`, `cotalerta.com.br`;
+- `riodoscedros.sc.gov.br`.
+
+Tudo o que vem dessas páginas abaixo está marcado **não conferido daqui**: é a leitura do Jefferson no
+navegador.
+
+Também não usei a captura do GitHub Actions (`capturar_fontes.py`). Ela aceita só URL de coletor ou fonte
+declarada em `fontes_tempo_real`, por regra testada ("nada entra por palpite"). Pôr matéria de jornal
+nela quebraria essa regra. Se o Jefferson quiser os originais com sha256, o caminho é uma lista de captura
+avulsa, separada dos alvos fixos, e isso é decisão dele.
+
+**Dados do próprio projeto: tudo o que a varredura cita, e mais.**
+- `data/brutos/dcsc-cheia-2026-09-11-12/*.csv`: série de 10 min da DCSC na cheia, 08/09 21:10 a 13/09 20:50.
+- `nivel-sc-2026-09/10.ndjson` e `2026-0*.ndjson` da VPS, no pacote `series-2026.tar.gz` de 03/10. É a
+  coleta estadual e municipal de 15 em 15 minutos, de 02/09 10:28 a 03/10 15:16.
+- `data/brutos/dcsc-estacoes-vale-2026-09-13.csv`: o catálogo com as coordenadas das estações.
+
+Carimbos em hora de Brasília, como em todo o projeto.
+
+## 1. Ilhota — a escala municipal aparece aplicada à DCSC-00030
+
+### Conferido daqui
+- **A cheia de 12/09 chegou a 11,71 m na DCSC-00030**, de 05:10 a 05:20 (`DCSC-00030.csv`). Confere com
+  a varredura.
+- **A DCSC não publica faixa para a DCSC-00030.** Em 2.994 leituras de 02/09 a 03/10, `faixa_estadual`
+  é sempre nula, como a varredura diz.
+- **O cadastro já tem `codigo_dcsc: "DCSC-00030"`** e diz que o PLANCON cita "a estação
+  hidrometeorológica da Ponte Cláudio Jeremias Cadorin". O pino de Ilhota está na coordenada da estação
+  no catálogo (−26,8944, −48,8248). Que essa coordenada é a da ponte, não deu para conferir daqui.
+
+### Não conferido daqui
+- O painel dos Bombeiros Voluntários: `data-rio="DCSC-00030"`, "ATENÇÃO · 9,43 m · Normal: até 9,20 m",
+  e o rodapé que atribui as cotas à COMPDEC.
+- O PLANCON 2025/2028 de Ilhota: o host está bloqueado. A transcrição em `docs/cotas-municipais/ilhota.md`
+  nomeia a estação da Ponte Cadorin, mas não a DCSC-00030 nem o zero.
+
+### Três achados que pesam na decisão
+
+**1. Com 9,20 m na DCSC-00030, Ilhota passaria quase todo setembro em "Atenção".**
+- 2.659 das 2.994 leituras de 02/09 a 03/10 ficam acima de 9,20 m (89 %). A mediana é 9,57 m e o mínimo,
+  8,69 m.
+- Fora das cheias, a estação passa dias oscilando entre 9,17 e 9,22 m, no ritmo da maré. A análise da
+  chegada a Itajaí mediu fator de maré 0,57 com atraso de 1 h em Ilhota.
+- Pelo PLANCON, a faixa de 9,20 a 10,00 é "represamento dos ribeirões". Nela a COMPDEC monitora e
+  **explicitamente não avisa a população**.
+
+**2. O bot de cotas avisaria 81 vezes em 32 dias.**
+- `alerta_cotas.py` avisa toda troca de faixa, para cima e para baixo, sem histerese.
+- Com 9,20 / 10,00 / 10,50 na DCSC-00030, a série de setembro dá 81 trocas, 46 delas só em 9,20 m.
+- Ilhota entraria no Telegram como Ascurra e Brusque. Isso é do desenho de `REGUAS_COM_COTA_PROPRIA`.
+
+**3. O painel dos bombeiros mistura dois zeros.**
+- Pela varredura, o painel lista ruas alagando a partir de 12,20 m ao lado da leitura da DCSC-00030.
+- O PLANCON, na transcrição do repositório, diz que as cotas de rua são altitude em relação ao nível do
+  mar ("Régua Municipal", a partir de 12,00 m) e não o zero da ponte: "Não misturar 12 m de rua com
+  9,20 m da ponte".
+- Ou seja: quem montou o painel aplica sobre a DCSC-00030 também um número que o plano diz ser de outra
+  referência. Isso enfraquece o painel como prova de qual régua é a do 9,20.
+
+### O que o painel prova e o que não prova
+- **Prova:** uma entidade local aplica o limite de 9,20 m sobre a leitura da DCSC-00030 e atribui as cotas
+  à COMPDEC.
+- **Não prova:**
+  - não é a COMPDEC escrevendo;
+  - os 10,00 e 10,50 não aparecem no painel;
+  - o mesmo painel mistura altitude de rua com a régua.
+
+### Proposta (não aplicada)
+
+**A regra hoje.** `REGUAS_COM_COTA_PROPRIA` pede, no comentário do código, "prova escrita da COMPDEC".
+- Ascurra entrou assim, com a resposta ao C18.
+- Brusque entrou com outra prova: a legenda da própria estação no portal **oficial** da Defesa Civil de
+  Brusque, mais 1.287 pares de leitura.
+- Aceitar Ilhota agora seria aceitar um terceiro tipo de prova: **painel de terceiro que republica a
+  estação e atribui as cotas à COMPDEC**. Isso é decisão do Jefferson, não minha.
+
+**Recomendação: esperar a resposta ao C11 atualizado.** O painel aponta a direção, mas pelos três achados
+acima não basta. Se a decisão for aceitar, estes seriam os campos.
+
+**`data/estacoes.json`, Ilhota**
+- `codigo_dcsc`: já é `"DCSC-00030"`; não muda.
+- `regua_das_cotas`: `"DCSC-00030 — estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin (rede estadual da Defesa Civil de SC)"`
+- `regua_das_cotas_fonte`: `"Painel dos Bombeiros Voluntários de Ilhota (bombeiroilhota.com/monitoramento/), lido pelo Jefferson em 03/10/2026 às 23h20: cartão com data-rio=\"DCSC-00030\", 'Normal: até 9,20 m' e rodapé que atribui as cotas à COMPDEC de Ilhota. Não é documento da COMPDEC; 10,00 e 10,50 m não aparecem no painel. O PLANCON 2025/2028 v016 cita a estação da Ponte Cláudio Jeremias Cadorin. Aceito por decisão do Jefferson em <data>."`
+- `cotas_nomes_na_fonte.atencao`: `"Represamento dos ribeirões"`. Assim o chip diz o nome do plano, e não
+  "Atenção", na faixa em que a COMPDEC não avisa a população (regra D6).
+- `cotas_aviso_publico` tem de ser reescrito. Hoje ele diz "Não compare … com a estação estadual de Ilhota:
+  são réguas com zeros diferentes", o que deixaria de ser a posição do cadastro.
+- `cotas_verificado` continua `false`.
+
+**`scripts/coleta_estadual_com_cota.py`**
+```python
+"DCSC-00030": {
+    "cidade": "ilhota",
+    "rio": "itajai-acu",
+    "estacao": "Ilhota — Ponte Cláudio Jeremias Cadorin (DCSC-00030)",
+    "fonte": ("Rede estadual (Defesa Civil de SC), estação DCSC-00030. Faixas do PLANCON "
+              "2025/2028 de Ilhota (9,20 / 10,00 / 10,50 m), aplicadas a esta estação pelo "
+              "painel dos Bombeiros Voluntários de Ilhota, que as atribui à COMPDEC "
+              "(lido em 03/10/2026). Sem confirmação escrita da COMPDEC."),
+},
+```
+
+**Efeito na tela, se aplicado**
+- Com 9,43 m, Ilhota entra em "Atenção", ou em "Represamento dos ribeirões" com o nome do plano. A cor é
+  amarela; hoje é cinza.
+- O cartão "Agora" passa a ter a frase da cota e o "quanto falta".
+- Ilhota entra no Telegram. Em setembro seriam 81 mensagens, como no achado 2.
+- O trecho de 36,4 km do Açu em Ilhota passa a pintar (A4 do checklist).
+
+### C11 atualizado
+O texto para envio está em `docs/oficios-prontos.md`, logo abaixo do C11 original. Ele pergunta só o que
+falta.
+
+## 2. Timbó — a leitura municipal é a DCSC-00023
+
+### Conferido daqui
+- **Os dois pares de 12/09 batem com `DCSC-00023.csv`.**
+  - 03h00 = 5,52 m na série, e 5,52 m na 104FM Pomerode.
+  - O topo da cheia ficou em 5,52 m de 02h10 a 03h10, e às 03h20 já marcava 5,51 m. A Misturebas dá
+    5,53 m e diz que o rio "começou a baixar por volta das 2h".
+  - Diferença de 1 cm. Na série, a descida começa uma hora depois do que a matéria diz.
+- **A DCSC classifica a DCSC-00023 com escala própria, e ela não é a da COMPDEC.**
+  - Na coleta de 13/09 a 03/10, a faixa estadual é "normal" até 4,49 m e "atenção" a partir de 4,50 m.
+    A troca para atenção foi em 22/09 às 00h30, com 4,50 m, e a volta em 22/09 às 16h31, com 4,49 m.
+  - A escala que a varredura atribui à Defesa Civil de Timbó dá "alto risco" a partir de 4,30 m.
+  - **Hoje o site mostra "Normal · Defesa Civil SC" para Timbó em níveis que a COMPDEC, pela imprensa,
+    chama de alto risco.** É a faixa da rede estadual, rotulada como tal, e ela é verdadeira. Mas esse é
+    o argumento mais forte para resolver Timbó.
+- **A estação fica a 1,61 km do pino de Timbó.** A DCSC-00023 ("Timbó 1") está em −26,83755, −49,27077 no
+  catálogo; o pino está em −26,8231, −49,2708. Nas outras cidades com `codigo_dcsc`, o pino cai a menos de
+  4 m da estação.
+  - O cadastro não diz de onde veio o pino.
+  - Se a DCSC-00023 fica na Rua Equador, não deu para conferir daqui: o OSM é bloqueado.
+- **A mesma escala já está no cadastro por outro canal.** O `cotas_divergencia` de Timbó guarda uma
+  publicação da Prefeitura de Timbó no Facebook, de 02/07/2026, com normal até 2,00 m, atenção até 3,00 m,
+  "elevação significativa" até 4,29 m e alto risco a partir de 4,30 m. A ND Mais de 31/08 cita a COMPDEC
+  com os mesmos números. São dois canais, um deles da própria prefeitura, sem nomear a régua.
+
+### Não conferido daqui
+- As matérias da Misturebas, 104FM e ND Mais, a lista de 2022 com a Rua Equador e o `cotalerta.com.br`.
+
+### Os pares de 31/08 — conferir no servidor
+A série deste ambiente começa em 02/09. A API da DCSC volta cerca de 88 dias, então 31/08 ainda está na
+janela. Estes comandos só leem: baixam para uma pasta nova e não mexem em cadastro.
+
+```
+cd /opt/enchentes-vale-itajai/scripts
+python3 baixar_historico_dcsc.py DCSC-00023 --dias 40 --destino /tmp/timbo-2026-10-04
+python3 - /tmp/timbo-2026-10-04 <<'PY'
+import glob, json, sys
+pts = {}
+for f in glob.glob(sys.argv[1] + "/DCSC-00023/*.json"):
+    for it in json.load(open(f))["resposta"]["data"]["historic"]["items"] or []:
+        ts = (it.get("ts") or "")[:16]
+        if ts[:13] in ("2026-08-31T09", "2026-08-31T15"):
+            pts[ts] = it.get("rio_nivel")
+for ts in sorted(pts):
+    print(ts, pts[ts])
+PY
+```
+
+Pela ND Mais, às 09h30 seriam 3,27 m e às 15h30, 4,51 m (hora de Brasília, que é o fuso do `ts`). Com os
+quatro pares batendo, o vínculo da leitura fica provado no padrão de Brusque.
+
+### O que isso prova e o que não prova
+- **Prova:** com dois pares ao centímetro, o número que a Defesa Civil de Timbó divulga é o da DCSC-00023.
+- **Não prova:**
+  - a escala 2,00 / 3,00 / 4,30 é de imprensa e de post, não de documento;
+  - o PLANCON de dez/2025 só traz a ativação a 5,00 m;
+  - a localização da estação na Rua Equador não está confirmada.
+
+### Proposta (não aplicada)
+**Recomendação, em duas etapas:**
+1. Com os pares de 31/08, propor `codigo_dcsc: "DCSC-00023"`. O vínculo da leitura não depende da escala.
+2. A escala espera o C27.
+
+O conjunto completo, para quando a decisão vier:
+
+**`data/estacoes.json`, Timbó**
+- `codigo_dcsc`: `"DCSC-00023"`. O validador precisa do par `("itajai-acu", "timbo"): "DCSC-00023"` em
+  `CODIGO_DCSC_ESPERADO`. Também é preciso decidir se o pino vai para a coordenada da estação.
+- `cotas_m`: `{"atencao": 2.01, "alerta": 3.01, "emergencia": 4.30, "ativacao_plancon": 5.0, "ruas_alerta_citadas": 6.0}`.
+  As duas chaves antigas ficam: elas não pintam, e o 5,00 m do PLANCON continua sendo o acionamento do
+  gabinete.
+- `cotas_nomes_na_fonte`: `{"emergencia": "Alto risco", "_por_que": "A Defesa Civil de Timbó chama de ALTO RISCO a faixa a partir de 4,30 m (post da Prefeitura de 02/07/2026; ND Mais de 31/08/2026). Entrou como emergencia pela posição; a tela escreve o nome da fonte."}`
+- `regua_das_cotas`: `"DCSC-00023 — Timbó 1, Rio Benedito (rede estadual da Defesa Civil de SC)"`
+- `regua_das_cotas_fonte`: `"Pares no mesmo instante entre o número divulgado pela Defesa Civil de Timbó e a DCSC-00023: 12/09/2026 03h00, 5,52 × 5,52 m (104FM Pomerode); pico da madrugada, 5,53 × 5,52 m (Misturebas); <31/08 09h30 e 15h30, a conferir>. Escala do post da Prefeitura de Timbó (02/07/2026) e da ND Mais (31/08/2026). <Confirmação da COMPDEC: C27, data>."`
+- `cotas_divergencia`: muda `_estado` para "resolvido: convivem". A escala 2/3/4,30 é a de orientação ao
+  público e o 5,00 m é o acionamento do PLANCON. Só depois de a COMPDEC confirmar no C27; antes disso,
+  continua aberto.
+- `cotas_aviso_publico` e `cotas_pendencia` têm de ser reescritos. Hoje dizem que a tela não pinta Timbó.
+
+**`scripts/coleta_estadual_com_cota.py`**
+```python
+"DCSC-00023": {
+    "cidade": "timbo",
+    "rio": "itajai-acu",
+    "estacao": "Timbó — Rio Benedito (DCSC-00023)",
+    "fonte": ("Rede estadual (Defesa Civil de SC), estação DCSC-00023. O número divulgado pela "
+              "Defesa Civil de Timbó é o desta estação (pares de 12/09/2026 e 31/08/2026). "
+              "Faixas 2,01 / 3,01 / 4,30 m confirmadas pela COMPDEC em <data> (C27)."),
+},
+```
+
+Isso também é um terceiro tipo de prova para `REGUAS_COM_COTA_PROPRIA`: pares com a imprensa, em vez de
+carta da COMPDEC ou do portal oficial. Decisão do Jefferson.
+
+**Efeito na tela, se aplicado** (contado sobre a coleta de 02/09 a 03/10)
+| Faixa | Leituras |
+|---|---:|
+| Normal | 1.913 |
+| Atenção (2,01) | 737 |
+| Alerta (3,01) | 190 |
+| Alto risco (4,30) | 154 |
+
+- O bot de cotas avisaria 19 vezes no período.
+- O chip "Defesa Civil SC" some de Timbó, porque a faixa municipal manda.
+- O cartão "Agora" ganha a frase da cota.
+- Timbó é afluente: não pinta o tronco, só o próprio trecho do Benedito.
+
+### C27 — novo
+Não havia C27 no repositório. O rascunho está em `docs/oficios-prontos.md`.
+
+## 3. Indaial — deslocamento estimado, ainda não fechado
+
+### Os pares
+| Momento | Régua municipal | DCSC-00006 | Diferença | Lado municipal conferido? |
+|---|---:|---:|---:|---|
+| 11/09, 20h00 | 4,92 m (Misturebas) | 7,35 m | 2,43 m | não conferido daqui |
+| 11/09, 21h00 | 5,00 m (Misturebas) | 7,43 m | 2,43 m | não conferido daqui |
+| 12/09, 22h00 | 4,10 m (documento da Defesa Civil) | 6,63 m | 2,53 m | **sim**: está na nossa coleta |
+
+- O lado da DCSC-00006 dos três pares foi conferido em `DCSC-00006.csv`. Na coleta de 15 min, a leitura
+  mais próxima do terceiro par (22h01) também dá 6,63 m.
+- **É uma pista, não uma conversão.** Os dois pares da subida concordam e o da descida difere 10 cm. Três
+  pontos não dizem se o deslocamento é constante, nem se muda com a vazão. **Não usar para pintar.**
+
+### Procura de mais pares
+- **A nossa coleta não tem outros.** O 4,10 m de 12/09 às 22h00 é a única leitura municipal de Indaial na
+  coleta da VPS de agosto a 03/10, o que confirma o E6 do checklist.
+- Mais pares só virão de boletins e imprensa de setembro, cujos hosts estão bloqueados daqui, ou da
+  resposta ao C19.
+
+### A DCSC-00006 parou antes do que se pensava
+- A última leitura plausível é **6,16 m em 26/09/2026 às 08h14**.
+- Depois vêm 12 horas sem leitura e três valores implausíveis: 0,11 m às 20h16, −0,01 m às 20h31 e 0,33 m
+  de 20h46 a 22h01.
+- Depois de 26/09 às 22h01 a estação não entrega número. A evidência entregue com a auditoria mostra o
+  carimbo de 02/10 às 17h22 com nível nulo.
+- Ou seja: Indaial está sem leitura estadual útil desde 26/09, não só desde 02/10. Qualquer par novo tem de
+  ser de antes de 26/09 às 08h14.
+
+### Proposta
+Nenhuma mudança de cadastro. A DCSC-00006 continua com `usar_para_cota: false`. O C19 atualizado está em
+`docs/oficios-b1-c15-c22.md`, logo abaixo do C19 original.
+
+## 4. O que a varredura não achou
+
+- **Rio dos Cedros:**
+  - Pela varredura, a página da prefeitura de 01/08/2011 (`riodoscedros.sc.gov.br/noticia-234732/`)
+    publica ≥ 4,80 m atenção, ≥ 5,30 m alerta, ≥ 5,70 m alarme e 6,02 m nas bocas de lobo. São os números
+    do cadastro. Não conferido daqui.
+  - Conferido daqui: a DCSC-00011 fica a 0,24 km do pino ("Régua da Praça Matriz") e chegou a 3,07 m em
+    11/09 às 22h30. Não há leitura municipal para parear, e 3,07 m está longe de 4,80 m.
+  - A proximidade é pista, não vínculo.
+- **Vidal Ramos e Botuverá** no portal da Defesa Civil de Brusque, pela varredura e não conferido daqui:
+  - estação 3 (Vidal Ramos): última medição em 04/11/2018;
+  - estação 18 (Botuverá): última medição em 18/04/2026;
+  - a 2 parou em 2020 e a 32 em 2022;
+  - só a 79 (Ponte Estaiada – DCSC) está viva.
+
+  O teste das três leituras no mesmo minuto, usado em Brusque, não é possível para elas.
+- **Ibirama:** o site da Defesa Civil não publica nível nem cota. O contato da varredura, não conferido
+  daqui, é defesacivil@ibirama.sc.gov.br e (47) 98838-5645. O C26 foi rascunhado em
+  `docs/oficios-prontos.md`.
+- **Lontras, Apiúna, Trombudo Central, Guabiruba e Ituporanga:** nada encontrado.
+- **Rótulo do painel de Ilhota:** a varredura registra que o segundo cartão do painel dos bombeiros diz
+  "Rio Itajaí-Mirim" para a DCSC-00163 (Ilhota – Arraial dos Cunhas). O rótulo parece errado. Fica só
+  registrado.
+
+## O que espera decisão do Jefferson
+1. **Ilhota:** aceitar ou não o painel dos bombeiros como prova para `REGUAS_COM_COTA_PROPRIA`. A
+   recomendação é esperar o C11 atualizado. Se aceitar, decidir também o nome da faixa de 9,20 m.
+2. **Timbó:**
+   - rodar no servidor a conferência de 31/08;
+   - com quatro pares, decidir sobre `codigo_dcsc` e o pino;
+   - a escala espera o C27.
+3. **Indaial:** nada a aplicar. Decidir o envio do C19 atualizado.
+4. **Envio dos rascunhos:** C11 atualizado, C19 atualizado, C26 e C27. Nenhum leva link do site.
+5. **Originais com sha256:** se forem necessários, decidir se cabe uma lista de captura avulsa no GitHub
+   Actions, separada dos alvos fixos.

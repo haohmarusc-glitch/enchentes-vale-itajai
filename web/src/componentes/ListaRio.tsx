@@ -10,6 +10,7 @@ import { caminho, faixaHoras } from '../logica/transito'
 import { ChipFaixa } from './CartaoAgora'
 import { rioDaUrl } from './CartoesDaCidade'
 import estilos from './ListaRio.module.css'
+import { situacaoDaLinha } from '../logica/linhaDaCidade'
 
 /**
  * O RIO COMO LISTA COMPACTA (versão 2, 03/10/2026) — uma linha por cidade:
@@ -123,6 +124,8 @@ function Linha({ cidade, rioId, aoVivo }: { cidade: Cidade; rioId: string; aoViv
   const idade = leitura?.medidoEm ? idadeMin(leitura.medidoEm, aoVivo.agora) : null
   const valida = leitura && idade !== null && frescorDaCidade(idade, cidade.id) !== 'velha'
   const seta = valida ? tendenciaDaLeitura(estado.serie, leitura, aoVivo.agora) : null
+  // Auditoria de 03/10/2026, item 5: leitura estadual sem faixa não é "sem leitura".
+  const linha = situacaoDaLinha(estado, cidade.id, aoVivo.agora)
   const para = cidade.id === 'itajai' ? '/itajai' : `/${rioDaUrl(rioId)}/${cidade.id}`
   return (
     <Link to={para} className={estilos.linha}>
@@ -141,10 +144,10 @@ function Linha({ cidade, rioId, aoVivo }: { cidade: Cidade; rioId: string; aoViv
             </>
           ) : estado.varias ? (
             <>{estado.todas.length} réguas, uma por uma</>
-          ) : estado.faixaEstadual && estado.estadual?.medidoEm ? (
+          ) : linha.tipo === 'estadual' ? (
             <>
-              rede estadual: {metros(estado.estadual.nivelBrutoM)} ·{' '}
-              {textoIdade(idadeMin(estado.estadual.medidoEm, aoVivo.agora))}
+              rede estadual (zero próprio): {metros(linha.nivel)}
+              {linha.comFaixa ? '' : ' · sem faixa publicada'} · {textoIdade(linha.idade)}
             </>
           ) : (
             <>sem leitura recente</>

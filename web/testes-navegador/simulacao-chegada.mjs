@@ -5,7 +5,9 @@ import { chromium } from 'playwright'
 import { preview } from 'vite'
 
 const servidor = await preview({ preview: { port: 4327, strictPort: true } })
-const navegador = await chromium.launch()
+// Mesmo padrão de base.mjs: CHROMIUM aponta para um navegador já instalado.
+const CHROMIUM = process.env.CHROMIUM || undefined
+const navegador = await chromium.launch(CHROMIUM ? { executablePath: CHROMIUM } : {})
 const base = servidor.resolvedUrls.local[0].replace(/\/$/, '')
 mkdirSync('../tmp/pesquisa-chegada', { recursive: true })
 try {

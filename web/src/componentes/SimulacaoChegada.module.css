@@ -26,3 +26,4 @@
 .rotuloJanela { margin: 0 0 .2rem; }
 .hipotese { border-style: dashed; }
 .manual { margin-top: 1.25rem; padding-top: .5rem; border-top: 1px solid var(--borda); }
+.janelaPassada { margin: .4rem 0; padding: .5rem .7rem; border-left: 3px solid var(--tinta-fraca); line-height: 1.55; }

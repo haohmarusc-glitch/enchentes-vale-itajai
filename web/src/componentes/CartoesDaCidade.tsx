@@ -11,6 +11,7 @@ import { ChipFaixa } from './CartaoAgora'
 import { ROTULO_FAIXA } from './LegendaFaixas'
 import SeloConfianca from './SeloConfianca'
 import estilos from './CartoesDaCidade.module.css'
+import { situacaoDaLinha } from '../logica/linhaDaCidade'
 
 /** `acu`/`mirim` — a palavra da URL para o rio do cadastro. */
 export function rioDaUrl(rioId: string): 'acu' | 'mirim' {
@@ -173,6 +174,8 @@ export function LinhaDeCidade({
   const { leitura } = estado
   const idade = leitura?.medidoEm ? idadeMin(leitura.medidoEm, aoVivo.agora) : null
   const velha = idade === null || frescorDaCidade(idade, cidade.id) === 'velha'
+  // Auditoria de 03/10/2026, item 5: leitura estadual sem faixa não é "sem leitura".
+  const linha = situacaoDaLinha(estado, cidade.id, aoVivo.agora)
   const para = cidade.id === 'itajai' ? '/itajai' : `/${rioDaUrl(rioId)}/${cidade.id}`
   return (
     <Link to={para} className={estilos.linha}>
@@ -188,11 +191,17 @@ export function LinhaDeCidade({
             </>
           ) : estado.varias ? (
             <>{estado.todas.length} réguas, uma por uma</>
-          ) : estado.faixaEstadual && estado.estadual?.medidoEm ? (
-            <>
-              rede estadual: {metros(estado.estadual.nivelBrutoM)} · medido{' '}
-              {textoIdade(idadeMin(estado.estadual.medidoEm, aoVivo.agora))}
-            </>
+          ) : linha.tipo === 'estadual' ? (
+            linha.comFaixa ? (
+              <>
+                rede estadual (zero próprio): {metros(linha.nivel)} · medido {textoIdade(linha.idade)}
+              </>
+            ) : (
+              <>
+                rede estadual (zero próprio): {metros(linha.nivel)} · sem faixa publicada · medido{' '}
+                {textoIdade(linha.idade)} · não conclua que está seguro
+              </>
+            )
           ) : (
             <>sem leitura recente · não conclua que está seguro</>
           )}
