@@ -54,3 +54,7 @@ data/brutos/BD_Atlas_*_Consolidado.csv
 
 # Capturas dos testes de navegador (simulacao-chegada.mjs grava tmp/pesquisa-chegada).
 /tmp/
+
+# Cloudflare: estado local do wrangler e segredos de teste (nunca commitar chave)
+.wrangler/
+.dev.vars

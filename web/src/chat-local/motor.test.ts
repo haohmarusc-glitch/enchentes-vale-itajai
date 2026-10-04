@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { TEXTO_ALERTA, citaRua, dataBR, escalaDoPico, extrair, responder, termoDaRua } from './motor'
 import { dados } from './testes/carregar'
 
@@ -54,7 +56,57 @@ test('chuva em cidade sem estação avisa', () => assert.match(r('quanto choveu 
 
 test('tempo de trânsito com fonte', () => assert.match(r('Quanto tempo a cheia leva de Rio do Sul até Blumenau?').texto, /de 7 a 10 h/))
 
-test('trânsito inexistente não soma trechos', () => assert.match(r('quanto tempo leva de Taió até Itajaí?').texto, /não tem tempo de trânsito/))
+// Todo par de cidades do site (pedido do Jefferson, 04/10/2026): o chat dá o MESMO tempo
+// que a tela e o bot — o gabarito `data/transito-esperado.json`, que os dois já seguem —
+// e, onde o gabarito diz que não há tempo, explica o porquê sem dar número do par.
+const GABARITO = JSON.parse(readFileSync(fileURLToPath(new URL('../../../data/transito-esperado.json', import.meta.url)), 'utf-8')) as {
+  caminhos: { rio: string; de: string; para: string; resultado: { horas_min: number; horas_max: number } | null }[]
+}
+const NOMES = new Map(Object.values(dados.estacoes.rios).flatMap((rr) => rr.cidades.map((c) => [c.id, c.nome] as const)))
+const faixa = (a: number, b: number) => {
+  const f = (h: number) => h.toLocaleString('pt-BR', { maximumFractionDigits: 1 })
+  return a === b ? `cerca de ${f(a)} h` : `de ${f(a)} a ${f(b)} h`
+}
+
+test('trânsito: todo par com tempo no gabarito sai com a mesma faixa, nas duas ordens da pergunta', () => {
+  const com = GABARITO.caminhos.filter((c) => c.resultado)
+  assert.ok(com.length >= 20)
+  for (const c of com) {
+    const [de, para] = [NOMES.get(c.de)!, NOMES.get(c.para)!]
+    const esperado = `Da passagem do pico em ${de} até ${para}: ${faixa(c.resultado!.horas_min, c.resultado!.horas_max)}`
+    const ida = r(`Quanto tempo a cheia leva de ${de} até ${para}?`)
+    assert.equal(ida.intencao, 'transito', `${de} → ${para}`)
+    assert.ok(ida.texto.includes(esperado), `${de} → ${para}: ${ida.texto}`)
+    const volta = r(`Quanto tempo de ${para} até ${de}?`)
+    assert.ok(volta.texto.startsWith(`A cheia desce de ${de} para ${para}, não o contrário.`) && volta.texto.includes(esperado), `${para} → ${de}: ${volta.texto}`)
+  }
+})
+
+test('trânsito: par sem tempo no gabarito explica e não inventa número do par', () => {
+  const sem = GABARITO.caminhos.filter((c) => !c.resultado)
+  const comTempo = new Set(GABARITO.caminhos.filter((c) => c.resultado).map((c) => `${c.de}>${c.para}`))
+  assert.ok(sem.length > 100)
+  for (const c of sem) {
+    if (comTempo.has(`${c.para}>${c.de}`)) continue // a ordem contrária tem tempo: coberto acima
+    const [de, para] = [NOMES.get(c.de)!, NOMES.get(c.para)!]
+    const x = r(`Quanto tempo a cheia leva de ${de} até ${para}?`)
+    assert.equal(x.intencao, 'transito', `${de} → ${para}`)
+    assert.ok(!x.texto.includes(`Da passagem do pico em ${de} até ${para}`), `${de} → ${para} ganhou número: ${x.texto}`)
+    assert.ok(!x.texto.includes(`Da passagem do pico em ${para} até ${de}`), `${para} → ${de} ganhou número: ${x.texto}`)
+    assert.ok(x.texto.length > 60, `${de} → ${para}: explicação curta demais`)
+  }
+})
+
+test('trânsito: os porquês', () => {
+  assert.match(r('quanto tempo de Brusque até Blumenau?').texto, /rios diferentes/)
+  assert.match(r('quanto tempo de Timbó até Blumenau?').texto, /afluente/)
+  assert.match(r('quanto tempo de Taió até Ituporanga?').texto, /rios paralelos/)
+  assert.match(r('quanto tempo de Vidal Ramos até Itajaí?').texto, /em estudo.*dados insuficientes[\s\S]*Brusque até Itajaí, cerca de 6 h/)
+  assert.match(r('quanto tempo de Lontras até Blumenau?').texto, /não tem o tempo medido[\s\S]*de Rio do Sul até Blumenau: de 7 a 10 h/)
+  assert.match(r('quanto tempo de Trombudo Central até Blumenau?').texto, /posição definida/)
+  assert.match(r('Quanto tempo a cheia leva de Taió até Itajaí?').texto, /de 25 a 35 h[\s\S]*Soma dos trechos/)
+  assert.match(r('quanto tempo até Blumenau?').texto, /Diga as duas cidades/)
+})
 
 test('cota ANA vem com aviso de régua', () => {
   const x = r('Cota da ANA em Brusque em novembro de 2008')

@@ -17,7 +17,7 @@ Uma caixa de perguntas nas páginas dos rios que responde **só com os JSONs de 
 - **Não inventa por construção:** o motor não gera texto livre. Ele escolhe uma intenção, busca o registro e preenche um modelo de frase. Todo número mostrado é um campo de um registro.
 - **Contrapartida:** entende menos formas de perguntar que uma IA. Quando não entende, diz isso e mostra exemplos clicáveis. Nunca chuta.
 
-O chat com IA (`CHAT-HISTORICO.md`, pacote `chat-historico-inicio.zip`) fica guardado como fase 2. Se um dia for publicado, este chat local continua sendo a opção sem backend.
+O chat com IA existe desde 04/10/2026 como **complemento**, desligado até a chave entrar no Cloudflare (`docs/CHAT-IA.md`). Este chat local continua respondendo primeiro e sozinho: a IA só entra quando a pessoa aperta "Perguntar à IA" numa resposta.
 
 ---
 
@@ -26,7 +26,7 @@ O chat com IA (`CHAT-HISTORICO.md`, pacote `chat-historico-inicio.zip`) fica gua
 1. **Não é alerta.** Pergunta sobre agora, hoje, amanhã, previsão, "está subindo" ou "devo sair de casa" recebe o texto fixo `TEXTO_ALERTA`, que manda para o 199 / 193 e para as réguas ao vivo do site. Isso é checado antes de qualquer outra coisa.
 2. **Todo número sai de um registro** e vem com a fonte. Quando existirem, vêm também a confiança, a nota, as divergências, a referência da régua e a cobertura da chuva.
 3. **Ausência não é zero.** Estação sem dado aparece como "sem dado válido", nunca como 0 mm. Cidade sem registro recebe "o site não tem", e nunca um número de outra cidade.
-4. **Não compara réguas diferentes em metros** e **não soma trechos de trânsito.** Se o trecho pedido não existe, o chat diz que não tem.
+4. **Não compara réguas diferentes em metros.** O **trânsito** responde qualquer par de cidades do site (pedido do Jefferson, 04/10/2026). Ele usa o mesmo encadeamento da tela e do bot (`caminho()` em `logica/transito.ts`), com teste contra o gabarito `data/transito-esperado.json`. Soma só trechos consecutivos do curso principal e mostra a conta. Quando não há tempo, diz o porquê e não dá número do par: outro rio, afluente lateral, cabeceiras paralelas, trecho em estudo, cidade sem posição na árvore ou cidade fora da tabela JICA. No último caso, mostra o menor trecho com tempo que contém o percurso.
 5. O chat só **lê** `data/`.
 
 ---
@@ -182,7 +182,7 @@ Decisão do Jefferson em 22/09/2026 (opção a): manter maio e baixar a confian�
 - Não trocar o motor por geração de texto livre, nem "completar" resposta com dado que não está em `data/`.
 - Não mostrar 0 mm quando a estação não tem dado.
 - Não comparar cotas de cidades ou réguas diferentes em metros.
-- Não encadear trechos de trânsito.
+- Não encadear trânsito fora de `caminho()` (nada por afluente, entre cabeceiras ou por trecho em estudo) nem dar número a par sem tempo no gabarito.
 - Não remover a barreira de "agora".
 - Não mudar o mês do registro de Rio do Sul 2018 (ver L5).
 

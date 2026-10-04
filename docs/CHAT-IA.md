@@ -1,0 +1,117 @@
+# Chat com IA — `/api/chat-ia`
+
+Pedido do Jefferson (04/10/2026): *"Pode criar api para o chat responder muitas perguntas?"*
+
+O chat local (`docs/CHAT-LOCAL.md`) só entende perguntas em alguns formatos. A API deixa uma IA
+(Claude, da Anthropic) responder perguntas livres, **usando os mesmos dados do site** e as mesmas regras.
+
+**Estado: o código está pronto e DESLIGADO.** A IA só liga quando o Jefferson põe a chave da Anthropic
+no Cloudflare (passo a passo em `docs/PUBLICACAO-E-ACESSO.md`, "Chat com IA").
+
+## Como funciona na tela
+
+1. A pessoa pergunta; **o chat local responde primeiro, sempre**. Ele é grátis, não manda nada para
+   fora e é o que já está testado.
+2. Se a IA estiver ligada, cada resposta do chat local ganha um botão **"Perguntar à IA"**. Só com esse
+   clique a pergunta vai à IA. É uma pergunta por clique.
+3. A resposta da IA aparece com o rótulo *"Resposta da IA com os dados do site — pode errar"*.
+4. Embaixo da caixa fica o aviso: *o botão envia o texto da pergunta à Anthropic (…) Não escreva nome,
+   endereço ou telefone. A IA pode errar: confira a fonte citada.*
+
+Pergunta sobre o **presente** (nível de agora, previsão, "vai encher?", "devo sair?") **nunca vai à IA**:
+- a resposta do chat local para ela não ganha o botão;
+- e o servidor recusa de novo com a mesma barreira (`pedeAgora` do motor). Ele devolve o texto do 199
+  sem chamar a IA.
+
+## O que a IA vê
+
+A IA **não recebe os JSONs inteiros**. Ela consulta quatro ferramentas, que leem os dados do site:
+
+| Ferramenta | O que devolve |
+|---|---|
+| `consultar_motor` | Roda **o motor do chat local** com uma pergunta reescrita. Assim herda as regras já testadas: régua × IBGE × ANA, Brusque antes de 2019, as onze réguas de Itajaí, a contagem de rua só na régua e a lista esparsa de Gaspar. |
+| `picos_da_cidade` | Os picos da cidade, cada um com a sua **escala** (`regua`, `ibge`, `ana`, `nao-declarada`, `antes-da-regua`), a confiança, a fonte e o valor como foi publicado. |
+| `info_da_cidade` | As cotas da Defesa Civil, com os nomes que a fonte usa, e as observações do cadastro. |
+| `tempos_de_descida` | As faixas de `transito.json` e os trechos experimentais, que não têm faixa. |
+
+O texto de instruções (`montarSistema` em `web/src/chat-ia/nucleo.ts`) repete as regras do `CLAUDE.md`:
+- não inventar número;
+- não falar do presente;
+- não comparar metros entre cidades;
+- não somar escalas diferentes;
+- não eleger "a maior cheia de Itajaí";
+- tempo de descida só como intervalo;
+- sem previsão a jusante;
+- sempre a fonte.
+
+`eventos-pendentes-regua.json` continua fora: o servidor não o importa.
+
+## Privacidade
+
+- **Vai à Anthropic:**
+  - o texto da pergunta;
+  - as duas últimas trocas com a IA naquela página, como contexto;
+  - o que as ferramentas devolvem.
+- **Não vai a lugar nenhum:**
+  - IP;
+  - e-mail do Cloudflare Access;
+  - User-Agent;
+  - qualquer identificador.
+
+  A função não lê esses cabeçalhos.
+- **O site não grava** a pergunta nem a resposta. Com o KV de limite ligado, guarda só `ia|AAAA-MM-DD`
+  → número de perguntas do dia, que some em 3 dias.
+- No log da Cloudflare, um erro aparece só como tipo e status (`RateLimitError 429`), sem a pergunta.
+- **Retenção do lado da Anthropic:** segue a política de dados da conta da API. Conferir no Console da
+  Anthropic e nos termos comerciais antes de ligar; este documento não substitui essa leitura.
+
+Isso é diferente da contagem do chat (`TELEMETRIA-CHAT.md`), que nunca manda o texto. Aqui o texto
+precisa ir, senão não há resposta. Por isso a regra é o **clique por pergunta** com o aviso à vista, e não
+um envio automático.
+
+## Custo e limites
+
+- **Modelo:** `claude-opus-5-5` por padrão, o mais capaz.
+  - Dá para trocar sem mexer no código pela variável `CHAT_IA_MODELO`, por exemplo `claude-sonnet-5-5`,
+    pela metade do preço.
+  - O esforço de raciocínio é `low`: é chat e o celular espera a resposta.
+- **Estimativa por pergunta** (2 a 3 rodadas de ferramenta, ~15–25 mil tokens de entrada e ~1–2 mil de
+  saída, com cache):
+  - Opus 5.5: **~US$ 0,05 a 0,12**;
+  - Sonnet 5.5: **~US$ 0,03 a 0,06**.
+  - É estimativa: confira no Console depois das primeiras perguntas reais.
+- **Tetos:**
+  1. Máximo de 6 rodadas de ferramenta por pergunta.
+  2. Pergunta com até 500 caracteres.
+  3. `CHAT_IA_LIMITE_DIA` perguntas por dia no site todo (padrão 300), quando o KV `CHAT_IA` está
+     ligado. Sem o KV, não há teto diário.
+  4. **O teto que garante o bolso é o limite mensal da chave no Console da Anthropic**
+     (*Settings → Limits*). Configure-o ao criar a chave.
+- **Recusa por política:**
+  - O pedido leva `fallbacks: "default"` (beta `server-side-fallback-2026-07-01`): se o modelo declinar,
+    a própria API tenta o modelo de reserva.
+  - Se todos recusarem, a tela mostra um texto fixo.
+- O site está atrás do Cloudflare Access, então só quem tem e-mail cadastrado chega a `/api/chat-ia`.
+
+## Arquivos
+
+| Arquivo | Papel |
+|---|---|
+| `web/src/chat-ia/nucleo.ts` | Instruções, ferramentas e o laço de consulta. Sem rede: o cliente da API entra de fora. |
+| `web/src/chat-ia/cliente.ts` | O lado do aparelho: o GET de "ligado?", o envio de uma pergunta e as mensagens de erro. |
+| `web/functions/api/chat-ia.ts` | A Pages Function: chave, limite do dia, origem, corpo e erros. |
+| `web/src/chat-local/ChatLocal.tsx` | O botão "Perguntar à IA", o rótulo e o aviso. |
+| `nucleo.test.ts`, `endpoint.test.ts`, `cliente.test.ts` | Travas com cliente **falso**: nenhum teste chama a API. |
+| `testes-navegador/fumaca.mjs` | Botão só com o servidor ligado, aviso visível, pergunta de agora sem botão, envio e rótulo. |
+
+**Conferido em 04/10/2026:**
+- A função compila com o `wrangler pages functions build`: ~6,6 MB, ~630 KB comprimidos, abaixo do
+  limite de 3 MB do plano gratuito.
+- Ela roda no `workerd` local (`wrangler pages dev`):
+  - o GET responde `ligado: true`;
+  - a pergunta de agora volta sem chamar a IA;
+  - com uma chave falsa, a API da Anthropic respondeu "chave inválida" e a função devolveu
+    `{"erro":"chave"}`.
+
+**Ainda não foi feita nenhuma chamada real** (não há chave aqui). A primeira pergunta depois de ligar é o
+teste de verdade.

@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "tsx --test src/logica/*.test.ts src/dados/*.test.ts src/chat-local/*.test.ts",
+    "test": "tsx --test src/logica/*.test.ts src/dados/*.test.ts src/chat-local/*.test.ts src/chat-ia/*.test.ts",
     "gabarito": "tsx ferramentas/gerar-gabarito-transito.ts",
     "fumaca": "node testes-navegador/fumaca.mjs",
     "auditoria": "node testes-navegador/auditoria.mjs",
@@ -16,6 +16,7 @@
     "pwa": "node testes-navegador/pwa.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
     "@types/leaflet": "^1.9.22",
     "leaflet": "^1.9.4",
     "react": "^19.3.0",
