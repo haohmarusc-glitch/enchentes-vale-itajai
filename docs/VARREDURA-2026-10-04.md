@@ -44,7 +44,8 @@ Carimbos em hora de Brasília, como em todo o projeto.
 ### Não conferido daqui
 - O painel dos Bombeiros Voluntários: `data-rio="DCSC-00030"`, "ATENÇÃO · 9,43 m · Normal: até 9,20 m",
   e o rodapé que atribui as cotas à COMPDEC.
-- O PLANCON 2025/2028 de Ilhota: o host está bloqueado. A transcrição em `docs/cotas-municipais/ilhota.md`
+- O PLANCON 2025/2028 de Ilhota: o host está bloqueado. **Atualização:** o original chegou na rodada 6 e foi
+  relido. Ele não liga as faixas a régua nenhuma (`docs/VARREDURA-2026-10-03-RODADA6.md`). A transcrição em `docs/cotas-municipais/ilhota.md`
   nomeia a estação da Ponte Cadorin, mas não a DCSC-00030 nem o zero.
 
 ### Três achados que pesam na decisão

@@ -127,3 +127,23 @@ Não misturar com a Barragem Norte (outra escala, painel de Rio do Sul).
 4. Se a COMPDEC publicar mancha por metro (como Ituporanga), substituir esta camada.
 
 Contato do autor do mapa = coordenador da Defesa Civil. Dá para pedir a tabela de cotas de rua e o shapefile bruto sem passar por My Maps.
+
+---
+
+## 04/10/2026 — o plano identifica a estação, mas a validade terminou
+
+Conferido no original (`data/brutos/varredura-pintar-2026-10-03/Ibirama_Decreto-5431-2024_PLAMCON.pdf`):
+- **Tabela (p. 11, seção 4.2):** "NÍVEL DO RIO ITAJAÍ DO NORTE¹ 3,00m – OBSERVAÇÃO / 3,50 m - ATENÇÃO / 4,00 m -
+  EMERGÊNCIA".
+- **Régua (nota 1, p. 11; também p. 9):** "Dados provenientes da Estação Hidrometeorológica da Defesa Civil de
+  Santa Catarina, localizada na ponte Prefeito Osvaldo Tadeu Beltramini." ✅ É a identificação física.
+- **Vigência (p. 32, seção 5):** "Este plano tem validade até 07/08/2025, devendo ser reavaliado e atualizado."
+  ❌ A tabela não pode ser tratada como vigente em out/2026.
+- **Decreto 5.824/2025:** homologa um "PLAMCON 2025" sem anexo, e o texto do plano não foi achado.
+  O boletim municipal de 11/09/2026 às 22h45 chamou 4,04 m de "atenção", contra a "emergência" a 4,00 m do
+  plano de 2024.
+- **Equivalência com o código:** o PLAMCON não escreve "DCSC-00020". O par boletim × DCSC-00020 de 11/09
+  (4,04 × 4,04 m) e os de 14/08 e 01/09 indicam que é a mesma estação. 🟡
+- **Nomes:** "Observação" fica "Observação". Não vira "atenção".
+- **Enviado em 04/10/2026 o C26** (lembrete do pedido de 13/09). Ele pergunta se as faixas são lidas na
+  DCSC-00020 e qual tabela vale.

@@ -89,3 +89,17 @@ Vale avisar Ituporanga.
 
 Pedir à Defesa Civil a tabela atenção/alerta/emergência amarrada à Ponte
 Vitório Sens e o zero da régua.
+
+---
+
+## 04/10/2026 — página municipal de leitura; estação não identificada
+
+- **Página "nível do rio"** (https://www.ituporanga.sc.gov.br/nivel-rio): registro de 02/10/2026 às 7h, local
+  "Centro", 2 m, situação "Alerta". Fonte: handoff de 03/10/2026. **Não conferido daqui** (host bloqueado). A página
+  é alvo do `capturar_fontes.py`, e o workflow de captura pode trazer o corpo.
+- "Centro" não identifica a régua e não liga a página à Ponte Vitório Sens nem à DCSC-00039.
+- **A tabela 1,4 / 1,9 / 2,6 m é da ANA 83250000**, confirmada pelo manual de barragens da SDC
+  (`data/brutos/varredura-pintar-2026-10-03/EXCERTO_WAYBACK_SDC_Operacao-de-Barragens_p9.pdf`). Não transferir
+  para a DCSC-00039. Um "Alerta" a 2 m casa com a escala da ANA (alerta acima de 1,9 m), o que sugere que a página
+  pode ler a 83250000. Isso é indício, não prova.
+- Complemento ao C22 preparado em `docs/oficios-b1-c15-c22.md`.

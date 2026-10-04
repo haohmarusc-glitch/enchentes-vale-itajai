@@ -68,7 +68,7 @@ Muito obrigado pelo trabalho de vocês.
 Jefferson
 
 
-### C11 — atualização de 04/10/2026 (rascunho, NÃO enviado)
+### C11 — atualização de 04/10/2026 ✅ ENVIADA em 04/10/2026 por decisão do Jefferson (Gmail, id `1a104e1a1b02cd6c`, resposta na conversa de 21/09 com dpo@ilhota.sc.gov.br)
 
 Resposta ao C11 ainda não chegou. Este texto vai como resposta na mesma conversa e pergunta só o que falta.
 Envio é decisão do Jefferson. Sem link do site (regra de 02/10/2026).
@@ -532,7 +532,11 @@ Transcrição literal:
 
 ---
 
-## C27 — Defesa Civil de Timbó (rascunho de 04/10/2026, NÃO enviado)
+## C27 — Defesa Civil de Timbó (rascunho de 04/10/2026, NÃO enviado: falta confirmar o destinatário)
+
+O envio foi autorizado pelo Jefferson em 04/10/2026, mas o e-mail não foi mandado. O único endereço achado,
+comdec@timbo.sc.gov.br, vem de resumo de busca da rodada 6, sem página oficial salva. Ver
+`data/brutos/varredura-pintar-2026-10-03/RELATORIO-rodada6.pdf`, seção 3.
 
 **Para:** a confirmar (Defesa Civil de Timbó)
 **Assunto:** Confirmação da tabela de cotas do Rio Benedito
@@ -568,7 +572,14 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-## C26 — Defesa Civil de Ibirama (rascunho de 04/10/2026, NÃO enviado) — ⚠️ É LEMBRETE, não pedido novo
+## C26 — Defesa Civil de Ibirama — ✅ ENVIADO em 04/10/2026 como lembrete, por decisão do Jefferson (Gmail, id `1a104e1d45640b24`, resposta na conversa de 13/09)
+
+**O texto enviado não é o rascunho abaixo.** Ele foi encurtado como lembrete e acrescentou o que a rodada 6 trouxe:
+- o Decreto 5.431/2024 liga o nível à estação da ponte Beltramini;
+- o boletim de 11/09 chamou 4,04 m de "atenção";
+- existe o PLAMCON 2025 homologado pelo Decreto 5.824/2025.
+
+A pergunta enviada: as faixas são lidas na DCSC-00020, e qual tabela vale, a de 2024 ou a nova do PLAMCON 2025?
 
 **Já houve pedido:** em 13/09/2026 às 17h14 BRT foi enviado e-mail mais completo a defesacivil@ibirama.sc.gov.br
 ("Régua e cotas de referência para o monitoramento de enchentes em Ibirama", Gmail, thread `1a09c686c39f1996`).

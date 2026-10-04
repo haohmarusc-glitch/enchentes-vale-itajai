@@ -122,3 +122,20 @@ pergunta que importa: **em que régua estão 9,20 / 10,00 / 10,50?**
 Recusado pintar a leitura de Gaspar com essas cotas (~17 km; regra nº 1). Pergunta
 para a COMPDEC (dpo@ilhota.sc.gov.br): a régua das três cotas, e se a estação da
 ponte existe e publica. Conferir data e texto da notícia 100533.
+
+---
+
+## 04/10/2026 — o plano não liga as faixas a régua nenhuma
+
+Conferido no original (`data/brutos/varredura-pintar-2026-10-03/Ilhota_PLANCON_2025-2028_v016.pdf`):
+- **p. 15:** "O monitoramento do nível do Rio Itajaí, em Ilhota, será feito pela COMPDEC, através da leitura da
+  régua instalada junto a ponte". A ponte não é nomeada.
+- **p. 16:** "De zero a Nove Metros e Vinte Centímetros: rio dentro da calha principal, estado normal. De Nove
+  metros e Vinte Centímetros a Dez metros: represamento dos ribeirões, não é passado aviso para população,
+  estado de atenção." Os nomes de fase e a redação dos limites estão no original.
+- **p. 21:** a estação da Ponte Cláudio Jeremias Cadorin aparece só na tarefa da Carta de Cheias, não junto das
+  faixas.
+- **Equivalência com a DCSC-00030:** ❌ não comprovada.
+  - O painel dos Bombeiros Voluntários aplica 9,20 m sobre ela, mas mistura altitude de rua com a régua.
+  - Com 9,20 m, 89 % de setembro ficaria em atenção (`docs/VARREDURA-2026-10-04.md`).
+- **Enviado em 04/10/2026 o C11 atualizado:** pergunta se as faixas são lidas na DCSC-00030.
