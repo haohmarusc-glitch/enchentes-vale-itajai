@@ -565,3 +565,31 @@ Se quiserem ver o site, basta me mandar o e-mail para cadastro.
 Muito obrigado pelo trabalho de vocês.
 
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C26 — Defesa Civil de Ibirama (rascunho de 04/10/2026, NÃO enviado)
+
+**Para:** defesacivil@ibirama.sc.gov.br · (47) 98838-5645 (contato da varredura de 04/10, não conferido daqui)
+**Assunto:** Faixas do Rio Itajaí do Norte e a estação estadual DCSC-00020
+
+Não leva link do site (regra de 02/10/2026). Envio é decisão do Jefferson.
+
+À Defesa Civil de Ibirama,
+
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Mantenho, sem fins
+comerciais e com acesso restrito, um site sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim. Ele cita a
+origem de cada dado e avisa que não é sistema oficial de alerta nem substitui a Defesa Civil. Em emergência,
+199.
+
+O site mostra a leitura da estação estadual **DCSC-00020** (Defesa Civil de SC) para Ibirama, mas não mostra
+cor de cota, porque não sei em que régua estão as faixas do Plano de Contingência.
+
+**As faixas de monitoramento do Rio Itajaí do Norte (Hercílio) são lidas na estação DCSC-00020? Se não, em
+qual régua, e qual é a tabela vigente?**
+
+Se quiserem ver o site, basta me mandar o e-mail para cadastro.
+
+Muito obrigado pelo trabalho de vocês.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com

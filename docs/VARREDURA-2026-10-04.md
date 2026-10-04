@@ -266,3 +266,39 @@ Não havia C27 no repositório. O rascunho está em `docs/oficios-prontos.md`.
 ### Proposta
 Nenhuma mudança de cadastro. A DCSC-00006 continua com `usar_para_cota: false`. O C19 atualizado está em
 `docs/oficios-b1-c15-c22.md`, logo abaixo do C19 original.
+
+## 4. O que a varredura não achou
+
+- **Rio dos Cedros:**
+  - Pela varredura, a página da prefeitura de 01/08/2011 (`riodoscedros.sc.gov.br/noticia-234732/`)
+    publica ≥ 4,80 m atenção, ≥ 5,30 m alerta, ≥ 5,70 m alarme e 6,02 m nas bocas de lobo. São os números
+    do cadastro. Não conferido daqui.
+  - Conferido daqui: a DCSC-00011 fica a 0,24 km do pino ("Régua da Praça Matriz") e chegou a 3,07 m em
+    11/09 às 22h30. Não há leitura municipal para parear, e 3,07 m está longe de 4,80 m.
+  - A proximidade é pista, não vínculo.
+- **Vidal Ramos e Botuverá** no portal da Defesa Civil de Brusque, pela varredura e não conferido daqui:
+  - estação 3 (Vidal Ramos): última medição em 04/11/2018;
+  - estação 18 (Botuverá): última medição em 18/04/2026;
+  - a 2 parou em 2020 e a 32 em 2022;
+  - só a 79 (Ponte Estaiada – DCSC) está viva.
+
+  O teste das três leituras no mesmo minuto, usado em Brusque, não é possível para elas.
+- **Ibirama:** o site da Defesa Civil não publica nível nem cota. O contato da varredura, não conferido
+  daqui, é defesacivil@ibirama.sc.gov.br e (47) 98838-5645. O C26 foi rascunhado em
+  `docs/oficios-prontos.md`.
+- **Lontras, Apiúna, Trombudo Central, Guabiruba e Ituporanga:** nada encontrado.
+- **Rótulo do painel de Ilhota:** a varredura registra que o segundo cartão do painel dos bombeiros diz
+  "Rio Itajaí-Mirim" para a DCSC-00163 (Ilhota – Arraial dos Cunhas). O rótulo parece errado. Fica só
+  registrado.
+
+## O que espera decisão do Jefferson
+1. **Ilhota:** aceitar ou não o painel dos bombeiros como prova para `REGUAS_COM_COTA_PROPRIA`. A
+   recomendação é esperar o C11 atualizado. Se aceitar, decidir também o nome da faixa de 9,20 m.
+2. **Timbó:**
+   - rodar no servidor a conferência de 31/08;
+   - com quatro pares, decidir sobre `codigo_dcsc` e o pino;
+   - a escala espera o C27.
+3. **Indaial:** nada a aplicar. Decidir o envio do C19 atualizado.
+4. **Envio dos rascunhos:** C11 atualizado, C19 atualizado, C26 e C27. Nenhum leva link do site.
+5. **Originais com sha256:** se forem necessários, decidir se cabe uma lista de captura avulsa no GitHub
+   Actions, separada dos alvos fixos.
