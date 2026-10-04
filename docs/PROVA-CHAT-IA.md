@@ -189,6 +189,64 @@ $T web/ferramentas/prova-chat-ia-resumo.ts $F
 **O "modelo servido" é conferido em toda pergunta.** Se a API responder com outro modelo (a reserva por recusa,
 por exemplo), a pergunta vai para `errors.jsonl` como substituição e não conta para o modelo pedido.
 
+## Rodar com o Ollama (IA local no seu computador)
+
+Pedido do Jefferson (04/10/2026). É **o mesmo chat**: a mesma barreira do presente, as mesmas instruções, as
+mesmas ferramentas sobre os dados do site e o mesmo corretor. Só muda quem responde: um modelo do Ollama no seu
+computador (`web/src/chat-ia/ollama.ts`, API `POST /api/chat`). **O site não usa isso**; é só para a prova.
+
+**Conferido aqui sem o Ollama de verdade:**
+- O ollama.com é bloqueado neste ambiente, então os testes usam um servidor falso no formato documentado da API
+  (`ollama.test.ts`).
+- O executor inteiro rodou contra esse servidor falso, com um "modelo" que só repassa a resposta do motor: deu
+  **31 de 34**, a mesma nota do chat sem IA. Isso confirma que nada se perde no meio.
+- **A primeira rodada no seu computador é o teste de verdade.**
+
+**Seu computador:** i3-10100F, 16 GB de memória, GTX 1650 com 4 GB. As estimativas abaixo não foram medidas.
+
+| Variante | Modelo | Cabe na placa? | Tempo estimado por pergunta | 34 perguntas |
+|---|---|---|---|---|
+| v3 | `qwen2.5:3b` (~2 GB) | sim | ~30 s a 1 min | ~20–35 min |
+| v4 | `qwen2.5:7b` (~4,7 GB) | não; divide com o processador | ~1,5 a 3 min | ~1–2 h |
+
+O pedido usa uma janela de contexto de 16 mil tokens (`OLLAMA_CONTEXTO`). O padrão do Ollama corta a conversa em
+silêncio, porque as instruções e a lista de picos de Blumenau já passam disso.
+
+### Passo a passo no Windows (PowerShell)
+
+1. **Instalar, uma vez:**
+   - **Git**: git-scm.com;
+   - **Node.js LTS**: nodejs.org;
+   - **Ollama**: ollama.com/download. Ele fica rodando na bandeja do Windows.
+2. **Baixar o projeto e as dependências, uma vez:**
+   ```powershell
+   git clone https://github.com/haohmarusc-glitch/enchentes-vale-itajai.git
+   cd enchentes-vale-itajai\web
+   npm install
+   cd ..
+   ```
+3. **Baixar o modelo:** `ollama pull qwen2.5:3b` (e, se quiser, `ollama pull qwen2.5:7b`). Para testar à mão:
+   `ollama run qwen2.5:3b`.
+4. **Rodar a prova** com uma pergunta por vez, porque a placa é uma só. Na primeira vez vai junto o
+   `--approve-harness`, que registra a impressão digital do executor:
+   ```powershell
+   web\node_modules\.bin\tsx web\ferramentas\prova-chat-ia.mjs --flow .claude/hillclimb/chat-ia --variant v3 --model ollama:qwen2.5:3b --reps 1 --concurrency 1 --approve-harness
+   web\node_modules\.bin\tsx web\ferramentas\prova-chat-ia-resumo.ts .claude/hillclimb/chat-ia
+   ```
+   Para o 7B, troque por `--variant v4 --model ollama:qwen2.5:7b`.
+5. **Como ler:**
+   - O resumo dá o acerto, as regras e o tempo médio por pergunta. O custo é zero.
+   - As conversas inteiras ficam em `.claude/hillclimb/chat-ia/v3/traces/`, em JSON: o que o modelo pediu às
+     ferramentas, o que recebeu e o que respondeu.
+   - **A régua a bater é 31 de 34 (91%), o chat sem IA, de graça e instantâneo.** Abaixo disso, o modelo local
+     piora o site.
+
+**Se der erro:**
+- `model "…" not found`: falta o `ollama pull`.
+- Conexão recusada: o Ollama não está aberto (procure o ícone na bandeja).
+- Muito lento ou sem memória: baixe a janela com `$env:OLLAMA_CONTEXTO="8192"`, sabendo que perguntas que leem a
+  lista toda de picos podem ser cortadas.
+
 ## Custo e margem de erro (estimativas antes do piloto)
 
 **Custo por rodada completa** (34 perguntas × 2 repetições), pelo tamanho medido das instruções e ferramentas:
@@ -225,6 +283,7 @@ por exemplo), a pergunta vai para `errors.jsonl` como substituição e não cont
 | `web/src/chat-ia/prova/corrigir.ts` | O corretor (normaliza o texto e confere os padrões) |
 | `web/src/chat-ia/prova/prova.test.ts` | Trava: gabarito × dados do site, resposta-modelo passa, vazio, "não sei" e errado reprovam (roda no `npm test`) |
 | `web/ferramentas/prova-chat-ia.mjs` | O executor, feito a partir do modelo de executor da skill `claude-api`: retoma de onde parou, espera e repete em 429, tem teto de tempo por caso, confere o modelo servido e separa as falhas de serviço |
+| `web/src/chat-ia/ollama.ts` | O mesmo chat respondendo por um modelo do Ollama (`--model ollama:…`), para rodar a prova no computador |
 | `web/ferramentas/prova-chat-ia-resumo.ts` | O resumo por modelo e por categoria |
 | `.claude/hillclimb/chat-ia/_state.json` | Notas, colunas do relatório, preços e os arquivos que entram na impressão digital do executor |
 | `.claude/hillclimb/chat-ia/v1/change.md`, `v2/change.md` | O que muda em cada variante (Opus, Haiku) |

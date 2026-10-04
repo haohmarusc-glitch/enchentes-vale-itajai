@@ -58,7 +58,9 @@ for (const v of variantes) {
   const acerto = media(ok.map((l) => l.grade.acerto))
   const margem = ok.length ? 1.96 * Math.sqrt((acerto * (1 - acerto)) / ok.length) : NaN
   const custos = linhas.map((l) =>
-    custoEstimado({
+    (l.model ?? '').startsWith('ollama:')
+      ? 0 // IA local: sem custo por pergunta (a conta de luz não entra aqui)
+      : custoEstimado({
       modelo: l.model ?? '',
       rodadas: 0,
       entrada: l.usage?.input_tokens ?? 0,
