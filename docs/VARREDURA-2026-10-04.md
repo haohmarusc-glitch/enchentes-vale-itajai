@@ -233,3 +233,36 @@ carta da COMPDEC ou do portal oficial. Decisão do Jefferson.
 
 ### C27 — novo
 Não havia C27 no repositório. O rascunho está em `docs/oficios-prontos.md`.
+
+## 3. Indaial — deslocamento estimado, ainda não fechado
+
+### Os pares
+| Momento | Régua municipal | DCSC-00006 | Diferença | Lado municipal conferido? |
+|---|---:|---:|---:|---|
+| 11/09, 20h00 | 4,92 m (Misturebas) | 7,35 m | 2,43 m | não conferido daqui |
+| 11/09, 21h00 | 5,00 m (Misturebas) | 7,43 m | 2,43 m | não conferido daqui |
+| 12/09, 22h00 | 4,10 m (documento da Defesa Civil) | 6,63 m | 2,53 m | **sim**: está na nossa coleta |
+
+- O lado da DCSC-00006 dos três pares foi conferido em `DCSC-00006.csv`. Na coleta de 15 min, a leitura
+  mais próxima do terceiro par (22h01) também dá 6,63 m.
+- **É uma pista, não uma conversão.** Os dois pares da subida concordam e o da descida difere 10 cm. Três
+  pontos não dizem se o deslocamento é constante, nem se muda com a vazão. **Não usar para pintar.**
+
+### Procura de mais pares
+- **A nossa coleta não tem outros.** O 4,10 m de 12/09 às 22h00 é a única leitura municipal de Indaial na
+  coleta da VPS de agosto a 03/10, o que confirma o E6 do checklist.
+- Mais pares só virão de boletins e imprensa de setembro, cujos hosts estão bloqueados daqui, ou da
+  resposta ao C19.
+
+### A DCSC-00006 parou antes do que se pensava
+- A última leitura plausível é **6,16 m em 26/09/2026 às 08h14**.
+- Depois vêm 12 horas sem leitura e três valores implausíveis: 0,11 m às 20h16, −0,01 m às 20h31 e 0,33 m
+  de 20h46 a 22h01.
+- Depois de 26/09 às 22h01 a estação não entrega número. A evidência entregue com a auditoria mostra o
+  carimbo de 02/10 às 17h22 com nível nulo.
+- Ou seja: Indaial está sem leitura estadual útil desde 26/09, não só desde 02/10. Qualquer par novo tem de
+  ser de antes de 26/09 às 08h14.
+
+### Proposta
+Nenhuma mudança de cadastro. A DCSC-00006 continua com `usar_para_cota: false`. O C19 atualizado está em
+`docs/oficios-b1-c15-c22.md`, logo abaixo do C19 original.

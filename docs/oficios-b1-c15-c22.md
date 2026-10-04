@@ -146,6 +146,31 @@ Agradeço a atenção e fico à disposição.
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
+
+### C19 — atualização de 04/10/2026 (rascunho, NÃO enviado)
+
+Resposta ao C19 ainda não chegou. Este texto vai como resposta na mesma conversa. Envio é decisão do
+Jefferson. Sem link do site.
+
+**Assunto:** Re: Relação entre a régua municipal de Indaial e a estação DCSC-00006
+
+À Defesa Civil de Indaial,
+
+Retomo a mensagem anterior com uma pergunta mais direta.
+
+Comparando leituras da régua municipal divulgadas na cheia de setembro com a estação estadual DCSC-00006,
+a diferença ficou perto de **2,43 m** na subida (11/09, 20h e 21h: 4,92 e 5,00 m na régua, contra 7,35 e
+7,43 m na estação) e de **2,53 m** na descida (12/09, 22h: 4,10 m contra 6,63 m).
+
+**O deslocamento entre a régua municipal e a DCSC-00006 é de cerca de 2,43 m? Ele é constante?**
+
+Também registro, caso ajude: a DCSC-00006 não publica leitura plausível desde 26/09/2026 às 8h14.
+
+Se quiserem ver o site, basta me mandar o e-mail para cadastro.
+
+Muito obrigado.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 ---
 
 ## C20 — Defesa Civil de Guabiruba
