@@ -23,6 +23,7 @@ régua da leitura.
 | A10 | Ituporanga | pino | leitura da 83250000, ou faixas da Ponte Vitório Sens amarradas à DCSC-00039 | Defesa Civil de Ituporanga / EPAGRI | [ ] **C22 enviado** em 10/09/2026; aguarda resposta |
 | A11 | Brusque (já pinta) | — | régua do 8,96 m de 2023, zero da DCSC-00019, legenda vigente (4 ou 79) | Defesa Civil de Brusque | [ ] **C13 enviado** em 10/09/2026; aguarda resposta |
 | A12 | Ibirama, Timbó, Rio dos Cedros, Trombudo | pinos | cota não verificada + datum da leitura DCSC (mesma pergunta de Indaial) | COMPDEC de cada uma | [ ] depois de A1–A11 |
+| A13 | Timbó | Benedito | **04/10:** o número da Defesa Civil de Timbó é o da DCSC-00023 (5,52 × 5,52 m em 12/09, conferido na série); falta conferir 31/08 no servidor e a COMPDEC confirmar a escala 2,01 / 3,01 / 4,30. A DCSC classifica a mesma estação com atenção só a 4,50 m. Ver [varredura de 04/10](VARREDURA-2026-10-04.md) | VPS + COMPDEC Timbó | [ ] C27 rascunhado, não enviado |
 
 ## B. Jefferson — pendências abertas
 

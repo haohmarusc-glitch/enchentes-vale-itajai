@@ -123,3 +123,113 @@ acima não basta. Se a decisão for aceitar, estes seriam os campos.
 ### C11 atualizado
 O texto para envio está em `docs/oficios-prontos.md`, logo abaixo do C11 original. Ele pergunta só o que
 falta.
+
+## 2. Timbó — a leitura municipal é a DCSC-00023
+
+### Conferido daqui
+- **Os dois pares de 12/09 batem com `DCSC-00023.csv`.**
+  - 03h00 = 5,52 m na série, e 5,52 m na 104FM Pomerode.
+  - O topo da cheia ficou em 5,52 m de 02h10 a 03h10, e às 03h20 já marcava 5,51 m. A Misturebas dá
+    5,53 m e diz que o rio "começou a baixar por volta das 2h".
+  - Diferença de 1 cm. Na série, a descida começa uma hora depois do que a matéria diz.
+- **A DCSC classifica a DCSC-00023 com escala própria, e ela não é a da COMPDEC.**
+  - Na coleta de 13/09 a 03/10, a faixa estadual é "normal" até 4,49 m e "atenção" a partir de 4,50 m.
+    A troca para atenção foi em 22/09 às 00h30, com 4,50 m, e a volta em 22/09 às 16h31, com 4,49 m.
+  - A escala que a varredura atribui à Defesa Civil de Timbó dá "alto risco" a partir de 4,30 m.
+  - **Hoje o site mostra "Normal · Defesa Civil SC" para Timbó em níveis que a COMPDEC, pela imprensa,
+    chama de alto risco.** É a faixa da rede estadual, rotulada como tal, e ela é verdadeira. Mas esse é
+    o argumento mais forte para resolver Timbó.
+- **A estação fica a 1,61 km do pino de Timbó.** A DCSC-00023 ("Timbó 1") está em −26,83755, −49,27077 no
+  catálogo; o pino está em −26,8231, −49,2708. Nas outras cidades com `codigo_dcsc`, o pino cai a menos de
+  4 m da estação.
+  - O cadastro não diz de onde veio o pino.
+  - Se a DCSC-00023 fica na Rua Equador, não deu para conferir daqui: o OSM é bloqueado.
+- **A mesma escala já está no cadastro por outro canal.** O `cotas_divergencia` de Timbó guarda uma
+  publicação da Prefeitura de Timbó no Facebook, de 02/07/2026, com normal até 2,00 m, atenção até 3,00 m,
+  "elevação significativa" até 4,29 m e alto risco a partir de 4,30 m. A ND Mais de 31/08 cita a COMPDEC
+  com os mesmos números. São dois canais, um deles da própria prefeitura, sem nomear a régua.
+
+### Não conferido daqui
+- As matérias da Misturebas, 104FM e ND Mais, a lista de 2022 com a Rua Equador e o `cotalerta.com.br`.
+
+### Os pares de 31/08 — conferir no servidor
+A série deste ambiente começa em 02/09. A API da DCSC volta cerca de 88 dias, então 31/08 ainda está na
+janela. Estes comandos só leem: baixam para uma pasta nova e não mexem em cadastro.
+
+```
+cd /opt/enchentes-vale-itajai/scripts
+python3 baixar_historico_dcsc.py DCSC-00023 --dias 40 --destino /tmp/timbo-2026-10-04
+python3 - /tmp/timbo-2026-10-04 <<'PY'
+import glob, json, sys
+pts = {}
+for f in glob.glob(sys.argv[1] + "/DCSC-00023/*.json"):
+    for it in json.load(open(f))["resposta"]["data"]["historic"]["items"] or []:
+        ts = (it.get("ts") or "")[:16]
+        if ts[:13] in ("2026-08-31T09", "2026-08-31T15"):
+            pts[ts] = it.get("rio_nivel")
+for ts in sorted(pts):
+    print(ts, pts[ts])
+PY
+```
+
+Pela ND Mais, às 09h30 seriam 3,27 m e às 15h30, 4,51 m (hora de Brasília, que é o fuso do `ts`). Com os
+quatro pares batendo, o vínculo da leitura fica provado no padrão de Brusque.
+
+### O que isso prova e o que não prova
+- **Prova:** com dois pares ao centímetro, o número que a Defesa Civil de Timbó divulga é o da DCSC-00023.
+- **Não prova:**
+  - a escala 2,00 / 3,00 / 4,30 é de imprensa e de post, não de documento;
+  - o PLANCON de dez/2025 só traz a ativação a 5,00 m;
+  - a localização da estação na Rua Equador não está confirmada.
+
+### Proposta (não aplicada)
+**Recomendação, em duas etapas:**
+1. Com os pares de 31/08, propor `codigo_dcsc: "DCSC-00023"`. O vínculo da leitura não depende da escala.
+2. A escala espera o C27.
+
+O conjunto completo, para quando a decisão vier:
+
+**`data/estacoes.json`, Timbó**
+- `codigo_dcsc`: `"DCSC-00023"`. O validador precisa do par `("itajai-acu", "timbo"): "DCSC-00023"` em
+  `CODIGO_DCSC_ESPERADO`. Também é preciso decidir se o pino vai para a coordenada da estação.
+- `cotas_m`: `{"atencao": 2.01, "alerta": 3.01, "emergencia": 4.30, "ativacao_plancon": 5.0, "ruas_alerta_citadas": 6.0}`.
+  As duas chaves antigas ficam: elas não pintam, e o 5,00 m do PLANCON continua sendo o acionamento do
+  gabinete.
+- `cotas_nomes_na_fonte`: `{"emergencia": "Alto risco", "_por_que": "A Defesa Civil de Timbó chama de ALTO RISCO a faixa a partir de 4,30 m (post da Prefeitura de 02/07/2026; ND Mais de 31/08/2026). Entrou como emergencia pela posição; a tela escreve o nome da fonte."}`
+- `regua_das_cotas`: `"DCSC-00023 — Timbó 1, Rio Benedito (rede estadual da Defesa Civil de SC)"`
+- `regua_das_cotas_fonte`: `"Pares no mesmo instante entre o número divulgado pela Defesa Civil de Timbó e a DCSC-00023: 12/09/2026 03h00, 5,52 × 5,52 m (104FM Pomerode); pico da madrugada, 5,53 × 5,52 m (Misturebas); <31/08 09h30 e 15h30, a conferir>. Escala do post da Prefeitura de Timbó (02/07/2026) e da ND Mais (31/08/2026). <Confirmação da COMPDEC: C27, data>."`
+- `cotas_divergencia`: muda `_estado` para "resolvido: convivem". A escala 2/3/4,30 é a de orientação ao
+  público e o 5,00 m é o acionamento do PLANCON. Só depois de a COMPDEC confirmar no C27; antes disso,
+  continua aberto.
+- `cotas_aviso_publico` e `cotas_pendencia` têm de ser reescritos. Hoje dizem que a tela não pinta Timbó.
+
+**`scripts/coleta_estadual_com_cota.py`**
+```python
+"DCSC-00023": {
+    "cidade": "timbo",
+    "rio": "itajai-acu",
+    "estacao": "Timbó — Rio Benedito (DCSC-00023)",
+    "fonte": ("Rede estadual (Defesa Civil de SC), estação DCSC-00023. O número divulgado pela "
+              "Defesa Civil de Timbó é o desta estação (pares de 12/09/2026 e 31/08/2026). "
+              "Faixas 2,01 / 3,01 / 4,30 m confirmadas pela COMPDEC em <data> (C27)."),
+},
+```
+
+Isso também é um terceiro tipo de prova para `REGUAS_COM_COTA_PROPRIA`: pares com a imprensa, em vez de
+carta da COMPDEC ou do portal oficial. Decisão do Jefferson.
+
+**Efeito na tela, se aplicado** (contado sobre a coleta de 02/09 a 03/10)
+| Faixa | Leituras |
+|---|---:|
+| Normal | 1.913 |
+| Atenção (2,01) | 737 |
+| Alerta (3,01) | 190 |
+| Alto risco (4,30) | 154 |
+
+- O bot de cotas avisaria 19 vezes no período.
+- O chip "Defesa Civil SC" some de Timbó, porque a faixa municipal manda.
+- O cartão "Agora" ganha a frase da cota.
+- Timbó é afluente: não pinta o tronco, só o próprio trecho do Benedito.
+
+### C27 — novo
+Não havia C27 no repositório. O rascunho está em `docs/oficios-prontos.md`.

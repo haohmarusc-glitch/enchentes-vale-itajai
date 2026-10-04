@@ -530,3 +530,38 @@ Transcrição literal:
   02/10/2026 (regra do `CLAUDE.md`: link sem cadastro abre a tela fechada). Sem mais perguntas técnicas ao Prof.
   Cordero (decisão de 03/10/2026).
 
+---
+
+## C27 — Defesa Civil de Timbó (rascunho de 04/10/2026, NÃO enviado)
+
+**Para:** a confirmar (Defesa Civil de Timbó)
+**Assunto:** Confirmação da tabela de cotas do Rio Benedito
+
+Não leva link do site (regra de 02/10/2026). Envio é decisão do Jefferson.
+
+À Defesa Civil de Timbó,
+
+Meu nome é Jefferson, sou morador da região e estudante de Engenharia de Software. Mantenho, sem fins
+comerciais e com acesso restrito, um site sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim. Ele cita a
+origem de cada dado e avisa que não é sistema oficial de alerta nem substitui a Defesa Civil. Em emergência,
+199.
+
+Comparei o nível do Rio Benedito que vocês divulgaram na cheia de 12/09/2026 com a estação estadual
+**DCSC-00023** (Defesa Civil de SC). Os números batem ao centímetro: 5,52 m às 3h nas duas, e 5,53 m contra
+5,52 m no pico da madrugada.
+
+Só preciso confirmar a tabela:
+
+**A escala do Rio Benedito é esta, lida nessa mesma estação?**
+- normal até 2,00 m;
+- atenção de 2,01 a 3,00 m;
+- alerta de 3,01 a 4,29 m;
+- alto risco a partir de 4,30 m.
+
+E ela convive com o acionamento do Plano de Contingência a 5,00 m, ou o substituiu?
+
+Se quiserem ver o site, basta me mandar o e-mail para cadastro.
+
+Muito obrigado pelo trabalho de vocês.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
