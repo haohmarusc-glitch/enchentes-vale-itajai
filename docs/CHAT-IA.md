@@ -59,8 +59,9 @@ O texto de instruções (`montarSistema` em `web/src/chat-ia/nucleo.ts`) repete 
   - qualquer identificador.
 
   A função não lê esses cabeçalhos.
-- **O site não grava** a pergunta nem a resposta. Com o KV de limite ligado, guarda só `ia|AAAA-MM-DD`
-  → número de perguntas do dia, que some em 3 dias.
+- **O site não grava** a pergunta nem a resposta. Com o KV `CHAT_IA` ligado, guarda só números do dia:
+  `ia|AAAA-MM-DD` → perguntas do dia, para o teto (some em 3 dias); e `uso|AAAA-MM-DD` → tokens e custo
+  somados do dia (some em 90 dias).
 - No log da Cloudflare, um erro aparece só como tipo e status (`RateLimitError 429`), sem a pergunta.
 - **Retenção do lado da Anthropic:** segue a política de dados da conta da API. Conferir no Console da
   Anthropic e nos termos comerciais antes de ligar; este documento não substitui essa leitura.
@@ -75,16 +76,21 @@ um envio automático.
   - Dá para trocar sem mexer no código pela variável `CHAT_IA_MODELO`, por exemplo `claude-sonnet-5-5`,
     pela metade do preço.
   - O esforço de raciocínio é `low`: é chat e o celular espera a resposta.
-- **Estimativa por pergunta** (2 a 3 rodadas de ferramenta, ~15–25 mil tokens de entrada e ~1–2 mil de
-  saída, com cache):
-  - Opus 5.5: **~US$ 0,05 a 0,12**;
-  - Sonnet 5.5: **~US$ 0,03 a 0,06**.
-  - É estimativa: confira no Console depois das primeiras perguntas reais.
+- **Estimativa por pergunta.** Medida em 04/10/2026 pelo tamanho real das instruções (~3,9 mil caracteres),
+  das ferramentas (~2,8 mil) e do que elas devolvem. Ainda **sem nenhuma pergunta real**.
+
+  | Pergunta | Tokens (entrada / saída) | Opus 5.5 | Sonnet 5.5 |
+  |---|---|---|---|
+  | Comum ("maior cheia de Gaspar"): 1 consulta ao motor, 2 rodadas | ~7 mil / ~1 mil | ~US$ 0,05 | ~US$ 0,025 |
+  | Pesada ("média por década em Blumenau"): lê os 129 picos (~33 mil caracteres), 3 rodadas | ~22 mil / ~2 mil | ~US$ 0,12–0,15 | ~US$ 0,06–0,08 |
+
+  Por mês, com média de US$ 0,06: 10 perguntas/dia ≈ US$ 18; 50/dia ≈ US$ 90 (Opus). No Sonnet, metade.
+  O gasto real aparece no log e no KV (abaixo) e no Console da Anthropic.
 - **Tetos:**
   1. Máximo de 6 rodadas de ferramenta por pergunta.
   2. Pergunta com até 500 caracteres.
-  3. `CHAT_IA_LIMITE_DIA` perguntas por dia no site todo (padrão 300), quando o KV `CHAT_IA` está
-     ligado. Sem o KV, não há teto diário.
+  3. `CHAT_IA_LIMITE_DIA` perguntas por dia no site todo (padrão **50**, baixado de 300 em 04/10/2026
+     para começar com folga no bolso), quando o KV `CHAT_IA` está ligado. Sem o KV, não há teto diário.
   4. **O teto que garante o bolso é o limite mensal da chave no Console da Anthropic**
      (*Settings → Limits*). Configure-o ao criar a chave.
 - **Recusa por política:**
@@ -92,6 +98,35 @@ um envio automático.
     a própria API tenta o modelo de reserva.
   - Se todos recusarem, a tela mostra um texto fixo.
 - O site está atrás do Cloudflare Access, então só quem tem e-mail cadastrado chega a `/api/chat-ia`.
+
+## Acompanhar o custo (pedido do Jefferson, 04/10/2026)
+
+Cada pergunta respondida escreve **uma linha** no log da Cloudflare, só com números:
+
+```
+{"evento":"chat-ia","tipo":"ia","modelo":"claude-opus-5-5","rodadas":2,"entrada":6800,"cache_criado":0,"cache_lido":0,"saida":950,"custo_usd":0.0462}
+```
+
+- **Os campos:**
+  - `entrada` é a parte sem cache; `cache_criado` e `cache_lido`, a parte que passou pelo cache.
+  - `modelo` é o que respondeu de fato, que pode ser o de reserva depois de uma recusa.
+  - `custo_usd` sai da tabela de preços em `nucleo.ts` (`PRECOS`). Modelo fora da tabela fica com
+    `null`, nunca com palpite.
+- **Onde ver ao vivo:** *Workers & Pages → `enchentes-vale-itajai` → Deployments → (o deploy de
+  produção) → Functions → Real-time logs → Begin log stream*. O log ao vivo do Pages **não guarda
+  histórico**.
+- **Histórico:** com o KV `CHAT_IA` ligado, a função soma o dia em `uso|AAAA-MM-DD`, mantido por 90 dias:
+
+  ```
+  {"perguntas":12,"entrada":81000,"cache_criado":0,"cache_lido":3000,"saida":11500,"custo_usd":0.5546}
+  ```
+
+  Para ler: *Storage & Databases → KV → `enchentes-chat-ia` → KV Pairs*.
+- **O que não vai no log nem no KV:** a pergunta, a resposta, IP e e-mail. Há teste que trava isso
+  (`endpoint.test.ts`).
+- **Pergunta que falhou no meio** (erro da API depois de uma rodada) não entra na conta. O Console da
+  Anthropic continua sendo o valor oficial.
+- A pergunta de agora, que não vai à IA, aparece no log com `tipo: "agora"` e custo 0.
 
 ## Arquivos
 

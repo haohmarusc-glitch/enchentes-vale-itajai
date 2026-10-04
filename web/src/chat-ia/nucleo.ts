@@ -53,7 +53,37 @@ export interface RespostaIA {
   tipo: 'ia' | 'agora' | 'recusa' | 'sem_resposta'
   texto: string
   /** Tokens somados das rodadas — para a conta de custo, nunca com o texto. */
-  uso?: { entrada: number; saida: number; cache_lido: number; rodadas: number }
+  uso?: UsoIA
+}
+
+/** Tokens de uma pergunta, somados das rodadas. `entrada` é só a parte sem cache. */
+export interface UsoIA {
+  /** O modelo que respondeu a última rodada (pode ser o de reserva, depois de uma recusa). */
+  modelo: string
+  rodadas: number
+  entrada: number
+  cache_criado: number
+  cache_lido: number
+  saida: number
+}
+
+/**
+ * Preço de tabela da API, em US$ por milhão de tokens (consultado em 04/10/2026).
+ * Gravar no cache custa 1,25 × a entrada (cache de 5 min). Modelo fora da tabela: sem custo
+ * estimado (null), nunca um palpite — o valor certo fica no Console da Anthropic.
+ */
+const PRECOS: Record<string, { entrada: number; saida: number; cache_lido: number }> = {
+  'claude-opus-5-5': { entrada: 4, saida: 20, cache_lido: 0.2 },
+  'claude-sonnet-5-5': { entrada: 2, saida: 10, cache_lido: 0.2 },
+  'claude-haiku-4-5': { entrada: 1, saida: 5, cache_lido: 0.1 },
+}
+
+/** Custo estimado em US$ (6 casas), ou null para modelo sem preço na tabela. */
+export function custoEstimado(u: UsoIA): number | null {
+  const p = PRECOS[u.modelo]
+  if (!p) return null
+  const usd = (u.entrada * p.entrada + u.cache_criado * p.entrada * 1.25 + u.cache_lido * p.cache_lido + u.saida * p.saida) / 1_000_000
+  return Math.round(usd * 1e6) / 1e6
 }
 
 export const TEXTO_RECUSA =
@@ -325,7 +355,7 @@ export async function responderComIA(pedido: PedidoIA, obter: ObterDados, criar:
   const sistema = montarSistema(base)
   const tools = ferramentas(base)
   const messages: BetaMessageParam[] = [{ role: 'user', content: mensagemInicial(pedido) }]
-  const uso = { entrada: 0, saida: 0, cache_lido: 0, rodadas: 0 }
+  const uso: UsoIA = { modelo: opcoes.modelo ?? MODELO_PADRAO, rodadas: 0, entrada: 0, cache_criado: 0, cache_lido: 0, saida: 0 }
 
   while (uso.rodadas < MAXIMO_RODADAS) {
     const r = await criar({
@@ -340,7 +370,9 @@ export async function responderComIA(pedido: PedidoIA, obter: ObterDados, criar:
       fallbacks: 'default',
     })
     uso.rodadas++
-    uso.entrada += r.usage.input_tokens + (r.usage.cache_creation_input_tokens ?? 0) + (r.usage.cache_read_input_tokens ?? 0)
+    uso.modelo = r.model || uso.modelo
+    uso.entrada += r.usage.input_tokens
+    uso.cache_criado += r.usage.cache_creation_input_tokens ?? 0
     uso.cache_lido += r.usage.cache_read_input_tokens ?? 0
     uso.saida += r.usage.output_tokens
 

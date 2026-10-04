@@ -14,6 +14,7 @@ import {
   MODELO_PADRAO,
   TEXTO_RECUSA,
   TEXTO_SEM_RESPOSTA,
+  custoEstimado,
   executar,
   ferramentas,
   montarSistema,
@@ -80,7 +81,8 @@ test('laço: ferramenta do motor, depois o texto; pedido com reserva e ferrament
   const r = await responderComIA({ pergunta: 'Quais as piores enchentes que Blumenau já teve?', anteriores: [] }, obter, criar)
   assert.equal(r.tipo, 'ia')
   assert.equal(r.texto, 'A maior cheia de Blumenau…')
-  assert.equal(r.uso?.rodadas, 2)
+  // Dois pedidos de 100 de entrada e 20 de saída (o falso não usa cache).
+  assert.deepEqual(r.uso, { modelo: MODELO_PADRAO, rodadas: 2, entrada: 200, cache_criado: 0, cache_lido: 0, saida: 40 })
 
   const [p1, p2] = pedidos
   assert.ok(p1 && p2)
@@ -172,4 +174,12 @@ test('ferramentas cobrem todas as cidades e o sistema é estável', () => {
   assert.deepEqual(new Set(enumIds), ids)
   assert.equal(enumIds.length, ids.size, 'Itajaí aparece uma vez só')
   assert.equal(montarSistema(dados), montarSistema(dados))
+})
+
+test('custo estimado pela tabela de preços; modelo desconhecido fica sem custo', () => {
+  const u = { modelo: 'claude-opus-5-5', rodadas: 2, entrada: 6_000, cache_criado: 1_000, cache_lido: 2_000, saida: 1_000 }
+  // 6000×4 + 1000×5 + 2000×0,20 + 1000×20 = 49.400 por milhão = US$ 0,0494
+  assert.equal(custoEstimado(u), 0.0494)
+  assert.equal(custoEstimado({ ...u, modelo: 'claude-sonnet-5-5' }), 0.0249)
+  assert.equal(custoEstimado({ ...u, modelo: 'modelo-novo' }), null)
 })

@@ -14,7 +14,12 @@ const AGORA = new Date('2026-10-04T15:00:00Z')
 const CHAVE = { ANTHROPIC_API_KEY: 'sk-ant-teste' }
 
 const texto = (t: string) =>
-  ({ content: [{ type: 'text', text: t }], stop_reason: 'end_turn', usage: { input_tokens: 1, output_tokens: 1 } }) as unknown as Anthropic.Beta.Messages.BetaMessage
+  ({
+    model: 'claude-opus-5-5',
+    content: [{ type: 'text', text: t }],
+    stop_reason: 'end_turn',
+    usage: { input_tokens: 1, output_tokens: 1 },
+  }) as unknown as Anthropic.Beta.Messages.BetaMessage
 
 function criarFalso(t = 'resposta') {
   let chamadas = 0
@@ -84,7 +89,14 @@ test('teto do dia no KV: só o contador, e 429 quando passa', async () => {
   assert.equal(r.status, 429)
   assert.deepEqual(await r.json(), { erro: 'limite_do_dia' })
   assert.equal(chamadas(), 2)
-  assert.deepEqual([...dados.entries()], [['ia|2026-10-04', '2']])
+  assert.equal(dados.get('ia|2026-10-04'), '2')
+  // Soma do dia: só números (o falso gasta 1 de entrada e 1 de saída por pergunta).
+  const dia = JSON.parse(dados.get('uso|2026-10-04') ?? '{}')
+  assert.deepEqual(Object.keys(dia).sort(), ['cache_criado', 'cache_lido', 'custo_usd', 'entrada', 'perguntas', 'saida'])
+  assert.equal(dia.perguntas, 2)
+  assert.equal(dia.entrada, 2)
+  assert.equal(dia.saida, 2)
+  assert.deepEqual([...dados.keys()].sort(), ['ia|2026-10-04', 'uso|2026-10-04'])
 })
 
 test('erro da IA não vaza detalhe nem a pergunta', async () => {
@@ -94,4 +106,30 @@ test('erro da IA não vaza detalhe nem a pergunta', async () => {
   const r = await tratar(post({ pergunta: 'Maior cheia de Gaspar?' }), CHAVE, criar, AGORA)
   assert.equal(r.status, 500)
   assert.deepEqual(await r.json(), { erro: 'interno' })
+})
+
+test('log de custo: uma linha por pergunta, só números, sem a pergunta nem a resposta', async () => {
+  const linhas: string[] = []
+  const original = console.log
+  console.log = (...x: unknown[]) => void linhas.push(x.map(String).join(' '))
+  try {
+    const { criar } = criarFalso('Resposta secreta sobre Gaspar')
+    await tratar(post({ pergunta: 'Pergunta secreta de Gaspar?' }), CHAVE, criar, AGORA)
+  } finally {
+    console.log = original
+  }
+  assert.equal(linhas.length, 1)
+  const linha = linhas[0]!
+  assert.ok(!linha.includes('secreta'), linha)
+  assert.deepEqual(JSON.parse(linha), {
+    evento: 'chat-ia',
+    tipo: 'ia',
+    modelo: 'claude-opus-5-5',
+    rodadas: 1,
+    entrada: 1,
+    cache_criado: 0,
+    cache_lido: 0,
+    saida: 1,
+    custo_usd: 0.000024,
+  })
 })

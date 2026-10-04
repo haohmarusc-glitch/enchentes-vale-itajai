@@ -201,7 +201,7 @@ botão "Perguntar à IA" não aparece.
 4. **(Opcional, recomendado) Teto do dia.**
    - Criar o namespace KV `enchentes-chat-ia`.
    - Ligar com o *Variable name* **`CHAT_IA`**.
-   - Se quiser outro teto, criar a variável de texto `CHAT_IA_LIMITE_DIA`. O padrão é 300 perguntas por
+   - Se quiser outro teto, criar a variável de texto `CHAT_IA_LIMITE_DIA`. O padrão é 50 perguntas por
      dia no site todo.
 5. **(Opcional) Trocar o modelo.**
    - Variável de texto `CHAT_IA_MODELO`.
