@@ -97,6 +97,16 @@ export default function Inicio() {
         <Seletor cidades={cidades} aoEscolher={escolher} aoCancelar={minha ? () => setTrocando(false) : undefined} />
       )}
 
+      {/* O chat do histórico, à vista (04/10/2026): antes ele só existia no fim da
+          aba Histórico de cada cidade, e quem não sabia não o achava. */}
+      <Link to="/perguntas" className={`${estilos.cartaoRio} ${estilos.cartaoChat}`}>
+        <span className={estilos.tituloRio}>Pergunte sobre as cheias →</span>
+        <span className={estilos.descricao}>
+          A maior cheia da sua cidade, as cheias de um ano, quantas chegaram à cota da sua rua. Respostas só
+          com os dados do site, sempre com a fonte. Não é alerta.
+        </span>
+      </Link>
+
       <h2 className={estilos.secao}>Escolha o rio</h2>
       <ul className={estilos.lista}>
         {RIOS.map((rio) => (

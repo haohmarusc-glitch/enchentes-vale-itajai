@@ -13,6 +13,7 @@ import TelaCidade from './telas/TelaCidade'
 import MonitorBacia from './telas/MonitorBacia'
 import TelaItajai from './telas/TelaItajai'
 import TelaRio from './telas/TelaRio'
+import TelaPerguntas from './telas/TelaPerguntas'
 
 const ABAS = [
   { para: '/', rotulo: 'Início', fim: true },
@@ -169,6 +170,7 @@ function Rotas() {
       <Route path="/:rioId/:cidadeId" element={<TelaCidade />} />
       <Route path="/mirim" element={<TelaRio key="mirim" rioId="itajai-mirim" />} />
       <Route path="/itajai" element={<TelaItajai />} />
+      <Route path="/perguntas" element={<TelaPerguntas />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

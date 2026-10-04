@@ -8,12 +8,17 @@
  * Contagem das perguntas não entendidas (decisão de 04/10/2026,
  * `docs/TELEMETRIA-CHAT.md`): só quando o servidor diz que está contando E a
  * pessoa não desmarcou. Vai um evento agregado, nunca o texto digitado.
+ *
+ * Chat com IA (docs/CHAT-IA.md): só quando o servidor diz que está ligado. O
+ * motor local responde primeiro, sempre; a pergunta só vai à IA quando a pessoa
+ * aperta "Perguntar à IA" naquela resposta, com o aviso de envio à vista.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { citaRua, responder, type Dados } from './motor'
 import { carregarBase, carregarCotasAna, carregarCotasRuas } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
 import { RETENCAO_DIAS, criarEnviador, idsDoCadastro, montarEvento, servidorContando } from '../logica/telemetriaChat'
+import { AVISO_ENVIO, iaLigada, perguntarIA } from '../chat-ia/cliente'
 import estilos from './ChatLocal.module.css'
 
 /** Trocado pelo Vite no build (`vite.config.ts`); fora dele, "dev". */
@@ -26,7 +31,15 @@ const enviarContagem = criarEnviador({
   fetch: typeof fetch === 'function' ? (url, init) => fetch(url, init) : undefined,
 })
 
-type Msg = { papel: 'usuario' | 'assistente'; texto: string; sugestoes?: string[] }
+type Msg = {
+  papel: 'usuario' | 'assistente'
+  texto: string
+  sugestoes?: string[]
+  /** Resposta do motor local que pode ir à IA: a pergunta que a gerou. */
+  paraIA?: string
+  /** Veio da IA (rótulo próprio na tela). */
+  ia?: boolean
+}
 
 const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
   'itajai-acu': [
@@ -50,6 +63,9 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
   // O servidor está contando? Começa em "não": sem resposta, nada é contado nem prometido.
   const [contando, setContando] = useState(false)
   const [permitido, setPermitido] = useState(() => contagemChatPermitida())
+  // A IA está ligada no servidor? Começa em "não": sem resposta, o botão não aparece.
+  const [comIA, setComIA] = useState(false)
+  const [esperandoIA, setEsperandoIA] = useState(false)
   const cadastro = useMemo(() => (dados ? idsDoCadastro(dados.estacoes) : new Set<string>()), [dados])
   const caixa = useRef<HTMLElement>(null)
   const fim = useRef<HTMLDivElement>(null)
@@ -79,6 +95,9 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     let vivo = true
     servidorContando((url, init) => fetch(url, init)).then((sim) => {
       if (vivo) setContando(sim)
+    })
+    iaLigada(typeof fetch === 'function' ? (url, init) => fetch(url, init) : undefined).then((sim) => {
+      if (vivo) setComIA(sim)
     })
     carregarBase()
       .then((d) => {
@@ -120,9 +139,32 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
       const evento = montarEvento({ intencao: r.intencao, falha: r.falha, agora: new Date(), versao: VERSAO_SITE, cidadesDoCadastro: cadastro })
       if (evento) enviarContagem(evento)
     }
-    setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes }])
+    // A barreira do presente vale igual na IA: essa resposta não ganha o botão.
+    const paraIA = r.intencao === 'agora' ? undefined : q
+    setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA }])
     setTexto('')
+    rolarAoFim()
+  }
+
+  function rolarAoFim() {
     setTimeout(() => fim.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 30)
+  }
+
+  async function perguntarAIA(indice: number, q: string) {
+    if (esperandoIA) return
+    setEsperandoIA(true)
+    // O botão some daquela resposta: uma pergunta, um envio.
+    setMsgs((atual) => atual.map((m, i) => (i === indice ? { ...m, paraIA: undefined } : m)))
+    rolarAoFim()
+    // Contexto: as duas últimas trocas com a IA (pergunta da pessoa → resposta da IA).
+    const anteriores = msgs.flatMap((m, i) => {
+      const antes = msgs[i - 1]
+      return m.ia && antes?.papel === 'usuario' ? [{ pergunta: antes.texto, resposta: m.texto }] : []
+    })
+    const r = await perguntarIA((url, init) => fetch(url, init), q, anteriores)
+    setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, ia: r.tipo === 'ia' }])
+    setEsperandoIA(false)
+    rolarAoFim()
   }
 
   return (
@@ -151,7 +193,13 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
         ) : null}
         {msgs.map((msg, i) => (
           <div key={i} className={`${estilos['chat-msg']} ${msg.papel === 'usuario' ? estilos['chat-usuario'] : estilos['chat-assistente']}`}>
+            {msg.ia ? <div className={estilos['chat-rotulo-ia']}>Resposta da IA com os dados do site — pode errar</div> : null}
             <div>{msg.texto}</div>
+            {comIA && msg.paraIA ? (
+              <button type="button" className={estilos['chat-botao-ia']} disabled={esperandoIA} onClick={() => perguntarAIA(i, msg.paraIA!)}>
+                Perguntar à IA
+              </button>
+            ) : null}
             {msg.sugestoes ? (
               <div className={estilos['chat-sugestoes']}>
                 {msg.sugestoes.map((s) => (
@@ -163,6 +211,11 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
             ) : null}
           </div>
         ))}
+        {esperandoIA ? (
+          <div className={`${estilos['chat-msg']} ${estilos['chat-assistente']}`} role="status">
+            A IA está consultando os dados do site…
+          </div>
+        ) : null}
         <div ref={fim} />
       </div>
 
@@ -182,6 +235,8 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
           Perguntar
         </button>
       </div>
+
+      {comIA ? <p className={estilos['chat-aviso-ia']}>{AVISO_ENVIO}</p> : null}
 
       {contando ? (
         <div className={estilos['chat-contagem']}>

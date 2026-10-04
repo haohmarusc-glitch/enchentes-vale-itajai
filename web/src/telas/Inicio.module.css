@@ -262,3 +262,10 @@
   padding: 0 1.1rem;
   cursor: pointer;
 }
+
+/* O cartão do chat do histórico (04/10/2026): o mesmo cartão dos rios, separado
+   da lista e com a borda de destaque, para ser achado sem competir com o nível. */
+.cartaoChat {
+  margin: 1rem 0 0.5rem;
+  border-color: var(--agua-clara);
+}

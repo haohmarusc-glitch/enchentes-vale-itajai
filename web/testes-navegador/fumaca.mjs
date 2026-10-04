@@ -209,6 +209,81 @@ console.log('\n"Minha rua alaga?" leva ao que promete, com a tela no lugar certo
   }
 }
 
+console.log('\no chat do histórico tem botão na tela inicial')
+{
+  // Pedido do Jefferson (04/10/2026): o chat só existia no fim da aba Histórico.
+  // A Início ganhou o cartão "Pergunte sobre as cheias", que abre /perguntas.
+  const ctx = await navegador.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } })
+  await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
+  const pagina = await ctx.newPage()
+  await pagina.goto(`${base}/#/`, { waitUntil: 'load' })
+  await pagina.getByRole('button', { name: 'Entendi' }).click({ timeout: 5_000 }).catch(() => {})
+  const cartao = pagina.getByRole('link', { name: /Pergunte sobre as cheias/ })
+  ;(await cartao.count()) > 0 ? ok('a Início tem o cartão do chat') : falhou('a Início perdeu o cartão do chat')
+  await cartao.click({ timeout: 5_000 }).catch(() => {})
+  const chat = pagina.locator('section[aria-label="Perguntas sobre o histórico de enchentes"]')
+  await chat.waitFor({ timeout: 15_000 }).catch(() => {})
+  ;(await chat.count()) > 0 && pagina.url().endsWith('#/perguntas')
+    ? ok('o cartão abre a página do chat (/perguntas)')
+    : falhou(`o cartão não abriu o chat (${pagina.url()})`)
+  await ctx.close()
+}
+
+console.log('\nchat com IA: botão só com o servidor ligado; o presente nunca vai à IA')
+{
+  // docs/CHAT-IA.md. O `vite preview` não roda as funções: o /api/chat-ia é simulado aqui.
+  async function chatCom(ligado, enviados) {
+    const ctx = await navegador.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } })
+    await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
+    await ctx.route('**/api/chat-ia', (r) => {
+      if (r.request().method() === 'GET') return r.fulfill({ json: { ligado } })
+      enviados.push(JSON.parse(r.request().postData() ?? '{}'))
+      return r.fulfill({ json: { tipo: 'ia', texto: 'Resposta simulada da IA.' } })
+    })
+    const pagina = await ctx.newPage()
+    await pagina.goto(`${base}/#/perguntas`, { waitUntil: 'load' })
+    await pagina.getByRole('button', { name: 'Entendi' }).click({ timeout: 5_000 }).catch(() => {})
+    const caixa = pagina.getByRole('textbox', { name: 'Sua pergunta' })
+    await pagina.waitForFunction(() => !document.querySelector('input[aria-label="Sua pergunta"]')?.disabled, null, { timeout: 15_000 }).catch(() => {})
+    return { ctx, pagina, caixa }
+  }
+  async function perguntar(pagina, caixa, q) {
+    await caixa.fill(q)
+    await pagina.getByRole('button', { name: 'Perguntar', exact: true }).click()
+  }
+
+  const nada = []
+  const desligado = await chatCom(false, nada)
+  await perguntar(desligado.pagina, desligado.caixa, 'Qual foi a maior cheia de Gaspar?')
+  await desligado.pagina.waitForTimeout(500)
+  ;(await desligado.pagina.getByRole('button', { name: 'Perguntar à IA' }).count()) === 0
+    ? ok('servidor desligado: nenhum botão "Perguntar à IA"')
+    : falhou('botão da IA apareceu com o servidor desligado')
+  await desligado.ctx.close()
+
+  const enviados = []
+  const { ctx, pagina, caixa } = await chatCom(true, enviados)
+  ;(await pagina.getByText(/envia o texto da pergunta à Anthropic/).count()) > 0
+    ? ok('aviso de envio à Anthropic visível')
+    : falhou('faltou o aviso de envio à Anthropic')
+  await perguntar(pagina, caixa, 'O rio vai encher hoje?')
+  await pagina.waitForTimeout(500)
+  ;(await pagina.getByRole('button', { name: 'Perguntar à IA' }).count()) === 0
+    ? ok('pergunta sobre agora: sem botão da IA')
+    : falhou('pergunta sobre agora ganhou botão da IA')
+  await perguntar(pagina, caixa, 'Qual foi a maior cheia de Gaspar?')
+  const botao = pagina.getByRole('button', { name: 'Perguntar à IA' })
+  await botao.first().click({ timeout: 5_000 }).catch(() => {})
+  await pagina.getByText('Resposta simulada da IA.').waitFor({ timeout: 5_000 }).catch(() => {})
+  ;(await pagina.getByText('Resposta simulada da IA.').count()) > 0 &&
+  (await pagina.getByText(/Resposta da IA com os dados do site/).count()) > 0 &&
+  enviados.length === 1 &&
+  enviados[0].pergunta === 'Qual foi a maior cheia de Gaspar?'
+    ? ok('o botão envia uma pergunta e mostra a resposta com o rótulo da IA')
+    : falhou(`envio à IA não funcionou (${JSON.stringify(enviados)})`)
+  await ctx.close()
+}
+
 await navegador.close()
 await servidor.close()
 

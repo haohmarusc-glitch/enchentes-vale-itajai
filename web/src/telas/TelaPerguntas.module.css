@@ -1,0 +1,10 @@
+.voltar {
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+}
+
+.intro {
+  margin: 0 0 1rem;
+  color: var(--tinta-fraca);
+  max-width: 65ch;
+}

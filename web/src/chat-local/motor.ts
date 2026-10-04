@@ -9,7 +9,8 @@
  * navegador. Especificação e regras do produto em `docs/CHAT-LOCAL.md`.
  */
 import type { FalhaDoMotor } from '../logica/telemetriaChat'
-import type { CotaRua } from '../dados/tipos'
+import type { CotaRua, Trecho, TrechoExperimental } from '../dados/tipos'
+import { caminho, type Caminho } from '../logica/transito'
 import { buscar, cidadesComCotas, nomeCompleto, podeAfirmarAlcance } from '../logica/cotasRuas'
 
 export interface RegistroCheia {
@@ -25,6 +26,7 @@ export interface RegistroCheia {
 }
 
 export interface TrechoTransito {
+  rio?: string
   de: string
   para: string
   horas_min: number
@@ -63,12 +65,18 @@ export interface EventoChuva {
 
 export interface Dados {
   enchentes: { eventos: RegistroCheia[] }
-  transito: { trechos: TrechoTransito[] }
+  transito: { trechos: TrechoTransito[]; trechos_experimentais?: TrechoExperimental[] }
   estacoes: {
     rios: Record<
       string,
       {
         nome: string
+        /** Árvore do rio (`docs/TOPOLOGIA-CANONICA.md`): tronco, cabeceiras e afluentes. */
+        _topologia?: {
+          tronco_sequencia?: string[]
+          cabeceiras_paralelas?: string[]
+          afluentes_laterais?: { id: string; entra_perto_de: string; rio: string }[]
+        }
         cidades: {
           id: string
           nome: string
@@ -142,6 +150,11 @@ const AGORA = [
   /\b(previsao|alerta)\b/,
   /\b(estou|to|moro)\b.{0,40}\b(ilhad|alagad|cercad)/,
 ]
+/** A pergunta é sobre o presente (nível de agora, previsão, sair de casa)? Vale também para o chat com IA. */
+export function pedeAgora(pergunta: string): boolean {
+  const t = norm(pergunta)
+  return AGORA.some((r) => r.test(t))
+}
 export const TEXTO_ALERTA =
   'Eu só respondo sobre cheias que já aconteceram, com os dados deste site. Não sei o que está acontecendo no rio agora. ' +
   'Para a situação atual, previsão ou para decidir se deve sair de casa, siga a Defesa Civil: ligue 199 (ou 193, Bombeiros, em emergência). ' +
@@ -685,26 +698,140 @@ function chuvaAntes(e: Extraido, d: Dados): Resposta {
   }
 }
 
+// Tempo de descida entre QUALQUER par de cidades do site (pedido do Jefferson, 04/10/2026).
+// O número vem de `caminho()` (logica/transito.ts) — o MESMO encadeamento da tela e do bot,
+// travado pelo gabarito `data/transito-esperado.json`. Sem caminho, o chat diz POR QUÊ
+// (outro rio, afluente, cabeceiras paralelas, trecho em estudo, cidade sem tempo medido)
+// e nunca inventa número.
+const NOME_RIO: Record<string, string> = { 'itajai-acu': 'Itajaí-Açu', 'itajai-mirim': 'Itajaí-Mirim' }
+const NOTA_TRANSITO = 'Cada cheia é diferente; isso é uma referência de estudo, não uma previsão.'
+
+function faixaTransito(c: Pick<Caminho, 'horasMin' | 'horasMax'>, direto: boolean): string {
+  if (c.horasMin !== c.horasMax) return `de ${num(c.horasMin, 1)} a ${num(c.horasMax, 1)} h`
+  return direto ? `cerca de ${num(c.horasMin, 1)} h (valor único na fonte, é aproximação)` : `cerca de ${num(c.horasMin, 1)} h (soma de valores únicos, é aproximação)`
+}
+
+function textoCaminho(c: Caminho, nome: (id: string) => string): string {
+  const conta = c.direto
+    ? ''
+    : `\nSoma dos trechos do estudo: ${c.trechos.map((t) => `${nome(t.de)} → ${nome(t.para)} (${faixaTransito({ horasMin: t.horas_min, horasMax: t.horas_max }, true).replace(/ \(.*\)$/, '')})`).join(' + ')}. Somar trechos acumula a incerteza.`
+  const fontes = [...new Set(c.trechos.map((t) => String(t.fonte ?? 'transito.json').replace(/\.+$/, '')))]
+  return `Da passagem do pico em ${nome(c.trechos[0]!.de)} até ${nome(c.trechos.at(-1)!.para)}: ${faixaTransito(c, c.direto)}, ${conf(c.confianca)}.${conta}\nFonte: ${fontes.join('; ')}.\n${NOTA_TRANSITO}`
+}
+
 function transito(e: Extraido, d: Dados): Resposta {
+  const rios = Object.entries(d.estacoes.rios)
+  const comRegua = rios.flatMap(([, r]) => r.cidades.map((c) => c.nome)).filter((x, i, l) => l.indexOf(x) === i)
   if (!e.cidade || !e.cidade2)
-    return { intencao: 'transito', texto: 'Diga as duas cidades. Ex.: "quanto tempo a cheia leva de Rio do Sul até Blumenau?"', falha: faltou('faltou_cidade', e) }
-  const a = e.cidade
-  const b = e.cidade2
-  const tr = d.transito.trechos.find((x) => x.de === a.id && x.para === b.id) ?? d.transito.trechos.find((x) => x.de === b.id && x.para === a.id)
-  if (!tr) {
-    const daqui = d.transito.trechos.filter((x) => x.de === a.id).map((x) => x.para)
     return {
       intencao: 'transito',
-      texto: `O site não tem tempo de trânsito levantado entre ${a.nome} e ${b.nome}.${daqui.length ? ` De ${a.nome} há tempo para: ${daqui.join(', ')}.` : ''} Não somo trechos, porque alguns rios têm cheia própria e o tempo não se encadeia.`,
+      texto: `Diga as duas cidades. Ex.: "quanto tempo a cheia leva de Rio do Sul até Blumenau?". Cidades com régua no site: ${comRegua.join(', ')}.`,
+      falha: faltou('faltou_cidade', e),
     }
-  }
-  const faixa = tr.horas_min === tr.horas_max ? `cerca de ${tr.horas_min} h (valor único na fonte, é aproximação)` : `de ${tr.horas_min} a ${tr.horas_max} h`
+  const a = e.cidade
+  const b = e.cidade2
   const conhecidas = cidadesConhecidas(d)
   const nome = (id: string) => conhecidas.find((c) => c.id === id)?.nome ?? id
-  return {
-    intencao: 'transito',
-    texto: `Da passagem do pico em ${nome(tr.de)} até ${nome(tr.para)}: ${faixa}, ${conf(tr.confianca)}.\nFonte: ${String(tr.fonte ?? 'transito.json').replace(/\.+$/, '')}.\nCada cheia é diferente; isso é uma referência de estudo, não uma previsão.`,
+  const riosDe = (id: string) => rios.filter(([, r]) => r.cidades.some((c) => c.id === id)).map(([k]) => k)
+  const resp = (texto: string): Resposta => ({ intencao: 'transito', texto })
+
+  for (const x of [a, b])
+    if (!riosDe(x.id).length)
+      return resp(`${x.nome} não tem régua de rio neste site, então não há tempo de descida para ela. As cidades com régua são: ${comRegua.join(', ')}.`)
+
+  const trechos = d.transito.trechos as unknown as Trecho[]
+  const experimentais = d.transito.trechos_experimentais ?? []
+  const comuns = riosDe(a.id).filter((r) => riosDe(b.id).includes(r))
+
+  // 1. Há caminho, na ordem pedida ou na contrária (a água só desce).
+  for (const rio of comuns) {
+    const ida = caminho(trechos, rio, a.id, b.id)
+    if (ida) return resp(textoCaminho(ida, nome))
+    const volta = caminho(trechos, rio, b.id, a.id)
+    if (volta) return resp(`A cheia desce de ${b.nome} para ${a.nome}, não o contrário.\n${textoCaminho(volta, nome)}`)
   }
+
+  // Para as explicações: o que o site TEM de cada cidade até Itajaí, na foz.
+  const ateFoz = (id: string, rio: string) => {
+    if (id === 'itajai') return ''
+    const c = caminho(trechos, rio, id, 'itajai')
+    return c ? `\nDe ${nome(id)} até Itajaí: ${faixaTransito(c, c.direto)}, ${conf(c.confianca)}.` : ''
+  }
+
+  // 2. Rios diferentes: a cheia de um não passa pelo outro.
+  if (!comuns.length) {
+    const [ra] = riosDe(a.id)
+    const [rb] = riosDe(b.id)
+    return resp(
+      `${a.nome} fica no rio ${NOME_RIO[ra!] ?? ra} e ${b.nome} no ${NOME_RIO[rb!] ?? rb}: são rios diferentes, e a cheia de um não desce pelo outro. Os dois se encontram só em Itajaí, na foz.${ateFoz(a.id, ra!)}${ateFoz(b.id, rb!)}\n${NOTA_TRANSITO}`,
+    )
+  }
+
+  const rio = comuns[0]!
+  const topo = d.estacoes.rios[rio]?._topologia ?? {}
+  const tronco = topo.tronco_sequencia ?? []
+  const cabeceiras = topo.cabeceiras_paralelas ?? []
+  const afluente = (id: string) => (topo.afluentes_laterais ?? []).find((x) => x.id === id)
+  const pos = (id: string) => (cabeceiras.includes(id) ? -1 : tronco.indexOf(id))
+  const naArvore = (id: string) => pos(id) >= 0 || cabeceiras.includes(id)
+
+  // 3. Trecho em estudo: há medição, mas cheias pareadas de menos para dar faixa.
+  const estudo = experimentais.find((t) => t.rio === rio && (t.de === a.id || t.de === b.id))
+  if (estudo) {
+    const [cima, baixo] = pos(a.id) <= pos(b.id) ? [a.id, b.id] : [b.id, a.id]
+    const resto = baixo !== estudo.para ? caminho(trechos, rio, estudo.para, baixo) : null
+    return resp(
+      `O trecho ${nome(estudo.de)} → ${nome(estudo.para)} está em estudo: o site tem ${estudo.eventos_pareados_com_hora} cheia medida com hora e precisa de ${estudo.minimo_eventos_pareados} para dar uma faixa. Por isso não dá o tempo de ${nome(cima)} até ${nome(baixo)} (dados insuficientes).` +
+        (resto ? `\nO que o site tem: de ${nome(estudo.para)} até ${nome(baixo)}, ${faixaTransito(resto, resto.direto)}, ${conf(resto.confianca)}.` : '') +
+        `\n${NOTA_TRANSITO}`,
+    )
+  }
+
+  // 4. Afluente lateral ou cidade sem posição na árvore: relógio próprio.
+  for (const x of [a, b]) {
+    const af = afluente(x.id)
+    if (af)
+      return resp(
+        `${x.nome} fica no ${af.rio}, um afluente que entra no ${NOME_RIO[rio] ?? rio} perto de ${nome(af.entra_perto_de)}. A cheia ali vem da chuva da própria sub-bacia: o pico entra no rio principal, não desce por ele. Por isso o site não encadeia tempo de descida entre ${a.nome} e ${b.nome}: ele só tem tempo entre cidades do curso principal do rio.`,
+      )
+    if (!naArvore(x.id))
+      return resp(
+        `${x.nome} ainda não tem posição definida no desenho do rio (a fonte diz o rio, não onde ele encontra o ${NOME_RIO[rio] ?? rio}). Sem isso, o site não calcula tempo de descida entre ${a.nome} e ${b.nome}.`,
+      )
+  }
+
+  // 5. Duas cabeceiras: rios paralelos que só se juntam em Rio do Sul.
+  if (cabeceiras.includes(a.id) && cabeceiras.includes(b.id)) {
+    const juncao = tronco[0] ?? 'rio-do-sul'
+    const ate = (id: string) => {
+      const c = caminho(trechos, rio, id, juncao)
+      return c ? `\nDe ${nome(id)} até ${nome(juncao)}: ${faixaTransito(c, c.direto)}, ${conf(c.confianca)}.` : ''
+    }
+    return resp(
+      `${a.nome} e ${b.nome} ficam em rios paralelos, que se juntam em ${nome(juncao)}: a cheia de uma não passa pela outra.${ate(a.id)}${ate(b.id)}\n${NOTA_TRANSITO}`,
+    )
+  }
+
+  // 6. As duas no eixo, mas sem tempo medido: o menor trecho com tempo que contém o percurso.
+  const [cima, baixo] = pos(a.id) <= pos(b.id) ? [a.id, b.id] : [b.id, a.id]
+  const invertido = cima !== a.id
+  const acima = [cima, ...tronco.filter((x) => pos(x) < pos(cima))].reverse()
+  const abaixo = [baixo, ...tronco.filter((x) => pos(x) > pos(baixo))]
+  let melhor: { u: string; v: string; c: Caminho; folga: number } | null = null
+  for (const u of acima)
+    for (const v of abaixo) {
+      const c = caminho(trechos, rio, u, v)
+      const folga = pos(cima) - pos(u) + (pos(v) - pos(baixo))
+      if (c && (!melhor || folga < melhor.folga)) melhor = { u, v, c, folga }
+    }
+  const sentido = invertido ? `A cheia desce de ${nome(cima)} para ${nome(baixo)}, não o contrário.\n` : ''
+  const semTempo = [cima, baixo].filter((id) => !trechos.some((t) => t.rio === rio && (t.de === id || t.para === id))).map(nome)
+  const porque = semTempo.length ? ` (${semTempo.join(' e ')} não ${semTempo.length > 1 ? 'estão' : 'está'} na tabela de tempos do estudo JICA)` : ''
+  if (melhor)
+    return resp(
+      `${sentido}O site não tem o tempo medido de ${nome(cima)} até ${nome(baixo)}${porque}.\nO menor trecho com tempo que passa pelas duas é de ${nome(melhor.u)} até ${nome(melhor.v)}: ${faixaTransito(melhor.c, melhor.c.direto)}, ${conf(melhor.c.confianca)}. O percurso que você perguntou é um pedaço dele; o tempo só desse pedaço não foi levantado.\n${NOTA_TRANSITO}`,
+    )
+  return resp(`${sentido}O site não tem tempo de descida levantado entre ${nome(cima)} e ${nome(baixo)}${porque}.`)
 }
 
 const ANA_MIRIM: Record<string, string> = { salseiro: '83892990', 'vidal ramos': '83892990', 'botuvera montante': '83892998', botuvera: '83892998', brusque: '83900000' }
@@ -774,14 +901,15 @@ export const EXEMPLOS = [
 // "rouba" pergunta de outra intenção — os testes travam a ordem atual.
 export function responder(pergunta: string, d: Dados): Resposta {
   const t0 = norm(pergunta)
-  if (AGORA.some((r) => r.test(t0))) return { intencao: 'agora', texto: TEXTO_ALERTA }
+  if (pedeAgora(pergunta)) return { intencao: 'agora', texto: TEXTO_ALERTA }
   if (t0.length < 3 || /^(oi|ola|ajuda|help|o que voce faz|como funciona)\b/.test(t0))
     return { intencao: 'ajuda', texto: 'Respondo perguntas sobre cheias que já aconteceram, com os dados deste site. Veja alguns exemplos:', sugestoes: EXEMPLOS }
 
   const e = extrair(pergunta, d)
   const t = e.t
   if (PALAVRA_RUA.test(t) && (e.cidade || /\b(quantas|quantos|alag|cheia|enchente|cota)/.test(t))) return ruaHistorico(e, d)
-  if (/\b(quanto tempo|demora|leva|chega|chegar|transito)\b/.test(t) && e.cidade2) return transito(e, d)
+  if (/\b(quanto tempo|quantas horas|demora|demorar|leva|levar|chega|chegar|desce|descer|transito)\b/.test(t) && (e.cidade2 || (/\b(quanto tempo|quantas horas)\b/.test(t) && /\bate\b/.test(t))))
+    return transito(e, d)
   if (/\bchov|chuva/.test(t)) return chuvaAntes(e, d)
   if (/\b(antecedencia|antes de brusque|chega em brusque)\b/.test(t) || (t.includes('botuvera') && t.includes('brusque') && /\bpico/.test(t))) return antecedenciaMirim(e, d)
   if (/\b(ana|cota|cm)\b/.test(t) && Object.keys(ANA_MIRIM).some((k) => t.includes(k))) return cotaAna(e, d)

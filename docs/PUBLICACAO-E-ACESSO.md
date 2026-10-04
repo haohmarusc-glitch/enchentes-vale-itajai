@@ -181,6 +181,43 @@ não se mete em `/api/…` (`sw-regras.js`, com teste). Custo: plano gratuito do
 chamadas de função e mil gravações de KV por dia — muito acima do uso de um chat de histórico); as
 Functions só rodam nessa rota, o resto do site continua estático.
 
+### Chat com IA (`/api/chat-ia`) — pedido de 04/10/2026
+O que faz, o que vai à Anthropic e quanto custa: `docs/CHAT-IA.md`. O código está pronto e
+**desligado**. O **segredo `ANTHROPIC_API_KEY`** é o interruptor: sem ele, o GET diz `ligado: false` e o
+botão "Perguntar à IA" não aparece.
+
+**Para LIGAR (uma vez):**
+
+1. **Root directory `web`:** o mesmo passo 1 da contagem do chat, acima.
+2. **Criar a chave da Anthropic.**
+   - Em `https://console.anthropic.com` → *API Keys → Create Key*, nome `enchentes-site`.
+   - **Antes de usar, pôr o limite mensal** em *Settings → Limits*, por exemplo US$ 20. É ele que
+     garante o bolso.
+   - A chave **não** vai para o repositório nem para e-mail.
+3. **Guardar como segredo no Pages.**
+   - Caminho: *Workers & Pages → `enchentes-vale-itajai` → Settings → Variables and Secrets → Add*.
+   - *Type* **Secret**, *Variable name* **`ANTHROPIC_API_KEY`**, valor = a chave.
+   - Em **Production**.
+4. **(Opcional, recomendado) Teto do dia.**
+   - Criar o namespace KV `enchentes-chat-ia`.
+   - Ligar com o *Variable name* **`CHAT_IA`**.
+   - Se quiser outro teto, criar a variável de texto `CHAT_IA_LIMITE_DIA`. O padrão é 50 perguntas por
+     dia no site todo.
+5. **(Opcional) Trocar o modelo.**
+   - Variável de texto `CHAT_IA_MODELO`.
+   - Vazio = `claude-opus-5-5`; `claude-sonnet-5-5` sai pela metade do preço.
+6. **Publicar de novo** (*Retry deployment* ou o próximo merge).
+7. **Conferir.**
+   - Com o Access aberto, `https://enchentes.premercadosc.com/api/chat-ia` deve mostrar
+     `{"ligado":true}`.
+   - Na página `/perguntas`, perguntar "Qual foi a maior cheia de Gaspar?" e apertar **Perguntar à IA**.
+   - A resposta chega com o rótulo da IA.
+   - No Console da Anthropic, em *Usage*, aparece o gasto da pergunta.
+
+**Para DESLIGAR:** apagar o segredo `ANTHROPIC_API_KEY` e publicar de novo; o botão some. Para cortar na
+hora, sem publicar: **revogar a chave** no Console. A IA passa a responder "desligada" e o chat local
+continua.
+
 ---
 
 ## O estado de hoje (conferido em 05/09/2026)## O estado de hoje (conferido em 05/09/2026)

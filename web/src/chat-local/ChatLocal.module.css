@@ -129,3 +129,33 @@
   margin: 0.2rem 0 0;
   line-height: 1.45;
 }
+
+/* Chat com IA (docs/CHAT-IA.md): o botão por resposta, o rótulo e o aviso de envio. */
+.chat-botao-ia {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--agua-clara);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--agua);
+  cursor: pointer;
+}
+
+.chat-botao-ia:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.chat-rotulo-ia {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--tinta-fraca);
+  margin-bottom: 0.25rem;
+}
+
+.chat-aviso-ia {
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+  margin: 0.5rem 0 0;
+}
