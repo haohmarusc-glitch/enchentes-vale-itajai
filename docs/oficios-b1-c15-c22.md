@@ -150,7 +150,7 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 
-### C19 — atualização de 04/10/2026 (rascunho, NÃO enviado)
+### C19 — atualização de 04/10/2026 ✅ ENVIADA em 04/10/2026 por decisão do Jefferson (Gmail, id `1a104e1b7a50c0f1`, resposta na conversa de 10/09 com defesacivil@indaial.sc.gov.br)
 
 Resposta ao C19 ainda não chegou. Este texto vai como resposta na mesma conversa. Envio é decisão do
 Jefferson. Sem link do site.
