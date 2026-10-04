@@ -24,3 +24,16 @@ Segunda fonte para o que o validador achou sozinho em 05/09 (pino a 4,24 km do
 Mirim): TV Brusque e Araguaia FM descrevem a estação de Guabiruba no Rio
 Guabiruba, recente, com 3,48 m enquanto o Mirim em Brusque marcava ~4 m. Não se
 comparam. Qualquer cota futura daqui é do ribeirão.
+
+---
+
+## 04/10/2026 — canal para encaminhar o C20
+
+- **Ouvidoria da Prefeitura:** https://guabiruba.sc.gov.br/ouvidoria/ · ouvidoria@guabiruba.sc.gov.br ·
+  (47) 3308-3100, com protocolo no Atende.net. Fonte: handoff de 03/10/2026. **Página não conferida daqui**
+  (host bloqueado). O telefone confere com `data/brutos/varredura-pintar-2026-10-03/Guabiruba_telefones-uteis.html`.
+- É canal administrativo: o pedido vai endereçado à COMPDEC de Guabiruba, pedindo encaminhamento ao setor
+  técnico. **Não é e-mail direto da COMPDEC** e não comprova régua, rio nem faixas.
+- **Leitura de 01/10/2026** (DC de Brusque, Araguaia FM): "Já em Guabiruba, o rio está em 1,02 metro, após pico
+  de 1,27 metro." Não está escrito que é a DCSC-00029, nem que é o mesmo curso d'água.
+- C20 com o canal da Ouvidoria em `docs/oficios-b1-c15-c22.md`. Não enviado.

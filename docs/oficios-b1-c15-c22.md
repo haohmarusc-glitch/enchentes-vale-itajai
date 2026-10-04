@@ -90,6 +90,32 @@ Agradeço a atenção e fico à disposição.
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
+
+### C17 — complemento de 04/10/2026 (rascunho, NÃO enviado)
+
+O C17 foi enviado em 10/09/2026 a defesacivil@botuvera.sc.gov.br (Gmail, thread `1a08dfcc58beb30b`), sem
+resposta. Este texto vai como resposta naquela conversa. Sem link do site. Envio é decisão do Jefferson.
+
+**Assunto:** Re: (assunto do C17)
+
+À Defesa Civil de Botuverá,
+
+Retomo a mensagem de setembro com uma pergunta mais específica, agora que o Plano de Contingência foi aprovado
+pelo Decreto nº 3.651/2026.
+
+A tabela da seção 4.1, "Critérios operacionais de referência", traz normal até 3,0 m, atenção de 3,0 a 4,0 m,
+alerta de 4,0 a 6,0 m e emergência acima de 6,0 m.
+
+1. Essa tabela é lida em qual régua ou estação do Rio Itajaí-Mirim? Peço o nome, o local e o código, e se é a
+   estação estadual DCSC-00018, a DCSC-00027 ou outra.
+2. Uma leitura de exatamente 3,0 m ou 4,0 m fica em qual faixa?
+3. Se a leitura estadual usa outra referência, existe equivalência técnica documentada?
+
+Se quiserem ver o site, basta me mandar o e-mail para cadastro.
+
+Muito obrigado.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 ---
 
 ## C18 — Defesa Civil de Ascurra
@@ -202,6 +228,21 @@ Agradeço a atenção e fico à disposição.
 Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
+
+### C20 — canal de envio, 04/10/2026 (NÃO enviado)
+
+O C20 nunca saiu por falta de destinatário. O handoff de 03/10/2026 achou a **Ouvidoria da Prefeitura**:
+ouvidoria@guabiruba.sc.gov.br, (47) 3308-3100, com protocolo no Atende.net em https://guabiruba.sc.gov.br/ouvidoria/.
+A página não foi conferida daqui.
+
+- O pedido vai **endereçado à Coordenadoria Municipal de Proteção e Defesa Civil de Guabiruba**, com uma linha
+  pedindo à Ouvidoria que encaminhe ao setor técnico e informe o protocolo.
+- O texto do C20 acima vale como está. Ele não leva link do site, como pede a regra de 02/10/2026.
+- Não registrar a Ouvidoria como "e-mail da COMPDEC".
+- Envio é decisão do Jefferson.
+
+Primeira linha sugerida: "À Ouvidoria da Prefeitura de Guabiruba: peço, por gentileza, o encaminhamento desta
+mensagem à Coordenadoria Municipal de Proteção e Defesa Civil e a informação do número de protocolo."
 ---
 
 ## C21 — Defesa Civil de Itajaí
@@ -261,3 +302,29 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
+
+### C22 — complemento de 04/10/2026 (rascunho, NÃO enviado)
+
+O C22 foi enviado em 10/09/2026 a dcituporanga@gmail.com (Gmail, thread `1a08dfccf0e61bca`), sem resposta.
+Este texto vai como resposta naquela conversa. Sem link do site. Envio é decisão do Jefferson.
+
+**Assunto:** Re: (assunto do C22)
+
+À Defesa Civil de Ituporanga,
+
+Retomo a mensagem de setembro com uma pergunta mais específica.
+
+A página "nível do rio" da Prefeitura mostrou, em 02/10/2026 às 7h, o local "Centro" com 2 m e situação
+"Alerta".
+
+1. Essa leitura vem de qual régua ou estação? Peço o nome, o local e o código: a estação da ANA 83250000, a régua
+   da Ponte Vitório Sens, a estação estadual DCSC-00039 ou outra.
+2. A classificação "Alerta" usa qual tabela? A do manual da Defesa Civil de SC (atenção acima de 1,4 m, alerta
+   acima de 1,9 m, emergência acima de 2,6 m, na estação 83250000) ou outra?
+3. Se a tabela for da 83250000, onde posso acompanhar a leitura dessa estação?
+
+Se quiserem ver o site, basta me mandar o e-mail para cadastro.
+
+Muito obrigado.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
