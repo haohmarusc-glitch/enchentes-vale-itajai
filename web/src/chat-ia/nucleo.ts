@@ -35,6 +35,16 @@ export const MAXIMO_ANTERIORES = 2
 /** Rodadas de ferramenta por pergunta. Passou disso, a pergunta é larga demais. */
 export const MAXIMO_RODADAS = 6
 const TETO_RESULTADO = 60_000
+/**
+ * O que cada modelo aceita. Haiku 4.5 recusa `effort` e não tem a reserva por recusa; os
+ * modelos da linha 5 aceitam os dois. Trocar `CHAT_IA_MODELO` não pode quebrar o pedido.
+ */
+export function opcoesDoModelo(modelo: string): Pick<ParametrosCriacao, 'output_config' | 'betas' | 'fallbacks'> {
+  if (/^claude-haiku-/.test(modelo)) return {}
+  const reserva = /^claude-(opus-5|sonnet-5-5|fable-5-1)/.test(modelo)
+  return { output_config: { effort: 'low' }, ...(reserva ? { betas: [BETA_RESERVA], fallbacks: 'default' as const } : {}) }
+}
+
 /** Recusa por política: a API refaz no modelo de reserva (`fallbacks: "default"`). */
 const BETA_RESERVA = 'server-side-fallback-2026-07-01'
 
@@ -364,10 +374,8 @@ export async function responderComIA(pedido: PedidoIA, obter: ObterDados, criar:
       system: sistema,
       tools,
       messages,
-      output_config: { effort: 'low' },
       cache_control: { type: 'ephemeral' },
-      betas: [BETA_RESERVA],
-      fallbacks: 'default',
+      ...opcoesDoModelo(opcoes.modelo ?? MODELO_PADRAO),
     })
     uso.rodadas++
     uso.modelo = r.model || uso.modelo

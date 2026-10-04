@@ -52,16 +52,18 @@ O texto de instruções (`montarSistema` em `web/src/chat-ia/nucleo.ts`) repete 
   - o texto da pergunta;
   - as duas últimas trocas com a IA naquela página, como contexto;
   - o que as ferramentas devolvem.
-- **Não vai a lugar nenhum:**
-  - IP;
-  - e-mail do Cloudflare Access;
-  - User-Agent;
-  - qualquer identificador.
-
-  A função não lê esses cabeçalhos.
-- **O site não grava** a pergunta nem a resposta. Com o KV `CHAT_IA` ligado, guarda só números do dia:
-  `ia|AAAA-MM-DD` → perguntas do dia, para o teto (some em 3 dias); e `uso|AAAA-MM-DD` → tokens e custo
-  somados do dia (some em 90 dias).
+- **Não vai à Anthropic:** IP, User-Agent e o **e-mail** de acesso. A função não lê IP nem User-Agent.
+- **O e-mail fica registrado, por decisão do Jefferson (04/10/2026), para controlar o gasto.**
+  - O e-mail é o que o Cloudflare Access põe no cabeçalho `cf-access-authenticated-user-email`.
+  - Ele entra na linha de log de cada pergunta e, com o KV, no total do dia por e-mail.
+  - O e-mail vai junto com a quantidade de perguntas e o custo, **nunca com o texto**.
+  - A tela avisa isso antes de cada envio.
+  - Sem o cabeçalho, ou com valor que não é e-mail, o registro sai com `null` (no KV, `(sem e-mail)`).
+  - O cabeçalho serve para a conta de custo, não como prova de identidade.
+- **O site não grava** a pergunta nem a resposta. Com o KV `CHAT_IA` ligado, guarda:
+  - `ia|AAAA-MM-DD` → perguntas do dia, para o teto (some em 3 dias);
+  - `uso|AAAA-MM-DD` → tokens e custo somados do dia, e `por_email` com perguntas e custo de cada
+    e-mail (some em 90 dias).
 - No log da Cloudflare, um erro aparece só como tipo e status (`RateLimitError 429`), sem a pergunta.
 - **Retenção do lado da Anthropic:** segue a política de dados da conta da API. Conferir no Console da
   Anthropic e nos termos comerciais antes de ligar; este documento não substitui essa leitura.
@@ -99,12 +101,31 @@ um envio automático.
   - Se todos recusarem, a tela mostra um texto fixo.
 - O site está atrás do Cloudflare Access, então só quem tem e-mail cadastrado chega a `/api/chat-ia`.
 
+## Qual modelo (custo × benefício), 04/10/2026
+
+Preços da API em US$ por milhão de tokens (entrada / saída). Custo por pergunta medido pelo tamanho real
+das instruções e das ferramentas (seção acima); ainda sem pergunta real.
+
+| Modelo | Preço | Pergunta comum | Pergunta pesada | Para este site |
+|---|---|---|---|---|
+| `claude-opus-5-5` (padrão do código) | 4 / 20 | ~US$ 0,05 | ~US$ 0,12–0,15 | O mais cuidadoso com as regras; caro para um chat de histórico. |
+| **`claude-sonnet-5-5`** | 2 / 10 | ~US$ 0,025 | ~US$ 0,06–0,08 | **Recomendado.** Segue bem instruções e ferramentas; metade do preço; responde mais rápido no celular. |
+| `claude-haiku-4-5` | 1 / 5 | ~US$ 0,012 | ~US$ 0,03–0,04 | O mais barato, mas mais propenso a escorregar nas regras: misturar réguas, comparar metros entre cidades, esquecer a fonte. Aqui um erro é afirmação falsa sobre enchente. |
+
+- **Recomendação:** `CHAT_IA_MODELO = claude-sonnet-5-5`.
+  - O trabalho é ler o que as ferramentas devolvem e reescrever em português simples, sem quebrar
+    regras.
+  - O motor local já faz a parte delicada (régua, escala, Itajaí).
+  - Se as respostas reais mostrarem erro de regra, volta para o Opus mudando só a variável.
+- O código ajusta o pedido a cada modelo (`opcoesDoModelo`): o Haiku vai sem `effort` e sem reserva por
+  recusa, que ele não aceita. Trocar a variável não quebra o pedido.
+
 ## Acompanhar o custo (pedido do Jefferson, 04/10/2026)
 
-Cada pergunta respondida escreve **uma linha** no log da Cloudflare, só com números:
+Cada pergunta respondida escreve **uma linha** no log da Cloudflare, com o e-mail de acesso e números:
 
 ```
-{"evento":"chat-ia","tipo":"ia","modelo":"claude-opus-5-5","rodadas":2,"entrada":6800,"cache_criado":0,"cache_lido":0,"saida":950,"custo_usd":0.0462}
+{"evento":"chat-ia","email":"fulano@exemplo.com","tipo":"ia","modelo":"claude-opus-5-5","rodadas":2,"entrada":6800,"cache_criado":0,"cache_lido":0,"saida":950,"custo_usd":0.0462}
 ```
 
 - **Os campos:**
@@ -118,12 +139,13 @@ Cada pergunta respondida escreve **uma linha** no log da Cloudflare, só com nú
 - **Histórico:** com o KV `CHAT_IA` ligado, a função soma o dia em `uso|AAAA-MM-DD`, mantido por 90 dias:
 
   ```
-  {"perguntas":12,"entrada":81000,"cache_criado":0,"cache_lido":3000,"saida":11500,"custo_usd":0.5546}
+  {"perguntas":12,"entrada":81000,"cache_criado":0,"cache_lido":3000,"saida":11500,"custo_usd":0.5546,
+   "por_email":{"fulano@exemplo.com":{"perguntas":9,"custo_usd":0.41},"(sem e-mail)":{"perguntas":3,"custo_usd":0.1446}}}
   ```
 
   Para ler: *Storage & Databases → KV → `enchentes-chat-ia` → KV Pairs*.
-- **O que não vai no log nem no KV:** a pergunta, a resposta, IP e e-mail. Há teste que trava isso
-  (`endpoint.test.ts`).
+- **O que não vai no log nem no KV:** a pergunta, a resposta e o IP. Há teste que trava isso
+  (`endpoint.test.ts`), e outro que trava que o e-mail não vai à Anthropic.
 - **Pergunta que falhou no meio** (erro da API depois de uma rodada) não entra na conta. O Console da
   Anthropic continua sendo o valor oficial.
 - A pergunta de agora, que não vai à IA, aparece no log com `tipo: "agora"` e custo 0.

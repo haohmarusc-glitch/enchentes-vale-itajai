@@ -16,6 +16,7 @@ import {
   TEXTO_SEM_RESPOSTA,
   custoEstimado,
   executar,
+  opcoesDoModelo,
   ferramentas,
   montarSistema,
   responderComIA,
@@ -182,4 +183,11 @@ test('custo estimado pela tabela de preços; modelo desconhecido fica sem custo'
   assert.equal(custoEstimado(u), 0.0494)
   assert.equal(custoEstimado({ ...u, modelo: 'claude-sonnet-5-5' }), 0.0249)
   assert.equal(custoEstimado({ ...u, modelo: 'modelo-novo' }), null)
+})
+
+test('parâmetros por modelo: Haiku sem esforço nem reserva; linha 5 com os dois', () => {
+  assert.deepEqual(opcoesDoModelo('claude-haiku-4-5'), {})
+  for (const m of ['claude-opus-5-5', 'claude-sonnet-5-5'])
+    assert.deepEqual(opcoesDoModelo(m), { output_config: { effort: 'low' }, betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' }, m)
+  assert.deepEqual(opcoesDoModelo('claude-sonnet-4-6'), { output_config: { effort: 'low' } })
 })

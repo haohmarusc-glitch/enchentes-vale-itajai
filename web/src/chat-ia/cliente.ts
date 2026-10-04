@@ -16,7 +16,7 @@ export interface RespostaDoServidor {
 }
 
 export const AVISO_ENVIO =
-  'O botão "Perguntar à IA" envia o texto da pergunta à Anthropic, a empresa da IA Claude, para montar a resposta com os dados deste site. Não escreva nome, endereço ou telefone. A IA pode errar: confira a fonte citada.'
+  'O botão "Perguntar à IA" envia o texto da pergunta à Anthropic, a empresa da IA Claude, para montar a resposta com os dados deste site. Não escreva nome, endereço ou telefone. Para controlar o gasto, o site registra o seu e-mail de acesso com a quantidade de perguntas e o custo; o texto da pergunta não é guardado, e o e-mail não vai à Anthropic. A IA pode errar: confira a fonte citada.'
 
 const ERROS: Record<string, string> = {
   limite_do_dia: 'A IA já respondeu o máximo de perguntas de hoje. O chat sem IA continua funcionando.',

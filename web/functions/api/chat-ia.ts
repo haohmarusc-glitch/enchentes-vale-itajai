@@ -14,14 +14,15 @@
  * `CHAT_IA_LIMITE_DIA` perguntas por dia (padrão 50) no site todo. O teto de
  * gasto de verdade fica no Console da Anthropic (limite mensal da chave).
  *
- * CUSTO (pedido do Jefferson, 04/10/2026): cada pergunta escreve UMA linha no log
- * da Cloudflare — `{"evento":"chat-ia","tipo",…,"entrada","saida","custo_usd"}` —
- * só com números. Com o KV `CHAT_IA`, soma também o dia em `uso|AAAA-MM-DD`
- * (90 dias), porque o log do Pages é só ao vivo.
+ * CUSTO (pedidos do Jefferson, 04/10/2026): cada pergunta escreve UMA linha no log
+ * da Cloudflare — `{"evento":"chat-ia","email",…,"entrada","saida","custo_usd"}` —
+ * com o e-mail de acesso de quem perguntou (cabeçalho que o Cloudflare Access põe)
+ * e só números. Com o KV `CHAT_IA`, soma também o dia em `uso|AAAA-MM-DD`, com o
+ * total por e-mail (90 dias), porque o log do Pages é só ao vivo.
  *
- * NÃO grava a pergunta, a resposta, IP, User-Agent nem o e-mail do Access. O KV
- * só guarda contadores do dia. A pergunta vai à Anthropic para ser respondida —
- * o site avisa isso antes de cada envio.
+ * NÃO grava a pergunta, a resposta, IP nem User-Agent. O e-mail NÃO vai à Anthropic.
+ * A tela avisa, antes de cada envio, que a pergunta vai à Anthropic e que o e-mail
+ * fica registrado com a contagem e o custo.
  */
 import Anthropic from '@anthropic-ai/sdk'
 import enchentes from '../../../data/enchentes.json'
@@ -103,7 +104,7 @@ async function dentroDoLimite(amb: Ambiente, agora: Date): Promise<boolean> {
   return true
 }
 
-/** Totais do dia no KV: perguntas, tokens e custo. Só números. */
+/** Totais do dia no KV: perguntas, tokens e custo, e por e-mail quantas perguntas e quanto custaram. */
 export interface UsoDoDia {
   perguntas: number
   entrada: number
@@ -111,17 +112,31 @@ export interface UsoDoDia {
   cache_lido: number
   saida: number
   custo_usd: number
+  por_email: Record<string, { perguntas: number; custo_usd: number }>
+}
+
+/** Sem e-mail no cabeçalho (acesso que não passou pelo Access, ex.: teste local). */
+export const SEM_EMAIL = '(sem e-mail)'
+
+/**
+ * E-mail de acesso do Cloudflare Access, ou null. É o cabeçalho que o Access põe em todo
+ * pedido que passou pelo login; serve para a conta de custo, não como prova de identidade.
+ */
+export function emailDoAcesso(pedido: Request): string | null {
+  const e = pedido.headers.get('cf-access-authenticated-user-email')?.trim().toLowerCase()
+  return e && e.length <= 254 && /^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$/.test(e) ? e : null
 }
 
 const RETENCAO_USO_DIAS = 90
 
-/** Uma linha de log por pergunta, só com números; e a soma do dia no KV, se houver. */
-async function registrarUso(r: RespostaIA, amb: Ambiente, agora: Date): Promise<void> {
+/** Uma linha de log por pergunta (e-mail e números); e a soma do dia no KV, se houver. */
+async function registrarUso(r: RespostaIA, email: string | null, amb: Ambiente, agora: Date): Promise<void> {
   const u = r.uso
   const custo = u ? custoEstimado(u) : 0
   console.log(
     JSON.stringify({
       evento: 'chat-ia',
+      email,
       tipo: r.tipo,
       modelo: u?.modelo ?? null,
       rodadas: u?.rodadas ?? 0,
@@ -137,7 +152,11 @@ async function registrarUso(r: RespostaIA, amb: Ambiente, agora: Date): Promise<
   const chave = `uso|${agora.toISOString().slice(0, 10)}`
   try {
     const bruto = await kv.get(chave)
-    const dia: UsoDoDia = bruto ? JSON.parse(bruto) : { perguntas: 0, entrada: 0, cache_criado: 0, cache_lido: 0, saida: 0, custo_usd: 0 }
+    const dia: UsoDoDia = bruto ? JSON.parse(bruto) : { perguntas: 0, entrada: 0, cache_criado: 0, cache_lido: 0, saida: 0, custo_usd: 0, por_email: {} }
+    dia.por_email ??= {}
+    const quem = (dia.por_email[email ?? SEM_EMAIL] ??= { perguntas: 0, custo_usd: 0 })
+    quem.perguntas += 1
+    quem.custo_usd = Math.round((quem.custo_usd + (custo ?? 0)) * 1e6) / 1e6
     dia.perguntas += 1
     dia.entrada += u.entrada
     dia.cache_criado += u.cache_criado
@@ -179,7 +198,7 @@ export async function tratar(pedido: Request, amb: Ambiente, criar?: Criar, agor
   const chamar: Criar = criar ?? ((params) => cliente!.beta.messages.create(params))
   try {
     const r = await responderComIA(p, obterDados, chamar, { modelo: amb.CHAT_IA_MODELO?.trim() || MODELO_PADRAO })
-    await registrarUso(r, amb, agora)
+    await registrarUso(r, emailDoAcesso(pedido), amb, agora)
     return resposta(200, { tipo: r.tipo, texto: r.texto })
   } catch (erro) {
     // Para o log da Cloudflare, só o tipo e o status — nunca a pergunta.

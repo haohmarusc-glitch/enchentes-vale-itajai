@@ -92,7 +92,7 @@ test('teto do dia no KV: só o contador, e 429 quando passa', async () => {
   assert.equal(dados.get('ia|2026-10-04'), '2')
   // Soma do dia: só números (o falso gasta 1 de entrada e 1 de saída por pergunta).
   const dia = JSON.parse(dados.get('uso|2026-10-04') ?? '{}')
-  assert.deepEqual(Object.keys(dia).sort(), ['cache_criado', 'cache_lido', 'custo_usd', 'entrada', 'perguntas', 'saida'])
+  assert.deepEqual(Object.keys(dia).sort(), ['cache_criado', 'cache_lido', 'custo_usd', 'entrada', 'perguntas', 'por_email', 'saida'])
   assert.equal(dia.perguntas, 2)
   assert.equal(dia.entrada, 2)
   assert.equal(dia.saida, 2)
@@ -108,21 +108,28 @@ test('erro da IA não vaza detalhe nem a pergunta', async () => {
   assert.deepEqual(await r.json(), { erro: 'interno' })
 })
 
-test('log de custo: uma linha por pergunta, só números, sem a pergunta nem a resposta', async () => {
+test('log de custo: uma linha por pergunta com o e-mail de acesso e números, sem a pergunta nem a resposta', async () => {
   const linhas: string[] = []
+  const pedidosAPI: string[] = []
   const original = console.log
   console.log = (...x: unknown[]) => void linhas.push(x.map(String).join(' '))
   try {
     const { criar } = criarFalso('Resposta secreta sobre Gaspar')
-    await tratar(post({ pergunta: 'Pergunta secreta de Gaspar?' }), CHAVE, criar, AGORA)
+    const espiao: Criar = async (p) => {
+      pedidosAPI.push(JSON.stringify(p))
+      return criar(p)
+    }
+    await tratar(post({ pergunta: 'Pergunta secreta de Gaspar?' }, { 'cf-access-authenticated-user-email': ' Fulano@Exemplo.com ' }), CHAVE, espiao, AGORA)
+    await tratar(post({ pergunta: 'Outra pergunta secreta?' }), CHAVE, criar, AGORA)
+    await tratar(post({ pergunta: 'Mais uma secreta?' }, { 'cf-access-authenticated-user-email': 'não é e-mail' }), CHAVE, criar, AGORA)
   } finally {
     console.log = original
   }
-  assert.equal(linhas.length, 1)
-  const linha = linhas[0]!
-  assert.ok(!linha.includes('secreta'), linha)
-  assert.deepEqual(JSON.parse(linha), {
+  assert.equal(linhas.length, 3)
+  for (const l of linhas) assert.ok(!l.includes('secreta'), l)
+  assert.deepEqual(JSON.parse(linhas[0]!), {
     evento: 'chat-ia',
+    email: 'fulano@exemplo.com',
     tipo: 'ia',
     modelo: 'claude-opus-5-5',
     rodadas: 1,
@@ -132,4 +139,28 @@ test('log de custo: uma linha por pergunta, só números, sem a pergunta nem a r
     saida: 1,
     custo_usd: 0.000024,
   })
+  assert.equal(JSON.parse(linhas[1]!).email, null, 'sem o cabeçalho do Access')
+  assert.equal(JSON.parse(linhas[2]!).email, null, 'cabeçalho que não é e-mail')
+  // O e-mail não vai à Anthropic.
+  assert.equal(pedidosAPI.length, 1)
+  assert.ok(!pedidosAPI[0]!.toLowerCase().includes('fulano'))
+})
+
+test('soma do dia no KV traz o total por e-mail', async () => {
+  const { kv, dados } = kvFalso()
+  const { criar } = criarFalso()
+  const amb = { ...CHAVE, CHAT_IA: kv }
+  const como = (email?: string): Record<string, string> => (email ? { 'cf-access-authenticated-user-email': email } : {})
+  await tratar(post({ pergunta: 'Maior cheia de Gaspar?' }, como('a@x.com')), amb, criar, AGORA)
+  await tratar(post({ pergunta: 'Maior cheia de Ilhota?' }, como('a@x.com')), amb, criar, AGORA)
+  await tratar(post({ pergunta: 'Maior cheia de Brusque?' }, como('b@x.com')), amb, criar, AGORA)
+  await tratar(post({ pergunta: 'Maior cheia de Blumenau?' }), amb, criar, AGORA)
+  const dia = JSON.parse(dados.get('uso|2026-10-04') ?? '{}')
+  assert.equal(dia.perguntas, 4)
+  assert.deepEqual(dia.por_email, {
+    'a@x.com': { perguntas: 2, custo_usd: 0.000048 },
+    'b@x.com': { perguntas: 1, custo_usd: 0.000024 },
+    '(sem e-mail)': { perguntas: 1, custo_usd: 0.000024 },
+  })
+  assert.ok(!JSON.stringify([...dados.entries()]).includes('Maior cheia'))
 })
