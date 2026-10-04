@@ -84,6 +84,13 @@ Comportamentos que foram checados com os dados reais em 22/09/2026:
 - **Chuva antes de 2006:** diz que o site não tem dado de chuva.
 - **Cota da ANA antes do fim do carregamento:** as cotas (~1,2 MB) chegam por último. Se a pergunta vier antes, a resposta é "carregando, tente em instantes".
 
+### Onde o chat fica (04/10/2026)
+
+- Na **tela inicial**, o cartão "Pergunte sobre as cheias" abre a página **`/perguntas`** (`telas/TelaPerguntas.tsx`),
+  que mostra só o chat. Funciona sem cidade escolhida e com Itajaí (a foz não tem aba Histórico). O rio da cidade da
+  pessoa escolhe só as sugestões de partida; o motor responde sobre qualquer cidade.
+- Continua também no fim da aba **Histórico** de cada cidade do Açu e do Mirim.
+
 ### Contagem sem misturar escalas, e a pergunta da rua (04/10/2026, decisão do Jefferson)
 
 - **`contar_acima` conta só uma escala.** Cada pico tem a sua (`escalaDoPico`): régua da cidade, zero do IBGE,

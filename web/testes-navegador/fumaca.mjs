@@ -209,6 +209,26 @@ console.log('\n"Minha rua alaga?" leva ao que promete, com a tela no lugar certo
   }
 }
 
+console.log('\no chat do histórico tem botão na tela inicial')
+{
+  // Pedido do Jefferson (04/10/2026): o chat só existia no fim da aba Histórico.
+  // A Início ganhou o cartão "Pergunte sobre as cheias", que abre /perguntas.
+  const ctx = await navegador.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } })
+  await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
+  const pagina = await ctx.newPage()
+  await pagina.goto(`${base}/#/`, { waitUntil: 'load' })
+  await pagina.getByRole('button', { name: 'Entendi' }).click({ timeout: 5_000 }).catch(() => {})
+  const cartao = pagina.getByRole('link', { name: /Pergunte sobre as cheias/ })
+  ;(await cartao.count()) > 0 ? ok('a Início tem o cartão do chat') : falhou('a Início perdeu o cartão do chat')
+  await cartao.click({ timeout: 5_000 }).catch(() => {})
+  const chat = pagina.locator('section[aria-label="Perguntas sobre o histórico de enchentes"]')
+  await chat.waitFor({ timeout: 15_000 }).catch(() => {})
+  ;(await chat.count()) > 0 && pagina.url().endsWith('#/perguntas')
+    ? ok('o cartão abre a página do chat (/perguntas)')
+    : falhou(`o cartão não abriu o chat (${pagina.url()})`)
+  await ctx.close()
+}
+
 await navegador.close()
 await servidor.close()
 
