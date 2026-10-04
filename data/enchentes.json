@@ -1290,7 +1290,7 @@
       "pico_m": 6.82,
       "confianca": "alta",
       "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2021-01-24-DIAS_7.json",
-      "nota": "Crista às 21:45; platô 6,77–6,82 m das 19:30 de 21/01 às 00:45 de 22/01 (22 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima da cota de alerta (6,00 m). Veio 18 h 30 ANTES da crista de Taió (6,91 m às 16:15 de 22/01, que não é registro pela decisão (b) do Jefferson de 09/09/2026): a chuva caiu perto de Blumenau, não desceu de Taió — ver transito.json._meta.medicoes.taio_e_blumenau_2021_2022. O Aviso 02/2021 da CIRAM dava 6,59 m às 05:00 de 22/01 já descendo, 23 cm abaixo da crista; aviso é instantâneo do horário da coleta, não pico (EPAGRI, 15/09/2026).",
+      "nota": "Crista às 21:45; platô 6,77–6,82 m das 19:30 de 21/01 às 00:45 de 22/01 (22 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima da cota de alerta (6,00 m). Veio 18 h 30 ANTES da crista de Taió (6,91 m às 16:15 de 22/01, que não é registro pela decisão (b) do Jefferson de 09/09/2026): a chuva caiu perto de Blumenau, não desceu de Taió — ver transito.json._meta.medicoes.taio_e_blumenau_2021_2022. O Aviso 02/2021 da CIRAM dava 6,59 m às 05:00 de 22/01 já descendo, 23 cm abaixo da crista; aviso é instantâneo do horário da coleta, não pico (EPAGRI, 15/09/2026). Confirmado pelo Jefferson em 04/10/2026 (B8): fica na régua de hoje, sem nova conversão.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
       "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
@@ -1303,7 +1303,7 @@
       "pico_m": 9.41,
       "confianca": "alta",
       "fonte": "ANA, série telemétrica da estação 83800002 (HidroinfoanaSerieTelemetricaAdotada), leituras de 15 em 15 min — bruto data/brutos/ana-telemetria-83800002-2022-05-06-DIAS_7.json",
-      "nota": "Crista às 02:45; platô 9,36–9,41 m das 00:00 às 04:30 (19 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima do Alerta Máximo (8,00 m). Veio 1 h 15 ANTES da crista de Taió (9,49 m às 04:00, que não é registro pela decisão (b)); Indaial pica em 04/05 (6,00 m), já no repo. O Aviso 03/2022 da CIRAM dava 6,39 m às 08:00 de 06/05 já descendo — três metros abaixo da crista, que é o tamanho do erro de tomar aviso por pico. Conferir contra a tabela /p/enchentes da Defesa Civil de Blumenau quando ela chegar.",
+      "nota": "Crista às 02:45; platô 9,36–9,41 m das 00:00 às 04:30 (19 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima do Alerta Máximo (8,00 m). Veio 1 h 15 ANTES da crista de Taió (9,49 m às 04:00, que não é registro pela decisão (b)); Indaial pica em 04/05 (6,00 m), já no repo. O Aviso 03/2022 da CIRAM dava 6,39 m às 08:00 de 06/05 já descendo — três metros abaixo da crista, que é o tamanho do erro de tomar aviso por pico. Conferir contra a tabela /p/enchentes da Defesa Civil de Blumenau quando ela chegar. Confirmado pelo Jefferson em 04/10/2026 (B8): fica na régua de hoje, sem nova conversão.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
       "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
@@ -3409,7 +3409,7 @@
       "pico_m": 9.38,
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
+      "nota": "POSSÍVEL ERRO DE ANO (decisão do Jefferson de 04/10/2026): mantido o ano e o mês impressos no Estudo Socioambiental (jun/2013), sem correção silenciosa. O mesmo 9,38 m é o que o Orli (2017) dá para 2014 e o que a ANA 83050000 marcou às 17h de 09/06/2014; para 2013 o Orli dá 9,53 m (guardado em divergencias). Só muda com outra fonte independente ou errata oficial. A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial.",
       "pendencia": "MÊS DUVIDOSO: a tabela municipal diz junho, mas a série da ANA 83050000 tem máxima de 6,80 m em junho/2013 e 9,70 m em 23/09/2013 (leitura das 17h) — a cheia grande de 2013 no Vale foi em setembro. Provavelmente é a de setembro. NÃO mudar a data sem boletim da Defesa Civil de Taió. Ver docs/HIDROWEB-VALE-2026-09-24.md. Sexta rodada (27/09/2026): o Orli (2017) dá 9,53 m para o evento de 2013 e 9,38 m para o de 2014; a tabela do Estudo Socioambiental dá 9,38 m para \"jun/2013\" e 8,91 m para 2014. A ANA 83050000 marcou 6,80 m em 22/06/2013 e 9,70 m às 17h de 23/09/2013, e 9,37 m às 17h de 09/06/2014 — o 9,38 \"de 2013\" da tabela é o valor de 2014 do Orli e da ANA. Hipótese: a tabela do Estudo deslocou um ano. Não mudar mês nem valor sem a Defesa Civil de Taió; decisão do Jefferson.",
       "divergencias": [
         {
@@ -3425,7 +3425,7 @@
       "pico_m": 8.91,
       "confianca": "baixa",
       "fonte": "Prefeitura de Taió — Estudo Socioambiental do Município de Taió (2024), tabela de inundações 1983–2023, p. 343 do PDF (https://www.taio.sc.gov.br/uploads/sites/346/2024/07/Estudo-Socioambiental-do-Municipio-de-Taio.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/taio-socioambiental.pdf",
-      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. Sexta rodada (27/09/2026): o Orli dá 9,38 m para 2014, e a ANA 83050000 marcou 9,18/9,37 m às 07h/17h de 09/06/2014 — os 8,91 m da tabela do Estudo ficam abaixo das duas; ver pendência do registro de 2013.",
+      "nota": "A tabela dá só ano, mês e nível — sem dia, hora ou régua. É a mesma série do registro de 09/10/2023 (a tabela traz os mesmos 12,40 m), não a da estação da ANA 83050000 (decisão (b), 09/09/2026). Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. Sexta rodada (27/09/2026): o Orli dá 9,38 m para 2014, e a ANA 83050000 marcou 9,18/9,37 m às 07h/17h de 09/06/2014 — os 8,91 m da tabela do Estudo ficam abaixo das duas; ver pendência do registro de 2013. Ver o registro de jun/2013: a tabela do Estudo pode ter deslocado um ano (marcado como possível erro de ano em 04/10/2026, sem correção).",
       "divergencias": [
         {
           "pico_m": 9.38,
@@ -4348,6 +4348,28 @@
           "fonte": "ANA/HidroWeb 83677000 TIMBÓ NOVO, leitura das 17:00 de 21/01/2021 (piso da crista, zero da ANA) — era registro próprio de 25/09/2026 e passou a divergência quando o municipal entrou. 7,59 m às 17h × 7,62 m às 20h: coerente com a mesma régua e a crista depois da leitura."
         }
       ]
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "gaspar",
+      "data": "2013-09-23",
+      "pico_m": 8.03,
+      "referencia": null,
+      "referencia_hipotese": "não declarada na nota da Autoridade Portuária; a tabela oficial de Gaspar (régua da estação municipal) não tem 2013",
+      "confianca": "baixa",
+      "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Os picos máximos verificados no rio Itajaí-Açu entre os dias 19 e 23 de setembro foram: […] Gaspar: 23/09= 8,03 m\"",
+      "nota": "Entrou em 04/10/2026 por decisão do Jefferson, como PICO PUBLICADO, com ressalva: sem hora, e a nota não declara a régua. A tabela oficial de Gaspar (48 registros na régua da estação municipal) não tem 2013. Por isso referencia null: fica fora da comparação com o nível de agora e da previsão a jusante até alguém confirmar que é a mesma régua — a tela diz que um pico ficou de fora. Confiança baixa, como o 7,61 m de Brusque da mesma nota."
+    },
+    {
+      "rio": "itajai-acu",
+      "cidade": "ituporanga",
+      "data": "2013-09-22",
+      "pico_m": 5.82,
+      "referencia": null,
+      "referencia_hipotese": "não declarada; NÃO é a ANA 83250000 (2,68/3,54 m no dia) — talvez a régua municipal manual da Ponte Vitório Sens, não confirmado",
+      "confianca": "baixa",
+      "fonte": "Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Os picos máximos verificados no rio Itajaí-Açu entre os dias 19 e 23 de setembro foram: […] Ituporanga 22/09= 5,82 m\"",
+      "nota": "Entrou em 04/10/2026 por decisão do Jefferson, como VALOR PUBLICADO, com ressalva: a fonte não identifica a régua. Não é a ANA 83250000, que marcou 2,68/3,54 m às 07h/17h do mesmo dia — e os outros registros de Ituporanga são da ANA. Não presumir a Ponte Vitório Sens nem a 83250000; não usar para classificar a leitura atual. Por isso referencia null: fica fora da comparação com o nível de agora e da previsão a jusante."
     }
   ]
 }
