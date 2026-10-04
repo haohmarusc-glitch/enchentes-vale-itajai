@@ -18,6 +18,7 @@ import {
   type Cena,
   type Pino,
 } from '../logica/mapaMotor'
+import { semLeiturasVelhas } from '../logica/leiturasDoMapa'
 import estilos from './MapaRios.module.css'
 
 // O traçado entra como URL (não como import de dado): são arquivos grandes, e o
@@ -170,10 +171,12 @@ export default function MapaRios({
     canvas.width = Math.round(tam.w * dpr)
     canvas.height = Math.round(tam.h * dpr)
 
+    // Leitura velha não vira número seco no pino (auditoria de 03/10/2026, item 1).
+    const tempoRealDoMapa = semLeiturasVelhas(tempoReal, agora)
     const cena = construirCena(
       canvas,
       [{ rioId, coords, cidades, eixo: eixoDoRio(rioId) }],
-      tempoReal,
+      tempoRealDoMapa,
       agora,
       tam.w,
       tam.h,
