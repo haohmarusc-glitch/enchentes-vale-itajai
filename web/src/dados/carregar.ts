@@ -27,6 +27,7 @@ import type {
   Topologia,
   Transito,
   Trecho,
+  TrechoExperimental,
 } from './tipos'
 
 const CONFIANCAS: Confianca[] = ['alta', 'media', 'baixa']
@@ -115,6 +116,10 @@ function trechoValido(t: Trecho): boolean {
 
 export const eventos: Evento[] = enchentes.eventos.filter(eventoValido)
 export const trechos: Trecho[] = transito.trechos.filter(trechoValido)
+/** Trechos em estudo: só para a tela dizer "dados insuficientes". Nunca entram em `caminho`. */
+export const trechosExperimentais: TrechoExperimental[] = (transito.trechos_experimentais ?? []).filter(
+  (t) => t.status === 'experimental',
+)
 
 export function rio(rioId: string): Rio | undefined {
   return estacoes.rios[rioId]

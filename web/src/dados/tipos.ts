@@ -269,9 +269,24 @@ export interface Trecho {
   fonte: string
 }
 
+/**
+ * Trecho EM ESTUDO (decisão de 04/10/2026): tem medição e evidência, mas não tem
+ * faixa operacional — nunca vira tempo de descida na tela. A tela diz "dados
+ * insuficientes" no lugar.
+ */
+export interface TrechoExperimental {
+  rio: string
+  de: string
+  para: string
+  status: 'experimental'
+  eventos_pareados_com_hora: number
+  minimo_eventos_pareados: number
+}
+
 export interface Transito {
   _meta: unknown
   trechos: Trecho[]
+  trechos_experimentais?: TrechoExperimental[]
 }
 
 /** Uma preamar ou baixa-mar da tábua oficial. `quando` é horário local, sem fuso. */

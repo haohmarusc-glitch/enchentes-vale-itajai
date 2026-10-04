@@ -11,7 +11,7 @@
  * traz um valor único: nesse caso mínimo e máximo coincidem e a tela mostra
  * "cerca de N h".
  */
-import type { Confianca, Trecho } from '../dados/tipos'
+import type { Confianca, Trecho, TrechoExperimental } from '../dados/tipos'
 
 export interface Caminho {
   horasMin: number
@@ -90,4 +90,21 @@ export function janelaChegada(
     inicio: new Date(partida.getTime() + c.horasMin * ms),
     fim: new Date(partida.getTime() + c.horasMax * ms),
   }
+}
+
+/**
+ * O trecho direto entre duas cidades está EM ESTUDO (decisão de 04/10/2026)?
+ *
+ * Serve só para a tela trocar "tempo ainda não levantado" por "dados
+ * insuficientes": há medição guardada, mas menos cheias pareadas do que o
+ * mínimo. Não devolve horas de propósito — trecho em estudo não vira tempo
+ * de descida, nem encadeado com outro.
+ */
+export function trechoEmEstudo(
+  experimentais: readonly TrechoExperimental[],
+  rio: string,
+  de: string,
+  para: string,
+): boolean {
+  return experimentais.some((t) => t.rio === rio && t.de === de && t.para === para && t.status === 'experimental')
 }

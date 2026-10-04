@@ -587,6 +587,42 @@ def valida_enchentes(conhecidas: set[tuple[str, str]]) -> None:
             )
 
 
+def valida_trechos_experimentais(conhecidas: set[tuple[str, str]]) -> None:
+    """
+    Trechos EM ESTUDO (decisão do Jefferson, 04/10/2026): guardam medição e
+    evidência, mas não podem ter faixa operacional. A garantia de que ninguém
+    os use como previsão é dupla: ficam fora de `trechos` (o que site, bot e
+    chat leem) e não têm horas_min/horas_max. Migrar para `trechos` exige ao
+    menos `minimo_eventos_pareados` cheias com hora nas duas pontas.
+    """
+    transito = le_json("transito.json")
+    operacionais = {(t.get("rio"), t.get("de"), t.get("para")) for t in transito["trechos"]}
+    for i, t in enumerate(transito.get("trechos_experimentais", [])):
+        onde = f"transito.json/trechos_experimentais[{i}] ({t.get('de', '???')} -> {t.get('para', '???')})"
+        for campo in ("rio", "de", "para", "status", "eventos_pareados_com_hora",
+                      "minimo_eventos_pareados", "medicoes", "fonte"):
+            if campo not in t:
+                erro(f"{onde}: falta o campo '{campo}'")
+                return
+        if t["status"] != "experimental":
+            erro(f"{onde}: status deve ser 'experimental', veio {t['status']!r}")
+        for proibido in ("horas_min", "horas_max", "confianca"):
+            if proibido in t:
+                erro(f"{onde}: trecho experimental não tem '{proibido}' — faixa operacional "
+                     "só em 'trechos', e só com cheias pareadas suficientes")
+        for ponta in ("de", "para"):
+            if (t["rio"], t[ponta]) not in conhecidas:
+                erro(f"{onde}: '{t[ponta]}' não está em estacoes.json")
+        if (t["rio"], t["de"], t["para"]) in operacionais:
+            erro(f"{onde}: o mesmo par está em 'trechos' — ou é experimental, ou é operacional")
+        if len(t["medicoes"]) != t["eventos_pareados_com_hora"]:
+            erro(f"{onde}: eventos_pareados_com_hora ({t['eventos_pareados_com_hora']}) não bate "
+                 f"com as {len(t['medicoes'])} medições guardadas")
+        if t["eventos_pareados_com_hora"] >= t["minimo_eventos_pareados"]:
+            aviso(f"{onde}: já tem {t['eventos_pareados_com_hora']} cheias pareadas com hora — "
+                  "pode ir para decisão de migrar para 'trechos'")
+
+
 def valida_transito(conhecidas: set[tuple[str, str]]) -> None:
     trechos = le_json("transito.json")["trechos"]
     # Posição comparável para pegar trecho que sobe o rio. Em rio em fila é a
@@ -2099,6 +2135,7 @@ def main() -> int:
     valida_enchentes(conhecidas)
     valida_eventos_pendentes(conhecidas)
     valida_transito(conhecidas)
+    valida_trechos_experimentais(conhecidas)
     valida_monotonia_transito()
     valida_meses_pareados()
     valida_hidraulica()

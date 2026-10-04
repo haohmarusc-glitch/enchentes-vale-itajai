@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import type { Trecho } from '../dados/tipos'
-import { caminho, faixaHoras, janelaChegada } from './transito'
+import { readFileSync } from 'node:fs'
+import type { Trecho, TrechoExperimental } from '../dados/tipos'
+import { caminho, faixaHoras, janelaChegada, trechoEmEstudo } from './transito'
 import transito from '../../../data/transito.json'
 import gabaritoTransito from '../../../data/transito-esperado.json'
 
@@ -102,4 +103,19 @@ test('o site reproduz o gabarito compartilhado com o bot', () => {
     }
   }
   assert.deepEqual(divergentes, [], divergentes.join('\n'))
+})
+
+// Decisão do Jefferson de 04/10/2026: Vidal Ramos → Brusque e Botuverá → Brusque
+// ficam EM ESTUDO — a tela diz "dados insuficientes" e nada vira tempo de descida.
+test('trecho em estudo só é reconhecido no par exato, e nunca vira caminho', () => {
+  const real = JSON.parse(readFileSync(new URL('../../../data/transito.json', import.meta.url), 'utf8'))
+  const exp = real.trechos_experimentais as TrechoExperimental[]
+  assert.equal(trechoEmEstudo(exp, 'itajai-mirim', 'botuvera', 'brusque'), true)
+  assert.equal(trechoEmEstudo(exp, 'itajai-mirim', 'vidal-ramos', 'brusque'), true)
+  assert.equal(trechoEmEstudo(exp, 'itajai-mirim', 'brusque', 'botuvera'), false)
+  assert.equal(trechoEmEstudo(exp, 'itajai-acu', 'botuvera', 'brusque'), false)
+  for (const t of exp) {
+    assert.equal('horas_min' in t || 'horas_max' in t, false, `${t.de}→${t.para}: sem faixa operacional`)
+    assert.equal(caminho(real.trechos, t.rio, t.de, t.para), null, `${t.de}→${t.para} não pode ter caminho`)
+  }
 })

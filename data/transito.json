@@ -119,7 +119,8 @@
           "Nenhum destes quatro picos está em enchentes.json (09/09/2026): entram só por decisão do Jefferson; os brutos já estão no repo."
         ]
       }
-    }
+    },
+    "trechos_experimentais": "Decisão do Jefferson de 04/10/2026: trechos EM ESTUDO, guardados com as medições e a evidência, mas SEM faixa operacional — não têm horas_min/horas_max e ficam fora de 'trechos', que é o que o site, o bot e o chat leem para tempo de descida. A tela mostra 'dados insuficientes' no lugar do tempo. Só migram para 'trechos' com pelo menos 3 cheias pareadas com hora nas duas pontas e por decisão do Jefferson. Não somar Vidal Ramos → Brusque com Botuverá → Brusque: são dois caminhos para o mesmo ponto, não etapas."
   },
   "trechos": [
     {
@@ -207,6 +208,41 @@
       "confianca": "baixa",
       "fonte": "Estimativa informal, NÃO calibrada: nenhuma fonte dá o tempo deste trecho.",
       "nota": "Auditoria de 03/10/2026: a justificativa antiga citava o hidrograma da JICA (pico de Brusque ~6 h após o de Rio do Sul), mas essa comparação é Rio do Sul × Brusque, por chuva na própria sub-bacia do Mirim — não é propagação Brusque → Itajaí e não sustenta as 6 h. A Tabela 7.5.1 não traz Brusque → Itajaí. O número fica como estimativa informal, com confiança baixa, até haver pares de picos observados em Brusque e nas réguas do Mirim em Itajaí (DC-10 a montante, DC-03/DC-04 na foz)."
+    }
+  ],
+  "trechos_experimentais": [
+    {
+      "rio": "itajai-mirim",
+      "de": "vidal-ramos",
+      "para": "brusque",
+      "status": "experimental",
+      "indicio": "≈ 6–8 h (indício citado na decisão do Jefferson de 04/10/2026; não é faixa operacional)",
+      "eventos_pareados_com_hora": 1,
+      "minimo_eventos_pareados": 3,
+      "medicoes": [
+        {
+          "evento": "2020-12-15",
+          "de": "ANA 83892990 Salseiro, 13:15, 2,73 m",
+          "para": "Defesa Civil de Brusque, 20:45",
+          "horas": 7.5,
+          "ressalva": "PISO, não centro: a série de Salseiro tem buraco de 07:15 a 13:00 (o mesmo na ANA e no portal); a crista real ficou entre 07:15 e 13:15, então o trânsito ficou entre 7,5 e ~13,5 h. Salseiro fica 6,8 km rio abaixo da sede de Vidal Ramos: não é a régua da cidade.",
+          "fonte": "docs/SALSEIRO-DC-BRUSQUE-2026-09-08.md; docs/ANA-API-2026-09-08.md (Salseiro, dezembro de 2020)"
+        }
+      ],
+      "evidencia_sem_hora": "34 picos de Brusque ≥ 450 cm (1997–2021) contra a ANA 83892990 Salseiro, com leituras às 07h/17h: antecedência ≤ 14 h em 27 de 34, cauda de 1–2 dias em cheias longas. A resolução (10/14 h) é o dobro do valor; não dá faixa fina.",
+      "fonte": "docs/HIDROWEB-MIRIM-2026-09-22.md, seção 'Salseiro e Botuverá-Montante'"
+    },
+    {
+      "rio": "itajai-mirim",
+      "de": "botuvera",
+      "para": "brusque",
+      "status": "experimental",
+      "indicio": null,
+      "eventos_pareados_com_hora": 0,
+      "minimo_eventos_pareados": 3,
+      "medicoes": [],
+      "evidencia_sem_hora": "34 picos de Brusque ≥ 450 cm (1997–2021) contra a ANA Botuverá-Montante, com leituras às 07h/17h: antecedência ≤ 14 h em 32 de 34 (18 no mesmo intervalo de leitura, 8 no anterior). A estação fica 3,5 km rio acima do pino de Botuverá: não é a régua da cidade. Nenhuma cheia com hora nas duas pontas.",
+      "fonte": "docs/HIDROWEB-MIRIM-2026-09-22.md, seção 'Salseiro e Botuverá-Montante'"
     }
   ]
 }

@@ -139,6 +139,54 @@ def _monotonia(estacoes_dict, transito_dict) -> tuple[list[str], list[str]]:
     return list(vd.erros), list(vd.avisos)
 
 
+def _experimentais(transito_dict) -> tuple[list[str], list[str]]:
+    """Roda só `valida_trechos_experimentais` sobre um transito.json em memória."""
+    vd.erros.clear()
+    vd.avisos.clear()
+    orig = vd.le_json
+    vd.le_json = lambda nome: transito_dict if nome == "transito.json" else orig(nome)
+    try:
+        conhecidas = {(r, c["id"]) for r, rio in orig("estacoes.json")["rios"].items() for c in rio["cidades"]}
+        vd.valida_trechos_experimentais(conhecidas)
+    finally:
+        vd.le_json = orig
+    return list(vd.erros), list(vd.avisos)
+
+
+class TrechosExperimentais(unittest.TestCase):
+    """Decisão do Jefferson de 04/10/2026: Vidal Ramos → Brusque e Botuverá → Brusque
+    ficam EM ESTUDO — medição e evidência guardadas, nenhuma faixa operacional."""
+
+    def setUp(self):
+        self.real = json.loads((DADOS / "transito.json").read_text(encoding="utf-8"))
+
+    def test_dados_reais_passam(self):
+        self.assertEqual(_experimentais(copy.deepcopy(self.real))[0], [])
+
+    def test_os_dois_do_mirim_estao_em_estudo_e_fora_dos_operacionais(self):
+        pares = {(t["de"], t["para"]) for t in self.real["trechos_experimentais"]}
+        self.assertEqual(pares, {("vidal-ramos", "brusque"), ("botuvera", "brusque")})
+        operacionais = {(t["de"], t["para"]) for t in self.real["trechos"]}
+        self.assertFalse(pares & operacionais)
+
+    def test_faixa_operacional_em_trecho_experimental_aborta(self):
+        d = copy.deepcopy(self.real)
+        d["trechos_experimentais"][0]["horas_min"] = 6
+        d["trechos_experimentais"][0]["horas_max"] = 8
+        self.assertTrue(any("horas_min" in e for e in _experimentais(d)[0]))
+
+    def test_mesmo_par_nos_dois_lugares_aborta(self):
+        d = copy.deepcopy(self.real)
+        d["trechos"].append({"rio": "itajai-mirim", "de": "botuvera", "para": "brusque",
+                             "horas_min": 6, "horas_max": 8, "confianca": "baixa", "fonte": "x"})
+        self.assertTrue(any("o mesmo par" in e for e in _experimentais(d)[0]))
+
+    def test_contagem_de_pares_tem_de_bater_com_as_medicoes(self):
+        d = copy.deepcopy(self.real)
+        d["trechos_experimentais"][1]["eventos_pareados_com_hora"] = 2
+        self.assertTrue(any("não bate" in e for e in _experimentais(d)[0]))
+
+
 def _marca_historica(estacoes_dict, enchentes_dict) -> list[str]:
     """Roda só `valida_marca_historica` sobre dois JSONs em memória."""
     vd.erros.clear()
