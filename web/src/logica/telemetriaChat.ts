@@ -29,6 +29,7 @@ export const CATEGORIAS = [
   'transito',
   'cota_ana',
   'antecedencia_mirim',
+  'rua_historico',
   'desconhecida',
 ] as const
 export type Categoria = (typeof CATEGORIAS)[number]
