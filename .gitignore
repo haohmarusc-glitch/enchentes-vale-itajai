@@ -51,3 +51,6 @@ data/brutos/ituporanga-mymaps-manchas-2026-09-09.kml
 # scripts/atlas_desastres.py: dezenas de MB, pública e reproduzível pelo script.
 # O que vale versionar é o recorte da bacia em data/desastres/.
 data/brutos/BD_Atlas_*_Consolidado.csv
+
+# Capturas dos testes de navegador (simulacao-chegada.mjs grava tmp/pesquisa-chegada).
+/tmp/
