@@ -112,7 +112,7 @@ das instruções e das ferramentas (seção acima); ainda sem pergunta real.
 | **`claude-sonnet-5-5`** | 2 / 10 | ~US$ 0,025 | ~US$ 0,06–0,08 | **Recomendado.** Segue bem instruções e ferramentas; metade do preço; responde mais rápido no celular. |
 | `claude-haiku-4-5` | 1 / 5 | ~US$ 0,012 | ~US$ 0,03–0,04 | O mais barato, mas mais propenso a escorregar nas regras: misturar réguas, comparar metros entre cidades, esquecer a fonte. Aqui um erro é afirmação falsa sobre enchente. |
 
-- **Recomendação:** `CHAT_IA_MODELO = claude-sonnet-5-5`.
+- **Recomendação:** `CHAT_IA_MODELO = claude-sonnet-5-5`. Para decidir pelo resultado, a prova de 34 perguntas está em `docs/PROVA-CHAT-IA.md`.
   - O trabalho é ler o que as ferramentas devolvem e reescrever em português simples, sem quebrar
     regras.
   - O motor local já faz a parte delicada (régua, escala, Itajaí).

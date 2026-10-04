@@ -164,7 +164,9 @@ test('info_da_cidade e tempos_de_descida', async () => {
   assert.equal(b.cotas_nomes_na_fonte._por_que, undefined)
   const t = (await json('tempos_de_descida', {})).valor
   assert.ok(t.trechos.length > 0 && t.trechos.every((x: { horas_min: number; horas_max: number }) => x.horas_min <= x.horas_max))
-  assert.ok(t.experimentais.length > 0 && t.experimentais.every((x: { horas_min?: number }) => x.horas_min === undefined))
+  assert.ok(t.experimentais.length > 0)
+  // Trecho em estudo sem número de horas nenhum (nem o "indício"): a tela não mostra.
+  assert.ok(!/\d\s*(–|-|a)\s*\d+\s*h/.test(JSON.stringify(t.experimentais)), JSON.stringify(t.experimentais))
   assert.equal((await executar('apagar_tudo', {}, obter, dados)).erro, true)
 })
 

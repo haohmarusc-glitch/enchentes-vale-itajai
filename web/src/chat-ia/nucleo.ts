@@ -245,7 +245,7 @@ export function ferramentas(d: Dados): BetaTool[] {
     {
       name: 'tempos_de_descida',
       description:
-        'Tempo que a cheia leva para descer entre cidades do mesmo tronco do rio (faixa em horas, confiança e fonte) e os trechos ainda experimentais, sem faixa.',
+        'Tempo que a cheia leva para descer entre cidades vizinhas do mesmo tronco do rio (faixa em horas, confiança e fonte) e os trechos em estudo, que não têm faixa. Para um par qualquer de cidades, prefira consultar_motor: ele soma os trechos como a tela do site.',
       strict: true,
       input_schema: { type: 'object', properties: {}, required: [], additionalProperties: false },
     },
@@ -324,11 +324,14 @@ export async function executar(nome: string, entrada: unknown, obter: ObterDados
       const t = base.transito
       return json({
         trechos: t.trechos.map((x) => ({ de: x.de, para: x.para, horas_min: x.horas_min, horas_max: x.horas_max, confianca: x.confianca, fonte: corta(x.fonte, 160) })),
+        // Trecho em estudo vai SEM o indício de horas: a tela diz "dados insuficientes" e não
+        // mostra número, e a IA não pode dizer mais que a tela.
         experimentais: (t.trechos_experimentais ?? []).map((x) => ({
           de: x.de,
           para: x.para,
-          status: x.status,
-          indicio: corta((x as unknown as Record<string, unknown>).indicio, 200),
+          status: 'em estudo: dados insuficientes, sem faixa de horas',
+          cheias_medidas_com_hora: x.eventos_pareados_com_hora,
+          minimo_para_faixa: x.minimo_eventos_pareados,
         })),
       })
     }
