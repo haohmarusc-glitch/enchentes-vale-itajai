@@ -40,3 +40,12 @@ ND Mais (31/08/2026), citando a Defesa Civil de Timbó: até 2,00 m normal ·
 Benedito. A notícia não nomeia a régua (o município tem três: Benedito, Cedros
 e Rua Indaial, após a junção). **Não pinta**; a tela avisa em texto. Entra em
 `cotas_m` quando o PLANCON ou a COMPDEC confirmar régua e tabela.
+
+---
+
+## 04/10/2026 — decisão do Jefferson: não ligar ainda à DCSC-00023
+
+A estação existe e os números divulgados batem com ela (5,52 × 5,52 m em 12/09/2026), mas falta comprovar que é a
+régua das faixas municipais (2,01 / 3,01 / 4,30 m). Timbó segue sem `codigo_dcsc` em `estacoes.json`, e nenhuma
+cota dela pinta. A leitura da DCSC-00023 aparece como "rede estadual (zero próprio)", sem classificação municipal.
+Aguarda a resposta do C27.

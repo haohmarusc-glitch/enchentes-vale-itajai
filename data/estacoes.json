@@ -318,13 +318,23 @@
             -27.057,
             -49.52
           ],
-          "cotas_pendentes_de_vinculo": {
-            "observacao_cota": 3.0,
-            "atencao": 3.5,
-            "emergencia": 4.0
+          "cotas_historicas_plancon_2024": {
+            "faixas_m": {
+              "observacao_cota": 3.0,
+              "atencao": 3.5,
+              "emergencia": 4.0
+            },
+            "nomes_na_fonte": {
+              "observacao_cota": "Observação",
+              "atencao": "Atenção",
+              "emergencia": "Emergência"
+            },
+            "fonte": "PLAMCON de Ibirama, Decreto nº 5.431/2024, p. 11 (tabela e nota 1: nível da estação da Defesa Civil de SC na ponte Beltramini)",
+            "validade": "até 07/08/2025 (p. 32: 'Este plano tem validade até 07/08/2025') — ENCERRADA",
+            "uso": "SÓ TABELA HISTÓRICA (decisão do Jefferson de 04/10/2026). Não classifica a leitura atual: a validade acabou, o PLAMCON 2025 (Decreto nº 5.824/2025) não tem texto público, e o boletim municipal de 11/09/2026 chamou 4,04 m de 'atenção', quando esta tabela diria emergência."
           },
-          "cotas_pendencia": "Faixas municipais preservadas em cotas_pendentes_de_vinculo. Equivalência com DCSC-00020 não confirmada; não classificar a leitura estadual com essas cotas.",
-          "cotas_aviso_publico": "As faixas municipais ainda não têm vínculo confirmado com a régua estadual DCSC-00020. O nível estadual não recebe classificação por essas cotas."
+          "cotas_pendencia": "A tabela do PLAMCON 2024 (3,00 / 3,50 / 4,00 m) fica em cotas_historicas_plancon_2024, só como histórico, com validade encerrada em 07/08/2025 (decisão do Jefferson de 04/10/2026). Não entra em cotas_m nem colore a leitura atual. Volta a ser considerada só com a tabela vigente da COMPDEC (PLAMCON 2025 ou resposta ao C26).",
+          "cotas_aviso_publico": "A tabela de faixas do Plano de Contingência de 2024 venceu em 07/08/2025 e não é usada para colorir o nível de agora. Ibirama aparece com a leitura da rede estadual, sem faixa municipal."
         },
         {
           "id": "lontras",

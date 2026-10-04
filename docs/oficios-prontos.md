@@ -655,3 +655,47 @@ Gmail, id `1a09c75462779e6d`) sem retorno. Endereço indicado pela rodada 6.
 3. A estação da DCSC em Apiúna (DCSC-00178) publica altitude, não nível. Qual é a cota do zero da régua?
 
 Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 04/05).
+
+---
+
+## C31 — INMET, Direção: manifestação de interesse em Acordo de Cooperação Técnica — 📝 RASCUNHO (decisão do Jefferson de 04/10/2026: "Sim, solicitar"; **envio depende da aprovação do texto**)
+
+Origem: a resposta da LAI C8 (NUP 21210.009435/2026-61, 22/09/2026) diz que a API do INMET só abre com Acordo de
+Cooperação Técnica, a começar por ofício de manifestação de interesse à Direção, seguido de reunião
+(`docs/LAI-INMET-2026-09-22.md`). Até a resposta, o projeto continua só com os canais públicos (BDMEP e a tabela do
+portal, consulta de tela). Não leva link do site (regra de 02/10/2026).
+
+**Ressalva para o Jefferson antes de enviar:** o ACT é entre instituições, e o projeto não tem pessoa jurídica. O
+texto diz isso de saída e pergunta se há caminho para pessoa física ou projeto acadêmico. Se houver instituição
+parceira (universidade, Defesa Civil), vale citá-la; o rascunho não inventa nenhuma.
+
+**Para:** diretor@inmet.gov.br
+**Assunto:** Manifestação de interesse em Acordo de Cooperação Técnica — dados de chuva da bacia do Itajaí (SC)
+
+À Direção do Instituto Nacional de Meteorologia,
+
+Meu nome é Jefferson, sou morador do Vale do Itajaí e estudante de Engenharia de Software. Mantenho, sem fins
+comerciais e com acesso restrito, um site sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim. Ele cita a origem
+de cada dado e avisa que não é sistema oficial de alerta nem substitui a Defesa Civil.
+
+Pelo pedido de acesso à informação NUP 21210.009435/2026-61, respondido em 22/09/2026, soube que a API do INMET é
+restrita a instituições com Acordo de Cooperação Técnica, e que o primeiro passo é esta manifestação de interesse.
+
+O uso seria só a chuva horária das estações automáticas da bacia (A817 Indaial, A861 Rio do Campo, A863 Ituporanga
+e A868 Itajaí), como contexto das cheias, sempre com crédito ao INMET e com a ressalva de que são dados brutos, sem
+consistência.
+
+Antes de pedir a reunião, gostaria de saber:
+
+1. O projeto não tem pessoa jurídica. Existe alguma modalidade de acesso para pessoa física ou projeto acadêmico,
+   ou o ACT exige instituição?
+2. Quais são a documentação da API, os formatos de saída e os limites de uso (a resposta citou 60 requisições por
+   minuto por token)?
+3. Quais condições de uso e de crédito valeriam para exibir esses dados num site de acesso restrito?
+
+Se o caminho for o ACT, fico à disposição para a reunião. Se quiserem ver o site, basta me mandar o e-mail para
+cadastro.
+
+Muito obrigado pela atenção.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
