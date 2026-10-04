@@ -260,3 +260,16 @@ pendência no README, para aprovação do Jefferson.
 **desligado** até ele criar o armazenamento (KV) na Cloudflare. O motor passou a marcar `falha`
 (motivo de um enum fechado + cidade citada) nas respostas que não entendem; o texto nunca sai do
 aparelho. Tudo em `docs/TELEMETRIA-CHAT.md`; como ligar em `docs/PUBLICACAO-E-ACESSO.md`.
+
+### Barreira do presente e cotas (04/10/2026)
+Achados da prova do chat com IA (`docs/PROVA-CHAT-IA.md`):
+- **"Alerta" sozinho não é mais barreira.** Só o alerta de agora ("tem alerta?", "está em alerta?", "alerta
+  vigente") continua barrado. "Previsão" continua barrada.
+- **"Essa madrugada", "daqui a pouco" e "como está o rio" entraram na barreira.**
+- **Intenção nova `cotas`:** "qual a cota de alerta de Blumenau?" responde a escada da Defesa Civil na régua da
+  cidade.
+  - Usa o nome local da faixa (D6).
+  - Diz quando as cotas não foram conferidas e traz o aviso público da cidade.
+  - Itajaí vai para a página das onze réguas.
+  - Cidade sem escada (Timbó, Ituporanga…) recebe "o site não tem cotas de faixa".
+- Testes em `motor.test.ts`.

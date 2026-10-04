@@ -127,6 +127,56 @@ test('perguntas de agora recebem o texto fixo', () => {
   for (const p of ['vai encher hoje?', 'Devo sair de casa?', 'tá subindo em gaspar?', 'qual a previsão para amanhã']) assert.equal(r(p).texto, TEXTO_ALERTA, p)
 })
 
+// Achados da prova do chat com IA (04/10/2026): "essa madrugada" e "como está o rio"
+// passavam pela barreira; "alerta" sozinho barrava pergunta sobre a cota de alerta.
+test('barreira: madrugada, "como está o rio" e alerta de AGORA', () => {
+  for (const p of [
+    'A água chega na minha casa no bairro Garcia essa madrugada?',
+    'O rio vai subir daqui a pouco?',
+    'Como está o rio em Rio do Sul?',
+    'como estão os rios?',
+    'Tem alerta em Blumenau?',
+    'Blumenau está em alerta?',
+    'Saiu alerta para Gaspar?',
+    'tem algum alerta vigente?',
+  ])
+    assert.equal(r(p).texto, TEXTO_ALERTA, p)
+})
+
+test('barreira: a cota de alerta NÃO é pergunta sobre agora', () => {
+  for (const p of [
+    'Qual é a cota de alerta do rio em Blumenau?',
+    'A partir de quantos metros é alerta em Ilhota?',
+    'Qual o nível de alerta de Rio do Sul?',
+  ])
+    assert.equal(r(p).intencao, 'cotas', p)
+})
+
+test('cotas da Defesa Civil: escada na régua da cidade, com o nome local', () => {
+  const b = r('Qual é a cota de alerta do rio em Blumenau?').texto
+  for (const linha of ['Observação: a partir de 3 m', 'Atenção: a partir de 4 m', 'Alerta: a partir de 6 m', 'Alerta Máximo: a partir de 8 m']) assert.ok(b.includes(linha), linha)
+  assert.match(b, /não se comparam com os de outra cidade/)
+  assert.doesNotMatch(b, /não foram conferidas/) // Blumenau: cotas_verificado true
+
+  const ilhota = r('A partir de quantos metros é alerta em Ilhota?').texto
+  assert.ok(ilhota.includes('Prontidão: a partir de 10 m'), ilhota) // D6: o nome da Defesa Civil de Ilhota
+  assert.match(ilhota, /não foram conferidas/)
+
+  assert.match(r('Quais são as cotas da Defesa Civil para o rio em Gaspar?').texto, /Atenção: acima de 5 m[\s\S]*Emergência: acima de 7 m/) // legenda "maior que"
+  assert.match(r('Qual a cota de alerta de Itajaí?').texto, /onze réguas/)
+  // Timbó: só gatilho do plano, sem escada — não vira faixa.
+  const timbo = r('Qual a cota de alerta de Timbó?').texto
+  assert.match(timbo, /não tem cotas de faixa/)
+  assert.doesNotMatch(timbo, /• /)
+  assert.match(r('Qual a cota de alerta de Pomerode?').texto, /Não achei a cidade[\s\S]*Blumenau/)
+})
+
+test('cotas não roubam outras intenções', () => {
+  assert.equal(r('Quantas cheias passaram de 10 m em Rio do Sul?').intencao, 'contar_acima')
+  assert.equal(r('Cota da ANA em Brusque em novembro de 2008').intencao, 'cota_ana')
+  assert.equal(r('Quantas cheias chegaram à cota da Rua São Rafael em Blumenau?').intencao, 'rua_historico')
+})
+
 test('fora do tema não inventa', () => {
   const x = r('me conta uma piada')
   assert.equal(x.intencao, 'nao_entendi')

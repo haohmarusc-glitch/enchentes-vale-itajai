@@ -82,6 +82,12 @@ export interface Dados {
           nome: string
           /** Brusque: só os picos desde `desde` estão na régua declarada (decisão de 04/10/2026). */
           historico_referencia?: { desde: string }
+          /** Cotas da Defesa Civil da cidade, na régua dela (`cotasDaCidade`). */
+          cotas_m?: Record<string, number>
+          cotas_nomes_na_fonte?: Record<string, string>
+          cotas_verificado?: boolean | null
+          cotas_aviso_publico?: string
+          fonte_cotas?: string
         }[]
       }
     >
@@ -141,13 +147,23 @@ const mesIso = (ano: number, mes: number) => `${ano}-${String(mes).padStart(2, '
 // ---------------------------------------------------------------- barreira de "agora"
 // Checada antes de qualquer outra coisa. Não é alerta: pergunta sobre o presente
 // vai para a Defesa Civil e para as réguas ao vivo do site.
+//
+// Correções de 04/10/2026 (achadas pela prova do chat com IA, docs/PROVA-CHAT-IA.md):
+//  - "alerta" sozinho NÃO é mais barreira: "qual a cota de alerta de Blumenau?" é pergunta
+//    sobre a régua, e recebia o texto do 199. Só o alerta de AGORA ("tem alerta?", "está em
+//    alerta?", "alerta vigente") continua barrado. "previsão" continua barrada.
+//  - "essa madrugada", "daqui a pouco", "como está o rio" passavam pela barreira.
 const AGORA = [
   /\b(agora|hoje|hj|amanha|neste momento|nesse momento|esta noite|essa noite|esta semana|essa semana|proximas horas)\b/,
+  /\b(madrugada|logo mais|daqui a pouco|mais tarde|esta tarde|essa tarde|esta manha|essa manha|proximos dias|fim de semana)\b/,
+  /\bcomo (esta|ta|estao|tao|anda|andam)\b.{0,25}\b(rio|rios|nivel|agua|cheia|enchente|situacao|ribeirao)\b/,
   /\b(vai|vao|pode|deve)\s+(encher|subir|transbordar|alagar|inundar|chover|baixar|descer)\b/,
   /\b(esta|ta|estao|tao)\s+(enchendo|subindo|alagando|transbordando|chovendo)\b/,
   /\b(devo|preciso|precisamos|tenho que|temos que|e para|e pra)\s+(sair|evacuar|deixar|subir os moveis|tirar o carro)\b/,
   /\b(nivel|cota|situacao)\s+(atual|de agora|de hoje)\b/,
-  /\b(previsao|alerta)\b/,
+  /\bprevisao\b/,
+  /\b(tem|ha|existe|esta|estamos|estao|ta|tao|emitiu|emitiram|saiu|decretou|decretaram|entrou|entramos)\s+(algum\s+|um\s+|o\s+|de\s+|no\s+|em\s+)?(estado\s+de\s+)?alerta\b/,
+  /\balerta\s+(vigente|ativo|em vigor|valendo|para (hoje|amanha|esta|essa))\b/,
   /\b(estou|to|moro)\b.{0,40}\b(ilhad|alagad|cercad)/,
 ]
 /** A pergunta é sobre o presente (nível de agora, previsão, sair de casa)? Vale também para o chat com IA. */
@@ -536,6 +552,58 @@ const NOTA_LISTA_ESPARSA: Record<string, string> = {
   gaspar: 'A lista de Gaspar só traz as cheias grandes (a menor tem 6,19 m): cheias médias que passaram desta cota podem não estar nela.',
 }
 
+// ---------------------------------------------------------------- cotas da Defesa Civil
+// "Qual a cota de alerta de Blumenau?" — a escada de faixas da cidade, na régua dela, com
+// o NOME que a Defesa Civil local usa (D6: "Alerta Máximo" em Blumenau, "Prontidão" em
+// Ilhota). Marca fora da escada (ex.: Timbó, só gatilho do plano) não vira faixa aqui.
+const ESCADA: [string, string][] = [
+  ['monitoramento', 'Monitoramento'],
+  ['atencao', 'Atenção'],
+  ['alerta', 'Alerta'],
+  ['inundacao', 'Inundação'],
+  ['emergencia', 'Emergência'],
+]
+/** Gaspar publica a legenda como "maior que": a faixa começa ACIMA do número. */
+const LEGENDA_ACIMA_DE = new Set(['gaspar'])
+const PALAVRA_COTA_DC =
+  /\b(cotas?|niveis?|nivel|faixas?|escala)\b.{0,40}\b(alerta|atencao|emergencia|inundacao|observacao|prontidao|monitoramento|defesa civil)\b|\b(alerta|atencao|emergencia|prontidao)\b.{0,25}\b(comeca|a partir)\b|\ba partir de quantos metros\b/
+
+function cotasDaCidade(e: Extraido, d: Dados): Resposta {
+  if (!e.cidade) {
+    const comRegua = [...new Set(Object.values(d.estacoes.rios).flatMap((r) => r.cidades.map((c) => c.nome)))]
+    return {
+      intencao: 'cotas',
+      texto: `Não achei a cidade na pergunta. As cidades com régua no site são: ${comRegua.join(', ')}. Ex.: "qual a cota de alerta de Blumenau?"`,
+      falha: faltou('faltou_cidade', e),
+    }
+  }
+  const cidade = Object.values(d.estacoes.rios)
+    .flatMap((r) => r.cidades)
+    .find((c) => c.id === e.cidade!.id)
+  if (!cidade) return { intencao: 'cotas', texto: `${e.cidade.nome} não tem régua de rio neste site, então não há cotas de lá.` }
+  if (VARIAS_REGUAS[cidade.id])
+    return { intencao: 'cotas', texto: `${VARIAS_REGUAS[cidade.id]}: cada régua tem as suas cotas. Elas estão na página de ${cidade.nome}, régua por régua.` }
+  const cotas = cidade.cotas_m ?? {}
+  const nomes = cidade.cotas_nomes_na_fonte ?? {}
+  const degraus = ESCADA.filter(([k]) => typeof cotas[k] === 'number')
+  const aviso = cidade.cotas_aviso_publico ? `\n${corta(cidade.cotas_aviso_publico, 400)}` : ''
+  if (!degraus.length)
+    return {
+      intencao: 'cotas',
+      texto: `O site não tem cotas de faixa da Defesa Civil para ${cidade.nome}.${aviso}${/199/.test(aviso) ? '' : '\nEm cheia, siga a Defesa Civil: ligue 199.'}`,
+    }
+  const inicio = LEGENDA_ACIMA_DE.has(cidade.id) ? 'acima de' : 'a partir de'
+  const linhas = degraus.map(([k, padrao]) => `• ${nomes[k] ?? padrao}: ${inicio} ${m(cotas[k]!)}`)
+  const conferida = cidade.cotas_verificado === true ? '' : '\nAtenção: essas cotas ainda não foram conferidas pelo projeto na fonte oficial.'
+  const fonte = cidade.fonte_cotas ? `\nFonte: ${corta(cidade.fonte_cotas, 200)}` : ''
+  return {
+    intencao: 'cotas',
+    texto:
+      `Cotas da Defesa Civil para o rio em ${cidade.nome}, na régua da cidade:\n${linhas.join('\n')}${conferida}${aviso}${fonte}\n` +
+      'Cada cidade tem a sua régua: esses metros não se comparam com os de outra cidade. Em cheia, siga a Defesa Civil: ligue 199.',
+  }
+}
+
 function ruaHistorico(e: Extraido, d: Dados): Resposta {
   const termo = termoDaRua(e)
   if (!e.cidade)
@@ -908,6 +976,7 @@ export function responder(pergunta: string, d: Dados): Resposta {
   const e = extrair(pergunta, d)
   const t = e.t
   if (PALAVRA_RUA.test(t) && (e.cidade || /\b(quantas|quantos|alag|cheia|enchente|cota)/.test(t))) return ruaHistorico(e, d)
+  if (PALAVRA_COTA_DC.test(t) && !/\bquant(as|os) (cheias|vezes|enchentes|picos)\b/.test(t)) return cotasDaCidade(e, d)
   if (/\b(quanto tempo|quantas horas|demora|demorar|leva|levar|chega|chegar|desce|descer|transito)\b/.test(t) && (e.cidade2 || (/\b(quanto tempo|quantas horas)\b/.test(t) && /\bate\b/.test(t))))
     return transito(e, d)
   if (/\bchov|chuva/.test(t)) return chuvaAntes(e, d)

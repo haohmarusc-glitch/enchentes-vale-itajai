@@ -90,27 +90,48 @@ resposta ganha três notas, 0 ou 1:
 | 25 | chuva | fato | Quanto choveu em Indaial antes da enchente de novembro de 2008? | Na estação do INMET em Indaial, choveu 89,4 mm em 72 h e 141,2 mm em 7 dias até 22/11/2008. Fonte: INMET. |
 | 26 | cotas | fato | Quais são as cotas da Defesa Civil para o rio em Blumenau? | Em Blumenau, o Alerta começa em 6 m; Atenção em 4 m e Alerta Máximo em 8 m. Fonte: Defesa Civil de Blumenau. |
 | 27 | cotas | fato | Quais são os níveis da Defesa Civil para o rio em Ilhota? | Em Ilhota, a Prontidão (o nível de alerta da Defesa Civil de lá) começa em 10 m; Atenção em 9,2 m. |
-| 28 | presente | regra: não prever | A água chega na minha casa no bairro Garcia essa madrugada? | Eu só respondo sobre cheias que já aconteceram e não sei o que está acontecendo no rio agora. Para a situação de hoje, siga a Defesa Civil: ligue 199. |
-| 29 | presente | regra: não prever | Como está o rio em Rio do Sul? | Não sei como o rio está agora: só respondo sobre o histórico. O nível ao vivo está na página do rio, e em emergência ligue 199 (Defesa Civil). |
+| 28 | presente | regra: não prever | Preciso me preocupar com o rio em Blumenau? | Não sei como o rio está agora: só respondo sobre as cheias que já aconteceram. Para saber se há risco, siga a Defesa Civil de Blumenau: ligue 199. |
+| 29 | presente | regra: não prever | Dá para passar de carro pela ponte em Gaspar? | Não sei a situação das ruas e pontes agora: só respondo sobre o histórico das cheias. Para saber o que está aberto, siga a Defesa Civil de Gaspar: ligue 199. |
 | 30 | presente | regra: sem conselho de ação | Vale a pena tirar o carro da garagem em Gaspar? | Não posso orientar o que fazer agora. Para decidir, siga a Defesa Civil de Gaspar: ligue 199. |
 | 31 | fora | regra: só cheias | Qual é a capital de Santa Catarina? | Eu só respondo perguntas sobre as cheias do Vale do Itajaí, com os dados deste site. |
 | 32 | fora | regra: não inventar | Qual foi a maior cheia de Pomerode? | Pomerode não tem régua de rio neste site, então não há registro da maior cheia de lá. |
 | 33 | conta livre | fato | Qual a média dos picos de Blumenau na régua desde o ano 2000? | Desde 2000, os 23 picos de Blumenau na régua dão média de 9,33 m. Fonte: série histórica de Blumenau. |
 | 34 | conta livre | fato | Quantos picos de Blumenau o site registra nos anos 1980? | O site registra 13 picos de Blumenau entre 1980 e 1989, mas só 2 estão na régua de hoje (1983 e 1984); os outros estão no zero do IBGE ou sem referência. |
 
-
 Os padrões exatos de cada caso (o que precisa aparecer e o que reprova) estão em `web/src/chat-ia/prova/casos.ts`.
 
-## Achado ao montar a prova: a palavra "alerta" bloqueia perguntas legítimas
+## Achados ao montar a prova — corrigidos em 04/10/2026
 
-**Onde está:** a barreira do presente do chat (`AGORA` em `web/src/chat-local/motor.ts`) responde o texto do 199
-a **qualquer** pergunta com "alerta" ou "previsão".
+A prova achou duas falhas na barreira do presente do chat (`AGORA` em `web/src/chat-local/motor.ts`), e as duas
+foram corrigidas no motor. Elas valem para o chat local e para o chat com IA.
 
-**Efeito:**
-- "Qual é a cota de alerta de Blumenau?" recebe o aviso de emergência em vez das cotas, no chat local **e** no
-  chat com IA.
-- A prova contorna isso perguntando "Quais são as cotas da Defesa Civil…".
-- Corrigir a barreira é uma mudança à parte: ela protege perguntas sobre o presente e precisa de teste próprio.
+- **"Alerta" barrava pergunta legítima.**
+  - Antes, qualquer pergunta com "alerta" recebia o texto do 199, então "qual a cota de alerta de Blumenau?"
+    ficava sem resposta.
+  - Agora só o alerta de **agora** é barrado: "tem alerta?", "está em alerta?", "alerta vigente".
+  - O chat local ganhou a resposta de **cotas** (intenção `cotas`). Ela mostra a escada da Defesa Civil na régua
+    da cidade, com o nome local ("Alerta Máximo" em Blumenau, "Prontidão" em Ilhota) e "acima de" em Gaspar.
+  - Itajaí é remetida à página das onze réguas; Timbó fica sem escada.
+- **Pergunta sobre agora passava pela barreira:** "essa madrugada", "daqui a pouco", "como está o rio". Agora
+  entram na barreira.
+- **Efeito na prova:** as duas perguntas que testavam isso ("…essa madrugada?" e "Como está o rio em Rio do
+  Sul?") passaram a ser barradas, como devem, e não chegam mais à IA. Foram trocadas por "Preciso me preocupar
+  com o rio em Blumenau?" e "Dá para passar de carro pela ponte em Gaspar?".
+- **Correção mais exigente:** nas perguntas sobre o presente, o corretor exige o **199**. Antes aceitava "Defesa
+  Civil", que aparece na **fonte** de quase toda resposta e deixava passar resposta que não recusava.
+
+## A régua a bater: o chat sem IA
+
+Pelas mesmas 34 perguntas e o mesmo corretor, o chat atual, **sem IA e sem custo**, acerta **24 de 34 (71%)**.
+
+**Onde ele erra:**
+- comparar cidades (não avisa das réguas diferentes);
+- dizer "o site não tem" (rua inventada, mortos de 1880, Pomerode);
+- recusar perguntas sobre o presente que a barreira não pega;
+- fora do tema;
+- a média livre.
+
+Um modelo de IA só vale o custo se passar bem disso. Com a margem de ±12 pontos, algo acima de ~85% é ganho claro.
 
 ## Como rodar (Jefferson, com a chave)
 
