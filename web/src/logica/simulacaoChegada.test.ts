@@ -75,3 +75,12 @@ test('caso de 2011 não se transforma em média nem altera a referência JICA', 
   assert.equal(historico.eventos[0]!.pico_jusante, null)
   assert.deepEqual([historico.referencia_estudo.horas_min, historico.referencia_estudo.horas_max], [12, 17])
 })
+
+test('janelaJaPassou: só quando o fim da janela ficou para trás', async () => {
+  const { janelaJaPassou } = await import('./simulacaoChegada')
+  const r = { inicio: new Date('2026-10-02T22:00:00-03:00'), fim: new Date('2026-10-03T03:00:00-03:00') } as Parameters<typeof janelaJaPassou>[0]
+  assert.equal(janelaJaPassou(r, new Date('2026-10-03T21:00:00-03:00')), true, 'o caso da auditoria: 18 h depois')
+  assert.equal(janelaJaPassou(r, new Date('2026-10-03T02:00:00-03:00')), false, 'janela em curso')
+  assert.equal(janelaJaPassou(r, new Date('2026-10-02T20:00:00-03:00')), false, 'janela futura')
+  assert.equal(janelaJaPassou({ erro: 'x' }, new Date()), false)
+})

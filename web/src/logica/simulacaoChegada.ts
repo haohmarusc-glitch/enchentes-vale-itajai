@@ -78,3 +78,13 @@ export function simularChegada(
       || (i === depois && e.quando.getTime() - fim.getTime() <= 12 * HORA)),
   }
 }
+
+/**
+ * A janela inteira já ficou para trás? Auditoria de 03/10/2026: o "Hoje" de
+ * Itajaí mostrava "chegaria entre 02/10 22:00 e 03/10 03:00" dezoito horas
+ * depois do fim da janela. Conta só quando o FIM já passou; janela em curso
+ * ou futura continua no condicional.
+ */
+export function janelaJaPassou(resultado: ResultadoSimulacao, agora: Date): boolean {
+  return !('erro' in resultado) && resultado.fim.getTime() < agora.getTime()
+}
