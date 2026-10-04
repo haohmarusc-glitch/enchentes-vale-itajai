@@ -13,6 +13,7 @@ import { barragensDaCidade, useBarragens } from '../dados/barragens'
 import { tendencia } from '../dados/serie'
 import { estadoDaCidade, useAoVivo } from '../dados/usarAoVivo'
 import { chuvaDaCidade } from '../logica/chuva'
+import { estacoesAnaDosPicos } from '../logica/estacoesAna'
 import { ROTULO_CONFIANCA, fonteTempoReal, metros, rotuloCota } from '../logica/formato'
 import { reguasComCota } from '../logica/reguas'
 import estilos from './TelaCidade.module.css'
@@ -139,6 +140,7 @@ export default function TelaCidade() {
   const { agora, tempoReal, serie } = aoVivo
   const chuva = chuvaDaCidade(tempoReal.chuva, cidade.id)
   const picos = eventos.filter((e) => e.cidade === cidade.id)
+  const anaDosPicos = estacoesAnaDosPicos(picos, cidade.codigo_ana)
   const cotas = Object.entries(cidade.cotas_m ?? {}).filter(([, v]) => typeof v === 'number') as [string, number][]
   const reguas = reguasComCota(estacoesTempoReal, rioId, cidade.id)
   const barragens = barragensDaCidade(mapaBarragens, cidade.id)
@@ -327,9 +329,16 @@ export default function TelaCidade() {
                 {cidade.regua ? <li>Régua: {cidade.regua}</li> : null}
                 <li>
                   {cidade.codigo_ana
-                    ? `Estação ANA ${cidade.codigo_ana}${cidade.verificado ? '' : ' (não conferida)'}`
-                    : 'Sem estação ANA localizada'}
+                    ? `Estação ANA desta cidade: ${cidade.codigo_ana}${cidade.verificado ? '' : ' (não conferida)'}`
+                    : 'Nenhuma estação ANA ligada à régua desta cidade'}
                 </li>
+                {anaDosPicos.length > 0 ? (
+                  <li>
+                    Os picos históricos citam {anaDosPicos.length === 1 ? 'a estação' : 'as estações'} ANA{' '}
+                    {anaDosPicos.join(' e ')}: outra régua, com zero próprio — não compare com a leitura de agora
+                    sem conferir a referência de cada pico no Histórico.
+                  </li>
+                ) : null}
                 {cidade.sub_bacia ? <li>Sub-bacia: {cidade.sub_bacia}</li> : null}
                 {cidade.km_da_foz !== undefined ? <li>{cidade.km_da_foz} km da foz</li> : null}
                 <li>{picos.length} pico{picos.length === 1 ? '' : 's'} no histórico</li>

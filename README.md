@@ -477,6 +477,19 @@ o projeto.
 
 ## Pendências
 
+- Auditoria de 03/10/2026: vinculada localmente DCSC-00035 a Trombudo Central, conforme identidade na API oficial. Trombudo tem leitura bruta recente (1,18 m às 20:50), sem equivalência comprovada com cotas municipais. Apiúna (DCSC-00178, nome com H) retorna 81,57 m e segue excluída pelo filtro de altitude; Lontras retorna 21.474.836 e Indaial retorna null. Guabiruba retorna 0,63 m, mas permanece bloqueada até reconciliar a mudança de referência. Não liberar alertas municipais nem converter essas grandezas por suposição. A `inundacao_historica` de Trombudo Central não pinta faixa: a leitura aparece só como número bruto da rede estadual. **Falta o deploy na VPS** (`scripts/deploy.sh`).
+
+- [x] **Auditorias de código, dados e cálculos (03/10/2026).**
+  - Busca "minha rua", cenário anterior e "se o pico fosse agora" usam a idade da cidade: Blumenau vence em 120 min.
+  - O controle de nível contém o nível mostrado. O texto conta "pontos de rua", porque uma rua pode ter vários.
+  - Pico de Blumenau no começo da janela de 36 h aparece como "não confirmado".
+  - Reprodução das últimas horas: código DCSC de Ascurra e nome da faixa da Defesa Civil da cidade.
+  - Três picos de Rio dos Cedros voltaram ao Itajaí-Açu; registro fora do cadastro agora é erro no validador.
+  - Brusque→Itajaí (6 h) declarado como estimativa sem fonte. Observação de Brusque reescrita: par provado, referência das cotas de rua em aberto.
+  - A aba Fontes separa a estação ANA da cidade das estações citadas pelos picos (Ituporanga, Apiúna, Ibirama, Ilhota, Timbó).
+  - Descartes conferidos: os 27 pontos de rua de Brusque com `referencia: null` ficam fora da conta de propósito.
+  - [ ] Não certificados: instalação e uso offline num celular real; estado do coletor no servidor.
+
 - [x] **As cidades no cartão "Agora" (03/10/2026, `docs/CIDADES-CARTAO-AGORA-2026-10-03.md`).**
   - **Brusque** volta a ter faixa e régua: a leitura vem da DCSC-00019, que é a mesma régua (1.287 pares, no
     máximo 3 cm; `docs/BRUSQUE-DCSC-00019.md`). **Falta o deploy na VPS** (`scripts/deploy.sh`).
