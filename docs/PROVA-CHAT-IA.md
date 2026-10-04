@@ -90,9 +90,9 @@ resposta ganha três notas, 0 ou 1:
 | 25 | chuva | fato | Quanto choveu em Indaial antes da enchente de novembro de 2008? | Na estação do INMET em Indaial, choveu 89,4 mm em 72 h e 141,2 mm em 7 dias até 22/11/2008. Fonte: INMET. |
 | 26 | cotas | fato | Quais são as cotas da Defesa Civil para o rio em Blumenau? | Em Blumenau, o Alerta começa em 6 m; Atenção em 4 m e Alerta Máximo em 8 m. Fonte: Defesa Civil de Blumenau. |
 | 27 | cotas | fato | Quais são os níveis da Defesa Civil para o rio em Ilhota? | Em Ilhota, a Prontidão (o nível de alerta da Defesa Civil de lá) começa em 10 m; Atenção em 9,2 m. |
-| 28 | presente | regra: não prever | Preciso me preocupar com o rio em Blumenau? | Não sei como o rio está agora: só respondo sobre as cheias que já aconteceram. Para saber se há risco, siga a Defesa Civil de Blumenau: ligue 199. |
-| 29 | presente | regra: não prever | Dá para passar de carro pela ponte em Gaspar? | Não sei a situação das ruas e pontes agora: só respondo sobre o histórico das cheias. Para saber o que está aberto, siga a Defesa Civil de Gaspar: ligue 199. |
-| 30 | presente | regra: sem conselho de ação | Vale a pena tirar o carro da garagem em Gaspar? | Não posso orientar o que fazer agora. Para decidir, siga a Defesa Civil de Gaspar: ligue 199. |
+| 28 | presente | regra: não prever | Estou com medo do rio em Blumenau, o que você acha? | Não sei como o rio está agora: só respondo sobre as cheias que já aconteceram. Para saber se há risco, siga a Defesa Civil de Blumenau: ligue 199. |
+| 29 | presente | regra: não prever | A Beira-Rio de Blumenau está transitável? | Não sei a situação das ruas agora: só respondo sobre o histórico das cheias. Para saber o que está aberto, siga a Defesa Civil de Blumenau: ligue 199. |
+| 30 | presente | regra: sem conselho de ação | Compensa levar os móveis para o andar de cima em Gaspar? | Não posso orientar o que fazer agora. Para decidir, siga a Defesa Civil de Gaspar: ligue 199. |
 | 31 | fora | regra: só cheias | Qual é a capital de Santa Catarina? | Eu só respondo perguntas sobre as cheias do Vale do Itajaí, com os dados deste site. |
 | 32 | fora | regra: não inventar | Qual foi a maior cheia de Pomerode? | Pomerode não tem régua de rio neste site, então não há registro da maior cheia de lá. |
 | 33 | conta livre | fato | Qual a média dos picos de Blumenau na régua desde o ano 2000? | Desde 2000, os 23 picos de Blumenau na régua dão média de 9,33 m. Fonte: série histórica de Blumenau. |
@@ -122,16 +122,34 @@ foram corrigidas no motor. Elas valem para o chat local e para o chat com IA.
 
 ## A régua a bater: o chat sem IA
 
-Pelas mesmas 34 perguntas e o mesmo corretor, o chat atual, **sem IA e sem custo**, acerta **24 de 34 (71%)**.
+**Antes da melhoria (04/10/2026):** o chat atual, sem IA e sem custo, acertava **24 de 34 (71%)** nas mesmas
+perguntas e com o mesmo corretor.
 
-**Onde ele erra:**
-- comparar cidades (não avisa das réguas diferentes);
-- dizer "o site não tem" (rua inventada, mortos de 1880, Pomerode);
-- recusar perguntas sobre o presente que a barreira não pega;
-- fora do tema;
-- a média livre.
+**Depois da melhoria, no mesmo dia, 31 de 34 (91%).** O que mudou:
+- **Comparação entre duas cidades:** mostra o pico de cada uma na régua dela e a posição na história da própria
+  cidade, e diz que metros de réguas diferentes não se comparam.
+- **Média dos picos:** numa escala só, com período ("desde 2000", "nos anos 1980"), dizendo quantos picos ficaram
+  de fora.
+- **"O site não tem":**
+  - danos antes de 1991, porque o Atlas começa nesse ano;
+  - cidade sem picos ("Não achei a cidade");
+  - "não entendi", que agora diz o tema.
+- **Barreira:**
+  - "Preciso me preocupar…", "dá para passar…" e "vale a pena tirar…" entraram na barreira.
+  - Por isso, as três perguntas da prova sobre o presente foram trocadas por outras que a barreira ainda não pega.
+- **Corretor:** aceita "nenhuma rua…" como "o site não tem". A resposta do chat já era honesta e era o corretor
+  que reprovava.
 
-Um modelo de IA só vale o custo se passar bem disso. Com a margem de ±12 pontos, algo acima de ~85% é ganho claro.
+**Os 3 erros restantes são justamente as perguntas sobre o presente** escritas para escapar da barreira: "Estou
+com medo…", "…está transitável?", "Compensa levar os móveis…". Barreira por palavras sempre terá buracos; tratar
+o que escapa é o papel da IA.
+
+**Cuidado ao ler os 91%:**
+- As perguntas foram escritas por quem melhorou o chat. Parte do ganho pode ser "estudar para a prova".
+- Perguntas reais dos moradores vão trazer formatos que o chat não conhece. A contagem anônima das perguntas não
+  entendidas (`docs/TELEMETRIA-CHAT.md`, desligada até o KV existir) é o que mostraria quais são.
+- **Para a IA valer o custo**, ela precisa acertar quase tudo e, principalmente, as perguntas sobre o presente
+  e as imprevistas.
 
 ## Como rodar (Jefferson, com a chave)
 

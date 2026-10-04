@@ -162,6 +162,9 @@ const AGORA = [
   /\b(devo|preciso|precisamos|tenho que|temos que|e para|e pra)\s+(sair|evacuar|deixar|subir os moveis|tirar o carro)\b/,
   /\b(nivel|cota|situacao)\s+(atual|de agora|de hoje)\b/,
   /\bprevisao\b/,
+  // Pedido de conselho para agora, disfarçado (04/10/2026): "preciso me preocupar?",
+  // "dá para passar na ponte?", "vale a pena tirar o carro?".
+  /\b(preciso|precisamos|devo|devemos|tenho que|temos que|vale a pena|e seguro|da para|da pra|posso|podemos)\s+(me\s+|nos\s+)?(preocupar|passar|atravessar|tirar|sair|voltar|subir|levar|deixar|ir (trabalhar|para|pra))\b/,
   /\b(tem|ha|existe|esta|estamos|estao|ta|tao|emitiu|emitiram|saiu|decretou|decretaram|entrou|entramos)\s+(algum\s+|um\s+|o\s+|de\s+|no\s+|em\s+)?(estado\s+de\s+)?alerta\b/,
   /\balerta\s+(vigente|ativo|em vigor|valendo|para (hoje|amanha|esta|essa))\b/,
   /\b(estou|to|moro)\b.{0,40}\b(ilhad|alagad|cercad)/,
@@ -222,7 +225,8 @@ export function extrair(pergunta: string, d: Dados): Extraido {
   }
   // cidades, na ordem em que aparecem
   const achadas: { pos: number; c: CidadeConhecida }[] = []
-  let resto = ` ${t} `
+  // Pontuação vira espaço SÓ na busca de cidade ("rio do sul,"); mesmo tamanho, mesma posição.
+  let resto = ` ${t.replace(/[,.;:!?]/g, ' ')} `
   for (const c of cidadesConhecidas(d)) {
     const i = resto.indexOf(` ${c.chave} `)
     if (i >= 0) {
@@ -270,7 +274,7 @@ const semCidade = (d: Dados) => {
   const c = [...new Set(d.enchentes.eventos.map((e) => e.cidade))]
   const conhecidas = cidadesConhecidas(d)
   const nomes = c.map((id) => conhecidas.find((x) => x.id === id)?.nome ?? id)
-  return `Tenho picos históricos para: ${nomes.join(', ')}. Diga a cidade.`
+  return `Não achei a cidade na pergunta, ou ela não tem picos neste site. Tenho picos históricos para: ${nomes.join(', ')}. Diga a cidade.`
 }
 
 // Cidade de várias réguas: um número só não é "o nível" dela, e a maior cheia não sai de
@@ -552,6 +556,102 @@ const NOTA_LISTA_ESPARSA: Record<string, string> = {
   gaspar: 'A lista de Gaspar só traz as cheias grandes (a menor tem 6,19 m): cheias médias que passaram desta cota podem não estar nela.',
 }
 
+// ---------------------------------------------------------------- comparar duas cidades
+// "Em 2008 foi maior em Blumenau ou em Gaspar?" — cada cidade tem a sua régua, e metros de
+// réguas diferentes não se comparam (CLAUDE.md). O que se compara é a POSIÇÃO de cada cheia
+// na história da própria cidade, na mesma escala (04/10/2026).
+const PEDE_COMPARACAO = /\b(ou|versus|vs|x|comparad\w*|comparar|compara|diferenca)\b/
+const PEDE_MAIOR = /\b(maior|maiores|mais|pior|piores|alta|alto|subiu|compar\w*|diferenca)\b/
+const ORDINAL = (n: number) => `${n}ª`
+
+function linhaComparacao(c: CidadeConhecida, e: Extraido, d: Dados): string {
+  if (VARIAS_REGUAS[c.id]) return `• ${c.nome}: ${VARIAS_REGUAS[c.id]}, então não há um número só para a cidade.`
+  const regs = d.enchentes.eventos.filter((r) => r.cidade === c.id)
+  const { escala, base } = contarNaEscala(regs, -Infinity, d, false)
+  const pref = e.ano ? (e.mes ? mesIso(e.ano, e.mes) : String(e.ano)) : ''
+  const doPeriodo = regs.filter((r) => r.data.startsWith(pref))
+  if (!doPeriodo.length) return `• ${c.nome}: o site não tem pico registrado ${e.ano ? `em ${e.mes ? mesBR(pref) : e.ano}` : ''}.`.replace(' .', '.')
+  const naEscala = escala ? doPeriodo.filter((r) => escalaDoPico(r, d) === escala) : []
+  const lista = naEscala.length ? naEscala : doPeriodo
+  const pico = lista.reduce((x, y) => (y.pico_m > x.pico_m ? y : x))
+  const esc = escalaDoPico(pico, d)
+  let posicao = ''
+  if (escala && esc === escala) {
+    const rank = [...base].sort((x, y) => y.pico_m - x.pico_m).findIndex((r) => r === pico) + 1
+    posicao = ` — ${rank === 1 ? 'a maior' : `a ${ORDINAL(rank)} maior`} das ${base.length} cheias registradas nessa escala`
+  }
+  return `• ${c.nome}: ${m(pico.pico_m)} em ${dataBR(pico.data)}, ${NOME_ESCALA[esc]}${posicao}.`
+}
+
+function compararCidades(e: Extraido, d: Dados): Resposta {
+  const titulo = e.ano ? `O maior pico registrado em ${e.mes ? mesBR(mesIso(e.ano, e.mes)) : e.ano} em cada cidade:` : 'A maior cheia registrada em cada cidade:'
+  return {
+    intencao: 'comparacao',
+    texto: [
+      titulo,
+      linhaComparacao(e.cidade!, e, d),
+      linhaComparacao(e.cidade2!, e, d),
+      'Não dá para dizer onde foi "maior" pelos metros: cada cidade tem a sua régua, com zero próprio, e metros de réguas diferentes não se comparam. O que dá para comparar é a posição de cada cheia na história da própria cidade.',
+    ].join('\n'),
+  }
+}
+
+// ---------------------------------------------------------------- média dos picos
+// "Média dos picos de Blumenau desde 2000" — só numa escala (a régua, quando há), e diz
+// quantos ficaram de fora. É a média dos PICOS registrados, não do nível do rio.
+function mediaDosPicos(e: Extraido, d: Dados): Resposta {
+  if (!e.cidade) return { intencao: 'media', texto: semCidade(d), falha: faltou('faltou_cidade', e) }
+  const cidade = e.cidade
+  if (VARIAS_REGUAS[cidade.id])
+    return { intencao: 'media', texto: `${VARIAS_REGUAS[cidade.id]}: por isso o site não tira média dos picos de ${cidade.nome}. Cada estação tem o seu zero.` }
+  const t = e.t
+  let de = -Infinity
+  let ate = Infinity
+  let periodo = ''
+  const desde = t.match(/\b(desde|a partir de|depois de|apos)\s+(o ano\s+(de\s+)?)?(1[89]\d{2}|20\d{2})\b/)
+  const antes = t.match(/\b(ate|antes de)\s+(o ano\s+(de\s+)?)?(1[89]\d{2}|20\d{2})\b/)
+  const decada = t.match(/\b(decada de|anos)\s+(1[89]\d0|20\d0)\b/)
+  if (decada?.[2]) {
+    de = parseInt(decada[2], 10)
+    ate = de + 9
+    periodo = ` nos anos ${de}`
+  } else if (desde?.[4] || antes?.[4]) {
+    if (desde?.[4]) de = parseInt(desde[4], 10) + (desde[1] === 'depois de' || desde[1] === 'apos' ? 1 : 0)
+    if (antes?.[4]) ate = parseInt(antes[4], 10) - (antes[1] === 'antes de' ? 1 : 0)
+    periodo = `${desde?.[4] ? ` desde ${de}` : ''}${antes?.[4] ? ` até ${ate}` : ''}`
+  } else if (e.ano) {
+    de = ate = e.ano
+    periodo = ` em ${e.ano}`
+  }
+  const regs = d.enchentes.eventos.filter((r) => {
+    if (r.cidade !== cidade.id) return false
+    const ano = parseInt(r.data.slice(0, 4), 10)
+    return ano >= de && ano <= ate
+  })
+  if (!regs.length) return { intencao: 'media', texto: `O site não tem pico registrado de ${cidade.nome}${periodo}.` }
+  const { escala, base } = contarNaEscala(regs, -Infinity, d, false)
+  if (!escala || !base.length)
+    return {
+      intencao: 'media',
+      texto: `Os picos de ${cidade.nome}${periodo} estão em escalas diferentes (régua, IBGE, ANA ou sem referência), e nenhuma delas é a régua de hoje: por isso o site não tira uma média só.`,
+    }
+  const valores = base.map((r) => r.pico_m)
+  const media = valores.reduce((s, x) => s + x, 0) / valores.length
+  const fora = regs.length - base.length
+  return {
+    intencao: 'media',
+    texto: [
+      `Média dos ${base.length} picos de ${cidade.nome} ${NOME_ESCALA[escala]}${periodo}: ${m(Math.round(media * 100) / 100)} (o menor, ${m(Math.min(...valores))}; o maior, ${m(Math.max(...valores))}).`,
+      fora ? `${fora} pico(s) em outra escala ficaram fora da conta.` : '',
+      NOTA_LISTA_ESPARSA[cidade.id] ? NOTA_LISTA_ESPARSA[cidade.id]!.replace('que passaram desta cota ', '') : '',
+      'É a média dos picos das cheias registradas, não do nível do rio no dia a dia.',
+      fonteDe(base),
+    ]
+      .filter(Boolean)
+      .join('\n'),
+  }
+}
+
 // ---------------------------------------------------------------- cotas da Defesa Civil
 // "Qual a cota de alerta de Blumenau?" — a escada de faixas da cidade, na régua dela, com
 // o NOME que a Defesa Civil local usa (D6: "Alerta Máximo" em Blumenau, "Prontidão" em
@@ -693,6 +793,11 @@ function danosAtlas(e: Extraido, d: Dados): Resposta {
       intencao: 'atlas',
       texto: 'Diga o ano (e, se souber, o mês). Ex.: "quais cidades tiveram desastre em setembro de 2011?"',
       falha: faltou('faltou_ano', e),
+    }
+  if (e.ano < 1991)
+    return {
+      intencao: 'atlas',
+      texto: `O site não tem número de mortos, desabrigados ou desalojados de ${e.ano}: os danos vêm do Atlas Digital de Desastres, que cobre 1991 a 2025. Para ${e.ano}, o site só tem a altura do rio, quando há registro (pergunte "cheias de ${e.cidade?.nome ?? 'Blumenau'} em ${e.ano}").`,
     }
   const { rio, ev, outros } = eventoAtlas(e, d)
   if (!ev)
@@ -982,7 +1087,9 @@ export function responder(pergunta: string, d: Dados): Resposta {
   if (/\bchov|chuva/.test(t)) return chuvaAntes(e, d)
   if (/\b(antecedencia|antes de brusque|chega em brusque)\b/.test(t) || (t.includes('botuvera') && t.includes('brusque') && /\bpico/.test(t))) return antecedenciaMirim(e, d)
   if (/\b(ana|cota|cm)\b/.test(t) && Object.keys(ANA_MIRIM).some((k) => t.includes(k))) return cotaAna(e, d)
-  if (/\b(desabrigad|desalojad|mort|atingid|desastre|cidades|municipios|atlas)/.test(t)) return danosAtlas(e, d)
+  if (/\b(desabrigad|desalojad|mort|morre|morreu|morreram|obito|vitima|atingid|desastre|cidades|municipios|atlas)/.test(t)) return danosAtlas(e, d)
+  if (e.cidade && e.cidade2 && e.cidade.id !== e.cidade2.id && PEDE_COMPARACAO.test(t) && PEDE_MAIOR.test(t)) return compararCidades(e, d)
+  if (/\bmedia\b/.test(t)) return mediaDosPicos(e, d)
   if (/\b(quantas|quantos|quantas vezes)\b/.test(t) && e.nivel != null) return contarAcima(e, d)
   if (/\b(maior|maiores|recorde|pior|piores|mais alta|maxima)\b/.test(t) && !e.ano) return maioresCheias(e, d)
   if (e.ano && e.cidade) return cheiasDoPeriodo(e, d)
@@ -990,7 +1097,7 @@ export function responder(pergunta: string, d: Dados): Resposta {
   if (e.ano) return danosAtlas(e, d)
   return {
     intencao: 'nao_entendi',
-    texto: 'Não entendi a pergunta. Eu respondo só sobre o histórico, usando os dados do site. Tente um destes formatos:',
+    texto: 'Não entendi a pergunta. Eu respondo só sobre o histórico das cheias e enchentes do Vale do Itajaí, usando os dados do site. Tente um destes formatos:',
     sugestoes: EXEMPLOS,
     falha: { motivo: 'sem_intencao' },
   }

@@ -278,3 +278,41 @@ test('extração do nome da rua', () => {
   assert.equal(termoDaRua(extrair('Quantas cheias passaram da cota da Rua São Rafael em Blumenau?', dados)), 'sao rafael')
   assert.equal(termoDaRua(extrair('a rua Lino em Gaspar ja alagou quantas vezes?', dados)), 'lino')
 })
+
+// Passo 1 da melhoria do chat sem IA (04/10/2026), a partir das falhas da prova
+// (docs/PROVA-CHAT-IA.md): comparar cidades, média, "o site não tem", fora do tema.
+test('comparar duas cidades: valores na régua de cada uma, posição na história, sem "foi maior em"', () => {
+  const x = r('Em 2008 a enchente foi maior em Blumenau ou em Gaspar?')
+  assert.equal(x.intencao, 'comparacao')
+  assert.match(x.texto, /Blumenau: 11,92 m em 24\/11\/2008, na régua da cidade — a \d+ª maior das 58/)
+  assert.match(x.texto, /Gaspar: 9,8 m em 24\/11\/2008/)
+  assert.match(x.texto, /cada cidade tem a sua régua/)
+  assert.doesNotMatch(x.texto, /(foi maior|subiu mais) em/)
+  assert.match(r('Qual foi pior, Blumenau ou Itajaí em 2011?').texto, /Itajaí: Itajaí tem onze réguas/)
+  assert.match(r('Blumenau x Rio do Sul, qual teve a maior cheia?').texto, /Blumenau: 17,3 m em 23\/09\/1880, na régua da cidade — a maior das/)
+  // Duas cidades sem pedir comparação continuam no trânsito.
+  assert.equal(r('Quanto tempo a cheia leva de Rio do Sul até Blumenau?').intencao, 'transito')
+})
+
+test('média dos picos: uma escala só, quantos ficaram de fora, período', () => {
+  const x = r('Qual a média dos picos de Blumenau na régua desde o ano 2000?')
+  assert.equal(x.intencao, 'media')
+  assert.match(x.texto, /Média dos 23 picos de Blumenau na régua da cidade desde 2000: 9,33 m/)
+  assert.match(x.texto, /5 pico\(s\) em outra escala ficaram fora/)
+  assert.match(r('Média das cheias de Rio do Sul nos anos 1980').texto, /picos de Rio do Sul sem referência declarada pela fonte nos anos 1980/)
+  assert.match(r('Média dos picos de Itajaí').texto, /não tira média/)
+})
+
+test('o site não tem: danos antes de 1991, cidade sem picos, fora do tema', () => {
+  const mortos = r('Quantas pessoas morreram na enchente de 1880 em Blumenau?')
+  assert.equal(mortos.intencao, 'atlas')
+  assert.match(mortos.texto, /não tem número de mortos[\s\S]*1991/)
+  assert.match(r('Qual foi a maior cheia de Pomerode?').texto, /Não achei a cidade/)
+  assert.match(r('Qual é a capital de Santa Catarina?').texto, /só sobre o histórico das cheias/)
+})
+
+test('barreira: pedido de conselho para agora', () => {
+  for (const p of ['Preciso me preocupar com o rio em Blumenau?', 'Dá para passar de carro pela ponte em Gaspar?', 'Vale a pena tirar o carro da garagem em Gaspar?'])
+    assert.equal(r(p).texto, TEXTO_ALERTA, p)
+  for (const p of ['Dá para comparar Blumenau e Gaspar?', 'Cheias de Gaspar em 2011.']) assert.notEqual(r(p).texto, TEXTO_ALERTA, p)
+})

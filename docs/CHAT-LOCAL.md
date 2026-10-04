@@ -273,3 +273,15 @@ Achados da prova do chat com IA (`docs/PROVA-CHAT-IA.md`):
   - Itajaí vai para a página das onze réguas.
   - Cidade sem escada (Timbó, Ituporanga…) recebe "o site não tem cotas de faixa".
 - Testes em `motor.test.ts`.
+
+### Melhorias a partir da prova (04/10/2026)
+O chat sem IA passou de 24 para 31 das 34 perguntas da prova (`docs/PROVA-CHAT-IA.md`). Mudanças:
+- **Intenção `comparacao`** ("maior em Blumenau ou em Gaspar?"): mostra o pico de cada cidade na régua dela e a
+  posição na história da própria cidade, na mesma escala. Nunca diz "foi maior em".
+- **Intenção `media`**: média dos picos numa escala só, com período ("desde", "até", "anos 1980"), dizendo
+  quantos ficaram de fora. Itajaí recusa.
+- **Danos antes de 1991:** "o site não tem", porque o Atlas começa em 1991. "Morreram" e "vítimas" agora caem no
+  Atlas.
+- **Cidade não achada:** "Não achei a cidade…". **"Não entendi"** diz o tema (cheias do Vale do Itajaí).
+- **Barreira:** pedidos de conselho para agora ("preciso me preocupar", "dá para passar", "vale a pena tirar").
+- **Busca de cidade:** ignora a pontuação colada ("rio do sul,").

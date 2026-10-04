@@ -31,6 +31,8 @@ export const CATEGORIAS = [
   'antecedencia_mirim',
   'rua_historico',
   'cotas',
+  'comparacao',
+  'media',
   'desconhecida',
 ] as const
 export type Categoria = (typeof CATEGORIAS)[number]
