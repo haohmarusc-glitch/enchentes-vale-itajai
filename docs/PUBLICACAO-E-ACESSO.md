@@ -136,6 +136,46 @@ aparelho por um *service worker* (`web/public/sw.js`, regras em `web/public/sw-r
   No iPhone a instalação é por Compartilhar → Adicionar à Tela de Início.
 - O **Monitor** funciona sem internet pela mesma cópia, mas não ganhou avisos nem barra nova (D2).
 
+### Contagem do chat (perguntas não entendidas) — decisão de 04/10/2026
+O que é contado e o que não é: `docs/TELEMETRIA-CHAT.md`. O código está pronto e **desligado**: a
+função `web/functions/api/chat-nao-entendi.ts` responde `contando: false` e não grava nada enquanto o
+projeto Pages não tiver o binding de KV `CHAT_NAO_ENTENDI`. O site só mostra o aviso e só envia quando
+essa resposta diz `true` — **o binding é o único interruptor**.
+
+**Para LIGAR (uma vez, pelo painel da Cloudflare):**
+
+1. **Conferir onde fica a pasta `functions/`.** O Pages procura `functions/` no *Root directory* do
+   build. Em *Workers & Pages → `enchentes-vale-itajai` → Settings → Build → Build configuration*, ver
+   o **Root directory**:
+   - `web` → a pasta já está no lugar (`web/functions/`). Nada a fazer.
+   - vazio (raiz do repositório) → a função **não será achada**. Pedir para mover `web/functions/` para
+     `functions/` na raiz (e ajustar os dois `import` relativos do arquivo); não mover à mão sem rodar
+     `npm test`.
+2. **Criar o armazenamento:** *Storage & Databases → KV → Create namespace* → nome
+   `enchentes-chat-nao-entendi`.
+3. **Ligar ao site:** *Workers & Pages → `enchentes-vale-itajai` → Settings → Bindings → Add → KV
+   namespace* → *Variable name* **`CHAT_NAO_ENTENDI`** (exatamente assim) → namespace
+   `enchentes-chat-nao-entendi`. Fazer em **Production**; em *Preview* só se quiser contar também as
+   pré-visualizações (não recomendado: misturaria testes com uso real).
+4. **Publicar de novo** (*Deployments → … → Retry deployment* no último do `main`, ou o próximo merge):
+   binding só vale para deploy feito depois dele. No log do build deve aparecer que a pasta de Functions
+   foi encontrada e enviada.
+5. **Conferir**, com a sessão do Access aberta no navegador, abrindo
+   `https://enchentes.premercadosc.com/api/chat-nao-entendi`: deve mostrar
+   `{"contando":true,"retencao_dias":90}`. Depois, na página de uma cidade, a caixa do chat passa a
+   mostrar a opção "Contar as perguntas que o chat não entender". Perguntar algo sem sentido ("me conta
+   uma piada") e, em *KV → `enchentes-chat-nao-entendi` → KV Pairs*, ver a linha
+   `AAAA-MM-DD|desconhecida|sem_intencao|-` com `1`.
+
+**Para DESLIGAR:** remover o binding `CHAT_NAO_ENTENDI` (passo 3) e publicar de novo. Para apagar
+também os números, apagar o namespace. Sem binding, a página volta a não mostrar nada da contagem.
+
+**Atrás do Access:** a rota `/api/chat-nao-entendi` fica sob a mesma aplicação `enchentes` — só quem
+entra no site consegue enviar. A função não lê o e-mail que o Access repassa nem o IP. O service worker
+não se mete em `/api/…` (`sw-regras.js`, com teste). Custo: plano gratuito do Workers/KV (100 mil
+chamadas de função e mil gravações de KV por dia — muito acima do uso de um chat de histórico); as
+Functions só rodam nessa rota, o resto do site continua estático.
+
 ---
 
 ## O estado de hoje (conferido em 05/09/2026)## O estado de hoje (conferido em 05/09/2026)

@@ -57,6 +57,13 @@ test('o service worker não se mete com mapas, outros sites, POST nem o interrup
   assert.equal(R.estrategia({ method: 'GET', url: `${SITE}/pwa.json` }, SITE), 'ignorar')
 })
 
+test('a contagem do chat (/api/…) passa direto: nem o POST nem o GET do interruptor ficam no aparelho', () => {
+  assert.equal(R.estrategia({ method: 'POST', url: `${SITE}/api/chat-nao-entendi` }, SITE), 'ignorar')
+  assert.equal(R.estrategia({ method: 'GET', url: `${SITE}/api/chat-nao-entendi` }, SITE), 'ignorar')
+  // Um arquivo do site que só começa com "api" no nome continua sendo do site.
+  assert.equal(R.estrategia({ method: 'GET', url: `${SITE}/apiuna.json` }, SITE), 'site')
+})
+
 test('a tela de login do Cloudflare Access nunca é guardada', () => {
   // Sessão vencida: o Access desvia para o domínio dele.
   assert.equal(R.podeGuardar(resposta({ type: 'opaqueredirect', status: 0, ok: false }), true), false)

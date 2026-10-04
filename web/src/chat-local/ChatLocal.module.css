@@ -98,3 +98,34 @@
   opacity: 0.5;
   cursor: default;
 }
+
+/* Contagem das perguntas não entendidas: só aparece quando o servidor está
+   contando (docs/TELEMETRIA-CHAT.md). Discreta, mas à vista antes de perguntar. */
+.chat-contagem {
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--borda);
+  font-size: 0.88rem;
+  color: var(--tinta-fraca);
+}
+
+.chat-contagem label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--tinta);
+  cursor: pointer;
+  min-height: 2.75rem; /* alvo de toque */
+}
+
+.chat-contagem input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  flex: none;
+}
+
+.chat-contagem p {
+  margin: 0.2rem 0 0;
+  line-height: 1.45;
+}

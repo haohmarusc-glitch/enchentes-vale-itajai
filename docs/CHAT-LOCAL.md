@@ -229,3 +229,8 @@ MÊS DUVIDOSO.
 ### L6 — não feito
 Contar `nao_entendi` exige decidir onde gravar e o que dizer sobre privacidade. Fica como
 pendência no README, para aprovação do Jefferson.
+
+**Atualização de 04/10/2026:** aprovado pelo Jefferson, com privacidade por padrão, e implementado
+**desligado** até ele criar o armazenamento (KV) na Cloudflare. O motor passou a marcar `falha`
+(motivo de um enum fechado + cidade citada) nas respostas que não entendem; o texto nunca sai do
+aparelho. Tudo em `docs/TELEMETRIA-CHAT.md`; como ligar em `docs/PUBLICACAO-E-ACESSO.md`.
