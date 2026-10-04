@@ -24,13 +24,13 @@ Legenda: ✅ comprovado · 🟡 indício, candidato ou parcial · ❌ não há �
 | Cidade | 1 Tabela | 2 Régua | 3 Equivalência | 4 Vigência | 5 Leitura | Estado |
 |---|---|---|---|---|---|---|
 | Ibirama | ✅ PLAMCON 2024, p. 11 | ✅ estação da DCSC na ponte Beltramini (nota 1) | 🟡 o PLAMCON não escreve "DCSC-00020"; boletim × DCSC-00020 dá 4,04 × 4,04 m em 11/09 | ❌ validade até 07/08/2025 (p. 32); PLAMCON 2025 sem texto; boletim de 11/09 contradiz | ✅ DCSC-00020 viva | **candidato**; C26 enviado em 04/10 |
-| Botuverá | 🟡 PLANCON 2026, seção 4.1 (não conferido daqui) | ❌ a tabela não nomeia régua | ❌ | 🟡 publicado em 15/09/2026; validade não conferida | 🟡 DCSC-00018 viva; DCSC-00027 sem leitura na coleta de 03/10 | **pendente**; complemento ao C17 preparado |
+| Botuverá | 🟡 PLANCON 2026, seção 4.1 (não conferido daqui) | ❌ a tabela não nomeia régua | ❌ | 🟡 publicado em 15/09/2026; validade não conferida | 🟡 DCSC-00018 viva; DCSC-00027 sem leitura na coleta de 03/10 | **pendente**; complemento ao C17 enviado em 04/10 |
 | Ilhota | ✅ PLANCON 2025/2028, p. 16 | 🟡 "régua instalada junto a ponte" (p. 15); a estação da ponte Cadorin só aparece na p. 21 | ❌ | 🟡 2025–2028 pelo título | ✅ DCSC-00030 viva | **pendente**; C11 atualizado enviado em 04/10 |
 | Rio dos Cedros | ✅ Plano v10.9 (abr/2026), p. 9 | 🟡 "proximidade da régua de medição" ao Paço (p. 4); a tabela não nomeia | ❌ com a DCSC-00011 | ✅ abr/2026 | ✅ DCSC-00011 viva | **pendente**: falta a equivalência |
-| Timbó | 🟡 escala de imprensa e de post da prefeitura (2/3/4,29/4,30) | 🟡 "régua do Rio Benedito, Rua Equador" (2022) | 🟡 três pares entre o número divulgado e a DCSC-00023 | ❌ dez/2025 chamou 4,34 m de "atenção" | ✅ DCSC-00023 viva | **candidato** só para o vínculo da leitura; C27 sem destinatário confirmado |
+| Timbó | 🟡 escala de imprensa e de post da prefeitura (2/3/4,29/4,30) | 🟡 "régua do Rio Benedito, Rua Equador" (2022) | 🟡 três pares entre o número divulgado e a DCSC-00023 | ❌ dez/2025 chamou 4,34 m de "atenção" | ✅ DCSC-00023 viva | **candidato** só para o vínculo da leitura; C27 enviado em 04/10 a defesacivil@timbo.sc.gov.br |
 | Indaial | ✅ faixa municipal 3/4/5,5 (prefeitura, 2023) | ✅ régua física nos fundos da Celesc | ❌ a prefeitura escreveu em 2023 que a estadual "não deve ser usada como base"; três pares dão ~2,43–2,53 m | 🟡 | ❌ DCSC-00006 sem leitura plausível desde 26/09 08h14 | **pendente**; C19 atualizado enviado em 04/10 |
-| Ituporanga | ✅ SDC: 1,4/1,9/2,6 m | ✅ ANA 83250000 | — não é a régua do site (DCSC-00039) | ✅ manual SDC 2024 | ❌ não há leitura da 83250000 no site | **pendente**; complemento ao C22 preparado |
-| Guabiruba | ❌ | ❌ | ❌ | — | 🟡 DCSC-00029 em suspeita; 1,02 m em 01/10 pela DC de Brusque | **pendente**; C20 com canal via Ouvidoria |
+| Ituporanga | ✅ SDC: 1,4/1,9/2,6 m | ✅ ANA 83250000 | — não é a régua do site (DCSC-00039) | ✅ manual SDC 2024 | ❌ não há leitura da 83250000 no site | **pendente**; complemento ao C22 enviado em 04/10 |
+| Guabiruba | ❌ | ❌ | ❌ | — | 🟡 DCSC-00029 em suspeita; 1,02 m em 01/10 pela DC de Brusque | **pendente**; C20 enviado em 04/10 pela Ouvidoria |
 | Lontras | ❌ (só o limite do SDE: 7,09 m "Emergência") | ❌ | ❌ | — | ❌ valor inválido (21.474.836) | **pendente** (C16) |
 | Vidal Ramos | ❌ (limites do SDE e da DC de Brusque) | ❌ | ❌ | — | ✅ DCSC-00024 viva | **pendente** (C15) |
 | Trombudo Central | ❌ | ❌ (a régua municipal "só até 6,15 m") | ❌ | — | ✅ DCSC-00035 ligada em 04/10, só identidade | **pendente** |
@@ -63,7 +63,7 @@ Legenda: ✅ comprovado · 🟡 indício, candidato ou parcial · ❌ não há �
 - Classificação estadual continua rotulada como estadual. Leitura vencida não classifica. Pico, cota de rua e
   faixa operacional ficam separados.
 
-## Complementos de ofício preparados (NÃO enviados)
+## Complementos de ofício (enviados em 04/10/2026 por decisão do Jefferson)
 Estão em `docs/oficios-b1-c15-c22.md`, logo abaixo de cada ofício original:
 - **C17 (Botuverá):** régua da tabela do PLANCON 2026 e os pontos exatos de 3,0 e 4,0 m.
 - **C20 (Guabiruba):** o mesmo pedido, endereçado à COMPDEC pela Ouvidoria, com protocolo.

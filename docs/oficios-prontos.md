@@ -532,7 +532,11 @@ Transcrição literal:
 
 ---
 
-## C27 — Defesa Civil de Timbó (rascunho de 04/10/2026, NÃO enviado: falta confirmar o destinatário)
+## C27 — Defesa Civil de Timbó — ✅ ENVIADO pelo Jefferson em 04/10/2026 às 00h38 BRT
+
+Enviado para **defesacivil@timbo.sc.gov.br** (Gmail, id `1a104fdd08d4e63a`), com o assunto "Régua e faixas de
+nível do Rio Benedito em Timbó — pedido de esclarecimento". O Jefferson redigiu e enviou o texto. O rascunho
+abaixo fica como referência.
 
 O envio foi autorizado pelo Jefferson em 04/10/2026, mas o e-mail não foi mandado. O único endereço achado,
 comdec@timbo.sc.gov.br, vem de resumo de busca da rodada 6, sem página oficial salva. Ver

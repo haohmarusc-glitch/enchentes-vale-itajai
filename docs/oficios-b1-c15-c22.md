@@ -91,7 +91,7 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 
-### C17 — complemento de 04/10/2026 (rascunho, NÃO enviado)
+### C17 — complemento de 04/10/2026 ✅ ENVIADO em 04/10/2026 por decisão do Jefferson (Gmail, id `1a1050024d2811ec`, resposta na conversa de 10/09 com defesacivil@botuvera.sc.gov.br)
 
 O C17 foi enviado em 10/09/2026 a defesacivil@botuvera.sc.gov.br (Gmail, thread `1a08dfcc58beb30b`), sem
 resposta. Este texto vai como resposta naquela conversa. Sem link do site. Envio é decisão do Jefferson.
@@ -229,7 +229,7 @@ Atenciosamente,
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 
-### C20 — canal de envio, 04/10/2026 (NÃO enviado)
+### C20 — ✅ ENVIADO em 04/10/2026 pela Ouvidoria, por decisão do Jefferson (Gmail, id `1a105003b87ee178`, para ouvidoria@guabiruba.sc.gov.br, com o pedido de encaminhamento à COMPDEC e de protocolo)
 
 O C20 nunca saiu por falta de destinatário. O handoff de 03/10/2026 achou a **Ouvidoria da Prefeitura**:
 ouvidoria@guabiruba.sc.gov.br, (47) 3308-3100, com protocolo no Atende.net em https://guabiruba.sc.gov.br/ouvidoria/.
@@ -303,7 +303,7 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ---
 
-### C22 — complemento de 04/10/2026 (rascunho, NÃO enviado)
+### C22 — complemento de 04/10/2026 ✅ ENVIADO em 04/10/2026 por decisão do Jefferson (Gmail, id `1a1050046f73f1f9`, resposta na conversa de 10/09 com dcituporanga@gmail.com)
 
 O C22 foi enviado em 10/09/2026 a dcituporanga@gmail.com (Gmail, thread `1a08dfccf0e61bca`), sem resposta.
 Este texto vai como resposta naquela conversa. Sem link do site. Envio é decisão do Jefferson.
