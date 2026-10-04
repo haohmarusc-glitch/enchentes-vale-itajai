@@ -17,6 +17,7 @@
  *    justamente a que importa.
  */
 import type { Confianca, CotaRua } from '../dados/tipos'
+import { frescorDaCidade, idadeMin } from './tempoReal'
 
 /** Compara ignorando acento e caixa: quem digita no celular não acentua. */
 /**
@@ -165,6 +166,43 @@ export function faixaDaCidade(
     .filter((v): v is number => v !== null)
   if (valores.length === 0) return null
   return { min: Math.min(...valores), max: Math.max(...valores) }
+}
+
+/**
+ * O nível que a busca pode usar, ou `null` se a leitura não serve.
+ *
+ * A MESMA regra de idade da cidade, e não a geral: Blumenau publica de hora em
+ * hora e vence em 120 min (`frescorDaCidade`). Com a regra geral (180), a busca
+ * aceitava aos 150 min uma leitura que o cartão "Agora" já recusava — a mesma
+ * medição valia para "faltam X m" e não valia para a cor (auditoria de
+ * 03/10/2026, achado 1).
+ */
+export function nivelUtilizavel(
+  leitura: { nivel_m: number; medidoEm: Date | null } | null,
+  cidadeId: string,
+  agora: Date,
+): number | null {
+  if (!leitura?.medidoEm) return null
+  return frescorDaCidade(idadeMin(leitura.medidoEm, agora), cidadeId) === 'velha' ? null : leitura.nivel_m
+}
+
+/**
+ * Limites do controle "e se o rio chegar a…". Precisam conter o NÍVEL mostrado:
+ * com piso na cota mais baixa menos 1 m, Brusque a 1,69 m ganhava um controle
+ * preso em 2,70 enquanto o texto dizia 1,69 — posição, leitor de tela e conta
+ * discordavam, e o primeiro toque saltava (auditoria de 03/10/2026, achado 2).
+ * O piso desce até o nível, e o teto sobe até ele, no passo do controle (5 cm).
+ */
+export function limitesDoControle(
+  faixa: { min: number; max: number } | null,
+  nivel: number,
+): { piso: number; teto: number } {
+  const pisoDasCotas = faixa ? Math.max(0, Math.floor((faixa.min - 1) * 10) / 10) : 0
+  const tetoDasCotas = faixa ? Math.ceil((faixa.max + 1) * 10) / 10 : 10
+  return {
+    piso: Math.min(pisoDasCotas, Math.floor(nivel * 20) / 20),
+    teto: Math.max(tetoDasCotas, Math.ceil(nivel * 20) / 20),
+  }
 }
 
 /**

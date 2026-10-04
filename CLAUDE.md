@@ -79,6 +79,12 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`
   **grava** local, o site lê com `deBrasilia()` (com teste travando), o vigia lê com `FUSO`.
   Toda fonte nova de nível/chuva grava `medido_em` no MESMO horário de Brasília, sem fuso.
+- **"A página publica em Brasília" não vale para tudo o que ela republica (03/10/2026).** Na página antiga da
+  Defesa Civil de Itajaí, as réguas DC vinham em Brasília, mas a publicação **"Blumenau"** vinha **3 h atrasada**:
+  na mesma coleta de 01/09, as DC marcavam 15h00, o AlertaBlu 15h00 e ela 12h05 (`docs/ANALISE-CHEGADA-ITAJAI-2026.md`,
+  seção 3). Ela saiu do ar em 19/09. O portal novo publica em UTC com offset, e `coleta_itajai_portal.py`
+  converte. Regra: antes de confiar no carimbo de uma estação republicada, comparar com outra fonte da mesma
+  régua.
 - **`coletado_em` é UTC** (campo diferente, do momento da coleta) — não confundir os dois.
   Uma fonte de resgate (AlertaBlu) gravou UTC "para honrar o contrato" e leu o comentário do
   `coletado_em` por engano: o vigia passou a ver a leitura como 2h no futuro. Custou uma sessão.

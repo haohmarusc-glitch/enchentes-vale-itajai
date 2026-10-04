@@ -104,12 +104,30 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota }: {
     return <p>Sem leitura recente de Blumenau: não dá para calcular hoje. Se a Defesa Civil ou o AlertaBlu
       informar o horário do pico, use a simulação abaixo.</p>
   }
-  const nivel = situacao.tipo === 'passou' ? situacao.pico.nivel_m : situacao.ultimo.nivel_m
+  const nivel = situacao.tipo === 'passou' || situacao.tipo === 'nao-confirmado' ? situacao.pico.nivel_m : situacao.ultimo.nivel_m
   // Rio abaixo da primeira cota: não há cheia descendo para cruzar com a maré.
   if (cota && nivel < cota.valor) {
     return <p>Blumenau está em <strong>{metros(situacao.ultimo.nivel_m)}</strong> (medido às{' '}
       {soHora(situacao.ultimo.medidoEm)}), abaixo da cota de {nomeCota} ({metros(cota.valor)}), e não passou dela
       nas últimas 36 h: <strong>não há pico de cheia descendo agora.</strong></p>
+  }
+
+  if (situacao.tipo === 'nao-confirmado') {
+    // O máximo é o primeiro ponto das últimas 36 h: o pico pode ter sido
+    // antes, fora da série. Não se afirma "passou" nem se ancora a chegada
+    // nele como detecção firme — a janela sai como hipótese.
+    const resultado = simularChegada(entradaBrasilia(situacao.pico.medidoEm), referencia.horas_min,
+      referencia.horas_max, mareItajai)
+    return <>
+      <p><strong>Pico não confirmado.</strong> A maior leitura das últimas 36 h em Blumenau é{' '}
+        {metros(situacao.pico.nivel_m)}, às {hora(situacao.pico.medidoEm)} — e é a primeira da janela: o rio já
+        estava alto quando ela começa, então o pico de verdade pode ter sido <strong>antes</strong>. Agora está em{' '}
+        {metros(situacao.ultimo.nivel_m)}, descendo.</p>
+      <Resultado resultado={resultado} hipotese qual="desta hipótese"
+        rotulo={`Se o pico tivesse sido nessa leitura, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), chegaria a Itajaí entre`} />
+      <p className={estilos.detalhe}>Se a Defesa Civil ou o AlertaBlu informar o horário do pico, use a simulação
+        abaixo com ele.</p>
+    </>
   }
 
   if (situacao.tipo === 'passou') {
@@ -122,8 +140,6 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota }: {
         {horasPlato >= 0.5 ? <> (o rio ficou a menos de 5 cm disso de {mesmoDia(situacao.platoInicio, situacao.pico.medidoEm)
           ? soHora(situacao.platoInicio) : hora(situacao.platoInicio)} até {mesmoDia(situacao.platoFim, situacao.pico.medidoEm)
           ? soHora(situacao.platoFim) : hora(situacao.platoFim)})</> : null}. Agora está em {metros(situacao.ultimo.nivel_m)}, descendo.</p>
-      {situacao.inicioIncerto ? <p className={estilos.detalhe}>O rio já estava alto no começo das últimas 36 h:
-        o pico pode ter sido antes disso, e a janela abaixo, mais cedo.</p> : null}
       <Resultado resultado={resultado} rotulo={`Pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), o pico chegaria a Itajaí entre`} />
     </>
   }

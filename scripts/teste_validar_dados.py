@@ -1991,5 +1991,38 @@ class EventosPendentesDeRegua(unittest.TestCase):
         self.assertEqual(leitores, [])
 
 
+class RegistroForaDoCadastro(unittest.TestCase):
+    """Auditoria de 03/10/2026: três picos de Rio dos Cedros com
+    `rio: "rio-dos-cedros"` passaram como AVISO, e o site os descartava calado."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.enchentes = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))
+        vd.erros.clear()
+        vd.avisos.clear()
+        cls.conhecidas = vd.valida_estacoes()
+
+    def _erros(self, enchentes):
+        vd.erros.clear()
+        vd.avisos.clear()
+        orig = vd.le_json
+        vd.le_json = lambda nome: enchentes if nome == "enchentes.json" else orig(nome)
+        try:
+            vd.valida_enchentes(self.conhecidas)
+        finally:
+            vd.le_json = orig
+        return list(vd.erros)
+
+    def test_dados_reais_nao_tem_registro_fora_do_cadastro(self):
+        self.assertEqual([e for e in self._erros(self.enchentes) if "não está em estacoes.json" in e], [])
+
+    def test_rio_errado_aborta(self):
+        ench = copy.deepcopy(self.enchentes)
+        ev = next(e for e in ench["eventos"] if e["cidade"] == "rio-dos-cedros")
+        ev["rio"] = "rio-dos-cedros"
+        self.assertTrue(any("(rio-dos-cedros, rio-dos-cedros) não está em estacoes.json" in e
+                            for e in self._erros(ench)))
+
+
 if __name__ == "__main__":
     unittest.main()

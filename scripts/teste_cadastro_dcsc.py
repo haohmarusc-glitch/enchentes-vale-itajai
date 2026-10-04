@@ -95,5 +95,13 @@ class Quebra(unittest.TestCase):
         self.assertIn("04/2026", SUSPEITAS["DCSC-00029"])
 
 
+class TrombudoCentral(unittest.TestCase):
+    def teste_dcsc_00035_e_trombudo_central(self):
+        """Identidade confirmada em Tags_data da DCSC em 03/10/2026 ('SDC-SC Trombudo Central 2',
+        a ~0,9 km do pino). Só a identidade: nenhuma cota municipal passa a valer para ela."""
+        self.assertEqual(CADEIA["DCSC-00035"], "trombudo-central")
+        self.assertNotIn("DCSC-00035", RESERVATORIOS)
+
+
 if __name__ == "__main__":
     unittest.main()

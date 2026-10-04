@@ -205,7 +205,8 @@
       "horas_min": 6,
       "horas_max": 6,
       "confianca": "baixa",
-      "fonte": "Estimativa informal; calibrar. O hidrograma de projeto da JICA põe o pico de Brusque ~6 h após o de Rio do Sul, mas por chuva na própria sub-bacia do Mirim, não por deslocamento da cheia do Açu."
+      "fonte": "Estimativa informal, NÃO calibrada: nenhuma fonte dá o tempo deste trecho.",
+      "nota": "Auditoria de 03/10/2026: a justificativa antiga citava o hidrograma da JICA (pico de Brusque ~6 h após o de Rio do Sul), mas essa comparação é Rio do Sul × Brusque, por chuva na própria sub-bacia do Mirim — não é propagação Brusque → Itajaí e não sustenta as 6 h. A Tabela 7.5.1 não traz Brusque → Itajaí. O número fica como estimativa informal, com confiança baixa, até haver pares de picos observados em Brusque e nas réguas do Mirim em Itajaí (DC-10 a montante, DC-03/DC-04 na foz)."
     }
   ]
 }

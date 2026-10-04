@@ -203,7 +203,7 @@
           "codigo_dcsc": "DCSC-00039",
           "verificado": false,
           "barragem": "Barragem Sul (Ituporanga)",
-          "observacao": "Cabeceira do Itajaí do Sul — corre em PARALELO ao Itajaí do Oeste (Taió) e se junta a ele em Rio do Sul. Overpass 02/09/2026: 'Rio Itajaí do Sul' a menos de 1 km da estação.",
+          "observacao": "Cabeceira do Itajaí do Sul — corre em PARALELO ao Itajaí do Oeste (Taió) e se junta a ele em Rio do Sul. Overpass 02/09/2026: 'Rio Itajaí do Sul' a menos de 1 km da estação. DOIS CÓDIGOS ANA, NÃO TROCAR UM PELO OUTRO (auditoria de 03/10/2026): `codigo_ana` 83145140 é a estação desta cidade no cadastro; os picos históricos de Ituporanga em enchentes.json vêm da 83250000 ITUPORANGA (convencional, outra régua, zero próprio, nunca comparado com a régua municipal — ver `codigo_ana_nao_e`).",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa",
@@ -369,7 +369,7 @@
             -49.3919
           ],
           "regua": "Referência cadastral ANA 83500000; vínculo com a régua municipal pendente",
-          "observacao": "Coordenadas do inventário ANA arquivado em data/brutos/ana-inventario-api-2026-09-08.json, estação fluviométrica 83500000. Pino cadastral, sem transmissão atual confirmada. Boletins municipais de maio/2022 não comprovam equivalência entre réguas. Não usar cotas de Ascurra nem tratar altitude como nível.",
+          "observacao": "Coordenadas do inventário ANA arquivado em data/brutos/ana-inventario-api-2026-09-08.json, estação fluviométrica 83500000. Pino cadastral, sem transmissão atual confirmada. Boletins municipais de maio/2022 não comprovam equivalência entre réguas. Não usar cotas de Ascurra nem tratar altitude como nível. O 83500000 marca SÓ a posição do pino (por isso `codigo_ana` fica null): o site não lê série nem leitura dessa estação (auditoria de 03/10/2026).",
           "codigo_ana_candidatos": [
             {
               "codigo": "83500000",
@@ -893,7 +893,7 @@
           "afluentes": [
             "rio Guabiruba"
           ],
-          "observacao": "O cadastro conserva atenção de 3,00 m e emergência de 5,00 m conforme a fonte registrada. A referência histórica de 4,80 m descreve alagamento da Av. Beira-Rio; não é o limiar de atenção vigente no cadastro. O nome Ponte Estaiada aparece em fontes distintas: não basta para provar que uma leitura usa a mesma referência das cotas de rua. Enquanto esse vínculo não estiver comprovado, não use o nível bruto estadual para calcular quanto falta até uma rua alagar. A Defesa Civil acompanha também os rios a montante e a tendência; as cotas isoladas não reproduzem sua decisão operacional.",
+          "observacao": "Atenção 3,00 m e emergência 5,00 m são da legenda da própria estação DCSC-00019 (Ponte Estaiada), a mesma da leitura ao vivo: o par foi provado em 07/09/2026 e reconfirmado em 03/10/2026 com 1.287 pares, diferença máxima de 3 cm (docs/BRUSQUE-DCSC-00019.md). A referência histórica de 4,80 m descreve alagamento da Av. Beira-Rio; não é o limiar de atenção vigente no cadastro. Em aberto: (1) as cotas de rua foram referidas ao pico de 8,96 m de nov/2023, e nenhum documento diz que é esta mesma régua — a distância até a rua é coerente, não comprovada; (2) há três escalas publicadas para a DCSC-00019 (3/5, 4/7 e 3,5/5/6 m); o cadastro usa 3/5, sem documento do operador. A Defesa Civil acompanha também os rios a montante e a tendência; as cotas isoladas não reproduzem a decisão operacional dela.",
           "cotas_m": {
             "atencao": 3.0,
             "emergencia": 5.0

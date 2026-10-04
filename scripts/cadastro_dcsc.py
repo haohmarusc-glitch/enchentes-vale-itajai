@@ -33,6 +33,8 @@ from datetime import datetime
 #: Estações que interessam à cadeia (código → cidade/slug). Fora daqui ainda é coletado,
 #: só sem 'cidade'.
 CADEIA = {
+    # Identidade confirmada em Tags_data da DCSC em 03/10/2026; sem equivalência de cotas.
+    "DCSC-00035": "trombudo-central",
     "DCSC-00025": "agrolandia", "DCSC-00039": "ituporanga", "DCSC-00033": "pouso-redondo",
     "DCSC-00041": "taio", "DCSC-00031": "laurentino", "DCSC-00001": "agronomica",
     "DCSC-00013": "rio-do-sul", "DCSC-00032": "lontras", "DCSC-00020": "ibirama",

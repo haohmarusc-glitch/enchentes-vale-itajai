@@ -5,7 +5,7 @@ import type { LeituraAoVivo } from '../dados/tempoReal'
 // que este componente, que só é carregado quando a busca aparece na tela.
 import { avisosCotasRuas, cotasRuas } from '../dados/cotasRuas'
 import { nomeDeCidade } from '../dados/carregar'
-import { frescor, idadeMin, textoIdade } from '../logica/tempoReal'
+import { idadeMin, textoIdade } from '../logica/tempoReal'
 import {
   MAX_RESULTADOS_BUSCA,
   atingidas,
@@ -14,6 +14,8 @@ import {
   daCidade,
   faixaDaCidade,
   faltaPara,
+  limitesDoControle,
+  nivelUtilizavel,
   nomeCompleto,
   pendentesAbaixoDoNivel,
   podeAfirmarAlcance,
@@ -89,9 +91,9 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   // idade e sem receber o relógio: um número de quatro horas atrás virava
   // "faltam 2,30 m de subida", que é a diferença entre alguém sair de casa e
   // não sair. O `NivelAoVivo`, dois cartões acima, já recusava o mesmo número.
+  // A regra de idade é a da cidade (`nivelUtilizavel`, auditoria de 03/10/2026).
   const idade = leitura?.medidoEm ? idadeMin(leitura.medidoEm, agora) : null
-  const velha = idade === null || frescor(idade) === 'velha'
-  const nivelAtual = leitura && !velha ? leitura.nivel_m : null
+  const nivelAtual = nivelUtilizavel(leitura, cidade.id, agora)
 
   // Sem nível utilizável o controle começa na cota mais baixa levantada — mas
   // isso NÃO é o nível de agora, e a tela diz. Antes caía para cá em silêncio,
@@ -125,8 +127,8 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   // a proporção por baixo.
   const contaveis = dela.length - semCota.length - bloqueados.length
 
-  const piso = faixa ? Math.max(0, Math.floor((faixa.min - 1) * 10) / 10) : 0
-  const teto = faixa ? Math.ceil((faixa.max + 1) * 10) / 10 : 10
+  // O controle contém o nível mostrado (`limitesDoControle`, auditoria de 03/10/2026).
+  const { piso, teto } = limitesDoControle(faixa, nivel)
 
   return (
     <section className="cartao">
@@ -266,8 +268,9 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
 
       <p className={estilos.contagem}>
         A {metros(nivel)}, <strong>{jaAlagam.length}</strong> de {contaveis}{' '}
-        {contaveis === 1 ? 'rua com cota levantada' : 'ruas com cota levantada'}
-        {jaAlagam.length === 1 ? ' já estaria alagada' : ' já estariam alagadas'} em {cidade.nome}.
+        {contaveis === 1 ? 'ponto de rua com cota levantada' : 'pontos de rua com cota levantada'}
+        {jaAlagam.length === 1 ? ' já estaria alagado' : ' já estariam alagados'} em {cidade.nome}. Uma
+        mesma rua pode ter vários pontos, com cotas diferentes.
       </p>
 
       {semNivel && simulado === null ? (

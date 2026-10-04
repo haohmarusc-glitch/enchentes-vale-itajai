@@ -11,6 +11,8 @@ import {
   daCidade,
   faixaDaCidade,
   faltaPara,
+  limitesDoControle,
+  nivelUtilizavel,
   nomeCompleto,
   normalizar,
   pendentesAbaixoDoNivel,
@@ -307,4 +309,31 @@ test('no cadastro REAL, Rio do Sul a 3,76 m não afirma nenhuma rua alagada', ()
   assert.equal(ja.length, 0, 'os dois que apareciam eram os bloqueados')
   assert.equal(pend.length, 2)
   assert.deepEqual(pend.map((x) => x.cota_m), [3.11, 3.26])
+})
+
+// Auditoria de 03/10/2026, achado 1: a busca usa a regra de idade DA CIDADE.
+test('nivelUtilizavel: Blumenau vence aos 120 min; as outras, aos 180', () => {
+  const agora = new Date('2026-10-03T18:00:00Z')
+  const aos = (min: number) => ({ nivel_m: 5.2, medidoEm: new Date(agora.getTime() - min * 60_000) })
+  assert.equal(nivelUtilizavel(aos(120), 'blumenau', agora), 5.2)
+  assert.equal(nivelUtilizavel(aos(121), 'blumenau', agora), null)
+  assert.equal(nivelUtilizavel(aos(150), 'blumenau', agora), null, 'o caso da auditoria')
+  assert.equal(nivelUtilizavel(aos(150), 'brusque', agora), 5.2)
+  assert.equal(nivelUtilizavel(aos(180), 'brusque', agora), 5.2)
+  assert.equal(nivelUtilizavel(aos(181), 'brusque', agora), null)
+  assert.equal(nivelUtilizavel({ nivel_m: 5.2, medidoEm: null }, 'brusque', agora), null)
+  assert.equal(nivelUtilizavel(null, 'brusque', agora), null)
+})
+
+// Auditoria de 03/10/2026, achado 2: o controle contém o nível mostrado.
+test('limitesDoControle: o nível de agora cabe no controle, abaixo ou acima das cotas', () => {
+  const faixa = { min: 3.7, max: 9.4 }
+  assert.deepEqual(limitesDoControle(faixa, 5), { piso: 2.7, teto: 10.4 }, 'nível no meio não mexe')
+  const brusque = limitesDoControle(faixa, 1.69)
+  assert.ok(brusque.piso <= 1.69 && 1.69 <= brusque.teto, JSON.stringify(brusque))
+  assert.equal(brusque.piso, 1.65)
+  const cheia = limitesDoControle(faixa, 11.23)
+  assert.ok(cheia.teto >= 11.23, JSON.stringify(cheia))
+  assert.equal(cheia.teto, 11.25)
+  assert.deepEqual(limitesDoControle(null, 0), { piso: 0, teto: 10 })
 })
