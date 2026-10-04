@@ -60,13 +60,14 @@ test('a ordenação mantém a ordem do arquivo no Açu (cabeceiras → tronco)',
   assert.deepEqual(ordenar(acu).map((c) => c.id), antes)
 })
 
-test('o Mirim segue em fila: ordem 1..N contígua e sem ramo', () => {
+test('o Mirim é árvore desde 04/10/2026: Guabiruba é afluente lateral, fora do tronco', () => {
   const mirim = estacoes.rios['itajai-mirim']!
-  assert.equal(mirim._topologia, undefined, 'o Mirim não é ramificado nas cidades')
-  const ordens = mirim.cidades.map((c) => c.ordem)
-  assert.deepEqual(
-    [...ordens].sort((a, b) => (a as number) - (b as number)),
-    Array.from({ length: ordens.length }, (_, i) => i + 1),
-  )
-  for (const c of mirim.cidades) assert.equal(c.ramo, undefined, `${c.id}: Mirim não usa ramo`)
+  assert.ok(mirim._topologia, 'o Mirim precisa de _topologia — sem ela Guabiruba volta a ser elo da fila')
+  assert.deepEqual(mirim._topologia!.tronco_sequencia, ['vidal-ramos', 'botuvera', 'brusque', 'itajai'])
+  assert.deepEqual(mirim._topologia!.cabeceiras_paralelas, [])
+  assert.deepEqual(mirim._topologia!.afluentes_laterais.map((a) => a.id), ['guabiruba'])
+  for (const c of mirim.cidades) {
+    assert.equal(c.ordem, null, `${c.id}: ordem global em rio ramificado afirma uma fila que não existe`)
+    assert.ok(c.ramo, `${c.id}: falta ramo`)
+  }
 })

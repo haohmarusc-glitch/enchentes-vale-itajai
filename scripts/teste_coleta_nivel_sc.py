@@ -124,6 +124,17 @@ class TestBaldes(unittest.TestCase):
         self.assertIn("datum", susp[0]["motivo"])
         self.assertNotIn("grandeza errada", susp[0]["motivo"])
 
+    def test_guabiruba_abaixo_de_10_m_e_zero_local(self):
+        """Decisão de 04/10/2026: a DCSC-00029 voltou ao zero local (~0,6 m em 03/10). Abaixo de
+        10 m a leitura é régua do ribeirão; de 10 m para cima continua suspeita (altitude)."""
+        leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00029", nome="SDC-SC Guabiruba", nivel=0.63)])
+        self.assertEqual(susp, [])
+        self.assertEqual(len(leituras), 1)
+        self.assertEqual(leituras[0]["cidade"], "guabiruba")
+        self.assertEqual(leituras[0]["nivel_bruto_m"], 0.63)
+        _, _, susp, _ = converter([estacao(codigo="DCSC-00029", nome="SDC-SC Guabiruba", nivel=10.0)])
+        self.assertEqual(len(susp), 1, "10 m já é o trecho em altitude: continua suspeito")
+
     def test_barragem_tem_datum_reservatorio(self):
         leituras, _, _, _ = converter([estacao(codigo="DCSC-00040", nome="SDC-SC Barragem Oeste", nivel=12.0)])
         self.assertEqual(leituras[0]["datum"], "reservatorio")

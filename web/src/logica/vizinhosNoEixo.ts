@@ -5,7 +5,7 @@
  * está em Rio do Sul chega aqui quando?". A tela da cidade já sabia; o mesmo
  * cálculo agora mora aqui, puro, para as duas telas concordarem.
  *
- * Só se afirma vizinho DENTRO do eixo (o tronco no Açu, a fila no Mirim).
+ * Só se afirma vizinho DENTRO do eixo (o tronco de cada rio; rio em fila, por `ordem`).
  * Cabeceira e afluente ficam com `noEixo: false` — a cheia deles não é a mesma
  * que desce o rio principal, e encadear tempo por eles daria resultado errado.
  */

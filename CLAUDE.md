@@ -137,7 +137,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 ## Telas
 
 1. `/acu` — **Itajaí-Açu** (ÁRVORE, não fila — ver `docs/TOPOLOGIA-CANONICA.md`): cabeceiras paralelas **Taió** (Oeste) ‖ **Ituporanga** (Sul) → tronco **Rio do Sul → Lontras → Ascurra → Indaial → Blumenau → Gaspar → Ilhota → Itajaí**; **Ibirama** (Rio Hercílio), **Timbó** (Rio Benedito) e **Rio dos Cedros** são afluentes laterais, não elos do tronco. **Trombudo Central** entrou sem posição na árvore (a fonte diz o rio, não a confluência) e a tela a mostra em "Outros pontos". `ordem` é `null` no Açu; a posição vem de `ramo` + `ordem_no_ramo`. O validador (`scripts/validar_dados.py`) aborta se a fila global voltar.
-2. `/mirim` — **Itajaí-Mirim**: Vidal Ramos → Botuverá → Brusque → Itajaí
+2. `/mirim` — **Itajaí-Mirim** (ÁRVORE desde 04/10/2026): tronco **Vidal Ramos → Botuverá → Brusque → Itajaí**; **Guabiruba** é afluente lateral (ribeirão Guabiruba, entra perto de Brusque), não elo do tronco. A DCSC-00029 é lida no **zero local**; valor ≥ 10 m continua suspeito (`SUSPEITA_SO_ACIMA_DE_M`).
 3. `/itajai` — **Itajaí (foz)**: chegada dos dois picos + maré
 4. `/` — início: **Minha cidade** (escolhida no aparelho) com o cartão "Agora", a cidade de cima do rio e as outras que a pessoa segue; abaixo, a escolha do rio.
 5. `/:rio/:cidade` — página da cidade em abas: **Agora · Minha rua · Histórico · Fontes** (`?aba=rua|historico|fontes`).

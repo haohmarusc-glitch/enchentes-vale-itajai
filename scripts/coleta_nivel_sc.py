@@ -68,6 +68,7 @@ from cadastro_dcsc import (  # noqa: F401  (re-exportados: quem já importava da
     NAO_MEDE_NIVEL,
     RESERVATORIOS,
     SUSPEITAS,
+    e_suspeita,
 )
 
 URL = "https://monitoramento.defesacivil.sc.gov.br/graphql"
@@ -290,7 +291,7 @@ def converter(
             sem_leitura.append({**base, "motivo": f"value não numérico: {val!r}"})
             continue
         v = float(val)
-        if cod in SUSPEITAS:                                           # armadilha 7
+        if e_suspeita(cod, v):                                         # armadilha 7
             suspeitas.append({**base, "nivel_bruto_m": round(v, 2), "motivo": SUSPEITAS[cod]})
             continue
         if v > LIMITE_M and cod not in RESERVATORIOS:                  # armadilha 3 (valor absurdo)

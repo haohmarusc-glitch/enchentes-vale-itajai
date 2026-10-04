@@ -87,7 +87,7 @@ export interface AfluenteMonitorado {
 }
 
 /**
- * A árvore de um rio ramificado (hoje só o Açu). Diz qual é a ÚNICA sequência
+ * A árvore de um rio ramificado (Açu e Mirim). Diz qual é a ÚNICA sequência
  * que a tela pode afirmar (o tronco), quais cidades são cabeceiras paralelas e
  * quais são afluentes laterais — que entram no tronco, não são elos da fila.
  */
@@ -115,7 +115,7 @@ export interface Rio {
   nome: string
   foz: string
   cidades: Cidade[]
-  /** Presente só em rio ramificado. Ausente = rio em fila (Mirim). */
+  /** Presente só em rio ramificado (hoje os dois). Ausente = rio em fila. */
   _topologia?: Topologia
 }
 

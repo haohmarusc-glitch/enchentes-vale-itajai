@@ -56,10 +56,34 @@ class TopologiaArvore(unittest.TestCase):
         self.assertTrue(any("ramo' ausente" in e for e in erros_de(d)))
 
     def test_ramo_em_rio_em_fila_aborta(self):
-        # Mirim é fila: pôr ramo nele mistura árvore e fila.
+        # Desde 04/10/2026 os dois rios são árvore; a trava continua valendo para
+        # um rio em fila. Monta-se um Mirim em fila (sem _topologia, ordem 1..N)
+        # e põe-se ramo numa cidade: isso mistura árvore e fila.
         d = self.base()
+        mirim = d["rios"]["itajai-mirim"]
+        mirim.pop("_topologia")
+        for i, c in enumerate(mirim["cidades"], start=1):
+            c["ordem"] = i
+            c.pop("ramo", None)
+            c.pop("ordem_no_ramo", None)
+        self.assertFalse(any("não se misturam" in e for e in erros_de(d)), "a fila montada deveria passar")
         _cidade(d, "itajai-mirim", "brusque")["ramo"] = "tronco_acu"
         self.assertTrue(any("não se misturam" in e for e in erros_de(d)))
+
+    def test_o_mirim_e_arvore_com_guabiruba_afluente(self):
+        # Decisão do Jefferson de 04/10/2026: Guabiruba fica no ribeirão, entra
+        # no Mirim de lado perto de Brusque e não é elo do tronco.
+        d = self.base()
+        topo = d["rios"]["itajai-mirim"]["_topologia"]
+        self.assertEqual(topo["tronco_sequencia"], ["vidal-ramos", "botuvera", "brusque", "itajai"])
+        self.assertEqual([a["id"] for a in topo["afluentes_laterais"]], ["guabiruba"])
+        self.assertEqual(_cidade(d, "itajai-mirim", "guabiruba")["ramo"], "ribeirao_guabiruba")
+
+    def test_mirim_com_guabiruba_no_tronco_aborta(self):
+        d = self.base()
+        _cidade(d, "itajai-mirim", "guabiruba")["ramo"] = "mirim_tronco"
+        _cidade(d, "itajai-mirim", "guabiruba")["ordem_no_ramo"] = 5
+        self.assertTrue(any("tronco_sequencia" in e and "mirim_tronco" in e for e in erros_de(d)))
 
     def test_codigo_dcsc_trocado_aborta(self):
         d = self.base()
@@ -390,6 +414,13 @@ class MesesPareados(unittest.TestCase):
         # erradas: lacuna de cobertura da fonte, como em Gaspar e Indaial.
         ("rio-do-sul 2023-07", "lontras"),
         ("rio-do-sul 2023-10-13", "lontras"),
+        # 04/10/2026: o Mirim virou árvore e a conferência passou a cobrir o
+        # tronco dele. Os dois avisos são de boletins estaduais DIFERENTES (SDE
+        # 011/2023 dá Vidal Ramos em 17/11; SDE 001/2024 dá Botuverá em 03/12),
+        # cada um com só a cidade que listou: eventos distintos, lacuna de
+        # cobertura da fonte. Nada foi corrigido.
+        ("vidal-ramos 2023-11-17", "botuvera"),
+        ("botuvera 2023-12-03", "brusque"),
     }
 
     def test_os_desalinhados_dos_dados_reais_sao_EXATAMENTE_os_conhecidos(self):
@@ -573,14 +604,17 @@ class Hidraulica(unittest.TestCase):
         """
         Trava a decisão, não só o dado.
 
-        Gravar 2/3–1/3 em `estacoes.json._topologia` do Mirim parece natural e
-        quebraria o rio inteiro: é a presença desse campo que faz o validador
-        tratar o rio como RAMIFICADO, passando a exigir ramo/ordem_no_ramo em
-        todas as cidades — e o Mirim é fila, com `ordem` 1..N.
+        A divisão 2/3–1/3 (canal retificado × curso antigo) é hidráulica da foz,
+        não topologia das cidades. Desde 04/10/2026 o Mirim tem `_topologia`
+        (Guabiruba é afluente lateral), mas a divisão continua fora dela: os
+        braços existem só entre as réguas DC de Itajaí, e pô-los na árvore
+        criaria elos de cidade que não existem.
         """
         est = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
-        self.assertNotIn("_topologia", est["rios"]["itajai-mirim"],
-                         "o Mirim é fila; _topologia o tornaria ramificado")
+        topo = est["rios"]["itajai-mirim"].get("_topologia", {})
+        texto = json.dumps({k: v for k, v in topo.items() if k != "nota"}, ensure_ascii=False)
+        for proibido in ("divisao", "2/3", "canal_retificado", "curso_antigo"):
+            self.assertNotIn(proibido, texto, f"a divisão do Mirim entrou na _topologia ({proibido})")
         self.assertIn("divisao_do_mirim", self.real)
 
 

@@ -105,10 +105,10 @@ test('Açu: quem não tem posição na árvore (Trombudo Central) não é afirma
   }
 })
 
-test('Mirim: fila por `ordem`, igual à topologia canônica (com Guabiruba, que o texto fixo omitia)', () => {
-  assert.equal(mirim.tronco, 'Vidal Ramos → Botuverá → Guabiruba → Brusque → Itajaí')
+test('Mirim: tronco sem Guabiruba, que entra de lado pelo ribeirão (decisão de 04/10/2026)', () => {
+  assert.equal(mirim.tronco, 'Vidal Ramos → Botuverá → Brusque → Itajaí')
   assert.equal(mirim.cabeceiras, null)
-  assert.equal(mirim.laterais, null)
+  assert.equal(mirim.laterais, 'Guabiruba, pelo Ribeirão Guabiruba')
   assert.equal(mirim.barragens, null)
 })
 

@@ -18,7 +18,7 @@ export function rioDaUrl(rioId: string): 'acu' | 'mirim' {
   return rioId === 'itajai-mirim' ? 'mirim' : 'acu'
 }
 
-/** A sequência que a água realmente segue: o tronco no Açu, a fila no Mirim. */
+/** A sequência que a água realmente segue: o tronco de cada rio (Açu e Mirim). */
 export function eixoDoRio(cidades: Cidade[], topologia?: Topologia): string[] {
   if (topologia?.tronco_sequencia?.length) return topologia.tronco_sequencia
   return cidades.map((c) => c.id)

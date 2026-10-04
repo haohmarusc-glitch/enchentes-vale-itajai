@@ -11,8 +11,8 @@
  *
  * Por isso o menu vem em GRUPOS, e cada grupo diz o que é: cabeceiras (sem
  * ordem entre si), tronco (montante → jusante), afluentes (com onde entram) e
- * "outros pontos" para o que a fonte não posicionou. O Mirim, que é fila, sai
- * na ordem do cadastro.
+ * "outros pontos" para o que a fonte não posicionou. Rio em fila (nenhum desde
+ * 04/10/2026, quando o Mirim virou árvore) sai na ordem do cadastro.
  *
  * Tudo aqui sai do `estacoes.json`; nada é escrito à mão.
  */

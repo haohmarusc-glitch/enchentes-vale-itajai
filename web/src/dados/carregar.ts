@@ -153,7 +153,7 @@ export function eixoDoRio(rioId: string): string[] | undefined {
   return [...(t.tronco_sequencia ?? []), ...(t.cabeceiras_paralelas ?? [])]
 }
 
-/** A árvore do rio, quando ele é ramificado (só o Açu hoje). */
+/** A árvore do rio, quando ele é ramificado (os dois rios, desde 04/10/2026). */
 export function topologiaDoRio(rioId: string): Topologia | undefined {
   return estacoes.rios[rioId]?._topologia
 }

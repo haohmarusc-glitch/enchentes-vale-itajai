@@ -1,8 +1,16 @@
 # Propostas da auditoria de 03/10/2026 — itens 2, 3 e 4
 
 Os itens 2, 3 e 4 da auditoria tocam dado ou topologia. Aqui ficam a investigação e a proposta de cada um.
-Nada disto foi aplicado: `data/`, `estacoes.json` e `cadastro_dcsc.py` estão como estavam. Cada item
-espera a decisão do Jefferson.
+
+> **Decisões do Jefferson de 04/10/2026, aplicadas:**
+> - **Item 2 — sim:** Guabiruba virou afluente lateral do Mirim (`_topologia` no Mirim, tronco Vidal Ramos →
+>   Botuverá → Brusque → Itajaí). O Monitor passa a mostrar o Mirim em Tronco e Afluentes; nenhum arquivo
+>   protegido foi editado.
+> - **Item 3 — sim, zero local:** a DCSC-00029 abaixo de 10 m vale como régua do ribeirão (zero próprio);
+>   ≥ 10 m continua suspeita (`SUSPEITA_SO_ACIMA_DE_M`). O histórico continua cortado em 01/04/2026 até a
+>   data da volta ser conferida no servidor (comandos abaixo): juntar o "antes" e o "depois" afirmaria
+>   que o zero é o mesmo, e isso não foi conferido.
+> - **Item 4 — opção B:** rótulo que declara a referência, sem mexer em `referencia` dos registros.
 
 ## Item 2 — Guabiruba como afluente lateral do Mirim
 
