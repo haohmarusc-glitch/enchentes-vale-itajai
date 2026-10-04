@@ -7,7 +7,8 @@ Aqui é o contrário: a pessoa pergunta quando quer — de madrugada, sem abrir 
 site, com internet ruim. Uma mensagem de texto passa onde uma página não passa.
 
 Comandos:
-    /rua [cidade] [rua]  a partir de quantos metros aquela rua alaga
+    /rua [cidade] [rua]  a partir de quantos metros aquela rua alaga, e em quantas
+                         cheias registradas na régua o rio chegou a essa cota
     (localização)        mande o pino: a régua mais próxima e, onde houver,
                          a cota da rua mais perto do ponto
     /nivel [cidade]      nível agora, cota e idade da leitura
@@ -706,7 +707,8 @@ def ajuda() -> str:
         "<b>Cheias do Vale do Itajaí</b>\n\n"
         "📍 <b>Mande a sua localização</b> — a régua mais próxima e, onde houver, "
         "a cota do ponto levantado mais perto de você\n\n"
-        "/rua <i>cidade rua</i> — a partir de quantos metros a sua rua alaga\n"
+        "/rua <i>cidade rua</i> — a partir de quantos metros a sua rua alaga, e em quantas "
+        "cheias na régua o rio chegou lá\n"
         "/nivel <i>cidade</i> — nível do rio agora\n"
         "/chuva <i>cidade</i> — quanto choveu em 1 h, 12 h, 24 h e 48 h\n"
         "/previsao <i>cidade</i> — se o pico fosse agora, quando chega embaixo\n"
@@ -1287,6 +1289,50 @@ def cheias_perto_do_nivel(base: Base, cidade_id: str,
     return sorted(escolhidas, key=lambda r: -float(r["pico_m"])), None, fora
 
 
+def cheias_na_cota(base: Base, cidade_id: str,
+                   cota_m: float) -> tuple[int, int, dict | None, int] | None:
+    """(quantas chegaram à cota, de quantas na régua, a mais recente, quantas a régua calou).
+
+    Pedido do Jefferson em 04/10/2026, o mesmo que o chat do site ganhou: "esta rua
+    pegou quantas enchentes?". A resposta honesta é outra pergunta — **em quantas
+    cheias registradas o rio chegou à cota deste ponto** —, porque a cota é de hoje
+    (obra e aterro mudam o número), é de um ponto e a lista de cheias é incompleta.
+
+    MESMA TRAVA de `cheias_perto_do_nivel`: só `referencia == "régua"`. A cota de
+    rua está na régua (o filtro de `Base` garante); um pico no IBGE ou sem
+    referência ao lado dela seria régua diferente com cara de comparação. Devolve
+    None quando a cidade não tem pico na régua — aí não há o que contar.
+    """
+    regs = [r for r in base.enchentes
+            if r.get("cidade") == cidade_id
+            and isinstance(r.get("pico_m"), (int, float))
+            and not isinstance(r.get("pico_m"), bool)]
+    na_regua = [r for r in regs if r.get("referencia") == "régua"]
+    if not na_regua:
+        return None
+    acima = [r for r in na_regua if float(r["pico_m"]) >= cota_m]
+    ultima = max(acima, key=lambda r: str(r.get("data") or "")) if acima else None
+    calados = sum(1 for r in regs
+                  if r.get("referencia") != "régua" and float(r["pico_m"]) >= cota_m)
+    return len(acima), len(na_regua), ultima, calados
+
+
+def cheias_fora_da_regua(base: Base, cidade_id: str) -> int:
+    """Quantas cheias da cidade não estão na régua (IBGE, sem referência): ficam fora da conta."""
+    return sum(1 for r in base.enchentes
+               if r.get("cidade") == cidade_id
+               and isinstance(r.get("pico_m"), (int, float))
+               and not isinstance(r.get("pico_m"), bool)
+               and r.get("referencia") != "régua")
+
+
+#: Cidades cuja lista de cheias só traz as grandes: a contagem sai menor que a
+#: realidade, e a resposta tem de dizer. Mesma lista de `validar_dados.py`.
+LISTA_SO_CHEIA_GRANDE = {
+    "gaspar": "Gaspar só lista as cheias grandes (a menor tem 6,19 m)",
+}
+
+
 def linhas_das_cheias(base: Base, cidade: dict, agora: datetime) -> list[str]:
     """O bloco "cheias já registradas nesta régua", para o pino.
 
@@ -1427,6 +1473,12 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
         ]
 
     achadas = base.ruas(cidade["id"] if cidade else None, termo)
+    # Palavra inteira vence pedaço (04/10/2026, o mesmo do chat do site): "Lino"
+    # trazia "Wandelino". Se algum ponto casa pelo nome inteiro, só esses saem.
+    alvo = chave_de_rua(termo)
+    inteiras = [c for c in achadas if f" {alvo} " in f" {chave_de_rua(c.get('rua', ''))} "]
+    if inteiras:
+        achadas = inteiras
     onde = f" em {e(cidade['nome'])}" if cidade else ""
     if not achadas:
         return [
@@ -1457,14 +1509,51 @@ def resposta_rua(base: Base, cidade: dict | None, termo: str, agora: datetime) -
     nomes_cidade = {c["id"]: c["nome"] for c in base.cidades()}
     linhas = [f"<b>Cotas de rua</b> — “{e(termo)}”{onde}"]
 
+    contadas: set[str] = set()
+    sem_cheia_na_regua: set[str] = set()
     for c in achadas[:MAX_RUAS]:
         linhas.extend(linhas_de_uma_cota(c, nomes_cidade.get(c["cidade"], c["cidade"]),
                                          niveis.get(c["cidade"])))
+        # Cheias antigas que chegaram a esta cota (04/10/2026). Ponto sem número
+        # ou não conferido para aviso não entra: a mesma guarda do "já alcançado".
+        if c["cota_m"] is None or c.get("usar_para_aviso") is False:
+            continue
+        conta = cheias_na_cota(base, c["cidade"], float(c["cota_m"]))
+        if conta is None:
+            sem_cheia_na_regua.add(c["cidade"])
+            continue
+        n, total, ultima, _ = conta
+        frase = f"\nChegou a esta cota em <b>{n}</b> de {total} cheias na régua"
+        quando = data_da_cheia(ultima.get("data")) if ultima else None
+        if quando:
+            frase += f" (última: {e(quando)})"
+        linhas.append(frase + ".")
+        contadas.add(c["cidade"])
 
     # A explicação sai UMA vez por cidade, no fim: repetida em cada rua ocupava
     # metade da mensagem. Mas sai — silêncio aqui parece esquecimento, e a
     # pergunta seguinte a "minha rua alaga a quantos metros" é sempre "e onde
     # está o rio agora".
+    # A contagem de cheias cabe numa nota só, no fim. Uma por cidade e por rua
+    # levava a busca por "maria" (Brusque, Gaspar e Rio do Sul juntas) acima do
+    # limite do Telegram — e corte é perder a última rua pela metade.
+    notas: list[str] = []
+    if contadas:
+        notas.append("A conta de cheias não diz que a rua alagou todas essas vezes: a cota é "
+                     "de hoje e de um ponto, e a lista de cheias é incompleta.")
+        for cid in sorted(contadas):
+            fora = cheias_fora_da_regua(base, cid)
+            if fora:
+                notas.append(f"{e(nomes_cidade.get(cid, cid))}: {fora} "
+                             f"{'cheia fora da régua não entra' if fora == 1 else 'cheias fora da régua não entram'}.")
+        notas.extend(f"{e(LISTA_SO_CHEIA_GRANDE[cid])}."
+                     for cid in sorted(contadas & set(LISTA_SO_CHEIA_GRANDE)))
+    if sem_cheia_na_regua:
+        nomes = ", ".join(e(nomes_cidade.get(c, c)) for c in sorted(sem_cheia_na_regua))
+        notas.append(f"Sem cheia na régua da cota em {nomes}: não há conta.")
+    if notas:
+        linhas.append("\n\n<i>" + " ".join(notas) + "</i>")
+
     faltando = sorted({c["cidade"] for c in achadas[:MAX_RUAS]} & set(sem_nivel))
     for cid in faltando:
         linhas.append(f"\n\n<i>Quanto falta subir em {e(nomes_cidade.get(cid, cid))}, não dá "

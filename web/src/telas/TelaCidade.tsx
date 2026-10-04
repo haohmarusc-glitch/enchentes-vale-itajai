@@ -1,5 +1,6 @@
 import { Suspense, lazy, useMemo, useRef, type KeyboardEvent } from 'react'
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
+import { ROTA_MANCHAS_ITAJAI } from '../logica/rotaManchas'
 import { BotaoLetra, BotaoMinhaCidade } from '../componentes/BotoesPreferencia'
 import CartaoAgora from '../componentes/CartaoAgora'
 import { AcoesDaCidade, CartaoDescida } from '../componentes/CartoesDaCidade'
@@ -105,7 +106,10 @@ export default function TelaCidade() {
   const cidade = cidades.find((c) => c.id === cidadeId)
   const telaPropria = TELA_PROPRIA[cidadeId]
 
-  if (telaPropria && dadosRio) return <Navigate to={telaPropria} replace />
+  // `/acu/itajai?aba=rua` (endereço ditado ou guardado) vai direto ao mapa das
+  // manchas, que é o que Itajaí tem no lugar da cota por rua (04/10/2026).
+  if (telaPropria && dadosRio)
+    return <Navigate to={cidadeId === 'itajai' && aba === 'rua' ? ROTA_MANCHAS_ITAJAI : telaPropria} replace />
 
   if (!dadosRio) {
     return (

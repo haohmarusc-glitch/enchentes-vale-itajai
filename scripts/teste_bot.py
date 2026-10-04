@@ -497,6 +497,42 @@ class TestLimiteDoTelegram(unittest.TestCase):
         )
 
 
+class TestRuaCheiasNaCota(unittest.TestCase):
+    """
+    /rua conta em quantas cheias registradas NA RÉGUA o rio chegou à cota do
+    ponto (pedido do Jefferson, 04/10/2026, o mesmo do chat do site). Nunca diz
+    "a rua alagou N vezes", e nunca põe pico do IBGE ou sem referência na conta.
+    """
+
+    def test_conta_so_na_regua_e_diz_a_ultima(self):
+        t = resp("/rua Blumenau São Rafael")
+        self.assertIn("Chegou a esta cota em <b>57</b> de 58 cheias na régua (última: 12/09/2026)", t)
+        self.assertIn("não diz que a rua alagou todas essas vezes", t)
+        self.assertIn("Blumenau: 71 cheias fora da régua não entram", t)
+        self.assertNotIn("alagou 57", t)
+
+    def test_palavra_inteira_vence_pedaco(self):
+        t = resp("/rua Gaspar Lino")
+        self.assertIn("Rua Lino", t)
+        self.assertNotIn("Wandelino", t)
+        self.assertIn("Gaspar só lista as cheias grandes", t)
+        self.assertIn("1 cheia fora da régua não entra", t)
+
+    def test_cidade_sem_cheia_na_regua_nao_conta(self):
+        t = resp("/rua Rio do Sul XV de Novembro")
+        self.assertNotIn("Chegou a esta cota", t)
+        self.assertIn("Sem cheia na régua da cota em Rio do Sul", t)
+
+    def test_pico_sem_referencia_nao_e_regua(self):
+        """Brusque tem 28 picos e nenhum com `referencia: "régua"`: a trava é a
+        mesma de `cheias_perto_do_nivel` — ausência não é régua."""
+        self.assertIsNone(bot.cheias_na_cota(base(), "brusque", 5.0))
+        n, total, ultima, calados = bot.cheias_na_cota(base(), "gaspar", 6.57)
+        self.assertEqual((n, total), (47, 48))
+        self.assertEqual(ultima["data"], "2023-10-12")
+        self.assertEqual(calados, 1, "Gaspar 23/09/2013 (8,03 m) tem referencia null")
+
+
 class TestCotas(unittest.TestCase):
     def test_cotas_com_aviso_de_regua_propria(self):
         t = resp("/cotas Rio do Sul")

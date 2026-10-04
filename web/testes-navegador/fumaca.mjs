@@ -175,6 +175,40 @@ console.log('\nversão 2: aviso completo na primeira visita e faixa do 199 em to
   await ctx.close()
 }
 
+console.log('\n"Minha rua alaga?" leva ao que promete, com a tela no lugar certo')
+{
+  // Relato do Jefferson (04/10/2026), no celular: o botão "Minha rua alaga?" da
+  // Início "só subia a tela". A página da cidade abria na MESMA rolagem da Início,
+  // com as abas fora da tela e o título por baixo da faixa do 199; em Itajaí, o
+  // botão levava ao topo da foz, longe do mapa. A pessoa rola até o botão (no
+  // celular ele fica embaixo) e clica: o que ela pediu tem de estar à vista.
+  for (const [rio, id, esperado] of [
+    ['acu', 'blumenau', 'A minha rua alaga com quantos metros?'],
+    ['mirim', 'brusque', 'A minha rua alaga com quantos metros?'],
+    ['acu', 'itajai', 'Até onde a água chegou'],
+  ]) {
+    const ctx = await navegador.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } })
+    await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
+    await ctx.addInitScript((c) => localStorage.setItem('enchentes:cidades', JSON.stringify([c])), { id, rio })
+    const pagina = await ctx.newPage()
+    await pagina.goto(`${base}/#/`, { waitUntil: 'load' })
+    await pagina.getByRole('button', { name: 'Entendi' }).click({ timeout: 5_000 }).catch(() => {})
+    const botao = pagina.getByRole('link', { name: 'Minha rua alaga?' }).first()
+    await botao.waitFor({ timeout: 10_000 }).catch(() => {})
+    await botao.evaluate((el) => el.scrollIntoView({ block: 'end' })).catch(() => {})
+    await pagina.evaluate(() => window.scrollBy(0, 200))
+    await botao.click({ timeout: 5_000 }).catch(() => {})
+    const titulo = pagina.getByRole('heading', { name: esperado }).first()
+    await titulo.waitFor({ timeout: 10_000 }).catch(() => {})
+    const caixa = await titulo.boundingBox().catch(() => null)
+    // Abaixo da faixa presa no topo (≈ 70 px) e dentro da primeira tela.
+    caixa && caixa.y > 70 && caixa.y < 844
+      ? ok(`${id}: "${esperado}" à vista depois do clique (y = ${Math.round(caixa.y)})`)
+      : falhou(`${id}: depois do clique, "${esperado}" não ficou à vista (${caixa ? `y = ${Math.round(caixa.y)}` : 'não achado'})`)
+    await ctx.close()
+  }
+}
+
 await navegador.close()
 await servidor.close()
 

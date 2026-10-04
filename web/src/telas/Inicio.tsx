@@ -205,7 +205,11 @@ function MinhaCidade({
       ) : null}
 
       <p className={estilos.dica}>
-        <Link to={para}>Tudo sobre {cidade.nome}: minha rua, histórico e fontes →</Link>
+        <Link to={para}>
+          {cidade.id === 'itajai'
+            ? 'Tudo sobre Itajaí: as onze réguas, a maré e o mapa das enchentes →'
+            : `Tudo sobre ${cidade.nome}: minha rua, histórico e fontes →`}
+        </Link>
       </p>
     </>
   )

@@ -99,3 +99,9 @@
   line-height: 1.5;
   color: var(--tinta-fraca);
 }
+
+/* Âncora do mapa das manchas: ao rolar até ela, o título não fica embaixo da
+   faixa presa no topo ("Emergência: 199"). */
+.secaoMapa {
+  scroll-margin-top: 4.5rem;
+}

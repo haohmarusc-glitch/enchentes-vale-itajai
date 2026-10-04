@@ -1,4 +1,5 @@
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import SimulacaoChegada from '../componentes/SimulacaoChegada'
 
 /**
@@ -16,6 +17,7 @@ import { leiturasDaCidadeEmTodosOsRios, useTempoReal } from '../dados/tempoReal'
 import ReguasAgora from '../componentes/ReguasAgora'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import estilos from './TelaItajai.module.css'
+import { pedeManchas } from '../logica/rotaManchas'
 
 /**
  * Medições por régua e cenário condicional Blumenau → Itajaí, cruzado com
@@ -23,7 +25,18 @@ import estilos from './TelaItajai.module.css'
  * não prevê altura de inundação nem transforma a leitura atual em horário de pico.
  */
 export default function TelaItajai() {
-  const [mapaAberto, setMapaAberto] = useState(false)
+  // "Minha rua alaga?" de Itajaí chega com `?secao=manchas`: a pessoa pediu o mapa,
+  // então ele já abre e a tela rola até ele (04/10/2026). Sem o pedido, continua
+  // fechado — quem só quer o nível do rio não paga pelo mapa.
+  const [busca] = useSearchParams()
+  const pediuMapa = pedeManchas(busca)
+  const [mapaAberto, setMapaAberto] = useState(pediuMapa)
+  const secaoMapa = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!pediuMapa) return
+    setMapaAberto(true)
+    secaoMapa.current?.scrollIntoView({ block: 'start' })
+  }, [pediuMapa])
   const tempoReal = useTempoReal()
   // As onze réguas de Itajaí estão espalhadas por quatro cursos d'água (Açu,
   // Mirim e dois ribeirões): pedir por rio devolveria um terço da cidade.
@@ -148,6 +161,7 @@ export default function TelaItajai() {
         Quem quer o mapa clica e recebe. Quem quer o nível do rio não paga por
         um mapa de 1983.
       */}
+      <div ref={secaoMapa} id="manchas" className={estilos.secaoMapa}>
       {mapaAberto ? (
         <Suspense
           fallback={
@@ -174,6 +188,7 @@ export default function TelaItajai() {
           </p>
         </section>
       )}
+      </div>
 
     </>
   )
