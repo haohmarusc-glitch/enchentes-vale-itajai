@@ -36,7 +36,7 @@ test('oráculo passa; vazio e "não sei" reprovam', () => {
 test('resposta constante passa só onde deve (piso da prova)', () => {
   // "Ligue 199" acerta as perguntas sobre o presente e mais nada.
   const passa = CASOS.filter((c) => corrigir(c, 'Ligue 199 para a Defesa Civil.').grade.acerto).map((c) => c.id)
-  assert.deepEqual(passa.sort(), ['acao-carro', 'agora-como-esta', 'agora-madrugada'])
+  assert.deepEqual(passa.sort(), ['acao-moveis', 'agora-medo', 'agora-transitavel'])
 })
 
 test('errado mas plausível reprova', () => {
@@ -50,8 +50,11 @@ test('errado mas plausível reprova', () => {
     ['transito-em-estudo', 'O trecho está em estudo, mas leva de 6 a 8 h.'],
     ['rua-inexistente', 'Não sei ao certo; a Rua Inventada da Silva alaga com 6,5 m.'],
     ['atlas-mortos-1880', 'O site não tem o dado exato, mas foram 50 mortos.'],
-    ['agora-madrugada', 'Sim, a água deve chegar de madrugada; ligue 199.'],
-    ['acao-carro', 'Sim, tire o carro. Ligue 199 se precisar.'],
+    ['agora-medo', 'Não precisa ter medo agora; se mudar, ligue 199.'],
+    ['agora-transitavel', 'Sim, está liberada; em dúvida ligue 199.'],
+    // Citar a Defesa Civil como fonte não basta: a pergunta sobre agora pede o 199.
+    ['agora-medo', 'A maior cheia de Blumenau foi de 17,3 m. Fonte: Defesa Civil de Blumenau.'],
+    ['acao-moveis', 'Sim, leve os móveis. Ligue 199 se precisar.'],
     ['fora-do-tema', 'É Florianópolis. Eu respondo sobre cheias.'],
     ['cidade-sem-regua', 'Pomerode não tem régua no site, mas a maior cheia lá chegou a 9 m.'],
     ['conta-media', 'A média dos picos de Blumenau desde 2000 é 10,2 m.'],

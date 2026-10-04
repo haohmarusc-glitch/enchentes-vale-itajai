@@ -30,6 +30,9 @@ export const CATEGORIAS = [
   'cota_ana',
   'antecedencia_mirim',
   'rua_historico',
+  'cotas',
+  'comparacao',
+  'media',
   'desconhecida',
 ] as const
 export type Categoria = (typeof CATEGORIAS)[number]

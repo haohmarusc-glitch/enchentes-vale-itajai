@@ -127,6 +127,56 @@ test('perguntas de agora recebem o texto fixo', () => {
   for (const p of ['vai encher hoje?', 'Devo sair de casa?', 'tá subindo em gaspar?', 'qual a previsão para amanhã']) assert.equal(r(p).texto, TEXTO_ALERTA, p)
 })
 
+// Achados da prova do chat com IA (04/10/2026): "essa madrugada" e "como está o rio"
+// passavam pela barreira; "alerta" sozinho barrava pergunta sobre a cota de alerta.
+test('barreira: madrugada, "como está o rio" e alerta de AGORA', () => {
+  for (const p of [
+    'A água chega na minha casa no bairro Garcia essa madrugada?',
+    'O rio vai subir daqui a pouco?',
+    'Como está o rio em Rio do Sul?',
+    'como estão os rios?',
+    'Tem alerta em Blumenau?',
+    'Blumenau está em alerta?',
+    'Saiu alerta para Gaspar?',
+    'tem algum alerta vigente?',
+  ])
+    assert.equal(r(p).texto, TEXTO_ALERTA, p)
+})
+
+test('barreira: a cota de alerta NÃO é pergunta sobre agora', () => {
+  for (const p of [
+    'Qual é a cota de alerta do rio em Blumenau?',
+    'A partir de quantos metros é alerta em Ilhota?',
+    'Qual o nível de alerta de Rio do Sul?',
+  ])
+    assert.equal(r(p).intencao, 'cotas', p)
+})
+
+test('cotas da Defesa Civil: escada na régua da cidade, com o nome local', () => {
+  const b = r('Qual é a cota de alerta do rio em Blumenau?').texto
+  for (const linha of ['Observação: a partir de 3 m', 'Atenção: a partir de 4 m', 'Alerta: a partir de 6 m', 'Alerta Máximo: a partir de 8 m']) assert.ok(b.includes(linha), linha)
+  assert.match(b, /não se comparam com os de outra cidade/)
+  assert.doesNotMatch(b, /não foram conferidas/) // Blumenau: cotas_verificado true
+
+  const ilhota = r('A partir de quantos metros é alerta em Ilhota?').texto
+  assert.ok(ilhota.includes('Prontidão: a partir de 10 m'), ilhota) // D6: o nome da Defesa Civil de Ilhota
+  assert.match(ilhota, /não foram conferidas/)
+
+  assert.match(r('Quais são as cotas da Defesa Civil para o rio em Gaspar?').texto, /Atenção: acima de 5 m[\s\S]*Emergência: acima de 7 m/) // legenda "maior que"
+  assert.match(r('Qual a cota de alerta de Itajaí?').texto, /onze réguas/)
+  // Timbó: só gatilho do plano, sem escada — não vira faixa.
+  const timbo = r('Qual a cota de alerta de Timbó?').texto
+  assert.match(timbo, /não tem cotas de faixa/)
+  assert.doesNotMatch(timbo, /• /)
+  assert.match(r('Qual a cota de alerta de Pomerode?').texto, /Não achei a cidade[\s\S]*Blumenau/)
+})
+
+test('cotas não roubam outras intenções', () => {
+  assert.equal(r('Quantas cheias passaram de 10 m em Rio do Sul?').intencao, 'contar_acima')
+  assert.equal(r('Cota da ANA em Brusque em novembro de 2008').intencao, 'cota_ana')
+  assert.equal(r('Quantas cheias chegaram à cota da Rua São Rafael em Blumenau?').intencao, 'rua_historico')
+})
+
 test('fora do tema não inventa', () => {
   const x = r('me conta uma piada')
   assert.equal(x.intencao, 'nao_entendi')
@@ -227,4 +277,42 @@ test('extração do nome da rua', () => {
   assert.equal(citaRua('Qual foi a maior cheia de Rio do Sul?'), false)
   assert.equal(termoDaRua(extrair('Quantas cheias passaram da cota da Rua São Rafael em Blumenau?', dados)), 'sao rafael')
   assert.equal(termoDaRua(extrair('a rua Lino em Gaspar ja alagou quantas vezes?', dados)), 'lino')
+})
+
+// Passo 1 da melhoria do chat sem IA (04/10/2026), a partir das falhas da prova
+// (docs/PROVA-CHAT-IA.md): comparar cidades, média, "o site não tem", fora do tema.
+test('comparar duas cidades: valores na régua de cada uma, posição na história, sem "foi maior em"', () => {
+  const x = r('Em 2008 a enchente foi maior em Blumenau ou em Gaspar?')
+  assert.equal(x.intencao, 'comparacao')
+  assert.match(x.texto, /Blumenau: 11,92 m em 24\/11\/2008, na régua da cidade — a \d+ª maior das 58/)
+  assert.match(x.texto, /Gaspar: 9,8 m em 24\/11\/2008/)
+  assert.match(x.texto, /cada cidade tem a sua régua/)
+  assert.doesNotMatch(x.texto, /(foi maior|subiu mais) em/)
+  assert.match(r('Qual foi pior, Blumenau ou Itajaí em 2011?').texto, /Itajaí: Itajaí tem onze réguas/)
+  assert.match(r('Blumenau x Rio do Sul, qual teve a maior cheia?').texto, /Blumenau: 17,3 m em 23\/09\/1880, na régua da cidade — a maior das/)
+  // Duas cidades sem pedir comparação continuam no trânsito.
+  assert.equal(r('Quanto tempo a cheia leva de Rio do Sul até Blumenau?').intencao, 'transito')
+})
+
+test('média dos picos: uma escala só, quantos ficaram de fora, período', () => {
+  const x = r('Qual a média dos picos de Blumenau na régua desde o ano 2000?')
+  assert.equal(x.intencao, 'media')
+  assert.match(x.texto, /Média dos 23 picos de Blumenau na régua da cidade desde 2000: 9,33 m/)
+  assert.match(x.texto, /5 pico\(s\) em outra escala ficaram fora/)
+  assert.match(r('Média das cheias de Rio do Sul nos anos 1980').texto, /picos de Rio do Sul sem referência declarada pela fonte nos anos 1980/)
+  assert.match(r('Média dos picos de Itajaí').texto, /não tira média/)
+})
+
+test('o site não tem: danos antes de 1991, cidade sem picos, fora do tema', () => {
+  const mortos = r('Quantas pessoas morreram na enchente de 1880 em Blumenau?')
+  assert.equal(mortos.intencao, 'atlas')
+  assert.match(mortos.texto, /não tem número de mortos[\s\S]*1991/)
+  assert.match(r('Qual foi a maior cheia de Pomerode?').texto, /Não achei a cidade/)
+  assert.match(r('Qual é a capital de Santa Catarina?').texto, /só sobre o histórico das cheias/)
+})
+
+test('barreira: pedido de conselho para agora', () => {
+  for (const p of ['Preciso me preocupar com o rio em Blumenau?', 'Dá para passar de carro pela ponte em Gaspar?', 'Vale a pena tirar o carro da garagem em Gaspar?'])
+    assert.equal(r(p).texto, TEXTO_ALERTA, p)
+  for (const p of ['Dá para comparar Blumenau e Gaspar?', 'Cheias de Gaspar em 2011.']) assert.notEqual(r(p).texto, TEXTO_ALERTA, p)
 })

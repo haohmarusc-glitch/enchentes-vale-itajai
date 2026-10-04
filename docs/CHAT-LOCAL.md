@@ -260,3 +260,28 @@ pendência no README, para aprovação do Jefferson.
 **desligado** até ele criar o armazenamento (KV) na Cloudflare. O motor passou a marcar `falha`
 (motivo de um enum fechado + cidade citada) nas respostas que não entendem; o texto nunca sai do
 aparelho. Tudo em `docs/TELEMETRIA-CHAT.md`; como ligar em `docs/PUBLICACAO-E-ACESSO.md`.
+
+### Barreira do presente e cotas (04/10/2026)
+Achados da prova do chat com IA (`docs/PROVA-CHAT-IA.md`):
+- **"Alerta" sozinho não é mais barreira.** Só o alerta de agora ("tem alerta?", "está em alerta?", "alerta
+  vigente") continua barrado. "Previsão" continua barrada.
+- **"Essa madrugada", "daqui a pouco" e "como está o rio" entraram na barreira.**
+- **Intenção nova `cotas`:** "qual a cota de alerta de Blumenau?" responde a escada da Defesa Civil na régua da
+  cidade.
+  - Usa o nome local da faixa (D6).
+  - Diz quando as cotas não foram conferidas e traz o aviso público da cidade.
+  - Itajaí vai para a página das onze réguas.
+  - Cidade sem escada (Timbó, Ituporanga…) recebe "o site não tem cotas de faixa".
+- Testes em `motor.test.ts`.
+
+### Melhorias a partir da prova (04/10/2026)
+O chat sem IA passou de 24 para 31 das 34 perguntas da prova (`docs/PROVA-CHAT-IA.md`). Mudanças:
+- **Intenção `comparacao`** ("maior em Blumenau ou em Gaspar?"): mostra o pico de cada cidade na régua dela e a
+  posição na história da própria cidade, na mesma escala. Nunca diz "foi maior em".
+- **Intenção `media`**: média dos picos numa escala só, com período ("desde", "até", "anos 1980"), dizendo
+  quantos ficaram de fora. Itajaí recusa.
+- **Danos antes de 1991:** "o site não tem", porque o Atlas começa em 1991. "Morreram" e "vítimas" agora caem no
+  Atlas.
+- **Cidade não achada:** "Não achei a cidade…". **"Não entendi"** diz o tema (cheias do Vale do Itajaí).
+- **Barreira:** pedidos de conselho para agora ("preciso me preocupar", "dá para passar", "vale a pena tirar").
+- **Busca de cidade:** ignora a pontuação colada ("rio do sul,").
