@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ROTA_MANCHAS_ITAJAI } from '../logica/rotaManchas'
 import type { Cidade, Topologia } from '../dados/tipos'
 import { trechos, trechosExperimentais } from '../dados/carregar'
 import type { AoVivo, EstadoDaCidade } from '../dados/usarAoVivo'
@@ -63,7 +64,7 @@ export function AcoesDaCidade({
         </a>
       ) : null}
       <div className={estilos.duas}>
-        <Link className={estilos.botao} to={cidade.id === 'itajai' ? '/itajai' : `/${rio}/${cidade.id}?aba=rua`}>
+        <Link className={estilos.botao} to={cidade.id === 'itajai' ? ROTA_MANCHAS_ITAJAI : `/${rio}/${cidade.id}?aba=rua`}>
           Minha rua alaga?
         </Link>
         <Link className={estilos.botao} to={`/monitor/${cidade.id}`}>

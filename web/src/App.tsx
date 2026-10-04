@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { useLayoutEffect, useState } from 'react'
+import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import Municipal from './telas/Municipal'
 import estilos from './App.module.css'
 import AvisoLegal from './componentes/AvisoLegal'
@@ -58,6 +58,7 @@ export default function App() {
         <AvisosDoAplicativo />
         <main className="conteudo" id="conteudo" tabIndex={-1}>
           <LimiteDeErro oQue="esta tela">
+            <RolarAoTopo />
             <Rotas />
           </LimiteDeErro>
           {/* O aviso completo continua em TODA tela (regra do CLAUDE.md, D1):
@@ -127,6 +128,28 @@ export default function App() {
       {!municipal && <Rodape />}
     </>
   )
+}
+
+/**
+ * Página nova começa no topo (04/10/2026).
+ *
+ * Achado no celular do Jefferson: na Início de Itajaí, "Minha rua alaga?" levava à
+ * tela da foz, e ela abria na mesma rolagem da página anterior — parecia que o
+ * botão só mexia a tela. Trocar de página (o caminho, não a aba `?aba=`) volta ao
+ * topo. O "voltar" do navegador (POP) fica com a rolagem que o navegador guardar.
+ * Só na casca nova: o Monitor (casca antiga) não muda (D2).
+ *
+ * `useLayoutEffect` de propósito: roda antes do `useEffect` das telas, então uma
+ * tela que pede para rolar até uma seção (`/itajai?secao=manchas`) rola DEPOIS
+ * deste topo, e não é desfeita por ele.
+ */
+function RolarAoTopo() {
+  const { pathname } = useLocation()
+  const tipo = useNavigationType()
+  useLayoutEffect(() => {
+    if (tipo !== 'POP') window.scrollTo(0, 0)
+  }, [pathname, tipo])
+  return null
 }
 
 function Rotas() {
