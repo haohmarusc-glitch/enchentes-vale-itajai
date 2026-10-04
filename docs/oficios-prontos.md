@@ -658,7 +658,7 @@ Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 0
 
 ---
 
-## C31 — INMET, Direção: manifestação de interesse em Acordo de Cooperação Técnica — 📝 RASCUNHO (decisão do Jefferson de 04/10/2026: "Sim, solicitar"; **envio depende da aprovação do texto**)
+## C31 — INMET, Direção: manifestação de interesse em Acordo de Cooperação Técnica — ✅ ENVIADO em 04/10/2026, por pedido do Jefferson ("faça o 4"), com o texto abaixo sem alteração (Gmail, id `1a1066b689e7fad1`, para diretor@inmet.gov.br)
 
 Origem: a resposta da LAI C8 (NUP 21210.009435/2026-61, 22/09/2026) diz que a API do INMET só abre com Acordo de
 Cooperação Técnica, a começar por ofício de manifestação de interesse à Direção, seguido de reunião
