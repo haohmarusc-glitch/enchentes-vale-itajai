@@ -614,3 +614,44 @@ Se quiserem ver o site, basta me mandar o e-mail para cadastro.
 Muito obrigado pelo trabalho de vocês.
 
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C28 a C30 — Trombudo Central, Rio dos Cedros e Apiúna — ✅ ENVIADOS pelo Jefferson em 04/10/2026
+
+O Jefferson redigiu e enviou os três textos. Aqui fica o registro do que foi perguntado, conferido na caixa
+de Enviados do Gmail em 04/10/2026. Nenhum leva link do site, e todos dizem: "se quiserem conhecer o site,
+basta me enviar um e-mail para cadastro". Os três citam o repositório público do código no GitHub, que não é
+o site. Sem resposta até 04/10/2026.
+
+### C28 — Defesa Civil de Trombudo Central — 04/10/2026 às 00h39 BRT
+**Para:** defesacivil@trombudocentral.sc.gov.br (Gmail, id `1a104feb75ee7bef`)
+**Assunto:** "Régua e faixas de nível do Rio Itajaí do Oeste em Trombudo Central — pedido de esclarecimento"
+
+1. A página da Defesa Civil diz que o município "trabalha com as seguintes cotas", mas a lista não aparece
+   (talvez seja imagem). Quais são as faixas vigentes, com nomes e valores, e em qual régua?
+2. A régua municipal é a mesma da estação da DCSC em Trombudo Central (DCSC-00035)? Se não, há diferença
+   documentada? A régua municipal "só mede até 6,15 m", e a estação estadual já passou bem disso.
+
+### C29 — Defesa Civil de Rio dos Cedros — 04/10/2026 às 00h42 BRT
+**Para:** defesacivil@riodoscedros.sc.gov.br (Gmail, id `1a105014b2aecbbb`)
+**Assunto:** "Régua do Rio dos Cedros e estação da Defesa Civil de SC — pedido de esclarecimento"
+
+Cita as faixas 4,80 (atenção) / 5,30 (alerta) / 5,70 m (alarme) do Plano v10.9, p. 9, lidas na régua do Paço.
+1. A estação da DCSC (DCSC-00011) mede na mesma régua do Paço? Se não, há diferença documentada? Onde e com
+   qual zero a régua do Paço foi instalada?
+2. Em que dia e hora foi o pico de 8,96 m de 2014 do documento "Históricos de Enchentes"? O PDF tem a tabela
+   de 15 em 15 minutos, mas não escreve a data.
+
+### C30 — Defesa Civil de Apiúna — 04/10/2026 às 00h42 BRT (reenvio)
+**Para:** defesacivil@apiuna.sc.gov.br (Gmail, id `1a10501b439a84e5`)
+**Assunto:** "Régua e cotas de referência do Rio Itajaí-Açu em Apiúna — pedido de esclarecimento"
+
+Reenvio direto à Defesa Civil do pedido de 13/09/2026, que tinha ido ao gabinete (gabinete@apiuna.sc.gov.br,
+Gmail, id `1a09c75462779e6d`) sem retorno. Endereço indicado pela rodada 6.
+1. Qual régua a Defesa Civil usa (local, código)? É a ANA 83500000, Apiúna–Régua Nova? Automática ou por
+   observador? Há página com as leituras?
+2. Quais as faixas vigentes, com nomes e valores? Plano de contingência ou tabela, se houver.
+3. A estação da DCSC em Apiúna (DCSC-00178) publica altitude, não nível. Qual é a cota do zero da régua?
+
+Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 04/05).

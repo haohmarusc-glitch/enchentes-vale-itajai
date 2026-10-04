@@ -58,3 +58,6 @@ Confirmar com a COMPDEC se a escala de 2014 ainda vale depois do desassoreamento
   5,30 m. Fonte: handoff de 03/10/2026. **Não conferida daqui.**
 - **Equivalência com a DCSC-00011:** ❌. A estação fica a 0,24 km do pino, viva (1,56 m em 03/10). Não há leitura
   municipal para parear.
+- **Pedido enviado (C29, 04/10/2026, pelo Jefferson):** se a DCSC-00011 lê na régua do Paço (e com que
+  diferença, se não), onde e com que zero a régua foi instalada, e a data e hora do pico de 8,96 m de 2014.
+  Ver `docs/oficios-prontos.md`. Sem resposta até 04/10/2026.
