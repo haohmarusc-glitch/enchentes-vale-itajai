@@ -3,7 +3,7 @@ import type { LeituraAoVivo } from '../dados/tempoReal'
 import { dataLegivel } from '../logica/datas'
 import { metros } from '../logica/formato'
 import { cenarioDaCidade } from '../logica/cenarioAnterior'
-import { frescor, idadeMin, textoIdade } from '../logica/tempoReal'
+import { frescorDaCidade, idadeMin, textoIdade } from '../logica/tempoReal'
 import estilos from './PainelCenarioAnterior.module.css'
 
 /**
@@ -36,7 +36,7 @@ export default function PainelCenarioAnterior({
 }) {
   if (!leitura?.medidoEm || typeof leitura.nivel_m !== 'number') return null
   const idade = idadeMin(leitura.medidoEm, agora)
-  if (frescor(idade) !== 'agora') return null
+  if (frescorDaCidade(idade, cidade.id) !== 'agora') return null
 
   const { cenario, motivo } = cenarioDaCidade(leitura.nivel_m, eventos)
 

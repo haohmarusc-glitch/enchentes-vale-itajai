@@ -1600,10 +1600,18 @@ class TestObservacaoNasCotas(unittest.TestCase):
             self.assertLessEqual(len(r), 4096, cidade["nome"])
 
     def test_a_ressalva_de_brusque_nao_promove_a_regua_estadual(self):
-        """O nome da ponte não autoriza subtrair nível estadual de cota de rua."""
+        """O que está provado e o que não está, cada um com o seu nome.
+
+        Até 03/10/2026 a mensagem dizia "não use o nível bruto estadual" para
+        cota de rua. A revisão da auditoria de 03/10/2026 provou o par leitura
+        DCSC-00019 ↔ cota de atenção (1.287 pares, docs/BRUSQUE-DCSC-00019.md);
+        o que segue sem documento é a referência das COTAS DE RUA, e a mensagem
+        tem de dizer isso antes do corte de 600 caracteres.
+        """
         r = responder("/cotas Brusque", base(), AGORA).lower()
-        self.assertIn("não use o nível bruto estadual", r)
-        self.assertIn("enquanto esse vínculo não estiver comprovado", r)
+        self.assertIn("1.287 pares", r)
+        self.assertIn("cotas de rua", r)
+        self.assertIn("não comprovada", r)
         self.assertNotIn("atenção: <b>4,80 m</b>", r)
 
 

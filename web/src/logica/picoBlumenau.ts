@@ -33,7 +33,14 @@ export type SituacaoPico =
       tendencia: Tendencia | null
     }
   | {
-      tipo: 'passou'
+      /**
+       * `passou`: o máximo está DENTRO da janela, com subida antes e descida
+       * depois — é o pico do evento. `nao-confirmado`: o máximo é o PRIMEIRO
+       * ponto da janela; o rio já estava alto quando ela começa, e o pico de
+       * verdade pode ter sido antes. A tela trata o segundo como "maior leitura
+       * da janela", nunca como detecção firme (auditoria de 03/10/2026).
+       */
+      tipo: 'passou' | 'nao-confirmado'
       pico: PontoSerie
       /** Começo e fim do platô em torno do máximo. */
       platoInicio: Date
@@ -77,7 +84,7 @@ export function situacaoDoPico(pontos: PontoSerie[], agora: Date): SituacaoPico 
   let b = iMax
   while (b < serie.length - 1 && serie[b + 1]!.nivel_m >= maximo.nivel_m - PLATO_M) b++
   return {
-    tipo: 'passou',
+    tipo: a === 0 ? 'nao-confirmado' : 'passou',
     pico: maximo,
     platoInicio: serie[a]!.medidoEm,
     platoFim: serie[b]!.medidoEm,

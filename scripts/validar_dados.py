@@ -559,7 +559,11 @@ def valida_enchentes(conhecidas: set[tuple[str, str]]) -> None:
                 erro(f"{ondiv}: divergência sem fonte")
 
         if (ev["rio"], ev["cidade"]) not in conhecidas:
-            aviso(f"{onde}: cidade não está em estacoes.json — não vai aparecer no diagrama")
+            # ERRO, não aviso (auditoria de 03/10/2026): três picos de Rio dos
+            # Cedros com `rio: "rio-dos-cedros"` passaram meses como aviso,
+            # e o site os descartava calado como "rio desconhecido".
+            erro(f"{onde}: ({ev['rio']}, {ev['cidade']}) não está em estacoes.json — "
+                 "o site descarta o registro")
 
         vistos[(ev["rio"], ev["cidade"], ev["data"])] += 1
 

@@ -83,8 +83,9 @@ test('máximo no começo da janela: o pico pode ter sido antes, e isso é dito',
     [ponto('2026-10-03T00:00:00', 7.0), ponto('2026-10-03T03:00:00', 6.7), ponto('2026-10-03T06:00:00', 6.4)],
     deBrasilia('2026-10-03T06:10:00'),
   )
-  assert.equal(s.tipo, 'passou')
-  if (s.tipo === 'passou') assert.equal(s.inicioIncerto, true)
+  // Não é "passou": o máximo é o primeiro ponto, então o pico pode ter sido antes.
+  assert.equal(s.tipo, 'nao-confirmado')
+  if (s.tipo === 'nao-confirmado') assert.equal(s.inicioIncerto, true)
 })
 
 test('usa a publicação com a leitura mais recente, sem misturar as duas fontes', () => {

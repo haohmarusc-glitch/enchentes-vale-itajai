@@ -3327,7 +3327,8 @@
       "nota": "Rio Benedito. A notícia não diz se é a régua da Rua Equador. Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial."
     },
     {
-      "rio": "rio-dos-cedros",
+      "rio": "itajai-acu",
+      "rio_corrigido_em_2026_10_03": "A chave era \"rio-dos-cedros\", que não existe em estacoes.json (o site descartava os três registros como rio desconhecido; auditoria de 03/10/2026). A cidade está cadastrada no Açu, ramo rio_dos_cedros, como os outros 15 picos dela. A chave é a da tela; a medição e a referência física não mudam.",
       "cidade": "rio-dos-cedros",
       "data": "1911-01-02",
       "pico_m": 9.0,
@@ -3336,7 +3337,8 @@
       "nota": "A data traz um asterisco na tabela, sem legenda visível na imagem. O PLANCON (v1.07 e 10.7) só cita 1911 numa frase de anos, sem valor; a tabela municipal em imagem é a única fonte do número. Régua não declarada; confiança baixa. Sexta rodada, 27/09/2026."
     },
     {
-      "rio": "rio-dos-cedros",
+      "rio": "itajai-acu",
+      "rio_corrigido_em_2026_10_03": "A chave era \"rio-dos-cedros\", que não existe em estacoes.json (o site descartava os três registros como rio desconhecido; auditoria de 03/10/2026). A cidade está cadastrada no Açu, ramo rio_dos_cedros, como os outros 15 picos dela. A chave é a da tela; a medição e a referência física não mudam.",
       "cidade": "rio-dos-cedros",
       "data": "1983-07-09",
       "pico_m": 7.9,
@@ -3345,7 +3347,8 @@
       "nota": "O PLANCON só cita 1983 numa frase de anos, sem valor. Régua não declarada; confiança baixa. Sexta rodada, 27/09/2026."
     },
     {
-      "rio": "rio-dos-cedros",
+      "rio": "itajai-acu",
+      "rio_corrigido_em_2026_10_03": "A chave era \"rio-dos-cedros\", que não existe em estacoes.json (o site descartava os três registros como rio desconhecido; auditoria de 03/10/2026). A cidade está cadastrada no Açu, ramo rio_dos_cedros, como os outros 15 picos dela. A chave é a da tela; a medição e a referência física não mudam.",
       "cidade": "rio-dos-cedros",
       "data": "1984-08-07",
       "pico_m": 7.65,

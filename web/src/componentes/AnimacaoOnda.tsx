@@ -6,6 +6,7 @@ import { faixaDaCidade, type Faixa } from '../logica/tempoReal'
 import { linhaDaReproducao, vinculoDeResgate } from '../logica/reproducaoPorCidade'
 import { dataHora, metros } from '../logica/formato'
 import { ROTULO_FAIXA } from './LegendaFaixas'
+import { rotuloDaFaixa } from '../logica/agora'
 import estilos from './AnimacaoOnda.module.css'
 
 /**
@@ -103,9 +104,14 @@ export default function AnimacaoOnda({
   const linhas = cidades.map((c) => {
     const pontos = serieDaCidade(serie, rioId, c.id)
     const atual = leituraEm(pontos, t)
+    // A régua de Ascurra só pinta pelo C18 quando a leitura diz que é a
+    // DCSC-00003; a série guarda o título da régua, não o código, então ele é
+    // lido do título. Sem isto a reprodução mostrava Ascurra cinza no mesmo
+    // 8,11 m que a lista pintava de monitoramento (auditoria de 03/10/2026).
+    const codigo = atual?.regua?.match(/DCSC-\d{5}/)?.[0]
     const faixa = faixaDaCidade(
       c,
-      atual ? { nivel_m: atual.nivel_m, medidoEm: atual.medidoEm } : null,
+      atual ? { nivel_m: atual.nivel_m, medidoEm: atual.medidoEm, codigo } : null,
       false,
       instante,
     )
@@ -150,7 +156,7 @@ export default function AnimacaoOnda({
             <span className={estilos.faixa}>
               {linha.tipo === 'varias-reguas'
                 ? `${linha.quantas} réguas nesta cidade`
-                : ROTULO_FAIXA[faixa]}
+                : rotuloDaFaixa(faixa, c, ROTULO_FAIXA[faixa])}
             </span>
             <span className={estilos.nivel}>
               {linha.tipo === 'leitura' ? metros(linha.nivel_m) : '—'}

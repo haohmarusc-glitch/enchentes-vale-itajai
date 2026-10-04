@@ -6,7 +6,7 @@ import {
   MIN_AGORA,
   chegadasSePicoAgora,
   foraDeOrdem,
-  frescor,
+  frescorDaCidade,
   idadeMin,
   primeiraCota,
   textoIdade,
@@ -43,7 +43,7 @@ export default function PainelSePicoAgora({
   if (!leitura.medidoEm) return null
 
   const idade = idadeMin(leitura.medidoEm, agora)
-  if (frescor(idade) !== 'agora') {
+  if (frescorDaCidade(idade, origem.id) !== 'agora') {
     return (
       <section className="cartao" aria-labelledby="pico-agora-titulo">
         <h2 id="pico-agora-titulo">Se o pico fosse agora</h2>
