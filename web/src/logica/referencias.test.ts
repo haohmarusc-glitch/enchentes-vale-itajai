@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import {
   ehIBGE,
   legendaDaEscala,
+  antesDaReguaDeclarada,
   misturaReferencias,
   referenciasDistintas,
   textoDaReferencia,
@@ -70,4 +71,50 @@ test('rótulos sem IBGE não mudam', () => {
   assert.equal(textoDaReferencia(undefined), 'régua')
   assert.equal(textoDaReferencia(null), 'não declarada')
   assert.equal(textoDaReferencia('régua'), 'régua')
+})
+
+// Brusque, decisão do Jefferson de 04/10/2026 (opção B do item 4 da auditoria).
+const BRUSQUE = {
+  rotulo: 'Histórico na régua da Ponte Estaiada',
+  desde: '2019-01-01',
+  fonte_desde: 'boletins da Defesa Civil de Brusque',
+  antes: 'da ANA (estação 83900000), com referência não conferida',
+}
+
+test('pico antes de "desde" fica fora da régua declarada, inclusive com data só de ano ou mês', () => {
+  assert.equal(antesDaReguaDeclarada('1961-11-01', BRUSQUE), true)
+  assert.equal(antesDaReguaDeclarada('1984-08', BRUSQUE), true)
+  assert.equal(antesDaReguaDeclarada('2011', BRUSQUE), true)
+  assert.equal(antesDaReguaDeclarada('2019-01-01', BRUSQUE), false)
+  assert.equal(antesDaReguaDeclarada('2023-11-17', BRUSQUE), false)
+  assert.equal(antesDaReguaDeclarada('1961-11-01', undefined), false)
+})
+
+test('Brusque: o título declara a régua e diz quantos picos ficam à parte', () => {
+  const l = legendaDaEscala('Brusque', 'Ponte Estaiada – DCSC', [undefined, undefined, undefined], {
+    declaracao: BRUSQUE,
+    datas: ['1961-11-01', '2008-11', '2023-11-17'],
+  })
+  assert.equal(l.ehAviso, false)
+  assert.ok(l.texto.startsWith('Histórico na régua da Ponte Estaiada: picos desde 2019'), l.texto)
+  assert.ok(l.texto.includes('Os 2 picos anteriores'), l.texto)
+  assert.ok(l.texto.includes('à parte'), l.texto)
+  assert.ok(!/nível histórico de Brusque/i.test(l.texto), 'nunca o rótulo genérico')
+  assert.ok(!l.texto.startsWith('Alturas na régua de Brusque'), 'não afirma a régua para a série inteira')
+})
+
+test('Brusque sem pico anterior a 2019 não fala em "à parte"', () => {
+  const l = legendaDaEscala('Brusque', 'Ponte Estaiada – DCSC', [undefined], {
+    declaracao: BRUSQUE,
+    datas: ['2023-11-17'],
+  })
+  assert.ok(!l.texto.includes('à parte'), l.texto)
+})
+
+test('declaração do histórico não esconde mistura de referências', () => {
+  const l = legendaDaEscala('Brusque', 'Ponte Estaiada – DCSC', ['régua', null], {
+    declaracao: BRUSQUE,
+    datas: ['2020-12-15', '2023-11-17'],
+  })
+  assert.equal(l.ehAviso, true)
 })

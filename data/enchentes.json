@@ -3312,9 +3312,11 @@
       "data": "2023-11-17",
       "hora": "17:00",
       "pico_m": 8.71,
+      "referencia": null,
+      "referencia_hipotese": "estação estadual da Defesa Civil de SC em Trombudo Central (DCSC-00035, zero próprio da estação), segundo o Boletim SDE 011/2023; não é a régua municipal",
       "confianca": "baixa",
       "fonte": "Prefeitura de Trombudo Central, \"Trombudo Central registra a maior enchente da sua história\", 27/11/2023 (https://www.trombudocentral.sc.gov.br/trombudo-central-registra-a-maior-enchente-da-sua-historia/) — trecho: \"Às 17h o Rio Trombudo atingiu 8,71 metros.\" — bruto: data/brutos/pesquisa-picos-2026-09-24/fontes/trombudo-evidencia.txt · confirmado por: Boletim Hidrometeorológico 011/2023 (SDE/SC), Tabela 3 \"Níveis máximos registrados nos municípios das bacias do Vale do Itajaí\", p. 18 — estações da DCSC (https://www.aguas.sc.gov.br/jsmallfib_top/DRHI/cadastro_de_usuarios_de_recursos_hidricos/Abastecimento%20Urbano/Boletim_Hidrometeorologico_011_2023.pdf) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada3/Boletim_SDE_SC_011_2023_novembro.pdf",
-      "nota": "Maior enchente da história do município, segundo a prefeitura. A notícia não usa a palavra \"pico\". Régua não declarada pela fonte: não dá para dizer se é a mesma régua das cotas desta cidade em estacoes.json. Por isso confiança baixa, mesmo com a fonte oficial. O Boletim SDE 011/2023 publica os mesmos 8,71 m às 18:00; a prefeitura diz 17h. Hora adotada: a da prefeitura."
+      "nota": "Maior enchente da história do município, segundo a prefeitura. Pico PUBLICADO PELA ESTAÇÃO ESTADUAL (decisão do Jefferson de 04/10/2026, rodada 6): o Boletim Hidrometeorológico SDE 011/2023 dá \"Trombudo Central 8,71 — 17/11/2023 18:00 — Emergência\" para a estação da DCSC, e a régua municipal \"só mede até 6,15 m\". DIVERGÊNCIA DE HORÁRIO: a prefeitura diz 17h; o boletim estadual, 18h. Um evento só; hora adotada a da prefeitura, com a do boletim registrada aqui. Não afirmar equivalência com a régua municipal nem com as cotas desta cidade: por isso referencia null e confiança baixa, mesmo com fonte oficial."
     },
     {
       "rio": "itajai-acu",

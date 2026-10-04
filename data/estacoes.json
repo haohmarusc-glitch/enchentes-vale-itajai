@@ -790,7 +790,9 @@
           "coordenadas": [
             -27.3053,
             -49.7919
-          ]
+          ],
+          "cotas_ressalva": "O 8,71 m de inundacao_historica (17/11/2023) é o pico PUBLICADO PELA ESTAÇÃO ESTADUAL (DCSC-00035), segundo o Boletim SDE 011/2023 — não uma marca da régua municipal, que 'só mede até 6,15 m' (rodada 6, 04/10/2026). Horário divergente: prefeitura 17h, boletim estadual 18h. É marca histórica, não gatilho; não comparar com leitura da régua municipal.",
+          "cotas_aviso_publico": "A marca de 8,71 m (17/11/2023) foi publicada pela estação da Defesa Civil de SC, não pela régua da prefeitura. Não compare com a régua municipal."
         }
       ]
     },
@@ -916,6 +918,13 @@
           "codigo_ana_verificacao": "Vinculado em 07/09/2026 por COORDENADA E POR TIPO, a regra emendada — mesmo padrão de Gaspar. Coordenada: a DCSC-00019 (que é este pino, 3,5 m medidos contra data/brutos/dcsc-estacoes-coordenadas-bacia-itajai.json) fica a 51 m da 83900000 no Inventário público da ANA (Inventario31_08_2026.mdb), lido em 06/09/2026 — logo a estação da ANA fica a no máximo ~55 m deste pino, por desigualdade triangular. É um LIMITE, não um ponto: a coordenada da 83900000 não foi transcrita para cá, então a trava de distância ao traçado não roda sobre ela. Tipo: a ANA a cadastra como FLUVIOMÉTRICA no Itajaí-Mirim, 1.240 km², escala desde 1929, sem fim declarado. O que faltava não era prova da ANA e sim do NOSSO lado: o codigo_dcsc de Brusque era null, e por isso os 51 m mediam até uma estação que este repositório nunca tinha afirmado ser este pino. Duas evidências independentes fecharam isso: a coincidência de coordenada (3,5 m) e o coletor scripts/coleta_nivel_sc.py, que já lia DCSC-00019 como 'brusque' para publicar a leitura ao vivo do site — a ligação existia em código e não estava no dado.",
           "verificado": false,
           "regua": "Ponte Estaiada – DCSC",
+          "historico_referencia": {
+            "rotulo": "Histórico na régua da Ponte Estaiada",
+            "desde": "2019-01-01",
+            "fonte_desde": "boletins da Defesa Civil de Brusque, Prefeitura e a lista de cheias 2019–2024",
+            "antes": "da ANA (estação 83900000), da imprensa e de estudos, com referência não conferida",
+            "nota": "Decisão do Jefferson de 04/10/2026 (opção B do item 4 da auditoria de 03/10): o gráfico declara a referência em vez de chamar tudo de 'nível histórico de Brusque'. Os picos desde 2019 são lidos na régua da Ponte Estaiada (a ANA 83900000 coincide com ela ao centímetro em 2019–2021: 590 × 5,90; 568 × 5,68). Antes de 2019 a referência não foi conferida, e esses picos aparecem à parte. Nenhum registro de enchentes.json foi alterado e nenhum deslocamento foi estimado."
+          },
           "afluentes": [
             "rio Guabiruba"
           ],
