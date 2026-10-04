@@ -67,6 +67,33 @@ Muito obrigado pelo trabalho de vocês.
 
 Jefferson
 
+
+### C11 — atualização de 04/10/2026 (rascunho, NÃO enviado)
+
+Resposta ao C11 ainda não chegou. Este texto vai como resposta na mesma conversa e pergunta só o que falta.
+Envio é decisão do Jefferson. Sem link do site (regra de 02/10/2026).
+
+**Assunto:** Re: Em que régua estão as cotas do Plano de Contingência 2025/2028?
+
+À Coordenadoria Municipal de Proteção e Defesa Civil de Ilhota,
+
+Retomo a mensagem anterior com uma pergunta mais simples, porque encontrei uma pista.
+
+O painel dos Bombeiros Voluntários de Ilhota mostra a estação estadual **DCSC-00030** (Defesa Civil de SC)
+com o aviso "Normal: até 9,20 m" e informa que as cotas são referenciais da COMPDEC.
+
+**As faixas do Plano de Contingência, 9,20 / 10,00 / 10,50 m, são lidas na estação DCSC-00030, como o painel
+dos bombeiros mostra?**
+
+Se forem, uma segunda dúvida: na faixa de 9,20 a 10,00 m o plano diz que a COMPDEC monitora e não avisa a
+população. Em setembro, a DCSC-00030 passou a maior parte do tempo um pouco acima de 9,20 m, oscilando com a
+maré. Devo mostrar essa faixa como "represamento dos ribeirões", sem tom de aviso?
+
+Se quiserem ver o site, basta me mandar o e-mail para cadastro.
+
+Muito obrigado.
+
+Jefferson
 ---
 
 ## C10 — Superintendência Municipal de Proteção e Defesa Civil de Gaspar
