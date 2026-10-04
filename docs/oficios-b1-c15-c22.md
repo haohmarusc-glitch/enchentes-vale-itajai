@@ -94,7 +94,10 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ## C18 — Defesa Civil de Ascurra
 
-**Estado:** rascunho concluído; e-mail destinatário a confirmar.
+**Estado:** ✅ enviado em 10/09/2026 22h02 BRT a defesa.civil@ascurra.sc.gov.br (Gmail, thread `1a08dfcc898b64ca`).
+**Respondido** em 11/09/2026 por João Paulo Waltrick, Coordenador de Proteção e Defesa Civil de Ascurra
+(`docs/resposta-ascurra-c18-2026-09-11.md`). **Agradecimento enviado** em 04/10/2026, na mesma conversa
+(Gmail, id `1a104daca0c2a364`), aprovado pelo Jefferson, sem link do site e com a oferta de cadastro por e-mail.
 
 **Assunto:** Cotas de acionamento do Itajaí-Açu e referência da estação DCSC-00003
 
