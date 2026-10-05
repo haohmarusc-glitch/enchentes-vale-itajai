@@ -23,7 +23,7 @@ Legenda: ✅ comprovado · 🟡 indício, candidato ou parcial · ❌ não há �
 
 | Cidade | 1 Tabela | 2 Régua | 3 Equivalência | 4 Vigência | 5 Leitura | Estado |
 |---|---|---|---|---|---|---|
-| Ibirama | ✅ PLAMCON 2024, p. 11 | ✅ estação da DCSC na ponte Beltramini (nota 1) | 🟡 o PLAMCON não escreve "DCSC-00020"; boletim × DCSC-00020 dá 4,04 × 4,04 m em 11/09 | ❌ validade até 07/08/2025 (p. 32); PLAMCON 2025 sem texto; boletim de 11/09 contradiz | ✅ DCSC-00020 viva | **pendente**; tabela de 2024 só histórica (decisão de 04/10); C26 enviado em 04/10 |
+| Ibirama | ✅ PLAMCON 2024, p. 11 | ✅ estação da DCSC na ponte Beltramini (nota 1) | 🟡 o PLAMCON não escreve "DCSC-00020"; boletim × DCSC-00020 dá 4,04 × 4,04 m em 11/09 | ❌ validade até 07/08/2025 (p. 32); PLAMCON 2025 sem texto; boletim de 11/09 contradiz | ✅ DCSC-00020 viva | **pendente**; tabela de 2024 só histórica (decisão de 04/10). **C26 respondido em 05/10:** régua = DCSC-00020 confirmada; tabela aguarda o PLAMCON 2026 |
 | Botuverá | 🟡 PLANCON 2026, seção 4.1 (não conferido daqui) | ❌ a tabela não nomeia régua | ❌ | 🟡 publicado em 15/09/2026; validade não conferida | 🟡 DCSC-00018 viva; DCSC-00027 sem leitura na coleta de 03/10 | **pendente**; complemento ao C17 enviado em 04/10 |
 | Ilhota | ✅ PLANCON 2025/2028, p. 16 | 🟡 "régua instalada junto a ponte" (p. 15); a estação da ponte Cadorin só aparece na p. 21 | ❌ | 🟡 2025–2028 pelo título | ✅ DCSC-00030 viva | **pendente**; C11 atualizado enviado em 04/10 |
 | Rio dos Cedros | ✅ Plano v10.9 (abr/2026), p. 9 | 🟡 "proximidade da régua de medição" ao Paço (p. 4); a tabela não nomeia | ❌ com a DCSC-00011 | ✅ abr/2026 | ✅ DCSC-00011 viva | **pendente**: falta a equivalência; C29 enviado em 04/10 |

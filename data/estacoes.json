@@ -306,6 +306,8 @@
           ],
           "verificado": false,
           "regua": "Régua do Rio Itajaí do Norte (Hercílio) em Ibirama",
+          "regua_das_cotas": "Estação DCSC-00020 (SDC-SC Ibirama), ponte Osvaldo Tadeu Beltramini",
+          "regua_das_cotas_fonte": "Resposta da COMPDEC de Ibirama ao C26, por e-mail, em 05/10/2026 (docs/resposta-ibirama-c26-2026-10-05.md): as faixas do Rio Itajaí do Norte são lidas na estação DCSC-00020, na ponte Osvaldo Tadeu Beltramini. Confirma a nota 1 da p. 11 do PLAMCON 2024 e o par boletim × estação (4,04 × 4,04 m em 11/09/2026). A régua está resolvida; a TABELA de faixas não: ver cotas_pendencia.",
           "referencia": "régua",
           "cotas_verificado": false,
           "fonte_cotas": "PLAMCON de Ibirama, homologado pelo Decreto nº 5.431/2024 (atualizado pelo Decreto nº 5.824/2025) — faixas do Rio Itajaí do Norte. https://s3cache.dom.sc.gov.br/atos/2024/08/1724680743_decreto_n_5.431__homologa_o_plano_municipal_de_contingncia.pdf",
@@ -333,7 +335,7 @@
             "validade": "até 07/08/2025 (p. 32: 'Este plano tem validade até 07/08/2025') — ENCERRADA",
             "uso": "SÓ TABELA HISTÓRICA (decisão do Jefferson de 04/10/2026). Não classifica a leitura atual: a validade acabou, o PLAMCON 2025 (Decreto nº 5.824/2025) não tem texto público, e o boletim municipal de 11/09/2026 chamou 4,04 m de 'atenção', quando esta tabela diria emergência."
           },
-          "cotas_pendencia": "A tabela do PLAMCON 2024 (3,00 / 3,50 / 4,00 m) fica em cotas_historicas_plancon_2024, só como histórico, com validade encerrada em 07/08/2025 (decisão do Jefferson de 04/10/2026). Não entra em cotas_m nem colore a leitura atual. Volta a ser considerada só com a tabela vigente da COMPDEC (PLAMCON 2025 ou resposta ao C26).",
+          "cotas_pendencia": "A RÉGUA está confirmada (C26, 05/10/2026: DCSC-00020). A TABELA não: a COMPDEC disse que as faixas do PLAMCON são metragens históricas e aproximadas e que o plano de 2026 está em ajustes finais. A tabela de 2024 (3,00 / 3,50 / 4,00 m) continua só como histórico em cotas_historicas_plancon_2024, com validade encerrada em 07/08/2025 (decisão do Jefferson de 04/10/2026). Não entra em cotas_m nem colore a leitura atual. Quando o PLAMCON 2026 sair com a tabela, a DCSC-00020 pode entrar em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py): régua e fonte escrita já estão aqui.",
           "cotas_aviso_publico": "A tabela de faixas do Plano de Contingência de 2024 venceu em 07/08/2025 e não é usada para colorir o nível de agora. Ibirama aparece com a leitura da rede estadual, sem faixa municipal."
         },
         {
