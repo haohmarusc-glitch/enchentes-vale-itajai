@@ -73,6 +73,11 @@ BRUTO_VAO_CANHANDUBA = RAIZ / "data/brutos/vao-canhanduba-osm.json"
 #:     way["waterway"]["name"~"Itajaí do Sul",i](-27.60,-49.75,-27.15,-49.45);
 #: Ver docs/TRACADO-ITAJAI-DO-SUL.md.
 BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
+
+#: Bruto do RIO HERCÍLIO (Itajaí do Norte), o rio de Ibirama. Baixado por
+#: `baixar_tracado_hercilio.py`, que só grava depois de conferir que o traçado
+#: chega ao Açu e passa pelo pino de Ibirama. Opcional, como os ribeirões.
+BRUTO_HERCILIO = RAIZ / "data/brutos/tracado-hercilio-osm.json"
 SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
@@ -101,7 +106,12 @@ RIOS = {
 RIOS_AFLUENTES = {
     "benedito": ["rio benedito"],
     "luiz-alves": ["rio luiz alves", "rio luís alves"],
-    "hercilio": ["rio hercílio", "rio hercilio"],
+    # O mesmo rio com DOIS nomes no OSM: "Rio Itajaí do Norte" a montante
+    # (José Boiteux) e "Rio Hercílio" a jusante (Ibirama até o Açu). A ANA o
+    # cadastra como um só, "Rio Itajaí do Norte ou Hercílio" — por isso os dois
+    # cabem no mesmo arquivo, ao contrário do Rio Conceição. Pedir só Hercílio
+    # deixava o rio sem montante (05/10/2026).
+    "hercilio": ["rio hercílio", "rio hercilio", "rio itajaí do norte", "rio itajai do norte"],
     # Os cursos de ITAJAÍ que carregam régua e não estavam no mapa. Medido em
     # 04/09/2026 (scripts/conferir_reguas_no_tracado.py): sem eles, DC-07 fica a
     # 2,25 km, DC-09 a 0,87 km e DC-08 a 4,41 km do traçado mais próximo — os
@@ -121,6 +131,32 @@ RIOS_AFLUENTES = {
     # O trecho que liga o Canhanduba ao Mirim. Ver BRUTO_VAO_CANHANDUBA.
     "rio-conceicao": ["rio conceição", "rio conceicao"],
 }
+
+
+#: Recorte do Hercílio ao NORTE desta latitude. O Itajaí do Norte nasce em
+#: Itaiópolis, ~55 km acima da borda norte do traçado de hoje (-26,838, o Açu em
+#: Blumenau). O Monitor enquadra a bacia pela extensão de TODOS os rios, então o
+#: rio inteiro afastaria o mapa inteiro — e a regra é que o Monitor não muda. O
+#: recorte guarda o que serve à tela: José Boiteux (barragem Norte), Ibirama e a
+#: chegada ao Açu. Teste: `teste_converter_tracado_rios.TesteHercilio`.
+CORTE_NORTE = {"hercilio": -26.84}
+
+
+def recortar_ao_sul(linhas: list[list[list[float]]], lat_max: float) -> list[list[list[float]]]:
+    """Os trechos de cada linha com lat <= lat_max; uma linha que sai e volta vira duas."""
+    out: list[list[list[float]]] = []
+    for linha in linhas:
+        atual: list[list[float]] = []
+        for p in linha:
+            if p[1] <= lat_max:
+                atual.append(p)
+            else:
+                if len(atual) >= 2:
+                    out.append(atual)
+                atual = []
+        if len(atual) >= 2:
+            out.append(atual)
+    return out
 
 
 def ways_por_nome(elementos: list[dict]) -> dict[str, list[dict]]:
@@ -220,7 +256,8 @@ def main() -> int:
     # O bruto dos ribeirões entra SÓ na busca por substring (afluentes
     # opcionais). O tronco continua saindo do bruto conferido, intocado.
     for extra_caminho, oque in ((BRUTO_RIBEIROES, "ribeirões de Itajaí"),
-                                (BRUTO_VAO_CANHANDUBA, "vão do Canhanduba")):
+                                (BRUTO_VAO_CANHANDUBA, "vão do Canhanduba"),
+                                (BRUTO_HERCILIO, "Rio Hercílio / Itajaí do Norte")):
         if extra_caminho.exists():
             extra = json.loads(extra_caminho.read_text(encoding="utf-8"))
             n = len(extra.get("elements") or [])
@@ -262,11 +299,19 @@ def main() -> int:
 
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
         linhas = linhas_por_substring(elementos, chaves)
+        if rio_id in CORTE_NORTE:
+            linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
         if not linhas:
             print(f"{rio_id}: nenhum way com {chaves} no bruto — pulado. Inclua o rio na "
                   "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
             continue
-        grava(feature_do_rio(rio_id, linhas), rio_id)
+        feat = feature_do_rio(rio_id, linhas)
+        if rio_id in CORTE_NORTE:
+            feat["properties"]["cobertura"] = (
+                f"RECORTADO ao sul da latitude {CORTE_NORTE[rio_id]}: de José Boiteux (barragem Norte) até o Açu, "
+                "passando por Ibirama. As nascentes, em Itaiópolis, ficam fora para não mudar o enquadramento do Monitor."
+            )
+        grava(feat, rio_id)
     return 0
 
 

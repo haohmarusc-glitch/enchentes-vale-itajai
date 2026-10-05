@@ -135,6 +135,40 @@ class CabeceiraDoSul(unittest.TestCase):
         self.assertEqual(props["fonte"], ct.ATRIBUICAO_ASTHON)
 
 
+class TesteHercilio(unittest.TestCase):
+    """O rio de Ibirama tem dois nomes no OSM e é recortado para não mudar o enquadramento do Monitor."""
+
+    def test_os_dois_nomes_entram_e_o_oeste_nao(self):
+        elementos = [way("Rio Itajaí do Norte"), way("Rio Hercílio"), way("Rio Itajaí do Oeste"), way("Rio Itajaí-Açu")]
+        self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["hercilio"])), 2)
+
+    def test_recorte_ao_sul_parte_a_linha_que_sai_e_volta(self):
+        linha = [[-49.5, -27.0], [-49.5, -26.9], [-49.5, -26.8], [-49.5, -26.7], [-49.5, -26.86], [-49.5, -26.95]]
+        self.assertEqual(ct.recortar_ao_sul([linha], -26.84),
+                         [[[-49.5, -27.0], [-49.5, -26.9]], [[-49.5, -26.86], [-49.5, -26.95]]])
+        self.assertEqual(ct.recortar_ao_sul([[[-49.5, -26.5], [-49.5, -26.6]]], -26.84), [])
+
+    def test_o_corte_fica_na_borda_norte_do_traçado_de_hoje(self):
+        # Se o tronco mudar de extensão, o corte tem de ser revisto: o Hercílio não pode alargar o mapa.
+        acu = json.loads((ct.SAIDA / "itajai-acu.geojson").read_text(encoding="utf-8"))
+        norte_do_acu = max(p[1] for l in acu["geometry"]["coordinates"] for p in l)
+        self.assertLessEqual(ct.CORTE_NORTE["hercilio"], norte_do_acu)
+
+    def test_o_arquivo_gravado_nao_passa_do_corte_e_passa_por_ibirama(self):
+        caminho = ct.SAIDA / "hercilio.geojson"
+        if not caminho.exists():
+            self.skipTest("sem o bruto do Hercílio: rode scripts/baixar_tracado_hercilio.py --gravar")
+        g = json.loads(caminho.read_text(encoding="utf-8"))
+        pts = [p for l in g["geometry"]["coordinates"] for p in l]
+        self.assertLessEqual(max(p[1] for p in pts), ct.CORTE_NORTE["hercilio"])
+        self.assertIn("RECORTADO", g["properties"]["cobertura"])
+        self.assertEqual(g["properties"]["fonte"], ct.ATRIBUICAO)
+        import math
+        ibirama = (-49.52, -27.057)
+        k = math.cos(math.radians(27))
+        d = min(math.hypot((p[0] - ibirama[0]) * k, p[1] - ibirama[1]) * 111.32 for p in pts)
+        self.assertLess(d, 0.5, f"o traçado fica a {d:.2f} km do pino de Ibirama")
+
 
 if __name__ == "__main__":
     unittest.main()

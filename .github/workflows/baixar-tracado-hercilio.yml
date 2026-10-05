@@ -1,0 +1,50 @@
+# Baixa do OpenStreetMap o traçado do Rio Hercílio / Itajaí do Norte (o rio de Ibirama) e gera
+# data/rios/hercilio.geojson.
+#
+# POR QUE EXISTE (05/10/2026). O Overpass não responde ao ambiente das sessões de código, e o Monitor já
+# pede o arquivo `hercilio` (traçados opcionais). O runner do GitHub alcança o Overpass.
+#
+# O QUE FAZ. `baixar_tracado_hercilio.py --gravar` (pede os dois nomes do rio, confere que chega ao Açu e
+# passa pelo pino de Ibirama, e só então grava), depois `converter_tracado_rios.py` (recorta ao sul da borda
+# norte do mapa). Devolve os dois arquivos num artefato, para a sessão conferir e commitar.
+#
+# O QUE NÃO FAZ. Não empurra nada e não muda o Monitor.
+#
+# QUANDO RODA. Manualmente ou no push que altera este arquivo ou o script.
+name: Baixar traçado do Hercílio
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/baixar-tracado-hercilio.yml
+      - scripts/baixar_tracado_hercilio.py
+
+permissions:
+  contents: read
+
+jobs:
+  baixar:
+    name: Baixar o traçado do Hercílio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+      - name: Baixar e conferir
+        run: python3 scripts/baixar_tracado_hercilio.py --gravar
+      - name: Converter
+        run: python3 scripts/converter_tracado_rios.py
+      - name: Conferir o arquivo gerado
+        working-directory: scripts
+        run: python3 teste_converter_tracado_rios.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tracado-hercilio
+          path: |
+            data/brutos/tracado-hercilio-osm.json
+            data/rios/hercilio.geojson
+          retention-days: 30
