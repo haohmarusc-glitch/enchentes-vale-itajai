@@ -80,6 +80,10 @@ Valor fora da lista vira "não sei", nunca conserto:
 **Confiança mínima:** 0,7. É provisória: a confiança é a IA avaliando a si mesma e costuma vir otimista. A prova
 é que calibra o número.
 
+Quando falta parâmetro obrigatório, o limite é **0,5**. Nesse caso a tela só pede o que faltou, sem dar número.
+Na prova da `c2`, o modelo acertava a intenção mas dava 0,6 sempre que faltava a cidade, mesmo instruído a não
+baixar a confiança por isso.
+
 ## Na tela
 
 - **"Entendi: a maior cheia de Blumenau. (interpretação automática, piloto)"**, e logo abaixo a resposta do motor.
@@ -228,8 +232,24 @@ ano em dois dígitos. Os outros 4 casos fora dos 89% foram "não consegui interp
 | "quanto tempo a água leva pra chegar em blumenau?" | Acertou tudo (trânsito, falta a origem), mas deu confiança 0,6 porque faltava a cidade. | Parâmetro que a pergunta não diz fica vazio e não baixa a confiança; a tela pede a cidade. |
 | "teve enchente em 2023?" | Leu como "cheias de uma cidade", sem cidade, com confiança 0,6. Caiu no "não consegui interpretar", a falha segura. | Instruções: "houve enchente num ano, sem cidade" é pergunta para o Atlas. |
 
-**Falta rodar a prova com a versão `c2`**, com uma chave nova (~US$ 0,37), e ligar o piloto para os e-mails
-escolhidos.
+**Prova da `c2`** (05/10/2026, 2 rodadas): de novo passou nos quatro critérios.
+- 34/34 nas antigas e 89% nas desconhecidas.
+- Nenhuma pergunta do presente foi liberada e nenhuma fora do tema foi adivinhada.
+- US$ 0,0034 por chamada; média de 2,4 s, p95 de 3,2 s e uma chamada de 8,3 s.
+
+O erro da "enchente de 84" sumiu, mas a dica do Atlas puxou "ilhota encheu em 2O11?" para o Atlas. A resposta não
+seria errada (os danos em Ilhota em 2011), mas o certo é o pico do rio.
+
+As duas perguntas com cidade faltando seguiram com confiança 0,6.
+
+**Versão `c3`:**
+- Com cidade e sem falar de danos, "X encheu em ANO?" é cheias do período.
+- Limite de 0,5 quando falta parâmetro.
+
+**Tempo:** em três rodadas houve uma chamada de 9 s e uma de 8,3 s. No site, sem nova tentativa, isso vira "não
+consegui interpretar" depois de 6 s. É raro e seguro; o registro do piloto mostra com que frequência acontece.
+
+**Falta rodar a prova com a `c3`** (~US$ 0,38) e ligar o piloto para os e-mails escolhidos.
 
 ## Custo (estimativa; o real sai no registro e na prova)
 
