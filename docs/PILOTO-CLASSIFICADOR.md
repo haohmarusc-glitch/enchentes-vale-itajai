@@ -90,6 +90,8 @@ Valor fora da lista vira "não sei", nunca conserto:
   - o servidor desiste da IA em **6 s**, sem nova tentativa;
   - o aparelho desiste em **8 s**;
   - nos dois casos, "Não consegui interpretar a pergunta".
+  - Cuidado: a API compila o esquema na primeira chamada e o guarda por 24 h. Essa primeira chamada pode passar
+    dos 6 s e cair no "não consegui interpretar" uma vez. O executor da prova faz essa chamada antes, com folga.
 - **Aviso fixo abaixo da caixa:** a pergunta vai à Anthropic só para ser classificada, e o site guarda o texto
   mascarado por 90 dias, sem o e-mail. Também pede para não escrever nome, endereço ou telefone.
 
@@ -177,6 +179,10 @@ web\node_modules\.bin\tsx web\ferramentas\prova-classificador.ts --modo falha
 $env:ANTHROPIC_API_KEY="sk-ant-..."
 web\node_modules\.bin\tsx web\ferramentas\prova-classificador.ts --modo api --reps 2
 ```
+
+Antes da prova, o executor faz uma chamada de teste. Se a chave for recusada, ele para e mostra o motivo
+(401: chave errada ou incompleta; 403: sem permissão; 429: limite de gasto). Durante a prova, mostra quantas
+chamadas já fez.
 
 Opções: `--modelo claude-sonnet-5-5` para comparar; `--confianca 0.8` para testar outro limite. O detalhe de
 cada chamada fica em `.claude/hillclimb/classificador/api-<modelo>/results.jsonl`.
