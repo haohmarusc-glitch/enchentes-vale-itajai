@@ -62,7 +62,7 @@ const cliente = MODO === 'api' ? new Anthropic({ maxRetries: 2, timeout: TEMPO_L
 /** Erros da API por tipo ("401 authentication_error", "tempo"…), para o relatório. */
 const erros = new Map<string, number>()
 const tipoDoErro = (e: unknown) =>
-  e instanceof Anthropic.APIError ? `${e.status ?? '?'} ${e.name}: ${String(e.message).slice(0, 160)}` : e instanceof Error ? e.message.slice(0, 160) : String(e)
+  e instanceof Anthropic.APIError ? `${e.status ?? '?'} ${e.name}: ${String(e.message).slice(0, 600)}` : e instanceof Error ? e.message.slice(0, 600) : String(e)
 let feitas = 0
 
 // Primeira chamada, com folga de tempo: confere a chave e o modelo antes de gastar a prova
@@ -81,6 +81,8 @@ if (cliente) {
       console.error('Chave recusada. Confira se é uma chave de API criada em Console → API Keys (costuma começar com "sk-ant-api03-") e se foi colada inteira.')
     else if (e instanceof Anthropic.PermissionDeniedError) console.error('A chave não tem permissão para este modelo ou workspace.')
     else if (e instanceof Anthropic.NotFoundError) console.error(`Modelo não encontrado: ${MODELO}.`)
+    else if (e instanceof Anthropic.BadRequestError && /workspace/i.test(String(e.message)))
+      console.error('Chave sem workspace. Crie outra em Console → Settings → API Keys escolhendo um workspace (ex.: Default); a chave do site precisa ser dessa mesma forma.')
     else if (e instanceof Anthropic.RateLimitError) console.error('Limite de uso ou de gasto atingido: veja Settings → Limits no Console.')
     process.exit(1)
   }

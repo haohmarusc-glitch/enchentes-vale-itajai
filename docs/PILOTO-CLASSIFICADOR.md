@@ -181,7 +181,7 @@ web\node_modules\.bin\tsx web\ferramentas\prova-classificador.ts --modo api --re
 ```
 
 Antes da prova, o executor faz uma chamada de teste. Se a chave for recusada, ele para e mostra o motivo
-(401: chave errada ou incompleta; 403: sem permissão; 429: limite de gasto). Durante a prova, mostra quantas
+(401: chave errada ou incompleta; 400 "not scoped to a workspace": chave sem workspace — criar outra em *Settings → API Keys* escolhendo um workspace; 403: sem permissão; 429: limite de gasto). Durante a prova, mostra quantas
 chamadas já fez.
 
 Opções: `--modelo claude-sonnet-5-5` para comparar; `--confianca 0.8` para testar outro limite. O detalhe de
