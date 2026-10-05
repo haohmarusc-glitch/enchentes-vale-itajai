@@ -508,7 +508,14 @@ o projeto.
     - Em Blumenau, `--rua` dá a hora em que a régua passou da cota oficial da rua.
   - `scripts/copiar_series.sh` copia toda semana a série da VPS e o registro de eventos para o branch
     `arquivo-series`, acumulando, sem `--force`.
-  - [ ] **Ligar a cópia no cron da VPS** (comandos no doc). Até lá a série de 2026 só existe no disco da VPS.
+  - [x] **Cópia ligada no cron da VPS em 05/10/2026** (domingo, 04:17 UTC).
+    - A primeira cópia é o commit `54cf3b1` do `arquivo-series`: 9.124 arquivos, de 30/08 a 05/10/2026.
+  - [x] **Relatório com a série completa da VPS:** `docs/NIVEL-ANTES-VPS.md`, com Brusque, Botuverá, Vidal Ramos,
+    Gaspar e Taió nas quatro cheias de set–out/2026.
+    - "Brusque" e "Rio do Sul MKS", da página antiga de Itajaí, foram conferidas contra outra fonte da mesma
+      régua: sem atraso.
+    - No caminho, foi corrigido um defeito: régua de afluente lateral (Ibirama, Timbó, Rio dos Cedros) listava o
+      tronco inteiro como "a montante". Há teste que trava a correção.
   - [x] Hora observada de rua alagada: **registro na mão** (decisão do Jefferson, 05/10/2026).
     - Planilha `docs/modelos/ruas-alagadas.csv`, importada por `scripts/ruas_alagadas.py` para `data/ruas-alagadas.json`.
     - Regras: hora de Brasília; hora do fato × hora da publicação; fonte em toda linha; teto de confiança pelo tipo

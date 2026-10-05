@@ -4,7 +4,8 @@ Gerado por `scripts/nivel_antes.py --relatorio` (somente leitura). **Descritivo,
 calibração.** Cada régua tem o seu zero: os números estão lado a lado, cada um na sua régua, e não se
 comparam entre si. Só aparecem as réguas **a montante** no mesmo rio. Séries da ANA (2020–2023) só se
 cruzam com séries da ANA, porque o fuso delas não foi conferido. Crista de réguas de Itajaí que sentem a
-maré: máximo da média de 12,42 h (um ciclo de maré); a leitura mostrada é a do instante.
+maré: máximo da média de 12,42 h (um ciclo de maré); a leitura mostrada é a do instante. Só entram como
+alvo as réguas de cidades cadastradas em `data/estacoes.json`.
 
 ## Ruas alagadas registradas à mão
 
@@ -33,15 +34,6 @@ Referência: **05/mai/2022 02:15**, leitura 9,40 m na régua desta estação
 (telemetria da ANA: fuso não conferido; as horas só se comparam entre séries da ANA)
 
 - **ANA 83050000 Taió** (a montante): 3 h antes: 9,40 m · 6 h antes: 9,26 m · 12 h antes: 8,74 m; crista própria 9,48 m às 05/mai 04:15 (2,0 h depois)
-
-### ANA 83360000 José Boiteux (Hercílio) — crista de 4,93 m
-
-Referência: **16/nov/2023 17:00**, leitura 4,93 m na régua desta estação
-(telemetria da ANA: fuso não conferido; as horas só se comparam entre séries da ANA)
-
-- **ANA 83029900 Barragem Taió Montante** (a montante): 3 h antes: 2,30 m · 6 h antes: 2,21 m · 12 h antes: 1,85 m; crista própria 2,92 m às 16/nov 22:45 (5,8 h depois) — na borda dos dados
-- **ANA 83050000 Taió** (a montante): 3 h antes: 7,22 m · 6 h antes: 6,74 m · 12 h antes: 6,30 m
-- **ANA 83300200 Rio do Sul** (a montante): 3 h antes: 8,53 m · 6 h antes: 7,32 m · 12 h antes: 5,68 m
 
 ### ANA 83300200 Rio do Sul — crista de 13,14 m
 
@@ -92,20 +84,6 @@ Referência: **06/set/2026 19:00**, leitura 1,38 m na régua desta estação
 
 - **Asthon Vidal Ramos** (a montante): 3 h antes: 2,45 m · 6 h antes: 2,45 m · 12 h antes: 2,47 m
 
-### DCSC-00011 SDC-SC Rio dos Cedros 1 — crista de 3,06 m
-
-Referência: **11/set/2026 22:20**, leitura 3,06 m na régua desta estação
-
-- **DCSC-00013 SDC-SC Rio do Sul** (a montante): 3 h antes: 5,75 m · 6 h antes: 5,14 m · 12 h antes: 4,04 m; crista própria 6,05 m às 11/set 23:40 (1,3 h depois)
-- **DCSC-00032 SDC-SC Lontras** (a montante): 3 h antes: 5,03 m · 6 h antes: 4,54 m · 12 h antes: 3,68 m; crista própria 5,22 m às 11/set 23:00 (0,7 h depois)
-- **DCSC-00003 SDC-SC Ascurra** (a montante): 3 h antes: 9,99 m · 6 h antes: 9,38 m · 12 h antes: 7,47 m; crista própria 10,45 m às 11/set 23:50 (1,5 h depois)
-- **DCSC-00006 SDC-SC Indaial** (a montante): 3 h antes: 7,27 m · 6 h antes: 6,63 m · 12 h antes: 5,96 m; crista própria 7,61 m às 12/set 00:50 (2,5 h depois)
-- **Blumenau (AlertaBlu)** (a montante): 3 h antes: 5,39 m · 6 h antes: sem leitura · 12 h antes: 3,31 m; crista própria 7,86 m às 12/set 05:00 (6,7 h depois)
-- **DCSC-00030 SDC-SC Ilhota** (a montante): 3 h antes: 9,99 m · 6 h antes: 10,20 m · 12 h antes: 9,28 m; crista própria 11,64 m às 12/set 07:46 (9,4 h depois)
-- **DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL** (a montante): 3 h antes: 0,63 m · 6 h antes: 1,28 m · 12 h antes: 0,66 m
-- **DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva** (a montante): 3 h antes: 1,57 m · 6 h antes: 1,57 m · 12 h antes: 0,70 m; crista própria 1,84 m às 12/set 03:01 (4,7 h depois)
-- **DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)** (a montante): 3 h antes: 2,93 m · 6 h antes: 3,23 m · 12 h antes: 2,32 m; crista própria 4,17 m às 12/set 08:20 (10,0 h depois)
-
 ### DCSC-00032 SDC-SC Lontras — crista de 5,22 m
 
 Referência: **11/set/2026 23:00**, leitura 5,22 m na régua desta estação
@@ -126,20 +104,6 @@ Referência: **12/set/2026 00:50**, leitura 7,61 m na régua desta estação
 - **DCSC-00013 SDC-SC Rio do Sul** (a montante): 3 h antes: 6,01 m · 6 h antes: 5,67 m · 12 h antes: 4,27 m; crista própria 6,05 m às 11/set 23:40 (1,2 h antes)
 - **DCSC-00032 SDC-SC Lontras** (a montante): 3 h antes: 5,20 m · 6 h antes: 4,96 m · 12 h antes: 3,86 m; crista própria 5,22 m às 11/set 23:00 (1,8 h antes)
 - **DCSC-00003 SDC-SC Ascurra** (a montante): 3 h antes: 10,34 m · 6 h antes: 9,93 m · 12 h antes: 7,56 m; crista própria 10,45 m às 11/set 23:50 (1,0 h antes)
-
-### DCSC-00023 SDC-SC Timbó 1 — crista de 5,52 m
-
-Referência: **12/set/2026 02:40**, leitura 5,52 m na régua desta estação
-
-- **DCSC-00013 SDC-SC Rio do Sul** (a montante): 3 h antes: 6,05 m · 6 h antes: 5,91 m · 12 h antes: 4,68 m; crista própria 6,05 m às 11/set 23:40 (3,0 h antes)
-- **DCSC-00032 SDC-SC Lontras** (a montante): 3 h antes: 5,22 m · 6 h antes: 5,15 m · 12 h antes: 4,21 m; crista própria 5,22 m às 11/set 23:00 (3,7 h antes)
-- **DCSC-00003 SDC-SC Ascurra** (a montante): 3 h antes: 10,45 m · 6 h antes: 10,16 m · 12 h antes: 8,52 m; crista própria 10,45 m às 11/set 23:50 (2,8 h antes)
-- **DCSC-00006 SDC-SC Indaial** (a montante): 3 h antes: 7,60 m · 6 h antes: 7,41 m · 12 h antes: 6,11 m; crista própria 7,61 m às 12/set 00:50 (1,8 h antes)
-- **Blumenau (AlertaBlu)** (a montante): 3 h antes: 7,22 m · 6 h antes: 6,14 m · 12 h antes: sem leitura; crista própria 7,86 m às 12/set 05:00 (2,3 h depois)
-- **DCSC-00030 SDC-SC Ilhota** (a montante): 3 h antes: 10,87 m · 6 h antes: 10,16 m · 12 h antes: 9,84 m; crista própria 11,64 m às 12/set 07:46 (5,1 h depois)
-- **DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL** (a montante): 3 h antes: 1,42 m · 6 h antes: 0,73 m · 12 h antes: 1,79 m
-- **DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva** (a montante): 3 h antes: 1,54 m · 6 h antes: 1,57 m · 12 h antes: 0,95 m; crista própria 1,84 m às 12/set 03:01 (0,3 h depois)
-- **DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)** (a montante): 3 h antes: 3,70 m · 6 h antes: 2,97 m · 12 h antes: 3,15 m; crista própria 4,17 m às 12/set 08:20 (5,7 h depois)
 
 ### DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva — crista de 1,84 m
 
@@ -258,11 +222,11 @@ pode cobrir algumas, como Brusque para as réguas do Itajaí-Mirim em Itajaí).
 - Asthon Vidal Ramos: crista de 3,00 m (na borda dos dados: piso), 10/set/2026 05:20
 - DC-07 Ribeirão da Murta - Portal: crista de 1,08 m, 10/set/2026 05:40
 - Defesa Civil de Taió: crista de 5,46 m, 10/set/2026 13:00
-- DCSC-00007 SDC-SC Pomerode: crista de 3,80 m, 11/set/2026 18:20
+- DCSC-00011 SDC-SC Rio dos Cedros 1: crista de 3,06 m, 11/set/2026 22:20
 - DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni: crista de 2,41 m, 11/set/2026 23:20
 - DCSC-00013 SDC-SC Rio do Sul: crista de 6,05 m, 11/set/2026 23:40
+- DCSC-00023 SDC-SC Timbó 1: crista de 5,52 m, 12/set/2026 02:40
 - DC-10 Rio Itajaí-Mirim – Bairro Limoeiro: crista de 8,04 m, 12/set/2026 03:10
-- DCSC-00163 SDC-SC Ilhota - Arraial dos Cunhas: crista de 4,07 m, 12/set/2026 04:30
 - DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada: crista de 2,42 m, 12/set/2026 05:01
 - DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados: crista de 1,54 m, 12/set/2026 06:31
 - DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo: crista de 1,10 m, 12/set/2026 08:10

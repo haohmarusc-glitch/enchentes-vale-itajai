@@ -104,12 +104,38 @@ python3 scripts/nivel_antes.py --series /caminho/tempo-real --listar     # com a
 - **Itajaí:** sai junto a preamar ou baixa-mar mais próxima da tábua da Marinha. A altura da maré é sobre o
   zero da carta náutica e nunca é régua.
 
-**O que dá hoje** (o relatório completo está em `docs/NIVEL-ANTES.md`):
+**O que dá com as séries do repositório** (`docs/NIVEL-ANTES.md`, testado contra o recalculado):
 - **Cheia de 11–12/09/2026 no Açu:** Rio do Sul, Lontras, Ascurra e Indaial (Defesa Civil de SC, 10 min),
   Blumenau (AlertaBlu), Ilhota e as réguas de Itajaí.
-- **Itajaí-Mirim em 2026:** só a Asthon de Vidal Ramos até 10/09. Brusque **não tem série com hora no
-  repositório**. Com a série inteira da VPS (`--series`), as cristas do Mirim em Itajaí ganham Brusque.
+- **Itajaí-Mirim em 2026:** só a Asthon de Vidal Ramos até 10/09.
 - **ANA 2021–2023:** pares Taió → Blumenau e Taió → Rio do Sul.
+
+**O que dá com a série completa da VPS** (`docs/NIVEL-ANTES-VPS.md`, refeito em 05/10/2026):
+- **Fonte:** branch `arquivo-series`, commit `54cf3b1`, de 30/08 a 05/10/2026, com quatro cheias:
+  01/09, 11–12/09, 22/09 e 01/10.
+- **Réguas que entram:** Brusque, Botuverá, Vidal Ramos, Gaspar, Taió e as estaduais.
+- **Não é testado na CI:** a série não está no `main`. O topo do relatório diz o commit e o comando para
+  refazê-lo.
+- **Horário das publicações da página antiga de Itajaí:** "Brusque" e "Rio do Sul Estação MKS" vinham de lá.
+  Foram conferidas contra outra fonte da mesma régua e não têm o atraso de 3 h da publicação "Blumenau":
+  - Brusque × DCSC-00019, crista de 12/09: 01:55 × 02:01, 4,62 m nas duas;
+  - Rio do Sul MKS × Asthon, crista de 01/09: 05:45 × 05:21.
+
+**Exemplo: Brusque e o Bairro Limoeiro (DC-10, Itajaí).** É a pergunta de partida, com a régua de Itajaí mais
+perto de Brusque:
+
+| Cheia | Crista em Brusque | Crista na DC-10 | Brusque 3 h antes da DC-10 | Brusque 6 h antes |
+|---|---|---|---|---|
+| 01/09/2026 | 4,87 m às 09:45 | 8,32 m às 11:10 | 4,76 m | 4,38 m |
+| 12/09/2026 | 4,62 m às 02:01 | 8,04 m às 03:10 | 4,51 m | 4,29 m |
+| 22/09/2026 | 4,09 m às 10:30 | 7,28 m às 12:40 | 4,08 m | 3,58 m |
+| 01/10/2026 | 3,75 m às 12:01 | 6,64 m às 13:50 | 3,63 m | 2,54 m |
+
+- Em 01/09, Brusque vem da publicação "Brusque", a mesma régua da DCSC-00019. Nas outras, da DCSC-00019.
+- Cada número está na sua régua: os metros de Brusque não se comparam com os da DC-10.
+- Nas quatro, a crista da DC-10 veio entre 1,1 e 2,2 h depois da de Brusque.
+- **São quatro cheias moderadas: é descrição, não previsão.** A regra do projeto pede pelo menos 5 eventos para
+  estimar, e nenhuma chegou à cota de inundação de Itajaí.
 
 **Testes.** `scripts/teste_nivel_antes.py` trava:
 - a leitura (perto, interpolada, vão);
