@@ -74,6 +74,17 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Migram para `enchentes.json` só quando a fonte identificar a régua ou permitir reconciliar os zeros, por decisão do Jefferson;
   migrar é **mover** (o validador acusa o mesmo evento nos dois arquivos).
 
+### Ruas alagadas registradas à mão — REGRA (decisão de 05/10/2026)
+- `data/ruas-alagadas.json` guarda a hora em que cada rua alagou, anotada durante a cheia (planilha
+  `docs/modelos/ruas-alagadas.csv` → `scripts/ruas_alagadas.py`). Passo a passo: `docs/REGISTRO-RUAS-ALAGADAS.md`.
+- `quando` é hora de Brasília sem fuso. `quando_e` separa `hora_do_fato` de `hora_da_publicacao`; esta última é
+  limite (a água chegou antes), nunca o momento.
+- Confiança com teto pelo tipo de fonte: relato é sempre `baixa`, e foto/vídeo no máximo `media`.
+- Sem nome, telefone ou e-mail de morador.
+- A importação só acrescenta.
+- Não é alerta e não vai para a tela. Usa-se só na conta `nivel_antes.py --registradas`.
+- As regras moram em `ruas_alagadas.validar`, que o `validar_dados.py` também chama.
+
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
   Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`

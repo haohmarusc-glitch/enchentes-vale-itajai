@@ -1253,6 +1253,21 @@ def valida_eventos_pendentes(conhecidas: set[tuple[str, str]]) -> None:
                      f"{s.get('pico_m')} m). Migrar é mover: apague daqui no mesmo commit.")
 
 
+def valida_ruas_alagadas() -> None:
+    """`ruas-alagadas.json`: o registro na mão das ruas alagadas (decisão do Jefferson, 05/10/2026).
+
+    As regras moram em `ruas_alagadas.validar`, a mesma função que a importação da planilha usa: hora de
+    Brasília sem fuso, hora do fato × hora da publicação, fonte em toda linha, teto de confiança pelo tipo
+    de fonte, nada de telefone ou e-mail e nenhuma linha repetida.
+    """
+    from ruas_alagadas import ARQUIVO, cidades, validar
+
+    if not ARQUIVO.exists():
+        return
+    for e in validar(le_json(ARQUIVO.name).get("registros", []), set(cidades().values())):
+        erro(e)
+
+
 def valida_regua_das_cotas() -> None:
     """
     Cidade que PINTA cor no mapa declara de qual régua são as cotas?
@@ -2134,6 +2149,7 @@ def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
     valida_eventos_pendentes(conhecidas)
+    valida_ruas_alagadas()
     valida_transito(conhecidas)
     valida_trechos_experimentais(conhecidas)
     valida_monotonia_transito()

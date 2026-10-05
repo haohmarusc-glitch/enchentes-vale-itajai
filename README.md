@@ -509,7 +509,13 @@ o projeto.
   - `scripts/copiar_series.sh` copia toda semana a série da VPS e o registro de eventos para o branch
     `arquivo-series`, acumulando, sem `--force`.
   - [ ] **Ligar a cópia no cron da VPS** (comandos no doc). Até lá a série de 2026 só existe no disco da VPS.
-  - [ ] Hora observada de rua alagada em Itajaí: registro na mão durante a cheia ou botão no site — **decisão do Jefferson**.
+  - [x] Hora observada de rua alagada: **registro na mão** (decisão do Jefferson, 05/10/2026).
+    - Planilha `docs/modelos/ruas-alagadas.csv`, importada por `scripts/ruas_alagadas.py` para `data/ruas-alagadas.json`.
+    - Regras: hora de Brasília; hora do fato × hora da publicação; fonte em toda linha; teto de confiança pelo tipo
+      de fonte; sem telefone nem e-mail; só acrescenta.
+    - `validar_dados.py` aplica as mesmas regras, e `nivel_antes.py --registradas` faz a conta.
+    - Passo a passo em `docs/REGISTRO-RUAS-ALAGADAS.md`.
+    - [ ] **Usar na próxima cheia.** O arquivo começa vazio: nenhuma rua foi registrada ainda.
   - [ ] Ligar Gaspar, Brusque e Rio do Sul em `REGUA_DAS_COTAS`, depois de conferir qual estação do coletor é a
     régua das cotas de rua.
 - [x] **Chat responde se uma rua de Itajaí ficou nas manchas das cheias (05/10/2026, pedido do Jefferson).** Itajaí não tem cota de rua; agora o chat cruza a base de vias da Prefeitura (GeoItajaí) com as manchas das nove cheias (1983–2015). Ele diz que % do traçado da rua ficou dentro da mancha de cada cheia e, onde há mapa de lâmina, quantos metros em cada faixa de água. A resposta traz os cuidados (mapa da área atingida, não medição por casa) e o atalho para o mapa das manchas. Exemplo: a R. José Domingos Machado ficou inteira dentro das manchas de 1983, 1984, 2008 e set/2011 (2011: ~760 m com 0,51–1 m de água). Tabela derivada `data/manchas/itajai/ruas-por-mancha.json`, feita por `scripts/ruas_por_mancha_itajai.py`, com teste. Detalhes em `docs/CHAT-LOCAL.md`.

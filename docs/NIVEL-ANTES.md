@@ -1,10 +1,17 @@
-# Nível das outras réguas N horas antes de cada crista
+# Nível das réguas N horas antes de cada crista e de cada rua alagada registrada
 
 Gerado por `scripts/nivel_antes.py --relatorio` (somente leitura). **Descritivo, não previsão nem
 calibração.** Cada régua tem o seu zero: os números estão lado a lado, cada um na sua régua, e não se
 comparam entre si. Só aparecem as réguas **a montante** no mesmo rio. Séries da ANA (2020–2023) só se
 cruzam com séries da ANA, porque o fuso delas não foi conferido. Crista de réguas de Itajaí que sentem a
 maré: máximo da média de 12,42 h (um ciclo de maré); a leitura mostrada é a do instante.
+
+## Ruas alagadas registradas à mão
+
+Nenhum registro ainda em `data/ruas-alagadas.json`. Como registrar durante a cheia:
+`docs/REGISTRO-RUAS-ALAGADAS.md`.
+
+## Cristas das réguas
 
 ### ANA 83800002 Blumenau — crista de 6,82 m
 
