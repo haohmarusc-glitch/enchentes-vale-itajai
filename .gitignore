@@ -67,3 +67,6 @@ data/brutos/BD_Atlas_*_Consolidado.csv
 .claude/hillclimb/**/progress.txt
 .claude/hillclimb/**/ref/
 .claude/hillclimb/chat-ia-simulado/
+
+# Saída da prova do classificador nos modos simulados (sem API): reproduzível, não versionar.
+.claude/hillclimb/classificador/*-sim/

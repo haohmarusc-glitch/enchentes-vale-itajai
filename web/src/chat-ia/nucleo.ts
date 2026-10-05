@@ -90,7 +90,8 @@ const PRECOS: Record<string, { entrada: number; saida: number; cache_lido: numbe
 
 /** Custo estimado em US$ (6 casas), ou null para modelo sem preço na tabela. */
 export function custoEstimado(u: UsoIA): number | null {
-  const p = PRECOS[u.modelo]
+  // A API devolve o nome com data ("claude-haiku-4-5-20251001"); a tabela usa o apelido.
+  const p = PRECOS[u.modelo] ?? PRECOS[u.modelo.replace(/-\d{8}$/, '')]
   if (!p) return null
   const usd = (u.entrada * p.entrada + u.cache_criado * p.entrada * 1.25 + u.cache_lido * p.cache_lido + u.saida * p.saida) / 1_000_000
   return Math.round(usd * 1e6) / 1e6

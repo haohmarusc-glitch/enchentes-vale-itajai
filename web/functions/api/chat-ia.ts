@@ -7,8 +7,11 @@
  *  - POST → `{"pergunta": "...", "anteriores": [{pergunta, resposta}]}` (esquema
  *           fechado, `validarPedido`) → `{"tipo", "texto"}`.
  *
- * INTERRUPTOR: o segredo `ANTHROPIC_API_KEY`. Sem ele (o estado de hoje), o GET
- * diz `ligado: false` e o POST responde 503 sem ler o corpo.
+ * INTERRUPTOR: o segredo `ANTHROPIC_API_KEY` E a variável `CHAT_IA_REDATOR=ligado`.
+ * Faltando qualquer um (o estado de hoje), o GET diz `ligado: false` e o POST responde
+ * 503 sem ler o corpo. A chave sozinha NÃO liga este chat (05/10/2026): ela também serve
+ * ao piloto do classificador (`chat-classificar.ts`), e a IA que redige continua fora do
+ * site (docs/RESULTADO-PROVA-OLLAMA.md, docs/PILOTO-CLASSIFICADOR.md).
  *
  * LIMITE DO DIA (opcional): com o KV `CHAT_IA` ligado, no máximo
  * `CHAT_IA_LIMITE_DIA` perguntas por dia (padrão 50) no site todo. O teto de
@@ -45,6 +48,8 @@ export interface ArmazemKV {
 
 export interface Ambiente {
   ANTHROPIC_API_KEY?: string
+  /** "ligado" liga este chat (com a chave). Qualquer outro valor, ou nada: desligado. */
+  CHAT_IA_REDATOR?: string
   /** Troca o modelo sem mexer no código (ex.: "claude-sonnet-5-5"). */
   CHAT_IA_MODELO?: string
   CHAT_IA?: ArmazemKV
@@ -170,7 +175,7 @@ async function registrarUso(r: RespostaIA, email: string | null, amb: Ambiente, 
 }
 
 export async function tratar(pedido: Request, amb: Ambiente, criar?: Criar, agora: Date = new Date()): Promise<Response> {
-  const chave = amb.ANTHROPIC_API_KEY?.trim()
+  const chave = amb.ANTHROPIC_API_KEY?.trim() && amb.CHAT_IA_REDATOR?.trim().toLowerCase() === 'ligado' ? amb.ANTHROPIC_API_KEY.trim() : ''
 
   if (pedido.method === 'GET') return resposta(200, { ligado: Boolean(chave) })
   if (pedido.method !== 'POST') return new Response(null, { status: 405, headers: { ...SEM_CACHE, allow: 'GET, POST' } })

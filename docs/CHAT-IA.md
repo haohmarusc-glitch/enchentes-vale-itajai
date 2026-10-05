@@ -5,8 +5,12 @@ Pedido do Jefferson (04/10/2026): *"Pode criar api para o chat responder muitas 
 O chat local (`docs/CHAT-LOCAL.md`) só entende perguntas em alguns formatos. A API deixa uma IA
 (Claude, da Anthropic) responder perguntas livres, **usando os mesmos dados do site** e as mesmas regras.
 
-**Estado: o código está pronto e DESLIGADO.** A IA só liga quando o Jefferson põe a chave da Anthropic
-no Cloudflare (passo a passo em `docs/PUBLICACAO-E-ACESSO.md`, "Chat com IA").
+**Estado: o código está pronto e DESLIGADO.** Ele só liga com a chave da Anthropic **e** a variável
+`CHAT_IA_REDATOR=ligado` no Cloudflare (passo a passo em `docs/PUBLICACAO-E-ACESSO.md`, "Chat com IA").
+
+**Decisão de 05/10/2026: a IA não redige respostas no site.** O modelo local errou inventando com certeza
+(`docs/RESULTADO-PROVA-OLLAMA.md`). O caminho escolhido é o **piloto do classificador**
+(`docs/PILOTO-CLASSIFICADOR.md`): a IA só diz qual é a pergunta, e o motor do chat sem IA responde.
 
 ## Como funciona na tela
 

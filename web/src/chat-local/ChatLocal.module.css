@@ -159,3 +159,42 @@
   color: var(--tinta-fraca);
   margin: 0.5rem 0 0;
 }
+
+/* Piloto do classificador (docs/PILOTO-CLASSIFICADOR.md): o que foi entendido e os botões. */
+.chat-entendido {
+  font-size: 0.88rem;
+  color: var(--tinta);
+  margin-bottom: 0.35rem;
+}
+
+.chat-entendido span {
+  color: var(--tinta-fraca);
+}
+
+.chat-correcao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chat-correcao button {
+  min-height: 2.75rem; /* alvo de toque */
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--agua-clara);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--agua);
+  cursor: pointer;
+}
+
+.chat-corrigido {
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+  margin-top: 0.4rem;
+}
+
+/* Resposta que a pessoa marcou como "não era isso": fica, mas apagada. */
+.chat-descartada {
+  opacity: 0.55;
+}
