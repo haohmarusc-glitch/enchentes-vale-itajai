@@ -47,6 +47,32 @@ qualquer traçado que existisse.
 - **A cor:** cinza, porque Ibirama não tem tabela de faixas vigente. A régua está confirmada, mas a tabela
   espera o PLAMCON 2026.
 
+## Os outros rios que passam por Ibirama (05/10/2026)
+
+Pedido do Jefferson: todos os rios que passam por Ibirama na tela.
+- `scripts/baixar_rios_municipio.py --municipio Ibirama` pede ao OSM todo curso com nome (rio, ribeirão, canal)
+  dentro do limite do município. Rodou no Actions (`baixar-rios-municipio.yml`), que publica no branch
+  `rios-municipio`. O bruto está em `data/brutos/rios-ibirama-osm.json`.
+- O OSM tem **cinco** cursos com nome em Ibirama:
+
+  | curso | km | no Monitor |
+  |---|---|---|
+  | Rio Hercílio | 22,2 | já estava (`hercilio`) |
+  | Rio Rafael Braço Grande | 11,8 | `rio-rafael-braco-grande`, chega ao Rio Rafael |
+  | Rio Rafael | 8,7 | `rio-rafael`, chega ao Hercílio |
+  | Rio Rafael Braço Pequeno | 3,3 | `rio-rafael-braco-pequeno`, chega ao Rio Rafael |
+  | Ribeirão Taquaras | 0,7 | `ribeirao-taquaras`, chega ao Hercílio |
+
+- O conversor gera um arquivo por nome, como o Rio Conceição; nenhum se funde a outro. Os rios do município
+  também são recortados na borda norte do Açu.
+- **Monitor:** o `MonitorBacia.tsx` passou a desenhar todo traçado de `data/rios/`, não só uma lista fixa. A
+  mudança foi autorizada pelo Jefferson com o rótulo `monitor-autorizado`. Assim, um rio que ganhe traçado
+  depois aparece sem mexer de novo no Monitor.
+- **Cor:** os rios novos ficam cinza, sem cidade no cadastro. Eles mostram por onde a água corre, não pintam
+  faixa.
+- **Outro município:** rodar o workflow com o nome dele e depois o conversor.
+- Um curso sem nome no OSM não entra. Melhorar o mapa ali é contribuir com o OpenStreetMap.
+
 ## Refazer
 
 Rodar o workflow "Baixar traçado do Hercílio" (Actions → Run workflow). Ele republica o branch

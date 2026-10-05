@@ -169,6 +169,38 @@ class TesteHercilio(unittest.TestCase):
         d = min(math.hypot((p[0] - ibirama[0]) * k, p[1] - ibirama[1]) * 111.32 for p in pts)
         self.assertLess(d, 0.5, f"o traçado fica a {d:.2f} km do pino de Ibirama")
 
+class TesteRiosDeMunicipio(unittest.TestCase):
+    """Os cursos com nome que passam por um município (Ibirama, 05/10/2026): um arquivo por nome."""
+
+    def test_slug_e_nomes_ja_desenhados(self):
+        self.assertEqual(ct.slug("Rio Rafael Braço Grande"), "rio-rafael-braco-grande")
+        self.assertEqual(ct.slug("Ribeirão Taquaras"), "ribeirao-taquaras")
+        self.assertTrue(ct.ja_desenhado("Rio Hercílio"))      # afluente
+        self.assertTrue(ct.ja_desenhado("Rio Itajaí-Açu"))    # tronco
+        self.assertFalse(ct.ja_desenhado("Rio Rafael"))
+
+    def test_os_rios_de_ibirama_chegam_ao_hercilio(self):
+        bruto = ct.RAIZ / "data/brutos/rios-ibirama-osm.json"
+        if not bruto.exists():
+            self.skipTest("sem o bruto de Ibirama: workflow baixar-rios-municipio.yml")
+        import math
+        k = math.cos(math.radians(27))
+
+        def pts(rio):
+            g = json.loads((ct.SAIDA / f"{rio}.geojson").read_text(encoding="utf-8"))
+            self.assertEqual(g["properties"]["municipio"], "ibirama")
+            return [p for l in g["geometry"]["coordinates"] for p in l]
+
+        def perto(a, b):
+            return min(math.hypot((p[0] - q[0]) * k, p[1] - q[1]) * 111.32 for p in a for q in b[::2]) < 0.1
+
+        hercilio = [p for l in json.loads((ct.SAIDA / "hercilio.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"] for p in l]
+        rafael = pts("rio-rafael")
+        self.assertTrue(perto(rafael, hercilio))
+        self.assertTrue(perto(pts("ribeirao-taquaras"), hercilio))
+        for braco in ("rio-rafael-braco-grande", "rio-rafael-braco-pequeno"):
+            self.assertTrue(perto(pts(braco), rafael), braco)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -78,6 +78,12 @@ BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
 #: `baixar_tracado_hercilio.py`, que só grava depois de conferir que o traçado
 #: chega ao Açu e passa pelo pino de Ibirama. Opcional, como os ribeirões.
 BRUTO_HERCILIO = RAIZ / "data/brutos/tracado-hercilio-osm.json"
+#: Brutos dos cursos d'água COM NOME que passam por um município
+#: (`baixar_rios_municipio.py`, `data/brutos/rios-<municipio>-osm.json`). Cada
+#: nome vira um arquivo próprio — como o Rio Conceição, nenhum se funde a outro.
+#: Os nomes que o tronco ou um afluente já desenham são pulados. Pedido do
+#: Jefferson (05/10/2026): os rios que passam por Ibirama no Monitor.
+BRUTOS_MUNICIPIOS = sorted((RAIZ / "data/brutos").glob("rios-*-osm.json"))
 SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
@@ -312,7 +318,39 @@ def main() -> int:
                 "passando por Ibirama. As nascentes, em Itaiópolis, ficam fora para não mudar o enquadramento do Monitor."
             )
         grava(feat, rio_id)
+
+    # Rios de município. Recortados na borda norte do Açu, como o Hercílio, para
+    # não mudar o enquadramento do Monitor.
+    lat_max = max(p[1] for l in geojson_do_rio("itajai-acu", RIOS["itajai-acu"], por_nome)["geometry"]["coordinates"] for p in l)
+    for bruto in BRUTOS_MUNICIPIOS:
+        municipio = bruto.name[len("rios-"):-len("-osm.json")]
+        dados_m = json.loads(bruto.read_text(encoding="utf-8"))
+        for nome, ways in sorted(ways_por_nome(dados_m.get("elements") or []).items()):
+            if ja_desenhado(nome):
+                continue
+            linhas = recortar_ao_sul([linha_do_way(w) for w in ways if len(linha_do_way(w)) >= 2], lat_max)
+            if not linhas:
+                continue
+            rio_id = slug(nome)
+            feat = feature_do_rio(rio_id, linhas)
+            feat["properties"]["nome"] = nome
+            feat["properties"]["municipio"] = municipio
+            grava(feat, rio_id)
     return 0
+
+
+def slug(texto: str) -> str:
+    import unicodedata
+    t = "".join(c for c in unicodedata.normalize("NFD", texto) if unicodedata.category(c) != "Mn").lower()
+    return "-".join("".join(c if c.isalnum() else " " for c in t).split())
+
+
+def ja_desenhado(nome: str) -> bool:
+    """O nome já sai pelo tronco (match exato) ou por um afluente (substring)?"""
+    if any(nome in nomes for nomes in RIOS.values()):
+        return True
+    n = nome.lower()
+    return any(c in n for chaves in RIOS_AFLUENTES.values() for c in chaves)
 
 
 if __name__ == "__main__":

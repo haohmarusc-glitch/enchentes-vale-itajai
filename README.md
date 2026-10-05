@@ -507,6 +507,10 @@ o projeto.
     Rodou no Actions; o resultado tem 56 km, de José Boiteux ao Açu.
   - O traçado é recortado na borda norte do mapa para não mudar o enquadramento do Monitor. Nenhum arquivo do
     Monitor foi tocado.
+  - **Os outros rios de Ibirama:** Rio Rafael, os dois braços dele e o Ribeirão Taquaras, todos os cursos com nome
+    que o OSM tem no município. Eles vieram de `scripts/baixar_rios_municipio.py`.
+  - O Monitor passou a desenhar todo traçado de `data/rios/`. Arquivo do Monitor alterado com o rótulo
+    `monitor-autorizado`, por decisão do Jefferson.
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
  (05/10/2026, pedido do Jefferson)** — `docs/GUARDAR-CHEIAS.md`.
   - `scripts/nivel_antes.py` responde "quando a régua X chegou à crista, passou de um nível ou passou da cota de uma
