@@ -1,0 +1,50 @@
+# Lista e guarda todos os cursos d'água com nome que passam por um município (OpenStreetMap).
+#
+# POR QUE EXISTE (05/10/2026). O Jefferson pediu os rios que passam por Ibirama na tela. O Overpass não
+# responde ao ambiente das sessões de código; o runner do GitHub alcança. O resultado vai para o branch
+# `rios-municipio` (um commit só, substituído a cada rodada), que a sessão lê. Não muda o Monitor nem o main.
+name: Baixar rios de um município
+
+on:
+  workflow_dispatch:
+    inputs:
+      municipio:
+        description: Nome do município como no OSM
+        default: Ibirama
+  push:
+    paths:
+      - .github/workflows/baixar-rios-municipio.yml
+      - scripts/baixar_rios_municipio.py
+
+permissions:
+  contents: write   # publicar no branch rios-municipio
+
+jobs:
+  baixar:
+    name: Cursos d'água do município
+    runs-on: ubuntu-latest
+    env:
+      MUNICIPIO: ${{ inputs.municipio || 'Ibirama' }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+      - name: Baixar
+        run: python3 scripts/baixar_rios_municipio.py --municipio "$MUNICIPIO" --gravar
+      - name: Publicar no branch rios-municipio
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          arquivo=$(ls data/brutos/rios-*-osm.json | head -1)
+          blob=$(git hash-object -w "$arquivo")
+          arvore=$(printf '100644 blob %s\t%s\n' "$blob" "$(basename "$arquivo")" | git mktree)
+          commit=$(git commit-tree "$arvore" -m "Rios de $MUNICIPIO, a partir de ${GITHUB_SHA::7}")
+          git push --force --quiet origin "$commit:refs/heads/rios-municipio"
+          echo "publicado em rios-municipio: $commit"

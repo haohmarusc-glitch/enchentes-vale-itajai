@@ -71,6 +71,11 @@ def consulta() -> str:
 
 
 def buscar(*, transporte=None, dormir=None, avisar=print) -> tuple[dict, str]:
+    """A consulta do Hercílio. Ver `buscar_consulta`."""
+    return buscar_consulta(consulta(), transporte=transporte, dormir=dormir, avisar=avisar)
+
+
+def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print) -> tuple[dict, str]:
     """(resposta do Overpass conferida como JSON, espelho que respondeu). Insiste como o vão do Canhanduba."""
     import time
 
@@ -84,7 +89,7 @@ def buscar(*, transporte=None, dormir=None, avisar=print) -> tuple[dict, str]:
     ultimo = ""
     for espelho in ESPELHOS:
         for tentativa in range(1, TENTATIVAS_POR_ESPELHO + 1):
-            r = transporte(espelho, {"data": consulta()}, {"User-Agent": USER_AGENT}, 180)
+            r = transporte(espelho, {"data": texto}, {"User-Agent": USER_AGENT}, 240)
             if r.status_code == 200:
                 try:
                     return json.loads(r.text), espelho
