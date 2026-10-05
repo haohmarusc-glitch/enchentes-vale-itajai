@@ -212,6 +212,32 @@ computador (`web/src/chat-ia/ollama.ts`, API `POST /api/chat`). **O site não us
 O pedido usa uma janela de contexto de 16 mil tokens (`OLLAMA_CONTEXTO`). O padrão do Ollama corta a conversa em
 silêncio, porque as instruções e a lista de picos de Blumenau já passam disso.
 
+### Resultado medido no PC do Jefferson (05/10/2026)
+
+| Modelo | Acerto (±95%) | Fato certo | Regras | Tempo médio | Custo |
+|---|---|---|---|---|---|
+| **Chat sem IA** (a régua) | **91%** (31/34) | — | — | instantâneo | zero |
+| `qwen2.5:3b` no Ollama (GTX 1650) | **41% ± 17** (14/34) | 41% | 97% | 10,7 s | zero |
+
+**Configuração da rodada:**
+- Prova inteira: 6 minutos.
+- Pela velocidade, a janela foi de 8 mil tokens (`OLLAMA_CONTEXTO=8192`), com o modelo inteiro na placa. Com 16 mil, 21% do modelo transbordava para o processador e cada pergunta levava ~1,5 min.
+
+**Onde o modelo de 3B errou:**
+- os 4 recordes;
+- as 3 contagens;
+- as 2 comparações entre cidades;
+- as 2 ruas;
+- os 3 casos do Atlas;
+- a média.
+
+**O que as conversas mostram (`v3/traces/`):**
+- Ele escolhe a ferramenta errada: pede a lista inteira de picos em vez do motor.
+- Recebe o dado certo e monta a resposta com pedaços de cheias diferentes, com tom confiante. Na maior cheia de Blumenau, por exemplo, respondeu "13 m em 8/9/2011, às 2h, baixou para 8,92 m às 14h", juntando 2011, 2013 e 2015. O certo é 17,3 m em 1880.
+- O corretor pega o fato errado, mas a nota de "Regras" (97%) é generosa: uma mistura de fatos verdadeiros não casa com nenhum padrão proibido.
+
+**Conclusão:** um modelo de 3B local fica **muito abaixo do chat sem IA** e erra inventando com certeza. **Não usar no site.** O de 7B (`v4`) seria mais lento na placa de 4 GB (~1,5–3 min por pergunta) e dificilmente chegaria aos 91%.
+
 ### Passo a passo no Windows (PowerShell)
 
 1. **Instalar, uma vez:**
