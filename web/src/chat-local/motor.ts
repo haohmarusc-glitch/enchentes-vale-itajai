@@ -111,6 +111,12 @@ export interface Resposta {
    * agregada lê (`logica/telemetriaChat.ts`, decisão de 04/10/2026).
    */
   falha?: FalhaDoMotor
+  /**
+   * A resposta saiu do PALPITE do roteador (achou só a cidade, ou só o ano, e nenhuma
+   * intenção). O piloto do classificador consulta a IA também nesse caso
+   * (`docs/PILOTO-CLASSIFICADOR.md`).
+   */
+  palpite?: boolean
 }
 
 /** Falha por falta de dado na pergunta: cidade (se citada) e motivo. */
@@ -180,7 +186,7 @@ export const TEXTO_ALERTA =
   'O nível ao vivo das réguas está na página de cada rio, com a fonte e a hora da leitura.'
 
 // ---------------------------------------------------------------- extração
-interface CidadeConhecida {
+export interface CidadeConhecida {
   id: string
   nome: string
   rio: string
@@ -199,7 +205,7 @@ export interface Extraido {
   n?: number
 }
 
-function cidadesConhecidas(d: Dados): CidadeConhecida[] {
+export function cidadesConhecidas(d: Dados): CidadeConhecida[] {
   const lista: CidadeConhecida[] = []
   for (const [rio, r] of Object.entries(d.estacoes.rios))
     for (const c of r.cidades) if (!lista.some((x) => x.id === c.id)) lista.push({ id: c.id, nome: c.nome, rio, chave: norm(c.nome) })
@@ -704,8 +710,7 @@ function cotasDaCidade(e: Extraido, d: Dados): Resposta {
   }
 }
 
-function ruaHistorico(e: Extraido, d: Dados): Resposta {
-  const termo = termoDaRua(e)
+function ruaHistorico(e: Extraido, d: Dados, termo: string | null = termoDaRua(e)): Resposta {
   if (!e.cidade)
     return {
       intencao: 'rua_historico',
@@ -1093,12 +1098,180 @@ export function responder(pergunta: string, d: Dados): Resposta {
   if (/\b(quantas|quantos|quantas vezes)\b/.test(t) && e.nivel != null) return contarAcima(e, d)
   if (/\b(maior|maiores|recorde|pior|piores|mais alta|maxima)\b/.test(t) && !e.ano) return maioresCheias(e, d)
   if (e.ano && e.cidade) return cheiasDoPeriodo(e, d)
-  if (e.cidade) return maioresCheias({ ...e, n: e.n ?? 5 }, d)
-  if (e.ano) return danosAtlas(e, d)
+  if (e.cidade) return { ...maioresCheias({ ...e, n: e.n ?? 5 }, d), palpite: true }
+  if (e.ano) return { ...danosAtlas(e, d), palpite: true }
   return {
     intencao: 'nao_entendi',
     texto: 'Não entendi a pergunta. Eu respondo só sobre o histórico das cheias e enchentes do Vale do Itajaí, usando os dados do site. Tente um destes formatos:',
     sugestoes: EXEMPLOS,
     falha: { motivo: 'sem_intencao' },
+  }
+}
+
+// ---------------------------------------------------------------- resposta a partir de uma classificação
+// Piloto do classificador (decisão do Jefferson de 05/10/2026, `docs/PILOTO-CLASSIFICADOR.md`):
+// quando o roteador acima não entende (ou só palpita), uma IA CLASSIFICA a pergunta numa
+// destas intenções, com os parâmetros. A IA não escolhe ferramenta e não escreve resposta:
+// o servidor confere tudo contra listas fechadas, e o texto sai daqui, das MESMAS funções
+// do roteador. Nenhum número vem da IA.
+
+export const INTENCOES = [
+  'maiores_cheias',
+  'cheias_periodo',
+  'contar_acima',
+  'atlas',
+  'chuva',
+  'transito',
+  'cota_ana',
+  'antecedencia_mirim',
+  'rua_historico',
+  'cotas',
+  'comparacao',
+  'media',
+] as const
+export type Intencao = (typeof INTENCOES)[number]
+
+export type Parametro = 'cidade' | 'cidade2' | 'ano' | 'nivel_m' | 'rua'
+
+/** Sem estes, a pergunta não é respondida: a tela pede o que faltou. */
+export const OBRIGATORIOS: Record<Intencao, Parametro[]> = {
+  maiores_cheias: ['cidade'],
+  cheias_periodo: ['cidade', 'ano'],
+  contar_acima: ['cidade', 'nivel_m'],
+  atlas: ['ano'],
+  chuva: ['ano'],
+  transito: ['cidade', 'cidade2'],
+  cota_ana: ['cidade', 'ano'],
+  antecedencia_mirim: [],
+  rua_historico: ['cidade', 'rua'],
+  cotas: ['cidade'],
+  comparacao: ['cidade', 'cidade2'],
+  media: ['cidade'],
+}
+
+/** Cidades com cota diária da ANA no Itajaí-Mirim (as chaves de `ANA_MIRIM`). */
+export const CIDADES_COTA_ANA = ['vidal-ramos', 'botuvera', 'brusque'] as const
+
+/** Já conferida pelo servidor: intenção da lista, cidade do cadastro, ano no intervalo. */
+export interface Classificacao {
+  intencao: Intencao
+  cidade: string | null
+  cidade2: string | null
+  rio: 'itajai-acu' | 'itajai-mirim' | null
+  ano: number | null
+  /** Último ano de um intervalo ("desde 2000" → ano 2000, ano_final o ano corrente). */
+  ano_final: number | null
+  mes: number | null
+  nivel_m: number | null
+  quantidade: number | null
+  rua: string | null
+}
+
+/** Os parâmetros obrigatórios da intenção que vieram vazios. */
+export function faltando(c: Classificacao): Parametro[] {
+  return OBRIGATORIOS[c.intencao].filter((p) => c[p] == null || c[p] === '')
+}
+
+const NOME_PARAMETRO: Record<Parametro, string> = {
+  cidade: 'a cidade',
+  cidade2: 'a segunda cidade',
+  ano: 'o ano',
+  nivel_m: 'o nível, em metros',
+  rua: 'o nome da rua',
+}
+export const textoParametros = (ps: Parametro[]) => ps.map((p) => NOME_PARAMETRO[p]).join(' e ')
+
+function extraidoDe(c: Classificacao, d: Dados): Extraido {
+  const lista = cidadesConhecidas(d)
+  const cidade = lista.find((x) => x.id === c.cidade)
+  const cidade2 = lista.find((x) => x.id === c.cidade2)
+  const ano2 = c.ano_final != null && c.ano_final !== c.ano ? c.ano_final : undefined
+  // Só a média lê período do texto ("desde", "até"): o texto aqui é montado, nunca o da pessoa.
+  const t = c.intencao === 'media' && c.ano != null && ano2 != null ? `desde ${c.ano} ate ${ano2}` : c.intencao === 'cota_ana' && cidade ? cidade.chave : ''
+  return {
+    t,
+    ...(cidade ? { cidade } : {}),
+    ...(cidade2 ? { cidade2 } : {}),
+    ...(c.rio ?? cidade?.rio ? { rio: c.rio ?? cidade?.rio } : {}),
+    ...(c.ano != null ? { ano: c.ano } : {}),
+    ...(ano2 != null ? { ano2 } : {}),
+    ...(c.mes != null ? { mes: c.mes } : {}),
+    ...(c.nivel_m != null ? { nivel: c.nivel_m } : {}),
+    ...(c.quantidade != null ? { n: c.quantidade } : {}),
+  }
+}
+
+/** A resposta do motor para uma classificação já conferida. */
+export function responderPorIntencao(c: Classificacao, d: Dados): Resposta {
+  const e = extraidoDe(c, d)
+  switch (c.intencao) {
+    case 'maiores_cheias':
+      return maioresCheias({ ...e, n: e.n ?? 1 }, d)
+    case 'cheias_periodo':
+      return cheiasDoPeriodo(e, d)
+    case 'contar_acima':
+      return contarAcima(e, d)
+    case 'atlas':
+      return danosAtlas(e, d)
+    case 'chuva':
+      return chuvaAntes(e, d)
+    case 'transito':
+      return transito(e, d)
+    case 'cota_ana':
+      return cotaAna(e, d)
+    case 'antecedencia_mirim':
+      return antecedenciaMirim(e, d)
+    case 'rua_historico':
+      return ruaHistorico(e, d, c.rua ? norm(c.rua).replace(PALAVRA_RUA, ' ').replace(/\s+/g, ' ').trim() || null : null)
+    case 'cotas':
+      return cotasDaCidade(e, d)
+    case 'comparacao':
+      return compararCidades(e, d)
+    case 'media':
+      return mediaDosPicos(e, d)
+  }
+}
+
+/** "Entendi: …" — o que a tela mostra antes da resposta, para a pessoa conferir. */
+export function descreverEntendido(c: Classificacao, d: Dados): string {
+  const lista = cidadesConhecidas(d)
+  const nome = (id: string | null) => lista.find((x) => x.id === id)?.nome ?? ''
+  const a = nome(c.cidade)
+  const b = nome(c.cidade2)
+  const quando =
+    c.ano == null
+      ? ''
+      : c.mes != null
+        ? `${MESES_EXIBIR[c.mes - 1]} de ${c.ano}`
+        : c.ano_final != null && c.ano_final !== c.ano
+          ? `${c.ano} a ${c.ano_final}`
+          : String(c.ano)
+  const em = quando ? ` em ${quando}` : ''
+  const rioNome = c.rio ? (NOME_RIO[c.rio] ?? c.rio) : ''
+  switch (c.intencao) {
+    case 'maiores_cheias':
+      return c.quantidade && c.quantidade > 1 ? `as ${c.quantidade} maiores cheias de ${a}` : `a maior cheia de ${a}`
+    case 'cheias_periodo':
+      return `as cheias de ${a}${em}`
+    case 'contar_acima':
+      return `quantas cheias de ${a} chegaram a ${m(c.nivel_m ?? 0)} ou mais`
+    case 'atlas':
+      return `os danos das cheias${em}${a ? ` em ${a}` : rioNome ? ` no ${rioNome}` : ''}`
+    case 'chuva':
+      return `quanto choveu antes da cheia${em}${rioNome ? ` no ${rioNome}` : ''}`
+    case 'transito':
+      return `quanto tempo a cheia leva de ${a} até ${b}`
+    case 'cota_ana':
+      return `a cota da ANA em ${a}${em}`
+    case 'antecedencia_mirim':
+      return 'a antecedência do pico em Botuverá antes de Brusque'
+    case 'rua_historico':
+      return `quantas cheias passaram da cota da rua "${c.rua ?? ''}" em ${a}`
+    case 'cotas':
+      return `as cotas da Defesa Civil para o rio em ${a}`
+    case 'comparacao':
+      return `a comparação das cheias de ${a} e ${b}${em}`
+    case 'media':
+      return `a média dos picos de ${a}${em}`
   }
 }

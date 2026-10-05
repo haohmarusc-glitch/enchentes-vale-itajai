@@ -11,7 +11,7 @@ import type { Criar } from './nucleo'
 
 const URL_API = 'https://enchentes.premercadosc.com/api/chat-ia'
 const AGORA = new Date('2026-10-04T15:00:00Z')
-const CHAVE = { ANTHROPIC_API_KEY: 'sk-ant-teste' }
+const CHAVE = { ANTHROPIC_API_KEY: 'sk-ant-teste', CHAT_IA_REDATOR: 'ligado' }
 
 const texto = (t: string) =>
   ({
@@ -52,6 +52,15 @@ test('sem a chave: GET diz desligado e o POST não chama a IA', async () => {
   assert.equal(p.status, 503)
   assert.equal(chamadas(), 0)
   assert.deepEqual(await (await tratar(new Request(URL_API), CHAVE)).json(), { ligado: true })
+})
+
+test('a chave sozinha não liga o chat que redige (ela serve ao piloto do classificador)', async () => {
+  const { criar, chamadas } = criarFalso()
+  for (const amb of [{ ANTHROPIC_API_KEY: 'sk-ant-teste' }, { ANTHROPIC_API_KEY: 'sk-ant-teste', CHAT_IA_REDATOR: 'sim' }]) {
+    assert.deepEqual(await (await tratar(new Request(URL_API), amb)).json(), { ligado: false })
+    assert.equal((await tratar(post({ pergunta: 'Maior cheia de Gaspar?' }), amb, criar)).status, 503)
+  }
+  assert.equal(chamadas(), 0)
 })
 
 test('com a chave: responde o texto da IA', async () => {

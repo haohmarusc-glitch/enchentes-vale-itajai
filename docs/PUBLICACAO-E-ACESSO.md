@@ -183,8 +183,12 @@ Functions só rodam nessa rota, o resto do site continua estático.
 
 ### Chat com IA (`/api/chat-ia`) — pedido de 04/10/2026
 O que faz, o que vai à Anthropic e quanto custa: `docs/CHAT-IA.md`. O código está pronto e
-**desligado**. O **segredo `ANTHROPIC_API_KEY`** é o interruptor: sem ele, o GET diz `ligado: false` e o
-botão "Perguntar à IA" não aparece.
+**desligado**. Desde 05/10/2026, o interruptor é o **segredo `ANTHROPIC_API_KEY` junto com a variável
+`CHAT_IA_REDATOR=ligado`**. Faltando um dos dois, o GET diz `ligado: false` e o botão "Perguntar à IA" não aparece.
+
+A chave sozinha liga só o que pedir por ela. Hoje a decisão é **não** ligar a IA que redige: a prova com o modelo
+local deu 41% (`docs/RESULTADO-PROVA-OLLAMA.md`). Em vez disso, há o **piloto do classificador**, com
+interruptores próprios: `docs/PILOTO-CLASSIFICADOR.md`, "Como ligar".
 
 **Para LIGAR (uma vez):**
 
@@ -198,6 +202,8 @@ botão "Perguntar à IA" não aparece.
    - Caminho: *Workers & Pages → `enchentes-vale-itajai` → Settings → Variables and Secrets → Add*.
    - *Type* **Secret**, *Variable name* **`ANTHROPIC_API_KEY`**, valor = a chave.
    - Em **Production**.
+   - Para o chat que redige, criar também a variável de texto **`CHAT_IA_REDATOR`** = `ligado`.
+     Sem ela, a chave serve só ao piloto do classificador.
 4. **(Opcional, recomendado) Teto do dia.**
    - Criar o namespace KV `enchentes-chat-ia`.
    - Ligar com o *Variable name* **`CHAT_IA`**.
@@ -214,13 +220,14 @@ botão "Perguntar à IA" não aparece.
    - A resposta chega com o rótulo da IA.
    - No Console da Anthropic, em *Usage*, aparece o gasto da pergunta.
 
-**Para DESLIGAR:** apagar o segredo `ANTHROPIC_API_KEY` e publicar de novo; o botão some. Para cortar na
+**Para DESLIGAR:** apagar a variável `CHAT_IA_REDATOR` (ou o segredo `ANTHROPIC_API_KEY`) e publicar de novo;
+o botão some. Para cortar na
 hora, sem publicar: **revogar a chave** no Console. A IA passa a responder "desligada" e o chat local
 continua.
 
 ---
 
-## O estado de hoje (conferido em 05/09/2026)## O estado de hoje (conferido em 05/09/2026)
+## O estado de hoje (conferido em 05/09/2026)
 
 | o quê | como está |
 |---|---|

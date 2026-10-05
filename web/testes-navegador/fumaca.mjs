@@ -284,6 +284,70 @@ console.log('\nchat com IA: botão só com o servidor ligado; o presente nunca v
   await ctx.close()
 }
 
+console.log('\npiloto do classificador: "Entendi", Correto/Não era isso, falha vira "não consegui interpretar"')
+{
+  // docs/PILOTO-CLASSIFICADOR.md. O /api/chat-classificar é simulado (o preview não roda funções).
+  const CLASSIF = { intencao: 'maiores_cheias', cidade: 'blumenau', cidade2: null, rio: null, ano: null, ano_final: null, mes: null, nivel_m: null, quantidade: 1, rua: null }
+  const ID = '2026-10-05_00000000-0000-4000-8000-000000000001'
+  const enviados = []
+  let quebrar = false
+  const ctx = await navegador.newContext({ serviceWorkers: 'block', viewport: { width: 390, height: 844 } })
+  await ctx.route('**/*', (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()))
+  await ctx.route('**/api/chat-classificar', (r) => {
+    if (r.request().method() === 'GET') return r.fulfill({ json: { ligado: true } })
+    const corpo = JSON.parse(r.request().postData() ?? '{}')
+    enviados.push(corpo)
+    if ('correcao' in corpo) return r.fulfill({ json: { ok: true } })
+    if (quebrar) return r.fulfill({ status: 504, json: { erro: 'tempo' } })
+    if (/medo/.test(corpo.pergunta)) return r.fulfill({ json: { id: ID, decisao: { tipo: 'agora', origem: 'classificador' } } })
+    return r.fulfill({ json: { id: ID, decisao: { tipo: 'ok', classificacao: CLASSIF } } })
+  })
+  const pagina = await ctx.newPage()
+  await pagina.goto(`${base}/#/perguntas`, { waitUntil: 'load' })
+  await pagina.getByRole('button', { name: 'Entendi' }).click({ timeout: 5_000 }).catch(() => {})
+  const caixa = pagina.getByRole('textbox', { name: 'Sua pergunta' })
+  await pagina.waitForFunction(() => !document.querySelector('input[aria-label="Sua pergunta"]')?.disabled, null, { timeout: 15_000 }).catch(() => {})
+  const perguntar = async (q) => {
+    await caixa.fill(q)
+    await pagina.getByRole('button', { name: 'Perguntar', exact: true }).click()
+  }
+  ;(await pagina.getByText(/Piloto: quando o chat não entende/).count()) > 0 ? ok('aviso do piloto visível') : falhou('faltou o aviso do piloto')
+
+  // Pergunta que o motor entende: não vai ao classificador.
+  await perguntar('Qual foi a maior cheia de Gaspar?')
+  await pagina.waitForTimeout(500)
+  enviados.length === 0 ? ok('pergunta entendida pelo motor não vai ao classificador') : falhou(`foi ao classificador: ${JSON.stringify(enviados)}`)
+
+  await perguntar('qual foi a enchente mais feia que blumenal já viu?')
+  await pagina.getByText('Entendi:').waitFor({ timeout: 5_000 }).catch(() => {})
+  ;(await pagina.getByText(/a maior cheia de Blumenau\./).count()) > 0 && (await pagina.getByText(/A maior cheia registrada de Blumenau foi de 17,3 m/).count()) > 0
+    ? ok('"Entendi: a maior cheia de Blumenau" + resposta do motor')
+    : falhou('faltou o "Entendi" ou a resposta do motor')
+  await pagina.getByRole('button', { name: 'Não era isso' }).click({ timeout: 5_000 }).catch(() => {})
+  await pagina.getByText('Marcado como entendido errado.').waitFor({ timeout: 5_000 }).catch(() => {})
+  const corr = enviados.find((x) => 'correcao' in x)
+  corr?.correcao === 'nao_era_isso' && corr.id === ID && (await pagina.getByText(/Obrigado por avisar/).count()) > 0 && (await pagina.getByRole('button', { name: 'Correto' }).count()) === 0
+    ? ok('"Não era isso" envia a correção, some com os botões e dá os exemplos')
+    : falhou(`correção não funcionou (${JSON.stringify(enviados)})`)
+
+  // Palpite + situacao_atual: o aviso da Defesa Civil, nunca a maior cheia.
+  await perguntar('Estou com medo do rio em Blumenau, o que você acha?')
+  await pagina.waitForTimeout(800)
+  const ultimas = await pagina.locator('[role="log"] > div').allInnerTexts()
+  ;/ligue 199/.test(ultimas.at(-2) ?? '') && enviados.some((x) => x.origem === 'palpite')
+    ? ok('palpite com situacao_atual: aviso da Defesa Civil')
+    : falhou(`palpite do presente: ${JSON.stringify(ultimas.slice(-2))}`)
+
+  quebrar = true
+  await perguntar('top 3 enchentes de rio do sul')
+  await pagina.getByText(/Não consegui interpretar a pergunta/).waitFor({ timeout: 10_000 }).catch(() => {})
+  const fim = await pagina.locator('[role="log"] > div').allInnerTexts()
+  ;/Não consegui interpretar a pergunta/.test(fim.at(-2) ?? '') && !/maiores cheias registradas de Rio do Sul/.test(fim.at(-2) ?? '')
+    ? ok('falha do servidor: "não consegui interpretar", sem o palpite')
+    : falhou(`falha do servidor: ${JSON.stringify(fim.slice(-2))}`)
+  await ctx.close()
+}
+
 await navegador.close()
 await servidor.close()
 

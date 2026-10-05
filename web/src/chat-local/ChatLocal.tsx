@@ -12,13 +12,20 @@
  * Chat com IA (docs/CHAT-IA.md): só quando o servidor diz que está ligado. O
  * motor local responde primeiro, sempre; a pergunta só vai à IA quando a pessoa
  * aperta "Perguntar à IA" naquela resposta, com o aviso de envio à vista.
+ *
+ * Piloto do classificador (docs/PILOTO-CLASSIFICADOR.md): só para quem o servidor
+ * diz que está no piloto. Quando o motor não entende (ou só palpita), a pergunta vai
+ * ao classificador; a resposta continua saindo do motor, com "Entendi: …" e os botões
+ * "Correto"/"Não era isso". Dúvida, demora ou falha: "não consegui interpretar" — o
+ * palpite (a maior cheia da cidade citada) não sai mais para quem está no piloto.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { citaRua, responder, type Dados } from './motor'
+import { EXEMPLOS, citaRua, responder, type Dados } from './motor'
 import { carregarBase, carregarCotasAna, carregarCotasRuas } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
 import { RETENCAO_DIAS, criarEnviador, idsDoCadastro, montarEvento, servidorContando } from '../logica/telemetriaChat'
 import { AVISO_ENVIO, iaLigada, perguntarIA } from '../chat-ia/cliente'
+import { AVISO_PILOTO, TEXTO_NAO_ERA_ISSO, classificarPergunta, enviarCorrecao, mensagemDoPiloto, pilotoLigado, type Correcao, type Origem } from '../chat-ia/clienteClassificador'
 import estilos from './ChatLocal.module.css'
 
 /** Trocado pelo Vite no build (`vite.config.ts`); fora dele, "dev". */
@@ -39,6 +46,10 @@ type Msg = {
   paraIA?: string
   /** Veio da IA (rótulo próprio na tela). */
   ia?: boolean
+  /** Piloto do classificador: o que foi entendido, e o id para os botões. */
+  entendido?: string
+  idCorrecao?: string
+  corrigido?: Correcao
 }
 
 const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
@@ -66,6 +77,9 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
   // A IA está ligada no servidor? Começa em "não": sem resposta, o botão não aparece.
   const [comIA, setComIA] = useState(false)
   const [esperandoIA, setEsperandoIA] = useState(false)
+  // Piloto do classificador: começa em "não", como a IA.
+  const [piloto, setPiloto] = useState(false)
+  const [classificando, setClassificando] = useState(false)
   const cadastro = useMemo(() => (dados ? idsDoCadastro(dados.estacoes) : new Set<string>()), [dados])
   const caixa = useRef<HTMLElement>(null)
   const fim = useRef<HTMLDivElement>(null)
@@ -98,6 +112,9 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     })
     iaLigada(typeof fetch === 'function' ? (url, init) => fetch(url, init) : undefined).then((sim) => {
       if (vivo) setComIA(sim)
+    })
+    pilotoLigado(typeof fetch === 'function' ? (url, init) => fetch(url, init) : undefined).then((sim) => {
+      if (vivo) setPiloto(sim)
     })
     carregarBase()
       .then((d) => {
@@ -141,8 +158,40 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     }
     // A barreira do presente vale igual na IA: essa resposta não ganha o botão.
     const paraIA = r.intencao === 'agora' ? undefined : q
-    setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA }])
+    const origem: Origem | null = !piloto || classificando ? null : r.intencao === 'nao_entendi' ? 'nao_entendi' : r.palpite ? 'palpite' : null
+    if (!origem) {
+      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA }])
+      setTexto('')
+      rolarAoFim()
+      return
+    }
+    // Piloto: o motor não entendeu (ou palpitou). Pergunta ao classificador; a resposta sai do motor.
+    setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }])
     setTexto('')
+    setClassificando(true)
+    rolarAoFim()
+    const c = await classificarPergunta((url, init) => fetch(url, init), q, origem)
+    if (!('erro' in c) && c.decisao.tipo === 'ok' && c.decisao.classificacao.intencao === 'rua_historico' && !base.cotasRuas) {
+      try {
+        const cotasRuas = await carregarCotasRuas()
+        base = { ...base, cotasRuas }
+        setDados((atual) => (atual ? { ...atual, cotasRuas } : atual))
+      } catch {
+        /* sem as cotas o motor responde "carregando" */
+      }
+    }
+    const m = mensagemDoPiloto(c, base)
+    setMsgs((atual) => [...atual, { papel: 'assistente', ...m, ...(m.entendido ? {} : { paraIA }) }])
+    setClassificando(false)
+    rolarAoFim()
+  }
+
+  function corrigir(indice: number, id: string, correcao: Correcao) {
+    void enviarCorrecao((url, init) => fetch(url, init), id, correcao)
+    setMsgs((atual) => {
+      const novas = atual.map((m, i) => (i === indice ? { ...m, corrigido: correcao } : m))
+      return correcao === 'nao_era_isso' ? [...novas, { papel: 'assistente' as const, texto: TEXTO_NAO_ERA_ISSO, sugestoes: EXEMPLOS }] : novas
+    })
     rolarAoFim()
   }
 
@@ -194,7 +243,28 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
         {msgs.map((msg, i) => (
           <div key={i} className={`${estilos['chat-msg']} ${msg.papel === 'usuario' ? estilos['chat-usuario'] : estilos['chat-assistente']}`}>
             {msg.ia ? <div className={estilos['chat-rotulo-ia']}>Resposta da IA com os dados do site — pode errar</div> : null}
-            <div>{msg.texto}</div>
+            {msg.entendido ? (
+              <div className={estilos['chat-entendido']}>
+                <strong>Entendi:</strong> {msg.entendido}. <span>(interpretação automática, piloto)</span>
+              </div>
+            ) : null}
+            <div className={msg.corrigido === 'nao_era_isso' ? estilos['chat-descartada'] : undefined}>{msg.texto}</div>
+            {msg.idCorrecao ? (
+              msg.corrigido ? (
+                <div className={estilos['chat-corrigido']} role="status">
+                  {msg.corrigido === 'correto' ? 'Obrigado pela confirmação.' : 'Marcado como entendido errado.'}
+                </div>
+              ) : (
+                <div className={estilos['chat-correcao']} role="group" aria-label="A interpretação está certa?">
+                  <button type="button" onClick={() => corrigir(i, msg.idCorrecao!, 'correto')}>
+                    Correto
+                  </button>
+                  <button type="button" onClick={() => corrigir(i, msg.idCorrecao!, 'nao_era_isso')}>
+                    Não era isso
+                  </button>
+                </div>
+              )
+            ) : null}
             {comIA && msg.paraIA ? (
               <button type="button" className={estilos['chat-botao-ia']} disabled={esperandoIA} onClick={() => perguntarAIA(i, msg.paraIA!)}>
                 Perguntar à IA
@@ -211,6 +281,11 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
             ) : null}
           </div>
         ))}
+        {classificando ? (
+          <div className={`${estilos['chat-msg']} ${estilos['chat-assistente']}`} role="status">
+            Tentando entender a pergunta…
+          </div>
+        ) : null}
         {esperandoIA ? (
           <div className={`${estilos['chat-msg']} ${estilos['chat-assistente']}`} role="status">
             A IA está consultando os dados do site…
@@ -231,12 +306,13 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
           }}
           aria-label="Sua pergunta"
         />
-        <button type="button" onClick={() => perguntar(texto)} disabled={!dados || !texto.trim()}>
+        <button type="button" onClick={() => perguntar(texto)} disabled={!dados || !texto.trim() || classificando}>
           Perguntar
         </button>
       </div>
 
       {comIA ? <p className={estilos['chat-aviso-ia']}>{AVISO_ENVIO}</p> : null}
+      {piloto ? <p className={estilos['chat-aviso-ia']}>{AVISO_PILOTO}</p> : null}
 
       {contando ? (
         <div className={estilos['chat-contagem']}>
