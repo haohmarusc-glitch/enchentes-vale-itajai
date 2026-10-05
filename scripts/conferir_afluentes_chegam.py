@@ -115,7 +115,7 @@ def avaliar(limite_m: float = LIMITE_M) -> list[dict]:
     Conceição**, que deságua no Mirim — foi por isso que a busca por nome nunca
     o fechou, e é geografia, não defeito. Então um afluente conta como chegado
     quando alcança um tronco OU outro afluente que, por sua vez, alcança um
-    tronco. O caminho inteiro sai no relatório, para ninguém confundir "chega
+    tronco, em quantos níveis forem precisos. O caminho inteiro sai no relatório, para ninguém confundir "chega
     pelo vizinho" com "chega direto".
     """
     troncos = {t: ls for t in TRONCOS if (ls := vias(t))}
@@ -129,19 +129,32 @@ def avaliar(limite_m: float = LIMITE_M) -> list[dict]:
         if m:
             direto[rio_id] = m
 
-    saida = []
-    for rio_id, ls in afluentes.items():
-        d, nome, ponta = direto[rio_id]
-        via = []
-        if d * 1000 > limite_m:
-            # Não toca tronco: tenta pelos VIZINHOS que tocam.
-            vizinhos = {n: afluentes[n] for n, (dv, _, _) in direto.items()
-                        if n != rio_id and dv * 1000 <= limite_m}
+    # A cadeia segue QUANTOS níveis precisar (05/10/2026): os braços do Rio
+    # Rafael chegam ao Rio Rafael, que chega ao Hercílio, que chega ao Açu. Com
+    # um nível só, os braços saíam "cortados" com a água chegando de fato.
+    chegou: dict[str, tuple[float, str, tuple, list[str]]] = {
+        r: (d, nome, ponta, []) for r, (d, nome, ponta) in direto.items() if d * 1000 <= limite_m}
+    mudou = True
+    while mudou:
+        mudou = False
+        for rio_id, ls in afluentes.items():
+            if rio_id in chegou:
+                continue
+            vizinhos = {n: afluentes[n] for n in chegou if n != rio_id}
             m = _mais_perto(ls, vizinhos) if vizinhos else None
             if m and m[0] * 1000 <= limite_m:
                 d, intermediario, ponta = m
-                via = [intermediario]
-                nome = direto[intermediario][1]
+                _, nome, _, via = chegou[intermediario]
+                chegou[rio_id] = (d, nome, ponta, [intermediario, *via])
+                mudou = True
+
+    saida = []
+    for rio_id in afluentes:
+        if rio_id in chegou:
+            d, nome, ponta, via = chegou[rio_id]
+        else:
+            d, nome, ponta = direto[rio_id]
+            via = []
         saida.append({
             "rio": rio_id,
             "chega_em": nome,
