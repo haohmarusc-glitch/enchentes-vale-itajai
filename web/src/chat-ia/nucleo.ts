@@ -342,7 +342,7 @@ export async function executar(nome: string, entrada: unknown, obter: ObterDados
 
 // ---------------------------------------------------------------- conversa
 
-function mensagemInicial(p: PedidoIA): string {
+export function mensagemInicial(p: PedidoIA): string {
   if (!p.anteriores.length) return p.pergunta
   const ant = p.anteriores.map((a) => `Pergunta: ${a.pergunta}\nResposta: ${a.resposta}`).join('\n\n')
   return `<anteriores>\n${ant}\n</anteriores>\n\n${p.pergunta}`

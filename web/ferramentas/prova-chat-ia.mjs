@@ -146,12 +146,18 @@ const REF_EXTS = ['', '.html', '.txt', '.json'];
 //   web/node_modules/.bin/tsx web/ferramentas/prova-chat-ia.mjs \
 //     --flow .claude/hillclimb/chat-ia --variant baseline --model claude-sonnet-5-5 --reps 2
 //
+// OLLAMA (IA local no seu computador): `--model ollama:qwen2.5:3b` manda as perguntas ao
+// Ollama em OLLAMA_URL (padrão http://localhost:11434), com o mesmo chat (src/chat-ia/ollama.ts).
+// Use --concurrency 1: uma placa de vídeo responde uma pergunta por vez. OLLAMA_CONTEXTO
+// troca a janela de contexto (padrão 16384).
+//
 // A chave vem de ANTHROPIC_API_KEY (nunca commitar). PROVA_SIMULAR=oraculo|nulo roda
 // tudo SEM API, respondendo com o oráculo (deve dar ~100%) ou com "Não sei." (~0%):
 // é a checagem do encanamento antes de gastar.
 
 import Anthropic from '@anthropic-ai/sdk';
 import { responderComIA } from '../src/chat-ia/nucleo.ts';
+import { responderComOllama } from '../src/chat-ia/ollama.ts';
 import { dados } from '../src/chat-local/testes/carregar.ts';
 import { CASOS } from '../src/chat-ia/prova/casos.ts';
 import { corrigir } from '../src/chat-ia/prova/corrigir.ts';
@@ -184,7 +190,49 @@ function conversa(chamadas, textoFinal) {
   return turnos;
 }
 
+/** Conversa do Ollama (formato de mensagens dele) → formato do relatório. */
+function conversaOllama(rodadas, textoFinal) {
+  const ultima = rodadas.at(-1);
+  if (!ultima) return [{ role: 'assistant', content: textoFinal }];
+  const turnos = [];
+  const mensagens = [...ultima.pedido.messages, { role: 'assistant', ...(ultima.resposta.message ?? {}) }];
+  for (const m of mensagens) {
+    if (m.role === 'tool') turnos.push({ role: 'tool_result', content: m.content ?? '' });
+    else if (m.role === 'assistant' && m.tool_calls?.length)
+      for (const c of m.tool_calls) turnos.push({ role: 'tool_call', name: c.function?.name, content: JSON.stringify(c.function?.arguments ?? {}, null, 2) });
+    else turnos.push({ role: m.role, content: m.content ?? '' });
+  }
+  return turnos;
+}
+
+async function runCaseOllama(input, ctx) {
+  const modelo = ctx.model.slice('ollama:'.length);
+  const rodadas = [];
+  const contexto = parseInt(process.env.OLLAMA_CONTEXTO ?? '', 10);
+  const resposta = await responderComOllama({ pergunta: input.caso.pergunta, anteriores: [] }, async () => dados,
+    { modelo, url: process.env.OLLAMA_URL, ...(contexto > 0 ? { contexto } : {}) }, rodadas);
+  if (!rodadas.length) {
+    const e = new Error(`o caso não chamou o modelo (tipo ${resposta.tipo}) - pergunta caiu na barreira?`);
+    e.failure_class = 'harness';
+    throw e;
+  }
+  const final = rodadas.at(-1).resposta;
+  return {
+    output: resposta.texto,
+    transcript: conversaOllama(rodadas, resposta.texto),
+    model: resposta.uso?.modelo ?? ctx.model,
+    // O Ollama diz "length" quando a resposta bateu no limite de tokens.
+    stop_reason: final.done_reason === 'length' ? 'max_tokens' : 'end_turn',
+    usage: { input_tokens: resposta.uso?.entrada ?? 0, output_tokens: resposta.uso?.saida ?? 0,
+             cache_read_input_tokens: 0, cache_creation_input_tokens: 0 },
+    tool_calls: rodadas.reduce((s, r) => s + (r.resposta.message?.tool_calls?.length ?? 0), 0),
+    rodadas: rodadas.length,
+    tipo: resposta.tipo,
+  };
+}
+
 async function runCase(input, ctx) {
+  if (!SIMULAR && ctx.model.startsWith('ollama:')) return runCaseOllama(input, ctx);
   if (SIMULAR) {
     const output = SIMULAR === 'oraculo' ? input.caso.oraculo : 'Não sei.';
     return { output, transcript: [{ role: 'user', content: input.caso.pergunta }, { role: 'assistant', content: output }],
