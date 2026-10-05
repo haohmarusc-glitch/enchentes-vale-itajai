@@ -59,6 +59,34 @@ const medidas: Medida[] = []
 const porPergunta = new Map(CASOS_CLASSIFICADOR.map((c) => [c.pergunta, c]))
 const naoSei = (q: string) => gabaritoDe({ id: '', pergunta: q, grupo: 'fora', espera: { tipo: 'nao_sei' } })
 const cliente = MODO === 'api' ? new Anthropic({ maxRetries: 2, timeout: TEMPO_LIMITE_MS }) : null
+/** Erros da API por tipo ("401 authentication_error", "tempo"…), para o relatório. */
+const erros = new Map<string, number>()
+const tipoDoErro = (e: unknown) =>
+  e instanceof Anthropic.APIError ? `${e.status ?? '?'} ${e.name}: ${String(e.message).slice(0, 600)}` : e instanceof Error ? e.message.slice(0, 600) : String(e)
+let feitas = 0
+
+// Primeira chamada, com folga de tempo: confere a chave e o modelo antes de gastar a prova
+// inteira, e deixa o esquema compilado (a API compila um esquema novo na primeira vez, o que
+// pode passar dos 6 s do site; depois fica guardado por 24 h).
+if (cliente) {
+  process.stderr.write('Conferindo a chave e o modelo… ')
+  try {
+    const aquecer = new Anthropic({ maxRetries: 1, timeout: 60_000 })
+    const c = await classificar('Qual foi a maior cheia de Blumenau?', dados, (p) => aquecer.messages.create(p), MODELO, ANO)
+    process.stderr.write(`ok (${c.ms} ms, modelo ${c.uso.modelo})\n`)
+  } catch (e) {
+    process.stderr.write('FALHOU\n')
+    console.error(`\nA API recusou: ${tipoDoErro(e)}`)
+    if (e instanceof Anthropic.AuthenticationError)
+      console.error('Chave recusada. Confira se é uma chave de API criada em Console → API Keys (costuma começar com "sk-ant-api03-") e se foi colada inteira.')
+    else if (e instanceof Anthropic.PermissionDeniedError) console.error('A chave não tem permissão para este modelo ou workspace.')
+    else if (e instanceof Anthropic.NotFoundError) console.error(`Modelo não encontrado: ${MODELO}.`)
+    else if (e instanceof Anthropic.BadRequestError && /workspace/i.test(String(e.message)))
+      console.error('Chave sem workspace. Crie outra em Console → Settings → API Keys escolhendo um workspace (ex.: Default); a chave do site precisa ser dessa mesma forma.')
+    else if (e instanceof Anthropic.RateLimitError) console.error('Limite de uso ou de gasto atingido: veja Settings → Limits no Console.')
+    process.exit(1)
+  }
+}
 
 const classificador: Classificar = async (q) => {
   if (MODO === 'falha') throw new Error('API fora do ar (simulada)')
@@ -74,7 +102,11 @@ const classificador: Classificar = async (q) => {
     return c.bruto
   } catch (e) {
     medidas.push({ ms: Date.now() - inicio, uso: null, custo: null })
+    const tipo = tipoDoErro(e)
+    erros.set(tipo, (erros.get(tipo) ?? 0) + 1)
     throw e
+  } finally {
+    process.stderr.write(`\r  ${++feitas} chamadas à IA…`)
   }
 }
 
@@ -147,6 +179,7 @@ const certoDesc = conta(desc, 'certo')
 const liberou = conta(pres, 'liberou')
 const adivinhou = conta(fora, 'errou') + conta(desc, 'errou')
 
+if (feitas) process.stderr.write('\n')
 console.log(`\nProva do classificador — modo ${MODO}${MODO === 'api' ? `, ${MODELO}` : ''}, versão ${VERSAO_CLASSIFICADOR}, confiança mínima ${CONFIANCA}, ${REPS} repetição(ões)`)
 console.log(`\n1. 34 perguntas antigas: ${acertos34}/${total34} (${pct(acertos34, total34)}); passaram pelo classificador: ${antigas.filter((x) => x.classificou).length}`)
 const falhas34 = [...new Set(antigas.filter((x) => !x.acerto).map((x) => x.id))]
@@ -168,6 +201,7 @@ if (MODO === 'api') {
   console.log(`   tempo: média ${Math.round(media(ms))} ms; p95 ${ms[Math.floor(ms.length * 0.95)] ?? 0} ms; máximo ${ms.at(-1) ?? 0} ms`)
   console.log(`   tokens de entrada (média): ${Math.round(media(ok.map((m) => m.uso!.entrada + m.uso!.cache_lido + m.uso!.cache_criado)))}; de saída: ${Math.round(media(ok.map((m) => m.uso!.saida)))}`)
   console.log(`   custo: média US$ ${media(custos).toFixed(5)}; máximo US$ ${Math.max(0, ...custos).toFixed(5)}; total US$ ${custos.reduce((s, x) => s + x, 0).toFixed(4)}`)
+  for (const [tipo, n] of erros) console.log(`   erro da API (${n}×): ${tipo}`)
 }
 
 const criterios: [string, boolean][] = [

@@ -5,7 +5,7 @@ O chat **sem IA continua em produção**. A IA entra só num piloto isolado, e *
 qual é a intenção e quais são os parâmetros. Ela não escreve resposta, não escolhe ferramenta e nenhum número
 sai dela. O texto que a pessoa lê sai do mesmo motor do chat sem IA (`web/src/chat-local/motor.ts`).
 
-**Estado:** código pronto e **desligado**. Falta a chave da Anthropic e rodar a prova com a API (abaixo).
+**Estado:** código pronto e **desligado**. A prova com a API passou em 05/10/2026 (abaixo); falta ligar na Cloudflare.
 
 ## Como a pergunta anda
 
@@ -90,6 +90,8 @@ Valor fora da lista vira "não sei", nunca conserto:
   - o servidor desiste da IA em **6 s**, sem nova tentativa;
   - o aparelho desiste em **8 s**;
   - nos dois casos, "Não consegui interpretar a pergunta".
+  - Cuidado: a API compila o esquema na primeira chamada e o guarda por 24 h. Essa primeira chamada pode passar
+    dos 6 s e cair no "não consegui interpretar" uma vez. O executor da prova faz essa chamada antes, com folga.
 - **Aviso fixo abaixo da caixa:** a pergunta vai à Anthropic só para ser classificada, e o site guarda o texto
   mascarado por 90 dias, sem o e-mail. Também pede para não escrever nome, endereço ou telefone.
 
@@ -178,6 +180,10 @@ $env:ANTHROPIC_API_KEY="sk-ant-..."
 web\node_modules\.bin\tsx web\ferramentas\prova-classificador.ts --modo api --reps 2
 ```
 
+Antes da prova, o executor faz uma chamada de teste. Se a chave for recusada, ele para e mostra o motivo
+(401: chave errada ou incompleta; 400 "not scoped to a workspace": chave sem workspace — criar outra em *Settings → API Keys* escolhendo um workspace; 403: sem permissão; 429: limite de gasto). Durante a prova, mostra quantas
+chamadas já fez.
+
 Opções: `--modelo claude-sonnet-5-5` para comparar; `--confianca 0.8` para testar outro limite. O detalhe de
 cada chamada fica em `.claude/hillclimb/classificador/api-<modelo>/results.jsonl`.
 
@@ -195,7 +201,35 @@ Defesa Civil.
 As linhas "sempre não sei" e "API fora do ar" mostram o pior caso: os 31 acertos continuam e nada do presente é
 respondido. O que se perde é só a resposta às desconhecidas, que viram "não consegui interpretar".
 
-**Falta a rodada com a API.** Ela diz quanto o modelo real chega perto do gabarito.
+### Resultado com a API (05/10/2026, PC do Jefferson, Haiku 4.5, 2 repetições)
+
+| Critério | Meta | Resultado |
+|---|---|---|
+| 34 perguntas antigas | não perder os 31 | **34/34 nas duas rodadas**; os 3 erros do presente viraram o aviso |
+| desconhecidas + faltou classificadas certo | 85–90% | **89%** (48/54): 2 erradas, 4 "não consegui interpretar" |
+| pergunta do presente respondida | zero | **zero**: 40/40 viraram o aviso |
+| fora do tema | "não sei" | **14/14**, nenhuma adivinhada |
+| custo por chamada | teto de US$ 0,01 | **US$ 0,0033** em média (máximo 0,0034); a prova inteira custou US$ 0,37 |
+| tempo por chamada | — | média 2,0 s, p95 2,7 s, máximo 2,9 s (o limite do site é 6 s) |
+
+**Tokens por chamada:** em média 2,6 mil de entrada e 127 de saída. A entrada ficou acima da estimativa de 1,5
+mil, porque a API acrescenta o esquema à instrução.
+
+**O único erro com resposta foi "qual a altura da enchente de 84 em blumenau"**, nas duas rodadas. A suspeita é o
+ano em dois dígitos. Os outros 4 casos fora dos 89% foram "não consegui interpretar", que é a falha segura.
+
+**Veredito:** passou nos quatro critérios.
+
+**Os 6 casos fora dos 89%** são três perguntas, cada uma falhando igual nas duas rodadas.
+
+| Pergunta | O que o modelo fez | Correção na versão `c2` das instruções |
+|---|---|---|
+| "qual a altura da enchente de 84 em blumenau" (as 2 erradas) | Leu 1984 certo, mas escolheu "maiores cheias" com ano. O motor ignoraria o ano e daria o recorde de 1880. | Regra fixa depois da IA: "maiores cheias" com ano vira "cheias do período", como o roteador do motor já faz. As instruções também explicam isso e o ano de dois dígitos. |
+| "quanto tempo a água leva pra chegar em blumenau?" | Acertou tudo (trânsito, falta a origem), mas deu confiança 0,6 porque faltava a cidade. | Parâmetro que a pergunta não diz fica vazio e não baixa a confiança; a tela pede a cidade. |
+| "teve enchente em 2023?" | Leu como "cheias de uma cidade", sem cidade, com confiança 0,6. Caiu no "não consegui interpretar", a falha segura. | Instruções: "houve enchente num ano, sem cidade" é pergunta para o Atlas. |
+
+**Falta rodar a prova com a versão `c2`**, com uma chave nova (~US$ 0,37), e ligar o piloto para os e-mails
+escolhidos.
 
 ## Custo (estimativa; o real sai no registro e na prova)
 
