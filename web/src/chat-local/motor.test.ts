@@ -316,3 +316,8 @@ test('barreira: pedido de conselho para agora', () => {
     assert.equal(r(p).texto, TEXTO_ALERTA, p)
   for (const p of ['Dá para comparar Blumenau e Gaspar?', 'Cheias de Gaspar em 2011.']) assert.notEqual(r(p).texto, TEXTO_ALERTA, p)
 })
+
+test('fonte que já termina em ponto não ganha ponto duplo (Gaspar: "…atribuídos ao CEOPS..")', () => {
+  for (const q of ['Qual foi a maior cheia de Gaspar?', 'As 5 maiores cheias de Blumenau', 'Cheias de Gaspar em 2011', 'Qual foi a maior cheia de Rio do Sul?'])
+    assert.doesNotMatch(responder(q, dados).texto, /\.\.(\s|$)/, q)
+})

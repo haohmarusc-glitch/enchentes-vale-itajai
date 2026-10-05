@@ -264,7 +264,8 @@ function linhaCheia(r: RegistroCheia): string {
   return s
 }
 function fonteDe(regs: RegistroCheia[]): string {
-  const f = [...new Set(regs.map((r) => r.fonte.split(' — http')[0]))]
+  // Sem o ponto final da própria fonte: "…atribuídos ao CEOPS." não vira "CEOPS..".
+  const f = [...new Set(regs.map((r) => (r.fonte.split(' — http')[0] ?? r.fonte).trim().replace(/\.+$/, '')))]
   return `Fonte: ${f.slice(0, 3).join('; ')}${f.length > 3 ? ' e outras' : ''}.`
 }
 function ressalvas(regs: RegistroCheia[]): string {
