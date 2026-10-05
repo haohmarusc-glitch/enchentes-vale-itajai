@@ -585,6 +585,8 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 A tabela vigente continua em aberto.
 
+**Resposta enviada em 05/10/2026:** e-mail cadastrado no site e link enviado, por decisão do Jefferson.
+
 **O texto enviado não é o rascunho abaixo.** Ele foi encurtado como lembrete e acrescentou o que a rodada 6 trouxe:
 - o Decreto 5.431/2024 liga o nível à estação da ponte Beltramini;
 - o boletim de 11/09 chamou 4,04 m de "atenção";

@@ -31,5 +31,11 @@ o texto da conversa nem os contatos pessoais.
   1. gravar as faixas em `cotas_m`, com a fonte;
   2. pôr a DCSC-00020 em `REGUAS_COM_COTA_PROPRIA` (`scripts/coleta_estadual_com_cota.py`). O teste do par já
      encontra a régua e a fonte escrita no cadastro.
-- **Resposta à COMPDEC:** o rascunho está no Gmail, na mesma conversa, aguardando o Jefferson. Ele confirma o
-  cadastro do e-mail e diz que o site não substitui a Defesa Civil.
+- **Resposta à COMPDEC:** enviada em 05/10/2026, na mesma conversa, com a aprovação do Jefferson (Gmail, id
+  `1a10d96037b29127`). Ela:
+  - agradece a resposta;
+  - confirma que o e-mail `defesacivil@ibirama.sc.gov.br` foi cadastrado no Access e manda o link do site. Por
+    decisão do Jefferson: a regra de não pôr link em e-mail vale para quem não tem cadastro;
+  - avisa que o site está em construção e pode ter erros, e pede sugestões;
+  - diz que o site não substitui a Defesa Civil de SC nem a de nenhuma cidade (emergência: 199);
+  - oferece ajuda no que estiver ao alcance.
