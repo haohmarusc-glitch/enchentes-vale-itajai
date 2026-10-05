@@ -34,9 +34,15 @@ export type Chamar = (p: MessageCreateParamsNonStreaming) => Promise<Message>
 
 export const MODELO_CLASSIFICADOR = 'claude-haiku-4-5'
 /** Vai no registro de cada chamada: muda quando as instruções ou o esquema mudam. */
-export const VERSAO_CLASSIFICADOR = 'c2-2026-10-05'
+export const VERSAO_CLASSIFICADOR = 'c3-2026-10-05'
 /** Provisório: a prova é que calibra (docs/PILOTO-CLASSIFICADOR.md). */
 export const CONFIANCA_MINIMA_PADRAO = 0.7
+/**
+ * Limite menor quando falta parâmetro obrigatório: aí a tela só PEDE o que faltou, sem dar
+ * nenhum número. Na prova com a API (c2), o modelo acertava a intenção mas dava 0,6 sempre
+ * que faltava a cidade, mesmo instruído a não baixar a confiança por isso.
+ */
+export const CONFIANCA_MINIMA_FALTOU = 0.5
 /** Teto do servidor para a IA responder; o aparelho desiste um pouco depois. */
 export const TEMPO_LIMITE_MS = 6_000
 export const TAMANHO_MAXIMO_PERGUNTA = 300
@@ -95,9 +101,9 @@ export function instrucoes(d: Dados, anoAtual: number): string {
 
 Intenções (campo intencao):
 - maiores_cheias: a maior cheia, as N maiores, o recorde de uma cidade, SEM ano. quantidade = N; "a maior" = 1; "as maiores" sem número = 5.
-- cheias_periodo: as cheias de uma cidade num ano, mês ou intervalo de anos, inclusive "a altura da enchente de 84", "a maior cheia de 2011". Ano de dois dígitos é do século XX quando não houver outra leitura ("84" → 1984).
+- cheias_periodo: as cheias de uma cidade num ano, mês ou intervalo de anos, inclusive "Gaspar encheu em 2008?", "a altura da enchente de 84", "a maior cheia de 2011". Ano de dois dígitos é do século XX quando não houver outra leitura ("84" → 1984).
 - contar_acima: quantas cheias de uma cidade passaram de X metros. nivel_m = X.
-- atlas: se houve enchente num ano/mês sem citar cidade ("teve enchente em 2023?"), danos (mortos, desabrigados, desalojados) ou quais cidades foram atingidas. Cidade opcional.
+- atlas: se houve enchente num ano/mês SEM citar cidade ("teve enchente em 2023?"), danos (mortos, desabrigados, desalojados) ou quais cidades foram atingidas. Com cidade e sem falar de danos, é cheias_periodo.
 - chuva: quanto choveu antes de uma cheia de um ano/mês.
 - transito: quanto tempo a cheia leva de uma cidade até outra (cidade = de onde sai, cidade2 = aonde chega).
 - cota_ana: a cota da ANA (régua da Agência Nacional de Águas) em Brusque, Botuverá ou Vidal Ramos num ano/mês.
@@ -231,9 +237,10 @@ export type Decisao =
  * A decisão, na ordem que a segurança pede:
  *  1. barreira determinística (sem olhar o modelo);
  *  2. `situacao_atual: true` liga a barreira, mesmo que o resto seja inválido;
- *  3. saída inválida, `nao_sei`, intenção "nao_sei" ou confiança baixa → não responde;
+ *  3. saída inválida, `nao_sei` ou intenção "nao_sei" → não responde;
  *  4. "maiores cheias" com ano vira "cheias do período", como no roteador do motor;
- *  5. faltou parâmetro obrigatório → pede;
+ *  5. confiança abaixo do limite (0,7; 0,5 quando falta parâmetro e a tela só pede) → não
+ *     responde; faltou parâmetro obrigatório → pede;
  *  6. senão, a classificação conferida.
  */
 export function decidir(pergunta: string, bruto: unknown, d: Dados, opcoes: { confiancaMinima: number; anoAtual: number }): { decisao: Decisao; saida: SaidaClassificador | null } {
@@ -245,7 +252,6 @@ export function decidir(pergunta: string, bruto: unknown, d: Dados, opcoes: { co
   if ('invalida' in v) return { decisao: { tipo: 'nao_sei', motivo: 'invalida' }, saida: null }
   const s = v.ok
   if (s.nao_sei || s.intencao === 'nao_sei') return { decisao: { tipo: 'nao_sei', motivo: 'nao_sei' }, saida: s }
-  if (s.confianca < opcoes.confiancaMinima) return { decisao: { tipo: 'nao_sei', motivo: 'baixa_confianca' }, saida: s }
   // "A maior cheia de Blumenau em 1984" é a cheia DAQUELE ano: a mesma regra do roteador do
   // motor (maior + ano → cheias do período). Sem isso, o motor ignoraria o ano e daria o
   // recorde de 1880 (achado na prova com a API, 05/10/2026).
@@ -263,6 +269,9 @@ export function decidir(pergunta: string, bruto: unknown, d: Dados, opcoes: { co
     rua: s.rua,
   }
   const faltam = faltando(classificacao)
+  // Faltando parâmetro, a tela só pede o que faltou: basta o limite menor.
+  const minima = faltam.length ? Math.min(opcoes.confiancaMinima, CONFIANCA_MINIMA_FALTOU) : opcoes.confiancaMinima
+  if (s.confianca < minima) return { decisao: { tipo: 'nao_sei', motivo: 'baixa_confianca' }, saida: s }
   if (faltam.length) return { decisao: { tipo: 'faltou', classificacao, faltam }, saida: s }
   return { decisao: { tipo: 'ok', classificacao }, saida: s }
 }

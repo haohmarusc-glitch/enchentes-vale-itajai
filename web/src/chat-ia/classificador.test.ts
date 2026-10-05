@@ -190,3 +190,13 @@ test('instruções (c2): parâmetro faltando não baixa a confiança; "teve ench
   assert.match(sys, /teve enchente em 2023/)
   assert.match(sys, /"84" → 1984/)
 })
+
+test('faltando parâmetro, o limite é 0,5: a tela só pede (c3, achado da prova: o modelo dá 0,6 quando falta a cidade)', () => {
+  const transito = saida({ intencao: 'transito', cidade: null, cidade2: 'blumenau', quantidade: null })
+  assert.equal(decidir('quanto tempo a água leva pra chegar em blumenau?', { ...transito, confianca: 0.6 }, dados, OPC).decisao.tipo, 'faltou')
+  assert.deepEqual(decidir('x', { ...transito, confianca: 0.45 }, dados, OPC).decisao, { tipo: 'nao_sei', motivo: 'baixa_confianca' })
+  // Com tudo preenchido, continua 0,7.
+  assert.deepEqual(decidir('x', saida({ confianca: 0.6 }), dados, OPC).decisao, { tipo: 'nao_sei', motivo: 'baixa_confianca' })
+  // Instrução c3: com cidade, "X encheu em ANO?" é cheias_periodo.
+  assert.match(instrucoes(dados, 2026), /Com cidade e sem falar de danos, é cheias_periodo/)
+})
