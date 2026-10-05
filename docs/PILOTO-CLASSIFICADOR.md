@@ -5,7 +5,7 @@ O chat **sem IA continua em produção**. A IA entra só num piloto isolado, e *
 qual é a intenção e quais são os parâmetros. Ela não escreve resposta, não escolhe ferramenta e nenhum número
 sai dela. O texto que a pessoa lê sai do mesmo motor do chat sem IA (`web/src/chat-local/motor.ts`).
 
-**Estado:** código pronto e **desligado**. A prova com a API passou em 05/10/2026 (abaixo); falta ligar na Cloudflare.
+**Estado:** código pronto e **desligado**. A versão `c3` passou na prova com a API em 05/10/2026, com 93% e nenhuma resposta errada (abaixo); falta ligar na Cloudflare.
 
 ## Como a pergunta anda
 
@@ -144,6 +144,18 @@ Opcionais:
 `/perguntas`, "qual foi a enchente mais feia que blumenal já viu?" deve trazer "Entendi: a maior cheia de
 Blumenau".
 
+Se aparecer `{"ligado":false,"motivo":…}`, o motivo diz o que falta:
+
+| `motivo` | O que fazer |
+|---|---|
+| `sem_chave` | Criar o segredo `ANTHROPIC_API_KEY` em **Production**. |
+| `piloto_desligado` | Criar `CLASSIFICADOR_PILOTO` = `ligado`, em **Production**. |
+| `lista_vazia` | Criar `CLASSIFICADOR_EMAILS`, em **Production**. |
+| `sem_email` | O e-mail do Access não chegou à função, nem pelo cabeçalho nem pelo token. Abrir pelo endereço com Access (`enchentes.premercadosc.com`), não pelo `*.pages.dev`. |
+| `email_fora_da_lista` | O e-mail do login não é o que está em `CLASSIFICADOR_EMAILS`. |
+
+Variável nova só vale depois de publicar de novo.
+
 **Desligar:** apagar `CLASSIFICADOR_PILOTO` (ou trocar o valor) e publicar de novo. Para cortar na hora, sem
 publicar, revogar a chave no Console da Anthropic. Nos dois casos, o chat sem IA segue igual.
 
@@ -249,7 +261,25 @@ As duas perguntas com cidade faltando seguiram com confiança 0,6.
 **Tempo:** em três rodadas houve uma chamada de 9 s e uma de 8,3 s. No site, sem nova tentativa, isso vira "não
 consegui interpretar" depois de 6 s. É raro e seguro; o registro do piloto mostra com que frequência acontece.
 
-**Falta rodar a prova com a `c3`** (~US$ 0,38) e ligar o piloto para os e-mails escolhidos.
+### Resultado da `c3` (05/10/2026, PC do Jefferson, Haiku 4.5, 2 rodadas): a versão a ligar
+
+| Critério | `c1` | `c2` | **`c3`** |
+|---|---|---|---|
+| 34 perguntas antigas | 34/34 | 34/34 | **34/34** |
+| desconhecidas + faltou certas | 89% | 87–89% | **93%** (50/54) |
+| respondidas com intenção ou parâmetro errado | 2 | 2 | **0** |
+| pergunta do presente respondida | 0 | 0 | **0** (40/40 viraram o aviso) |
+| fora do tema adivinhada | 0 | 0 | **0** (14/14 "não sei") |
+| custo por chamada | US$ 0,0033 | US$ 0,0034 | **US$ 0,0034** (rodada: US$ 0,38) |
+| tempo: média / p95 / máximo | 2,0 / 2,7 / 2,9 s | 2,2–2,4 / 3,0–3,2 / 8,3 s | **2,2 / 3,0 / 6,0 s** |
+
+As 4 que sobraram foram "não consegui interpretar", a falha segura.
+
+**Atenção ao tempo:** a cauda encosta no limite de 6 s do site. Os máximos das rodadas foram 9 s, 8,3 s e 6,0 s;
+a média e o p95 estão bem abaixo. No piloto, o registro mostra quantas viram `erro:tempo`. Se for frequente,
+dá para subir o limite para 8 s (`TEMPO_LIMITE_MS` e `TEMPO_LIMITE_APARELHO_MS`).
+
+**Falta:** ligar o piloto para os e-mails escolhidos (abaixo, "Como ligar").
 
 ## Custo (estimativa; o real sai no registro e na prova)
 

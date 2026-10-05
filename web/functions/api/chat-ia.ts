@@ -128,8 +128,30 @@ export const SEM_EMAIL = '(sem e-mail)'
  * pedido que passou pelo login; serve para a conta de custo, não como prova de identidade.
  */
 export function emailDoAcesso(pedido: Request): string | null {
-  const e = pedido.headers.get('cf-access-authenticated-user-email')?.trim().toLowerCase()
-  return e && e.length <= 254 && /^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$/.test(e) ? e : null
+  const valido = (x: string | null | undefined) => {
+    const e = x?.trim().toLowerCase()
+    return e && e.length <= 254 && /^[^\s@"<>]+@[^\s@"<>]+\.[^\s@"<>]+$/.test(e) ? e : null
+  }
+  return valido(pedido.headers.get('cf-access-authenticated-user-email')) ?? valido(emailDoCracha(pedido.headers.get('cf-access-jwt-assertion')))
+}
+
+/**
+ * O e-mail de dentro do token que o Access põe em todo pedido que passou pelo login
+ * (`Cf-Access-Jwt-Assertion`), para quando o cabeçalho de e-mail não vier (05/10/2026: no
+ * site, o piloto respondeu "desligado" com o e-mail na lista). Só LÊ o campo `email`, sem
+ * conferir a assinatura: o pedido já passou pelo Access, e o uso é contar custo e conferir
+ * a lista do piloto, nunca dar acesso.
+ */
+export function emailDoCracha(token: string | null): string | null {
+  const meio = token?.split('.')[1]
+  if (!meio || meio.length > 8_000) return null
+  try {
+    const b64 = meio.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(meio.length / 4) * 4, '=')
+    const dados = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0)))) as { email?: unknown }
+    return typeof dados.email === 'string' ? dados.email : null
+  } catch {
+    return null
+  }
 }
 
 const RETENCAO_USO_DIAS = 90
