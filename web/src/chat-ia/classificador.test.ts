@@ -171,3 +171,22 @@ test('máscara do registro: tira e-mail, telefone e número da casa; mantém ano
 test('o texto do motor para "agora" é o mesmo do chat', () => {
   assert.equal(responder('o rio vai subir hoje?', dados).texto, TEXTO_ALERTA)
 })
+
+test('"maior cheia" com ano vira "cheias do período" (achado da prova com a API: "enchente de 84 em blumenau")', () => {
+  const { decisao } = decidir('qual a altura da enchente de 84 em blumenau', saida({ ano: 1984, quantidade: null }), dados, OPC)
+  assert.equal(decisao.tipo, 'ok')
+  if (decisao.tipo !== 'ok') return
+  assert.equal(decisao.classificacao.intencao, 'cheias_periodo')
+  const r = responderPorIntencao(decisao.classificacao, dados)
+  assert.equal(r.texto, responder('cheias de Blumenau em 1984', dados).texto)
+  assert.doesNotMatch(r.texto, /1880/)
+  // Sem ano, continua o recorde.
+  assert.equal((decidir('x', saida(), dados, OPC).decisao as { classificacao: Classificacao }).classificacao.intencao, 'maiores_cheias')
+})
+
+test('instruções (c2): parâmetro faltando não baixa a confiança; "teve enchente em ANO" é Atlas; "84" é 1984', () => {
+  const sys = instrucoes(dados, 2026)
+  assert.match(sys, /NÃO baixa a confiança/)
+  assert.match(sys, /teve enchente em 2023/)
+  assert.match(sys, /"84" → 1984/)
+})

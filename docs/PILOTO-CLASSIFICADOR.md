@@ -220,10 +220,16 @@ ano em dois dígitos. Os outros 4 casos fora dos 89% foram "não consegui interp
 
 **Veredito:** passou nos quatro critérios.
 
-**Próximos passos:**
-1. Ver o que o modelo respondeu nos 6 casos.
-2. Talvez ensinar o ano em dois dígitos nas instruções, e rodar de novo (~US$ 0,37).
-3. Ligar o piloto para os e-mails escolhidos.
+**Os 6 casos fora dos 89%** são três perguntas, cada uma falhando igual nas duas rodadas.
+
+| Pergunta | O que o modelo fez | Correção na versão `c2` das instruções |
+|---|---|---|
+| "qual a altura da enchente de 84 em blumenau" (as 2 erradas) | Leu 1984 certo, mas escolheu "maiores cheias" com ano. O motor ignoraria o ano e daria o recorde de 1880. | Regra fixa depois da IA: "maiores cheias" com ano vira "cheias do período", como o roteador do motor já faz. As instruções também explicam isso e o ano de dois dígitos. |
+| "quanto tempo a água leva pra chegar em blumenau?" | Acertou tudo (trânsito, falta a origem), mas deu confiança 0,6 porque faltava a cidade. | Parâmetro que a pergunta não diz fica vazio e não baixa a confiança; a tela pede a cidade. |
+| "teve enchente em 2023?" | Leu como "cheias de uma cidade", sem cidade, com confiança 0,6. Caiu no "não consegui interpretar", a falha segura. | Instruções: "houve enchente num ano, sem cidade" é pergunta para o Atlas. |
+
+**Falta rodar a prova com a versão `c2`**, com uma chave nova (~US$ 0,37), e ligar o piloto para os e-mails
+escolhidos.
 
 ## Custo (estimativa; o real sai no registro e na prova)
 
