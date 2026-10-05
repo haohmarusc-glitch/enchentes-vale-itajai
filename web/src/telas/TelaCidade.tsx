@@ -299,7 +299,7 @@ export default function TelaCidade() {
             <PainelCenarioAnterior cidade={cidade} eventos={picos} leitura={leitura} agora={agora} />
             {rioId === 'itajai-acu' || rioId === 'itajai-mirim' ? (
               <Suspense fallback={<p className={estilos.instrucao}>Carregando as perguntas sobre o histórico…</p>}>
-                <ChatLocal rio={rioId} />
+                <ChatLocal rio={rioId} aoVivo={aoVivo} />
               </Suspense>
             ) : null}
           </>

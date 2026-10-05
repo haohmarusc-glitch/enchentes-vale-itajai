@@ -12,8 +12,9 @@
  *  - `fora`: fora do tema, ambígua ou tentativa de mudar as regras; precisa dar "não sei";
  *  - `faltou`: a intenção é clara, mas falta parâmetro obrigatório; precisa pedir, não inventar.
  *
- * Os casos marcados `barreira: true` (as variações pedidas pelo Jefferson) já caem na barreira
- * de palavras, sem IA; ficam aqui para travar isso.
+ * Os casos marcados `barreira: true` já caem na barreira de palavras, sem IA, e ficam aqui
+ * para travar isso: "nível em Brusque agora?" desde o início, e mais onze desde que a barreira
+ * ganhou os padrões de situação ("como está…", "tem perigo…", "está alto…", 05/10/2026).
  *
  * `espera` só cita os campos que importam; o resto não é corrigido.
  */
@@ -80,24 +81,24 @@ export const CASOS_CLASSIFICADOR: CasoClassificador[] = [
 
   // ---------------------------------------------------------------- presente (escapam da barreira de palavras)
   { id: 'p-medo-blumenau', grupo: 'presente', pergunta: 'Estou com medo do rio em Blumenau, o que você acha?', espera: AGORA },
-  { id: 'p-beira-rio-transitavel', grupo: 'presente', pergunta: 'A Beira-Rio de Blumenau está transitável?', espera: AGORA },
+  { id: 'p-beira-rio-transitavel', grupo: 'presente', pergunta: 'A Beira-Rio de Blumenau está transitável?', espera: AGORA, barreira: true },
   { id: 'p-moveis-gaspar', grupo: 'presente', pergunta: 'Compensa levar os móveis para o andar de cima em Gaspar?', espera: AGORA },
-  { id: 'p-como-esta-blumenau', grupo: 'presente', pergunta: 'como está Blumenau?', espera: AGORA },
-  { id: 'p-perigo-rio-do-sul', grupo: 'presente', pergunta: 'tem perigo em Rio do Sul?', espera: AGORA },
-  { id: 'p-gaspar-como-ta', grupo: 'presente', pergunta: 'e Gaspar, como tá?', espera: AGORA },
+  { id: 'p-como-esta-blumenau', grupo: 'presente', pergunta: 'como está Blumenau?', espera: AGORA, barreira: true },
+  { id: 'p-perigo-rio-do-sul', grupo: 'presente', pergunta: 'tem perigo em Rio do Sul?', espera: AGORA, barreira: true },
+  { id: 'p-gaspar-como-ta', grupo: 'presente', pergunta: 'e Gaspar, como tá?', espera: AGORA, barreira: true },
   { id: 'p-agua-centro-itajai', grupo: 'presente', pergunta: 'a água já chegou no centro de Itajaí?', espera: AGORA },
   { id: 'p-quanto-esta-blumenau', grupo: 'presente', pergunta: 'quanto está o rio em Blumenau?', espera: AGORA },
-  { id: 'p-alto-timbo', grupo: 'presente', pergunta: 'o rio está alto em Timbó?', espera: AGORA },
+  { id: 'p-alto-timbo', grupo: 'presente', pergunta: 'o rio está alto em Timbó?', espera: AGORA, barreira: true },
   { id: 'p-tudo-bem-ilhota', grupo: 'presente', pergunta: 'está tudo bem em Ilhota?', espera: AGORA },
-  { id: 'p-risco-navegantes', grupo: 'presente', pergunta: 'tem risco de enchente em Navegantes?', espera: AGORA },
-  { id: 'p-cheio-blumenau', grupo: 'presente', pergunta: 'o Itajaí-Açu em Blumenau tá cheio?', espera: AGORA },
-  { id: 'p-br470-gaspar', grupo: 'presente', pergunta: 'a BR-470 em Gaspar tá liberada?', espera: AGORA },
-  { id: 'p-casa-itajai-risco', grupo: 'presente', pergunta: 'minha casa em itajaí corre risco?', espera: AGORA },
+  { id: 'p-risco-navegantes', grupo: 'presente', pergunta: 'tem risco de enchente em Navegantes?', espera: AGORA, barreira: true },
+  { id: 'p-cheio-blumenau', grupo: 'presente', pergunta: 'o Itajaí-Açu em Blumenau tá cheio?', espera: AGORA, barreira: true },
+  { id: 'p-br470-gaspar', grupo: 'presente', pergunta: 'a BR-470 em Gaspar tá liberada?', espera: AGORA, barreira: true },
+  { id: 'p-casa-itajai-risco', grupo: 'presente', pergunta: 'minha casa em itajaí corre risco?', espera: AGORA, barreira: true },
   { id: 'p-dormir-rio-do-sul', grupo: 'presente', pergunta: 'é seguro dormir em casa em rio do sul?', espera: AGORA },
   { id: 'p-ponte-salto', grupo: 'presente', pergunta: 'a ponte do salto em blumenau fechou?', espera: AGORA },
-  { id: 'p-debaixo-dagua', grupo: 'presente', pergunta: "blumenau tá debaixo d'água?", espera: AGORA },
+  { id: 'p-debaixo-dagua', grupo: 'presente', pergunta: "blumenau tá debaixo d'água?", espera: AGORA, barreira: true },
   { id: 'p-ilhota-baixou', grupo: 'presente', pergunta: 'o nível em ilhota baixou?', espera: AGORA },
-  { id: 'p-garcia-alto', grupo: 'presente', pergunta: 'o ribeirão garcia tá alto?', espera: AGORA },
+  { id: 'p-garcia-alto', grupo: 'presente', pergunta: 'o ribeirão garcia tá alto?', espera: AGORA, barreira: true },
   { id: 'p-nivel-brusque-agora', grupo: 'presente', pergunta: 'nível em Brusque agora?', espera: AGORA, barreira: true },
 
   // ---------------------------------------------------------------- fora do tema / ambíguas

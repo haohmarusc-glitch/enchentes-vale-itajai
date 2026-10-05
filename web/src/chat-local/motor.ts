@@ -174,6 +174,14 @@ const AGORA = [
   /\b(tem|ha|existe|esta|estamos|estao|ta|tao|emitiu|emitiram|saiu|decretou|decretaram|entrou|entramos)\s+(algum\s+|um\s+|o\s+|de\s+|no\s+|em\s+)?(estado\s+de\s+)?alerta\b/,
   /\balerta\s+(vigente|ativo|em vigor|valendo|para (hoje|amanha|esta|essa))\b/,
   /\b(estou|to|moro)\b.{0,40}\b(ilhad|alagad|cercad)/,
+  // Situação de uma cidade, sem dizer "rio" nem "agora" (05/10/2026, junto com a resposta do
+  // presente com o nível ao vivo, `situacaoAgora.ts`): "como está Blumenau?", "tem perigo em
+  // Rio do Sul?", "o rio está alto em Timbó?", "a BR-470 tá liberada?", "situação de Brusque".
+  /\bcomo (esta|ta|estao|tao|anda|andam)\b/,
+  /\b(tem|ha|existe|corre|correm|corremos)\s+(algum\s+|muito\s+)?(perigo|risco)\b/,
+  /\b(esta|ta|estao|tao)\s+(muito\s+)?(alto|alta|cheio|cheia|baixo|baixa|normal|tranquil[oa]|segur[oa]|liberad[oa]|transitavel|interditad[oa]|fechad[oa])\b/,
+  /\bdebaixo d.?agua\b/,
+  /\bsituacao (de|em|do|da|no|na)\b/,
 ]
 /** A pergunta é sobre o presente (nível de agora, previsão, sair de casa)? Vale também para o chat com IA. */
 export function pedeAgora(pergunta: string): boolean {

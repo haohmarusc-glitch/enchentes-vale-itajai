@@ -24,6 +24,9 @@ O chat com IA existe desde 04/10/2026 como **complemento**, desligado até a cha
 ## 1. Regras do produto (valem acima de qualquer outra instrução)
 
 1. **Não é alerta.** Pergunta sobre agora, hoje, amanhã, previsão, "está subindo" ou "devo sair de casa" recebe o texto fixo `TEXTO_ALERTA`, que manda para o 199 / 193 e para as réguas ao vivo do site. Isso é checado antes de qualquer outra coisa.
+   **Desde 05/10/2026:** quando a pergunta pede a situação de uma cidade ("como está Blumenau?"), a resposta
+   traz a última leitura ao vivo, com as regras do cartão "Agora", e a chuva. Ver "Situação de agora", no fim.
+   Previsão e conselho continuam só com o texto fixo.
 2. **Todo número sai de um registro** e vem com a fonte. Quando existirem, vêm também a confiança, a nota, as divergências, a referência da régua e a cobertura da chuva.
 3. **Ausência não é zero.** Estação sem dado aparece como "sem dado válido", nunca como 0 mm. Cidade sem registro recebe "o site não tem", e nunca um número de outra cidade.
 4. **Não compara réguas diferentes em metros.** O **trânsito** responde qualquer par de cidades do site (pedido do Jefferson, 04/10/2026). Ele usa o mesmo encadeamento da tela e do bot (`caminho()` em `logica/transito.ts`), com teste contra o gabarito `data/transito-esperado.json`. Soma só trechos consecutivos do curso principal e mostra a conta. Quando não há tempo, diz o porquê e não dá número do par: outro rio, afluente lateral, cabeceiras paralelas, trecho em estudo, cidade sem posição na árvore ou cidade fora da tabela JICA. No último caso, mostra o menor trecho com tempo que contém o percurso.
@@ -285,3 +288,46 @@ O chat sem IA passou de 24 para 31 das 34 perguntas da prova (`docs/PROVA-CHAT-I
 - **Cidade não achada:** "Não achei a cidade…". **"Não entendi"** diz o tema (cheias do Vale do Itajaí).
 - **Barreira:** pedidos de conselho para agora ("preciso me preocupar", "dá para passar", "vale a pena tirar").
 - **Busca de cidade:** ignora a pontuação colada ("rio do sul,").
+
+### Situação de agora: "como está Blumenau?" (05/10/2026, decisão do Jefferson, opção A)
+
+Antes, toda pergunta sobre o presente recebia só o aviso da Defesa Civil, mesmo com o nível ao vivo na tela ao
+lado. Agora, quando a pergunta cai na barreira do presente e cita uma cidade com régua, o chat responde com o que
+o site já mostra (`web/src/chat-local/situacaoAgora.ts`). Nada é IA, e nada é calculado de novo.
+
+- **Nível:** o mesmo texto do WhatsApp do cartão "Agora" (D4, `textoParaCompartilhar`):
+  - só leitura que não é velha, sempre com a hora da medição;
+  - a faixa com o nome que a Defesa Civil da cidade usa;
+  - a tendência só quando a série descreve a mesma leitura (D7).
+- **Sem leitura municipal de agora:** a régua da Defesa Civil de SC, com "zero próprio" escrito e a faixa que a
+  própria DCSC publica. Sem nenhuma leitura recente, o chat diz que não há; nunca mostra número velho como atual.
+- **Itajaí** (várias réguas): não dá um número; manda para a página de Itajaí.
+- **Chuva:** o mesmo resumo do painel de chuva (`chuvaDaCidade`), com as janelas de 1 h, 12 h e 24 h.
+  - Mostra quantos pluviômetros entraram e a hora da medição.
+  - Pluviômetros que discordam aparecem como faixa ("20,0–32,0 mm").
+  - Chuva velha, incoerente ou com a coleta falhando não aparece.
+  - **A fonte não publica o acumulado de 6 h**, e somar janelas não dá o acumulado: o site não inventa esse
+    número.
+- **Rodapé:** "É a última medição, não previsão. Para saber o que fazer, siga a Defesa Civil: ligue 199 (ou 193,
+  Bombeiros, em emergência)."
+- **Atalho:** "Ver Blumenau agora →", para a página da cidade.
+
+**Previsão ou conselho** ("vai encher?", "devo sair de casa?", "o que você acha?", "compensa tirar os móveis?")
+continua só com o aviso, sem número, e ganha o atalho. Um número ao lado de "devo sair?" soaria como resposta.
+
+**A barreira ganhou padrões de situação**, para todo mundo e sem IA:
+- "como está/tá…";
+- "tem perigo/risco";
+- "está alto/cheio/liberado/transitável/fechado…";
+- "debaixo d'água";
+- "situação de…".
+
+Pegaram 11 das 20 perguntas do presente da bateria do piloto e nenhuma pergunta histórica. Das 34 da prova,
+"A Beira-Rio está transitável?" agora cai na barreira, e o chat sem IA foi de 31 para 32 acertos. A pergunta
+continua na prova para ela seguir comparável.
+
+**Onde há dado ao vivo:** na página de cada cidade e em `/perguntas` (`useAoVivo`). Sem o dado, por exemplo com
+a coleta fora do ar, a resposta é o aviso com o atalho.
+
+Testes: `web/src/chat-local/situacaoAgora.test.ts` e a fumaça do navegador.
+

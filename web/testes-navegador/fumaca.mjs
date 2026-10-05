@@ -271,6 +271,19 @@ console.log('\nchat com IA: botão só com o servidor ligado; o presente nunca v
   ;(await pagina.getByRole('button', { name: 'Perguntar à IA' }).count()) === 0
     ? ok('pergunta sobre agora: sem botão da IA')
     : falhou('pergunta sobre agora ganhou botão da IA')
+  // "Como está Blumenau?" (05/10/2026): resposta do presente com o 199 e o atalho para a cidade.
+  // O tempo real vem de fora e é bloqueado aqui: a resposta diz que não há leitura recente.
+  await perguntar(pagina, caixa, 'como está Blumenau?')
+  await pagina.getByRole('link', { name: 'Ver Blumenau agora →' }).waitFor({ timeout: 5_000 }).catch(() => {})
+  const presente = (await pagina.locator('[role="log"] > div').allInnerTexts()).at(-2) ?? ''
+  ;(await pagina.getByRole('link', { name: 'Ver Blumenau agora →' }).count()) > 0 && /199/.test(presente) && !/maior cheia/i.test(presente)
+    ? ok('"como está Blumenau?": 199 e atalho para a cidade, sem a maior cheia')
+    : falhou(`"como está Blumenau?": ${presente.slice(0, 120)}`)
+  await pagina.getByRole('link', { name: 'Ver Blumenau agora →' }).click({ timeout: 5_000 }).catch(() => {})
+  await pagina.waitForTimeout(500)
+  pagina.url().includes('#/acu/blumenau') ? ok('o atalho abre a página de Blumenau') : falhou(`o atalho abriu ${pagina.url()}`)
+  await pagina.goBack()
+  await pagina.waitForFunction(() => !document.querySelector('input[aria-label="Sua pergunta"]')?.disabled, null, { timeout: 15_000 }).catch(() => {})
   await perguntar(pagina, caixa, 'Qual foi a maior cheia de Gaspar?')
   const botao = pagina.getByRole('button', { name: 'Perguntar à IA' })
   await botao.first().click({ timeout: 5_000 }).catch(() => {})
