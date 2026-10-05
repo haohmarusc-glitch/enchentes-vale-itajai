@@ -24,6 +24,9 @@ O chat com IA existe desde 04/10/2026 como **complemento**, desligado até a cha
 ## 1. Regras do produto (valem acima de qualquer outra instrução)
 
 1. **Não é alerta.** Pergunta sobre agora, hoje, amanhã, previsão, "está subindo" ou "devo sair de casa" recebe o texto fixo `TEXTO_ALERTA`, que manda para o 199 / 193 e para as réguas ao vivo do site. Isso é checado antes de qualquer outra coisa.
+   **Desde 05/10/2026:** quando a pergunta pede a situação de uma cidade ("como está Blumenau?"), a resposta
+   traz a última leitura ao vivo, com as regras do cartão "Agora", e a chuva. Ver "Situação de agora", no fim.
+   Previsão e conselho continuam só com o texto fixo.
 2. **Todo número sai de um registro** e vem com a fonte. Quando existirem, vêm também a confiança, a nota, as divergências, a referência da régua e a cobertura da chuva.
 3. **Ausência não é zero.** Estação sem dado aparece como "sem dado válido", nunca como 0 mm. Cidade sem registro recebe "o site não tem", e nunca um número de outra cidade.
 4. **Não compara réguas diferentes em metros.** O **trânsito** responde qualquer par de cidades do site (pedido do Jefferson, 04/10/2026). Ele usa o mesmo encadeamento da tela e do bot (`caminho()` em `logica/transito.ts`), com teste contra o gabarito `data/transito-esperado.json`. Soma só trechos consecutivos do curso principal e mostra a conta. Quando não há tempo, diz o porquê e não dá número do par: outro rio, afluente lateral, cabeceiras paralelas, trecho em estudo, cidade sem posição na árvore ou cidade fora da tabela JICA. No último caso, mostra o menor trecho com tempo que contém o percurso.
@@ -285,3 +288,78 @@ O chat sem IA passou de 24 para 31 das 34 perguntas da prova (`docs/PROVA-CHAT-I
 - **Cidade não achada:** "Não achei a cidade…". **"Não entendi"** diz o tema (cheias do Vale do Itajaí).
 - **Barreira:** pedidos de conselho para agora ("preciso me preocupar", "dá para passar", "vale a pena tirar").
 - **Busca de cidade:** ignora a pontuação colada ("rio do sul,").
+
+### Situação de agora: "como está Blumenau?" (05/10/2026, decisão do Jefferson, opção A)
+
+Antes, toda pergunta sobre o presente recebia só o aviso da Defesa Civil, mesmo com o nível ao vivo na tela ao
+lado. Agora, quando a pergunta cai na barreira do presente e cita uma cidade com régua, o chat responde com o que
+o site já mostra (`web/src/chat-local/situacaoAgora.ts`). Nada é IA, e nada é calculado de novo.
+
+- **Nível:** o mesmo texto do WhatsApp do cartão "Agora" (D4, `textoParaCompartilhar`):
+  - só leitura que não é velha, sempre com a hora da medição;
+  - a faixa com o nome que a Defesa Civil da cidade usa;
+  - a tendência só quando a série descreve a mesma leitura (D7).
+- **Sem leitura municipal de agora:** a régua da Defesa Civil de SC, com "zero próprio" escrito e a faixa que a
+  própria DCSC publica. Sem nenhuma leitura recente, o chat diz que não há; nunca mostra número velho como atual.
+- **Itajaí** (várias réguas): não dá um número; manda para a página de Itajaí.
+- **Chuva:** o mesmo resumo do painel de chuva (`chuvaDaCidade`), com as janelas de 1 h, 12 h e 24 h.
+  - Mostra quantos pluviômetros entraram e a hora da medição.
+  - Pluviômetros que discordam aparecem como faixa ("20,0–32,0 mm").
+  - Chuva velha, incoerente ou com a coleta falhando não aparece.
+  - **A fonte não publica o acumulado de 6 h**, e somar janelas não dá o acumulado: o site não inventa esse
+    número.
+- **Rodapé:** "É a última medição, não previsão. Para saber o que fazer, siga a Defesa Civil: ligue 199 (ou 193,
+  Bombeiros, em emergência)."
+- **Atalho:** "Ver Blumenau agora →", para a página da cidade.
+
+**Previsão ou conselho** ("vai encher?", "devo sair de casa?", "o que você acha?", "compensa tirar os móveis?")
+continua só com o aviso, sem número, e ganha o atalho. Um número ao lado de "devo sair?" soaria como resposta.
+
+**A barreira ganhou padrões de situação**, para todo mundo e sem IA:
+- "como está/tá…";
+- "tem perigo/risco";
+- "está alto/cheio/liberado/transitável/fechado…";
+- "debaixo d'água";
+- "situação de…".
+
+Pegaram 11 das 20 perguntas do presente da bateria do piloto e nenhuma pergunta histórica. Das 34 da prova,
+"A Beira-Rio está transitável?" agora cai na barreira, e o chat sem IA foi de 31 para 32 acertos. A pergunta
+continua na prova para ela seguir comparável.
+
+**Onde há dado ao vivo:** na página de cada cidade e em `/perguntas` (`useAoVivo`). Sem o dado, por exemplo com
+a coleta fora do ar, a resposta é o aviso com o atalho.
+
+Testes: `web/src/chat-local/situacaoAgora.test.ts` e a fumaça do navegador.
+
+### Rua de Itajaí pelas manchas da Prefeitura (05/10/2026, pedido do Jefferson)
+
+Itajaí não tem cota de rua publicada. Por isso o chat respondia "ainda não há cota de rua levantada para Itajaí"
+até para "a Rua José Domingos Machado alagou em 2011?". Mas o site tem as **manchas de nove cheias** da
+Prefeitura (1983–2015) e a **base de vias** dela (GeoItajaí). Agora o chat cruza as duas.
+
+- **A tabela:** `scripts/ruas_por_mancha_itajai.py` calcula, uma vez, para cada rua da base e cada cheia:
+  - quantos metros (e que % do traçado) ficaram dentro da mancha;
+  - nos mapas de lâmina d'água (2011, 2013, 2014 e 2015), quantos metros caíram em cada faixa.
+  
+  Ela é gravada em `data/manchas/itajai/ruas-por-mancha.json` (~217 KB): é um arquivo derivado, sem data dentro,
+  e não mexe em `enchentes.json`. O teste `scripts/teste_ruas_por_mancha_itajai.py` reprova se a tabela salva
+  não bater com a recalculada: se a base de vias ou uma mancha mudar, rode o script de novo.
+- **A resposta** (`ruaItajaiPorMancha` no motor):
+  - **Com ano:** só aquela cheia. Ano sem mancha → "o site não tem mancha de cheia de Itajaí de 2010", com a
+    lista das que existem.
+  - **Sem ano:** todas as cheias, e as que não pegaram a rua aparecem juntas em "Fora da mancha".
+  - **Ponta de rua:** menos de 10 m dentro da mancha conta como a ponta encostando na borda, não como a rua
+    dentro dela.
+  - **Lâmina:** em faixas ("0,51 a 1 m em cerca de 760 m").
+  - **Cuidados, sempre:** a mancha é o mapa da área atingida feito pela Prefeitura, não medição em cada casa; ruas
+    com o mesmo nome na base entram juntas. A frase nunca é "a sua casa alagou".
+  - **Atalho:** "Ver no mapa das manchas de Itajaí →".
+- **Busca da rua:** pelo nome sem o prefixo ("R.", "Av."), primeiro o nome inteiro, depois a palavra inteira,
+  depois um pedaço do nome. Mostra até 3 ruas e diz quantas mais casaram.
+- **Download:** a tabela só baixa quando a pergunta cita uma rua, junto com as cotas de rua.
+- **Diferença entre os dois mapas de 2011:** em setembro de 2011, a mancha total e o mapa de lâmina da Prefeitura
+  não coincidem exatamente, e a soma das faixas pode passar um pouco do trecho dentro da mancha. A % vem da
+  mancha total; as faixas, do mapa de lâmina.
+
+Testes: `motor.test.ts` (resposta e tabela), `scripts/teste_ruas_por_mancha_itajai.py` e a fumaça do navegador.
+

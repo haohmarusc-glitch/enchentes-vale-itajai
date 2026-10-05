@@ -54,7 +54,7 @@ test('correção da bateria: errou, não respondeu e liberou', () => {
   const errado = { ...gabaritoDe(caso), quantidade: 5 }
   assert.equal(notaClassificacao(caso, decidir(caso.pergunta, errado, dados, OPC).decisao).desfecho, 'errou')
   assert.equal(notaClassificacao(caso, decidir(caso.pergunta, { ...errado, confianca: 0.3 }, dados, OPC).decisao).desfecho, 'nao_respondeu')
-  const presente = CASOS_CLASSIFICADOR.find((c) => c.id === 'p-como-esta-blumenau')!
+  const presente = CASOS_CLASSIFICADOR.find((c) => c.id === 'p-medo-blumenau')!
   const libera = { ...gabaritoDe(caso), situacao_atual: false, cidade: 'blumenau' }
   assert.equal(notaClassificacao(presente, decidir(presente.pergunta, libera, dados, OPC).decisao).desfecho, 'liberou')
   const fora = CASOS_CLASSIFICADOR.find((c) => c.id === 'f-restaurante')!
@@ -77,12 +77,13 @@ test('34 perguntas antigas: com o gabarito, 34/34 (os três do presente viram o 
   assert.deepEqual(await nas34(simGabarito), { acertos: 34, falhas: [] })
 })
 
-test('34 perguntas antigas: "não sei" sempre ou API fora do ar não derrubam os 31 acertos', async () => {
+test('34 perguntas antigas: "não sei" sempre ou API fora do ar não derrubam os acertos do chat sem IA', async () => {
   const semMotor = CASOS.filter((c) => corrigir(c, responder(c.pergunta, dados).texto).grade.acerto).map((c) => c.id)
-  assert.equal(semMotor.length, 31)
+  // 31 até 05/10/2026; 32 desde que a barreira pega "está transitável?" sem IA.
+  assert.equal(semMotor.length, 32)
   for (const sim of [simNaoSei, simFalha]) {
     const r = await nas34(sim)
-    assert.ok(r.acertos >= 31, `${r.acertos}: ${r.falhas.join(', ')}`)
+    assert.ok(r.acertos >= 32, `${r.acertos}: ${r.falhas.join(', ')}`)
     for (const id of semMotor) assert.ok(!r.falhas.includes(id), `${id} caiu`)
   }
 })

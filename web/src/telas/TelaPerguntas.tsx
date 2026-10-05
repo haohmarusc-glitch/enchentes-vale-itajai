@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { useCidadesSeguidas } from '../dados/usarPreferencias'
+import { useAoVivo } from '../dados/usarAoVivo'
 import estilos from './TelaPerguntas.module.css'
 
 /**
@@ -20,6 +21,8 @@ const ChatLocal = lazy(() => import('../chat-local/ChatLocal'))
 export default function TelaPerguntas() {
   const { cidades } = useCidadesSeguidas()
   const rio = cidades[0]?.rio === 'mirim' ? 'itajai-mirim' : 'itajai-acu'
+  // O nível e a chuva de agora, para "como está Blumenau?" (05/10/2026).
+  const aoVivo = useAoVivo()
   return (
     <>
       <p className={estilos.voltar}>
@@ -32,7 +35,7 @@ export default function TelaPerguntas() {
         rua. Cada resposta sai dos dados deste site, com a fonte.
       </p>
       <Suspense fallback={<p className={estilos.intro}>Carregando as perguntas sobre o histórico…</p>}>
-        <ChatLocal rio={rio} />
+        <ChatLocal rio={rio} aoVivo={aoVivo} />
       </Suspense>
     </>
   )

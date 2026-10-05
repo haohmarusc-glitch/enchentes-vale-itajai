@@ -134,6 +134,8 @@ export interface MensagemPiloto {
   entendido?: string
   /** Para os botões "Correto"/"Não era isso". */
   idCorrecao?: string
+  /** Atalho que a resposta do motor trouxe (ex.: o mapa das manchas de Itajaí). */
+  link?: { texto: string; para: string }
 }
 
 /**
@@ -156,6 +158,7 @@ export function mensagemDoPiloto(c: Classificado, d: Dados): MensagemPiloto {
   return {
     texto: r.texto,
     ...(r.sugestoes ? { sugestoes: r.sugestoes } : {}),
+    ...(r.link ? { link: r.link } : {}),
     entendido: descreverEntendido(dec.classificacao, d),
     ...(c.id ? { idCorrecao: c.id } : {}),
   }

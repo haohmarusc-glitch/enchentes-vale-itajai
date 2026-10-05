@@ -316,3 +316,40 @@ test('barreira: pedido de conselho para agora', () => {
     assert.equal(r(p).texto, TEXTO_ALERTA, p)
   for (const p of ['Dá para comparar Blumenau e Gaspar?', 'Cheias de Gaspar em 2011.']) assert.notEqual(r(p).texto, TEXTO_ALERTA, p)
 })
+
+test('fonte que já termina em ponto não ganha ponto duplo (Gaspar: "…atribuídos ao CEOPS..")', () => {
+  for (const q of ['Qual foi a maior cheia de Gaspar?', 'As 5 maiores cheias de Blumenau', 'Cheias de Gaspar em 2011', 'Qual foi a maior cheia de Rio do Sul?'])
+    assert.doesNotMatch(responder(q, dados).texto, /\.\.(\s|$)/, q)
+})
+
+test('rua de Itajaí: responde pelas manchas da Prefeitura, com a lâmina, os cuidados e o atalho', () => {
+  const r = responder('em 2011 a rua jose domingos machado em itajai teve cheias ?', dados)
+  assert.equal(r.intencao, 'rua_historico')
+  assert.match(r.texto, /Rua José Domingos Machado \(cerca de 1\.014 m na base de vias da Prefeitura\):/)
+  assert.match(r.texto, /setembro de 2011: a rua toda \(1\.014 m\) dentro da mancha; lâmina d'água: 0,51 a 1 m em cerca de 760 m/)
+  assert.doesNotMatch(r.texto, /novembro de 2008|julho de 1983/, 'com ano, só aquele ano')
+  assert.match(r.texto, /NÃO quer dizer que cada casa alagou/)
+  assert.match(r.texto, /Fonte: GeoItajaí/)
+  assert.deepEqual(r.link, { texto: 'Ver no mapa das manchas de Itajaí →', para: '/itajai?secao=manchas' })
+  // Sem ano: todas as cheias, com as de fora juntas.
+  const todas = responder('a rua jose domingos machado em itajai alaga?', dados).texto
+  assert.match(todas, /2001: 52% do trecho \(527 m\)/)
+  assert.match(todas, /Fora da mancha: julho de 2013, setembro de 2013, junho de 2014\./)
+  // Ano sem mancha e rua que não existe na base: diz, não inventa.
+  assert.match(responder('rua jose domingos machado em itajai alagou em 2010?', dados).texto, /não tem mancha de cheia de Itajaí de 2010/)
+  assert.match(responder('rua xpto em itajai alaga?', dados).texto, /Nenhuma rua com "xpto" na base de vias/)
+  // Sem a tabela carregada: "carregando", nunca "Itajaí não tem cota".
+  const { ruasManchaItajai: _, ...semTabela } = dados
+  assert.match(responder('a rua jose domingos machado em itajai alaga?', semTabela).texto, /ainda estão carregando/)
+})
+
+test('tabela ruas × manchas de Itajaí: coerente com o catálogo e com o próprio comprimento', () => {
+  const t = dados.ruasManchaItajai!
+  const eventos = new Set(t._meta.eventos.map((e) => e.evento))
+  assert.equal(eventos.size, 9)
+  for (const [nome, r] of Object.entries(t.ruas))
+    for (const [ev, v] of Object.entries(r.ev)) {
+      assert.ok(eventos.has(ev), `${nome}: cheia ${ev} fora do catálogo`)
+      assert.ok(v.m <= r.m + 1 && v.pct >= 0 && v.pct <= 100, `${nome} ${ev}: ${v.m} m de ${r.m} m`)
+    }
+})

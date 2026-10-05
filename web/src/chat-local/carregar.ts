@@ -47,3 +47,12 @@ export async function carregarCotasRuas(): Promise<NonNullable<Dados['cotasRuas'
   const mod = await import('../dados/cotasRuas')
   return mod.cotasRuas
 }
+
+/**
+ * Itajaí: cada rua da base de vias da Prefeitura cruzada com as manchas de cheia (~216 KB),
+ * só quando a pergunta cita uma rua (05/10/2026, `scripts/ruas_por_mancha_itajai.py`).
+ */
+export async function carregarRuasManchaItajai(): Promise<NonNullable<Dados['ruasManchaItajai']>> {
+  const mod = await import('@dados/manchas/itajai/ruas-por-mancha.json')
+  return mod.default as unknown as NonNullable<Dados['ruasManchaItajai']>
+}

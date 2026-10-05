@@ -22,7 +22,10 @@ const caso = (id: string) => {
 test('ids únicos e perguntas que chegam à IA', () => {
   assert.equal(new Set(CASOS.map((c) => c.id)).size, CASOS.length)
   assert.ok(CASOS.length >= 30, `${CASOS.length} casos`)
-  for (const c of CASOS) assert.equal(pedeAgora(c.pergunta), false, `${c.id} cai na barreira do presente`)
+  // A pergunta fica igual para a prova seguir comparável; desde 05/10/2026 a barreira de
+  // palavras pega "está transitável?" sozinha (padrões de situação, `situacaoAgora.ts`).
+  const pegasPelaBarreira = new Set(['agora-transitavel'])
+  for (const c of CASOS) assert.equal(pedeAgora(c.pergunta), pegasPelaBarreira.has(c.id), `${c.id}: barreira do presente`)
 })
 
 test('oráculo passa; vazio e "não sei" reprovam', () => {

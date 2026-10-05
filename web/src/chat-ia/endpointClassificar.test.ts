@@ -117,7 +117,7 @@ test('barreira do presente: responde "agora" sem chamar a IA nem gastar o limite
 test('situacao_atual true da IA vira barreira e fica registrado', async () => {
   const { kv, dados } = kvFalso()
   const { chamar } = iaFalsa({ ...BOA, situacao_atual: true })
-  const r = await tratar(req({ pergunta: 'A Beira-Rio de Blumenau está transitável?', origem: 'palpite' }), LIGADO(kv), chamar, AGORA, () => ID)
+  const r = await tratar(req({ pergunta: 'Estou com medo do rio em Blumenau, o que você acha?', origem: 'palpite' }), LIGADO(kv), chamar, AGORA, () => ID)
   assert.deepEqual(((await r.json()) as { decisao: unknown }).decisao, { tipo: 'agora', origem: 'classificador' })
   assert.equal((JSON.parse(dados.get(`piloto|2026-10-05_${ID}`)!) as RegistroPiloto).resultado, 'agora:classificador')
 })

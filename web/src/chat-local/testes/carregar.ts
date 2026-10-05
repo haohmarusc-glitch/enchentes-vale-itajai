@@ -31,4 +31,5 @@ export const dados: Dados = {
   cotasAna: j('brutos/hidroweb-mirim-2026-09-22/cotas_itajai_mirim_diaria.json'),
   picosMirim: j('brutos/hidroweb-mirim-2026-09-22/picos_itajai_mirim_1997_2021.json'),
   cotasRuas: cotasRuasDoDisco(),
+  ruasManchaItajai: j('manchas/itajai/ruas-por-mancha.json'),
 }

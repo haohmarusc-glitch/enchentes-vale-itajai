@@ -128,7 +128,7 @@ export function textoTendencia(t: Tendencia): string {
 
 const FUSO = 'America/Sao_Paulo'
 
-function horaDeBrasilia(d: Date): string {
+export function horaDeBrasilia(d: Date): string {
   return d.toLocaleString('pt-BR', {
     timeZone: FUSO,
     hour: '2-digit',
@@ -136,7 +136,7 @@ function horaDeBrasilia(d: Date): string {
   })
 }
 
-function diaDeBrasilia(d: Date): string {
+export function diaDeBrasilia(d: Date): string {
   return d.toLocaleString('pt-BR', { timeZone: FUSO, day: '2-digit', month: '2-digit' })
 }
 

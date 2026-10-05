@@ -18,14 +18,22 @@
  * ao classificador; a resposta continua saindo do motor, com "Entendi: …" e os botões
  * "Correto"/"Não era isso". Dúvida, demora ou falha: "não consegui interpretar" — o
  * palpite (a maior cheia da cidade citada) não sai mais para quem está no piloto.
+ *
+ * Pergunta sobre o presente que cita uma cidade ("como está Blumenau?", 05/10/2026): a
+ * última leitura ao vivo, com as regras do cartão "Agora", a chuva e o 199
+ * (`situacaoAgora.ts`). Previsão e conselho continuam só com o aviso.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { EXEMPLOS, citaRua, responder, type Dados } from './motor'
-import { carregarBase, carregarCotasAna, carregarCotasRuas } from './carregar'
+import { carregarBase, carregarCotasAna, carregarCotasRuas, carregarRuasManchaItajai } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
 import { RETENCAO_DIAS, criarEnviador, idsDoCadastro, montarEvento, servidorContando } from '../logica/telemetriaChat'
 import { AVISO_ENVIO, iaLigada, perguntarIA } from '../chat-ia/cliente'
 import { AVISO_PILOTO, TEXTO_NAO_ERA_ISSO, classificarPergunta, enviarCorrecao, mensagemDoPiloto, pilotoLigado, type Correcao, type Origem } from '../chat-ia/clienteClassificador'
+import { estacoes } from '../dados/carregar'
+import type { AoVivo } from '../dados/usarAoVivo'
+import { respostaDoPresente } from './situacaoAgora'
 import estilos from './ChatLocal.module.css'
 
 /** Trocado pelo Vite no build (`vite.config.ts`); fora dele, "dev". */
@@ -50,6 +58,8 @@ type Msg = {
   entendido?: string
   idCorrecao?: string
   corrigido?: Correcao
+  /** Atalho para uma página do site ("Ver Blumenau agora →"). */
+  link?: { texto: string; para: string }
 }
 
 const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
@@ -65,7 +75,7 @@ const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
   ],
 }
 
-export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' }) {
+export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 'itajai-mirim'; aoVivo?: AoVivo | null }) {
   const [dados, setDados] = useState<Dados | null>(null)
   const [falhou, setFalhou] = useState(false)
   const [visivel, setVisivel] = useState(false)
@@ -136,20 +146,22 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     }
   }, [visivel])
 
+  /** Baixa (uma vez) as cotas de rua e a tabela ruas × manchas de Itajaí. Falha: o motor diz "carregando". */
+  async function comDadosDeRua(base: Dados): Promise<Dados> {
+    const [cotasRuas, ruasManchaItajai] = await Promise.all([
+      base.cotasRuas ?? carregarCotasRuas().catch(() => undefined),
+      base.ruasManchaItajai ?? carregarRuasManchaItajai().catch(() => undefined),
+    ])
+    const novo = { ...base, ...(cotasRuas ? { cotasRuas } : {}), ...(ruasManchaItajai ? { ruasManchaItajai } : {}) }
+    setDados((atual) => (atual ? { ...atual, ...(cotasRuas ? { cotasRuas } : {}), ...(ruasManchaItajai ? { ruasManchaItajai } : {}) } : atual))
+    return novo
+  }
+
   async function perguntar(p: string) {
     const q = p.trim()
     if (!q || !dados) return
-    // Pergunta sobre rua: baixa as cotas (~3 MB) só agora, e responde quando chegam.
-    let base = dados
-    if (citaRua(q) && !base.cotasRuas) {
-      try {
-        const cotasRuas = await carregarCotasRuas()
-        base = { ...base, cotasRuas }
-        setDados((atual) => (atual ? { ...atual, cotasRuas } : atual))
-      } catch {
-        /* sem as cotas o motor responde "carregando" */
-      }
-    }
+    // Pergunta sobre rua: baixa as cotas (~3 MB) e as ruas × manchas de Itajaí só agora.
+    let base = citaRua(q) ? await comDadosDeRua(dados) : dados
     const r = responder(q, base)
     if (contando && permitido) {
       // O texto `q` não entra aqui: só a intenção e o motivo que o motor classificou.
@@ -158,9 +170,16 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     }
     // A barreira do presente vale igual na IA: essa resposta não ganha o botão.
     const paraIA = r.intencao === 'agora' ? undefined : q
+    const presente = () => respostaDoPresente({ pergunta: q, dados: base, rios: estacoes.rios, aoVivo })
+    if (r.intencao === 'agora') {
+      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', ...presente() }])
+      setTexto('')
+      rolarAoFim()
+      return
+    }
     const origem: Origem | null = !piloto || classificando ? null : r.intencao === 'nao_entendi' ? 'nao_entendi' : r.palpite ? 'palpite' : null
     if (!origem) {
-      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA }])
+      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA, ...(r.link ? { link: r.link } : {}) }])
       setTexto('')
       rolarAoFim()
       return
@@ -171,17 +190,13 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
     setClassificando(true)
     rolarAoFim()
     const c = await classificarPergunta((url, init) => fetch(url, init), q, origem)
-    if (!('erro' in c) && c.decisao.tipo === 'ok' && c.decisao.classificacao.intencao === 'rua_historico' && !base.cotasRuas) {
-      try {
-        const cotasRuas = await carregarCotasRuas()
-        base = { ...base, cotasRuas }
-        setDados((atual) => (atual ? { ...atual, cotasRuas } : atual))
-      } catch {
-        /* sem as cotas o motor responde "carregando" */
-      }
+    if (!('erro' in c) && c.decisao.tipo === 'ok' && c.decisao.classificacao.intencao === 'rua_historico') base = await comDadosDeRua(base)
+    if (!('erro' in c) && c.decisao.tipo === 'agora') {
+      setMsgs((atual) => [...atual, { papel: 'assistente', ...presente() }])
+    } else {
+      const m = mensagemDoPiloto(c, base)
+      setMsgs((atual) => [...atual, { papel: 'assistente', ...m, ...(m.entendido ? {} : { paraIA }) }])
     }
-    const m = mensagemDoPiloto(c, base)
-    setMsgs((atual) => [...atual, { papel: 'assistente', ...m, ...(m.entendido ? {} : { paraIA }) }])
     setClassificando(false)
     rolarAoFim()
   }
@@ -269,6 +284,11 @@ export default function ChatLocal({ rio }: { rio: 'itajai-acu' | 'itajai-mirim' 
               <button type="button" className={estilos['chat-botao-ia']} disabled={esperandoIA} onClick={() => perguntarAIA(i, msg.paraIA!)}>
                 Perguntar à IA
               </button>
+            ) : null}
+            {msg.link ? (
+              <Link className={estilos['chat-link']} to={msg.link.para}>
+                {msg.link.texto}
+              </Link>
             ) : null}
             {msg.sugestoes ? (
               <div className={estilos['chat-sugestoes']}>

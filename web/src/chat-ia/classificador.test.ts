@@ -48,7 +48,7 @@ test('barreira determinística vem antes: situacao_atual false NUNCA a desfaz', 
 
 test('situacao_atual true liga a barreira, mesmo com o resto inválido ou com confiança baixa', () => {
   for (const bruto of [saida({ situacao_atual: true }), saida({ situacao_atual: true, cidade: 'paris' }), saida({ situacao_atual: true, confianca: 0.1, nao_sei: true }), { situacao_atual: true }])
-    assert.deepEqual(decidir('A Beira-Rio está transitável?', bruto, dados, OPC).decisao, { tipo: 'agora', origem: 'classificador' })
+    assert.deepEqual(decidir('Estou com medo do rio em Blumenau, o que você acha?', bruto, dados, OPC).decisao, { tipo: 'agora', origem: 'classificador' })
 })
 
 test('nao_sei, intenção "nao_sei" e confiança abaixo do limite: não responde', () => {
