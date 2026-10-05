@@ -94,6 +94,9 @@ class Serie:
     familia: str  # "brasilia" ou "ana" — famílias não se cruzam
     pontos: list[tuple[datetime, float]] = field(default_factory=list)
     _cristas: dict = field(default_factory=dict, repr=False, compare=False)
+    # (cidade, rio) de cada leitura do coletor: a série fica com o par da maioria. A DC-11 já foi gravada como
+    # Ilhota no começo de setembro; a primeira linha lida não pode decidir de que cidade a régua é.
+    _votos: dict = field(default_factory=dict, repr=False, compare=False)
 
     @property
     def mare(self) -> bool:
@@ -150,6 +153,7 @@ def ler_tempo_real(pasta: Path, series: dict[str, Serie]) -> None:
                     continue
                 s = series.setdefault(sid, Serie(sid, cidade, rio, "coletor", "brasilia"))
                 s.pontos.append((t, float(v)))
+                s._votos[(cidade, rio)] = s._votos.get((cidade, rio), 0) + 1
 
 
 def ler_dcsc(pasta: Path, nomes: dict[str, str], series: dict[str, Serie]) -> None:
@@ -221,6 +225,8 @@ def carregar(extras: list[Path] | None = None) -> dict[str, Serie]:
     # O rio das estações da DCSC vem do cadastro da cidade.
     cad = cadastro()
     for s in series.values():
+        if s._votos:
+            s.cidade, s.rio = max(s._votos, key=lambda par: (s._votos[par], par))
         if not s.rio and s.cidade in cad:
             s.rio = cad[s.cidade][0]
     return {k: s.arrumar() for k, s in series.items() if len(s.pontos) >= 10}
@@ -321,6 +327,10 @@ def montante(alvo: Serie, outra: Serie, cad: dict[str, tuple[str, int]]) -> bool
         return False
     pa = cad.get(alvo.cidade, (rio, 999))[1] if alvo.cidade != "itajai" else 10_000
     po = cad.get(outra.cidade, (rio, 999))[1]
+    if pa == 999:
+        # Afluente lateral ou cidade sem posição: o tronco não está "acima" dela. Sem a régua do próprio
+        # afluente rio acima, não há montante para mostrar.
+        return False
     return po < pa and po != 999
 
 
@@ -527,7 +537,7 @@ def achar(series: dict[str, Serie], texto: str) -> Serie:
     return next((s for s in cands if s.id.lower().startswith(t)), cands[0])
 
 
-def relatorio(series: dict[str, Serie], horas: tuple[int, ...]) -> str:
+def relatorio(series: dict[str, Serie], horas: tuple[int, ...], origem: str = "") -> str:
     partes = [
         "# Nível das réguas N horas antes de cada crista e de cada rua alagada registrada",
         "",
@@ -535,12 +545,16 @@ def relatorio(series: dict[str, Serie], horas: tuple[int, ...]) -> str:
         "calibração.** Cada régua tem o seu zero: os números estão lado a lado, cada um na sua régua, e não se",
         "comparam entre si. Só aparecem as réguas **a montante** no mesmo rio. Séries da ANA (2020–2023) só se",
         "cruzam com séries da ANA, porque o fuso delas não foi conferido. Crista de réguas de Itajaí que sentem a",
-        "maré: máximo da média de 12,42 h (um ciclo de maré); a leitura mostrada é a do instante.",
+        "maré: máximo da média de 12,42 h (um ciclo de maré); a leitura mostrada é a do instante. Só entram como",
+        "alvo as réguas de cidades cadastradas em `data/estacoes.json`.",
         "",
     ]
+    if origem:
+        partes += [origem, ""]
     partes.append(secao_registros(series, horas))
     partes += ["## Cristas das réguas", ""]
-    todas = sorted(((c, s) for s in series.values() for c in cristas(s)), key=lambda x: (x[0].quando, x[1].id))
+    cad = cadastro()
+    todas = sorted(((c, s) for s in series.values() if s.cidade in cad for c in cristas(s)), key=lambda x: (x[0].quando, x[1].id))
     sozinhas = []
     for c, alvo in todas:
         titulo = f"crista de {num(c.nivel)} m{' (na borda dos dados: piso)' if c.borda else ''}"
@@ -567,13 +581,14 @@ def main() -> None:
     ap.add_argument("--registradas", nargs="?", const="", help="ruas alagadas registradas à mão (opcional: parte do nome da rua)")
     ap.add_argument("--todas", action="store_true", help="mostrar também réguas que não estão a montante")
     ap.add_argument("--relatorio", type=Path, help="gravar o relatório de todas as cristas neste arquivo .md")
+    ap.add_argument("--origem", default="", help="parágrafo sobre a série usada, no topo do relatório (ex.: o commit do arquivo-series)")
     a = ap.parse_args()
     series = carregar(a.series)
     horas = tuple(a.horas)
     if a.listar:
         print(listar(series))
     if a.relatorio:
-        a.relatorio.write_text(relatorio(series, horas), encoding="utf-8")
+        a.relatorio.write_text(relatorio(series, horas, a.origem), encoding="utf-8")
         print(f"relatório: {a.relatorio}")
     if a.registradas is not None:
         print(secao_registros(series, horas, filtro=a.registradas))

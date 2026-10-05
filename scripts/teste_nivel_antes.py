@@ -67,6 +67,11 @@ class Topologia(unittest.TestCase):
         self.assertFalse(montante(alvo, serie("D", "timbo", "itajai-acu", [1]), cad))  # afluente lateral
         self.assertFalse(montante(alvo, serie("E", "gaspar", "itajai-acu", [1]), cad))  # a jusante
         self.assertFalse(montante(alvo, serie("F", "brusque", "itajai-mirim", [1]), cad))  # outro rio
+        # Alvo num afluente lateral: o tronco não está acima dele (Ibirama e Timbó listavam até Itajaí).
+        for lateral in ("timbo", "ibirama", "rio-dos-cedros", "trombudo-central"):
+            alvo_lateral = serie("L", lateral, "itajai-acu", [1])
+            for outra in ("rio-do-sul", "taio", "blumenau", "itajai"):
+                self.assertFalse(montante(alvo_lateral, serie("O", outra, "itajai-acu", [1]), cad), (lateral, outra))
         itajai = serie("G", "itajai", "itajai-mirim", [1])
         self.assertTrue(montante(itajai, serie("H", "brusque", "itajai-mirim", [1]), cad))
         self.assertFalse(montante(itajai, serie("I", "itajai", "itajai-mirim", [1]), cad))  # outra régua da mesma cidade
