@@ -78,7 +78,7 @@ if (cliente) {
     process.stderr.write('FALHOU\n')
     console.error(`\nA API recusou: ${tipoDoErro(e)}`)
     if (e instanceof Anthropic.AuthenticationError)
-      console.error('Chave recusada. Confira se é uma chave de API criada em Console → API Keys (costuma começar com "sk-ant-api03-") e se foi colada inteira.')
+      console.error('Chave recusada. Confira se foi colada inteira (sem espaço nem aspas a mais), se não foi apagada no Console e se esta janela do PowerShell não guardou uma chave antiga em $env:ANTHROPIC_API_KEY.')
     else if (e instanceof Anthropic.PermissionDeniedError) console.error('A chave não tem permissão para este modelo ou workspace.')
     else if (e instanceof Anthropic.NotFoundError) console.error(`Modelo não encontrado: ${MODELO}.`)
     else if (e instanceof Anthropic.BadRequestError && /workspace/i.test(String(e.message)))
