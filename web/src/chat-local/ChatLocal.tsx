@@ -26,7 +26,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { EXEMPLOS, citaRua, responder, type Dados } from './motor'
-import { carregarBase, carregarCotasAna, carregarCotasRuas } from './carregar'
+import { carregarBase, carregarCotasAna, carregarCotasRuas, carregarRuasManchaItajai } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
 import { RETENCAO_DIAS, criarEnviador, idsDoCadastro, montarEvento, servidorContando } from '../logica/telemetriaChat'
 import { AVISO_ENVIO, iaLigada, perguntarIA } from '../chat-ia/cliente'
@@ -146,20 +146,22 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     }
   }, [visivel])
 
+  /** Baixa (uma vez) as cotas de rua e a tabela ruas × manchas de Itajaí. Falha: o motor diz "carregando". */
+  async function comDadosDeRua(base: Dados): Promise<Dados> {
+    const [cotasRuas, ruasManchaItajai] = await Promise.all([
+      base.cotasRuas ?? carregarCotasRuas().catch(() => undefined),
+      base.ruasManchaItajai ?? carregarRuasManchaItajai().catch(() => undefined),
+    ])
+    const novo = { ...base, ...(cotasRuas ? { cotasRuas } : {}), ...(ruasManchaItajai ? { ruasManchaItajai } : {}) }
+    setDados((atual) => (atual ? { ...atual, ...(cotasRuas ? { cotasRuas } : {}), ...(ruasManchaItajai ? { ruasManchaItajai } : {}) } : atual))
+    return novo
+  }
+
   async function perguntar(p: string) {
     const q = p.trim()
     if (!q || !dados) return
-    // Pergunta sobre rua: baixa as cotas (~3 MB) só agora, e responde quando chegam.
-    let base = dados
-    if (citaRua(q) && !base.cotasRuas) {
-      try {
-        const cotasRuas = await carregarCotasRuas()
-        base = { ...base, cotasRuas }
-        setDados((atual) => (atual ? { ...atual, cotasRuas } : atual))
-      } catch {
-        /* sem as cotas o motor responde "carregando" */
-      }
-    }
+    // Pergunta sobre rua: baixa as cotas (~3 MB) e as ruas × manchas de Itajaí só agora.
+    let base = citaRua(q) ? await comDadosDeRua(dados) : dados
     const r = responder(q, base)
     if (contando && permitido) {
       // O texto `q` não entra aqui: só a intenção e o motivo que o motor classificou.
@@ -177,7 +179,7 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     }
     const origem: Origem | null = !piloto || classificando ? null : r.intencao === 'nao_entendi' ? 'nao_entendi' : r.palpite ? 'palpite' : null
     if (!origem) {
-      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA }])
+      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA, ...(r.link ? { link: r.link } : {}) }])
       setTexto('')
       rolarAoFim()
       return
@@ -188,15 +190,7 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     setClassificando(true)
     rolarAoFim()
     const c = await classificarPergunta((url, init) => fetch(url, init), q, origem)
-    if (!('erro' in c) && c.decisao.tipo === 'ok' && c.decisao.classificacao.intencao === 'rua_historico' && !base.cotasRuas) {
-      try {
-        const cotasRuas = await carregarCotasRuas()
-        base = { ...base, cotasRuas }
-        setDados((atual) => (atual ? { ...atual, cotasRuas } : atual))
-      } catch {
-        /* sem as cotas o motor responde "carregando" */
-      }
-    }
+    if (!('erro' in c) && c.decisao.tipo === 'ok' && c.decisao.classificacao.intencao === 'rua_historico') base = await comDadosDeRua(base)
     if (!('erro' in c) && c.decisao.tipo === 'agora') {
       setMsgs((atual) => [...atual, { papel: 'assistente', ...presente() }])
     } else {

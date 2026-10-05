@@ -284,9 +284,15 @@ console.log('\nchat com IA: botão só com o servidor ligado; o presente nunca v
   pagina.url().includes('#/acu/blumenau') ? ok('o atalho abre a página de Blumenau') : falhou(`o atalho abriu ${pagina.url()}`)
   await pagina.goBack()
   await pagina.waitForFunction(() => !document.querySelector('input[aria-label="Sua pergunta"]')?.disabled, null, { timeout: 15_000 }).catch(() => {})
+  // Rua de Itajaí pelas manchas da Prefeitura (05/10/2026): baixa a tabela só agora e dá o atalho do mapa.
+  await perguntar(pagina, caixa, 'em 2011 a rua jose domingos machado em itajai teve cheias?')
+  await pagina.getByText(/Rua José Domingos Machado \(cerca de 1\.014 m/).waitFor({ timeout: 10_000 }).catch(() => {})
+  ;(await pagina.getByText(/setembro de 2011: a rua toda/).count()) > 0 && (await pagina.getByRole('link', { name: 'Ver no mapa das manchas de Itajaí →' }).count()) > 0
+    ? ok('rua de Itajaí: resposta pelas manchas e atalho para o mapa')
+    : falhou('rua de Itajaí: faltou a resposta pelas manchas ou o atalho')
   await perguntar(pagina, caixa, 'Qual foi a maior cheia de Gaspar?')
   const botao = pagina.getByRole('button', { name: 'Perguntar à IA' })
-  await botao.first().click({ timeout: 5_000 }).catch(() => {})
+  await botao.last().click({ timeout: 5_000 }).catch(() => {})
   await pagina.getByText('Resposta simulada da IA.').waitFor({ timeout: 5_000 }).catch(() => {})
   ;(await pagina.getByText('Resposta simulada da IA.').count()) > 0 &&
   (await pagina.getByText(/Resposta da IA com os dados do site/).count()) > 0 &&

@@ -12,6 +12,7 @@ import type { FalhaDoMotor } from '../logica/telemetriaChat'
 import type { CotaRua, Trecho, TrechoExperimental } from '../dados/tipos'
 import { caminho, type Caminho } from '../logica/transito'
 import { buscar, cidadesComCotas, nomeCompleto, podeAfirmarAlcance } from '../logica/cotasRuas'
+import { ROTA_MANCHAS_ITAJAI } from '../logica/rotaManchas'
 
 export interface RegistroCheia {
   rio?: string
@@ -99,6 +100,18 @@ export interface Dados {
   picosMirim?: { eventos: { botuvera_mont?: { antecedencia_h: number } }[] }
   /** Cotas de rua já filtradas (só régua). Baixadas quando a pergunta cita uma rua. */
   cotasRuas?: CotaRua[]
+  /**
+   * Itajaí: cada rua da base de vias da Prefeitura cruzada com as manchas de cheia
+   * (`data/manchas/itajai/ruas-por-mancha.json`, `scripts/ruas_por_mancha_itajai.py`).
+   * Baixado quando a pergunta cita uma rua.
+   */
+  ruasManchaItajai?: RuasPorMancha
+}
+
+export interface RuasPorMancha {
+  _meta: { eventos: { evento: string; rotulo: string; total?: string; lamina?: string; classes?: string[] }[] }
+  /** Por nome da rua na base: comprimento (m) e, por cheia, metros e % dentro da mancha e faixas de lâmina. */
+  ruas: Record<string, { m: number; ev: Record<string, { m: number; pct: number; lamina?: Record<string, number> }> }>
 }
 
 export interface Resposta {
@@ -111,6 +124,8 @@ export interface Resposta {
    * agregada lê (`logica/telemetriaChat.ts`, decisão de 04/10/2026).
    */
   falha?: FalhaDoMotor
+  /** Atalho para uma página do site (ex.: o mapa das manchas de Itajaí). */
+  link?: { texto: string; para: string }
   /**
    * A resposta saiu do PALPITE do roteador (achou só a cidade, ou só o ano, e nenhuma
    * intenção). O piloto do classificador consulta a IA também nesse caso
@@ -726,6 +741,7 @@ function ruaHistorico(e: Extraido, d: Dados, termo: string | null = termoDaRua(e
       texto: 'Diga a rua e a cidade, por exemplo: "quantas cheias passaram da cota da Rua São Rafael em Blumenau?"',
       falha: faltou('faltou_cidade', e),
     }
+  if (e.cidade.id === 'itajai') return ruaItajaiPorMancha(e, d, termo)
   if (!d.cotasRuas) return { intencao: 'rua_historico', texto: 'As cotas de rua ainda estão carregando. Tente de novo em instantes.' }
   const cidade = e.cidade
   const comCotas = cidadesComCotas(d.cotasRuas)
@@ -789,6 +805,67 @@ function ruaHistorico(e: Extraido, d: Dados, termo: string | null = termoDaRua(e
       .filter(Boolean)
       .join('\n'),
   }
+}
+
+// ---------------------------------------------------------------- rua de Itajaí × manchas
+// Itajaí não tem cota de rua publicada, mas tem as manchas de nove cheias da Prefeitura e a
+// base de vias dela (pedido do Jefferson, 05/10/2026). O cruzamento é feito uma vez, por
+// `scripts/ruas_por_mancha_itajai.py`; aqui só se lê. A frase nunca é "a sua casa alagou": é
+// "este trecho da rua ficou dentro da área que a Prefeitura mapeou como atingida".
+const PREFIXO_VIA = /^(r|av|tv|rod|al|est|serv|trav|pc|pca)\.?\s*/
+const nucleoDaVia = (nome: string) => norm(nome).replace(PREFIXO_VIA, '').trim()
+const MAX_RUAS_ITAJAI = 3
+/** Menos que isso é a ponta da rua encostando na borda da mancha, não a rua dentro dela. */
+const MINIMO_DENTRO_M = 10
+const numeroBR = (n: number) => n.toLocaleString('pt-BR')
+const textoLamina = (rot: string) => (rot.includes(' a ') ? `${rot} m` : `até ${rot} m`)
+
+function ruaItajaiPorMancha(e: Extraido, d: Dados, termo: string | null): Resposta {
+  const resp = (texto: string, extra: Partial<Resposta> = {}): Resposta => ({ intencao: 'rua_historico', texto, ...extra })
+  const t = d.ruasManchaItajai
+  if (!t) return resp('As manchas das cheias de Itajaí ainda estão carregando. Tente de novo em instantes.')
+  if (!termo) return resp('Diga o nome da rua em Itajaí, por exemplo: "a Rua José Domingos Machado alagou em 2011?"')
+  const alvo = norm(termo).replace(PREFIXO_VIA, '').trim()
+  const nomes = Object.keys(t.ruas)
+  const inteira = new RegExp(`(^|\\s)${alvo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\s|$)`)
+  const exatas = nomes.filter((n) => nucleoDaVia(n) === alvo)
+  const porPalavra = nomes.filter((n) => inteira.test(nucleoDaVia(n)))
+  const achadas = exatas.length ? exatas : porPalavra.length ? porPalavra : nomes.filter((n) => nucleoDaVia(n).includes(alvo))
+  const link = { texto: 'Ver no mapa das manchas de Itajaí →', para: ROTA_MANCHAS_ITAJAI }
+  if (!achadas.length)
+    return resp(
+      `Nenhuma rua com "${termo}" na base de vias da Prefeitura de Itajaí. Confira o nome (sem número de casa); a base pode não ter todas as ruas.`,
+      { link },
+    )
+  const eventos = t._meta.eventos
+  const doAno = e.ano ? eventos.filter((x) => x.evento.startsWith(String(e.ano))) : eventos
+  if (e.ano && !doAno.length)
+    return resp(
+      `O site não tem mancha de cheia de Itajaí de ${e.ano}. As manchas da Prefeitura são de: ${eventos.map((x) => x.rotulo).join(', ')}.`,
+      { link },
+    )
+  const blocos = achadas.slice(0, MAX_RUAS_ITAJAI).map((nome) => {
+    const r = t.ruas[nome]!
+    const dentro = doAno.filter((x) => (r.ev[x.evento]?.m ?? 0) >= MINIMO_DENTRO_M)
+    const fora = doAno.filter((x) => (r.ev[x.evento]?.m ?? 0) < MINIMO_DENTRO_M)
+    const linhas = dentro.map((x) => {
+      const v = r.ev[x.evento]!
+      const lam = v.lamina ? Object.entries(v.lamina).map(([k, mm]) => `${textoLamina(k)} em cerca de ${numeroBR(mm)} m`) : []
+      return `• ${x.rotulo}: ${v.pct >= 99 ? 'a rua toda' : `${v.pct}% do trecho`} (${numeroBR(v.m)} m) dentro da mancha${lam.length ? `; lâmina d'água: ${lam.join(', ')}` : ''}.`
+    })
+    if (fora.length) linhas.push(`• Fora da mancha: ${fora.map((x) => x.rotulo).join(', ')}.`)
+    return [`${nome.replace(/^R\.\s*/, 'Rua ').replace(/^Av\.\s*/, 'Avenida ')} (cerca de ${numeroBR(r.m)} m na base de vias da Prefeitura):`, ...linhas].join('\n')
+  })
+  if (achadas.length > MAX_RUAS_ITAJAI) blocos.push(`Mais ${achadas.length - MAX_RUAS_ITAJAI} rua(s) com "${termo}". Escreva o nome com mais letras para reduzir.`)
+  return resp(
+    [
+      e.ano ? `Ruas de Itajaí nas manchas de cheia da Prefeitura, em ${e.ano}:` : 'Ruas de Itajaí nas manchas de cheia da Prefeitura:',
+      ...blocos,
+      'Isso NÃO quer dizer que cada casa alagou: a mancha é o mapa da área atingida feito pela Prefeitura, a lâmina vem em faixas, e ruas com o mesmo nome na base entram juntas.',
+      'Fonte: GeoItajaí / Prefeitura de Itajaí (base de vias e manchas de cheia, 1983–2015).',
+    ].join('\n'),
+    { link },
+  )
 }
 
 function eventoAtlas(e: Extraido, d: Dados): { rio: string; ev: EventoAtlas | undefined; outros: EventoAtlas[] } {

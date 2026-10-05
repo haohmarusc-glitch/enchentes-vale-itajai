@@ -331,3 +331,35 @@ a coleta fora do ar, a resposta é o aviso com o atalho.
 
 Testes: `web/src/chat-local/situacaoAgora.test.ts` e a fumaça do navegador.
 
+### Rua de Itajaí pelas manchas da Prefeitura (05/10/2026, pedido do Jefferson)
+
+Itajaí não tem cota de rua publicada. Por isso o chat respondia "ainda não há cota de rua levantada para Itajaí"
+até para "a Rua José Domingos Machado alagou em 2011?". Mas o site tem as **manchas de nove cheias** da
+Prefeitura (1983–2015) e a **base de vias** dela (GeoItajaí). Agora o chat cruza as duas.
+
+- **A tabela:** `scripts/ruas_por_mancha_itajai.py` calcula, uma vez, para cada rua da base e cada cheia:
+  - quantos metros (e que % do traçado) ficaram dentro da mancha;
+  - nos mapas de lâmina d'água (2011, 2013, 2014 e 2015), quantos metros caíram em cada faixa.
+  
+  Ela é gravada em `data/manchas/itajai/ruas-por-mancha.json` (~217 KB): é um arquivo derivado, sem data dentro,
+  e não mexe em `enchentes.json`. O teste `scripts/teste_ruas_por_mancha_itajai.py` reprova se a tabela salva
+  não bater com a recalculada: se a base de vias ou uma mancha mudar, rode o script de novo.
+- **A resposta** (`ruaItajaiPorMancha` no motor):
+  - **Com ano:** só aquela cheia. Ano sem mancha → "o site não tem mancha de cheia de Itajaí de 2010", com a
+    lista das que existem.
+  - **Sem ano:** todas as cheias, e as que não pegaram a rua aparecem juntas em "Fora da mancha".
+  - **Ponta de rua:** menos de 10 m dentro da mancha conta como a ponta encostando na borda, não como a rua
+    dentro dela.
+  - **Lâmina:** em faixas ("0,51 a 1 m em cerca de 760 m").
+  - **Cuidados, sempre:** a mancha é o mapa da área atingida feito pela Prefeitura, não medição em cada casa; ruas
+    com o mesmo nome na base entram juntas. A frase nunca é "a sua casa alagou".
+  - **Atalho:** "Ver no mapa das manchas de Itajaí →".
+- **Busca da rua:** pelo nome sem o prefixo ("R.", "Av."), primeiro o nome inteiro, depois a palavra inteira,
+  depois um pedaço do nome. Mostra até 3 ruas e diz quantas mais casaram.
+- **Download:** a tabela só baixa quando a pergunta cita uma rua, junto com as cotas de rua.
+- **Diferença entre os dois mapas de 2011:** em setembro de 2011, a mancha total e o mapa de lâmina da Prefeitura
+  não coincidem exatamente, e a soma das faixas pode passar um pouco do trecho dentro da mancha. A % vem da
+  mancha total; as faixas, do mapa de lâmina.
+
+Testes: `motor.test.ts` (resposta e tabela), `scripts/teste_ruas_por_mancha_itajai.py` e a fumaça do navegador.
+
