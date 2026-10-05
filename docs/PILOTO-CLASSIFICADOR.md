@@ -5,7 +5,7 @@ O chat **sem IA continua em produção**. A IA entra só num piloto isolado, e *
 qual é a intenção e quais são os parâmetros. Ela não escreve resposta, não escolhe ferramenta e nenhum número
 sai dela. O texto que a pessoa lê sai do mesmo motor do chat sem IA (`web/src/chat-local/motor.ts`).
 
-**Estado:** código pronto e **desligado**. Falta a chave da Anthropic e rodar a prova com a API (abaixo).
+**Estado:** código pronto e **desligado**. A prova com a API passou em 05/10/2026 (abaixo); falta ligar na Cloudflare.
 
 ## Como a pergunta anda
 
@@ -201,7 +201,29 @@ Defesa Civil.
 As linhas "sempre não sei" e "API fora do ar" mostram o pior caso: os 31 acertos continuam e nada do presente é
 respondido. O que se perde é só a resposta às desconhecidas, que viram "não consegui interpretar".
 
-**Falta a rodada com a API.** Ela diz quanto o modelo real chega perto do gabarito.
+### Resultado com a API (05/10/2026, PC do Jefferson, Haiku 4.5, 2 repetições)
+
+| Critério | Meta | Resultado |
+|---|---|---|
+| 34 perguntas antigas | não perder os 31 | **34/34 nas duas rodadas**; os 3 erros do presente viraram o aviso |
+| desconhecidas + faltou classificadas certo | 85–90% | **89%** (48/54): 2 erradas, 4 "não consegui interpretar" |
+| pergunta do presente respondida | zero | **zero**: 40/40 viraram o aviso |
+| fora do tema | "não sei" | **14/14**, nenhuma adivinhada |
+| custo por chamada | teto de US$ 0,01 | **US$ 0,0033** em média (máximo 0,0034); a prova inteira custou US$ 0,37 |
+| tempo por chamada | — | média 2,0 s, p95 2,7 s, máximo 2,9 s (o limite do site é 6 s) |
+
+**Tokens por chamada:** em média 2,6 mil de entrada e 127 de saída. A entrada ficou acima da estimativa de 1,5
+mil, porque a API acrescenta o esquema à instrução.
+
+**O único erro com resposta foi "qual a altura da enchente de 84 em blumenau"**, nas duas rodadas. A suspeita é o
+ano em dois dígitos. Os outros 4 casos fora dos 89% foram "não consegui interpretar", que é a falha segura.
+
+**Veredito:** passou nos quatro critérios.
+
+**Próximos passos:**
+1. Ver o que o modelo respondeu nos 6 casos.
+2. Talvez ensinar o ano em dois dígitos nas instruções, e rodar de novo (~US$ 0,37).
+3. Ligar o piloto para os e-mails escolhidos.
 
 ## Custo (estimativa; o real sai no registro e na prova)
 
