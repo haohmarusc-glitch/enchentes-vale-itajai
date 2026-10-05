@@ -144,6 +144,18 @@ Opcionais:
 `/perguntas`, "qual foi a enchente mais feia que blumenal já viu?" deve trazer "Entendi: a maior cheia de
 Blumenau".
 
+Se aparecer `{"ligado":false,"motivo":…}`, o motivo diz o que falta:
+
+| `motivo` | O que fazer |
+|---|---|
+| `sem_chave` | Criar o segredo `ANTHROPIC_API_KEY` em **Production**. |
+| `piloto_desligado` | Criar `CLASSIFICADOR_PILOTO` = `ligado`, em **Production**. |
+| `lista_vazia` | Criar `CLASSIFICADOR_EMAILS`, em **Production**. |
+| `sem_email` | O e-mail do Access não chegou à função, nem pelo cabeçalho nem pelo token. Abrir pelo endereço com Access (`enchentes.premercadosc.com`), não pelo `*.pages.dev`. |
+| `email_fora_da_lista` | O e-mail do login não é o que está em `CLASSIFICADOR_EMAILS`. |
+
+Variável nova só vale depois de publicar de novo.
+
 **Desligar:** apagar `CLASSIFICADOR_PILOTO` (ou trocar o valor) e publicar de novo. Para cortar na hora, sem
 publicar, revogar a chave no Console da Anthropic. Nos dois casos, o chat sem IA segue igual.
 

@@ -7,7 +7,8 @@
  * A resposta é montada no aparelho, pelo motor do chat, a partir da classificação
  * conferida aqui (`decidir` em `src/chat-ia/classificador.ts`).
  *
- *  - GET  → `{"ligado": true|false}` para QUEM pede. O chat só consulta quando é `true`.
+ *  - GET  → `{"ligado": true}` ou `{"ligado": false, "motivo": …}` para QUEM pede (o motivo diz
+ *           qual interruptor falta). O chat só consulta quando é `true`.
  *  - POST `{"pergunta", "origem": "nao_entendi"|"palpite"}` → `{"id", "decisao"}`.
  *  - POST `{"id", "correcao": "correto"|"nao_era_isso"}` → guarda o botão que a pessoa apertou.
  *
@@ -81,17 +82,29 @@ const BASE: Dados = {
   chuvaEventos: { estacoes: {}, eventos: {} },
 }
 
-/** O piloto está ligado para quem pede? */
-export function ligadoPara(pedido: Request, amb: Ambiente): boolean {
-  if (!amb.ANTHROPIC_API_KEY?.trim() || amb.CLASSIFICADOR_PILOTO?.trim().toLowerCase() !== 'ligado') return false
+/**
+ * Por que o piloto está (des)ligado para quem pede. O GET devolve o motivo para quem
+ * configura saber qual interruptor falta; não revela valor de nada (nem a lista, nem o
+ * e-mail lido).
+ */
+export type MotivoDesligado = 'sem_chave' | 'piloto_desligado' | 'lista_vazia' | 'sem_email' | 'email_fora_da_lista'
+
+export function estadoDoPiloto(pedido: Request, amb: Ambiente): { ligado: true } | { ligado: false; motivo: MotivoDesligado } {
+  if (!amb.ANTHROPIC_API_KEY?.trim()) return { ligado: false, motivo: 'sem_chave' }
+  if (amb.CLASSIFICADOR_PILOTO?.trim().toLowerCase() !== 'ligado') return { ligado: false, motivo: 'piloto_desligado' }
   const lista = (amb.CLASSIFICADOR_EMAILS ?? '')
     .split(',')
     .map((x) => x.trim().toLowerCase())
     .filter(Boolean)
-  if (lista.includes('*')) return true
+  if (!lista.length) return { ligado: false, motivo: 'lista_vazia' }
+  if (lista.includes('*')) return { ligado: true }
   const email = emailDoAcesso(pedido)
-  return email !== null && lista.includes(email)
+  if (email === null) return { ligado: false, motivo: 'sem_email' }
+  return lista.includes(email) ? { ligado: true } : { ligado: false, motivo: 'email_fora_da_lista' }
 }
+
+/** O piloto está ligado para quem pede? */
+export const ligadoPara = (pedido: Request, amb: Ambiente): boolean => estadoDoPiloto(pedido, amb).ligado
 
 function numeroDoAmbiente(valor: string | undefined, padrao: number, min: number, max: number): number {
   const n = Number(valor)
@@ -198,7 +211,7 @@ async function corrigir(corpo: Record<string, unknown>, amb: Ambiente): Promise<
 }
 
 export async function tratar(pedido: Request, amb: Ambiente, chamar?: Chamar, agora: Date = new Date(), novoId: () => string = () => crypto.randomUUID()): Promise<Response> {
-  if (pedido.method === 'GET') return resposta(200, { ligado: ligadoPara(pedido, amb) })
+  if (pedido.method === 'GET') return resposta(200, estadoDoPiloto(pedido, amb))
   if (pedido.method !== 'POST') return new Response(null, { status: 405, headers: { ...SEM_CACHE, allow: 'GET, POST' } })
   if (!ligadoPara(pedido, amb)) return resposta(503, { erro: 'desligado' })
 

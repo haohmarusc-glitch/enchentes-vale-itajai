@@ -156,3 +156,23 @@ test('confiança mínima configurável', async () => {
   const r = await tratar(req({ pergunta: 'enchente mais feia de blumenal', origem: 'nao_entendi' }), { ...LIGADO(), CLASSIFICADOR_CONFIANCA_MINIMA: '0.85' }, chamar, AGORA)
   assert.deepEqual(((await r.json()) as { decisao: unknown }).decisao, { tipo: 'nao_sei', motivo: 'baixa_confianca' })
 })
+
+test('GET diz o motivo do desligado, sem revelar valores', async () => {
+  const estado = async (amb: Ambiente, cab: Record<string, string> = { 'cf-access-authenticated-user-email': EMAIL }) =>
+    (await tratar(new Request(URL_API, { headers: cab }), amb)).json()
+  assert.deepEqual(await estado({ ...LIGADO(), ANTHROPIC_API_KEY: '' }), { ligado: false, motivo: 'sem_chave' })
+  assert.deepEqual(await estado({ ...LIGADO(), CLASSIFICADOR_PILOTO: undefined }), { ligado: false, motivo: 'piloto_desligado' })
+  assert.deepEqual(await estado({ ...LIGADO(), CLASSIFICADOR_EMAILS: ' , ' }), { ligado: false, motivo: 'lista_vazia' })
+  assert.deepEqual(await estado(LIGADO(), {}), { ligado: false, motivo: 'sem_email' })
+  assert.deepEqual(await estado(LIGADO(), { 'cf-access-authenticated-user-email': 'outro@x.org' }), { ligado: false, motivo: 'email_fora_da_lista' })
+  assert.deepEqual(await estado(LIGADO()), { ligado: true })
+})
+
+test('sem o cabeçalho de e-mail, lê o e-mail do token do Access (Cf-Access-Jwt-Assertion)', async () => {
+  const b64url = (o: unknown) => Buffer.from(JSON.stringify(o)).toString('base64url')
+  const token = `${b64url({ alg: 'RS256' })}.${b64url({ email: 'Piloto@Exemplo.com', sub: 'x' })}.assinatura`
+  const estado = async (cab: Record<string, string>) => (await tratar(new Request(URL_API, { headers: cab }), LIGADO())).json()
+  assert.deepEqual(await estado({ 'cf-access-jwt-assertion': token }), { ligado: true })
+  assert.deepEqual(await estado({ 'cf-access-jwt-assertion': 'lixo' }), { ligado: false, motivo: 'sem_email' })
+  assert.deepEqual(await estado({ 'cf-access-jwt-assertion': `a.${b64url({ email: 'x@y.com' })}.b` }), { ligado: false, motivo: 'email_fora_da_lista' })
+})
