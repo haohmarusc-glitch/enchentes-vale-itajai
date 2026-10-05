@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "descricao": "Ruas alagadas observadas durante as cheias, com a hora, registradas à mão por quem acompanha. Serve para a conta 'como estavam as réguas N horas antes' (scripts/nivel_antes.py).",
+    "como_registrar": "Planilha docs/modelos/ruas-alagadas.csv → python3 scripts/ruas_alagadas.py --planilha ARQUIVO. Passo a passo em docs/REGISTRO-RUAS-ALAGADAS.md.",
+    "fuso": "quando = hora de Brasília (America/Sao_Paulo), sem fuso, como o medido_em das réguas.",
+    "campos": {
+      "cidade": "id de data/estacoes.json",
+      "rua": "nome como a fonte escreve",
+      "ponto": "trecho, esquina ou número, quando a fonte diz",
+      "bairro": "quando a fonte diz",
+      "quando": "AAAA-MM-DDTHH:MM, hora de Brasília",
+      "situacao": "comecou_a_alagar | alagada | interditada | liberada",
+      "quando_e": "hora_do_fato (a água estava lá nessa hora) | hora_da_publicacao (só se sabe quando saiu: a água chegou antes)",
+      "precisao": "exata | aproximada ('por volta de')",
+      "lamina": "altura da água como a fonte descreve (texto), quando houver",
+      "fonte_tipo": "defesa_civil | prefeitura | imprensa | foto_video | relato",
+      "fonte": "boletim, link ou descrição de onde veio; nunca nome, telefone ou e-mail de morador",
+      "confianca": "alta (Defesa Civil/Prefeitura) | media (imprensa; foto ou vídeo conferidos) | baixa (relato, foto sem conferência)",
+      "registrado_em": "AAAA-MM-DD em que a linha entrou",
+      "nota": "opcional"
+    },
+    "cuidados": [
+      "Não é alerta e não vai para a tela; não muda faixa nem cota.",
+      "Hora da publicação não é hora em que a água chegou: é o limite (a água chegou antes).",
+      "A importação só acrescenta; corrigir é editar este arquivo no commit."
+    ]
+  },
+  "registros": []
+}

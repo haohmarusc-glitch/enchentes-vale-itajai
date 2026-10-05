@@ -32,6 +32,7 @@ Uso:
     python3 scripts/nivel_antes.py --alvo DC-04 --data 2026-09-12 --horas 3 6 12
     python3 scripts/nivel_antes.py --alvo DC-04 --data 2026-09-11 --nivel 1.5
     python3 scripts/nivel_antes.py --rua "São Rafael"   # Blumenau: hora em que a régua passou da cota da rua
+    python3 scripts/nivel_antes.py --registradas         # ruas alagadas registradas à mão (data/ruas-alagadas.json)
     python3 scripts/nivel_antes.py --relatorio docs/NIVEL-ANTES.md
     python3 scripts/nivel_antes.py --series /opt/enchentes-vale-itajai/data/tempo-real --listar
 """
@@ -445,6 +446,67 @@ def bloco_rua(texto: str, series: dict[str, Serie], horas: tuple[int, ...]) -> s
     return "\n".join(saida)
 
 
+RUAS_ALAGADAS = RAIZ / "data" / "ruas-alagadas.json"
+SITUACAO_TXT = {"comecou_a_alagar": "começou a alagar", "alagada": "alagada", "interditada": "interditada", "liberada": "liberada"}
+
+
+def registros_de_ruas(caminho: Path = RUAS_ALAGADAS) -> list[dict]:
+    if not caminho.exists():
+        return []
+    return json.loads(caminho.read_text(encoding="utf-8")).get("registros", [])
+
+
+def rios_da_cidade(cidade: str) -> list[str]:
+    e = json.loads((RAIZ / "data" / "estacoes.json").read_text(encoding="utf-8"))
+    return [rid for rid, r in e["rios"].items() if any(c["id"] == cidade for c in r["cidades"])]
+
+
+def bloco_registro(reg: dict, series: dict[str, Serie], horas: tuple[int, ...]) -> str:
+    """Rua alagada registrada à mão (data/ruas-alagadas.json): as réguas da cidade na hora e as de cima N h antes."""
+    t0 = datetime.strptime(reg["quando"], "%Y-%m-%dT%H:%M")
+    local = ", ".join(x for x in (reg["rua"], reg.get("ponto"), reg.get("bairro")) if x)
+    linhas = [f"### {local} ({reg['cidade']}) — {SITUACAO_TXT.get(reg['situacao'], reg['situacao'])} às {data_hora(t0)}", ""]
+    if reg.get("quando_e") == "hora_da_publicacao":
+        linhas.append("A hora é a da **publicação**: a água chegou antes. As leituras abaixo são um limite, não o momento.")
+    else:
+        linhas.append("A hora é a do fato: a água estava lá nessa hora" + (" (hora aproximada)." if reg.get("precisao") == "aproximada" else "."))
+    linhas.append(f"Fonte: {reg['fonte']} (confiança {reg['confianca']})" + (f". Lâmina: {reg['lamina']}" if reg.get("lamina") else "") + ".")
+    if reg["cidade"] == "itajai" and (m := mare_perto(t0)):
+        linhas.append(f"({m})")
+    cotas = [c for c in cotas_da_rua(reg["rua"]) if c["cidade"] == reg["cidade"]]
+    if cotas:
+        linhas.append("Cota oficial de rua com esse nome, na régua da cidade: "
+                      + "; ".join(f"{num(c['cota_m'])} m ({c.get('ponto') or 'sem ponto'})" for c in cotas) + ".")
+    linhas.append("")
+    proprias = []
+    for s in sorted(series.values(), key=lambda s: s.id):
+        if s.cidade != reg["cidade"] or s.familia != "brasilia":
+            continue
+        r = nivel_em(s, t0)
+        if r:
+            exata = any(t == t0 for t, _ in s.pontos)
+            obs = f" (leitura das {hora(r[1])})" if r[1] != t0 else ("" if exata else " (entre duas leituras)")
+            proprias.append(f"- **{s.id}**: {num(r[0])} m{obs}")
+    linhas += ["Réguas da própria cidade nessa hora (cada uma no seu zero):", ""] + (proprias or ["- nenhuma com leitura"]) + [""]
+    acima: list[str] = []
+    for rio in rios_da_cidade(reg["cidade"]):
+        alvo = Serie(f"registro {reg['cidade']}", reg["cidade"], rio, "registro", "brasilia")
+        acima += [x for x in linhas_antes(alvo, t0, series, horas, True) if x not in acima]
+    linhas += ["Réguas de cima, N horas antes:", ""] + (acima or ["- nenhuma com leitura nessas horas"])
+    return "\n".join(linhas) + "\n"
+
+
+def secao_registros(series: dict[str, Serie], horas: tuple[int, ...], caminho: Path = RUAS_ALAGADAS, filtro: str = "") -> str:
+    regs = [r for r in registros_de_ruas(caminho) if filtro.lower() in r["rua"].lower()]
+    partes = ["## Ruas alagadas registradas à mão", ""]
+    if not regs:
+        partes += ["Nenhum registro ainda em `data/ruas-alagadas.json`. Como registrar durante a cheia:",
+                   "`docs/REGISTRO-RUAS-ALAGADAS.md`.", ""]
+    for r in regs:
+        partes.append(bloco_registro(r, series, horas))
+    return "\n".join(partes)
+
+
 def listar(series: dict[str, Serie]) -> str:
     out = ["Séries com hora (cada uma na sua régua):", ""]
     for s in sorted(series.values(), key=lambda s: (s.familia, s.pontos[0][0], s.id)):
@@ -467,7 +529,7 @@ def achar(series: dict[str, Serie], texto: str) -> Serie:
 
 def relatorio(series: dict[str, Serie], horas: tuple[int, ...]) -> str:
     partes = [
-        "# Nível das outras réguas N horas antes de cada crista",
+        "# Nível das réguas N horas antes de cada crista e de cada rua alagada registrada",
         "",
         "Gerado por `scripts/nivel_antes.py --relatorio` (somente leitura). **Descritivo, não previsão nem",
         "calibração.** Cada régua tem o seu zero: os números estão lado a lado, cada um na sua régua, e não se",
@@ -476,6 +538,8 @@ def relatorio(series: dict[str, Serie], horas: tuple[int, ...]) -> str:
         "maré: máximo da média de 12,42 h (um ciclo de maré); a leitura mostrada é a do instante.",
         "",
     ]
+    partes.append(secao_registros(series, horas))
+    partes += ["## Cristas das réguas", ""]
     todas = sorted(((c, s) for s in series.values() for c in cristas(s)), key=lambda x: (x[0].quando, x[1].id))
     sozinhas = []
     for c, alvo in todas:
@@ -500,6 +564,7 @@ def main() -> None:
     ap.add_argument("--nivel", type=float, help="usar a primeira passagem desse nível (m, na régua do alvo) em vez da crista")
     ap.add_argument("--horas", type=int, nargs="+", default=list(HORAS_PADRAO))
     ap.add_argument("--rua", help="parte do nome da rua em data/cotas-ruas.json: hora em que a régua passou da cota dela")
+    ap.add_argument("--registradas", nargs="?", const="", help="ruas alagadas registradas à mão (opcional: parte do nome da rua)")
     ap.add_argument("--todas", action="store_true", help="mostrar também réguas que não estão a montante")
     ap.add_argument("--relatorio", type=Path, help="gravar o relatório de todas as cristas neste arquivo .md")
     a = ap.parse_args()
@@ -510,6 +575,8 @@ def main() -> None:
     if a.relatorio:
         a.relatorio.write_text(relatorio(series, horas), encoding="utf-8")
         print(f"relatório: {a.relatorio}")
+    if a.registradas is not None:
+        print(secao_registros(series, horas, filtro=a.registradas))
     if a.rua:
         print(bloco_rua(a.rua, series, horas))
     if a.alvo:

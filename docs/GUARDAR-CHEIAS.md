@@ -61,15 +61,16 @@ remoto local e verifica quatro coisas:
 | Gaspar, Brusque, Rio do Sul | Cotas de rua com régua declarada (1.617, 350 e 555 pontos) | Falta conferir qual estação do coletor é a régua dessas cotas. Até lá, `REGUA_DAS_COTAS` não liga essas cidades e a ferramenta diz isso em vez de dar hora. |
 | Itajaí | Nenhuma cota de rua; só as manchas por cheia (sem hora). A página nova da Defesa Civil publica as réguas, sem lista de ruas. | Interdições de rua saem em redes sociais e boletins, sem hora estruturada. |
 
-**Para Itajaí (e para conferir as cotas nas outras cidades) a hora precisa ser observada.** Há dois caminhos.
-Os dois dependem de decisão do Jefferson:
+**Para Itajaí (e para conferir as cotas nas outras cidades) a hora precisa ser observada.** Havia dois caminhos:
 
-1. **Registro na mão durante a cheia.** Quem acompanha anota "rua, hora, fonte" (boletim da Defesa Civil,
-   foto com hora, matéria). Basta uma planilha. Depois da cheia, o registro entra em `data/` com fonte e
-   confiança, pelas mesmas regras de `enchentes.json`.
-2. **Botão "minha rua alagou agora" no site.** Guarda rua e hora no KV da Cloudflare. Precisa de moderação
-   (relato falso ou repetido), aviso de privacidade e uma regra de que o relato nunca vira alerta. Só depois
-   de decidido.
+1. **Registro na mão durante a cheia** — **escolhido pelo Jefferson em 05/10/2026 e feito.**
+   - Quem acompanha anota rua, hora e fonte na planilha `docs/modelos/ruas-alagadas.csv`.
+   - `scripts/ruas_alagadas.py` importa para `data/ruas-alagadas.json`, conferindo linha por linha.
+   - `nivel_antes.py --registradas` faz a conta com essas horas.
+   - Passo a passo em `docs/REGISTRO-RUAS-ALAGADAS.md`.
+2. **Botão "minha rua alagou agora" no site.** Guardaria rua e hora no KV da Cloudflare. Precisaria de
+   moderação (relato falso ou repetido), aviso de privacidade e uma regra de que o relato nunca vira alerta.
+   **Não feito.**
 
 **O que não fazer.** Inventar a hora a partir da mancha. A mancha de Itajaí diz *onde* alagou, não *quando*.
 
