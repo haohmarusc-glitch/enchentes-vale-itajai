@@ -62,6 +62,12 @@ export interface Cidade {
   /** De onde veio a coordenada da régua, quando não é a ficha da estação estadual. */
   coordenadas_fonte?: string
   /**
+   * "não confirmada": o pino fica na coordenada do cadastro, mas nenhuma fonte situa a régua ali (Timbó, decisão
+   * de 06/10/2026). Não move o pino nem vincula estação; o painel diz isso. O porquê vai em `coordenadas_status_nota`.
+   */
+  coordenadas_status?: 'não confirmada'
+  coordenadas_status_nota?: string
+  /**
    * A estação estadual perto da cidade e se ela é a régua das cotas (decisão de 06/10/2026). "não confirmada"
    * até existir documento, código comum ou comparação de referência/zero da régua.
    */

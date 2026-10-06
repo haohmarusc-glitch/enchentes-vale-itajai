@@ -2118,6 +2118,38 @@ class RegistroForaDoCadastro(unittest.TestCase):
                             for e in self._erros(ench)))
 
 
+class CoordenadaNaoConfirmada(unittest.TestCase):
+    """Decisão de 06/10/2026: Timbó mantém o pino, marcado como coordenada não confirmada."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, d):
+        vd.erros.clear()
+        vd.avisos.clear()
+        vd.valida_coordenada_nao_confirmada(d)
+        return list(vd.erros)
+
+    def timbo(self, d):
+        return next(c for c in d["rios"]["itajai-acu"]["cidades"] if c["id"] == "timbo")
+
+    def test_timbo_marcado_com_nota_e_pino_mantido(self):
+        t = self.timbo(self.real)
+        self.assertEqual(t["coordenadas_status"], "não confirmada")
+        self.assertEqual(t["coordenadas"], [-26.8231, -49.2708])
+        self.assertIsNone(t.get("codigo_dcsc"))
+        self.assertEqual(self.roda(copy.deepcopy(self.real)), [])
+
+    def test_nao_confirmada_com_fonte_ou_sem_nota_reprova(self):
+        d = copy.deepcopy(self.real)
+        self.timbo(d)["coordenadas_fonte"] = "x"
+        self.assertTrue(any("fonte declarada" in e for e in self.roda(d)))
+        d = copy.deepcopy(self.real)
+        del self.timbo(d)["coordenadas_status_nota"]
+        self.assertTrue(any("coordenadas_status_nota" in e for e in self.roda(d)))
+
+
 class RioChegaASemPosicaoNaArvore(unittest.TestCase):
     """Decisão de 06/10/2026: Trombudo → Itajaí do Oeste com fonte, sem posição na árvore."""
 

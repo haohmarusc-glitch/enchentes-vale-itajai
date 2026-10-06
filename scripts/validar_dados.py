@@ -1286,6 +1286,28 @@ def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
                 erro(f"{onde}: equivalência confirmada sem `fonte`")
 
 
+def valida_coordenada_nao_confirmada(estacoes: dict | None = None) -> None:
+    """
+    `coordenadas_status: "não confirmada"` marca o pino mantido sem fonte que situe a régua (Timbó, decisão do
+    Jefferson de 06/10/2026). Trava: só esse valor; exige `coordenadas_status_nota`; não convive com
+    `coordenadas_fonte` (fonte declarada É confirmação) nem com `coordenadas_sao_da_regua: true`.
+    """
+    estacoes = estacoes if estacoes is not None else le_json("estacoes.json")
+    for rio_id, rio in estacoes["rios"].items():
+        for c in rio["cidades"]:
+            st = c.get("coordenadas_status")
+            if st is None:
+                continue
+            onde = f"estacoes.json / {rio_id} / {c['id']} / coordenadas_status"
+            if st != "não confirmada":
+                erro(f"{onde}: valor {st!r}; o único aceito é 'não confirmada'")
+                continue
+            if not c.get("coordenadas_status_nota"):
+                erro(f"{onde}: sem `coordenadas_status_nota` (por que não se confirma e o que confirmaria)")
+            if c.get("coordenadas_fonte") or c.get("coordenadas_sao_da_regua") is True:
+                erro(f"{onde}: 'não confirmada' junto com fonte declarada — escolha um dos dois")
+
+
 def valida_rio_chega_a(estacoes: dict | None = None) -> None:
     """
     `rio_chega_a` registra em que rio o curso da cidade deságua, com fonte — SEM dar posição na árvore.
@@ -2213,6 +2235,7 @@ def main() -> int:
     valida_regua_das_cotas()
     valida_equivalencia_estadual()
     valida_rio_chega_a()
+    valida_coordenada_nao_confirmada()
     valida_pico_copiado_de_outra_cidade()
     valida_divergencia_que_virou_registro()
     valida_cota_de_rua_nao_e_lamina()

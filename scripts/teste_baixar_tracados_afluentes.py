@@ -80,5 +80,40 @@ class NovosDaInspecao(unittest.TestCase):
         self.assertLess(ba.ORDEM.index("itajai-do-sul"), ba.ORDEM.index("trombudo"))
 
 
+class RodadaComOverpassFalhando(unittest.TestCase):
+    """06/10/2026: um rio sem resposta não derruba a rodada; os outros seguem, e o relatório diz o porquê."""
+
+    def test_rio_sem_resposta_nao_para_os_outros_e_mantem_o_ultimo_arquivo(self):
+        import json as _json
+        bruto = _json.loads((ba.BRUTOS / "tracado-benedito-osm.json").read_text(encoding="utf-8"))
+
+        def buscar(texto, registro):
+            if "Rio dos Cedros" in texto:
+                registro.append({"espelho": "https://espelho/", "tentativa": 3, "resultado": "ReadTimeout: lido demais"})
+                raise SystemExit("Nenhum espelho do Overpass respondeu com JSON.")
+            registro.append({"espelho": "https://espelho/", "tentativa": 1, "resultado": "ok"})
+            return bruto, "https://espelho/"
+
+        rodada = ba.rodar(["rio-dos-cedros", "benedito"], buscar=buscar)
+        self.assertEqual(rodada["rio-dos-cedros"]["situacao"], "sem_resposta")
+        self.assertEqual(rodada["rio-dos-cedros"]["arquivo"], "mantido")
+        self.assertIn("ReadTimeout", rodada["rio-dos-cedros"]["tentativas"][0]["resultado"])
+        self.assertEqual(rodada["benedito"]["situacao"], "baixado")
+        self.assertEqual(rodada["benedito"]["espelho"], "https://espelho/")
+        aviso = ba.aviso_da_rodada(rodada)
+        self.assertTrue(aviso.startswith("Coleta parcial: 1 de 2 rios baixados."))
+        self.assertIn("rio-dos-cedros (último arquivo válido mantido)", aviso)
+
+    def test_nenhum_rio_respondeu_avisa_e_nao_toca_arquivos(self):
+        def buscar(texto, registro):
+            raise SystemExit("fora do ar")
+        rodada = ba.rodar(["benedito"], buscar=buscar)
+        self.assertEqual(rodada["benedito"]["arquivo"], "mantido")
+        self.assertTrue(ba.aviso_da_rodada(rodada).startswith("Coleta não realizada"))
+
+    def test_rodada_completa_nao_avisa(self):
+        self.assertIsNone(ba.aviso_da_rodada({"benedito": {"situacao": "baixado", "arquivo": "novo"}}))
+
+
 if __name__ == "__main__":
     unittest.main()

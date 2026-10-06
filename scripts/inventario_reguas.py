@@ -119,6 +119,7 @@ def inventario(estacoes, dcsc, tracados) -> list[dict]:
                 "dist_ficha_km": km(lat, lon, float(ficha["latitude"]), float(ficha["longitude"])) if ficha else None,
                 "sao_da_regua": c.get("coordenadas_sao_da_regua", None),
                 "fonte_coord": c.get("coordenadas_fonte"),
+                "status_coord": c.get("coordenadas_status"),
                 "equivalencia": c.get("equivalencia_estadual"),
                 "antes_km": ao_rio(lat, lon, tracados[rio_id]),
                 "candidatas": [],
@@ -146,6 +147,8 @@ def situacao(l: dict) -> str:
         return "confere com a ficha"
     if l["codigo"]:
         return f"**difere da ficha** em {grau2(l['dist_ficha_km'])} km"
+    if l.get("status_coord") == "não confirmada":
+        return "**coordenada não confirmada** (decisão de 06/10/2026): pino mantido, sem fonte que situe a régua"
     return "sem código: ponto do cadastro, fonte não confirma"
 
 

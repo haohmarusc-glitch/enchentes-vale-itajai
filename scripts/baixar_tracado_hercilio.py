@@ -75,8 +75,14 @@ def buscar(*, transporte=None, dormir=None, avisar=print) -> tuple[dict, str]:
     return buscar_consulta(consulta(), transporte=transporte, dormir=dormir, avisar=avisar)
 
 
-def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print) -> tuple[dict, str]:
-    """(resposta do Overpass conferida como JSON, espelho que respondeu). Insiste como o vão do Canhanduba."""
+def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print,
+                    registro: list | None = None) -> tuple[dict, str]:
+    """
+    (resposta do Overpass conferida como JSON, espelho que respondeu). Insiste como o vão do Canhanduba.
+
+    `registro`, se dado, recebe uma linha por tentativa: {espelho, tentativa, resultado}. É o que o relatório
+    da rodada mostra quando um rio fica sem resposta.
+    """
     import time
 
     dormir = dormir or time.sleep
@@ -86,21 +92,44 @@ def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print) -
         def transporte(url, dados, cabecalhos, timeout):  # noqa: E306
             return requests.post(url, data=dados, headers=cabecalhos, timeout=timeout)
 
+    def anota(espelho: str, tentativa: int, resultado: str) -> None:
+        if registro is not None:
+            registro.append({"espelho": espelho, "tentativa": tentativa, "resultado": resultado})
+
     ultimo = ""
     for espelho in ESPELHOS:
         for tentativa in range(1, TENTATIVAS_POR_ESPELHO + 1):
-            r = transporte(espelho, {"data": texto}, {"User-Agent": USER_AGENT}, 240)
+            onde = f"{espelho} (tentativa {tentativa}/{TENTATIVAS_POR_ESPELHO})"
+            try:
+                r = transporte(espelho, {"data": texto}, {"User-Agent": USER_AGENT}, 240)
+            except OSError as e:
+                # Timeout ou queda de conexão (requests.RequestException é OSError) conta como fila: espera e
+                # tenta de novo, depois o próximo espelho. Em 06/10/2026, um ReadTimeout do kumi.systems
+                # derrubava a rodada inteira, com os rios seguintes sem baixar.
+                motivo = f"{type(e).__name__}: {e}"
+                anota(espelho, tentativa, motivo)
+                ultimo = f"{onde} não respondeu: {motivo}"
+                if tentativa == TENTATIVAS_POR_ESPELHO:
+                    break
+                espera = BACKOFF_BASE_S * 2 ** (tentativa - 1)
+                avisar(f"   {onde}: {type(e).__name__} — esperando {espera}s")
+                dormir(espera)
+                continue
             if r.status_code == 200:
                 try:
-                    return json.loads(r.text), espelho
+                    dados = json.loads(r.text)
                 except ValueError:
-                    ultimo = f"{espelho} respondeu 200 mas o corpo NÃO é JSON.\n{r.text[:400]}"
+                    anota(espelho, tentativa, "HTTP 200 sem JSON")
+                    ultimo = f"{onde} respondeu 200 mas o corpo NÃO é JSON.\n{r.text[:400]}"
                     break
-            ultimo = f"{espelho} respondeu {r.status_code}.\n{r.text[:400]}"
+                anota(espelho, tentativa, "ok")
+                return dados, espelho
+            anota(espelho, tentativa, f"HTTP {r.status_code}")
+            ultimo = f"{onde} respondeu {r.status_code}.\n{r.text[:400]}"
             if r.status_code not in STATUS_QUE_ESPERAM or tentativa == TENTATIVAS_POR_ESPELHO:
                 break
             espera = BACKOFF_BASE_S * 2 ** (tentativa - 1)
-            avisar(f"   {r.status_code} — fila do Overpass; esperando {espera}s")
+            avisar(f"   {onde}: HTTP {r.status_code} — fila do Overpass; esperando {espera}s")
             dormir(espera)
         avisar(f"   {espelho} não serviu; tentando o próximo espelho")
     raise SystemExit(f"Nenhum espelho do Overpass respondeu com JSON. Último retorno:\n{ultimo}")

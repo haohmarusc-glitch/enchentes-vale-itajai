@@ -58,6 +58,35 @@ class Busca(unittest.TestCase):
         self.assertEqual(espelho, bh.ESPELHOS[1])
         self.assertEqual(esperas, [bh.BACKOFF_BASE_S])
 
+    def test_timeout_espera_e_tenta_de_novo_sem_derrubar_a_rodada(self):
+        def transporte(*a, _r=iter([TimeoutError("lido demais"), Resposta(200, json.dumps({"elements": [NORTE]}))])):
+            r = next(_r)
+            if isinstance(r, Exception):
+                raise r
+            return r
+        esperas = []
+        dados, espelho = bh.buscar(transporte=transporte, dormir=esperas.append, avisar=lambda *a: None)
+        self.assertEqual(len(dados["elements"]), 1)
+        self.assertEqual(espelho, bh.ESPELHOS[0])
+        self.assertEqual(esperas, [bh.BACKOFF_BASE_S])
+
+    def test_o_registro_guarda_espelho_tentativa_e_motivo(self):
+        respostas = iter([Resposta(504, "fila"), Resposta(200, json.dumps({"elements": []}))])
+        registro = []
+        bh.buscar_consulta("q", transporte=lambda *a: next(respostas), dormir=lambda s: None,
+                           avisar=lambda *a: None, registro=registro)
+        self.assertEqual(registro, [
+            {"espelho": bh.ESPELHOS[0], "tentativa": 1, "resultado": "HTTP 504"},
+            {"espelho": bh.ESPELHOS[0], "tentativa": 2, "resultado": "ok"},
+        ])
+
+    def test_todos_os_espelhos_sem_resposta_vira_systemexit_com_o_motivo(self):
+        def transporte(*a):
+            raise TimeoutError("lido demais")
+        with self.assertRaises(SystemExit) as ctx:
+            bh.buscar(transporte=transporte, dormir=lambda s: None, avisar=lambda *a: None)
+        self.assertIn("TimeoutError", str(ctx.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

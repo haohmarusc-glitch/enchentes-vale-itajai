@@ -539,10 +539,16 @@ o projeto.
     `--gravar` não funcionava (regex de uma linha) e foi corrigido.
   - [x] **Trombudo → Itajaí do Oeste registrado com fonte, sem posição na árvore** (`rio_chega_a`, travado por
     `valida_rio_chega_a`). O menu "Outros pontos" diz a ligação.
-  - [ ] **Coordenada de Timbó sem fonte:** o pino fica a 0,28 km do Rio dos Cedros e a 0,64 km do Benedito,
-    embora a régua seja "Rio Benedito, Rua Equador". Precisa de fonte; o pino não foi mexido.
-  - [ ] **Lacuna de 1,8 km no Rio Guabiruba Norte no OSM**, rio acima da estação. A cabeceira não é desenhada
-    até alguém corrigir o OSM.
+  - [ ] **Coordenada de Timbó: marcada "não confirmada" (decisão de 06/10/2026), pino mantido.** O pino fica a
+    0,28 km do Rio dos Cedros e a 0,64 km do Benedito, mas a régua é "Rio Benedito, Rua Equador". A proximidade não
+    move o pino nem vincula estação.
+    - **Fecha com uma destas:** cadastro municipal da estação, documento da Defesa Civil, coordenada do órgão
+      responsável ou foto georreferenciada verificável.
+    - **Quando houver:** `coordenadas_fonte` substitui o status.
+  - [ ] **Vão de 1,8 km no Rio Guabiruba Norte no OSM**, rio acima da estação. **Decisão:** não completar no projeto.
+    - **Antes:** corrigir no OSM, com imagem ou conhecimento local verificável.
+    - **Depois:** rodar de novo `baixar-tracados-afluentes.yml` e o conversor.
+  - [x] **Margem de ~1,5 km no recorte dos afluentes aprovada** (resolve o Rio dos Cedros cortado a 137 m da régua).
 - [x] **Cidades sem cor no Monitor (06/10/2026, auditoria do Jefferson das 19 cidades)**: `docs/CIDADES-SEM-COR-2026-10-06.md`.
   - **Motivo específico no painel** em vez de "sem leitura": Lontras (valor impossível rejeitado), Indaial
     (estadual sem nível desde 02/10), Gaspar (última leitura e hora) e Apiúna (cota altimétrica).
