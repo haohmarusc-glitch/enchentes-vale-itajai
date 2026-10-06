@@ -70,7 +70,7 @@
         "nao_e_regua_de_rio": [
           {
             "id": "DCSC-00178",
-            "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026."
+            "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026. CORREÇÃO (06/10/2026, auditoria das cidades sem cor): medida contra data/rios/, a coordenada fica a 0,08 km do traçado do Açu — o 'sem curso d'água próximo' não se confirma. Continua fora do eixo porque o valor é cota altimétrica sem referência vertical documentada (C30 pendente). O painel de Apiúna mostra o número com essa ressalva, sem faixa (balde `altimetricas` do coletor)."
           }
         ],
         "afluentes_rios": [

@@ -12,13 +12,19 @@ const urls = import.meta.glob('@dados/manchas/**/*.geojson', { query: '?url', im
 export type CamadaDesenhada = { geo: GeoJSON.FeatureCollection; rotulo: string } | null
 interface Props {
   somenteDados?: boolean
+  /**
+   * O nome da cidade escolhida no Monitor, ou null quando nenhuma foi. Sem cidade, as camadas abertas
+   * são as de Itajaí, e a tela pede para escolher; com cidade, diz de qual cidade são (auditoria de
+   * 06/10/2026: o pedido de "selecione a cidade" ficava na tela com a cidade já escolhida).
+   */
+  nomeEscolhida?: string | null
   cidade: string
   leituras: readonly MedicaoComparavel[]
   agora: Date
   reproduzindo: boolean
   onCamada: (camada: CamadaDesenhada) => void
 }
-export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada, somenteDados = false }: Props) {
+export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada, somenteDados = false, nomeEscolhida = null }: Props) {
   const [modo, setModo] = useState(cidade === 'ascurra' ? RISCO_ASCURRA : 'auto')
   const [estado, setEstado] = useState('')
   const [tentativa, setTentativa] = useState(0)
@@ -82,6 +88,8 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
     </>}
     <p role="status">{estado}</p>
     {estado.startsWith('Não foi possível') && <button onClick={() => setTentativa((n) => n + 1)}>Tentar novamente</button>}
-    {somenteDados ? <p>Exibição restrita às camadas cadastradas deste município. Sem geometria ou referência compatível, o mapa permanece sem mancha automática.</p> : <p>Selecione a cidade no menu Cidades do Monitor para consultar suas camadas. Ausência de área desenhada não significa ausência de risco. Siga a Defesa Civil, 199.</p>}
+    {somenteDados ? <p>Exibição restrita às camadas cadastradas deste município. Sem geometria ou referência compatível, o mapa permanece sem mancha automática.</p>
+      : nomeEscolhida ? <p>Camadas de <strong>{nomeEscolhida}</strong>. Ausência de área desenhada não significa ausência de risco. Siga a Defesa Civil, 199.</p>
+      : <p>Selecione a cidade no menu Cidades do Monitor para consultar suas camadas. Ausência de área desenhada não significa ausência de risco. Siga a Defesa Civil, 199.</p>}
   </section>
 }

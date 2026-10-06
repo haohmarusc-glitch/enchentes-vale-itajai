@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import coleta_nivel_sc
-from coleta_nivel_sc import acumular_serie, buscar, converter, e_numero, hora_local
+from coleta_nivel_sc import acumular_serie, altimetricas, buscar, converter, e_numero, hora_local
 
 
 def estacao(codigo="DCSC-00006", nome="SDC-SC Indaial", local="",
@@ -114,6 +114,17 @@ class TestBaldes(unittest.TestCase):
         """'(H)' reporta altitude, não rio: não entra em balde nenhum."""
         leituras, sem, susp, nao_mede = converter([estacao(nome="SDC-SC Salete (H)", nivel=399.0)])
         self.assertEqual((leituras, sem, susp, nao_mede), ([], [], [], []))
+
+    def test_apiuna_H_fica_fora_da_leitura_mas_vai_para_o_balde_altimetrico(self):
+        """06/10/2026: a DCSC-00178 continua fora de leitura/série/faixa, mas o valor publicado vai
+        para `altimetricas`, para o painel explicar o motivo em vez de "sem leitura"."""
+        e = estacao(codigo="DCSC-00178", nome="Apiúna (H)", nivel=81.17, carimbo="2026-10-06T02:53:02+00:00")
+        self.assertEqual(converter([e]), ([], [], [], []))
+        [a] = altimetricas([e, estacao(nome="SDC-SC Salete (H)", nivel=399.0)])
+        self.assertEqual((a["codigo"], a["cidade"], a["valor_publicado_m"]), ("DCSC-00178", "apiuna", 81.17))
+        self.assertEqual(a["medido_em"], "2026-10-05T23:53:02")
+        self.assertIs(a["usar_para_cota"], False)
+        self.assertIn("não validada", a["motivo"])
 
     def test_guabiruba_e_suspeita_por_datum_nao_por_sensor_errado(self):
         leituras, sem, susp, nao_mede = converter([estacao(codigo="DCSC-00029", nome="SDC-SC Guabiruba", nivel=24.91)])

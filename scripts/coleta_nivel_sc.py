@@ -64,6 +64,7 @@ import requests
 # não sabia que Guabiruba trocou de datum — o resumo commitado listava 28,70 m como crista
 # candidata da estação que este coletor já mandava para `suspeitas`. Um cadastro, dois leitores.
 from cadastro_dcsc import (  # noqa: F401  (re-exportados: quem já importava daqui continua importando)
+    ALTIMETRICAS,
     CADEIA,
     NAO_MEDE_NIVEL,
     RESERVATORIOS,
@@ -302,6 +303,31 @@ def converter(
     return leituras, sem_leitura, suspeitas, nao_mede_nivel
 
 
+def altimetricas(estacoes: list[dict]) -> list[dict]:
+    """As estações "(H)" de ALTIMETRICAS, com o valor publicado, só para o painel EXPLICAR (06/10/2026).
+
+    O `converter` continua descartando toda "(H)" (armadilha 3): nada daqui vira leitura, série ou
+    faixa. O balde existe porque "sem leitura" escondia o motivo real — em Apiúna há número, publicado
+    em referência altimétrica não validada, e o morador merece saber que é isso.
+    """
+    saida = []
+    for s in estacoes:
+        cod = s.get("codigo", "")
+        if cod not in ALTIMETRICAS:
+            continue
+        nome = " ".join(x for x in [(s.get("name") or {}).get("general"), (s.get("name") or {}).get("local")] if x).strip()
+        val = (((s.get("data") or {}).get("rio") or {}).get("rio_nivel") or {}).get("value")
+        saida.append({
+            "codigo": cod, "estacao": nome, "cidade": ALTIMETRICAS[cod],
+            "origem": "estadual", "datum": "altimetrico_nao_validado", "usar_para_cota": False,
+            "medido_em": hora_local(s.get("timestamp")),
+            "valor_publicado_m": round(float(val), 2) if e_numero(val) else None,
+            "motivo": "cota altimétrica (H): referência vertical não validada — não é leitura de régua "
+                      "e não se compara com cota nenhuma",
+        })
+    return saida
+
+
 def _linha_serie(l: dict) -> dict:
     """O que vai para a série ndjson — só o essencial do nível bruto."""
     return {
@@ -378,6 +404,7 @@ def main():
         "fonte": URL, "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "aviso": "NÍVEL BRUTO (datum da estação). usar_para_cota=False em todas. Não comparar com cotas municipais sem offset calibrado.",
         "leituras": leituras, "sem_leitura": sem, "suspeitas": susp, "nao_mede_nivel": nao_mede,
+        "altimetricas": altimetricas(est),
     }
     SAIDA.mkdir(parents=True, exist_ok=True)
     (SAIDA / "ultimo_nivel_sc.json").write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")

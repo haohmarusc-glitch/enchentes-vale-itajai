@@ -522,6 +522,14 @@ o projeto.
   - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Corrigido
     junto com as outras cidades na auditoria das réguas (item abaixo).
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
+- [x] **Cidades sem cor no Monitor (06/10/2026, auditoria do Jefferson das 19 cidades)**: `docs/CIDADES-SEM-COR-2026-10-06.md`.
+  - **Motivo específico no painel** em vez de "sem leitura": Lontras (valor impossível rejeitado), Indaial
+    (estadual sem nível desde 02/10), Gaspar (última leitura e hora) e Apiúna (cota altimétrica).
+  - **Textos conforme a origem da cor:** nada de "fica cinza" sob cor estadual, nem "zero diferente" sem
+    documento. Itajaí sem faixa única. A caixa de camadas diz de qual cidade são as camadas.
+  - [ ] **Atualizar o coletor na VPS** (`scripts/deploy.sh`) para o balde `altimetricas` chegar ao site (Apiúna).
+  - [ ] **Pendências externas:** faixas de Lontras, Apiúna e Guabiruba; referência da DCSC-00178 (C30); leitura
+    da régua da Celesc (Indaial); vínculo DCSC-00030 × cotas (Ilhota); volta da estação 21 (Gaspar).
 - [x] **Auditoria das réguas do Monitor (06/10/2026, pedido do Jefferson, com a inspeção das 19 cidades no satélite).**
   `docs/AUDITORIA-REGUAS-2026-10-06.md`.
   - **A causa das 8 cidades sem pino na tela:** o pino era encaixado no traçado do rio da tela, e a câmera centrava
