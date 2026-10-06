@@ -118,5 +118,5 @@ mesma estação. As coordenadas da inspeção, tiradas do Plus Code, batem com a
 
 ## O que fica
 
-- **Rios ainda sem traçado:** desenhar o Benedito, o Itajaí do Sul e o Trombudo. O pino já não depende disso;
-  falta só o rio aparecer no mapa.
+- [x] **Rios ainda sem traçado:** o Benedito, o Itajaí do Sul e o Trombudo foram desenhados em 06/10/2026
+  (`docs/TRACADOS-AFLUENTES-2026-10-06.md`).

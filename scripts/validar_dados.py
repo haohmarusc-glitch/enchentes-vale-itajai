@@ -885,10 +885,8 @@ LONGE_ACEITO = {
     # Blumenau saiu em 06/10/2026: a coordenada passou a ser a da régua (Ponte Adolfo
     # Konder, confirmada pela Prefeitura), a 0,05 km do traçado. Antes era a
     # DCSC-00026, estação de CHUVA a 2,99 km.
-    "ituporanga": (25.0, "o traçado do Itajaí do Sul é PARCIAL (10,5 km, cobertura "
-                         "municipal de Rio do Sul). Falta o trecho Ituporanga->Rio do Sul, "
-                         "que sai do Overpass — ver docs/TRACADO-ITAJAI-DO-SUL.md. "
-                         "Baixe o trecho e este número cai para <1 km."),
+    # Ituporanga saiu em 06/10/2026: o Itajaí do Sul passou a vir inteiro do OSM
+    # (baixar_tracados_afluentes.py), e o pino fica a 0,02 km dele.
     # ACHADO POR ESTA PRÓPRIA TRAVA, na primeira execução (05/09/2026), sem que
     # ninguém tivesse reportado: Guabiruba fica a 4,24 km do Mirim e longe de
     # todo o resto. Não é erro de coordenada — a cidade fica no RIBEIRÃO

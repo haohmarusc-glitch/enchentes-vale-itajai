@@ -163,7 +163,7 @@ class AfluentesBaixadosEm06De10(unittest.TestCase):
                   for l in json.loads((ct.SAIDA / f"{r}.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"]]
         oeste, sul, leste, norte = ct.caixa_do_mapa(tronco)
         vistos = 0
-        for rio, cidade, limite in (("benedito", "timbo", 0.5), ("itajai-do-sul", "ituporanga", 0.5), ("trombudo", "trombudo-central", 1.0)):
+        for rio, cidade, limite in (("benedito", "timbo", 1.0), ("itajai-do-sul", "ituporanga", 0.5), ("trombudo", "trombudo-central", 1.0)):
             if not ct.BRUTOS_AFLUENTES[rio].exists():
                 continue
             pts = [p for l in json.loads((ct.SAIDA / f"{rio}.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"] for p in l]

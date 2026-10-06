@@ -16,10 +16,17 @@ def _coord(cidade_id):
 
 class Confluencias(unittest.TestCase):
     def test_sem_geojson_reporta_e_nao_inventa(self):
-        # Sem os GeoJSON dos afluentes (não estão no repo), nada é medido.
+        # Sem o GeoJSON do afluente (o Luís Alves não está no repo), nada é medido.
         r = ac.analisar()
-        self.assertEqual(r["indaial"]["status"], "sem_geojson")
         self.assertEqual(r["ilhota"]["status"], "sem_geojson")
+
+    def test_o_benedito_baixado_entra_entre_indaial_e_blumenau(self):
+        # 06/10/2026: com o traçado do Benedito (baixar_tracados_afluentes.py), a confluência é medida.
+        if not (DADOS / "rios" / "benedito.geojson").exists():
+            self.skipTest("sem data/rios/benedito.geojson")
+        r = ac.analisar()["indaial"]
+        self.assertEqual(r["status"], "ok")
+        self.assertIn("depois de Indaial e antes de Blumenau", r["texto"])
 
     def test_afluente_colado_no_tronco_diz_entre_quais_cidades(self):
         # Afluente falso tocando o tronco perto de Gaspar (montante de Ilhota):
