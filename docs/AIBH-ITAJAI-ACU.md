@@ -35,6 +35,11 @@ O AIBH confirma, por fonte oficial e independente, a árvore que levantamos no m
   Benedito, com aproximadamente 14 km"**
   → **RESOLVE a pendência do Benedito**: ele entra **depois de Ascurra e antes de Indaial**, e o trecho
   livre entre a confluência e Ascurra tem ~14 km. Era a dúvida que o `achar_confluencias.py` iria medir.
+  **CORREÇÃO DE 06/10/2026:** a frase fala dos **municípios** ("entre os municípios de Ascurra e Indaial"),
+  não da régua de Indaial. Ler "antes de Indaial" como "a montante da régua" foi excesso de leitura. Medido
+  no OSM, o Benedito entra no centro urbano de Indaial, **4,6 km abaixo da régua** DCSC-00006
+  (`docs/TRACADOS-AFLUENTES-2026-10-06.md`). O AIBH continua consistente com isso: o trecho entre os dois
+  municípios fica a montante da confluência.
 - CGHs Tafona, J. Grabowski e Gunther Faller descritas como **"a montante da confluência do rio Itajaí-Açu
   com o rio Hercílio"** → reforça a mesma estrutura.
 

@@ -78,6 +78,17 @@ BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
 #: `baixar_tracado_hercilio.py`, que só grava depois de conferir que o traçado
 #: chega ao Açu e passa pelo pino de Ibirama. Opcional, como os ribeirões.
 BRUTO_HERCILIO = RAIZ / "data/brutos/tracado-hercilio-osm.json"
+#: Brutos do BENEDITO (Timbó), do ITAJAÍ DO SUL (Ituporanga) e do TROMBUDO (Trombudo Central), baixados por
+#: `baixar_tracados_afluentes.py` (pedido do Jefferson, 06/10/2026), que só grava o rio que chega a um rio
+#: desenhado e passa pela régua da cidade. Opcionais: sem o arquivo, o rio fica de fora. O Itajaí do Sul do
+#: OSM, quando existe, SUBSTITUI o da Asthon (10,5 km perto de Rio do Sul).
+BRUTOS_AFLUENTES = {
+    "benedito": RAIZ / "data/brutos/tracado-benedito-osm.json",
+    "itajai-do-sul": RAIZ / "data/brutos/tracado-itajai-do-sul-osm.json",
+    "trombudo": RAIZ / "data/brutos/tracado-trombudo-osm.json",
+    "rio-dos-cedros": RAIZ / "data/brutos/tracado-rio-dos-cedros-osm.json",
+    "guabiruba": RAIZ / "data/brutos/tracado-guabiruba-osm.json",
+}
 #: Brutos dos cursos d'água COM NOME que passam por um município
 #: (`baixar_rios_municipio.py`, `data/brutos/rios-<municipio>-osm.json`). Cada
 #: nome vira um arquivo próprio — como o Rio Conceição, nenhum se funde a outro.
@@ -136,7 +147,35 @@ RIOS_AFLUENTES = {
     "mirim-canal-retificado": ["canal retificado", "canal do itajaí-mirim"],
     # O trecho que liga o Canhanduba ao Mirim. Ver BRUTO_VAO_CANHANDUBA.
     "rio-conceicao": ["rio conceição", "rio conceicao"],
+    # A cabeceira do Sul inteira, do OSM (BRUTOS_AFLUENTES). Sem o bruto, fica a da Asthon.
+    "itajai-do-sul": ["rio itajaí do sul", "rio itajai do sul"],
+    # O rio de Trombudo Central (BRUTOS_AFLUENTES). Desenhá-lo NÃO dá posição na árvore à cidade: a
+    # confluência é geometria do OSM, e a árvore só muda com fonte (docs/TOPOLOGIA-CANONICA.md).
+    "trombudo": ["rio trombudo"],
+    # O rio da cidade de Rio dos Cedros, que chega ao Benedito em Timbó (BRUTOS_AFLUENTES).
+    "rio-dos-cedros": ["rio dos cedros"],
+    # O curso que a DCSC-00029 mede em Guabiruba, até o Mirim em Brusque (BRUTOS_AFLUENTES): o "Rio Guabiruba
+    # Norte", onde fica a estação, e o "Rio Guabiruba", que nasce do encontro dele com o Sul. NOME EXATO
+    # (NOMES_EXATOS): por substring, "rio guabiruba" pegaria também o Sul, que não é o curso da estação.
+    "guabiruba": ["rio guabiruba norte", "rio guabiruba"],
 }
+
+#: Afluentes casados pelo nome EXATO (minúsculo), não por substring.
+NOMES_EXATOS = {"guabiruba"}
+
+#: Afluentes desenhados só no trecho LIGADO à régua da cidade (vértice comum). No Rio Guabiruba Norte, o OSM
+#: tem uma lacuna de ~1,8 km rio acima da estação: a cabeceira vem solta. Ligar a lacuna seria reta inventada;
+#: desenhar o pedaço solto seria um salto no mapa. Fica o curso da estação até o Mirim.
+SO_O_LIGADO_A_REGUA = {"guabiruba": "guabiruba"}
+
+#: Os rios recortados na CAIXA do mapa (a extensão do tronco e das réguas do cadastro). O Benedito nasce ao
+#: norte de Doutor Pedrinho e o Itajaí do Sul em Alfredo Wagner, fora do quadro de hoje; inteiros, eles
+#: afastariam o mapa inteiro. O recorte guarda o trecho das cidades e a chegada ao rio de baixo.
+RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba")
+#: Folga do recorte, em graus (~1,5 km). Sem ela, a régua que define a borda do quadro (Rio dos Cedros, a mais
+#: ao norte) ficava NA PONTA do rio recortado, a 137 m do fim da linha — o rio parecia nascer na cidade. Com a
+#: folga, a linha passa pela régua e segue um pouco além. O quadro do Monitor cresce no máximo isso.
+FOLGA_DA_CAIXA_GRAUS = 0.015
 
 
 #: Recorte do Hercílio ao NORTE desta latitude. O Itajaí do Norte nasce em
@@ -146,6 +185,58 @@ RIOS_AFLUENTES = {
 #: recorte guarda o que serve à tela: José Boiteux (barragem Norte), Ibirama e a
 #: chegada ao Açu. Teste: `teste_converter_tracado_rios.TesteHercilio`.
 CORTE_NORTE = {"hercilio": -26.84}
+
+
+def recortar_na_caixa(linhas: list[list[list[float]]], caixa: tuple[float, float, float, float]) -> list[list[list[float]]]:
+    """Os trechos de cada linha dentro da caixa (oeste, sul, leste, norte); a linha que sai e volta vira duas."""
+    oeste, sul, leste, norte = caixa
+    out: list[list[list[float]]] = []
+    for linha in linhas:
+        atual: list[list[float]] = []
+        for p in linha:
+            if oeste <= p[0] <= leste and sul <= p[1] <= norte:
+                atual.append(p)
+            else:
+                if len(atual) >= 2:
+                    out.append(atual)
+                atual = []
+        if len(atual) >= 2:
+            out.append(atual)
+    return out
+
+
+def caixa_do_mapa(tronco: list[list[list[float]]]) -> tuple[float, float, float, float]:
+    """(oeste, sul, leste, norte) do tronco desenhado e das coordenadas do cadastro — o quadro do Monitor."""
+    pts = [p for l in tronco for p in l]
+    estacoes = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
+    for rio in estacoes["rios"].values():
+        for c in rio["cidades"]:
+            if c.get("coordenadas"):
+                pts.append([c["coordenadas"][1], c["coordenadas"][0]])
+    return (min(p[0] for p in pts), min(p[1] for p in pts), max(p[0] for p in pts), max(p[1] for p in pts))
+
+
+def coordenada_da_cidade(cidade_id: str) -> tuple[float, float]:
+    """(lon, lat) da cidade no cadastro."""
+    estacoes = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
+    c = next(c for r in estacoes["rios"].values() for c in r["cidades"] if c["id"] == cidade_id)
+    return (c["coordenadas"][1], c["coordenadas"][0])
+
+
+def ligadas_ao_ponto(linhas: list[list[list[float]]], ponto: tuple[float, float]) -> list[list[list[float]]]:
+    """As linhas ligadas, por vértice comum, à linha com o vértice mais perto do ponto (lon, lat)."""
+    chaves = [{(round(p[0], 7), round(p[1], 7)) for p in l} for l in linhas]
+    def d2(l: list[list[float]]) -> float:
+        return min((p[0] - ponto[0]) ** 2 + (p[1] - ponto[1]) ** 2 for p in l)
+    inicio = min(range(len(linhas)), key=lambda i: d2(linhas[i]))
+    vistos, fila = {inicio}, [inicio]
+    while fila:
+        i = fila.pop()
+        for j in range(len(linhas)):
+            if j not in vistos and chaves[i] & chaves[j]:
+                vistos.add(j)
+                fila.append(j)
+    return [linhas[i] for i in sorted(vistos)]
 
 
 def recortar_ao_sul(linhas: list[list[list[float]]], lat_max: float) -> list[list[list[float]]]:
@@ -194,6 +285,14 @@ def linhas_por_substring(elementos: list[dict], chaves: list[str]) -> list[list[
             if len(linha) >= 2:
                 linhas.append(linha)
     return linhas
+
+
+def linhas_por_nome_exato(elementos: list[dict], nomes: list[str]) -> list[list[list[float]]]:
+    """Ways cujo `name` (minúsculo) é exatamente um dos nomes."""
+    return [linha for e in elementos
+            if e.get("type") == "way" and "geometry" in e
+            and ((e.get("tags") or {}).get("name") or "").lower() in nomes
+            and len(linha := linha_do_way(e)) >= 2]
 
 
 def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
@@ -263,7 +362,8 @@ def main() -> int:
     # opcionais). O tronco continua saindo do bruto conferido, intocado.
     for extra_caminho, oque in ((BRUTO_RIBEIROES, "ribeirões de Itajaí"),
                                 (BRUTO_VAO_CANHANDUBA, "vão do Canhanduba"),
-                                (BRUTO_HERCILIO, "Rio Hercílio / Itajaí do Norte")):
+                                (BRUTO_HERCILIO, "Rio Hercílio / Itajaí do Norte"),
+                                *((c, f"afluente {r}") for r, c in BRUTOS_AFLUENTES.items())):
         if extra_caminho.exists():
             extra = json.loads(extra_caminho.read_text(encoding="utf-8"))
             n = len(extra.get("elements") or [])
@@ -303,15 +403,35 @@ def main() -> int:
         )
         grava(feat, rio_id)
 
+    tronco = [l for r, nomes in RIOS.items() for l in geojson_do_rio(r, nomes, por_nome)["geometry"]["coordinates"]]
+    oeste, sul, leste, norte = caixa_do_mapa(tronco)
+    f = FOLGA_DA_CAIXA_GRAUS
+    caixa = (oeste - f, sul - f, leste + f, norte + f)
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
-        linhas = linhas_por_substring(elementos, chaves)
+        linhas = (linhas_por_nome_exato(elementos, chaves) if rio_id in NOMES_EXATOS
+                  else linhas_por_substring(elementos, chaves))
         if rio_id in CORTE_NORTE:
             linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
+        if rio_id in RECORTE_NA_CAIXA:
+            linhas = recortar_na_caixa(linhas, caixa)
+        if rio_id in SO_O_LIGADO_A_REGUA and linhas:
+            linhas = ligadas_ao_ponto(linhas, coordenada_da_cidade(SO_O_LIGADO_A_REGUA[rio_id]))
         if not linhas:
             print(f"{rio_id}: nenhum way com {chaves} no bruto — pulado. Inclua o rio na "
                   "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
             continue
         feat = feature_do_rio(rio_id, linhas)
+        if rio_id in RECORTE_NA_CAIXA:
+            feat["properties"]["cobertura"] = (
+                "RECORTADO na caixa do mapa (extensão do tronco e das réguas do cadastro), para não mudar o "
+                "enquadramento do Monitor. Baixado por scripts/baixar_tracados_afluentes.py."
+            )
+        if rio_id in SO_O_LIGADO_A_REGUA:
+            feat["properties"]["cobertura"] += (
+                " Só o trecho ligado à régua de Guabiruba (DCSC-00029): o Rio Guabiruba Norte a partir de ~2 km acima da"
+                " estação e o Rio Guabiruba até o Itajaí-Mirim. A cabeceira do Norte, solta no OSM por uma lacuna de ~1,8 km, fica"
+                " de fora; o Rio Guabiruba Sul não é o curso da estação."
+            )
         if rio_id in CORTE_NORTE:
             feat["properties"]["cobertura"] = (
                 f"RECORTADO ao sul da latitude {CORTE_NORTE[rio_id]}: de José Boiteux (barragem Norte) até o Açu, "

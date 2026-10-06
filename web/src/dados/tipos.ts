@@ -23,6 +23,19 @@ export interface Cidade {
   codigo_dcsc?: string | null
   /** Sub-bacia a que a cidade pertence (Itajaí do Oeste, Benedito, …). */
   sub_bacia?: string
+  /**
+   * Em que rio o curso da cidade deságua, com fonte, quando a cidade NÃO tem posição na árvore
+   * (Trombudo → Itajaí do Oeste, OSM, decisão de 06/10/2026). `posicao_na_arvore` é sempre null.
+   */
+  rio_chega_a?: {
+    rio: string
+    ponto: [number, number]
+    fonte: string
+    metodo?: string
+    incerteza: string
+    posicao_na_arvore: null
+    decisao?: string
+  }
   /** Distância até a foz, em km, quando conhecida. */
   km_da_foz?: number
   codigo_ana: string | null

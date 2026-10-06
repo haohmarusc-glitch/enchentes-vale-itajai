@@ -16,10 +16,40 @@ def _coord(cidade_id):
 
 class Confluencias(unittest.TestCase):
     def test_sem_geojson_reporta_e_nao_inventa(self):
-        # Sem os GeoJSON dos afluentes (não estão no repo), nada é medido.
+        # Sem o GeoJSON do afluente (o Luís Alves não está no repo), nada é medido.
         r = ac.analisar()
-        self.assertEqual(r["indaial"]["status"], "sem_geojson")
         self.assertEqual(r["ilhota"]["status"], "sem_geojson")
+
+    def test_o_benedito_baixado_entra_entre_indaial_e_blumenau(self):
+        # 06/10/2026: com o traçado do Benedito (baixar_tracados_afluentes.py), a confluência é medida.
+        if not (DADOS / "rios" / "benedito.geojson").exists():
+            self.skipTest("sem data/rios/benedito.geojson")
+        r = ac.analisar()["indaial"]
+        self.assertEqual(r["status"], "ok")
+        self.assertIn("depois de Indaial (", r["texto"])
+        self.assertIn("e antes de Blumenau (", r["texto"])
+        # A junção do OSM: o nó 1575465793, ponta do Rio Benedito e junção de dois ways do Açu.
+        self.assertEqual(r["ponto"], (-26.89134, -49.23557))
+
+    def test_gravar_so_mexe_na_entrada_do_afluente_medido(self):
+        import shutil
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            copia = Path(d) / "estacoes.json"
+            shutil.copy(DADOS / "estacoes.json", copia)
+            antes = json.loads(copia.read_text(encoding="utf-8"))
+            n = ac.gravar({"indaial": {"status": "ok", "texto": "MEDIDO"},
+                           "ilhota": {"status": "sem_geojson", "texto": "x"}}, copia)
+            depois = json.loads(copia.read_text(encoding="utf-8"))
+        self.assertEqual(n, 1)
+        ar = depois["rios"]["itajai-acu"]["_topologia"]["afluentes_rios"]
+        self.assertEqual(next(a for a in ar if a["entra_perto_de"] == "indaial")["ponto_exato"], "MEDIDO")
+        # Tudo o mais fica igual: devolvendo o texto antigo, o arquivo volta a ser o de antes.
+        ant = antes["rios"]["itajai-acu"]["_topologia"]["afluentes_rios"]
+        next(a for a in ar if a["entra_perto_de"] == "indaial")["ponto_exato"] = next(
+            a for a in ant if a["entra_perto_de"] == "indaial")["ponto_exato"]
+        self.assertEqual(depois, antes)
 
     def test_afluente_colado_no_tronco_diz_entre_quais_cidades(self):
         # Afluente falso tocando o tronco perto de Gaspar (montante de Ilhota):
