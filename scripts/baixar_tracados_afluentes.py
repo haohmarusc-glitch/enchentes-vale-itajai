@@ -40,7 +40,9 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / "scripts"))
 
-from baixar_tracado_hercilio import buscar_consulta, comprimento_km, km, tracado  # noqa: E402
+from baixar_tracado_hercilio import (  # noqa: E402
+    DECISOES, base_do_arquivo, base_osm, buscar_consulta, comparar_bases, comprimento_km, km, tracado,
+)
 
 BRUTOS = RAIZ / "data" / "brutos"
 
@@ -210,69 +212,115 @@ def diagnosticar(rio_id: str, resposta: dict, texto: str) -> None:
 
 def rodar(ids: list[str], *, gravar: bool = False, buscar=buscar_consulta) -> dict[str, dict]:
     """
-    Baixa e confere cada rio, um de cada vez. Devolve, por rio: `situacao` (baixado | recusado | sem_resposta),
-    `espelho`, `tentativas` (espelho, tentativa e resultado de cada pedido), `motivo` e `arquivo`.
+    Baixa e confere cada rio, um de cada vez. Devolve, por rio:
+      - `situacao`: baixado | recusado | sem_resposta | desatualizado | incerto;
+      - `arquivo`: o que aconteceu com o bruto gravado (texto de DECISOES, ou "mantido/ausente, sem resposta");
+      - `espelho` (o que serviu, ou o atrasado que foi recusado), `tentativas`, `motivo`;
+      - `base_osm` (da resposta) e `base_do_arquivo` (do bruto existente) — as duas datas que decidem.
 
-    Um rio sem resposta do Overpass NÃO para a rodada: os outros seguem e são gravados. O arquivo de quem
-    falhou não é tocado — fica o último válido (`arquivo: "mantido"`), ou nenhum (`"ausente"`).
+    Um rio sem resposta do Overpass NÃO para a rodada: os outros seguem e são gravados. Só substitui o arquivo
+    a resposta de base OSM COMPROVADAMENTE mais nova (`comparar_bases`); base mais antiga, mesma base ou data
+    faltando/inválida de um dos lados mantêm o arquivo, e a incerteza fica escrita.
     """
     alvos = {"itajai-acu": tracado("itajai-acu"), "itajai-mirim": tracado("itajai-mirim")}
     rodada: dict[str, dict] = {}
     for rio_id in ids:
         destino = BRUTOS / f"tracado-{rio_id}-osm.json"
-        anterior = "mantido" if destino.exists() else "ausente"
+        existe = destino.exists()
+        base_existente = base_do_arquivo(destino) if existe else None
         texto = consulta(rio_id)
         tentativas: list[dict] = []
         try:
-            resposta, espelho = buscar(texto, registro=tentativas)
+            resposta, espelho = buscar(texto, registro=tentativas, arquivo=destino)
         except SystemExit as e:
-            print(f"{rio_id}: SEM RESPOSTA do Overpass — {e}", file=sys.stderr)
-            rodada[rio_id] = {"situacao": "sem_resposta", "espelho": None, "tentativas": tentativas,
-                              "motivo": str(e), "arquivo": anterior}
+            # Espelhos que responderam com base antiga ou sem data contam: o arquivo fica e o porquê também.
+            julgadas = [t for t in tentativas if t.get("decisao")]
+            if julgadas:
+                ultima = julgadas[-1]
+                antiga = any(t["decisao"] == "antiga" for t in julgadas)
+                decisao = "antiga" if antiga else "resposta_sem_data"
+                if antiga:
+                    ultima = [t for t in julgadas if t["decisao"] == "antiga"][-1]
+                situacao = "desatualizado" if antiga else "incerto"
+                espelho_visto, base_vista, arquivo_txt = ultima["espelho"], ultima.get("base_osm"), DECISOES[decisao][1]
+            else:
+                situacao, espelho_visto, base_vista = "sem_resposta", None, None
+                arquivo_txt = "mantido, sem resposta" if existe else "ausente, sem resposta"
+            print(f"{rio_id}: {situacao.upper().replace('_', ' ')} — {arquivo_txt}. {e}", file=sys.stderr)
+            rodada[rio_id] = {"situacao": situacao, "espelho": espelho_visto, "tentativas": tentativas,
+                              "motivo": str(e), "arquivo": arquivo_txt, "base_osm": base_vista,
+                              "base_do_arquivo": base_existente}
             continue
+        base_recebida = base_osm(resposta)
         ls = linhas(resposta.get("elements") or [], RIOS[rio_id]["nomes"])
-        print(f"{rio_id}: {len(ls)} way(s), {comprimento_km(ls):.1f} km (espelho {espelho})")
+        print(f"{rio_id}: {len(ls)} way(s), {comprimento_km(ls):.1f} km (espelho {espelho}, base OSM {base_recebida})")
         problemas = conferir(rio_id, ls, alvos, pino(RIOS[rio_id]["cidade"]))
         if problemas:
             for p in problemas:
                 print(f"   RECUSADO: {p}", file=sys.stderr)
             rodada[rio_id] = {"situacao": "recusado", "espelho": espelho, "tentativas": tentativas,
-                              "motivo": "; ".join(problemas), "arquivo": anterior}
+                              "motivo": "; ".join(problemas),
+                              "arquivo": "mantido, resposta recusada" if existe else "ausente, resposta recusada",
+                              "base_osm": base_recebida, "base_do_arquivo": base_existente}
             if gravar:
                 # Para decidir à mão, sem adivinhar: o que veio pelo nome e os cursos d'água em volta da régua.
                 diagnosticar(rio_id, resposta, texto)
             continue
-        alvos[rio_id] = [p for l in ls for p in l]
         d = distancia_ao_pino(ls, pino(RIOS[rio_id]["cidade"]))
         print(f"   conferido: chega a {' / '.join(RIOS[rio_id]['chega_a'])} e passa a {d:.2f} km do pino de "
               f"{RIOS[rio_id]['cidade']}")
-        arquivo = anterior
-        if gravar:
+        decisao = comparar_bases(base_recebida, base_existente, existe)
+        grava, arquivo_txt = DECISOES[decisao]
+        situacao = "incerto" if decisao == "arquivo_sem_data" else "baixado"
+        print(f"   base recebida {base_recebida} · do arquivo {base_existente} → {arquivo_txt}")
+        if grava:
+            alvos[rio_id] = [p for l in ls for p in l]
+        else:
+            # O rio que chega a este (o Rio dos Cedros ao Benedito) é conferido contra o arquivo que FICA.
+            try:
+                existente = linhas(json.loads(destino.read_text(encoding="utf-8")).get("elements") or [],
+                                   RIOS[rio_id]["nomes"])
+            except (OSError, ValueError, AttributeError):
+                existente = []
+            alvos[rio_id] = [p for l in existente for p in l] or [p for l in ls for p in l]
+        if grava and gravar:
             resposta["_consulta"] = {
                 "overpass": texto,
                 "espelho": espelho,
+                "base_osm": base_recebida,
                 "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "script": "scripts/baixar_tracados_afluentes.py",
             }
             destino.write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")
             print(f"   gravado: {destino.relative_to(RAIZ)}")
-            arquivo = "novo"
-        rodada[rio_id] = {"situacao": "baixado", "espelho": espelho, "tentativas": tentativas, "motivo": None,
-                          "arquivo": arquivo}
+        elif grava:
+            arquivo_txt += " (não gravado: rodada sem --gravar)"
+        rodada[rio_id] = {"situacao": situacao, "espelho": espelho, "tentativas": tentativas, "motivo": None,
+                          "arquivo": arquivo_txt, "base_osm": base_recebida, "base_do_arquivo": base_existente}
     return rodada
 
 
+#: Situações em que o arquivo do rio NÃO foi atualizado por causa do Overpass (o aviso da rodada as lista).
+FALTOU = ("sem_resposta", "desatualizado", "incerto")
+
+
 def aviso_da_rodada(rodada: dict[str, dict]) -> str | None:
-    """None se todos os rios responderam; senão, o aviso de coleta parcial (ou nula) com o que ficou."""
-    sem = [r for r, v in rodada.items() if v["situacao"] == "sem_resposta"]
-    if not sem:
+    """None se todos os rios vieram; senão, o aviso de coleta parcial (ou nula) com o que ficou e por quê."""
+    faltou = [r for r, v in rodada.items() if v["situacao"] in FALTOU]
+    if not faltou:
         return None
+
+    def porque(r: str) -> str:
+        v = rodada[r]
+        datas = (f"; base recebida {v.get('base_osm')}, do arquivo {v.get('base_do_arquivo')}"
+                 if v["situacao"] != "sem_resposta" else "")
+        return f"{r} ({v['arquivo']}{datas})"
+
+    ficou = ", ".join(porque(r) for r in faltou)
     ok = [r for r, v in rodada.items() if v["situacao"] == "baixado"]
-    ficou = ", ".join(f"{r} ({'último arquivo válido mantido' if rodada[r]['arquivo'] == 'mantido' else 'sem arquivo'})"
-                      for r in sem)
     if ok:
-        return f"Coleta parcial: {len(ok)} de {len(rodada)} rios baixados. Sem resposta do Overpass: {ficou}."
-    return f"Coleta não realizada: nenhum rio respondeu. {ficou}."
+        return f"Coleta parcial: {len(ok)} de {len(rodada)} rios baixados. Faltou: {ficou}."
+    return f"Coleta não realizada: nenhum rio veio. Faltou: {ficou}."
 
 
 def main() -> int:
@@ -289,9 +337,12 @@ def main() -> int:
             "rodada_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "rios": rodada,
         }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    por = {s: [r for r, v in rodada.items() if v["situacao"] == s] for s in ("baixado", "recusado", "sem_resposta")}
+    por = {s: [r for r, v in rodada.items() if v["situacao"] == s]
+           for s in ("baixado", "recusado", "sem_resposta", "desatualizado", "incerto")}
     print(f"\nconferidos: {', '.join(por['baixado']) or 'nenhum'} · recusados: {', '.join(por['recusado']) or 'nenhum'}"
-          f" · sem resposta do Overpass: {', '.join(por['sem_resposta']) or 'nenhum'}")
+          f" · sem resposta do Overpass: {', '.join(por['sem_resposta']) or 'nenhum'}"
+          f" · só espelho atrasado: {', '.join(por['desatualizado']) or 'nenhum'}"
+          f" · sem data para comparar: {', '.join(por['incerto']) or 'nenhum'}")
     aviso = aviso_da_rodada(rodada)
     if aviso:
         print(f"\nAVISO: {aviso}")

@@ -77,7 +77,7 @@ class Busca(unittest.TestCase):
                            avisar=lambda *a: None, registro=registro)
         self.assertEqual(registro, [
             {"espelho": bh.ESPELHOS[0], "tentativa": 1, "resultado": "HTTP 504"},
-            {"espelho": bh.ESPELHOS[0], "tentativa": 2, "resultado": "ok"},
+            {"espelho": bh.ESPELHOS[0], "tentativa": 2, "resultado": "ok", "base_osm": None},
         ])
 
     def test_todos_os_espelhos_sem_resposta_vira_systemexit_com_o_motivo(self):
@@ -87,6 +87,75 @@ class Busca(unittest.TestCase):
             bh.buscar(transporte=transporte, dormir=lambda s: None, avisar=lambda *a: None)
         self.assertIn("TimeoutError", str(ctx.exception))
 
+    # ---- espelho atrasado (06/10/2026): decide a DATA DA BASE OSM, nunca a do download ----
+    EXISTENTE = "2026-10-06T12:21:47Z"   # base do tracado-benedito-osm.json do repositório
+
+    def test_base_anterior_igual_posterior(self):
+        cmp = bh.comparar_bases
+        self.assertEqual(cmp("2026-06-01T08:52:28Z", self.EXISTENTE, True), "antiga")   # o kumi.systems
+        self.assertEqual(cmp(self.EXISTENTE, self.EXISTENTE, True), "igual")
+        self.assertEqual(cmp("2026-10-06T15:00:00Z", self.EXISTENTE, True), "mais_nova")
+        self.assertEqual(cmp("2026-10-06T12:21:47+00:00", self.EXISTENTE, True), "igual")   # mesmo instante
+
+    def test_data_ausente_ou_invalida_preserva_o_arquivo(self):
+        cmp = bh.comparar_bases
+        for ruim in (None, "", "ontem", "2026-13-40T00:00:00Z", "2026-10-06T12:21:47"):   # o último sem fuso
+            self.assertEqual(cmp(ruim, self.EXISTENTE, True), "resposta_sem_data", ruim)
+            self.assertEqual(cmp("2026-10-07T00:00:00Z", ruim, True), "arquivo_sem_data", ruim)
+        self.assertEqual(cmp(None, None, False), "sem_arquivo")   # sem arquivo, a resposta conferida serve
+
+    def test_so_o_comprovadamente_mais_novo_grava(self):
+        gravam = {k for k, (grava, _) in bh.DECISOES.items() if grava}
+        self.assertEqual(gravam, {"sem_arquivo", "mais_nova"})
+        self.assertEqual(bh.DECISOES["antiga"][1], "mantido, base existente mais nova")
+
+    def _arquivo(self, base):
+        import tempfile
+        from pathlib import Path
+        d = Path(tempfile.mkdtemp())
+        p = d / "bruto.json"
+        p.write_text(json.dumps({"osm3s": {"timestamp_osm_base": base}, "elements": []}), encoding="utf-8")
+        return p
+
+    def test_espelho_atrasado_passa_ao_proximo_e_fica_no_registro(self):
+        velha = json.dumps({"osm3s": {"timestamp_osm_base": "2026-06-01T08:52:28Z"}, "elements": []})
+        nova = json.dumps({"osm3s": {"timestamp_osm_base": "2026-10-06T15:00:00Z"}, "elements": [NORTE]})
+        respostas = iter([Resposta(200, velha), Resposta(200, nova)])
+        registro = []
+        dados, espelho = bh.buscar_consulta("q", transporte=lambda *a: next(respostas), dormir=lambda s: None,
+                                            avisar=lambda *a: None, registro=registro,
+                                            arquivo=self._arquivo(self.EXISTENTE))
+        self.assertEqual(espelho, bh.ESPELHOS[1])
+        self.assertEqual(len(dados["elements"]), 1)
+        self.assertEqual(registro[0]["decisao"], "antiga")
+        self.assertEqual(registro[0]["base_osm"], "2026-06-01T08:52:28Z")
+        self.assertIn("mais antiga que a do arquivo (2026-10-06T12:21:47Z)", registro[0]["resultado"])
+        self.assertEqual((registro[1]["resultado"], registro[1]["decisao"]), ("ok", "mais_nova"))
+
+    def test_resposta_sem_data_tambem_passa_ao_proximo(self):
+        sem = json.dumps({"elements": []})
+        with self.assertRaises(SystemExit) as ctx:
+            bh.buscar_consulta("q", transporte=lambda *a: Resposta(200, sem), dormir=lambda s: None,
+                               avisar=lambda *a: None, arquivo=self._arquivo(self.EXISTENTE))
+        self.assertIn("sem data de base válida", str(ctx.exception))
+
+    def test_so_espelhos_atrasados_vira_systemexit(self):
+        velha = json.dumps({"osm3s": {"timestamp_osm_base": "2026-06-01T08:52:28Z"}, "elements": []})
+        with self.assertRaises(SystemExit) as ctx:
+            bh.buscar_consulta("q", transporte=lambda *a: Resposta(200, velha), dormir=lambda s: None,
+                               avisar=lambda *a: None, arquivo=self._arquivo(self.EXISTENTE))
+        self.assertIn("mais antiga", str(ctx.exception))
+
+    def test_mesma_base_volta_da_busca_e_quem_grava_decide(self):
+        igual = json.dumps({"osm3s": {"timestamp_osm_base": self.EXISTENTE}, "elements": []})
+        registro = []
+        bh.buscar_consulta("q", transporte=lambda *a: Resposta(200, igual), dormir=lambda s: None,
+                           avisar=lambda *a: None, registro=registro, arquivo=self._arquivo(self.EXISTENTE))
+        self.assertEqual(registro[-1]["decisao"], "igual")
+
+    def test_base_do_arquivo_le_o_bruto_gravado(self):
+        self.assertTrue(bh.base_do_arquivo(bh.SAIDA))
+        self.assertIsNone(bh.base_do_arquivo(bh.SAIDA.with_name("nao-existe.json")))
 
 if __name__ == "__main__":
     unittest.main()

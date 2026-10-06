@@ -24,7 +24,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / "scripts"))
 
-from baixar_tracado_hercilio import buscar_consulta  # noqa: E402
+from baixar_tracado_hercilio import DECISOES, base_do_arquivo, base_osm, buscar_consulta, comparar_bases  # noqa: E402
 
 CONSULTA = """[out:json][timeout:180];
 area["boundary"="administrative"]["admin_level"="8"]["name"="{municipio}"]->.a;
@@ -69,7 +69,13 @@ def main() -> int:
     ap.add_argument("--gravar", action="store_true")
     a = ap.parse_args()
     consulta = CONSULTA.format(municipio=a.municipio)
-    resposta, espelho = buscar_consulta(consulta)
+    saida = RAIZ / "data" / "brutos" / f"rios-{slug(a.municipio)}-osm.json"
+    try:
+        # Espelho atrasado (base OSM mais antiga que a do arquivo gravado) não serve: ver buscar_consulta.
+        resposta, espelho = buscar_consulta(consulta, arquivo=saida)
+    except SystemExit as e:
+        print(f"AVISO: coleta não realizada; {saida.relative_to(RAIZ)} mantido. {e}", file=sys.stderr)
+        return 0
     itens = resumo(resposta.get("elements") or [])
     if not itens:
         print(f"nenhum curso d'água com nome em {a.municipio} — conferir o nome do município no OSM", file=sys.stderr)
@@ -77,9 +83,11 @@ def main() -> int:
     print(f"{len(itens)} curso(s) com nome em {a.municipio}:")
     for i in itens:
         print(f"   {i['km']:6.1f} km  {i['ways']:3d} way(s)  {'/'.join(i['tipos']):14s} {i['nome']}")
-    if a.gravar:
-        saida = RAIZ / "data" / "brutos" / f"rios-{slug(a.municipio)}-osm.json"
-        resposta["_consulta"] = {"overpass": consulta, "espelho": espelho,
+    decisao = comparar_bases(base_osm(resposta), base_do_arquivo(saida), saida.exists())
+    grava, efeito = DECISOES[decisao]
+    print(f"base OSM recebida {base_osm(resposta)} · do arquivo {base_do_arquivo(saida)} → {efeito}")
+    if a.gravar and grava:
+        resposta["_consulta"] = {"overpass": consulta, "espelho": espelho, "base_osm": base_osm(resposta),
                                  "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                                  "script": "scripts/baixar_rios_municipio.py", "resumo": itens}
         saida.write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")

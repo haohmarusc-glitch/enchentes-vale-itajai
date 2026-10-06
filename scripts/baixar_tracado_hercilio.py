@@ -30,6 +30,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -75,13 +76,80 @@ def buscar(*, transporte=None, dormir=None, avisar=print) -> tuple[dict, str]:
     return buscar_consulta(consulta(), transporte=transporte, dormir=dormir, avisar=avisar)
 
 
+def base_osm(resposta: dict) -> str | None:
+    """`osm3s.timestamp_osm_base` da resposta, como veio (pode ser inválido), ou None se ela não disse."""
+    v = (resposta.get("osm3s") or {}).get("timestamp_osm_base") if isinstance(resposta, dict) else None
+    return v if isinstance(v, str) and v else None
+
+
+def base_do_arquivo(caminho: Path) -> str | None:
+    """`base_osm` do bruto já gravado, ou None se ele não existe, não abre ou não guardou a data."""
+    try:
+        return base_osm(json.loads(caminho.read_text(encoding="utf-8")))
+    except (OSError, ValueError):
+        return None
+
+
+def instante_da_base(base: str | None) -> datetime | None:
+    """A data da base como instante UTC, ou None se faltar ou não for ISO 8601 com fuso."""
+    if not base:
+        return None
+    try:
+        t = datetime.fromisoformat(base.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return t if t.tzinfo is not None else None
+
+
+#: Resultado de `comparar_bases` → (grava?, o que acontece com o arquivo, como o rodada.json diz).
+#: A data do DOWNLOAD nunca entra: um espelho atrasado responde hoje com dados de meses atrás.
+DECISOES = {
+    "sem_arquivo": (True, "novo (não havia arquivo)"),
+    "mais_nova": (True, "substituído, base recebida mais nova"),
+    "igual": (False, "mantido, mesma base"),
+    "antiga": (False, "mantido, base existente mais nova"),
+    "resposta_sem_data": (False, "mantido, resposta sem data de base válida (incerto)"),
+    "arquivo_sem_data": (False, "mantido, arquivo existente sem data de base válida (incerto)"),
+}
+
+
+def comparar_bases(base_recebida: str | None, base_existente: str | None, arquivo_existe: bool) -> str:
+    """
+    Uma chave de DECISOES. Só substitui o que é COMPROVADAMENTE mais novo: base recebida estritamente
+    posterior à do arquivo. Mesma base não reescreve. Sem data válida de um dos lados não dá para provar, e o
+    arquivo fica, com a incerteza registrada. Sem arquivo, qualquer resposta conferida serve.
+    """
+    if not arquivo_existe:
+        return "sem_arquivo"
+    existente = instante_da_base(base_existente)
+    if existente is None:
+        return "arquivo_sem_data"
+    recebida = instante_da_base(base_recebida)
+    if recebida is None:
+        return "resposta_sem_data"
+    if recebida > existente:
+        return "mais_nova"
+    return "igual" if recebida == existente else "antiga"
+
+
+#: Respostas que não servem para ESTE arquivo: a busca tenta o próximo espelho.
+NAO_SERVE_NA_BUSCA = ("antiga", "resposta_sem_data")
+
+
 def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print,
-                    registro: list | None = None) -> tuple[dict, str]:
+                    registro: list | None = None, arquivo: Path | None = None) -> tuple[dict, str]:
     """
     (resposta do Overpass conferida como JSON, espelho que respondeu). Insiste como o vão do Canhanduba.
 
-    `registro`, se dado, recebe uma linha por tentativa: {espelho, tentativa, resultado}. É o que o relatório
-    da rodada mostra quando um rio fica sem resposta.
+    `registro`, se dado, recebe uma linha por tentativa: {espelho, tentativa, resultado} e, quando houve
+    resposta, `base_osm`. É o que o relatório da rodada mostra.
+
+    `arquivo` (o bruto já gravado): a resposta é julgada pela data da base OSM contra a dele
+    (`comparar_bases`). Base mais antiga, ou resposta sem data válida, não serve — o espelho pode estar
+    atrasado (06/10/2026: o kumi.systems serviu o Benedito com a base de 01/06/2026, e ela teria substituído a
+    de 06/10 sem aviso). Fica no registro com a decisão, e a busca passa ao próximo espelho; se nenhum servir,
+    sai com SystemExit, e quem chamou mantém o arquivo. Mesma base, base mais nova, arquivo sem data e
+    arquivo ausente voltam: quem grava decide pela mesma tabela.
     """
     import time
 
@@ -92,9 +160,12 @@ def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print,
         def transporte(url, dados, cabecalhos, timeout):  # noqa: E306
             return requests.post(url, data=dados, headers=cabecalhos, timeout=timeout)
 
-    def anota(espelho: str, tentativa: int, resultado: str) -> None:
+    def anota(espelho: str, tentativa: int, resultado: str, **extra) -> None:
         if registro is not None:
-            registro.append({"espelho": espelho, "tentativa": tentativa, "resultado": resultado})
+            registro.append({"espelho": espelho, "tentativa": tentativa, "resultado": resultado, **extra})
+
+    existe = arquivo is not None and arquivo.exists()
+    base_existente = base_do_arquivo(arquivo) if existe else None
 
     ultimo = ""
     for espelho in ESPELHOS:
@@ -122,7 +193,16 @@ def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print,
                     anota(espelho, tentativa, "HTTP 200 sem JSON")
                     ultimo = f"{onde} respondeu 200 mas o corpo NÃO é JSON.\n{r.text[:400]}"
                     break
-                anota(espelho, tentativa, "ok")
+                base = base_osm(dados)
+                decisao = comparar_bases(base, base_existente, existe) if arquivo is not None else None
+                if decisao in NAO_SERVE_NA_BUSCA:
+                    motivo = (f"base OSM {base} mais antiga que a do arquivo ({base_existente})"
+                              if decisao == "antiga" else f"resposta sem data de base válida ({base!r})")
+                    anota(espelho, tentativa, motivo, base_osm=base, decisao=decisao)
+                    ultimo = f"{onde}: {motivo}"
+                    avisar(f"   {onde}: {motivo} — tentando o próximo espelho")
+                    break
+                anota(espelho, tentativa, "ok", base_osm=base, **({"decisao": decisao} if decisao else {}))
                 return dados, espelho
             anota(espelho, tentativa, f"HTTP {r.status_code}")
             ultimo = f"{onde} respondeu {r.status_code}.\n{r.text[:400]}"
@@ -194,7 +274,16 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="Baixa o traçado do Rio Hercílio / Itajaí do Norte (OSM).")
     ap.add_argument("--gravar", action="store_true", help=f"grava {SAIDA.relative_to(RAIZ)} se passar na conferência")
     a = ap.parse_args()
-    resposta, espelho = buscar()
+    registro: list[dict] = []
+    try:
+        resposta, espelho = buscar_consulta(consulta(), registro=registro, arquivo=SAIDA)
+    except SystemExit as e:
+        # Sem resposta, ou só espelhos atrasados: o arquivo gravado fica como está, e a rodada avisa.
+        print(f"AVISO: coleta não realizada; {SAIDA.relative_to(RAIZ)} mantido. {e}", file=sys.stderr)
+        if os.environ.get("GITHUB_ACTIONS"):
+            print("::warning title=Coleta do Hercílio não realizada::último arquivo válido mantido; "
+                  + "; ".join(f"{t['espelho']} #{t['tentativa']}: {t['resultado']}" for t in registro))
+        return 0
     por_nome = linhas(resposta.get("elements") or [])
     for nome, ls in sorted(por_nome.items()):
         print(f"   {nome}: {len(ls)} way(s), {comprimento_km(ls):.1f} km")
@@ -204,10 +293,18 @@ def main() -> int:
             print(f"RECUSADO: {p}", file=sys.stderr)
         return 1
     print(f"conferido: chega ao Açu e passa por Ibirama ({sum(len(v) for v in por_nome.values())} ways)")
+    decisao = comparar_bases(base_osm(resposta), base_do_arquivo(SAIDA), SAIDA.exists())
+    grava, efeito = DECISOES[decisao]
+    print(f"base OSM recebida {base_osm(resposta)} · do arquivo {base_do_arquivo(SAIDA)} → {efeito}")
+    if a.gravar and not grava:
+        if os.environ.get("GITHUB_ACTIONS") and decisao != "igual":
+            print(f"::warning title=Hercílio não substituído::{efeito}")
+        return 0
     if a.gravar:
         resposta["_consulta"] = {
             "overpass": consulta(),
             "espelho": espelho,
+            "base_osm": base_osm(resposta),
             "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "script": "scripts/baixar_tracado_hercilio.py",
         }
