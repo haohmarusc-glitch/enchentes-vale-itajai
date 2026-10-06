@@ -552,6 +552,11 @@ o projeto.
       da página usa o mesmo destaque.
     - Gaspar e Brusque: os pontos de cota da rua no Monitor, com o aviso de localização aproximada.
     - Blumenau e Rio do Sul: só a cota, sem ponto no mapa (a fonte não publica a coordenada).
+  - [x] **Quarta entrega (06/10/2026): o aparelho.**
+    - "Usar minha localização": a régua mais perto em linha reta, com permissão pedida na hora; nada é
+      guardado nem enviado.
+    - "Relatar problema": texto pronto para copiar, porque o site não tem canal de relato.
+    - Minha cidade, seguir e deixar de seguir, letra e tela cheia.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

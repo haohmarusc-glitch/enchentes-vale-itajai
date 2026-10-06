@@ -21,7 +21,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• "quais leituras estão atrasadas?", "o que mudou na última hora?", "comparar as réguas de Itajaí";',
         '• "o que fica a montante daqui?", "afluentes deste trecho", "de onde vem esse traçado?";',
         '• "copiar resumo desta cidade", "copiar link desta visualização" (o chat prepara; quem envia é você);',
-        '• rua: "mostrar a rua X em Gaspar" (pontos de cota), "mostrar a avenida Y em Itajaí" e "manchas na rua Y" (traçado sobre as manchas), "remover destaque".',
+        '• rua: "mostrar a rua X em Gaspar" (pontos de cota), "mostrar a avenida Y em Itajaí" e "manchas na rua Y" (traçado sobre as manchas), "remover destaque";',
+        '• "usar minha localização" (a régua mais perto; nada é guardado), "relatar problema nesta régua", "minha cidade é X", "seguir X".',
         'E perguntas: "como está Blumenau?", "maior cheia de Rio do Sul", "quanto tempo a cheia leva de Rio do Sul até Blumenau?".',
         'Tela cheia é pelo botão "Tela cheia": o navegador só abre com o seu toque.',
       ]
@@ -34,6 +35,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         `• "o que fica a montante de ${aqui}?", "afluentes de ${aqui}", "comparar as réguas de Itajaí";`,
         `• "copiar resumo de ${aqui}" e "copiar link desta página" (o chat prepara; quem envia é você);`,
         '• "mostrar a avenida 7 de Setembro em Itajaí", "manchas na rua X", "mostrar a rua Y em Gaspar";',
+        `• "usar minha localização", "minha cidade é ${aqui}", "seguir Gaspar", "quais cidades eu sigo?", "letra maior";`,
+        '• "relatar problema nesta página" prepara um texto para copiar (o site não tem canal de relato);',
         '• perguntas: "como está Blumenau?", "as 5 maiores cheias de Brusque", "cheias de 2008".',
       ]
   const sugestoes = ctx.naMonitor

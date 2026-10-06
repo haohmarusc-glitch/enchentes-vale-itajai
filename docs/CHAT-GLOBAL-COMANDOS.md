@@ -68,7 +68,7 @@ que ainda não temos.
 
 ## Matriz de comandos
 
-`1ª` = primeira entrega · `2ª` = segunda · `3ª` = terceira (✓ = entregue em 06/10/2026) · `dado` = depende de dado ou infraestrutura · `não` = fora de escopo.
+`1ª` a `4ª` = entregas (✓ = entregue em 06/10/2026) · `dado` = depende de dado ou infraestrutura · `não` = fora de escopo.
 
 | Pedido (exemplo) | Entrega | Observação conferida |
 |---|---|---|
@@ -100,9 +100,9 @@ que ainda não temos.
 | "rua X, Gaspar/Brusque" | 3ª ✓ | só ponto: "localização aproximada; traçado da rua indisponível" |
 | "rua X, Blumenau/Rio do Sul" | dado | só a cota; sem ponto no mapa (decisão 3) |
 | "manchas na rua X" com rua em outra cor | 3ª ✓ | ver abaixo |
-| "relatar problema nesta régua" | dado | não há canal; no máximo preparar o texto para a pessoa copiar |
-| "usar minha localização" | dado | fase posterior, só com permissão pedida na hora |
-| "tela cheia" | não | o navegador exige toque no botão; o chat aponta o botão |
+| "relatar problema nesta régua" | 4ª ✓ | não há canal: o chat prepara o texto para a pessoa copiar |
+| "usar minha localização" | 4ª ✓ | só com permissão pedida na hora; nada é guardado nem enviado |
+| "tela cheia" | 4ª ✓ | o navegador exige toque no botão; o chat aponta o botão |
 | evacuar ou ficar, "é seguro?", previsão de hora exata | não | barreira do presente: dado, hora e 199 |
 
 ## Rua destacada sobre as manchas (3ª entrega — saiu em 06/10/2026, ver o fim do documento)
@@ -256,10 +256,7 @@ página ficava no Início. Corrigido com dependências pelas peças (`AoVivoDoCh
 - **Segunda entrega:** saiu em 06/10/2026 (seção abaixo).
 - **Rua no mapa e rua sobre as manchas:** saíram na 3ª entrega (fim do documento). Blumenau e Rio do Sul
   continuam sem ponto no mapa, porque a fonte não publica a coordenada.
-- **Depende de dado:**
-  - relatar problema (não há canal);
-  - "usar minha localização".
-- **Tela cheia:** só pelo botão, porque o navegador exige o toque da pessoa.
+- **Relatar problema, localização e tela cheia:** saíram na 4ª entrega (fim do documento).
 
 ## Segunda entrega (06/10/2026): o que saiu
 
@@ -365,4 +362,30 @@ mapa o que a fonte publicou com geometria.
 - `testes-navegador/chat-comandos.mjs`, seção 4: o endereço, o traço magenta, a legenda, o nome escrito, a
   troca de cenário com a rua mantida, a interseção, "remover destaque", a marca de Gaspar e Blumenau sem
   mexer no mapa.
+
+## Quarta entrega (06/10/2026): o aparelho da pessoa
+
+O plano não tinha uma 4ª entrega. Ela juntou o que tinha sobrado da matriz (relatar problema, localização,
+tela cheia) com comandos para as preferências que o site já guarda no aparelho (minha cidade, cidades
+seguidas, letra).
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "usar minha localização", "qual a régua mais perto de mim?" | O navegador pede permissão. O chat diz a régua mais perto **em linha reta** e as duas seguintes, abre o Monitor da cidade mais perto e marca a posição ("Você está aqui, aproximado; não fica guardado"). Itajaí entra pelas onze réguas dela. Avisa quando a posição veio imprecisa (> 2 km), quando a régua mais perto é de coordenada não confirmada (Timbó) e quando a pessoa está fora da área (> 25 km). | Gravar a posição, pô-la no endereço ou enviá-la a qualquer lugar. Dizer que a água chega (ou não) até a pessoa: distância em linha reta não é previsão. |
+| permissão recusada, aparelho sem posição, demora | Diz o porquê e como permitir. A espera tem limite de 25 s, contando a pergunta do navegador: sem resposta, o chat não fica preso em "Executando…". | Mexer na tela. |
+| "relatar problema nesta régua", "essa leitura está errada" | Prepara o texto: quando (hora de Brasília), a tela (Monitor, régua, caminho), o que o site mostra agora e o espaço "O problema: …", com o botão "Copiar". Diz que não há canal e para quem mandar. | Enviar. Pôr o endereço do site. Tratar relato como alerta: se a água está subindo, 199. |
+| "minha cidade é Gaspar", "definir Rio do Sul como minha cidade" | A mesma preferência do Início ("Minha cidade"). Diz se não deu para guardar (navegação anônima). | Aceitar cidade fora do cadastro. |
+| "seguir Blumenau", "deixar de seguir", "quais cidades eu sigo?" | A lista do Início, no máximo quatro; com a lista cheia, pede para tirar uma. | Trocar uma cidade seguida por conta própria. |
+| "letra maior", "letra normal" | A mesma preferência do botão de letra. No Monitor avisa que o mapa não muda. | — |
+| "tela cheia" | Aponta o botão "Tela cheia" (no Monitor) ou o link para o Monitor. | Abrir sozinho: o navegador exige o toque da pessoa. |
+
+- **Código:**
+  - `comandos/aparelho.ts`: distância, régua mais perto e os textos;
+  - `logica/preferencias.ts`: ganhou `seguir`;
+  - a posição vem de `navigator.geolocation`, uma vez por pedido (`usarComandos.ts`);
+  - as preferências avisam as telas abertas (`avisarPreferencias`).
+- **Testes:**
+  - `src/comandos/quarta.test.ts` (9): textos, frases e executor;
+  - `testes-navegador/chat-comandos.mjs`, seção 5: localização simulada no Chromium, com e sem permissão; a
+    posição fora do endereço e do aparelho; minha cidade guardada; relato com "Copiar"; letra.
 

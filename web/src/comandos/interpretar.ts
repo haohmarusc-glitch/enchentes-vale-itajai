@@ -125,6 +125,53 @@ function partesDoPedidoDeRua(resto: string, cat: Catalogo): { texto: string; cid
   return { texto: r, ...(cidadeId ? { cidadeId } : {}), ...(ano ? { ano } : {}) }
 }
 
+/** A 4ª entrega: o que depende do aparelho (localização, preferências, relato, tela cheia). */
+function lerTrechoDaQuarta(t: string, cat: Catalogo): Lido {
+  if (/^(?:usar|use|usa|pegar|pegue|ver|veja|mostrar|mostre)(?: a)? minha (?:localizacao|posicao)$|^onde (?:eu )?estou$|^(?:qual (?:e )?)?a regua mais (?:perto|proxima)(?: de mim| daqui)?$|^(?:qual )?regua (?:fica |esta )?mais (?:perto|proxima)(?: de mim| daqui)?$/.test(t)) {
+    return [{ tipo: 'localizacao' }]
+  }
+  if (/^(?:relatar|relate|reportar|reporte|informar|informe|comunicar|comunique|avisar|avise)(?: sobre)?(?: um| o)? (?:problema|erro|defeito)(?: (?:nesta|nessa|na|desta|dessa|da|nesse|neste|no) (?:regua|tela|pagina|leitura|cidade|mapa|site))?$|^(?:a |essa |esta )?leitura (?:esta|ta) errada$/.test(t)) {
+    return [{ tipo: 'relatar' }]
+  }
+  {
+    const m = t.match(/^(?:a )?minha cidade e (.+)$/)
+      ?? t.match(/^(?:definir|defina|mudar|mude|trocar|troque|colocar|coloque|escolher|escolha)(?: a)? minha cidade (?:para|pra|como|em) (.+)$/)
+      ?? t.match(/^(?:definir|defina|colocar|coloque|escolher|escolha|tornar|torne) (.+?) como (?:a )?minha cidade$/)
+    if (m) {
+      const c = cidadePorNome(m[1] ?? '', cat)
+      if (c) return [{ tipo: 'preferencia_cidade', acao: 'minha', cidadeId: c.id }]
+      return { erro: `"${(m[1] ?? '').trim()}" não está entre as cidades do site, então não dá para guardar como a sua.`, sugestoes: ['quais cidades eu sigo?'] }
+    }
+  }
+  {
+    const m = t.match(/^(?:deixar de seguir|deixe de seguir|parar de seguir|pare de seguir|nao seguir mais)(?: a cidade de| a cidade)? (.+)$/)
+    if (m) {
+      const c = cidadePorNome(m[1] ?? '', cat)
+      return c ? [{ tipo: 'preferencia_cidade', acao: 'deixar', cidadeId: c.id }] : null
+    }
+  }
+  {
+    const m = t.match(/^(?:seguir|siga|acompanhar|acompanhe)(?: a cidade de| a cidade)? (.+)$/)
+    if (m) {
+      const c = cidadePorNome(m[1] ?? '', cat)
+      return c ? [{ tipo: 'preferencia_cidade', acao: 'seguir', cidadeId: c.id }] : null
+    }
+  }
+  if (/^(?:quais|que) cidades (?:eu )?sigo$|^cidades que (?:eu )?sigo$|^(?:qual (?:e )?)?(?:a )?minha cidade$/.test(t)) {
+    return [{ tipo: 'preferencia_cidade', acao: 'listar' }]
+  }
+  if (/^(?:aumentar|aumente|aumenta)(?: a| o)? (?:letra|fonte|texto)$|^(?:letra|fonte|texto) (?:maior|grande)$|^(?:usar|use|ligar|ligue)(?: a)? letra (?:maior|grande)$/.test(t)) {
+    return [{ tipo: 'letra', tamanho: 'grande' }]
+  }
+  if (/^(?:diminuir|diminua|diminui|reduzir|reduza)(?: a| o)? (?:letra|fonte|texto)$|^(?:letra|fonte|texto) (?:normal|menor|padrao)$|^(?:voltar|volte)(?: a| o)? (?:letra|fonte|texto) (?:normal|ao normal)$/.test(t)) {
+    return [{ tipo: 'letra', tamanho: 'normal' }]
+  }
+  if (/^(?:(?:abrir|abra|ativar|ative|ligar|ligue|colocar|coloque|por|ver|mostrar|entrar)(?: em| no| a| o)? )?(?:modo )?tela cheia$|^(?:maximizar|maximize)(?: o)? mapa$/.test(t)) {
+    return [{ tipo: 'tela_cheia' }]
+  }
+  return null
+}
+
 /** A 3ª entrega: a rua no mapa (docs/CHAT-GLOBAL-COMANDOS.md, "Rua destacada sobre as manchas"). */
 function lerTrechoDaTerceira(t: string, cat: Catalogo): Lido {
   if (/^(?:remover|remova|tirar|tire|apagar|apague|limpar|limpe|desligar|desligue)(?: o| a)? (?:destaque|marca|marcacao)(?: da rua| das ruas| dos pontos)?$/.test(t)) {
@@ -251,6 +298,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const quarta = lerTrechoDaQuarta(t, cat)
+  if (quarta) return quarta
   const terceira = lerTrechoDaTerceira(t, cat)
   if (terceira) return terceira
   const segunda = lerTrechoDaSegunda(t, cat)

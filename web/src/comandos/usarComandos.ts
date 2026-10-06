@@ -13,6 +13,62 @@ import { MUDA_A_TELA, baseDoSite, executar, type DadosDoChat, type Saida } from 
 import type { PropriedadesDoTracado } from './respostas'
 import { carregarCotasRuas, carregarRuasManchaItajai } from '../chat-local/carregar'
 import { carregarViasItajai } from '../dados/viasItajai'
+import { cidadesSeguidas, deixarDeSeguir, gravarLetra, seguir, tornarMinha } from '../logica/preferencias'
+import { avisarPreferencias } from '../dados/usarPreferencias'
+import type { Posicao } from './aparelho'
+
+const LIMITE_LOCALIZACAO_MS = 25_000
+
+/**
+ * A posição do aparelho, UMA vez, quando a pessoa pede ("usar minha localização"). O navegador pergunta se
+ * pode; a resposta não é guardada pelo site, nem a posição (docs/CHAT-GLOBAL-COMANDOS.md, 4ª entrega).
+ */
+function localizacao(): ReturnType<NonNullable<DadosDoChat['localizacao']>> {
+  if (typeof navigator === 'undefined' || !navigator.geolocation) return Promise.resolve({ erro: 'sem_suporte' as const })
+  return new Promise((resolver) => {
+    // O `timeout` da API só conta DEPOIS da permissão: com a pergunta do navegador sem resposta, o pedido
+    // ficaria em "Executando…" para sempre, com o Enviar travado. O limite daqui cobre a espera inteira.
+    let feito = false
+    const responder = (r: Awaited<ReturnType<NonNullable<DadosDoChat['localizacao']>>>) => {
+      if (feito) return
+      feito = true
+      clearTimeout(limite)
+      resolver(r)
+    }
+    const limite = setTimeout(() => responder({ erro: 'tempo' }), LIMITE_LOCALIZACAO_MS)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => responder({ lat: pos.coords.latitude, lon: pos.coords.longitude, precisaoM: Number.isFinite(pos.coords.accuracy) ? pos.coords.accuracy : null } satisfies Posicao),
+      (erro) => responder({ erro: erro.code === erro.PERMISSION_DENIED ? 'negada' : erro.code === erro.TIMEOUT ? 'tempo' : 'indisponivel' }),
+      { enableHighAccuracy: false, timeout: 20_000, maximumAge: 5 * 60_000 },
+    )
+  })
+}
+
+/** As preferências do aparelho, com o aviso para as telas abertas (Início, estrela da cidade, letra). */
+const preferencias: NonNullable<DadosDoChat['preferencias']> = {
+  seguidas: () => cidadesSeguidas(),
+  tornarMinha: (c) => {
+    const l = tornarMinha(c)
+    avisarPreferencias()
+    return l
+  },
+  seguir: (c) => {
+    const r = seguir(c)
+    avisarPreferencias()
+    return r
+  },
+  deixarDeSeguir: (id) => {
+    const l = deixarDeSeguir(id)
+    avisarPreferencias()
+    return l
+  },
+  letra: (l) => {
+    gravarLetra(l)
+    // Sem armazenamento a troca ainda vale nesta visita (como no botão de letra).
+    document.documentElement.dataset.letra = l
+    avisarPreferencias()
+  },
+}
 
 /** Nome da via → quantos trechos ela tem na base (ruas com o mesmo nome entram juntas). */
 async function viasDeItajai(): Promise<Record<string, number> | null> {
@@ -132,6 +188,8 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
           viasItajai: viasDeItajai,
           ruasMancha: () => carregarRuasManchaItajai().catch(() => null),
           cotasRuas: () => carregarCotasRuas().catch(() => null),
+          localizacao,
+          preferencias,
         },
       }
       let saida: Saida | null = null

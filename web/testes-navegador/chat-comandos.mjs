@@ -12,7 +12,10 @@
  *    data da base; montante sem o aviso de que ligação não é previsão; gráfico que não abre a página;
  *  - 3ª entrega: rua de Itajaí sem o traçado magenta, sem a legenda de destaque ou sem a interseção; cenário que
  *    apaga a rua; "remover destaque" que não remove; rua de Gaspar sem a marca e o aviso de localização
- *    aproximada; rua de Blumenau mexendo no mapa.
+ *    aproximada; rua de Blumenau mexendo no mapa;
+ *  - 4ª entrega: localização sem a régua mais perto ou sem o aviso de que nada é guardado, posição no endereço
+ *    ou no aparelho, recusa que mexe na tela; minha cidade que não fica guardada; relato sem "Copiar"; letra
+ *    que não muda.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -174,7 +177,39 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 5. Página com chat próprio: a barra do topo some.
+  // 5. 4ª entrega: localização (com permissão e sem), minha cidade, letra e relato.
+  {
+    const { b, pg, erros } = await abrir('#/', { largura: w, altura: h })
+    await entender(pg)
+    await pg.context().grantPermissions(['geolocation'])
+    await pg.context().setGeolocation({ latitude: -26.93, longitude: -48.97, accuracy: 30 })
+    let r = await pedirAte(pg, 'usar minha localização', /régua mais perto|Não|fora/)
+    await pg.waitForTimeout(1500)
+    ok(/a de Gaspar/.test(r) && /não grava/.test(r), 'localização: a régua mais perto e o aviso de que nada é guardado')
+    ok(pg.url().endsWith('#/monitor/gaspar') && (await pg.getByText(/^Marca: Você está aqui/).count()) === 1, 'localização: Monitor de Gaspar com a posição marcada')
+    ok(!pg.url().includes('-26') && !(await pg.evaluate(() => JSON.stringify(localStorage))).includes('-26.93'), 'localização: a posição não vai para o endereço nem para o aparelho')
+    r = await pedirAte(pg, 'minha cidade é Gaspar', /Gaspar agora é a sua cidade|Não deu/)
+    ok((await pg.evaluate(() => localStorage.getItem('enchentes:cidades') ?? '')).includes('gaspar'), 'minha cidade: guardada no aparelho')
+    r = await pedirAte(pg, 'relatar problema nesta tela', /canal de relato/)
+    ok(/Relato de problema/.test(r) && (await pg.getByRole('button', { name: 'Copiar' }).count()) >= 1, 'relato: texto pronto, com o botão Copiar')
+    await pg.goto(pg.url().split('#')[0] + '#/acu')
+    await pg.waitForTimeout(2500)
+    await pedirAte(pg, 'aumentar a letra', /Letra maior/)
+    ok((await pg.evaluate(() => document.documentElement.dataset.letra)) === 'grande', 'letra: a página passou para a letra maior')
+    await pedirAte(pg, 'letra normal', /Letra normal/)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  {
+    const { b, pg } = await abrir('#/', { largura: w, altura: h })
+    await entender(pg)
+    // Sem permissão concedida, o navegador fica perguntando: o chat não pode ficar preso em "Executando…".
+    const r = await pedirAte(pg, 'usar minha localização', /Você não permitiu|não chegou a tempo|não conseguiu/, 40000)
+    ok(/Você não permitiu|não chegou a tempo|não conseguiu/.test(r) && !pg.url().includes('/monitor'), `localização sem permissão: diz o porquê e não mexe na tela (${r.slice(0, 40)}…)`)
+    ok(await pg.locator('input[aria-label="Pergunte ou peça"]').first().isEnabled(), 'localização sem permissão: o chat continua aceitando pedidos')
+    await b.close()
+  }
+  // 6. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

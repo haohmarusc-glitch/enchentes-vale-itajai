@@ -16,7 +16,14 @@ interface CadastroMinimo {
     string,
     {
       nome?: string
-      cidades: { id: string; nome: string; sub_bacia?: string | null; rio_chega_a?: { rio?: string; ponto?: number[]; fonte?: string } }[]
+      cidades: {
+        id: string
+        nome: string
+        sub_bacia?: string | null
+        coordenadas?: number[] | null
+        coordenadas_status?: string
+        rio_chega_a?: { rio?: string; ponto?: number[]; fonte?: string }
+      }[]
       _topologia?: {
         tronco_sequencia?: string[]
         cabeceiras_paralelas?: string[]
@@ -57,13 +64,20 @@ export function catalogoDoCadastro(e: CadastroMinimo): Catalogo {
   for (const [rioId, rio] of Object.entries(e.rios)) {
     for (const c of rio.cidades) {
       if (cidades.some((x) => x.id === c.id)) continue
-      cidades.push({ id: c.id, nome: c.nome, rio: rioId === 'itajai-mirim' ? 'mirim' : 'acu' })
+      const [lat, lon] = c.coordenadas ?? []
+      cidades.push({
+        id: c.id,
+        nome: c.nome,
+        rio: rioId === 'itajai-mirim' ? 'mirim' : 'acu',
+        ...(typeof lat === 'number' && typeof lon === 'number' ? { lat, lon } : {}),
+        ...(c.coordenadas_status === 'não confirmada' ? { coordenadaNaoConfirmada: true } : {}),
+      })
     }
   }
   const nome = (id: string) => cidades.find((c) => c.id === id)?.nome ?? id
   const reguas: ReguaDoCatalogo[] = (e.estacoes_tempo_real ?? [])
     .filter((r) => /^DC-\d+$/.test(r.codigo ?? '') && typeof r.lat === 'number' && typeof r.lon === 'number' && r.cidade)
-    .map((r) => ({ codigo: r.codigo!, titulo: r.titulo, nome: nomeDoLugar(r), cidadeId: r.cidade! }))
+    .map((r) => ({ codigo: r.codigo!, titulo: r.titulo, nome: nomeDoLugar(r), cidadeId: r.cidade!, lat: r.lat!, lon: r.lon! }))
     .sort((a, b) => a.codigo.localeCompare(b.codigo, 'pt-BR', { numeric: true }))
 
   const confluencias: Confluencia[] = []

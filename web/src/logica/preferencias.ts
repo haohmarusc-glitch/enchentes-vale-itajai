@@ -97,6 +97,17 @@ export function tornarMinha(c: CidadeSeguida, a: Armazem | null = armazemPadrao(
   return lista
 }
 
+/**
+ * Segue mais uma cidade, no fim da lista (a primeira continua sendo "a minha"). Com a lista cheia, não troca
+ * nenhuma por conta própria: devolve `cheia` e quem chama diz isso à pessoa.
+ */
+export function seguir(c: CidadeSeguida, a: Armazem | null = armazemPadrao()): 'seguindo' | 'ja_seguia' | 'cheia' | 'sem_memoria' {
+  const atual = cidadesSeguidas(a)
+  if (atual.some((x) => x.id === c.id)) return 'ja_seguia'
+  if (atual.length >= MAX_CIDADES) return 'cheia'
+  return gravar(CHAVE_CIDADES, JSON.stringify([...atual, c]), a) ? 'seguindo' : 'sem_memoria'
+}
+
 /** Deixa de seguir a cidade. */
 export function deixarDeSeguir(id: string, a: Armazem | null = armazemPadrao()): CidadeSeguida[] {
   const lista = cidadesSeguidas(a).filter((x) => x.id !== id)

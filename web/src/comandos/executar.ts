@@ -23,6 +23,12 @@ import { NOME_DO_ARQUIVO, arquivoDoRioDaCidade } from './rios'
 import { intersecoes, pontosDaRua, ruasSemCoordenada, textoDaRuaItajai, textoDosPontos, comTipo } from './ruas'
 import { acharVias, nomeLegivelDaVia } from '../logica/viasItajai'
 import type { CotaRua } from '../dados/tipos'
+import type { CidadeSeguida } from '../logica/preferencias'
+import { estadoDaCidade } from '../dados/usarAoVivo'
+import { horaDeBrasilia } from '../logica/agora'
+import { metros } from '../logica/formato'
+import { idadeMin, textoIdade } from '../logica/tempoReal'
+import { AVISO_RELATO, textoDaLocalizacao, textoDoRelato, type Posicao } from './aparelho'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
 
@@ -42,6 +48,15 @@ export interface DadosDoChat {
   viasItajai?(): Promise<Record<string, number> | null>
   ruasMancha?(): Promise<RuasPorMancha | null>
   cotasRuas?(): Promise<CotaRua[] | null>
+  /** 4ª entrega: a posição do aparelho (o navegador pede permissão) e as preferências guardadas nele. */
+  localizacao?(): Promise<Posicao | { erro: 'negada' | 'indisponivel' | 'tempo' | 'sem_suporte' }>
+  preferencias?: {
+    seguidas(): CidadeSeguida[]
+    tornarMinha(c: CidadeSeguida): CidadeSeguida[]
+    seguir(c: CidadeSeguida): 'seguindo' | 'ja_seguia' | 'cheia' | 'sem_memoria'
+    deixarDeSeguir(id: string): CidadeSeguida[]
+    letra(l: 'normal' | 'grande'): void
+  }
 }
 
 export interface Ambiente {
@@ -63,6 +78,7 @@ export function limparRetratos(): void {
 export const MUDA_A_TELA = new Set<Passo['tipo']>([
   'ir_cidade', 'monitor_bacia', 'abrir_pagina', 'abrir_rota', 'escolher_regua', 'aproximar_regua', 'zoom',
   'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia', 'rua', 'remover_destaque',
+  'localizacao',
 ])
 const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
   'escolher_regua', 'aproximar_regua', 'zoom', 'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'o_que_vejo', 'filtro',
@@ -398,10 +414,112 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         }
         return { texto: 'Não há rua destacada nem ponto marcado nesta tela.' }
       }
+      // ------------------------------------------------ 4ª entrega: o aparelho
+      case 'localizacao': {
+        if (!amb.dados?.localizacao) return { texto: 'Este navegador não oferece a localização ao site.' }
+        const p = await amb.dados.localizacao()
+        if ('erro' in p) return { texto: ERRO_LOCALIZACAO[p.erro] }
+        const r = textoDaLocalizacao(p, cat)
+        if (r.fora || !r.perto) return { texto: r.texto }
+        const nomePerto = nomeDaCidade(r.perto.cidadeId, cat)
+        const sugestoes = [`como está ${nomePerto}?`, `definir ${nomePerto} como minha cidade`]
+        // A posição vai para o mapa como marca (memória da tela). Fora do Monitor, abre o da cidade mais perto.
+        let mon = amb.monitor()
+        if (!mon) {
+          amb.navegar(`/monitor/${r.perto.cidadeId}`)
+          mon = await amb.esperarMonitor(r.perto.cidadeId)
+        }
+        const marcou = mon?.marcarPonto?.({ lat: p.lat, lon: p.lon, rotulo: 'Você está aqui (aproximado; não fica guardado)', km: 6 })
+        const nota = marcou?.ok ? 'Sua posição está marcada no mapa com um anel branco.' : 'Não deu para marcar a sua posição no mapa.'
+        return { texto: `${r.texto}\n${nota}`, sugestoes }
+      }
+      case 'relatar': {
+        const mon = amb.monitor()
+        const e = mon?.estado()
+        const caminho = `#${amb.rotaAtual()}`
+        const alvo = cidade
+        const tela = e
+          ? [e.cidadeNome ? `Monitor de ${e.cidadeNome}` : 'Monitor da bacia', e.regua ? `régua ${e.regua.rotulo}` : ''].filter(Boolean).join(', ')
+          : alvo ? `página de ${nomeDaCidade(alvo, cat)}` : 'página do site'
+        let mostra: string | null = null
+        const v = await amb.dados?.aoVivo()
+        if (v && e?.regua) {
+          const r = cat.reguas.find((x) => x.codigo === e.regua!.codigo)
+          const l = r && v.tempoReal.leituras.find((x) => x.estacao === r.titulo)
+          mostra = l ? `${metros(l.nivel_m)}${l.medidoEm ? `, medido às ${horaDeBrasilia(l.medidoEm)} (${textoIdade(idadeMin(l.medidoEm, v.agora))})` : ', sem horário'} na ${e.regua.rotulo}` : `sem leitura da ${e.regua.rotulo}`
+        } else if (v && alvo) {
+          const c = amb.dados?.cidade(alvo)
+          const est = c ? estadoDaCidade(c.cidade, c.rioId, v) : null
+          if (est?.varias) mostra = `várias réguas em ${nomeDaCidade(alvo, cat)} (sem régua escolhida)`
+          else if (est?.leitura) mostra = `${metros(est.leitura.nivel_m)} na régua de ${nomeDaCidade(alvo, cat)}${est.leitura.medidoEm ? `, medido às ${horaDeBrasilia(est.leitura.medidoEm)} (${textoIdade(idadeMin(est.leitura.medidoEm, v.agora))})` : ', sem horário'}`
+          else mostra = `sem leitura municipal de ${nomeDaCidade(alvo, cat)} nesta coleta`
+        }
+        const texto = textoDoRelato({ tela, caminho, mostra, agora: v?.agora ?? new Date() })
+        return { texto: `${AVISO_RELATO}\n\n${texto}`, copiar: texto }
+      }
+      case 'preferencia_cidade': {
+        const pref = amb.dados?.preferencias
+        if (!pref) return { texto: 'Não consigo mexer nas preferências deste aparelho agora.' }
+        const c = passo.cidadeId ? cat.cidades.find((x) => x.id === passo.cidadeId) : null
+        const nome = c?.nome ?? ''
+        const comoSeguida = (x: typeof c): CidadeSeguida => ({ id: x!.id, rio: x!.rio })
+        if (passo.acao === 'listar') {
+          const lista = pref.seguidas()
+          if (!lista.length) return { texto: 'Nenhuma cidade guardada neste aparelho. Peça, por exemplo, "minha cidade é Gaspar".', sugestoes: ['minha cidade é Gaspar'] }
+          const [minha, ...outras] = lista.map((x) => nomeDaCidade(x.id, cat))
+          return { texto: `Sua cidade neste aparelho: ${minha}.${outras.length ? ` Também segue: ${outras.join(', ')}.` : ''} Fica só neste aparelho.` }
+        }
+        if (!c) return { texto: 'Qual cidade?', sugestoes: ['minha cidade é Gaspar', 'seguir Blumenau'] }
+        if (passo.acao === 'minha') {
+          const lista = pref.tornarMinha(comoSeguida(c))
+          return lista[0]?.id === c.id && pref.seguidas()[0]?.id === c.id
+            ? { texto: `${nome} agora é a sua cidade neste aparelho: o Início abre com ela. A escolha fica só neste aparelho.`, sugestoes: [`como está ${nome}?`] }
+            : { texto: `Não deu para guardar neste aparelho (navegação anônima ou armazenamento bloqueado). ${nome} vale só enquanto a página estiver aberta.` }
+        }
+        if (passo.acao === 'seguir') {
+          const r = pref.seguir(comoSeguida(c))
+          return {
+            texto: {
+              seguindo: `Agora você segue ${nome} neste aparelho: ela aparece no Início.`,
+              ja_seguia: `Você já segue ${nome}.`,
+              cheia: 'Você já segue quatro cidades, o máximo. Deixe de seguir uma antes (por exemplo, "deixar de seguir Ilhota").',
+              sem_memoria: 'Não deu para guardar neste aparelho (navegação anônima ou armazenamento bloqueado).',
+            }[r],
+          }
+        }
+        const antes = pref.seguidas().some((x) => x.id === c.id)
+        pref.deixarDeSeguir(c.id)
+        return { texto: antes ? `Você deixou de seguir ${nome} neste aparelho.` : `Você não segue ${nome}.` }
+      }
+      case 'letra': {
+        if (!amb.dados?.preferencias) return { texto: 'Não consigo mudar a letra agora.' }
+        amb.dados.preferencias.letra(passo.tamanho)
+        const qual = passo.tamanho === 'grande' ? 'Letra maior ligada' : 'Letra normal'
+        return {
+          texto: ctx.naMonitor
+            ? `${qual} neste aparelho, nas páginas do site. O Monitor mantém o desenho dele e não muda o tamanho da letra.`
+            : `${qual} neste aparelho. É o mesmo botão de letra do topo da página.`,
+        }
+      }
+      case 'tela_cheia': {
+        if (ctx.naMonitor) return { texto: 'O navegador só abre a tela cheia com o seu toque: use o botão "Tela cheia" no bloco do topo do mapa. Para sair, o mesmo botão ou a tecla Esc.' }
+        const alvo = cidade
+        return {
+          texto: 'A tela cheia é do mapa, e o navegador só a abre com o seu toque: abra o Monitor e toque em "Tela cheia".',
+          link: { texto: 'Abrir o Monitor →', para: alvo ? `/monitor/${alvo}` : '/monitor' },
+        }
+      }
     }
   }
   return { texto: feitos.join(' ') || 'Feito.' }
 }
+
+const ERRO_LOCALIZACAO = {
+  negada: 'Você não permitiu a localização (ou o navegador bloqueou). Nada foi lido nem guardado. Para usar, permita a localização para este site nas configurações do navegador e peça de novo.',
+  indisponivel: 'O aparelho não conseguiu dizer a sua posição agora. Nada foi guardado.',
+  tempo: 'A posição não chegou a tempo: o navegador pode estar esperando a sua permissão, ou o aparelho está sem sinal de localização. Nada foi guardado; responda à pergunta do navegador ou tente de novo.',
+  sem_suporte: 'Este navegador não oferece a localização ao site.',
+} as const
 
 /** As cidades com rua no mapa: Itajaí (traçado) e as que publicam o ponto da cota (Gaspar, Brusque). */
 const CIDADES_COM_RUA_NO_MAPA = ['itajai', 'gaspar', 'brusque']

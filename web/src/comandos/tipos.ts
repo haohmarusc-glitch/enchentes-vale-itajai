@@ -65,6 +65,15 @@ export type Passo =
   | { tipo: 'rua'; texto: string; cidadeId?: string; ano?: string; foco: 'mostrar' | 'manchas' }
   /** Tira o destaque da rua (mapa das manchas) ou a marca dos pontos (Monitor). */
   | { tipo: 'remover_destaque' }
+  // --- 4ª entrega: o aparelho
+  /** A régua mais perto da pessoa. O navegador pede permissão; nada é guardado nem enviado. */
+  | { tipo: 'localizacao' }
+  /** Texto pronto para relatar um problema na tela (não há canal: a pessoa copia e envia). */
+  | { tipo: 'relatar' }
+  /** As cidades guardadas no aparelho: a minha, seguir, deixar de seguir, listar. */
+  | { tipo: 'preferencia_cidade'; acao: 'minha' | 'seguir' | 'deixar' | 'listar'; cidadeId?: string }
+  | { tipo: 'letra'; tamanho: 'normal' | 'grande' }
+  | { tipo: 'tela_cheia' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }
@@ -85,6 +94,11 @@ export interface CidadeDoCatalogo {
   nome: string
   /** Rio da página da cidade: `/acu/<id>` ou `/mirim/<id>`. Itajaí (foz) tem página própria. */
   rio: 'acu' | 'mirim'
+  /** Coordenada da régua da cidade no cadastro, quando há. */
+  lat?: number
+  lon?: number
+  /** `coordenadas_status: "não confirmada"` no cadastro (Timbó). */
+  coordenadaNaoConfirmada?: boolean
 }
 
 export interface ReguaDoCatalogo {
@@ -95,6 +109,8 @@ export interface ReguaDoCatalogo {
   /** Nome do lugar, como o mapa mostra ("Sítio Sr. Hilário"). */
   nome: string
   cidadeId: string
+  lat?: number
+  lon?: number
 }
 
 /** Um ponto de confluência com coordenada gravada no cadastro, e a fonte dela. */
