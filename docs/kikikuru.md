@@ -397,9 +397,10 @@ causas, duas regras:
    coladas não tinham trava vertical: com o pino de Timbó meio pixel acima da borda, o nome dele
    nascia "abaixo" — em cima do pino cinza de Indaial, que ficou parecendo Timbó ("réguas
    sobrepondo", na captura). O pino que só encosta na borda continua desenhado; o nome, não.
-8. **Pinos que caem no mesmo ponto são postos lado a lado** (`separarPinosCoincidentes`): Timbó e
-   Rio dos Cedros, afluentes sem traçado próprio, encaixavam no mesmo vértice do Açu, e o de baixo
-   nunca achava lugar para o nome. É deslocamento cartográfico, não posição.
+8. **Pinos que caem no mesmo ponto são postos lado a lado** (`separarPinosCoincidentes`). É
+   deslocamento cartográfico, não posição. Até 06/10/2026 Timbó e Rio dos Cedros caíam no mesmo
+   vértice do Açu; desde a auditoria das réguas, o pino fica na coordenada da régua (`pontoDoPino`),
+   sem encaixe no traçado, e os dois ficam a 9 km um do outro (`docs/AUDITORIA-REGUAS-2026-10-06.md`).
 
 Por que a regra 2 não é dura: na bacia inteira no celular os pinos ficam a 10 px uns dos outros,
 e a versão dura deixava "Rio do Sul 4,60 m" de fora enquanto três "sem leitura" cabiam — o

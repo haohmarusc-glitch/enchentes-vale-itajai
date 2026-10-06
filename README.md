@@ -508,7 +508,7 @@ o projeto.
   - Sem aviso na tela: o registro é só para controle interno (decisão do Jefferson).
   - [ ] **Criar a variável `ADMIN_EMAILS` = `haohmarusc@gmail.com` no Cloudflare Pages** (passo a passo em
     `docs/PUBLICACAO-E-ACESSO.md`, "Registro de acessos").
- (05/10/2026, pedido do Jefferson para ajudar a Defesa Civil de Ibirama).**
+- [x] **Rio Hercílio (Itajaí do Norte) e os rios de Ibirama no Monitor (05/10/2026, pedido do Jefferson para ajudar a Defesa Civil de Ibirama).**
   - No OSM o rio tem dois nomes ("Itajaí do Norte" a montante, "Hercílio" a jusante), e nenhuma consulta pedia os
     dois.
   - `scripts/baixar_tracado_hercilio.py` baixa o traçado e só grava se ele chega ao Açu e passa pelo pino de Ibirama.
@@ -519,8 +519,31 @@ o projeto.
     que o OSM tem no município. Eles vieram de `scripts/baixar_rios_municipio.py`.
   - O Monitor passou a desenhar todo traçado de `data/rios/`. Arquivo do Monitor alterado com o rótulo
     `monitor-autorizado`, por decisão do Jefferson.
+  - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Corrigido
+    junto com as outras cidades na auditoria das réguas (item abaixo).
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
- (05/10/2026, pedido do Jefferson)** — `docs/GUARDAR-CHEIAS.md`.
+- [x] **Auditoria das réguas do Monitor (06/10/2026, pedido do Jefferson, com a inspeção das 19 cidades no satélite).**
+  `docs/AUDITORIA-REGUAS-2026-10-06.md`.
+  - **A causa das 8 cidades sem pino na tela:** o pino era encaixado no traçado do rio da tela, e a câmera centrava
+    na coordenada do cadastro. Fora do tronco, os dois ficavam até 28 km longe (Ituporanga). Timbó e Rio dos
+    Cedros, ao norte da borda do traçado, abriam no mesmo lugar, porque a câmera era presa aos limites dele.
+  - **Corrigido (rótulo `monitor-autorizado`):**
+    - o pino fica na coordenada da régua;
+    - Blumenau, cuja coordenada é de pluviômetro, fica no rio e com "posição aproximada";
+    - a câmera centra no pino;
+    - no celular, o pino sobe para acima do painel;
+    - tocar de novo na cidade recentraliza;
+    - o enquadramento da bacia cabe todas as réguas;
+    - o painel diz de onde vem a posição.
+  - **Inventário:** `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py`). As 12 cidades com código DCSC
+    batem com a ficha da mesma estação, a até 10 m. Nenhuma coordenada do cadastro mudou.
+  - [ ] **Para o Jefferson decidir:**
+    - o local da régua de Blumenau (Ponte Adolfo Konder);
+    - a fonte do ponto de Lontras, Apiúna, Timbó, Rio dos Cedros, Trombudo Central e Itajaí, cidades sem código
+      nas quais o cadastro não diz de onde veio a coordenada;
+    - se as estações estaduais mais próximas são a mesma régua da leitura municipal: Timbó 1 (1,6 km), Rio dos
+      Cedros 1 (0,24 km), Trombudo Central 2 (0,9 km) e Lontras (0,8 km).
+- [x] **Guardar as cheias para a conta "N horas antes" (05/10/2026, pedido do Jefferson)** — `docs/GUARDAR-CHEIAS.md`.
   - `scripts/nivel_antes.py` responde "quando a régua X chegou à crista, passou de um nível ou passou da cota de uma
     rua, como estavam as réguas de cima N horas antes".
     - Só réguas a montante no mesmo rio; cada número na sua régua, com a hora; ANA só com ANA (fuso não conferido).

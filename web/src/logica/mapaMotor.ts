@@ -169,6 +169,11 @@ export interface Pino {
   rioId: string
   x: number
   y: number
+  /** Onde o pino está no mapa — a régua, ou o ponto no rio quando `aproximado`. A câmera centra AQUI. */
+  lon: number
+  lat: number
+  /** A coordenada do cadastro não é a da régua (ver `pontoDoPino`): o painel diz "posição aproximada". */
+  aproximado: boolean
   faixa: Faixa
   /** De onde veio `faixa`. `estadual` só quando a municipal é `sem-dado`. */
   origemFaixa?: OrigemFaixa
@@ -243,6 +248,37 @@ export interface RioParaCena {
  * — e barra o que está em outra bacia.
  */
 const LIMITE_ANCORA_KM = 5
+
+/**
+ * Onde o pino da cidade é desenhado: na coordenada da régua, sem encaixe no traçado.
+ *
+ * O DEFEITO (06/10/2026, auditoria do Jefferson com satélite nas 19 cidades). O pino era encaixado no
+ * ponto mais perto do traçado do rio da tela, e a câmera centrava na coordenada do cadastro. Fora do
+ * tronco, os dois ficavam longe: Ibirama a 2,6 km (pino no mato, no Açu), Guabiruba a 4,2, Timbó a 8,2,
+ * Trombudo Central a 10,6, Rio dos Cedros a 16,6 e Ituporanga a 28 km. A câmera abria a cidade e o pino
+ * não estava lá. A régua real fica na margem ou numa ponte, e o traçado do OSM tem erro de dezenas de
+ * metros: encaixar não a punha no lugar certo.
+ *
+ * O encaixe continua só onde ele é preciso: a ESPINHA que pinta o rio (ver `ancorasQuePintam`) usa o
+ * ponto no traçado. O pino não.
+ *
+ * A EXCEÇÃO é a cidade cuja coordenada o cadastro declara que NÃO é a da régua
+ * (`coordenadas_sao_da_regua: false`, hoje só Blumenau, cuja coordenada é de um pluviômetro a ~3 km do
+ * rio). Ali o pino fica no rio, no ponto mais perto, e sai marcado como `aproximado`: desenhar no
+ * pluviômetro diria que a régua está no morro.
+ */
+export function pontoDoPino(
+  cidade: Pick<Cidade, 'coordenadas' | 'coordenadas_sao_da_regua'>,
+  tracadoDoRio: LonLat[][],
+): { ponto: LonLat; aproximado: boolean } | null {
+  const c = cidade.coordenadas
+  if (!c) return null
+  const alvo: LonLat = [c[1], c[0]]
+  if (cidade.coordenadas_sao_da_regua === false) {
+    return { ponto: maisProximoNoRio(tracadoDoRio, alvo) ?? alvo, aproximado: true }
+  }
+  return { ponto: alvo, aproximado: false }
+}
 
 export function corDaFaixa(el: Element, f: Faixa): string {
   const v = getComputedStyle(el).getPropertyValue(VAR_FAIXA[f]).trim()
@@ -326,8 +362,14 @@ export function construirCena(
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
 
-  // Enquadramento comum: cobre o traçado de TODOS os rios.
-  const todos = rios.flatMap((r) => r.coords.flat())
+  // Enquadramento comum: cobre o traçado de TODOS os rios e a régua de TODAS as cidades. As réguas
+  // entram desde 06/10/2026, quando o pino passou a ficar na coordenada dela (`pontoDoPino`): Timbó e
+  // Rio dos Cedros ficam ao norte da borda do traçado, e sem isto a câmera, presa aos limites, parava
+  // as duas no MESMO lugar, sem pino nenhum na tela.
+  const todos = [
+    ...rios.flatMap((r) => r.coords.flat()),
+    ...rios.flatMap((r) => r.cidades.flatMap((c) => (c.coordenadas ? [[c.coordenadas[1], c.coordenadas[0]] as LonLat] : []))),
+  ]
   const limBase = limitesOuBacia(limitesDe(todos))
   const enq: Enquadramento = enquadrar(
     vista ? aplicarVista(limBase, vista) : limBase,
@@ -370,6 +412,7 @@ export function construirCena(
           medidoEm: aoVivo?.medidoEm ?? null,
           nivelBruto: aoVivo ? null : bruto,
           ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
+          pino: pontoDoPino(cidade, rio.coords)!,
         }
       })
     // Quem PINTA é só o eixo. As demais continuam como PINO — o nível delas é
@@ -501,12 +544,15 @@ export function construirCena(
       // com a leitura mais informativa (a que não é sem-dado).
       const existente = pinosPorId.get(a.cidade.id)
       if (existente && existente.faixa !== 'sem-dado') continue
-      const [x, y] = projetar(enq, a.ponto)
+      const [x, y] = projetar(enq, a.pino.ponto)
       pinosPorId.set(a.cidade.id, {
         cidade: a.cidade,
         rioId: rio.rioId,
         x,
         y,
+        lon: a.pino.ponto[0],
+        lat: a.pino.ponto[1],
+        aproximado: a.pino.aproximado,
         faixa: a.faixa,
         origemFaixa: a.origemFaixa,
         nivel: a.nivel,

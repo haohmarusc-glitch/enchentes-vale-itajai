@@ -22,7 +22,7 @@ import { menuDasCidades } from '../logica/menuDasCidades'
 import { vizinhosNoEixo } from '../logica/vizinhosNoEixo'
 import { resumo24h } from '../logica/resumo24h'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
-import { kmDaVista, vistaQueCabeAsReguas, zoomMaximo } from '../logica/vistaDaCidade'
+import { kmDaVista, vistaAcimaDaFolha, vistaQueCabeAsReguas, zoomMaximo } from '../logica/vistaDaCidade'
 import { reguasComRotulo } from '../logica/rotulosDasReguas'
 import {
   COR_COTA_RUA,
@@ -59,6 +59,7 @@ import {
   caixaDaEtiquetaMare,
   desenharPinos,
   desenharReguas,
+  MARGEM,
   medidorDe,
   planejarRotulosDosPinos,
   type Caixa,
@@ -70,6 +71,7 @@ import {
 } from '../logica/mapaMotor'
 import { reguasComCota } from '../logica/reguas'
 import { reguasNoMapa, type ReguaNoMapa } from '../logica/reguasNoMapa'
+import { textoDaPosicao } from '../logica/posicaoDoPino'
 import {
   FUNDOS,
   FUNDO_PADRAO,
@@ -280,6 +282,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   vistaRef.current = vista
   /** Já enquadrou na cidade da rota? Uma vez por cidade: depois o zoom é de quem mexe. */
   const enquadrou = useRef(false)
+  /**
+   * Tocar de novo na cidade que já está aberta (menu "Cidades") volta a enquadrá-la. Antes o endereço
+   * não mudava, nada acontecia, e quem tinha arrastado o mapa para longe não achava o caminho de volta
+   * (auditoria de 06/10/2026).
+   */
+  const [pedidoDeEnquadrar, setPedidoDeEnquadrar] = useState(0)
   /** O menu de cidades, na ordem do rio (logica/menuDasCidades). */
   const [menuAberto, setMenuAberto] = useState(false)
   const menu = useMemo(
@@ -791,7 +799,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     } else {
       setLegendaAberta(false)
     }
-  }, [cidadeFoco])
+  }, [cidadeFoco, pedidoDeEnquadrar])
 
   useEffect(() => {
     if (!cidadeFoco || enquadrou.current) return
@@ -805,18 +813,25 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     // espalhadas por 20,8 x 17,6 km: com a janela fixa de 24 km centrada no
     // pino, a DC-10 (Bairro Limoeiro) ficava a 24,2 km do centro, fora da tela.
     // Ver `vistaQueCabeAsReguas`.
+    //
+    // O centro é o PINO como ele está desenhado (`pino.lat/lon`), não a coordenada do cadastro: em
+    // Blumenau, cuja coordenada é de um pluviômetro, o pino fica no rio, e centrar no cadastro abria a
+    // tela no morro, sem o pino (auditoria de 06/10/2026).
     const daCidade = reguasRef.current.filter((r) => r.cidade === cidadeFoco)
     const v = vistaQueCabeAsReguas(
-      pino?.cidade.coordenadas,
+      pino ? [pino.lat, pino.lon] : undefined,
       daCidade,
       cena.limitesBase,
       cena.largura > 0 ? cena.altura / cena.largura : 1,
     )
     enquadrou.current = true
     if (!v) return
-    setVista(v)
+    // O painel abre junto. No celular ele é uma folha que cobre a parte de baixo, e o pino no meio
+    // ficava atrás dela: sobe para a faixa livre (`vistaAcimaDaFolha`).
+    const abrePainel = !!pino && !municipal
+    setVista(abrePainel ? vistaAcimaDaFolha(v, cena.limitesBase, cena.largura, cena.altura, MARGEM) : v)
     if (pino && !municipal) setSel(pino)
-  }, [cidadeFoco, tam, rios, tempoReal])
+  }, [cidadeFoco, tam, rios, tempoReal, pedidoDeEnquadrar])
 
   /**
    * Carrega e recalcula as cotas de rua da cidade em foco.
@@ -1176,7 +1191,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                             type="button"
                             className={`${estilos.menuCidade} ${item.id === cidadeFoco ? estilos.menuAtual : ''}`}
                             aria-current={item.id === cidadeFoco ? 'page' : undefined}
-                            onClick={() => navigate(`/monitor/${item.id}`)}
+                            onClick={() =>
+                              item.id === cidadeFoco
+                                ? setPedidoDeEnquadrar((n) => n + 1)
+                                : navigate(`/monitor/${item.id}`)
+                            }
                           >
                             {item.nome}
                             {item.detalhe ? <span className={estilos.menuDetalhe}>{item.detalhe}</span> : null}
@@ -1540,6 +1559,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   />
                 </div>
               ) : null}
+              {/* De onde vem o ponto do pino: estação, posição aproximada ou cidade de várias réguas
+                  (auditoria de 06/10/2026; ver `logica/posicaoDoPino.ts`). */}
+              <p className={estilos.painelRessalva}>
+                {textoDaPosicao(cid, foco, reguasRef.current.filter((r) => r.cidade === cid.id).length)}
+              </p>
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
                   <span className={estilos.painelRotulo}>{cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>

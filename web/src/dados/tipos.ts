@@ -36,9 +36,12 @@ export interface Cidade {
   observacao?: string
   afluentes?: string[]
   /** [lat, lon] da estação de nível (Defesa Civil de SC) — posição da régua no
-   *  rio, não o centro da cidade; o mapa encaixa no traçado. Exceções: Itajaí
-   *  (foz, sem estação estadual) e Vidal Ramos (Asthon, = DCSC). */
+   *  rio, não o centro da cidade. O pino do mapa fica AQUI, sem encaixe no
+   *  traçado (`pontoDoPino`). Exceções: Itajaí (foz, sem estação estadual) e
+   *  Vidal Ramos (Asthon, = DCSC). */
   coordenadas?: [number, number]
+  /** `false` quando o cadastro sabe que `coordenadas` NÃO é a régua (Blumenau: pluviômetro). */
+  coordenadas_sao_da_regua?: boolean
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>
   /**

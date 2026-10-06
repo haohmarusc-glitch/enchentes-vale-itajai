@@ -184,3 +184,33 @@ export function vistaInicial(
 ): Vista {
   return vistaDaCidade(coordenadas, limites, kmAlvo) ?? VISTA_INTEIRA
 }
+
+/** Até esta largura de mapa, em px, o painel da cidade é uma folha que cobre a parte de baixo (CSS do Monitor). */
+export const LARGURA_DA_FOLHA_PX = 700
+
+/** Onde o pino fica, de cima para baixo, quando a folha está aberta: entre os controles e a folha. */
+export const ALTURA_DO_PINO_COM_FOLHA = 0.36
+
+/**
+ * No celular, sobe o pino para a faixa visível acima da folha do painel.
+ *
+ * POR QUE (auditoria de 06/10/2026). A câmera centrava o pino no meio do mapa, e no celular o painel da
+ * cidade ocupa até 52% de baixo: o pino ficava logo atrás dele. A vista desce o centro até o pino cair a
+ * `ALTURA_DO_PINO_COM_FOLHA` da altura. Os botões de zoom mantêm o centro, então o pino continua ali.
+ *
+ * Conta: na tela estreita e alta quem limita o enquadramento é a LARGURA (a bacia é larga), então a
+ * altura visível em km é a largura em km vezes altura/largura útil (sem a margem do enquadramento).
+ */
+export function vistaAcimaDaFolha(
+  v: Vista,
+  limites: Limites,
+  largura: number,
+  altura: number,
+  /** A margem do enquadramento (`MARGEM` do `mapaMotor`): a largura em km ocupa `largura - 2*margem` px. */
+  margem: number = 18,
+): Vista {
+  if (!(largura > 2 * margem) || !(altura > 0) || largura > LARGURA_DA_FOLHA_PX) return v
+  const kmAltura = kmDaVista(limites, v.zoom) * (altura / (largura - 2 * margem))
+  if (!Number.isFinite(kmAltura)) return v
+  return { ...v, centroLat: v.centroLat - ((0.5 - ALTURA_DO_PINO_COM_FOLHA) * kmAltura) / KM_POR_GRAU_LAT }
+}

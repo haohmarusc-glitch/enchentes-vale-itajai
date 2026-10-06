@@ -73,6 +73,15 @@ Pedido do Jefferson: todos os rios que passam por Ibirama na tela.
 - **Outro município:** rodar o workflow com o nome dele e depois o conversor.
 - Um curso sem nome no OSM não entra. Melhorar o mapa ali é contribuir com o OpenStreetMap.
 
+## O pino de Ibirama (06/10/2026)
+
+O Jefferson viu no satélite, com o zoom novo, que o pino de Ibirama estava no mato, longe da cidade. O
+Monitor encaixava o pino de toda cidade do cadastro do Açu no ponto mais perto do **traçado do Açu**, e
+Ibirama fica a 2,6 km dele. A régua DCSC-00020 está no Hercílio.
+
+Na mesma noite, a auditoria das 19 cidades achou o mesmo defeito em outras sete. Desde então o pino fica
+na **coordenada da régua**, sem encaixe em traçado nenhum. Detalhes em `docs/AUDITORIA-REGUAS-2026-10-06.md`.
+
 ## Refazer
 
 Rodar o workflow "Baixar traçado do Hercílio" (Actions → Run workflow). Ele republica o branch
