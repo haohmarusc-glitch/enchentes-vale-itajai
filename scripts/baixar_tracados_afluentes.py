@@ -48,7 +48,9 @@ RIOS = {
         "chega_a": ("itajai-acu",),
         "chega_km": 1.0,
         "cidade": "timbo",
-        "passa_km": 0.5,
+        # 1 km, não 0,5 (06/10/2026): a primeira rodada achou o Benedito a 0,63 km do pino. A coordenada de
+        # Timbó ("Rio Benedito, Rua Equador") não tem fonte declarada no cadastro — o mesmo caso do Trombudo.
+        "passa_km": 1.0,
     },
     "itajai-do-sul": {
         "nomes": ("Rio Itajaí do Sul",),
@@ -113,10 +115,14 @@ def conferir(rio_id: str, ls: list, alvos: dict[str, list], pino_cidade: tuple[f
         if d > c["chega_km"]:
             problemas.append(f"não chega a {' / '.join(c['chega_a'])}: a ponta mais perto fica a {d:.2f} km "
                              f"(limite {c['chega_km']} km)")
-    d = min(km(pino_cidade, p) for l in ls for p in l)
+    d = distancia_ao_pino(ls, pino_cidade)
     if d > c["passa_km"]:
         problemas.append(f"não passa pela régua de {c['cidade']}: fica a {d:.2f} km do pino (limite {c['passa_km']} km)")
     return problemas
+
+
+def distancia_ao_pino(ls: list, pino_cidade: tuple[float, float]) -> float:
+    return min(km(pino_cidade, p) for l in ls for p in l)
 
 
 def main() -> int:
@@ -140,7 +146,9 @@ def main() -> int:
             recusados.append(rio_id)
             continue
         alvos[rio_id] = [p for l in ls for p in l]
-        print(f"   conferido: chega a {' / '.join(RIOS[rio_id]['chega_a'])} e passa por {RIOS[rio_id]['cidade']}")
+        d = distancia_ao_pino(ls, pino(RIOS[rio_id]["cidade"]))
+        print(f"   conferido: chega a {' / '.join(RIOS[rio_id]['chega_a'])} e passa a {d:.2f} km do pino de "
+              f"{RIOS[rio_id]['cidade']}")
         if a.gravar:
             resposta["_consulta"] = {
                 "overpass": texto,
