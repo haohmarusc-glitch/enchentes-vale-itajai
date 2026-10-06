@@ -687,6 +687,16 @@
 
 /* CELULAR: legenda e painel cobriam o mapa inteiro. O painel vira folha de
    baixo, largura toda, com teto; a legenda nasce recolhida (ver o componente). */
+/* CHAT ABERTO NO CELULAR (docs/CHAT-GLOBAL-COMANDOS.md, 06/10/2026). A folha da cidade (z-index 7) subia
+   por cima da conversa, que fica no bloco do topo, e a resposta não se lia. Enquanto a conversa está aberta,
+   a coluna sobe acima da folha. A coluna não recebe toque (só as folhas dela), então o mapa e a folha
+   continuam tocáveis onde não há bloco visível. Ao executar um pedido, a conversa recolhe sozinha no
+   celular, e a folha com o resultado volta para cima. */
+@media (max-width: 700px) {
+  .colunaEsquerda.chatAberto {
+    z-index: 8;
+  }
+}
 @media (max-width: 700px) {
   .cantoEsquerdo {
     max-width: 100%;

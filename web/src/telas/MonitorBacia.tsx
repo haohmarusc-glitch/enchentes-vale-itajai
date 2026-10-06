@@ -7,7 +7,10 @@ import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMoni
 import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
 import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import ChatNoTopo from '../componentes/ChatNoTopo'
+import { registrarMonitor, type Retrato } from '../comandos/ponte'
+import { useConversa } from '../chat-local/conversa'
 import {
   cidadesDoRio,
   eixoDoRio,
@@ -87,6 +90,8 @@ import {
 import VariasReguas from '../componentes/VariasReguas'
 import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
 import estilos from './MonitorBacia.module.css'
+
+const NOME_DO_FUNDO: Record<ChaveFundo, string> = { escuro: 'escuro', satelite: 'satélite', mapa: 'mapa de ruas' }
 
 /** Nomes das faixas que a Defesa Civil de SC publica (C7) — rotuladas como dela, nunca como nossas. */
 const NOME_FAIXA_ESTADUAL = { normal: 'NORMAL', atencao: 'ATENÇÃO', alerta: 'ALERTA', emergencia: 'EMERGÊNCIA' } as const
@@ -258,6 +263,16 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   }, [])
   const navigate = useNavigate()
   const { cidadeId } = useParams()
+  const [busca] = useSearchParams()
+  // Conversa do chat aberta: no celular, o bloco do topo sobe acima da folha da cidade (ver o CSS).
+  const { aberto: chatAberto } = useConversa()
+  /**
+   * Camadas de cheia comandadas pelo chat (docs/CHAT-GLOBAL-COMANDOS.md): o controle continua o de
+   * `CamadasMonitor`; o chat só PEDE um modo, e lê as opções e o modo de agora para responder certo.
+   */
+  const [camadasDisponiveis, setCamadasDisponiveis] = useState<{ arquivo: string; rotulo: string }[]>([])
+  const [modoCamada, setModoCamada] = useState<string | null>(null)
+  const [pedidoCamada, setPedidoCamada] = useState<{ cidade: string; modo: string; n: number } | null>(null)
   const cidadeFoco = municipal ? 'ascurra' : cidadeId
   const divRef = useRef<HTMLDivElement | null>(null)
   /**
@@ -460,6 +475,34 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     if (!r || !cena) return
     const v = vistaDaRegua(r, cena.limitesBase, cena.largura, cena.altura, MARGEM)
     if (v) setVista(v)
+  }
+
+  /**
+   * Os textos do painel que dizem a faixa, por que está cinza, de onde vem o pino e a equivalência. Uma
+   * função só, usada pelo painel e pelo chat ("por que essa régua está cinza?"): o chat nunca dá um
+   * segundo diagnóstico, diferente do que a tela mostra.
+   */
+  function textosDoFoco(foco: Pino) {
+    const cid = foco.cidade
+    const brutoSc = cid.id === 'ascurra' ? null : nivelSc.get(cid.id) ?? null
+    const daCidade = leiturasDaCidade(tempoReal, foco.rioId, cid.id)
+    const variasReguas = foco.nivel == null && (daCidade.length > 1 || reguasRef.current.filter((r) => r.cidade === cid.id).length > 1)
+    const situacaoSc = brutoSc ? null : nivelSc.situacoes?.get(cid.id) ?? null
+    const faixa = foco.origemFaixa === 'estadual'
+      ? `Classificação estadual: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
+      : foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]
+    const motivoCinza = foco.faixa !== 'sem-dado'
+      ? null
+      : variasReguas
+        ? MOTIVO_VARIAS_REGUAS
+        : motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id, situacaoSc,
+            serieDaCidade(serie, foco.rioId, cid.id).at(-1) ?? null)
+    return {
+      faixa,
+      motivoCinza,
+      posicao: textoDaPosicao(cid, foco, reguasRef.current.filter((r) => r.cidade === cid.id).length),
+      equivalencia: cid.equivalencia_estadual ? textoEquivalencia(cid.equivalencia_estadual) : null,
+    }
   }
 
   /**
@@ -1102,6 +1145,122 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
   const rotaDoRio = (rioId: string) => (rioId === 'itajai-mirim' ? '/mirim' : '/acu')
 
+
+  /**
+   * A PONTE COM O CHAT (docs/CHAT-GLOBAL-COMANDOS.md, 06/10/2026). Registrada a cada desenho, com as
+   * mesmas funções que os botões usam: o chat nunca clica no DOM nem mexe no estado por fora. Cada função
+   * devolve o resultado REAL ("já está no zoom máximo", "esta régua não está no mapa"), e o chat repete.
+   * `pronto` só vale com a cena montada e a cidade já enquadrada: é por ele que o chat espera depois de
+   * abrir o Monitor de outra cidade.
+   */
+  const cidadeDaCamada = cidadeFoco ?? sel?.cidade.id ?? 'itajai'
+  const nomeDaCidadeEmFoco = cidadeFoco ? cidadesBacia.find((c) => c.id === cidadeFoco)?.nome ?? cidadeFoco : null
+  useEffect(() => {
+    const opcoes = opcoesRegua.filter((o) => o.valor !== TODAS)
+    const rotuloDaRegua = (codigo: string) => opcoes.find((o) => o.valor === codigo)?.rotulo ?? codigo
+    const rota = municipal ? '/municipal/ascurra' : cidadeFoco ? `/monitor/${cidadeFoco}` : '/monitor'
+    return registrarMonitor({
+      cidade: cidadeFoco ?? null,
+      get pronto() {
+        const cena = cenaRef.current
+        return !!cena && cena.pinos.length > 0 && (!cidadeFoco || enquadrou.current)
+      },
+      estado: () => ({
+        cidade: cidadeFoco ?? null,
+        cidadeNome: nomeDaCidadeEmFoco,
+        regua: reguaSel ? { codigo: reguaSel, rotulo: rotuloDaRegua(reguaSel) } : null,
+        reguas: opcoes.map((o) => ({ codigo: o.valor, rotulo: o.rotulo })),
+        fundo,
+        camada: rotuloCamada,
+        camadasDisponiveis,
+        reproducao: idxRepro == null || grade[idxRepro] == null ? null : dataHora(new Date(grade[idxRepro]!)),
+      }),
+      escolherRegua: (codigo) => {
+        if (codigo === 'todas') {
+          if (opcoes.length === 0) return { ok: false, texto: `${nomeDaCidadeEmFoco ?? 'Esta tela'} não tem várias réguas para escolher.` }
+          escolherRegua(TODAS)
+          return { ok: true, texto: `Todas as ${opcoes.length} réguas de ${nomeDaCidadeEmFoco} enquadradas.` }
+        }
+        if (!opcoes.some((o) => o.valor === codigo) || !reguasDoMapa.some((r) => chaveDaRegua(r) === codigo)) {
+          return { ok: false, texto: `A régua ${codigo} não está no mapa agora.` }
+        }
+        escolherRegua(codigo)
+        return { ok: true, texto: `Mapa centralizado na régua ${rotuloDaRegua(codigo)}.` }
+      },
+      enquadrarCidade: () => {
+        if (!cidadeFoco) {
+          setVista(VISTA_INTEIRA)
+          return { ok: true, texto: 'Bacia inteira enquadrada.' }
+        }
+        setReguaSel(null)
+        setPedidoDeEnquadrar((n) => n + 1)
+        return { ok: true, texto: `Mapa enquadrado em ${nomeDaCidadeEmFoco}, no pino da régua.` }
+      },
+      zoom: (sentido) => {
+        const max = zoomMaximo(cenaRef.current?.limitesBase, !!cidadeFoco)
+        if (sentido === 'mais' && vista.zoom >= max) return { ok: false, texto: 'O mapa já está no zoom máximo.' }
+        if (sentido === 'menos' && vista.zoom <= 1) return { ok: false, texto: 'O mapa já mostra a bacia inteira.' }
+        aplicarZoom(sentido === 'mais' ? 1.6 : 1 / 1.6)
+        return { ok: true, texto: sentido === 'mais' ? 'Aproximei o mapa.' : 'Afastei o mapa.' }
+      },
+      verBacia: () => {
+        setVista(VISTA_INTEIRA)
+        return { ok: true, texto: 'Bacia inteira enquadrada.' }
+      },
+      fundo: (f) => {
+        if (!ehChaveDeFundo(f)) return { ok: false, texto: 'Esse fundo não existe no mapa.' }
+        setFundo(f)
+        return { ok: true, texto: `Fundo do mapa: ${NOME_DO_FUNDO[f]}.` }
+      },
+      camada: (arquivo) => {
+        if (arquivo !== 'off' && !camadasDisponiveis.some((c) => c.arquivo === arquivo)) {
+          return { ok: false, texto: 'Essa camada não está disponível nesta cidade.' }
+        }
+        setPedidoCamada((p) => ({ cidade: cidadeDaCamada, modo: arquivo, n: (p?.n ?? 0) + 1 }))
+        if (arquivo === 'off') return { ok: true, texto: 'Camadas de cheia ocultas.' }
+        const rotulo = camadasDisponiveis.find((c) => c.arquivo === arquivo)?.rotulo ?? arquivo
+        return { ok: true, texto: `Camada ligada: ${rotulo}. É referência (cheia passada ou simulação), não alagamento atual.` }
+      },
+      aoVivo: () => {
+        if (idxRepro == null) return { ok: true, texto: 'O mapa já mostra as leituras mais recentes.' }
+        setTocando(false)
+        setIdxRepro(null)
+        return { ok: true, texto: 'Voltei às leituras mais recentes. Cada uma mostra a hora dela no painel.' }
+      },
+      explicar: (id) => {
+        const pino = cenaRef.current?.pinos.find((p) => p.cidade.id === id)
+        if (!pino) return null
+        return { cidadeNome: pino.cidade.nome, ...textosDoFoco(pino) }
+      },
+      retrato: (): Retrato => ({ rota, cidade: cidadeFoco ?? null, vista, regua: reguaSel, fundo, camada: modoCamada }),
+      restaurar: (r) => {
+        enquadrou.current = true
+        if (r.fundo && ehChaveDeFundo(r.fundo)) setFundo(r.fundo)
+        if (r.camada != null) setPedidoCamada((p) => ({ cidade: cidadeDaCamada, modo: r.camada!, n: (p?.n ?? 0) + 1 }))
+        setReguaSel(r.regua ?? null)
+        if (r.regua) setSel(null)
+        if (r.vista) setVista(r.vista as Vista)
+        return { ok: true, texto: 'ok' }
+      },
+    })
+  })
+
+  /**
+   * Endereço com `?regua=DC-05` e `?fundo=satelite` (docs/CHAT-GLOBAL-COMANDOS.md): aplicados uma vez,
+   * depois que a cidade é enquadrada. Valor que não existe é ignorado — nunca vira régua inventada.
+   */
+  const urlAplicada = useRef<string | null>(null)
+  useEffect(() => {
+    const chave = `${cidadeFoco ?? ''}?${busca.toString()}`
+    if (urlAplicada.current === chave || !busca.toString()) return
+    const cena = cenaRef.current
+    if (!cena || cena.pinos.length === 0 || (cidadeFoco && !enquadrou.current)) return
+    urlAplicada.current = chave
+    const f = busca.get('fundo')
+    if (f && ehChaveDeFundo(f)) setFundo(f)
+    const r = busca.get('regua')
+    if (r && opcoesRegua.some((o) => o.valor === r && o.valor !== TODAS)) escolherRegua(r)
+  })
   return (
     <div className={`${estilos.pagina} ${municipal ? estilos.paginaMunicipal : ''}`}>
       <div ref={divRef} className={`${estilos.palco} ${ampliado ? estilos.ampliado : ''} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
@@ -1137,7 +1296,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             Numa coluna só, os dois disputam a mesma altura pelas regras do
             flex: quando não cabe, a legenda e o menu ROLAM, e nenhum dos dois
             invade o outro em resolução nenhuma. */}
-        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''}`}>
+        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''} ${chatAberto ? estilos.chatAberto : ''}`}>
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
             desenhado no canvas). O botão de tela cheia vai no canto inferior
             direito para não colidir com o chip. */}
@@ -1169,6 +1328,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           <button type="button" className={estilos.botaoCheia} onClick={telaCheia}>
             {ampliado ? 'Sair da tela cheia' : 'Tela cheia'}
           </button>
+          {/* O chat, dentro do bloco do topo (decisão do Jefferson, 06/10/2026): o retângulo do mapa não
+              muda, e os pedidos do chat chegam pela ponte abaixo (docs/CHAT-GLOBAL-COMANDOS.md). */}
+          <ChatNoTopo variante="monitor" />
         </div>
 
         {!municipal && tempoReal.fonteItajaiOk === false && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
@@ -1190,6 +1352,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           <CamadasMonitor key={cidadeFoco ?? sel?.cidade.id ?? 'itajai'} cidade={cidadeFoco ?? sel?.cidade.id ?? 'itajai'}
             leituras={tempoReal.leituras} agora={agora} reproduzindo={idxRepro !== null}
             onCamada={receberCamada} somenteDados={municipal}
+            pedido={pedidoCamada} onOpcoes={setCamadasDisponiveis} onModo={setModoCamada}
             nomeEscolhida={(cidadeFoco ?? sel?.cidade.id) ? cidadesBacia.find((c) => c.id === (cidadeFoco ?? sel?.cidade.id))?.nome ?? null : null} />
         </details>
 
@@ -1541,7 +1704,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           // cinza e do nível estadual dependem disso, e eram fixos — e se contradiziam.
           const variasReguas = foco.nivel == null && (daCidade.length > 1 || reguasRef.current.filter((r) => r.cidade === cid.id).length > 1)
           const origemDaCor = variasReguas ? 'varias' : foco.origemFaixa === 'estadual' ? 'estadual' : 'municipal'
-          const situacaoSc = brutoSc ? null : nivelSc.situacoes?.get(cid.id) ?? null
+          const textos = textosDoFoco(foco)
           return (
             <div className={estilos.painel} data-tapa-mapa>
               <div className={estilos.painelTopo}>
@@ -1568,17 +1731,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   className={estilos.amostra}
                   style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }}
                 />
-                {foco.origemFaixa === 'estadual'
-                  ? `Classificação estadual: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
-                  : foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]}
+                {textos.faixa}
               </div>
-              {foco.faixa === 'sem-dado' && (
+              {textos.motivoCinza && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
-                  {variasReguas
-                    ? MOTIVO_VARIAS_REGUAS
-                    : motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id, situacaoSc,
-                        serieDaCidade(serie, foco.rioId, cid.id).at(-1) ?? null)}
+                  {textos.motivoCinza}
                 </p>
               )}
               <p className={estilos.painelNivel}>
@@ -1611,10 +1769,10 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               {/* De onde vem o ponto do pino: estação, posição aproximada ou cidade de várias réguas
                   (auditoria de 06/10/2026; ver `logica/posicaoDoPino.ts`). */}
               <p className={estilos.painelRessalva}>
-                {textoDaPosicao(cid, foco, reguasRef.current.filter((r) => r.cidade === cid.id).length)}
+                {textos.posicao}
               </p>
-              {cid.equivalencia_estadual ? (
-                <p className={estilos.painelRessalva}>{textoEquivalencia(cid.equivalencia_estadual)}</p>
+              {textos.equivalencia ? (
+                <p className={estilos.painelRessalva}>{textos.equivalencia}</p>
               ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
