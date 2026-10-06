@@ -527,7 +527,8 @@ o projeto.
     (estadual sem nível desde 02/10), Gaspar (última leitura e hora) e Apiúna (cota altimétrica).
   - **Textos conforme a origem da cor:** nada de "fica cinza" sob cor estadual, nem "zero diferente" sem
     documento. Itajaí sem faixa única. A caixa de camadas diz de qual cidade são as camadas.
-  - [ ] **Atualizar o coletor na VPS** (`scripts/deploy.sh`) para o balde `altimetricas` chegar ao site (Apiúna).
+  - [x] **Coletor atualizado na VPS em 06/10/2026.** A primeira publicação com o balde `altimetricas` saiu às
+    08:45 (Brasília): Apiúna, DCSC-00178, 80,81 m.
   - [ ] **Pendências externas:** faixas de Lontras, Apiúna e Guabiruba; referência da DCSC-00178 (C30); leitura
     da régua da Celesc (Indaial); vínculo DCSC-00030 × cotas (Ilhota); volta da estação 21 (Gaspar).
 - [x] **Auditoria das réguas do Monitor (06/10/2026, pedido do Jefferson, com a inspeção das 19 cidades no satélite).**
