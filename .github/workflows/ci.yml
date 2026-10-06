@@ -3,7 +3,11 @@ name: CI
 on:
   push:
     branches: ['**']
+  # `labeled`/`unlabeled`: a trava do Monitor lê o rótulo `monitor-autorizado` do evento. Sem estes tipos, o
+  # rótulo posto depois de abrir o PR não era visto (a execução da abertura reprovava e "re-run" repete o mesmo
+  # evento, ainda sem rótulo), e tirar o rótulo não reprovava o PR.
   pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
 
 jobs:
   dados:
