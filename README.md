@@ -522,6 +522,23 @@ o projeto.
   - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Corrigido
     junto com as outras cidades na auditoria das réguas (item abaixo).
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
+- [x] **Chat no topo de todas as páginas, com comandos para o mapa (06/10/2026, pedido do Jefferson):**
+  `docs/CHAT-GLOBAL-COMANDOS.md`.
+  - **Onde fica:**
+    - uma barra abaixo da faixa do 199 em toda página;
+    - no Monitor de cada cidade, dentro do bloco do topo, sem mudar o mapa;
+    - a conversa segue entre páginas, sem gravar nada no aparelho.
+  - **Comandos tipados:**
+    - "mostrar X";
+    - "zoom na régua DC-05" e "aproximar a régua" (em Itajaí, pergunta qual);
+    - zoom, bacia, fundo e camadas;
+    - "voltar ao mapa de antes", "ir para a leitura mais recente";
+    - "o que estou vendo?", "por que essa régua está cinza?", "essa coordenada foi confirmada?".
+
+    O chat diz o resultado real; pergunta não mexe no mapa.
+  - [ ] **Segunda entrega:** leituras atrasadas, filtro de qualidade, gráfico, proveniência do traçado,
+    montante, comparação e links.
+  - [ ] **Rua no mapa e rua destacada sobre as manchas:** só Itajaí, Gaspar e Brusque têm coordenada.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

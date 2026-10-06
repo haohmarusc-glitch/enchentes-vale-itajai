@@ -213,3 +213,167 @@
   font-weight: 600;
   text-decoration: none;
 }
+
+/* ---------------------------------------------------------------------------
+   Chat no topo de todas as páginas (docs/CHAT-GLOBAL-COMANDOS.md, 06/10/2026).
+   Uma linha que abre a conversa ao tocar. No celular, que é onde a maioria usa
+   durante a chuva, a barra ocupa uma linha só e a conversa rola dentro do
+   painel, sem empurrar a página além da conta. */
+.global {
+  margin: 0 0 1rem;
+  min-width: 0;
+}
+
+.global-barra {
+  display: flex;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.global-barra input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.55rem 0.7rem;
+  font-size: 1rem; /* 16px+: o iOS não dá zoom ao focar */
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--tinta);
+  text-overflow: ellipsis;
+}
+
+.global-barra button {
+  flex: none;
+  min-height: 2.75rem; /* alvo de toque */
+  padding: 0.4rem 0.9rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--agua);
+  color: var(--papel);
+  cursor: pointer;
+}
+
+.global-barra button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.global-painel {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--papel);
+  color: var(--tinta);
+}
+
+.global-painel .chat-mensagens {
+  max-height: min(50vh, 26rem);
+}
+
+.global-cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  color: var(--tinta-fraca);
+  margin-bottom: 0.4rem;
+}
+
+.global-contexto {
+  font-weight: 600;
+  color: var(--tinta);
+  overflow-wrap: anywhere;
+}
+
+.global-aviso {
+  flex: 1;
+  min-width: 10rem;
+}
+
+.global-acoes {
+  display: flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.global-acoes button {
+  min-height: 2.5rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid var(--agua-clara);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--agua);
+  cursor: pointer;
+}
+
+/* No Monitor: dentro do bloco do topo, que já é um cartão sobre o mapa. Ocupa a
+   largura do bloco, e a conversa rola dentro de uma altura pequena, para o mapa
+   continuar à vista e os controles da coluna seguirem logo abaixo. */
+.global-monitor {
+  flex-basis: 100%;
+  width: 100%;
+  margin: 0.35rem 0 0;
+}
+
+.global-monitor .global-barra input {
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+}
+
+.global-monitor .global-barra button {
+  min-height: 2.4rem;
+  padding: 0.3rem 0.7rem;
+}
+
+.global-monitor .global-painel {
+  margin-top: 0.35rem;
+  padding: 0.45rem 0.5rem;
+}
+
+.global-monitor .global-painel .chat-mensagens {
+  max-height: min(32vh, 16rem);
+}
+
+.global-monitor .chat-msg {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+.global-monitor .chat-sugestoes button {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.88rem;
+}
+
+/* Conversa recolhida: a última resposta numa linha, para o resultado de um pedido ficar à vista sem cobrir
+   o mapa (no celular, o painel recolhe sozinho depois de um pedido no Monitor). */
+.global-ultima {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.35rem;
+  font-size: 0.88rem;
+}
+
+.global-ultima p {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: pre-line;
+}
+
+.global-ultima button {
+  flex: none;
+  min-height: 2.4rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--agua-clara);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--agua);
+  cursor: pointer;
+}

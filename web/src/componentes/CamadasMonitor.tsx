@@ -23,8 +23,16 @@ interface Props {
   agora: Date
   reproduzindo: boolean
   onCamada: (camada: CamadaDesenhada) => void
+  /**
+   * Pedido do chat (docs/CHAT-GLOBAL-COMANDOS.md): um modo ('off' ou o arquivo de uma opção) para ESTA
+   * cidade. O controle continua este; o chat só pede, como a pessoa faria no seletor.
+   */
+  pedido?: { cidade: string; modo: string; n: number } | null
+  /** As opções da cidade e o modo de agora, para o chat responder certo (ligar "a de 2008", voltar). */
+  onOpcoes?: (opcoes: { arquivo: string; rotulo: string }[]) => void
+  onModo?: (modo: string) => void
 }
-export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada, somenteDados = false, nomeEscolhida = null }: Props) {
+export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, onCamada, somenteDados = false, nomeEscolhida = null, pedido = null, onOpcoes, onModo }: Props) {
   const [modo, setModo] = useState(cidade === 'ascurra' ? RISCO_ASCURRA : 'auto')
   const [estado, setEstado] = useState('')
   const [tentativa, setTentativa] = useState(0)
@@ -36,6 +44,13 @@ export default function CamadasMonitor({ cidade, leituras, agora, reproduzindo, 
     : cidade === 'ituporanga'
     ? ituporanga.camadas.map((c) => ({ arquivo: 'manchas/ituporanga/' + c.arquivo, rotulo: `Camada ${c.nivel_m.toFixed(2).replace('.', ',')} m — consulta manual` }))
     : eventos.map((e) => ({ arquivo: e.arquivo, rotulo: `${rotuloEvento(e.evento)} — ${e.tipo ?? 'mancha histórica'}` })), [cidade, eventos])
+  useEffect(() => {
+    if (pedido && pedido.cidade === cidade) setModo(pedido.modo)
+    // Só quando chega um pedido novo (n muda), não a cada desenho.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pedido?.n])
+  useEffect(() => onOpcoes?.(opcoes), [opcoes, onOpcoes])
+  useEffect(() => onModo?.(modo), [modo, onModo])
   const proxima = reproduzindo ? null : cheiaMaisProxima(eventos, leituras, agora)
   const blu = cidade === 'blumenau'
   const cotaBlu = blu && !reproduzindo ? camadaBlumenau(blumenau.camadas, leituras, agora) : null

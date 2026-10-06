@@ -8,6 +8,7 @@ import FaixaEmergencia from './componentes/FaixaEmergencia'
 import { useAvisoLido, useLetra } from './dados/usarPreferencias'
 import LimiteDeErro from './componentes/LimiteDeErro'
 import Rodape from './componentes/Rodape'
+import ChatNoTopo from './componentes/ChatNoTopo'
 import Inicio from './telas/Inicio'
 import TelaCidade from './telas/TelaCidade'
 import MonitorBacia from './telas/MonitorBacia'
@@ -59,6 +60,9 @@ export default function App() {
         <NavPrincipal />
         <AvisosDoAplicativo />
         <main className="conteudo" id="conteudo" tabIndex={-1}>
+          {/* O chat no topo de toda página, antes do conteúdo (docs/CHAT-GLOBAL-COMANDOS.md). No Monitor,
+              ele fica dentro do bloco do topo do mapa, pela casca antiga. */}
+          <ChatNoTopo variante="barra" />
           <LimiteDeErro oQue="esta tela">
             <RolarAoTopo />
             <Rotas />

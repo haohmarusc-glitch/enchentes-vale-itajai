@@ -22,9 +22,17 @@
  * Pergunta sobre o presente que cita uma cidade ("como está Blumenau?", 05/10/2026): a
  * última leitura ao vivo, com as regras do cartão "Agora", a chuva e o 199
  * (`situacaoAgora.ts`). Previsão e conselho continuam só com o aviso.
+ *
+ * Chat no topo de todas as páginas e comandos (docs/CHAT-GLOBAL-COMANDOS.md, 06/10/2026). Três variantes,
+ * a mesma conversa (`conversa.ts`, só na memória da aba):
+ *  - `cartao`: a caixa de sempre, em /perguntas e na aba Histórico; com ela na tela, a barra do topo some;
+ *  - `barra`: uma linha no topo das páginas, que abre a conversa ao tocar;
+ *  - `monitor`: a mesma linha, dentro do bloco do topo do Monitor (decisão do Jefferson: o mapa não muda).
+ * Antes do motor, o texto é tentado como PEDIDO (`comandos/`): "mostrar Blumenau", "zoom na régua DC-05".
+ * Só comandos do registro executam, e o chat diz o resultado real de cada um.
  */
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { EXEMPLOS, citaRua, responder, type Dados } from './motor'
 import { carregarBase, carregarCotasAna, carregarCotasRuas, carregarRuasManchaItajai } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
@@ -34,6 +42,9 @@ import { AVISO_PILOTO, TEXTO_NAO_ERA_ISSO, classificarPergunta, enviarCorrecao, 
 import { estacoes } from '../dados/carregar'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { respostaDoPresente } from './situacaoAgora'
+import { abrirPainel, limparConversa, mudarMsgs, registrarChatDePagina, useConversa, type Msg } from './conversa'
+import { useComandos } from '../comandos/usarComandos'
+import AoVivoDoChat from './AoVivoDoChat'
 import estilos from './ChatLocal.module.css'
 
 /** Trocado pelo Vite no build (`vite.config.ts`); fora dele, "dev". */
@@ -45,22 +56,6 @@ const enviarContagem = criarEnviador({
   beacon: (url, corpo) => typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function' && navigator.sendBeacon(url, corpo),
   fetch: typeof fetch === 'function' ? (url, init) => fetch(url, init) : undefined,
 })
-
-type Msg = {
-  papel: 'usuario' | 'assistente'
-  texto: string
-  sugestoes?: string[]
-  /** Resposta do motor local que pode ir à IA: a pergunta que a gerou. */
-  paraIA?: string
-  /** Veio da IA (rótulo próprio na tela). */
-  ia?: boolean
-  /** Piloto do classificador: o que foi entendido, e o id para os botões. */
-  entendido?: string
-  idCorrecao?: string
-  corrigido?: Correcao
-  /** Atalho para uma página do site ("Ver Blumenau agora →"). */
-  link?: { texto: string; para: string }
-}
 
 const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
   'itajai-acu': [
@@ -75,12 +70,28 @@ const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
   ],
 }
 
-export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 'itajai-mirim'; aoVivo?: AoVivo | null }) {
+export type Variante = 'cartao' | 'barra' | 'monitor'
+
+export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante = 'cartao' }: {
+  rio: 'itajai-acu' | 'itajai-mirim'
+  aoVivo?: AoVivo | null
+  variante?: Variante
+}) {
+  const compacto = variante !== 'cartao'
   const [dados, setDados] = useState<Dados | null>(null)
   const [falhou, setFalhou] = useState(false)
+  // Compacto: os dados só descem quando a pessoa toca na caixa (no Monitor, numa noite de chuva, quem abriu
+  // o mapa não paga pelo chat).
   const [visivel, setVisivel] = useState(false)
-  const [msgs, setMsgs] = useState<Msg[]>([])
+  const conversa = useConversa()
+  const msgs = conversa.msgs
+  const setMsgs = mudarMsgs
   const [texto, setTexto] = useState('')
+  const [aoVivoProprio, setAoVivoProprio] = useState<AoVivo | null>(null)
+  const aoVivo = aoVivoDaPagina ?? aoVivoProprio
+  const comandos = useComandos()
+  useLocation() // redesenha ao navegar: o contexto (cidade, Monitor) vem do endereço
+  const pendente = useRef<string | null>(null)
   // O servidor está contando? Começa em "não": sem resposta, nada é contado nem prometido.
   const [contando, setContando] = useState(false)
   const [permitido, setPermitido] = useState(() => contagemChatPermitida())
@@ -94,8 +105,12 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
   const caixa = useRef<HTMLElement>(null)
   const fim = useRef<HTMLDivElement>(null)
 
-  // Só começa a baixar os JSONs quando a caixa chega a ~600 px da tela.
+  // Chat de página: a barra do topo some enquanto ele estiver montado (a caixa aparece uma vez só).
+  useEffect(() => (compacto ? undefined : registrarChatDePagina()), [compacto])
+
+  // Só começa a baixar os JSONs quando a caixa chega a ~600 px da tela (cartão) ou é tocada (compacto).
   useEffect(() => {
+    if (compacto) return
     const el = caixa.current
     if (!el || typeof IntersectionObserver === 'undefined') {
       setVisivel(true)
@@ -112,7 +127,17 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     )
     obs.observe(el)
     return () => obs.disconnect()
-  }, [])
+  }, [compacto])
+
+  // Pergunta feita antes de os dados chegarem: responde assim que chegarem.
+  useEffect(() => {
+    if (dados && pendente.current) {
+      const q = pendente.current
+      pendente.current = null
+      void perguntar(q, true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dados])
 
   useEffect(() => {
     if (!visivel) return
@@ -157,9 +182,25 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     return novo
   }
 
-  async function perguntar(p: string) {
+  async function perguntar(p: string, jaMostrada = false) {
     const q = p.trim()
-    if (!q || !dados) return
+    if (!q) return
+    setVisivel(true)
+    abrirPainel(true)
+    // Pedido ("mostrar Blumenau", "zoom na régua DC-05"): executa e diz o resultado. Não depende dos dados.
+    if (!jaMostrada && comandos.tentar(q)) {
+      setTexto('')
+      rolarAoFim()
+      return
+    }
+    if (!dados) {
+      // Ainda carregando: guarda e responde quando os dados chegarem, em vez de engolir a pergunta.
+      pendente.current = q
+      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }])
+      setTexto('')
+      rolarAoFim()
+      return
+    }
     // Pergunta sobre rua: baixa as cotas (~3 MB) e as ruas × manchas de Itajaí só agora.
     let base = citaRua(q) ? await comDadosDeRua(dados) : dados
     const r = responder(q, base)
@@ -171,21 +212,22 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     // A barreira do presente vale igual na IA: essa resposta não ganha o botão.
     const paraIA = r.intencao === 'agora' ? undefined : q
     const presente = () => respostaDoPresente({ pergunta: q, dados: base, rios: estacoes.rios, aoVivo })
+    const doUsuario: Msg[] = jaMostrada ? [] : [{ papel: 'usuario', texto: q }]
     if (r.intencao === 'agora') {
-      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', ...presente() }])
+      setMsgs((atual) => [...atual, ...doUsuario, { papel: 'assistente', ...presente() }])
       setTexto('')
       rolarAoFim()
       return
     }
     const origem: Origem | null = !piloto || classificando ? null : r.intencao === 'nao_entendi' ? 'nao_entendi' : r.palpite ? 'palpite' : null
     if (!origem) {
-      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA, ...(r.link ? { link: r.link } : {}) }])
+      setMsgs((atual) => [...atual, ...doUsuario, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA, ...(r.link ? { link: r.link } : {}) }])
       setTexto('')
       rolarAoFim()
       return
     }
     // Piloto: o motor não entendeu (ou palpitou). Pergunta ao classificador; a resposta sai do motor.
-    setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }])
+    setMsgs((atual) => [...atual, ...doUsuario])
     setTexto('')
     setClassificando(true)
     rolarAoFim()
@@ -231,26 +273,31 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
     rolarAoFim()
   }
 
-  return (
-    <section ref={caixa} className="cartao" aria-label="Perguntas sobre o histórico de enchentes">
-      <h2>Pergunte sobre o histórico</h2>
-      <p className={estilos['chat-aviso']}>
-        Respostas montadas só com os dados deste site, com a fonte de cada número. <strong>Não é alerta.</strong> Em
-        emergência, ligue <strong>199</strong>.
-      </p>
+  const ctx = comandos.contexto()
+  const nomeCidade = comandos.nomeDaCidadeAtual()
+  const iniciais = compacto
+    ? [
+        { rotulo: nomeCidade ? `Situação de ${nomeCidade}` : 'Situação de Blumenau', texto: `como está ${nomeCidade ?? 'Blumenau'}?` },
+        ctx.naMonitor
+          ? { rotulo: 'Aproximar a régua', texto: ctx.cidadeAtual ? 'aproximar a régua' : 'ver a bacia toda' }
+          : { rotulo: `Mostrar ${nomeCidade ?? 'Blumenau'} no mapa`, texto: `mostrar ${nomeCidade ?? 'Blumenau'}` },
+        { rotulo: 'O que posso pedir?', texto: 'o que posso pedir?' },
+      ]
+    : INICIO[rio].map((t) => ({ rotulo: t, texto: t }))
+  const exemploPedido = ctx.naMonitor ? 'aproximar a régua' : `mostrar ${nomeCidade ?? 'Blumenau'}`
+  const textoContexto = [
+    ctx.naMonitor ? 'Monitor' : 'Página',
+    nomeCidade ?? (ctx.naMonitor ? 'bacia inteira' : null),
+    ctx.reguaAtual ? `régua ${ctx.reguaAtual}` : null,
+  ].filter(Boolean).join(' · ')
 
-      {falhou ? (
-        <p className={estilos['chat-erro']} role="alert">
-          Não foi possível carregar os dados do chat.
-        </p>
-      ) : null}
-
+  const log = (
       <div className={estilos['chat-mensagens']} role="log" aria-live="polite">
         {msgs.length === 0 ? (
           <div className={estilos['chat-sugestoes']}>
-            {INICIO[rio].map((s) => (
-              <button key={s} type="button" disabled={!dados} onClick={() => perguntar(s)}>
-                {s}
+            {iniciais.map((s) => (
+              <button key={s.rotulo} type="button" disabled={!dados && !compacto} onClick={() => perguntar(s.texto)}>
+                {s.rotulo}
               </button>
             ))}
           </div>
@@ -301,6 +348,11 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
             ) : null}
           </div>
         ))}
+        {conversa.ocupado ? (
+          <div className={`${estilos['chat-msg']} ${estilos['chat-assistente']}`} role="status">
+            Executando o pedido…
+          </div>
+        ) : null}
         {classificando ? (
           <div className={`${estilos['chat-msg']} ${estilos['chat-assistente']}`} role="status">
             Tentando entender a pergunta…
@@ -313,6 +365,131 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
         ) : null}
         <div ref={fim} />
       </div>
+  )
+
+  const avisos = (
+    <>
+        {comIA ? <p className={estilos['chat-aviso-ia']}>{AVISO_ENVIO}</p> : null}
+        {piloto ? <p className={estilos['chat-aviso-ia']}>{AVISO_PILOTO}</p> : null}
+
+        {contando ? (
+          <div className={estilos['chat-contagem']}>
+            <label>
+              <input
+                type="checkbox"
+                checked={permitido}
+                onChange={(e) => {
+                  setPermitido(e.target.checked)
+                  gravarContagemChat(e.target.checked)
+                }}
+              />{' '}
+              Contar as perguntas que o chat não entender
+            </label>
+            <p>
+              Soma 1 num contador do dia com o tipo de pergunta, o motivo, a cidade citada e a versão do site.{' '}
+              <strong>Não guarda o que você digitou</strong>, nem IP, nome, telefone ou qualquer identificador; por isso não
+              há dado seu para apagar. Os contadores somem em {RETENCAO_DIAS} dias. Desmarcar para a contagem neste aparelho.
+            </p>
+          </div>
+        ) : null}
+    </>
+  )
+
+  if (compacto) {
+    const aberto = conversa.aberto
+    const ultimaMsg = msgs.at(-1)
+    const ultima = ultimaMsg && ultimaMsg.papel === 'assistente' ? ultimaMsg : null
+    return (
+      <section
+        ref={caixa}
+        className={`${estilos.global} ${variante === 'monitor' ? estilos['global-monitor'] : ''}`}
+        aria-label="Chat: perguntas e pedidos"
+      >
+        <form
+          className={estilos['global-barra']}
+          onSubmit={(e) => {
+            e.preventDefault()
+            void perguntar(texto)
+          }}
+        >
+          <input
+            id={variante === 'monitor' ? 'chat-monitor' : 'chat-global'}
+            value={texto}
+            maxLength={300}
+            enterKeyHint="send"
+            autoComplete="off"
+            placeholder={nomeCidade ? `Pergunte sobre ${nomeCidade} ou peça: ${exemploPedido}` : `Pergunte ou peça: ${exemploPedido}`}
+            onFocus={() => {
+              setVisivel(true)
+              abrirPainel(true)
+            }}
+            onChange={(e) => setTexto(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') abrirPainel(false)
+            }}
+            aria-label="Pergunte ou peça"
+            aria-controls="chat-painel"
+            aria-expanded={aberto}
+          />
+          <button type="submit" disabled={!texto.trim() || conversa.ocupado || classificando}>
+            Enviar
+          </button>
+        </form>
+        {visivel && !aoVivoDaPagina ? <AoVivoDoChat aoMudar={setAoVivoProprio} /> : null}
+        {!aberto && ultima ? (
+          <div className={estilos['global-ultima']}>
+            <p role="status">{ultima.texto}</p>
+            <button type="button" onClick={() => abrirPainel(true)}>
+              Ver conversa ({msgs.length})
+            </button>
+          </div>
+        ) : null}
+        {aberto ? (
+          <div id="chat-painel" className={estilos['global-painel']}>
+            <div className={estilos['global-cabeca']}>
+              <span className={estilos['global-contexto']}>{textoContexto}</span>
+              <span className={estilos['global-aviso']}>
+                Não é alerta. Emergência: <strong>199</strong>.
+              </span>
+              <span className={estilos['global-acoes']}>
+                {msgs.length > 0 ? (
+                  <button type="button" onClick={limparConversa}>
+                    Limpar
+                  </button>
+                ) : null}
+                <button type="button" onClick={() => abrirPainel(false)} aria-label="Recolher a conversa">
+                  Recolher
+                </button>
+              </span>
+            </div>
+            {falhou ? (
+              <p className={estilos['chat-erro']} role="alert">
+                Não foi possível carregar os dados das perguntas. Os pedidos de mapa continuam funcionando.
+              </p>
+            ) : null}
+            {log}
+            {avisos}
+          </div>
+        ) : null}
+      </section>
+    )
+  }
+
+  return (
+    <section ref={caixa} className="cartao" aria-label="Perguntas sobre o histórico de enchentes">
+      <h2>Pergunte sobre o histórico</h2>
+      <p className={estilos['chat-aviso']}>
+        Respostas montadas só com os dados deste site, com a fonte de cada número. <strong>Não é alerta.</strong> Em
+        emergência, ligue <strong>199</strong>.
+      </p>
+
+      {falhou ? (
+        <p className={estilos['chat-erro']} role="alert">
+          Não foi possível carregar os dados do chat.
+        </p>
+      ) : null}
+
+      {log}
 
       <div className={estilos['chat-entrada']}>
         <input
@@ -331,29 +508,7 @@ export default function ChatLocal({ rio, aoVivo = null }: { rio: 'itajai-acu' | 
         </button>
       </div>
 
-      {comIA ? <p className={estilos['chat-aviso-ia']}>{AVISO_ENVIO}</p> : null}
-      {piloto ? <p className={estilos['chat-aviso-ia']}>{AVISO_PILOTO}</p> : null}
-
-      {contando ? (
-        <div className={estilos['chat-contagem']}>
-          <label>
-            <input
-              type="checkbox"
-              checked={permitido}
-              onChange={(e) => {
-                setPermitido(e.target.checked)
-                gravarContagemChat(e.target.checked)
-              }}
-            />{' '}
-            Contar as perguntas que o chat não entender
-          </label>
-          <p>
-            Soma 1 num contador do dia com o tipo de pergunta, o motivo, a cidade citada e a versão do site.{' '}
-            <strong>Não guarda o que você digitou</strong>, nem IP, nome, telefone ou qualquer identificador; por isso não
-            há dado seu para apagar. Os contadores somem em {RETENCAO_DIAS} dias. Desmarcar para a contagem neste aparelho.
-          </p>
-        </div>
-      ) : null}
+      {avisos}
     </section>
   )
 }
