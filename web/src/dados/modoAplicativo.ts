@@ -100,6 +100,11 @@ if (typeof window !== 'undefined') {
   })
 }
 
+/** O navegador ofereceu instalar (o chat só aponta o botão: instalar exige o toque da pessoa). */
+export function podeInstalar(): boolean {
+  return pedidoGuardado !== null
+}
+
 export function jaInstalado(): boolean {
   if (typeof window === 'undefined') return false
   const nav = navigator as Navigator & { standalone?: boolean }

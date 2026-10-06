@@ -9,13 +9,15 @@ import { buscarBarragens } from '../dados/barragens'
 import historicoChegada from '@dados/historico-chegada-itajai.json'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { reguasNoMapa } from '../logica/reguasNoMapa'
-import { abrirPainel, acrescentar, marcarOcupado } from '../chat-local/conversa'
+import { abrirPainel, acrescentar, limparConversa, marcarOcupado } from '../chat-local/conversa'
 import { catalogoDoCadastro } from './catalogo'
 import { MUDA_A_TELA, baseDoSite, executar, type DadosDoChat, type Saida } from './executar'
 import type { PropriedadesDoTracado } from './respostas'
 import { carregarCotasRuas, carregarRuasManchaItajai } from '../chat-local/carregar'
 import { carregarViasItajai } from '../dados/viasItajai'
-import { cidadesSeguidas, deixarDeSeguir, gravarLetra, seguir, tornarMinha } from '../logica/preferencias'
+import { avisoLido, cidadesSeguidas, contagemChatPermitida, deixarDeSeguir, esquecerPreferencias, gravarContagemChat, gravarLetra, letra, seguir, temMemoria, tornarMinha } from '../logica/preferencias'
+import { pedirAtualizacao } from '../dados/atualizar'
+import { ehIphone, jaInstalado, podeInstalar } from '../dados/modoAplicativo'
 import { avisarPreferencias } from '../dados/usarPreferencias'
 import type { Posicao } from './aparelho'
 
@@ -70,6 +72,33 @@ const preferencias: NonNullable<DadosDoChat['preferencias']> = {
     document.documentElement.dataset.letra = l
     avisarPreferencias()
   },
+}
+
+/**
+ * "Atualizar as leituras": pede a busca (todas as telas abertas buscam de novo) e espera a resposta chegar
+ * ao chat — o estado ao vivo troca de objeto a cada busca —, por no máximo 10 s.
+ */
+async function atualizarLeituras(aoVivo: () => Promise<AoVivo | null>) {
+  const antes = await aoVivo()
+  const coletaAntes = antes?.tempoReal.coletadoEm ?? null
+  const pedido = pedirAtualizacao()
+  let v = antes
+  if (pedido) {
+    const fim = Date.now() + 10_000
+    while (Date.now() < fim) {
+      await new Promise((r) => setTimeout(r, 400))
+      v = await aoVivo()
+      if (v && antes && v.tempoReal !== antes.tempoReal) break
+    }
+  }
+  const medicoes = (v?.tempoReal.leituras ?? []).map((l) => l.medidoEm?.getTime() ?? NaN).filter(Number.isFinite)
+  return {
+    pedido,
+    coletaAntes,
+    coletaDepois: v?.tempoReal.coletadoEm ?? null,
+    medicaoMaisNova: medicoes.length ? new Date(Math.max(...medicoes)) : null,
+    agora: new Date(),
+  }
 }
 
 /** Nome da via → quantos trechos ela tem na base (ruas com o mesmo nome entram juntas). */
@@ -196,6 +225,27 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
           mare: () => mareItajai,
           transito: () => ({ trechos, experimentais: trechosExperimentais }),
           referenciaChegada: () => historicoChegada.referencia_estudo,
+          atualizar: () => atualizarLeituras(aoVivo),
+          aplicativo: () => ({ instalado: jaInstalado(), iphone: ehIphone(), pode: podeInstalar() }),
+          privacidade: () => ({
+            memoria: temMemoria(),
+            seguidas: cidadesSeguidas().map((c) => c.id),
+            letraGrande: letra() === 'grande',
+            avisoLido: avisoLido(),
+            contagem: contagemChatPermitida(),
+          }),
+          esquecer: () => {
+            const ok = esquecerPreferencias()
+            document.documentElement.dataset.letra = 'normal'
+            avisarPreferencias()
+            return ok
+          },
+          contagem: (permitir: boolean) => {
+            const ok = gravarContagemChat(permitir)
+            avisarPreferencias()
+            return ok
+          },
+          limparConversa,
           fontesDaCidade: (id: string) => {
             const c = cidadeDoCadastro(id)?.cidade as { fontes_tempo_real?: unknown } | undefined
             return Array.isArray(c?.fontes_tempo_real) ? c.fontes_tempo_real.filter((f): f is string => typeof f === 'string') : []

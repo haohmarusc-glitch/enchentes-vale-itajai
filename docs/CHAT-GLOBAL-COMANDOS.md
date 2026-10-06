@@ -484,3 +484,34 @@ por regressão). Pôr esses números no chat seria mostrar algo que o site não 
     mudando de estado no Monitor;
   - `simulacao-chegada.mjs` continua passando com o painel usando a função extraída. Com os dados reais de
     06/10, o chat e o painel de `/itajai` deram a mesma janela (06:00 a 11:00 de 07/10, Blumenau subindo).
+
+## Oitava entrega (06/10/2026): o site e os seus dados
+
+A 8ª entrega cobre o que a pessoa pergunta sobre o próprio site durante a cheia: se o número é o mais novo, se o
+site é oficial, como tê-lo no celular, o que ele guarda e para quem ligar. Não toca em arquivo do Monitor.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "atualizar as leituras", "tem leitura nova?" | Antecipa a próxima busca dos três arquivos de tempo real (leituras, rede estadual, série) em todas as telas abertas (`dados/atualizar.ts`, um evento que os ganchos já existentes escutam). Espera a resposta, por no máximo 10 s, e diz se a coleta é nova ou a mesma, e a hora da medição mais nova. Um pedido a cada 30 s. | Forçar a coleta das fontes (ela roda no servidor) nem prometer leitura nova. Tratar leitura velha como nova. |
+| "isso é oficial?", "ler o aviso" | O texto do aviso de toda tela (`AvisoLegal`). | — |
+| "telefone de emergência", "para quem devo ligar?" | 199 e 193, os números da faixa de toda tela. | Dar telefone que o site não tem cadastrado. |
+| "como instalar o aplicativo?" | O caminho do aparelho: iPhone (Compartilhar → Tela de Início), o botão "Instalar" do Início quando o navegador oferece, ou o menu do navegador. Lembra que, sem internet, o número guardado sai com a hora da medição. | Instalar sozinho: o navegador exige o toque da pessoa. |
+| "o que o site guarda de mim?" | As preferências deste aparelho, lidas na hora (cidades, letra, aviso lido, contagem do chat), e o que não é guardado (localização, conversa). | — |
+| "apagar minhas preferências" → "sim, apagar minhas preferências" | Pede confirmação; confirmado, apaga as quatro chaves do aparelho (`esquecerPreferencias`) e a letra volta ao normal. | Apagar sem a confirmação. |
+| "não contar minhas perguntas", "pode contar minhas perguntas" | A mesma escolha da caixa "Contar as perguntas que o chat não entender", que passa a acompanhar a mudança. | — |
+| "limpar a conversa" | O mesmo "Limpar" do painel. | — |
+
+- **Código:**
+  - `comandos/site.ts`: os textos;
+  - `dados/atualizar.ts`: o pedido de busca, com o limite de 30 s; `useTempoReal`, `useNivelSc` e
+    `useSerieRecente` escutam;
+  - `logica/preferencias.ts`: `esquecerPreferencias` e `temMemoria`;
+  - `dados/modoAplicativo.ts`: `podeInstalar`;
+  - `ChatLocal.tsx`: a caixa da contagem acompanha a escolha feita pelo chat.
+- **Testes:**
+  - `src/comandos/oitava.test.ts` (8): frases, o limite de 30 s, os textos, apagar com armazenamento bloqueado, e o
+    executor (nada é apagado sem confirmar);
+  - `testes-navegador/chat-comandos.mjs`, seção 9: aviso, atualizar, privacidade, apagar (a cidade sai do
+    `localStorage` só depois de confirmar), contagem gravada como `nao`, emergência e conversa limpa;
+  - sonda com os dados do branch `tempo-real`: "atualizar" disparou a busca dos três arquivos em cada tela aberta,
+    e um segundo pedido em menos de 30 s não disparou nenhuma.

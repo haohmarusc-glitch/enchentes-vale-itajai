@@ -162,6 +162,33 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
   return null
 }
 
+/** A 8ª entrega: o site e os seus dados (atualizar, aviso, instalar, privacidade, conversa, emergência). */
+function lerTrechoDaOitava(t: string): Lido {
+  if (/^(?:atualizar|atualize|atualiza|recarregar|recarregue|recarrega|buscar de novo|busque de novo|busca de novo)(?: as| os| a| o)?(?: leituras| dados| niveis| numeros| medicoes| mapa| pagina| tudo)?(?: agora)?$|^(?:tem|ha|chegou) (?:leitura|medicao|dado) nov[ao]$/.test(t)) {
+    return [{ tipo: 'atualizar' }]
+  }
+  if (/^(?:isso|isto|este site|esse site|o site)(?: aqui)? e oficial$|^(?:o que e|para que serve) (?:este|esse|o) site$|^(?:ler|leia|mostrar|mostre|ver)(?: o)? aviso(?: legal)?$|^(?:este|esse|o) site e (?:um )?(?:alerta|sistema) oficial$/.test(t)) {
+    return [{ tipo: 'oficial' }]
+  }
+  if (/^(?:como )?(?:instalar|instalo|instale|baixar|baixo|baixe)(?: o)? (?:app|aplicativo|site)(?: no celular| no telefone| na tela inicial)?$|^(?:tem|existe) (?:app|aplicativo)$|^(?:adicionar|adiciono|colocar|coloco)(?: o site)? na tela (?:inicial|de inicio)$/.test(t)) {
+    return [{ tipo: 'instalar' }]
+  }
+  if (/^o que (?:o site|voce|vc) (?:guarda|sabe|grava|salva) (?:de mim|sobre mim|no (?:meu )?(?:celular|aparelho|telefone))$|^quais (?:sao )?(?:os )?meus dados(?: guardados)?$|^privacidade$|^o site (?:me rastreia|guarda minha localizacao|grava minhas perguntas|guarda minhas perguntas)$/.test(t)) {
+    return [{ tipo: 'privacidade' }]
+  }
+  {
+    const m = t.match(/^(sim )?(?:apagar|apague|esquecer|esqueca|limpar|limpe|zerar|zere)(?: as| os| todas as| todos os)? (?:minhas preferencias|meus dados|preferencias|dados do aparelho|o que o site guarda)$/)
+    if (m) return [{ tipo: 'esquecer', confirmado: !!m[1] }]
+  }
+  if (/^(?:nao|parar de|pare de) contar (?:as )?minhas perguntas$|^(?:desligar|desligue) (?:a )?contagem(?: do chat)?$/.test(t)) return [{ tipo: 'contagem', permitir: false }]
+  if (/^(?:pode )?contar (?:as )?minhas perguntas$|^(?:ligar|ligue|religar) (?:a )?contagem(?: do chat)?$/.test(t)) return [{ tipo: 'contagem', permitir: true }]
+  if (/^(?:limpar|limpe|apagar|apague|zerar|zere)(?: a| esta| essa)? (?:conversa|historico do chat)$/.test(t)) return [{ tipo: 'limpar_conversa' }]
+  if (/^(?:qual (?:e )?)?(?:o )?(?:telefone|numero|contato)(?: de emergencia| da defesa civil| dos bombeiros| de socorro)$|^(?:para )?quem (?:ligar|eu ligo|devo ligar)(?: em emergencia| em caso de enchente)?$|^(?:telefones?|numeros?) de emergencia$/.test(t)) {
+    return [{ tipo: 'emergencia' }]
+  }
+  return null
+}
+
 /** A 7ª entrega: a foz (chegada × maré em Itajaí), a legenda do mapa e os botões de animação e legenda. */
 const COR_PARA_TEMA: Record<string, TemaDaLegenda> = {
   'verde claro': 'monitoramento', verde: 'normal', amarelo: 'atencao', laranja: 'alerta', vermelho: 'inundacao', cinza: 'sem-dado',
@@ -414,6 +441,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const oitava = lerTrechoDaOitava(t)
+  if (oitava) return oitava
   const setima = lerTrechoDaSetima(t)
   if (setima) return setima
   const quinta = lerTrechoDaQuinta(t, cat)

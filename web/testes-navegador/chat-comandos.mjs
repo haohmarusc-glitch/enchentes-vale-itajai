@@ -22,6 +22,8 @@
  *    sem o aviso de que ligação não é previsão; Gaspar com frase de cota.
  *  - 7ª entrega: chegada × maré sem o 199; simulação sem a janela; legenda que compara metros; animações ou
  *    legenda que não mudam o botão do Monitor.
+ *  - 8ª entrega: "oficial" sem o aviso; atualizar sem buscar; apagar preferências sem confirmar ou sem apagar;
+ *    contagem que não grava; conversa que não limpa.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -289,7 +291,32 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 9. Página com chat próprio: a barra do topo some.
+  // 9. 8ª entrega: o site e os seus dados.
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'isso é oficial?', /oficial/)
+    ok(/não é sistema oficial de alerta/.test(r) && /199/.test(r), 'oficial: o aviso de toda tela')
+    r = await pedirAte(pg, 'atualizar as leituras', /Busquei de novo|não respondeu|menos de 30 segundos/, 20000)
+    ok(/Busquei de novo|não respondeu/.test(r), `atualizar: buscou de novo e disse a coleta (${r.slice(0, 60)}…)`)
+    await pedirAte(pg, 'minha cidade é Gaspar', /Gaspar/)
+    r = await pedirAte(pg, 'o que o site guarda de mim?', /aparelho/)
+    ok(/cidades: Gaspar \(a sua\)/.test(r) && /Não guarda: a sua localização/.test(r), 'privacidade: lido do aparelho, na hora')
+    r = await pedirAte(pg, 'apagar minhas preferências', /confirmar/)
+    ok((await pg.evaluate(() => localStorage.getItem('enchentes:cidades'))) !== null, 'apagar: nada some antes de confirmar')
+    await pedirAte(pg, 'sim, apagar minhas preferências', /apagadas/)
+    ok((await pg.evaluate(() => localStorage.getItem('enchentes:cidades'))) === null, 'apagar: a cidade saiu do aparelho')
+    await pedirAte(pg, 'não contar minhas perguntas', /Contagem desligada/)
+    ok((await pg.evaluate(() => localStorage.getItem('enchentes:chat-contagem'))) === 'nao', 'contagem: desligada no aparelho')
+    r = await pedirAte(pg, 'telefone de emergência', /199/)
+    ok(/193/.test(r), 'emergência: 199 e 193')
+    await pedirAte(pg, 'limpar a conversa', /Conversa limpa/)
+    const n = await pg.locator('[role="log"] [class*="chat-assistente"]').count()
+    ok(n <= 1, `limpar a conversa: só a resposta ficou (${n})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 10. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

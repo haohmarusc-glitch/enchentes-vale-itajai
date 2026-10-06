@@ -134,6 +134,12 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
   // O servidor está contando? Começa em "não": sem resposta, nada é contado nem prometido.
   const [contando, setContando] = useState(false)
   const [permitido, setPermitido] = useState(() => contagemChatPermitida())
+  // A escolha também muda pelo chat ("não contar minhas perguntas"): a caixa acompanha.
+  useEffect(() => {
+    const atualizar = () => setPermitido(contagemChatPermitida())
+    window.addEventListener('enchentes:preferencias', atualizar)
+    return () => window.removeEventListener('enchentes:preferencias', atualizar)
+  }, [])
   // A IA está ligada no servidor? Começa em "não": sem resposta, o botão não aparece.
   const [comIA, setComIA] = useState(false)
   const [esperandoIA, setEsperandoIA] = useState(false)

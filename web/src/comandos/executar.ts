@@ -33,6 +33,7 @@ import { instantePedido, textoBarragens, textoChuvaAgora, textoFonteDaLeitura, t
 import type { Barragem } from '../dados/barragens'
 import type { TabuaMare, Trecho, TrechoExperimental } from '../dados/tipos'
 import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
+import { TEXTO_CONFIRMAR_ESQUECER, TEXTO_EMERGENCIA, TEXTO_OFICIAL, textoAtualizacao, textoInstalar, textoPrivacidade } from './site'
 import { textoChegadaItajai, textoLegenda, textoSimulacao, instanteDoPico, type ReferenciaChegada } from './foz'
 import { hojeEmItajai } from '../logica/hojeEmItajai'
 import { publicacaoMaisRecente, situacaoDoPico } from '../logica/picoBlumenau'
@@ -76,6 +77,13 @@ export interface DadosDoChat {
   transito?(): { trechos: Trecho[]; experimentais: TrechoExperimental[] }
   /** 7ª entrega: a referência de estudo do tempo entre os picos de Blumenau e Itajaí (o mesmo do painel). */
   referenciaChegada?(): ReferenciaChegada
+  /** 8ª entrega: buscar de novo as leituras, o aplicativo, a privacidade e a conversa. */
+  atualizar?(): Promise<{ pedido: boolean; coletaAntes: Date | null; coletaDepois: Date | null; medicaoMaisNova: Date | null; agora: Date }>
+  aplicativo?(): { instalado: boolean; iphone: boolean; pode: boolean }
+  privacidade?(): { memoria: boolean; seguidas: string[]; letraGrande: boolean; avisoLido: boolean; contagem: boolean }
+  esquecer?(): boolean
+  contagem?(permitir: boolean): boolean
+  limparConversa?(): void
 }
 
 export interface Ambiente {
@@ -685,6 +693,44 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         if (!r.ok) return falha(r.texto)
         feitos.push(r.texto)
         break
+      }
+      case 'atualizar': {
+        const r = await amb.dados?.atualizar?.()
+        if (!r) return { texto: SEM_DADOS }
+        return { texto: textoAtualizacao(r) }
+      }
+      case 'oficial':
+        return { texto: TEXTO_OFICIAL }
+      case 'emergencia':
+        return { texto: TEXTO_EMERGENCIA }
+      case 'instalar': {
+        const a = amb.dados?.aplicativo?.() ?? { instalado: false, iphone: false, pode: false }
+        return { texto: textoInstalar(a), ...(a.pode && !amb.rotaAtual().match(/^\/?$/) ? { link: { texto: 'Ir ao Início, onde fica o botão "Instalar" →', para: '/' } } : {}) }
+      }
+      case 'privacidade': {
+        const p = amb.dados?.privacidade?.()
+        if (!p) return { texto: 'Não consegui ler as preferências deste aparelho.' }
+        return { texto: textoPrivacidade({ ...p, seguidas: p.seguidas.map((id) => nomeDaCidade(id, cat)) }) }
+      }
+      case 'esquecer': {
+        if (!passo.confirmado) return { texto: TEXTO_CONFIRMAR_ESQUECER, sugestoes: ['sim, apagar minhas preferências', 'o que o site guarda de mim?'] }
+        const ok = amb.dados?.esquecer?.()
+        return {
+          texto: ok
+            ? 'Preferências apagadas deste aparelho: cidade, cidades seguidas, letra, aviso lido e a escolha sobre a contagem. O aviso legal volta a aparecer na próxima visita.'
+            : 'Este navegador não deixa o site guardar nada (janela anônima ou armazenamento bloqueado), então não havia preferência guardada para apagar.',
+        }
+      }
+      case 'contagem': {
+        const ok = amb.dados?.contagem?.(passo.permitir)
+        const base = passo.permitir
+          ? 'Contagem permitida neste aparelho: quando o chat não entender uma pergunta, o site soma 1 num contador anônimo do dia (tipo de pergunta, motivo, cidade citada), e só se estiver contando. Nunca guarda o que você digitou.'
+          : 'Contagem desligada neste aparelho: as perguntas que o chat não entender não entram em contador nenhum.'
+        return { texto: ok === false ? `${base} Mas este navegador não deixa guardar a escolha: ela vale só até fechar a página.` : base }
+      }
+      case 'limpar_conversa': {
+        amb.dados?.limparConversa?.()
+        return { texto: 'Conversa limpa. Ela nunca é gravada: fica só nesta aba e some ao fechar.' }
       }
       case 'tela_cheia': {
         if (ctx.naMonitor) return { texto: 'O navegador só abre a tela cheia com o seu toque: use o botão "Tela cheia" no bloco do topo do mapa. Para sair, o mesmo botão ou a tecla Esc.' }

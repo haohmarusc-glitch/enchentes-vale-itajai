@@ -18,6 +18,7 @@
 import { useEffect, useState } from 'react'
 import { deBrasilia } from '../logica/tempoReal'
 import { buscarPublicacao } from './publicacao'
+import { ouvirAtualizacao } from './atualizar'
 
 const PADRAO =
   'https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/ultimo.json'
@@ -283,10 +284,13 @@ export function useTempoReal(intervaloMin = 5): EstadoTempoReal {
 
     void buscar()
     const relogio = setInterval(() => void buscar(), intervaloMin * 60_000)
+    // "Atualizar as leituras" (chat): antecipa a próxima busca, sem mudar o intervalo.
+    const pararDeOuvir = ouvirAtualizacao(() => void buscar())
 
     return () => {
       vivo = false
       clearInterval(relogio)
+      pararDeOuvir()
       for (const c of emVoo) c.abort()
     }
   }, [intervaloMin])
