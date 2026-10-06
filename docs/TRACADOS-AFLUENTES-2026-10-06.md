@@ -38,6 +38,7 @@ As cinco leituras e faixas não mudam: pino e cor seguem como estavam.
      recortado, a 137 m do fim da linha. O rio parecia nascer na cidade.
    - **Efeito no mapa:** o quadro do Monitor cresce no máximo isso. A trava do Monitor mede o retângulo do
      mapa, não o enquadramento, e passou.
+   - **Aprovada pelo Jefferson (06/10/2026):** a margem fica. Não há motivo para reduzi-la agora.
 
 Fonte de todos os traçados: © OpenStreetMap contributors, ODbL. Coordenadas em WGS 84 (lon, lat no GeoJSON).
 
@@ -78,6 +79,9 @@ Fonte de todos os traçados: © OpenStreetMap contributors, ODbL. Coordenadas em
   Mirim.
   - Ligar o vão seria uma reta inventada.
   - Desenhar o pedaço solto seria um salto no mapa.
+  - **Decisão do Jefferson (06/10/2026):** não completar o traçado no projeto. O certo é corrigir primeiro o vão no
+    OpenStreetMap, com imagem ou conhecimento local verificável. Depois, rodar de novo o workflow e o conversor.
+    O vão aparece sozinho como ligado. Nada foi alterado no OSM.
 - **Incerteza:** a escolha do Norte vem da posição da estação, a 10 m do traçado. Nenhuma fonte da DCSC ou da
   prefeitura nomeia o curso. O Rio Pomerânia passa a 0,32 km. O `ramo` do cadastro (`ribeirao_guabiruba`) não
   mudou.
@@ -150,7 +154,21 @@ Fonte de todos os traçados: © OpenStreetMap contributors, ODbL. Coordenadas em
   - **Timbó:** o pino tem coordenada sem fonte declarada. Ele fica a **0,28 km do Rio dos Cedros** e a 0,64 km
     do Benedito, perto da confluência dos dois (0,04 km pela água). A régua é declarada "Rio Benedito, Rua
     Equador".
-    - O pino não foi mexido. É mais um motivo para a coordenada de Timbó precisar de fonte.
+    - **Decisão do Jefferson (06/10/2026):** o pino fica onde está, marcado como **coordenada não confirmada**.
+      A busca não achou fonte oficial que situe a régua "Rio Benedito, Rua Equador". A proximidade dos rios
+      não basta para mover o pino nem para vincular a régua à estação estadual.
+      - **No cadastro:** `coordenadas_status: "não confirmada"`, com o porquê em `coordenadas_status_nota`.
+      - **Trava:** `valida_coordenada_nao_confirmada` exige a nota e reprova o status junto com fonte declarada.
+      - **No painel:** "Coordenada não confirmada (−26,8231, −49,2708): nenhuma fonte oficial situa a régua
+        “Rio Benedito, Rua Equador”…" (`posicaoDoPino.ts`). O mesmo texto vale no inventário
+        (`docs/INVENTARIO-REGUAS.md`).
+      - **O que confirmaria:**
+        - cadastro municipal da estação;
+        - documento da Defesa Civil;
+        - coordenada divulgada pelo órgão responsável;
+        - fotografia georreferenciada verificável.
+
+        O portal oficial do município está no ar, mas a busca pública não trouxe esse dado.
   - **Estações estaduais perto:** a DCSC-00023 (Timbó 1) fica a 0,05 km do Benedito; a DCSC-00034 (Timbó 2), a
     0,13 km do Rio dos Cedros; a DCSC-00011 (Rio dos Cedros 1), a 0,05 km do Rio dos Cedros.
     - Proximidade não vincula (decisão de 06/10/2026).

@@ -29,7 +29,7 @@ auditoria visual das 19 cidades do Monitor.
 | Gaspar | Rio Itajaí Açu Gaspar — estação municipal 21 | -26,9264, -48,9643 | DCSC-00005 | Hidro | 2 m | 0,12 km | confere com a ficha |
 | Ilhota | Estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin (a régua que o PLANCON cita) | -26,8944, -48,8248 | DCSC-00030 | Hidro | 4 m | 0,02 km | confere com a ficha |
 | Itajaí | — | -26,9078, -48,6619 | — | — | — | 0,88 km | sem código: ponto do cadastro, fonte não confirma |
-| Timbó | Rio Benedito, Rua Equador | -26,8231, -49,2708 | — | — | — | 8,22 km | sem código: ponto do cadastro, fonte não confirma |
+| Timbó | Rio Benedito, Rua Equador | -26,8231, -49,2708 | — | — | — | 8,22 km | **coordenada não confirmada** (decisão de 06/10/2026): pino mantido, sem fonte que situe a régua |
 | Rio dos Cedros | Régua da Praça Matriz | -26,7397, -49,2703 | — | — | — | 16,58 km | sem código: ponto do cadastro, fonte não confirma |
 | Trombudo Central | Régua do Rio Trombudo (a fonte não nomeia o ponto) | -27,3053, -49,7919 | — | — | — | 10,54 km | sem código: ponto do cadastro, fonte não confirma |
 | Vidal Ramos | — | -27,3855, -49,3581 | DCSC-00024 | Hidro | 1 m | 0,02 km | confere com a ficha |

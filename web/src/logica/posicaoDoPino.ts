@@ -6,20 +6,26 @@
  *   leitura municipal; isso o painel já separa no nível e nas cotas;
  * - a coordenada veio de uma fonte declarada (`coordenadas_fonte`; Blumenau, a régua da ponte): diz a fonte;
  * - o cadastro sabe que a coordenada NÃO é a régua: "posição aproximada" (nenhuma cidade desde 06/10/2026);
- * - cidade de várias réguas (Itajaí): o pino marca a cidade, e cada régua tem o seu ponto.
+ * - cidade de várias réguas (Itajaí): o pino marca a cidade, e cada régua tem o seu ponto;
+ * - coordenada marcada "não confirmada" no cadastro (Timbó, decisão de 06/10/2026): diz isso com essas palavras,
+ *   e que a proximidade de rio ou estação não move o pino.
  */
 import type { Cidade } from '../dados/tipos'
 
 const grau = (n: number) => n.toFixed(4).replace('.', ',').replace('-', '−')
 
 export function textoDaPosicao(
-  cidade: Pick<Cidade, 'codigo_dcsc' | 'coordenadas' | 'coordenadas_fonte'>,
+  cidade: Pick<Cidade, 'codigo_dcsc' | 'coordenadas' | 'coordenadas_fonte' | 'coordenadas_status' | 'regua'>,
   pino: { lat: number; lon: number; aproximado: boolean },
   reguasDaCidade: number,
 ): string {
   const onde = `${grau(pino.lat)}, ${grau(pino.lon)}`
   if (pino.aproximado) {
     return `Posição aproximada (${onde}): a fonte não informa onde fica a régua. O pino está no rio, no ponto mais perto da coordenada que temos.`
+  }
+  if (cidade.coordenadas_status === 'não confirmada') {
+    const regua = cidade.regua ? ` a régua “${cidade.regua}”` : ' a régua'
+    return `Coordenada não confirmada (${onde}): nenhuma fonte oficial situa${regua}. O pino fica no ponto do cadastro; a proximidade de rios ou de estações estaduais não basta para movê-lo nem para vincular a régua.`
   }
   // A fonte declarada vem antes do código: em Blumenau o `codigo_dcsc` é de um pluviômetro, e a
   // coordenada é a da régua da ponte, confirmada pela Prefeitura (06/10/2026).
