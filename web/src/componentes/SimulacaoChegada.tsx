@@ -3,7 +3,8 @@ import historico from '@dados/historico-chegada-itajai.json'
 import { cidadesDoRio, mareItajai } from '../dados/carregar'
 import { porRegua, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { publicacaoMaisRecente, situacaoDoPico, type SituacaoPico } from '../logica/picoBlumenau'
-import { entradaBrasilia, janelaJaPassou, simularChegada, type ResultadoSimulacao } from '../logica/simulacaoChegada'
+import { simularChegada, type ResultadoSimulacao } from '../logica/simulacaoChegada'
+import { hojeEmItajai } from '../logica/hojeEmItajai'
 import { primeiraCota } from '../logica/tempoReal'
 import { rotuloCota, metros } from '../logica/formato'
 import estilos from './SimulacaoChegada.module.css'
@@ -17,7 +18,6 @@ const soHora = (d: Date) => d.toLocaleString('pt-BR', {
 const dia = (d: Date) => d.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
 const mesmoDia = (a: Date, b: Date) => dia(a) === dia(b)
 const numero = (n: number) => n.toLocaleString('pt-BR', { maximumFractionDigits: 2 })
-const HORA = 3_600_000
 
 /**
  * CHEGADA DO PICO × MARÉ EM ITAJAÍ.
@@ -101,32 +101,31 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota, agora }: {
   cota: { valor: number } | null
   nomeCota: string | null
 }) {
-  if (situacao.tipo === 'sem-dado') {
+  // A decisão mora em `logica/hojeEmItajai.ts`, a mesma que o chat usa: tela e chat dizem o mesmo.
+  const h = hojeEmItajai(situacao, cota, referencia, mareItajai, agora)
+  if (h.tipo === 'sem-dado') {
     return <p>Sem leitura recente de Blumenau: não dá para calcular hoje. Se a Defesa Civil ou o AlertaBlu
       informar o horário do pico, use a simulação abaixo.</p>
   }
-  const nivel = situacao.tipo === 'passou' || situacao.tipo === 'nao-confirmado' ? situacao.pico.nivel_m : situacao.ultimo.nivel_m
   // Rio abaixo da primeira cota: não há cheia descendo para cruzar com a maré.
-  if (cota && nivel < cota.valor) {
-    return <p>Blumenau está em <strong>{metros(situacao.ultimo.nivel_m)}</strong> (medido às{' '}
-      {soHora(situacao.ultimo.medidoEm)}), abaixo da cota de {nomeCota} ({metros(cota.valor)}), e não passou dela
+  if (h.tipo === 'abaixo-da-cota') {
+    return <p>Blumenau está em <strong>{metros(h.ultimo.nivel_m)}</strong> (medido às{' '}
+      {soHora(h.ultimo.medidoEm)}), abaixo da cota de {nomeCota} ({metros(cota!.valor)}), e não passou dela
       nas últimas 36 h: <strong>não há pico de cheia descendo agora.</strong></p>
   }
 
-  if (situacao.tipo === 'nao-confirmado') {
+  if (h.tipo === 'nao-confirmado') {
     // O máximo é o primeiro ponto das últimas 36 h: o pico pode ter sido
     // antes, fora da série. Não se afirma "passou" nem se ancora a chegada
     // nele como detecção firme — a janela sai como hipótese.
-    const resultado = simularChegada(entradaBrasilia(situacao.pico.medidoEm), referencia.horas_min,
-      referencia.horas_max, mareItajai)
     return <>
       <p><strong>Pico não confirmado.</strong> A maior leitura das últimas 36 h em Blumenau é{' '}
-        {metros(situacao.pico.nivel_m)}, às {hora(situacao.pico.medidoEm)} — e é a primeira da janela: o rio já
+        {metros(h.pico.nivel_m)}, às {hora(h.pico.medidoEm)} — e é a primeira da janela: o rio já
         estava alto quando ela começa, então o pico de verdade pode ter sido <strong>antes</strong>. Agora está em{' '}
-        {metros(situacao.ultimo.nivel_m)}, descendo.</p>
-      {janelaJaPassou(resultado, agora) ? <JanelaPassada resultado={resultado} /> : null}
-      <Resultado resultado={resultado} hipotese qual="desta hipótese"
-        rotulo={janelaJaPassou(resultado, agora)
+        {metros(h.ultimo.nivel_m)}, descendo.</p>
+      {h.janelaPassou ? <JanelaPassada resultado={h.resultado} /> : null}
+      <Resultado resultado={h.resultado} hipotese qual="desta hipótese"
+        rotulo={h.janelaPassou
           ? `Se o pico tivesse sido nessa leitura, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), teria chegado a Itajaí entre`
           : `Se o pico tivesse sido nessa leitura, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), chegaria a Itajaí entre`} />
       <p className={estilos.detalhe}>Se a Defesa Civil ou o AlertaBlu informar o horário do pico, use a simulação
@@ -134,36 +133,31 @@ function ConteudoHoje({ situacao, referencia, cota, nomeCota, agora }: {
     </>
   }
 
-  if (situacao.tipo === 'passou') {
-    const horasPlato = (situacao.platoFim.getTime() - situacao.platoInicio.getTime()) / HORA
-    const resultado = simularChegada(entradaBrasilia(situacao.platoInicio), referencia.horas_min,
-      referencia.horas_max + Math.round(horasPlato * 10) / 10, mareItajai)
+  if (h.tipo === 'passou') {
     return <>
-      <p><strong>O pico já passou por Blumenau:</strong> {metros(situacao.pico.nivel_m)} às{' '}
-        {hora(situacao.pico.medidoEm)}
-        {horasPlato >= 0.5 ? <> (o rio ficou a menos de 5 cm disso de {mesmoDia(situacao.platoInicio, situacao.pico.medidoEm)
-          ? soHora(situacao.platoInicio) : hora(situacao.platoInicio)} até {mesmoDia(situacao.platoFim, situacao.pico.medidoEm)
-          ? soHora(situacao.platoFim) : hora(situacao.platoFim)})</> : null}. Agora está em {metros(situacao.ultimo.nivel_m)}, descendo.</p>
-      {janelaJaPassou(resultado, agora) ? <JanelaPassada resultado={resultado} /> : null}
-      <Resultado resultado={resultado} rotulo={janelaJaPassou(resultado, agora)
+      <p><strong>O pico já passou por Blumenau:</strong> {metros(h.pico.nivel_m)} às{' '}
+        {hora(h.pico.medidoEm)}
+        {h.horasPlato >= 0.5 ? <> (o rio ficou a menos de 5 cm disso de {mesmoDia(h.platoInicio, h.pico.medidoEm)
+          ? soHora(h.platoInicio) : hora(h.platoInicio)} até {mesmoDia(h.platoFim, h.pico.medidoEm)
+          ? soHora(h.platoFim) : hora(h.platoFim)})</> : null}. Agora está em {metros(h.ultimo.nivel_m)}, descendo.</p>
+      {h.janelaPassou ? <JanelaPassada resultado={h.resultado} /> : null}
+      <Resultado resultado={h.resultado} rotulo={h.janelaPassou
         ? `Pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), o pico teria chegado a Itajaí entre`
         : `Pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), o pico chegaria a Itajaí entre`} />
     </>
   }
 
-  const resultado = simularChegada(entradaBrasilia(situacao.ultimo.medidoEm), referencia.horas_min,
-    referencia.horas_max, mareItajai)
   return <>
-    {situacao.tipo === 'subindo' ? (
-      <p><strong>Blumenau ainda está subindo:</strong> {metros(situacao.ultimo.nivel_m)} às{' '}
-        {soHora(situacao.ultimo.medidoEm)}
-        {situacao.tendencia ? <> (+{Math.abs(situacao.tendencia.cmh)} cm/h)</> : null}. O pico ainda não aconteceu,
+    {h.tipo === 'subindo' ? (
+      <p><strong>Blumenau ainda está subindo:</strong> {metros(h.ultimo.nivel_m)} às{' '}
+        {soHora(h.ultimo.medidoEm)}
+        {h.cmh != null ? <> (+{h.cmh} cm/h)</> : null}. O pico ainda não aconteceu,
         então o horário de chegada a Itajaí <strong>ainda não se sabe</strong>.</p>
     ) : (
-      <p><strong>Blumenau está perto do ponto mais alto</strong> ({metros(situacao.ultimo.nivel_m)} às{' '}
-        {soHora(situacao.ultimo.medidoEm)}), mas ainda não desceu o bastante para confirmar que o pico passou.</p>
+      <p><strong>Blumenau está perto do ponto mais alto</strong> ({metros(h.ultimo.nivel_m)} às{' '}
+        {soHora(h.ultimo.medidoEm)}), mas ainda não desceu o bastante para confirmar que o pico passou.</p>
     )}
-    <Resultado resultado={resultado} hipotese qual="deste cenário"
+    <Resultado resultado={h.resultado} hipotese qual="deste cenário"
       rotulo={`Se o pico fosse agora, pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h), chegaria a Itajaí entre`} />
     <p className={estilos.detalhe}>A cada leitura nova de Blumenau esta janela é refeita; enquanto o rio subir, ela
       anda para frente.</p>

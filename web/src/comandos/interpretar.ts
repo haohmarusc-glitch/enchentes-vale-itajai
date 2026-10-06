@@ -9,6 +9,7 @@
  * validados ANTES de qualquer execução. Se um trecho não for entendido, nada é executado e o chat diz qual.
  */
 import type { Aba, Catalogo, CidadeDoCatalogo, Contexto, Fundo, Interpretacao, Passo, ReguaDoCatalogo } from './tipos'
+import type { TemaDaLegenda } from './foz'
 
 import { normalizar } from './normalizar'
 import { arquivoPeloNome } from './rios'
@@ -158,6 +159,45 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
       return c ? [{ tipo: 'fonte_leitura', ...c }] : null
     }
   }
+  return null
+}
+
+/** A 7ª entrega: a foz (chegada × maré em Itajaí), a legenda do mapa e os botões de animação e legenda. */
+const COR_PARA_TEMA: Record<string, TemaDaLegenda> = {
+  'verde claro': 'monitoramento', verde: 'normal', amarelo: 'atencao', laranja: 'alerta', vermelho: 'inundacao', cinza: 'sem-dado',
+  azul: 'azul', violeta: 'violeta', roxo: 'violeta', lilas: 'violeta',
+}
+const FAIXA_PARA_TEMA: Record<string, TemaDaLegenda> = {
+  'abaixo da atencao': 'normal', monitoramento: 'monitoramento', observacao: 'monitoramento', atencao: 'atencao', alerta: 'alerta',
+  prontidao: 'alerta', 'alerta maximo': 'inundacao', inundacao: 'inundacao', emergencia: 'inundacao', 'sem dado': 'sem-dado',
+  'varias reguas': 'varias',
+}
+function lerTrechoDaSetima(t: string): Lido {
+  if (/^(?:o )?pico (?:de |em )?blumenau (?:ja )?passou$|^(?:quando )?(?:o pico|a cheia|a onda de cheia)(?: de blumenau)? chega(?:ria)? (?:em|a|no) itajai$|^(?:o pico|a cheia)(?: de blumenau)?(?: vai)? (?:chega|chegar|pega|pegar|coincide|coincidir)(?: em itajai)?(?: com| na)? (?:a )?mare(?: alta| cheia)?(?: em itajai)?$|^chegada (?:do pico |da cheia )?(?:em|a|no) itajai$|^(?:pico|cheia) (?:x|e|com) mare(?: em itajai)?$/.test(t)) {
+    return [{ tipo: 'chegada_itajai' }]
+  }
+  {
+    const m = t.match(/^(?:e )?(?:se|simular|simule)(?: o)? pico (?:de |em )?blumenau (?:for |fosse |foi |tiver sido |ocorrer )?(?:(hoje|amanha|ontem) )?(?:as |a |ao )?(\d{1,2})(?: ?h(?:oras)?)?(?: ?(\d{2}))?(?: ?min)?(?: (hoje|amanha|ontem))?(?: quando chega(?:ria)? (?:em|a) itajai)?$/)
+    if (m) {
+      const dia = (m[1] ?? m[4]) as 'hoje' | 'amanha' | 'ontem' | undefined
+      return [{ tipo: 'simular_chegada', hora: Number(m[2]), ...(m[3] ? { minuto: Number(m[3]) } : {}), ...(dia ? { dia } : {}) }]
+    }
+  }
+  {
+    const cor = t.match(/^o que (?:significa|quer dizer|e|indica)(?: a cor| o| a)? (verde claro|verde|amarelo|laranja|vermelho|cinza|azul|violeta|roxo|lilas)(?: no mapa| no rio| na legenda)?$/)
+    if (cor) return [{ tipo: 'legenda', tema: COR_PARA_TEMA[cor[1]!]! }]
+    const fx = t.match(/^o que (?:significa|quer dizer|e)(?: a faixa(?: de)?| o nivel(?: de)?)? (abaixo da atencao|monitoramento|observacao|atencao|alerta maximo|alerta|prontidao|inundacao|emergencia|sem dado|varias reguas)$/)
+    if (fx) return [{ tipo: 'legenda', tema: FAIXA_PARA_TEMA[fx[1]!]! }]
+  }
+  if (/^o que (?:significa|quer dizer|e) (?:o |a )?(?:trecho |linha )?tracejad[oa](?: no mapa)?$|^por que (?:o trecho |a linha )?(?:esta |ta )?tracejad[oa]$/.test(t)) return [{ tipo: 'legenda', tema: 'tracejado' }]
+  if (/^o que (?:significam|sao|querem dizer) as ondas(?: no mapa)?$|^por que (?:a agua|o rio|a correnteza|as ondas) (?:se mexe|se mexem|anda|andam|corre|correm|esta andando|se move|se movem)(?: no mapa)?$/.test(t)) return [{ tipo: 'legenda', tema: 'ondas' }]
+  if (/^o que (?:significa|e|quer dizer) (?:a |essa |esta )?seta(?: no mapa)?$/.test(t)) return [{ tipo: 'legenda', tema: 'seta' }]
+  if (/^o que (?:significa|e|quer dizer) (?:o |a )?(?:anel sem cor|regua sem faixa|bolinha sem cor)$/.test(t)) return [{ tipo: 'legenda', tema: 'regua_mare' }]
+  if (/^(?:o que (?:significam|querem dizer) as cores(?: do mapa)?|(?:explicar|explique|me explica|explica)(?: as)? (?:cores|legenda|a legenda)(?: do mapa)?|quais sao as cores(?: do mapa)?)$/.test(t)) return [{ tipo: 'legenda', tema: 'cores' }]
+  if (/^(?:pausar|pause|parar|pare|desligar|desligue|congelar)(?: as| a)? (?:animacoes|ondas|animacao do rio|animacao da correnteza|correnteza)(?: do mapa)?$/.test(t)) return [{ tipo: 'animacoes', acao: 'pausar' }]
+  if (/^(?:retomar|retome|voltar|volte|ligar|ligue|religar|continuar)(?: as| a)? (?:animacoes|ondas|correnteza)(?: do mapa)?$/.test(t)) return [{ tipo: 'animacoes', acao: 'retomar' }]
+  if (/^(?:abrir|abra|mostrar|mostre|ver)(?: a)? legenda(?: do mapa)?$/.test(t)) return [{ tipo: 'legenda_mapa', acao: 'abrir' }]
+  if (/^(?:fechar|feche|recolher|recolha|esconder|esconda|tirar|tire)(?: a)? legenda(?: do mapa)?$/.test(t)) return [{ tipo: 'legenda_mapa', acao: 'fechar' }]
   return null
 }
 
@@ -374,6 +414,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const setima = lerTrechoDaSetima(t)
+  if (setima) return setima
   const quinta = lerTrechoDaQuinta(t, cat)
   if (quinta) return quinta
   const sexta = lerTrechoDaSexta(t, cat)

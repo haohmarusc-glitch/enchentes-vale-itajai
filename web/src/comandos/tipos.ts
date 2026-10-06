@@ -4,6 +4,7 @@
  * O texto da pessoa só PROPÕE um destes passos; nenhum identificador sai do texto sem ser resolvido contra
  * o cadastro (`Catalogo`). Nada de URL, JavaScript ou nome inventado.
  */
+import type { TemaDaLegenda } from './foz'
 
 export type Fundo = 'escuro' | 'satelite' | 'mapa'
 
@@ -91,6 +92,12 @@ export type Passo =
   | { tipo: 'maximo_24h'; cidadeId?: string }
   | { tipo: 'panorama' }
   | { tipo: 'de_cima'; cidadeId?: string }
+  // 7ª entrega: a foz (chegada × maré em Itajaí) e o que o mapa quer dizer.
+  | { tipo: 'chegada_itajai' }
+  | { tipo: 'simular_chegada'; hora: number; minuto?: number; dia?: 'hoje' | 'amanha' | 'ontem' }
+  | { tipo: 'legenda'; tema: TemaDaLegenda }
+  | { tipo: 'animacoes'; acao: 'pausar' | 'retomar' }
+  | { tipo: 'legenda_mapa'; acao: 'abrir' | 'fechar' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

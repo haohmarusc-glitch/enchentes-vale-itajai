@@ -25,7 +25,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• "usar minha localização" (a régua mais perto; nada é guardado), "relatar problema nesta régua", "minha cidade é X", "seguir X";',
         '• "reproduzir as últimas 24 h", "pausar", "como estava às 14h", "voltar 3 horas";',
         '• "onde está chovendo mais?", "como estão as barragens?", "como está a maré?", "de onde vem essa leitura?";',
-        '• o rio agora: "quanto falta para a cota?", "está subindo ou descendo?", "máximo das últimas 24 h", "quais cidades estão em alerta?", "o que vem de cima?", "mostrar só as cidades em alerta".',
+        '• o rio agora: "quanto falta para a cota?", "está subindo ou descendo?", "máximo das últimas 24 h", "quais cidades estão em alerta?", "o que vem de cima?", "mostrar só as cidades em alerta";',
+        '• a foz: "o pico de Blumenau já passou?", "se o pico de Blumenau for às 22h"; o mapa: "o que significa a cor laranja?", "explicar as cores", "pausar as animações", "abrir a legenda".',
         'E perguntas: "como está Blumenau?", "maior cheia de Rio do Sul", "quanto tempo a cheia leva de Rio do Sul até Blumenau?".',
         'Tela cheia é pelo botão "Tela cheia": o navegador só abre com o seu toque.',
       ]
@@ -42,6 +43,7 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• "relatar problema nesta página" prepara um texto para copiar (o site não tem canal de relato);',
         `• "onde está chovendo mais?", "como estão as barragens?", "como está a maré?", "de onde vem a leitura de ${aqui}?";`,
         `• o rio agora: "quanto falta para a cota em ${aqui}?", "${aqui} está subindo?", "máximo das últimas 24 h em ${aqui}", "quais cidades estão em alerta?", "o que vem de cima para ${aqui}?";`,
+        '• a foz: "o pico de Blumenau já passou?", "se o pico de Blumenau for às 22h"; as cores: "o que significa a cor laranja?", "explicar as cores";',
         '• perguntas: "como está Blumenau?", "as 5 maiores cheias de Brusque", "cheias de 2008".',
       ]
   const sugestoes = ctx.naMonitor

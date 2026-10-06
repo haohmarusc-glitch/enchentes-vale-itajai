@@ -20,6 +20,8 @@
  *    "não é cheia"; barragem com nível em metros; fonte da leitura sem a hora.
  *  - 6ª entrega: panorama sem "mesma faixa não é mesmo metro"; filtro "acima do normal" fora da tela; "de cima"
  *    sem o aviso de que ligação não é previsão; Gaspar com frase de cota.
+ *  - 7ª entrega: chegada × maré sem o 199; simulação sem a janela; legenda que compara metros; animações ou
+ *    legenda que não mudam o botão do Monitor.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -267,7 +269,27 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 8. Página com chat próprio: a barra do topo some.
+  // 8. 7ª entrega: a foz (pico × maré), a simulação, a legenda e os botões de animação e legenda do Monitor.
+  {
+    const { b, pg, erros } = await abrir('#/monitor/blumenau', { largura: w, altura: h })
+    let r = await pedirAte(pg, 'o pico de Blumenau já passou?', /Blumenau|Não consegui/)
+    ok(/Blumenau/.test(r) && /199/.test(r), `chegada × maré: o "Hoje" do painel de Itajaí (${r.slice(0, 50)}…)`)
+    r = await pedirAte(pg, 'se o pico de Blumenau for às 22h', /Janela:|tábua/)
+    ok(/Janela: de [0-9]{2}:[0-9]{2} de/.test(r) && /não o nível do rio/.test(r), 'simulação: a janela e o aviso')
+    r = await pedirAte(pg, 'o que significa a cor laranja?', /Laranja/)
+    ok(/Laranja — Alerta/.test(r) && /não o nível em metros/.test(r), 'legenda: a faixa, na régua de cada cidade')
+    await pedirAte(pg, 'abrir a legenda', /Legenda aberta|já está aberta/)
+    ok((await pg.locator('button[aria-expanded="true"]', { hasText: 'recolher' }).count()) === 1, 'abrir a legenda: a legenda abriu')
+    await pedirAte(pg, 'pausar as animações', /pausadas/)
+    ok((await pg.locator('button[aria-pressed="true"]', { hasText: 'Retomar animações' }).count()) === 1, 'pausar as animações: o botão virou "Retomar"')
+    await pedirAte(pg, 'retomar animações', /retomadas|já estão ligadas/)
+    ok((await pg.locator('button[aria-pressed="false"]', { hasText: 'Pausar animações' }).count()) === 1, 'retomar animações: o botão voltou')
+    await pedirAte(pg, 'recolher a legenda', /Legenda recolhida|já está recolhida/)
+    ok((await pg.locator('button[aria-expanded="false"]', { hasText: 'abrir' }).count()) === 1, 'recolher a legenda: fechou')
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 9. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

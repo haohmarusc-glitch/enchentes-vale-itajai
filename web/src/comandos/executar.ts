@@ -8,7 +8,7 @@
  * - Antes da primeira mudança de um pedido, guarda um retrato da tela; "voltar ao mapa de antes" restaura o
  *   último (pilha curta, só nesta aba, nada gravado no aparelho).
  */
-import { serieDaCidade } from '../dados/serie'
+import { porRegua, serieDaCidade } from '../dados/serie'
 import type { Cidade } from '../dados/tipos'
 import type { AoVivo } from '../dados/usarAoVivo'
 import type { ReguaNoMapa } from '../logica/reguasNoMapa'
@@ -33,6 +33,12 @@ import { instantePedido, textoBarragens, textoChuvaAgora, textoFonteDaLeitura, t
 import type { Barragem } from '../dados/barragens'
 import type { TabuaMare, Trecho, TrechoExperimental } from '../dados/tipos'
 import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
+import { textoChegadaItajai, textoLegenda, textoSimulacao, instanteDoPico, type ReferenciaChegada } from './foz'
+import { hojeEmItajai } from '../logica/hojeEmItajai'
+import { publicacaoMaisRecente, situacaoDoPico } from '../logica/picoBlumenau'
+import { entradaBrasilia, simularChegada } from '../logica/simulacaoChegada'
+import { primeiraCota } from '../logica/tempoReal'
+import { rotuloCota } from '../logica/formato'
 import { textoDeCima, textoMaximo24h, textoPanorama, textoQuantoFalta, textoSubindoOuBaixando, type CidadeAgora } from './rioAgora'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
@@ -68,6 +74,8 @@ export interface DadosDoChat {
   fontesDaCidade?(id: string): string[]
   /** 6ª entrega: o tempo de descida do cadastro (`transito.json`), os trechos e os que estão em estudo. */
   transito?(): { trechos: Trecho[]; experimentais: TrechoExperimental[] }
+  /** 7ª entrega: a referência de estudo do tempo entre os picos de Blumenau e Itajaí (o mesmo do painel). */
+  referenciaChegada?(): ReferenciaChegada
 }
 
 export interface Ambiente {
@@ -89,11 +97,11 @@ export function limparRetratos(): void {
 export const MUDA_A_TELA = new Set<Passo['tipo']>([
   'ir_cidade', 'monitor_bacia', 'abrir_pagina', 'abrir_rota', 'escolher_regua', 'aproximar_regua', 'zoom',
   'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia', 'rua', 'remover_destaque',
-  'localizacao', 'reproducao',
+  'localizacao', 'reproducao', 'animacoes', 'legenda_mapa',
 ])
 const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
   'escolher_regua', 'aproximar_regua', 'zoom', 'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'o_que_vejo', 'filtro',
-  'reproducao',
+  'reproducao', 'animacoes', 'legenda_mapa',
 ])
 
 const NOME_FUNDO = { escuro: 'escuro', satelite: 'satélite', mapa: 'mapa de ruas' } as const
@@ -634,6 +642,49 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
             agora: v.agora,
           }),
         }
+      }
+      case 'chegada_itajai': {
+        const d = amb.dados
+        const v = await d?.aoVivo()
+        const ref = d?.referenciaChegada?.()
+        const tabua = d?.mare?.()
+        if (!d || !v || !ref || !tabua) return { texto: SEM_DADOS }
+        // Os mesmos passos do "Hoje" do painel de Itajaí: uma publicação da régua, a situação do pico, a decisão.
+        const pontos = publicacaoMaisRecente(porRegua(serieDaCidade(v.serie, 'itajai-acu', 'blumenau')))
+        const blu = d.cidade('blumenau')?.cidade
+        const c = blu ? primeiraCota(blu) : null
+        const h = hojeEmItajai(situacaoDoPico(pontos, v.agora), c, ref, tabua, v.agora)
+        return {
+          texto: textoChegadaItajai(h, { cota: c && blu ? { nome: rotuloCota(c.chave, blu.cotas_nomes_na_fonte), valor: c.valor } : null, referencia: ref, agora: v.agora }),
+          link: { texto: 'Ver a chegada × maré em Itajaí →', para: '/itajai' },
+          sugestoes: ['como está a maré?', 'se o pico de Blumenau for às 22h'],
+        }
+      }
+      case 'simular_chegada': {
+        const ref = amb.dados?.referenciaChegada?.()
+        const tabua = amb.dados?.mare?.()
+        if (!ref || !tabua) return { texto: 'A tábua de maré ou a referência de estudo não estão disponíveis agora.' }
+        const agora = new Date()
+        const pico = instanteDoPico(passo, agora)
+        if (!pico) return { texto: 'Não entendi o horário do pico. Peça, por exemplo: "se o pico de Blumenau for às 22h".' }
+        const r = simularChegada(entradaBrasilia(pico), ref.horas_min, ref.horas_max, tabua)
+        return { texto: textoSimulacao(pico, r, ref, agora), link: { texto: 'Ver a chegada × maré em Itajaí →', para: '/itajai' } }
+      }
+      case 'legenda':
+        return { texto: textoLegenda(passo.tema) }
+      case 'animacoes': {
+        if (!m!.animacoes) return falha('Esse botão não está disponível nesta tela.')
+        const r = m!.animacoes(passo.acao)
+        if (!r.ok) return falha(r.texto)
+        feitos.push(r.texto)
+        break
+      }
+      case 'legenda_mapa': {
+        if (!m!.legendaDoMapa) return falha('A legenda não está disponível nesta tela.')
+        const r = m!.legendaDoMapa(passo.acao)
+        if (!r.ok) return falha(r.texto)
+        feitos.push(r.texto)
+        break
       }
       case 'tela_cheia': {
         if (ctx.naMonitor) return { texto: 'O navegador só abre a tela cheia com o seu toque: use o botão "Tela cheia" no bloco do topo do mapa. Para sair, o mesmo botão ou a tecla Esc.' }
