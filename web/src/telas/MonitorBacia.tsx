@@ -10,7 +10,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ChatNoTopo from '../componentes/ChatNoTopo'
 import { registrarMonitor, type FiltroMonitor, type MarcaNoMapa, type Retrato } from '../comandos/ponte'
-import { pinoSemLeituraDeAgora, reguaSemLeituraDeAgora } from '../logica/filtroSemLeitura'
+import { faixaAcimaDoNormal, pinoSemLeituraDeAgora, reguaSemLeituraDeAgora } from '../logica/filtroSemLeitura'
 import { useConversa } from '../chat-local/conversa'
 import {
   cidadesDoRio,
@@ -462,7 +462,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     [tempoReal, agora],
   )
   const reguasRef = useRef(reguasDoMapa)
-  reguasRef.current = municipal ? [] : filtro === 'sem_leitura' ? reguasDoMapa.filter((r) => reguaSemLeituraDeAgora(r, agora)) : reguasDoMapa
+  reguasRef.current = municipal ? [] : filtro === 'sem_leitura' ? reguasDoMapa.filter((r) => reguaSemLeituraDeAgora(r, agora)) : filtro === 'acima_do_normal' ? reguasDoMapa.filter((r) => faixaAcimaDoNormal(r.faixa)) : reguasDoMapa
 
   /**
    * O seletor de régua da cidade em foco (Itajaí, as onze; pedido do Jefferson, 06/10/2026). Na própria
@@ -658,6 +658,10 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // O filtro só ESCONDE os pinos com leitura de agora. Os trechos do rio continuam pintados como sempre.
       const reguaFresca = new Set(reguasDoMapa.filter((r) => !reguaSemLeituraDeAgora(r, instante)).map((r) => r.cidade))
       cena.pinos = cena.pinos.filter((p) => pinoSemLeituraDeAgora(p, instante, reguaFresca.has(p.cidade.id)))
+    } else if (filtro === 'acima_do_normal') {
+      // 6ª entrega: só os pinos com a faixa do mapa acima do normal (e Itajaí, se uma régua dela está).
+      const reguaAcima = new Set(reguasDoMapa.filter((r) => faixaAcimaDoNormal(r.faixa)).map((r) => r.cidade))
+      cena.pinos = cena.pinos.filter((p) => faixaAcimaDoNormal(p.faixa) || reguaAcima.has(p.cidade.id))
     }
     cenaRef.current = cena
     // O painel guarda a seleção, mas os números devem acompanhar a nova coleta.
@@ -1280,6 +1284,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           setFiltro(null)
           return { ok: true, texto: 'Filtro limpo: o mapa mostra todas as cidades e réguas de novo.' }
         }
+        if (f === 'acima_do_normal') {
+          const pinos = pinosTodosRef.current.filter((p) => faixaAcimaDoNormal(p.faixa))
+          const reguasAcima = reguasDoMapa.filter((r) => faixaAcimaDoNormal(r.faixa))
+          const nomesAcima = [...pinos.map((p) => p.cidade.nome), ...reguasAcima.map((r) => `${r.codigo} · ${r.nome}`)]
+          if (nomesAcima.length === 0) {
+            return { ok: true, texto: 'Nenhuma cidade ou régua do mapa está com faixa acima de "Abaixo da atenção" agora: o filtro não foi ligado. Cinza não entra na conta, e faixa baixa no rio não quer dizer que não há alagamento. Em emergência, ligue 199.' }
+          }
+          setFiltro('acima_do_normal')
+          setSel(null)
+          setReguaSel(null)
+          setVista(VISTA_INTEIRA)
+          return { ok: true, texto: `Filtro ligado: a bacia inteira, só com a faixa do mapa acima de "Abaixo da atenção" (${nomesAcima.length}): ${nomesAcima.join(', ')}. Cada cor é a faixa da cidade na régua dela; cinza fica de fora. Peça "quais cidades estão em alerta?" para as faixas e "limpar filtros" para voltar.` }
+        }
         const reguaFresca = new Set(reguasDoMapa.filter((r) => !reguaSemLeituraDeAgora(r, agora)).map((r) => r.cidade))
         const cidades = pinosTodosRef.current.filter((p) => pinoSemLeituraDeAgora(p, agora, reguaFresca.has(p.cidade.id)))
         const reguas = reguasDoMapa.filter((r) => reguaSemLeituraDeAgora(r, agora))
@@ -1466,8 +1483,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         {rotuloCamada && <p className={estilos.rotuloCamada} data-tapa-mapa>
           {rotuloCamada} · referência, não alagamento atual
         </p>}
-        {filtro === 'sem_leitura' && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
-          Filtro: só cidades e réguas sem leitura de agora
+        {filtro && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
+          {filtro === 'sem_leitura' ? 'Filtro: só cidades e réguas sem leitura de agora' : 'Filtro: só cidades e réguas com faixa acima do normal'}
           <button type="button" className={estilos.botaoAviso} onClick={() => setFiltro(null)}>Limpar filtro</button>
         </p>}
         {marca && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>

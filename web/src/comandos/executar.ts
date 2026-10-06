@@ -31,8 +31,9 @@ import { idadeMin, textoIdade } from '../logica/tempoReal'
 import { AVISO_RELATO, textoDaLocalizacao, textoDoRelato, type Posicao } from './aparelho'
 import { instantePedido, textoBarragens, textoChuvaAgora, textoFonteDaLeitura, textoMare } from './bacia'
 import type { Barragem } from '../dados/barragens'
-import type { TabuaMare } from '../dados/tipos'
+import type { TabuaMare, Trecho, TrechoExperimental } from '../dados/tipos'
 import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
+import { textoDeCima, textoMaximo24h, textoPanorama, textoQuantoFalta, textoSubindoOuBaixando, type CidadeAgora } from './rioAgora'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
 
@@ -65,6 +66,8 @@ export interface DadosDoChat {
   barragens?(): Promise<ReadonlyMap<string, Barragem>>
   mare?(): TabuaMare
   fontesDaCidade?(id: string): string[]
+  /** 6ª entrega: o tempo de descida do cadastro (`transito.json`), os trechos e os que estão em estudo. */
+  transito?(): { trechos: Trecho[]; experimentais: TrechoExperimental[] }
 }
 
 export interface Ambiente {
@@ -557,6 +560,79 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
             agora: v.agora,
           }),
           link: { texto: `Abrir as fontes de ${c.nome} →`, para: c.id === 'itajai' ? '/itajai' : `/${c.rio}/${c.id}?aba=fontes` },
+        }
+      }
+      case 'quanto_falta':
+      case 'tendencia': {
+        const alvo = passo.cidadeId ?? cidade
+        if (!alvo) {
+          const ex = passo.tipo === 'quanto_falta' ? 'quanto falta para a cota em Blumenau?' : 'o rio está subindo em Blumenau?'
+          return { texto: `Em qual cidade? Por exemplo: "${ex}"`, sugestoes: [ex] }
+        }
+        const d = amb.dados
+        const v = await d?.aoVivo()
+        const c = d?.cidade(alvo)
+        if (!d || !v || !c) return { texto: SEM_DADOS }
+        const e = estadoDaCidade(c.cidade, c.rioId, v)
+        const dc = cat.cidades.find((x) => x.id === alvo)
+        return {
+          texto: passo.tipo === 'quanto_falta' ? textoQuantoFalta(c.cidade, e, v.agora) : textoSubindoOuBaixando(c.cidade, e, v.agora),
+          link: { texto: `Ver ${c.cidade.nome} agora →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}` },
+        }
+      }
+      case 'maximo_24h': {
+        const alvo = passo.cidadeId ?? cidade
+        if (!alvo) return { texto: 'Em qual cidade? Por exemplo: "máximo das últimas 24 h em Blumenau".', sugestoes: ['máximo das últimas 24 h em Blumenau'] }
+        const d = amb.dados
+        const v = await d?.aoVivo()
+        if (!d || !v) return { texto: SEM_DADOS }
+        const nome = nomeDaCidade(alvo, cat)
+        const reguaDoMonitor = ctx.reguaAtual && cat.reguas.find((r) => r.codigo === ctx.reguaAtual && r.cidadeId === alvo)
+        const pontos = Object.keys(v.serie.series).flatMap((r) => serieDaCidade(v.serie, r, alvo)).sort((a, b) => a.medidoEm.getTime() - b.medidoEm.getTime())
+        const s = serieDeUmaRegua(pontos, v.serie.resgates ?? {}, reguaDoMonitor ? reguaDoMonitor.titulo : null)
+        if ('escolher' in s) {
+          const daCidade = cat.reguas.filter((r) => r.cidadeId === alvo)
+          return {
+            texto: `${nome} tem ${s.escolher.length} réguas, cada uma com o seu zero: máximo e mínimo são de uma régua só. Escolha uma no Monitor e peça de novo.`,
+            sugestoes: daCidade.slice(0, 3).map((r) => `zoom na régua ${rotuloDaRegua(r)}`),
+          }
+        }
+        const rotulo = reguaDoMonitor ? `${nome} (${rotuloDaRegua(reguaDoMonitor)})` : nome
+        return { texto: textoMaximo24h({ nome: rotulo, cidadeId: alvo, pontos: s.pontos, publicacao: s.publicacao, agora: v.agora }) }
+      }
+      case 'panorama': {
+        const d = amb.dados
+        const v = await d?.aoVivo()
+        if (!d || !v) return { texto: SEM_DADOS }
+        const cidades: CidadeAgora[] = cat.cidades.flatMap((x) => {
+          const c = d.cidade(x.id)
+          return c ? [{ cidade: c.cidade, estado: estadoDaCidade(c.cidade, c.rioId, v) }] : []
+        })
+        return {
+          texto: textoPanorama(cidades, d.reguasNoMapa(v), v.agora),
+          sugestoes: ['mostrar só as cidades em alerta', 'o que vem de cima?'],
+          ...(ctx.naMonitor ? {} : { link: { texto: 'Abrir o Monitor da bacia →', para: '/monitor' } }),
+        }
+      }
+      case 'de_cima': {
+        const alvo = passo.cidadeId ?? cidade
+        if (!alvo) return { texto: 'Acima de qual cidade? Por exemplo: "o que vem de cima para Blumenau?"', sugestoes: ['o que vem de cima para Blumenau?', 'o que vem de cima para Itajaí?'] }
+        const d = amb.dados
+        const v = await d?.aoVivo()
+        if (!d || !v) return { texto: SEM_DADOS }
+        const t = d.transito?.() ?? { trechos: [], experimentais: [] }
+        return {
+          texto: textoDeCima({
+            cat,
+            alvo,
+            estado: (id) => {
+              const c = d.cidade(id)
+              return c ? { cidade: c.cidade, estado: estadoDaCidade(c.cidade, c.rioId, v) } : null
+            },
+            trechos: t.trechos,
+            experimentais: t.experimentais,
+            agora: v.agora,
+          }),
         }
       }
       case 'tela_cheia': {

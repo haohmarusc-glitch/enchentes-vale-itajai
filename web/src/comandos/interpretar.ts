@@ -161,6 +161,46 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
   return null
 }
 
+/** A 6ª entrega: o rio agora, de cima a baixo (quanto falta, tendência, máximo de 24 h, panorama, de cima, filtro). */
+const EM_CIDADE = '(?: (?:em|de|no|na|do|da|para|pra) (.+?))?(?: agora)?'
+function lerTrechoDaSexta(t: string, cat: Catalogo): Lido {
+  const comCidade = <T extends Passo>(alvo: string | undefined, passo: (c: { cidadeId?: string }) => T): T[] | null => {
+    const c = cidadeOpcional(alvo, cat)
+    return c ? [passo(c)] : null
+  }
+  {
+    const m = t.match(new RegExp(`^(?:quanto|qto) (?:falta|faltam)(?: (?:para|pra|ate)(?: a| o)? (?:(?:cota|nivel)(?: de)? )?(?:alerta maximo|alerta|atencao|inundacao|emergencia|prontidao|monitoramento|proxima cota|cota|transbordar))?${EM_CIDADE}$`))
+      ?? t.match(new RegExp(`^(?:a )?que distancia (?:esta )?(?:o rio |o nivel )?(?:esta )?da (?:proxima )?cota${EM_CIDADE}$`))
+    if (m) return comCidade(m[1], (c) => ({ tipo: 'quanto_falta', ...c }))
+  }
+  {
+    const m = t.match(/^(.*?) ?(?:esta|ta) (?:subindo|descendo|baixando)(?: ou (?:subindo|descendo|baixando))?(?: (?:em|de|no|na) (.+?))?(?: agora)?$/)
+    if (m) {
+      const antes = (m[1] ?? '').replace(/^(?:o rio|a regua|o nivel|a agua)(?: (?:de|em|do|da|no|na))? ?/, '').trim()
+      if (m[2] && antes) return null
+      return comCidade(m[2] ?? antes, (c) => ({ tipo: 'tendencia', ...c }))
+    }
+    const n = t.match(new RegExp(`^(?:qual (?:e )?)?a tendencia(?: do rio| do nivel)?${EM_CIDADE}$`))
+    if (n) return comCidade(n[1], (c) => ({ tipo: 'tendencia', ...c }))
+  }
+  {
+    const m = t.match(new RegExp(`^(?:qual (?:foi |e )?)?(?:o |a )?(?:minimo e (?:o )?)?(?:maximo|pico|maior nivel|nivel maximo|nivel mais alto|maxima)(?: e (?:o )?minimo)?(?: do rio| do nivel)? (?:(?:das|nas|em) ultimas 24 ?(?:h|horas)|de hoje|hoje|em 24 ?(?:h|horas))${EM_CIDADE}$`))
+    if (m) return comCidade(m[1], (c) => ({ tipo: 'maximo_24h', ...c }))
+  }
+  if (/^(?:quais|que|tem|ha|alguma|algumas|existe|existem)(?: as)? (?:cidades?|reguas?)(?: (?:estao|esta|tao|ta))? (?:em|no|na|acima da cota de) (?:alerta|atencao|emergencia|inundacao|cota de alerta)(?: agora)?$|^(?:como (?:esta|ta) a bacia|como (?:estao|tao) (?:os rios|as cidades)|resumo da bacia|panorama(?: da bacia)?|situacao da bacia)(?: agora| toda| inteira)?$/.test(t)) {
+    return [{ tipo: 'panorama' }]
+  }
+  {
+    const m = t.match(/^o que (?:vem|esta vindo|ta vindo|desce|esta descendo) (?:de cima|do alto vale|de montante|rio abaixo)(?: (?:para|pra|ate|em|sobre) (.+?))?(?: agora)?$/)
+      ?? t.match(/^como (?:esta|estao|ta|tao) (?:o rio|as cidades|as reguas) (?:acima|de cima|rio acima)(?: (?:de|do|da) (.+?))?(?: agora)?$/)
+    if (m) return comCidade(m[1], (c) => ({ tipo: 'de_cima', ...c }))
+  }
+  if (/^(?:(?:mostrar|mostre|mostra|ver|veja|filtrar|filtre|deixar|deixe)(?: so| somente| apenas)?(?: as| os)? )?(?:so |somente |apenas )?(?:as |os )?(?:reguas|cidades|estacoes|pinos) (?:em alerta|acima do normal|com faixa(?: acima do normal)?|com cor de faixa)$/.test(t)) {
+    return [{ tipo: 'filtro', filtro: 'acima_do_normal' }]
+  }
+  return null
+}
+
 /** A 4ª entrega: o que depende do aparelho (localização, preferências, relato, tela cheia). */
 function lerTrechoDaQuarta(t: string, cat: Catalogo): Lido {
   if (/^(?:usar|use|usa|pegar|pegue|ver|veja|mostrar|mostre)(?: a)? minha (?:localizacao|posicao)$|^onde (?:eu )?estou$|^(?:qual (?:e )?)?a regua mais (?:perto|proxima)(?: de mim| daqui)?$|^(?:qual )?regua (?:fica |esta )?mais (?:perto|proxima)(?: de mim| daqui)?$/.test(t)) {
@@ -336,6 +376,8 @@ const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', ag
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
   const quinta = lerTrechoDaQuinta(t, cat)
   if (quinta) return quinta
+  const sexta = lerTrechoDaSexta(t, cat)
+  if (sexta) return sexta
   const quarta = lerTrechoDaQuarta(t, cat)
   if (quarta) return quarta
   const terceira = lerTrechoDaTerceira(t, cat)

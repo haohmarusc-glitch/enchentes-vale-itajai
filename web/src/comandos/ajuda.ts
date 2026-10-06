@@ -24,7 +24,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• rua: "mostrar a rua X em Gaspar" (pontos de cota), "mostrar a avenida Y em Itajaí" e "manchas na rua Y" (traçado sobre as manchas), "remover destaque";',
         '• "usar minha localização" (a régua mais perto; nada é guardado), "relatar problema nesta régua", "minha cidade é X", "seguir X";',
         '• "reproduzir as últimas 24 h", "pausar", "como estava às 14h", "voltar 3 horas";',
-        '• "onde está chovendo mais?", "como estão as barragens?", "como está a maré?", "de onde vem essa leitura?".',
+        '• "onde está chovendo mais?", "como estão as barragens?", "como está a maré?", "de onde vem essa leitura?";',
+        '• o rio agora: "quanto falta para a cota?", "está subindo ou descendo?", "máximo das últimas 24 h", "quais cidades estão em alerta?", "o que vem de cima?", "mostrar só as cidades em alerta".',
         'E perguntas: "como está Blumenau?", "maior cheia de Rio do Sul", "quanto tempo a cheia leva de Rio do Sul até Blumenau?".',
         'Tela cheia é pelo botão "Tela cheia": o navegador só abre com o seu toque.',
       ]
@@ -40,6 +41,7 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         `• "usar minha localização", "minha cidade é ${aqui}", "seguir Gaspar", "quais cidades eu sigo?", "letra maior";`,
         '• "relatar problema nesta página" prepara um texto para copiar (o site não tem canal de relato);',
         `• "onde está chovendo mais?", "como estão as barragens?", "como está a maré?", "de onde vem a leitura de ${aqui}?";`,
+        `• o rio agora: "quanto falta para a cota em ${aqui}?", "${aqui} está subindo?", "máximo das últimas 24 h em ${aqui}", "quais cidades estão em alerta?", "o que vem de cima para ${aqui}?";`,
         '• perguntas: "como está Blumenau?", "as 5 maiores cheias de Brusque", "cheias de 2008".',
       ]
   const sugestoes = ctx.naMonitor

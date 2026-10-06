@@ -564,6 +564,13 @@ o projeto.
     - "Como estão as barragens?": comportas e percentual de uso como a fonte publica, nunca o nível em metros.
     - "Como está a maré?": a tábua da Marinha, como previsão astronômica; maré alta não é cheia.
     - "De onde vem essa leitura?": estação, hora da medição e fontes do cadastro.
+  - [x] **Sexta entrega (06/10/2026): o rio agora, de cima a baixo.**
+    - "Quanto falta para a cota?" e "está subindo?": a frase e a seta do cartão "Agora", com as mesmas recusas
+      (Gaspar, Ascurra, Itajaí, leitura que não é de agora).
+    - "Máximo das últimas 24 h": a série de uma régua, com a hora.
+    - "Quais cidades estão em alerta?": a faixa de cada cidade na régua dela; a da Defesa Civil de SC à parte.
+    - "O que vem de cima?": as cidades acima pela árvore, com a leitura e o tempo de descida em intervalo.
+    - "Mostrar só as cidades em alerta": filtro no Monitor (arquivo do Monitor alterado com `monitor-autorizado`).
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado
