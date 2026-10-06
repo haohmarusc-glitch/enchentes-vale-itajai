@@ -5,7 +5,7 @@ import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
-import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoSemCota } from '../logica/textosDoPainel'
+import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -1613,6 +1613,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               <p className={estilos.painelRessalva}>
                 {textoDaPosicao(cid, foco, reguasRef.current.filter((r) => r.cidade === cid.id).length)}
               </p>
+              {cid.equivalencia_estadual ? (
+                <p className={estilos.painelRessalva}>{textoEquivalencia(cid.equivalencia_estadual)}</p>
+              ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
                   <span className={estilos.painelRotulo}>{cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoSemCota } from './textosDoPainel'
+import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoEquivalencia, textoSemCota } from './textosDoPainel'
 import { motivoDaEstacaoEstadual, motivoSemCorNoMonitor } from './motivoSemCor'
 import { montarNivelSc } from '../dados/nivelSc'
 
@@ -97,4 +97,20 @@ test('Gaspar: sem leitura no arquivo de agora, mas com ponto na série — diz a
   assert.match(t, /A última leitura recebida é de .* \(1,92 m\)/)
   assert.match(t, /antiga demais/)
   assert.doesNotMatch(t, /horário válido/)
+})
+
+test('equivalência estadual: as quatro cidades do cadastro dizem "não confirmada", com estação e distância', async () => {
+  const { readFileSync } = await import('node:fs')
+  const est = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf8')) as {
+    rios: Record<string, { cidades: { id: string; equivalencia_estadual?: Parameters<typeof textoEquivalencia>[0] }[] }>
+  }
+  const com = Object.values(est.rios).flatMap((r) => r.cidades).filter((c) => c.equivalencia_estadual)
+  assert.deepEqual(com.map((c) => c.id).sort(), ['lontras', 'rio-dos-cedros', 'timbo', 'trombudo-central'])
+  for (const c of com) {
+    const t = textoEquivalencia(c.equivalencia_estadual!)
+    assert.match(t, /não confirmada/)
+    assert.match(t, new RegExp(c.equivalencia_estadual!.codigo))
+    assert.match(t, /Proximidade não basta/)
+  }
+  assert.match(textoEquivalencia({ codigo: 'DCSC-00032', nome_na_dcsc: 'Lontras', distancia_km: 0.82, status: 'não confirmada' }), /DCSC-00032 \(Lontras\), a 0,82 km: não confirmada/)
 })

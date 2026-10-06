@@ -48,6 +48,17 @@ export interface Cidade {
   coordenadas_sao_da_regua?: boolean
   /** De onde veio a coordenada da régua, quando não é a ficha da estação estadual. */
   coordenadas_fonte?: string
+  /**
+   * A estação estadual perto da cidade e se ela é a régua das cotas (decisão de 06/10/2026). "não confirmada"
+   * até existir documento, código comum ou comparação de referência/zero da régua.
+   */
+  equivalencia_estadual?: {
+    codigo: string
+    nome_na_dcsc?: string
+    distancia_km?: number
+    status: 'não confirmada' | 'confirmada'
+    fonte?: string
+  }
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>
   /**
