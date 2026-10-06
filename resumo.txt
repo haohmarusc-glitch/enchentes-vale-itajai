@@ -1,0 +1,26 @@
+   https://overpass-api.de/api/interpreter (tentativa 1/3): HTTP 504 — fila do Overpass; esperando 5s
+   https://overpass-api.de/api/interpreter (tentativa 2/3): HTTP 504 — fila do Overpass; esperando 10s
+benedito: 12 way(s), 67.0 km (espelho https://overpass-api.de/api/interpreter, base OSM 2026-10-06T16:51:06Z)
+   conferido: chega a itajai-acu e passa a 0.63 km do pino de timbo
+   base recebida 2026-10-06T16:51:06Z · do arquivo 2026-10-06T12:21:47Z → substituído, base recebida mais nova
+   gravado: data/brutos/tracado-benedito-osm.json
+rio-dos-cedros: 10 way(s), 70.1 km (espelho https://overpass-api.de/api/interpreter, base OSM 2026-10-06T16:51:06Z)
+   conferido: chega a benedito e passa a 0.07 km do pino de rio-dos-cedros
+   base recebida 2026-10-06T16:51:06Z · do arquivo 2026-10-06T12:38:11Z → substituído, base recebida mais nova
+   gravado: data/brutos/tracado-rio-dos-cedros-osm.json
+itajai-do-sul: 25 way(s), 87.8 km (espelho https://overpass-api.de/api/interpreter, base OSM 2026-10-06T16:51:06Z)
+   conferido: chega a itajai-acu e passa a 0.02 km do pino de ituporanga
+   base recebida 2026-10-06T16:51:06Z · do arquivo 2026-10-06T12:21:47Z → substituído, base recebida mais nova
+   gravado: data/brutos/tracado-itajai-do-sul-osm.json
+   https://overpass-api.de/api/interpreter (tentativa 1/3): HTTP 504 — fila do Overpass; esperando 5s
+   https://overpass-api.de/api/interpreter (tentativa 2/3): HTTP 429 — fila do Overpass; esperando 10s
+trombudo: 17 way(s), 40.9 km (espelho https://overpass-api.de/api/interpreter, base OSM 2026-10-06T16:51:06Z)
+   conferido: chega a itajai-acu / itajai-do-sul e passa a 0.25 km do pino de trombudo-central
+   base recebida 2026-10-06T16:51:06Z · do arquivo 2026-10-06T12:22:49Z → substituído, base recebida mais nova
+   gravado: data/brutos/tracado-trombudo-osm.json
+guabiruba: 11 way(s), 15.5 km (espelho https://overpass-api.de/api/interpreter, base OSM 2026-10-06T16:51:06Z)
+   conferido: chega a itajai-mirim e passa a 0.01 km do pino de guabiruba
+   base recebida 2026-10-06T16:51:06Z · do arquivo 2026-10-06T12:56:29Z → substituído, base recebida mais nova
+   gravado: data/brutos/tracado-guabiruba-osm.json
+
+conferidos: benedito, rio-dos-cedros, itajai-do-sul, trombudo, guabiruba · recusados: nenhum · sem resposta do Overpass: nenhum · só espelho atrasado: nenhum · sem data para comparar: nenhum
