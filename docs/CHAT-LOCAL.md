@@ -94,6 +94,13 @@ Comportamentos que foram checados com os dados reais em 22/09/2026:
   pessoa escolhe só as sugestões de partida; o motor responde sobre qualquer cidade.
 - Continua também no fim da aba **Histórico** de cada cidade do Açu e do Mirim.
 
+### Chat no topo de todas as páginas e comandos (06/10/2026)
+
+O mesmo motor agora também aparece numa barra no topo de toda página e no bloco do topo do Monitor. Antes
+dele, o texto é tentado como **pedido** ("mostrar Blumenau", "zoom na régua DC-05"). Os pedidos são comandos
+tipados, e o chat diz o resultado real de cada um. Pergunta continua aqui, com as mesmas regras. Ver
+`docs/CHAT-GLOBAL-COMANDOS.md`.
+
 ### Contagem sem misturar escalas, e a pergunta da rua (04/10/2026, decisão do Jefferson)
 
 - **`contar_acima` conta só uma escala.** Cada pico tem a sua (`escalaDoPico`): régua da cidade, zero do IBGE,
