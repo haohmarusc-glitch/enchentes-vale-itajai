@@ -41,8 +41,8 @@ auditoria visual das 19 cidades do Monitor.
 
 Não vincular por proximidade: a régua municipal e a estação estadual podem ser equipamentos
 diferentes, com zeros, seções do rio ou referências diferentes. Decisão do Jefferson (06/10/2026):
-só vincular com código, coordenada coincidente, declaração do município ou comparação documental
-das séries. A equivalência fica em `equivalencia_estadual` no cadastro, e o validador trava o vínculo.
+fica "não confirmada" até existir documento, código comum ou comparação de referência/zero da
+régua. A equivalência fica em `equivalencia_estadual` no cadastro, e o validador trava o vínculo.
 
 | Cidade | Estação | Nome na DCSC | Distância | Equivalência |
 |---|---|---|---|---|

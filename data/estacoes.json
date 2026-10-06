@@ -352,7 +352,7 @@
             "nome_na_dcsc": "Lontras",
             "distancia_km": 0.82,
             "status": "não confirmada",
-            "criterio": "Decisão do Jefferson em 06/10/2026: distância de 0,24 a 1,6 km não prova que seja a mesma régua — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Só vincular com código, coordenada coincidente, declaração do município ou comparação documental das séries. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
           },
           "verificado": false,
           "regua": "Régua do Itajaí-Açu em Lontras (a fonte não nomeia o ponto)",
@@ -721,7 +721,7 @@
             "nome_na_dcsc": "Timbó 1",
             "distancia_km": 1.61,
             "status": "não confirmada",
-            "criterio": "Decisão do Jefferson em 06/10/2026: distância de 0,24 a 1,6 km não prova que seja a mesma régua — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Só vincular com código, coordenada coincidente, declaração do município ou comparação documental das séries. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
           },
           "verificado": false,
           "regua": "Rio Benedito, Rua Equador",
@@ -778,7 +778,7 @@
             "nome_na_dcsc": "Rio dos Cedros 1",
             "distancia_km": 0.24,
             "status": "não confirmada",
-            "criterio": "Decisão do Jefferson em 06/10/2026: distância de 0,24 a 1,6 km não prova que seja a mesma régua — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Só vincular com código, coordenada coincidente, declaração do município ou comparação documental das séries. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
           },
           "verificado": false,
           "regua": "Régua da Praça Matriz",
@@ -814,7 +814,7 @@
             "nome_na_dcsc": "Trombudo Central 2",
             "distancia_km": 0.9,
             "status": "não confirmada",
-            "criterio": "Decisão do Jefferson em 06/10/2026: distância de 0,24 a 1,6 km não prova que seja a mesma régua — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Só vincular com código, coordenada coincidente, declaração do município ou comparação documental das séries. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
           },
           "verificado": false,
           "regua": "Régua do Rio Trombudo (a fonte não nomeia o ponto)",

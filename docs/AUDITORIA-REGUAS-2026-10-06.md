@@ -107,8 +107,7 @@ mesma estação. As coordenadas da inspeção, tiradas do Plus Code, batem com a
    - **No cadastro:** cada uma tem `equivalencia_estadual` com `status: "não confirmada"`.
    - **Trava:** `valida_equivalencia_estadual` reprova o código em `codigo_dcsc` enquanto não houver
      confirmação, e reprova "confirmada" sem `fonte`.
-   - **Quando vincular:** só com código, coordenada coincidente, declaração do município ou comparação
-     documental das séries.
+   - **Quando vincular:** só quando existir documento, código comum ou comparação de referência/zero da régua. Proximidade não basta.
 3. **Itajaí: seletor de régua na própria tela do Monitor.**
    - **Opções:** "Todas as 11 réguas" (padrão), depois DC-01 a DC-11.
    - **Escolher uma régua:** o mapa centraliza nela, com ~3 km de largura, e o painel dela abre. No celular, o

@@ -1266,8 +1266,8 @@ def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
 
     DECISÃO DO JEFFERSON (06/10/2026), depois da auditoria das réguas: Timbó, Rio dos Cedros,
     Trombudo Central e Lontras têm uma estação da Defesa Civil de SC a 0,24–1,6 km, e isso não
-    prova que seja a mesma régua (zero, seção do rio e referência podem diferir). Só se vincula com
-    código, coordenada coincidente, declaração do município ou comparação documental das séries.
+    prova que seja a mesma régua (zero, seção do rio e referência podem diferir). Fica "não
+    confirmada" até existir documento, código comum ou comparação de referência/zero da régua.
 
     Trava: enquanto o status for "não confirmada", o código NÃO pode estar em `codigo_dcsc` (é ele
     que liga a estação à cidade e deixa as cotas da cidade pintarem a leitura estadual). E
@@ -1288,8 +1288,8 @@ def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
                 erro(f"{onde}: sem `codigo` da estação estadual")
             if status == "não confirmada" and c.get("codigo_dcsc") == eq.get("codigo"):
                 erro(f"{onde}: {eq.get('codigo')} está em `codigo_dcsc` com a equivalência NÃO "
-                     "confirmada — vincular exige código, coordenada coincidente, declaração do "
-                     "município ou comparação documental das séries (decisão de 06/10/2026)")
+                     "confirmada — vincular exige documento, código comum ou comparação de "
+                     "referência/zero da régua (decisão de 06/10/2026)")
             if status == "confirmada" and not eq.get("fonte"):
                 erro(f"{onde}: equivalência confirmada sem `fonte`")
 

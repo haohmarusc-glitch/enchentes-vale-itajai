@@ -114,7 +114,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   Prefeitura (`coordenadas_fonte`). A DCSC-00026 de Blumenau é de chuva: fica em `codigo_dcsc` só para a chuva.
 - **Estação estadual perto não é a régua da cidade.** Timbó, Rio dos Cedros, Trombudo Central e Lontras têm
   `equivalencia_estadual.status: "não confirmada"`.
-  - Só vincular com código, coordenada coincidente, declaração do município ou comparação documental das séries.
+  - Fica "não confirmada" até existir documento, código comum ou comparação de referência/zero da régua (decisão fechada em 06/10/2026). Proximidade não basta.
   - O validador reprova o código em `codigo_dcsc` sem a confirmação, e "confirmada" sem `fonte`.
 - Inventário em `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py --gravar`). Relatório em
   `docs/AUDITORIA-REGUAS-2026-10-06.md`.
