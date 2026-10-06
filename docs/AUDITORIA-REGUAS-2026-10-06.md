@@ -118,5 +118,6 @@ mesma estação. As coordenadas da inspeção, tiradas do Plus Code, batem com a
 
 ## O que fica
 
-- [x] **Rios ainda sem traçado:** o Benedito, o Itajaí do Sul e o Trombudo foram desenhados em 06/10/2026
+- [x] **Rios ainda sem traçado:** o Benedito, o Rio dos Cedros, o Itajaí do Sul, o Trombudo e o curso de
+  Guabiruba (Rio Guabiruba Norte → Rio Guabiruba) foram desenhados em 06/10/2026
   (`docs/TRACADOS-AFLUENTES-2026-10-06.md`).

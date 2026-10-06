@@ -871,9 +871,10 @@ def valida_meses_pareados() -> None:
 TRACADO_DO_RAMO = {
     "tronco_acu": "itajai-acu",
     "mirim_tronco": "itajai-mirim",
-    # Guabiruba fica no ribeirão, sem traçado próprio; confere-se contra o Mirim
-    # com a exceção de LONGE_ACEITO, que diz por que o pino fica a 4,24 km.
-    "ribeirao_guabiruba": "itajai-mirim",
+    # Guabiruba: desde 06/10/2026 o curso da DCSC-00029 tem traçado próprio
+    # (guabiruba.geojson: Rio Guabiruba Norte + Rio Guabiruba, OSM), e o pino
+    # fica a 0,01 km dele. Antes conferia contra o Mirim, a 4,24 km, com exceção.
+    "ribeirao_guabiruba": "guabiruba",
     "itajai_do_oeste": "itajai-acu",   # o Oeste vem DENTRO do arquivo do Açu (OSM)
     "itajai_do_sul": "itajai-do-sul",
 }
@@ -887,16 +888,9 @@ LONGE_ACEITO = {
     # DCSC-00026, estação de CHUVA a 2,99 km.
     # Ituporanga saiu em 06/10/2026: o Itajaí do Sul passou a vir inteiro do OSM
     # (baixar_tracados_afluentes.py), e o pino fica a 0,02 km dele.
-    # ACHADO POR ESTA PRÓPRIA TRAVA, na primeira execução (05/09/2026), sem que
-    # ninguém tivesse reportado: Guabiruba fica a 4,24 km do Mirim e longe de
-    # todo o resto. Não é erro de coordenada — a cidade fica no RIBEIRÃO
-    # Guabiruba, afluente que não está desenhado. Duas fontes concordam: o
-    # `coleta_nivel_sc.py` já chamava a leitura dela de "implausível PARA O
-    # RIBEIRÃO". É a MESMA omissão do Itajaí do Sul e dos ribeirões de Itajaí: a
-    # consulta do Overpass só pediu `waterway=river` com os nomes do tronco.
-    "guabiruba": (5.0, "fica no Ribeirão Guabiruba, afluente do Mirim que não está "
-                       "desenhado — mesma lacuna do Overpass do Itajaí do Sul. Baixar o "
-                       "ribeirão (docs/TRACADO-ITAJAI-DO-SUL.md) derruba este número."),
+    # Guabiruba saiu em 06/10/2026: estava a 4,24 km do Mirim porque o curso dela
+    # (Rio Guabiruba Norte, achado pelo diagnóstico de baixar_tracados_afluentes.py)
+    # não estava desenhado. Com guabiruba.geojson, o pino fica a 0,01 km dele.
 }
 
 #: Acima disto o pino flutua: aparece sobre o satélite, sem rio embaixo.

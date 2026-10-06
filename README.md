@@ -522,15 +522,27 @@ o projeto.
   - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Corrigido
     junto com as outras cidades na auditoria das réguas (item abaixo).
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
-- [x] **Benedito, Itajaí do Sul e Trombudo no Monitor (06/10/2026, pedido do Jefferson):**
+- [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
-  - Baixados do OSM no Actions (`baixar-tracados-afluentes.yml`), conferidos (chegam a um rio desenhado e passam
-    pela régua da cidade) e recortados na caixa do mapa.
-  - O Itajaí do Sul agora vai inteiro de Ituporanga a Rio do Sul.
-  - A árvore não muda: o OSM mostra o Trombudo chegando ao Itajaí do Oeste, mas a posição de Trombudo Central
-    só muda com fonte.
-  - [ ] **Decisão do Jefferson:** gravar o ponto da confluência do Benedito (`achar_confluencias.py --gravar`):
-    entra entre Indaial e Blumenau.
+  - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado
+    em cinza, sem depender de leitura, cota ou faixa.
+  - **Rios desenhados:** Benedito (Timbó), Rio dos Cedros, Itajaí do Sul inteiro (Ituporanga), Trombudo e o curso
+    de Guabiruba.
+    - O curso de Guabiruba é o **Rio Guabiruba Norte**, a 10 m da DCSC-00029, seguido do Rio Guabiruba até o Mirim.
+      O "Rio Guabiruba" sozinho passava a 1,72 km da estação e foi recusado.
+  - **Como entraram:** baixados do OSM no Actions e conferidos antes de gravar:
+    - passam pela régua;
+    - chegam, por continuidade, a um rio desenhado.
+  - Saíram as exceções `LONGE_ACEITO` de Ituporanga e Guabiruba.
+  - [x] **Confluência do Benedito gravada (decisão do Jefferson):** 4,6 km **abaixo** da régua de Indaial, em
+    −26,89134, −49,23557 (nó comum do OSM). Isso corrige a leitura de 05/09 ("a montante de Indaial"). O
+    `--gravar` não funcionava (regex de uma linha) e foi corrigido.
+  - [x] **Trombudo → Itajaí do Oeste registrado com fonte, sem posição na árvore** (`rio_chega_a`, travado por
+    `valida_rio_chega_a`). O menu "Outros pontos" diz a ligação.
+  - [ ] **Coordenada de Timbó sem fonte:** o pino fica a 0,28 km do Rio dos Cedros e a 0,64 km do Benedito,
+    embora a régua seja "Rio Benedito, Rua Equador". Precisa de fonte; o pino não foi mexido.
+  - [ ] **Lacuna de 1,8 km no Rio Guabiruba Norte no OSM**, rio acima da estação. A cabeceira não é desenhada
+    até alguém corrigir o OSM.
 - [x] **Cidades sem cor no Monitor (06/10/2026, auditoria do Jefferson das 19 cidades)**: `docs/CIDADES-SEM-COR-2026-10-06.md`.
   - **Motivo específico no painel** em vez de "sem leitura": Lontras (valor impossível rejeitado), Indaial
     (estadual sem nível desde 02/10), Gaspar (última leitura e hora) e Apiúna (cota altimétrica).

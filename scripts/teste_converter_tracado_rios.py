@@ -154,6 +154,19 @@ class AfluentesBaixadosEm06De10(unittest.TestCase):
         self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["trombudo"])), 1)
         self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["itajai-do-sul"])), 1)
 
+    def test_so_o_trecho_ligado_a_regua_fica(self):
+        ligada = [[0.0, 0.0], [1.0, 0.0]]
+        vizinha = [[1.0, 0.0], [2.0, 0.0]]
+        solta = [[5.0, 0.0], [6.0, 0.0]]   # lacuna: não toca as outras
+        self.assertEqual(ct.ligadas_ao_ponto([solta, ligada, vizinha], (0.1, 0.0)), [ligada, vizinha])
+
+    def test_o_guabiruba_desenhado_e_uma_cadeia_so_da_estacao_ao_mirim(self):
+        arq = ct.SAIDA / "guabiruba.geojson"
+        if not arq.exists():
+            self.skipTest("sem guabiruba.geojson")
+        ls = json.loads(arq.read_text(encoding="utf-8"))["geometry"]["coordinates"]
+        self.assertEqual(len(ct.ligadas_ao_ponto(ls, ct.coordenada_da_cidade("guabiruba"))), len(ls))
+
     def test_guabiruba_pelo_nome_exato_sem_o_sul(self):
         elementos = [way("Rio Guabiruba Norte"), way("Rio Guabiruba"), way("Rio Guabiruba Sul")]
         self.assertEqual(len(ct.linhas_por_nome_exato(elementos, ct.RIOS_AFLUENTES["guabiruba"])), 2)

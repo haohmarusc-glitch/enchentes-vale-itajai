@@ -163,6 +163,11 @@ RIOS_AFLUENTES = {
 #: Afluentes casados pelo nome EXATO (minúsculo), não por substring.
 NOMES_EXATOS = {"guabiruba"}
 
+#: Afluentes desenhados só no trecho LIGADO à régua da cidade (vértice comum). No Rio Guabiruba Norte, o OSM
+#: tem uma lacuna de ~1,8 km rio acima da estação: a cabeceira vem solta. Ligar a lacuna seria reta inventada;
+#: desenhar o pedaço solto seria um salto no mapa. Fica o curso da estação até o Mirim.
+SO_O_LIGADO_A_REGUA = {"guabiruba": "guabiruba"}
+
 #: Os rios recortados na CAIXA do mapa (a extensão do tronco e das réguas do cadastro). O Benedito nasce ao
 #: norte de Doutor Pedrinho e o Itajaí do Sul em Alfredo Wagner, fora do quadro de hoje; inteiros, eles
 #: afastariam o mapa inteiro. O recorte guarda o trecho das cidades e a chegada ao rio de baixo.
@@ -209,6 +214,29 @@ def caixa_do_mapa(tronco: list[list[list[float]]]) -> tuple[float, float, float,
             if c.get("coordenadas"):
                 pts.append([c["coordenadas"][1], c["coordenadas"][0]])
     return (min(p[0] for p in pts), min(p[1] for p in pts), max(p[0] for p in pts), max(p[1] for p in pts))
+
+
+def coordenada_da_cidade(cidade_id: str) -> tuple[float, float]:
+    """(lon, lat) da cidade no cadastro."""
+    estacoes = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
+    c = next(c for r in estacoes["rios"].values() for c in r["cidades"] if c["id"] == cidade_id)
+    return (c["coordenadas"][1], c["coordenadas"][0])
+
+
+def ligadas_ao_ponto(linhas: list[list[list[float]]], ponto: tuple[float, float]) -> list[list[list[float]]]:
+    """As linhas ligadas, por vértice comum, à linha com o vértice mais perto do ponto (lon, lat)."""
+    chaves = [{(round(p[0], 7), round(p[1], 7)) for p in l} for l in linhas]
+    def d2(l: list[list[float]]) -> float:
+        return min((p[0] - ponto[0]) ** 2 + (p[1] - ponto[1]) ** 2 for p in l)
+    inicio = min(range(len(linhas)), key=lambda i: d2(linhas[i]))
+    vistos, fila = {inicio}, [inicio]
+    while fila:
+        i = fila.pop()
+        for j in range(len(linhas)):
+            if j not in vistos and chaves[i] & chaves[j]:
+                vistos.add(j)
+                fila.append(j)
+    return [linhas[i] for i in sorted(vistos)]
 
 
 def recortar_ao_sul(linhas: list[list[list[float]]], lat_max: float) -> list[list[list[float]]]:
@@ -386,6 +414,8 @@ def main() -> int:
             linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
         if rio_id in RECORTE_NA_CAIXA:
             linhas = recortar_na_caixa(linhas, caixa)
+        if rio_id in SO_O_LIGADO_A_REGUA and linhas:
+            linhas = ligadas_ao_ponto(linhas, coordenada_da_cidade(SO_O_LIGADO_A_REGUA[rio_id]))
         if not linhas:
             print(f"{rio_id}: nenhum way com {chaves} no bruto — pulado. Inclua o rio na "
                   "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
@@ -395,6 +425,12 @@ def main() -> int:
             feat["properties"]["cobertura"] = (
                 "RECORTADO na caixa do mapa (extensão do tronco e das réguas do cadastro), para não mudar o "
                 "enquadramento do Monitor. Baixado por scripts/baixar_tracados_afluentes.py."
+            )
+        if rio_id in SO_O_LIGADO_A_REGUA:
+            feat["properties"]["cobertura"] += (
+                " Só o trecho ligado à régua de Guabiruba (DCSC-00029): o Rio Guabiruba Norte a partir de ~2 km acima da"
+                " estação e o Rio Guabiruba até o Itajaí-Mirim. A cabeceira do Norte, solta no OSM por uma lacuna de ~1,8 km, fica"
+                " de fora; o Rio Guabiruba Sul não é o curso da estação."
             )
         if rio_id in CORTE_NORTE:
             feat["properties"]["cobertura"] = (
