@@ -43,8 +43,7 @@ class Conferencia(unittest.TestCase):
         self.assertIn('"^(Rio Itajaí do Sul)$"', q)
         self.assertIn('"^(river)$"', q)
         g = ba.consulta("guabiruba")
-        self.assertIn('"^(Ribeirão Guabiruba|Rio Guabiruba)$"', g)
-        self.assertIn('"^(river|stream)$"', g)
+        self.assertIn('"^(Rio Guabiruba Norte|Rio Guabiruba)$"', g)
         self.assertIn("(-27.9,-49.8,-27.15,-49.1)", q)
 
 
@@ -57,10 +56,24 @@ class NovosDaInspecao(unittest.TestCase):
         self.assertEqual(ba.conferir("rio-dos-cedros", ls, {"benedito": [(-49.27, -26.801)]}, rc), [])
         self.assertTrue(ba.conferir("rio-dos-cedros", ls, {}, rc))
 
-    def test_guabiruba_aceita_os_dois_nomes_e_confere_pela_estacao(self):
+    def test_guabiruba_e_o_norte_da_estacao_ligado_ao_guabiruba_que_chega_ao_mirim(self):
         g = ba.pino("guabiruba")
-        ls = ba.linhas([way("Ribeirão Guabiruba", [(-49.00, -27.10), g, (-48.93, -27.099)])], ba.RIOS["guabiruba"]["nomes"])
-        self.assertEqual(ba.conferir("guabiruba", ls, {"itajai-mirim": [(-48.93, -27.10)]}, g), [])
+        juncao = (-48.96326, -27.0958)
+        norte = way("Rio Guabiruba Norte", [(-48.99211, -27.08118), g, juncao])
+        baixo = way("Rio Guabiruba", [juncao, (-48.92983, -27.09784)])
+        mirim = {"itajai-mirim": [(-48.92983, -27.09784)]}
+        nomes = ba.RIOS["guabiruba"]["nomes"]
+        self.assertEqual(ba.conferir("guabiruba", ba.linhas([norte, baixo], nomes), mirim, g), [])
+        # O Sul entra no mesmo nó, mas não é o curso da estação: o nome não entra.
+        self.assertEqual(ba.linhas([way("Rio Guabiruba Sul", [(-49.05, -27.13), juncao])], nomes), [])
+
+    def test_pedaco_solto_perto_do_rio_de_baixo_nao_conta_como_chegada(self):
+        g = ba.pino("guabiruba")
+        norte = way("Rio Guabiruba Norte", [(-48.99211, -27.08118), g, (-48.96326, -27.0958)])
+        solto = way("Rio Guabiruba", [(-48.95, -27.0959), (-48.92983, -27.09784)])   # não toca o Norte
+        ls = ba.linhas([norte, solto], ba.RIOS["guabiruba"]["nomes"])
+        problemas = ba.conferir("guabiruba", ls, {"itajai-mirim": [(-48.92983, -27.09784)]}, g)
+        self.assertTrue(any("não chega" in p for p in problemas))
 
     def test_a_ordem_baixa_quem_recebe_antes(self):
         self.assertLess(ba.ORDEM.index("benedito"), ba.ORDEM.index("rio-dos-cedros"))

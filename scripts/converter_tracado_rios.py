@@ -154,15 +154,23 @@ RIOS_AFLUENTES = {
     "trombudo": ["rio trombudo"],
     # O rio da cidade de Rio dos Cedros, que chega ao Benedito em Timbó (BRUTOS_AFLUENTES).
     "rio-dos-cedros": ["rio dos cedros"],
-    # O curso que a DCSC-00029 mede em Guabiruba, até o Mirim em Brusque (BRUTOS_AFLUENTES). O OSM pode
-    # chamá-lo de rio ou de ribeirão; o download aceita os dois e confere a passagem pela estação.
-    "guabiruba": ["ribeirão guabiruba", "rio guabiruba"],
+    # O curso que a DCSC-00029 mede em Guabiruba, até o Mirim em Brusque (BRUTOS_AFLUENTES): o "Rio Guabiruba
+    # Norte", onde fica a estação, e o "Rio Guabiruba", que nasce do encontro dele com o Sul. NOME EXATO
+    # (NOMES_EXATOS): por substring, "rio guabiruba" pegaria também o Sul, que não é o curso da estação.
+    "guabiruba": ["rio guabiruba norte", "rio guabiruba"],
 }
+
+#: Afluentes casados pelo nome EXATO (minúsculo), não por substring.
+NOMES_EXATOS = {"guabiruba"}
 
 #: Os rios recortados na CAIXA do mapa (a extensão do tronco e das réguas do cadastro). O Benedito nasce ao
 #: norte de Doutor Pedrinho e o Itajaí do Sul em Alfredo Wagner, fora do quadro de hoje; inteiros, eles
 #: afastariam o mapa inteiro. O recorte guarda o trecho das cidades e a chegada ao rio de baixo.
 RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba")
+#: Folga do recorte, em graus (~1,5 km). Sem ela, a régua que define a borda do quadro (Rio dos Cedros, a mais
+#: ao norte) ficava NA PONTA do rio recortado, a 137 m do fim da linha — o rio parecia nascer na cidade. Com a
+#: folga, a linha passa pela régua e segue um pouco além. O quadro do Monitor cresce no máximo isso.
+FOLGA_DA_CAIXA_GRAUS = 0.015
 
 
 #: Recorte do Hercílio ao NORTE desta latitude. O Itajaí do Norte nasce em
@@ -249,6 +257,14 @@ def linhas_por_substring(elementos: list[dict], chaves: list[str]) -> list[list[
             if len(linha) >= 2:
                 linhas.append(linha)
     return linhas
+
+
+def linhas_por_nome_exato(elementos: list[dict], nomes: list[str]) -> list[list[list[float]]]:
+    """Ways cujo `name` (minúsculo) é exatamente um dos nomes."""
+    return [linha for e in elementos
+            if e.get("type") == "way" and "geometry" in e
+            and ((e.get("tags") or {}).get("name") or "").lower() in nomes
+            and len(linha := linha_do_way(e)) >= 2]
 
 
 def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
@@ -360,9 +376,12 @@ def main() -> int:
         grava(feat, rio_id)
 
     tronco = [l for r, nomes in RIOS.items() for l in geojson_do_rio(r, nomes, por_nome)["geometry"]["coordinates"]]
-    caixa = caixa_do_mapa(tronco)
+    oeste, sul, leste, norte = caixa_do_mapa(tronco)
+    f = FOLGA_DA_CAIXA_GRAUS
+    caixa = (oeste - f, sul - f, leste + f, norte + f)
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
-        linhas = linhas_por_substring(elementos, chaves)
+        linhas = (linhas_por_nome_exato(elementos, chaves) if rio_id in NOMES_EXATOS
+                  else linhas_por_substring(elementos, chaves))
         if rio_id in CORTE_NORTE:
             linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
         if rio_id in RECORTE_NA_CAIXA:

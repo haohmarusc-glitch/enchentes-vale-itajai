@@ -1292,6 +1292,40 @@ def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
                 erro(f"{onde}: equivalência confirmada sem `fonte`")
 
 
+def valida_rio_chega_a(estacoes: dict | None = None) -> None:
+    """
+    `rio_chega_a` registra em que rio o curso da cidade deságua, com fonte — SEM dar posição na árvore.
+
+    DECISÃO DO JEFFERSON (06/10/2026): o traçado do OSM liga o Rio Trombudo ao Itajaí do Oeste. A ligação
+    entra no cadastro com fonte, método e incerteza; Trombudo Central continua fora da árvore, em
+    "Outros pontos". Trava: exige `rio`, `ponto` [lat, lon], `fonte` e `incerteza`; `posicao_na_arvore`
+    tem de ser null; e a cidade não pode estar no tronco, nas cabeceiras nem nos afluentes laterais —
+    o registro da ligação não pode virar posição na árvore por uma porta lateral.
+    """
+    estacoes = estacoes if estacoes is not None else le_json("estacoes.json")
+    for rio_id, rio in estacoes["rios"].items():
+        topo = rio.get("_topologia") or {}
+        na_arvore = set(topo.get("tronco_sequencia") or []) | set(topo.get("cabeceiras_paralelas") or []) | {
+            a.get("id") for a in topo.get("afluentes_laterais") or []}
+        for c in rio["cidades"]:
+            liga = c.get("rio_chega_a")
+            if liga is None:
+                continue
+            onde = f"estacoes.json / {rio_id} / {c['id']} / rio_chega_a"
+            for campo in ("rio", "fonte", "incerteza"):
+                if not liga.get(campo):
+                    erro(f"{onde}: sem `{campo}`")
+            p = liga.get("ponto")
+            if not (isinstance(p, list) and len(p) == 2 and -28.5 < p[0] < -26.0 and -50.5 < p[1] < -48.4):
+                erro(f"{onde}: `ponto` precisa ser [lat, lon] dentro da bacia, veio {p!r}")
+            if liga.get("posicao_na_arvore") is not None:
+                erro(f"{onde}: `posicao_na_arvore` tem de ser null — a ligação não posiciona a cidade na "
+                     "árvore (decisão de 06/10/2026)")
+            if c["id"] in na_arvore:
+                erro(f"{onde}: {c['id']} está na árvore (_topologia) e tem rio_chega_a — posição na árvore "
+                     "só com fonte e decisão do Jefferson, não pelo registro da ligação")
+
+
 def valida_regua_das_cotas() -> None:
     """
     Cidade que PINTA cor no mapa declara de qual régua são as cotas?
@@ -2184,6 +2218,7 @@ def main() -> int:
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
     valida_equivalencia_estadual()
+    valida_rio_chega_a()
     valida_pico_copiado_de_outra_cidade()
     valida_divergencia_que_virou_registro()
     valida_cota_de_rua_nao_e_lamina()

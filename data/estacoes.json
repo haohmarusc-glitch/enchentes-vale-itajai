@@ -77,7 +77,7 @@
           {
             "nome": "Rio Benedito (Timbó)",
             "entra_perto_de": "indaial",
-            "ponto_exato": "Entra ENTRE Ascurra e Indaial, a MONTANTE de Indaial — confirmado por fonte oficial e independente: o AIBH do Itajaí-Açu (CEDRO+ENGERA para o IMA, 2021) descreve o 'trecho entre Ascurra e Indaial, a montante da confluência com o Rio Benedito, ~14 km'. É fato geográfico descritivo, não conclusão de cheia do estudo (esta última não se usa — o estudo foi pago pelos empreendedores das PCHs). Ver docs/AIBH-ITAJAI-ACU.md."
+            "ponto_exato": "Entra depois de Indaial (4,6 km abaixo da régua) e antes de Blumenau (26,3 km acima da régua), contando pela água. Confluência medida no traçado do OpenStreetMap, em −26,89134, −49,23557 (lat, lon), a 90,4 km de Rio do Sul pela água (toque 0 m). Método e incertezas em docs/TRACADOS-AFLUENTES-2026-10-06.md."
           },
           {
             "nome": "Rio Luís Alves",
@@ -807,6 +807,18 @@
           "ramo": "trombudo",
           "ordem_no_ramo": 1,
           "sub_bacia": "Rio Trombudo",
+          "rio_chega_a": {
+            "rio": "Rio Itajaí do Oeste",
+            "ponto": [
+              -27.2451031,
+              -49.6906952
+            ],
+            "fonte": "OpenStreetMap (© contribuidores, ODbL), baixado em 06/10/2026 por scripts/baixar_tracados_afluentes.py (data/brutos/tracado-trombudo-osm.json): o way 660933103 'Rio Trombudo' termina no nó 534975895, que é ponta comum dos ways 660933101 e 705279282 'Rio Itajaí do Oeste' (data/brutos/tracado-rios-osm.json).",
+            "metodo": "Nó comum entre os dois traçados do OSM (toque 0 m), não proximidade. Pela água, a junção fica 6,3 km acima da confluência do Oeste com o Sul e 8,4 km acima da régua de Rio do Sul (grafo de data/rios/itajai-acu.geojson, como em medir_distancia_rio.py).",
+            "incerteza": "Geometria colaborativa: o OSM não é levantamento oficial, e nenhuma fonte hidrológica (ANA, DCSC, prefeitura) foi lida para esta ligação. Ela diz em que rio o Trombudo deságua, não onde fica em relação à régua de Taió (o traçado do Oeste entre Taió e a junção não é contínuo no grafo).",
+            "posicao_na_arvore": null,
+            "decisao": "Jefferson, 06/10/2026: representar a ligação com a fonte identificada, sem inventar posição na árvore. A cidade continua fora de afluentes_laterais e de cabeceiras_paralelas, em 'Outros pontos'; o traçado do Trombudo continua visível no mapa, em cinza, sem depender disto."
+          },
           "codigo_ana": null,
           "codigo_dcsc": null,
           "equivalencia_estadual": {
@@ -821,7 +833,7 @@
           "referencia": "régua",
           "cotas_verificado": false,
           "fonte_cotas": "Prefeitura de Trombudo Central e GOVSC: pico de 8,71 m em nov/2023, descrito como a maior enchente da história do município. NÃO há tabela de atenção, alerta ou emergência publicada.",
-          "observacao": "ENTROU EM 04/09/2026, no Rio Trombudo. FICA DE PROPÓSITO FORA DE afluentes_laterais: a fonte diz em que RIO a cidade está, mas não onde esse rio encontra o eixo, e este projeto não inventa o lado — a mesma regra que mantém o Luís Alves com 'a confirmar por coordenada'. Por isso a tela a mostra em 'Outros pontos', com a nota de que ainda não tem posição na árvore, em vez de fingir uma. O único número que existe é o pico de 2023, gravado como 'inundacao_historica': é marca histórica, não gatilho, e não dispara aviso nenhum. ATENÇÃO AO HOMÔNIMO: o bairro Barra do Trombudo, em Rio do Sul, é outro lugar — não misturar.",
+          "observacao": "ENTROU EM 04/09/2026, no Rio Trombudo. FICA DE PROPÓSITO FORA DE afluentes_laterais: a fonte diz em que RIO a cidade está, mas não onde esse rio encontra o eixo, e este projeto não inventa o lado — a mesma regra que mantém o Luís Alves com 'a confirmar por coordenada'. Por isso a tela a mostra em 'Outros pontos', com a nota de que ainda não tem posição na árvore, em vez de fingir uma. O único número que existe é o pico de 2023, gravado como 'inundacao_historica': é marca histórica, não gatilho, e não dispara aviso nenhum. ATENÇÃO AO HOMÔNIMO: o bairro Barra do Trombudo, em Rio do Sul, é outro lugar — não misturar. ATUALIZAÇÃO DE 06/10/2026: o traçado do OSM liga o Rio Trombudo ao Itajaí do Oeste por um nó comum, registrado em rio_chega_a com fonte e incerteza. Isso NÃO dá posição na árvore (posicao_na_arvore: null, decisão do Jefferson): a cidade continua em 'Outros pontos'.",
           "cotas_m": {
             "inundacao_historica": 8.71
           },

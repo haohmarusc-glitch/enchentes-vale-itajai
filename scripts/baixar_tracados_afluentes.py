@@ -85,11 +85,13 @@ RIOS = {
         "passa_km": 1.0,
     },
     "guabiruba": {
-        # Inspeção de 06/10/2026: pino de Guabiruba sem o curso dele. A DCSC-00029 mede o ribeirão que passa
-        # pela cidade; o cadastro o chama de Ribeirão Guabiruba (afluente lateral do Mirim, perto de Brusque).
-        # O OSM pode tê-lo como rio ou ribeirão: os dois nomes entram, e quem confere é a passagem pela estação.
-        "nomes": ("Ribeirão Guabiruba", "Rio Guabiruba"),
-        "waterway": ("river", "stream"),
+        # Inspeção de 06/10/2026: pino de Guabiruba sem o curso dele. A DCSC-00029 não declara o rio. A primeira
+        # rodada pediu "Rio/Ribeirão Guabiruba" e foi RECUSADA: o único way com esse nome passa a 1,72 km da
+        # estação. Os cursos d'água em volta dela (diagnóstico da rodada) mostraram o "Rio Guabiruba Norte" a
+        # 0,01 km. No OSM, o Norte termina no nó 3932444707, onde nasce o "Rio Guabiruba", que chega ao Mirim.
+        # Por isso os dois nomes, e não o nome da cidade. O "Rio Guabiruba Sul", que entra no mesmo nó, não é o
+        # curso da estação e fica de fora.
+        "nomes": ("Rio Guabiruba Norte", "Rio Guabiruba"),
         "caixa": (-27.20, -49.10, -27.00, -48.85),
         "chega_a": ("itajai-mirim",),
         "chega_km": 1.0,
@@ -139,7 +141,9 @@ def conferir(rio_id: str, ls: list, alvos: dict[str, list], pino_cidade: tuple[f
     if not pontos_alvo:
         problemas.append(f"nenhum traçado de {', '.join(c['chega_a'])} para conferir a chegada")
     else:
-        pontas = [p for l in ls for p in (l[0], l[-1])]
+        # A chegada conta só pelas linhas LIGADAS à da régua (vértice comum): um pedaço solto com o mesmo
+        # nome, perto do rio de baixo, não prova que o curso da estação chega lá.
+        pontas = [p for l in componente_da_regua(ls, pino_cidade) for p in (l[0], l[-1])]
         d = min(km(p, q) for p in pontas for q in pontos_alvo)
         if d > c["chega_km"]:
             problemas.append(f"não chega a {' / '.join(c['chega_a'])}: a ponta mais perto fica a {d:.2f} km "
@@ -151,6 +155,22 @@ def conferir(rio_id: str, ls: list, alvos: dict[str, list], pino_cidade: tuple[f
 
 
 ORDEM = ("benedito", "rio-dos-cedros", "itajai-do-sul", "trombudo", "guabiruba")
+
+
+def componente_da_regua(ls: list, pino_cidade: tuple[float, float]) -> list:
+    """As linhas ligadas, por vértice comum, à linha que passa mais perto da régua."""
+    if not ls:
+        return []
+    chave = [{(round(p[0], 7), round(p[1], 7)) for p in l} for l in ls]
+    inicio = min(range(len(ls)), key=lambda i: distancia_ao_pino([ls[i]], pino_cidade))
+    vistos, fila = {inicio}, [inicio]
+    while fila:
+        i = fila.pop()
+        for j in range(len(ls)):
+            if j not in vistos and chave[i] & chave[j]:
+                vistos.add(j)
+                fila.append(j)
+    return [ls[i] for i in sorted(vistos)]
 
 
 def distancia_ao_pino(ls: list, pino_cidade: tuple[float, float]) -> float:

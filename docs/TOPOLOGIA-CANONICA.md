@@ -22,19 +22,26 @@ Itajaí do OESTE (Taió)  ‖  Itajaí do SUL (Ituporanga)   ← cabeceiras PARA
                           │ ← entra o Rio Hercílio / Itajaí do Norte ***
                           │     [IBIRAMA = afluente lateral, NÃO elo do tronco]
                        ASCURRA            (tronco)
-                          │ ← entra o Rio Benedito (Timbó), perto de Indaial *
-                       INDAIAL → BLUMENAU → GASPAR
+                          │
+                       INDAIAL
+                          │ ← entra o Rio Benedito (Timbó), 4,6 km abaixo da régua de Indaial *
+                       BLUMENAU → GASPAR
                           │ ← entra o Rio Luís Alves, perto de Ilhota *
                         ILHOTA
                           │ ← entra o ITAJAÍ-MIRIM (que é ramificado; ver abaixo)
                         ITAJAÍ → foz (Atlântico)
 ```
 
-**\*** O **ponto exato** onde o Benedito e o Luís Alves entram (antes ou depois
-da régua de Indaial / Ilhota) **ainda não está confirmado** — as fontes internas
-divergiam (o `afluentes_monitorados` do Timbó dizia "entre Indaial e Blumenau").
-Registrado como pendência em `_topologia.afluentes_rios`, para resolver no mapa
-quando o Overpass voltar (esteve fora do ar em 02/09). Não se inventa o lado.
+**\*** **Benedito: medido em 06/10/2026.** No OSM, o way "Rio Benedito" termina no nó
+1575465793, que também é a ponta de dois ways do "Rio Itajaí-Açu". O nó está em
+−26,89134, −49,23557, no centro urbano de Indaial. Pela água, fica **4,6 km abaixo da régua de Indaial** (DCSC-00006)
+e 26,3 km acima da de Blumenau. `achar_confluencias.py --gravar` gravou isso em
+`_topologia.afluentes_rios`, por decisão do Jefferson. Método e incertezas:
+`docs/TRACADOS-AFLUENTES-2026-10-06.md`. Isso **corrige** a leitura de 05/09/2026
+("a montante de Indaial"): o AIBH fala do trecho "entre os **municípios** de Ascurra e Indaial, a
+montante da confluência" — ele não situa a confluência em relação à régua. A JICA (seção 3.1) diz
+"Benedito River in Indaial city". As duas fontes concordam com a medição.
+O **Luís Alves** continua sem ponto exato: falta o traçado dele. Não se inventa o lado.
 
 **\*\*** A **coordenada da confluência** (04/09/2026, em
 `_topologia.confluencia_cabeceiras`). Não é medição nossa de "onde os traçados
@@ -95,6 +102,11 @@ Fora dela:
   o lado, a mesma regra que mantém o Luís Alves "a confirmar". Fica fora de
   `afluentes_laterais`, e o diagrama a mostra em "Outros pontos". Cuidado com o homônimo: o
   bairro Barra do Trombudo, em Rio do Sul, é outro lugar.
+  **Atualização de 06/10/2026:** o traçado do OSM liga o Rio Trombudo ao **Itajaí do Oeste** por
+  um nó comum (534975895, em −27,24510, −49,69070, 6,3 km acima da confluência com o Sul). A
+  ligação está em `rio_chega_a` da cidade, com fonte e incerteza, por decisão do Jefferson.
+  A cidade continua **sem posição na árvore** (`posicao_na_arvore: null`, travado por
+  `valida_rio_chega_a`): ligação geométrica do OSM não é fonte hidrológica.
 - **Apiúna saiu do eixo**: a estação estadual DCSC-00178 é de altitude ("(H)",
   reporta ~82 m) e cai em área de mata sem curso d'água — não é régua de rio.
   Fica em `_topologia.nao_e_regua_de_rio`. Ascurra (DCSC-00003, confirmada no
@@ -160,11 +172,10 @@ fica vermelho. Rode `python3 scripts/validar_dados.py` antes de todo commit em
 
 ## Pendências (não bloqueiam a topologia)
 
-- **Ponto exato** onde o Benedito e o Luís Alves entram (antes/depois das réguas
-  de Indaial e Ilhota) — `scripts/achar_confluencias.py` resolve por geometria
-  (grafo do tronco + Dijkstra), sem Overpass; falta rodar **na VPS**, onde estão
-  os GeoJSON dos afluentes (não no repo). Até lá, `_topologia.afluentes_rios`
-  fica "a confirmar por coordenada".
+- **Ponto exato** onde o Luís Alves entra (antes/depois da régua de Ilhota). O
+  `scripts/achar_confluencias.py` resolve por geometria (grafo do tronco + Dijkstra), mas falta o
+  `luiz-alves.geojson`. Até lá, `_topologia.afluentes_rios` fica "a confirmar por coordenada". O
+  Benedito foi medido e gravado em 06/10/2026 (nota \* acima).
 - Distância **ao longo do rio** no `transito.json` — **medida** (02/09/2026) por
   `scripts/medir_distancia_rio.py`, montando os segmentos do OSM num grafo e
   caminhando pela água. Gravada como `km_rio` (contexto/QA, **não** muda os

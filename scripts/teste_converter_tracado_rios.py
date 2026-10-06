@@ -141,7 +141,7 @@ class CabeceiraDoSul(unittest.TestCase):
 
 
 class AfluentesBaixadosEm06De10(unittest.TestCase):
-    """Benedito, Itajaí do Sul e Trombudo: recortados na caixa do mapa, passando pela régua da cidade."""
+    """Benedito, Rio dos Cedros, Itajaí do Sul e Trombudo: recortados na caixa do mapa, passando pela régua."""
 
     def test_recorte_na_caixa_parte_a_linha_que_sai_e_volta(self):
         caixa = (-50.0, -27.5, -49.0, -26.8)
@@ -154,6 +154,11 @@ class AfluentesBaixadosEm06De10(unittest.TestCase):
         self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["trombudo"])), 1)
         self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["itajai-do-sul"])), 1)
 
+    def test_guabiruba_pelo_nome_exato_sem_o_sul(self):
+        elementos = [way("Rio Guabiruba Norte"), way("Rio Guabiruba"), way("Rio Guabiruba Sul")]
+        self.assertEqual(len(ct.linhas_por_nome_exato(elementos, ct.RIOS_AFLUENTES["guabiruba"])), 2)
+        self.assertIn("guabiruba", ct.NOMES_EXATOS)
+
     def test_os_arquivos_gravados_cabem_na_caixa_e_passam_pela_regua(self):
         import math
         k = math.cos(math.radians(27))
@@ -162,8 +167,11 @@ class AfluentesBaixadosEm06De10(unittest.TestCase):
         tronco = [l for r in ("itajai-acu", "itajai-mirim")
                   for l in json.loads((ct.SAIDA / f"{r}.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"]]
         oeste, sul, leste, norte = ct.caixa_do_mapa(tronco)
+        f = ct.FOLGA_DA_CAIXA_GRAUS
+        oeste, sul, leste, norte = oeste - f, sul - f, leste + f, norte + f
         vistos = 0
-        for rio, cidade, limite in (("benedito", "timbo", 1.0), ("itajai-do-sul", "ituporanga", 0.5), ("trombudo", "trombudo-central", 1.0)):
+        for rio, cidade, limite in (("benedito", "timbo", 1.0), ("rio-dos-cedros", "rio-dos-cedros", 1.0),
+                                    ("itajai-do-sul", "ituporanga", 0.5), ("trombudo", "trombudo-central", 1.0)):
             if not ct.BRUTOS_AFLUENTES[rio].exists():
                 continue
             pts = [p for l in json.loads((ct.SAIDA / f"{rio}.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"] for p in l]
@@ -174,6 +182,15 @@ class AfluentesBaixadosEm06De10(unittest.TestCase):
             vistos += 1
         if not vistos:
             self.skipTest("sem os brutos: workflow baixar-tracados-afluentes.yml")
+
+    def test_o_rio_dos_cedros_passa_pela_regua_e_segue_alem(self):
+        # A régua de Rio dos Cedros é a borda norte do quadro. Sem a folga, o recorte terminava a linha no pino.
+        if not ct.BRUTOS_AFLUENTES["rio-dos-cedros"].exists():
+            self.skipTest("sem o bruto do Rio dos Cedros")
+        estacoes = json.loads((ct.RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
+        lat = next(c for r in estacoes["rios"].values() for c in r["cidades"] if c["id"] == "rio-dos-cedros")["coordenadas"][0]
+        pts = [p for l in json.loads((ct.SAIDA / "rio-dos-cedros.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"] for p in l]
+        self.assertGreater(max(p[1] for p in pts), lat + 0.01)
 
 
 class TesteHercilio(unittest.TestCase):

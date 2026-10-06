@@ -122,6 +122,10 @@ test('os rios SEM régua que entram no tronco aparecem — Benedito e Luís Alve
   // A ressalva da fonte vai junto, inclusive quando ela diz "a confirmar".
   const luis = acu.afluentesSemRegua.find((r) => r.nome === 'Rio Luís Alves')
   assert.ok(luis?.pontoExato?.includes('a confirmar'))
+  // 06/10/2026: o Benedito foi medido no OSM (achar_confluencias.py --gravar) — ABAIXO da régua de Indaial.
+  const bene = acu.afluentesSemRegua.find((r) => r.nome === 'Rio Benedito (Timbó)')
+  assert.match(bene?.pontoExato ?? '', /^Entra depois de Indaial \(4,6 km abaixo da régua\) e antes de Blumenau/)
+  assert.ok(!(bene?.pontoExato ?? '').includes('MONTANTE'))
 })
 
 test('rio sem régua não vira elo do tronco nem cidade', () => {
