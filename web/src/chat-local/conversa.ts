@@ -28,6 +28,8 @@ export type Msg = {
   link?: { texto: string; para: string }
   /** Resposta de um comando (mapa ou navegação), não do motor de perguntas. */
   comando?: boolean
+  /** Texto preparado para copiar (resumo, link): o botão "Copiar" copia; o chat nunca envia. */
+  copiar?: string
 }
 
 interface Estado {

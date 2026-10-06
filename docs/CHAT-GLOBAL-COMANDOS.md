@@ -68,7 +68,7 @@ que ainda não temos.
 
 ## Matriz de comandos
 
-`1ª` = primeira entrega · `2ª` = segunda · `dado` = depende de dado ou infraestrutura · `não` = fora de escopo.
+`1ª` a `4ª` = entregas (✓ = entregue em 06/10/2026) · `dado` = depende de dado ou infraestrutura · `não` = fora de escopo.
 
 | Pedido (exemplo) | Entrega | Observação conferida |
 |---|---|---|
@@ -86,26 +86,26 @@ que ainda não temos.
 | "ir para a leitura mais recente" | 1ª | encerra a reprodução |
 | "essa coordenada foi confirmada?" | 1ª | `textoDaPosicao` + `equivalencia_estadual` |
 | "por que essa régua está cinza?" | 1ª | o mesmo motivo que o painel já mostra; nunca um segundo diagnóstico |
-| "quais leituras estão atrasadas?" | 2ª | idade de cada leitura pela regra de leitura velha que já existe (`MIN_VELHA`) |
-| "mostrar só as réguas sem leitura" | 2ª | filtro novo no Monitor, visível na tela, com "limpar filtros" |
-| "abrir o gráfico desta régua" | 2ª | não há gráfico no Monitor; abre a página da cidade, na aba que tiver a série |
-| "o que mudou na última hora?" | 2ª | `serie.ts`; diz lacunas e o passo das medições |
-| "de onde vem esse traçado?" | 2ª | fonte e cobertura do GeoJSON; a data da base precisa ir do bruto para o arquivo |
-| "o que fica a montante daqui?", "afluentes deste trecho" | 2ª | resposta pela árvore; conexão não é previsão de impacto |
-| "ver a confluência do Benedito" | 2ª | ponto gravado (−26,89134, −49,23557). O Luís Alves não tem ponto e o chat diz isso |
-| "comparar as réguas de Itajaí" | 2ª | lado a lado com hora e referência; nunca subtrai referências diferentes |
-| "copiar resumo desta cidade" | 2ª | `textoParaCompartilhar` (D4: sem endereço, com hora, sem ordem de ação) |
-| "copiar link desta visualização" | 2ª | `#/monitor/…?regua=…&fundo=…`. **Atenção:** o site só abre para e-mail cadastrado, e isso tem de vir escrito junto |
-| "mostrar a rua X, Itajaí" + destaque | 3ª | traçado real da via (GeoItajaí); escolha entre homônimos |
-| "rua X, Gaspar/Brusque" | 3ª | só ponto: "localização aproximada; traçado da rua indisponível" |
+| "quais leituras estão atrasadas?" | 2ª ✓ | idade de cada leitura pela regra de leitura velha que já existe (`MIN_VELHA`) |
+| "mostrar só as réguas sem leitura" | 2ª ✓ | filtro novo no Monitor, visível na tela, com "limpar filtros" |
+| "abrir o gráfico desta régua" | 2ª ✓ | não há gráfico no Monitor; abre a página da cidade, na aba que tiver a série |
+| "o que mudou na última hora?" | 2ª ✓ | `serie.ts`; diz lacunas e o passo das medições |
+| "de onde vem esse traçado?" | 2ª ✓ | fonte e cobertura do GeoJSON; a data da base precisa ir do bruto para o arquivo |
+| "o que fica a montante daqui?", "afluentes deste trecho" | 2ª ✓ | resposta pela árvore; conexão não é previsão de impacto |
+| "ver a confluência do Benedito" | 2ª ✓ | ponto gravado (−26,89134, −49,23557). O Luís Alves não tem ponto e o chat diz isso |
+| "comparar as réguas de Itajaí" | 2ª ✓ | lado a lado com hora e referência; nunca subtrai referências diferentes |
+| "copiar resumo desta cidade" | 2ª ✓ | `textoParaCompartilhar` (D4: sem endereço, com hora, sem ordem de ação) |
+| "copiar link desta visualização" | 2ª ✓ | `#/monitor/…?regua=…&fundo=…`. **Atenção:** o site só abre para e-mail cadastrado, e isso tem de vir escrito junto |
+| "mostrar a rua X, Itajaí" + destaque | 3ª ✓ | traçado real da via (GeoItajaí); escolha entre homônimos |
+| "rua X, Gaspar/Brusque" | 3ª ✓ | só ponto: "localização aproximada; traçado da rua indisponível" |
 | "rua X, Blumenau/Rio do Sul" | dado | só a cota; sem ponto no mapa (decisão 3) |
-| "manchas na rua X" com rua em outra cor | 3ª | ver abaixo |
-| "relatar problema nesta régua" | dado | não há canal; no máximo preparar o texto para a pessoa copiar |
-| "usar minha localização" | dado | fase posterior, só com permissão pedida na hora |
-| "tela cheia" | não | o navegador exige toque no botão; o chat aponta o botão |
+| "manchas na rua X" com rua em outra cor | 3ª ✓ | ver abaixo |
+| "relatar problema nesta régua" | 4ª ✓ | não há canal: o chat prepara o texto para a pessoa copiar |
+| "usar minha localização" | 4ª ✓ | só com permissão pedida na hora; nada é guardado nem enviado |
+| "tela cheia" | 4ª ✓ | o navegador exige toque no botão; o chat aponta o botão |
 | evacuar ou ficar, "é seguro?", previsão de hora exata | não | barreira do presente: dado, hora e 199 |
 
-## Rua destacada sobre as manchas (3ª entrega)
+## Rua destacada sobre as manchas (3ª entrega — saiu em 06/10/2026, ver o fim do documento)
 
 - **Onde já existe:** em Itajaí, o mapa de manchas (`MapaManchas`, Leaflet) já destaca a via buscada em branco
   tracejado e enquadra nela.
@@ -251,21 +251,141 @@ página ficava no Início. Corrigido com dependências pelas peças (`AoVivoDoCh
   - sem exceção de JavaScript.
 - **Também passaram:** `npm test` (886), build, `trava-monitor`, `colisao-dos-controles`, `fumaca` e `pwa`.
 
-### O que ficou para depois (2ª entrega e dependências)
+### O que ficou para depois (dependências)
 
-- **Segunda entrega:**
-  - leituras atrasadas;
-  - filtro de réguas sem leitura;
-  - gráfico da régua;
-  - "o que mudou na última hora";
-  - origem do traçado com a data da base;
-  - montante e afluentes;
-  - confluência no mapa;
-  - comparar réguas;
-  - copiar resumo e copiar link (`?regua=`/`?fundo=` já são lidos).
-- **Depende de dado:**
-  - rua no mapa: Itajaí, Gaspar e Brusque têm coordenada; Blumenau e Rio do Sul não;
-  - rua destacada sobre as manchas;
-  - relatar problema (não há canal);
-  - "usar minha localização".
-- **Tela cheia:** só pelo botão, porque o navegador exige o toque da pessoa.
+- **Segunda entrega:** saiu em 06/10/2026 (seção abaixo).
+- **Rua no mapa e rua sobre as manchas:** saíram na 3ª entrega (fim do documento). Blumenau e Rio do Sul
+  continuam sem ponto no mapa, porque a fonte não publica a coordenada.
+- **Relatar problema, localização e tela cheia:** saíram na 4ª entrega (fim do documento).
+
+## Segunda entrega (06/10/2026): o que saiu
+
+Os dez pedidos da matriz marcados com ✓. Mesmo desenho da 1ª entrega: o texto só propõe um passo tipado
+(`comandos/tipos.ts`), tudo é resolvido contra o cadastro, e o chat diz o resultado real.
+
+### Os pedidos
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "quais leituras estão atrasadas?" | Lista as réguas municipais em dia, atrasadas (90 min a 3 h; Blumenau, 2 h), velhas e sem horário, com a hora e a idade de cada uma. Inclui a rede da Defesa Civil de SC e as estações que não publicaram nível. | Mostrar o número da leitura atrasada. Contar primária e resgate como duas réguas. |
+| "mostrar só as réguas sem leitura", "limpar filtros" | Filtro no Monitor: some o pino e a régua com leitura de agora (municipal, estadual ou uma régua da cidade), e o mapa enquadra a bacia inteira. A tela escreve "Filtro: …" com "Limpar filtro". | Mudar cor, faixa ou número. Ligar o filtro quando todos têm leitura (diz isso). |
+| "gráfico de Blumenau", "abrir o gráfico desta régua" | Abre a página da cidade em `?secao=grafico`, que rola até "Últimas horas". | Em Itajaí, inventar um gráfico só: abre a foz e oferece "comparar as réguas". |
+| "o que mudou na última hora?" | Variação de UMA régua: de quanto a quanto, em quantas medições, o passo e as lacunas. Blumenau usa a publicação mais fresca, sem fundir; com série horária, compara com a medição anterior se ela tem até 90 min. | Responder com série velha (diz a hora da última). Juntar réguas de Itajaí (pergunta qual). Chamar de previsão. |
+| "de onde vem esse traçado?" | Fonte, número de trechos, cobertura e **a data da base do OSM**, com o bruto de origem. | Confundir traçado com mancha. |
+| "o que fica a montante daqui?", "afluentes deste trecho" | Tronco acima, cabeceiras, Trombudo (sem posição na árvore) e afluentes, pela `_topologia`. O Benedito sai com o ponto que o cadastro escreve; em Indaial ele aparece como "logo depois da régua". | Dizer antes/depois de uma régua quando o cadastro só diz "perto de". Sugerir que a água "vai chegar". |
+| "ver a confluência do Benedito", "onde nasce o Itajaí-Açu?" | Centra e marca o ponto gravado (anel branco, "Marca: …" com "Tirar marca") e diz a coordenada e como ela foi medida. | Marcar ponto estimado: Luís Alves, Hercílio, Rio dos Cedros e Guabiruba respondem que não há ponto gravado. |
+| "comparar as réguas de Itajaí" | As onze lado a lado, em ordem de código, cada uma com hora, idade e faixa. | Subtrair, ordenar por metro ou dar faixa a leitura velha. |
+| "copiar resumo desta cidade" | O texto de compartilhar (D4) com o botão "Copiar". | Sair sem leitura de agora. Levar o endereço do site. Enviar sozinho. |
+| "copiar link desta visualização" | O endereço com `?regua=` e `?fundo=`, mais o aviso de que o site só abre para e-mail cadastrado. | Enviar sozinho. |
+
+### Dados e código
+
+- **A data da base do traçado** morava só no bruto. `scripts/converter_tracado_rios.py` agora grava em cada
+  arquivo de `data/rios/` a propriedade `origem: [{bruto, base_osm}]`. A geometria não mudou: o conversor foi
+  rodado de novo e comparado arquivo por arquivo. Teste em `scripts/teste_converter_tracado_rios.py`
+  (`OrigemDoTracado`). Os rios de Ibirama mostram base de 06/05/2026, do espelho atrasado; o chat diz a data
+  como está.
+- **Confluências** (`comandos/catalogo.ts`): só as gravadas no cadastro — `confluencia_cabeceiras`,
+  `rio_chega_a` do Trombudo e a coordenada que o `ponto_exato` do Benedito escreve (lida do texto, travada
+  por teste). Os outros rios entram em `semPonto`, com o motivo.
+- **Respostas** em `comandos/respostas.ts` (funções puras) e `comandos/rios.ts`. O resumo para copiar sai de
+  `compartilharDaCidade` (`chat-local/situacaoAgora.ts`), o mesmo texto de "como está X?".
+- **Leituras ao vivo:** o chat espera a primeira busca terminar (até 12 s); sem dado, diz que não conseguiu.
+- **No celular**, a conversa só recolhe depois de pedido que mexe no mapa. Resposta de leitura ou de cópia fica
+  aberta.
+
+### No Monitor (com o rótulo `monitor-autorizado`)
+
+- `filtro` e `marca` no estado, com aviso escrito e botão para tirar; os dois entram no retrato de "voltar".
+- A ponte ganhou `filtrar` e `marcarPonto`. `pronto`, o enquadramento e o `?regua=` olham os pinos sem filtro.
+- A regra do filtro está em `logica/filtroSemLeitura.ts`, com teste.
+- Desligados, o Monitor é o de antes: `trava-monitor` passa com a referência atual.
+
+### Testes
+
+- `src/comandos/segunda.test.ts` (24): cadastro e confluências; frases que viram pedido e perguntas que
+  continuam perguntas; cada resposta, inclusive o que ela não pode dizer; o executor com Monitor e dados falsos.
+- `testes-navegador/chat-comandos.mjs`, seção 3, em 390 e 1280 px: link, filtro, confluência, Luís Alves,
+  traçado, montante, leituras atrasadas e gráfico.
+- Sonda manual com os dados reais do branch `tempo-real` (06/10/2026, 14h): 17 de 17 réguas municipais em dia;
+  Rio do Sul +5 cm na última hora; as onze de Itajaí lado a lado; filtro com Lontras, Apiúna e Indaial (as três
+  sem leitura estadual utilizável); resumo de Rio do Sul pronto para copiar.
+
+## Terceira entrega (06/10/2026): a rua no mapa
+
+O plano da seção "Rua destacada sobre as manchas", com as regras dela. Nada é geocodificado na hora: só entra no
+mapa o que a fonte publicou com geometria.
+
+### Os pedidos
+
+| Pedido | Itajaí | Gaspar e Brusque | Blumenau, Rio do Sul e outras |
+|---|---|---|---|
+| "mostrar a rua X", "zoom na avenida Y", "onde fica a rua Z em Gaspar" | Abre o mapa das manchas com o **traçado real** da via (base de vias da Prefeitura) destacado, e diz a interseção com cada cenário. | Abre o Monitor da cidade e marca **os pontos de cota** da rua (um anel por ponto, nenhuma linha entre eles), com a cota de cada um na régua da cidade e o aviso "localização aproximada; traçado da rua indisponível". | Diz que a rua tem cota, mas a fonte não publica a coordenada. O mapa não muda; sugere a pergunta da cota. |
+| "manchas na rua X", "mancha de 2008 na rua X" | Destaca a rua e, com o ano, troca o cenário. Sem ano, com várias cheias cruzando a rua, **pergunta qual cenário mostrar** em vez de trocar. | — | — |
+| "remover destaque", "tirar a marca" | Tira a rua do endereço e do mapa. | Tira os anéis do Monitor. | — |
+
+- **Homônimos:** a base de Itajaí tem "R." e "Av." com o mesmo nome (Carlos Drumond de Andrade, Jorge Mattos…).
+  O tipo escrito pela pessoa ("rua", "avenida") decide; sem ele, o chat pergunta qual, e nada é marcado antes.
+- **Sem cidade no pedido:** vale a cidade da tela, se a rua estiver lá. Senão, o chat procura em Itajaí,
+  Gaspar e Brusque e pergunta se achar em mais de uma.
+- **Interseção, nunca alagamento:** "Interseção com o cenário de novembro de 2008: 32% do trecho (727 m)
+  dentro da mancha". Rua fora da mancha "não quer dizer rua segura". O texto sai de
+  `manchas/itajai/ruas-por-mancha.json`, o mesmo cruzamento do chat de perguntas (corte de 10 m).
+
+### O destaque no mapa das manchas (`componentes/MapaManchas.tsx`)
+
+- **Aparência:** linha magenta (`#ff3db8`) com contorno escuro, num pane próprio acima das manchas (z 450). A
+  escala azul de profundidade não muda.
+  - O nome da rua vai escrito sobre a linha.
+  - A legenda diz "rua selecionada, destaque de localização", e que o destaque não indica risco.
+  - O contorno escuro foi conferido nos três fundos.
+- **O endereço manda:** `?rua=<nome na base>&cenario=<evento>`.
+  - A busca da própria página (`BuscaViaItajai`) grava o mesmo `?rua=`, então o destaque é um só, com o chat
+    ou sem ele.
+  - O link leva o destaque junto, e "voltar ao mapa de antes" o restaura.
+- **Comportamento:**
+  - trocar de cenário mantém a rua e o enquadramento dela;
+  - "Remover destaque" tira só a rua;
+  - sair de Itajaí limpa, porque o endereço é outro.
+- **Base de vias:** `dados/viasItajai.ts` baixa a base uma vez por página e a reparte entre a busca e o chat.
+
+### No Monitor (rótulo `monitor-autorizado`)
+
+- A marca do chat (`marcarPonto`) aceita vários pontos (`extras`) e a largura da vista (`km`): os pontos de cota
+  de uma rua de Gaspar ou Brusque entram juntos, centrados no meio deles.
+
+### Testes
+
+- `src/comandos/terceira.test.ts` (11), com as bases de verdade: casar nomes e homônimos; frases que viram
+  pedido e as que continuam pergunta ("Rua XV de Novembro, Blumenau", "a rua X alagou em 2011?"); os textos
+  de interseção e de ponto; o executor com Itajaí, Gaspar, Blumenau, "remover destaque" e "voltar".
+- `testes-navegador/chat-comandos.mjs`, seção 4: o endereço, o traço magenta, a legenda, o nome escrito, a
+  troca de cenário com a rua mantida, a interseção, "remover destaque", a marca de Gaspar e Blumenau sem
+  mexer no mapa.
+
+## Quarta entrega (06/10/2026): o aparelho da pessoa
+
+O plano não tinha uma 4ª entrega. Ela juntou o que tinha sobrado da matriz (relatar problema, localização,
+tela cheia) com comandos para as preferências que o site já guarda no aparelho (minha cidade, cidades
+seguidas, letra).
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "usar minha localização", "qual a régua mais perto de mim?" | O navegador pede permissão. O chat diz a régua mais perto **em linha reta** e as duas seguintes, abre o Monitor da cidade mais perto e marca a posição ("Você está aqui, aproximado; não fica guardado"). Itajaí entra pelas onze réguas dela. Avisa quando a posição veio imprecisa (> 2 km), quando a régua mais perto é de coordenada não confirmada (Timbó) e quando a pessoa está fora da área (> 25 km). | Gravar a posição, pô-la no endereço ou enviá-la a qualquer lugar. Dizer que a água chega (ou não) até a pessoa: distância em linha reta não é previsão. |
+| permissão recusada, aparelho sem posição, demora | Diz o porquê e como permitir. A espera tem limite de 25 s, contando a pergunta do navegador: sem resposta, o chat não fica preso em "Executando…". | Mexer na tela. |
+| "relatar problema nesta régua", "essa leitura está errada" | Prepara o texto: quando (hora de Brasília), a tela (Monitor, régua, caminho), o que o site mostra agora e o espaço "O problema: …", com o botão "Copiar". Diz que não há canal e para quem mandar. | Enviar. Pôr o endereço do site. Tratar relato como alerta: se a água está subindo, 199. |
+| "minha cidade é Gaspar", "definir Rio do Sul como minha cidade" | A mesma preferência do Início ("Minha cidade"). Diz se não deu para guardar (navegação anônima). | Aceitar cidade fora do cadastro. |
+| "seguir Blumenau", "deixar de seguir", "quais cidades eu sigo?" | A lista do Início, no máximo quatro; com a lista cheia, pede para tirar uma. | Trocar uma cidade seguida por conta própria. |
+| "letra maior", "letra normal" | A mesma preferência do botão de letra. No Monitor avisa que o mapa não muda. | — |
+| "tela cheia" | Aponta o botão "Tela cheia" (no Monitor) ou o link para o Monitor. | Abrir sozinho: o navegador exige o toque da pessoa. |
+
+- **Código:**
+  - `comandos/aparelho.ts`: distância, régua mais perto e os textos;
+  - `logica/preferencias.ts`: ganhou `seguir`;
+  - a posição vem de `navigator.geolocation`, uma vez por pedido (`usarComandos.ts`);
+  - as preferências avisam as telas abertas (`avisarPreferencias`).
+- **Testes:**
+  - `src/comandos/quarta.test.ts` (9): textos, frases e executor;
+  - `testes-navegador/chat-comandos.mjs`, seção 5: localização simulada no Chromium, com e sem permissão; a
+    posição fora do endereço e do aparelho; minha cidade guardada; relato com "Copiar"; letra.
+

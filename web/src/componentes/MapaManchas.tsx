@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import indice from '@dados/manchas/index.json'
@@ -9,6 +10,31 @@ import type { Coordenada } from '../logica/pontoNaMancha'
 import { metros } from '../logica/formato'
 import estilos from './MapaManchas.module.css'
 import BuscaViaItajai from './BuscaViaItajai'
+import { feicoesDaVia } from '../dados/viasItajai'
+import { nomeLegivelDaVia } from '../logica/viasItajai'
+import type { RuasPorMancha } from '../chat-local/motor'
+import { AVISO_DESTAQUE, AVISO_INTERSECAO, intersecoes } from '../comandos/ruas'
+
+/**
+ * A rua selecionada (busca da página ou chat, 3ª entrega dos comandos — docs/CHAT-GLOBAL-COMANDOS.md):
+ * magenta com contorno escuro, numa camada PRÓPRIA acima das manchas, sem mexer nas cores de profundidade
+ * (escala azul). O contorno escuro segura a linha nos três fundos (escuro, satélite e mapa). É destaque de
+ * localização, não cor de risco: a legenda diz isso.
+ */
+const COR_RUA = '#ff3db8'
+const CONTORNO_RUA = '#1b0b14'
+
+/** Um ponto de cima da via (o vértice do meio do trecho mais longo), para o nome não cair fora da linha. */
+function pontoDoRotulo(g: GeoJSON.FeatureCollection): L.LatLngExpression | null {
+  let melhor: number[][] = []
+  for (const f of g.features) {
+    const geo = f.geometry
+    const linhas = geo.type === 'LineString' ? [geo.coordinates] : geo.type === 'MultiLineString' ? geo.coordinates : []
+    for (const l of linhas) if (l.length > melhor.length) melhor = l
+  }
+  const p = melhor[Math.floor(melhor.length / 2)]
+  return p && typeof p[0] === 'number' && typeof p[1] === 'number' ? [p[1], p[0]] : null
+}
 
 /**
  * Os GeoJSON entram como URL, não como import de dado.
@@ -145,7 +171,23 @@ export default function MapaManchas() {
   const fundoRef = useRef<ChaveFundo>(fundo)
   fundoRef.current = fundo
   const camadaRef = useRef<L.GeoJSON | null>(null)
-  const viaRef = useRef<L.GeoJSON | null>(null)
+  const viaRef = useRef<L.LayerGroup | null>(null)
+  // A rua e o cenário vêm do ENDEREÇO (`?rua=`, `?cenario=`): a busca da página e o chat usam o mesmo caminho,
+  // o link leva o destaque junto, e "voltar ao mapa de antes" o restaura.
+  const [busca, setBusca] = useSearchParams()
+  const ruaPedida = busca.get('rua')
+  const cenarioPedido = busca.get('cenario')
+  const [rua, setRua] = useState<{ nome: string; trechos: number } | null>(null)
+  const [erroRua, setErroRua] = useState<string | null>(null)
+  /** Com rua destacada, a mancha nova não reenquadra o mapa (a pessoa está olhando a rua). */
+  const ruaAtivaRef = useRef(false)
+  ruaAtivaRef.current = !!ruaPedida
+  const [tabelaRuas, setTabelaRuas] = useState<RuasPorMancha | null>(null)
+  const mudarBusca = (f: (p: URLSearchParams) => void) => {
+    const nova = new URLSearchParams(busca)
+    f(nova)
+    setBusca(nova, { replace: true })
+  }
 
   // "Este ponto ficou dentro de quais manchas?"
   const [ponto, setPonto] = useState<Coordenada | null>(null)
@@ -167,6 +209,13 @@ export default function MapaManchas() {
     mapa.createPane('fundo')
     const pane = mapa.getPane('fundo')
     if (pane) pane.style.zIndex = '180'
+    // A rua selecionada fica ACIMA das manchas (overlay = 400) e abaixo dos marcadores e popups.
+    mapa.createPane('rua')
+    const paneRua = mapa.getPane('rua')
+    if (paneRua) {
+      paneRua.style.zIndex = '450'
+      paneRua.style.pointerEvents = 'none'
+    }
     const inicial = FUNDOS[fundoRef.current]
     fundoLayerRef.current = L.tileLayer(inicial.url, {
       pane: 'fundo',
@@ -300,7 +349,8 @@ export default function MapaManchas() {
         }).addTo(mapa)
         camadaRef.current = camada
         const limites = camada.getBounds()
-        if (limites.isValid()) mapa.fitBounds(limites, { padding: [16, 16] })
+        // Trocar de cenário mantém a rua (e o enquadramento dela).
+        if (limites.isValid() && !ruaAtivaRef.current) mapa.fitBounds(limites, { padding: [16, 16] })
       })
       .catch((e: Error) => vivo && setErro(e.message))
       .finally(() => vivo && setCarregando(false))
@@ -309,6 +359,71 @@ export default function MapaManchas() {
       vivo = false
     }
   }, [escolhida])
+
+  // O cenário pedido no endereço (o chat: "mancha de 2008 na rua X"). Só muda quando o pedido muda e é
+  // diferente do que está escolhido: escolher no seletor grava o mesmo evento, e não volta a trocar.
+  useEffect(() => {
+    if (!cenarioPedido) return
+    setEscolhida((atual) => (atual?.evento === cenarioPedido ? atual : manchas.find((m) => m.evento === cenarioPedido) ?? atual))
+  }, [cenarioPedido, manchas])
+
+  // A rua pedida no endereço: o traçado real da base de vias, nada de reta ou círculo no lugar.
+  useEffect(() => {
+    const mapa = mapaRef.current
+    viaRef.current?.remove()
+    viaRef.current = null
+    setRua(null)
+    setErroRua(null)
+    if (!mapa || !ruaPedida) return
+    let vivo = true
+    feicoesDaVia(ruaPedida)
+      .then((g) => {
+        if (!vivo) return
+        if (g.features.length === 0) {
+          setErroRua(`"${ruaPedida}" não está na base de vias da Prefeitura de Itajaí.`)
+          return
+        }
+        const grupo = L.layerGroup()
+        L.geoJSON(g, { pane: 'rua', interactive: false, style: { color: CONTORNO_RUA, weight: 10, opacity: 0.9, lineCap: 'round' } }).addTo(grupo)
+        const linha = L.geoJSON(g, { pane: 'rua', interactive: false, style: { color: COR_RUA, weight: 5, opacity: 1, lineCap: 'round' } }).addTo(grupo)
+        const onde = pontoDoRotulo(g)
+        if (onde) {
+          L.tooltip({ permanent: true, direction: 'top', offset: [0, -8], className: estilos.rotuloRua, pane: 'rua' })
+            .setLatLng(onde)
+            .setContent(nomeLegivelDaVia(ruaPedida))
+            .addTo(grupo)
+        }
+        grupo.addTo(mapa)
+        viaRef.current = grupo
+        setRua({ nome: ruaPedida, trechos: g.features.length })
+        const limites = linha.getBounds()
+        if (limites.isValid()) mapa.fitBounds(limites, { padding: [30, 30], maxZoom: 17 })
+      })
+      .catch(() => vivo && setErroRua('Não foi possível carregar a base de vias. Tente de novo.'))
+    return () => {
+      vivo = false
+    }
+  }, [ruaPedida])
+
+  // O cruzamento rua × mancha (~216 kB), só quando há rua destacada.
+  useEffect(() => {
+    if (!rua || tabelaRuas) return
+    let vivo = true
+    import('@dados/manchas/itajai/ruas-por-mancha.json')
+      .then((m) => vivo && setTabelaRuas(m.default as unknown as RuasPorMancha))
+      .catch(() => {
+        /* sem a tabela, a tela só não diz a interseção */
+      })
+    return () => {
+      vivo = false
+    }
+  }, [rua, tabelaRuas])
+
+  const intersecao = useMemo(() => {
+    if (!rua || !tabelaRuas || !escolhida) return null
+    const d = intersecoes(tabelaRuas, rua.nome).dentro.find((x) => x.evento === escolhida.evento)
+    return d ? `Interseção com o cenário de ${rotuloEvento(escolhida.evento)}: ${d.pct >= 99 ? 'a rua toda' : `${d.pct}% do trecho`} (${d.m.toLocaleString('pt-BR')} m) dentro da mancha.` : `A rua não cruza a mancha de ${rotuloEvento(escolhida.evento)}.`
+  }, [rua, tabelaRuas, escolhida])
 
   // A mesma conta que pinta o mapa, para a legenda não divergir dele.
   const coresDaEscolhida = useMemo(
@@ -334,7 +449,11 @@ export default function MapaManchas() {
         id="mancha"
         className={estilos.seletor}
         value={escolhida?.arquivo ?? ''}
-        onChange={(e) => setEscolhida(manchas.find((m) => m.arquivo === e.target.value))}
+        onChange={(e) => {
+          const m = manchas.find((x) => x.arquivo === e.target.value)
+          setEscolhida(m)
+          if (m) mudarBusca((p) => p.set('cenario', m.evento))
+        }}
       >
         {manchas.map((m) => (
           <option key={m.arquivo} value={m.arquivo}>
@@ -361,18 +480,30 @@ export default function MapaManchas() {
         ))}
       </div>
 
-      <BuscaViaItajai onSelecionar={dados => {
-        const mapa = mapaRef.current
-        if (!mapa) return
-        viaRef.current?.remove()
-        viaRef.current = null
-        if (!dados) return
-        const via = L.geoJSON(dados, { style: { color: '#ffffff', weight: 5, dashArray: '8 5' }, interactive: false }).addTo(mapa)
-        viaRef.current = via
-        if (via.getBounds().isValid()) mapa.fitBounds(via.getBounds(), { padding: [30, 30], maxZoom: 17 })
-      }} />
+      <BuscaViaItajai onSelecionar={(nome) => mudarBusca((p) => (nome ? p.set('rua', nome) : p.delete('rua')))} />
       <div className={estilos.mapa} ref={divRef} role="img"
            aria-label={`Mapa das áreas atingidas em Itajaí na enchente de ${escolhida ? rotuloEvento(escolhida.evento) : ''}`} />
+
+      {rua ? (
+        <div className={estilos.ruaSelecionada} role="status">
+          <p className={estilos.legendaRua}>
+            <span className={estilos.amostraRua} aria-hidden="true" />
+            <span>
+              <strong>{nomeLegivelDaVia(rua.nome)}</strong> — rua selecionada, destaque de localização. {AVISO_DESTAQUE}
+            </span>
+          </p>
+          {rua.trechos > 1 ? <p className={estilos.estado}>A base tem {rua.trechos} trechos com este nome; todos aparecem destacados.</p> : null}
+          {intersecao ? (
+            <p className={estilos.estado}>
+              {intersecao} {AVISO_INTERSECAO}
+            </p>
+          ) : null}
+          <button type="button" className={estilos.botaoFundo} onClick={() => mudarBusca((p) => p.delete('rua'))}>
+            Remover destaque
+          </button>
+        </div>
+      ) : null}
+      {erroRua ? <p className={estilos.erro}>{erroRua}</p> : null}
 
       <div className={estilos.consulta}>
         <p className={estilos.rotulo}>Toque num ponto do mapa</p>

@@ -6,7 +6,16 @@
  *  - um pedido não faz o que diz ("zoom na régua DC-05" e o seletor não muda; "voltar" e nada volta);
  *  - pergunta mudando o mapa;
  *  - o painel do chat aberto cobrindo o zoom, a legenda ou o menu no Monitor;
- *  - erro de JavaScript na página.
+ *  - erro de JavaScript na página;
+ *  - 2ª entrega: link sem régua/fundo ou sem o aviso de acesso; filtro dito e não mostrado (ou o contrário);
+ *    confluência sem a coordenada do cadastro, ou ponto marcado para rio sem ponto gravado; traçado sem a
+ *    data da base; montante sem o aviso de que ligação não é previsão; gráfico que não abre a página;
+ *  - 3ª entrega: rua de Itajaí sem o traçado magenta, sem a legenda de destaque ou sem a interseção; cenário que
+ *    apaga a rua; "remover destaque" que não remove; rua de Gaspar sem a marca e o aviso de localização
+ *    aproximada; rua de Blumenau mexendo no mapa;
+ *  - 4ª entrega: localização sem a régua mais perto ou sem o aviso de que nada é guardado, posição no endereço
+ *    ou no aparelho, recusa que mexe na tela; minha cidade que não fica guardada; relato sem "Copiar"; letra
+ *    que não muda.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -41,6 +50,17 @@ const ultimaResposta = (pg) => pg.evaluate(() => {
   const naLinha = document.querySelector('[class*="global-ultima"] p')
   return (noPainel ?? naLinha)?.innerText ?? ''
 })
+/** Pede e espera a resposta casar com `re` (respostas que leem as leituras ao vivo podem levar segundos). */
+async function pedirAte(pg, texto, re, ms = 15000) {
+  await pedir(pg, texto)
+  const fim = Date.now() + ms
+  let r = await ultimaResposta(pg)
+  while (!re.test(r) && Date.now() < fim) {
+    await pg.waitForTimeout(500)
+    r = await ultimaResposta(pg)
+  }
+  return r
+}
 /** Só exceção da página conta: sem rede, os mosaicos do fundo falham por certificado, e isso não é do chat. */
 const excecoes = (erros) => erros.filter((e) => e.startsWith('PAGEERROR'))
 
@@ -100,7 +120,96 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 3. Página com chat próprio: a barra do topo some.
+  // 3. 2ª entrega: link, filtro, confluência, traçado, árvore, leituras, gráfico.
+  {
+    const { b, pg, erros } = await abrir('#/monitor/itajai', { largura: w, altura: h })
+    await pedir(pg, 'zoom na régua DC-05')
+    let r = await pedirAte(pg, 'copiar link desta visualização', /Link desta visualização/)
+    ok(/#\/monitor\/itajai\?regua=DC-05&fundo=/.test(r) && /e-mail cadastrado/.test(r), 'copiar link: régua e fundo no endereço, com o aviso do acesso')
+    ok((await pg.getByRole('button', { name: 'Copiar' }).count()) >= 1, 'copiar link: o botão "Copiar" fica à vista (a conversa não recolhe)')
+    r = await pedirAte(pg, 'mostrar só as réguas sem leitura', /Filtro ligado|têm leitura de agora/)
+    const chipFiltro = await pg.getByText('Filtro: só cidades e réguas sem leitura de agora').count()
+    ok(/Filtro ligado/.test(r) ? chipFiltro === 1 : chipFiltro === 0, `filtro: o que o chat diz é o que a tela mostra (${r.slice(0, 60)}…)`)
+    await pedirAte(pg, 'limpar filtros', /Filtro limpo|Não há filtro/)
+    ok((await pg.getByText('Filtro: só cidades e réguas sem leitura de agora').count()) === 0, 'limpar filtros: o aviso do filtro saiu da tela')
+    r = await pedirAte(pg, 'ver a confluência do Benedito', /Benedito/)
+    ok(/−26,89134, −49,23557/.test(r) && (await pg.getByText(/^Marca: Confluência do Rio Benedito/).count()) === 1, 'confluência do Benedito: coordenada do cadastro e a marca escrita na tela')
+    r = await pedirAte(pg, 'confluência do Luís Alves', /Luís Alves/)
+    ok(/não tem ponto de confluência gravado/.test(r), 'Luís Alves: diz que não há ponto, não marca nada')
+    r = await pedirAte(pg, 'de onde vem o traçado do Benedito?', /Traçado do Rio Benedito/)
+    ok(/Base do OpenStreetMap: 06\/10\/2026/.test(r), 'origem do traçado: a data da base do OSM')
+    r = await pedirAte(pg, 'o que fica a montante de Blumenau?', /montante|Rio do Sul/)
+    ok(/Rio do Sul → Lontras/.test(r) && /não é previsão/.test(r), 'montante: pela árvore, com o aviso de que ligação não é previsão')
+    r = await pedirAte(pg, 'quais leituras estão atrasadas?', /Réguas municipais|Não consegui|nenhuma leitura/)
+    ok(/Réguas municipais|Não consegui|nenhuma leitura/.test(r), `leituras atrasadas: responde com a regra de idade ou diz que não conseguiu (${r.slice(0, 50)}…)`)
+    await pedirAte(pg, 'gráfico de Blumenau', /gráfico/)
+    await pg.waitForTimeout(1000)
+    ok(pg.url().endsWith('#/acu/blumenau?secao=grafico'), `gráfico: abriu ${pg.url().split('#')[1]}`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 4. 3ª entrega: a rua no mapa.
+  {
+    const { b, pg, erros } = await abrir('#/itajai', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'mostrar a Avenida 7 de Setembro em Itajaí', /destacada|Não consegui/)
+    await pg.waitForTimeout(2500)
+    ok(pg.url().includes('#/itajai?secao=manchas&rua=Av.7+de+Setembro'), `rua de Itajaí: o endereço leva a rua (${pg.url().split('#')[1]})`)
+    ok(/Interseção com as manchas/.test(r) && /não quer dizer rua segura/.test(r), 'rua de Itajaí: interseção com os cenários e a ressalva')
+    const traco = await pg.evaluate(() => [...document.querySelectorAll('.leaflet-rua-pane path, .leaflet-pane path')].some((p) => p.getAttribute('stroke') === '#ff3db8'))
+    ok(traco, 'rua de Itajaí: o traçado magenta está no mapa')
+    ok((await pg.getByText('rua selecionada, destaque de localização').count()) >= 1, 'rua de Itajaí: a legenda diz que é destaque, não risco')
+    ok((await pg.getByText(/^Avenida 7 de Setembro$/).count()) >= 1, 'rua de Itajaí: o nome escrito sobre o mapa')
+    await pedirAte(pg, 'mancha de 2008 na Avenida 7 de Setembro em Itajaí', /novembro de 2008/)
+    await pg.waitForTimeout(2000)
+    ok((await pg.locator('#mancha').inputValue()).includes('2008'), 'cenário de 2008 escolhido, a rua continua')
+    ok((await pg.getByText(/Interseção com o cenário de novembro de 2008: 32% do trecho/).count()) >= 1, 'a interseção do cenário aparece embaixo do mapa')
+    await pedirAte(pg, 'remover destaque', /Destaque da rua tirado/)
+    await pg.waitForTimeout(1200)
+    ok(!pg.url().includes('rua=') && (await pg.getByText('rua selecionada, destaque de localização').count()) === 0, 'remover destaque: a rua saiu do endereço e do mapa')
+    r = await pedirAte(pg, 'mostrar a rua Adriano Kormann em Gaspar', /Localização aproximada|Não consegui/, 20000)
+    await pg.waitForTimeout(1500)
+    ok(pg.url().endsWith('#/monitor/gaspar') && /Localização aproximada/.test(r), 'rua de Gaspar: Monitor de Gaspar, com o aviso de localização aproximada')
+    ok((await pg.getByText(/^Marca: Rua Adriano Kormann, Gaspar — localização aproximada/).count()) === 1, 'rua de Gaspar: a marca escrita na tela')
+    r = await pedirAte(pg, 'mostrar a rua São Rafael em Blumenau', /Blumenau/)
+    ok(/não publica a coordenada/.test(r) && pg.url().endsWith('#/monitor/gaspar'), 'Blumenau: só diz que não há coordenada, o mapa não muda')
+    await pg.screenshot({ path: `${process.env.SAIDA || '.'}/chat-rua-gaspar-${w}.png` })
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 5. 4ª entrega: localização (com permissão e sem), minha cidade, letra e relato.
+  {
+    const { b, pg, erros } = await abrir('#/', { largura: w, altura: h })
+    await entender(pg)
+    await pg.context().grantPermissions(['geolocation'])
+    await pg.context().setGeolocation({ latitude: -26.93, longitude: -48.97, accuracy: 30 })
+    let r = await pedirAte(pg, 'usar minha localização', /régua mais perto|Não|fora/)
+    await pg.waitForTimeout(1500)
+    ok(/a de Gaspar/.test(r) && /não grava/.test(r), 'localização: a régua mais perto e o aviso de que nada é guardado')
+    ok(pg.url().endsWith('#/monitor/gaspar') && (await pg.getByText(/^Marca: Você está aqui/).count()) === 1, 'localização: Monitor de Gaspar com a posição marcada')
+    ok(!pg.url().includes('-26') && !(await pg.evaluate(() => JSON.stringify(localStorage))).includes('-26.93'), 'localização: a posição não vai para o endereço nem para o aparelho')
+    r = await pedirAte(pg, 'minha cidade é Gaspar', /Gaspar agora é a sua cidade|Não deu/)
+    ok((await pg.evaluate(() => localStorage.getItem('enchentes:cidades') ?? '')).includes('gaspar'), 'minha cidade: guardada no aparelho')
+    r = await pedirAte(pg, 'relatar problema nesta tela', /canal de relato/)
+    ok(/Relato de problema/.test(r) && (await pg.getByRole('button', { name: 'Copiar' }).count()) >= 1, 'relato: texto pronto, com o botão Copiar')
+    await pg.goto(pg.url().split('#')[0] + '#/acu')
+    await pg.waitForTimeout(2500)
+    await pedirAte(pg, 'aumentar a letra', /Letra maior/)
+    ok((await pg.evaluate(() => document.documentElement.dataset.letra)) === 'grande', 'letra: a página passou para a letra maior')
+    await pedirAte(pg, 'letra normal', /Letra normal/)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  {
+    const { b, pg } = await abrir('#/', { largura: w, altura: h })
+    await entender(pg)
+    // Sem permissão concedida, o navegador fica perguntando: o chat não pode ficar preso em "Executando…".
+    const r = await pedirAte(pg, 'usar minha localização', /Você não permitiu|não chegou a tempo|não conseguiu/, 40000)
+    ok(/Você não permitiu|não chegou a tempo|não conseguiu/.test(r) && !pg.url().includes('/monitor'), `localização sem permissão: diz o porquê e não mexe na tela (${r.slice(0, 40)}…)`)
+    ok(await pg.locator('input[aria-label="Pergunte ou peça"]').first().isEnabled(), 'localização sem permissão: o chat continua aceitando pedidos')
+    await b.close()
+  }
+  // 6. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

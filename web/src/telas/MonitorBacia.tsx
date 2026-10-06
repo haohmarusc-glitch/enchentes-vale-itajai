@@ -9,7 +9,8 @@ import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoEquivalencia, textoSemCota 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ChatNoTopo from '../componentes/ChatNoTopo'
-import { registrarMonitor, type Retrato } from '../comandos/ponte'
+import { registrarMonitor, type FiltroMonitor, type MarcaNoMapa, type Retrato } from '../comandos/ponte'
+import { pinoSemLeituraDeAgora, reguaSemLeituraDeAgora } from '../logica/filtroSemLeitura'
 import { useConversa } from '../chat-local/conversa'
 import {
   cidadesDoRio,
@@ -26,7 +27,7 @@ import { menuDasCidades } from '../logica/menuDasCidades'
 import { vizinhosNoEixo } from '../logica/vizinhosNoEixo'
 import { resumo24h } from '../logica/resumo24h'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
-import { kmDaVista, vistaAcimaDaFolha, vistaQueCabeAsReguas, zoomMaximo } from '../logica/vistaDaCidade'
+import { kmDaVista, vistaAcimaDaFolha, vistaDaCidade, vistaQueCabeAsReguas, zoomMaximo } from '../logica/vistaDaCidade'
 import { reguasComRotulo } from '../logica/rotulosDasReguas'
 import {
   COR_COTA_RUA,
@@ -273,6 +274,17 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [camadasDisponiveis, setCamadasDisponiveis] = useState<{ arquivo: string; rotulo: string }[]>([])
   const [modoCamada, setModoCamada] = useState<string | null>(null)
   const [pedidoCamada, setPedidoCamada] = useState<{ cidade: string; modo: string; n: number } | null>(null)
+  /**
+   * 2ª entrega do chat (docs/CHAT-GLOBAL-COMANDOS.md): o filtro "só sem leitura de agora" e a marca de um
+   * ponto de confluência. Os dois aparecem ESCRITOS na tela, cada um com o botão de tirar; nenhum muda cor,
+   * faixa ou número. Desligados (o padrão), o Monitor é o de sempre.
+   */
+  const [filtro, setFiltro] = useState<FiltroMonitor>(null)
+  const [marca, setMarca] = useState<MarcaNoMapa | null>(null)
+  const marcaRef = useRef<MarcaNoMapa | null>(null)
+  marcaRef.current = marca
+  /** Os pinos da cena SEM o filtro: o chat conta e encontra cidades por aqui, com ou sem filtro ligado. */
+  const pinosTodosRef = useRef<Pino[]>([])
   const cidadeFoco = municipal ? 'ascurra' : cidadeId
   const divRef = useRef<HTMLDivElement | null>(null)
   /**
@@ -450,7 +462,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     [tempoReal, agora],
   )
   const reguasRef = useRef(reguasDoMapa)
-  reguasRef.current = municipal ? [] : reguasDoMapa
+  reguasRef.current = municipal ? [] : filtro === 'sem_leitura' ? reguasDoMapa.filter((r) => reguaSemLeituraDeAgora(r, agora)) : reguasDoMapa
 
   /**
    * O seletor de régua da cidade em foco (Itajaí, as onze; pedido do Jefferson, 06/10/2026). Na própria
@@ -640,6 +652,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // Conserva a divisão geográfica regional; nunca estende a régua local
       // por todo o rio ao remover as outras cidades.
       cena.trechos = cena.trechos.map((t) => t.cidadeId === 'ascurra' ? t : ({ ...t, faixa: 'sem-dado', cidadeId: null, animacao: 'parada' }))
+    }
+    pinosTodosRef.current = cena.pinos
+    if (filtro === 'sem_leitura') {
+      // O filtro só ESCONDE os pinos com leitura de agora. Os trechos do rio continuam pintados como sempre.
+      const reguaFresca = new Set(reguasDoMapa.filter((r) => !reguaSemLeituraDeAgora(r, instante)).map((r) => r.cidade))
+      cena.pinos = cena.pinos.filter((p) => pinoSemLeituraDeAgora(p, instante, reguaFresca.has(p.cidade.id)))
     }
     cenaRef.current = cena
     // O painel guarda a seleção, mas os números devem acompanhar a nova coleta.
@@ -834,6 +852,32 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         ),
       )
       desenharPinos(ctx, cena, selRef.current, { ...opcoesPinos, rotulos })
+      // A marca do chat (confluência): anel claro com contorno escuro, por cima de tudo. É destaque de
+      // localização, não cor de faixa — por isso branco, fora da escala de cores das cheias.
+      // Os pontos de cota de uma rua (3ª entrega) vêm como `extras`: um anel por ponto, nenhuma linha entre eles.
+      const mk = marcaRef.current
+      if (mk) {
+        const r = 10 * escala
+        ctx.save()
+        for (const pt of [mk, ...(mk.extras ?? [])]) {
+          const [mx, my] = projetar(cena.enq, [pt.lon, pt.lat])
+          ctx.lineWidth = 5
+          ctx.strokeStyle = '#062c43'
+          ctx.beginPath()
+          ctx.arc(mx, my, r, 0, 2 * Math.PI)
+          ctx.stroke()
+          ctx.lineWidth = 2.5
+          ctx.strokeStyle = '#ffffff'
+          ctx.beginPath()
+          ctx.arc(mx, my, r, 0, 2 * Math.PI)
+          ctx.stroke()
+          ctx.fillStyle = '#ffffff'
+          ctx.beginPath()
+          ctx.arc(mx, my, 2.5 * escala, 0, 2 * Math.PI)
+          ctx.fill()
+        }
+        ctx.restore()
+      }
       if (!reduz) raf = requestAnimationFrame(quadro)
     }
     if (!paginaOculta) raf = requestAnimationFrame(quadro)
@@ -841,7 +885,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta])
+  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -874,8 +918,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   useEffect(() => {
     if (!cidadeFoco || enquadrou.current) return
     const cena = cenaRef.current
-    if (!cena || cena.pinos.length === 0) return
-    const pino = cena.pinos.find((p) => p.cidade.id === cidadeFoco)
+    if (!cena || pinosTodosRef.current.length === 0) return
+    const pino = pinosTodosRef.current.find((p) => p.cidade.id === cidadeFoco)
     // Cidade que não está no mapa (id errado no endereço, ou sem coordenada):
     // fica a bacia inteira. Melhor do que zoom num lugar inventado.
     //
@@ -1163,7 +1207,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       cidade: cidadeFoco ?? null,
       get pronto() {
         const cena = cenaRef.current
-        return !!cena && cena.pinos.length > 0 && (!cidadeFoco || enquadrou.current)
+        return !!cena && pinosTodosRef.current.length > 0 && (!cidadeFoco || enquadrou.current)
       },
       estado: () => ({
         cidade: cidadeFoco ?? null,
@@ -1174,6 +1218,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         camada: rotuloCamada,
         camadasDisponiveis,
         reproducao: idxRepro == null || grade[idxRepro] == null ? null : dataHora(new Date(grade[idxRepro]!)),
+        filtro,
+        marca: marca?.rotulo ?? null,
       }),
       escolherRegua: (codigo) => {
         if (codigo === 'todas') {
@@ -1227,14 +1273,58 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         setIdxRepro(null)
         return { ok: true, texto: 'Voltei às leituras mais recentes. Cada uma mostra a hora dela no painel.' }
       },
+      filtrar: (f) => {
+        if (municipal) return { ok: false, texto: 'O filtro não existe no Monitor de Ascurra.' }
+        if (f === null) {
+          if (!filtro) return { ok: true, texto: 'Não há filtro ligado: o mapa já mostra todas as cidades e réguas.' }
+          setFiltro(null)
+          return { ok: true, texto: 'Filtro limpo: o mapa mostra todas as cidades e réguas de novo.' }
+        }
+        const reguaFresca = new Set(reguasDoMapa.filter((r) => !reguaSemLeituraDeAgora(r, agora)).map((r) => r.cidade))
+        const cidades = pinosTodosRef.current.filter((p) => pinoSemLeituraDeAgora(p, agora, reguaFresca.has(p.cidade.id)))
+        const reguas = reguasDoMapa.filter((r) => reguaSemLeituraDeAgora(r, agora))
+        const nomes = [...cidades.map((p) => p.cidade.nome), ...reguas.map((r) => `${r.codigo} · ${r.nome}`)]
+        if (nomes.length === 0) return { ok: true, texto: 'Todas as cidades e réguas do mapa têm leitura de agora: o filtro não foi ligado.' }
+        setFiltro('sem_leitura')
+        setSel(null)
+        setReguaSel(null)
+        // A bacia inteira: o que ficou sem leitura pode estar longe da cidade aberta.
+        setVista(VISTA_INTEIRA)
+        const lista = nomes.length > 10 ? `${nomes.slice(0, 10).join(', ')} e mais ${nomes.length - 10}` : nomes.join(', ')
+        return { ok: true, texto: `Filtro ligado: a bacia inteira, só com o que está sem leitura de agora (${nomes.length}): ${lista}. "Sem leitura" é sem medição, sem horário ou com leitura de mais de 3 h. Peça "limpar filtros" para voltar.` }
+      },
+      marcarPonto: (p) => {
+        if (!p) {
+          setMarca(null)
+          return { ok: true, texto: 'Marca tirada do mapa.' }
+        }
+        const cena = cenaRef.current
+        if (!cena) return { ok: false, texto: 'O mapa ainda não carregou.' }
+        const b = cena.limitesBase
+        const pts = [p, ...(p.extras ?? [])]
+        if (pts.some((q) => q.lon < b.minLon || q.lon > b.maxLon || q.lat < b.minLat || q.lat > b.maxLat)) {
+          return { ok: false, texto: 'Esse ponto fica fora do mapa do Monitor.' }
+        }
+        setMarca(p)
+        setSel(null)
+        setReguaSel(null)
+        // O centro da vista é o meio dos pontos (um só: o próprio ponto).
+        const lats = pts.map((q) => q.lat)
+        const lons = pts.map((q) => q.lon)
+        const v = vistaDaCidade([(Math.min(...lats) + Math.max(...lats)) / 2, (Math.min(...lons) + Math.max(...lons)) / 2], b, p.km ?? 6)
+        if (v) setVista(v)
+        return { ok: true, texto: pts.length > 1 ? `Mapa centrado, com ${pts.length} anéis brancos.` : 'Mapa centrado e marcado com um anel branco.' }
+      },
       explicar: (id) => {
-        const pino = cenaRef.current?.pinos.find((p) => p.cidade.id === id)
+        const pino = pinosTodosRef.current.find((p) => p.cidade.id === id)
         if (!pino) return null
         return { cidadeNome: pino.cidade.nome, ...textosDoFoco(pino) }
       },
-      retrato: (): Retrato => ({ rota, cidade: cidadeFoco ?? null, vista, regua: reguaSel, fundo, camada: modoCamada }),
+      retrato: (): Retrato => ({ rota, cidade: cidadeFoco ?? null, vista, regua: reguaSel, fundo, camada: modoCamada, filtro, marca }),
       restaurar: (r) => {
         enquadrou.current = true
+        setFiltro(r.filtro ?? null)
+        setMarca(r.marca ?? null)
         if (r.fundo && ehChaveDeFundo(r.fundo)) setFundo(r.fundo)
         if (r.camada != null) setPedidoCamada((p) => ({ cidade: cidadeDaCamada, modo: r.camada!, n: (p?.n ?? 0) + 1 }))
         setReguaSel(r.regua ?? null)
@@ -1254,7 +1344,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     const chave = `${cidadeFoco ?? ''}?${busca.toString()}`
     if (urlAplicada.current === chave || !busca.toString()) return
     const cena = cenaRef.current
-    if (!cena || cena.pinos.length === 0 || (cidadeFoco && !enquadrou.current)) return
+    if (!cena || pinosTodosRef.current.length === 0 || (cidadeFoco && !enquadrou.current)) return
     urlAplicada.current = chave
     const f = busca.get('fundo')
     if (f && ehChaveDeFundo(f)) setFundo(f)
@@ -1346,6 +1436,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         </div>}
         {rotuloCamada && <p className={estilos.rotuloCamada} data-tapa-mapa>
           {rotuloCamada} · referência, não alagamento atual
+        </p>}
+        {filtro === 'sem_leitura' && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
+          Filtro: só cidades e réguas sem leitura de agora
+          <button type="button" className={estilos.botaoAviso} onClick={() => setFiltro(null)}>Limpar filtro</button>
+        </p>}
+        {marca && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
+          Marca: {marca.rotulo}
+          <button type="button" className={estilos.botaoAviso} onClick={() => setMarca(null)}>Tirar marca</button>
         </p>}
         <details className={estilos.camadasControle} data-tapa-mapa>
           <summary>Camadas de cheia</summary>

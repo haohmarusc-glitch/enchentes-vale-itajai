@@ -10,16 +10,10 @@
  */
 import type { Aba, Catalogo, CidadeDoCatalogo, Contexto, Fundo, Interpretacao, Passo, ReguaDoCatalogo } from './tipos'
 
-/** Minúsculo, sem acento, sem pontuação; hífen vira espaço ("DC-05" → "dc 05", "rio-do-sul" → "rio do sul"). */
-export function normalizar(s: string): string {
-  return s
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
+import { normalizar } from './normalizar'
+import { arquivoPeloNome } from './rios'
+
+export { normalizar }
 
 const CORTESIA_INICIO = /^(?:por favor|pfv|favor|voce pode|vc pode|pode|poderia|consegue|me|eu quero|quero|gostaria de|queria)\s+/
 const CORTESIA_FIM = /\s+(?:por favor|pfv|pra mim|para mim|no mapa|no monitor|na tela|ai)$/
@@ -88,9 +82,228 @@ export function rotuloDaRegua(r: ReguaDoCatalogo): string {
 
 type Lido = Passo[] | { erro: string; sugestoes: string[] } | null
 
+const AQUI = /^(?:aqui|daqui|desta cidade|dessa cidade|deste lugar|desse lugar|desta regua|dessa regua|deste trecho|desse trecho|neste trecho|nesse trecho|da cidade|da regua)$/
+
+/**
+ * A cidade opcional de um pedido ("… de Gaspar"). Sem alvo, ou "daqui": o contexto decide na execução.
+ * Alvo que não é cidade do cadastro: `null` — o trecho não vira comando (e o motor de perguntas tenta).
+ */
+function cidadeOpcional(alvo: string | undefined, cat: Catalogo): { cidadeId?: string } | null {
+  const a = (alvo ?? '').trim()
+  if (!a || AQUI.test(a)) return {}
+  const c = cidadePorNome(a, cat)
+  return c ? { cidadeId: c.id } : null
+}
+
+const TIPO_DE_VIA = '(?:rua|avenida|av|travessa|tv|trav|alameda|al|rodovia|rod|servidao|serv|estrada)'
+const VERBO_RUA =
+  '(?:mostrar|mostre|mostra|ver|veja|zoom|aproximar|aproxime|destacar|destaque|localizar|localize|achar|ache|encontrar|encontre|marcar|marque|onde fica|onde e|ir para|ir pra|va para)'
+
+/**
+ * O que vem depois de "rua …": o nome, a cidade no fim ("…, Gaspar" ou "… em Gaspar") e o ano ("… em 2008").
+ * A cidade só sai do fim se for do cadastro; o resto é nome de rua.
+ */
+function partesDoPedidoDeRua(resto: string, cat: Catalogo): { texto: string; cidadeId?: string; ano?: string } {
+  let r = resto.trim()
+  let ano: string | undefined
+  const a = r.match(/\s(?:em|de|na cheia de|na enchente de)\s(\d{4})$/)
+  if (a) {
+    ano = a[1]
+    r = r.slice(0, a.index).trim()
+  }
+  let cidadeId: string | undefined
+  for (const c of [...cat.cidades].sort((x, y) => normalizar(y.nome).length - normalizar(x.nome).length)) {
+    const n = normalizar(c.nome)
+    const m = r.match(new RegExp(`^(.+?)\\s(?:(?:em|no|na|de) )?${n}$`))
+    // "rua brusque" (em Itajaí) é nome de rua: a cidade só sai do fim se sobrar tipo + nome.
+    if (m?.[1] && m[1].trim().split(' ').length >= 2) {
+      cidadeId = c.id
+      r = m[1].trim()
+      break
+    }
+  }
+  return { texto: r, ...(cidadeId ? { cidadeId } : {}), ...(ano ? { ano } : {}) }
+}
+
+/** A 4ª entrega: o que depende do aparelho (localização, preferências, relato, tela cheia). */
+function lerTrechoDaQuarta(t: string, cat: Catalogo): Lido {
+  if (/^(?:usar|use|usa|pegar|pegue|ver|veja|mostrar|mostre)(?: a)? minha (?:localizacao|posicao)$|^onde (?:eu )?estou$|^(?:qual (?:e )?)?a regua mais (?:perto|proxima)(?: de mim| daqui)?$|^(?:qual )?regua (?:fica |esta )?mais (?:perto|proxima)(?: de mim| daqui)?$/.test(t)) {
+    return [{ tipo: 'localizacao' }]
+  }
+  if (/^(?:relatar|relate|reportar|reporte|informar|informe|comunicar|comunique|avisar|avise)(?: sobre)?(?: um| o)? (?:problema|erro|defeito)(?: (?:nesta|nessa|na|desta|dessa|da|nesse|neste|no) (?:regua|tela|pagina|leitura|cidade|mapa|site))?$|^(?:a |essa |esta )?leitura (?:esta|ta) errada$/.test(t)) {
+    return [{ tipo: 'relatar' }]
+  }
+  {
+    const m = t.match(/^(?:a )?minha cidade e (.+)$/)
+      ?? t.match(/^(?:definir|defina|mudar|mude|trocar|troque|colocar|coloque|escolher|escolha)(?: a)? minha cidade (?:para|pra|como|em) (.+)$/)
+      ?? t.match(/^(?:definir|defina|colocar|coloque|escolher|escolha|tornar|torne) (.+?) como (?:a )?minha cidade$/)
+    if (m) {
+      const c = cidadePorNome(m[1] ?? '', cat)
+      if (c) return [{ tipo: 'preferencia_cidade', acao: 'minha', cidadeId: c.id }]
+      return { erro: `"${(m[1] ?? '').trim()}" não está entre as cidades do site, então não dá para guardar como a sua.`, sugestoes: ['quais cidades eu sigo?'] }
+    }
+  }
+  {
+    const m = t.match(/^(?:deixar de seguir|deixe de seguir|parar de seguir|pare de seguir|nao seguir mais)(?: a cidade de| a cidade)? (.+)$/)
+    if (m) {
+      const c = cidadePorNome(m[1] ?? '', cat)
+      return c ? [{ tipo: 'preferencia_cidade', acao: 'deixar', cidadeId: c.id }] : null
+    }
+  }
+  {
+    const m = t.match(/^(?:seguir|siga|acompanhar|acompanhe)(?: a cidade de| a cidade)? (.+)$/)
+    if (m) {
+      const c = cidadePorNome(m[1] ?? '', cat)
+      return c ? [{ tipo: 'preferencia_cidade', acao: 'seguir', cidadeId: c.id }] : null
+    }
+  }
+  if (/^(?:quais|que) cidades (?:eu )?sigo$|^cidades que (?:eu )?sigo$|^(?:qual (?:e )?)?(?:a )?minha cidade$/.test(t)) {
+    return [{ tipo: 'preferencia_cidade', acao: 'listar' }]
+  }
+  if (/^(?:aumentar|aumente|aumenta)(?: a| o)? (?:letra|fonte|texto)$|^(?:letra|fonte|texto) (?:maior|grande)$|^(?:usar|use|ligar|ligue)(?: a)? letra (?:maior|grande)$/.test(t)) {
+    return [{ tipo: 'letra', tamanho: 'grande' }]
+  }
+  if (/^(?:diminuir|diminua|diminui|reduzir|reduza)(?: a| o)? (?:letra|fonte|texto)$|^(?:letra|fonte|texto) (?:normal|menor|padrao)$|^(?:voltar|volte)(?: a| o)? (?:letra|fonte|texto) (?:normal|ao normal)$/.test(t)) {
+    return [{ tipo: 'letra', tamanho: 'normal' }]
+  }
+  if (/^(?:(?:abrir|abra|ativar|ative|ligar|ligue|colocar|coloque|por|ver|mostrar|entrar)(?: em| no| a| o)? )?(?:modo )?tela cheia$|^(?:maximizar|maximize)(?: o)? mapa$/.test(t)) {
+    return [{ tipo: 'tela_cheia' }]
+  }
+  return null
+}
+
+/** A 3ª entrega: a rua no mapa (docs/CHAT-GLOBAL-COMANDOS.md, "Rua destacada sobre as manchas"). */
+function lerTrechoDaTerceira(t: string, cat: Catalogo): Lido {
+  if (/^(?:remover|remova|tirar|tire|apagar|apague|limpar|limpe|desligar|desligue)(?: o| a)? (?:destaque|marca|marcacao)(?: da rua| das ruas| dos pontos)?$/.test(t)) {
+    return [{ tipo: 'remover_destaque' }]
+  }
+  {
+    // "manchas na rua X", "mancha de 2008 na rua X", "ver as manchas da avenida Y em Itajaí"
+    const m = t.match(new RegExp(`^(?:(?:ver|veja|mostrar|mostre|mostra|quais) )?(?:as |a )?manchas?(?: de (\\d{4}))? (?:na|da|sobre a|no|do) (${TIPO_DE_VIA} .+)$`))
+    if (m?.[2]) {
+      const p = partesDoPedidoDeRua(m[2], cat)
+      return [{ tipo: 'rua', foco: 'manchas', ...p, ...(m[1] ? { ano: m[1] } : {}) }]
+    }
+  }
+  {
+    // "mostrar a rua X", "zoom na avenida Y, Itajaí", "onde fica a rua Z em Gaspar" — com verbo: "Rua XV de
+    // Novembro, Blumenau" sozinha continua pergunta para o motor.
+    const m = t.match(new RegExp(`^${VERBO_RUA}(?: (?:na|no|a|o|para|pra|ate))* (${TIPO_DE_VIA} .+)$`))
+    if (m?.[1]) {
+      const p = partesDoPedidoDeRua(m[1], cat)
+      if (p.texto.split(' ').length < 2) return null
+      return [{ tipo: 'rua', foco: 'mostrar', ...p }]
+    }
+  }
+  return null
+}
+
+/** A 2ª entrega (docs/CHAT-GLOBAL-COMANDOS.md): leituras, filtro, gráfico, traçado, árvore, confluência, cópia. */
+function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
+  if (/^(?:quais|que|tem|ha|existe|existem)?(?: (?:as|alguma|algumas))? ?(?:leituras?|reguas?|estacoes|estacao|medicoes|medicao)(?: (?:estao|esta|tao|ta))? (?:atrasadas?|velhas?|desatualizadas?|paradas?|sem atualizar)$/.test(t)) {
+    return [{ tipo: 'atrasadas' }]
+  }
+  if (/^(?:(?:mostrar|mostre|mostra|ver|veja|filtrar|filtre|deixar|deixe)(?: so| somente| apenas)?(?: as| os)? )?(?:so |somente |apenas )?(?:as |os )?(?:reguas|cidades|estacoes|pinos) sem leitura(?: de agora| recente| atual)?$/.test(t)) {
+    return [{ tipo: 'filtro', filtro: 'sem_leitura' }]
+  }
+  if (/^(?:limpar|limpe|tirar|tire|remover|remova|desligar|desligue|apagar|apague)(?: os| o)? filtros?$|^(?:mostrar|mostre|ver) (?:todas as reguas e cidades|todos os pinos|todas as cidades)$/.test(t)) {
+    return [{ tipo: 'filtro', filtro: null }]
+  }
+  {
+    const m = t.match(/^(?:(?:abrir|abra|abre|ver|veja|mostrar|mostre|mostra) )?(?:o )?grafico(?: (?:desta|dessa|da) (?:regua|cidade))?(?: (?:de|do|da|em) (.+))?$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'abrir_grafico', ...c }] : null
+    }
+  }
+  {
+    const m = t.match(/^o que (?:mudou|aconteceu|variou)(?: com o rio| com a regua)? na ultima hora(?: (?:em|no|na|de|do|da) (.+))?$/)
+      ?? t.match(/^(?:quanto|como) (?:o rio |a regua |o nivel )?(?:subiu|desceu|baixou|variou|mudou) na ultima hora(?: (?:em|no|na|de|do|da) (.+))?$/)
+      ?? t.match(/^(?:a )?ultima hora(?: (?:em|no|na|de|do|da) (.+))?$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'ultima_hora', ...c }] : null
+    }
+  }
+  {
+    const m = t.match(/^de onde (?:vem|veio|e|saiu) (?:esse|este|o) (?:tracado|desenho)(?: do rio)?(?: (?:de|do|da) (.+))?$/)
+      ?? t.match(/^(?:qual (?:e )?a )?(?:fonte|origem) do (?:tracado|desenho)(?: do rio)?(?: (?:de|do|da) (.+))?$/)
+    if (m) {
+      const alvo = (m[1] ?? '').trim()
+      const c = cidadeOpcional(alvo, cat)
+      if (c) return [{ tipo: 'origem_tracado', ...c }]
+      const rio = arquivoPeloNome(alvo)
+      return rio ? [{ tipo: 'origem_tracado', rio }] : { erro: `Não achei o traçado de "${alvo}".`, sugestoes: ['de onde vem o traçado do Benedito?', 'de onde vem o traçado do Itajaí-Mirim?'] }
+    }
+  }
+  {
+    const m = t.match(/^o que (?:fica|esta|vem|tem|ha) (?:a montante|acima|rio acima)(?: (?:de|do|da) (.+?)| daqui)?$/)
+      ?? t.match(/^(?:quem|o que|quais cidades) (?:fica|ficam|esta|estao) (?:a montante|acima|rio acima)(?: (?:de|do|da) (.+?)| daqui)?$/)
+      ?? t.match(/^de onde vem a agua(?: (?:de|do|da) (.+?)| daqui)?$/)
+      ?? t.match(/^(?:o que fica )?(?:a )?montante(?: (?:de|do|da) (.+?)| daqui)?$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'montante', foco: 'montante', ...c }] : null
+    }
+  }
+  {
+    const m = t.match(/^(?:quais (?:sao )?)?(?:os )?afluentes(?: (?:deste|desse|neste|nesse) trecho| daqui| (?:de|do|da|perto de|em) (.+?))?$/)
+      ?? t.match(/^(?:o que|que rios?|quais rios?) (?:entra|entram|desagua|desaguam|chega|chegam) (?:no rio )?(?:aqui|neste trecho|nesse trecho|(?:perto de|em|antes de) (.+?))$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'montante', foco: 'afluentes', ...c }] : null
+    }
+  }
+  {
+    const m = t.match(/^(?:(?:ver|veja|mostrar|mostre|mostra|abrir|abra|ir para|ir pra|va para|onde (?:fica|e|esta)) )?(?:a |o )?(?:confluencia|encontro|juncao|barra)(?: (?:do|da|de|dos|das) (.+?))?(?: com o .+)?$/)
+      ?? t.match(/^onde (?:nasce|comeca) o (?:rio )?(itajai acu)$/)
+    // "onde o Benedito entra no Açu?": só vira pedido quando o rio é um dos que o cadastro conhece — "onde a
+    // água chega em Blumenau?" continua pergunta para o motor.
+    const solto = m ? null : t.match(/^onde (?:o |a )?(?:rio |ribeirao )?(.+?) (?:entra|encontra|desagua|chega)(?: (?:no|na|ao|o|a|com o|com a) .+)?$/)
+    if (solto) {
+      const alvo = (solto[1] ?? '').trim()
+      const achada = cat.confluencias?.find((c) => c.chaves.includes(alvo)) ?? cat.semPonto?.find((c) => c.chaves.includes(alvo))
+      return achada ? [{ tipo: 'confluencia', id: achada.id }] : null
+    }
+    if (m) {
+      const alvo = (m[1] ?? '').replace(/^(?:rio|ribeirao) /, '').trim()
+      if (!alvo) return { erro: 'Confluência de qual rio?', sugestoes: ['ver a confluência do Benedito', 'onde o Trombudo encontra o Oeste', 'onde nasce o Itajaí-Açu'] }
+      const nasce = /^itajai acu$|^acu$|cabeceiras|oeste com o sul/.test(alvo) ? 'itajai-acu-nasce' : null
+      const achada = nasce ? cat.confluencias?.find((c) => c.id === nasce)
+        : cat.confluencias?.find((c) => c.chaves.includes(alvo)) ?? cat.semPonto?.find((c) => c.chaves.includes(alvo))
+      if (achada) return [{ tipo: 'confluencia', id: achada.id }]
+      return { erro: `O cadastro não tem a confluência de "${alvo}".`, sugestoes: (cat.confluencias ?? []).map((c) => `ver a confluência do ${c.chaves[0]}`) }
+    }
+  }
+  {
+    const m = t.match(/^(?:comparar|compare|compara|comparacao das|lado a lado)(?: as)? reguas(?: (?:de|do|da|em) (.+))?$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'comparar_reguas', ...c }] : null
+    }
+  }
+  {
+    const m = t.match(/^(?:copiar|copie|copia|gerar|gere|preparar|prepare|montar|monte|compartilhar|compartilhe)(?: o| um)? (?:resumo|texto|situacao)(?: (?:desta|dessa|da) cidade| (?:de|do|da) (.+?))?(?: (?:para|pra|pro) (?:o )?(?:whatsapp|zap))?$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'copiar_resumo', ...c }] : null
+    }
+  }
+  if (/^(?:copiar|copie|copia|gerar|gere|me de|me da|compartilhar|compartilhe|qual (?:e )?)(?: o| um)? (?:link|endereco)(?: (?:desta|dessa|da) (?:visualizacao|tela|pagina|vista)| do mapa| daqui)?$/.test(t)) {
+    return [{ tipo: 'copiar_link' }]
+  }
+  return null
+}
+
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const quarta = lerTrechoDaQuarta(t, cat)
+  if (quarta) return quarta
+  const terceira = lerTrechoDaTerceira(t, cat)
+  if (terceira) return terceira
+  const segunda = lerTrechoDaSegunda(t, cat)
+  if (segunda) return segunda
   // --- ajuda
   if (/^(?:o que (?:eu )?posso (?:pedir|fazer|perguntar|mandar)|quais (?:sao )?(?:os )?comandos|comandos|ajuda|o que voce (?:faz|sabe fazer)|como (?:te )?usar(?: o chat)?)$/.test(t)) {
     return [{ tipo: 'ajuda' }]

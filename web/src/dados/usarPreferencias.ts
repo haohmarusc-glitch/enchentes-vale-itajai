@@ -23,6 +23,9 @@ function avisar() {
   window.dispatchEvent(new Event(EVENTO))
 }
 
+/** Para quem muda a preferência fora destes ganchos (o chat): as telas abertas se atualizam. */
+export const avisarPreferencias = avisar
+
 function useAtualizar<T>(ler: () => T): T {
   const [valor, setValor] = useState(ler)
   useEffect(() => {

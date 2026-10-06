@@ -4,10 +4,86 @@
  */
 import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { estacoes } from '../dados/carregar'
+import { estacoes, estacoesTempoReal } from '../dados/carregar'
+import type { AoVivo } from '../dados/usarAoVivo'
+import { reguasNoMapa } from '../logica/reguasNoMapa'
 import { abrirPainel, acrescentar, marcarOcupado } from '../chat-local/conversa'
 import { catalogoDoCadastro } from './catalogo'
-import { executar } from './executar'
+import { MUDA_A_TELA, baseDoSite, executar, type DadosDoChat, type Saida } from './executar'
+import type { PropriedadesDoTracado } from './respostas'
+import { carregarCotasRuas, carregarRuasManchaItajai } from '../chat-local/carregar'
+import { carregarViasItajai } from '../dados/viasItajai'
+import { cidadesSeguidas, deixarDeSeguir, gravarLetra, seguir, tornarMinha } from '../logica/preferencias'
+import { avisarPreferencias } from '../dados/usarPreferencias'
+import type { Posicao } from './aparelho'
+
+const LIMITE_LOCALIZACAO_MS = 25_000
+
+/**
+ * A posição do aparelho, UMA vez, quando a pessoa pede ("usar minha localização"). O navegador pergunta se
+ * pode; a resposta não é guardada pelo site, nem a posição (docs/CHAT-GLOBAL-COMANDOS.md, 4ª entrega).
+ */
+function localizacao(): ReturnType<NonNullable<DadosDoChat['localizacao']>> {
+  if (typeof navigator === 'undefined' || !navigator.geolocation) return Promise.resolve({ erro: 'sem_suporte' as const })
+  return new Promise((resolver) => {
+    // O `timeout` da API só conta DEPOIS da permissão: com a pergunta do navegador sem resposta, o pedido
+    // ficaria em "Executando…" para sempre, com o Enviar travado. O limite daqui cobre a espera inteira.
+    let feito = false
+    const responder = (r: Awaited<ReturnType<NonNullable<DadosDoChat['localizacao']>>>) => {
+      if (feito) return
+      feito = true
+      clearTimeout(limite)
+      resolver(r)
+    }
+    const limite = setTimeout(() => responder({ erro: 'tempo' }), LIMITE_LOCALIZACAO_MS)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => responder({ lat: pos.coords.latitude, lon: pos.coords.longitude, precisaoM: Number.isFinite(pos.coords.accuracy) ? pos.coords.accuracy : null } satisfies Posicao),
+      (erro) => responder({ erro: erro.code === erro.PERMISSION_DENIED ? 'negada' : erro.code === erro.TIMEOUT ? 'tempo' : 'indisponivel' }),
+      { enableHighAccuracy: false, timeout: 20_000, maximumAge: 5 * 60_000 },
+    )
+  })
+}
+
+/** As preferências do aparelho, com o aviso para as telas abertas (Início, estrela da cidade, letra). */
+const preferencias: NonNullable<DadosDoChat['preferencias']> = {
+  seguidas: () => cidadesSeguidas(),
+  tornarMinha: (c) => {
+    const l = tornarMinha(c)
+    avisarPreferencias()
+    return l
+  },
+  seguir: (c) => {
+    const r = seguir(c)
+    avisarPreferencias()
+    return r
+  },
+  deixarDeSeguir: (id) => {
+    const l = deixarDeSeguir(id)
+    avisarPreferencias()
+    return l
+  },
+  letra: (l) => {
+    gravarLetra(l)
+    // Sem armazenamento a troca ainda vale nesta visita (como no botão de letra).
+    document.documentElement.dataset.letra = l
+    avisarPreferencias()
+  },
+}
+
+/** Nome da via → quantos trechos ela tem na base (ruas com o mesmo nome entram juntas). */
+async function viasDeItajai(): Promise<Record<string, number> | null> {
+  try {
+    const g = await carregarViasItajai()
+    const conta: Record<string, number> = {}
+    for (const f of g.features) {
+      const n = f.properties?.nome
+      if (typeof n === 'string') conta[n] = (conta[n] ?? 0) + 1
+    }
+    return conta
+  } catch {
+    return null
+  }
+}
 import { interpretar, nomeDaCidade } from './interpretar'
 import { esperarMonitor, monitorAtual, type ControleMonitor } from './ponte'
 import { textoDeAjuda } from './ajuda'
@@ -40,13 +116,40 @@ function rotaAgora(): string {
   return window.location.hash.replace(/^#/, '') || '/'
 }
 
+// Os traçados como URL, os mesmos arquivos que o Monitor baixa (o navegador reaproveita).
+const TRACADOS = import.meta.glob('@dados/rios/*.geojson', { query: '?url', import: 'default', eager: true }) as Record<string, string>
+
+async function propriedadesDoTracado(arquivo: string): Promise<PropriedadesDoTracado | null> {
+  const chave = Object.keys(TRACADOS).find((k) => k.endsWith(`/${arquivo}.geojson`))
+  if (!chave) return null
+  try {
+    const r = await fetch(TRACADOS[chave]!)
+    if (!r.ok) return null
+    const geo = (await r.json()) as { properties?: PropriedadesDoTracado }
+    return geo.properties ?? null
+  } catch {
+    return null
+  }
+}
+
+function cidadeDoCadastro(id: string): ReturnType<DadosDoChat['cidade']> {
+  for (const [rioId, r] of Object.entries(estacoes.rios)) {
+    const c = r.cidades.find((x) => x.id === id)
+    if (c) return { cidade: c, rioId }
+  }
+  return null
+}
+
 let catalogo: Catalogo | null = null
 export function catalogoDoSite(): Catalogo {
   catalogo ??= catalogoDoCadastro(estacoes as Parameters<typeof catalogoDoCadastro>[0])
   return catalogo
 }
 
-export function useComandos(): {
+/**
+ * @param aoVivo devolve as leituras ao vivo do chat, esperando a primeira busca (ver `ChatLocal`).
+ */
+export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => null): {
   contexto: () => Contexto
   nomeDaCidadeAtual: () => string | null
   tentar: (texto: string) => boolean
@@ -75,21 +178,39 @@ export function useComandos(): {
         rotaAtual: rotaAgora,
         monitor: monitorAtual,
         esperarMonitor: (cidade: string | null) => esperarMonitor(cidade),
+        dados: {
+          aoVivo,
+          cidade: cidadeDoCadastro,
+          reguasNoMapa: (v: AoVivo) =>
+            reguasNoMapa(estacoesTempoReal, v.tempoReal.leituras.map((l) => ({ titulo: l.estacao, nivel_m: l.nivel_m, medidoEm: l.medidoEm })), v.agora),
+          tracado: propriedadesDoTracado,
+          base: () => (typeof window === 'undefined' ? '' : baseDoSite(window.location.href)),
+          viasItajai: viasDeItajai,
+          ruasMancha: () => carregarRuasManchaItajai().catch(() => null),
+          cotasRuas: () => carregarCotasRuas().catch(() => null),
+          localizacao,
+          preferencias,
+        },
       }
+      let saida: Saida | null = null
       executar(r.passos, ambiente, cat, ctx, () => textoDeAjuda(ctx, ctx.cidadeAtual ? nomeDaCidade(ctx.cidadeAtual, cat) : null))
-        .then((s) => acrescentar({ papel: 'assistente', texto: s.texto, comando: true, ...(s.sugestoes ? { sugestoes: s.sugestoes } : {}), ...(s.link ? { link: s.link } : {}) }))
+        .then((s) => (saida = s))
+        .then((s) => acrescentar({ papel: 'assistente', texto: s.texto, comando: true, ...(s.sugestoes ? { sugestoes: s.sugestoes } : {}), ...(s.link ? { link: s.link } : {}), ...(s.copiar ? { copiar: s.copiar } : {}) }))
         .catch(() => acrescentar({ papel: 'assistente', texto: 'Não consegui executar o pedido. Nada foi alterado depois do erro.', comando: true }))
         .finally(() => {
           marcarOcupado(false)
           // No celular, no Monitor, a conversa recolhe depois do pedido: o resultado está no MAPA (a folha
-          // da régua, a cidade enquadrada), e a última resposta fica numa linha logo abaixo da caixa.
-          if (contextoDaRota(rotaAgora(), null).naMonitor && typeof matchMedia === 'function' && matchMedia('(max-width: 700px)').matches) {
+          // da régua, a cidade enquadrada), e a última resposta fica numa linha logo abaixo da caixa. Pedido que
+          // só RESPONDE (leituras atrasadas, montante) ou prepara texto para copiar fica aberto: o resultado é a
+          // conversa, e o botão "Copiar" sumiria com ela.
+          const mexeuNoMapa = r.passos.some((p) => MUDA_A_TELA.has(p.tipo)) && !(saida as Saida | null)?.copiar
+          if (mexeuNoMapa && contextoDaRota(rotaAgora(), null).naMonitor && typeof matchMedia === 'function' && matchMedia('(max-width: 700px)').matches) {
             abrirPainel(false)
           }
         })
       return true
     },
-    [cat, contexto, navigate],
+    [cat, contexto, navigate, aoVivo],
   )
   return { contexto, nomeDaCidadeAtual, tentar }
 }
