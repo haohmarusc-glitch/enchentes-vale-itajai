@@ -273,5 +273,35 @@ class TesteRiosDeMunicipio(unittest.TestCase):
             self.assertTrue(perto(pts(braco), rafael), braco)
 
 
+class OrigemDoTracado(unittest.TestCase):
+    """Cada arquivo de data/rios/ diz de que bruto veio e a data da base do OSM (chat, 2ª entrega, 06/10/2026)."""
+
+    def test_origem_sem_repeticao_e_ordenada(self):
+        a = way("Rio A")
+        b = way("Rio B")
+        c = way("Rio C")
+        ct.marcar_origem({"osm3s": {"timestamp_osm_base": "2026-10-06T12:21:47Z"}, "elements": [a, b]},
+                         ct.RAIZ / "data/brutos/x-osm.json")
+        ct.marcar_origem({"elements": [c]}, ct.RAIZ / "data/brutos/a-osm.json")
+        self.assertEqual(ct.origem_das_ways([a, b, c]), [
+            {"bruto": "a-osm.json", "base_osm": None},
+            {"bruto": "x-osm.json", "base_osm": "2026-10-06T12:21:47Z"},
+        ])
+
+    def test_os_arquivos_gravados_levam_a_base_do_bruto(self):
+        for arquivo in sorted(ct.SAIDA.glob("*.geojson")):
+            props = json.loads(arquivo.read_text(encoding="utf-8"))["properties"]
+            origem = props.get("origem")
+            if props.get("fonte") != ct.ATRIBUICAO:
+                continue  # o Sul da Asthon, quando é ele, não é OSM
+            self.assertTrue(origem, arquivo.name)
+            for o in origem:
+                bruto = ct.RAIZ / "data/brutos" / o["bruto"]
+                if not bruto.exists():
+                    continue
+                base = (json.loads(bruto.read_text(encoding="utf-8")).get("osm3s") or {}).get("timestamp_osm_base")
+                self.assertEqual(o["base_osm"], base, arquivo.name)
+
+
 if __name__ == "__main__":
     unittest.main()

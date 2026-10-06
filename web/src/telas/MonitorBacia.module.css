@@ -766,6 +766,20 @@
 .camadasControle h2 { font-size: 1rem; }
 .camadasControle p { font-size: 0.85rem; line-height: 1.4; }
 .rotuloCamada { background: #e6f3ff; color: #143d60; border-radius: 6px; padding: 8px; max-width: 360px; font-size: 0.85rem; }
+/* "limpar filtro" e "tirar marca" (chat, 2ª entrega): botão escuro sobre o aviso claro, alvo de toque cheio. */
+.botaoAviso {
+  appearance: none;
+  margin-left: 0.35rem;
+  min-height: 2.25rem;
+  padding: 0.2rem 0.7rem;
+  border: 1px solid #143d60;
+  border-radius: 0.35rem;
+  background: #143d60;
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
 
 .municipal { height: 100dvh; min-height: 28rem; border-radius: 0; }
 .resumoMunicipal { pointer-events: auto; display: grid; gap: .3rem; padding: .6rem; border-radius: .5rem; background: rgba(6,16,26,.88); color: #eaf1f8; max-width: min(24rem, 100%); font-size: .8rem; }
@@ -819,7 +833,7 @@
   .barra { min-width: 2.5rem; width: 0; }
   .instante { min-width: 3.5rem; font-size: .65rem; }
   .legenda { max-height: 28dvh; font-size: .72rem; padding: .3rem .5rem; }
-  .botaoLegenda { min-height: 44px; }
+  .botaoLegenda, .botaoAviso { min-height: 44px; }
 }
 
 /* Alternativa à Fullscreen API para navegadores que a recusam. */

@@ -50,6 +50,24 @@ export interface RespostaDoPresente {
   link?: { texto: string; para: string }
 }
 
+/**
+ * O texto de compartilhar da cidade (regra D4), com as regras do cartão "Agora": só leitura que não é velha,
+ * com a hora; cidade de várias réguas não tem um número só ('varias'). Usado pela resposta "como está X?" e
+ * pelo pedido "copiar resumo desta cidade" (docs/CHAT-GLOBAL-COMANDOS.md).
+ */
+export function compartilharDaCidade(cidade: Cidade, rioId: string, v: AoVivo): string | null | 'varias' {
+  const e = estadoDaCidade(cidade, rioId, v)
+  if (e.varias) return 'varias'
+  if (!e.leitura) return null
+  return textoParaCompartilhar({
+    cidade,
+    leitura: e.leitura,
+    rotuloFaixa: e.faixa === 'sem-dado' || e.faixa === 'varias' ? null : rotuloDaFaixa(e.faixa, cidade, ROTULO[e.faixa].rotulo),
+    tendencia: tendenciaDaLeitura(e.serie, e.leitura, v.agora),
+    agora: v.agora,
+  })
+}
+
 export const RODAPE_PRESENTE = 'É a última medição, não previsão. Para saber o que fazer, siga a Defesa Civil: ligue 199 (ou 193, Bombeiros, em emergência).'
 
 const JANELAS_CHAT: Janela[] = ['h1', 'h12', 'h24']
@@ -92,15 +110,8 @@ export function respostaDoPresente(args: {
   if (e.varias) {
     linhas.push(`${cidade.nome} tem várias réguas, cada uma com o seu zero: não há um número só para a cidade. A leitura de cada régua está na página de ${cidade.nome}.`)
   } else {
-    const texto = e.leitura
-      ? textoParaCompartilhar({
-          cidade,
-          leitura: e.leitura,
-          rotuloFaixa: e.faixa === 'sem-dado' || e.faixa === 'varias' ? null : rotuloDaFaixa(e.faixa, cidade, ROTULO[e.faixa].rotulo),
-          tendencia: tendenciaDaLeitura(e.serie, e.leitura, v.agora),
-          agora: v.agora,
-        })
-      : null
+    const pronto = compartilharDaCidade(cidade, rioId, v)
+    const texto = pronto === 'varias' ? null : pronto
     const est = e.estadual
     if (texto) {
       // O texto do WhatsApp (D4) sem o rodapé dele: o rodapé daqui vem no fim.

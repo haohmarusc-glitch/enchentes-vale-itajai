@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, useRef, type KeyboardEvent } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, type KeyboardEvent } from 'react'
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom'
 import { ROTA_MANCHAS_ITAJAI } from '../logica/rotaManchas'
 import { BotaoLetra, BotaoMinhaCidade } from '../componentes/BotoesPreferencia'
@@ -85,6 +85,21 @@ export default function TelaCidade() {
   const mapaBarragens = useBarragens()
   const abasRef = useRef<(HTMLButtonElement | null)[]>([])
 
+  // "Abrir o gráfico de Blumenau" no chat chega com `?secao=grafico` (docs/CHAT-GLOBAL-COMANDOS.md): a tela
+  // rola até "Últimas horas" UMA vez, quando o cartão aparece (a série chega depois da página).
+  const pedeGrafico = busca.get('secao') === 'grafico'
+  const rolouAoGrafico = useRef(false)
+  useEffect(() => {
+    rolouAoGrafico.current = false
+  }, [cidadeId, pedeGrafico])
+  const cartaoDoGrafico = useCallback(
+    (el: HTMLElement | null) => {
+      if (!el || !pedeGrafico || rolouAoGrafico.current) return
+      rolouAoGrafico.current = true
+      el.scrollIntoView({ block: 'start' })
+    },
+    [pedeGrafico],
+  )
   const pedida = busca.get('aba')
   const aba: Aba = ABAS.some((a) => a.id === pedida) ? (pedida as Aba) : 'agora'
   const irPara = (nova: Aba, focar = false) => {
@@ -218,7 +233,7 @@ export default function TelaCidade() {
             ) : null}
 
             {estado.serie.length > 0 && cotas.length > 0 ? (
-              <section className="cartao">
+              <section className="cartao" id="ultimas-horas" ref={cartaoDoGrafico}>
                 <h2>Últimas horas em {cidade.nome}</h2>
                 <Suspense fallback={<span className={`esqueleto ${estilos.esqGrafico}`} />}>
                   <LinhaDoTempo cidade={cidade} serie={estado.serie} agora={agora} resgates={serie.resgates} />

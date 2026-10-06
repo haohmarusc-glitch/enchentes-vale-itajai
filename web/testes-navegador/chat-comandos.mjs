@@ -6,7 +6,10 @@
  *  - um pedido não faz o que diz ("zoom na régua DC-05" e o seletor não muda; "voltar" e nada volta);
  *  - pergunta mudando o mapa;
  *  - o painel do chat aberto cobrindo o zoom, a legenda ou o menu no Monitor;
- *  - erro de JavaScript na página.
+ *  - erro de JavaScript na página;
+ *  - 2ª entrega: link sem régua/fundo ou sem o aviso de acesso; filtro dito e não mostrado (ou o contrário);
+ *    confluência sem a coordenada do cadastro, ou ponto marcado para rio sem ponto gravado; traçado sem a
+ *    data da base; montante sem o aviso de que ligação não é previsão; gráfico que não abre a página.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -41,6 +44,17 @@ const ultimaResposta = (pg) => pg.evaluate(() => {
   const naLinha = document.querySelector('[class*="global-ultima"] p')
   return (noPainel ?? naLinha)?.innerText ?? ''
 })
+/** Pede e espera a resposta casar com `re` (respostas que leem as leituras ao vivo podem levar segundos). */
+async function pedirAte(pg, texto, re, ms = 15000) {
+  await pedir(pg, texto)
+  const fim = Date.now() + ms
+  let r = await ultimaResposta(pg)
+  while (!re.test(r) && Date.now() < fim) {
+    await pg.waitForTimeout(500)
+    r = await ultimaResposta(pg)
+  }
+  return r
+}
 /** Só exceção da página conta: sem rede, os mosaicos do fundo falham por certificado, e isso não é do chat. */
 const excecoes = (erros) => erros.filter((e) => e.startsWith('PAGEERROR'))
 
@@ -100,7 +114,35 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 3. Página com chat próprio: a barra do topo some.
+  // 3. 2ª entrega: link, filtro, confluência, traçado, árvore, leituras, gráfico.
+  {
+    const { b, pg, erros } = await abrir('#/monitor/itajai', { largura: w, altura: h })
+    await pedir(pg, 'zoom na régua DC-05')
+    let r = await pedirAte(pg, 'copiar link desta visualização', /Link desta visualização/)
+    ok(/#\/monitor\/itajai\?regua=DC-05&fundo=/.test(r) && /e-mail cadastrado/.test(r), 'copiar link: régua e fundo no endereço, com o aviso do acesso')
+    ok((await pg.getByRole('button', { name: 'Copiar' }).count()) >= 1, 'copiar link: o botão "Copiar" fica à vista (a conversa não recolhe)')
+    r = await pedirAte(pg, 'mostrar só as réguas sem leitura', /Filtro ligado|têm leitura de agora/)
+    const chipFiltro = await pg.getByText('Filtro: só cidades e réguas sem leitura de agora').count()
+    ok(/Filtro ligado/.test(r) ? chipFiltro === 1 : chipFiltro === 0, `filtro: o que o chat diz é o que a tela mostra (${r.slice(0, 60)}…)`)
+    await pedirAte(pg, 'limpar filtros', /Filtro limpo|Não há filtro/)
+    ok((await pg.getByText('Filtro: só cidades e réguas sem leitura de agora').count()) === 0, 'limpar filtros: o aviso do filtro saiu da tela')
+    r = await pedirAte(pg, 'ver a confluência do Benedito', /Benedito/)
+    ok(/−26,89134, −49,23557/.test(r) && (await pg.getByText(/^Marca: Confluência do Rio Benedito/).count()) === 1, 'confluência do Benedito: coordenada do cadastro e a marca escrita na tela')
+    r = await pedirAte(pg, 'confluência do Luís Alves', /Luís Alves/)
+    ok(/não tem ponto de confluência gravado/.test(r), 'Luís Alves: diz que não há ponto, não marca nada')
+    r = await pedirAte(pg, 'de onde vem o traçado do Benedito?', /Traçado do Rio Benedito/)
+    ok(/Base do OpenStreetMap: 06\/10\/2026/.test(r), 'origem do traçado: a data da base do OSM')
+    r = await pedirAte(pg, 'o que fica a montante de Blumenau?', /montante|Rio do Sul/)
+    ok(/Rio do Sul → Lontras/.test(r) && /não é previsão/.test(r), 'montante: pela árvore, com o aviso de que ligação não é previsão')
+    r = await pedirAte(pg, 'quais leituras estão atrasadas?', /Réguas municipais|Não consegui|nenhuma leitura/)
+    ok(/Réguas municipais|Não consegui|nenhuma leitura/.test(r), `leituras atrasadas: responde com a regra de idade ou diz que não conseguiu (${r.slice(0, 50)}…)`)
+    await pedirAte(pg, 'gráfico de Blumenau', /gráfico/)
+    await pg.waitForTimeout(1000)
+    ok(pg.url().endsWith('#/acu/blumenau?secao=grafico'), `gráfico: abriu ${pg.url().split('#')[1]}`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 4. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

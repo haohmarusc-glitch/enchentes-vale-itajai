@@ -199,6 +199,30 @@
   opacity: 0.55;
 }
 
+/* "Copiar" do resumo e do link (2ª entrega dos comandos): copia, nunca envia. */
+.chat-copiar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.chat-copiar button {
+  min-height: 2.75rem; /* alvo de toque */
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--agua-clara);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--agua);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-copiar span {
+  font-size: 0.9em;
+}
+
 /* Atalho para a página da cidade na resposta sobre o presente ("Ver Blumenau agora →"). */
 .chat-link {
   display: inline-block;

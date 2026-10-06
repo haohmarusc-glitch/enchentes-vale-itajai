@@ -36,6 +36,27 @@ export type Passo =
   | { tipo: 'por_que_cinza'; cidadeId?: string }
   | { tipo: 'coordenada'; cidadeId?: string }
   | { tipo: 'ajuda' }
+  // --- 2ª entrega (docs/CHAT-GLOBAL-COMANDOS.md)
+  /** Quais leituras estão atrasadas ou velhas, pela regra de idade do site (`frescorDaCidade`). */
+  | { tipo: 'atrasadas' }
+  /** Filtro do Monitor: só as cidades e réguas sem leitura de agora; null limpa. */
+  | { tipo: 'filtro'; filtro: 'sem_leitura' | null }
+  /** O gráfico das últimas horas, na página da cidade. */
+  | { tipo: 'abrir_grafico'; cidadeId?: string }
+  /** A variação medida na última hora, numa régua só. */
+  | { tipo: 'ultima_hora'; cidadeId?: string }
+  /** Fonte, cobertura e data da base do traçado do rio. `rio` = arquivo de `data/rios/`. */
+  | { tipo: 'origem_tracado'; cidadeId?: string; rio?: string }
+  /** O que fica a montante, ou os afluentes do trecho, pela árvore da bacia. */
+  | { tipo: 'montante'; cidadeId?: string; foco: 'montante' | 'afluentes' }
+  /** Centra o mapa num ponto de confluência gravado no cadastro (ou diz que não há ponto). */
+  | { tipo: 'confluencia'; id: string }
+  /** As réguas de uma cidade de várias réguas, lado a lado, sem subtrair. */
+  | { tipo: 'comparar_reguas'; cidadeId?: string }
+  /** O texto de compartilhar da cidade (regra D4): preparado para copiar, nunca enviado. */
+  | { tipo: 'copiar_resumo'; cidadeId?: string }
+  /** O endereço da tela aberta, com régua e fundo, para copiar. */
+  | { tipo: 'copiar_link' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }
@@ -61,14 +82,49 @@ export interface CidadeDoCatalogo {
 export interface ReguaDoCatalogo {
   /** Código do cadastro (`estacoes_tempo_real[].codigo`), a chave do seletor do Monitor. */
   codigo: string
+  /** Título da régua na fonte (`estacoes_tempo_real[].titulo`): a chave da leitura e da série. */
+  titulo: string
   /** Nome do lugar, como o mapa mostra ("Sítio Sr. Hilário"). */
   nome: string
   cidadeId: string
 }
 
+/** Um ponto de confluência com coordenada gravada no cadastro, e a fonte dela. */
+export interface Confluencia {
+  id: string
+  nome: string
+  /** Palavras (normalizadas) que nomeiam este encontro num pedido: "benedito", "trombudo". */
+  chaves: string[]
+  lat: number
+  lon: number
+  fonte: string
+}
+
+/** Um rio que entra na bacia sem ponto de confluência gravado: o chat diz isso, não inventa. */
+export interface ConfluenciaSemPonto {
+  id: string
+  nome: string
+  chaves: string[]
+  motivo: string
+}
+
+/** A árvore de um rio, como o cadastro a declara (`_topologia`). */
+export interface TopologiaDoRio {
+  rioId: string
+  tronco: string[]
+  cabeceiras: string[]
+  laterais: { id: string; rio: string; entraPertoDe: string }[]
+  afluentesSemRegua: { nome: string; entraPertoDe: string; pontoExato: string | null }[]
+}
+
 export interface Catalogo {
   cidades: CidadeDoCatalogo[]
   reguas: ReguaDoCatalogo[]
+  confluencias?: Confluencia[]
+  semPonto?: ConfluenciaSemPonto[]
+  topologia?: TopologiaDoRio[]
+  /** Cidade fora da árvore, com a ligação que a fonte dá (Trombudo Central → Itajaí do Oeste). */
+  foraDaArvore?: { id: string; rio: string; chegaA: string; lat: number; lon: number; fonte: string }[]
 }
 
 /** O resultado REAL de um passo, dito ao chat. */

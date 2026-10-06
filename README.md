@@ -536,8 +536,17 @@ o projeto.
     - "o que estou vendo?", "por que essa régua está cinza?", "essa coordenada foi confirmada?".
 
     O chat diz o resultado real; pergunta não mexe no mapa.
-  - [ ] **Segunda entrega:** leituras atrasadas, filtro de qualidade, gráfico, proveniência do traçado,
-    montante, comparação e links.
+  - [x] **Segunda entrega (06/10/2026):**
+    - leituras atrasadas, pela regra de idade do site e sem o número da leitura atrasada;
+    - "mostrar só as réguas sem leitura": filtro no Monitor, escrito na tela, com "limpar filtro";
+    - gráfico "Últimas horas" da cidade; "o que mudou na última hora", numa régua só, com lacunas;
+    - origem do traçado, com a data da base do OSM, que o conversor passou a gravar em `data/rios/`;
+    - montante e afluentes pela árvore do cadastro;
+    - confluência marcada no mapa só onde o cadastro tem o ponto (Benedito, Trombudo → Oeste, nascente do Açu);
+    - réguas de Itajaí lado a lado, sem subtrair;
+    - copiar resumo (D4) e copiar link: o chat prepara, a pessoa copia e envia.
+
+    Arquivos do Monitor alterados com o rótulo `monitor-autorizado`. Ver o doc, "Segunda entrega".
   - [ ] **Rua no mapa e rua destacada sobre as manchas:** só Itajaí, Gaspar e Brusque têm coordenada.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.

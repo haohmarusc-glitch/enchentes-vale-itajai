@@ -101,6 +101,10 @@ dele, o texto é tentado como **pedido** ("mostrar Blumenau", "zoom na régua DC
 tipados, e o chat diz o resultado real de cada um. Pergunta continua aqui, com as mesmas regras. Ver
 `docs/CHAT-GLOBAL-COMANDOS.md`.
 
+A 2ª entrega (06/10/2026) acrescentou pedidos que respondem lendo o site: leituras atrasadas, a última hora
+de uma régua, montante e afluentes, a origem do traçado, as réguas de Itajaí lado a lado, o resumo e o link
+para copiar. O resumo para copiar é o mesmo texto de "como está X?" (`compartilharDaCidade`).
+
 ### Contagem sem misturar escalas, e a pergunta da rua (04/10/2026, decisão do Jefferson)
 
 - **`contar_acima` conta só uma escala.** Cada pico tem a sua (`escalaDoPico`): régua da cidade, zero do IBGE,

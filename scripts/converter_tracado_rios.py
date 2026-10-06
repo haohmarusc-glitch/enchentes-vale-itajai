@@ -273,26 +273,51 @@ def linha_do_way(way: dict) -> list[list[float]]:
             if isinstance(p.get("lon"), (int, float)) and isinstance(p.get("lat"), (int, float))]
 
 
+def ways_por_substring(elementos: list[dict], chaves: list[str]) -> list[dict]:
+    """Ways (com geometria de 2+ pontos) cujo `name` (minúsculo) contém alguma das chaves — para afluentes."""
+    return [e for e in elementos
+            if e.get("type") == "way" and "geometry" in e
+            and any(c in ((e.get("tags") or {}).get("name") or "").lower() for c in chaves)
+            and len(linha_do_way(e)) >= 2]
+
+
+def ways_por_nome_exato(elementos: list[dict], nomes: list[str]) -> list[dict]:
+    """Ways (com geometria de 2+ pontos) cujo `name` (minúsculo) é exatamente um dos nomes."""
+    return [e for e in elementos
+            if e.get("type") == "way" and "geometry" in e
+            and ((e.get("tags") or {}).get("name") or "").lower() in nomes
+            and len(linha_do_way(e)) >= 2]
+
+
 def linhas_por_substring(elementos: list[dict], chaves: list[str]) -> list[list[list[float]]]:
     """Ways cujo `name` (minúsculo) contém alguma das chaves — para afluentes."""
-    linhas = []
-    for e in elementos:
-        if e.get("type") != "way" or "geometry" not in e:
-            continue
-        nome = ((e.get("tags") or {}).get("name") or "").lower()
-        if any(c in nome for c in chaves):
-            linha = linha_do_way(e)
-            if len(linha) >= 2:
-                linhas.append(linha)
-    return linhas
+    return [linha_do_way(e) for e in ways_por_substring(elementos, chaves)]
 
 
 def linhas_por_nome_exato(elementos: list[dict], nomes: list[str]) -> list[list[list[float]]]:
     """Ways cujo `name` (minúsculo) é exatamente um dos nomes."""
-    return [linha for e in elementos
-            if e.get("type") == "way" and "geometry" in e
-            and ((e.get("tags") or {}).get("name") or "").lower() in nomes
-            and len(linha := linha_do_way(e)) >= 2]
+    return [linha_do_way(e) for e in ways_por_nome_exato(elementos, nomes)]
+
+
+def marcar_origem(dados: dict, bruto: pathlib.Path) -> list[dict]:
+    """
+    Os elementos do bruto, cada um marcado com o arquivo e a data da base do OSM de onde veio.
+
+    A data da base (`osm3s.timestamp_osm_base`) é a da cópia do OpenStreetMap que o espelho respondeu, não a
+    do download (docs/TRACADOS-AFLUENTES-2026-10-06.md). Ela morava só no bruto; com isto ela vai para o
+    arquivo de `data/rios/`, e o chat responde "de onde vem esse traçado?" com a data (docs/CHAT-GLOBAL-COMANDOS.md).
+    """
+    base = (dados.get("osm3s") or {}).get("timestamp_osm_base")
+    elementos = dados.get("elements") or []
+    for e in elementos:
+        e["_origem"] = (bruto.name, base if isinstance(base, str) else None)
+    return elementos
+
+
+def origem_das_ways(ways: list[dict]) -> list[dict]:
+    """Os brutos de onde vieram as ways do arquivo, sem repetição: [{"bruto": ..., "base_osm": ...}]."""
+    vistos = sorted({w["_origem"] for w in ways if "_origem" in w}, key=lambda o: (o[0], o[1] or ""))
+    return [{"bruto": b, "base_osm": base} for b, base in vistos]
 
 
 def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
@@ -306,6 +331,7 @@ def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
 def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]]) -> dict:
     linhas = []
     faltando = []
+    usadas = []
     for nome in nomes:
         ways = por_nome.get(nome) or []
         if not ways:
@@ -314,11 +340,12 @@ def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]
             linha = linha_do_way(w)
             if len(linha) >= 2:
                 linhas.append(linha)
+                usadas.append(w)
     if faltando:
         # Nome esperado que não veio: o bruto mudou ou a query pegou coisa
         # diferente. Grita, não emite um rio pela metade em silêncio.
         raise SystemExit(f"{rio_id}: nomes ausentes no bruto: {faltando}")
-    return {
+    feat = {
         "type": "Feature",
         "properties": {
             "rio": rio_id,
@@ -327,6 +354,9 @@ def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]
         },
         "geometry": {"type": "MultiLineString", "coordinates": linhas},
     }
+    if origem := origem_das_ways(usadas):
+        feat["properties"]["origem"] = origem
+    return feat
 
 
 def linhas_do_geojson_asthon(caminho: pathlib.Path, nome: str) -> list[list[list[float]]]:
@@ -355,8 +385,8 @@ def main() -> int:
     if not BRUTO.exists():
         raise SystemExit(f"falta o bruto {BRUTO} — baixe na VPS (ver docs)")
     dados = json.loads(BRUTO.read_text(encoding="utf-8"))
-    por_nome = ways_por_nome(dados.get("elements") or [])
-    elementos = dados.get("elements") or []
+    elementos = marcar_origem(dados, BRUTO)
+    por_nome = ways_por_nome(elementos)
 
     # O bruto dos ribeirões entra SÓ na busca por substring (afluentes
     # opcionais). O tronco continua saindo do bruto conferido, intocado.
@@ -367,7 +397,7 @@ def main() -> int:
         if extra_caminho.exists():
             extra = json.loads(extra_caminho.read_text(encoding="utf-8"))
             n = len(extra.get("elements") or [])
-            elementos = elementos + (extra.get("elements") or [])
+            elementos = elementos + marcar_origem(extra, extra_caminho)
             print(f"bruto ({oque}): +{n} elemento(s) de {extra_caminho.name}")
         else:
             print(f"sem {extra_caminho.name} — {oque} fica de fora "
@@ -408,8 +438,9 @@ def main() -> int:
     f = FOLGA_DA_CAIXA_GRAUS
     caixa = (oeste - f, sul - f, leste + f, norte + f)
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
-        linhas = (linhas_por_nome_exato(elementos, chaves) if rio_id in NOMES_EXATOS
-                  else linhas_por_substring(elementos, chaves))
+        ways = (ways_por_nome_exato(elementos, chaves) if rio_id in NOMES_EXATOS
+                else ways_por_substring(elementos, chaves))
+        linhas = [linha_do_way(w) for w in ways]
         if rio_id in CORTE_NORTE:
             linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
         if rio_id in RECORTE_NA_CAIXA:
@@ -421,6 +452,8 @@ def main() -> int:
                   "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
             continue
         feat = feature_do_rio(rio_id, linhas)
+        if origem := origem_das_ways(ways):
+            feat["properties"]["origem"] = origem
         if rio_id in RECORTE_NA_CAIXA:
             feat["properties"]["cobertura"] = (
                 "RECORTADO na caixa do mapa (extensão do tronco e das réguas do cadastro), para não mudar o "
@@ -445,7 +478,7 @@ def main() -> int:
     for bruto in BRUTOS_MUNICIPIOS:
         municipio = bruto.name[len("rios-"):-len("-osm.json")]
         dados_m = json.loads(bruto.read_text(encoding="utf-8"))
-        for nome, ways in sorted(ways_por_nome(dados_m.get("elements") or []).items()):
+        for nome, ways in sorted(ways_por_nome(marcar_origem(dados_m, bruto)).items()):
             if ja_desenhado(nome):
                 continue
             linhas = recortar_ao_sul([linha_do_way(w) for w in ways if len(linha_do_way(w)) >= 2], lat_max)
@@ -453,6 +486,8 @@ def main() -> int:
                 continue
             rio_id = slug(nome)
             feat = feature_do_rio(rio_id, linhas)
+            if origem := origem_das_ways(ways):
+                feat["properties"]["origem"] = origem
             feat["properties"]["nome"] = nome
             feat["properties"]["municipio"] = municipio
             grava(feat, rio_id)

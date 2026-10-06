@@ -16,6 +16,18 @@ export interface Retrato {
   regua?: string | null
   fundo?: Fundo
   camada?: string | null
+  filtro?: FiltroMonitor
+  marca?: MarcaNoMapa | null
+}
+
+/** Filtro do Monitor pedido pelo chat (2ª entrega): só cidades e réguas sem leitura de agora. */
+export type FiltroMonitor = 'sem_leitura' | null
+
+/** Um ponto marcado no mapa pelo chat (confluência), com o nome e a fonte que o painel mostra. */
+export interface MarcaNoMapa {
+  lat: number
+  lon: number
+  rotulo: string
 }
 
 export interface EstadoMonitor {
@@ -31,6 +43,9 @@ export interface EstadoMonitor {
   camadasDisponiveis: { arquivo: string; rotulo: string }[]
   /** Reprodução ligada: a hora mostrada (passado). Null = leituras ao vivo. */
   reproducao: string | null
+  filtro?: FiltroMonitor
+  /** O ponto marcado pelo chat, pelo nome; null sem marca. */
+  marca?: string | null
 }
 
 export interface Explicacao {
@@ -57,6 +72,10 @@ export interface ControleMonitor {
   /** `arquivo` = uma camada de `camadasDisponiveis`; 'off' desliga. */
   camada(arquivo: string | 'off'): Resultado
   aoVivo(): Resultado
+  /** Liga ou limpa o filtro "só sem leitura de agora"; o filtro aparece escrito na tela, com "limpar". */
+  filtrar?(f: FiltroMonitor): Resultado
+  /** Marca um ponto (confluência) e centra nele; null tira a marca. */
+  marcarPonto?(p: MarcaNoMapa | null): Resultado
   explicar(cidadeId: string): Explicacao | null
   retrato(): Retrato
   restaurar(r: Retrato): Resultado

@@ -31,7 +31,7 @@
  * Antes do motor, o texto é tentado como PEDIDO (`comandos/`): "mostrar Blumenau", "zoom na régua DC-05".
  * Só comandos do registro executam, e o chat diz o resultado real de cada um.
  */
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { EXEMPLOS, citaRua, responder, type Dados } from './motor'
 import { carregarBase, carregarCotasAna, carregarCotasRuas, carregarRuasManchaItajai } from './carregar'
@@ -89,7 +89,46 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
   const [texto, setTexto] = useState('')
   const [aoVivoProprio, setAoVivoProprio] = useState<AoVivo | null>(null)
   const aoVivo = aoVivoDaPagina ?? aoVivoProprio
-  const comandos = useComandos()
+  // Os pedidos da 2ª entrega ("quais leituras estão atrasadas?") leem as leituras ao vivo: esperam a primeira
+  // busca terminar, com limite, em vez de responder com dado que ainda não chegou.
+  const aoVivoRef = useRef<AoVivo | null>(null)
+  aoVivoRef.current = aoVivo
+  const esperasAoVivo = useRef(new Set<() => void>())
+  useEffect(() => {
+    esperasAoVivo.current.forEach((f) => f())
+  }, [aoVivo])
+  const obterAoVivo = useCallback(
+    () =>
+      new Promise<AoVivo | null>((resolver) => {
+        const pronto = () => {
+          const v = aoVivoRef.current
+          return v && v.tempoReal.situacao !== 'carregando' && v.serie.situacao !== 'carregando' ? v : null
+        }
+        const ja = pronto()
+        if (ja) return resolver(ja)
+        setVisivel(true)
+        const ouvir = () => {
+          const v = pronto()
+          if (!v) return
+          esperasAoVivo.current.delete(ouvir)
+          clearTimeout(limite)
+          resolver(v)
+        }
+        const limite = setTimeout(() => {
+          esperasAoVivo.current.delete(ouvir)
+          const v = aoVivoRef.current
+          resolver(v && v.tempoReal.situacao !== 'carregando' ? v : null)
+        }, 12_000)
+        esperasAoVivo.current.add(ouvir)
+      }),
+    [],
+  )
+  const comandos = useComandos(obterAoVivo)
+  const [copiados, setCopiados] = useState<Record<number, 'ok' | 'falhou'>>({})
+  // "Limpar" zera a conversa: o "Copiado." de uma mensagem antiga não pode aparecer numa nova.
+  useEffect(() => {
+    if (msgs.length === 0) setCopiados({})
+  }, [msgs.length])
   useLocation() // redesenha ao navegar: o contexto (cidade, Monitor) vem do endereço
   const pendente = useRef<string | null>(null)
   // O servidor está contando? Começa em "não": sem resposta, nada é contado nem prometido.
@@ -252,6 +291,30 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
     rolarAoFim()
   }
 
+  /** Copia o texto preparado (resumo, link). Sem permissão de área de transferência, diz para selecionar. */
+  async function copiar(indice: number, texto: string) {
+    let ok = false
+    try {
+      await navigator.clipboard.writeText(texto)
+      ok = true
+    } catch {
+      try {
+        const area = document.createElement('textarea')
+        area.value = texto
+        area.setAttribute('readonly', '')
+        area.style.position = 'fixed'
+        area.style.opacity = '0'
+        document.body.appendChild(area)
+        area.select()
+        ok = document.execCommand('copy')
+        area.remove()
+      } catch {
+        ok = false
+      }
+    }
+    setCopiados((c) => ({ ...c, [indice]: ok ? 'ok' : 'falhou' }))
+  }
+
   function rolarAoFim() {
     setTimeout(() => fim.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 30)
   }
@@ -331,6 +394,16 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
               <button type="button" className={estilos['chat-botao-ia']} disabled={esperandoIA} onClick={() => perguntarAIA(i, msg.paraIA!)}>
                 Perguntar à IA
               </button>
+            ) : null}
+            {msg.copiar ? (
+              <div className={estilos['chat-copiar']}>
+                <button type="button" onClick={() => void copiar(i, msg.copiar!)}>
+                  Copiar
+                </button>
+                {copiados[i] ? (
+                  <span role="status">{copiados[i] === 'ok' ? 'Copiado.' : 'Não consegui copiar: selecione o texto acima.'}</span>
+                ) : null}
+              </div>
             ) : null}
             {msg.link ? (
               <Link className={estilos['chat-link']} to={msg.link.para}>
