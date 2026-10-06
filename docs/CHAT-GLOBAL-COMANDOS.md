@@ -68,7 +68,7 @@ que ainda não temos.
 
 ## Matriz de comandos
 
-`1ª` = primeira entrega · `2ª` = segunda (✓ = entregue em 06/10/2026) · `dado` = depende de dado ou infraestrutura · `não` = fora de escopo.
+`1ª` = primeira entrega · `2ª` = segunda · `3ª` = terceira (✓ = entregue em 06/10/2026) · `dado` = depende de dado ou infraestrutura · `não` = fora de escopo.
 
 | Pedido (exemplo) | Entrega | Observação conferida |
 |---|---|---|
@@ -96,16 +96,16 @@ que ainda não temos.
 | "comparar as réguas de Itajaí" | 2ª ✓ | lado a lado com hora e referência; nunca subtrai referências diferentes |
 | "copiar resumo desta cidade" | 2ª ✓ | `textoParaCompartilhar` (D4: sem endereço, com hora, sem ordem de ação) |
 | "copiar link desta visualização" | 2ª ✓ | `#/monitor/…?regua=…&fundo=…`. **Atenção:** o site só abre para e-mail cadastrado, e isso tem de vir escrito junto |
-| "mostrar a rua X, Itajaí" + destaque | 3ª | traçado real da via (GeoItajaí); escolha entre homônimos |
-| "rua X, Gaspar/Brusque" | 3ª | só ponto: "localização aproximada; traçado da rua indisponível" |
+| "mostrar a rua X, Itajaí" + destaque | 3ª ✓ | traçado real da via (GeoItajaí); escolha entre homônimos |
+| "rua X, Gaspar/Brusque" | 3ª ✓ | só ponto: "localização aproximada; traçado da rua indisponível" |
 | "rua X, Blumenau/Rio do Sul" | dado | só a cota; sem ponto no mapa (decisão 3) |
-| "manchas na rua X" com rua em outra cor | 3ª | ver abaixo |
+| "manchas na rua X" com rua em outra cor | 3ª ✓ | ver abaixo |
 | "relatar problema nesta régua" | dado | não há canal; no máximo preparar o texto para a pessoa copiar |
 | "usar minha localização" | dado | fase posterior, só com permissão pedida na hora |
 | "tela cheia" | não | o navegador exige toque no botão; o chat aponta o botão |
 | evacuar ou ficar, "é seguro?", previsão de hora exata | não | barreira do presente: dado, hora e 199 |
 
-## Rua destacada sobre as manchas (3ª entrega)
+## Rua destacada sobre as manchas (3ª entrega — saiu em 06/10/2026, ver o fim do documento)
 
 - **Onde já existe:** em Itajaí, o mapa de manchas (`MapaManchas`, Leaflet) já destaca a via buscada em branco
   tracejado e enquadra nela.
@@ -254,9 +254,9 @@ página ficava no Início. Corrigido com dependências pelas peças (`AoVivoDoCh
 ### O que ficou para depois (dependências)
 
 - **Segunda entrega:** saiu em 06/10/2026 (seção abaixo).
+- **Rua no mapa e rua sobre as manchas:** saíram na 3ª entrega (fim do documento). Blumenau e Rio do Sul
+  continuam sem ponto no mapa, porque a fonte não publica a coordenada.
 - **Depende de dado:**
-  - rua no mapa: Itajaí, Gaspar e Brusque têm coordenada; Blumenau e Rio do Sul não;
-  - rua destacada sobre as manchas;
   - relatar problema (não há canal);
   - "usar minha localização".
 - **Tela cheia:** só pelo botão, porque o navegador exige o toque da pessoa.
@@ -313,3 +313,56 @@ Os dez pedidos da matriz marcados com ✓. Mesmo desenho da 1ª entrega: o texto
 - Sonda manual com os dados reais do branch `tempo-real` (06/10/2026, 14h): 17 de 17 réguas municipais em dia;
   Rio do Sul +5 cm na última hora; as onze de Itajaí lado a lado; filtro com Lontras, Apiúna e Indaial (as três
   sem leitura estadual utilizável); resumo de Rio do Sul pronto para copiar.
+
+## Terceira entrega (06/10/2026): a rua no mapa
+
+O plano da seção "Rua destacada sobre as manchas", com as regras dela. Nada é geocodificado na hora: só entra no
+mapa o que a fonte publicou com geometria.
+
+### Os pedidos
+
+| Pedido | Itajaí | Gaspar e Brusque | Blumenau, Rio do Sul e outras |
+|---|---|---|---|
+| "mostrar a rua X", "zoom na avenida Y", "onde fica a rua Z em Gaspar" | Abre o mapa das manchas com o **traçado real** da via (base de vias da Prefeitura) destacado, e diz a interseção com cada cenário. | Abre o Monitor da cidade e marca **os pontos de cota** da rua (um anel por ponto, nenhuma linha entre eles), com a cota de cada um na régua da cidade e o aviso "localização aproximada; traçado da rua indisponível". | Diz que a rua tem cota, mas a fonte não publica a coordenada. O mapa não muda; sugere a pergunta da cota. |
+| "manchas na rua X", "mancha de 2008 na rua X" | Destaca a rua e, com o ano, troca o cenário. Sem ano, com várias cheias cruzando a rua, **pergunta qual cenário mostrar** em vez de trocar. | — | — |
+| "remover destaque", "tirar a marca" | Tira a rua do endereço e do mapa. | Tira os anéis do Monitor. | — |
+
+- **Homônimos:** a base de Itajaí tem "R." e "Av." com o mesmo nome (Carlos Drumond de Andrade, Jorge Mattos…).
+  O tipo escrito pela pessoa ("rua", "avenida") decide; sem ele, o chat pergunta qual, e nada é marcado antes.
+- **Sem cidade no pedido:** vale a cidade da tela, se a rua estiver lá. Senão, o chat procura em Itajaí,
+  Gaspar e Brusque e pergunta se achar em mais de uma.
+- **Interseção, nunca alagamento:** "Interseção com o cenário de novembro de 2008: 32% do trecho (727 m)
+  dentro da mancha". Rua fora da mancha "não quer dizer rua segura". O texto sai de
+  `manchas/itajai/ruas-por-mancha.json`, o mesmo cruzamento do chat de perguntas (corte de 10 m).
+
+### O destaque no mapa das manchas (`componentes/MapaManchas.tsx`)
+
+- **Aparência:** linha magenta (`#ff3db8`) com contorno escuro, num pane próprio acima das manchas (z 450). A
+  escala azul de profundidade não muda.
+  - O nome da rua vai escrito sobre a linha.
+  - A legenda diz "rua selecionada, destaque de localização", e que o destaque não indica risco.
+  - O contorno escuro foi conferido nos três fundos.
+- **O endereço manda:** `?rua=<nome na base>&cenario=<evento>`.
+  - A busca da própria página (`BuscaViaItajai`) grava o mesmo `?rua=`, então o destaque é um só, com o chat
+    ou sem ele.
+  - O link leva o destaque junto, e "voltar ao mapa de antes" o restaura.
+- **Comportamento:**
+  - trocar de cenário mantém a rua e o enquadramento dela;
+  - "Remover destaque" tira só a rua;
+  - sair de Itajaí limpa, porque o endereço é outro.
+- **Base de vias:** `dados/viasItajai.ts` baixa a base uma vez por página e a reparte entre a busca e o chat.
+
+### No Monitor (rótulo `monitor-autorizado`)
+
+- A marca do chat (`marcarPonto`) aceita vários pontos (`extras`) e a largura da vista (`km`): os pontos de cota
+  de uma rua de Gaspar ou Brusque entram juntos, centrados no meio deles.
+
+### Testes
+
+- `src/comandos/terceira.test.ts` (11), com as bases de verdade: casar nomes e homônimos; frases que viram
+  pedido e as que continuam pergunta ("Rua XV de Novembro, Blumenau", "a rua X alagou em 2011?"); os textos
+  de interseção e de ponto; o executor com Itajaí, Gaspar, Blumenau, "remover destaque" e "voltar".
+- `testes-navegador/chat-comandos.mjs`, seção 4: o endereço, o traço magenta, a legenda, o nome escrito, a
+  troca de cenário com a rua mantida, a interseção, "remover destaque", a marca de Gaspar e Blumenau sem
+  mexer no mapa.
+

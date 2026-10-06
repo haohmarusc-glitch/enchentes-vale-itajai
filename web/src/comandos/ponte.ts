@@ -28,6 +28,10 @@ export interface MarcaNoMapa {
   lat: number
   lon: number
   rotulo: string
+  /** Largura da vista, em km (padrão 6; rua, mais perto). */
+  km?: number
+  /** Outros pontos da mesma marca (os pontos de cota de uma rua): cada um ganha o seu anel. */
+  extras?: { lat: number; lon: number }[]
 }
 
 export interface EstadoMonitor {

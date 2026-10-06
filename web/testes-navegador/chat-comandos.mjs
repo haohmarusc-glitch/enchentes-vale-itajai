@@ -9,7 +9,10 @@
  *  - erro de JavaScript na página;
  *  - 2ª entrega: link sem régua/fundo ou sem o aviso de acesso; filtro dito e não mostrado (ou o contrário);
  *    confluência sem a coordenada do cadastro, ou ponto marcado para rio sem ponto gravado; traçado sem a
- *    data da base; montante sem o aviso de que ligação não é previsão; gráfico que não abre a página.
+ *    data da base; montante sem o aviso de que ligação não é previsão; gráfico que não abre a página;
+ *  - 3ª entrega: rua de Itajaí sem o traçado magenta, sem a legenda de destaque ou sem a interseção; cenário que
+ *    apaga a rua; "remover destaque" que não remove; rua de Gaspar sem a marca e o aviso de localização
+ *    aproximada; rua de Blumenau mexendo no mapa.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -142,7 +145,36 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 4. Página com chat próprio: a barra do topo some.
+  // 4. 3ª entrega: a rua no mapa.
+  {
+    const { b, pg, erros } = await abrir('#/itajai', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'mostrar a Avenida 7 de Setembro em Itajaí', /destacada|Não consegui/)
+    await pg.waitForTimeout(2500)
+    ok(pg.url().includes('#/itajai?secao=manchas&rua=Av.7+de+Setembro'), `rua de Itajaí: o endereço leva a rua (${pg.url().split('#')[1]})`)
+    ok(/Interseção com as manchas/.test(r) && /não quer dizer rua segura/.test(r), 'rua de Itajaí: interseção com os cenários e a ressalva')
+    const traco = await pg.evaluate(() => [...document.querySelectorAll('.leaflet-rua-pane path, .leaflet-pane path')].some((p) => p.getAttribute('stroke') === '#ff3db8'))
+    ok(traco, 'rua de Itajaí: o traçado magenta está no mapa')
+    ok((await pg.getByText('rua selecionada, destaque de localização').count()) >= 1, 'rua de Itajaí: a legenda diz que é destaque, não risco')
+    ok((await pg.getByText(/^Avenida 7 de Setembro$/).count()) >= 1, 'rua de Itajaí: o nome escrito sobre o mapa')
+    await pedirAte(pg, 'mancha de 2008 na Avenida 7 de Setembro em Itajaí', /novembro de 2008/)
+    await pg.waitForTimeout(2000)
+    ok((await pg.locator('#mancha').inputValue()).includes('2008'), 'cenário de 2008 escolhido, a rua continua')
+    ok((await pg.getByText(/Interseção com o cenário de novembro de 2008: 32% do trecho/).count()) >= 1, 'a interseção do cenário aparece embaixo do mapa')
+    await pedirAte(pg, 'remover destaque', /Destaque da rua tirado/)
+    await pg.waitForTimeout(1200)
+    ok(!pg.url().includes('rua=') && (await pg.getByText('rua selecionada, destaque de localização').count()) === 0, 'remover destaque: a rua saiu do endereço e do mapa')
+    r = await pedirAte(pg, 'mostrar a rua Adriano Kormann em Gaspar', /Localização aproximada|Não consegui/, 20000)
+    await pg.waitForTimeout(1500)
+    ok(pg.url().endsWith('#/monitor/gaspar') && /Localização aproximada/.test(r), 'rua de Gaspar: Monitor de Gaspar, com o aviso de localização aproximada')
+    ok((await pg.getByText(/^Marca: Rua Adriano Kormann, Gaspar — localização aproximada/).count()) === 1, 'rua de Gaspar: a marca escrita na tela')
+    r = await pedirAte(pg, 'mostrar a rua São Rafael em Blumenau', /Blumenau/)
+    ok(/não publica a coordenada/.test(r) && pg.url().endsWith('#/monitor/gaspar'), 'Blumenau: só diz que não há coordenada, o mapa não muda')
+    await pg.screenshot({ path: `${process.env.SAIDA || '.'}/chat-rua-gaspar-${w}.png` })
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 5. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

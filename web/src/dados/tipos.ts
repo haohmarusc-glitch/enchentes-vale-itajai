@@ -414,6 +414,9 @@ export interface CotaRua {
   abrigo?: string | null
   /** O código do abrigo na fonte (ex.: `E9`). */
   abrigo_codigo?: string | null
+  /** Coordenada do PONTO, quando a fonte publica (Gaspar, Brusque). Nunca geocodificada aqui. */
+  lat?: number
+  lon?: number
   fonte: string
   data_fonte: string
   confianca: Confianca

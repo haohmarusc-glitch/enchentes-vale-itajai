@@ -1,11 +1,14 @@
-import { useRef, useState } from 'react'
-import url from '@dados/vias/itajai.geojson?url'
+import { useState } from 'react'
+import { carregarViasItajai } from '../dados/viasItajai'
 import { pesquisarVias } from '../logica/viasItajai'
 
+/**
+ * A busca de rua do mapa das manchas. Escolher uma rua grava `?rua=` no endereço, o mesmo caminho do chat
+ * ("mostrar a rua X em Itajaí"): o destaque é um só, e a página o desenha (`MapaManchas`).
+ */
 export default function BuscaViaItajai({ onSelecionar }: {
-  onSelecionar: (dados: GeoJSON.FeatureCollection | null) => void
+  onSelecionar: (nome: string | null) => void
 }) {
-  const cache = useRef<GeoJSON.FeatureCollection | null>(null)
   const [termo, setTermo] = useState('')
   const [resultados, setResultados] = useState<string[]>([])
   const [estado, setEstado] = useState('')
@@ -16,12 +19,7 @@ export default function BuscaViaItajai({ onSelecionar }: {
       setEstado('Buscando…')
       setResultados([])
       try {
-        if (!cache.current) {
-          const r = await fetch(url)
-          if (!r.ok) throw new Error('download')
-          cache.current = await r.json() as GeoJSON.FeatureCollection
-        }
-        const nomes = pesquisarVias(cache.current, termo)
+        const nomes = pesquisarVias(await carregarViasItajai(), termo)
         setResultados(nomes)
         setEstado(nomes.length ? 'Selecione a rua (até 20 resultados).' : 'Rua não encontrada nesta base.')
       } catch { setEstado('Não foi possível carregar as ruas. Tente novamente.') }
@@ -33,8 +31,7 @@ export default function BuscaViaItajai({ onSelecionar }: {
     </form>
     <p role="status">{estado}</p>
     {resultados.length > 0 && <ul>{resultados.map(nome => <li key={nome}>
-      <button type="button" onClick={() => onSelecionar({ type: 'FeatureCollection',
-        features: cache.current!.features.filter(f => f.properties?.nome === nome) })}>{nome}</button>
+      <button type="button" onClick={() => onSelecionar(nome)}>{nome}</button>
     </li>)}</ul>}
     <p>Fonte: <a href="https://geoitajai.github.io/sie/dcitajai.html" target="_blank" rel="noreferrer">GeoItajaí / SIE</a>.
       {' '}O destaque localiza a via; não indica alagamento atual nem que toda a rua foi atingida.</p>

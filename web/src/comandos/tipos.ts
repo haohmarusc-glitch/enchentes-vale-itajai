@@ -57,6 +57,14 @@ export type Passo =
   | { tipo: 'copiar_resumo'; cidadeId?: string }
   /** O endereço da tela aberta, com régua e fundo, para copiar. */
   | { tipo: 'copiar_link' }
+  // --- 3ª entrega: rua no mapa
+  /**
+   * Uma rua: em Itajaí, o traçado destacado no mapa das manchas; em Gaspar e Brusque, os pontos de cota no
+   * Monitor. `texto` é o que a pessoa escreveu ("rua hamilton pimentel"); casar com a base é da execução.
+   */
+  | { tipo: 'rua'; texto: string; cidadeId?: string; ano?: string; foco: 'mostrar' | 'manchas' }
+  /** Tira o destaque da rua (mapa das manchas) ou a marca dos pontos (Monitor). */
+  | { tipo: 'remover_destaque' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

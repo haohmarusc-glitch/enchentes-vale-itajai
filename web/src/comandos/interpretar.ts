@@ -95,6 +95,62 @@ function cidadeOpcional(alvo: string | undefined, cat: Catalogo): { cidadeId?: s
   return c ? { cidadeId: c.id } : null
 }
 
+const TIPO_DE_VIA = '(?:rua|avenida|av|travessa|tv|trav|alameda|al|rodovia|rod|servidao|serv|estrada)'
+const VERBO_RUA =
+  '(?:mostrar|mostre|mostra|ver|veja|zoom|aproximar|aproxime|destacar|destaque|localizar|localize|achar|ache|encontrar|encontre|marcar|marque|onde fica|onde e|ir para|ir pra|va para)'
+
+/**
+ * O que vem depois de "rua …": o nome, a cidade no fim ("…, Gaspar" ou "… em Gaspar") e o ano ("… em 2008").
+ * A cidade só sai do fim se for do cadastro; o resto é nome de rua.
+ */
+function partesDoPedidoDeRua(resto: string, cat: Catalogo): { texto: string; cidadeId?: string; ano?: string } {
+  let r = resto.trim()
+  let ano: string | undefined
+  const a = r.match(/\s(?:em|de|na cheia de|na enchente de)\s(\d{4})$/)
+  if (a) {
+    ano = a[1]
+    r = r.slice(0, a.index).trim()
+  }
+  let cidadeId: string | undefined
+  for (const c of [...cat.cidades].sort((x, y) => normalizar(y.nome).length - normalizar(x.nome).length)) {
+    const n = normalizar(c.nome)
+    const m = r.match(new RegExp(`^(.+?)\\s(?:(?:em|no|na|de) )?${n}$`))
+    // "rua brusque" (em Itajaí) é nome de rua: a cidade só sai do fim se sobrar tipo + nome.
+    if (m?.[1] && m[1].trim().split(' ').length >= 2) {
+      cidadeId = c.id
+      r = m[1].trim()
+      break
+    }
+  }
+  return { texto: r, ...(cidadeId ? { cidadeId } : {}), ...(ano ? { ano } : {}) }
+}
+
+/** A 3ª entrega: a rua no mapa (docs/CHAT-GLOBAL-COMANDOS.md, "Rua destacada sobre as manchas"). */
+function lerTrechoDaTerceira(t: string, cat: Catalogo): Lido {
+  if (/^(?:remover|remova|tirar|tire|apagar|apague|limpar|limpe|desligar|desligue)(?: o| a)? (?:destaque|marca|marcacao)(?: da rua| das ruas| dos pontos)?$/.test(t)) {
+    return [{ tipo: 'remover_destaque' }]
+  }
+  {
+    // "manchas na rua X", "mancha de 2008 na rua X", "ver as manchas da avenida Y em Itajaí"
+    const m = t.match(new RegExp(`^(?:(?:ver|veja|mostrar|mostre|mostra|quais) )?(?:as |a )?manchas?(?: de (\\d{4}))? (?:na|da|sobre a|no|do) (${TIPO_DE_VIA} .+)$`))
+    if (m?.[2]) {
+      const p = partesDoPedidoDeRua(m[2], cat)
+      return [{ tipo: 'rua', foco: 'manchas', ...p, ...(m[1] ? { ano: m[1] } : {}) }]
+    }
+  }
+  {
+    // "mostrar a rua X", "zoom na avenida Y, Itajaí", "onde fica a rua Z em Gaspar" — com verbo: "Rua XV de
+    // Novembro, Blumenau" sozinha continua pergunta para o motor.
+    const m = t.match(new RegExp(`^${VERBO_RUA}(?: (?:na|no|a|o|para|pra|ate))* (${TIPO_DE_VIA} .+)$`))
+    if (m?.[1]) {
+      const p = partesDoPedidoDeRua(m[1], cat)
+      if (p.texto.split(' ').length < 2) return null
+      return [{ tipo: 'rua', foco: 'mostrar', ...p }]
+    }
+  }
+  return null
+}
+
 /** A 2ª entrega (docs/CHAT-GLOBAL-COMANDOS.md): leituras, filtro, gráfico, traçado, árvore, confluência, cópia. */
 function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
   if (/^(?:quais|que|tem|ha|existe|existem)?(?: (?:as|alguma|algumas))? ?(?:leituras?|reguas?|estacoes|estacao|medicoes|medicao)(?: (?:estao|esta|tao|ta))? (?:atrasadas?|velhas?|desatualizadas?|paradas?|sem atualizar)$/.test(t)) {
@@ -195,6 +251,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const terceira = lerTrechoDaTerceira(t, cat)
+  if (terceira) return terceira
   const segunda = lerTrechoDaSegunda(t, cat)
   if (segunda) return segunda
   // --- ajuda

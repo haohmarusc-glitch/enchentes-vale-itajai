@@ -11,6 +11,23 @@ import { abrirPainel, acrescentar, marcarOcupado } from '../chat-local/conversa'
 import { catalogoDoCadastro } from './catalogo'
 import { MUDA_A_TELA, baseDoSite, executar, type DadosDoChat, type Saida } from './executar'
 import type { PropriedadesDoTracado } from './respostas'
+import { carregarCotasRuas, carregarRuasManchaItajai } from '../chat-local/carregar'
+import { carregarViasItajai } from '../dados/viasItajai'
+
+/** Nome da via → quantos trechos ela tem na base (ruas com o mesmo nome entram juntas). */
+async function viasDeItajai(): Promise<Record<string, number> | null> {
+  try {
+    const g = await carregarViasItajai()
+    const conta: Record<string, number> = {}
+    for (const f of g.features) {
+      const n = f.properties?.nome
+      if (typeof n === 'string') conta[n] = (conta[n] ?? 0) + 1
+    }
+    return conta
+  } catch {
+    return null
+  }
+}
 import { interpretar, nomeDaCidade } from './interpretar'
 import { esperarMonitor, monitorAtual, type ControleMonitor } from './ponte'
 import { textoDeAjuda } from './ajuda'
@@ -112,6 +129,9 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
             reguasNoMapa(estacoesTempoReal, v.tempoReal.leituras.map((l) => ({ titulo: l.estacao, nivel_m: l.nivel_m, medidoEm: l.medidoEm })), v.agora),
           tracado: propriedadesDoTracado,
           base: () => (typeof window === 'undefined' ? '' : baseDoSite(window.location.href)),
+          viasItajai: viasDeItajai,
+          ruasMancha: () => carregarRuasManchaItajai().catch(() => null),
+          cotasRuas: () => carregarCotasRuas().catch(() => null),
         },
       }
       let saida: Saida | null = null

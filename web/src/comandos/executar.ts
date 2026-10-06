@@ -20,6 +20,10 @@ import {
   textoMontante, textoOrigemTracado, textoUltimaHora, type PropriedadesDoTracado,
 } from './respostas'
 import { NOME_DO_ARQUIVO, arquivoDoRioDaCidade } from './rios'
+import { intersecoes, pontosDaRua, ruasSemCoordenada, textoDaRuaItajai, textoDosPontos, comTipo } from './ruas'
+import { acharVias, nomeLegivelDaVia } from '../logica/viasItajai'
+import type { CotaRua } from '../dados/tipos'
+import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
 
 /**
@@ -34,6 +38,10 @@ export interface DadosDoChat {
   tracado(arquivo: string): Promise<PropriedadesDoTracado | null>
   /** O endereço do site, sem o `#` (para montar o link da tela). */
   base(): string
+  /** 3ª entrega: as vias de Itajaí (nome → quantos trechos na base), o cruzamento rua × mancha e as cotas de rua. */
+  viasItajai?(): Promise<Record<string, number> | null>
+  ruasMancha?(): Promise<RuasPorMancha | null>
+  cotasRuas?(): Promise<CotaRua[] | null>
 }
 
 export interface Ambiente {
@@ -54,7 +62,7 @@ export function limparRetratos(): void {
 
 export const MUDA_A_TELA = new Set<Passo['tipo']>([
   'ir_cidade', 'monitor_bacia', 'abrir_pagina', 'abrir_rota', 'escolher_regua', 'aproximar_regua', 'zoom',
-  'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia',
+  'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia', 'rua', 'remover_destaque',
 ])
 const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
   'escolher_regua', 'aproximar_regua', 'zoom', 'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'o_que_vejo', 'filtro',
@@ -361,9 +369,164 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         const link = `${base}#${amb.rotaAtual()}`
         return { texto: textoDoLink(link, 'a página aberta'), copiar: link }
       }
+      // ------------------------------------------------ 3ª entrega: rua no mapa
+      case 'rua': {
+        const r = await executarRua(passo, amb, cat, cidade)
+        if ('fim' in r) return r.fim
+        cidade = r.cidade
+        feitos.push(r.texto)
+        if (r.sugestoes) return { texto: feitos.join(' '), sugestoes: r.sugestoes }
+        break
+      }
+      case 'remover_destaque': {
+        const rota = amb.rotaAtual()
+        const [caminho, busca = ''] = rota.split('?')
+        const params = new URLSearchParams(busca)
+        if (caminho === '/itajai' && params.has('rua')) {
+          params.delete('rua')
+          const resto = params.toString()
+          amb.navegar(`${caminho}${resto ? `?${resto}` : ''}`)
+          feitos.push('Destaque da rua tirado do mapa das manchas.')
+          break
+        }
+        const mon = amb.monitor()
+        if (mon?.marcarPonto && mon.estado().marca) {
+          const r = mon.marcarPonto(null)
+          if (!r.ok) return falha(r)
+          feitos.push(r.texto)
+          break
+        }
+        return { texto: 'Não há rua destacada nem ponto marcado nesta tela.' }
+      }
     }
   }
   return { texto: feitos.join(' ') || 'Feito.' }
+}
+
+/** As cidades com rua no mapa: Itajaí (traçado) e as que publicam o ponto da cota (Gaspar, Brusque). */
+const CIDADES_COM_RUA_NO_MAPA = ['itajai', 'gaspar', 'brusque']
+
+type ResultadoRua = { fim: Saida } | { texto: string; cidade: string | null; sugestoes?: string[] }
+
+async function executarRua(
+  passo: Extract<Passo, { tipo: 'rua' }>,
+  amb: Ambiente,
+  cat: Catalogo,
+  cidadeEmFoco: string | null,
+): Promise<ResultadoRua> {
+  const d = amb.dados
+  const [vias, cotas] = await Promise.all([d?.viasItajai?.() ?? null, d?.cotasRuas?.() ?? null])
+  if (!vias && !cotas) return { fim: { texto: 'Não consegui carregar as ruas agora. Tente de novo em instantes.' } }
+  const nomeDe = (id: string) => nomeDaCidade(id, cat)
+  const comTipoEscrito = (rua: string) => (comTipo(rua) ? rua : `rua ${rua}`)
+  const achadosEm = (id: string) =>
+    id === 'itajai' ? acharVias(passo.texto, Object.keys(vias ?? {})).length : pontosDaRua(cotas ?? [], id, passo.texto).length
+
+  // A cidade citada manda. Sem ela, a da tela — se a rua estiver lá. Senão, procura nas cidades que têm rua no
+  // mapa e pergunta se achar em mais de uma.
+  const naTela = cidadeEmFoco && cat.cidades.some((c) => c.id === cidadeEmFoco) ? cidadeEmFoco : null
+  const ruaNaTela = naTela && (CIDADES_COM_RUA_NO_MAPA.includes(naTela) ? achadosEm(naTela) > 0 : ruasSemCoordenada(cotas ?? [], naTela, passo.texto).length > 0)
+  let alvo = passo.cidadeId ?? (ruaNaTela ? naTela : null)
+  if (!alvo) {
+    const onde = CIDADES_COM_RUA_NO_MAPA.filter((id) => achadosEm(id) > 0)
+    if (onde.length === 0) {
+      return { fim: { texto: `Não achei "${passo.texto}" em Itajaí, Gaspar nem Brusque, as cidades com rua no mapa. Diga a cidade, por exemplo: "${passo.texto} em Blumenau".` } }
+    }
+    if (onde.length > 1) {
+      return { fim: { texto: `Achei "${passo.texto}" em ${onde.map(nomeDe).join(' e ')}. Em qual cidade?`, sugestoes: onde.map((id) => `mostrar a ${passo.texto} em ${nomeDe(id)}`) } }
+    }
+    alvo = onde[0]!
+  }
+  const nomeCidade = nomeDe(alvo)
+
+  if (alvo === 'itajai') {
+    const nomes = acharVias(passo.texto, Object.keys(vias ?? {}))
+    if (nomes.length === 0) {
+      return { fim: { texto: `Nenhuma via com "${passo.texto}" na base de vias da Prefeitura de Itajaí. Confira o nome, sem número de casa; a base pode não ter todas as ruas. Nada foi marcado.` } }
+    }
+    if (nomes.length > 1) {
+      // Homônimos (R. e Av. com o mesmo nome) ou nomes parecidos: pergunta antes de marcar.
+      return { fim: { texto: `Mais de uma via casa com "${passo.texto}" em Itajaí. Qual delas?`, sugestoes: nomes.slice(0, 8).map((n) => `mostrar a ${nomeLegivelDaVia(n)} em Itajaí`) } }
+    }
+    const nome = nomes[0]!
+    const tabela = (await d?.ruasMancha?.()) ?? null
+    let evento: string | null = null
+    if (passo.ano) {
+      const doAno = tabela?._meta.eventos.filter((e) => e.evento.startsWith(passo.ano!)) ?? []
+      if (!doAno.length) {
+        const de = tabela ? ` As manchas da Prefeitura são de: ${tabela._meta.eventos.map((e) => e.rotulo).join(', ')}.` : ''
+        return { fim: { texto: `O site não tem mancha de cheia de Itajaí de ${passo.ano}.${de} Nada foi marcado.` } }
+      }
+      // Dois cenários no mesmo ano (2013): o que cruza a rua, se houver.
+      const cruzam = tabela ? intersecoes(tabela, nome).dentro.map((x) => x.evento) : []
+      evento = (doAno.find((e) => cruzam.includes(e.evento)) ?? doAno[0]!).evento
+    }
+    const busca = new URLSearchParams({ secao: 'manchas', rua: nome })
+    if (evento) busca.set('cenario', evento)
+    amb.navegar(`/itajai?${busca.toString()}`)
+    const texto = textoDaRuaItajai({ nome, tabela, evento, trechos: vias?.[nome] ?? 1 })
+    // "manchas na rua X" sem ano, com várias cheias cruzando: o mapa mantém o cenário escolhido e o chat
+    // pergunta qual mostrar, em vez de ligar um por conta própria.
+    if (passo.foco === 'manchas' && !evento && tabela) {
+      const anos = [...new Set(intersecoes(tabela, nome).dentro.map((x) => x.evento.slice(0, 4)))]
+      if (anos.length > 1) {
+        return { texto: `${texto}\nQual cenário mostrar no mapa?`, cidade: 'itajai', sugestoes: anos.map((a) => `mancha de ${a} na ${nomeLegivelDaVia(nome)} em Itajaí`) }
+      }
+    }
+    return { texto, cidade: 'itajai' }
+  }
+
+  // Gaspar e Brusque: os pontos de cota com coordenada.
+  const grupos = pontosDaRua(cotas ?? [], alvo, passo.texto)
+  if (grupos.length === 0) {
+    const semPonto = ruasSemCoordenada(cotas ?? [], alvo, passo.texto)
+    if (semPonto.length) {
+      return {
+        fim: {
+          texto: `${nomeCidade} tem cota levantada para ${semPonto.slice(0, 3).map(nomeLegivelDaVia).join(', ')}, mas a fonte não publica a coordenada do ponto: o mapa não marca a rua (nada é localizado por conta própria).`,
+          sugestoes: semPonto.slice(0, 2).map((r) => `quantas cheias passaram da cota da ${comTipoEscrito(r)} em ${nomeCidade}?`),
+        },
+      }
+    }
+    const temCotas = (cotas ?? []).some((c) => c.cidade === alvo)
+    return {
+      fim: {
+        texto: temCotas
+          ? `Nenhuma rua com "${passo.texto}" entre as cotas levantadas em ${nomeCidade}. Isso não quer dizer que ela não alaga: a lista é a que a Defesa Civil publicou. Nada foi marcado.`
+          : `O site não tem as ruas de ${nomeCidade} no mapa: só Itajaí (traçado das vias) e Gaspar e Brusque (pontos de cota). Nada foi marcado.`,
+      },
+    }
+  }
+  if (grupos.length > 1) {
+    return { fim: { texto: `Mais de uma rua casa com "${passo.texto}" em ${nomeCidade}. Qual delas?`, sugestoes: grupos.slice(0, 8).map((g) => `mostrar a ${comTipoEscrito(g.rua)} em ${nomeCidade}`) } }
+  }
+  const { rua, pontos } = grupos[0]!
+  let m = amb.monitor()
+  if (!m || m.cidade !== alvo) {
+    amb.navegar(`/monitor/${alvo}`)
+    m = await amb.esperarMonitor(alvo)
+    if (!m) return { fim: { texto: `Não consegui abrir o Monitor de ${nomeCidade}.` } }
+  }
+  if (!m.marcarPonto) return { fim: { texto: 'Não consigo marcar pontos nesta tela.' } }
+  const [primeiro, ...resto] = pontos
+  const r = m.marcarPonto({
+    lat: primeiro!.lat!,
+    lon: primeiro!.lon!,
+    rotulo: `${nomeLegivelDaVia(rua)}, ${nomeCidade} — localização aproximada`,
+    km: kmParaOsPontos(pontos),
+    extras: resto.map((c) => ({ lat: c.lat!, lon: c.lon! })),
+  })
+  if (!r.ok) return { fim: { texto: r.texto } }
+  return { texto: textoDosPontos(rua, nomeCidade, pontos), cidade: alvo }
+}
+
+/** Largura da vista que cabe os pontos de uma rua, com folga; ao menos 1,2 km. */
+function kmParaOsPontos(pontos: readonly CotaRua[]): number {
+  const lats = pontos.map((c) => c.lat!)
+  const lons = pontos.map((c) => c.lon!)
+  const dLat = (Math.max(...lats) - Math.min(...lats)) * 111.32
+  const dLon = (Math.max(...lons) - Math.min(...lons)) * 111.32 * Math.cos(((lats[0] ?? -27) * Math.PI) / 180)
+  return Math.max(1.2, 1.5 * Math.max(dLat, dLon))
 }
 
 /** A fonte da coordenada, inteira até ~320 caracteres; mais longa, corta na última frase que cabe. */

@@ -854,25 +854,28 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       desenharPinos(ctx, cena, selRef.current, { ...opcoesPinos, rotulos })
       // A marca do chat (confluência): anel claro com contorno escuro, por cima de tudo. É destaque de
       // localização, não cor de faixa — por isso branco, fora da escala de cores das cheias.
+      // Os pontos de cota de uma rua (3ª entrega) vêm como `extras`: um anel por ponto, nenhuma linha entre eles.
       const mk = marcaRef.current
       if (mk) {
-        const [mx, my] = projetar(cena.enq, [mk.lon, mk.lat])
         const r = 10 * escala
         ctx.save()
-        ctx.lineWidth = 5
-        ctx.strokeStyle = '#062c43'
-        ctx.beginPath()
-        ctx.arc(mx, my, r, 0, 2 * Math.PI)
-        ctx.stroke()
-        ctx.lineWidth = 2.5
-        ctx.strokeStyle = '#ffffff'
-        ctx.beginPath()
-        ctx.arc(mx, my, r, 0, 2 * Math.PI)
-        ctx.stroke()
-        ctx.fillStyle = '#ffffff'
-        ctx.beginPath()
-        ctx.arc(mx, my, 2.5 * escala, 0, 2 * Math.PI)
-        ctx.fill()
+        for (const pt of [mk, ...(mk.extras ?? [])]) {
+          const [mx, my] = projetar(cena.enq, [pt.lon, pt.lat])
+          ctx.lineWidth = 5
+          ctx.strokeStyle = '#062c43'
+          ctx.beginPath()
+          ctx.arc(mx, my, r, 0, 2 * Math.PI)
+          ctx.stroke()
+          ctx.lineWidth = 2.5
+          ctx.strokeStyle = '#ffffff'
+          ctx.beginPath()
+          ctx.arc(mx, my, r, 0, 2 * Math.PI)
+          ctx.stroke()
+          ctx.fillStyle = '#ffffff'
+          ctx.beginPath()
+          ctx.arc(mx, my, 2.5 * escala, 0, 2 * Math.PI)
+          ctx.fill()
+        }
         ctx.restore()
       }
       if (!reduz) raf = requestAnimationFrame(quadro)
@@ -1298,15 +1301,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         const cena = cenaRef.current
         if (!cena) return { ok: false, texto: 'O mapa ainda não carregou.' }
         const b = cena.limitesBase
-        if (p.lon < b.minLon || p.lon > b.maxLon || p.lat < b.minLat || p.lat > b.maxLat) {
+        const pts = [p, ...(p.extras ?? [])]
+        if (pts.some((q) => q.lon < b.minLon || q.lon > b.maxLon || q.lat < b.minLat || q.lat > b.maxLat)) {
           return { ok: false, texto: 'Esse ponto fica fora do mapa do Monitor.' }
         }
         setMarca(p)
         setSel(null)
         setReguaSel(null)
-        const v = vistaDaCidade([p.lat, p.lon], b, 6)
+        // O centro da vista é o meio dos pontos (um só: o próprio ponto).
+        const lats = pts.map((q) => q.lat)
+        const lons = pts.map((q) => q.lon)
+        const v = vistaDaCidade([(Math.min(...lats) + Math.max(...lats)) / 2, (Math.min(...lons) + Math.max(...lons)) / 2], b, p.km ?? 6)
         if (v) setVista(v)
-        return { ok: true, texto: 'Mapa centrado e marcado com um anel branco.' }
+        return { ok: true, texto: pts.length > 1 ? `Mapa centrado, com ${pts.length} anéis brancos.` : 'Mapa centrado e marcado com um anel branco.' }
       },
       explicar: (id) => {
         const pino = pinosTodosRef.current.find((p) => p.cidade.id === id)

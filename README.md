@@ -547,7 +547,11 @@ o projeto.
     - copiar resumo (D4) e copiar link: o chat prepara, a pessoa copia e envia.
 
     Arquivos do Monitor alterados com o rótulo `monitor-autorizado`. Ver o doc, "Segunda entrega".
-  - [ ] **Rua no mapa e rua destacada sobre as manchas:** só Itajaí, Gaspar e Brusque têm coordenada.
+  - [x] **Terceira entrega (06/10/2026): a rua no mapa.**
+    - Itajaí: o traçado real da via, em magenta, sobre as manchas, com a interseção de cada cenário. A busca
+      da página usa o mesmo destaque.
+    - Gaspar e Brusque: os pontos de cota da rua no Monitor, com o aviso de localização aproximada.
+    - Blumenau e Rio do Sul: só a cota, sem ponto no mapa (a fonte não publica a coordenada).
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado
