@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""
+Baixa do OpenStreetMap o traçado do Rio Benedito, do Rio Itajaí do Sul e do Rio Trombudo.
+
+POR QUE (pedido do Jefferson, 06/10/2026). Desde a auditoria das réguas, o pino de cada cidade fica na régua,
+mas três cidades ainda aparecem sem o rio delas no mapa:
+  - Timbó, no Benedito (o Benedito também recebe o Rio dos Cedros);
+  - Ituporanga, no Itajaí do Sul — hoje só há 10,5 km dele, da Defesa Civil de Rio do Sul (Asthon),
+    perto da confluência;
+  - Trombudo Central, no Trombudo.
+
+O QUE CONFERE ANTES DE GRAVAR CADA RIO (o que falha não grava; os outros seguem):
+  - o nome exato veio;
+  - o traçado chega a um rio já desenhado (o Açu; o Trombudo também pode chegar ao Itajaí do Sul baixado
+    na mesma rodada): alguma ponta a menos de `chega_km`;
+  - o traçado passa pela régua da cidade: o pino do cadastro a menos de `passa_km`.
+Chegar a um rio é GEOMETRIA, não topologia: a árvore da bacia (`_topologia` em estacoes.json) não muda por
+causa disto. O Trombudo continua sem posição na árvore até uma fonte dizer a confluência.
+
+Gravado, `converter_tracado_rios.py` gera `data/rios/<id>.geojson`. Fonte: © OpenStreetMap contributors,
+ODbL. Roda onde o Overpass responde: na VPS ou no Actions (`baixar-tracados-afluentes.yml`).
+
+Uso:
+    python3 scripts/baixar_tracados_afluentes.py            # baixa e confere, não grava
+    python3 scripts/baixar_tracados_afluentes.py --gravar   # grava data/brutos/tracado-<id>-osm.json
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+RAIZ = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(RAIZ / "scripts"))
+
+from baixar_tracado_hercilio import buscar_consulta, comprimento_km, km, tracado  # noqa: E402
+
+BRUTOS = RAIZ / "data" / "brutos"
+
+#: Um rio por entrada. `caixa` = (sul, oeste, norte, leste), larga de propósito: quem filtra é o nome.
+#: `chega_a` são os traçados (ids de data/rios ou desta rodada) a que a ponta tem de chegar.
+RIOS = {
+    "benedito": {
+        "nomes": ("Rio Benedito",),
+        "caixa": (-27.00, -49.60, -26.35, -49.10),
+        "chega_a": ("itajai-acu",),
+        "chega_km": 1.0,
+        "cidade": "timbo",
+        "passa_km": 0.5,
+    },
+    "itajai-do-sul": {
+        "nomes": ("Rio Itajaí do Sul",),
+        "caixa": (-27.90, -49.80, -27.15, -49.10),
+        "chega_a": ("itajai-acu",),
+        "chega_km": 1.0,
+        "cidade": "ituporanga",
+        "passa_km": 0.5,
+    },
+    "trombudo": {
+        "nomes": ("Rio Trombudo",),
+        "caixa": (-27.60, -50.05, -27.10, -49.55),
+        "chega_a": ("itajai-acu", "itajai-do-sul"),
+        "chega_km": 1.0,
+        "cidade": "trombudo-central",
+        # 1 km, não 0,5: a coordenada de Trombudo Central não tem fonte declarada no cadastro, e a estação
+        # estadual mais perto (DCSC-00035, equivalência não confirmada) fica a 0,9 km dela.
+        "passa_km": 1.0,
+    },
+}
+
+
+def consulta(rio_id: str) -> str:
+    c = RIOS[rio_id]
+    s, o, n, l = c["caixa"]
+    nomes = "|".join(n.removeprefix("Rio ") for n in c["nomes"])
+    return (f'[out:json][timeout:120];\nway["waterway"="river"]["name"~"^Rio ({nomes})$"]'
+            f"({s},{o},{n},{l});\nout geom;")
+
+
+def linhas(elementos: list[dict], nomes: tuple[str, ...]) -> list[list[tuple[float, float]]]:
+    out = []
+    for e in elementos:
+        if e.get("type") != "way" or (e.get("tags") or {}).get("name") not in nomes:
+            continue
+        pts = [(p["lon"], p["lat"]) for p in e.get("geometry") or []
+               if isinstance(p.get("lon"), (int, float)) and isinstance(p.get("lat"), (int, float))]
+        if len(pts) >= 2:
+            out.append(pts)
+    return out
+
+
+def pino(cidade_id: str) -> tuple[float, float]:
+    e = json.loads((RAIZ / "data" / "estacoes.json").read_text(encoding="utf-8"))
+    c = next(c for r in e["rios"].values() for c in r["cidades"] if c["id"] == cidade_id)
+    lat, lon = c["coordenadas"]
+    return (lon, lat)
+
+
+def conferir(rio_id: str, ls: list, alvos: dict[str, list], pino_cidade: tuple[float, float]) -> list[str]:
+    """Problemas que impedem gravar este rio. Vazio = pode gravar."""
+    c = RIOS[rio_id]
+    if not ls:
+        return [f"não veio nenhum way chamado {' / '.join(c['nomes'])}"]
+    problemas = []
+    pontos_alvo = [p for a in c["chega_a"] for p in alvos.get(a) or []]
+    if not pontos_alvo:
+        problemas.append(f"nenhum traçado de {', '.join(c['chega_a'])} para conferir a chegada")
+    else:
+        pontas = [p for l in ls for p in (l[0], l[-1])]
+        d = min(km(p, q) for p in pontas for q in pontos_alvo)
+        if d > c["chega_km"]:
+            problemas.append(f"não chega a {' / '.join(c['chega_a'])}: a ponta mais perto fica a {d:.2f} km "
+                             f"(limite {c['chega_km']} km)")
+    d = min(km(pino_cidade, p) for l in ls for p in l)
+    if d > c["passa_km"]:
+        problemas.append(f"não passa pela régua de {c['cidade']}: fica a {d:.2f} km do pino (limite {c['passa_km']} km)")
+    return problemas
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Baixa o traçado do Benedito, do Itajaí do Sul e do Trombudo (OSM).")
+    ap.add_argument("--gravar", action="store_true", help="grava data/brutos/tracado-<id>-osm.json dos que passarem")
+    ap.add_argument("--so", choices=sorted(RIOS), action="append", help="só este rio (repetível)")
+    a = ap.parse_args()
+
+    alvos = {"itajai-acu": tracado("itajai-acu")}
+    gravados, recusados = [], []
+    # Itajaí do Sul antes do Trombudo: o Trombudo pode chegar a ele.
+    for rio_id in [r for r in ("benedito", "itajai-do-sul", "trombudo") if not a.so or r in a.so]:
+        texto = consulta(rio_id)
+        resposta, espelho = buscar_consulta(texto)
+        ls = linhas(resposta.get("elements") or [], RIOS[rio_id]["nomes"])
+        print(f"{rio_id}: {len(ls)} way(s), {comprimento_km(ls):.1f} km")
+        problemas = conferir(rio_id, ls, alvos, pino(RIOS[rio_id]["cidade"]))
+        if problemas:
+            for p in problemas:
+                print(f"   RECUSADO: {p}", file=sys.stderr)
+            recusados.append(rio_id)
+            continue
+        alvos[rio_id] = [p for l in ls for p in l]
+        print(f"   conferido: chega a {' / '.join(RIOS[rio_id]['chega_a'])} e passa por {RIOS[rio_id]['cidade']}")
+        if a.gravar:
+            resposta["_consulta"] = {
+                "overpass": texto,
+                "espelho": espelho,
+                "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "script": "scripts/baixar_tracados_afluentes.py",
+            }
+            destino = BRUTOS / f"tracado-{rio_id}-osm.json"
+            destino.write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")
+            print(f"   gravado: {destino.relative_to(RAIZ)}")
+        gravados.append(rio_id)
+    print(f"\nconferidos: {', '.join(gravados) or 'nenhum'} · recusados: {', '.join(recusados) or 'nenhum'}")
+    return 0 if gravados else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
