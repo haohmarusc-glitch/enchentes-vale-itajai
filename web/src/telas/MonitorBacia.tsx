@@ -151,6 +151,19 @@ const AFLUENTES = [
   'rio-conceicao',
 ] as const
 
+/**
+ * Todo traçado de `data/rios/` que não é tronco, canal nem afluente da lista
+ * acima também entra, como linha extra (05/10/2026, autorizado pelo Jefferson
+ * com o rótulo `monitor-autorizado`). Foi o que trouxe os rios que passam por
+ * Ibirama sem uma lista nova aqui: um rio que ganha traçado aparece no Monitor
+ * sem mexer neste arquivo. Sem cidade no cadastro, a linha fica cinza — só
+ * mostra por onde a água corre, não pinta faixa.
+ */
+const OUTROS_TRACADOS: string[] = Object.keys(TRACADOS)
+  .map((k) => k.replace(/^.*\//, '').replace(/\.geojson$/, ''))
+  .filter((id) => !new Set<string>([...RIOS_TRONCO, ...CANAIS, ...AFLUENTES]).has(id))
+  .sort()
+
 async function baixarTracado(rioId: string): Promise<LonLat[][] | null> {
   const url = urlDoRio(rioId)
   if (!url) return null
@@ -482,6 +495,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       ...RIOS_TRONCO.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
       ...CANAIS.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
       ...AFLUENTES.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
+      ...OUTROS_TRACADOS.map(async (rioId) => ({ rioId, coords: await baixarTracado(rioId) })),
     ]).then((baixados) => {
       if (!vivo) return
       // `juntarCanais` funde o canal retificado no traçado do Mirim e o tira da

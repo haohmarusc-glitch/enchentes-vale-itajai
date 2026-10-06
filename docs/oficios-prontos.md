@@ -578,6 +578,15 @@ Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
 
 ## C26 — Defesa Civil de Ibirama — ✅ ENVIADO em 04/10/2026 como lembrete, por decisão do Jefferson (Gmail, id `1a104e1d45640b24`, resposta na conversa de 13/09)
 
+**✅ RESPONDIDO em 05/10/2026** (`docs/resposta-ibirama-c26-2026-10-05.md`):
+- a régua das faixas é a DCSC-00020;
+- as faixas do PLAMCON são aproximadas, e o plano de 2026 está em ajustes finais;
+- não há cotas de rua.
+
+A tabela vigente continua em aberto.
+
+**Resposta enviada em 05/10/2026:** e-mail cadastrado no site e link enviado, por decisão do Jefferson.
+
 **O texto enviado não é o rascunho abaixo.** Ele foi encurtado como lembrete e acrescentou o que a rodada 6 trouxe:
 - o Decreto 5.431/2024 liga o nível à estação da ponte Beltramini;
 - o boletim de 11/09 chamou 4,04 m de "atenção";

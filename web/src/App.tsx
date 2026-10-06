@@ -14,6 +14,7 @@ import MonitorBacia from './telas/MonitorBacia'
 import TelaItajai from './telas/TelaItajai'
 import TelaRio from './telas/TelaRio'
 import TelaPerguntas from './telas/TelaPerguntas'
+import TelaAcessos from './telas/TelaAcessos'
 
 const ABAS = [
   { para: '/', rotulo: 'Início', fim: true },
@@ -171,6 +172,8 @@ function Rotas() {
       <Route path="/mirim" element={<TelaRio key="mirim" rioId="itajai-mirim" />} />
       <Route path="/itajai" element={<TelaItajai />} />
       <Route path="/perguntas" element={<TelaPerguntas />} />
+      {/* Só para o admin; a API responde 404 a qualquer outro e a tela diz "não encontrada". */}
+      <Route path="/admin/acessos" element={<TelaAcessos />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )

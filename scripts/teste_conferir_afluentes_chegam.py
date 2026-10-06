@@ -153,6 +153,16 @@ class ContraOsDadosReais(unittest.TestCase):
               "(docs/tracado-ribeiroes.md) — nunca desenhe o vão à mão.",
         )
 
+    def test_a_cadeia_segue_mais_de_um_nivel(self):
+        # Braço → Rio Rafael → Hercílio → Açu (Ibirama, 05/10/2026). Com um nível
+        # só, os braços saíam cortados com a água chegando de fato.
+        if "rio-rafael-braco-grande" not in self.rs:
+            self.skipTest("sem os rios de Ibirama em data/rios/")
+        for braco in ("rio-rafael-braco-grande", "rio-rafael-braco-pequeno"):
+            r = self.rs[braco]
+            self.assertFalse(r["cortado"], braco)
+            self.assertEqual((r["via"], r["chega_em"]), (["rio-rafael", "hercilio"], "itajai-acu"), braco)
+
     def test_cada_afluente_chega_no_tronco_que_o_cadastro_diz(self):
         # Chegar não basta: chegar no rio ERRADO seria traçado trocado.
         esperado = {

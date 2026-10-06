@@ -1,0 +1,60 @@
+# Baixa do OpenStreetMap o traçado do Rio Hercílio / Itajaí do Norte (o rio de Ibirama) e gera
+# data/rios/hercilio.geojson.
+#
+# POR QUE EXISTE (05/10/2026). O Overpass não responde ao ambiente das sessões de código, e o Monitor já
+# pede o arquivo `hercilio` (traçados opcionais). O runner do GitHub alcança o Overpass.
+#
+# O QUE FAZ. `baixar_tracado_hercilio.py --gravar` (pede os dois nomes do rio, confere que chega ao Açu e
+# passa pelo pino de Ibirama, e só então grava), depois `converter_tracado_rios.py` (recorta ao sul da borda
+# norte do mapa). Publica os dois arquivos no branch `tracado-hercilio` (um commit só, substituído a cada
+# rodada, como o `coleta-gaspar`), porque a sessão não alcança o servidor dos artefatos. A sessão confere e
+# commita no PR.
+#
+# O QUE NÃO FAZ. Não empurra para o main nem para o branch do PR, e não muda o Monitor.
+#
+# QUANDO RODA. Manualmente ou no push que altera este arquivo ou o script.
+name: Baixar traçado do Hercílio
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/baixar-tracado-hercilio.yml
+      - scripts/baixar_tracado_hercilio.py
+
+permissions:
+  contents: write   # publicar no branch tracado-hercilio
+
+jobs:
+  baixar:
+    name: Baixar o traçado do Hercílio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+      - name: Baixar e conferir
+        run: python3 scripts/baixar_tracado_hercilio.py --gravar
+      - name: Converter
+        run: python3 scripts/converter_tracado_rios.py
+      - name: Conferir o arquivo gerado
+        working-directory: scripts
+        run: python3 teste_converter_tracado_rios.py
+      - name: Publicar no branch tracado-hercilio
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          set -euo pipefail
+          bruto=$(git hash-object -w data/brutos/tracado-hercilio-osm.json)
+          rio=$(git hash-object -w data/rios/hercilio.geojson)
+          arvore=$(printf '100644 blob %s\ttracado-hercilio-osm.json\n100644 blob %s\thercilio.geojson\n' \
+            "$bruto" "$rio" | git mktree)
+          commit=$(git commit-tree "$arvore" -m "Traçado do Hercílio, a partir de ${GITHUB_SHA::7}")
+          git push --force --quiet origin "$commit:refs/heads/tracado-hercilio"
+          echo "publicado em tracado-hercilio: $commit"

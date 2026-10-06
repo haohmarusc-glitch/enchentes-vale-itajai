@@ -73,6 +73,17 @@ BRUTO_VAO_CANHANDUBA = RAIZ / "data/brutos/vao-canhanduba-osm.json"
 #:     way["waterway"]["name"~"Itajaí do Sul",i](-27.60,-49.75,-27.15,-49.45);
 #: Ver docs/TRACADO-ITAJAI-DO-SUL.md.
 BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
+
+#: Bruto do RIO HERCÍLIO (Itajaí do Norte), o rio de Ibirama. Baixado por
+#: `baixar_tracado_hercilio.py`, que só grava depois de conferir que o traçado
+#: chega ao Açu e passa pelo pino de Ibirama. Opcional, como os ribeirões.
+BRUTO_HERCILIO = RAIZ / "data/brutos/tracado-hercilio-osm.json"
+#: Brutos dos cursos d'água COM NOME que passam por um município
+#: (`baixar_rios_municipio.py`, `data/brutos/rios-<municipio>-osm.json`). Cada
+#: nome vira um arquivo próprio — como o Rio Conceição, nenhum se funde a outro.
+#: Os nomes que o tronco ou um afluente já desenham são pulados. Pedido do
+#: Jefferson (05/10/2026): os rios que passam por Ibirama no Monitor.
+BRUTOS_MUNICIPIOS = sorted((RAIZ / "data/brutos").glob("rios-*-osm.json"))
 SAIDA = RAIZ / "data/rios"
 
 ATRIBUICAO = "© OpenStreetMap contributors, ODbL (openstreetmap.org/copyright)"
@@ -101,7 +112,12 @@ RIOS = {
 RIOS_AFLUENTES = {
     "benedito": ["rio benedito"],
     "luiz-alves": ["rio luiz alves", "rio luís alves"],
-    "hercilio": ["rio hercílio", "rio hercilio"],
+    # O mesmo rio com DOIS nomes no OSM: "Rio Itajaí do Norte" a montante
+    # (José Boiteux) e "Rio Hercílio" a jusante (Ibirama até o Açu). A ANA o
+    # cadastra como um só, "Rio Itajaí do Norte ou Hercílio" — por isso os dois
+    # cabem no mesmo arquivo, ao contrário do Rio Conceição. Pedir só Hercílio
+    # deixava o rio sem montante (05/10/2026).
+    "hercilio": ["rio hercílio", "rio hercilio", "rio itajaí do norte", "rio itajai do norte"],
     # Os cursos de ITAJAÍ que carregam régua e não estavam no mapa. Medido em
     # 04/09/2026 (scripts/conferir_reguas_no_tracado.py): sem eles, DC-07 fica a
     # 2,25 km, DC-09 a 0,87 km e DC-08 a 4,41 km do traçado mais próximo — os
@@ -121,6 +137,32 @@ RIOS_AFLUENTES = {
     # O trecho que liga o Canhanduba ao Mirim. Ver BRUTO_VAO_CANHANDUBA.
     "rio-conceicao": ["rio conceição", "rio conceicao"],
 }
+
+
+#: Recorte do Hercílio ao NORTE desta latitude. O Itajaí do Norte nasce em
+#: Itaiópolis, ~55 km acima da borda norte do traçado de hoje (-26,838, o Açu em
+#: Blumenau). O Monitor enquadra a bacia pela extensão de TODOS os rios, então o
+#: rio inteiro afastaria o mapa inteiro — e a regra é que o Monitor não muda. O
+#: recorte guarda o que serve à tela: José Boiteux (barragem Norte), Ibirama e a
+#: chegada ao Açu. Teste: `teste_converter_tracado_rios.TesteHercilio`.
+CORTE_NORTE = {"hercilio": -26.84}
+
+
+def recortar_ao_sul(linhas: list[list[list[float]]], lat_max: float) -> list[list[list[float]]]:
+    """Os trechos de cada linha com lat <= lat_max; uma linha que sai e volta vira duas."""
+    out: list[list[list[float]]] = []
+    for linha in linhas:
+        atual: list[list[float]] = []
+        for p in linha:
+            if p[1] <= lat_max:
+                atual.append(p)
+            else:
+                if len(atual) >= 2:
+                    out.append(atual)
+                atual = []
+        if len(atual) >= 2:
+            out.append(atual)
+    return out
 
 
 def ways_por_nome(elementos: list[dict]) -> dict[str, list[dict]]:
@@ -220,7 +262,8 @@ def main() -> int:
     # O bruto dos ribeirões entra SÓ na busca por substring (afluentes
     # opcionais). O tronco continua saindo do bruto conferido, intocado.
     for extra_caminho, oque in ((BRUTO_RIBEIROES, "ribeirões de Itajaí"),
-                                (BRUTO_VAO_CANHANDUBA, "vão do Canhanduba")):
+                                (BRUTO_VAO_CANHANDUBA, "vão do Canhanduba"),
+                                (BRUTO_HERCILIO, "Rio Hercílio / Itajaí do Norte")):
         if extra_caminho.exists():
             extra = json.loads(extra_caminho.read_text(encoding="utf-8"))
             n = len(extra.get("elements") or [])
@@ -262,12 +305,52 @@ def main() -> int:
 
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
         linhas = linhas_por_substring(elementos, chaves)
+        if rio_id in CORTE_NORTE:
+            linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
         if not linhas:
             print(f"{rio_id}: nenhum way com {chaves} no bruto — pulado. Inclua o rio na "
                   "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
             continue
-        grava(feature_do_rio(rio_id, linhas), rio_id)
+        feat = feature_do_rio(rio_id, linhas)
+        if rio_id in CORTE_NORTE:
+            feat["properties"]["cobertura"] = (
+                f"RECORTADO ao sul da latitude {CORTE_NORTE[rio_id]}: de José Boiteux (barragem Norte) até o Açu, "
+                "passando por Ibirama. As nascentes, em Itaiópolis, ficam fora para não mudar o enquadramento do Monitor."
+            )
+        grava(feat, rio_id)
+
+    # Rios de município. Recortados na borda norte do Açu, como o Hercílio, para
+    # não mudar o enquadramento do Monitor.
+    lat_max = max(p[1] for l in geojson_do_rio("itajai-acu", RIOS["itajai-acu"], por_nome)["geometry"]["coordinates"] for p in l)
+    for bruto in BRUTOS_MUNICIPIOS:
+        municipio = bruto.name[len("rios-"):-len("-osm.json")]
+        dados_m = json.loads(bruto.read_text(encoding="utf-8"))
+        for nome, ways in sorted(ways_por_nome(dados_m.get("elements") or []).items()):
+            if ja_desenhado(nome):
+                continue
+            linhas = recortar_ao_sul([linha_do_way(w) for w in ways if len(linha_do_way(w)) >= 2], lat_max)
+            if not linhas:
+                continue
+            rio_id = slug(nome)
+            feat = feature_do_rio(rio_id, linhas)
+            feat["properties"]["nome"] = nome
+            feat["properties"]["municipio"] = municipio
+            grava(feat, rio_id)
     return 0
+
+
+def slug(texto: str) -> str:
+    import unicodedata
+    t = "".join(c for c in unicodedata.normalize("NFD", texto) if unicodedata.category(c) != "Mn").lower()
+    return "-".join("".join(c if c.isalnum() else " " for c in t).split())
+
+
+def ja_desenhado(nome: str) -> bool:
+    """O nome já sai pelo tronco (match exato) ou por um afluente (substring)?"""
+    if any(nome in nomes for nomes in RIOS.values()):
+        return True
+    n = nome.lower()
+    return any(c in n for chaves in RIOS_AFLUENTES.values() for c in chaves)
 
 
 if __name__ == "__main__":
