@@ -453,3 +453,34 @@ Monitor um segundo filtro. Nenhum número novo: nada aqui é calculado fora das 
     as recusas (Gaspar, Ascurra, Itajaí, leitura velha), a faixa estadual só à parte e o executor;
   - `testes-navegador/chat-comandos.mjs`, seção 7: panorama, filtro ligado e limpo (ou a recusa sem nada acima),
     "de cima", quanto falta, tendência, máximo de 24 h e Gaspar sem frase de cota.
+
+## Sétima entrega (06/10/2026): a foz e o que o mapa quer dizer
+
+A 7ª traz para o chat o painel "Chegada do pico × maré em Itajaí" e a legenda do Monitor, mais dois botões do
+Monitor que o chat ainda não alcançava. Dois painéis ficaram de fora de propósito, porque não aparecem em
+nenhuma tela: `PainelSePicoAgora` (chegadas a jusante "se o pico fosse agora") e `prever()` (estimativa a jusante
+por regressão). Pôr esses números no chat seria mostrar algo que o site não mostra.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "o pico de Blumenau já passou?", "quando a cheia chega em Itajaí?", "a cheia vai pegar maré alta?" | O "Hoje" do painel de Itajaí, pela MESMA decisão da tela (`logica/hojeEmItajai.ts`, extraída do componente). Diz se o pico passou (com o platô), se não está confirmado, se o rio ainda sobe (aí a janela é a de "se o pico fosse agora") ou se Blumenau está abaixo da primeira cota. Junto vêm a janela de chegada pela referência de estudo da JICA e as marés da tábua dentro dela. | Chamar a janela de previsão. Mostrar como futura uma janela que já terminou. Dizer que a coincidência com a maré alaga ou não alaga. |
+| "se o pico de Blumenau for às 22h", "se o pico em Blumenau for amanhã às 3h30" | A simulação do formulário (`simularChegada`) com o horário informado, em hora de Brasília (hoje, se o dia não vem). | Tratar a última leitura como pico. |
+| "o que significa a cor laranja?", "o que é alerta máximo?", "por que o trecho está tracejado?", "por que a água se mexe?", "explicar as cores" | Os textos de `data/faixas.json` (fonte única) e das notas da legenda do Monitor: cor, tracejado (faixa estadual), violeta (nível bruto estadual), azul (mar, chuva, várias réguas), ondas (sentido ilustrativo, velocidade constante), seta e régua sem faixa. Fecha com "cor é faixa, não metro". | Escrever texto de faixa à mão, fora de `faixas.json`. Dizer que cinza é seguro. |
+| "pausar as animações", "retomar animações" | O botão "Pausar/Retomar animações" da legenda do Monitor. Avisa quando o aparelho pede movimento reduzido. | Confundir com a reprodução: "pausar" e "pausar a animação" continuam pausando a reprodução (5ª entrega). |
+| "abrir a legenda", "recolher a legenda" | O "abrir/recolher" da legenda do Monitor. | — |
+
+- **Código:**
+  - `logica/hojeEmItajai.ts`: a decisão do "Hoje", usada pelo `SimulacaoChegada` e pelo chat;
+  - `comandos/foz.ts`: os textos da chegada, da simulação e da legenda;
+  - `comandos/executar.ts`: os passos `chegada_itajai`, `simular_chegada`, `legenda`, `animacoes` e
+    `legenda_mapa`; a referência de estudo chega por `DadosDoChat.referenciaChegada`.
+- **No Monitor (rótulo `monitor-autorizado`):** `MonitorBacia.tsx` registra `animacoes` e `legendaDoMapa` na
+  ponte, sobre os mesmos `animacoesPausadas` e `legendaAberta` dos botões. Sem pedido, nada muda: a
+  `trava-monitor` passa com a referência atual.
+- **Testes:**
+  - `src/comandos/setima.test.ts` (8): frases, cada ramo do "Hoje" com séries montadas, os textos com a tábua real,
+    a simulação, a legenda e o executor;
+  - `testes-navegador/chat-comandos.mjs`, seção 8: chegada, simulação, legenda, e os botões de animação e legenda
+    mudando de estado no Monitor;
+  - `simulacao-chegada.mjs` continua passando com o painel usando a função extraída. Com os dados reais de
+    06/10, o chat e o painel de `/itajai` deram a mesma janela (06:00 a 11:00 de 07/10, Blumenau subindo).

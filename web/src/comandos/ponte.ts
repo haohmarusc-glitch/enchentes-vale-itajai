@@ -80,6 +80,9 @@ export interface ControleMonitor {
   filtrar?(f: FiltroMonitor): Resultado
   /** A reprodução das últimas 24 h: tocar, pausar ou ir a um instante do passado. */
   reproducao?(p: { acao: 'tocar' } | { acao: 'pausar' } | { acao: 'ir'; instante: Date }): Resultado
+  /** 7ª entrega: o botão "Pausar/Retomar animações" e o "abrir/recolher" da legenda. */
+  animacoes?(acao: 'pausar' | 'retomar'): Resultado
+  legendaDoMapa?(acao: 'abrir' | 'fechar'): Resultado
   /** Marca um ponto (confluência) e centra nele; null tira a marca. */
   marcarPonto?(p: MarcaNoMapa | null): Resultado
   explicar(cidadeId: string): Explicacao | null

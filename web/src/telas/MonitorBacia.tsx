@@ -1310,6 +1310,25 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         const lista = nomes.length > 10 ? `${nomes.slice(0, 10).join(', ')} e mais ${nomes.length - 10}` : nomes.join(', ')
         return { ok: true, texto: `Filtro ligado: a bacia inteira, só com o que está sem leitura de agora (${nomes.length}): ${lista}. "Sem leitura" é sem medição, sem horário ou com leitura de mais de 3 h. Peça "limpar filtros" para voltar.` }
       },
+      // 7ª entrega: os mesmos estados do botão "Pausar/Retomar animações" e do "abrir/recolher" da legenda.
+      animacoes: (acao) => {
+        if (acao === 'pausar') {
+          if (animacoesPausadas) return { ok: true, texto: 'As animações já estão pausadas.' }
+          setAnimacoesPausadas(true)
+          return { ok: true, texto: 'Animações pausadas: as ondas pararam. As cores e os números não mudam.' }
+        }
+        if (!animacoesPausadas) {
+          return { ok: true, texto: movimentoReduzido ? 'As animações não estão pausadas aqui, mas o aparelho pede movimento reduzido, então elas ficam paradas.' : 'As animações já estão ligadas.' }
+        }
+        setAnimacoesPausadas(false)
+        return { ok: true, texto: movimentoReduzido ? 'Animações retomadas, mas o aparelho pede movimento reduzido, então elas continuam paradas.' : 'Animações retomadas. As ondas mostram só o sentido do curso, não a velocidade da água.' }
+      },
+      legendaDoMapa: (acao) => {
+        const abrir = acao === 'abrir'
+        if (legendaAberta === abrir) return { ok: true, texto: abrir ? 'A legenda já está aberta, no canto do mapa.' : 'A legenda já está recolhida.' }
+        setLegendaAberta(abrir)
+        return { ok: true, texto: abrir ? 'Legenda aberta no canto do mapa. Peça "explicar as cores" para ler aqui.' : 'Legenda recolhida. O botão "abrir" no canto do mapa a traz de volta.' }
+      },
       // A reprodução das últimas 24 h, pelos mesmos estados do botão "Reproduzir 24 h" e da barra de tempo.
       reproducao: (p) => {
         if (municipal) return { ok: false, texto: 'A reprodução não existe no Monitor de Ascurra.' }

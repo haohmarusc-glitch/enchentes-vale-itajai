@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { estacoes, estacoesTempoReal, mareItajai, trechos, trechosExperimentais } from '../dados/carregar'
 import { buscarBarragens } from '../dados/barragens'
+import historicoChegada from '@dados/historico-chegada-itajai.json'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { reguasNoMapa } from '../logica/reguasNoMapa'
 import { abrirPainel, acrescentar, marcarOcupado } from '../chat-local/conversa'
@@ -194,6 +195,7 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
           barragens: () => buscarBarragens(),
           mare: () => mareItajai,
           transito: () => ({ trechos, experimentais: trechosExperimentais }),
+          referenciaChegada: () => historicoChegada.referencia_estudo,
           fontesDaCidade: (id: string) => {
             const c = cidadeDoCadastro(id)?.cidade as { fontes_tempo_real?: unknown } | undefined
             return Array.isArray(c?.fontes_tempo_real) ? c.fontes_tempo_real.filter((f): f is string => typeof f === 'string') : []

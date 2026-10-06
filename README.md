@@ -571,6 +571,14 @@ o projeto.
     - "Quais cidades estão em alerta?": a faixa de cada cidade na régua dela; a da Defesa Civil de SC à parte.
     - "O que vem de cima?": as cidades acima pela árvore, com a leitura e o tempo de descida em intervalo.
     - "Mostrar só as cidades em alerta": filtro no Monitor (arquivo do Monitor alterado com `monitor-autorizado`).
+  - [x] **Sétima entrega (06/10/2026): a foz e o que o mapa quer dizer.**
+    - "O pico de Blumenau já passou?": o "Hoje" do painel de chegada × maré de Itajaí, pela mesma função da
+      tela (extraída para `logica/hojeEmItajai.ts`).
+    - "Se o pico de Blumenau for às 22h": a simulação do formulário, com a tábua da Marinha.
+    - "O que significa a cor laranja?": a legenda, pelos textos de `faixas.json` e do Monitor.
+    - "Pausar as animações" e "abrir a legenda": os botões do Monitor (`monitor-autorizado`).
+    - Fora de propósito: as chegadas "se o pico fosse agora" a jusante e a estimativa por regressão, que não
+      aparecem em nenhuma tela.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado
