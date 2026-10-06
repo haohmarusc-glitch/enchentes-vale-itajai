@@ -13,6 +13,7 @@ import type { TemaDaLegenda } from './foz'
 
 import { normalizar } from './normalizar'
 import { corrigirCidade, textoDaCorrecao } from './corrigir'
+import { verbeteDe } from './glossario'
 import { arquivoPeloNome } from './rios'
 
 export { normalizar }
@@ -160,6 +161,22 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
       return c ? [{ tipo: 'fonte_leitura', ...c }] : null
     }
   }
+  return null
+}
+
+/** A 11ª entrega: as palavras do rio (glossário) e a resposta em voz alta. */
+function lerTrechoDaDecimaPrimeira(t: string): Lido {
+  {
+    const m = t.match(/^(?:qual (?:e )?)?a diferenca entre (.+?) e (.+)$/)
+    if (m && verbeteDe(m[1]!) && verbeteDe(m[2]!)) return [{ tipo: 'glossario', termos: [m[1]!, m[2]!] }]
+  }
+  {
+    const m = t.match(/^o que (?:e|eh|sao|significa|significam|quer dizer|querem dizer) (.+?)(?: no mapa| no site| no rio| na regua)?$/)
+    if (m && verbeteDe(m[1]!)) return [{ tipo: 'glossario', termos: [m[1]!] }]
+  }
+  if (/^(?:que|quais) (?:palavras|termos) (?:voce|vc) (?:explica|conhece|sabe explicar)$|^glossario$/.test(t)) return [{ tipo: 'termos' }]
+  if (/^(?:ler|leia|le|falar|fale|fala)(?: a)?(?: ultima)?(?: resposta)? em voz alta$|^(?:ler|leia)(?: a)? (?:ultima )?resposta$/.test(t)) return [{ tipo: 'voz', acao: 'ler' }]
+  if (/^(?:parar|pare|para)(?: de)? (?:ler|falar)$|^(?:silencio|chega de ler)$/.test(t)) return [{ tipo: 'voz', acao: 'parar' }]
   return null
 }
 
@@ -446,6 +463,8 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
   if (oitava) return oitava
   const setima = lerTrechoDaSetima(t)
   if (setima) return setima
+  const decimaPrimeira = lerTrechoDaDecimaPrimeira(t)
+  if (decimaPrimeira) return decimaPrimeira
   const quinta = lerTrechoDaQuinta(t, cat)
   if (quinta) return quinta
   const sexta = lerTrechoDaSexta(t, cat)

@@ -572,3 +572,31 @@ Monitor.
     continuação e o pedido refeito virando comando;
   - `testes-navegador/chat-comandos.mjs`, seção 11: sem pedido anterior, "Entendi como" depois de "quanto falta…",
     "de novo" e "e Gaspar" abrindo o Monitor de Gaspar.
+
+## Décima primeira entrega (06/10/2026): as palavras do rio e a resposta em voz alta
+
+O público do site não é técnico, e as respostas usam palavras como cota, jusante, preamar e zero da régua. A 11ª
+entrega explica essas palavras e lê a resposta em voz alta para quem tem dificuldade de ler na tela. Não toca em
+arquivo do Monitor.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "o que é cota?", "o que significa jusante?", "o que é o zero da régua?", "o que quer dizer sizígia?" | Explica a palavra como ela vale neste site (`comandos/glossario.ts`), com sugestões de pedidos ligados a ela ("quanto falta para a cota em Blumenau?"). | Dar conselho, ou explicar sem as regras do site: cada régua com o seu zero, faixa não é metro, tempo de descida em intervalo, leitura velha não é de agora. |
+| "qual a diferença entre enchente e alagamento?" | Os dois verbetes, ou um só quando os dois termos são o mesmo verbete. | — |
+| "que palavras você explica?" | A lista dos 18 verbetes. | — |
+| "ler em voz alta", "parar de ler" | A voz do próprio navegador (`speechSynthesis`) lê a última resposta, com as unidades por extenso ("4,80 metros", "12 centímetros por hora", "7 a 10 horas"). | Mandar o texto a servidor do site. Travar a tela quando o navegador não tem voz: o chat diz que não há e lembra do leitor de tela do aparelho. |
+
+- **Verbetes (18):** régua; zero da régua; nível; cota (com cota de rua); faixa; montante e jusante; afluente;
+  foz; preamar e baixamar; sizígia; estuário; pluviômetro e milímetro de chuva; pico e platô; tempo de
+  descida; nível bruto da rede estadual; barragem de contenção; cheia, enchente, inundação e alagamento;
+  Defesa Civil e AlertaBlu. Cada um fecha com o 199.
+- **A legenda continua sendo a da 7ª entrega:** "o que é alerta?" e "o que significa a cor laranja?" respondem
+  pelos textos de `faixas.json`. O glossário atende só as palavras que não são nome de faixa. Palavra que o
+  glossário não tem segue para o motor de perguntas.
+- **Código:** `comandos/glossario.ts`, `comandos/fala.ts` (o texto para a voz) e a voz em `usarComandos.ts`
+  (`lerEmVoz`).
+- **Testes:**
+  - `src/comandos/decimaprimeira.test.ts` (4): frases, a legenda que continua na 7ª, verbetes com as regras do
+    site, o texto para a voz e o executor com e sem voz no navegador;
+  - `testes-navegador/chat-comandos.mjs`, seção 12: cota, enchente × alagamento, "ler em voz alta" e
+    "parar de ler".

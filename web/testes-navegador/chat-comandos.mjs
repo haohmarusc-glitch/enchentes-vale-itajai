@@ -27,6 +27,7 @@
  *  - 9ª entrega: cidade com erro de digitação executada sem perguntar; sugestão que não leva à cidade certa.
  *  - 10ª entrega: continuação sem "Entendi como"; "e Gaspar" sem pedido anterior que adivinha; comando refeito
  *    que não executa.
+ *  - 11ª entrega: verbete sem a régua de cada cidade ou sem o 199; voz que trava a tela.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -357,7 +358,22 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 12. Página com chat próprio: a barra do topo some.
+  // 12. 11ª entrega: as palavras do rio e a resposta em voz alta.
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'o que é cota?', /Cota/)
+    ok(/marca de altura na régua da cidade/.test(r) && /199/.test(r), 'glossário: cota, com o 199')
+    r = await pedirAte(pg, 'qual a diferença entre enchente e alagamento?', /alagamento/i)
+    ok(/pode acontecer sem o rio subir/.test(r), 'glossário: enchente × alagamento')
+    r = await pedirAte(pg, 'ler em voz alta', /Lendo|não tem leitura/)
+    ok(/Lendo a última resposta|não tem leitura em voz alta/.test(r), `voz: lê pelo aparelho ou diz que não há (${r.slice(0, 40)}…)`)
+    r = await pedirAte(pg, 'parar de ler', /Parei|Não estou lendo|não tem leitura/)
+    ok(/Parei de ler|Não estou lendo|não tem leitura/.test(r), 'parar de ler')
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 13. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

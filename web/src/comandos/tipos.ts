@@ -107,6 +107,10 @@ export type Passo =
   | { tipo: 'contagem'; permitir: boolean }
   | { tipo: 'limpar_conversa' }
   | { tipo: 'emergencia' }
+  // 11ª entrega: as palavras do rio e a resposta em voz alta.
+  | { tipo: 'glossario'; termos: string[] }
+  | { tipo: 'termos' }
+  | { tipo: 'voz'; acao: 'ler' | 'parar' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }
