@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """
-Baixa do OpenStreetMap o traçado do Rio Benedito, do Rio Itajaí do Sul e do Rio Trombudo.
+Baixa do OpenStreetMap o traçado do Benedito, do Rio dos Cedros, do Itajaí do Sul, do Trombudo e do Ribeirão
+Guabiruba.
 
 POR QUE (pedido do Jefferson, 06/10/2026). Desde a auditoria das réguas, o pino de cada cidade fica na régua,
-mas três cidades ainda aparecem sem o rio delas no mapa:
+mas cidades ainda aparecem sem o rio delas no mapa:
   - Timbó, no Benedito (o Benedito também recebe o Rio dos Cedros);
   - Ituporanga, no Itajaí do Sul — hoje só há 10,5 km dele, da Defesa Civil de Rio do Sul (Asthon),
     perto da confluência;
   - Trombudo Central, no Trombudo.
+Na mesma data, a inspeção visual do Jefferson acrescentou Rio dos Cedros (Rio dos Cedros) e Guabiruba
+(Ribeirão Guabiruba). A causa dos cinco é a mesma: o arquivo do rio não existia em data/rios/ — o Monitor
+desenha todo traçado que existe, em cinza, sem depender de leitura, cota ou faixa.
 
 O QUE CONFERE ANTES DE GRAVAR CADA RIO (o que falha não grava; os outros seguem):
   - o nome exato veio;
@@ -52,6 +56,16 @@ RIOS = {
         # Timbó ("Rio Benedito, Rua Equador") não tem fonte declarada no cadastro — o mesmo caso do Trombudo.
         "passa_km": 1.0,
     },
+    "rio-dos-cedros": {
+        # Inspeção de 06/10/2026: pino de Rio dos Cedros sem o rio dele. Desce de Rio dos Cedros para o Benedito.
+        "nomes": ("Rio dos Cedros",),
+        "caixa": (-26.95, -49.55, -26.45, -49.15),
+        "chega_a": ("benedito",),
+        "chega_km": 1.0,
+        "cidade": "rio-dos-cedros",
+        # 1 km: coordenada do cadastro ("Régua da Praça Matriz") sem fonte declarada, como Timbó.
+        "passa_km": 1.0,
+    },
     "itajai-do-sul": {
         "nomes": ("Rio Itajaí do Sul",),
         "caixa": (-27.90, -49.80, -27.15, -49.10),
@@ -70,14 +84,29 @@ RIOS = {
         # estadual mais perto (DCSC-00035, equivalência não confirmada) fica a 0,9 km dela.
         "passa_km": 1.0,
     },
+    "guabiruba": {
+        # Inspeção de 06/10/2026: pino de Guabiruba sem o curso dele. A DCSC-00029 mede o ribeirão que passa
+        # pela cidade; o cadastro o chama de Ribeirão Guabiruba (afluente lateral do Mirim, perto de Brusque).
+        # O OSM pode tê-lo como rio ou ribeirão: os dois nomes entram, e quem confere é a passagem pela estação.
+        "nomes": ("Ribeirão Guabiruba", "Rio Guabiruba"),
+        "waterway": ("river", "stream"),
+        "caixa": (-27.20, -49.10, -27.00, -48.85),
+        "chega_a": ("itajai-mirim",),
+        "chega_km": 1.0,
+        "cidade": "guabiruba",
+        # 0,5 km: o pino é a coordenada da estação DCSC-00029.
+        "passa_km": 0.5,
+    },
 }
 
 
 def consulta(rio_id: str) -> str:
     c = RIOS[rio_id]
     s, o, n, l = c["caixa"]
-    nomes = "|".join(n.removeprefix("Rio ") for n in c["nomes"])
-    return (f'[out:json][timeout:120];\nway["waterway"="river"]["name"~"^Rio ({nomes})$"]'
+    nomes = "|".join(c["nomes"])
+    # Ribeirão costuma ser `stream` no OSM; rio, `river`. Quem filtra é o nome exato.
+    tipos = "|".join(c.get("waterway", ("river",)))
+    return (f'[out:json][timeout:120];\nway["waterway"~"^({tipos})$"]["name"~"^({nomes})$"]'
             f"({s},{o},{n},{l});\nout geom;")
 
 
@@ -121,20 +150,23 @@ def conferir(rio_id: str, ls: list, alvos: dict[str, list], pino_cidade: tuple[f
     return problemas
 
 
+ORDEM = ("benedito", "rio-dos-cedros", "itajai-do-sul", "trombudo", "guabiruba")
+
+
 def distancia_ao_pino(ls: list, pino_cidade: tuple[float, float]) -> float:
     return min(km(pino_cidade, p) for l in ls for p in l)
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Baixa o traçado do Benedito, do Itajaí do Sul e do Trombudo (OSM).")
+    ap = argparse.ArgumentParser(description="Baixa o traçado dos afluentes sem rio no Monitor (OSM).")
     ap.add_argument("--gravar", action="store_true", help="grava data/brutos/tracado-<id>-osm.json dos que passarem")
     ap.add_argument("--so", choices=sorted(RIOS), action="append", help="só este rio (repetível)")
     a = ap.parse_args()
 
-    alvos = {"itajai-acu": tracado("itajai-acu")}
+    alvos = {"itajai-acu": tracado("itajai-acu"), "itajai-mirim": tracado("itajai-mirim")}
     gravados, recusados = [], []
-    # Itajaí do Sul antes do Trombudo: o Trombudo pode chegar a ele.
-    for rio_id in [r for r in ("benedito", "itajai-do-sul", "trombudo") if not a.so or r in a.so]:
+    # Ordem: quem recebe antes de quem chega (o Rio dos Cedros chega ao Benedito; o Trombudo pode chegar ao Sul).
+    for rio_id in [r for r in ORDEM if not a.so or r in a.so]:
         texto = consulta(rio_id)
         resposta, espelho = buscar_consulta(texto)
         ls = linhas(resposta.get("elements") or [], RIOS[rio_id]["nomes"])

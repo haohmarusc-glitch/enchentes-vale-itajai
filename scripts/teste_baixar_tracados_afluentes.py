@@ -1,4 +1,4 @@
-"""Trava o download do Benedito, do Itajaí do Sul e do Trombudo (scripts/baixar_tracados_afluentes.py)."""
+"""Trava o download dos afluentes (scripts/baixar_tracados_afluentes.py)."""
 import unittest
 
 import baixar_tracados_afluentes as ba
@@ -40,8 +40,31 @@ class Conferencia(unittest.TestCase):
 
     def test_consulta_pede_o_nome_exato_na_caixa_do_rio(self):
         q = ba.consulta("itajai-do-sul")
-        self.assertIn('"^Rio (Itajaí do Sul)$"', q)
+        self.assertIn('"^(Rio Itajaí do Sul)$"', q)
+        self.assertIn('"^(river)$"', q)
+        g = ba.consulta("guabiruba")
+        self.assertIn('"^(Ribeirão Guabiruba|Rio Guabiruba)$"', g)
+        self.assertIn('"^(river|stream)$"', g)
         self.assertIn("(-27.9,-49.8,-27.15,-49.1)", q)
+
+
+class NovosDaInspecao(unittest.TestCase):
+    """Rio dos Cedros chega ao Benedito; Guabiruba ao Mirim (06/10/2026)."""
+
+    def test_rio_dos_cedros_chega_ao_benedito_baixado_na_rodada(self):
+        rc = ba.pino("rio-dos-cedros")
+        ls = ba.linhas([way("Rio dos Cedros", [(-49.30, -26.60), rc, (-49.27, -26.80)])], ("Rio dos Cedros",))
+        self.assertEqual(ba.conferir("rio-dos-cedros", ls, {"benedito": [(-49.27, -26.801)]}, rc), [])
+        self.assertTrue(ba.conferir("rio-dos-cedros", ls, {}, rc))
+
+    def test_guabiruba_aceita_os_dois_nomes_e_confere_pela_estacao(self):
+        g = ba.pino("guabiruba")
+        ls = ba.linhas([way("Ribeirão Guabiruba", [(-49.00, -27.10), g, (-48.93, -27.099)])], ba.RIOS["guabiruba"]["nomes"])
+        self.assertEqual(ba.conferir("guabiruba", ls, {"itajai-mirim": [(-48.93, -27.10)]}, g), [])
+
+    def test_a_ordem_baixa_quem_recebe_antes(self):
+        self.assertLess(ba.ORDEM.index("benedito"), ba.ORDEM.index("rio-dos-cedros"))
+        self.assertLess(ba.ORDEM.index("itajai-do-sul"), ba.ORDEM.index("trombudo"))
 
 
 if __name__ == "__main__":

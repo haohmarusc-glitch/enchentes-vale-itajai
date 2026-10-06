@@ -1,5 +1,5 @@
-# Baixa do OpenStreetMap o traçado do Rio Benedito, do Itajaí do Sul e do Trombudo (pedido do Jefferson,
-# 06/10/2026).
+# Baixa do OpenStreetMap o traçado dos afluentes sem rio no Monitor: Benedito, Rio dos Cedros, Itajaí do Sul,
+# Trombudo e Ribeirão Guabiruba (pedido do Jefferson, 06/10/2026).
 #
 # POR QUE NO ACTIONS. O Overpass não responde ao ambiente das sessões de código; o runner do GitHub alcança.
 #
@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   baixar:
-    name: Baixar Benedito, Itajaí do Sul e Trombudo
+    name: Baixar os afluentes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -52,7 +52,8 @@ jobs:
         run: |
           set -euo pipefail
           linhas=$(printf '100644 blob %s\tresumo.txt\n' "$(git hash-object -w resumo.txt)")
-          for f in data/brutos/tracado-benedito-osm.json data/brutos/tracado-itajai-do-sul-osm.json data/brutos/tracado-trombudo-osm.json; do
+          for r in benedito rio-dos-cedros itajai-do-sul trombudo guabiruba; do
+            f=data/brutos/tracado-$r-osm.json
             if [ -f "$f" ]; then
               linhas="$linhas"$'\n'"$(printf '100644 blob %s\t%s' "$(git hash-object -w "$f")" "$(basename "$f")")"
             fi

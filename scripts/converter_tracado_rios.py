@@ -86,6 +86,8 @@ BRUTOS_AFLUENTES = {
     "benedito": RAIZ / "data/brutos/tracado-benedito-osm.json",
     "itajai-do-sul": RAIZ / "data/brutos/tracado-itajai-do-sul-osm.json",
     "trombudo": RAIZ / "data/brutos/tracado-trombudo-osm.json",
+    "rio-dos-cedros": RAIZ / "data/brutos/tracado-rio-dos-cedros-osm.json",
+    "guabiruba": RAIZ / "data/brutos/tracado-guabiruba-osm.json",
 }
 #: Brutos dos cursos d'água COM NOME que passam por um município
 #: (`baixar_rios_municipio.py`, `data/brutos/rios-<municipio>-osm.json`). Cada
@@ -150,12 +152,17 @@ RIOS_AFLUENTES = {
     # O rio de Trombudo Central (BRUTOS_AFLUENTES). Desenhá-lo NÃO dá posição na árvore à cidade: a
     # confluência é geometria do OSM, e a árvore só muda com fonte (docs/TOPOLOGIA-CANONICA.md).
     "trombudo": ["rio trombudo"],
+    # O rio da cidade de Rio dos Cedros, que chega ao Benedito em Timbó (BRUTOS_AFLUENTES).
+    "rio-dos-cedros": ["rio dos cedros"],
+    # O curso que a DCSC-00029 mede em Guabiruba, até o Mirim em Brusque (BRUTOS_AFLUENTES). O OSM pode
+    # chamá-lo de rio ou de ribeirão; o download aceita os dois e confere a passagem pela estação.
+    "guabiruba": ["ribeirão guabiruba", "rio guabiruba"],
 }
 
 #: Os rios recortados na CAIXA do mapa (a extensão do tronco e das réguas do cadastro). O Benedito nasce ao
 #: norte de Doutor Pedrinho e o Itajaí do Sul em Alfredo Wagner, fora do quadro de hoje; inteiros, eles
 #: afastariam o mapa inteiro. O recorte guarda o trecho das cidades e a chegada ao rio de baixo.
-RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo")
+RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba")
 
 
 #: Recorte do Hercílio ao NORTE desta latitude. O Itajaí do Norte nasce em
