@@ -515,3 +515,33 @@ site é oficial, como tê-lo no celular, o que ele guarda e para quem ligar. Nã
     `localStorage` só depois de confirmar), contagem gravada como `nao`, emergência e conversa limpa;
   - sonda com os dados do branch `tempo-real`: "atualizar" disparou a busca dos três arquivos em cada tela aberta,
     e um segundo pedido em menos de 30 s não disparou nenhuma.
+
+## Nona entrega (06/10/2026): nome de cidade com erro de digitação
+
+Quem digita no celular, na chuva, escreve "Blumenal" ou "Rio do Sol". O chat só casava o nome exato: o comando
+não era reconhecido e a pergunta caía na resposta genérica. A 9ª entrega troca isso por uma pergunta de volta.
+Não toca em arquivo do Monitor.
+
+| Caso | O que faz | O que nunca faz |
+|---|---|---|
+| comando: "mostrar Blumenal", "quanto falta para a cota em Rio do Sol?", "mostrar Blumenal e satélite" | Se a frase com o nome corrigido vira comando, responde "Não achei a cidade "Blumenal". Você quis dizer Blumenau? Nada foi feito" e oferece a frase corrigida como sugestão. Tocar nela executa o pedido certo. | Executar o palpite sozinho. |
+| pergunta: "como está blumenal?", "cheias de brusqe" | O motor responde o que foi escrito, como antes. Antes da resposta, o chat diz "Você quis dizer Blumenau?" e põe a pergunta corrigida como primeira sugestão. Vale também em `/perguntas` e na aba Histórico. | Responder pela cidade do palpite sem a pessoa tocar. |
+
+- **As regras que seguram o palpite** (`comandos/corrigir.ts`):
+  - se a frase já tem um nome conhecido exato, não há correção;
+  - nome de até 4 letras (Taió) não é corrigido; 5 a 7 letras aceitam 1 diferença; 8 ou mais, 2;
+  - o trecho precisa estar onde cabe um nome de cidade: no começo, depois de "em", "de", "está", "mostrar" e afins,
+    ou com maiúscula. Assim "levei um tombo" não vira Timbó e "gastar" não vira Gaspar, e essas palavras também
+    estão numa lista curta que nunca é corrigida;
+  - perto de dois nomes, nenhum palpite;
+  - na pergunta, a lista de nomes inclui os municípios do Atlas que o motor conhece: "Pomerode" nunca vira erro
+    de digitação de outra cidade.
+- **Prova de falso positivo:** o corretor rodou sobre as 2.744 frases dos testes do chat e da prova. Só houve
+  palpite em erros de digitação de verdade, já escritos nos testes ("blumenal", "Rio do Sol").
+- **O motor não muda:** a prova do chat (`chat-ia/prova`) responde igual. O "Você quis dizer" é acrescentado pela
+  tela do chat (`ChatLocal.tsx`) e pelo interpretador de comandos.
+- **Testes:**
+  - `src/comandos/nona.test.ts` (5): distância, acertos, recusas (nome exato, curto, palavra comum, fora da posição,
+    longe, dois nomes, município do Atlas), comando e pergunta;
+  - `testes-navegador/chat-comandos.mjs`, seção 10: "mostrar Blumenal" não muda a tela, e a sugestão abre o Monitor
+    de Blumenau; "como está blumenal?" traz o palpite e a pergunta corrigida como sugestão.
