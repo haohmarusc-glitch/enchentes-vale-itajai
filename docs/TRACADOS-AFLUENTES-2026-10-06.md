@@ -29,7 +29,20 @@ As cinco leituras e faixas não mudam: pino e cor seguem como estavam.
      da régua (`componente_da_regua`): um pedaço solto com o mesmo nome não prova continuidade.
 
    Rio que falha não grava. O script guarda o que veio e os cursos d'água a 1,5 km da régua, para a decisão
-   ser feita à mão. Uma rodada caiu por timeout do espelho do Overpass e foi rodada de novo uma vez.
+   ser feita à mão.
+
+   **Falha do Overpass:** duas rodadas caíram por timeout do espelho `overpass.kumi.systems`. O erro subia
+   sem tratamento: o terceiro espelho nunca era tentado, e os rios seguintes nem eram pedidos. Desde
+   06/10/2026, por decisão do Jefferson:
+   - **timeout e queda de conexão** contam como fila: espera progressiva, nova tentativa e, esgotadas as
+     tentativas, o próximo espelho;
+   - **cada rio é isolado:** o que fica sem resposta não para os outros, que são conferidos e publicados;
+   - **último arquivo válido:** quem falha mantém o arquivo anterior, o do checkout. Nada é apagado ou
+     sobrescrito;
+   - **`rodada.json`** (publicado junto com `resumo.txt`) registra, por rio, a situação (`baixado`,
+     `recusado` ou `sem_resposta`), o espelho, cada tentativa com o resultado e o motivo do erro;
+   - **a rodada termina verde**, com a anotação "Coleta parcial" (ou "Coleta não realizada", se nenhum rio
+     respondeu) dizendo quais rios ficaram com o último arquivo válido.
 2. O script roda no GitHub Actions (`baixar-tracados-afluentes.yml`). Os brutos e o resumo vão para o branch
    `tracado-afluentes`.
 3. `converter_tracado_rios.py` gera `data/rios/<id>.geojson`. Ele recorta na **caixa do mapa** (extensão do

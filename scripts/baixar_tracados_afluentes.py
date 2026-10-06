@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -189,7 +190,11 @@ def diagnosticar(rio_id: str, resposta: dict, texto: str) -> None:
                              "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     (BRUTOS / f"recusado-{rio_id}-osm.json").write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")
     texto_a = consulta_arredores(cidade)
-    arredores, _ = buscar_consulta(texto_a)
+    try:
+        arredores, _ = buscar_consulta(texto_a)
+    except SystemExit as e:
+        print(f"   arredores de {cidade}: sem resposta do Overpass — {e}", file=sys.stderr)
+        return
     arredores["_consulta"] = {"overpass": texto_a, "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds")}
     (BRUTOS / f"arredores-{rio_id}-osm.json").write_text(json.dumps(arredores, ensure_ascii=False) + "\n", encoding="utf-8")
     p = pino(cidade)
@@ -203,32 +208,37 @@ def diagnosticar(rio_id: str, resposta: dict, texto: str) -> None:
         print(f"     way {wid} {t.get('waterway')} {t.get('name')!r}: {d:.2f} km do pino")
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description="Baixa o traçado dos afluentes sem rio no Monitor (OSM).")
-    ap.add_argument("--gravar", action="store_true", help="grava data/brutos/tracado-<id>-osm.json dos que passarem")
-    ap.add_argument("--so", choices=sorted(RIOS), action="append", help="só este rio (repetível)")
-    a = ap.parse_args()
+def rodar(ids: list[str], *, gravar: bool = False, buscar=buscar_consulta) -> dict[str, dict]:
+    """
+    Baixa e confere cada rio, um de cada vez. Devolve, por rio: `situacao` (baixado | recusado | sem_resposta),
+    `espelho`, `tentativas` (espelho, tentativa e resultado de cada pedido), `motivo` e `arquivo`.
 
+    Um rio sem resposta do Overpass NÃO para a rodada: os outros seguem e são gravados. O arquivo de quem
+    falhou não é tocado — fica o último válido (`arquivo: "mantido"`), ou nenhum (`"ausente"`).
+    """
     alvos = {"itajai-acu": tracado("itajai-acu"), "itajai-mirim": tracado("itajai-mirim")}
-    gravados, recusados, sem_resposta = [], [], []
-    # Ordem: quem recebe antes de quem chega (o Rio dos Cedros chega ao Benedito; o Trombudo pode chegar ao Sul).
-    for rio_id in [r for r in ORDEM if not a.so or r in a.so]:
+    rodada: dict[str, dict] = {}
+    for rio_id in ids:
+        destino = BRUTOS / f"tracado-{rio_id}-osm.json"
+        anterior = "mantido" if destino.exists() else "ausente"
         texto = consulta(rio_id)
+        tentativas: list[dict] = []
         try:
-            resposta, espelho = buscar_consulta(texto)
+            resposta, espelho = buscar(texto, registro=tentativas)
         except SystemExit as e:
-            # Overpass sem resposta para ESTE rio: os outros seguem (e são publicados); a rodada sai com erro.
             print(f"{rio_id}: SEM RESPOSTA do Overpass — {e}", file=sys.stderr)
-            sem_resposta.append(rio_id)
+            rodada[rio_id] = {"situacao": "sem_resposta", "espelho": None, "tentativas": tentativas,
+                              "motivo": str(e), "arquivo": anterior}
             continue
         ls = linhas(resposta.get("elements") or [], RIOS[rio_id]["nomes"])
-        print(f"{rio_id}: {len(ls)} way(s), {comprimento_km(ls):.1f} km")
+        print(f"{rio_id}: {len(ls)} way(s), {comprimento_km(ls):.1f} km (espelho {espelho})")
         problemas = conferir(rio_id, ls, alvos, pino(RIOS[rio_id]["cidade"]))
         if problemas:
             for p in problemas:
                 print(f"   RECUSADO: {p}", file=sys.stderr)
-            recusados.append(rio_id)
-            if a.gravar:
+            rodada[rio_id] = {"situacao": "recusado", "espelho": espelho, "tentativas": tentativas,
+                              "motivo": "; ".join(problemas), "arquivo": anterior}
+            if gravar:
                 # Para decidir à mão, sem adivinhar: o que veio pelo nome e os cursos d'água em volta da régua.
                 diagnosticar(rio_id, resposta, texto)
             continue
@@ -236,20 +246,62 @@ def main() -> int:
         d = distancia_ao_pino(ls, pino(RIOS[rio_id]["cidade"]))
         print(f"   conferido: chega a {' / '.join(RIOS[rio_id]['chega_a'])} e passa a {d:.2f} km do pino de "
               f"{RIOS[rio_id]['cidade']}")
-        if a.gravar:
+        arquivo = anterior
+        if gravar:
             resposta["_consulta"] = {
                 "overpass": texto,
                 "espelho": espelho,
                 "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 "script": "scripts/baixar_tracados_afluentes.py",
             }
-            destino = BRUTOS / f"tracado-{rio_id}-osm.json"
             destino.write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")
             print(f"   gravado: {destino.relative_to(RAIZ)}")
-        gravados.append(rio_id)
-    print(f"\nconferidos: {', '.join(gravados) or 'nenhum'} · recusados: {', '.join(recusados) or 'nenhum'}"
-          f" · sem resposta do Overpass: {', '.join(sem_resposta) or 'nenhum'}")
-    return 0 if gravados and not sem_resposta else 1
+            arquivo = "novo"
+        rodada[rio_id] = {"situacao": "baixado", "espelho": espelho, "tentativas": tentativas, "motivo": None,
+                          "arquivo": arquivo}
+    return rodada
+
+
+def aviso_da_rodada(rodada: dict[str, dict]) -> str | None:
+    """None se todos os rios responderam; senão, o aviso de coleta parcial (ou nula) com o que ficou."""
+    sem = [r for r, v in rodada.items() if v["situacao"] == "sem_resposta"]
+    if not sem:
+        return None
+    ok = [r for r, v in rodada.items() if v["situacao"] == "baixado"]
+    ficou = ", ".join(f"{r} ({'último arquivo válido mantido' if rodada[r]['arquivo'] == 'mantido' else 'sem arquivo'})"
+                      for r in sem)
+    if ok:
+        return f"Coleta parcial: {len(ok)} de {len(rodada)} rios baixados. Sem resposta do Overpass: {ficou}."
+    return f"Coleta não realizada: nenhum rio respondeu. {ficou}."
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description="Baixa o traçado dos afluentes sem rio no Monitor (OSM).")
+    ap.add_argument("--gravar", action="store_true", help="grava data/brutos/tracado-<id>-osm.json dos que passarem")
+    ap.add_argument("--so", choices=sorted(RIOS), action="append", help="só este rio (repetível)")
+    ap.add_argument("--relatorio", type=Path, help="grava o relatório da rodada (JSON) neste caminho")
+    a = ap.parse_args()
+
+    # Ordem: quem recebe antes de quem chega (o Rio dos Cedros chega ao Benedito; o Trombudo pode chegar ao Sul).
+    rodada = rodar([r for r in ORDEM if not a.so or r in a.so], gravar=a.gravar)
+    if a.relatorio:
+        a.relatorio.write_text(json.dumps({
+            "rodada_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "rios": rodada,
+        }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    por = {s: [r for r, v in rodada.items() if v["situacao"] == s] for s in ("baixado", "recusado", "sem_resposta")}
+    print(f"\nconferidos: {', '.join(por['baixado']) or 'nenhum'} · recusados: {', '.join(por['recusado']) or 'nenhum'}"
+          f" · sem resposta do Overpass: {', '.join(por['sem_resposta']) or 'nenhum'}")
+    aviso = aviso_da_rodada(rodada)
+    if aviso:
+        print(f"\nAVISO: {aviso}")
+        if os.environ.get("GITHUB_ACTIONS"):
+            # Anotação no Actions: a rodada termina verde, com o aviso visível, e publica o que veio.
+            print(f"::warning title=Coleta parcial dos afluentes::{aviso}")
+    # Falha do Overpass não derruba a rodada (decisão de 06/10/2026): os válidos são publicados, os outros
+    # ficam com o último arquivo válido, e o aviso diz quais. Recusa por conferência também não é erro do
+    # script — é o resultado da conferência, com diagnóstico.
+    return 0
 
 
 if __name__ == "__main__":

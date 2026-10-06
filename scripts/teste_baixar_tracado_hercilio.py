@@ -70,6 +70,16 @@ class Busca(unittest.TestCase):
         self.assertEqual(espelho, bh.ESPELHOS[0])
         self.assertEqual(esperas, [bh.BACKOFF_BASE_S])
 
+    def test_o_registro_guarda_espelho_tentativa_e_motivo(self):
+        respostas = iter([Resposta(504, "fila"), Resposta(200, json.dumps({"elements": []}))])
+        registro = []
+        bh.buscar_consulta("q", transporte=lambda *a: next(respostas), dormir=lambda s: None,
+                           avisar=lambda *a: None, registro=registro)
+        self.assertEqual(registro, [
+            {"espelho": bh.ESPELHOS[0], "tentativa": 1, "resultado": "HTTP 504"},
+            {"espelho": bh.ESPELHOS[0], "tentativa": 2, "resultado": "ok"},
+        ])
+
     def test_todos_os_espelhos_sem_resposta_vira_systemexit_com_o_motivo(self):
         def transporte(*a):
             raise TimeoutError("lido demais")
