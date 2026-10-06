@@ -43,3 +43,23 @@ export function ressalvaDoBruto(temCotasMunicipais: boolean, corEstadual: boolea
 /** "Por que está cinza?" na cidade de várias réguas: não falta cota — falta uma faixa única, que não existe. */
 export const MOTIVO_VARIAS_REGUAS =
   'A cidade tem várias réguas, cada uma com zero e cotas próprias: não existe uma faixa única da cidade, e a cor não é a média nem a maior delas. A situação de cada régua está abaixo.'
+
+/**
+ * A equivalência entre a régua municipal e a estação estadual perto dela (decisão de 06/10/2026). O painel
+ * mostrava o nível estadual sem dizer que a ligação não está confirmada (conferência do Jefferson, 06/10).
+ */
+export function textoEquivalencia(eq: {
+  codigo: string
+  nome_na_dcsc?: string
+  distancia_km?: number
+  status: string
+  fonte?: string
+}): string {
+  const nome = eq.nome_na_dcsc ? ` (${eq.nome_na_dcsc})` : ''
+  const km = typeof eq.distancia_km === 'number' ? `, a ${eq.distancia_km.toLocaleString('pt-BR')} km` : ''
+  if (eq.status === 'confirmada') {
+    return `A estação estadual ${eq.codigo}${nome} é a régua das cotas desta cidade${eq.fonte ? ` (fonte: ${eq.fonte})` : ''}.`
+  }
+  return `Equivalência entre a régua municipal e a estação estadual ${eq.codigo}${nome}${km}: não confirmada. ` +
+    'Proximidade não basta: falta documento, código comum ou comparação de referência/zero da régua.'
+}
