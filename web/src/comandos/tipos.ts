@@ -98,6 +98,15 @@ export type Passo =
   | { tipo: 'legenda'; tema: TemaDaLegenda }
   | { tipo: 'animacoes'; acao: 'pausar' | 'retomar' }
   | { tipo: 'legenda_mapa'; acao: 'abrir' | 'fechar' }
+  // 8ª entrega: o site e os seus dados.
+  | { tipo: 'atualizar' }
+  | { tipo: 'oficial' }
+  | { tipo: 'instalar' }
+  | { tipo: 'privacidade' }
+  | { tipo: 'esquecer'; confirmado: boolean }
+  | { tipo: 'contagem'; permitir: boolean }
+  | { tipo: 'limpar_conversa' }
+  | { tipo: 'emergencia' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

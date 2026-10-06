@@ -579,6 +579,12 @@ o projeto.
     - "Pausar as animações" e "abrir a legenda": os botões do Monitor (`monitor-autorizado`).
     - Fora de propósito: as chegadas "se o pico fosse agora" a jusante e a estimativa por regressão, que não
       aparecem em nenhuma tela.
+  - [x] **Oitava entrega (06/10/2026): o site e os seus dados.**
+    - "Atualizar as leituras": antecipa a busca do tempo real em todas as telas abertas (um pedido por 30 s) e
+      diz se a coleta é nova.
+    - "Isso é oficial?", "telefone de emergência" (199 e 193), "como instalar o aplicativo?".
+    - "O que o site guarda de mim?", "apagar minhas preferências" (com confirmação), "não contar minhas
+      perguntas", "limpar a conversa".
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

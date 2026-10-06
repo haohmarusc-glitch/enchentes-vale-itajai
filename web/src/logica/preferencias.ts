@@ -178,3 +178,23 @@ export function contagemChatPermitida(
 export function gravarContagemChat(permitir: boolean, a: Armazem | null = armazemPadrao()): boolean {
   return gravar(CHAVE_CONTAGEM_CHAT, permitir ? 'sim' : 'nao', a)
 }
+
+/**
+ * "Apagar minhas preferências" (8ª entrega do chat): tira deste aparelho tudo o que o site lembra. Devolve
+ * false quando o armazenamento não responde (aí não havia nada guardado de qualquer forma).
+ */
+export function esquecerPreferencias(a: Armazem | null = armazemPadrao()): boolean {
+  return [CHAVE_CIDADES, CHAVE_LETRA, CHAVE_AVISO, CHAVE_CONTAGEM_CHAT].map((c) => gravar(c, null, a)).every(Boolean)
+}
+
+/** O aparelho consegue guardar? (Janela anônima ou armazenamento bloqueado: não.) */
+export function temMemoria(a: Armazem | null = armazemPadrao()): boolean {
+  if (!a) return false
+  try {
+    a.setItem('enchentes:teste', '1')
+    a.removeItem('enchentes:teste')
+    return true
+  } catch {
+    return false
+  }
+}
