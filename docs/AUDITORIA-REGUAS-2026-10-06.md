@@ -84,24 +84,39 @@ mesma estação. As coordenadas da inspeção, tiradas do Plus Code, batem com a
 - **Nenhuma coordenada do cadastro mudou.** A estação estadual mais próxima de uma cidade sem código não foi
   copiada para ela.
 
-## O que fica para o Jefferson
+## Decisões do Jefferson (06/10/2026, depois da auditoria)
 
-1. **Blumenau:** o local da régua da Ponte Adolfo Konder. Pode vir da Defesa Civil de Blumenau ou do AlertaBlu.
-   A ANA 83800002 (−26,9186, −49,0656) é candidata, não confirmada. Com o local, o cadastro troca a coordenada
-   e o "aproximado" sai.
-2. **A régua municipal é a estação estadual mais próxima?**
+1. **Blumenau: coordenada da régua confirmada.**
+   - **Informação da Prefeitura:** as réguas ficam na escadaria logo após a Ponte Adolfo Konder, na Avenida
+     Presidente Castelo Branco (Beira-Rio), e foram fornecidas pela ANA/Epagri. O sensor automático fica no
+     guarda-corpo da ponte.
+   - **No cadastro:**
+     - `coordenadas` = −26,9186, −49,0656, a da ANA 83800002;
+     - `coordenadas_sao_da_regua: true`;
+     - `coordenadas_fonte`: "Prefeitura de Blumenau/Defesa Civil — Ponte Adolfo Konder, Beira-Rio";
+     - o antes e o depois ficam em `coordenadas_nota`.
+   - **O que muda com isso:**
+     - o "aproximado" sai;
+     - o painel diz a fonte;
+     - o bot volta a dar a distância, agora até a régua;
+     - as exceções de Blumenau no validador (`LONGE_ACEITO`, `PINO_LONGE_DA_REGUA`) saíram.
+   - **A DCSC-00026** continua em `codigo_dcsc`, só para a chuva.
+2. **Timbó, Rio dos Cedros, Trombudo Central e Lontras: equivalência não confirmada.**
+   - **Por quê:** distância de 0,24 a 1,6 km não prova que seja a mesma régua. Zero, seção do rio e referência
+     altimétrica podem diferir.
+   - **No cadastro:** cada uma tem `equivalencia_estadual` com `status: "não confirmada"`.
+   - **Trava:** `valida_equivalencia_estadual` reprova o código em `codigo_dcsc` enquanto não houver
+     confirmação, e reprova "confirmada" sem `fonte`.
+   - **Quando vincular:** só quando existir documento, código comum ou comparação de referência/zero da régua. Proximidade não basta.
+3. **Itajaí: seletor de régua na própria tela do Monitor.**
+   - **Opções:** "Todas as 11 réguas" (padrão), depois DC-01 a DC-11.
+   - **Escolher uma régua:** o mapa centraliza nela, com ~3 km de largura, e o painel dela abre. No celular, o
+     ponto fica acima do painel.
+   - **"Todas":** volta ao enquadramento das onze.
+   - **Toque no mapa:** tocar numa régua também muda o seletor.
+   - **Código e testes:** `logica/seletorDeRegua.ts`, testado com o cadastro real.
 
-   | Cidade | Estação estadual | Distância |
-   |---|---|---|
-   | Timbó | Timbó 1, DCSC-00023 | 1,6 km |
-   | Rio dos Cedros | Rio dos Cedros 1, DCSC-00011 | 0,24 km |
-   | Trombudo Central | Trombudo Central 2, DCSC-00035 | 0,9 km |
-   | Lontras | DCSC-00032 | 0,8 km |
+## O que fica
 
-   Só a fonte responde. Proximidade não é vínculo.
-3. **Itajaí:** a inspeção não achou DC-01, DC-02 e DC-11 ao ampliar. As três têm ponto próprio no mapa, com
-   coordenada do mapa da Defesa Civil de Itajaí (02/09/2026). A tela de Itajaí abre enquadrando as 11 réguas.
-   Ao ampliar com os botões, o centro é o meio delas, que não é régua nenhuma: é preciso arrastar até a régua.
-   Uma seleção por régua no menu seria uma tela nova, a decidir.
-4. **Fora deste trabalho:** desenhar o Benedito, o Itajaí do Sul e o Trombudo. O pino já não depende disso; o
-   rio é que aparece.
+- **Rios ainda sem traçado:** desenhar o Benedito, o Itajaí do Sul e o Trombudo. O pino já não depende disso;
+  falta só o rio aparecer no mapa.

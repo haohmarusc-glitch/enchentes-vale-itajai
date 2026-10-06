@@ -70,7 +70,7 @@
         "nao_e_regua_de_rio": [
           {
             "id": "DCSC-00178",
-            "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026."
+            "motivo": "Estação estadual DCSC-00178 é de ALTITUDE ('(H)'), não régua de rio: reporta ~82 m e a coordenada cai em área de mata sem curso d'água próximo. Retirada do eixo em 02/09/2026. CORREÇÃO (06/10/2026, auditoria das cidades sem cor): medida contra data/rios/, a coordenada fica a 0,08 km do traçado do Açu — o 'sem curso d'água próximo' não se confirma. Continua fora do eixo porque o valor é cota altimétrica sem referência vertical documentada (C30 pendente). O painel de Apiúna mostra o número com essa ressalva, sem faixa (balde `altimetricas` do coletor)."
           }
         ],
         "afluentes_rios": [
@@ -347,6 +347,13 @@
           "sub_bacia": "Itajaí-Açu",
           "codigo_ana": null,
           "codigo_dcsc": null,
+          "equivalencia_estadual": {
+            "codigo": "DCSC-00032",
+            "nome_na_dcsc": "Lontras",
+            "distancia_km": 0.82,
+            "status": "não confirmada",
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+          },
           "verificado": false,
           "regua": "Régua do Itajaí-Açu em Lontras (a fonte não nomeia o ponto)",
           "referencia": "régua",
@@ -484,11 +491,12 @@
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "coordenadas": [
-            -26.9224,
-            -49.1354
+            -26.9186,
+            -49.0656
           ],
-          "coordenadas_sao_da_regua": false,
-          "coordenadas_sao_da_regua_nota": "A `coordenadas` desta cidade é a da DCSC-00026, que é estação de CHUVA (tipo `Meteo`, `tem_nivel_do_rio: false` no inventário da ANA) — não é a régua que dá o nível mostrado na tela, e fica a ~3 km do talvegue. Por isso o bot NÃO publica a distância até ela: medida até o ponto errado, ela dizia a um morador do Centro que a régua fica a 6,9 km, quando a régua que deu aquele número está a algumas centenas de metros dele (medido no pino real em 18/09/2026). O campo existe para que essa omissão seja uma DECLARAÇÃO e não um esquecimento. Ausência do campo mantém a distância, porque nas outras cidades não há prova de que o pino não seja a régua — e tirar de todas removeria informação boa. ATENÇÃO, e é o limite deste conserto: tirar a distância NÃO conserta a ESCOLHA da cidade, que continua saindo dessa mesma coordenada. Ver `pino_nota`. Some quando a Defesa Civil de Blumenau informar o local da régua do `nivel_oficial.json`.",
+          "coordenadas_sao_da_regua": true,
+          "coordenadas_fonte": "Prefeitura de Blumenau/Defesa Civil — Ponte Adolfo Konder, Beira-Rio",
+          "coordenadas_nota": "Confirmada em 06/10/2026 por decisão do Jefferson, com a informação da Prefeitura de Blumenau (mp.blumenau.sc.gov.br, citado por ele): as réguas ficam na escadaria logo após a Ponte Adolfo Konder, na Avenida Presidente Castelo Branco (Beira-Rio), e foram fornecidas pela ANA/Epagri; o sensor automático fica no guarda-corpo da própria ponte. A coordenada é a da estação fluviométrica da ANA 83800002 (`codigo_ana_coordenadas`). ANTES: [-26.9224, -49.1354], a da DCSC-00026, estação de CHUVA a ~3 km do talvegue e a 6,93 km daqui; o mapa desenhava o pino no rio e marcava 'posição aproximada', e o bot não publicava a distância. A DCSC-00026 continua em `codigo_dcsc` só para a chuva.",
           "codigo_ana_verificado": true,
           "codigo_ana_nome": "BLUMENAU (PCD)",
           "codigo_ana_verificacao": "Conferido no HidroWeb (ANA/SNIRH) em 06/09/2026: o código existe, é FLUVIOMÉTRICA e o nome oficial é 'BLUMENAU (PCD)'. Como: arquivo de séries históricas baixado e lido (2.654 linhas-mês, 1939–2026). COORDENADA OBTIDA em 06/09/2026 no Inventário público da ANA (Inventario31_08_2026.mdb, tabela `Estacao`), aberto com mdbtools em 06/09/2026. A lacuna que este campo declarava está fechada: a estação fica a 0,05 km do traçado do rio (medido aqui, contra data/rios/) e a 6,93 km do pino desta cidade. O vínculo deixa de ser por NOME e passa a ser por coordenada E por tipo — a ANA cadastra esta estação como FLUVIOMÉTRICA. Ver docs/INVENTARIO-ANA.md.",
@@ -504,8 +512,8 @@
           },
           "codigo_ana_sucessor": "83800003",
           "codigo_ana_sucessor_nota": "A escala convencional da 83800002 ENCERROU em 12/2021; a ANA cadastra a 83800003 BLUMENAU (PCD), na mesma coordenada, como ativa. O `codigo_ana` continua 83800002 porque é dele a SÉRIE HISTÓRICA que o projeto usa (1939–2021, baixada em 06/09/2026). Para o presente, o código é o 83800003 — e nenhum dos dois é a fonte de tempo real do site, que é a Defesa Civil. Não conferido aqui: o inventário não traz a cota do zero de nenhum dos dois, então não se sabe se compartilham o mesmo zero.",
-          "codigo_ana_distancia_do_pino_km": 6.93,
-          "pino_nota": "O pino de Blumenau fica a 2,99 km do traçado do Açu — medido em 06/09/2026, e é a razão da exceção `LONGE_ACEITO['blumenau']` no validador. O que o inventário da ANA acrescentou: essa coordenada é a da DCSC-00026, estação do tipo `Meteo`, que NÃO mede nível de rio. Ou seja, o pino não é 'a régua a 3 km do talvegue' — é uma estação de CHUVA. A estação fluviométrica da ANA em Blumenau (83800002) fica a 6,93 km daqui e a 49 m do traçado. NÃO foi movido: a convenção diz que `coordenadas` é a posição da régua cuja leitura o site mostra, e a régua do tempo real de Blumenau é a da Defesa Civil/AlertaBlu, cuja coordenada o projeto não tem. Mover para a estação da ANA trocaria uma coordenada errada por uma de outra rede. Decisão do Jefferson.",
+          "codigo_ana_distancia_do_pino_km": 0.0,
+          "pino_nota": "Desde 06/10/2026 o pino é a régua (ver `coordenadas_nota`): fica a 0,05 km do traçado do Açu. Até então era a DCSC-00026, estação de CHUVA a 2,99 km do traçado, o que pedia exceção no validador (LONGE_ACEITO e PINO_LONGE_DA_REGUA, removidas na mesma data).",
           "codigo_ana_ultima_transmissao": "2024-02-07T14:45",
           "codigo_ana_ultima_transmissao_nota": "⚠️ A ficha da estação na Hidro-Telemetria da ANA (snirh.gov.br/hidrotelemetria/EstacoesCadastro.aspx) traz 'Desc. Status: Ativo' e, logo abaixo, última transmissão em 07/02/2024 14:45. Dois anos e meio parada, cadastrada como ativa — a mesma classe de silêncio da escala convencional que encerrou em 12/2021 sem que o cadastro dissesse. Equipamento consta como 'Não Informado', ativado em 01/05/1996, sem data de desativação. CONSEQUÊNCIA PRÁTICA: nenhuma, hoje, porque o tempo real de Blumenau vem da Defesa Civil/AlertaBlu e não desta estação. O risco é futuro: quem for ligar telemetria da ANA aqui achando o cadastro confiável vai ligar num cano seco. Lido no navegador em 07/09/2026 (este ambiente tem *.ana.gov.br bloqueado pelo proxy). RESOLVIDO em 09/09/2026: a EPAGRI/CIRAM lista a 83800002 como telemétrica DESATIVADA em 04/04/2026 (docs/RESPOSTA-EPAGRI-C5-2026-09-09.md). Última transmissão em 02/2024, desativação formal em 04/2026, cadastro 'Ativo' — três datas, uma estação parada.",
           "codigo_ana_cotas_da_ana": {
@@ -708,6 +716,13 @@
           "sub_bacia": "Rio Benedito",
           "codigo_ana": null,
           "codigo_dcsc": null,
+          "equivalencia_estadual": {
+            "codigo": "DCSC-00023",
+            "nome_na_dcsc": "Timbó 1",
+            "distancia_km": 1.61,
+            "status": "não confirmada",
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+          },
           "verificado": false,
           "regua": "Rio Benedito, Rua Equador",
           "referencia": "régua",
@@ -758,6 +773,13 @@
           "sub_bacia": "Rio dos Cedros",
           "codigo_ana": null,
           "codigo_dcsc": null,
+          "equivalencia_estadual": {
+            "codigo": "DCSC-00011",
+            "nome_na_dcsc": "Rio dos Cedros 1",
+            "distancia_km": 0.24,
+            "status": "não confirmada",
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+          },
           "verificado": false,
           "regua": "Régua da Praça Matriz",
           "referencia": "régua",
@@ -787,6 +809,13 @@
           "sub_bacia": "Rio Trombudo",
           "codigo_ana": null,
           "codigo_dcsc": null,
+          "equivalencia_estadual": {
+            "codigo": "DCSC-00035",
+            "nome_na_dcsc": "Trombudo Central 2",
+            "distancia_km": 0.9,
+            "status": "não confirmada",
+            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+          },
           "verificado": false,
           "regua": "Régua do Rio Trombudo (a fonte não nomeia o ponto)",
           "referencia": "régua",

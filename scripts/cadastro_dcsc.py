@@ -53,6 +53,16 @@ CADEIA = {
 #: Reservatório: o nível é do lago, no datum da barragem. Nunca é cota urbana.
 RESERVATORIOS = {"DCSC-00040", "DCSC-00038"}
 
+#: Estações "(H)" que publicam COTA ALTIMÉTRICA, ligadas a uma cidade só para EXPLICAR no painel por
+#: que ela não tem faixa (auditoria das cidades sem cor, 06/10/2026). Nunca viram leitura: o valor sai
+#: no balde `altimetricas` do `ultimo_nivel_sc.json`, com a ressalva, e não entra em série nem em conta.
+#:
+#: DCSC-00178, Apiúna (H): Hidro, a 0,08 km do traçado do Açu (medido em 06/10/2026 contra data/rios/),
+#: publica ~81–82 m. É compatível com cota da superfície da água em referência altimétrica, mas a
+#: referência vertical não está documentada (C30 à Defesa Civil de Apiúna, pendente). Sem ela, o número
+#: não se compara com cota nenhuma. Ver `_topologia.nao_e_regua_de_rio` em estacoes.json.
+ALTIMETRICAS = {"DCSC-00178": "apiuna"}
+
 # Estações Hidro que a API confirma medir nível de rio (`tem_nivel_do_rio=true`, investigação de
 # 03/09/2026, docs/API-DCSC-CAMPOS-NOVOS.md), mas cujo valor bruto é implausível para o rio local —
 # problema de DATUM/ESCALA da estação, não sensor ou grandeza errada. Vão para 'suspeitas': o valor

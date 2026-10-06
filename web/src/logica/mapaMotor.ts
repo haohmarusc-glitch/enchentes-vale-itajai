@@ -242,10 +242,10 @@ export interface RioParaCena {
  *
  * Não é folga de cadastro, é o filtro que sobra: uma cabeceira cujo rio NÃO foi
  * desenhado (Ituporanga, no Itajaí do Sul, a 28 km) continuaria no eixo e seria
- * encaixada num ponto qualquer do Açu. 5 km deixa passar o caso conhecido e
- * legítimo — a régua de BLUMENAU fica a 3,0 km do talvegue porque a coordenada
- * publicada é a da ESTAÇÃO, não do rio (ver `teste_conferir_reguas_no_tracado`)
- * — e barra o que está em outra bacia.
+ * encaixada num ponto qualquer do Açu. 5 km deixa passar os casos conhecidos e
+ * legítimos — hoje ITAJAÍ, a 2,1 km do traçado do Mirim, que ancora a espinha
+ * dele (até 06/10/2026 também Blumenau, cuja coordenada era um pluviômetro a
+ * 3 km do rio) — e barra o que está em outra bacia.
  */
 const LIMITE_ANCORA_KM = 5
 
@@ -263,9 +263,9 @@ const LIMITE_ANCORA_KM = 5
  * ponto no traçado. O pino não.
  *
  * A EXCEÇÃO é a cidade cuja coordenada o cadastro declara que NÃO é a da régua
- * (`coordenadas_sao_da_regua: false`, hoje só Blumenau, cuja coordenada é de um pluviômetro a ~3 km do
- * rio). Ali o pino fica no rio, no ponto mais perto, e sai marcado como `aproximado`: desenhar no
- * pluviômetro diria que a régua está no morro.
+ * (`coordenadas_sao_da_regua: false`). Ali o pino fica no rio, no ponto mais perto, e sai marcado como
+ * `aproximado`: desenhar no ponto errado diria que a régua está lá. Era Blumenau (pluviômetro no morro)
+ * até 06/10/2026, quando a régua da Ponte Adolfo Konder foi confirmada; hoje nenhuma cidade usa.
  */
 export function pontoDoPino(
   cidade: Pick<Cidade, 'coordenadas' | 'coordenadas_sao_da_regua'>,

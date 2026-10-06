@@ -5,6 +5,7 @@ import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
+import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoSemCota } from '../logica/textosDoPainel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
@@ -72,6 +73,7 @@ import {
 import { reguasComCota } from '../logica/reguas'
 import { reguasNoMapa, type ReguaNoMapa } from '../logica/reguasNoMapa'
 import { textoDaPosicao } from '../logica/posicaoDoPino'
+import { chaveDaRegua, opcoesDoSeletor, TODAS, vistaDaRegua } from '../logica/seletorDeRegua'
 import {
   FUNDOS,
   FUNDO_PADRAO,
@@ -434,6 +436,31 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   )
   const reguasRef = useRef(reguasDoMapa)
   reguasRef.current = municipal ? [] : reguasDoMapa
+
+  /**
+   * O seletor de régua da cidade em foco (Itajaí, as onze; pedido do Jefferson, 06/10/2026). Na própria
+   * tela: "Todas as N réguas" é o padrão e reenquadra a cidade; uma régua centraliza o mapa nela e abre o
+   * painel dela. Tocar numa régua no mapa também muda o seletor, porque o valor vem de `reguaSel`.
+   */
+  const opcoesRegua = useMemo(
+    () => (cidadeFoco && !municipal ? opcoesDoSeletor(reguasDoMapa, cidadeFoco) : []),
+    [cidadeFoco, municipal, reguasDoMapa],
+  )
+  const valorSeletor = reguaSel && opcoesRegua.some((o) => o.valor === reguaSel) ? reguaSel : TODAS
+  function escolherRegua(valor: string) {
+    if (valor === TODAS) {
+      setReguaSel(null)
+      setPedidoDeEnquadrar((n) => n + 1)
+      return
+    }
+    const r = reguasDoMapa.find((x) => chaveDaRegua(x) === valor)
+    const cena = cenaRef.current
+    setReguaSel(valor)
+    setSel(null)
+    if (!r || !cena) return
+    const v = vistaDaRegua(r, cena.limitesBase, cena.largura, cena.altura, MARGEM)
+    if (v) setVista(v)
+  }
 
   /**
    * As barragens como marcadores, comporta a comporta. O Monitor é a bacia
@@ -1126,6 +1153,16 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           >
             {menuAberto ? 'Fechar' : 'Cidades ▾'}
           </button>}
+          {opcoesRegua.length > 0 && (
+            <label className={estilos.seletorRegua}>
+              <span>Régua</span>
+              <select id="seletor-regua" value={valorSeletor} onChange={(e) => escolherRegua(e.target.value)}>
+                {opcoesRegua.map((o) => (
+                  <option key={o.valor} value={o.valor}>{o.rotulo}</option>
+                ))}
+              </select>
+            </label>
+          )}
           <span className={estilos.aviso}>
             {municipal ? "Dados observados · não é alerta oficial." : <>Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.</>}
           </span>
@@ -1152,7 +1189,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           <summary>Camadas de cheia</summary>
           <CamadasMonitor key={cidadeFoco ?? sel?.cidade.id ?? 'itajai'} cidade={cidadeFoco ?? sel?.cidade.id ?? 'itajai'}
             leituras={tempoReal.leituras} agora={agora} reproduzindo={idxRepro !== null}
-            onCamada={receberCamada} somenteDados={municipal} />
+            onCamada={receberCamada} somenteDados={municipal}
+            nomeEscolhida={(cidadeFoco ?? sel?.cidade.id) ? cidadesBacia.find((c) => c.id === (cidadeFoco ?? sel?.cidade.id))?.nome ?? null : null} />
         </details>
 
         {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
@@ -1499,6 +1537,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           const viz = vizinhosNoEixo(foco.rioId, cid.id, eixo, cidadesDoFoco, trechos)
           const pinoDe = (id: string) => cenaRef.current?.pinos.find((p) => p.cidade.id === id) ?? null
           const ultimas = resumo24h(serieDaCidade(serie, foco.rioId, cid.id))
+          // De onde veio a cor (auditoria das cidades sem cor, 06/10/2026): os textos de cota, de
+          // cinza e do nível estadual dependem disso, e eram fixos — e se contradiziam.
+          const variasReguas = foco.nivel == null && (daCidade.length > 1 || reguasRef.current.filter((r) => r.cidade === cid.id).length > 1)
+          const origemDaCor = variasReguas ? 'varias' : foco.origemFaixa === 'estadual' ? 'estadual' : 'municipal'
+          const situacaoSc = brutoSc ? null : nivelSc.situacoes?.get(cid.id) ?? null
           return (
             <div className={estilos.painel} data-tapa-mapa>
               <div className={estilos.painelTopo}>
@@ -1532,7 +1575,10 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               {foco.faixa === 'sem-dado' && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
-                  {motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id)}
+                  {variasReguas
+                    ? MOTIVO_VARIAS_REGUAS
+                    : motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id, situacaoSc,
+                        serieDaCidade(serie, foco.rioId, cid.id).at(-1) ?? null)}
                 </p>
               )}
               <p className={estilos.painelNivel}>
@@ -1540,6 +1586,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   <>
                     <strong>{metros(foco.nivel)}</strong>
                     {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))}</> : null}
+                    {/* Leitura velha é HISTÓRICA: a hora dela por extenso, para não passar por atual
+                        (Gaspar parado às 16:50, auditoria de 06/10/2026). */}
+                    {foco.medidoEm && frescor(idadeMin(foco.medidoEm, agora)) === 'velha' ? <> · medida em {dataHora(foco.medidoEm)}</> : null}
                   </>
                 ) : daCidade.length > 1 || brutoSc ? null : (
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>
@@ -1577,7 +1626,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 </div>
               ) : (
                 <p className={estilos.painelSemCota}>
-                  Sem cota de referência cadastrada — a faixa fica cinza.
+                  {textoSemCota(origemDaCor)}
                 </p>
               )}
               {brutoSc ? (
@@ -1599,8 +1648,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {brutoSc.codigo && <a href={`https://monitoramento.defesacivil.sc.gov.br/estacao/${brutoSc.codigo}`} target="_blank" rel="noreferrer">Consultar estação na Defesa Civil de SC</a>}
                   {cid.id === 'indaial' && <p>As cotas municipais de 3 / 4 / 5,5 m são da régua dos fundos da Celesc, indicada no <a href="https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/edit" target="_blank" rel="noreferrer">documento de acompanhamento de Indaial</a>. Não são aplicadas à leitura da terceira ponte.</p>}
                   <p className={estilos.painelRessalva}>
-                    Régua PRÓPRIA da estação estadual, zero diferente da régua municipal —
-                    não comparável às cotas acima nem à faixa de cor deste pino.
+                    {ressalvaDoBruto(cotas.length > 0, foco.origemFaixa === 'estadual')}
                   </p>
                 </div>
               ) : null}

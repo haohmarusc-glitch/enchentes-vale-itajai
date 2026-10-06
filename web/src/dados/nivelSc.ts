@@ -51,8 +51,28 @@ export interface BrutoEstadual {
 export type FaixaEstadual = 'normal' | 'atencao' | 'alerta' | 'emergencia'
 const FAIXAS_ESTADUAIS: readonly FaixaEstadual[] = ['normal', 'atencao', 'alerta', 'emergencia']
 
-/** Uma leitura bruta por cidade (a mais fresca). Só para EXIBIR, nunca cota. */
-export type NivelSc = Map<string, BrutoEstadual>
+/**
+ * Por que a estação estadual da cidade NÃO deu leitura utilizável (auditoria das cidades sem cor,
+ * 06/10/2026). O coletor já separava os baldes, e o site lia só `leituras`: Lontras (valor impossível),
+ * Indaial (sem nível desde 02/10) e Apiúna (cota altimétrica) terminavam todas em "sem leitura".
+ * - `rejeitada`: balde `suspeitas` — valor publicado, recusado por qualidade (nunca vira zero nem faixa);
+ * - `sem_leitura`: balde `sem_leitura` — a estação não publicou nível;
+ * - `altimetrica`: balde `altimetricas` — cota em referência altimétrica não validada.
+ */
+export interface SituacaoEstadual {
+  codigo: string | null
+  estacao: string
+  tipo: 'rejeitada' | 'sem_leitura' | 'altimetrica'
+  /** O número que a estação publicou, quando publicou. Só para mostrar, nunca para conta. */
+  valorPublicadoM: number | null
+  medidoEm: Date | null
+}
+
+/**
+ * Uma leitura bruta por cidade (a mais fresca). Só para EXIBIR, nunca cota.
+ * `situacoes`: por cidade, por que a estação dela NÃO deu leitura (ver `SituacaoEstadual`).
+ */
+export type NivelSc = Map<string, BrutoEstadual> & { situacoes?: Map<string, SituacaoEstadual> }
 
 function brutoValido(bruta: unknown): BrutoEstadual | null {
   if (typeof bruta !== 'object' || bruta === null) return null
@@ -80,10 +100,47 @@ function brutoValido(bruta: unknown): BrutoEstadual | null {
   return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm, faixaEstadual, motivoFaixaEstadual }
 }
 
+function hora(v: unknown): Date | null {
+  if (typeof v !== 'string' || !RE_SEM_FUSO.test(v)) return null
+  const d = deBrasilia(v)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
+const BALDES: readonly [string, SituacaoEstadual['tipo'], string][] = [
+  ['suspeitas', 'rejeitada', 'nivel_bruto_m'],
+  ['sem_leitura', 'sem_leitura', 'nivel_bruto_m'],
+  ['altimetricas', 'altimetrica', 'valor_publicado_m'],
+]
+
+/** Cidade → por que a estação estadual dela não deu leitura. Só cidades do cadastro (com `cidade`). */
+export function montarSituacoes(corpo: unknown): Map<string, SituacaoEstadual> {
+  const mapa = new Map<string, SituacaoEstadual>()
+  if (typeof corpo !== 'object' || corpo === null) return mapa
+  for (const [chave, tipo, campo] of BALDES) {
+    const lista = (corpo as Record<string, unknown>)[chave]
+    if (!Array.isArray(lista)) continue
+    for (const bruta of lista) {
+      if (typeof bruta !== 'object' || bruta === null) continue
+      const l = bruta as Record<string, unknown>
+      if (typeof l.cidade !== 'string' || l.cidade.trim() === '' || mapa.has(l.cidade)) continue
+      const v = l[campo]
+      mapa.set(l.cidade, {
+        codigo: typeof l.codigo === 'string' ? l.codigo : null,
+        estacao: typeof l.estacao === 'string' ? l.estacao : '',
+        tipo,
+        valorPublicadoM: typeof v === 'number' && Number.isFinite(v) ? v : null,
+        medidoEm: hora(l.medido_em),
+      })
+    }
+  }
+  return mapa
+}
+
 /** Constrói o mapa cidade → bruto mais fresco a partir do JSON cru. */
 export function montarNivelSc(corpo: unknown): NivelSc {
   const mapa: NivelSc = new Map()
   if (typeof corpo !== 'object' || corpo === null) return mapa
+  mapa.situacoes = montarSituacoes(corpo)
   const leituras = (corpo as Record<string, unknown>).leituras
   if (!Array.isArray(leituras)) return mapa
   for (const bruta of leituras) {

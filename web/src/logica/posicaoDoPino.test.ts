@@ -11,10 +11,19 @@ test('estação estadual: diz o código e a coordenada', () => {
   )
 })
 
-test('aproximada vence o código: Blumenau tem DCSC-00026, que é pluviômetro', () => {
+test('aproximada vence o código', () => {
   const t = textoDaPosicao({ codigo_dcsc: 'DCSC-00026' }, { ...pino, aproximado: true }, 0)
   assert.match(t, /^Posição aproximada/)
   assert.doesNotMatch(t, /DCSC-00026/)
+})
+
+test('fonte declarada vence o código: Blumenau, régua da ponte, com DCSC-00026 de chuva', () => {
+  const t = textoDaPosicao(
+    { codigo_dcsc: 'DCSC-00026', coordenadas_fonte: 'Prefeitura de Blumenau/Defesa Civil — Ponte Adolfo Konder, Beira-Rio' },
+    { lat: -26.9186, lon: -49.0656, aproximado: false },
+    0,
+  )
+  assert.equal(t, 'Pino na régua (−26,9186, −49,0656). Fonte: Prefeitura de Blumenau/Defesa Civil — Ponte Adolfo Konder, Beira-Rio.')
 })
 
 test('várias réguas: o pino é a cidade; sem código: não afirma o ponto da régua', () => {

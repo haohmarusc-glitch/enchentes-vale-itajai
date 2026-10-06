@@ -108,6 +108,17 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   régua por esse campo — viva se qualquer das duas está fresca —, sem mascarar as réguas
   distintas de uma cidade com várias (Itajaí tem onze).
 
+### Posição das réguas no mapa — REGRA (decisões de 06/10/2026)
+- O pino de cada cidade fica na `coordenadas` dela, sem encaixe no traçado (`pontoDoPino`). A câmera centra no pino.
+- **Blumenau:** a coordenada é a da régua da Ponte Adolfo Konder, Beira-Rio (−26,9186, −49,0656), confirmada pela
+  Prefeitura (`coordenadas_fonte`). A DCSC-00026 de Blumenau é de chuva: fica em `codigo_dcsc` só para a chuva.
+- **Estação estadual perto não é a régua da cidade.** Timbó, Rio dos Cedros, Trombudo Central e Lontras têm
+  `equivalencia_estadual.status: "não confirmada"`.
+  - Fica "não confirmada" até existir documento, código comum ou comparação de referência/zero da régua (decisão fechada em 06/10/2026). Proximidade não basta.
+  - O validador reprova o código em `codigo_dcsc` sem a confirmação, e "confirmada" sem `fonte`.
+- Inventário em `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py --gravar`). Relatório em
+  `docs/AUDITORIA-REGUAS-2026-10-06.md`.
+
 ### Referência altimétrica de Blumenau — REGRA BLOQUEANTE (conversão parcial em 03/10/2026)
 - Três referências para a régua da Ponte Adolfo Konder, pela FURB (Prof. Ademar Cordero, e-mails e
   planilha de 02/10/2026): **régua antiga** (até a troca, depois da cheia de set/2011); **zero do IBGE**

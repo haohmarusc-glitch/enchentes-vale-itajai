@@ -522,6 +522,14 @@ o projeto.
   - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Corrigido
     junto com as outras cidades na auditoria das réguas (item abaixo).
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
+- [x] **Cidades sem cor no Monitor (06/10/2026, auditoria do Jefferson das 19 cidades)**: `docs/CIDADES-SEM-COR-2026-10-06.md`.
+  - **Motivo específico no painel** em vez de "sem leitura": Lontras (valor impossível rejeitado), Indaial
+    (estadual sem nível desde 02/10), Gaspar (última leitura e hora) e Apiúna (cota altimétrica).
+  - **Textos conforme a origem da cor:** nada de "fica cinza" sob cor estadual, nem "zero diferente" sem
+    documento. Itajaí sem faixa única. A caixa de camadas diz de qual cidade são as camadas.
+  - [ ] **Atualizar o coletor na VPS** (`scripts/deploy.sh`) para o balde `altimetricas` chegar ao site (Apiúna).
+  - [ ] **Pendências externas:** faixas de Lontras, Apiúna e Guabiruba; referência da DCSC-00178 (C30); leitura
+    da régua da Celesc (Indaial); vínculo DCSC-00030 × cotas (Ilhota); volta da estação 21 (Gaspar).
 - [x] **Auditoria das réguas do Monitor (06/10/2026, pedido do Jefferson, com a inspeção das 19 cidades no satélite).**
   `docs/AUDITORIA-REGUAS-2026-10-06.md`.
   - **A causa das 8 cidades sem pino na tela:** o pino era encaixado no traçado do rio da tela, e a câmera centrava
@@ -537,12 +545,15 @@ o projeto.
     - o painel diz de onde vem a posição.
   - **Inventário:** `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py`). As 12 cidades com código DCSC
     batem com a ficha da mesma estação, a até 10 m. Nenhuma coordenada do cadastro mudou.
-  - [ ] **Para o Jefferson decidir:**
-    - o local da régua de Blumenau (Ponte Adolfo Konder);
-    - a fonte do ponto de Lontras, Apiúna, Timbó, Rio dos Cedros, Trombudo Central e Itajaí, cidades sem código
-      nas quais o cadastro não diz de onde veio a coordenada;
-    - se as estações estaduais mais próximas são a mesma régua da leitura municipal: Timbó 1 (1,6 km), Rio dos
-      Cedros 1 (0,24 km), Trombudo Central 2 (0,9 km) e Lontras (0,8 km).
+  - [x] **Decisões do Jefferson (06/10/2026):**
+    - **Blumenau:** a régua da Ponte Adolfo Konder (Beira-Rio), confirmada pela Prefeitura, está na
+      −26,9186, −49,0656. O "aproximado" saiu, o painel e o bot citam a fonte, e o bot dá a distância até a régua.
+    - **Timbó, Rio dos Cedros, Trombudo Central e Lontras:** `equivalencia_estadual` com status "não
+      confirmada", travada no validador.
+    - **Itajaí:** seletor de régua no Monitor. "Todas as 11 réguas" é o padrão; escolher uma centraliza o mapa
+      nela e abre os dados dela.
+  - [ ] **Fonte do ponto ainda não declarada:** Lontras, Apiúna, Timbó, Rio dos Cedros, Trombudo Central e
+    Itajaí (cidades sem código). O cadastro não diz de onde veio a coordenada delas.
 - [x] **Guardar as cheias para a conta "N horas antes" (05/10/2026, pedido do Jefferson)** — `docs/GUARDAR-CHEIAS.md`.
   - `scripts/nivel_antes.py` responde "quando a régua X chegou à crista, passou de um nível ou passou da cota de uma
     rua, como estavam as réguas de cima N horas antes".

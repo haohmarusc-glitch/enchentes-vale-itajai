@@ -118,6 +118,8 @@ def inventario(estacoes, dcsc, tracados) -> list[dict]:
                 "tipo": ficha["tipo"] if ficha else None,
                 "dist_ficha_km": km(lat, lon, float(ficha["latitude"]), float(ficha["longitude"])) if ficha else None,
                 "sao_da_regua": c.get("coordenadas_sao_da_regua", None),
+                "fonte_coord": c.get("coordenadas_fonte"),
+                "equivalencia": c.get("equivalencia_estadual"),
                 "antes_km": ao_rio(lat, lon, tracados[rio_id]),
                 "candidatas": [],
             }
@@ -134,6 +136,8 @@ def inventario(estacoes, dcsc, tracados) -> list[dict]:
 
 
 def situacao(l: dict) -> str:
+    if l["fonte_coord"]:
+        return f"régua confirmada: {l['fonte_coord']}"
     if l["sao_da_regua"] is False:
         return "**aproximada**: coordenada declarada como não sendo a régua; pino no rio"
     if l["codigo"] and l["tipo"] == "Meteo":
@@ -159,7 +163,8 @@ def relatorio(linhas: list[dict], estacoes) -> str:
         "- **Candidata:** estação Hidro da DCSC a até 3 km de cidade sem código (fora as que o cadastro já",
         "  declarou que não são régua, como a DCSC-00178). Não está vinculada e não foi",
         "  usada para mudar nada: só indica onde conferir.",
-        "- Nenhuma coordenada de `estacoes.json` mudou nesta auditoria.",
+        "- Na auditoria, nenhuma coordenada mudou. Depois, por decisão do Jefferson (06/10/2026), Blumenau",
+        "  passou para a régua da Ponte Adolfo Konder, confirmada pela Prefeitura (`coordenadas_fonte`).",
         "",
         "## Cidades",
         "",
@@ -167,7 +172,8 @@ def relatorio(linhas: list[dict], estacoes) -> str:
         "|---|---|---|---|---|---|---|---|",
     ]
     for l in linhas:
-        dist = f"{l['dist_ficha_km'] * 1000:.0f} m" if l["dist_ficha_km"] is not None else "—"
+        # Com a coordenada de outra fonte, a distância à ficha do código (de chuva, em Blumenau) não diz nada.
+        dist = f"{l['dist_ficha_km'] * 1000:.0f} m" if l["dist_ficha_km"] is not None and not l["fonte_coord"] else "—"
         out.append(
             f"| {l['nome']} | {l['regua'] or '—'} | {grau(l['lat'])}, {grau(l['lon'])} | {l['codigo'] or '—'} | "
             f"{l['tipo'] or '—'} | {dist} | {grau2(l['antes_km'])} km | {situacao(l)} |"
@@ -179,14 +185,18 @@ def relatorio(linhas: list[dict], estacoes) -> str:
             "## Cidades sem código: estações estaduais por perto",
             "",
             "Não vincular por proximidade: a régua municipal e a estação estadual podem ser equipamentos",
-            "diferentes, com zeros diferentes. Conferir na fonte antes.",
+            "diferentes, com zeros, seções do rio ou referências diferentes. Decisão do Jefferson (06/10/2026):",
+            "fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da",
+            "régua. A equivalência fica em `equivalencia_estadual` no cadastro, e o validador trava o vínculo.",
             "",
-            "| Cidade | Estação | Nome na DCSC | Distância |",
-            "|---|---|---|---|",
+            "| Cidade | Estação | Nome na DCSC | Distância | Equivalência |",
+            "|---|---|---|---|---|",
         ]
         for l in cand:
+            eq = l["equivalencia"] or {}
             for cod, nome, d in l["candidatas"]:
-                out.append(f"| {l['nome']} | {cod} | {nome} | {grau2(d)} km |")
+                status = eq.get("status") if eq.get("codigo") == cod else "não registrada"
+                out.append(f"| {l['nome']} | {cod} | {nome} | {grau2(d)} km | {status} |")
     sem_cand = [l["nome"] for l in linhas if not l["codigo"] and not l["candidatas"]]
     if sem_cand:
         out += ["", f"Sem estação Hidro da DCSC a até 3 km: {', '.join(sem_cand)}."]
