@@ -374,3 +374,11 @@ Prefeitura (1983–2015) e a **base de vias** dela (GeoItajaí). Agora o chat cr
 
 Testes: `motor.test.ts` (resposta e tabela), `scripts/teste_ruas_por_mancha_itajai.py` e a fumaça do navegador.
 
+
+### Nome de cidade com erro de digitação (06/10/2026, 9ª entrega dos comandos)
+
+O motor continua casando só o nome exato, e a prova responde igual. Quem acrescenta o palpite é a tela do chat
+(`ChatLocal.tsx`): se a pergunta tem um trecho a uma ou duas letras de UM nome conhecido (cidades do cadastro e
+municípios do Atlas), na posição de cidade, a resposta começa com "Não achei a cidade "blumenal". Você quis dizer
+Blumenau?" e a pergunta corrigida vira a primeira sugestão. O palpite nunca é respondido sozinho. Regras e testes
+em `docs/CHAT-GLOBAL-COMANDOS.md`, "Nona entrega".

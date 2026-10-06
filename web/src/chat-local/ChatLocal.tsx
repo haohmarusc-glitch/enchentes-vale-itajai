@@ -33,7 +33,8 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { EXEMPLOS, citaRua, responder, type Dados } from './motor'
+import { EXEMPLOS, cidadesConhecidas, citaRua, responder, type Dados } from './motor'
+import { corrigirCidade, textoDaCorrecao } from '../comandos/corrigir'
 import { carregarBase, carregarCotasAna, carregarCotasRuas, carregarRuasManchaItajai } from './carregar'
 import { contagemChatPermitida, gravarContagemChat } from '../logica/preferencias'
 import { RETENCAO_DIAS, criarEnviador, idsDoCadastro, montarEvento, servidorContando } from '../logica/telemetriaChat'
@@ -256,17 +257,22 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
     }
     // A barreira do presente vale igual na IA: essa resposta não ganha o botão.
     const paraIA = r.intencao === 'agora' ? undefined : q
+    // 9ª entrega: nome de cidade com erro de digitação ("Blumenal") vira "Você quis dizer…?" antes da resposta,
+    // com a frase corrigida como sugestão. O motor continua respondendo o que foi escrito; nada é trocado sozinho.
+    const dica = corrigirCidade(q, cidadesConhecidas(base))
+    const comDica = <T extends { texto: string; sugestoes?: string[] }>(m: T): T =>
+      dica ? { ...m, texto: `${textoDaCorrecao(dica, 'pergunta')}\n\n${m.texto}`, sugestoes: [dica.texto, ...(m.sugestoes ?? [])].slice(0, 4) } : m
     const presente = () => respostaDoPresente({ pergunta: q, dados: base, rios: estacoes.rios, aoVivo })
     const doUsuario: Msg[] = jaMostrada ? [] : [{ papel: 'usuario', texto: q }]
     if (r.intencao === 'agora') {
-      setMsgs((atual) => [...atual, ...doUsuario, { papel: 'assistente', ...presente() }])
+      setMsgs((atual) => [...atual, ...doUsuario, { papel: 'assistente', ...comDica(presente()) }])
       setTexto('')
       rolarAoFim()
       return
     }
     const origem: Origem | null = !piloto || classificando ? null : r.intencao === 'nao_entendi' ? 'nao_entendi' : r.palpite ? 'palpite' : null
     if (!origem) {
-      setMsgs((atual) => [...atual, ...doUsuario, { papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, paraIA, ...(r.link ? { link: r.link } : {}) }])
+      setMsgs((atual) => [...atual, ...doUsuario, { papel: 'assistente', ...comDica({ texto: r.texto, sugestoes: r.sugestoes }), paraIA, ...(r.link ? { link: r.link } : {}) }])
       setTexto('')
       rolarAoFim()
       return

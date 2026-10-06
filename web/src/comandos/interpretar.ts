@@ -12,6 +12,7 @@ import type { Aba, Catalogo, CidadeDoCatalogo, Contexto, Fundo, Interpretacao, P
 import type { TemaDaLegenda } from './foz'
 
 import { normalizar } from './normalizar'
+import { corrigirCidade, textoDaCorrecao } from './corrigir'
 import { arquivoPeloNome } from './rios'
 
 export { normalizar }
@@ -598,7 +599,25 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
  * O texto é pedido? `null` = não: vai para o motor de perguntas.
  * Régua de cidade com várias réguas (Itajaí) sem escolha: pergunta qual, com as opções — nunca escolhe uma.
  */
+/**
+ * O texto vira passos tipados, uma pergunta de esclarecimento ou `null` (pergunta para o motor). Sem nada
+ * entendido, tenta o nome de cidade com erro de digitação (9ª entrega): se a frase corrigida vira comando,
+ * o chat PERGUNTA "Você quis dizer…?" e não faz nada.
+ */
 export function interpretar(texto: string, cat: Catalogo, ctx: Contexto): Interpretacao | null {
+  const r = interpretarAoPeDaLetra(texto, cat, ctx)
+  if (r && r.tipo === 'comandos') return r
+  if (r && !r.texto.startsWith(NAO_ENTENDI_PARTE)) return r
+  const c = corrigirCidade(texto, cat.cidades)
+  if (!c) return r
+  const corrigido = interpretarAoPeDaLetra(c.texto, cat, ctx)
+  if (!corrigido || corrigido.tipo !== 'comandos') return r
+  return { tipo: 'esclarecer', texto: textoDaCorrecao(c, 'comando'), sugestoes: [c.texto] }
+}
+
+const NAO_ENTENDI_PARTE = 'Não entendi esta parte do pedido'
+
+function interpretarAoPeDaLetra(texto: string, cat: Catalogo, ctx: Contexto): Interpretacao | null {
   const t = semCortesia(normalizar(texto))
   if (!t) return null
   // A frase inteira primeiro: "essa informação é atual" tem um "e" que não é conjunção.
@@ -643,7 +662,7 @@ export function interpretar(texto: string, cat: Catalogo, ctx: Contexto): Interp
   if (naoEntendidos.length > 0) {
     return {
       tipo: 'esclarecer',
-      texto: `Não entendi esta parte do pedido: "${naoEntendidos.join('", "')}". Nada foi feito. Peça de novo sem ela, ou veja o que posso fazer.`,
+      texto: `${NAO_ENTENDI_PARTE}: "${naoEntendidos.join('", "')}". Nada foi feito. Peça de novo sem ela, ou veja o que posso fazer.`,
       sugestoes: ['o que posso pedir?'],
     }
   }
