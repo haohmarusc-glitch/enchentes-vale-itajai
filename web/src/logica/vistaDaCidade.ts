@@ -53,6 +53,26 @@ export function zoomParaKm(limites: Limites, kmAlvo: number = KM_NA_TELA): numbe
 }
 
 /**
+ * Até onde o zoom vai na BACIA INTEIRA (`/monitor`): a bacia, de ~1,6° de largura, dividida por 32 deixa
+ * ~5 km de tela, escala de bairro.
+ */
+export const ZOOM_MAX_BACIA = 32
+
+/**
+ * Até onde o zoom vai NUMA CIDADE (`/monitor/:cidade`), em km de largura de tela (pedido do Jefferson,
+ * 06/10/2026): ~300 m, o zoom de rua do Google Earth. O fundo de satélite (Esri) tem imagem até o nível 19;
+ * a régua, os afluentes e a margem do rio ficam visíveis. Abaixo disso o traçado do OSM, digitalizado com
+ * erro de alguns metros, começaria a parecer mais preciso do que é.
+ */
+export const KM_MINIMO_NA_TELA_CIDADE = 0.3
+
+/** O zoom máximo da vista: maior numa cidade, igual ao de sempre na bacia inteira. */
+export function zoomMaximo(limites: Limites | null | undefined, naCidade: boolean): number {
+  if (!naCidade || !limites) return ZOOM_MAX_BACIA
+  return Math.max(ZOOM_MAX_BACIA, zoomParaKm(limites, KM_MINIMO_NA_TELA_CIDADE))
+}
+
+/**
  * A vista centrada na cidade — ou `null` quando não dá para saber onde ela é.
  *
  * `coordenadas` vem do cadastro no formato [lat, lon].
