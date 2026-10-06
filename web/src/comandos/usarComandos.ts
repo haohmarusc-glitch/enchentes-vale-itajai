@@ -183,7 +183,8 @@ export function catalogoDoSite(): Catalogo {
 export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => null): {
   contexto: () => Contexto
   nomeDaCidadeAtual: () => string | null
-  tentar: (texto: string) => boolean
+  /** `eco: false`: o pedido já está na conversa (continuação "e Gaspar?"); não repete a mensagem da pessoa. */
+  tentar: (texto: string, eco?: boolean) => boolean
 } {
   const navigate = useNavigate()
   const cat = useMemo(catalogoDoSite, [])
@@ -194,11 +195,12 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
   }, [cat, contexto])
 
   const tentar = useCallback(
-    (texto: string) => {
+    (texto: string, eco = true) => {
       const ctx = contexto()
       const r = interpretar(texto, cat, ctx)
       if (!r) return false
-      acrescentar({ papel: 'usuario', texto })
+      // Sem eco quando o chat já mostrou o pedido ("e Gaspar?" refeito como "mostrar Gaspar").
+      if (eco) acrescentar({ papel: 'usuario', texto })
       if (r.tipo === 'esclarecer') {
         acrescentar({ papel: 'assistente', texto: r.texto, sugestoes: r.sugestoes, comando: true })
         return true
