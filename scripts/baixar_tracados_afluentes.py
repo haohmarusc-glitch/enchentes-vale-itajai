@@ -157,6 +157,32 @@ def distancia_ao_pino(ls: list, pino_cidade: tuple[float, float]) -> float:
     return min(km(pino_cidade, p) for l in ls for p in l)
 
 
+def consulta_arredores(cidade_id: str, raio_m: int = 1500) -> str:
+    lon, lat = pino(cidade_id)
+    return f'[out:json][timeout:120];\nway["waterway"](around:{raio_m},{lat},{lon});\nout geom;'
+
+
+def diagnosticar(rio_id: str, resposta: dict, texto: str) -> None:
+    """Rio recusado: grava o que veio pelo nome e os cursos d'água a 1,5 km da régua, e lista no resumo."""
+    cidade = RIOS[rio_id]["cidade"]
+    resposta["_consulta"] = {"overpass": texto, "recusado": True,
+                             "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    (BRUTOS / f"recusado-{rio_id}-osm.json").write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")
+    texto_a = consulta_arredores(cidade)
+    arredores, _ = buscar_consulta(texto_a)
+    arredores["_consulta"] = {"overpass": texto_a, "baixado_em": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+    (BRUTOS / f"arredores-{rio_id}-osm.json").write_text(json.dumps(arredores, ensure_ascii=False) + "\n", encoding="utf-8")
+    p = pino(cidade)
+    print(f"   cursos d'água a 1,5 km da régua de {cidade}:")
+    achados = []
+    for e in arredores.get("elements") or []:
+        pts = [(q["lon"], q["lat"]) for q in e.get("geometry") or []]
+        if pts:
+            achados.append((distancia_ao_pino([pts], p), e.get("id"), e.get("tags") or {}))
+    for d, wid, t in sorted(achados, key=lambda x: x[0]):
+        print(f"     way {wid} {t.get('waterway')} {t.get('name')!r}: {d:.2f} km do pino")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Baixa o traçado dos afluentes sem rio no Monitor (OSM).")
     ap.add_argument("--gravar", action="store_true", help="grava data/brutos/tracado-<id>-osm.json dos que passarem")
@@ -176,6 +202,9 @@ def main() -> int:
             for p in problemas:
                 print(f"   RECUSADO: {p}", file=sys.stderr)
             recusados.append(rio_id)
+            if a.gravar:
+                # Para decidir à mão, sem adivinhar: o que veio pelo nome e os cursos d'água em volta da régua.
+                diagnosticar(rio_id, resposta, texto)
             continue
         alvos[rio_id] = [p for l in ls for p in l]
         d = distancia_ao_pino(ls, pino(RIOS[rio_id]["cidade"]))

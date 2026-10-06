@@ -52,8 +52,8 @@ jobs:
         run: |
           set -euo pipefail
           linhas=$(printf '100644 blob %s\tresumo.txt\n' "$(git hash-object -w resumo.txt)")
-          for r in benedito rio-dos-cedros itajai-do-sul trombudo guabiruba; do
-            f=data/brutos/tracado-$r-osm.json
+          for f in data/brutos/tracado-{benedito,rio-dos-cedros,itajai-do-sul,trombudo,guabiruba}-osm.json \
+                   data/brutos/recusado-*-osm.json data/brutos/arredores-*-osm.json; do
             if [ -f "$f" ]; then
               linhas="$linhas"$'\n'"$(printf '100644 blob %s\t%s' "$(git hash-object -w "$f")" "$(basename "$f")")"
             fi
