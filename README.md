@@ -550,7 +550,8 @@ o projeto.
     - **Blumenau:** a régua da Ponte Adolfo Konder (Beira-Rio), confirmada pela Prefeitura, está na
       −26,9186, −49,0656. O "aproximado" saiu, o painel e o bot citam a fonte, e o bot dá a distância até a régua.
     - **Timbó, Rio dos Cedros, Trombudo Central e Lontras:** `equivalencia_estadual` com status "não
-      confirmada", travada no validador.
+      confirmada", travada no validador. O painel do Monitor diz isso, com a estação e a distância
+      (`textoEquivalencia`, conferência de 06/10/2026).
     - **Itajaí:** seletor de régua no Monitor. "Todas as 11 réguas" é o padrão; escolher uma centraliza o mapa
       nela e abre os dados dela.
   - [ ] **Fonte do ponto ainda não declarada:** Lontras, Apiúna, Timbó, Rio dos Cedros, Trombudo Central e
