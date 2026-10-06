@@ -210,11 +210,17 @@ def main() -> int:
     a = ap.parse_args()
 
     alvos = {"itajai-acu": tracado("itajai-acu"), "itajai-mirim": tracado("itajai-mirim")}
-    gravados, recusados = [], []
+    gravados, recusados, sem_resposta = [], [], []
     # Ordem: quem recebe antes de quem chega (o Rio dos Cedros chega ao Benedito; o Trombudo pode chegar ao Sul).
     for rio_id in [r for r in ORDEM if not a.so or r in a.so]:
         texto = consulta(rio_id)
-        resposta, espelho = buscar_consulta(texto)
+        try:
+            resposta, espelho = buscar_consulta(texto)
+        except SystemExit as e:
+            # Overpass sem resposta para ESTE rio: os outros seguem (e são publicados); a rodada sai com erro.
+            print(f"{rio_id}: SEM RESPOSTA do Overpass — {e}", file=sys.stderr)
+            sem_resposta.append(rio_id)
+            continue
         ls = linhas(resposta.get("elements") or [], RIOS[rio_id]["nomes"])
         print(f"{rio_id}: {len(ls)} way(s), {comprimento_km(ls):.1f} km")
         problemas = conferir(rio_id, ls, alvos, pino(RIOS[rio_id]["cidade"]))
@@ -241,8 +247,9 @@ def main() -> int:
             destino.write_text(json.dumps(resposta, ensure_ascii=False) + "\n", encoding="utf-8")
             print(f"   gravado: {destino.relative_to(RAIZ)}")
         gravados.append(rio_id)
-    print(f"\nconferidos: {', '.join(gravados) or 'nenhum'} · recusados: {', '.join(recusados) or 'nenhum'}")
-    return 0 if gravados else 1
+    print(f"\nconferidos: {', '.join(gravados) or 'nenhum'} · recusados: {', '.join(recusados) or 'nenhum'}"
+          f" · sem resposta do Overpass: {', '.join(sem_resposta) or 'nenhum'}")
+    return 0 if gravados and not sem_resposta else 1
 
 
 if __name__ == "__main__":

@@ -89,7 +89,19 @@ def buscar_consulta(texto: str, *, transporte=None, dormir=None, avisar=print) -
     ultimo = ""
     for espelho in ESPELHOS:
         for tentativa in range(1, TENTATIVAS_POR_ESPELHO + 1):
-            r = transporte(espelho, {"data": texto}, {"User-Agent": USER_AGENT}, 240)
+            try:
+                r = transporte(espelho, {"data": texto}, {"User-Agent": USER_AGENT}, 240)
+            except OSError as e:
+                # Timeout ou queda de conexão (requests.RequestException é OSError) conta como fila: espera e
+                # tenta de novo, depois o próximo espelho. Em 06/10/2026, um ReadTimeout do kumi.systems
+                # derrubava a rodada inteira, com os rios seguintes sem baixar.
+                ultimo = f"{espelho} não respondeu: {type(e).__name__}: {e}"
+                if tentativa == TENTATIVAS_POR_ESPELHO:
+                    break
+                espera = BACKOFF_BASE_S * 2 ** (tentativa - 1)
+                avisar(f"   {type(e).__name__} — sem resposta do Overpass; esperando {espera}s")
+                dormir(espera)
+                continue
             if r.status_code == 200:
                 try:
                     return json.loads(r.text), espelho
