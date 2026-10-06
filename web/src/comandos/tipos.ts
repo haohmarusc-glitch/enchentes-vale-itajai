@@ -40,7 +40,7 @@ export type Passo =
   /** Quais leituras estão atrasadas ou velhas, pela regra de idade do site (`frescorDaCidade`). */
   | { tipo: 'atrasadas' }
   /** Filtro do Monitor: só as cidades e réguas sem leitura de agora; null limpa. */
-  | { tipo: 'filtro'; filtro: 'sem_leitura' | null }
+  | { tipo: 'filtro'; filtro: 'sem_leitura' | 'acima_do_normal' | null }
   /** O gráfico das últimas horas, na página da cidade. */
   | { tipo: 'abrir_grafico'; cidadeId?: string }
   /** A variação medida na última hora, numa régua só. */
@@ -85,6 +85,12 @@ export type Passo =
   | { tipo: 'mare' }
   /** De onde vem a leitura de uma cidade: estação, hora e fontes cadastradas. */
   | { tipo: 'fonte_leitura'; cidadeId?: string }
+  // 6ª entrega: o rio agora, de cima a baixo.
+  | { tipo: 'quanto_falta'; cidadeId?: string }
+  | { tipo: 'tendencia'; cidadeId?: string }
+  | { tipo: 'maximo_24h'; cidadeId?: string }
+  | { tipo: 'panorama' }
+  | { tipo: 'de_cima'; cidadeId?: string }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

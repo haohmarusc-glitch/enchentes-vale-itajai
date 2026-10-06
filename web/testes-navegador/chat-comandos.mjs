@@ -18,6 +18,8 @@
  *    que não muda;
  *  - 5ª entrega: reprodução que não toca, não pausa ou não vai ao instante; maré sem a tábua da Marinha ou sem
  *    "não é cheia"; barragem com nível em metros; fonte da leitura sem a hora.
+ *  - 6ª entrega: panorama sem "mesma faixa não é mesmo metro"; filtro "acima do normal" fora da tela; "de cima"
+ *    sem o aviso de que ligação não é previsão; Gaspar com frase de cota.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -239,7 +241,33 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 7. Página com chat próprio: a barra do topo some.
+  // 7. 6ª entrega: o rio agora — quanto falta, tendência, máximo de 24 h, panorama, de cima e o filtro.
+  {
+    const { b, pg, erros } = await abrir('#/monitor/blumenau', { largura: w, altura: h })
+    let r = await pedirAte(pg, 'quais cidades estão em alerta?', /Faixa de cada cidade|Não consegui/)
+    ok(/mesma faixa não é mesmo metro/.test(r) && /199/.test(r), 'panorama: faixa na régua de cada cidade, com o 199')
+    r = await pedirAte(pg, 'mostrar só as cidades em alerta', /Filtro ligado|não foi ligado/)
+    if (/Filtro ligado/.test(r)) {
+      ok(await pg.getByText('Filtro: só cidades e réguas com faixa acima do normal').isVisible(), 'filtro "acima do normal": escrito na tela')
+      await pedirAte(pg, 'limpar filtros', /Filtro limpo/)
+      ok((await pg.getByText('Filtro: só cidades e réguas com faixa acima do normal').count()) === 0, 'limpar filtros: o aviso sai da tela')
+    } else {
+      ok(/não quer dizer que não há alagamento/.test(r), 'filtro "acima do normal": nada acima, e o chat diz que isso não é sinal de segurança')
+    }
+    r = await pedirAte(pg, 'o que vem de cima para Blumenau?', /acima de Blumenau/)
+    ok(/Rio do Sul/.test(r) && /Ligação não é previsão/.test(r), 'de cima: pela árvore, com o aviso')
+    r = await pedirAte(pg, 'quanto falta para a cota em Rio do Sul?', /Rio do Sul/)
+    ok(/Faltam|acima da cota|só sai com leitura de agora|não tem leitura|Já passou/.test(r), `quanto falta: a frase do cartão ou a recusa (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'Blumenau está subindo?', /Blumenau/)
+    ok(/cm\/h|estável|não digo|não chega|não tem leitura/.test(r), `tendência: a seta do cartão ou a recusa (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'máximo das últimas 24 h em Blumenau', /Blumenau/)
+    ok(/máximo:|não tem pontos suficientes/.test(r), 'máximo de 24 h: da série, com hora')
+    r = await pedirAte(pg, 'quanto falta para a cota em Gaspar?', /Gaspar/)
+    ok(/não faz a conta/.test(r), 'Gaspar: sem frase de cota ("maior que")')
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 8. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

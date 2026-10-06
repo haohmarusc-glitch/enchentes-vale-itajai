@@ -423,3 +423,33 @@ tudo vem das mesmas fontes e regras das telas.
     (06/10, 15h00: baixando; próxima preamar 22h59, 0,85 m; baixamar 18h49, 0,42 m), fonte e executor;
   - `testes-navegador/chat-comandos.mjs`, seção 6: reproduzir, pausar, "voltar 3 horas" e voltar ao vivo no
     Monitor de Blumenau; maré, chuva, barragens (sem metros) e fonte da leitura.
+
+## Sexta entrega (06/10/2026): o rio agora, de cima a baixo
+
+O plano original acabou na 5ª entrega; só falta a rua de Blumenau e de Rio do Sul no mapa, que depende de dado.
+A 6ª dá ao chat as contas que o cartão "Agora", o painel e o tempo de descida já fazem na tela, e liga no
+Monitor um segundo filtro. Nenhum número novo: nada aqui é calculado fora das funções que as telas usam.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "quanto falta para a cota de alerta em Blumenau?", "quanto falta para a próxima cota?" | A frase do cartão "Agora" (`situacaoNasCotas`): quanto está acima da última cota alcançada e quanto falta para a próxima, com o nome da Defesa Civil da cidade (D6: "Observação", "Alerta Máximo") e a hora da medição. | A conta sobre leitura que não é de agora. A conta em Gaspar ("maior que"), Ascurra (C18) e Itajaí (várias réguas): diz por quê. Usar a régua estadual (zero próprio) contra as cotas da cidade. |
+| "o rio está subindo ou descendo?", "Blumenau está subindo?", "qual a tendência em Brusque?" | A seta do cartão (D7, `tendenciaDaLeitura`): cm/h na última hora medida, só quando o último ponto da série é a leitura e é de agora. Leitura antiga com a série subindo: "agora pode estar mais alto", como no cartão. | Dizer tendência com série que não casa com a leitura, nem juntar réguas de Itajaí. "Vai subir?" continua na barreira do presente. |
+| "máximo das últimas 24 h em Blumenau", "pico de hoje" | Máximo e mínimo da série publicada de UMA régua, com a hora de cada um, e a variação do primeiro ao último ponto. Diz quando o último ponto é velho. | Misturar réguas (Itajaí pede para escolher uma). Ponto com mais de 24 h. |
+| "quais cidades estão em alerta?", "como está a bacia?" | A faixa de cada cidade na régua dela, da mais alta para a mais baixa, com o número e a hora com a idade. Mostra também: as réguas de Itajaí com cor; à parte, a faixa da Defesa Civil de SC, onde não há leitura municipal de agora; e as cidades sem cor. | Dizer que está tudo calmo. Sem nada acima do normal, diz que faixa baixa no rio não quer dizer que não há alagamento. Pôr Itajaí como cidade de um número só. |
+| "o que vem de cima para Blumenau?", "como estão as cidades de cima?" | As cidades acima pela árvore do cadastro, da mais perto para a mais longe, e as cabeceiras e os afluentes com régua. Cada uma traz a leitura de agora (ou a estadual, com "zero próprio") e o tempo de descida em intervalo, pelo mesmo `caminho()` da tela. Itajaí recebe as duas seções, Açu e Mirim. | Tempo de descida para afluente ou trecho sem dado ("sem tempo no cadastro", "em estudo"). Chamar ligação de previsão. Comparar metros entre cidades. |
+| "mostrar só as cidades em alerta", "só as cidades acima do normal" | Filtro no Monitor: só pinos e réguas com a faixa do mapa de monitoramento para cima, escrito na tela, com "Limpar filtro". O mapa abre na bacia inteira. | Contar cinza, "várias réguas" ou régua de estuário sem cor. Ligar o filtro vazio: diz que nada está acima e que isso não é sinal de segurança. |
+
+- **Código:**
+  - `comandos/rioAgora.ts`: os textos de quanto falta, tendência, máximo de 24 h, panorama e "de cima";
+  - `logica/filtroSemLeitura.ts`: `faixaAcimaDoNormal`;
+  - `comandos/executar.ts`: os passos `quanto_falta`, `tendencia`, `maximo_24h`, `panorama`, `de_cima` e o filtro
+    `acima_do_normal`; o tempo de descida chega por `DadosDoChat.transito` (`transito.json`, com os trechos em
+    estudo).
+- **No Monitor (rótulo `monitor-autorizado`):** `MonitorBacia.tsx` aceita o filtro `acima_do_normal` na ponte,
+  esconde os outros pinos e réguas e escreve o filtro na tela. Sem pedido, nada muda: a `trava-monitor` passa com
+  a referência atual.
+- **Testes:**
+  - `src/comandos/sexta.test.ts` (10): frases, cada texto com o cadastro real (cotas de Blumenau, árvore, `transito.json`),
+    as recusas (Gaspar, Ascurra, Itajaí, leitura velha), a faixa estadual só à parte e o executor;
+  - `testes-navegador/chat-comandos.mjs`, seção 7: panorama, filtro ligado e limpo (ou a recusa sem nada acima),
+    "de cima", quanto falta, tendência, máximo de 24 h e Gaspar sem frase de cota.

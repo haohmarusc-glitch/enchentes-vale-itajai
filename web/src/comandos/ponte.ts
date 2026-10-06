@@ -21,7 +21,7 @@ export interface Retrato {
 }
 
 /** Filtro do Monitor pedido pelo chat (2ª entrega): só cidades e réguas sem leitura de agora. */
-export type FiltroMonitor = 'sem_leitura' | null
+export type FiltroMonitor = 'sem_leitura' | 'acima_do_normal' | null
 
 /** Um ponto marcado no mapa pelo chat (confluência), com o nome e a fonte que o painel mostra. */
 export interface MarcaNoMapa {
