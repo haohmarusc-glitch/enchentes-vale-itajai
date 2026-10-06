@@ -42,6 +42,10 @@ export default function AvisoLegal({
         <li>
           Em emergência, <strong>ligue 199</strong>. Consulte os comunicados da Defesa Civil.
         </li>
+        <li>
+          O site registra o e-mail de quem entra e a data do acesso, só para a administração. Sem acesso novo,
+          o registro é apagado em 90 dias.
+        </li>
       </ul>
     </section>
   )

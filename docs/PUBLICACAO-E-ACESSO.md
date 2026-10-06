@@ -227,6 +227,30 @@ continua.
 
 ---
 
+### Registro de acessos (`/admin/acessos`) — pedido de 06/10/2026
+
+Quem está logado e quem entrou, só para o admin (`haohmarusc@gmail.com`).
+
+- **O que guarda:** a cada abertura de página, `web/functions/_middleware.ts` anota, por e-mail que o Access
+  informa, o primeiro e o último acesso, em quantos dias a pessoa entrou e o último dia.
+  - Não guarda IP, página nem aparelho.
+  - No máximo uma escrita a cada 15 minutos por pessoa (o KV gratuito aceita mil por dia).
+  - O registro expira em 90 dias sem acesso novo.
+- **Onde guarda:** no KV `CHAT_IA`, que já está ligado, com chaves `acesso|<e-mail>`.
+- **Quem vê:** `GET /api/acessos` responde só para os e-mails da variável `ADMIN_EMAILS`. Para qualquer outro,
+  inclusive quem está logado, devolve 404 e a tela diz "Página não encontrada". Nenhum link do site aponta para
+  ela.
+- **Para ligar (uma vez):** Cloudflare → Workers & Pages → `enchentes-vale-itajai` → Settings → Variables and
+  Secrets → **Add**:
+  - **Type** "Text", **Variable name** `ADMIN_EMAILS`, **Value** `haohmarusc@gmail.com`, no ambiente
+    **Production**;
+  - depois, um deploy novo (o próximo merge serve).
+- **Para ver:** abrir `/#/admin/acessos` no site.
+  - "Logados agora" = abriu uma página nos últimos 15 minutos.
+  - O login em si, com IP e país, continua no painel da Cloudflare: Zero Trust → Logs → Access.
+- **Transparência:** o aviso legal de toda página diz que o e-mail e a data do acesso são registrados para a
+  administração e apagados em 90 dias.
+
 ## O estado de hoje (conferido em 05/09/2026)
 
 | o quê | como está |

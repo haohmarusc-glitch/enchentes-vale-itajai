@@ -1,0 +1,63 @@
+.voltar {
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+}
+
+.titulo {
+  margin: 0 0 0.5rem;
+}
+
+.subtitulo {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.contagem {
+  color: var(--tinta-fraca);
+  font-weight: normal;
+  font-size: 0.9em;
+}
+
+.nota {
+  margin: 0 0 1rem;
+  color: var(--tinta-fraca);
+  max-width: 65ch;
+}
+
+.aviso {
+  margin: 0 0 1rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--nota-borda);
+  background: var(--nota-fundo);
+  color: var(--nota-tinta);
+  border-radius: var(--raio);
+}
+
+.lista {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.rolagem {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.tabela {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.tabela th,
+.tabela td {
+  text-align: left;
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid var(--borda);
+  white-space: nowrap;
+}
+
+.numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
