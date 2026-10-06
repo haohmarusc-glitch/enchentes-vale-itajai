@@ -30,6 +30,8 @@ export type Msg = {
   comando?: boolean
   /** Texto preparado para copiar (resumo, link): o botão "Copiar" copia; o chat nunca envia. */
   copiar?: string
+  /** Pedido do usuário refeito por continuação ("e Gaspar?" → "como está Gaspar?"): o próximo "e …" parte dele. */
+  entendidoComo?: string
 }
 
 interface Estado {

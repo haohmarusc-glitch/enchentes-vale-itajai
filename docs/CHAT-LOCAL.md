@@ -382,3 +382,10 @@ O motor continua casando só o nome exato, e a prova responde igual. Quem acresc
 municípios do Atlas), na posição de cidade, a resposta começa com "Não achei a cidade "blumenal". Você quis dizer
 Blumenau?" e a pergunta corrigida vira a primeira sugestão. O palpite nunca é respondido sozinho. Regras e testes
 em `docs/CHAT-GLOBAL-COMANDOS.md`, "Nona entrega".
+
+### "E Gaspar?": a conversa que continua (06/10/2026, 10ª entrega dos comandos)
+
+O motor continua lendo uma pergunta por vez. Quem resolve a continuação é a tela do chat (`ChatLocal.tsx`, com
+`comandos/continuar.ts`): "e Gaspar?", "e em 2011?" e "de novo" viram o último pedido com uma troca só, a tela
+mostra "Entendi como: …", e o pedido refeito passa pelo motor (ou pelos comandos) como qualquer outro. Regras em
+`docs/CHAT-GLOBAL-COMANDOS.md`, "Décima entrega".

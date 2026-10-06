@@ -545,3 +545,30 @@ Não toca em arquivo do Monitor.
     longe, dois nomes, município do Atlas), comando e pergunta;
   - `testes-navegador/chat-comandos.mjs`, seção 10: "mostrar Blumenal" não muda a tela, e a sugestão abre o Monitor
     de Blumenau; "como está blumenal?" traz o palpite e a pergunta corrigida como sugestão.
+
+## Décima entrega (06/10/2026): a conversa que continua
+
+"Como está Blumenau?" e depois "e Gaspar?". O chat lia cada mensagem sozinha, e "e Gaspar?" virava "Gaspar" solto.
+Agora três continuações curtas refazem o último pedido da conversa com uma troca só. Não toca em arquivo do
+Monitor.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "e Gaspar?", "e em Rio do Sul?", "e lá em Ilhota?" | Refaz o último pedido com a cidade trocada, na frase como foi escrita ("quanto falta para a cota em Rio do Sul?"). Mostra antes "Entendi como: …". Vale para pergunta e para comando ("mostrar Blumenau" → "e Gaspar" abre o Monitor de Gaspar). | Adivinhar: sem pedido anterior, pergunta o que saber da cidade; se o pedido anterior cita duas cidades ("de Rio do Sul até Blumenau"), pergunta qual trocar; se não cita cidade, pede o pedido inteiro. Tratar "Itajaí-Açu" ou "Itajaí-Mirim" como a cidade de Itajaí. |
+| "e em 2011?" | O último pedido com o ano trocado ("cheias de 2008 em Blumenau" → "cheias de 2011 em Blumenau"). | Trocar quando o pedido anterior não tem ano ou tem mais de um. |
+| "de novo", "repetir" | O mesmo pedido de novo (por exemplo, para ver a leitura mais nova). | — |
+
+- **Encadeado:** "e Gaspar?" depois de "e Rio do Sul?" parte do pedido já refeito, guardado na mensagem
+  (`Msg.entendidoComo`), e não do "e Rio do Sul?" solto.
+- **O mesmo caminho do que é digitado:** o pedido refeito passa pelo interpretador de comandos e pelo motor como
+  qualquer outro, com a barreira do presente e o "Você quis dizer" da 9ª entrega. A mensagem da pessoa aparece
+  uma vez só, como foi escrita.
+- **O que não é continuação:** "e agora?", "e se chover?", cidade fora da lista ("e Pomerode?" segue para o
+  motor), e a pergunta inteira ("como está Gaspar?").
+- **Código:** `comandos/continuar.ts` (pura), `ChatLocal.tsx` (a ligação e o "Entendi como"), `conversa.ts`
+  (`entendidoComo`) e `usarComandos.ts` (`tentar` sem repetir a mensagem).
+- **Testes:**
+  - `src/comandos/decima.test.ts` (5): troca de cidade e de ano, repetir, as perguntas em vez de palpite, o que não é
+    continuação e o pedido refeito virando comando;
+  - `testes-navegador/chat-comandos.mjs`, seção 11: sem pedido anterior, "Entendi como" depois de "quanto falta…",
+    "de novo" e "e Gaspar" abrindo o Monitor de Gaspar.

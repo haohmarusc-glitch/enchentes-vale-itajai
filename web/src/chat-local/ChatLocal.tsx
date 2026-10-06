@@ -43,7 +43,8 @@ import { AVISO_PILOTO, TEXTO_NAO_ERA_ISSO, classificarPergunta, enviarCorrecao, 
 import { estacoes } from '../dados/carregar'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { respostaDoPresente } from './situacaoAgora'
-import { abrirPainel, limparConversa, mudarMsgs, registrarChatDePagina, useConversa, type Msg } from './conversa'
+import { abrirPainel, lerConversa, limparConversa, mudarMsgs, registrarChatDePagina, useConversa, type Msg } from './conversa'
+import { continuar } from '../comandos/continuar'
 import { useComandos } from '../comandos/usarComandos'
 import AoVivoDoChat from './AoVivoDoChat'
 import estilos from './ChatLocal.module.css'
@@ -72,6 +73,9 @@ const INICIO: Record<'itajai-acu' | 'itajai-mirim', string[]> = {
 }
 
 export type Variante = 'cartao' | 'barra' | 'monitor'
+
+/** As cidades do cadastro, para "e Gaspar?" antes de os dados do motor carregarem. */
+const nomesDoCadastro = Object.values(estacoes.rios).flatMap((r) => r.cidades.map((c) => ({ id: c.id, nome: c.nome })))
 
 export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante = 'cartao' }: {
   rio: 'itajai-acu' | 'itajai-mirim'
@@ -228,13 +232,31 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
     return novo
   }
 
-  async function perguntar(p: string, jaMostrada = false) {
+  async function perguntar(p: string, jaMostrada = false, refeito = false) {
     const q = p.trim()
     if (!q) return
     setVisivel(true)
     abrirPainel(true)
+    // 10ª entrega: "e Gaspar?", "e em 2011?", "de novo" refazem o último pedido com uma troca só, e a tela diz
+    // "Entendi como: …" antes de responder. Sem pedido anterior (ou com duas cidades nele), pergunta.
+    if (!jaMostrada) {
+      const ultima = [...lerConversa().msgs].reverse().find((m) => m.papel === 'usuario')
+      const anterior = ultima ? (ultima.entendidoComo ?? ultima.texto) : null
+      const c = continuar(q, anterior, dados ? cidadesConhecidas(dados) : nomesDoCadastro)
+      if (c && 'erro' in c) {
+        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: c.erro, sugestoes: c.sugestoes }])
+        setTexto('')
+        rolarAoFim()
+        return
+      }
+      if (c) {
+        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q, entendidoComo: c.texto }, { papel: 'assistente', texto: `Entendi como: "${c.texto}".` }])
+        setTexto('')
+        return perguntar(c.texto, true, true)
+      }
+    }
     // Pedido ("mostrar Blumenau", "zoom na régua DC-05"): executa e diz o resultado. Não depende dos dados.
-    if (!jaMostrada && comandos.tentar(q)) {
+    if ((!jaMostrada && comandos.tentar(q)) || (refeito && comandos.tentar(q, false))) {
       setTexto('')
       rolarAoFim()
       return
@@ -242,7 +264,7 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
     if (!dados) {
       // Ainda carregando: guarda e responde quando os dados chegarem, em vez de engolir a pergunta.
       pendente.current = q
-      setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }])
+      if (!jaMostrada) setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }])
       setTexto('')
       rolarAoFim()
       return

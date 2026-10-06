@@ -25,6 +25,8 @@
  *  - 8ª entrega: "oficial" sem o aviso; atualizar sem buscar; apagar preferências sem confirmar ou sem apagar;
  *    contagem que não grava; conversa que não limpa.
  *  - 9ª entrega: cidade com erro de digitação executada sem perguntar; sugestão que não leva à cidade certa.
+ *  - 10ª entrega: continuação sem "Entendi como"; "e Gaspar" sem pedido anterior que adivinha; comando refeito
+ *    que não executa.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -336,7 +338,26 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes([...erros, ...outra.erros]).length === 0, `sem exceção de JavaScript (${excecoes([...erros, ...outra.erros]).join(' | ')})`)
     await outra.b.close()
   }
-  // 11. Página com chat próprio: a barra do topo some.
+  // 11. 10ª entrega: a conversa que continua ("e Gaspar?", "e em 2011?", "de novo").
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'e Gaspar?', /pedido anterior/)
+    ok(/Não há pedido anterior/.test(r), 'sem pedido anterior: pergunta o que saber')
+    await pedirAte(pg, 'quanto falta para a cota em Blumenau?', /Blumenau/)
+    await pedir(pg, 'e Rio do Sul?')
+    const textos = await pg.locator('[role="log"] [class*="chat-assistente"]').allInnerTexts()
+    ok(textos.some((t) => /Entendi como: "quanto falta para a cota em Rio do Sul\?"/.test(t)), 'continuação: diz como entendeu')
+    r = await pedirAte(pg, 'de novo', /Rio do Sul/)
+    ok(/Rio do Sul/.test(r), 'de novo: repete o último pedido refeito')
+    await pedirAte(pg, 'mostrar Blumenau', /Blumenau/)
+    await pedir(pg, 'e Gaspar')
+    await pg.waitForURL(/#\/monitor\/gaspar/, { timeout: 15000 }).catch(() => {})
+    ok(/#\/monitor\/gaspar/.test(pg.url()), `continuação de comando: abriu o Monitor de Gaspar (${pg.url()})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 12. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')
