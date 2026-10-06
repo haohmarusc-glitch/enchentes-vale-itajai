@@ -557,6 +557,13 @@ o projeto.
       guardado nem enviado.
     - "Relatar problema": texto pronto para copiar, porque o site não tem canal de relato.
     - Minha cidade, seguir e deixar de seguir, letra e tela cheia.
+  - [x] **Quinta entrega (06/10/2026): o tempo e a bacia.**
+    - Reprodução pelo chat: "reproduzir as últimas 24 h", "pausar", "como estava às 14h", "voltar 3 horas".
+      Arquivo do Monitor alterado com o rótulo `monitor-autorizado`.
+    - "Onde está chovendo mais?": só pluviômetro com leitura que não é velha, em 1 h e 24 h.
+    - "Como estão as barragens?": comportas e percentual de uso como a fonte publica, nunca o nível em metros.
+    - "Como está a maré?": a tábua da Marinha, como previsão astronômica; maré alta não é cheia.
+    - "De onde vem essa leitura?": estação, hora da medição e fontes do cadastro.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

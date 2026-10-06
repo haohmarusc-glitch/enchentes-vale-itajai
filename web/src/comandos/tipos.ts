@@ -74,6 +74,17 @@ export type Passo =
   | { tipo: 'preferencia_cidade'; acao: 'minha' | 'seguir' | 'deixar' | 'listar'; cidadeId?: string }
   | { tipo: 'letra'; tamanho: 'normal' | 'grande' }
   | { tipo: 'tela_cheia' }
+  // --- 5ª entrega: o tempo e a bacia
+  /** A reprodução das últimas 24 h do Monitor: tocar, pausar ou ir a um instante ("às 14h", "há 3 horas"). */
+  | { tipo: 'reproducao'; acao: 'tocar' | 'pausar' | 'ir'; hora?: number; minuto?: number; horasAtras?: number }
+  /** Onde chove mais agora, pelos pluviômetros com leitura recente. */
+  | { tipo: 'chuva_agora' }
+  /** O estado das comportas das barragens de contenção, como a fonte publica. */
+  | { tipo: 'barragens' }
+  /** A maré no porto de Itajaí, pela tábua da Marinha. */
+  | { tipo: 'mare' }
+  /** De onde vem a leitura de uma cidade: estação, hora e fontes cadastradas. */
+  | { tipo: 'fonte_leitura'; cidadeId?: string }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

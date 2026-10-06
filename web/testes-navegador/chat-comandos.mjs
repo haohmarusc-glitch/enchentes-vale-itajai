@@ -15,7 +15,9 @@
  *    aproximada; rua de Blumenau mexendo no mapa;
  *  - 4ª entrega: localização sem a régua mais perto ou sem o aviso de que nada é guardado, posição no endereço
  *    ou no aparelho, recusa que mexe na tela; minha cidade que não fica guardada; relato sem "Copiar"; letra
- *    que não muda.
+ *    que não muda;
+ *  - 5ª entrega: reprodução que não toca, não pausa ou não vai ao instante; maré sem a tábua da Marinha ou sem
+ *    "não é cheia"; barragem com nível em metros; fonte da leitura sem a hora.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -209,7 +211,35 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(await pg.locator('input[aria-label="Pergunte ou peça"]').first().isEnabled(), 'localização sem permissão: o chat continua aceitando pedidos')
     await b.close()
   }
-  // 6. Página com chat próprio: a barra do topo some.
+  // 6. 5ª entrega: reprodução, maré, chuva, barragens e fonte da leitura.
+  {
+    const { b, pg, erros } = await abrir('#/monitor/blumenau', { largura: w, altura: h })
+    const instante = () => pg.locator('[class*="instante"]').first().innerText().catch(() => '')
+    const temSerie = (await pg.locator('input[aria-label="Instante da reprodução"]').count()) > 0
+    if (temSerie) {
+      await pedirAte(pg, 'reproduzir as últimas 24 h', /Reproduzindo|série/)
+      ok((await pg.getByRole('button', { name: '⏸ Pausar' }).count()) === 1, 'reprodução: o botão virou "Pausar"')
+      await pedirAte(pg, 'pausar', /pausada|parada|não está tocando/)
+      ok((await pg.getByRole('button', { name: /Reproduzir 24 h/ }).count()) === 1, 'pausar: a reprodução parou')
+      let r = await pedirAte(pg, 'voltar 3 horas', /Mapa em|só cobre|mais recente/)
+      ok(/Mapa em/.test(r) && (await instante()) !== 'ao vivo', `"voltar 3 horas": o mapa mostra o passado (${await instante()})`)
+      r = await pedirAte(pg, 'ir para a leitura mais recente', /leituras mais recentes|ao vivo|Voltei|agora/)
+      ok((await instante()) === 'ao vivo', 'voltar ao agora: "ao vivo"')
+    } else {
+      ok(true, 'reprodução: sem série publicada neste ambiente (o comando diz isso)')
+    }
+    let r = await pedirAte(pg, 'como está a maré?', /maré/)
+    ok(/tábua de maré da Marinha/.test(r) && /não é cheia/.test(r), 'maré: pela tábua da Marinha, e maré não é cheia')
+    r = await pedirAte(pg, 'onde está chovendo mais?', /chuv|pluvi/i)
+    ok(/A fonte não publica 6 h|Não consegui|não recebeu|Nenhum pluviômetro/.test(r), `chuva: responde pelos pluviômetros (${r.slice(0, 50)}…)`)
+    r = await pedirAte(pg, 'como estão as barragens?', /Barragens|barragens/)
+    ok(/comportas|Não consegui/.test(r) && !/\d,\d\d m\b/.test(r), 'barragens: comportas, sem nível em metros')
+    r = await pedirAte(pg, 'de onde vem a leitura de Blumenau?', /Blumenau/)
+    ok(/A hora é a da medição/.test(r), 'fonte da leitura: estação, hora e fontes cadastradas')
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 7. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

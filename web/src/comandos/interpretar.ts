@@ -125,6 +125,42 @@ function partesDoPedidoDeRua(resto: string, cat: Catalogo): { texto: string; cid
   return { texto: r, ...(cidadeId ? { cidadeId } : {}), ...(ano ? { ano } : {}) }
 }
 
+/** A 5ª entrega: o tempo e a bacia (reprodução, chuva, barragens, maré, fonte da leitura). */
+function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
+  if (/^(?:reproduzir|reproduza)$|^(?:reproduzir|reproduza|tocar|toque|rodar|rode|passar|passe|mostrar|mostre|ver)(?: a| o| as)? (?:reproducao|animacao|(?:das )?ultimas (?:24 ?h|24 horas|horas)|24 ?h|24 horas)$/.test(t)) {
+    return [{ tipo: 'reproducao', acao: 'tocar' }]
+  }
+  // "Parar a reprodução" é voltar ao agora (1ª entrega); pausar congela no instante.
+  if (/^(?:pausar|pause|pausa)(?: a| o)?(?: reproducao| animacao)?$/.test(t)) {
+    return [{ tipo: 'reproducao', acao: 'pausar' }]
+  }
+  {
+    // "como estava às 14h", "mostrar o mapa das 9h30", "voltar 3 horas", "como estava há 2 horas"
+    const h = t.match(/^(?:como (?:estava|tava)|mostrar?(?: o mapa)?|mostre(?: o mapa)?|ir|va|ver|voltar)(?: o rio| o mapa| a bacia)?(?: para| pra)? (?:as|a|das|de) (\d{1,2})(?: ?h(?:oras)?)?(?: ?:? ?(\d{2}))?(?: ?min)?$/)
+    if (h) return [{ tipo: 'reproducao', acao: 'ir', hora: Number(h[1]), ...(h[2] ? { minuto: Number(h[2]) } : {}) }]
+    const a = t.match(/^(?:como (?:estava|tava)(?: o rio| o mapa| a bacia)? ha|voltar|volte|recuar|recue)(?: o mapa| a reproducao)? (\d{1,2}) (?:horas?|h)(?: atras)?$/)
+    if (a) return [{ tipo: 'reproducao', acao: 'ir', horasAtras: Number(a[1]) }]
+  }
+  if (/^(?:onde|em que cidades?|quais cidades?) (?:esta|ta|estao) chovendo(?: mais)?(?: agora)?$|^onde (?:chove|choveu|chove mais|choveu mais)(?: agora| hoje| na ultima hora)?$|^(?:a )?chuva (?:agora|na bacia|de agora|nas cidades)$|^(?:ranking|lista) (?:da|de) chuva$/.test(t)) {
+    return [{ tipo: 'chuva_agora' }]
+  }
+  if (/^(?:como (?:estao|esta|tao)(?: as| a)?|qual (?:e )?o estado (?:das|da)) barragens?(?: de contencao| do alto vale)?(?: agora)?$|^(?:as )?barragens?(?: agora)?$|^(?:as )?comportas(?: das barragens)?(?: estao)?(?: abertas| fechadas)?$/.test(t)) {
+    return [{ tipo: 'barragens' }]
+  }
+  if (/^(?:(?:como (?:esta|ta)|qual(?: e)?) )?(?:a )?mare(?: agora| em itajai| na foz| no porto)?$|^(?:a )?mare (?:esta|ta) (?:subindo|baixando|alta|baixa)$|^(?:(?:quando e|qual(?: e)?) )?a proxima (?:preamar|mare alta|baixamar|mare baixa)$/.test(t)) {
+    return [{ tipo: 'mare' }]
+  }
+  {
+    const m = t.match(/^de onde vem (?:essa|esta|a) (?:leitura|medicao|informacao|numero)(?: (?:de|do|da) (.+))?$/)
+      ?? t.match(/^(?:qual (?:e )?a )?fonte (?:da|desta|dessa) (?:leitura|medicao|regua)(?: (?:de|do|da) (.+))?$/)
+    if (m) {
+      const c = cidadeOpcional(m[1], cat)
+      return c ? [{ tipo: 'fonte_leitura', ...c }] : null
+    }
+  }
+  return null
+}
+
 /** A 4ª entrega: o que depende do aparelho (localização, preferências, relato, tela cheia). */
 function lerTrechoDaQuarta(t: string, cat: Catalogo): Lido {
   if (/^(?:usar|use|usa|pegar|pegue|ver|veja|mostrar|mostre)(?: a)? minha (?:localizacao|posicao)$|^onde (?:eu )?estou$|^(?:qual (?:e )?)?a regua mais (?:perto|proxima)(?: de mim| daqui)?$|^(?:qual )?regua (?:fica |esta )?mais (?:perto|proxima)(?: de mim| daqui)?$/.test(t)) {
@@ -298,6 +334,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const quinta = lerTrechoDaQuinta(t, cat)
+  if (quinta) return quinta
   const quarta = lerTrechoDaQuarta(t, cat)
   if (quarta) return quarta
   const terceira = lerTrechoDaTerceira(t, cat)
@@ -334,7 +372,7 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
     }
   }
   // --- voltar no tempo e voltar a vista
-  if (/^(?:ir|voltar|volte|volta|va|ver)(?: para| pra| ao| a)?(?: a| o)? (?:leitura )?(?:mais recente|ao vivo|agora|presente|tempo real)$|^(?:parar|pare|sair|saia)(?: da)? reproducao$/.test(t)) {
+  if (/^(?:ir|voltar|volte|volta|va|ver)(?: para| pra| ao| a)?(?: a| o)? (?:leitura )?(?:mais recente|ao vivo|agora|presente|tempo real)$|^(?:parar|pare|sair|saia)(?: da| a)? reproducao$/.test(t)) {
     return [{ tipo: 'ao_vivo' }]
   }
   if (/^(?:ver|mostrar|mostre|mostra|enquadrar|enquadre|voltar para|voltar a|volta pra|volte para)?(?: a| o)? ?(?:bacia(?: toda| inteira)?|toda a bacia|tudo|mapa (?:todo|inteiro)|vale (?:todo|inteiro))$/.test(t)) {

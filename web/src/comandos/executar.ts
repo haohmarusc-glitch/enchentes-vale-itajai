@@ -29,6 +29,10 @@ import { horaDeBrasilia } from '../logica/agora'
 import { metros } from '../logica/formato'
 import { idadeMin, textoIdade } from '../logica/tempoReal'
 import { AVISO_RELATO, textoDaLocalizacao, textoDoRelato, type Posicao } from './aparelho'
+import { instantePedido, textoBarragens, textoChuvaAgora, textoFonteDaLeitura, textoMare } from './bacia'
+import type { Barragem } from '../dados/barragens'
+import type { TabuaMare } from '../dados/tipos'
+import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
 
@@ -57,6 +61,10 @@ export interface DadosDoChat {
     deixarDeSeguir(id: string): CidadeSeguida[]
     letra(l: 'normal' | 'grande'): void
   }
+  /** 5ª entrega: as barragens (buscadas na hora), a tábua de maré e as fontes de tempo real do cadastro. */
+  barragens?(): Promise<ReadonlyMap<string, Barragem>>
+  mare?(): TabuaMare
+  fontesDaCidade?(id: string): string[]
 }
 
 export interface Ambiente {
@@ -78,10 +86,11 @@ export function limparRetratos(): void {
 export const MUDA_A_TELA = new Set<Passo['tipo']>([
   'ir_cidade', 'monitor_bacia', 'abrir_pagina', 'abrir_rota', 'escolher_regua', 'aproximar_regua', 'zoom',
   'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia', 'rua', 'remover_destaque',
-  'localizacao',
+  'localizacao', 'reproducao',
 ])
 const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
   'escolher_regua', 'aproximar_regua', 'zoom', 'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'o_que_vejo', 'filtro',
+  'reproducao',
 ])
 
 const NOME_FUNDO = { escuro: 'escuro', satelite: 'satélite', mapa: 'mapa de ruas' } as const
@@ -499,6 +508,55 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
           texto: ctx.naMonitor
             ? `${qual} neste aparelho, nas páginas do site. O Monitor mantém o desenho dele e não muda o tamanho da letra.`
             : `${qual} neste aparelho. É o mesmo botão de letra do topo da página.`,
+        }
+      }
+      // ------------------------------------------------ 5ª entrega: o tempo e a bacia
+      case 'reproducao': {
+        if (!m!.reproducao) return falha('A reprodução não está disponível nesta tela.')
+        let r: Resultado
+        if (passo.acao === 'ir') {
+          const agora = (await amb.dados?.aoVivo())?.agora ?? new Date()
+          const instante = instantePedido(passo, agora)
+          if (!instante) return { texto: 'Não entendi o horário. Peça, por exemplo, "como estava às 14h" ou "voltar 3 horas".' }
+          r = m!.reproducao({ acao: 'ir', instante })
+        } else {
+          r = m!.reproducao({ acao: passo.acao })
+        }
+        if (!r.ok) return falha(r)
+        feitos.push(r.texto)
+        break
+      }
+      case 'chuva_agora': {
+        const v = await amb.dados?.aoVivo()
+        if (!v) return { texto: SEM_DADOS }
+        return { texto: textoChuvaAgora(v.tempoReal.chuva, v.tempoReal.chuvaOk, cat, v.agora) }
+      }
+      case 'barragens': {
+        const b = await amb.dados?.barragens?.()
+        if (!b) return { texto: 'Não consegui buscar o estado das barragens agora.' }
+        return { texto: textoBarragens(b, new Date()) }
+      }
+      case 'mare': {
+        const t = amb.dados?.mare?.()
+        if (!t) return { texto: 'A tábua de maré não está disponível agora.' }
+        return { texto: textoMare(t, new Date()), link: { texto: 'Ver a foz e a maré →', para: '/itajai' } }
+      }
+      case 'fonte_leitura': {
+        const alvo = passo.cidadeId ?? cidade
+        if (!alvo) return { texto: 'De qual cidade? Por exemplo: "de onde vem a leitura de Blumenau?"', sugestoes: ['de onde vem a leitura de Blumenau?'] }
+        const v = await amb.dados?.aoVivo()
+        if (!v) return { texto: SEM_DADOS }
+        const c = cat.cidades.find((x) => x.id === alvo)
+        if (!c) return falha('Cidade fora do cadastro.')
+        return {
+          texto: textoFonteDaLeitura({
+            nome: c.nome,
+            leituras: leiturasDaCidadeEmTodosOsRios(v.tempoReal, alvo),
+            estadual: v.nivelSc.get(alvo) ?? null,
+            fontesCadastradas: amb.dados?.fontesDaCidade?.(alvo) ?? [],
+            agora: v.agora,
+          }),
+          link: { texto: `Abrir as fontes de ${c.nome} →`, para: c.id === 'itajai' ? '/itajai' : `/${c.rio}/${c.id}?aba=fontes` },
         }
       }
       case 'tela_cheia': {

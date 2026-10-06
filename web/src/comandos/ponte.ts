@@ -78,6 +78,8 @@ export interface ControleMonitor {
   aoVivo(): Resultado
   /** Liga ou limpa o filtro "só sem leitura de agora"; o filtro aparece escrito na tela, com "limpar". */
   filtrar?(f: FiltroMonitor): Resultado
+  /** A reprodução das últimas 24 h: tocar, pausar ou ir a um instante do passado. */
+  reproducao?(p: { acao: 'tocar' } | { acao: 'pausar' } | { acao: 'ir'; instante: Date }): Resultado
   /** Marca um ponto (confluência) e centra nele; null tira a marca. */
   marcarPonto?(p: MarcaNoMapa | null): Resultado
   explicar(cidadeId: string): Explicacao | null

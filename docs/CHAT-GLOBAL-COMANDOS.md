@@ -389,3 +389,37 @@ seguidas, letra).
   - `testes-navegador/chat-comandos.mjs`, seção 5: localização simulada no Chromium, com e sem permissão; a
     posição fora do endereço e do aparelho; minha cidade guardada; relato com "Copiar"; letra.
 
+
+## Quinta entrega (06/10/2026): o tempo e a bacia
+
+A 5ª entrega dá ao chat o tempo (a reprodução das últimas horas, que o Monitor já tinha em botão e barra) e o
+resto da bacia que as telas já mostram: chuva, barragens, maré e a origem de cada leitura. Nenhum número novo:
+tudo vem das mesmas fontes e regras das telas.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "reproduzir as últimas 24 h", "pausar" | Os mesmos estados do botão "Reproduzir 24 h" do Monitor. Diz de quando a quando vai a série e que é o medido, não previsão. | Tocar no Monitor de Ascurra, que não tem reprodução. Inventar série onde não há. |
+| "como estava às 14h", "voltar 3 horas" | Põe o mapa no último instante da série até aquela hora (hora de Brasília; hora que ainda não chegou hoje é a de ontem), com cada cidade na última leitura até ali. Diz "passado, não agora". | Ir para antes do começo da série: diz desde quando ela cobre. Mostrar leitura posterior ao instante. |
+| "ir para a leitura mais recente", "parar a reprodução" | Volta ao vivo. | — |
+| "onde está chovendo mais?" | Os pluviômetros com leitura que não é velha, do maior acumulado de 1 h para baixo (sem chuva na última hora, pelo de 24 h), até seis cidades, com quantos pluviômetros e a hora. Diz quantas cidades ficaram de fora por leitura velha e que a fonte não publica 6 h. | Contar leitura velha. Dizer que chuva forte quer dizer cheia ali. |
+| "como estão as barragens?" | O estado das comportas e o percentual de uso do reservatório **como a fonte publica**, com hora e idade. Acima de 60 min, "pode ter mudado desde então". | O nível da barragem em metros (zero próprio, 339–370 m de altitude). Veredito sobre a cheia: comporta aberta não quer dizer que a cheia passou. |
+| "como está a maré?", "quando é a próxima preamar?" | Pela tábua da Marinha (porto de Itajaí): subindo ou baixando agora, a próxima preamar e a próxima baixamar com a altura da tábua, e a sizígia. Atalho para `/itajai`. | Chamar previsão astronômica de medição. Dizer que maré alta é cheia: ela dificulta o escoamento na foz. |
+| "de onde vem essa leitura?", "de onde vem a leitura de Blumenau?" | As estações municipais da coleta, com a hora da medição e a de resgate quando for o caso; a estação estadual, com "zero próprio"; as fontes de tempo real do cadastro. Atalho para a aba Fontes da cidade. | Trocar a hora da medição pela da coleta. |
+
+- **Código:**
+  - `comandos/bacia.ts`: os textos de chuva, barragens, maré e fonte, e `instantePedido` (a hora pedida em
+    Brasília);
+  - `comandos/ponte.ts`: `reproducao` (tocar, pausar, ir a um instante);
+  - `comandos/executar.ts`: os passos `reproducao`, `chuva_agora`, `barragens`, `mare` e `fonte_leitura`; a
+    reprodução muda a tela e precisa do mapa;
+  - `comandos/usarComandos.ts`: busca as barragens só quando o pedido chega; a tábua de maré já vem com o site
+    (`mareItajai`).
+- **No Monitor (rótulo `monitor-autorizado`):** `MonitorBacia.tsx` registra `reproducao` na ponte, sobre os
+  mesmos `grade`, `idxRepro` e `tocando` do botão e da barra. Sem pedido, nada muda: a `trava-monitor` passa
+  com a referência atual.
+- **Defeito achado no caminho:** "parar a reprodução" não era reconhecido pela 1ª entrega; agora volta ao vivo.
+- **Testes:**
+  - `src/comandos/quinta.test.ts` (9): frases, `instantePedido`, chuva, barragens, maré com a tábua real
+    (06/10, 15h00: baixando; próxima preamar 22h59, 0,85 m; baixamar 18h49, 0,42 m), fonte e executor;
+  - `testes-navegador/chat-comandos.mjs`, seção 6: reproduzir, pausar, "voltar 3 horas" e voltar ao vivo no
+    Monitor de Blumenau; maré, chuva, barragens (sem metros) e fonte da leitura.
