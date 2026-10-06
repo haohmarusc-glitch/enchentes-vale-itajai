@@ -181,3 +181,13 @@ test('sem pino E sem régua não se inventa um centro', () => {
   // Régua sem pino ainda enquadra: o que não pode é não haver ponto nenhum.
   assert.ok(vistaQueCabeAsReguas(null, [{ lat: -26.9, lon: -49 }], BACIA, 1))
 })
+
+test('zoom máximo: o de sempre na bacia, ~300 m de tela numa cidade (06/10/2026)', async () => {
+  const { zoomMaximo, ZOOM_MAX_BACIA, KM_MINIMO_NA_TELA_CIDADE } = await import('./vistaDaCidade')
+  assert.equal(zoomMaximo(BACIA, false), ZOOM_MAX_BACIA)
+  assert.equal(zoomMaximo(null, true), ZOOM_MAX_BACIA)
+  const z = zoomMaximo(BACIA, true)
+  assert.ok(z > ZOOM_MAX_BACIA)
+  // No zoom máximo da cidade a tela mostra os ~300 m pedidos.
+  assert.ok(Math.abs(kmDaVista(BACIA, z) - KM_MINIMO_NA_TELA_CIDADE) < 1e-9)
+})

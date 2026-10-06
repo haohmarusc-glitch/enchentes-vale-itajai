@@ -22,7 +22,7 @@ import { menuDasCidades } from '../logica/menuDasCidades'
 import { vizinhosNoEixo } from '../logica/vizinhosNoEixo'
 import { resumo24h } from '../logica/resumo24h'
 import { CANAIS, juntarCanais } from '../logica/canaisDoTronco'
-import { kmDaVista, vistaQueCabeAsReguas } from '../logica/vistaDaCidade'
+import { kmDaVista, vistaQueCabeAsReguas, zoomMaximo } from '../logica/vistaDaCidade'
 import { reguasComRotulo } from '../logica/rotulosDasReguas'
 import {
   COR_COTA_RUA,
@@ -205,13 +205,8 @@ const VAR_LEGENDA: Record<Faixa, string> = {
  * nível está mais alto, o mar na foz colorido pela maré (escala própria), a
  * chuva recente por cidade e a idade de cada leitura. Não é sistema de alerta.
  */
-/**
- * Até onde o zoom vai. A bacia tem ~1,9° de largura; dividida por 32 sobram
- * ~6 km de tela, que é a escala de bairro — o suficiente para ver de que lado
- * do Ribeirão da Murta está a régua, e não tanto que o traçado do OSM comece a
- * mostrar mais precisão do que ele tem.
- */
-const ZOOM_MAX = 32
+// Até onde o zoom vai: `zoomMaximo` em `logica/vistaDaCidade.ts`. Na bacia inteira, o de sempre (escala de
+// bairro); numa cidade, ~300 m de tela, o zoom de rua do satélite (pedido do Jefferson, 06/10/2026).
 
 /**
  * Quantos pixels o dedo pode andar antes de virar arrasto.
@@ -946,7 +941,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   function aplicarZoom(fator: number, ancora?: { x: number; y: number }) {
     const cena = cenaRef.current
     setVista((v) => {
-      const zoom = Math.min(ZOOM_MAX, Math.max(1, v.zoom * fator))
+      const zoom = Math.min(zoomMaximo(cena?.limitesBase, !!cidadeFoco), Math.max(1, v.zoom * fator))
       if (!cena) return { ...v, zoom }
       // Sem âncora (botões), o centro fica onde está. Com âncora (pinça, roda),
       // o ponto sob o dedo é o que fica parado — é o que faz a pinça parecer
