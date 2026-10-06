@@ -39,10 +39,57 @@ As cinco leituras e faixas não mudam: pino e cor seguem como estavam.
    - **cada rio é isolado:** o que fica sem resposta não para os outros, que são conferidos e publicados;
    - **último arquivo válido:** quem falha mantém o arquivo anterior, o do checkout. Nada é apagado ou
      sobrescrito;
-   - **`rodada.json`** (publicado junto com `resumo.txt`) registra, por rio, a situação (`baixado`,
-     `recusado` ou `sem_resposta`), o espelho, cada tentativa com o resultado e o motivo do erro;
+   - **`rodada.json`** (publicado junto com `resumo.txt`) registra, por rio:
+     - a situação (`baixado`, `recusado`, `sem_resposta` ou `desatualizado`);
+     - o espelho e cada tentativa, com o resultado e o motivo do erro;
+     - a data da base OSM da resposta (`base_osm`) e a do arquivo gravado (`base_do_arquivo`);
    - **a rodada termina verde**, com a anotação "Coleta parcial" (ou "Coleta não realizada", se nenhum rio
-     respondeu) dizendo quais rios ficaram com o último arquivo válido.
+     veio) dizendo quais rios ficaram com o último arquivo válido e por quê.
+
+   **Espelho atrasado (desde 06/10/2026, decisão do Jefferson):** a resposta é julgada pela **data da base
+   OSM** (`osm3s.timestamp_osm_base`), comparada com a do arquivo válido existente. A data do download nunca
+   substitui a da base: um espelho atrasado responde hoje com dados de meses atrás.
+
+   | Base recebida × base do arquivo | O arquivo | Na busca |
+   |---|---|---|
+   | posterior | substituído (`substituído, base recebida mais nova`) | serve |
+   | igual | `mantido, mesma base` (nada a reescrever) | serve |
+   | anterior | `mantido, base existente mais nova` | tenta o próximo espelho |
+   | resposta sem data ou com data inválida | `mantido, resposta sem data de base válida (incerto)` | tenta o próximo espelho |
+   | arquivo sem data ou com data inválida | `mantido, arquivo existente sem data de base válida (incerto)` | serve, mas não grava |
+   | não há arquivo | `novo (não havia arquivo)` | serve |
+
+   - **Data inválida:** a que não é ISO 8601 com fuso.
+   - **Quando nenhum espelho serve:** o rio sai `desatualizado` (algum espelho respondeu com base antiga) ou
+     `incerto` (sem data), e o arquivo fica.
+   - **O que `rodada.json` grava:** as duas datas (`base_osm`, `base_do_arquivo`), o espelho consultado e cada
+     tentativa, com a base e a decisão.
+   - **Procedência:** o arquivo aceito leva `base_osm`, `espelho` e `baixado_em` em `_consulta`.
+   - **Integridade primeiro:** a data não passa por cima da conferência. Resposta recusada (não chega, não
+     passa pela régua, sem continuidade) nunca grava, por mais nova que seja.
+   - **Onde vale:** também no Hercílio (`baixar_tracado_hercilio.py`) e nos rios de município
+     (`baixar_rios_municipio.py`), que usam a mesma busca.
+
+   **Diagnóstico das rodadas de 06/10/2026.** Os arquivos publicados no branch `tracado-afluentes` foram
+   comparados com os do repositório (base, ways, geometria e conferência). Nenhum chegou a `data/`.
+
+   | Rodada | Rio | Base publicada (espelho) | Base no repositório | Geometria | Conferência | Pela regra |
+   |---|---|---|---|---|---|---|
+   | `488117b`, 15:39 UTC | Benedito | 01/06/2026 08:52 (kumi) | 06/10/2026 12:21 | **difere** (13 ways × 12) | passa | mantido, base existente mais nova |
+   | | Guabiruba | 01/06/2026 08:52 (kumi) | 06/10/2026 12:56 | igual | passa | mantido, base existente mais nova |
+   | | Rio dos Cedros, Itajaí do Sul, Trombudo | 06/10 15:22–15:27 (overpass-api.de) | 06/10 12:21–12:38 | igual | passa | substituído, base mais nova |
+   | `704153c` (main), 15:52 UTC | Rio dos Cedros | 15/07/2026 15:22 (kumi) | 06/10/2026 12:38 | igual | passa | mantido, base existente mais nova |
+   | | Benedito, Itajaí do Sul, Trombudo, Guabiruba | 06/10 15:48–15:50 (overpass-api.de) | 06/10 12:21–12:56 | igual | passa | substituído, base mais nova |
+
+   - **Três artefatos regressivos.** Todos vieram do `overpass.kumi.systems`, com a base atrasada em meses.
+   - **A geometria não basta como prova.** O Benedito difere, mas a contagem de 13 contra 12 ways sozinha
+     não provaria nada. O Guabiruba e o Rio dos Cedros têm geometria **idêntica** e são regressivos do mesmo
+     jeito: a procedência que eles carregam é mais velha. Quem decide é a data da base. Os três passam na
+     conferência: são válidos, só antigos.
+   - **A correção:** a rodada do PR que trouxe esta regra publica de novo o branch. Quem vier de espelho
+     atrasado fica com o arquivo do repositório; nada é trocado por versão que não seja comprovadamente mais
+     nova.
+
 2. O script roda no GitHub Actions (`baixar-tracados-afluentes.yml`). Os brutos e o resumo vão para o branch
    `tracado-afluentes`.
 3. `converter_tracado_rios.py` gera `data/rios/<id>.geojson`. Ele recorta na **caixa do mapa** (extensão do

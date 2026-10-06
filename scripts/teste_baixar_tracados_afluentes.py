@@ -1,4 +1,5 @@
 """Trava o download dos afluentes (scripts/baixar_tracados_afluentes.py)."""
+import json
 import unittest
 
 import baixar_tracados_afluentes as ba
@@ -87,7 +88,7 @@ class RodadaComOverpassFalhando(unittest.TestCase):
         import json as _json
         bruto = _json.loads((ba.BRUTOS / "tracado-benedito-osm.json").read_text(encoding="utf-8"))
 
-        def buscar(texto, registro):
+        def buscar(texto, registro, arquivo=None):
             if "Rio dos Cedros" in texto:
                 registro.append({"espelho": "https://espelho/", "tentativa": 3, "resultado": "ReadTimeout: lido demais"})
                 raise SystemExit("Nenhum espelho do Overpass respondeu com JSON.")
@@ -96,23 +97,71 @@ class RodadaComOverpassFalhando(unittest.TestCase):
 
         rodada = ba.rodar(["rio-dos-cedros", "benedito"], buscar=buscar)
         self.assertEqual(rodada["rio-dos-cedros"]["situacao"], "sem_resposta")
-        self.assertEqual(rodada["rio-dos-cedros"]["arquivo"], "mantido")
+        self.assertEqual(rodada["rio-dos-cedros"]["arquivo"], "mantido, sem resposta")
         self.assertIn("ReadTimeout", rodada["rio-dos-cedros"]["tentativas"][0]["resultado"])
         self.assertEqual(rodada["benedito"]["situacao"], "baixado")
         self.assertEqual(rodada["benedito"]["espelho"], "https://espelho/")
         aviso = ba.aviso_da_rodada(rodada)
         self.assertTrue(aviso.startswith("Coleta parcial: 1 de 2 rios baixados."))
-        self.assertIn("rio-dos-cedros (último arquivo válido mantido)", aviso)
+        self.assertIn("rio-dos-cedros (mantido, sem resposta)", aviso)
 
     def test_nenhum_rio_respondeu_avisa_e_nao_toca_arquivos(self):
-        def buscar(texto, registro):
+        def buscar(texto, registro, arquivo=None):
             raise SystemExit("fora do ar")
         rodada = ba.rodar(["benedito"], buscar=buscar)
-        self.assertEqual(rodada["benedito"]["arquivo"], "mantido")
+        self.assertEqual(rodada["benedito"]["arquivo"], "mantido, sem resposta")
         self.assertTrue(ba.aviso_da_rodada(rodada).startswith("Coleta não realizada"))
 
     def test_rodada_completa_nao_avisa(self):
-        self.assertIsNone(ba.aviso_da_rodada({"benedito": {"situacao": "baixado", "arquivo": "novo"}}))
+        self.assertIsNone(ba.aviso_da_rodada({"benedito": {"situacao": "baixado", "arquivo": "mantido, mesma base"}}))
+
+
+class EspelhoAtrasado(unittest.TestCase):
+    """06/10/2026: o kumi.systems serviu o Benedito com a base OSM de 01/06; não pode substituir a de 06/10."""
+
+    KUMI = "https://overpass.kumi.systems/api/interpreter"
+
+    def bruto(self, base):
+        b = json.loads((ba.BRUTOS / "tracado-benedito-osm.json").read_text(encoding="utf-8"))
+        b["osm3s"] = {"timestamp_osm_base": base} if base is not None else {}
+        return b
+
+    def test_so_espelho_atrasado_mantem_o_arquivo_com_as_duas_datas_e_o_espelho(self):
+        recebido = {}
+
+        def buscar(texto, registro, arquivo=None):
+            recebido["arquivo"] = arquivo
+            registro.append({"espelho": self.KUMI, "tentativa": 1, "base_osm": "2026-06-01T08:52:28Z",
+                             "decisao": "antiga", "resultado": "base OSM 2026-06-01T08:52:28Z mais antiga"})
+            raise SystemExit("Nenhum espelho do Overpass respondeu com JSON.")
+
+        v = ba.rodar(["benedito"], buscar=buscar)["benedito"]
+        self.assertEqual(recebido["arquivo"], ba.BRUTOS / "tracado-benedito-osm.json")
+        self.assertEqual(v["situacao"], "desatualizado")
+        self.assertEqual(v["arquivo"], "mantido, base existente mais nova")
+        self.assertEqual(v["espelho"], self.KUMI)
+        self.assertEqual(v["base_osm"], "2026-06-01T08:52:28Z")
+        self.assertEqual(v["base_do_arquivo"], ba.base_do_arquivo(ba.BRUTOS / "tracado-benedito-osm.json"))
+        aviso = ba.aviso_da_rodada({"benedito": v})
+        self.assertIn("mantido, base existente mais nova; base recebida 2026-06-01T08:52:28Z", aviso)
+
+    def test_mesma_base_conferida_nao_reescreve(self):
+        base = ba.base_do_arquivo(ba.BRUTOS / "tracado-benedito-osm.json")
+        v = ba.rodar(["benedito"], buscar=lambda t, registro, arquivo=None: (self.bruto(base), self.KUMI))["benedito"]
+        self.assertEqual((v["situacao"], v["arquivo"]), ("baixado", "mantido, mesma base"))
+
+    def test_base_posterior_conferida_substitui(self):
+        v = ba.rodar(["benedito"],
+                     buscar=lambda t, registro, arquivo=None: (self.bruto("2099-01-01T00:00:00Z"), self.KUMI))["benedito"]
+        self.assertEqual(v["situacao"], "baixado")
+        self.assertTrue(v["arquivo"].startswith("substituído, base recebida mais nova"))
+        self.assertEqual(v["base_osm"], "2099-01-01T00:00:00Z")
+
+    def test_resposta_valida_mas_recusada_na_conferencia_nunca_grava(self):
+        # A data da base não passa por cima da integridade: sem ways, o rio é recusado mesmo com base nova.
+        vazio = {"osm3s": {"timestamp_osm_base": "2099-01-01T00:00:00Z"}, "elements": []}
+        v = ba.rodar(["benedito"], buscar=lambda t, registro, arquivo=None: (vazio, self.KUMI))["benedito"]
+        self.assertEqual((v["situacao"], v["arquivo"]), ("recusado", "mantido, resposta recusada"))
 
 
 if __name__ == "__main__":

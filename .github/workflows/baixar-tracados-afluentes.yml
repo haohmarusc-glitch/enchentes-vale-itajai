@@ -11,7 +11,9 @@
 # FALHA DO OVERPASS (06/10/2026). Cada rio é pedido sozinho, com espera progressiva e troca de espelho. O rio
 # que fica sem resposta não para a rodada: os outros seguem e são publicados, o arquivo dele fica o último
 # válido (o do checkout), e a rodada termina VERDE com a anotação "Coleta parcial". `rodada.json` registra,
-# por rio, a situação, o espelho, cada tentativa e o motivo do erro.
+# por rio, a situação, o espelho, cada tentativa e o motivo do erro. Só substitui o arquivo a resposta de base
+# OSM COMPROVADAMENTE mais nova que a dele; base antiga, mesma base ou data faltando mantêm o arquivo (do
+# checkout), com as duas datas no relatório (docs/TRACADOS-AFLUENTES-2026-10-06.md, "Espelho atrasado").
 #
 # O QUE NÃO FAZ. Não empurra para o main nem para o branch do PR, e não muda o Monitor.
 #
