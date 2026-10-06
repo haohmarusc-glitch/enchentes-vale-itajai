@@ -22,6 +22,8 @@ export interface CidadeParaMenu {
   nome: string
   ordem?: number | null
   sub_bacia?: string | null
+  /** Em que rio o curso da cidade deságua, com fonte — SEM posição na árvore (Trombudo, 06/10/2026). */
+  rio_chega_a?: { rio: string } | null
 }
 
 export interface TopologiaParaMenu {
@@ -127,8 +129,21 @@ function gruposDoRio(rio: RioParaMenu): GrupoDoMenu[] {
     grupos.push({
       titulo: 'Outros pontos',
       ordenado: false,
-      itens: sobra.map((c) => ({ id: c.id, nome: c.nome, detalhe: c.sub_bacia ?? 'sem posição na árvore' })),
+      itens: sobra.map((c) => ({ id: c.id, nome: c.nome, detalhe: detalheSemPosicao(c) })),
     })
   }
   return grupos
+}
+
+/**
+ * O que "Outros pontos" diz da cidade. Com `rio_chega_a`, diz onde o rio dela deságua — e que isso não é
+ * posição na árvore (decisão de 06/10/2026: Trombudo → Itajaí do Oeste pelo traçado do OSM).
+ */
+export function detalheSemPosicao(c: CidadeParaMenu): string {
+  const rio = c.sub_bacia ?? null
+  if (c.rio_chega_a?.rio) {
+    const destino = c.rio_chega_a.rio.replace(/^Rio /, '')
+    return `${rio ?? 'Curso da cidade'} → ${destino} (traçado do OpenStreetMap) · sem posição na árvore`
+  }
+  return rio ?? 'sem posição na árvore'
 }

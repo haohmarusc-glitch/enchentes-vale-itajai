@@ -871,9 +871,10 @@ def valida_meses_pareados() -> None:
 TRACADO_DO_RAMO = {
     "tronco_acu": "itajai-acu",
     "mirim_tronco": "itajai-mirim",
-    # Guabiruba fica no ribeirão, sem traçado próprio; confere-se contra o Mirim
-    # com a exceção de LONGE_ACEITO, que diz por que o pino fica a 4,24 km.
-    "ribeirao_guabiruba": "itajai-mirim",
+    # Guabiruba: desde 06/10/2026 o curso da DCSC-00029 tem traçado próprio
+    # (guabiruba.geojson: Rio Guabiruba Norte + Rio Guabiruba, OSM), e o pino
+    # fica a 0,01 km dele. Antes conferia contra o Mirim, a 4,24 km, com exceção.
+    "ribeirao_guabiruba": "guabiruba",
     "itajai_do_oeste": "itajai-acu",   # o Oeste vem DENTRO do arquivo do Açu (OSM)
     "itajai_do_sul": "itajai-do-sul",
 }
@@ -885,20 +886,11 @@ LONGE_ACEITO = {
     # Blumenau saiu em 06/10/2026: a coordenada passou a ser a da régua (Ponte Adolfo
     # Konder, confirmada pela Prefeitura), a 0,05 km do traçado. Antes era a
     # DCSC-00026, estação de CHUVA a 2,99 km.
-    "ituporanga": (25.0, "o traçado do Itajaí do Sul é PARCIAL (10,5 km, cobertura "
-                         "municipal de Rio do Sul). Falta o trecho Ituporanga->Rio do Sul, "
-                         "que sai do Overpass — ver docs/TRACADO-ITAJAI-DO-SUL.md. "
-                         "Baixe o trecho e este número cai para <1 km."),
-    # ACHADO POR ESTA PRÓPRIA TRAVA, na primeira execução (05/09/2026), sem que
-    # ninguém tivesse reportado: Guabiruba fica a 4,24 km do Mirim e longe de
-    # todo o resto. Não é erro de coordenada — a cidade fica no RIBEIRÃO
-    # Guabiruba, afluente que não está desenhado. Duas fontes concordam: o
-    # `coleta_nivel_sc.py` já chamava a leitura dela de "implausível PARA O
-    # RIBEIRÃO". É a MESMA omissão do Itajaí do Sul e dos ribeirões de Itajaí: a
-    # consulta do Overpass só pediu `waterway=river` com os nomes do tronco.
-    "guabiruba": (5.0, "fica no Ribeirão Guabiruba, afluente do Mirim que não está "
-                       "desenhado — mesma lacuna do Overpass do Itajaí do Sul. Baixar o "
-                       "ribeirão (docs/TRACADO-ITAJAI-DO-SUL.md) derruba este número."),
+    # Ituporanga saiu em 06/10/2026: o Itajaí do Sul passou a vir inteiro do OSM
+    # (baixar_tracados_afluentes.py), e o pino fica a 0,02 km dele.
+    # Guabiruba saiu em 06/10/2026: estava a 4,24 km do Mirim porque o curso dela
+    # (Rio Guabiruba Norte, achado pelo diagnóstico de baixar_tracados_afluentes.py)
+    # não estava desenhado. Com guabiruba.geojson, o pino fica a 0,01 km dele.
 }
 
 #: Acima disto o pino flutua: aparece sobre o satélite, sem rio embaixo.
@@ -1292,6 +1284,40 @@ def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
                      "referência/zero da régua (decisão de 06/10/2026)")
             if status == "confirmada" and not eq.get("fonte"):
                 erro(f"{onde}: equivalência confirmada sem `fonte`")
+
+
+def valida_rio_chega_a(estacoes: dict | None = None) -> None:
+    """
+    `rio_chega_a` registra em que rio o curso da cidade deságua, com fonte — SEM dar posição na árvore.
+
+    DECISÃO DO JEFFERSON (06/10/2026): o traçado do OSM liga o Rio Trombudo ao Itajaí do Oeste. A ligação
+    entra no cadastro com fonte, método e incerteza; Trombudo Central continua fora da árvore, em
+    "Outros pontos". Trava: exige `rio`, `ponto` [lat, lon], `fonte` e `incerteza`; `posicao_na_arvore`
+    tem de ser null; e a cidade não pode estar no tronco, nas cabeceiras nem nos afluentes laterais —
+    o registro da ligação não pode virar posição na árvore por uma porta lateral.
+    """
+    estacoes = estacoes if estacoes is not None else le_json("estacoes.json")
+    for rio_id, rio in estacoes["rios"].items():
+        topo = rio.get("_topologia") or {}
+        na_arvore = set(topo.get("tronco_sequencia") or []) | set(topo.get("cabeceiras_paralelas") or []) | {
+            a.get("id") for a in topo.get("afluentes_laterais") or []}
+        for c in rio["cidades"]:
+            liga = c.get("rio_chega_a")
+            if liga is None:
+                continue
+            onde = f"estacoes.json / {rio_id} / {c['id']} / rio_chega_a"
+            for campo in ("rio", "fonte", "incerteza"):
+                if not liga.get(campo):
+                    erro(f"{onde}: sem `{campo}`")
+            p = liga.get("ponto")
+            if not (isinstance(p, list) and len(p) == 2 and -28.5 < p[0] < -26.0 and -50.5 < p[1] < -48.4):
+                erro(f"{onde}: `ponto` precisa ser [lat, lon] dentro da bacia, veio {p!r}")
+            if liga.get("posicao_na_arvore") is not None:
+                erro(f"{onde}: `posicao_na_arvore` tem de ser null — a ligação não posiciona a cidade na "
+                     "árvore (decisão de 06/10/2026)")
+            if c["id"] in na_arvore:
+                erro(f"{onde}: {c['id']} está na árvore (_topologia) e tem rio_chega_a — posição na árvore "
+                     "só com fonte e decisão do Jefferson, não pelo registro da ligação")
 
 
 def valida_regua_das_cotas() -> None:
@@ -2186,6 +2212,7 @@ def main() -> int:
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
     valida_equivalencia_estadual()
+    valida_rio_chega_a()
     valida_pico_copiado_de_outra_cidade()
     valida_divergencia_que_virou_registro()
     valida_cota_de_rua_nao_e_lamina()

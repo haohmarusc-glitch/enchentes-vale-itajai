@@ -1,5 +1,9 @@
 # O Itajaí do Sul não estava no mapa — 05/09/2026
 
+> **Atualização de 06/10/2026:** o rio agora vem inteiro do OpenStreetMap (`baixar_tracados_afluentes.py`),
+> recortado na caixa do mapa, e passa a 0,02 km do pino de Ituporanga. O trecho da Asthon só é usado se o bruto do
+> OSM faltar. Ver `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
+
 A cabeceira que se junta a Taió em Rio do Sul, e que traz a parcela maior da água a montante dali,
 **não estava desenhada**. Achado por Jefferson no `#/monitor` em produção.
 

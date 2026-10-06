@@ -20,9 +20,11 @@ HONESTIDADE
 - Se o toque for grande (> LIMITE_TOQUE_M), os traçados NÃO se encontram no
   GeoJSON (falta trecho, ou o afluente baixado é só o alto curso): AVISA e não
   grava. Melhor sem resposta que com resposta errada.
-- Os GeoJSON dos afluentes (benedito.geojson, luiz-alves.geojson) NÃO estão no
-  repositório — rode onde eles existem (a VPS). Sem eles, o script pula o
-  afluente e não inventa nada.
+- Sem o GeoJSON do afluente, o script pula o afluente e não inventa nada. O
+  benedito.geojson entrou em 06/10/2026 (baixar_tracados_afluentes.py); o
+  luiz-alves.geojson ainda não está no repositório.
+- "depois de Indaial" quer dizer depois da RÉGUA de Indaial do cadastro, não do
+  município: o texto gravado diz a quantos km, pela água.
 
 Uso:
     python3 scripts/achar_confluencias.py            # relatório
@@ -127,36 +129,48 @@ def analisar() -> dict[str, dict]:
             saida[cidade_alvo] = {"nome": nome, "status": "nao_toca",
                                   "texto": "confluência fora do trecho conectado do traçado"}
             continue
-        antes = [n for _, (d, n) in ordenadas if d <= km_conf]
-        depois = [n for _, (d, n) in ordenadas if d > km_conf]
-        entre = f"depois de {antes[-1]}" if antes else "antes da 1ª cidade do tronco"
+        antes = [(d, n) for _, (d, n) in ordenadas if d <= km_conf]
+        depois = [(d, n) for _, (d, n) in ordenadas if d > km_conf]
+        # "Indaial" aqui é a RÉGUA do cadastro (coordenadas), não o município: a distância pela água diz quanto.
+        entre = (f"depois de {antes[-1][1]} ({br(km_conf - antes[-1][0], 1)} km abaixo da régua)"
+                 if antes else "antes da 1ª cidade do tronco")
         if depois:
-            entre += f" e antes de {depois[0]}"
+            entre += f" e antes de {depois[0][1]} ({br(depois[0][0] - km_conf, 1)} km acima da régua)"
         saida[cidade_alvo] = {
-            "nome": nome, "status": "ok",
-            "texto": f"entra {entre} — confluência medida no traçado OSM "
-                     f"(toque {afast * 1000:.0f} m, {km_conf:.1f} km de Rio do Sul pela água)",
+            "nome": nome, "status": "ok", "ponto": (round(ponto[1], 5), round(ponto[0], 5)),
+            # O texto vai para a tela (árvore do Monitor): vírgula decimal, como o resto do site.
+            "texto": f"Entra {entre}, contando pela água. Confluência medida no traçado do OpenStreetMap, "
+                     f"em {br(ponto[1], 5)}, {br(ponto[0], 5)} (lat, lon), a {br(km_conf, 1)} km de Rio do Sul "
+                     f"pela água (toque {afast * 1000:.0f} m). Método e incertezas em "
+                     f"docs/TRACADOS-AFLUENTES-2026-10-06.md.",
         }
     return saida
 
 
-def gravar(resultado: dict[str, dict]) -> int:
+def br(x: float, casas: int) -> str:
+    """Número com vírgula decimal e sinal de menos tipográfico, como o site escreve."""
+    return f"{x:.{casas}f}".replace(".", ",").replace("-", "−")
+
+
+def gravar(resultado: dict[str, dict], arquivo: Path = ESTACOES) -> int:
     """Atualiza o ponto_exato das entradas medidas, preservando o formato do arquivo."""
-    raw = ESTACOES.read_text(encoding="utf-8")
+    raw = arquivo.read_text(encoding="utf-8")
     gravadas = 0
     for cidade_alvo, r in resultado.items():
         if r["status"] != "ok":
             continue
-        # A entrada compacta de afluentes_rios com este entra_perto_de.
+        # A entrada de afluentes_rios com este entra_perto_de, numa linha ou em várias. `[^{}]` não deixa o
+        # casamento sair do objeto (06/10/2026: com `[^\n]` ele nunca casava a entrada em várias linhas, e o
+        # --gravar só avisava, sem gravar nada).
         padrao = re.compile(
-            r'(\{[^\n]*"entra_perto_de":\s*"' + re.escape(cidade_alvo) + r'"[^\n]*"ponto_exato":\s*)"(?:[^"\\]|\\.)*"')
+            r'(\{[^{}]*"entra_perto_de":\s*"' + re.escape(cidade_alvo) + r'"[^{}]*"ponto_exato":\s*)"(?:[^"\\]|\\.)*"')
         novo, n = padrao.subn(lambda m: m.group(1) + json.dumps(r["texto"], ensure_ascii=False), raw, count=1)
         if n:
             raw, gravadas = novo, gravadas + 1
         else:
             print(f"  aviso: não achei entrada afluentes_rios com entra_perto_de={cidade_alvo}", file=sys.stderr)
     json.loads(raw)  # trava: nunca grava JSON inválido
-    ESTACOES.write_text(raw, encoding="utf-8")
+    arquivo.write_text(raw, encoding="utf-8")
     return gravadas
 
 

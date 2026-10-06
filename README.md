@@ -522,6 +522,27 @@ o projeto.
   - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Corrigido
     junto com as outras cidades na auditoria das réguas (item abaixo).
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
+- [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
+  `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
+  - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado
+    em cinza, sem depender de leitura, cota ou faixa.
+  - **Rios desenhados:** Benedito (Timbó), Rio dos Cedros, Itajaí do Sul inteiro (Ituporanga), Trombudo e o curso
+    de Guabiruba.
+    - O curso de Guabiruba é o **Rio Guabiruba Norte**, a 10 m da DCSC-00029, seguido do Rio Guabiruba até o Mirim.
+      O "Rio Guabiruba" sozinho passava a 1,72 km da estação e foi recusado.
+  - **Como entraram:** baixados do OSM no Actions e conferidos antes de gravar:
+    - passam pela régua;
+    - chegam, por continuidade, a um rio desenhado.
+  - Saíram as exceções `LONGE_ACEITO` de Ituporanga e Guabiruba.
+  - [x] **Confluência do Benedito gravada (decisão do Jefferson):** 4,6 km **abaixo** da régua de Indaial, em
+    −26,89134, −49,23557 (nó comum do OSM). Isso corrige a leitura de 05/09 ("a montante de Indaial"). O
+    `--gravar` não funcionava (regex de uma linha) e foi corrigido.
+  - [x] **Trombudo → Itajaí do Oeste registrado com fonte, sem posição na árvore** (`rio_chega_a`, travado por
+    `valida_rio_chega_a`). O menu "Outros pontos" diz a ligação.
+  - [ ] **Coordenada de Timbó sem fonte:** o pino fica a 0,28 km do Rio dos Cedros e a 0,64 km do Benedito,
+    embora a régua seja "Rio Benedito, Rua Equador". Precisa de fonte; o pino não foi mexido.
+  - [ ] **Lacuna de 1,8 km no Rio Guabiruba Norte no OSM**, rio acima da estação. A cabeceira não é desenhada
+    até alguém corrigir o OSM.
 - [x] **Cidades sem cor no Monitor (06/10/2026, auditoria do Jefferson das 19 cidades)**: `docs/CIDADES-SEM-COR-2026-10-06.md`.
   - **Motivo específico no painel** em vez de "sem leitura": Lontras (valor impossível rejeitado), Indaial
     (estadual sem nível desde 02/10), Gaspar (última leitura e hora) e Apiúna (cota altimétrica).
@@ -1745,8 +1766,8 @@ o projeto.
 
 - [x] **O bloco do Monitor deixou de calar sobre o que o cadastro já sabia (05/09/2026).** Conferência
   item a item depois de a árvore entrar: três coisas estavam nos dados, com fonte, e não na tela.
-  (1) **Os rios que entram no tronco SEM régua** — o **Benedito** (entre Ascurra e Indaial, a montante de
-  Indaial, pelo AIBH 2021) e o **Luís Alves** (em Ilhota, ponto ainda a confirmar, e a tela diz isso).
+  (1) **Os rios que entram no tronco SEM régua** — o **Benedito** (pelo AIBH 2021; medido em 06/10/2026:
+  4,6 km abaixo da régua de Indaial, ver `docs/TRACADOS-AFLUENTES-2026-10-06.md`) e o **Luís Alves** (em Ilhota, ponto ainda a confirmar, e a tela diz isso).
   Sem eles, quem lia o mapa concluía que entre Ascurra e Indaial nada entra; entra a sub-bacia inteira do
   Benedito, e a ausência de pino é falta de régua, não falta de água. (2) **A área de drenagem de cada
   barragem**, com as **duas delimitações lado a lado** quando divergem (Oeste: 851 km² na rede estadual
@@ -1860,7 +1881,11 @@ pública, e só um caminho de rede entre as duas.
 - [x] **A maré medida do CIRAM entrou em produção — 05/09/2026.** `coleta_mare_ciram.py` rodou na VPS: **189 medidas** em Balneário Camboriú, última às 23:00 com **66,3 cm (0,663 m) e residual +18,3 cm**, idade 29 min. Florianópolis e Imbituba também respondem. E **Itajaí devolveu 384 linhas sem nenhuma maré observada** — confirmação independente, agora na nossa própria coleta, de que não há maré medida em Itajaí hoje. O carimbo em Brasília e a conversão cm→m funcionaram no dado real (23:00 local contra 02:29 UTC dá os 29 min corretos).
 
 - [ ] **⚠️ Cotas de Rio do Sul vão mudar — obra de Melhorias Fluviais (em licitação, 2026).** O AIBH do Itajaí-Açu (2021) descreve o projeto estadual de rebaixamento do leito + comporta de controle no trecho **Rio do Sul–Lontras**; o usuário informou (02/09/2026) que a obra **não foi executada e está em licitação** neste ano. Quando sair, ela **muda a curva-chave** (mesma vazão → nível menor na régua), põe o nível de cheia sob **operação de comporta**, e **quebra a série histórica** de Rio do Sul — que é o ponto onde nasce o Açu e a primeira referência do tronco, logo afeta previsão a jusante. **Ação:** acompanhar a licitação (Defesa Civil de SC); ao concluir, revalidar as cotas (4,50/5,50/6,50/abrigos 7,00) com a Defesa Civil de Rio do Sul, pedir a **nova curva-chave**, e marcar em `enchentes.json` uma **quebra de série** ("antes/depois das melhorias") para os picos de Rio do Sul. Já anotado na `observacao` de Rio do Sul (`estacoes.json`). Detalhe em `docs/AIBH-ITAJAI-ACU.md` §3.
-- [x] **Onde o Benedito entra no tronco — resolvido por fonte oficial.** O AIBH do Itajaí-Açu (CEDRO+ENGERA para o IMA, 2021) descreve o "trecho entre Ascurra e Indaial, a montante da confluência com o Rio Benedito, ~14 km": o Benedito entra **entre Ascurra e Indaial, a montante de Indaial** — confirma o diagrama da topologia e corrige a suposição antiga ("entre Indaial e Blumenau"). É fato geográfico descritivo (não a conclusão de cheia do estudo, que é de fonte interessada e não se usa). Gravado em `_topologia.afluentes_rios` e no `desagua_em` do Timbó. **Falta o Luís Alves** (antes/depois da régua de Ilhota): segue para o `achar_confluencias.py` na VPS — o `converter_tracado_rios.py` e a query do Overpass já foram estendidos para baixar `luiz-alves.geojson`.
+- [x] **Onde o Benedito entra no tronco — CORRIGIDO EM 06/10/2026: 4,6 km ABAIXO da régua de Indaial.** O
+  nó comum do OSM entre o Rio Benedito e o Itajaí-Açu fica no centro de Indaial, e `achar_confluencias.py
+  --gravar` substituiu o texto abaixo (decisão do Jefferson; `docs/TRACADOS-AFLUENTES-2026-10-06.md`). A
+  leitura abaixo tomou "entre os municípios" por "a montante da régua". Registro histórico:
+  **Onde o Benedito entra no tronco — resolvido por fonte oficial.** O AIBH do Itajaí-Açu (CEDRO+ENGERA para o IMA, 2021) descreve o "trecho entre Ascurra e Indaial, a montante da confluência com o Rio Benedito, ~14 km": o Benedito entra **entre Ascurra e Indaial, a montante de Indaial** — confirma o diagrama da topologia e corrige a suposição antiga ("entre Indaial e Blumenau"). É fato geográfico descritivo (não a conclusão de cheia do estudo, que é de fonte interessada e não se usa). Gravado em `_topologia.afluentes_rios` e no `desagua_em` do Timbó. **Falta o Luís Alves** (antes/depois da régua de Ilhota): segue para o `achar_confluencias.py` na VPS — o `converter_tracado_rios.py` e a query do Overpass já foram estendidos para baixar `luiz-alves.geojson`.
 
 - [x] **Distância AO LONGO DO RIO no `transito.json` (não mais só a reta).** `scripts/medir_distancia_rio.py` monta os segmentos soltos do traçado OSM num grafo e caminha pela água (Dijkstra), gravando `km_rio` como CONTEXTO — **sem mexer nos tempos**, que seguem do estudo JICA (dividir por velocidade suposta seria inventar precisão). Onde as duas pontas estão no traçado: Rio do Sul→Indaial 85,8 km, Gaspar→Ilhota 16,9 km, Ilhota→Itajaí 33,2 km — sinuosidade de **1,2 a 2,0×** a reta e velocidade implícita 3–9 km/h, coerente com o JICA. Fica de fora quem está longe do traçado (Blumenau, coordenada da estação ~3 km do talvegue) ou em braço não mapeado (cabeceiras). Travado por `scripts/teste_medir_distancia_rio.py`.
 - [ ] **Ponto exato onde o Luís Alves entra** (antes/depois da régua de Ilhota). O Benedito já está resolvido (acima, pelo AIBH); o Luís Alves ainda não. Caminho pronto: na VPS, rebaixar o traçado do afluente (a query do Overpass em `docs/fontes-tempo-real.md` já inclui o Luís Alves), rodar `converter_tracado_rios.py` (gera `luiz-alves.geojson`) e `achar_confluencias.py --gravar` — que acha a confluência por geometria (ponto de menor toque com o tronco) e usa o grafo do tronco (Dijkstra) para dizer entre quais cidades cai, com guarda "não toca". Travado por `scripts/teste_achar_confluencias.py`.

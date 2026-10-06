@@ -2118,6 +2118,43 @@ class RegistroForaDoCadastro(unittest.TestCase):
                             for e in self._erros(ench)))
 
 
+class RioChegaASemPosicaoNaArvore(unittest.TestCase):
+    """Decisão de 06/10/2026: Trombudo → Itajaí do Oeste com fonte, sem posição na árvore."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, d):
+        vd.erros.clear()
+        vd.avisos.clear()
+        vd.valida_rio_chega_a(d)
+        return list(vd.erros)
+
+    def trombudo(self, d):
+        return next(c for c in d["rios"]["itajai-acu"]["cidades"] if c["id"] == "trombudo-central")
+
+    def test_o_trombudo_chega_ao_oeste_com_fonte_e_sem_posicao(self):
+        liga = self.trombudo(self.real)["rio_chega_a"]
+        self.assertEqual(liga["rio"], "Rio Itajaí do Oeste")
+        self.assertIsNone(liga["posicao_na_arvore"])
+        self.assertIn("534975895", liga["fonte"])
+        self.assertEqual(self.roda(copy.deepcopy(self.real)), [])
+
+    def test_dar_posicao_pela_ligacao_reprova(self):
+        d = copy.deepcopy(self.real)
+        self.trombudo(d)["rio_chega_a"]["posicao_na_arvore"] = "itajai_do_oeste"
+        self.assertTrue(any("posicao_na_arvore" in e for e in self.roda(d)))
+        d = copy.deepcopy(self.real)
+        d["rios"]["itajai-acu"]["_topologia"]["afluentes_laterais"].append({"id": "trombudo-central"})
+        self.assertTrue(any("está na árvore" in e for e in self.roda(d)))
+
+    def test_sem_fonte_reprova(self):
+        d = copy.deepcopy(self.real)
+        del self.trombudo(d)["rio_chega_a"]["fonte"]
+        self.assertTrue(any("sem `fonte`" in e for e in self.roda(d)))
+
+
 class EquivalenciaEstadualNaoConfirmada(unittest.TestCase):
     """Decisão de 06/10/2026: estação estadual perto não é a régua da cidade sem prova."""
 

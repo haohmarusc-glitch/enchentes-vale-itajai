@@ -39,6 +39,10 @@ test('afluentes entram de lado e dizem onde entram', () => {
 test('Trombudo Central, sem posição na árvore, vai para "Outros pontos" — não para o tronco', () => {
   const outros = acu().grupos.find((g) => g.titulo === 'Outros pontos')!
   assert.ok(ids(outros).includes('trombudo-central'))
+  // 06/10/2026: diz onde o Trombudo deságua (OSM) e que isso não é posição na árvore.
+  const t = outros.itens.find((i) => i.id === 'trombudo-central')!
+  assert.equal(t.detalhe, 'Rio Trombudo → Itajaí do Oeste (traçado do OpenStreetMap) · sem posição na árvore')
+  assert.ok(!acu().grupos.some((g) => g.titulo !== 'Outros pontos' && ids(g).includes('trombudo-central')))
 })
 
 test('toda cidade do Açu aparece uma vez, e só uma', () => {
