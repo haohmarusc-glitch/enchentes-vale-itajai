@@ -145,9 +145,8 @@ test('com leitura em TODAS as cidades, nenhum rótulo cobre pino ou rótulo de o
   const escondidos = conferir(tempoReal, undefined, null)
   console.log('# rótulos escondidos por falta de espaço (todas com leitura):', JSON.stringify(escondidos))
   // Só some quem tem vizinho COLADO: na tela grande, um pino isolado sempre
-  // tem lugar para o nome. (Timbó e Rio dos Cedros caem no mesmo ponto do
-  // traçado; Guabiruba fica a 20 px de Brusque; Trombudo Central a 40 px de
-  // Ituporanga; Itajaí encosta em Ilhota e no chip da maré.)
+  // tem lugar para o nome. (Guabiruba fica perto de Brusque; Itajaí encosta
+  // em Ilhota e no chip da maré.)
   for (const [w, h] of TELAS) {
     const cena = construirCena(el, rios, tempoReal, agora, w, h, null)
     const escala = escalaDe(w)
@@ -167,14 +166,15 @@ test('a cidade selecionada sempre tem rótulo e nenhum outro rótulo cobre o del
   }
 })
 
-test('Timbó e Rio dos Cedros caem no mesmo ponto do traçado e são postos lado a lado — os dois com nome', () => {
+test('Timbó e Rio dos Cedros ficam cada um na sua régua, 9 km um do outro — os dois com nome', () => {
+  // Até 06/10/2026 os dois eram encaixados no MESMO ponto do Açu e postos lado a lado à força. Desde a
+  // auditoria das réguas, cada pino fica na coordenada da sua (ver `pontoDoPino`).
   const tempoReal: EstadoTempoReal = { situacao: 'ok', chuva: [], chuvaOk: true, coletadoEm: agora, fonte: null, leituras: leiturasEmTodas() }
   const cena = construirCena(el, rios, tempoReal, agora, 1400, 800, null)
   const timbo = cena.pinos.find((p) => p.cidade.id === 'timbo')!
   const cedros = cena.pinos.find((p) => p.cidade.id === 'rio-dos-cedros')!
   assert.ok(timbo && cedros)
-  assert.ok(Math.abs(timbo.x - cedros.x) >= 20, `os pinos ficaram a ${Math.abs(timbo.x - cedros.x).toFixed(1)} px um do outro`)
-  assert.equal(timbo.y, cedros.y)
+  assert.ok(cedros.y < timbo.y - 20, `Rio dos Cedros (ao norte) a ${(timbo.y - cedros.y).toFixed(1)} px acima de Timbó`)
   const plano = planejarRotulosDosPinos(medir, cena, null, { escala: escalaDe(1400), mostrarIdade: true, agora }, [])
   assert.ok(plano.has('timbo') && plano.has('rio-dos-cedros'), 'os dois ganham nome na tela grande')
 })

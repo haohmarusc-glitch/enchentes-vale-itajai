@@ -169,6 +169,11 @@ export interface Pino {
   rioId: string
   x: number
   y: number
+  /** Onde o pino está no mapa — a régua, ou o ponto no rio quando `aproximado`. A câmera centra AQUI. */
+  lon: number
+  lat: number
+  /** A coordenada do cadastro não é a da régua (ver `pontoDoPino`): o painel diz "posição aproximada". */
+  aproximado: boolean
   faixa: Faixa
   /** De onde veio `faixa`. `estadual` só quando a municipal é `sem-dado`. */
   origemFaixa?: OrigemFaixa
@@ -245,27 +250,34 @@ export interface RioParaCena {
 const LIMITE_ANCORA_KM = 5
 
 /**
- * Até onde o pino de uma cidade FORA do eixo procura o rio DELA entre os outros traçados.
+ * Onde o pino da cidade é desenhado: na coordenada da régua, sem encaixe no traçado.
  *
- * O defeito (06/10/2026, visto pelo Jefferson no satélite): o pino de Ibirama era encaixado no
- * ponto mais perto do AÇU, 2,6 km ao sul, no meio do mato — mas a régua (DCSC-00020) fica no
- * Hercílio, a 0,06 km do traçado dele. Fora do eixo, o pino vai para o traçado desenhado mais
- * perto se ele estiver a até 1 km; senão continua no tronco, como sempre (Timbó, Rio dos
- * Cedros, Ituporanga ainda não têm o rio delas desenhado).
+ * O DEFEITO (06/10/2026, auditoria do Jefferson com satélite nas 19 cidades). O pino era encaixado no
+ * ponto mais perto do traçado do rio da tela, e a câmera centrava na coordenada do cadastro. Fora do
+ * tronco, os dois ficavam longe: Ibirama a 2,6 km (pino no mato, no Açu), Guabiruba a 4,2, Timbó a 8,2,
+ * Trombudo Central a 10,6, Rio dos Cedros a 16,6 e Ituporanga a 28 km. A câmera abria a cidade e o pino
+ * não estava lá. A régua real fica na margem ou numa ponte, e o traçado do OSM tem erro de dezenas de
+ * metros: encaixar não a punha no lugar certo.
+ *
+ * O encaixe continua só onde ele é preciso: a ESPINHA que pinta o rio (ver `ancorasQuePintam`) usa o
+ * ponto no traçado. O pino não.
+ *
+ * A EXCEÇÃO é a cidade cuja coordenada o cadastro declara que NÃO é a da régua
+ * (`coordenadas_sao_da_regua: false`, hoje só Blumenau, cuja coordenada é de um pluviômetro a ~3 km do
+ * rio). Ali o pino fica no rio, no ponto mais perto, e sai marcado como `aproximado`: desenhar no
+ * pluviômetro diria que a régua está no morro.
  */
-export const LIMITE_PINO_NO_RIO_DELA_KM = 1
-
-/** Onde fica o pino da cidade: no tronco se ela é do eixo; fora dele, no rio dela quando desenhado. */
 export function pontoDoPino(
-  alvo: LonLat,
+  cidade: Pick<Cidade, 'coordenadas' | 'coordenadas_sao_da_regua'>,
   tracadoDoRio: LonLat[][],
-  outrosTracados: LonLat[][],
-  doEixo: boolean,
-): LonLat {
-  const noTronco = maisProximoNoRio(tracadoDoRio, alvo) ?? alvo
-  if (doEixo) return noTronco
-  const noRioDela = maisProximoNoRio(outrosTracados, alvo)
-  return noRioDela && kmEntre(alvo, noRioDela) <= LIMITE_PINO_NO_RIO_DELA_KM ? noRioDela : noTronco
+): { ponto: LonLat; aproximado: boolean } | null {
+  const c = cidade.coordenadas
+  if (!c) return null
+  const alvo: LonLat = [c[1], c[0]]
+  if (cidade.coordenadas_sao_da_regua === false) {
+    return { ponto: maisProximoNoRio(tracadoDoRio, alvo) ?? alvo, aproximado: true }
+  }
+  return { ponto: alvo, aproximado: false }
 }
 
 export function corDaFaixa(el: Element, f: Faixa): string {
@@ -350,8 +362,14 @@ export function construirCena(
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
 
-  // Enquadramento comum: cobre o traçado de TODOS os rios.
-  const todos = rios.flatMap((r) => r.coords.flat())
+  // Enquadramento comum: cobre o traçado de TODOS os rios e a régua de TODAS as cidades. As réguas
+  // entram desde 06/10/2026, quando o pino passou a ficar na coordenada dela (`pontoDoPino`): Timbó e
+  // Rio dos Cedros ficam ao norte da borda do traçado, e sem isto a câmera, presa aos limites, parava
+  // as duas no MESMO lugar, sem pino nenhum na tela.
+  const todos = [
+    ...rios.flatMap((r) => r.coords.flat()),
+    ...rios.flatMap((r) => r.cidades.flatMap((c) => (c.coordenadas ? [[c.coordenadas[1], c.coordenadas[0]] as LonLat] : []))),
+  ]
   const limBase = limitesOuBacia(limitesDe(todos))
   const enq: Enquadramento = enquadrar(
     vista ? aplicarVista(limBase, vista) : limBase,
@@ -364,8 +382,6 @@ export function construirCena(
   const pinosPorId = new Map<string, Pino>()
 
   for (const rio of rios) {
-    const noEixo = rio.eixo ? new Set(rio.eixo) : null
-    const outrosTracados = rios.filter((r) => r !== rio).flatMap((r) => r.coords)
     const ancoras = rio.cidades
       .filter((c) => c.coordenadas)
       .map((cidade) => {
@@ -395,12 +411,14 @@ export function construirCena(
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
           nivelBruto: aoVivo ? null : bruto,
-          ponto: pontoDoPino(alvo, rio.coords, outrosTracados, !noEixo || noEixo.has(cidade.id)),
+          ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
+          pino: pontoDoPino(cidade, rio.coords)!,
         }
       })
     // Quem PINTA é só o eixo. As demais continuam como PINO — o nível delas é
     // informação boa, e some-lo seria esconder dado —, mas não colorem trecho
     // nenhum nem entram na espinha que ordena montante→jusante.
+    const noEixo = rio.eixo ? new Set(rio.eixo) : null
     const ancorasQuePintam = ancoras.filter((a) => {
       if (noEixo && !noEixo.has(a.cidade.id)) return false
       const c = a.cidade.coordenadas
@@ -526,12 +544,15 @@ export function construirCena(
       // com a leitura mais informativa (a que não é sem-dado).
       const existente = pinosPorId.get(a.cidade.id)
       if (existente && existente.faixa !== 'sem-dado') continue
-      const [x, y] = projetar(enq, a.ponto)
+      const [x, y] = projetar(enq, a.pino.ponto)
       pinosPorId.set(a.cidade.id, {
         cidade: a.cidade,
         rioId: rio.rioId,
         x,
         y,
+        lon: a.pino.ponto[0],
+        lat: a.pino.ponto[1],
+        aproximado: a.pino.aproximado,
         faixa: a.faixa,
         origemFaixa: a.origemFaixa,
         nivel: a.nivel,

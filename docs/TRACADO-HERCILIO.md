@@ -76,26 +76,11 @@ Pedido do Jefferson: todos os rios que passam por Ibirama na tela.
 ## O pino de Ibirama (06/10/2026)
 
 O Jefferson viu no satélite, com o zoom novo, que o pino de Ibirama estava no mato, longe da cidade. O
-motivo: o Monitor encaixava o pino de toda cidade do cadastro do Açu no ponto mais perto do **traçado do
-Açu**. Ibirama fica a 2,6 km dele, então o pino caía no Açu, ao sul. A régua DCSC-00020 está no Hercílio,
-a 0,06 km do traçado dele.
+Monitor encaixava o pino de toda cidade do cadastro do Açu no ponto mais perto do **traçado do Açu**, e
+Ibirama fica a 2,6 km dele. A régua DCSC-00020 está no Hercílio.
 
-Correção em `mapaMotor.ts` (`pontoDoPino`, rótulo `monitor-autorizado`):
-- a cidade do eixo continua encaixada no tronco, como sempre;
-- a cidade **fora do eixo** vai para o traçado desenhado mais perto, se ele estiver a até 1 km;
-- sem traçado perto, nada muda.
-
-Ainda puxados para o tronco, porque o rio delas não está desenhado:
-
-| cidade | distância do pino ao tronco |
-|---|---|
-| Timbó (Benedito) | 8,2 km |
-| Rio dos Cedros | 16,6 km |
-| Ituporanga (Itajaí do Sul) | 28 km |
-| Trombudo Central | 10,6 km |
-| Guabiruba | 4,2 km |
-
-Desenhar esses rios corrige o pino delas sem mexer de novo no código.
+Na mesma noite, a auditoria das 19 cidades achou o mesmo defeito em outras sete. Desde então o pino fica
+na **coordenada da régua**, sem encaixe em traçado nenhum. Detalhes em `docs/AUDITORIA-REGUAS-2026-10-06.md`.
 
 ## Refazer
 
