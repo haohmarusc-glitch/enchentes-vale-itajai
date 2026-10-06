@@ -244,6 +244,30 @@ export interface RioParaCena {
  */
 const LIMITE_ANCORA_KM = 5
 
+/**
+ * Até onde o pino de uma cidade FORA do eixo procura o rio DELA entre os outros traçados.
+ *
+ * O defeito (06/10/2026, visto pelo Jefferson no satélite): o pino de Ibirama era encaixado no
+ * ponto mais perto do AÇU, 2,6 km ao sul, no meio do mato — mas a régua (DCSC-00020) fica no
+ * Hercílio, a 0,06 km do traçado dele. Fora do eixo, o pino vai para o traçado desenhado mais
+ * perto se ele estiver a até 1 km; senão continua no tronco, como sempre (Timbó, Rio dos
+ * Cedros, Ituporanga ainda não têm o rio delas desenhado).
+ */
+export const LIMITE_PINO_NO_RIO_DELA_KM = 1
+
+/** Onde fica o pino da cidade: no tronco se ela é do eixo; fora dele, no rio dela quando desenhado. */
+export function pontoDoPino(
+  alvo: LonLat,
+  tracadoDoRio: LonLat[][],
+  outrosTracados: LonLat[][],
+  doEixo: boolean,
+): LonLat {
+  const noTronco = maisProximoNoRio(tracadoDoRio, alvo) ?? alvo
+  if (doEixo) return noTronco
+  const noRioDela = maisProximoNoRio(outrosTracados, alvo)
+  return noRioDela && kmEntre(alvo, noRioDela) <= LIMITE_PINO_NO_RIO_DELA_KM ? noRioDela : noTronco
+}
+
 export function corDaFaixa(el: Element, f: Faixa): string {
   const v = getComputedStyle(el).getPropertyValue(VAR_FAIXA[f]).trim()
   return v || FALLBACK_FAIXA[f]
@@ -340,6 +364,8 @@ export function construirCena(
   const pinosPorId = new Map<string, Pino>()
 
   for (const rio of rios) {
+    const noEixo = rio.eixo ? new Set(rio.eixo) : null
+    const outrosTracados = rios.filter((r) => r !== rio).flatMap((r) => r.coords)
     const ancoras = rio.cidades
       .filter((c) => c.coordenadas)
       .map((cidade) => {
@@ -369,13 +395,12 @@ export function construirCena(
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
           nivelBruto: aoVivo ? null : bruto,
-          ponto: maisProximoNoRio(rio.coords, alvo) ?? alvo,
+          ponto: pontoDoPino(alvo, rio.coords, outrosTracados, !noEixo || noEixo.has(cidade.id)),
         }
       })
     // Quem PINTA é só o eixo. As demais continuam como PINO — o nível delas é
     // informação boa, e some-lo seria esconder dado —, mas não colorem trecho
     // nenhum nem entram na espinha que ordena montante→jusante.
-    const noEixo = rio.eixo ? new Set(rio.eixo) : null
     const ancorasQuePintam = ancoras.filter((a) => {
       if (noEixo && !noEixo.has(a.cidade.id)) return false
       const c = a.cidade.coordenadas
