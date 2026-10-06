@@ -842,12 +842,13 @@ class TestLocalizacao(unittest.TestCase):
         """É o piso: onde não há cota perto, ela é a resposta inteira."""
         for ponto in (self.BRUSQUE_COM_COTA, self.BLUMENAU):
             t = self.loc(ponto)
-            # Brusque e Blumenau não têm coordenada de régua no cadastro: o
-            # cabeçalho diz CIDADE. Chamá-lo de "régua" era a afirmação falsa
-            # corrigida em 19/09/2026.
-            self.assertIn("Cidade mais próxima", t)
-            self.assertNotIn("Régua mais próxima", t)
             self.assertIn("nível do rio", t)
+        # Brusque não tem coordenada de régua no cadastro: o cabeçalho diz
+        # CIDADE. Chamá-lo de "régua" era a afirmação falsa corrigida em
+        # 19/09/2026. (Blumenau tem, desde 06/10/2026: ver o teste da ponte.)
+        t = self.loc(self.BRUSQUE_COM_COTA)
+        self.assertIn("Cidade mais próxima", t)
+        self.assertNotIn("Régua mais próxima", t)
 
     def test_sem_cota_perto_responde_so_a_cidade_sem_linha_em_branco(self):
         t = self.loc(self.BLUMENAU)
@@ -1021,17 +1022,16 @@ class TestLocalizacao(unittest.TestCase):
         self.assertNotIn("não aparece na fonte de tempo real", t)
         self.assertIn("BRUTO da rede estadual", t)
 
-    def test_blumenau_nao_publica_distancia_ate_uma_estacao_de_chuva(self):
-        """A `coordenadas` de Blumenau é a da DCSC-00026, estação de CHUVA — não
-        é a régua. O "a 6,9 km em linha reta" saía medido até ela, e era dito a
-        quem está a algumas centenas de metros da régua que deu o número da
-        linha seguinte (pino real, 18/09/2026)."""
+    def test_blumenau_diz_a_distancia_ate_a_regua_da_ponte(self):
+        """REESCRITO em 06/10/2026. Até então a `coordenadas` de Blumenau era a da
+        DCSC-00026, estação de CHUVA, e a distância não saía (o "a 6,9 km" era
+        medido até ela). Agora é a régua da Ponte Adolfo Konder, confirmada pela
+        Prefeitura: o pino do Centro está a ~100 m dela, e é isso que sai."""
         t = self.loc(self.BLUMENAU)
-        self.assertIn("Cidade mais próxima", t)
-        self.assertNotIn("Régua mais próxima", t)
-        self.assertNotIn("em linha reta", t)
-        # A omissão é DITA. Sumir calado é o defeito que o aviso de cota tinha.
-        self.assertIn("A distância não sai", t)
+        self.assertIn("Régua mais próxima: <b>Ponte Adolfo Konder (Centro)</b>", t)
+        self.assertIn("em linha reta", t)
+        self.assertNotIn("A distância não sai", t)
+        self.assertNotIn("ponto de referência da cidade", t)
 
     def test_sem_coordenada_de_regua_a_distancia_fica_mas_diz_ate_onde(self):
         """REESCRITO em 19/09/2026. Antes dizia "ausência do campo mantém a
@@ -1048,12 +1048,18 @@ class TestLocalizacao(unittest.TestCase):
         self.assertNotIn("Régua mais próxima", t)
         self.assertNotIn("A distância não sai", t)
 
-    def test_so_blumenau_declara_que_o_pino_nao_e_a_regua(self):
-        """Trava de cadastro: cidade nova com o campo `false` cai aqui, e é para
-        cair — quem o põe tem de saber que está tirando número da tela."""
-        sem = {c["id"] for c in base().cidades()
-               if c.get("coordenadas_sao_da_regua") is False}
-        self.assertEqual(sem, {"blumenau"})
+    def test_quem_declara_o_pino_como_regua_diz_de_onde_veio(self):
+        """Trava de cadastro: `coordenadas_sao_da_regua: true` põe "Régua mais
+        próxima" na tela, então só vale com a fonte escrita (`coordenadas_fonte`).
+        E o `false` (pino que não é a régua) não sobrou em cidade nenhuma desde
+        que Blumenau recebeu a coordenada da régua, em 06/10/2026."""
+        cidades = base().cidades()
+        sim = {c["id"] for c in cidades if c.get("coordenadas_sao_da_regua") is True}
+        self.assertEqual(sim, {"blumenau"})
+        for c in cidades:
+            if c.get("coordenadas_sao_da_regua") is True:
+                self.assertTrue(c.get("coordenadas_fonte"), c["id"])
+        self.assertEqual({c["id"] for c in cidades if c.get("coordenadas_sao_da_regua") is False}, set())
 
     def test_fora_da_bacia_ainda_diz_a_distancia(self):
         """Lá o número continua: a 60 km, os ~7 km de erro do pino de Blumenau
@@ -1754,8 +1760,9 @@ class TestFaixaJuntoDoNivel(unittest.TestCase):
         # e o aviso de "nenhum ponto na sua esquina" também não (a mais próxima
         # fica a dezenas de km). A resposta não pode começar em branco.
         self.assertNotIn("Nenhum ponto levantado", saida)
-        # Blumenau não tem coordenada de régua: o cabeçalho diz CIDADE.
-        self.assertTrue(saida.startswith("📍 Cidade mais próxima"))
+        # Desde 06/10/2026 Blumenau tem a coordenada da régua (Ponte Adolfo
+        # Konder): o cabeçalho diz RÉGUA, com o nome dela.
+        self.assertTrue(saida.startswith("📍 Régua mais próxima: <b>Ponte Adolfo Konder"))
 
 
 class TestFaixaPorRegua(unittest.TestCase):

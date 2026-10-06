@@ -882,18 +882,9 @@ TRACADO_DO_RAMO = {
 #: sem motivo escrito vira lixo em seis meses; cada uma aqui diz por que existe
 #: e o que a remove.
 LONGE_ACEITO = {
-    # CORRIGIDO em 06/09/2026 pelo inventário da ANA. O motivo escrito aqui
-    # dizia "a coordenada é a da ESTAÇÃO" e dava a entender que era a régua de
-    # nível. Não é: a DCSC-00026 é do tipo `Meteo`, com `tem_nivel_do_rio:
-    # false` — mede CHUVA. A fluviométrica da ANA em Blumenau (83800002) fica a
-    # 6,93 km deste pino e a 49 m do traçado. A exceção continua, porque mover o
-    # pino trocaria uma coordenada errada por uma de OUTRA REDE; o que muda é
-    # que o motivo agora diz a verdade, e o que a remove ficou concreto.
-    "blumenau": (3.5, "a coordenada publicada é a da DCSC-00026, que é estação de "
-                      "CHUVA (type Meteo, tem_nivel_do_rio false) e fica a ~3 km do "
-                      "talvegue — não é a régua de nível de Blumenau. Remove esta "
-                      "exceção: a coordenada da régua do AlertaBlu/Defesa Civil, que "
-                      "é a fonte do tempo real mostrado na tela"),
+    # Blumenau saiu em 06/10/2026: a coordenada passou a ser a da régua (Ponte Adolfo
+    # Konder, confirmada pela Prefeitura), a 0,05 km do traçado. Antes era a
+    # DCSC-00026, estação de CHUVA a 2,99 km.
     "ituporanga": (25.0, "o traçado do Itajaí do Sul é PARCIAL (10,5 km, cobertura "
                          "municipal de Rio do Sul). Falta o trecho Ituporanga->Rio do Sul, "
                          "que sai do Overpass — ver docs/TRACADO-ITAJAI-DO-SUL.md. "
@@ -947,12 +938,9 @@ LIMITE_MESMA_REGUA_KM = 1.0
 
 #: Vínculo aceito acima do limite, com o motivo. Só entra aqui quem tem razão
 #: ESCRITA para o pino estar longe da régua — e o que remove a exceção.
-PINO_LONGE_DA_REGUA = {
-    "blumenau": ("o pino de Blumenau é a coordenada publicada da DCSC-00026, que "
-                 "é estação de CHUVA, não a régua de nível; a 83800002 fica a 40 m "
-                 "do traçado e a 6,94 km desse pino. Remove esta exceção: a "
-                 "coordenada da régua do AlertaBlu/Defesa Civil, que é a fonte do "
-                 "tempo real da tela. Mesmo motivo já escrito em LONGE_ACEITO."),
+PINO_LONGE_DA_REGUA: dict[str, str] = {
+    # Vazio desde 06/10/2026: Blumenau, a única exceção, passou a ter a coordenada
+    # da régua (Ponte Adolfo Konder, confirmada pela Prefeitura).
 }
 
 
@@ -1266,6 +1254,44 @@ def valida_ruas_alagadas() -> None:
         return
     for e in validar(le_json(ARQUIVO.name).get("registros", []), set(cidades().values())):
         erro(e)
+
+
+#: Os estados que `equivalencia_estadual.status` aceita. "confirmada" só com `fonte`.
+STATUS_EQUIVALENCIA = {"não confirmada", "confirmada"}
+
+
+def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
+    """
+    A estação estadual perto de uma cidade só vira a régua dela com prova.
+
+    DECISÃO DO JEFFERSON (06/10/2026), depois da auditoria das réguas: Timbó, Rio dos Cedros,
+    Trombudo Central e Lontras têm uma estação da Defesa Civil de SC a 0,24–1,6 km, e isso não
+    prova que seja a mesma régua (zero, seção do rio e referência podem diferir). Só se vincula com
+    código, coordenada coincidente, declaração do município ou comparação documental das séries.
+
+    Trava: enquanto o status for "não confirmada", o código NÃO pode estar em `codigo_dcsc` (é ele
+    que liga a estação à cidade e deixa as cotas da cidade pintarem a leitura estadual). E
+    "confirmada" exige a fonte escrita.
+    """
+    estacoes = estacoes if estacoes is not None else le_json("estacoes.json")
+    for rio_id, rio in estacoes["rios"].items():
+        for c in rio["cidades"]:
+            eq = c.get("equivalencia_estadual")
+            if eq is None:
+                continue
+            onde = f"estacoes.json / {rio_id} / {c['id']} / equivalencia_estadual"
+            status = eq.get("status")
+            if status not in STATUS_EQUIVALENCIA:
+                erro(f"{onde}: status {status!r} fora de {sorted(STATUS_EQUIVALENCIA)}")
+                continue
+            if not eq.get("codigo"):
+                erro(f"{onde}: sem `codigo` da estação estadual")
+            if status == "não confirmada" and c.get("codigo_dcsc") == eq.get("codigo"):
+                erro(f"{onde}: {eq.get('codigo')} está em `codigo_dcsc` com a equivalência NÃO "
+                     "confirmada — vincular exige código, coordenada coincidente, declaração do "
+                     "município ou comparação documental das séries (decisão de 06/10/2026)")
+            if status == "confirmada" and not eq.get("fonte"):
+                erro(f"{onde}: equivalência confirmada sem `fonte`")
 
 
 def valida_regua_das_cotas() -> None:
@@ -2159,6 +2185,7 @@ def main() -> int:
     valida_referencias()
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
+    valida_equivalencia_estadual()
     valida_pico_copiado_de_outra_cidade()
     valida_divergencia_que_virou_registro()
     valida_cota_de_rua_nao_e_lamina()

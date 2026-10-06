@@ -122,6 +122,32 @@
   background: rgba(20, 40, 60, 0.9);
 }
 
+/* Seletor de régua (Itajaí, 06/10/2026): nativo, porque no celular abre a lista do sistema, com
+   letra grande e rolagem que o morador já conhece. */
+.seletorRegua {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+}
+.seletorRegua select {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 2.25rem;
+  background: rgba(28, 110, 164, 0.85);
+  color: #eaf1f8;
+  border: 1px solid rgba(180, 200, 220, 0.35);
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  font: inherit;
+}
+.seletorRegua select:focus-visible {
+  outline: 2px solid #eaf1f8;
+  outline-offset: 2px;
+}
+
 /* Legenda sempre visível, canto inferior esquerdo. */
 /* RODAPÉ: barra de reprodução EM CIMA, legenda embaixo, numa coluna só.
 
@@ -762,6 +788,8 @@
     padding: .3rem .4rem;
   }
   .topo > strong { font-size: .75rem; flex: 1; }
+  .seletorRegua { flex: 1 1 100%; margin-top: 0; }
+  .seletorRegua select { min-height: 44px; }
   .topo .botaoMenu, .topo .botaoCheia {
     margin: 0;
     min-height: 44px;

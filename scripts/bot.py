@@ -1712,6 +1712,13 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
         destaque = (est["titulo"], km_regua)
         linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(est['titulo'])}</b>, "
                       f"em {e(cidade['nome'])}, a {quilometros(km_regua)} em linha reta.\n\n")
+    elif cidade.get("coordenadas_sao_da_regua") is True:
+        # 06/10/2026: a coordenada da cidade É a régua, com a fonte declarada no
+        # cadastro (`coordenadas_fonte`). Hoje só Blumenau: Ponte Adolfo Konder,
+        # confirmada pela Prefeitura. Aí a distância é até a régua, e diz-se qual.
+        nome_regua = cidade.get("regua") or "régua da cidade"
+        linhas.append(f"{cabeca}📍 Régua mais próxima: <b>{e(nome_regua)}</b>, "
+                      f"em {e(cidade['nome'])}, a {quilometros(km)} em linha reta.\n\n")
     elif cidade.get("coordenadas_sao_da_regua") is False:
         linhas.append(f"{cabeca}📍 Cidade mais próxima: <b>{e(cidade['nome'])}</b>."
                       "\n<i>A distância não sai: o projeto ainda não tem a coordenada "

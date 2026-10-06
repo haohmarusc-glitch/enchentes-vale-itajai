@@ -10,7 +10,8 @@ auditoria visual das 19 cidades do Monitor.
 - **Candidata:** estação Hidro da DCSC a até 3 km de cidade sem código (fora as que o cadastro já
   declarou que não são régua, como a DCSC-00178). Não está vinculada e não foi
   usada para mudar nada: só indica onde conferir.
-- Nenhuma coordenada de `estacoes.json` mudou nesta auditoria.
+- Na auditoria, nenhuma coordenada mudou. Depois, por decisão do Jefferson (06/10/2026), Blumenau
+  passou para a régua da Ponte Adolfo Konder, confirmada pela Prefeitura (`coordenadas_fonte`).
 
 ## Cidades
 
@@ -24,7 +25,7 @@ auditoria visual das 19 cidades do Monitor.
 | Apiúna | Referência cadastral ANA 83500000; vínculo com a régua municipal pendente | -27,0375, -49,3919 | — | — | — | 0,28 km | sem código: ponto do cadastro, fonte não confirma |
 | Ascurra | Ponte do Beber — Itajaí-Açu (DCSC-00003) | -26,9613, -49,3730 | DCSC-00003 | Hidro | 10 m | 0,10 km | confere com a ficha |
 | Indaial | Régua do Itajaí-Açu em Indaial (a COMPDEC não nomeia o ponto) | -26,9109, -49,2700 | DCSC-00006 | Hidro | 5 m | 0,02 km | confere com a ficha |
-| Blumenau | Ponte Adolfo Konder (Centro) | -26,9224, -49,1354 | DCSC-00026 | Meteo | 6 m | 2,99 km | **aproximada**: coordenada declarada como não sendo a régua; pino no rio |
+| Blumenau | Ponte Adolfo Konder (Centro) | -26,9186, -49,0656 | DCSC-00026 | Meteo | — | 0,05 km | régua confirmada: Prefeitura de Blumenau/Defesa Civil — Ponte Adolfo Konder, Beira-Rio |
 | Gaspar | Rio Itajaí Açu Gaspar — estação municipal 21 | -26,9264, -48,9643 | DCSC-00005 | Hidro | 2 m | 0,12 km | confere com a ficha |
 | Ilhota | Estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin (a régua que o PLANCON cita) | -26,8944, -48,8248 | DCSC-00030 | Hidro | 4 m | 0,02 km | confere com a ficha |
 | Itajaí | — | -26,9078, -48,6619 | — | — | — | 0,88 km | sem código: ponto do cadastro, fonte não confirma |
@@ -39,14 +40,16 @@ auditoria visual das 19 cidades do Monitor.
 ## Cidades sem código: estações estaduais por perto
 
 Não vincular por proximidade: a régua municipal e a estação estadual podem ser equipamentos
-diferentes, com zeros diferentes. Conferir na fonte antes.
+diferentes, com zeros, seções do rio ou referências diferentes. Decisão do Jefferson (06/10/2026):
+só vincular com código, coordenada coincidente, declaração do município ou comparação documental
+das séries. A equivalência fica em `equivalencia_estadual` no cadastro, e o validador trava o vínculo.
 
-| Cidade | Estação | Nome na DCSC | Distância |
-|---|---|---|---|
-| Lontras | DCSC-00032 | Lontras | 0,82 km |
-| Timbó | DCSC-00023 | Timbó 1 | 1,61 km |
-| Rio dos Cedros | DCSC-00011 | Rio dos Cedros 1 | 0,24 km |
-| Trombudo Central | DCSC-00035 | Trombudo Central 2 | 0,90 km |
+| Cidade | Estação | Nome na DCSC | Distância | Equivalência |
+|---|---|---|---|---|
+| Lontras | DCSC-00032 | Lontras | 0,82 km | não confirmada |
+| Timbó | DCSC-00023 | Timbó 1 | 1,61 km | não confirmada |
+| Rio dos Cedros | DCSC-00011 | Rio dos Cedros 1 | 0,24 km | não confirmada |
+| Trombudo Central | DCSC-00035 | Trombudo Central 2 | 0,90 km | não confirmada |
 
 Sem estação Hidro da DCSC a até 3 km: Apiúna, Itajaí.
 

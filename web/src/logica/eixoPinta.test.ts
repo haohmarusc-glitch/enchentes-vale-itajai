@@ -179,10 +179,11 @@ test('as cidades do Açu FORA do eixo estão mesmo longe do traçado — a medid
   assert.ok(fora.length >= 3, 'se ninguém mais está fora do eixo, esta trava virou letra morta')
 })
 
-test('Blumenau fica a ~3 km do talvegue e MESMO ASSIM pinta', () => {
-  // A coordenada publicada é a da ESTAÇÃO, não do rio. É por isso que a guarda
-  // geométrica é de 5 km e não de 1: apertá-la calaria a cidade com 97
-  // registros históricos desde 1852.
+test('Blumenau pinta, agora com a régua em cima do rio (Ponte Adolfo Konder, 06/10/2026)', () => {
+  // Até 06/10/2026 a coordenada era a da DCSC-00026, estação de CHUVA a ~3 km do talvegue, e era
+  // ela o caso que fazia a guarda geométrica ser de 5 km. Agora é a régua da ponte, confirmada pela
+  // Prefeitura. A guarda continua em 5 km por causa de Itajaí, que fica a 2,1 km do traçado do
+  // Mirim e precisa ancorar a espinha dele.
   const acu = estacoes.rios['itajai-acu']!
   const b = acu.cidades.find((c) => c.id === 'blumenau')!
   const linhas = JSON.parse(
@@ -190,6 +191,5 @@ test('Blumenau fica a ~3 km do talvegue e MESMO ASSIM pinta', () => {
   ).geometry.coordinates as [number, number][][]
   const p: [number, number] = [b.coordenadas![1], b.coordenadas![0]]
   const d = Math.min(...linhas.flat().map((q) => kmEntre(p, q as [number, number])))
-  assert.ok(d > 1, `Blumenau está a ${d.toFixed(2)} km — se encostou no rio, revise o limite`)
-  assert.ok(d < 5, `Blumenau está a ${d.toFixed(2)} km e deixaria de pintar`)
+  assert.ok(d < 0.2, `Blumenau está a ${d.toFixed(2)} km do Açu — a régua da ponte fica no rio`)
 })

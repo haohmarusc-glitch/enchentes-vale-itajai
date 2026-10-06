@@ -66,7 +66,7 @@ const cena = (vista?: Parameters<typeof construirCena>[9]) =>
 
 const cidades = [...new Map(Object.values(estacoes.rios).flatMap((r) => r.cidades).map((c) => [c.id, c])).values()]
 
-test('o pino de cada cidade fica na coordenada da régua; só Blumenau, declarada sem régua, fica no rio', () => {
+test('o pino de cada cidade fica na coordenada da régua (e a declarada sem régua, se houver, no rio)', () => {
   const base = cena()
   for (const c of cidades.filter((c) => c.coordenadas)) {
     const p = base.pinos.find((x) => x.cidade.id === c.id)
@@ -139,4 +139,11 @@ test('no celular, a câmera põe o pino acima da folha do painel; no computador,
   }
   const v = { zoom: 10, centroLon: -49, centroLat: -27 }
   assert.deepEqual(vistaAcimaDaFolha(v, cena().limitesBase, 1000, 700), v)
+})
+
+test('Blumenau: pino na régua da Ponte Adolfo Konder, sem "aproximado" (decisão de 06/10/2026)', () => {
+  const p = cena().pinos.find((x) => x.cidade.id === 'blumenau')!
+  assert.equal(p.aproximado, false)
+  assert.deepEqual([p.lat, p.lon], [-26.9186, -49.0656])
+  assert.equal(p.cidade.coordenadas_fonte, 'Prefeitura de Blumenau/Defesa Civil — Ponte Adolfo Konder, Beira-Rio')
 })

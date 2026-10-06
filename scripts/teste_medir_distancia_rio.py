@@ -26,9 +26,11 @@ class Distancia(unittest.TestCase):
         self.assertLess(km / reta, 3.0, "fator de sinuosidade implausível — provável erro de grafo")
 
     def test_cidade_longe_do_tracado_nao_recebe_km(self):
-        # Blumenau tem a coordenada da ESTAÇÃO, ~3 km do talvegue: fora do traçado.
-        km, da, db = self.km("gaspar", "blumenau")
-        self.assertIsNone(km, "Blumenau está longe do traçado; km_rio não deve sair")
+        # Timbó fica no Benedito, que não está desenhado: a régua está a 8,2 km do Açu.
+        # (Até 06/10/2026 o exemplo era Blumenau, cuja coordenada era um pluviômetro a
+        # 3 km do talvegue; agora é a régua da Ponte Adolfo Konder, em cima do rio.)
+        km, da, db = self.km("gaspar", "timbo")
+        self.assertIsNone(km, "Timbó está longe do traçado do Açu; km_rio não deve sair")
         self.assertTrue(da > AFASTAMENTO_MAX_KM or db > AFASTAMENTO_MAX_KM)
 
     def test_valores_gravados_batem_com_o_calculo(self):

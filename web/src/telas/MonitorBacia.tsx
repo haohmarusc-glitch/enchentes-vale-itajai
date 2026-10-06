@@ -72,6 +72,7 @@ import {
 import { reguasComCota } from '../logica/reguas'
 import { reguasNoMapa, type ReguaNoMapa } from '../logica/reguasNoMapa'
 import { textoDaPosicao } from '../logica/posicaoDoPino'
+import { chaveDaRegua, opcoesDoSeletor, TODAS, vistaDaRegua } from '../logica/seletorDeRegua'
 import {
   FUNDOS,
   FUNDO_PADRAO,
@@ -434,6 +435,31 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   )
   const reguasRef = useRef(reguasDoMapa)
   reguasRef.current = municipal ? [] : reguasDoMapa
+
+  /**
+   * O seletor de régua da cidade em foco (Itajaí, as onze; pedido do Jefferson, 06/10/2026). Na própria
+   * tela: "Todas as N réguas" é o padrão e reenquadra a cidade; uma régua centraliza o mapa nela e abre o
+   * painel dela. Tocar numa régua no mapa também muda o seletor, porque o valor vem de `reguaSel`.
+   */
+  const opcoesRegua = useMemo(
+    () => (cidadeFoco && !municipal ? opcoesDoSeletor(reguasDoMapa, cidadeFoco) : []),
+    [cidadeFoco, municipal, reguasDoMapa],
+  )
+  const valorSeletor = reguaSel && opcoesRegua.some((o) => o.valor === reguaSel) ? reguaSel : TODAS
+  function escolherRegua(valor: string) {
+    if (valor === TODAS) {
+      setReguaSel(null)
+      setPedidoDeEnquadrar((n) => n + 1)
+      return
+    }
+    const r = reguasDoMapa.find((x) => chaveDaRegua(x) === valor)
+    const cena = cenaRef.current
+    setReguaSel(valor)
+    setSel(null)
+    if (!r || !cena) return
+    const v = vistaDaRegua(r, cena.limitesBase, cena.largura, cena.altura, MARGEM)
+    if (v) setVista(v)
+  }
 
   /**
    * As barragens como marcadores, comporta a comporta. O Monitor é a bacia
@@ -1126,6 +1152,16 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           >
             {menuAberto ? 'Fechar' : 'Cidades ▾'}
           </button>}
+          {opcoesRegua.length > 0 && (
+            <label className={estilos.seletorRegua}>
+              <span>Régua</span>
+              <select id="seletor-regua" value={valorSeletor} onChange={(e) => escolherRegua(e.target.value)}>
+                {opcoesRegua.map((o) => (
+                  <option key={o.valor} value={o.valor}>{o.rotulo}</option>
+                ))}
+              </select>
+            </label>
+          )}
           <span className={estilos.aviso}>
             {municipal ? "Dados observados · não é alerta oficial." : <>Não é alerta oficial. Emergência: <strong>199</strong>. Siga a Defesa Civil.</>}
           </span>

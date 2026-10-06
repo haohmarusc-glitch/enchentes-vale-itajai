@@ -40,8 +40,14 @@ export interface Cidade {
    *  traçado (`pontoDoPino`). Exceções: Itajaí (foz, sem estação estadual) e
    *  Vidal Ramos (Asthon, = DCSC). */
   coordenadas?: [number, number]
-  /** `false` quando o cadastro sabe que `coordenadas` NÃO é a régua (Blumenau: pluviômetro). */
+  /**
+   * `true` quando a coordenada É a régua, com a fonte em `coordenadas_fonte` (Blumenau desde 06/10/2026:
+   * Ponte Adolfo Konder, confirmada pela Prefeitura). `false` quando o cadastro sabe que não é: o pino vai
+   * para o rio e sai "aproximado". Ausente: não se sabe.
+   */
   coordenadas_sao_da_regua?: boolean
+  /** De onde veio a coordenada da régua, quando não é a ficha da estação estadual. */
+  coordenadas_fonte?: string
   /** Cotas de referência na régua LOCAL. Cada cidade tem seu próprio zero. */
   cotas_m: Record<string, number>
   /**

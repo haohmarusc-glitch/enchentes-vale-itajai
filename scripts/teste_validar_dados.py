@@ -809,13 +809,20 @@ class CodigoAnaEhReguaDeRio(unittest.TestCase):
                 cod = c.get("codigo_dcsc")
                 if not cod or cod not in dcsc:
                     continue
+                if c.get("coordenadas_fonte"):
+                    # A coordenada veio de outra fonte, declarada (Blumenau, 06/10/2026: a
+                    # régua da Ponte Adolfo Konder). Só vale quando o código é de estação que
+                    # NÃO mede rio — o caso de Blumenau, cuja DCSC-00026 é de chuva.
+                    self.assertIsNone(dcsc[cod].get("nivel_agora_m"),
+                                      f"{c['id']}: {cod} mede rio e a coordenada saiu de outra fonte")
+                    continue
                 la, lo = c["coordenadas"]
                 dy = (dcsc[cod]["lat"] - la) * 111320
                 dx = (dcsc[cod]["lon"] - lo) * 111320 * _math.cos(_math.radians(la))
                 d = _math.hypot(dx, dy)
                 self.assertLess(d, 50, f"{c['id']} está a {d:.0f} m da {cod}")
                 vistas += 1
-        self.assertGreaterEqual(vistas, 13, "o cruzamento deixou de olhar cidades")
+        self.assertGreaterEqual(vistas, 12, "o cruzamento deixou de olhar cidades")
 
     def test_estacao_longe_do_tracado_mas_colada_no_pino_passa(self):
         """
@@ -1732,15 +1739,20 @@ class OutroPontoDoRioCertoNaoEAReguaDaCidade(unittest.TestCase):
                 self.assertTrue(doente, f"{codigo} ligada a {cidade} e o validador calou")
                 self.assertIn(km, doente[0], "a distância medida entrou errada no aviso")
 
-    def test_a_excecao_do_blumenau_segura_o_vinculo_real(self):
-        """6,94 km, e com motivo escrito: o pino é da estação de CHUVA."""
+    def test_blumenau_passa_sem_excecao_desde_que_o_pino_e_a_regua(self):
+        """06/10/2026: a coordenada de Blumenau passou a ser a da régua (Ponte Adolfo
+        Konder, confirmada pela Prefeitura), e a exceção saiu."""
+        self.assertNotIn("blumenau", vd.PINO_LONGE_DA_REGUA)
         erros, _ = self.roda(copy.deepcopy(self.real))
         self.assertFalse([e for e in erros if "blumenau" in e])
 
-    def test_sem_a_excecao_o_blumenau_reprovaria(self):
-        """Se o guarda não medisse, este teste passaria por engano."""
-        erros, _ = self.roda(copy.deepcopy(self.real), excecoes={})
-        self.assertTrue([e for e in erros if "blumenau" in e and "6.94" in e],
+    def test_com_a_coordenada_antiga_o_blumenau_reprovaria(self):
+        """Se o guarda não medisse, este teste passaria por engano: com o pino de
+        volta no pluviômetro (DCSC-00026), a 83800002 fica a 6,94 km dele."""
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "blumenau")["coordenadas"] = [-26.9224, -49.1354]
+        erros, _ = self.roda(d)
+        self.assertTrue([e for e in erros if "blumenau" in e and "6.9" in e],
                         "o guarda não está medindo o vínculo real de Blumenau")
 
     def test_excecao_que_nao_e_usada_vira_aviso(self):
@@ -2104,6 +2116,44 @@ class RegistroForaDoCadastro(unittest.TestCase):
         ev["rio"] = "rio-dos-cedros"
         self.assertTrue(any("(rio-dos-cedros, rio-dos-cedros) não está em estacoes.json" in e
                             for e in self._erros(ench)))
+
+
+class EquivalenciaEstadualNaoConfirmada(unittest.TestCase):
+    """Decisão de 06/10/2026: estação estadual perto não é a régua da cidade sem prova."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, d):
+        vd.erros.clear()
+        vd.avisos.clear()
+        vd.valida_equivalencia_estadual(d)
+        return list(vd.erros), list(vd.avisos)
+
+    def test_as_quatro_estao_registradas_e_nao_confirmadas(self):
+        achadas = {}
+        for rio in self.real["rios"].values():
+            for c in rio["cidades"]:
+                if c.get("equivalencia_estadual"):
+                    achadas[c["id"]] = c["equivalencia_estadual"]
+        self.assertEqual(set(achadas), {"timbo", "rio-dos-cedros", "trombudo-central", "lontras"})
+        for cid, eq in achadas.items():
+            self.assertEqual(eq["status"], "não confirmada", cid)
+        erros, _ = self.roda(copy.deepcopy(self.real))
+        self.assertEqual(erros, [])
+
+    def test_vincular_sem_confirmar_reprova(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "rio-dos-cedros")["codigo_dcsc"] = "DCSC-00011"
+        erros, _ = self.roda(d)
+        self.assertTrue([e for e in erros if "rio-dos-cedros" in e and "NÃO" in e])
+
+    def test_confirmar_exige_fonte(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "timbo")["equivalencia_estadual"]["status"] = "confirmada"
+        erros, _ = self.roda(d)
+        self.assertTrue([e for e in erros if "timbo" in e and "fonte" in e])
 
 
 if __name__ == "__main__":
