@@ -508,7 +508,7 @@ o projeto.
   - Sem aviso na tela: o registro é só para controle interno (decisão do Jefferson).
   - [ ] **Criar a variável `ADMIN_EMAILS` = `haohmarusc@gmail.com` no Cloudflare Pages** (passo a passo em
     `docs/PUBLICACAO-E-ACESSO.md`, "Registro de acessos").
- (05/10/2026, pedido do Jefferson para ajudar a Defesa Civil de Ibirama).**
+- [x] **Rio Hercílio (Itajaí do Norte) e os rios de Ibirama no Monitor (05/10/2026, pedido do Jefferson para ajudar a Defesa Civil de Ibirama).**
   - No OSM o rio tem dois nomes ("Itajaí do Norte" a montante, "Hercílio" a jusante), e nenhuma consulta pedia os
     dois.
   - `scripts/baixar_tracado_hercilio.py` baixa o traçado e só grava se ele chega ao Açu e passa pelo pino de Ibirama.
@@ -519,8 +519,13 @@ o projeto.
     que o OSM tem no município. Eles vieram de `scripts/baixar_rios_municipio.py`.
   - O Monitor passou a desenhar todo traçado de `data/rios/`. Arquivo do Monitor alterado com o rótulo
     `monitor-autorizado`, por decisão do Jefferson.
+  - [x] **O pino de Ibirama caía no Açu, 2,6 km ao sul (visto pelo Jefferson no satélite, 06/10/2026).** Agora a
+    cidade fora do eixo vai para o traçado desenhado mais perto, se estiver a até 1 km (`pontoDoPino`, com o
+    rótulo `monitor-autorizado`). O pino de Ibirama fica no Hercílio, a 0,06 km da régua.
+  - [ ] Timbó, Rio dos Cedros, Ituporanga, Trombudo Central e Guabiruba ainda têm o pino puxado para o tronco
+    (de 4 a 28 km), porque o rio delas não está desenhado. Desenhar o rio corrige o pino sem mexer no código.
   - Detalhes em `docs/TRACADO-HERCILIO.md`.
- (05/10/2026, pedido do Jefferson)** — `docs/GUARDAR-CHEIAS.md`.
+- [x] **Guardar as cheias para a conta "N horas antes" (05/10/2026, pedido do Jefferson)** — `docs/GUARDAR-CHEIAS.md`.
   - `scripts/nivel_antes.py` responde "quando a régua X chegou à crista, passou de um nível ou passou da cota de uma
     rua, como estavam as réguas de cima N horas antes".
     - Só réguas a montante no mesmo rio; cada número na sua régua, com a hora; ANA só com ANA (fuso não conferido).
