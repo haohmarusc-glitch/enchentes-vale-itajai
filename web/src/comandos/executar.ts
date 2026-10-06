@@ -108,11 +108,11 @@ export function limparRetratos(): void {
 export const MUDA_A_TELA = new Set<Passo['tipo']>([
   'ir_cidade', 'monitor_bacia', 'abrir_pagina', 'abrir_rota', 'escolher_regua', 'aproximar_regua', 'zoom',
   'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia', 'rua', 'remover_destaque',
-  'localizacao', 'reproducao', 'animacoes', 'legenda_mapa',
+  'localizacao', 'reproducao', 'animacoes', 'legenda_mapa', 'enquadrar', 'fechar_painel', 'menu_cidades',
 ])
 const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
   'escolher_regua', 'aproximar_regua', 'zoom', 'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'o_que_vejo', 'filtro',
-  'reproducao', 'animacoes', 'legenda_mapa',
+  'reproducao', 'animacoes', 'legenda_mapa', 'enquadrar', 'fechar_painel', 'menu_cidades',
 ])
 
 const NOME_FUNDO = { escuro: 'escuro', satelite: 'satélite', mapa: 'mapa de ruas' } as const
@@ -734,6 +734,27 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
       case 'limpar_conversa': {
         amb.dados?.limparConversa?.()
         return { texto: 'Conversa limpa. Ela nunca é gravada: fica só nesta aba e some ao fechar.' }
+      }
+      case 'enquadrar': {
+        if (!m!.enquadrar) return falha('O enquadramento não está disponível nesta tela.')
+        const r = m!.enquadrar(passo.alvo === 'rio' ? { tipo: 'rio', rioId: passo.rioId } : { tipo: 'barragens' })
+        if (!r.ok) return falha(r)
+        feitos.push(r.texto)
+        break
+      }
+      case 'fechar_painel': {
+        if (!m!.fecharPainel) return falha('O painel não está disponível nesta tela.')
+        const r = m!.fecharPainel()
+        if (!r.ok) return falha(r)
+        feitos.push(r.texto)
+        break
+      }
+      case 'menu_cidades': {
+        if (!m!.menuDeCidades) return falha('O menu de cidades não está disponível nesta tela.')
+        const r = m!.menuDeCidades(passo.acao)
+        if (!r.ok) return falha(r)
+        feitos.push(r.texto)
+        break
       }
       case 'glossario': {
         const vs = passo.termos.map(verbeteDe).filter((v): v is NonNullable<typeof v> => v !== null)

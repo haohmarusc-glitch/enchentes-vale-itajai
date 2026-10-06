@@ -164,6 +164,26 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
   return null
 }
 
+/** A 12ª entrega: o Monitor, peça por peça (rio inteiro, barragens, painel, menu de cidades). */
+// "No mapa" é cortesia para o resto do chat (sai antes de ler); aqui ele decide, então é lido no texto inteiro.
+const RIO_NO_MAPA = /^(?:ver|veja|mostrar|mostre|enquadrar|enquadre|focar|foque)(?: o| no)?(?: rio)? (itajai acu|acu|itajai mirim|mirim)(?: inteiro| todo)? no mapa$/
+const BARRAGENS_NO_MAPA = /^(?:ver|veja|mostrar|mostre|enquadrar|enquadre)(?: as)? barragens no mapa$/
+function lerTrechoDaDecimaSegunda(t: string, ctx: Contexto): Lido {
+  {
+    const m = t.match(/^(?:zoom|enquadrar|enquadre|aproximar|aproxime)(?: no| o| em)?(?: rio)? (itajai acu|acu|itajai mirim|mirim)(?: inteiro| todo)?$/)
+      // No Monitor, "ver o Itajaí-Mirim" é o rio no mapa; fora dele, a página do rio (1ª entrega).
+      ?? (ctx.naMonitor ? t.match(/^(?:ver|veja|mostrar|mostre|focar|foque)(?: o| no)?(?: rio)? (itajai acu|acu|itajai mirim|mirim)(?: inteiro| todo)?$/) : null)
+    if (m) return [{ tipo: 'enquadrar', alvo: 'rio', rioId: /mirim/.test(m[1]!) ? 'itajai-mirim' : 'itajai-acu' }]
+  }
+  if (/^(?:zoom|enquadrar|enquadre|aproximar|aproxime)(?: nas| as)? barragens$|^onde ficam as barragens$/.test(t)) {
+    return [{ tipo: 'enquadrar', alvo: 'barragens' }]
+  }
+  if (/^(?:fechar|feche|fecha|recolher|recolha|tirar|tire)(?: o| a)? (?:painel|folha|ficha)(?: da cidade| da regua)?$/.test(t)) return [{ tipo: 'fechar_painel' }]
+  if (/^(?:abrir|abra|abre|mostrar|mostre)(?: o)? menu(?: de| das)? cidades$|^(?:a )?lista de cidades do mapa$/.test(t)) return [{ tipo: 'menu_cidades', acao: 'abrir' }]
+  if (/^(?:fechar|feche|fecha|recolher|recolha)(?: o)? menu(?: de| das)?(?: cidades)?$/.test(t)) return [{ tipo: 'menu_cidades', acao: 'fechar' }]
+  return null
+}
+
 /** A 11ª entrega: as palavras do rio (glossário) e a resposta em voz alta. */
 function lerTrechoDaDecimaPrimeira(t: string): Lido {
   {
@@ -459,6 +479,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const decimaSegunda = lerTrechoDaDecimaSegunda(t, ctx)
+  if (decimaSegunda) return decimaSegunda
   const oitava = lerTrechoDaOitava(t)
   if (oitava) return oitava
   const setima = lerTrechoDaSetima(t)
@@ -624,6 +646,10 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
  * o chat PERGUNTA "Você quis dizer…?" e não faz nada.
  */
 export function interpretar(texto: string, cat: Catalogo, ctx: Contexto): Interpretacao | null {
+  const inteiro = normalizar(texto)
+  const rio = inteiro.match(RIO_NO_MAPA)
+  if (rio) return { tipo: 'comandos', passos: [{ tipo: 'enquadrar', alvo: 'rio', rioId: /mirim/.test(rio[1]!) ? 'itajai-mirim' : 'itajai-acu' }] }
+  if (BARRAGENS_NO_MAPA.test(inteiro)) return { tipo: 'comandos', passos: [{ tipo: 'enquadrar', alvo: 'barragens' }] }
   const r = interpretarAoPeDaLetra(texto, cat, ctx)
   if (r && r.tipo === 'comandos') return r
   if (r && !r.texto.startsWith(NAO_ENTENDI_PARTE)) return r

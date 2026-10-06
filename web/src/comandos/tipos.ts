@@ -111,6 +111,11 @@ export type Passo =
   | { tipo: 'glossario'; termos: string[] }
   | { tipo: 'termos' }
   | { tipo: 'voz'; acao: 'ler' | 'parar' }
+  // 12ª entrega: o Monitor, peça por peça.
+  | { tipo: 'enquadrar'; alvo: 'rio'; rioId: 'itajai-acu' | 'itajai-mirim' }
+  | { tipo: 'enquadrar'; alvo: 'barragens' }
+  | { tipo: 'fechar_painel' }
+  | { tipo: 'menu_cidades'; acao: 'abrir' | 'fechar' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

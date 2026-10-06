@@ -83,6 +83,10 @@ export interface ControleMonitor {
   /** 7ª entrega: o botão "Pausar/Retomar animações" e o "abrir/recolher" da legenda. */
   animacoes?(acao: 'pausar' | 'retomar'): Resultado
   legendaDoMapa?(acao: 'abrir' | 'fechar'): Resultado
+  /** 12ª entrega: enquadrar um rio inteiro ou as barragens; fechar o painel da cidade; o menu de cidades. */
+  enquadrar?(alvo: { tipo: 'rio'; rioId: 'itajai-acu' | 'itajai-mirim' } | { tipo: 'barragens' }): Resultado
+  fecharPainel?(): Resultado
+  menuDeCidades?(acao: 'abrir' | 'fechar'): Resultado
   /** Marca um ponto (confluência) e centra nele; null tira a marca. */
   marcarPonto?(p: MarcaNoMapa | null): Resultado
   explicar(cidadeId: string): Explicacao | null

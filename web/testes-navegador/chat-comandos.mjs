@@ -28,6 +28,7 @@
  *  - 10ª entrega: continuação sem "Entendi como"; "e Gaspar" sem pedido anterior que adivinha; comando refeito
  *    que não executa.
  *  - 11ª entrega: verbete sem a régua de cada cidade ou sem o 199; voz que trava a tela.
+ *  - 12ª entrega: painel ou menu que não abre ou fecha de verdade; rio ou barragens que não enquadram.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -373,7 +374,25 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 13. Página com chat próprio: a barra do topo some.
+  // 13. 12ª entrega: o Monitor, peça por peça.
+  {
+    const { b, pg, erros } = await abrir('#/monitor/blumenau', { largura: w, altura: h })
+    const painel = () => pg.locator('button[aria-label^="Fechar o painel de"]').count()
+    ok((await painel()) >= 1, 'Monitor de Blumenau: o painel da cidade abre junto')
+    let r = await pedirAte(pg, 'fechar o painel', /fechado|Não há painel/)
+    ok(/Painel de Blumenau fechado/.test(r) && (await painel()) === 0, 'fechar o painel: saiu da tela')
+    await pedirAte(pg, 'abrir o menu de cidades', /Menu de cidades/)
+    ok(await pg.locator('#menu-cidades').isVisible(), 'abrir o menu de cidades: visível')
+    await pedirAte(pg, 'fechar o menu', /fechado/)
+    ok((await pg.locator('#menu-cidades').count()) === 0, 'fechar o menu: saiu da tela')
+    r = await pedirAte(pg, 'ver o Itajaí-Mirim no mapa', /Itajaí-Mirim/)
+    ok(/Mapa enquadrado no Itajaí-Mirim: as \d+ cidades/.test(r), `rio no mapa: enquadrado (${r.slice(0, 50)}…)`)
+    r = await pedirAte(pg, 'zoom nas barragens', /barragens/)
+    ok(/Mapa enquadrado nas barragens|ainda não têm posição/.test(r), 'barragens: enquadradas, ou o motivo')
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 14. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

@@ -28,7 +28,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• o rio agora: "quanto falta para a cota?", "está subindo ou descendo?", "máximo das últimas 24 h", "quais cidades estão em alerta?", "o que vem de cima?", "mostrar só as cidades em alerta";',
         '• a foz: "o pico de Blumenau já passou?", "se o pico de Blumenau for às 22h"; o mapa: "o que significa a cor laranja?", "explicar as cores", "pausar as animações", "abrir a legenda";',
         '• o site: "atualizar as leituras", "isso é oficial?", "como instalar o aplicativo?", "o que o site guarda de mim?", "apagar minhas preferências", "limpar a conversa", "telefone de emergência";',
-        '• palavras do rio: "o que é cota?", "o que é jusante?", "qual a diferença entre enchente e alagamento?"; "ler em voz alta" e "parar de ler".',
+        '• palavras do rio: "o que é cota?", "o que é jusante?", "qual a diferença entre enchente e alagamento?"; "ler em voz alta" e "parar de ler";',
+        '• o mapa, peça por peça: "ver o Itajaí-Mirim no mapa", "zoom nas barragens", "fechar o painel", "abrir o menu de cidades".',
         'E perguntas: "como está Blumenau?", "maior cheia de Rio do Sul", "quanto tempo a cheia leva de Rio do Sul até Blumenau?".',
         'Tela cheia é pelo botão "Tela cheia": o navegador só abre com o seu toque.',
       ]

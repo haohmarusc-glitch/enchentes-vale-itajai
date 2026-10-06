@@ -1310,6 +1310,43 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         const lista = nomes.length > 10 ? `${nomes.slice(0, 10).join(', ')} e mais ${nomes.length - 10}` : nomes.join(', ')
         return { ok: true, texto: `Filtro ligado: a bacia inteira, só com o que está sem leitura de agora (${nomes.length}): ${lista}. "Sem leitura" é sem medição, sem horário ou com leitura de mais de 3 h. Peça "limpar filtros" para voltar.` }
       },
+      // 12ª entrega: enquadrar um rio inteiro (as cidades dele no mapa) ou as barragens, pelo mesmo
+      // `vistaQueCabeAsReguas` do pino da cidade; fechar o painel; o menu de cidades.
+      enquadrar: (alvo) => {
+        if (municipal) return { ok: false, texto: 'O Monitor de Ascurra mostra só a régua de Ascurra.' }
+        const cena = cenaRef.current
+        if (!cena) return { ok: false, texto: 'O mapa ainda não está pronto.' }
+        const pontos = alvo.tipo === 'rio'
+          ? pinosTodosRef.current.filter((p) => p.rioId === alvo.rioId).map((p) => ({ lat: p.lat, lon: p.lon }))
+          : barragensRef.current.map((b) => ({ lat: b.lat, lon: b.lon }))
+        const nomeRio = alvo.tipo === 'rio' ? (alvo.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu') : ''
+        if (pontos.length === 0) {
+          return { ok: false, texto: alvo.tipo === 'rio' ? `O ${nomeRio} não tem cidade no mapa agora.` : 'As barragens ainda não têm posição no mapa (a fonte não respondeu). Peça "como estão as barragens?" para o estado das comportas.' }
+        }
+        const v = vistaQueCabeAsReguas(undefined, pontos, cena.limitesBase, cena.largura > 0 ? cena.altura / cena.largura : 1)
+        if (!v) return { ok: false, texto: 'Não consegui enquadrar esses pontos no mapa.' }
+        setSel(null)
+        setReguaSel(null)
+        setVista(v)
+        return {
+          ok: true,
+          texto: alvo.tipo === 'rio'
+            ? `Mapa enquadrado no ${nomeRio}: as ${pontos.length} cidades com régua dele, com os afluentes. Cada cor é a faixa da cidade na régua dela.`
+            : `Mapa enquadrado nas barragens de contenção (${pontos.length}), comporta a comporta. Peça "como estão as barragens?" para o estado e a hora de cada uma.`,
+        }
+      },
+      fecharPainel: () => {
+        if (!sel) return { ok: true, texto: 'Não há painel de cidade aberto.' }
+        setSel(null)
+        return { ok: true, texto: `Painel de ${sel.cidade.nome} fechado. O mapa continua no mesmo lugar.` }
+      },
+      menuDeCidades: (acao) => {
+        if (municipal) return { ok: false, texto: 'O Monitor de Ascurra não tem menu de cidades.' }
+        const abrir = acao === 'abrir'
+        if (menuAberto === abrir) return { ok: true, texto: abrir ? 'O menu de cidades já está aberto.' : 'O menu de cidades já está fechado.' }
+        setMenuAberto(abrir)
+        return { ok: true, texto: abrir ? 'Menu de cidades aberto: toque numa cidade para ir até ela, ou peça "mostrar Gaspar".' : 'Menu de cidades fechado.' }
+      },
       // 7ª entrega: os mesmos estados do botão "Pausar/Retomar animações" e do "abrir/recolher" da legenda.
       animacoes: (acao) => {
         if (acao === 'pausar') {
