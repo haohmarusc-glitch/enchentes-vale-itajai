@@ -125,14 +125,55 @@ class CabeceiraDoSul(unittest.TestCase):
         self.assertNotEqual(ct.ATRIBUICAO_ASTHON, ct.ATRIBUICAO)
         self.assertIn("Rio do Sul", ct.ATRIBUICAO_ASTHON)
 
-    def test_o_arquivo_gravado_diz_que_a_cobertura_e_parcial(self):
+    def test_o_arquivo_gravado_diz_de_onde_veio(self):
+        """Com o bruto do OSM (06/10/2026), o Sul inteiro, recortado na caixa; sem ele, o da Asthon, parcial."""
         caminho = ct.SAIDA / "itajai-do-sul.geojson"
         if not caminho.exists():
             self.skipTest("rode scripts/converter_tracado_rios.py")
         props = json.loads(caminho.read_text(encoding="utf-8"))["properties"]
-        self.assertIn("PARCIAL", props["cobertura"])
-        self.assertIn("Ituporanga", props["cobertura"])
-        self.assertEqual(props["fonte"], ct.ATRIBUICAO_ASTHON)
+        if ct.BRUTOS_AFLUENTES["itajai-do-sul"].exists():
+            self.assertEqual(props["fonte"], ct.ATRIBUICAO)
+            self.assertIn("RECORTADO", props["cobertura"])
+        else:
+            self.assertIn("PARCIAL", props["cobertura"])
+            self.assertIn("Ituporanga", props["cobertura"])
+            self.assertEqual(props["fonte"], ct.ATRIBUICAO_ASTHON)
+
+
+class AfluentesBaixadosEm06De10(unittest.TestCase):
+    """Benedito, Itajaí do Sul e Trombudo: recortados na caixa do mapa, passando pela régua da cidade."""
+
+    def test_recorte_na_caixa_parte_a_linha_que_sai_e_volta(self):
+        caixa = (-50.0, -27.5, -49.0, -26.8)
+        linha = [[-49.5, -27.0], [-49.5, -26.9], [-49.5, -26.7], [-49.5, -26.85], [-49.5, -26.82]]
+        self.assertEqual(ct.recortar_na_caixa([linha], caixa),
+                         [[[-49.5, -27.0], [-49.5, -26.9]], [[-49.5, -26.85], [-49.5, -26.82]]])
+
+    def test_o_trombudo_nao_pega_outro_rio_e_o_sul_nao_pega_o_oeste(self):
+        elementos = [way("Rio Trombudo"), way("Rio Itajaí do Sul"), way("Rio Itajaí do Oeste")]
+        self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["trombudo"])), 1)
+        self.assertEqual(len(ct.linhas_por_substring(elementos, ct.RIOS_AFLUENTES["itajai-do-sul"])), 1)
+
+    def test_os_arquivos_gravados_cabem_na_caixa_e_passam_pela_regua(self):
+        import math
+        k = math.cos(math.radians(27))
+        estacoes = json.loads((ct.RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
+        cidades = {c["id"]: c for r in estacoes["rios"].values() for c in r["cidades"]}
+        tronco = [l for r in ("itajai-acu", "itajai-mirim")
+                  for l in json.loads((ct.SAIDA / f"{r}.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"]]
+        oeste, sul, leste, norte = ct.caixa_do_mapa(tronco)
+        vistos = 0
+        for rio, cidade, limite in (("benedito", "timbo", 0.5), ("itajai-do-sul", "ituporanga", 0.5), ("trombudo", "trombudo-central", 1.0)):
+            if not ct.BRUTOS_AFLUENTES[rio].exists():
+                continue
+            pts = [p for l in json.loads((ct.SAIDA / f"{rio}.geojson").read_text(encoding="utf-8"))["geometry"]["coordinates"] for p in l]
+            self.assertTrue(all(oeste <= p[0] <= leste and sul <= p[1] <= norte for p in pts), f"{rio} sai da caixa do mapa")
+            lat, lon = cidades[cidade]["coordenadas"]
+            d = min(math.hypot((p[0] - lon) * k, p[1] - lat) * 111.32 for p in pts)
+            self.assertLess(d, limite, f"{rio} fica a {d:.2f} km da régua de {cidade}")
+            vistos += 1
+        if not vistos:
+            self.skipTest("sem os brutos: workflow baixar-tracados-afluentes.yml")
 
 
 class TesteHercilio(unittest.TestCase):
