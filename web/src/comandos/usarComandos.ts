@@ -4,7 +4,8 @@
  */
 import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { estacoes, estacoesTempoReal } from '../dados/carregar'
+import { estacoes, estacoesTempoReal, mareItajai } from '../dados/carregar'
+import { buscarBarragens } from '../dados/barragens'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { reguasNoMapa } from '../logica/reguasNoMapa'
 import { abrirPainel, acrescentar, marcarOcupado } from '../chat-local/conversa'
@@ -190,6 +191,12 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
           cotasRuas: () => carregarCotasRuas().catch(() => null),
           localizacao,
           preferencias,
+          barragens: () => buscarBarragens(),
+          mare: () => mareItajai,
+          fontesDaCidade: (id: string) => {
+            const c = cidadeDoCadastro(id)?.cidade as { fontes_tempo_real?: unknown } | undefined
+            return Array.isArray(c?.fontes_tempo_real) ? c.fontes_tempo_real.filter((f): f is string => typeof f === 'string') : []
+          },
         },
       }
       let saida: Saida | null = null

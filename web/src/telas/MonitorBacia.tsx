@@ -1293,6 +1293,35 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         const lista = nomes.length > 10 ? `${nomes.slice(0, 10).join(', ')} e mais ${nomes.length - 10}` : nomes.join(', ')
         return { ok: true, texto: `Filtro ligado: a bacia inteira, só com o que está sem leitura de agora (${nomes.length}): ${lista}. "Sem leitura" é sem medição, sem horário ou com leitura de mais de 3 h. Peça "limpar filtros" para voltar.` }
       },
+      // A reprodução das últimas 24 h, pelos mesmos estados do botão "Reproduzir 24 h" e da barra de tempo.
+      reproducao: (p) => {
+        if (municipal) return { ok: false, texto: 'A reprodução não existe no Monitor de Ascurra.' }
+        if (grade.length === 0) return { ok: false, texto: 'Ainda não há série publicada para reproduzir.' }
+        const quando = (i: number) => dataHora(new Date(grade[i]!))
+        if (p.acao === 'tocar') {
+          setIdxRepro((x) => (x == null ? 0 : x))
+          setTocando(true)
+          return { ok: true, texto: `Reproduzindo as últimas horas medidas, de ${quando(0)} até agora, de meia em meia hora. É o que já foi medido, não previsão; no fim, o mapa volta ao vivo.` }
+        }
+        if (p.acao === 'pausar') {
+          if (!tocando) {
+            return { ok: true, texto: idxRepro == null ? 'A reprodução não está tocando: o mapa mostra as leituras mais recentes.' : `A reprodução já está parada em ${quando(idxRepro)}.` }
+          }
+          setTocando(false)
+          return { ok: true, texto: `Reprodução pausada em ${quando(idxRepro ?? 0)}. Peça "ir para a leitura mais recente" para voltar ao agora.` }
+        }
+        const t = p.instante.getTime()
+        if (t < grade[0]!) return { ok: false, texto: `A reprodução só cobre desde ${quando(0)}.` }
+        let i = 0
+        for (let k = 0; k < grade.length; k++) if (grade[k]! <= t) i = k
+        setTocando(false)
+        if (i >= grade.length - 1) {
+          setIdxRepro(null)
+          return { ok: true, texto: 'Esse horário é o mais recente: o mapa mostra as leituras ao vivo.' }
+        }
+        setIdxRepro(i)
+        return { ok: true, texto: `Mapa em ${quando(i)}, com a última leitura de cada cidade até esse instante — passado, não agora. Peça "ir para a leitura mais recente" para voltar.` }
+      },
       marcarPonto: (p) => {
         if (!p) {
           setMarca(null)
