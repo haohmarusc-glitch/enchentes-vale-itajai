@@ -600,3 +600,26 @@ arquivo do Monitor.
     site, o texto para a voz e o executor com e sem voz no navegador;
   - `testes-navegador/chat-comandos.mjs`, seção 12: cota, enchente × alagamento, "ler em voz alta" e
     "parar de ler".
+
+## Décima segunda entrega (06/10/2026): o Monitor, peça por peça
+
+A 12ª entrega dá ao chat as últimas peças do Monitor que só se alcançavam com o dedo: enquadrar um rio inteiro
+ou as barragens, fechar o painel da cidade e abrir ou fechar o menu de cidades.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "ver o Itajaí-Mirim no mapa", "zoom no Itajaí-Açu", no Monitor "mostrar o Itajaí-Mirim" | Enquadra as cidades com régua do rio (com os afluentes) pelo mesmo `vistaQueCabeAsReguas` do pino da cidade. Diz quantas são e que cada cor é a faixa da cidade na régua dela. | Mudar a página fora do Monitor: lá, "mostrar o Itajaí-Açu" continua abrindo a página do rio (1ª entrega). |
+| "zoom nas barragens", "mostrar as barragens no mapa", "onde ficam as barragens?" | Enquadra os marcadores das barragens. Sem posição (fonte fora do ar), diz isso e aponta "como estão as barragens?". | Responder o estado das comportas aqui: isso é da 5ª entrega. |
+| "fechar o painel" | Fecha o painel da cidade; o mapa fica onde está. | — |
+| "abrir o menu de cidades", "fechar o menu" | O botão "Cidades ▾" do topo. | Existir no Monitor de Ascurra, que não tem menu. |
+
+- **"No mapa":** o chat tirava "no mapa" do fim da frase como cortesia. Agora o pedido do rio e das barragens é lido
+  no texto inteiro antes disso, e "ver o Itajaí-Mirim no mapa" de qualquer página abre o Monitor no rio.
+- **No Monitor (rótulo `monitor-autorizado`):** `MonitorBacia.tsx` registra `enquadrar`, `fecharPainel` e
+  `menuDeCidades` na ponte, sobre os mesmos `setVista`, `sel` e `menuAberto` dos botões. Sem pedido, nada muda:
+  a `trava-monitor` passa com a referência atual.
+- **Testes:**
+  - `src/comandos/decimasegunda.test.ts` (3): frases (com "no mapa" e com o contexto do Monitor), o executor
+    abrindo o Monitor e usando a ponte, a ajuda;
+  - `testes-navegador/chat-comandos.mjs`, seção 13: o painel fecha de verdade, o menu abre e fecha, o Itajaí-Mirim
+    enquadrado, as barragens.
