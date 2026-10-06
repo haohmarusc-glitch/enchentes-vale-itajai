@@ -248,8 +248,8 @@ Quem está logado e quem entrou, só para o admin (`haohmarusc@gmail.com`).
 - **Para ver:** abrir `/#/admin/acessos` no site.
   - "Logados agora" = abriu uma página nos últimos 15 minutos.
   - O login em si, com IP e país, continua no painel da Cloudflare: Zero Trust → Logs → Access.
-- **Transparência:** o aviso legal de toda página diz que o e-mail e a data do acesso são registrados para a
-  administração e apagados em 90 dias.
+- **Sem aviso na tela:** por decisão do Jefferson (06/10/2026), o registro é só para controle interno e o aviso
+  legal não fala dele.
 
 ## O estado de hoje (conferido em 05/09/2026)
 

@@ -505,7 +505,7 @@ o projeto.
     primeiro e o último acesso e em quantos dias entrou.
   - Grava só e-mail e datas no KV `CHAT_IA`, com expiração de 90 dias. A API devolve 404 a quem não está em
     `ADMIN_EMAILS`.
-  - O aviso legal ganhou uma linha sobre o registro.
+  - Sem aviso na tela: o registro é só para controle interno (decisão do Jefferson).
   - [ ] **Criar a variável `ADMIN_EMAILS` = `haohmarusc@gmail.com` no Cloudflare Pages** (passo a passo em
     `docs/PUBLICACAO-E-ACESSO.md`, "Registro de acessos").
  (05/10/2026, pedido do Jefferson para ajudar a Defesa Civil de Ibirama).**
