@@ -27,7 +27,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• "onde está chovendo mais?", "como estão as barragens?", "como está a maré?", "de onde vem essa leitura?";',
         '• o rio agora: "quanto falta para a cota?", "está subindo ou descendo?", "máximo das últimas 24 h", "quais cidades estão em alerta?", "o que vem de cima?", "mostrar só as cidades em alerta";',
         '• a foz: "o pico de Blumenau já passou?", "se o pico de Blumenau for às 22h"; o mapa: "o que significa a cor laranja?", "explicar as cores", "pausar as animações", "abrir a legenda";',
-        '• o site: "atualizar as leituras", "isso é oficial?", "como instalar o aplicativo?", "o que o site guarda de mim?", "apagar minhas preferências", "limpar a conversa", "telefone de emergência".',
+        '• o site: "atualizar as leituras", "isso é oficial?", "como instalar o aplicativo?", "o que o site guarda de mim?", "apagar minhas preferências", "limpar a conversa", "telefone de emergência";',
+        '• palavras do rio: "o que é cota?", "o que é jusante?", "qual a diferença entre enchente e alagamento?"; "ler em voz alta" e "parar de ler".',
         'E perguntas: "como está Blumenau?", "maior cheia de Rio do Sul", "quanto tempo a cheia leva de Rio do Sul até Blumenau?".',
         'Tela cheia é pelo botão "Tela cheia": o navegador só abre com o seu toque.',
       ]
@@ -46,6 +47,7 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         `• o rio agora: "quanto falta para a cota em ${aqui}?", "${aqui} está subindo?", "máximo das últimas 24 h em ${aqui}", "quais cidades estão em alerta?", "o que vem de cima para ${aqui}?";`,
         '• a foz: "o pico de Blumenau já passou?", "se o pico de Blumenau for às 22h"; as cores: "o que significa a cor laranja?", "explicar as cores";',
         '• o site: "atualizar as leituras", "isso é oficial?", "como instalar o aplicativo?", "o que o site guarda de mim?", "apagar minhas preferências", "limpar a conversa";',
+        '• palavras do rio: "o que é cota?", "o que é jusante?", "qual a diferença entre enchente e alagamento?"; "ler em voz alta";',
         '• perguntas: "como está Blumenau?", "as 5 maiores cheias de Brusque", "cheias de 2008".',
       ]
   const sugestoes = ctx.naMonitor

@@ -591,6 +591,9 @@ o projeto.
   - [x] **Décima entrega (06/10/2026): a conversa que continua.** "E Gaspar?", "e em 2011?" e "de novo" refazem o
     último pedido com uma troca só, sempre com "Entendi como: …"; sem pedido anterior, ou com duas cidades nele, o
     chat pergunta em vez de adivinhar.
+  - [x] **Décima primeira entrega (06/10/2026): as palavras do rio e a resposta em voz alta.** "O que é cota?",
+    "o que significa jusante?", "qual a diferença entre enchente e alagamento?" (18 verbetes, com as regras do site),
+    e "ler em voz alta" pela voz do próprio navegador.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

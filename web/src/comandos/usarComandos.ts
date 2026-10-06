@@ -9,7 +9,8 @@ import { buscarBarragens } from '../dados/barragens'
 import historicoChegada from '@dados/historico-chegada-itajai.json'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { reguasNoMapa } from '../logica/reguasNoMapa'
-import { abrirPainel, acrescentar, limparConversa, marcarOcupado } from '../chat-local/conversa'
+import { abrirPainel, acrescentar, lerConversa, limparConversa, marcarOcupado } from '../chat-local/conversa'
+import { textoParaFala } from './fala'
 import { catalogoDoCadastro } from './catalogo'
 import { MUDA_A_TELA, baseDoSite, executar, type DadosDoChat, type Saida } from './executar'
 import type { PropriedadesDoTracado } from './respostas'
@@ -72,6 +73,27 @@ const preferencias: NonNullable<DadosDoChat['preferencias']> = {
     document.documentElement.dataset.letra = l
     avisarPreferencias()
   },
+}
+
+/**
+ * "Ler em voz alta": a voz do próprio navegador lê a última resposta do chat (a anterior a este pedido).
+ * Nada sai para servidor do site. "Parar de ler" cancela.
+ */
+function lerEmVoz(acao: 'ler' | 'parar'): 'lendo' | 'parado' | 'nada' | 'sem_suporte' {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return 'sem_suporte'
+  const voz = window.speechSynthesis
+  if (acao === 'parar') {
+    const falava = voz.speaking || voz.pending
+    voz.cancel()
+    return falava ? 'parado' : 'nada'
+  }
+  const ultima = [...lerConversa().msgs].reverse().find((m) => m.papel === 'assistente')
+  if (!ultima) return 'nada'
+  const fala = new SpeechSynthesisUtterance(textoParaFala(ultima.texto))
+  fala.lang = 'pt-BR'
+  voz.cancel()
+  voz.speak(fala)
+  return 'lendo'
 }
 
 /**
@@ -248,6 +270,7 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
             return ok
           },
           limparConversa,
+          voz: lerEmVoz,
           fontesDaCidade: (id: string) => {
             const c = cidadeDoCadastro(id)?.cidade as { fontes_tempo_real?: unknown } | undefined
             return Array.isArray(c?.fontes_tempo_real) ? c.fontes_tempo_real.filter((f): f is string => typeof f === 'string') : []

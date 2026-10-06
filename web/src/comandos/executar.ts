@@ -33,6 +33,7 @@ import { instantePedido, textoBarragens, textoChuvaAgora, textoFonteDaLeitura, t
 import type { Barragem } from '../dados/barragens'
 import type { TabuaMare, Trecho, TrechoExperimental } from '../dados/tipos'
 import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
+import { TERMOS, sugestoesDoVerbete, textoDoVerbete, verbeteDe } from './glossario'
 import { TEXTO_CONFIRMAR_ESQUECER, TEXTO_EMERGENCIA, TEXTO_OFICIAL, textoAtualizacao, textoInstalar, textoPrivacidade } from './site'
 import { textoChegadaItajai, textoLegenda, textoSimulacao, instanteDoPico, type ReferenciaChegada } from './foz'
 import { hojeEmItajai } from '../logica/hojeEmItajai'
@@ -84,6 +85,8 @@ export interface DadosDoChat {
   esquecer?(): boolean
   contagem?(permitir: boolean): boolean
   limparConversa?(): void
+  /** 11ª entrega: a voz do navegador lê a última resposta, ou para de ler. */
+  voz?(acao: 'ler' | 'parar'): 'lendo' | 'parado' | 'nada' | 'sem_suporte'
 }
 
 export interface Ambiente {
@@ -731,6 +734,23 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
       case 'limpar_conversa': {
         amb.dados?.limparConversa?.()
         return { texto: 'Conversa limpa. Ela nunca é gravada: fica só nesta aba e some ao fechar.' }
+      }
+      case 'glossario': {
+        const vs = passo.termos.map(verbeteDe).filter((v): v is NonNullable<typeof v> => v !== null)
+        if (!vs.length) return { texto: `Ainda não tenho essa palavra. Explico: ${TERMOS.join(', ')}.` }
+        return { texto: textoDoVerbete(vs), sugestoes: sugestoesDoVerbete(vs) }
+      }
+      case 'termos':
+        return { texto: `Explico estas palavras do rio: ${TERMOS.join('; ')}. Pergunte, por exemplo: "o que é cota?" ou "qual a diferença entre enchente e alagamento?".`, sugestoes: ['o que é cota?', 'o que é jusante?', 'qual a diferença entre enchente e alagamento?'] }
+      case 'voz': {
+        const r = amb.dados?.voz?.(passo.acao) ?? 'sem_suporte'
+        const textos = {
+          lendo: 'Lendo a última resposta em voz alta, com a voz do aparelho. Peça "parar de ler" para parar.',
+          parado: 'Parei de ler.',
+          nada: passo.acao === 'ler' ? 'Ainda não há resposta para ler nesta conversa.' : 'Não estou lendo nada agora.',
+          sem_suporte: 'Este navegador não tem leitura em voz alta. A tela continua com o texto; o leitor de tela do aparelho também pode ler.',
+        } as const
+        return { texto: textos[r] }
       }
       case 'tela_cheia': {
         if (ctx.naMonitor) return { texto: 'O navegador só abre a tela cheia com o seu toque: use o botão "Tela cheia" no bloco do topo do mapa. Para sair, o mesmo botão ou a tecla Esc.' }
