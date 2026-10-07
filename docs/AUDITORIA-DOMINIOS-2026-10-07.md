@@ -146,27 +146,10 @@ liberação. A investigação e o conserto de chuva e maré seguem em trabalho s
   `telemetriaws1.ana.gov.br`, os três espelhos Overpass, `www.defesacivil.sc.gov.br` e
   `defesacivil.brusque.sc.gov.br`. Precisam de nova tentativa, não de liberação.
 
-## 7. Trabalho pausado: Blumenau de 5 minutos (PADKND)
+## 7. Blumenau de 5 minutos (PADKND)
 
-A fonte de 5 min de Blumenau foi pausada para esta auditoria. Fica **separada** deste PR.
+Ficou separada desta auditoria. Foi pausada durante ela e retomada no mesmo dia como o **PR #507**, branch
+`claude/projeto-critico-seguranca-ubkk9l-blumenau5`.
 
-- **Branch:** `claude/projeto-critico-seguranca-ubkk9l-blumenau5`, criado de `origin/main` em f34fc03, sem
-  commits próprios.
-- **Stash:** `stash@{0}`, mensagem "wip blumenau 5min (pausado para auditoria de domínios)", commit `0dac622`.
-  Existe só no contêiner desta sessão. Cópia do diff na área de rascunho da sessão (`blumenau5-wip.patch`).
-- **O que contém:**
-  - `parse_blumenau()` e `conferir_com_alertablu()` em `scripts/coleta_itajai_portal.py`;
-  - `baixar_nivel_blumenau_5min()` em `scripts/coleta_niveis.py`;
-  - 17 testes em `scripts/teste_coleta_itajai_portal.py` (`TestBlumenauDe5Minutos`);
-  - o título `Blumenau (PADKND)` em `web/src/logica/camadaBlumenau.ts` e no teste dele.
-- **Teste pendente:** `TestBlumenauDe5Minutos.test_prova_velha_nao_vale` falha.
-  - **Causa:** erro no próprio teste, não no código. Cortar o AlertaBlu às 17:00Z deixa só dois pares (16:00 e
-    17:00) com a série da PADKND, que começa às 15:05Z. O motivo devolvido é "mínimo", não "prova velha".
-  - **Conserto:** cortar às 18:00Z, que dá três pares a ~9 h da leitura.
-  - Os outros 59 testes do arquivo passam.
-- **Para retomar:** `git checkout claude/projeto-critico-seguranca-ubkk9l-blumenau5 && git stash pop`. Depois:
-  - corrigir o teste;
-  - testar `coleta_niveis`;
-  - atualizar docs e README;
-  - rodar as suítes;
-  - abrir o PR rascunho.
+O stash (`0dac622`) foi aplicado e removido. O teste que estava pendente, `test_prova_velha_nao_vale`, foi corrigido
+cortando o AlertaBlu às 18:00Z, o que dá três pares a 9 h da leitura.
