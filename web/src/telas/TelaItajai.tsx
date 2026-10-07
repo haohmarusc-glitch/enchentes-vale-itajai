@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import SimulacaoChegada from '../componentes/SimulacaoChegada'
+import PainelMareMedida from '../componentes/PainelMareMedida'
 
 /**
  * O mapa carrega à parte, como o gráfico de picos.
@@ -89,6 +90,7 @@ export default function TelaItajai() {
             </>
           ) : null}
         </p>
+        <PainelMareMedida />
       </section>
 
       {/* AGORA, RÉGUA POR RÉGUA.

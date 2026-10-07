@@ -24,7 +24,8 @@
  * baixe os arquivos antes e aponte DADOS para a pasta deles:
  *
  *   mkdir -p /tmp/tr && for f in ultimo.json ultimo_barragens.json \
- *     ultimo_nivel_sc.json serie-recente.json ultimo_classificacao.json; do curl -sL \
+ *     ultimo_nivel_sc.json serie-recente.json ultimo_classificacao.json \
+ *     ultimo_mare_medida.json; do curl -sL \
  *     "https://raw.githubusercontent.com/haohmarusc-glitch/enchentes-vale-itajai/tempo-real/$f" \
  *     -o /tmp/tr/$f; done
  *   DADOS=/tmp/tr node testes-navegador/colisao-dos-controles.mjs
@@ -53,7 +54,7 @@ export async function abrir(rota, { largura = 1280, altura = 900, semRede = fals
   pg.on('console', m => { if (m.type() === 'error') erros.push(m.text().slice(0, 200)) })
   pg.on('pageerror', e => erros.push('PAGEERROR ' + e.message.slice(0, 200)))
   if (!semRede && DADOS) {
-    for (const f of ['ultimo.json', 'ultimo_barragens.json', 'ultimo_nivel_sc.json', 'serie-recente.json', 'ultimo_classificacao.json']) {
+    for (const f of ['ultimo.json', 'ultimo_barragens.json', 'ultimo_nivel_sc.json', 'serie-recente.json', 'ultimo_classificacao.json', 'ultimo_mare_medida.json']) {
       const caminho = `${DADOS}/${f}`
       if (!existsSync(caminho)) continue
       await pg.route(RAW + f, r => r.fulfill({

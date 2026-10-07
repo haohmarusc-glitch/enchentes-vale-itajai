@@ -494,8 +494,8 @@ o projeto.
     a rede estadual.
   - [x] Campo `regua_das_cotas_id` (aprovado pelo Jefferson em 07/10/2026), em seis cidades: Brusque, Ascurra, Rio dos
     Cedros, Rio do Sul, Blumenau e Gaspar.
-  - [x] Piloto ampliado (decisões do Jefferson, 07/10/2026). Depende do deploy na VPS (`deploy.sh`) para o arquivo de
-    produção trazer as duas cidades novas.
+  - [x] Piloto ampliado (decisões do Jefferson, 07/10/2026). Em produção desde o deploy de 07/10/2026 (583b056);
+    conferido nas coletas de 21h00 a 21h45 UTC, com o leitor do site classificando as três cidades pelo motor.
     - Blumenau entra só com publicações de referência validada: AlertaBlu e PADKND conferida.
     - Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas. A faixa estadual da DCSC-00011
       aparece como "faixa estadual"; sem ela, fica cinza.
@@ -503,7 +503,8 @@ o projeto.
   - [ ] Rio dos Cedros: pedir à COMPDEC a confirmação do zero e da vigência das cotas depois do desassoreamento de
     2026. **C32 rascunhado** em `docs/oficios-prontos.md` (07/10/2026) e deixado como rascunho no Gmail, na conversa do C29. Não enviado.
   - [ ] Sem `regua_das_cotas_id` por falta de prova escrita: Taió (régua das cotas em aberto), Indaial e Ilhota.
-  - [ ] Rio dos Cedros entra sem cor municipal enquanto `cotas_verificado` for false — decidir junto com o PR 2.
+  - [x] Rio dos Cedros sem cor municipal enquanto `cotas_verificado` for false: decidido pelo Jefferson em 07/10/2026,
+    sem exceção (`PILOTO_SEM_MUNICIPAL`); a cor é a faixa estadual quando válida, e cinza sem ela.
 
 - [x] **Rio dos Cedros: resposta da Defesa Civil ao C29 aplicada (07/10/2026, decisão do Jefferson).** A cidade tem uma
   única estação de nível, na ponte próxima ao Paço Municipal; o Paço é só referência. Resposta transcrita em
@@ -511,19 +512,22 @@ o projeto.
   - A DCSC-00011 virou a régua da cidade: equivalência "confirmada", `codigo_dcsc`, pino na coordenada da estação
     (antes na Praça Matriz, a 0,24 km) e lista `REGUAS_COM_COTA_PROPRIA`. Rio dos Cedros passa a pintar pelas cotas de
     4,80 / 5,30 / 5,70 m **depois do deploy do coletor na VPS** (o site lê a leitura que o coletor marca para cota).
+    **Superado no mesmo dia:** pela decisão do Jefferson no piloto da classificação, Rio dos Cedros fica sem cor
+    municipal até a COMPDEC confirmar as cotas (C32).
   - O pico de 8,96 m de 2014: 09/06/2014 às 00:45, confiança alta (antes 08/06, sem hora, baixa).
   - O traçado do Rio dos Cedros foi regerado pelo `converter_tracado_rios.py`: o quadro do mapa encolheu ~35 m ao sul
     com o pino novo, e o recorte acompanhou.
   - [ ] **Ainda aberto:** a COMPDEC não falou do zero da régua nem da vigência da escala depois do desassoreamento de
     2026 (`cotas_verificado` continua false). A DCSC classifica a estação com faixas próprias que não são as
     municipais (3,65 m já é "atenção" na rede estadual em 07/10/2026); o painel mostra as duas, rotuladas.
-- [ ] **Blumenau de 5 em 5 minutos (PADKND), 07/10/2026 — mergeado; falta o deploy na VPS.** `coleta_itajai_portal.parse_blumenau`
+- [x] **Blumenau de 5 em 5 minutos (PADKND), 07/10/2026 — em produção.** Conferido na coleta de 21h45 UTC:
+  `Blumenau (PADKND)` com `resgate_de: "Blumenau"` (4,83 m às 18h40, Brasília) ao lado do AlertaBlu (4,85 m às 18h00). `coleta_itajai_portal.parse_blumenau`
   lê a estação "AlertaBlu PADKND" do portal da Defesa Civil de Itajaí (`?municipio_id=3`). Ela vem sem coordenada, então a
   identidade é provada **por medição a cada coleta**: nas horas cheias em comum com o `nivel_oficial.json` do AlertaBlu
   (mínimo 3, a mais recente a até 3 h da leitura), o valor tem de ser o mesmo, com 1 cm de folga. Isso prova régua e
   relógio. Ao vivo, às 15:01 UTC, deu 10 pares com diferença de 0,00 m; a PADKND estava 11 min atrás e o AlertaBlu 61 min.
   Entra como `Blumenau (PADKND)` com `resgate_de: "Blumenau"` (nunca o título `Blumenau`, que é o repasse antigo 3 h
-  atrasado). O AlertaBlu horário segue como reserva; sem ele, a PADKND não entra. Falta o deploy na VPS. A série ganha
+  atrasado). O AlertaBlu horário segue como reserva; sem ele, a PADKND não entra. A série ganha
   um ponto por coleta (15 min), não os de 5 min.
 - [ ] **Chuva e maré de Itajaí leem fonte morta (achado da auditoria de domínios, 07/10/2026,
   `docs/AUDITORIA-DOMINIOS-2026-10-07.md`).** O host antigo `defesacivil.itajai.sc.gov.br` devolve HTTP 200 com uma
@@ -534,7 +538,18 @@ o projeto.
     errado viram falha (`chuva_ok: false`) mesmo com 200. Relatório: `docs/INVESTIGACAO-CHUVA-MARE-ITAJAI-2026-10-07.md`.
   - [x] Maré: `coleta_mares.py` recusa resposta inválida e não sobrescreve a tábua da Marinha. O portal novo publica
     só a imagem JPEG da tábua do mês (UNIVALI), e nenhum endpoint foi inventado.
-  - [ ] Deploy na VPS, e lá conferir a última chuva e a maré do CIRAM (comandos no relatório).
+  - [x] Chuva em produção: na coleta de 21h45 UTC, `chuva_ok: true` com as onze DC de Itajaí medidas às 18h30
+    (Brasília).
+  - [x] Maré do CIRAM conferida na VPS em 07/10/2026: o `ultimo_mare_ciram.json` é de 05/09/2026 02:29 UTC, o
+    crontab não tem linha de maré e nenhum código do site, do bot ou da publicação lê esse arquivo. O coletor rodou
+    à mão em 05/09 e nunca foi agendado, então nenhuma tela mostra maré velha: a de `/itajai` é a tábua da Marinha.
+  - [x] Maré medida do CIRAM ligada (decisão do Jefferson, 07/10/2026; `docs/MARE-MEDIDA-CIRAM.md`): coleta a cada
+    publicação, `ultimo_mare_medida.json` no `tempo-real` e painel "Maré medida perto da foz" em `/itajai`. A fonte
+    mede (Balneário Camboriú, a cada 15 min); horário e unidade conferidos contra a tábua da Marinha. Depende do
+    deploy na VPS.
+  - [ ] Referência vertical da maré medida: a fonte não diz a que zero o nível se refere, então a tela mostra
+    "referência pendente", sem número. Perguntar à EPAGRI/CIRAM (perguntas no doc); entrada em
+    `REFERENCIA_VERTICAL` só com fonte escrita, por decisão do Jefferson.
   - [ ] DC-00: cadastrar a coordenada (decisão do Jefferson); até lá ela fica fora da chuva.
 - [x] **Auditoria de 03/10/2026 (segunda rodada) — decidida em 04/10/2026** (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`; resumo de tudo em `docs/DECISOES-2026-10-04.md`). Guabiruba virou afluente lateral do Mirim (o Mirim agora é árvore); a DCSC-00029 vale no zero local abaixo de 10 m; Brusque ganhou o rótulo da opção B. **Falta:** conferir no servidor a data da volta da DCSC-00029 ao zero local (comandos no item 3 do doc) antes de pensar em juntar as duas séries.
   - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
@@ -547,7 +562,7 @@ o projeto.
   - [x] Rótulo do histórico de Brusque: opção B, aplicada em 04/10/2026 ("Histórico na régua da Ponte
     Estaiada", com os picos anteriores a 2019 à parte). O "Quanto falta" ainda usa os 28 picos.
 
-- Auditoria de 03/10/2026: vinculada localmente DCSC-00035 a Trombudo Central, conforme identidade na API oficial. Trombudo tem leitura bruta recente (1,18 m às 20:50), sem equivalência comprovada com cotas municipais. Apiúna (DCSC-00178, nome com H) retorna 81,57 m e segue excluída pelo filtro de altitude; Lontras retorna 21.474.836 e Indaial retorna null. Guabiruba retorna 0,63 m, mas permanece bloqueada até reconciliar a mudança de referência. Não liberar alertas municipais nem converter essas grandezas por suposição. A `inundacao_historica` de Trombudo Central não pinta faixa: a leitura aparece só como número bruto da rede estadual. **Falta o deploy na VPS** (`scripts/deploy.sh`).
+- Auditoria de 03/10/2026: vinculada localmente DCSC-00035 a Trombudo Central, conforme identidade na API oficial. Trombudo tem leitura bruta recente (1,18 m às 20:50), sem equivalência comprovada com cotas municipais. Apiúna (DCSC-00178, nome com H) retorna 81,57 m e segue excluída pelo filtro de altitude; Lontras retorna 21.474.836 e Indaial retorna null. Guabiruba retorna 0,63 m, mas permanece bloqueada até reconciliar a mudança de referência. Não liberar alertas municipais nem converter essas grandezas por suposição. A `inundacao_historica` de Trombudo Central não pinta faixa: a leitura aparece só como número bruto da rede estadual. **Em produção:** na coleta de 21h45 UTC de 07/10/2026, a DCSC-00035 sai em `ultimo_nivel_sc.json` como `trombudo-central`, `datum: bruto_estadual`, `usar_para_cota: false`.
 
 - [ ] **Decisões de 04/10/2026 — o que ficou para o Jefferson** (`docs/DECISOES-2026-10-04.md`, seção "O que depende do Jefferson"): data da volta da DCSC-00029; ligar o Actions de Gaspar (merge, permissão do token, `pull` na VPS); fonte autorizada para Indaial; Visconde de Cairu e ofício à COMPDEC de Rio do Sul; aguardar a resposta do INMET ao C31; criar o KV da contagem do chat; e, em Brusque, se o "Quanto falta" deve deixar de usar os picos anteriores a 2019. Ibirama (tabela de 2024 só histórica) e Timbó (sem vínculo com a DCSC-00023) seguem sem cor automática até confirmação oficial. **Ibirama, 05/10/2026:** a COMPDEC confirmou a régua (DCSC-00020); falta só a tabela, que sai no PLAMCON 2026 (`docs/resposta-ibirama-c26-2026-10-05.md`).
 - [x] **Chat do site: a contagem "quantas cheias passaram de X m" misturava escalas — corrigido em 04/10/2026; e agora responde pela cota da rua.** Somava régua de hoje, zero do IBGE e pico sem referência e dizia "na régua local" (Blumenau ≥ 10 m: 72, quando só 32 estão na régua). Agora conta numa escala só e diz quantos ficaram de fora e por quê. Pergunta nova (`rua_historico`): "quantas cheias chegaram à cota da Rua X em Cidade?" — conta só picos na régua, nunca diz "a rua alagou N vezes", e vem com a ressalva (cota de hoje, de um ponto, lista incompleta). Regras em `docs/CHAT-LOCAL.md`.

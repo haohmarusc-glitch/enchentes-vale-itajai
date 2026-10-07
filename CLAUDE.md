@@ -119,6 +119,17 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Não é alerta e não vai para a tela. Usa-se só na conta `nivel_antes.py --registradas`.
 - As regras moram em `ruas_alagadas.validar`, que o `validar_dados.py` também chama.
 
+### Maré medida do CIRAM — REGRA (decisão de 07/10/2026)
+- Coleta a cada publicação (`coleta_mare_ciram.py --publicar`, uma consulta), arquivo `ultimo_mare_medida.json`,
+  painel "Maré medida perto da foz" em `/itajai`. Detalhes em `docs/MARE-MEDIDA-CIRAM.md`.
+- Número só com horário, estação, unidade e **referência vertical** identificados. Hoje a referência está pendente
+  (`REFERENCIA_VERTICAL` vazio, teste trava): a tela diz "referência pendente", sem número. Entrada nova só com a
+  fonte escrita, por decisão do Jefferson.
+- A diferença se chama **"diferença entre nível observado e maré astronômica prevista"**, vem da mesma linha da mesma
+  estação e nunca é atribuída só a vento e pressão (pode ter influência do rio). Nunca "maré meteorológica" na tela.
+- Leitura antiga nunca como atual: medição com mais de 60 min ou do futuro é "Medição indisponível". A tábua da
+  Marinha continua sendo a previsão, com fonte e horário à parte.
+
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
   Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`

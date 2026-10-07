@@ -16,10 +16,12 @@ O projeto já tinha tábua de maré (`data/mare-itajai.json`, planilha da UNIVAL
 que é PREVISÃO astronômica. O CIRAM traz o que a tábua não tem:
 
 * **maré observada** — medida, não prevista;
-* **residual = observada − astronômica**, que é a **maré meteorológica**: o
-  empilhamento de água por vento e pressão. É exatamente o que a tábua não
-  prevê e o que faz a água do rio não escoar. Um residual de 30 cm somado a
-  uma preamar de sizígia é a diferença entre o rio vazar e represar.
+* **a diferença entre o nível observado e a maré astronômica prevista** (a
+  coluna "residual" da fonte): o que a tábua não prevê. Ela NÃO é só vento e
+  pressão — pode trazer influência do rio e outros efeitos —, e por isso nunca
+  é chamada de "maré meteorológica" na tela (decisão do Jefferson, 07/10/2026).
+  Trinta centímetros a mais numa preamar de sizígia podem ser a diferença entre
+  o rio vazar e represar.
 
 ITAJAÍ NÃO PUBLICA MARÉ OBSERVADA
 ---------------------------------
@@ -108,6 +110,31 @@ FRESCA_MIN = 60
 #: Maré fora desta faixa (em cm) não é maré: é célula trocada ou unidade errada.
 #: A maior amplitude registrada no litoral catarinense fica bem dentro disto.
 MIN_CM, MAX_CM = -300.0, 300.0
+
+# --- Publicação (decisão do Jefferson, 07/10/2026) ---------------------------
+#
+# O publicador (`publicar_tempo_real.sh`) roda `--publicar` a cada 15 min: UMA
+# consulta, só à estação principal, e um arquivo pequeno para o site. A tela só
+# mostra o número quando a fonte identifica horário, estação, unidade e
+# referência vertical. A existência do endereço não prova que o marégrafo mede.
+
+ARQUIVO_PUBLICAVEL = "tempo-real/ultimo_mare_medida.json"
+URL_PAGINA = "https://ciram.epagri.sc.gov.br/index.php/maregrafos/"
+
+#: Referência vertical (o zero) CONFIRMADA de cada estação: {chave: {"descricao", "fonte"}}.
+#: Vazio de propósito. Conferido em 07/10/2026: nem o JSON nem a página dos marégrafos dizem a
+#: que zero a maré observada se refere (o "NMM" de cada estação é outro número: 66,4 em Balneário
+#: Camboriú, 55,2 em Florianópolis, 47,4 em Imbituba). Sem ela, a tela diz "referência pendente"
+#: e o arquivo publicado não leva número nenhum. Entrada nova só com a fonte escrita, por decisão
+#: do Jefferson — a mesma régua do `regua_das_cotas_id`.
+REFERENCIA_VERTICAL: dict[str, dict[str, str]] = {}
+
+#: O que se sabe do horário e da unidade, com a prova. A fonte não declara nenhum dos dois.
+HORARIO = ("Brasília, sem fuso. A fonte não declara o fuso; conferido em 07/10/2026: as preamares "
+           "astronômicas do CIRAM para Itajaí (12/2921) caem 10 a 25 min antes das da tábua da "
+           "Marinha em 06–09/10, nos quatro dias (em UTC seriam 3 h).")
+UNIDADE_NA_FONTE = ("centímetro. A fonte não declara a unidade; a preamar astronômica do CIRAM em "
+                    "Itajaí (108 em 07/10 12:15) bate com a da tábua da Marinha (1,02 m às 12:34).")
 
 
 def numero(celula) -> float | None:
@@ -217,7 +244,8 @@ def buscar(n: int, ident: int) -> dict:
 def coletar(agora: datetime, buscador=buscar) -> dict:
     saida: dict = {
         "_meta": {
-            "descricao": "Maré MEDIDA e residual (maré meteorológica) da EPAGRI/CIRAM.",
+            "descricao": "Maré MEDIDA da EPAGRI/CIRAM e a diferença entre nível observado e maré "
+                         "astronômica prevista.",
             "fonte": "EPAGRI/CIRAM — https://ciram.epagri.sc.gov.br/index.php/maregrafos/",
             "coletado_em": datetime.now(tz=FUSO_BRASILIA)
             .astimezone(ZoneInfo("UTC")).isoformat(timespec="seconds"),
@@ -225,10 +253,10 @@ def coletar(agora: datetime, buscador=buscar) -> dict:
                     "`coletado_em` é UTC — campos diferentes, não confundir.",
             "unidade": "A fonte publica em CENTÍMETROS. Cada valor sai em `_cm` e em `_m`; "
                        "comparar com régua de rio exige o `_m`.",
-            "residual": "residual = observada − astronômica = maré METEOROLÓGICA (vento e pressão). "
-                        "É o que a tábua astronômica não prevê e o que faz o rio não escoar. "
-                        "A coluna da fonte chama-se '(MA-MO)', mas os números são observada − "
-                        "astronômica; vale o número, não o rótulo.",
+            "residual": "residual = observada − astronômica: a diferença entre nível observado e maré "
+                        "astronômica prevista. Não se atribui só a vento e pressão: pode incluir "
+                        "influência do rio e outros efeitos. A coluna da fonte chama-se '(MA-MO)', "
+                        "mas os números são observada − astronômica; vale o número, não o rótulo.",
             "medido_vs_previsto": "A fonte devolve ~2 dias passados e ~2 futuros no MESMO vetor. "
                                   "Aqui saem separados: `medidas` (têm maré observada) e "
                                   "`previsoes` (só astronômica/MOHID). Nunca juntar.",
@@ -282,12 +310,102 @@ def coletar(agora: datetime, buscador=buscar) -> dict:
     return saida
 
 
+def resumo_publicavel(
+    chave: str,
+    medidas: list[dict],
+    agora: datetime,
+    gerado_em_utc: str,
+    referencias: dict[str, dict[str, str]] | None = None,
+) -> dict:
+    """
+    O arquivo pequeno que o site lê. `agora` é Brasília sem fuso; `gerado_em_utc`, ISO com fuso.
+
+    Número só vai quando a referência vertical da estação está confirmada E a medição é recente.
+    Com a referência pendente, vai só a hora da última medição — o que diz se o marégrafo está
+    medindo, sem afirmar um nível que ninguém sabe a que zero se refere. A diferença para a
+    astronômica sai da MESMA linha (mesma estação, mesmo horário): nunca da tábua da Marinha, que
+    é de outro ponto e de outro zero.
+    """
+    referencias = REFERENCIA_VERTICAL if referencias is None else referencias
+    n, ident, nome, km = ESTACOES[chave]
+    ref = referencias.get(chave) or {}
+    confirmada = bool(ref.get("descricao") and ref.get("fonte"))
+    ultima = medidas[-1] if medidas else None
+    idade = idade_min(ultima["medido_em"], agora) if ultima else None
+    if ultima is None:
+        situacao = "sem_medicao"
+    elif idade is None or idade < -15 or idade > FRESCA_MIN:
+        situacao = "sem_medicao_recente"
+    else:
+        situacao = "medindo"
+
+    medicao: dict | None = None
+    if ultima is not None:
+        medicao = {"medido_em": ultima["medido_em"]}
+        if confirmada and situacao == "medindo" and ultima.get("observada_m") is not None:
+            medicao["observada_m"] = ultima["observada_m"]
+            astr = ultima.get("astronomica_m")
+            medicao["astronomica_m"] = astr
+            medicao["diferenca_observado_astronomica_m"] = (
+                round(ultima["observada_m"] - astr, 3) if astr is not None else None)
+
+    return {
+        "versao": 1,
+        "gerado_em": gerado_em_utc,
+        "fonte": "EPAGRI/CIRAM — marégrafos",
+        "fonte_url": URL_PAGINA,
+        "estacao": {"id": chave, "nome": nome, "endpoint": f"getDataMare{n}_{ident}.php",
+                    "km_da_foz": km},
+        "horario": HORARIO,
+        "unidade": "m",
+        "unidade_na_fonte": UNIDADE_NA_FONTE,
+        "referencia_vertical": {
+            "status": "confirmada" if confirmada else "pendente",
+            "descricao": ref.get("descricao") if confirmada else None,
+            "fonte": ref.get("fonte") if confirmada else None,
+        },
+        "situacao": situacao,
+        "frescor_max_min": FRESCA_MIN,
+        "idade_min_na_coleta": idade,
+        "ultima_medicao": medicao,
+        "aviso": "Maré de Balneário Camboriú, a 13 km da foz: contexto, não o nível de Itajaí. A "
+                 "previsão astronômica do porto de Itajaí continua sendo a tábua da Marinha.",
+    }
+
+
+def publicar(agora: datetime, buscador=buscar) -> int:
+    """
+    `--publicar`: uma consulta, um arquivo pequeno. Falha APAGA o arquivo anterior — um de outra
+    coleta não pode passar por atual (o publicador ainda recusa o que tiver mais de 30 min).
+    """
+    from comum import DADOS
+    destino = DADOS / ARQUIVO_PUBLICAVEL
+    n, ident, nome, _ = ESTACOES[PRINCIPAL]
+    gerado = datetime.now(tz=ZoneInfo("UTC")).isoformat(timespec="seconds")
+    try:
+        medidas, _ = converter(buscador(n, ident), agora)
+    except Exception as e:  # noqa: BLE001 — a maré nunca segura a publicação do nível
+        destino.unlink(missing_ok=True)
+        print(f"aviso: maré do CIRAM ({nome}) indisponível ({e}); nada publicado", file=sys.stderr)
+        return 1
+    saida = resumo_publicavel(PRINCIPAL, medidas, agora, gerado)
+    grava_json(ARQUIVO_PUBLICAVEL, saida)
+    print(f"maré {nome}: {saida['situacao']}, referência {saida['referencia_vertical']['status']}"
+          f" -> data/{ARQUIVO_PUBLICAVEL}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description="Coleta a maré medida da EPAGRI/CIRAM.")
     p.add_argument("--arquivo", help="JSON já baixado de UMA estação, para conferir sem rede")
+    p.add_argument("--publicar", action="store_true",
+                   help="só a estação principal, no arquivo pequeno que o site lê")
     a = p.parse_args(argv)
 
     agora = datetime.now(tz=FUSO_BRASILIA).replace(tzinfo=None)
+
+    if a.publicar:
+        return publicar(agora)
 
     if a.arquivo:
         bruto = json.loads(open(a.arquivo, encoding="utf-8").read())
