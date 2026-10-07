@@ -58,6 +58,14 @@ class TesteGabaritoCompartilhadoComOSite(unittest.TestCase):
                 estado = {"cidades": {caso["cidade"]: r}}
                 self.assertEqual(cr.validar_estado(estado, agora), [], "a saída do motor passa no próprio validador")
 
+    def test_a_saida_do_motor_no_gabarito_esta_em_dia(self):
+        """O site é testado com o `motor` guardado em cada caso (PR 2): ele tem de ser o que o motor dá hoje."""
+        for caso in GABARITO["casos"]:
+            with self.subTest(caso["id"]):
+                self.assertIn("motor", caso, "rode: python3 scripts/classificar_reguas.py --gabarito")
+                self.assertEqual(caso["motor"], cr.motor_do_caso(ESTACOES, caso),
+                                 "motor mudou sem regerar: python3 scripts/classificar_reguas.py --gabarito")
+
     def test_sem_divergencia_declarada_o_site_pinta_o_mesmo(self):
         """O lado `site` do gabarito, lido como o motor lê: quem pinta e com que faixa."""
         for caso in GABARITO["casos"]:

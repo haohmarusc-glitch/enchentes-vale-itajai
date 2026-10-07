@@ -501,6 +501,29 @@ def _le(caminho: Path) -> dict:
     return d if isinstance(d, dict) else {}
 
 
+GABARITO = DADOS / "classificacao-esperada.json"
+
+
+def motor_do_caso(estacoes: dict, caso: dict) -> dict:
+    """A saída do motor para um caso do gabarito — o que o site recebe no `ultimo_classificacao.json`."""
+    agora = de_brasilia(caso["agora_brasilia"])
+    return montar_estado(estacoes, {"leituras": caso["leituras"]}, caso["nivel_sc"], agora, piloto=(caso["cidade"],))
+
+
+def regravar_gabarito(estacoes: dict) -> int:
+    """Grava em cada caso a saída do motor (`motor`), que o teste do site usa como entrada (PR 2).
+
+    Só a saída do motor é regerada; `esperado`, `site` e `diverge_do_site` são decisão e ficam como estão.
+    """
+    gabarito = json.loads(GABARITO.read_text(encoding="utf-8"))
+    for caso in gabarito["casos"]:
+        caso["motor"] = motor_do_caso(estacoes, caso)
+    tmp = GABARITO.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(gabarito, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    tmp.replace(GABARITO)
+    return len(gabarito["casos"])
+
+
 def inventario(estacoes: dict) -> list[tuple[str, list[str]]]:
     return [(chave, problemas_do_cadastro(c)) for chave, c in cidades_do_cadastro(estacoes).items()]
 
@@ -509,8 +532,13 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--gravar", action="store_true", help="grava data/tempo-real/ultimo_classificacao.json")
     ap.add_argument("--inventario", action="store_true", help="o que bloqueia cada cidade no motor")
+    ap.add_argument("--gabarito", action="store_true",
+                    help="regrava a saída do motor em cada caso de data/classificacao-esperada.json")
     a = ap.parse_args(argv)
     estacoes = le_json("estacoes.json")
+    if a.gabarito:
+        print(f"{regravar_gabarito(estacoes)} casos com a saída do motor → {GABARITO}")
+        return 0
     if a.inventario:
         for chave, problemas in inventario(estacoes):
             print(f"{chave}: {'pode entrar' if not problemas else 'bloqueada'}")

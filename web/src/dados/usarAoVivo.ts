@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { faixasDoMotor, useClassificacao, type EstadoClassificacao, type OrigemDaCor } from './classificacao'
 import { comReferenciaAscurra } from './referenciaAscurra'
 import { leituraDaCidade, leiturasDaCidade, useTempoReal, type EstadoTempoReal, type LeituraAoVivo } from './tempoReal'
 import { useNivelSc, type BrutoEstadual, type NivelSc } from './nivelSc'
@@ -17,6 +18,11 @@ export interface AoVivo {
   nivelSc: NivelSc
   serie: EstadoSerie
   agora: Date
+  /**
+   * A classificação estadual × municipal do motor Python (PR 2, 07/10/2026). Opcional: sem ela — ou
+   * quando ela não é desta coleta —, `estadoDaCidade` usa a regra de sempre.
+   */
+  classificacao?: EstadoClassificacao | null
 }
 
 export function useAoVivo(): AoVivo {
@@ -24,8 +30,9 @@ export function useAoVivo(): AoVivo {
   const nivelSc = useNivelSc()
   const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
   const serie = useSerieRecente()
-  const agora = useMemo(() => new Date(), [tempoReal])
-  return { tempoReal, nivelSc, serie, agora }
+  const classificacao = useClassificacao()
+  const agora = useMemo(() => new Date(), [tempoReal, classificacao])
+  return { tempoReal, nivelSc, serie, agora, classificacao }
 }
 
 /** O estado de UMA cidade, como os cartões precisam. */
@@ -49,6 +56,13 @@ export interface EstadoDaCidade {
    * vem de cota nossa, nunca dispara aviso, e a tela diz de quem é.
    */
   faixaEstadual: Faixa | null
+  /**
+   * De onde veio a cor, quando quem decidiu foi o motor de classificação (`ultimo_classificacao.json`).
+   * Null pela regra de sempre do site, ou quando nada pinta.
+   */
+  origemDaCor: OrigemDaCor | null
+  /** `motor` quando a faixa saiu do `ultimo_classificacao.json`; `site` pela regra de sempre. */
+  classificadaPor: 'motor' | 'site'
   serie: PontoSerie[]
 }
 
@@ -68,6 +82,24 @@ export function estadoDaCidade(cidade: Cidade, rioId: string, v: AoVivo): Estado
   const varias = leitura === null && todas.length > 1
   const estadual = v.nivelSc.get(cidade.id) ?? null
   const bruto = leitura === null && todas.length <= 1 ? estadual : null
+  const serie = serieDaCidade(v.serie, rioId, cidade.id)
+  // O motor decide quando a decisão dele é desta coleta e viu as mesmas medições que a tela mostra.
+  const motor = faixasDoMotor(
+    v.classificacao,
+    cidade.id,
+    rioId,
+    { leituraMedidaEm: leitura?.medidoEm, estadualMedidaEm: estadual?.medidoEm, varias },
+    v.agora,
+  )
+  if (motor) {
+    return {
+      leitura, todas, varias, bruto, estadual, serie,
+      faixa: motor.faixa,
+      faixaEstadual: motor.faixaEstadual,
+      origemDaCor: motor.origem,
+      classificadaPor: 'motor',
+    }
+  }
   const faixa = faixaDaCidade(cidade, leitura, varias, v.agora)
   // A municipal manda: a estadual só aparece quando a municipal não diz nada de agora.
   const municipalDeAgora =
@@ -80,6 +112,8 @@ export function estadoDaCidade(cidade: Cidade, rioId: string, v: AoVivo): Estado
     bruto,
     estadual,
     faixaEstadual: varias || municipalDeAgora ? null : faixaDaRedeEstadual(estadual, cidade.id, v.agora),
-    serie: serieDaCidade(v.serie, rioId, cidade.id),
+    origemDaCor: null,
+    classificadaPor: 'site',
+    serie,
   }
 }

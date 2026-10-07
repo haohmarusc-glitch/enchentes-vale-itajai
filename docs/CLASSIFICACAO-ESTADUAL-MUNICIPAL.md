@@ -1,10 +1,12 @@
-# Classificação estadual × municipal — PR 1: motor Python em paralelo (07/10/2026)
+# Classificação estadual × municipal (07/10/2026)
 
 O plano está em `PLANO_BACKEND_CLASSIFICACAO_ESTADUAL_MUNICIPAL.md`, enviado pelo Jefferson em 07/10/2026. O trabalho foi
 dividido em três PRs, começando depois da decisão sobre os PRs #504–#509, que foram todos mergeados:
 
-1. **Este PR.** O motor Python gera o estado em paralelo, e o site não muda o que consome.
-2. O site passa a consumir o estado (`ultimo_classificacao.json`).
+1. **PR 1 (#510, mergeado).** O motor Python gera o estado em paralelo, e o site não muda o que consome. Em produção
+   desde a coleta das 17h30 UTC de 07/10/2026.
+2. **PR 2.** O site passa a seguir o estado (`ultimo_classificacao.json`) nas telas que usam `estadoDaCidade` — ver
+   a seção "PR 2" abaixo.
 3. O Monitor passa a dizer qual classificação deu a cor.
 
 ## Decisões fechadas (Jefferson, 07/10/2026)
@@ -106,7 +108,7 @@ declarada (`diverge_do_site`):
 - **Site hoje:** compara essa leitura com as cotas da DCSC-00019 e pinta.
 - **Motor:** recusa, pela regra 1, e a cidade fica sem cor (a estadual não entra, porque há leitura municipal de agora).
 
-O site adota a regra no PR 2.
+O site adota a regra no PR 2, quando recebe o arquivo do motor desta coleta.
 
 ## Inventário: o que falta para cada cidade entrar
 
@@ -148,6 +150,53 @@ Saída de `python3 scripts/classificar_reguas.py --inventario` em 07/10/2026:
 - **Comparador especial**: Ascurra e Gaspar precisam ter a regra transcrita com o mesmo comparador da fonte, e um caso
   no gabarito, antes de entrar.
 
+## PR 2: o site segue o motor
+
+`web/src/dados/classificacao.ts` lê o `ultimo_classificacao.json` (rede primeiro, como o resto do branch `tempo-real`) e
+`estadoDaCidade` passa a usar a decisão do motor. Isso vale para o cartão "Agora", as listas, o início e o chat. O Monitor
+(`MonitorBacia`, `mapaMotor`) não lê o arquivo; isso é o PR 3.
+
+O site só segue o motor quando **todas** as condições abaixo valem. Basta uma falhar para a cidade voltar, naquela
+renderização, à regra de sempre (`faixaDaCidade` + `faixaDaRedeEstadual`):
+
+1. **O arquivo é desta coleta.** `versao: 1`, `gerado_em` com fuso, e no máximo 30 min de idade
+   (`MAX_IDADE_CLASSIFICACAO_MIN`, o mesmo limite do publicador).
+2. **A cidade está no arquivo e no mesmo rio.** Hoje é só Brusque.
+3. **O motor viu as mesmas medições que a tela mostra.** O `medido_em` da municipal e o da estadual precisam ser iguais
+   aos do `ultimo.json` e do `ultimo_nivel_sc.json` que o site buscou. Os três arquivos são buscados em separado e podem
+   vir de publicações vizinhas; sem isso, a cor seria de um número que não está na tela.
+4. **O arquivo é entendido.** Faixa fora do vocabulário, cor sem carimbo, municipal com `regua_da_leitura` ≠ `regua_id`
+   ou classificações trocadas fazem a cidade ser ignorada.
+
+**A idade é refeita no relógio de agora.** O motor rodou na hora da coleta. Uma leitura que estava "atrasada" naquela
+hora pode ter ficado velha minutos depois. O site então descarta a faixa velha e refaz a escolha (municipal manda;
+estadual só sem municipal de agora), com as faixas que o motor deu.
+
+`EstadoDaCidade` ganhou `classificadaPor` (`motor` ou `site`) e `origemDaCor` (tipo, régua, rótulo e, na estadual, o
+aviso "Não são as cotas do município"). A tela ainda não mostra a origem: os chips de hoje já separam a faixa municipal
+da estadual, que é tracejada e diz "Defesa Civil SC". Mostrar a origem é o PR 3.
+
+**O que muda para quem olha a tela de Brusque:** nada, enquanto a leitura vier da DCSC-00019, que é o caso real. Só muda
+no caso `leitura-de-outra-regua`: com uma leitura de outra régua, o cartão fica sem cor em vez de comparar com as cotas da
+DCSC-00019.
+
+**Até o PR 3, o mapa do Monitor ainda segue a regra antiga.** Nesse caso, e só nele, o mapa do Monitor pintaria e o cartão
+não. Hoje não acontece: a única leitura de Brusque é a DCSC-00019, porque o portal antigo de Itajaí saiu do ar em 19/09.
+
+### Testes do PR 2
+
+- **`data/classificacao-esperada.json`:** cada caso guarda agora a saída real do motor (`motor`), regerada por
+  `python3 scripts/classificar_reguas.py --gabarito`. O `teste_classificar_reguas.py` reprova se ela estiver
+  desatualizada.
+- **`web/src/logica/classificacaoParidade.test.ts`:**
+  - sem o arquivo do motor, o site dá o lado `site` (regra de sempre);
+  - com o arquivo, o site dá o `esperado` nos 17 casos, inclusive na divergência declarada.
+- **`web/src/dados/classificacao.test.ts`:** os portões (idade do arquivo, medições diferentes, cidade fora do piloto,
+  envelhecimento depois da coleta, arquivo quebrado ou estranho, arquivo ausente).
+- **Arquivos reais de produção (17h30 UTC de 07/10/2026):** o site usou o motor para Brusque (normal, municipal,
+  DCSC-00019).
+- **Navegador:** `/mirim/brusque` e `/mirim` abriram sem erro no console, com "Abaixo da atenção · 2,25 m".
+
 ## Depois do deploy, na VPS
 
 ```bash
@@ -160,10 +209,10 @@ No branch `tempo-real`, o `ultimo_classificacao.json` passa a ir junto com o `ul
 `/var/log/niveis.log` mostra o motivo (linha "aviso: classificação estadual × municipal não gerada" ou "ERRO:
 classificação recusada").
 
-## Fora deste PR
+## Fora destes PRs
 
 - **Conversões entre réguas** (§4 do plano): não há vínculo oficial cadastrado. Quando houver, entram como dado auditável,
   com testes próprios.
 - **Comparação numérica do lado estadual**: fica fora por decisão de 07/10/2026.
-- **Consumo pelo site (PR 2) e origem da cor no Monitor (PR 3).** O PR 3 mexe em arquivos do Monitor e precisa do rótulo
+- **Origem da cor no Monitor (PR 3).** O PR 3 mexe em arquivos do Monitor e precisa do rótulo
   `monitor-autorizado`.

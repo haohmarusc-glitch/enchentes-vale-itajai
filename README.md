@@ -480,14 +480,16 @@ o projeto.
 
 ## Pendências
 
-- [ ] **Classificação estadual × municipal — PR 1 (motor em paralelo), 07/10/2026; falta o deploy na VPS.**
+- [x] **Classificação estadual × municipal — PR 1 (motor em paralelo), 07/10/2026; em produção desde a coleta das 17h30 UTC.**
   `scripts/classificar_reguas.py` calcula, para o piloto Brusque, a classificação municipal (cotas 3,00/5,00 m na
   DCSC-00019) e a estadual (a faixa que a Defesa Civil de SC publica), e diz qual pinta o rio. O
   `publicar_tempo_real.sh` grava e publica `ultimo_classificacao.json` no branch `tempo-real`, sem o site ler.
   - Gabarito de 17 casos, compartilhado com o site: 16 iguais e 1 divergência declarada (leitura de outra régua, que o
     motor recusa).
   - Relatório e inventário em `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.
-  - [ ] PR 2: o site consome o arquivo.
+  - [x] PR 2: o site segue o motor em `estadoDaCidade` (cartão, listas, início e chat). Só faz isso com o arquivo desta
+    coleta e as mesmas medições da tela; senão, vale a regra de sempre. O mapa do Monitor ainda segue a regra antiga
+    até o PR 3.
   - [ ] PR 3: o Monitor diz qual classificação deu a cor (`monitor-autorizado`).
   - [ ] Proposta para o Jefferson: um campo que identifique a régua das cotas por código nas cidades lidas por
     título (Blumenau, Indaial, Rio do Sul…). Sem ele, elas não entram no motor.
