@@ -187,6 +187,77 @@ function cidadesDaLista(texto: string, cat: Catalogo): string[] | null {
   return unicos.length >= 2 ? unicos : null
 }
 /**
+ * 16ª entrega: as ruas pela cota, cidade inteira. O número vem como `normalizar` o deixa: "8,50 m" vira "8 50 m", e
+ * "50 cm" é centímetro. Só "quais/que ruas…": "qual a cota da rua X" e "manchas na rua X" continuam onde estavam.
+ */
+const NUM_M = '(\\d{1,2})(?: (\\d{1,2}))? ?(?:m|metros?)'
+const NUM_CM = '(\\d{1,3}) ?(?:cm|centimetros?)'
+const RUAS = '(?:quais|que|quantas|quantos) (?:sao )?(?:as )?(?:ruas|pontos de rua|pontos)'
+const ALAGAM = '(?:alagam|alagariam|alagarao|vao alagar|ficam alagadas|ficariam alagadas|ficam embaixo d agua|ficam debaixo d agua|a agua alcanca|a agua pega|o rio alcanca|o rio pega)'
+function metrosDitos(inteiro: string | undefined, decimal: string | undefined): number | null {
+  if (!inteiro) return null
+  const n = Number(`${inteiro}.${decimal ?? '0'}`)
+  return n > 0 && n < 25 ? n : null
+}
+function lerTrechoDaDecimaSexta(t: string, cat: Catalogo): Lido {
+  type P = Extract<Passo, { tipo: 'ruas_pela_cota' }>
+  const com = (alvo: string | undefined, resto: Omit<P, 'tipo' | 'cidadeId'>): Lido => {
+    const c = cidadeOpcional((alvo ?? '').replace(/^(?:em|de|do|da|no|na) /, '').trim(), cat)
+    return c ? [{ tipo: 'ruas_pela_cota', ...resto, ...c }] : null
+  }
+  // "quais ruas alagam se subir mais 50 cm em Blumenau?", "que ruas alagam com mais 1 m?"
+  {
+    const m =
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:se (?:o rio |o nivel )?(?:subir|subisse|aumentar) |com )?mais ${NUM_CM}(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:se (?:o rio |o nivel )?(?:subir|subisse|aumentar) |com )?mais ${NUM_M}(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) {
+      const cm = m.length === 3 ? Number(m[1]) : null
+      const subirM = cm != null ? cm / 100 : metrosDitos(m[1], m[2])
+      if (!subirM || subirM > 10) return null
+      return com(m[m.length - 1], { pergunta: 'proximas', subirM: Math.round(subirM * 100) / 100 })
+    }
+  }
+  // "quais ruas alagam com 8 m em Blumenau?", "se o rio chegar a 8,50 m, quais ruas alagam em Blumenau?"
+  {
+    const m =
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:com |a |em |no nivel de |com o rio (?:a|em) |se o rio (?:chegar|subir|estiver|for|bater) (?:a |em |ate |nos? )?)?${NUM_M}(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^(?:com |a |em |se o rio (?:chegar|subir|estiver|for|bater) (?:a |em |ate |nos? )?|se chegar (?:a |em )?)${NUM_M}(?: (?:em|de|no|na) (.+?))? ${RUAS} ${ALAGAM}(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) {
+      const nivelM = metrosDitos(m[1], m[2])
+      if (!nivelM) return null
+      const cidades = m.slice(3).filter(Boolean)
+      if (cidades.length > 1) return null
+      return com(cidades[0], { pergunta: 'nivel', nivelM })
+    }
+  }
+  // "quais ruas o rio já alcançou em Blumenau?", "que ruas estão alagadas agora em Blumenau?"
+  {
+    const m =
+      t.match(new RegExp(`^${RUAS} (?:o rio |a agua )?(?:ja )?(?:alcancou|atingiu|pegou|alagou|cobriu)(?: agora| ate agora)?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} (?:ja )?(?:estao|tao|ficam|estariam) (?:alagadas|alagando|na cota|embaixo d agua|debaixo d agua|com agua)(?: agora| neste momento)?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} (?:estao|tao) alagando(?: agora)?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:agora|hoje|neste momento|com o (?:rio|nivel) de agora)(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) return com(m[1], { pergunta: 'agora' })
+  }
+  // "quais são as próximas ruas a alagar em Blumenau?"
+  {
+    const m = t.match(new RegExp(`^${RUAS}(?: sao)? (?:as )?proximas(?: ruas)?(?: a alagar| que alagam| a serem alagadas| na fila)?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(/^(?:quais|que) (?:sao )?(?:as )?proximas ruas(?: a alagar| que alagam| a serem alagadas)?(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:em seguida|depois|a seguir|se (?:o rio )?continuar subindo)(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) return com(m[1], { pergunta: 'proximas' })
+  }
+  // "quais ruas alagam primeiro em Gaspar?", "quais são as ruas mais baixas de Blumenau?"
+  {
+    const m =
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:primeiro|antes|mais cedo|com o rio mais baixo|com menos agua)(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} (?:sao )?(?:as )?mais baixas(?: da cidade)?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} (?:tem|têm) (?:a )?(?:cota|cotas) mais baixas?(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) return com(m[1], { pergunta: 'primeiras' })
+  }
+  return null
+}
+
+/**
  * 15ª entrega: as cheias que a coleta do site já captou (`data/eventos-captados.json`). Perguntas sobre o passado
  * RECENTE: "última cheia", "o que o site captou", "nos últimos meses", "este ano", um mês sem ano (ou de 2026 em
  * diante) e um dia do mês. Ano antigo ("cheias de setembro de 2011") continua no motor, que lê enchentes.json.
@@ -683,6 +754,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const decimaSexta = lerTrechoDaDecimaSexta(t, cat)
+  if (decimaSexta) return decimaSexta
   const decimaQuinta = lerTrechoDaDecimaQuinta(t, cat)
   if (decimaQuinta) return decimaQuinta
   const decimaQuarta = lerTrechoDaDecimaQuarta(t, cat)

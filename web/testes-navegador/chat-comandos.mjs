@@ -32,6 +32,7 @@
  *  - 13ª entrega: várias cidades sem "não compare os metros" ou sem o 199; minhas cidades que não leem a escolha.
  *  - 14ª entrega: hora de cruzamento sem a hora da medição; "há quanto tempo" sem a faixa; linha do tempo que muda a tela.
  *  - 15ª entrega: cheia captada chamada de pico ou de registro; lista sem o aviso de captura; link que não leva ao Histórico.
+ *  - 16ª entrega: ruas afirmadas como alagadas sem leitura fresca; conta sem o aviso de que é tabela; link que não leva à Minha rua.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -448,7 +449,24 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 17. Página com chat próprio: a barra do topo some.
+  // 17. 16ª entrega: as ruas pela cota, cidade inteira (tabela, não observação nem previsão).
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'quais ruas alagam com 8 m em Blumenau?', /8,00 m/)
+    ok(/^Se o rio em Blumenau chegar a 8,00 m, pela cota publicada \d+ de \d+ pontos de rua com cota levantada já estariam alagados\./.test(r) && /Por bairro:/.test(r) && /não é completa[^]*199/.test(r), `nível dito: a contagem, os bairros e o aviso (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'quais ruas o rio já alcançou em Blumenau?', /Blumenau/)
+    ok(/^Régua de Blumenau: [\d,]+ m às \d{2}:\d{2}[^]*Pela cota publicada, \d+ de \d+/.test(r) || /Sem leitura de agora da régua de Blumenau/.test(r), `agora: com a leitura fresca e a hora, ou a recusa (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'quais são as próximas ruas em Blumenau?', /ruas|leitura/)
+    ok(/As próximas ruas a alagar[^]*\(faltam [\d,]+ (?:cm|m)\)/.test(r) || /Todos os pontos de rua levantados/.test(r) || /Sem leitura de agora/.test(r), `próximas: com quanto falta, ou a recusa (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'quais ruas alagam primeiro em Gaspar?', /Gaspar/)
+    ok(/^As ruas que alagam primeiro em Gaspar[^]*• .+ — a partir de [\d,]+ m/.test(r), `primeiro: as cotas mais baixas de Gaspar (${r.slice(0, 60)}…)`)
+    ok((await pg.getByRole('link', { name: /Minha rua em Gaspar/ }).count()) >= 1, 'o link leva à aba Minha rua')
+    ok(/#\/acu\/blumenau$/.test(pg.url()), `a tela não mudou (${pg.url()})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 18. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

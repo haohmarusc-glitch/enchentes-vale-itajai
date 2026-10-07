@@ -125,6 +125,8 @@ export type Passo =
    * `AAAA-MM-DD`; `cota` é a chave do cadastro, para "quantas vezes passou da cota de alerta".
    */
   | { tipo: 'captados'; pergunta: 'lista' | 'ultima' | 'maior' | 'quantas' | 'periodo'; cidadeId?: string; cota?: string; mes?: number; ano?: number; dia?: string }
+  /** 16ª: as ruas pela cota, cidade inteira (`nivelM` dito pela pessoa; `subirM` para "se subir mais 50 cm"). */
+  | { tipo: 'ruas_pela_cota'; pergunta: 'nivel' | 'agora' | 'proximas' | 'primeiras'; cidadeId?: string; nivelM?: number; subirM?: number }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }
