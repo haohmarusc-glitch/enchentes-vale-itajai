@@ -118,7 +118,7 @@ export const MUDA_A_TELA = new Set<Passo['tipo']>([
   'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'filtro', 'abrir_grafico', 'confluencia', 'rua', 'remover_destaque',
   'localizacao', 'reproducao', 'animacoes', 'legenda_mapa', 'enquadrar', 'fechar_painel', 'menu_cidades',
 ])
-const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
+export const PRECISA_DO_MAPA = new Set<Passo['tipo']>([
   'escolher_regua', 'aproximar_regua', 'zoom', 'ver_bacia', 'fundo', 'camada', 'ao_vivo', 'o_que_vejo', 'filtro',
   'reproducao', 'animacoes', 'legenda_mapa', 'enquadrar', 'fechar_painel', 'menu_cidades',
 ])

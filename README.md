@@ -612,6 +612,17 @@ o projeto.
   - [x] **Décima sexta entrega (07/10/2026): as ruas pela cota, cidade inteira.** "Quais ruas alagam com 8 m em
     Blumenau?", "quais ruas o rio já alcançou?" (só com leitura fresca, em régua), "quais são as próximas ruas?" e
     "se subir mais 50 cm?", "quais ruas alagam primeiro em Gaspar?", com as contas da aba Minha rua (`logica/cotasRuas`).
+  - [x] **Décima sétima entrega (07/10/2026): linha de base, bateria de avaliação e catálogo de capacidades** — o PR 1
+    do handoff de qualidade (`docs/HANDOFF-QUALIDADE-CHAT-2026-10-07.md`). Catálogo único dos 67 passos
+    (`comandos/capacidades.ts` → `docs/CHAT-CAPACIDADES.md`), extratores compartilhados (`entidades.ts`), bateria de
+    **478 casos** em sete grupos com cenários congelados do executor (`comandos/avaliacao/`), `npm run avaliar` e a
+    trava (zero ações indevidas, dev 100 %, nenhum grupo abaixo da linha). **Linha de base: 416/478 (87 %); reservado
+    81 %; 0 ações indevidas; 25 palpites do motor.** Diagnóstico e limitações em `docs/AVALIACAO-CHAT.md` e na seção
+    da entrega em `docs/CHAT-GLOBAL-COMANDOS.md`. Nenhuma função nova; nenhum comando mudou.
+  - [ ] **PR 2 do handoff (classificação estruturada em modo sombra):** depende de o Jefferson definir as metas por
+    grupo a partir desta linha de base. Achados que podem ser corrigidos antes, sem IA: "é seguro ficar em casa em
+    Blumenau?" escapa da barreira do presente; pedido com duas leituras encadeadas responde só a primeira; camada de
+    ano inexistente no meio da cadeia não diz o que foi feito; panorama com publicação sem leitura válida.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

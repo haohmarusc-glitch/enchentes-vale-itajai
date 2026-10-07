@@ -88,6 +88,18 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Regerar: `cd scripts && python3 eventos_captados.py --serie /caminho/tempo-real --gravar` depois de cada cheia
   (ou de cada cópia nova em `arquivo-series`).
 
+### Qualidade do chat — REGRA (17ª entrega, 07/10/2026)
+- `web/src/comandos/capacidades.ts` é o **catálogo único** dos passos do chat (`Record<Passo['tipo'], …>`): passo novo
+  exige ficha com exemplos que o leitor entende (o teste roda cada um) e `mudaTela`/`precisaDoMapa` iguais aos
+  conjuntos de `executar.ts`. `docs/CHAT-CAPACIDADES.md` é gerado — não editar à mão.
+- Regras de extração de cidade, lista de cidades, cota, metros e mês moram em `comandos/entidades.ts`; leitor novo
+  importa de lá, não copia.
+- A bateria `comandos/avaliacao/` é a **linha de base** do handoff (`docs/HANDOFF-QUALIDADE-CHAT-2026-10-07.md`).
+  Caso reprovado é achado: nunca ajustar o esperado para o número subir. Caso novo ou melhora → `npm run avaliar --
+  --baseline` e commitar `baseline.json` junto com `docs/AVALIACAO-CHAT.md`. O teste trava zero ações indevidas,
+  `dev` em 100 % e nenhum grupo abaixo da linha.
+- O piloto do classificador, listas de permissão, segredos, retenção e público **não** mudam em PR de refatoração.
+
 ### Ruas alagadas registradas à mão — REGRA (decisão de 05/10/2026)
 - `data/ruas-alagadas.json` guarda a hora em que cada rua alagou, anotada durante a cheia (planilha
   `docs/modelos/ruas-alagadas.csv` → `scripts/ruas_alagadas.py`). Passo a passo: `docs/REGISTRO-RUAS-ALAGADAS.md`.

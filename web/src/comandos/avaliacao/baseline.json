@@ -1,0 +1,47 @@
+{
+  "geradoEm": "2026-10-07",
+  "total": 478,
+  "acertos": 416,
+  "porGrupo": {
+    "diretos": {
+      "total": 237,
+      "acertos": 211
+    },
+    "escrita": {
+      "total": 46,
+      "acertos": 34
+    },
+    "contexto": {
+      "total": 41,
+      "acertos": 34
+    },
+    "ambiguidades": {
+      "total": 44,
+      "acertos": 37
+    },
+    "atualidade": {
+      "total": 40,
+      "acertos": 39
+    },
+    "seguranca": {
+      "total": 40,
+      "acertos": 33
+    },
+    "falhas": {
+      "total": 30,
+      "acertos": 28
+    }
+  },
+  "porConjunto": {
+    "dev": {
+      "total": 160,
+      "acertos": 160
+    },
+    "reservado": {
+      "total": 318,
+      "acertos": 256
+    }
+  },
+  "acoesIndevidas": 0,
+  "palpites": 25
+}

@@ -744,3 +744,63 @@ pela cidade inteira. Textos em `comandos/ruasPelaCota.ts`.
     (fresca × velha; link para a aba Minha rua; nada navega), a ajuda;
   - `testes-navegador/chat-comandos.mjs`, seção 17: com 8 m (contagem, bairros, aviso), agora ou a recusa, as
     próximas, Gaspar primeiro, o link.
+
+## Décima sétima entrega (07/10/2026): linha de base, bateria de avaliação e catálogo de capacidades
+
+É o **PR 1** do handoff de qualidade do chat (`docs/HANDOFF-QUALIDADE-CHAT-2026-10-07.md`): medir o que existe antes
+de mudar como o chat entende. **Nenhuma função hidrológica nova**; nenhum comando mudou de comportamento (os 1.001
+testes das dezesseis entregas passam iguais). O que entrou:
+
+| Peça | Onde | O que é |
+|---|---|---|
+| Extratores compartilhados | `comandos/entidades.ts` | `cidadePorNome`, `cidadeOpcional`, `cidadesDaLista`, `cotaDita`, `metrosDitos`, `mesDito`, `soSujeito`, `ARTIGOS`, `AQUI`, `COTA_DITA`, `SUJEITO`. Antes cada leitor de `interpretar.ts` tinha a sua cópia; agora é uma, com a resolução contra o cadastro num lugar só. |
+| Catálogo único de capacidades | `comandos/capacidades.ts` → `docs/CHAT-CAPACIDADES.md` | `Record<Passo['tipo'], Capacidade>`: 67 fichas (título, descrição, exemplos, argumentos tipados, `mudaTela`, `precisaDoMapa`, dados que lê, quando esclarece, o que nunca faz), em 8 grupos. Passo novo sem ficha não compila. `esquemaDoClassificador()` deriva daí os identificadores para o PR 2. É o catálogo de **comandos**; o de cidades e réguas continua em `catalogo.ts`. |
+| Bateria de avaliação | `comandos/avaliacao/casos.ts`, `cenarios.ts`, `avaliar.ts` | **478 casos** nos sete grupos do handoff (diretos 237 · escrita 46 · contexto 41 · ambiguidades 44 · atualidade 40 · segurança 40 · falhas 30). `dev` = os 160 exemplos do catálogo; `reservado` = 318 frases novas. Os casos de atualidade e falhas rodam o **executor de verdade** em cenários congelados (leitura fresca, velha, cidade sem leitura, Itajaí com três réguas, série curta, leituras indisponíveis, nível impossível de 30 m lido pelo próprio `buscarTempoReal`, Monitor que não abre, sem tabelas). Relógio fixo: 06/10/2026 15h00. |
+| Trava | `avaliacao/avaliacao.test.ts` + `baseline.json` | zero ações indevidas; `dev` em 100 %; nenhum grupo abaixo da linha de base; tamanho da bateria igual ao registrado (caso novo exige regravar a linha). |
+| Ferramenta | `npm run avaliar` (`ferramentas/avaliar-chat.ts`) | grava `docs/AVALIACAO-CHAT.md` e `docs/CHAT-CAPACIDADES.md`; com `--baseline`, regrava `baseline.json`; com `--falhas`, lista os reprovados. |
+
+### A linha de base (07/10/2026)
+
+**416/478 (87 %)**: dev 160/160; reservado 256/318 (81 %); intenção correta 349/408; argumentos corretos 84/110;
+**0 ações indevidas**; 0 esclarecimentos desnecessários; 13 esclarecimentos que faltaram; 25 respostas por palpite do
+motor; latência do leitor + motor 0,2 ms (p95 1,1 ms). Por grupo: diretos 89 %, escrita 74 %, contexto 83 %,
+ambiguidades 84 %, atualidade 98 %, segurança 83 %, falhas 93 %. A lista completa dos 62 reprovados está em
+`docs/AVALIACAO-CHAT.md`; cada caso espera o comportamento **certo pelas regras**, não o de hoje, então reprovado é
+achado e não se ajusta o esperado para o número subir.
+
+### O diagnóstico, atualizado com os números
+
+1. **Paráfrase fora do padrão cai no motor** (26 diretos, 12 de escrita): "leva para Gaspar", "abre o monitor da
+   bacia", "as barragens estão abertas?", "buscar leituras novas", "ir p/ o monitor", "qdo blumenau passou da cota".
+   É o limite do leitor por expressões regulares que o handoff descreve, agora com medida.
+2. **O motor responde por palpite** (25 casos): achou a cidade e nada mais e devolve "maiores cheias" — para
+   "blumenau" solto, para "quais ruas alagam com 30 m", para "mude o nível de Blumenau para 10 m" e, o mais sério,
+   para **"é seguro ficar em casa em Blumenau?"**, que devia cair na barreira do presente e não cai (a palavra
+   "seguro" sem "está" escapa de `pedeAgora`). Nenhum palpite muda a tela.
+3. **Contexto da página pouco usado** (7): "histórico", "minha rua", "fontes", "ao vivo" na página da cidade ou no
+   Monitor não viram comando; "aqui" só é entendido em algumas frases.
+4. **Dois defeitos do executor em encadeamento** (falhas): pedido com duas leituras ("quanto falta … e quais ruas o
+   rio já alcançou") responde só a primeira; passo de camada com ano inexistente no meio da cadeia não diz o que já
+   foi feito nem que os seguintes não foram.
+5. **Publicação sem leitura válida** (atualidade, 1): o panorama diz "nenhuma cidade em alerta" em vez de dizer que a
+   coleta não trouxe leitura. O nível impossível **nunca** aparece como número (travado), mas a ausência é mal
+   explicada.
+6. **O que já está firme** (e a bateria trava): leitura velha nunca vira "agora" em nenhum comando; Gaspar, Ascurra
+   e Itajaí recusam a conta de cota; Itajaí pede a régua; falha externa é dita (SEM_DADOS, maré, barragens, traçado,
+   Monitor que não abre); nenhum pedido malicioso, URL, rota dita ou "apagar" muda a tela ou executa algo.
+
+### Limitações desta medição
+
+- As frases reservadas foram escritas por quem conhece o leitor; não são frases reais de moradores (a telemetria
+  anônima não guarda texto, por decisão de 04/10/2026). A rubrica humana de clareza do handoff não foi aplicada.
+- Os cenários do executor são de mentira: dados fixos, Monitor falso que aceita tudo. O que eles provam é a regra,
+  não a tela — a tela continua coberta por `testes-navegador/chat-comandos.mjs`.
+- A latência medida é do leitor + motor em Node; não inclui rede nem o classificador (desligado).
+- "Intenção correta" e "argumentos corretos" só valem para os casos de leitura; os de execução conferem o texto.
+- Metas por grupo para o PR 2 ficam para depois desta medida, como o handoff pede ("definir metas por categoria após
+  medir o baseline").
+
+### O que NÃO mudou (de propósito)
+
+O piloto do classificador continua desligado; nenhuma lista de permissões, segredo, retenção ou público foi tocado;
+nenhum comando ganhou ou perdeu frase; os arquivos do Monitor ficaram intactos.
