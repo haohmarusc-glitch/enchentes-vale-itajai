@@ -43,9 +43,21 @@ export type Esperado =
   | { tipo: 'esclarecer' }
   | { tipo: 'pergunta' }
   | { tipo: 'motor'; intencao: string }
-  | { tipo: 'continuacao'; texto: string; troca: 'cidade' | 'ano' | 'repetir' }
+  | { tipo: 'continuacao'; texto: string; troca: 'cidade' | 'ano' | 'repetir' | 'dia' | 'numero' | 'cota' }
   | { tipo: 'continuacao_pergunta' }
+  /** 19ª: a continuação refaria um pedido que muda a tela — o chat pergunta antes, com a frase pronta. */
+  | { tipo: 'confirmar'; texto: string }
   | { tipo: 'execucao'; cenario: NomeDoCenario | 'impossivel'; contem: RegExp[]; naoContem?: RegExp[]; navega?: boolean }
+  /** 19ª: uma conversa inteira, turno a turno, com a tela e a memória seguindo os pedidos. */
+  | { tipo: 'conversa'; turnos: Turno[] }
+
+export interface Turno {
+  texto: string
+  /** O desfecho esperado do turno (qualquer esperado que não seja outra conversa). */
+  esperado: Exclude<Esperado, { tipo: 'conversa' }>
+  /** A cidade que o executor usaria (dita > tela > conversa), quando vale conferir. `null` = nenhuma. */
+  cidadeResolvida?: string | null
+}
 
 export interface Caso {
   id: string
@@ -475,7 +487,60 @@ const RESERVADOS_18: Caso[] = [
   caso('falhas', 'quais leituras estão atrasadas e quais cidades estão em alerta?', exec('velha', [/0 de 1 com leitura de agora/, /Nenhuma cidade com leitura municipal/])),
 ]
 
-export const CASOS: Caso[] = [...casosDoCatalogo(), ...RESERVADOS, ...RESERVADOS_18]
+/**
+ * 19ª entrega: conversas completas (handoff, "Contexto de conversa"), escritas antes de rodar. A tela começa como
+ * `contexto` do caso e segue os pedidos (mostrar X abre o Monitor de X; a página da cidade; "escolher régua"); a
+ * memória guarda a última cidade citada e o último pedido entendido. Regras: cidade dita vence a da tela, que vence a da
+ * conversa; continuação que mudaria a tela pede confirmação; trocar de cidade apaga a régua.
+ */
+const conversa = (grupo: Grupo, turnos: Turno[], extra: Partial<Caso> = {}): Caso => caso(grupo, turnos.map((t) => t.texto).join(' → '), { tipo: 'conversa', turnos }, extra)
+const turno = (texto: string, esperado: Esperado, cidadeResolvida?: string | null): Turno => {
+  if (esperado.tipo === 'conversa') throw new Error('turno dentro de conversa')
+  return cidadeResolvida === undefined ? { texto, esperado } : { texto, esperado, cidadeResolvida }
+}
+const continuacao = (texto: string, troca: 'cidade' | 'ano' | 'repetir' | 'dia' | 'numero' | 'cota'): Esperado => ({ tipo: 'continuacao', texto, troca })
+const confirmar = (texto: string): Esperado => ({ tipo: 'confirmar', texto })
+
+const RESERVADOS_19: Caso[] = [
+  // As sequências que o handoff pede, uma a uma.
+  conversa('contexto', [turno('como está Blumenau?', agora), turno('e Gaspar?', continuacao('como está Gaspar?', 'cidade'))], { nota: 'handoff: "Como está Blumenau?" → "E Gaspar?"' }),
+  conversa('contexto', [turno('mostrar Itajaí', cmd('ir_cidade', { cidadeId: 'itajai' })), turno('aproximar a régua', esclarecer)], { nota: 'handoff: "Mostre Itajaí" → "Aproxime a régua" → qual régua?' }),
+  conversa('contexto', [turno('quando Blumenau passou da cota de alerta?', cmd('linha_do_tempo', { pergunta: 'cruzou_cota', cota: 'alerta', cidadeId: 'blumenau' })), turno('e ontem?', continuacao('quando Blumenau passou da cota de alerta ontem?', 'dia'))], { nota: 'handoff: "Quando passou do alerta em Blumenau?" → "E ontem?"' }),
+  conversa('contexto', [turno('mostrar Blumenau', cmd('ir_cidade', { cidadeId: 'blumenau' })), turno('e Gaspar?', confirmar('mostrar Gaspar'))], { nota: 'handoff: "Mostre Blumenau" → "E Gaspar?" não navega por suposição: confirma' }),
+  conversa('contexto', [turno('zoom na régua DC-05', cmd('escolher_regua', { codigo: 'DC-05' }), 'itajai'), turno('mostrar Blumenau', cmd('ir_cidade', { cidadeId: 'blumenau' })), turno('aproximar a régua', cmd('aproximar_regua'), 'blumenau')], { nota: 'handoff: trocar de cidade invalida a régua (DC-05 é de Itajaí; em Blumenau, aproxima a régua da cidade)', contexto: ITA }),
+  // Cidade da conversa, da tela e dita.
+  conversa('contexto', [turno('como está Gaspar?', agora), turno('quanto falta para a cota?', cmd('quanto_falta'), 'gaspar')], { nota: 'fora de cidade: a cidade da conversa responde' }),
+  conversa('contexto', [turno('como está Gaspar?', agora), turno('quanto falta para a cota?', cmd('quanto_falta'), 'blumenau')], { contexto: BLU_PAGINA, nota: 'na página de Blumenau: a tela vence a conversa' }),
+  conversa('contexto', [turno('como está Gaspar?', agora), turno('quanto falta para a cota em Brusque?', cmd('quanto_falta', { cidadeId: 'brusque' }), 'brusque')], { contexto: BLU_PAGINA, nota: 'a cidade dita vence a tela e a conversa' }),
+  conversa('contexto', [turno('quanto falta para a cota em Blumenau?', cmd('quanto_falta', { cidadeId: 'blumenau' })), turno('e a tendência?', cmd('tendencia'), 'blumenau')], { nota: '"e a tendência?" continua o assunto; a cidade vem da conversa' }),
+  conversa('contexto', [turno('quanto falta para a cota em Blumenau?', cmd('quanto_falta', { cidadeId: 'blumenau' })), turno('e quais ruas o rio já alcançou?', cmd('ruas_pela_cota', { pergunta: 'agora' }), 'blumenau')]),
+  conversa('contexto', [turno('mostrar Gaspar', cmd('ir_cidade', { cidadeId: 'gaspar' })), turno('quanto falta para a cota?', cmd('quanto_falta'), 'gaspar')], { nota: 'depois de navegar, a tela é Gaspar' }),
+  conversa('contexto', [turno('mostrar Gaspar', cmd('ir_cidade', { cidadeId: 'gaspar' })), turno('satélite', cmd('fundo', { fundo: 'satelite' }))]),
+  conversa('contexto', [turno('mostrar Gaspar', cmd('ir_cidade', { cidadeId: 'gaspar' })), turno('e Blumenau?', confirmar('mostrar Blumenau'))]),
+  conversa('contexto', [turno('histórico de Blumenau', cmd('abrir_pagina', { cidadeId: 'blumenau', aba: 'historico' })), turno('minha rua', cmd('abrir_pagina', { cidadeId: 'blumenau', aba: 'rua' }))], { nota: 'na página aberta pelo pedido anterior, uma palavra basta' }),
+  // Continuações que respondem (não mudam a tela): refazem direto.
+  conversa('contexto', [turno('copiar resumo de Blumenau', cmd('copiar_resumo', { cidadeId: 'blumenau' })), turno('e Gaspar?', continuacao('copiar resumo de Gaspar', 'cidade'))]),
+  conversa('contexto', [turno('quais ruas alagam com 8 m em Blumenau?', cmd('ruas_pela_cota', { pergunta: 'nivel', nivelM: 8, cidadeId: 'blumenau' })), turno('e com 9 m?', continuacao('quais ruas alagam com 9 m em Blumenau?', 'numero'))]),
+  conversa('contexto', [turno('quanto Blumenau subiu nas últimas 6 horas?', cmd('linha_do_tempo', { pergunta: 'variacao', horas: 6, cidadeId: 'blumenau' })), turno('e nas últimas 12?', continuacao('quanto Blumenau subiu nas últimas 12 horas?', 'numero'))]),
+  conversa('contexto', [turno('quando Blumenau passou da cota de alerta?', cmd('linha_do_tempo', { pergunta: 'cruzou_cota', cota: 'alerta', cidadeId: 'blumenau' })), turno('e de atenção?', continuacao('quando Blumenau passou da cota de atencao?', 'cota'))]),
+  conversa('contexto', [turno('quais cidades estão em alerta?', cmd('panorama')), turno('de novo', continuacao('quais cidades estão em alerta?', 'repetir'))]),
+  // Continuações que não têm como trocar: perguntam.
+  conversa('contexto', [turno('como estão Blumenau e Gaspar?', cmd('varias_cidades', { cidadeIds: ['blumenau', 'gaspar'] })), turno('e Brusque?', { tipo: 'continuacao_pergunta' })]),
+  conversa('contexto', [turno('qual foi a última cheia em Blumenau?', cmd('captados', { pergunta: 'ultima', cidadeId: 'blumenau' })), turno('e em 2011?', { tipo: 'continuacao_pergunta' })]),
+  conversa('contexto', [turno('como está Blumenau?', agora), turno('e ontem?', { tipo: 'continuacao_pergunta' })], { nota: '"ontem" só troca o dia de uma pergunta de "quando"' }),
+  conversa('contexto', [turno('como está Blumenau?', agora), turno('e Pomerode?', pergunta)]),
+  // Segurança no meio da conversa: contexto não transforma pergunta em ação.
+  conversa('seguranca', [turno('mostrar Blumenau', cmd('ir_cidade', { cidadeId: 'blumenau' })), turno('e Gaspar?', confirmar('mostrar Gaspar')), turno('devo sair de casa?', agora)]),
+  conversa('seguranca', [turno('como está Gaspar?', agora), turno('apagar o histórico', esclarecer)], { nota: 'a cidade da conversa não torna a alteração aceitável' }),
+  conversa('seguranca', [turno('mostrar Blumenau', cmd('ir_cidade', { cidadeId: 'blumenau' })), turno('e /monitor/gaspar?', esclarecer)]),
+  conversa('diretos', [turno('quando o rio passou da cota ontem em Blumenau?', cmd('linha_do_tempo', { pergunta: 'cruzou_cota', dia: 'ontem', cidadeId: 'blumenau' }))]),
+  conversa('diretos', [turno('quando Blumenau passou da cota de atenção hoje?', cmd('linha_do_tempo', { pergunta: 'cruzou_cota', cota: 'atencao', dia: 'hoje', cidadeId: 'blumenau' }))]),
+  caso('atualidade', 'quando Blumenau passou da cota de alerta ontem?', exec('fresca', [/ontem \(05\/10\)/, /não passou da cota de Alerta/, /não previsão/], [/passou da cota às/])),
+  caso('atualidade', 'quando Blumenau passou da cota de alerta hoje?', exec('fresca', [/hoje \(06\/10\)/, /passou da cota às 12:50 de 06\/10/, /medição a cada ~15 min/])),
+  caso('atualidade', 'quando Blumenau passou da cota de alerta anteontem?', exec('fresca', [/não cobre anteontem/])),
+]
+
+export const CASOS: Caso[] = [...casosDoCatalogo(), ...RESERVADOS, ...RESERVADOS_18, ...RESERVADOS_19]
 
 /** Os casos de um grupo, para relatório. */
 export const porGrupo = (g: Grupo): Caso[] => CASOS.filter((c) => c.grupo === g)

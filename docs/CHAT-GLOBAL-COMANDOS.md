@@ -863,3 +863,45 @@ reprovar de novo, e é para isso que ela existe.
 `decimasexta.test.ts` (30 m → esclarecer), `decimaterceira.test.ts` (Pomerode → esclarecer), `casosClassificador.ts`
 (`p-dormir-rio-do-sul` agora cai na barreira: `barreira: true`). `testes-navegador/chat-comandos.mjs` ganhou a seção
 18 (barreira, duas leituras, nome solto, alteração de dado, "histórico" na página da cidade).
+
+## Décima nona entrega (07/10/2026): o contexto da conversa
+
+A seção "Contexto de conversa" do handoff (`docs/HANDOFF-QUALIDADE-CHAT-2026-10-07.md`), sem IA. Até aqui o chat lia
+cada mensagem com o contexto da TELA; a conversa só entrava em "e Gaspar?" (10ª). Agora os dois contextos são
+separados e tipados, e a conversa entra em três lugares, sempre dizendo de onde veio a entidade.
+
+| Regra do handoff | Como ficou | Onde |
+|---|---|---|
+| Separar contexto da tela e da conversa; informar a origem | `Contexto.cidadeDaConversa` (a última cidade citada nesta conversa) ao lado de `cidadeAtual` (tela). O executor usa a da conversa só quando a tela não tem cidade, e a resposta começa com **"Pela conversa, entendi que é de Gaspar."** | `comandos/conversa.ts` (`memoriaDaConversa`, `contextoComConversa`), `executar.ts` |
+| Entidade dita vence a implícita | Dita no pedido > tela > conversa (`passo.cidadeId` primeiro; a tela antes da conversa porque é o que a pessoa está olhando) | `executar.ts`, testado em conversas |
+| "Como está Blumenau?" → "E Gaspar?" | Continua como na 10ª (refaz e responde) | `continuar.ts` |
+| "Mostre Itajaí" → "Aproxime a régua" → esclarecer | A tela depois de navegar é o Monitor de Itajaí: pergunta qual das 11 réguas | já valia; agora coberto por conversa na bateria |
+| "Quando passou do alerta em Blumenau?" → "E ontem?" | Continuação de **dia**: refaz como "… ontem?"; o passo `linha_do_tempo` ganhou `dia` (hoje/ontem/anteontem, em Brasília) e a resposta diz só o que aconteceu naquele dia, ou que a série não o cobre | `continuar.ts`, `interpretar.ts`, `linhaDoTempo.ts` |
+| "Mostre Blumenau" → "E Gaspar?": não executar por suposição | A continuação que **mudaria a tela** não executa: *"Entendi como "mostrar Gaspar", que muda a tela. É isso? Toque na sugestão para confirmar; nada foi feito."* — a sugestão é a frase pronta. Continuação que só responde ("copiar resumo", "como está") refaz direto, com "Entendi como:" | `conversa.ts` `decidirContinuacao` |
+| Trocar de cidade invalida a régua | "zoom na régua DC-05" → "mostrar Blumenau" → "aproximar a régua" aproxima a régua de Blumenau (a DC-05 é de Itajaí e sai com a navegação) | já valia; coberto por conversa |
+| Contexto não transforma pergunta em ação | "e a tendência?", "e quanto falta?" continuam o ASSUNTO (o "e" de continuação, com o resto lido como pedido inteiro); perguntas e recusas continuam perguntas e recusas no meio da conversa | `interpretar.ts` `lerTrecho` |
+| Não guardar além da política | A memória é a lista de mensagens desta aba (como já era); nada vai ao aparelho nem ao servidor | `ChatLocal.tsx` |
+
+Continuações novas em `continuar.ts`, sempre UMA troca no pedido anterior como foi escrito: **dia** ("e ontem?", "e
+hoje?" — só em pergunta de "quando"), **número** ("e com 9 m?", "e nas últimas 12 horas?", "e 12?" — a unidade tem
+de bater; dois números ou nenhum → pergunta) e **cota** ("e de atenção?", "e a de alerta máximo?").
+
+### A medida
+
+- Bateria: **+36 casos** (`RESERVADOS_19`), 29 deles **conversas completas** (2–3 turnos, com a tela e a memória
+  seguindo os pedidos no avaliador: "mostrar X" abre o Monitor de X, página da cidade, régua escolhida). Métrica nova no
+  relatório: "Conversas completas (todos os turnos certos)". Escritas antes de rodar: **36/36 na primeira rodada** —
+  número a ler com desconfiança, porque quem escreveu as conversas acabara de escrever as regras (a mesma pessoa, no
+  mesmo dia). O que vale é a trava: elas ficam na bateria e qualquer mudança no leitor que quebre uma conversa reprova.
+  Linha de base: **556/556**, 0 ações indevidas, 0 palpites.
+- Testes: `decimanona.test.ts` (continuações, memória, decisão refazer/confirmar/perguntar, leitor, executor com a
+  nota, linha do tempo por dia); `chat-comandos.mjs` seção 19 (cidade da conversa fora de cidade, "e a tendência?",
+  confirmação depois de navegar e a navegação ao tocar na sugestão).
+
+### Decisões
+
+1. **Tela vence conversa.** Na página de Blumenau, depois de "como está Gaspar?", "quanto falta?" é de Blumenau — a
+   resposta nomeia a cidade, e quem quer Gaspar diz Gaspar.
+2. **Confirmar só o que muda a tela.** Uma resposta a mais não custa nada; uma navegação errada no meio da cheia custa.
+3. **"ontem" é dia de Brasília** (`chaveDoDia`), não "24 h atrás"; a série publicada tem 48 h, então "anteontem" quase
+   sempre responde "não cobre".

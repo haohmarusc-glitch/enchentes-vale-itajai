@@ -73,7 +73,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
     descricao: 'Abre o Monitor enquadrado na cidade (ou reenquadra, se já está nela). Exige verbo: "Blumenau" sozinho pergunta o que a pessoa quer da cidade, com exemplos (18ª).',
     exemplos: [{ texto: 'mostrar Blumenau' }, { texto: 'ir para Taió' }, { texto: 'abrir Rio do Sul' }],
     argumentos: [cidadeObrigatoria], mudaTela: true, precisaDoMapa: false, dados: ['cadastro'],
-    esclarece: 'Nome parecido com uma cidade do cadastro ("Blumenal") ou verbo com erro ("msotrar") pergunta "você quis dizer…?" e não faz nada.',
+    esclarece: 'Nome parecido com uma cidade do cadastro ("Blumenal") ou verbo com erro ("msotrar") pergunta "você quis dizer…?" e não faz nada. Continuação da conversa ("mostrar Blumenau" → "e Gaspar?") confirma antes de navegar (19ª).',
   },
   monitor_bacia: {
     grupo: 'navegacao', entrega: 1, titulo: 'Abrir o Monitor da bacia',
@@ -487,7 +487,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
     grupo: 'leituras', entrega: 14, titulo: 'A linha do tempo da cheia de agora',
     descricao: 'Quando passou da cota, há quanto tempo está na faixa, quando começou a subir, quanto subiu em N horas — pela série de 48 h de uma régua, com a hora da medição e o passo da série.',
     exemplos: [{ texto: 'quando Blumenau passou da cota de alerta?' }, { texto: 'há quanto tempo Blumenau está em alerta?' }, { texto: 'quando o rio começou a subir em Blumenau?' }, { texto: 'quanto Blumenau subiu nas últimas 6 horas?' }],
-    argumentos: [{ nome: 'pergunta', tipo: 'enum', obrigatorio: true, valores: ['cruzou_cota', 'ha_quanto_tempo', 'comecou_a_subir', 'variacao'] }, cidade(), { nome: 'cota', tipo: 'enum', obrigatorio: false, valores: ['monitoramento', 'atencao', 'alerta', 'inundacao', 'emergencia'] }, { nome: 'horas', tipo: 'numero', obrigatorio: false }],
+    argumentos: [{ nome: 'pergunta', tipo: 'enum', obrigatorio: true, valores: ['cruzou_cota', 'ha_quanto_tempo', 'comecou_a_subir', 'variacao'] }, cidade(), { nome: 'cota', tipo: 'enum', obrigatorio: false, valores: ['monitoramento', 'atencao', 'alerta', 'inundacao', 'emergencia'] }, { nome: 'horas', tipo: 'numero', obrigatorio: false }, { nome: 'dia', tipo: 'enum', obrigatorio: false, valores: ['hoje', 'ontem', 'anteontem'], nota: '19ª: só os cruzamentos daquele dia (Brasília); na conversa, "e ontem?"' }],
     mudaTela: false, precisaDoMapa: false, dados: ['serie', 'cadastro'],
     nunca: 'Inventar hora entre duas medições; perguntas de cota em Gaspar, Ascurra e Itajaí.',
   },

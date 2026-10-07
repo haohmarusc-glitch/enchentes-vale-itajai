@@ -105,6 +105,12 @@ export interface Ambiente {
   dados?: DadosDoChat
 }
 
+/** Os passos em que a cidade é opcional e vem da tela (ou, na 19ª, da conversa) quando não é dita. */
+const ACEITA_CIDADE_OPCIONAL = new Set<Passo['tipo']>([
+  'por_que_cinza', 'coordenada', 'abrir_grafico', 'ultima_hora', 'origem_tracado', 'montante', 'comparar_reguas', 'copiar_resumo',
+  'fonte_leitura', 'quanto_falta', 'tendencia', 'maximo_24h', 'de_cima', 'linha_do_tempo', 'captados', 'ruas_pela_cota', 'rua',
+])
+
 const MAX_RETRATOS = 10
 const retratos: Retrato[] = []
 
@@ -143,7 +149,10 @@ const SEM_LEITURA_VALIDA =
 export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ctx: Contexto, ajuda: () => Saida): Promise<Saida> {
   const feitos: string[] = []
   let guardou = false
-  let cidade = ctx.cidadeAtual
+  // 19ª: sem cidade na tela, a última cidade da conversa — e a resposta diz que foi ela (origem da entidade).
+  const daConversa = !ctx.cidadeAtual && !!ctx.cidadeDaConversa
+  let cidade = ctx.cidadeAtual ?? ctx.cidadeDaConversa ?? null
+  let usouAConversa = false
   const falha = (r: Resultado | string, sugestoes: string[] = ['o que posso pedir?']): Saida => {
     const motivo = typeof r === 'string' ? r : r.texto
     const antes = feitos.length ? `Feito: ${feitos.join(' ')} ` : ''
@@ -156,20 +165,22 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
   // feito), resposta = guarda e segue. No fim, as respostas vão juntas, com o que foi feito antes delas.
   const respostas: Saida[] = []
   for (const passo of passos) {
+    if (daConversa && !('cidadeId' in passo && passo.cidadeId) && ACEITA_CIDADE_OPCIONAL.has(passo.tipo)) usouAConversa = true
     const saida = await executarPasso(passo)
     if (!saida) continue
     if (saida.falhou) return saida
     respostas.push(saida)
   }
-  if (respostas.length === 0) return { texto: feitos.join(' ') || 'Feito.' }
+  const notaDaConversa = usouAConversa && cidade ? `Pela conversa, entendi que é de ${nomeDaCidade(cidade, cat)}.\n\n` : ''
+  if (respostas.length === 0) return { texto: notaDaConversa + (feitos.join(' ') || 'Feito.') }
   // O que foi feito antes das respostas entra uma vez só (o passo de rua já devolve os feitos no próprio texto).
   const jaDisse = respostas.some((r) => feitos.some((f) => r.texto.includes(f)))
   const feitosAntes = feitos.length && !jaDisse ? `${feitos.join(' ')}\n\n` : ''
-  if (respostas.length === 1) return feitosAntes ? { ...respostas[0]!, texto: feitosAntes + respostas[0]!.texto } : respostas[0]!
+  if (respostas.length === 1) return notaDaConversa || feitosAntes ? { ...respostas[0]!, texto: notaDaConversa + feitosAntes + respostas[0]!.texto } : respostas[0]!
   const ultima = respostas[respostas.length - 1]!
   const comLink = [...respostas].reverse().find((r) => r.link)
   return {
-    texto: feitosAntes + respostas.map((r) => r.texto).join('\n\n'),
+    texto: notaDaConversa + feitosAntes + respostas.map((r) => r.texto).join('\n\n'),
     ...(ultima.sugestoes ? { sugestoes: ultima.sugestoes } : {}),
     ...(comLink?.link ? { link: comLink.link } : {}),
     ...(ultima.copiar ? { copiar: ultima.copiar } : {}),
@@ -697,6 +708,7 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
             agora: v.agora,
             janelaHoras: v.serie.janelaHoras,
             ...(passo.cota ? { cota: passo.cota } : {}),
+            ...(passo.dia ? { dia: passo.dia } : {}),
             ...(passo.horas ? { horas: passo.horas } : {}),
           }),
           sugestoes: [seguinte[passo.pergunta]],

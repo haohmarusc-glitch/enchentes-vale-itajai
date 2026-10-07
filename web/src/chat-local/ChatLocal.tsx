@@ -44,8 +44,8 @@ import { estacoes } from '../dados/carregar'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { respostaDoPresente } from './situacaoAgora'
 import { abrirPainel, lerConversa, limparConversa, mudarMsgs, registrarChatDePagina, useConversa, type Msg } from './conversa'
-import { continuar } from '../comandos/continuar'
 import { useComandos } from '../comandos/usarComandos'
+import { contextoComConversa, decidirContinuacao, memoriaDaConversa } from '../comandos/conversa'
 import AoVivoDoChat from './AoVivoDoChat'
 import estilos from './ChatLocal.module.css'
 
@@ -239,24 +239,32 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
     abrirPainel(true)
     // 10ª entrega: "e Gaspar?", "e em 2011?", "de novo" refazem o último pedido com uma troca só, e a tela diz
     // "Entendi como: …" antes de responder. Sem pedido anterior (ou com duas cidades nele), pergunta.
+    // 19ª entrega: a memória da conversa (a última cidade citada, o último pedido como foi entendido) é separada da
+    // tela; uma continuação que MUDARIA A TELA ("mostrar Blumenau" → "e Gaspar?") pede confirmação em vez de navegar.
+    const nomes = dados ? cidadesConhecidas(dados) : nomesDoCadastro
+    const memoria = memoriaDaConversa(lerConversa().msgs.filter((m) => m.papel === 'usuario').map((m) => m.entendidoComo ?? m.texto), nomes)
     if (!jaMostrada) {
-      const ultima = [...lerConversa().msgs].reverse().find((m) => m.papel === 'usuario')
-      const anterior = ultima ? (ultima.entendidoComo ?? ultima.texto) : null
-      const c = continuar(q, anterior, dados ? cidadesConhecidas(dados) : nomesDoCadastro)
-      if (c && 'erro' in c) {
-        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: c.erro, sugestoes: c.sugestoes }])
+      const d = decidirContinuacao(q, memoria, nomes, comandos.catalogo, contextoComConversa(comandos.contexto(), memoria))
+      if (d && d.tipo === 'perguntar') {
+        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: d.texto, sugestoes: d.sugestoes }])
         setTexto('')
         rolarAoFim()
         return
       }
-      if (c) {
-        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q, entendidoComo: c.texto }, { papel: 'assistente', texto: `Entendi como: "${c.texto}".` }])
+      if (d && d.tipo === 'confirmar') {
+        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q }, { papel: 'assistente', texto: d.pergunta, sugestoes: d.sugestoes, comando: true }])
         setTexto('')
-        return perguntar(c.texto, true, true)
+        rolarAoFim()
+        return
+      }
+      if (d) {
+        setMsgs((atual) => [...atual, { papel: 'usuario', texto: q, entendidoComo: d.texto }, { papel: 'assistente', texto: `Entendi como: "${d.texto}".` }])
+        setTexto('')
+        return perguntar(d.texto, true, true)
       }
     }
     // Pedido ("mostrar Blumenau", "zoom na régua DC-05"): executa e diz o resultado. Não depende dos dados.
-    if ((!jaMostrada && comandos.tentar(q)) || (refeito && comandos.tentar(q, false))) {
+    if ((!jaMostrada && comandos.tentar(q, true, memoria)) || (refeito && comandos.tentar(q, false, memoria))) {
       setTexto('')
       rolarAoFim()
       return

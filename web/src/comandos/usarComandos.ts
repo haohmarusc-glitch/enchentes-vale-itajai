@@ -141,6 +141,7 @@ async function viasDeItajai(): Promise<Record<string, number> | null> {
 import { interpretar, nomeDaCidade } from './interpretar'
 import { esperarMonitor, monitorAtual, type ControleMonitor } from './ponte'
 import { textoDeAjuda } from './ajuda'
+import { contextoComConversa, type MemoriaDaConversa } from './conversa'
 import type { Catalogo, Contexto } from './tipos'
 
 /** A cidade e o tipo da tela, pelo endereço (HashRouter: `#/monitor/blumenau`). */
@@ -206,8 +207,13 @@ export function catalogoDoSite(): Catalogo {
 export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => null): {
   contexto: () => Contexto
   nomeDaCidadeAtual: () => string | null
-  /** `eco: false`: o pedido já está na conversa (continuação "e Gaspar?"); não repete a mensagem da pessoa. */
-  tentar: (texto: string, eco?: boolean) => boolean
+  /** O catálogo de cidades e réguas do site (19ª: a conversa decide continuações com ele). */
+  catalogo: Catalogo
+  /**
+   * `eco: false`: o pedido já está na conversa (continuação "e Gaspar?"); não repete a mensagem da pessoa.
+   * `conversa` (19ª): a memória da conversa — a última cidade citada entra como `cidadeDaConversa` quando a tela não tem cidade.
+   */
+  tentar: (texto: string, eco?: boolean, conversa?: MemoriaDaConversa) => boolean
 } {
   const navigate = useNavigate()
   const cat = useMemo(catalogoDoSite, [])
@@ -218,8 +224,8 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
   }, [cat, contexto])
 
   const tentar = useCallback(
-    (texto: string, eco = true) => {
-      const ctx = contexto()
+    (texto: string, eco = true, conversa?: MemoriaDaConversa) => {
+      const ctx = conversa ? contextoComConversa(contexto(), conversa) : contexto()
       const r = interpretar(texto, cat, ctx)
       if (!r) return false
       // Sem eco quando o chat já mostrou o pedido ("e Gaspar?" refeito como "mostrar Gaspar").
@@ -299,5 +305,5 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
     },
     [cat, contexto, navigate, aoVivo],
   )
-  return { contexto, nomeDaCidadeAtual, tentar }
+  return { contexto, nomeDaCidadeAtual, catalogo: cat, tentar }
 }

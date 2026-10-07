@@ -19,8 +19,9 @@ import { executar, limparRetratos, MUDA_A_TELA } from '../executar'
 import { textoDeAjuda } from '../ajuda'
 import { responder, type Dados } from '../../chat-local/motor'
 import type { Contexto, Interpretacao, Passo } from '../tipos'
-import { CASOS, GRUPOS, type Caso, type Conjunto, type Esperado, type Grupo } from './casos'
+import { CASOS, GRUPOS, type Caso, type Conjunto, type Esperado, type Grupo, type Turno } from './casos'
 import { CENARIOS, aoVivoComNivelImpossivel, cenario, estacoes, type Cenario, type NomeDoCenario } from './cenarios'
+import { contextoComConversa, decidirContinuacao, memoriaDaConversa } from '../conversa'
 
 export interface Resultado {
   id: string
@@ -57,6 +58,8 @@ export interface Metricas {
   esclarecimentos: { adequados: number; desnecessarios: number; faltaram: number }
   acoesIndevidas: number
   palpites: number
+  /** 19ª: as conversas completas (todos os turnos certos). */
+  conversas: Contagem
   latenciaMs: { mediana: number; p95: number }
 }
 
@@ -73,6 +76,8 @@ function descreverEsperado(e: Esperado): string {
     case 'motor': return `motor ${e.intencao}`
     case 'continuacao': return `continuação ${e.troca}: "${e.texto}"`
     case 'continuacao_pergunta': return 'continuação: perguntar'
+    case 'confirmar': return `confirmar antes: "${e.texto}"`
+    case 'conversa': return e.turnos.map((t) => `"${t.texto}" → ${descreverEsperado(t.esperado)}${t.cidadeResolvida !== undefined ? ` [${t.cidadeResolvida ?? 'sem cidade'}]` : ''}`).join(' ⇢ ')
     case 'execucao': return `execução [${e.cenario}] ${e.contem.map(String).join(' ')}${e.naoContem?.length ? ' sem ' + e.naoContem.map(String).join(' ') : ''}${e.navega ? ' (navega)' : ''}`
   }
 }
@@ -88,6 +93,7 @@ const mudaATela = (passos: Passo[]) => passos.some((p) => MUDA_A_TELA.has(p.tipo
 type Desfecho =
   | { via: 'continuacao'; texto: string; troca: string }
   | { via: 'continuacao_pergunta'; erro: string }
+  | { via: 'confirmar'; texto: string }
   | { via: 'comandos'; passos: Passo[] }
   | { via: 'esclarecer'; texto: string }
   | { via: 'motor'; intencao: string; palpite: boolean; falha?: string }
@@ -96,6 +102,7 @@ function descreverDesfecho(d: Desfecho): string {
   switch (d.via) {
     case 'continuacao': return `continuação ${d.troca}: "${d.texto}"`
     case 'continuacao_pergunta': return `continuação: perguntou ("${d.erro.slice(0, 60)}…")`
+    case 'confirmar': return `confirmar antes: "${d.texto}"`
     case 'comandos': return d.passos.length === 1 ? `comando ${JSON.stringify(d.passos[0])}` : `comandos ${d.passos.map((p) => p.tipo).join(' → ')}`
     case 'esclarecer': return `esclarecer ("${d.texto.slice(0, 70)}")`
     case 'motor': return `motor ${d.intencao}${d.falha ? ` (${d.falha})` : ''}${d.palpite ? ' (palpite)' : ''}`
@@ -143,8 +150,77 @@ function julgar(e: Esperado, d: Desfecho): { ok: boolean; intencao: boolean; arg
       return { ok, intencao: d.via === 'continuacao', args: ok ? true : d.via === 'continuacao' ? false : null }
     }
     case 'continuacao_pergunta': return { ok: d.via === 'continuacao_pergunta', intencao: d.via === 'continuacao_pergunta', args: null }
-    case 'execucao': return { ok: false, intencao: false, args: null } // julgado à parte
+    case 'confirmar': {
+      const ok = d.via === 'confirmar' && d.texto === e.texto
+      return { ok, intencao: d.via === 'confirmar', args: ok ? true : d.via === 'confirmar' ? false : null }
+    }
+    case 'execucao':
+    case 'conversa': return { ok: false, intencao: false, args: null } // julgados à parte
   }
+}
+
+/** A tela depois de um desfecho: "mostrar X" abre o Monitor de X; a página da cidade; a régua escolhida; o início. */
+function telaDepois(ctx: Contexto, d: Desfecho, cat: ReturnType<typeof catalogoDoCadastro>): Contexto {
+  if (d.via !== 'comandos') return ctx
+  let novo: Contexto = { cidadeAtual: ctx.cidadeAtual, naMonitor: ctx.naMonitor, reguaAtual: ctx.reguaAtual }
+  for (const p of d.passos) {
+    if (p.tipo === 'ir_cidade') novo = { cidadeAtual: p.cidadeId, naMonitor: true, reguaAtual: null }
+    else if (p.tipo === 'monitor_bacia') novo = { cidadeAtual: null, naMonitor: true, reguaAtual: null }
+    else if (p.tipo === 'abrir_pagina') novo = { cidadeAtual: p.cidadeId, naMonitor: false, reguaAtual: null }
+    else if (p.tipo === 'abrir_rota') novo = { cidadeAtual: p.rota === '/itajai' ? 'itajai' : null, naMonitor: false, reguaAtual: null }
+    else if (p.tipo === 'escolher_regua' && p.codigo !== 'todas') {
+      const r = cat.reguas.find((x) => x.codigo === p.codigo)
+      novo = { cidadeAtual: r?.cidadeId ?? novo.cidadeAtual, naMonitor: true, reguaAtual: p.codigo }
+    }
+  }
+  return novo
+}
+
+/** A cidade que o executor usaria num desfecho de comandos: dita no passo > tela > conversa. */
+function cidadeResolvidaDe(d: Desfecho, ctx: Contexto): string | null {
+  if (d.via !== 'comandos') return ctx.cidadeAtual ?? ctx.cidadeDaConversa ?? null
+  const dita = d.passos.map((p) => ('cidadeId' in p ? p.cidadeId : undefined)).find((c): c is string => !!c)
+  return dita ?? ctx.cidadeAtual ?? ctx.cidadeDaConversa ?? null
+}
+
+/** Uma conversa inteira, turno a turno; `null` quando todos os turnos saem como esperado, senão o primeiro problema. */
+function conversar(c: Caso, turnos: Turno[], cat: ReturnType<typeof catalogoDoCadastro>, dados: Dados): { obtido: string; ok: boolean; acaoIndevida: boolean; palpite: boolean } {
+  let tela: Contexto = contextoDe(c)
+  const pedidos: string[] = []
+  const nomes = cat.cidades
+  const relatos: string[] = []
+  let ok = true
+  let acaoIndevida = false
+  let palpite = false
+  for (const t of turnos) {
+    const memoria = memoriaDaConversa(pedidos, nomes)
+    const ctx = contextoComConversa(tela, memoria)
+    let d: Desfecho
+    const dec = decidirContinuacao(t.texto, memoria, nomes, cat, ctx)
+    if (dec?.tipo === 'perguntar') d = { via: 'continuacao_pergunta', erro: dec.texto }
+    else if (dec?.tipo === 'confirmar') d = { via: 'confirmar', texto: dec.texto }
+    else if (dec?.tipo === 'refazer') d = { via: 'continuacao', texto: dec.texto, troca: dec.troca }
+    else d = decidir({ ...c, texto: t.texto, anterior: undefined }, ctx, cat, dados)
+    // Uma continuação refeita vira o pedido do turno e é lida como tal (como a tela faz).
+    const entendido = d.via === 'continuacao' ? d.texto : d.via === 'confirmar' ? null : t.texto
+    const j = julgar(t.esperado, d)
+    let turnoOk = j.ok
+    // Se o esperado é um comando/motor e o desfecho foi "refazer", julga o pedido refeito.
+    if (!turnoOk && d.via === 'continuacao' && t.esperado.tipo !== 'continuacao') {
+      const refeito = decidir({ ...c, texto: d.texto, anterior: undefined }, ctx, cat, dados)
+      turnoOk = julgar(t.esperado, refeito).ok
+      d = refeito
+    }
+    const resolvida = cidadeResolvidaDe(d, ctx)
+    if (turnoOk && t.cidadeResolvida !== undefined && resolvida !== t.cidadeResolvida) turnoOk = false
+    if (d.via === 'comandos' && mudaATela(d.passos) && !esperaAgir(t.esperado)) acaoIndevida = true
+    if (d.via === 'motor' && d.palpite) palpite = true
+    relatos.push(`"${t.texto}" → ${descreverDesfecho(d)}${t.cidadeResolvida !== undefined ? ` [${resolvida ?? 'sem cidade'}]` : ''}${turnoOk ? '' : ' ✗'}`)
+    if (!turnoOk) ok = false
+    if (entendido) pedidos.push(entendido)
+    tela = telaDepois(tela, d, cat)
+  }
+  return { obtido: relatos.join(' ⇢ '), ok, acaoIndevida, palpite }
 }
 
 async function cenarioDe(nome: NomeDoCenario | 'impossivel'): Promise<Cenario> {
@@ -153,7 +229,7 @@ async function cenarioDe(nome: NomeDoCenario | 'impossivel'): Promise<Cenario> {
 }
 
 const esperaAgir = (e: Esperado) => e.tipo === 'comando' || e.tipo === 'comandos' || (e.tipo === 'execucao' && e.navega === true)
-const esperaPerguntar = (e: Esperado) => e.tipo === 'esclarecer' || e.tipo === 'pergunta' || e.tipo === 'continuacao_pergunta'
+const esperaPerguntar = (e: Esperado) => e.tipo === 'esclarecer' || e.tipo === 'pergunta' || e.tipo === 'continuacao_pergunta' || e.tipo === 'confirmar'
 
 export interface Avaliacao { resultados: Resultado[]; metricas: Metricas }
 
@@ -165,6 +241,11 @@ export async function avaliar(casos: Caso[] = CASOS, dados?: Dados): Promise<Ava
     const ctx = contextoDe(c)
     const base = { id: c.id, grupo: c.grupo, conjunto: c.conjunto, texto: c.texto, contexto: rotuloDoContexto(c), esperado: descreverEsperado(c.esperado), nota: c.nota }
     const t0 = performance.now()
+    if (c.esperado.tipo === 'conversa') {
+      const r = conversar(c, c.esperado.turnos, cat, motorDados)
+      resultados.push({ ...base, obtido: r.obtido, ok: r.ok, acaoIndevida: r.acaoIndevida, palpite: r.palpite, esclarecimentoDesnecessario: false, esclarecimentoFaltou: false, ms: performance.now() - t0 })
+      continue
+    }
     if (c.esperado.tipo === 'execucao') {
       limparRetratos()
       const e = c.esperado
@@ -207,7 +288,8 @@ function medir(rs: Resultado[], casos: Caso[]): Metricas {
   const porGrupo = Object.fromEntries((Object.keys(GRUPOS) as Grupo[]).map((g) => [g, contagem(rs.filter((r) => r.grupo === g))])) as Record<Grupo, Contagem>
   const porConjunto = { dev: contagem(rs.filter((r) => r.conjunto === 'dev')), reservado: contagem(rs.filter((r) => r.conjunto === 'reservado')) }
   const esperadoDe = new Map(casos.map((c) => [c.id, c.esperado]))
-  const deLeitura = rs.filter((r) => esperadoDe.get(r.id)!.tipo !== 'execucao')
+  const deLeitura = rs.filter((r) => { const t = esperadoDe.get(r.id)!.tipo; return t !== 'execucao' && t !== 'conversa' })
+  const conversas = rs.filter((r) => esperadoDe.get(r.id)!.tipo === 'conversa')
   const comArgs = rs.filter((r) => { const e = esperadoDe.get(r.id)!; return (e.tipo === 'comando' && e.args) || e.tipo === 'continuacao' })
   // Intenção certa = o desfecho certo, mesmo com argumento errado: aproxima pelo texto do obtido.
   const intencaoCorreta = { total: deLeitura.length, acertos: deLeitura.filter((r) => r.ok || (r.obtido.startsWith('comando') && r.esperado.startsWith('comando') && r.obtido.includes(`"tipo":"${r.esperado.split(' ')[1]}"`))).length }
@@ -224,6 +306,7 @@ function medir(rs: Resultado[], casos: Caso[]): Metricas {
     esclarecimentos: { adequados: esperavaPerguntar.filter((r) => r.ok).length, desnecessarios: rs.filter((r) => r.esclarecimentoDesnecessario).length, faltaram: rs.filter((r) => r.esclarecimentoFaltou).length },
     acoesIndevidas: rs.filter((r) => r.acaoIndevida).length,
     palpites: rs.filter((r) => r.palpite).length,
+    conversas: contagem(conversas),
     latenciaMs: { mediana: q(0.5), p95: q(0.95) },
   }
 }
@@ -270,6 +353,7 @@ export function relatorio(a: Avaliacao, anterior: Baseline | null, geradoEm = ne
     `| Esclarecimentos que faltaram (agiu ou respondeu quando devia perguntar) | ${m.esclarecimentos.faltaram} |`,
     `| **Ações indevidas** (a tela mudaria sem o caso esperar) | **${m.acoesIndevidas}** |`,
     `| Respostas por palpite do motor | ${m.palpites} |`,
+    `| Conversas completas (todos os turnos certos) | ${linha(m.conversas)} |`,
     `| Latência do leitor + motor (mediana · p95) | ${m.latenciaMs.mediana} ms · ${m.latenciaMs.p95} ms |`,
     '',
     '## Por grupo',

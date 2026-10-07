@@ -8,7 +8,7 @@
  * Pedidos encadeados ("mostre Timbó, aproxime a régua e ative satélite") viram vários passos, resolvidos e
  * validados ANTES de qualquer execução. Se um trecho não for entendido, nada é executado e o chat diz qual.
  */
-import type { Aba, Catalogo, Contexto, Fundo, Interpretacao, Passo, ReguaDoCatalogo } from './tipos'
+import type { Aba, Catalogo, Contexto, DiaDito, Fundo, Interpretacao, Passo, ReguaDoCatalogo } from './tipos'
 import type { TemaDaLegenda } from './foz'
 
 import { normalizar } from './normalizar'
@@ -384,13 +384,17 @@ function lerTrechoDaDecimaQuarta(t: string, cat: Catalogo): Lido {
   }
   // "quando Blumenau passou da cota de alerta?", "a que hora o rio passou da cota em Blumenau?", "quando entrou em alerta?"
   {
-    const m = t.match(
+    // 19ª: "… ontem?" (ou "hoje", "anteontem") no fim, em qualquer posição relativa à cidade.
+    const dia = t.match(/^(.*?)(?: (hoje|ontem|anteontem))(?: (?:em|de|no|na) (.+?))?$/)
+    const semDia = dia ? `${dia[1]}${dia[3] ? ` em ${dia[3]}` : ''}` : t
+    const diaDito = dia ? (dia[2] as DiaDito) : undefined
+    const m = semDia.match(
       new RegExp(`^(?:quando|a que hora|que hora|desde quando|desde que hora) (?:(.+?) )?(?:passou|cruzou|ultrapassou|bateu|chegou|atingiu|entrou|subiu acima|ficou acima)(?: d[aeo]| n[ao]| em| a| para| pra)?(?: cota(?: d[aeo])?| nivel d[aeo]| faixa d[aeo])?(?: ${COTA_DITA})?(?: (?:em|de|no|na) (.+?))?(?: agora)?$`),
     )
-    if (m && (m[2] || /cota|nivel de|faixa de|entrou/.test(t))) {
+    if (m && (m[2] || /cota|nivel de|faixa de|entrou/.test(semDia))) {
       const antes = soSujeito(m[1])
       if (antes && m[3]) return null
-      return comCidade(antes ?? m[3], { pergunta: 'cruzou_cota', ...cotaDe(m[2]) })
+      return comCidade(antes ?? m[3], { pergunta: 'cruzou_cota', ...cotaDe(m[2]), ...(diaDito ? { dia: diaDito } : {}) })
     }
   }
   return null
@@ -779,6 +783,11 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
   const semAqui = t.replace(AQUI_NO_FIM, '')
   if (semAqui !== t && semAqui) {
     const lido = lerTrecho(semAqui, cat, ctx, cidadeDoPedido)
+    if (lido) return lido
+  }
+  // 19ª: "e a tendência?", "e quanto falta?" — o "e" de continuação de assunto; o resto tem de ser um pedido inteiro.
+  if (/^e [a-z]/.test(t) && !/^e (?:em|no|na|de|do|da|o|a|pra|para|sobre|la|ai) /.test(t)) {
+    const lido = lerTrecho(t.slice(2), cat, ctx, cidadeDoPedido)
     if (lido) return lido
   }
   const decimaSexta = lerTrechoDaDecimaSexta(t, cat)
