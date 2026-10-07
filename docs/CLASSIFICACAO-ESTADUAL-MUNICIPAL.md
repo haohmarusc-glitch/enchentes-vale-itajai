@@ -5,9 +5,10 @@ dividido em três PRs, começando depois da decisão sobre os PRs #504–#509, q
 
 1. **PR 1 (#510, mergeado).** O motor Python gera o estado em paralelo, e o site não muda o que consome. Em produção
    desde a coleta das 17h30 UTC de 07/10/2026.
-2. **PR 2.** O site passa a seguir o estado (`ultimo_classificacao.json`) nas telas que usam `estadoDaCidade` — ver
-   a seção "PR 2" abaixo.
-3. O Monitor passa a dizer qual classificação deu a cor.
+2. **PR 2 (#511, mergeado).** O site passa a seguir o estado (`ultimo_classificacao.json`) nas telas que usam
+   `estadoDaCidade` — ver a seção "PR 2" abaixo.
+3. **PR 3.** O mapa do Monitor segue a mesma decisão, e o painel da cidade diz qual classificação deu a cor — ver a
+   seção "PR 3" abaixo.
 
 ## Decisões fechadas (Jefferson, 07/10/2026)
 
@@ -180,8 +181,9 @@ da estadual, que é tracejada e diz "Defesa Civil SC". Mostrar a origem é o PR 
 no caso `leitura-de-outra-regua`: com uma leitura de outra régua, o cartão fica sem cor em vez de comparar com as cotas da
 DCSC-00019.
 
-**Até o PR 3, o mapa do Monitor ainda segue a regra antiga.** Nesse caso, e só nele, o mapa do Monitor pintaria e o cartão
-não. Hoje não acontece: a única leitura de Brusque é a DCSC-00019, porque o portal antigo de Itajaí saiu do ar em 19/09.
+**Entre o PR 2 e o PR 3, o mapa do Monitor seguiu a regra antiga.** Nesse caso, e só nele, o mapa do Monitor pintaria e
+o cartão não. Isso não chegou a acontecer: a única leitura de Brusque é a DCSC-00019, porque o portal antigo de Itajaí saiu
+do ar em 19/09. O PR 3 alinhou o mapa.
 
 ### Testes do PR 2
 
@@ -196,6 +198,37 @@ não. Hoje não acontece: a única leitura de Brusque é a DCSC-00019, porque o 
 - **Arquivos reais de produção (17h30 UTC de 07/10/2026):** o site usou o motor para Brusque (normal, municipal,
   DCSC-00019).
 - **Navegador:** `/mirim/brusque` e `/mirim` abriram sem erro no console, com "Abaixo da atenção · 2,25 m".
+
+## PR 3: a origem da cor no Monitor
+
+O PR tem o rótulo `monitor-autorizado`.
+
+- **O mapa segue o motor.** `construirCena` (`mapaMotor.ts`) recebe a classificação e passa por `faixasDoMotor`, com os
+  mesmos portões dos cartões. Com isso, o mapa do Monitor e o cartão nunca pintam Brusque diferente. Isso vale só ao
+  vivo: na reprodução a cor é do instante passado, e o motor só fala da coleta de agora. Cada pino carrega
+  `classificadaPor` e `origemDoMotor`.
+- **O painel diz quem pintou** (`textoDaOrigemDaCor`, em `textosDoPainel.ts`), no bloco completo — o do computador e o
+  expandido do celular:
+  - pelo motor, municipal: *"Cor do rio: classificação municipal — Ponte Estaiada – DCSC (DCSC-00019)."*;
+  - pelo motor, estadual: *"Cor do rio: classificação estadual (Defesa Civil de SC) — DCSC-00019. Não representa as cotas
+    municipais."*;
+  - pela regra de sempre, só o tipo: *"Cor do rio: classificação municipal — cotas da cidade."* (o site não confere ali
+    a identidade da régua, e o texto não afirma mais do que a conta fez), ou a estadual com o código da estação;
+  - cinza ou várias réguas: nenhuma linha. O "Por que está cinza?" já explica.
+- **A geometria não muda.** A trava do Monitor passou sem regravar o baseline.
+- **Testes** (`logica/classificacaoNoMapa.test.ts`):
+  - mapa e cartão pintam igual nos 17 casos do gabarito;
+  - leitura de outra régua: o mapa pinta pela regra antiga e fica cinza com o motor;
+  - estadual tracejada, com o aviso;
+  - o painel nomeia a régua;
+  - na reprodução, o motor não entra;
+  - pela regra de sempre, o painel diz só o tipo.
+- **Navegador**, com os arquivos de produção das 17h45 UTC: `/monitor/brusque` em 1280 e 390 px mostrou "Cor do rio:
+  classificação municipal — Ponte Estaiada – DCSC (DCSC-00019).", sem erro no console.
+
+**O que ainda segue a regra antiga:** o mapa do rio fora do Monitor (`MapaRios`, na tela do rio). Ele não lê a rede
+estadual, então não tem como passar pelo portão das medições. A diferença só apareceria no caso `leitura-de-outra-regua`,
+que hoje não acontece.
 
 ## Depois do deploy, na VPS
 
@@ -214,5 +247,5 @@ classificação recusada").
 - **Conversões entre réguas** (§4 do plano): não há vínculo oficial cadastrado. Quando houver, entram como dado auditável,
   com testes próprios.
 - **Comparação numérica do lado estadual**: fica fora por decisão de 07/10/2026.
-- **Origem da cor no Monitor (PR 3).** O PR 3 mexe em arquivos do Monitor e precisa do rótulo
-  `monitor-autorizado`.
+- **Outras cidades no motor:** dependem das duas decisões do Jefferson listadas no README (campo da régua das cotas
+  por código; Rio dos Cedros com `cotas_verificado: false`).

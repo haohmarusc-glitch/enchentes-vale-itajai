@@ -89,3 +89,34 @@ export function textoEquivalencia(eq: {
   return `Equivalência entre a régua municipal e a estação estadual ${eq.codigo}${nome}${km}: não confirmada. ` +
     'Proximidade não basta: falta documento, código comum ou comparação de referência/zero da régua.'
 }
+
+/**
+ * "Cor do rio: …" — qual classificação pintou o pino (PR 3 da classificação estadual × municipal, 07/10/2026;
+ * §9 do plano). Quando quem decidiu foi o motor (`ultimo_classificacao.json` desta coleta), o texto nomeia a
+ * régua dele; pela regra de sempre, diz só o tipo — o site não confere ali a identidade da régua, e o texto
+ * não pode afirmar mais do que a conta fez. Sem cor (cinza, várias réguas), não há o que atribuir: null, e o
+ * "Por que está cinza?" explica.
+ */
+export function textoDaOrigemDaCor(p: {
+  faixa: string
+  origemFaixa?: 'municipal' | 'estadual'
+  classificadaPor?: 'motor' | 'site'
+  origemDoMotor?: { tipo: 'municipal' | 'estadual'; reguaId: string | null; rotulo: string } | null
+  codigoEstadual?: string | null
+}): string | null {
+  if (p.faixa === 'sem-dado' || p.faixa === 'varias') return null
+  const NAO_MUNICIPAL = 'Não representa as cotas municipais.'
+  if (p.classificadaPor === 'motor' && p.origemDoMotor) {
+    const o = p.origemDoMotor
+    const regua = o.reguaId ? ` (${o.reguaId})` : ''
+    if (o.tipo === 'estadual') {
+      return `Cor do rio: classificação estadual (Defesa Civil de SC) — ${o.reguaId ?? 'estação estadual'}. ${NAO_MUNICIPAL}`
+    }
+    // O rótulo do motor já começa por "Classificação municipal — <régua>".
+    return `Cor do rio: ${o.rotulo.charAt(0).toLowerCase()}${o.rotulo.slice(1)}${o.rotulo.includes(o.reguaId ?? '\u0000') ? '' : regua}.`
+  }
+  if (p.origemFaixa === 'estadual') {
+    return `Cor do rio: classificação estadual (Defesa Civil de SC) — ${p.codigoEstadual ?? 'estação estadual'}. ${NAO_MUNICIPAL}`
+  }
+  return 'Cor do rio: classificação municipal — cotas da cidade.'
+}

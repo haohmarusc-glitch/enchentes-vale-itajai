@@ -10,7 +10,7 @@ import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
-import { MOTIVO_VARIAS_REGUAS, estacaoEhReguaDasCotas, ressalvaDoBruto, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
+import { MOTIVO_VARIAS_REGUAS, estacaoEhReguaDasCotas, ressalvaDoBruto, textoDaOrigemDaCor, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ChatNoTopo from '../componentes/ChatNoTopo'
@@ -44,6 +44,7 @@ import {
 } from '../logica/cotasNoMapa'
 import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
+import { useClassificacao } from '../dados/classificacao'
 import { useBarragens } from '../dados/barragens'
 import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
@@ -450,6 +451,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
   const original = useTempoReal()
   const nivelSc = useNivelSc()
+  // A classificação estadual × municipal do motor (PR 3, 07/10/2026): o mapa segue a mesma decisão dos
+  // cartões, com os mesmos portões (`faixasDoMotor`); sem ela, a regra de sempre.
+  const classificacao = useClassificacao()
   const tempoReal = useMemo(() => comReferenciaAscurra(original, nivelSc), [original, nivelSc])
   const mapaBarragens = useBarragens()
   const serie = useSerieRecente()
@@ -545,6 +549,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     return {
       faixa,
       motivoCinza,
+      origemDaCor: variasReguas ? null : textoDaOrigemDaCor({ ...foco, codigoEstadual: brutoSc?.codigo ?? null }),
       posicao: textoDaPosicao(cid, foco, reguasRef.current.filter((r) => r.cidade === cid.id).length),
       equivalencia: cid.equivalencia_estadual ? textoEquivalencia(cid.equivalencia_estadual) : null,
     }
@@ -680,6 +685,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     const cena = construirCena(
       canvas, tracadosVisiveis(rios, tracadosOcultos), tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
       municipal || emRepro ? undefined : reguasDoMapa.find(r => r.codigo === 'DC-11'),
+      emRepro ? null : classificacao,
     )
     // Maré desligada no menu de camadas: o mar fica neutro e o chip some. O dado continua na tábua.
     if (!mostrarMare) cena.mar = null
@@ -928,7 +934,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca, mostrarMare, mostrarChuva, tracadosOcultos])
+  }, [rios, tempoReal, nivelSc, classificacao, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca, mostrarMare, mostrarChuva, tracadosOcultos])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -2335,6 +2341,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {textos.motivoCinza}
                 </p>
               )}
+              {textos.origemDaCor && <p className={estilos.painelRessalva}>{textos.origemDaCor}</p>}
               {!celular ? (
               <p className={estilos.painelNivel}>
                 {foco.nivel != null ? (
