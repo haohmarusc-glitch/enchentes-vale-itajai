@@ -673,6 +673,55 @@ Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 0
 
 ---
 
+## C33 — EPAGRI/CIRAM: referência vertical, unidade e fuso da maré observada — 📝 RASCUNHO, não enviado (07/10/2026)
+
+**Origem.** A decisão do Jefferson de 07/10/2026 manda mostrar a maré medida só com a referência vertical identificada
+(`docs/MARE-MEDIDA-CIRAM.md`). A conferência do mesmo dia achou três lacunas:
+- a fonte não diz a que zero a maré observada se refere, e por isso a tela mostra "referência pendente";
+- a unidade (centímetro) foi deduzida por comparação com a tábua da Marinha, porque a fonte não a declara;
+- o fuso (Brasília) também foi deduzido por comparação, pelo mesmo motivo.
+
+A resposta ao C5 não falou dos marégrafos.
+
+**Como enviar.** Responder na conversa do C5/C12 com a Equipe de Hidrologia (sshidrosc@epagri.sc.gov.br), que já
+conhece o projeto. Se os marégrafos forem de outra equipe, o texto pede o encaminhamento.
+- Sem link do site (regra de 02/10/2026); no fim, o pedido de cadastro.
+- Só pergunta o que falta; não pede acesso novo nem muda a frequência combinada.
+
+**Para:** sshidrosc@epagri.sc.gov.br (resposta na conversa do C5/C12)
+**Assunto:** Re: marégrafos do CIRAM — referência vertical da maré observada
+
+Prezada Equipe de Hidrologia,
+
+Obrigado mais uma vez pelas respostas de setembro, que já entraram no site com o crédito à EPAGRI/CIRAM.
+
+Passei a usar também a maré observada que a página dos marégrafos publica, da estação de Balneário Camboriú, a mais
+próxima da foz do Itajaí-Açu com maré observada. Antes de mostrar qualquer número, quero ter certeza do que ele
+significa. Hoje o site só informa que a estação está medindo e a hora da última medição, com a observação de que a
+referência está pendente.
+
+Se puderem, ou se puderem encaminhar à equipe responsável pelos marégrafos:
+
+1. A que referência vertical (zero) se refere a maré observada da estação de Balneário Camboriú? A maré astronômica
+   publicada para a mesma estação está na mesma referência?
+2. A série é publicada em centímetros e no horário de Brasília? Pela comparação com a tábua da Marinha para o porto
+   de Itajaí, entendi que sim, mas prefiro confirmar com vocês.
+3. A estação de Itajaí deve voltar a publicar maré observada? Hoje ela traz só a maré astronômica e a previsão.
+
+O site consulta a página uma vez a cada 15 minutos, identificado com o nome do projeto. Se preferirem outra
+frequência ou outra forma de acesso, ajusto.
+
+Na tela, a diferença entre a maré observada e a astronômica aparece com o nome "diferença entre nível observado e
+maré astronômica prevista", sem atribuir a causa só a vento e pressão. Se houver uma forma melhor de apresentar,
+agradeço a orientação.
+
+Se quiserem conhecer o site, basta me enviar um e-mail para cadastro.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
 ## C32 — Defesa Civil de Rio dos Cedros: confirmação das cotas na DCSC-00011 — 📝 RASCUNHO no Gmail, não enviado (07/10/2026; rascunho `r3697923724363143209`, resposta na conversa do C29)
 
 **Origem.** Decisão do Jefferson de 07/10/2026: Rio dos Cedros fica **sem classificação municipal** até a COMPDEC

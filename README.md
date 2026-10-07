@@ -548,8 +548,9 @@ o projeto.
     mede (Balneário Camboriú, a cada 15 min); horário e unidade conferidos contra a tábua da Marinha. Depende do
     deploy na VPS.
   - [ ] Referência vertical da maré medida: a fonte não diz a que zero o nível se refere, então a tela mostra
-    "referência pendente", sem número. Perguntar à EPAGRI/CIRAM (perguntas no doc); entrada em
-    `REFERENCIA_VERTICAL` só com fonte escrita, por decisão do Jefferson.
+    "referência pendente", sem número. **C33 rascunhado** em `docs/oficios-prontos.md` (07/10/2026), para a
+    Equipe de Hidrologia da EPAGRI/CIRAM. Não enviado. Entrada em `REFERENCIA_VERTICAL` só com fonte escrita, por
+    decisão do Jefferson.
   - [ ] DC-00: cadastrar a coordenada (decisão do Jefferson); até lá ela fica fora da chuva.
 - [x] **Auditoria de 03/10/2026 (segunda rodada) — decidida em 04/10/2026** (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`; resumo de tudo em `docs/DECISOES-2026-10-04.md`). Guabiruba virou afluente lateral do Mirim (o Mirim agora é árvore); a DCSC-00029 vale no zero local abaixo de 10 m; Brusque ganhou o rótulo da opção B. **Falta:** conferir no servidor a data da volta da DCSC-00029 ao zero local (comandos no item 3 do doc) antes de pensar em juntar as duas séries.
   - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
