@@ -122,6 +122,17 @@ O QUE ESTE COLETOR NÃO FAZ
   régua; o cadastro de Blumenau já diz que o AlertaBlu não nomeia o ponto e
   que o par cota↔leitura foi provado por medição.
 
+  **Blumenau LIGADA em 07/10/2026 (`parse_blumenau`), com prova por MEDIÇÃO.**
+  A PADKND publica de 5 em 5 minutos; o AlertaBlu, de hora em hora. Sem
+  coordenada, a identidade sai da comparação com o `nivel_oficial.json`, refeita
+  a cada coleta: nas horas cheias em comum (no mínimo três, a mais recente a até
+  três horas da leitura), o valor tem que ser o mesmo, com 1 cm de folga. Isso
+  prova régua e relógio juntos. Nas capturas de 27 e 28/09/2026, 12 de 12 horas
+  iguais, diferença 0,00 m. Sem o AlertaBlu, a PADKND não entra. O título é
+  "Blumenau (PADKND)", com `resgate_de: "Blumenau"` — nunca "Blumenau", que é o
+  repasse antigo 3 h atrasado. Brusque (2) e Rio do Sul (4) continuam fora: lá
+  não há outra publicação da mesma régua para comparar.
+
 Uso:
     python3 scripts/coleta_itajai_portal.py --arquivo pagina.html   # sem rede
     python3 scripts/coleta_itajai_portal.py
@@ -151,8 +162,8 @@ TOLERANCIA_COORD_M = 50.0
 
 RE_DATA_PAGE = re.compile(r'<div[^>]*\bid="app"[^>]*\bdata-page="([^"]*)"', re.I)
 
-#: `props.municipioId` da página que este coletor lê. Os outros três (Brusque 2,
-#: Blumenau 3, Rio do Sul 4) existem no mesmo portal e NÃO são lidos aqui.
+#: `props.municipioId` da página que `parse()` lê. Blumenau (3) tem leitor próprio,
+#: `parse_blumenau()`; Brusque (2) e Rio do Sul (4) NÃO são lidos.
 MUNICIPIO_ITAJAI = 1
 
 
@@ -310,6 +321,160 @@ def parse(pagina: str) -> list[dict]:
     for msg in recusadas:
         print(f"recusada — {msg}", file=sys.stderr)
     return leituras
+
+
+# --------------------------------------------------------------- Blumenau (3)
+#
+# A estação PADKND ("Estação AlertaBlu PADKND") publica a série de 5 em 5
+# minutos, contra a série HORÁRIA do `nivel_oficial.json` do AlertaBlu. Ela não
+# traz coordenada, então a regra 1 (identidade pela coordenada) não se aplica, e
+# o nome não prova régua. A identidade sai de MEDIÇÃO, refeita a cada coleta:
+# nas horas cheias que as duas publicam, o valor tem que ser o mesmo. Isso prova
+# ao mesmo tempo a régua (o mesmo número) e o relógio (no mesmo instante) — a
+# regra do CLAUDE.md para estação republicada, e o motivo é o repasse antigo de
+# Blumenau, que vinha 3 h atrasado.
+#
+# Conferido nas capturas de 27 e 28/09/2026: 12 de 12 horas cheias iguais nas
+# duas publicações, diferença 0,00 m, sem deslocamento.
+
+MUNICIPIO_BLUMENAU = 3
+URL_BLUMENAU = URL + "?municipio_id=3"
+CODIGO_BLUMENAU = "PADKND"
+
+#: Título desta publicação. NUNCA "Blumenau": esse título é o do repasse antigo
+#: da página de Itajaí, com relógio 3 h atrasado, e `extrair_picos`,
+#: `nivel_antes`, `analisar_chegada_itajai` e o site o tratam assim.
+TITULO_BLUMENAU = "Blumenau (PADKND)"
+
+#: A régua que esta publicação cobre — o título do cadastro (`estacoes_tempo_real`).
+#: Vai em `resgate_de`, como no AlertaBlu: as duas são publicações da MESMA régua,
+#: e o site e o bot escolhem entre elas a medição mais recente.
+REGUA_BLUMENAU = "Blumenau"
+
+#: As duas publicam o nível em centímetros; mais que 1 cm de diferença no mesmo
+#: instante não é arredondamento.
+TOLERANCIA_PAR_M = 0.01
+
+#: Horas cheias em comum exigidas. Uma só coincidência pode ser acaso num rio parado.
+MIN_PARES = 3
+
+#: O par mais recente não pode estar mais longe que isto da leitura publicada:
+#: a prova tem que ser de agora, não de meio dia atrás.
+PAR_RECENTE_H = 3
+
+#: Leitura com carimbo além disto no futuro é relógio errado, não medição.
+FUTURO_MAX_MIN = 10
+
+
+def _instante_utc(iso) -> datetime | None:
+    if not isinstance(iso, str) or not iso.strip():
+        return None
+    try:
+        q = datetime.fromisoformat(iso.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if q.tzinfo is None:
+        return None
+    return q.astimezone(timezone.utc)
+
+
+def _serie_por_instante(pontos, chave_quando: str, chave_nivel: str) -> dict[datetime, float]:
+    saida: dict[datetime, float] = {}
+    for p in pontos or []:
+        if not isinstance(p, dict):
+            continue
+        quando = _instante_utc(p.get(chave_quando))
+        nivel = p.get(chave_nivel)
+        if quando is not None and nivel_plausivel(nivel):
+            saida[quando] = float(nivel)
+    return saida
+
+
+def conferir_com_alertablu(serie_12_h, niveis_alertablu, ultima: datetime) -> str | None:
+    """None quando a PADKND e o AlertaBlu concordam; senão, o motivo.
+
+    `serie_12_h` é a série da PADKND no portal ({medido_em, nivel_rio_m}, UTC
+    com offset); `niveis_alertablu` é o `niveis` do `nivel_oficial.json`
+    ({horaLeitura, nivel}, UTC com Z). Compara só instantes IGUAIS — nunca
+    interpola: interpolar esconderia um relógio deslocado."""
+    padknd = _serie_por_instante(serie_12_h, "medido_em", "nivel_rio_m")
+    alertablu = _serie_por_instante(niveis_alertablu, "horaLeitura", "nivel")
+    comuns = sorted(set(padknd) & set(alertablu))
+    if len(comuns) < MIN_PARES:
+        return (f"só {len(comuns)} instante(s) em comum com o AlertaBlu (mínimo {MIN_PARES}) "
+                "— sem medição, nada prova que é a mesma régua")
+    for t in comuns:
+        dif = abs(padknd[t] - alertablu[t])
+        if round(dif, 3) > TOLERANCIA_PAR_M:
+            return (f"às {t:%d/%m %H:%M}Z a PADKND diz {padknd[t]:.2f} m e o AlertaBlu "
+                    f"{alertablu[t]:.2f} m — diferença de {dif:.2f} m, acima de "
+                    f"{TOLERANCIA_PAR_M:.2f} m")
+    distancia_h = (ultima - comuns[-1]).total_seconds() / 3600
+    if distancia_h > PAR_RECENTE_H:
+        return (f"o par mais recente com o AlertaBlu é de {comuns[-1]:%d/%m %H:%M}Z, "
+                f"{distancia_h:.1f} h antes da leitura — prova velha (teto {PAR_RECENTE_H} h)")
+    return None
+
+
+def parse_blumenau(pagina: str, alertablu: dict | None,
+                   agora: datetime | None = None) -> list[dict]:
+    """A leitura de 5 min da PADKND como publicação da régua de Blumenau.
+
+    `alertablu` é o `nivel_oficial.json` já baixado. Sem ele não há prova, e a
+    PADKND não entra: o AlertaBlu horário segue sozinho, como antes."""
+    if not isinstance(alertablu, dict) or not alertablu.get("niveis"):
+        print("Blumenau (PADKND) recusada — sem a série do AlertaBlu para conferir a régua",
+              file=sys.stderr)
+        return []
+    dados = carga(pagina)
+    motivo = conferir_municipio(dados, MUNICIPIO_BLUMENAU)
+    if motivo is not None:
+        print(f"Blumenau (PADKND) recusada — {motivo}", file=sys.stderr)
+        return []
+    estacoes = [e for e in ((dados.get("props") or {}).get("estacoes") or [])
+                if isinstance(e, dict) and e.get("codigo") == CODIGO_BLUMENAU]
+    if len(estacoes) != 1:
+        print(f"Blumenau (PADKND) recusada — {len(estacoes)} estações {CODIGO_BLUMENAU} na página",
+              file=sys.stderr)
+        return []
+    e = estacoes[0]
+
+    nivel = e.get("nivel_rio_m")
+    if not nivel_plausivel(nivel):
+        print(f"Blumenau (PADKND) recusada — {nivel!r} não é nível de rio desta bacia",
+              file=sys.stderr)
+        return []
+    q = (e.get("qualidade") or {}).get("nivel_rio_m") or {}
+    carimbo = q.get("medido_em") or e.get("medido_em")
+    ultima = _instante_utc(carimbo)
+    medido_em = para_brasilia(carimbo)
+    if ultima is None or medido_em is None:
+        print("Blumenau (PADKND) recusada — sem horário de medição legível", file=sys.stderr)
+        return []
+    agora = agora or datetime.now(timezone.utc)
+    if (ultima - agora).total_seconds() > FUTURO_MAX_MIN * 60:
+        print(f"Blumenau (PADKND) recusada — carimbo {carimbo} está no futuro", file=sys.stderr)
+        return []
+
+    motivo = conferir_com_alertablu(e.get("serie_12_h"), alertablu.get("niveis"), ultima)
+    if motivo is not None:
+        print(f"Blumenau (PADKND) recusada — {motivo}", file=sys.stderr)
+        return []
+
+    # REGRA 2: rio e cidade saem do cadastro da régua, não daqui.
+    nossa = next((c for c in estacoes_tempo_real() if c.get("titulo") == REGUA_BLUMENAU), None)
+    if nossa is None:
+        print(f"Blumenau (PADKND) recusada — régua {REGUA_BLUMENAU!r} fora do cadastro",
+              file=sys.stderr)
+        return []
+    return [{
+        "estacao": TITULO_BLUMENAU,
+        "rio": nossa.get("rio"),
+        "cidade": nossa.get("cidade"),
+        "nivel_m": float(nivel),
+        "medido_em": medido_em,
+        "resgate_de": REGUA_BLUMENAU,
+    }]
 
 
 def coletar(pagina: str | None = None) -> dict:

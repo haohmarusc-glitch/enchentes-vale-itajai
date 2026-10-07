@@ -480,6 +480,14 @@ o projeto.
 
 ## Pendências
 
+- [ ] **Blumenau de 5 em 5 minutos (PADKND), 07/10/2026 — mergeado; falta o deploy na VPS.** `coleta_itajai_portal.parse_blumenau`
+  lê a estação "AlertaBlu PADKND" do portal da Defesa Civil de Itajaí (`?municipio_id=3`). Ela vem sem coordenada, então a
+  identidade é provada **por medição a cada coleta**: nas horas cheias em comum com o `nivel_oficial.json` do AlertaBlu
+  (mínimo 3, a mais recente a até 3 h da leitura), o valor tem de ser o mesmo, com 1 cm de folga. Isso prova régua e
+  relógio. Ao vivo, às 15:01 UTC, deu 10 pares com diferença de 0,00 m; a PADKND estava 11 min atrás e o AlertaBlu 61 min.
+  Entra como `Blumenau (PADKND)` com `resgate_de: "Blumenau"` (nunca o título `Blumenau`, que é o repasse antigo 3 h
+  atrasado). O AlertaBlu horário segue como reserva; sem ele, a PADKND não entra. Falta o deploy na VPS. A série ganha
+  um ponto por coleta (15 min), não os de 5 min.
 - [ ] **Chuva e maré de Itajaí leem fonte morta (achado da auditoria de domínios, 07/10/2026,
   `docs/AUDITORIA-DOMINIOS-2026-10-07.md`).** O host antigo `defesacivil.itajai.sc.gov.br` devolve HTTP 200 com uma
   casca HTML de 641 bytes. A última chuva de Itajaí em `arquivo-series` é de 19/09/2026 17:30, e o `ultimo.json`

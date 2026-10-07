@@ -637,5 +637,46 @@ class GasparFiadaNaColeta(unittest.TestCase):
             self.assertIn("estacoes", json.loads(destino.read_text(encoding="utf-8")))
 
 
+class TestBlumenauDe5MinutosNaColeta(unittest.TestCase):
+    """O AlertaBlu horário segue sempre; a PADKND só entra conferida contra ele."""
+
+    CAPTURA = Path(__file__).resolve().parent.parent / "data" / "brutos" / "captura-fontes-2026-09-28"
+
+    def setUp(self):
+        self.alertablu = json.loads((self.CAPTURA / "blumenau-alertablu-nivel-oficial.json")
+                                    .read_text(encoding="utf-8"))
+        self.pagina = (self.CAPTURA / "itajai-portal-rios-municipio-3-blumenau.html").read_text(encoding="utf-8")
+
+    def _coletar(self, baixar_alertablu, baixar_portal):
+        falso = types.ModuleType("coleta_alertablu")
+        falso.URL = "https://alertablu"
+        falso.baixar = baixar_alertablu
+        import coleta_alertablu
+        falso.parse = coleta_alertablu.parse
+        with mock.patch.dict(sys.modules, {"coleta_alertablu": falso}), \
+             mock.patch.object(coleta_niveis, "espera_turno", lambda: None), \
+             mock.patch("comum.baixar", baixar_portal):
+            return coleta_niveis.baixar_nivel_alertablu([])
+
+    def test_as_duas_publicacoes_da_mesma_regua(self):
+        leituras = self._coletar(lambda url: self.alertablu, lambda *a, **k: self.pagina)
+        self.assertEqual([(l["estacao"], l["resgate_de"]) for l in leituras],
+                         [("Blumenau (AlertaBlu)", "Blumenau"), ("Blumenau (PADKND)", "Blumenau")])
+
+    def test_portal_fora_do_ar_preserva_o_alertablu(self):
+        def quebra(*a, **k):
+            raise OSError("portal fora")
+        leituras = self._coletar(lambda url: self.alertablu, quebra)
+        self.assertEqual([l["estacao"] for l in leituras], ["Blumenau (AlertaBlu)"])
+
+    def test_sem_alertablu_a_padknd_nao_entra(self):
+        def quebra(url):
+            raise OSError("AlertaBlu fora")
+        pedidos = []
+        leituras = self._coletar(quebra, lambda *a, **k: pedidos.append(a) or self.pagina)
+        self.assertEqual(leituras, [])
+        self.assertEqual(pedidos, [], "sem a prova, nem pede o portal")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
