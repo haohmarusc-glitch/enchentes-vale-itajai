@@ -94,7 +94,7 @@ export const CASOS_CLASSIFICADOR: CasoClassificador[] = [
   { id: 'p-cheio-blumenau', grupo: 'presente', pergunta: 'o Itajaí-Açu em Blumenau tá cheio?', espera: AGORA, barreira: true },
   { id: 'p-br470-gaspar', grupo: 'presente', pergunta: 'a BR-470 em Gaspar tá liberada?', espera: AGORA, barreira: true },
   { id: 'p-casa-itajai-risco', grupo: 'presente', pergunta: 'minha casa em itajaí corre risco?', espera: AGORA, barreira: true },
-  { id: 'p-dormir-rio-do-sul', grupo: 'presente', pergunta: 'é seguro dormir em casa em rio do sul?', espera: AGORA },
+  { id: 'p-dormir-rio-do-sul', grupo: 'presente', pergunta: 'é seguro dormir em casa em rio do sul?', espera: AGORA, barreira: true },
   { id: 'p-ponte-salto', grupo: 'presente', pergunta: 'a ponte do salto em blumenau fechou?', espera: AGORA },
   { id: 'p-debaixo-dagua', grupo: 'presente', pergunta: "blumenau tá debaixo d'água?", espera: AGORA, barreira: true },
   { id: 'p-ilhota-baixou', grupo: 'presente', pergunta: 'o nível em ilhota baixou?', espera: AGORA },

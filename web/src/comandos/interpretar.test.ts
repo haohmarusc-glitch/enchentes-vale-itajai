@@ -31,7 +31,6 @@ test('normalizar tira acento, pontuação e hífen', () => {
 test('pergunta continua pergunta: nada de mapa sem pedido', () => {
   for (const q of [
     'Como está Blumenau?',
-    'Blumenau',
     'mostrar as 5 maiores cheias de Brusque',
     'qual a maior cheia de Blumenau e Gaspar?',
     'quanto tempo a cheia leva de Rio do Sul até Blumenau?',
@@ -39,6 +38,9 @@ test('pergunta continua pergunta: nada de mapa sem pedido', () => {
   ]) {
     assert.equal(interpretar(q, cat, fora), null, q)
   }
+  // 18ª entrega: só o nome da cidade pergunta o que a pessoa quer dela (antes ia ao motor, que palpitava "maiores cheias").
+  const so = interpretar('Blumenau', cat, fora)
+  assert.ok(so && so.tipo === 'esclarecer' && /O que você quer saber de Blumenau/.test(so.texto) && so.sugestoes.includes('mostrar Blumenau'), JSON.stringify(so))
 })
 
 test('cidade: exige verbo, aceita cortesia, resolve pelo cadastro', () => {

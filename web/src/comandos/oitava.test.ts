@@ -70,7 +70,10 @@ test('frases da 8ª entrega; pedido de conselho continua fora dos comandos', () 
   assert.deepEqual(passos('para quem devo ligar?'), [{ tipo: 'emergencia' }])
   // "Limpar filtros" e "limpar o histórico" não são a conversa.
   assert.deepEqual(passos('limpar filtros'), [{ tipo: 'filtro', filtro: null }])
-  for (const q of ['devo sair de casa?', 'apagar o histórico de Blumenau', 'o site vai avisar quando encher?']) assert.equal(interpretar(q, cat, fora), null, q)
+  for (const q of ['devo sair de casa?', 'o site vai avisar quando encher?']) assert.equal(interpretar(q, cat, fora), null, q)
+  // 18ª entrega: pedido de alterar dado é recusado com texto, nunca executado nem palpitado.
+  const alterar = interpretar('apagar o histórico de Blumenau', cat, fora)
+  assert.ok(alterar && alterar.tipo === 'esclarecer' && /não altera dados/.test(alterar.texto), JSON.stringify(alterar))
 })
 
 // ---------------------------------------------------------------- atualizar

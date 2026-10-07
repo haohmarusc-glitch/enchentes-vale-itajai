@@ -131,22 +131,51 @@ export interface Saida {
   link?: { texto: string; para: string }
   /** Texto preparado para a pessoa copiar (resumo, link). O chat mostra o botão; nunca envia sozinho. */
   copiar?: string
+  /** 18ª entrega: o passo falhou (ou pediu esclarecimento) e a cadeia parou — o texto já diz o que foi feito. */
+  falhou?: true
 }
 
 const SEM_DADOS = 'Não consegui carregar as leituras agora. Tente de novo em instantes; em emergência, ligue 199.'
+const SEM_LEITURA_VALIDA =
+  'A coleta de agora não trouxe leitura válida de nenhuma régua (publicação indisponível ou só valores que o site descarta): ' +
+  'sem número, não há panorama, e isso não quer dizer que o rio está normal. Tente de novo em instantes; em emergência, ligue 199.'
 
 export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ctx: Contexto, ajuda: () => Saida): Promise<Saida> {
   const feitos: string[] = []
   let guardou = false
   let cidade = ctx.cidadeAtual
-  const falha = (r: Resultado | string): Saida => {
+  const falha = (r: Resultado | string, sugestoes: string[] = ['o que posso pedir?']): Saida => {
     const motivo = typeof r === 'string' ? r : r.texto
     const antes = feitos.length ? `Feito: ${feitos.join(' ')} ` : ''
     const resto = feitos.length || passos.length > 1 ? ' Os passos seguintes não foram feitos.' : ''
-    return { texto: `${antes}${motivo}${resto}`.trim(), sugestoes: ['o que posso pedir?'] }
+    return { texto: `${antes}${motivo}${resto}`.trim(), sugestoes, falhou: true }
   }
 
+  // 18ª entrega: um pedido com várias leituras ("quanto falta … e quais ruas o rio já alcançou") responde TODAS, na
+  // ordem. Cada passo roda em `executarPasso`: `null` = feito (segue), falha = para (o texto já diz o que foi
+  // feito), resposta = guarda e segue. No fim, as respostas vão juntas, com o que foi feito antes delas.
+  const respostas: Saida[] = []
   for (const passo of passos) {
+    const saida = await executarPasso(passo)
+    if (!saida) continue
+    if (saida.falhou) return saida
+    respostas.push(saida)
+  }
+  if (respostas.length === 0) return { texto: feitos.join(' ') || 'Feito.' }
+  // O que foi feito antes das respostas entra uma vez só (o passo de rua já devolve os feitos no próprio texto).
+  const jaDisse = respostas.some((r) => feitos.some((f) => r.texto.includes(f)))
+  const feitosAntes = feitos.length && !jaDisse ? `${feitos.join(' ')}\n\n` : ''
+  if (respostas.length === 1) return feitosAntes ? { ...respostas[0]!, texto: feitosAntes + respostas[0]!.texto } : respostas[0]!
+  const ultima = respostas[respostas.length - 1]!
+  const comLink = [...respostas].reverse().find((r) => r.link)
+  return {
+    texto: feitosAntes + respostas.map((r) => r.texto).join('\n\n'),
+    ...(ultima.sugestoes ? { sugestoes: ultima.sugestoes } : {}),
+    ...(comLink?.link ? { link: comLink.link } : {}),
+    ...(ultima.copiar ? { copiar: ultima.copiar } : {}),
+  }
+
+  async function executarPasso(passo: Passo): Promise<Saida | null> {
     if (MUDA_A_TELA.has(passo.tipo) && !guardou) {
       const m = amb.monitor()
       retratos.push(m ? m.retrato() : { rota: amb.rotaAtual() })
@@ -252,11 +281,11 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         const escolhidas = passo.rotulo ? opcoes.filter((o) => normalizar(o.rotulo) === passo.rotulo)
           : passo.ano ? opcoes.filter((o) => o.rotulo.includes(passo.ano!)) : opcoes
         if (escolhidas.length === 0) {
-          return { texto: `${onde} não tem camada de ${passo.ano}. As camadas disponíveis são estas; escolha uma.`, sugestoes: opcoes.slice(0, 8).map((o) => `camada: ${o.rotulo}`) }
+          return falha(`${onde} não tem camada de ${passo.ano}. As camadas disponíveis são estas; escolha uma.`, opcoes.slice(0, 8).map((o) => `camada: ${o.rotulo}`))
         }
         if (escolhidas.length > 1) {
           // Vários cenários e nenhum escolhido: pergunta. Não liga todos.
-          return { texto: `${onde} tem ${escolhidas.length} camadas${passo.ano ? ` de ${passo.ano}` : ''}. Qual delas? (Camada é referência de cheia passada ou simulação, não alagamento atual.)`, sugestoes: escolhidas.slice(0, 8).map((o) => `camada: ${o.rotulo}`) }
+          return falha(`${onde} tem ${escolhidas.length} camadas${passo.ano ? ` de ${passo.ano}` : ''}. Qual delas? (Camada é referência de cheia passada ou simulação, não alagamento atual.)`, escolhidas.slice(0, 8).map((o) => `camada: ${o.rotulo}`))
         }
         const r = m!.camada(escolhidas[0]!.arquivo)
         if (!r.ok) return falha(r)
@@ -757,6 +786,11 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         const d = amb.dados
         const v = await d?.aoVivo()
         if (!d || !v) return { texto: SEM_DADOS }
+        // 18ª entrega: publicação indisponível ou só com leituras inválidas (nível impossível) não é "nenhuma cidade
+        // em alerta": é falta de leitura, e a resposta diz isso.
+        if (v.tempoReal.situacao !== 'ok' || v.tempoReal.leituras.length === 0) {
+          return { texto: SEM_LEITURA_VALIDA, ...(ctx.naMonitor ? {} : { link: { texto: 'Abrir o Monitor da bacia →', para: '/monitor' } }) }
+        }
         const cidades: CidadeAgora[] = cat.cidades.flatMap((x) => {
           const c = d.cidade(x.id)
           return c ? [{ cidade: c.cidade, estado: estadoDaCidade(c.cidade, c.rioId, v) }] : []
@@ -809,7 +843,8 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         const ref = amb.dados?.referenciaChegada?.()
         const tabua = amb.dados?.mare?.()
         if (!ref || !tabua) return { texto: 'A tábua de maré ou a referência de estudo não estão disponíveis agora.' }
-        const agora = new Date()
+        // O mesmo "agora" das leituras (um relógio por atualização); sem leituras carregadas, o do aparelho.
+        const agora = (await amb.dados?.aoVivo())?.agora ?? new Date()
         const pico = instanteDoPico(passo, agora)
         if (!pico) return { texto: 'Não entendi o horário do pico. Peça, por exemplo: "se o pico de Blumenau for às 22h".' }
         const r = simularChegada(entradaBrasilia(pico), ref.horas_min, ref.horas_max, tabua)
@@ -942,8 +977,8 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         }
       }
     }
+    return null
   }
-  return { texto: feitos.join(' ') || 'Feito.' }
 }
 
 const ERRO_LOCALIZACAO = {

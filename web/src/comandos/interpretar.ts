@@ -12,7 +12,7 @@ import type { Aba, Catalogo, Contexto, Fundo, Interpretacao, Passo, ReguaDoCatal
 import type { TemaDaLegenda } from './foz'
 
 import { normalizar } from './normalizar'
-import { corrigirCidade, textoDaCorrecao } from './corrigir'
+import { corrigirCidade, distanciaDeEdicao, textoDaCorrecao } from './corrigir'
 import { verbeteDe } from './glossario'
 import { arquivoPeloNome } from './rios'
 import {
@@ -40,16 +40,31 @@ function semCortesia(t: string): string {
  * (a normalização tira a pontuação). Nenhum nome do cadastro tem " e ". O "é" sem acento também vira "e":
  * por isso a frase inteira é tentada antes de dividir ("essa informação é atual ou histórica?").
  */
+/**
+ * 18ª entrega: abreviações do celular, depois de `normalizar` ("ir p/ o monitor" → "ir para o monitor", "qdo blumenau
+ * passou da cota" → "quando …"). Só palavras inteiras; "dc" e "m" ficam como estão.
+ */
+const ABREVIACOES: [RegExp, string][] = [
+  [/\bp\b/g, 'para'], [/\bq\b/g, 'que'], [/\bqdo\b/g, 'quando'], [/\b(?:qto|qnt)\b/g, 'quanto'], [/\b(?:qtos|qnts)\b/g, 'quantos'],
+  [/\b(?:qtas|qntas)\b/g, 'quantas'], [/\boque\b/g, 'o que'], [/\bhj\b/g, 'hoje'], [/\bvc\b/g, 'voce'], [/\bvcs\b/g, 'voces'],
+  [/\bc\b/g, 'com'], [/\b(?:tb|tbm)\b/g, 'tambem'], [/\bpq\b/g, 'por que'], [/\bmsm\b/g, 'mesmo'], [/\bblz\b/g, ''],
+]
+export function expandirAbreviacoes(t: string): string {
+  let s = t
+  for (const [re, por] of ABREVIACOES) s = s.replace(re, por)
+  return s.replace(/\s+/g, ' ').trim()
+}
+
 function trechos(texto: string): string[] {
   return texto
     .split(/[,;]/)
-    .flatMap((parte) => normalizar(parte).split(/\s*(?:\be depois\b|\bdepois\b|\be em seguida\b|\bem seguida\b|\be entao\b|\bentao\b|\be\b)\s*/))
+    .flatMap((parte) => expandirAbreviacoes(normalizar(parte)).split(/\s*(?:\be depois\b|\bdepois\b|\be em seguida\b|\bem seguida\b|\be entao\b|\bentao\b|\be\b)\s*/))
     .map((x) => semCortesia(x.trim()))
     .filter(Boolean)
 }
 
 const VERBO_IR =
-  '(?:mostrar|mostre|mostra|ver|veja|abrir|abra|abre|ir|va|vai|leve me|centralizar|centralize|focar|foque|enquadrar|enquadre|selecionar|selecione|zoom|aproximar|aproxime|aproxima)'
+  '(?:mostrar|mostre|mostra|ver|veja|abrir|abra|abre|ir|va|vai|leve me|me leve|leva|leve|levar|me leva|centralizar|centralize|focar|foque|enquadrar|enquadre|selecionar|selecione|zoom|aproximar|aproxime|aproxima)'
 
 function reguaPorCodigo(t: string, cat: Catalogo): ReguaDoCatalogo | null | 'inexistente' {
   const m = t.match(/\bdc\s*0*(\d{1,2})\b/)
@@ -130,7 +145,7 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
   if (/^(?:onde|em que cidades?|quais cidades?) (?:esta|ta|estao) chovendo(?: mais)?(?: agora)?$|^onde (?:chove|choveu|chove mais|choveu mais)(?: agora| hoje| na ultima hora)?$|^(?:a )?chuva (?:agora|na bacia|de agora|nas cidades)$|^(?:ranking|lista) (?:da|de) chuva$/.test(t)) {
     return [{ tipo: 'chuva_agora' }]
   }
-  if (/^(?:como (?:estao|esta|tao)(?: as| a)?|qual (?:e )?o estado (?:das|da)) barragens?(?: de contencao| do alto vale)?(?: agora)?$|^(?:as )?barragens?(?: agora)?$|^(?:as )?comportas(?: das barragens)?(?: estao)?(?: abertas| fechadas)?$/.test(t)) {
+  if (/^(?:como (?:estao|esta|tao)(?: as| a)?|qual (?:e )?o estado (?:das|da)) barragens?(?: de contencao| do alto vale)?(?: agora)?$|^(?:as )?barragens?(?: agora)?$|^(?:as )?comportas(?: das barragens)?(?: estao)?(?: abertas| fechadas)?$|^(?:as )?barragens? (?:estao|tao|esta|ta) (?:abertas?|fechadas?|vertendo|cheias?|segurando|liberando)$/.test(t)) {
     return [{ tipo: 'barragens' }]
   }
   if (/^(?:(?:como (?:esta|ta)|qual(?: e)?) )?(?:a )?mare(?: agora| em itajai| na foz| no porto)?$|^(?:a )?mare (?:esta|ta) (?:subindo|baixando|alta|baixa)$|^(?:(?:quando e|qual(?: e)?) )?a proxima (?:preamar|mare alta|baixamar|mare baixa)$/.test(t)) {
@@ -180,7 +195,12 @@ function lerTrechoDaDecimaSexta(t: string, cat: Catalogo): Lido {
       t.match(new RegExp(`^(?:com |a |em |se o rio (?:chegar|subir|estiver|for|bater) (?:a |em |ate |nos? )?|se chegar (?:a |em )?)${NUM_M}(?: (?:em|de|no|na) (.+?))? ${RUAS} ${ALAGAM}(?: (?:em|de|no|na) (.+?))?$`))
     if (m) {
       const nivelM = metrosDitos(m[1], m[2])
-      if (!nivelM) return null
+      if (!nivelM) {
+        return {
+          erro: `${m[1]}${m[2] ? `,${m[2]}` : ''} m não é um nível possível de rio nesta bacia: as réguas das cidades vão de pouco acima de 0 a menos de 25 m. Peça com um nível dentro dessa faixa.`,
+          sugestoes: ['quais ruas alagam com 8 m em Blumenau?', 'quais são as ruas mais baixas de Blumenau?'],
+        }
+      }
       const cidades = m.slice(3).filter(Boolean)
       if (cidades.length > 1) return null
       return com(cidades[0], { pergunta: 'nivel', nivelM })
@@ -199,7 +219,8 @@ function lerTrechoDaDecimaSexta(t: string, cat: Catalogo): Lido {
   {
     const m = t.match(new RegExp(`^${RUAS}(?: sao)? (?:as )?proximas(?: ruas)?(?: a alagar| que alagam| a serem alagadas| na fila)?(?: (?:em|de|no|na) (.+?))?$`)) ??
       t.match(/^(?:quais|que) (?:sao )?(?:as )?proximas ruas(?: a alagar| que alagam| a serem alagadas)?(?: (?:em|de|no|na) (.+?))?$/) ??
-      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:em seguida|depois|a seguir|se (?:o rio )?continuar subindo)(?: (?:em|de|no|na) (.+?))?$`))
+      t.match(new RegExp(`^${RUAS} ${ALAGAM} (?:em seguida|depois|a seguir|se (?:o rio )?continuar subindo)(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^${RUAS} (?:vem|veem|viriam|vao|seriam as proximas|sao as proximas|entram) (?:depois|em seguida|a seguir|na sequencia|agora)(?: (?:em|de|no|na) (.+?))?$`))
     if (m) return com(m[1], { pergunta: 'proximas' })
   }
   // "quais ruas alagam primeiro em Gaspar?", "quais são as ruas mais baixas de Blumenau?"
@@ -235,7 +256,8 @@ function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
       t.match(/^(?:o que|que) (?:o site|a coleta|voce|voces) (?:ja )?(?:captou|captaram|registrou|registraram|acompanhou|acompanharam|viu|viram)(?: ate agora| nos ultimos meses| este ano)?(?: (?:em|de|no|na) (.+?))?$/) ??
       t.match(/^(?:o que aconteceu|que cheias houve|quais foram as cheias|que cheias teve|quais cheias teve|houve cheia|teve cheia) (?:nos ultimos (?:\d+ )?meses|nas ultimas semanas|este ano|neste ano|ultimamente|recentemente|em 2026)(?: (?:em|de|no|na) (.+?))?$/) ??
       t.match(/^(?:cheias|enchentes) (?:recentes|captadas|dos ultimos meses|deste ano|de 2026)(?: (?:em|de|no|na) (.+?))?$/) ??
-      t.match(/^(?:ultimas|as ultimas) (?:cheias|enchentes)(?: (?:em|de|no|na) (.+?))?$/)
+      t.match(/^(?:ultimas|as ultimas) (?:cheias|enchentes)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:quais foram|quais sao|que|quais) (?:as )?(?:cheias|enchentes|eventos) que (?:o site|a coleta|voce|voces) (?:ja )?(?:captou|captaram|registrou|registraram|acompanhou|acompanharam|viu|viram|pegou|pegaram|mediu|mediram)(?: (?:em|de|no|na) (.+?))?$/)
     if (m) {
       const c = m[1] ? cidadeOpcional(m[1], cat) : {}
       return c ? [{ tipo: 'captados', pergunta: 'lista', ...c }] : null
@@ -244,7 +266,7 @@ function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
   // Última: "qual foi a última cheia em Blumenau?", "quando foi a última vez que Blumenau passou da cota de alerta?"
   {
     const m =
-      t.match(/^(?:qual foi|quando foi|qual e|quando) (?:a )?ultima (?:cheia|enchente)(?: (?:em|de|do|da|no|na) (.+?))?$/) ??
+      t.match(/^(?:qual(?: foi| e)?|quando(?: foi)?) (?:a )?ultima (?:cheia|enchente)(?: (?:em|de|do|da|no|na) (.+?))?$/) ??
       t.match(/^(?:a )?ultima (?:cheia|enchente)(?: (?:em|de|do|da|no|na) (.+?))?$/)
     if (m) return com(m[1], { pergunta: 'ultima' })
     const v = t.match(new RegExp(`^(?:quando foi |qual foi )?(?:a )?ultima vez que (?:(.+?) )?(?:passou|cruzou|chegou|entrou|ficou|esteve) (?:d[aeo] |n[ao] |em |a |acima d[ao] )?(?:cota(?: d[aeo])? |nivel de |faixa de )?${COTA_DITA}?(?: (?:em|de|no|na) (.+?))?$`))
@@ -324,6 +346,21 @@ function lerTrechoDaDecimaQuarta(t: string, cat: Catalogo): Lido {
       return comCidade(partes[0], { pergunta: 'variacao', horas })
     }
   }
+  // 18ª entrega: "quanto Blumenau subiu?" sem a janela de horas pergunta a janela, em vez de cair no motor por palpite.
+  {
+    const m = t.match(new RegExp(`^(?:quanto|qto) (?:(.+?) )?(?:subiu|baixou|desceu|variou|mudou|encheu)(?: ${SUJEITO})?(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) {
+      const partes = m.slice(1).filter((x): x is string => !!x).map(soSujeito).filter(Boolean)
+      const alvo = partes.length <= 1 ? cidadeOpcional(partes[0], cat) : null
+      if (alvo) {
+        const nome = alvo.cidadeId ? nomeDaCidade(alvo.cidadeId, cat) : 'a cidade'
+        return {
+          erro: `Em quantas horas? Diga a janela, por exemplo "quanto ${nome} subiu nas últimas 6 horas?", ou peça a última hora.`,
+          sugestoes: [`quanto ${nome} subiu nas últimas 6 horas?`, `o que mudou na última hora em ${nome}?`],
+        }
+      }
+    }
+  }
   // "quando o rio começou a subir em Blumenau?", "quando Blumenau começou a subir?", "há quanto tempo está subindo?"
   {
     const m =
@@ -338,7 +375,7 @@ function lerTrechoDaDecimaQuarta(t: string, cat: Catalogo): Lido {
   }
   // "há quanto tempo Blumenau está em alerta?", "há quanto tempo está acima da cota de atenção em Blumenau?"
   {
-    const m = t.match(new RegExp(`^(?:ha|faz|desde) quanto tempo (?:(.+?) )?(?:esta|ta|fica|ficou|segue|continua) (?:em|no|na|acima d[ao]|acima d[ao] cota de|na cota de|em cota de|na faixa de) ?${COTA_DITA}?${EM_CIDADE}$`))
+    const m = t.match(new RegExp(`^(?:(?:ha|faz|desde) quanto tempo|desde quando|a partir de quando) (?:(.+?) )?(?:esta|ta|fica|ficou|segue|continua) (?:em|no|na|acima d[ao]|acima d[ao] cota de|na cota de|em cota de|na faixa de) ?${COTA_DITA}?${EM_CIDADE}$`))
     if (m) {
       const antes = soSujeito(m[1])
       if (antes && m[3]) return null
@@ -372,8 +409,33 @@ function lerTrechoDaDecimaTerceira(t: string, cat: Catalogo): Lido {
     const m = t.match(/^como (?:estao|esta|tao|ta) (?:as cidades (?:de )?)?(.+?)(?: agora)?$/)
     const ids = m ? cidadesDaLista(m[1]!, cat) : null
     if (ids && ids.length >= 2) return [{ tipo: 'varias_cidades', cidadeIds: ids }]
+    // 18ª entrega: "como estão Blumenau e Pomerode?" — uma fora do cadastro invalida a lista, e o chat diz qual.
+    if (m && / e /.test(m[1]!)) {
+      const desconhecidas = cidadesForaDoCadastro(m[1]!, cat)
+      if (desconhecidas) {
+        return {
+          erro: `${desconhecidas.map((d) => `"${d}"`).join(' e ')} não ${desconhecidas.length > 1 ? 'estão' : 'está'} entre as cidades do site, então não respondo a lista pela metade. As cidades com régua são: ${cat.cidades.map((c) => c.nome).join(', ')}.`,
+          sugestoes: ['quais cidades estão em alerta?'],
+        }
+      }
+    }
   }
   return null
+}
+
+/** As palavras de uma lista de cidades que não são cidade do cadastro (e nem "e"), quando ao menos UMA é. */
+function cidadesForaDoCadastro(lista: string, cat: Catalogo): string[] | null {
+  let resto = ` ${lista} `
+  let achouAlguma = false
+  for (const c of [...cat.cidades].sort((a, b) => normalizar(b.nome).length - normalizar(a.nome).length)) {
+    const n = normalizar(c.nome)
+    if (resto.includes(` ${n} `)) {
+      achouAlguma = true
+      resto = resto.replace(` ${n} `, ' ')
+    }
+  }
+  const sobras = resto.split(' ').filter((w) => w && w !== 'e')
+  return achouAlguma && sobras.length ? sobras : null
 }
 
 /** A 12ª entrega: o Monitor, peça por peça (rio inteiro, barragens, painel, menu de cidades). */
@@ -390,8 +452,8 @@ function lerTrechoDaDecimaSegunda(t: string, ctx: Contexto): Lido {
   if (/^(?:zoom|enquadrar|enquadre|aproximar|aproxime)(?: nas| as)? barragens$|^onde ficam as barragens$/.test(t)) {
     return [{ tipo: 'enquadrar', alvo: 'barragens' }]
   }
-  if (/^(?:fechar|feche|fecha|recolher|recolha|tirar|tire)(?: o| a)? (?:painel|folha|ficha)(?: da cidade| da regua)?$/.test(t)) return [{ tipo: 'fechar_painel' }]
-  if (/^(?:abrir|abra|abre|mostrar|mostre)(?: o)? menu(?: de| das)? cidades$|^(?:a )?lista de cidades do mapa$/.test(t)) return [{ tipo: 'menu_cidades', acao: 'abrir' }]
+  if (/^(?:fechar|feche|fecha|recolher|recolha|tirar|tire)(?: o| a| esse| essa| este| esta)? (?:painel|folha|ficha)(?: da cidade| da regua)?$/.test(t)) return [{ tipo: 'fechar_painel' }]
+  if (/^(?:abrir|abra|abre|mostrar|mostre)(?: o)? menu(?: de| das)? cidades$|^(?:a )?lista de cidades do mapa$|^(?:abrir|abra|abre|mostrar|mostre|ver)(?: a)? lista (?:de|das) cidades(?: do mapa)?$/.test(t)) return [{ tipo: 'menu_cidades', acao: 'abrir' }]
   if (/^(?:fechar|feche|fecha|recolher|recolha)(?: o)? menu(?: de| das)?(?: cidades)?$/.test(t)) return [{ tipo: 'menu_cidades', acao: 'fechar' }]
   return null
 }
@@ -414,25 +476,26 @@ function lerTrechoDaDecimaPrimeira(t: string): Lido {
 
 /** A 8ª entrega: o site e os seus dados (atualizar, aviso, instalar, privacidade, conversa, emergência). */
 function lerTrechoDaOitava(t: string): Lido {
-  if (/^(?:atualizar|atualize|atualiza|recarregar|recarregue|recarrega|buscar de novo|busque de novo|busca de novo)(?: as| os| a| o)?(?: leituras| dados| niveis| numeros| medicoes| mapa| pagina| tudo)?(?: agora)?$|^(?:tem|ha|chegou) (?:leitura|medicao|dado) nov[ao]$/.test(t)) {
+  if (/^(?:atualizar|atualize|atualiza|recarregar|recarregue|recarrega|buscar de novo|busque de novo|busca de novo)(?: as| os| a| o)?(?: leituras| dados| niveis| numeros| medicoes| mapa| pagina| tudo)?(?: agora)?$|^(?:hoje |agora )?(?:tem|ha|chegou|teve|saiu|entrou) (?:leitura|medicao|dado) nov[ao](?: hoje| agora)?$|^(?:buscar|busque|busca|pegar|pegue|puxar|puxe|carregar|carregue|checar|cheque|conferir|confira)(?: as| os| se tem| se ha)? ?(?:leituras|dados|medicoes|niveis|numeros)(?: novas?| novos?| mais recentes?| atualizad[ao]s?)?$/.test(t)) {
     return [{ tipo: 'atualizar' }]
   }
-  if (/^(?:isso|isto|este site|esse site|o site)(?: aqui)? e oficial$|^(?:o que e|para que serve) (?:este|esse|o) site$|^(?:ler|leia|mostrar|mostre|ver)(?: o)? aviso(?: legal)?$|^(?:este|esse|o) site e (?:um )?(?:alerta|sistema) oficial$/.test(t)) {
+  if (/^(?:isso|isto|este site|esse site|o site)(?: aqui)? e oficial$|^(?:o que e|para que serve) (?:este|esse|o) site$|^(?:ler|leia|mostrar|mostre|ver)(?: o)? aviso(?: legal)?$|^(?:este|esse|o) site e (?:um )?(?:alerta|sistema) oficial$|^(?:este|esse|o) site e (?:da|do|oficial da|ligado a|vinculado a) (?:defesa civil|prefeitura|governo|alertablu|ana)$|^(?:voces sao|vcs sao|e) (?:a |da )?defesa civil$/.test(t)) {
     return [{ tipo: 'oficial' }]
   }
-  if (/^(?:como )?(?:instalar|instalo|instale|baixar|baixo|baixe)(?: o)? (?:app|aplicativo|site)(?: no celular| no telefone| na tela inicial)?$|^(?:tem|existe) (?:app|aplicativo)$|^(?:adicionar|adiciono|colocar|coloco)(?: o site)? na tela (?:inicial|de inicio)$/.test(t)) {
+  if (/^(?:como )?(?:instalar|instalo|instale|baixar|baixo|baixe)(?: o)? (?:app|aplicativo|site)(?: no celular| no telefone| na tela inicial)?$|^(?:tem|existe) (?:app|aplicativo)$|^(?:adicionar|adiciono|colocar|coloco)(?: o site)? na tela (?:inicial|de inicio)$|^(?:da para|da pra|posso|consigo|tem como|e possivel|como faco para|como faco pra) (?:instalar|baixar|colocar)(?: o site| o app| o aplicativo| isso)?(?: no celular| no telefone| na tela inicial)?$/.test(t)) {
     return [{ tipo: 'instalar' }]
   }
-  if (/^o que (?:o site|voce|vc) (?:guarda|sabe|grava|salva) (?:de mim|sobre mim|no (?:meu )?(?:celular|aparelho|telefone))$|^quais (?:sao )?(?:os )?meus dados(?: guardados)?$|^privacidade$|^o site (?:me rastreia|guarda minha localizacao|grava minhas perguntas|guarda minhas perguntas)$/.test(t)) {
+  if (/^o que (?:o site|voce|vc|voces|vcs) (?:guarda|guardam|sabe|sabem|grava|gravam|salva|salvam|coleta|coletam|armazena|armazenam) (?:de mim|sobre mim|no (?:meu )?(?:celular|aparelho|telefone))$|^quais (?:sao )?(?:os )?meus dados(?: guardados)?$|^(?:o site|voce|voces) (?:guarda|guardam|salva|salvam|tem|coleta|coletam) (?:os )?meus dados$|^privacidade$|^o site (?:me rastreia|guarda minha localizacao|grava minhas perguntas|guarda minhas perguntas)$/.test(t)) {
     return [{ tipo: 'privacidade' }]
   }
   {
     const m = t.match(/^(sim )?(?:apagar|apague|esquecer|esqueca|limpar|limpe|zerar|zere)(?: as| os| todas as| todos os)? (?:minhas preferencias|meus dados|preferencias|dados do aparelho|o que o site guarda)$/)
+      ?? t.match(/^(sim )?(?:apagar|apague|esquecer|esqueca|limpar|limpe|zerar|zere) (?:tudo|todo) (?:o )?que (?:o site|voce|vc) (?:guarda|guardou|sabe|salvou|tem) (?:de mim|sobre mim|no (?:meu )?(?:celular|aparelho))$/)
     if (m) return [{ tipo: 'esquecer', confirmado: !!m[1] }]
   }
   if (/^(?:nao|parar de|pare de) contar (?:as )?minhas perguntas$|^(?:desligar|desligue) (?:a )?contagem(?: do chat)?$/.test(t)) return [{ tipo: 'contagem', permitir: false }]
   if (/^(?:pode )?contar (?:as )?minhas perguntas$|^(?:ligar|ligue|religar) (?:a )?contagem(?: do chat)?$/.test(t)) return [{ tipo: 'contagem', permitir: true }]
-  if (/^(?:limpar|limpe|apagar|apague|zerar|zere)(?: a| esta| essa)? (?:conversa|historico do chat)$/.test(t)) return [{ tipo: 'limpar_conversa' }]
+  if (/^(?:limpar|limpe|apagar|apague|zerar|zere)(?: a| esta| essa| o| este| esse| as)? (?:conversa|historico do chat|chat|mensagens|bate papo)$/.test(t)) return [{ tipo: 'limpar_conversa' }]
   if (/^(?:qual (?:e )?)?(?:o )?(?:telefone|numero|contato)(?: de emergencia| da defesa civil| dos bombeiros| de socorro)$|^(?:para )?quem (?:ligar|eu ligo|devo ligar)(?: em emergencia| em caso de enchente)?$|^(?:telefones?|numeros?) de emergencia$/.test(t)) {
     return [{ tipo: 'emergencia' }]
   }
@@ -444,6 +507,7 @@ const COR_PARA_TEMA: Record<string, TemaDaLegenda> = {
   'verde claro': 'monitoramento', verde: 'normal', amarelo: 'atencao', laranja: 'alerta', vermelho: 'inundacao', cinza: 'sem-dado',
   azul: 'azul', violeta: 'violeta', roxo: 'violeta', lilas: 'violeta',
 }
+const COR_FEMININA: Record<string, string> = { amarela: 'amarelo', vermelha: 'vermelho', roxa: 'roxo', cinzenta: 'cinza' }
 const FAIXA_PARA_TEMA: Record<string, TemaDaLegenda> = {
   'abaixo da atencao': 'normal', monitoramento: 'monitoramento', observacao: 'monitoramento', atencao: 'atencao', alerta: 'alerta',
   prontidao: 'alerta', 'alerta maximo': 'inundacao', inundacao: 'inundacao', emergencia: 'inundacao', 'sem dado': 'sem-dado',
@@ -473,8 +537,8 @@ function lerTrechoDaSetima(t: string): Lido {
     }
   }
   {
-    const cor = t.match(/^o que (?:significa|quer dizer|e|indica)(?: a cor| o| a)? (verde claro|verde|amarelo|laranja|vermelho|cinza|azul|violeta|roxo|lilas)(?: no mapa| no rio| na legenda)?$/)
-    if (cor) return [{ tipo: 'legenda', tema: COR_PARA_TEMA[cor[1]!]! }]
+    const cor = t.match(/^o que (?:significa|quer dizer|e|indica)(?: a cor| o| a)? (verde claro|verde|amarel[oa]|laranja|vermelh[oa]|cinza|cinzenta|azul|violeta|rox[oa]|lilas)(?: no mapa| no rio| na legenda)?$/)
+    if (cor) return [{ tipo: 'legenda', tema: COR_PARA_TEMA[COR_FEMININA[cor[1]!] ?? cor[1]!]! }]
     const fx = t.match(/^o que (?:significa|quer dizer|e)(?: a faixa(?: de)?| o nivel(?: de)?)? (abaixo da atencao|monitoramento|observacao|atencao|alerta maximo|alerta|prontidao|inundacao|emergencia|sem dado|varias reguas)$/)
     if (fx) return [{ tipo: 'legenda', tema: FAIXA_PARA_TEMA[fx[1]!]! }]
   }
@@ -511,6 +575,12 @@ function lerTrechoDaSexta(t: string, cat: Catalogo): Lido {
     }
     const n = t.match(new RegExp(`^(?:qual (?:e )?)?a tendencia(?: do rio| do nivel)?${EM_CIDADE}$`))
     if (n) return comCidade(n[1], (c) => ({ tipo: 'tendencia', ...c }))
+    // "Blumenau subindo?": a cidade e o particípio, sem verbo.
+    const s = t.match(/^(.+?) (?:subindo|descendo|baixando)(?: ou (?:subindo|descendo|baixando))?$/)
+    if (s) {
+      const c = cidadePorNome(s[1]!, cat)
+      if (c) return [{ tipo: 'tendencia', cidadeId: c.id }]
+    }
   }
   {
     const m = t.match(new RegExp(`^(?:qual (?:foi |e )?)?(?:o |a )?(?:minimo e (?:o )?)?(?:maximo|pico|maior nivel|nivel maximo|nivel mais alto|maxima)(?: e (?:o )?minimo)?(?: do rio| do nivel)? (?:(?:das|nas|em) ultimas 24 ?(?:h|horas)|de hoje|hoje|em 24 ?(?:h|horas))${EM_CIDADE}$`))
@@ -520,7 +590,7 @@ function lerTrechoDaSexta(t: string, cat: Catalogo): Lido {
     return [{ tipo: 'panorama' }]
   }
   {
-    const m = t.match(/^o que (?:vem|esta vindo|ta vindo|desce|esta descendo) (?:de cima|do alto vale|de montante|rio abaixo)(?: (?:para|pra|ate|em|sobre) (.+?))?(?: agora)?$/)
+    const m = t.match(/^o que (?:vem|esta vindo|ta vindo|desce|esta descendo) (?:de cima|do alto vale|de montante|rio abaixo|rio acima|la de cima)(?: (?:para|pra|ate|em|sobre) (.+?))?(?: agora)?$/)
       ?? t.match(/^como (?:esta|estao|ta|tao) (?:o rio|as cidades|as reguas) (?:acima|de cima|rio acima)(?: (?:de|do|da) (.+?))?(?: agora)?$/)
     if (m) return comCidade(m[1], (c) => ({ tipo: 'de_cima', ...c }))
   }
@@ -571,7 +641,7 @@ function lerTrechoDaQuarta(t: string, cat: Catalogo): Lido {
   if (/^(?:diminuir|diminua|diminui|reduzir|reduza)(?: a| o)? (?:letra|fonte|texto)$|^(?:letra|fonte|texto) (?:normal|menor|padrao)$|^(?:voltar|volte)(?: a| o)? (?:letra|fonte|texto) (?:normal|ao normal)$/.test(t)) {
     return [{ tipo: 'letra', tamanho: 'normal' }]
   }
-  if (/^(?:(?:abrir|abra|ativar|ative|ligar|ligue|colocar|coloque|por|ver|mostrar|entrar)(?: em| no| a| o)? )?(?:modo )?tela cheia$|^(?:maximizar|maximize)(?: o)? mapa$/.test(t)) {
+  if (/^(?:(?:abrir|abra|abre|ativar|ative|ativa|ligar|ligue|liga|colocar|coloque|coloca|por|poe|ver|mostrar|mostra|entrar|entra)(?: em| no| a| o)? )?(?:modo )?tela cheia$|^(?:maximizar|maximize|maximiza)(?: o)? mapa$/.test(t)) {
     return [{ tipo: 'tela_cheia' }]
   }
   return null
@@ -642,8 +712,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
     }
   }
   {
-    const m = t.match(/^o que (?:fica|esta|vem|tem|ha) (?:a montante|acima|rio acima)(?: (?:de|do|da) (.+?)| daqui)?$/)
-      ?? t.match(/^(?:quem|o que|quais cidades) (?:fica|ficam|esta|estao) (?:a montante|acima|rio acima)(?: (?:de|do|da) (.+?)| daqui)?$/)
+    const m = t.match(/^o que (?:fica|esta|vem|tem|ha) (?:a montante|acima|rio acima)(?: (?:de|do|da) (.+?)| daqui)?(?: no rio| no mapa)?$/)
+      ?? t.match(/^(?:quem|o que|quais cidades) (?:fica|ficam|esta|estao) (?:a montante|acima|rio acima)(?: (?:de|do|da) (.+?)| daqui)?(?: no rio| no mapa)?$/)
       ?? t.match(/^de onde vem a agua(?: (?:de|do|da) (.+?)| daqui)?$/)
       ?? t.match(/^(?:o que fica )?(?:a )?montante(?: (?:de|do|da) (.+?)| daqui)?$/)
     if (m) {
@@ -681,7 +751,7 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
     }
   }
   {
-    const m = t.match(/^(?:comparar|compare|compara|comparacao das|lado a lado)(?: as)? reguas(?: (?:de|do|da|em) (.+))?$/)
+    const m = t.match(/^(?:comparar|compare|compara|comparacao das|lado a lado)(?: as)? reguas(?: (?:de|do|da|em) (.+?))?(?: lado a lado)?$/)
     if (m) {
       const c = cidadeOpcional(m[1], cat)
       return c ? [{ tipo: 'comparar_reguas', ...c }] : null
@@ -702,7 +772,15 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
+/** 18ª entrega: "… aqui", "… desta cidade" no fim do pedido é a cidade da tela — sai do texto e o executor decide. */
+const AQUI_NO_FIM = / (?:aqui|daqui|desta cidade|nesta cidade|dessa cidade|nessa cidade|desta regua|nesta regua|neste trecho|nesse trecho)$/
+
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const semAqui = t.replace(AQUI_NO_FIM, '')
+  if (semAqui !== t && semAqui) {
+    const lido = lerTrecho(semAqui, cat, ctx, cidadeDoPedido)
+    if (lido) return lido
+  }
   const decimaSexta = lerTrechoDaDecimaSexta(t, cat)
   if (decimaSexta) return decimaSexta
   const decimaQuinta = lerTrechoDaDecimaQuinta(t, cat)
@@ -730,18 +808,18 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
   const segunda = lerTrechoDaSegunda(t, cat)
   if (segunda) return segunda
   // --- ajuda
-  if (/^(?:o que (?:eu )?posso (?:pedir|fazer|perguntar|mandar)|quais (?:sao )?(?:os )?comandos|comandos|ajuda|o que voce (?:faz|sabe fazer)|como (?:te )?usar(?: o chat)?)$/.test(t)) {
+  if (/^(?:o que (?:eu )?posso (?:pedir|fazer|perguntar|mandar)|quais (?:sao )?(?:os )?comandos|comandos|ajuda+|me ajuda|socorro|help|o que voce (?:faz|sabe fazer)|como (?:te )?usar(?: o chat)?)$/.test(t)) {
     return [{ tipo: 'ajuda' }]
   }
   // --- leitura do estado da tela
-  if (/^o que (?:eu )?(?:estou|to|esto) vendo$|^o que (?:e|significa) (?:isso|essa tela|esta tela|esse mapa|este mapa)$|^explique? o mapa$/.test(t)) {
+  if (/^o que (?:eu )?(?:estou|to|esto) vendo$|^o que (?:e|significa) (?:isso|essa tela|esta tela|esse mapa|este mapa)$|^explique? o mapa$|^o que (?:esta|ta|tem|aparece)(?: na tela| no mapa| aparecendo)?$/.test(t)) {
     return [{ tipo: 'o_que_vejo' }]
   }
-  if (/\b(?:atual|agora) ou (?:historic[ao]|antig[ao]|passad[ao])\b|^(?:essa|esta) (?:informacao|leitura|camada) e (?:atual|de agora)$/.test(t)) {
+  if (/\b(?:atual|agora) ou (?:e )?(?:historic[ao]|antig[ao]|passad[ao])\b|^(?:essa|esta) (?:informacao|leitura|camada) e (?:atual|de agora)$/.test(t)) {
     return [{ tipo: 'atual_ou_historico' }]
   }
   {
-    const m = t.match(/^por ?que (?:(?:a|essa|esta) )?(?:(?:regua|cidade|estacao|bolinha|pino|bola) )?(?:(?:de|do|da) )?(.*?) ?(?:esta|ta|fica|ficou|aparece|e) (?:em )?cinza$/)
+    const m = t.match(/^por ?que (?:(?:a|essa|esta) )?(?:(?:regua|cidade|estacao|bolinha|pino|bola) )?(?:(?:de|do|da) )?(.*?) ?(?:esta|ta|fica|ficou|aparece|e) (?:(?:em )?cinza|sem cor|sem faixa|apagad[ao]|sem leitura)$/)
     if (m) {
       const alvo = (m[1] ?? '').trim()
       if (!alvo) return [{ tipo: 'por_que_cinza' }]
@@ -759,17 +837,17 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
     }
   }
   // --- voltar no tempo e voltar a vista
-  if (/^(?:ir|voltar|volte|volta|va|ver)(?: para| pra| ao| a)?(?: a| o)? (?:leitura )?(?:mais recente|ao vivo|agora|presente|tempo real)$|^(?:parar|pare|sair|saia)(?: da| a)? reproducao$/.test(t)) {
+  if (/^(?:ir|voltar|volte|volta|va|ver)(?: para| pra| ao| a)?(?: a| o)? (?:leitura )?(?:de |do )?(?:mais recente|ao vivo|agora|presente|tempo real)$|^(?:parar|pare|sair|saia)(?: da| a)? reproducao$|^(?:ao vivo|tempo real|leitura mais recente)$/.test(t)) {
     return [{ tipo: 'ao_vivo' }]
   }
   if (/^(?:ver|mostrar|mostre|mostra|enquadrar|enquadre|voltar para|voltar a|volta pra|volte para)?(?: a| o)? ?(?:bacia(?: toda| inteira)?|toda a bacia|tudo|mapa (?:todo|inteiro)|vale (?:todo|inteiro))$/.test(t)) {
     return [{ tipo: 'ver_bacia' }]
   }
-  if (/^(?:voltar|volte|volta|desfazer|desfaca|desfaz)(?: ao| para o| pro| o)?(?: mapa| vista| visualizacao)?(?: de antes| anterior)?$|^(?:o )?mapa de antes$/.test(t)) {
+  if (/^(?:voltar|volte|volta|desfazer|desfaca|desfaz)(?: ao| para o| pro| o)?(?: mapa| vista| visualizacao)?(?: de antes| anterior)?$|^(?:o )?mapa de antes$|^(?:desfazer|desfaca|desfaz)(?: a| o)? (?:ultima |ultimo )?(?:acao|mudanca|alteracao|comando|passo)$/.test(t)) {
     return [{ tipo: 'voltar' }]
   }
   // --- zoom
-  if (/^(?:aproximar|aproxime|aproxima|mais zoom|zoom|ampliar|amplie|mais perto|chegar mais perto)$/.test(t)) {
+  if (/^(?:aproximar|aproxime|aproxima|aproximar mais|aproxime mais|aproxima mais|mais zoom|zoom|dar zoom|da zoom|ampliar|amplie|mais perto|chegar mais perto)$/.test(t)) {
     return [{ tipo: 'zoom', sentido: 'mais' }]
   }
   if (/^(?:afastar|afaste|afasta|menos zoom|diminuir(?: o)? zoom|diminua(?: o)? zoom|tirar(?: o)? zoom|mais longe|reduzir(?: o)? zoom)$/.test(t)) {
@@ -777,7 +855,7 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
   }
   // --- fundo do mapa
   {
-    const m = t.match(/^(?:(?:ativar|ative|ligar|ligue|mudar|mude|trocar|troque|usar|use|colocar|coloque|por|mostrar|mostre|ver)(?: o)?(?: fundo)?(?: para| pra| de| em)? )?(?:(?:o )?(?:fundo|modo|vista|mapa) (?:de |em )?)?(satelite|escuro|ruas|mapa de ruas|claro|normal)$/)
+    const m = t.match(/^(?:(?:ativar|ative|ativa|ligar|ligue|liga|mudar|mude|muda|trocar|troque|troca|usar|use|usa|colocar|coloque|coloca|por|poe|mostrar|mostre|mostra|ver)(?: o)?(?: fundo)?(?: para| pra| de| em)?(?: o| a)? )?(?:(?:o )?(?:fundo|modo|vista|mapa) (?:de |em )?)?(satelite|escuro|ruas|mapa de ruas|claro|normal)$/)
     if (m) {
       const f: Fundo = m[1] === 'satelite' ? 'satelite' : m[1] === 'escuro' ? 'escuro' : 'mapa'
       return [{ tipo: 'fundo', fundo: f }]
@@ -791,12 +869,12 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
     if (ano?.[1]) return [{ tipo: 'camada', acao: 'ligar', ano: ano[1] }]
     if (m?.[1] && !/^(?:de |da |do )?(?:cheia|inundacao|enchente)$/.test(m[1])) return [{ tipo: 'camada', acao: 'ligar', rotulo: m[1] }]
   }
-  if (/^(?:desligar|desligue|ocultar|oculte|esconder|esconda|tirar|tire|remover|remova|apagar|apague)(?: as| a)? (?:manchas?|camadas?)(?: de (?:cheia|inundacao|enchente))?$/.test(t)) {
+  if (/^(?:desligar|desligue|desliga|ocultar|oculte|oculta|esconder|esconda|esconde|tirar|tire|tira|remover|remova|remove|apagar|apague|apaga)(?: as| a)? (?:manchas?|camadas?)(?: de (?:cheia|inundacao|enchente))?$/.test(t)) {
     return [{ tipo: 'camada', acao: 'desligar' }]
   }
   {
-    const m = t.match(/^(?:(?:ligar|ligue|ativar|ative|mostrar|mostre|exibir|exiba|ver)(?: as| a)? )?(?:manchas?|camadas?)(?: de (?:cheia|inundacao|enchente))?(?: (?:de|da cheia de|do ano de|da enchente de) (\d{4}))?$/)
-    if (m && (m[1] || /^(?:ligar|ligue|ativar|ative|mostrar|mostre|exibir|exiba|ver)\b/.test(t))) {
+    const m = t.match(/^(?:(?:ligar|ligue|liga|ativar|ative|ativa|mostrar|mostre|mostra|exibir|exiba|exibe|ver)(?: as| a)? )?(?:manchas?|camadas?)(?: de (?:cheia|inundacao|enchente))?(?: (?:de |da cheia de |do ano de |da enchente de )?(\d{4}))?$/)
+    if (m && (m[1] || /^(?:ligar|ligue|liga|ativar|ative|ativa|mostrar|mostre|mostra|exibir|exiba|exibe|ver)\b/.test(t))) {
       return [{ tipo: 'camada', acao: 'ligar', ...(m[1] ? { ano: m[1] } : {}) }]
     }
   }
@@ -804,7 +882,7 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
   if (/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)?(?: o)? ?(?:mapa|pagina) (?:das|de) manchas(?: de itajai)?$/.test(t)) {
     return [{ tipo: 'abrir_rota', rota: '/itajai?secao=manchas', descricao: 'o mapa das manchas de Itajaí' }]
   }
-  if (/^(?:abrir|abra|abre|ver|ir para|ir pra|va para|voltar para|voltar ao|volte ao|volte para)?(?: o| a)? ?(?:inicio|pagina inicial|comeco)$/.test(t)) {
+  if (/^(?:(?:abrir|abra|abre|ver|ir para|ir pra|va para|voltar para|voltar ao|volte ao|volte para) )?(?:o |a )?(?:inicio|pagina inicial|comeco)$/.test(t)) {
     return [{ tipo: 'abrir_rota', rota: '/', descricao: 'o início' }]
   }
   if (/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)(?: o)? (?:rio )?itajai acu$/.test(t)) {
@@ -813,14 +891,31 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
   if (/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)(?: o)? (?:rio )?(?:itajai )?mirim$/.test(t)) {
     return [{ tipo: 'abrir_rota', rota: '/mirim', descricao: 'a página do Itajaí-Mirim' }]
   }
-  if (/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)(?: a)? foz$/.test(t)) {
+  if (/^(?:(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para) )?(?:a )?(?:pagina da |tela da )?foz$/.test(t) && t !== 'foz') {
     return [{ tipo: 'abrir_rota', rota: '/itajai', descricao: 'a página da foz, em Itajaí' }]
   }
-  if (/^(?:abrir|abra|abre|ver|ir para|ir pra|va para)(?: o)? monitor$/.test(t)) {
+  if (/^(?:abrir|abra|abre|ver|ir para|ir pra|va para)(?: o)? monitor(?: da bacia| inteiro| geral)?$/.test(t)) {
     return [{ tipo: 'monitor_bacia' }]
   }
   {
-    const m = t.match(/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)?(?: a| o)? ?(pagina|historico|fontes|agora|minha rua) (?:de|do|da|em) (.+)$/)
+    // "página do Itajaí-Mirim", "a página do rio Itajaí-Açu"
+    const m = t.match(/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)?(?: a)? ?pagina do (?:rio )?(itajai acu|acu|itajai mirim|mirim)$/)
+    if (m) {
+      return /mirim/.test(m[1]!)
+        ? [{ tipo: 'abrir_rota', rota: '/mirim', descricao: 'a página do Itajaí-Mirim' }]
+        : [{ tipo: 'abrir_rota', rota: '/acu', descricao: 'a página do Itajaí-Açu' }]
+    }
+  }
+  // 18ª entrega: na página da cidade (ou no Monitor dela), uma palavra basta: "histórico", "minha rua", "fontes".
+  if (ctx.cidadeAtual) {
+    const m = t.match(/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)?(?: o| a| as)? ?(historico|fontes|minha rua)(?: (?:desta|dessa|da) cidade| daqui)?$/)
+    if (m) {
+      const aba = m[1] === 'minha rua' ? 'rua' : ABAS[m[1] ?? '']
+      return [{ tipo: 'abrir_pagina', cidadeId: ctx.cidadeAtual, ...(aba ? { aba } : {}) }]
+    }
+  }
+  {
+    const m = t.match(/^(?:abrir|abra|abre|ver|mostrar|mostre|ir para|ir pra|va para)?(?: a| o| as)? ?(pagina|historico|fontes|agora|minha rua) (?:de|do|da|em) (.+)$/)
     if (m) {
       const c = cidadePorNome(m[2] ?? '', cat)
       if (!c) return null
@@ -863,10 +958,26 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
       if (c) return [{ tipo: 'ir_cidade', cidadeId: c.id }]
     }
   }
-  void ctx
   void cidadeDoPedido
   return null
 }
+
+/**
+ * 18ª entrega: pedido de ALTERAR dado do site ("mude o nível de Blumenau para 10 m", "registrar pico de 12 m",
+ * "apagar o histórico de Blumenau"). Não é comando e não vai ao motor palpitar: o chat diz que não altera dados.
+ * Lido depois de todos os leitores, para "apagar as manchas", "limpar a conversa" e "mudar minha cidade" continuarem
+ * sendo os comandos que são.
+ */
+const VERBO_DE_ALTERACAO = /^(?:mude|mudar|muda|altere|alterar|altera|corrija|corrigir|corrige|registre|registrar|registra|cadastre|cadastrar|cadastra|apague|apagar|apaga|exclua|excluir|exclui|delete|deletar|deleta|edite|editar|edita|insira|inserir|insere|grave|gravar|grava|salve|salvar|salva|zere|zerar|remova|remover|remove|ajuste|ajustar|ajusta|lance|lancar|lanca|adicione|adicionar|adiciona|inclua|incluir|inclui)\b/
+const DADO_DO_SITE = /\b(?:nivel|niveis|cotas?|picos?|historico|leituras?|registros?|dados?|medic(?:ao|oes)|coordenadas?|recordes?)\b/
+export function pedeAlteracaoDeDado(t: string): boolean {
+  return VERBO_DE_ALTERACAO.test(t) && DADO_DO_SITE.test(t)
+}
+const TEXTO_NAO_ALTERA =
+  'O chat não altera dados do site: níveis, cotas, picos e registros vêm das fontes (Defesa Civil, AlertaBlu, ANA) e só mudam no cadastro, por decisão de pessoa, com a fonte aberta. Posso mostrar o que já existe ou preparar um relato de problema.'
+const ENDERECO_DIGITADO = /https?:\/\/|(?:^|\s)\/[a-z]/i
+const TEXTO_SEM_ENDERECO =
+  'Não abro endereços nem rotas digitadas. Peça pela tela: "abrir o monitor", "abrir o início", "mostrar Blumenau", "histórico de Gaspar".'
 
 /**
  * O texto é pedido? `null` = não: vai para o motor de perguntas.
@@ -878,24 +989,89 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
  * o chat PERGUNTA "Você quis dizer…?" e não faz nada.
  */
 export function interpretar(texto: string, cat: Catalogo, ctx: Contexto): Interpretacao | null {
-  const inteiro = normalizar(texto)
+  // 18ª entrega: endereço ou rota digitada nunca é comando, nem vai ao motor.
+  if (ENDERECO_DIGITADO.test(texto)) return { tipo: 'esclarecer', texto: TEXTO_SEM_ENDERECO, sugestoes: ['abrir o monitor', 'abrir o início', 'o que posso pedir?'] }
+  const inteiro = expandirAbreviacoes(normalizar(texto))
+  const repetida = palavraRepetida(inteiro)
+  if (repetida) return { tipo: 'esclarecer', texto: `O pedido repete "${repetida}" muitas vezes e eu não sei o que fazer com ele. Peça uma vez só.`, sugestoes: ['o que posso pedir?'] }
   const rio = inteiro.match(RIO_NO_MAPA)
   if (rio) return { tipo: 'comandos', passos: [{ tipo: 'enquadrar', alvo: 'rio', rioId: /mirim/.test(rio[1]!) ? 'itajai-mirim' : 'itajai-acu' }] }
   if (BARRAGENS_NO_MAPA.test(inteiro)) return { tipo: 'comandos', passos: [{ tipo: 'enquadrar', alvo: 'barragens' }] }
   const r = interpretarAoPeDaLetra(texto, cat, ctx)
   if (r && r.tipo === 'comandos') return r
   if (r && !r.texto.startsWith(NAO_ENTENDI_PARTE)) return r
+  const limpo = semCortesia(inteiro)
+  // Pedido de alterar dado: recusa dita, nada executado, nada palpitado.
+  if (pedeAlteracaoDeDado(limpo)) return { tipo: 'esclarecer', texto: TEXTO_NAO_ALTERA, sugestoes: ['relatar problema nesta régua', 'de onde vem essa leitura?', 'o que posso pedir?'] }
   const c = corrigirCidade(texto, cat.cidades)
-  if (!c) return r
-  const corrigido = interpretarAoPeDaLetra(c.texto, cat, ctx)
-  if (!corrigido || corrigido.tipo !== 'comandos') return r
-  return { tipo: 'esclarecer', texto: textoDaCorrecao(c, 'comando'), sugestoes: [c.texto] }
+  if (c) {
+    const corrigido = interpretarAoPeDaLetra(c.texto, cat, ctx)
+    if (corrigido && corrigido.tipo === 'comandos') return { tipo: 'esclarecer', texto: textoDaCorrecao(c, 'comando'), sugestoes: [c.texto] }
+  }
+  // Só o nome de uma cidade: pergunta o que a pessoa quer dela, com exemplos (antes, o motor palpitava "maiores cheias").
+  const so = cidadePorNome(limpo, cat)
+  if (so && !r) {
+    return {
+      tipo: 'esclarecer',
+      texto: `O que você quer saber de ${so.nome}? Posso dizer como está agora, mostrar no mapa, dizer quanto falta para a cota ou buscar o histórico.`,
+      sugestoes: [`como está ${so.nome}?`, `mostrar ${so.nome}`, `quanto falta para a cota em ${so.nome}?`, `maior cheia de ${so.nome}`],
+    }
+  }
+  // Verbo com erro de digitação ("msotrar blumenau"): como no nome da cidade, pergunta e não executa.
+  const v = corrigirVerbo(limpo)
+  if (v && !r) {
+    const corrigido = interpretarAoPeDaLetra(v.texto, cat, ctx)
+    if (corrigido && corrigido.tipo === 'comandos') {
+      return { tipo: 'esclarecer', texto: `Não conheço "${v.errado}". Você quis dizer "${v.texto}"? Nada foi feito; toque na sugestão para confirmar.`, sugestoes: [v.texto] }
+    }
+  }
+  return r
+}
+
+/** Uma palavra repetida 6+ vezes num pedido longo ("mostrar Blumenau" × 30): não é pedido, é ruído. */
+function palavraRepetida(t: string): string | null {
+  const palavras = t.split(' ').filter(Boolean)
+  if (palavras.length < 12) return null
+  const contagem = new Map<string, number>()
+  for (const w of palavras) contagem.set(w, (contagem.get(w) ?? 0) + 1)
+  for (const [w, n] of contagem) if (n >= 6 && w.length >= 3) return w
+  return null
+}
+
+/**
+ * As palavras que abrem ou nomeiam pedidos (verbos e telas/peças): um erro de até 2 letras numa palavra de 6+ (1 letra
+ * em 5) vira sugestão "você quis dizer…?", desde que a frase corrigida seja um comando. Uma palavra por vez, a
+ * primeira que der certo. Nomes de cidade têm a própria correção (9ª entrega).
+ */
+const PALAVRAS_DE_PEDIDO = [
+  'mostrar', 'mostre', 'mostra', 'abrir', 'abra', 'abre', 'aproximar', 'aproxime', 'afastar', 'afaste', 'ligar', 'ligue', 'desligar',
+  'desligue', 'copiar', 'copie', 'comparar', 'compare', 'atualizar', 'atualize', 'voltar', 'volte', 'fechar', 'feche', 'seguir', 'siga',
+  'quanto', 'quando', 'quais', 'quantas', 'pausar', 'pause', 'reproduzir', 'limpar', 'limpe', 'apagar', 'apague', 'usar', 'relatar',
+  'instalar', 'enquadrar', 'focar', 'centralizar', 'selecionar', 'levar', 'ver',
+  'monitor', 'inicio', 'historico', 'fontes', 'legenda', 'satelite', 'escuro', 'manchas', 'camadas', 'reguas', 'regua', 'leituras',
+  'barragens', 'grafico', 'resumo', 'tendencia', 'alerta', 'atencao', 'bacia', 'painel', 'conversa', 'localizacao', 'confluencia',
+]
+function corrigirVerbo(t: string): { texto: string; errado: string } | null {
+  const palavras = t.split(' ')
+  if (palavras.length < 2) return null
+  for (let i = 0; i < palavras.length; i++) {
+    const p = palavras[i]!
+    if (p.length < 5 || PALAVRAS_DE_PEDIDO.includes(p)) continue
+    const limite = p.length >= 6 ? 2 : 1
+    const distancias = PALAVRAS_DE_PEDIDO.map((v) => ({ v, d: distanciaDeEdicao(p, v, limite) })).filter((x) => x.d <= limite)
+    if (distancias.length === 0) continue
+    const menor = Math.min(...distancias.map((x) => x.d))
+    const candidatos = distancias.filter((x) => x.d === menor)
+    if (candidatos.length !== 1) continue
+    return { texto: [...palavras.slice(0, i), candidatos[0]!.v, ...palavras.slice(i + 1)].join(' '), errado: p }
+  }
+  return null
 }
 
 const NAO_ENTENDI_PARTE = 'Não entendi esta parte do pedido'
 
 function interpretarAoPeDaLetra(texto: string, cat: Catalogo, ctx: Contexto): Interpretacao | null {
-  const t = semCortesia(normalizar(texto))
+  const t = semCortesia(expandirAbreviacoes(normalizar(texto)))
   if (!t) return null
   // A frase inteira primeiro: "essa informação é atual" tem um "e" que não é conjunção.
   const partes = lerTrecho(t, cat, ctx, ctx.cidadeAtual) !== null ? [t] : trechos(texto)

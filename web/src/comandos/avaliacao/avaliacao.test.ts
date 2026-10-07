@@ -47,8 +47,8 @@ test('nenhum grupo abaixo da linha de base; o total também não', () => {
 
 test('as regras de dado dos cenários congelados valem todas (atualidade 100 % no que já passa; nunca número de leitura velha ou impossível)', () => {
   const atual = resultados.filter((r) => r.grupo === 'atualidade')
-  // Os dois achados conhecidos ficam listados aqui de propósito: sair da lista exige corrigir o executor, não o caso.
-  const achados = new Set(['quais cidades estão em alerta?'])
+  // Achados conhecidos ficariam listados aqui de propósito (sair da lista exige corrigir o executor, não o caso). Hoje: nenhum.
+  const achados = new Set<string>()
   for (const r of atual) if (!achados.has(r.texto)) assert.ok(r.ok, `${r.texto} [${r.esperado}] → ${r.obtido}`)
   // Em nenhum caso de execução o nível impossível (30 m / −0,5 m) ou a leitura velha aparece como número de agora.
   for (const r of resultados.filter((r) => r.esperado.startsWith('execução [impossivel]') || r.esperado.startsWith('execução [velha]'))) {

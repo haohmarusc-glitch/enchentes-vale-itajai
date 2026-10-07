@@ -25,6 +25,8 @@
  *  - 8ª entrega: "oficial" sem o aviso; atualizar sem buscar; apagar preferências sem confirmar ou sem apagar;
  *    contagem que não grava; conversa que não limpa.
  *  - 9ª entrega: cidade com erro de digitação executada sem perguntar; sugestão que não leva à cidade certa.
+ *  - 18ª entrega: pergunta de segurança respondida com histórico; segunda leitura de um pedido engolida; nome de cidade
+ *    solto virando lista de cheias; pedido de alterar dado indo ao motor; "histórico" na página da cidade sem efeito.
  *  - 10ª entrega: continuação sem "Entendi como"; "e Gaspar" sem pedido anterior que adivinha; comando refeito
  *    que não executa.
  *  - 11ª entrega: verbete sem a régua de cada cidade ou sem o 199; voz que trava a tela.
@@ -466,7 +468,28 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 18. Página com chat próprio: a barra do topo some.
+  // 18. 17ª/18ª entregas: os achados da linha de base — barreira do presente, pedido com duas leituras, nome de cidade
+  // solto, pedido de alterar dado, uma palavra na página da cidade.
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'é seguro ficar em casa em Blumenau?', /199/)
+    ok(/199/.test(r) && !/maiores cheias|maior cheia/i.test(r), `pergunta de segurança cai na barreira do presente, não no histórico (${r.slice(0, 70)}…)`)
+    r = await pedirAte(pg, 'quanto falta para a cota em Blumenau e Blumenau está subindo?', /Blumenau|leituras/)
+    ok(/Não consegui carregar as leituras/.test(r) || (/(?:Faltam|acima da cota|abaixo da cota|só sai com leitura de agora|não tem leitura)/.test(r) && /(?:subindo|descendo|estável|tendência|não digo|não há medição)/.test(r)), `duas leituras num pedido: as duas respostas (${r.slice(0, 70)}…)`)
+    r = await pedirAte(pg, 'blumenau', /Blumenau/)
+    ok(/^O que você quer saber de Blumenau\?/.test(r), `só o nome da cidade pergunta o que a pessoa quer (${r.slice(0, 70)}…)`)
+    ok((await pg.getByRole('button', { name: 'mostrar Blumenau' }).count()) >= 1, 'com a sugestão "mostrar Blumenau"')
+    r = await pedirAte(pg, 'mude o nível de Blumenau para 10 m', /dados/)
+    ok(/O chat não altera dados do site/.test(r), `pedido de alterar dado é recusado com texto (${r.slice(0, 70)}…)`)
+    ok(/#\/acu\/blumenau$/.test(pg.url()), `nada disso mudou a tela (${pg.url()})`)
+    await pedir(pg, 'histórico')
+    await pg.waitForURL(/aba=historico/, { timeout: 10000 }).catch(() => {})
+    ok(/#\/acu\/blumenau\?aba=historico$/.test(pg.url()), `"histórico" na página da cidade abre a aba dela (${pg.url()})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 19. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')
