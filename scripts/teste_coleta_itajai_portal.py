@@ -25,11 +25,14 @@ O que não pode falhar, e por que cada um está travado aqui:
 import html as _html
 import json
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from coleta_itajai_portal import (MUNICIPIO_ITAJAI, TOLERANCIA_COORD_M, carga, coletar,
+from coleta_itajai_portal import (MIN_PARES, MUNICIPIO_BLUMENAU, MUNICIPIO_ITAJAI,
+                                  REGUA_BLUMENAU, TITULO_BLUMENAU, TOLERANCIA_COORD_M,
+                                  URL_BLUMENAU, carga, coletar, conferir_com_alertablu,
                                   conferir_municipio, municipio_da_carga,
-                                  distancia_m, para_brasilia, parse)
+                                  distancia_m, para_brasilia, parse, parse_blumenau)
 from comum import classificar_estacao, estacoes_tempo_real
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -313,8 +316,8 @@ class TestPaginaDeOutroMunicipio(unittest.TestCase):
     def test_os_tres_outros_municipios_seguem_o_mesmo_padrao(self):
         """Blumenau (3) e Rio do Sul (4) chegaram em 21/09/2026 e confirmam o
         que Brusque mostrou: UMA estação por município, SEM coordenada, com a
-        moldura de Itajaí por cima. Nenhum dos três pode ser ligado por este
-        coletor, e nenhum vira leitura de Itajaí."""
+        moldura de Itajaí por cima. Nenhum vira leitura de Itajaí; Blumenau
+        tem leitor próprio, com prova por medição (`TestBlumenauDe5Minutos`)."""
         for arquivo, mid, nome, codigo, fonte, cotas in OUTROS_MUNICIPIOS:
             with self.subTest(municipio=nome):
                 html = (RAIZ / "data" / "brutos" / arquivo).read_text(encoding="utf-8")
@@ -438,7 +441,7 @@ class TestCapturaDe27DeSetembro(unittest.TestCase):
 
     def test_os_outros_tres_seguem_sem_coordenada_e_sem_moldura(self):
         """Brusque, Blumenau e Rio do Sul: mesma estação, mesma fonte, mesmas
-        cotas, e ainda SEM coordenada — continuam fora. O que mudou: a moldura
+        cotas, e ainda SEM coordenada — fora de `parse()`. O que mudou: a moldura
         "Situação atual em Itajaí" não vem mais no HTML servido (páginas de
         ~44 KB para ~15 KB). A armadilha passou para o navegador; a regra de
         conferir `props.municipioId` continua valendo igual."""
@@ -456,6 +459,128 @@ class TestCapturaDe27DeSetembro(unittest.TestCase):
                 self.assertNotIn("Situação atual em Itajaí", html)
                 self.assertIsNotNone(conferir_municipio(dados, MUNICIPIO_ITAJAI))
                 self.assertEqual(parse(html), [])
+
+
+CAPTURA_28_09 = RAIZ / "data" / "brutos" / "captura-fontes-2026-09-28"
+PADKND_28_09 = CAPTURA_28_09 / "itajai-portal-rios-municipio-3-blumenau.html"
+PADKND_27_09 = RAIZ / "data" / "brutos" / "itajai-portal-rios-municipio-3-blumenau-2026-09-27.html"
+ALERTABLU_28_09 = CAPTURA_28_09 / "blumenau-alertablu-nivel-oficial.json"
+
+
+class TestBlumenauDe5Minutos(unittest.TestCase):
+    """A PADKND (municipio_id=3) entra como publicação da régua de Blumenau só
+    quando bate com o AlertaBlu nas horas cheias em comum. Sem coordenada, é a
+    medição que prova a régua — e o relógio, que no repasse antigo vinha 3 h
+    atrasado."""
+
+    AGORA_28 = datetime(2026, 9, 28, 3, 32, 32, tzinfo=timezone.utc)
+
+    def setUp(self):
+        self.pagina = PADKND_28_09.read_text(encoding="utf-8")
+        self.alertablu = json.loads(ALERTABLU_28_09.read_text(encoding="utf-8"))
+
+    def _alertablu_mexido(self, horas=0, soma_m=0.0, so_ate=None):
+        a = json.loads(json.dumps(self.alertablu))
+        niveis = []
+        for n in a["niveis"]:
+            t = datetime.fromisoformat(n["horaLeitura"].replace("Z", "+00:00")) + timedelta(hours=horas)
+            if so_ate and t > so_ate:
+                continue
+            niveis.append({"nivel": round(n["nivel"] + soma_m, 2),
+                           "horaLeitura": t.strftime("%Y-%m-%dT%H:%M:%SZ")})
+        a["niveis"] = niveis
+        return a
+
+    def test_captura_de_28_09_entra_com_titulo_proprio(self):
+        r = parse_blumenau(self.pagina, self.alertablu, self.AGORA_28)
+        self.assertEqual(r, [{
+            "estacao": "Blumenau (PADKND)", "rio": "itajai-acu", "cidade": "blumenau",
+            "nivel_m": 3.2, "medido_em": "2026-09-28T00:05:00", "resgate_de": "Blumenau",
+        }])
+
+    def test_captura_de_27_09_tambem_bate(self):
+        pagina = PADKND_27_09.read_text(encoding="utf-8")
+        r = parse_blumenau(pagina, self.alertablu, datetime(2026, 9, 27, 21, 4, tzinfo=timezone.utc))
+        self.assertEqual([(l["nivel_m"], l["medido_em"]) for l in r], [(3.3, "2026-09-27T17:50:00")])
+
+    def test_as_horas_cheias_batem_ao_centimetro(self):
+        """O que sustenta a ligação, medido: 12 de 12 horas iguais."""
+        est = carga(self.pagina)["props"]["estacoes"][0]
+        padknd = {p["medido_em"]: p["nivel_rio_m"] for p in est["serie_12_h"]}
+        pares = [(padknd[n["horaLeitura"].replace("Z", "+00:00")], n["nivel"])
+                 for n in self.alertablu["niveis"]
+                 if n["horaLeitura"].replace("Z", "+00:00") in padknd]
+        self.assertEqual(len(pares), 12)
+        self.assertTrue(all(a == b for a, b in pares))
+
+    def test_nunca_usa_o_titulo_do_repasse_atrasado(self):
+        """'Blumenau' é o repasse antigo da página de Itajaí, 3 h atrasado:
+        extrair_picos, nivel_antes e o site o tratam assim."""
+        self.assertNotEqual(TITULO_BLUMENAU, "Blumenau")
+        from extrair_picos import RELOGIO_DEFASADO
+        self.assertNotIn(TITULO_BLUMENAU, RELOGIO_DEFASADO)
+
+    def test_a_regua_coberta_esta_no_cadastro(self):
+        titulos = {e.get("titulo") for e in estacoes_tempo_real()}
+        self.assertIn(REGUA_BLUMENAU, titulos)
+        self.assertNotIn(TITULO_BLUMENAU, titulos)
+
+    def test_relogio_deslocado_em_3_h_e_recusado(self):
+        self.assertEqual(parse_blumenau(self.pagina, self._alertablu_mexido(horas=3), self.AGORA_28), [])
+
+    def test_valor_diferente_e_recusado(self):
+        """Outra régua com o mesmo código daria número diferente no mesmo instante."""
+        self.assertEqual(parse_blumenau(self.pagina, self._alertablu_mexido(soma_m=0.05), self.AGORA_28), [])
+
+    def test_um_centimetro_de_arredondamento_passa(self):
+        self.assertEqual(len(parse_blumenau(self.pagina, self._alertablu_mexido(soma_m=0.01), self.AGORA_28)), 1)
+
+    def test_sem_alertablu_nao_entra(self):
+        for a in (None, {}, {"niveis": []}):
+            with self.subTest(alertablu=a):
+                self.assertEqual(parse_blumenau(self.pagina, a, self.AGORA_28), [])
+
+    def test_poucos_pares_nao_provam(self):
+        """A série da PADKND começa às 15:05Z; cortar o AlertaBlu às 16:00Z deixa
+        uma hora cheia em comum — coincidência num rio parado, não prova."""
+        motivo = conferir_com_alertablu(
+            carga(self.pagina)["props"]["estacoes"][0]["serie_12_h"],
+            self._alertablu_mexido(so_ate=datetime(2026, 9, 27, 16, 0, tzinfo=timezone.utc))["niveis"],
+            datetime(2026, 9, 28, 3, 5, tzinfo=timezone.utc))
+        self.assertIn("mínimo", motivo)
+        self.assertEqual(MIN_PARES, 3)
+
+    def test_prova_velha_nao_vale(self):
+        """Três pares que batem (16:00, 17:00 e 18:00Z), mas a 9 h da leitura de
+        03:05Z: a régua pode ter sido trocada depois."""
+        motivo = conferir_com_alertablu(
+            carga(self.pagina)["props"]["estacoes"][0]["serie_12_h"],
+            self._alertablu_mexido(so_ate=datetime(2026, 9, 27, 18, 0, tzinfo=timezone.utc))["niveis"],
+            datetime(2026, 9, 28, 3, 5, tzinfo=timezone.utc))
+        self.assertIn("prova velha", motivo)
+
+    def test_carimbo_no_futuro_e_recusado(self):
+        self.assertEqual(parse_blumenau(self.pagina, self.alertablu,
+                                        datetime(2026, 9, 28, 2, 0, tzinfo=timezone.utc)), [])
+
+    def test_pagina_de_outro_municipio_e_recusada(self):
+        brusque = PAGINA_BRUSQUE.read_text(encoding="utf-8")
+        self.assertEqual(parse_blumenau(brusque, self.alertablu, self.AGORA_28), [])
+        itajai = (CAPTURA_28_09 / "itajai-portal-rios-municipio-1-itajai.html").read_text(encoding="utf-8")
+        self.assertEqual(parse_blumenau(itajai, self.alertablu, self.AGORA_28), [])
+
+    def test_nivel_implausivel_e_recusado(self):
+        dados = carga(self.pagina)
+        dados["props"]["estacoes"][0]["nivel_rio_m"] = 0
+        pagina = '<div id="app" data-page="' + _html.escape(json.dumps(dados)) + '"></div>'
+        self.assertEqual(parse_blumenau(pagina, self.alertablu, self.AGORA_28), [])
+
+    def test_endereco_e_o_do_municipio_3(self):
+        self.assertTrue(URL_BLUMENAU.endswith("?municipio_id=3"))
+        self.assertEqual(MUNICIPIO_BLUMENAU, 3)
+
+    def test_parse_de_itajai_continua_sem_blumenau(self):
+        self.assertEqual(parse(self.pagina), [])
 
 
 if __name__ == "__main__":
