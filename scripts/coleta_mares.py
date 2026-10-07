@@ -25,6 +25,28 @@ As preamares são os máximos locais da curva astronômica. A fonte publica uma
 série contínua, não uma tabela de quatro linhas por dia, então o horário da
 maré alta é calculado — e calculado a partir do dado oficial, não estimado.
 
+A FONTE SAIU DO AR (conferido em 07/10/2026)
+--------------------------------------------
+`ajax/mares.php` devolve hoje **HTTP 200 com uma casca HTML de 641 bytes**, a mesma
+de qualquer caminho de `defesacivil.itajai.sc.gov.br`. No histórico do repositório,
+este coletor nunca gravou tábua com preamar: as duas versões dele (30/08/2026) saíram
+vazias. A tábua que o site usa desde 09/09/2026 é a da **Marinha (CHM/DHN, 2026)**,
+importada por `importar_mare_chm.py`. A maré observada vem do CIRAM
+(`coleta_mare_ciram.py`).
+
+O portal novo (`monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/mares`)
+publica só uma IMAGEM da tábua do mês: `props.tabuaMare.arquivo_url` aponta um JPEG
+"Maré prevista – Cabeçudas Iate Clube/UNIVALI". Não há série nem endpoint de maré
+legível por máquina no portal, e nenhum endereço foi inventado aqui. Bruto da
+página: `data/brutos/itajai-portal-2026-10-07/itajai-portal-mares-municipio-1.html`.
+
+Por isso este coletor:
+* recusa, com motivo claro, resposta que não é o JSON esperado — HTML, vazia, ou
+  JSON sem `tides`/`astronimical_tides` —, mesmo com HTTP 200 (`validar_resposta`);
+* **nunca sobrescreve uma tábua de OUTRA fonte** (`_meta.fonte` diferente de `URL`):
+  a da Marinha cobre o ano inteiro, e trocá-la por uma série da Defesa Civil exige
+  decisão, não efeito colateral de cron. `--substituir` existe para essa decisão.
+
 Uso:
     python3 scripts/coleta_mares.py --verificar   # mostra o que veio, não grava
     python3 scripts/coleta_mares.py               # grava data/mare-itajai.json
@@ -77,6 +99,44 @@ def instante(texto: str) -> datetime | None:
             return datetime.strptime(texto, f)
         except ValueError:
             continue
+    return None
+
+
+class RespostaInvalida(ValueError):
+    """A resposta não é o JSON de maré esperado — falha, mesmo com HTTP 200."""
+
+
+def validar_resposta(texto: str) -> dict:
+    """O JSON de maré, ou `RespostaInvalida` com o motivo. Nunca devolve "vazio"."""
+    corpo = (texto or "").strip()
+    if not corpo:
+        raise RespostaInvalida("resposta vazia")
+    if corpo.startswith("<"):
+        raise RespostaInvalida(f"a fonte devolveu HTML ({len(texto)} caracteres), não o JSON da "
+                               "maré — o endereço antigo hoje é uma casca vazia")
+    try:
+        resposta = json.loads(corpo)
+    except ValueError as e:
+        raise RespostaInvalida(f"a resposta não é JSON ({e})") from None
+    if not isinstance(resposta, dict):
+        raise RespostaInvalida(f"o JSON veio como {type(resposta).__name__}, não como objeto")
+    chaves = [c for c in ("tides", "astronimical_tides") if c in resposta]
+    if not chaves:
+        raise RespostaInvalida("o JSON não tem `tides` nem `astronimical_tides` — não é o esquema da maré")
+    for c in chaves:
+        if not isinstance(resposta[c], list):
+            raise RespostaInvalida(f"`{c}` não é lista")
+    return resposta
+
+
+def tabua_de_outra_fonte(destino: Path = DESTINO) -> str | None:
+    """A fonte da tábua gravada, quando NÃO é esta; None quando é esta ou não há tábua."""
+    try:
+        fonte = (json.loads(destino.read_text(encoding="utf-8")).get("_meta") or {}).get("fonte")
+    except (OSError, ValueError, AttributeError):
+        return None
+    if fonte and fonte != URL:
+        return str(fonte)
     return None
 
 
@@ -212,13 +272,15 @@ def main() -> int:
     )
     ap.add_argument("--verificar", action="store_true", help="mostra o que veio e não grava")
     ap.add_argument("--arquivo", help="analisa uma resposta JSON salva em vez de baixar")
+    ap.add_argument("--substituir", action="store_true",
+                    help="grava mesmo por cima de uma tábua de OUTRA fonte (decisão, não rotina)")
     args = ap.parse_args()
 
     if args.arquivo:
         try:
-            resposta = json.loads(Path(args.arquivo).read_text(encoding="utf-8"))
-        except (OSError, ValueError) as e:
-            print(f"ERRO ao ler {args.arquivo}: {e}", file=sys.stderr)
+            resposta = validar_resposta(Path(args.arquivo).read_text(encoding="utf-8"))
+        except (OSError, RespostaInvalida) as e:
+            print(f"ERRO ao ler {args.arquivo}: {e}. A tábua NÃO foi alterada.", file=sys.stderr)
             return 1
     else:
         try:
@@ -235,9 +297,9 @@ def main() -> int:
         try:
             from comum import baixar
 
-            resposta = json.loads(baixar(URL))
+            resposta = validar_resposta(baixar(URL))
         except Exception as e:
-            print(f"ERRO ao baixar {URL}: {e}", file=sys.stderr)
+            print(f"ERRO ao baixar {URL}: {e}. A tábua NÃO foi alterada.", file=sys.stderr)
             return 1
 
     astronomica = serie_astronomica(resposta)
@@ -266,6 +328,15 @@ def main() -> int:
     if args.verificar:
         print("\n--verificar: nada foi gravado.")
         return 0
+
+    outra = tabua_de_outra_fonte()
+    if outra and not args.substituir:
+        print(
+            f"\nA tábua gravada é de outra fonte ({outra[:80]}…). Este coletor não a sobrescreve;\n"
+            "trocar de fonte é decisão — use --substituir. A tábua NÃO foi alterada.",
+            file=sys.stderr,
+        )
+        return 1
 
     temporario = DESTINO.with_suffix(".json.tmp")
     temporario.write_text(json.dumps(dados, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

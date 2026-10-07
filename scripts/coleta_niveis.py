@@ -51,6 +51,10 @@ from zoneinfo import ZoneInfo
 
 from comum import DADOS, espera_turno
 
+#: Endereço da chuva de Itajaí publicado no `ultimo.json`. Escrito à mão aqui,
+#: ficou apontando para a página antiga depois que a fonte mudou de lugar.
+URL_CHUVA_ITAJAI = "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/chuvas"
+
 SERIE = DADOS / "tempo-real"
 ULTIMO = SERIE / "ultimo.json"
 SERIE_RECENTE = SERIE / "serie-recente.json"
@@ -749,7 +753,7 @@ def main() -> int:
                 "fonte": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
                 "leituras": leituras,
                 "fonte_itajai_ok": fonte_itajai_ok,
-                "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
+                "fonte_chuva": URL_CHUVA_ITAJAI,
                 "chuva": chuva,
                 # Falso só quando a coleta da chuva FALHOU. Lista vazia com
                 # chuva_ok verdadeiro é "a fonte não publica pluviômetro"; com

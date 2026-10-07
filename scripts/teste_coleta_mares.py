@@ -10,7 +10,9 @@ chave `astronimical_tides`, escrita com erro de digitação na própria API, e o
 
 import unittest
 from datetime import datetime
+from pathlib import Path
 
+import coleta_mares
 from coleta_mares import (
     JANELA_PICO_H,
     extremos,
@@ -130,6 +132,55 @@ class TesteMontagem(unittest.TestCase):
         d = montar([], [])
         self.assertEqual(d["preamares"], [])
         self.assertEqual(d["pontos_astronomicos"], 0)
+
+
+class TesteRecusaMesmoComStatus200(unittest.TestCase):
+    """O endereço antigo devolve 200 com uma casca HTML; isso é falha, nunca tábua vazia."""
+
+    CASCA = (Path(__file__).resolve().parent.parent / "data" / "brutos"
+             / "itajai-portal-2026-10-07" / "defesacivil-itajai-casca-spa.html")
+
+    def test_casca_html_real_e_recusada(self):
+        with self.assertRaises(coleta_mares.RespostaInvalida) as ctx:
+            coleta_mares.validar_resposta(self.CASCA.read_text(encoding="utf-8"))
+        self.assertIn("HTML", str(ctx.exception))
+
+    def test_vazio_lixo_e_esquema_errado_sao_recusados(self):
+        for corpo in ("", "  ", "nada", "[]", '{"outra": 1}', '{"tides": "x"}'):
+            with self.subTest(corpo=corpo), self.assertRaises(coleta_mares.RespostaInvalida):
+                coleta_mares.validar_resposta(corpo)
+
+    def test_json_do_esquema_passa(self):
+        r = coleta_mares.validar_resposta('{"tides": [], "astronimical_tides": []}')
+        self.assertEqual(r["tides"], [])
+
+    def test_nao_sobrescreve_a_tabua_da_marinha(self):
+        """A tábua do repositório é a da CHM/DHN; este coletor não a troca sozinho."""
+        fonte = coleta_mares.tabua_de_outra_fonte()
+        self.assertIsNotNone(fonte)
+        self.assertIn("Marinha", fonte)
+
+    def test_tabua_desta_fonte_ou_ausente_nao_bloqueia(self):
+        import json
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            caminho = Path(d) / "mare.json"
+            self.assertIsNone(coleta_mares.tabua_de_outra_fonte(caminho))
+            caminho.write_text(json.dumps({"_meta": {"fonte": coleta_mares.URL}}), encoding="utf-8")
+            self.assertIsNone(coleta_mares.tabua_de_outra_fonte(caminho))
+
+    def test_main_com_casca_nao_grava_e_sai_com_erro(self):
+        import contextlib
+        import io
+        import sys
+        from unittest import mock
+        antes = coleta_mares.DESTINO.read_bytes()
+        erro = io.StringIO()
+        with mock.patch.object(sys, "argv", ["coleta_mares.py", "--arquivo", str(self.CASCA)]), \
+             contextlib.redirect_stderr(erro), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(coleta_mares.main(), 1)
+        self.assertEqual(coleta_mares.DESTINO.read_bytes(), antes)
+        self.assertIn("NÃO foi alterada", erro.getvalue())
 
 
 if __name__ == "__main__":
