@@ -119,7 +119,7 @@ export type Passo =
   // 13ª entrega: várias cidades de uma vez (uma lista dita, ou as cidades que a pessoa segue).
   | { tipo: 'varias_cidades'; cidadeIds?: string[]; seguidas?: boolean; copiar?: boolean }
   /** 14ª: a linha do tempo da cheia de agora, na série de uma régua. `cota` já é a chave do cadastro. */
-  | { tipo: 'linha_do_tempo'; pergunta: 'cruzou_cota' | 'ha_quanto_tempo' | 'comecou_a_subir' | 'variacao'; cidadeId?: string; cota?: string; horas?: number }
+  | { tipo: 'linha_do_tempo'; pergunta: 'cruzou_cota' | 'ha_quanto_tempo' | 'comecou_a_subir' | 'variacao'; cidadeId?: string; cota?: string; horas?: number; dia?: DiaDito }
   /**
    * 15ª: as cheias que a coleta do site já captou (`data/eventos-captados.json`). `mes` é 1–12 e `dia` é
    * `AAAA-MM-DD`; `cota` é a chave do cadastro, para "quantas vezes passou da cota de alerta".
@@ -133,13 +133,24 @@ export type Interpretacao =
   /** Era pedido, mas falta escolher (régua ambígua) ou um trecho não foi entendido: nada é executado. */
   | { tipo: 'esclarecer'; texto: string; sugestoes: string[] }
 
-/** O que a tela tem aberto agora. "Aqui", "essa cidade", "essa régua" usam isto. */
+/** 19ª entrega: o dia dito numa pergunta de linha do tempo ("e ontem?"), em Brasília. */
+export type DiaDito = 'hoje' | 'ontem' | 'anteontem'
+
+/**
+ * O que a tela tem aberto agora. "Aqui", "essa cidade", "essa régua" usam isto.
+ *
+ * 19ª entrega: o contexto da TELA e o da CONVERSA são separados. `cidadeAtual` é a da página ou do Monitor;
+ * `cidadeDaConversa` é a última cidade que a pessoa citou nesta conversa, e só vale quando a tela não tem cidade —
+ * cidade dita no pedido vence as duas, e a resposta diz quando usou a da conversa.
+ */
 export interface Contexto {
   /** Cidade da página ou do Monitor; null na bacia inteira ou fora de uma cidade. */
   cidadeAtual: string | null
   naMonitor: boolean
   /** Código da régua selecionada no Monitor, se houver. */
   reguaAtual: string | null
+  /** A última cidade citada na conversa (19ª); ausente ou null = nenhuma. */
+  cidadeDaConversa?: string | null
 }
 
 export interface CidadeDoCatalogo {

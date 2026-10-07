@@ -626,6 +626,11 @@ o projeto.
     repetição perguntam/recusam; abreviações ("p/", "qdo", "qto", "hj"), erro no verbo ("você quis dizer…?"), "aqui" e
     "histórico"/"minha rua"/"fontes" na página da cidade. **Bateria: 416/478 → 525/525 (47 frases novas: 39/47 antes
     do ajuste); 0 ações indevidas; 0 palpites.** Seção da entrega em `docs/CHAT-GLOBAL-COMANDOS.md`.
+  - [x] **Décima nona entrega (07/10/2026): o contexto da conversa** (handoff, "Contexto de conversa", sem IA). Tela e
+    conversa separados (`Contexto.cidadeDaConversa`); fora de cidade, a última cidade da conversa responde e a resposta
+    diz "Pela conversa, entendi que é de X"; dita > tela > conversa; continuação que mudaria a tela ("mostrar
+    Blumenau" → "e Gaspar?") pede confirmação em vez de navegar; "e ontem?"/"e com 9 m?"/"e de atenção?" refazem com
+    uma troca; `linha_do_tempo` ganhou `dia`; "e a tendência?" continua o assunto. 29 conversas completas na bateria.
   - [ ] **PR 2 do handoff (classificação estruturada em modo sombra):** depende de o Jefferson definir as metas por
     grupo. Com a 18ª, a bateria de hoje está em 100 %: a próxima família de frases reservadas (de moradores, se a
     telemetria um dia guardar texto com consentimento; senão, escritas por outra pessoa) é o que vai mostrar o que o

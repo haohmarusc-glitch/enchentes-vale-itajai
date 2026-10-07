@@ -101,6 +101,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Cada entrega que mexe no leitor acrescenta uma **família nova de frases reservadas** (`RESERVADOS_<n>` em `casos.ts`),
   escrita ANTES de rodar o leitor com elas, e o relatório diz quantas passaram na primeira rodada (18ª: 39/47) antes de
   corrigir. Esperado revisto é exceção documentada na seção da entrega, nunca ajuste silencioso.
+- **Contexto da conversa (19ª):** `Contexto.cidadeAtual` é a tela; `cidadeDaConversa` (de `comandos/conversa.ts`) só
+  vale sem cidade na tela, e a resposta diz "Pela conversa, entendi que é de X". Dita > tela > conversa. Continuação
+  ("e Gaspar?") que mudaria a tela **confirma** antes (`decidirContinuacao`); a que só responde refaz com "Entendi como".
 - O chat **não altera dados** (`pedeAlteracaoDeDado`), não abre endereço digitado e, com só o nome da cidade, pergunta
   o que a pessoa quer; o motor só palpita "maiores cheias" quando a pergunta fala do rio (`FALA_DO_RIO`).
 - O piloto do classificador, listas de permissão, segredos, retenção e público **não** mudam em PR de refatoração.

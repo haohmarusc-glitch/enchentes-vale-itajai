@@ -16,6 +16,7 @@
  * rio pode ter cruzado antes. Nada aqui é previsão nem conselho; em emergência, 199.
  */
 import type { PontoSerie } from '../dados/serie'
+import type { DiaDito } from './tipos'
 import type { Cidade } from '../dados/tipos'
 import { SEM_FRASE_DE_COTA, diaDeBrasilia, horaDeBrasilia } from '../logica/agora'
 import { cotasOperacionais } from '../logica/cotasOperacionais'
@@ -128,7 +129,19 @@ export interface EntradaDaLinha {
   cota?: string
   /** As horas de "quanto subiu nas últimas N horas". */
   horas?: number
+  /** 19ª: só os cruzamentos de um dia (Brasília): "quando passou da cota ontem?", "e ontem?". */
+  dia?: DiaDito
 }
+
+const DIA_BR = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' })
+/** A chave do dia em Brasília (AAAA-MM-DD) de um instante. */
+export const chaveDoDia = (d: Date) => DIA_BR.format(d)
+/** A chave do dia pedido ("ontem" = o dia de Brasília anterior ao de `agora`). */
+export function chaveDoDiaDito(dia: DiaDito, agora: Date): string {
+  const desloca = dia === 'hoje' ? 0 : dia === 'ontem' ? 1 : 2
+  return chaveDoDia(new Date(agora.getTime() - desloca * 24 * 3_600_000))
+}
+const NOME_DO_DIA: Record<DiaDito, string> = { hoje: 'hoje', ontem: 'ontem', anteontem: 'anteontem' }
 
 function recusaDeCota(cidade: Cidade): string | null {
   if (cidade.id === 'itajai' || !SEM_FRASE_DE_COTA.has(cidade.id)) {
@@ -261,7 +274,26 @@ export function textoLinhaDoTempo(e: EntradaDaLinha): string {
     ].join('\n')
   }
   const [chave, valor] = alvoCota
-  const c = cruzamentos(pontos, valor)
+  const todos = cruzamentos(pontos, valor)
+  if (e.dia) {
+    // Só o dia pedido, em Brasília. Fora da janela publicada, diz isso; sem cruzamento no dia, diz o que o rio fez nele.
+    const k = chaveDoDiaDito(e.dia, agora)
+    const doDia = pontos.filter((p) => chaveDoDia(p.medidoEm) === k)
+    const rotuloDia = `${NOME_DO_DIA[e.dia]} (${k.slice(8, 10)}/${k.slice(5, 7)})`
+    if (!doDia.length) {
+      return [`A série publicada de ${rotulo} vai de ${hd(pontos[0]!.medidoEm)} a ${hd(ultimo.medidoEm)} e não cobre ${rotuloDia}: não dá para dizer se passou da cota nesse dia.`, ...rodape].join('\n')
+    }
+    const cDia = todos.filter((x) => chaveDoDia(x.quando.medidoEm) === k)
+    if (!cDia.length) {
+      const min = Math.min(...doDia.map((p) => p.nivel_m))
+      const max = Math.max(...doDia.map((p) => p.nivel_m))
+      const onde = min >= valor ? `ficou o tempo todo na cota de ${nomeDa(chave)} (${metros(valor)}) ou acima` : `não passou da cota de ${nomeDa(chave)} (${metros(valor)})`
+      return [`Nas medições publicadas de ${rotuloDia}, a régua de ${rotulo}${de} ${onde}: ficou entre ${metros(min)} e ${metros(max)}.`, ...rodape].join('\n')
+    }
+    const frases = cDia.map((x) => `${x.sentido === 'subiu' ? 'passou da cota' : 'voltou para baixo dela'} às ${hd(x.quando.medidoEm)} (de ${metros(x.antes.nivel_m)} para ${metros(x.quando.nivel_m)})`)
+    return [`Régua de ${rotulo}${de}, ${rotuloDia}, cota de ${nomeDa(chave)} (${metros(valor)}): ${frases.join('; ')}${precisao}.`, ...rodape].join('\n')
+  }
+  const c = todos
   if (!c.length) {
     const acima = pontos[0]!.nivel_m >= valor
     return [

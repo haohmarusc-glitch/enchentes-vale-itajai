@@ -25,6 +25,8 @@
  *  - 8ª entrega: "oficial" sem o aviso; atualizar sem buscar; apagar preferências sem confirmar ou sem apagar;
  *    contagem que não grava; conversa que não limpa.
  *  - 9ª entrega: cidade com erro de digitação executada sem perguntar; sugestão que não leva à cidade certa.
+ *  - 19ª entrega: "quanto falta?" fora de cidade sem usar a cidade da conversa; "e Gaspar?" depois de "mostrar Blumenau"
+ *    navegando por suposição; a nota "Pela conversa" faltando.
  *  - 18ª entrega: pergunta de segurança respondida com histórico; segunda leitura de um pedido engolida; nome de cidade
  *    solto virando lista de cheias; pedido de alterar dado indo ao motor; "histórico" na página da cidade sem efeito.
  *  - 10ª entrega: continuação sem "Entendi como"; "e Gaspar" sem pedido anterior que adivinha; comando refeito
@@ -489,7 +491,32 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 19. Página com chat próprio: a barra do topo some.
+  // 19. 19ª entrega: o contexto da conversa — a cidade da conversa responde fora de cidade (e a resposta diz que foi
+  // ela), "e Gaspar?" depois de "mostrar Blumenau" pede confirmação em vez de navegar, e a confirmação navega.
+  {
+    const { b, pg, erros } = await abrir('#/', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'como está Gaspar?', /Gaspar|199/)
+    r = await pedirAte(pg, 'quanto falta para a cota?', /Gaspar/)
+    ok(/^Pela conversa, entendi que é de Gaspar\./.test(r), `fora de cidade, a cidade da conversa responde e diz que foi ela (${r.slice(0, 70)}…)`)
+    r = await pedirAte(pg, 'e a tendência?', /Gaspar/)
+    ok(/Pela conversa, entendi que é de Gaspar/.test(r), `"e a tendência?" continua o assunto com a cidade da conversa (${r.slice(0, 70)}…)`)
+    ok(/#\/$/.test(pg.url()), `nada disso mudou a tela (${pg.url()})`)
+    await pedir(pg, 'mostrar Blumenau')
+    await pg.waitForURL(/#\/monitor\/blumenau/, { timeout: 15000 }).catch(() => {})
+    ok(/#\/monitor\/blumenau/.test(pg.url()), `"mostrar Blumenau" abriu o Monitor (${pg.url()})`)
+    r = await pedirAte(pg, 'e Gaspar?', /Gaspar/)
+    ok(/Entendi como "mostrar Gaspar", que muda a tela\. É isso\?/.test(r), `"e Gaspar?" depois de navegar pede confirmação (${r.slice(0, 80)}…)`)
+    ok(/#\/monitor\/blumenau/.test(pg.url()), `e não navegou (${pg.url()})`)
+    const chip = pg.getByRole('button', { name: 'mostrar Gaspar' }).first()
+    ok((await chip.count()) >= 1, 'a sugestão é a frase pronta')
+    await chip.click()
+    await pg.waitForURL(/#\/monitor\/gaspar/, { timeout: 15000 }).catch(() => {})
+    ok(/#\/monitor\/gaspar/.test(pg.url()), `tocar na sugestão navega para Gaspar (${pg.url()})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 20. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')
