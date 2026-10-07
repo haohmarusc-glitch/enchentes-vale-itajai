@@ -159,6 +159,25 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Inventário em `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py --gravar`). Relatório em
   `docs/AUDITORIA-REGUAS-2026-10-06.md`.
 
+### Classificação estadual × municipal — REGRA (decisões de 07/10/2026)
+- Duas classificações **independentes** por cidade. O motor é `scripts/classificar_reguas.py`; o relatório está em
+  `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.
+- Migração em três PRs separados, nesta ordem:
+  1. Python em paralelo: grava `data/tempo-real/ultimo_classificacao.json`, e o site **não** o lê.
+  2. Consumo pelo site.
+  3. Origem da cor no Monitor (`monitor-autorizado`).
+- **O motor só LÊ `estacoes.json`.** Campo novo depende de proposta e aprovação do Jefferson.
+- **Faixa estadual = a que a Defesa Civil de SC publica** (`rio_alarmes`, `classificar_alarmes`). Comparação numérica
+  com limites por estação fica fora até haver limites oficiais e referência de régua validada.
+- **Régua da leitura = régua das faixas**, por código; proximidade e título parecido não contam. Conversão entre
+  réguas só com vínculo oficial, fórmula e fonte (nenhum cadastrado).
+- **A municipal manda.** A estadual pinta só sem leitura municipal de agora, como `fallback`, com aviso.
+- **A saída diz a faixa, não a cor** (token do site).
+- **Piloto: Brusque** (`CIDADES_PILOTO`). Cidade nova entra com o `--inventario` limpo e com um caso no gabarito.
+- **Gabarito:** `data/classificacao-esperada.json` trava motor e site juntos (`teste_classificar_reguas.py` e
+  `classificacaoParidade.test.ts`). Divergência só declarada em `diverge_do_site`; esperado revisto é decisão, nunca
+  ajuste para passar.
+
 ### Referência altimétrica de Blumenau — REGRA BLOQUEANTE (conversão parcial em 03/10/2026)
 - Três referências para a régua da Ponte Adolfo Konder, pela FURB (Prof. Ademar Cordero, e-mails e
   planilha de 02/10/2026): **régua antiga** (até a troca, depois da cheia de set/2011); **zero do IBGE**
@@ -230,7 +249,8 @@ Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em c
   - **Onde fica:** em `EstadoDaCidade.faixaEstadual`, nunca em `faixa`. Frase, WhatsApp e aviso não a leem.
     Teste em `dados/usarAoVivo.test.ts`.
   - **Réguas estaduais que pintam com as cotas da cidade:** só as de `REGUAS_COM_COTA_PROPRIA` em
-    `scripts/coleta_estadual_com_cota.py`. Hoje são DCSC-00003 (Ascurra) e DCSC-00019 (Brusque).
+    `scripts/coleta_estadual_com_cota.py`. Hoje são DCSC-00003 (Ascurra), DCSC-00019 (Brusque) e DCSC-00011
+    (Rio dos Cedros, desde 07/10/2026).
 - **D5 — modo aplicativo (PWA):** `web/public/sw.js` + `sw-regras.js` (testado em `src/logica/swRegras.test.ts`
   e no navegador por `testes-navegador/pwa.mjs`). Rede primeiro para a página e o nível ao vivo; a cópia
   guardada só sem rede, e o número guardado sai com a hora da medição. **Nunca guardar** desvio, resposta

@@ -1333,6 +1333,21 @@ def valida_equivalencia_estadual(estacoes: dict | None = None) -> None:
                 erro(f"{onde}: equivalência confirmada sem `fonte`")
 
 
+def valida_classificacao_piloto(estacoes: dict | None = None) -> None:
+    """Cidade do piloto da classificação estadual × municipal com cadastro que o motor aceita (07/10/2026).
+
+    `classificar_reguas.CIDADES_PILOTO` é a lista das cidades que o motor Python já classifica. Cada uma
+    precisa da régua das cotas identificada por código (`codigo_dcsc` e `REGUAS_COM_COTA_PROPRIA`
+    concordando), de cotas de acionamento em ordem crescente, de `regua_das_cotas_fonte` e de
+    `cotas_verificado: true`. O motor só lê `estacoes.json`; quem conserta é o cadastro, por decisão
+    do Jefferson.
+    """
+    from classificar_reguas import validar_cadastro_piloto
+
+    for e in validar_cadastro_piloto(estacoes if estacoes is not None else le_json("estacoes.json")):
+        erro(f"classificação (piloto) / {e}")
+
+
 def valida_coordenada_nao_confirmada(estacoes: dict | None = None) -> None:
     """
     `coordenadas_status: "não confirmada"` marca o pino mantido sem fonte que situe a régua (Timbó, decisão do
@@ -2282,6 +2297,7 @@ def main() -> int:
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
     valida_equivalencia_estadual()
+    valida_classificacao_piloto()
     valida_rio_chega_a()
     valida_coordenada_nao_confirmada()
     valida_pico_copiado_de_outra_cidade()

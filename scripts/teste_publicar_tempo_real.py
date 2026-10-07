@@ -124,6 +124,36 @@ class Publicador(unittest.TestCase):
             self.assertIn(nome, r.stdout, f"o ensaio não anunciou {nome}")
         self.assertNotIn("ultimo_nivel_sc.json", r.stdout)
 
+    def classificacao(self, minutos_atras: int) -> dict:
+        from datetime import datetime, timedelta, timezone
+        gerado = datetime.now(timezone.utc) - timedelta(minutes=minutos_atras)
+        return {"gerado_em": gerado.isoformat(timespec="seconds"), "cidades": {"brusque": {}}}
+
+    def test_leva_a_classificacao_quando_e_desta_coleta(self):
+        """A classificação em paralelo (PR 1 de 07/10/2026) sobe junto, mas o site ainda não a lê."""
+        base = self.monta({"ultimo_classificacao.json": self.classificacao(2)})
+        r = self.roda(base)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("ultimo_classificacao.json", self.arvore(base, r.stdout))
+
+    def test_classificacao_de_outra_coleta_nao_sobe(self):
+        """Se o classificador morreu sem apagar o arquivo, o de horas atrás não pode passar por atual."""
+        for minutos in (31, 240):
+            with self.subTest(minutos):
+                base = self.monta({"ultimo_classificacao.json": self.classificacao(minutos)})
+                r = self.roda(base)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                self.assertNotIn("ultimo_classificacao.json", self.arvore(base, r.stdout))
+
+    def test_classificacao_quebrada_ou_vazia_nao_sobe_e_nao_derruba(self):
+        for conteudo in ("{quebrado", json.dumps({"gerado_em": "x"}), json.dumps({"cidades": {}})):
+            with self.subTest(conteudo):
+                base = self.monta({})
+                (base / "data" / "tempo-real" / "ultimo_classificacao.json").write_text(conteudo, encoding="utf-8")
+                r = self.roda(base)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
+
     def test_ultimo_json_sem_leituras_nao_vai_ao_ar(self):
         """O portão que já existia: publicar vazio apagaria o nível da tela."""
         base = self.monta({})
