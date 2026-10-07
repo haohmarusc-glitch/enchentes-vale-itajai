@@ -106,3 +106,47 @@ Prints reais da pré-visualização (390×844, 360×740 e 1280×800) estão no P
   `docs/prints/monitor-etapa1-2026-10-07/`.
 
 Fora da etapa 1 (ficam para a 2 e a 3): painel compacto → expandido; barra inferior Mapa · Réguas · Perguntar.
+
+## Etapa 2 — o que entrou (07/10/2026, PR em rascunho empilhado sobre a etapa 1, sem merge)
+
+Só no celular (≤ 700 px); no computador o painel é o de sempre.
+
+- **Compacto ao tocar no pino** (ou ao abrir `/monitor/<cidade>`): nome, rio, o chip da faixa (o mesmo texto do
+  painel: faixa municipal, "Classificação estadual: …" ou "Sem classificação…"), a pílula da leitura com a hora por
+  extenso ("Leitura: há 17 min · 07/10, 03:58"; velha → "Leitura antiga … — não é a de agora", em âmbar; cidade só
+  com nível estadual → "Leitura estadual: …"; Itajaí → "Várias réguas: cada uma com a própria leitura e hora"), e
+  dois quadros: **Nível do rio** (municipal; sem ele, o estadual dito "zero próprio"; em Itajaí, "N réguas"; sem
+  nada, "sem leitura") e **Tendência** (`tendenciaDaLeitura`, regra D7; sem tendência, dito "sem tendência").
+- **Expandido** ("Mais detalhes ▾"): mais dois quadros — **Chuva (24 h)** (pluviômetro da cidade, estação e idade;
+  "—" com o motivo real quando não há ou está antiga) e **a cota** (`cotaDaFaixa`: a cota da faixa de agora; sem
+  faixa, "Primeira cota (…)" com "sem faixa para esta leitura" ou "nível abaixo desta cota"; sem cota, dito) —, os
+  botões **Ver histórico** (`?aba=historico`) e **Detalhes da fonte** (`?aba=fontes`) e, abaixo, o painel inteiro
+  de sempre (cotas, estadual, chuva por estação, vizinhos, resumo da série, ruas…). "Menos detalhes ▴" recolhe;
+  trocar de cidade volta ao compacto.
+- Nenhum texto de maquete: "Leitura antiga" só existe quando a leitura é velha; a cota nunca é chamada de faixa
+  numa cidade sem faixa; a tendência não tem seta sem tendência.
+- Lógica pura e testada em `web/src/logica/painelCompacto.ts`. A auditoria do navegador abre "Mais detalhes" antes
+  de conferir os textos do painel inteiro. Trava do Monitor: baseline igual ao da etapa 1 (o painel não muda a
+  geometria do mapa).
+
+## Etapa 3 — o que entrou (07/10/2026, PR em rascunho, sem merge)
+
+Só no celular (≤ 700 px) e só em `/monitor*`; no computador e em `/municipal/ascurra` nada muda.
+
+- **Barra de baixo Mapa · Réguas · Perguntar** (`nav[aria-label="Modos do Monitor"]`, em `MonitorBacia.tsx`). Fica no
+  **fluxo** da página, colada embaixo do mapa — nunca `position: fixed` — e o mapa desconta a altura dela:
+  `calc(100dvh − 5.875rem − 3.5rem)` (56 px a menos que na etapa 1: 646 → 590 px em 360×740, 750 → 694 px em 390×844).
+  Some em tela cheia. Não é a barra de navegação do site (`nav[aria-label="Principal"]`), que continua fora do Monitor.
+- **Mapa**: o mapa de sempre. Fica aceso quando nenhuma das outras está.
+- **Réguas**: uma folha clara cobre o mapa (dentro do palco) com as cidades dos dois rios na **mesma `ListaRio`** das
+  telas do Açu e do Mirim — faixa (cor = faixa), número, tendência (D7) e idade; leitura velha sem número; estadual dita
+  "rede estadual (zero próprio)" com o chip tracejado; cabeceiras, tronco e afluentes em grupos (árvore, não fila). A única
+  diferença é o destino do toque (`ListaRio` ganhou `destino`): a cidade abre **no mapa do Monitor** (`/monitor/<id>`),
+  com o painel compacto da etapa 2, e a folha fecha. Trocar de cidade por qualquer caminho volta ao Mapa.
+- **Perguntar**: leva à caixa do chat do topo — a mesma, com os mesmos comandos e a mesma ponte — e fica acesa enquanto a
+  caixa tem o foco ou a conversa está aberta. Não há segundo chat.
+- **Trava do Monitor** (`testes-navegador/trava-monitor.mjs`): baseline regravado com o mapa encolhido no celular
+  (computador e Ascurra iguais) e regra nova (6): no celular, em `/monitor*`, a barra do Monitor tem de existir, não ser
+  `fixed` e começar exatamente onde o mapa termina; fora disso ela não pode existir. As regras 1–5 continuam.
+- Prints reais (390×844 e 360×740, dados do branch `tempo-real` de 07/10/2026 ~15h UTC):
+  `docs/prints/monitor-etapa3-2026-10-07/`.

@@ -49,6 +49,8 @@ try {
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1))
  console.log('OK: seletor municipal sem overflow em 390 px')
  await abrir('/monitor/ascurra')
+ // Etapa 2 do redesenho: no celular o painel abre compacto; os detalhes ficam atrás de "Mais detalhes".
+ await page.getByRole('button',{name:'Mais detalhes ▾'}).click()
  await page.getByText('Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.').waitFor()
  await page.getByText('8,94 m',{exact:true}).waitFor()
  assert.equal(await page.getByText('Por que está cinza?',{exact:true}).count(),0)
@@ -90,6 +92,7 @@ try {
  console.log('OK: piloto municipal sem botão de outra cidade')
  await abrir('/monitor/indaial')
  await page.getByText('6,74 m',{exact:true}).waitFor()
+ await page.getByRole('button',{name:'Mais detalhes ▾'}).click()
  await page.getByText('SDC-SC Indaial · DCSC-00006 · terceira ponte. Esta é a régua do monitoramento estadual.',{exact:true}).waitFor()
  assert.equal(await page.getByText('sem leitura fresca',{exact:true}).count(),0)
  await page.getByText('Não são aplicadas à leitura da terceira ponte.',{exact:false}).waitFor()

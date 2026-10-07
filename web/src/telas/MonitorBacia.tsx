@@ -1,10 +1,11 @@
 import { cotasOperacionais as cotasOrdenadas } from '../logica/cotasOperacionais'
 import { comReferenciaAscurra } from '../dados/referenciaAscurra'
-import { linhasChuva, linhasChuvaCompactas } from '../logica/chuvaMonitor'
+import { chuvaMonitor, linhasChuva, linhasChuvaCompactas, mmChuva } from '../logica/chuvaMonitor'
+import { cotaDaFaixa, estadoDaLeitura, LEITURA_VARIAS_REGUAS, textoTendenciaCompacta } from '../logica/painelCompacto'
 import { contagemDeTracados, opcoesDeTracado, tracadosVisiveis } from '../logica/tracadosDoMapa'
 import { destaqueDaBacia } from '../logica/destaqueDaBacia'
 import { estadoMareAgora } from '../logica/mare'
-import { diaDeBrasilia, horaDeBrasilia } from '../logica/agora'
+import { diaDeBrasilia, horaDeBrasilia, tendenciaDaLeitura } from '../logica/agora'
 import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
@@ -93,6 +94,7 @@ import {
 } from '../logica/tiles'
 import VariasReguas from '../componentes/VariasReguas'
 import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
+import ReguasDoMonitor from '../componentes/ReguasDoMonitor'
 import estilos from './MonitorBacia.module.css'
 
 const NOME_DO_FUNDO: Record<ChaveFundo, string> = { escuro: 'escuro', satelite: 'satélite', mapa: 'mapa de ruas' }
@@ -323,6 +325,15 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   /** O menu de cidades, na ordem do rio (logica/menuDasCidades). */
   const [menuAberto, setMenuAberto] = useState(false)
   /**
+   * ETAPA 3 do redesenho (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md): a barra de baixo do celular,
+   * Mapa · Réguas · Perguntar. "Réguas" cobre o mapa com a lista compacta dos dois rios; "Perguntar" leva à
+   * caixa do chat do topo (a mesma, com os mesmos comandos). Trocar de cidade volta ao mapa.
+   */
+  const [abaCelular, setAbaCelular] = useState<'mapa' | 'reguas'>('mapa')
+  useEffect(() => { setAbaCelular('mapa') }, [cidadeId])
+  /** A caixa do chat do topo com o foco: "Perguntar" acende, e "Mapa" apaga. */
+  const [focoNoChat, setFocoNoChat] = useState(false)
+  /**
    * REDESENHO DO MONITOR, etapa 1 (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md): o menu "Camadas do mapa"
    * reúne as camadas de cheia, a maré, a chuva, a legenda, os traçados e o fundo. Maré e chuva são só
    * VISIBILIDADE — desligar não apaga dado nenhum, e o painel da cidade continua mostrando a chuva dela.
@@ -335,6 +346,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [mareAberta, setMareAberta] = useState(false)
   /** A cidade com a faixa mais grave AGORA (`destaqueDaBacia`); null sem faixa válida acima da atenção ou na reprodução. */
   const [destaque, setDestaque] = useState<Pino | null>(null)
+  /**
+   * ETAPA 2 do redesenho (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md): no celular o painel da cidade abre
+   * COMPACTO (nível, horário, tendência) e "Mais detalhes" o expande. Volta a compacto a cada cidade nova.
+   * No computador o painel é o de sempre, inteiro.
+   */
+  const [painelExpandido, setPainelExpandido] = useState(false)
   const menu = useMemo(
     () =>
       menuDasCidades(
@@ -1214,6 +1231,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   }
 
   const rotaDoRio = (rioId: string) => (rioId === 'itajai-mirim' ? '/mirim' : '/acu')
+  const celular = tam.w > 1 && tam.w <= 700
+  const cidadeSelecionada = sel?.cidade.id ?? null
+  useEffect(() => {
+    setPainelExpandido(false)
+  }, [cidadeSelecionada])
 
   /**
    * A maré no instante mostrado (ao vivo ou da reprodução), pela tábua da Marinha — a MESMA conta que
@@ -1583,7 +1605,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             caixa do chat em pílula ("Cidade, régua ou pergunta") e o botão "Cidades"; título e aviso
             saem (o 199 está na faixa do topo da página, e volta aqui em tela cheia); "Tela cheia" e
             "Camadas do mapa" ficam nos botões redondos da coluna da direita. */}
-        <div className={estilos.topo} data-tapa-mapa>
+        <div
+          className={estilos.topo}
+          data-tapa-mapa
+          onFocus={(e) => setFocoNoChat((e.target as Element).matches?.('input[aria-label="Pergunte ou peça"]') ?? false)}
+          onBlur={() => setFocoNoChat(false)}
+        >
           <strong className={estilos.titulo}>{municipal ? "Monitor de Ascurra" : "Monitoramento da bacia"}</strong>
           {!municipal && <button
             type="button"
@@ -2192,8 +2219,108 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
                 </span>
               </div>
+              {celular ? (() => {
+                // VERSÃO COMPACTA (celular): o que a pessoa quer ao tocar no pino — nível, hora e tendência —
+                // e, expandido, chuva e cota antes do painel inteiro. Só textos de dados reais
+                // (`logica/painelCompacto`): sem faixa não se escreve faixa; sem tendência, diz-se.
+                // A hora que acompanha o número mostrado: a municipal; sem ela, a estadual (dita como tal);
+                // em cidade de várias réguas não há uma hora só.
+                const estadoLeitura = variasReguas
+                  ? LEITURA_VARIAS_REGUAS
+                  : foco.nivel != null || !brutoSc
+                    ? estadoDaLeitura(foco.medidoEm, agora, cid.id)
+                    : estadoDaLeitura(brutoSc.medidoEm, agora, cid.id, 'Leitura estadual')
+                const tend = textoTendenciaCompacta(
+                  foco.nivel != null ? tendenciaDaLeitura(serieDaCidade(serie, foco.rioId, cid.id), { nivel_m: foco.nivel, medidoEm: foco.medidoEm }, agora) : null,
+                )
+                const chuva = chuvaMonitor(tempoReal.chuva, cid.id)
+                const chuvaIdade = chuva?.medidoEm ? idadeMin(chuva.medidoEm, agora) : null
+                const chuvaVale = chuvaIdade != null && frescor(chuvaIdade) !== 'velha' && chuva?.mm.h24 != null
+                const cota = cotaDaFaixa(cid, foco.faixa, origemDaCor)
+                return (
+                  <div className={estilos.compacto}>
+                    <div className={estilos.chipFaixa} data-faixa={foco.faixa}>
+                      <span className={estilos.amostra} style={{ background: `var(${VAR_LEGENDA[foco.faixa]})` }} />
+                      {textos.faixa}
+                    </div>
+                    <p className={`${estilos.pilulaLeitura} ${estilos[`leitura-${estadoLeitura.tipo}`] ?? ''}`} role="status">{estadoLeitura.texto}</p>
+                    <div className={estilos.tiles}>
+                      <div className={estilos.tile}>
+                        <small>Nível do rio</small>
+                        {foco.nivel != null ? (
+                          <>
+                            <strong>{metros(foco.nivel)}</strong>
+                            <small>{foco.medidoEm ? textoIdade(idadeMin(foco.medidoEm, agora)) : 'sem horário'}</small>
+                          </>
+                        ) : brutoSc ? (
+                          <>
+                            <strong>{metros(brutoSc.nivelBrutoM)}</strong>
+                            <small>rede estadual, zero próprio{brutoSc.medidoEm ? ` · ${textoIdade(idadeMin(brutoSc.medidoEm, agora))}` : ''}</small>
+                          </>
+                        ) : variasReguas ? (
+                          <>
+                            <strong>{daCidade.length} réguas</strong>
+                            <small>zeros diferentes; cada uma em Mais detalhes</small>
+                          </>
+                        ) : (
+                          <>
+                            <strong className={estilos.painelSemDado}>sem leitura</strong>
+                            <small>nenhuma medição fresca nesta régua</small>
+                          </>
+                        )}
+                      </div>
+                      <div className={estilos.tile}>
+                        <small>Tendência</small>
+                        <strong><span aria-hidden="true">{tend.seta}</span> {tend.texto}</strong>
+                        <small>{tend.nota}</small>
+                      </div>
+                    </div>
+                    {painelExpandido ? (
+                      <>
+                        <div className={estilos.tiles}>
+                          <div className={estilos.tile}>
+                            <small>Chuva (24 h)</small>
+                            {chuvaVale && chuva ? (
+                              <>
+                                <strong>{mmChuva(chuva.mm.h24)} mm</strong>
+                                <small>{chuva.estacao} · {textoIdade(chuvaIdade!)}</small>
+                              </>
+                            ) : (
+                              <>
+                                <strong>—</strong>
+                                <small>{chuva?.medidoEm ? 'última medição antiga; não vale como chuva de agora' : 'sem pluviômetro com leitura'}</small>
+                              </>
+                            )}
+                          </div>
+                          <div className={estilos.tile}>
+                            <small>{cota.titulo}</small>
+                            <strong>{cota.valor ?? '—'}</strong>
+                            <small>{cota.nota}</small>
+                          </div>
+                        </div>
+                        <div className={estilos.botoesPainel}>
+                          <button type="button" onClick={() => navigate(`${rotaDoRio(foco.rioId)}/${cid.id}?aba=historico`)}>Ver histórico</button>
+                          <button type="button" onClick={() => navigate(`${rotaDoRio(foco.rioId)}/${cid.id}?aba=fontes`)}>Detalhes da fonte</button>
+                        </div>
+                      </>
+                    ) : null}
+                    <button
+                      type="button"
+                      className={estilos.botaoMais}
+                      aria-expanded={painelExpandido}
+                      onClick={() => setPainelExpandido((v) => !v)}
+                    >
+                      {painelExpandido ? 'Menos detalhes ▴' : 'Mais detalhes ▾'}
+                    </button>
+                  </div>
+                )
+              })() : null}
+              {!celular || painelExpandido ? (<>
               {cid.id === 'ascurra' && <p>Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.</p>}
               {cid.id === 'gaspar' && <p>Faixa calculada somente pelo nível, conforme a <a href="https://defesacivil.gaspar.sc.gov.br/estacao/ver/21" target="_blank" rel="noreferrer">legenda da estação 21</a>: normal abaixo de 5 m, atenção acima de 5 m, emergência acima de 7 m. Em 5 m exatos, inclusão não definida. O estado oficial também considera chuva; a cor não indica ruas alagadas.</p>}
+              {/* No celular a faixa e o nível já estão no bloco compacto (chip e quadro): estas linhas não
+                  entram no DOM — escondê-las por CSS deixaria o número duas vezes na página. */}
+              {!celular ? (
               <div className={estilos.painelFaixa}>
                 <span
                   className={estilos.amostra}
@@ -2201,12 +2328,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 />
                 {textos.faixa}
               </div>
+              ) : null}
               {textos.motivoCinza && (
                 <p className={estilos.painelRessalva}>
                   <strong>Por que está cinza?</strong>{' '}
                   {textos.motivoCinza}
                 </p>
               )}
+              {!celular ? (
               <p className={estilos.painelNivel}>
                 {foco.nivel != null ? (
                   <>
@@ -2221,6 +2350,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>
                 )}
               </p>
+              ) : null}
               {/* Cidade de várias réguas: todas, sem eleger nenhuma — o mesmo
                   componente da tela do rio, com o aviso de que os zeros são
                   diferentes e os números não se comparam. Dizer "sem leitura"
@@ -2452,10 +2582,53 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 Nível na régua <strong>desta</strong> cidade. Não compare metros entre
                 cidades — a comparação é pela faixa (cor).
               </p>
+              </>) : null}
             </div>
           )
         })() : null}
+        {celular && !municipal && !ampliado && abaCelular === 'reguas' ? (
+          <ReguasDoMonitor aoEscolher={() => setAbaCelular('mapa')} />
+        ) : null}
       </div>
+
+      {/* BARRA DE BAIXO (celular, etapa 3): Mapa · Réguas · Perguntar. Fica no fluxo da página, logo abaixo do
+          mapa — nunca `position: fixed` —, e o mapa já desconta a altura dela (CSS e baseline da trava).
+          É do Monitor e não a barra de navegação do site (`nav[aria-label="Principal"]`), que continua fora. */}
+      {celular && !municipal && !ampliado ? (
+        <nav className={estilos.barraModos} aria-label="Modos do Monitor">
+          <button
+            type="button"
+            className={estilos.modo}
+            aria-pressed={abaCelular === 'mapa' && !chatAberto && !focoNoChat}
+            onClick={() => setAbaCelular('mapa')}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 2.2 6 2v11.6l-6-2V6.2Z" /></svg>
+            Mapa
+          </button>
+          <button
+            type="button"
+            className={estilos.modo}
+            aria-pressed={abaCelular === 'reguas'}
+            onClick={() => setAbaCelular((a) => (a === 'reguas' ? 'mapa' : 'reguas'))}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16.6 16.6 3 21 7.4 7.4 21 3 16.6Zm2.8 0 1.6 1.6 1.1-1.1-.9-.9.9-.9.9.9 1.2-1.2-1.6-1.6.9-.9 1.6 1.6 1.2-1.2-.9-.9.9-.9.9.9 1.2-1.2-1.6-1.6.9-.9 1.6 1.6 1.1-1.1-1.6-1.6L5.8 16.6Z" /></svg>
+            Réguas
+          </button>
+          <button
+            type="button"
+            className={estilos.modo}
+            aria-pressed={chatAberto || focoNoChat}
+            onClick={() => {
+              setAbaCelular('mapa')
+              const caixa = divRef.current?.querySelector<HTMLInputElement>('input[aria-label="Pergunte ou peça"]')
+              caixa?.focus()
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm1 2v9h1v2l2.5-2H19V6H5Z" /></svg>
+            Perguntar
+          </button>
+        </nav>
+      ) : null}
 
       {/* A árvore da bacia, embaixo do mapa: quem vê os pinos precisa saber
           QUEM ESTÁ ACIMA DE QUEM, e que a barragem não é o rio da cidade. */}
