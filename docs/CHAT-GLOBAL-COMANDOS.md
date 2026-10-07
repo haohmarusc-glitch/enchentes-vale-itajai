@@ -719,3 +719,28 @@ com a maior leitura captada, a hora dela, a maior lacuna e se já há registro e
   - `testes-navegador/chat-comandos.mjs`, seção 16: lista, última, setembro com o registrado, quantas, o link.
 - **Validador:** `valida_eventos_captados` cobra cidade do cadastro, hora em Brasília sem fuso, faixa do
   vocabulário e que "registrado" aponte registro existente.
+
+## Décima sexta entrega (07/10/2026): as ruas pela cota, cidade inteira
+
+A aba "Minha rua" responde uma rua por vez e tem o controle "e se o rio estivesse em…". A 16ª entrega leva as
+mesmas contas (`logica/cotasRuas.ts`: `atingidas`, `proximas`, `nivelUtilizavel`, `podeAfirmarAlcance`) para o chat,
+pela cidade inteira. Textos em `comandos/ruasPelaCota.ts`.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "quais ruas alagam com 8 m em Blumenau?", "se o rio chegar a 8,50 m, quais ruas alagam?" | Os pontos com cota até o nível: quantos de quantos, por bairro, e os 8 mais perto do nível (os últimos alcançados), com abrigo quando a fonte dá. Nível impossível (≥ 25 m) não vira comando. | Afirmar que "já alagou": nível dito é hipótese. |
+| "quais ruas o rio já alcançou em Blumenau?", "que ruas estão alagadas agora?" | O mesmo, no nível de agora — só com leitura fresca (`nivelUtilizavel`, a regra de idade da cidade), em régua, numa cidade de uma régua só. Leitura velha ou cidade de várias réguas: recusa e aponta "com 8 m". | Chamar de observação o que é tabela. |
+| "quais são as próximas ruas em Blumenau?", "quais ruas alagam se subir mais 50 cm?" | As de cota logo acima do nível de agora, com quanto falta; com "mais N", os pontos entre o nível e nível + N. | Dizer que o rio vai subir. |
+| "quais ruas alagam primeiro em Gaspar?", "quais são as ruas mais baixas de Blumenau?" | As cotas mais baixas da cidade, sem precisar de leitura. | — |
+
+- **Regras da aba que valem aqui:** cota de rua é PONTO, não rua inteira; a lista é a que a Defesa Civil publicou e
+  não é completa; ponto `usar_para_aviso: false` (Rio do Sul) fica fora da conta e é dito à parte; cota nula não é
+  zero (contada à parte); números na régua da própria cidade. Cidade sem cotas (Itajaí) aponta as manchas.
+- **O que continua onde estava:** "qual a cota da Rua X" e "quantas cheias passaram da cota da Rua X" (motor);
+  "manchas na rua X" e "mostrar a rua X" (3ª entrega).
+- **Testes:**
+  - `src/comandos/decimasexta.test.ts` (4): frases (número com vírgula, "mais 50 cm", o que fica no motor), os
+    textos sobre uma tabela pequena (bloqueado fora da conta, sem número, Itajaí, leitura velha), o executor
+    (fresca × velha; link para a aba Minha rua; nada navega), a ajuda;
+  - `testes-navegador/chat-comandos.mjs`, seção 17: com 8 m (contagem, bairros, aviso), agora ou a recusa, as
+    próximas, Gaspar primeiro, o link.

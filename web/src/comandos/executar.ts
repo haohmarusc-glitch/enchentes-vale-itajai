@@ -44,6 +44,8 @@ import { rotuloCota } from '../logica/formato'
 import { MAX_CIDADES_JUNTAS, textoParaCopiarVarias, textoVariasCidades } from './variasCidades'
 import { textoLinhaDoTempo } from './linhaDoTempo'
 import { textoListaCaptados, textoMaiorCaptada, textoPeriodoCaptado, textoQuantasCaptadas, textoUltimaCaptada, type ContextoCaptados } from './captados'
+import { nivelUtilizavel, textoPrimeirasRuas, textoProximasRuas, textoRuasNoNivel, textoSemCotasDeRua, textoSemNivelDeAgora, type EntradaRuas } from './ruasPelaCota'
+import { cidadesComCotas } from '../logica/cotasRuas'
 import type { EventosCaptados } from '../dados/eventosCaptados'
 import { textoDeCima, textoMaximo24h, textoPanorama, textoQuantoFalta, textoSubindoOuBaixando, type CidadeAgora } from './rioAgora'
 import type { RuasPorMancha } from '../chat-local/motor'
@@ -670,6 +672,43 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
           }),
           sugestoes: [seguinte[passo.pergunta]],
           link: { texto: `Ver ${nome} agora →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}` },
+        }
+      }
+      case 'ruas_pela_cota': {
+        const alvo = passo.cidadeId ?? cidade
+        const exemplos: Record<typeof passo.pergunta, string> = {
+          nivel: 'quais ruas alagam com 8 m em Blumenau?',
+          agora: 'quais ruas o rio já alcançou em Blumenau?',
+          proximas: 'quais são as próximas ruas a alagar em Blumenau?',
+          primeiras: 'quais ruas alagam primeiro em Gaspar?',
+        }
+        if (!alvo) return { texto: `Em qual cidade? Por exemplo: "${exemplos[passo.pergunta]}"`, sugestoes: [exemplos[passo.pergunta]] }
+        const d = amb.dados
+        const c = d?.cidade(alvo)
+        const cotas = await d?.cotasRuas?.()
+        if (!d || !c || !cotas) return { texto: 'As cotas de rua não estão disponíveis nesta tela.' }
+        const nome = nomeDaCidade(alvo, cat)
+        const entrada: EntradaRuas = { cidade: c.cidade, cotas, cobertas: cidadesComCotas(cotas).map((id) => nomeDaCidade(id, cat)) }
+        const dc = cat.cidades.find((x) => x.id === alvo)
+        const link = { texto: `Minha rua em ${nome} →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}?aba=rua` }
+        if (passo.pergunta === 'primeiras') return { texto: textoPrimeirasRuas(entrada), link, sugestoes: [`quais ruas alagam com ${metros(Math.ceil(((cotas.find((x) => x.cidade === alvo && x.cota_m != null)?.cota_m ?? 5) + 1) * 2) / 2).replace(' m', ' m')} em ${nome}?`] }
+        if (passo.pergunta === 'nivel') return { texto: textoRuasNoNivel(entrada, passo.nivelM!, { tipo: 'dito' }), link, sugestoes: [`quais ruas o rio já alcançou em ${nome}?`, `quais são as próximas ruas em ${nome}?`] }
+        // Agora e próximas: só com leitura de agora, em régua, da cidade (uma régua só).
+        const v = await d.aoVivo()
+        if (!v) return { texto: SEM_DADOS }
+        const e = estadoDaCidade(c.cidade, c.rioId, v)
+        const nivel = e.varias || c.cidade.id === 'itajai' ? null : nivelUtilizavel(e.leitura, alvo, v.agora)
+        if (nivel == null || !e.leitura?.medidoEm) {
+          if (!cotas.some((x) => x.cidade === alvo)) return { texto: textoSemCotasDeRua(entrada), link }
+          return { texto: textoSemNivelDeAgora(c.cidade, e.leitura, v.agora, e.varias || c.cidade.id === 'itajai'), sugestoes: [`quais ruas alagam com 8 m em ${nome}?`, `quais ruas alagam primeiro em ${nome}?`] }
+        }
+        return {
+          texto:
+            passo.pergunta === 'agora'
+              ? textoRuasNoNivel(entrada, nivel, { tipo: 'agora', medidoEm: e.leitura.medidoEm, agora: v.agora })
+              : textoProximasRuas(entrada, nivel, e.leitura.medidoEm, v.agora, passo.subirM),
+          link,
+          sugestoes: passo.pergunta === 'agora' ? [`quais são as próximas ruas em ${nome}?`, `quanto falta para a cota em ${nome}?`] : [`quais ruas o rio já alcançou em ${nome}?`, `${nome} está subindo?`],
         }
       }
       case 'captados': {

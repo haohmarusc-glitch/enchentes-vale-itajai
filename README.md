@@ -609,6 +609,9 @@ o projeto.
     foi a última cheia em Blumenau?", "como foi a cheia de setembro?", "quantas vezes passou da cota de alerta desde
     que o site acompanha?", a partir de `data/eventos-captados.json` (resumo da série do coletor, gerado por
     `scripts/eventos_captados.py` da cópia em `arquivo-series`; nunca entra em `enchentes.json`).
+  - [x] **Décima sexta entrega (07/10/2026): as ruas pela cota, cidade inteira.** "Quais ruas alagam com 8 m em
+    Blumenau?", "quais ruas o rio já alcançou?" (só com leitura fresca, em régua), "quais são as próximas ruas?" e
+    "se subir mais 50 cm?", "quais ruas alagam primeiro em Gaspar?", com as contas da aba Minha rua (`logica/cotasRuas`).
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado
