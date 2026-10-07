@@ -62,7 +62,8 @@ try {
  await page.keyboard.press('Escape')
  await page.getByRole('button',{name:'Tela cheia',exact:true}).waitFor()
  console.log('OK: referência C18 e ampliação mesmo sem Fullscreen API')
- await page.getByRole('button',{name:'abrir',exact:true}).click()
+ // O botão de pausar as animações mora no menu "Camadas do mapa" (redesenho de 07/10/2026).
+ await page.getByRole('button',{name:'Camadas do mapa'}).click()
  await page.evaluate(()=>{
    window.tracosAuditoria=0
    const stroke=CanvasRenderingContext2D.prototype.stroke
@@ -79,6 +80,8 @@ try {
  await page.getByRole('button',{name:'Retomar animações',exact:true}).click()
  await page.waitForTimeout(200)
  assert.ok(await page.evaluate(()=>window.tracosAuditoria)>parado)
+ // A navegação é por hash, sem recarregar: o menu de camadas ficaria aberto nas telas seguintes.
+ await page.getByRole('button',{name:'Fechar camadas do mapa'}).click()
  console.log('OK: pausa interrompe os desenhos; retomar reativa as ondas')
 
  await abrir('/municipal/ascurra')
@@ -97,9 +100,10 @@ try {
  }
  console.log('OK: Ilhota, Ibirama, Botuverá e Vidal Ramos recuperam nível com CDN em 503')
  await abrir('/monitor/blumenau')
- await page.getByText('6,10 m',{exact:true}).waitFor()
+ // O número aparece duas vezes desde 07/10/2026 (destaque da bacia e painel): o que se confere é o do painel.
+ await page.locator('[class*="_painel_"]').getByText('6,10 m',{exact:true}).waitFor()
  await page.getByRole('button',{name:'Fechar o painel de Blumenau'}).click()
- await page.locator('summary').filter({hasText:'Camadas de cheia'}).click()
+ await page.getByRole('button',{name:/Camadas do mapa/}).click()
  await page.getByText('Sem camada automática:',{exact:false}).waitFor()
  const cartas=JSON.parse(readFileSync(new URL('../../data/manchas/blumenau/index.json',import.meta.url),'utf8'))
  for (const c of cartas.camadas) {

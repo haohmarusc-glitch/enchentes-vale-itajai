@@ -67,8 +67,17 @@
 .menuCidades,
 .zoom,
 .controles,
-.legenda {
+.legenda,
+.ladoDireito > *,
+.destaque,
+.botaoCamadas,
+.painelCamadas,
+.mare,
+.atribuicao {
   pointer-events: auto;
+}
+.ladoDireito {
+  pointer-events: none;
 }
 
 /* O TOPO NÃO ENCOLHE. Ele carrega os botões de zoom, e botão de zoom cortado
@@ -82,6 +91,15 @@
    O menu é passageiro: abre, escolhe a cidade, fecha. */
 .comMenu .rodape {
   display: none;
+}
+/* No celular, o menu de cidades e o menu de camadas são folhas que cobrem o topo do mapa: enquanto
+   um deles está aberto, a coluna de botões da direita (camadas, tela cheia, zoom) sai, para nenhum
+   botão ficar por baixo da folha (sonda `colisao-dos-controles`, 07/10/2026). Cada folha tem o seu fechar. */
+@media (max-width: 700px) {
+  .comMenu .ladoDireito,
+  .comCamadas .ladoDireito {
+    display: none;
+  }
 }
 
 .cantoEsquerdo {
@@ -701,21 +719,6 @@
   .cantoEsquerdo {
     max-width: 100%;
   }
-  /* O aviso legal continua — ele não pode sumir —, mas encolhido: o bloco do
-     topo estava comendo um terço da tela do celular. */
-  .topo {
-    max-width: calc(100% - 8.5rem); /* deixa o chip da maré, no topo direito, à vista */
-    font-size: 0.82rem;
-    padding: 0.3rem 0.5rem;
-  }
-  .aviso {
-    font-size: 0.72rem;
-  }
-  .botaoCheia {
-    margin-top: 0.25rem;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.78rem;
-  }
   .menuCidades {
     width: 100%;
   }
@@ -749,6 +752,7 @@
     width: 100%;
     flex-wrap: wrap;
   }
+  .instante { flex: 1 1 100%; text-align: left; min-width: 0; }
   .barra {
     min-width: 6rem;
   }
@@ -760,11 +764,6 @@
 }
 
 
-.camadasControle { background: #fff; color: #18334c; border-radius: 8px; padding: 10px; max-width: 360px; max-height: 45vh; overflow: auto; pointer-events: auto; }
-.camadasControle summary { cursor: pointer; min-height: 32px; font-weight: 700; }
-.camadasControle select { width: 100%; min-height: 44px; }
-.camadasControle h2 { font-size: 1rem; }
-.camadasControle p { font-size: 0.85rem; line-height: 1.4; }
 .rotuloCamada { background: #e6f3ff; color: #143d60; border-radius: 6px; padding: 8px; max-width: 360px; font-size: 0.85rem; }
 /* "limpar filtro" e "tirar marca" (chat, 2ª entrega): botão escuro sobre o aviso claro, alvo de toque cheio. */
 .botaoAviso {
@@ -790,51 +789,351 @@
 
 .paginaMunicipal { width: 100%; left: 0; margin-left: 0; }
 
-/* Controles compactos no celular: mantém o centro livre para os rios. */
+/* ---------------------------------------------------------------------------
+   CELULAR — redesenho do Monitor, etapa 1 (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md).
+
+   O mapa ganha a tela: a casca de cima encolheu (faixa do 199 numa linha, cabeçalho com menu, sem
+   abas), e por cima do mapa ficam só: a pílula do chat ("Cidade, régua ou pergunta") com o botão
+   "Cidades"; a coluna da direita com "Camadas do mapa", "Tela cheia" e o zoom, redondos; o destaque da
+   bacia sob a pílula; embaixo, o chip da maré e a barra de reprodução. Título, aviso, "Tela cheia" em
+   texto e a legenda recolhida somem (o 199 está na faixa da página; em tela cheia o aviso volta).
+   `100dvh − 5.875rem` (94 px) = a faixa do 199 numa linha + o cabeçalho de uma linha + o respiro do
+   <main>, medidos em 360 e 390 px de largura em 07/10/2026; o baseline da trava guarda o resultado. */
 @media (max-width: 700px) {
-  .palco { height: 85dvh; min-height: 34rem; }
+  .palco { height: calc(100dvh - 5.875rem); min-height: 30rem; }
   .palco:fullscreen, .municipal { height: 100dvh; }
   .colunaEsquerda { inset: .4rem; }
   .cantoEsquerdo {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: .35rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: .4rem;
     width: 100%;
-    padding-top: 1.6rem;
+    max-width: 100%;
+    padding-top: 0;
+  }
+  .cantoEsquerdo > * { grid-column: 1; min-width: 0; }
+  /* A coluna da direita ocupa as primeiras linhas; o que é largo (menu, painel de camadas) vai
+     por cima, em posição absoluta, para começar logo abaixo da pílula. */
+  .ladoDireito {
+    grid-column: 2;
+    grid-row: 1 / span 8;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .4rem;
   }
   .topo {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: .25rem .5rem;
+    gap: .3rem .4rem;
     max-width: 100%;
-    padding: .3rem .4rem;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
   }
-  .topo > strong { font-size: .75rem; flex: 1; }
-  .seletorRegua { flex: 1 1 100%; margin-top: 0; }
+  .titulo, .botaoCheia { display: none; }
+  .aviso { display: none; grid-column: 1 / -1; order: 6; font-size: .68rem; margin: 0; padding: .2rem .5rem; background: rgba(6, 16, 26, .72); border-radius: .4rem; }
+  .palco:fullscreen .aviso, .palco.ampliado .aviso { display: block; }
+  .topo .botaoMenu { order: 2; margin: 0; min-height: 2.75rem; padding: .25rem .7rem; font-size: .8rem; border-radius: 999px; background: rgba(6, 16, 26, .82); border: 1px solid rgba(180, 200, 220, .35); }
+  .seletorRegua { grid-column: 1 / -1; order: 5; margin: 0; }
   .seletorRegua select { min-height: 44px; }
-  .topo .botaoMenu, .topo .botaoCheia {
-    margin: 0;
-    min-height: 44px;
-    padding: .25rem .5rem;
-    font-size: .75rem;
+  /* A caixa do chat vira a PÍLULA da maquete: a seção some como caixa (`display: contents`) e o
+     formulário entra na grade do topo; a conversa e a última resposta ocupam a largura toda. */
+  .topo section[aria-label="Chat: perguntas e pedidos"] { display: contents; }
+  .topo section[aria-label="Chat: perguntas e pedidos"] > form { order: 1; grid-column: 1; margin: 0; }
+  .topo section[aria-label="Chat: perguntas e pedidos"] > :not(form) { order: 4; grid-column: 1 / -1; margin-top: 0; }
+  .topo section[aria-label="Chat: perguntas e pedidos"] > form input {
+    min-height: 2.75rem;
+    padding: .4rem .6rem .4rem 2.2rem;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23526a80' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat .7rem center / 1.1rem;
+    color: #14202b;
+    border: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
   }
-  .topo .aviso { order: 3; width: 100%; font-size: .65rem; margin: 0; }
-  .camadasControle { padding: 0 .55rem; max-width: 100%; font-size: .8rem; }
-  .camadasControle summary { min-height: 44px; display: flex; align-items: center; }
-  .camadasControle[open] { grid-column: 1 / -1; max-height: 38dvh; }
-  .zoom { display: flex; flex-direction: row; gap: .3rem; justify-self: end; }
-  .zoom button { width: 44px; height: 44px; min-height: 44px; padding: 0; }
-  .menuCidades, .resumoMunicipal, .rotuloCamada { grid-column: 1 / -1; }
-  .menuCidades { max-height: 42dvh; overflow-y: auto; }
-  .controles { padding: .25rem .4rem; gap: .35rem; flex-wrap: nowrap; }
-  .botaoPlay { font-size: .72rem; padding: .3rem .4rem; min-height: 44px; }
+  .topo section[aria-label="Chat: perguntas e pedidos"] > form input::placeholder { color: #526a80; }
+  /* "Enviar" vira o botão redondo com a seta; o texto continua para o leitor de tela (font-size 0). */
+  .topo section[aria-label="Chat: perguntas e pedidos"] > form button {
+    width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    font-size: 0;
+    background: #1c6ea4 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h13M13 6l6 6-6 6'/%3E%3C/svg%3E") no-repeat center / 1.2rem;
+  }
+  .soComputador { display: none; }
+  .ladoDireito .soCelular { display: inline-flex; }
+  .zoom { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; }
+  .zoom button, .botaoRedondo {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(180, 200, 220, .35);
+    background: rgba(6, 16, 26, .82);
+    color: #eaf1f8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  }
+  /* "Ver tudo" vira um botão redondo com o ícone de enquadrar; o nome continua no texto (lido pelo leitor de tela). */
+  .zoom .botaoVerTudo {
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+    border: 1px solid rgba(180, 200, 220, .35);
+    background: rgba(6, 16, 26, .82) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23eaf1f8' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5M4 4l5 5M20 4l-5 5M4 20l5-5M20 20l-5-5'/%3E%3C/svg%3E") no-repeat center / 1.2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  }
+  .painelCamadas { background: #08121e; }
+  .menuCidades, .painelCamadas {
+    position: absolute;
+    top: 3.3rem;
+    left: 0;
+    right: 0;
+    z-index: 9;
+    width: auto;
+    max-height: calc(100% - 4rem);
+    overflow-y: auto;
+  }
+  .painelCamadas[hidden] { display: none; }
+  .resumoMunicipal, .rotuloCamada { grid-column: 1; }
+  .destaque { font-size: .82rem; }
+  .controles { padding: .3rem .5rem; gap: .4rem; }
+  .botaoPlay { min-height: 44px; }
+  .textoPlay { display: none; }
+  .linhaDoTempo { min-width: 8rem; }
   .barra { min-width: 2.5rem; width: 0; }
-  .instante { min-width: 3.5rem; font-size: .65rem; }
+  .instante { min-width: 3.5rem; font-size: .68rem; }
   .legenda { max-height: 28dvh; font-size: .72rem; padding: .3rem .5rem; }
+  /* Recolhida, a legenda some do celular: abre pelo menu de camadas ou pelo chat. */
+  .legendaFechada { display: none; }
   .botaoLegenda, .botaoAviso { min-height: 44px; }
+  .atribuicao { font-size: .6rem; }
 }
+
+/* ---------------------------------------------------------------------------
+   COMUNS (computador e celular) — redesenho do Monitor, etapa 1. */
+.soCelular { display: none; }
+.ladoDireito { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; }
+.botaoRedondo {
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* O destaque da bacia: cor da faixa (nunca o metro), texto escuro no amarelo e claro nas demais. */
+.destaque {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  max-width: 100%;
+  padding: .45rem .8rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: .86rem;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+  background: var(--faixa-atencao);
+  color: #1b1500;
+}
+.destaque[data-faixa="alerta"] { background: var(--faixa-alerta); color: #fff; }
+.destaque[data-faixa="inundacao"], .destaque[data-faixa="emergencia"] { background: var(--faixa-inundacao); color: #fff; }
+.destaqueTexto { flex: 1; min-width: 0; }
+.destaqueVer { flex: none; text-decoration: underline; font-weight: 700; }
+
+/* O botão "Camadas do mapa" do computador, no lugar do antigo "Camadas de cheia". */
+.botaoCamadas {
+  appearance: none;
+  min-height: 2.4rem;
+  padding: .3rem .8rem;
+  border: 1px solid rgba(180, 200, 220, .35);
+  border-radius: .5rem;
+  background: rgba(6, 16, 26, .82);
+  color: #eaf1f8;
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.botaoCamadas:hover { background: rgba(20, 40, 60, .92); }
+
+/* O menu "Camadas do mapa": folha escura, linhas com ícone, texto e interruptor. */
+.painelCamadas {
+  width: min(24rem, 100%);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: .5rem .7rem .7rem;
+  border: 1px solid rgba(180, 200, 220, .3);
+  border-radius: .75rem;
+  background: rgba(8, 18, 30, .96);
+  color: #eaf1f8;
+  font-size: .85rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+}
+.painelCamadas[hidden] { display: none; }
+.painelCamadasTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding-bottom: .4rem;
+  border-bottom: 1px solid rgba(180, 200, 220, .18);
+  font-size: 1rem;
+}
+.botaoFecharCamadas {
+  appearance: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .08);
+  color: #eaf1f8;
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.linhaCamada {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: 3rem;
+  padding: .35rem 0;
+  border-bottom: 1px solid rgba(180, 200, 220, .12);
+}
+.iconeCamada { flex: none; display: inline-flex; width: 1.6rem; justify-content: center; color: #9edcff; }
+.textoCamada { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .1rem; cursor: pointer; }
+.textoCamada strong { font-size: .92rem; }
+.textoCamada small { color: #b9c6d4; font-size: .74rem; line-height: 1.3; }
+.contagemTracados { flex: none; color: #b9c6d4; font-size: .78rem; font-variant-numeric: tabular-nums; }
+/* Interruptor: a caixa de seleção nativa desenhada como chave, acessível como `switch`. */
+.interruptor {
+  appearance: none;
+  flex: none;
+  width: 2.9rem;
+  height: 1.7rem;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .22);
+  position: relative;
+  cursor: pointer;
+  transition: background .15s;
+}
+.interruptor::after {
+  content: '';
+  position: absolute;
+  top: .2rem;
+  left: .2rem;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform .15s;
+}
+.interruptor:checked { background: #2f86c9; }
+.interruptor:checked::after { transform: translateX(1.2rem); }
+.interruptor:focus-visible { outline: 2px solid #eaf1f8; outline-offset: 2px; }
+.detalheCamada { padding: .3rem 0 .5rem; }
+.detalheCamada[hidden] { display: none; }
+.detalheCamada :global(.cartao) { background: rgba(255, 255, 255, .06); border-color: rgba(180, 200, 220, .18); color: #eaf1f8; padding: .6rem .7rem; font-size: .82rem; }
+.detalheCamada :global(.cartao) h2 { font-size: .9rem; margin: 0 0 .3rem; }
+.detalheCamada :global(.cartao) a { color: #9edcff; }
+.detalheCamada select { width: 100%; min-height: 2.5rem; margin: .2rem 0 .4rem; font: inherit; }
+.legendaCamada summary {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  min-height: 3rem;
+  padding: .35rem 0;
+  border-bottom: 1px solid rgba(180, 200, 220, .12);
+  cursor: pointer;
+  list-style: none;
+}
+.legendaCamada summary::-webkit-details-marker { display: none; }
+.legendaCamada summary::after { content: '▾'; color: #b9c6d4; }
+.legendaCamada[open] summary::after { content: '▴'; }
+.legendaCamada .listaLegenda { padding: .4rem 0 0; }
+.secaoCamada { padding-bottom: .3rem; }
+.listaTracados {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 .3rem 2.2rem;
+  display: grid;
+  gap: .1rem;
+}
+.listaTracados label { display: flex; align-items: center; gap: .55rem; min-height: 2.5rem; cursor: pointer; }
+.listaTracados input { width: 1.25rem; height: 1.25rem; margin: 0; accent-color: #2f86c9; }
+.listaTracados small { color: #b9c6d4; }
+.listaLegenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.1rem 0.7rem;
+}
+.listaLegenda li { display: flex; align-items: center; gap: 0.35rem; line-height: 1.5; }
+.painelCamadas .fundos { padding-left: 2.2rem; }
+
+/* O chip da maré (HTML): acima da barra de reprodução, à direita; a folha com a próxima maré abre acima. */
+.mare { position: relative; align-self: flex-end; display: flex; flex-direction: column; align-items: flex-end; max-width: 100%; }
+.chipMare {
+  appearance: none;
+  min-height: 2.4rem;
+  padding: .3rem .9rem;
+  border: 1px solid rgba(180, 200, 220, .35);
+  border-radius: 999px;
+  background: rgba(6, 16, 26, .82);
+  color: #bfe0ff;
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .35);
+}
+/* A folha abre ACIMA do chip, no fluxo (o rodapé tem `overflow: hidden`, então nada pode sair dele por
+   posição absoluta): ela vem antes do botão na ordem visual e o rodapé cresce para cima. */
+.mareDetalhe {
+  order: -1;
+  margin-bottom: .35rem;
+  width: min(20rem, calc(100vw - 1rem));
+  padding: .5rem .7rem;
+  border: 1px solid rgba(180, 200, 220, .3);
+  border-radius: .6rem;
+  background: rgba(8, 18, 30, .96);
+  color: #eaf1f8;
+  font-size: .8rem;
+  line-height: 1.4;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .45);
+}
+.mareDetalhe p { margin: 0 0 .35rem; }
+.mareDetalhe p:last-child { margin-bottom: 0; }
+
+/* A barra de reprodução: botão com ícone, a linha do tempo com as marcas e a linha de estado. */
+.iconePlay { font-size: .95em; }
+.textoPlay, .janelaPlay { margin-left: .35rem; }
+.janelaPlay { font-weight: 700; }
+.linhaDoTempo { flex: 1; min-width: 16rem; display: flex; flex-direction: column; gap: .05rem; }
+.linhaDoTempo .barra { width: 100%; min-width: 0; margin: 0; }
+.marcas {
+  display: flex;
+  justify-content: space-between;
+  font-size: .62rem;
+  color: #9fb2c4;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.marcaAgora { color: #eaf1f8; font-weight: 700; }
+.marcaHistorica { color: #ffd166; font-weight: 700; }
+.controlesHistoricos { border-color: rgba(255, 209, 102, .55); }
+.controlesHistoricos .instante { color: #ffd166; font-weight: 600; }
+.controlesHistoricos .barra { accent-color: #ffd166; }
 
 /* Alternativa à Fullscreen API para navegadores que a recusam. */
 .palco.ampliado {

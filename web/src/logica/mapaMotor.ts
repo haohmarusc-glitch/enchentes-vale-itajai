@@ -609,6 +609,12 @@ export type OpcoesBase = {
    */
   fundoTiles?: (ctx: CanvasRenderingContext2D) => void
   /**
+   * Desenha o chip "Mar · Maré…" no canto do canvas. Padrão true (MapaRios). O Monitor passa false desde
+   * o redesenho de 07/10/2026: lá o chip é HTML, acima da barra de reprodução, com a próxima maré ao
+   * toque — e o canvas não reserva mais o canto para ele.
+   */
+  etiquetaMare?: boolean
+  /**
    * Há imagem com TEXTURA embaixo (satélite, mapa de ruas).
    *
    * Liga o contorno escuro sob cada traço. Sem ele o satélite prejudica
@@ -670,8 +676,10 @@ export function desenharBase(
     ctx.strokeStyle = cena.cores[t.faixa]
     ctx.shadowColor = cena.cores[t.faixa]
     // Estadual: sem bloom — o brilho é a assinatura da cota nossa.
-    ctx.shadowBlur = t.origemFaixa === 'estadual' ? 0 : 12 * LARGURA_FAIXA[t.faixa] * escala
-    ctx.globalAlpha = 0.9
+    // 8 (era 12) e 0,8 (era 0,9) desde 07/10/2026: o Jefferson pediu "um pouco menos de brilho azul";
+    // o traçado e a largura por faixa não mudam.
+    ctx.shadowBlur = t.origemFaixa === 'estadual' ? 0 : 8 * LARGURA_FAIXA[t.faixa] * escala
+    ctx.globalAlpha = 0.8
     ctx.lineWidth = 3.4 * LARGURA_FAIXA[t.faixa] * escala
     ctx.stroke()
   }
@@ -701,7 +709,7 @@ export function desenharBase(
   ctx.setLineDash([])
   ctx.globalAlpha = 1
 
-  desenharEtiquetaMare(ctx, cena, escala)
+  if (opcoes.etiquetaMare !== false) desenharEtiquetaMare(ctx, cena, escala)
 }
 
 /** Tracejado só na faixa estadual; o resto volta ao traço cheio. */
@@ -873,6 +881,12 @@ export interface OpcoesPinos {
   rotulos?: Map<string, RotuloDoPino>
   /** Lista compartilhada de rótulos já colocados, quando não há plano pronto. */
   caixas?: Caixa[]
+  /**
+   * Rótulo COMPACTO (Monitor no celular, redesenho de 07/10/2026): só o nome; "sem leitura" quando
+   * não há número; a chuva vira uma bolha com o valor. Nível, idade e "faixa estadual" ficam no painel,
+   * que mostra o horário completo. A cidade selecionada continua com a linha inteira.
+   */
+  compacto?: boolean
 }
 
 /** Tamanho da fonte do NOME no pino, em px na escala 1. */
@@ -881,6 +895,9 @@ export const FONTE_PINO = 11
 export const FATOR_SUB = 0.85
 /** Altura da linha do nome, em px na escala 1. */
 const ALT_NOME = 13
+/** Respiro da bolha de chuva do modo compacto, em px na escala 1 (de cada lado). */
+const BOLHA_PAD_X = 6
+const BOLHA_PAD_Y = 3
 
 /** Mede um texto numa fonte — o que a caixa precisa saber do canvas. */
 export type Medidor = (texto: string, fonte: number) => number
@@ -1029,8 +1046,14 @@ export function caixaDoRotuloDoPino(
   }
 }
 
-/** O nome e a sub-linha que o pino mostra. */
-export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}): { nome: string; sub: string } {
+/** O nome e a sub-linha que o pino mostra. `completo` força a linha inteira mesmo no modo compacto. */
+export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}, completo = false): { nome: string; sub: string } {
+  if (opcoes.compacto && !completo) {
+    // Com número (calibrado, bruto ou várias réguas) o nome basta: o toque abre o painel com tudo.
+    // Sem número, a ausência precisa estar escrita — pino cinza sem texto parece cidade normal.
+    const temNumero = p.nivel != null || p.nivelBruto != null || p.faixa === 'varias'
+    return { nome: p.cidade.nome, sub: temNumero ? '' : semNumero(p.cidade, opcoes.temRegua) }
+  }
   const idade =
     opcoes.mostrarIdade && opcoes.agora && p.medidoEm
       ? textoIdade(idadeMin(p.medidoEm, opcoes.agora))
@@ -1149,8 +1172,12 @@ export function planejarRotulosDosPinos(
     // borda continua desenhado; o nome, não.
     if (!pinoNaTela(p, cena, escala)) continue
     if (p.x < 0 || p.y < 0 || p.x > cena.largura || p.y > cena.altura) continue
-    const { nome, sub } = textoDoPino(p, opcoes)
+    const { nome, sub } = textoDoPino(p, opcoes, p.cidade.id === selecionada)
     const chuvaDaCidade = opcoes.chuva?.get(p.cidade.id) ?? []
+    // A bolha da chuva (modo compacto) tem borda e respiro: a caixa precisa contá-los, senão a bolha
+    // encosta no rótulo vizinho que o planejador julgou livre.
+    const folgaBolhaX = opcoes.compacto ? BOLHA_PAD_X * 2 * escala : 0
+    const folgaBolhaY = opcoes.compacto ? BOLHA_PAD_Y * 2 * escala : 2 * escala
     const chuvaY = p.y + 12 * escala
     const outrosPinos = [...bolinhas].filter(([id]) => id !== p.cidade.id).map(([, b]) => b)
     // Tenta as posições na ordem: acima centrado, acima à direita, acima à
@@ -1173,10 +1200,10 @@ export function planejarRotulosDosPinos(
     // A selecionada fica no lugar de sempre, caiba ou não — ela é primeira na
     // fila e os outros é que cedem.
     const larguras = (chuva: string[], comSub = true) => {
-      const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub)))
+      const larguraChuva = Math.max(0, ...chuva.map(t => medir(t, fonteSub) + folgaBolhaX))
       return { nome: Math.max(medir(nome, fonte), larguraChuva), sub: comSub && sub ? medir(sub, fonteSub) : 0 }
     }
-    const alturaChuva = (chuva: string[]) => chuva.length * (fonteSub + 2 * escala)
+    const alturaChuva = (chuva: string[]) => chuva.length * (fonteSub + folgaBolhaY)
     // RÓTULO SÓ EXISTE INTEIRO DENTRO DA TELA (14/09/2026). As posições coladas
     // não têm trava vertical: com o pino encostado na borda de cima, o nome
     // saía cortado — e um rótulo cortado ao lado de outro inteiro é o que
@@ -1649,6 +1676,17 @@ export function semNumero(cidade: Cidade, temRegua: TemRegua = () => false): str
   return cidade.regua || cidade.codigo_dcsc || temRegua(cidade.id) ? 'sem leitura' : 'sem régua'
 }
 
+/** Caminho de um retângulo de cantos redondos (a bolha da chuva). Só o caminho: quem chama pinta. */
+function desenharPilula(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.arcTo(x + w, y, x + w, y + h, r)
+  ctx.arcTo(x + w, y + h, x, y + h, r)
+  ctx.arcTo(x, y + h, x, y, r)
+  ctx.arcTo(x, y, x + w, y, r)
+  ctx.closePath()
+}
+
 export function desenharPinos(
   ctx: CanvasRenderingContext2D,
   cena: Cena,
@@ -1674,7 +1712,7 @@ export function desenharPinos(
     // assinatura do trecho; a bolinha cheia e brilhante é só da cota nossa.
     ctx.fillStyle = estadual ? 'rgba(255,255,255,0.92)' : cena.cores[p.faixa]
     ctx.shadowColor = cinza || estadual ? 'transparent' : cena.cores[p.faixa]
-    ctx.shadowBlur = cinza || estadual ? 0 : 10 * escala
+    ctx.shadowBlur = cinza || estadual ? 0 : 7 * escala
     ctx.fill()
     ctx.shadowBlur = 0
     ctx.lineWidth = (estadual ? 2.5 : 2) * escala
@@ -1707,12 +1745,35 @@ export function desenharPinos(
       const fonteChuva = Math.round(fonte * FATOR_SUB)
       ctx.font = `600 ${fonteChuva}px system-ui, sans-serif`
       ctx.textBaseline = 'top'
-      ctx.fillStyle = '#bfe6fb'
-      r.chuva.forEach((linha, i) => {
-        const y = r.chuvaY! + i * (fonteChuva + 2 * escala)
-        ctx.strokeText(linha, r.cx, y)
-        ctx.fillText(linha, r.cx, y)
-      })
+      if (opcoes.compacto) {
+        // BOLHA (celular): o valor dentro de uma pílula azul-escura com borda da cor da chuva — a
+        // mesma cor da legenda ("Chuva recente"). Nunca a cor de uma faixa.
+        const padX = BOLHA_PAD_X * escala
+        const padY = BOLHA_PAD_Y * escala
+        r.chuva.forEach((linha, i) => {
+          const w = ctx.measureText(linha).width
+          const h = fonteChuva + padY * 2
+          const y = r.chuvaY! + i * h
+          const x0 = r.alinhar === 'left' ? r.cx - padX : r.alinhar === 'right' ? r.cx - w - padX : r.cx - w / 2 - padX
+          desenharPilula(ctx, x0, y, w + padX * 2, h, h / 2)
+          ctx.fillStyle = 'rgba(10, 40, 70, 0.92)'
+          ctx.fill()
+          ctx.lineWidth = 1 * escala
+          ctx.strokeStyle = '#38aae2'
+          ctx.stroke()
+          ctx.fillStyle = '#dff4ff'
+          ctx.fillText(linha, r.cx, y + padY)
+        })
+        ctx.lineWidth = 3.2 * escala
+        ctx.strokeStyle = 'rgba(4,12,20,0.92)'
+      } else {
+        ctx.fillStyle = '#bfe6fb'
+        r.chuva.forEach((linha, i) => {
+          const y = r.chuvaY! + i * (fonteChuva + 2 * escala)
+          ctx.strokeText(linha, r.cx, y)
+          ctx.fillText(linha, r.cx, y)
+        })
+      }
       ctx.textBaseline = 'bottom'
     }
     if (r.sub) {

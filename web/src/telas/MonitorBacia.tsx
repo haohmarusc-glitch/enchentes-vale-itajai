@@ -1,6 +1,10 @@
 import { cotasOperacionais as cotasOrdenadas } from '../logica/cotasOperacionais'
 import { comReferenciaAscurra } from '../dados/referenciaAscurra'
-import { linhasChuva } from '../logica/chuvaMonitor'
+import { linhasChuva, linhasChuvaCompactas } from '../logica/chuvaMonitor'
+import { contagemDeTracados, opcoesDeTracado, tracadosVisiveis } from '../logica/tracadosDoMapa'
+import { destaqueDaBacia } from '../logica/destaqueDaBacia'
+import { estadoMareAgora } from '../logica/mare'
+import { diaDeBrasilia, horaDeBrasilia } from '../logica/agora'
 import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
@@ -42,9 +46,9 @@ import { useNivelSc } from '../dados/nivelSc'
 import { useBarragens } from '../dados/barragens'
 import { barragensNoMapa } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
-import { idadeMin, textoIdade, type Faixa, frescor, frescorDaCidade } from '../logica/tempoReal'
+import { deBrasilia, idadeMin, textoIdade, type Faixa, frescor, frescorDaCidade } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
-import { dataHora, metros, rotuloCota } from '../logica/formato'
+import { dataHora, metros, numero, rotuloCota } from '../logica/formato'
 import {
   desprojetar,
   projetar,
@@ -61,7 +65,6 @@ import {
   desenharBarragens,
   desenharCotasDeRua,
   desenharOnda,
-  caixaDaEtiquetaMare,
   desenharPinos,
   desenharReguas,
   MARGEM,
@@ -319,6 +322,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [pedidoDeEnquadrar, setPedidoDeEnquadrar] = useState(0)
   /** O menu de cidades, na ordem do rio (logica/menuDasCidades). */
   const [menuAberto, setMenuAberto] = useState(false)
+  /**
+   * REDESENHO DO MONITOR, etapa 1 (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md): o menu "Camadas do mapa"
+   * reúne as camadas de cheia, a maré, a chuva, a legenda, os traçados e o fundo. Maré e chuva são só
+   * VISIBILIDADE — desligar não apaga dado nenhum, e o painel da cidade continua mostrando a chuva dela.
+   * Esconder um traçado é não desenhá-lo; o tronco fica sempre (`tracadosDoMapa`).
+   */
+  const [camadasAbertas, setCamadasAbertas] = useState(false)
+  const [mostrarMare, setMostrarMare] = useState(true)
+  const [mostrarChuva, setMostrarChuva] = useState(true)
+  const [tracadosOcultos, setTracadosOcultos] = useState<ReadonlySet<string>>(() => new Set())
+  const [mareAberta, setMareAberta] = useState(false)
+  /** A cidade com a faixa mais grave AGORA (`destaqueDaBacia`); null sem faixa válida acima da atenção ou na reprodução. */
+  const [destaque, setDestaque] = useState<Pino | null>(null)
   const menu = useMemo(
     () =>
       menuDasCidades(
@@ -642,10 +658,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         }
       : undefined
 
+    // Celular (≤ 700 px): rótulos compactos — só o nome; chuva em bolha; nível e hora no painel.
+    const compacto = tam.w <= 700
     const cena = construirCena(
-      canvas, rios, tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
+      canvas, tracadosVisiveis(rios, tracadosOcultos), tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
       municipal || emRepro ? undefined : reguasDoMapa.find(r => r.codigo === 'DC-11'),
     )
+    // Maré desligada no menu de camadas: o mar fica neutro e o chip some. O dado continua na tábua.
+    if (!mostrarMare) cena.mar = null
     if (municipal) {
       cena.pinos = cena.pinos.filter((p) => p.cidade.id === 'ascurra')
       cena.mar = null
@@ -654,6 +674,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       cena.trechos = cena.trechos.map((t) => t.cidadeId === 'ascurra' ? t : ({ ...t, faixa: 'sem-dado', cidadeId: null, animacao: 'parada' }))
     }
     pinosTodosRef.current = cena.pinos
+    // O destaque é do AGORA: na reprodução, um "em atenção" do passado soaria como de agora.
+    setDestaque(emRepro || municipal ? null : destaqueDaBacia(cena.pinos))
     if (filtro === 'sem_leitura') {
       // O filtro só ESCONDE os pinos com leitura de agora. Os trechos do rio continuam pintados como sempre.
       const reguaFresca = new Set(reguasDoMapa.filter((r) => !reguaSemLeituraDeAgora(r, instante)).map((r) => r.cidade))
@@ -670,9 +692,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     // A chuva é do agora; na reprodução do passado, some (não fingimos chuva
     // num instante que não medimos). No pino, só o acumulado de 24 h em
     // qualquer zoom; 1 h / 12 h e a idade ficam no painel. Ver `linhasChuva`.
-    chuvaRef.current = emRepro
+    chuvaRef.current = emRepro || !mostrarChuva
       ? new Map()
-      : new Map(cidadesBacia.map(c => [c.id, linhasChuva(tempoReal.chuva, c.id, agora)]))
+      : new Map(cidadesBacia.map(c => [c.id, compacto ? linhasChuvaCompactas(tempoReal.chuva, c.id, agora) : linhasChuva(tempoReal.chuva, c.id, agora)]))
 
     const fundoCanvas = document.createElement('canvas')
     fundoCanvas.width = canvas.width
@@ -716,6 +738,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       desenharBase(fctx, cena, escala, {
         fundoTiles: pintarTiles,
         sobreImagem: !!camada.texturado,
+        // O chip da maré é HTML desde 07/10/2026 (rodapé, com a próxima maré ao toque).
+        etiquetaMare: false,
       })
     }
     redesenharFundo()
@@ -816,11 +840,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         mostrarIdade: true,
         agora: instante,
         temRegua: temReguaCadastrada,
+        compacto,
       }
       const caixas: Caixa[] = []
-      // O chip da maré é fixo no topo-direito e não cede: reserva antes de todos.
-      const chipMare = caixaDaEtiquetaMare(medidorDe(ctx), cena, escala)
-      if (chipMare) caixas.push(chipMare)
       // OS CONTROLES DE HTML TAMBÉM OCUPAM O MAPA. Eles são DOM por cima do
       // vidro, e até aqui o canvas não os enxergava: "Timbó" saía atrás do
       // botão +, "Blumenau" atrás do −, sobrando "…mbó" e "…nau" na tela
@@ -889,7 +911,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca])
+  }, [rios, tempoReal, nivelSc, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca, mostrarMare, mostrarChuva, tracadosOcultos])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -1193,6 +1215,19 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
 
   const rotaDoRio = (rioId: string) => (rioId === 'itajai-mirim' ? '/mirim' : '/acu')
 
+  /**
+   * A maré no instante mostrado (ao vivo ou da reprodução), pela tábua da Marinha — a MESMA conta que
+   * pinta o mar no canvas (`construirCena`). O chip HTML e a linha "Maré" do menu de camadas leem daqui.
+   */
+  const instanteMostrado = idxRepro !== null && grade.length > 0 ? new Date(grade[Math.min(idxRepro, grade.length - 1)]!) : agora
+  const mareAgora = useMemo(() => {
+    const paraData = (e: { quando: string; altura_m?: number }) => ({ quando: deBrasilia(e.quando), altura_m: e.altura_m })
+    return estadoMareAgora((mareItajai.preamares ?? []).map(paraData), (mareItajai.baixamares ?? []).map(paraData), instanteMostrado)
+  }, [instanteMostrado])
+  const textoMare = mareAgora.estado === 'subindo' ? 'subindo' : mareAgora.estado === 'baixando' ? 'baixando' : 'sem dado da tábua'
+  const setaMare = mareAgora.estado === 'subindo' ? '▲' : mareAgora.estado === 'baixando' ? '▼' : ''
+  const opcoesTracado = useMemo(() => opcoesDeTracado(rios ?? []), [rios])
+
 
   /**
    * A PONTE COM O CHAT (docs/CHAT-GLOBAL-COMANDOS.md, 06/10/2026). Registrada a cada desenho, com as
@@ -1453,6 +1488,56 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     const r = busca.get('regua')
     if (r && opcoesRegua.some((o) => o.valor === r && o.valor !== TODAS)) escolherRegua(r)
   })
+  /** A lista de cores e símbolos — a mesma na legenda do canto e no menu "Camadas do mapa". */
+  const listaDaLegenda = (
+    <ul className={estilos.listaLegenda}>
+            {FAIXAS_LEGENDA.map((faixa) => (
+              <li key={faixa}>
+                <span className={estilos.amostra} style={{ background: `var(${VAR_LEGENDA[faixa]})` }} />
+                {ROTULO_FAIXA[faixa]}
+              </li>
+            ))}
+            <li>
+              <span className={estilos.amostra} style={{ background: '#38aae2' }} />
+              Chuva recente (mm)
+            </li>
+            <li>
+              <span className={estilos.amostra} style={{ background: '#2f86c9' }} />
+              Mar / maré na foz
+            </li>
+            {/* O violeta estava no mapa sem entrada aqui: uma cor com
+                significado e sem explicação. Fica FORA da escala de faixas de
+                propósito — não é grau de perigo, é outro tipo de dado. */}
+            <li>
+              <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
+              ≈ nível bruto (rede estadual)
+            </li>
+            {/* C7, camada 2: a cor tracejada é a classificação da própria Defesa
+                Civil de SC, na régua da estação — só onde não há faixa municipal.
+                A amostra é tracejada e neutra porque a cor varia com a faixa. */}
+            <li>
+              <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
+              Faixa estadual (tracejado) — classificação da Defesa Civil de SC, não cota deste site
+            </li>
+            {/* A linha-guia (14/09/2026): onde os pinos se amontoam, o nome vai
+                para um lugar livre e a seta aponta a cidade dele. */}
+            <li>
+              <span className={`${estilos.amostra} ${estilos.amostraSeta}`} aria-hidden="true">→</span>
+              Seta — o nome ficou afastado por falta de espaço; a ponta indica a cidade dele
+            </li>
+            {/* As nove réguas de estuário de Itajaí. Mostram número e não
+                afirmam faixa: a maré cruza a cota sem enchente, e uma cor que
+                acende com a maré ensina a ignorar a cor. */}
+            <li>
+              <span
+                className={estilos.amostra}
+                style={{ background: 'transparent', border: `2px solid ${COR_REGUA_SEM_GRAU}` }}
+              />
+              Régua sem faixa (maré)
+            </li>
+    </ul>
+  )
+
   return (
     <div className={`${estilos.pagina} ${municipal ? estilos.paginaMunicipal : ''}`}>
       <div ref={divRef} className={`${estilos.palco} ${ampliado ? estilos.ampliado : ''} ${municipal ? estilos.municipal : ''} ${!municipal && !reguaSel && (sel ?? hover) ? estilos.temPainel : ''}`}>
@@ -1488,13 +1573,18 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             Numa coluna só, os dois disputam a mesma altura pelas regras do
             flex: quando não cabe, a legenda e o menu ROLAM, e nenhum dos dois
             invade o outro em resolução nenhuma. */}
-        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''} ${chatAberto ? estilos.chatAberto : ''}`}>
+        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''} ${camadasAbertas ? estilos.comCamadas : ''} ${chatAberto ? estilos.chatAberto : ''}`}>
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
             desenhado no canvas). O botão de tela cheia vai no canto inferior
             direito para não colidir com o chip. */}
         <div className={estilos.cantoEsquerdo}>
+        {/* TOPO. No computador, o cartão de sempre: título, "Cidades", aviso, "Tela cheia" e o chat.
+            No celular (redesenho de 07/10/2026, etapa 1), o mesmo DOM vira UMA LINHA transparente: a
+            caixa do chat em pílula ("Cidade, régua ou pergunta") e o botão "Cidades"; título e aviso
+            saem (o 199 está na faixa do topo da página, e volta aqui em tela cheia); "Tela cheia" e
+            "Camadas do mapa" ficam nos botões redondos da coluna da direita. */}
         <div className={estilos.topo} data-tapa-mapa>
-          <strong>{municipal ? "Monitor de Ascurra" : "Monitoramento da bacia"}</strong>
+          <strong className={estilos.titulo}>{municipal ? "Monitor de Ascurra" : "Monitoramento da bacia"}</strong>
           {!municipal && <button
             type="button"
             className={estilos.botaoMenu}
@@ -1525,6 +1615,86 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           <ChatNoTopo variante="monitor" />
         </div>
 
+        {/* DESTAQUE DA BACIA (celular e computador): a cidade com a faixa municipal mais grave agora,
+            com o nível e a hora DELA. Só existe com faixa válida — cota do cadastro e leitura fresca
+            (`destaqueDaBacia`); sem isso não aparece nada, e nunca na reprodução. Toque abre a cidade. */}
+        {destaque && destaque.nivel != null ? (
+          <button
+            type="button"
+            className={estilos.destaque}
+            data-faixa={destaque.faixa}
+            data-tapa-mapa
+            onClick={() => {
+              const alvo = destaque
+              setReguaSel(null)
+              if (alvo.cidade.id !== cidadeFoco) navigate(`/monitor/${alvo.cidade.id}`)
+              setSel(alvo)
+            }}
+          >
+            <span className={estilos.destaqueTexto}>
+              <strong>{destaque.cidade.nome}</strong> em {ROTULO_FAIXA[destaque.faixa].toLowerCase()} · <strong>{metros(destaque.nivel)}</strong>
+              {destaque.medidoEm ? <> · {textoIdade(idadeMin(destaque.medidoEm, agora))}</> : null}
+            </span>
+            <span className={estilos.destaqueVer}>ver ›</span>
+          </button>
+        ) : null}
+
+        {/* COLUNA DA DIREITA. No celular: "Camadas do mapa", "Tela cheia" e o zoom, redondos, um abaixo
+            do outro, encostados na borda direita — o centro fica para os rios. No computador só o zoom
+            aparece aqui (os dois primeiros ficam escondidos pelo CSS), no mesmo lugar de antes. */}
+        <div className={estilos.ladoDireito} data-tapa-mapa>
+          <button
+            type="button"
+            className={`${estilos.botaoRedondo} ${estilos.soCelular}`}
+            aria-label="Camadas do mapa"
+            aria-expanded={camadasAbertas}
+            aria-controls="camadas-mapa"
+            onClick={() => setCamadasAbertas((v) => !v)}
+          >
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+              <path d="M12 3 2 8.5 12 14l10-5.5L12 3Z" fill="currentColor" opacity=".95" />
+              <path d="m4.6 11.8-2.6 1.4L12 18.7l10-5.5-2.6-1.4L12 15.9l-7.4-4.1Z" fill="currentColor" opacity=".6" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className={`${estilos.botaoRedondo} ${estilos.soCelular}`}
+            aria-label={ampliado ? 'Sair da tela cheia' : 'Tela cheia'}
+            onClick={telaCheia}
+          >
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+              <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa">
+          <button
+            type="button"
+            className={estilos.botaoZoom}
+            aria-label="Aproximar"
+            onClick={() => aplicarZoom(1.6)}
+          >
+            +
+          </button>
+          <button
+            type="button"
+            className={estilos.botaoZoom}
+            aria-label="Afastar"
+            onClick={() => aplicarZoom(1 / 1.6)}
+          >
+            −
+          </button>
+          {!municipal && vista.zoom > 1 ? (
+            <button
+              type="button"
+              className={estilos.botaoVerTudo}
+              onClick={() => setVista(VISTA_INTEIRA)}
+            >
+              Ver tudo
+            </button>
+          ) : null}
+        </div>
+        </div>
+
         {!municipal && tempoReal.fonteItajaiOk === false && <p className={estilos.rotuloCamada} role="status" data-tapa-mapa>
           Fonte de Itajaí indisponível: não foi possível obter as medições das réguas municipais.
         </p>}
@@ -1547,14 +1717,163 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           Marca: {marca.rotulo}
           <button type="button" className={estilos.botaoAviso} onClick={() => setMarca(null)}>Tirar marca</button>
         </p>}
-        <details className={estilos.camadasControle} data-tapa-mapa>
-          <summary>Camadas de cheia</summary>
+        {/* CAMADAS DO MAPA (redesenho de 07/10/2026). Um menu só, nesta ordem: camadas de cheia (o
+            controle de sempre, `CamadasMonitor`, que continua montado com o menu fechado — o chat pede
+            camadas por ele), maré e chuva (visibilidade), legenda, traçados dos rios (um por curso real;
+            Benedito e Rio dos Cedros separados) e o fundo do mapa, que saiu da legenda. Fechado, fica
+            escondido (`hidden`), não desmontado. */}
+        <button
+          type="button"
+          className={`${estilos.botaoCamadas} ${estilos.soComputador}`}
+          aria-expanded={camadasAbertas}
+          aria-controls="camadas-mapa"
+          onClick={() => setCamadasAbertas((v) => !v)}
+        >
+          Camadas do mapa {camadasAbertas ? '▴' : '▾'}
+        </button>
+        <div id="camadas-mapa" className={estilos.painelCamadas} hidden={!camadasAbertas} data-tapa-mapa>
+          <div className={estilos.painelCamadasTopo}>
+            <strong>Camadas do mapa</strong>
+            <button type="button" className={estilos.botaoFecharCamadas} aria-label="Fechar camadas do mapa" onClick={() => setCamadasAbertas(false)}>✕</button>
+          </div>
+          <div className={estilos.linhaCamada}>
+            <span className={estilos.iconeCamada} aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 16c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M3 11c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+            </span>
+            <label className={estilos.textoCamada} htmlFor="interruptor-cheia">
+              <strong>Camadas de cheia</strong>
+              <small>{rotuloCamada ?? 'nenhuma camada desenhada agora'}</small>
+            </label>
+            <input
+              id="interruptor-cheia"
+              className={estilos.interruptor}
+              type="checkbox"
+              role="switch"
+              checked={modoCamada !== 'off'}
+              onChange={(e) => setPedidoCamada((pd) => ({ cidade: cidadeDaCamada, modo: e.target.checked ? 'auto' : 'off', n: (pd?.n ?? 0) + 1 }))}
+            />
+          </div>
+          <div className={estilos.detalheCamada} hidden={modoCamada === 'off'}>
           <CamadasMonitor key={cidadeFoco ?? sel?.cidade.id ?? 'itajai'} cidade={cidadeFoco ?? sel?.cidade.id ?? 'itajai'}
             leituras={tempoReal.leituras} agora={agora} reproduzindo={idxRepro !== null}
             onCamada={receberCamada} somenteDados={municipal}
             pedido={pedidoCamada} onOpcoes={setCamadasDisponiveis} onModo={setModoCamada}
             nomeEscolhida={(cidadeFoco ?? sel?.cidade.id) ? cidadesBacia.find((c) => c.id === (cidadeFoco ?? sel?.cidade.id))?.nome ?? null : null} />
-        </details>
+          </div>
+          {!municipal ? (
+            <div className={estilos.linhaCamada}>
+              <span className={estilos.iconeCamada} aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M2 14c3 0 3-2.5 6-2.5s3 2.5 6 2.5 3-2.5 6-2.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M2 19c3 0 3-2.5 6-2.5s3 2.5 6 2.5 3-2.5 6-2.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" opacity=".6" /></svg>
+              </span>
+              <label className={estilos.textoCamada} htmlFor="interruptor-mare">
+                <strong>Maré</strong>
+                <small>Maré: {textoMare} {setaMare} · porto de Itajaí</small>
+              </label>
+              <input id="interruptor-mare" className={estilos.interruptor} type="checkbox" role="switch" checked={mostrarMare} onChange={(e) => { setMostrarMare(e.target.checked); setMareAberta(false) }} />
+            </div>
+          ) : null}
+          {!municipal ? (
+            <div className={estilos.linhaCamada}>
+              <span className={estilos.iconeCamada} aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11Z" fill="currentColor" opacity=".9" /></svg>
+              </span>
+              <label className={estilos.textoCamada} htmlFor="interruptor-chuva">
+                <strong>Chuva 24 h</strong>
+                <small>acumulado nas estações com pluviômetro</small>
+              </label>
+              <input id="interruptor-chuva" className={estilos.interruptor} type="checkbox" role="switch" checked={mostrarChuva} onChange={(e) => setMostrarChuva(e.target.checked)} />
+            </div>
+          ) : null}
+          {/* "Pausar/Retomar animações" saiu da legenda (que no celular fica escondida) para cá: um só botão,
+              o mesmo que o chat aciona pela ponte. */}
+          <div className={estilos.linhaCamada}>
+            <span className={estilos.iconeCamada} aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 12c3-4 6 4 9 0s6-4 9 0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M14 8l5 4-5 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+            <span className={estilos.textoCamada}>
+              <strong>Animações</strong>
+              <small>{movimentoReduzido ? 'movimento reduzido ativado no aparelho' : 'correnteza e crista; só ilustram o sentido'}</small>
+            </span>
+            <button type="button" className={estilos.botaoLegenda}
+              aria-pressed={animacoesPausadas}
+              onClick={() => setAnimacoesPausadas(v => !v)}>
+              {animacoesPausadas ? 'Retomar animações' : 'Pausar animações'}
+            </button>
+          </div>
+          <details className={estilos.legendaCamada}>
+            <summary>
+              <span className={estilos.iconeCamada} aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M7 9h4M7 13h4M7 17h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><circle cx="16" cy="9" r="1.6" fill="currentColor" /><circle cx="16" cy="13" r="1.6" fill="currentColor" /><circle cx="16" cy="17" r="1.6" fill="currentColor" /></svg>
+              </span>
+              <span className={estilos.textoCamada}>
+                <strong>Legenda</strong>
+                <small>cores e símbolos</small>
+              </span>
+            </summary>
+            {listaDaLegenda}
+            <p className={estilos.legendaNota}>Cor é a faixa na régua de cada cidade, <strong>nunca o metro</strong> entre cidades. Cinza = sem faixa para afirmar.</p>
+          </details>
+          {opcoesTracado.length > 0 ? (
+            <div className={estilos.secaoCamada}>
+              <div className={estilos.linhaCamada}>
+                <span className={estilos.iconeCamada} aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 12c3-6 6 6 9 0s6-6 9 0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
+                </span>
+                <span className={estilos.textoCamada}>
+                  <strong>Traçados dos rios</strong>
+                  <small>cursos desenhados no mapa</small>
+                </span>
+                <span className={estilos.contagemTracados}>{contagemDeTracados(opcoesTracado, tracadosOcultos)}</span>
+              </div>
+              <ul className={estilos.listaTracados}>
+                {opcoesTracado.map((o) => (
+                  <li key={o.id}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={o.fixo || !tracadosOcultos.has(o.id)}
+                        disabled={o.fixo}
+                        onChange={(e) => setTracadosOcultos((atual) => {
+                          const prox = new Set(atual)
+                          if (e.target.checked) prox.delete(o.id)
+                          else prox.add(o.id)
+                          return prox
+                        })}
+                      />
+                      <span>{o.nome}{o.fixo ? <small> · tronco, sempre no mapa</small> : null}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+          <div className={estilos.secaoCamada}>
+            <div className={estilos.linhaCamada}>
+              <span className={estilos.iconeCamada} aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="m3 6 6-2 6 2 6-2v14l-6 2-6-2-6 2V6Z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" /><path d="M9 4v14M15 6v14" stroke="currentColor" strokeWidth="2" /></svg>
+              </span>
+              <span className={estilos.textoCamada}>
+                <strong>Fundo do mapa</strong>
+                <small>{FUNDOS[fundo].nome}</small>
+              </span>
+            </div>
+            {/* O ESCURO é o padrão por FUNÇÃO, não por estética: qualquer fundo com textura concorre com
+                as faixas de alerta. Ver `docs/CAMADAS-DE-MAPA.md`. */}
+            <div className={estilos.fundos} role="group" aria-label="Fundo do mapa">
+              {(Object.keys(FUNDOS) as ChaveFundo[]).map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  aria-pressed={fundo === k}
+                  className={fundo === k ? estilos.fundoAtivo : estilos.fundoBotao}
+                  onClick={() => setFundo(k)}
+                >
+                  {FUNDOS[k].nome}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* MENU DE CIDADES, na ordem do rio — em GRUPOS, porque o Açu é árvore:
             Taió e Ituporanga correm em paralelo, e uma lista "Taió → Ituporanga
@@ -1615,37 +1934,6 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </nav>
         ) : null}
 
-        {/* ZOOM. Os botões existem além da pinça porque nem todo mundo usa dois
-            dedos, e porque no computador não há pinça nenhuma. "Ver tudo" volta
-            à bacia inteira: sem ele, quem se perde no zoom fica sem saber que
-            existe mapa fora da tela. */}
-        <div className={estilos.zoom} role="group" aria-label="Zoom do mapa" data-tapa-mapa>
-          <button
-            type="button"
-            className={estilos.botaoZoom}
-            aria-label="Aproximar"
-            onClick={() => aplicarZoom(1.6)}
-          >
-            +
-          </button>
-          <button
-            type="button"
-            className={estilos.botaoZoom}
-            aria-label="Afastar"
-            onClick={() => aplicarZoom(1 / 1.6)}
-          >
-            −
-          </button>
-          {!municipal && vista.zoom > 1 ? (
-            <button
-              type="button"
-              className={estilos.botaoVerTudo}
-              onClick={() => setVista(VISTA_INTEIRA)}
-            >
-              Ver tudo
-            </button>
-          ) : null}
-        </div>
         </div>
         {/* RODAPÉ — uma coluna só, e é isso que impede a sobreposição.
 
@@ -1661,13 +1949,49 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             Empilhar numa coluna resolve por geometria: em largura nenhuma os
             dois podem se cobrir, porque um está ABAIXO do outro no fluxo. */}
         <div className={estilos.rodape}>
+          {/* CHIP DA MARÉ (HTML desde 07/10/2026; antes era desenhado no canto do canvas). O estado é o
+              do instante mostrado — ao vivo ou da reprodução —, pela tábua da Marinha, a mesma conta
+              que pinta o mar. Ao toque, a próxima preamar ou baixa-mar. Some com a maré desligada. */}
+          {!municipal && mostrarMare ? (
+            <div className={estilos.mare} data-tapa-mapa>
+              <button
+                type="button"
+                className={estilos.chipMare}
+                aria-expanded={mareAberta}
+                aria-controls="mare-detalhe"
+                onClick={() => setMareAberta((v) => !v)}
+              >
+                <span aria-hidden="true">≈</span> Maré: {textoMare} {setaMare} <span aria-hidden="true">{mareAberta ? '▴' : '▾'}</span>
+              </button>
+              {mareAberta ? (
+                <div id="mare-detalhe" className={estilos.mareDetalhe}>
+                  {mareAgora.proxima ? (
+                    <p>
+                      Próxima {mareAgora.proxima.tipo === 'preamar' ? 'preamar' : 'baixa-mar'} às{' '}
+                      <strong>{horaDeBrasilia(mareAgora.proxima.quando)}</strong> de {diaDeBrasilia(mareAgora.proxima.quando)}
+                      {mareAgora.proxima.altura_m != null ? ` (${numero(mareAgora.proxima.altura_m)} m sobre o nível de redução da carta náutica, não régua de rio)` : ''}.
+                    </p>
+                  ) : (
+                    <p>A tábua não tem preamar ou baixa-mar que cerque este horário.</p>
+                  )}
+                  <p>
+                    {mareItajai._meta?.fonte_curta ?? 'Tábua de maré'}, porto de Itajaí.{' '}
+                    <strong>Maré não é cheia</strong>: a maré alta trava o escoamento do rio na foz.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
           {/* Reprodução das últimas 24 h: a onda de cor descendo, do MEDIDO. Só
-              aparece quando há série publicada. */}
+              aparece quando há série publicada. Na reprodução, o "Agora" do fim da barra vira o
+              horário histórico e a linha de estado diz que não é a leitura atual (correção 5 da
+              maquete, 07/10/2026). */}
           {grade.length > 0 ? (
-            <div className={estilos.controles} data-tapa-mapa>
+            <div className={`${estilos.controles} ${idxRepro == null ? '' : estilos.controlesHistoricos}`} data-tapa-mapa>
               <button
                 type="button"
                 className={estilos.botaoPlay}
+                aria-label={tocando ? '⏸ Pausar' : '▶ Reproduzir 24 h'}
                 onClick={() => {
                   if (tocando) {
                     setTocando(false)
@@ -1677,28 +2001,42 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   }
                 }}
               >
-                {tocando ? '⏸ Pausar' : '▶ Reproduzir 24 h'}
+                <span className={estilos.iconePlay} aria-hidden="true">{tocando ? '⏸' : '▶'}</span>
+                <span className={estilos.textoPlay} aria-hidden="true">{tocando ? 'Pausar' : 'Reproduzir'}</span>
+                <span className={estilos.janelaPlay} aria-hidden="true">24 h</span>
               </button>
-              <input
-                className={estilos.barra}
-                type="range"
-                min={0}
-                max={grade.length - 1}
-                value={idxRepro ?? grade.length - 1}
-                onChange={(e) => {
-                  setTocando(false)
-                  const v = Number(e.target.value)
-                  setIdxRepro(v >= grade.length - 1 ? null : v)
-                }}
-                aria-label="Instante da reprodução"
-              />
-              <span className={estilos.instante}>
-                {idxRepro == null ? 'ao vivo' : dataHora(new Date(grade[idxRepro]!))}
+              <div className={estilos.linhaDoTempo}>
+                <input
+                  className={estilos.barra}
+                  type="range"
+                  min={0}
+                  max={grade.length - 1}
+                  value={idxRepro ?? grade.length - 1}
+                  onChange={(e) => {
+                    setTocando(false)
+                    const v = Number(e.target.value)
+                    setIdxRepro(v >= grade.length - 1 ? null : v)
+                  }}
+                  aria-label="Instante da reprodução"
+                />
+                <div className={estilos.marcas} aria-hidden="true">
+                  <span>−24 h</span>
+                  <span>−18 h</span>
+                  <span>−12 h</span>
+                  <span>−6 h</span>
+                  <span className={idxRepro == null ? estilos.marcaAgora : estilos.marcaHistorica}>
+                    {idxRepro == null ? 'Agora' : horaDeBrasilia(new Date(grade[idxRepro]!))}
+                  </span>
+                </div>
+              </div>
+              <span className={estilos.instante} role="status">
+                {idxRepro == null ? 'ao vivo' : <>{dataHora(new Date(grade[idxRepro]!))} · reprodução · não é a leitura atual</>}
               </span>
             </div>
           ) : null}
-        {/* Legenda sempre visível, canto inferior esquerdo. O painel da cidade
-            vai para o canto direito, então os dois não se cobrem. */}
+        {/* Legenda, canto inferior esquerdo. No celular nasce recolhida e, recolhida, fica escondida:
+            lá ela abre pelo menu "Camadas do mapa" ou pelo chat ("abrir a legenda"). O fundo do mapa
+            saiu daqui para o menu de camadas; a atribuição ficou fora, sempre à vista. */}
         <div
           className={`${estilos.legenda} ${legendaAberta ? '' : estilos.legendaFechada}`}
           data-tapa-mapa
@@ -1718,58 +2056,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             <>
           <p className={estilos.legendaNota}>No Itajaí-Açu, de Santa Regina até a foz, a cor do traçado é referência visual da DC-11. Não indica nível local, ruas alagadas nem classificação das outras réguas. Na reprodução histórica essa referência fica desativada.</p>
           <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Movimento ilustrativo em direção à foz; não representa a corrente real, que pode variar com a maré. Trechos sem orientação definida ficam parados.</p>
-          <button type="button" className={estilos.botaoLegenda}
-            aria-pressed={animacoesPausadas}
-            onClick={() => setAnimacoesPausadas(v => !v)}>
-            {animacoesPausadas ? 'Retomar animações' : 'Pausar animações'}
-          </button>
           {movimentoReduzido && <p className={estilos.legendaNota}>Movimento reduzido ativado nas preferências do dispositivo.</p>}
-          <ul>
-            {FAIXAS_LEGENDA.map((faixa) => (
-              <li key={faixa}>
-                <span className={estilos.amostra} style={{ background: `var(${VAR_LEGENDA[faixa]})` }} />
-                {ROTULO_FAIXA[faixa]}
-              </li>
-            ))}
-            <li>
-              <span className={estilos.amostra} style={{ background: '#38aae2' }} />
-              Chuva recente (mm)
-            </li>
-            <li>
-              <span className={estilos.amostra} style={{ background: '#2f86c9' }} />
-              Mar / maré na foz
-            </li>
-            {/* O violeta estava no mapa sem entrada aqui: uma cor com
-                significado e sem explicação. Fica FORA da escala de faixas de
-                propósito — não é grau de perigo, é outro tipo de dado. */}
-            <li>
-              <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
-              ≈ nível bruto (rede estadual)
-            </li>
-            {/* C7, camada 2: a cor tracejada é a classificação da própria Defesa
-                Civil de SC, na régua da estação — só onde não há faixa municipal.
-                A amostra é tracejada e neutra porque a cor varia com a faixa. */}
-            <li>
-              <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
-              Faixa estadual (tracejado) — classificação da Defesa Civil de SC, não cota deste site
-            </li>
-            {/* A linha-guia (14/09/2026): onde os pinos se amontoam, o nome vai
-                para um lugar livre e a seta aponta a cidade dele. */}
-            <li>
-              <span className={`${estilos.amostra} ${estilos.amostraSeta}`} aria-hidden="true">→</span>
-              Seta — o nome ficou afastado por falta de espaço; a ponta indica a cidade dele
-            </li>
-            {/* As nove réguas de estuário de Itajaí. Mostram número e não
-                afirmam faixa: a maré cruza a cota sem enchente, e uma cor que
-                acende com a maré ensina a ignorar a cor. */}
-            <li>
-              <span
-                className={estilos.amostra}
-                style={{ background: 'transparent', border: `2px solid ${COR_REGUA_SEM_GRAU}` }}
-              />
-              Régua sem faixa (maré)
-            </li>
-          </ul>
+          {listaDaLegenda}
           <p className={estilos.legendaNota}>
             Cor é a faixa na régua da cidade, <strong>nunca o metro</strong> entre
             cidades. Cinza = sem faixa para afirmar (não é seguro, é sem
@@ -1798,30 +2086,10 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           </p>
             </>
           ) : null}
-
-          {/* Seletor de fundo. O ESCURO é o padrão por FUNÇÃO, não por estética:
-              qualquer fundo com textura concorre visualmente com as faixas de
-              alerta, e numa noite de chuva, com o celular na mão, isso pesa mais
-              que parecer bonito. Satélite e mapa entram como escolha de quem
-              olha — o satélite ganha na foz, onde reconhecer a barra e os molhes
-              ajuda a se localizar. Ver `docs/CAMADAS-DE-MAPA.md`. */}
-          <div className={estilos.fundos} role="group" aria-label="Fundo do mapa">
-            {(Object.keys(FUNDOS) as ChaveFundo[]).map((k) => (
-              <button
-                key={k}
-                type="button"
-                aria-pressed={fundo === k}
-                className={fundo === k ? estilos.fundoAtivo : estilos.fundoBotao}
-                onClick={() => setFundo(k)}
-              >
-                {FUNDOS[k].nome}
-              </button>
-            ))}
-          </div>
+        </div>
           {/* A ATRIBUIÇÃO É CONDIÇÃO DE LICENÇA, não cortesia: fica visível
               enquanto a camada estiver ativa, e troca junto com ela. */}
-          <p className={estilos.atribuicao}>{FUNDOS[fundo].atribuicao}</p>
-        </div>
+          <p className={estilos.atribuicao} data-tapa-mapa>{FUNDOS[fundo].atribuicao}</p>
         </div>
         </div>
 
@@ -1842,7 +2110,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 {g.nivel != null ? (
                   <>
                     <strong>{metros(g.nivel)}</strong>
-                    {g.medidoEm ? <> · {textoIdade(idadeMin(g.medidoEm, agora))}</> : null}
+                    {g.medidoEm ? <> · {textoIdade(idadeMin(g.medidoEm, agora))} · medida em {dataHora(g.medidoEm)}</> : null}
                   </>
                 ) : (
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>
@@ -1943,10 +2211,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 {foco.nivel != null ? (
                   <>
                     <strong>{metros(foco.nivel)}</strong>
-                    {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))}</> : null}
-                    {/* Leitura velha é HISTÓRICA: a hora dela por extenso, para não passar por atual
-                        (Gaspar parado às 16:50, auditoria de 06/10/2026). */}
-                    {foco.medidoEm && frescor(idadeMin(foco.medidoEm, agora)) === 'velha' ? <> · medida em {dataHora(foco.medidoEm)}</> : null}
+                    {/* A hora da medição SEMPRE por extenso (correção 5 da maquete, 07/10/2026) — e a leitura
+                        velha é HISTÓRICA, dita como tal, para não passar por atual (Gaspar parado às 16:50,
+                        auditoria de 06/10/2026). */}
+                    {foco.medidoEm ? <> · {textoIdade(idadeMin(foco.medidoEm, agora))} · medida em {dataHora(foco.medidoEm)}</> : null}
+                    {foco.medidoEm && frescor(idadeMin(foco.medidoEm, agora)) === 'velha' ? <> <span className={estilos.painelSemDado}>(leitura antiga, não é a de agora)</span></> : null}
                   </>
                 ) : daCidade.length > 1 || brutoSc ? null : (
                   <span className={estilos.painelSemDado}>sem leitura fresca</span>

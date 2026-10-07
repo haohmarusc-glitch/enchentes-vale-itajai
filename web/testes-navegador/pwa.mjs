@@ -124,7 +124,9 @@ try {
   await page.goto(`${base}/#/monitor`, { waitUntil: 'load' }).catch(() => {})
   await page.waitForTimeout(1500)
   const monitor = await page.locator('body').innerText()
-  monitor.includes('Emergência: ligue 199') && !monitor.includes('Sem conexão')
+  // A faixa do 199 na casca antiga: texto completo no computador, uma linha no celular (redesenho de 07/10/2026).
+  const faixa199 = /Emergência: ligue 199|Defesa Civil: 199/.test(monitor)
+  faixa199 && !monitor.includes('Sem conexão')
     ? ok('o Monitor abre sem rede, com a casca antiga e sem os avisos novos')
     : falhou('sem rede, o Monitor não abriu como antes')
   await ctx.setOffline(false)
