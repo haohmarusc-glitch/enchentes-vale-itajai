@@ -219,7 +219,9 @@ export function LinhaDeCidade({
           )}
         </span>
       </span>
-      {(leitura && !velha) || estado.varias || estado.faixa !== 'sem-dado' ? (
+      {estado.origemDaCor?.tipo === 'estadual' && estado.faixaEstadual ? (
+        <ChipFaixa faixa={estado.faixaEstadual} cidade={cidade} compacto estadual />
+      ) : (leitura && !velha) || estado.varias || estado.faixa !== 'sem-dado' ? (
         <ChipFaixa faixa={estado.faixa} cidade={cidade} compacto />
       ) : estado.faixaEstadual ? (
         <ChipFaixa faixa={estado.faixaEstadual} cidade={cidade} compacto estadual />

@@ -61,7 +61,16 @@ export interface CotaCompacta {
  * A cota que acompanha a faixa de agora. `faixa` é a do pino (já válida: cota do cadastro + leitura fresca);
  * `origem` diz de onde veio a cor (municipal, estadual ou várias réguas).
  */
-export function cotaDaFaixa(cidade: Cidade, faixa: Faixa, origem: OrigemDaCor): CotaCompacta {
+export function cotaDaFaixa(
+  cidade: Cidade,
+  faixa: Faixa,
+  origem: OrigemDaCor,
+  /** Cotas não confirmadas (decisão de 07/10/2026): o nível não se compara com elas. */
+  cotasNaoConfirmadas = false,
+): CotaCompacta {
+  if (cotasNaoConfirmadas) {
+    return { titulo: 'Cotas municipais', valor: null, nota: 'ainda não confirmadas — sem classificação municipal' }
+  }
   if (origem === 'varias') {
     return { titulo: 'Cotas', valor: null, nota: 'cada régua tem as próprias cotas; estão em Mais detalhes' }
   }

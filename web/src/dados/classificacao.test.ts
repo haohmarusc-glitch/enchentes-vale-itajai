@@ -87,7 +87,7 @@ test('a estadual que envelheceu depois da coleta também para de pintar', () => 
   const tela = { leituraMedidaEm: null, estadualMedidaEm: deBrasilia('2026-10-07T10:10:00'), varias: false }
   assert.equal(faixasDoMotor(estado, 'brusque', 'itajai-mirim', tela, AGORA)?.faixaEstadual, 'alerta')
   const depois = faixasDoMotor(estado, 'brusque', 'itajai-mirim', tela, minDepois(15))
-  assert.deepEqual(depois, { faixa: 'sem-dado', faixaEstadual: null, origem: null })
+  assert.deepEqual(depois, { faixa: 'sem-dado', faixaEstadual: null, origem: null, cotasMunicipaisNaoConfirmadas: false })
 })
 
 test('arquivo que o site não entende é ignorado inteiro, ou a cidade estranha', () => {

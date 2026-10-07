@@ -1,7 +1,7 @@
 {
  "_meta": {
   "o_que_e": "Gabarito da classificação estadual × municipal (PR 1, 07/10/2026). scripts/teste_classificar_reguas.py exige que o motor Python dê `esperado`; web/src/logica/classificacaoParidade.test.ts exige que o site de hoje dê `site`. Sem `diverge_do_site`, o que o site pinta tem de ser o `esperado.aplicada`.",
-  "cidade_piloto": "brusque — cotas_m lidas do estacoes.json real (atenção 3,00, emergência 5,00); mudar as cotas exige rever este arquivo",
+  "cidade_piloto": "brusque, blumenau e rio-dos-cedros — cotas_m lidas do estacoes.json real (Brusque 3,00/5,00; Blumenau 3/4/6/8; Rio dos Cedros 4,80/5,30/5,70, não confirmadas); mudar as cotas exige rever este arquivo",
   "agora": "agora_brasilia é hora de Brasília sem fuso, como medido_em",
   "como_mudar": "Esperado revisto é decisão documentada, nunca ajuste para o teste passar."
  },
@@ -90,6 +90,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "normal",
         "motivo": null
        },
@@ -205,6 +206,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "atencao",
         "motivo": null
        },
@@ -320,6 +322,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "atencao",
         "motivo": null
        },
@@ -435,6 +438,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "emergencia",
         "motivo": null
        },
@@ -550,6 +554,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "emergencia",
         "motivo": null
        },
@@ -665,6 +670,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "atencao",
         "motivo": null
        },
@@ -780,6 +786,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": true,
         "faixa": "atencao",
         "motivo": null
        },
@@ -895,6 +902,7 @@
         "de_agora": false,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "leitura antiga — o número de horas atrás não diz a faixa de agora"
        },
@@ -917,7 +925,7 @@
        "faixa": "atencao",
        "regua_id": "DCSC-00019",
        "fallback": true,
-       "rotulo": "Classificação estadual (Defesa Civil de SC) — DCSC-00019",
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00019",
        "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00019, no zero dela. Não são as cotas do município.",
        "motivo": null
       },
@@ -1010,6 +1018,7 @@
         "de_agora": false,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "leitura antiga — o número de horas atrás não diz a faixa de agora"
        },
@@ -1112,6 +1121,7 @@
         "fonte_leitura": null,
         "de_agora": false,
         "varias_reguas": false,
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "sem leitura municipal publicada"
        },
@@ -1134,7 +1144,7 @@
        "faixa": "alerta",
        "regua_id": "DCSC-00019",
        "fallback": true,
-       "rotulo": "Classificação estadual (Defesa Civil de SC) — DCSC-00019",
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00019",
        "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00019, no zero dela. Não são as cotas do município.",
        "motivo": null
       },
@@ -1214,6 +1224,7 @@
         "fonte_leitura": null,
         "de_agora": false,
         "varias_reguas": false,
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "sem leitura municipal publicada"
        },
@@ -1316,6 +1327,7 @@
         "fonte_leitura": null,
         "de_agora": false,
         "varias_reguas": false,
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "sem leitura municipal publicada"
        },
@@ -1431,6 +1443,7 @@
         "de_agora": false,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "hora de medição no futuro — fuso trocado; instante desconhecido"
        },
@@ -1453,7 +1466,7 @@
        "faixa": "normal",
        "regua_id": "DCSC-00019",
        "fallback": true,
-       "rotulo": "Classificação estadual (Defesa Civil de SC) — DCSC-00019",
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00019",
        "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00019, no zero dela. Não são as cotas do município.",
        "motivo": null
       },
@@ -1545,6 +1558,7 @@
         "de_agora": false,
         "varias_reguas": false,
         "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "leitura sem hora de medição — não dá para dizer que é de agora"
        },
@@ -1567,7 +1581,7 @@
        "faixa": "normal",
        "regua_id": "DCSC-00019",
        "fallback": true,
-       "rotulo": "Classificação estadual (Defesa Civil de SC) — DCSC-00019",
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00019",
        "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00019, no zero dela. Não são as cotas do município.",
        "motivo": null
       },
@@ -1659,6 +1673,7 @@
         "fonte_leitura": null,
         "de_agora": false,
         "varias_reguas": false,
+        "segura_estadual": false,
         "faixa": null,
         "motivo": "sem leitura municipal publicada"
        },
@@ -1681,7 +1696,7 @@
        "faixa": "normal",
        "regua_id": "DCSC-00019",
        "fallback": true,
-       "rotulo": "Classificação estadual (Defesa Civil de SC) — DCSC-00019",
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00019",
        "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00019, no zero dela. Não são as cotas do município.",
        "motivo": null
       },
@@ -1898,6 +1913,7 @@
         "de_agora": true,
         "varias_reguas": false,
         "estacao": "Brusque",
+        "segura_estadual": true,
         "faixa": null,
         "motivo": "a leitura (Brusque) e as cotas (DCSC-00019) são de réguas diferentes — sem conversão oficial, não se compara"
        },
@@ -1923,6 +1939,1359 @@
        "rotulo": null,
        "aviso": null,
        "motivo": "leitura municipal de agora sem classificação: a leitura (Brusque) e as cotas (DCSC-00019) são de réguas diferentes — sem conversão oficial, não se compara"
+      },
+      "faixa_do_rio": null
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-alertablu-atencao",
+   "descricao": "Blumenau, AlertaBlu 4,92 m de agora: atenção (4,00) pela régua do AlertaBlu. Sem estação de nível estadual (a DCSC-00026 é meteorológica)",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (AlertaBlu)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 4.92,
+     "medido_em": "2026-10-07T13:00:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "atencao",
+    "estadual": null,
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 4.92,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau (AlertaBlu)",
+        "segura_estadual": true,
+        "faixa": "atencao",
+        "motivo": null
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "municipal",
+       "faixa": "atencao",
+       "regua_id": "Blumenau",
+       "fallback": false,
+       "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+       "aviso": null,
+       "motivo": null
+      },
+      "faixa_do_rio": "atencao"
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-padknd-mais-nova",
+   "descricao": "AlertaBlu de 12:00 (5,90 m) e PADKND de 13:00 (6,05 m): vale a mais nova, e as duas são a mesma régua (resgate_de)",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (AlertaBlu)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 5.9,
+     "medido_em": "2026-10-07T12:00:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    },
+    {
+     "estacao": "Blumenau (PADKND)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 6.05,
+     "medido_em": "2026-10-07T13:00:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "alerta",
+    "estadual": null,
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "alerta"
+    }
+   },
+   "site": {
+    "faixa": "alerta",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 6.05,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau (PADKND)",
+        "segura_estadual": true,
+        "faixa": "alerta",
+        "motivo": null
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "municipal",
+       "faixa": "alerta",
+       "regua_id": "Blumenau",
+       "fallback": false,
+       "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+       "aviso": null,
+       "motivo": null
+      },
+      "faixa_do_rio": "alerta"
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-observacao-exata",
+   "descricao": "3,00 m é Observação (monitoramento) — o nome da Defesa Civil de Blumenau muda, a posição na escada não",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (AlertaBlu)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 3.0,
+     "medido_em": "2026-10-07T13:00:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "monitoramento",
+    "estadual": null,
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "monitoramento"
+    }
+   },
+   "site": {
+    "faixa": "monitoramento",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 3.0,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau (AlertaBlu)",
+        "segura_estadual": true,
+        "faixa": "monitoramento",
+        "motivo": null
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "municipal",
+       "faixa": "monitoramento",
+       "regua_id": "Blumenau",
+       "fallback": false,
+       "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+       "aviso": null,
+       "motivo": null
+      },
+      "faixa_do_rio": "monitoramento"
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-abaixo-da-observacao",
+   "descricao": "2,99 m: normalidade",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (AlertaBlu)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 2.99,
+     "medido_em": "2026-10-07T13:00:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "normal",
+    "estadual": null,
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "normal"
+    }
+   },
+   "site": {
+    "faixa": "normal",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 2.99,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau (AlertaBlu)",
+        "segura_estadual": true,
+        "faixa": "normal",
+        "motivo": null
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "municipal",
+       "faixa": "normal",
+       "regua_id": "Blumenau",
+       "fallback": false,
+       "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+       "aviso": null,
+       "motivo": null
+      },
+      "faixa_do_rio": "normal"
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-alerta-maximo",
+   "descricao": "8,00 m é Alerta Máximo (emergência)",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (PADKND)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 8.0,
+     "medido_em": "2026-10-07T13:00:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "emergencia",
+    "estadual": null,
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "emergencia"
+    }
+   },
+   "site": {
+    "faixa": "emergencia",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 8.0,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau (PADKND)",
+        "segura_estadual": true,
+        "faixa": "emergencia",
+        "motivo": null
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "municipal",
+       "faixa": "emergencia",
+       "regua_id": "Blumenau",
+       "fallback": false,
+       "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+       "aviso": null,
+       "motivo": null
+      },
+      "faixa_do_rio": "emergencia"
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-120-min-ainda-pinta",
+   "descricao": "Blumenau envelhece em 2 h: 120 min ainda pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (AlertaBlu)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 4.5,
+     "medido_em": "2026-10-07T11:05:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "atencao",
+    "estadual": null,
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 4.5,
+        "medido_em": "2026-10-07T11:05:00",
+        "idade_min": 120,
+        "status_leitura": "atrasada",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau (AlertaBlu)",
+        "segura_estadual": true,
+        "faixa": "atencao",
+        "motivo": null
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "municipal",
+       "faixa": "atencao",
+       "regua_id": "Blumenau",
+       "fallback": false,
+       "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+       "aviso": null,
+       "motivo": null
+      },
+      "faixa_do_rio": "atencao"
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-121-min-velha",
+   "descricao": "121 min já é velha em Blumenau, e não há estadual: cinza",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau (AlertaBlu)",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 4.5,
+     "medido_em": "2026-10-07T11:04:00",
+     "fonte": "teste",
+     "resgate_de": "Blumenau"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": null
+   },
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 4.5,
+        "medido_em": "2026-10-07T11:04:00",
+        "idade_min": 121,
+        "status_leitura": "antiga",
+        "fonte_leitura": "teste",
+        "de_agora": false,
+        "varias_reguas": false,
+        "estacao": "Blumenau (AlertaBlu)",
+        "segura_estadual": false,
+        "faixa": null,
+        "motivo": "leitura antiga — o número de horas atrás não diz a faixa de agora"
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "nenhuma",
+       "faixa": null,
+       "regua_id": null,
+       "fallback": false,
+       "rotulo": null,
+       "aviso": null,
+       "motivo": "municipal: leitura antiga — o número de horas atrás não diz a faixa de agora; estadual: sem leitura da rede estadual para a cidade"
+      },
+      "faixa_do_rio": null
+     }
+    }
+   }
+  },
+  {
+   "id": "blumenau-repasse-sem-referencia-validada",
+   "descricao": "Só o repasse antigo 'Blumenau' (3 h atrasado e até 0,245 m acima, fora do ar desde 19/09): mesma identidade, referência não validada — o motor não pinta pelas cotas",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "blumenau",
+   "leituras": [
+    {
+     "estacao": "Blumenau",
+     "cidade": "blumenau",
+     "rio": "itajai-acu",
+     "nivel_m": 4.5,
+     "medido_em": "2026-10-07T13:00:00",
+     "fonte": "teste"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [],
+    "nao_mede_nivel": [
+     {
+      "codigo": "DCSC-00026",
+      "cidade": "blumenau",
+      "estacao": "SDC-SC Blumenau",
+      "motivo": "Blumenau: type=Meteo, tem_nivel_do_rio=false — estação meteorológica, não mede nível de rio"
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   },
+   "diverge_do_site": "Condição do Jefferson para Blumenau entrar no piloto (07/10/2026): leitura e cotas na mesma régua, com referência validada. O site de sempre pinta qualquer publicação da régua 'Blumenau'; o motor só a do AlertaBlu e a PADKND conferida (PUBLICACOES_VALIDADAS).",
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "blumenau"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "blumenau": {
+      "cidade": "Blumenau",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "Blumenau",
+        "regua_nome": "régua do AlertaBlu",
+        "cotas_m": {
+         "monitoramento": 3.0,
+         "atencao": 4.0,
+         "alerta": 6.0,
+         "emergencia": 8.0
+        },
+        "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+        "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+        "status_faixas": "confirmada",
+        "regua_da_leitura": "Blumenau",
+        "nivel_m": 4.5,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Blumenau",
+        "segura_estadual": true,
+        "faixa": null,
+        "motivo": "a publicação 'Blumenau' tem a identidade da régua Blumenau, mas a referência dela não foi validada contra as cotas"
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": null,
+        "estacao": null,
+        "nivel_m": null,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": null,
+        "idade_min": null,
+        "status_leitura": "indisponivel",
+        "fonte_faixas": null,
+        "faixa": null,
+        "motivo": "sem leitura da rede estadual para a cidade"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "nenhuma",
+       "faixa": null,
+       "regua_id": null,
+       "fallback": false,
+       "rotulo": null,
+       "aviso": null,
+       "motivo": "leitura municipal de agora sem classificação: a publicação 'Blumenau' tem a identidade da régua Blumenau, mas a referência dela não foi validada contra as cotas"
+      },
+      "faixa_do_rio": null
+     }
+    }
+   }
+  },
+  {
+   "id": "rio-dos-cedros-estadual-atencao",
+   "descricao": "Rio dos Cedros 3,69 m de agora, DCSC publica atenção: sem classificação municipal (cotas não confirmadas) e a faixa estadual aparece — o retrato de produção das 17h16 de 07/10/2026",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "rio-dos-cedros",
+   "leituras": [
+    {
+     "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+     "cidade": "rio-dos-cedros",
+     "rio": "itajai-acu",
+     "nivel_m": 3.69,
+     "medido_em": "2026-10-07T13:00:00",
+     "codigo": "DCSC-00011",
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "teste"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00011",
+      "estacao": "SDC-SC Rio dos Cedros 1",
+      "cidade": "rio-dos-cedros",
+      "nivel_bruto_m": 3.69,
+      "medido_em": "2026-10-07T13:00:10",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "atencao",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "normal",
+    "faixaEstadual": null
+   },
+   "diverge_do_site": "Decisão do Jefferson (07/10/2026): Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas — sem exceção. O site de sempre pinta pelas cotas 4,80/5,30/5,70 m não confirmadas; o motor não. A faixa estadual válida pode aparecer, identificada como tal.",
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "rio-dos-cedros"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "rio-dos-cedros": {
+      "cidade": "Rio dos Cedros",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "DCSC-00011",
+        "regua_nome": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+        "cotas_m": {
+         "atencao": 4.8,
+         "alerta": 5.3,
+         "emergencia": 5.7
+        },
+        "fonte_faixas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
+        "fonte_regua": "Resposta da COMPDEC ao C29 em 07/10/2026 (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt): a cidade tem uma única estação de nível, a DCSC-00011 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+        "status_faixas": "nao_confirmada",
+        "regua_da_leitura": "DCSC-00011",
+        "nivel_m": 3.69,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+        "segura_estadual": false,
+        "faixa": null,
+        "motivo": "cotas não confirmadas (cotas_verificado = False)"
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": "DCSC-00011",
+        "estacao": "SDC-SC Rio dos Cedros 1",
+        "nivel_m": 3.69,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": "2026-10-07T13:00:10",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_faixas": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+        "faixa": "atencao",
+        "motivo": null
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "estadual",
+       "faixa": "atencao",
+       "regua_id": "DCSC-00011",
+       "fallback": true,
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00011",
+       "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00011, no zero dela. Não são as cotas do município.",
+       "motivo": null
+      },
+      "faixa_do_rio": "atencao"
+     }
+    }
+   }
+  },
+  {
+   "id": "rio-dos-cedros-sem-faixa-estadual",
+   "descricao": "Sem cotas confirmadas e sem faixa estadual: cinza. A ausência de cota municipal não é nível normal",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "rio-dos-cedros",
+   "leituras": [
+    {
+     "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+     "cidade": "rio-dos-cedros",
+     "rio": "itajai-acu",
+     "nivel_m": 3.69,
+     "medido_em": "2026-10-07T13:00:00",
+     "codigo": "DCSC-00011",
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "teste"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00011",
+      "estacao": "SDC-SC Rio dos Cedros 1",
+      "cidade": "rio-dos-cedros",
+      "nivel_bruto_m": 3.69,
+      "medido_em": "2026-10-07T13:00:10",
+      "classificacao_estadual": {
+       "faixa": null,
+       "ativo": false,
+       "coerente": true,
+       "motivo": "sem faixas configuradas pela Defesa Civil de SC para esta estação (ativo=false)",
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "normal",
+    "faixaEstadual": null
+   },
+   "diverge_do_site": "Decisão do Jefferson (07/10/2026): Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas — sem exceção. O site de sempre pinta pelas cotas 4,80/5,30/5,70 m não confirmadas; o motor não. A faixa estadual válida pode aparecer, identificada como tal.",
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "rio-dos-cedros"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "rio-dos-cedros": {
+      "cidade": "Rio dos Cedros",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "DCSC-00011",
+        "regua_nome": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+        "cotas_m": {
+         "atencao": 4.8,
+         "alerta": 5.3,
+         "emergencia": 5.7
+        },
+        "fonte_faixas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
+        "fonte_regua": "Resposta da COMPDEC ao C29 em 07/10/2026 (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt): a cidade tem uma única estação de nível, a DCSC-00011 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+        "status_faixas": "nao_confirmada",
+        "regua_da_leitura": "DCSC-00011",
+        "nivel_m": 3.69,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+        "segura_estadual": false,
+        "faixa": null,
+        "motivo": "cotas não confirmadas (cotas_verificado = False)"
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": "DCSC-00011",
+        "estacao": "SDC-SC Rio dos Cedros 1",
+        "nivel_m": 3.69,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": "2026-10-07T13:00:10",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_faixas": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+        "faixa": null,
+        "motivo": "sem faixas configuradas pela Defesa Civil de SC para esta estação (ativo=false)"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "nenhuma",
+       "faixa": null,
+       "regua_id": null,
+       "fallback": false,
+       "rotulo": null,
+       "aviso": null,
+       "motivo": "municipal: cotas não confirmadas (cotas_verificado = False); estadual: sem faixas configuradas pela Defesa Civil de SC para esta estação (ativo=false)"
+      },
+      "faixa_do_rio": null
+     }
+    }
+   }
+  },
+  {
+   "id": "rio-dos-cedros-acima-das-cotas-nao-confirmadas",
+   "descricao": "5,00 m passa a atenção municipal NÃO confirmada (4,80): a municipal não pinta e vale a faixa estadual publicada",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "rio-dos-cedros",
+   "leituras": [
+    {
+     "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+     "cidade": "rio-dos-cedros",
+     "rio": "itajai-acu",
+     "nivel_m": 5.0,
+     "medido_em": "2026-10-07T13:00:00",
+     "codigo": "DCSC-00011",
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "teste"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00011",
+      "estacao": "SDC-SC Rio dos Cedros 1",
+      "cidade": "rio-dos-cedros",
+      "nivel_bruto_m": 5.0,
+      "medido_em": "2026-10-07T13:00:10",
+      "classificacao_estadual": {
+       "faixa": "normal",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "normal",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "normal"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   },
+   "diverge_do_site": "Decisão do Jefferson (07/10/2026): Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas — sem exceção. O site de sempre pinta pelas cotas 4,80/5,30/5,70 m não confirmadas; o motor não. A faixa estadual válida pode aparecer, identificada como tal.",
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "rio-dos-cedros"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "rio-dos-cedros": {
+      "cidade": "Rio dos Cedros",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "DCSC-00011",
+        "regua_nome": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+        "cotas_m": {
+         "atencao": 4.8,
+         "alerta": 5.3,
+         "emergencia": 5.7
+        },
+        "fonte_faixas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
+        "fonte_regua": "Resposta da COMPDEC ao C29 em 07/10/2026 (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt): a cidade tem uma única estação de nível, a DCSC-00011 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+        "status_faixas": "nao_confirmada",
+        "regua_da_leitura": "DCSC-00011",
+        "nivel_m": 5.0,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+        "segura_estadual": false,
+        "faixa": null,
+        "motivo": "cotas não confirmadas (cotas_verificado = False)"
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": "DCSC-00011",
+        "estacao": "SDC-SC Rio dos Cedros 1",
+        "nivel_m": 5.0,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": "2026-10-07T13:00:10",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_faixas": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+        "faixa": "normal",
+        "motivo": null
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "estadual",
+       "faixa": "normal",
+       "regua_id": "DCSC-00011",
+       "fallback": true,
+       "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00011",
+       "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00011, no zero dela. Não são as cotas do município.",
+       "motivo": null
+      },
+      "faixa_do_rio": "normal"
+     }
+    }
+   }
+  },
+  {
+   "id": "rio-dos-cedros-estadual-velha",
+   "descricao": "Municipal de agora sem cotas confirmadas e estadual velha: cinza",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "rio-dos-cedros",
+   "leituras": [
+    {
+     "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+     "cidade": "rio-dos-cedros",
+     "rio": "itajai-acu",
+     "nivel_m": 3.69,
+     "medido_em": "2026-10-07T13:00:00",
+     "codigo": "DCSC-00011",
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "teste"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00011",
+      "estacao": "SDC-SC Rio dos Cedros 1",
+      "cidade": "rio-dos-cedros",
+      "nivel_bruto_m": 3.69,
+      "medido_em": "2026-10-07T09:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "normal",
+    "faixaEstadual": null
+   },
+   "diverge_do_site": "Decisão do Jefferson (07/10/2026): Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas — sem exceção. O site de sempre pinta pelas cotas 4,80/5,30/5,70 m não confirmadas; o motor não. A faixa estadual válida pode aparecer, identificada como tal.",
+   "motor": {
+    "versao": 1,
+    "gerado_em": "2026-10-07T16:05:00+00:00",
+    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "piloto": [
+     "rio-dos-cedros"
+    ],
+    "entradas": {
+     "leituras_coletadas_em": null,
+     "nivel_sc_coletado_em": null
+    },
+    "cidades": {
+     "rio-dos-cedros": {
+      "cidade": "Rio dos Cedros",
+      "rio": "itajai-acu",
+      "classificacoes": {
+       "municipal": {
+        "tipo": "municipal",
+        "regua_id": "DCSC-00011",
+        "regua_nome": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+        "cotas_m": {
+         "atencao": 4.8,
+         "alerta": 5.3,
+         "emergencia": 5.7
+        },
+        "fonte_faixas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
+        "fonte_regua": "Resposta da COMPDEC ao C29 em 07/10/2026 (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt): a cidade tem uma única estação de nível, a DCSC-00011 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+        "status_faixas": "nao_confirmada",
+        "regua_da_leitura": "DCSC-00011",
+        "nivel_m": 3.69,
+        "medido_em": "2026-10-07T13:00:00",
+        "idade_min": 5,
+        "status_leitura": "valida",
+        "fonte_leitura": "teste",
+        "de_agora": true,
+        "varias_reguas": false,
+        "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+        "segura_estadual": false,
+        "faixa": null,
+        "motivo": "cotas não confirmadas (cotas_verificado = False)"
+       },
+       "estadual": {
+        "tipo": "estadual",
+        "regua_id": "DCSC-00011",
+        "estacao": "SDC-SC Rio dos Cedros 1",
+        "nivel_m": 3.69,
+        "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+        "medido_em": "2026-10-07T09:00:00",
+        "idade_min": 245,
+        "status_leitura": "antiga",
+        "fonte_faixas": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+        "faixa": null,
+        "motivo": "leitura antiga — o número de horas atrás não diz a faixa de agora"
+       }
+      },
+      "classificacao_aplicada": {
+       "tipo": "nenhuma",
+       "faixa": null,
+       "regua_id": null,
+       "fallback": false,
+       "rotulo": null,
+       "aviso": null,
+       "motivo": "municipal: cotas não confirmadas (cotas_verificado = False); estadual: leitura antiga — o número de horas atrás não diz a faixa de agora"
       },
       "faixa_do_rio": null
      }

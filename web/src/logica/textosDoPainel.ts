@@ -110,13 +110,22 @@ export function textoDaOrigemDaCor(p: {
     const o = p.origemDoMotor
     const regua = o.reguaId ? ` (${o.reguaId})` : ''
     if (o.tipo === 'estadual') {
-      return `Cor do rio: classificação estadual (Defesa Civil de SC) — ${o.reguaId ?? 'estação estadual'}. ${NAO_MUNICIPAL}`
+      return `Cor do rio: faixa estadual (Defesa Civil de SC) — ${o.reguaId ?? 'estação estadual'}. ${NAO_MUNICIPAL}`
     }
     // O rótulo do motor já começa por "Classificação municipal — <régua>".
     return `Cor do rio: ${o.rotulo.charAt(0).toLowerCase()}${o.rotulo.slice(1)}${o.rotulo.includes(o.reguaId ?? '\u0000') ? '' : regua}.`
   }
   if (p.origemFaixa === 'estadual') {
-    return `Cor do rio: classificação estadual (Defesa Civil de SC) — ${p.codigoEstadual ?? 'estação estadual'}. ${NAO_MUNICIPAL}`
+    return `Cor do rio: faixa estadual (Defesa Civil de SC) — ${p.codigoEstadual ?? 'estação estadual'}. ${NAO_MUNICIPAL}`
   }
   return 'Cor do rio: classificação municipal — cotas da cidade.'
 }
+
+/**
+ * "Por que está cinza?" quando o motor não classifica pela régua municipal porque as cotas da cidade não estão
+ * confirmadas (Rio dos Cedros, decisão do Jefferson de 07/10/2026) e não há faixa estadual válida para pintar.
+ * O ponto que não pode faltar: a falta de cor municipal não é nível normal.
+ */
+export const MOTIVO_COTAS_NAO_CONFIRMADAS =
+  'Sem classificação municipal: as cotas desta cidade ainda não foram confirmadas pela Defesa Civil do município, e ' +
+  'a Defesa Civil de SC não publica faixa válida para a estação agora. Sem cor não quer dizer nível normal.'

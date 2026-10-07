@@ -494,7 +494,13 @@ o projeto.
     a rede estadual.
   - [x] Campo `regua_das_cotas_id` (aprovado pelo Jefferson em 07/10/2026), em seis cidades: Brusque, Ascurra, Rio dos
     Cedros, Rio do Sul, Blumenau e Gaspar.
-  - [ ] Blumenau passa no `--inventario`: pôr no piloto é decisão do Jefferson, com casos no gabarito.
+  - [x] Piloto ampliado (decisões do Jefferson, 07/10/2026). Depende do deploy na VPS (`deploy.sh`) para o arquivo de
+    produção trazer as duas cidades novas.
+    - Blumenau entra só com publicações de referência validada: AlertaBlu e PADKND conferida.
+    - Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas. A faixa estadual da DCSC-00011
+      aparece como "faixa estadual"; sem ela, fica cinza.
+    - Brusque sem mudança.
+  - [ ] Rio dos Cedros: pedir à COMPDEC a confirmação do zero e da vigência das cotas depois do desassoreamento de 2026.
   - [ ] Sem `regua_das_cotas_id` por falta de prova escrita: Taió (régua das cotas em aberto), Indaial e Ilhota.
   - [ ] Rio dos Cedros entra sem cor municipal enquanto `cotas_verificado` for false — decidir junto com o PR 2.
 

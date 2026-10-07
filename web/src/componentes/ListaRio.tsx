@@ -167,7 +167,9 @@ function Linha({ cidade, rioId, aoVivo, destino }: { cidade: Cidade; rioId: stri
       {/* Sem leitura, o marcador tracejado e o "sem leitura recente" já dizem
           tudo; o chip repetiria a frase em cada linha. Com leitura e sem cota,
           o chip fica — é ele que diz "sem cota". */}
-      {valida || estado.varias || faixa !== 'sem-dado' ? (
+      {estado.origemDaCor?.tipo === 'estadual' && estado.faixaEstadual ? (
+        <ChipFaixa faixa={estado.faixaEstadual} cidade={cidade} compacto estadual />
+      ) : valida || estado.varias || faixa !== 'sem-dado' ? (
         <ChipFaixa faixa={faixa} cidade={cidade} compacto />
       ) : estado.faixaEstadual ? (
         <ChipFaixa faixa={estado.faixaEstadual} cidade={cidade} compacto estadual />
