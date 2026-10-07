@@ -103,6 +103,28 @@ if [ -f "$BARRAGENS" ] && python3 -c 'import json,sys; d=json.load(open(sys.argv
   BARRAGENS_ENTRY="$(printf '100644 blob %s\tultimo_barragens.json' "$BLOB_BARRAGENS")"
 fi
 
+# ultimo_classificacao.json: as duas classificações de cada cidade do piloto (municipal e
+# estadual) e qual delas pintaria o rio, calculadas pelo classificar_reguas.py EM PARALELO ao
+# site (PR 1 de 07/10/2026). O site ainda não lê este arquivo. Falha aqui nunca segura a
+# publicação: o script recusa saída inválida e apaga a anterior, e o arquivo só sobe se for
+# JSON, tiver cidades e tiver sido gerado há no máximo 30 min — um de outra coleta não passa
+# por atual.
+CLASSIFICACAO="$RAIZ/data/tempo-real/ultimo_classificacao.json"
+if [ "$SECO" -eq 0 ] && [ -f "$RAIZ/scripts/classificar_reguas.py" ]; then
+  timeout 60 python3 scripts/classificar_reguas.py --gravar \
+    || echo "aviso: classificação estadual × municipal não gerada; o nível ao vivo segue." >&2
+fi
+CLASSIFICACAO_ENTRY=""
+if [ -f "$CLASSIFICACAO" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("cidades") and 0 <= idade <= 1800 else 1)' "$CLASSIFICACAO" 2>/dev/null; then
+  BLOB_CLASSIFICACAO="$(git hash-object -w "$CLASSIFICACAO")"
+  CLASSIFICACAO_ENTRY="$(printf '100644 blob %s\tultimo_classificacao.json' "$BLOB_CLASSIFICACAO")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
@@ -110,6 +132,7 @@ TREE="$(
     [ -n "$NIVEL_SC_ENTRY" ] && printf '%s\n' "$NIVEL_SC_ENTRY"
     [ -n "$TAIO_ENTRY" ] && printf '%s\n' "$TAIO_ENTRY"
     [ -n "$BARRAGENS_ENTRY" ] && printf '%s\n' "$BARRAGENS_ENTRY"
+    [ -n "$CLASSIFICACAO_ENTRY" ] && printf '%s\n' "$CLASSIFICACAO_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o

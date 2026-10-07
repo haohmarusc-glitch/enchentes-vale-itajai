@@ -1,0 +1,816 @@
+{
+ "_meta": {
+  "o_que_e": "Gabarito da classificação estadual × municipal (PR 1, 07/10/2026). scripts/teste_classificar_reguas.py exige que o motor Python dê `esperado`; web/src/logica/classificacaoParidade.test.ts exige que o site de hoje dê `site`. Sem `diverge_do_site`, o que o site pinta tem de ser o `esperado.aplicada`.",
+  "cidade_piloto": "brusque — cotas_m lidas do estacoes.json real (atenção 3,00, emergência 5,00); mudar as cotas exige rever este arquivo",
+  "agora": "agora_brasilia é hora de Brasília sem fuso, como medido_em",
+  "como_mudar": "Esperado revisto é decisão documentada, nunca ajuste para o teste passar."
+ },
+ "casos": [
+  {
+   "id": "abaixo-da-atencao",
+   "descricao": "2,29 m de agora, abaixo da atenção (3,00): normal pela municipal; a estadual existe mas não pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 2.29,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T12:59:55"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "normal",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "normal",
+    "estadual": "normal",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "normal"
+    }
+   },
+   "site": {
+    "faixa": "normal",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "exatamente-na-atencao",
+   "descricao": "3,00 m é atenção: a cota alcançada usa >=, como o site",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.0,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "atencao",
+    "estadual": "atencao",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "entre-atencao-e-emergencia",
+   "descricao": "4,20 m fica na atenção: Brusque não tem alerta e o motor não inventa um",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 4.2,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "alerta",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "atencao",
+    "estadual": "alerta",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "exatamente-na-emergencia",
+   "descricao": "5,00 m é emergência",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 5.0,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "emergencia",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "emergencia",
+    "estadual": "emergencia",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "emergencia"
+    }
+   },
+   "site": {
+    "faixa": "emergencia",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "acima-da-emergencia",
+   "descricao": "6,10 m continua emergência",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 6.1,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "emergencia",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "emergencia",
+    "estadual": "emergencia",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "emergencia"
+    }
+   },
+   "site": {
+    "faixa": "emergencia",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "atrasada-ainda-pinta",
+   "descricao": "leitura de 120 min (atrasada, não velha) ainda pinta, como no site",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T11:05:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "atencao",
+    "estadual": "atencao",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "limite-180-min",
+   "descricao": "180 min ainda é atrasada e pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T10:05:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "normal",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": "atencao",
+    "estadual": "normal",
+    "aplicada": {
+     "tipo": "municipal",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "limite-181-min-velha",
+   "descricao": "181 min é velha: a municipal para de pintar e a estadual de agora entra como fallback",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T10:04:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "atencao",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "atencao"
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": "atencao"
+   }
+  },
+  {
+   "id": "velha-e-estadual-velha",
+   "descricao": "as duas velhas: nada pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T08:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T08:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "so-estadual",
+   "descricao": "sem leitura municipal: a faixa publicada pela Defesa Civil de SC pinta, marcada como fallback",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "alerta",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "alerta",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "alerta"
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": "alerta"
+   }
+  },
+  {
+   "id": "estadual-sem-faixas-configuradas",
+   "descricao": "estadual com ativo=false: a DCSC não classifica a estação; nada pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": null,
+       "ativo": false,
+       "coerente": true,
+       "motivo": "sem faixas configuradas pela Defesa Civil de SC para esta estação (ativo=false)",
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "estadual-contraditoria",
+   "descricao": "estadual com duas flags ligadas: o coletor já recusa e nada pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": null,
+       "ativo": true,
+       "coerente": false,
+       "motivo": "contraditório: atencao e alerta ligadas ao mesmo tempo",
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": null,
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "carimbo-no-futuro",
+   "descricao": "municipal 3 h no futuro (fuso trocado) não é de agora: a estadual entra",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T16:05:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "normal",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "normal",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "normal"
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": "normal"
+   }
+  },
+  {
+   "id": "sem-carimbo",
+   "descricao": "municipal sem hora de medição não pinta e não segura a estadual",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "normal",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "normal",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "normal"
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": "normal"
+   }
+  },
+  {
+   "id": "valor-impossivel",
+   "descricao": "26 m não é nível de rio: a linha é descartada, como no site, e a estadual entra",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 26.0,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "normal",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "normal",
+    "aplicada": {
+     "tipo": "estadual",
+     "faixa": "normal"
+    }
+   },
+   "site": {
+    "faixa": "sem-dado",
+    "faixaEstadual": "normal"
+   }
+  },
+  {
+   "id": "varias-reguas",
+   "descricao": "duas réguas distintas na cidade: eleger uma seria escolher a cor; nada pinta",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "codigo": "DCSC-00019",
+     "medido_em": "2026-10-07T13:00:00"
+    },
+    {
+     "estacao": "Brusque",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 1.2,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "atencao",
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "varias",
+    "faixaEstadual": null
+   }
+  },
+  {
+   "id": "leitura-de-outra-regua",
+   "descricao": "a única leitura municipal é de outra régua (título 'Brusque', sem código): o motor não a compara com as cotas da DCSC-00019",
+   "agora_brasilia": "2026-10-07T13:05:00",
+   "cidade": "brusque",
+   "leituras": [
+    {
+     "estacao": "Brusque",
+     "cidade": "brusque",
+     "rio": "itajai-mirim",
+     "nivel_m": 3.5,
+     "origem": "estadual",
+     "usar_para_cota": true,
+     "fonte": "Rede estadual (DCSC-00019)",
+     "medido_em": "2026-10-07T13:00:00"
+    }
+   ],
+   "nivel_sc": {
+    "leituras": [
+     {
+      "codigo": "DCSC-00019",
+      "estacao": "SDC-SC Brusque",
+      "cidade": "brusque",
+      "nivel_bruto_m": 2.3,
+      "medido_em": "2026-10-07T13:00:00",
+      "classificacao_estadual": {
+       "faixa": "atencao",
+       "ativo": true,
+       "coerente": true,
+       "motivo": null,
+       "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)"
+      }
+     }
+    ]
+   },
+   "esperado": {
+    "municipal": null,
+    "estadual": "atencao",
+    "aplicada": {
+     "tipo": "nenhuma",
+     "faixa": null
+    }
+   },
+   "site": {
+    "faixa": "atencao",
+    "faixaEstadual": null
+   },
+   "diverge_do_site": "O site compara qualquer leitura única da cidade com as cotas dela e pintaria atenção; o motor exige que a leitura seja da régua das cotas (DCSC-00019) e recusa. É a regra 1 do plano — o site passa a segui-la quando consumir o motor (PR 2). A estadual não entra porque há leitura municipal de agora."
+  }
+ ]
+}
