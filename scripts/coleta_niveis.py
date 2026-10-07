@@ -51,6 +51,10 @@ from zoneinfo import ZoneInfo
 
 from comum import DADOS, espera_turno
 
+#: Endereço da chuva de Itajaí publicado no `ultimo.json`. Escrito à mão aqui,
+#: ficou apontando para a página antiga depois que a fonte mudou de lugar.
+URL_CHUVA_ITAJAI = "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/chuvas"
+
 SERIE = DADOS / "tempo-real"
 ULTIMO = SERIE / "ultimo.json"
 SERIE_RECENTE = SERIE / "serie-recente.json"
@@ -162,15 +166,36 @@ def baixar_chuva_cemaden() -> list[dict]:
 def baixar_nivel_alertablu(leituras: list[dict]) -> list[dict]:
     """Consulta a fonte municipal em toda coleta, sem esperar atraso de 60 min.
 
-    As duas fontes convivem: site e bot escolhem a medição mais recente da
-    mesma régua pelo horário original. Falha no AlertaBlu preserva a primária.
+    As publicações convivem: site e bot escolhem a medição mais recente da
+    mesma régua pelo horário original. Com o `nivel_oficial.json` em mãos, vem
+    junto a série de 5 min da PADKND, que só entra se bater com ele. Falha no
+    AlertaBlu deixa Blumenau sem as duas — sem ele, a PADKND não tem prova.
     O argumento é mantido para compatibilidade com os chamadores.
     """
     try:
         from coleta_alertablu import URL, baixar, parse
-        return parse(baixar(URL))
+        dados = baixar(URL)
     except Exception as e:
         print(f"aviso: resgate de Blumenau pelo AlertaBlu falhou ({e}).", file=sys.stderr)
+        return []
+    return parse(dados) + baixar_nivel_blumenau_5min(dados)
+
+
+def baixar_nivel_blumenau_5min(alertablu: dict) -> list[dict]:
+    """A série de 5 min de Blumenau (PADKND, no portal da Defesa Civil de Itajaí).
+
+    Só entra se bater com o AlertaBlu nas horas cheias em comum — a prova é
+    refeita a cada coleta, em `coleta_itajai_portal.parse_blumenau`. Falha aqui
+    preserva o AlertaBlu horário, que segue como reserva.
+    """
+    try:
+        from coleta_itajai_portal import URL_BLUMENAU, parse_blumenau
+        from comum import baixar
+
+        espera_turno()
+        return parse_blumenau(baixar(URL_BLUMENAU), alertablu)
+    except Exception as e:
+        print(f"aviso: Blumenau de 5 min (PADKND) não coletada ({e}).", file=sys.stderr)
         return []
 
 
@@ -749,7 +774,7 @@ def main() -> int:
                 "fonte": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
                 "leituras": leituras,
                 "fonte_itajai_ok": fonte_itajai_ok,
-                "fonte_chuva": "https://defesacivil.itajai.sc.gov.br/monitoramento/chuvas",
+                "fonte_chuva": URL_CHUVA_ITAJAI,
                 "chuva": chuva,
                 # Falso só quando a coleta da chuva FALHOU. Lista vazia com
                 # chuva_ok verdadeiro é "a fonte não publica pluviômetro"; com

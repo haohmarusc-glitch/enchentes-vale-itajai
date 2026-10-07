@@ -130,6 +130,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   seção 3). Ela saiu do ar em 19/09. O portal novo publica em UTC com offset, e `coleta_itajai_portal.py`
   converte. Regra: antes de confiar no carimbo de uma estação republicada, comparar com outra fonte da mesma
   régua.
+- **Blumenau de 5 min (PADKND, portal de Itajaí `?municipio_id=3`):** publicação `Blumenau (PADKND)` com
+  `resgate_de: "Blumenau"`. Só entra se bater, na mesma coleta, com o AlertaBlu nas horas cheias em comum
+  (`coleta_itajai_portal.conferir_com_alertablu`). O título `Blumenau` é reservado ao repasse antigo 3 h atrasado.
 - **`coletado_em` é UTC** (campo diferente, do momento da coleta) — não confundir os dois.
   Uma fonte de resgate (AlertaBlu) gravou UTC "para honrar o contrato" e leu o comentário do
   `coletado_em` por engano: o vigia passou a ver a leitura como 2h no futuro. Custou uma sessão.

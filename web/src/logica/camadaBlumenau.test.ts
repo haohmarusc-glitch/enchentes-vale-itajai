@@ -17,3 +17,6 @@ test('recusa outra régua, leitura antiga e futura', () => {
   assert.equal(frescorDaCidade(121,'blumenau'),'velha')
   assert.equal(frescorDaCidade(121,'gaspar'),'atrasada')
 })
+test('a série de 5 min (PADKND) também escolhe a carta', () => {
+  assert.equal(camadaBlumenau(camadas,[{...leitura,estacao:'Blumenau (PADKND)'}],agora)?.nivel_m,8.5)
+})
