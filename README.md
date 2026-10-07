@@ -599,6 +599,9 @@ o projeto.
   - [x] **Décima terceira entrega (07/10/2026): várias cidades de uma vez.** "Como estão Blumenau, Gaspar e Itajaí?",
     "como estão as minhas cidades?" (as seguidas neste aparelho) e "copiar o resumo das minhas cidades": cada cidade na
     régua dela, numa resposta só, com um rodapé só no texto para copiar.
+  - [x] **Ajuste (07/10/2026): "a água chega na hora da maré alta?"** ia para "Não entendi"; agora vai, sozinha ou junto
+    com "quanto tempo chega a água de Blumenau até Itajaí?", para o quadro de chegada × maré, que diz também as
+    12–17 h quando não há pico descendo.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

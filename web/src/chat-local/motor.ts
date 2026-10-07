@@ -1010,7 +1010,8 @@ function transito(e: Extraido, d: Dados): Resposta {
   // 1. Há caminho, na ordem pedida ou na contrária (a água só desce).
   for (const rio of comuns) {
     const ida = caminho(trechos, rio, a.id, b.id)
-    if (ida) return resp(textoCaminho(ida, nome))
+    // Até a foz, a pergunta seguinte costuma ser a da maré: o quadro de chegada × maré responde.
+    if (ida) return b.id === 'itajai' ? { ...resp(textoCaminho(ida, nome)), sugestoes: ['a água chega na hora da maré alta?'] } : resp(textoCaminho(ida, nome))
     const volta = caminho(trechos, rio, b.id, a.id)
     if (volta) return resp(`A cheia desce de ${b.nome} para ${a.nome}, não o contrário.\n${textoCaminho(volta, nome)}`)
   }

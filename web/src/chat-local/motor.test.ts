@@ -353,3 +353,11 @@ test('tabela ruas × manchas de Itajaí: coerente com o catálogo e com o própr
       assert.ok(v.m <= r.m + 1 && v.pct >= 0 && v.pct <= 100, `${nome} ${ev}: ${v.m} m de ${r.m} m`)
     }
 })
+
+test('tempo de descida até Itajaí sugere a pergunta da maré', () => {
+  const r = responder('quanto tempo chega a água de Blumenau até Itajaí?', dados)
+  assert.equal(r.intencao, 'transito')
+  assert.match(r.texto, /de 12 a 17 h/)
+  assert.deepEqual(r.sugestoes, ['a água chega na hora da maré alta?'])
+  assert.equal(responder('quanto tempo a cheia leva de Rio do Sul até Blumenau?', dados).sugestoes, undefined)
+})

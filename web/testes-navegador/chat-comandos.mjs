@@ -282,6 +282,8 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     const { b, pg, erros } = await abrir('#/monitor/blumenau', { largura: w, altura: h })
     let r = await pedirAte(pg, 'o pico de Blumenau já passou?', /Blumenau|Não consegui/)
     ok(/Blumenau/.test(r) && /199/.test(r), `chegada × maré: o "Hoje" do painel de Itajaí (${r.slice(0, 50)}…)`)
+    r = await pedirAte(pg, 'quanto tempo chega a água de Blumenau até Itajaí, a água chega na hora da maré alta?', /12 a 17 h|Não consegui/)
+    ok(/12 a 17 h/.test(r) && /199/.test(r), `as duas perguntas juntas: o tempo de descida e a maré, com o 199 (${r.slice(0, 50)}…)`)
     r = await pedirAte(pg, 'se o pico de Blumenau for às 22h', /Janela:|tábua/)
     ok(/Janela: de [0-9]{2}:[0-9]{2} de/.test(r) && /não o nível do rio/.test(r), 'simulação: a janela e o aviso')
     r = await pedirAte(pg, 'o que significa a cor laranja?', /Laranja/)

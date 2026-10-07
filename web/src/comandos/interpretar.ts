@@ -275,7 +275,19 @@ const FAIXA_PARA_TEMA: Record<string, TemaDaLegenda> = {
   prontidao: 'alerta', 'alerta maximo': 'inundacao', inundacao: 'inundacao', emergencia: 'inundacao', 'sem dado': 'sem-dado',
   'varias reguas': 'varias',
 }
+/**
+ * "A água chega na hora da maré alta?", "quanto tempo chega a água de Blumenau até Itajaí, chega na maré alta?":
+ * a cheia descendo (água, cheia, pico, enchente, ou Blumenau dita) + chegar + maré alta. É o mesmo quadro de chegada
+ * × maré, que já diz a janela em horas. "Como está a maré?" e "quando é a maré alta?" não têm a cheia e seguem
+ * para a maré (5ª entrega).
+ */
+const CHEIA_NA_MARE = (t: string) =>
+  /\b(?:mare alta|mare cheia|preamar)\b/.test(t) &&
+  /\b(?:chega|chegar|chegara|chegaria|chegam|chegando|pega|pegar|coincide|coincidir|bate|bater|junto)\b/.test(t) &&
+  /\b(?:agua|cheia|pico|enchente|blumenau)\b/.test(t)
+
 function lerTrechoDaSetima(t: string): Lido {
+  if (CHEIA_NA_MARE(t)) return [{ tipo: 'chegada_itajai' }]
   if (/^(?:o )?pico (?:de |em )?blumenau (?:ja )?passou$|^(?:quando )?(?:o pico|a cheia|a onda de cheia)(?: de blumenau)? chega(?:ria)? (?:em|a|no) itajai$|^(?:o pico|a cheia)(?: de blumenau)?(?: vai)? (?:chega|chegar|pega|pegar|coincide|coincidir)(?: em itajai)?(?: com| na)? (?:a )?mare(?: alta| cheia)?(?: em itajai)?$|^chegada (?:do pico |da cheia )?(?:em|a|no) itajai$|^(?:pico|cheia) (?:x|e|com) mare(?: em itajai)?$/.test(t)) {
     return [{ tipo: 'chegada_itajai' }]
   }
