@@ -106,3 +106,25 @@ Prints reais da pré-visualização (390×844, 360×740 e 1280×800) estão no P
   `docs/prints/monitor-etapa1-2026-10-07/`.
 
 Fora da etapa 1 (ficam para a 2 e a 3): painel compacto → expandido; barra inferior Mapa · Réguas · Perguntar.
+
+## Etapa 2 — o que entrou (07/10/2026, PR em rascunho empilhado sobre a etapa 1, sem merge)
+
+Só no celular (≤ 700 px); no computador o painel é o de sempre.
+
+- **Compacto ao tocar no pino** (ou ao abrir `/monitor/<cidade>`): nome, rio, o chip da faixa (o mesmo texto do
+  painel: faixa municipal, "Classificação estadual: …" ou "Sem classificação…"), a pílula da leitura com a hora por
+  extenso ("Leitura: há 17 min · 07/10, 03:58"; velha → "Leitura antiga … — não é a de agora", em âmbar; cidade só
+  com nível estadual → "Leitura estadual: …"; Itajaí → "Várias réguas: cada uma com a própria leitura e hora"), e
+  dois quadros: **Nível do rio** (municipal; sem ele, o estadual dito "zero próprio"; em Itajaí, "N réguas"; sem
+  nada, "sem leitura") e **Tendência** (`tendenciaDaLeitura`, regra D7; sem tendência, dito "sem tendência").
+- **Expandido** ("Mais detalhes ▾"): mais dois quadros — **Chuva (24 h)** (pluviômetro da cidade, estação e idade;
+  "—" com o motivo real quando não há ou está antiga) e **a cota** (`cotaDaFaixa`: a cota da faixa de agora; sem
+  faixa, "Primeira cota (…)" com "sem faixa para esta leitura" ou "nível abaixo desta cota"; sem cota, dito) —, os
+  botões **Ver histórico** (`?aba=historico`) e **Detalhes da fonte** (`?aba=fontes`) e, abaixo, o painel inteiro
+  de sempre (cotas, estadual, chuva por estação, vizinhos, resumo da série, ruas…). "Menos detalhes ▴" recolhe;
+  trocar de cidade volta ao compacto.
+- Nenhum texto de maquete: "Leitura antiga" só existe quando a leitura é velha; a cota nunca é chamada de faixa
+  numa cidade sem faixa; a tendência não tem seta sem tendência.
+- Lógica pura e testada em `web/src/logica/painelCompacto.ts`. A auditoria do navegador abre "Mais detalhes" antes
+  de conferir os textos do painel inteiro. Trava do Monitor: baseline igual ao da etapa 1 (o painel não muda a
+  geometria do mapa).
