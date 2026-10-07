@@ -605,6 +605,10 @@ o projeto.
   - [x] **Décima quarta entrega (07/10/2026): a linha do tempo da cheia de agora.** "Quando Blumenau passou da cota de
     alerta?", "há quanto tempo está em alerta?", "quando o rio começou a subir?" e "quanto subiu nas últimas 6 horas?",
     pela série publicada de uma régua, com a hora da medição e o passo da série.
+  - [x] **Décima quinta entrega (07/10/2026): as cheias que o site já captou.** "Quais cheias o site captou?", "qual
+    foi a última cheia em Blumenau?", "como foi a cheia de setembro?", "quantas vezes passou da cota de alerta desde
+    que o site acompanha?", a partir de `data/eventos-captados.json` (resumo da série do coletor, gerado por
+    `scripts/eventos_captados.py` da cópia em `arquivo-series`; nunca entra em `enchentes.json`).
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

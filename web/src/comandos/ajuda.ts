@@ -31,7 +31,8 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• palavras do rio: "o que é cota?", "o que é jusante?", "qual a diferença entre enchente e alagamento?"; "ler em voz alta" e "parar de ler";',
         '• o mapa, peça por peça: "ver o Itajaí-Mirim no mapa", "zoom nas barragens", "fechar o painel", "abrir o menu de cidades";',
         '• várias cidades: "como estão Blumenau e Gaspar?", "como estão as minhas cidades?", "copiar o resumo das minhas cidades";',
-        '• a linha do tempo da cheia: "quando Blumenau passou da cota de alerta?", "há quanto tempo Blumenau está em alerta?", "quando o rio começou a subir em Blumenau?", "quanto Blumenau subiu nas últimas 6 horas?".',
+        '• a linha do tempo da cheia: "quando Blumenau passou da cota de alerta?", "há quanto tempo Blumenau está em alerta?", "quando o rio começou a subir em Blumenau?", "quanto Blumenau subiu nas últimas 6 horas?";',
+        '• as cheias que o site já captou: "quais cheias o site captou?", "qual foi a última cheia em Blumenau?", "como foi a cheia de setembro?", "quantas vezes Blumenau passou da cota de alerta desde que o site acompanha?".',
         'E perguntas: "como está Blumenau?", "maior cheia de Rio do Sul", "quanto tempo a cheia leva de Rio do Sul até Blumenau?".',
         'Tela cheia é pelo botão "Tela cheia": o navegador só abre com o seu toque.',
       ]
@@ -53,6 +54,7 @@ export function textoDeAjuda(ctx: Contexto, nomeCidade: string | null): Saida {
         '• palavras do rio: "o que é cota?", "o que é jusante?", "qual a diferença entre enchente e alagamento?"; "ler em voz alta";',
         '• várias cidades: "como estão Blumenau e Gaspar?", "como estão as minhas cidades?", "copiar o resumo das minhas cidades";',
         `• a linha do tempo da cheia: "quando ${aqui} passou da cota de alerta?", "há quanto tempo ${aqui} está em alerta?", "quando o rio começou a subir em ${aqui}?", "quanto ${aqui} subiu nas últimas 6 horas?";`,
+        `• as cheias que o site já captou: "quais cheias o site captou?", "qual foi a última cheia em ${aqui}?", "como foi a cheia de setembro em ${aqui}?", "quantas vezes ${aqui} passou da cota de alerta desde que o site acompanha?";`,
         '• perguntas: "como está Blumenau?", "as 5 maiores cheias de Brusque", "cheias de 2008".',
       ]
   const sugestoes = ctx.naMonitor

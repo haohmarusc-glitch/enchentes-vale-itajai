@@ -1233,6 +1233,50 @@ def valida_eventos_pendentes(conhecidas: set[tuple[str, str]]) -> None:
                      f"{s.get('pico_m')} m). Migrar é mover: apague daqui no mesmo commit.")
 
 
+def valida_eventos_captados(conhecidas: set[tuple[str, str]]) -> None:
+    """`eventos-captados.json`: o resumo das cheias que a coleta captou, para o chat.
+
+    É arquivo DERIVADO (scripts/eventos_captados.py), não fonte: nada aqui entra em
+    enchentes.json. O que se cobra: cidade do cadastro, número plausível, hora com formato
+    da série (Brasília sem fuso), faixa dentro do vocabulário, e que todo episódio marcado
+    como "registrado" aponte um registro que EXISTE em enchentes.json — senão o chat diria
+    "conferido" sobre o que ninguém conferiu.
+    """
+    caminho = RAIZ / "data" / "eventos-captados.json"
+    if not caminho.exists():
+        return
+    d = le_json(caminho)
+    if "Nunca entra em enchentes.json" not in str(d.get("_meta", {}).get("o_que_e", "")):
+        erro("eventos-captados.json: _meta.o_que_e tem de dizer que o arquivo nunca entra em enchentes.json")
+    serie = le_json("enchentes.json")["eventos"]
+    faixas_ok = {"monitoramento", "atencao", "alerta", "inundacao", "emergencia", None}
+    cidades = {c for _, c in conhecidas}
+    for i, e in enumerate(d.get("episodios", [])):
+        onde = f"eventos-captados.json/episodios[{i}] ({e.get('cidade')} {str(e.get('quando'))[:16]})"
+        if e.get("cidade") not in cidades:
+            erro(f"{onde}: cidade fora de estacoes.json")
+        for campo in ("regua", "inicio", "fim", "quando", "maior_leitura_m", "leituras", "maior_lacuna_min"):
+            if e.get(campo) in (None, ""):
+                erro(f"{onde}: falta '{campo}'")
+        n = e.get("maior_leitura_m")
+        if not isinstance(n, (int, float)) or not 0 < float(n) < 25:
+            erro(f"{onde}: maior_leitura_m fora da faixa plausível: {n!r}")
+        for campo in ("inicio", "fim", "quando"):
+            v = str(e.get(campo, ""))
+            if len(v) != 19 or v[10] != "T" or v.endswith("Z") or "+" in v:
+                erro(f"{onde}: '{campo}' deve ser AAAA-MM-DDTHH:MM:SS em horário de Brasília, sem fuso: {v!r}")
+        if e.get("faixa_alcancada") not in faixas_ok:
+            erro(f"{onde}: faixa_alcancada desconhecida {e.get('faixa_alcancada')!r}")
+        reg = e.get("registro_em_enchentes")
+        if reg is not None:
+            data = str(reg.get("data", ""))
+            if not any(s.get("cidade") == e.get("cidade") and s.get("data") == data for s in serie):
+                erro(f"{onde}: registro_em_enchentes aponta {data}, que não está em enchentes.json")
+    for i, c in enumerate(d.get("cobertura", [])):
+        if c.get("cidade") not in cidades:
+            erro(f"eventos-captados.json/cobertura[{i}]: cidade {c.get('cidade')!r} fora de estacoes.json")
+
+
 def valida_ruas_alagadas() -> None:
     """`ruas-alagadas.json`: o registro na mão das ruas alagadas (decisão do Jefferson, 05/10/2026).
 
@@ -2223,6 +2267,7 @@ def main() -> int:
     conhecidas = valida_estacoes()
     valida_enchentes(conhecidas)
     valida_eventos_pendentes(conhecidas)
+    valida_eventos_captados(conhecidas)
     valida_ruas_alagadas()
     valida_transito(conhecidas)
     valida_trechos_experimentais(conhecidas)

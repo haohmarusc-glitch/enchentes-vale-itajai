@@ -120,6 +120,11 @@ export type Passo =
   | { tipo: 'varias_cidades'; cidadeIds?: string[]; seguidas?: boolean; copiar?: boolean }
   /** 14ª: a linha do tempo da cheia de agora, na série de uma régua. `cota` já é a chave do cadastro. */
   | { tipo: 'linha_do_tempo'; pergunta: 'cruzou_cota' | 'ha_quanto_tempo' | 'comecou_a_subir' | 'variacao'; cidadeId?: string; cota?: string; horas?: number }
+  /**
+   * 15ª: as cheias que a coleta do site já captou (`data/eventos-captados.json`). `mes` é 1–12 e `dia` é
+   * `AAAA-MM-DD`; `cota` é a chave do cadastro, para "quantas vezes passou da cota de alerta".
+   */
+  | { tipo: 'captados'; pergunta: 'lista' | 'ultima' | 'maior' | 'quantas' | 'periodo'; cidadeId?: string; cota?: string; mes?: number; ano?: number; dia?: string }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

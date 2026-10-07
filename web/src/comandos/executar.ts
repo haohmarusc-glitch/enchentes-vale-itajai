@@ -43,6 +43,8 @@ import { primeiraCota } from '../logica/tempoReal'
 import { rotuloCota } from '../logica/formato'
 import { MAX_CIDADES_JUNTAS, textoParaCopiarVarias, textoVariasCidades } from './variasCidades'
 import { textoLinhaDoTempo } from './linhaDoTempo'
+import { textoListaCaptados, textoMaiorCaptada, textoPeriodoCaptado, textoQuantasCaptadas, textoUltimaCaptada, type ContextoCaptados } from './captados'
+import type { EventosCaptados } from '../dados/eventosCaptados'
 import { textoDeCima, textoMaximo24h, textoPanorama, textoQuantoFalta, textoSubindoOuBaixando, type CidadeAgora } from './rioAgora'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
@@ -80,6 +82,8 @@ export interface DadosDoChat {
   transito?(): { trechos: Trecho[]; experimentais: TrechoExperimental[] }
   /** 7ª entrega: a referência de estudo do tempo entre os picos de Blumenau e Itajaí (o mesmo do painel). */
   referenciaChegada?(): ReferenciaChegada
+  /** 15ª entrega: as cheias que a coleta do site já captou (`data/eventos-captados.json`). */
+  captados?(): EventosCaptados
   /** 8ª entrega: buscar de novo as leituras, o aplicativo, a privacidade e a conversa. */
   atualizar?(): Promise<{ pedido: boolean; coletaAntes: Date | null; coletaDepois: Date | null; medicaoMaisNova: Date | null; agora: Date }>
   aplicativo?(): { instalado: boolean; iphone: boolean; pode: boolean }
@@ -666,6 +670,48 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
           }),
           sugestoes: [seguinte[passo.pergunta]],
           link: { texto: `Ver ${nome} agora →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}` },
+        }
+      }
+      case 'captados': {
+        const d = amb.dados
+        const dados = d?.captados?.()
+        if (!d || !dados) return { texto: 'O resumo das cheias captadas pelo site não está disponível nesta tela.' }
+        const alvo = passo.cidadeId ?? (passo.pergunta === 'lista' || passo.pergunta === 'periodo' ? null : cidade)
+        const exemplos: Record<typeof passo.pergunta, string> = {
+          lista: 'quais cheias o site captou?',
+          ultima: 'qual foi a última cheia em Blumenau?',
+          maior: 'qual foi o maior nível que o site captou em Blumenau?',
+          quantas: 'quantas vezes Blumenau passou da cota de alerta desde que o site acompanha?',
+          periodo: 'como foi a cheia de setembro em Blumenau?',
+        }
+        if (!alvo && passo.pergunta !== 'lista' && passo.pergunta !== 'periodo') {
+          return { texto: `Em qual cidade? Por exemplo: "${exemplos[passo.pergunta]}"`, sugestoes: [exemplos[passo.pergunta]] }
+        }
+        const c: ContextoCaptados = { dados, cidade: (id) => d.cidade(id)?.cidade ?? null, nome: (id) => nomeDaCidade(id, cat) }
+        const agora = (await d.aoVivo())?.agora ?? new Date()
+        const texto =
+          passo.pergunta === 'lista'
+            ? textoListaCaptados(c, alvo)
+            : passo.pergunta === 'ultima'
+              ? textoUltimaCaptada(c, alvo!, passo.cota)
+              : passo.pergunta === 'maior'
+                ? textoMaiorCaptada(c, alvo!)
+                : passo.pergunta === 'quantas'
+                  ? textoQuantasCaptadas(c, alvo!, passo.cota)
+                  : textoPeriodoCaptado(c, { ...(passo.mes ? { mes: passo.mes } : {}), ...(passo.ano ? { ano: passo.ano } : {}), ...(passo.dia ? { dia: passo.dia } : {}) }, alvo, agora)
+        const nome = alvo ? nomeDaCidade(alvo, cat) : 'Blumenau'
+        const seguinte: Record<typeof passo.pergunta, string[]> = {
+          lista: [`qual foi a última cheia em ${nome}?`, 'como foi a cheia de setembro?'],
+          ultima: [`quantas vezes ${nome} passou da cota de alerta desde que o site acompanha?`, `maior cheia de ${nome}`],
+          maior: [`qual foi a última cheia em ${nome}?`, `maior cheia de ${nome}`],
+          quantas: [`qual foi a última cheia em ${nome}?`, 'quais cheias o site captou?'],
+          periodo: ['quais cheias o site captou?', `qual foi a última cheia em ${nome}?`],
+        }
+        const dc = alvo ? cat.cidades.find((x) => x.id === alvo) : null
+        return {
+          texto,
+          sugestoes: seguinte[passo.pergunta],
+          ...(alvo ? { link: { texto: `Histórico de ${nome} →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}?aba=historico` } } : {}),
         }
       }
       case 'panorama': {

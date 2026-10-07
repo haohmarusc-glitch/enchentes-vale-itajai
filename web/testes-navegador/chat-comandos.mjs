@@ -31,6 +31,7 @@
  *  - 12ª entrega: painel ou menu que não abre ou fecha de verdade; rio ou barragens que não enquadram.
  *  - 13ª entrega: várias cidades sem "não compare os metros" ou sem o 199; minhas cidades que não leem a escolha.
  *  - 14ª entrega: hora de cruzamento sem a hora da medição; "há quanto tempo" sem a faixa; linha do tempo que muda a tela.
+ *  - 15ª entrega: cheia captada chamada de pico ou de registro; lista sem o aviso de captura; link que não leva ao Histórico.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -430,7 +431,24 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 16. Página com chat próprio: a barra do topo some.
+  // 16. 15ª entrega: as cheias que o site já captou (arquivo derivado da série, não registro oficial).
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'quais cheias o site captou?', /captou/)
+    ok(/^Cheias que a coleta do site captou desde \d{2}\/\d{2}/.test(r) && /não é registro oficial nem pico conferido/.test(r) && /199/.test(r), `lista: as ondas, com o aviso de captura e o 199 (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'qual foi a última cheia em Blumenau?', /Blumenau/)
+    ok(/A última vez que Blumenau passou da cota[^]*• [\d,]+ m \([^)]+\) às \d{2}:\d{2} de \d{2}\/\d{2}/.test(r), `última: a maior leitura com a hora da medição (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'como foi a cheia de setembro em Blumenau?', /setembro/)
+    ok(/Cheias captadas pelo site em setembro de 2026 em Blumenau \(\d+ episódios?\)/.test(r) && /Conferido e registrado no histórico: 7,87 m às 05:15/.test(r), `setembro: os episódios, com o registrado marcado (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'quantas vezes Blumenau passou da cota de alerta desde que o site acompanha?', /Alerta/)
+    ok(/passou da cota de Alerta (?:uma vez|\d+ vezes) na série captada pelo site/.test(r), `quantas: a contagem desde o começo da série (${r.slice(0, 60)}…)`)
+    ok((await pg.getByRole('link', { name: /Histórico de Blumenau/ }).count()) >= 1, 'o link leva à aba Histórico')
+    ok(/#\/acu\/blumenau$/.test(pg.url()), `a tela não mudou (${pg.url()})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 17. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')
