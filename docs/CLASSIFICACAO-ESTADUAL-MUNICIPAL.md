@@ -149,8 +149,9 @@ Situação em 07/10/2026, depois do campo `regua_das_cotas_id` e do piloto ampli
 - **"publicações sem referência validada no motor"** vale para régua identificada por título (Rio do Sul, Gaspar). Cada
   publicação aceita entra em `PUBLICACOES_VALIDADAS`, com a prova, quando a cidade entrar no piloto.
 - **"`cotas_verificado` ≠ true"** em Rio dos Cedros é coerente com a resposta ao C29: a COMPDEC não falou do zero nem da
-  vigência da escala depois do desassoreamento. Hoje o site pinta Rio dos Cedros mesmo assim; quando ela entrar no motor,
-  ficará sem cor municipal até essa confirmação. É uma decisão a tomar junto com o PR 2.
+  vigência da escala depois do desassoreamento. Por decisão do Jefferson de 07/10/2026, Rio dos Cedros está no piloto
+  sem classificação municipal até essa confirmação, sem exceção: a cor é a faixa estadual quando válida, e cinza sem
+  ela (`PILOTO_SEM_MUNICIPAL`). A pergunta à COMPDEC é o C32 (`docs/oficios-prontos.md`).
 - **Comparador especial**: Ascurra e Gaspar precisam ter a regra transcrita com o mesmo comparador da fonte, e um caso
   no gabarito, antes de entrar.
 
