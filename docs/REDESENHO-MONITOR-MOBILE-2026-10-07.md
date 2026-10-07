@@ -81,7 +81,8 @@ Prints reais da pré-visualização (390×844, 360×740 e 1280×800) estão no P
   réguas", cinza, nem durante a reprodução. Sem cidade nessas condições, não aparece nada — não há "tudo normal".
 - **Menu "Camadas do mapa"** (celular e computador), nesta ordem: Camadas de cheia (interruptor que espelha o modo
   do `CamadasMonitor`, que continua montado para o chat; sub-linha com a camada desenhada ou "nenhuma camada
-  desenhada agora"), Maré (visibilidade; sub-linha com o estado real), Chuva 24 h (visibilidade), Legenda
+  desenhada agora"), Maré (visibilidade; sub-linha com o estado real), Chuva 24 h (visibilidade), Animações
+  (o botão "Pausar/Retomar animações" saiu da legenda para cá — um só, o mesmo da ponte do chat), Legenda
   (recolhível, a mesma lista da legenda do canto), Traçados dos rios (uma caixa por curso **carregado**,
   `logica/tracadosDoMapa.ts` com teste — Benedito e Rio dos Cedros separados, braços do Rio Rafael juntos,
   tronco marcado e fixo; só o que existe em `data/rios/`, sem "em breve") e Fundo do mapa (saiu da legenda; a
@@ -99,6 +100,9 @@ Prints reais da pré-visualização (390×844, 360×740 e 1280×800) estão no P
 - **Horário completo**: o painel da cidade e o da régua mostram sempre "medida em dd/mm, hh:mm"; leitura velha
   ganha "(leitura antiga, não é a de agora)".
 - **Trava**: baseline regravado (celular: y = 94; computador: igual ao de antes). `auditoria.mjs` abre o menu pelo
-  botão "Camadas do mapa".
+  botão "Camadas do mapa"; `pwa.mjs` aceita a faixa do 199 nas duas redações; `colisao-dos-controles` passou a
+  cobrir a coluna de botões da direita (com o menu de cidades aberto ela some, como o rodapé).
+- **Prints reais** (pré-visualização local com os dados do branch `tempo-real` de 07/10/2026 ~07h UTC):
+  `docs/prints/monitor-etapa1-2026-10-07/`.
 
 Fora da etapa 1 (ficam para a 2 e a 3): painel compacto → expandido; barra inferior Mapa · Réguas · Perguntar.

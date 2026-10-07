@@ -62,7 +62,8 @@ try {
  await page.keyboard.press('Escape')
  await page.getByRole('button',{name:'Tela cheia',exact:true}).waitFor()
  console.log('OK: referência C18 e ampliação mesmo sem Fullscreen API')
- await page.getByRole('button',{name:'abrir',exact:true}).click()
+ // O botão de pausar as animações mora no menu "Camadas do mapa" (redesenho de 07/10/2026).
+ await page.getByRole('button',{name:'Camadas do mapa'}).click()
  await page.evaluate(()=>{
    window.tracosAuditoria=0
    const stroke=CanvasRenderingContext2D.prototype.stroke

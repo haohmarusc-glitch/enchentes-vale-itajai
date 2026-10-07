@@ -1784,6 +1784,22 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               <input id="interruptor-chuva" className={estilos.interruptor} type="checkbox" role="switch" checked={mostrarChuva} onChange={(e) => setMostrarChuva(e.target.checked)} />
             </div>
           ) : null}
+          {/* "Pausar/Retomar animações" saiu da legenda (que no celular fica escondida) para cá: um só botão,
+              o mesmo que o chat aciona pela ponte. */}
+          <div className={estilos.linhaCamada}>
+            <span className={estilos.iconeCamada} aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 12c3-4 6 4 9 0s6-4 9 0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M14 8l5 4-5 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+            <span className={estilos.textoCamada}>
+              <strong>Animações</strong>
+              <small>{movimentoReduzido ? 'movimento reduzido ativado no aparelho' : 'correnteza e crista; só ilustram o sentido'}</small>
+            </span>
+            <button type="button" className={estilos.botaoLegenda}
+              aria-pressed={animacoesPausadas}
+              onClick={() => setAnimacoesPausadas(v => !v)}>
+              {animacoesPausadas ? 'Retomar animações' : 'Pausar animações'}
+            </button>
+          </div>
           <details className={estilos.legendaCamada}>
             <summary>
               <span className={estilos.iconeCamada} aria-hidden="true">
@@ -2040,11 +2056,6 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             <>
           <p className={estilos.legendaNota}>No Itajaí-Açu, de Santa Regina até a foz, a cor do traçado é referência visual da DC-11. Não indica nível local, ruas alagadas nem classificação das outras réguas. Na reprodução histórica essa referência fica desativada.</p>
           <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Movimento ilustrativo em direção à foz; não representa a corrente real, que pode variar com a maré. Trechos sem orientação definida ficam parados.</p>
-          <button type="button" className={estilos.botaoLegenda}
-            aria-pressed={animacoesPausadas}
-            onClick={() => setAnimacoesPausadas(v => !v)}>
-            {animacoesPausadas ? 'Retomar animações' : 'Pausar animações'}
-          </button>
           {movimentoReduzido && <p className={estilos.legendaNota}>Movimento reduzido ativado nas preferências do dispositivo.</p>}
           {listaDaLegenda}
           <p className={estilos.legendaNota}>
