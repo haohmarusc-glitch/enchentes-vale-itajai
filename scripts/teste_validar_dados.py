@@ -2187,6 +2187,61 @@ class RioChegaASemPosicaoNaArvore(unittest.TestCase):
         self.assertTrue(any("sem `fonte`" in e for e in self.roda(d)))
 
 
+class ReguaDasCotasId(unittest.TestCase):
+    """`regua_das_cotas_id` (campo aprovado pelo Jefferson em 07/10/2026): a régua das cotas por código."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.real = json.loads((DADOS / "estacoes.json").read_text(encoding="utf-8"))
+
+    def roda(self, d):
+        vd.erros.clear()
+        vd.avisos.clear()
+        vd.valida_regua_das_cotas_id(d)
+        return list(vd.erros)
+
+    @staticmethod
+    def cidade(d, rio, cid):
+        return next(c for c in d["rios"][rio]["cidades"] if c["id"] == cid)
+
+    def test_o_cadastro_real_passa_e_tem_as_seis(self):
+        self.assertEqual(self.roda(self.real), [])
+        com = {c["id"] for r in self.real["rios"].values() for c in r["cidades"] if "regua_das_cotas_id" in c}
+        self.assertEqual(com, {"brusque", "ascurra", "rio-dos-cedros", "rio-do-sul", "blumenau", "gaspar"})
+
+    def test_sem_fonte_ou_sem_codigo(self):
+        d = copy.deepcopy(self.real)
+        self.cidade(d, "itajai-acu", "blumenau")["regua_das_cotas_id"]["fonte"] = ""
+        self.assertTrue(any("sem `fonte`" in e for e in self.roda(d)))
+        d = copy.deepcopy(self.real)
+        del self.cidade(d, "itajai-acu", "gaspar")["regua_das_cotas_id"]["codigo"]
+        self.assertTrue(any("sem `codigo`" in e for e in self.roda(d)))
+
+    def test_chave_estranha(self):
+        d = copy.deepcopy(self.real)
+        self.cidade(d, "itajai-acu", "blumenau")["regua_das_cotas_id"]["offset_m"] = 0.2
+        self.assertTrue(any("offset_m" in e for e in self.roda(d)), "conversão não entra por este campo")
+
+    def test_mesmo_codigo_em_duas_cidades_do_rio(self):
+        d = copy.deepcopy(self.real)
+        self.cidade(d, "itajai-acu", "gaspar")["regua_das_cotas_id"]["codigo"] = "Blumenau"
+        self.assertTrue(any("já é a régua das cotas de" in e for e in self.roda(d)))
+
+    def test_dcsc_diferente_do_codigo_dcsc(self):
+        d = copy.deepcopy(self.real)
+        self.cidade(d, "itajai-mirim", "brusque")["codigo_dcsc"] = "DCSC-00099"
+        self.assertTrue(any("diferente do codigo_dcsc" in e for e in self.roda(d)))
+
+    def test_lista_da_cota_propria_e_campo_concordam_nos_dois_sentidos(self):
+        d = copy.deepcopy(self.real)
+        del self.cidade(d, "itajai-mirim", "brusque")["regua_das_cotas_id"]
+        self.assertTrue(any("ausente, mas REGUAS_COM_COTA_PROPRIA" in e for e in self.roda(d)))
+        d = copy.deepcopy(self.real)
+        self.cidade(d, "itajai-acu", "rio-do-sul")["regua_das_cotas_id"]["codigo"] = "DCSC-00019"
+        self.cidade(d, "itajai-acu", "rio-do-sul")["codigo_dcsc"] = "DCSC-00019"
+        self.assertTrue(any("REGUAS_COM_COTA_PROPRIA para brusque" in e for e in self.roda(d)))
+
+
 class EquivalenciaEstadualNaoConfirmada(unittest.TestCase):
     """Decisão de 06/10/2026: estação estadual perto não é a régua da cidade sem prova."""
 

@@ -1338,7 +1338,7 @@ def valida_classificacao_piloto(estacoes: dict | None = None) -> None:
 
     `classificar_reguas.CIDADES_PILOTO` é a lista das cidades que o motor Python já classifica. Cada uma
     precisa da régua das cotas identificada por código (`codigo_dcsc` e `REGUAS_COM_COTA_PROPRIA`
-    concordando), de cotas de acionamento em ordem crescente, de `regua_das_cotas_fonte` e de
+    concordando com `regua_das_cotas_id`), de cotas de acionamento em ordem crescente, de `fonte_cotas` e de
     `cotas_verificado: true`. O motor só lê `estacoes.json`; quem conserta é o cadastro, por decisão
     do Jefferson.
     """
@@ -1346,6 +1346,59 @@ def valida_classificacao_piloto(estacoes: dict | None = None) -> None:
 
     for e in validar_cadastro_piloto(estacoes if estacoes is not None else le_json("estacoes.json")):
         erro(f"classificação (piloto) / {e}")
+
+
+#: As chaves que `regua_das_cotas_id` aceita (campo aprovado pelo Jefferson em 07/10/2026).
+CHAVES_REGUA_DAS_COTAS_ID = {"codigo", "fonte", "registro"}
+
+
+def valida_regua_das_cotas_id(estacoes: dict | None = None) -> None:
+    """`regua_das_cotas_id`: a régua das cotas por código, a identidade que a leitura carrega (07/10/2026).
+
+    O motor de classificação (`classificar_reguas.py`) só compara leitura e cota quando a leitura é da
+    régua deste campo. Por isso: `codigo` e `fonte` obrigatórios (a fonte diz onde está a prova), nenhum
+    código em duas cidades do mesmo rio, código `DCSC-…` igual ao `codigo_dcsc` da cidade, e
+    `REGUAS_COM_COTA_PROPRIA` concordando com o campo nos dois sentidos — a lista e o cadastro são duas
+    fontes da mesma afirmação.
+    """
+    from coleta_estadual_com_cota import REGUAS_COM_COTA_PROPRIA
+
+    estacoes = estacoes if estacoes is not None else le_json("estacoes.json")
+    vistos: dict[tuple[str, str], str] = {}
+    for rio_id, rio in estacoes["rios"].items():
+        for c in rio["cidades"]:
+            campo = c.get("regua_das_cotas_id")
+            onde = f"estacoes.json / {rio_id} / {c['id']} / regua_das_cotas_id"
+            cfg_da_cidade = [cod for cod, v in REGUAS_COM_COTA_PROPRIA.items()
+                             if v.get("cidade") == c["id"] and v.get("rio") == rio_id]
+            if campo is None:
+                for cod in cfg_da_cidade:
+                    erro(f"{onde}: ausente, mas REGUAS_COM_COTA_PROPRIA dá {cod} à cidade — as duas fontes "
+                         "precisam concordar")
+                continue
+            if not isinstance(campo, dict):
+                erro(f"{onde}: tem de ser um objeto {{codigo, fonte}}")
+                continue
+            sobra = set(campo) - CHAVES_REGUA_DAS_COTAS_ID
+            if sobra:
+                erro(f"{onde}: chave(s) fora de {sorted(CHAVES_REGUA_DAS_COTAS_ID)}: {sorted(sobra)}")
+            codigo, fonte = campo.get("codigo"), campo.get("fonte")
+            if not isinstance(codigo, str) or not codigo.strip():
+                erro(f"{onde}: sem `codigo`")
+                continue
+            if not isinstance(fonte, str) or not fonte.strip():
+                erro(f"{onde}: {codigo} sem `fonte` — o código só vale com a prova de que é a régua das cotas")
+            if (rio_id, codigo) in vistos:
+                erro(f"{onde}: {codigo} já é a régua das cotas de {vistos[(rio_id, codigo)]} no mesmo rio")
+            vistos[(rio_id, codigo)] = c["id"]
+            if codigo.startswith("DCSC-") and codigo != c.get("codigo_dcsc"):
+                erro(f"{onde}: {codigo} diferente do codigo_dcsc da cidade ({c.get('codigo_dcsc')!r})")
+            cfg = REGUAS_COM_COTA_PROPRIA.get(codigo)
+            if cfg and (cfg.get("cidade") != c["id"] or cfg.get("rio") != rio_id):
+                erro(f"{onde}: {codigo} está em REGUAS_COM_COTA_PROPRIA para {cfg.get('cidade')}")
+            for cod in cfg_da_cidade:
+                if cod != codigo:
+                    erro(f"{onde}: diz {codigo}, mas REGUAS_COM_COTA_PROPRIA dá {cod} à cidade")
 
 
 def valida_coordenada_nao_confirmada(estacoes: dict | None = None) -> None:
@@ -2297,6 +2350,7 @@ def main() -> int:
     valida_pinos_no_tracado()
     valida_regua_das_cotas()
     valida_equivalencia_estadual()
+    valida_regua_das_cotas_id()
     valida_classificacao_piloto()
     valida_rio_chega_a()
     valida_coordenada_nao_confirmada()

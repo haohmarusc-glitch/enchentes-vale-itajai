@@ -126,7 +126,7 @@ class TesteFaixasMunicipais(unittest.TestCase):
 
     def test_fonte_das_faixas_ausente_nao_pinta(self):
         c = brusque()
-        c["regua_das_cotas_fonte"] = ""
+        c["fonte_cotas"] = ""
         r = cr.classificar_municipal(c, [leitura(3.5)], AGORA)
         self.assertIsNone(r["faixa"])
         self.assertIn("fonte das faixas ausente", r["motivo"])
@@ -148,6 +148,38 @@ class TesteFaixasMunicipais(unittest.TestCase):
         r = cr.classificar_municipal(c, [leitura(3.5)], AGORA)
         self.assertIsNone(r["faixa"])
         self.assertIn("não concordam", r["motivo"])
+
+    def test_sem_regua_das_cotas_id_nao_compara(self):
+        c = brusque()
+        del c["regua_das_cotas_id"]
+        r = cr.classificar_municipal(c, [leitura(3.5)], AGORA)
+        self.assertIsNone(r["faixa"])
+        self.assertIn("falta `regua_das_cotas_id`", r["motivo"], "a lista ainda aponta a DCSC-00019: discordância")
+
+    def test_regua_das_cotas_id_sem_fonte_nao_vale(self):
+        c = brusque()
+        c["regua_das_cotas_id"] = {"codigo": "DCSC-00019", "fonte": " "}
+        self.assertIsNone(cr.regua_das_cotas_id(c))
+        self.assertIsNone(cr.classificar_municipal(c, [leitura(3.5)], AGORA)["faixa"])
+
+    def test_regua_das_cotas_id_e_lista_da_cota_propria_precisam_concordar(self):
+        c = brusque()
+        c["regua_das_cotas_id"] = {"codigo": "DCSC-00003", "fonte": "teste"}  # a de Ascurra
+        regua, motivo = cr.regua_das_cotas(c)
+        self.assertIsNone(regua)
+        self.assertIn("não concordam", motivo)
+
+    def test_regua_por_titulo_casa_com_a_publicacao_e_o_resgate(self):
+        """Blumenau: sem código, a identidade é o título que `comum.regua_de` devolve (o resgate cola na primária)."""
+        blu = copy.deepcopy(cr.cidade_do_piloto(ESTACOES, "blumenau"))
+        self.assertEqual(cr.regua_das_cotas(blu), ("Blumenau", None))
+        resgate = {"estacao": "Blumenau (PADKND)", "resgate_de": "Blumenau", "cidade": "blumenau",
+                   "rio": "itajai-acu", "nivel_m": 4.5, "medido_em": "2026-10-07T13:00:00", "fonte": "teste"}
+        r = cr.classificar_municipal(blu, [resgate], AGORA)
+        self.assertEqual(r["regua_da_leitura"], "Blumenau")
+        self.assertEqual(r["faixa"], "atencao")  # Blumenau: atenção 4,00 · alerta 6,00
+        outra = {**resgate, "estacao": "Blumenau", "resgate_de": None}
+        self.assertEqual(cr.classificar_municipal(blu, [{**outra, "estacao": "Outra régua"}], AGORA)["faixa"], None)
 
     def test_comparador_especial_e_recusado(self):
         cidade = cr.cidade_do_piloto(ESTACOES, "ascurra")

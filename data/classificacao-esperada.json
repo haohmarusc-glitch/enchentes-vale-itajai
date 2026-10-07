@@ -78,7 +78,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 2.29,
@@ -192,7 +193,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.0,
@@ -306,7 +308,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 4.2,
@@ -420,7 +423,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 5.0,
@@ -534,7 +538,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 6.1,
@@ -648,7 +653,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.5,
@@ -762,7 +768,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.5,
@@ -876,7 +883,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.5,
@@ -990,7 +998,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.5,
@@ -1092,7 +1101,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
         "nivel_m": null,
@@ -1193,7 +1203,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
         "nivel_m": null,
@@ -1294,7 +1305,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
         "nivel_m": null,
@@ -1407,7 +1419,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.5,
@@ -1520,7 +1533,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
         "nivel_m": 3.5,
@@ -1634,7 +1648,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
         "nivel_m": null,
@@ -1757,7 +1772,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
         "nivel_m": null,
@@ -1870,7 +1886,8 @@
          "atencao": 3.0,
          "emergencia": 5.0
         },
-        "fonte_faixas": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
+        "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+        "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "Brusque",
         "nivel_m": 3.5,
