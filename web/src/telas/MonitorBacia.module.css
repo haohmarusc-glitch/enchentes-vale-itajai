@@ -1201,9 +1201,7 @@
   font-weight: 600;
   cursor: pointer;
 }
-/* No celular, o compacto já mostra a faixa e o nível: as linhas antigas do painel não repetem. */
 @media (max-width: 700px) {
-  .painel .painelFaixa, .painel .painelNivel { display: none; }
   .painel { max-height: 62%; padding: .7rem .8rem .8rem; border-radius: .9rem .9rem .6rem .6rem; }
   .painelTopo strong { font-size: 1.15rem; }
 }
