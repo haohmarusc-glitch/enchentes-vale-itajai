@@ -163,8 +163,10 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Duas classificações **independentes** por cidade. O motor é `scripts/classificar_reguas.py`; o relatório está em
   `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.
 - Migração em três PRs separados, nesta ordem:
-  1. Python em paralelo: grava `data/tempo-real/ultimo_classificacao.json`, e o site **não** o lê.
-  2. Consumo pelo site.
+  1. Python em paralelo: grava `data/tempo-real/ultimo_classificacao.json` (#510, em produção).
+  2. Consumo pelo site: `dados/classificacao.ts` e `estadoDaCidade`, fora do Monitor. O site só segue o motor com o arquivo
+     desta coleta (≤ 30 min), a cidade no arquivo e as **mesmas** medições da tela. A idade é refeita no relógio de agora.
+     Senão, vale a regra de sempre.
   3. Origem da cor no Monitor (`monitor-autorizado`).
 - **O motor só LÊ `estacoes.json`.** Campo novo depende de proposta e aprovação do Jefferson.
 - **Faixa estadual = a que a Defesa Civil de SC publica** (`rio_alarmes`, `classificar_alarmes`). Comparação numérica
