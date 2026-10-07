@@ -481,11 +481,16 @@ o projeto.
 ## Pendências
 
 - [ ] **Chuva e maré de Itajaí leem fonte morta (achado da auditoria de domínios, 07/10/2026,
-  `docs/AUDITORIA-DOMINIOS-2026-10-07.md`).** `coleta_chuva.py` e `coleta_mares.py` buscam
-  `defesacivil.itajai.sc.gov.br`, que devolve HTTP 200 com uma casca HTML de 641 bytes. Os dados foram para
-  `monitoramento.defesacivil.itajai.sc.gov.br/api/v1` (portal novo). Falta validar a fonte nova e fazer o coletor
-  recusar HTML e esquema errado mesmo com 200, sem inventar endpoint de maré nem transformar falha em zero.
-  A mesma auditoria lista os domínios que ainda estão bloqueados na sessão de código.
+  `docs/AUDITORIA-DOMINIOS-2026-10-07.md`).** O host antigo `defesacivil.itajai.sc.gov.br` devolve HTTP 200 com uma
+  casca HTML de 641 bytes. A última chuva de Itajaí em `arquivo-series` é de 19/09/2026 17:30, e o `ultimo.json`
+  saía com `chuva_ok: true` sem nenhuma estação de Itajaí.
+  - [x] Chuva: `coleta_chuva.py` lê o portal novo (`monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/chuvas`).
+    A identidade é provada pela coordenada, com o mesmo título das séries antigas. HTML, página vazia e esquema
+    errado viram falha (`chuva_ok: false`) mesmo com 200. Relatório: `docs/INVESTIGACAO-CHUVA-MARE-ITAJAI-2026-10-07.md`.
+  - [x] Maré: `coleta_mares.py` recusa resposta inválida e não sobrescreve a tábua da Marinha. O portal novo publica
+    só a imagem JPEG da tábua do mês (UNIVALI), e nenhum endpoint foi inventado.
+  - [ ] Deploy na VPS, e lá conferir a última chuva e a maré do CIRAM (comandos no relatório).
+  - [ ] DC-00: cadastrar a coordenada (decisão do Jefferson); até lá ela fica fora da chuva.
 - [x] **Auditoria de 03/10/2026 (segunda rodada) — decidida em 04/10/2026** (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`; resumo de tudo em `docs/DECISOES-2026-10-04.md`). Guabiruba virou afluente lateral do Mirim (o Mirim agora é árvore); a DCSC-00029 vale no zero local abaixo de 10 m; Brusque ganhou o rótulo da opção B. **Falta:** conferir no servidor a data da volta da DCSC-00029 ao zero local (comandos no item 3 do doc) antes de pensar em juntar as duas séries.
   - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
     "sem leitura" de leitura estadual sem faixa; o "Hoje" de Itajaí diz quando a janela já terminou.
