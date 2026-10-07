@@ -94,6 +94,7 @@ import {
 } from '../logica/tiles'
 import VariasReguas from '../componentes/VariasReguas'
 import ArvoreDaBacia from '../componentes/ArvoreDaBacia'
+import ReguasDoMonitor from '../componentes/ReguasDoMonitor'
 import estilos from './MonitorBacia.module.css'
 
 const NOME_DO_FUNDO: Record<ChaveFundo, string> = { escuro: 'escuro', satelite: 'satélite', mapa: 'mapa de ruas' }
@@ -323,6 +324,15 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [pedidoDeEnquadrar, setPedidoDeEnquadrar] = useState(0)
   /** O menu de cidades, na ordem do rio (logica/menuDasCidades). */
   const [menuAberto, setMenuAberto] = useState(false)
+  /**
+   * ETAPA 3 do redesenho (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md): a barra de baixo do celular,
+   * Mapa · Réguas · Perguntar. "Réguas" cobre o mapa com a lista compacta dos dois rios; "Perguntar" leva à
+   * caixa do chat do topo (a mesma, com os mesmos comandos). Trocar de cidade volta ao mapa.
+   */
+  const [abaCelular, setAbaCelular] = useState<'mapa' | 'reguas'>('mapa')
+  useEffect(() => { setAbaCelular('mapa') }, [cidadeId])
+  /** A caixa do chat do topo com o foco: "Perguntar" acende, e "Mapa" apaga. */
+  const [focoNoChat, setFocoNoChat] = useState(false)
   /**
    * REDESENHO DO MONITOR, etapa 1 (docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md): o menu "Camadas do mapa"
    * reúne as camadas de cheia, a maré, a chuva, a legenda, os traçados e o fundo. Maré e chuva são só
@@ -1595,7 +1605,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             caixa do chat em pílula ("Cidade, régua ou pergunta") e o botão "Cidades"; título e aviso
             saem (o 199 está na faixa do topo da página, e volta aqui em tela cheia); "Tela cheia" e
             "Camadas do mapa" ficam nos botões redondos da coluna da direita. */}
-        <div className={estilos.topo} data-tapa-mapa>
+        <div
+          className={estilos.topo}
+          data-tapa-mapa
+          onFocus={(e) => setFocoNoChat((e.target as Element).matches?.('input[aria-label="Pergunte ou peça"]') ?? false)}
+          onBlur={() => setFocoNoChat(false)}
+        >
           <strong className={estilos.titulo}>{municipal ? "Monitor de Ascurra" : "Monitoramento da bacia"}</strong>
           {!municipal && <button
             type="button"
@@ -2571,7 +2586,49 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             </div>
           )
         })() : null}
+        {celular && !municipal && !ampliado && abaCelular === 'reguas' ? (
+          <ReguasDoMonitor aoEscolher={() => setAbaCelular('mapa')} />
+        ) : null}
       </div>
+
+      {/* BARRA DE BAIXO (celular, etapa 3): Mapa · Réguas · Perguntar. Fica no fluxo da página, logo abaixo do
+          mapa — nunca `position: fixed` —, e o mapa já desconta a altura dela (CSS e baseline da trava).
+          É do Monitor e não a barra de navegação do site (`nav[aria-label="Principal"]`), que continua fora. */}
+      {celular && !municipal && !ampliado ? (
+        <nav className={estilos.barraModos} aria-label="Modos do Monitor">
+          <button
+            type="button"
+            className={estilos.modo}
+            aria-pressed={abaCelular === 'mapa' && !chatAberto && !focoNoChat}
+            onClick={() => setAbaCelular('mapa')}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 2.2 6 2v11.6l-6-2V6.2Z" /></svg>
+            Mapa
+          </button>
+          <button
+            type="button"
+            className={estilos.modo}
+            aria-pressed={abaCelular === 'reguas'}
+            onClick={() => setAbaCelular((a) => (a === 'reguas' ? 'mapa' : 'reguas'))}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16.6 16.6 3 21 7.4 7.4 21 3 16.6Zm2.8 0 1.6 1.6 1.1-1.1-.9-.9.9-.9.9.9 1.2-1.2-1.6-1.6.9-.9 1.6 1.6 1.2-1.2-.9-.9.9-.9.9.9 1.2-1.2-1.6-1.6.9-.9 1.6 1.6 1.1-1.1-1.6-1.6L5.8 16.6Z" /></svg>
+            Réguas
+          </button>
+          <button
+            type="button"
+            className={estilos.modo}
+            aria-pressed={chatAberto || focoNoChat}
+            onClick={() => {
+              setAbaCelular('mapa')
+              const caixa = divRef.current?.querySelector<HTMLInputElement>('input[aria-label="Pergunte ou peça"]')
+              caixa?.focus()
+            }}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm1 2v9h1v2l2.5-2H19V6H5Z" /></svg>
+            Perguntar
+          </button>
+        </nav>
+      ) : null}
 
       {/* A árvore da bacia, embaixo do mapa: quem vê os pinos precisa saber
           QUEM ESTÁ ACIMA DE QUEM, e que a barragem não é o rio da cidade. */}

@@ -16,7 +16,12 @@
  *   1. o retângulo do mapa diferente do `baseline-monitor.json` (±1 px);
  *   2. elemento `position: fixed` fora do mapa cruzando o retângulo dele;
  *   3. o ponto da base visível do mapa pertencendo a outro elemento;
- *   4. a barra de navegação nova (`nav[aria-label="Principal"]`) nessas rotas.
+ *   4. a barra de navegação nova (`nav[aria-label="Principal"]`) nessas rotas;
+ *   6. no celular, em `/monitor*`: a barra do PRÓPRIO Monitor (Mapa · Réguas ·
+ *      Perguntar, `nav[aria-label="Modos do Monitor"]`, redesenho de 07/10/2026,
+ *      etapa 3) ausente, `position: fixed`, ou fora do lugar — ela fica no fluxo,
+ *      colada embaixo do mapa, e o mapa desconta a altura dela (o baseline já
+ *      guarda o mapa encolhido). No computador e em Ascurra ela não pode existir.
  * E, numa rota que não é do Monitor: 5. a barra nova com `z-index` acima de
  * 1000 (o modo ampliado do Monitor usa 10000 e precisa ficar por cima).
  *
@@ -86,6 +91,12 @@ for (const [largura, altura] of TELAS) {
         fixosPorCima,
         baseDoMapa: !!alvo && palco.contains(alvo),
         barraNova: !!document.querySelector('nav[aria-label="Principal"]'),
+        barraModos: (() => {
+          const nav = document.querySelector('nav[aria-label="Modos do Monitor"]')
+          if (!nav) return null
+          const b = nav.getBoundingClientRect()
+          return { fixa: getComputedStyle(nav).position === 'fixed', topo: Math.round(b.top + scrollY), altura: Math.round(b.height) }
+        })(),
       }
     })
     await page.close()
@@ -94,6 +105,14 @@ for (const [largura, altura] of TELAS) {
     if (r.fixosPorCima.length) falhas.push(`${chave}: elemento fixo sobre o mapa — ${r.fixosPorCima.join(', ')}`)
     if (!r.baseDoMapa) falhas.push(`${chave}: a base visível do mapa é de outro elemento`)
     if (r.barraNova) falhas.push(`${chave}: a barra de navegação nova apareceu no Monitor`)
+    const querBarraModos = largura <= 700 && rota.startsWith('/monitor')
+    if (querBarraModos && !r.barraModos) falhas.push(`${chave}: a barra Mapa · Réguas · Perguntar sumiu`)
+    if (!querBarraModos && r.barraModos) falhas.push(`${chave}: a barra Mapa · Réguas · Perguntar apareceu fora do Monitor do celular`)
+    if (querBarraModos && r.barraModos) {
+      if (r.barraModos.fixa) falhas.push(`${chave}: a barra do Monitor é position: fixed`)
+      const fimDoMapa = r.ret.y + r.ret.altura
+      if (Math.abs(r.barraModos.topo - fimDoMapa) > TOLERANCIA) falhas.push(`${chave}: a barra do Monitor não está colada embaixo do mapa (mapa termina em ${fimDoMapa}, barra começa em ${r.barraModos.topo})`)
+    }
   }
   await ctx.close()
 }

@@ -23,16 +23,24 @@ import { situacaoDaLinha } from '../logica/linhaDaCidade'
  * elos da fila, e encadear tempo por elas afirmaria um caminho de água que não
  * existe.
  */
+/** Para onde vai o toque numa cidade. Padrão: a página da cidade; o Monitor manda para o mapa dele. */
+export type DestinoDaCidade = (cidade: Cidade, rioId: string) => string
+
+const paginaDaCidade: DestinoDaCidade = (cidade, rioId) =>
+  cidade.id === 'itajai' ? '/itajai' : `/${rioDaUrl(rioId)}/${cidade.id}`
+
 export default function ListaRio({
   rioId,
   cidades,
   topologia,
   aoVivo,
+  destino = paginaDaCidade,
 }: {
   rioId: string
   cidades: Cidade[]
   topologia?: Topologia
   aoVivo: AoVivo
+  destino?: DestinoDaCidade
 }) {
   const porId = new Map(cidades.map((c) => [c.id, c]))
   const pegar = (ids: string[]) => ids.map((id) => porId.get(id)).filter((c): c is Cidade => Boolean(c))
@@ -40,7 +48,7 @@ export default function ListaRio({
   if (!topologia) {
     return (
       <Grupo titulo="A água desce nesta ordem">
-        <Fila cidades={cidades} rioId={rioId} aoVivo={aoVivo} comTempo />
+        <Fila cidades={cidades} rioId={rioId} aoVivo={aoVivo} destino={destino} comTempo />
       </Grupo>
     )
   }
@@ -55,20 +63,20 @@ export default function ListaRio({
     <>
       {cabeceiras.length > 0 ? (
         <Grupo titulo="Cabeceiras — correm em paralelo" nota={`Juntam-se em ${tronco[0]?.nome ?? 'Rio do Sul'}, onde nasce o Itajaí-Açu.`}>
-          <Fila cidades={cabeceiras} rioId={rioId} aoVivo={aoVivo} />
+          <Fila cidades={cabeceiras} rioId={rioId} aoVivo={aoVivo} destino={destino} />
         </Grupo>
       ) : null}
       <Grupo titulo="Tronco — a água desce nesta ordem">
-        <Fila cidades={tronco} rioId={rioId} aoVivo={aoVivo} comTempo />
+        <Fila cidades={tronco} rioId={rioId} aoVivo={aoVivo} destino={destino} comTempo />
       </Grupo>
       {afluentes.length > 0 ? (
         <Grupo titulo="Afluentes laterais" nota="Entram no tronco de lado — não são elos da fila.">
-          <Fila cidades={afluentes} rioId={rioId} aoVivo={aoVivo} />
+          <Fila cidades={afluentes} rioId={rioId} aoVivo={aoVivo} destino={destino} />
         </Grupo>
       ) : null}
       {resto.length > 0 ? (
         <Grupo titulo="Outros pontos" nota="Ainda sem posição definida na árvore do rio.">
-          <Fila cidades={resto} rioId={rioId} aoVivo={aoVivo} />
+          <Fila cidades={resto} rioId={rioId} aoVivo={aoVivo} destino={destino} />
         </Grupo>
       ) : null}
     </>
@@ -89,11 +97,13 @@ function Fila({
   cidades,
   rioId,
   aoVivo,
+  destino,
   comTempo = false,
 }: {
   cidades: Cidade[]
   rioId: string
   aoVivo: AoVivo
+  destino: DestinoDaCidade
   comTempo?: boolean
 }) {
   return (
@@ -104,7 +114,7 @@ function Fila({
         return (
           <Fragment key={c.id}>
             <li>
-              <Linha cidade={c} rioId={rioId} aoVivo={aoVivo} />
+              <Linha cidade={c} rioId={rioId} aoVivo={aoVivo} destino={destino} />
             </li>
             {trecho && proxima ? (
               <li className={estilos.tempo} aria-label={`a cheia leva ${faixaHoras(trecho)} até ${proxima.nome}`}>
@@ -118,7 +128,7 @@ function Fila({
   )
 }
 
-function Linha({ cidade, rioId, aoVivo }: { cidade: Cidade; rioId: string; aoVivo: AoVivo }) {
+function Linha({ cidade, rioId, aoVivo, destino }: { cidade: Cidade; rioId: string; aoVivo: AoVivo; destino: DestinoDaCidade }) {
   const estado = estadoDaCidade(cidade, rioId, aoVivo)
   const { leitura, faixa } = estado
   const idade = leitura?.medidoEm ? idadeMin(leitura.medidoEm, aoVivo.agora) : null
@@ -126,7 +136,7 @@ function Linha({ cidade, rioId, aoVivo }: { cidade: Cidade; rioId: string; aoViv
   const seta = valida ? tendenciaDaLeitura(estado.serie, leitura, aoVivo.agora) : null
   // Auditoria de 03/10/2026, item 5: leitura estadual sem faixa não é "sem leitura".
   const linha = situacaoDaLinha(estado, cidade.id, aoVivo.agora)
-  const para = cidade.id === 'itajai' ? '/itajai' : `/${rioDaUrl(rioId)}/${cidade.id}`
+  const para = destino(cidade, rioId)
   return (
     <Link to={para} className={estilos.linha}>
       <span className={`${estilos.marcador} ${estilos[`m_${faixa}`] ?? ''}`} aria-hidden="true" />
