@@ -500,7 +500,8 @@ o projeto.
     - Rio dos Cedros fica sem classificação municipal até a COMPDEC confirmar as cotas. A faixa estadual da DCSC-00011
       aparece como "faixa estadual"; sem ela, fica cinza.
     - Brusque sem mudança.
-  - [ ] Rio dos Cedros: pedir à COMPDEC a confirmação do zero e da vigência das cotas depois do desassoreamento de 2026.
+  - [ ] Rio dos Cedros: pedir à COMPDEC a confirmação do zero e da vigência das cotas depois do desassoreamento de
+    2026. **C32 rascunhado** em `docs/oficios-prontos.md` (07/10/2026), como resposta na conversa do C29. Não enviado.
   - [ ] Sem `regua_das_cotas_id` por falta de prova escrita: Taió (régua das cotas em aberto), Indaial e Ilhota.
   - [ ] Rio dos Cedros entra sem cor municipal enquanto `cotas_verificado` for false — decidir junto com o PR 2.
 
