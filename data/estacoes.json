@@ -1675,6 +1675,9 @@
     },
     {
       "codigo": "DC-00",
+      "lat": -26.9165821,
+      "lon": -48.7016231,
+      "fonte_coordenada": "monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/chuvas (portal novo, data-page, campos latitude/longitude da DC00), 07/10/2026; cadastrada por decisão do Jefferson em 07/10/2026",
       "titulo": "DC-00 Defesa Civil de Itajaí",
       "rio": null,
       "cidade": "itajai",

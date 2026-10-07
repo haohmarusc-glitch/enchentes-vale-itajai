@@ -105,8 +105,9 @@ test('AS ONZE RÉGUAS DE ITAJAÍ cabem no enquadramento da cidade', () => {
    * norte-sul some primeiro.
    */
   const d = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf-8'))
-  const reguas = (d.estacoes_tempo_real as { cidade: string; lat?: number; lon?: number }[])
-    .filter((e) => e.cidade === 'itajai' && typeof e.lat === 'number' && typeof e.lon === 'number')
+  // A DC-00 (07/10/2026) tem coordenada, mas é pluviômetro: não é régua.
+  const reguas = (d.estacoes_tempo_real as { cidade: string; lat?: number; lon?: number; tipo?: string }[])
+    .filter((e) => e.cidade === 'itajai' && typeof e.lat === 'number' && typeof e.lon === 'number' && e.tipo !== 'pluviometro')
     .map((e) => ({ lat: e.lat as number, lon: e.lon as number }))
   assert.equal(reguas.length, 11, 'o cadastro deveria ter 11 réguas de Itajaí com coordenada')
 

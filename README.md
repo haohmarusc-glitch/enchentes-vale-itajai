@@ -551,7 +551,9 @@ o projeto.
     "referência pendente", sem número. **C33 rascunhado** em `docs/oficios-prontos.md` (07/10/2026), para a
     Equipe de Hidrologia da EPAGRI/CIRAM, e deixado como rascunho no Gmail, na conversa do C5/C12. Não enviado. Entrada em `REFERENCIA_VERTICAL` só com fonte escrita, por
     decisão do Jefferson.
-  - [ ] DC-00: cadastrar a coordenada (decisão do Jefferson); até lá ela fica fora da chuva.
+  - [x] DC-00: coordenada cadastrada por decisão do Jefferson (07/10/2026), a que o portal novo publica
+    (−26,9165821, −48,7016231). Com a página real das 19h30, a chuva de Itajaí passa a ter as doze estações; entra
+    na coleta depois do deploy.
 - [x] **Auditoria de 03/10/2026 (segunda rodada) — decidida em 04/10/2026** (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`; resumo de tudo em `docs/DECISOES-2026-10-04.md`). Guabiruba virou afluente lateral do Mirim (o Mirim agora é árvore); a DCSC-00029 vale no zero local abaixo de 10 m; Brusque ganhou o rótulo da opção B. **Falta:** conferir no servidor a data da volta da DCSC-00029 ao zero local (comandos no item 3 do doc) antes de pensar em juntar as duas séries.
   - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
     "sem leitura" de leitura estadual sem faixa; o "Hoje" de Itajaí diz quando a janela já terminou.

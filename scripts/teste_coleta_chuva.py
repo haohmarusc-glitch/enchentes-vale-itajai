@@ -136,14 +136,27 @@ class TestPortalNovo(unittest.TestCase):
         self.assertTrue(URL.startswith("https://monitoramento.defesacivil.itajai.sc.gov.br/"))
         self.assertNotEqual(URL, URL_ANTIGA)
 
-    def test_onze_estacoes_com_coordenada_entram(self):
-        self.assertEqual(len(self.leituras), 11)
+    def test_as_doze_estacoes_com_coordenada_entram(self):
+        """A DC-00 ganhou coordenada no cadastro por decisão do Jefferson (07/10/2026)."""
+        self.assertEqual(len(self.leituras), 12)
         self.assertEqual(sorted(l["estacao"][:5] for l in self.leituras),
-                         [f"DC-{i:02d}" for i in range(1, 12)])
+                         [f"DC-{i:02d}" for i in range(0, 12)])
 
-    def test_dc00_fica_de_fora_sem_coordenada_no_cadastro(self):
-        """Nome igual não prova estação igual; a DC-00 não tem coordenada cadastrada."""
-        self.assertFalse(any(l["estacao"].startswith("DC-00") for l in self.leituras))
+    def test_dc00_entra_pela_coordenada_cadastrada(self):
+        dc0 = por_titulo(self.leituras, "DC-00")
+        self.assertEqual(dc0["estacao"], "DC-00 Defesa Civil de Itajaí")
+        self.assertEqual(dc0["cidade"], "itajai")
+
+    def test_estacao_sem_coordenada_no_cadastro_fica_de_fora(self):
+        """Nome igual não prova estação igual: sem coordenada dos dois lados, a estação fica de fora."""
+        from unittest import mock
+        import coleta_chuva
+        cadastro = coleta_chuva._cadastro_por_codigo()
+        sem = {**cadastro, "DC-00": {k: v for k, v in cadastro["DC-00"].items() if k not in ("lat", "lon")}}
+        with mock.patch.object(coleta_chuva, "_cadastro_por_codigo", return_value=sem):
+            leituras = parse(self.texto)
+        self.assertFalse(any(l["estacao"].startswith("DC-00") for l in leituras))
+        self.assertEqual(len(leituras), 11)
 
     def test_titulo_igual_ao_das_series_antigas(self):
         """O título vem do cadastro — o mesmo das séries até 19/09 — e a série não quebra."""
@@ -211,7 +224,7 @@ class TestRecusaMesmoComStatus200(unittest.TestCase):
         e["chuva_1_h_mm"] = "0,0"
         leituras = parse(_pagina_de(self.dados))
         self.assertFalse(any(l["estacao"].startswith("DC-01") for l in leituras))
-        self.assertEqual(len(leituras), 10)
+        self.assertEqual(len(leituras), 11)
 
     def test_sem_dados_vira_ausente_nunca_zero(self):
         e = next(x for x in self.dados["props"]["estacoes"] if x["codigo"] == "DC02")
