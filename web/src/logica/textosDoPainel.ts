@@ -24,9 +24,35 @@ export function textoSemCota(origem: OrigemDaCor): string {
   return 'Sem cota de referência cadastrada — a faixa fica cinza.'
 }
 
+/**
+ * Estações estaduais que SÃO a régua das cotas municipais da cidade: a COMPDEC declarou, ou a medição provou,
+ * que as faixas estão na escala da própria estação. Espelho de `REGUAS_COM_COTA_PROPRIA` em
+ * `scripts/coleta_estadual_com_cota.py` — o `teste_coleta_estadual_com_cota.py` trava os dois iguais. Nelas a
+ * frase genérica "a referência vertical não está validada" seria falsa (Brusque; Rio dos Cedros desde o C29).
+ */
+export const REGUA_ESTADUAL_DAS_COTAS: Readonly<Record<string, string>> = {
+  ascurra: 'DCSC-00003',
+  brusque: 'DCSC-00019',
+  'rio-dos-cedros': 'DCSC-00011',
+}
+
+/** A estação estadual `codigo` é a régua das cotas da cidade? Código diferente, nunca. */
+export function estacaoEhReguaDasCotas(cidadeId: string, codigo: string | null | undefined): boolean {
+  return !!codigo && REGUA_ESTADUAL_DAS_COTAS[cidadeId] === codigo
+}
+
 /** A ressalva embaixo do nível bruto da rede estadual. */
-export function ressalvaDoBruto(temCotasMunicipais: boolean, corEstadual: boolean): string {
+export function ressalvaDoBruto(temCotasMunicipais: boolean, corEstadual: boolean, reguaDasCotas = false): string {
   const partes = ['Nível na régua própria da estação estadual.']
+  if (temCotasMunicipais && reguaDasCotas) {
+    partes.push('Esta estação é a régua das cotas municipais acima: o número se compara com elas.')
+    partes.push(
+      corEstadual
+        ? 'A cor do pino é a classificação que a própria rede publica para esta estação, não uma comparação com cota municipal.'
+        : 'Com a leitura em dia, é a comparação deste número com as cotas que define a faixa do pino.',
+    )
+    return partes.join(' ')
+  }
   partes.push(
     temCotasMunicipais
       ? 'A referência vertical não está validada para as cotas municipais acima: este número não se compara com elas.'
