@@ -19,6 +19,7 @@ import type { Cidade, TabuaMare } from '../dados/tipos'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import { leituraDaCidade, leiturasDaCidade } from '../dados/tempoReal'
 import type { BrutoEstadual, NivelSc } from '../dados/nivelSc'
+import { faixasDoMotor, type EstadoClassificacao, type OrigemDaCor as OrigemDoMotor } from '../dados/classificacao'
 import { deBrasilia, faixaDaCidade, frescor, idadeMin, textoIdade, type Faixa } from '../logica/tempoReal'
 import { estadoMareAgora, type EstadoMare } from '../logica/mare'
 import { metros } from '../logica/formato'
@@ -177,6 +178,13 @@ export interface Pino {
   faixa: Faixa
   /** De onde veio `faixa`. `estadual` só quando a municipal é `sem-dado`. */
   origemFaixa?: OrigemFaixa
+  /**
+   * Quem decidiu a faixa (PR 3 da classificação, 07/10/2026): `motor` quando foi o
+   * `ultimo_classificacao.json` desta coleta (`faixasDoMotor`), `site` pela regra de sempre.
+   */
+  classificadaPor?: 'motor' | 'site'
+  /** A régua e o rótulo de quem pintou, quando foi o motor. */
+  origemDoMotor?: OrigemDoMotor | null
   nivel: number | null
   medidoEm: Date | null
   /**
@@ -358,6 +366,12 @@ export function construirCena(
    */
   vista?: Vista,
   referenciaDc11?: ReguaNoMapa,
+  /**
+   * A classificação do motor Python (PR 3, 07/10/2026). Só AO VIVO: na reprodução a cor é do
+   * instante passado, e o motor só fala da coleta de agora. Ausente, ou fora dos portões de
+   * `faixasDoMotor` (arquivo de outra coleta, outra medição), vale a regra de sempre.
+   */
+  classificacao?: EstadoClassificacao | null,
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -398,16 +412,30 @@ export function construirCena(
         // Bruto só entra AO VIVO (não em leituraNaHora/reprodução — ver o
         // parâmetro nivelBrutoSc).
         const bruto = !leituraNaHora ? (nivelBrutoSc?.get(cidade.id) ?? null) : null
-        const municipal = faixaDaCidade(cidade, aoVivo, temVarias, agora)
+        // O motor decide quando a decisão dele é desta coleta e viu as mesmas medições que o pino mostra —
+        // os mesmos portões dos cartões (`estadoDaCidade`), para mapa e cartão nunca pintarem diferente.
+        const motor = !leituraNaHora
+          ? faixasDoMotor(
+              classificacao,
+              cidade.id,
+              rio.rioId,
+              { leituraMedidaEm: aoVivo?.medidoEm, estadualMedidaEm: bruto?.medidoEm, varias: temVarias },
+              agora,
+            )
+          : null
+        const municipal = motor ? motor.faixa : faixaDaCidade(cidade, aoVivo, temVarias, agora)
         // C7, camada 2: sem faixa municipal (e sem o impasse de várias réguas),
         // a classificação da própria Defesa Civil de SC pinta — tracejada e
         // rotulada. Só com leitura fresca: velha fica cinza, como a municipal.
-        const estadual =
-          municipal === 'sem-dado' && !aoVivo ? faixaEstadualDe(bruto, agora) : null
+        const estadual = motor
+          ? motor.faixaEstadual
+          : municipal === 'sem-dado' && !aoVivo ? faixaEstadualDe(bruto, agora) : null
         return {
           cidade,
           faixa: estadual ?? municipal,
           origemFaixa: (estadual ? 'estadual' : 'municipal') as OrigemFaixa,
+          classificadaPor: (motor ? 'motor' : 'site') as 'motor' | 'site',
+          origemDoMotor: motor?.origem ?? null,
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
           nivelBruto: aoVivo ? null : bruto,
@@ -555,6 +583,8 @@ export function construirCena(
         aproximado: a.pino.aproximado,
         faixa: a.faixa,
         origemFaixa: a.origemFaixa,
+        classificadaPor: a.classificadaPor,
+        origemDoMotor: a.origemDoMotor,
         nivel: a.nivel,
         medidoEm: a.medidoEm,
         nivelBruto: a.nivelBruto,

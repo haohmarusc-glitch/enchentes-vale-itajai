@@ -167,7 +167,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   2. Consumo pelo site: `dados/classificacao.ts` e `estadoDaCidade`, fora do Monitor. O site só segue o motor com o arquivo
      desta coleta (≤ 30 min), a cidade no arquivo e as **mesmas** medições da tela. A idade é refeita no relógio de agora.
      Senão, vale a regra de sempre.
-  3. Origem da cor no Monitor (`monitor-autorizado`).
+  3. Origem da cor no Monitor (`monitor-autorizado`). `construirCena` passa pelos mesmos portões (só ao vivo, nunca na
+     reprodução), e o painel diz "Cor do rio: classificação municipal/estadual — régua" (`textoDaOrigemDaCor`). Pela
+     regra de sempre, a linha diz só o tipo, sem nomear régua.
 - **O motor só LÊ `estacoes.json`.** Campo novo depende de proposta e aprovação do Jefferson.
 - **Faixa estadual = a que a Defesa Civil de SC publica** (`rio_alarmes`, `classificar_alarmes`). Comparação numérica
   com limites por estação fica fora até haver limites oficiais e referência de régua validada.

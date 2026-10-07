@@ -488,9 +488,10 @@ o projeto.
     motor recusa).
   - Relatório e inventário em `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.
   - [x] PR 2: o site segue o motor em `estadoDaCidade` (cartão, listas, início e chat). Só faz isso com o arquivo desta
-    coleta e as mesmas medições da tela; senão, vale a regra de sempre. O mapa do Monitor ainda segue a regra antiga
-    até o PR 3.
-  - [ ] PR 3: o Monitor diz qual classificação deu a cor (`monitor-autorizado`).
+    coleta e as mesmas medições da tela; senão, vale a regra de sempre.
+  - [x] PR 3: o mapa do Monitor segue o motor com os mesmos portões (só ao vivo), e o painel diz "Cor do rio:
+    classificação municipal/estadual — régua" (`monitor-autorizado`). Ainda fora: o `MapaRios` da tela do rio, que não lê
+    a rede estadual.
   - [ ] Proposta para o Jefferson: um campo que identifique a régua das cotas por código nas cidades lidas por
     título (Blumenau, Indaial, Rio do Sul…). Sem ele, elas não entram no motor.
   - [ ] Rio dos Cedros entra sem cor municipal enquanto `cotas_verificado` for false — decidir junto com o PR 2.
