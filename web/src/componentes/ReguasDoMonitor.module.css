@@ -1,0 +1,28 @@
+/* A folha da aba "Réguas": cobre o mapa (dentro do palco), rola sozinha. O Monitor fica fora do tema do
+   app (`:root[data-app]`), então os tokens resolvem para os valores claros de sempre — a lista é a mesma
+   das telas de rio, num papel claro sobre o mapa escuro. */
+.folha {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.9rem 0.8rem 1.2rem;
+  background: var(--fundo, #f4f6f8);
+  color: var(--tinta, #14202b);
+}
+
+.instrucao {
+  margin: 0 0 0.9rem;
+  font-size: 0.9rem;
+  color: var(--tinta-fraca, #4a5866);
+}
+
+.rio + .rio {
+  margin-top: 1.2rem;
+}
+
+.nomeRio {
+  margin: 0 0 0.5rem;
+  font-size: 1.15rem;
+}

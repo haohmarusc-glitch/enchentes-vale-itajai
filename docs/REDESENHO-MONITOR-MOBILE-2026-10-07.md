@@ -128,3 +128,25 @@ Só no celular (≤ 700 px); no computador o painel é o de sempre.
 - Lógica pura e testada em `web/src/logica/painelCompacto.ts`. A auditoria do navegador abre "Mais detalhes" antes
   de conferir os textos do painel inteiro. Trava do Monitor: baseline igual ao da etapa 1 (o painel não muda a
   geometria do mapa).
+
+## Etapa 3 — o que entrou (07/10/2026, PR em rascunho, sem merge)
+
+Só no celular (≤ 700 px) e só em `/monitor*`; no computador e em `/municipal/ascurra` nada muda.
+
+- **Barra de baixo Mapa · Réguas · Perguntar** (`nav[aria-label="Modos do Monitor"]`, em `MonitorBacia.tsx`). Fica no
+  **fluxo** da página, colada embaixo do mapa — nunca `position: fixed` — e o mapa desconta a altura dela:
+  `calc(100dvh − 5.875rem − 3.5rem)` (56 px a menos que na etapa 1: 646 → 590 px em 360×740, 750 → 694 px em 390×844).
+  Some em tela cheia. Não é a barra de navegação do site (`nav[aria-label="Principal"]`), que continua fora do Monitor.
+- **Mapa**: o mapa de sempre. Fica aceso quando nenhuma das outras está.
+- **Réguas**: uma folha clara cobre o mapa (dentro do palco) com as cidades dos dois rios na **mesma `ListaRio`** das
+  telas do Açu e do Mirim — faixa (cor = faixa), número, tendência (D7) e idade; leitura velha sem número; estadual dita
+  "rede estadual (zero próprio)" com o chip tracejado; cabeceiras, tronco e afluentes em grupos (árvore, não fila). A única
+  diferença é o destino do toque (`ListaRio` ganhou `destino`): a cidade abre **no mapa do Monitor** (`/monitor/<id>`),
+  com o painel compacto da etapa 2, e a folha fecha. Trocar de cidade por qualquer caminho volta ao Mapa.
+- **Perguntar**: leva à caixa do chat do topo — a mesma, com os mesmos comandos e a mesma ponte — e fica acesa enquanto a
+  caixa tem o foco ou a conversa está aberta. Não há segundo chat.
+- **Trava do Monitor** (`testes-navegador/trava-monitor.mjs`): baseline regravado com o mapa encolhido no celular
+  (computador e Ascurra iguais) e regra nova (6): no celular, em `/monitor*`, a barra do Monitor tem de existir, não ser
+  `fixed` e começar exatamente onde o mapa termina; fora disso ela não pode existir. As regras 1–5 continuam.
+- Prints reais (390×844 e 360×740, dados do branch `tempo-real` de 07/10/2026 ~15h UTC):
+  `docs/prints/monitor-etapa3-2026-10-07/`.

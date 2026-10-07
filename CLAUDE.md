@@ -205,7 +205,8 @@ Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em c
   - **Exceção autorizada (07/10/2026): o redesenho do Monitor no celular**, em três etapas e PRs separados com o
     rótulo `monitor-autorizado` — `docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md`. A casca antiga continua nas rotas
     do Monitor, mas em ≤ 700 px ela é compacta (faixa do 199 numa linha, cabeçalho com menu ☰ no lugar das abas) e o
-    mapa mede `calc(100dvh - 5.875rem)`; no computador nada da casca muda. O baseline da trava é regravado em cada
+    mapa mede `calc(100dvh - 5.875rem - 3.5rem)` (etapa 3: a barra Mapa · Réguas · Perguntar fica no fluxo, colada embaixo
+    do mapa, nunca `fixed` — regra 6 da trava); no computador nada da casca muda. O baseline da trava é regravado em cada
     etapa, com a data no commit. **Nenhuma etapa é mergeada nem vai para produção sem o Jefferson dizer.**
 - **D1 — aviso:** a regra de "toda tela traz o aviso" continua. A faixa presa no topo diz *"Emergência: 199 · não substitui a Defesa Civil"*; o texto completo (`AvisoLegal`) abre numa folha na primeira visita (sai só com "Entendi"; volta se o aparelho não lembrar) e fica no fim de toda página.
 - **D3:** a "marca antiga mais próxima acima" (`PainelCenarioAnterior`) fica só na aba Histórico — perto do nível de agora, soaria previsão.
