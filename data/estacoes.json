@@ -774,16 +774,17 @@
           "ordem_no_ramo": 1,
           "sub_bacia": "Rio dos Cedros",
           "codigo_ana": null,
-          "codigo_dcsc": null,
+          "codigo_dcsc": "DCSC-00011",
           "equivalencia_estadual": {
             "codigo": "DCSC-00011",
             "nome_na_dcsc": "Rio dos Cedros 1",
             "distancia_km": 0.24,
-            "status": "não confirmada",
-            "criterio": "Decisão do Jefferson, fechada em 06/10/2026: a régua municipal não é considerada igual à estação estadual só pela proximidade (0,24 a 1,6 km) — pode haver diferença de zero, de seção do rio ou de referência altimétrica. Fica \"não confirmada\" até existir documento, código comum ou comparação de referência/zero da régua. Enquanto isso, a leitura da estação estadual aparece só como número BRUTO da rede estadual, com zero próprio, e nunca pinta faixa pelas cotas da cidade."
+            "status": "confirmada",
+            "criterio": "Confirmada em 07/10/2026 por decisão do Jefferson, com documento escrito da COMPDEC (critério fechado em 06/10/2026: documento, código comum ou comparação de referência/zero). Resposta transcrita em data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt: \"temos apenas uma estação de nível de rio, que fica na ponte próxima ao Paço Municipal, sendo usado o Paço Municipal apenas como referência\". Com uma estação só, a DCSC-00011 (Rio dos Cedros 1) é a régua das faixas municipais. Reforço: o relatório CEOPS/FURB de 2016 (p. 44) põe a régua de referência no local da estação telemétrica. De 06/10 a 07/10/2026 ficou \"não confirmada\": só havia proximidade (0,24 km).",
+            "fonte": "Defesa Civil de Rio dos Cedros, resposta ao ofício C29 em 07/10/2026: a cidade tem uma única estação de nível, na ponte próxima ao Paço Municipal"
           },
           "verificado": false,
-          "regua": "Régua da Praça Matriz",
+          "regua": "Estação da ponte próxima ao Paço Municipal (DCSC-00011)",
           "referencia": "régua",
           "cotas_verificado": false,
           "fonte_cotas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
@@ -798,9 +799,11 @@
             "https://monitoramento.defesacivil.sc.gov.br/mapa"
           ],
           "coordenadas": [
-            -26.7397,
-            -49.2703
-          ]
+            -26.740013,
+            -49.272686
+          ],
+          "regua_das_cotas": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+          "regua_das_cotas_fonte": "Defesa Civil de Rio dos Cedros, resposta ao ofício C29 em 07/10/2026, assinada por Jucinei Ivan Vicenzi, Coordenador de Proteção e Defesa Civil — bruto: data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt. A cidade tem uma única estação de nível, na ponte próxima ao Paço; as faixas de 4,80 / 5,30 / 5,70 m do Plano de Contingência v10.9 (abr/2026, p. 9) são lidas nela. Não foi informado deslocamento; não aplicar conversões."
         },
         {
           "id": "trombudo-central",

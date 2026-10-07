@@ -99,7 +99,7 @@ test('Gaspar: sem leitura no arquivo de agora, mas com ponto na série — diz a
   assert.doesNotMatch(t, /horário válido/)
 })
 
-test('equivalência estadual: as quatro cidades do cadastro dizem "não confirmada", com estação e distância', async () => {
+test('equivalência estadual: das quatro do cadastro, três dizem "não confirmada"; Rio dos Cedros, confirmada pela COMPDEC (07/10/2026)', async () => {
   const { readFileSync } = await import('node:fs')
   const est = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf8')) as {
     rios: Record<string, { cidades: { id: string; equivalencia_estadual?: Parameters<typeof textoEquivalencia>[0] }[] }>
@@ -108,6 +108,11 @@ test('equivalência estadual: as quatro cidades do cadastro dizem "não confirma
   assert.deepEqual(com.map((c) => c.id).sort(), ['lontras', 'rio-dos-cedros', 'timbo', 'trombudo-central'])
   for (const c of com) {
     const t = textoEquivalencia(c.equivalencia_estadual!)
+    if (c.id === 'rio-dos-cedros') {
+      assert.match(t, /^A estação estadual DCSC-00011 \(Rio dos Cedros 1\) é a régua das cotas desta cidade \(fonte: Defesa Civil de Rio dos Cedros, resposta ao ofício C29/)
+      assert.doesNotMatch(t, /não confirmada/)
+      continue
+    }
     assert.match(t, /não confirmada/)
     assert.match(t, new RegExp(c.equivalencia_estadual!.codigo))
     assert.match(t, /Proximidade não basta/)

@@ -2200,7 +2200,9 @@ class EquivalenciaEstadualNaoConfirmada(unittest.TestCase):
         vd.valida_equivalencia_estadual(d)
         return list(vd.erros), list(vd.avisos)
 
-    def test_as_quatro_estao_registradas_e_nao_confirmadas(self):
+    def test_as_quatro_estao_registradas_tres_nao_confirmadas(self):
+        """Eram quatro "não confirmadas" em 06/10/2026. Rio dos Cedros passou a "confirmada" em 07/10/2026, com a
+        resposta escrita da COMPDEC ao C29 (uma estação de nível só, na ponte próxima ao Paço)."""
         achadas = {}
         for rio in self.real["rios"].values():
             for c in rio["cidades"]:
@@ -2208,13 +2210,22 @@ class EquivalenciaEstadualNaoConfirmada(unittest.TestCase):
                     achadas[c["id"]] = c["equivalencia_estadual"]
         self.assertEqual(set(achadas), {"timbo", "rio-dos-cedros", "trombudo-central", "lontras"})
         for cid, eq in achadas.items():
-            self.assertEqual(eq["status"], "não confirmada", cid)
+            self.assertEqual(eq["status"], "confirmada" if cid == "rio-dos-cedros" else "não confirmada", cid)
+        cedros = _cidade(self.real, "itajai-acu", "rio-dos-cedros")
+        self.assertEqual(cedros["codigo_dcsc"], cedros["equivalencia_estadual"]["codigo"])
+        self.assertIn("C29", cedros["equivalencia_estadual"]["fonte"])
         erros, _ = self.roda(copy.deepcopy(self.real))
         self.assertEqual(erros, [])
 
     def test_vincular_sem_confirmar_reprova(self):
         d = copy.deepcopy(self.real)
-        _cidade(d, "itajai-acu", "rio-dos-cedros")["codigo_dcsc"] = "DCSC-00011"
+        _cidade(d, "itajai-acu", "timbo")["codigo_dcsc"] = _cidade(d, "itajai-acu", "timbo")["equivalencia_estadual"]["codigo"]
+        erros, _ = self.roda(d)
+        self.assertTrue([e for e in erros if "timbo" in e and "NÃO" in e])
+
+    def test_rio_dos_cedros_desconfirmada_reprova_o_vinculo(self):
+        d = copy.deepcopy(self.real)
+        _cidade(d, "itajai-acu", "rio-dos-cedros")["equivalencia_estadual"]["status"] = "não confirmada"
         erros, _ = self.roda(d)
         self.assertTrue([e for e in erros if "rio-dos-cedros" in e and "NÃO" in e])
 

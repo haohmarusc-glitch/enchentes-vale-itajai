@@ -480,6 +480,19 @@ o projeto.
 
 ## Pendências
 
+- [x] **Rio dos Cedros: resposta da Defesa Civil ao C29 aplicada (07/10/2026, decisão do Jefferson).** A cidade tem uma
+  única estação de nível, na ponte próxima ao Paço Municipal; o Paço é só referência. Resposta transcrita em
+  `data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt`.
+  - A DCSC-00011 virou a régua da cidade: equivalência "confirmada", `codigo_dcsc`, pino na coordenada da estação
+    (antes na Praça Matriz, a 0,24 km) e lista `REGUAS_COM_COTA_PROPRIA`. Rio dos Cedros passa a pintar pelas cotas de
+    4,80 / 5,30 / 5,70 m **depois do deploy do coletor na VPS** (o site lê a leitura que o coletor marca para cota).
+  - O pico de 8,96 m de 2014: 09/06/2014 às 00:45, confiança alta (antes 08/06, sem hora, baixa).
+  - O traçado do Rio dos Cedros foi regerado pelo `converter_tracado_rios.py`: o quadro do mapa encolheu ~35 m ao sul
+    com o pino novo, e o recorte acompanhou.
+  - [ ] **Ainda aberto:** a COMPDEC não falou do zero da régua nem da vigência da escala depois do desassoreamento de
+    2026 (`cotas_verificado` continua false). A DCSC classifica a estação com faixas próprias que não são as
+    municipais (3,65 m já é "atenção" na rede estadual em 07/10/2026); o painel mostra as duas, rotuladas.
+
 - [x] **Auditoria de 03/10/2026 (segunda rodada) — decidida em 04/10/2026** (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`; resumo de tudo em `docs/DECISOES-2026-10-04.md`). Guabiruba virou afluente lateral do Mirim (o Mirim agora é árvore); a DCSC-00029 vale no zero local abaixo de 10 m; Brusque ganhou o rótulo da opção B. **Falta:** conferir no servidor a data da volta da DCSC-00029 ao zero local (comandos no item 3 do doc) antes de pensar em juntar as duas séries.
   - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
     "sem leitura" de leitura estadual sem faixa; o "Hoje" de Itajaí diz quando a janela já terminou.

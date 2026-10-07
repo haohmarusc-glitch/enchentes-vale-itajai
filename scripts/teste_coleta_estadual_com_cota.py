@@ -83,6 +83,11 @@ class TesteOParEstaTrancadoNoEstacoesJson(unittest.TestCase):
     def teste_ascurra_esta_na_lista(self):
         self.assertIn("DCSC-00003", cec.REGUAS_COM_COTA_PROPRIA)
 
+    def teste_rio_dos_cedros_esta_na_lista_no_acu(self):
+        # Resposta da COMPDEC ao C29 (07/10/2026): uma estação de nível só, a DCSC-00011.
+        cfg = cec.REGUAS_COM_COTA_PROPRIA["DCSC-00011"]
+        self.assertEqual((cfg["cidade"], cfg["rio"]), ("rio-dos-cedros", "itajai-acu"))
+
     def teste_brusque_esta_na_lista_no_mirim(self):
         cfg = cec.REGUAS_COM_COTA_PROPRIA["DCSC-00019"]
         self.assertEqual((cfg["cidade"], cfg["rio"]), ("brusque", "itajai-mirim"))

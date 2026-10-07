@@ -45,8 +45,14 @@ class Inventario(unittest.TestCase):
         self.assertEqual((b["lat"], b["lon"]), (-26.9186, -49.0656))
         self.assertIn("régua confirmada", inv.situacao(b))
 
-    def test_as_quatro_candidatas_ficam_nao_confirmadas(self):
-        for cid in ("timbo", "rio-dos-cedros", "trombudo-central", "lontras"):
+    def test_rio_dos_cedros_confirmada_pela_compdec(self):
+        """Resposta ao C29 em 07/10/2026: a cidade tem uma estação de nível só, a DCSC-00011."""
+        l = self.linhas["rio-dos-cedros"]
+        self.assertEqual(l["codigo"], "DCSC-00011")
+        self.assertEqual(l["equivalencia"]["status"], "confirmada")
+
+    def test_as_tres_candidatas_ficam_nao_confirmadas(self):
+        for cid in ("timbo", "trombudo-central", "lontras"):
             l = self.linhas[cid]
             self.assertIsNone(l["codigo"], cid)
             self.assertEqual(l["equivalencia"]["status"], "não confirmada", cid)
