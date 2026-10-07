@@ -540,8 +540,11 @@ o projeto.
     só a imagem JPEG da tábua do mês (UNIVALI), e nenhum endpoint foi inventado.
   - [x] Chuva em produção: na coleta de 21h45 UTC, `chuva_ok: true` com as onze DC de Itajaí medidas às 18h30
     (Brasília).
-  - [ ] Maré do CIRAM: o `ultimo_mare_ciram.json` não vai ao branch `tempo-real`; conferir na VPS (comandos no
-    relatório).
+  - [x] Maré do CIRAM conferida na VPS em 07/10/2026: o `ultimo_mare_ciram.json` é de 05/09/2026 02:29 UTC, o
+    crontab não tem linha de maré e nenhum código do site, do bot ou da publicação lê esse arquivo. O coletor rodou
+    à mão em 05/09 e nunca foi agendado, então nenhuma tela mostra maré velha: a de `/itajai` é a tábua da Marinha.
+  - [ ] Ligar a maré medida do CIRAM (cron + publicação + tela) é decisão do Jefferson, e a EPAGRI não falou dos
+    marégrafos na resposta ao C5 ("perguntar antes de supor que continuam", `docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`).
   - [ ] DC-00: cadastrar a coordenada (decisão do Jefferson); até lá ela fica fora da chuva.
 - [x] **Auditoria de 03/10/2026 (segunda rodada) — decidida em 04/10/2026** (`docs/PROPOSTAS-AUDITORIA-2026-10-03.md`; resumo de tudo em `docs/DECISOES-2026-10-04.md`). Guabiruba virou afluente lateral do Mirim (o Mirim agora é árvore); a DCSC-00029 vale no zero local abaixo de 10 m; Brusque ganhou o rótulo da opção B. **Falta:** conferir no servidor a data da volta da DCSC-00029 ao zero local (comandos no item 3 do doc) antes de pensar em juntar as duas séries.
   - Corrigido: o pino do mapa do rio não mostra mais leitura velha sem idade; a lista e os cartões separam
