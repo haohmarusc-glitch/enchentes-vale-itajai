@@ -673,7 +673,7 @@ Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 0
 
 ---
 
-## C33 — EPAGRI/CIRAM: referência vertical, unidade e fuso da maré observada — 📝 RASCUNHO, não enviado (07/10/2026)
+## C33 — EPAGRI/CIRAM: referência vertical, unidade e fuso da maré observada — 📝 RASCUNHO no Gmail, não enviado (07/10/2026; rascunho `r-8608294657834909168`, resposta na conversa do C5/C12, com "Tema deste retorno" na primeira linha, como no C12)
 
 **Origem.** A decisão do Jefferson de 07/10/2026 manda mostrar a maré medida só com a referência vertical identificada
 (`docs/MARE-MEDIDA-CIRAM.md`). A conferência do mesmo dia achou três lacunas:
