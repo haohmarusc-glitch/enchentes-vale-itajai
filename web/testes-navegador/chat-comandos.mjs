@@ -30,6 +30,7 @@
  *  - 11ª entrega: verbete sem a régua de cada cidade ou sem o 199; voz que trava a tela.
  *  - 12ª entrega: painel ou menu que não abre ou fecha de verdade; rio ou barragens que não enquadram.
  *  - 13ª entrega: várias cidades sem "não compare os metros" ou sem o 199; minhas cidades que não leem a escolha.
+ *  - 14ª entrega: hora de cruzamento sem a hora da medição; "há quanto tempo" sem a faixa; linha do tempo que muda a tela.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -412,7 +413,24 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 15. Página com chat próprio: a barra do topo some.
+  // 15. 14ª entrega: a linha do tempo da cheia de agora, na série de uma régua.
+  {
+    const { b, pg, erros } = await abrir('#/acu/blumenau', { largura: w, altura: h })
+    await entender(pg)
+    const fim = /199/
+    let r = await pedirAte(pg, 'quanto Blumenau subiu nas últimas 6 horas?', /Régua de Blumenau|não chega a 6 h|não tem série/)
+    ok(/de [\d,]+ m às \d{2}:\d{2}[^]*para [\d,]+ m às \d{2}:\d{2}|não chega a 6 h|não tem série/.test(r) && (fim.test(r) || /não tem série/.test(r)), `variação em 6 h: dois pontos com hora, ou o motivo (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'há quanto tempo Blumenau está em alerta?', /Blumenau|série/)
+    ok(/está em Alerta[^]*há |não está em Alerta|abaixo de todas as cotas|desde antes do começo|não tem série/.test(r), `há quanto tempo: a faixa com a hora do cruzamento, ou o motivo (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'quando o rio começou a subir em Blumenau?', /subida|subindo|série/)
+    ok(/a subida que ainda dura começou às \d{2}:\d{2}|não está subindo na última medição|não tem série/.test(r), `começou a subir: a hora, ou que não sobe (${r.slice(0, 60)}…)`)
+    r = await pedirAte(pg, 'quando Blumenau passou da cota de alerta?', /cota|série/)
+    ok(/passou da cota de Alerta[^]*às \d{2}:\d{2}|não passou da cota de Alerta|esteve o tempo todo|não tem série/.test(r), `passou da cota: a hora de medição, ou que não passou (${r.slice(0, 60)}…)`)
+    ok(/#\/acu\/blumenau/.test(pg.url()), `a tela não mudou (${pg.url()})`)
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 16. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

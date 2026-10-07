@@ -602,6 +602,9 @@ o projeto.
   - [x] **Ajuste (07/10/2026): "a água chega na hora da maré alta?"** ia para "Não entendi"; agora vai, sozinha ou junto
     com "quanto tempo chega a água de Blumenau até Itajaí?", para o quadro de chegada × maré, que diz também as
     12–17 h quando não há pico descendo.
+  - [x] **Décima quarta entrega (07/10/2026): a linha do tempo da cheia de agora.** "Quando Blumenau passou da cota de
+    alerta?", "há quanto tempo está em alerta?", "quando o rio começou a subir?" e "quanto subiu nas últimas 6 horas?",
+    pela série publicada de uma régua, com a hora da medição e o passo da série.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

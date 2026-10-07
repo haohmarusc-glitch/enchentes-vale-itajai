@@ -118,6 +118,8 @@ export type Passo =
   | { tipo: 'menu_cidades'; acao: 'abrir' | 'fechar' }
   // 13ª entrega: várias cidades de uma vez (uma lista dita, ou as cidades que a pessoa segue).
   | { tipo: 'varias_cidades'; cidadeIds?: string[]; seguidas?: boolean; copiar?: boolean }
+  /** 14ª: a linha do tempo da cheia de agora, na série de uma régua. `cota` já é a chave do cadastro. */
+  | { tipo: 'linha_do_tempo'; pergunta: 'cruzou_cota' | 'ha_quanto_tempo' | 'comecou_a_subir' | 'variacao'; cidadeId?: string; cota?: string; horas?: number }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }
