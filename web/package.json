@@ -13,7 +13,8 @@
     "auditoria": "node testes-navegador/auditoria.mjs",
     "varredura": "node testes-navegador/varredura.mjs",
     "trava-monitor": "node testes-navegador/trava-monitor.mjs",
-    "pwa": "node testes-navegador/pwa.mjs"
+    "pwa": "node testes-navegador/pwa.mjs",
+    "avaliar": "tsx ferramentas/avaliar-chat.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",

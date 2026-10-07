@@ -8,14 +8,17 @@
  * Pedidos encadeados ("mostre Timbó, aproxime a régua e ative satélite") viram vários passos, resolvidos e
  * validados ANTES de qualquer execução. Se um trecho não for entendido, nada é executado e o chat diz qual.
  */
-import type { Aba, Catalogo, CidadeDoCatalogo, Contexto, Fundo, Interpretacao, Passo, ReguaDoCatalogo } from './tipos'
+import type { Aba, Catalogo, Contexto, Fundo, Interpretacao, Passo, ReguaDoCatalogo } from './tipos'
 import type { TemaDaLegenda } from './foz'
 
 import { normalizar } from './normalizar'
 import { corrigirCidade, textoDaCorrecao } from './corrigir'
 import { verbeteDe } from './glossario'
-import { NOMES_DE_COTA } from './linhaDoTempo'
 import { arquivoPeloNome } from './rios'
+import {
+  ARTIGOS, COTA_DITA, MESES_SEM_ACENTO, MES_DITO, SUJEITO, cidadeOpcional, cidadePorNome, cidadesDaLista,
+  cotaDita, metrosDitos, soSujeito,
+} from './entidades'
 
 export { normalizar }
 
@@ -43,14 +46,6 @@ function trechos(texto: string): string[] {
     .flatMap((parte) => normalizar(parte).split(/\s*(?:\be depois\b|\bdepois\b|\be em seguida\b|\bem seguida\b|\be entao\b|\bentao\b|\be\b)\s*/))
     .map((x) => semCortesia(x.trim()))
     .filter(Boolean)
-}
-
-const ARTIGOS = /^(?:(?:o|a|os|as|de|do|da|dos|das|em|no|na|para|pra|pro|ao|a cidade de|o mapa de|o monitor de|o pino de)\s+)+/
-
-function cidadePorNome(alvo: string, cat: Catalogo): CidadeDoCatalogo | null {
-  const a = alvo.replace(ARTIGOS, '').trim()
-  if (!a) return null
-  return cat.cidades.find((c) => normalizar(c.nome) === a || normalizar(c.id) === a) ?? null
 }
 
 const VERBO_IR =
@@ -85,19 +80,6 @@ export function rotuloDaRegua(r: ReguaDoCatalogo): string {
 }
 
 type Lido = Passo[] | { erro: string; sugestoes: string[] } | null
-
-const AQUI = /^(?:aqui|daqui|desta cidade|dessa cidade|deste lugar|desse lugar|desta regua|dessa regua|deste trecho|desse trecho|neste trecho|nesse trecho|da cidade|da regua)$/
-
-/**
- * A cidade opcional de um pedido ("… de Gaspar"). Sem alvo, ou "daqui": o contexto decide na execução.
- * Alvo que não é cidade do cadastro: `null` — o trecho não vira comando (e o motor de perguntas tenta).
- */
-function cidadeOpcional(alvo: string | undefined, cat: Catalogo): { cidadeId?: string } | null {
-  const a = (alvo ?? '').trim()
-  if (!a || AQUI.test(a)) return {}
-  const c = cidadePorNome(a, cat)
-  return c ? { cidadeId: c.id } : null
-}
 
 const TIPO_DE_VIA = '(?:rua|avenida|av|travessa|tv|trav|alameda|al|rodovia|rod|servidao|serv|estrada)'
 const VERBO_RUA =
@@ -165,27 +147,6 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
   return null
 }
 
-/** A 13ª entrega: várias cidades de uma vez. Só vira comando com DUAS ou mais cidades conhecidas (ou "minhas cidades"). */
-function cidadesDaLista(texto: string, cat: Catalogo): string[] | null {
-  // A vírgula já sumiu na normalização: lê palavra a palavra, o nome mais longo primeiro ("rio do sul").
-  const palavras = texto.split(' ').filter((w) => w && w !== 'e')
-  const ids: string[] = []
-  let i = 0
-  while (i < palavras.length) {
-    let achou: string | null = null
-    for (let n = Math.min(4, palavras.length - i); n >= 1 && !achou; n--) {
-      const c = cidadePorNome(palavras.slice(i, i + n).join(' '), cat)
-      if (c) {
-        achou = c.id
-        i += n
-      }
-    }
-    if (!achou) return null
-    ids.push(achou)
-  }
-  const unicos = [...new Set(ids)]
-  return unicos.length >= 2 ? unicos : null
-}
 /**
  * 16ª entrega: as ruas pela cota, cidade inteira. O número vem como `normalizar` o deixa: "8,50 m" vira "8 50 m", e
  * "50 cm" é centímetro. Só "quais/que ruas…": "qual a cota da rua X" e "manchas na rua X" continuam onde estavam.
@@ -194,11 +155,6 @@ const NUM_M = '(\\d{1,2})(?: (\\d{1,2}))? ?(?:m|metros?)'
 const NUM_CM = '(\\d{1,3}) ?(?:cm|centimetros?)'
 const RUAS = '(?:quais|que|quantas|quantos) (?:sao )?(?:as )?(?:ruas|pontos de rua|pontos)'
 const ALAGAM = '(?:alagam|alagariam|alagarao|vao alagar|ficam alagadas|ficariam alagadas|ficam embaixo d agua|ficam debaixo d agua|a agua alcanca|a agua pega|o rio alcanca|o rio pega)'
-function metrosDitos(inteiro: string | undefined, decimal: string | undefined): number | null {
-  if (!inteiro) return null
-  const n = Number(`${inteiro}.${decimal ?? '0'}`)
-  return n > 0 && n < 25 ? n : null
-}
 function lerTrechoDaDecimaSexta(t: string, cat: Catalogo): Lido {
   type P = Extract<Passo, { tipo: 'ruas_pela_cota' }>
   const com = (alvo: string | undefined, resto: Omit<P, 'tipo' | 'cidadeId'>): Lido => {
@@ -262,8 +218,6 @@ function lerTrechoDaDecimaSexta(t: string, cat: Catalogo): Lido {
  * RECENTE: "última cheia", "o que o site captou", "nos últimos meses", "este ano", um mês sem ano (ou de 2026 em
  * diante) e um dia do mês. Ano antigo ("cheias de setembro de 2011") continua no motor, que lê enchentes.json.
  */
-const MES_DITO = '(janeiro|fevereiro|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)'
-const MESES_SEM_ACENTO = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
 const RECENTE = '(?:desde que o site (?:acompanha|existe|mede|coleta)|nos ultimos (?:\\d+ )?meses|nas ultimas semanas|este ano|neste ano|em 2026|de 2026|ultimamente|recentemente)'
 function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
   type P = Extract<Passo, { tipo: 'captados' }>
@@ -272,7 +226,7 @@ function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
     const c = cidadeOpcional(limpo, cat)
     return c ? [{ tipo: 'captados', ...resto, ...c }] : null
   }
-  const cotaDe = (s: string | undefined) => (s ? { cota: NOMES_DE_COTA[s] ?? s } : {})
+  const cotaDe = cotaDita
   const anoDe = (s: string | undefined) => (s ? Number(s) : undefined)
   // Lista: "quais cheias o site captou?", "o que aconteceu nos últimos meses?", "cheias recentes em Blumenau".
   {
@@ -295,7 +249,7 @@ function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
     if (m) return com(m[1], { pergunta: 'ultima' })
     const v = t.match(new RegExp(`^(?:quando foi |qual foi )?(?:a )?ultima vez que (?:(.+?) )?(?:passou|cruzou|chegou|entrou|ficou|esteve) (?:d[aeo] |n[ao] |em |a |acima d[ao] )?(?:cota(?: d[aeo])? |nivel de |faixa de )?${COTA_DITA}?(?: (?:em|de|no|na) (.+?))?$`))
     if (v) {
-      const antes = soSujeitoDaQuinta(v[1])
+      const antes = soSujeito(v[1])
       if (antes && v[3]) return null
       return com(antes ?? v[3], { pergunta: 'ultima', ...cotaDe(v[2]) })
     }
@@ -313,7 +267,7 @@ function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
   {
     const m = t.match(new RegExp(`^(?:quantas|quantos) (?:vezes|cheias|enchentes|episodios) (?:(.+?) )?(?:passou|passaram|cruzou|cruzaram|chegou|chegaram|entrou|entraram|ficou|ficaram|esteve|estiveram|teve|houve) (?:d[aeo] |n[ao] |em |a |acima d[ao] )?(?:cota(?: d[aeo])? |nivel de |faixa de )?${COTA_DITA}?(?: (?:em|de|no|na) (.+?))? ${RECENTE}$`))
     if (m) {
-      const antes = soSujeitoDaQuinta(m[1])
+      const antes = soSujeito(m[1])
       if (antes && m[3]) return null
       return com(antes ?? m[3], { pergunta: 'quantas', ...cotaDe(m[2]) })
     }
@@ -346,23 +300,18 @@ function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
   }
   return null
 }
-const soSujeitoDaQuinta = (s: string | undefined) => (s && new RegExp(`^${SUJEITO}$`).test(s) ? undefined : s)
 
 /**
  * 14ª entrega: a linha do tempo da cheia de agora. A cidade pode vir antes do verbo ("quando Blumenau passou da
  * cota?") ou no fim ("quando o rio passou da cota em Blumenau?"); sem cidade, vale a da página.
  */
-const COTA_DITA = '(alerta maximo|alerta|atencao|observacao|monitoramento|inundacao|emergencia|prontidao|transbordamento)'
-const SUJEITO = '(?:o rio|o nivel|a agua|a regua|o itajai(?: acu| mirim)?)'
 function lerTrechoDaDecimaQuarta(t: string, cat: Catalogo): Lido {
   const comCidade = (alvo: string | undefined, resto: Omit<Extract<Passo, { tipo: 'linha_do_tempo' }>, 'tipo' | 'cidadeId'>): Lido => {
     const limpo = (alvo ?? '').replace(new RegExp(`^${SUJEITO}(?: (?:de|em|do|da|no|na))? ?`), '').trim()
     const c = cidadeOpcional(limpo, cat)
     return c ? [{ tipo: 'linha_do_tempo', ...resto, ...c }] : null
   }
-  const cotaDe = (s: string | undefined) => (s ? { cota: NOMES_DE_COTA[s] ?? s } : {})
-  // "o rio" antes do verbo não é cidade: "a que hora o rio passou da cota em Blumenau?" tem a cidade no fim.
-  const soSujeito = (s: string | undefined) => (s && new RegExp(`^${SUJEITO}$`).test(s) ? undefined : s)
+  const cotaDe = cotaDita
   // "quanto Blumenau subiu nas últimas 6 horas?", "quanto o rio subiu em Blumenau nas últimas 12 h?"
   {
     const m =
