@@ -596,6 +596,9 @@ o projeto.
     e "ler em voz alta" pela voz do próprio navegador.
   - [x] **Décima segunda entrega (06/10/2026): o Monitor, peça por peça.** "Ver o Itajaí-Mirim no mapa", "zoom nas
     barragens", "fechar o painel" e "abrir o menu de cidades" (arquivo do Monitor alterado com `monitor-autorizado`).
+  - [x] **Décima terceira entrega (07/10/2026): várias cidades de uma vez.** "Como estão Blumenau, Gaspar e Itajaí?",
+    "como estão as minhas cidades?" (as seguidas neste aparelho) e "copiar o resumo das minhas cidades": cada cidade na
+    régua dela, numa resposta só, com um rodapé só no texto para copiar.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

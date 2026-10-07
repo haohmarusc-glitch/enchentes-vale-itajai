@@ -164,6 +164,44 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
   return null
 }
 
+/** A 13ª entrega: várias cidades de uma vez. Só vira comando com DUAS ou mais cidades conhecidas (ou "minhas cidades"). */
+function cidadesDaLista(texto: string, cat: Catalogo): string[] | null {
+  // A vírgula já sumiu na normalização: lê palavra a palavra, o nome mais longo primeiro ("rio do sul").
+  const palavras = texto.split(' ').filter((w) => w && w !== 'e')
+  const ids: string[] = []
+  let i = 0
+  while (i < palavras.length) {
+    let achou: string | null = null
+    for (let n = Math.min(4, palavras.length - i); n >= 1 && !achou; n--) {
+      const c = cidadePorNome(palavras.slice(i, i + n).join(' '), cat)
+      if (c) {
+        achou = c.id
+        i += n
+      }
+    }
+    if (!achou) return null
+    ids.push(achou)
+  }
+  const unicos = [...new Set(ids)]
+  return unicos.length >= 2 ? unicos : null
+}
+const MINHAS = '(?:as )?(?:minhas cidades|cidades que (?:eu )?sigo|cidades seguidas)'
+function lerTrechoDaDecimaTerceira(t: string, cat: Catalogo): Lido {
+  if (new RegExp(`^(?:como (?:estao|tao) |e )?${MINHAS}(?: agora)?$`).test(t)) return [{ tipo: 'varias_cidades', seguidas: true }]
+  if (new RegExp(`^copiar (?:o )?resumo (?:das|de) (?:minhas cidades|cidades que (?:eu )?sigo|cidades seguidas)$`).test(t)) return [{ tipo: 'varias_cidades', seguidas: true, copiar: true }]
+  {
+    const m = t.match(/^copiar (?:o )?resumo (?:de|das cidades) (.+)$/)
+    const ids = m ? cidadesDaLista(m[1]!, cat) : null
+    if (ids && ids.length >= 2) return [{ tipo: 'varias_cidades', cidadeIds: ids, copiar: true }]
+  }
+  {
+    const m = t.match(/^como (?:estao|esta|tao|ta) (?:as cidades (?:de )?)?(.+?)(?: agora)?$/)
+    const ids = m ? cidadesDaLista(m[1]!, cat) : null
+    if (ids && ids.length >= 2) return [{ tipo: 'varias_cidades', cidadeIds: ids }]
+  }
+  return null
+}
+
 /** A 12ª entrega: o Monitor, peça por peça (rio inteiro, barragens, painel, menu de cidades). */
 // "No mapa" é cortesia para o resto do chat (sai antes de ler); aqui ele decide, então é lido no texto inteiro.
 const RIO_NO_MAPA = /^(?:ver|veja|mostrar|mostre|enquadrar|enquadre|focar|foque)(?: o| no)?(?: rio)? (itajai acu|acu|itajai mirim|mirim)(?: inteiro| todo)? no mapa$/
@@ -479,6 +517,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const decimaTerceira = lerTrechoDaDecimaTerceira(t, cat)
+  if (decimaTerceira) return decimaTerceira
   const decimaSegunda = lerTrechoDaDecimaSegunda(t, ctx)
   if (decimaSegunda) return decimaSegunda
   const oitava = lerTrechoDaOitava(t)

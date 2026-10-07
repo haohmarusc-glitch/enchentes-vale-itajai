@@ -41,6 +41,7 @@ import { publicacaoMaisRecente, situacaoDoPico } from '../logica/picoBlumenau'
 import { entradaBrasilia, simularChegada } from '../logica/simulacaoChegada'
 import { primeiraCota } from '../logica/tempoReal'
 import { rotuloCota } from '../logica/formato'
+import { MAX_CIDADES_JUNTAS, textoParaCopiarVarias, textoVariasCidades } from './variasCidades'
 import { textoDeCima, textoMaximo24h, textoPanorama, textoQuantoFalta, textoSubindoOuBaixando, type CidadeAgora } from './rioAgora'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
@@ -755,6 +756,32 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         if (!r.ok) return falha(r)
         feitos.push(r.texto)
         break
+      }
+      case 'varias_cidades': {
+        const d = amb.dados
+        const ids = passo.seguidas ? (d?.preferencias?.seguidas().map((c) => c.id) ?? []) : (passo.cidadeIds ?? [])
+        if (passo.seguidas && ids.length === 0) {
+          return { texto: 'Você ainda não escolheu cidades neste aparelho. Peça "minha cidade é Blumenau" e "seguir Gaspar".', sugestoes: ['minha cidade é Blumenau', 'seguir Gaspar'] }
+        }
+        const v = await d?.aoVivo()
+        if (!d || !v) return { texto: SEM_DADOS }
+        const itens = ids.slice(0, MAX_CIDADES_JUNTAS).flatMap((id) => {
+          const c = d.cidade(id)
+          return c ? [{ cidade: c.cidade, rioId: c.rioId, estado: estadoDaCidade(c.cidade, c.rioId, v) }] : []
+        })
+        if (!itens.length) return { texto: 'Nenhuma dessas cidades está no cadastro do site.' }
+        const resto = ids.length > MAX_CIDADES_JUNTAS ? `\nMostrei as ${MAX_CIDADES_JUNTAS} primeiras; peça as outras separadamente.` : ''
+        if (!passo.copiar) {
+          return { texto: textoVariasCidades(itens, v.agora) + resto, sugestoes: [passo.seguidas ? 'copiar o resumo das minhas cidades' : `copiar o resumo de ${itens.map((i) => i.cidade.nome).join(' e ')}`] }
+        }
+        const pronto = textoParaCopiarVarias(
+          itens.map((i) => ({
+            nome: i.cidade.nome,
+            texto: cat.reguas.filter((r) => r.cidadeId === i.cidade.id).length > 1 ? 'varias' : compartilharDaCidade(i.cidade, i.rioId, v),
+          })),
+        )
+        if (!pronto) return { texto: 'Nenhuma dessas cidades tem leitura de agora: o resumo só sai com leitura que não é velha, para não circular número antigo como se fosse de agora.' }
+        return { texto: `Resumo pronto para copiar (sem o endereço do site, com a hora de cada medição). Quem envia é você:\n\n${pronto}`, copiar: pronto }
       }
       case 'glossario': {
         const vs = passo.termos.map(verbeteDe).filter((v): v is NonNullable<typeof v> => v !== null)
