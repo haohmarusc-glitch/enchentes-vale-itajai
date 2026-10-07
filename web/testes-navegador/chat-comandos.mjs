@@ -29,6 +29,7 @@
  *    que não executa.
  *  - 11ª entrega: verbete sem a régua de cada cidade ou sem o 199; voz que trava a tela.
  *  - 12ª entrega: painel ou menu que não abre ou fecha de verdade; rio ou barragens que não enquadram.
+ *  - 13ª entrega: várias cidades sem "não compare os metros" ou sem o 199; minhas cidades que não leem a escolha.
  *
  * Uso (com o site servido em :4173, como as outras sondas):
  *   npx vite preview --port 4173 &
@@ -392,7 +393,24 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
-  // 14. Página com chat próprio: a barra do topo some.
+  // 14. 13ª entrega: várias cidades de uma vez.
+  {
+    const { b, pg, erros } = await abrir('#/', { largura: w, altura: h })
+    await entender(pg)
+    let r = await pedirAte(pg, 'como estão Blumenau e Gaspar?', /cada cidade na régua dela/)
+    ok(/não compare os metros/.test(r) && /• Blumenau:/.test(r) && /• Gaspar:/.test(r) && /199/.test(r), 'lista dita: as duas cidades, cada uma na régua dela, com o 199')
+    ok(/#\/$/.test(pg.url()), `lista dita: a tela não mudou (${pg.url()})`)
+    r = await pedirAte(pg, 'como estão as minhas cidades?', /escolheu/)
+    ok(/ainda não escolheu cidades/.test(r), 'minhas cidades: sem escolha, ensina a escolher')
+    await pedirAte(pg, 'minha cidade é Gaspar', /Gaspar/)
+    r = await pedirAte(pg, 'como estão as minhas cidades?', /• Gaspar/)
+    ok(/• Gaspar:/.test(r), 'minhas cidades: Gaspar, depois de escolhida')
+    r = await pedirAte(pg, 'copiar o resumo das minhas cidades', /Gaspar|leitura de agora/)
+    ok((await pg.getByRole('button', { name: 'Copiar' }).count()) >= 1 || /sem leitura de agora|Nenhuma/.test(r), 'copiar o resumo: o botão "Copiar" à vista (ou o motivo de não haver)')
+    ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
+    await b.close()
+  }
+  // 15. Página com chat próprio: a barra do topo some.
   {
     const { b, pg } = await abrir('#/perguntas', { largura: w, altura: h })
     ok((await caixas(pg).count()) === 1, '/perguntas: só o chat da página, sem a barra do topo')

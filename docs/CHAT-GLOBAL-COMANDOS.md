@@ -623,3 +623,24 @@ ou as barragens, fechar o painel da cidade e abrir ou fechar o menu de cidades.
     abrindo o Monitor e usando a ponte, a ajuda;
   - `testes-navegador/chat-comandos.mjs`, seção 13: o painel fecha de verdade, o menu abre e fecha, o Itajaí-Mirim
     enquadrado, as barragens.
+
+## Décima terceira entrega (07/10/2026): várias cidades de uma vez
+
+Quem tem família em Blumenau, Gaspar e Itajaí perguntava cidade por cidade. A 13ª entrega responde todas numa
+mensagem só, com as mesmas regras de cada cidade sozinha.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "como estão Blumenau, Gaspar e Itajaí?", "como estão Blumenau e Gaspar agora?" | Uma linha por cidade (até 6), a mesma de "o que vem de cima" (`leituraCurta`): número na régua dela, faixa com o nome da Defesa Civil, seta só quando a série casa com a leitura (D7), hora e idade. Abre com "cada cidade na régua dela (não compare os metros…)" e fecha com o 199. | Comparar metros de cidades diferentes; mostrar leitura velha como de agora; dar um número só para Itajaí; mudar de tela. |
+| "como estão as minhas cidades?", "as cidades que eu sigo" | As cidades guardadas neste aparelho (a sua primeiro, depois as seguidas). Sem nenhuma, ensina "minha cidade é Blumenau" e "seguir Gaspar". | Adivinhar a cidade da pessoa. |
+| "copiar o resumo das minhas cidades", "copiar o resumo de Blumenau e Gaspar" | Junta o resumo de cada cidade (o mesmo do WhatsApp, D4) com um rodapé só e mostra o botão "Copiar". Cidade sem leitura de agora fica "sem leitura de agora"; Itajaí, "várias réguas". | Pôr o endereço do site (D4); sair sem nenhuma leitura de agora. |
+
+- **Lista dita:** a vírgula some na normalização, então a lista é lida palavra a palavra, pelo nome mais longo do
+  cadastro (até quatro palavras, "e" entre elas). Só vira comando com duas ou mais cidades conhecidas: "como está
+  Blumenau?" continua no motor, e uma cidade fora do cadastro ("Pomerode") devolve a frase ao motor em vez de
+  responder com uma cidade a menos.
+- **Testes:**
+  - `src/comandos/decimaterceira.test.ts` (5): frases, texto para copiar (um rodapé, Itajaí sem número, sem
+    endereço), executor com lista dita, com as cidades seguidas e sem nenhuma, a ajuda;
+  - `testes-navegador/chat-comandos.mjs`, seção 14: as duas cidades com "não compare os metros" e o 199, a tela que
+    não muda, "minhas cidades" antes e depois de "minha cidade é Gaspar", o botão "Copiar".

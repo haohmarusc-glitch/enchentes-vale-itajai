@@ -116,6 +116,8 @@ export type Passo =
   | { tipo: 'enquadrar'; alvo: 'barragens' }
   | { tipo: 'fechar_painel' }
   | { tipo: 'menu_cidades'; acao: 'abrir' | 'fechar' }
+  // 13ª entrega: várias cidades de uma vez (uma lista dita, ou as cidades que a pessoa segue).
+  | { tipo: 'varias_cidades'; cidadeIds?: string[]; seguidas?: boolean; copiar?: boolean }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }
