@@ -183,7 +183,10 @@ for (const [nomeTela, tela] of Object.entries(TELAS)) {
     if (await barra.count()) { await barra.first().focus(); await page.keyboard.press('End'); await espera(page, 600) }
     return 'tocou, pausou e voltou ao vivo'
   })
+  // Desde 07/10/2026 (redesenho do Monitor, etapa 1) o fundo do mapa e as camadas de cheia moram no menu
+  // "Camadas do mapa", que abre pelo botão (texto no computador, redondo no celular).
   await passo('fundos do mapa', async () => {
+    await page.getByRole('button', { name: /Camadas do mapa/ }).first().click(); await espera(page, 400)
     const botoes = page.getByRole('group', { name: 'Fundo do mapa' }).getByRole('button')
     const n = await botoes.count()
     if (n < 2) throw new Error(`só ${n} fundo(s)`)
@@ -193,12 +196,14 @@ for (const [nomeTela, tela] of Object.entries(TELAS)) {
     return nomes.join(', ')
   })
   await passo('camadas de cheia', async () => {
-    const det = page.locator('details', { has: page.locator('summary', { hasText: 'Camadas de cheia' }) })
-    await det.first().locator('summary').click(); await espera(page, 400)
-    const controles = det.first().locator('input, button, select')
+    const painel = page.locator('#camadas-mapa')
+    if (!(await painel.isVisible())) { await page.getByRole('button', { name: /Camadas do mapa/ }).first().click(); await espera(page, 400) }
+    const controles = painel.locator('input, button, select')
     const n = await controles.count()
-    if (!n) throw new Error('sem controles dentro de Camadas de cheia')
+    if (!n) throw new Error('sem controles dentro de Camadas do mapa')
     await captura(page, `${nomeTela}_monitor_camadas`)
+    // Fecha o menu: no celular ele cobre o mapa, e o passo seguinte toca no mapa.
+    await page.getByRole('button', { name: 'Fechar camadas do mapa' }).click(); await espera(page, 300)
     return `${n} controle(s)`
   })
   await passo('toque e arrasto no mapa', async () => {
