@@ -154,6 +154,35 @@ class Publicador(unittest.TestCase):
                 self.assertEqual(r.returncode, 0, r.stderr)
                 self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
 
+    def mare_medida(self, minutos_atras: int) -> dict:
+        from datetime import datetime, timedelta, timezone
+        gerado = datetime.now(timezone.utc) - timedelta(minutes=minutos_atras)
+        return {"versao": 1, "gerado_em": gerado.isoformat(timespec="seconds"),
+                "estacao": {"id": "balneario-camboriu"}, "situacao": "medindo"}
+
+    def test_leva_a_mare_medida_quando_e_desta_coleta(self):
+        """Maré medida do CIRAM (decisão de 07/10/2026): sobe junto, gerada nesta publicação."""
+        base = self.monta({"ultimo_mare_medida.json": self.mare_medida(2)})
+        r = self.roda(base)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("ultimo_mare_medida.json", self.arvore(base, r.stdout))
+
+    def test_mare_medida_velha_quebrada_ou_de_outra_versao_nao_sobe(self):
+        """Leitura antiga nunca aparece como atual: o arquivo de outra coleta fica de fora."""
+        casos = {
+            "velha": json.dumps(self.mare_medida(31)),
+            "quebrada": "{quebrado",
+            "outra versão": json.dumps({**self.mare_medida(2), "versao": 2}),
+            "sem estação": json.dumps({**self.mare_medida(2), "estacao": None}),
+        }
+        for nome, conteudo in casos.items():
+            with self.subTest(nome):
+                base = self.monta({})
+                (base / "data" / "tempo-real" / "ultimo_mare_medida.json").write_text(conteudo, encoding="utf-8")
+                r = self.roda(base)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
+
     def test_ultimo_json_sem_leituras_nao_vai_ao_ar(self):
         """O portão que já existia: publicar vazio apagaria o nível da tela."""
         base = self.monta({})

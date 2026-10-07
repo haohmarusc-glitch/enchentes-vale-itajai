@@ -125,6 +125,27 @@ sys.exit(0 if d.get("cidades") and 0 <= idade <= 1800 else 1)' "$CLASSIFICACAO" 
   CLASSIFICACAO_ENTRY="$(printf '100644 blob %s\tultimo_classificacao.json' "$BLOB_CLASSIFICACAO")"
 fi
 
+# ultimo_mare_medida.json: a maré MEDIDA da EPAGRI/CIRAM (Balneário Camboriú, a 13 km da foz), por
+# decisão do Jefferson de 07/10/2026. UMA consulta por publicação, só à estação principal. O coletor
+# só põe número no arquivo com a referência vertical confirmada; sem ela, a tela diz "referência
+# pendente". Falha apaga o arquivo anterior e nunca segura o nível; e, como na classificação, só
+# sobe o que foi gerado há no máximo 30 min.
+MARE_MEDIDA="$RAIZ/data/tempo-real/ultimo_mare_medida.json"
+if [ "$SECO" -eq 0 ] && [ -f "$RAIZ/scripts/coleta_mare_ciram.py" ]; then
+  timeout 60 python3 scripts/coleta_mare_ciram.py --publicar \
+    || echo "aviso: maré medida do CIRAM não coletada; o nível ao vivo segue." >&2
+fi
+MARE_MEDIDA_ENTRY=""
+if [ -f "$MARE_MEDIDA" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("versao") == 1 and d.get("estacao") and 0 <= idade <= 1800 else 1)' "$MARE_MEDIDA" 2>/dev/null; then
+  BLOB_MARE_MEDIDA="$(git hash-object -w "$MARE_MEDIDA")"
+  MARE_MEDIDA_ENTRY="$(printf '100644 blob %s\tultimo_mare_medida.json' "$BLOB_MARE_MEDIDA")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
@@ -133,6 +154,7 @@ TREE="$(
     [ -n "$TAIO_ENTRY" ] && printf '%s\n' "$TAIO_ENTRY"
     [ -n "$BARRAGENS_ENTRY" ] && printf '%s\n' "$BARRAGENS_ENTRY"
     [ -n "$CLASSIFICACAO_ENTRY" ] && printf '%s\n' "$CLASSIFICACAO_ENTRY"
+    [ -n "$MARE_MEDIDA_ENTRY" ] && printf '%s\n' "$MARE_MEDIDA_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o

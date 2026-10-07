@@ -14,7 +14,8 @@ tem teste próprio, com a guarda sabotada:
 """
 
 import unittest
-from datetime import datetime
+import json
+from datetime import datetime, timedelta
 
 import coleta_mare_ciram as c
 from coleta_mare_ciram import (
@@ -205,6 +206,86 @@ class LeituraVelhaNaoELeituraAtual(unittest.TestCase):
         # Zero afirmaria leitura recém-chegada. Ausência diz "não sei".
         self.assertIsNone(c.idade_min(None, AGORA))
         self.assertIsNone(c.idade_min("ontem", AGORA))
+
+
+class OArquivoQueOSiteLe(unittest.TestCase):
+    """`--publicar` (decisão do Jefferson, 07/10/2026): número só com a referência vertical confirmada
+    e a medição recente; a diferença para a astronômica sai da mesma linha da mesma estação."""
+
+    GERADO = "2026-09-04T22:40:00+00:00"
+    REF = {c.PRINCIPAL: {"descricao": "zero do marégrafo X", "fonte": "ofício Y"}}
+
+    def _medidas(self, minutos_atras):
+        hora = AGORA - timedelta(minutes=minutos_atras)
+        linha = {"c": [{"v": hora.strftime("%d/%m %H:%M")}, {"v": "61.80"}, {"v": "45.00"},
+                       {"v": "16.80"}, {"v": "44.10"}, {"v": "17.20"}, {"v": "66.40"}]}
+        return converter(bruto(linha), AGORA)[0]
+
+    def test_sem_referencia_confirmada_o_arquivo_nao_leva_numero(self):
+        r = c.resumo_publicavel(c.PRINCIPAL, self._medidas(10), AGORA, self.GERADO, referencias={})
+        self.assertEqual(r["referencia_vertical"]["status"], "pendente")
+        self.assertEqual(r["situacao"], "medindo")
+        self.assertEqual(set(r["ultima_medicao"]), {"medido_em"}, "nível sem zero conhecido foi publicado")
+
+    def test_a_referencia_de_hoje_esta_pendente(self):
+        # Vazio de propósito até haver fonte escrita (07/10/2026). Mudar isto é decisão do Jefferson.
+        self.assertEqual(c.REFERENCIA_VERTICAL, {})
+
+    def test_referencia_sem_fonte_nao_conta_como_confirmada(self):
+        sem_fonte = {c.PRINCIPAL: {"descricao": "zero do marégrafo X", "fonte": ""}}
+        r = c.resumo_publicavel(c.PRINCIPAL, self._medidas(10), AGORA, self.GERADO, referencias=sem_fonte)
+        self.assertEqual(r["referencia_vertical"]["status"], "pendente")
+        self.assertNotIn("observada_m", r["ultima_medicao"])
+
+    def test_com_referencia_e_medicao_recente_vai_o_nivel_e_a_diferenca_da_mesma_linha(self):
+        r = c.resumo_publicavel(c.PRINCIPAL, self._medidas(10), AGORA, self.GERADO, referencias=self.REF)
+        m = r["ultima_medicao"]
+        self.assertEqual(m["observada_m"], 0.618)
+        self.assertEqual(m["astronomica_m"], 0.45)
+        self.assertAlmostEqual(m["diferenca_observado_astronomica_m"], 0.168, places=3)
+
+    def test_medicao_antiga_nunca_leva_numero_mesmo_com_referencia(self):
+        r = c.resumo_publicavel(c.PRINCIPAL, self._medidas(c.FRESCA_MIN + 5), AGORA, self.GERADO,
+                                referencias=self.REF)
+        self.assertEqual(r["situacao"], "sem_medicao_recente")
+        self.assertEqual(set(r["ultima_medicao"]), {"medido_em"})
+
+    def test_sem_medicao_nenhuma(self):
+        r = c.resumo_publicavel(c.PRINCIPAL, [], AGORA, self.GERADO, referencias=self.REF)
+        self.assertEqual(r["situacao"], "sem_medicao")
+        self.assertIsNone(r["ultima_medicao"])
+
+    def test_o_arquivo_identifica_fonte_estacao_horario_e_unidade(self):
+        r = c.resumo_publicavel(c.PRINCIPAL, self._medidas(10), AGORA, self.GERADO, referencias={})
+        self.assertEqual(r["versao"], 1)
+        self.assertEqual(r["estacao"]["nome"], "Balneário Camboriú")
+        self.assertEqual(r["unidade"], "m")
+        self.assertIn("Brasília", r["horario"])
+        self.assertIn("centímetro", r["unidade_na_fonte"])
+        self.assertIn("tábua da Marinha", r["aviso"])
+
+    def test_nenhum_texto_atribui_a_diferenca_so_a_vento_e_pressao(self):
+        saida = coletar(AGORA, buscador=lambda n, i: bruto(LINHA_REAL))
+        texto = json.dumps(saida["_meta"], ensure_ascii=False).lower()
+        self.assertNotIn("maré meteorológica", texto)
+        self.assertIn("influência do rio", texto)
+
+    def test_falha_apaga_o_arquivo_anterior(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        import comum
+        with tempfile.TemporaryDirectory() as t:
+            (Path(t) / "tempo-real").mkdir()
+            velho = Path(t) / c.ARQUIVO_PUBLICAVEL
+            velho.write_text("{}", encoding="utf-8")
+
+            def cai(n, i):
+                raise OSError("fora do ar")
+
+            with mock.patch.object(comum, "DADOS", Path(t)):
+                self.assertEqual(c.publicar(AGORA, buscador=cai), 1)
+            self.assertFalse(velho.exists(), "o arquivo de outra coleta ficou para ser publicado")
 
 if __name__ == "__main__":
     unittest.main()
