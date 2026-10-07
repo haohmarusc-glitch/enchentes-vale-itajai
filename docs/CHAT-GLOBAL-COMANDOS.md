@@ -804,3 +804,62 @@ achado e não se ajusta o esperado para o número subir.
 
 O piloto do classificador continua desligado; nenhuma lista de permissões, segredo, retenção ou público foi tocado;
 nenhum comando ganhou ou perdeu frase; os arquivos do Monitor ficaram intactos.
+
+## Décima oitava entrega (07/10/2026): os achados da linha de base
+
+A 17ª mediu; a 18ª corrige o que a bateria reprovou **sem IA** — regras do leitor, do motor e do executor — e mede de
+novo. Nenhuma função hidrológica nova; o piloto do classificador continua desligado.
+
+### O que mudou
+
+| Achado da linha de base | Correção | Onde |
+|---|---|---|
+| "é seguro ficar em casa em Blumenau?" escapava da barreira do presente (sem "está") e virava palpite de "maiores cheias" | `(é\|seria) segur[oa]`, `segur[oa] (ficar\|sair\|atravessar…)`, `vai (chegar\|passar\|atingir…)`, `posso dormir\|ficar` entraram na barreira | `chat-local/motor.ts` `AGORA` |
+| O motor palpitava "maiores cheias" com qualquer cidade ("blumenau", "leva para Gaspar", "mude o nível de Blumenau") | Palpite só quando a pergunta fala do rio (`FALA_DO_RIO`); sem isso, "não entendi o que você quer saber de Blumenau" com exemplos da cidade | `motor.ts` `responder` |
+| Pedido com duas leituras ("quanto falta … e quais ruas o rio já alcançou") respondia só a primeira | O executor roda cada passo em `executarPasso`; resposta de leitura é guardada e a cadeia segue; no fim, todas juntas (link da última que tem link). Falha ainda para a cadeia e diz o que foi feito (`Saida.falhou`) | `executar.ts` |
+| Camada de ano inexistente no meio da cadeia não dizia o que já fora feito | Vira `falha(…, sugestões)`: "Feito: … <motivo>. Os passos seguintes não foram feitos." | `executar.ts` `camada` |
+| Panorama com publicação sem leitura válida dizia "nenhuma cidade em alerta" | "A coleta de agora não trouxe leitura válida de nenhuma régua … isso não quer dizer que o rio está normal" | `executar.ts` `panorama` |
+| Só o nome da cidade ("blumenau") | Pergunta "O que você quer saber de Blumenau?" com 4 exemplos; nada executado | `interpretar.ts` |
+| Pedido de ALTERAR dado ("mude o nível…", "registrar pico…", "apagar o histórico de Blumenau", "cadastrar a cota…") | Recusa dita: "O chat não altera dados do site…", lida depois de todos os leitores (apagar manchas, limpar conversa, mudar minha cidade continuam comandos) | `interpretar.ts` `pedeAlteracaoDeDado` |
+| Endereço ou rota digitada ("abrir /monitor/blumenau", "http://…") | Esclarecer: "Não abro endereços nem rotas digitadas" — nem comando, nem motor | `interpretar.ts` |
+| "mostrar Blumenau" × 30 | Palavra repetida 6+ vezes em pedido longo: pergunta | `interpretar.ts` `palavraRepetida` |
+| Abreviações do celular ("ir p/ o monitor", "qdo", "qto", "oque", "q", "c 8 m", "hj", "vc") | `expandirAbreviacoes` depois de `normalizar`, no leitor e nos trechos | `interpretar.ts` |
+| Erro de digitação no verbo ou na peça ("msotrar blumenau", "kuanto falta", "abrir monitr") | Como no nome da cidade (9ª): "Você quis dizer …?" com a frase corrigida; nada executado. Palavra por palavra, candidato único à menor distância | `interpretar.ts` `corrigirVerbo` |
+| "… aqui", "… desta cidade" no fim do pedido | Sai do texto; o executor usa a cidade da tela | `interpretar.ts` `AQUI_NO_FIM` |
+| "histórico", "minha rua", "fontes" sozinhos na página da cidade | Abrem a aba da cidade da tela | `interpretar.ts` |
+| "quanto Blumenau subiu?" sem janela | Pergunta a janela ("em quantas horas?") | `interpretar.ts` (14ª) |
+| "quais ruas alagam com 30 m" | Pergunta um nível possível (0–25 m) em vez de ir ao motor | `interpretar.ts` (16ª) |
+| "como estão Blumenau e Pomerode?" | Diz qual nome não está entre as cidades do site | `interpretar.ts` (13ª) |
+| Paráfrases: "leva para", "abre o monitor da bacia", "página do Itajaí-Mirim", "aproximar mais", "voltar para a leitura de agora", "desfazer a última ação", "o que está na tela", "sem cor", "quem está acima … no rio", "lado a lado", "as barragens estão abertas", "rio acima", "cor vermelha", "buscar leituras novas", "site é da Defesa Civil", "dá para instalar", "o que vocês guardam", "apagar tudo que o site guardou", "limpar o chat", "fechar esse painel", "abrir a lista de cidades", "desde quando … em alerta", "cheias que o site registrou", "ruas vêm depois", "Blumenau subindo?", formas "liga/desliga/troca/coloca" | Regras dos leitores de cada entrega | `interpretar.ts` |
+| Relógio da simulação de chegada | `simular_chegada` usa o mesmo `agora` das leituras (`AoVivo.agora`); o teste da 7ª dependia da data real e ficaria vermelho em 07/10 | `executar.ts` |
+
+### A medida
+
+Linha de base da 17ª (478 casos): **416/478 (87 %)**, reservado 81 %, 25 palpites. Com as correções, nos MESMOS 478:
+**473/478**, e os cinco restantes eram quatro esperados que precisavam de revisão (abaixo) e um bug de cortesia.
+
+**Generalização:** antes de fechar, entraram **47 frases novas** (`RESERVADOS_18`), escritas depois das correções e
+antes de rodar o leitor com elas. Primeira rodada: **39/47 (83 %)**. As oito que falharam ("a página da foz", "troca o
+fundo para o mapa de ruas", "desliga as camadas", "coloca em tela cheia", "vc guarda meus dados?", "hj teve leitura
+nova?", "abrir monitr", "posso dormir tranquilo em Blumenau?") foram corrigidas — uma delas era **defeito da regra
+nova**: "coloca em tela cheia" caía na recusa de alterar dado porque "cheia" estava na lista de dados e "coloca" na
+de verbos; os dois saíram da lista.
+
+Linha de base nova (`baseline.json`): **525/525**, 0 ações indevidas, **0 palpites**, latência 0,2 ms (p95 1 ms).
+Honestidade do número: 100 % é sobre frases escritas por quem conhece o leitor; a próxima família de frases novas vai
+reprovar de novo, e é para isso que ela existe.
+
+### Quatro esperados revistos (documentados, não "ajustados para subir")
+
+1. "msotrar blumenau" e "kuanto falta pra cota em blumenau": esperavam executar; passam a esperar **esclarecer**,
+   pela regra da 9ª (erro de digitação pergunta, não executa).
+2. "ligar camada 1999": esperava "perguntar" no leitor; o leitor não conhece as camadas do Monitor — vira **comando** e
+   quem pergunta é o executor (agora com "Feito: …" e a lista).
+3. "vai chegar a 10 m?": esperava "perguntar"; é previsão, e o certo é a **barreira do presente** (que passou a pegá-la).
+
+### Testes que mudaram de contrato (18ª)
+
+`interpretar.test.ts` ("Blumenau" solto → esclarecer), `oitava.test.ts` ("apagar o histórico de Blumenau" → recusa),
+`decimasexta.test.ts` (30 m → esclarecer), `decimaterceira.test.ts` (Pomerode → esclarecer), `casosClassificador.ts`
+(`p-dormir-rio-do-sul` agora cai na barreira: `barreira: true`). `testes-navegador/chat-comandos.mjs` ganhou a seção
+18 (barreira, duas leituras, nome solto, alteração de dado, "histórico" na página da cidade).

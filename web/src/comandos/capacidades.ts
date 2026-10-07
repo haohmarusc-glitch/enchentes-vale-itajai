@@ -70,10 +70,10 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
   // --- 1ª entrega: navegação e o Monitor
   ir_cidade: {
     grupo: 'navegacao', entrega: 1, titulo: 'Abrir o Monitor numa cidade',
-    descricao: 'Abre o Monitor enquadrado na cidade (ou reenquadra, se já está nela). Exige verbo: "Blumenau" sozinho é pergunta.',
+    descricao: 'Abre o Monitor enquadrado na cidade (ou reenquadra, se já está nela). Exige verbo: "Blumenau" sozinho pergunta o que a pessoa quer da cidade, com exemplos (18ª).',
     exemplos: [{ texto: 'mostrar Blumenau' }, { texto: 'ir para Taió' }, { texto: 'abrir Rio do Sul' }],
     argumentos: [cidadeObrigatoria], mudaTela: true, precisaDoMapa: false, dados: ['cadastro'],
-    esclarece: 'Nome parecido com uma cidade do cadastro ("Blumenal") pergunta "você quis dizer…?" e não faz nada.',
+    esclarece: 'Nome parecido com uma cidade do cadastro ("Blumenal") ou verbo com erro ("msotrar") pergunta "você quis dizer…?" e não faz nada.',
   },
   monitor_bacia: {
     grupo: 'navegacao', entrega: 1, titulo: 'Abrir o Monitor da bacia',
@@ -83,7 +83,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
   },
   abrir_pagina: {
     grupo: 'navegacao', entrega: 1, titulo: 'Abrir a página da cidade',
-    descricao: 'Abre a página da cidade numa aba: Agora, Minha rua, Histórico ou Fontes.',
+    descricao: 'Abre a página da cidade numa aba: Agora, Minha rua, Histórico ou Fontes. Na página da cidade (ou no Monitor dela), "histórico", "minha rua" ou "fontes" sozinhos bastam (18ª).',
     exemplos: [{ texto: 'histórico de Blumenau' }, { texto: 'abrir a página de Gaspar' }, { texto: 'minha rua em Blumenau' }, { texto: 'fontes de Brusque' }],
     argumentos: [cidadeObrigatoria, { nome: 'aba', tipo: 'enum', obrigatorio: false, valores: ['agora', 'rua', 'historico', 'fontes'], semDizer: 'padrão' }],
     mudaTela: true, precisaDoMapa: false, dados: ['cadastro'],
@@ -129,7 +129,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
   },
   camada: {
     grupo: 'mapa', entrega: 1, titulo: 'Ligar ou desligar uma camada de cheia',
-    descricao: 'Liga a mancha de um ano (ou o rótulo exato que o Monitor oferece) ou desliga as camadas. Só onde a camada existe; rótulo fora da lista é recusado na execução.',
+    descricao: 'Liga a mancha de um ano (ou o rótulo exato que o Monitor oferece) ou desliga as camadas. Só onde a camada existe; ano ou rótulo fora da lista para a cadeia e lista as camadas (o leitor não as conhece; quem pergunta é o executor).',
     exemplos: [{ texto: 'ligar as manchas de 2008' }, { texto: 'desligar as manchas' }, { texto: 'camada 2011' }],
     argumentos: [{ nome: 'acao', tipo: 'enum', obrigatorio: true, valores: ['ligar', 'desligar'] }, { nome: 'ano', tipo: 'ano', obrigatorio: false, semDizer: 'pergunta qual' }, { nome: 'rotulo', tipo: 'texto', obrigatorio: false }],
     mudaTela: true, precisaDoMapa: true, dados: ['monitor'],
@@ -480,7 +480,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
     exemplos: [{ texto: 'como estão Blumenau e Gaspar?' }, { texto: 'como estão as minhas cidades?' }, { texto: 'copiar o resumo das minhas cidades' }],
     argumentos: [{ nome: 'cidadeIds', tipo: 'cidadeIds', obrigatorio: false }, { nome: 'seguidas', tipo: 'booleano', obrigatorio: false }, { nome: 'copiar', tipo: 'booleano', obrigatorio: false }],
     mudaTela: false, precisaDoMapa: false, dados: ['aoVivo', 'preferencias'],
-    nunca: 'Comparar metros entre cidades; responder com uma cidade a menos quando uma da lista está fora do cadastro.',
+    nunca: 'Comparar metros entre cidades; responder com uma cidade a menos quando uma da lista está fora do cadastro (18ª: diz qual não está).',
   },
   // --- 14ª entrega
   linha_do_tempo: {
@@ -507,6 +507,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
     argumentos: [{ nome: 'pergunta', tipo: 'enum', obrigatorio: true, valores: ['nivel', 'agora', 'proximas', 'primeiras'] }, cidade(), { nome: 'nivelM', tipo: 'numero', obrigatorio: false }, { nome: 'subirM', tipo: 'numero', obrigatorio: false }],
     mudaTela: false, precisaDoMapa: false, dados: ['cotasRuas', 'aoVivo', 'cadastro'],
     nunca: 'Afirmar "já alagou" com leitura velha, cidade de várias réguas ou nível dito.',
+    esclarece: 'Nível impossível ("30 m", "0 m") pergunta um nível possível (18ª).',
   },
 }
 

@@ -40,7 +40,9 @@ test('frases: duas ou mais cidades, ou "minhas cidades"; uma cidade só continua
   assert.equal(interpretar('como está Blumenau?', cat, fora), null)
   assert.deepEqual(passos('copiar resumo de Blumenau'), [{ tipo: 'copiar_resumo', cidadeId: 'blumenau' }])
   // Cidade fora do cadastro na lista: não vira comando com cidade a menos.
-  assert.equal(interpretar('como estão Blumenau e Pomerode?', cat, fora), null)
+  // 18ª entrega: a cidade fora do cadastro é dita, em vez de a lista cair na barreira do presente.
+  const pomerode = interpretar('como estão Blumenau e Pomerode?', cat, fora)
+  assert.ok(pomerode && pomerode.tipo === 'esclarecer' && /"pomerode" não está entre as cidades/.test(pomerode.texto), JSON.stringify(pomerode))
 })
 
 test('texto para copiar: um rodapé só, Itajaí sem número, cidade sem leitura dita', () => {

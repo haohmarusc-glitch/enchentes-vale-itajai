@@ -619,10 +619,17 @@ o projeto.
     trava (zero ações indevidas, dev 100 %, nenhum grupo abaixo da linha). **Linha de base: 416/478 (87 %); reservado
     81 %; 0 ações indevidas; 25 palpites do motor.** Diagnóstico e limitações em `docs/AVALIACAO-CHAT.md` e na seção
     da entrega em `docs/CHAT-GLOBAL-COMANDOS.md`. Nenhuma função nova; nenhum comando mudou.
+  - [x] **Décima oitava entrega (07/10/2026): os achados da linha de base, sem IA.** Barreira do presente pega "é
+    seguro…", "vai chegar…", "posso dormir…"; o motor só palpita "maiores cheias" quando a pergunta fala do rio; duas
+    leituras num pedido respondem as duas; camada inexistente no meio da cadeia diz o que foi feito; panorama sem
+    leitura válida diz que a coleta falhou; nome de cidade solto, pedido de alterar dado, endereço digitado e
+    repetição perguntam/recusam; abreviações ("p/", "qdo", "qto", "hj"), erro no verbo ("você quis dizer…?"), "aqui" e
+    "histórico"/"minha rua"/"fontes" na página da cidade. **Bateria: 416/478 → 525/525 (47 frases novas: 39/47 antes
+    do ajuste); 0 ações indevidas; 0 palpites.** Seção da entrega em `docs/CHAT-GLOBAL-COMANDOS.md`.
   - [ ] **PR 2 do handoff (classificação estruturada em modo sombra):** depende de o Jefferson definir as metas por
-    grupo a partir desta linha de base. Achados que podem ser corrigidos antes, sem IA: "é seguro ficar em casa em
-    Blumenau?" escapa da barreira do presente; pedido com duas leituras encadeadas responde só a primeira; camada de
-    ano inexistente no meio da cadeia não diz o que foi feito; panorama com publicação sem leitura válida.
+    grupo. Com a 18ª, a bateria de hoje está em 100 %: a próxima família de frases reservadas (de moradores, se a
+    telemetria um dia guardar texto com consentimento; senão, escritas por outra pessoa) é o que vai mostrar o que o
+    leitor por regras ainda não cobre.
 - [x] **Cinco réguas sem o rio delas no Monitor — resolvido (06/10/2026, inspeção do Jefferson):**
   `docs/TRACADOS-AFLUENTES-2026-10-06.md`.
   - **Causa, nos cinco casos:** o arquivo do rio não existia em `data/rios/`. O Monitor já desenhava todo traçado

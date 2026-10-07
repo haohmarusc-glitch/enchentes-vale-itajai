@@ -98,6 +98,11 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   Caso reprovado é achado: nunca ajustar o esperado para o número subir. Caso novo ou melhora → `npm run avaliar --
   --baseline` e commitar `baseline.json` junto com `docs/AVALIACAO-CHAT.md`. O teste trava zero ações indevidas,
   `dev` em 100 % e nenhum grupo abaixo da linha.
+- Cada entrega que mexe no leitor acrescenta uma **família nova de frases reservadas** (`RESERVADOS_<n>` em `casos.ts`),
+  escrita ANTES de rodar o leitor com elas, e o relatório diz quantas passaram na primeira rodada (18ª: 39/47) antes de
+  corrigir. Esperado revisto é exceção documentada na seção da entrega, nunca ajuste silencioso.
+- O chat **não altera dados** (`pedeAlteracaoDeDado`), não abre endereço digitado e, com só o nome da cidade, pergunta
+  o que a pessoa quer; o motor só palpita "maiores cheias" quando a pergunta fala do rio (`FALA_DO_RIO`).
 - O piloto do classificador, listas de permissão, segredos, retenção e público **não** mudam em PR de refatoração.
 
 ### Ruas alagadas registradas à mão — REGRA (decisão de 05/10/2026)

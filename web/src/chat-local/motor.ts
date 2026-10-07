@@ -185,7 +185,7 @@ const AGORA = [
   /\bprevisao\b/,
   // Pedido de conselho para agora, disfarçado (04/10/2026): "preciso me preocupar?",
   // "dá para passar na ponte?", "vale a pena tirar o carro?".
-  /\b(preciso|precisamos|devo|devemos|tenho que|temos que|vale a pena|e seguro|da para|da pra|posso|podemos)\s+(me\s+|nos\s+)?(preocupar|passar|atravessar|tirar|sair|voltar|subir|levar|deixar|ir (trabalhar|para|pra))\b/,
+  /\b(preciso|precisamos|devo|devemos|tenho que|temos que|vale a pena|e seguro|da para|da pra|posso|podemos)\s+(me\s+|nos\s+)?(preocupar|passar|atravessar|tirar|sair|voltar|subir|levar|deixar|dormir|ficar|ir (trabalhar|para|pra))\b/,
   /\b(tem|ha|existe|esta|estamos|estao|ta|tao|emitiu|emitiram|saiu|decretou|decretaram|entrou|entramos)\s+(algum\s+|um\s+|o\s+|de\s+|no\s+|em\s+)?(estado\s+de\s+)?alerta\b/,
   /\balerta\s+(vigente|ativo|em vigor|valendo|para (hoje|amanha|esta|essa))\b/,
   /\b(estou|to|moro)\b.{0,40}\b(ilhad|alagad|cercad)/,
@@ -197,6 +197,11 @@ const AGORA = [
   /\b(esta|ta|estao|tao)\s+(muito\s+)?(alto|alta|cheio|cheia|baixo|baixa|normal|tranquil[oa]|segur[oa]|liberad[oa]|transitavel|interditad[oa]|fechad[oa])\b/,
   /\bdebaixo d.?agua\b/,
   /\bsituacao (de|em|do|da|no|na)\b/,
+  // 18ª entrega dos comandos (achado da linha de base, 07/10/2026): "é seguro ficar em casa em Blumenau?" passava
+  // sem "está", e "vai chegar a 10 m?" é previsão sem o verbo da lista acima.
+  /\b(e|eh|seria|sera) segur[oa]\b/,
+  /\bsegur[oa] (ficar|sair|atravessar|passar|voltar|dormir|andar|dirigir)\b/,
+  /\b(vai|vao|pode|deve|ira|irao)\s+(chegar|passar|bater|atingir|alcancar|ultrapassar)\b/,
 ]
 /** A pergunta é sobre o presente (nível de agora, previsão, sair de casa)? Vale também para o chat com IA. */
 export function pedeAgora(pergunta: string): boolean {
@@ -1161,6 +1166,19 @@ export const EXEMPLOS = [
   'Cota da ANA em Brusque em novembro de 2008',
 ]
 
+/** A pergunta fala do rio ou das cheias (vocabulário que justifica o palpite de "maiores cheias"). */
+const FALA_DO_RIO =
+  /\b(cheias?|enchentes?|inunda\w*|picos?|niveis|nivel|rios?|agua|cotas?|metros?|alag\w*|histor\w*|recordes?|maior(?:es)?|desastres?|chuvas?|choveu|reguas?|transbord\w*|subiu|baixou|encheu|\d+ ?m)\b/
+
+function naoEntendiDaCidade(cidade: CidadeConhecida): Resposta {
+  return {
+    intencao: 'nao_entendi',
+    texto: `Não entendi o que você quer saber de ${cidade.nome}. Posso dizer como está agora, mostrar no mapa ou buscar o histórico das cheias — escolha um exemplo ou escreva o pedido inteiro:`,
+    sugestoes: [`como está ${cidade.nome}?`, `mostrar ${cidade.nome}`, `quanto falta para a cota em ${cidade.nome}?`, `maior cheia de ${cidade.nome}`],
+    falha: { motivo: 'sem_intencao', cidade: cidade.id },
+  }
+}
+
 // ---------------------------------------------------------------- roteador
 // A ordem importa: a primeira intenção que casar vence. Gatilho amplo demais
 // "rouba" pergunta de outra intenção — os testes travam a ordem atual.
@@ -1185,6 +1203,10 @@ export function responder(pergunta: string, d: Dados): Resposta {
   if (/\b(quantas|quantos|quantas vezes)\b/.test(t) && e.nivel != null) return contarAcima(e, d)
   if (/\b(maior|maiores|recorde|pior|piores|mais alta|maxima)\b/.test(t) && !e.ano) return maioresCheias(e, d)
   if (e.ano && e.cidade) return cheiasDoPeriodo(e, d)
+  // 18ª entrega dos comandos (achado da linha de base, 07/10/2026): o palpite "maiores cheias" só quando a pergunta
+  // fala do rio. "Blumenau" solto, "leva para Gaspar" ou "mude o nível de Blumenau" não são pedidos de histórico:
+  // o chat pergunta o que a pessoa quer, com exemplos da cidade, em vez de responder uma lista que ninguém pediu.
+  if (e.cidade && !FALA_DO_RIO.test(t)) return naoEntendiDaCidade(e.cidade)
   if (e.cidade) return { ...maioresCheias({ ...e, n: e.n ?? 5 }, d), palpite: true }
   if (e.ano) return { ...danosAtlas(e, d), palpite: true }
   return {

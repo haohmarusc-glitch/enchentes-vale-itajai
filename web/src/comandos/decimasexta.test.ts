@@ -57,7 +57,8 @@ test('frases: nível dito, agora, próximas (com "mais 50 cm"), primeiro; rua po
   assert.deepEqual(passos('mostrar a rua São Paulo em Gaspar')[0]!.tipo, 'rua')
   assert.equal(interpretar('qual a cota da Rua São Rafael em Blumenau?', cat, fora), null, 'cota de UMA rua é do motor')
   assert.equal(interpretar('quantas cheias passaram da cota da Rua São Rafael em Blumenau?', cat, fora), null)
-  assert.equal(interpretar('quais ruas alagam com 30 m em Blumenau?', cat, fora), null, 'nível impossível não vira comando')
+  // 18ª entrega: nível impossível pergunta (antes caía no motor por palpite).
+  assert.equal(interpretar('quais ruas alagam com 30 m em Blumenau?', cat, fora)?.tipo, 'esclarecer', 'nível impossível não vira comando: pergunta')
   assert.equal(interpretar('quais ruas alagam com 8 m em Pomerode?', cat, fora), null)
 })
 

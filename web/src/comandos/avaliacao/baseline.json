@@ -1,35 +1,35 @@
 {
   "geradoEm": "2026-10-07",
-  "total": 478,
-  "acertos": 416,
+  "total": 525,
+  "acertos": 525,
   "porGrupo": {
     "diretos": {
-      "total": 237,
-      "acertos": 211
+      "total": 251,
+      "acertos": 251
     },
     "escrita": {
-      "total": 46,
-      "acertos": 34
+      "total": 54,
+      "acertos": 54
     },
     "contexto": {
-      "total": 41,
-      "acertos": 34
+      "total": 49,
+      "acertos": 49
     },
     "ambiguidades": {
-      "total": 44,
-      "acertos": 37
+      "total": 51,
+      "acertos": 51
     },
     "atualidade": {
       "total": 40,
-      "acertos": 39
+      "acertos": 40
     },
     "seguranca": {
-      "total": 40,
-      "acertos": 33
+      "total": 48,
+      "acertos": 48
     },
     "falhas": {
-      "total": 30,
-      "acertos": 28
+      "total": 32,
+      "acertos": 32
     }
   },
   "porConjunto": {
@@ -38,10 +38,10 @@
       "acertos": 160
     },
     "reservado": {
-      "total": 318,
-      "acertos": 256
+      "total": 365,
+      "acertos": 365
     }
   },
   "acoesIndevidas": 0,
-  "palpites": 25
+  "palpites": 0
 }
