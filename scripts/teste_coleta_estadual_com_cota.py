@@ -104,5 +104,20 @@ class TesteBrusque(unittest.TestCase):
         self.assertTrue(l["usar_para_cota"])
 
 
+class TesteEspelhoNoSite(unittest.TestCase):
+    def teste_o_site_conhece_as_mesmas_reguas_das_cotas(self):
+        """`REGUA_ESTADUAL_DAS_COTAS` (web/src/logica/textosDoPainel.ts) decide se o painel do Monitor diz que
+        a estação estadual É a régua das cotas. Lista diferente da daqui volta a frase falsa "a referência
+        vertical não está validada" (Brusque, Rio dos Cedros) — ou a afirma onde não vale."""
+        import re
+        ts = (Path(__file__).resolve().parent.parent / "web" / "src" / "logica" / "textosDoPainel.ts").read_text(
+            encoding="utf-8")
+        bloco = re.search(r"REGUA_ESTADUAL_DAS_COTAS[^{]*\{([^}]*)\}", ts)
+        self.assertIsNotNone(bloco, "constante não encontrada no site")
+        no_site = dict(re.findall(r"'?([a-z-]+)'?\s*:\s*'(DCSC-\d{5})'", bloco.group(1)))
+        aqui = {cfg["cidade"]: codigo for codigo, cfg in cec.REGUAS_COM_COTA_PROPRIA.items()}
+        self.assertEqual(no_site, aqui)
+
+
 if __name__ == "__main__":
     unittest.main()

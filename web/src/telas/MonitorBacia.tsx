@@ -9,7 +9,7 @@ import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
-import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
+import { MOTIVO_VARIAS_REGUAS, estacaoEhReguaDasCotas, ressalvaDoBruto, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ChatNoTopo from '../componentes/ChatNoTopo'
@@ -2278,7 +2278,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   {brutoSc.codigo && <a href={`https://monitoramento.defesacivil.sc.gov.br/estacao/${brutoSc.codigo}`} target="_blank" rel="noreferrer">Consultar estação na Defesa Civil de SC</a>}
                   {cid.id === 'indaial' && <p>As cotas municipais de 3 / 4 / 5,5 m são da régua dos fundos da Celesc, indicada no <a href="https://docs.google.com/document/d/1EN1iEU3lDUfRnOtPx6IjeSpoO7DMGd-iD4i2AdHiFvk/edit" target="_blank" rel="noreferrer">documento de acompanhamento de Indaial</a>. Não são aplicadas à leitura da terceira ponte.</p>}
                   <p className={estilos.painelRessalva}>
-                    {ressalvaDoBruto(cotas.length > 0, foco.origemFaixa === 'estadual')}
+                    {ressalvaDoBruto(cotas.length > 0, foco.origemFaixa === 'estadual', estacaoEhReguaDasCotas(cid.id, brutoSc.codigo))}
                   </p>
                 </div>
               ) : null}

@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { MOTIVO_VARIAS_REGUAS, ressalvaDoBruto, textoEquivalencia, textoSemCota } from './textosDoPainel'
+import { MOTIVO_VARIAS_REGUAS, estacaoEhReguaDasCotas, ressalvaDoBruto, textoEquivalencia, textoSemCota } from './textosDoPainel'
 import { motivoDaEstacaoEstadual, motivoSemCorNoMonitor } from './motivoSemCor'
 import { montarNivelSc } from '../dados/nivelSc'
 
@@ -24,6 +24,24 @@ test('ressalva do bruto: não afirma "zero diferente" e não nega a origem estad
       if (!cotas) assert.doesNotMatch(t, /acima/)
     }
   }
+})
+
+test('régua das cotas (Brusque, Rio dos Cedros): a ressalva não diz que a referência não está validada', () => {
+  assert.ok(estacaoEhReguaDasCotas('brusque', 'DCSC-00019'))
+  assert.ok(estacaoEhReguaDasCotas('rio-dos-cedros', 'DCSC-00011'))
+  assert.ok(!estacaoEhReguaDasCotas('brusque', 'DCSC-00011'), 'código de outra cidade não vale')
+  assert.ok(!estacaoEhReguaDasCotas('indaial', 'DCSC-00006'), 'Indaial: as cotas são da régua da Celesc')
+  assert.ok(!estacaoEhReguaDasCotas('timbo', 'DCSC-00023'), 'equivalência não confirmada')
+  assert.ok(!estacaoEhReguaDasCotas('brusque', null))
+  for (const estadual of [true, false]) {
+    const t = ressalvaDoBruto(true, estadual, true)
+    assert.doesNotMatch(t, /não está validada|não se compara/)
+    assert.match(t, /é a régua das cotas municipais acima/)
+    if (estadual) assert.match(t, /A cor do pino é a classificação/)
+    else assert.match(t, /define a faixa do pino/)
+  }
+  // Sem cota cadastrada não há com o que comparar: volta ao texto genérico.
+  assert.match(ressalvaDoBruto(false, false, true), /não está validada para cotas municipais/)
 })
 
 test('várias réguas: o motivo não diz que falta cota', () => {
