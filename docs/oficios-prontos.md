@@ -652,6 +652,12 @@ Cita as faixas 4,80 (atenção) / 5,30 (alerta) / 5,70 m (alarme) do Plano v10.9
 2. Em que dia e hora foi o pico de 8,96 m de 2014 do documento "Históricos de Enchentes"? O PDF tem a tabela
    de 15 em 15 minutos, mas não escreve a data.
 
+**Resposta (07/10/2026, 09h36, Jucinei Ivan Vicenzi, Coordenador de Proteção e Defesa Civil):** "temos apenas uma
+estação de nível de rio, que fica na ponte próxima ao Paço Municipal, sendo usado o Paço Municipal apenas como
+referência"; "o pico aconteceu as 00:45 do dia 09/06/2014 atingindo 8,96m". Transcrição em
+`data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt`. Aplicada no mesmo dia por decisão do Jefferson
+(equivalência com a DCSC-00011 confirmada; data e hora do pico de 2014). Sem resposta: o zero da régua.
+
 ### C30 — Defesa Civil de Apiúna — 04/10/2026 às 00h42 BRT (reenvio)
 **Para:** defesacivil@apiuna.sc.gov.br (Gmail, id `1a10501b439a84e5`)
 **Assunto:** "Régua e cotas de referência do Rio Itajaí-Açu em Apiúna — pedido de esclarecimento"

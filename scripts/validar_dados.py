@@ -67,6 +67,9 @@ CODIGO_DCSC_ESPERADO = {
     ("itajai-acu", "blumenau"): "DCSC-00026",
     ("itajai-acu", "gaspar"): "DCSC-00005",
     ("itajai-acu", "ilhota"): "DCSC-00030",
+    # Entrou em 07/10/2026: a COMPDEC de Rio dos Cedros escreveu (resposta ao C29) que a cidade tem
+    # UMA estação de nível, na ponte próxima ao Paço — é a DCSC-00011, e a equivalência ficou confirmada.
+    ("itajai-acu", "rio-dos-cedros"): "DCSC-00011",
     # Mirim, escritas em 07/09/2026. Ficaram null desde o começo, embora
     # `scripts/coleta_nivel_sc.py` já lesse essas mesmas estações como estas
     # cidades para publicar a leitura ao vivo: a ligação existia em CÓDIGO e

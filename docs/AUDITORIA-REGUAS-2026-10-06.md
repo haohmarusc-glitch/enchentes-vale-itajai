@@ -101,7 +101,8 @@ mesma estação. As coordenadas da inspeção, tiradas do Plus Code, batem com a
      - o bot volta a dar a distância, agora até a régua;
      - as exceções de Blumenau no validador (`LONGE_ACEITO`, `PINO_LONGE_DA_REGUA`) saíram.
    - **A DCSC-00026** continua em `codigo_dcsc`, só para a chuva.
-2. **Timbó, Rio dos Cedros, Trombudo Central e Lontras: equivalência não confirmada.**
+2. **Timbó, Rio dos Cedros, Trombudo Central e Lontras: equivalência não confirmada.** *(Atualização de 07/10/2026:
+   Rio dos Cedros foi confirmada com a resposta escrita da COMPDEC ao C29; as outras três continuam.)*
    - **Por quê:** distância de 0,24 a 1,6 km não prova que seja a mesma régua. Zero, seção do rio e referência
      altimétrica podem diferir.
    - **No cadastro:** cada uma tem `equivalencia_estadual` com `status: "não confirmada"`.

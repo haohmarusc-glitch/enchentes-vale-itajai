@@ -83,6 +83,11 @@ class TesteOParEstaTrancadoNoEstacoesJson(unittest.TestCase):
     def teste_ascurra_esta_na_lista(self):
         self.assertIn("DCSC-00003", cec.REGUAS_COM_COTA_PROPRIA)
 
+    def teste_rio_dos_cedros_esta_na_lista_no_acu(self):
+        # Resposta da COMPDEC ao C29 (07/10/2026): uma estação de nível só, a DCSC-00011.
+        cfg = cec.REGUAS_COM_COTA_PROPRIA["DCSC-00011"]
+        self.assertEqual((cfg["cidade"], cfg["rio"]), ("rio-dos-cedros", "itajai-acu"))
+
     def teste_brusque_esta_na_lista_no_mirim(self):
         cfg = cec.REGUAS_COM_COTA_PROPRIA["DCSC-00019"]
         self.assertEqual((cfg["cidade"], cfg["rio"]), ("brusque", "itajai-mirim"))
@@ -97,6 +102,21 @@ class TesteBrusque(unittest.TestCase):
         self.assertEqual(l["codigo"], "DCSC-00019")
         self.assertEqual(l["medido_em"], "2026-10-03T16:01:00", "hora de Brasília, sem fuso")
         self.assertTrue(l["usar_para_cota"])
+
+
+class TesteEspelhoNoSite(unittest.TestCase):
+    def teste_o_site_conhece_as_mesmas_reguas_das_cotas(self):
+        """`REGUA_ESTADUAL_DAS_COTAS` (web/src/logica/textosDoPainel.ts) decide se o painel do Monitor diz que
+        a estação estadual É a régua das cotas. Lista diferente da daqui volta a frase falsa "a referência
+        vertical não está validada" (Brusque, Rio dos Cedros) — ou a afirma onde não vale."""
+        import re
+        ts = (Path(__file__).resolve().parent.parent / "web" / "src" / "logica" / "textosDoPainel.ts").read_text(
+            encoding="utf-8")
+        bloco = re.search(r"REGUA_ESTADUAL_DAS_COTAS[^{]*\{([^}]*)\}", ts)
+        self.assertIsNotNone(bloco, "constante não encontrada no site")
+        no_site = dict(re.findall(r"'?([a-z-]+)'?\s*:\s*'(DCSC-\d{5})'", bloco.group(1)))
+        aqui = {cfg["cidade"]: codigo for codigo, cfg in cec.REGUAS_COM_COTA_PROPRIA.items()}
+        self.assertEqual(no_site, aqui)
 
 
 if __name__ == "__main__":

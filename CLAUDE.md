@@ -149,8 +149,11 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - O pino de cada cidade fica na `coordenadas` dela, sem encaixe no traçado (`pontoDoPino`). A câmera centra no pino.
 - **Blumenau:** a coordenada é a da régua da Ponte Adolfo Konder, Beira-Rio (−26,9186, −49,0656), confirmada pela
   Prefeitura (`coordenadas_fonte`). A DCSC-00026 de Blumenau é de chuva: fica em `codigo_dcsc` só para a chuva.
-- **Estação estadual perto não é a régua da cidade.** Timbó, Rio dos Cedros, Trombudo Central e Lontras têm
+- **Estação estadual perto não é a régua da cidade.** Timbó, Trombudo Central e Lontras têm
   `equivalencia_estadual.status: "não confirmada"`.
+  - **Rio dos Cedros: confirmada em 07/10/2026** (decisão do Jefferson): a COMPDEC respondeu ao C29 que a cidade tem
+    uma única estação de nível, na ponte próxima ao Paço — a DCSC-00011, que agora está em `codigo_dcsc`, pinta pelas
+    cotas da cidade (`REGUAS_COM_COTA_PROPRIA`) e leva o pino. O pico de 8,96 m de 2014 passou a 09/06/2014 00:45.
   - Fica "não confirmada" até existir documento, código comum ou comparação de referência/zero da régua (decisão fechada em 06/10/2026). Proximidade não basta.
   - O validador reprova o código em `codigo_dcsc` sem a confirmação, e "confirmada" sem `fonte`.
 - Inventário em `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py --gravar`). Relatório em

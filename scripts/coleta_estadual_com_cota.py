@@ -66,6 +66,15 @@ REGUAS_COM_COTA_PROPRIA: dict[str, dict[str, str]] = {
                   "de Brusque, que republica esta estação; par provado em 07/09/2026 e em 1.287 "
                   "leituras de 02 a 19/09/2026 (docs/BRUSQUE-DCSC-00019.md)."),
     },
+    "DCSC-00011": {
+        "cidade": "rio-dos-cedros",
+        "rio": "itajai-acu",
+        "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+        "fonte": ("Rede estadual (Defesa Civil de SC), estação DCSC-00011, Rio dos Cedros 1. A COMPDEC de "
+                  "Rio dos Cedros respondeu ao C29 em 07/10/2026 que a cidade tem uma única estação de nível, "
+                  "na ponte próxima ao Paço Municipal: as faixas do Plano de Contingência v10.9 são lidas nela "
+                  "(data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt)."),
+    },
 }
 
 

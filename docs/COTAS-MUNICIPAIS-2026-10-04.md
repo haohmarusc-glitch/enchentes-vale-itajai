@@ -26,7 +26,7 @@ Legenda: ✅ comprovado · 🟡 indício, candidato ou parcial · ❌ não há �
 | Ibirama | ✅ PLAMCON 2024, p. 11 | ✅ estação da DCSC na ponte Beltramini (nota 1) | 🟡 o PLAMCON não escreve "DCSC-00020"; boletim × DCSC-00020 dá 4,04 × 4,04 m em 11/09 | ❌ validade até 07/08/2025 (p. 32); PLAMCON 2025 sem texto; boletim de 11/09 contradiz | ✅ DCSC-00020 viva | **pendente**; tabela de 2024 só histórica (decisão de 04/10). **C26 respondido em 05/10:** régua = DCSC-00020 confirmada; tabela aguarda o PLAMCON 2026 |
 | Botuverá | 🟡 PLANCON 2026, seção 4.1 (não conferido daqui) | ❌ a tabela não nomeia régua | ❌ | 🟡 publicado em 15/09/2026; validade não conferida | 🟡 DCSC-00018 viva; DCSC-00027 sem leitura na coleta de 03/10 | **pendente**; complemento ao C17 enviado em 04/10 |
 | Ilhota | ✅ PLANCON 2025/2028, p. 16 | 🟡 "régua instalada junto a ponte" (p. 15); a estação da ponte Cadorin só aparece na p. 21 | ❌ | 🟡 2025–2028 pelo título | ✅ DCSC-00030 viva | **pendente**; C11 atualizado enviado em 04/10 |
-| Rio dos Cedros | ✅ Plano v10.9 (abr/2026), p. 9 | 🟡 "proximidade da régua de medição" ao Paço (p. 4); a tabela não nomeia | ❌ com a DCSC-00011 | ✅ abr/2026 | ✅ DCSC-00011 viva | **pendente**: falta a equivalência; C29 enviado em 04/10 |
+| Rio dos Cedros | ✅ Plano v10.9 (abr/2026), p. 9 | 🟡 "proximidade da régua de medição" ao Paço (p. 4); a tabela não nomeia | ❌ com a DCSC-00011 | ✅ abr/2026 | ✅ DCSC-00011 viva | ✅ **resolvida em 07/10/2026**: resposta ao C29 — uma única estação de nível, na ponte próxima ao Paço; equivalência confirmada |
 | Timbó | 🟡 escala de imprensa e de post da prefeitura (2/3/4,29/4,30) | 🟡 "régua do Rio Benedito, Rua Equador" (2022) | 🟡 três pares entre o número divulgado e a DCSC-00023 | ❌ dez/2025 chamou 4,34 m de "atenção" | ✅ DCSC-00023 viva | **pendente**: não ligar ainda (decisão de 04/10); aparece como leitura estadual; C27 enviado em 04/10 a defesacivil@timbo.sc.gov.br |
 | Indaial | ✅ faixa municipal 3/4/5,5 (prefeitura, 2023) | ✅ régua física nos fundos da Celesc | ❌ a prefeitura escreveu em 2023 que a estadual "não deve ser usada como base"; três pares dão ~2,43–2,53 m | 🟡 | ❌ DCSC-00006 sem leitura plausível desde 26/09 08h14 | **pendente**; C19 atualizado enviado em 04/10 |
 | Ituporanga | ✅ SDC: 1,4/1,9/2,6 m | ✅ ANA 83250000 | — não é a régua do site (DCSC-00039) | ✅ manual SDC 2024 | ❌ não há leitura da 83250000 no site | **pendente**; complemento ao C22 enviado em 04/10 |
@@ -75,5 +75,6 @@ Já enviados em 04/10, que cobrem o que o handoff pede para Ilhota e Ibirama sem
 
 Enviados pelo Jefferson em 04/10, registrados em `docs/oficios-prontos.md`:
 - **C28 (Trombudo Central):** faixas da página da Defesa Civil e se a régua municipal é a da DCSC-00035;
-- **C29 (Rio dos Cedros):** se a DCSC-00011 lê na régua do Paço e a data do pico de 8,96 m de 2014;
+- **C29 (Rio dos Cedros):** se a DCSC-00011 lê na régua do Paço e a data do pico de 8,96 m de 2014 — **respondido em
+  07/10/2026**: uma única estação, na ponte próxima ao Paço; pico às 00:45 de 09/06/2014;
 - **C30 (Apiúna):** reenvio à Defesa Civil: régua, faixas e o zero da estação de altitude.

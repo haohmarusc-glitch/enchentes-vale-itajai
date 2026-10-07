@@ -480,6 +480,18 @@ o projeto.
 
 ## Pendências
 
+- [x] **Rio dos Cedros: resposta da Defesa Civil ao C29 aplicada (07/10/2026, decisão do Jefferson).** A cidade tem uma
+  única estação de nível, na ponte próxima ao Paço Municipal; o Paço é só referência. Resposta transcrita em
+  `data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt`.
+  - A DCSC-00011 virou a régua da cidade: equivalência "confirmada", `codigo_dcsc`, pino na coordenada da estação
+    (antes na Praça Matriz, a 0,24 km) e lista `REGUAS_COM_COTA_PROPRIA`. Rio dos Cedros passa a pintar pelas cotas de
+    4,80 / 5,30 / 5,70 m **depois do deploy do coletor na VPS** (o site lê a leitura que o coletor marca para cota).
+  - O pico de 8,96 m de 2014: 09/06/2014 às 00:45, confiança alta (antes 08/06, sem hora, baixa).
+  - O traçado do Rio dos Cedros foi regerado pelo `converter_tracado_rios.py`: o quadro do mapa encolheu ~35 m ao sul
+    com o pino novo, e o recorte acompanhou.
+  - [ ] **Ainda aberto:** a COMPDEC não falou do zero da régua nem da vigência da escala depois do desassoreamento de
+    2026 (`cotas_verificado` continua false). A DCSC classifica a estação com faixas próprias que não são as
+    municipais (3,65 m já é "atenção" na rede estadual em 07/10/2026); o painel mostra as duas, rotuladas.
 - [ ] **Blumenau de 5 em 5 minutos (PADKND), 07/10/2026 — mergeado; falta o deploy na VPS.** `coleta_itajai_portal.parse_blumenau`
   lê a estação "AlertaBlu PADKND" do portal da Defesa Civil de Itajaí (`?municipio_id=3`). Ela vem sem coordenada, então a
   identidade é provada **por medição a cada coleta**: nas horas cheias em comum com o `nivel_oficial.json` do AlertaBlu

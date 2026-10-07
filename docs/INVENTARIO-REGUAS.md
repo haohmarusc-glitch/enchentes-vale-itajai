@@ -30,7 +30,7 @@ auditoria visual das 19 cidades do Monitor.
 | Ilhota | Estação hidrometeorológica da Ponte Cláudio Jeremias Cadorin (a régua que o PLANCON cita) | -26,8944, -48,8248 | DCSC-00030 | Hidro | 4 m | 0,02 km | confere com a ficha |
 | Itajaí | — | -26,9078, -48,6619 | — | — | — | 0,88 km | sem código: ponto do cadastro, fonte não confirma |
 | Timbó | Rio Benedito, Rua Equador | -26,8231, -49,2708 | — | — | — | 8,22 km | **coordenada não confirmada** (decisão de 06/10/2026): pino mantido, sem fonte que situe a régua |
-| Rio dos Cedros | Régua da Praça Matriz | -26,7397, -49,2703 | — | — | — | 16,58 km | sem código: ponto do cadastro, fonte não confirma |
+| Rio dos Cedros | Estação da ponte próxima ao Paço Municipal (DCSC-00011) | -26,7400, -49,2727 | DCSC-00011 | Hidro | 1 m | 16,62 km | confere com a ficha |
 | Trombudo Central | Régua do Rio Trombudo (a fonte não nomeia o ponto) | -27,3053, -49,7919 | — | — | — | 10,54 km | sem código: ponto do cadastro, fonte não confirma |
 | Vidal Ramos | — | -27,3855, -49,3581 | DCSC-00024 | Hidro | 1 m | 0,02 km | confere com a ficha |
 | Botuverá | — | -27,1862, -49,1206 | DCSC-00018 | Hidro | 1 m | 0,04 km | confere com a ficha |
@@ -48,7 +48,6 @@ régua. A equivalência fica em `equivalencia_estadual` no cadastro, e o validad
 |---|---|---|---|---|
 | Lontras | DCSC-00032 | Lontras | 0,82 km | não confirmada |
 | Timbó | DCSC-00023 | Timbó 1 | 1,61 km | não confirmada |
-| Rio dos Cedros | DCSC-00011 | Rio dos Cedros 1 | 0,24 km | não confirmada |
 | Trombudo Central | DCSC-00035 | Trombudo Central 2 | 0,90 km | não confirmada |
 
 Sem estação Hidro da DCSC a até 3 km: Apiúna, Itajaí.
