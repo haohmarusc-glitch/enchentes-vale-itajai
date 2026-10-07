@@ -42,6 +42,7 @@ import { entradaBrasilia, simularChegada } from '../logica/simulacaoChegada'
 import { primeiraCota } from '../logica/tempoReal'
 import { rotuloCota } from '../logica/formato'
 import { MAX_CIDADES_JUNTAS, textoParaCopiarVarias, textoVariasCidades } from './variasCidades'
+import { textoLinhaDoTempo } from './linhaDoTempo'
 import { textoDeCima, textoMaximo24h, textoPanorama, textoQuantoFalta, textoSubindoOuBaixando, type CidadeAgora } from './rioAgora'
 import type { RuasPorMancha } from '../chat-local/motor'
 import type { Catalogo, Contexto, Passo, Resultado } from './tipos'
@@ -619,6 +620,53 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
         }
         const rotulo = reguaDoMonitor ? `${nome} (${rotuloDaRegua(reguaDoMonitor)})` : nome
         return { texto: textoMaximo24h({ nome: rotulo, cidadeId: alvo, pontos: s.pontos, publicacao: s.publicacao, agora: v.agora }) }
+      }
+      case 'linha_do_tempo': {
+        const alvo = passo.cidadeId ?? cidade
+        const exemplos: Record<typeof passo.pergunta, string> = {
+          cruzou_cota: 'quando Blumenau passou da cota de alerta?',
+          ha_quanto_tempo: 'há quanto tempo Blumenau está em alerta?',
+          comecou_a_subir: 'quando o rio começou a subir em Blumenau?',
+          variacao: 'quanto Blumenau subiu nas últimas 6 horas?',
+        }
+        if (!alvo) return { texto: `Em qual cidade? Por exemplo: "${exemplos[passo.pergunta]}"`, sugestoes: [exemplos[passo.pergunta]] }
+        const d = amb.dados
+        const v = await d?.aoVivo()
+        const c = d?.cidade(alvo)
+        if (!d || !v || !c) return { texto: SEM_DADOS }
+        const nome = nomeDaCidade(alvo, cat)
+        const reguaDoMonitor = ctx.reguaAtual && cat.reguas.find((r) => r.codigo === ctx.reguaAtual && r.cidadeId === alvo)
+        const pontos = Object.keys(v.serie.series).flatMap((r) => serieDaCidade(v.serie, r, alvo)).sort((a, b) => a.medidoEm.getTime() - b.medidoEm.getTime())
+        const s = serieDeUmaRegua(pontos, v.serie.resgates ?? {}, reguaDoMonitor ? reguaDoMonitor.titulo : null)
+        if ('escolher' in s) {
+          const daCidade = cat.reguas.filter((r) => r.cidadeId === alvo)
+          return {
+            texto: `${nome} tem ${s.escolher.length} réguas, cada uma com o seu zero: a linha do tempo é de uma régua só. Escolha uma no Monitor e peça de novo.`,
+            sugestoes: daCidade.slice(0, 3).map((r) => `zoom na régua ${rotuloDaRegua(r)}`),
+          }
+        }
+        const dc = cat.cidades.find((x) => x.id === alvo)
+        const seguinte: Record<typeof passo.pergunta, string> = {
+          cruzou_cota: `há quanto tempo ${nome} está nessa faixa?`,
+          ha_quanto_tempo: `quando ${nome} começou a subir?`,
+          comecou_a_subir: `quanto ${nome} subiu nas últimas 6 horas?`,
+          variacao: `${nome} está subindo?`,
+        }
+        return {
+          texto: textoLinhaDoTempo({
+            pergunta: passo.pergunta,
+            cidade: c.cidade,
+            rotulo: reguaDoMonitor ? `${nome} (${rotuloDaRegua(reguaDoMonitor)})` : nome,
+            pontos: s.pontos,
+            publicacao: s.publicacao,
+            agora: v.agora,
+            janelaHoras: v.serie.janelaHoras,
+            ...(passo.cota ? { cota: passo.cota } : {}),
+            ...(passo.horas ? { horas: passo.horas } : {}),
+          }),
+          sugestoes: [seguinte[passo.pergunta]],
+          link: { texto: `Ver ${nome} agora →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}` },
+        }
       }
       case 'panorama': {
         const d = amb.dados

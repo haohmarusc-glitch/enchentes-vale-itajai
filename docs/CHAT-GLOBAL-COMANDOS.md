@@ -663,3 +663,31 @@ respondiam só o tempo.
   - `setima.test.ts`: as frases do morador e o tempo dito sem pico;
   - `motor.test.ts`: a sugestão;
   - `chat-comandos.mjs`, seção 8: as duas perguntas juntas, com "12 a 17 h" e o 199.
+
+## Décima quarta entrega (07/10/2026): a linha do tempo da cheia de agora
+
+Quem olha o rio subir pergunta "quando passou da cota?", "há quanto tempo está assim?", "quando começou?" e
+"quanto subiu desde de manhã?". A 14ª entrega responde as quatro pela série publicada de UMA régua (a janela de
+~48 h de `dados/serie.ts`), sem conta nova sobre o futuro.
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "quando Blumenau passou da cota de alerta?", "a que hora o rio passou da cota em Blumenau?", "quando Blumenau entrou em alerta máximo?" | O primeiro ponto da série na cota ou acima, depois de estar abaixo, com o passo da série ("medição a cada ~15 min: o cruzamento pode ter sido até 15 min antes"). Se já voltou para baixo, diz quando. Sem cota dita, usa a da faixa de agora. Cota que a cidade não tem: lista as que tem. | Inventar hora entre duas medições; chamar de agora o que a série velha mostra. |
+| "há quanto tempo Blumenau está em alerta?", "há quanto tempo está acima da cota de atenção em Blumenau?" | Desde o último cruzamento, para cima, da cota da faixa pedida (ou a de agora). Abaixo de todas: diz desde quando. Já estava acima no começo da série: "mais de N h". | — |
+| "quando o rio começou a subir em Blumenau?", "há quanto tempo o rio está subindo?" | O começo da subida que ainda dura: o último ponto no mínimo do trecho que só sobe, com 2 cm de tolerância (o limiar de `tendencia`). Diz quanto subiu e a média em cm/h. Rio descendo: o pico das 48 h e quanto desceu. | Chamar patamar de subida. |
+| "quanto Blumenau subiu nas últimas 6 horas?", "quanto o rio baixou nas últimas 12 h em Blumenau?" | O ponto de agora contra o ponto de N horas antes (1 a 72), na mesma régua; se no meio passou mais alto, diz. Série curta: diz de onde a onde ela vai. | Comparar pontos de réguas diferentes. |
+
+- **Regras que continuam:** as duas perguntas de cota são recusadas em Gaspar ("maior que"), Ascurra (C18) e Itajaí
+  (várias réguas), pelos mesmos motivos de "quanto falta" — e apontam as outras duas, que funcionam em qualquer
+  régua. Itajaí: a linha do tempo é de uma régua; com uma escolhida no Monitor, vale para ela. Série velha leva a
+  frase "a série para às HH:MM: depois disso ela não diz nada". Toda resposta termina com "tudo na régua de X: não
+  compare com outras cidades" e o 199.
+- **Frases:** a cidade pode vir antes do verbo ("quando Blumenau passou…") ou no fim ("…em Blumenau"); "o rio",
+  "o nível" e "a água" antes do verbo não são cidade. Sem cidade, vale a da página. "Blumenau está subindo?",
+  "quanto falta…", "o que mudou na última hora" e "máximo das últimas 24 h" continuam onde estavam; o tempo de
+  descida e o histórico continuam no motor.
+- **Testes:**
+  - `src/comandos/decimaquarta.test.ts` (5): frases, as contas (cruzamentos, começo da subida, ponto de N horas
+    antes), os textos (hora de medição, série velha, Gaspar), o executor (Itajaí pede régua; nada navega), a ajuda;
+  - `testes-navegador/chat-comandos.mjs`, seção 15: as quatro perguntas em Blumenau, com a hora de medição ou o
+    motivo, sem mudar de tela.

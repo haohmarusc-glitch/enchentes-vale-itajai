@@ -14,6 +14,7 @@ import type { TemaDaLegenda } from './foz'
 import { normalizar } from './normalizar'
 import { corrigirCidade, textoDaCorrecao } from './corrigir'
 import { verbeteDe } from './glossario'
+import { NOMES_DE_COTA } from './linhaDoTempo'
 import { arquivoPeloNome } from './rios'
 
 export { normalizar }
@@ -185,6 +186,68 @@ function cidadesDaLista(texto: string, cat: Catalogo): string[] | null {
   const unicos = [...new Set(ids)]
   return unicos.length >= 2 ? unicos : null
 }
+/**
+ * 14ª entrega: a linha do tempo da cheia de agora. A cidade pode vir antes do verbo ("quando Blumenau passou da
+ * cota?") ou no fim ("quando o rio passou da cota em Blumenau?"); sem cidade, vale a da página.
+ */
+const COTA_DITA = '(alerta maximo|alerta|atencao|observacao|monitoramento|inundacao|emergencia|prontidao|transbordamento)'
+const SUJEITO = '(?:o rio|o nivel|a agua|a regua|o itajai(?: acu| mirim)?)'
+function lerTrechoDaDecimaQuarta(t: string, cat: Catalogo): Lido {
+  const comCidade = (alvo: string | undefined, resto: Omit<Extract<Passo, { tipo: 'linha_do_tempo' }>, 'tipo' | 'cidadeId'>): Lido => {
+    const limpo = (alvo ?? '').replace(new RegExp(`^${SUJEITO}(?: (?:de|em|do|da|no|na))? ?`), '').trim()
+    const c = cidadeOpcional(limpo, cat)
+    return c ? [{ tipo: 'linha_do_tempo', ...resto, ...c }] : null
+  }
+  const cotaDe = (s: string | undefined) => (s ? { cota: NOMES_DE_COTA[s] ?? s } : {})
+  // "o rio" antes do verbo não é cidade: "a que hora o rio passou da cota em Blumenau?" tem a cidade no fim.
+  const soSujeito = (s: string | undefined) => (s && new RegExp(`^${SUJEITO}$`).test(s) ? undefined : s)
+  // "quanto Blumenau subiu nas últimas 6 horas?", "quanto o rio subiu em Blumenau nas últimas 12 h?"
+  {
+    const m =
+      t.match(new RegExp(`^(?:quanto|qto) (?:(.+?) )?(?:subiu|baixou|desceu|variou|mudou|encheu)(?: ${SUJEITO})?(?: (?:em|de|no|na) (.+?))? (?:nas |em |desde |durante )?(?:as )?(?:ultimas )?(\\d{1,2}) ?(?:h|horas?)(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^(?:quanto|qto) (?:${SUJEITO} )?(?:subiu|baixou|desceu|variou|mudou|encheu) (?:(.+?) )?(?:nas |em |desde |durante )?(?:as )?(?:ultimas )?(\\d{1,2}) ?(?:h|horas?)(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) {
+      const partes = m.slice(1).filter((x): x is string => !!x && !/^\d+$/.test(x)).map(soSujeito).filter(Boolean)
+      const horas = Number(m.slice(1).find((x) => x && /^\d+$/.test(x)))
+      if (partes.length > 1 || !(horas >= 1 && horas <= 72)) return null
+      return comCidade(partes[0], { pergunta: 'variacao', horas })
+    }
+  }
+  // "quando o rio começou a subir em Blumenau?", "quando Blumenau começou a subir?", "há quanto tempo está subindo?"
+  {
+    const m =
+      t.match(new RegExp(`^(?:quando|a que hora|que hora|desde quando|desde que hora) (?:(.+?) )?(?:comecou|comecaram|passou|voltou) a (?:subir|encher)${EM_CIDADE}$`)) ??
+      t.match(new RegExp(`^(?:ha|faz) quanto tempo (?:(.+?) )?(?:esta|ta|vem|anda) (?:subindo|enchendo)${EM_CIDADE}$`)) ??
+      t.match(new RegExp(`^(?:desde quando) (?:(.+?) )?(?:esta|ta|vem|anda)? ?(?:subindo|sobe|enchendo|enche)${EM_CIDADE}$`))
+    if (m) {
+      const antes = soSujeito(m[1])
+      if (antes && m[2]) return null
+      return comCidade(antes ?? m[2], { pergunta: 'comecou_a_subir' })
+    }
+  }
+  // "há quanto tempo Blumenau está em alerta?", "há quanto tempo está acima da cota de atenção em Blumenau?"
+  {
+    const m = t.match(new RegExp(`^(?:ha|faz|desde) quanto tempo (?:(.+?) )?(?:esta|ta|fica|ficou|segue|continua) (?:em|no|na|acima d[ao]|acima d[ao] cota de|na cota de|em cota de|na faixa de) ?${COTA_DITA}?${EM_CIDADE}$`))
+    if (m) {
+      const antes = soSujeito(m[1])
+      if (antes && m[3]) return null
+      return comCidade(antes ?? m[3], { pergunta: 'ha_quanto_tempo', ...cotaDe(m[2]) })
+    }
+  }
+  // "quando Blumenau passou da cota de alerta?", "a que hora o rio passou da cota em Blumenau?", "quando entrou em alerta?"
+  {
+    const m = t.match(
+      new RegExp(`^(?:quando|a que hora|que hora|desde quando|desde que hora) (?:(.+?) )?(?:passou|cruzou|ultrapassou|bateu|chegou|atingiu|entrou|subiu acima|ficou acima)(?: d[aeo]| n[ao]| em| a| para| pra)?(?: cota(?: d[aeo])?| nivel d[aeo]| faixa d[aeo])?(?: ${COTA_DITA})?(?: (?:em|de|no|na) (.+?))?(?: agora)?$`),
+    )
+    if (m && (m[2] || /cota|nivel de|faixa de|entrou/.test(t))) {
+      const antes = soSujeito(m[1])
+      if (antes && m[3]) return null
+      return comCidade(antes ?? m[3], { pergunta: 'cruzou_cota', ...cotaDe(m[2]) })
+    }
+  }
+  return null
+}
+
 const MINHAS = '(?:as )?(?:minhas cidades|cidades que (?:eu )?sigo|cidades seguidas)'
 function lerTrechoDaDecimaTerceira(t: string, cat: Catalogo): Lido {
   if (new RegExp(`^(?:como (?:estao|tao) |e )?${MINHAS}(?: agora)?$`).test(t)) return [{ tipo: 'varias_cidades', seguidas: true }]
@@ -529,6 +592,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const decimaQuarta = lerTrechoDaDecimaQuarta(t, cat)
+  if (decimaQuarta) return decimaQuarta
   const decimaTerceira = lerTrechoDaDecimaTerceira(t, cat)
   if (decimaTerceira) return decimaTerceira
   const decimaSegunda = lerTrechoDaDecimaSegunda(t, ctx)
