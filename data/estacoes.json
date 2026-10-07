@@ -246,6 +246,11 @@
             -49.6335
           ],
           "regua_das_cotas": "Ponte Dom Tito Buss",
+          "regua_das_cotas_id": {
+            "codigo": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
+            "fonte": "As cotas 4,50/5,50/6,50 são os band_thresholds da Asthon na própria estação Ponte Dom Tito Buss (`fonte_cotas`), e a leitura vem dessa estação pela coleta_asthon.py. Par resolvido em 09/09/2026 (`regua_das_cotas_fonte`, docs/sessoes/2026-09-09-SESSAO.md §4).",
+            "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+          },
           "regua_das_cotas_fonte": "✅ RESOLVIDO em 09/09/2026, pelo lado da LEITURA, não da cota. O par MKS × Ponte Dom Tito Buss foi DESMENTIDO por medição no mesmo instante (sessão do Jefferson na VPS, docs/sessoes/2026-09-09-SESSAO.md §4): MKS 4,64 m (~50 min mais velha), Tito Buss DCSC 4,63 m, Tito Buss Asthon 4,46 m. A MKS é a régua da DCSC, com zero ~0,17 m acima da Asthon; as cotas 4,50/5,50/6,50 são band_thresholds da Asthon na Tito Buss (reference_station_id da cidade). Com atenção em 4,50, o site pintava amarelo enquanto o município mostrava NORMAL na régua dona das cotas — e conferir_par_regua.py já tinha visto 88 de 88 leituras da MKS acima da atenção. A leitura de Rio do Sul passou a vir da Tito Buss da Asthon (scripts/coleta_asthon.py, cadência 5 min); a MKS saiu da coleta e do mapeamento (comum._FALLBACK, saude_coleta.ESTACOES_APOSENTADAS). ✅ PROVADO na VPS em 09/09/2026, primeira rodada depois do merge: coleta_niveis.py gravou UMA leitura de Rio do Sul, 'Rio do Sul, Ponte Dom Tito Buss (Asthon)', 3,02 m às 20:43:27 (Brasília), sem a MKS. Abaixo da atenção (4,50): NORMAL, como o município.",
           "cotas_verificado": false,
           "codigo_ana_verificado": true,
@@ -426,6 +431,11 @@
           "cotas_verificado": true,
           "fonte_cotas": "Defesa Civil de Ascurra, resposta ao ofício C18 em 11/09/2026, 08:48 BRT. Síntese: docs/resposta-ascurra-c18-2026-09-11.md.",
           "regua_das_cotas": "DCSC-00003 — Ponte do Beber, rio Itajaí-Açu",
+          "regua_das_cotas_id": {
+            "codigo": "DCSC-00003",
+            "fonte": "Resposta da COMPDEC ao C18 em 11/09/2026 (docs/resposta-ascurra-c18-2026-09-11.md): as faixas foram definidas na escala da DCSC-00003 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+            "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+          },
           "regua_das_cotas_fonte": "Resposta da COMPDEC de Ascurra ao C18 em 11/09/2026: identifica a DCSC-00003 na Ponte do Beber e informa as faixas municipais. Não foi informado deslocamento; não aplicar conversões.",
           "cotas_aviso_publico": "Faixas informadas pela Defesa Civil de Ascurra em 11/09/2026 para a estação da Ponte do Beber: até 8,50 m monitoramento; de 8,50 a 9,76 m atenção; de 9,76 a 10,76 m alerta; acima de 10,76 m emergência. A régua do Ribeirão São Paulo é outra referência, não oficial. A classificação calculada pelo projeto usa somente a DCSC-00003, conforme confirmação no C18; não é boletim oficial nem área alagada."
         },
@@ -478,6 +488,11 @@
           "verificado": false,
           "regua": "Ponte Adolfo Konder (Centro)",
           "regua_das_cotas": "Régua única do AlertaBlu / Proteção e Defesa Civil de Blumenau (static/data/nivel_oficial.json) — a FONTE não nomeia o ponto. O par cota↔leitura é provado por MEDIÇÃO, não por nome; ver `regua_nota`.",
+          "regua_das_cotas_id": {
+            "codigo": "Blumenau",
+            "fonte": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+            "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+          },
           "regua_nota": "Preenchido em 18/09/2026, a pedido do Jefferson, depois de ler a fonte primária em vez de copiar o campo `regua`. O QUE A FONTE DIZ: nada sobre o nome. O `static/data/nivel_oficial.json` publica UMA escala (`condicoes`: Normalidade 0 · Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8, todas `tipo: nvl`) e UMA série de nível (`niveis`), sob `fonte: \"AlertaBLU\"`, sem identificar a régua — conferido no bruto blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json. O QUE ESTÁ PROVADO: que a cota e a leitura são da MESMA régua, por medição. `conferir_par_regua.py` registra que as duas publicações de Blumenau — a página da Defesa Civil de Itajaí (nossa primária) e o AlertaBlu (nosso resgate, e a dona das cotas) — cobrem a mesma régua, divergindo em mediana +0,065 m e máximo +0,245 m. É desse número que saiu a TOLERANCIA_M de 0,10 m do próprio script. É isso que sustenta `cotas_verificado: true`, e não o nome. O QUE NÃO ESTÁ PROVADO É O NOME. O campo `regua` diz \"Ponte Adolfo Konder (Centro)\"; esse nome entrou no PRIMEIRO commit do projeto (c741f65), sem fonte citada, e nenhuma publicação da Defesa Civil de Blumenau que está no repositório o usa para a régua do tempo real. Dentro do repositório ele aparece ligado à série do CEOPS/FURB (enchentes.json, divergências de set/2011: \"CEOPS/FURB — Ponte Adolfo Konder\", 13,00 m), que está na referência IBGE — o outro lado exato da REGRA BLOQUEANTE. Escrever esse nome aqui seria vínculo por NOME entre referências diferentes: o risco que o Salseiro trouxe em Vidal Ramos e que a ambiguidade da \"Ponte Estaiada\" já custou uma vez em Brusque (PR #241). RESOLVE: pedir à Defesa Civil de Blumenau o nome e o local da régua que alimenta o `nivel_oficial.json`. Enquanto não vier, o campo diz o que se sabe e declara o que não se sabe.",
           "cotas_m": {
             "monitoramento": 3.0,
@@ -636,6 +651,11 @@
           "codigo_ana_sucessor": null,
           "codigo_ana_sucessor_nota": "A ANA NÃO tem estação sucessora em Gaspar — é a única das quatro que morreram em 12/2021 sem substituta. Por isso o campo é null com motivo, e não um código inventado. Consequência prática: para o presente, a ÚNICA fonte de nível de Gaspar é a municipal (/estacao/ver/21), a mesma régua das cotas de rua. O que era um dado solitário passa a ser um dado solitário POR UM MOTIVO CONHECIDO.",
           "regua_das_cotas": "Rio Itajaí Açu Gaspar — estação municipal 21",
+          "regua_das_cotas_id": {
+            "codigo": "Gaspar — Rio Itajaí-Açu (Defesa Civil de Gaspar)",
+            "fonte": "As cotas são da legenda da página da estação municipal 21 (`fonte_cotas`, defesacivil.gaspar.sc.gov.br/estacao/ver/21), e a leitura é dessa mesma estação, pela coleta_gaspar.py.",
+            "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+          },
           "estacao_municipal": {
             "id": 21,
             "coordenadas": [
@@ -803,6 +823,11 @@
             -49.272686
           ],
           "regua_das_cotas": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+          "regua_das_cotas_id": {
+            "codigo": "DCSC-00011",
+            "fonte": "Resposta da COMPDEC ao C29 em 07/10/2026 (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt): a cidade tem uma única estação de nível, a DCSC-00011 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+            "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+          },
           "regua_das_cotas_fonte": "Defesa Civil de Rio dos Cedros, resposta ao ofício C29 em 07/10/2026, assinada por Jucinei Ivan Vicenzi, Coordenador de Proteção e Defesa Civil — bruto: data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt. A cidade tem uma única estação de nível, na ponte próxima ao Paço; as faixas de 4,80 / 5,30 / 5,70 m do Plano de Contingência v10.9 (abr/2026, p. 9) são lidas nela. Não foi informado deslocamento; não aplicar conversões."
         },
         {
@@ -1002,6 +1027,11 @@
             -48.9172
           ],
           "regua_das_cotas": "Ponte Estaiada – DCSC",
+          "regua_das_cotas_id": {
+            "codigo": "DCSC-00019",
+            "fonte": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
+            "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+          },
           "regua_das_cotas_fonte": "PAR PROVADO em 07/09/2026, por três leituras simultâneas do mesmo minuto: a página da Ponte Estaiada publicou 1,27 m, a rede estadual (DCSC-00019) publicou 1,27 m e a nossa coleta publicou 1,28 m. É a MESMA régua — Brusque não opera régua própria de rio, a Ponte Estaiada é repasse do DCSC. Logo as cotas da legenda dessa estação valem para o número que o site mostra. Antes deste par, `regua_das_cotas_fonte` dizia 'par NÃO provado'. RECONFIRMADO em 03/10/2026 com 1.287 pares de 02/09 a 19/09/2026 (cheias de 10–12/09 incluídas): a régua 'Brusque' que o site lia e a DCSC-00019 diferiram no máximo 3 cm, mediana 0 (docs/BRUSQUE-DCSC-00019.md). Desde então a leitura ao vivo de Brusque vem da DCSC-00019, por coleta_estadual_com_cota.py.",
           "fonte_cotas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
           "cotas_substituidas_em_2026_09_07": {

@@ -175,6 +175,11 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   com limites por estação fica fora até haver limites oficiais e referência de régua validada.
 - **Régua da leitura = régua das faixas**, por código; proximidade e título parecido não contam. Conversão entre
   réguas só com vínculo oficial, fórmula e fonte (nenhum cadastrado).
+- **`regua_das_cotas_id` (campo aprovado pelo Jefferson em 07/10/2026):** `{codigo, fonte}`.
+  - `codigo` é a identidade que a leitura carrega (`codigo` ou o título por `comum.regua_de`); `fonte` aponta a prova.
+  - Está em Brusque, Ascurra, Rio dos Cedros, Rio do Sul, Blumenau e Gaspar.
+  - Valor novo só com a prova escrita, por decisão do Jefferson. O validador cobra a coerência com `codigo_dcsc` e
+    `REGUAS_COM_COTA_PROPRIA`.
 - **A municipal manda.** A estadual pinta só sem leitura municipal de agora, como `fallback`, com aviso.
 - **A saída diz a faixa, não a cor** (token do site).
 - **Piloto: Brusque** (`CIDADES_PILOTO`). Cidade nova entra com o `--inventario` limpo e com um caso no gabarito.

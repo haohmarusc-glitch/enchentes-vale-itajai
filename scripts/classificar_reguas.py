@@ -169,23 +169,49 @@ def cotas_que_pintam(cidade: dict) -> list[tuple[str, float]]:
             and math.isfinite(float(cotas[k]))]
 
 
-def regua_das_cotas(cidade: dict) -> tuple[str | None, str | None]:
-    """(id da régua das cotas, motivo quando não há). Por IDENTIDADE, de duas fontes que concordam.
+def regua_das_cotas_id(cidade: dict) -> dict | None:
+    """O campo `regua_das_cotas_id` ({codigo, fonte}) do cadastro, ou None quando falta ou está incompleto.
 
-    Hoje o único caminho provado é o da estação estadual que É a régua das cotas: o código está em
-    `REGUAS_COM_COTA_PROPRIA` apontando para esta cidade E em `codigo_dcsc` da cidade. Réguas municipais
-    sem código (os títulos das Defesas Civis) entram quando a cidade delas entrar no motor.
+    Campo aprovado pelo Jefferson em 07/10/2026. `codigo` é a identidade que a LEITURA carrega: o `codigo`
+    dela (as estações estaduais, `DCSC-…`) ou, sem código, o título da publicação como `comum.regua_de` o
+    devolve (o resgate cola na primária). `fonte` é onde está a prova de que essa publicação é a régua das
+    cotas. Sem as duas coisas, o campo não vale.
     """
-    codigo = cidade.get("codigo_dcsc")
-    cfg = REGUAS_COM_COTA_PROPRIA.get(codigo or "")
-    if cfg and cfg.get("cidade") == cidade["id"] and cfg.get("rio") == cidade["rio"]:
-        return codigo, None
+    campo = cidade.get("regua_das_cotas_id")
+    if not isinstance(campo, dict):
+        return None
+    codigo, fonte = campo.get("codigo"), campo.get("fonte")
+    if not isinstance(codigo, str) or not codigo.strip() or not isinstance(fonte, str) or not fonte.strip():
+        return None
+    return {"codigo": codigo, "fonte": fonte}
+
+
+def regua_das_cotas(cidade: dict) -> tuple[str | None, str | None]:
+    """(id da régua das cotas, motivo quando não há). Por IDENTIDADE: o campo `regua_das_cotas_id`.
+
+    Estação estadual que pinta com as cotas da cidade (`REGUAS_COM_COTA_PROPRIA`) é uma segunda fonte da
+    mesma afirmação, e as duas têm de concordar: a lista e o campo apontando a mesma estação para a cidade.
+    """
+    campo = regua_das_cotas_id(cidade)
     donos = [c for c, v in REGUAS_COM_COTA_PROPRIA.items()
              if v.get("cidade") == cidade["id"] and v.get("rio") == cidade["rio"]]
-    if donos:
-        return None, (f"REGUAS_COM_COTA_PROPRIA aponta {', '.join(donos)} para a cidade, mas o "
-                      f"codigo_dcsc dela é {codigo!r} — as duas fontes não concordam")
-    return None, "régua das cotas sem identificador que o motor saiba casar com a leitura (fora do piloto)"
+    if campo is None:
+        if donos:
+            return None, (f"REGUAS_COM_COTA_PROPRIA aponta {', '.join(donos)} para a cidade, mas falta "
+                          "`regua_das_cotas_id` no cadastro — as duas fontes não concordam")
+        return None, "sem `regua_das_cotas_id` (a régua das cotas não está identificada por código)"
+    codigo = campo["codigo"]
+    cfg = REGUAS_COM_COTA_PROPRIA.get(codigo)
+    if cfg and (cfg.get("cidade") != cidade["id"] or cfg.get("rio") != cidade["rio"]):
+        return None, (f"`regua_das_cotas_id` diz {codigo}, que REGUAS_COM_COTA_PROPRIA dá a "
+                      f"{cfg.get('cidade')} — as duas fontes não concordam")
+    if donos and codigo not in donos:
+        return None, (f"REGUAS_COM_COTA_PROPRIA aponta {', '.join(donos)} para a cidade, mas "
+                      f"`regua_das_cotas_id` diz {codigo} — as duas fontes não concordam")
+    if codigo.startswith("DCSC-") and codigo != cidade.get("codigo_dcsc"):
+        return None, (f"`regua_das_cotas_id` diz {codigo}, mas o codigo_dcsc da cidade é "
+                      f"{cidade.get('codigo_dcsc')!r} — as duas fontes não concordam")
+    return codigo, None
 
 
 def problemas_do_cadastro(cidade: dict) -> list[str]:
@@ -204,8 +230,8 @@ def problemas_do_cadastro(cidade: dict) -> list[str]:
     regua, motivo = regua_das_cotas(cidade)
     if regua is None:
         problemas.append(f"{nome} / municipal: {motivo}")
-    if not (cidade.get("regua_das_cotas_fonte") or "").strip():
-        problemas.append(f"{nome} / municipal / {regua or '?'}: fonte das faixas ausente (regua_das_cotas_fonte)")
+    if not (cidade.get("fonte_cotas") or "").strip():
+        problemas.append(f"{nome} / municipal / {regua or '?'}: fonte das faixas ausente (fonte_cotas)")
     if cidade.get("cotas_verificado") is not True:
         problemas.append(f"{nome} / municipal / {regua or '?'}: cotas não confirmadas (cotas_verificado "
                          f"= {cidade.get('cotas_verificado')!r})")
@@ -260,7 +286,8 @@ def classificar_municipal(cidade: dict, leituras: list[dict], agora: datetime) -
         "regua_id": regua,
         "regua_nome": cidade.get("regua_das_cotas"),
         "cotas_m": dict(cotas_que_pintam(cidade)),
-        "fonte_faixas": cidade.get("regua_das_cotas_fonte"),
+        "fonte_faixas": cidade.get("fonte_cotas"),
+        "fonte_regua": (regua_das_cotas_id(cidade) or {}).get("fonte"),
         "status_faixas": "confirmada" if cidade.get("cotas_verificado") is True else "nao_confirmada",
         "regua_da_leitura": None,
         "nivel_m": None,
@@ -442,6 +469,8 @@ def validar_estado(estado: dict, agora: datetime) -> list[str]:
             if not (x.get("fonte_faixas") or "").strip():
                 erros.append(f"{onde}: fonte_faixas ausente")
             if tipo == "municipal":
+                if not (x.get("fonte_regua") or "").strip():
+                    erros.append(f"{onde}: fonte_regua ausente — sem prova de que a leitura é da régua das cotas")
                 if x.get("regua_da_leitura") != x.get("regua_id"):
                     erros.append(f"{onde}: leitura da régua {x.get('regua_da_leitura')!r} classificada com "
                                  f"as cotas de {x.get('regua_id')!r}")

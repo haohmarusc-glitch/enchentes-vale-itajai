@@ -35,9 +35,11 @@ O site **não lê** o arquivo novo. Nenhum componente, tipo ou consumo do `web/`
 
 1. **A régua da leitura tem de ser a régua das faixas.** A classificação municipal só sai quando a leitura é da régua das
    cotas da cidade, por identidade (código). Proximidade e título parecido não contam.
-   - Hoje, o único caminho provado é o da estação estadual que é a própria régua das cotas: o código precisa estar em
-     `codigo_dcsc` da cidade **e** em `REGUAS_COM_COTA_PROPRIA` apontando para ela. Se as duas fontes discordarem, a
-     cidade fica sem classificação.
+   - A identidade vem do campo `regua_das_cotas_id` (`{codigo, fonte}`, aprovado pelo Jefferson em 07/10/2026 — ver a
+     seção "O campo `regua_das_cotas_id`"). O `codigo` é o que a leitura carrega: o `codigo` dela (`DCSC-…`) ou, sem
+     código, o título da publicação como `comum.regua_de` o devolve.
+   - Estação estadual que pinta com as cotas da cidade (`REGUAS_COM_COTA_PROPRIA`) tem de concordar com o campo, e um
+     código `DCSC-…` tem de ser o `codigo_dcsc` da cidade. Se as fontes discordarem, a cidade fica sem classificação.
 2. **Não há conversão entre réguas.** Nenhum vínculo oficial está cadastrado, e o motor não converte.
 3. **A estadual é a faixa publicada pela própria Defesa Civil de SC.** O metro da estação não é comparado com nada: ele
    aparece com a observação de que o zero é o da estação.
@@ -53,7 +55,7 @@ O site **não lê** o arquivo novo. Nenhum componente, tipo ou consumo do `web/`
 
    O número continua na saída, com o motivo.
 6. **A municipal também não classifica** nestes casos:
-   - sem `regua_das_cotas_fonte`;
+   - sem `fonte_cotas` (a fonte das faixas) ou sem a `fonte` do `regua_das_cotas_id` (a prova da régua);
    - `cotas_verificado` diferente de `true`;
    - cotas de acionamento fora de ordem;
    - cidade com comparador especial ainda não transcrito: Ascurra (C18) e Gaspar ("maior que").
@@ -113,43 +115,81 @@ O site adota a regra no PR 2, quando recebe o arquivo do motor desta coleta.
 
 ## Inventário: o que falta para cada cidade entrar
 
-Saída de `python3 scripts/classificar_reguas.py --inventario` em 07/10/2026:
+Saída de `python3 scripts/classificar_reguas.py --inventario` em 07/10/2026, depois do campo `regua_das_cotas_id`:
 
 | Cidade | Bloqueios |
 |---|---|
-| `itajai-acu/taio` | régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-acu/ituporanga` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-acu/rio-do-sul` | régua das cotas sem código; `cotas_verificado` ≠ true |
-| `itajai-acu/ibirama` | sem cota de acionamento; régua das cotas sem código; `cotas_verificado` ≠ true |
-| `itajai-acu/lontras` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-acu/apiuna` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
+| `itajai-acu/taio` | sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
+| `itajai-acu/ituporanga` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
+| `itajai-acu/rio-do-sul` | `cotas_verificado` ≠ true |
+| `itajai-acu/ibirama` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
+| `itajai-acu/lontras` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
+| `itajai-acu/apiuna` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 | `itajai-acu/ascurra` | comparador especial (C18) |
-| `itajai-acu/indaial` | régua das cotas sem código; sem `regua_das_cotas_fonte` |
-| `itajai-acu/blumenau` | régua das cotas sem código; sem `regua_das_cotas_fonte` |
-| `itajai-acu/gaspar` | comparador especial (estação 21, "maior que"); régua das cotas sem código; sem `regua_das_cotas_fonte` |
-| `itajai-acu/ilhota` | régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-acu/itajai` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-acu/timbo` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
+| `itajai-acu/indaial` | sem `regua_das_cotas_id` |
+| `itajai-acu/blumenau` | **pode entrar** — falta a decisão de pôr no piloto |
+| `itajai-acu/gaspar` | comparador especial (estação 21, "maior que") |
+| `itajai-acu/ilhota` | sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
+| `itajai-acu/itajai` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
+| `itajai-acu/timbo` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
 | `itajai-acu/rio-dos-cedros` | `cotas_verificado` ≠ true |
-| `itajai-acu/trombudo-central` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-mirim/vidal-ramos` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-mirim/botuvera` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
-| `itajai-mirim/guabiruba` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
+| `itajai-acu/trombudo-central` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
+| `itajai-mirim/vidal-ramos` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
+| `itajai-mirim/botuvera` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
+| `itajai-mirim/guabiruba` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 | `itajai-mirim/brusque` | **pode entrar** (piloto) |
-| `itajai-mirim/itajai` | sem cota de acionamento; régua das cotas sem código; sem `regua_das_cotas_fonte`; `cotas_verificado` ≠ true |
+| `itajai-mirim/itajai` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 
 ### Como ler os bloqueios
 
-- **"régua das cotas sem código"** é limite do motor, não falta da cidade. Blumenau, Indaial, Rio do Sul, Taió e outras
-  leem a régua municipal por título de publicação (AlertaBlu, portal de Itajaí, Asthon), e o `estacoes.json` não tem um
-  campo que diga, sem ambiguidade, qual título é a régua das cotas. O `regua_das_cotas` é texto livre. Resolver isso
-  exige um campo novo, e **campo novo depende de proposta e aprovação do Jefferson**. Fica como proposta para o PR em que
-  a próxima cidade entrar.
+- **"sem `regua_das_cotas_id`"**: o cadastro ainda não tem a prova escrita de qual publicação é a régua das cotas.
+  - Taió: o próprio cadastro diz que a régua das cotas continua em aberto (`regua_nota`).
+  - Indaial e Ilhota: estão sem leitura municipal hoje.
+  - As demais: não têm cota de acionamento.
+- **Blumenau "pode entrar"**: o campo era o único bloqueio dela. Pôr no piloto (`CIDADES_PILOTO`) muda a cor que o site
+  mostra e é decisão do Jefferson. Vem com casos no gabarito: os dois títulos (`AlertaBlu` e `PADKND`, que se juntam em
+  "Blumenau"), a leitura velha depois de 120 min e a cota de observação.
 - **"`cotas_verificado` ≠ true"** em Rio dos Cedros é coerente com a resposta ao C29: a COMPDEC não falou do zero nem da
   vigência da escala depois do desassoreamento. Hoje o site pinta Rio dos Cedros mesmo assim; quando ela entrar no motor,
   ficará sem cor municipal até essa confirmação. É uma decisão a tomar junto com o PR 2.
 - **Comparador especial**: Ascurra e Gaspar precisam ter a regra transcrita com o mesmo comparador da fonte, e um caso
   no gabarito, antes de entrar.
+
+## O campo `regua_das_cotas_id` (aprovado pelo Jefferson em 07/10/2026)
+
+```json
+"regua_das_cotas_id": {
+  "codigo": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
+  "fonte": "onde está a prova de que esta publicação é a régua das cotas",
+  "registro": "Campo aprovado pelo Jefferson em 07/10/2026; o valor transcreve a prova que o cadastro já registrava."
+}
+```
+
+- `codigo` é a identidade que a leitura carrega (`codigo` da leitura ou o título por `comum.regua_de`), e não um nome
+  parecido.
+- `fonte` aponta a prova, que já estava no cadastro. Nenhum valor foi decidido aqui.
+- O `validar_dados.py` (`valida_regua_das_cotas_id`) cobra:
+  - `codigo` e `fonte`;
+  - só as chaves `codigo`, `fonte` e `registro` (conversão não entra por este campo);
+  - nenhum código em duas cidades do mesmo rio;
+  - `DCSC-…` igual ao `codigo_dcsc`;
+  - `REGUAS_COM_COTA_PROPRIA` concordando nos dois sentidos.
+
+Entrou em seis cidades, as que têm a prova no cadastro:
+
+| Cidade | `codigo` | De onde vem a prova |
+|---|---|---|
+| Brusque | `DCSC-00019` | par provado (07/09 e 03/10/2026, `docs/BRUSQUE-DCSC-00019.md`) + `REGUAS_COM_COTA_PROPRIA` |
+| Ascurra | `DCSC-00003` | resposta ao C18 (11/09/2026) + `REGUAS_COM_COTA_PROPRIA` |
+| Rio dos Cedros | `DCSC-00011` | resposta ao C29 (07/10/2026) + `REGUAS_COM_COTA_PROPRIA` |
+| Rio do Sul | `Rio do Sul, Ponte Dom Tito Buss (Asthon)` | cotas = `band_thresholds` da Asthon na própria estação; par resolvido em 09/09/2026 |
+| Blumenau | `Blumenau` | escala e nível no mesmo `nivel_oficial.json` do AlertaBlu; par provado por medição (18/09/2026) |
+| Gaspar | `Gaspar — Rio Itajaí-Açu (Defesa Civil de Gaspar)` | cotas da legenda da estação 21, a mesma estação lida |
+
+Ficou de fora quem não tem a prova escrita (Taió, Indaial, Ilhota e as cidades sem cota de acionamento).
+
+**Na saída do motor**, `fonte_faixas` passou a ser a `fonte_cotas` da cidade (a fonte das faixas). A prova da régua foi para
+um campo próprio, `fonte_regua`, que o validador da saída também exige. A faixa e quem pinta não mudam.
 
 ## PR 2: o site segue o motor
 

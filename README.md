@@ -492,8 +492,10 @@ o projeto.
   - [x] PR 3: o mapa do Monitor segue o motor com os mesmos portões (só ao vivo), e o painel diz "Cor do rio:
     classificação municipal/estadual — régua" (`monitor-autorizado`). Ainda fora: o `MapaRios` da tela do rio, que não lê
     a rede estadual.
-  - [ ] Proposta para o Jefferson: um campo que identifique a régua das cotas por código nas cidades lidas por
-    título (Blumenau, Indaial, Rio do Sul…). Sem ele, elas não entram no motor.
+  - [x] Campo `regua_das_cotas_id` (aprovado pelo Jefferson em 07/10/2026), em seis cidades: Brusque, Ascurra, Rio dos
+    Cedros, Rio do Sul, Blumenau e Gaspar.
+  - [ ] Blumenau passa no `--inventario`: pôr no piloto é decisão do Jefferson, com casos no gabarito.
+  - [ ] Sem `regua_das_cotas_id` por falta de prova escrita: Taió (régua das cotas em aberto), Indaial e Ilhota.
   - [ ] Rio dos Cedros entra sem cor municipal enquanto `cotas_verificado` for false — decidir junto com o PR 2.
 
 - [x] **Rio dos Cedros: resposta da Defesa Civil ao C29 aplicada (07/10/2026, decisão do Jefferson).** A cidade tem uma
