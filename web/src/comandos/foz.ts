@@ -45,14 +45,18 @@ export function textoJanela(r: ResultadoSimulacao, qual: string): string {
   return linhas.join('\n')
 }
 
+/** "Quanto tempo a água leva de Blumenau até Itajaí?": dito também quando não há pico para pôr na janela. */
+const tempoDeDescida = (r: ReferenciaChegada) =>
+  `Quando há pico, ele leva de ${r.horas_min} a ${r.horas_max} h de Blumenau até Itajaí, pela referência de estudo da JICA; cada cheia é diferente, não é previsão.`
+
 export function textoChegadaItajai(h: HojeEmItajai, args: { cota: { nome: string; valor: number } | null; referencia: ReferenciaChegada; agora: Date }): string {
   const { referencia, agora } = args
   const ref = `pela referência de estudo (${referencia.horas_min} a ${referencia.horas_max} h)`
   switch (h.tipo) {
     case 'sem-dado':
-      return 'Sem leitura recente de Blumenau: não dá para dizer se o pico passou. Se a Defesa Civil ou o AlertaBlu informar o horário do pico, peça, por exemplo: "se o pico de Blumenau for às 22h".'
+      return `Sem leitura recente de Blumenau: não dá para dizer se o pico passou. ${tempoDeDescida(referencia)}\nSe a Defesa Civil ou o AlertaBlu informar o horário do pico, peça, por exemplo: "se o pico de Blumenau for às 22h", e eu digo se a janela de chegada pega maré alta. Em emergência, ligue 199.`
     case 'abaixo-da-cota':
-      return `Blumenau está em ${metros(h.ultimo.nivel_m)} (medido às ${horaDeBrasilia(h.ultimo.medidoEm)}, ${textoIdade(idadeMin(h.ultimo.medidoEm, agora))})${args.cota ? `, abaixo da cota de ${args.cota.nome} (${metros(args.cota.valor)}), e não passou dela nas últimas 36 h` : ''}: não há pico de cheia descendo agora.\nEm Itajaí a maré alta pesa mesmo sem cheia de cima. Em emergência, ligue 199.`
+      return `Blumenau está em ${metros(h.ultimo.nivel_m)} (medido às ${horaDeBrasilia(h.ultimo.medidoEm)}, ${textoIdade(idadeMin(h.ultimo.medidoEm, agora))})${args.cota ? `, abaixo da cota de ${args.cota.nome} (${metros(args.cota.valor)}), e não passou dela nas últimas 36 h` : ''}: não há pico de cheia descendo agora.\n${tempoDeDescida(referencia)}\nEm Itajaí a maré alta pesa mesmo sem cheia de cima. Em emergência, ligue 199.`
     case 'nao-confirmado':
       return [
         `Pico não confirmado. A maior leitura das últimas 36 h em Blumenau é ${metros(h.pico.nivel_m)}, às ${dh(h.pico.medidoEm)}, e é a primeira da janela: o pico de verdade pode ter sido antes. Agora está em ${metros(h.ultimo.nivel_m)}, descendo.`,

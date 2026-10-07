@@ -228,3 +228,21 @@ test('a ajuda lista os pedidos da 7ª entrega', () => {
   const t = textoDeAjuda({ cidadeAtual: null, naMonitor: true, reguaAtual: null }, null).texto
   for (const f of ['o pico de Blumenau já passou?', 'se o pico de Blumenau for às 22h', 'o que significa a cor laranja?', 'pausar as animações', 'abrir a legenda']) assert.ok(t.includes(f), f)
 })
+
+test('as perguntas do morador: "a água chega na hora da maré alta?" e as duas juntas vão para chegada × maré', () => {
+  for (const q of [
+    'a água chega na hora da maré alta?',
+    'a água de Blumenau chega em Itajaí na maré alta?',
+    'a cheia vai chegar junto com a maré alta?',
+    'quanto tempo chega a água de Blumenau até Itajaí, a água chega na hora da maré alta?',
+    'o pico pega a preamar?',
+  ])
+    assert.deepEqual(passos(q), [{ tipo: 'chegada_itajai' }], q)
+  // Sem a cheia na frase, é a maré (5ª entrega) ou o tempo de descida (motor), como antes.
+  assert.deepEqual(passos('como está a maré?'), [{ tipo: 'mare' }])
+  assert.equal(interpretar('quanto tempo chega a água de Blumenau até Itajaí?', cat, fora), null)
+  assert.notDeepEqual(interpretar('quando é a maré alta?', cat, fora), { tipo: 'comandos', passos: [{ tipo: 'chegada_itajai' }] })
+  // Sem pico para pôr na janela, a resposta ainda diz quanto tempo a água leva.
+  const t = (pontos: PontoSerie[]) => textoChegadaItajai(hojeEmItajai(situacaoDoPico(pontos, AGORA), COTA, REF, tabua, AGORA), { cota: COTA, referencia: REF, agora: AGORA })
+  for (const x of [t([]), t(baixo)]) assert.match(x, /leva de 12 a 17 h de Blumenau até Itajaí[^]*não é previsão[^]*199/)
+})

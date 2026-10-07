@@ -644,3 +644,22 @@ mensagem só, com as mesmas regras de cada cidade sozinha.
     endereço), executor com lista dita, com as cidades seguidas e sem nenhuma, a ajuda;
   - `testes-navegador/chat-comandos.mjs`, seção 14: as duas cidades com "não compare os metros" e o 199, a tela que
     não muda, "minhas cidades" antes e depois de "minha cidade é Gaspar", o botão "Copiar".
+
+## Ajuste (07/10/2026): as duas perguntas do morador sobre a foz
+
+O Jefferson perguntou no chat: "quanto tempo chega a água de Blumenau até Itajaí?" e "a água chega na hora da maré
+alta?". A primeira já respondia (12 a 17 h, estudo da JICA). A segunda caía em "Não entendi", e as duas juntas
+respondiam só o tempo.
+
+- **Rota:** frase com a cheia descendo (água, cheia, pico, enchente ou Blumenau), com chegar (ou pegar,
+  coincidir, bater, junto) e com maré alta, maré cheia ou preamar vai para o quadro de chegada × maré (7ª entrega).
+  Esse quadro já diz a janela em horas e se há preamar dentro dela. "Como está a maré?" e "quando é a maré alta?" não
+  falam da cheia e continuam na maré.
+- **Sem pico descendo:** o quadro dizia "não há pico de cheia descendo" sem dizer quanto tempo a água leva. Agora diz
+  também "quando há pico, ele leva de 12 a 17 h de Blumenau até Itajaí, pela referência de estudo; não é previsão",
+  e sem leitura de Blumenau termina com o 199.
+- **Sugestão:** a resposta do tempo de descida até Itajaí oferece "a água chega na hora da maré alta?".
+- **Testes:**
+  - `setima.test.ts`: as frases do morador e o tempo dito sem pico;
+  - `motor.test.ts`: a sugestão;
+  - `chat-comandos.mjs`, seção 8: as duas perguntas juntas, com "12 a 17 h" e o 199.
