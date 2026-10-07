@@ -691,3 +691,31 @@ Quem olha o rio subir pergunta "quando passou da cota?", "há quanto tempo está
     antes), os textos (hora de medição, série velha, Gaspar), o executor (Itajaí pede régua; nada navega), a ajuda;
   - `testes-navegador/chat-comandos.mjs`, seção 15: as quatro perguntas em Blumenau, com a hora de medição ou o
     motivo, sem mudar de tela.
+
+## Décima quinta entrega (07/10/2026): as cheias que o site já captou
+
+Pedido do Jefferson: perguntas sobre os eventos dos últimos meses que o site já captou. A fonte é a série de 15 em
+15 min que o coletor grava (agosto a outubro de 2026, cópia no branch `arquivo-series`), destilada por
+`scripts/eventos_captados.py` em `data/eventos-captados.json`: por régua, os episódios acima da cota de referência,
+com a maior leitura captada, a hora dela, a maior lacuna e se já há registro em `enchentes.json`. Regra em
+`CLAUDE.md` ("Cheias captadas pelo site").
+
+| Pedido | O que faz | O que nunca faz |
+|---|---|---|
+| "quais cheias o site captou?", "o que aconteceu nos últimos meses?", "cheias recentes em Blumenau" | As ondas na bacia (cristas a menos de 48 h uma da outra), da mais recente para a mais antiga, com a maior leitura de cada cidade e "✓ registrado" no que já foi conferido. Com cidade: os episódios dela. | Chamar a maior leitura de pico; juntar réguas de Itajaí num número só. |
+| "qual foi a última cheia em Blumenau?", "quando foi a última vez que Blumenau passou da cota de alerta?" | O último episódio (ou o último na faixa pedida ou acima), com a hora da medição, a duração acima da cota, a lacuna quando passa de 3 h e o registro conferido. Se a série termina dentro dele, diz que pode não ter acabado. | Descrever o nível de agora (isso é "como está X?"). |
+| "qual foi o maior nível que o site já captou em Blumenau?", "maior leitura captada em Rio do Sul" | A maior leitura desde o começo da série, por publicação quando a cidade trocou de fonte (Rio do Sul: Estação MKS → Ponte Dom Tito Buss), cada uma com o seu zero. Aponta "maior cheia de X" para o histórico registrado. | Comparar publicações entre si. |
+| "quantas vezes Blumenau passou da cota de alerta desde que o site acompanha / este ano?", "quantas cheias o site captou em X?" | A contagem de episódios desde o começo da série, com as datas. Diz que 18 h abaixo da cota separam dois episódios e que a série tem lacunas. | — |
+| "como foi a cheia de setembro em Blumenau?", "o que aconteceu em 12 de setembro?", "cheias de setembro de 2026" | Os episódios do mês ou do dia (todas as cidades ou uma). Mês anterior à série: diz desde quando o site acompanha e aponta o histórico. | Responder sobre ano antigo: "cheias de setembro de 2011" continua no motor (`enchentes.json`). |
+
+- **Captura, não registro:** toda resposta termina com "é o que a coleta do site captou, com lacunas; não é
+  registro oficial nem pico conferido" e o 199. Em Blumenau, quando só o repasse (3 h atrasado) tinha a leitura, a
+  hora vem com "hora do repasse". Réguas de estuário de Itajaí não geram episódio; Ascurra e Gaspar ficam sem faixa.
+- **Testes:**
+  - `scripts/teste_eventos_captados.py` (7): relógio de Blumenau, estuário, troca de fonte, Ascurra/Gaspar,
+    casamento com `enchentes.json`, lacuna, arquivo;
+  - `src/comandos/decimaquinta.test.ts` (4): frases (e o que continua no motor), os textos sobre um arquivo pequeno
+    (nunca "pico", sempre o 199), o executor (link para a aba Histórico; nada navega), a ajuda;
+  - `testes-navegador/chat-comandos.mjs`, seção 16: lista, última, setembro com o registrado, quantas, o link.
+- **Validador:** `valida_eventos_captados` cobra cidade do cadastro, hora em Brasília sem fuso, faixa do
+  vocabulário e que "registrado" aponte registro existente.

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { estacoes, estacoesTempoReal, mareItajai, trechos, trechosExperimentais } from '../dados/carregar'
 import { buscarBarragens } from '../dados/barragens'
 import historicoChegada from '@dados/historico-chegada-itajai.json'
+import { eventosCaptados } from '../dados/eventosCaptados'
 import type { AoVivo } from '../dados/usarAoVivo'
 import { reguasNoMapa } from '../logica/reguasNoMapa'
 import { abrirPainel, acrescentar, lerConversa, limparConversa, marcarOcupado } from '../chat-local/conversa'
@@ -249,6 +250,7 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
           mare: () => mareItajai,
           transito: () => ({ trechos, experimentais: trechosExperimentais }),
           referenciaChegada: () => historicoChegada.referencia_estudo,
+          captados: () => eventosCaptados,
           atualizar: () => atualizarLeituras(aoVivo),
           aplicativo: () => ({ instalado: jaInstalado(), iphone: ehIphone(), pode: podeInstalar() }),
           privacidade: () => ({

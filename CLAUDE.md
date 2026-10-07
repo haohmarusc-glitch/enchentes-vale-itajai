@@ -74,6 +74,20 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Migram para `enchentes.json` só quando a fonte identificar a régua ou permitir reconciliar os zeros, por decisão do Jefferson;
   migrar é **mover** (o validador acusa o mesmo evento nos dois arquivos).
 
+### Cheias captadas pelo site — REGRA (07/10/2026)
+- `data/eventos-captados.json` é **derivado**: `scripts/eventos_captados.py` o gera da série do coletor
+  (`data/tempo-real/*.ndjson` na VPS, cópia semanal no branch `arquivo-series`; aqui, `--serie <pasta>`). Guarda, por
+  régua, os episódios acima da cota de referência com a **maior leitura captada** e a hora dela, a maior lacuna e se
+  o episódio já tem registro em `enchentes.json`.
+- **Nunca entra em `enchentes.json` por esse caminho** (quem propõe registro é `extrair_picos.py`, com pessoa
+  conferindo). O chat (15ª entrega) diz "a maior leitura que o site captou", nunca "pico", e "conferido e registrado"
+  só quando `registro_em_enchentes` aponta um registro que existe — o validador cobra isso.
+- Regras herdadas de `extrair_picos.py`: régua por `comum.regua_de`; cota da própria estação ou da cidade com uma
+  publicação por vez; 18 h sem cheia separam episódios; o repasse de Blumenau (3 h atrasado) cede a hora ao
+  AlertaBlu. Régua de estuário (`alerta_automatico: false`) não gera episódio; Ascurra e Gaspar ficam sem faixa.
+- Regerar: `cd scripts && python3 eventos_captados.py --serie /caminho/tempo-real --gravar` depois de cada cheia
+  (ou de cada cópia nova em `arquivo-series`).
+
 ### Ruas alagadas registradas à mão — REGRA (decisão de 05/10/2026)
 - `data/ruas-alagadas.json` guarda a hora em que cada rua alagou, anotada durante a cheia (planilha
   `docs/modelos/ruas-alagadas.csv` → `scripts/ruas_alagadas.py`). Passo a passo: `docs/REGISTRO-RUAS-ALAGADAS.md`.

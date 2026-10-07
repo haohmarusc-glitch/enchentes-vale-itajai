@@ -187,6 +187,97 @@ function cidadesDaLista(texto: string, cat: Catalogo): string[] | null {
   return unicos.length >= 2 ? unicos : null
 }
 /**
+ * 15ª entrega: as cheias que a coleta do site já captou (`data/eventos-captados.json`). Perguntas sobre o passado
+ * RECENTE: "última cheia", "o que o site captou", "nos últimos meses", "este ano", um mês sem ano (ou de 2026 em
+ * diante) e um dia do mês. Ano antigo ("cheias de setembro de 2011") continua no motor, que lê enchentes.json.
+ */
+const MES_DITO = '(janeiro|fevereiro|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)'
+const MESES_SEM_ACENTO = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro']
+const RECENTE = '(?:desde que o site (?:acompanha|existe|mede|coleta)|nos ultimos (?:\\d+ )?meses|nas ultimas semanas|este ano|neste ano|em 2026|de 2026|ultimamente|recentemente)'
+function lerTrechoDaDecimaQuinta(t: string, cat: Catalogo): Lido {
+  type P = Extract<Passo, { tipo: 'captados' }>
+  const com = (alvo: string | undefined, resto: Omit<P, 'tipo' | 'cidadeId'>): Lido => {
+    const limpo = (alvo ?? '').replace(new RegExp(`^${SUJEITO}(?: (?:de|em|do|da|no|na))? ?`), '').replace(/^(?:em|de|do|da|no|na) /, '').trim()
+    const c = cidadeOpcional(limpo, cat)
+    return c ? [{ tipo: 'captados', ...resto, ...c }] : null
+  }
+  const cotaDe = (s: string | undefined) => (s ? { cota: NOMES_DE_COTA[s] ?? s } : {})
+  const anoDe = (s: string | undefined) => (s ? Number(s) : undefined)
+  // Lista: "quais cheias o site captou?", "o que aconteceu nos últimos meses?", "cheias recentes em Blumenau".
+  {
+    const m =
+      t.match(/^(?:quais|que) (?:cheias|enchentes|eventos) (?:o site|a coleta|voce|voces) (?:ja )?(?:captou|captaram|registrou|registraram|acompanhou|acompanharam|viu|viram|pegou|pegaram)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:o que|que) (?:o site|a coleta|voce|voces) (?:ja )?(?:captou|captaram|registrou|registraram|acompanhou|acompanharam|viu|viram)(?: ate agora| nos ultimos meses| este ano)?(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:o que aconteceu|que cheias houve|quais foram as cheias|que cheias teve|quais cheias teve|houve cheia|teve cheia) (?:nos ultimos (?:\d+ )?meses|nas ultimas semanas|este ano|neste ano|ultimamente|recentemente|em 2026)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:cheias|enchentes) (?:recentes|captadas|dos ultimos meses|deste ano|de 2026)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:ultimas|as ultimas) (?:cheias|enchentes)(?: (?:em|de|no|na) (.+?))?$/)
+    if (m) {
+      const c = m[1] ? cidadeOpcional(m[1], cat) : {}
+      return c ? [{ tipo: 'captados', pergunta: 'lista', ...c }] : null
+    }
+  }
+  // Última: "qual foi a última cheia em Blumenau?", "quando foi a última vez que Blumenau passou da cota de alerta?"
+  {
+    const m =
+      t.match(/^(?:qual foi|quando foi|qual e|quando) (?:a )?ultima (?:cheia|enchente)(?: (?:em|de|do|da|no|na) (.+?))?$/) ??
+      t.match(/^(?:a )?ultima (?:cheia|enchente)(?: (?:em|de|do|da|no|na) (.+?))?$/)
+    if (m) return com(m[1], { pergunta: 'ultima' })
+    const v = t.match(new RegExp(`^(?:quando foi |qual foi )?(?:a )?ultima vez que (?:(.+?) )?(?:passou|cruzou|chegou|entrou|ficou|esteve) (?:d[aeo] |n[ao] |em |a |acima d[ao] )?(?:cota(?: d[aeo])? |nivel de |faixa de )?${COTA_DITA}?(?: (?:em|de|no|na) (.+?))?$`))
+    if (v) {
+      const antes = soSujeitoDaQuinta(v[1])
+      if (antes && v[3]) return null
+      return com(antes ?? v[3], { pergunta: 'ultima', ...cotaDe(v[2]) })
+    }
+  }
+  // Maior: "qual foi o maior nível que o site já captou em Blumenau?", "maior leitura captada em Blumenau".
+  {
+    const m =
+      t.match(/^(?:qual (?:foi |e )?)?(?:o |a )?(?:maior|mais alto|mais alta|recorde d[eo]) (?:nivel|leitura|cheia|medicao|marca|valor)?(?: do rio| do nivel)? ?(?:que )?(?:o site|a coleta|voce|voces) (?:ja )?(?:captou|captaram|registrou|registraram|mediu|mediram|viu|viram|acompanhou)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:qual (?:foi |e )?)?(?:o |a )?(?:maior|mais alto|mais alta) (?:nivel|leitura|cheia|medicao|marca) (?:captad[ao]|medid[ao]|registrad[ao] pelo site)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:qual (?:foi |e )?)?(?:o |a )?(?:maior|mais alto|mais alta) (?:nivel|leitura|cheia|medicao|marca)(?: (?:em|de|no|na) (.+?))? desde que o site (?:acompanha|existe|mede|coleta)$/) ??
+      t.match(/^recorde do site(?: (?:em|de|no|na) (.+?))?$/)
+    if (m) return com(m[1], { pergunta: 'maior' })
+  }
+  // Quantas: "quantas vezes Blumenau passou da cota de alerta desde que o site acompanha?", "quantas cheias o site captou em Blumenau?"
+  {
+    const m = t.match(new RegExp(`^(?:quantas|quantos) (?:vezes|cheias|enchentes|episodios) (?:(.+?) )?(?:passou|passaram|cruzou|cruzaram|chegou|chegaram|entrou|entraram|ficou|ficaram|esteve|estiveram|teve|houve) (?:d[aeo] |n[ao] |em |a |acima d[ao] )?(?:cota(?: d[aeo])? |nivel de |faixa de )?${COTA_DITA}?(?: (?:em|de|no|na) (.+?))? ${RECENTE}$`))
+    if (m) {
+      const antes = soSujeitoDaQuinta(m[1])
+      if (antes && m[3]) return null
+      return com(antes ?? m[3], { pergunta: 'quantas', ...cotaDe(m[2]) })
+    }
+    const n =
+      t.match(/^(?:quantas|quantos) (?:cheias|enchentes|episodios|vezes) (?:o site|a coleta|voce|voces) (?:ja )?(?:captou|captaram|registrou|registraram|acompanhou|viu|viram|contou)(?: (?:em|de|no|na) (.+?))?$/) ??
+      t.match(/^(?:quantas|quantos) (?:cheias|enchentes) (?:teve|houve|aconteceram)(?: (?:em|de|no|na) (.+?))? (?:desde que o site (?:acompanha|existe|mede|coleta)|nos ultimos (?:\d+ )?meses|este ano|neste ano|em 2026|ultimamente)$/)
+    if (n) return com(n[1], { pergunta: 'quantas' })
+  }
+  // Período: "como foi a cheia de setembro em Blumenau?", "o que aconteceu em 12 de setembro?", "cheias de setembro em Blumenau".
+  {
+    const d = t.match(new RegExp(`^(?:o que aconteceu|como foi|como estava|qual foi o pico|qual foi o nivel|qual foi a maior leitura|quanto deu|que cheia teve|houve cheia|teve cheia)(?: (?:o rio|a cheia|a enchente|o dia|no dia|em|no|na|de|do|da))*? (\\d{1,2}) de ${MES_DITO}(?: de (20\\d{2}))?(?: (?:em|de|no|na) (.+?))?$`))
+    if (d) {
+      const ano = anoDe(d[3])
+      if (ano && ano < 2026) return null
+      const mes = MESES_SEM_ACENTO.indexOf(d[2]!) + 1
+      const diaN = Number(d[1])
+      if (diaN < 1 || diaN > 31) return null
+      const a = ano ?? (mes > new Date().getMonth() + 1 ? new Date().getFullYear() - 1 : new Date().getFullYear())
+      return com(d[4], { pergunta: 'periodo', dia: `${a}-${String(mes).padStart(2, '0')}-${String(diaN).padStart(2, '0')}` })
+    }
+    const m =
+      t.match(new RegExp(`^(?:como foi|como foram|o que aconteceu|que cheia teve|houve cheia|teve cheia|qual foi o pico|qual foi a maior leitura|quanto deu) (?:(?:a|as|o|os|na|nas|no|nos|em|de|da|do) )?(?:cheias?|enchentes?|rio|nivel|pico)?(?: (?:de|do|da|em|no|na))? ${MES_DITO}(?: de (20\\d{2}))?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^(?:cheias?|enchentes?) de ${MES_DITO}(?: de (20\\d{2}))?(?: (?:em|de|no|na) (.+?))?$`)) ??
+      t.match(new RegExp(`^(?:o que aconteceu|como foi) (?:em|no mes de) ${MES_DITO}(?: de (20\\d{2}))?(?: (?:em|de|no|na) (.+?))?$`))
+    if (m) {
+      const ano = anoDe(m[2])
+      if (ano && ano < 2026) return null
+      return com(m[3], { pergunta: 'periodo', mes: MESES_SEM_ACENTO.indexOf(m[1]!) + 1, ...(ano ? { ano } : {}) })
+    }
+  }
+  return null
+}
+const soSujeitoDaQuinta = (s: string | undefined) => (s && new RegExp(`^${SUJEITO}$`).test(s) ? undefined : s)
+
+/**
  * 14ª entrega: a linha do tempo da cheia de agora. A cidade pode vir antes do verbo ("quando Blumenau passou da
  * cota?") ou no fim ("quando o rio passou da cota em Blumenau?"); sem cidade, vale a da página.
  */
@@ -592,6 +683,8 @@ function lerTrechoDaSegunda(t: string, cat: Catalogo): Lido {
 const ABAS: Record<string, Aba> = { historico: 'historico', fontes: 'fontes', agora: 'agora' }
 
 function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: string | null): Lido {
+  const decimaQuinta = lerTrechoDaDecimaQuinta(t, cat)
+  if (decimaQuinta) return decimaQuinta
   const decimaQuarta = lerTrechoDaDecimaQuarta(t, cat)
   if (decimaQuarta) return decimaQuarta
   const decimaTerceira = lerTrechoDaDecimaTerceira(t, cat)
