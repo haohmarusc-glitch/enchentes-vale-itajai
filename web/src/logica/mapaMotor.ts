@@ -185,6 +185,8 @@ export interface Pino {
   classificadaPor?: 'motor' | 'site'
   /** A régua e o rótulo de quem pintou, quando foi o motor. */
   origemDoMotor?: OrigemDoMotor | null
+  /** O motor não classifica pela régua municipal: as cotas da cidade não estão confirmadas (07/10/2026). */
+  cotasMunicipaisNaoConfirmadas?: boolean
   nivel: number | null
   medidoEm: Date | null
   /**
@@ -436,6 +438,7 @@ export function construirCena(
           origemFaixa: (estadual ? 'estadual' : 'municipal') as OrigemFaixa,
           classificadaPor: (motor ? 'motor' : 'site') as 'motor' | 'site',
           origemDoMotor: motor?.origem ?? null,
+          cotasMunicipaisNaoConfirmadas: motor?.cotasMunicipaisNaoConfirmadas ?? false,
           nivel: aoVivo?.nivel_m ?? null,
           medidoEm: aoVivo?.medidoEm ?? null,
           nivelBruto: aoVivo ? null : bruto,
@@ -585,6 +588,7 @@ export function construirCena(
         origemFaixa: a.origemFaixa,
         classificadaPor: a.classificadaPor,
         origemDoMotor: a.origemDoMotor,
+        cotasMunicipaisNaoConfirmadas: a.cotasMunicipaisNaoConfirmadas,
         nivel: a.nivel,
         medidoEm: a.medidoEm,
         nivelBruto: a.nivelBruto,

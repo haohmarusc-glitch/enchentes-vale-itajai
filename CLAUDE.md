@@ -182,7 +182,17 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
     `REGUAS_COM_COTA_PROPRIA`.
 - **A municipal manda.** A estadual pinta só sem leitura municipal de agora, como `fallback`, com aviso.
 - **A saída diz a faixa, não a cor** (token do site).
-- **Piloto: Brusque** (`CIDADES_PILOTO`). Cidade nova entra com o `--inventario` limpo e com um caso no gabarito.
+- **Piloto (`CIDADES_PILOTO`): Brusque, Blumenau e Rio dos Cedros** (decisões do Jefferson de 07/10/2026). Cidade nova
+  entra com o `--inventario` limpo e com casos no gabarito.
+  - **Blumenau:** só pinta pelas publicações com referência validada (`PUBLICACOES_VALIDADAS`): o AlertaBlu e a PADKND
+    conferida. O repasse antigo "Blumenau" não pinta pelas cotas.
+  - **Rio dos Cedros** (`PILOTO_SEM_MUNICIPAL`): sem classificação municipal até a COMPDEC confirmar as cotas, sem exceção.
+    - A faixa estadual válida aparece como "faixa estadual".
+    - Sem ela, fica cinza: falta de cota municipal não é nível normal.
+    - Nada compara o nível com as cotas não confirmadas (frase, medidor e quadro de cota).
+  - **Brusque:** cor inalterada.
+- **A municipal só segura a estadual com cotas confirmadas** (`segura_estadual`). A origem estadual se chama "faixa
+  estadual" no motor, no painel e no cartão.
 - **Gabarito:** `data/classificacao-esperada.json` trava motor e site juntos (`teste_classificar_reguas.py` e
   `classificacaoParidade.test.ts`). Divergência só declarada em `diverge_do_site`; esperado revisto é decisão, nunca
   ajuste para passar.

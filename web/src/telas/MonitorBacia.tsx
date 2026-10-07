@@ -10,7 +10,7 @@ import ChuvaMonitor from '../componentes/ChuvaMonitor'
 import { faixaAscurra } from '../logica/municipal'
 import CamadasMonitor, { type CamadaDesenhada } from '../componentes/CamadasMonitor'
 import { motivoSemCorNoMonitor } from '../logica/motivoSemCor'
-import { MOTIVO_VARIAS_REGUAS, estacaoEhReguaDasCotas, ressalvaDoBruto, textoDaOrigemDaCor, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
+import { MOTIVO_COTAS_NAO_CONFIRMADAS, MOTIVO_VARIAS_REGUAS, estacaoEhReguaDasCotas, ressalvaDoBruto, textoDaOrigemDaCor, textoEquivalencia, textoSemCota } from '../logica/textosDoPainel'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import ChatNoTopo from '../componentes/ChatNoTopo'
@@ -538,13 +538,15 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     const variasReguas = foco.nivel == null && (daCidade.length > 1 || reguasRef.current.filter((r) => r.cidade === cid.id).length > 1)
     const situacaoSc = brutoSc ? null : nivelSc.situacoes?.get(cid.id) ?? null
     const faixa = foco.origemFaixa === 'estadual'
-      ? `Classificação estadual: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
+      ? `Faixa estadual: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
       : foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]
     const motivoCinza = foco.faixa !== 'sem-dado'
       ? null
       : variasReguas
         ? MOTIVO_VARIAS_REGUAS
-        : motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id, situacaoSc,
+        : foco.cotasMunicipaisNaoConfirmadas
+          ? MOTIVO_COTAS_NAO_CONFIRMADAS
+          : motivoSemCorNoMonitor(cid.cotas_m, foco.medidoEm, agora, foco.nivel != null, !!brutoSc, cid.id, situacaoSc,
             serieDaCidade(serie, foco.rioId, cid.id).at(-1) ?? null)
     return {
       faixa,
@@ -2242,7 +2244,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 const chuva = chuvaMonitor(tempoReal.chuva, cid.id)
                 const chuvaIdade = chuva?.medidoEm ? idadeMin(chuva.medidoEm, agora) : null
                 const chuvaVale = chuvaIdade != null && frescor(chuvaIdade) !== 'velha' && chuva?.mm.h24 != null
-                const cota = cotaDaFaixa(cid, foco.faixa, origemDaCor)
+                const cota = cotaDaFaixa(cid, foco.faixa, origemDaCor, foco.cotasMunicipaisNaoConfirmadas === true)
                 return (
                   <div className={estilos.compacto}>
                     <div className={estilos.chipFaixa} data-faixa={foco.faixa}>
@@ -2382,7 +2384,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               ) : null}
               {cotas.length > 0 ? (
                 <div className={estilos.painelBloco}>
-                  <span className={estilos.painelRotulo}>{cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>
+                  <span className={estilos.painelRotulo}>{foco.cotasMunicipaisNaoConfirmadas ? 'Cotas municipais — ainda não confirmadas, sem classificação municipal' : cid.id === 'indaial' ? 'Cotas municipais — régua dos fundos da Celesc' : 'Cotas da régua'}</span>
                   <ul>
                     {cotas.map(([k, v]) => (
                       <li key={k}>

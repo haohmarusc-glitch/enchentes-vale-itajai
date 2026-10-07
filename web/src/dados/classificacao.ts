@@ -35,8 +35,16 @@ export interface ClassificacaoMunicipal {
   /** A faixa pelas cotas da cidade, null quando não classificou (o motivo vem junto). */
   faixa: Faixa | null
   medidoEm: Date | null
-  /** Havia leitura municipal com carimbo e não velha NA HORA DA COLETA (segura a estadual, como no site). */
+  /** Havia leitura municipal com carimbo e não velha NA HORA DA COLETA. */
   deAgora: boolean
+  /**
+   * A leitura municipal de agora segura a estadual — só com as cotas da cidade confirmadas. Com cotas não
+   * confirmadas (Rio dos Cedros, decisão de 07/10/2026), a municipal não diz faixa e a estadual válida aparece.
+   * Arquivo de antes do campo: vale `deAgora`, a regra de então.
+   */
+  seguraEstadual: boolean
+  /** `status_faixas` do motor: as cotas da cidade estão confirmadas. */
+  cotasConfirmadas: boolean
   variasReguas: boolean
   rotulo: string
   motivo: string | null
@@ -105,6 +113,8 @@ function cidadeValida(bruta: unknown): ClassificacaoDaCidade | null {
       faixa: faixaM,
       medidoEm: medidoM,
       deAgora: m.de_agora === true,
+      seguraEstadual: typeof m.segura_estadual === 'boolean' ? m.segura_estadual : m.de_agora === true,
+      cotasConfirmadas: m.status_faixas === 'confirmada',
       variasReguas: m.varias_reguas === true,
       rotulo: `Classificação municipal — ${texto(m.regua_nome) ?? texto(m.regua_id) ?? 'régua da cidade'}`,
       motivo: texto(m.motivo),
@@ -113,7 +123,7 @@ function cidadeValida(bruta: unknown): ClassificacaoDaCidade | null {
       reguaId: reguaE,
       faixa: faixaE,
       medidoEm: medidoE,
-      rotulo: `Classificação estadual (Defesa Civil de SC) — ${reguaE ?? 'estação estadual'}`,
+      rotulo: `Faixa estadual (Defesa Civil de SC) — ${reguaE ?? 'estação estadual'}`,
       aviso: `Cor pela classificação que a Defesa Civil de SC publica para a estação ${reguaE ?? ''}, no zero dela. Não são as cotas do município.`,
       motivo: texto(e.motivo),
     },
@@ -149,6 +159,11 @@ export interface FaixasDoMotor {
   faixa: Faixa
   faixaEstadual: Faixa | null
   origem: OrigemDaCor | null
+  /**
+   * As cotas da cidade não estão confirmadas: não há classificação municipal (decisão de 07/10/2026, Rio dos
+   * Cedros). A tela não compara o nível com elas e diz que a falta de cor municipal não é nível normal.
+   */
+  cotasMunicipaisNaoConfirmadas: boolean
 }
 
 function mesmoInstante(a: Date | null | undefined, b: Date | null | undefined): boolean {
@@ -181,7 +196,8 @@ export function faixasDoMotor(
   // A idade, no relógio de agora: o que era "de agora" na coleta pode ter envelhecido desde então.
   const viva = (d: Date | null) => d !== null && frescorDaCidade(idadeMin(d, agora), cidadeId) !== 'velha'
   const municipal = c.municipal.faixa && viva(c.municipal.medidoEm) ? c.municipal.faixa : null
-  const municipalDeAgora = c.municipal.deAgora && viva(c.municipal.medidoEm)
+  const municipalDeAgora = c.municipal.seguraEstadual && viva(c.municipal.medidoEm)
+  const cotasMunicipaisNaoConfirmadas = !c.municipal.cotasConfirmadas
   const estadual = c.estadual.faixa && viva(c.estadual.medidoEm) ? c.estadual.faixa : null
 
   if (municipal) {
@@ -189,6 +205,7 @@ export function faixasDoMotor(
       faixa: municipal,
       faixaEstadual: null,
       origem: { tipo: 'municipal', reguaId: c.municipal.reguaId, rotulo: c.municipal.rotulo, aviso: null },
+      cotasMunicipaisNaoConfirmadas,
     }
   }
   const semMunicipal: Faixa = c.municipal.variasReguas ? 'varias' : 'sem-dado'
@@ -197,9 +214,10 @@ export function faixasDoMotor(
       faixa: semMunicipal,
       faixaEstadual: estadual,
       origem: { tipo: 'estadual', reguaId: c.estadual.reguaId, rotulo: c.estadual.rotulo, aviso: c.estadual.aviso },
+      cotasMunicipaisNaoConfirmadas,
     }
   }
-  return { faixa: semMunicipal, faixaEstadual: null, origem: null }
+  return { faixa: semMunicipal, faixaEstadual: null, origem: null, cotasMunicipaisNaoConfirmadas }
 }
 
 /** O `fetch`, injetável para o teste rodar sem rede. */

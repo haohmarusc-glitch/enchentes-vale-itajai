@@ -63,6 +63,12 @@ export interface EstadoDaCidade {
   origemDaCor: OrigemDaCor | null
   /** `motor` quando a faixa saiu do `ultimo_classificacao.json`; `site` pela regra de sempre. */
   classificadaPor: 'motor' | 'site'
+  /**
+   * O motor não classifica pela régua municipal porque as cotas da cidade não estão confirmadas (Rio dos
+   * Cedros, decisão de 07/10/2026). A tela não compara o nível com elas, e sem faixa estadual a cidade fica
+   * cinza — a falta de cota municipal não é nível normal. Sempre `false` pela regra de sempre.
+   */
+  cotasMunicipaisNaoConfirmadas: boolean
   serie: PontoSerie[]
 }
 
@@ -98,6 +104,7 @@ export function estadoDaCidade(cidade: Cidade, rioId: string, v: AoVivo): Estado
       faixaEstadual: motor.faixaEstadual,
       origemDaCor: motor.origem,
       classificadaPor: 'motor',
+      cotasMunicipaisNaoConfirmadas: motor.cotasMunicipaisNaoConfirmadas,
     }
   }
   const faixa = faixaDaCidade(cidade, leitura, varias, v.agora)
@@ -114,6 +121,7 @@ export function estadoDaCidade(cidade: Cidade, rioId: string, v: AoVivo): Estado
     faixaEstadual: varias || municipalDeAgora ? null : faixaDaRedeEstadual(estadual, cidade.id, v.agora),
     origemDaCor: null,
     classificadaPor: 'site',
+    cotasMunicipaisNaoConfirmadas: false,
     serie,
   }
 }

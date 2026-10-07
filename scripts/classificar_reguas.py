@@ -59,7 +59,32 @@ NIVEL_SC = TEMPO_REAL / "ultimo_nivel_sc.json"
 SAIDA = TEMPO_REAL / "ultimo_classificacao.json"
 
 #: Cidades que o motor classifica neste PR. Entrar aqui é decisão, com o inventário limpo.
-CIDADES_PILOTO: tuple[str, ...] = ("brusque",)
+CIDADES_PILOTO: tuple[str, ...] = ("brusque", "blumenau", "rio-dos-cedros")
+
+#: Cidades do piloto que entram de propósito SEM classificação municipal (decisão do Jefferson, 07/10/2026).
+#: Rio dos Cedros: as cotas da cidade ainda não foram confirmadas pela COMPDEC (`cotas_verificado: false`).
+#: Fica sem cor municipal até a confirmação — sem exceção —, e a faixa estadual da estação pode aparecer,
+#: identificada como tal. Sem nenhuma das duas, a cidade fica cinza: falta de cota não é nível normal.
+PILOTO_SEM_MUNICIPAL: dict[str, str] = {
+    "rio-dos-cedros": "cotas municipais ainda não confirmadas pela COMPDEC (decisão de 07/10/2026)",
+}
+
+#: Para régua identificada por TÍTULO (sem código), as publicações cuja referência foi validada contra as
+#: cotas. Outra publicação com a mesma identidade (`comum.regua_de`) não classifica: o repasse antigo
+#: "Blumenau" da Defesa Civil de Itajaí vinha 3 h atrasado e até 0,245 m acima (`regua_nota`), e saiu do ar
+#: em 19/09/2026 — se voltar, não pinta pelas cotas. Condição do Jefferson para Blumenau entrar no piloto
+#: (07/10/2026): leitura e cotas na mesma régua, com referência validada.
+PUBLICACOES_VALIDADAS: dict[str, dict] = {
+    "Blumenau": {
+        # O nome que a tela mostra. A fonte não nomeia o ponto (`regua_nota`): por isso não "Ponte Adolfo Konder".
+        "nome": "régua do AlertaBlu",
+        "publicacoes": {
+            "Blumenau (AlertaBlu)": "o nível e a escala das cotas saem do mesmo nivel_oficial.json do AlertaBlu",
+            "Blumenau (PADKND)": ("entra só quando bate com o AlertaBlu na mesma coleta "
+                                  "(coleta_itajai_portal.conferir_com_alertablu, 1 cm de folga)"),
+        },
+    },
+}
 
 # --- Espelho do site (o teste de paridade, `data/classificacao-esperada.json`, cobra os dois lados) ---
 
@@ -230,6 +255,9 @@ def problemas_do_cadastro(cidade: dict) -> list[str]:
     regua, motivo = regua_das_cotas(cidade)
     if regua is None:
         problemas.append(f"{nome} / municipal: {motivo}")
+    elif not regua.startswith("DCSC-") and regua not in PUBLICACOES_VALIDADAS:
+        problemas.append(f"{nome} / municipal / {regua}: régua por título sem as publicações validadas no motor "
+                         "(PUBLICACOES_VALIDADAS)")
     if not (cidade.get("fonte_cotas") or "").strip():
         problemas.append(f"{nome} / municipal / {regua or '?'}: fonte das faixas ausente (fonte_cotas)")
     if cidade.get("cotas_verificado") is not True:
@@ -284,7 +312,7 @@ def classificar_municipal(cidade: dict, leituras: list[dict], agora: datetime) -
     base = {
         "tipo": "municipal",
         "regua_id": regua,
-        "regua_nome": cidade.get("regua_das_cotas"),
+        "regua_nome": (PUBLICACOES_VALIDADAS.get(regua) or {}).get("nome") or cidade.get("regua_das_cotas"),
         "cotas_m": dict(cotas_que_pintam(cidade)),
         "fonte_faixas": cidade.get("fonte_cotas"),
         "fonte_regua": (regua_das_cotas_id(cidade) or {}).get("fonte"),
@@ -317,6 +345,10 @@ def classificar_municipal(cidade: dict, leituras: list[dict], agora: datetime) -
             # O critério do site para a estadual NÃO aparecer: há leitura municipal com carimbo e não velha.
             "de_agora": status in STATUS_QUE_PINTAM,
         })
+    # A leitura municipal de agora segura a estadual só quando as cotas da cidade estão confirmadas. Com cotas
+    # não confirmadas (Rio dos Cedros), a municipal não diz faixa nenhuma, e a estadual válida pode aparecer
+    # (decisão do Jefferson, 07/10/2026) — a ausência de cota municipal não é nível normal.
+    base["segura_estadual"] = base["de_agora"] and base["status_faixas"] == "confirmada"
     problemas = problemas_do_cadastro(cidade)
     if problemas:
         return sem_classificacao(base, "; ".join(p.split(": ", 1)[-1] for p in problemas))
@@ -325,6 +357,10 @@ def classificar_municipal(cidade: dict, leituras: list[dict], agora: datetime) -
     if base["regua_da_leitura"] != regua:
         return sem_classificacao(base, f"a leitura ({base['regua_da_leitura']}) e as cotas ({regua}) são de "
                                        "réguas diferentes — sem conversão oficial, não se compara")
+    validadas = (PUBLICACOES_VALIDADAS.get(regua) or {}).get("publicacoes")
+    if validadas is not None and leitura.get("estacao") not in validadas:
+        return sem_classificacao(base, f"a publicação {leitura.get('estacao')!r} tem a identidade da régua {regua}, "
+                                       "mas a referência dela não foi validada contra as cotas")
     if base["status_leitura"] not in STATUS_QUE_PINTAM:
         return sem_classificacao(base, MOTIVO_DO_STATUS[base["status_leitura"]])
     return {**base, "faixa": faixa_pelas_cotas(cotas_que_pintam(cidade), float(leitura["nivel_m"])),
@@ -384,7 +420,8 @@ def classificar_estadual(cidade: dict, nivel_sc: dict, agora: datetime) -> dict:
 def rotulo(c: dict) -> str:
     if c["tipo"] == "municipal":
         return f"Classificação municipal — {c.get('regua_nome') or c['regua_id']} ({c['regua_id']})"
-    return f"Classificação estadual (Defesa Civil de SC) — {c['regua_id']}"
+    # "Faixa estadual": é o nome que a tela usa para o que a Defesa Civil de SC publica (decisão de 07/10/2026).
+    return f"Faixa estadual (Defesa Civil de SC) — {c['regua_id']}"
 
 
 def escolher_aplicada(municipal: dict, estadual: dict) -> dict:
@@ -392,7 +429,7 @@ def escolher_aplicada(municipal: dict, estadual: dict) -> dict:
     if municipal.get("faixa"):
         return {"tipo": "municipal", "faixa": municipal["faixa"], "regua_id": municipal["regua_id"],
                 "fallback": False, "rotulo": rotulo(municipal), "aviso": None, "motivo": None}
-    if not municipal.get("varias_reguas") and not municipal.get("de_agora") and estadual.get("faixa"):
+    if not municipal.get("varias_reguas") and not municipal.get("segura_estadual") and estadual.get("faixa"):
         return {"tipo": "estadual", "faixa": estadual["faixa"], "regua_id": estadual["regua_id"],
                 "fallback": True, "rotulo": rotulo(estadual),
                 "aviso": (f"Cor pela classificação que a Defesa Civil de SC publica para a estação "
@@ -400,7 +437,7 @@ def escolher_aplicada(municipal: dict, estadual: dict) -> dict:
                 "motivo": None}
     if municipal.get("varias_reguas"):
         motivo = municipal["motivo"]
-    elif municipal.get("de_agora"):
+    elif municipal.get("segura_estadual"):
         motivo = f"leitura municipal de agora sem classificação: {municipal['motivo']}"
     else:
         motivo = f"municipal: {municipal['motivo']}; estadual: {estadual['motivo']}"
@@ -497,7 +534,8 @@ def validar_estado(estado: dict, agora: datetime) -> list[str]:
             if ap.get("faixa") != origem.get("faixa") or ap.get("regua_id") != origem.get("regua_id"):
                 erros.append(f"{nome} / aplicada / {ap.get('regua_id')}: faixa ou régua diferente da "
                              f"classificação {tipo}")
-            if not (ap.get("rotulo") or "").startswith(f"Classificação {tipo}"):
+            prefixo = "Classificação municipal" if tipo == "municipal" else "Faixa estadual"
+            if not (ap.get("rotulo") or "").startswith(prefixo):
                 erros.append(f"{nome} / aplicada / {ap.get('regua_id')}: rótulo não diz que é {tipo}")
             if ap.get("fallback") is not (tipo == "estadual"):
                 erros.append(f"{nome} / aplicada / {ap.get('regua_id')}: fallback incoerente com {tipo}")
@@ -516,7 +554,11 @@ def validar_cadastro_piloto(estacoes: dict, piloto: tuple[str, ...] = CIDADES_PI
         if cidade is None:
             erros.append(f"{cid}: cidade do piloto ausente ou repetida em estacoes.json")
             continue
-        erros.extend(problemas_do_cadastro(cidade))
+        problemas = problemas_do_cadastro(cidade)
+        if cid in PILOTO_SEM_MUNICIPAL:
+            # Entrou de propósito sem classificação municipal: o bloqueio pelas cotas não confirmadas é a regra.
+            problemas = [p for p in problemas if "cotas não confirmadas" not in p]
+        erros.extend(problemas)
     return erros
 
 

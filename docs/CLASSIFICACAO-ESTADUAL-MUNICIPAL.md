@@ -115,29 +115,29 @@ O site adota a regra no PR 2, quando recebe o arquivo do motor desta coleta.
 
 ## Inventário: o que falta para cada cidade entrar
 
-Saída de `python3 scripts/classificar_reguas.py --inventario` em 07/10/2026, depois do campo `regua_das_cotas_id`:
+Situação em 07/10/2026, depois do campo `regua_das_cotas_id` e do piloto ampliado (`--inventario`):
 
 | Cidade | Bloqueios |
 |---|---|
 | `itajai-acu/taio` | sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
 | `itajai-acu/ituporanga` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
-| `itajai-acu/rio-do-sul` | `cotas_verificado` ≠ true |
+| `itajai-acu/rio-do-sul` | publicações sem referência validada no motor; `cotas_verificado` ≠ true |
 | `itajai-acu/ibirama` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
 | `itajai-acu/lontras` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
 | `itajai-acu/apiuna` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 | `itajai-acu/ascurra` | comparador especial (C18) |
 | `itajai-acu/indaial` | sem `regua_das_cotas_id` |
-| `itajai-acu/blumenau` | **pode entrar** — falta a decisão de pôr no piloto |
-| `itajai-acu/gaspar` | comparador especial (estação 21, "maior que") |
+| `itajai-acu/blumenau` | **no piloto** |
+| `itajai-acu/gaspar` | comparador especial (estação 21, "maior que"); publicações sem referência validada no motor |
 | `itajai-acu/ilhota` | sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
 | `itajai-acu/itajai` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 | `itajai-acu/timbo` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
-| `itajai-acu/rio-dos-cedros` | `cotas_verificado` ≠ true |
+| `itajai-acu/rio-dos-cedros` | **no piloto, sem classificação municipal** (cotas não confirmadas; faixa estadual quando válida) |
 | `itajai-acu/trombudo-central` | sem cota de acionamento; sem `regua_das_cotas_id`; `cotas_verificado` ≠ true |
 | `itajai-mirim/vidal-ramos` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 | `itajai-mirim/botuvera` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 | `itajai-mirim/guabiruba` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
-| `itajai-mirim/brusque` | **pode entrar** (piloto) |
+| `itajai-mirim/brusque` | **no piloto** |
 | `itajai-mirim/itajai` | sem cota de acionamento; sem `regua_das_cotas_id`; sem `fonte_cotas`; `cotas_verificado` ≠ true |
 
 ### Como ler os bloqueios
@@ -146,9 +146,8 @@ Saída de `python3 scripts/classificar_reguas.py --inventario` em 07/10/2026, de
   - Taió: o próprio cadastro diz que a régua das cotas continua em aberto (`regua_nota`).
   - Indaial e Ilhota: estão sem leitura municipal hoje.
   - As demais: não têm cota de acionamento.
-- **Blumenau "pode entrar"**: o campo era o único bloqueio dela. Pôr no piloto (`CIDADES_PILOTO`) muda a cor que o site
-  mostra e é decisão do Jefferson. Vem com casos no gabarito: os dois títulos (`AlertaBlu` e `PADKND`, que se juntam em
-  "Blumenau"), a leitura velha depois de 120 min e a cota de observação.
+- **"publicações sem referência validada no motor"** vale para régua identificada por título (Rio do Sul, Gaspar). Cada
+  publicação aceita entra em `PUBLICACOES_VALIDADAS`, com a prova, quando a cidade entrar no piloto.
 - **"`cotas_verificado` ≠ true"** em Rio dos Cedros é coerente com a resposta ao C29: a COMPDEC não falou do zero nem da
   vigência da escala depois do desassoreamento. Hoje o site pinta Rio dos Cedros mesmo assim; quando ela entrar no motor,
   ficará sem cor municipal até essa confirmação. É uma decisão a tomar junto com o PR 2.
@@ -190,6 +189,76 @@ Ficou de fora quem não tem a prova escrita (Taió, Indaial, Ilhota e as cidades
 
 **Na saída do motor**, `fonte_faixas` passou a ser a `fonte_cotas` da cidade (a fonte das faixas). A prova da régua foi para
 um campo próprio, `fonte_regua`, que o validador da saída também exige. A faixa e quem pinta não mudam.
+
+## Piloto ampliado: Blumenau e Rio dos Cedros (decisões do Jefferson, 07/10/2026)
+
+As três decisões:
+- **Blumenau entra**, "desde que a leitura e as cotas estejam vinculadas à mesma régua, com referência validada".
+- **Rio dos Cedros** fica "sem classificação municipal até confirmar as cotas. Não abra exceção. Se houver classificação
+  estadual válida para a estação, pode exibi-la, identificada como 'faixa estadual'. A ausência de cotas municipais não
+  significa nível normal".
+- **Brusque** mantém a cor atual.
+
+### Blumenau: a condição conferida
+- **Mesma régua.** A escala das cotas (`condicoes`: Observação 3 · Atenção 4 · Alerta 6 · Alerta Máximo 8 m) e o nível
+  (`niveis`) saem do **mesmo** `nivel_oficial.json` do AlertaBlu. A escala foi conferida no bruto
+  `data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json`, e o par foi provado por medição
+  (`regua_nota`, 18/09/2026).
+- **Referência validada.** As cotas e a leitura ao vivo estão na régua de hoje, que é a do AlertaBlu (CLAUDE.md, referência
+  altimétrica de Blumenau). A regra bloqueante de Blumenau trata dos picos históricos, não da leitura ao vivo.
+- **Só publicações validadas** (`PUBLICACOES_VALIDADAS`):
+  - `Blumenau (AlertaBlu)`: o mesmo arquivo das cotas;
+  - `Blumenau (PADKND)`: só entra quando bate com o AlertaBlu na mesma coleta, com 1 cm de folga
+    (`conferir_com_alertablu`).
+- O repasse antigo `Blumenau` da Defesa Civil de Itajaí tem a mesma identidade, mas vinha 3 h atrasado e até 0,245 m acima.
+  Está fora do ar desde 19/09; se voltar, **não pinta pelas cotas**. É o caso `blumenau-repasse-sem-referencia-validada`
+  do gabarito, uma divergência declarada.
+- **Na tela:** *"Cor do rio: classificação municipal — régua do AlertaBlu (Blumenau)."* O nome da ponte não entra porque a
+  fonte não nomeia o ponto.
+- **Não há classificação estadual:** a DCSC-00026 de Blumenau é meteorológica.
+
+### Rio dos Cedros: sem classificação municipal
+- Entra no piloto **de propósito sem classificação municipal** (`PILOTO_SEM_MUNICIPAL`). O motor nunca compara o nível com
+  as cotas 4,80/5,30/5,70 m enquanto `cotas_verificado` não for `true`, e o validador só aceita essa exceção para Rio dos
+  Cedros.
+- **A municipal só segura a estadual com cotas confirmadas** (`segura_estadual` na saída do motor). Aqui a leitura municipal
+  de agora não segura, e a faixa que a Defesa Civil de SC publica para a DCSC-00011 aparece, como *faixa estadual*:
+  - chip tracejado "Atenção · Defesa Civil SC";
+  - no Monitor, "Cor do rio: faixa estadual (Defesa Civil de SC) — DCSC-00011. Não representa as cotas municipais.".
+- **Sem faixa estadual válida**, a cidade fica **cinza**, nunca verde. O cartão diz: "Sem classificação municipal: as
+  cotas de Rio dos Cedros ainda não foram confirmadas pela Defesa Civil do município. Isso não quer dizer que o nível
+  esteja normal." O "Por que está cinza?" do Monitor diz o mesmo.
+- **Nada compara o nível com as cotas não confirmadas:**
+  - o cartão não mostra a frase "Faltam X cm para a cota" nem o medidor;
+  - o quadro de cota do Monitor diz "Cotas municipais — ainda não confirmadas";
+  - o bot já exigia `cotas_verificado: true`.
+- **O que muda para quem olha Rio dos Cedros:**
+  - **antes:** às 17h16 de 07/10, com 3,69 m, o site pintava *normal* pelas cotas não confirmadas;
+  - **agora:** mostra a faixa estadual publicada, *atenção*.
+
+### Brusque
+Sem mudança: as cotas estão confirmadas e a municipal continua mandando. Os 17 casos dela no gabarito ficaram iguais.
+
+### Nome "faixa estadual"
+- A origem estadual passou a se chamar **faixa estadual** no rótulo do motor (`Faixa estadual (Defesa Civil de SC) — …`),
+  no painel do Monitor ("Faixa estadual: Atenção" e "Cor do rio: faixa estadual …") e no cartão.
+- O chip continua "Atenção · Defesa Civil SC", tracejado.
+
+### Testes e conferência
+- **Gabarito:** 29 casos, 12 novos.
+  - Blumenau: AlertaBlu; PADKND mais nova; Observação exata e abaixo dela; Alerta Máximo; 120 e 121 min; repasse sem
+    referência validada.
+  - Rio dos Cedros: estadual em atenção; sem faixa estadual; acima da atenção não confirmada; estadual velha.
+  - Divergências declaradas em `diverge_do_site`, com a decisão de 07/10.
+- **Motor e site:** os testes do motor cobrem o piloto, a exceção restrita a Rio dos Cedros, as publicações validadas e
+  `segura_estadual`. `classificacaoNoMapa.test.ts` cobre mapa e cartão iguais nos 29 casos e os textos de Blumenau e de
+  Rio dos Cedros.
+- **Navegador**, com a coleta de produção das 20h31 UTC e o motor novo:
+  - Blumenau: 4,85 m, atenção, "régua do AlertaBlu";
+  - Rio dos Cedros: 3,69 m, faixa estadual atenção, com o porquê;
+  - Brusque: 2,17 m, normal, sem mudança.
+
+  A trava do Monitor passou sem regravar o baseline.
 
 ## PR 2: o site segue o motor
 

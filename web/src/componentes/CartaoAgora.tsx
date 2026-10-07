@@ -92,7 +92,7 @@ export default function CartaoAgora({
   children?: ReactNode
 }) {
   const { agora, tempoReal } = aoVivo
-  const { leitura, faixa, bruto, varias, todas, serie, estadual, faixaEstadual } = estado
+  const { leitura, faixa, bruto, varias, todas, serie, estadual, faixaEstadual, cotasMunicipaisNaoConfirmadas } = estado
   const carregando = tempoReal.situacao === 'carregando' && !leitura && !bruto && todas.length === 0
 
   if (carregando) {
@@ -190,7 +190,8 @@ export default function CartaoAgora({
   // Leitura que não é de agora com o rio SUBINDO: o número erra para baixo,
   // que é o lado que machuca. Vale a série mesmo sem casar com a leitura.
   const subia = estadoIdade !== 'agora' && tendenciaDaSerie(serie)?.rotulo === 'subindo'
-  const situacao = situacaoNasCotas(cidade, leitura, agora)
+  // Cotas não confirmadas (Rio dos Cedros, decisão de 07/10/2026): nada se compara com elas — nem frase, nem medidor.
+  const situacao = cotasMunicipaisNaoConfirmadas ? null : situacaoNasCotas(cidade, leitura, agora)
   const c18 =
     cidade.id === 'ascurra' && leitura.codigo === 'DCSC-00003'
       ? faixaAscurra(
@@ -203,7 +204,11 @@ export default function CartaoAgora({
     <section className={`${estilos.cartao} surge`} aria-label={`Agora em ${cidade.nome}`}>
       {titulo}
       <div className={estilos.topo}>
-        <ChipFaixa faixa={faixa} cidade={cidade} />
+        {cotasMunicipaisNaoConfirmadas && faixaEstadual ? (
+          <ChipFaixa faixa={faixaEstadual} cidade={cidade} estadual />
+        ) : (
+          <ChipFaixa faixa={faixa} cidade={cidade} />
+        )}
         <span className={estilos.medido}>
           <span className={`${estilos.frescor} ${estilos[`frescor_${estadoIdade}`] ?? ''}`} aria-hidden="true" />
           {idade === null ? 'sem horário de medição' : `medido ${textoIdade(idade)}`}
@@ -244,6 +249,20 @@ export default function CartaoAgora({
           ) : null}
         </p>
       ) : null}
+      {cotasMunicipaisNaoConfirmadas ? (
+        <p className={estilos.estadual}>
+          <strong>Sem classificação municipal:</strong> as cotas de {cidade.nome} ainda não foram confirmadas pela
+          Defesa Civil do município. Isso <strong>não</strong> quer dizer que o nível esteja normal.{' '}
+          {faixaEstadual ? (
+            <>
+              A cor é a <strong>faixa estadual</strong> que a Defesa Civil de SC publica para a estação
+              {estadual?.codigo ? ` ${estadual.codigo}` : ''}, no zero dela.
+            </>
+          ) : (
+            <>A Defesa Civil de SC não publica faixa válida para a estação agora.</>
+          )}
+        </p>
+      ) : null}
       {subia ? (
         <p className={estilos.alertaLeitura}>
           Quando foi medido, o rio vinha <strong>subindo</strong>: agora pode estar mais alto.
@@ -278,7 +297,7 @@ export default function CartaoAgora({
         </p>
       ) : null}
 
-      {cidade.id !== 'gaspar' && cidade.id !== 'ascurra' ? (
+      {cidade.id !== 'gaspar' && cidade.id !== 'ascurra' && !cotasMunicipaisNaoConfirmadas ? (
         <MedidorCotas cidade={cidade} nivel={estadoIdade === 'velha' ? null : leitura.nivel_m} />
       ) : null}
 

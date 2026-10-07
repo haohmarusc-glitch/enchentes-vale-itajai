@@ -268,7 +268,7 @@ class TesteEscolhaDaPrincipal(unittest.TestCase):
         ap = self.aplicada([], estadual("alerta"))
         self.assertEqual((ap["tipo"], ap["faixa"], ap["fallback"]), ("estadual", "alerta", True))
         self.assertIn("Não são as cotas do município", ap["aviso"])
-        self.assertTrue(ap["rotulo"].startswith("Classificação estadual"))
+        self.assertTrue(ap["rotulo"].startswith("Faixa estadual"))
 
     def test_nenhuma_valida(self):
         ap = self.aplicada([], {"leituras": []})
@@ -345,6 +345,51 @@ class TesteValidador(unittest.TestCase):
         self.assertErro(e, "faixa_do_rio diferente")
 
 
+class TestePilotoDe07De10(unittest.TestCase):
+    """Decisões do Jefferson de 07/10/2026: Blumenau entra; Rio dos Cedros entra SEM classificação municipal."""
+
+    def test_o_piloto(self):
+        self.assertEqual(set(cr.CIDADES_PILOTO), {"brusque", "blumenau", "rio-dos-cedros"})
+        self.assertEqual(set(cr.PILOTO_SEM_MUNICIPAL), {"rio-dos-cedros"})
+
+    def test_rio_dos_cedros_nunca_tem_faixa_municipal_enquanto_as_cotas_nao_forem_confirmadas(self):
+        rdc = cr.cidade_do_piloto(ESTACOES, "rio-dos-cedros")
+        self.assertIsNot(rdc["cotas_verificado"], True)
+        for nivel in (1.0, 4.8, 5.5, 9.0):
+            leitura = {"estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)", "codigo": "DCSC-00011",
+                       "cidade": "rio-dos-cedros", "rio": "itajai-acu", "nivel_m": nivel, "medido_em": "2026-10-07T13:00:00"}
+            r = cr.classificar_municipal(rdc, [leitura], AGORA)
+            self.assertIsNone(r["faixa"], f"{nivel} m")
+            self.assertIn("cotas não confirmadas", r["motivo"])
+            self.assertFalse(r["segura_estadual"], "sem cota confirmada, a municipal não segura a estadual")
+
+    def test_rio_dos_cedros_no_piloto_nao_reprova_o_validador_e_outra_cidade_reprovaria(self):
+        self.assertEqual(cr.validar_cadastro_piloto(ESTACOES), [])
+        d = copy.deepcopy(ESTACOES)
+        next(c for c in d["rios"]["itajai-mirim"]["cidades"] if c["id"] == "brusque")["cotas_verificado"] = False
+        self.assertTrue(any("cotas não confirmadas" in e for e in cr.validar_cadastro_piloto(d)),
+                        "a exceção é só de Rio dos Cedros")
+
+    def test_brusque_com_cotas_confirmadas_continua_segurando_a_estadual(self):
+        r = cr.classificar_municipal(brusque(), [leitura(2.0)], AGORA)
+        self.assertTrue(r["segura_estadual"])
+
+    def test_blumenau_so_pinta_pelas_publicacoes_validadas(self):
+        blu = cr.cidade_do_piloto(ESTACOES, "blumenau")
+        base = {"cidade": "blumenau", "rio": "itajai-acu", "nivel_m": 4.5, "medido_em": "2026-10-07T13:00:00"}
+        for titulo in ("Blumenau (AlertaBlu)", "Blumenau (PADKND)"):
+            r = cr.classificar_municipal(blu, [{**base, "estacao": titulo, "resgate_de": "Blumenau"}], AGORA)
+            self.assertEqual(r["faixa"], "atencao", titulo)
+            self.assertEqual(r["regua_nome"], "régua do AlertaBlu")
+        r = cr.classificar_municipal(blu, [{**base, "estacao": "Blumenau"}], AGORA)
+        self.assertIsNone(r["faixa"])
+        self.assertIn("não foi validada", r["motivo"])
+
+    def test_regua_por_titulo_sem_publicacoes_validadas_fica_no_inventario(self):
+        rds = cr.cidade_do_piloto(ESTACOES, "rio-do-sul")
+        self.assertTrue(any("PUBLICACOES_VALIDADAS" in p for p in cr.problemas_do_cadastro(rds)))
+
+
 class TesteCadastro(unittest.TestCase):
     def test_o_piloto_esta_limpo_no_estacoes_json_real(self):
         self.assertEqual(cr.validar_cadastro_piloto(ESTACOES), [])
@@ -390,7 +435,7 @@ class TesteGravacao(unittest.TestCase):
                     mock.patch("sys.stdout"):
                 self.assertEqual(cr.main(["--gravar"]), 0)
             d = json.loads(saida.read_text(encoding="utf-8"))
-            self.assertEqual(d["piloto"], ["brusque"])
+            self.assertEqual(d["piloto"], list(cr.CIDADES_PILOTO))
             self.assertEqual(d["cidades"]["brusque"]["classificacao_aplicada"]["tipo"], "nenhuma")
 
 
