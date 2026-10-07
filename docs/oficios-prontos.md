@@ -673,6 +673,56 @@ Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 0
 
 ---
 
+## C32 — Defesa Civil de Rio dos Cedros: confirmação das cotas na DCSC-00011 — 📝 RASCUNHO no Gmail, não enviado (07/10/2026; rascunho `r3697923724363143209`, resposta na conversa do C29)
+
+**Origem.** Decisão do Jefferson de 07/10/2026: Rio dos Cedros fica **sem classificação municipal** até a COMPDEC
+confirmar as cotas, sem exceção (`docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`, "Piloto ampliado").
+
+**O que ainda falta saber.** A resposta ao C29 (07/10/2026) confirmou que a cidade tem uma estação de nível só, a
+DCSC-00011. Ela não disse três coisas:
+- se as cotas do Plano v10.9, p. 9 (4,80 / 5,30 / 5,70 m), são lidas diretamente nessa estação, no mesmo zero;
+- qual é o zero da régua;
+- se a escala continua valendo depois do desassoreamento de 2026.
+
+**Pergunta nova.** Em 07/10, com 3,69 m, a Defesa Civil de SC classificava a estação em *atenção*, faixa própria do
+Estado, enquanto pelo Plano o nível estaria abaixo da atenção. Falta saber qual das duas o município usa para acionar.
+
+**Como enviar.** Responder na conversa do C29 (Gmail, id `1a105014b2aecbbb`), para defesacivil@riodoscedros.sc.gov.br,
+que é onde o coordenador já respondeu.
+- Sem link do site (regra de 02/10/2026).
+- Sem números que a COMPDEC não publicou.
+- O pedido de cadastro vai no fim, como nos anteriores.
+
+**Para:** defesacivil@riodoscedros.sc.gov.br (resposta na conversa do C29)
+**Assunto:** Re: Régua do Rio dos Cedros e estação da Defesa Civil de SC — pedido de esclarecimento
+
+Bom dia, Jucinei,
+
+Obrigado pela resposta do dia 7. Com ela, passei a usar a estação da Defesa Civil de SC na ponte próxima ao Paço
+Municipal (DCSC-00011) como a régua de Rio dos Cedros, e corrigi o pico de 2014 para 00h45 de 09/06/2014, com 8,96 m.
+
+Falta uma confirmação para eu poder comparar o nível com as cotas do município. Por isso, até a resposta, o site não
+classifica Rio dos Cedros pelas cotas municipais. Ele mostra o nível e, quando há, a faixa que a Defesa Civil de SC
+publica para a estação, identificada como faixa estadual.
+
+As perguntas:
+
+1. As cotas do Plano de Contingência v10.9 (abril de 2026, p. 9) — atenção em 4,80 m, alerta em 5,30 m e alarme em
+   5,70 m — são lidas diretamente na estação DCSC-00011, no mesmo zero, sem correção?
+2. Qual é o zero (a referência) dessa régua? Ele mudou em algum momento desde 2014?
+3. Essas cotas continuam valendo depois do desassoreamento do rio feito em 2026, ou há revisão prevista?
+4. A Defesa Civil de SC publica faixas próprias para a mesma estação. No dia 7, com 3,69 m, ela aparecia em "atenção"
+   na rede estadual, enquanto pelo Plano o nível estaria abaixo da atenção. Para o acionamento do município, valem as
+   faixas do Plano, as do Estado ou as duas?
+
+Se quiserem conhecer o site, basta me enviar um e-mail para cadastro.
+
+Muito obrigado pela atenção.
+
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
 ## C31 — INMET, Direção: manifestação de interesse em Acordo de Cooperação Técnica — ✅ ENVIADO em 04/10/2026, por pedido do Jefferson ("faça o 4"), com o texto abaixo sem alteração (Gmail, id `1a1066b689e7fad1`, para diretor@inmet.gov.br)
 
 Origem: a resposta da LAI C8 (NUP 21210.009435/2026-61, 22/09/2026) diz que a API do INMET só abre com Acordo de

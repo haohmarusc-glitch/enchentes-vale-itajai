@@ -14,6 +14,7 @@ import tempfile
 import unittest
 from datetime import datetime, timedelta
 from pathlib import Path
+from unittest import mock
 
 import extrair_picos as ep
 from eventos_captados import faixa_alcancada, maior_lacuna_min, registro_em_enchentes, resumir
@@ -55,20 +56,25 @@ class TesteResumo(unittest.TestCase):
     def setUp(self):
         import eventos_captados
         import comum
-        # O cadastro de teste no lugar do estacoes.json real, nas duas pontas que o leem.
-        self._le_json = comum.le_json
-        comum.le_json = lambda nome: ESTACOES if nome == "estacoes.json" else self._le_json(nome)
-        eventos_captados.estacao_por_titulo = lambda t: next((e for e in ESTACOES["estacoes_tempo_real"] if e["titulo"] == t), None)
-        ep.cota_da_estacao = lambda t: next(
-            ((float(e["cotas_m"][k]), k) for e in ESTACOES["estacoes_tempo_real"] if e["titulo"] == t
-             for k in ("atencao", "alerta", "emergencia", "inundacao") if k in e["cotas_m"]), (None, None))
-        ep.cota_de_referencia = lambda rio, cidade: next(
-            ((float(c["cotas_m"][k]), k) for c in ESTACOES["rios"][rio]["cidades"] if c["id"] == cidade
-             for k in ("atencao", "alerta", "emergencia", "inundacao") if k in c["cotas_m"]), (None, None))
-
-    def tearDown(self):
-        import comum
-        comum.le_json = self._le_json
+        # O cadastro de teste no lugar do estacoes.json real, nas duas pontas que o leem. Tudo volta ao
+        # original no fim de cada teste: sem isso, `extrair_picos` ficava com o cadastro de teste e os testes
+        # dele que rodam depois na mesma suíte (`discover`) liam cotas erradas.
+        le_json = comum.le_json
+        trocas = {
+            (comum, "le_json"): lambda nome: ESTACOES if nome == "estacoes.json" else le_json(nome),
+            (eventos_captados, "estacao_por_titulo"):
+                lambda t: next((e for e in ESTACOES["estacoes_tempo_real"] if e["titulo"] == t), None),
+            (ep, "cota_da_estacao"): lambda t: next(
+                ((float(e["cotas_m"][k]), k) for e in ESTACOES["estacoes_tempo_real"] if e["titulo"] == t
+                 for k in ("atencao", "alerta", "emergencia", "inundacao") if k in e["cotas_m"]), (None, None)),
+            (ep, "cota_de_referencia"): lambda rio, cidade: next(
+                ((float(c["cotas_m"][k]), k) for c in ESTACOES["rios"][rio]["cidades"] if c["id"] == cidade
+                 for k in ("atencao", "alerta", "emergencia", "inundacao") if k in c["cotas_m"]), (None, None)),
+        }
+        for (modulo, nome), falso in trocas.items():
+            troca = mock.patch.object(modulo, nome, falso)
+            troca.start()
+            self.addCleanup(troca.stop)
 
     def test_blumenau_relogio_do_repasse_cede_a_hora_ao_alertablu(self):
         # Repasse (Blumenau) de 10 em 10 min com a crista 7,87 às 02:15; AlertaBlu horário com a crista 7,86 às 05:00.
