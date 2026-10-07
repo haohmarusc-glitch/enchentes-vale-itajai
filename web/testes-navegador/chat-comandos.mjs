@@ -363,9 +363,12 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     r = await pedirAte(pg, 'de novo', /Rio do Sul/)
     ok(/Rio do Sul/.test(r), 'de novo: repete o último pedido refeito')
     await pedirAte(pg, 'mostrar Blumenau', /Blumenau/)
-    await pedir(pg, 'e Gaspar')
+    // 19ª entrega: a continuação que mudaria a tela CONFIRMA antes; a sugestão é a frase pronta, e tocar nela navega.
+    r = await pedirAte(pg, 'e Gaspar', /Gaspar/)
+    ok(/Entendi como "mostrar Gaspar", que muda a tela/.test(r) && /#\/monitor\/blumenau/.test(pg.url()), `continuação de comando: confirma antes de navegar (${pg.url()})`)
+    await pg.getByRole('button', { name: 'mostrar Gaspar' }).first().click()
     await pg.waitForURL(/#\/monitor\/gaspar/, { timeout: 15000 }).catch(() => {})
-    ok(/#\/monitor\/gaspar/.test(pg.url()), `continuação de comando: abriu o Monitor de Gaspar (${pg.url()})`)
+    ok(/#\/monitor\/gaspar/.test(pg.url()), `continuação confirmada: abriu o Monitor de Gaspar (${pg.url()})`)
     ok(excecoes(erros).length === 0, `sem exceção de JavaScript (${excecoes(erros).join(' | ')})`)
     await b.close()
   }
