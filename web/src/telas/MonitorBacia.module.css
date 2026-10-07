@@ -92,6 +92,15 @@
 .comMenu .rodape {
   display: none;
 }
+/* No celular, o menu de cidades e o menu de camadas são folhas que cobrem o topo do mapa: enquanto
+   um deles está aberto, a coluna de botões da direita (camadas, tela cheia, zoom) sai, para nenhum
+   botão ficar por baixo da folha (sonda `colisao-dos-controles`, 07/10/2026). Cada folha tem o seu fechar. */
+@media (max-width: 700px) {
+  .comMenu .ladoDireito,
+  .comCamadas .ladoDireito {
+    display: none;
+  }
+}
 
 .cantoEsquerdo {
   flex: none;

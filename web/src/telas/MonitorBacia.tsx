@@ -1573,7 +1573,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
             Numa coluna só, os dois disputam a mesma altura pelas regras do
             flex: quando não cabe, a legenda e o menu ROLAM, e nenhum dos dois
             invade o outro em resolução nenhuma. */}
-        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''} ${chatAberto ? estilos.chatAberto : ''}`}>
+        <div className={`${estilos.colunaEsquerda} ${menuAberto ? estilos.comMenu : ''} ${camadasAbertas ? estilos.comCamadas : ''} ${chatAberto ? estilos.chatAberto : ''}`}>
         {/* Título e aviso no topo-esquerdo (o chip da maré fica no topo-direito,
             desenhado no canvas). O botão de tela cheia vai no canto inferior
             direito para não colidir com o chip. */}
