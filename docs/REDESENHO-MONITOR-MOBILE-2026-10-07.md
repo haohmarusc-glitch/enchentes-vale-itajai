@@ -61,3 +61,44 @@ fica como está até decisão.
 Dados em `data/`, coordenadas dos pinos (`coordenadas` do cadastro), traçados (`data/rios/*.geojson`), cotas, fontes, as regras
 do mapa (`docs/kikikuru.md`: cor = faixa, nunca metro; animação = nível; cinza não corre; fuso), os comandos do chat e a ponte
 (`comandos/ponte.ts`).
+
+## Etapa 1 — o que entrou (07/10/2026, PR em rascunho, sem merge)
+
+Prints reais da pré-visualização (390×844, 360×740 e 1280×800) estão no PR. O que mudou, por arquivo:
+
+- **Casca no celular** (`App.tsx`, `App.module.css`, `FaixaEmergencia`): a faixa do 199 vira uma linha
+  ("Defesa Civil: 199 · Bombeiros: 193 · Não é alerta oficial"); o cabeçalho vira uma linha com o menu ☰
+  (as cinco páginas descem dele), a marca e o nome da página atual. Nada é `position: fixed`. No computador a
+  casca é a mesma de antes. O mapa mede `calc(100dvh − 5.875rem)` (94 px medidos em 360 e 390) e termina no fim
+  da tela.
+- **Topo do mapa** (`MonitorBacia.tsx`/`.module.css`): o mesmo DOM do cartão de sempre vira, no celular, uma
+  linha transparente — a caixa do chat em pílula ("Cidade, régua ou pergunta", com o botão de enviar em seta) e
+  o botão "Cidades". Título, aviso e "Tela cheia" em texto somem (o aviso volta em tela cheia). À direita, uma
+  coluna de botões redondos: Camadas do mapa, Tela cheia, +, −, e Ver tudo quando há zoom.
+- **Destaque da bacia** (`logica/destaqueDaBacia.ts`, com teste): sob a pílula, a cidade com a faixa
+  **municipal** mais grave acima da atenção, com o nível e a hora **dela**; toque abre a cidade. Só existe com
+  faixa válida (cota do cadastro + leitura fresca — `faixaDaCidade`, travado em teste); nunca estadual, "várias
+  réguas", cinza, nem durante a reprodução. Sem cidade nessas condições, não aparece nada — não há "tudo normal".
+- **Menu "Camadas do mapa"** (celular e computador), nesta ordem: Camadas de cheia (interruptor que espelha o modo
+  do `CamadasMonitor`, que continua montado para o chat; sub-linha com a camada desenhada ou "nenhuma camada
+  desenhada agora"), Maré (visibilidade; sub-linha com o estado real), Chuva 24 h (visibilidade), Legenda
+  (recolhível, a mesma lista da legenda do canto), Traçados dos rios (uma caixa por curso **carregado**,
+  `logica/tracadosDoMapa.ts` com teste — Benedito e Rio dos Cedros separados, braços do Rio Rafael juntos,
+  tronco marcado e fixo; só o que existe em `data/rios/`, sem "em breve") e Fundo do mapa (saiu da legenda; a
+  atribuição do OSM ficou fora, sempre à vista).
+- **Rótulos compactos** (`mapaMotor.ts`, `OpcoesPinos.compacto`, só em ≤ 700 px): nome; "sem leitura"/"sem régua"
+  quando não há número; a chuva como bolha com o valor, e só onde há pluviômetro com acumulado de 24 h de agora
+  (`linhasChuvaCompactas`). A cidade selecionada continua com a linha inteira. Nível e hora ficam no painel.
+- **Brilho**: halo do rio de 12→8 e alfa 0,9→0,8; brilho do pino 10→7. Traçados, cores por faixa e largura por
+  faixa não mudam.
+- **Maré**: o chip saiu do canvas (`etiquetaMare: false`) e virou HTML acima da barra de reprodução, com a próxima
+  preamar/baixa-mar ao toque, a fonte (tábua da Marinha) e "maré não é cheia". No `MapaRios` nada muda.
+- **Reprodução**: botão com ▶ e "24 h"; marcas −24 h · −18 h · −12 h · −6 h · **Agora**; no passado, "Agora" vira o
+  horário (Brasília) em âmbar e a linha de estado diz "{dia, hora} · reprodução · não é a leitura atual".
+  Ao vivo, a linha diz "ao vivo" (o chat e os testes leem isso).
+- **Horário completo**: o painel da cidade e o da régua mostram sempre "medida em dd/mm, hh:mm"; leitura velha
+  ganha "(leitura antiga, não é a de agora)".
+- **Trava**: baseline regravado (celular: y = 94; computador: igual ao de antes). `auditoria.mjs` abre o menu pelo
+  botão "Camadas do mapa".
+
+Fora da etapa 1 (ficam para a 2 e a 3): painel compacto → expandido; barra inferior Mapa · Réguas · Perguntar.

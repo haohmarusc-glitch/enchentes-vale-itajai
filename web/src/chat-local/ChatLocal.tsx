@@ -533,7 +533,9 @@ export default function ChatLocal({ rio, aoVivo: aoVivoDaPagina = null, variante
             maxLength={300}
             enterKeyHint="send"
             autoComplete="off"
-            placeholder={nomeCidade ? `Pergunte sobre ${nomeCidade} ou peça: ${exemploPedido}` : `Pergunte ou peça: ${exemploPedido}`}
+            // No Monitor, a caixa é a pílula da maquete (07/10/2026): "Cidade, régua ou pergunta" — o que ela
+            // aceita, numa linha que cabe no celular. Fora dele, o convite com o exemplo de pedido.
+            placeholder={variante === 'monitor' ? 'Cidade, régua ou pergunta' : nomeCidade ? `Pergunte sobre ${nomeCidade} ou peça: ${exemploPedido}` : `Pergunte ou peça: ${exemploPedido}`}
             onFocus={() => {
               setVisivel(true)
               abrirPainel(true)

@@ -5,3 +5,25 @@
   text-align: center;
   font-size: 0.95rem;
 }
+
+.compacto {
+  display: none;
+}
+
+/* Celular: uma linha, letra menor — o 199 continua a primeira coisa da tela. */
+@media (max-width: 700px) {
+  .faixa {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .completo {
+    display: none;
+  }
+  .compacto {
+    display: inline;
+  }
+}

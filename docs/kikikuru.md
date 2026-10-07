@@ -270,7 +270,9 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   o que ela faz é **travar o escoamento** do rio. `estadoMareAgora` (em
   `logica/mare.ts`) lê a tábua (`data/mare-itajai.json`, via `mareItajai`) e diz
   se a maré **sobe** ou **desce** agora e a que altura do ciclo — o azul segue
-  essa altura, e um chip mostra "Mar · Maré subindo/baixando". **Sem tábua**
+  essa altura, e um chip mostra "Maré: subindo/baixando" — no Monitor ele é HTML, acima da barra de
+  reprodução, com a próxima preamar ou baixa-mar ao toque (desde 07/10/2026; no `MapaRios` continua
+  desenhado no canvas, "Mar · Maré…"). **Sem tábua**
   (hoje ela está vazia) o mar fica **cinza**, "maré: sem dado" — nada é estimado;
   acende quando `scripts/coleta_mares.py` preencher a tábua.
 - Os nomes das cidades têm **anticolisão**: onde os pinos se amontoam (a foz do
@@ -339,7 +341,8 @@ número nenhum.** `caixaDoRotuloDoPino` passou a usar `max(nome, sub)` nas duas 
 enxergava os outros. Agora a lista é **uma só**, criada por quadro no Monitor, e a ordem de reserva é
 uma decisão, não um acaso:
 
-1. **o chip da maré** — é fixo na tela e não pode ceder;
+1. **os controles de HTML** (`data-tapa-mapa`: a pílula do chat, os botões, o chip da maré, a barra) — são opacos e
+   não cedem (até 07/10/2026 o chip da maré era desenhado no canvas e reservava o canto primeiro);
 2. **os nomes das cidades** — são a âncora do mapa: sem eles não se sabe onde é nada;
 3. barragens e réguas, que cedem espaço ao que veio antes.
 

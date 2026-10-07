@@ -47,6 +47,83 @@
   font-weight: 700;
 }
 
+/* O botão ☰ e o nome da página atual só existem no celular. */
+.botaoMenuPaginas,
+.paginaAtual {
+  display: none;
+}
+
+/* CELULAR — casca antiga (Monitor), redesenho de 07/10/2026: cabeçalho de UMA linha (☰ · marca · página
+   atual) e as abas viram um menu que desce do cabeçalho. Nada é `position: fixed`: a trava do Monitor
+   reprova elemento fixo sobre o mapa. */
+@media (max-width: 700px) {
+  .cabecalho {
+    position: relative;
+    z-index: 20;
+  }
+  .faixa {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+  }
+  .marca {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .paginaAtual {
+    display: inline-block;
+    flex: none;
+    font-size: 0.8rem;
+    color: #dceaf4;
+  }
+  .botaoMenuPaginas {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    font-size: 1.35rem;
+    cursor: pointer;
+  }
+  .botaoMenuPaginas:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+  .abas {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.35rem 0.5rem 0.6rem;
+    background: var(--agua);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  .abasAbertas {
+    display: flex;
+  }
+  .aba {
+    border-radius: var(--raio);
+    padding: 0.7rem 0.85rem;
+  }
+  .abaAtiva {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
 /*
  * Pular para o conteúdo: invisível até o foco, e então visível de verdade.
  *

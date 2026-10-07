@@ -29,3 +29,16 @@ export function linhasChuva(chuvas: ChuvaAoVivo[], cidade: string, agora: Date):
   const valeAgora = c?.medidoEm != null && frescor(idadeMin(c.medidoEm, agora)) !== 'velha'
   return [`24 h: ${mmChuva(valeAgora ? c.mm.h24 : null)} mm`]
 }
+
+/**
+ * A chuva como BOLHA do pino, no Monitor compacto do celular (redesenho de 07/10/2026): só o número,
+ * "19,6 mm", e só onde há pluviômetro com acumulado de 24 h de agora. Sem estação, sem valor ou com
+ * medição velha não há bolha nenhuma — a camada já se chama "Chuva 24 h", e "— mm" numa bolha diria
+ * que mediu quando não mediu.
+ */
+export function linhasChuvaCompactas(chuvas: ChuvaAoVivo[], cidade: string, agora: Date): string[] {
+  const c = chuvaMonitor(chuvas, cidade)
+  const valeAgora = c?.medidoEm != null && frescor(idadeMin(c.medidoEm, agora)) !== 'velha'
+  if (!valeAgora || c.mm.h24 == null) return []
+  return [`${mmChuva(c.mm.h24)} mm`]
+}

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import Municipal from './telas/Municipal'
 import estilos from './App.module.css'
@@ -39,6 +39,14 @@ export default function App() {
   const local = useLocation()
   const municipal = local.pathname.startsWith('/municipal/ascurra')
   const antiga = cascaAntiga(local.pathname)
+  /**
+   * Casca antiga no CELULAR (redesenho do Monitor, etapa 1 — docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md):
+   * as abas saem do topo e viram este menu (☰), para o mapa ganhar a tela. No computador o CSS esconde o
+   * botão e mostra as abas como sempre. Trocar de página fecha o menu.
+   */
+  const [menuPaginas, setMenuPaginas] = useState(false)
+  useEffect(() => setMenuPaginas(false), [local.pathname])
+  const paginaAtual = ABAS.find((a) => (a.fim ? local.pathname === a.para : local.pathname.startsWith(a.para)))?.rotulo ?? null
   const [letra] = useLetra()
   useEscopoApp(!antiga, letra)
   const [avisoLido, marcarAvisoLido] = useAvisoLido()
@@ -99,11 +107,22 @@ export default function App() {
       {!municipal && <FaixaEmergencia />}
       {!municipal && <header className={estilos.cabecalho}>
         <div className={estilos.faixa}>
+          <button
+            type="button"
+            className={estilos.botaoMenuPaginas}
+            aria-label={menuPaginas ? 'Fechar o menu de páginas' : 'Menu de páginas'}
+            aria-expanded={menuPaginas}
+            aria-controls="menu-paginas"
+            onClick={() => setMenuPaginas((v) => !v)}
+          >
+            <span aria-hidden="true">{menuPaginas ? '✕' : '☰'}</span>
+          </button>
           <NavLink to="/" className={estilos.marca}>
             Enchentes do Vale do Itajaí
           </NavLink>
-          <nav aria-label="Rios">
-            <ul className={estilos.abas}>
+          {paginaAtual ? <span className={estilos.paginaAtual} aria-hidden="true">{paginaAtual}</span> : null}
+          <nav aria-label="Rios" onKeyDown={(e) => { if (e.key === 'Escape') setMenuPaginas(false) }}>
+            <ul id="menu-paginas" className={`${estilos.abas} ${menuPaginas ? estilos.abasAbertas : ''}`}>
               {ABAS.map((aba) => (
                 <li key={aba.para}>
                   <NavLink

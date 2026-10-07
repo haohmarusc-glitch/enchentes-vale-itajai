@@ -99,7 +99,7 @@ try {
  await abrir('/monitor/blumenau')
  await page.getByText('6,10 m',{exact:true}).waitFor()
  await page.getByRole('button',{name:'Fechar o painel de Blumenau'}).click()
- await page.locator('summary').filter({hasText:'Camadas de cheia'}).click()
+ await page.getByRole('button',{name:/Camadas do mapa/}).click()
  await page.getByText('Sem camada automática:',{exact:false}).waitFor()
  const cartas=JSON.parse(readFileSync(new URL('../../data/manchas/blumenau/index.json',import.meta.url),'utf8'))
  for (const c of cartas.camadas) {

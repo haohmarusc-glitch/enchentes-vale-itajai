@@ -202,6 +202,11 @@ Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em c
 
 ### Versão 2 das telas — REGRAS (decisões D1–D7 de 03/10/2026)
 - **O Monitor não muda.** `/monitor*` e `/municipal/ascurra*` mantêm a casca antiga (`cascaAntiga` em `App.tsx`, opção ③ da D2): o mapa soma à mão a altura dessa casca (`calc(100vh - 8.5rem)`). `testes-navegador/trava-monitor.mjs` compara a geometria do mapa com `baseline-monitor.json`, e a CI reprova PR que altere arquivos do Monitor sem o rótulo `monitor-autorizado`. Refazer o baseline é decisão do Jefferson.
+  - **Exceção autorizada (07/10/2026): o redesenho do Monitor no celular**, em três etapas e PRs separados com o
+    rótulo `monitor-autorizado` — `docs/REDESENHO-MONITOR-MOBILE-2026-10-07.md`. A casca antiga continua nas rotas
+    do Monitor, mas em ≤ 700 px ela é compacta (faixa do 199 numa linha, cabeçalho com menu ☰ no lugar das abas) e o
+    mapa mede `calc(100dvh - 5.875rem)`; no computador nada da casca muda. O baseline da trava é regravado em cada
+    etapa, com a data no commit. **Nenhuma etapa é mergeada nem vai para produção sem o Jefferson dizer.**
 - **D1 — aviso:** a regra de "toda tela traz o aviso" continua. A faixa presa no topo diz *"Emergência: 199 · não substitui a Defesa Civil"*; o texto completo (`AvisoLegal`) abre numa folha na primeira visita (sai só com "Entendi"; volta se o aparelho não lembrar) e fica no fim de toda página.
 - **D3:** a "marca antiga mais próxima acima" (`PainelCenarioAnterior`) fica só na aba Histórico — perto do nível de agora, soaria previsão.
 - **D4:** o texto do WhatsApp não leva endereço do site (está atrás do Cloudflare Access); só monta com leitura que não é velha, com a hora da medição, sem ordem de ação.
