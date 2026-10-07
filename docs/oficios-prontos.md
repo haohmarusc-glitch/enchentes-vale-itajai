@@ -673,7 +673,7 @@ Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 0
 
 ---
 
-## C32 — Defesa Civil de Rio dos Cedros: confirmação das cotas na DCSC-00011 — 📝 RASCUNHO, não enviado (07/10/2026)
+## C32 — Defesa Civil de Rio dos Cedros: confirmação das cotas na DCSC-00011 — 📝 RASCUNHO no Gmail, não enviado (07/10/2026; rascunho `r3697923724363143209`, resposta na conversa do C29)
 
 **Origem.** Decisão do Jefferson de 07/10/2026: Rio dos Cedros fica **sem classificação municipal** até a COMPDEC
 confirmar as cotas, sem exceção (`docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`, "Piloto ampliado").
