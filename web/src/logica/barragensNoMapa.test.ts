@@ -106,3 +106,70 @@ test('funciona com um Map (como o hook devolve) e com N barragens, não só duas
   ])
   assert.equal(barragensNoMapa(tres.values(), AGORA, 'bacia').length, 3)
 })
+
+// --- Painel do toque e armazenamento (07/10/2026) -------------------------------------------------------------
+
+import { fichaDaBarragem, ROTULO_PERCENTUAL, textoPercentual } from './barragensNoMapa'
+import { montarBarragens } from '../dados/barragens'
+
+/** O corpo publicado às 19h38 de 07/10/2026 (Oeste), pelo mesmo leitor do site. */
+const OESTE_PUBLICADA = montarBarragens({
+  _meta: { fonte: ['https://public.asthon.com.br/public/dams?city_id=4214805'] },
+  barragens: [{
+    nome: 'Barragem Oeste Taió', rio: 'Itajaí do Oeste', lat: -27.0974, lon: -50.0388, medido_em: '2026-10-07T19:38:10',
+    altitude_montante_m: 347.97, nivel_na_regua_da_barragem_m: 8.97, zero_da_regua_m: 339.0, jusante_m: 5.14,
+    percent_use: 4.4937, percent_use_divergencia_pp: 0.0, capacidade_atual: 4.4919, capacidade_maxima: 99.96,
+    comportas_abertas: 7, comportas_total: 7, comportas: Array.from({ length: 7 }, (_, i) => ({ nome: `C${i + 1}`, aberta: true })),
+    vertido_bruto: 0,
+  }],
+}).get('Barragem Oeste Taió')!
+
+const linha = (f: ReturnType<typeof fichaDaBarragem>, rotulo: string) => f.linhas.find((l) => l.rotulo === rotulo)!
+
+test('o painel mostra o que a fonte publica e "não informado" no resto — nunca zero', () => {
+  const [b] = barragensNoMapa([OESTE_PUBLICADA], new Date('2026-10-07T19:50:00-03:00'), 'bacia')
+  const f = fichaDaBarragem(b!)
+  assert.match(f.situacao, /há 12 min/)
+  assert.equal(linha(f, 'Comportas').valor, '7 de 7 abertas')
+  assert.equal(ROTULO_PERCENTUAL, 'Percentual de ocupação informado pela fonte')
+  assert.equal(linha(f, ROTULO_PERCENTUAL).valor, '4,5 %')
+  assert.equal(linha(f, 'Nível na régua da barragem').valor, '8,97 m')
+  assert.match(linha(f, 'Nível na régua da barragem').nota!, /339 m de altitude/)
+  assert.match(linha(f, 'Nível na régua da barragem').nota!, /Não se compara com régua de rio/)
+  assert.match(linha(f, 'Capacidade atual / máxima').nota!, /Unidade não informada/)
+  assert.doesNotMatch(JSON.stringify(f), /m³|hm³|volume útil/, 'unidade ou nome presumido')
+  assert.match(linha(f, ROTULO_PERCENTUAL).nota!, /capacidade atual dividida pela máxima/)
+  assert.equal(linha(f, 'Vazão de entrada e de saída').valor, 'Não publicadas', 'vazão não publicada virou número')
+  assert.equal(linha(f, 'Nível a jusante').valor, 'Sem referência da medição', 'jusante sem referência virou número')
+  assert.doesNotMatch(JSON.stringify(f), /5,14/, 'o número a jusante vazou')
+  assert.match(linha(f, 'Nível a jusante').nota!, /não é usado para classificar/)
+  assert.match(linha(f, 'Medido em').valor!, /07\/10\/2026.*19:38.*Brasília/)
+  assert.match(linha(f, 'Fonte').valor!, /asthon/)
+})
+
+test('leitura antiga é dita como tal no painel', () => {
+  const [b] = barragensNoMapa([OESTE_PUBLICADA], new Date('2026-10-07T23:00:00-03:00'), 'bacia')
+  assert.equal(b!.fresca, false)
+  assert.match(fichaDaBarragem(b!).situacao, /Leitura antiga.*pode ter mudado/)
+})
+
+test('campo ausente é "não informado"; percentual implausível diz o que veio', () => {
+  const crua = montarBarragens({ barragens: [{ nome: 'Y', lat: -27.1, lon: -50, comportas_abertas: 0, comportas_total: 3, percent_use: 812 }] }).get('Y')!
+  const [b] = barragensNoMapa([crua], new Date(), 'bacia')
+  const f = fichaDaBarragem(b!)
+  assert.equal(f.situacao, 'Leitura sem horário: estado não confirmado.')
+  assert.equal(linha(f, ROTULO_PERCENTUAL).valor, null)
+  assert.match(linha(f, ROTULO_PERCENTUAL).nota!, /812 %, valor implausível/)
+  assert.equal(linha(f, 'Nível na régua da barragem').valor, null)
+  assert.equal(linha(f, 'Capacidade atual / máxima').valor, null)
+  assert.equal(linha(f, 'Fonte').valor, null)
+})
+
+test('acima de 100 %: o valor real e o aviso de que passa da capacidade máxima publicada', () => {
+  const crua = montarBarragens({ barragens: [{ nome: 'Z', lat: -27.1, lon: -50, comportas_abertas: 1, comportas_total: 3, percent_use: 104.2 }] }).get('Z')!
+  const [b] = barragensNoMapa([crua], new Date(), 'bacia')
+  const p = linha(fichaDaBarragem(b!), ROTULO_PERCENTUAL)
+  assert.equal(p.valor, '104 %')
+  assert.match(p.nota!, /acima da capacidade máxima publicada/)
+  assert.equal(textoPercentual(4.49), '4,5 %')
+})

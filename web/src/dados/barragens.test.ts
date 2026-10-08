@@ -64,11 +64,13 @@ test('o corpo real vira as duas barragens', () => {
  * dela atravessar para a tela, alguém o compara com os 5,24 m de Rio do Sul —
  * o erro central deste projeto, em forma de dois números lado a lado.
  */
-test('o nível da barragem em metros NÃO atravessa para a tela', () => {
+test('sem a referência da régua (zero), o nível da barragem NÃO atravessa para a tela', () => {
+  // Até 07/10/2026 o nível nunca atravessava. O pedido "Monitor: Ituporanga e barragens" (seção 2) passou a
+  // mostrar o nível NO PAINEL, sempre com a referência própria da barragem. Este corpo de 05/09 não traz o
+  // `zero_da_regua_m`: sem ele não se sabe a que zero o número se refere, e nada atravessa.
   const oeste = montarBarragens(CORPO).get('Barragem Oeste Taió')!
-  const chaves = Object.keys(oeste)
-  assert.ok(!chaves.some((k) => /nivel|altitude|montante/i.test(k)),
-    `campo de nível vazou para a tela: ${chaves.join(', ')}`)
+  assert.equal(oeste.nivelReguaM, null)
+  assert.equal(oeste.altitudeM, null)
   assert.ok(!JSON.stringify(oeste).includes('353.66'))
   assert.ok(!JSON.stringify(oeste).includes('14.66'))
 })
@@ -108,11 +110,41 @@ test('sem saber o total, "N de M" não significa nada e a barragem some', () => 
     0)
 })
 
-test('percent_use fora de 0..100 vira null em vez de número absurdo', () => {
+test('percent_use implausível (acima de 200) vira null, com o valor publicado guardado para a tela', () => {
   const corpo = {
     barragens: [{ nome: 'X', comportas_abertas: 1, comportas_total: 2, percent_use: 812 }],
   }
-  assert.equal(montarBarragens(corpo).get('X')!.percentUso, null)
+  const x = montarBarragens(corpo).get('X')!
+  assert.equal(x.percentUso, null)
+  assert.equal(x.percentPublicado, 812)
+})
+
+test('acima de 100 % não é cortado em silêncio: sai o valor real (07/10/2026)', () => {
+  const corpo = { barragens: [{ nome: 'X', comportas_abertas: 1, comportas_total: 2, percent_use: 104.2 }] }
+  assert.equal(montarBarragens(corpo).get('X')!.percentUso, 104.2)
+})
+
+test('o nível da barragem só sai com a referência coerente (régua = altitude − zero)', () => {
+  const base = { nome: 'X', comportas_abertas: 1, comportas_total: 2 }
+  const ok = montarBarragens({ barragens: [{ ...base, nivel_na_regua_da_barragem_m: 8.97, zero_da_regua_m: 339, altitude_montante_m: 347.97 }] }).get('X')!
+  assert.equal(ok.nivelReguaM, 8.97)
+  assert.equal(ok.zeroReguaM, 339)
+  const incoerente = montarBarragens({ barragens: [{ ...base, nivel_na_regua_da_barragem_m: 8.97, zero_da_regua_m: 339, altitude_montante_m: 350 }] }).get('X')!
+  assert.equal(incoerente.nivelReguaM, null)
+  const semZero = montarBarragens({ barragens: [{ ...base, nivel_na_regua_da_barragem_m: 8.97, altitude_montante_m: 347.97 }] }).get('X')!
+  assert.equal(semZero.nivelReguaM, null, 'nível sem referência saiu')
+})
+
+test('capacidade e fonte saem como a fonte publica', () => {
+  const corpo = {
+    _meta: { fonte: ['https://public.asthon.com.br/public/dams?city_id=4214805'] },
+    barragens: [{ nome: 'X', comportas_abertas: 1, comportas_total: 2, capacidade_atual: 4.49, capacidade_maxima: 99.96, percent_use_divergencia_pp: -0.0447 }],
+  }
+  const x = montarBarragens(corpo).get('X')!
+  assert.equal(x.capacidadeAtual, 4.49)
+  assert.equal(x.capacidadeMaxima, 99.96)
+  assert.equal(x.percentDivergenciaPp, -0.0447)
+  assert.match(x.fonte!, /asthon/)
 })
 
 test('corpo quebrado vira mapa vazio, nunca palpite', () => {

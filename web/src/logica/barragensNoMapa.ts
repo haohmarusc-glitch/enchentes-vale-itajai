@@ -23,7 +23,8 @@
  *    pior que não desenhar.
  */
 import type { Barragem } from '../dados/barragens'
-import { idadeMin } from './tempoReal'
+import { metros, numero } from './formato'
+import { idadeMin, textoIdade } from './tempoReal'
 
 /** Minutos sem leitura nova a partir dos quais a comporta deixa de animar. */
 export const FRESCA_MIN = 60
@@ -46,6 +47,17 @@ export type BarragemNoMapa = {
   fresca: boolean
   /** Idade em minutos, para o rótulo. `null` sem carimbo. */
   idadeMin: number | null
+  /** O resto do que a fonte publica, para o painel do toque (07/10/2026). Ausente = não informado. */
+  rio?: string | null
+  medidoEm?: Date | null
+  percentPublicado?: number | null
+  percentDivergenciaPp?: number | null
+  capacidadeAtual?: number | null
+  capacidadeMaxima?: number | null
+  nivelReguaM?: number | null
+  zeroReguaM?: number | null
+  altitudeM?: number | null
+  fonte?: string | null
 }
 
 /**
@@ -73,6 +85,16 @@ export function barragensNoMapa(
       // Sem carimbo não é "fresca por padrão": é não sei, e não sei não anima.
       fresca: idade !== null && idade >= 0 && idade <= FRESCA_MIN,
       idadeMin: idade,
+      rio: b.rio,
+      medidoEm: b.medidoEm,
+      percentPublicado: b.percentPublicado ?? null,
+      percentDivergenciaPp: b.percentDivergenciaPp ?? null,
+      capacidadeAtual: b.capacidadeAtual ?? null,
+      capacidadeMaxima: b.capacidadeMaxima ?? null,
+      nivelReguaM: b.nivelReguaM ?? null,
+      zeroReguaM: b.zeroReguaM ?? null,
+      altitudeM: b.altitudeM ?? null,
+      fonte: b.fonte ?? null,
     })
   }
   return saida
@@ -119,4 +141,92 @@ export function comportas(
 export function rotuloComportas(b: Pick<BarragemNoMapa, 'abertas' | 'total'>): string {
   if (b.abertas === 0) return `${b.total} de ${b.total} fechadas`
   return `${b.abertas} de ${b.total} abertas`
+}
+
+// --- Armazenamento e painel do toque (07/10/2026, "Monitor: Ituporanga e barragens", seção 2) ---------------
+//
+// O armazenamento NÃO tem faixas operacionais oficiais publicadas para estas barragens: nada de atenção,
+// alerta ou emergência aqui. Sai um indicador QUANTITATIVO, numa escala azul própria, com o número. E ele
+// não pinta o rio a jusante nem muda a correnteza: a cor do rio continua sendo a régua do trecho.
+
+/** As cores da escala de armazenamento (azul): do vazio ao cheio. Fora da paleta de faixa. */
+export const AZUL_VAZIO = 'rgba(70,120,170,0.35)'
+export const AZUL_CHEIO = 'rgb(90,170,240)'
+
+/** Texto do percentual: o valor real, também acima de 100. */
+export function textoPercentual(p: number): string {
+  return `${numero(p, p < 10 ? 1 : 0)} %`
+}
+
+/** Rótulo do percentual: o nome é de ocupação, nunca "volume útil" (a fonte não define o denominador assim). */
+export const ROTULO_PERCENTUAL = 'Percentual de ocupação informado pela fonte'
+
+/** Uma linha do painel da barragem. `valor` null = "não informado". */
+export interface LinhaDaBarragem {
+  rotulo: string
+  valor: string | null
+  nota?: string
+}
+
+const BRASILIA_DATA_HORA = new Intl.DateTimeFormat('pt-BR', {
+  timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit',
+})
+
+/**
+ * O que o painel mostra de uma barragem, linha por linha, com "não informado" no que a fonte não publica.
+ * Nunca preenche com zero nem supõe funcionamento normal. A leitura velha é dita como tal.
+ */
+export function fichaDaBarragem(b: BarragemNoMapa): { situacao: string; linhas: LinhaDaBarragem[] } {
+  const quando = b.medidoEm ? `${BRASILIA_DATA_HORA.format(b.medidoEm)} (Brasília)` : null
+  const situacao = b.idadeMin === null
+    ? 'Leitura sem horário: estado não confirmado.'
+    : b.fresca
+      ? `Leitura de ${textoIdade(b.idadeMin)}.`
+      : `Leitura antiga (${textoIdade(b.idadeMin)}): pode ter mudado desde então.`
+  const nivel: LinhaDaBarragem = b.nivelReguaM != null && b.zeroReguaM != null && b.altitudeM != null
+    ? {
+        rotulo: 'Nível na régua da barragem',
+        valor: metros(b.nivelReguaM),
+        nota: `Régua própria da barragem: o zero fica a ${numero(b.zeroReguaM, 0)} m de altitude, então a água está a ` +
+          `${numero(b.altitudeM, 2)} m acima do nível do mar. Não se compara com régua de rio nem com a outra barragem.`,
+      }
+    : { rotulo: 'Nível na régua da barragem', valor: null, nota: 'Sem a referência da régua coerente na fonte.' }
+  const percentual: LinhaDaBarragem = b.percentUso != null
+    ? {
+        rotulo: ROTULO_PERCENTUAL,
+        valor: textoPercentual(b.percentUso),
+        nota: 'Corresponde à capacidade atual dividida pela máxima, as duas publicadas pela fonte' +
+          (b.percentDivergenciaPp ? ` (diferença de ${numero(Math.abs(b.percentDivergenciaPp), 2)} ponto percentual)` : '') +
+          (b.percentUso > 100 ? '. Acima de 100 %: acima da capacidade máxima publicada.' : '.'),
+      }
+    : {
+        rotulo: ROTULO_PERCENTUAL,
+        valor: null,
+        nota: b.percentPublicado != null ? `A fonte publicou ${numero(b.percentPublicado, 0)} %, valor implausível.` : undefined,
+      }
+  const capacidade: LinhaDaBarragem = b.capacidadeAtual != null && b.capacidadeMaxima != null
+    ? {
+        rotulo: 'Capacidade atual / máxima',
+        valor: `${numero(b.capacidadeAtual, 1)} de ${numero(b.capacidadeMaxima, 1)}`,
+        nota: 'Unidade não informada.',
+      }
+    : { rotulo: 'Capacidade atual / máxima', valor: null }
+  return {
+    situacao,
+    linhas: [
+      { rotulo: 'Comportas', valor: rotuloComportas(b), nota: b.fechadas.length > 0 && b.abertas > 0 ? `fechadas: ${b.fechadas.join(', ')}` : undefined },
+      percentual,
+      nivel,
+      capacidade,
+      // Vazão: a fonte não publica. Nunca zero (o `vertido_bruto` vem 0 com as comportas abertas).
+      { rotulo: 'Vazão de entrada e de saída', valor: 'Não publicadas' },
+      {
+        rotulo: 'Nível a jusante',
+        valor: 'Sem referência da medição',
+        nota: 'A fonte publica um número, mas sem a referência dele. Ele não aparece e não é usado para classificar o rio.',
+      },
+      { rotulo: 'Medido em', valor: quando },
+      { rotulo: 'Fonte', valor: b.fonte ?? null },
+    ],
+  }
 }
