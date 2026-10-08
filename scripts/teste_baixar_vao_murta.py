@@ -127,6 +127,16 @@ class ConferirCadeia(unittest.TestCase):
         self.assertEqual(medidas["vias"][0]["tunnel"], "culvert")
         self.assertIsNone(medidas["vias"][0]["name"])
 
+    def test_bueiro_reto_entre_os_mesmos_nos_passa_apesar_do_arredondamento(self):
+        # O caso da 1ª rodada: via de dois pontos nos nós das pontas, com a sétima casa decimal que `VAOS` não tem.
+        cadeia = [via(556881887, [(-48.7169990, -26.8913440), (-48.7167101, -26.8911139)], tunnel="culvert")]
+        problemas, medidas = bm.conferir_cadeia(V2, cadeia)
+        self.assertEqual(problemas, [])
+        self.assertEqual(medidas["cadeia_m"], 38)
+        # Mas uma via que pare 2 m antes continua sendo medida errada.
+        curta = [via(1, [V2.montante, meio(V2, 0.94)])]
+        self.assertTrue(any("mais curta" in p for p in bm.conferir_cadeia(V2, curta)[0]))
+
     def test_volta_longa_por_outro_curso_e_recusada(self):
         longe = deslocado(V1.montante, -400)
         cadeia = [via(20, [V1.montante, longe]), via(21, [longe, V1.jusante])]

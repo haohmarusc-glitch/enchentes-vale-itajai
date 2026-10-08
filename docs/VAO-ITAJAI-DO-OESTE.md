@@ -37,7 +37,7 @@ o resultado no branch `vao-oeste`.
 ## Como entrou
 
 - O `converter_tracado_rios.py` emenda a via no `data/rios/itajai-acu.geojson` **pelo número**
-  (`EMENDAS_DO_TRONCO`), nunca pelo nome. "Rio Itajaí" não vira nome aceito para outra via.
+  (`EMENDAS`, antes `EMENDAS_DO_TRONCO`), nunca pelo nome. "Rio Itajaí" não vira nome aceito para outra via.
 - Se a via vier com outro nome, a conversão aborta e pede nova conferência.
 - O arquivo registra a emenda em `properties.emendas` e o bruto novo em `properties.origem`.
 - Sem o bruto `data/brutos/vao-oeste-osm.json`, o tronco volta a ser o de antes. Rodar o conversor sem ele

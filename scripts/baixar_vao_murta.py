@@ -86,6 +86,10 @@ TOCA_M = 30.0
 #: Comprimento da cadeia sobre a reta. Travessia de rua é quase reta; acima de 3, a cadeia está dando volta.
 SINUOSIDADE_MAX = 3.0
 
+#: Quanto a cadeia pode ficar aquém da reta por arredondamento das pontas (1ª rodada, 08/10/2026: o bueiro de 38 m
+#: saiu 38,45 m contra uma reta de 38,45 m e foi recusado por 0,3 mm).
+TOLERANCIA_M = 1.0
+
 CONSULTA = """[out:json][timeout:120];
 way["waterway"]({sul},{oeste},{norte},{leste});
 out geom;
@@ -221,8 +225,10 @@ def conferir_cadeia(vao: Vao, cadeia: list[dict]) -> tuple[list[str], dict]:
                   "pontos": len(v["geometry"]), "comprimento_m": round(comprimento_m(v))} for v in cadeia],
     }
     problemas = []
-    if sinuosidade < 1.0:
-        problemas.append(f"{vao.nome}: cadeia de {total:.0f} m é mais curta que a reta de {reta:.0f} m: medida errada")
+    # As pontas de `VAOS` estão arredondadas à sexta casa (~0,1 m): uma via reta entre os mesmos nós sai alguns
+    # centímetros "mais curta" que a reta. Só é medida errada quando falta mais que `TOLERANCIA_M`.
+    if total < reta - TOLERANCIA_M:
+        problemas.append(f"{vao.nome}: cadeia de {total:.1f} m é mais curta que a reta de {reta:.1f} m: medida errada")
     if sinuosidade > SINUOSIDADE_MAX:
         problemas.append(f"{vao.nome}: cadeia de {total:.0f} m é {sinuosidade:.1f} vezes a reta "
                          f"(máximo {SINUOSIDADE_MAX}): volta por outro curso, não é o ribeirão")

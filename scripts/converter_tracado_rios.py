@@ -82,8 +82,27 @@ BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
 #: nome aceito para outra via. Ver docs/VAO-ITAJAI-DO-OESTE.md.
 BRUTO_VAO_OESTE = RAIZ / "data/brutos/vao-oeste-osm.json"
 
-#: Vias que entram no tronco pelo ID, com o nome que têm no OSM (conferido: nome diferente aborta).
-EMENDAS_DO_TRONCO = {"itajai-acu": {1207901475: "Rio Itajaí"}}
+#: Bruto dos VÃOS DA MURTA — os dois bueiros (`tunnel=culvert`, sem nome) que o OSM usa onde o Ribeirão da Murta passa
+#: sob a rua, entre a DC-07 e a foz. A consulta dos ribeirões pedia o curso PELO NOME, e bueiro sem nome não vinha:
+#: o traçado ficava em três pedaços (vãos de 78 m e 38 m, medidos em 08/10/2026), e vínculo de régua só pinta
+#: caminho contínuo. `baixar_vao_murta.py` os achou por CONECTIVIDADE (base OSM de 08/10/2026 16:49 UTC): cada um
+#: começa e termina nos MESMOS nós das vias da Murta (0 m). Entram pelo ID, nunca pelo nome. Ver docs/VAO-MURTA.md.
+BRUTO_VAO_MURTA = RAIZ / "data/brutos/vao-murta-osm.json"
+
+#: Vias que entram num rio pelo ID, com o nome que têm no OSM (conferido: nome diferente aborta; `None` = sem nome).
+EMENDAS = {
+    "itajai-acu": {1207901475: "Rio Itajaí"},
+    "ribeirao-murta": {138922682: None, 556881887: None},
+}
+#: Compatibilidade com quem lia o nome antigo (a emenda do Oeste foi a primeira).
+EMENDAS_DO_TRONCO = EMENDAS
+
+#: Por que cada emenda entra, para `properties.emendas` do arquivo.
+MOTIVO_DA_EMENDA = {
+    "itajai-acu": "liga as duas pontas do Itajaí do Oeste rio abaixo de Taió (docs/VAO-ITAJAI-DO-OESTE.md)",
+    "ribeirao-murta": "bueiro sem nome do OSM que liga duas vias do Ribeirão da Murta entre a DC-07 e a foz "
+                      "(docs/VAO-MURTA.md)",
+}
 
 #: Bruto do RIO HERCÍLIO (Itajaí do Norte), o rio de Ibirama. Baixado por
 #: `baixar_tracado_hercilio.py`, que só grava depois de conferir que o traçado
@@ -358,12 +377,12 @@ def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
 
 def emendas(rio_id: str, elementos: list[dict]) -> list[dict]:
     """
-    As vias de EMENDAS_DO_TRONCO para `rio_id`, achadas pelo ID nos elementos dados.
+    As vias de EMENDAS para `rio_id`, achadas pelo ID nos elementos dados.
 
-    Via ausente não é erro (o bruto da emenda é opcional: sem ele, o tronco fica com a falha, como antes). Via
+    Via ausente não é erro (o bruto da emenda é opcional: sem ele, o rio fica com a falha, como antes). Via
     presente com outro nome aborta: o ID foi conferido com aquele nome, e um OSM que mudou pede nova conferência.
     """
-    esperadas = EMENDAS_DO_TRONCO.get(rio_id) or {}
+    esperadas = EMENDAS.get(rio_id) or {}
     achadas = []
     for e in elementos:
         if e.get("type") != "way" or e.get("id") not in esperadas:
@@ -371,7 +390,7 @@ def emendas(rio_id: str, elementos: list[dict]) -> list[dict]:
         nome = (e.get("tags") or {}).get("name")
         if nome != esperadas[e["id"]]:
             raise SystemExit(f"{rio_id}: a emenda {e['id']} veio com o nome {nome!r}, "
-                             f"não {esperadas[e['id']]!r} — conferir de novo (baixar_vao_oeste.py)")
+                             f"não {esperadas[e['id']]!r} — conferir de novo (baixar_vao_oeste.py / baixar_vao_murta.py)")
         achadas.append(e)
     return achadas
 
@@ -411,11 +430,21 @@ def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]
     if origem := origem_das_ways(usadas):
         feat["properties"]["origem"] = origem
     if extras:
-        feat["properties"]["emendas"] = [
-            {"id": w["id"], "nome_no_osm": (w.get("tags") or {}).get("name"),
-             "motivo": "liga as duas pontas do Itajaí do Oeste rio abaixo de Taió (docs/VAO-ITAJAI-DO-OESTE.md)"}
-            for w in extras]
+        feat["properties"]["emendas"] = registro_das_emendas(rio_id, extras)
     return feat
+
+
+def registro_das_emendas(rio_id: str, vias: list[dict]) -> list[dict]:
+    """`properties.emendas`: cada via emendada, com o nome que tem no OSM e o motivo de entrar."""
+    registros = []
+    for w in vias:
+        tags = w.get("tags") or {}
+        r = {"id": w["id"], "nome_no_osm": tags.get("name")}
+        if tags.get("tunnel"):   # só quando existe: o arquivo do Açu não muda por causa da Murta
+            r["tunnel"] = tags["tunnel"]
+        r["motivo"] = MOTIVO_DA_EMENDA[rio_id]
+        registros.append(r)
+    return registros
 
 
 def linhas_do_geojson_asthon(caminho: pathlib.Path, nome: str) -> list[list[list[float]]]:
@@ -462,11 +491,13 @@ def main() -> int:
             print(f"sem {extra_caminho.name} — {oque} fica de fora "
                   "(ver docs/tracado-ribeiroes.md para baixar na VPS)")
 
-    # As emendas do tronco ficam FORA de `elementos`: entram só pelo ID, nunca pela busca por nome.
+    # As emendas ficam FORA de `elementos`: entram só pelo ID, nunca pela busca por nome.
     vias_emenda: list[dict] = []
-    if BRUTO_VAO_OESTE.exists():
-        vias_emenda = marcar_origem(json.loads(BRUTO_VAO_OESTE.read_text(encoding="utf-8")), BRUTO_VAO_OESTE)
-        print(f"bruto (vão do Oeste): {len(vias_emenda)} via(s) de {BRUTO_VAO_OESTE.name}")
+    for bruto_emenda, oque in ((BRUTO_VAO_OESTE, "vão do Oeste"), (BRUTO_VAO_MURTA, "vãos da Murta")):
+        if bruto_emenda.exists():
+            novas = marcar_origem(json.loads(bruto_emenda.read_text(encoding="utf-8")), bruto_emenda)
+            vias_emenda = vias_emenda + novas
+            print(f"bruto ({oque}): {len(novas)} via(s) de {bruto_emenda.name}")
     extras = {r: emendas(r, vias_emenda) for r in RIOS}
 
     SAIDA.mkdir(parents=True, exist_ok=True)
@@ -507,6 +538,8 @@ def main() -> int:
     for rio_id, chaves in RIOS_AFLUENTES.items():   # afluentes: opcional
         ways = (ways_por_nome_exato(elementos, chaves) if rio_id in NOMES_EXATOS
                 else ways_por_substring(elementos, chaves))
+        emendadas = emendas(rio_id, vias_emenda)   # pelo ID (EMENDAS), nunca pelo nome
+        ways = ways + emendadas
         linhas = [linha_do_way(w) for w in ways]
         if rio_id in CORTE_NORTE:
             linhas = recortar_ao_sul(linhas, CORTE_NORTE[rio_id])
@@ -523,6 +556,8 @@ def main() -> int:
         feat = feature_do_rio(rio_id, linhas)
         if origem := origem_das_ways(ways):
             feat["properties"]["origem"] = origem
+        if emendadas:
+            feat["properties"]["emendas"] = registro_das_emendas(rio_id, emendadas)
         if rio_id in RECORTE_NA_CAIXA:
             feat["properties"]["cobertura"] = (
                 "RECORTADO na caixa do mapa (extensão do tronco e das réguas do cadastro), para não mudar o "
