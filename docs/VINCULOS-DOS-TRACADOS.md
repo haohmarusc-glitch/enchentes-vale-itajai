@@ -62,8 +62,35 @@ Distâncias medidas em 07/10/2026 contra `data/rios/*.geojson`. "Faixa às 19h45
 | Curso | Motivo |
 |---|---|
 | Benedito (Timbó) | A coordenada da régua municipal não está confirmada e a equivalência com a DCSC-00023 também não (decisão de 06/10/2026). O pino de Timbó continua com a faixa estadual da DCSC-00023, mas o rio não. |
-| Ribeirão da Murta (Itajaí) | DC-07 e DC-09 estão sem aviso automático: cota não conferida (DC-07) e régua de estuário (DC-09). |
-| Ribeirão Canhanduba (Itajaí) | DC-08 está sem aviso automático: a cota parece baixa demais. |
+| Ribeirão da Murta (Itajaí) | DC-07 e DC-09 estão sem aviso automático: cota não conferida (DC-07) e régua de estuário (DC-09). O traçado OSM também está partido entre a DC-07 e a foz (68 de 195 vértices alcançáveis, 08/10/2026). |
+| ~~Ribeirão Canhanduba (Itajaí)~~ | ~~DC-08 sem aviso automático~~ — **vinculado por régua em 08/10/2026**, ver abaixo. |
+
+### Cursos vinculados por RÉGUA (08/10/2026)
+
+Decisão do Jefferson, 08/10/2026: "ribeirões com cota devem pintar conforme cota". A DC-08 foi destravada no #520
+(cota de atenção provisória de 1,70 m) e o pino ficou verde ao lado de um curso cinza. `VINCULOS_DE_REGUA` liga o
+traçado à **régua** (não à cidade): a cor do curso é a mesma decisão do pino da régua (`reguasNoMapa`), nada é
+recalculado; régua sem cor (maré, sem cota, leitura velha) deixa o curso cinza com o motivo dela
+(`regua-sem-cor`); na reprodução o curso fica cinza. O curso fica **parado**: correr é outra decisão.
+
+| Curso | Régua | Distância ao traçado | Alcance | Fim | Acima da régua |
+|---|---|---|---|---|---|
+| Ribeirão Canhanduba / `ribeirao-canhanduba` | DC-08 "Rio do Meio" (Itajaí) | 13 m | 6,3 km | o último vértice do traçado OSM rio abaixo, 574 m antes do Mirim (o OSM não desenha a foz) | 11,5 km cinza (`fora-do-alcance`) |
+
+O toque no trecho pintado abre o painel da régua, e o painel diz até onde a cor vale (`textoDoAlcanceDaRegua`) e o
+que ela é: a classificação medida **na régua**, aplicada ao trecho vinculado — não medição em cada ponto do curso nem
+mancha de inundação.
+
+Regras confirmadas pelo Jefferson em 08/10/2026:
+
+- **Os 574 m até o Mirim ficam sem linha e sem cor.** Nada é completado por aproximação; o alcance é só caminho em
+  arestas existentes do traçado.
+- **Reprodução: cinza** enquanto não houver leitura histórica da régua encaixada no instante escolhido e classificação
+  correspondente. Hoje `construirCena` não recebe as réguas na reprodução; o motivo diz isso no toque.
+- **Murta (destravar a DC-07):** além da decisão sobre a cota, é preciso (a) conferir a continuidade do traçado — hoje
+  partido entre a DC-07 e a foz, só 68 de 195 vértices alcançáveis — e (b) delimitar o trecho do vínculo novo (régua
+  → foz no Açu, ou até a DC-09). O teste de `VINCULOS_DE_REGUA` exige caminho contínuo com o km declarado e reprova
+  vínculo sem caminho.
 | Rio Conceição, Ribeirão Taquaras, Rio Rafael e braços | Não há régua cadastrada. |
 
 ### Tronco

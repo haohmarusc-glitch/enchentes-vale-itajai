@@ -171,6 +171,10 @@ export interface Trecho {
    * toque no trecho cinza diz isto no painel. Ausente = a cor (ou o cinza) é a da âncora, como sempre.
    */
   motivoCinza?: MotivoDoTrecho
+  /** O complemento do motivo `regua-sem-cor`: a régua e o porquê dela estar sem cor, como `reguasNoMapa` diz. */
+  motivoDetalhe?: string
+  /** A RÉGUA que pintou este trecho (curso com `reguaVinculada`); o toque abre o painel dela. Sem cidade. */
+  reguaCodigo?: string
 }
 /** Uma cidade âncora, já projetada, para o pino e o toque. */
 export interface Pino {
@@ -267,6 +271,12 @@ export interface RioParaCena {
   arestasAutorizadas?: Set<string>
   /** Sem régua vinculada: o traçado inteiro fica cinza com este motivo (o toque o mostra). */
   semVinculo?: boolean
+  /**
+   * Curso vinculado a uma RÉGUA de cidade, não a uma cidade (`VINCULOS_DE_REGUA`, 08/10/2026): o ribeirão
+   * Canhanduba pela DC-08 de Itajaí. Sem âncora: a faixa das arestas autorizadas é a do pino da régua, que
+   * `construirCena` recebe em `reguas` (só ao vivo). O curso fica parado.
+   */
+  reguaVinculada?: { codigo: string; cidade: string }
 }
 
 /**
@@ -400,6 +410,11 @@ export function construirCena(
    * `faixasDoMotor` (arquivo de outra coleta, outra medição), vale a regra de sempre.
    */
   classificacao?: EstadoClassificacao | null,
+  /**
+   * As réguas individuais com a decisão de cor delas (`reguasNoMapa`), para os cursos com `reguaVinculada`
+   * (08/10/2026). Só AO VIVO: na reprodução a régua não tem faixa histórica, e o curso fica cinza com o motivo.
+   */
+  reguas?: readonly ReguaNoMapa[],
 ): Cena {
   const cores = {} as Record<Faixa, string>
   ;(Object.keys(VAR_FAIXA) as Faixa[]).forEach((f) => (cores[f] = corDaFaixa(el, f)))
@@ -514,6 +529,16 @@ export function construirCena(
     const acimaDaPrimeira = (p: LonLat): boolean =>
       !rio.arestasAutorizadas && espinha.length >= 2 && trechoDoPonto(espinha, p) === 0 &&
       kmAcimaDe(p, espinha[0]!, espinha[1]!) > FOLGA_ACIMA_DA_REGUA_KM
+    // Curso vinculado a uma RÉGUA (ribeirão de Itajaí, 08/10/2026): sem âncora de cidade, a cor das arestas
+    // autorizadas é a decisão do pino da régua — a mesma de `reguasNoMapa`, nada recalculado aqui. Régua sem cor
+    // (maré, sem cota, leitura velha) ou fora do ao vivo (sem `reguas`): cinza, com o motivo dela.
+    const reguaDoCurso = rio.reguaVinculada ? reguas?.find((g) => g.codigo === rio.reguaVinculada!.codigo) ?? null : null
+    const faixaDaRegua: Faixa | null = reguaDoCurso?.faixa ?? null
+    const detalheDaRegua = rio.reguaVinculada
+      ? reguaDoCurso
+        ? `${reguaDoCurso.codigo} (${reguaDoCurso.nome}): ${reguaDoCurso.motivoSemCor ?? 'sem faixa neste instante'}`
+        : `${rio.reguaVinculada.codigo}: sem classificação neste instante (na reprodução a régua não tem faixa histórica)`
+      : undefined
 
     rio.coords.forEach((linha, li) => {
       if (linha.length < 2) return
@@ -538,6 +563,7 @@ export function construirCena(
         if (rio.arestasAutorizadas && !rio.arestasAutorizadas.has(chaveDaAresta(li, invertida ? n - i + 1 : i))) {
           return 'fora-do-alcance'
         }
+        if (rio.reguaVinculada && faixaDaRegua === null) return 'regua-sem-cor'
         if (acimaDaPrimeira(meioDaAresta(i))) return 'acima-da-primeira-regua'
         return undefined
       }
@@ -557,6 +583,7 @@ export function construirCena(
       const faixaAresta = (i: number): Faixa => {
         const p = meioDaAresta(i)
         if (motivoAresta(i)) return 'sem-dado'
+        if (rio.reguaVinculada) return faixaDaRegua ?? 'sem-dado'
         if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) {
           return dc11.faixa ?? 'sem-dado'
         }
@@ -589,8 +616,9 @@ export function construirCena(
         const { cum, total } = acumularPixels(pts)
         trechos.push({
           // Faixa estadual corre como a municipal desde 08/10/2026 (decisão do Jefferson; antes, 14/09/2026, ficava
-          // parada). O que continua parado é o trecho com motivo de cinza e o de direção incerta.
-          animacao: curMotivo ? 'parada'
+          // parada). O que continua parado é o trecho com motivo de cinza, o de direção incerta e o curso pintado
+          // por RÉGUA (ribeirão de Itajaí): pintar pela cota foi a decisão de 08/10/2026; correr é outra.
+          animacao: curMotivo || rio.reguaVinculada ? 'parada'
             : orientada && (rio.rioId === 'itajai-acu' || curCidade !== 'itajai') ? 'direcional' : 'parada',
           pts,
           faixa: cur,
@@ -601,6 +629,8 @@ export function construirCena(
           cidadeId: curCidade,
           rioId: rio.rioId,
           ...(curMotivo ? { motivoCinza: curMotivo } : {}),
+          ...(curMotivo === 'regua-sem-cor' && detalheDaRegua ? { motivoDetalhe: detalheDaRegua } : {}),
+          ...(rio.reguaVinculada && !curMotivo ? { reguaCodigo: rio.reguaVinculada.codigo } : {}),
         })
       }
       for (let i = 1; i < seq.length; i++) {
@@ -1508,8 +1538,8 @@ export function trechoCinzaNoPonto(
   x: number,
   y: number,
   raio: number = RAIO_TRECHO_PX,
-): { rioId: string; motivo: MotivoDoTrecho } | null {
-  let melhor: { rioId: string; motivo: MotivoDoTrecho } | null = null
+): { rioId: string; motivo: MotivoDoTrecho; detalhe?: string } | null {
+  let melhor: { rioId: string; motivo: MotivoDoTrecho; detalhe?: string } | null = null
   let d = raio
   for (const t of trechos) {
     if (!t.motivoCinza) continue
@@ -1517,7 +1547,32 @@ export function trechoCinzaNoPonto(
       const dd = distanciaAoSegmento(x, y, t.pts[i - 1]!, t.pts[i]!)
       if (dd < d) {
         d = dd
-        melhor = { rioId: t.rioId, motivo: t.motivoCinza }
+        melhor = { rioId: t.rioId, motivo: t.motivoCinza, ...(t.motivoDetalhe ? { detalhe: t.motivoDetalhe } : {}) }
+      }
+    }
+  }
+  return melhor
+}
+
+/**
+ * O trecho pintado por uma RÉGUA sob o ponteiro (curso com `reguaVinculada`, 08/10/2026): o toque abre o
+ * painel da régua que decidiu a cor, como tocar no pino dela. `null` fora dele.
+ */
+export function reguaNoTrecho(
+  trechos: readonly Trecho[],
+  x: number,
+  y: number,
+  raio: number = RAIO_TRECHO_PX,
+): { codigo: string; rioId: string } | null {
+  let melhor: { codigo: string; rioId: string } | null = null
+  let d = raio
+  for (const t of trechos) {
+    if (!t.reguaCodigo) continue
+    for (let i = 1; i < t.pts.length; i++) {
+      const dd = distanciaAoSegmento(x, y, t.pts[i - 1]!, t.pts[i]!)
+      if (dd < d) {
+        d = dd
+        melhor = { codigo: t.reguaCodigo, rioId: t.rioId }
       }
     }
   }

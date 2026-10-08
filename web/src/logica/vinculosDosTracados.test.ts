@@ -10,15 +10,20 @@ import { montarNivelSc } from '../dados/nivelSc'
 import type { EstadoTempoReal } from '../dados/tempoReal'
 import type { Cidade } from '../dados/tipos'
 import type { LonLat } from './mapaCanvas'
-import { cidadeNoTrecho, construirCena, trechoCinzaNoPonto, type Cena, type RioParaCena } from './mapaMotor'
+import { cidadeNoTrecho, construirCena, reguaNoTrecho, trechoCinzaNoPonto, type Cena, type RioParaCena } from './mapaMotor'
+import type { ReguaNoMapa } from './reguasNoMapa'
 import {
   SEM_VINCULO,
   VINCULOS,
+  VINCULOS_DE_REGUA,
   arestasDoAlcance,
   kmEntre,
   rioParaCena,
   textoDoAlcance,
+  textoDoAlcanceDaRegua,
   textoDoTrechoCinza,
+  vinculoDaRegua,
+  vinculoDeReguaDoTracado,
   vinculoDoTracado,
 } from './vinculosDosTracados'
 
@@ -53,8 +58,17 @@ function nivelSc(faixas: Record<string, string | null>, medido = '2026-10-07T19:
   })
 }
 
-function cena(rios: RioParaCena[], sc = nivelSc({}), leituraNaHora?: Parameters<typeof construirCena>[7]): Cena {
-  return construirCena(el, rios, semLeitura, AGORA, 1200, 900, null, leituraNaHora, sc)
+function cena(rios: RioParaCena[], sc = nivelSc({}), leituraNaHora?: Parameters<typeof construirCena>[7], reguas?: ReguaNoMapa[]): Cena {
+  return construirCena(el, rios, semLeitura, AGORA, 1200, 900, null, leituraNaHora, sc, undefined, undefined, undefined, reguas)
+}
+
+/** A DC-08 como `reguasNoMapa` a entrega: com a faixa decidida, ou sem cor e com o motivo. */
+function dc08(faixa: ReguaNoMapa['faixa'], motivoSemCor: string | null = null): ReguaNoMapa {
+  return {
+    codigo: 'DC-08', titulo: 'DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni', cidade: 'itajai', nome: 'Rio do Meio',
+    lon: -48.711948, lat: -26.979694, nivel: 1.15, medidoEm: new Date('2026-10-07T19:00:00-03:00'),
+    faixa, motivoSemCor, cotas: { atencao: 1.7, alerta: 2.3, emergencia: 2.89 },
+  }
 }
 const doRio = (c: Cena, id: string) => c.trechos.filter((t) => t.rioId === id)
 const pintados = (c: Cena, id: string) => doRio(c, id).filter((t) => t.faixa !== 'sem-dado')
@@ -165,7 +179,7 @@ test('tronco: a primeira régua não pinta o rio acima dela (Taió no Oeste; Vid
 })
 
 test('ribeirões de Itajaí sem respaldo e cursos sem régua ficam sem classificação, com o motivo', () => {
-  for (const id of ['ribeirao-murta', 'ribeirao-canhanduba', 'rio-conceicao', 'ribeirao-taquaras', 'rio-rafael']) {
+  for (const id of ['ribeirao-murta', 'rio-conceicao', 'ribeirao-taquaras', 'rio-rafael']) {
     const r = rio(id)
     assert.equal(r.semVinculo, true, id)
     assert.equal(r.cidades.length, 0, id)
@@ -195,4 +209,76 @@ test('o painel diz até onde a cor vale', () => {
   assert.match(texto, /39,2 km/)
   assert.match(texto, /Não vale para o rio acima da estação/)
   assert.ok(kmEntre(v.inicio, v.fim) > 20)
+})
+
+/*
+ * Vínculo traçado × RÉGUA (08/10/2026, decisão do Jefferson: "ribeirões com cota devem pintar conforme cota").
+ * O Canhanduba pinta pela DC-08 de Itajaí — a mesma decisão do pino da régua —, só da régua para baixo, e PARADO.
+ */
+test('cada vínculo de régua tem caminho no traçado real, da régua até o fim, com o comprimento declarado', () => {
+  assert.ok(VINCULOS_DE_REGUA.length > 0)
+  for (const v of VINCULOS_DE_REGUA) {
+    const r = arestasDoAlcance(tracado(v.tracado), v.inicio, v.fim)
+    assert.ok(r, `${v.tracado}: sem caminho`)
+    assert.ok(Math.abs(r.km - v.km) < 0.2, `${v.tracado}: ${r.km.toFixed(1)} km × ${v.km} declarados`)
+    assert.ok(!(v.tracado in SEM_VINCULO), `${v.tracado} está em SEM_VINCULO e em VINCULOS_DE_REGUA ao mesmo tempo`)
+    assert.ok(!vinculoDoTracado(v.tracado), `${v.tracado} tem vínculo de cidade e de régua ao mesmo tempo`)
+    assert.ok(cidadesDoRio('itajai-mirim').some((c) => c.id === v.cidade) || cidadesDoRio('itajai-acu').some((c) => c.id === v.cidade))
+  }
+  assert.equal(vinculoDaRegua('DC-08')?.tracado, 'ribeirao-canhanduba')
+  assert.equal(vinculoDeReguaDoTracado('ribeirao-canhanduba')?.regua, 'DC-08')
+  assert.equal(vinculoDaRegua('DC-07'), null, 'a Murta continua sem vínculo: DC-07 sem cota conferida, DC-09 de estuário')
+})
+
+test('o Canhanduba pinta pela DC-08: a cor do pino da régua, da régua para baixo, sem cidade e parado', () => {
+  const r = rio('ribeirao-canhanduba')
+  assert.equal(r.semVinculo, undefined)
+  assert.equal(r.cidades.length, 0, 'o ribeirão não ganhou cidade: a cor vem da régua')
+  assert.deepEqual(r.reguaVinculada, { codigo: 'DC-08', cidade: 'itajai' })
+  const c = cena([r], undefined, undefined, [dc08('atencao')])
+  const cor = pintados(c, 'ribeirao-canhanduba')
+  assert.ok(cor.length > 0, 'o Canhanduba continuou cinza com a DC-08 em atenção')
+  for (const t of cor) {
+    assert.equal(t.faixa, 'atencao')
+    assert.equal(t.cidadeId, null, 'trecho de régua não tem cidade')
+    assert.equal(t.reguaCodigo, 'DC-08')
+    assert.equal(t.animacao, 'parada', 'pintar pela cota não faz o curso correr (decisão à parte)')
+  }
+  const acima = doRio(c, 'ribeirao-canhanduba').filter((t) => t.motivoCinza === 'fora-do-alcance')
+  assert.ok(acima.length > 0, 'o ribeirão acima da régua recebeu a cor')
+  assert.ok(acima.every((t) => t.faixa === 'sem-dado' && !t.reguaCodigo))
+  assert.equal(c.pinos.length, 0, 'régua não vira pino de cidade')
+  // O toque no trecho pintado devolve a régua, não uma cidade.
+  const t = cor[0]!
+  const [x, y] = [(t.pts[0]![0] + t.pts[1]![0]) / 2, (t.pts[0]![1] + t.pts[1]![1]) / 2]
+  assert.equal(reguaNoTrecho(c.trechos, x, y, 2)?.codigo, 'DC-08')
+  assert.equal(cidadeNoTrecho(c.trechos, x, y, 2), null)
+})
+
+test('DC-08 sem cor (leitura velha, maré, sem cota) deixa o Canhanduba cinza com o motivo da régua', () => {
+  const c = cena([rio('ribeirao-canhanduba')], undefined, undefined, [dc08(null, 'leitura velha demais para dizer a faixa')])
+  assert.equal(pintados(c, 'ribeirao-canhanduba').length, 0)
+  const semCor = doRio(c, 'ribeirao-canhanduba').filter((t) => t.motivoCinza === 'regua-sem-cor')
+  assert.ok(semCor.length > 0)
+  assert.ok(semCor.every((t) => t.animacao === 'parada' && !t.reguaCodigo))
+  assert.match(semCor[0]!.motivoDetalhe ?? '', /DC-08 \(Rio do Meio\): leitura velha/)
+  const t = semCor[0]!
+  const achado = trechoCinzaNoPonto(c.trechos, (t.pts[0]![0] + t.pts[1]![0]) / 2, (t.pts[0]![1] + t.pts[1]![1]) / 2, 2)
+  assert.equal(achado?.motivo, 'regua-sem-cor')
+  assert.match(textoDoTrechoCinza('regua-sem-cor', 'ribeirao-canhanduba', achado?.detalhe), /régua DC-08.*sem cor — DC-08 \(Rio do Meio\)/)
+  assert.match(textoDoTrechoCinza('fora-do-alcance', 'ribeirao-canhanduba'), /régua DC-08 representa/)
+})
+
+test('sem as réguas (reprodução), o Canhanduba fica cinza: a régua não tem faixa histórica', () => {
+  const c = cena([rio('ribeirao-canhanduba')])
+  assert.equal(pintados(c, 'ribeirao-canhanduba').length, 0)
+  assert.ok(doRio(c, 'ribeirao-canhanduba').some((t) => t.motivoCinza === 'regua-sem-cor' && /reprodução/.test(t.motivoDetalhe ?? '')))
+})
+
+test('o painel da régua diz até onde a cor dela vale, e que o curso fica parado', () => {
+  const v = vinculoDaRegua('DC-08')!
+  const texto = textoDoAlcanceDaRegua(v, 'Ribeirão Canhanduba')
+  assert.match(texto, /Ribeirão Canhanduba, da régua até o fim do traçado/)
+  assert.match(texto, /6,3 km/)
+  assert.match(texto, /fica parado/)
 })

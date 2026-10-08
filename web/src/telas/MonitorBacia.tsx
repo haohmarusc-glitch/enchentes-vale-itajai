@@ -3,7 +3,7 @@ import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { chuvaMonitor, linhasChuva, linhasChuvaCompactas, mmChuva } from '../logica/chuvaMonitor'
 import { cotaDaFaixa, estadoDaLeitura, LEITURA_VARIAS_REGUAS, textoTendenciaCompacta } from '../logica/painelCompacto'
 import { NOME_TRACADO, contagemDeTracados, opcoesDeTracado, tracadosVisiveis } from '../logica/tracadosDoMapa'
-import { rioParaCena, textoDoAlcance, textoDoTrechoCinza, vinculoDaCidade, type MotivoDoTrecho } from '../logica/vinculosDosTracados'
+import { rioParaCena, textoDoAlcance, textoDoAlcanceDaRegua, textoDoTrechoCinza, vinculoDaCidade, vinculoDaRegua, type MotivoDoTrecho } from '../logica/vinculosDosTracados'
 import { destaqueDaBacia } from '../logica/destaqueDaBacia'
 import { estadoMareAgora } from '../logica/mare'
 import { diaDeBrasilia, horaDeBrasilia, tendenciaDaLeitura } from '../logica/agora'
@@ -80,6 +80,7 @@ import {
   type LeituraNaHora,
   type Pino,
   type RioParaCena,
+  reguaNoTrecho,
   trechoCinzaNoPonto,
 } from '../logica/mapaMotor'
 import { reguasComCota } from '../logica/reguas'
@@ -446,7 +447,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [tam, setTam] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
   const [sel, setSel] = useState<Pino | null>(null)
   /** O trecho cinza tocado, para o painel dizer por que ele não tem cor (07/10/2026). */
-  const [trechoCinza, setTrechoCinza] = useState<{ rioId: string; motivo: MotivoDoTrecho } | null>(null)
+  const [trechoCinza, setTrechoCinza] = useState<{ rioId: string; motivo: MotivoDoTrecho; detalhe?: string } | null>(null)
   const [hover, setHover] = useState<Pino | null>(null)
   /**
    * A régua individual em foco (as onze de Itajaí).
@@ -691,6 +692,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       canvas, tracadosVisiveis(rios, tracadosOcultos), tempoReal, instante, tam.w, tam.h, mareItajai, override, nivelSc, vista,
       municipal || emRepro ? undefined : reguasDoMapa.find(r => r.codigo === 'DC-11'),
       emRepro ? null : classificacao,
+      // Cursos pintados por RÉGUA (o Canhanduba pela DC-08, 08/10/2026): a decisão de cor de cada régua, só ao vivo.
+      municipal || emRepro ? undefined : reguasDoMapa,
     )
     // Maré desligada no menu de camadas: o mar fica neutro e o chip some. O dado continua na tábua.
     if (!mostrarMare) cena.mar = null
@@ -1121,6 +1124,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     // largo: quem mira o pino de Gaspar não pode receber o trecho que passa por
     // baixo dele.
     const pino = pinoNoPonto(ev) ?? pinoDoTrechoNoPonto(ev)
+    // O trecho pintado por uma RÉGUA (o Canhanduba pela DC-08) abre o painel da régua, como o toque no pino dela.
+    const trechoDeRegua = !pino && cena && r ? reguaNoTrecho(cena.trechos, ev.clientX - r.left, ev.clientY - r.top) : null
+    if (trechoDeRegua) {
+      setReguaSel(trechoDeRegua.codigo)
+      setSel(null)
+      setTrechoCinza(null)
+      return
+    }
     setSel(pino)
     // Por último, o trecho CINZA com motivo: o toque explica o cinza em vez de não fazer nada.
     if (!pino && cena && r) {
@@ -2223,6 +2234,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   <p className={estilos.painelRessalva}>{g.motivoSemCor}</p>
                 </div>
               ) : null}
+              {/* Régua que pinta um curso (o Canhanduba pela DC-08, 08/10/2026): até onde a cor dela vale. */}
+              {(() => {
+                const v = vinculoDaRegua(g.codigo)
+                return v ? <p className={estilos.painelRessalva}>{textoDoAlcanceDaRegua(v, NOME_TRACADO[v.tracado] ?? v.tracado)}</p> : null
+              })()}
               <p className={estilos.painelRessalva}>
                 Cada régua tem o zero dela: <strong>estes metros não se comparam</strong>{' '}
                 com os de outra régua nem com a cota da cidade.
@@ -2287,7 +2303,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               </button>
             </div>
             <p>Sem classificação neste trecho.</p>
-            <p className={estilos.painelRessalva}>{textoDoTrechoCinza(trechoCinza.motivo, trechoCinza.rioId)}</p>
+            <p className={estilos.painelRessalva}>{textoDoTrechoCinza(trechoCinza.motivo, trechoCinza.rioId, trechoCinza.detalhe)}</p>
           </div>
         ) : null}
 

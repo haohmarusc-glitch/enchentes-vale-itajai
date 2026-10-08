@@ -27,6 +27,12 @@
  * Se o `medir_mare.py` um dia destravar uma delas, o caminho (2) cai. Este
  * arquivo existe para que isso apareça como um teste vermelho — uma pergunta a
  * responder — em vez de o mapa começar a correr sozinho.
+ *
+ * 08/10/2026 — a pergunta foi respondida para a DC-08, em duas decisões separadas do Jefferson: a régua foi
+ * destravada (#520) e "ribeirões com cota devem pintar conforme cota". O Canhanduba passou a PINTAR pela DC-08,
+ * por vínculo de RÉGUA (`VINCULOS_DE_REGUA`, não por cidade), e continua PARADO: `construirCena` força
+ * `animacao: 'parada'` em curso com `reguaVinculada` (`vinculosDosTracados.test.ts` trava). O caminho (1) segue
+ * valendo — nenhum afluente tem cidade —, e correr continua sendo outra decisão.
  */
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -86,10 +92,10 @@ test('nenhum afluente tem cidade no cadastro — é o que o mantém sem faixa', 
 })
 
 /**
- * Réguas de ribeirão destravadas por decisão, com o curso mantido cinza e PARADO. A decisão de 08/10/2026
- * (proposta, aguardando aprovação; docs/AVISOS-DC05-DC08-DC11-2026-10-08.md): a DC-08 não sente a maré e só
- * passou da cota em cheia, então avisa e o PINO ganha cor. O curso do Canhanduba continua sem cidade (o caminho
- * 1, acima), portanto cinza e sem correnteza. Fazer o curso correr é outra decisão.
+ * Réguas de ribeirão destravadas por decisão, com o curso PARADO. A DC-08 (08/10/2026, #520) não sente a maré
+ * e só passou da cota em cheia, então avisa e o pino ganha cor; desde a decisão do mesmo dia ("ribeirões com
+ * cota devem pintar conforme cota"), o curso do Canhanduba PINTA pela régua, por `VINCULOS_DE_REGUA`, sem
+ * cidade (o caminho 1, acima) e sem correnteza. Fazer o curso correr é outra decisão.
  */
 const DESTRAVADAS_SEM_CORRER = new Set(['DC-08'])
 
@@ -109,7 +115,7 @@ test('as réguas dos afluentes continuam travadas pela maré', () => {
   }
 })
 
-test('a DC-08 destravada não faz o Canhanduba correr: o curso segue sem cidade', () => {
+test('a DC-08 destravada não faz o Canhanduba correr: o curso segue sem cidade (pinta por régua, parado)', () => {
   const dc08 = estacoes.estacoes_tempo_real.find((e) => e.codigo === 'DC-08')
   assert.ok(dc08 && dc08.alerta_automatico !== false, 'a DC-08 voltou a ser travada: tire-a de DESTRAVADAS_SEM_CORRER')
   assert.equal(dc08.rio, 'ribeirao-canhanduba')

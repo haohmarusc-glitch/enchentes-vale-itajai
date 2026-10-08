@@ -111,6 +111,61 @@ export const VINCULOS: readonly VinculoDeTracado[] = [
   },
 ]
 
+/**
+ * Vínculo traçado × RÉGUA de uma cidade (decisão do Jefferson, 08/10/2026: "ribeirões com cota devem pintar
+ * conforme cota"). Itajaí tem onze réguas com coordenada própria, e as de ribeirão (Murta, Canhanduba) não são
+ * a régua da cidade — `VINCULOS` só sabe cidade, e o Canhanduba ficava cinza ao lado do pino verde da DC-08.
+ *
+ * A cor do curso é a MESMA decisão do pino da régua (`reguasNoMapa`: cota de acionamento, leitura fresca, sem
+ * maré): este módulo continua sem calcular faixa. Régua sem cor (maré, sem cota, leitura velha) deixa o curso
+ * cinza com o motivo dela. O curso fica PARADO: correnteza animada é outra decisão (`afluenteNaoCorre.test.ts`).
+ * O alcance segue a regra de sempre: da régua até a foz (ou o fim do traçado), nunca o ribeirão acima dela.
+ */
+export interface VinculoDeRegua {
+  /** O traçado (`data/rios/<id>.geojson`). */
+  tracado: string
+  /** A cidade dona da régua (o painel e o enquadramento). */
+  cidade: string
+  /** O código da régua no cadastro (`estacoes_tempo_real[].codigo`) — o mesmo de `ReguaNoMapa.codigo`. */
+  regua: string
+  /** Onde a régua está ([lon, lat]): o começo do alcance. */
+  inicio: LonLat
+  /** O fim do alcance ([lon, lat]). */
+  fim: LonLat
+  /** O que é o fim, como a pessoa lê. */
+  fimDescricao: string
+  /** O comprimento medido do alcance no traçado, para o texto e o teste. */
+  km: number
+  /** De onde vêm o vínculo e os dois pontos. */
+  fonte: string
+}
+
+export const VINCULOS_DE_REGUA: readonly VinculoDeRegua[] = [
+  {
+    tracado: 'ribeirao-canhanduba',
+    cidade: 'itajai',
+    regua: 'DC-08',
+    inicio: [-48.711948, -26.979694],
+    fim: [-48.694898, -26.939465],
+    fimDescricao: 'o fim do traçado do ribeirão, 0,6 km antes do Itajaí-Mirim',
+    km: 6.3,
+    fonte: 'DC-08 "Ribeirão da Canhanduba - Rio do Meio": coordenada do cadastro (portal da Defesa Civil de Itajaí), ' +
+      'a 13 m do traçado; cota de atenção provisória de 1,70 m (#520, 08/10/2026). Fim: o último vértice do ' +
+      'traçado OSM rio abaixo, medido em 08/10/2026 (o traçado pára 574 m antes do Mirim; esses 574 m ficam sem ' +
+      'linha e sem cor — nada é completado por aproximação, decisão do Jefferson de 08/10/2026). Os 11,5 km acima ' +
+      'da régua ficam cinza: a régua não mede o que corre acima dela.',
+  },
+]
+
+export function vinculoDeReguaDoTracado(tracado: string): VinculoDeRegua | null {
+  return VINCULOS_DE_REGUA.find((v) => v.tracado === tracado) ?? null
+}
+
+/** O vínculo em que esta régua colore um curso (para o painel da régua dizer até onde vale). */
+export function vinculoDaRegua(codigo: string): VinculoDeRegua | null {
+  return VINCULOS_DE_REGUA.find((v) => v.regua === codigo) ?? null
+}
+
 /** Traçados que ficam sem cor, com o porquê. Mostrado no painel quando a pessoa toca no trecho cinza. */
 export const SEM_VINCULO: Readonly<Record<string, string>> = {
   benedito:
@@ -126,10 +181,7 @@ export const SEM_VINCULO: Readonly<Record<string, string>> = {
   'ribeirao-murta':
     'As réguas de Itajaí neste ribeirão (DC-07 e DC-09) estão sem aviso automático: cota ainda não conferida ' +
     'contra a série (DC-07) e régua de estuário com oscilação de maré (DC-09). Sem respaldo, não colorem o ' +
-    'ribeirão.',
-  'ribeirao-canhanduba':
-    'A régua de Itajaí neste ribeirão (DC-08) está sem aviso automático: a cota parece baixa demais e precisa ' +
-    'ser conferida com a COMPDEC. Sem respaldo, não colore o ribeirão.',
+    'ribeirão. (O traçado OSM da Murta também está partido entre a DC-07 e a foz; medido em 08/10/2026.)',
 }
 
 export function vinculoDoTracado(tracado: string): VinculoDeTracado | null {
@@ -235,20 +287,43 @@ export function textoDoAlcance(v: VinculoDeTracado, nomeDoCurso: string): string
     `${v.fimDescricao} (${km} km). Não vale para o rio acima da estação nem para o rio que recebe a água.`
 }
 
-/** Por que um trecho ficou cinza mesmo com cor no pino da cidade. */
-export type MotivoDoTrecho = 'sem-vinculo' | 'fora-do-alcance' | 'acima-da-primeira-regua'
+/** "No mapa, a cor desta régua vale só …": o limite da representação, dito no painel da RÉGUA (08/10/2026). */
+export function textoDoAlcanceDaRegua(v: VinculoDeRegua, nomeDoCurso: string): string {
+  const km = v.km.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+  return `No mapa, a cor desta régua vale só para o ${nomeDoCurso}, da régua até ${v.fimDescricao} (${km} km). ` +
+    'É a classificação medida NA RÉGUA, aplicada ao trecho vinculado: não é medição em cada ponto do curso nem ' +
+    'mancha de inundação. O curso fica parado (a correnteza animada é outra decisão). Não vale para o ribeirão ' +
+    'acima da régua nem para o rio que recebe a água.'
+}
 
-export function textoDoTrechoCinza(motivo: MotivoDoTrecho, tracado: string): string {
+/**
+ * Por que um trecho ficou cinza mesmo com cor no pino da cidade. `regua-sem-cor` (08/10/2026): o curso tem
+ * régua vinculada, mas a régua está sem cor agora (maré, sem cota, sem leitura, leitura velha, reprodução).
+ */
+export type MotivoDoTrecho = 'sem-vinculo' | 'fora-do-alcance' | 'acima-da-primeira-regua' | 'regua-sem-cor'
+
+export function textoDoTrechoCinza(motivo: MotivoDoTrecho, tracado: string, detalhe?: string): string {
   if (motivo === 'sem-vinculo') return motivoSemVinculo(tracado)
   if (motivo === 'acima-da-primeira-regua') {
     return 'Este trecho fica rio acima da primeira régua do rio. A régua mede o rio a partir dela; ' +
       'o que corre acima não tem medição no mapa.'
   }
+  if (motivo === 'regua-sem-cor') {
+    const vr = vinculoDeReguaDoTracado(tracado)
+    const quem = vr ? `a régua ${vr.regua}` : 'a régua vinculada'
+    return `A cor deste curso é a de ${quem}, que agora está sem cor${detalhe ? ` — ${detalhe}` : '.'}`
+  }
   const v = vinculoDoTracado(tracado)
-  return v
-    ? `Fora do trecho que a régua ${v.estacao} representa (da estação até ${v.fimDescricao}). Sem medição ` +
+  if (v) {
+    return `Fora do trecho que a régua ${v.estacao} representa (da estação até ${v.fimDescricao}). Sem medição ` +
       'aqui, o trecho fica sem cor.'
-    : motivoSemVinculo(tracado)
+  }
+  const vr = vinculoDeReguaDoTracado(tracado)
+  if (vr) {
+    return `Fora do trecho que a régua ${vr.regua} representa (da régua até ${vr.fimDescricao}). Sem medição ` +
+      'aqui, o trecho fica sem cor.'
+  }
+  return motivoSemVinculo(tracado)
 }
 
 /**
@@ -280,6 +355,8 @@ export function kmAcimaDe(p: LonLat, a: LonLat, b: LonLat): number {
  * Um traçado baixado → o que o motor desenha. É a montagem do Monitor, aqui para o teste usar a MESMA:
  *  - tronco: as cidades do cadastro pela espinha, com o eixo, como sempre;
  *  - fora do tronco, com vínculo e caminho: só a cidade do vínculo, no grupo dela, e só as arestas do alcance;
+ *  - fora do tronco com vínculo de RÉGUA (08/10/2026): sem cidade; a cor é a do pino da régua, nas arestas do
+ *    alcance, e o motor a lê em `reguaVinculada`;
  *  - fora do tronco sem vínculo, ou sem caminho (desconectado, estação longe): cinza, `semVinculo`.
  */
 export function rioParaCena(
@@ -302,6 +379,18 @@ export function rioParaCena(
       grupo: v.grupo,
       eixo: [cidade.id],
       arestasAutorizadas: alcance.arestas,
+    }
+  }
+  const vr = vinculoDeReguaDoTracado(b.rioId)
+  const alcanceDaRegua = vr ? arestasDoAlcance(b.coords, vr.inicio, vr.fim) : null
+  if (vr && alcanceDaRegua) {
+    return {
+      rioId: b.rioId,
+      coords: b.coords,
+      cidades: [],
+      eixo: [],
+      reguaVinculada: { codigo: vr.regua, cidade: vr.cidade },
+      arestasAutorizadas: alcanceDaRegua.arestas,
     }
   }
   return { rioId: b.rioId, coords: b.coords, cidades: [], semVinculo: true }
