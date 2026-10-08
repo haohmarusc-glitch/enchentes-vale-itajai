@@ -1229,8 +1229,9 @@
 }
 
 .amostraTracejada {
-  background: transparent !important;
-  border: 2px dashed rgba(234, 241, 248, 0.85);
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 2px dotted rgba(234, 241, 248, 0.85);
+  border-radius: 50%;
   box-shadow: none;
 }
 

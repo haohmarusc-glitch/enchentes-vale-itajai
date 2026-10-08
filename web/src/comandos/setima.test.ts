@@ -128,7 +128,7 @@ test('legenda: os textos de faixas.json e da legenda do Monitor; cor é faixa, n
   assert.match(textoLegenda('ondas'), /velocidade visual constante\. Não representam a velocidade da água/)
   assert.match(textoLegenda('violeta'), /zero próprio[^]*não vira faixa/)
   const todas = textoLegenda('cores')
-  for (const c of ['Verde —', 'Verde-claro —', 'Amarelo —', 'Laranja —', 'Vermelho — Inundação / Emergência', 'Cinza —', 'tracejado', 'Violeta']) assert.ok(todas.includes(c), c)
+  for (const c of ['Verde —', 'Verde-claro —', 'Amarelo —', 'Laranja —', 'Vermelho — Inundação / Emergência', 'Cinza —', 'Pino pontilhado', 'Violeta']) assert.ok(todas.includes(c), c)
   assert.match(todas, /não é alerta oficial[^]*199/)
 })
 

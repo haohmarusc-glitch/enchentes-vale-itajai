@@ -158,7 +158,7 @@ const TEXTOS: Record<Exclude<TemaDaLegenda, 'cores'>, string> = {
   varias: `${F.varias!.rotulo}: ${F.varias!.acao} Itajaí tem onze réguas, cada uma com o seu zero; nenhuma cor sozinha vale para a cidade.`,
   azul: 'Azul no mapa tem três sentidos, nenhum deles é faixa de cheia: o mar na foz, colorido pela maré (escala própria); a chuva recente, em mm, nos pluviômetros; e o pino de Itajaí, que tem várias réguas.',
   violeta: 'Violeta é o nível bruto da rede estadual (Defesa Civil de SC), com zero próprio: aparece quando não há fonte municipal e não vira faixa nem se compara com as cotas da cidade.',
-  tracejado: 'Trecho tracejado é a faixa estadual: a classificação da própria Defesa Civil de SC, na régua da estação, só onde não há leitura municipal de agora. Não é cota deste site.',
+  tracejado: 'Pino pontilhado, de miolo claro, é a faixa estadual: a classificação da própria Defesa Civil de SC, na régua da estação, só onde não há leitura municipal de agora. O rio leva a mesma cor, em traço contínuo, e o rótulo diz "faixa estadual". Não é cota deste site.',
   ondas: 'As ondas indicam apenas o sentido ilustrativo do curso, rumo à foz, com velocidade visual constante. Não representam a velocidade da água, a corrente real (que varia com a maré) nem a chegada da cheia; cinza em movimento não indica nível nem segurança. Peça "pausar as animações" para parar.',
   seta: 'A seta aparece onde os pinos se amontoam: o nome ficou afastado por falta de espaço, e a ponta indica a cidade dele.',
   regua_mare: 'Régua sem faixa (anel sem cor) é régua de estuário em Itajaí: mostra o número, mas não ganha cor, porque a maré cruza a cota sem enchente e uma cor que acende com a maré ensinaria a ignorar a cor.',

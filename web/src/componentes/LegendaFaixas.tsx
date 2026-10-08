@@ -65,7 +65,7 @@ export default function LegendaFaixas() {
           <span>
             <strong>Faixa estadual</strong>
             <span className={estilos.acao}>
-              {' '}— trecho tracejado: a cor é a classificação da Defesa Civil de SC para a
+              {' '}— pino pontilhado: a cor é a classificação da Defesa Civil de SC para a
               estação da cidade, na régua dela. Não é cota deste projeto e não aciona aviso.
             </span>
           </span>

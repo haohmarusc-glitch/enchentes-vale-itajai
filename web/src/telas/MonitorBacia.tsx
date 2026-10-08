@@ -1580,12 +1580,13 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               <span className={estilos.amostra} style={{ background: COR_BRUTO }} />
               ≈ nível bruto (rede estadual)
             </li>
-            {/* C7, camada 2: a cor tracejada é a classificação da própria Defesa
-                Civil de SC, na régua da estação — só onde não há faixa municipal.
-                A amostra é tracejada e neutra porque a cor varia com a faixa. */}
+            {/* C7, camada 2: o pino pontilhado é a classificação da própria Defesa
+                Civil de SC, na régua da estação — só onde não há faixa municipal. O rio
+                leva a mesma cor em traço contínuo (08/10/2026). A amostra é neutra porque
+                a cor varia com a faixa. */}
             <li>
               <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
-              Faixa estadual (tracejado) — classificação da Defesa Civil de SC, não cota deste site
+              Faixa estadual (pino pontilhado) — classificação da Defesa Civil de SC, não cota deste site
             </li>
             {/* A linha-guia (14/09/2026): onde os pinos se amontoam, o nome vai
                 para um lugar livre e a seta aponta a cidade dele. */}

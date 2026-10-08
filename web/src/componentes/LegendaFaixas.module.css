@@ -69,11 +69,13 @@
   );
 }
 
-/* Faixa estadual (C7): mesma paleta, mas tracejada — a amostra é um traço
-   tracejado neutro, porque a cor varia com a faixa que o estado publicar. */
+/* Faixa estadual (C7): mesma paleta; o que muda é o pino, pontilhado e de miolo
+   claro (o rio leva a mesma cor, contínuo, desde 08/10/2026). A amostra é neutra,
+   porque a cor varia com a faixa que o estado publicar. */
 .estadual {
   background: none;
   box-shadow: none;
-  border: 2px dashed currentColor;
+  border: 2px dotted currentColor;
+  border-radius: 50%;
   opacity: 0.75;
 }
