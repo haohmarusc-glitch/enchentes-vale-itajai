@@ -480,6 +480,13 @@ o projeto.
 
 ## Pendências
 
+- [x] **Monitor: cor dos afluentes por vínculo explícito (07/10/2026, pedido do Jefferson, `monitor-autorizado`).**
+  O Itajaí do Sul passa a acompanhar a faixa de Ituporanga, da estação até Rio do Sul; Hercílio (Ibirama), Rio dos
+  Cedros, Trombudo e Ribeirão Guabiruba, cada um no seu alcance. Taió e Vidal Ramos deixam de pintar o rio acima.
+  O toque no curso cinza diz por quê. Auditoria e prints em `docs/VINCULOS-DOS-TRACADOS.md`.
+  - [ ] Timbó/Benedito sem vínculo até confirmar a régua (coordenada e equivalência com a DCSC-00023).
+  - [ ] Falha de 2,1 km no traçado do Itajaí do Oeste (OSM), rio abaixo de Taió.
+  - [ ] Ribeirões de Itajaí (DC-07, DC-08, DC-09) sem cor até a cota ter respaldo.
 - [x] **Classificação estadual × municipal — PR 1 (motor em paralelo), 07/10/2026; em produção desde a coleta das 17h30 UTC.**
   `scripts/classificar_reguas.py` calcula, para o piloto Brusque, a classificação municipal (cotas 3,00/5,00 m na
   DCSC-00019) e a estadual (a faixa que a Defesa Civil de SC publica), e diz qual pinta o rio. O
