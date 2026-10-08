@@ -481,8 +481,9 @@ o projeto.
 ## Pendências
 
 - [x] **Barragens no Monitor: painel e armazenamento em escala própria (07/10/2026, em PR, sem merge).** O toque no marcador
-  abre comportas e o percentual informado pela fonte; "Mais detalhes" mostra o nível na régua da barragem (com zero e
-  altitude), capacidade sem unidade, horário e fonte, e "não informado" para vazão e jusante. Barra azul sob o marcador,
+  abre comportas e o "Percentual de ocupação informado pela fonte" (atual ÷ máxima); "Mais detalhes" mostra o nível na
+  régua da barragem (com zero e altitude), capacidade com "Unidade não informada", horário e fonte, vazões "Não
+  publicadas" e o jusante sem número nem uso na classificação. Barragem Norte: "dados indisponíveis nesta fonte". Barra azul sob o marcador,
   interruptor em Camadas e legenda. Acima de 100 % sai o valor real. A cor do rio não muda. `docs/BARRAGENS-NO-MONITOR.md`.
   - [ ] **Ainda faltam na fonte:** Barragem Norte; unidade da capacidade; definição do percentual; vazão de entrada e
     saída; referência do `jusante_m`; faixas operacionais oficiais por barragem.

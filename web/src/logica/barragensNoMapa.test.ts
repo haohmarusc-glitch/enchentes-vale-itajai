@@ -109,7 +109,7 @@ test('funciona com um Map (como o hook devolve) e com N barragens, não só duas
 
 // --- Painel do toque e armazenamento (07/10/2026) -------------------------------------------------------------
 
-import { fichaDaBarragem, textoPercentual } from './barragensNoMapa'
+import { fichaDaBarragem, ROTULO_PERCENTUAL, textoPercentual } from './barragensNoMapa'
 import { montarBarragens } from '../dados/barragens'
 
 /** O corpo publicado às 19h38 de 07/10/2026 (Oeste), pelo mesmo leitor do site. */
@@ -131,13 +131,18 @@ test('o painel mostra o que a fonte publica e "não informado" no resto — nunc
   const f = fichaDaBarragem(b!)
   assert.match(f.situacao, /há 12 min/)
   assert.equal(linha(f, 'Comportas').valor, '7 de 7 abertas')
-  assert.equal(linha(f, 'Percentual informado pela fonte').valor, '4,5 %')
+  assert.equal(ROTULO_PERCENTUAL, 'Percentual de ocupação informado pela fonte')
+  assert.equal(linha(f, ROTULO_PERCENTUAL).valor, '4,5 %')
   assert.equal(linha(f, 'Nível na régua da barragem').valor, '8,97 m')
   assert.match(linha(f, 'Nível na régua da barragem').nota!, /339 m de altitude/)
   assert.match(linha(f, 'Nível na régua da barragem').nota!, /Não se compara com régua de rio/)
-  assert.match(linha(f, 'Capacidade atual / máxima').nota!, /não informa a unidade/)
-  assert.equal(linha(f, 'Vazão de entrada e de saída').valor, null, 'vazão não publicada virou número')
-  assert.equal(linha(f, 'Nível a jusante').valor, null, 'jusante sem referência virou número')
+  assert.match(linha(f, 'Capacidade atual / máxima').nota!, /Unidade não informada/)
+  assert.doesNotMatch(JSON.stringify(f), /m³|hm³|volume útil/, 'unidade ou nome presumido')
+  assert.match(linha(f, ROTULO_PERCENTUAL).nota!, /capacidade atual dividida pela máxima/)
+  assert.equal(linha(f, 'Vazão de entrada e de saída').valor, 'Não publicadas', 'vazão não publicada virou número')
+  assert.equal(linha(f, 'Nível a jusante').valor, 'Sem referência da medição', 'jusante sem referência virou número')
+  assert.doesNotMatch(JSON.stringify(f), /5,14/, 'o número a jusante vazou')
+  assert.match(linha(f, 'Nível a jusante').nota!, /não é usado para classificar/)
   assert.match(linha(f, 'Medido em').valor!, /07\/10\/2026.*19:38.*Brasília/)
   assert.match(linha(f, 'Fonte').valor!, /asthon/)
 })
@@ -153,8 +158,8 @@ test('campo ausente é "não informado"; percentual implausível diz o que veio'
   const [b] = barragensNoMapa([crua], new Date(), 'bacia')
   const f = fichaDaBarragem(b!)
   assert.equal(f.situacao, 'Leitura sem horário: estado não confirmado.')
-  assert.equal(linha(f, 'Percentual informado pela fonte').valor, null)
-  assert.match(linha(f, 'Percentual informado pela fonte').nota!, /812 %, valor implausível/)
+  assert.equal(linha(f, ROTULO_PERCENTUAL).valor, null)
+  assert.match(linha(f, ROTULO_PERCENTUAL).nota!, /812 %, valor implausível/)
   assert.equal(linha(f, 'Nível na régua da barragem').valor, null)
   assert.equal(linha(f, 'Capacidade atual / máxima').valor, null)
   assert.equal(linha(f, 'Fonte').valor, null)
@@ -163,7 +168,7 @@ test('campo ausente é "não informado"; percentual implausível diz o que veio'
 test('acima de 100 %: o valor real e o aviso de que passa da capacidade máxima publicada', () => {
   const crua = montarBarragens({ barragens: [{ nome: 'Z', lat: -27.1, lon: -50, comportas_abertas: 1, comportas_total: 3, percent_use: 104.2 }] }).get('Z')!
   const [b] = barragensNoMapa([crua], new Date(), 'bacia')
-  const p = linha(fichaDaBarragem(b!), 'Percentual informado pela fonte')
+  const p = linha(fichaDaBarragem(b!), ROTULO_PERCENTUAL)
   assert.equal(p.valor, '104 %')
   assert.match(p.nota!, /acima da capacidade máxima publicada/)
   assert.equal(textoPercentual(4.49), '4,5 %')

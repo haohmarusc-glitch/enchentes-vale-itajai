@@ -46,7 +46,7 @@ import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { useClassificacao } from '../dados/classificacao'
 import { useBarragens } from '../dados/barragens'
-import { AZUL_CHEIO, AZUL_VAZIO, barragensNoMapa, fichaDaBarragem } from '../logica/barragensNoMapa'
+import { AZUL_CHEIO, AZUL_VAZIO, barragensNoMapa, fichaDaBarragem, ROTULO_PERCENTUAL } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { deBrasilia, idadeMin, textoIdade, type Faixa, frescor, frescorDaCidade } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
@@ -1560,7 +1560,12 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 operacionais oficiais; não é grau de cheia e não pinta o rio. */}
             <li>
               <span className={estilos.amostra} style={{ background: `linear-gradient(90deg, ${AZUL_CHEIO} 60%, ${AZUL_VAZIO} 60%)` }} />
-              Barragem: % informado pela fonte (escala própria, não é faixa de cheia)
+              Barragem: ocupação informada pela fonte — escala informativa, sem faixas oficiais; não é faixa de cheia
+            </li>
+            {/* A Norte não está na fonte e o cadastro não tem coordenada dela: sem marcador, só esta linha. */}
+            <li>
+              <span className={estilos.amostra} style={{ background: AZUL_VAZIO }} />
+              Barragem Norte (José Boiteux): dados indisponíveis nesta fonte
             </li>
             {/* O violeta estava no mapa sem entrada aqui: uma cor com
                 significado e sem explicação. Fica FORA da escala de faixas de
@@ -1852,8 +1857,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="6" width="18" height="7" rx="1" fill="none" stroke="currentColor" strokeWidth="2" /><rect x="3" y="16" width="11" height="3" fill="currentColor" /><rect x="3" y="16" width="18" height="3" fill="none" stroke="currentColor" strokeWidth="1" /></svg>
               </span>
               <label className={estilos.textoCamada} htmlFor="interruptor-armazenamento">
-                <strong>Barragens: armazenamento</strong>
-                <small>% informado pela fonte, em azul; toque na barragem para os detalhes</small>
+                <strong>Barragens: ocupação</strong>
+                <small>Escala informativa, em azul, sem faixas oficiais; toque na barragem para os detalhes</small>
               </label>
               <input id="interruptor-armazenamento" className={estilos.interruptor} type="checkbox" role="switch" checked={mostrarArmazenamento} onChange={(e) => setMostrarArmazenamento(e.target.checked)} />
             </div>
@@ -2228,7 +2233,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           const b = barragensDoMapa.find((x) => x.nome === barragemSel)
           if (!b) return null
           const ficha = fichaDaBarragem(b)
-          const linhas = barragemExpandida ? ficha.linhas : ficha.linhas.filter((l) => l.rotulo === 'Comportas' || l.rotulo === 'Percentual informado pela fonte')
+          const linhas = barragemExpandida ? ficha.linhas : ficha.linhas.filter((l) => l.rotulo === 'Comportas' || l.rotulo === ROTULO_PERCENTUAL)
           return (
             <div className={estilos.painel} data-tapa-mapa>
               <div className={estilos.painelTopo}>
@@ -2249,8 +2254,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 ))}
               </dl>
               <p className={estilos.painelRessalva}>
-                Situação da barragem, separada da faixa de cheia das cidades. Armazenamento, nível e comportas não
-                mudam a cor do rio: ela continua sendo a régua de cada trecho.
+                Situação da barragem, separada da faixa de cheia das cidades. A ocupação, o nível e as comportas não
+                mudam a cor do rio a jusante: ela segue a régua de cada trecho e as cotas compatíveis com ela.
               </p>
               <button type="button" className={estilos.botaoMais} aria-expanded={barragemExpandida} onClick={() => setBarragemExpandida((v) => !v)}>
                 {barragemExpandida ? 'Menos detalhes ▴' : 'Mais detalhes ▾'}

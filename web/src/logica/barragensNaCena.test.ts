@@ -29,7 +29,7 @@ function barragens(percent: number, abertas: number) {
   return barragensNoMapa(montarBarragens({
     barragens: [{
       nome: 'Barragem Oeste Taió', lat: -27.1, lon: -50.0, medido_em: '2026-10-07T19:40:00',
-      altitude_montante_m: 347.97, nivel_na_regua_da_barragem_m: 8.97, zero_da_regua_m: 339,
+      altitude_montante_m: 347.97, nivel_na_regua_da_barragem_m: 8.97, zero_da_regua_m: 339, jusante_m: 5.14,
       percent_use: percent, comportas_abertas: abertas, comportas_total: 7,
       comportas: Array.from({ length: 7 }, (_, i) => ({ nome: `C${i + 1}`, aberta: i < abertas })),
     }],
@@ -50,7 +50,7 @@ function ctxFalso() {
   return ctx as unknown as CanvasRenderingContext2D & { textos: string[] }
 }
 
-test('armazenamento, nível e comportas não mudam a cor do rio', () => {
+test('ocupação, nível, comportas e o número a jusante não mudam a cor do rio', () => {
   const cena = construirCena(el, [rio], tempoReal, agora, 800, 600, null)
   const antes = JSON.stringify(cena.trechos.map((t) => [t.faixa, t.cidadeId, t.animacao]))
   for (const [p, a] of [[0, 0], [50, 3], [104, 7]] as const) {
@@ -66,7 +66,7 @@ test('o rótulo leva o percentual real, nunca o nível em metros', () => {
   desenharBarragens(ctx, cena, barragens(104.2, 7), 1, 1, [], true)
   assert.equal(ctx.textos.length, 1)
   assert.match(ctx.textos[0]!, /104 %/, 'acima de 100 foi cortado')
-  assert.doesNotMatch(ctx.textos[0]!, /8,97|347|339/)
+  assert.doesNotMatch(ctx.textos[0]!, /8,97|347|339|5,14/)
   // Camada desligada: sem percentual no rótulo.
   const sem = ctxFalso()
   desenharBarragens(sem, cena, barragens(104.2, 7), 1, 1, [], false)

@@ -158,6 +158,9 @@ export function textoPercentual(p: number): string {
   return `${numero(p, p < 10 ? 1 : 0)} %`
 }
 
+/** Rótulo do percentual: o nome é de ocupação, nunca "volume útil" (a fonte não define o denominador assim). */
+export const ROTULO_PERCENTUAL = 'Percentual de ocupação informado pela fonte'
+
 /** Uma linha do painel da barragem. `valor` null = "não informado". */
 export interface LinhaDaBarragem {
   rotulo: string
@@ -190,14 +193,14 @@ export function fichaDaBarragem(b: BarragemNoMapa): { situacao: string; linhas: 
     : { rotulo: 'Nível na régua da barragem', valor: null, nota: 'Sem a referência da régua coerente na fonte.' }
   const percentual: LinhaDaBarragem = b.percentUso != null
     ? {
-        rotulo: 'Percentual informado pela fonte',
+        rotulo: ROTULO_PERCENTUAL,
         valor: textoPercentual(b.percentUso),
-        nota: 'A fonte não define o percentual. Ele bate com a capacidade atual dividida pela máxima que ela publica' +
+        nota: 'Corresponde à capacidade atual dividida pela máxima, as duas publicadas pela fonte' +
           (b.percentDivergenciaPp ? ` (diferença de ${numero(Math.abs(b.percentDivergenciaPp), 2)} ponto percentual)` : '') +
           (b.percentUso > 100 ? '. Acima de 100 %: acima da capacidade máxima publicada.' : '.'),
       }
     : {
-        rotulo: 'Percentual informado pela fonte',
+        rotulo: ROTULO_PERCENTUAL,
         valor: null,
         nota: b.percentPublicado != null ? `A fonte publicou ${numero(b.percentPublicado, 0)} %, valor implausível.` : undefined,
       }
@@ -205,7 +208,7 @@ export function fichaDaBarragem(b: BarragemNoMapa): { situacao: string; linhas: 
     ? {
         rotulo: 'Capacidade atual / máxima',
         valor: `${numero(b.capacidadeAtual, 1)} de ${numero(b.capacidadeMaxima, 1)}`,
-        nota: 'A fonte não informa a unidade.',
+        nota: 'Unidade não informada.',
       }
     : { rotulo: 'Capacidade atual / máxima', valor: null }
   return {
@@ -215,8 +218,13 @@ export function fichaDaBarragem(b: BarragemNoMapa): { situacao: string; linhas: 
       percentual,
       nivel,
       capacidade,
-      { rotulo: 'Vazão de entrada e de saída', valor: null },
-      { rotulo: 'Nível a jusante', valor: null, nota: 'A fonte publica um número sem referência identificada; ele não é mostrado.' },
+      // Vazão: a fonte não publica. Nunca zero (o `vertido_bruto` vem 0 com as comportas abertas).
+      { rotulo: 'Vazão de entrada e de saída', valor: 'Não publicadas' },
+      {
+        rotulo: 'Nível a jusante',
+        valor: 'Sem referência da medição',
+        nota: 'A fonte publica um número, mas sem a referência dele. Ele não aparece e não é usado para classificar o rio.',
+      },
       { rotulo: 'Medido em', valor: quando },
       { rotulo: 'Fonte', valor: b.fonte ?? null },
     ],
