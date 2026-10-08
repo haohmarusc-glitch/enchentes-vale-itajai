@@ -673,6 +673,100 @@ Referência citada: os boletins municipais de 4 e 5/05/2022 (6,43 m às 17h de 0
 
 ---
 
+## C34 — ANA, Hidrologia (hidro@ana.gov.br): leituras de cota com erro de digitação no HidroWeb — 📝 RASCUNHO no Gmail, não enviado (08/10/2026, pedido do Jefferson: "prepare os rascunhos … sem enviar"; rascunho `r-7072622022553343910`, conversa nova)
+
+**Origem.** `docs/HIDROWEB-MIRIM-2026-09-22.md`, seção "Os erros de digitação do HidroWeb". Na série baixada em
+22/09/2026, `implausiveis()` acha leituras das 07h/17h maiores que duas vezes a média consistida do dia mais 1 m. A
+consistência da ANA corrige a média e deixa a leitura. Quem exporta a instantânea herda o erro, e quem ordena a
+série de Brusque por valor encontra os erros antes das cheias reais. A ANA não tinha recebido a lista. No README, o item
+"HidroWeb: quatro erros de digitação…" deixava o envio para decisão do Jefferson.
+
+**Como enviar.** Conversa nova para hidro@ana.gov.br (a de setembro foi sobre o cadastro na API). Sem link do site;
+no fim, o pedido de cadastro. Sem CPF nem dado pessoal além do nome e do contato.
+
+**Para:** hidro@ana.gov.br
+**Assunto:** Possíveis erros de digitação em leituras de cota no HidroWeb — estações 83900000, 83892990 e 83892998
+
+Prezada equipe de Hidrologia da ANA,
+
+Sou o Jefferson, usuário cadastrado do HidroWeb e da API desde setembro. Estou montando, sem fins comerciais, um site
+sobre as enchentes dos rios Itajaí-Açu e Itajaí-Mirim (SC), que usa as séries de cota da ANA com a fonte citada.
+
+Ao conferir as séries do Itajaí-Mirim baixadas em 22/09/2026, encontrei leituras das 07h e das 17h que parecem erro de
+digitação. A média consistida do mesmo dia está correta e não acompanha esses valores, mas a leitura continua na
+exportação, sem marcação. Envio a lista para o caso de ser útil à conferência de vocês:
+
+| Estação | Data e hora da leitura | Valor publicado | Média consistida do dia | Observação |
+|---|---|---|---|---|
+| 83892990 Salseiro | 24/12/2009 07h | 3 145 cm | 174 cm | parece 145 com um 3 à frente |
+| 83892990 Salseiro | 03/10/2020 17h | 434 cm | 138 cm | a Defesa Civil de Brusque registrou 1,49 m no dia |
+| 83892990 Salseiro | 15/04/2023 07h | 1 140 cm | 143 cm | parece 140 com um 1 à frente; Defesa Civil: 1,49 m no dia |
+| 83892990 Salseiro | 25/03/2024 17h | 167 165 cm | sem consistido | parece 167 e 165 juntos |
+| 83892998 Botuverá-Montante | 03/04/2002 17h | 490 cm | 151 cm | |
+| 83892998 Botuverá-Montante | 29/10/2013 07h | 903 cm | 117 cm | |
+| 83900000 Brusque | 19/11/1941 | 1 047 cm | 147 cm | |
+| 83900000 Brusque | 22/06/1943 | 912 cm | 90 cm | |
+| 83900000 Brusque | 04/02/1944 | 1 444 cm | 142 cm | |
+| 83900000 Brusque | 11/04/1958 | 1 347 cm | 150 cm | |
+| 83900000 Brusque | 22/10/1975 | 775 cm | 173 cm | |
+| 83900000 Brusque | 20/02/1978 | 1 204 cm | 123 cm | |
+| 83900000 Brusque | 26/11/1985 | 994 cm | 115 cm | |
+
+No site, essas leituras ficam marcadas como suspeitas e fora de qualquer recorde. Nada foi corrigido por conta própria.
+
+Aproveito para duas perguntas:
+
+1. Essas leituras podem ser corrigidas ou marcadas como duvidosas na base, para quem exportar a série instantânea?
+2. A série de cota da 83900000 (Brusque) no HidroWeb termina em 03/2022, mas o inventário indica a estação como em
+   operação. Ela continua operando? Se sim, onde ficam os dados depois de 03/2022?
+
+Se quiserem conhecer o site, basta me enviar um e-mail para cadastro.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
+## C35 — Defesa Civil de Gaspar: cadência da estação 21 (Itajaí-Açu) — 📝 RASCUNHO no Gmail, não enviado (08/10/2026, pedido do Jefferson; rascunho `r1898558751829575100`, resposta na conversa do C10, que segue sem retorno desde 10/09/2026)
+
+**Origem.** O README dizia que a estação 21 "não publica o Açu desde 02/10 às 06h04". A série do coletor desmente:
+houve leituras em 03/10 19h27, 04/10, 05/10 e até 07/10 17h53 (3,04 m). O que existe é uma cadência irregular. Nas
+66 leituras captadas de 10/09 a 07/10, o intervalo entre leituras novas teve mediana de **5,9 h**, p90 de **23 h** e
+máximo de **74 h**. Houve vazios de 37 h (02/10 06h04 → 03/10 19h27) e de 39 h (16/09 → 18/09). **Ressalva:** são as
+leituras que o coletor conseguiu ver. A VPS às vezes não alcança o portal de Gaspar
+(`docs/GASPAR-SEM-NIVEL-AO-VIVO.md`), então parte do vazio pode ser da coleta e não da estação.
+
+**Como enviar.** Resposta na conversa do C10 (Gmail, id `1a08dc8e84af8f57`, para defesacivil@gaspar.sc.gov.br). Curta,
+porque o C10 já tem quatro perguntas sem resposta. Sem link do site; no fim, o pedido de cadastro.
+
+**Para:** defesacivil@gaspar.sc.gov.br (resposta na conversa do C10)
+**Assunto:** Re: Quatro dúvidas sobre os dados publicados no portal da Defesa Civil de Gaspar
+
+À Superintendência Municipal de Proteção e Defesa Civil de Gaspar,
+
+Retomo a mensagem de 10/09 com uma pergunta só, a mais útil para quem acompanha o Itajaí-Açu em Gaspar.
+
+A página da estação do Rio Itajaí-Açu (`/estacao/ver/21`) continua publicando, mas em intervalos muito diferentes.
+Nas consultas que consegui fazer entre 10/09 e 07/10, a leitura mais recente mudou a cada 6 horas, em média. Algumas
+vezes passou mais de um dia sem leitura nova, como entre 02/10 às 06h04 e 03/10 às 19h27.
+
+Gostaria de saber **qual é a cadência prevista da estação 21**:
+- se a leitura é manual, em horários definidos;
+- ou se é automática e, nesses intervalos, a transmissão falhou.
+
+Pergunto porque, sem saber a cadência, não dá para distinguir uma estação sem leitura nova por rotina de uma estação
+com problema. No site, quando a leitura fica velha, ela aparece com a hora da medição e sem a faixa.
+
+Se houver um endereço direto (arquivo ou serviço) de onde ler o nível, também agradeço a indicação. As consultas são
+identificadas com o nome do projeto, e respeito qualquer limite que vocês indicarem.
+
+Se quiserem conhecer o site, basta me enviar um e-mail para cadastro.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---
+
 ## C33 — EPAGRI/CIRAM: referência vertical, unidade e fuso da maré observada — 📝 RASCUNHO no Gmail, não enviado (07/10/2026; rascunho `r-8608294657834909168`, resposta na conversa do C5/C12, com "Tema deste retorno" na primeira linha, como no C12)
 
 **Origem.** A decisão do Jefferson de 07/10/2026 manda mostrar a maré medida só com a referência vertical identificada
