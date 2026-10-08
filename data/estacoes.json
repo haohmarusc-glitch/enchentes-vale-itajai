@@ -82,7 +82,7 @@
           {
             "nome": "Rio Luís Alves",
             "entra_perto_de": "ilhota",
-            "ponto_exato": "a confirmar por coordenada — antes ou depois da régua de Ilhota (Ilhota 'recebe o rio Luiz Alves')."
+            "ponto_exato": "Entra depois de Ilhota (4,4 km abaixo da régua) e antes de Itajaí (28,8 km acima da régua), contando pela água. Confluência medida no traçado do OpenStreetMap, em −26,87302, −48,78871 (lat, lon), a 154,4 km de Rio do Sul pela água (toque 0 m). Método e incertezas em docs/TRACADOS-AFLUENTES-2026-10-06.md."
           }
         ],
         "nota": "A bacia do Itajaí-Açu é uma ÁRVORE, não uma fila. Taió (Itajaí do Oeste) e Ituporanga (Itajaí do Sul) são cabeceiras PARALELAS que se juntam em Rio do Sul, onde NASCE o Açu. Ibirama fica no Rio Hercílio (Itajaí do Norte), afluente lateral — não é elo do tronco: um pico nele ENTRA no tronco, não desce por ele. A única sequência que a tela pode afirmar é o tronco (tronco_sequencia). Dentro de cada ramo vale ordem_no_ramo; entre ramos, nada 'vem antes'. Verificado em mapa + Overpass (02/09/2026); ver docs/TOPOLOGIA-CANONICA.md.",
