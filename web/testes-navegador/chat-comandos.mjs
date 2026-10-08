@@ -155,8 +155,11 @@ for (const [w, h] of [[390, 844], [1280, 800]]) {
     ok((await pg.getByText('Filtro: só cidades e réguas sem leitura de agora').count()) === 0, 'limpar filtros: o aviso do filtro saiu da tela')
     r = await pedirAte(pg, 'ver a confluência do Benedito', /Benedito/)
     ok(/−26,89134, −49,23557/.test(r) && (await pg.getByText(/^Marca: Confluência do Rio Benedito/).count()) === 1, 'confluência do Benedito: coordenada do cadastro e a marca escrita na tela')
+    // 08/10/2026: o Luís Alves foi medido no OSM e passou a ter ponto, como o Benedito.
     r = await pedirAte(pg, 'confluência do Luís Alves', /Luís Alves/)
-    ok(/não tem ponto de confluência gravado/.test(r), 'Luís Alves: diz que não há ponto, não marca nada')
+    ok(/−26,87302, −48,78871/.test(r) && (await pg.getByText(/^Marca: Confluência do Rio Luís Alves/).count()) === 1, 'confluência do Luís Alves: coordenada do cadastro e a marca escrita na tela')
+    r = await pedirAte(pg, 'confluência do Rio dos Cedros', /Rio dos Cedros/)
+    ok(/não tem ponto de confluência gravado/.test(r), 'Rio dos Cedros: diz que não há ponto, não marca nada')
     r = await pedirAte(pg, 'de onde vem o traçado do Benedito?', /Traçado do Rio Benedito/)
     ok(/Base do OpenStreetMap: 06\/10\/2026/.test(r), 'origem do traçado: a data da base do OSM')
     r = await pedirAte(pg, 'o que fica a montante de Blumenau?', /montante|Rio do Sul/)
