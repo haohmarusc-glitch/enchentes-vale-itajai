@@ -155,6 +155,10 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   em `leituras`**: como leitura municipal desligaria a classificação estadual). A tela mostra número, hora de
   Brasília e fonte, repassa a criticidade **como a fonte escreve** e fica **sem cor** até a Defesa Civil confirmar as
   cotas na mesma régua. Leitura com mais de 18 h não é atual. Detalhes em `docs/ITUPORANGA-CENTRO.md`.
+- **A Prefeitura recusa a VPS (403 no `robots.txt`, 08/10/2026).** A página é lida pelo GitHub Actions
+  (`coletar-ituporanga.yml` → branch `coleta-ituporanga`, só quando a leitura muda), e `coleta_ituporanga.py
+  --publicar` na VPS usa esse publicado quando a página recusa (`via.coletor = "github-actions"`), como Gaspar.
+  Nunca trocar o `User-Agent` nem pular o robots para passar.
 
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
