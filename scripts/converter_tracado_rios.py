@@ -74,6 +74,17 @@ BRUTO_VAO_CANHANDUBA = RAIZ / "data/brutos/vao-canhanduba-osm.json"
 #: Ver docs/TRACADO-ITAJAI-DO-SUL.md.
 BRUTO_RIO_DO_SUL = RAIZ / "data/brutos/rio-do-sul-rios-tracados.geojson"
 
+#: Bruto do VÃO DO OESTE — os 6,0 km rio abaixo de Taió que faltavam no tronco (falha de 2,1 km em linha reta,
+#: auditoria dos vínculos, 07/10/2026). `baixar_vao_oeste.py` o achou por CONECTIVIDADE (08/10/2026, base OSM
+#: 08/10/2026 10:21 UTC): é UMA via, `waterway=river`, que no OSM se chama só "Rio Itajaí" — por isso a consulta
+#: por nome não a trazia. Ela começa e termina nos MESMOS nós das duas vias do Oeste (0 m), e a sinuosidade dela
+#: (2,82) está entre a das vizinhas (2,0 a 2,97). Entra no tronco pelo ID, nunca pelo nome: "Rio Itajaí" não vira
+#: nome aceito para outra via. Ver docs/VAO-ITAJAI-DO-OESTE.md.
+BRUTO_VAO_OESTE = RAIZ / "data/brutos/vao-oeste-osm.json"
+
+#: Vias que entram no tronco pelo ID, com o nome que têm no OSM (conferido: nome diferente aborta).
+EMENDAS_DO_TRONCO = {"itajai-acu": {1207901475: "Rio Itajaí"}}
+
 #: Bruto do RIO HERCÍLIO (Itajaí do Norte), o rio de Ibirama. Baixado por
 #: `baixar_tracado_hercilio.py`, que só grava depois de conferir que o traçado
 #: chega ao Açu e passa pelo pino de Ibirama. Opcional, como os ribeirões.
@@ -345,7 +356,28 @@ def feature_do_rio(rio_id: str, linhas: list[list[list[float]]]) -> dict:
     }
 
 
-def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]]) -> dict:
+def emendas(rio_id: str, elementos: list[dict]) -> list[dict]:
+    """
+    As vias de EMENDAS_DO_TRONCO para `rio_id`, achadas pelo ID nos elementos dados.
+
+    Via ausente não é erro (o bruto da emenda é opcional: sem ele, o tronco fica com a falha, como antes). Via
+    presente com outro nome aborta: o ID foi conferido com aquele nome, e um OSM que mudou pede nova conferência.
+    """
+    esperadas = EMENDAS_DO_TRONCO.get(rio_id) or {}
+    achadas = []
+    for e in elementos:
+        if e.get("type") != "way" or e.get("id") not in esperadas:
+            continue
+        nome = (e.get("tags") or {}).get("name")
+        if nome != esperadas[e["id"]]:
+            raise SystemExit(f"{rio_id}: a emenda {e['id']} veio com o nome {nome!r}, "
+                             f"não {esperadas[e['id']]!r} — conferir de novo (baixar_vao_oeste.py)")
+        achadas.append(e)
+    return achadas
+
+
+def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]],
+                   extras: list[dict] | None = None) -> dict:
     linhas = []
     faltando = []
     usadas = []
@@ -358,6 +390,11 @@ def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]
             if len(linha) >= 2:
                 linhas.append(linha)
                 usadas.append(w)
+    for w in extras or []:
+        linha = linha_do_way(w)
+        if len(linha) >= 2:
+            linhas.append(linha)
+            usadas.append(w)
     if faltando:
         # Nome esperado que não veio: o bruto mudou ou a query pegou coisa
         # diferente. Grita, não emite um rio pela metade em silêncio.
@@ -373,6 +410,11 @@ def geojson_do_rio(rio_id: str, nomes: list[str], por_nome: dict[str, list[dict]
     }
     if origem := origem_das_ways(usadas):
         feat["properties"]["origem"] = origem
+    if extras:
+        feat["properties"]["emendas"] = [
+            {"id": w["id"], "nome_no_osm": (w.get("tags") or {}).get("name"),
+             "motivo": "liga as duas pontas do Itajaí do Oeste rio abaixo de Taió (docs/VAO-ITAJAI-DO-OESTE.md)"}
+            for w in extras]
     return feat
 
 
@@ -420,6 +462,13 @@ def main() -> int:
             print(f"sem {extra_caminho.name} — {oque} fica de fora "
                   "(ver docs/tracado-ribeiroes.md para baixar na VPS)")
 
+    # As emendas do tronco ficam FORA de `elementos`: entram só pelo ID, nunca pela busca por nome.
+    vias_emenda: list[dict] = []
+    if BRUTO_VAO_OESTE.exists():
+        vias_emenda = marcar_origem(json.loads(BRUTO_VAO_OESTE.read_text(encoding="utf-8")), BRUTO_VAO_OESTE)
+        print(f"bruto (vão do Oeste): {len(vias_emenda)} via(s) de {BRUTO_VAO_OESTE.name}")
+    extras = {r: emendas(r, vias_emenda) for r in RIOS}
+
     SAIDA.mkdir(parents=True, exist_ok=True)
 
     def grava(feat: dict, rio_id: str) -> None:
@@ -429,7 +478,7 @@ def main() -> int:
         print(f"{rio_id}: {feat['properties']['trechos']} trechos, {pts} pontos -> {destino.name}")
 
     for rio_id, nomes in RIOS.items():   # tronco: obrigatório
-        grava(geojson_do_rio(rio_id, nomes, por_nome), rio_id)
+        grava(geojson_do_rio(rio_id, nomes, por_nome, extras[rio_id]), rio_id)
 
     # Cabeceira do SUL, do bruto da Defesa Civil de Rio do Sul. Opcional e
     # parcial — ver BRUTO_RIO_DO_SUL.
@@ -450,7 +499,8 @@ def main() -> int:
         )
         grava(feat, rio_id)
 
-    tronco = [l for r, nomes in RIOS.items() for l in geojson_do_rio(r, nomes, por_nome)["geometry"]["coordinates"]]
+    tronco = [l for r, nomes in RIOS.items()
+              for l in geojson_do_rio(r, nomes, por_nome, extras[r])["geometry"]["coordinates"]]
     oeste, sul, leste, norte = caixa_do_mapa(tronco)
     f = FOLGA_DA_CAIXA_GRAUS
     caixa = (oeste - f, sul - f, leste + f, norte + f)
@@ -499,7 +549,7 @@ def main() -> int:
 
     # Rios de município. Recortados na borda norte do Açu, como o Hercílio, para
     # não mudar o enquadramento do Monitor.
-    lat_max = max(p[1] for l in geojson_do_rio("itajai-acu", RIOS["itajai-acu"], por_nome)["geometry"]["coordinates"] for p in l)
+    lat_max = max(p[1] for l in geojson_do_rio("itajai-acu", RIOS["itajai-acu"], por_nome, extras["itajai-acu"])["geometry"]["coordinates"] for p in l)
     for bruto in BRUTOS_MUNICIPIOS:
         municipio = bruto.name[len("rios-"):-len("-osm.json")]
         dados_m = json.loads(bruto.read_text(encoding="utf-8"))

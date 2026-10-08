@@ -325,5 +325,36 @@ class LuizAlvesSoOLigadoAoTronco(unittest.TestCase):
         self.assertIn("lacuna de ~7,8 km", la["properties"]["cobertura"])
 
 
+class VaoDoOeste(unittest.TestCase):
+    """A via "Rio Itajaí" fecha a falha de 2,1 km do Oeste, e só ela, pelo ID (08/10/2026)."""
+
+    def via(self, id_, nome):
+        return {"type": "way", "id": id_, "tags": {"waterway": "river", "name": nome},
+                "geometry": [{"lon": -49.91, "lat": -27.14}, {"lon": -49.90, "lat": -27.15}]}
+
+    def test_entra_pelo_id_e_outra_via_com_o_mesmo_nome_nao(self):
+        achadas = ct.emendas("itajai-acu", [self.via(1207901475, "Rio Itajaí"), self.via(99, "Rio Itajaí")])
+        self.assertEqual([v["id"] for v in achadas], [1207901475])
+        self.assertEqual(ct.emendas("itajai-mirim", [self.via(1207901475, "Rio Itajaí")]), [])
+
+    def test_a_emenda_com_outro_nome_aborta(self):
+        with self.assertRaises(SystemExit):
+            ct.emendas("itajai-acu", [self.via(1207901475, "Rio Itajaí do Oeste")])
+
+    def test_rio_itajai_nao_virou_nome_aceito_no_tronco(self):
+        for nomes in ct.RIOS.values():
+            self.assertNotIn("Rio Itajaí", nomes)
+        for chaves in ct.RIOS_AFLUENTES.values():
+            self.assertNotIn("rio itajaí", chaves)
+
+    def test_o_tronco_gravado_tem_a_emenda_e_a_falha_fechada(self):
+        acu = json.loads((ct.SAIDA / "itajai-acu.geojson").read_text(encoding="utf-8"))
+        self.assertEqual([e["id"] for e in acu["properties"]["emendas"]], [1207901475])
+        pontas = [tuple(round(c, 6) for c in p) for l in acu["geometry"]["coordinates"] for p in (l[0], l[-1])]
+        # Cada ponta da antiga falha agora é ponta de DUAS linhas: a do Oeste e a emenda.
+        for ponta in ((-49.915234, -27.145079), (-49.894166, -27.148412)):
+            self.assertEqual(pontas.count(ponta), 2, ponta)
+
+
 if __name__ == "__main__":
     unittest.main()
