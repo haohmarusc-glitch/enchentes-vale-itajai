@@ -254,6 +254,21 @@ bundle `DbhlrD0K5T.js` e os chunks que ele importa) e li o código. Conclusões,
 5. **Opacidade = idade.** `opacity: minutos_desde_timestamp < 60 ? 1 : 0.4`. Marcador apagado é
    leitura com mais de 60 min, não faixa.
 
+**Confirmação empírica (08/10/2026, 14:41 UTC), para não ficar só na leitura do código.** Abri o mapa oficial
+num Chromium controlado (Playwright; as requisições passam pelo Node com TLS verificado e o SharedWorker do
+site fica desligado para a página buscar o GraphQL por HTTP), troquei "Tipo de Dado" para **"Nível do Rio"**
+e li, no DOM, a cor computada de cada marcador:
+
+- **96 marcadores visíveis, 96 em `rgb(128, 128, 128)`** — nenhum de outra cor;
+- entre eles, os três que a API classificava naquele instante: Ituporanga **4,17** (`emergencia=1`),
+  Rio do Sul **5,64** (`alerta=1`) e Lontras **6,29** (`alerta=1`) — todos cinza;
+- o painel "Legenda" some nessa visualização (na de chuva ele mostra a escala em mm);
+- a página `/estacao/DCSC-00039` mostra "Nível do Rio 4,17 m", gráfico e chuva, e **não contém** as palavras
+  atenção, alerta ou emergência.
+
+Portanto é regra, não observação pontual: a interface oficial não exibe a classificação por faixa em
+lugar nenhum. Capturas em evidência local (`oficial/03-rio.png`, `oficial/04-estacao-00039.png`).
+
 Logo, **o vermelho do site e o cinza do mapa oficial não se contradizem**: o site mostra o campo
 `rio_alarmes.inundacao.emergencia = 1` que a própria Defesa Civil de SC publica para a DCSC-00039,
 e o mapa oficial não exibe esse campo para estação nenhuma. A conferência "cor de duas ou três
