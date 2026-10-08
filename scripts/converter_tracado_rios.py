@@ -88,6 +88,8 @@ BRUTOS_AFLUENTES = {
     "trombudo": RAIZ / "data/brutos/tracado-trombudo-osm.json",
     "rio-dos-cedros": RAIZ / "data/brutos/tracado-rio-dos-cedros-osm.json",
     "guabiruba": RAIZ / "data/brutos/tracado-guabiruba-osm.json",
+    # O afluente que o Açu recebe em Ilhota (`baixar_tracado_luiz_alves.py`): só para achar a confluência.
+    "luiz-alves": RAIZ / "data/brutos/tracado-luiz-alves-osm.json",
 }
 #: Brutos dos cursos d'água COM NOME que passam por um município
 #: (`baixar_rios_municipio.py`, `data/brutos/rios-<municipio>-osm.json`). Cada
@@ -171,7 +173,7 @@ SO_O_LIGADO_A_REGUA = {"guabiruba": "guabiruba"}
 #: Os rios recortados na CAIXA do mapa (a extensão do tronco e das réguas do cadastro). O Benedito nasce ao
 #: norte de Doutor Pedrinho e o Itajaí do Sul em Alfredo Wagner, fora do quadro de hoje; inteiros, eles
 #: afastariam o mapa inteiro. O recorte guarda o trecho das cidades e a chegada ao rio de baixo.
-RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba")
+RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba", "luiz-alves")
 #: Folga do recorte, em graus (~1,5 km). Sem ela, a régua que define a borda do quadro (Rio dos Cedros, a mais
 #: ao norte) ficava NA PONTA do rio recortado, a 137 m do fim da linha — o rio parecia nascer na cidade. Com a
 #: folga, a linha passa pela régua e segue um pouco além. O quadro do Monitor cresce no máximo isso.
@@ -457,7 +459,8 @@ def main() -> int:
         if rio_id in RECORTE_NA_CAIXA:
             feat["properties"]["cobertura"] = (
                 "RECORTADO na caixa do mapa (extensão do tronco e das réguas do cadastro), para não mudar o "
-                "enquadramento do Monitor. Baixado por scripts/baixar_tracados_afluentes.py."
+                "enquadramento do Monitor. Baixado por scripts/"
+                + ("baixar_tracado_luiz_alves.py." if rio_id == "luiz-alves" else "baixar_tracados_afluentes.py.")
             )
         if rio_id in SO_O_LIGADO_A_REGUA:
             feat["properties"]["cobertura"] += (
