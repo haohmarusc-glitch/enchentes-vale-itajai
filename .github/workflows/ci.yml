@@ -9,6 +9,16 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
+# Um rótulo posto segundos depois de abrir o PR dispara a execução `labeled`, que vê o rótulo e passa — mas a
+# execução `opened`, que não o viu, continuava correndo e terminava VERMELHA no mesmo commit (#523 e #526,
+# 08/10/2026). Com um grupo por PR e `cancel-in-progress`, a execução nova cancela a anterior: cancelada é
+# cinza, não vermelha, e só a última decisão sobre o rótulo conta. Falha real continua aparecendo: a última
+# execução reprova se um arquivo do Monitor mudou sem o rótulo, ou se o rótulo foi tirado (`unlabeled`).
+# O push de branch fica em grupo próprio (por ref), como antes.
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   dados:
     name: Validar dados
