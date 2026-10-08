@@ -63,10 +63,11 @@ export default function LegendaFaixas() {
         <li className={estilos.item}>
           <span className={`${estilos.amostra} ${estilos.estadual}`} aria-hidden="true" />
           <span>
-            <strong>Faixa estadual</strong>
+            <strong>Classificação estadual nesta estação</strong>
             <span className={estilos.acao}>
-              {' '}— pino pontilhado: a cor é a classificação da Defesa Civil de SC para a
-              estação da cidade, na régua dela. Não é cota deste projeto e não aciona aviso.
+              {' '}— pino pontilhado: a classificação que a Defesa Civil de SC publica para a
+              estação da cidade, na régua dela (fonte: monitoramento.defesacivil.sc.gov.br). Não é cota
+              deste projeto e não aciona aviso.
             </span>
           </span>
         </li>

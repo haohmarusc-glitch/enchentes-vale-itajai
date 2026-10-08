@@ -255,8 +255,9 @@ export default function CartaoAgora({
           Defesa Civil do município. Isso <strong>não</strong> quer dizer que o nível esteja normal.{' '}
           {faixaEstadual ? (
             <>
-              A cor é a <strong>faixa estadual</strong> que a Defesa Civil de SC publica para a estação
-              {estadual?.codigo ? ` ${estadual.codigo}` : ''}, no zero dela.
+              A cor é a <strong>classificação estadual nesta estação</strong>, publicada pela Defesa Civil de SC
+              para a estação{estadual?.codigo ? ` ${estadual.codigo}` : ''}, no zero dela (fonte:
+              monitoramento.defesacivil.sc.gov.br).
             </>
           ) : (
             <>A Defesa Civil de SC não publica faixa válida para a estação agora.</>

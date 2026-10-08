@@ -123,7 +123,7 @@ function cidadeValida(bruta: unknown): ClassificacaoDaCidade | null {
       reguaId: reguaE,
       faixa: faixaE,
       medidoEm: medidoE,
-      rotulo: `Faixa estadual (Defesa Civil de SC) — ${reguaE ?? 'estação estadual'}`,
+      rotulo: `Classificação estadual nesta estação (Defesa Civil de SC) — ${reguaE ?? 'estação estadual'}`,
       aviso: `Cor pela classificação que a Defesa Civil de SC publica para a estação ${reguaE ?? ''}, no zero dela. Não são as cotas do município.`,
       motivo: texto(e.motivo),
     },

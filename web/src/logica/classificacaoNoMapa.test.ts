@@ -91,7 +91,7 @@ test('fallback estadual pelo motor: tracejado no mapa e "Não representa as cota
   assert.equal(pino.origemDoMotor?.reguaId, 'DCSC-00019')
   assert.equal(
     textoDaOrigemDaCor(pino),
-    'Cor do rio: faixa estadual (Defesa Civil de SC) — DCSC-00019. Não representa as cotas municipais.',
+    'Cor do rio: classificação estadual nesta estação — DCSC-00019. Fonte: Defesa Civil de SC (monitoramento.defesacivil.sc.gov.br, campo rio_alarmes). Não representa as cotas municipais.',
   )
 })
 
@@ -114,7 +114,7 @@ test('pela regra de sempre, o painel diz só o tipo — sem afirmar uma régua q
   const estadual = pinoDe(await montar('so-estadual', false))
   assert.equal(
     textoDaOrigemDaCor({ ...estadual, codigoEstadual: 'DCSC-00019' }),
-    'Cor do rio: faixa estadual (Defesa Civil de SC) — DCSC-00019. Não representa as cotas municipais.',
+    'Cor do rio: classificação estadual nesta estação — DCSC-00019. Fonte: Defesa Civil de SC (monitoramento.defesacivil.sc.gov.br, campo rio_alarmes). Não representa as cotas municipais.',
   )
 })
 
@@ -140,7 +140,7 @@ test('Rio dos Cedros com faixa estadual: tracejada, "faixa estadual" no painel, 
   assert.equal(pino.cotasMunicipaisNaoConfirmadas, true)
   assert.equal(
     textoDaOrigemDaCor(pino),
-    'Cor do rio: faixa estadual (Defesa Civil de SC) — DCSC-00011. Não representa as cotas municipais.',
+    'Cor do rio: classificação estadual nesta estação — DCSC-00011. Fonte: Defesa Civil de SC (monitoramento.defesacivil.sc.gov.br, campo rio_alarmes). Não representa as cotas municipais.',
   )
   const { cidade } = cidadeDoCadastro('rio-dos-cedros')
   const cota = cotaDaFaixa(cidade, pino.faixa, 'estadual', true)

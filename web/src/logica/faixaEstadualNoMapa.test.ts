@@ -55,7 +55,7 @@ test('sem faixa municipal, a classificação estadual pinta: rotulada e correndo
     assert.equal(t.animacao, 'direcional', 'faixa estadual tem correnteza')
   }
   const { sub } = textoDoPino(pino, { mostrarIdade: true, agora })
-  assert.match(sub, /faixa estadual/)
+  assert.match(sub, /classificação estadual/)
   assert.match(sub, /5,39/)
 })
 
@@ -92,7 +92,7 @@ test('sem classificação estadual válida, nada muda: cinza continua cinza', ()
   assert.equal(pino.faixa, 'sem-dado')
   const { sub } = textoDoPino(pino, { mostrarIdade: true, agora })
   assert.match(sub, /bruto/, 'sem faixa estadual o rótulo continua o do bruto')
-  assert.doesNotMatch(sub, /faixa estadual/)
+  assert.doesNotMatch(sub, /classificação estadual/)
 })
 
 test('faixaEstadualDe é puro e recusa o que não pode pintar', () => {
