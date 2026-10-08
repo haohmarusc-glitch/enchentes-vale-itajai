@@ -161,11 +161,13 @@ inventada: é o veredito da fonte, mostrado como dela. Regras, todas em
 - mesma paleta e **mesmo traço do rio** (contínuo, com brilho e correnteza — decisão do
   Jefferson, 08/10/2026: o tracejado antigo atrapalhava ver o curso do rio); o que a distingue
   é o **contorno pontilhado** do pino, de miolo claro — a bolinha cheia é só da cota nossa;
-- rótulo "faixa estadual" no pino; no painel, "Classificação da Defesa Civil de SC".
-  DECIDIDO (Jefferson, 14/09/2026): fica "faixa estadual", não "régua estadual". São coisas
-  diferentes — o número é lido na régua estadual (zero próprio), a cor é a faixa que a
-  rede declara —, mas "faixa" é a palavra que o site inteiro usa para cor, e "≈5,20 m na régua
-  estadual · faixa estadual" alargaria um rótulo que já disputa espaço;
+- rótulo no pino: "classificação estadual"; no painel, no cartão e nas legendas, **"Classificação
+  estadual nesta estação"**, com a fonte (Defesa Civil de SC, `rio_alarmes`) no painel — DECIDIDO
+  (Jefferson, 08/10/2026), substituindo o "faixa estadual" de 14/09/2026. O motivo: a auditoria do
+  mapa oficial mostrou que a DCSC publica a classificação na API mas não a exibe em lugar nenhum da
+  interface dela; o rótulo tem de dizer o que a cor é e de onde vem. Continua não sendo "régua
+  estadual": o número é lido na régua estadual (zero próprio), a cor é a classificação que a rede
+  declara;
 - "normal" também pinta (decisão do Jefferson, 14/09/2026);
 - leitura estadual velha (> 3 h) volta a cinza, como a municipal;
 - **correnteza parada**: animação = nível na régua nossa, e esta cor não é nossa;

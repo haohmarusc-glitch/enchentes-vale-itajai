@@ -1181,10 +1181,13 @@ export function textoDoPino(p: Pino, opcoes: OpcoesPinos = {}, completo = false)
       : usaBruto
         ? p.origemFaixa === 'estadual'
           // A cor deste pino é a classificação da Defesa Civil de SC: o rótulo
-          // diz isso ao lado do número, para ninguém ler como cota nossa.
+          // diz isso ao lado do número, para ninguém ler como cota nossa. Na tela o
+          // nome é "Classificação estadual nesta estação" (decisão do Jefferson,
+          // 08/10/2026); o pino, que disputa espaço com número e idade, abrevia
+          // para "classificação estadual" — o painel traz o nome inteiro e a fonte.
           ? idadeBruto
-            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} · faixa estadual · ${idadeBruto}`
-            : `≈${metros(p.nivelBruto!.nivelBrutoM)} · faixa estadual`
+            ? `≈${metros(p.nivelBruto!.nivelBrutoM)} · classificação estadual · ${idadeBruto}`
+            : `≈${metros(p.nivelBruto!.nivelBrutoM)} · classificação estadual`
           : idadeBruto
             ? `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto · ${idadeBruto}`
             : `≈${metros(p.nivelBruto!.nivelBrutoM)} bruto`

@@ -251,8 +251,12 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
     - Sem ela, fica cinza: falta de cota municipal não é nível normal.
     - Nada compara o nível com as cotas não confirmadas (frase, medidor e quadro de cota).
   - **Brusque:** cor inalterada.
-- **A municipal só segura a estadual com cotas confirmadas** (`segura_estadual`). A origem estadual se chama "faixa
-  estadual" no motor, no painel e no cartão.
+- **A municipal só segura a estadual com cotas confirmadas** (`segura_estadual`). No motor a origem continua
+  `estadual`/"faixa estadual"; **na tela** (chip do painel, cartão, legendas, chat) o rótulo é **"Classificação
+  estadual nesta estação"**, com a fonte no painel (Defesa Civil de SC, monitoramento.defesacivil.sc.gov.br, campo
+  `rio_alarmes`) — decisão do Jefferson de 08/10/2026, depois da auditoria que mostrou que o mapa oficial não exibe
+  essa classificação (`docs/API-DEFESA-CIVIL-SC.md`). O pino, que disputa espaço com número e idade, abrevia para
+  "classificação estadual".
 - **Gabarito:** `data/classificacao-esperada.json` trava motor e site juntos (`teste_classificar_reguas.py` e
   `classificacaoParidade.test.ts`). Divergência só declarada em `diverge_do_site`; esperado revisto é decisão, nunca
   ajuste para passar.

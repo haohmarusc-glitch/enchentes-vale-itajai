@@ -547,7 +547,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     const variasReguas = foco.nivel == null && (daCidade.length > 1 || reguasRef.current.filter((r) => r.cidade === cid.id).length > 1)
     const situacaoSc = brutoSc ? null : nivelSc.situacoes?.get(cid.id) ?? null
     const faixa = foco.origemFaixa === 'estadual'
-      ? `Faixa estadual: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
+      ? `Classificação estadual nesta estação: ${brutoSc?.faixaEstadual ? NOME_FAIXA_ESTADUAL[brutoSc.faixaEstadual] : ROTULO_FAIXA[foco.faixa]}`
       : foco.faixa === 'sem-dado' && brutoSc && foco.nivel == null ? 'Sem classificação para esta régua' : ROTULO_FAIXA[foco.faixa]
     const motivoCinza = foco.faixa !== 'sem-dado'
       ? null
@@ -1597,7 +1597,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 a cor varia com a faixa. */}
             <li>
               <span className={`${estilos.amostra} ${estilos.amostraTracejada}`} />
-              Faixa estadual (pino pontilhado) — classificação da Defesa Civil de SC, não cota deste site
+              Classificação estadual nesta estação (pino pontilhado) — publicada pela Defesa Civil de SC, não cota deste site
             </li>
             {/* A linha-guia (14/09/2026): onde os pinos se amontoam, o nome vai
                 para um lugar livre e a seta aponta a cidade dele. */}
