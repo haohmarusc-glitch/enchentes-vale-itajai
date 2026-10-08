@@ -13,7 +13,7 @@ import unittest
 from datetime import date, timedelta
 from pathlib import Path
 
-from comum import DADOS
+from comum import DADOS, cotas_do_plano
 import validar_dados as vd
 
 
@@ -1301,8 +1301,8 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
         for cod in emconflito:
             div = self.dc[cod]["cotas_divergencia"]
             with self.subTest(regua=cod):
-                self.assertEqual(div["adotado_tabela_11_v17"], self.dc[cod]["cotas_m"],
-                                 "o adotado tem de ser igual ao que está valendo")
+                self.assertEqual(div["adotado_tabela_11_v17"], cotas_do_plano(self.dc[cod]),
+                                 "o adotado tem de ser igual ao que está valendo, salvo cota provisória declarada")
                 for faixa in ("atencao", "alerta", "emergencia"):
                     self.assertIn(faixa, div["outra_leitura_de_outra_edicao"])
 
@@ -1330,7 +1330,7 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
             if not div:
                 continue
             a, b = div["adotado_tabela_11_v17"], div["outra_leitura_de_outra_edicao"]
-            atual = e["cotas_m"]
+            atual = cotas_do_plano(e)
             with self.subTest(regua=cod):
                 self.assertTrue(
                     atual == a or atual == b,
@@ -1345,7 +1345,18 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
             if not div:
                 continue
             with self.subTest(regua=cod):
-                self.assertEqual(e["cotas_m"], div["adotado_tabela_11_v17"])
+                self.assertEqual(cotas_do_plano(e), div["adotado_tabela_11_v17"])
+
+    def test_a_unica_excecao_ao_plano_e_a_atencao_provisoria_da_dc08(self):
+        """08/10/2026 (proposta, aguardando aprovação): a DC-08 passa a avisar com a atenção de 1,70 m que
+        o portal publica, PROVISÓRIA, guardando o 1,80 m do Plano ao lado. Nenhuma outra régua tem
+        exceção, e a provisória tem de ser exatamente o número do portal."""
+        com_excecao = {c: e["cota_provisoria"] for c, e in self.dc.items() if e.get("cota_provisoria")}
+        self.assertEqual(set(com_excecao), {"DC-08"})
+        prov = com_excecao["DC-08"]["atencao"]
+        self.assertEqual((prov["valor"], prov["plano_v17"]), (1.7, 1.8))
+        self.assertEqual(self.dc["DC-08"]["cotas_conferencia_2026_09_13"]["portal"]["atencao"], prov["valor"])
+        self.assertIn("provisória", prov["estado"])
 
 
 class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):

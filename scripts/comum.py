@@ -259,6 +259,20 @@ def estacoes_tempo_real() -> list[dict[str, Any]]:
     return le_json("estacoes.json").get("estacoes_tempo_real", [])
 
 
+def cotas_do_plano(estacao: dict[str, Any]) -> dict[str, Any]:
+    """
+    As cotas da régua como o Plano de Contingência as publica: `cotas_m` com cada faixa de
+    `cota_provisoria` trocada pelo `plano_v17` dela (08/10/2026: a atenção da DC-08 vale 1,70 m do
+    portal, provisória, e o Plano traz 1,80 m). Serve aos testes que conferem o cadastro contra o
+    Plano: a exceção só passa declarada, com o número do Plano ao lado.
+    """
+    cotas = dict(estacao.get("cotas_m") or {})
+    for faixa, prov in (estacao.get("cota_provisoria") or {}).items():
+        if isinstance(prov, dict) and "plano_v17" in prov:
+            cotas[faixa] = prov["plano_v17"]
+    return cotas
+
+
 def estacao_por_titulo(titulo: str) -> dict[str, Any] | None:
     """
     A estação cadastrada que corresponde a este título.

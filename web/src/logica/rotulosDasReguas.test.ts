@@ -70,6 +70,7 @@ test('o número de réguas de maré em Itajaí é o que o cadastro diz', () => {
   const daFoz = (d.estacoes_tempo_real as { cidade: string; lat?: number; tipo?: string; alerta_automatico?: boolean }[])
     .filter((e) => e.cidade === 'itajai' && typeof e.lat === 'number' && e.tipo !== 'pluviometro')
   assert.equal(daFoz.length, 11)
-  assert.equal(daFoz.filter((e) => e.alerta_automatico === false).length, 9,
+  // Sete travadas: DC-05 e DC-08 avisam desde a proposta de 08/10/2026 (aguardando aprovação).
+  assert.equal(daFoz.filter((e) => e.alerta_automatico === false).length, 7,
     'se o cadastro mudar, a conta de quantas falam no zoom médio muda junto')
 })

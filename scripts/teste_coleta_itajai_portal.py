@@ -33,7 +33,7 @@ from coleta_itajai_portal import (MIN_PARES, MUNICIPIO_BLUMENAU, MUNICIPIO_ITAJA
                                   URL_BLUMENAU, carga, coletar, conferir_com_alertablu,
                                   conferir_municipio, municipio_da_carga,
                                   distancia_m, para_brasilia, parse, parse_blumenau)
-from comum import classificar_estacao, estacoes_tempo_real
+from comum import classificar_estacao, cotas_do_plano, estacoes_tempo_real
 
 RAIZ = Path(__file__).resolve().parent.parent
 PAGINA_REAL = RAIZ / "data" / "brutos" / "itajai-portal-novo-2026-09-19.html"
@@ -432,7 +432,8 @@ class TestCapturaDe27DeSetembro(unittest.TestCase):
         antes = {e["codigo"]: trinca(e) for e in self.antes["props"]["estacoes"]}
         agora = {e["codigo"]: trinca(e) for e in self.dados["props"]["estacoes"]}
         self.assertEqual(agora, antes)
-        cadastro = {e["codigo"]: e["cotas_m"] for e in estacoes_tempo_real()
+        # Contra o PLANO: a atenção provisória da DC-08 (1,70 m, do portal; 08/10/2026) não apaga a divergência.
+        cadastro = {e["codigo"]: cotas_do_plano(e) for e in estacoes_tempo_real()
                     if str(e.get("codigo", "")).startswith("DC-")}
         divergem = sorted(
             f"DC-{c[2:]}" for c, t in agora.items()
