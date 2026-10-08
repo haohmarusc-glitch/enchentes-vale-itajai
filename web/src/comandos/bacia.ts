@@ -79,7 +79,7 @@ export function textoBarragens(barragens: ReadonlyMap<string, Barragem>, agora: 
   const linhas = [...barragens.values()]
     .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
     .map((b) => {
-      const uso = b.percentUso != null ? ` · ${b.percentUso.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}% de uso do reservatório, como a fonte publica` : ''
+      const uso = b.percentUso != null ? ` · ${b.percentUso.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}% de ocupação, como a fonte publica` : ''
       const hora = b.medidoEm ? `, ${quando(b.medidoEm, agora)}` : ', sem horário publicado'
       const velha = !b.medidoEm || idadeMin(b.medidoEm, agora) > BARRAGEM_FRESCA_MIN ? ' — pode ter mudado desde então' : ''
       return `${b.nome}: comportas ${rotuloComportas(b)}${uso}${hora}${velha}.`

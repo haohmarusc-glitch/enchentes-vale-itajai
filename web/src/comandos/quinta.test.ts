@@ -81,7 +81,7 @@ test('chuva: os pluviômetros de leitura recente, do mais chuvoso para o menos; 
 test('barragens: comportas e uso como a fonte publica, nunca o nível em metros nem veredito', () => {
   const b = (nome: string, abertas: number, min: number, uso: number | null): Barragem => ({ nome, rio: null, abertas, total: 7, fechadas: [], percentUso: uso, medidoEm: minAtras(min), lat: null, lon: null })
   const t = textoBarragens(new Map([['o', b('Barragem Oeste Taió', 0, 20, 12.5)], ['s', b('Barragem Sul Ituporanga', 7, 200, null)]]), AGORA)
-  assert.match(t, /Barragem Oeste Taió: comportas 7 de 7 fechadas · 12,5% de uso do reservatório, como a fonte publica, às 14:40/)
+  assert.match(t, /Barragem Oeste Taió: comportas 7 de 7 fechadas · 12,5% de ocupação, como a fonte publica, às 14:40/)
   assert.match(t, /Barragem Sul Ituporanga: comportas 7 de 7 abertas, às 11:40 de 06\/10 \(há 3 h 20\) — pode ter mudado desde então/)
   assert.match(t, /não diz se a cheia já passou/)
   assert.ok(!/\d,\d\d m\b/.test(t), 'nenhum nível em metros')

@@ -47,7 +47,7 @@ import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { useClassificacao } from '../dados/classificacao'
 import { useBarragens } from '../dados/barragens'
-import { barragensNoMapa } from '../logica/barragensNoMapa'
+import { AZUL_CHEIO, AZUL_VAZIO, barragensNoMapa, fichaDaBarragem, ROTULO_PERCENTUAL } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { deBrasilia, idadeMin, textoIdade, type Faixa, frescor, frescorDaCidade } from '../logica/tempoReal'
 import { ROTULO_FAIXA, ACAO_FAIXA } from '../componentes/LegendaFaixas'
@@ -66,6 +66,7 @@ import {
   desenharBase,
   desenharCorrenteza,
   desenharBarragens,
+  barragemNoPonto,
   desenharCotasDeRua,
   desenharOnda,
   desenharPinos,
@@ -343,6 +344,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [camadasAbertas, setCamadasAbertas] = useState(false)
   const [mostrarMare, setMostrarMare] = useState(true)
   const [mostrarChuva, setMostrarChuva] = useState(true)
+  /** A barra azul e o percentual de armazenamento das barragens (camada própria, 07/10/2026). */
+  const [mostrarArmazenamento, setMostrarArmazenamento] = useState(true)
+  /** A barragem tocada (pelo nome) e se o painel dela está expandido. */
+  const [barragemSel, setBarragemSel] = useState<string | null>(null)
+  const [barragemExpandida, setBarragemExpandida] = useState(false)
   const [tracadosOcultos, setTracadosOcultos] = useState<ReadonlySet<string>>(() => new Set())
   const [mareAberta, setMareAberta] = useState(false)
   /** A cidade com a faixa mais grave AGORA (`destaqueDaBacia`); null sem faixa válida acima da atenção ou na reprodução. */
@@ -881,7 +887,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
         opcoesPinos,
         caixas,
       )
-      desenharBarragens(ctx, cena, barragensRef.current, seg, escala, caixas)
+      desenharBarragens(ctx, cena, barragensRef.current, seg, escala, caixas, mostrarArmazenamento)
       // As réguas ANTES dos pinos das cidades: o pino maior fica por cima.
       // Quais réguas mostram o NÚMERO neste zoom. Em Itajaí são onze, e de
       // longe elas escreviam umas por cima das outras e por cima do nome da
@@ -933,7 +939,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       vivo = false // tile que chegar depois não redesenha canvas morto
       cancelAnimationFrame(raf)
     }
-  }, [rios, tempoReal, nivelSc, classificacao, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca, mostrarMare, mostrarChuva, tracadosOcultos])
+  }, [rios, tempoReal, nivelSc, classificacao, reguasDoMapa, agora, tam, cidadesBacia, idxRepro, grade, serie, fundo, vista, rotuloCamada, municipal, animacoesPausadas, movimentoReduzido, paginaOculta, filtro, marca, mostrarMare, mostrarChuva, mostrarArmazenamento, tracadosOcultos])
 
   useEffect(() => {
     pontosRuaRef.current = pontosRua
@@ -1091,19 +1097,33 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       // Um painel por vez: dois abertos no mesmo canto se cobrem.
       setReguaSel(g.codigo || g.titulo)
       setSel(null)
+      setBarragemSel(null)
+      setTrechoCinza(null)
       return
     }
     setReguaSel(null)
+    const cena = cenaRef.current
+    const canvas = canvasRef.current
+    const r = canvas?.getBoundingClientRect()
+    // A barragem tocada abre o painel dela (07/10/2026): detalhes no toque, nada fixo sobre o rio.
+    if (cena && r) {
+      const b = barragemNoPonto(cena, barragensRef.current, ev.clientX - r.left, ev.clientY - r.top)
+      if (b) {
+        setBarragemSel(b.nome)
+        setBarragemExpandida(false)
+        setSel(null)
+        setTrechoCinza(null)
+        return
+      }
+    }
+    setBarragemSel(null)
     // Régua, pino, e só então o rio. A ordem é do alvo mais preciso para o mais
     // largo: quem mira o pino de Gaspar não pode receber o trecho que passa por
     // baixo dele.
     const pino = pinoNoPonto(ev) ?? pinoDoTrechoNoPonto(ev)
     setSel(pino)
     // Por último, o trecho CINZA com motivo: o toque explica o cinza em vez de não fazer nada.
-    const cena = cenaRef.current
-    const canvas = canvasRef.current
-    if (!pino && cena && canvas) {
-      const r = canvas.getBoundingClientRect()
+    if (!pino && cena && r) {
       setTrechoCinza(trechoCinzaNoPonto(cena.trechos, ev.clientX - r.left, ev.clientY - r.top))
     } else {
       setTrechoCinza(null)
@@ -1542,6 +1562,17 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               <span className={estilos.amostra} style={{ background: '#2f86c9' }} />
               Mar / maré na foz
             </li>
+            {/* Armazenamento das barragens (07/10/2026): escala azul própria, com o número. Não há faixas
+                operacionais oficiais; não é grau de cheia e não pinta o rio. */}
+            <li>
+              <span className={estilos.amostra} style={{ background: `linear-gradient(90deg, ${AZUL_CHEIO} 60%, ${AZUL_VAZIO} 60%)` }} />
+              Barragem: ocupação informada pela fonte — escala informativa, sem faixas oficiais; não é faixa de cheia
+            </li>
+            {/* A Norte não está na fonte e o cadastro não tem coordenada dela: sem marcador, só esta linha. */}
+            <li>
+              <span className={estilos.amostra} style={{ background: AZUL_VAZIO }} />
+              Barragem Norte (José Boiteux): dados indisponíveis nesta fonte
+            </li>
             {/* O violeta estava no mapa sem entrada aqui: uma cor com
                 significado e sem explicação. Fica FORA da escala de faixas de
                 propósito — não é grau de perigo, é outro tipo de dado. */}
@@ -1824,6 +1855,18 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 <small>acumulado nas estações com pluviômetro</small>
               </label>
               <input id="interruptor-chuva" className={estilos.interruptor} type="checkbox" role="switch" checked={mostrarChuva} onChange={(e) => setMostrarChuva(e.target.checked)} />
+            </div>
+          ) : null}
+          {!municipal ? (
+            <div className={estilos.linhaCamada}>
+              <span className={estilos.iconeCamada} aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="6" width="18" height="7" rx="1" fill="none" stroke="currentColor" strokeWidth="2" /><rect x="3" y="16" width="11" height="3" fill="currentColor" /><rect x="3" y="16" width="18" height="3" fill="none" stroke="currentColor" strokeWidth="1" /></svg>
+              </span>
+              <label className={estilos.textoCamada} htmlFor="interruptor-armazenamento">
+                <strong>Barragens: ocupação</strong>
+                <small>Escala informativa, em azul, sem faixas oficiais; toque na barragem para os detalhes</small>
+              </label>
+              <input id="interruptor-armazenamento" className={estilos.interruptor} type="checkbox" role="switch" checked={mostrarArmazenamento} onChange={(e) => setMostrarArmazenamento(e.target.checked)} />
             </div>
           ) : null}
           {/* "Pausar/Retomar animações" saiu da legenda (que no celular fica escondida) para cá: um só botão,
@@ -2185,6 +2228,43 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               </p>
               <button type="button" onClick={() => setReguaSel(null)}>
                 fechar
+              </button>
+            </div>
+          )
+        })() : null}
+
+        {/* A barragem tocada: compacto (comportas, armazenamento, hora) e, expandido, tudo o que a fonte
+            publica — com "não informado" no que ela não publica. Nada disto muda a cor do rio. */}
+        {!municipal && !reguaSel && !(sel ?? hover) && barragemSel ? (() => {
+          const b = barragensDoMapa.find((x) => x.nome === barragemSel)
+          if (!b) return null
+          const ficha = fichaDaBarragem(b)
+          const linhas = barragemExpandida ? ficha.linhas : ficha.linhas.filter((l) => l.rotulo === 'Comportas' || l.rotulo === ROTULO_PERCENTUAL)
+          return (
+            <div className={estilos.painel} data-tapa-mapa>
+              <div className={estilos.painelTopo}>
+                <strong>{b.nome}</strong>
+                <button type="button" className={estilos.botaoFechar} aria-label={`Fechar o painel da ${b.nome}`} onClick={() => setBarragemSel(null)}>✕</button>
+                {b.rio ? <span className={estilos.painelRio}>{b.rio}</span> : null}
+              </div>
+              <p className={b.fresca ? undefined : estilos.painelRessalva} role="status">{ficha.situacao}</p>
+              <dl>
+                {linhas.map((l) => (
+                  <div key={l.rotulo}>
+                    <dt><small>{l.rotulo}</small></dt>
+                    <dd style={{ margin: 0 }}>
+                      <strong>{l.valor ?? 'não informado'}</strong>
+                      {l.nota ? <><br /><small>{l.nota}</small></> : null}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className={estilos.painelRessalva}>
+                Situação da barragem, separada da faixa de cheia das cidades. A ocupação, o nível e as comportas não
+                mudam a cor do rio a jusante: ela segue a régua de cada trecho e as cotas compatíveis com ela.
+              </p>
+              <button type="button" className={estilos.botaoMais} aria-expanded={barragemExpandida} onClick={() => setBarragemExpandida((v) => !v)}>
+                {barragemExpandida ? 'Menos detalhes ▴' : 'Mais detalhes ▾'}
               </button>
             </div>
           )

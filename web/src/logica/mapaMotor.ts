@@ -38,7 +38,7 @@ import {
   type LonLat,
   type Vista,
 } from '../logica/mapaCanvas'
-import { comportas, faseComporta, rotuloComportas, type BarragemNoMapa } from './barragensNoMapa'
+import { AZUL_CHEIO, AZUL_VAZIO, comportas, faseComporta, rotuloComportas, textoPercentual, type BarragemNoMapa } from './barragensNoMapa'
 import { FOLGA_ACIMA_DA_REGUA_KM, chaveDaAresta, kmAcimaDe, type MotivoDoTrecho } from './vinculosDosTracados'
 
 /**
@@ -1435,15 +1435,18 @@ const COR_AGUA_COMPORTA = 'rgba(150,220,255,0.95)'
  * VELHA não anima nenhuma (o "cinza não corre" da comporta). A cor é própria:
  * segurar e soltar são operação normal, e cor de faixa aqui diria perigo.
  *
- * O nível da barragem em metros NÃO aparece: a régua dela tem zero próprio
+ * O nível da barragem em metros NÃO aparece no mapa: a régua dela tem zero próprio
  * (339 m de altitude na Oeste), e um número ao lado do rio convidaria a
- * comparação que este projeto existe para não fazer. Sai o estado e o
- * percentual, que atravessam sem datum.
+ * comparação que este projeto existe para não fazer. No mapa sai o estado e o
+ * percentual, que atravessam sem datum; o nível, com a referência, fica no painel do toque.
  *
- * A parede é desenhada na horizontal da tela, simbólica. A Sul fica a 20 km
- * do rio desenhado mais perto — a cabeceira do Itajaí do Sul ainda não tem
- * traçado —, então ela flutua na coordenada exata, sem rio embaixo; o rótulo
- * carrega a informação sozinho.
+ * ARMAZENAMENTO (07/10/2026): abaixo da parede, uma barra AZUL com o percentual informado pela fonte —
+ * escala própria, sem faixas de atenção/alerta (não há tabela oficial para elas). Acima de 100 % a barra
+ * enche e ganha um traço além do fim: o valor real fica no rótulo, nunca cortado. Leitura velha apaga a
+ * barra junto com a parede. Nada disto pinta o rio a jusante nem mexe na correnteza.
+ *
+ * A parede é desenhada na horizontal da tela, simbólica, na coordenada exata da fonte (a Sul fica a
+ * 100 m do traçado do Itajaí do Sul desde que ele foi completado).
  */
 /**
  * Distância, em pixels, de um ponto ao SEGMENTO ab — não aos extremos.
@@ -1577,6 +1580,27 @@ export interface Caixa {
   y1: number
 }
 
+/** A barragem sob o ponteiro, para o painel do toque (07/10/2026). Raio em px de tela. */
+export function barragemNoPonto(
+  cena: Cena,
+  barragens: readonly BarragemNoMapa[],
+  x: number,
+  y: number,
+  raio = 16,
+): BarragemNoMapa | null {
+  let melhor: BarragemNoMapa | null = null
+  let d = raio * raio
+  for (const b of barragens) {
+    const [bx, by] = projetar(cena.enq, [b.lon, b.lat])
+    const dd = (bx - x) ** 2 + (by - y) ** 2
+    if (dd < d) {
+      d = dd
+      melhor = b
+    }
+  }
+  return melhor
+}
+
 /** O rótulo pisa em algum já colocado? */
 export function colide(c: Caixa, caixas: readonly Caixa[]): boolean {
   return caixas.some((o) => c.x0 < o.x1 && c.x1 > o.x0 && c.y0 < o.y1 && c.y1 > o.y0)
@@ -1598,6 +1622,8 @@ export function desenharBarragens(
    * CIDADES antes de tudo, porque são a âncora: sem eles não se sabe onde é nada.
    */
   caixas: Caixa[] = [],
+  /** A barra azul e o percentual de armazenamento (camada "Barragens e reservatórios"). */
+  mostrarArmazenamento = true,
 ): void {
   if (barragens.length === 0) return
   const fase = faseComporta(tempo)
@@ -1647,10 +1673,29 @@ export function desenharBarragens(
       ctx.fill()
     })
 
-    // Rótulo: nome curto + estado. Anticolisão simples, como nas réguas.
+    // Armazenamento: barra azul própria, com o percentual informado pela fonte (ver o cabeçalho).
+    if (mostrarArmazenamento && b.percentUso != null) {
+      const bw = Math.max(total + 4 * escala, 22 * escala)
+      const bx = x - bw / 2
+      const by = y0 + alt + 3.5 * escala
+      const bh = 3.2 * escala
+      ctx.globalAlpha = b.fresca ? 1 : 0.5
+      ctx.fillStyle = AZUL_VAZIO
+      ctx.fillRect(bx, by, bw, bh)
+      ctx.fillStyle = AZUL_CHEIO
+      ctx.fillRect(bx, by, bw * Math.min(1, b.percentUso / 100), bh)
+      if (b.percentUso > 100) ctx.fillRect(bx + bw, by - 1.5 * escala, 2 * escala, bh + 3 * escala)
+      ctx.lineWidth = 0.8 * escala
+      ctx.strokeStyle = 'rgba(4,12,20,0.9)'
+      ctx.strokeRect(bx, by, bw, bh)
+      ctx.globalAlpha = 1
+    }
+
+    // Rótulo: nome curto + estado (+ armazenamento). Anticolisão simples, como nas réguas.
     const nome = b.nome.replace(/^Barragem\s+/i, '')
     const estado = rotuloComportas(b)
-    const texto = b.fresca ? `${nome} · ${estado}` : `${nome} · ${estado} · sem leitura fresca`
+    const armazenado = mostrarArmazenamento && b.percentUso != null ? ` · ${textoPercentual(b.percentUso)}` : ''
+    const texto = b.fresca ? `${nome} · ${estado}${armazenado}` : `${nome} · ${estado}${armazenado} · sem leitura fresca`
     ctx.font = `600 ${fonte}px system-ui, sans-serif`
     const w = ctx.measureText(texto).width
     const tx = Math.max(2 * escala + w / 2, Math.min(cena.largura - 2 * escala - w / 2, x))

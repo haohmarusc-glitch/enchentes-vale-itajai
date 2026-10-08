@@ -185,6 +185,20 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Inventário em `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py --gravar`). Relatório em
   `docs/AUDITORIA-REGUAS-2026-10-06.md`.
 
+### Barragens no Monitor — REGRA (07/10/2026, com `monitor-autorizado`)
+- Toque no marcador abre o painel (compacto: comportas e percentual; "Mais detalhes": o resto). Ajustes do Jefferson
+  (08/10/2026): vazões **"Não publicadas"** (nunca zero); capacidade com **"Unidade não informada"** (nada de m³);
+  número a jusante sem o valor, **fora de qualquer classificação** até ter a referência da medição; Barragem Norte
+  **"dados indisponíveis nesta fonte"**, na legenda (sem coordenada, sem marcador). Auditoria em
+  `docs/BARRAGENS-NO-MONITOR.md`.
+- O percentual se chama **"Percentual de ocupação informado pela fonte"** e corresponde a atual ÷ máxima (nunca "volume
+  útil"). Escala **azul informativa**, sem faixas oficiais: nada de atenção, alerta ou emergência. Acima de 100 % sai
+  o valor real; acima de 200 % é implausível. Reservatório sem preenchimento até haver contorno confiável.
+- O nível da barragem só sai no painel, com zero e altitude coerentes (régua = altitude − zero) e o aviso de que não
+  se compara com régua de rio. Nível nunca vira volume sem curva cota-volume.
+- **Barragem não pinta o rio.** Ocupação, nível e comportas não mudam a classificação nem a correnteza; o trecho a
+  jusante segue a própria régua e as cotas compatíveis com ela (`barragensNaCena.test.ts`). Polígono de reservatório
+  só com geometria oficial, nunca buffer do rio.
 ### Cor dos cursos fora do tronco — REGRA (07/10/2026, com `monitor-autorizado`)
 - Curso fora do tronco só ganha cor por **vínculo explícito** em `web/src/logica/vinculosDosTracados.ts`
   (`VINCULOS`): cidade, grupo dos dados, estação e alcance. O alcance vai da estação até a confluência ou a próxima

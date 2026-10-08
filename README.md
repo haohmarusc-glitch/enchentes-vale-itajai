@@ -480,6 +480,15 @@ o projeto.
 
 ## Pendências
 
+- [x] **Barragens no Monitor: painel e armazenamento em escala própria (07/10/2026; mesclado em 08/10/2026 por decisão do Jefferson).** O toque no marcador
+  abre comportas e o "Percentual de ocupação informado pela fonte" (atual ÷ máxima); "Mais detalhes" mostra o nível na
+  régua da barragem (com zero e altitude), capacidade com "Unidade não informada", horário e fonte, vazões "Não
+  publicadas" e o jusante sem número nem uso na classificação. Barragem Norte: "dados indisponíveis nesta fonte". Barra azul sob o marcador,
+  interruptor em Camadas e legenda. Acima de 100 % sai o valor real. A cor do rio não muda. `docs/BARRAGENS-NO-MONITOR.md`.
+  - [ ] **Ainda faltam na fonte:** Barragem Norte; unidade da capacidade; definição do percentual; vazão de entrada e
+    saída; referência do `jusante_m`; faixas operacionais oficiais por barragem.
+  - [ ] **Polígonos dos reservatórios:** não há geometria confiável no repositório. Só marcador e painel até haver
+    contorno oficial com fonte.
 - [x] **Monitor: cor dos afluentes por vínculo explícito (07/10/2026, pedido do Jefferson, `monitor-autorizado`).**
   O Itajaí do Sul passa a acompanhar a faixa de Ituporanga, da estação até Rio do Sul; Hercílio (Ibirama), Rio dos
   Cedros, Trombudo e Ribeirão Guabiruba, cada um no seu alcance. Taió e Vidal Ramos deixam de pintar o rio acima.
