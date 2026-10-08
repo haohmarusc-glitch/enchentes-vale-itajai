@@ -184,6 +184,41 @@ Fonte de todos os traçados: © OpenStreetMap contributors, ODbL. Coordenadas em
   - a régua usada é a coordenada da DCSC-00006. Ela bate com a ficha da DCSC a 10 m, mas a COMPDEC não
     nomeia o ponto da régua municipal. Se a régua municipal estiver em outro lugar, a relação muda.
 
+## Rio Luís Alves: a confluência (medida em 08/10/2026, gravação a aprovar)
+
+- **Coordenada:** **−26,87302, −48,78871** (lat, lon), em Ilhota.
+- **Fonte:** OpenStreetMap, base de 08/10/2026 12:02 UTC.
+  - Baixada por `scripts/baixar_tracado_luiz_alves.py` no Actions (`baixar-tracado-luiz-alves.yml`, branch
+    `tracado-luiz-alves`).
+  - Cinco vias "Rio Luís Alves", com 41,1 km no total.
+  - A última, 522493945, termina no nó **3981099664**, que também é vértice do "Rio Itajaí-Açu" (via 770081767).
+- **Método** (o mesmo do Benedito):
+  - `achar_confluencias.py` mede o toque com o tronco: **0 m**;
+  - posição pela água a partir de Rio do Sul: **154,4 km**;
+  - a confluência fica **4,4 km abaixo da régua de Ilhota** (−26,8944, −48,8248, a régua da Ponte Cláudio
+    Jeremias Cadorin que o PLANCON cita) e 28,8 km acima da régua de Itajaí.
+- **O que o desenho mostra:**
+  - o OSM tem uma lacuna de **~7,8 km** em linha reta no meio do rio, entre a via 741111134 (que termina em
+    −26,7719, −48,8097) e a 136185376 (que começa em −26,8424, −48,8166);
+  - pela regra do Guabiruba, o pedaço solto (o alto curso, na cidade de Luiz Alves) fica de fora
+    (`SO_O_LIGADO_AO_TRONCO`);
+  - o desenho fica com 3 trechos, de −26,8424 até a confluência, e o enquadramento do Monitor não muda;
+  - o rio não tem régua no cadastro, então fica cinza ("Não há régua cadastrada neste rio.").
+- **Gravação:** `python3 scripts/achar_confluencias.py --gravar` muda **uma linha** de `data/estacoes.json`, o
+  `ponto_exato` da entrada `entra_perto_de: "ilhota"`. Antes ela dizia "a confirmar por coordenada". Como no
+  Benedito, a gravação depende da decisão do Jefferson: está no PR em rascunho, sem mesclar.
+- **Efeito no site:**
+  - o chat passa a marcar a confluência no Monitor ("confluência do Luiz Alves"), como já faz com a do Benedito;
+  - a árvore mostra o texto medido.
+- **Incertezas:**
+  - o OSM é colaborativo, e a posição do nó tem precisão de dezenas de metros;
+  - a margem de 4,4 km pela água é larga diante disso;
+  - a coordenada da régua de Ilhota não tem fonte declarada no cadastro. Se a régua estiver em outro ponto da
+    ponte, a margem muda pouco; se estiver em outro lugar, a relação precisa ser medida de novo.
+- **Defeito achado no caminho:** `teste_achar_confluencias.py` escrevia um `luiz-alves.geojson` falso e
+  o apagava no fim. Com o arquivo real no repositório, rodar os testes apagava o traçado. Agora o teste guarda
+  o arquivo e o devolve (`luiz_alves_trocado`).
+
 ## Rio Trombudo → Itajaí do Oeste (ligação registrada, sem posição na árvore)
 
 - **Coordenada:** **−27,24510, −49,69070**.

@@ -56,8 +56,12 @@ test('confluências: só as que o cadastro grava, com a coordenada dele; as outr
   const trombudo = cat.confluencias?.find((c) => c.id === 'trombudo-central')
   assert.deepEqual([trombudo?.lat, trombudo?.lon], [-27.2451031, -49.6906952])
   assert.ok(cat.confluencias?.some((c) => c.id === 'itajai-acu-nasce'))
-  assert.equal(cat.confluencias?.length, 3)
-  for (const id of ['luis-alves', 'ibirama', 'rio-dos-cedros', 'guabiruba']) assert.ok(cat.semPonto?.some((s) => s.id === id), id)
+  // 08/10/2026: o Luís Alves foi medido no OSM (achar_confluencias.py --gravar), como o Benedito.
+  const luis = cat.confluencias?.find((c) => c.id === 'luis-alves')
+  assert.deepEqual([luis?.lat, luis?.lon], [-26.87302, -48.78871])
+  assert.equal(cat.confluencias?.length, 4)
+  for (const id of ['ibirama', 'rio-dos-cedros', 'guabiruba']) assert.ok(cat.semPonto?.some((s) => s.id === id), id)
+  assert.ok(!cat.semPonto?.some((s) => s.id === 'luis-alves'))
   assert.equal(pontoDoTexto('a confirmar por coordenada — antes ou depois da régua de Ilhota'), null)
   assert.deepEqual(pontoDoTexto('em −26,89134, −49,23557 (lat, lon), a 90 km'), { lat: -26.89134, lon: -49.23557 })
 })
@@ -324,9 +328,10 @@ test('confluência com ponto: marca no Monitor e diz a coordenada e a fonte; sem
   assert.deepEqual(montados.get(null)!.chamadas, ['marca:-26.89134,-49.23557'])
   assert.match(s.texto, /Confluência do Rio Benedito[^:]*: −26,89134, −49,23557\. Fonte: Confluência medida no traçado do OpenStreetMap[^]*docs\/TRACADOS-AFLUENTES-2026-10-06\.md\.$/)
   const sem = ambiente(null)
-  const t = await executar([{ tipo: 'confluencia', id: 'luis-alves' }], sem.amb, cat, fora, ajuda)
+  const semPonto = cat.semPonto!.find((x) => x.id === 'rio-dos-cedros')!
+  const t = await executar([{ tipo: 'confluencia', id: 'rio-dos-cedros' }], sem.amb, cat, fora, ajuda)
   assert.deepEqual(sem.navegacoes, [])
-  assert.match(t.texto, /Rio Luís Alves não tem ponto de confluência gravado[^]*O mapa não marca um ponto estimado/)
+  assert.match(t.texto, new RegExp(`^${semPonto.nome} não tem ponto de confluência gravado[^]*O mapa não marca um ponto estimado`))
 })
 
 test('copiar resumo: só com leitura de agora, e o texto vai para copiar, nunca é enviado', async () => {

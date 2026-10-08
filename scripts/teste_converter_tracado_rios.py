@@ -303,6 +303,28 @@ class OrigemDoTracado(unittest.TestCase):
                 self.assertEqual(o["base_osm"], base, arquivo.name)
 
 
+class LuizAlvesSoOLigadoAoTronco(unittest.TestCase):
+    """O alto curso do Luís Alves fica solto no OSM (lacuna de ~7,8 km): só o trecho que chega ao Açu entra."""
+
+    def test_o_pedaco_solto_fica_de_fora(self):
+        acu = [[[-48.80, -26.88], [-48.78, -26.87]]]
+        ligado = [[-48.82, -26.85], [-48.80, -26.86]]
+        chegada = [[-48.80, -26.86], [-48.80, -26.88]]  # termina num vértice do Açu
+        solto = [[-48.82, -26.75], [-48.81, -26.77]]
+        ponta = ct.ponta_mais_perto([solto, ligado, chegada], acu)
+        self.assertEqual(ponta, (-48.80, -26.88))
+        self.assertEqual(ct.ligadas_ao_ponto([solto, ligado, chegada], ponta), [ligado, chegada])
+
+    def test_o_arquivo_gravado_comeca_abaixo_da_lacuna(self):
+        arquivo = ct.SAIDA / "luiz-alves.geojson"
+        if not arquivo.exists():
+            self.skipTest("sem data/rios/luiz-alves.geojson")
+        la = json.loads(arquivo.read_text(encoding="utf-8"))
+        norte = max(p[1] for l in la["geometry"]["coordinates"] for p in l)
+        self.assertLess(norte, -26.80, "o alto curso solto voltou ao desenho")
+        self.assertIn("lacuna de ~7,8 km", la["properties"]["cobertura"])
+
+
 class VaoDoOeste(unittest.TestCase):
     """A via "Rio Itajaí" fecha a falha de 2,1 km do Oeste, e só ela, pelo ID (08/10/2026)."""
 

@@ -99,6 +99,8 @@ BRUTOS_AFLUENTES = {
     "trombudo": RAIZ / "data/brutos/tracado-trombudo-osm.json",
     "rio-dos-cedros": RAIZ / "data/brutos/tracado-rio-dos-cedros-osm.json",
     "guabiruba": RAIZ / "data/brutos/tracado-guabiruba-osm.json",
+    # O afluente que o Açu recebe em Ilhota (`baixar_tracado_luiz_alves.py`): só para achar a confluência.
+    "luiz-alves": RAIZ / "data/brutos/tracado-luiz-alves-osm.json",
 }
 #: Brutos dos cursos d'água COM NOME que passam por um município
 #: (`baixar_rios_municipio.py`, `data/brutos/rios-<municipio>-osm.json`). Cada
@@ -179,10 +181,16 @@ NOMES_EXATOS = {"guabiruba"}
 #: desenhar o pedaço solto seria um salto no mapa. Fica o curso da estação até o Mirim.
 SO_O_LIGADO_A_REGUA = {"guabiruba": "guabiruba"}
 
+#: Afluentes desenhados só no trecho LIGADO ao tronco (vértice comum, a partir da ponta mais perto do Açu). No Rio
+#: Luís Alves, o OSM tem uma lacuna de ~7,8 km em linha reta entre o alto curso (cidade de Luiz Alves, vias
+#: 24582788 e 741111134) e o baixo (136185376 em diante). Pela mesma regra do Guabiruba, o pedaço solto fica de
+#: fora; o que fica chega ao Açu no nó 3981099664, que é onde a confluência é medida (08/10/2026).
+SO_O_LIGADO_AO_TRONCO = {"luiz-alves"}
+
 #: Os rios recortados na CAIXA do mapa (a extensão do tronco e das réguas do cadastro). O Benedito nasce ao
 #: norte de Doutor Pedrinho e o Itajaí do Sul em Alfredo Wagner, fora do quadro de hoje; inteiros, eles
 #: afastariam o mapa inteiro. O recorte guarda o trecho das cidades e a chegada ao rio de baixo.
-RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba")
+RECORTE_NA_CAIXA = ("benedito", "itajai-do-sul", "trombudo", "rio-dos-cedros", "guabiruba", "luiz-alves")
 #: Folga do recorte, em graus (~1,5 km). Sem ela, a régua que define a borda do quadro (Rio dos Cedros, a mais
 #: ao norte) ficava NA PONTA do rio recortado, a 137 m do fim da linha — o rio parecia nascer na cidade. Com a
 #: folga, a linha passa pela régua e segue um pouco além. O quadro do Monitor cresce no máximo isso.
@@ -248,6 +256,15 @@ def ligadas_ao_ponto(linhas: list[list[list[float]]], ponto: tuple[float, float]
                 vistos.add(j)
                 fila.append(j)
     return [linhas[i] for i in sorted(vistos)]
+
+
+def ponta_mais_perto(linhas: list[list[list[float]]], alvo: list[list[list[float]]]) -> tuple[float, float]:
+    """A ponta (lon, lat) das `linhas` mais perto de algum vértice do `alvo` — a chegada do afluente."""
+    pontos = [p for l in alvo for p in l]
+    def d2(p: list[float]) -> float:
+        return min((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 for q in pontos)
+    ponta = min((p for l in linhas for p in (l[0], l[-1])), key=d2)
+    return (ponta[0], ponta[1])
 
 
 def recortar_ao_sul(linhas: list[list[list[float]]], lat_max: float) -> list[list[list[float]]]:
@@ -497,6 +514,8 @@ def main() -> int:
             linhas = recortar_na_caixa(linhas, caixa)
         if rio_id in SO_O_LIGADO_A_REGUA and linhas:
             linhas = ligadas_ao_ponto(linhas, coordenada_da_cidade(SO_O_LIGADO_A_REGUA[rio_id]))
+        if rio_id in SO_O_LIGADO_AO_TRONCO and linhas:
+            linhas = ligadas_ao_ponto(linhas, ponta_mais_perto(linhas, tronco))
         if not linhas:
             print(f"{rio_id}: nenhum way com {chaves} no bruto — pulado. Inclua o rio na "
                   "query do Overpass (docs/fontes-tempo-real.md) e rebaixe o bruto.")
@@ -507,13 +526,19 @@ def main() -> int:
         if rio_id in RECORTE_NA_CAIXA:
             feat["properties"]["cobertura"] = (
                 "RECORTADO na caixa do mapa (extensão do tronco e das réguas do cadastro), para não mudar o "
-                "enquadramento do Monitor. Baixado por scripts/baixar_tracados_afluentes.py."
+                "enquadramento do Monitor. Baixado por scripts/"
+                + ("baixar_tracado_luiz_alves.py." if rio_id == "luiz-alves" else "baixar_tracados_afluentes.py.")
             )
         if rio_id in SO_O_LIGADO_A_REGUA:
             feat["properties"]["cobertura"] += (
                 " Só o trecho ligado à régua de Guabiruba (DCSC-00029): o Rio Guabiruba Norte a partir de ~2 km acima da"
                 " estação e o Rio Guabiruba até o Itajaí-Mirim. A cabeceira do Norte, solta no OSM por uma lacuna de ~1,8 km, fica"
                 " de fora; o Rio Guabiruba Sul não é o curso da estação."
+            )
+        if rio_id in SO_O_LIGADO_AO_TRONCO:
+            feat["properties"]["cobertura"] += (
+                " Só o trecho ligado ao Itajaí-Açu: o alto curso, solto no OSM por uma lacuna de ~7,8 km, fica de fora."
+                " Serve para medir a confluência (achar_confluencias.py); o rio não tem régua no cadastro e fica cinza."
             )
         if rio_id in CORTE_NORTE:
             feat["properties"]["cobertura"] = (
