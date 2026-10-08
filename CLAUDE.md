@@ -147,6 +147,15 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   ribeirão não faz o curso correr.
 - Detalhes e números em `docs/AVISOS-DC05-DC08-DC11-2026-10-08.md`.
 
+### Ituporanga: régua a jusante da Barragem Sul e régua do Centro — REGRA (08/10/2026)
+- A régua da cidade (DCSC-00039 = ANA 83145140 "Barragem Sul Ituporanga Jusante") fica **a jusante da Barragem Sul**
+  (≈3,7 km abaixo do barramento): a leitura é de água já amortecida. Está em `observacao` e no painel do Monitor.
+- A régua do **"Centro"** do Boletim Diário da Prefeitura (2 leituras/dia) é outra régua, sem zero nem cotas
+  publicados. `scripts/coleta_ituporanga.py --publicar` → `ultimo_ituporanga_centro.json` (arquivo próprio, **nunca
+  em `leituras`**: como leitura municipal desligaria a classificação estadual). A tela mostra número, hora de
+  Brasília e fonte, repassa a criticidade **como a fonte escreve** e fica **sem cor** até a Defesa Civil confirmar as
+  cotas na mesma régua. Leitura com mais de 18 h não é atual. Detalhes em `docs/ITUPORANGA-CENTRO.md`.
+
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
   Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`

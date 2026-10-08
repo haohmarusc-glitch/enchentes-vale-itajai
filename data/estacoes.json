@@ -203,11 +203,11 @@
           "codigo_dcsc": "DCSC-00039",
           "verificado": false,
           "barragem": "Barragem Sul (Ituporanga)",
-          "observacao": "Cabeceira do Itajaí do Sul — corre em PARALELO ao Itajaí do Oeste (Taió) e se junta a ele em Rio do Sul. Overpass 02/09/2026: 'Rio Itajaí do Sul' a menos de 1 km da estação. DOIS CÓDIGOS ANA, NÃO TROCAR UM PELO OUTRO (auditoria de 03/10/2026): `codigo_ana` 83145140 é a estação desta cidade no cadastro; os picos históricos de Ituporanga em enchentes.json vêm da 83250000 ITUPORANGA (convencional, outra régua, zero próprio, nunca comparado com a régua municipal — ver `codigo_ana_nao_e`).",
+          "observacao": "RÉGUA A JUSANTE DA BARRAGEM SUL (conferido em 08/10/2026): a estação desta cidade, DCSC-00039 = ANA 83145140 'Barragem Sul Ituporanga Jusante', fica na coordenada do pino (−27,4822 / −49,5825), cerca de 3,7 km rio abaixo do barramento da Barragem Sul (DCSC-00038, −27,5039 / −49,5536); a leitura é de água já amortecida pela barragem, e a coluna 'Jusante (m)' do Boletim Diário da Prefeitura bate com ela. A régua do 'Centro', que a Prefeitura lê duas vezes por dia no mesmo boletim, é OUTRA régua, não nomeada, não situada e sem zero informado: é coletada à parte (scripts/coleta_ituporanga.py -> ultimo_ituporanga_centro.json) e mostrada com horário e fonte, SEM COR, até a Defesa Civil confirmar as cotas na mesma régua (decisão do Jefferson, 08/10/2026). Cabeceira do Itajaí do Sul — corre em PARALELO ao Itajaí do Oeste (Taió) e se junta a ele em Rio do Sul. Overpass 02/09/2026: 'Rio Itajaí do Sul' a menos de 1 km da estação. DOIS CÓDIGOS ANA, NÃO TROCAR UM PELO OUTRO (auditoria de 03/10/2026): `codigo_ana` 83145140 é a estação desta cidade no cadastro; os picos históricos de Ituporanga em enchentes.json vêm da 83250000 ITUPORANGA (convencional, outra régua, zero próprio, nunca comparado com a régua municipal — ver `codigo_ana_nao_e`).",
           "cotas_m": {},
           "fontes_tempo_real": [
             "https://monitoramento.defesacivil.sc.gov.br/mapa",
-            "https://www.ituporanga.sc.gov.br/nivel-rio (Rio Itajaí do Sul — Nível do Rio 'Centro'; 2 leituras/dia, 07:00 e 17:00; régua NÃO nomeada; CSV com 8.433 registros)"
+            "https://www.ituporanga.sc.gov.br/nivel-rio (Boletim Diário da Prefeitura: 'Nível do Rio (Centro)' em régua própria, não nomeada; 2 leituras/dia, 07:00 e 17:00; tabela da Barragem Sul com montante/jusante/comportas; scripts/coleta_ituporanga.py, arquivo ultimo_ituporanga_centro.json, sem cor)"
           ],
           "coordenadas": [
             -27.4822,

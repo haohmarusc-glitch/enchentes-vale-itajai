@@ -8,6 +8,7 @@ import ChuvaAoVivo from '../componentes/ChuvaAoVivo'
 import EstadoDasBarragens from '../componentes/EstadoDasBarragens'
 import LegendaFaixas from '../componentes/LegendaFaixas'
 import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
+import PainelCentroItuporanga from '../componentes/PainelCentroItuporanga'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import { cidadesDoRio, eventosDoRio, estacoesTempoReal, rio, topologiaDoRio } from '../dados/carregar'
 import { barragensDaCidade, useBarragens } from '../dados/barragens'
@@ -212,6 +213,9 @@ export default function TelaCidade() {
             <CartaoAgora cidade={cidade} aoVivo={aoVivo} estado={estado}>
               <AcoesDaCidade cidade={cidade} rioId={rioId} aoVivo={aoVivo} estado={estado} />
             </CartaoAgora>
+            {/* Ituporanga (08/10/2026): a régua do Centro da Prefeitura, com horário e fonte, sem cor — é outra
+                régua, não a DCSC-00039 (a jusante da Barragem Sul) que dá a cor do cartão acima. */}
+            {cidade.id === 'ituporanga' ? <PainelCentroItuporanga /> : null}
 
             <CartaoDescida cidade={cidade} rioId={rioId} cidades={cidades} topologia={topologia} />
 
