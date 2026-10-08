@@ -62,7 +62,7 @@ Distâncias medidas em 07/10/2026 contra `data/rios/*.geojson`. "Faixa às 19h45
 | Curso | Motivo |
 |---|---|
 | Benedito (Timbó) | A coordenada da régua municipal não está confirmada e a equivalência com a DCSC-00023 também não (decisão de 06/10/2026). O pino de Timbó continua com a faixa estadual da DCSC-00023, mas o rio não. |
-| Ribeirão da Murta (Itajaí) | DC-07 e DC-09 estão sem aviso automático: cota não conferida (DC-07) e régua de estuário (DC-09). O traçado OSM também está partido entre a DC-07 e a foz (68 de 195 vértices alcançáveis, 08/10/2026). |
+| Ribeirão da Murta (Itajaí) | DC-07 e DC-09 estão sem aviso automático: cota não conferida (DC-07) e régua de estuário (DC-09). O traçado OSM estava partido entre a DC-07 e a foz (68 de 195 vértices alcançáveis) — **fechado em 08/10/2026** com os dois bueiros sem nome do OSM (`docs/VAO-MURTA.md`): 195 de 195 alcançáveis. O trecho do futuro vínculo (DC-07 → DC-09, 4,86 km) está delimitado lá, sem ativar. |
 | ~~Ribeirão Canhanduba (Itajaí)~~ | ~~DC-08 sem aviso automático~~ — **vinculado por régua em 08/10/2026**, ver abaixo. |
 
 ### Cursos vinculados por RÉGUA (08/10/2026)
@@ -87,9 +87,11 @@ Regras confirmadas pelo Jefferson em 08/10/2026:
   arestas existentes do traçado.
 - **Reprodução: cinza** enquanto não houver leitura histórica da régua encaixada no instante escolhido e classificação
   correspondente. Hoje `construirCena` não recebe as réguas na reprodução; o motivo diz isso no toque.
-- **Murta (destravar a DC-07):** além da decisão sobre a cota, é preciso (a) conferir a continuidade do traçado — hoje
-  partido entre a DC-07 e a foz, só 68 de 195 vértices alcançáveis — e (b) delimitar o trecho do vínculo novo (régua
-  → foz no Açu, ou até a DC-09). O teste de `VINCULOS_DE_REGUA` exige caminho contínuo com o km declarado e reprova
+- **Murta (destravar a DC-07):** além da decisão sobre a cota, é preciso (a) conferir a continuidade do traçado — estava
+  partido entre a DC-07 e a foz, só 68 de 195 vértices alcançáveis; **fechado em 08/10/2026** pelos dois bueiros do OSM
+  (`docs/VAO-MURTA.md`) — e (b) delimitar o trecho do vínculo novo: **da DC-07 até a DC-09** (próxima régua rio abaixo,
+  4,86 km pelo traçado), não até a foz; os 1,43 km finais são da DC-09, de estuário. O rascunho do vínculo está no doc e
+  **não** está em `VINCULOS_DE_REGUA`. O teste de `VINCULOS_DE_REGUA` exige caminho contínuo com o km declarado e reprova
   vínculo sem caminho.
 | Rio Conceição, Ribeirão Taquaras, Rio Rafael e braços | Não há régua cadastrada. |
 

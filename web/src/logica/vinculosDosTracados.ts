@@ -181,7 +181,8 @@ export const SEM_VINCULO: Readonly<Record<string, string>> = {
   'ribeirao-murta':
     'As réguas de Itajaí neste ribeirão (DC-07 e DC-09) estão sem aviso automático: cota ainda não conferida ' +
     'contra a série (DC-07) e régua de estuário com oscilação de maré (DC-09). Sem respaldo, não colorem o ' +
-    'ribeirão. (O traçado OSM da Murta também está partido entre a DC-07 e a foz; medido em 08/10/2026.)',
+    'ribeirão. (O traçado já é contínuo da DC-07 à foz desde 08/10/2026 — docs/VAO-MURTA.md; o trecho do futuro ' +
+    'vínculo da DC-07, até a DC-09, está delimitado lá e só entra com a decisão sobre a cota.)',
 }
 
 export function vinculoDoTracado(tracado: string): VinculoDeTracado | null {
