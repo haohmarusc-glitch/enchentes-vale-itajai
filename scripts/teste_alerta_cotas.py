@@ -623,5 +623,128 @@ class TaioAvisaEmMonitoramento(unittest.TestCase):
         self.assertIsNone(alerta_cotas.nota_da_faixa("itajai-acu", "taio", "atencao"))
 
 
+
+
+class HistereseNaDescida(unittest.TestCase):
+    """
+    Proposta de 08/10/2026 (aguardando aprovação; docs/AVISOS-DC05-DC08-DC11-2026-10-08.md): DC-11 com
+    0,30 m e DC-05 com 0,10 m de histerese, só na descida. A subida avisa na cota, na mesma leitura de
+    antes; a faixa só baixa quando o nível desce a histerese abaixo da cota da faixa em que estava.
+    """
+
+    DC11 = "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
+    DC05 = "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada"
+    DC08 = "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni"
+
+    def rodada(self, estacao, nivel, estado, rio="itajai-acu"):
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": estacao, "rio": rio, "cidade": "itajai", "nivel_m": nivel,
+             "medido_em": "2026-08-30T00:00:00"}]}
+        return decidir(dados, estado, AGORA)
+
+    def test_a_subida_avisa_na_cota_como_antes(self):
+        avisos, estado, _ = self.rodada(self.DC11, 3.00, {})
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"])
+        avisos, _, _ = self.rodada(self.DC05, 1.60, {}, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"])
+
+    def test_baixa_mar_que_nao_desce_030_nao_manda_voltou_ao_normal(self):
+        _, estado, _ = self.rodada(self.DC11, 3.10, {})
+        avisos, estado, _ = self.rodada(self.DC11, 2.75, estado)
+        self.assertEqual(avisos, [])
+        self.assertEqual(estado[self.DC11]["faixa"], "atencao")
+        # E a preamar seguinte não manda outra "atenção": a régua nunca saiu dela.
+        avisos, _, _ = self.rodada(self.DC11, 3.05, estado)
+        self.assertEqual(avisos, [])
+
+    def test_descer_alem_da_histerese_volta_ao_normal(self):
+        _, estado, _ = self.rodada(self.DC11, 3.10, {})
+        avisos, estado, _ = self.rodada(self.DC11, 2.69, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_alerta_segura_ate_030_abaixo_de_4_e_depois_baixa_para_atencao(self):
+        _, estado, _ = self.rodada(self.DC11, 4.10, {})
+        avisos, estado, _ = self.rodada(self.DC11, 3.80, estado)
+        self.assertEqual(avisos, [])
+        avisos, _, _ = self.rodada(self.DC11, 3.65, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"])
+
+    def test_dc05_usa_010(self):
+        _, estado, _ = self.rodada(self.DC05, 1.65, {}, rio="itajai-mirim")
+        avisos, estado, _ = self.rodada(self.DC05, 1.52, estado, rio="itajai-mirim")
+        self.assertEqual(avisos, [])
+        avisos, _, _ = self.rodada(self.DC05, 1.49, estado, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_subida_para_faixa_mais_alta_avisa_na_hora_mesmo_segurada(self):
+        """A margem não atrasa subida: segurada em "atenção" na baixa-mar, a régua que chega a 4,00 m avisa "alerta"."""
+        _, estado, _ = self.rodada(self.DC11, 3.10, {})
+        _, estado, _ = self.rodada(self.DC11, 2.80, estado)  # segurada em atenção
+        avisos, _, _ = self.rodada(self.DC11, 4.00, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["alerta"])
+        _, estado, _ = self.rodada(self.DC05, 1.60, {}, rio="itajai-mirim")
+        _, estado, _ = self.rodada(self.DC05, 1.55, estado, rio="itajai-mirim")  # segurada em atenção
+        avisos, _, _ = self.rodada(self.DC05, 2.20, estado, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["alerta"])
+
+    def test_na_fronteira_exata_ja_baixa(self):
+        """Descer exatamente a margem (2,70 m na DC-11; 1,50 m na DC-05) já baixa: a conta não fica presa no centímetro."""
+        _, estado, _ = self.rodada(self.DC11, 3.10, {})
+        avisos, _, _ = self.rodada(self.DC11, 2.70, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+        _, estado, _ = self.rodada(self.DC05, 1.65, {}, rio="itajai-mirim")
+        avisos, _, _ = self.rodada(self.DC05, 1.50, estado, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_queda_grande_entre_leituras_nao_pula_a_faixa_do_meio(self):
+        """De "alerta" direto para 2,90 m (lacuna na coleta): 2,90 m não desceu 0,30 m abaixo de 3,00 m, fica "atenção"."""
+        _, estado, _ = self.rodada(self.DC11, 4.10, {})
+        avisos, estado, _ = self.rodada(self.DC11, 2.90, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"])
+        avisos, _, _ = self.rodada(self.DC11, 2.60, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_regua_sem_histerese_continua_como_antes(self):
+        """A DC-10 não ganhou histerese: desceu da cota, volta ao normal na hora."""
+        dc10 = "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
+        _, estado, _ = self.rodada(dc10, 8.05, {}, rio="itajai-mirim")
+        avisos, _, _ = self.rodada(dc10, 7.98, estado, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+
+class DC05eDC08Destravadas(unittest.TestCase):
+    """Proposta de 08/10/2026: DC-05 e DC-08 avisam; DC-08 com a atenção provisória de 1,70 m do portal."""
+
+    def test_dc08_avisa_em_170_e_o_aviso_diz_que_a_cota_e_provisoria(self):
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": HistereseNaDescida.DC08, "rio": "ribeirao-canhanduba", "cidade": "itajai",
+             "nivel_m": 1.72, "medido_em": "2026-08-30T00:00:00"}]}
+        avisos, _, recusas = decidir(dados, {}, AGORA)
+        self.assertEqual(recusas, [])
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"])
+        texto = avisos[0]["texto"]
+        self.assertIn("1,70 m", texto)
+        self.assertIn("provisória", texto)
+        self.assertIn("1,80 m", texto)
+
+    def test_dc08_abaixo_de_170_nao_avisa(self):
+        dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+            {"estacao": HistereseNaDescida.DC08, "rio": "ribeirao-canhanduba", "cidade": "itajai",
+             "nivel_m": 1.69, "medido_em": "2026-08-30T00:00:00"}]}
+        avisos, _, _ = decidir(dados, {}, AGORA)
+        self.assertEqual(avisos, [])
+
+    def test_as_travadas_continuam_recusadas(self):
+        for titulo, rio in (("DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "itajai-acu"),
+                            ("DC-07 Ribeirão da Murta - Portal", "ribeirao-murta")):
+            dados = {"coletado_em": AGORA.isoformat(), "leituras": [
+                {"estacao": titulo, "rio": rio, "cidade": "itajai", "nivel_m": 5.0,
+                 "medido_em": "2026-08-30T00:00:00"}]}
+            with self.subTest(regua=titulo[:5]):
+                avisos, _, recusas = decidir(dados, {}, AGORA)
+                self.assertEqual(avisos, [])
+                self.assertTrue(recusas)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

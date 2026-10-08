@@ -605,9 +605,14 @@ class TestCotas(unittest.TestCase):
 
     def test_regua_que_nao_sente_a_mare_nao_leva_a_marca_de_mare(self):
         """03/10/2026: a medição mostrou que DC-02, DC-05, DC-07 e DC-08 não
-        sentem a maré. Continuam sem aviso automático, mas com a marca †."""
+        sentem a maré. DC-02 e DC-07 continuam sem aviso automático, com a marca †;
+        DC-05 e DC-08 passam a avisar (proposta de 08/10/2026) e perdem a marca."""
         t = resp("/cotas Itajaí")
-        for codigo in ("DC-02", "DC-05", "DC-07", "DC-08"):
+        for codigo in ("DC-05", "DC-08"):
+            linha = t.split(codigo)[1].split("\n")[0]
+            self.assertNotIn("†", linha, codigo)
+            self.assertNotIn("*", linha, codigo)
+        for codigo in ("DC-02", "DC-07"):
             linha = t.split(codigo)[1].split("\n")[0]
             self.assertIn("†", linha, codigo)
             self.assertNotIn("*", linha, codigo)
@@ -1901,9 +1906,11 @@ class TestDC10NaoEDeEstuario(unittest.TestCase):
     """
 
     def test_sao_nove_as_de_estuario(self):
+        """Eram nove; a proposta de 08/10/2026 destrava DC-05 e DC-08 (sem maré, só passam da cota
+        em cheia). Ficam sete travadas."""
         mudas = {e.get("codigo") for e in estacoes_tempo_real()
                  if e.get("alerta_automatico") is False}
-        self.assertEqual(len(mudas), 9)
+        self.assertEqual(mudas, {"DC-01", "DC-02", "DC-03", "DC-04", "DC-06", "DC-07", "DC-09"})
         self.assertNotIn("DC-10", mudas)
         self.assertNotIn("DC-11", mudas)
 

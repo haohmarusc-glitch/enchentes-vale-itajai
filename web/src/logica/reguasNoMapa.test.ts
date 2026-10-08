@@ -107,13 +107,14 @@ test('cada régua leva as cotas DELA, não as da cidade', () => {
   assert.deepEqual(reguasNoMapa([sujo], [], AGORA)[0]!.cotas, { atencao: 1.16 })
 })
 
-test('contra os dados REAIS: as onze de Itajaí entram, e nove não podem pintar', () => {
+test('contra os dados REAIS: as onze de Itajaí entram, e sete não podem pintar', () => {
   const d = JSON.parse(readFileSync(new URL('../../../data/estacoes.json', import.meta.url), 'utf-8'))
   const ets: EstacaoTempoReal[] = d.estacoes_tempo_real
   const rs = reguasNoMapa(ets, [], AGORA)
   assert.equal(rs.length, 11, `esperava 11 réguas com coordenada, vieram ${rs.length}`)
   const deMare = ets.filter((e) => e.alerta_automatico === false)
-  assert.equal(deMare.length, 9, 'mudou o número de réguas de estuário no cadastro')
+  // Eram nove; DC-05 e DC-08 avisam e pintam desde a proposta de 08/10/2026 (aguardando aprovação).
+  assert.equal(deMare.length, 7, 'mudou o número de réguas travadas no cadastro')
   for (const r of rs) {
     assert.ok(r.motivoSemCor, `${r.codigo} sem leitura tinha de dizer por que não tem cor`)
     // Todas as onze têm nome de lugar no Plano — nenhuma cai para o código.

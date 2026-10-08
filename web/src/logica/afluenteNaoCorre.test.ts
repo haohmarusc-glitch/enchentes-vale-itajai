@@ -85,9 +85,17 @@ test('nenhum afluente tem cidade no cadastro — é o que o mantém sem faixa', 
   }
 })
 
+/**
+ * Réguas de ribeirão destravadas por decisão, com o curso mantido cinza e PARADO. A decisão de 08/10/2026
+ * (proposta, aguardando aprovação; docs/AVISOS-DC05-DC08-DC11-2026-10-08.md): a DC-08 não sente a maré e só
+ * passou da cota em cheia, então avisa e o PINO ganha cor. O curso do Canhanduba continua sem cidade (o caminho
+ * 1, acima), portanto cinza e sem correnteza. Fazer o curso correr é outra decisão.
+ */
+const DESTRAVADAS_SEM_CORRER = new Set(['DC-08'])
+
 test('as réguas dos afluentes continuam travadas pela maré', () => {
   const nosAfluentes = estacoes.estacoes_tempo_real.filter(
-    (e) => e.rio && afluentes().includes(e.rio),
+    (e) => e.rio && afluentes().includes(e.rio) && !DESTRAVADAS_SEM_CORRER.has(e.codigo ?? ''),
   )
   assert.ok(nosAfluentes.length > 0, 'nenhuma régua nos afluentes — o teste virou vazio')
   for (const e of nosAfluentes) {
@@ -99,4 +107,11 @@ test('as réguas dos afluentes continuam travadas pela maré', () => {
         'correnteza significa faixa.',
     )
   }
+})
+
+test('a DC-08 destravada não faz o Canhanduba correr: o curso segue sem cidade', () => {
+  const dc08 = estacoes.estacoes_tempo_real.find((e) => e.codigo === 'DC-08')
+  assert.ok(dc08 && dc08.alerta_automatico !== false, 'a DC-08 voltou a ser travada: tire-a de DESTRAVADAS_SEM_CORRER')
+  assert.equal(dc08.rio, 'ribeirao-canhanduba')
+  assert.equal((estacoes.rios['ribeirao-canhanduba']?.cidades ?? []).length, 0)
 })

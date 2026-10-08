@@ -130,6 +130,21 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Leitura antiga nunca como atual: medição com mais de 60 min ou do futuro é "Medição indisponível". A tábua da
   Marinha continua sendo a previsão, com fonte e horário à parte.
 
+### Avisos de DC-05, DC-08 e DC-11 — REGRA (proposta de 08/10/2026, aguardando aprovação)
+- **Histerese só na descida** (`aviso_histerese_m` em `estacoes.json`, lido por `alerta_cotas.faixa_com_histerese`).
+  - A subida avisa ao **atingir** a cota, na mesma leitura de antes.
+  - A faixa só baixa quando o nível desce o valor abaixo da cota da faixa em que estava.
+  - DC-11 usa 0,30 m (maré); DC-05 usa 0,10 m (5 × o passo p99 entre leituras).
+  - O mapa e o bot não usam histerese: mostram a faixa da leitura de agora.
+  - A histerese reduz repetição, não tira a maré.
+- **DC-08: atenção provisória de 1,70 m**, do portal da Defesa Civil de Itajaí (`cota_provisoria`), com o 1,80 m do
+  Plano v17 ao lado.
+  - O aviso diz que é provisória (`nota_no_aviso`).
+  - Testes que conferem o cadastro contra o Plano usam `comum.cotas_do_plano`: só a exceção declarada passa.
+  - Confirmação municipal pendente; a orientação de não enviar ofício a Itajaí continua.
+- O curso do Ribeirão Canhanduba segue cinza e parado. Destravar uma régua de ribeirão não faz o curso correr.
+- Detalhes e números em `docs/AVISOS-DC05-DC08-DC11-2026-10-08.md`.
+
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
 - **`medido_em` sem fuso = horário de Brasília (America/Sao_Paulo).** É o que a página da
   Defesa Civil de Itajaí publica, e o sistema inteiro já concorda nisso: `coleta_itajai.py`

@@ -283,6 +283,26 @@ def valida_estacoes() -> set[tuple[str, str]]:
         if e.get("alerta_automatico") is False and not str(e.get("motivo_sem_alerta", "")).strip():
             erro(f"{onde}: alerta_automatico=false sem 'motivo_sem_alerta' — a régua que "
                  "não dispara aviso tem de dizer por que, ou vira faixa de perigo enganosa")
+        # Histerese do aviso (08/10/2026): só na descida, só em régua que dispara, com o motivo escrito.
+        histerese = e.get("aviso_histerese_m")
+        if histerese is not None:
+            if not isinstance(histerese, (int, float)) or not 0 < histerese <= 0.5:
+                erro(f"{onde}: aviso_histerese_m = {histerese!r} fora de (0, 0,5] m")
+            if e.get("alerta_automatico") is False:
+                erro(f"{onde}: aviso_histerese_m em régua que não dispara aviso")
+            if not str(e.get("aviso_histerese_motivo", "")).strip():
+                erro(f"{onde}: aviso_histerese_m sem 'aviso_histerese_motivo'")
+        # Cota provisória: o valor tem de ser o que está em cotas_m, com fonte, estado e o número do Plano ao lado.
+        for faixa, prov in (e.get("cota_provisoria") or {}).items():
+            if not isinstance(prov, dict) or (e.get("cotas_m") or {}).get(faixa) != prov.get("valor"):
+                erro(f"{onde}: cota_provisoria.{faixa} não bate com cotas_m.{faixa}")
+                continue
+            for campo in ("fonte", "estado", "plano_v17", "evidencia"):
+                if not prov.get(campo):
+                    erro(f"{onde}: cota_provisoria.{faixa} sem '{campo}'")
+        for faixa in (e.get("nota_no_aviso") or {}):
+            if faixa not in (e.get("cotas_m") or {}):
+                erro(f"{onde}: nota_no_aviso.{faixa} para uma faixa sem cota")
         if (
             e.get("tipo") != "pluviometro"
             and not (e.get("cotas_m") or {})

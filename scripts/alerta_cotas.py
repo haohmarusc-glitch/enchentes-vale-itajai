@@ -190,6 +190,13 @@ def cotas_da_cidade(rio: str, cidade: str) -> dict:
     return {}
 
 
+def _juntar_notas(*notas) -> str | None:
+    """As notas da cidade e da régua, na ordem, sem vazias. A da régua é a de `nota_no_aviso` em
+    `estacoes.json` (hoje: a cota de atenção provisória da DC-08, com a fonte)."""
+    partes = [n.strip() for n in notas if isinstance(n, str) and n.strip()]
+    return " ".join(partes) or None
+
+
 def nota_da_faixa(rio: str | None, cidade: str | None, faixa: str) -> str | None:
     """
     O texto que a cidade manda junto com o aviso desta faixa — hoje só o de
@@ -361,12 +368,41 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
         if motivo:
             recusas.append(f"{titulo}: {motivo}")
             continue
+        estacao = estacao_por_titulo(titulo) or {}
+        histerese = estacao.get("aviso_histerese_m")
         vigiadas.append({
             "leitura": leitura,
             "cotas": cotas,
             "faixa": faixa_de(float(nivel), cotas),
+            # Só na DESCIDA (08/10/2026): a régua só "baixa" de faixa quando desce isto abaixo da cota da
+            # faixa em que estava. A subida continua na cota. Ver `faixa_com_histerese`.
+            "histerese_m": float(histerese) if isinstance(histerese, (int, float)) else 0.0,
+            "notas": estacao.get("nota_no_aviso") if isinstance(estacao.get("nota_no_aviso"), dict) else {},
         })
     return vigiadas, recusas
+
+
+def faixa_com_histerese(nivel: float, cotas: dict, faixa_nova: str, faixa_antes: str, histerese_m: float) -> str:
+    """
+    A faixa que vale para o AVISO, com histerese só na descida.
+
+    Na DC-11 a maré sobe e desce a régua ~0,7 m por dia em volta da cota de atenção, e a regra de
+    trocar de faixa a cada travessia mandava "atenção" na preamar e "voltou ao normal" na baixa-mar:
+    112 mensagens em 36 dias (docs/PROPOSTA-DC11-AVISOS-2026-10-08.md). Com histerese, a faixa só
+    baixa quando o nível desce `histerese_m` abaixo da cota da faixa em que estava. A SUBIDA não
+    muda: chegar à cota avisa na mesma leitura de antes. O mapa e o bot não usam isto: mostram a
+    faixa da leitura de agora.
+    """
+    if histerese_m <= 0 or FAIXAS.index(faixa_nova) >= FAIXAS.index(faixa_antes):
+        return faixa_nova
+    # Da faixa de antes para baixo, a primeira que o nível ainda não deixou pela histerese. Uma queda
+    # grande entre duas leituras (lacuna na coleta) não pula a faixa do meio: de "alerta" para 2,90 m
+    # na DC-11 fica "atenção", porque 2,90 m não desceu 0,30 m abaixo de 3,00 m.
+    for nome in reversed(FAIXAS[FAIXAS.index(faixa_nova) + 1:FAIXAS.index(faixa_antes) + 1]):
+        cota = cotas.get(nome)
+        if isinstance(cota, (int, float)) and nivel > float(cota) - histerese_m:
+            return nome
+    return faixa_nova
 
 
 def resolver_atuais(dados: dict, agora: datetime) -> tuple[list[dict], list[str]]:
@@ -408,6 +444,7 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         faixa_antes = antes.get("faixa", "normal")
         nivel_antes = antes.get("nivel_m")
         desde = antes.get("avisado_em")
+        faixa = faixa_com_histerese(float(nivel), cotas, faixa, faixa_antes, item.get("histerese_m", 0.0))
 
         manda = False
         if faixa != faixa_antes:
@@ -447,7 +484,8 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
                     leitura, faixa, faixa_antes, cotas,
                     idade_min(leitura.get("medido_em"), agora),
                     nomes_da_cidade(leitura.get("rio"), leitura.get("cidade")),
-                    nota_da_faixa(leitura.get("rio"), leitura.get("cidade"), faixa),
+                    _juntar_notas(nota_da_faixa(leitura.get("rio"), leitura.get("cidade"), faixa),
+                                  (item.get("notas") or {}).get(faixa)),
                 ),
             })
             novo[chave_estado] = {
