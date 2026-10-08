@@ -29,7 +29,8 @@ e `web/src/telas/MonitorBacia.tsx`. Testes: `web/src/logica/vinculosDosTracados.
     cor).
   - A distância geométrica é conferência, não prova de régua.
 - **Cor:** é a mesma decisão do pino, com a mesma estação, medição, frescor e origem. O módulo não calcula faixa.
-  - Faixa estadual continua tracejada, parada e com o nome "faixa estadual".
+  - Faixa estadual pinta como a municipal (traço contínuo, brilho e correnteza, desde 08/10/2026); só o pino é
+    pontilhado, e o nome segue "faixa estadual".
   - Na reprodução não há classificação estadual histórica, então o trecho fica cinza: o dado de agora não vai para o
     passado.
 - **Tronco:** a primeira régua não pinta o rio acima dela, com folga de 0,5 km para meandro.
