@@ -77,7 +77,20 @@ recalculado; régua sem cor (maré, sem cota, leitura velha) deixa o curso cinza
 |---|---|---|---|---|---|
 | Ribeirão Canhanduba / `ribeirao-canhanduba` | DC-08 "Rio do Meio" (Itajaí) | 13 m | 6,3 km | o último vértice do traçado OSM rio abaixo, 574 m antes do Mirim (o OSM não desenha a foz) | 11,5 km cinza (`fora-do-alcance`) |
 
-O toque no trecho pintado abre o painel da régua, e o painel diz até onde a cor vale (`textoDoAlcanceDaRegua`).
+O toque no trecho pintado abre o painel da régua, e o painel diz até onde a cor vale (`textoDoAlcanceDaRegua`) e o
+que ela é: a classificação medida **na régua**, aplicada ao trecho vinculado — não medição em cada ponto do curso nem
+mancha de inundação.
+
+Regras confirmadas pelo Jefferson em 08/10/2026:
+
+- **Os 574 m até o Mirim ficam sem linha e sem cor.** Nada é completado por aproximação; o alcance é só caminho em
+  arestas existentes do traçado.
+- **Reprodução: cinza** enquanto não houver leitura histórica da régua encaixada no instante escolhido e classificação
+  correspondente. Hoje `construirCena` não recebe as réguas na reprodução; o motivo diz isso no toque.
+- **Murta (destravar a DC-07):** além da decisão sobre a cota, é preciso (a) conferir a continuidade do traçado — hoje
+  partido entre a DC-07 e a foz, só 68 de 195 vértices alcançáveis — e (b) delimitar o trecho do vínculo novo (régua
+  → foz no Açu, ou até a DC-09). O teste de `VINCULOS_DE_REGUA` exige caminho contínuo com o km declarado e reprova
+  vínculo sem caminho.
 | Rio Conceição, Ribeirão Taquaras, Rio Rafael e braços | Não há régua cadastrada. |
 
 ### Tronco

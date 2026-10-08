@@ -151,8 +151,9 @@ export const VINCULOS_DE_REGUA: readonly VinculoDeRegua[] = [
     km: 6.3,
     fonte: 'DC-08 "Ribeirão da Canhanduba - Rio do Meio": coordenada do cadastro (portal da Defesa Civil de Itajaí), ' +
       'a 13 m do traçado; cota de atenção provisória de 1,70 m (#520, 08/10/2026). Fim: o último vértice do ' +
-      'traçado OSM rio abaixo, medido em 08/10/2026 (o traçado pára 574 m antes do Mirim). Os 11,5 km acima da ' +
-      'régua ficam cinza: a régua não mede o que corre acima dela.',
+      'traçado OSM rio abaixo, medido em 08/10/2026 (o traçado pára 574 m antes do Mirim; esses 574 m ficam sem ' +
+      'linha e sem cor — nada é completado por aproximação, decisão do Jefferson de 08/10/2026). Os 11,5 km acima ' +
+      'da régua ficam cinza: a régua não mede o que corre acima dela.',
   },
 ]
 
@@ -289,9 +290,10 @@ export function textoDoAlcance(v: VinculoDeTracado, nomeDoCurso: string): string
 /** "No mapa, a cor desta régua vale só …": o limite da representação, dito no painel da RÉGUA (08/10/2026). */
 export function textoDoAlcanceDaRegua(v: VinculoDeRegua, nomeDoCurso: string): string {
   const km = v.km.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-  return `No mapa, a cor desta régua vale só para o ${nomeDoCurso}, da régua até ${v.fimDescricao} (${km} km), ` +
-    'e o curso fica parado: a correnteza animada é outra decisão. Não vale para o ribeirão acima da régua nem ' +
-    'para o rio que recebe a água.'
+  return `No mapa, a cor desta régua vale só para o ${nomeDoCurso}, da régua até ${v.fimDescricao} (${km} km). ` +
+    'É a classificação medida NA RÉGUA, aplicada ao trecho vinculado: não é medição em cada ponto do curso nem ' +
+    'mancha de inundação. O curso fica parado (a correnteza animada é outra decisão). Não vale para o ribeirão ' +
+    'acima da régua nem para o rio que recebe a água.'
 }
 
 /**
