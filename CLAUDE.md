@@ -142,7 +142,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   - O aviso diz que é provisória (`nota_no_aviso`).
   - Testes que conferem o cadastro contra o Plano usam `comum.cotas_do_plano`: só a exceção declarada passa.
   - Confirmação municipal pendente; a orientação de não enviar ofício a Itajaí continua.
-- O curso do Ribeirão Canhanduba segue cinza e parado. Destravar uma régua de ribeirão não faz o curso correr.
+- O curso do Ribeirão Canhanduba **pinta pela DC-08** desde a decisão de 08/10/2026 ("ribeirões com cota devem
+  pintar conforme cota", vínculo de régua em `VINCULOS_DE_REGUA`) e continua **parado**: destravar uma régua de
+  ribeirão não faz o curso correr.
 - Detalhes e números em `docs/AVISOS-DC05-DC08-DC11-2026-10-08.md`.
 
 ### Fuso dos carimbos de tempo real — REGRA (aprendida em 01/09/2026)
@@ -210,6 +212,12 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - No tronco, a primeira régua **não pinta o rio acima dela** (folga de 0,5 km).
 - Vínculo novo exige estação identificada pelo cadastro (código) e caminho no traçado. Proximidade não basta (Timbó
   segue sem vínculo). Auditoria em `docs/VINCULOS-DOS-TRACADOS.md`.
+- **Vínculo traçado × régua** (`VINCULOS_DE_REGUA`, decisão do Jefferson de 08/10/2026: "ribeirões com cota devem
+  pintar conforme cota"): ribeirão de Itajaí pinta pela régua da Defesa Civil que fica nele, com a **mesma decisão
+  do pino da régua** (`reguasNoMapa`: cota, leitura fresca, sem maré), só da régua para baixo e **parado** —
+  correr é outra decisão. Régua sem cor deixa o curso cinza com o motivo dela (`regua-sem-cor`); na reprodução
+  fica cinza. Hoje só o Canhanduba pela DC-08; a Murta segue sem vínculo (DC-07 sem cota conferida, DC-09 de
+  estuário). O toque no trecho abre o painel da régua.
 
 ### Classificação estadual × municipal — REGRA (decisões de 07/10/2026)
 - Duas classificações **independentes** por cidade. O motor é `scripts/classificar_reguas.py`; o relatório está em
