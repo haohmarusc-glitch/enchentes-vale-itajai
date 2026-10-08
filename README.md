@@ -480,6 +480,14 @@ o projeto.
 
 ## Pendências
 
+- [x] **Barragens no Monitor: painel e armazenamento em escala própria (07/10/2026, em PR, sem merge).** O toque no marcador
+  abre comportas e o percentual informado pela fonte; "Mais detalhes" mostra o nível na régua da barragem (com zero e
+  altitude), capacidade sem unidade, horário e fonte, e "não informado" para vazão e jusante. Barra azul sob o marcador,
+  interruptor em Camadas e legenda. Acima de 100 % sai o valor real. A cor do rio não muda. `docs/BARRAGENS-NO-MONITOR.md`.
+  - [ ] **Ainda faltam na fonte:** Barragem Norte; unidade da capacidade; definição do percentual; vazão de entrada e
+    saída; referência do `jusante_m`; faixas operacionais oficiais por barragem.
+  - [ ] **Polígonos dos reservatórios:** não há geometria confiável no repositório. Só marcador e painel até haver
+    contorno oficial com fonte.
 - [x] **Classificação estadual × municipal — PR 1 (motor em paralelo), 07/10/2026; em produção desde a coleta das 17h30 UTC.**
   `scripts/classificar_reguas.py` calcula, para o piloto Brusque, a classificação municipal (cotas 3,00/5,00 m na
   DCSC-00019) e a estadual (a faixa que a Defesa Civil de SC publica), e diz qual pinta o rio. O

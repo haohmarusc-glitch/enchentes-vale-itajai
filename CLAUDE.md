@@ -170,6 +170,18 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Inventário em `docs/INVENTARIO-REGUAS.md` (`scripts/inventario_reguas.py --gravar`). Relatório em
   `docs/AUDITORIA-REGUAS-2026-10-06.md`.
 
+### Barragens no Monitor — REGRA (07/10/2026, com `monitor-autorizado`)
+- Toque no marcador abre o painel (compacto: comportas e percentual; "Mais detalhes": o resto). O que a fonte não
+  publica sai **"não informado"** (vazão, jusante sem referência, Barragem Norte). Auditoria em
+  `docs/BARRAGENS-NO-MONITOR.md`.
+- O percentual se chama **"percentual informado pela fonte"** (não "volume útil"), com escala **azul** própria. Sem
+  tabela oficial da barragem, nada de atenção, alerta ou emergência. Acima de 100 % sai o valor real; acima de 200 % é
+  implausível.
+- O nível da barragem só sai no painel, com zero e altitude coerentes (régua = altitude − zero) e o aviso de que não
+  se compara com régua de rio. Nível nunca vira volume sem curva cota-volume.
+- **Barragem não pinta o rio.** Percentual, nível e comportas não mudam a classificação nem a correnteza
+  (`barragensNaCena.test.ts`). Polígono de reservatório só com geometria oficial, nunca buffer do rio.
+
 ### Classificação estadual × municipal — REGRA (decisões de 07/10/2026)
 - Duas classificações **independentes** por cidade. O motor é `scripts/classificar_reguas.py`; o relatório está em
   `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.

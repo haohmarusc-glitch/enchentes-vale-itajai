@@ -94,7 +94,7 @@ export default function EstadoDasBarragens({
 
             {b.percentUso !== null ? (
               <span className={estilos.capacidade}>
-                reservatório em <strong>{b.percentUso.toFixed(0)}%</strong> da capacidade
+                percentual informado pela fonte: <strong>{b.percentUso.toFixed(0)}%</strong>
               </span>
             ) : null}
           </div>
