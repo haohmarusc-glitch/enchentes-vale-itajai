@@ -237,7 +237,10 @@ export const afluentesMonitorados: AfluenteMonitorado[] = estacoes.afluentes_mon
  * das cidades com mais de uma régua (Itajaí) ou cuja régua não é a da cidade
  * (Ilhota). Ver `logica/reguas.ts` para o porquê de não escolher uma delas.
  */
-export const estacoesTempoReal: EstacaoTempoReal[] = estacoes.estacoes_tempo_real ?? []
+export const estacoesTempoReal: EstacaoTempoReal[] = (estacoes.estacoes_tempo_real ?? [])
+  // Pluviômetro mede chuva, não nível: não é régua. A DC-00 ganhou coordenada em 07/10/2026 só para a chuva
+  // (`coleta_chuva.py` identifica a estação pela coordenada); sem este filtro, viraria a 12ª "régua" de Itajaí.
+  .filter((e) => e.tipo !== 'pluviometro')
 
 /**
  * As cidades que TÊM régua, contando as do cadastro de estações.

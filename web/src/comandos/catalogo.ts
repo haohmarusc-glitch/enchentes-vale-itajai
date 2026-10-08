@@ -38,6 +38,7 @@ interface CadastroMinimo {
     titulo: string
     nome_no_plano?: string
     cidade?: string
+    tipo?: string
     lat?: number | null
     lon?: number | null
   }[]
@@ -76,7 +77,8 @@ export function catalogoDoCadastro(e: CadastroMinimo): Catalogo {
   }
   const nome = (id: string) => cidades.find((c) => c.id === id)?.nome ?? id
   const reguas: ReguaDoCatalogo[] = (e.estacoes_tempo_real ?? [])
-    .filter((r) => /^DC-\d+$/.test(r.codigo ?? '') && typeof r.lat === 'number' && typeof r.lon === 'number' && r.cidade)
+    // Pluviômetro (DC-00) mede chuva, não nível: não é régua do seletor.
+    .filter((r) => /^DC-\d+$/.test(r.codigo ?? '') && r.tipo !== 'pluviometro' && typeof r.lat === 'number' && typeof r.lon === 'number' && r.cidade)
     .map((r) => ({ codigo: r.codigo!, titulo: r.titulo, nome: nomeDoLugar(r), cidadeId: r.cidade!, lat: r.lat!, lon: r.lon! }))
     .sort((a, b) => a.codigo.localeCompare(b.codigo, 'pt-BR', { numeric: true }))
 

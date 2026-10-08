@@ -52,7 +52,7 @@ e sem número. Nenhum nível sai no arquivo publicado enquanto a referência nã
 (`{"descricao": …, "fonte": …}`) só com a referência escrita pela EPAGRI/CIRAM ou outra fonte oficial, por decisão
 do Jefferson. A resposta da EPAGRI ao C5 não falou dos marégrafos (`docs/RESPOSTA-EPAGRI-C5-2026-09-09.md`).
 
-Perguntas a fazer à EPAGRI/CIRAM:
+Perguntas a fazer à EPAGRI/CIRAM (rascunho C33 em `docs/oficios-prontos.md`, não enviado):
 1. A que referência vertical (zero) a maré observada de Balneário Camboriú se refere? É a mesma da maré astronômica
    que a página publica para a estação?
 2. Em que unidade e em que fuso a série é publicada?
