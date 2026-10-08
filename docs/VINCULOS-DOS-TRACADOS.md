@@ -69,7 +69,7 @@ Distâncias medidas em 07/10/2026 contra `data/rios/*.geojson`. "Faixa às 19h45
 
 | Rio | Âncoras que pintam | Correção | Pendência |
 |---|---|---|---|
-| Itajaí-Açu (com o Oeste) | Taió, Rio do Sul, Lontras, Apiúna, Ascurra, Indaial, Blumenau, Gaspar, Ilhota, Itajaí (Ituporanga fica fora: a 23 km do Açu) | 71,5 km acima de Taió deixam de receber a cor de Taió | O traçado do Oeste tem uma falha de **2,1 km** no OSM, rio abaixo de Taió (−27,14508, −49,91523 → −27,14841, −49,89417). O trecho entre a falha e Rio do Sul fica abaixo da régua de Taió e mantém a cor dela. |
+| Itajaí-Açu (com o Oeste) | Taió, Rio do Sul, Lontras, Apiúna, Ascurra, Indaial, Blumenau, Gaspar, Ilhota, Itajaí (Ituporanga fica fora: a 23 km do Açu) | 71,5 km acima de Taió deixam de receber a cor de Taió | O traçado do Oeste tinha uma falha de **2,1 km** no OSM, rio abaixo de Taió (−27,14508, −49,91523 → −27,14841, −49,89417). **Fechada em 08/10/2026:** a via 1207901475 ("Rio Itajaí" no OSM, 6,0 km) liga as duas pontas (`docs/VAO-ITAJAI-DO-OESTE.md`). |
 | Itajaí-Mirim | Vidal Ramos, Botuverá, Brusque, Itajaí | 25,4 km acima de Vidal Ramos deixam de receber a cor de Vidal Ramos | — |
 
 As réguas de Itajaí (DC-01 a DC-11): a chegada da cheia segue a regra de sempre (DC-11 primeiro, DC-02 depois). A
@@ -85,7 +85,7 @@ DC-01 é referência do mar. Nenhuma faixa única de Itajaí se espalha pelos ri
   - Timbó/Benedito sem vínculo;
   - ribeirões de Itajaí sem respaldo de cota;
   - Guabiruba sem faixa publicada;
-  - a falha de 2,1 km no Oeste;
+  - a falha de 2,1 km no Oeste (fechada em 08/10/2026, `docs/VAO-ITAJAI-DO-OESTE.md`);
   - Lontras, Apiúna e Indaial sem leitura municipal, como antes.
 
 ## Prints (390 px, dados de produção das 19h45)

@@ -16,6 +16,9 @@ seção "O que depende do Jefferson" de `docs/DECISOES-2026-10-04.md` como lista
 
 ## 2. Publicação (PRs prontos, esperando o "pode")
 
+**Feito em 08/10/2026:** os três foram mesclados, nesta ordem, e o `deploy.sh` rodou na VPS. A DC-00 entrou na
+chuva publicada na coleta das 06h16 UTC (03h16 em Brasília).
+
 | # | PR | o que entra | situação do CI |
 |---|---|---|---|
 | 2.1 | [#517](https://github.com/haohmarusc-glitch/enchentes-vale-itajai/pull/517) | DC-00 na chuva, C33–C35, as propostas e a limpeza do README | verde; depois do merge, `deploy.sh` na VPS para a DC-00 |
