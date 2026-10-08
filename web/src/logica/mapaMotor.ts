@@ -39,7 +39,7 @@ import {
   type Vista,
 } from '../logica/mapaCanvas'
 import { AZUL_CHEIO, AZUL_VAZIO, comportas, faseComporta, rotuloComportas, textoPercentual, type BarragemNoMapa } from './barragensNoMapa'
-import { FOLGA_ACIMA_DA_REGUA_KM, chaveDaAresta, kmAcimaDe, type MotivoDoTrecho } from './vinculosDosTracados'
+import { FOLGA_ACIMA_DA_REGUA_KM, arestasAJusanteDe, chaveDaAresta, kmAcimaDe, type MotivoDoTrecho } from './vinculosDosTracados'
 
 /**
  * Os limites da bacia, ou uma caixa de segurança quando ainda não há traçado —
@@ -291,6 +291,10 @@ export interface RioParaCena {
  */
 const LIMITE_ANCORA_KM = 5
 
+/** A DC-11 (Santa Regina) fica a 116 m do vértice mais perto do traçado do Açu; o vértice da referência é
+ *  procurado até esta distância, só entre os que alcançam a foz. */
+const TOLERANCIA_DC11_KM = 0.5
+
 /**
  * Onde o pino da cidade é desenhado: na coordenada da régua, sem encaixe no traçado.
  *
@@ -504,9 +508,12 @@ export function construirCena(
     // Só a orientação visual do Açu é prolongada até a extremidade leste
     // do traçado cadastrado (foz). A espinha de CORES permanece intacta.
     const espinhaFluxo = [...espinha]
-    if (rio.rioId === 'itajai-acu' && espinha.length >= 2) {
-      const foz = rio.coords.flat().reduce((a, p) => p[0] > a[0] ? p : a)
-      if (foz[0] > espinha.at(-1)![0]) espinhaFluxo.push(foz)
+    // A foz do Açu: a extremidade leste do traçado cadastrado.
+    const fozDoAcu = rio.rioId === 'itajai-acu' && rio.coords.some((l) => l.length > 0)
+      ? rio.coords.flat().reduce((a, p) => p[0] > a[0] ? p : a)
+      : null
+    if (fozDoAcu && espinha.length >= 2) {
+      if (fozDoAcu[0] > espinha.at(-1)![0]) espinhaFluxo.push(fozDoAcu)
     }
     const cumFluxo = acumuladoEspinha(espinhaFluxo)
     const limiteIdx = rio.rioId === 'itajai-acu' ? espinhaFluxo.length - 1
@@ -514,12 +521,16 @@ export function construirCena(
     const limiteFluxo = limiteIdx >= 0 ? cumFluxo[limiteIdx]! : -1
     const progressoFluxo = (p: LonLat) => progressoNaEspinha(espinhaFluxo, cumFluxo, p)
     // Referência visual exclusiva do Açu: não transfere nível/cota aos pinos.
-    // Usa a mesma projeção da espinha do motor; limite cartográfico aproximado.
+    // "A jusante da DC-11" é medido PELO TRAÇADO (arestas no caminho do rio até a foz), não pela projeção
+    // na reta entre os pinos: a Volta de Cima, logo abaixo da régua, volta para trás nessa reta e deixava
+    // 2,86 km de rio cinza ao longo da Rua Santa Regina (08/10/2026). A régua fica a 116 m do vértice mais
+    // perto; a tolerância cobre isso.
     const dc11 = rio.rioId === 'itajai-acu' && !leituraNaHora &&
       referenciaDc11?.codigo === 'DC-11' && referenciaDc11.cidade === 'itajai'
       ? referenciaDc11 : undefined
-    const inicioDc11 = dc11 && espinha.length >= 2
-      ? progressoNaEspinha(espinha, cumEspinha, [dc11.lon, dc11.lat]) : Infinity
+    const arestasDc11 = dc11 && fozDoAcu
+      ? arestasAJusanteDe(rio.coords, [dc11.lon, dc11.lat], fozDoAcu, TOLERANCIA_DC11_KM)
+      : null
     const ancoraEm = (p: LonLat) =>
       ancorasQuePintam.length === 0 ? null : ancorasQuePintam[trechoDoPonto(espinha, p)]!
     const faixaEm = (p: LonLat): Faixa => ancoraEm(p)?.faixa ?? 'sem-dado' 
@@ -580,13 +591,14 @@ export function construirCena(
         (seq[i - 1]![0] + seq[i]![0]) / 2,
         (seq[i - 1]![1] + seq[i]![1]) / 2,
       ]
+      // A aresta i de `seq` na ordem do ARQUIVO (a chave de `arestasAJusanteDe` e do alcance).
+      const chaveNoArquivo = (i: number): string => chaveDaAresta(li, invertida ? n - i + 1 : i)
+      const aJusanteDaDc11 = (i: number): boolean => !!(dc11 && arestasDc11?.has(chaveNoArquivo(i)))
       const faixaAresta = (i: number): Faixa => {
         const p = meioDaAresta(i)
         if (motivoAresta(i)) return 'sem-dado'
         if (rio.reguaVinculada) return faixaDaRegua ?? 'sem-dado'
-        if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) {
-          return dc11.faixa ?? 'sem-dado'
-        }
+        if (aJusanteDaDc11(i)) return dc11!.faixa ?? 'sem-dado'
         return faixaEm(p)
       }
       const cidadeAresta = (i: number): string | null =>
@@ -594,9 +606,8 @@ export function construirCena(
       // A origem acompanha a âncora (o corte de trecho já é por âncora), e o
       // DC-11 é referência municipal.
       const origemAresta = (i: number): OrigemFaixa => {
-        const p = meioDaAresta(i)
-        if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) return 'municipal'
-        return ancoraEm(p)?.origemFaixa ?? 'municipal'
+        if (aJusanteDaDc11(i)) return 'municipal'
+        return ancoraEm(meioDaAresta(i))?.origemFaixa ?? 'municipal'
       }
       // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
       const progMax = cumEspinha[cumEspinha.length - 1] || 1

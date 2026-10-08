@@ -223,6 +223,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   pontilhado** de miolo claro e o rótulo "faixa estadual". Na reprodução, sem classificação estadual histórica, o
   trecho fica cinza.
 - No tronco, a primeira régua **não pinta o rio acima dela** (folga de 0,5 km).
+- **"A jusante" de uma régua é pelo caminho do rio, nunca pela projeção na reta entre pinos** (08/10/2026): a
+  Volta de Cima, abaixo da DC-11, volta para trás na reta Ilhota→Itajaí e ficava cinza. `arestasAJusanteDe`
+  (traçado como grafo, distância até a foz) decide; meandro é o caso normal, não a exceção.
 - Vínculo novo exige estação identificada pelo cadastro (código) e caminho no traçado. Proximidade não basta (Timbó
   segue sem vínculo). Auditoria em `docs/VINCULOS-DOS-TRACADOS.md`.
 - **Vínculo traçado × régua** (`VINCULOS_DE_REGUA`, decisão do Jefferson de 08/10/2026: "ribeirões com cota devem
