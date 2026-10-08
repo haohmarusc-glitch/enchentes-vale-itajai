@@ -101,6 +101,20 @@ def falha_aberta(elementos_do_tronco: list[dict]) -> bool:
     return ponta_solta(PONTA_MONTANTE, oeste) and ponta_solta(PONTA_JUSANTE, oeste)
 
 
+def emenda_gravada_fecha() -> bool:
+    """
+    O bruto já gravado (`SAIDA`) liga as duas pontas: a falha está fechada no tronco pela emenda.
+
+    O bruto do tronco continua com a falha (é a cópia do OSM de 01/09/2026); quem a fecha é a emenda, que o
+    conversor junta pelo ID. Sem esta conferência, cada push que trazia o script para outro branch consultava o
+    Overpass de novo, e a rodada ficava vermelha quando o serviço caía (#522, 08/10/2026).
+    """
+    if not SAIDA.exists():
+        return False
+    vias = json.loads(SAIDA.read_text(encoding="utf-8")).get("elements") or []
+    return bool(encadear([v for v in vias if v.get("geometry")], PONTA_MONTANTE, [PONTA_JUSANTE]))
+
+
 def comprimento_m(via: dict) -> float:
     g = via["geometry"]
     return sum(m((a["lon"], a["lat"]), (b["lon"], b["lat"])) for a, b in zip(g, g[1:]))
@@ -162,6 +176,8 @@ def main() -> int:
     tronco = json.loads(BRUTO_TRONCO.read_text(encoding="utf-8")).get("elements") or []
     if not falha_aberta(tronco):
         return fim(0, "a falha já não existe no bruto do tronco: nada a procurar")
+    if emenda_gravada_fecha():
+        return fim(0, f"a falha já está fechada pela emenda gravada em {SAIDA.relative_to(RAIZ)}: nada a procurar")
 
     tentativas: list = []
     relatorio["tentativas"] = tentativas

@@ -37,6 +37,35 @@ class FalhaAberta(unittest.TestCase):
         self.assertTrue(bo.falha_aberta([montante, jusante]))
 
 
+class EmendaGravada(unittest.TestCase):
+    def test_a_emenda_do_repositorio_fecha_a_falha(self):
+        if not bo.SAIDA.exists():
+            self.skipTest("sem data/brutos/vao-oeste-osm.json")
+        self.assertTrue(bo.emenda_gravada_fecha())
+
+    def test_sem_emenda_ou_com_emenda_que_nao_liga_a_falha_segue_aberta(self):
+        import tempfile
+        from pathlib import Path
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as d:
+            falsa = Path(d) / "vao.json"
+            with mock.patch.object(bo, "SAIDA", falsa):
+                self.assertFalse(bo.emenda_gravada_fecha())
+                falsa.write_text(json.dumps({"elements": [via(1, [A, meio(0.5)])]}), encoding="utf-8")
+                self.assertFalse(bo.emenda_gravada_fecha())
+                falsa.write_text(json.dumps({"elements": [via(1, [A, meio(0.5)]), via(2, [meio(0.5), B])]}),
+                                 encoding="utf-8")
+                self.assertTrue(bo.emenda_gravada_fecha())
+
+    def test_rodada_com_a_emenda_nao_consulta_o_overpass(self):
+        if not bo.SAIDA.exists():
+            self.skipTest("sem data/brutos/vao-oeste-osm.json")
+        from unittest import mock
+        with mock.patch.object(bo, "buscar_consulta", side_effect=AssertionError("consultou o Overpass")), \
+                mock.patch("sys.argv", ["baixar_vao_oeste.py"]):
+            self.assertEqual(bo.main(), 0)
+
+
 class ConferirCadeia(unittest.TestCase):
     def test_sem_cadeia_nao_grava(self):
         problemas, _ = bo.conferir_cadeia([])
