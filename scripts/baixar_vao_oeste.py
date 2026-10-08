@@ -165,7 +165,11 @@ def main() -> int:
 
     tentativas: list = []
     relatorio["tentativas"] = tentativas
-    resposta, espelho = buscar_consulta(consulta(), registro=tentativas)
+    try:
+        resposta, espelho = buscar_consulta(consulta(), registro=tentativas)
+    except SystemExit as e:
+        # Falha do serviço, não da consulta: o relatório sai do mesmo jeito, com cada tentativa.
+        return fim(2, f"Overpass sem resposta útil, nada gravado: {str(e).splitlines()[0]}")
     relatorio["espelho"] = espelho
     relatorio["base_osm"] = base_osm(resposta)
     elementos = resposta.get("elements") or []
