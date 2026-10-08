@@ -1675,10 +1675,11 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
     cabeca = "\n\n" if linhas else ""
     # A DISTÂNCIA SÓ SAI DE QUEM PODE MEDI-LA. `coordenadas_sao_da_regua: false`
     # é a cidade que declara, por escrito no cadastro, que o pino dela NÃO é a
-    # régua. Hoje só Blumenau: a coordenada de lá é a da DCSC-00026, estação de
-    # CHUVA, e o "a 6,9 km em linha reta" saía medido até ela — dito a um morador
-    # do Centro que está a algumas centenas de metros da régua que deu o número
-    # da linha seguinte (medido no pino real em 18/09/2026).
+    # régua. Nasceu em Blumenau: até 06/10/2026 a coordenada de lá era a da
+    # DCSC-00026, estação de CHUVA, e o "a 6,9 km em linha reta" saía medido até
+    # ela — dito a um morador do Centro que está a algumas centenas de metros da
+    # régua que deu o número da linha seguinte (medido no pino real em
+    # 18/09/2026). Hoje nenhuma cidade usa `false`; o caminho fica para a próxima.
     #
     # A omissão é DITA, não silenciosa: sumir com a distância sem explicar é o
     # mesmo defeito do aviso de cota que o pino tinha em 17/09 — a ausência
@@ -1688,10 +1689,10 @@ def resposta_localizacao(base: Base, lat, lon, agora: datetime) -> list[str]:
     # que o pino não seja a régua, e tirar de todas removeria informação boa
     # ("a régua fica a 1,8 km de mim" é o que a pessoa quer saber).
     #
-    # O QUE ISTO NÃO CONSERTA, e precisa estar escrito: a ESCOLHA da cidade
-    # continua saindo da mesma coordenada errada (`cidade_mais_proxima`). Em
-    # Ponta Aguda a margem para o bot responder GASPAR a um morador de Blumenau
-    # é de 700 m. Isto tira a afirmação falsa da tela; não tira o risco.
+    # O que isto não consertava era a ESCOLHA da cidade (`cidade_mais_proxima`):
+    # em Ponta Aguda a margem para o bot responder GASPAR a um morador de
+    # Blumenau era de 700 m. Consertou-se com a coordenada real da régua
+    # (06/10/2026): a margem passou a 6,6–7,6 km (README, 08/10/2026).
     #
     # CORRIGIDO EM 19/09/2026, num pino real: o cabeçalho dizia "Régua mais
     # próxima: Itajaí, a 3,7 km" e os 3,7 km eram até o PONTO MUNICIPAL. A régua
