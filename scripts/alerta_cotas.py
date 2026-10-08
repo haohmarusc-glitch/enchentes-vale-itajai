@@ -395,9 +395,13 @@ def faixa_com_histerese(nivel: float, cotas: dict, faixa_nova: str, faixa_antes:
     """
     if histerese_m <= 0 or FAIXAS.index(faixa_nova) >= FAIXAS.index(faixa_antes):
         return faixa_nova
-    cota = cotas.get(faixa_antes)
-    if isinstance(cota, (int, float)) and nivel > float(cota) - histerese_m:
-        return faixa_antes
+    # Da faixa de antes para baixo, a primeira que o nível ainda não deixou pela histerese. Uma queda
+    # grande entre duas leituras (lacuna na coleta) não pula a faixa do meio: de "alerta" para 2,90 m
+    # na DC-11 fica "atenção", porque 2,90 m não desceu 0,30 m abaixo de 3,00 m.
+    for nome in reversed(FAIXAS[FAIXAS.index(faixa_nova) + 1:FAIXAS.index(faixa_antes) + 1]):
+        cota = cotas.get(nome)
+        if isinstance(cota, (int, float)) and nivel > float(cota) - histerese_m:
+            return nome
     return faixa_nova
 
 

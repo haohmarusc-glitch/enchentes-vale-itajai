@@ -676,6 +676,34 @@ class HistereseNaDescida(unittest.TestCase):
         avisos, _, _ = self.rodada(self.DC05, 1.49, estado, rio="itajai-mirim")
         self.assertEqual([a["faixa"] for a in avisos], ["normal"])
 
+    def test_subida_para_faixa_mais_alta_avisa_na_hora_mesmo_segurada(self):
+        """A margem não atrasa subida: segurada em "atenção" na baixa-mar, a régua que chega a 4,00 m avisa "alerta"."""
+        _, estado, _ = self.rodada(self.DC11, 3.10, {})
+        _, estado, _ = self.rodada(self.DC11, 2.80, estado)  # segurada em atenção
+        avisos, _, _ = self.rodada(self.DC11, 4.00, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["alerta"])
+        _, estado, _ = self.rodada(self.DC05, 1.60, {}, rio="itajai-mirim")
+        _, estado, _ = self.rodada(self.DC05, 1.55, estado, rio="itajai-mirim")  # segurada em atenção
+        avisos, _, _ = self.rodada(self.DC05, 2.20, estado, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["alerta"])
+
+    def test_na_fronteira_exata_ja_baixa(self):
+        """Descer exatamente a margem (2,70 m na DC-11; 1,50 m na DC-05) já baixa: a conta não fica presa no centímetro."""
+        _, estado, _ = self.rodada(self.DC11, 3.10, {})
+        avisos, _, _ = self.rodada(self.DC11, 2.70, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+        _, estado, _ = self.rodada(self.DC05, 1.65, {}, rio="itajai-mirim")
+        avisos, _, _ = self.rodada(self.DC05, 1.50, estado, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_queda_grande_entre_leituras_nao_pula_a_faixa_do_meio(self):
+        """De "alerta" direto para 2,90 m (lacuna na coleta): 2,90 m não desceu 0,30 m abaixo de 3,00 m, fica "atenção"."""
+        _, estado, _ = self.rodada(self.DC11, 4.10, {})
+        avisos, estado, _ = self.rodada(self.DC11, 2.90, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"])
+        avisos, _, _ = self.rodada(self.DC11, 2.60, estado)
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
     def test_regua_sem_histerese_continua_como_antes(self):
         """A DC-10 não ganhou histerese: desceu da cota, volta ao normal na hora."""
         dc10 = "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
