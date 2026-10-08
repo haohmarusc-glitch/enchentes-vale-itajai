@@ -114,6 +114,10 @@ grava ali a leitura da estação 21 de Gaspar e o HTML público de onde ela saiu
 `raw.githubusercontent.com` (`scripts/gaspar_actions.py`, `.github/workflows/coletar-gaspar.yml`). Não
 há credencial nem dado pessoal nele. Operação em `docs/gaspar-ponte-pc.md`.
 
+O branch **`coleta-ituporanga`** (desde 08/10/2026) idem: a Prefeitura de Ituporanga recusa a VPS (403 no
+`robots.txt`), e o Actions grava ali a leitura do Centro e o HTML público do Boletim Diário
+(`scripts/ituporanga_actions.py`, `.github/workflows/coletar-ituporanga.yml`). Operação em `docs/ITUPORANGA-CENTRO.md`.
+
 ### Modo aplicativo (instalar no celular) — decisão D5, 03/10/2026
 O site instala como aplicativo (manifesto `web/public/manifest.webmanifest`) e guarda uma cópia no
 aparelho por um *service worker* (`web/public/sw.js`, regras em `web/public/sw-regras.js`).

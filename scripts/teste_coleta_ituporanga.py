@@ -118,7 +118,8 @@ class OArquivoPublicado(unittest.TestCase):
 
             def cai():
                 raise RuntimeError("fora do ar")
-            self.assertEqual(c.publicar(AGORA, buscador=cai, raiz=raiz), 1)
+            # Sem a página e sem o publicado pelo Actions (teste_ituporanga_actions.py cobre esse caminho).
+            self.assertEqual(c.publicar(AGORA, buscador=cai, raiz=raiz, publicado=lambda: None), 1)
             self.assertFalse(arquivo.exists(), "falha não pode deixar leitura velha passando por atual")
 
 

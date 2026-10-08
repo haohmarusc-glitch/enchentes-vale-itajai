@@ -164,13 +164,18 @@ def idade_min(medido_em: str, agora: datetime) -> float:
     return (agora - datetime.fromisoformat(medido_em)).total_seconds() / 60
 
 
-def resumo_publicavel(dados: dict, agora: datetime, gerado_em: str) -> dict:
+def resumo_publicavel(dados: dict, agora: datetime, gerado_em: str, via: dict | None = None) -> dict:
+    """
+    O arquivo pequeno que o site lê. `via`, quando dado, diz que a página foi lida pelo GitHub Actions
+    (`{"coletor": "github-actions", "pagina_lida_em": <UTC>}`), porque a Prefeitura recusa a VPS.
+    """
     idade = round(idade_min(dados["medido_em"], agora))
     return {
         "versao": 1,
         "gerado_em": gerado_em,
         "fonte": FONTE,
         "fonte_url": URL,
+        "via": via or {"coletor": "vps", "pagina_lida_em": gerado_em},
         "cidade": "ituporanga",
         "regua": {
             "nome": "Centro",
@@ -202,27 +207,45 @@ def baixar_pagina() -> str:
     return baixar(URL)
 
 
-def publicar(agora: datetime, buscador=baixar_pagina, raiz: Path | None = None) -> int:
+def ler_pelo_actions() -> dict | None:
+    """O que `ituporanga_actions.py` publicou no branch `coleta-ituporanga`, validado — ou None."""
+    import ituporanga_actions
+
+    return ituporanga_actions.ler_publicado()
+
+
+def publicar(agora: datetime, buscador=baixar_pagina, raiz: Path | None = None, publicado=ler_pelo_actions) -> int:
     """
     `--publicar`: uma página, um arquivo pequeno. Falha APAGA o arquivo anterior — uma leitura de
     outra coleta não pode passar por atual (o publicador ainda recusa arquivo com mais de 30 min).
+
+    A página primeiro. Se a Prefeitura recusar a VPS (403 no robots.txt desde o primeiro deploy, 08/10/2026),
+    vale o que o GitHub Actions leu e publicou (`ituporanga_actions.py`), com `via` dizendo isso e a hora em que
+    o runner leu a página. Sem nenhum dos dois, nada é publicado.
     """
     destino = (raiz or DADOS) / ARQUIVO_PUBLICAVEL
     gerado = datetime.now(tz=ZoneInfo("UTC")).isoformat(timespec="seconds")
+    via = None
     try:
         dados = extrair(buscador())
     except Exception as e:  # noqa: BLE001 — a leitura do Centro nunca segura a publicação do nível
-        destino.unlink(missing_ok=True)
-        print(f"aviso: leitura do Centro de Ituporanga indisponível ({e}); nada publicado", file=sys.stderr)
-        return 1
-    saida = resumo_publicavel(dados, agora, gerado)
+        print(f"aviso: página do Centro de Ituporanga indisponível daqui ({e}); tentando o publicado pelo Actions",
+              file=sys.stderr)
+        pelo_actions = publicado()
+        if not pelo_actions:
+            destino.unlink(missing_ok=True)
+            print("aviso: leitura do Centro de Ituporanga indisponível; nada publicado", file=sys.stderr)
+            return 1
+        dados = pelo_actions["dados"]
+        via = {"coletor": "github-actions", "pagina_lida_em": pelo_actions["pagina_lida_em"]}
+    saida = resumo_publicavel(dados, agora, gerado, via)
     if raiz is None:
         grava_json(ARQUIVO_PUBLICAVEL, saida)
     else:
         destino.parent.mkdir(parents=True, exist_ok=True)
         destino.write_text(json.dumps(saida, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(f"Ituporanga Centro: {saida['ultima_leitura']['nivel_m']} m às {dados['medido_em']} "
-          f"({saida['situacao']}) -> data/{ARQUIVO_PUBLICAVEL}")
+          f"({saida['situacao']}, via {saida['via']['coletor']}) -> data/{ARQUIVO_PUBLICAVEL}")
     return 0
 
 

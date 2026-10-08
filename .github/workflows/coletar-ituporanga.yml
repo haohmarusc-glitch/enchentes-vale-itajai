@@ -1,0 +1,137 @@
+# Coleta a régua do CENTRO de Ituporanga (Boletim Diário da Prefeitura) a partir do GitHub Actions, de 30 em 30 min.
+#
+# POR QUE EXISTE (08/10/2026). A Prefeitura responde 403 ao robots.txt quando quem pede é a VPS (Hetzner,
+# Helsinque), e o projeto não pede página sem ler o robots. Da sessão de código e do runner do GitHub a página
+# abre e o robots diz `Allow: /`. Mesmo caminho da estação 21 de Gaspar (`coletar-gaspar.yml`, 04/10/2026). A
+# lógica e os testes ficam em scripts/ituporanga_actions.py e scripts/teste_ituporanga_actions.py.
+#
+# O QUE FAZ. robots.txt antes; um pedido à página com o User-Agent do projeto e timeout; se a leitura MUDOU
+# (duas por dia, 07:00 e 17:00), publica ituporanga-centro.json + o HTML bruto no branch `coleta-ituporanga`
+# (órfão, um commit só, substituído a cada leitura nova). Se não mudou, não grava nada. A VPS tenta a página
+# primeiro e, bloqueada, lê este arquivo pelo raw.githubusercontent.com (`coleta_ituporanga.py --publicar`) e
+# publica `ultimo_ituporanga_centro.json` no `tempo-real`. Não muda cota, faixa nem cadastro; a régua do Centro
+# segue sem cor.
+#
+# ALERTA. Falha (robots recusando, timeout, HTTP, página sem a leitura) deixa o job VERMELHO, guarda o
+# diagnóstico como artefato e abre — ou atualiza, sem notificar de novo — a issue "Coleta de Ituporanga (Centro)
+# pelo Actions falhando". Quando a coleta volta, a issue é fechada com um comentário. Leitura velha (Boletim
+# parado há mais de 18 h) NÃO é falha da coleta: sai como aviso amarelo no run.
+#
+# LIMITES DO AGENDAMENTO. O GitHub pode atrasar ou pular execuções agendadas, e o agendamento só vale no main.
+name: Coletar Ituporanga (Centro)
+
+on:
+  schedule:
+    # Minutos 11 e 41: fora do :00 e dos minutos de Gaspar.
+    - cron: '11,41 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # publicar no branch coleta-ituporanga
+  issues: write     # abrir, atualizar e fechar o aviso de falha
+
+concurrency:
+  group: coletar-ituporanga
+  cancel-in-progress: false
+
+jobs:
+  coletar:
+    name: Régua do Centro de Ituporanga
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      TITULO_ISSUE: Coleta de Ituporanga (Centro) pelo Actions falhando
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+
+      - name: Ler a publicação anterior
+        run: |
+          mkdir -p anterior
+          if git fetch --depth=1 origin coleta-ituporanga 2>/dev/null; then
+            git show FETCH_HEAD:ituporanga-centro.json > anterior/ituporanga-centro.json 2>/dev/null \
+              || rm -f anterior/ituporanga-centro.json
+          fi
+
+      - name: Coletar
+        id: coleta
+        working-directory: scripts
+        run: python3 ituporanga_actions.py --anterior ../anterior/ituporanga-centro.json --saida ../saida
+
+      - name: Publicar no branch coleta-ituporanga
+        if: steps.coleta.outputs.mudou == 'true'
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          MOTIVO: ${{ steps.coleta.outputs.motivo }}
+        run: |
+          set -euo pipefail
+          json=$(git hash-object -w saida/ituporanga-centro.json)
+          bruto=$(git hash-object -w saida/ituporanga-nivel-rio.html)
+          arvore=$(printf '100644 blob %s\tituporanga-centro.json\n100644 blob %s\tituporanga-nivel-rio.html\n' \
+            "$json" "$bruto" | git mktree)
+          commit=$(git commit-tree "$arvore" -m "Ituporanga (Centro): $MOTIVO")
+          git push --force --quiet origin "$commit:refs/heads/coleta-ituporanga"
+          echo "publicado em coleta-ituporanga: $MOTIVO"
+
+      - name: Guardar o diagnóstico da falha
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ituporanga-falha-${{ github.run_id }}
+          path: saida/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Abrir ou atualizar a issue de falha
+        if: failure()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ESTADO: ${{ steps.coleta.outputs.estado }}
+          MOTIVO: ${{ steps.coleta.outputs.motivo }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          {
+            echo "A coleta da régua do Centro de Ituporanga pelo GitHub Actions falhou. Última falha: **$(date -u +%Y-%m-%dT%H:%MZ)** (UTC)."
+            echo
+            echo "- estado: \`${ESTADO:-passo do fluxo}\`"
+            echo "- motivo: ${MOTIVO:-ver o log do run}"
+            echo "- run: ${RUN}"
+            echo
+            echo "Sem esta coleta, a VPS (bloqueada pela Prefeitura) não tem a leitura do Centro, e o painel da cidade diz \"indisponível\". O nível da cidade (DCSC-00039) não depende dela. Lógica em \`scripts/ituporanga_actions.py\`; operação em \`docs/ITUPORANGA-CENTRO.md\`."
+            echo
+            echo "Esta issue é atualizada a cada falha (sem nova notificação) e fecha sozinha quando a coleta voltar."
+          } > "$RUNNER_TEMP/issue-ituporanga.md"
+          numero=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 50 \
+            --json number,title --jq ".[] | select(.title == env.TITULO_ISSUE) | .number" | head -1)
+          if [ -z "$numero" ]; then
+            gh issue create --repo "$GITHUB_REPOSITORY" --title "$TITULO_ISSUE" --body-file "$RUNNER_TEMP/issue-ituporanga.md"
+          else
+            gh issue edit "$numero" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/issue-ituporanga.md"
+          fi
+
+      - name: Fechar a issue de falha, se a coleta voltou
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MOTIVO: ${{ steps.coleta.outputs.motivo }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          numero=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --limit 50 \
+            --json number,title --jq ".[] | select(.title == env.TITULO_ISSUE) | .number" | head -1)
+          if [ -n "$numero" ]; then
+            gh issue close "$numero" --repo "$GITHUB_REPOSITORY" \
+              --comment "A coleta voltou em $(date -u +%Y-%m-%dT%H:%MZ) (UTC): ${MOTIVO}. Run: ${RUN}"
+          fi
