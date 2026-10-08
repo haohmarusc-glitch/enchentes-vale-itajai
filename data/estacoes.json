@@ -1521,7 +1521,7 @@
       },
       "verificado": true,
       "referencia": "régua",
-      "fonte_cotas": "Atenção 1,70 m: portal da Defesa Civil de Itajaí (monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios), PROVISÓRIA — o Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11, traz 1,80 m; a divergência aguarda confirmação da Defesa Civil de Itajaí. Alerta 2,30 m e emergência 2,89 m: Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf — iguais no portal.",
+      "fonte_cotas": "Atenção 1,70 m: portal da Defesa Civil de Itajaí, PROVISÓRIA — o Plano traz 1,80 m, e a divergência aguarda confirmação da Defesa Civil de Itajaí. Alerta 2,30 m e emergência 2,89 m, iguais no portal: Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Canhanduba - Rio do Meio",
       "cota_provisoria": {
         "atencao": {

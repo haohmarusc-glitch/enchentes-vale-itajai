@@ -281,6 +281,17 @@ test('toda cota exibida em Itajaí diz de que documento veio', () => {
   }
 })
 
+test('a fonte das cotas de Itajaí não deixa endereço solto no texto', () => {
+  // Só a URL do FIM vira link; uma no meio sai como palavra de 120 letras e faz
+  // a tela do celular rolar de lado (DC-08, 08/10/2026).
+  for (const r of todasAsReguas(estacoesTempoReal, 'itajai')) {
+    const { texto } = separarFonte(r.fonteCotas ?? '')
+    assert.doesNotMatch(texto, /https?:\/\//, `${r.id}: a URL tem de ficar no fim`)
+    const maior = Math.max(...texto.split(/\s+/).map((p) => p.length))
+    assert.ok(maior <= 40, `${r.id}: palavra de ${maior} letras não quebra no celular`)
+  }
+})
+
 /*
  * Sobre os dados reais. A Murta é `ribeirao-murta`, com DC-07 e DC-09. Se o
  * rótulo de uma régua do Açu ou do Mirim voltar a dizer "Murta", quem mora lá
