@@ -567,6 +567,11 @@ o projeto.
 
 - Auditoria de 03/10/2026: vinculada localmente DCSC-00035 a Trombudo Central, conforme identidade na API oficial. Trombudo tem leitura bruta recente (1,18 m às 20:50), sem equivalência comprovada com cotas municipais. Apiúna (DCSC-00178, nome com H) retorna 81,57 m e segue excluída pelo filtro de altitude; Lontras retorna 21.474.836 e Indaial retorna null. Guabiruba retorna 0,63 m, mas permanece bloqueada até reconciliar a mudança de referência. Não liberar alertas municipais nem converter essas grandezas por suposição. A `inundacao_historica` de Trombudo Central não pinta faixa: a leitura aparece só como número bruto da rede estadual. **Em produção:** na coleta de 21h45 UTC de 07/10/2026, a DCSC-00035 sai em `ultimo_nivel_sc.json` como `trombudo-central`, `datum: bruto_estadual`, `usar_para_cota: false`.
 
+- [ ] **Avisos de DC-05, DC-08 e DC-11 preparados, aguardando aprovação (08/10/2026):** `docs/AVISOS-DC05-DC08-DC11-2026-10-08.md`.
+  - DC-05 destravada, com histerese de 0,10 m;
+  - DC-08 destravada, com a atenção provisória de 1,70 m do portal (o Plano traz 1,80 m);
+  - DC-11 com histerese de 0,30 m: 112 → 52 mensagens em 36 dias, sem perder nenhuma subida de faixa.
+  - Os pinos de DC-05 e DC-08 ganham cor; o curso do Canhanduba continua cinza.
 - [ ] **Lista única do que depende do Jefferson, atualizada em 08/10/2026:** `docs/DECISOES-PENDENTES-2026-10-08.md`. Ordem:
   1. segurança dos avisos (DC-05 e DC-08 acima da atenção, travadas; DC-11);
   2. publicação dos #517, #518 e #519;
