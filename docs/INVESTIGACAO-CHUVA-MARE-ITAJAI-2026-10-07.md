@@ -131,6 +131,7 @@ de estação. A tábua da Marinha fica intacta e protegida.
    `python3 scripts/coleta_chuva.py` uma vez e conferir as 11 estações e as horas.
 2. **DC-00:** cadastrar ou não a coordenada que o portal publica (−26,9165821, −48,7016231) em
    `estacoes_tempo_real`. A mudança em `estacoes.json` é decisão do Jefferson. Até lá, a DC-00 fica fora da chuva.
+   **Decidido em 07/10/2026:** cadastrada (`fonte_coordenada` no `estacoes.json`).
 3. **Maré:** a tábua do portal é imagem. Transcrever a imagem seria criar dado. A tábua oficial da Marinha já cobre
    2026. Se a Defesa Civil vier a publicar a maré em JSON, cabe um coletor novo, com validação contra a CHM.
 4. **`chuva_ok`:** a marca hoje cobre **só** a fonte de Itajaí. Se Itajaí falhar, o chat responde "Não consegui

@@ -184,6 +184,15 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - **Barragem não pinta o rio.** Ocupação, nível e comportas não mudam a classificação nem a correnteza; o trecho a
   jusante segue a própria régua e as cotas compatíveis com ela (`barragensNaCena.test.ts`). Polígono de reservatório
   só com geometria oficial, nunca buffer do rio.
+### Cor dos cursos fora do tronco — REGRA (07/10/2026, com `monitor-autorizado`)
+- Curso fora do tronco só ganha cor por **vínculo explícito** em `web/src/logica/vinculosDosTracados.ts`
+  (`VINCULOS`): cidade, grupo dos dados, estação e alcance. O alcance vai da estação até a confluência ou a próxima
+  estação rio abaixo, pelo caminho no próprio traçado. Sem vínculo, o curso fica cinza com o motivo em `SEM_VINCULO`.
+- A cor do trecho é a **mesma decisão do pino**: nenhuma faixa calculada aqui. Faixa estadual continua tracejada e
+  parada. Na reprodução, sem classificação estadual histórica, o trecho fica cinza.
+- No tronco, a primeira régua **não pinta o rio acima dela** (folga de 0,5 km).
+- Vínculo novo exige estação identificada pelo cadastro (código) e caminho no traçado. Proximidade não basta (Timbó
+  segue sem vínculo). Auditoria em `docs/VINCULOS-DOS-TRACADOS.md`.
 
 ### Classificação estadual × municipal — REGRA (decisões de 07/10/2026)
 - Duas classificações **independentes** por cidade. O motor é `scripts/classificar_reguas.py`; o relatório está em
