@@ -54,7 +54,7 @@ export async function abrir(rota, { largura = 1280, altura = 900, semRede = fals
   pg.on('console', m => { if (m.type() === 'error') erros.push(m.text().slice(0, 200)) })
   pg.on('pageerror', e => erros.push('PAGEERROR ' + e.message.slice(0, 200)))
   if (!semRede && DADOS) {
-    for (const f of ['ultimo.json', 'ultimo_barragens.json', 'ultimo_nivel_sc.json', 'serie-recente.json', 'ultimo_classificacao.json', 'ultimo_mare_medida.json']) {
+    for (const f of ['ultimo.json', 'ultimo_barragens.json', 'ultimo_nivel_sc.json', 'serie-recente.json', 'ultimo_classificacao.json', 'ultimo_mare_medida.json', 'ultimo_ituporanga_centro.json']) {
       const caminho = `${DADOS}/${f}`
       if (!existsSync(caminho)) continue
       await pg.route(RAW + f, r => r.fulfill({

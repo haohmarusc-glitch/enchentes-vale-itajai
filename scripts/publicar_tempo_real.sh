@@ -146,6 +146,26 @@ sys.exit(0 if d.get("versao") == 1 and d.get("estacao") and 0 <= idade <= 1800 e
   MARE_MEDIDA_ENTRY="$(printf '100644 blob %s\tultimo_mare_medida.json' "$BLOB_MARE_MEDIDA")"
 fi
 
+# ultimo_ituporanga_centro.json: a régua do CENTRO de Ituporanga, do Boletim Diário da Prefeitura (decisão do
+# Jefferson de 08/10/2026). Vai em arquivo próprio, nunca em `leituras`: como leitura municipal ela desligaria
+# a classificação estadual da DCSC-00039. Sem cor na tela. Falha apaga o arquivo anterior e nunca segura o
+# nível; só sobe o que foi gerado há no máximo 30 min.
+ITUPORANGA_CENTRO="$RAIZ/data/tempo-real/ultimo_ituporanga_centro.json"
+if [ "$SECO" -eq 0 ] && [ -f "$RAIZ/scripts/coleta_ituporanga.py" ]; then
+  timeout 60 python3 scripts/coleta_ituporanga.py --publicar \
+    || echo "aviso: régua do Centro de Ituporanga não coletada; o nível ao vivo segue." >&2
+fi
+ITUPORANGA_CENTRO_ENTRY=""
+if [ -f "$ITUPORANGA_CENTRO" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("versao") == 1 and d.get("ultima_leitura") and 0 <= idade <= 1800 else 1)' "$ITUPORANGA_CENTRO" 2>/dev/null; then
+  BLOB_ITUPORANGA_CENTRO="$(git hash-object -w "$ITUPORANGA_CENTRO")"
+  ITUPORANGA_CENTRO_ENTRY="$(printf '100644 blob %s\tultimo_ituporanga_centro.json' "$BLOB_ITUPORANGA_CENTRO")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
@@ -155,6 +175,7 @@ TREE="$(
     [ -n "$BARRAGENS_ENTRY" ] && printf '%s\n' "$BARRAGENS_ENTRY"
     [ -n "$CLASSIFICACAO_ENTRY" ] && printf '%s\n' "$CLASSIFICACAO_ENTRY"
     [ -n "$MARE_MEDIDA_ENTRY" ] && printf '%s\n' "$MARE_MEDIDA_ENTRY"
+    [ -n "$ITUPORANGA_CENTRO_ENTRY" ] && printf '%s\n' "$ITUPORANGA_CENTRO_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o

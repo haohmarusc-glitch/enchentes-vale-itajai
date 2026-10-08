@@ -47,6 +47,7 @@ import { leiturasDaCidade, useTempoReal } from '../dados/tempoReal'
 import { useNivelSc } from '../dados/nivelSc'
 import { useClassificacao } from '../dados/classificacao'
 import { useBarragens } from '../dados/barragens'
+import { estadoDoCentro, textoDoCentro, useCentroItuporanga } from '../dados/ituporangaCentro'
 import { AZUL_CHEIO, AZUL_VAZIO, barragensNoMapa, fichaDaBarragem, ROTULO_PERCENTUAL } from '../logica/barragensNoMapa'
 import { leituraEm, serieDaCidade, useSerieRecente } from '../dados/serie'
 import { deBrasilia, idadeMin, textoIdade, type Faixa, frescor, frescorDaCidade } from '../logica/tempoReal'
@@ -457,6 +458,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
    * numa régua quer a régua; quem toca largo quer a cidade.
    */
   const [reguaSel, setReguaSel] = useState<string | null>(null)
+  // Ituporanga (08/10/2026): a régua do Centro da Prefeitura, só para o texto do painel — sem cor, sem pino.
+  const centroItuporanga = useCentroItuporanga()
 
   const original = useTempoReal()
   const nivelSc = useNivelSc()
@@ -2451,6 +2454,17 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               })() : null}
               {!celular || painelExpandido ? (<>
               {cid.id === 'ascurra' && <p>Fonte: DCSC-00003 · Ponte do Beber. Enquadramento calculado conforme C18; não é boletim oficial nem área alagada.</p>}
+              {cid.id === 'ituporanga' && (() => {
+                const t = textoDoCentro(estadoDoCentro(centroItuporanga.dado, agora))
+                return (
+                  <p>
+                    Fonte da cor: DCSC-00039, régua <strong>a jusante da Barragem Sul</strong> (≈3,7 km abaixo do barramento; ANA
+                    83145140 “Barragem Sul Ituporanga Jusante”): a leitura é de água já amortecida pela barragem.{' '}
+                    <strong>{t.titulo}</strong> {t.detalhe} Outra régua, da Prefeitura (Boletim Diário), zero não informado:
+                    não se compara com a de cima e fica sem cor até a Defesa Civil confirmar as cotas na mesma régua.
+                  </p>
+                )
+              })()}
               {cid.id === 'gaspar' && <p>Faixa calculada somente pelo nível, conforme a <a href="https://defesacivil.gaspar.sc.gov.br/estacao/ver/21" target="_blank" rel="noreferrer">legenda da estação 21</a>: normal abaixo de 5 m, atenção acima de 5 m, emergência acima de 7 m. Em 5 m exatos, inclusão não definida. O estado oficial também considera chuva; a cor não indica ruas alagadas.</p>}
               {/* No celular a faixa e o nível já estão no bloco compacto (chip e quadro): estas linhas não
                   entram no DOM — escondê-las por CSS deixaria o número duas vezes na página. */}
