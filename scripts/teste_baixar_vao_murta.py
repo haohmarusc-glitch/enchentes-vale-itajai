@@ -155,6 +155,34 @@ class Caixa(unittest.TestCase):
         self.assertLess((n - s) * 111.32, 2.0, "caixa de mais de 2 km para vãos de dezenas de metros")
 
 
+class TracadoContinuo(unittest.TestCase):
+    """Com as duas emendas, a Murta é contínua da DC-07 à foz, e o trecho do futuro vínculo está medido."""
+
+    def test_o_tracado_gravado_tem_as_duas_emendas(self):
+        geo = json.loads((bm.RAIZ / "data" / "rios" / "ribeirao-murta.geojson").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(e["id"] for e in geo["properties"]["emendas"]), [138922682, 556881887])
+        self.assertTrue(all(e["tunnel"] == "culvert" and e["nome_no_osm"] is None for e in geo["properties"]["emendas"]))
+
+    def test_dc07_alcanca_a_dc09_e_a_foz_so_por_arestas_do_tracado(self):
+        import medir_alcance_murta as ma
+        medidas = ma.medir(ma.linhas_do_tracado(), ma.reguas_da_murta(), ma.foz_da_murta())
+        self.assertTrue(medidas["continuo"], medidas)
+        self.assertLess(medidas["dc07"]["distancia_ao_tracado_m"], 50)
+        self.assertLess(medidas["dc09"]["distancia_ao_tracado_m"], 50)
+        self.assertAlmostEqual(medidas["dc07_ate_dc09_km"], 4.86, delta=0.05)
+        self.assertAlmostEqual(medidas["dc09_ate_foz_km"], 1.43, delta=0.05)
+
+    def test_sem_as_emendas_o_tracado_volta_a_ser_partido(self):
+        import medir_alcance_murta as ma
+        linhas = ma.linhas_do_tracado()
+        geo = json.loads((bm.RAIZ / "data" / "rios" / "ribeirao-murta.geojson").read_text(encoding="utf-8"))
+        n_emendas = len(geo["properties"]["emendas"])
+        sem = linhas[:len(linhas) - n_emendas]   # as emendas entram por último no arquivo
+        medidas = ma.medir(sem, ma.reguas_da_murta(), ma.foz_da_murta())
+        self.assertFalse(medidas["continuo"])
+        self.assertIsNone(medidas["dc07_ate_dc09_km"])
+
+
 class Rodada(unittest.TestCase):
     """O fluxo do `main` com um Overpass fingido, sem rede."""
 

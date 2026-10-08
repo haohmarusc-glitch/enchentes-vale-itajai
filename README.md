@@ -497,7 +497,13 @@ o projeto.
   - [x] Falha de 2,1 km no traçado do Itajaí do Oeste (OSM), rio abaixo de Taió: **fechada em 08/10/2026.** O trecho
     existe no OSM com o nome incompleto ("Rio Itajaí", via 1207901475, 6,0 km) e entra no tronco pelo número da via,
     nunca pelo nome (`scripts/baixar_vao_oeste.py`, `docs/VAO-ITAJAI-DO-OESTE.md`).
-  - [ ] Ribeirões de Itajaí (DC-07, DC-08, DC-09) sem cor até a cota ter respaldo.
+  - [ ] Ribeirões de Itajaí (DC-07, DC-08, DC-09) sem cor até a cota ter respaldo. O Canhanduba pinta pela DC-08 desde
+    08/10/2026 (#526). A Murta segue cinza: DC-07 sem cota conferida, DC-09 de estuário.
+  - [x] Traçado da Murta partido entre a DC-07 e a foz (68 de 195 vértices alcançáveis): **fechado em 08/10/2026**
+    com os dois bueiros sem nome do OSM (`tunnel=culvert`, 78 m e 38 m, vias 138922682 e 556881887), achados por
+    conectividade no Actions e emendados pelo número (`scripts/baixar_vao_murta.py`, `docs/VAO-MURTA.md`). O trecho
+    do futuro vínculo da DC-07 está **delimitado, sem ativar**: da DC-07 até a DC-09, 4,86 km pelo traçado
+    (`scripts/medir_alcance_murta.py`); os 1,43 km finais até o Açu são da DC-09.
 - [x] **Classificação estadual × municipal — PR 1 (motor em paralelo), 07/10/2026; em produção desde a coleta das 17h30 UTC.**
   `scripts/classificar_reguas.py` calcula, para o piloto Brusque, a classificação municipal (cotas 3,00/5,00 m na
   DCSC-00019) e a estadual (a faixa que a Defesa Civil de SC publica), e diz qual pinta o rio. O
