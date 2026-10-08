@@ -155,8 +155,11 @@ def classificar_alarmes(rio_bloco: dict) -> dict | None:
         cotas". Indaial, Ilhota, Agronômica, Benedito Novo e Arraial idem.
       * `ativo=true` sem flag = NORMAL. Prova: Brusque 1,73 m (atenção estadual > 3 m), Timbó
         2,42, Vidal Ramos 2,54, Taió 4,53 — onze estações, todas baixas.
-      * `status` é RÓTULO, não severidade: 0 normal, 2 atenção, 1 alerta (emergência não
-        observada). Continua só registrado; nunca decide.
+      * `status` é RÓTULO, não severidade: 0 normal, 2 atenção, 1 alerta, 3 emergência (observado
+        em 08/10/2026, Ituporanga 4,17 m). Continua só registrado; nunca decide.
+      * O mapa oficial da DCSC NÃO lê `rio_alarmes` nem pinta marcador por faixa (na visualização
+        "Rio" todo marcador é cinza, sem legenda) — docs/API-DEFESA-CIVIL-SC.md, 08/10/2026. O cinza
+        de lá não contradiz a faixa que a API publica.
     Por isso `faixa` assume "normal" quando ativo e sem flag; `None` (cinza) só quando a estação
     não tem faixas configuradas (ativo=false) ou é contraditória.
     """

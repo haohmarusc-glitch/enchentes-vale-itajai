@@ -225,11 +225,62 @@ recusada" NÃO pode aparecer; se aparecer, o 400 tem outra causa e a `Historic` 
 
 Conclusões gravadas em `coleta_nivel_sc.classificar_alarmes`: `ativo` = "tem faixas configuradas",
 não "alarme disparado"; `ativo=true` sem flag = **normal** (agora afirmado); `status` é rótulo
-(0 normal, 2 atenção, 1 alerta; emergência não observada), nunca decide. Nenhuma leitura
-contraditória na amostra.
+(0 normal, 2 atenção, 1 alerta e, observado em 08/10/2026, **3 emergência** — Ituporanga 4,17 m
+com `emergencia=1`), nunca decide. Nenhuma leitura contraditória na amostra.
 
-**Camada 2 (pintar o mapa pela classificação estadual)** — falta só o mock aprovado pelo Jefferson.
-Conferência opcional que ainda vale: a cor de duas ou três estações em NORMAL no mapa oficial.
+### O mapa oficial NÃO mostra `rio_alarmes` (auditoria do bundle, 08/10/2026)
+
+Pergunta que motivou: o site pintava Ituporanga de **vermelho** ("faixa estadual: emergência",
+DCSC-00039 a 4,17 m) enquanto o mapa de `monitoramento.defesacivil.sc.gov.br` mostrava o marcador
+**cinza**, sem a palavra "emergência". Baixei os 28 arquivos JS do site oficial (`/assets/*.js`,
+bundle `DbhlrD0K5T.js` e os chunks que ele importa) e li o código. Conclusões, com o lugar no código:
+
+1. **As consultas do mapa oficial não pedem `rio_alarmes`.** A `query Tags_data` (poll de 5 min) e a
+   `subscription Nowcasting` (`nowcasting_unique`) pedem `codigo`, `name`, `show`, `timestamp`,
+   `position`, `data.rio.{rio_nome, rio_nivel, rio_nivel_tendencia, rio_area_drenagem,
+   homologacao.relacao.valido}` e os blocos de chuva, pressão, temperatura etc. O campo
+   `rio_alarmes` só existe na API; o site oficial nunca o lê.
+2. **Nenhum chunk contém as palavras "alarme", "atenção", "alerta" ou "emergência".** A
+   classificação não aparece em texto em lugar nenhum da interface — nem no mapa, nem na página da
+   estação (`/estacao/:codigo`), nem na tabela.
+3. **Na visualização "Rio" todo marcador é cinza por construção.** O catálogo
+   `opcoesVisualizacao` do mapa define `rio: { periodos: [{ key: "NivelRio", label: "Nível Atual" }],
+   showOnZero: true }` **sem `legenda`**, enquanto chuva, temperatura, umidade etc. têm escala
+   (`{modo, cores, minimo, maximo}`). O componente `MarcadorMapa` faz `let cor = "gray"; if
+   (legenda) { … escolhe a cor pelos ranges … }` — sem legenda, fica `"gray"`. O cinza não é
+   "normal": é "esta visualização não tem escala de cor".
+4. **A visualização padrão é "Chuva" (3 h), com `showOnZero: false`:** estação Hidro com 0 mm nas
+   últimas 3 h some ou fica no cinza da escala de chuva — também sem relação com o nível do rio.
+5. **Opacidade = idade.** `opacity: minutos_desde_timestamp < 60 ? 1 : 0.4`. Marcador apagado é
+   leitura com mais de 60 min, não faixa.
+
+Logo, **o vermelho do site e o cinza do mapa oficial não se contradizem**: o site mostra o campo
+`rio_alarmes.inundacao.emergencia = 1` que a própria Defesa Civil de SC publica para a DCSC-00039,
+e o mapa oficial não exibe esse campo para estação nenhuma. A conferência "cor de duas ou três
+estações em NORMAL no mapa oficial" (abaixo) deixa de fazer sentido: o mapa oficial não pinta
+por faixa. O que continua valendo: a faixa estadual é o que a API declara (`classificar_alarmes`);
+o site diz de quem é a classificação ("faixa estadual") e nunca compara o metro com cota própria.
+
+Evidência no mesmo instante (08/10/2026 14:23 UTC = 11:23 BRT), direto na API, com os campos que o
+mapa oficial pede mais `rio_alarmes`:
+
+| estação | nível | show | valido | ativo | atenção | alerta | emergência | status |
+|---|---|---|---|---|---|---|---|---|
+| DCSC-00039 Ituporanga | 4,17 | true | true | true | 0 | 0 | **1** | **3** |
+| DCSC-00013 Rio do Sul | 5,64 | true | true | true | 0 | 1 | 0 | 1 |
+| DCSC-00032 Lontras | 6,29 | true | true | true | 0 | 1 | 0 | 1 |
+| DCSC-00011 Rio dos Cedros | 3,54 | true | true | true | 1 | 0 | 0 | 2 |
+| DCSC-00019 Brusque | 1,85 | true | true | true | 0 | 0 | 0 | 0 |
+| DCSC-00003 Ascurra | 8,12 | true | true | **false** | 0 | 0 | 0 | 0 |
+
+Observação sobre Ituporanga: em 14/09/2026 a DCSC-00039 estava em `alerta` a 3,44 m; em 08/10 está em
+`emergencia` a 4,17 m — a ordem das faixas acompanha o nível. A régua da Prefeitura ("Centro",
+2,04 m em "Alerta" na mesma manhã) é **outra régua**, a jusante da barragem, e não se compara com
+esta (ver auditoria de Ituporanga).
+
+**Camada 2 (pintar o mapa pela classificação estadual)** — em produção ("faixa estadual").
+A conferência "cor de duas ou três estações em NORMAL no mapa oficial" **não é possível**: o mapa
+oficial não pinta por faixa (seção acima, 08/10/2026).
 
 **Validação pendente na VPS (antes de pintar o mapa) — FEITA, acima:** rodar `python3 scripts/coleta_nivel_sc.py`
 e conferir em `ultimo_nivel_sc.json` (a) se estações em NORMAL no site oficial vêm com `ativo: true`
