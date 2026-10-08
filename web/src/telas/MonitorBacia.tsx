@@ -2,7 +2,8 @@ import { cotasOperacionais as cotasOrdenadas } from '../logica/cotasOperacionais
 import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { chuvaMonitor, linhasChuva, linhasChuvaCompactas, mmChuva } from '../logica/chuvaMonitor'
 import { cotaDaFaixa, estadoDaLeitura, LEITURA_VARIAS_REGUAS, textoTendenciaCompacta } from '../logica/painelCompacto'
-import { contagemDeTracados, opcoesDeTracado, tracadosVisiveis } from '../logica/tracadosDoMapa'
+import { NOME_TRACADO, contagemDeTracados, opcoesDeTracado, tracadosVisiveis } from '../logica/tracadosDoMapa'
+import { rioParaCena, textoDoAlcance, textoDoTrechoCinza, vinculoDaCidade, type MotivoDoTrecho } from '../logica/vinculosDosTracados'
 import { destaqueDaBacia } from '../logica/destaqueDaBacia'
 import { estadoMareAgora } from '../logica/mare'
 import { diaDeBrasilia, horaDeBrasilia, tendenciaDaLeitura } from '../logica/agora'
@@ -78,6 +79,7 @@ import {
   type LeituraNaHora,
   type Pino,
   type RioParaCena,
+  trechoCinzaNoPonto,
 } from '../logica/mapaMotor'
 import { reguasComCota } from '../logica/reguas'
 import { reguasNoMapa, type ReguaNoMapa } from '../logica/reguasNoMapa'
@@ -149,11 +151,9 @@ const AFLUENTES = [
   // sugerindo Taió -> Ituporanga -> Rio do Sul em SÉRIE, a fila que o projeto
   // desmontou nos dados. O desenho é o que o morador lê primeiro.
   //
-  // ⚠️ PARCIAL: 10,5 km, da Defesa Civil de Rio do Sul (Asthon). Mostra as duas
-  // cabeceiras CHEGANDO à confluência, que é a afirmação que corrige o erro;
-  // não alcança Ituporanga, 21 km acima. Ituporanga segue fora da guarda de
-  // 5 km, então continua sem pintar traçado — que é o certo enquanto o rio dela
-  // não estiver desenhado até lá.
+  // Hoje (conferido em 07/10/2026) o traçado tem 58 km, é contínuo e passa a 19 m da régua de
+  // Ituporanga (DCSC-00039). Ele é pintado pelo VÍNCULO explícito (`vinculosDosTracados.ts`): só da
+  // estação até a confluência em Rio do Sul, com a mesma decisão de cor do pino de Ituporanga.
   'itajai-do-sul',
   'benedito',
   'luiz-alves',
@@ -439,6 +439,8 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
   const [rios, setRios] = useState<RioParaCena[] | null>(null)
   const [tam, setTam] = useState<{ w: number; h: number }>({ w: 0, h: 0 })
   const [sel, setSel] = useState<Pino | null>(null)
+  /** O trecho cinza tocado, para o painel dizer por que ele não tem cor (07/10/2026). */
+  const [trechoCinza, setTrechoCinza] = useState<{ rioId: string; motivo: MotivoDoTrecho } | null>(null)
   const [hover, setHover] = useState<Pino | null>(null)
   /**
    * A régua individual em foco (as onze de Itajaí).
@@ -625,19 +627,14 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
       if (!vivo) return
       // `juntarCanais` funde o canal retificado no traçado do Mirim e o tira da
       // lista: é o que faz a espinha do Mirim pintar os dois canais igual.
-      const lista: RioParaCena[] = juntarCanais(baixados).map((b) => ({
-        rioId: b.rioId,
-        coords: b.coords,
-        // Tronco tem cidades que o pintam; afluente entra só como linha (sem
-        // cidade própria no cadastro → fica cinza, honesto).
-        cidades: (RIOS_TRONCO as readonly string[]).includes(b.rioId)
-          ? cidadesDoRio(b.rioId)
-          : [],
-        // O eixo diz quem pode PINTAR. Sem ele, Timbó (no Benedito, a 8,2 km)
-        // e Rio dos Cedros (16,6 km) coloriam trechos do Açu com o nível de
-        // outro rio.
-        eixo: eixoDoRio(b.rioId),
-      }))
+      // Tronco: as cidades do cadastro pintam pela espinha. Fora do tronco, só o VÍNCULO explícito pinta
+      // (07/10/2026), e só no alcance dele — da estação até a confluência ou a próxima estação, pelo
+      // caminho no próprio traçado. Sem vínculo, ou sem caminho, o curso fica cinza e o toque diz por quê.
+      // O eixo do tronco diz quem pode PINTAR: sem ele, Timbó (no Benedito, a 8,2 km) e Rio dos Cedros
+      // (16,6 km) coloriam trechos do Açu com o nível de outro rio.
+      const lista: RioParaCena[] = juntarCanais(baixados).flatMap((b) => b.coords
+        ? [rioParaCena({ rioId: b.rioId, coords: b.coords }, (RIOS_TRONCO as readonly string[]).includes(b.rioId), cidadesDoRio, eixoDoRio)]
+        : [])
       setRios(lista)
     })
     return () => {
@@ -1100,7 +1097,17 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
     // Régua, pino, e só então o rio. A ordem é do alvo mais preciso para o mais
     // largo: quem mira o pino de Gaspar não pode receber o trecho que passa por
     // baixo dele.
-    setSel(pinoNoPonto(ev) ?? pinoDoTrechoNoPonto(ev))
+    const pino = pinoNoPonto(ev) ?? pinoDoTrechoNoPonto(ev)
+    setSel(pino)
+    // Por último, o trecho CINZA com motivo: o toque explica o cinza em vez de não fazer nada.
+    const cena = cenaRef.current
+    const canvas = canvasRef.current
+    if (!pino && cena && canvas) {
+      const r = canvas.getBoundingClientRect()
+      setTrechoCinza(trechoCinzaNoPonto(cena.trechos, ev.clientX - r.left, ev.clientY - r.top))
+    } else {
+      setTrechoCinza(null)
+    }
   }
 
   /**
@@ -2183,6 +2190,26 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           )
         })() : null}
 
+        {/* O trecho cinza tocado: por que ele não tem cor. Sem isto, tocar no Benedito não fazia nada, e o
+            cinza parecia rio sem problema. */}
+        {!municipal && !reguaSel && !(sel ?? hover) && trechoCinza ? (
+          <div className={estilos.painel} data-tapa-mapa role="status">
+            <div className={estilos.painelTopo}>
+              <strong>{NOME_TRACADO[trechoCinza.rioId] ?? trechoCinza.rioId}</strong>
+              <button
+                type="button"
+                className={estilos.botaoFechar}
+                aria-label="Fechar o painel do trecho"
+                onClick={() => setTrechoCinza(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <p>Sem classificação neste trecho.</p>
+            <p className={estilos.painelRessalva}>{textoDoTrechoCinza(trechoCinza.motivo, trechoCinza.rioId)}</p>
+          </div>
+        ) : null}
+
         {/* Painel de dados da cidade em foco (mouse por cima ou toque), no canto
             superior direito, abaixo do chip da maré. Traz tudo o que temos dela. */}
         {!municipal && !reguaSel && (sel ?? hover) ? (() => {
@@ -2224,7 +2251,9 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                   ✕
                 </button>
                 <span className={estilos.painelRio}>
-                  {foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
+                  {vinculoDaCidade(cid.id)
+                    ? NOME_TRACADO[vinculoDaCidade(cid.id)!.tracado] ?? vinculoDaCidade(cid.id)!.tracado
+                    : foco.rioId === 'itajai-mirim' ? 'Itajaí-Mirim' : 'Itajaí-Açu'}
                 </span>
               </div>
               {celular ? (() => {
@@ -2344,6 +2373,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
                 </p>
               )}
               {textos.origemDaCor && <p className={estilos.painelRessalva}>{textos.origemDaCor}</p>}
+              {/* Até onde a cor desta régua vale no mapa, quando ela colore um curso fora do tronco. */}
+              {(() => {
+                const v = vinculoDaCidade(cid.id)
+                return v ? <p className={estilos.painelRessalva}>{textoDoAlcance(v, NOME_TRACADO[v.tracado] ?? v.tracado)}</p> : null
+              })()}
               {!celular ? (
               <p className={estilos.painelNivel}>
                 {foco.nivel != null ? (

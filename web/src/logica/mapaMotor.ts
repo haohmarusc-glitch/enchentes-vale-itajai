@@ -39,6 +39,7 @@ import {
   type Vista,
 } from '../logica/mapaCanvas'
 import { comportas, faseComporta, rotuloComportas, type BarragemNoMapa } from './barragensNoMapa'
+import { FOLGA_ACIMA_DA_REGUA_KM, chaveDaAresta, kmAcimaDe, type MotivoDoTrecho } from './vinculosDosTracados'
 
 /**
  * Os limites da bacia, ou uma caixa de segurança quando ainda não há traçado —
@@ -163,6 +164,12 @@ export interface Trecho {
    */
   cidadeId: string | null
   rioId: string
+  /**
+   * Por que o trecho ficou sem cor mesmo podendo haver cor no pino (07/10/2026): o curso não tem régua
+   * vinculada, a aresta está fora do alcance da régua, ou fica rio acima da primeira régua do tronco. O
+   * toque no trecho cinza diz isto no painel. Ausente = a cor (ou o cinza) é a da âncora, como sempre.
+   */
+  motivoCinza?: MotivoDoTrecho
 }
 /** Uma cidade âncora, já projetada, para o pino e o toque. */
 export interface Pino {
@@ -245,6 +252,20 @@ export interface RioParaCena {
    * Ausente = todas pintam, que é o certo em rio não ramificado (o Mirim).
    */
   eixo?: string[]
+  /**
+   * O rio do cadastro em que as cidades deste traçado moram — onde se buscam leitura, série e
+   * classificação. Ausente = o próprio `rioId` (o tronco). Um afluente vinculado (o Itajaí do Sul) desenha
+   * `itajai-do-sul`, mas a leitura de Ituporanga está no grupo `itajai-acu` (`vinculosDosTracados.ts`).
+   */
+  grupo?: string
+  /**
+   * As únicas arestas que a régua pode colorir (`arestasDoAlcance`, chave `chaveDaAresta(linha, i)` na
+   * ordem do arquivo). Ausente = o traçado inteiro, pela espinha, como sempre. Presente = fora dela fica
+   * cinza, com `motivoCinza: 'fora-do-alcance'`.
+   */
+  arestasAutorizadas?: Set<string>
+  /** Sem régua vinculada: o traçado inteiro fica cinza com este motivo (o toque o mostra). */
+  semVinculo?: boolean
 }
 
 /**
@@ -398,6 +419,8 @@ export function construirCena(
   const pinosPorId = new Map<string, Pino>()
 
   for (const rio of rios) {
+    // Onde moram a leitura e a classificação das cidades deste traçado (ver `RioParaCena.grupo`).
+    const grupo = rio.grupo ?? rio.rioId
     const ancoras = rio.cidades
       .filter((c) => c.coordenadas)
       .map((cidade) => {
@@ -405,12 +428,12 @@ export function construirCena(
         const alvo: LonLat = [coord[1], coord[0]] // [lon,lat] para casar com o rio
         // Na reprodução, a leitura vem da série no instante t; ao vivo, do tempoReal.
         const aoVivo = leituraNaHora
-          ? leituraNaHora(rio.rioId, cidade.id)
-          : leituraDaCidade(tempoReal, rio.rioId, cidade.id)
+          ? leituraNaHora(grupo, cidade.id)
+          : leituraDaCidade(tempoReal, grupo, cidade.id)
         const temVarias =
           !leituraNaHora &&
           aoVivo === null &&
-          leiturasDaCidade(tempoReal, rio.rioId, cidade.id).length > 1
+          leiturasDaCidade(tempoReal, grupo, cidade.id).length > 1
         // Bruto só entra AO VIVO (não em leituraNaHora/reprodução — ver o
         // parâmetro nivelBrutoSc).
         const bruto = !leituraNaHora ? (nivelBrutoSc?.get(cidade.id) ?? null) : null
@@ -420,7 +443,7 @@ export function construirCena(
           ? faixasDoMotor(
               classificacao,
               cidade.id,
-              rio.rioId,
+              grupo,
               { leituraMedidaEm: aoVivo?.medidoEm, estadualMedidaEm: bruto?.medidoEm, varias: temVarias },
               agora,
             )
@@ -480,17 +503,38 @@ export function construirCena(
     const ancoraEm = (p: LonLat) =>
       ancorasQuePintam.length === 0 ? null : ancorasQuePintam[trechoDoPonto(espinha, p)]!
     const faixaEm = (p: LonLat): Faixa => ancoraEm(p)?.faixa ?? 'sem-dado' 
+    // TRONCO: a primeira régua não pinta o rio ACIMA dela (07/10/2026). Taió pintava 71 km do Itajaí do
+    // Oeste rio acima, com a Barragem Oeste; Vidal Ramos, 25 km do Mirim. A projeção na reta entre as duas
+    // primeiras âncoras diz o que fica acima, com folga para o meandro logo abaixo da régua.
+    const acimaDaPrimeira = (p: LonLat): boolean =>
+      !rio.arestasAutorizadas && espinha.length >= 2 && trechoDoPonto(espinha, p) === 0 &&
+      kmAcimaDe(p, espinha[0]!, espinha[1]!) > FOLGA_ACIMA_DA_REGUA_KM
 
-    for (const linha of rio.coords) {
-      if (linha.length < 2) continue
+    rio.coords.forEach((linha, li) => {
+      if (linha.length < 2) return
       // Orienta o way no sentido do rio pela espinha (o OSM não os entrega todos
       // montante→jusante). A cor é por trecho e independe disso; só a correnteza
       // precisa do sentido certo.
       let seq = linha
+      let invertida = false
       if (espinha.length >= 2) {
         const pa = progressoFluxo(linha[0]!)
         const pb = progressoFluxo(linha[linha.length - 1]!)
-        if (pb < pa) seq = [...linha].reverse()
+        if (pb < pa) {
+          seq = [...linha].reverse()
+          invertida = true
+        }
+      }
+      // Por que a aresta `i` de `seq` fica cinza, se fica. A chave do alcance é na ordem do ARQUIVO: com a
+      // linha invertida, a aresta i de seq é a (n - i + 1) do arquivo.
+      const n = linha.length - 1
+      const motivoAresta = (i: number): MotivoDoTrecho | undefined => {
+        if (rio.semVinculo) return 'sem-vinculo'
+        if (rio.arestasAutorizadas && !rio.arestasAutorizadas.has(chaveDaAresta(li, invertida ? n - i + 1 : i))) {
+          return 'fora-do-alcance'
+        }
+        if (acimaDaPrimeira(meioDaAresta(i))) return 'acima-da-primeira-regua'
+        return undefined
       }
       // A orientação é do way inteiro: um meandro pode recuar na projeção
       // da espinha sem inverter o sentido ao longo da calha. Exigir avanço
@@ -507,13 +551,14 @@ export function construirCena(
       ]
       const faixaAresta = (i: number): Faixa => {
         const p = meioDaAresta(i)
+        if (motivoAresta(i)) return 'sem-dado'
         if (dc11 && progressoNaEspinha(espinha, cumEspinha, p) >= inicioDc11) {
           return dc11.faixa ?? 'sem-dado'
         }
         return faixaEm(p)
       }
       const cidadeAresta = (i: number): string | null =>
-        ancoraEm(meioDaAresta(i))?.cidade.id ?? null
+        motivoAresta(i) ? null : ancoraEm(meioDaAresta(i))?.cidade.id ?? null
       // A origem acompanha a âncora (o corte de trecho já é por âncora), e o
       // DC-11 é referência municipal.
       const origemAresta = (i: number): OrigemFaixa => {
@@ -533,13 +578,14 @@ export function construirCena(
       let cur = faixaAresta(1)
       let curCidade = cidadeAresta(1)
       let curOrigem = origemAresta(1)
+      let curMotivo = motivoAresta(1)
       let ini = 0
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
         trechos.push({
           // Faixa estadual não corre: a regra do Kikikuru é "animação = nível na
           // régua nossa", e esta cor não é nossa (decisão do Jefferson, 14/09/2026).
-          animacao: curOrigem === 'estadual' ? 'parada'
+          animacao: curOrigem === 'estadual' || curMotivo ? 'parada'
             : orientada && (rio.rioId === 'itajai-acu' || curCidade !== 'itajai') ? 'direcional' : 'parada',
           pts,
           faixa: cur,
@@ -549,6 +595,7 @@ export function construirCena(
           progMid: progMidDe(ini, fim),
           cidadeId: curCidade,
           rioId: rio.rioId,
+          ...(curMotivo ? { motivoCinza: curMotivo } : {}),
         })
       }
       for (let i = 1; i < seq.length; i++) {
@@ -556,19 +603,21 @@ export function construirCena(
         const temProx = i + 1 < seq.length
         const prox = temProx ? faixaAresta(i + 1) : null
         const proxCidade = temProx ? cidadeAresta(i + 1) : null
-        // Corta na troca de faixa OU de âncora. A troca de âncora não muda a
+        const proxMotivo = temProx ? motivoAresta(i + 1) : undefined
+        // Corta na troca de faixa, de âncora OU de motivo do cinza. A troca de âncora não muda a
         // cor; muda de quem é o trecho, e é isso que o toque devolve.
-        if (temProx && (prox !== cur || proxCidade !== curCidade)) {
+        if (temProx && (prox !== cur || proxCidade !== curCidade || proxMotivo !== curMotivo)) {
           empurra(i)
           pts = [projetar(enq, seq[i]!)]
           cur = prox!
           curCidade = proxCidade
           curOrigem = origemAresta(i + 1)
+          curMotivo = proxMotivo
           ini = i
         }
       }
       empurra(seq.length - 1)
-    }
+    })
 
     for (const a of ancoras) {
       // Cidade que aparece em dois rios (a foz, Itajaí) entra uma vez só. Fica
@@ -578,7 +627,8 @@ export function construirCena(
       const [x, y] = projetar(enq, a.pino.ponto)
       pinosPorId.set(a.cidade.id, {
         cidade: a.cidade,
-        rioId: rio.rioId,
+        // O grupo, não o traçado: o painel busca a leitura e a série da cidade por este id.
+        rioId: grupo,
         x,
         y,
         lon: a.pino.ponto[0],
@@ -1447,6 +1497,31 @@ export function cidadeNoTrecho(
       if (dd < d) {
         d = dd
         melhor = { cidadeId: t.cidadeId, rioId: t.rioId }
+      }
+    }
+  }
+  return melhor
+}
+
+/**
+ * O trecho CINZA com motivo sob o ponteiro — o curso sem régua vinculada, fora do alcance da régua ou rio
+ * acima da primeira régua (07/10/2026). É o toque que explica o cinza em vez de não fazer nada.
+ */
+export function trechoCinzaNoPonto(
+  trechos: readonly Trecho[],
+  x: number,
+  y: number,
+  raio: number = RAIO_TRECHO_PX,
+): { rioId: string; motivo: MotivoDoTrecho } | null {
+  let melhor: { rioId: string; motivo: MotivoDoTrecho } | null = null
+  let d = raio
+  for (const t of trechos) {
+    if (!t.motivoCinza) continue
+    for (let i = 1; i < t.pts.length; i++) {
+      const dd = distanciaAoSegmento(x, y, t.pts[i - 1]!, t.pts[i]!)
+      if (dd < d) {
+        d = dd
+        melhor = { rioId: t.rioId, motivo: t.motivoCinza }
       }
     }
   }
