@@ -98,15 +98,18 @@ export function textoMare(tabua: TabuaMare, agora: Date): string {
   const pre = tabua.preamares.map(para)
   const bai = tabua.baixamares.map(para)
   const m = estadoMareAgora(pre, bai, agora)
+  // A fonte vem do próprio arquivo da tábua (`_meta.fonte_curta`), nunca de texto fixo: em 09/09/2026 a tábua
+  // era a da Marinha e o chat dizia "Marinha"; desde 08/10/2026 é a da UNIVALI (decisão do Jefferson).
+  const fonte = tabua._meta?.fonte_curta ?? 'fonte não identificada'
   if (m.estado === 'sem-dado') {
-    return 'A tábua de maré do site não cobre este horário, então não digo se a maré sobe ou desce agora. A tábua oficial é a da Marinha (porto de Itajaí).'
+    return `A tábua de maré do site (${fonte}) não cobre este horário, então não digo se a maré sobe ou desce agora.`
   }
   const proximaPre = pre.find((p) => p.quando.getTime() > agora.getTime())
   const proximaBai = bai.find((p) => p.quando.getTime() > agora.getTime())
   const alt = (a?: number) => (a != null ? ` (${metros(a)} na tábua)` : '')
   const regime = regimeMare(agora)
   return [
-    `Pela tábua de maré da Marinha para o porto de Itajaí, a maré está ${m.estado === 'subindo' ? 'subindo (enchente)' : 'baixando (vazante)'} agora.`,
+    `Pela tábua de maré do porto de Itajaí (${fonte}), a maré está ${m.estado === 'subindo' ? 'subindo (enchente)' : 'baixando (vazante)'} agora.`,
     [
       proximaPre ? `Próxima preamar: ${horaDeBrasilia(proximaPre.quando)} de ${diaDeBrasilia(proximaPre.quando)}${alt(proximaPre.altura_m)}.` : '',
       proximaBai ? `Próxima baixamar: ${horaDeBrasilia(proximaBai.quando)} de ${diaDeBrasilia(proximaBai.quando)}${alt(proximaBai.altura_m)}.` : '',

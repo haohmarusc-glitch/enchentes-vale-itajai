@@ -480,6 +480,13 @@ o projeto.
 
 ## Pendências
 
+- [x] **Tábua de maré: a fonte voltou a ser a UNIVALI (decisão do Jefferson, 08/10/2026).** A planilha do ano inteiro
+  que o Prof. Mauro e o Márcio Piazera mandaram em 23/09 (`mare_astronomica_2026.xlsx`, 5 min, marégrafo de
+  Cabeçudas) estava sem uso: desde 09/09 o site creditava a Marinha, e o Prof. Mauro viu isso no site. Agora
+  `importar_mare_univali.py` lê a série, tira os extremos (851 preamares, 851 baixa-mares; 46 pares de ondulação de
+  estofo < 2 cm fora) e cruza com a Marinha antes de gravar (mediana −11 min, p90 28 min: sem erro de fuso). **Só o
+  horário entra**: a planilha não declara a referência vertical (fica ~0,25 m acima do NR da Marinha), então nada
+  de altura. Site e chat passam a dizer a fonte do próprio arquivo, nunca "tábua da Marinha". `docs/TABUA-UNIVALI-2026.md`.
 - [x] **Barragens no Monitor: painel e armazenamento em escala própria (07/10/2026; mesclado em 08/10/2026 por decisão do Jefferson).** O toque no marcador
   abre comportas e o "Percentual de ocupação informado pela fonte" (atual ÷ máxima); "Mais detalhes" mostra o nível na
   régua da barragem (com zero e altitude), capacidade com "Unidade não informada", horário e fonte, vazões "Não

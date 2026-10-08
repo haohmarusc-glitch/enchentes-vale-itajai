@@ -82,7 +82,7 @@ export type Passo =
   | { tipo: 'chuva_agora' }
   /** O estado das comportas das barragens de contenção, como a fonte publica. */
   | { tipo: 'barragens' }
-  /** A maré no porto de Itajaí, pela tábua da Marinha. */
+  /** A maré no porto de Itajaí, pela tábua do site (fonte em `mareItajai._meta.fonte_curta`). */
   | { tipo: 'mare' }
   /** De onde vem a leitura de uma cidade: estação, hora e fontes cadastradas. */
   | { tipo: 'fonte_leitura'; cidadeId?: string }

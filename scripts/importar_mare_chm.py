@@ -184,6 +184,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--pdf", type=Path, default=BRUTO)
     ap.add_argument("--seco", action="store_true", help="não grava")
+    ap.add_argument("--substituir", action="store_true",
+                    help="grava mesmo que a tábua em uso seja a da UNIVALI (decisão do Jefferson, 08/10/2026)")
     args = ap.parse_args()
     if not args.pdf.exists():
         print(f"não achei {args.pdf}", file=sys.stderr)
@@ -215,6 +217,11 @@ def main() -> int:
     if args.seco:
         print("--seco: nada gravado.")
         return 0
+    # Desde 08/10/2026 a tábua do site é a da UNIVALI (decisão do Jefferson); a Marinha é referência de cruzamento.
+    # Este importador só a substitui de propósito.
+    if antigo and "UNIVALI" in str((antigo.get("_meta") or {}).get("fonte_curta", "")) and not args.substituir:
+        print("a tábua em uso é a da UNIVALI (decisão de 08/10/2026): nada gravado. Para trocar, repita com --substituir.")
+        return 1
     grava_json(DESTINO, novo)
     print(f"gravado data/{DESTINO}.")
     return 0

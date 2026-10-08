@@ -348,6 +348,12 @@ export interface MetaTabuaMare {
   /** Presente só na tábua INTERINA (não veio do endpoint oficial da Defesa
    *  Civil) — a tela mostra isto como aviso, não some em silêncio. */
   aviso_interino?: string
+  /**
+   * A referência vertical de `altura_m` ("Nível de Redução da carta 1841", por exemplo). `null` ou ausente
+   * quando a tábua não traz altura (UNIVALI, 08/10/2026: a planilha não declara a referência, então só o horário
+   * entra). A tela nomeia a referência a partir daqui, nunca por texto fixo.
+   */
+  referencia_altura?: string | null
 }
 
 export interface TabuaMare {

@@ -98,7 +98,7 @@ test('texto da chegada × maré: o pico, a janela, as marés dentro dela e o avi
   const p = t(passou)
   assert.match(p, /^O pico já passou por Blumenau: 6,00 m às 05:00 de 06\/10/)
   assert.match(p, /Pela referência de estudo \(12 a 17 h\), o pico chegaria a Itajaí:\nJanela: de 16:45 de 06\/10 a /)
-  assert.match(p, /maré baixa às 18:49 de 06\/10 \(0,42 m na tábua\)/)
+  // Tábua da UNIVALI (08/10/2026): baixa-mar às 18:35 (a Marinha dava 18:49) e sem altura, porque a planilha não declara a referência.\n  assert.match(p, /maré baixa às 18:35 de 06\/10 \(sem altura na tábua\)/)
   assert.match(p, /não previsão[^]*não o nível do rio[^]*199/)
   const s = t(subindo)
   assert.match(s, /^Blumenau ainda está subindo: 6,00 m às 15:00 \(\+10 cm\/h\)\. O pico ainda não aconteceu/)
@@ -116,7 +116,7 @@ test('simulação com horário informado: hora de Brasília, hoje por padrão; j
   const r = simularChegada(entradaBrasilia(pico), REF.horas_min, REF.horas_max, tabua)
   const t = textoSimulacao(pico, r, REF, AGORA)
   assert.match(t, /^Se o pico em Blumenau for às 10:00 de 06\/10, pela referência de estudo \(12 a 17 h\), chegaria a Itajaí:\nJanela: de 22:00 de 06\/10 a 03:00 de 07\/10/)
-  assert.match(t, /maré alta às 22:59 de 06\/10 \(0,85 m na tábua\)/)
+  assert.match(t, /maré alta às 23:05 de 06\/10 \(sem altura na tábua\)/)
   assert.match(t, /Há preamar dentro da janela simulada\. A coincidência de horários não determina a altura/)
   const velho = instanteDoPico({ hora: 1, dia: 'ontem' }, AGORA)!
   assert.match(textoSimulacao(velho, simularChegada(entradaBrasilia(velho), REF.horas_min, REF.horas_max, tabua), REF, AGORA), /teria chegado[^]*Essa janela já terminou/)

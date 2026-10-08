@@ -88,12 +88,21 @@ test('barragens: comportas e uso como a fonte publica, nunca o nível em metros 
   assert.match(textoBarragens(new Map(), AGORA), /Não consegui/)
 })
 
-test('maré: pela tábua da Marinha, subindo ou baixando, a próxima preamar; maré não é cheia', () => {
+test('maré: pela tábua do site (a fonte vem do arquivo), subindo ou baixando, a próxima preamar; maré não é cheia', () => {
   const t = textoMare(tabua, AGORA)
-  assert.match(t, /^Pela tábua de maré da Marinha para o porto de Itajaí, a maré está baixando \(vazante\) agora\./)
-  assert.match(t, /Próxima preamar: 22:59 de 06\/10 \(0,85 m na tábua\)\. Próxima baixamar: 18:49 de 06\/10 \(0,42 m na tábua\)\./)
+  // A fonte é a do próprio `mare-itajai.json` (UNIVALI desde 08/10/2026), nunca um nome fixo no código.
+  assert.match(t, /^Pela tábua de maré do porto de Itajaí \(Laboratório de Oceanografia Física da UNIVALI.*\), a maré está baixando \(vazante\) agora\./)
+  assert.ok(!/Marinha/.test(t), 'o chat não crava a Marinha como fonte')
+  // 06/10/2026, 15h00 em Brasília: a UNIVALI dá a preamar às 23:05 e a baixa-mar às 18:35 (a Marinha dava 22:59 e
+  // 18:49). Sem altura: a planilha não declara a referência vertical.
+  assert.match(t, /Próxima preamar: 23:05 de 06\/10\. Próxima baixamar: 18:35 de 06\/10\./)
+  assert.ok(!/na tábua\)/.test(t), 'sem altura, nenhum "(x m na tábua)"')
   assert.match(t, /previsão astronômica[^]*Maré alta não é cheia/)
-  assert.match(textoMare({ ...tabua, preamares: [], baixamares: [] }, AGORA), /não cobre este horário/)
+  const sem = textoMare({ ...tabua, preamares: [], baixamares: [] }, AGORA)
+  assert.match(sem, /não cobre este horário/)
+  assert.match(sem, /UNIVALI/)
+  // Uma tábua com outra fonte no arquivo muda o texto junto.
+  assert.match(textoMare({ ...tabua, _meta: { fonte_curta: 'Fonte X' } }, AGORA), /^Pela tábua de maré do porto de Itajaí \(Fonte X\)/)
 })
 
 test('fonte da leitura: estação e hora de cada leitura, a estadual com zero próprio e as fontes cadastradas', () => {
@@ -194,7 +203,7 @@ test('chuva, barragens e maré: texto, sem mexer no mapa', async () => {
   assert.match((await rodar('onde está chovendo mais?', amb)).texto, /Gaspar: 1 h: 3,0 mm/)
   assert.match((await rodar('como estão as barragens?', amb)).texto, /Não consegui buscar o estado das barragens/)
   const m = await rodar('como está a maré?', amb)
-  assert.match(m.texto, /tábua de maré da Marinha/)
+  assert.match(m.texto, /tábua de maré do porto de Itajaí \(Laboratório de Oceanografia Física da UNIVALI/)
   assert.equal(m.link?.para, '/itajai')
   assert.deepEqual(navegacoes, [])
 })

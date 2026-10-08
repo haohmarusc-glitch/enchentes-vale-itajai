@@ -9,8 +9,8 @@ import estilos from './PainelMare.module.css'
  * Decisão do Jefferson de 07/10/2026: número só com horário, estação, unidade e referência vertical
  * identificados; leitura antiga nunca como atual; a diferença para a maré astronômica só quando as duas são
  * da mesma estação, no mesmo horário e na mesma referência — e com o nome "diferença entre nível observado e
- * maré astronômica prevista", sem atribuir a causa só a vento e pressão. A tábua da Marinha continua sendo a
- * previsão astronômica desta tela.
+ * maré astronômica prevista", sem atribuir a causa só a vento e pressão. A tábua do porto de Itajaí usada no
+ * site (desde 08/10/2026 a da UNIVALI, antes a da Marinha) continua sendo a previsão astronômica desta tela.
  */
 export default function PainelMareMedida() {
   const { dado, carregado } = useMareMedida()

@@ -1,5 +1,9 @@
 # Tábua de Marés 2026 do Porto de Itajaí (Marinha, CHM/DHN)
 
+> **08/10/2026:** por decisão do Jefferson, a tábua do site voltou a ser a da **UNIVALI** (planilha do ano inteiro
+> recebida em 23/09, `docs/TABUA-UNIVALI-2026.md`). A da Marinha fica neste bruto como referência de cruzamento;
+> `importar_mare_chm.py` só a grava de novo com `--substituir`.
+
 Data: 09/09/2026. Bruto: `data/brutos/chm-tabua-mare-itajai-2026.pdf` (60 KB, páginas 166–168 da
 Tábua de Marés 2026; sha256 `0da7287be13187f787c7f7cf2c3b9e91bad530caddb99b52b60a42c55d0f62b2`),
 enviado pelo Jefferson — o host da Marinha não responde deste ambiente. Importador:
