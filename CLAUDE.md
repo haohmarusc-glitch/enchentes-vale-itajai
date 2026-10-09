@@ -134,8 +134,9 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - **A fonte é a previsão harmônica da UNIVALI** (Laboratório de Oceanografia Física, Prof. Mauro Michelena Andrade
   e Márcio Piazera; marégrafo de Cabeçudas), planilha de 5 min do ano de 2026 em
   `data/brutos/univali-mare-astronomica-2026.xlsx`, importada por `scripts/importar_mare_univali.py` para
-  `data/mare-itajai.json`. A Tábua da Marinha (CHM/DHN) fica como referência de cruzamento (`importar_mare_chm.py`
-  só grava com `--substituir`). Detalhes em `docs/TABUA-UNIVALI-2026.md`.
+  `data/mare-itajai.json`. A Tábua da Marinha (CHM/DHN) fica como referência de cruzamento e das análises que precisam
+  da altura, em `data/mare-itajai-chm.json` (site e chat não a leem; `importar_mare_chm.py` só toca a tábua do site
+  com `--substituir`). Detalhes em `docs/TABUA-UNIVALI-2026.md`.
 - **Só o horário entra**: a planilha não declara a referência vertical, então `altura_m` não existe e
   `_meta.referencia_altura` é `null`. Nenhuma tela ou texto nomeia referência de altura por texto fixo.
 - **A fonte na tela e no chat vem de `_meta.fonte_curta`**, nunca de texto fixo ("tábua da Marinha" foi erro de

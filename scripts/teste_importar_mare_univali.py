@@ -180,5 +180,17 @@ class TesteBrutoReal(unittest.TestCase):
             self.assertNotEqual(a[0], b[0])
 
 
+class TesteTabuaDaMarinhaSoParaAnalise(unittest.TestCase):
+    """Desde 08/10/2026 a Marinha é referência (`mare-itajai-chm.json`, com altura): só as análises a leem."""
+
+    def test_o_site_nao_le_a_tabua_da_marinha(self):
+        web = BRUTO.parents[2] / "web"
+        arquivos = [*(web / "src").rglob("*.ts"), *(web / "src").rglob("*.tsx"),
+                    *(web / "functions").rglob("*.ts"), *web.glob("*.ts")]
+        leitores = [str(f.relative_to(web)) for f in arquivos
+                    if "mare-itajai-chm" in f.read_text(encoding="utf-8", errors="replace")]
+        self.assertEqual(leitores, [])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -155,7 +155,7 @@ def relatorio(linhas: list[dict]) -> str:
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("pasta", type=Path)
-    p.add_argument("--mare", type=Path, default=DADOS / "mare-itajai.json")
+    p.add_argument("--mare", type=Path, default=DADOS / "mare-itajai-chm.json")
     p.add_argument("--estacoes", type=Path, default=DADOS / "estacoes.json")
     p.add_argument("--pontos", type=Path, default=PONTOS_COTADOS)
     a = p.parse_args(argv)

@@ -336,9 +336,10 @@ def montante(alvo: Serie, outra: Serie, cad: dict[str, tuple[str, int]]) -> bool
 
 @functools.lru_cache(maxsize=1)
 def extremos_mare() -> tuple[tuple[datetime, float, str], ...]:
-    """Tábua da Marinha (hora local, como a série das réguas). A altura é sobre o NR da carta: nunca é régua."""
+    """Tábua da Marinha, arquivo de referência com altura (hora local, como a série das réguas). A altura é sobre
+    o NR da carta: nunca é régua. A tábua do site (UNIVALI, desde 08/10/2026) só traz horário."""
     try:
-        m = json.loads((RAIZ / "data" / "mare-itajai.json").read_text(encoding="utf-8"))
+        m = json.loads((RAIZ / "data" / "mare-itajai-chm.json").read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
         return ()
     ex = [(datetime.fromisoformat(x["quando"]), x["altura_m"], "preamar") for x in m.get("preamares", [])]

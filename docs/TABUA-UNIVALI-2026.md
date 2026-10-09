@@ -52,7 +52,14 @@ de 2–3 h são extremos secundários que uma fonte publica e a outra não, pare
 **Altura:** o `sl_fit` fica em média **0,25 m acima** da altura da Marinha (que é sobre o Nível de Redução da carta
 1841). São zeros diferentes; a planilha de setembro vinha em datum IBGE. Sem a referência escrita pela fonte, a
 altura não entra — regra do projeto desde a maré medida do CIRAM (07/10/2026): número só com referência
-identificada. Quem precisar da altura sobre o NR tem o bruto da Marinha e `importar_mare_chm.py --substituir`.
+identificada.
+
+**As análises que precisam da curva de altura** (`analisar_chegada_itajai.py`, `nivel_antes.py` — e, por ele,
+`ruas_alagadas.py` —, `estimar_zero_reguas_itajai.py`, `simular_avisos_mare.py`) leem a tábua da Marinha num
+arquivo de referência, `data/mare-itajai-chm.json`, com a altura sobre o NR. `importar_mare_chm.py` grava esse
+arquivo sempre (é idêntico, extremo a extremo, à tábua que o site usou de 09/09 a 08/10, então os relatórios
+já gravados nos docs se reproduzem) e só toca a tábua do site com `--substituir`. Site e chat não leem a
+referência — `teste_importar_mare_univali.py` trava isso.
 
 ## O que muda na tela e no chat
 

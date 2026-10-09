@@ -130,7 +130,7 @@ class TesteRecorteVersionado(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         from comum import DADOS
-        cls.r = analisar(DADOS / "brutos" / "serie-2026-itajai", DADOS / "mare-itajai.json")
+        cls.r = analisar(DADOS / "brutos" / "serie-2026-itajai", DADOS / "mare-itajai-chm.json")
 
     def test_fatores_de_mare(self):
         reg = self.r["reguas"]
