@@ -1215,9 +1215,15 @@ o projeto.
   2026 (em 09/2026 o par com a Ponte Estaiada é idêntico); e qual das duas legendas do portal (estação 4:
   4,00 / 7,00; estação 79: 3,00 / 5,00) é a vigente. Enquanto não responde, as 357 cotas de rua de 2023
   seguem sem importar e o 3,00 / 5,00 segue como adotado.
-- [ ] **Histórico DCSC: retomar Taió e baixar as outras 16 estações da cadeia, a partir de 2022-06-01.**
-  Lista e ordem em `docs/DCSC-HISTORICO-2026-09-10.md`. O script de download do PC entra em `scripts/`.
-  Séries vivem na VPS (`data/series/dcsc/`), regeradas pelo consolidador a partir dos zips.
+- [ ] **Histórico DCSC: a partir de 2022-06-01 não dá mais — a API é janela móvel de ~89 dias; o que dá é ACUMULAR
+  (09/10/2026).** O pedido original (retomar Taió e baixar as outras estações desde 2022) esbarra no limite medido em
+  13/09 (`PROFUNDIDADE_MAX_DIAS = 88`): o que saiu da janela só existe na cópia do PC do Jefferson (até 09/09/2026).
+  Nada acumulava depois dela. Agora `acumular-historico-dcsc.yml` (Actions, toda terça) guarda as semanas fechadas
+  das 14 estações da cadeia no branch `historico-dcsc` (`baixar_historico_dcsc.py --acumular`, `.json.gz`, ~10 MB
+  por ano), e o consolidador junta as duas origens (`consolidar_historico_dcsc.py zips/ acervo/`). Em 09/10 a API
+  ainda alcança 20/07, então a primeira execução emenda na cópia do PC sem buraco; a crista de Rio do Sul de 01/09
+  (7,07 m às 05:20) saiu igual nas duas. **Falta:** o merge (liga o agendamento) e, na VPS, o `scp` da cópia do PC
+  (B5 do `docs/CHECKLIST-PINTAR-CIDADES.md`).
 - [x] **Os campos recuperados da camada 2011 de Brusque NÃO decidem a referência (10/09/2026).** Era
   a esperança de `docs/cotas-de-ruas.md` ("`obs`, `esquina` e UTM são justamente o que decidiria").
   Lidos no KML original: `obs` é número da casa ("N 440") ou distância ("100m", "final da rua"), em 654
