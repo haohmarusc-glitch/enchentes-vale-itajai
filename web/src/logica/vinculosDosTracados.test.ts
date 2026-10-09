@@ -207,7 +207,7 @@ test('tronco: a primeira régua não pinta o rio acima dela (Taió no Oeste; Vid
 })
 
 test('ribeirões de Itajaí sem respaldo e cursos sem régua ficam sem classificação, com o motivo', () => {
-  for (const id of ['ribeirao-murta', 'rio-conceicao', 'ribeirao-taquaras', 'rio-rafael']) {
+  for (const id of ['ribeirao-murta', 'ribeirao-taquaras', 'rio-rafael']) {
     const r = rio(id)
     assert.equal(r.semVinculo, true, id)
     assert.equal(r.cidades.length, 0, id)
@@ -308,5 +308,47 @@ test('o painel da régua diz até onde a cor dela vale, e que o curso fica parad
   const texto = textoDoAlcanceDaRegua(v, 'Ribeirão Canhanduba')
   assert.match(texto, /Ribeirão Canhanduba, da régua até o fim do traçado/)
   assert.match(texto, /6,3 km/)
+  assert.match(texto, /Rio Conceição, que o continua até a confluência com o Itajaí-Mirim \(0,7 km\)/)
   assert.match(texto, /fica parado/)
+})
+
+/*
+ * Rio Conceição (decisão do Jefferson de 09/10/2026, que revê a de 08/10): os 665 m que o OSM chama de Rio
+ * Conceição levam o Canhanduba até o Itajaí-Mirim. Pintam pela DC-08, parados, como o Canhanduba.
+ */
+test('o Rio Conceição continua o Canhanduba: começa no último vértice dele e acaba num vértice do Mirim', () => {
+  const v = vinculoDeReguaDoTracado('rio-conceicao')!
+  assert.equal(v.regua, 'DC-08')
+  assert.equal(v.continuacaoDe, 'ribeirao-canhanduba')
+  // Emenda sem vão: o primeiro vértice do Conceição é um vértice do traçado do Canhanduba, a < 1 m do fim declarado.
+  const conceicao = tracado('rio-conceicao')
+  assert.deepEqual(conceicao[0]![0], v.inicio)
+  assert.ok(tracado('ribeirao-canhanduba').flat().some((p) => p[0] === v.inicio[0] && p[1] === v.inicio[1]),
+    'o início do Conceição não é vértice do Canhanduba')
+  const canhanduba = vinculoDeReguaDoTracado('ribeirao-canhanduba')!
+  assert.ok(Math.hypot(canhanduba.fim[0] - v.inicio[0], canhanduba.fim[1] - v.inicio[1]) < 1e-5)
+  const vertices = tracado('itajai-mirim').flat()
+  assert.ok(vertices.some((p) => p[0] === v.fim[0] && p[1] === v.fim[1]), 'o fim não é vértice do Mirim')
+  assert.equal(vinculoDaRegua('DC-08')?.tracado, 'ribeirao-canhanduba', 'o painel parte do vínculo principal')
+})
+
+test('o Rio Conceição pinta pela DC-08, parado, e fica cinza quando a régua está sem cor', () => {
+  const r = rio('rio-conceicao')
+  assert.equal(r.semVinculo, undefined)
+  assert.deepEqual(r.reguaVinculada, { codigo: 'DC-08', cidade: 'itajai' })
+  const c = cena([rio('ribeirao-canhanduba'), r], undefined, undefined, [dc08('atencao')])
+  const cor = pintados(c, 'rio-conceicao')
+  assert.ok(cor.length > 0, 'o Rio Conceição continuou cinza com a DC-08 em atenção')
+  for (const t of cor) {
+    assert.equal(t.faixa, 'atencao')
+    assert.equal(t.reguaCodigo, 'DC-08')
+    assert.equal(t.cidadeId, null)
+    assert.equal(t.animacao, 'parada')
+  }
+  assert.equal(doRio(c, 'rio-conceicao').filter((t) => t.motivoCinza === 'fora-do-alcance').length, 0,
+    'o vínculo vai do primeiro ao último vértice: nada do Conceição fica fora')
+  const sem = cena([r], undefined, undefined, [dc08(null, 'leitura velha demais para dizer a faixa')])
+  assert.equal(pintados(sem, 'rio-conceicao').length, 0)
+  assert.ok(doRio(sem, 'rio-conceicao').every((t) => t.motivoCinza === 'regua-sem-cor'))
+  assert.equal(pintados(cena([r]), 'rio-conceicao').length, 0, 'na reprodução fica cinza')
 })
