@@ -6,6 +6,19 @@ de 14 dias desde 1980. Consolidado por `scripts/consolidar_historico_dcsc.py`; r
 `data/brutos/dcsc-historico-resumo-2026-09-10.json`; séries inteiras (129 MB) em `data/series/dcsc/`,
 fora do git.
 
+## Depois de 09/09/2026: acervo semanal no Actions (09/10/2026)
+
+A API é uma janela móvel de ~89 dias, e esta cópia do PC parou em 09/09. Para não abrir buraco,
+`.github/workflows/acumular-historico-dcsc.yml` roda toda terça e guarda, no branch `historico-dcsc`, as
+semanas fechadas (segunda a segunda, UTC) das 14 estações da cadeia, uma resposta crua por estação-semana
+(`DCSC-NNNNN/<início>_<fim>.json.gz`, ~13 KB). Só pede o que o branch ainda não tem; semana vazia ou com item de
+outra estação não vira arquivo. Prova de 09/10/2026, Rio do Sul: 11 semanas (19/07 a 04/10, hora de Brasília),
+11.084 leituras, 160 KB, crista de 01/09 igual à desta cópia (7,07 m às 05:20). Para juntar as duas origens:
+
+```
+python3 scripts/consolidar_historico_dcsc.py data/series/dcsc-zips /opt/historico-dcsc
+```
+
 ## O que tem
 
 | estação | cidade | leituras | de | até | observação |

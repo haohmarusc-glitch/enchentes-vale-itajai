@@ -62,6 +62,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import sys
 import zipfile
@@ -130,7 +131,8 @@ def itens_do_arquivo(corpo: dict) -> list[dict]:
 def ler_pasta(origem: Path) -> dict[str, dict]:
     """{codigo: {'itens': {ts: item}, 'janelas': n, 'coletas': [utc...], 'fim_janelas': max endDate}}.
 
-    Aceita zips (DCSC00013.zip) e pastas já extraídas (DCSC-00013/*.json), misturados.
+    Aceita zips (DCSC00013.zip), pastas já extraídas (DCSC-00013/*.json) e o acervo semanal do Actions
+    (DCSC-00013/*.json.gz), misturados.
     """
     por_estacao: dict[str, dict] = {}
 
@@ -158,7 +160,26 @@ def ler_pasta(origem: Path) -> dict[str, dict]:
             acumula(json.loads(j.read_text(encoding="utf-8")))
         except (json.JSONDecodeError, UnicodeDecodeError):
             continue
+    # O acervo semanal do Actions (branch `historico-dcsc`, `baixar_historico_dcsc.py --acumular`).
+    for g in sorted(origem.rglob("*.json.gz")):
+        try:
+            acumula(json.loads(gzip.decompress(g.read_bytes()).decode("utf-8")))
+        except (OSError, EOFError, json.JSONDecodeError, UnicodeDecodeError):
+            continue
     return por_estacao
+
+
+def juntar(lidos: list[dict[str, dict]]) -> dict[str, dict]:
+    """Junta o `ler_pasta` de várias origens (zips do PC + acervo do Actions). Mesmo `ts` é a mesma leitura."""
+    saida: dict[str, dict] = {}
+    for lido in lidos:
+        for cod, e in lido.items():
+            d = saida.setdefault(cod, {"itens": {}, "janelas": 0, "coletas": [], "fim_janelas": ""})
+            d["itens"].update(e["itens"])
+            d["janelas"] += e["janelas"]
+            d["coletas"] += e["coletas"]
+            d["fim_janelas"] = max(d["fim_janelas"], e["fim_janelas"])
+    return saida
 
 
 def serie_de(itens: dict[str, dict], cod: str | None = None) -> list[tuple[datetime, float | None]]:
@@ -295,15 +316,17 @@ def gravar_csv(destino: Path, itens: dict[str, dict], cod: str | None = None) ->
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("origem", type=Path, help="pasta com os zips (DCSC000NN.zip) ou os JSON extraídos")
+    ap.add_argument("origem", type=Path, nargs="+",
+                    help="pasta(s) com os zips (DCSC000NN.zip), os JSON extraídos ou o acervo semanal (.json.gz); "
+                         "várias são juntadas, deduplicando por `ts`")
     ap.add_argument("--series", type=Path, default=DADOS / "series" / "dcsc")
     ap.add_argument("--resumo", type=Path,
                     default=DADOS / "brutos" / f"dcsc-historico-resumo-{date.today().isoformat()}.json")
     args = ap.parse_args()
 
-    por_estacao = ler_pasta(args.origem)
+    por_estacao = juntar([ler_pasta(o) for o in args.origem])
     if not por_estacao:
-        print(f"nenhuma resposta `historic` encontrada em {args.origem}", file=sys.stderr)
+        print(f"nenhuma resposta `historic` encontrada em {', '.join(map(str, args.origem))}", file=sys.stderr)
         return 2
     resumos = []
     for cod in sorted(por_estacao):

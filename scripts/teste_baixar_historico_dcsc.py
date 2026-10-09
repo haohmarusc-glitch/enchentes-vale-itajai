@@ -194,6 +194,95 @@ class TesteOConsolidadorLeOQueEsteScriptGrava(unittest.TestCase):
         self.assertIn("2026-09-01T05:20:00.000", lido["DCSC-00013"]["itens"])
 
 
+class TesteSemanasFechadas(unittest.TestCase):
+    """O modo do cron: semanas fixas no calendário, para o nome do arquivo não mudar entre execuções."""
+
+    def teste_segunda_a_segunda_dentro_do_alcance_e_terminadas(self):
+        agora = datetime(2026, 10, 9, 21, 0, tzinfo=UTC)  # sexta
+        s = bh.semanas_fechadas(agora)
+        self.assertTrue(s)
+        for ini, fim in s:
+            self.assertEqual(ini.weekday(), 0)
+            self.assertEqual((ini.hour, ini.minute), (0, 0))
+            self.assertEqual(fim - ini, timedelta(days=7))
+        self.assertGreaterEqual(s[0][0], agora - timedelta(days=bh.PROFUNDIDADE_MAX_DIAS))
+        self.assertEqual(s[-1][1], datetime(2026, 10, 5, tzinfo=UTC), "a semana corrente não fecha")
+        for (_, f), (i, _) in zip(s, s[1:]):
+            self.assertEqual(f, i, "semanas contíguas, sem buraco")
+
+    def teste_folga_de_um_dia_depois_do_fim_da_semana(self):
+        # Segunda 12:00: a semana que terminou à 00:00 ainda pode receber dado atrasado.
+        s = bh.semanas_fechadas(datetime(2026, 10, 5, 12, 0, tzinfo=UTC))
+        self.assertEqual(s[-1][1], datetime(2026, 9, 28, tzinfo=UTC))
+        s = bh.semanas_fechadas(datetime(2026, 10, 6, 0, 0, tzinfo=UTC))
+        self.assertEqual(s[-1][1], datetime(2026, 10, 5, tzinfo=UTC))
+
+    def teste_o_nome_e_o_mesmo_em_execucoes_diferentes(self):
+        a = bh.semanas_fechadas(datetime(2026, 10, 9, 3, 0, tzinfo=UTC))
+        b = bh.semanas_fechadas(datetime(2026, 10, 10, 23, 0, tzinfo=UTC))
+        comuns = set(a) & set(b)
+        self.assertGreater(len(comuns), 10)
+        ini, fim = sorted(comuns)[0]
+        self.assertEqual(bh.nome_acumulado("DCSC-00013", ini, fim),
+                         f"DCSC-00013/{ini:%Y%m%dT%H%M%S}_{fim:%Y%m%dT%H%M%S}.json.gz")
+
+
+class TesteAcumularEstacao(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.destino = Path(self.tmp.name)
+        self.addCleanup(self.tmp.cleanup)
+        self.semanas = [(datetime(2026, 9, 21, tzinfo=UTC), datetime(2026, 9, 28, tzinfo=UTC)),
+                        (datetime(2026, 9, 28, tzinfo=UTC), datetime(2026, 10, 5, tzinfo=UTC))]
+
+    def acumular(self, transporte, ja=frozenset()):
+        return bh.acumular_estacao("DCSC-00013", self.semanas, "MIN_10", self.destino, set(ja),
+                                   transporte=transporte, dormir=lambda _s: None)
+
+    def teste_pula_o_que_o_acervo_tem_e_grava_gz_que_o_consolidador_le(self):
+        chamadas = []
+
+        def transporte(payload):
+            chamadas.append(payload["variables"]["startDate"])
+            return resposta_com([{"ts": "2026-09-28T05:20:00.000", "codigo": "DCSC-00013", "rio_nivel": 7.07}])
+
+        ja = {bh.nome_acumulado("DCSC-00013", *self.semanas[0])}
+        r = self.acumular(transporte, ja)
+        self.assertEqual(r["ja_no_acervo"], 1)
+        self.assertEqual(len(chamadas), 1, "a semana do acervo não pode ser pedida de novo")
+        self.assertEqual(r["novas"], [bh.nome_acumulado("DCSC-00013", *self.semanas[1])])
+        self.assertTrue((self.destino / r["novas"][0]).exists())
+        lido = cons.ler_pasta(self.destino)
+        self.assertIn("2026-09-28T05:20:00.000", lido["DCSC-00013"]["itens"], "ts como veio, sem fuso")
+
+    def teste_o_consolidador_junta_o_pc_e_o_acervo_sem_duplicar(self):
+        item = {"ts": "2026-09-28T05:20:00.000", "codigo": "DCSC-00013", "rio_nivel": 7.07}
+        self.acumular(lambda _p: resposta_com([item]))
+        pc = Path(self.tmp.name) / "pc"
+        bh.baixar_estacao("DCSC-00013", datetime(2026, 9, 27, tzinfo=UTC), datetime(2026, 9, 29, tzinfo=UTC),
+                          "MIN_10", pc, transporte=lambda _p: resposta_com(
+                              [item, {**item, "ts": "2026-09-27T05:20:00.000"}]), dormir=lambda _s: None)
+        junto = cons.juntar([cons.ler_pasta(pc), cons.ler_pasta(self.destino / "DCSC-00013")])
+        self.assertEqual(sorted(junto["DCSC-00013"]["itens"]),
+                         ["2026-09-27T05:20:00.000", "2026-09-28T05:20:00.000"])
+
+    def teste_semana_vazia_nao_vira_arquivo(self):
+        r = self.acumular(lambda _p: resposta_com([]))
+        self.assertEqual((r["vazias"], r["novas"], r["falhas"]), (2, [], []))
+        self.assertEqual(list(self.destino.rglob("*.gz")), [])
+
+    def teste_item_de_outra_estacao_reprova_a_semana(self):
+        r = self.acumular(lambda _p: resposta_com([{"ts": "2026-09-28T05:20:00.000", "codigo": "DCSC-00019"}]))
+        self.assertEqual(r["novas"], [])
+        self.assertEqual(len(r["falhas"]), 2)
+        self.assertEqual(list(self.destino.rglob("*.gz")), [])
+
+    def teste_recusa_da_api_vira_falha_sem_arquivo(self):
+        r = self.acumular(lambda _p: {"errors": [{"message": "Operação bloqueada."}]})
+        self.assertEqual(len(r["falhas"]), 2)
+        self.assertEqual(list(self.destino.rglob("*.gz")), [])
+
+
 class TesteCodigosDaCadeia(unittest.TestCase):
     def teste_le_os_codigos_dcsc_do_estacoes_json(self):
         codigos = bh.codigos_da_cadeia()

@@ -1,0 +1,120 @@
+# Acumula, semana a semana, a série histórica da rede estadual (DCSC) das estações da cadeia.
+#
+# POR QUE EXISTE (09/10/2026). A query `historic` de monitoramento.defesacivil.sc.gov.br é uma JANELA MÓVEL de
+# ~89 dias, não um arquivo: o que sai dela se perde. A única cópia longa é a do PC do Jefferson (13 estações,
+# out/2022 a 09/09/2026, `docs/DCSC-HISTORICO-2026-09-10.md`), e nada acumulava depois dela. Em 09/10/2026 a API
+# ainda alcança ~13/07/2026, então a primeira execução emenda na cópia do PC sem buraco; a partir de ~06/12/2026
+# o trecho depois de 09/09 já teria começado a sair do alcance.
+#
+# O QUE FAZ. Lista o que o branch `historico-dcsc` já tem (sem fazer checkout: só `git ls-tree`), pede à API
+# só as semanas FECHADAS que faltam (segunda a segunda, UTC, 1 s entre chamadas, User-Agent do projeto) e
+# acrescenta um commit com os arquivos novos, `DCSC-NNNNN/<início>_<fim>.json.gz` (a resposta crua, como o
+# `consolidar_historico_dcsc.py` lê). Nunca reescreve semana já guardada nem força o push. Semana vazia não vira
+# arquivo. Sem nada novo, não grava. Lógica e testes: scripts/baixar_historico_dcsc.py (`--acumular`) e
+# scripts/teste_baixar_historico_dcsc.py.
+#
+# TAMANHO. ~13 KB por estação-semana comprimido; 14 estações ≈ 10 MB por ano no branch.
+#
+# USO NA VPS. `git fetch origin historico-dcsc && git worktree add /opt/historico-dcsc historico-dcsc` (uma vez;
+# depois `git -C /opt/historico-dcsc pull`) e `python3 scripts/consolidar_historico_dcsc.py data/series/dcsc-zips
+# /opt/historico-dcsc` — o consolidador junta zips do PC e o acervo, deduplicando por `ts`.
+#
+# LIMITES. O GitHub pode atrasar ou pular execução agendada; com 12 semanas de alcance, até dez semanas sem
+# rodar ainda não perdem nada. Falha da API deixa o job vermelho e a semana sem arquivo, para a próxima tentar.
+name: Acumular histórico DCSC
+
+on:
+  schedule:
+    # Terça 06:23 UTC: a semana de segunda a segunda já passou da folga de um dia.
+    - cron: '23 6 * * 2'
+  workflow_dispatch:
+  # No push que altera este arquivo ou o script: prova, no PR, que o runner alcança a API e grava o acervo.
+  push:
+    paths:
+      - .github/workflows/acumular-historico-dcsc.yml
+      - scripts/baixar_historico_dcsc.py
+
+permissions:
+  contents: write   # acrescentar ao branch historico-dcsc
+
+concurrency:
+  group: acumular-historico-dcsc
+  cancel-in-progress: false
+
+jobs:
+  acumular:
+    name: Semanas fechadas das estações da cadeia
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - name: Instalar dependências
+        run: python3 -m pip install -r scripts/requirements.txt
+
+      - name: Listar o acervo
+        id: acervo
+        run: |
+          set -euo pipefail
+          : > "$RUNNER_TEMP/ja-baixadas.txt"
+          if git fetch --quiet origin historico-dcsc 2>/dev/null; then
+            git ls-tree -r --name-only FETCH_HEAD | grep '\.json\.gz$' > "$RUNNER_TEMP/ja-baixadas.txt" || true
+            echo "pai=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_OUTPUT"
+          else
+            echo "pai=" >> "$GITHUB_OUTPUT"
+          fi
+          echo "$(wc -l < "$RUNNER_TEMP/ja-baixadas.txt") arquivo(s) no acervo"
+
+      - name: Baixar as semanas que faltam
+        id: baixar
+        working-directory: scripts
+        run: |
+          set -o pipefail
+          python3 baixar_historico_dcsc.py --cadeia --acumular \
+            --ja-baixadas "$RUNNER_TEMP/ja-baixadas.txt" --destino "$RUNNER_TEMP/novas" \
+            && echo "falhou=false" >> "$GITHUB_OUTPUT" \
+            || echo "falhou=true" >> "$GITHUB_OUTPUT"
+
+      # Grava o que chegou mesmo se uma estação falhou: semana baixada não precisa esperar a outra.
+      - name: Acrescentar ao branch historico-dcsc
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          PAI: ${{ steps.acervo.outputs.pai }}
+        run: |
+          set -euo pipefail
+          novas="$RUNNER_TEMP/novas"
+          if [ ! -d "$novas" ] || [ -z "$(find "$novas" -name '*.json.gz' -print -quit)" ]; then
+            echo "nada novo: o acervo já tem todas as semanas fechadas"
+            exit 0
+          fi
+          export GIT_INDEX_FILE="$RUNNER_TEMP/indice"
+          if [ -n "$PAI" ]; then git read-tree "$PAI"; else git read-tree --empty; fi
+          n=0
+          while IFS= read -r -d '' f; do
+            caminho="${f#"$novas"/}"
+            blob=$(git hash-object -w "$f")
+            git update-index --add --cacheinfo "100644,$blob,$caminho"
+            n=$((n + 1))
+          done < <(find "$novas" -name '*.json.gz' -print0 | sort -z)
+          arvore=$(git write-tree)
+          msg="Acervo DCSC: $n semana(s)-estação nova(s) até $(date -u +%Y-%m-%d)"
+          if [ -n "$PAI" ]; then
+            commit=$(git commit-tree "$arvore" -p "$PAI" -m "$msg")
+          else
+            commit=$(git commit-tree "$arvore" -m "$msg")
+          fi
+          git push --quiet origin "$commit:refs/heads/historico-dcsc"
+          echo "$msg"
+
+      - name: Falha de alguma estação deixa o run vermelho
+        if: steps.baixar.outputs.falhou == 'true'
+        run: |
+          echo "::error::Alguma estação falhou (ver o passo 'Baixar as semanas que faltam'). As semanas sem arquivo serão tentadas de novo na próxima execução, enquanto estiverem no alcance da API (~89 dias)."
+          exit 1

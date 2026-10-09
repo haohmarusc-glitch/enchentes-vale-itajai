@@ -32,8 +32,16 @@ do `consolidar_historico_dcsc.py`. As datas ENVIADAS (`startDate`/`endDate`) sã
 São coisas diferentes: pede-se em UTC e recebe-se em Brasília. Este script não converte nada;
 grava a resposta como veio.
 
+ACUMULAR (09/10/2026). `--acumular` é o modo do cron (`.github/workflows/acumular-historico-dcsc.yml`):
+semanas FECHADAS, de segunda 00:00 UTC a segunda 00:00 UTC, inteiras dentro do alcance e terminadas há mais
+de um dia. Como a semana é fixa no calendário, o nome do arquivo é o mesmo em toda execução, e a que já está no
+acervo (`--ja-baixadas`, a lista do branch `historico-dcsc`) não é pedida de novo. Grava `.json.gz` (13 KB por
+estação-semana, contra 260 KB), que o consolidador também lê. Semana vazia NÃO vira arquivo (a próxima
+execução tenta de novo, enquanto estiver no alcance), e item de outra estação reprova a semana inteira.
+
 Uso:
     python3 scripts/baixar_historico_dcsc.py DCSC-00006 DCSC-00013 --dias 88 --intervalo MIN_10
+    python3 scripts/baixar_historico_dcsc.py --cadeia --acumular --ja-baixadas lista.txt --destino novas/
     python3 scripts/baixar_historico_dcsc.py --cadeia            # as estações da CADEIA do Açu/Mirim
     python3 scripts/consolidar_historico_dcsc.py data/series/dcsc-baixado
 """
@@ -41,6 +49,7 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import sys
 import time
@@ -198,6 +207,65 @@ def baixar_estacao(codigo: str, inicio: datetime, fim: datetime, intervalo: str,
     return resumo
 
 
+SEMANA = timedelta(days=7)
+FOLGA_SEMANA_FECHADA = timedelta(days=1)
+
+
+def semanas_fechadas(agora: datetime, maximo_dias: int = PROFUNDIDADE_MAX_DIAS,
+                     folga: timedelta = FOLGA_SEMANA_FECHADA) -> list[tuple[datetime, datetime]]:
+    """As semanas de segunda 00:00 UTC a segunda 00:00 UTC que cabem inteiras no alcance da API e que
+    terminaram há mais de `folga` (dado atrasado da telemetria ainda pode chegar no dia seguinte)."""
+    agora = agora.astimezone(timezone.utc)
+    limite = agora - timedelta(days=maximo_dias)
+    seg = (limite - timedelta(days=limite.weekday())).replace(hour=0, minute=0, second=0, microsecond=0)
+    if seg < limite:
+        seg += SEMANA
+    saida = []
+    while seg + SEMANA + folga <= agora:
+        saida.append((seg, seg + SEMANA))
+        seg += SEMANA
+    return saida
+
+
+def nome_acumulado(codigo: str, inicio: datetime, fim: datetime) -> str:
+    """`DCSC-00013/20260928T000000_20261005T000000.json.gz`: o caminho no acervo."""
+    return f"{codigo}/{nome_da_janela(inicio, fim)}.gz"
+
+
+def acumular_estacao(codigo: str, semanas: list[tuple[datetime, datetime]], intervalo: str,
+                     destino: Path, ja_baixadas: set[str], transporte=None, dormir=time.sleep,
+                     agora: datetime | None = None) -> dict:
+    """Baixa as semanas que o acervo ainda não tem. Grava só semana com itens, todos desta estação."""
+    resumo = {"codigo": codigo, "novas": [], "ja_no_acervo": 0, "vazias": 0, "itens": 0, "falhas": []}
+    for ini, ate in semanas:
+        nome = nome_acumulado(codigo, ini, ate)
+        if nome in ja_baixadas:
+            resumo["ja_no_acervo"] += 1
+            continue
+        try:
+            variaveis, resposta = pedir(codigo, ini, ate, intervalo, transporte=transporte, dormir=dormir)
+        except Bloqueado as exc:
+            resumo["falhas"].append(str(exc))
+            continue
+        finally:
+            dormir(PAUSA_ENTRE_CHAMADAS_S)
+        itens = (resposta.get("data") or {}).get("historic", {}).get("items") or []
+        if not itens:
+            resumo["vazias"] += 1
+            continue
+        alheios = {it.get("codigo") for it in itens} - {codigo}
+        if alheios:
+            resumo["falhas"].append(f"{codigo} {variaveis['startDate']}: itens de outra estação {sorted(map(str, alheios))}")
+            continue
+        arquivo = destino / nome
+        arquivo.parent.mkdir(parents=True, exist_ok=True)
+        corpo = json.dumps(envelope(variaveis, resposta, agora), ensure_ascii=False).encode("utf-8")
+        arquivo.write_bytes(gzip.compress(corpo, mtime=0))
+        resumo["novas"].append(nome)
+        resumo["itens"] += len(itens)
+    return resumo
+
+
 def codigos_da_cadeia() -> list[str]:
     """Os `codigo_dcsc` das cidades do `estacoes.json` — a bacia que o site mostra."""
     from comum import le_json
@@ -225,6 +293,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--dias", type=int, default=PROFUNDIDADE_MAX_DIAS)
     ap.add_argument("--intervalo", default="MIN_10", choices=INTERVALOS)
     ap.add_argument("--destino", type=Path, default=DESTINO_PADRAO)
+    ap.add_argument("--acumular", action="store_true",
+                    help="semanas fechadas, .json.gz, pulando as de --ja-baixadas (modo do cron)")
+    ap.add_argument("--ja-baixadas", type=Path,
+                    help="arquivo com os caminhos já no acervo, um por linha (DCSC-00013/....json.gz)")
     args = ap.parse_args(argv)
 
     codigos = list(args.codigos)
@@ -234,6 +306,8 @@ def main(argv: list[str] | None = None) -> int:
         ap.error("informe ao menos um código, ou --cadeia")
 
     agora = datetime.now(timezone.utc)
+    if args.acumular:
+        return acumular(codigos, args.intervalo, args.destino, args.ja_baixadas, agora)
     inicio, cortou = limitar_profundidade(agora - timedelta(days=args.dias), agora)
     if cortou:
         print(f"aviso: a API só volta ~{PROFUNDIDADE_MAX_DIAS} dias; início puxado para "
@@ -250,6 +324,31 @@ def main(argv: list[str] | None = None) -> int:
             print(f"    falha: {f}", file=sys.stderr)
             falhou = True
     print(f"\nconsolidar: python3 scripts/consolidar_historico_dcsc.py {args.destino}")
+    return 1 if falhou else 0
+
+
+def acumular(codigos: list[str], intervalo: str, destino: Path, lista: Path | None, agora: datetime) -> int:
+    ja = set()
+    if lista and lista.exists():
+        ja = {linha.strip() for linha in lista.read_text(encoding="utf-8").splitlines() if linha.strip()}
+    semanas = semanas_fechadas(agora)
+    if not semanas:
+        print("nenhuma semana fechada no alcance da API", file=sys.stderr)
+        return 1
+    print(f"semanas fechadas no alcance: {semanas[0][0]:%Y-%m-%d} a {semanas[-1][1]:%Y-%m-%d} "
+          f"({len(semanas)}); {len(ja)} arquivo(s) já no acervo")
+    falhou = False
+    total = 0
+    for i, codigo in enumerate(codigos, 1):
+        r = acumular_estacao(codigo, semanas, intervalo, destino, ja)
+        total += len(r["novas"])
+        print(f"[{i}/{len(codigos)}] {codigo}: {len(r['novas'])} semana(s) nova(s), {r['itens']} pontos, "
+              f"{r['ja_no_acervo']} já no acervo, {r['vazias']} vazia(s)"
+              + (f", {len(r['falhas'])} FALHA(S)" if r["falhas"] else ""))
+        for f in r["falhas"]:
+            print(f"    falha: {f}", file=sys.stderr)
+            falhou = True
+    print(f"\n{total} arquivo(s) novo(s) em {destino}")
     return 1 if falhou else 0
 
 
