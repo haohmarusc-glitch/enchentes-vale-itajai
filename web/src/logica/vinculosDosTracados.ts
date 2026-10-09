@@ -138,6 +138,13 @@ export interface VinculoDeRegua {
   km: number
   /** De onde vêm o vínculo e os dois pontos. */
   fonte: string
+  /**
+   * Continuação: este curso recebe a cor da régua porque continua, rio abaixo, o traçado citado aqui (começa no
+   * último vértice dele). O painel da régua descreve o vínculo principal e cita as continuações.
+   */
+  continuacaoDe?: string
+  /** Nome do curso, para o painel da régua citar a continuação. */
+  nome?: string
 }
 
 export const VINCULOS_DE_REGUA: readonly VinculoDeRegua[] = [
@@ -147,13 +154,28 @@ export const VINCULOS_DE_REGUA: readonly VinculoDeRegua[] = [
     regua: 'DC-08',
     inicio: [-48.711948, -26.979694],
     fim: [-48.694898, -26.939465],
-    fimDescricao: 'o fim do traçado do ribeirão, 0,6 km antes do Itajaí-Mirim',
+    fimDescricao: 'o fim do traçado do ribeirão, onde começa o Rio Conceição',
     km: 6.3,
     fonte: 'DC-08 "Ribeirão da Canhanduba - Rio do Meio": coordenada do cadastro (portal da Defesa Civil de Itajaí), ' +
       'a 13 m do traçado; cota de atenção provisória de 1,70 m (#520, 08/10/2026). Fim: o último vértice do ' +
-      'traçado OSM rio abaixo, medido em 08/10/2026 (o traçado pára 574 m antes do Mirim; esses 574 m ficam sem ' +
-      'linha e sem cor — nada é completado por aproximação, decisão do Jefferson de 08/10/2026). Os 11,5 km acima ' +
-      'da régua ficam cinza: a régua não mede o que corre acima dela.',
+      'traçado OSM rio abaixo, medido em 08/10/2026, onde o OSM passa a chamar o curso de Rio Conceição (vínculo ' +
+      'abaixo). Os 11,5 km acima da régua ficam cinza: a régua não mede o que corre acima dela.',
+  },
+  {
+    tracado: 'rio-conceicao',
+    cidade: 'itajai',
+    regua: 'DC-08',
+    inicio: [-48.6948975, -26.9394653],
+    fim: [-48.6949242, -26.9339787],
+    fimDescricao: 'a confluência com o Itajaí-Mirim',
+    km: 0.7,
+    fonte: 'Decisão do Jefferson de 09/10/2026 ("sim"), que revê a de 08/10 (deixar esse trecho cinza): o Rio ' +
+      'Conceição é a continuação do Canhanduba até o Itajaí-Mirim (traçado OSM, 3 trechos, 665 m). Início: o ' +
+      'último vértice do traçado do Canhanduba, a mesma coordenada. Fim: um vértice do traçado do Itajaí-Mirim ' +
+      '(0 m). Nada é completado por aproximação: os dois encontros são vértices comuns do OSM. Pinta pela DC-08, ' +
+      'parado, como o Canhanduba.',
+    continuacaoDe: 'ribeirao-canhanduba',
+    nome: 'Rio Conceição',
   },
 ]
 
@@ -161,9 +183,22 @@ export function vinculoDeReguaDoTracado(tracado: string): VinculoDeRegua | null 
   return VINCULOS_DE_REGUA.find((v) => v.tracado === tracado) ?? null
 }
 
-/** O vínculo em que esta régua colore um curso (para o painel da régua dizer até onde vale). */
+/** O vínculo em que esta régua colore um curso (para o painel da régua dizer até onde vale). As continuações
+ *  (`continuacaoDe`) entram no texto do painel por `textoDoAlcanceDaRegua`. */
 export function vinculoDaRegua(codigo: string): VinculoDeRegua | null {
-  return VINCULOS_DE_REGUA.find((v) => v.regua === codigo) ?? null
+  return VINCULOS_DE_REGUA.find((v) => v.regua === codigo && !v.continuacaoDe) ?? null
+}
+
+/** Os cursos que continuam, rio abaixo, o vínculo `v` e também pintam pela régua dele. */
+export function continuacoesDoVinculo(v: VinculoDeRegua): VinculoDeRegua[] {
+  const fora: VinculoDeRegua[] = []
+  let atual = v.tracado
+  for (;;) {
+    const prox = VINCULOS_DE_REGUA.find((w) => w.regua === v.regua && w.continuacaoDe === atual)
+    if (!prox || fora.includes(prox)) return fora
+    fora.push(prox)
+    atual = prox.tracado
+  }
 }
 
 /** Traçados que ficam sem cor, com o porquê. Mostrado no painel quando a pessoa toca no trecho cinza. */
@@ -177,7 +212,6 @@ export const SEM_VINCULO: Readonly<Record<string, string>> = {
   'rio-rafael': 'Não há régua cadastrada neste rio.',
   'rio-rafael-braco-grande': 'Não há régua cadastrada neste rio.',
   'rio-rafael-braco-pequeno': 'Não há régua cadastrada neste rio.',
-  'rio-conceicao': 'Não há régua cadastrada neste rio.',
   'ribeirao-murta':
     'As réguas de Itajaí neste ribeirão (DC-07 e DC-09) estão sem aviso automático: cota ainda não conferida ' +
     'contra a série (DC-07) e régua de estuário com oscilação de maré (DC-09). Sem respaldo, não colorem o ' +
@@ -353,8 +387,12 @@ export function textoDoAlcance(v: VinculoDeTracado, nomeDoCurso: string): string
 
 /** "No mapa, a cor desta régua vale só …": o limite da representação, dito no painel da RÉGUA (08/10/2026). */
 export function textoDoAlcanceDaRegua(v: VinculoDeRegua, nomeDoCurso: string): string {
-  const km = v.km.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
-  return `No mapa, a cor desta régua vale só para o ${nomeDoCurso}, da régua até ${v.fimDescricao} (${km} km). ` +
+  const km = (x: number) => x.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+  const seguintes = continuacoesDoVinculo(v)
+    .map((c) => `, e para o ${c.nome ?? c.tracado}, que o continua até ${c.fimDescricao} (${km(c.km)} km)`)
+    .join('')
+  return `No mapa, a cor desta régua vale só para o ${nomeDoCurso}, da régua até ${v.fimDescricao} (${km(v.km)} km)` +
+    `${seguintes}. ` +
     'É a classificação medida NA RÉGUA, aplicada ao trecho vinculado: não é medição em cada ponto do curso nem ' +
     'mancha de inundação. O curso fica parado (a correnteza animada é outra decisão). Não vale para o ribeirão ' +
     'acima da régua nem para o rio que recebe a água.'

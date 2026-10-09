@@ -489,6 +489,11 @@ o projeto.
   de altura. Site e chat passam a dizer a fonte do próprio arquivo, nunca "tábua da Marinha". As análises que
   precisam da altura (chegada em Itajaí, nível antes, zero das réguas, avisos de maré) leem a Marinha em
   `data/mare-itajai-chm.json`, arquivo de referência que o site não lê. `docs/TABUA-UNIVALI-2026.md`.
+- [x] **Rio Conceição pinta pela DC-08 (decisão do Jefferson, 09/10/2026).** Os 665 m que o OSM chama de Rio Conceição
+  levam o Canhanduba até o Itajaí-Mirim e ficavam cinza no Monitor entre o ribeirão pintado e o Mirim. Agora pintam pela
+  DC-08, parados, como continuação do Canhanduba (`VINCULOS_DE_REGUA`, `continuacaoDe`); as duas pontas são vértices
+  comuns do OSM, sem aproximação. O painel da DC-08 diz até onde a cor vale nos dois cursos. Revê a decisão de 08/10
+  ("deixar cinza"). `docs/VINCULOS-DOS-TRACADOS.md`.
 - [x] **DC-11: o rio na Rua Santa Regina ficava cinza com a régua em atenção (print do Jefferson, 08/10/2026 14:39).**
   A cor da DC-11 valia para os trechos cuja projeção na reta entre os pinos de Ilhota e Itajaí caía depois da régua, e
   a Volta de Cima, logo abaixo dela, volta para trás nessa reta: 9 arestas, **2,86 km** de rio, cinza. Agora "a jusante"

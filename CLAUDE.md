@@ -246,7 +246,8 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   pintar conforme cota"): ribeirão de Itajaí pinta pela régua da Defesa Civil que fica nele, com a **mesma decisão
   do pino da régua** (`reguasNoMapa`: cota, leitura fresca, sem maré), só da régua para baixo e **parado** —
   correr é outra decisão. Régua sem cor deixa o curso cinza com o motivo dela (`regua-sem-cor`); na reprodução
-  fica cinza. Hoje só o Canhanduba pela DC-08; a Murta segue sem vínculo (DC-07 sem cota conferida, DC-09 de
+  fica cinza. Hoje o Canhanduba e, como continuação dele até o Mirim, o Rio Conceição (decisão de 09/10/2026), pela
+  DC-08; a Murta segue sem vínculo (DC-07 sem cota conferida, DC-09 de
   estuário). O toque no trecho abre o painel da régua.
 
 ### Classificação estadual × municipal — REGRA (decisões de 07/10/2026)

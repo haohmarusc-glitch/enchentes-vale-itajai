@@ -82,7 +82,8 @@ recalculado; régua sem cor (maré, sem cota, leitura velha) deixa o curso cinza
 
 | Curso | Régua | Distância ao traçado | Alcance | Fim | Acima da régua |
 |---|---|---|---|---|---|
-| Ribeirão Canhanduba / `ribeirao-canhanduba` | DC-08 "Rio do Meio" (Itajaí) | 13 m | 6,3 km | o último vértice do traçado OSM rio abaixo, 574 m antes do Mirim (o OSM não desenha a foz) | 11,5 km cinza (`fora-do-alcance`) |
+| Ribeirão Canhanduba / `ribeirao-canhanduba` | DC-08 "Rio do Meio" (Itajaí) | 13 m | 6,3 km | o último vértice do traçado OSM rio abaixo, onde o OSM passa a chamar o curso de Rio Conceição | 11,5 km cinza (`fora-do-alcance`) |
+| Rio Conceição / `rio-conceicao` (desde 09/10/2026) | DC-08, como continuação do Canhanduba (`continuacaoDe`) | — (começa no último vértice do Canhanduba) | 0,7 km (665 m, 3 trechos OSM) | um vértice do traçado do Itajaí-Mirim (0 m) | nada: o vínculo cobre o traçado inteiro |
 
 O toque no trecho pintado abre o painel da régua, e o painel diz até onde a cor vale (`textoDoAlcanceDaRegua`) e o
 que ela é: a classificação medida **na régua**, aplicada ao trecho vinculado — não medição em cada ponto do curso nem
@@ -90,8 +91,12 @@ mancha de inundação.
 
 Regras confirmadas pelo Jefferson em 08/10/2026:
 
-- **Os 574 m até o Mirim ficam sem linha e sem cor.** Nada é completado por aproximação; o alcance é só caminho em
-  arestas existentes do traçado.
+- ~~Os 574 m até o Mirim ficam sem linha e sem cor.~~ **Revisto em 09/10/2026 pelo Jefferson ("sim"):** esses
+  574 m (em linha reta; 665 m pelo canal) já têm linha — é o traçado do **Rio Conceição**, que o OSM desenha como
+  outro curso e que encosta no Canhanduba e no Mirim em vértices comuns (0 m nas duas pontas,
+  `docs/testes-navegador.md`). Ele pinta pela DC-08, parado, como continuação do Canhanduba. Nada continua sendo
+  completado por aproximação: o alcance é só caminho em arestas existentes do traçado. O painel da DC-08 cita os
+  dois cursos (`continuacoesDoVinculo`).
 - **Reprodução: cinza** enquanto não houver leitura histórica da régua encaixada no instante escolhido e classificação
   correspondente. Hoje `construirCena` não recebe as réguas na reprodução; o motivo diz isso no toque.
 - **Murta (destravar a DC-07):** além da decisão sobre a cota, é preciso (a) conferir a continuidade do traçado — estava
@@ -100,7 +105,7 @@ Regras confirmadas pelo Jefferson em 08/10/2026:
   4,86 km pelo traçado), não até a foz; os 1,43 km finais são da DC-09, de estuário. O rascunho do vínculo está no doc e
   **não** está em `VINCULOS_DE_REGUA`. O teste de `VINCULOS_DE_REGUA` exige caminho contínuo com o km declarado e reprova
   vínculo sem caminho.
-| Rio Conceição, Ribeirão Taquaras, Rio Rafael e braços | Não há régua cadastrada. |
+| Ribeirão Taquaras, Rio Rafael e braços | Não há régua cadastrada. |
 
 ### Tronco
 
