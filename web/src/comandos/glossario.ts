@@ -63,7 +63,7 @@ const V: Record<string, Verbete> = {
   preamar: {
     termo: 'Preamar e baixamar',
     texto:
-      'Preamar é a maré alta; baixamar, a maré baixa. Os horários vêm da tábua de maré da Marinha para o porto de Itajaí, que é previsão astronômica: vento e chuva mudam a maré real. Maré alta não é cheia, mas dificulta o rio de escoar na foz.',
+      'Preamar é a maré alta; baixamar, a maré baixa. Os horários vêm da tábua de maré do porto de Itajaí usada no site (a fonte está escrita na tela da foz), que é previsão astronômica: vento e chuva mudam a maré real. Maré alta não é cheia, mas dificulta o rio de escoar na foz.',
     veja: ['como está a maré?'],
   },
   sizigia: {

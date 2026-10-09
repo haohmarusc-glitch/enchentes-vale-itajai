@@ -1162,7 +1162,7 @@
     "defesa_civil_sc": "https://monitoramento.defesacivil.sc.gov.br/",
     "ceops_furb_acervo": "http://ceops.furb.br/index.php/sistema-de-alerta/picos-de-enchentes",
     "epagri_ciram": "https://ciram.epagri.sc.gov.br/index.php/solucoes/rios/",
-    "mare_itajai": "Tábuas de maré da Marinha do Brasil (DHN) - porto de Itajaí",
+    "mare_itajai": "Previsão harmônica de maré do Laboratório de Oceanografia Física da UNIVALI (marégrafo de Cabeçudas, porto de Itajaí), recebida do Prof. Mauro Michelena Andrade e de Márcio Piazera em 23/09/2026; a Tábua de Marés da Marinha (CHM/DHN) fica como referência de cruzamento",
     "dc_itajai_niveis": "https://monitoramento.defesacivil.itajai.sc.gov.br/monitoramento/rios",
     "dc_itajai_mares": "https://defesacivil.itajai.sc.gov.br/monitoramento/mares",
     "dc_itajai_barragem": "https://defesacivil.itajai.sc.gov.br/monitoramento/barragem",

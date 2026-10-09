@@ -8,8 +8,8 @@
  *
  * A diferença para a maré astronômica sai da MESMA linha da MESMA estação (o coletor faz a conta). Ela se
  * chama "diferença entre nível observado e maré astronômica prevista": não se atribui só a vento e pressão,
- * porque também pode trazer influência do rio e outros efeitos. A tábua da Marinha (porto de Itajaí) é
- * outro lugar e outro zero, e continua sendo a previsão da tela, à parte.
+ * porque também pode trazer influência do rio e outros efeitos. A tábua do porto de Itajaí usada no site (a da
+ * UNIVALI desde 08/10/2026) é outro lugar e outro zero, e continua sendo a previsão da tela, à parte.
  */
 import { useEffect, useState } from 'react'
 import { metros } from '../logica/formato'

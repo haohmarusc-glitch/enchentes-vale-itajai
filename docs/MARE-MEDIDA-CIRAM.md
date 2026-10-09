@@ -43,7 +43,8 @@ e sem número. Nenhum nível sai no arquivo publicado enquanto a referência nã
     com a hora dela e "Não é atual".
   - Arquivo de publicação parada (mais de 30 min) ou fora do combinado: "Medição indisponível".
   - Horário sempre em Brasília, escrito na tela.
-  - A tábua da Marinha continua sendo a previsão da tela, com a fonte dela à parte.
+  - A tábua de maré do site continua sendo a previsão da tela, com a fonte dela à parte (desde 08/10/2026, a da
+    UNIVALI; antes, a da Marinha — `docs/TABUA-UNIVALI-2026.md`).
 - **O chat não mudou:** "como está a maré?" responde pela tábua, como antes.
 
 ## Para mostrar o número

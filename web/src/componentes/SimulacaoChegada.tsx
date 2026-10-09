@@ -234,6 +234,8 @@ function Resultado({ resultado, titulo, rotulo, nota, hipotese = false, qual = '
   /** Como chamar a janela na conclusão: "simulada", "deste cenário"… */
   qual?: string
 }) {
+  // A referência vertical da altura vem do arquivo da tábua, nunca de texto fixo (08/10/2026: a UNIVALI não traz altura).
+  const referenciaAltura = mareItajai._meta.referencia_altura ?? null
   if ('erro' in resultado) return <p role="alert">{resultado.erro}</p>
   return <div className={`${estilos.resultado} ${hipotese ? estilos.hipotese : ''}`}>
     {titulo ? <h3>{titulo}</h3> : null}
@@ -250,7 +252,7 @@ function Resultado({ resultado, titulo, rotulo, nota, hipotese = false, qual = '
     {resultado.extremos.length > 0 && <div className={estilos.tabela}>
       <table>
         <caption>Extremos da maré astronômica: dentro e nos limites próximos da janela</caption>
-        <thead><tr><th scope="col">Extremo e horário</th><th scope="col">Altura sobre NR</th><th scope="col">Posição</th></tr></thead>
+        <thead><tr><th scope="col">Extremo e horário</th><th scope="col">{referenciaAltura ? 'Altura' : 'Altura (a tábua não traz)'}</th><th scope="col">Posição</th></tr></thead>
         <tbody>{resultado.extremos.map((p) => <tr key={`${p.tipo}-${p.quando.toISOString()}`}>
           <th scope="row">{p.tipo === 'preamar' ? 'Maré alta' : 'Maré baixa'}<br />{hora(p.quando)}</th>
           <td>{p.altura === null ? 'Sem altura' : `${numero(p.altura)} m`}</td>
@@ -258,8 +260,10 @@ function Resultado({ resultado, titulo, rotulo, nota, hipotese = false, qual = '
         </tr>)}</tbody>
       </table>
     </div>}
-    <p className={estilos.detalhe}>Fonte: {mareItajai._meta.fonte_curta}. NR é a referência de altura da carta náutica.
-      Essas alturas são dos extremos publicados, não de cada instante da janela. Não são o nível do rio e não devem
-      ser somadas à régua de Blumenau. Vento, pressão atmosférica, afluentes e chuva local não estão modelados.</p>
+    <p className={estilos.detalhe}>Fonte: {mareItajai._meta.fonte_curta}.{' '}
+      {referenciaAltura
+        ? `As alturas são sobre ${referenciaAltura}, dos extremos publicados, não de cada instante da janela. Não são o nível do rio e não devem ser somadas à régua de Blumenau.`
+        : 'A tábua traz só o horário de cada extremo: a fonte não declara a referência vertical da altura, e o site não mostra número sem referência.'}
+      {' '}Vento, pressão atmosférica, afluentes e chuva local não estão modelados.</p>
   </div>
 }

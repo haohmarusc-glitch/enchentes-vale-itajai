@@ -3,7 +3,7 @@
  * Funções puras, com o que as telas já dizem:
  *
  * - "o pico de Blumenau já passou?": o "Hoje" do painel de chegada × maré de Itajaí (`logica/hojeEmItajai.ts`,
- *   a MESMA decisão que a tela usa), com a referência de estudo da JICA e a tábua da Marinha. Enquanto o rio
+ *   a MESMA decisão que a tela usa), com a referência de estudo da JICA e a tábua de maré do site. Enquanto o rio
  *   sobe, a janela é a de "se o pico fosse agora"; janela que já terminou é dita como terminada;
  * - "se o pico de Blumenau for às 22h": a simulação com horário informado (`simularChegada`), como o formulário;
  * - "o que significa a cor laranja?": a legenda do Monitor e `data/faixas.json`, a fonte única dos textos.
@@ -26,7 +26,7 @@ export interface ReferenciaChegada {
 }
 
 export const AVISO_FOZ =
-  'A janela é a referência de estudo da JICA (picos de projeto, sem calibração com cheias observadas), não previsão. A altura da maré é a da tábua da Marinha, não o nível do rio, e vento, chuva local e afluentes não entram na conta. Siga a Defesa Civil de Itajaí; em emergência, ligue 199.'
+  'A janela é a referência de estudo da JICA (picos de projeto, sem calibração com cheias observadas), não previsão. Os horários de maré são os da tábua do porto de Itajaí usada no site (previsão astronômica), não o nível do rio, e vento, chuva local e afluentes não entram na conta. Siga a Defesa Civil de Itajaí; em emergência, ligue 199.'
 
 /** A janela de chegada e as marés dentro dela — o mesmo quadro (`Resultado`) do painel, em texto. */
 export function textoJanela(r: ResultadoSimulacao, qual: string): string {

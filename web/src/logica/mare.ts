@@ -14,8 +14,8 @@
  * verificável: **a cheia chega junto com a preamar?** e **este é um período de
  * maré de sizígia?**
  *
- * As preamares vêm da tábua oficial (Marinha/DHN ou Defesa Civil de Itajaí),
- * informadas por quem usa a tela. Nada de tábua é estimado aqui.
+ * As preamares vêm da tábua do site (`data/mare-itajai.json`: a previsão harmônica da UNIVALI desde
+ * 08/10/2026, antes a da Marinha/DHN) ou são informadas por quem usa a tela. Nada de tábua é estimado aqui.
  */
 
 const DIA_MS = 86_400_000

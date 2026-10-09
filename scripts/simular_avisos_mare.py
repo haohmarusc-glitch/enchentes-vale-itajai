@@ -162,7 +162,7 @@ def main(argv: list[str] | None = None) -> int:
     resultados = {nome: simular(pontos, cotas, **kw) for nome, kw in OPCOES.items()}
     if args.codigo in FATOR_MARE:
         fator, atraso = FATOR_MARE[args.codigo]
-        residuo = mare_prevista(DADOS / "mare-itajai.json")
+        residuo = mare_prevista(DADOS / "mare-itajai-chm.json")
         descontada = []
         for t, v in pontos:
             r = residuo(t - timedelta(hours=atraso))

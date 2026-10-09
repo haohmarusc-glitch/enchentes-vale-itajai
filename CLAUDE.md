@@ -127,8 +127,22 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   fonte escrita, por decisão do Jefferson.
 - A diferença se chama **"diferença entre nível observado e maré astronômica prevista"**, vem da mesma linha da mesma
   estação e nunca é atribuída só a vento e pressão (pode ter influência do rio). Nunca "maré meteorológica" na tela.
-- Leitura antiga nunca como atual: medição com mais de 60 min ou do futuro é "Medição indisponível". A tábua da
-  Marinha continua sendo a previsão, com fonte e horário à parte.
+- Leitura antiga nunca como atual: medição com mais de 60 min ou do futuro é "Medição indisponível". A tábua de
+  maré do site continua sendo a previsão, com fonte e horário à parte.
+
+### Tábua de maré do porto de Itajaí — REGRA (decisão do Jefferson, 08/10/2026)
+- **A fonte é a previsão harmônica da UNIVALI** (Laboratório de Oceanografia Física, Prof. Mauro Michelena Andrade
+  e Márcio Piazera; marégrafo de Cabeçudas), planilha de 5 min do ano de 2026 em
+  `data/brutos/univali-mare-astronomica-2026.xlsx`, importada por `scripts/importar_mare_univali.py` para
+  `data/mare-itajai.json`. A Tábua da Marinha (CHM/DHN) fica como referência de cruzamento e das análises que precisam
+  da altura, em `data/mare-itajai-chm.json` (site e chat não a leem; `importar_mare_chm.py` só toca a tábua do site
+  com `--substituir`). Detalhes em `docs/TABUA-UNIVALI-2026.md`.
+- **Só o horário entra**: a planilha não declara a referência vertical, então `altura_m` não existe e
+  `_meta.referencia_altura` é `null`. Nenhuma tela ou texto nomeia referência de altura por texto fixo.
+- **A fonte na tela e no chat vem de `_meta.fonte_curta`**, nunca de texto fixo ("tábua da Marinha" foi erro de
+  crédito apontado pelo Prof. Mauro). Teste em `comandos/quinta.test.ts`.
+- Preamar e baixa-mar são os extremos locais da curva; pares adjacentes com amplitude menor que 2 cm (ondulação de
+  estofo) saem aos pares. Cruzamento com a Marinha em 2026: mediana −11 min, p90 28 min (sem erro de fuso).
 
 ### Avisos de DC-05, DC-08 e DC-11 — REGRA (proposta de 08/10/2026, aguardando aprovação)
 - **Histerese só na descida** (`aviso_histerese_m` em `estacoes.json`, lido por `alerta_cotas.faixa_com_histerese`).
@@ -363,7 +377,7 @@ Cada tela de rio mostra (versão 2): a lista compacta das cidades, agrupada em c
 - Previsão a jusante = correlação linear entre picos históricos da cidade de cima e da cidade de baixo no mesmo evento (`enchentes.json`).
 - Tempo de chegada = faixa de `transito.json`; mostrar sempre como **intervalo** ("14–17 h"), nunca número exato.
 - Quando não houver pares suficientes (< 5 eventos), exibir "dados insuficientes" em vez de estimar.
-- Para Itajaí: considerar os dois rios e mostrar o estado da maré no horário previsto de chegada de cada pico. Fonte de maré: tábuas da Marinha (DHN), porto de Itajaí — integração futura.
+- Para Itajaí: considerar os dois rios e mostrar o estado da maré no horário previsto de chegada de cada pico. Fonte de maré: previsão harmônica da UNIVALI para o marégrafo de Cabeçudas (porto de Itajaí), em `data/mare-itajai.json` (ver a regra acima).
 
 ## Fontes externas
 

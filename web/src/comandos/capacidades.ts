@@ -309,7 +309,7 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
   },
   mare: {
     grupo: 'rio', entrega: 5, titulo: 'Como está a maré',
-    descricao: 'A tábua da Marinha para o porto de Itajaí: previsão astronômica, não medição.',
+    descricao: 'A tábua de maré do porto de Itajaí (a fonte vem do próprio arquivo): previsão astronômica, não medição.',
     exemplos: [{ texto: 'como está a maré?' }, { texto: 'qual a próxima maré alta?' }],
     argumentos: [], mudaTela: false, precisaDoMapa: false, dados: ['mare'],
   },

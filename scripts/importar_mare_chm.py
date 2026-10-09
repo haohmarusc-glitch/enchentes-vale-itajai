@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """
-Importa a Tábua de Marés da Marinha (CHM/DHN) do Porto de Itajaí para `data/mare-itajai.json`.
+Importa a Tábua de Marés da Marinha (CHM/DHN) do Porto de Itajaí para `data/mare-itajai-chm.json`.
+
+DESDE 08/10/2026 a tábua do site (`data/mare-itajai.json`) é a previsão harmônica da UNIVALI, só com
+horário (decisão do Jefferson; ver docs/TABUA-UNIVALI-2026.md). A da Marinha continua sendo gravada,
+com a altura sobre o NR, num arquivo próprio de REFERÊNCIA: é dela que as análises que precisam da
+curva de altura (`analisar_chegada_itajai.py`, `nivel_antes.py`, `estimar_zero_reguas_itajai.py`,
+`simular_avisos_mare.py`) leem, e os relatórios já gravados nos docs foram feitos com ela. Site e chat
+não a leem. Com `--substituir`, o importador grava também a tábua do site (troca de fonte é decisão).
 
 POR QUE EXISTE (09/09/2026). A tábua que o site usava veio de uma planilha da
 UNIVALI, cobria só setembro de 2026 e, no dia 1º de outubro, o painel de maré
@@ -33,7 +40,8 @@ independentes do mesmo porto têm de concordar em minutos; se não concordarem,
 uma das duas está em fuso errado, e é isso que este cruzamento denuncia.
 
 Uso:
-    python3 scripts/importar_mare_chm.py                  # lê o bruto, cruza, grava
+    python3 scripts/importar_mare_chm.py                  # lê o bruto, cruza, grava a referência
+    python3 scripts/importar_mare_chm.py --substituir     # grava também a tábua do site (decisão)
     python3 scripts/importar_mare_chm.py --seco           # tudo menos gravar
     python3 scripts/importar_mare_chm.py --pdf outro.pdf  # outro ano/arquivo
 """
@@ -53,6 +61,7 @@ from importar_mare_univali import classificar_extremos
 
 BRUTO = DADOS / "brutos" / "chm-tabua-mare-itajai-2026.pdf"
 DESTINO = "mare-itajai.json"
+REFERENCIA = "mare-itajai-chm.json"
 
 MESES = {
     "janeiro": 1, "fevereiro": 2, "março": 3, "marco": 3, "abril": 4, "maio": 5, "junho": 6,
@@ -155,8 +164,9 @@ def montar(preamares, baixamares, pdf: Path, relato: dict, descartados: int) -> 
     sha = hashlib.sha256(pdf.read_bytes()).hexdigest()
     return {
         "_meta": {
-            "descricao": ("Tábua de maré do porto de Itajaí. O site cruza estas preamares com a janela "
-                          "de chegada da cheia: maré alta trava o escoamento do rio."),
+            "descricao": ("Tábua de maré do porto de Itajaí da Marinha, com altura. Desde 08/10/2026 é REFERÊNCIA: "
+                          "a tábua do site é data/mare-itajai.json (UNIVALI, só horário); esta serve ao cruzamento "
+                          "e às análises que precisam da curva de altura. Site e chat não a leem."),
             "fuso": "Horário local (America/Sao_Paulo, UTC−3), como a tábua publica e o site espera.",
             "fonte": (f"Marinha do Brasil, Centro de Hidrografia da Marinha (CHM/DHN) — Tábua de Marés {relato['ano']}, "
                       "Porto de Itajaí (SC), páginas 166–168; 78 componentes harmônicas, Carta 1841. "
@@ -184,6 +194,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--pdf", type=Path, default=BRUTO)
     ap.add_argument("--seco", action="store_true", help="não grava")
+    ap.add_argument("--substituir", action="store_true",
+                    help="grava também a tábua do site, que hoje é a da UNIVALI (decisão do Jefferson, 08/10/2026)")
     args = ap.parse_args()
     if not args.pdf.exists():
         print(f"não achei {args.pdf}", file=sys.stderr)
@@ -214,6 +226,13 @@ def main() -> int:
                 print(f"cruzamento {chave}: nada a parear com o arquivo anterior.")
     if args.seco:
         print("--seco: nada gravado.")
+        return 0
+    grava_json(REFERENCIA, novo)
+    print(f"gravado data/{REFERENCIA} (referência com altura).")
+    # Desde 08/10/2026 a tábua do site é a da UNIVALI (decisão do Jefferson); a Marinha é referência de cruzamento.
+    # Este importador só a substitui de propósito.
+    if not args.substituir:
+        print("a tábua do site (data/mare-itajai.json) não foi tocada. Para trocá-la pela da Marinha, use --substituir.")
         return 0
     grava_json(DESTINO, novo)
     print(f"gravado data/{DESTINO}.")

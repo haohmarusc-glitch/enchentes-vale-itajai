@@ -480,6 +480,15 @@ o projeto.
 
 ## Pendências
 
+- [x] **Tábua de maré: a fonte voltou a ser a UNIVALI (decisão do Jefferson, 08/10/2026).** A planilha do ano inteiro
+  que o Prof. Mauro e o Márcio Piazera mandaram em 23/09 (`mare_astronomica_2026.xlsx`, 5 min, marégrafo de
+  Cabeçudas) estava sem uso: desde 09/09 o site creditava a Marinha, e o Prof. Mauro viu isso no site. Agora
+  `importar_mare_univali.py` lê a série, tira os extremos (851 preamares, 851 baixa-mares; 46 pares de ondulação de
+  estofo < 2 cm fora) e cruza com a Marinha antes de gravar (mediana −11 min, p90 28 min: sem erro de fuso). **Só o
+  horário entra**: a planilha não declara a referência vertical (fica ~0,25 m acima do NR da Marinha), então nada
+  de altura. Site e chat passam a dizer a fonte do próprio arquivo, nunca "tábua da Marinha". As análises que
+  precisam da altura (chegada em Itajaí, nível antes, zero das réguas, avisos de maré) leem a Marinha em
+  `data/mare-itajai-chm.json`, arquivo de referência que o site não lê. `docs/TABUA-UNIVALI-2026.md`.
 - [x] **DC-11: o rio na Rua Santa Regina ficava cinza com a régua em atenção (print do Jefferson, 08/10/2026 14:39).**
   A cor da DC-11 valia para os trechos cuja projeção na reta entre os pinos de Ilhota e Itajaí caía depois da régua, e
   a Volta de Cima, logo abaixo dela, volta para trás nessa reta: 9 arestas, **2,86 km** de rio, cinza. Agora "a jusante"

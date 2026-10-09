@@ -276,7 +276,7 @@ def relatorio(r: dict) -> str:
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     p.add_argument("pasta", type=Path, help="pasta com os .ndjson de data/tempo-real")
-    p.add_argument("--mare", type=Path, default=DADOS / "mare-itajai.json")
+    p.add_argument("--mare", type=Path, default=DADOS / "mare-itajai-chm.json")
     a = p.parse_args(argv)
     if not a.pasta.is_dir():
         print(f"pasta não encontrada: {a.pasta}", file=sys.stderr)
