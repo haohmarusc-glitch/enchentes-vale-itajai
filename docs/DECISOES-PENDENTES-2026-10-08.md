@@ -75,3 +75,27 @@ Ibirama (C26) e Rio dos Cedros (C29) já responderam.
 - **Vidal Ramos:** sem leitura municipal desde 11/09 (saiu da Asthon); segue só a estadual DCSC-00024.
 - **Indaial:** o documento municipal parou em 12/09; não há fonte autorizada.
 - **DC-02:** a série fica parada; não serve como régua até alguém explicar o porquê.
+
+## Atualização de 08/10/2026 (tarde)
+
+Mesclados e em produção no mesmo dia (todos pelo Jefferson, exceto o #525 a pedido dele): #523 (linha estadual
+contínua), #524 e #525 (divergência de Ituporanga explicada e provada), #526 (Canhanduba pinta pela DC-08),
+#527 (CI: `concurrency` por evento), #528 (rótulo "Classificação estadual nesta estação"), #529 (Ituporanga: régua a
+jusante da Barragem Sul e régua do Centro), #530 (proposta do Atlas), #531 (traçado da Murta contínuo) e #532
+(Centro de Ituporanga pelo Actions, porque a Prefeitura recusa a VPS). O `deploy.sh` rodou depois do #525 e do #532;
+a publicação das 17:32 UTC já trouxe `ultimo_ituporanga_centro.json` via Actions.
+
+O item 4.5 (coletor de Gaspar no Actions) está em operação: o branch `coleta-gaspar` recebe leituras (última
+publicação 16:50 UTC de hoje).
+
+O que **entrou** na lista de decisões:
+
+| # | decisão | recomendação | detalhe |
+|---|---|---|---|
+| 1.5 | **DC-07 (Murta):** cota do PLANCON v17 ou do portal (é o 5.1), e destravar? O traçado já é contínuo da DC-07 à foz e o trecho do vínculo está delimitado: DC-07 → DC-09, 4,86 km. | decidir a cota primeiro; com `alerta_automatico: true`, o vínculo rascunhado entra num PR pequeno, **parado** como o Canhanduba (1.4 continua valendo) | `docs/VAO-MURTA.md` |
+| 5.8 | **Atlas de Desastres pelo Actions:** autorizar a 1ª rodada (sonda + `--dry-run`, sem trocar o `User-Agent`); se o runner passar, cadência mensal ou só manual; onde apontar as lacunas novas | sonda primeiro; mensal (dia 10) se passar; lacunas num doc por rodada | `docs/PROPOSTA-ATLAS-ACTIONS-2026-10-08.md` |
+| 3.5 | **Cotas da régua do Centro de Ituporanga** na mesma régua: a pergunta à Defesa Civil já foi enviada e reforçada; sem resposta, a régua fica sem cor | aguardar; nada a enviar | `docs/ITUPORANGA-CENTRO.md` |
+
+O que **saiu**: 2.1–2.3 (publicados) e 4.5 (em operação). Fora desta lista, não há pendência que a sessão feche
+sozinha: os avisos do validador (47, ver README) pedem conferência na fonte, e as demais dependem de resposta
+externa (C11, C13, C24, C27, C28, C30, C31) ou de envio (C32–C35, rascunhos no Gmail, nenhum enviado).
