@@ -218,12 +218,11 @@ export const TOLERANCIA_PONTO_KM = 0.3
  * fim. Sem caminho (segmento desconectado) ou com ponto longe do traçado, devolve `null` — e o curso fica
  * cinza, com o motivo. Nada acima da estação entra: o caminho vai da estação para o fim, não para os lados.
  */
-export function arestasDoAlcance(
-  coords: LonLat[][],
-  inicio: LonLat,
-  fim: LonLat,
-  tolerancia = TOLERANCIA_PONTO_KM,
-): { arestas: Set<string>; km: number } | null {
+/** O traçado como grafo: vértices (chave por coordenada) e arestas com o comprimento em km. */
+function grafoDoTracado(coords: LonLat[][]): {
+  adj: Map<string, { para: string; km: number; aresta: string }[]>
+  pos: Map<string, LonLat>
+} {
   const chave = (p: LonLat) => `${p[0].toFixed(6)},${p[1].toFixed(6)}`
   const adj = new Map<string, { para: string; km: number; aresta: string }[]>()
   const pos = new Map<string, LonLat>()
@@ -241,31 +240,43 @@ export function arestasDoAlcance(
       adj.get(b)!.push({ para: a, km, aresta })
     }
   })
-  const maisPerto = (alvo: LonLat): string | null => {
-    let melhor: string | null = null
-    let d = tolerancia
-    for (const [k, p] of pos) {
-      const dd = kmEntre(p, alvo)
-      if (dd <= d) {
-        d = dd
-        melhor = k
-      }
-    }
-    return melhor
-  }
-  const s = maisPerto(inicio)
-  const f = maisPerto(fim)
-  if (!s || !f) return null
+  return { adj, pos }
+}
 
-  // Dijkstra simples: os traçados têm poucos milhares de vértices.
-  const dist = new Map<string, number>([[s, 0]])
+/** O vértice mais perto de `alvo` a até `tolerancia` km, entre os que `aceita` (todos, por padrão). */
+function verticeMaisPerto(
+  pos: Map<string, LonLat>,
+  alvo: LonLat,
+  tolerancia: number,
+  aceita: (k: string) => boolean = () => true,
+): string | null {
+  let melhor: string | null = null
+  let d = tolerancia
+  for (const [k, p] of pos) {
+    if (!aceita(k)) continue
+    const dd = kmEntre(p, alvo)
+    if (dd <= d) {
+      d = dd
+      melhor = k
+    }
+  }
+  return melhor
+}
+
+/** Distância em km, pelo traçado, de cada vértice alcançável até `origem` (Dijkstra; poucos milhares de vértices). */
+function distanciasNoTracado(
+  adj: Map<string, { para: string; km: number; aresta: string }[]>,
+  origem: string,
+  parar?: string,
+): { dist: Map<string, number>; veio: Map<string, { de: string; aresta: string }> } {
+  const dist = new Map<string, number>([[origem, 0]])
   const veio = new Map<string, { de: string; aresta: string }>()
-  const abertos = new Set<string>([s])
+  const abertos = new Set<string>([origem])
   while (abertos.size > 0) {
     let u: string | null = null
     for (const k of abertos) if (u === null || dist.get(k)! < dist.get(u)!) u = k
     abertos.delete(u!)
-    if (u === f) break
+    if (u === parar) break
     for (const { para, km, aresta } of adj.get(u!) ?? []) {
       const nd = dist.get(u!)! + km
       if (nd < (dist.get(para) ?? Infinity)) {
@@ -275,6 +286,58 @@ export function arestasDoAlcance(
       }
     }
   }
+  return { dist, veio }
+}
+
+/**
+ * As arestas do traçado que ficam a JUSANTE de `ponto`, pelo caminho do rio até `foz` (08/10/2026).
+ *
+ * Serve à referência da DC-11 no Açu: a cor valia para os trechos cuja PROJEÇÃO na reta entre os pinos de
+ * Ilhota e Itajaí caía depois da régua, e a Volta de Cima, logo abaixo da DC-11, volta para trás nessa reta —
+ * 2,86 km de rio ao longo da Rua Santa Regina ficavam cinza com a régua em atenção. Aqui "a jusante" é medido
+ * NO traçado: uma aresta entra quando os dois vértices dela estão, pelo canal, mais perto da foz do que o
+ * vértice da régua. Braços paralelos (ilhas) entram pelos dois lados; o rio acima da régua, não.
+ *
+ * O vértice da régua é o mais perto de `ponto` (até `tolerancia` km) entre os que alcançam a foz: um pedaço
+ * solto do traçado não serve de referência. Sem vértice ou sem foz, devolve `null` (nenhuma aresta pintada).
+ */
+export function arestasAJusanteDe(
+  coords: LonLat[][],
+  ponto: LonLat,
+  foz: LonLat,
+  tolerancia = TOLERANCIA_PONTO_KM,
+): Set<string> | null {
+  const { adj, pos } = grafoDoTracado(coords)
+  const f = verticeMaisPerto(pos, foz, tolerancia)
+  if (!f) return null
+  const { dist } = distanciasNoTracado(adj, f)
+  const s = verticeMaisPerto(pos, ponto, tolerancia, (k) => dist.has(k))
+  if (!s) return null
+  const limite = dist.get(s)! + 1e-9
+  const arestas = new Set<string>()
+  for (const [a, vizinhos] of adj) {
+    const da = dist.get(a)
+    if (da === undefined || da > limite) continue
+    for (const { para, aresta } of vizinhos) {
+      const db = dist.get(para)
+      if (db !== undefined && db <= limite) arestas.add(aresta)
+    }
+  }
+  return arestas
+}
+
+export function arestasDoAlcance(
+  coords: LonLat[][],
+  inicio: LonLat,
+  fim: LonLat,
+  tolerancia = TOLERANCIA_PONTO_KM,
+): { arestas: Set<string>; km: number } | null {
+  const { adj, pos } = grafoDoTracado(coords)
+  const s = verticeMaisPerto(pos, inicio, tolerancia)
+  const f = verticeMaisPerto(pos, fim, tolerancia)
+  if (!s || !f) return null
+
+  const { dist, veio } = distanciasNoTracado(adj, s, f)
   if (!dist.has(f)) return null
   const arestas = new Set<string>()
   for (let k = f; k !== s; k = veio.get(k)!.de) arestas.add(veio.get(k)!.aresta)

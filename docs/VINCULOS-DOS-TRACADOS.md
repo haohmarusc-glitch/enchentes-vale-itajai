@@ -36,6 +36,13 @@ e `web/src/telas/MonitorBacia.tsx`. Testes: `web/src/logica/vinculosDosTracados.
 - **Tronco:** a primeira régua não pinta o rio acima dela, com folga de 0,5 km para meandro.
   - O resto da regra do tronco não mudou: a régua a montante dá a cor até a próxima, o DC-11 vale na foz e o canal
     retificado do Mirim segue a regra própria.
+  - **DC-11, "a jusante" pelo traçado (08/10/2026):** a cor da DC-11 valia para os trechos cuja projeção na reta
+    entre os pinos de Ilhota e Itajaí caía depois da régua. A Volta de Cima, logo abaixo da DC-11, volta para
+    trás nessa reta: com a régua em atenção (3,17 m), 9 arestas, **2,86 km** de rio ao longo da Rua Santa Regina,
+    ficavam cinza (print do Jefferson, 14:39). Agora `arestasAJusanteDe` mede no traçado: entra a aresta cujos dois
+    vértices estão, pelo canal, mais perto da foz do que o vértice da régua (a 116 m dela). O rio acima da régua
+    continua cinza; braços de ilha entram pelos dois lados. Teste com o traçado real em
+    `vinculosDosTracados.test.ts` e com um meandro sintético em `referenciaDc11.test.ts`.
 - **Toque:**
   - no trecho colorido, abre o painel da cidade que decidiu a cor, com a linha "No mapa, a cor desta régua vale só
     para…";

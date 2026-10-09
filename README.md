@@ -489,6 +489,12 @@ o projeto.
   de altura. Site e chat passam a dizer a fonte do próprio arquivo, nunca "tábua da Marinha". As análises que
   precisam da altura (chegada em Itajaí, nível antes, zero das réguas, avisos de maré) leem a Marinha em
   `data/mare-itajai-chm.json`, arquivo de referência que o site não lê. `docs/TABUA-UNIVALI-2026.md`.
+- [x] **DC-11: o rio na Rua Santa Regina ficava cinza com a régua em atenção (print do Jefferson, 08/10/2026 14:39).**
+  A cor da DC-11 valia para os trechos cuja projeção na reta entre os pinos de Ilhota e Itajaí caía depois da régua, e
+  a Volta de Cima, logo abaixo dela, volta para trás nessa reta: 9 arestas, **2,86 km** de rio, cinza. Agora "a jusante"
+  é medido no traçado (`arestasAJusanteDe`: distância até a foz pelo canal, aresta entra quando os dois vértices estão
+  mais perto da foz que o vértice da régua). O rio acima da DC-11 continua cinza. Teste com o traçado real e com um
+  meandro sintético; trava do Monitor intacta. `docs/VINCULOS-DOS-TRACADOS.md`.
 - [x] **Barragens no Monitor: painel e armazenamento em escala própria (07/10/2026; mesclado em 08/10/2026 por decisão do Jefferson).** O toque no marcador
   abre comportas e o "Percentual de ocupação informado pela fonte" (atual ÷ máxima); "Mais detalhes" mostra o nível na
   régua da barragem (com zero e altitude), capacidade com "Unidade não informada", horário e fonte, vazões "Não

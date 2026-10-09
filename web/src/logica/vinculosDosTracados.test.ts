@@ -16,6 +16,7 @@ import {
   SEM_VINCULO,
   VINCULOS,
   VINCULOS_DE_REGUA,
+  arestasAJusanteDe,
   arestasDoAlcance,
   kmEntre,
   rioParaCena,
@@ -72,6 +73,33 @@ function dc08(faixa: ReguaNoMapa['faixa'], motivoSemCor: string | null = null): 
 }
 const doRio = (c: Cena, id: string) => c.trechos.filter((t) => t.rioId === id)
 const pintados = (c: Cena, id: string) => doRio(c, id).filter((t) => t.faixa !== 'sem-dado')
+
+test('a jusante da DC-11 pelo traçado real do Açu: a Volta de Cima inteira entra, o rio acima não (08/10/2026)', () => {
+  const acu = JSON.parse(readFileSync(new URL('../../../data/rios/itajai-acu.geojson', import.meta.url), 'utf8'))
+  const coords = acu.geometry.coordinates as LonLat[][]
+  const dc11: LonLat = [-48.761549, -26.879641]
+  const foz = coords.flat().reduce((a, p) => (p[0] > a[0] ? p : a))
+  const arestas = arestasAJusanteDe(coords, dc11, foz, 0.5)
+  assert.ok(arestas && arestas.size > 0)
+  // As nove arestas da volta para o norte logo abaixo da régua (linha 50, arestas 7–15), que a projeção na reta
+  // Ilhota→Itajaí deixava cinza: 2,86 km ao longo da Rua Santa Regina.
+  for (let i = 7; i <= 15; i++) assert.ok(arestas.has(`50:${i}`), `linha 50, aresta ${i} fica a jusante da DC-11`)
+  // O rio acima da régua, na mesma linha, não entra.
+  assert.ok(!arestas.has('50:1') && !arestas.has('50:2'), 'o rio acima da DC-11 não pinta')
+  // Nada acima de Ilhota entra: toda aresta a jusante está a leste de −48,80.
+  let km = 0
+  coords.forEach((linha, li) => {
+    for (let i = 1; i < linha.length; i++) {
+      if (!arestas.has(`${li}:${i}`)) continue
+      assert.ok(linha[i]![0] > -48.80 && linha[i - 1]![0] > -48.80, `aresta ${li}:${i} longe demais da foz`)
+      km += kmEntre(linha[i - 1]!, linha[i]!)
+    }
+  })
+  // O comprimento a jusante da DC-11 pelo canal é 27,3 km (medido em 08/10/2026); braços de ilha somam um pouco.
+  assert.ok(km >= 27 && km <= 32, `${km.toFixed(1)} km a jusante da DC-11`)
+  // Ponto longe de qualquer vértice: sem referência, nada pintado.
+  assert.equal(arestasAJusanteDe(coords, [-48.9, -26.5], foz, 0.5), null)
+})
 
 test('cada vínculo tem caminho no traçado real, da estação até o fim, com o comprimento declarado', () => {
   for (const v of VINCULOS) {
