@@ -1,0 +1,27 @@
+{
+  "versao": 1,
+  "gerado_em": "2026-10-10T23:30:34+00:00",
+  "fonte": "EPAGRI/CIRAM — marégrafos",
+  "fonte_url": "https://ciram.epagri.sc.gov.br/index.php/maregrafos/",
+  "estacao": {
+    "id": "balneario-camboriu",
+    "nome": "Balneário Camboriú",
+    "endpoint": "getDataMare5_2927.php",
+    "km_da_foz": 13
+  },
+  "horario": "Brasília, sem fuso. A fonte não declara o fuso; conferido em 07/10/2026: as preamares astronômicas do CIRAM para Itajaí (12/2921) caem 10 a 25 min antes das da tábua da Marinha em 06–09/10, nos quatro dias (em UTC seriam 3 h).",
+  "unidade": "m",
+  "unidade_na_fonte": "centímetro. A fonte não declara a unidade; a preamar astronômica do CIRAM em Itajaí (108 em 07/10 12:15) bate com a da tábua da Marinha (1,02 m às 12:34).",
+  "referencia_vertical": {
+    "status": "pendente",
+    "descricao": null,
+    "fonte": null
+  },
+  "situacao": "medindo",
+  "frescor_max_min": 60,
+  "idade_min_na_coleta": 30.6,
+  "ultima_medicao": {
+    "medido_em": "2026-10-10T20:00:00"
+  },
+  "aviso": "Maré de Balneário Camboriú, a 13 km da foz: contexto, não o nível de Itajaí. A previsão astronômica do porto de Itajaí continua sendo a tábua da Marinha."
+}

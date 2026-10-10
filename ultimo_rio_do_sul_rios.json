@@ -1,0 +1,107 @@
+{
+ "versao": 1,
+ "gerado_em": "2026-10-10T23:30:36+00:00",
+ "fonte": "Asthon — painel público usado pela Defesa Civil de Rio do Sul (public.asthon.com.br)",
+ "fonte_url": "https://public.asthon.com.br/public/panel?city_id=4214805",
+ "cidade": "rio-do-sul",
+ "reguas": [
+  {
+   "station_id": "30475400-b7ba-4551-9646-19df0c3bfa38",
+   "nome": "Ponte Ricardo Kanitz",
+   "rio": "Rio Itajaí do Sul",
+   "ramo": "itajai_do_sul",
+   "medido_em": "2026-10-10T20:07:10",
+   "nivel_m": 4.28,
+   "cotas_na_fonte": {
+    "atencao": {
+     "cota_m": 4.5,
+     "origem": "authored"
+    },
+    "alerta": {
+     "cota_m": 5.5,
+     "origem": "authored"
+    },
+    "emergencia": {
+     "cota_m": 6.5,
+     "origem": "authored"
+    }
+   },
+   "idade_min_na_coleta": 23,
+   "situacao": "fresca"
+  },
+  {
+   "station_id": "039a5d4f-f58d-4fca-bef6-5d37e132a6f0",
+   "nome": "Ponte Hannelore Hartmann Eyng",
+   "rio": "Rio Itajaí do Sul",
+   "ramo": "itajai_do_sul",
+   "medido_em": "2026-10-10T20:25:00",
+   "nivel_m": 4.27,
+   "cotas_na_fonte": {
+    "atencao": {
+     "cota_m": 4.5,
+     "origem": "authored"
+    },
+    "alerta": {
+     "cota_m": 5.5,
+     "origem": "authored"
+    },
+    "emergencia": {
+     "cota_m": 6.5,
+     "origem": "authored"
+    }
+   },
+   "idade_min_na_coleta": 6,
+   "situacao": "fresca"
+  },
+  {
+   "station_id": "3167e629-3bbe-48f2-9244-c65dfe6882d8",
+   "nome": "Ponte BR 470",
+   "rio": "Rio Itajaí do Oeste",
+   "ramo": "itajai_do_oeste",
+   "medido_em": "2026-10-10T20:28:21",
+   "nivel_m": 3.94,
+   "cotas_na_fonte": {
+    "atencao": {
+     "cota_m": 4.5,
+     "origem": "authored"
+    },
+    "alerta": {
+     "cota_m": 5.5,
+     "origem": "authored"
+    },
+    "emergencia": {
+     "cota_m": 6.5,
+     "origem": "authored"
+    }
+   },
+   "idade_min_na_coleta": 2,
+   "situacao": "fresca"
+  },
+  {
+   "station_id": "f6360951-219f-4859-935f-b2e2d13962f1",
+   "nome": "Ponte Dom Tito Buss",
+   "rio": "Rio Itajaí-Açu",
+   "ramo": "tronco_acu",
+   "medido_em": "2026-10-10T20:28:57",
+   "nivel_m": 4.09,
+   "cotas_na_fonte": {
+    "atencao": {
+     "cota_m": 4.5,
+     "origem": "authored"
+    },
+    "alerta": {
+     "cota_m": 5.5,
+     "origem": "authored"
+    },
+    "emergencia": {
+     "cota_m": 6.5,
+     "origem": "authored"
+    }
+   },
+   "idade_min_na_coleta": 2,
+   "situacao": "fresca"
+  }
+ ],
+ "fora": [],
+ "aviso": "Réguas do Itajaí do Sul e do Itajaí do Oeste em Rio do Sul, para calibração (decisão do Jefferson, 10/10/2026). Cada régua tem o zero dela: os metros não se comparam entre elas nem com a régua de outra cidade. Não é alerta deste site, não pinta o mapa e não está no cadastro."
+}

@@ -1,0 +1,178 @@
+{
+ "versao": 1,
+ "gerado_em": "2026-10-10T23:30:33+00:00",
+ "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+ "piloto": [
+  "brusque",
+  "blumenau",
+  "rio-dos-cedros"
+ ],
+ "entradas": {
+  "leituras_coletadas_em": "2026-10-10T23:30:29+00:00",
+  "nivel_sc_coletado_em": "2026-10-10T23:30:32+00:00"
+ },
+ "cidades": {
+  "brusque": {
+   "cidade": "Brusque",
+   "rio": "itajai-mirim",
+   "classificacoes": {
+    "municipal": {
+     "tipo": "municipal",
+     "regua_id": "DCSC-00019",
+     "regua_nome": "Ponte Estaiada – DCSC",
+     "cotas_m": {
+      "atencao": 3.0,
+      "emergencia": 5.0
+     },
+     "fonte_faixas": "Legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque (defesacivil.brusque.sc.gov.br/estacao/ver/79), lida no navegador em 07/09/2026: normalidade < 3,00 m; atenção 3,00 m (ou chuva atual > 6,00 mm); emergência 5,00 m. Não há faixa de alerta intermediária — a fonte pula de atenção para emergência, igual ao Ribeirão Belchior de Gaspar, que é a mesma plataforma.",
+     "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
+     "status_faixas": "confirmada",
+     "regua_da_leitura": "DCSC-00019",
+     "nivel_m": 1.58,
+     "medido_em": "2026-10-10T20:30:11",
+     "idade_min": 0,
+     "status_leitura": "valida",
+     "fonte_leitura": "Rede estadual (Defesa Civil de SC), estação DCSC-00019, Ponte Estaiada. Faixas da legenda da estação 'Ponte Estaiada – DCSC' no portal da Defesa Civil de Brusque, que republica esta estação; par provado em 07/09/2026 e em 1.287 leituras de 02 a 19/09/2026 (docs/BRUSQUE-DCSC-00019.md).",
+     "de_agora": true,
+     "varias_reguas": false,
+     "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
+     "segura_estadual": true,
+     "faixa": "normal",
+     "motivo": null
+    },
+    "estadual": {
+     "tipo": "estadual",
+     "regua_id": "DCSC-00019",
+     "estacao": "SDC-SC Brusque",
+     "nivel_m": 1.58,
+     "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+     "medido_em": "2026-10-10T20:30:26",
+     "idade_min": 0,
+     "status_leitura": "valida",
+     "fonte_faixas": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+     "faixa": "normal",
+     "motivo": null
+    }
+   },
+   "classificacao_aplicada": {
+    "tipo": "municipal",
+    "faixa": "normal",
+    "regua_id": "DCSC-00019",
+    "fallback": false,
+    "rotulo": "Classificação municipal — Ponte Estaiada – DCSC (DCSC-00019)",
+    "aviso": null,
+    "motivo": null
+   },
+   "faixa_do_rio": "normal"
+  },
+  "blumenau": {
+   "cidade": "Blumenau",
+   "rio": "itajai-acu",
+   "classificacoes": {
+    "municipal": {
+     "tipo": "municipal",
+     "regua_id": "Blumenau",
+     "regua_nome": "régua do AlertaBlu",
+     "cotas_m": {
+      "monitoramento": 3.0,
+      "atencao": 4.0,
+      "alerta": 6.0,
+      "emergencia": 8.0
+     },
+     "fonte_faixas": "JSON oficial do AlertaBlu / Proteção e Defesa Civil de Blumenau — https://defesacivil.blumenau.sc.gov.br/static/data/nivel_oficial.json, campo `condicoes` (fonte: 'AlertaBLU'), lido na VPS em 09/09/2026 por scripts/conferir_faixas_blumenau.py — Bruto: data/brutos/blumenau-alertablu-nivel-oficial-sem-serie-2026-09-09.json (a saída da sonda, sem a série horária). Cinco condições, todas `tipo: nvl`: Normalidade a partir de 0 m · Observação 3 m · Atenção 4 m · Alerta 6 m · Alerta Máximo 8 m. É a mesma escala que a página /d/nivel-do-rio publica em texto (relatada em 08/09/2026) e que as cinco cores do app já indicavam.",
+     "fonte_regua": "A régua 'Blumenau' é a do AlertaBlu: a escala (`condicoes`) e o nível saem do mesmo nivel_oficial.json, e o par cota↔leitura foi provado por medição (`regua_nota`, 18/09/2026). 'Blumenau (AlertaBlu)' e 'Blumenau (PADKND)' entram com resgate_de 'Blumenau'; a PADKND só entra depois de bater com o AlertaBlu na mesma coleta (coleta_itajai_portal.conferir_com_alertablu).",
+     "status_faixas": "confirmada",
+     "regua_da_leitura": "Blumenau",
+     "nivel_m": 3.23,
+     "medido_em": "2026-10-10T20:20:00",
+     "idade_min": 11,
+     "status_leitura": "valida",
+     "fonte_leitura": null,
+     "de_agora": true,
+     "varias_reguas": false,
+     "estacao": "Blumenau (PADKND)",
+     "segura_estadual": true,
+     "faixa": "monitoramento",
+     "motivo": null
+    },
+    "estadual": {
+     "tipo": "estadual",
+     "regua_id": null,
+     "estacao": null,
+     "nivel_m": null,
+     "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+     "medido_em": null,
+     "idade_min": null,
+     "status_leitura": "indisponivel",
+     "fonte_faixas": null,
+     "faixa": null,
+     "motivo": "sem leitura da rede estadual para a cidade"
+    }
+   },
+   "classificacao_aplicada": {
+    "tipo": "municipal",
+    "faixa": "monitoramento",
+    "regua_id": "Blumenau",
+    "fallback": false,
+    "rotulo": "Classificação municipal — régua do AlertaBlu (Blumenau)",
+    "aviso": null,
+    "motivo": null
+   },
+   "faixa_do_rio": "monitoramento"
+  },
+  "rio-dos-cedros": {
+   "cidade": "Rio dos Cedros",
+   "rio": "itajai-acu",
+   "classificacoes": {
+    "municipal": {
+     "tipo": "municipal",
+     "regua_id": "DCSC-00011",
+     "regua_nome": "DCSC-00011 — Rio dos Cedros 1, na ponte próxima ao Paço Municipal",
+     "cotas_m": {
+      "atencao": 4.8,
+      "alerta": 5.3,
+      "emergencia": 5.7
+     },
+     "fonte_faixas": "Escala publicada no monitoramento antigo do site da Prefeitura cruzada com a cadência do PLANCON municipal (versão ~10.7, 2022): atenção 4,80 m (monitorar de 30 em 30 min a partir de 4,50), alerta 5,30 m, alarme 5,70 m. As bocas-de-lobo da praça afogam a 6,02 m, e o painel Looker marca 'Nível Enchente – Praça Matriz' em 6,00 m.",
+     "fonte_regua": "Resposta da COMPDEC ao C29 em 07/10/2026 (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt): a cidade tem uma única estação de nível, a DCSC-00011 (`regua_das_cotas_fonte`); a mesma estação está em REGUAS_COM_COTA_PROPRIA.",
+     "status_faixas": "nao_confirmada",
+     "regua_da_leitura": "DCSC-00011",
+     "nivel_m": 1.7,
+     "medido_em": "2026-10-10T20:30:03",
+     "idade_min": 1,
+     "status_leitura": "valida",
+     "fonte_leitura": "Rede estadual (Defesa Civil de SC), estação DCSC-00011, Rio dos Cedros 1. A COMPDEC de Rio dos Cedros respondeu ao C29 em 07/10/2026 que a cidade tem uma única estação de nível, na ponte próxima ao Paço Municipal: as faixas do Plano de Contingência v10.9 são lidas nela (data/brutos/respostas/rio-dos-cedros-c29-2026-10-07.txt).",
+     "de_agora": true,
+     "varias_reguas": false,
+     "estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+     "segura_estadual": false,
+     "faixa": null,
+     "motivo": "cotas não confirmadas (cotas_verificado = False)"
+    },
+    "estadual": {
+     "tipo": "estadual",
+     "regua_id": "DCSC-00011",
+     "estacao": "SDC-SC Rio dos Cedros 1",
+     "nivel_m": 1.7,
+     "zero": "o da própria estação estadual (a faixa é a que a DCSC publica para ela)",
+     "medido_em": "2026-10-10T20:30:18",
+     "idade_min": 0,
+     "status_leitura": "valida",
+     "fonte_faixas": "Defesa Civil de SC — rio_alarmes.inundacao (classificação no datum da própria estação; não é faixa deste projeto)",
+     "faixa": "normal",
+     "motivo": null
+    }
+   },
+   "classificacao_aplicada": {
+    "tipo": "estadual",
+    "faixa": "normal",
+    "regua_id": "DCSC-00011",
+    "fallback": true,
+    "rotulo": "Faixa estadual (Defesa Civil de SC) — DCSC-00011",
+    "aviso": "Cor pela classificação que a Defesa Civil de SC publica para a estação DCSC-00011, no zero dela. Não são as cotas do município.",
+    "motivo": null
+   },
+   "faixa_do_rio": "normal"
+  }
+ }
+}
