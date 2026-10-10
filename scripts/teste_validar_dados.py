@@ -278,10 +278,27 @@ class MonotoniaDaJanela(unittest.TestCase):
         erros, _ = _monotonia(*self.base())
         self.assertEqual(erros, [], "o transito.json real não deveria ter janela impossível")
 
+    def com_colunas_misturadas(self):
+        """O transito.json de antes de 10/10/2026: Rio do Sul -> Blumenau 7-10 h (faixa do texto da JICA,
+        que junta as colunas de 5 e de 25/50 anos) e Blumenau -> Itajaí 12-17 h (envelope das colunas)."""
+        est, tr = self.base()
+        for tt in tr["trechos"]:
+            if tt["rio"] == "itajai-acu" and (tt["de"], tt["para"]) == ("rio-do-sul", "blumenau"):
+                tt["horas_min"], tt["horas_max"] = 7, 10
+            if tt["rio"] == "itajai-acu" and (tt["de"], tt["para"]) == ("blumenau", "itajai"):
+                tt["horas_min"], tt["horas_max"] = 12, 17
+        return est, tr
+
+    def test_coluna_unica_no_tronco_nao_deixa_sobreposicao(self):
+        """Decisão de 10/10/2026: a coluna de 5 anos em todo o tronco. Os dados reais não avisam mais."""
+        erros, avisos = _monotonia(*self.base())
+        self.assertEqual(erros, [])
+        self.assertEqual(avisos, [], "voltou a misturar colunas da Tabela 7.5.1 no tronco do Açu")
+
     def test_a_sobreposicao_conhecida_sai_como_aviso_e_nao_erro(self):
         # Indaial 10-10 h x Blumenau 7-10 h: a de baixo COMEÇA antes, mas
         # 10 <= 10, então existe atribuição consistente. Aviso, nunca erro.
-        erros, avisos = _monotonia(*self.base())
+        erros, avisos = _monotonia(*self.com_colunas_misturadas())
         self.assertEqual(erros, [])
         self.assertTrue(
             any("blumenau" in a and "indaial" in a for a in avisos),
@@ -314,7 +331,7 @@ class MonotoniaDaJanela(unittest.TestCase):
         # Quem for arrumar precisa saber se é mistura de coluna, afluente no
         # meio, ou dado errado — sem isso, "consertar" vira trocar fonte por
         # interpolação, que é perder dado.
-        _, avisos = _monotonia(*self.base())
+        _, avisos = _monotonia(*self.com_colunas_misturadas())
         self.assertTrue(avisos)
         for pista in ("COLUNAS diferentes", "afluente", "dado errado"):
             self.assertTrue(any(pista in a for a in avisos), f"o aviso não fala de '{pista}'")
@@ -332,8 +349,12 @@ class MonotoniaDaJanela(unittest.TestCase):
     def test_segue_a_mesma_busca_do_site(self):
         # Gaspar não tem trecho direto desde Rio do Sul: a janela sai da cadeia
         # rio-do-sul -> blumenau -> gaspar. Se a busca divergir da do site, o
-        # validador aprovaria um percurso que a tela não usa.
+        # validador aprovaria um percurso que a tela não usa. Coluna de 5 anos: 10 + 2 h.
         _, tr = self.base()
+        self.assertEqual(
+            vd._janela_ate(tr["trechos"], "itajai-acu", "rio-do-sul", "gaspar"), (12, 12)
+        )
+        _, tr = self.com_colunas_misturadas()
         self.assertEqual(
             vd._janela_ate(tr["trechos"], "itajai-acu", "rio-do-sul", "gaspar"), (9, 12)
         )

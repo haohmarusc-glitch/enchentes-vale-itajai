@@ -54,7 +54,7 @@ test('chuva de 2008 mostra sensor sem dado em vez de zero', () => {
 
 test('chuva em cidade sem estação avisa', () => assert.match(r('quanto choveu em Brusque em 2011').texto, /Não há estação do INMET em Brusque/))
 
-test('tempo de trânsito com fonte', () => assert.match(r('Quanto tempo a cheia leva de Rio do Sul até Blumenau?').texto, /de 7 a 10 h/))
+test('tempo de trânsito com fonte', () => assert.match(r('Quanto tempo a cheia leva de Rio do Sul até Blumenau?').texto, /cerca de 10 h/))
 
 // Todo par de cidades do site (pedido do Jefferson, 04/10/2026): o chat dá o MESMO tempo
 // que a tela e o bot — o gabarito `data/transito-esperado.json`, que os dois já seguem —
@@ -102,9 +102,9 @@ test('trânsito: os porquês', () => {
   assert.match(r('quanto tempo de Timbó até Blumenau?').texto, /afluente/)
   assert.match(r('quanto tempo de Taió até Ituporanga?').texto, /rios paralelos/)
   assert.match(r('quanto tempo de Vidal Ramos até Itajaí?').texto, /em estudo.*dados insuficientes[\s\S]*Brusque até Itajaí, cerca de 6 h/)
-  assert.match(r('quanto tempo de Lontras até Blumenau?').texto, /não tem o tempo medido[\s\S]*de Rio do Sul até Blumenau: de 7 a 10 h/)
+  assert.match(r('quanto tempo de Lontras até Blumenau?').texto, /não tem o tempo medido[\s\S]*de Rio do Sul até Blumenau: cerca de 10 h/)
   assert.match(r('quanto tempo de Trombudo Central até Blumenau?').texto, /posição definida/)
-  assert.match(r('Quanto tempo a cheia leva de Taió até Itajaí?').texto, /de 25 a 35 h[\s\S]*Soma dos trechos/)
+  assert.match(r('Quanto tempo a cheia leva de Taió até Itajaí?').texto, /de 33 a 35 h[\s\S]*Soma dos trechos/)
   assert.match(r('quanto tempo até Blumenau?').texto, /Diga as duas cidades/)
 })
 
@@ -357,7 +357,7 @@ test('tabela ruas × manchas de Itajaí: coerente com o catálogo e com o própr
 test('tempo de descida até Itajaí sugere a pergunta da maré', () => {
   const r = responder('quanto tempo chega a água de Blumenau até Itajaí?', dados)
   assert.equal(r.intencao, 'transito')
-  assert.match(r.texto, /de 12 a 17 h/)
+  assert.match(r.texto, /cerca de 17 h/)
   assert.deepEqual(r.sugestoes, ['a água chega na hora da maré alta?'])
   assert.equal(responder('quanto tempo a cheia leva de Rio do Sul até Blumenau?', dados).sugestoes, undefined)
 })

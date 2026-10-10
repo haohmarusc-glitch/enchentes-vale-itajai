@@ -181,13 +181,14 @@ class TestPrevisao(unittest.TestCase):
 
     def test_janela_ancorada_na_medicao_e_nao_em_agora(self):
         """
-        A leitura de Rio do Sul é das 17:55; a chegada em Blumenau (7-10 h) tem
-        de ser contada a partir dali, não das 18:30. Ancorar em "agora"
-        empurraria toda a janela 35 min para frente.
+        A leitura de Rio do Sul é das 17:55; a chegada em Blumenau (10 h, coluna de
+        5 anos da JICA desde 10/10/2026) tem de ser contada a partir dali, não das
+        18:30. Ancorar em "agora" empurraria toda a janela 35 min para frente.
         """
         t = resp("/previsao Rio do Sul")
-        self.assertIn("00:55", t, "17:55 + 7 h")
-        self.assertIn("03:55", t, "17:55 + 10 h")
+        self.assertIn("03:55", t, "17:55 + 10 h (Blumenau)")
+        self.assertIn("05:55", t, "17:55 + 12 h (Gaspar)")
+        self.assertNotIn("04:30", t, "ancorou em agora (18:30 + 10 h)")
 
     def test_cidade_com_varias_reguas_recusa(self):
         t = resp("/previsao Itajaí")
@@ -217,8 +218,17 @@ class TestPrevisao(unittest.TestCase):
         fica acima. Esconder isso seria apresentar como sequência algo que a
         fonte não sustenta.
         """
-        t = resp("/previsao Rio do Sul")
+        # Desde 10/10/2026 o tronco usa uma coluna só da JICA e os dados reais não têm mais a desordem;
+        # o caso é reproduzido com o trecho de antes (Rio do Sul -> Blumenau 7-10 h, colunas misturadas).
+        b = base()
+        b.transito = [dict(tt, horas_min=7, horas_max=10)
+                      if (tt["rio"], tt["de"], tt["para"]) == ("itajai-acu", "rio-do-sul", "blumenau") else tt
+                      for tt in b.transito]
+        t = responder("/previsao Rio do Sul", b, AGORA)
         self.assertIn("não estão em ordem de rio abaixo", t)
+
+    def test_coluna_unica_nao_denuncia_desordem_nos_dados_reais(self):
+        self.assertNotIn("não estão em ordem", resp("/previsao Rio do Sul"))
 
     def test_previsao_sem_desordem_nao_avisa_a_toa(self):
         b = base()
