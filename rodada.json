@@ -1,0 +1,38 @@
+{
+ "caixa": [
+  -26.89713,
+  -48.72595,
+  -26.88611,
+  -48.71171
+ ],
+ "vaos": [
+  {
+   "nome": "vao-1",
+   "via_montante": 138922683,
+   "via_jusante": 390147234,
+   "montante": [
+    -48.720949,
+    -26.89213
+   ],
+   "jusante": [
+    -48.720167,
+    -26.892064
+   ]
+  },
+  {
+   "nome": "vao-2",
+   "via_montante": 390147234,
+   "via_jusante": 556881889,
+   "montante": [
+    -48.716999,
+    -26.891344
+   ],
+   "jusante": [
+    -48.71671,
+    -26.891114
+   ]
+  }
+ ],
+ "vaos_abertos": [],
+ "situacao": "nenhum vão aberto: o bruto dos ribeirões ou a emenda gravada em data/brutos/vao-murta-osm.json já ligam as pontas; nada a procurar"
+}
