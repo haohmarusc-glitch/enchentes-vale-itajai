@@ -1903,7 +1903,7 @@ o projeto.
   dia o boletim da EPAGRI publicava 172 cm para a **mesma estação** às 08:00 — o número não é o mesmo nos
   dois sistemas. Qualquer coleta futura dali tem de **exigir carimbo fresco e recusar sozinha**, que é o
   que este site já faz com as próprias leituras e o oposto do que essa fonte faz.
-- [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** O
+- [ ] **⚠️ O ArcGIS de Itajaí pode estar com ESCRITA aberta ao público — verificar e comunicar.** **Verificado em 10/10/2026, só com leitura (`docs/ARCGIS-ITAJAI-EDICAO-2026-10-10.md`):** o `historico_inundacoes/FeatureServer` abre sem login e declara `Query,Create,Update,Delete,Uploads,Editing,Extract` no serviço e nas 10 camadas (áreas atingidas de 1983 a 2011, cotas de 2011 a 2015), sem controle por autor. Escrita não testada. **Falta:** decidir se comunica, contra a orientação de 14/09 de não oficiar Itajaí. Texto original: O
   script `coleta_inundacoes_itajai.mjs` que Jefferson trouxe avisa no cabeçalho que o
   `historico_inundacoes/FeatureServer` **expõe `Create, Update, Delete, Editing`**. Não foi possível
   conferir daqui (o proxy bloqueia o domínio) e não constava em lugar nenhum deste repositório. Se for
