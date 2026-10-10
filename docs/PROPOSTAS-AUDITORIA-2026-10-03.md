@@ -113,6 +113,10 @@ Também ficou desatualizado no `TOPOLOGIA-CANONICA.md`: ele diz que Apiúna saiu
   - os números de 26/09 passaram por alguma conta.
 
 ### Como conferir no servidor
+> **10/10/2026:** conferido sem a VPS, pelo acervo semanal do Actions. Não há degrau: a API devolve o histórico
+> já no zero local desde pelo menos 11/07, e o download de 10/09 tinha altitude nas mesmas datas. A DCSC
+> reprocessou o histórico. Ver `docs/GUABIRUBA-DCSC-00029-2026-10-10.md`.
+
 Os comandos só leem: baixam para uma pasta nova e não mexem em cadastro.
 
 ```
