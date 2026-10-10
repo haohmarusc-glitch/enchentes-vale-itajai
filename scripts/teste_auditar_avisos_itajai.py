@@ -58,6 +58,8 @@ class TesteComparar(unittest.TestCase):
         s = serie(*([3.1] + [2.9] * 42 + [3.1]))
         self.assertEqual(len(A.reproduzir(s, COTAS, 0.30)), 1)
         self.assertEqual(len(A.com_liberacao_por_tempo(s, COTAS, 0.30, 6)), 3)
+        # A reprodução com a regra do motor (`liberar_por_tempo`) dá o mesmo.
+        self.assertEqual(len(A.reproduzir(s, COTAS, 0.30, 6)), 3)
 
 
 class TesteZero(unittest.TestCase):

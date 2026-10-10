@@ -27,7 +27,7 @@ from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-from alerta_cotas import FAIXAS, REPETE_H, SUBIDA_M, faixa_com_histerese, faixa_de
+from alerta_cotas import FAIXAS, REPETE_H, SUBIDA_M, faixa_com_histerese, faixa_de, liberar_por_tempo
 from comum import DADOS, estacoes_tempo_real
 
 #: Episódios acima da cota de atenção separados por mais que isto contam como dois (o mesmo de
@@ -60,13 +60,16 @@ def ler_series(pasta: Path, glob: str = "20[0-9][0-9]-[0-9][0-9].ndjson", chave:
     return {c: sorted(d.items()) for c, d in pontos.items()}
 
 
-def reproduzir(serie: Serie, cotas: dict, histerese_m: float = 0.0) -> list[Mensagem]:
-    """As mensagens que `alerta_cotas.decidir` mandaria para esta régua, leitura a leitura."""
+def reproduzir(serie: Serie, cotas: dict, histerese_m: float = 0.0, libera_apos_h: float = 0.0) -> list[Mensagem]:
+    """As mensagens que `alerta_cotas.decidir` mandaria para esta régua, leitura a leitura (com a liberação
+    por tempo de 10/10/2026, `liberar_por_tempo`, quando `libera_apos_h` > 0)."""
     estado: dict = {}
     msgs: list[Mensagem] = []
     for t, nivel in serie:
         antes = estado.get("faixa", "normal")
-        faixa = faixa_com_histerese(float(nivel), cotas, faixa_de(nivel, cotas), antes, histerese_m)
+        crua = faixa_de(nivel, cotas)
+        faixa = faixa_com_histerese(float(nivel), cotas, crua, antes, histerese_m)
+        faixa, segurada = liberar_por_tempo(faixa, crua, estado.get("segurada_desde"), t, libera_apos_h)
         manda = False
         if faixa != antes:
             manda = not (faixa == "normal" and not estado)
@@ -77,8 +80,48 @@ def reproduzir(serie: Serie, cotas: dict, histerese_m: float = 0.0) -> list[Mens
             msgs.append((t, nivel, antes, faixa))
             estado = {"faixa": faixa, "nivel_m": nivel, "avisado_em": t}
         else:
-            estado = {**estado, "faixa": faixa}
+            estado = {**estado, "faixa": faixa, "segurada_desde": segurada}
     return msgs
+
+
+def config_do_cadastro(estacao: dict) -> tuple[float, float]:
+    h = estacao.get("aviso_histerese_m")
+    libera = estacao.get("aviso_libera_apos_h")
+    return (float(h) if isinstance(h, (int, float)) else 0.0, float(libera) if isinstance(libera, (int, float)) else 0.0)
+
+
+def auditar_cadastro(series: dict[str, Serie], cad: dict[str, dict]) -> list[dict]:
+    """
+    Cada régua que avisa, com a configuração do cadastro (cotas, histerese, liberação por tempo): mensagens,
+    episódios e o primeiro aviso de cada um, a maior rajada em 24 h e se alguma subida de faixa ficou sem aviso.
+    É a prova pedida antes de ativar (10/10/2026), a rodar também com a série que inclui 06–07/10.
+    """
+    saida = []
+    for cod in sorted(series):
+        e = cad.get(cod) or {}
+        if e.get("alerta_automatico") is False or not e.get("cotas_m"):
+            continue
+        cotas, s = e["cotas_m"], series[cod]
+        h, libera = config_do_cadastro(e)
+        msgs = reproduzir(s, cotas, h, libera)
+        crus = reproduzir(s, cotas)
+        tmsgs = [m[0] for m in msgs]
+        eps = []
+        for ini, _fim, maximo in episodios(s, cotas["atencao"]):
+            p = primeiro_aviso(msgs, ini - timedelta(minutes=1))
+            eps.append((ini, maximo, None if p is None else (p[0] - ini).total_seconds() / 3600))
+        rajada = max((sum(1 for u in tmsgs if t <= u < t + timedelta(hours=24)) for t in tmsgs), default=0)
+        faixas_cruas = {(m[0], m[3]) for m in crus if sobe(m)}
+        faixas_com = {(m[0], m[3]) for m in msgs if sobe(m)}
+        perdidas = []
+        for t, faixa in sorted(faixas_cruas - faixas_com):
+            vigente = next((m[3] for m in reversed(msgs) if m[0] < t), "normal")
+            if FAIXAS.index(faixa) > FAIXAS.index(vigente):
+                perdidas.append((t, faixa))
+        saida.append({"codigo": cod, "histerese": h, "libera": libera, "mensagens": len(msgs), "sem_regras": len(crus),
+                      "episodios": eps, "rajada_24h": rajada, "faixa_mais_alta_perdida": perdidas,
+                      "maximo": max(v for _, v in s), "faixas": sorted({m[3] for m in msgs}, key=FAIXAS.index)})
+    return saida
 
 
 def sobe(m: Mensagem) -> bool:
@@ -279,6 +322,16 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  alternativa: soltar a faixa após {horas} h abaixo da cota → "
                       f"{len(com_liberacao_por_tempo(s, cotas, h, horas))} mensagens")
         print()
+
+    print("## Configuração do cadastro (o que os avisos fariam com estas regras)")
+    for r in auditar_cadastro(series, cad):
+        regra = f"histerese {r['histerese']:.2f} m" + (f" + liberação após {r['libera']:.0f} h" if r["libera"] else "")
+        print(f"  {r['codigo']} ({regra}): {r['mensagens']} mensagens (sem regras {r['sem_regras']}); máximo "
+              f"{r['maximo']:.2f} m; faixas avisadas {r['faixas']}; maior rajada em 24 h {r['rajada_24h']}; "
+              f"subida de faixa sem aviso {len(r['faixa_mais_alta_perdida'])}")
+        for ini, mx, atraso in r["episodios"]:
+            print(f"    episódio {ini:%d/%m %H:%M} (máx {mx:.2f}): " + ("SEM AVISO" if atraso is None else f"atraso {atraso:.1f} h"))
+    print()
 
     for cod in ("DC-07", "DC-08"):
         s, cotas = series[cod], cad[cod]["cotas_m"]

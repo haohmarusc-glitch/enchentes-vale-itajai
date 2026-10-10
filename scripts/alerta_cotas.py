@@ -370,6 +370,7 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
             continue
         estacao = estacao_por_titulo(titulo) or {}
         histerese = estacao.get("aviso_histerese_m")
+        libera = estacao.get("aviso_libera_apos_h")
         vigiadas.append({
             "leitura": leitura,
             "cotas": cotas,
@@ -377,6 +378,9 @@ def resolver(dados: dict) -> tuple[list[dict], list[str]]:
             # Só na DESCIDA (08/10/2026): a régua só "baixa" de faixa quando desce isto abaixo da cota da
             # faixa em que estava. A subida continua na cota. Ver `faixa_com_histerese`.
             "histerese_m": float(histerese) if isinstance(histerese, (int, float)) else 0.0,
+            # Liberação por tempo (10/10/2026): a faixa segurada pela histerese solta depois de tantas horas com o
+            # nível abaixo da cota dela, para que uma nova subida depois de uma queda prolongada volte a avisar.
+            "libera_apos_h": float(libera) if isinstance(libera, (int, float)) else 0.0,
             "notas": estacao.get("nota_no_aviso") if isinstance(estacao.get("nota_no_aviso"), dict) else {},
         })
     return vigiadas, recusas
@@ -403,6 +407,28 @@ def faixa_com_histerese(nivel: float, cotas: dict, faixa_nova: str, faixa_antes:
         if isinstance(cota, (int, float)) and nivel > float(cota) - histerese_m:
             return nome
     return faixa_nova
+
+
+def liberar_por_tempo(faixa: str, crua: str, segurada_desde: str | None, agora: datetime,
+                      libera_apos_h: float) -> tuple[str, str | None]:
+    """
+    A faixa do aviso depois da liberação por tempo, e desde quando ela está segurada (para o estado).
+
+    A histerese segura a faixa enquanto o nível não desce `histerese_m` abaixo da cota. Na DC-11 isso escondeu
+    uma nova subida depois de 8,3 h logo abaixo da cota (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md). Com
+    `aviso_libera_apos_h` (decisão do Jefferson, 10/10/2026: 6 h na DC-03 e na DC-11), a faixa segurada solta
+    quando o nível passa esse tempo abaixo da cota dela: sai o "baixou", e a volta à cota avisa de novo.
+    Sem o campo, ou com a faixa não segurada, nada muda.
+    """
+    if libera_apos_h <= 0 or faixa == crua:
+        return faixa, None
+    try:
+        desde = datetime.fromisoformat(segurada_desde) if segurada_desde else agora
+    except ValueError:
+        desde = agora
+    if (agora - desde).total_seconds() / 3600 >= libera_apos_h:
+        return crua, None
+    return faixa, desde.isoformat()
 
 
 def resolver_atuais(dados: dict, agora: datetime) -> tuple[list[dict], list[str]]:
@@ -444,7 +470,10 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
         faixa_antes = antes.get("faixa", "normal")
         nivel_antes = antes.get("nivel_m")
         desde = antes.get("avisado_em")
+        crua = faixa
         faixa = faixa_com_histerese(float(nivel), cotas, faixa, faixa_antes, item.get("histerese_m", 0.0))
+        faixa, segurada_desde = liberar_por_tempo(faixa, crua, antes.get("segurada_desde"), agora,
+                                                  item.get("libera_apos_h", 0.0))
 
         manda = False
         if faixa != faixa_antes:
@@ -498,6 +527,10 @@ def decidir(dados: dict, estado: dict, agora: datetime) -> tuple[list[dict], dic
             # houve mudança. O nível e o horário do último aviso ficam como
             # estavam: é contra eles que se mede "subiu desde o último aviso".
             novo[chave_estado] = {**antes, "faixa": faixa}
+            if segurada_desde:
+                novo[chave_estado]["segurada_desde"] = segurada_desde
+            else:
+                novo[chave_estado].pop("segurada_desde", None)
 
     return avisos, novo, recusas
 

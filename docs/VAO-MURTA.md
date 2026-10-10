@@ -57,7 +57,7 @@ O vão 2 foi recusado nessa rodada por **0,3 mm**: a cadeia saiu "mais curta que
   **condição (a)** para destravar a DC-07, não a decisão.
 - Dois bueiros de 78 m e 38 m sob ruas não mudam o enquadramento do Monitor.
 
-## O trecho do futuro vínculo DC-07 (delimitado, NÃO ativado)
+## O trecho do vínculo DC-07 (ativado por decisão do Jefferson em 10/10/2026, a valer depois da auditoria de 06–07/10)
 
 Medido no traçado contínuo (`scripts/medir_alcance_murta.py`), com as réguas na coordenada do cadastro:
 
@@ -81,7 +81,8 @@ não pinta. O rascunho, para quando o Jefferson destravar a DC-07:
   fimDescricao: 'a régua DC-09 (Ponte da Rua Lidia Puel Peixer), 1,4 km antes da foz no Itajaí-Açu', km: 4.9 }
 ```
 
-Isto **não** está em `VINCULOS_DE_REGUA`. Condições que faltam, na ordem: (1) decisão sobre a cota da DC-07 (Plano v17
+**10/10/2026:** entrou em `VINCULOS_DE_REGUA` (cotas do portal provisórias, DC-07 destravada,
+`docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`). As condições que faltavam, na ordem: (1) decisão sobre a cota da DC-07 (Plano v17
 × portal, `docs/AUDITORIA-2026-09-19-fechamento.md`); (2) `alerta_automatico: true` na DC-07, por decisão do Jefferson;
 (3) o teste de `VINCULOS_DE_REGUA` confere o caminho contínuo e o km.
 

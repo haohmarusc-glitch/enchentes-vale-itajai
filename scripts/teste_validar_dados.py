@@ -1348,15 +1348,20 @@ class ConflitoDoPlanconDeItajaiFechado(unittest.TestCase):
                 self.assertEqual(cotas_do_plano(e), div["adotado_tabela_11_v17"])
 
     def test_a_unica_excecao_ao_plano_e_a_atencao_provisoria_da_dc08(self):
-        """08/10/2026 (proposta, aguardando aprovação): a DC-08 passa a avisar com a atenção de 1,70 m que
-        o portal publica, PROVISÓRIA, guardando o 1,80 m do Plano ao lado. Nenhuma outra régua tem
-        exceção, e a provisória tem de ser exatamente o número do portal."""
+        """As exceções ao Plano são as provisórias declaradas, cada uma com o número do portal e o do Plano:
+        a atenção da DC-08 (1,70 × 1,80 m, 08/10/2026, com a pendência do zero do Plano registrada em
+        10/10/2026) e o alerta e a emergência da DC-07 (1,40 × 1,35 e 1,50 × 1,65 m, decisão de 10/10/2026)."""
         com_excecao = {c: e["cota_provisoria"] for c, e in self.dc.items() if e.get("cota_provisoria")}
-        self.assertEqual(set(com_excecao), {"DC-08"})
-        prov = com_excecao["DC-08"]["atencao"]
-        self.assertEqual((prov["valor"], prov["plano_v17"]), (1.7, 1.8))
-        self.assertEqual(self.dc["DC-08"]["cotas_conferencia_2026_09_13"]["portal"]["atencao"], prov["valor"])
-        self.assertIn("provisória", prov["estado"])
+        self.assertEqual(set(com_excecao), {"DC-07", "DC-08"})
+        esperado = {"DC-08": {"atencao": (1.7, 1.8)}, "DC-07": {"alerta": (1.4, 1.35), "emergencia": (1.5, 1.65)}}
+        for codigo, faixas in esperado.items():
+            self.assertEqual(set(com_excecao[codigo]), set(faixas), codigo)
+            for faixa, (portal, plano) in faixas.items():
+                prov = com_excecao[codigo][faixa]
+                self.assertEqual((prov["valor"], prov["plano_v17"]), (portal, plano), (codigo, faixa))
+                self.assertEqual(self.dc[codigo]["cotas_conferencia_2026_09_13"]["portal"][faixa], prov["valor"])
+                self.assertIn("provisória", prov["estado"])
+        self.assertIn("PENDENTE", com_excecao["DC-08"]["atencao"]["zero_do_plano"])
 
 
 class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):

@@ -165,6 +165,37 @@ mais cauteloso. O 1,80 continua registrado em `cota_provisoria.plano_v17`.
   vínculo DC-07 → DC-09 (4,86 km, `docs/VAO-MURTA.md`) entra parado, como o Canhanduba. Na série, a DC-07 não
   precisa de histerese: são 10 mensagens sem, 8 com 0,30 m.
 
+## 5. Decisões do Jefferson (10/10/2026) — prontas, a ativar depois da auditoria de 06–07/10
+
+| régua | decisão | no cadastro |
+|---|---|---|
+| DC-03 | destravar, histerese 0,30 m e liberação após 6 h abaixo da cota | `aviso_histerese_m: 0.3`, `aviso_libera_apos_h: 6` |
+| DC-06 | destravar, atenção 1,50 m | sem histerese |
+| DC-05 | manter | 0,10 m, sem liberação |
+| DC-11 | liberação após 6 h abaixo da cota (61 mensagens em vez de 52) | `aviso_libera_apos_h: 6` |
+| DC-08 | manter 1,70 m provisório | `cota_provisoria.atencao.zero_do_plano`: pendência do zero do Plano |
+| DC-07 | cotas do portal provisórias (1,00 / 1,40 / 1,50 m), divergência com o Plano documentada; Murta habilitada | `cota_provisoria` de alerta e emergência; vínculo DC-07 → DC-09, parado |
+
+**A liberação por tempo** (`alerta_cotas.liberar_por_tempo`): quando a histerese segura a faixa, o estado guarda
+`segurada_desde`. Se o nível passa `aviso_libera_apos_h` horas abaixo da cota, a faixa solta (sai o "baixou"), e a
+volta à cota avisa de novo. Voltar à cota antes disso zera a contagem.
+
+**Com a série de 30/08 a 05/10 e o cadastro novo** (`auditar_avisos_itajai.py`, seção "Configuração do cadastro"):
+
+| régua | mensagens | episódios com aviso na 1ª leitura | subida de faixa sem aviso | maior rajada em 24 h |
+|---|---|---|---|---|
+| DC-03 | 11 | 3 de 3 | 0 | 5 |
+| DC-05 | 16 | 4 de 4 | 0 | 4 |
+| DC-06 | 0 | — | 0 | 0 |
+| DC-07 | 10 | 3 de 3 | 0 | 6 |
+| DC-08 | 23 | 5 de 5 | 0 | 5 |
+| DC-10 | 4 | 2 de 2 | 0 | 2 |
+| DC-11 | 61 | 8 de 8 | 0 | 6 |
+
+**Falta, antes de ativar:** rodar o mesmo com a série que inclui a chuva de 06–07/10. Ela está só na VPS; o
+arquivo semanal (`arquivo-series`) parou em 05/10. Na VPS: `scripts/copiar_series.sh`, e depois
+`python3 scripts/auditar_avisos_itajai.py --serie data/tempo-real`.
+
 ## Como refazer
 
 ```bash

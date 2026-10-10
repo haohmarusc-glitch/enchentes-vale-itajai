@@ -207,13 +207,12 @@ test('tronco: a primeira régua não pinta o rio acima dela (Taió no Oeste; Vid
 })
 
 test('ribeirões de Itajaí sem respaldo e cursos sem régua ficam sem classificação, com o motivo', () => {
-  for (const id of ['ribeirao-murta', 'ribeirao-taquaras', 'rio-rafael']) {
+  for (const id of ['ribeirao-taquaras', 'rio-rafael']) {
     const r = rio(id)
     assert.equal(r.semVinculo, true, id)
     assert.equal(r.cidades.length, 0, id)
     assert.ok(SEM_VINCULO[id], `${id}: sem motivo escrito`)
   }
-  assert.match(textoDoTrechoCinza('sem-vinculo', 'ribeirao-murta'), /DC-07 e DC-09/)
 })
 
 test('segmento desconectado ou estação longe do traçado: sem caminho, sem cor', () => {
@@ -255,7 +254,9 @@ test('cada vínculo de régua tem caminho no traçado real, da régua até o fim
   }
   assert.equal(vinculoDaRegua('DC-08')?.tracado, 'ribeirao-canhanduba')
   assert.equal(vinculoDeReguaDoTracado('ribeirao-canhanduba')?.regua, 'DC-08')
-  assert.equal(vinculoDaRegua('DC-07'), null, 'a Murta continua sem vínculo: DC-07 sem cota conferida, DC-09 de estuário')
+  // Murta: destravada em 10/10/2026 (decisão do Jefferson), da DC-07 até a DC-09; a DC-09, de estuário, não pinta.
+  assert.equal(vinculoDaRegua('DC-07')?.tracado, 'ribeirao-murta')
+  assert.equal(vinculoDaRegua('DC-09'), null)
 })
 
 test('o Canhanduba pinta pela DC-08: a cor do pino da régua, da régua para baixo, sem cidade e parado', () => {
@@ -351,4 +352,38 @@ test('o Rio Conceição pinta pela DC-08, parado, e fica cinza quando a régua e
   assert.equal(pintados(sem, 'rio-conceicao').length, 0)
   assert.ok(doRio(sem, 'rio-conceicao').every((t) => t.motivoCinza === 'regua-sem-cor'))
   assert.equal(pintados(cena([r]), 'rio-conceicao').length, 0, 'na reprodução fica cinza')
+})
+
+/*
+ * Murta (decisão do Jefferson de 10/10/2026): a DC-07 destravada, com as cotas do portal provisórias, pinta o
+ * ribeirão da régua até a DC-09 (4,86 km pelo traçado), parado. Os 1,43 km da DC-09 até a foz e o ribeirão
+ * acima da DC-07 ficam cinza.
+ */
+function dc07(faixa: ReguaNoMapa['faixa'], motivoSemCor: string | null = null): ReguaNoMapa {
+  return {
+    codigo: 'DC-07', titulo: 'DC-07 Ribeirão da Murta - Portal', cidade: 'itajai', nome: 'Portal I',
+    lon: -48.735573, lat: -26.892699, nivel: 1.05, medidoEm: new Date('2026-10-07T19:00:00-03:00'),
+    faixa, motivoSemCor, cotas: { atencao: 1.0, alerta: 1.4, emergencia: 1.5 },
+  }
+}
+
+test('a Murta pinta pela DC-07, parada, só da régua até a DC-09', () => {
+  const r = rio('ribeirao-murta')
+  assert.equal(r.semVinculo, undefined)
+  assert.deepEqual(r.reguaVinculada, { codigo: 'DC-07', cidade: 'itajai' })
+  const c = cena([r], undefined, undefined, [dc07('atencao')])
+  const cor = pintados(c, 'ribeirao-murta')
+  assert.ok(cor.length > 0, 'a Murta continuou cinza com a DC-07 em atenção')
+  for (const t of cor) {
+    assert.equal(t.faixa, 'atencao')
+    assert.equal(t.reguaCodigo, 'DC-07')
+    assert.equal(t.cidadeId, null)
+    assert.equal(t.animacao, 'parada')
+  }
+  const fora = doRio(c, 'ribeirao-murta').filter((t) => t.motivoCinza === 'fora-do-alcance')
+  assert.ok(fora.length > 0, 'o trecho da DC-09 até a foz e o ribeirão acima da DC-07 ficam cinza')
+  assert.match(textoDoTrechoCinza('fora-do-alcance', 'ribeirao-murta'), /régua DC-07 representa.*DC-09/)
+  const sem = cena([r], undefined, undefined, [dc07(null, 'leitura velha demais para dizer a faixa')])
+  assert.equal(pintados(sem, 'ribeirao-murta').length, 0)
+  assert.equal(pintados(cena([r]), 'ribeirao-murta').length, 0, 'na reprodução fica cinza')
 })

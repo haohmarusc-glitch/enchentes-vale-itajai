@@ -69,7 +69,6 @@ Distâncias medidas em 07/10/2026 contra `data/rios/*.geojson`. "Faixa às 19h45
 | Curso | Motivo |
 |---|---|
 | Benedito (Timbó) | A coordenada da régua municipal não está confirmada e a equivalência com a DCSC-00023 também não (decisão de 06/10/2026). O pino de Timbó continua com a faixa estadual da DCSC-00023, mas o rio não. |
-| Ribeirão da Murta (Itajaí) | DC-07 e DC-09 estão sem aviso automático: cota não conferida (DC-07) e régua de estuário (DC-09). O traçado OSM estava partido entre a DC-07 e a foz (68 de 195 vértices alcançáveis) — **fechado em 08/10/2026** com os dois bueiros sem nome do OSM (`docs/VAO-MURTA.md`): 195 de 195 alcançáveis. O trecho do futuro vínculo (DC-07 → DC-09, 4,86 km) está delimitado lá, sem ativar. |
 | ~~Ribeirão Canhanduba (Itajaí)~~ | ~~DC-08 sem aviso automático~~ — **vinculado por régua em 08/10/2026**, ver abaixo. |
 
 ### Cursos vinculados por RÉGUA (08/10/2026)
@@ -84,6 +83,7 @@ recalculado; régua sem cor (maré, sem cota, leitura velha) deixa o curso cinza
 |---|---|---|---|---|---|
 | Ribeirão Canhanduba / `ribeirao-canhanduba` | DC-08 "Rio do Meio" (Itajaí) | 13 m | 6,3 km | o último vértice do traçado OSM rio abaixo, onde o OSM passa a chamar o curso de Rio Conceição | 11,5 km cinza (`fora-do-alcance`) |
 | Rio Conceição / `rio-conceicao` (desde 09/10/2026) | DC-08, como continuação do Canhanduba (`continuacaoDe`) | — (começa no último vértice do Canhanduba) | 0,7 km (665 m, 3 trechos OSM) | um vértice do traçado do Itajaí-Mirim (0 m) | nada: o vínculo cobre o traçado inteiro |
+| Ribeirão da Murta / `ribeirao-murta` (desde 10/10/2026) | DC-07 "Portal I" (Itajaí), cotas do portal provisórias | 0 m (vértice do traçado) | 4,9 km (4,86 medidos) | a régua DC-09, 1,4 km antes da foz; a DC-09 é de estuário e travada | o trecho acima da DC-07 e os 1,43 km da DC-09 à foz, cinza |
 
 O toque no trecho pintado abre o painel da régua, e o painel diz até onde a cor vale (`textoDoAlcanceDaRegua`) e o
 que ela é: a classificação medida **na régua**, aplicada ao trecho vinculado — não medição em cada ponto do curso nem

@@ -36,9 +36,12 @@ class CotasPortalItajai(unittest.TestCase):
                 self.assertIn("Plano de Contingência", est["fonte_cotas"])
                 self.assertNotIn("monitoramento/nivel-rios", est["fonte_cotas"])
                 if est.get("cota_provisoria"):
-                    # DC-08 (08/10/2026): avisa com a atenção do portal, PROVISÓRIA, e a fonte diz as duas.
+                    # DC-08 (08/10/2026) e DC-07 (10/10/2026): avisam com as cotas do portal, PROVISÓRIAS, e a
+                    # fonte diz o número do Plano de cada faixa trocada.
                     self.assertIn("PROVISÓRIA", est["fonte_cotas"], code)
-                    self.assertIn("1,80 m", est["fonte_cotas"], code)
+                    for prov in est["cota_provisoria"].values():
+                        self.assertIn(f"{prov['plano_v17']:.2f}".replace(".", ","), est["fonte_cotas"], code)
+                    self.assertEqual(est["cotas_m"], grafico["cotas_m"], code)
                 else:
                     self.assertEqual(est["fonte_cotas"], conferencia["fonte_plano"], code)
                     self.assertIs(est["alerta_automatico"], False)

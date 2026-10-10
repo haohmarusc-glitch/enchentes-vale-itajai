@@ -177,6 +177,20 @@ export const VINCULOS_DE_REGUA: readonly VinculoDeRegua[] = [
     continuacaoDe: 'ribeirao-canhanduba',
     nome: 'Rio Conceição',
   },
+  {
+    tracado: 'ribeirao-murta',
+    cidade: 'itajai',
+    regua: 'DC-07',
+    inicio: [-48.735573, -26.892699],
+    fim: [-48.700308, -26.879777],
+    fimDescricao: 'a régua DC-09 (Ponte da Rua Lidia Puel Peixer), 1,4 km antes da foz no Itajaí-Açu',
+    km: 4.9,
+    fonte: 'DC-07 "Ribeirão da Murta - Portal": coordenada do cadastro (Mapa.php de 02/09/2026 = portal de 08/10/2026). ' +
+      'Destravada por decisão do Jefferson de 10/10/2026, com as cotas do portal provisórias (atenção 1,00 m, igual ' +
+      'ao Plano; alerta 1,40 e emergência 1,50 m, o Plano traz 1,35 e 1,65 m) — docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md. ' +
+      'Fim: a próxima régua rio abaixo, a DC-09, de estuário e travada; os 1,43 km dela até a foz ficam cinza. ' +
+      'Traçado contínuo desde 08/10/2026 (docs/VAO-MURTA.md).',
+  },
 ]
 
 export function vinculoDeReguaDoTracado(tracado: string): VinculoDeRegua | null {
@@ -212,11 +226,6 @@ export const SEM_VINCULO: Readonly<Record<string, string>> = {
   'rio-rafael': 'Não há régua cadastrada neste rio.',
   'rio-rafael-braco-grande': 'Não há régua cadastrada neste rio.',
   'rio-rafael-braco-pequeno': 'Não há régua cadastrada neste rio.',
-  'ribeirao-murta':
-    'As réguas de Itajaí neste ribeirão (DC-07 e DC-09) estão sem aviso automático: cota ainda não conferida ' +
-    'contra a série (DC-07) e régua de estuário com oscilação de maré (DC-09). Sem respaldo, não colorem o ' +
-    'ribeirão. (O traçado já é contínuo da DC-07 à foz desde 08/10/2026 — docs/VAO-MURTA.md; o trecho do futuro ' +
-    'vínculo da DC-07, até a DC-09, está delimitado lá e só entra com a decisão sobre a cota.)',
 }
 
 export function vinculoDoTracado(tracado: string): VinculoDeTracado | null {
