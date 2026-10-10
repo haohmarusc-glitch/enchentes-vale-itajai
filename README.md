@@ -480,12 +480,13 @@ o projeto.
 
 ## Pendências
 
-- [ ] **Avisos de Itajaí: decisões de 10/10/2026 prontas, a ativar depois da auditoria com a chuva de 06–07/10.**
+- [x] **Avisos de Itajaí: decisões de 10/10/2026 mescladas (#539) e auditadas com a chuva de 06–07/10.**
   DC-03 destravada com histerese de 0,30 m e liberação após 6 h; DC-06 destravada (atenção 1,50 m); DC-11 com
   liberação após 6 h (61 mensagens em 35 dias, em vez de 52); DC-07 com as cotas do portal provisórias e a Murta
   pintando da DC-07 até a DC-09, parada; DC-08 com 1,70 m provisório e a pendência do zero do Plano registrada; DC-05
-  sem mudança. **Falta:** na VPS, `scripts/copiar_series.sh` e `python3 scripts/auditar_avisos_itajai.py --serie
-  data/tempo-real`; só depois o merge. `docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`, seção 5.
+  sem mudança. Com a série até 10/10 (cópia de 10/10), nenhuma subida sem aviso, as três destravadas quietas na
+  chuva, e a liberação de 6 h sem mensagem a mais de 06/10 em diante. Valem na VPS depois do `deploy.sh`.
+  `docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`, seções 5 e 6.
 - [x] **Tábua de maré: a fonte voltou a ser a UNIVALI (decisão do Jefferson, 08/10/2026).** A planilha do ano inteiro
   que o Prof. Mauro e o Márcio Piazera mandaram em 23/09 (`mare_astronomica_2026.xlsx`, 5 min, marégrafo de
   Cabeçudas) estava sem uso: desde 09/09 o site creditava a Marinha, e o Prof. Mauro viu isso no site. Agora

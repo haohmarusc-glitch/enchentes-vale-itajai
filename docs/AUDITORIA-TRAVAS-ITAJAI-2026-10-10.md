@@ -15,7 +15,7 @@ Os itens 1.1 e 1.2 de `DECISOES-PENDENTES-2026-10-08.md` estavam desatualizados,
 **auditoria do que já está ligado**.
 
 **Série:** `arquivo-series`, de 30/08 16:00 a 05/10 15:21 (hora de Brasília), 35 dias completos.
-- A chuva de 06–07/10, quando a DC-08 marcou 2,28 m, ainda não está no arquivo.
+- A chuva de 06–07/10 entrou depois, na cópia de 10/10 14h43 UTC (`8bc5ebe`, até 10/10 11:20): seção 6.
 - O aviso é reproduzido leitura a leitura com o mesmo laço de `alerta_cotas.decidir`: `faixa_com_histerese` e
   repetição só depois de 3 h e 30 cm de subida.
 - Script: `scripts/auditar_avisos_itajai.py`, testes em `teste_auditar_avisos_itajai.py`.
@@ -165,7 +165,7 @@ mais cauteloso. O 1,80 continua registrado em `cota_provisoria.plano_v17`.
   vínculo DC-07 → DC-09 (4,86 km, `docs/VAO-MURTA.md`) entra parado, como o Canhanduba. Na série, a DC-07 não
   precisa de histerese: são 10 mensagens sem, 8 com 0,30 m.
 
-## 5. Decisões do Jefferson (10/10/2026) — prontas, a ativar depois da auditoria de 06–07/10
+## 5. Decisões do Jefferson (10/10/2026) — mescladas no #539, auditadas com 06–07/10 na seção 6
 
 | régua | decisão | no cadastro |
 |---|---|---|
@@ -192,9 +192,64 @@ volta à cota avisa de novo. Voltar à cota antes disso zera a contagem.
 | DC-10 | 4 | 2 de 2 | 0 | 2 |
 | DC-11 | 61 | 8 de 8 | 0 | 6 |
 
-**Falta, antes de ativar:** rodar o mesmo com a série que inclui a chuva de 06–07/10. Ela está só na VPS; o
-arquivo semanal (`arquivo-series`) parou em 05/10. Na VPS: `scripts/copiar_series.sh`, e depois
-`python3 scripts/auditar_avisos_itajai.py --serie data/tempo-real`.
+A auditoria com a chuva de 06–07/10, pedida antes de ativar, está na seção 6.
+
+## 6. Com a chuva de 06–07/10 (série até 10/10 11:20)
+
+**Série:** `arquivo-series` em `8bc5ebe` (cópia da VPS de 10/10 14h43 UTC), de 30/08 16:00 a 10/10 11:20, hora de
+Brasília. De 05/10 12h em diante, a maior lacuna foi de 1,3 h (07/10 12h50) nas réguas que avisam, 2,5 h na DC-03.
+
+**Conferido com o motor de verdade.** A série inteira, leitura a leitura, por `alerta_cotas.decidir` com o cadastro
+do #539, dá os mesmos números da seção "Configuração do cadastro" do script:
+
+| régua | mensagens até 05/10 | até 10/10 | episódios com aviso na 1ª leitura | subida de faixa sem aviso | maior rajada em 24 h |
+|---|---|---|---|---|---|
+| DC-03 | 11 | 11 | 3 de 3 | 0 | 5 |
+| DC-05 | 16 | **18** | **5 de 5** | 0 | 4 |
+| DC-06 | 0 | 0 | — | 0 | 0 |
+| DC-07 | 10 | 10 | 3 de 3 | 0 | 6 |
+| DC-08 | 23 | **26** | **6 de 6** | 0 | 5 |
+| DC-10 | 4 | 4 | 2 de 2 | 0 | 2 |
+| DC-11 | 61 | **72** | **9 de 9** | 0 | 6 |
+
+**O que a chuva de 06–07/10 fez com os avisos** (todas as mensagens de 06/10 em diante):
+
+| hora (Brasília) | régua | nível | mensagem |
+|---|---|---|---|
+| 06/10 07:10 | DC-08 | 1,71 m | atenção (provisória) |
+| 06/10 09:21 | DC-05 | 1,60 m | atenção |
+| 06/10 10:20 | DC-08 | 2,04 m | atenção, repetida (3 h e +0,33 m) |
+| 06/10 23:50 | DC-11 | 3,01 m | atenção |
+| 07/10 10:20 | DC-08 | 1,68 m | normal |
+| 07/10 14:10 | DC-11 | 3,35 m | atenção, repetida |
+| 07/10 17:51 | DC-05 | 1,50 m | normal (1,60 − 0,10) |
+| 08/10 a 10/10 | DC-11 | 3,00–3,04 m / 2,67–2,70 m | quatro pares atenção → normal, um por preamar alta |
+
+Máximos de 06/10 em diante: DC-08 2,28 m (07/10 02:50), DC-11 3,35 m, DC-05 1,71 m, DC-10 5,26 m, DC-06 1,13 m,
+DC-03 1,04 m, DC-07 0,87 m.
+
+**O que se aprende:**
+- **Nenhuma subida ficou sem aviso.** Os três episódios novos (DC-05, DC-08 e DC-11) avisaram na primeira leitura
+  acima da cota.
+- **As três réguas destravadas ficaram quietas, como devem.** A chuva não levou a DC-03 (1,04 m contra 1,48), a DC-06
+  (1,13 contra 1,50) nem a DC-07 (0,87 contra 1,00) à atenção. Nenhuma mensagem delas. Com as cotas do Plano, a DC-07
+  também não avisaria: a atenção é a mesma, 1,00 m.
+- **A liberação após 6 h não custou mensagem nesta chuva.** De 06/10 em diante, a DC-11 manda 11 mensagens com ou sem
+  ela (sem histerese seriam 21). No total, 72 com a liberação e 63 sem: a diferença de 9 é toda de antes de 05/10.
+- **A DC-11 depois da chuva é maré, não cheia.** De 08 a 10/10, com a DC-10 abaixo de 5,3 m, a preamar levou a
+  DC-11 a 3,00–3,04 m quatro vezes, e a baixa-mar a 2,67–2,70 m, o bastante para a histerese de 0,30 m soltar a
+  faixa. São oito mensagens em três dias, com ou sem a liberação. É o comportamento já descrito na seção 2: a
+  histerese reduz repetição, não tira a maré. Com o rio ainda alto depois da chuva, a preamar passa da cota.
+- **A DC-08 chegou a 2,28 m, 2 cm abaixo do alerta**, sem nova mensagem depois da das 10:20 (2,04 m): a repetição
+  pede +0,30 m. É a regra de repetição de sempre, que este PR não muda.
+
+**Situação que nenhuma das duas janelas testou:** subida da DC-07 acima de 1,40 m com as cotas novas (só 31/08, com
+1,47 m), DC-06 na cota, e a DC-03 na liberação depois de uma cheia longa. O código dessas três está coberto por
+testes (`LiberacaoPorTempo` em `teste_alerta_cotas.py`); a série ainda não tem o caso.
+
+**Conclusão:** a chuva de 06–07/10 não trouxe situação que mude as decisões de 10/10. O #539 foi mesclado às 14h45
+UTC de 10/10, dois minutos depois da cópia e antes desta conferência; o resultado confirma o que entrou. Os avisos
+passam a valer na VPS depois do `deploy.sh`.
 
 ## Como refazer
 
