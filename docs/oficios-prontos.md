@@ -7,6 +7,34 @@ Contato preenchido: **Jefferson — (47) 98405-6082 · haohmarusc@gmail.com**
 > **REGRA (02/10/2026): nunca pôr link do site em e-mail ou ofício.** O site só abre para e-mail cadastrado.
 > Escrever, no lugar: "se quiser ver o site, basta me mandar o seu e-mail para cadastro". Ver `CLAUDE.md`.
 
+## Revisão dos rascunhos C32–C35 no Gmail (10/10/2026, pedido do Jefferson; nada enviado)
+
+Conferidos destinatário, conversa, texto e anexos de cada rascunho no Gmail, contra o texto deste arquivo.
+
+| | destinatário e conversa | anexos | texto | link do site | situação |
+|---|---|---|---|---|---|
+| C32 Rio dos Cedros | defesacivil@riodoscedros.sc.gov.br, resposta na conversa do C29 (Jucinei) | nenhum | igual ao daqui | não (o citado traz o GitHub, que não é o site) | **pronto** |
+| C33 EPAGRI/CIRAM | sshidrosc@epagri.sc.gov.br, conversa do C5/C12 | nenhum | igual ao daqui | não | **pronto** |
+| C34 ANA | hidro@ana.gov.br, conversa nova | nenhum | igual (a tabela daqui virou lista; os 13 valores conferem) | não | **pronto** |
+| C35 Gaspar | defesacivil@gaspar.sc.gov.br, conversa do C10 | nenhum | **corrigir antes de enviar** (abaixo) | não | **segurar** |
+
+**C35 — o "a cada 6 horas, em média" está errado.** Medido em 10/10 na série do coletor:
+- **de 10/09 a 07/10:** 6 h é a **mediana**; a média é 10 h;
+- **antes de 04/10:** a coleta de Gaspar não era contínua (ponte pelo PC). Um vazio longo daquele período, como o
+  exemplo de 02/10 06h04 → 03/10 19h27, pode ser falha nossa, e não da estação;
+- **desde 04/10:** o Actions consulta a página a cada 15 min. Nesse período, a leitura muda em mediana a cada 6,6 h, e
+  à noite fica de 14 a 16 h sem leitura nova. Exemplos: 04/10 18h27 → 05/10 09h42; 08/10 18h09 → 09/10 09h47.
+
+Parágrafo proposto, no lugar do segundo:
+
+> A página da estação do Rio Itajaí-Açu (/estacao/ver/21) continua publicando, mas em intervalos irregulares. Desde
+> 04/10 consulto a página a cada 15 minutos: durante o dia, a leitura muda mais ou menos a cada 6 horas, e à noite
+> passa de 14 a 16 horas sem leitura nova (por exemplo, das 18h09 de 08/10 às 09h47 de 09/10).
+
+O rascunho do Gmail **não foi alterado**: a troca do parágrafo espera o "pode" do Jefferson. O envio de cada um também.
+
+---
+
 Pronto para copiar e colar no e-mail. O texto-fonte, com a justificativa técnica de
 cada pedido, e os demais ofícios (C1–C4) ficam em `docs/pendencias-navegador-e-oficios.md`.
 
