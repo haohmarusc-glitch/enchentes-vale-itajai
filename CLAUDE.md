@@ -144,11 +144,14 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Preamar e baixa-mar são os extremos locais da curva; pares adjacentes com amplitude menor que 2 cm (ondulação de
   estofo) saem aos pares. Cruzamento com a Marinha em 2026: mediana −11 min, p90 28 min (sem erro de fuso).
 
-### Avisos de DC-05, DC-08 e DC-11 — REGRA (proposta de 08/10/2026, aguardando aprovação)
+### Avisos de DC-05, DC-08 e DC-11 — REGRA (mesclada em 08/10/2026, #520; auditada em 10/10, `docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`)
 - **Histerese só na descida** (`aviso_histerese_m` em `estacoes.json`, lido por `alerta_cotas.faixa_com_histerese`).
   - A subida avisa ao **atingir** a cota, na mesma leitura de antes.
   - A faixa só baixa quando o nível desce o valor abaixo da cota da faixa em que estava.
-  - DC-11 usa 0,30 m (maré); DC-05 usa 0,10 m (5 × o passo p99 entre leituras).
+  - DC-11 usa 0,30 m (maré); DC-05 usa 0,10 m (5 × o passo p99 entre leituras); DC-03 usa 0,30 m (maré, 10/10/2026).
+  - **Liberação por tempo** (`aviso_libera_apos_h`, `alerta_cotas.liberar_por_tempo`, decisão de 10/10/2026): na
+    DC-11 e na DC-03, a faixa segurada solta depois de 6 h com o nível abaixo da cota, para uma nova subida depois
+    de queda prolongada voltar a avisar. O estado guarda `segurada_desde`.
   - O mapa e o bot não usam histerese: mostram a faixa da leitura de agora.
   - A histerese reduz repetição, não tira a maré.
 - **DC-08: atenção provisória de 1,70 m**, do portal da Defesa Civil de Itajaí (`cota_provisoria`), com o 1,80 m do
@@ -156,6 +159,10 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   - O aviso diz que é provisória (`nota_no_aviso`).
   - Testes que conferem o cadastro contra o Plano usam `comum.cotas_do_plano`: só a exceção declarada passa.
   - Confirmação municipal pendente; a orientação de não enviar ofício a Itajaí continua.
+- **10/10/2026 (decisões do Jefferson, a ativar só depois da auditoria com a chuva de 06–07/10):** DC-03 e DC-06
+  destravadas (a maré sozinha não as leva à cota); **DC-07 com as cotas do portal provisórias** (1,00 / 1,40 /
+  1,50 m; o Plano traz 1,35 e 1,65 m em alerta e emergência); DC-08 com a pendência do zero do Plano registrada
+  (`zero_do_plano`). Travadas ficam DC-01, DC-02, DC-04 e DC-09. `docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`.
 - O curso do Ribeirão Canhanduba **pinta pela DC-08** desde a decisão de 08/10/2026 ("ribeirões com cota devem
   pintar conforme cota", vínculo de régua em `VINCULOS_DE_REGUA`) e continua **parado**: destravar uma régua de
   ribeirão não faz o curso correr.
@@ -247,8 +254,8 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   do pino da régua** (`reguasNoMapa`: cota, leitura fresca, sem maré), só da régua para baixo e **parado** —
   correr é outra decisão. Régua sem cor deixa o curso cinza com o motivo dela (`regua-sem-cor`); na reprodução
   fica cinza. Hoje o Canhanduba e, como continuação dele até o Mirim, o Rio Conceição (decisão de 09/10/2026), pela
-  DC-08; a Murta segue sem vínculo (DC-07 sem cota conferida, DC-09 de
-  estuário). O toque no trecho abre o painel da régua.
+  DC-08; e a Murta, da DC-07 até a DC-09, pela DC-07 (decisão de 10/10/2026); a DC-09, de estuário, segue
+  travada. O toque no trecho abre o painel da régua.
 
 ### Classificação estadual × municipal — REGRA (decisões de 07/10/2026)
 - Duas classificações **independentes** por cidade. O motor é `scripts/classificar_reguas.py`; o relatório está em

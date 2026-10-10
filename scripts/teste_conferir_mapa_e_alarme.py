@@ -172,16 +172,18 @@ class ReguaComCotaPropria(unittest.TestCase):
     def test_as_reguas_reais_do_cadastro_que_pintam_sao_as_que_o_site_pintaria(self):
         """
         Contra o cadastro de verdade: DC-10 e DC-11 pintam por cota própria, e
-        DC-05 e DC-08 também, destravadas pela proposta de 08/10/2026 (sem maré;
-        só passam da cota em cheia). As outras sete seguem travadas. Se alguém
-        destravar outra sem medir, esta linha muda e o teste conta.
+        DC-05 e DC-08 também, destravadas em 08/10/2026 (sem maré; só passam da
+        cota em cheia), e DC-03, DC-06 e DC-07, destravadas em 10/10/2026 depois
+        da auditoria com a série (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md). As
+        outras quatro seguem travadas. Se alguém destravar outra sem medir, esta
+        linha muda e o teste conta.
         """
         reais = json.loads((RAIZ / "data/estacoes.json").read_text(encoding="utf-8"))
         codigos = set()
         por_titulo = {e.get("titulo"): e for e in reais["estacoes_tempo_real"]}
         for titulo in cf.reguas_que_pintam(reais):
             codigos.add(por_titulo[titulo].get("codigo"))
-        self.assertEqual(codigos, {"DC-05", "DC-08", "DC-10", "DC-11"})
+        self.assertEqual(codigos, {"DC-03", "DC-05", "DC-06", "DC-07", "DC-08", "DC-10", "DC-11"})
 
 
 if __name__ == "__main__":

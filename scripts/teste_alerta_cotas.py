@@ -14,7 +14,7 @@ import unittest
 import alerta_cotas
 from datetime import datetime, timedelta, timezone
 
-from comum import DADOS
+from comum import DADOS, estacao_por_titulo
 from alerta_cotas import (
     REPETE_H,
     resolver,
@@ -22,6 +22,7 @@ from alerta_cotas import (
     decidir,
     faixa_de,
     idade_min,
+    liberar_por_tempo,
     subiu,
 )
 
@@ -625,6 +626,75 @@ class TaioAvisaEmMonitoramento(unittest.TestCase):
 
 
 
+class LiberacaoPorTempo(unittest.TestCase):
+    """
+    Decisão do Jefferson de 10/10/2026 (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md): na DC-11 e na DC-03, a
+    faixa segurada pela histerese solta depois de 6 h com o nível abaixo da cota, para que uma nova subida
+    depois de uma queda prolongada volte a avisar. Medido coleta a coleta pelo `decidir` de verdade.
+    """
+
+    DC11 = "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
+    DC03 = "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA"
+
+    def rodada(self, estacao, nivel, estado, horas, rio="itajai-acu"):
+        agora = AGORA + timedelta(hours=horas)
+        # `medido_em` sem fuso é hora de Brasília (regra do projeto).
+        brasilia = timezone(timedelta(hours=-3))
+        medido = (agora - timedelta(minutes=5)).astimezone(brasilia).replace(tzinfo=None).isoformat(timespec="seconds")
+        dados = {"coletado_em": agora.isoformat(), "leituras": [
+            {"estacao": estacao, "rio": rio, "cidade": "itajai", "nivel_m": nivel, "medido_em": medido}]}
+        return decidir(dados, estado, agora)
+
+    def test_queda_rasa_de_menos_de_6_h_continua_segurada(self):
+        _, estado, _ = self.rodada(self.DC11, 3.10, {}, 0)
+        for h in (1, 3, 5.5):
+            avisos, estado, _ = self.rodada(self.DC11, 2.85, estado, h)
+            self.assertEqual(avisos, [], h)
+        self.assertIn("segurada_desde", estado[self.DC11])
+        avisos, estado, _ = self.rodada(self.DC11, 3.05, estado, 6)
+        self.assertEqual(avisos, [], "voltou à cota antes das 6 h: a faixa nunca baixou")
+        self.assertNotIn("segurada_desde", estado[self.DC11])
+
+    def test_depois_de_6_h_abaixo_da_cota_baixa_e_a_nova_subida_avisa(self):
+        _, estado, _ = self.rodada(self.DC11, 3.10, {}, 0)
+        avisos, estado, _ = self.rodada(self.DC11, 2.85, estado, 1)
+        self.assertEqual(avisos, [])
+        avisos, estado, _ = self.rodada(self.DC11, 2.88, estado, 7)
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"], "6 h abaixo da cota: solta a faixa")
+        avisos, _, _ = self.rodada(self.DC11, 3.02, estado, 8)
+        self.assertEqual([a["faixa"] for a in avisos], ["atencao"], "a nova subida volta a avisar")
+
+    def test_a_contagem_reinicia_quando_o_nivel_volta_a_cota(self):
+        _, estado, _ = self.rodada(self.DC11, 3.10, {}, 0)
+        _, estado, _ = self.rodada(self.DC11, 2.85, estado, 1)
+        _, estado, _ = self.rodada(self.DC11, 3.05, estado, 4)   # voltou: zera
+        _, estado, _ = self.rodada(self.DC11, 2.85, estado, 5)
+        avisos, estado, _ = self.rodada(self.DC11, 2.85, estado, 10)  # 5 h desde a nova queda
+        self.assertEqual(avisos, [])
+        avisos, _, _ = self.rodada(self.DC11, 2.85, estado, 11)  # 6 h
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_dc03_tem_histerese_e_liberacao(self):
+        _, estado, _ = self.rodada(self.DC03, 1.55, {}, 0, rio="itajai-mirim")
+        avisos, estado, _ = self.rodada(self.DC03, 1.30, estado, 1, rio="itajai-mirim")
+        self.assertEqual(avisos, [], "1,30 m não desceu 0,30 m abaixo de 1,48 m")
+        avisos, _, _ = self.rodada(self.DC03, 1.30, estado, 7, rio="itajai-mirim")
+        self.assertEqual([a["faixa"] for a in avisos], ["normal"])
+
+    def test_dc05_sem_liberacao_fica_como_estava(self):
+        e = estacao_por_titulo("DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada")
+        self.assertNotIn("aviso_libera_apos_h", e)
+        self.assertEqual(e["aviso_histerese_m"], 0.10)
+
+    def test_funcao_pura(self):
+        t0 = datetime(2026, 10, 2, 0, 0)
+        self.assertEqual(liberar_por_tempo("atencao", "normal", None, t0, 6), ("atencao", t0.isoformat()))
+        self.assertEqual(liberar_por_tempo("atencao", "normal", t0.isoformat(), t0 + timedelta(hours=6), 6),
+                         ("normal", None))
+        self.assertEqual(liberar_por_tempo("atencao", "atencao", t0.isoformat(), t0, 6), ("atencao", None))
+        self.assertEqual(liberar_por_tempo("atencao", "normal", None, t0, 0), ("atencao", None))
+
+
 class HistereseNaDescida(unittest.TestCase):
     """
     Proposta de 08/10/2026 (aguardando aprovação; docs/AVISOS-DC05-DC08-DC11-2026-10-08.md): DC-11 com
@@ -735,8 +805,9 @@ class DC05eDC08Destravadas(unittest.TestCase):
         self.assertEqual(avisos, [])
 
     def test_as_travadas_continuam_recusadas(self):
+        # DC-07 saiu desta lista em 10/10/2026 (decisão do Jefferson: cotas do portal, provisórias).
         for titulo, rio in (("DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "itajai-acu"),
-                            ("DC-07 Ribeirão da Murta - Portal", "ribeirao-murta")):
+                            ("DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "itajai-acu")):
             dados = {"coletado_em": AGORA.isoformat(), "leituras": [
                 {"estacao": titulo, "rio": rio, "cidade": "itajai", "nivel_m": 5.0,
                  "medido_em": "2026-08-30T00:00:00"}]}

@@ -292,6 +292,15 @@ def valida_estacoes() -> set[tuple[str, str]]:
                 erro(f"{onde}: aviso_histerese_m em régua que não dispara aviso")
             if not str(e.get("aviso_histerese_motivo", "")).strip():
                 erro(f"{onde}: aviso_histerese_m sem 'aviso_histerese_motivo'")
+        # Liberação por tempo (10/10/2026): só junto da histerese, com o motivo, entre 1 e 48 h.
+        libera = e.get("aviso_libera_apos_h")
+        if libera is not None:
+            if not isinstance(libera, (int, float)) or not 1 <= libera <= 48:
+                erro(f"{onde}: aviso_libera_apos_h = {libera!r} fora de [1, 48] h")
+            if histerese is None:
+                erro(f"{onde}: aviso_libera_apos_h sem aviso_histerese_m (só solta faixa segurada pela histerese)")
+            if not str(e.get("aviso_libera_motivo", "")).strip():
+                erro(f"{onde}: aviso_libera_apos_h sem 'aviso_libera_motivo'")
         # Cota provisória: o valor tem de ser o que está em cotas_m, com fonte, estado e o número do Plano ao lado.
         for faixa, prov in (e.get("cota_provisoria") or {}).items():
             if not isinstance(prov, dict) or (e.get("cotas_m") or {}).get(faixa) != prov.get("valor"):

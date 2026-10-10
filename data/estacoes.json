@@ -1294,8 +1294,6 @@
       "referencia": "régua",
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim Canal Retificado - SEMASA",
-      "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
         "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
@@ -1311,7 +1309,12 @@
           "alerta": 2.85,
           "emergencia": 3.3
         }
-      }
+      },
+      "motivo_sem_alerta_ate_2026_10_10": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py). — DESFEITO em 10/10/2026 (Decisão do Jefferson de 10/10/2026, a ativar só depois da auditoria com a chuva de 06–07/10): a maré sozinha deixou a régua, em mediana, 0,52 m abaixo da atenção em 35 dias; ela só passou da cota nas cheias de 01/09, 12/09 e 22/09 (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md).",
+      "aviso_histerese_m": 0.3,
+      "aviso_histerese_motivo": "Decisão do Jefferson de 10/10/2026 (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md). A régua sente a maré (fator 0,79): em cheia, a maré a faz cruzar e recruzar a cota, como a DC-11. Com 0,30 m na descida, as mensagens em 35 dias caem de 20 para 11; os três episódios avisam na mesma leitura.",
+      "aviso_libera_apos_h": 6,
+      "aviso_libera_motivo": "Decisão do Jefferson de 10/10/2026: a faixa segurada pela histerese solta depois de 6 h com o nível abaixo da cota, para que uma nova subida depois de uma queda prolongada volte a avisar (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md)."
     },
     {
       "codigo": "DC-04",
@@ -1427,8 +1430,6 @@
       "referencia": "régua",
       "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Rio Itajaí-Mirim Curso Antigo - Clube Itamirim",
-      "alerta_automatico": false,
-      "motivo_sem_alerta": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
       "cotas_divergencia": {
         "_estado": "✅ RESOLVIDO em 08/09/2026 — a fonte primária foi lida diretamente",
         "_como": "O PDF da versão 17 (22/12/2025) foi aberto e a tabela lida página a página. A tabela de níveis é a **Tabela 11**, na página 23, e o documento tem **doze tabelas ao todo — não existe Tabela 13 nele**. Os onze valores desta régua e das outras batem EXATAMENTE com o que já estava cadastrado: 11 de 11, sem uma divergência de centavo.",
@@ -1444,7 +1445,8 @@
           "alerta": 1.6,
           "emergencia": 2.0
         }
-      }
+      },
+      "motivo_sem_alerta_ate_2026_10_10": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py). — DESFEITO em 10/10/2026 (Decisão do Jefferson de 10/10/2026, a ativar só depois da auditoria com a chuva de 06–07/10): a maré sozinha deixou a régua, em mediana, 0,43 m abaixo da atenção; em 35 dias ela não passou da cota nenhuma vez (máximo 1,48 m). Atenção mantida em 1,50 m, sem histerese (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md)."
     },
     {
       "codigo": "DC-07",
@@ -1458,15 +1460,13 @@
       "cidade": "itajai",
       "cotas_m": {
         "atencao": 1.0,
-        "alerta": 1.35,
-        "emergencia": 1.65
+        "alerta": 1.4,
+        "emergencia": 1.5
       },
       "verificado": true,
       "referencia": "régua",
-      "fonte_cotas": "Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
+      "fonte_cotas": "Atenção 1,00 m: igual no Plano de Contingência v17 e no portal. Alerta 1,40 m e emergência 1,50 m: portal da Defesa Civil de Itajaí, PROVISÓRIAS (decisão do Jefferson, 10/10/2026) — o Plano traz 1,35 e 1,65 m, e a divergência aguarda confirmação da Defesa Civil de Itajaí. Plano de Contingência de Desastres, COMPDEC Itajaí, versão 17 (22/12/2025), Tabela 11 — https://defesacivil.itajai.sc.gov.br/wp-content/uploads/2025/12/Plano-de-Contingencia-de-Inundacao-ALTERADO-EM-22-12-25.pdf",
       "nome_no_plano": "Ribeirão da Murta - Portal I",
-      "alerta_automatico": false,
-      "motivo_sem_alerta": "NÃO é régua de maré (medido duas vezes: 05/09/2026, oscilação diária de 0,09 m; 03/10/2026, fator de maré 0,01). O aviso automático continua desligado porque a cota (PLANCON v17) ainda não foi conferida contra a série desta régua; destravar é decisão do Jefferson (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
       "sente_mare": false,
       "motivo_sem_alerta_ate_2026_10_03": "Régua no estuário, com oscilação de maré maior que a distância até a cota (texto comum às nove réguas DC-01 a DC-09, trocado nesta régua em 03/10/2026 por decisão do Jefferson: a medição mostrou que ela não sente a maré).",
       "cotas_divergencia": {
@@ -1502,6 +1502,47 @@
         "evidencia": "data/brutos/itajai-cotas-portal-2026-09-13.json",
         "criterio": "Preservar as cotas adotadas do PLANCON v17 conforme a auditoria de 19/09/2026. Valores do portal mantidos somente como divergência documental, sem declaração municipal de substituição do plano. Avisos automáticos permanecem bloqueados.",
         "decisao_documentada_em": "docs/AUDITORIA-2026-09-19-fechamento.md"
+      },
+      "motivo_sem_alerta_ate_2026_10_10": "NÃO é régua de maré (medido duas vezes: 05/09/2026, oscilação diária de 0,09 m; 03/10/2026, fator de maré 0,01). O aviso automático continua desligado porque a cota (PLANCON v17) ainda não foi conferida contra a série desta régua; destravar é decisão do Jefferson (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md). — DESFEITO em 10/10/2026 (Decisão do Jefferson de 10/10/2026, a ativar só depois da auditoria com a chuva de 06–07/10): régua e zero conferidos (mesma coordenada; base 0,31–0,35 m antes e depois da troca de portal); cotas do portal adotadas como provisórias (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md).",
+      "cota_provisoria": {
+        "alerta": {
+          "valor": 1.4,
+          "plano_v17": 1.35,
+          "fonte": "portal da Defesa Civil de Itajaí (rios, município 1), que também classifica a régua por este valor (`situacao`)",
+          "vista_no_portal": [
+            "2026-09-13",
+            "2026-09-27",
+            "2026-10-08"
+          ],
+          "mesma_regua": "Sim. Código DC-07/DC07 e coordenada idêntica (−26,892699, −48,735573) no Mapa.php de 02/09/2026 e no portal de 08/10/2026; o Plano v17 a chama de 'Ribeirão da Murta – Portal I', e nenhuma fonte cita uma 'Portal II'. A base em dia parado é a mesma antes e depois da troca de portal (0,31–0,35 m).",
+          "estado": "provisória por decisão do Jefferson (10/10/2026); divergência com o Plano registrada para confirmação municipal",
+          "evidencia": [
+            "data/brutos/itajai-cotas-portal-2026-09-13.json",
+            "data/brutos/itajai-portal-rios-municipio-1-itajai-2026-09-27.html",
+            "data/brutos/itajai-portal-2026-10-08/itajai-portal-rios-municipio-1-itajai-2026-10-08.html"
+          ]
+        },
+        "emergencia": {
+          "valor": 1.5,
+          "plano_v17": 1.65,
+          "fonte": "portal da Defesa Civil de Itajaí (rios, município 1), que também classifica a régua por este valor (`situacao`)",
+          "vista_no_portal": [
+            "2026-09-13",
+            "2026-09-27",
+            "2026-10-08"
+          ],
+          "mesma_regua": "Sim. Código DC-07/DC07 e coordenada idêntica (−26,892699, −48,735573) no Mapa.php de 02/09/2026 e no portal de 08/10/2026; o Plano v17 a chama de 'Ribeirão da Murta – Portal I', e nenhuma fonte cita uma 'Portal II'. A base em dia parado é a mesma antes e depois da troca de portal (0,31–0,35 m).",
+          "estado": "provisória por decisão do Jefferson (10/10/2026); divergência com o Plano registrada para confirmação municipal",
+          "evidencia": [
+            "data/brutos/itajai-cotas-portal-2026-09-13.json",
+            "data/brutos/itajai-portal-rios-municipio-1-itajai-2026-09-27.html",
+            "data/brutos/itajai-portal-2026-10-08/itajai-portal-rios-municipio-1-itajai-2026-10-08.html"
+          ]
+        }
+      },
+      "nota_no_aviso": {
+        "alerta": "Cota de alerta provisória (1,40 m), do portal da Defesa Civil de Itajaí; o Plano de Contingência v17 traz 1,35 m.",
+        "emergencia": "Cota de emergência provisória (1,50 m), do portal da Defesa Civil de Itajaí; o Plano de Contingência v17 traz 1,65 m."
       }
     },
     {
@@ -1535,12 +1576,13 @@
           "plano_v17": 1.8,
           "mesma_regua": "Sim. O Plano v17 chama a régua de 'Ribeirão da Canhanduba - Rio do Meio', o mesmo nome que o portal antigo usava com o código DC-08 (`nome_anterior`); a coordenada dessa DC-08 (Mapa.php, 02/09/2026) é idêntica à da DC08 'Rua Benjamin Dagnoni' do portal novo (−26,979694, −48,711948). A régua foi renomeada, não trocada.",
           "vigencia": "O Plano v17 (22/12/2025) é a versão mais recente conhecida pelo projeto. O portal publica 1,70 m desde pelo menos 13/09/2026 e ainda em 08/10/2026, sem data nem motivo da mudança.",
-          "estado": "provisória: adotada por decisão a aprovar (08/10/2026); divergência registrada para confirmação municipal",
+          "estado": "provisória por decisão do Jefferson (08/10/2026, mantida em 10/10/2026); divergência e pendência do zero do Plano registradas para confirmação municipal",
           "evidencia": [
             "data/brutos/itajai-cotas-portal-2026-09-13.json",
             "data/brutos/itajai-portal-rios-municipio-1-itajai-2026-09-27.html",
             "data/brutos/itajai-portal-2026-10-08/itajai-portal-rios-municipio-1-itajai-2026-10-08.html"
-          ]
+          ],
+          "zero_do_plano": "PENDENTE (auditoria de 10/10/2026, docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md): o 1,70 m está no zero das leituras que o site usa — a página antiga (13/09) e o portal novo o aplicam, e o nível de base em dia parado é o mesmo antes e depois da troca de portal (0,95–1,01 → 1,00–1,02 m). O 1,80 m do Plano v17 (22/12/2025) vem sem zero, altitude ou leitura de referência, e a série do projeto começa em 30/08/2026: não há como provar se foi definido no mesmo zero. Só a Defesa Civil de Itajaí resolve (a orientação de 14/09 continua: sem ofício ao município)."
         }
       },
       "nota_no_aviso": {
@@ -1687,7 +1729,9 @@
       "aviso_histerese_motivo": "Proposta de 08/10/2026, aguardando a aprovação do Jefferson (docs/PROPOSTA-DC11-AVISOS-2026-10-08.md). A régua sente a maré (correlação 0,91, fator 0,69, 1 h depois) e oscila ±0,33 m em volta do nível de base, 0,30 m abaixo da cota de atenção. Com 0,30 m na descida, as mensagens em 36 dias caem de 112 para 52; a primeira entrada em cada faixa e o início de cada episódio saem na mesma leitura de antes. A histerese reduz repetição, não tira a maré: a primeira preamar que passa da cota continua avisando.",
       "nota_cidade": "Estação de Itajaí, não de Ilhota. Confirmado no Plano de Contingência da COMPDEC Itajaí (v17, 22/12/2025): a Tabela 11 (p. 23) a lista como estação de Itajaí, e a p. 12 põe Santa Regina e Volta de Cima na ZONA 1 da Defesa Civil de Itajaí — localidades do município, no extremo a montante, junto à divisa com Ilhota. É uma das DUAS réguas de Itajaí acima da maré (rio de verdade), com a DC-10 Limoeiro, e por isso dispara aviso, ao contrário das nove de estuário. CORRIGIDO em 19/09/2026: esta nota dizia \"a única das onze\", o que não fecha com o resto do repositório — são nove com `alerta_automatico: false`, e nove mais esta dão dez, não onze. A DC-10 é a que faltava: `docs/coordenadas-dc-itajai.md` a põe como o ponto MAIS A MONTANTE do Mirim em Itajaí, acima da bifurcação que desce ao estuário, e as cotas dela (8/9/10 m) são escala de rio, não de maré — as de estuário ficam entre 1 e 3 m. `alerta_cotas.py` conta \"as nove réguas de estuário\". A palavra \"única\" serviria, mais tarde, para calar a DC-10 ou para chamá-la de maré. Ilhota, a montante daqui, NÃO tem régua própria: esta leitura é de Itajaí e não pode ser lida como o nível de Ilhota — zeros diferentes, cidade diferente.",
       "cotas_verificado": true,
-      "cotas_verificado_nota": "Cota↔leitura provado para ESTA régua, em 19/09/2026, e só para ela. (a) A identidade da estação foi provada pela COORDENADA contra o portal novo da Defesa Civil de Itajaí, com distância 0,0 m — não por casar o código por string, que é vínculo por NOME (scripts/coleta_itajai_portal.py). (b) As cotas vêm do Plano de Contingência da COMPDEC v17 (22/12/2025), Tabela 11, lido página a página em 08/09/2026. (c) O portal novo publica para esta régua exatamente as MESMAS três cotas — é uma das sete que coincidem; as quatro em disputa (DC-01, DC-07, DC-08, DC-09) seguem sem este campo. (d) Não é régua de estuário, então não tem `alerta_automatico: false`. Consequência ÚNICA: o bot pode dizer em que faixa está a leitura DESTA régua, comparada com a cota DELA MESMA — nenhum zero é misturado. Não autoriza faixa para a CIDADE de Itajaí, que tem onze réguas e nenhum \"nível da cidade\"."
+      "cotas_verificado_nota": "Cota↔leitura provado para ESTA régua, em 19/09/2026, e só para ela. (a) A identidade da estação foi provada pela COORDENADA contra o portal novo da Defesa Civil de Itajaí, com distância 0,0 m — não por casar o código por string, que é vínculo por NOME (scripts/coleta_itajai_portal.py). (b) As cotas vêm do Plano de Contingência da COMPDEC v17 (22/12/2025), Tabela 11, lido página a página em 08/09/2026. (c) O portal novo publica para esta régua exatamente as MESMAS três cotas — é uma das sete que coincidem; as quatro em disputa (DC-01, DC-07, DC-08, DC-09) seguem sem este campo. (d) Não é régua de estuário, então não tem `alerta_automatico: false`. Consequência ÚNICA: o bot pode dizer em que faixa está a leitura DESTA régua, comparada com a cota DELA MESMA — nenhum zero é misturado. Não autoriza faixa para a CIDADE de Itajaí, que tem onze réguas e nenhum \"nível da cidade\".",
+      "aviso_libera_apos_h": 6,
+      "aviso_libera_motivo": "Decisão do Jefferson de 10/10/2026 (docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md): a histerese de 0,30 m escondeu, em 35 dias, cinco voltas à cota depois de mais de 6 h logo abaixo dela (a maior, 8,3 h, em 02/10). Soltando a faixa depois de 6 h abaixo da cota, essas subidas voltam a avisar: 61 mensagens em vez de 52."
     },
     {
       "titulo": "Brusque",

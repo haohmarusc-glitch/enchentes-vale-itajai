@@ -95,9 +95,11 @@ test('nenhum afluente tem cidade no cadastro — é o que o mantém sem faixa', 
  * Réguas de ribeirão destravadas por decisão, com o curso PARADO. A DC-08 (08/10/2026, #520) não sente a maré
  * e só passou da cota em cheia, então avisa e o pino ganha cor; desde a decisão do mesmo dia ("ribeirões com
  * cota devem pintar conforme cota"), o curso do Canhanduba PINTA pela régua, por `VINCULOS_DE_REGUA`, sem
- * cidade (o caminho 1, acima) e sem correnteza. Fazer o curso correr é outra decisão.
+ * cidade (o caminho 1, acima) e sem correnteza. Fazer o curso correr é outra decisão. A DC-07 (Murta) foi
+ * destravada em 10/10/2026, com as cotas do portal provisórias, e o trecho DC-07 → DC-09 pinta pela régua,
+ * também parado.
  */
-const DESTRAVADAS_SEM_CORRER = new Set(['DC-08'])
+const DESTRAVADAS_SEM_CORRER = new Set(['DC-07', 'DC-08'])
 
 test('as réguas dos afluentes continuam travadas pela maré', () => {
   const nosAfluentes = estacoes.estacoes_tempo_real.filter(
@@ -120,4 +122,11 @@ test('a DC-08 destravada não faz o Canhanduba correr: o curso segue sem cidade 
   assert.ok(dc08 && dc08.alerta_automatico !== false, 'a DC-08 voltou a ser travada: tire-a de DESTRAVADAS_SEM_CORRER')
   assert.equal(dc08.rio, 'ribeirao-canhanduba')
   assert.equal((estacoes.rios['ribeirao-canhanduba']?.cidades ?? []).length, 0)
+})
+
+test('a DC-07 destravada não faz a Murta correr: o curso segue sem cidade (pinta por régua, parado)', () => {
+  const dc07 = estacoes.estacoes_tempo_real.find((e) => e.codigo === 'DC-07')
+  assert.ok(dc07 && dc07.alerta_automatico !== false, 'a DC-07 voltou a ser travada: tire-a de DESTRAVADAS_SEM_CORRER')
+  assert.equal(dc07.rio, 'ribeirao-murta')
+  assert.equal((estacoes.rios['ribeirao-murta']?.cidades ?? []).length, 0)
 })

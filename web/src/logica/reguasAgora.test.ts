@@ -61,14 +61,18 @@ test('régua sem leitura continua na lista, sem número e sem cor', () => {
 test('selo "maré" só nas réguas que sentem a maré (medição de 03/10/2026)', () => {
   const naoSentem = reguas.filter((r) => !r.senteMare).map((r) => r.id).sort()
   assert.deepEqual(naoSentem, ['DC-02', 'DC-05', 'DC-07', 'DC-08'])
-  // DC-02 e DC-07 continuam sem aviso automático; DC-05 e DC-08 avisam desde a proposta de 08/10/2026
+  // DC-02 continua sem aviso automático; DC-05 e DC-08 avisam desde 08/10/2026 e DC-07 desde 10/10/2026
   // (só passaram da cota em cheia) e, por isso, não levam selo nenhum.
-  for (const id of ['DC-02', 'DC-07']) {
+  for (const id of ['DC-02']) {
     const r = reguas.find((x) => x.id === id)!
     assert.equal(r.alertaAutomatico, false, id)
     assert.match(r.motivoSemAlerta ?? '', /NÃO é régua de maré/, id)
   }
-  for (const id of ['DC-05', 'DC-08']) {
+  for (const id of ['DC-05', 'DC-07', 'DC-08']) {
+    assert.equal(reguas.find((x) => x.id === id)!.alertaAutomatico, true, id)
+  }
+  // DC-03 e DC-06 sentem a maré, mas a maré sozinha não as leva à cota: destravadas em 10/10/2026.
+  for (const id of ['DC-03', 'DC-06']) {
     assert.equal(reguas.find((x) => x.id === id)!.alertaAutomatico, true, id)
   }
   for (const id of ['DC-01', 'DC-03', 'DC-04', 'DC-06', 'DC-09']) {

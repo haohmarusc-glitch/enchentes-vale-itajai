@@ -76,6 +76,19 @@ Ibirama (C26) e Rio dos Cedros (C29) já responderam.
 - **Indaial:** o documento municipal parou em 12/09; não há fonte autorizada.
 - **DC-02:** a série fica parada; não serve como régua até alguém explicar o porquê.
 
+## Atualização de 10/10/2026
+
+**Correção:** os itens 1.1 e 1.2 já estavam resolvidos. O PR #520, mesclado em 08/10, destravou DC-05 (histerese
+0,10 m) e DC-08 (atenção provisória 1,70 m) e pôs histerese de 0,30 m na DC-11. A auditoria pedida em 10/10
+(`docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`) mede o que está ligado e o que falta:
+
+| # | decisão | o que a série mostra (30/08–05/10) |
+|---|---|---|
+| 1.2a | DC-11: soltar a faixa depois de T h abaixo da cota? | a histerese preserva toda subida de faixa e todo início de episódio (8 de 8 na mesma leitura); some a volta à mesma faixa após descida rasa, até 8,3 h abaixo da cota. Soltar após 6 h: 61 mensagens em vez de 52 |
+| 1.3 | destravar DC-03 e DC-06 | o motivo da trava não se sustenta: a maré as leva a 0,5 e 0,4 m da atenção, nunca à cota; DC-03 só passou em cheia (20 → 11 mensagens com histerese), DC-06 nunca |
+| 1.5 / 5.1 | DC-07: alerta e emergência do Plano (1,35 / 1,65) ou do portal (1,40 / 1,50) | régua e zero confirmados; atenção 1,00 igual nas duas fontes; mesmas 10 mensagens com qualquer das duas |
+| 5.1 | DC-08: 1,70 (portal) ou 1,80 (Plano) | mesma régua; só o 1,70 se prova no zero das leituras; mesmas 23 mensagens; recomendação: manter o 1,70 provisório |
+
 ## Atualização de 08/10/2026 (tarde)
 
 Mesclados e em produção no mesmo dia (todos pelo Jefferson, exceto o #525 a pedido dele): #523 (linha estadual
