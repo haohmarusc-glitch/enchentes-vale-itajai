@@ -144,7 +144,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
 - Preamar e baixa-mar são os extremos locais da curva; pares adjacentes com amplitude menor que 2 cm (ondulação de
   estofo) saem aos pares. Cruzamento com a Marinha em 2026: mediana −11 min, p90 28 min (sem erro de fuso).
 
-### Avisos de DC-05, DC-08 e DC-11 — REGRA (proposta de 08/10/2026, aguardando aprovação)
+### Avisos de DC-05, DC-08 e DC-11 — REGRA (mesclada em 08/10/2026, #520; auditada em 10/10, `docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`)
 - **Histerese só na descida** (`aviso_histerese_m` em `estacoes.json`, lido por `alerta_cotas.faixa_com_histerese`).
   - A subida avisa ao **atingir** a cota, na mesma leitura de antes.
   - A faixa só baixa quando o nível desce o valor abaixo da cota da faixa em que estava.
