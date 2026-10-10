@@ -51,7 +51,7 @@ Ibirama (C26) e Rio dos Cedros (C29) já responderam.
 
 | # | o quê | onde |
 |---|---|---|
-| 4.1 | variável `ADMIN_EMAILS` no Cloudflare Pages (registro de acessos) | `docs/PUBLICACAO-E-ACESSO.md`, "Registro de acessos" |
+| 4.1 | ✅ feito pelo Jefferson (informado em 10/10/2026): variável `ADMIN_EMAILS` no Cloudflare Pages (registro de acessos) | `docs/PUBLICACAO-E-ACESSO.md`, "Registro de acessos" |
 | 4.2 | KV `CHAT_NAO_ENTENDI` (contagem das perguntas que o chat não entende) | `docs/PUBLICACAO-E-ACESSO.md` |
 | 4.3 | chave `ANTHROPIC_API_KEY` e limite mensal: liga o chat com IA, o piloto do classificador e a prova de 34 perguntas | `docs/CHAT-IA.md` e `docs/PUBLICACAO-E-ACESSO.md`, "Chat com IA" |
 | 4.4 | ~~data da volta da DCSC-00029 (Guabiruba) ao zero local~~ **resolvido em 10/10/2026 sem a VPS:** não houve volta; a DCSC reprocessou o histórico (ver 5.9) | `docs/GUABIRUBA-DCSC-00029-2026-10-10.md` |
@@ -85,8 +85,8 @@ pelo acervo do Actions, sem comando na VPS.
 
 | # | decisão | recomendação | detalhe |
 |---|---|---|---|
-| 5.9 | **Guabiruba (DCSC-00029):** a API serve hoje o histórico no zero local desde pelo menos 11/07. O download de 10/09 tinha altitude nas mesmas datas. Manter o trecho reprocessado (19/07 →) na série consolidada? | sim, como série própria, sem emendar no "antes" de 01/04 enquanto o zero não for provado | `docs/GUABIRUBA-DCSC-00029-2026-10-10.md` |
-| 5.10 | Perguntar à DCSC qual conta converteu o histórico de 01/04 em diante | só com a resposta "antes" e "depois" viram uma série única; nada rascunhado | idem |
+| 5.9 | ✅ **Aplicado em 10/10/2026 (série própria, `REPROCESSAMENTOS`):** **Guabiruba (DCSC-00029):** a API serve hoje o histórico no zero local desde pelo menos 11/07. O download de 10/09 tinha altitude nas mesmas datas. Manter o trecho reprocessado (19/07 →) na série consolidada? | sim, como série própria, sem emendar no "antes" de 01/04 enquanto o zero não for provado | `docs/GUABIRUBA-DCSC-00029-2026-10-10.md` |
+| 5.10 | Perguntar à DCSC qual conta converteu o histórico de 01/04 em diante | ✅ **C36 rascunhado em 10/10/2026, não enviado**; destinatário a confirmar (telefone geral (48) 3664-7000 ou Ouvidoria do Estado) | `docs/oficios-prontos.md`, C36 |
 
 ## Atualização de 10/10/2026
 

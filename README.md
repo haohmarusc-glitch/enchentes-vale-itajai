@@ -615,7 +615,9 @@ o projeto.
     datas, o download de 10/09 vinha em altitude: a DCSC reprocessou o histórico entre 10/09 e 26/09. O acervo
     bate ao minuto com os candidatos de 26/09 (31/08 2,04 m; 20/09 1,96 m). Desde 04/10/2026 a leitura
     abaixo de 10 m já vale como zero local (`SUSPEITA_SO_ACIMA_DE_M`); o histórico segue cortado em 01/04/2026.
-    **Falta (Jefferson):** manter o trecho reprocessado como série própria, e se pergunta à DCSC a conta usada.
+    **Aplicado em 10/10/2026 (5.9):** o trecho reprocessado é série própria (`cadastro_dcsc.REPROCESSAMENTOS`,
+    `DCSC-00029-reprocessado.csv`), sem emendar no antes de 01/04. **5.10:** C36 rascunhado, não enviado, com o
+    destinatário a confirmar. **Falta:** enviar o C36 e, com a resposta, decidir se as duas séries viram uma.
   - [x] Rótulo do histórico de Brusque: opção B, aplicada em 04/10/2026 ("Histórico na régua da Ponte
     Estaiada", com os picos anteriores a 2019 à parte). O "Quanto falta" ainda usa os 28 picos.
 

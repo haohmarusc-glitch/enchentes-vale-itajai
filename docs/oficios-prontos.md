@@ -907,3 +907,56 @@ cadastro.
 Muito obrigado pela atenção.
 
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+## C36 — Defesa Civil de SC, Gerência de Monitoramento e Alerta: a conversão do histórico da estação de Guabiruba (DCSC-00029) — 📝 RASCUNHO, não enviado (10/10/2026, decisão 5.10 do Jefferson: "rascunhar sem enviar")
+
+**Origem.** `docs/GUABIRUBA-DCSC-00029-2026-10-10.md`. O histórico da DCSC-00029 que a API `historic` devolve hoje
+está no zero local do ribeirão. O download de 10/09/2026 trazia, para as mesmas datas, a cota referenciada ao nível do
+mar (~24 m). A DCSC converteu o histórico entre 10/09 e 26/09, sem publicar a conta. Pela decisão 5.9, o trecho
+convertido virou série própria (`cadastro_dcsc.REPROCESSAMENTOS`), com fórmula, deslocamento, zero e vigência em
+branco até esta resposta.
+
+**Destinatário: A CONFIRMAR.** Não há e-mail da Defesa Civil de SC no histórico de ofícios, e a busca de 10/10 não
+achou endereço publicado da Gerência de Monitoramento e Alerta (Diretoria de Gestão de Desastres). Caminhos, nesta ordem:
+1. pedir o e-mail da Gerência pelo telefone geral da Secretaria, (48) 3664-7000, e enviar para ele;
+2. sem e-mail, registrar o texto como pedido de acesso à informação na Ouvidoria do Estado, como foi feito com o C24 no
+   Informa.BR.
+
+Nenhum endereço foi deduzido. O rascunho fica sem "Para".
+
+- Sem link do site (regra de 02/10/2026); no fim, o pedido de cadastro.
+- Só pergunta o que falta para juntar as séries; não pede acesso novo à API.
+
+**Assunto:** Estação DCSC-00029 (Guabiruba) — conversão do histórico de nível para o zero local
+
+Prezada equipe da Gerência de Monitoramento e Alerta,
+
+Meu nome é Jefferson, sou morador do Vale do Itajaí e mantenho um site aberto e sem fins comerciais sobre as
+enchentes dos rios Itajaí-Açu e Itajaí-Mirim. Ele usa o histórico da rede estadual de monitoramento, sempre com a
+fonte citada.
+
+Tenho uma dúvida sobre a estação DCSC-00029, em Guabiruba:
+- em 01/04/2026, às 17h40, o nível da estação passou de cerca de 0,5 m para cerca de 24 m, o que entendemos como a
+  troca para cota referenciada ao nível do mar;
+- no histórico que baixei em 10/09/2026, todas as leituras de 01/04 a 09/09 estavam nessa casa dos 24 m;
+- desde o fim de setembro, o mesmo histórico, para as mesmas datas, aparece entre 0,5 m e 2 m, como régua do
+  ribeirão. Por exemplo: 2,04 m às 11h20 de 31/08 e 1,96 m às 06h30 de 20/09.
+
+Entendo que a série foi convertida para o zero local. Para usar o trecho convertido sem misturar referências,
+gostaria de confirmar:
+
+1. Qual conta foi usada na conversão? É uma subtração de valor fixo ou outra fórmula?
+2. Se foi um deslocamento fixo, qual é o valor, em metros?
+3. Qual é o zero do valor convertido? É o mesmo zero da régua de antes de 01/04/2026, quando a estação marcava cerca
+   de 0,5 m com o ribeirão normal?
+4. A partir de que data a conversão passou a valer na publicação, e desde que data do histórico ela foi aplicada? Todo
+   o período desde 01/04/2026 já está convertido?
+
+Até a resposta, o site guarda o trecho convertido como série separada, sem emendá-lo nas leituras de antes de abril.
+
+Se quiserem conhecer o site, basta me enviar um e-mail para cadastro.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---

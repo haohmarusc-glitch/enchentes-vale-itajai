@@ -103,5 +103,27 @@ class TrombudoCentral(unittest.TestCase):
         self.assertNotIn("DCSC-00035", RESERVATORIOS)
 
 
+class Reprocessamento(unittest.TestCase):
+    """O trecho reprocessado pela DCSC (decisão 5.9): só depois da quebra, de coleta nova e abaixo de 10 m."""
+
+    def test_as_tres_condicoes(self):
+        from cadastro_dcsc import e_reprocessada
+        g, depois, nova = "DCSC-00029", datetime(2026, 8, 31, 11, 20), "2026-10-09T23:39:00.000Z"
+        self.assertTrue(e_reprocessada(g, depois, nova, 2.04))
+        self.assertFalse(e_reprocessada(g, datetime(2026, 3, 31, 12), nova, 0.51))      # antes da quebra
+        self.assertFalse(e_reprocessada(g, depois, "2026-09-10T02:21:39.033Z", 0.60))   # coleta antiga
+        self.assertFalse(e_reprocessada(g, depois, nova, 24.7))                          # altitude
+        self.assertFalse(e_reprocessada(g, depois, None, 2.04))                          # coleta desconhecida
+        self.assertFalse(e_reprocessada("DCSC-00013", depois, nova, 2.04))               # outra estação
+
+    def test_a_conversao_nao_e_inventada(self):
+        from cadastro_dcsc import REPROCESSAMENTOS
+        r = REPROCESSAMENTOS["DCSC-00029"]
+        for campo in ("formula", "deslocamento_m", "referencia_do_zero", "vigente_desde"):
+            self.assertIsNone(r[campo])
+        self.assertEqual(r["abaixo_de_m"], 10.0)
+        self.assertTrue(r["fonte"] and r["periodo_observado"]["fonte"])
+
+
 if __name__ == "__main__":
     unittest.main()
