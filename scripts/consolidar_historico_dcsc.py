@@ -46,9 +46,18 @@ sabia das duas desde 07/09. Por isso passaram a morar em `scripts/cadastro_dcsc.
 importam. Quebra de série corta a COLUNA de nível na data (chuva e bateria seguem); estação que
 não mede nível fica sem crista candidata, com as contagens preservadas e o motivo no resumo.
 
+O TRECHO REPROCESSADO (10/10/2026, decisão 5.9). A DCSC reescreveu o histórico da DCSC-00029 para o
+zero local: a coleta de 09/10 devolve 0,5–2 m onde a de 10/09 devolvia ~24 m, para os mesmos `ts`.
+Por isso cada leitura guarda a data da coleta de onde veio (`_coletado_em_utc`), e no mesmo `ts`
+fica a coleta mais recente (`juntar`). A série principal continua cortada na quebra; o trecho que a
+DCSC reprocessou (`cadastro_dcsc.REPROCESSAMENTOS`) sai num CSV PRÓPRIO e num bloco próprio do
+resumo, sem emendar no "antes" de 01/04 e sem a altitude.
+
 O QUE GRAVA
   * `data/series/dcsc/DCSC-000NN.csv` — a série inteira, uma linha por carimbo (fora do
     git: 129 MB em 13 estações; `data/series/` é ignorado, reproduzível por este script);
+  * `data/series/dcsc/DCSC-000NN-reprocessado.csv` — só nas estações de REPROCESSAMENTOS: o trecho
+    reprocessado pela DCSC, com a data da coleta de cada leitura;
   * `data/brutos/dcsc-historico-resumo-<data>.json` — o que cabe no repo e é citável:
     cobertura, contagens, sentinelas, buracos e as maiores cristas de cada estação.
     Crista aqui é CANDIDATA: nada entra em enchentes.json sem decisão do Jefferson.
@@ -73,7 +82,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from analisar_telemetria_ana import buracos, crista  # noqa: E402
 from cadastro_dcsc import (CADEIA, NAO_MEDE_NIVEL, apos_a_quebra,  # noqa: E402
-                           mede_nivel, quando_da_quebra, quebra_de)
+                           e_reprocessada, mede_nivel, quando_da_quebra, quebra_de,
+                           reprocessamento_de)
 from comum import DADOS  # noqa: E402
 
 COLUNAS = ["medido_em", "rio_nivel", "rio_variacao", "chuva_mm", "chuva_total",
@@ -107,6 +117,18 @@ def nivel(item: dict, cod: str | None = None) -> float | None:
     if v < LIMITE_SENTINELA or v > LIMITE_PLAUSIVEL:
         return None
     if cod and apos_a_quebra(cod, quando(item)):
+        return None
+    return v
+
+
+def nivel_reprocessado(item: dict, cod: str) -> float | None:
+    """Nível da leitura na SÉRIE PRÓPRIA reprocessada pela DCSC (`REPROCESSAMENTOS`), ou None.
+
+    Nunca devolve leitura do lado antigo da quebra (esse é o `nivel`), nem altitude, nem leitura de
+    coleta anterior ao reprocessamento: as duas grandezas não se misturam em nenhuma das duas séries.
+    """
+    v = nivel(item)
+    if v is None or not e_reprocessada(cod, quando(item), item.get("_coletado_em_utc"), v):
         return None
     return v
 
@@ -148,7 +170,9 @@ def ler_pasta(origem: Path) -> dict[str, dict]:
         e["fim_janelas"] = max(e["fim_janelas"], fim)
         for it in itens_do_arquivo(corpo):
             if it.get("ts"):
-                e["itens"][it["ts"]] = it
+                # A coleta de onde a leitura veio: a DCSC reprocessa o histórico (Guabiruba, 10/10/2026)
+                # e o mesmo `ts` pode trazer grandezas diferentes em coletas diferentes.
+                e["itens"][it["ts"]] = {**it, "_coletado_em_utc": corpo.get("coletado_em_utc")}
 
     for z in sorted(origem.rglob("*.zip")):
         with zipfile.ZipFile(z) as zf:
@@ -170,12 +194,20 @@ def ler_pasta(origem: Path) -> dict[str, dict]:
 
 
 def juntar(lidos: list[dict[str, dict]]) -> dict[str, dict]:
-    """Junta o `ler_pasta` de várias origens (zips do PC + acervo do Actions). Mesmo `ts` é a mesma leitura."""
+    """Junta o `ler_pasta` de várias origens (zips do PC + acervo do Actions).
+
+    Mesmo `ts` é a mesma leitura, e fica a da coleta MAIS RECENTE — é a versão que a DCSC publica hoje
+    (ela reprocessou o histórico de Guabiruba). Sem data de coleta, vale a ordem das origens.
+    """
     saida: dict[str, dict] = {}
     for lido in lidos:
         for cod, e in lido.items():
             d = saida.setdefault(cod, {"itens": {}, "janelas": 0, "coletas": [], "fim_janelas": ""})
-            d["itens"].update(e["itens"])
+            for ts, it in e["itens"].items():
+                velho = d["itens"].get(ts)
+                if (velho is None or not velho.get("_coletado_em_utc") or not it.get("_coletado_em_utc")
+                        or it["_coletado_em_utc"] >= velho["_coletado_em_utc"]):
+                    d["itens"][ts] = it
             d["janelas"] += e["janelas"]
             d["coletas"] += e["coletas"]
             d["fim_janelas"] = max(d["fim_janelas"], e["fim_janelas"])
@@ -261,7 +293,7 @@ def resumo_da_estacao(cod: str, e: dict) -> dict:
     serie_sadia = [(t, v) for t, v in serie if corte is None or t < corte]
     bur = [(a, b, tipo) for a, b, tipo in buracos(serie_sadia, BURACO_MINIMO)] if serie_sadia else []
     esperadas = int((serie[-1][0] - serie[0][0]) / CADENCIA) + 1 if len(serie) > 1 else len(serie)
-    campos = Counter(k for it in e["itens"].values() for k in it)
+    campos = Counter(k for it in e["itens"].values() for k in it if not k.startswith("_"))
     return {
         "codigo": cod,
         "cidade": CADEIA.get(cod),
@@ -289,7 +321,36 @@ def resumo_da_estacao(cod: str, e: dict) -> dict:
         "nao_mede_nivel": NAO_MEDE_NIVEL.get(cod),
         "quebra_de_serie": {**q, "leituras_de_nivel_cortadas": cortadas_na_quebra(cod, e["itens"])}
                            if q else None,
+        "serie_reprocessada": resumo_reprocessado(cod, e["itens"]),
     }
+
+
+def serie_reprocessada(itens: dict[str, dict], cod: str) -> list[tuple[datetime, float]]:
+    saida = []
+    for ts in sorted(itens):
+        v = nivel_reprocessado(itens[ts], cod)
+        t = quando(itens[ts])
+        if v is not None and t is not None:
+            saida.append((t, v))
+    return saida
+
+
+def resumo_reprocessado(cod: str, itens: dict[str, dict]) -> dict | None:
+    """O bloco da série própria reprocessada pela DCSC, com o que o cadastro sabe da conversão
+    (fórmula, deslocamento e zero ficam None até a DCSC responder), ou None."""
+    r = reprocessamento_de(cod)
+    if not r:
+        return None
+    s = serie_reprocessada(itens, cod)
+    vals = [v for _, v in s]
+    return {**r,
+            "leituras": len(s),
+            "primeira": s[0][0].isoformat(timespec="minutes") if s else None,
+            "ultima": s[-1][0].isoformat(timespec="minutes") if s else None,
+            "nivel_min_m": min(vals, default=None),
+            "nivel_max_m": max(vals, default=None),
+            "cristas_candidatas": [c for c in cristas(s, n=8) if not c["isolada"]][:5],
+            "descartadas_isoladas": [c for c in cristas(s, n=8) if c["isolada"]]}
 
 
 def gravar_csv(destino: Path, itens: dict[str, dict], cod: str | None = None) -> int:
@@ -314,6 +375,22 @@ def gravar_csv(destino: Path, itens: dict[str, dict], cod: str | None = None) ->
     return n
 
 
+def gravar_csv_reprocessado(destino: Path, itens: dict[str, dict], cod: str) -> int:
+    """Grava a série própria reprocessada: só as leituras que `nivel_reprocessado` aceita, com a data
+    da coleta de cada uma. O CSV principal não muda."""
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    n = 0
+    with destino.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["medido_em", "rio_nivel", "coletado_em_utc"])
+        for ts in sorted(itens):
+            v = nivel_reprocessado(itens[ts], cod)
+            if v is not None:
+                w.writerow([str(ts)[:19], v, itens[ts].get("_coletado_em_utc")])
+                n += 1
+    return n
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("origem", type=Path, nargs="+",
@@ -332,6 +409,8 @@ def main() -> int:
     for cod in sorted(por_estacao):
         e = por_estacao[cod]
         n = gravar_csv(args.series / f"{cod}.csv", e["itens"], cod)
+        if reprocessamento_de(cod):
+            gravar_csv_reprocessado(args.series / f"{cod}-reprocessado.csv", e["itens"], cod)
         r = resumo_da_estacao(cod, e)
         resumos.append(r)
         topo = r["cristas_candidatas"][0] if r["cristas_candidatas"] else None
@@ -346,6 +425,11 @@ def main() -> int:
             print(f"{'':11s}↳ quebra de série desde {qs['desde']}: {qs['leituras_de_nivel_cortadas']} "
                   f"leitura(s) de nível cortadas ({qs['grandeza_depois']}); "
                   f"chuva e bateria seguem na série")
+        if r["serie_reprocessada"]:
+            sr = r["serie_reprocessada"]
+            print(f"{'':11s}↳ série própria reprocessada pela DCSC: {sr['leituras']} leitura(s), "
+                  f"{sr['primeira'] or '—'} → {sr['ultima'] or '—'} (CSV {cod}-reprocessado.csv; "
+                  f"não emendada no antes da quebra)")
         if r["nao_mede_nivel"]:
             print(f"{'':11s}↳ não mede nível de rio nesta rede — sem crista candidata. "
                   f"{r['nao_mede_nivel']}")

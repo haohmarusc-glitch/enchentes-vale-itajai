@@ -7,6 +7,34 @@ Contato preenchido: **Jefferson — (47) 98405-6082 · haohmarusc@gmail.com**
 > **REGRA (02/10/2026): nunca pôr link do site em e-mail ou ofício.** O site só abre para e-mail cadastrado.
 > Escrever, no lugar: "se quiser ver o site, basta me mandar o seu e-mail para cadastro". Ver `CLAUDE.md`.
 
+## Revisão dos rascunhos C32–C35 no Gmail (10/10/2026, pedido do Jefferson; nada enviado)
+
+Conferidos destinatário, conversa, texto e anexos de cada rascunho no Gmail, contra o texto deste arquivo.
+
+| | destinatário e conversa | anexos | texto | link do site | situação |
+|---|---|---|---|---|---|
+| C32 Rio dos Cedros | defesacivil@riodoscedros.sc.gov.br, resposta na conversa do C29 (Jucinei) | nenhum | igual ao daqui | não (o citado traz o GitHub, que não é o site) | **pronto** |
+| C33 EPAGRI/CIRAM | sshidrosc@epagri.sc.gov.br, conversa do C5/C12 | nenhum | igual ao daqui | não | **pronto** |
+| C34 ANA | hidro@ana.gov.br, conversa nova | nenhum | igual (a tabela daqui virou lista; os 13 valores conferem) | não | **pronto** |
+| C35 Gaspar | defesacivil@gaspar.sc.gov.br, conversa do C10 | nenhum | **corrigir antes de enviar** (abaixo) | não | **segurar** |
+
+**C35 — o "a cada 6 horas, em média" está errado.** Medido em 10/10 na série do coletor:
+- **de 10/09 a 07/10:** 6 h é a **mediana**; a média é 10 h;
+- **antes de 04/10:** a coleta de Gaspar não era contínua (ponte pelo PC). Um vazio longo daquele período, como o
+  exemplo de 02/10 06h04 → 03/10 19h27, pode ser falha nossa, e não da estação;
+- **desde 04/10:** o Actions consulta a página a cada 15 min. Nesse período, a leitura muda em mediana a cada 6,6 h, e
+  à noite fica de 14 a 16 h sem leitura nova. Exemplos: 04/10 18h27 → 05/10 09h42; 08/10 18h09 → 09/10 09h47.
+
+Parágrafo proposto, no lugar do segundo:
+
+> A página da estação do Rio Itajaí-Açu (/estacao/ver/21) continua publicando, mas em intervalos irregulares. Desde
+> 04/10 consulto a página a cada 15 minutos: durante o dia, a leitura muda mais ou menos a cada 6 horas, e à noite
+> passa de 14 a 16 horas sem leitura nova (por exemplo, das 18h09 de 08/10 às 09h47 de 09/10).
+
+O rascunho do Gmail **não foi alterado**: a troca do parágrafo espera o "pode" do Jefferson. O envio de cada um também.
+
+---
+
 Pronto para copiar e colar no e-mail. O texto-fonte, com a justificativa técnica de
 cada pedido, e os demais ofícios (C1–C4) ficam em `docs/pendencias-navegador-e-oficios.md`.
 
@@ -907,3 +935,56 @@ cadastro.
 Muito obrigado pela atenção.
 
 Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+## C36 — Defesa Civil de SC, Gerência de Monitoramento e Alerta: a conversão do histórico da estação de Guabiruba (DCSC-00029) — 📝 RASCUNHO, não enviado (10/10/2026, decisão 5.10 do Jefferson: "rascunhar sem enviar")
+
+**Origem.** `docs/GUABIRUBA-DCSC-00029-2026-10-10.md`. O histórico da DCSC-00029 que a API `historic` devolve hoje
+está no zero local do ribeirão. O download de 10/09/2026 trazia, para as mesmas datas, a cota referenciada ao nível do
+mar (~24 m). A DCSC converteu o histórico entre 10/09 e 26/09, sem publicar a conta. Pela decisão 5.9, o trecho
+convertido virou série própria (`cadastro_dcsc.REPROCESSAMENTOS`), com fórmula, deslocamento, zero e vigência em
+branco até esta resposta.
+
+**Destinatário: A CONFIRMAR.** Não há e-mail da Defesa Civil de SC no histórico de ofícios, e a busca de 10/10 não
+achou endereço publicado da Gerência de Monitoramento e Alerta (Diretoria de Gestão de Desastres). Caminhos, nesta ordem:
+1. pedir o e-mail da Gerência pelo telefone geral da Secretaria, (48) 3664-7000, e enviar para ele;
+2. sem e-mail, registrar o texto como pedido de acesso à informação na Ouvidoria do Estado, como foi feito com o C24 no
+   Informa.BR.
+
+Nenhum endereço foi deduzido. O rascunho fica sem "Para".
+
+- Sem link do site (regra de 02/10/2026); no fim, o pedido de cadastro.
+- Só pergunta o que falta para juntar as séries; não pede acesso novo à API.
+
+**Assunto:** Estação DCSC-00029 (Guabiruba) — conversão do histórico de nível para o zero local
+
+Prezada equipe da Gerência de Monitoramento e Alerta,
+
+Meu nome é Jefferson, sou morador do Vale do Itajaí e mantenho um site aberto e sem fins comerciais sobre as
+enchentes dos rios Itajaí-Açu e Itajaí-Mirim. Ele usa o histórico da rede estadual de monitoramento, sempre com a
+fonte citada.
+
+Tenho uma dúvida sobre a estação DCSC-00029, em Guabiruba:
+- em 01/04/2026, às 17h40, o nível da estação passou de cerca de 0,5 m para cerca de 24 m, o que entendemos como a
+  troca para cota referenciada ao nível do mar;
+- no histórico que baixei em 10/09/2026, todas as leituras de 01/04 a 09/09 estavam nessa casa dos 24 m;
+- desde o fim de setembro, o mesmo histórico, para as mesmas datas, aparece entre 0,5 m e 2 m, como régua do
+  ribeirão. Por exemplo: 2,04 m às 11h20 de 31/08 e 1,96 m às 06h30 de 20/09.
+
+Entendo que a série foi convertida para o zero local. Para usar o trecho convertido sem misturar referências,
+gostaria de confirmar:
+
+1. Qual conta foi usada na conversão? É uma subtração de valor fixo ou outra fórmula?
+2. Se foi um deslocamento fixo, qual é o valor, em metros?
+3. Qual é o zero do valor convertido? É o mesmo zero da régua de antes de 01/04/2026, quando a estação marcava cerca
+   de 0,5 m com o ribeirão normal?
+4. A partir de que data a conversão passou a valer na publicação, e desde que data do histórico ela foi aplicada? Todo
+   o período desde 01/04/2026 já está convertido?
+
+Até a resposta, o site guarda o trecho convertido como série separada, sem emendá-lo nas leituras de antes de abril.
+
+Se quiserem conhecer o site, basta me enviar um e-mail para cadastro.
+
+Atenciosamente,
+Jefferson — (47) 98405-6082 · haohmarusc@gmail.com
+
+---

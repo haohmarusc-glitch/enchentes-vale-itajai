@@ -241,5 +241,104 @@ class Cadastro(unittest.TestCase):
         self.assertIsNone(r["quebra_de_serie"])
 
 
+class Reprocessamento(unittest.TestCase):
+    """Decisão 5.9 (10/10/2026): o trecho que a DCSC reprocessou para o zero local vira SÉRIE PRÓPRIA.
+
+    A coleta de 10/09 trouxe altitude (~24 m) e a de 09/10 trouxe o zero local (0,5–2 m) para os MESMOS
+    `ts`. As duas grandezas nunca podem cair na mesma série, e o trecho reprocessado nunca se emenda no
+    que veio antes da quebra de 01/04.
+    """
+
+    GUABIRUBA = "DCSC-00029"
+    ANTIGA = "2026-09-10T02:21:39.033Z"      # download do PC: altitude depois de 01/04
+    NOVA = "2026-10-09T23:39:00.000Z"        # acervo do Actions: zero local reprocessado
+
+    def _janela(self, coletado: str, itens: list[dict]) -> dict:
+        return {"variables": {"stationCode": self.GUABIRUBA, "startDate": "x", "endDate": "y"},
+                "coletado_em_utc": coletado,
+                "resposta": {"data": {"historic": {"items": itens, "totalCount": len(itens)}}}}
+
+    def _origens(self) -> dict[str, dict]:
+        g = self.GUABIRUBA
+        antiga = self._janela(self.ANTIGA, [
+            item("2026-03-31T12:00:00.000", 0.51, codigo=g),          # antes da quebra
+            item("2026-08-31T11:10:00.000", 25.9, codigo=g),          # altitude
+            item("2026-08-31T11:20:00.000", 26.1, codigo=g),
+            item("2026-08-31T11:30:00.000", 25.8, codigo=g),
+            item("2026-09-05T00:00:00.000", 0.60, codigo=g),          # valor baixo, mas coleta antiga
+        ])
+        nova = self._janela(self.NOVA, [
+            item("2026-08-31T11:10:00.000", 1.98, codigo=g),
+            item("2026-08-31T11:20:00.000", 2.04, codigo=g),          # conferido em 26/09 e 09/10
+            item("2026-08-31T11:30:00.000", 2.01, codigo=g),
+            item("2026-09-20T06:30:00.000", 1.96, codigo=g),          # conferido em 26/09 e 09/10
+            item("2026-09-21T00:00:00.000", 24.7, codigo=g),          # altitude numa coleta nova: trava de valor
+        ])
+        from consolidar_historico_dcsc import juntar
+        lidos = []
+        for corpo in (nova, antiga):         # a ordem das origens NÃO decide: decide a data da coleta
+            with tempfile.TemporaryDirectory() as d:
+                Path(d, "x.json").write_text(json.dumps(corpo), encoding="utf-8")
+                lidos.append(ler_pasta(Path(d)))
+        return juntar(lidos)[self.GUABIRUBA]
+
+    def test_no_mesmo_ts_fica_a_coleta_mais_recente(self):
+        e = self._origens()
+        it = e["itens"]["2026-08-31T11:20:00.000"]
+        self.assertEqual(it["rio_nivel"], 2.04)
+        self.assertEqual(it["_coletado_em_utc"], self.NOVA)
+
+    def test_os_valores_conferidos_saem_na_serie_propria(self):
+        from cadastro_dcsc import REPROCESSAMENTOS
+        from consolidar_historico_dcsc import serie_reprocessada
+        s = {t.isoformat(timespec="minutes"): v for t, v in serie_reprocessada(self._origens()["itens"],
+                                                                                  self.GUABIRUBA)}
+        for quando_, valor in REPROCESSAMENTOS[self.GUABIRUBA]["conferidos"].items():
+            self.assertEqual(s[quando_], valor)
+
+    def test_a_serie_propria_nao_mistura_os_dois_zeros(self):
+        from consolidar_historico_dcsc import serie_reprocessada
+        s = serie_reprocessada(self._origens()["itens"], self.GUABIRUBA)
+        self.assertTrue(s)
+        self.assertTrue(all(t >= datetime(2026, 4, 1, 17, 40) for t, _ in s), "emendou o antes de 01/04")
+        self.assertTrue(all(v < 10 for _, v in s), "altitude entrou na série própria")
+        self.assertNotIn(datetime(2026, 9, 5), [t for t, _ in s], "leitura de coleta antiga entrou")
+
+    def test_a_serie_principal_continua_cortada_na_quebra(self):
+        """O CSV principal não muda: depois de 01/04 o nível sai vazio, venha de que coleta vier."""
+        e = self._origens()
+        with tempfile.TemporaryDirectory() as d:
+            destino = Path(d) / "p.csv"
+            gravar_csv(destino, e["itens"], self.GUABIRUBA)
+            linhas = list(csv.DictReader(destino.open(encoding="utf-8")))
+        depois = [l for l in linhas if l["medido_em"] >= "2026-04-01T17:40"]
+        self.assertTrue(depois)
+        self.assertTrue(all(l["rio_nivel"] == "" for l in depois))
+        self.assertEqual([l["rio_nivel"] for l in linhas if l["medido_em"] < "2026-04-01"], ["0.51"])
+
+    def test_o_csv_proprio_guarda_a_coleta_de_cada_leitura(self):
+        from consolidar_historico_dcsc import gravar_csv_reprocessado
+        e = self._origens()
+        with tempfile.TemporaryDirectory() as d:
+            destino = Path(d) / "r.csv"
+            n = gravar_csv_reprocessado(destino, e["itens"], self.GUABIRUBA)
+            linhas = list(csv.DictReader(destino.open(encoding="utf-8")))
+        self.assertEqual(n, 4)
+        self.assertEqual(list(linhas[0].keys()), ["medido_em", "rio_nivel", "coletado_em_utc"])
+        self.assertTrue(all(l["coletado_em_utc"] == self.NOVA for l in linhas))
+
+    def test_o_resumo_diz_o_que_ainda_nao_se_sabe_da_conversao(self):
+        r = resumo_da_estacao(self.GUABIRUBA, self._origens())
+        sr = r["serie_reprocessada"]
+        for campo in ("formula", "deslocamento_m", "referencia_do_zero", "vigente_desde"):
+            self.assertIsNone(sr[campo], f"{campo} preenchido sem resposta da DCSC")
+        self.assertIn("C36", sr["pendente"])
+        self.assertEqual(sr["leituras"], 4)
+        self.assertEqual(sr["nivel_max_m"], 2.04)
+        # e a série principal segue sem nada depois da quebra
+        self.assertLess(r["nivel_max_m"], 10)
+        self.assertNotIn("_coletado_em_utc", r["campos"])
+
+
 if __name__ == "__main__":
     unittest.main()

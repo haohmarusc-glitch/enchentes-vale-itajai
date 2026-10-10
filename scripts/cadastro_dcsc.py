@@ -81,9 +81,10 @@ SUSPEITAS = {"DCSC-00029": "Guabiruba ~24,8 m: estação Hidro real (tem_nivel_d
                            "escrita à mão — o que diz que a régua de plausibilidade por valor absoluto "
                            "é rede de segurança, não a primeira linha. Fonte: Prefeitura de Brusque, "
                            "abril de 2026, via levantamento externo de 07/09/2026. "
-                           "VOLTA AO ZERO LOCAL (decisão do Jefferson de 04/10/2026): entre "
-                           "09/09/2026 23:10 e 03/10/2026 23:01 a estação voltou a publicar ~0,6 m, "
-                           "régua do ribeirão com zero próprio. Desde então só o valor ≥ 10 m cai "
+                           "VOLTA AO ZERO LOCAL (decisão do Jefferson de 04/10/2026): a estação "
+                           "voltou a publicar ~0,6 m, régua do ribeirão com zero próprio — e a DCSC "
+                           "reprocessou o histórico para esse zero (visto em 26/09 e 09/10/2026; ver "
+                           "REPROCESSAMENTOS). Desde então só o valor ≥ 10 m cai "
                            "aqui (ver SUSPEITA_SO_ACIMA_DE_M); abaixo disso a leitura vale como zero "
                            "local — nunca como a cota ortométrica ~25–28 m dos boletins de Brusque.",
              "DCSC-00007": "Pomerode: estação Hidro real (tem_nivel_do_rio=true), mas oscila de forma "
@@ -154,6 +155,42 @@ QUEBRAS_DE_SERIE = {
 }
 
 
+#: Trecho que a própria DCSC REPROCESSOU depois da quebra (decisão 5.9 do Jefferson, 10/10/2026).
+#:
+#: A API passou a devolver o histórico da DCSC-00029 já no zero local, sem degrau (acervo do
+#: Actions de 19/07 a 04/10, coletado em 09/10; busca de 26/09 desde 11/07), e o download de 10/09
+#: tinha altitude para as MESMAS datas (`docs/GUABIRUBA-DCSC-00029-2026-10-10.md`). Esse trecho é
+#: guardado como SÉRIE PRÓPRIA: nunca emendado no "antes" de 01/04 (que o zero seja o mesmo não foi
+#: provado) e nunca misturado com a altitude. Vale para a leitura que cumpre as três condições:
+#:   * está do lado novo da quebra (`apos_a_quebra`);
+#:   * veio de uma coleta feita a partir de `coletado_a_partir_de_utc` (as anteriores traziam
+#:     altitude para as mesmas datas);
+#:   * fica abaixo de `abaixo_de_m` (a trava de valor de `SUSPEITA_SO_ACIMA_DE_M`).
+#: A DCSC não publicou a conta: fórmula, deslocamento, referência do zero e data de vigência ficam
+#: `None` até a resposta do C36 — nunca preenchidos por dedução.
+REPROCESSAMENTOS = {
+    "DCSC-00029": {
+        "coletado_a_partir_de_utc": "2026-09-26T00:00:00Z",
+        "abaixo_de_m": SUSPEITA_SO_ACIMA_DE_M["DCSC-00029"],
+        "grandeza": "régua do ribeirão, zero local, como a DCSC publica depois do reprocessamento",
+        "formula": None,
+        "deslocamento_m": None,
+        "referencia_do_zero": None,
+        "vigente_desde": None,
+        "pendente": "a DCSC não publicou a conversão; pedido em rascunho (C36, docs/oficios-prontos.md)",
+        "periodo_observado": {"de": "2026-07-19T21:10", "ate": "2026-10-04T21:00",
+                              "fonte": "acervo semanal do Actions (branch historico-dcsc, commit 0820804e, "
+                                       "coletado da API em 09/10/2026); a busca de 26/09 já via o zero "
+                                       "local em 11/07"},
+        "conferidos": {"2026-08-31T11:20": 2.04, "2026-09-20T06:30": 1.96},
+        "fonte": "API historic de monitoramento.defesacivil.sc.gov.br, coletas de 26/09 e 09/10/2026, "
+                 "comparadas com o download de 10/09/2026 (altitude nas mesmas datas)",
+        "nao_emendar": "série própria: não se junta ao trecho anterior a 01/04/2026 17:40 enquanto o zero "
+                       "não for provado o mesmo",
+    },
+}
+
+
 # --------------------------------------------------------------------------- #
 # Consultas
 # --------------------------------------------------------------------------- #
@@ -181,3 +218,20 @@ def apos_a_quebra(codigo: str, quando: datetime | None) -> bool:
     """
     corte = quando_da_quebra(codigo)
     return bool(corte and quando is not None and quando >= corte)
+
+
+def reprocessamento_de(codigo: str) -> dict | None:
+    """O trecho reprocessado pela DCSC (série própria) da estação, ou None."""
+    return REPROCESSAMENTOS.get(codigo)
+
+
+def e_reprocessada(codigo: str, quando: datetime | None, coletado_em_utc: str | None,
+                   valor_m: float | None) -> bool:
+    """A leitura pertence à série própria reprocessada pela DCSC? (ver REPROCESSAMENTOS)
+
+    Sem a data da coleta não há como saber se ela já veio reprocessada: fica de fora.
+    """
+    r = REPROCESSAMENTOS.get(codigo)
+    if not r or valor_m is None or not coletado_em_utc or not apos_a_quebra(codigo, quando):
+        return False
+    return coletado_em_utc[:19] >= r["coletado_a_partir_de_utc"][:19] and valor_m < r["abaixo_de_m"]
