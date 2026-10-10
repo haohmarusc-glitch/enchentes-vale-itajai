@@ -57,7 +57,7 @@ O vão 2 foi recusado nessa rodada por **0,3 mm**: a cadeia saiu "mais curta que
   **condição (a)** para destravar a DC-07, não a decisão.
 - Dois bueiros de 78 m e 38 m sob ruas não mudam o enquadramento do Monitor.
 
-## O trecho do vínculo DC-07 (ativado por decisão do Jefferson em 10/10/2026, a valer depois da auditoria de 06–07/10)
+## O trecho do vínculo DC-07 (ativado por decisão do Jefferson em 10/10/2026; auditoria de 06–07/10 feita, vale no merge)
 
 Medido no traçado contínuo (`scripts/medir_alcance_murta.py`), com as réguas na coordenada do cadastro:
 

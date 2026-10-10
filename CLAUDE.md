@@ -159,7 +159,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   - O aviso diz que é provisória (`nota_no_aviso`).
   - Testes que conferem o cadastro contra o Plano usam `comum.cotas_do_plano`: só a exceção declarada passa.
   - Confirmação municipal pendente; a orientação de não enviar ofício a Itajaí continua.
-- **10/10/2026 (decisões do Jefferson, a ativar só depois da auditoria com a chuva de 06–07/10):** DC-03 e DC-06
+- **10/10/2026 (decisões do Jefferson, auditadas com a chuva de 06–07/10; ativam no merge):** DC-03 e DC-06
   destravadas (a maré sozinha não as leva à cota); **DC-07 com as cotas do portal provisórias** (1,00 / 1,40 /
   1,50 m; o Plano traz 1,35 e 1,65 m em alerta e emergência); DC-08 com a pendência do zero do Plano registrada
   (`zero_do_plano`). Travadas ficam DC-01, DC-02, DC-04 e DC-09. `docs/AUDITORIA-TRAVAS-ITAJAI-2026-10-10.md`.
