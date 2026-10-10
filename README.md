@@ -610,9 +610,12 @@ o projeto.
     "sem leitura" de leitura estadual sem faixa; o "Hoje" de Itajaí diz quando a janela já terminou.
   - [x] Guabiruba como afluente lateral do Mirim: aplicado em 04/10/2026; o menu do Mirim no Monitor sai
     em Tronco e Afluentes, sem tocar arquivo protegido.
-  - [ ] DCSC-00029 voltou à régua local entre 09/09 e 03/10/2026: falta a data, com o comando de conferência
-    no servidor; depois, a segunda quebra de série. Desde 04/10/2026 a leitura abaixo de 10 m já vale
-    como zero local (`SUSPEITA_SO_ACIMA_DE_M`); o histórico segue cortado em 01/04/2026.
+  - [ ] DCSC-00029: **não houve "volta" com data** (10/10/2026, `docs/GUABIRUBA-DCSC-00029-2026-10-10.md`).
+    O acervo do Actions (19/07 → 04/10, 10.981 leituras) está todo no zero local, sem degrau. Para as mesmas
+    datas, o download de 10/09 vinha em altitude: a DCSC reprocessou o histórico entre 10/09 e 26/09. O acervo
+    bate ao minuto com os candidatos de 26/09 (31/08 2,04 m; 20/09 1,96 m). Desde 04/10/2026 a leitura
+    abaixo de 10 m já vale como zero local (`SUSPEITA_SO_ACIMA_DE_M`); o histórico segue cortado em 01/04/2026.
+    **Falta (Jefferson):** manter o trecho reprocessado como série própria, e se pergunta à DCSC a conta usada.
   - [x] Rótulo do histórico de Brusque: opção B, aplicada em 04/10/2026 ("Histórico na régua da Ponte
     Estaiada", com os picos anteriores a 2019 à parte). O "Quanto falta" ainda usa os 28 picos.
 
@@ -1232,8 +1235,9 @@ o projeto.
   das 14 estações da cadeia no branch `historico-dcsc` (`baixar_historico_dcsc.py --acumular`, `.json.gz`, ~10 MB
   por ano), e o consolidador junta as duas origens (`consolidar_historico_dcsc.py zips/ acervo/`). Em 09/10 a API
   ainda alcança 20/07, então a primeira execução emenda na cópia do PC sem buraco; a crista de Rio do Sul de 01/09
-  (7,07 m às 05:20) saiu igual nas duas. **Falta:** o merge (liga o agendamento) e, na VPS, o `scp` da cópia do PC
-  (B5 do `docs/CHECKLIST-PINTAR-CIDADES.md`).
+  (7,07 m às 05:20) saiu igual nas duas. **Em operação desde 09/10/2026** (#537): a primeira execução gravou 153
+  semanas-estação, de 20/07 a 05/10, das 14 estações (`historico-dcsc` em `0820804e`). **Falta:** na VPS, o `scp`
+  da cópia do PC (B5 do `docs/CHECKLIST-PINTAR-CIDADES.md`).
 - [x] **Os campos recuperados da camada 2011 de Brusque NÃO decidem a referência (10/09/2026).** Era
   a esperança de `docs/cotas-de-ruas.md` ("`obs`, `esquina` e UTM são justamente o que decidiria").
   Lidos no KML original: `obs` é número da casa ("N 440") ou distância ("100m", "final da rua"), em 654

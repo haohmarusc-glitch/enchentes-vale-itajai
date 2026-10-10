@@ -54,7 +54,7 @@ Ibirama (C26) e Rio dos Cedros (C29) já responderam.
 | 4.1 | variável `ADMIN_EMAILS` no Cloudflare Pages (registro de acessos) | `docs/PUBLICACAO-E-ACESSO.md`, "Registro de acessos" |
 | 4.2 | KV `CHAT_NAO_ENTENDI` (contagem das perguntas que o chat não entende) | `docs/PUBLICACAO-E-ACESSO.md` |
 | 4.3 | chave `ANTHROPIC_API_KEY` e limite mensal: liga o chat com IA, o piloto do classificador e a prova de 34 perguntas | `docs/CHAT-IA.md` e `docs/PUBLICACAO-E-ACESSO.md`, "Chat com IA" |
-| 4.4 | data da volta da DCSC-00029 (Guabiruba) ao zero local: rodar o comando na VPS e colar a saída | `docs/PROPOSTAS-AUDITORIA-2026-10-03.md`, item 3 |
+| 4.4 | ~~data da volta da DCSC-00029 (Guabiruba) ao zero local~~ **resolvido em 10/10/2026 sem a VPS:** não houve volta; a DCSC reprocessou o histórico (ver 5.9) | `docs/GUABIRUBA-DCSC-00029-2026-10-10.md` |
 | 4.5 | coletor de Gaspar no Actions: merge, permissão do token, disparo à mão, `pull` na VPS | `docs/DECISOES-2026-10-04.md` |
 
 ## 5. Dados que só entram por decisão
@@ -75,6 +75,18 @@ Ibirama (C26) e Rio dos Cedros (C29) já responderam.
 - **Vidal Ramos:** sem leitura municipal desde 11/09 (saiu da Asthon); segue só a estadual DCSC-00024.
 - **Indaial:** o documento municipal parou em 12/09; não há fonte autorizada.
 - **DC-02:** a série fica parada; não serve como régua até alguém explicar o porquê.
+
+## Atualização de 10/10/2026 (tarde)
+
+Mesclados e em produção: #539 (DC-03 e DC-06 destravadas, DC-07 com as cotas do portal provisórias, liberação após
+6 h na DC-03 e na DC-11, Murta pintando pela DC-07), #540 (Itajaí do Sul e do Oeste em Rio do Sul) e #541
+(auditoria com a chuva de 06–07/10). Saem da lista os itens 1.2a, 1.3, 1.5 e 5.1. O item 4.4 também sai: resolveu-se
+pelo acervo do Actions, sem comando na VPS.
+
+| # | decisão | recomendação | detalhe |
+|---|---|---|---|
+| 5.9 | **Guabiruba (DCSC-00029):** a API serve hoje o histórico no zero local desde pelo menos 11/07. O download de 10/09 tinha altitude nas mesmas datas. Manter o trecho reprocessado (19/07 →) na série consolidada? | sim, como série própria, sem emendar no "antes" de 01/04 enquanto o zero não for provado | `docs/GUABIRUBA-DCSC-00029-2026-10-10.md` |
+| 5.10 | Perguntar à DCSC qual conta converteu o histórico de 01/04 em diante | só com a resposta "antes" e "depois" viram uma série única; nada rascunhado | idem |
 
 ## Atualização de 10/10/2026
 
