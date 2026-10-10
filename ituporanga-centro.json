@@ -1,0 +1,29 @@
+{
+ "fonte": "Prefeitura de Ituporanga — Defesa Civil, Boletim Diário (Nível do Rio)",
+ "fonte_url": "https://www.ituporanga.sc.gov.br/nivel-rio",
+ "coletor": "github-actions",
+ "pagina_lida_em": "2026-10-10T21:30:59+00:00",
+ "dados": {
+  "medido_em": "2026-10-10T17:00:00",
+  "nivel_m": 1.44,
+  "criticidade_na_fonte": "Atenção",
+  "barragem_sul": {
+   "medido_em": "2026-10-10T17:00:00",
+   "montante_m": 6.0,
+   "jusante_m": 2.36,
+   "comportas_abertas": 5,
+   "comportas_fechadas": 0,
+   "canal_extravasor": "Fechado",
+   "lamina_canal_extravasor_m": 0.0,
+   "lamina_vertedouro_m": 0.0
+  }
+ },
+ "bruto": {
+  "arquivo": "ituporanga-nivel-rio.html",
+  "sha256": "6bd0ecabd521c90d53cfd61be0f8dee1cefee23feefe309ad96942cee8fbf46f",
+  "bytes": 83823,
+  "http": 200
+ },
+ "user_agent": "enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)",
+ "nota": "medido_em é horário de Brasília sem fuso, como a página publica; pagina_lida_em é UTC. O arquivo só é regravado quando a leitura muda. A régua do Centro não tem cor no site."
+}
