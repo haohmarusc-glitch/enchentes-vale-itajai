@@ -11,7 +11,7 @@
       }
     }
   },
-  "gerado_em": "2026-10-07T01:19:47+00:00",
+  "gerado_em": "2026-10-10T20:38:41+00:00",
   "cobertura": [
     {
       "cidade": "ascurra",
@@ -23,8 +23,8 @@
         "Ascurra — Ponte do Beber (DCSC-00003)"
       ],
       "de": "2026-09-13T22:16:08",
-      "ate": "2026-10-05T15:31:09",
-      "leituras": 2086,
+      "ate": "2026-10-10T11:31:12",
+      "leituras": 2475,
       "cota_referencia": {
         "chave": "atencao",
         "valor_m": 8.5
@@ -46,11 +46,12 @@
       "varias_ao_mesmo_tempo": false,
       "publicacoes": [
         "Blumenau",
-        "Blumenau (AlertaBlu)"
+        "Blumenau (AlertaBlu)",
+        "Blumenau (PADKND)"
       ],
       "de": "2026-08-31T07:35:00",
-      "ate": "2026-10-05T15:00:00",
-      "leituras": 2371,
+      "ate": "2026-10-10T11:25:00",
+      "leituras": 2732,
       "cota_referencia": {
         "chave": "atencao",
         "valor_m": 4.0
@@ -99,16 +100,16 @@
         "Brusque — Ponte Estaiada (DCSC-00019)"
       ],
       "de": "2026-10-03T17:16:08",
-      "ate": "2026-10-05T15:31:10",
-      "leituras": 186,
+      "ate": "2026-10-10T11:31:03",
+      "leituras": 647,
       "cota_referencia": {
         "chave": "atencao",
         "valor_m": 3.0
       },
       "sem_faixa": null,
       "maior_leitura": {
-        "nivel_m": 2.04,
-        "quando": "2026-10-04T21:14:53",
+        "nivel_m": 2.44,
+        "quando": "2026-10-06T21:29:55",
         "horario_de": "Brusque — Ponte Estaiada (DCSC-00019)",
         "relogio_defasado": false,
         "faixa": null
@@ -124,8 +125,8 @@
         "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL"
       ],
       "de": "2026-08-30T16:01:00",
-      "ate": "2026-10-05T15:21:49",
-      "leituras": 3278,
+      "ate": "2026-10-10T11:11:35",
+      "leituras": 3738,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.16
@@ -149,8 +150,8 @@
         "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva"
       ],
       "de": "2026-08-30T16:01:00",
-      "ate": "2026-10-05T15:21:22",
-      "leituras": 3307,
+      "ate": "2026-10-10T11:11:22",
+      "leituras": 3766,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.6
@@ -174,19 +175,19 @@
         "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:03",
-      "leituras": 3160,
+      "ate": "2026-10-10T11:20:01",
+      "leituras": 3604,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.48
       },
-      "sem_faixa": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "sem_faixa": null,
       "maior_leitura": {
         "nivel_m": 1.97,
         "quando": "2026-09-12T03:30:00",
         "horario_de": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
         "relogio_defasado": false,
-        "faixa": null
+        "faixa": "alerta"
       }
     },
     {
@@ -199,8 +200,8 @@
         "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:21:13",
-      "leituras": 3307,
+      "ate": "2026-10-10T11:11:13",
+      "leituras": 3767,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.5
@@ -224,19 +225,19 @@
         "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:21:06",
-      "leituras": 3302,
+      "ate": "2026-10-10T11:11:06",
+      "leituras": 3762,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.6
       },
-      "sem_faixa": "NÃO é régua de maré (curso antigo do Mirim; fator de maré 0,04 em 03/10/2026). O aviso automático continua desligado por outro motivo: em 05/09/2026 ela ficou 46,8 h seguidas acima da cota de atenção sem cheia — a cota parece baixa demais para esta régua e precisa ser conferida com a COMPDEC (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sem_faixa": null,
       "maior_leitura": {
         "nivel_m": 2.6,
         "quando": "2026-09-01T05:40:00",
         "horario_de": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
         "relogio_defasado": false,
-        "faixa": null
+        "faixa": "alerta"
       }
     },
     {
@@ -249,13 +250,13 @@
         "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:35",
-      "leituras": 3299,
+      "ate": "2026-10-10T11:10:56",
+      "leituras": 3759,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.5
       },
-      "sem_faixa": "Régua no estuário, com oscilação de maré maior que a distância até a cota. Em 30/08/2026 esta faixa de estações variou mais de 50 cm em três horas sem enchente. Mostrar a cota na tela: sim. Disparar aviso automático a partir de uma travessia isolada: não, até medir a oscilação na série coletada (scripts/medir_mare.py).",
+      "sem_faixa": null,
       "maior_leitura": {
         "nivel_m": 1.48,
         "quando": "2026-09-12T02:40:00",
@@ -274,19 +275,19 @@
         "DC-07 Ribeirão da Murta - Portal"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:49",
-      "leituras": 3222,
+      "ate": "2026-10-10T11:10:35",
+      "leituras": 3680,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.0
       },
-      "sem_faixa": "NÃO é régua de maré (medido duas vezes: 05/09/2026, oscilação diária de 0,09 m; 03/10/2026, fator de maré 0,01). O aviso automático continua desligado porque a cota (PLANCON v17) ainda não foi conferida contra a série desta régua; destravar é decisão do Jefferson (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sem_faixa": null,
       "maior_leitura": {
         "nivel_m": 1.47,
         "quando": "2026-08-31T11:00:00",
         "horario_de": "DC-07 Ribeirão da Murta - Portal",
         "relogio_defasado": false,
-        "faixa": null
+        "faixa": "alerta"
       }
     },
     {
@@ -299,19 +300,19 @@
         "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:21",
-      "leituras": 3301,
+      "ate": "2026-10-10T11:10:21",
+      "leituras": 3761,
       "cota_referencia": {
         "chave": "atencao da própria estação",
-        "valor_m": 1.8
+        "valor_m": 1.7
       },
-      "sem_faixa": "NÃO é régua de maré (fator de maré ≈ 0 em 03/10/2026). O aviso automático continua desligado por outro motivo: em 05/09/2026 ela ficou 25,5 h seguidas acima da cota de atenção sem cheia — a cota parece baixa demais para esta régua e precisa ser conferida com a COMPDEC (docs/MEDICAO-MARE-2026-09-05.md e docs/ANALISE-CHEGADA-ITAJAI-2026.md).",
+      "sem_faixa": null,
       "maior_leitura": {
         "nivel_m": 2.8,
         "quando": "2026-08-31T16:00:00",
         "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
         "relogio_defasado": false,
-        "faixa": null
+        "faixa": "alerta"
       }
     },
     {
@@ -324,8 +325,8 @@
         "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:03",
-      "leituras": 3284,
+      "ate": "2026-10-10T11:20:02",
+      "leituras": 3744,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 1.12
@@ -349,8 +350,8 @@
         "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:06",
-      "leituras": 3296,
+      "ate": "2026-10-10T11:20:13",
+      "leituras": 3756,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 8.0
@@ -374,8 +375,8 @@
         "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)"
       ],
       "de": "2026-08-30T16:00:00",
-      "ate": "2026-10-05T15:20:08",
-      "leituras": 3268,
+      "ate": "2026-10-10T11:20:01",
+      "leituras": 3728,
       "cota_referencia": {
         "chave": "atencao da própria estação",
         "valor_m": 3.0
@@ -399,8 +400,8 @@
         "Gaspar — Rio Itajaí-Açu (Defesa Civil de Gaspar)"
       ],
       "de": "2026-09-10T05:53:00",
-      "ate": "2026-10-05T09:42:00",
-      "leituras": 57,
+      "ate": "2026-10-09T16:24:00",
+      "leituras": 72,
       "cota_referencia": {
         "chave": "atencao",
         "valor_m": 5.0
@@ -474,8 +475,8 @@
         "Rio do Sul, Ponte Dom Tito Buss (Asthon)"
       ],
       "de": "2026-09-09T20:43:27",
-      "ate": "2026-10-05T15:28:10",
-      "leituras": 2478,
+      "ate": "2026-10-10T11:28:30",
+      "leituras": 2939,
       "cota_referencia": {
         "chave": "atencao",
         "valor_m": 4.5
@@ -490,6 +491,31 @@
       }
     },
     {
+      "cidade": "rio-dos-cedros",
+      "rio": "itajai-acu",
+      "regua": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+      "no_cadastro": false,
+      "varias_ao_mesmo_tempo": false,
+      "publicacoes": [
+        "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)"
+      ],
+      "de": "2026-10-07T14:15:12",
+      "ate": "2026-10-10T11:31:08",
+      "leituras": 279,
+      "cota_referencia": {
+        "chave": "atencao",
+        "valor_m": 4.8
+      },
+      "sem_faixa": null,
+      "maior_leitura": {
+        "nivel_m": 3.85,
+        "quando": "2026-10-07T23:46:02",
+        "horario_de": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)",
+        "relogio_defasado": false,
+        "faixa": null
+      }
+    },
+    {
       "cidade": "taio",
       "rio": "itajai-acu",
       "regua": "Taió — Rio Itajaí do Oeste, Centro",
@@ -499,8 +525,8 @@
         "Taió — Rio Itajaí do Oeste, Centro"
       ],
       "de": "2026-09-04T02:29:16",
-      "ate": "2026-10-05T15:25:00",
-      "leituras": 3023,
+      "ate": "2026-10-10T11:25:00",
+      "leituras": 3480,
       "cota_referencia": {
         "chave": "atencao",
         "valor_m": 7.0
@@ -557,6 +583,72 @@
       "faixa_alcancada": "alerta",
       "leituras": 183,
       "maior_lacuna_min": 720,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-01-itajai-dc-05",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "no_cadastro": true,
+      "inicio": "2026-08-31T10:00:00",
+      "fim": "2026-09-02T08:30:00",
+      "maior_leitura_m": 2.6,
+      "quando": "2026-09-01T05:40:00",
+      "horario_de": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.6
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 185,
+      "maior_lacuna_min": 60,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-08-31-itajai-dc-07",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "regua": "DC-07 Ribeirão da Murta - Portal",
+      "no_cadastro": true,
+      "inicio": "2026-08-31T10:00:00",
+      "fim": "2026-09-01T00:40:00",
+      "maior_leitura_m": 1.47,
+      "quando": "2026-08-31T11:00:00",
+      "horario_de": "DC-07 Ribeirão da Murta - Portal",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.0
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 49,
+      "maior_lacuna_min": 170,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-08-31-itajai-dc-08",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "regua": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "no_cadastro": true,
+      "inicio": "2026-08-31T10:00:00",
+      "fim": "2026-09-01T12:40:00",
+      "maior_leitura_m": 2.8,
+      "quando": "2026-08-31T16:00:00",
+      "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.7
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 108,
+      "maior_lacuna_min": 30,
       "leituras_suspeitas": 0,
       "registro_em_enchentes": null
     },
@@ -633,6 +725,28 @@
       "registro_em_enchentes": null
     },
     {
+      "id": "2026-09-01-itajai-dc-03",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "no_cadastro": true,
+      "inicio": "2026-09-01T00:40:00",
+      "fim": "2026-09-01T19:00:00",
+      "maior_leitura_m": 1.92,
+      "quando": "2026-09-01T04:00:00",
+      "horario_de": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.48
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 74,
+      "maior_lacuna_min": 30,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
       "id": "2026-09-01-itajai-dc-10",
       "rio": "itajai-mirim",
       "cidade": "itajai",
@@ -695,6 +809,72 @@
       "faixa_alcancada": "alerta",
       "leituras": 214,
       "maior_lacuna_min": 690,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-10-itajai-dc-07",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "regua": "DC-07 Ribeirão da Murta - Portal",
+      "no_cadastro": true,
+      "inicio": "2026-09-10T04:30:00",
+      "fim": "2026-09-10T06:31:00",
+      "maior_leitura_m": 1.08,
+      "quando": "2026-09-10T05:40:00",
+      "horario_de": "DC-07 Ribeirão da Murta - Portal",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.0
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 8,
+      "maior_lacuna_min": 30,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-10-itajai-dc-08",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "regua": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "no_cadastro": true,
+      "inicio": "2026-09-10T04:50:00",
+      "fim": "2026-09-10T12:10:00",
+      "maior_leitura_m": 2.18,
+      "quando": "2026-09-10T08:00:00",
+      "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.7
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 31,
+      "maior_lacuna_min": 20,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-10-itajai-dc-05",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "no_cadastro": true,
+      "inicio": "2026-09-10T05:31:00",
+      "fim": "2026-09-10T11:41:00",
+      "maior_leitura_m": 1.66,
+      "quando": "2026-09-10T06:32:00",
+      "horario_de": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.6
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 26,
+      "maior_lacuna_min": 21,
       "leituras_suspeitas": 0,
       "registro_em_enchentes": null
     },
@@ -771,6 +951,72 @@
       "registro_em_enchentes": null
     },
     {
+      "id": "2026-09-11-itajai-dc-08",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "regua": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "no_cadastro": true,
+      "inicio": "2026-09-11T16:30:00",
+      "fim": "2026-09-12T06:00:00",
+      "maior_leitura_m": 2.41,
+      "quando": "2026-09-11T23:00:00",
+      "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.7
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 55,
+      "maior_lacuna_min": 20,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-12-itajai-dc-05",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "no_cadastro": true,
+      "inicio": "2026-09-11T16:31:00",
+      "fim": "2026-09-12T21:41:00",
+      "maior_leitura_m": 2.42,
+      "quando": "2026-09-12T04:41:00",
+      "horario_de": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.6
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 84,
+      "maior_lacuna_min": 450,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-12-itajai-dc-03",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "no_cadastro": true,
+      "inicio": "2026-09-12T00:00:00",
+      "fim": "2026-09-12T16:20:00",
+      "maior_leitura_m": 1.97,
+      "quando": "2026-09-12T03:30:00",
+      "horario_de": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.48
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 29,
+      "maior_lacuna_min": 560,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
       "id": "2026-09-12-itajai-dc-10",
       "rio": "itajai-mirim",
       "cidade": "itajai",
@@ -793,13 +1039,35 @@
       "registro_em_enchentes": null
     },
     {
+      "id": "2026-09-20-itajai-dc-08",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "regua": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "no_cadastro": true,
+      "inicio": "2026-09-19T21:20:21",
+      "fim": "2026-09-20T17:10:21",
+      "maior_leitura_m": 2.5,
+      "quando": "2026-09-20T10:40:21",
+      "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.7
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 79,
+      "maior_lacuna_min": 40,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
       "id": "2026-10-01-rio-do-sul-rio",
       "rio": "itajai-acu",
       "cidade": "rio-do-sul",
       "regua": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
       "no_cadastro": true,
       "inicio": "2026-09-20T07:27:03",
-      "fim": "2026-10-05T15:28:10",
+      "fim": "2026-10-05T20:57:54",
       "maior_leitura_m": 6.35,
       "quando": "2026-10-01T08:13:47",
       "horario_de": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
@@ -809,7 +1077,7 @@
         "valor_m": 4.5
       },
       "faixa_alcancada": "alerta",
-      "leituras": 1347,
+      "leituras": 1369,
       "maior_lacuna_min": 1049,
       "leituras_suspeitas": 0,
       "registro_em_enchentes": null
@@ -833,6 +1101,72 @@
       "faixa_alcancada": "atencao",
       "leituras": 13,
       "maior_lacuna_min": 60,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-22-itajai-dc-08",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "regua": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "no_cadastro": true,
+      "inicio": "2026-09-21T20:10:21",
+      "fim": "2026-09-22T10:50:21",
+      "maior_leitura_m": 2.66,
+      "quando": "2026-09-22T02:50:21",
+      "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.7
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 60,
+      "maior_lacuna_min": 30,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-21-itajai-dc-07",
+      "rio": "ribeirao-murta",
+      "cidade": "itajai",
+      "regua": "DC-07 Ribeirão da Murta - Portal",
+      "no_cadastro": true,
+      "inicio": "2026-09-21T21:00:35",
+      "fim": "2026-09-22T00:50:35",
+      "maior_leitura_m": 1.3,
+      "quando": "2026-09-21T21:40:35",
+      "horario_de": "DC-07 Ribeirão da Murta - Portal",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.0
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 16,
+      "maior_lacuna_min": 30,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-22-itajai-dc-05",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "no_cadastro": true,
+      "inicio": "2026-09-21T22:11:06",
+      "fim": "2026-09-23T05:21:06",
+      "maior_leitura_m": 2.0,
+      "quando": "2026-09-22T16:01:30",
+      "horario_de": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.6
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 126,
+      "maior_lacuna_min": 30,
       "leituras_suspeitas": 0,
       "registro_em_enchentes": null
     },
@@ -899,6 +1233,28 @@
       "faixa_alcancada": "atencao",
       "leituras": 231,
       "maior_lacuna_min": 529,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-09-22-itajai-dc-03",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "no_cadastro": true,
+      "inicio": "2026-09-22T13:10:04",
+      "fim": "2026-09-22T16:20:09",
+      "maior_leitura_m": 1.58,
+      "quando": "2026-09-22T15:20:04",
+      "horario_de": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.48
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 8,
+      "maior_lacuna_min": 100,
       "leituras_suspeitas": 0,
       "registro_em_enchentes": null
     },
@@ -1009,6 +1365,116 @@
       "faixa_alcancada": "atencao",
       "leituras": 24,
       "maior_lacuna_min": 60,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-10-07-itajai-dc-08",
+      "rio": "ribeirao-canhanduba",
+      "cidade": "itajai",
+      "regua": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "no_cadastro": true,
+      "inicio": "2026-10-06T07:10:21",
+      "fim": "2026-10-07T10:10:21",
+      "maior_leitura_m": 2.28,
+      "quando": "2026-10-07T02:50:21",
+      "horario_de": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.7
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 109,
+      "maior_lacuna_min": 30,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-10-06-itajai-dc-05",
+      "rio": "itajai-mirim",
+      "cidade": "itajai",
+      "regua": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "no_cadastro": true,
+      "inicio": "2026-10-06T09:21:32",
+      "fim": "2026-10-07T08:41:06",
+      "maior_leitura_m": 1.71,
+      "quando": "2026-10-06T23:11:06",
+      "horario_de": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 1.6
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 94,
+      "maior_lacuna_min": 30,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-10-07-blumenau",
+      "rio": "itajai-acu",
+      "cidade": "blumenau",
+      "regua": "Blumenau",
+      "no_cadastro": true,
+      "inicio": "2026-10-06T20:00:00",
+      "fim": "2026-10-09T06:30:00",
+      "maior_leitura_m": 5.04,
+      "quando": "2026-10-07T08:00:00",
+      "horario_de": "Blumenau (AlertaBlu)",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao",
+        "valor_m": 4.0
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 200,
+      "maior_lacuna_min": 120,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-10-07-rio-do-sul-rio",
+      "rio": "itajai-acu",
+      "cidade": "rio-do-sul",
+      "regua": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
+      "no_cadastro": true,
+      "inicio": "2026-10-06T22:58:01",
+      "fim": "2026-10-10T07:42:38",
+      "maior_leitura_m": 5.56,
+      "quando": "2026-10-07T20:28:21",
+      "horario_de": "Rio do Sul, Ponte Dom Tito Buss (Asthon)",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao",
+        "valor_m": 4.5
+      },
+      "faixa_alcancada": "alerta",
+      "leituras": 321,
+      "maior_lacuna_min": 75,
+      "leituras_suspeitas": 0,
+      "registro_em_enchentes": null
+    },
+    {
+      "id": "2026-10-07-itajai-dc-11",
+      "rio": "itajai-acu",
+      "cidade": "itajai",
+      "regua": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
+      "no_cadastro": true,
+      "inicio": "2026-10-06T23:50:02",
+      "fim": "2026-10-10T03:40:04",
+      "maior_leitura_m": 3.35,
+      "quando": "2026-10-07T14:10:03",
+      "horario_de": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)",
+      "relogio_defasado": false,
+      "cota_referencia": {
+        "chave": "atencao da própria estação",
+        "valor_m": 3.0
+      },
+      "faixa_alcancada": "atencao",
+      "leituras": 117,
+      "maior_lacuna_min": 640,
       "leituras_suspeitas": 0,
       "registro_em_enchentes": null
     }
