@@ -1,0 +1,1 @@
+a falha já está fechada pela emenda gravada em data/brutos/vao-oeste-osm.json: nada a procurar

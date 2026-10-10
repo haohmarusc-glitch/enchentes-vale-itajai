@@ -1,0 +1,17 @@
+{
+ "caixa": [
+  -27.15841,
+  -49.92523,
+  -27.13508,
+  -49.88417
+ ],
+ "ponta_montante": [
+  -49.9152338,
+  -27.1450785
+ ],
+ "ponta_jusante": [
+  -49.8941659,
+  -27.1484117
+ ],
+ "situacao": "a falha já está fechada pela emenda gravada em data/brutos/vao-oeste-osm.json: nada a procurar"
+}
