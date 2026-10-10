@@ -91,7 +91,7 @@ const V: Record<string, Verbete> = {
   descida: {
     termo: 'Tempo de descida',
     texto:
-      'É quanto tempo a cheia levou, em cheias passadas e em estudos, para ir do pico de uma cidade ao pico da cidade de baixo. O site mostra sempre um intervalo ("7–10 h"), nunca uma hora exata, e só onde há dado; ligação entre cidades não é previsão.',
+      'É quanto tempo a cheia levou, em cheias passadas e em estudos, para ir do pico de uma cidade ao pico da cidade de baixo. O site mostra sempre um intervalo ("16–18 h") ou, quando a fonte traz um valor só, "cerca de 10 h", nunca uma hora exata, e só onde há dado; ligação entre cidades não é previsão.',
     veja: ['quanto tempo a cheia leva de Rio do Sul até Blumenau?', 'o que vem de cima para Blumenau?'],
   },
   bruto: {

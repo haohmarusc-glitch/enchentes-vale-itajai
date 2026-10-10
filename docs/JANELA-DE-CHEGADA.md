@@ -1,3 +1,22 @@
+> ## ✅ DECIDIDO EM 10/10/2026 — uma coluna só no tronco do Açu: a de 5 anos
+> Decisão do Jefferson: o tronco usa a coluna de **5 anos** da Tabela 7.5.1 em todos os trechos, para a janela de
+> uma cidade nunca começar antes da de cima.
+>
+> | trecho | antes | agora (5 anos) |
+> |---|---|---|
+> | Rio do Sul → Blumenau | 7–10 h (texto da JICA; junta as colunas de 5 e de 25/50 anos), confiança alta | **10 h**, confiança média |
+> | Blumenau → Itajaí | 12–17 h (envelope das quatro colunas) | **17 h**, confiança média |
+>
+> Os outros trechos do tronco já eram da coluna de 5 anos (Indaial 10, Gaspar +2, Ilhota +5, Itajaí +10). Com isso:
+> - o validador deixa de avisar que Blumenau (7–10 h) e Gaspar (9–12 h) começavam antes de Indaial (10 h);
+> - Taió → Blumenau passa de 13–18 h para 16–18 h, e Taió → Itajaí de 25–35 h para 33–35 h;
+> - o site mostra "cerca de 10 h (valor único na fonte, é aproximação)".
+>
+> Os números das outras colunas continuam em `_meta.tabela_7_5_1` e nas notas dos dois trechos: não somem, só não se
+> misturam. O gabarito `data/transito-esperado.json` foi regerado (`npm run gabarito`). Os testes que provavam o caso
+> antigo agora o reproduzem com um dado montado à mão: `com_colunas_misturadas` no validador e o trecho de 7–10 h no
+> teste do bot.
+
 > ## ⚠️ CONFERIDO NO DADO — A PREMISSA DESTE DOC NÃO SE SUSTENTA
 > **04/09/2026.** Este documento afirma que "não existe medição de Rio do Sul → Indaial em
 > nenhuma fonte do projeto", que "as cidades intermediárias não têm tempo medido" e que o 10 h

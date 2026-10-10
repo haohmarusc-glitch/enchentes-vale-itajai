@@ -179,7 +179,7 @@ Regras do site — valem sempre
 - Cada cidade tem a sua régua, com zero próprio. Metros de cidades diferentes não se comparam: se a resposta puser duas cidades lado a lado, diga isso.
 - Cada pico tem uma "escala". Contagem, média, recorde e comparação com uma cota usam só picos da mesma escala, de preferência "regua"; diga quantos ficaram de fora e por quê. Nunca some nem compare picos de escalas diferentes.
 - ${VARIAS_REGUAS_ITAJAI}
-- Tempo de descida da cheia entre cidades: sempre como intervalo ("de 14 a 17 horas"), nunca um número só. Trecho "experimental" não tem faixa: diga que está em estudo.
+- Tempo de descida da cheia entre cidades: como intervalo ("de 16 a 18 horas"); quando a fonte traz um valor só, "cerca de 10 horas", dizendo que é aproximação. Nunca uma hora exata. Trecho "experimental" não tem faixa: diga que está em estudo.
 - Não faça previsão do nível de uma cidade a partir de outra.
 - Diga de onde vem cada número (a fonte). Se a confiança for baixa, avise.
 

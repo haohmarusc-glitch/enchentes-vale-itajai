@@ -86,6 +86,7 @@ pelo acervo do Actions, sem comando na VPS.
 | # | decisão | recomendação | detalhe |
 |---|---|---|---|
 | 5.9 | ✅ **Aplicado em 10/10/2026 (série própria, `REPROCESSAMENTOS`):** **Guabiruba (DCSC-00029):** a API serve hoje o histórico no zero local desde pelo menos 11/07. O download de 10/09 tinha altitude nas mesmas datas. Manter o trecho reprocessado (19/07 →) na série consolidada? | sim, como série própria, sem emendar no "antes" de 01/04 enquanto o zero não for provado | `docs/GUABIRUBA-DCSC-00029-2026-10-10.md` |
+| 5.11 | ✅ **Aplicado em 10/10/2026:** janela de chegada do tronco do Açu numa coluna só da Tabela 7.5.1 da JICA, a de 5 anos (Rio do Sul → Blumenau 10 h; Blumenau → Itajaí 17 h) | os avisos de janela fora de ordem no validador zeram | `docs/JANELA-DE-CHEGADA.md` |
 | 5.10 | Perguntar à DCSC qual conta converteu o histórico de 01/04 em diante | ✅ **C36 rascunhado em 10/10/2026, não enviado**; destinatário a confirmar (telefone geral (48) 3664-7000 ou Ouvidoria do Estado) | `docs/oficios-prontos.md`, C36 |
 
 ## Atualização de 10/10/2026

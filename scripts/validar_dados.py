@@ -841,7 +841,7 @@ def valida_meses_pareados() -> None:
     """
     Evento do mesmo ano em duas cidades do tronco tem de cair no mesmo MÊS.
 
-    A cheia desce o Açu em horas — Rio do Sul → Blumenau são 7 a 10 h. Então
+    A cheia desce o Açu em horas — Rio do Sul → Blumenau são cerca de 10 h. Então
     duas cidades do tronco que registram o mesmo evento registram no mesmo dia,
     e no mesmo mês com folga de sobra. Mês diferente não é imprecisão: são
     eventos distintos, ou uma das datas está errada.
