@@ -4,6 +4,27 @@ Levantado em 03/09/2026 no portal da Defesa Civil de Rio do Sul e na API Asthon.
 árvore de `docs/TOPOLOGIA-CANONICA.md`: as duas cabeceiras (Itajaí do Oeste e Itajaí do Sul) se juntam em
 Rio do Sul e formam o Itajaí-Açu.
 
+## Coleta em arquivo próprio (decisão do Jefferson, 10/10/2026)
+
+`scripts/coleta_riodosul_rios.py --publicar`, chamado pelo `publicar_tempo_real.sh` a cada publicação, faz uma
+consulta ao painel da Asthon e guarda, por lista fechada de `station_id` e com o rio conferido:
+
+| régua | rio | `station_id` |
+|---|---|---|
+| Ponte Ricardo Kanitz | Itajaí do Sul | `30475400-b7ba-4551-9646-19df0c3bfa38` |
+| Ponte Hannelore Hartmann Eyng | Itajaí do Sul | `039a5d4f-f58d-4fca-bef6-5d37e132a6f0` |
+| **Ponte BR 470** | Itajaí do **Oeste** | `3167e629-3bbe-48f2-9244-c65dfe6882d8` — **está na API desde, pelo menos, 10/10/2026** |
+| Ponte Dom Tito Buss (saída, já no site) | Itajaí-Açu | `f6360951-219f-4859-935f-b2e2d13962f1` |
+
+- `data/tempo-real/ultimo_rio_do_sul_rios.json`: a última leitura de cada uma, com a idade e as cotas como a
+  Asthon publica (`band_thresholds`: 4,50 / 5,50 / 6,50 m, `authored`, nas três do centro e na BR 470). **Arquivo
+  próprio, nunca em `leituras`:** não pinta, não avisa e não está no cadastro. Mostrar na tela é outra decisão.
+- `data/tempo-real/rio-do-sul-rios-AAAA-MM.ndjson`: a série, sem repetir leitura, para a calibração das duas
+  cabeceiras. Vai para o `arquivo-series` na cópia semanal.
+
+Primeira leitura (10/10/2026, ~07:28 em Brasília): Kanitz 5,00 m, Hannelore 4,85 m, BR 470 4,39 m, Tito Buss
+4,55 m — cada uma na régua dela.
+
 ## As réguas
 
 | Régua | Rio | Ramo | Situação da verificação |
@@ -60,7 +81,6 @@ A regra do datum continua valendo **entre cidades**; não se aplicava a esse cas
 ## Pendências que isto abre
 - Capturar o `panel` da Asthon na VPS e conferir se as réguas de rio trazem `band_thresholds` (comando em
   `docs/API-ASTHON-COMPLETA.md`). É o que fecharia a cota de Vidal Ramos e, talvez, das três de Rio do Sul.
-- Confirmar a "Ponte BR 470" (Oeste) — sem ela, não há régua do Oeste na API, e a calibração das duas
-  cabeceiras fica com só um lado medido.
-- Coletar as réguas confirmadas (hoje `coleta_asthon.py` traz Vidal Ramos por lista fechada de
-  `station_id`), cada uma com o seu `ramo`.
+- ~~Confirmar a "Ponte BR 470" (Oeste)~~ — **está no painel da Asthon (10/10/2026)**, com rio e cotas.
+- ~~Coletar as réguas confirmadas~~ — **coletadas desde 10/10/2026**, em arquivo próprio (seção acima).
+- Calibrar a contribuição de cada cabeceira quando a série tiver uma cheia (`rio-do-sul-rios-*.ndjson`).

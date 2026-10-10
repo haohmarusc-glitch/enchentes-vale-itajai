@@ -166,6 +166,27 @@ sys.exit(0 if d.get("versao") == 1 and d.get("ultima_leitura") and 0 <= idade <=
   ITUPORANGA_CENTRO_ENTRY="$(printf '100644 blob %s\tultimo_ituporanga_centro.json' "$BLOB_ITUPORANGA_CENTRO")"
 fi
 
+# ultimo_rio_do_sul_rios.json: as réguas do Itajaí do Sul (Ricardo Kanitz, Hannelore Hartmann Eyng) e do Itajaí do
+# Oeste (BR 470) em Rio do Sul, mais a Tito Buss, para calibração (decisão do Jefferson, 10/10/2026). Arquivo
+# próprio, nunca em `leituras`: não pinta, não avisa e não está no cadastro. A coleta também acumula a série em
+# data/tempo-real/rio-do-sul-rios-AAAA-MM.ndjson. Falha apaga o arquivo anterior e nunca segura o nível; só sobe o
+# que foi gerado há no máximo 30 min.
+RIO_DO_SUL_RIOS="$RAIZ/data/tempo-real/ultimo_rio_do_sul_rios.json"
+if [ "$SECO" -eq 0 ] && [ -f "$RAIZ/scripts/coleta_riodosul_rios.py" ]; then
+  timeout 60 python3 scripts/coleta_riodosul_rios.py --publicar \
+    || echo "aviso: réguas dos rios de Rio do Sul não coletadas; o nível ao vivo segue." >&2
+fi
+RIO_DO_SUL_RIOS_ENTRY=""
+if [ -f "$RIO_DO_SUL_RIOS" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("versao") == 1 and d.get("reguas") and 0 <= idade <= 1800 else 1)' "$RIO_DO_SUL_RIOS" 2>/dev/null; then
+  BLOB_RIO_DO_SUL_RIOS="$(git hash-object -w "$RIO_DO_SUL_RIOS")"
+  RIO_DO_SUL_RIOS_ENTRY="$(printf '100644 blob %s\tultimo_rio_do_sul_rios.json' "$BLOB_RIO_DO_SUL_RIOS")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
@@ -176,6 +197,7 @@ TREE="$(
     [ -n "$CLASSIFICACAO_ENTRY" ] && printf '%s\n' "$CLASSIFICACAO_ENTRY"
     [ -n "$MARE_MEDIDA_ENTRY" ] && printf '%s\n' "$MARE_MEDIDA_ENTRY"
     [ -n "$ITUPORANGA_CENTRO_ENTRY" ] && printf '%s\n' "$ITUPORANGA_CENTRO_ENTRY"
+    [ -n "$RIO_DO_SUL_RIOS_ENTRY" ] && printf '%s\n' "$RIO_DO_SUL_RIOS_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o
