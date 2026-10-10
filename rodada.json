@@ -1,0 +1,32 @@
+{
+ "caixa": [
+  -27.0,
+  -49.2,
+  -26.55,
+  -48.7
+ ],
+ "nomes": [
+  "Rio Luiz Alves",
+  "Rio Luís Alves",
+  "Rio Luis Alves"
+ ],
+ "tentativas": [
+  {
+   "espelho": "https://overpass-api.de/api/interpreter",
+   "tentativa": 1,
+   "resultado": "ok",
+   "base_osm": "2026-10-10T21:29:26Z",
+   "decisao": "mais_nova"
+  }
+ ],
+ "espelho": "https://overpass-api.de/api/interpreter",
+ "base_osm": "2026-10-10T21:29:26Z",
+ "por_nome": {
+  "Rio Luís Alves": {
+   "ways": 5,
+   "km": 41.1
+  }
+ },
+ "problemas": [],
+ "situacao": "gravado em data/brutos/tracado-luiz-alves-osm.json (substituído, base recebida mais nova)"
+}

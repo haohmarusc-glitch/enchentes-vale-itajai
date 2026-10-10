@@ -1,0 +1,2 @@
+{"Rio Luís Alves": {"ways": 5, "km": 41.1}}
+gravado em data/brutos/tracado-luiz-alves-osm.json (substituído, base recebida mais nova)
