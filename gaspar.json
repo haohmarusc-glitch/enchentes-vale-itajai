@@ -1,0 +1,21 @@
+{
+ "fonte": "https://defesacivil.gaspar.sc.gov.br/estacao/ver/21",
+ "coletor": "github-actions",
+ "coletado_em": "2026-10-13T11:37:03+00:00",
+ "leitura": {
+  "estacao": "Gaspar — Rio Itajaí-Açu (Defesa Civil de Gaspar)",
+  "rio": "itajai-acu",
+  "cidade": "gaspar",
+  "nivel_m": 1.53,
+  "medido_em": "2026-10-13T08:06:00",
+  "usar_para_cota": true
+ },
+ "bruto": {
+  "arquivo": "gaspar-estacao-21.html",
+  "sha256": "5ab2b310cb9b300435f6b3546d4a10bd80da6ba96c20294d1457c1f60c79e38d",
+  "bytes": 29957,
+  "http": 200
+ },
+ "user_agent": "enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)",
+ "nota": "medido_em é horário de Brasília sem fuso, como a página publica; coletado_em é UTC. O arquivo só é regravado quando a leitura muda."
+}
