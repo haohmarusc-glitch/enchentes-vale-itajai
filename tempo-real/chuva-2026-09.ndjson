@@ -68701,3 +68701,4 @@
 {"estacao": "DCSC-00023 SDC-SC Timbó 1", "rio": null, "cidade": "timbo", "medido_em": "2026-09-30T23:46:13", "mm": {"min10": null, "h1": 0.11, "h12": 18.29, "h24": 18.54, "h48": null}, "coerente": true}
 {"estacao": "DCSC-00024 SDC-SC Vidal Ramos", "rio": null, "cidade": "vidal-ramos", "medido_em": "2026-09-30T23:46:16", "mm": {"min10": null, "h1": 0.0, "h12": 15.8, "h24": 16.4, "h48": null}, "coerente": true}
 {"estacao": "DCSC-00039 SDC-SC Ituporanga", "rio": null, "cidade": "ituporanga", "medido_em": "2026-09-30T23:46:14", "mm": {"min10": null, "h1": 0.0, "h12": 17.8, "h24": 17.8, "h48": null}, "coerente": true}
+{"estacao": "DCSC-00030 SDC-SC Ilhota", "rio": null, "cidade": "ilhota", "medido_em": "2026-09-24T18:12:33", "mm": {"min10": null, "h1": null, "h12": 0.34, "h24": 0.78, "h48": null}, "coerente": true}
