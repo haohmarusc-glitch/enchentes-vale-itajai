@@ -114,7 +114,11 @@ def coletar(buscar=None, converter=None) -> list[dict]:
             from coleta_nivel_sc import buscar as _buscar, converter as _converter
             buscar = buscar or _buscar
             converter = converter or _converter
-        brutas, _sem, _susp, _nao_mede = converter(buscar(), so_cadeia=False)
+        # `coleta_nivel_sc.buscar` devolve (estações, consulta) desde 27/10/2026; um `buscar` injetado
+        # pode devolver só a lista.
+        resposta = buscar()
+        estacoes, consulta = resposta if isinstance(resposta, tuple) else (resposta, None)
+        brutas, _sem, _susp, _nao_mede = converter(estacoes, so_cadeia=False, consulta=consulta)
         return montar(brutas)
     except Exception as e:  # noqa: BLE001 — uma fonte a mais nunca derruba a coleta
         print(f"aviso: rede estadual com cota própria não coletada ({e}).", file=sys.stderr)

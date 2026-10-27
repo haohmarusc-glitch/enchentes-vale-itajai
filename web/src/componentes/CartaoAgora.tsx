@@ -168,6 +168,9 @@ export default function CartaoAgora({
               <strong>zero próprio</strong>: não se compara com as cotas desta cidade.{' '}
               {faixaEstadual ? (
                 <>A cor é a faixa que a própria Defesa Civil de SC publica para a estação.</>
+              ) : bruto.faixaEstadualIndisponivel ? (
+                // 27/10/2026: a DCSC publica a faixa, mas bloqueou a nossa leitura; o motivo vem dos dados.
+                <>Sem cor: {bruto.motivoFaixaEstadual ?? 'classificação estadual indisponível nesta coleta'}.</>
               ) : (
                 <>A Defesa Civil de SC não publica faixa para esta estação agora.</>
               )}
@@ -259,6 +262,8 @@ export default function CartaoAgora({
               para a estação{estadual?.codigo ? ` ${estadual.codigo}` : ''}, no zero dela (fonte:
               monitoramento.defesacivil.sc.gov.br).
             </>
+          ) : estadual?.faixaEstadualIndisponivel ? (
+            <>Sem cor: {estadual.motivoFaixaEstadual ?? 'classificação estadual indisponível nesta coleta'}.</>
           ) : (
             <>A Defesa Civil de SC não publica faixa válida para a estação agora.</>
           )}
