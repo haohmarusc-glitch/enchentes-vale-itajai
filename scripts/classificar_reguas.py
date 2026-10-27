@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Classificação MUNICIPAL e ESTADUAL de cada cidade, calculadas em separado (PR 1: em paralelo ao site).
+"""Classificação MUNICIPAL e ESTADUAL de cada cidade, calculadas em separado.
 
-POR QUE EXISTE (plano de 07/10/2026, decisões do Jefferson). Hoje quem decide a cor de uma cidade é o
-site (`web/src/logica/tempoReal.ts::faixaDaCidade` e `web/src/dados/usarAoVivo.ts::estadoDaCidade`).
+POR QUE EXISTE (plano de 07/10/2026, decisões do Jefferson). Pela regra de sempre, quem decide a cor de uma
+cidade é o site (`web/src/logica/tempoReal.ts::faixaDaCidade` e `web/src/dados/usarAoVivo.ts::estadoDaCidade`).
 Este módulo faz a mesma conta do lado Python e entrega, por cidade, as DUAS classificações e qual delas
-pintaria o rio, com a régua e a fonte de cada uma. O site AINDA NÃO LÊ o arquivo que sai daqui: o
-consumo é o PR 2, depois que a saída rodar em paralelo e bater com a tela.
+pinta o rio, com a régua e a fonte de cada uma. Desde o PR 2 (#511) o site segue este arquivo nas cidades do
+piloto, e desde o PR 3 o Monitor também — só quando o arquivo é desta coleta e viu as mesmas medições da tela.
 
 AS REGRAS, nesta ordem:
   1. Régua da leitura = régua das faixas. A municipal só classifica quando a leitura é da régua das
@@ -372,6 +372,24 @@ def _estadual_valido(nivel) -> bool:
             and 0 < float(nivel) < NIVEL_MAXIMO_ESTADUAL_M)
 
 
+def motivo_sem_faixa_estadual(cls: dict, nivel_sc: dict) -> str:
+    """Por que a estação ficou sem faixa estadual — o motivo CERTO, não o texto de sempre.
+
+    "A Defesa Civil de SC não publicou faixa para a estação" só é verdade quando o coletor leu `rio_alarmes`
+    (degrau `completa` em `consulta`) e a estação veio sem faixa. Desde 13/10/2026 a DCSC recusa a leitura
+    de `rio_alarmes` ("Operação bloqueada."), e nesse caso o coletor escreve o motivo da recusa na própria
+    leitura (`classificacao_indisponivel`) e o degrau em `consulta`; dizer "não publicou" seria falso.
+    """
+    if cls.get("motivo"):
+        return cls["motivo"]
+    consulta = nivel_sc.get("consulta") if isinstance(nivel_sc.get("consulta"), dict) else None
+    if consulta is None:
+        return "classificação estadual ausente na coleta (o coletor não registrou o degrau da consulta)"
+    if consulta.get("degrau") == "completa":
+        return "a Defesa Civil de SC não publicou faixa para a estação"
+    return f"classificação estadual indisponível: {consulta.get('motivo') or 'rio_alarmes não lido nesta coleta'}"
+
+
 def classificar_estadual(cidade: dict, nivel_sc: dict, agora: datetime) -> dict:
     """A faixa que a Defesa Civil de SC publica para a estação da cidade. Nenhum metro é comparado aqui."""
     base = {
@@ -413,7 +431,7 @@ def classificar_estadual(cidade: dict, nivel_sc: dict, agora: datetime) -> dict:
         return sem_classificacao(base, MOTIVO_DO_STATUS[status])
     faixa = cls.get("faixa")
     if faixa not in FAIXAS_ESTADUAIS:
-        return sem_classificacao(base, cls.get("motivo") or "a Defesa Civil de SC não publicou faixa para a estação")
+        return sem_classificacao(base, motivo_sem_faixa_estadual(cls, nivel_sc))
     return {**base, "faixa": faixa, "motivo": None}
 
 
@@ -469,12 +487,15 @@ def montar_estado(estacoes: dict, ultimo: dict, nivel_sc: dict, agora: datetime,
     return {
         "versao": 1,
         "gerado_em": agora.astimezone(timezone.utc).isoformat(timespec="seconds"),
-        "aviso": ("Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações "
-                  "independentes por cidade; a faixa diz a cor, nunca o metro."),
+        "aviso": ("Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site "
+                  "(estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é "
+                  "desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre."),
         "piloto": list(piloto),
         "entradas": {
             "leituras_coletadas_em": ultimo.get("coletado_em"),
             "nivel_sc_coletado_em": nivel_sc.get("coletado_em"),
+            # Qual degrau da consulta à DCSC respondeu (27/10/2026): fora do `completa`, não há faixa estadual.
+            "nivel_sc_consulta": nivel_sc.get("consulta"),
         },
         "cidades": cidades,
     }

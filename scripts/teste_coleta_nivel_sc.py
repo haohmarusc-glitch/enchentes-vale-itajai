@@ -209,50 +209,161 @@ class TestCamposNovosDaAPI(unittest.TestCase):
         self.assertEqual(leituras[0]["rio_area_drenagem_km2"], 1164.0)
 
 
+#: A recusa real da DCSC desde 13/10/2026 a qualquer consulta que peça `rio_alarmes` (log da VPS).
+BLOQUEIO = {"message": "Operação bloqueada.", "extensions": {"code": "INTERNAL_SERVER_ERROR"}}
+
+
 class TestBuscarFallback(unittest.TestCase):
     """
-    buscar() tenta QUERY_CAMPOS_NOVOS primeiro; se a API recusar (GraphQL 'errors' —
-    a allowlist de query persistida pode rejeitar qualquer string que não seja a exata
-    do bundle), cai para a QUERY original de 01/09. Nunca escolhe às cegas: é a resposta
-    real, na primeira execução contra o host de verdade, que decide.
+    buscar() desce três degraus (armadilhas 9 e 10): a QUERY_CAMPOS_NOVOS completa, a mesma sem
+    `rio_alarmes` e a QUERY original de 01/09. Nunca escolhe às cegas: é a resposta real que
+    decide — e o degrau usado, com o motivo, vai para `consulta`.
     """
 
     @staticmethod
-    def _resposta(ok=True):
+    def _resposta(ok=True, erro=None):
         m = unittest.mock.Mock()
         m.raise_for_status = unittest.mock.Mock()
         corpo = (
             {"data": {"tags_data": {"qualle_meteorologia": [{"codigo": "X"}]}}}
-            if ok else {"errors": ["allowlist recusou a query"]}
+            if ok else {"errors": [erro or BLOQUEIO]}
         )
         m.json = unittest.mock.Mock(return_value=corpo)
         return m
 
-    def test_usa_a_enriquecida_direto_quando_aceita(self):
+    def test_usa_a_completa_direto_quando_aceita(self):
         with unittest.mock.patch.object(coleta_nivel_sc.requests, "post",
-                                         return_value=self._resposta(ok=True)) as m:
-            est = buscar()
+                                         return_value=self._resposta(ok=True)) as m, \
+                unittest.mock.patch("sys.stderr"):
+            est, consulta = buscar()
         self.assertEqual(est, [{"codigo": "X"}])
-        self.assertEqual(m.call_count, 1, "aceitou de primeira, não devia tentar a original")
+        self.assertEqual(m.call_count, 1, "aceitou de primeira, não devia descer degrau")
         self.assertIn("rio_alarmes", m.call_args.kwargs["json"]["query"])
+        self.assertEqual(consulta, {"degrau": "completa", "motivo": None})
 
-    def test_cai_para_a_original_quando_a_api_recusa_a_enriquecida(self):
+    def test_rio_alarmes_recusado_cai_para_a_sem_alarmes_e_guarda_o_motivo_real(self):
+        """O caso de 13/10/2026: só `rio_alarmes` bloqueado; `type`/`rio_nome` seguem vindo."""
         with unittest.mock.patch.object(
             coleta_nivel_sc.requests, "post",
             side_effect=[self._resposta(ok=False), self._resposta(ok=True)],
-        ) as m:
-            est = buscar()
+        ) as m, unittest.mock.patch("sys.stderr"):
+            est, consulta = buscar()
         self.assertEqual(est, [{"codigo": "X"}])
         self.assertEqual(m.call_count, 2)
         primeira, segunda = m.call_args_list
         self.assertIn("rio_alarmes", primeira.kwargs["json"]["query"])
-        self.assertNotIn("tem_nivel_do_rio", segunda.kwargs["json"]["query"])
+        self.assertNotIn("rio_alarmes", segunda.kwargs["json"]["query"])
+        self.assertIn("rio_nome { value }", segunda.kwargs["json"]["query"], "o degrau do meio mantém os campos novos")
+        self.assertIn(" type ", segunda.kwargs["json"]["query"])
+        self.assertEqual(consulta["degrau"], "sem_alarmes")
+        self.assertEqual(consulta["motivo"], "rio_alarmes recusado: Operação bloqueada.",
+                         "o motivo é a mensagem real da API, não texto fixo")
 
-    def test_propaga_erro_se_as_duas_falharem(self):
+    def test_tudo_recusado_cai_para_a_original_e_diz_as_duas_recusas(self):
+        with unittest.mock.patch.object(
+            coleta_nivel_sc.requests, "post",
+            side_effect=[self._resposta(ok=False), self._resposta(ok=False, erro={"message": "campo type inválido"}),
+                         self._resposta(ok=True)],
+        ) as m, unittest.mock.patch("sys.stderr"):
+            est, consulta = buscar()
+        self.assertEqual(est, [{"codigo": "X"}])
+        self.assertEqual(m.call_count, 3)
+        terceira = m.call_args_list[2]
+        self.assertEqual(terceira.kwargs["json"]["query"], coleta_nivel_sc.QUERY)
+        self.assertEqual(consulta["degrau"], "original")
+        self.assertIn("Operação bloqueada.", consulta["motivo"])
+        self.assertIn("campo type inválido", consulta["motivo"])
+
+    def test_avisa_uma_linha_por_degrau_que_cai(self):
+        import io
+        with unittest.mock.patch.object(
+            coleta_nivel_sc.requests, "post",
+            side_effect=[self._resposta(ok=False), self._resposta(ok=False), self._resposta(ok=True)],
+        ), unittest.mock.patch("sys.stderr", new_callable=io.StringIO) as err:
+            buscar()
+        linhas = [l for l in err.getvalue().splitlines() if l.startswith("aviso:")]
+        self.assertEqual(len(linhas), 2)
+        self.assertIn("completa", linhas[0])
+        self.assertIn("Operação bloqueada.", linhas[0])
+        self.assertIn("sem_alarmes", linhas[1])
+
+    def test_erro_http_tambem_vira_motivo(self):
+        with unittest.mock.patch.object(
+            coleta_nivel_sc.requests, "post",
+            side_effect=[coleta_nivel_sc.requests.HTTPError("400 Client Error"), self._resposta(ok=True)],
+        ), unittest.mock.patch("sys.stderr"):
+            _, consulta = buscar()
+        self.assertEqual(consulta, {"degrau": "sem_alarmes", "motivo": "rio_alarmes recusado: 400 Client Error"})
+
+    def test_propaga_erro_se_os_tres_falharem(self):
         with unittest.mock.patch.object(coleta_nivel_sc.requests, "post",
-                                         return_value=self._resposta(ok=False)):
+                                         return_value=self._resposta(ok=False)) as m, \
+                unittest.mock.patch("sys.stderr"):
             with self.assertRaises(RuntimeError):
                 buscar()
+        self.assertEqual(m.call_count, 3)
+
+
+class TestClassificacaoIndisponivel(unittest.TestCase):
+    """Armadilha 10: fora do degrau completo, a leitura diz que a classificação estadual está
+    INDISPONÍVEL (a DCSC recusou a nossa leitura), não que a estação está sem faixa (`ativo=false`)."""
+
+    SEM_ALARMES = {"degrau": "sem_alarmes", "motivo": "rio_alarmes recusado: Operação bloqueada."}
+
+    def test_sem_alarmes_marca_indisponivel_com_o_motivo_da_recusa(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nome="SDC-SC Rio do Sul", nivel=5.46,
+                                          tipo="Hidro", rio_nome={"value": "Itajaí-Açu"})],
+                                 consulta=self.SEM_ALARMES)
+        c = leituras[0]["classificacao_estadual"]
+        self.assertIsNotNone(c, "no código antigo isto era None, igual a 'a API não trouxe o bloco'")
+        self.assertIsNone(c["faixa"])
+        self.assertIsNone(c["ativo"], "ativo=None: não sabemos; ativo=false é outra coisa")
+        self.assertTrue(c["indisponivel"])
+        self.assertEqual(c["motivo"], "classificação estadual indisponível: rio_alarmes recusado: Operação bloqueada.")
+        self.assertIn("Defesa Civil de SC", c["fonte"])
+        self.assertEqual(leituras[0]["tipo_estacao"], "Hidro", "os campos que a API ainda serve continuam entrando")
+        self.assertEqual(leituras[0]["rio_nome"], "Itajaí-Açu")
+
+    def test_e_diferente_de_estacao_sem_faixas_configuradas(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00003", nome="SDC-SC Ascurra", nivel=8.26,
+                                          alarmes=alarme(ativo=0))], consulta={"degrau": "completa", "motivo": None})
+        c = leituras[0]["classificacao_estadual"]
+        self.assertIs(c["ativo"], False)
+        self.assertNotIn("indisponivel", c)
+        self.assertIn("sem faixas configuradas", c["motivo"])
+
+    def test_degrau_original_tambem_marca_indisponivel(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46)],
+                                 consulta={"degrau": "original", "motivo": "campos novos recusados (…)"})
+        self.assertTrue(leituras[0]["classificacao_estadual"]["indisponivel"])
+
+    def test_degrau_completo_sem_bloco_continua_none(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46)],
+                                 consulta={"degrau": "completa", "motivo": None})
+        self.assertIsNone(leituras[0]["classificacao_estadual"])
+
+    def test_a_serie_nao_ganha_faixa(self):
+        leituras, *_ = converter([estacao(codigo="DCSC-00013", nivel=5.46)], consulta=self.SEM_ALARMES)
+        self.assertIsNone(coleta_nivel_sc._linha_serie(leituras[0])["faixa_estadual"])
+
+    def test_a_query_sem_alarmes_e_a_completa_sem_o_bloco(self):
+        self.assertNotIn("rio_alarmes", coleta_nivel_sc.QUERY_SEM_ALARMES)
+        self.assertEqual(coleta_nivel_sc.QUERY_CAMPOS_NOVOS.replace(
+            "rio_alarmes { inundacao { ativo { value } status { value } "
+            "atencao { value } alerta { value } emergencia { value } } } ", ""), coleta_nivel_sc.QUERY_SEM_ALARMES)
+        self.assertEqual([n for n, _ in coleta_nivel_sc.DEGRAUS], ["completa", "sem_alarmes", "original"])
+
+    def test_o_arquivo_gravado_leva_a_consulta(self):
+        with tempfile.TemporaryDirectory() as d, \
+                unittest.mock.patch.object(coleta_nivel_sc, "SAIDA", Path(d)), \
+                unittest.mock.patch.object(coleta_nivel_sc, "buscar",
+                                           return_value=([estacao(codigo="DCSC-00013", nivel=5.46)], self.SEM_ALARMES)), \
+                unittest.mock.patch("sys.argv", ["coleta_nivel_sc.py"]), unittest.mock.patch("sys.stdout"):
+            self.assertEqual(coleta_nivel_sc.main(), 0)
+            import json
+            saida = json.loads((Path(d) / "ultimo_nivel_sc.json").read_text(encoding="utf-8"))
+        self.assertEqual(saida["consulta"], self.SEM_ALARMES)
+        self.assertTrue(saida["leituras"][0]["classificacao_estadual"]["indisponivel"])
 
 
 class TestRegraDeFundo(unittest.TestCase):

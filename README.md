@@ -480,6 +480,24 @@ o projeto.
 
 ## Pendências
 
+- [x] **A DCSC bloqueou `rio_alarmes` e o mapa perdeu a faixa estadual (desde 13/10/2026; tratado em 27/10/2026).**
+  A API da Defesa Civil de SC responde "Operação bloqueada." a qualquer consulta que peça `rio_alarmes` — só esse
+  campo (`type`, `rio_nome`, `rio_nivel` e `rio_area_drenagem` seguem liberados, testados um a um em 27/10). O coletor
+  descartava a query enriquecida inteira (2.759 avisos em 14 dias) e o motor e o site diziam "a Defesa Civil de SC não
+  publicou faixa", o que é falso. Agora `coleta_nivel_sc.buscar()` desce três degraus (completa → sem alarmes →
+  original), grava em `consulta` qual respondeu e por quê, e cada leitura sem o campo sai com
+  `classificacao_estadual.indisponivel` e o motivo da recusa real; motor e site passam o motivo adiante. **A cor não
+  volta por este caminho** — sem o campo não há faixa estadual, e metro bruto não se compara com cota municipal. A
+  query completa continua sendo o primeiro degrau: se a DCSC liberar, volta sozinha. `docs/API-DEFESA-CIVIL-SC.md`,
+  `docs/coleta-nivel-estadual.md`, `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.
+  - [ ] **Perguntar à DCSC se o bloqueio de `rio_alarmes` é proposital** (e, se for, se há outro caminho para a
+    classificação por estação). Nada rascunhado.
+  - [ ] **Cron possivelmente duplicado na VPS:** 2.759 recusas em ~14 dias dão o dobro de ciclos de 15 min, e as duas
+    primeiras estão a 64 linhas uma da outra no log. Conferir com `crontab -l | grep -n coleta_nivel_sc`. Não mexido.
+  - [ ] Depois do deploy: `consulta` no `ultimo_nivel_sc.json` deve dizer `sem_alarmes`, com `tipo_estacao` e
+    `rio_nome` preenchidos, e `grep -c "query enriquecida" /var/log/niveis.log` deve parar de crescer.
+  - [ ] O "Por que está cinza?" do Monitor ainda não nomeia o bloqueio (texto verdadeiro, mas sem o motivo); fica
+    para um PR com `monitor-autorizado`.
 - [x] **Avisos de Itajaí: decisões de 10/10/2026 mescladas (#539) e auditadas com a chuva de 06–07/10.**
   DC-03 destravada com histerese de 0,30 m e liberação após 6 h; DC-06 destravada (atenção 1,50 m); DC-11 com
   liberação após 6 h (61 mensagens em 35 dias, em vez de 52); DC-07 com as cotas do portal provisórias e a Murta

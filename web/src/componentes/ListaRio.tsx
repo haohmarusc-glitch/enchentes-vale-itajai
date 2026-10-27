@@ -157,7 +157,7 @@ function Linha({ cidade, rioId, aoVivo, destino }: { cidade: Cidade; rioId: stri
           ) : linha.tipo === 'estadual' ? (
             <>
               rede estadual (zero próprio): {metros(linha.nivel)}
-              {linha.comFaixa ? '' : ' · sem faixa publicada'} · {textoIdade(linha.idade)}
+              {linha.comFaixa ? '' : linha.faixaIndisponivel ? ' · classificação estadual indisponível' : ' · sem faixa publicada'} · {textoIdade(linha.idade)}
             </>
           ) : (
             <>sem leitura recente</>

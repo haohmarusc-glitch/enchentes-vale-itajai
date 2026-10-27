@@ -251,6 +251,58 @@ class TesteEstadual(unittest.TestCase):
         self.assertIn("> 20 m", r["motivo"])
 
 
+class TesteEstadualBloqueada(unittest.TestCase):
+    """Desde 13/10/2026 a DCSC recusa a leitura de `rio_alarmes` ("Operação bloqueada."). O coletor marca a
+    classificação como indisponível e registra o degrau em `consulta`; o motor fica cinza com ESSE motivo —
+    nunca "normal", nunca "a DCSC não publicou faixa", que seria falso."""
+
+    RECUSA = "rio_alarmes recusado: Operação bloqueada."
+
+    def bloqueada(self, com_motivo_na_leitura=True, consulta=None):
+        sc = estadual(None)
+        cls = sc["leituras"][0]["classificacao_estadual"]
+        if com_motivo_na_leitura:
+            cls.update({"ativo": None, "indisponivel": True,
+                        "motivo": f"classificação estadual indisponível: {self.RECUSA}"})
+        if consulta is not None:
+            sc["consulta"] = consulta
+        return sc
+
+    def test_cinza_com_o_motivo_de_bloqueio_nunca_normal(self):
+        r = cr.classificar_estadual(brusque(), self.bloqueada(), AGORA)
+        self.assertIsNone(r["faixa"])
+        self.assertEqual(r["motivo"], f"classificação estadual indisponível: {self.RECUSA}")
+        self.assertNotIn("não publicou", r["motivo"])
+
+    def test_o_degrau_da_consulta_explica_quando_a_leitura_nao_traz_motivo(self):
+        sc = self.bloqueada(com_motivo_na_leitura=False, consulta={"degrau": "sem_alarmes", "motivo": self.RECUSA})
+        r = cr.classificar_estadual(brusque(), sc, AGORA)
+        self.assertIsNone(r["faixa"])
+        self.assertEqual(r["motivo"], f"classificação estadual indisponível: {self.RECUSA}")
+
+    def test_nao_publicou_so_vale_no_degrau_completo(self):
+        sc = self.bloqueada(com_motivo_na_leitura=False, consulta={"degrau": "completa", "motivo": None})
+        self.assertEqual(cr.classificar_estadual(brusque(), sc, AGORA)["motivo"],
+                         "a Defesa Civil de SC não publicou faixa para a estação")
+        sem_consulta = self.bloqueada(com_motivo_na_leitura=False)
+        r = cr.classificar_estadual(brusque(), sem_consulta, AGORA)
+        self.assertNotIn("não publicou", r["motivo"], "arquivo sem `consulta`: não dá para afirmar que a DCSC não publicou")
+        self.assertIn("degrau", r["motivo"])
+
+    def test_a_aplicada_fica_sem_cor_e_diz_por_que(self):
+        r = cr.classificar_cidade(brusque(), [], self.bloqueada(), AGORA)
+        ap = r["classificacao_aplicada"]
+        self.assertEqual((ap["tipo"], ap["faixa"]), ("nenhuma", None))
+        self.assertIn(self.RECUSA, ap["motivo"])
+        self.assertEqual(cr.validar_estado({"cidades": {"brusque": r}}, AGORA), [])
+
+    def test_a_saida_registra_o_degrau_da_consulta(self):
+        estado = cr.montar_estado(ESTACOES, {"leituras": []}, self.bloqueada(consulta={"degrau": "sem_alarmes", "motivo": self.RECUSA}), AGORA)
+        self.assertEqual(estado["entradas"]["nivel_sc_consulta"], {"degrau": "sem_alarmes", "motivo": self.RECUSA})
+        self.assertNotIn("PARALELO", estado["aviso"])
+        self.assertNotIn("ainda não lê", estado["aviso"])
+
+
 class TesteEscolhaDaPrincipal(unittest.TestCase):
     def aplicada(self, leituras, sc):
         return cr.classificar_cidade(brusque(), leituras, sc, AGORA)["classificacao_aplicada"]

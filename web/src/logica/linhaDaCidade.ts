@@ -12,11 +12,15 @@ import { frescorDaCidade, idadeMin } from './tempoReal'
  *
  * O número estadual continua fora de `faixa` (regra da faixa estadual do
  * CLAUDE.md): aqui ele só é texto, e frase, WhatsApp e aviso não leem isto.
+ *
+ * `faixaIndisponivel` (27/10/2026): a Defesa Civil de SC bloqueou a leitura de
+ * `rio_alarmes` desde 13/10/2026. Sem faixa por isso NÃO é "sem faixa publicada":
+ * a DCSC publica, mas recusou a nossa consulta, e a linha tem de dizer o que é.
  */
 export type SituacaoDaLinha =
   | { tipo: 'municipal'; idade: number }
   | { tipo: 'varias'; quantas: number }
-  | { tipo: 'estadual'; nivel: number; idade: number; comFaixa: boolean }
+  | { tipo: 'estadual'; nivel: number; idade: number; comFaixa: boolean; faixaIndisponivel: boolean }
   | { tipo: 'sem-leitura' }
 
 export function situacaoDaLinha(estado: EstadoDaCidade, cidadeId: string, agora: Date): SituacaoDaLinha {
@@ -30,7 +34,8 @@ export function situacaoDaLinha(estado: EstadoDaCidade, cidadeId: string, agora:
   if (e?.medidoEm && Number.isFinite(e.medidoEm.getTime())) {
     const idade = idadeMin(e.medidoEm, agora)
     if (frescorDaCidade(idade, cidadeId) !== 'velha') {
-      return { tipo: 'estadual', nivel: e.nivelBrutoM, idade, comFaixa: estado.faixaEstadual !== null }
+      const comFaixa = estado.faixaEstadual !== null
+      return { tipo: 'estadual', nivel: e.nivelBrutoM, idade, comFaixa, faixaIndisponivel: !comFaixa && e.faixaEstadualIndisponivel === true }
     }
   }
   return { tipo: 'sem-leitura' }

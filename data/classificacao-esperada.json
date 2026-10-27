@@ -57,13 +57,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -173,13 +174,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -289,13 +291,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -405,13 +408,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -521,13 +525,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -637,13 +642,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -753,13 +759,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -869,13 +876,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -985,13 +993,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1089,13 +1098,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1192,13 +1202,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1295,13 +1306,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1410,13 +1422,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1525,13 +1538,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1641,13 +1655,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1766,13 +1781,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1880,13 +1896,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "brusque"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "brusque": {
@@ -1987,13 +2004,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2105,13 +2123,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2214,13 +2233,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2323,13 +2343,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2432,13 +2453,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2541,13 +2563,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2650,13 +2673,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2759,13 +2783,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "blumenau"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "blumenau": {
@@ -2878,13 +2903,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "rio-dos-cedros"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "rio-dos-cedros": {
@@ -2996,13 +3022,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "rio-dos-cedros"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "rio-dos-cedros": {
@@ -3114,13 +3141,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "rio-dos-cedros"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "rio-dos-cedros": {
@@ -3232,13 +3260,14 @@
    "motor": {
     "versao": 1,
     "gerado_em": "2026-10-07T16:05:00+00:00",
-    "aviso": "Saída em PARALELO (PR 1): o site ainda não lê este arquivo. Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro.",
+    "aviso": "Duas classificações independentes por cidade; a faixa diz a cor, nunca o metro. O site (estadoDaCidade) e o Monitor leem este arquivo para as cidades do piloto, só quando ele é desta coleta (≤ 30 min) e viu as mesmas medições da tela; senão vale a regra de sempre.",
     "piloto": [
      "rio-dos-cedros"
     ],
     "entradas": {
      "leituras_coletadas_em": null,
-     "nivel_sc_coletado_em": null
+     "nivel_sc_coletado_em": null,
+     "nivel_sc_consulta": null
     },
     "cidades": {
      "rio-dos-cedros": {

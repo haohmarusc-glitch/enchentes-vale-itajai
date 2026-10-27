@@ -44,6 +44,14 @@ ARMADILHAS que este coletor já trata (todas vistas em 01/09):
      a enriquecida funciona, `converter()` usa `tem_nivel_do_rio` da própria resposta para classificar
      (substituindo NAO_MEDE_NIVEL); quando não funciona (campo ausente = None), cai para os dicionários
      de `cadastro_dcsc.py`, que continuam servindo de rede de segurança.
+  10. A DCSC bloqueou SÓ `rio_alarmes` (desde 13/10/2026 ~10h30: "Operação bloqueada." a qualquer consulta
+      que peça `data.rio.rio_alarmes.inundacao.*`; `type`, `rio_nome`, `rio_nivel` e `rio_area_drenagem`
+      continuam liberados — testado campo a campo em 27/10). Com dois degraus, a recusa de UM campo
+      derrubava a query inteira e `tipo_estacao`/`rio_nome` voltavam a None em todas as estações. Por isso
+      `buscar()` tem TRÊS degraus (completa → sem alarmes → original) e devolve também qual foi usado e por
+      quê (`consulta`); fora do degrau completo, cada leitura sai com `classificacao_estadual` marcada
+      `indisponivel`, com o motivo da recusa real — diferente de "estação sem faixas configuradas"
+      (`ativo=false`), que é o que a DCSC publica. O motor e o site leem esse motivo.
 
 Uso:
     python3 scripts/coleta_nivel_sc.py            # imprime + grava data/tempo-real/ultimo_nivel_sc.json
@@ -108,6 +116,22 @@ QUERY_CAMPOS_NOVOS = (
     'rio_alarmes { inundacao { ativo { value } status { value } '
     'atencao { value } alerta { value } emergencia { value } } } } '
     'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
+)
+
+#: Degrau do meio (27/10/2026, armadilha 10): a completa SEM o bloco `rio_alarmes`, que a DCSC bloqueou em
+#: 13/10/2026. Mantém `type`, `rio_nome` e `rio_area_drenagem`, que a API continua servindo.
+QUERY_SEM_ALARMES = (
+    'query Tags_data { tags_data(clients: ["secretaria-de-defesa-civil"]) { qualle_meteorologia { '
+    'codigo name { general local } timestamp type position { bacia latitude longitude } '
+    'data { rio { rio_nome { value } rio_nivel { value } rio_area_drenagem { value } } '
+    'chuva { acumulado { h024 { value } h168 { value } } } } } } }'
+)
+
+#: Os degraus de `buscar()`, na ordem. O nome vai para `consulta.degrau` no `ultimo_nivel_sc.json`.
+DEGRAUS: tuple[tuple[str, str], ...] = (
+    ("completa", QUERY_CAMPOS_NOVOS),
+    ("sem_alarmes", QUERY_SEM_ALARMES),
+    ("original", QUERY),
 )
 
 #: As três flags que a Defesa Civil de SC publica em `rio_alarmes.inundacao`, na ordem; "normal"
@@ -195,6 +219,27 @@ def classificar_alarmes(rio_bloco: dict) -> dict | None:
     }
 
 
+def classificacao_indisponivel(consulta: dict) -> dict:
+    """A `classificacao_estadual` de uma leitura colhida SEM o bloco `rio_alarmes` (armadilha 10).
+
+    Não é "sem faixas configuradas" (`ativo=false`, que a DCSC publica) nem "contraditório": é a nossa
+    leitura do campo que foi recusada. `ativo` fica None (não sabemos), `indisponivel` marca o caso, e o
+    `motivo` leva a recusa real que a API devolveu — nunca um texto fixo que envelhece sozinho.
+    """
+    return {
+        "faixa": None,
+        "ativo": None,
+        "coerente": None,
+        "atencao": None,
+        "alerta": None,
+        "emergencia": None,
+        "status": None,
+        "indisponivel": True,
+        "motivo": f"classificação estadual indisponível: {consulta.get('motivo') or 'rio_alarmes não lido nesta coleta'}",
+        "fonte": "Defesa Civil de SC — rio_alarmes.inundacao (não lido nesta coleta; ver `consulta`)",
+    }
+
+
 def e_numero(valor) -> bool:
     """`isinstance(True, int)` é True em Python, e True não é metro."""
     return isinstance(valor, (int, float)) and not isinstance(valor, bool)
@@ -220,30 +265,56 @@ def _post(query: str) -> dict:
     return r.json()
 
 
-def buscar() -> list[dict]:
+def _mensagem_da_recusa(e: Exception) -> str:
+    """O que a API disse, como ela disse: `errors[].message` do GraphQL, ou o erro HTTP."""
+    arg = e.args[0] if e.args else None
+    if isinstance(arg, list):
+        mensagens = [x.get("message") for x in arg if isinstance(x, dict) and x.get("message")]
+        if mensagens:
+            return "; ".join(str(m) for m in mensagens)
+    return str(e)
+
+
+def buscar() -> tuple[list[dict], dict]:
     """
-    Tenta QUERY_CAMPOS_NOVOS (type/tem_nivel_do_rio/rio_area_drenagem); se a API recusar
-    (`errors` no GraphQL, ou a request falhar), cai para a QUERY original de 01/09 — nunca
-    escolhe às cegas qual string funciona, é a resposta real que decide (armadilha 9).
+    Três degraus, nesta ordem, e a resposta real decide (armadilha 9): a completa (com `rio_alarmes`,
+    para voltar sozinha se a DCSC liberar), a mesma sem o bloco `rio_alarmes` (armadilha 10) e a
+    QUERY original de 01/09. Devolve (estações, consulta), com `consulta = {"degrau", "motivo"}`
+    dizendo qual degrau respondeu e, fora do completo, o que a API recusou — é isso que vai para o
+    `ultimo_nivel_sc.json`, para o motor e o site não dizerem "a DCSC não publicou" quando o que
+    houve foi recusa à nossa leitura.
     """
-    try:
-        j = _post(QUERY_CAMPOS_NOVOS)
-        if j.get("errors"):
-            raise RuntimeError(j["errors"])
-    except Exception as e:
-        print(f"aviso: query enriquecida (type/rio_nome/rio_area_drenagem/rio_alarmes) recusada "
-              f"({e}); caindo para a query original de 01/09 — sem classificação estadual", file=sys.stderr)
-        j = _post(QUERY)
-        if j.get("errors"):
-            raise RuntimeError(j["errors"])
-    return j["data"]["tags_data"]["qualle_meteorologia"]
+    recusas: list[str] = []
+    for nome, query in DEGRAUS:
+        try:
+            j = _post(query)
+            if j.get("errors"):
+                raise RuntimeError(j["errors"])
+        except Exception as e:  # noqa: BLE001 — a recusa é dado: vai para o motivo
+            recusa = _mensagem_da_recusa(e)
+            recusas.append(f"{nome}: {recusa}")
+            print(f"aviso: query {nome} recusada ({recusa}); caindo para o próximo degrau", file=sys.stderr)
+            continue
+        motivo = None
+        if nome == "sem_alarmes":
+            motivo = f"rio_alarmes recusado: {recusas[0].split(': ', 1)[1]}"
+        elif nome == "original":
+            motivo = "campos novos recusados (" + "; ".join(recusas) + ")"
+        return j["data"]["tags_data"]["qualle_meteorologia"], {"degrau": nome, "motivo": motivo}
+    raise RuntimeError("todos os degraus recusados: " + "; ".join(recusas))
 
 
 def converter(
-    estacoes: list[dict], so_cadeia: bool = False
+    estacoes: list[dict], so_cadeia: bool = False, consulta: dict | None = None
 ) -> tuple[list[dict], list[dict], list[dict], list[dict]]:
-    """Devolve (leituras, sem_leitura, suspeitas, nao_mede_nivel). Tudo com datum bruto e usar_para_cota=False."""
+    """Devolve (leituras, sem_leitura, suspeitas, nao_mede_nivel). Tudo com datum bruto e usar_para_cota=False.
+
+    `consulta` é o que `buscar()` devolveu: fora do degrau completo, a leitura sem `rio_alarmes` sai com a
+    classificação `indisponivel` (armadilha 10), não com `None` — `None` é "a API não trouxe o bloco" na
+    query completa, e fica reservado a isso.
+    """
     leituras, sem_leitura, suspeitas, nao_mede_nivel = [], [], [], []
+    sem_alarmes = bool(consulta) and consulta.get("degrau") != "completa"
     for s in estacoes:
         bacia = (s.get("position") or {}).get("bacia") or ""          # armadilha 6
         if BACIA_RE.lower() not in bacia.lower():
@@ -301,8 +372,10 @@ def converter(
         if v > LIMITE_M and cod not in RESERVATORIOS:                  # armadilha 3 (valor absurdo)
             suspeitas.append({**base, "nivel_bruto_m": round(v, 2), "motivo": f"> {LIMITE_M} m: altitude/grandeza errada"})
             continue
-        leituras.append({**base, "nivel_bruto_m": round(v, 2),
-                         "classificacao_estadual": classificar_alarmes(rio_bloco)})
+        cls = classificar_alarmes(rio_bloco)
+        if cls is None and sem_alarmes:
+            cls = classificacao_indisponivel(consulta)
+        leituras.append({**base, "nivel_bruto_m": round(v, 2), "classificacao_estadual": cls})
     return leituras, sem_leitura, suspeitas, nao_mede_nivel
 
 
@@ -398,14 +471,16 @@ def main():
     ap.add_argument("--so-acu", action="store_true", help="só estações mapeadas na CADEIA")
     a = ap.parse_args()
     try:
-        est = buscar()
+        est, consulta = buscar()
     except Exception as e:
         print(f"ERRO ao buscar a rede estadual: {e}", file=sys.stderr)
         return 1
-    leituras, sem, susp, nao_mede = converter(est, so_cadeia=a.so_acu)
+    leituras, sem, susp, nao_mede = converter(est, so_cadeia=a.so_acu, consulta=consulta)
     saida = {
         "fonte": URL, "coletado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "aviso": "NÍVEL BRUTO (datum da estação). usar_para_cota=False em todas. Não comparar com cotas municipais sem offset calibrado.",
+        # Qual degrau da consulta respondeu e, fora do completo, o que a API recusou (armadilha 10).
+        "consulta": consulta,
         "leituras": leituras, "sem_leitura": sem, "suspeitas": susp, "nao_mede_nivel": nao_mede,
         "altimetricas": altimetricas(est),
     }
@@ -416,6 +491,7 @@ def main():
         print(f"{l['nivel_bruto_m']:6.2f} m bruto  {l['codigo']}  {l['estacao'][:32]:32s}  [{l['cidade'] or '-'}]")
     print(f"\n{len(leituras)} com nível · {len(sem)} sem leitura agora · {len(susp)} suspeitas · "
           f"{len(nao_mede)} não medem nível → data/tempo-real/ultimo_nivel_sc.json")
+    print(f"consulta: degrau {consulta['degrau']}" + (f" — {consulta['motivo']}" if consulta.get("motivo") else ""))
     print(f"série: +{novas} leitura(s) nova(s), {repetidas} repetida(s) em nivel-sc-AAAA-MM.ndjson")
     return 0
 

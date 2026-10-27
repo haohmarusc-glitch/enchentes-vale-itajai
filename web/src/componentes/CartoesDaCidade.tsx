@@ -210,7 +210,8 @@ export function LinhaDeCidade({
               </>
             ) : (
               <>
-                rede estadual (zero próprio): {metros(linha.nivel)} · sem faixa publicada · medido{' '}
+                rede estadual (zero próprio): {metros(linha.nivel)} ·{' '}
+                {linha.faixaIndisponivel ? 'classificação estadual indisponível' : 'sem faixa publicada'} · medido{' '}
                 {textoIdade(linha.idade)} · não conclua que está seguro
               </>
             )
