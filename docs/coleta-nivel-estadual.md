@@ -132,7 +132,7 @@ Gaspar/Blumenau/Guabiruba/Pomerode continuam vindo só dos dicionários hardcode
 a string exata do bundle (inspecionada de um browser real logado no `monitoramento.defesacivil.sc.gov.br`,
 não reconstruída por nome de campo) — não é uma tarefa deste ambiente.
 
-### Três degraus desde 27/10/2026: a DCSC bloqueou só `rio_alarmes`
+### Três degraus desde 27/10/2026: a DCSC bloqueou só `rio_alarmes` (liberado de novo até 31/10)
 Desde **13/10/2026 ~10h30** a API responde `Operação bloqueada.` (`INTERNAL_SERVER_ERROR`) a qualquer
 `Tags_data` que peça `data.rio.rio_alarmes.inundacao.*`; `type`, `rio_nome`, `rio_nivel` e
 `rio_area_drenagem` continuam liberados (testado campo a campo em 27/10, ver `API-DEFESA-CIVIL-SC.md`).

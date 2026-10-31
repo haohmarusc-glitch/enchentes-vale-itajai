@@ -341,6 +341,15 @@ para mostrar, e comparar o metro bruto com cota municipal continua proibido. O q
 DCSC liberar, é a query completa — ela continua sendo o primeiro degrau. Pendência no README: perguntar à
 DCSC se o bloqueio é proposital.
 
+**✅ Liberado de novo (visto em 31/10/2026, 18h16 UTC).** O `ultimo_nivel_sc.json` publicado nessa coleta — ainda
+com o coletor de dois degraus — veio com `tipo_estacao` preenchido nas 24 leituras e `classificacao_estadual` em
+todas, **18 com faixa** (Presidente Getúlio `normal`, Ilhota e Agronômica `ativo=false`, como em 14/09). Ou seja, a
+query completa foi aceita: a DCSC voltou a servir `rio_alarmes` em algum momento entre 27/10 e 31/10 (a data exata
+está no `nivel-sc-2026-10.ndjson` da VPS, pelo primeiro `faixa_estadual` não nulo depois de 13/10). As cidades que
+pintavam pela faixa estadual voltam a pintar sozinhas, sem deploy. O bloqueio durou pelo menos 14 dias
+(13/10 → 27/10) e no máximo 18. Os três degraus e o motivo `indisponivel` ficam como proteção para a próxima
+vez — e a pergunta à DCSC passa a ser se o bloqueio foi proposital e se pode voltar.
+
 ### Não é arquivo histórico
 
 Janela móvel de ~90 dias. 1983, 1984, 2008, 2011 e 2023 **não estão aqui**. Série longa só

@@ -490,12 +490,15 @@ o projeto.
   volta por este caminho** — sem o campo não há faixa estadual, e metro bruto não se compara com cota municipal. A
   query completa continua sendo o primeiro degrau: se a DCSC liberar, volta sozinha. `docs/API-DEFESA-CIVIL-SC.md`,
   `docs/coleta-nivel-estadual.md`, `docs/CLASSIFICACAO-ESTADUAL-MUNICIPAL.md`.
-  - [ ] **Perguntar à DCSC se o bloqueio de `rio_alarmes` é proposital** (e, se for, se há outro caminho para a
-    classificação por estação). Nada rascunhado.
+  - [x] **A DCSC liberou o campo (visto em 31/10/2026, 18h16 UTC):** a coleta veio com faixa em 18 das 24 estações,
+    ainda com o coletor antigo. As cidades voltam a pintar sozinhas. O bloqueio durou entre 14 e 18 dias; a data exata
+    da volta está no `nivel-sc-2026-10.ndjson` da VPS. Os três degraus ficam como proteção.
+  - [ ] **Perguntar à DCSC se o bloqueio de `rio_alarmes` foi proposital** (e se pode voltar). Nada rascunhado.
   - [ ] **Cron possivelmente duplicado na VPS:** 2.759 recusas em ~14 dias dão o dobro de ciclos de 15 min, e as duas
     primeiras estão a 64 linhas uma da outra no log. Conferir com `crontab -l | grep -n coleta_nivel_sc`. Não mexido.
-  - [ ] Depois do deploy: `consulta` no `ultimo_nivel_sc.json` deve dizer `sem_alarmes`, com `tipo_estacao` e
-    `rio_nome` preenchidos, e `grep -c "query enriquecida" /var/log/niveis.log` deve parar de crescer.
+  - [ ] Depois do deploy: `consulta` no `ultimo_nivel_sc.json` deve dizer `completa` (com a DCSC liberada) ou
+    `sem_alarmes` (se bloquear de novo), sempre com `tipo_estacao` preenchido; `grep -c "query enriquecida"
+    /var/log/niveis.log` deve parar de crescer.
   - [ ] O "Por que está cinza?" do Monitor ainda não nomeia o bloqueio (texto verdadeiro, mas sem o motivo); fica
     para um PR com `monitor-autorizado`.
 - [x] **Avisos de Itajaí: decisões de 10/10/2026 mescladas (#539) e auditadas com a chuva de 06–07/10.**

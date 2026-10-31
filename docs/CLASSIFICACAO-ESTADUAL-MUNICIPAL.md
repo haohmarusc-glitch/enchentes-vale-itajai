@@ -376,6 +376,10 @@ Gabarito regerado (`--gabarito`) porque `aviso` e `entradas` fazem parte da saí
 `esperado`, `site` ou `diverge_do_site` mudou. A cor só volta quando a DCSC liberar o campo (a query completa continua
 sendo o primeiro degrau) — pendência no README: perguntar se o bloqueio é proposital.
 
+**31/10/2026:** a DCSC liberou o campo. A coleta das 18h16 UTC veio com faixa em 18 das 24 estações, ainda com o
+coletor antigo (`docs/API-DEFESA-CIVIL-SC.md`, "Liberado de novo"). Rio dos Cedros e as demais cidades voltam a pintar
+pela faixa estadual sem deploy; este PR fica como proteção para a próxima vez.
+
 ## Fora destes PRs
 
 - **Conversões entre réguas** (§4 do plano): não há vínculo oficial cadastrado. Quando houver, entram como dado auditável,
