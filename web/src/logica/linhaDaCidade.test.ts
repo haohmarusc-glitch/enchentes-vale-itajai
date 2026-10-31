@@ -28,9 +28,21 @@ function situacao(id: string, leituras: LeituraAoVivo[], estaduais: BrutoEstadua
 
 test('Ilhota: leitura estadual de 15 min sem faixa publicada não é "sem leitura"', () => {
   const { estado, linha } = situacao('ilhota', [], [bruto('ilhota', null)])
-  assert.deepEqual(linha, { tipo: 'estadual', nivel: 9.51, idade: 15, comFaixa: false })
+  assert.deepEqual(linha, { tipo: 'estadual', nivel: 9.51, idade: 15, comFaixa: false, faixaIndisponivel: false })
   assert.equal(estado.faixa, 'sem-dado', 'o número estadual não vira faixa')
   assert.equal(estado.faixaEstadual, null)
+})
+
+test('Timbó com a DCSC bloqueando rio_alarmes (13/10/2026): sem faixa, mas a linha diz que é indisponível', () => {
+  const b: BrutoEstadual = { ...bruto('timbo', null), faixaEstadualIndisponivel: true,
+    motivoFaixaEstadual: 'classificação estadual indisponível: rio_alarmes recusado: Operação bloqueada.' }
+  const { estado, linha } = situacao('timbo', [], [b])
+  assert.deepEqual(linha, { tipo: 'estadual', nivel: 9.51, idade: 15, comFaixa: false, faixaIndisponivel: true })
+  assert.equal(estado.faixa, 'sem-dado', 'bloqueio não vira cor')
+  assert.equal(estado.faixaEstadual, null)
+  // Com faixa publicada, "indisponível" não se aplica, mesmo que o arquivo traga a marca por engano.
+  const c = situacao('ibirama', [], [{ ...bruto('ibirama', 'atencao'), faixaEstadualIndisponivel: true }]).linha
+  assert.deepEqual(c, { tipo: 'estadual', nivel: 9.51, idade: 15, comFaixa: true, faixaIndisponivel: false })
 })
 
 test('com faixa estadual publicada, a linha diz que há faixa', () => {
@@ -53,5 +65,6 @@ test('a lista e os cartões usam esta função', async () => {
     const fonte = readFileSync(new URL(`../componentes/${arq}`, import.meta.url), 'utf8')
     assert.match(fonte, /situacaoDaLinha\(/, arq)
     assert.match(fonte, /sem faixa publicada/, arq)
+    assert.match(fonte, /linha\.faixaIndisponivel \? '( · )?classificação estadual indisponível' : '( · )?sem faixa publicada'/, arq)
   }
 })

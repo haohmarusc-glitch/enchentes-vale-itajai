@@ -132,6 +132,37 @@ Gaspar/Blumenau/Guabiruba/Pomerode continuam vindo só dos dicionários hardcode
 a string exata do bundle (inspecionada de um browser real logado no `monitoramento.defesacivil.sc.gov.br`,
 não reconstruída por nome de campo) — não é uma tarefa deste ambiente.
 
+### Três degraus desde 27/10/2026: a DCSC bloqueou só `rio_alarmes` (liberado de novo até 31/10)
+Desde **13/10/2026 ~10h30** a API responde `Operação bloqueada.` (`INTERNAL_SERVER_ERROR`) a qualquer
+`Tags_data` que peça `data.rio.rio_alarmes.inundacao.*`; `type`, `rio_nome`, `rio_nivel` e
+`rio_area_drenagem` continuam liberados (testado campo a campo em 27/10, ver `API-DEFESA-CIVIL-SC.md`).
+Com dois degraus, a recusa de UM campo descartava a query enriquecida inteira: 2.759 avisos
+`query enriquecida … recusada` em 14 dias e `tipo_estacao`/`rio_nome`/`classificacao_estadual` nulos em
+todas as estações.
+
+`buscar()` passou a descer três degraus, e a resposta real decide (armadilha 9):
+
+| degrau | query | quando responde |
+|---|---|---|
+| `completa` | `QUERY_CAMPOS_NOVOS` (com `rio_alarmes`) | se a DCSC liberar de novo, volta sozinha |
+| `sem_alarmes` | `QUERY_SEM_ALARMES` (a mesma, sem o bloco) | **hoje** |
+| `original` | `QUERY` de 01/09 | se os campos novos também caírem |
+
+O degrau usado vai para `ultimo_nivel_sc.json`:
+```json
+"consulta": {"degrau": "sem_alarmes", "motivo": "rio_alarmes recusado: Operação bloqueada."}
+```
+O `motivo` é a mensagem que a API devolveu (`errors[].message` ou o erro HTTP), nunca texto fixo. Fora do
+degrau completo, cada leitura sai com
+`classificacao_estadual: {"faixa": null, "ativo": null, "indisponivel": true, "motivo": "classificação
+estadual indisponível: rio_alarmes recusado: Operação bloqueada.", "fonte": …}` — **diferente** de
+`ativo=false` ("sem faixas configuradas", que é o que a DCSC publica para Ascurra, Indaial, Ilhota).
+Uma linha no stderr por degrau que cai. `classificar_alarmes()` e a semântica validada em 14/09 não mudam.
+
+O que isto **não** faz: pintar. Sem `rio_alarmes` não há faixa estadual, e metro bruto não se compara com
+cota municipal. O motor (`classificar_reguas.motivo_sem_faixa_estadual`) e o site dizem "classificação
+estadual indisponível: …" em vez de "a Defesa Civil de SC não publicou faixa", que seria falso.
+
 ## Schema de cada leitura (regra do datum aplicada no código)
 ```json
 {"codigo":"DCSC-00006","estacao":"SDC-SC Indaial","cidade":"indaial",

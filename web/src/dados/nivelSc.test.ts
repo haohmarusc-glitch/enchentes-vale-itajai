@@ -85,4 +85,22 @@ test('lê a classificação estadual (C7) só quando o coletor a validou; senão
   assert.equal(lixo.get('x')?.faixaEstadual, null)
   const sem = montarNivelSc({ leituras: [base] })
   assert.equal(sem.get('rio-do-sul')?.faixaEstadual, null)
+  assert.equal(sem.get('rio-do-sul')?.faixaEstadualIndisponivel, false)
+  assert.equal(cinza.get('rio-do-sul')?.faixaEstadualIndisponivel, false, 'ativo=false é "sem faixas configuradas", não indisponível')
+})
+
+test('classificação estadual INDISPONÍVEL (a DCSC bloqueou rio_alarmes, 13/10/2026) não é "sem faixa publicada"', () => {
+  const base = { cidade: 'timbo', estacao: 'SDC-SC Timbó', codigo: 'DCSC-00023', nivel_bruto_m: 2.42, medido_em: '2026-10-27T10:05:00' }
+  const motivo = 'classificação estadual indisponível: rio_alarmes recusado: Operação bloqueada.'
+  const mapa = montarNivelSc({
+    consulta: { degrau: 'sem_alarmes', motivo: 'rio_alarmes recusado: Operação bloqueada.' },
+    leituras: [{ ...base, classificacao_estadual: { faixa: null, ativo: null, indisponivel: true, motivo } }],
+  })
+  const t = mapa.get('timbo')
+  assert.equal(t?.faixaEstadual, null, 'bloqueio nunca vira faixa, muito menos "normal"')
+  assert.equal(t?.faixaEstadualIndisponivel, true)
+  assert.equal(t?.motivoFaixaEstadual, motivo, 'o motivo é o que o coletor escreveu, vindo da recusa real')
+  // Uma faixa publicada junto com `indisponivel` seria contradição do arquivo: vale a faixa, e não é indisponível.
+  const contradicao = montarNivelSc({ leituras: [{ ...base, classificacao_estadual: { faixa: 'atencao', indisponivel: true } }] })
+  assert.equal(contradicao.get('timbo')?.faixaEstadualIndisponivel, false)
 })

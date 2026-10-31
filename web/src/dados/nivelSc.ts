@@ -47,6 +47,13 @@ export interface BrutoEstadual {
   faixaEstadual?: FaixaEstadual | null
   /** Por que não há faixa estadual, quando o coletor explicou. */
   motivoFaixaEstadual?: string | null
+  /**
+   * A classificação estadual não foi LIDA nesta coleta: a Defesa Civil de SC recusou a consulta a
+   * `rio_alarmes` (desde 13/10/2026, "Operação bloqueada."), e o coletor marcou `indisponivel` com o
+   * motivo real. É diferente de "a fonte não publica faixa para a estação" (`ativo=false`): a DCSC
+   * publica, mas bloqueou a nossa leitura. A tela não pode dizer "não publicou".
+   */
+  faixaEstadualIndisponivel?: boolean
 }
 
 export type FaixaEstadual = 'normal' | 'atencao' | 'alerta' | 'emergencia'
@@ -98,7 +105,8 @@ function brutoValido(bruta: unknown): BrutoEstadual | null {
   const faixaCrua = cls?.faixa
   const faixaEstadual = FAIXAS_ESTADUAIS.find((f) => f === faixaCrua) ?? null
   const motivoFaixaEstadual = typeof cls?.motivo === 'string' && cls.motivo.trim() !== '' ? cls.motivo : null
-  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm, faixaEstadual, motivoFaixaEstadual }
+  const faixaEstadualIndisponivel = faixaEstadual === null && cls?.indisponivel === true
+  return { cidade: l.cidade, estacao: l.estacao, codigo: typeof l.codigo === 'string' ? l.codigo : null, nivelBrutoM: nivel, medidoEm, chuva24hMm, chuva168hMm, faixaEstadual, motivoFaixaEstadual, faixaEstadualIndisponivel }
 }
 
 function hora(v: unknown): Date | null {

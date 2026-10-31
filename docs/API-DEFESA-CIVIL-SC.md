@@ -305,6 +305,51 @@ flag em várias estações; (c) que nenhuma leitura veio `contraditório`.
 Uma ressalva antes de usar: o campo `status` acompanha a faixa mas parece numerado ao contrário
 da severidade. Ler as três flags, nunca o `status` sozinho.
 
+### ⛔ `rio_alarmes` bloqueado desde 13/10/2026 (registrado em 27/10/2026)
+
+Desde **13/10/2026 ~10h30 (Brasília)** a API responde `{"errors":[{"message":"Operação bloqueada.",
+"extensions":{"code":"INTERNAL_SERVER_ERROR"}}]}` a **qualquer** `Tags_data` que peça
+`data.rio.rio_alarmes.inundacao.*`. A mensagem é a mesma da allowlist de operações, mas o `operationName`
+e o `client` são os de sempre: o que a DCSC passou a recusar é o **campo**, não a operação.
+
+**Testado campo a campo em 27/10/2026**, na mesma query, tirando um bloco por vez:
+
+| campo pedido | resposta |
+|---|---|
+| `type` | liberado |
+| `data.rio.rio_nome { value }` | liberado |
+| `data.rio.rio_nivel { value }` | liberado |
+| `data.rio.rio_area_drenagem { value }` | liberado |
+| `data.rio.rio_alarmes { inundacao { … } }` | **"Operação bloqueada."** |
+
+No log da VPS (`/var/log/niveis.log`) há 2.759 linhas `aviso: query enriquecida … recusada ([{'message':
+'Operação bloqueada.' …` entre 13/10 (linha 398.800) e 27/10. A recusa isolada de 17/09 era outra coisa (um
+*timeout*).
+
+**Efeito até o PR de 27/10:** `buscar()` tinha dois degraus e descartava a `QUERY_CAMPOS_NOVOS` inteira,
+caindo na `QUERY` de 01/09 — `ultimo_nivel_sc.json` saía com `classificacao_estadual: null`, `tipo_estacao:
+null` e `rio_nome: null` nas 25 estações, e o motor e o site diziam "a Defesa Civil de SC não publicou
+faixa para a estação", **o que é falso**: a DCSC publica, mas bloqueou a nossa leitura. As cidades que
+pintavam pela faixa estadual (Timbó, Vidal Ramos, Ituporanga, Rio dos Cedros, Taió…) ficaram cinza.
+
+**Desde o PR de 27/10:** três degraus em `buscar()` (`completa` → `sem_alarmes` → `original`), o degrau
+usado e o motivo gravados em `consulta` no `ultimo_nivel_sc.json`, e cada leitura fora do degrau completo
+com `classificacao_estadual: {faixa: null, ativo: null, indisponivel: true, motivo: "classificação estadual
+indisponível: rio_alarmes recusado: Operação bloqueada."}` — texto da recusa real, não fixo. O motor e o
+site passam esse motivo adiante. **A cor não volta por aqui:** sem `rio_alarmes` não existe faixa estadual
+para mostrar, e comparar o metro bruto com cota municipal continua proibido. O que volta sozinho, se a
+DCSC liberar, é a query completa — ela continua sendo o primeiro degrau. Pendência no README: perguntar à
+DCSC se o bloqueio é proposital.
+
+**✅ Liberado de novo (visto em 31/10/2026, 18h16 UTC).** O `ultimo_nivel_sc.json` publicado nessa coleta — ainda
+com o coletor de dois degraus — veio com `tipo_estacao` preenchido nas 24 leituras e `classificacao_estadual` em
+todas, **18 com faixa** (Presidente Getúlio `normal`, Ilhota e Agronômica `ativo=false`, como em 14/09). Ou seja, a
+query completa foi aceita: a DCSC voltou a servir `rio_alarmes` em algum momento entre 27/10 e 31/10 (a data exata
+está no `nivel-sc-2026-10.ndjson` da VPS, pelo primeiro `faixa_estadual` não nulo depois de 13/10). As cidades que
+pintavam pela faixa estadual voltam a pintar sozinhas, sem deploy. O bloqueio durou pelo menos 14 dias
+(13/10 → 27/10) e no máximo 18. Os três degraus e o motivo `indisponivel` ficam como proteção para a próxima
+vez — e a pergunta à DCSC passa a ser se o bloqueio foi proposital e se pode voltar.
+
 ### Não é arquivo histórico
 
 Janela móvel de ~90 dias. 1983, 1984, 2008, 2011 e 2023 **não estão aqui**. Série longa só

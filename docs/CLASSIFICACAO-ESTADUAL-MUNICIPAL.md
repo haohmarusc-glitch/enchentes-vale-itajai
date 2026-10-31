@@ -352,6 +352,34 @@ No branch `tempo-real`, o `ultimo_classificacao.json` passa a ir junto com o `ul
 `/var/log/niveis.log` mostra o motivo (linha "aviso: classificação estadual × municipal não gerada" ou "ERRO:
 classificação recusada").
 
+## A DCSC bloqueou `rio_alarmes` (13/10/2026; tratado em 27/10/2026)
+
+Desde 13/10/2026 a API da Defesa Civil de SC recusa ("Operação bloqueada.") qualquer consulta que peça `rio_alarmes`
+— só esse campo; `type`, `rio_nome` e `rio_nivel` seguem liberados (`docs/API-DEFESA-CIVIL-SC.md`). Efeito no piloto:
+
+- **Rio dos Cedros** (`PILOTO_SEM_MUNICIPAL`) vinha pintando só pela faixa estadual da DCSC-00011. Sem o campo, fica
+  **cinza** — como a regra manda: falta de faixa não é nível normal, e o nível não se compara com as cotas não
+  confirmadas.
+- **Brusque e Blumenau** não mudam de cor: a municipal manda e segura a estadual.
+- Fora do piloto, as cidades que pintavam pela faixa estadual (Timbó, Vidal Ramos, Ituporanga, Taió…) também ficam cinza.
+
+O que o PR de 27/10 muda é o **motivo**, não a cor. O coletor grava em `consulta` qual degrau da consulta respondeu e
+marca cada leitura com `classificacao_estadual.indisponivel = true` e o motivo da recusa real; o motor
+(`motivo_sem_faixa_estadual`) só escreve "a Defesa Civil de SC não publicou faixa para a estação" quando o degrau foi o
+completo e a estação veio sem faixa — senão, "classificação estadual indisponível: rio_alarmes recusado: Operação
+bloqueada.". A saída leva `entradas.nivel_sc_consulta`, e o `aviso` do arquivo deixou de dizer que o site não o lê
+(desatualizado desde o #511). O site mostra o motivo vindo dos dados ("classificação estadual indisponível") no cartão
+"Agora", na lista do rio e nos cartões do início; o "Por que está cinza?" do Monitor não foi tocado (texto verdadeiro,
+sem nomear a DCSC) porque exigiria `monitor-autorizado`.
+
+Gabarito regerado (`--gabarito`) porque `aviso` e `entradas` fazem parte da saída do motor guardada em cada caso; nenhum
+`esperado`, `site` ou `diverge_do_site` mudou. A cor só volta quando a DCSC liberar o campo (a query completa continua
+sendo o primeiro degrau) — pendência no README: perguntar se o bloqueio é proposital.
+
+**31/10/2026:** a DCSC liberou o campo. A coleta das 18h16 UTC veio com faixa em 18 das 24 estações, ainda com o
+coletor antigo (`docs/API-DEFESA-CIVIL-SC.md`, "Liberado de novo"). Rio dos Cedros e as demais cidades voltam a pintar
+pela faixa estadual sem deploy; este PR fica como proteção para a próxima vez.
+
 ## Fora destes PRs
 
 - **Conversões entre réguas** (§4 do plano): não há vínculo oficial cadastrado. Quando houver, entram como dado auditável,
