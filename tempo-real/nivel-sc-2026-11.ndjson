@@ -1,0 +1,144 @@
+{"codigo": "DCSC-00043", "cidade": "presidente-getulio", "estacao": "SDC-SC Presidente Getúlio", "datum": "bruto_estadual", "nivel_bruto_m": 1.62, "medido_em": "2026-11-01T00:01:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00001", "cidade": "agronomica", "estacao": "SDC-SC Agronômica", "datum": "bruto_estadual", "nivel_bruto_m": 3.05, "medido_em": "2026-11-01T00:01:42", "faixa_estadual": null}
+{"codigo": "DCSC-00035", "cidade": "trombudo-central", "estacao": "SDC-SC Trombudo Central 2", "datum": "bruto_estadual", "nivel_bruto_m": -0.13, "medido_em": "2026-11-01T00:01:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00004", "cidade": "benedito-novo", "estacao": "SDC-SC Benedito Novo", "datum": "bruto_estadual", "nivel_bruto_m": 2.93, "medido_em": "2026-11-01T00:01:47", "faixa_estadual": null}
+{"codigo": "DCSC-00013", "cidade": "rio-do-sul", "estacao": "SDC-SC Rio do Sul", "datum": "bruto_estadual", "nivel_bruto_m": 2.62, "medido_em": "2026-11-01T00:01:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00030", "cidade": "ilhota", "estacao": "SDC-SC Ilhota", "datum": "bruto_estadual", "nivel_bruto_m": 9.04, "medido_em": "2026-11-01T00:01:39", "faixa_estadual": null}
+{"codigo": "DCSC-00023", "cidade": "timbo", "estacao": "SDC-SC Timbó 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.31, "medido_em": "2026-11-01T00:01:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00016", "cidade": null, "estacao": "SDC-SC Alfredo Wagner", "datum": "bruto_estadual", "nivel_bruto_m": 1.09, "medido_em": "2026-11-01T00:01:47", "faixa_estadual": null}
+{"codigo": "DCSC-00020", "cidade": "ibirama", "estacao": "SDC-SC Ibirama", "datum": "bruto_estadual", "nivel_bruto_m": 1.65, "medido_em": "2026-11-01T00:01:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00028", "cidade": "doutor-pedrinho", "estacao": "SDC-SC Doutor Pedrinho", "datum": "bruto_estadual", "nivel_bruto_m": 1.46, "medido_em": "2026-11-01T00:01:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00041", "cidade": "taio", "estacao": "SDC-SC Taió", "datum": "bruto_estadual", "nivel_bruto_m": 3.12, "medido_em": "2026-11-01T00:01:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00024", "cidade": "vidal-ramos", "estacao": "SDC-SC Vidal Ramos", "datum": "bruto_estadual", "nivel_bruto_m": 2.35, "medido_em": "2026-11-01T00:01:50", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00163", "cidade": "ilhota-arraial-dos-cunhas", "estacao": "Ilhota - Arraial dos Cunhas", "datum": "bruto_estadual", "nivel_bruto_m": 0.32, "medido_em": "2026-11-01T00:01:46", "faixa_estadual": null}
+{"codigo": "DCSC-00019", "cidade": "brusque", "estacao": "SDC-SC Brusque", "datum": "bruto_estadual", "nivel_bruto_m": 1.25, "medido_em": "2026-11-01T00:01:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00003", "cidade": "ascurra", "estacao": "SDC-SC Ascurra", "datum": "bruto_estadual", "nivel_bruto_m": 6.45, "medido_em": "2026-11-01T00:01:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00040", "cidade": "barragem-oeste-taio", "estacao": "Barragem Oeste Taió", "datum": "reservatorio", "nivel_bruto_m": 342.45, "medido_em": "2026-11-01T00:01:45", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00021", "cidade": "jose-boiteux", "estacao": "SDC-SC José Boiteux", "datum": "bruto_estadual", "nivel_bruto_m": 1.27, "medido_em": "2026-11-01T00:01:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00025", "cidade": "agrolandia", "estacao": "SDC-SC Agrolândia", "datum": "bruto_estadual", "nivel_bruto_m": 0.66, "medido_em": "2026-11-01T00:01:38", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00033", "cidade": "pouso-redondo", "estacao": "SDC-SC Pouso Redondo", "datum": "bruto_estadual", "nivel_bruto_m": 1.48, "medido_em": "2026-11-01T00:01:50", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00011", "cidade": "rio-dos-cedros", "estacao": "SDC-SC Rio dos Cedros 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.11, "medido_em": "2026-11-01T00:01:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00032", "cidade": "lontras", "estacao": "SDC-SC Lontras", "datum": "bruto_estadual", "nivel_bruto_m": 12.76, "medido_em": "2026-11-01T00:01:41", "faixa_estadual": "emergencia"}
+{"codigo": "DCSC-00031", "cidade": "laurentino", "estacao": "SDC-SC Laurentino", "datum": "bruto_estadual", "nivel_bruto_m": 2.29, "medido_em": "2026-11-01T00:01:44", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00029", "cidade": "guabiruba", "estacao": "SDC-SC Guabiruba", "datum": "bruto_estadual", "nivel_bruto_m": 0.59, "medido_em": "2026-11-01T00:01:39", "faixa_estadual": null}
+{"codigo": "DCSC-00038", "cidade": "barragem-sul-ituporanga", "estacao": "Barragem Sul Ituporanga", "datum": "reservatorio", "nivel_bruto_m": 372.5, "medido_em": "2026-11-01T00:01:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00043", "cidade": "presidente-getulio", "estacao": "SDC-SC Presidente Getúlio", "datum": "bruto_estadual", "nivel_bruto_m": 1.62, "medido_em": "2026-11-01T00:16:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00001", "cidade": "agronomica", "estacao": "SDC-SC Agronômica", "datum": "bruto_estadual", "nivel_bruto_m": 3.05, "medido_em": "2026-11-01T00:16:42", "faixa_estadual": null}
+{"codigo": "DCSC-00035", "cidade": "trombudo-central", "estacao": "SDC-SC Trombudo Central 2", "datum": "bruto_estadual", "nivel_bruto_m": -0.13, "medido_em": "2026-11-01T00:16:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00004", "cidade": "benedito-novo", "estacao": "SDC-SC Benedito Novo", "datum": "bruto_estadual", "nivel_bruto_m": 2.93, "medido_em": "2026-11-01T00:16:32", "faixa_estadual": null}
+{"codigo": "DCSC-00013", "cidade": "rio-do-sul", "estacao": "SDC-SC Rio do Sul", "datum": "bruto_estadual", "nivel_bruto_m": 2.6, "medido_em": "2026-11-01T00:16:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00030", "cidade": "ilhota", "estacao": "SDC-SC Ilhota", "datum": "bruto_estadual", "nivel_bruto_m": 9.03, "medido_em": "2026-11-01T00:16:39", "faixa_estadual": null}
+{"codigo": "DCSC-00023", "cidade": "timbo", "estacao": "SDC-SC Timbó 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.31, "medido_em": "2026-11-01T00:16:31", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00016", "cidade": null, "estacao": "SDC-SC Alfredo Wagner", "datum": "bruto_estadual", "nivel_bruto_m": 1.09, "medido_em": "2026-11-01T00:16:32", "faixa_estadual": null}
+{"codigo": "DCSC-00020", "cidade": "ibirama", "estacao": "SDC-SC Ibirama", "datum": "bruto_estadual", "nivel_bruto_m": 1.65, "medido_em": "2026-11-01T00:16:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00028", "cidade": "doutor-pedrinho", "estacao": "SDC-SC Doutor Pedrinho", "datum": "bruto_estadual", "nivel_bruto_m": 1.46, "medido_em": "2026-11-01T00:16:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00041", "cidade": "taio", "estacao": "SDC-SC Taió", "datum": "bruto_estadual", "nivel_bruto_m": 3.12, "medido_em": "2026-11-01T00:16:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00024", "cidade": "vidal-ramos", "estacao": "SDC-SC Vidal Ramos", "datum": "bruto_estadual", "nivel_bruto_m": 2.35, "medido_em": "2026-11-01T00:16:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00163", "cidade": "ilhota-arraial-dos-cunhas", "estacao": "Ilhota - Arraial dos Cunhas", "datum": "bruto_estadual", "nivel_bruto_m": 0.3, "medido_em": "2026-11-01T00:16:36", "faixa_estadual": null}
+{"codigo": "DCSC-00019", "cidade": "brusque", "estacao": "SDC-SC Brusque", "datum": "bruto_estadual", "nivel_bruto_m": 1.25, "medido_em": "2026-11-01T00:16:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00003", "cidade": "ascurra", "estacao": "SDC-SC Ascurra", "datum": "bruto_estadual", "nivel_bruto_m": 6.43, "medido_em": "2026-11-01T00:16:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00040", "cidade": "barragem-oeste-taio", "estacao": "Barragem Oeste Taió", "datum": "reservatorio", "nivel_bruto_m": 342.45, "medido_em": "2026-11-01T00:16:45", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00021", "cidade": "jose-boiteux", "estacao": "SDC-SC José Boiteux", "datum": "bruto_estadual", "nivel_bruto_m": 1.27, "medido_em": "2026-11-01T00:16:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00025", "cidade": "agrolandia", "estacao": "SDC-SC Agrolândia", "datum": "bruto_estadual", "nivel_bruto_m": 0.66, "medido_em": "2026-11-01T00:16:38", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00033", "cidade": "pouso-redondo", "estacao": "SDC-SC Pouso Redondo", "datum": "bruto_estadual", "nivel_bruto_m": 1.48, "medido_em": "2026-11-01T00:16:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00011", "cidade": "rio-dos-cedros", "estacao": "SDC-SC Rio dos Cedros 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.11, "medido_em": "2026-11-01T00:16:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00032", "cidade": "lontras", "estacao": "SDC-SC Lontras", "datum": "bruto_estadual", "nivel_bruto_m": 12.77, "medido_em": "2026-11-01T00:16:41", "faixa_estadual": "emergencia"}
+{"codigo": "DCSC-00031", "cidade": "laurentino", "estacao": "SDC-SC Laurentino", "datum": "bruto_estadual", "nivel_bruto_m": 2.29, "medido_em": "2026-11-01T00:16:44", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00029", "cidade": "guabiruba", "estacao": "SDC-SC Guabiruba", "datum": "bruto_estadual", "nivel_bruto_m": 0.59, "medido_em": "2026-11-01T00:16:39", "faixa_estadual": null}
+{"codigo": "DCSC-00038", "cidade": "barragem-sul-ituporanga", "estacao": "Barragem Sul Ituporanga", "datum": "reservatorio", "nivel_bruto_m": 372.5, "medido_em": "2026-11-01T00:16:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00163", "cidade": "ilhota-arraial-dos-cunhas", "estacao": "Ilhota - Arraial dos Cunhas", "datum": "bruto_estadual", "nivel_bruto_m": 0.33, "medido_em": "2026-11-01T00:31:36", "faixa_estadual": null}
+{"codigo": "DCSC-00043", "cidade": "presidente-getulio", "estacao": "SDC-SC Presidente Getúlio", "datum": "bruto_estadual", "nivel_bruto_m": 1.62, "medido_em": "2026-11-01T00:31:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00001", "cidade": "agronomica", "estacao": "SDC-SC Agronômica", "datum": "bruto_estadual", "nivel_bruto_m": 3.05, "medido_em": "2026-11-01T00:31:42", "faixa_estadual": null}
+{"codigo": "DCSC-00019", "cidade": "brusque", "estacao": "SDC-SC Brusque", "datum": "bruto_estadual", "nivel_bruto_m": 1.25, "medido_em": "2026-11-01T00:31:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00035", "cidade": "trombudo-central", "estacao": "SDC-SC Trombudo Central 2", "datum": "bruto_estadual", "nivel_bruto_m": -0.14, "medido_em": "2026-11-01T00:31:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00004", "cidade": "benedito-novo", "estacao": "SDC-SC Benedito Novo", "datum": "bruto_estadual", "nivel_bruto_m": 2.93, "medido_em": "2026-11-01T00:31:32", "faixa_estadual": null}
+{"codigo": "DCSC-00013", "cidade": "rio-do-sul", "estacao": "SDC-SC Rio do Sul", "datum": "bruto_estadual", "nivel_bruto_m": 2.6, "medido_em": "2026-11-01T00:31:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00030", "cidade": "ilhota", "estacao": "SDC-SC Ilhota", "datum": "bruto_estadual", "nivel_bruto_m": 9.03, "medido_em": "2026-11-01T00:31:39", "faixa_estadual": null}
+{"codigo": "DCSC-00023", "cidade": "timbo", "estacao": "SDC-SC Timbó 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.31, "medido_em": "2026-11-01T00:31:31", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00003", "cidade": "ascurra", "estacao": "SDC-SC Ascurra", "datum": "bruto_estadual", "nivel_bruto_m": 6.43, "medido_em": "2026-11-01T00:31:31", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00040", "cidade": "barragem-oeste-taio", "estacao": "Barragem Oeste Taió", "datum": "reservatorio", "nivel_bruto_m": 342.45, "medido_em": "2026-11-01T00:31:30", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00016", "cidade": null, "estacao": "SDC-SC Alfredo Wagner", "datum": "bruto_estadual", "nivel_bruto_m": 1.09, "medido_em": "2026-11-01T00:31:32", "faixa_estadual": null}
+{"codigo": "DCSC-00021", "cidade": "jose-boiteux", "estacao": "SDC-SC José Boiteux", "datum": "bruto_estadual", "nivel_bruto_m": 1.27, "medido_em": "2026-11-01T00:31:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00025", "cidade": "agrolandia", "estacao": "SDC-SC Agrolândia", "datum": "bruto_estadual", "nivel_bruto_m": 0.65, "medido_em": "2026-11-01T00:31:38", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00033", "cidade": "pouso-redondo", "estacao": "SDC-SC Pouso Redondo", "datum": "bruto_estadual", "nivel_bruto_m": 1.48, "medido_em": "2026-11-01T00:31:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00020", "cidade": "ibirama", "estacao": "SDC-SC Ibirama", "datum": "bruto_estadual", "nivel_bruto_m": 1.65, "medido_em": "2026-11-01T00:31:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00011", "cidade": "rio-dos-cedros", "estacao": "SDC-SC Rio dos Cedros 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.11, "medido_em": "2026-11-01T00:31:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00032", "cidade": "lontras", "estacao": "SDC-SC Lontras", "datum": "bruto_estadual", "nivel_bruto_m": 12.77, "medido_em": "2026-11-01T00:31:41", "faixa_estadual": "emergencia"}
+{"codigo": "DCSC-00031", "cidade": "laurentino", "estacao": "SDC-SC Laurentino", "datum": "bruto_estadual", "nivel_bruto_m": 2.27, "medido_em": "2026-11-01T00:31:44", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00028", "cidade": "doutor-pedrinho", "estacao": "SDC-SC Doutor Pedrinho", "datum": "bruto_estadual", "nivel_bruto_m": 1.46, "medido_em": "2026-11-01T00:31:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00029", "cidade": "guabiruba", "estacao": "SDC-SC Guabiruba", "datum": "bruto_estadual", "nivel_bruto_m": 0.59, "medido_em": "2026-11-01T00:31:39", "faixa_estadual": null}
+{"codigo": "DCSC-00038", "cidade": "barragem-sul-ituporanga", "estacao": "Barragem Sul Ituporanga", "datum": "reservatorio", "nivel_bruto_m": 372.5, "medido_em": "2026-11-01T00:31:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00041", "cidade": "taio", "estacao": "SDC-SC Taió", "datum": "bruto_estadual", "nivel_bruto_m": 3.12, "medido_em": "2026-11-01T00:31:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00024", "cidade": "vidal-ramos", "estacao": "SDC-SC Vidal Ramos", "datum": "bruto_estadual", "nivel_bruto_m": 2.35, "medido_em": "2026-11-01T00:31:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00163", "cidade": "ilhota-arraial-dos-cunhas", "estacao": "Ilhota - Arraial dos Cunhas", "datum": "bruto_estadual", "nivel_bruto_m": 0.33, "medido_em": "2026-11-01T00:46:46", "faixa_estadual": null}
+{"codigo": "DCSC-00043", "cidade": "presidente-getulio", "estacao": "SDC-SC Presidente Getúlio", "datum": "bruto_estadual", "nivel_bruto_m": 1.62, "medido_em": "2026-11-01T00:46:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00001", "cidade": "agronomica", "estacao": "SDC-SC Agronômica", "datum": "bruto_estadual", "nivel_bruto_m": 3.05, "medido_em": "2026-11-01T00:46:42", "faixa_estadual": null}
+{"codigo": "DCSC-00019", "cidade": "brusque", "estacao": "SDC-SC Brusque", "datum": "bruto_estadual", "nivel_bruto_m": 1.25, "medido_em": "2026-11-01T00:46:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00035", "cidade": "trombudo-central", "estacao": "SDC-SC Trombudo Central 2", "datum": "bruto_estadual", "nivel_bruto_m": -0.14, "medido_em": "2026-11-01T00:46:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00004", "cidade": "benedito-novo", "estacao": "SDC-SC Benedito Novo", "datum": "bruto_estadual", "nivel_bruto_m": 2.95, "medido_em": "2026-11-01T00:46:47", "faixa_estadual": null}
+{"codigo": "DCSC-00013", "cidade": "rio-do-sul", "estacao": "SDC-SC Rio do Sul", "datum": "bruto_estadual", "nivel_bruto_m": 2.6, "medido_em": "2026-11-01T00:46:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00030", "cidade": "ilhota", "estacao": "SDC-SC Ilhota", "datum": "bruto_estadual", "nivel_bruto_m": 9.07, "medido_em": "2026-11-01T00:46:39", "faixa_estadual": null}
+{"codigo": "DCSC-00023", "cidade": "timbo", "estacao": "SDC-SC Timbó 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.31, "medido_em": "2026-11-01T00:46:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00003", "cidade": "ascurra", "estacao": "SDC-SC Ascurra", "datum": "bruto_estadual", "nivel_bruto_m": 6.41, "medido_em": "2026-11-01T00:46:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00040", "cidade": "barragem-oeste-taio", "estacao": "Barragem Oeste Taió", "datum": "reservatorio", "nivel_bruto_m": 342.45, "medido_em": "2026-11-01T00:46:45", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00016", "cidade": null, "estacao": "SDC-SC Alfredo Wagner", "datum": "bruto_estadual", "nivel_bruto_m": 1.09, "medido_em": "2026-11-01T00:46:47", "faixa_estadual": null}
+{"codigo": "DCSC-00021", "cidade": "jose-boiteux", "estacao": "SDC-SC José Boiteux", "datum": "bruto_estadual", "nivel_bruto_m": 1.27, "medido_em": "2026-11-01T00:46:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00025", "cidade": "agrolandia", "estacao": "SDC-SC Agrolândia", "datum": "bruto_estadual", "nivel_bruto_m": 0.65, "medido_em": "2026-11-01T00:46:38", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00033", "cidade": "pouso-redondo", "estacao": "SDC-SC Pouso Redondo", "datum": "bruto_estadual", "nivel_bruto_m": 1.48, "medido_em": "2026-11-01T00:46:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00020", "cidade": "ibirama", "estacao": "SDC-SC Ibirama", "datum": "bruto_estadual", "nivel_bruto_m": 1.65, "medido_em": "2026-11-01T00:46:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00011", "cidade": "rio-dos-cedros", "estacao": "SDC-SC Rio dos Cedros 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.11, "medido_em": "2026-11-01T00:46:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00032", "cidade": "lontras", "estacao": "SDC-SC Lontras", "datum": "bruto_estadual", "nivel_bruto_m": 12.77, "medido_em": "2026-11-01T00:46:41", "faixa_estadual": "emergencia"}
+{"codigo": "DCSC-00031", "cidade": "laurentino", "estacao": "SDC-SC Laurentino", "datum": "bruto_estadual", "nivel_bruto_m": 2.27, "medido_em": "2026-11-01T00:46:44", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00028", "cidade": "doutor-pedrinho", "estacao": "SDC-SC Doutor Pedrinho", "datum": "bruto_estadual", "nivel_bruto_m": 1.46, "medido_em": "2026-11-01T00:46:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00029", "cidade": "guabiruba", "estacao": "SDC-SC Guabiruba", "datum": "bruto_estadual", "nivel_bruto_m": 0.59, "medido_em": "2026-11-01T00:46:39", "faixa_estadual": null}
+{"codigo": "DCSC-00038", "cidade": "barragem-sul-ituporanga", "estacao": "Barragem Sul Ituporanga", "datum": "reservatorio", "nivel_bruto_m": 372.5, "medido_em": "2026-11-01T00:46:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00041", "cidade": "taio", "estacao": "SDC-SC Taió", "datum": "bruto_estadual", "nivel_bruto_m": 3.12, "medido_em": "2026-11-01T00:46:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00024", "cidade": "vidal-ramos", "estacao": "SDC-SC Vidal Ramos", "datum": "bruto_estadual", "nivel_bruto_m": 2.35, "medido_em": "2026-11-01T00:46:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00163", "cidade": "ilhota-arraial-dos-cunhas", "estacao": "Ilhota - Arraial dos Cunhas", "datum": "bruto_estadual", "nivel_bruto_m": 0.33, "medido_em": "2026-11-01T01:01:46", "faixa_estadual": null}
+{"codigo": "DCSC-00043", "cidade": "presidente-getulio", "estacao": "SDC-SC Presidente Getúlio", "datum": "bruto_estadual", "nivel_bruto_m": 1.62, "medido_em": "2026-11-01T01:01:34", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00001", "cidade": "agronomica", "estacao": "SDC-SC Agronômica", "datum": "bruto_estadual", "nivel_bruto_m": 3.04, "medido_em": "2026-11-01T01:01:42", "faixa_estadual": null}
+{"codigo": "DCSC-00019", "cidade": "brusque", "estacao": "SDC-SC Brusque", "datum": "bruto_estadual", "nivel_bruto_m": 1.25, "medido_em": "2026-11-01T01:01:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00035", "cidade": "trombudo-central", "estacao": "SDC-SC Trombudo Central 2", "datum": "bruto_estadual", "nivel_bruto_m": -0.14, "medido_em": "2026-11-01T01:01:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00004", "cidade": "benedito-novo", "estacao": "SDC-SC Benedito Novo", "datum": "bruto_estadual", "nivel_bruto_m": 2.95, "medido_em": "2026-11-01T01:01:47", "faixa_estadual": null}
+{"codigo": "DCSC-00013", "cidade": "rio-do-sul", "estacao": "SDC-SC Rio do Sul", "datum": "bruto_estadual", "nivel_bruto_m": 2.6, "medido_em": "2026-11-01T01:01:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00030", "cidade": "ilhota", "estacao": "SDC-SC Ilhota", "datum": "bruto_estadual", "nivel_bruto_m": 9.07, "medido_em": "2026-11-01T01:01:39", "faixa_estadual": null}
+{"codigo": "DCSC-00023", "cidade": "timbo", "estacao": "SDC-SC Timbó 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.31, "medido_em": "2026-11-01T01:01:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00003", "cidade": "ascurra", "estacao": "SDC-SC Ascurra", "datum": "bruto_estadual", "nivel_bruto_m": 6.41, "medido_em": "2026-11-01T01:01:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00040", "cidade": "barragem-oeste-taio", "estacao": "Barragem Oeste Taió", "datum": "reservatorio", "nivel_bruto_m": 342.45, "medido_em": "2026-11-01T01:01:45", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00016", "cidade": null, "estacao": "SDC-SC Alfredo Wagner", "datum": "bruto_estadual", "nivel_bruto_m": 1.09, "medido_em": "2026-11-01T01:01:47", "faixa_estadual": null}
+{"codigo": "DCSC-00021", "cidade": "jose-boiteux", "estacao": "SDC-SC José Boiteux", "datum": "bruto_estadual", "nivel_bruto_m": 1.27, "medido_em": "2026-11-01T01:01:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00025", "cidade": "agrolandia", "estacao": "SDC-SC Agrolândia", "datum": "bruto_estadual", "nivel_bruto_m": 0.65, "medido_em": "2026-11-01T01:01:38", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00033", "cidade": "pouso-redondo", "estacao": "SDC-SC Pouso Redondo", "datum": "bruto_estadual", "nivel_bruto_m": 1.48, "medido_em": "2026-11-01T01:01:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00020", "cidade": "ibirama", "estacao": "SDC-SC Ibirama", "datum": "bruto_estadual", "nivel_bruto_m": 1.65, "medido_em": "2026-11-01T01:01:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00011", "cidade": "rio-dos-cedros", "estacao": "SDC-SC Rio dos Cedros 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.11, "medido_em": "2026-11-01T01:01:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00032", "cidade": "lontras", "estacao": "SDC-SC Lontras", "datum": "bruto_estadual", "nivel_bruto_m": 12.76, "medido_em": "2026-11-01T01:01:41", "faixa_estadual": "emergencia"}
+{"codigo": "DCSC-00031", "cidade": "laurentino", "estacao": "SDC-SC Laurentino", "datum": "bruto_estadual", "nivel_bruto_m": 2.27, "medido_em": "2026-11-01T01:01:44", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00028", "cidade": "doutor-pedrinho", "estacao": "SDC-SC Doutor Pedrinho", "datum": "bruto_estadual", "nivel_bruto_m": 1.46, "medido_em": "2026-11-01T01:01:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00029", "cidade": "guabiruba", "estacao": "SDC-SC Guabiruba", "datum": "bruto_estadual", "nivel_bruto_m": 0.59, "medido_em": "2026-11-01T01:01:39", "faixa_estadual": null}
+{"codigo": "DCSC-00038", "cidade": "barragem-sul-ituporanga", "estacao": "Barragem Sul Ituporanga", "datum": "reservatorio", "nivel_bruto_m": 372.5, "medido_em": "2026-11-01T01:01:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00041", "cidade": "taio", "estacao": "SDC-SC Taió", "datum": "bruto_estadual", "nivel_bruto_m": 3.12, "medido_em": "2026-11-01T01:01:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00024", "cidade": "vidal-ramos", "estacao": "SDC-SC Vidal Ramos", "datum": "bruto_estadual", "nivel_bruto_m": 2.35, "medido_em": "2026-11-01T01:01:35", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00163", "cidade": "ilhota-arraial-dos-cunhas", "estacao": "Ilhota - Arraial dos Cunhas", "datum": "bruto_estadual", "nivel_bruto_m": 0.32, "medido_em": "2026-11-01T01:16:46", "faixa_estadual": null}
+{"codigo": "DCSC-00043", "cidade": "presidente-getulio", "estacao": "SDC-SC Presidente Getúlio", "datum": "bruto_estadual", "nivel_bruto_m": 1.62, "medido_em": "2026-11-01T01:16:49", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00001", "cidade": "agronomica", "estacao": "SDC-SC Agronômica", "datum": "bruto_estadual", "nivel_bruto_m": 3.04, "medido_em": "2026-11-01T01:16:42", "faixa_estadual": null}
+{"codigo": "DCSC-00019", "cidade": "brusque", "estacao": "SDC-SC Brusque", "datum": "bruto_estadual", "nivel_bruto_m": 1.23, "medido_em": "2026-11-01T01:16:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00035", "cidade": "trombudo-central", "estacao": "SDC-SC Trombudo Central 2", "datum": "bruto_estadual", "nivel_bruto_m": -0.14, "medido_em": "2026-11-01T01:16:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00004", "cidade": "benedito-novo", "estacao": "SDC-SC Benedito Novo", "datum": "bruto_estadual", "nivel_bruto_m": 2.95, "medido_em": "2026-11-01T01:16:47", "faixa_estadual": null}
+{"codigo": "DCSC-00013", "cidade": "rio-do-sul", "estacao": "SDC-SC Rio do Sul", "datum": "bruto_estadual", "nivel_bruto_m": 2.6, "medido_em": "2026-11-01T01:16:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00030", "cidade": "ilhota", "estacao": "SDC-SC Ilhota", "datum": "bruto_estadual", "nivel_bruto_m": 9.09, "medido_em": "2026-11-01T01:16:39", "faixa_estadual": null}
+{"codigo": "DCSC-00023", "cidade": "timbo", "estacao": "SDC-SC Timbó 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.31, "medido_em": "2026-11-01T01:16:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00003", "cidade": "ascurra", "estacao": "SDC-SC Ascurra", "datum": "bruto_estadual", "nivel_bruto_m": 6.4, "medido_em": "2026-11-01T01:16:46", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00040", "cidade": "barragem-oeste-taio", "estacao": "Barragem Oeste Taió", "datum": "reservatorio", "nivel_bruto_m": 342.45, "medido_em": "2026-11-01T01:16:45", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00016", "cidade": null, "estacao": "SDC-SC Alfredo Wagner", "datum": "bruto_estadual", "nivel_bruto_m": 1.09, "medido_em": "2026-11-01T01:16:47", "faixa_estadual": null}
+{"codigo": "DCSC-00021", "cidade": "jose-boiteux", "estacao": "SDC-SC José Boiteux", "datum": "bruto_estadual", "nivel_bruto_m": 1.27, "medido_em": "2026-11-01T01:16:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00025", "cidade": "agrolandia", "estacao": "SDC-SC Agrolândia", "datum": "bruto_estadual", "nivel_bruto_m": 0.66, "medido_em": "2026-11-01T01:16:38", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00033", "cidade": "pouso-redondo", "estacao": "SDC-SC Pouso Redondo", "datum": "bruto_estadual", "nivel_bruto_m": 1.48, "medido_em": "2026-11-01T01:16:50", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00020", "cidade": "ibirama", "estacao": "SDC-SC Ibirama", "datum": "bruto_estadual", "nivel_bruto_m": 1.65, "medido_em": "2026-11-01T01:16:40", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00011", "cidade": "rio-dos-cedros", "estacao": "SDC-SC Rio dos Cedros 1", "datum": "bruto_estadual", "nivel_bruto_m": 1.11, "medido_em": "2026-11-01T01:16:39", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00032", "cidade": "lontras", "estacao": "SDC-SC Lontras", "datum": "bruto_estadual", "nivel_bruto_m": 12.75, "medido_em": "2026-11-01T01:16:41", "faixa_estadual": "emergencia"}
+{"codigo": "DCSC-00031", "cidade": "laurentino", "estacao": "SDC-SC Laurentino", "datum": "bruto_estadual", "nivel_bruto_m": 2.27, "medido_em": "2026-11-01T01:16:44", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00028", "cidade": "doutor-pedrinho", "estacao": "SDC-SC Doutor Pedrinho", "datum": "bruto_estadual", "nivel_bruto_m": 1.44, "medido_em": "2026-11-01T01:16:41", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00029", "cidade": "guabiruba", "estacao": "SDC-SC Guabiruba", "datum": "bruto_estadual", "nivel_bruto_m": 0.59, "medido_em": "2026-11-01T01:16:39", "faixa_estadual": null}
+{"codigo": "DCSC-00038", "cidade": "barragem-sul-ituporanga", "estacao": "Barragem Sul Ituporanga", "datum": "reservatorio", "nivel_bruto_m": 372.5, "medido_em": "2026-11-01T01:16:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00041", "cidade": "taio", "estacao": "SDC-SC Taió", "datum": "bruto_estadual", "nivel_bruto_m": 3.1, "medido_em": "2026-11-01T01:16:43", "faixa_estadual": "normal"}
+{"codigo": "DCSC-00024", "cidade": "vidal-ramos", "estacao": "SDC-SC Vidal Ramos", "datum": "bruto_estadual", "nivel_bruto_m": 2.35, "medido_em": "2026-11-01T01:16:50", "faixa_estadual": "normal"}
