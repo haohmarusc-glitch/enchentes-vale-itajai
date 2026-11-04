@@ -1,0 +1,16 @@
+cemaden-mapservices-layer-1: robots.txt sem resposta (ReadTimeout: HTTPSConnectionPool(host='mapservices.cemaden.gov.br', port=443): Read timed out. (read timeout=30)); não pedido
+cemaden-mapservices-layer-2: robots.txt sem resposta (ReadTimeout: HTTPSConnectionPool(host='mapservices.cemaden.gov.br', port=443): Read timed out. (read timeout=30)); não pedido
+cemaden-mapservices-layer-3: robots.txt sem resposta (ReadTimeout: HTTPSConnectionPool(host='mapservices.cemaden.gov.br', port=443): Read timed out. (read timeout=30)); não pedido
+cemaden-resources-311_24: HTTP 200 application/json 2161958 B
+cemaden-wms-capabilities: HTTP 200 text/xml 2074376 B
+cemaden-grafico-pcd-exemplo: HTTP 404 text/html; charset=UTF-8 42857 B
+dcsc-wp-json-avisos: robots.txt sem resposta (ConnectTimeout: HTTPSConnectionPool(host='www.defesacivil.sc.gov.br', port=443): Max retries exceeded with url: /robots.txt (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.defesacivil.sc.gov.br', port=443) at 0x7c66ca95ae90>, 'Connection to www.defesacivil.sc.gov.br timed out. (connect timeout=30)'))); não pedido
+dcsc-feed: robots.txt sem resposta (ConnectTimeout: HTTPSConnectionPool(host='www.defesacivil.sc.gov.br', port=443): Max retries exceeded with url: /robots.txt (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.defesacivil.sc.gov.br', port=443) at 0x7c66ca95ae90>, 'Connection to www.defesacivil.sc.gov.br timed out. (connect timeout=30)'))); não pedido
+sgb-inundacao-distintos-sc: HTTP 200 application/json; charset=UTF-8 4383 B
+sgb-risco-distintos: HTTP 200 application/json; charset=UTF-8 62409 B
+furb-geonode-layers: HTTP 200 application/json 16329 B
+mendeley-dataset: HTTP 200 text/html; charset=utf-8 124554 B
+copernicus-ems-portal: HTTP 200 text/html; charset=utf-8 20467 B
+copernicus-ems-activations: HTTP 200 text/html; charset=utf-8 15897 B
+copernicus-gfm-portal: HTTP 200 text/html 4025 B
+copernicus-gfm-api-eodc: HTTP 200 text/html; charset=utf-8 3816 B
