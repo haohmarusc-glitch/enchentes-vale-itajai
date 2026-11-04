@@ -16,7 +16,8 @@
       "data_na_fonte": "Data que a fonte publica quando o registro adota outra, com o motivo na nota. Só existe onde as duas descrevem o mesmo pico (crista na virada do dia).",
       "chuva_mm": "Volume de chuva (mm) que a fonte associa ao pico, quando publica. Só Rio do Sul, da tabela municipal, de 1992 em diante. Ausente = a fonte não deu.",
       "dias_de_chuva": "Dias de chuva que a fonte associa ao pico, quando publica. Só Rio do Sul, da tabela municipal. Ausente = a fonte não deu.",
-      "pendencia": "Pendência aberta sobre o registro, com a decisão de quem a abriu: o que falta conferir e o que NÃO fazer enquanto isso. Não altera pico nem data; a tela mostra junto do número."
+      "pendencia": "Pendência aberta sobre o registro, com a decisão de quem a abriu: o que falta conferir e o que NÃO fazer enquanto isso. Não altera pico nem data; a tela mostra junto do número.",
+      "cruzamentos": "Fontes independentes que trazem o MESMO pico, só para cruzamento: cada entrada tem fonte, valor_m (o número como a fonte publica), data_na_fonte, bate_com (com que referência de Blumenau o número bate, ou 'diferente'), confianca, em (data da conferência) e doc. Não é nível: nada aqui entra em recorde, gráfico, 'minha rua', simulador ou bot, e não muda pico_m nem referencia. Hoje só a tabela do Mendeley em Blumenau (04/11/2026)."
     },
     "pendencias": [
       "Levantar picos de Itajaí (foz) — nenhum registro até agora; sem eles a tela da foz não estima altura.",
@@ -68,7 +69,18 @@
       "nota": "Primeiro grande registro após a colonização. Algumas fontes citam 16,50 m. Valor contestado por historiadores locais.",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 16,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md. Confere com 16,50 m de outra fonte (antes guardado como divergência): Outras compilações históricas."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 16,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md. Confere com 16,50 m de outra fonte (antes guardado como divergência): Outras compilações históricas.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.3,
+          "data_na_fonte": "1852-10-29",
+          "bate_com": "diferente",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -81,7 +93,18 @@
       "nota": "Relato histórico (Avé-Lallemant); dia confirmado pela compilação 1852–2017.",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 13.3,
+          "data_na_fonte": "1855-11-20",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -114,7 +137,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.0,
+          "data_na_fonte": "1864-09-17",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -126,7 +160,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 13.3,
+          "data_na_fonte": "1868-11-27",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -138,7 +183,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.0,
+          "data_na_fonte": "1869-10-21",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -150,7 +206,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.0,
+          "data_na_fonte": "1870-10-11",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -163,7 +230,18 @@
       "nota": "Maior cota de que se tem registro na bacia (Comitê do Itajaí / Águas SC).",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 17,10 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 17,10 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 17.1,
+          "data_na_fonte": "1880-09-23",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -184,7 +262,18 @@
       "referencia_publicada": "IBGE (régua + 0,20 m)",
       "confianca": "alta",
       "fonte": "Cordero & Medeiros, Estudo estatístico das vazões máximas do rio Itajaí-Açu em Blumenau, XV SBRH (ABRH), Tabela 4 — https://files.abrhidro.org.br/Eventos/Trabalhos/154/291.pdf",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.8,
+          "data_na_fonte": "1888-09-23",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -196,7 +285,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 13,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 13.8,
+          "data_na_fonte": "1891-06-18",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -208,7 +308,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.8,
+          "data_na_fonte": "1898-05-01",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -220,7 +331,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.3,
+          "data_na_fonte": "1898-12-25",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -232,7 +354,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.8,
+          "data_na_fonte": "1900-10-02",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -245,7 +378,18 @@
       "nota": "Segunda maior cota da série. Quase toda a área urbana histórica submersa.",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 16,90 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 16,90 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 16.9,
+          "data_na_fonte": "1911-10-02",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -257,7 +401,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,86 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,86 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.86,
+          "data_na_fonte": "1911-10-29",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -269,7 +424,18 @@
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,00 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.0,
+          "data_na_fonte": "1923-06-20",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -281,7 +447,18 @@
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.3,
+          "data_na_fonte": "1925-05-14",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -293,7 +470,18 @@
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,50 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,50 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.5,
+          "data_na_fonte": "1926-01-14",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -305,7 +493,18 @@
       "fonte": "Itajaípedia — enchentes em Itajaí · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.3,
+          "data_na_fonte": "1927-10-09",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -317,7 +516,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,20 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,20 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.2,
+          "data_na_fonte": "1928-05-31",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -329,7 +539,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,76 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,76 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.76,
+          "data_na_fonte": "1928-06-18",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -353,7 +574,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,82 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,82 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.82,
+          "data_na_fonte": "1928-08-15",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -365,7 +597,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,30 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.3,
+          "data_na_fonte": "1928-09-17",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -374,7 +617,18 @@
       "pico_m": 11.05,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.05,
+          "data_na_fonte": "1931-05-02",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -383,7 +637,18 @@
       "pico_m": 11.25,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.25,
+          "data_na_fonte": "1931-09-14",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -392,7 +657,18 @@
       "pico_m": 11.53,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.53,
+          "data_na_fonte": "1931-09-18",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -401,7 +677,18 @@
       "pico_m": 9.75,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.75,
+          "data_na_fonte": "1932-05-25",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -410,7 +697,18 @@
       "pico_m": 11.85,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.85,
+          "data_na_fonte": "1933-10-04",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -419,7 +717,18 @@
       "pico_m": 11.65,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.65,
+          "data_na_fonte": "1935-09-24",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -428,7 +737,18 @@
       "pico_m": 10.4,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.4,
+          "data_na_fonte": "1936-08-06",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -437,7 +757,18 @@
       "pico_m": 11.45,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.45,
+          "data_na_fonte": "1939-11-27",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -455,7 +786,18 @@
       "pico_m": 10.5,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.5,
+          "data_na_fonte": "1943-08-03",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -464,7 +806,18 @@
       "pico_m": 9.45,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.45,
+          "data_na_fonte": "1946-02-02",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -473,7 +826,18 @@
       "pico_m": 11.85,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.85,
+          "data_na_fonte": "1948-05-17",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -482,7 +846,18 @@
       "pico_m": 9.45,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.45,
+          "data_na_fonte": "1950-10-17",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -500,7 +875,18 @@
       "pico_m": 9.65,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.65,
+          "data_na_fonte": "1953-11-01",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -509,7 +895,18 @@
       "pico_m": 9.56,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.56,
+          "data_na_fonte": "1954-05-08",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -527,7 +924,18 @@
       "pico_m": 12.53,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.53,
+          "data_na_fonte": "1954-11-22",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -536,7 +944,18 @@
       "pico_m": 10.61,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.61,
+          "data_na_fonte": "1955-05-20",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -545,7 +964,18 @@
       "pico_m": 9.28,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.28,
+          "data_na_fonte": "1957-07-20",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -554,7 +984,18 @@
       "pico_m": 10.6,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.6,
+          "data_na_fonte": "1957-08-02",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -563,7 +1004,18 @@
       "pico_m": 13.07,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 13.07,
+          "data_na_fonte": "1957-08-18",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -572,7 +1024,18 @@
       "pico_m": 9.44,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.44,
+          "data_na_fonte": "1957-09-16",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -599,7 +1062,18 @@
       "pico_m": 10.35,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.35,
+          "data_na_fonte": "1961-09-12",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -608,7 +1082,18 @@
       "pico_m": 9.63,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.63,
+          "data_na_fonte": "1961-09-30",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -617,7 +1102,18 @@
       "pico_m": 12.49,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.49,
+          "data_na_fonte": "1961-11-01",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -626,7 +1122,18 @@
       "pico_m": 8.94,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.94,
+          "data_na_fonte": "1962-09-09",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -635,7 +1142,18 @@
       "pico_m": 9.29,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.29,
+          "data_na_fonte": "1962-09-21",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -644,7 +1162,18 @@
       "pico_m": 9.67,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.67,
+          "data_na_fonte": "1963-09-29",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -662,7 +1191,18 @@
       "pico_m": 10.07,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.07,
+          "data_na_fonte": "1966-02-13",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -671,7 +1211,18 @@
       "pico_m": 10.5,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.5,
+          "data_na_fonte": "1967-02-18",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -680,7 +1231,18 @@
       "pico_m": 10.14,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.14,
+          "data_na_fonte": "1969-04-06",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -689,7 +1251,18 @@
       "pico_m": 10.35,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.35,
+          "data_na_fonte": "1971-06-09",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -698,7 +1271,18 @@
       "pico_m": 10.7,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.7,
+          "data_na_fonte": "1972-08-17",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -707,7 +1291,18 @@
       "pico_m": 11.35,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.35,
+          "data_na_fonte": "1972-08-29",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -716,7 +1311,18 @@
       "pico_m": 11.3,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.3,
+          "data_na_fonte": "1973-06-25",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -734,7 +1340,18 @@
       "pico_m": 9.0,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.0,
+          "data_na_fonte": "1973-07-03",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -743,7 +1360,18 @@
       "pico_m": 9.3,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.3,
+          "data_na_fonte": "1973-07-22",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -752,7 +1380,18 @@
       "pico_m": 9.35,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.35,
+          "data_na_fonte": "1973-07-28",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -761,7 +1400,18 @@
       "pico_m": 12.35,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.35,
+          "data_na_fonte": "1973-08-29",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -779,7 +1429,18 @@
       "pico_m": 12.63,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.63,
+          "data_na_fonte": "1975-10-04",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -788,7 +1449,18 @@
       "pico_m": 8.5,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.5,
+          "data_na_fonte": "1975-12-13",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -797,7 +1469,18 @@
       "pico_m": 8.3,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.3,
+          "data_na_fonte": "1976-05-15",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -806,7 +1489,18 @@
       "pico_m": 10.85,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.85,
+          "data_na_fonte": "1976-05-29",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -834,7 +1528,18 @@
       ],
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,25 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,25 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.15,
+          "data_na_fonte": "1977-08-18",
+          "bate_com": "divergência já cadastrada",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -843,7 +1548,18 @@
       "pico_m": 11.5,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.5,
+          "data_na_fonte": "1978-12-26",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -852,7 +1568,18 @@
       "pico_m": 9.45,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.45,
+          "data_na_fonte": "1979-05-10",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -861,7 +1588,18 @@
       "pico_m": 10.45,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.45,
+          "data_na_fonte": "1979-10-09",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -870,7 +1608,18 @@
       "pico_m": 8.4,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.4,
+          "data_na_fonte": "1980-07-31",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -879,7 +1628,18 @@
       "pico_m": 13.27,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 13.27,
+          "data_na_fonte": "1980-12-22",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -888,7 +1648,18 @@
       "pico_m": 8.65,
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
-      "referencia": null
+      "referencia": null,
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.65,
+          "data_na_fonte": "1982-11-15",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -906,7 +1677,18 @@
       "pico_m": 10.6,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.6,
+          "data_na_fonte": "1983-03-04",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -915,7 +1697,18 @@
       "pico_m": 12.52,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.52,
+          "data_na_fonte": "1983-05-20",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -928,7 +1721,18 @@
       "nota": "A cheia mais longa da história recente. A cidade ficou semanas debaixo d'água.",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 15,34 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 15,34 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 15.34,
+          "data_na_fonte": "1983-07-09",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -981,7 +1785,18 @@
       "pico_m": 11.75,
       "confianca": "alta",
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
-      "referencia": "IBGE (régua + 0,20 m)"
+      "referencia": "IBGE (régua + 0,20 m)",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.75,
+          "data_na_fonte": "1983-09-24",
+          "bate_com": "igual ao projeto, que está em IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -994,7 +1809,18 @@
       "nota": "Maior cota do século XX depois de 1911. Quarto evento em dois anos.",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 15,46 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 15,46 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 15.46,
+          "data_na_fonte": "1984-08-07",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1007,7 +1833,18 @@
       "nota": "No mesmo ano, a enxurrada da Rua Belo Horizonte matou 21 pessoas — desastre de encosta, não de cota do rio principal.",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,82 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,82 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.82,
+          "data_na_fonte": "1990-07-21",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1019,7 +1856,18 @@
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.8,
+          "data_na_fonte": "1992-05-29",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1043,7 +1891,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,62 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 10,62 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.62,
+          "data_na_fonte": "1992-07-01",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1067,7 +1926,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,44 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 9,44 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.44,
+          "data_na_fonte": "1997-02-01",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1079,7 +1949,18 @@
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,24 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,24 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.24,
+          "data_na_fonte": "1998-04-28",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1091,7 +1972,18 @@
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,26 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,26 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.26,
+          "data_na_fonte": "1999-07-03",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1103,7 +1995,18 @@
       "fonte": "Defesa Civil de Blumenau — Enchentes Registradas · confere com Cordero & Medeiros, XV SBRH, Tabela 4",
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,02 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,02 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.02,
+          "data_na_fonte": "2001-10-01",
+          "bate_com": "IBGE (régua + 0,20 m)",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1117,7 +2020,18 @@
       "nota": "A cota do rio não foi recorde. As mortes vieram sobretudo dos deslizamentos. Hora: 0h de 24/11/2008, Clicrbs/RBS 24/11/2008 02h41 — \"O nível do rio Itajaí-Açu chegou a 11,52 metros à 0h desta segunda e baixou 5 centímetros até as 2h\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_clicrbs_calamidade_2008-11-24.html); fuso não declarado. A Tabela 3 do Esboços (CEOPS) traz a linha \"2008 24/11 11,72m 8,22m\", mas ela sai do PDF numa tira só e a coluna de cada número é inferida, não lida — por isso os 11,72 m NÃO estão em divergencias. Se forem de Blumenau, são 11,52 + 0,20 exatos, o mesmo padrão do CEOPS sobre o AlertaBlu em 31/08 e 09/09/2011 (8,7 × 8,5; 12,8 × 12,6).",
       "referencia": "régua",
       "referencia_publicada": "régua antiga",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,52 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 11,52 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 11.52,
+          "data_na_fonte": "2008-11-24",
+          "bate_com": "régua antiga",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1130,7 +2044,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
       "referencia": "régua",
       "referencia_publicada": "régua antiga",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,06 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,06 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.06,
+          "data_na_fonte": "2009-09-29",
+          "bate_com": "régua antiga",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1159,6 +2084,17 @@
           "referencia_publicada": "régua de hoje",
           "nota": "A planilha dá 26/05/2010, com 8,64 m na coluna IBGE e 8,84 m na régua nova. Tratada como a MESMA cheia deste registro (26/04/2010, 8,46 m na régua antiga = 8,86 m na de hoje): o dia é o mesmo, a diferença é de 2 cm, e mês e dígitos parecem trocados na digitação. Não virou registro novo para não contar a cheia duas vezes. 03/10/2026, pedido do Jefferson."
         }
+      ],
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.46,
+          "data_na_fonte": "2010-04-26",
+          "bate_com": "régua antiga",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
       ]
     },
     {
@@ -1171,7 +2107,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "régua antiga",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,50 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 8,50 m na régua antiga, + 0,40 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.5,
+          "data_na_fonte": "2011-08-31",
+          "bate_com": "régua antiga",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1201,7 +2148,18 @@
       ],
       "referencia": "régua",
       "referencia_publicada": "IBGE (régua + 0,20 m)",
-      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md. Confere com 13,00 m de outra fonte (antes guardado como divergência): CEOPS/FURB — Ponte Adolfo Konder — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ABRH_Cotas-enchente-Blumenau.pdf, p. 1."
+      "conversao": "Convertido em 03/10/2026 para a régua de hoje, por decisão do Jefferson: publicado como 12,80 m na referência do IBGE, + 0,20 m. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md. Confere com 13,00 m de outra fonte (antes guardado como divergência): CEOPS/FURB — Ponte Adolfo Konder — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ABRH_Cotas-enchente-Blumenau.pdf, p. 1.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 12.6,
+          "data_na_fonte": "2011-09-09",
+          "bate_com": "régua antiga",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1221,7 +2179,18 @@
       "confianca": "media",
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017 · confirmado por: Revista Portuária, \"Nota de esclarecimento\" da Autoridade Portuária de Itajaí sobre a interrupção das manobras no porto, set/2013 (https://www.revistaportuaria.com.br/noticia/15738) — bruto: data/brutos/pesquisa-picos-2026-09-24/rodada6/originais/RevistaPortuaria_noticia-15738_nota-esclarecimento.html — \"Blumenau: 23/09 = 10,51 m\" · confirmado por: Defesa Civil de Blumenau — Enchentes Registradas (defesacivil.blumenau.sc.gov.br/p/enchentes), original salvo na sétima rodada — bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/AlertaBlu_enchentes-registradas.html",
       "referencia": null,
-      "nota": "Hora: 2h, G1 SC 23/09/2013 — \"O pico do rio Itajaí-Açu ocorreu às 2h, com 10,51m\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/G1_blumenau_2013-09-23.html); a série horária do blog Dalva Day, \"Fonte: CEOPS (Régua da Ponte Adolfo Konder)\", dá 10,47 / 10,50 / 10,51 / 10,42 m às 0h, 1h, 2h e 3h (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_dalvaday_2013-09.html). Fuso não declarado."
+      "nota": "Hora: 2h, G1 SC 23/09/2013 — \"O pico do rio Itajaí-Açu ocorreu às 2h, com 10,51m\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/G1_blumenau_2013-09-23.html); a série horária do blog Dalva Day, \"Fonte: CEOPS (Régua da Ponte Adolfo Konder)\", dá 10,47 / 10,50 / 10,51 / 10,42 m às 0h, 1h, 2h e 3h (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Blumenau_dalvaday_2013-09.html). Fuso não declarado.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.51,
+          "data_na_fonte": "2013-09-23",
+          "bate_com": "igual ao projeto, que está em referência null",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1232,7 +2201,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.18,
+          "data_na_fonte": "2014-06-09",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1244,7 +2224,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.13,
+          "data_na_fonte": "2014-06-29",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1257,7 +2248,18 @@
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
       "nota": "Hora: 1h, G1 SC 23/10/2015 — \"depois de atingir um pico de 10,03m, à 1h, o Rio Itajaí-Açú baixou para 8,92 metros às 14h\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/G1_blumenau_2015-10-23.html). Fuso não declarado.",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.03,
+          "data_na_fonte": "2015-10-23",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1268,7 +2270,18 @@
       "fonte": "Compilação da série histórica de Blumenau, 1852–2017",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.71,
+          "data_na_fonte": "2017-06-01",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1280,7 +2293,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.52,
+          "data_na_fonte": "2017-06-06",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1306,7 +2330,18 @@
       "nota": "Crista às 02:45; platô 9,36–9,41 m das 00:00 às 04:30 (19 leituras). Mesma régua da Ponte Adolfo Konder que o AlertaBlu usa — daí referencia 'régua'. Acima do Alerta Máximo (8,00 m). Veio 1 h 15 ANTES da crista de Taió (9,49 m às 04:00, que não é registro pela decisão (b)); Indaial pica em 04/05 (6,00 m), já no repo. O Aviso 03/2022 da CIRAM dava 6,39 m às 08:00 de 06/05 já descendo — três metros abaixo da crista, que é o tamanho do erro de tomar aviso por pico. Conferir contra a tabela /p/enchentes da Defesa Civil de Blumenau quando ela chegar. Confirmado pelo Jefferson em 04/10/2026 (B8): fica na régua de hoje, sem nova conversão.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo conferido em 03/10/2026: leitura posterior à troca de régua, logo já na régua de hoje; nada somado. Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.4,
+          "data_na_fonte": "2022-05-05",
+          "bate_com": "diferente",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1318,7 +2353,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.78,
+          "data_na_fonte": "2023-10-05",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1341,7 +2387,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha. Hora: 6h, ND Mais 09/10/2023 — \"a marca mais alta alcançada nas últimas horas foi às 06h da manhã, de 10,19 metros\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/ND_blumenau_amanhece-acima-10m_2023-10-09.html); fuso não declarado. A NSC (10/10/2023) põe os 10,19 m na madrugada de domingo, 08/10 — dia diferente da lista e da ND. O primeiro ciclo da cheia teve crista de 9,49 m por volta das 2h15 de 08/10 (ND, medição do AlertaBlu), que a lista oficial não traz como enchente separada.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.19,
+          "data_na_fonte": "2023-10-09",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1366,7 +2423,18 @@
       ],
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 10.76,
+          "data_na_fonte": "2023-10-12",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1378,7 +2446,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.38,
+          "data_na_fonte": "2023-10-29",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1390,7 +2469,18 @@
       "nota": "A lista oficial não declara régua nem zero, daí referencia null. Entrou na sétima rodada (02/10/2026): a lista tem esta enchente e o repositório não tinha.",
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.5,
+          "data_na_fonte": "2023-11-03",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1403,7 +2493,18 @@
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
       "nota": "Hora: 9h45, O Blumenauense — \"A Defesa Civil confirmou que o pico momentâneo do rio Itajaí-Açu em Blumenau foi de 9,14 metros às 9h45\" (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/OBlumenauense_2023-11-17.html). Fuso não declarado.",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 9.14,
+          "data_na_fonte": "2023-11-17",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",
@@ -1415,7 +2516,18 @@
       "referencia": "régua",
       "referencia_publicada": "régua de hoje",
       "nota": "O Auditório (bruto data/brutos/pesquisa-picos-2026-09-24/rodada7/originais/Oauditorio_blumenau_2024-05-19.html) dá 8,67 m às 12h e 8,65 m às 13h, mas não chama a leitura das 12h de pico — por isso o campo hora ficou vazio.",
-      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md."
+      "conversao": "Rótulo definido em 03/10/2026, por decisão do Jefferson: o valor já está na régua de hoje (a lista do AlertaBlu de 2014 em diante está na régua nova). Fonte: Prof. Ademar Cordero (FURB), e-mails e planilha de 02/10/2026: régua antiga + 0,20 m = IBGE; IBGE + 0,20 m = GPS = régua de hoje. Ver docs/CONVERSAO-BLUMENAU.md.",
+      "cruzamentos": [
+        {
+          "fonte": "Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa Civil de Blumenau; não declara a régua",
+          "valor_m": 8.67,
+          "data_na_fonte": "2024-05-19",
+          "bate_com": "régua de hoje",
+          "confianca": "media",
+          "em": "2026-11-04",
+          "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+        }
+      ]
     },
     {
       "rio": "itajai-acu",

@@ -17,7 +17,7 @@ Regra da pasta: todo arquivo entra com sha256 (`SHA256SUMS`) e data de acesso. N
 | sha256 | `56fdbe6baa58fbc14a78552b66aefe92f8ad223fd39de6ec28c6d0ec75aa30c6` — **conferido** contra o handoff |
 | Conteúdo | planilha única (`Sheet1`), 102 linhas de 1852 a 19/05/2024: Ano, Mês, Dia, COMPLETA, Cota, Categoria; ao lado, tabelas auxiliares (classificação "maior que 12" = Típica e "maior que 16" = Atípica; totais por século, por mês e enchentes por ano) |
 | **Régua / referência altimétrica** | **não informada** pela tabela. O cruzamento (`docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md`) mostra que ela mistura as três referências de Blumenau: valores iguais aos de Cordero & Medeiros (IBGE) até 2001, régua antiga em 2008–2011 e régua de hoje de 2013 em diante |
-| Confiança, se algum número entrar | `media` (compilação); uso previsto: só cruzamento |
+| Confiança, se algum número entrar | `media` (compilação); uso: **só cruzamento** — desde 04/11/2026 (decisão do Jefferson) os 101 registros de Blumenau que a tabela também tem trazem o número dela em `cruzamentos`, sem mudar `pico_m` nem `referencia` (`scripts/cruzar_mendeley_blumenau.py --anotar`) |
 
 Problemas conhecidos (do handoff e confirmados na transcrição):
 

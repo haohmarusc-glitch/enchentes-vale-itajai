@@ -201,11 +201,41 @@ def relatorio_md(r: dict, anomalias: list[str]) -> str:
     return "\n".join(out) + "\n"
 
 
+#: O que `--anotar` grava em cada registro de Blumenau que a tabela também tem (decisão do Jefferson, 04/11/2026:
+#: "citar nas notas dos registros de Blumenau como fonte de cruzamento"). Vai num campo próprio, `cruzamentos`,
+#: para não misturar com `nota` (que a tela mostra) nem com `divergencias` (que exige valor adotado × outro).
+FONTE_CRUZAMENTO = ("Histórico de enchentes em Blumenau (Melchioretto, Loos e Silva & Warwar da Fonseca, Senac SC), "
+                    "Mendeley Data, DOI 10.17632/cj64gycsw8.2, v2 de 23/09/2025, CC BY 4.0 — compilação da Defesa "
+                    "Civil de Blumenau; não declara a régua")
+DOC_CRUZAMENTO = "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"
+#: Descrição do campo, gravada em `_meta.campos` de enchentes.json junto com a anotação.
+CAMPO_CRUZAMENTOS = (
+    "Fontes independentes que trazem o MESMO pico, só para cruzamento: cada entrada tem fonte, valor_m (o número "
+    "como a fonte publica), data_na_fonte, bate_com (com que referência de Blumenau o número bate, ou 'diferente'), "
+    "confianca, em (data da conferência) e doc. Não é nível: nada aqui entra em recorde, gráfico, 'minha rua', "
+    "simulador ou bot, e não muda pico_m nem referencia. Hoje só a tabela do Mendeley em Blumenau (04/11/2026)."
+)
+
+
+def anotar(eventos: list[dict], resultado: dict, em: str = "2026-11-04") -> int:
+    """Grava `cruzamentos` nos registros pareados (idempotente: substitui a entrada da mesma fonte). Devolve quantos."""
+    n = 0
+    for x, e, bate in resultado["pares"] + resultado["proximos"]:
+        entrada = {"fonte": FONTE_CRUZAMENTO, "valor_m": x["cota_m"], "data_na_fonte": x["data"],
+                   "bate_com": bate or "diferente", "confianca": "media", "em": em, "doc": DOC_CRUZAMENTO}
+        outros = [c for c in e.get("cruzamentos") or [] if c.get("fonte") != FONTE_CRUZAMENTO]
+        e["cruzamentos"] = outros + [entrada]
+        n += 1
+    return n
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--xlsx", type=Path, default=XLSX)
     ap.add_argument("--csv", type=Path, default=CSV)
     ap.add_argument("--transcrever", action="store_true", help="regrava o CSV a partir do xlsx")
+    ap.add_argument("--anotar", action="store_true",
+                    help="grava `cruzamentos` nos registros de Blumenau de enchentes.json (decisão do Jefferson)")
     a = ap.parse_args(argv)
     if a.transcrever:
         linhas, anomalias = transcrever(a.xlsx)
@@ -216,7 +246,16 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     linhas = ler_csv(a.csv)
     anomalias = transcrever(a.xlsx)[1] if a.xlsx.exists() else []
-    print(relatorio_md(cruzar(linhas, le_json("enchentes.json")["eventos"]), anomalias))
+    dados = le_json("enchentes.json")
+    resultado = cruzar(linhas, dados["eventos"])
+    if a.anotar:
+        from comum import grava_json
+        n = anotar(dados["eventos"], resultado)
+        dados.setdefault("_meta", {}).setdefault("campos", {})["cruzamentos"] = CAMPO_CRUZAMENTOS
+        grava_json("enchentes.json", dados)
+        print(f"{n} registro(s) de Blumenau anotados com `cruzamentos` → data/enchentes.json", file=sys.stderr)
+        return 0
+    print(relatorio_md(resultado, anomalias))
     return 0
 
 
