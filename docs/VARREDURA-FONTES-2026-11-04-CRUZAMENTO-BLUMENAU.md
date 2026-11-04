@@ -2,8 +2,17 @@
 
 Tarefa C do handoff de 04/11/2026: cruzar `data/brutos/varredura-fontes-2026-11-04/mendeley-blumenau-enchentes.csv`
 (transcrição da "Histórico de enchentes em Blumenau", Mendeley Data, DOI 10.17632/cj64gycsw8.2, CC BY 4.0) com os
-registros de Blumenau em `enchentes.json`. **Nenhum dado foi alterado.** Gerado por
+registros de Blumenau em `enchentes.json`. **Nenhum número nem referência foi alterado.** Gerado por
 `python3 scripts/cruzar_mendeley_blumenau.py` (o relatório bruto está no fim); a leitura é esta.
+
+**Decisão do Jefferson (04/11/2026, "aprovo todas" as pendências do relatório de ganhos):** o item 2 abaixo foi
+aplicado por `python3 scripts/cruzar_mendeley_blumenau.py --anotar`. Os 101 registros de Blumenau que a tabela também
+tem ganharam o campo `cruzamentos` (descrito em `_meta.campos`), com a fonte, o número **como a tabela publica**,
+`bate_com` (com que referência de Blumenau o número bate — ou `diferente`, nos casos de 1852 e 2022), confiança
+`media`, a data da conferência e este documento. O campo é citação, não nível: `pico_m`, `referencia` e
+`divergencias` ficaram como estavam, o site não o lê e o validador (`valida_cruzamentos`) cobra os campos de cada
+entrada. A linha de 20/11/1862, só da tabela, continua fora. Rodar de novo não duplica (a entrada da mesma fonte é
+substituída).
 
 ## O que o cruzamento diz
 
@@ -39,8 +48,9 @@ registros de Blumenau em `enchentes.json`. **Nenhum dado foi alterado.** Gerado 
 
 1. **Nada a cadastrar.** A tabela não traz cheia que o projeto não tenha, salvo a data 20/11/1862, que contradiz a data
    de Cordero (08/11) sem dizer a fonte.
-2. **Pode entrar como fonte de cruzamento** nas notas dos registros de Blumenau, com confiança `media`: "a compilação
+2. **Pode entrar como fonte de cruzamento** nos registros de Blumenau, com confiança `media`: "a compilação
    do Senac (Mendeley, CC BY 4.0) traz o mesmo número". Não acrescenta certeza sobre a régua — ela repete Cordero.
+   **Aplicado em 04/11/2026** (campo `cruzamentos`, ver o alto deste documento).
 3. **Os 51 registros de 1931–1983 continuam em disputa** (`REGRA_REFERENCIA_BLUMENAU`): a tabela não ajuda a
    desempatar Tabela 4 × planilha do Cordero, porque copia a Tabela 4.
 4. Se um dia a tabela for citada na tela ou no chat, dizer que ela mistura referências e não informar os números dela

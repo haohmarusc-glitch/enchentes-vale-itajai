@@ -491,6 +491,9 @@ o projeto.
   `docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md` (`scripts/cruzar_mendeley_blumenau.py`): 101 das 102
   datas já estão no projeto; a tabela não declara régua e mistura IBGE (até 2001), régua antiga (2008–2011) e régua de
   hoje (2013+); 2 números diferem (1852: 10,30 × 16,30 publicado; 2022: 9,40 × 9,41) e 1 data só dela (20/11/1862).
+  **04/11/2026, decisão do Jefferson:** os 101 registros pareados citam a tabela no campo `cruzamentos`
+  (`--anotar`; confiança média; número como publicado e `bate_com` dizendo a referência; `pico_m` intacto; o
+  validador cobra os campos).
   **Descartadas:** GeoNode da FURB (FlorestaSC, sem enchente), manchas do SGB (não cobrem a bacia), recorte CEMADEN do
   SGB. **Pendentes:** CEMADEN `mapservices` (recusa conexão também na rede doméstica; testar da VPS), Copernicus GFM.
   Confirmado que **não** existe: SAH do SGB para o Itajaí, portal de nível em Navegantes, marégrafo público do porto,

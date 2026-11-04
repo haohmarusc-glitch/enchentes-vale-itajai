@@ -73,6 +73,25 @@ class Cruzamento(unittest.TestCase):
         self.assertEqual([x["data"] for x in r["so_tabela"]], ["1862-11-20"], "e a linha da tabela fica só nela, sem casar por mês")
 
 
+class Anotar(unittest.TestCase):
+    def test_grava_cruzamentos_sem_tocar_no_resto_e_e_idempotente(self):
+        eventos = [registro("2023-10-12", 10.76), registro("1983-07-09", 15.54), registro("2023-10-12", 5.0, cidade="gaspar")]
+        eventos[0]["nota"] = "nota antiga"
+        linhas = [linha("2023-10-12", 10.76), linha("1900-10-02", 12.8)]
+        r = cm.cruzar(linhas, eventos)
+        self.assertEqual(cm.anotar(eventos, r), 1)
+        c = eventos[0]["cruzamentos"]
+        self.assertEqual(len(c), 1)
+        self.assertEqual((c[0]["valor_m"], c[0]["bate_com"], c[0]["confianca"]), (10.76, "régua de hoje", "media"))
+        self.assertIn("Mendeley", c[0]["fonte"])
+        self.assertEqual(eventos[0]["nota"], "nota antiga", "nota não muda")
+        self.assertEqual(eventos[0]["pico_m"], 10.76, "pico não muda")
+        self.assertNotIn("cruzamentos", eventos[1], "registro só do projeto não ganha cruzamento")
+        self.assertNotIn("cruzamentos", eventos[2], "Gaspar não entra")
+        cm.anotar(eventos, cm.cruzar(linhas, eventos))
+        self.assertEqual(len(eventos[0]["cruzamentos"]), 1, "rodar duas vezes não duplica")
+
+
 class Transcricao(unittest.TestCase):
     def test_completa_nos_dois_formatos(self):
         import datetime as dt
