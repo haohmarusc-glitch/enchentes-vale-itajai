@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 import sys
 import tempfile
 import unittest
@@ -80,6 +81,7 @@ class Transcricao(unittest.TestCase):
         self.assertIsNone(cm._data_de_completa(42))
 
     @unittest.skipUnless(cm.XLSX.exists(), "xlsx do Mendeley ausente")
+    @unittest.skipUnless(importlib.util.find_spec("openpyxl"), "sem openpyxl (a CI instala só requirements-mapas.txt)")
     def test_o_csv_commitado_e_a_transcricao_do_xlsx(self):
         """A transcrição é reproduzível: regerar do xlsx dá o CSV que está no repositório."""
         linhas, anomalias = cm.transcrever(cm.XLSX)
