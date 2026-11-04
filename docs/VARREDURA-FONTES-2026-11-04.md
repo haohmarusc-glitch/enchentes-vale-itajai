@@ -194,3 +194,13 @@ Regra que não muda: só GET, `User-Agent` do projeto, robots antes de tudo.
 
 Terceira rodada (16h43 UTC): o SGB passou a ser pedido e vieram **16 cartas de suscetibilidade e 24 setorizações** (190 MB
 de GeoJSON no branch). O cruzamento com as cotas de rua está em `docs/SGB-RUAS.md`.
+
+Quarta rodada (17h10 UTC), com os alvos do **Copernicus** (pendência 4 do relatório de ganhos): do runner, os quatro
+respondem **200** — portal do EMS (`emergency.copernicus.eu`), lista de ativações do EMS (`mapping.emergency.copernicus.eu/
+activations/`), portal do GFM (`global-flood.emergency.copernicus.eu`) e a API do GFM na EODC (`api.gfm.eodc.eu/v2/`, página
+HTML de documentação). Daqui e da rede do Jefferson nenhum abre. O que isso diz: a fonte existe e o Actions a alcança; o que
+ainda **não** se sabe, porque a sondagem só lê 400 caracteres, é se há ativação do EMS para o Vale do Itajaí e o que a API do
+GFM entrega sem cadastro. Próximo passo, se o Jefferson quiser: um alvo de leitura que baixe a lista de ativações inteira e
+procure "Brazil"/"Santa Catarina", e a página de termos da API do GFM. Nada disso é tempo real: serviria para a **extensão
+observada** das cheias (satélite), como contexto histórico.
+

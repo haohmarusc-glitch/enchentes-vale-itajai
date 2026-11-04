@@ -49,7 +49,9 @@ entrou, onde está e o que ainda depende de decisão.
 2. **Suscetibilidade/risco do SGB na "minha rua"** — aprovar como camada de contexto ou não.
 3. **CEMADEN `mapservices`/`resources`** — recusam conexão da sua rede e daqui; do Actions o `robots.txt` também não
    respondeu (a próxima rodada grava o motivo — `docs/VARREDURA-FONTES-2026-11-04.md`, seção 12); resta testar da VPS, só leitura.
-4. **Copernicus GFM/EMS** — não conferido; serviria para a extensão observada das cheias de 2023.
+4. **Copernicus GFM/EMS** — **alcançável pelo Actions** (4ª rodada, 04/11: os quatro endereços respondem 200; daqui e da sua
+   rede, nenhum abre). Falta ler o conteúdo: se há ativação do EMS para o Vale e o que a API do GFM dá sem cadastro
+   (`docs/VARREDURA-FONTES-2026-11-04.md`, seção 12). Serviria para a extensão observada das cheias, como contexto.
 5. **Tabela do Mendeley** — se quiser, citar nas notas dos registros de Blumenau como fonte de cruzamento (confiança
    média); nada a cadastrar.
 6. Continuam de antes: C32–C35 (envio), C36 (destinatário), ArcGIS de Itajaí (comunicar ou não), pergunta à DCSC sobre
