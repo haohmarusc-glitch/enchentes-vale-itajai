@@ -58,6 +58,13 @@ class Resumo(unittest.TestCase):
         def quatrocentos_e_quatro(url):
             raise Erro(404)
 
+        def reembrulhado(url):
+            # Como `comum.baixar` faz: RequestException(f"{url}: {ultimo}") from HTTPError — o status fica na causa.
+            try:
+                raise Erro(404)
+            except Erro as causa:
+                raise RuntimeError(f"{url}: {causa}") from causa
+
         def quinhentos(url):
             raise Erro(503)
 
@@ -65,6 +72,7 @@ class Resumo(unittest.TestCase):
             raise ConnectionError("sem rota")
 
         self.assertEqual(sgb.robots_do_geoportal(quatrocentos_e_quatro), (True, "robots.txt não existe (404): nada proibido"))
+        self.assertEqual(sgb.robots_do_geoportal(reembrulhado), (True, "robots.txt não existe (404): nada proibido"))
         self.assertEqual(sgb.robots_do_geoportal(quinhentos)[0], False)
         self.assertIn("sem resposta", sgb.robots_do_geoportal(sem_rota)[1])
         self.assertEqual(sgb.robots_do_geoportal(lambda url: "User-agent: *\nDisallow: /\n")[0], False)

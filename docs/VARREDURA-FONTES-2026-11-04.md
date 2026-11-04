@@ -185,5 +185,9 @@ Primeira rodada, 13h52 UTC:
 | SGB download por cidade | nada pedido | o geoportal responde **404 ao `robots.txt`**, e o script tratava 404 como "sem resposta". **Corrigido**: 404 = não há robots = nada proibido (como em `sondar_fontes`); outro erro continua fechando tudo |
 | FURB GeoNode, Mendeley | 200 | como antes |
 
-A rodada seguinte (disparada pelo push desta correção) deve trazer o motivo da falha nos hosts do CEMADEN e da
-DCSC e os GeoJSON do SGB por cidade. Regra que não muda: só GET, `User-Agent` do projeto, robots antes de tudo.
+Segunda rodada (16h29 UTC), com o motivo gravado: **CEMADEN `mapservices` e `resources` = `ReadTimeout`** (a conexão
+abre e o servidor não responde em 30 s — filtro, não rota) e **DCSC `www.defesacivil.sc.gov.br` = `ConnectTimeout`**
+(nem a conexão abre: o site não atende o runner). Ou seja, do GitHub Actions essas duas fontes **não** se alcançam;
+o coletor de avisos da DCSC (#564) só faz sentido na VPS. O SGB continuou sem pedir nada: `comum.baixar` reembrulha o
+HTTPError num `RequestException` sem `response`, e a leitura do 404 não o achava — corrigido lendo a cadeia de causas.
+Regra que não muda: só GET, `User-Agent` do projeto, robots antes de tudo.

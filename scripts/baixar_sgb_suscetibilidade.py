@@ -61,6 +61,18 @@ def robots_libera(texto_robots: str) -> bool:
     return rp.can_fetch(USER_AGENT, BASE + "/inundacao/MapServer/0/query")
 
 
+def _status_http(e: BaseException) -> int | None:
+    """O status da resposta que causou a exceção. `comum.baixar` reembrulha o HTTPError num RequestException sem
+    `response` (a 2ª rodada na Actions ainda leu o 404 como "sem resposta"): procura na cadeia de causas."""
+    visto: BaseException | None = e
+    while visto is not None:
+        status = getattr(getattr(visto, "response", None), "status_code", None)
+        if isinstance(status, int):
+            return status
+        visto = visto.__cause__ or visto.__context__
+    return None
+
+
 def robots_do_geoportal(baixar_fn=None) -> tuple[bool, str]:
     """(pode pedir?, motivo). O geoportal NÃO publica robots.txt (404 na Actions em 04/11/2026): 404 é "nada
     proibido", como em `sondar_fontes._robots` — a primeira rodada tratou o 404 como "sem resposta" e não pediu
@@ -69,7 +81,7 @@ def robots_do_geoportal(baixar_fn=None) -> tuple[bool, str]:
     try:
         texto = baixar_fn(ROBOTS)
     except Exception as e:  # noqa: BLE001
-        if getattr(getattr(e, "response", None), "status_code", None) == 404:
+        if _status_http(e) == 404:
             return True, "robots.txt não existe (404): nada proibido"
         return False, f"robots.txt sem resposta ({e}); nada pedido"
     if robots_libera(texto):
