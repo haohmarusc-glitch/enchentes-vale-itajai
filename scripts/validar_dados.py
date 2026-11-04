@@ -1265,6 +1265,51 @@ def valida_eventos_pendentes(conhecidas: set[tuple[str, str]]) -> None:
                      f"{s.get('pico_m')} m). Migrar é mover: apague daqui no mesmo commit.")
 
 
+#: Tipologias de setor de risco do SGB que o site aceita em `sgb-ruas.json` (as de água; deslizamento fica fora).
+TIPOLOGIAS_SGB_DE_AGUA = {"Inundação", "Enxurrada", "Enchente", "Alagamento"}
+CLASSES_SGB = {"Alta", "Média", "Baixa"}
+
+
+def valida_sgb_ruas() -> None:
+    """`sgb-ruas.json`: o contexto do SGB para os pontos de cota de rua (decisão do Jefferson de 04/11/2026).
+
+    É arquivo DERIVADO (scripts/cruzar_sgb_ruas.py): classe de suscetibilidade do terreno e setores de risco
+    de ÁGUA em que cada ponto cai. O que se cobra: todo ponto é um ponto de `cotas-ruas.json` (mesma cidade,
+    mesma coordenada — senão a tela diria do terreno de um lugar que não é o da rua), classe do conjunto do
+    SGB, só tipologias de água (um setor de deslizamento aqui viraria "risco de inundação" na tela), contagens
+    coerentes e `_meta.regras` dizendo que não é cota.
+    """
+    caminho = RAIZ / "data" / "sgb-ruas.json"
+    if not caminho.exists():
+        return
+    d = le_json(caminho)
+    regras = " ".join(d.get("_meta", {}).get("regras", []))
+    if "não é cota" not in regras or "199" not in regras:
+        erro("sgb-ruas.json: _meta.regras tem de dizer que não é cota e apontar o 199")
+    cotas = le_json("cotas-ruas.json")["cotas"]
+    coordenadas = {(c["cidade"], c.get("lat"), c.get("lon")) for c in cotas if c.get("lat") is not None}
+    for cid, b in d.get("cidades", {}).items():
+        onde = f"sgb-ruas.json/{cid}"
+        for camada, info in (b.get("camadas") or {}).items():
+            if not re.fullmatch(r"[0-9a-f]{64}", str(info.get("sha256", ""))):
+                erro(f"{onde}/camadas/{camada}: sem sha256 do GeoJSON lido")
+        pontos = b.get("pontos") or []
+        for i, p in enumerate(pontos):
+            if (cid, p.get("lat"), p.get("lon")) not in coordenadas:
+                erro(f"{onde}/pontos[{i}] ({p.get('rua')}): coordenada não é de um ponto de cotas-ruas.json desta cidade")
+            s = p.get("suscetibilidade")
+            if s is not None and s.get("classe") not in CLASSES_SGB:
+                erro(f"{onde}/pontos[{i}]: classe {s.get('classe')!r} fora de {sorted(CLASSES_SGB)}")
+            for r in p.get("risco") or []:
+                fora = set(r.get("tipologias") or []) - TIPOLOGIAS_SGB_DE_AGUA
+                if fora or not r.get("tipologias"):
+                    erro(f"{onde}/pontos[{i}]: setor {r.get('setor')} com tipologia fora de água {sorted(fora) or '(vazia)'}")
+        if sum((b.get("pontos_por_classe") or {}).values()) != len(pontos):
+            erro(f"{onde}: pontos_por_classe não soma {len(pontos)} pontos")
+        if b.get("pontos_em_setor_de_risco") != sum(1 for p in pontos if p.get("risco")):
+            erro(f"{onde}: pontos_em_setor_de_risco não bate com os pontos")
+
+
 def valida_eventos_captados(conhecidas: set[tuple[str, str]]) -> None:
     """`eventos-captados.json`: o resumo das cheias que a coleta captou, para o chat.
 
@@ -2368,6 +2413,7 @@ def main() -> int:
     valida_enchentes(conhecidas)
     valida_eventos_pendentes(conhecidas)
     valida_eventos_captados(conhecidas)
+    valida_sgb_ruas()
     valida_ruas_alagadas()
     valida_transito(conhecidas)
     valida_trechos_experimentais(conhecidas)

@@ -114,16 +114,40 @@ def nomes_na_bacia(distintos: dict, campo: str) -> dict[str, str]:
     return achados
 
 
+def _ano(valor) -> str | None:
+    """`ano` vem como inteiro; `data_setor` (risco) vem em milissegundos desde 1970 — a 3ª rodada na Actions imprimiu
+    "1540339200000" como ano. Os dois viram o ano com quatro dígitos."""
+    if isinstance(valor, (int, float)) and valor > 10**11:
+        return str(datetime.fromtimestamp(valor / 1000, tz=timezone.utc).year)
+    if isinstance(valor, (int, float)):
+        return str(int(valor))
+    if isinstance(valor, str) and valor.strip():
+        return valor.strip()[:4]
+    return None
+
+
 def resumir(nome_servico: str, geojson: dict) -> dict:
     feicoes = geojson.get("features") or []
     chave = "classe" if nome_servico == "inundacao" else "grau_risco"
     contagem: dict[str, int] = {}
+    tipologias: dict[str, int] = {}
+    anos: set[str] = set()
     for f in feicoes:
-        v = str((f.get("properties") or {}).get(chave))
+        p = f.get("properties") or {}
+        v = str(p.get(chave))
         contagem[v] = contagem.get(v, 0) + 1
-    anos = sorted({str((f.get("properties") or {}).get("ano") or (f.get("properties") or {}).get("data_setor") or "")
-                   for f in feicoes} - {""})
-    return {"feicoes": len(feicoes), chave: contagem, "anos": anos}
+        a = _ano(p.get("ano") if nome_servico == "inundacao" else p.get("data_setor"))
+        if a:
+            anos.add(a)
+        # Setor de risco tem tipologia (deslizamento, inundação, enxurrada…): a maioria não é de água, e isso importa.
+        for i in range(1, 6):
+            t = str(p.get(f"tipolo_g{i}") or "").strip()
+            if t:
+                tipologias[t] = tipologias.get(t, 0) + 1
+    saida = {"feicoes": len(feicoes), chave: contagem, "anos": sorted(anos)}
+    if nome_servico == "risco":
+        saida["tipologias"] = tipologias
+    return saida
 
 
 def main(argv: list[str] | None = None) -> int:

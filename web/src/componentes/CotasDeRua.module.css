@@ -99,6 +99,21 @@
   font-size: 0.78rem;
 }
 
+/* O contexto do SGB por ponto: discreto, sem cor de faixa — é do terreno, não do nível. */
+.sgb {
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+.sgbLista {
+  margin: 0.3rem 0 0;
+  padding-left: 1.2rem;
+  line-height: 1.45;
+}
+.sgbLista li + li {
+  margin-top: 0.25rem;
+}
+
 /* A identificação completa das fontes, uma vez por fonte, fechada por padrão. */
 .fontes {
   margin: 0.5rem 0 0;

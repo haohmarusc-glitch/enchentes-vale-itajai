@@ -43,6 +43,11 @@ ALVOS: list[tuple[str, str]] = [
     ("sgb-risco-distintos", "https://geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/risco/MapServer/0/query?where=1%3D1&outFields=munic&returnDistinctValues=true&returnGeometry=false&f=json"),
     ("furb-geonode-layers", "https://monitora.furb.br/api/layers/?limit=5"),
     ("mendeley-dataset", "https://data.mendeley.com/datasets/cj64gycsw8"),
+    # Copernicus (pendência 4 do relatório de ganhos de 04/11/2026): daqui e da rede do Jefferson nada abre.
+    ("copernicus-ems-portal", "https://emergency.copernicus.eu/"),
+    ("copernicus-ems-activations", "https://mapping.emergency.copernicus.eu/activations/"),
+    ("copernicus-gfm-portal", "https://global-flood.emergency.copernicus.eu/"),
+    ("copernicus-gfm-api-eodc", "https://api.gfm.eodc.eu/v2/"),
 ]
 AMOSTRA = 300
 

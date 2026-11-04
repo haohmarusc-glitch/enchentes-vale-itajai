@@ -41,8 +41,12 @@ class Resumo(unittest.TestCase):
         g = {"features": [{"properties": {"classe": "Alta", "ano": 2013}}, {"properties": {"classe": "Alta", "ano": 2013}},
                           {"properties": {"classe": "Baixa", "ano": 2013}}]}
         self.assertEqual(sgb.resumir("inundacao", g), {"feicoes": 3, "classe": {"Alta": 2, "Baixa": 1}, "anos": ["2013"]})
-        r = {"features": [{"properties": {"grau_risco": "Muito Alto", "data_setor": "2025-09"}}]}
-        self.assertEqual(sgb.resumir("risco", r)["grau_risco"], {"Muito Alto": 1})
+        r = {"features": [{"properties": {"grau_risco": "Muito Alto", "data_setor": "2025-09", "tipolo_g1": "Inundação"}},
+                          {"properties": {"grau_risco": "Alto", "data_setor": 1540339200000, "tipolo_g1": "Deslizamento", "tipolo_g2": "Inundação"}}]}
+        resumo = sgb.resumir("risco", r)
+        self.assertEqual(resumo["grau_risco"], {"Muito Alto": 1, "Alto": 1})
+        self.assertEqual(resumo["anos"], ["2018", "2025"], "data_setor em milissegundos vira ano (3ª rodada imprimia 1540339200000)")
+        self.assertEqual(resumo["tipologias"], {"Inundação": 2, "Deslizamento": 1})
 
     def test_robots(self):
         self.assertTrue(sgb.robots_libera("User-agent: *\nDisallow: /admin/\n"))

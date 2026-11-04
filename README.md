@@ -484,7 +484,8 @@ o projeto.
   `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md` (conferência do Jefferson no Chrome). Sete candidatas, nenhuma em uso.
   **Funcionam:** o `wp-json`/`feed` da Defesa Civil de SC (avisos por região, candidato ao chat) e os serviços
   `inundacao` e `risco` do geoportal do SGB (suscetibilidade e setorização por município da bacia — contexto, nunca
-  cota). **Baixada e cruzada:** a tabela "Histórico de enchentes em Blumenau" (Mendeley Data, CC BY 4.0, 102 cheias),
+  cota; **em uso desde 04/11/2026** na "minha rua" de Gaspar e Brusque, `docs/SGB-RUAS.md`, `data/sgb-ruas.json`
+  derivado por `scripts/cruzar_sgb_ruas.py`; só setores de risco de ÁGUA, nunca cota nem cor). **Baixada e cruzada:** a tabela "Histórico de enchentes em Blumenau" (Mendeley Data, CC BY 4.0, 102 cheias),
   bruto com sha256 em `data/brutos/varredura-fontes-2026-11-04/` e cruzamento em
   `docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md` (`scripts/cruzar_mendeley_blumenau.py`): 101 das 102
   datas já estão no projeto; a tabela não declara régua e mistura IBGE (até 2001), régua antiga (2008–2011) e régua de

@@ -191,3 +191,6 @@ abre e o servidor não responde em 30 s — filtro, não rota) e **DCSC `www.def
 o coletor de avisos da DCSC (#564) só faz sentido na VPS. O SGB continuou sem pedir nada: `comum.baixar` reembrulha o
 HTTPError num `RequestException` sem `response`, e a leitura do 404 não o achava — corrigido lendo a cadeia de causas.
 Regra que não muda: só GET, `User-Agent` do projeto, robots antes de tudo.
+
+Terceira rodada (16h43 UTC): o SGB passou a ser pedido e vieram **16 cartas de suscetibilidade e 24 setorizações** (190 MB
+de GeoJSON no branch). O cruzamento com as cotas de rua está em `docs/SGB-RUAS.md`.

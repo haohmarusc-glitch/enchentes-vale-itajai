@@ -1426,6 +1426,53 @@ class ItuporangaTemEscalaOficialDeOutraRegua(unittest.TestCase):
 
 
 
+class SgbRuasEContextoNaoCota(unittest.TestCase):
+    """O arquivo derivado do SGB (04/11/2026): todo ponto é um ponto de cotas-ruas, só tipologias de água, contagens coerentes."""
+
+    def _erros(self, sgb, cotas):
+        vd.erros.clear()
+        vd.avisos.clear()
+        orig = vd.le_json
+        vd.le_json = lambda nome: (sgb if str(nome).endswith("sgb-ruas.json") else {"cotas": cotas} if nome == "cotas-ruas.json" else orig(nome))
+        try:
+            vd.valida_sgb_ruas()
+        finally:
+            vd.le_json = orig
+        return list(vd.erros)
+
+    def _arquivo(self, ponto_extra=None, tipologias=("Inundação",)):
+        pontos = [{"rua": "A", "lat": -26.9, "lon": -48.2, "suscetibilidade": {"classe": "Alta"},
+                   "risco": [{"setor": "S1", "grau": "Alto", "tipologias": list(tipologias)}]}]
+        if ponto_extra:
+            pontos.append(ponto_extra)
+        return {"_meta": {"regras": ["não é cota", "ligue 199"]},
+                "cidades": {"gaspar": {"camadas": {"inundacao": {"sha256": "a" * 64}}, "pontos": pontos,
+                                       "pontos_por_classe": {"Alta": len(pontos)}, "pontos_em_setor_de_risco": 1}}}
+
+    def test_arquivo_coerente_passa(self):
+        self.assertEqual(self._erros(self._arquivo(), [{"cidade": "gaspar", "lat": -26.9, "lon": -48.2}]), [])
+
+    def test_ponto_que_nao_e_de_cotas_ruas_e_setor_de_deslizamento_caem(self):
+        cotas = [{"cidade": "gaspar", "lat": -26.9, "lon": -48.2}]
+        erros = self._erros(self._arquivo(ponto_extra={"rua": "B", "lat": -26.0, "lon": -48.0, "suscetibilidade": None, "risco": []}), cotas)
+        self.assertTrue(any("não é de um ponto de cotas-ruas.json" in e for e in erros), erros)
+        erros = self._erros(self._arquivo(tipologias=("Deslizamento",)), cotas)
+        self.assertTrue(any("tipologia fora de água" in e for e in erros), erros)
+        erros = self._erros(self._arquivo(tipologias=()), cotas)
+        self.assertTrue(any("tipologia fora de água" in e for e in erros), "setor sem tipologia também cai")
+
+    def test_o_arquivo_real_bate_com_as_cotas_de_rua(self):
+        if not (DADOS / "sgb-ruas.json").exists():
+            self.skipTest("sem sgb-ruas.json")
+        real = json.loads((DADOS / "sgb-ruas.json").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(c for c, b in real["cidades"].items() if b["pontos"]), ["brusque", "gaspar"],
+                         "só Gaspar e Brusque têm coordenada nas cotas de rua (04/11/2026)")
+        for b in real["cidades"].values():
+            for p in b["pontos"]:
+                for r in p["risco"]:
+                    self.assertTrue(set(r["tipologias"]) <= vd.TIPOLOGIAS_SGB_DE_AGUA, r)
+
+
 def _dispara(eventos: list[dict]) -> bool:
     """Roda só `valida_divergencia_que_virou_registro` sobre dados em memória."""
     vd.erros.clear()
