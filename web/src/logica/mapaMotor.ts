@@ -39,7 +39,7 @@ import {
   type Vista,
 } from '../logica/mapaCanvas'
 import { AZUL_CHEIO, AZUL_VAZIO, comportas, faseComporta, rotuloComportas, textoPercentual, type BarragemNoMapa } from './barragensNoMapa'
-import { FOLGA_ACIMA_DA_REGUA_KM, arestasAJusanteDe, chaveDaAresta, kmAcimaDe, type MotivoDoTrecho } from './vinculosDosTracados'
+import { FOLGA_ACIMA_DA_REGUA_KM, arestasAJusanteDe, arestasDasReguasNoTronco, chaveDaAresta, kmAcimaDe, reguasNoTronco, type MotivoDoTrecho } from './vinculosDosTracados'
 
 /**
  * Os limites da bacia, ou uma caixa de segurança quando ainda não há traçado —
@@ -550,6 +550,28 @@ export function construirCena(
         ? `${reguaDoCurso.codigo} (${reguaDoCurso.nome}): ${reguaDoCurso.motivoSemCor ?? 'sem faixa neste instante'}`
         : `${rio.reguaVinculada.codigo}: sem classificação neste instante (na reprodução a régua não tem faixa histórica)`
       : undefined
+    // TRONCO com as réguas da cidade da foz (Mirim, decisão do Jefferson de 04/11/2026): a cor de Brusque ia até o
+    // pino de Itajaí (44,9 km) por cima da DC-10 (Limoeiro), régua de Itajaí fora da maré que, no mesmo lugar, dizia
+    // outra faixa. Agora cada régua de `REGUAS_NO_TRONCO` pinta da régua até a próxima rio abaixo (DC-10 → DC-05 →
+    // DC-06 → DC-04 → foz), com a MESMA decisão do pino da régua; régua sem cor deixa o trecho cinza com o motivo
+    // dela, e a cidade de montante pára na primeira régua. Só ao vivo (`reguas`): na reprodução vale a regra de sempre.
+    const tronco = !leituraNaHora && !rio.arestasAutorizadas && reguas ? reguasNoTronco(rio.rioId) : null
+    const cadeiaDoTronco = tronco
+      ? arestasDasReguasNoTronco(
+          rio.coords,
+          tronco.reguas.flatMap((cod) => {
+            const g = reguas!.find((x) => x.codigo === cod && x.cidade === tronco.cidade)
+            return g ? [{ codigo: cod, ponto: [g.lon, g.lat] as LonLat }] : []
+          }),
+          tronco.foz,
+          TOLERANCIA_DC11_KM,
+        )
+      : null
+    const reguaDoTronco = (chave: string): ReguaNoMapa | null => {
+      if (!cadeiaDoTronco) return null
+      for (const [cod, arestas] of cadeiaDoTronco) if (arestas.has(chave)) return reguas!.find((x) => x.codigo === cod) ?? null
+      return null
+    }
 
     rio.coords.forEach((linha, li) => {
       if (linha.length < 2) return
@@ -575,6 +597,8 @@ export function construirCena(
           return 'fora-do-alcance'
         }
         if (rio.reguaVinculada && faixaDaRegua === null) return 'regua-sem-cor'
+        const rt = reguaDoTronco(chaveDaAresta(li, invertida ? n - i + 1 : i))
+        if (rt && rt.faixa === null) return 'regua-sem-cor'
         if (acimaDaPrimeira(meioDaAresta(i))) return 'acima-da-primeira-regua'
         return undefined
       }
@@ -594,20 +618,30 @@ export function construirCena(
       // A aresta i de `seq` na ordem do ARQUIVO (a chave de `arestasAJusanteDe` e do alcance).
       const chaveNoArquivo = (i: number): string => chaveDaAresta(li, invertida ? n - i + 1 : i)
       const aJusanteDaDc11 = (i: number): boolean => !!(dc11 && arestasDc11?.has(chaveNoArquivo(i)))
+      // A régua do tronco que pinta a aresta i (Mirim, 04/11/2026), ou null quando é a âncora de cidade que pinta.
+      const reguaDoTroncoNa = (i: number): ReguaNoMapa | null => reguaDoTronco(chaveNoArquivo(i))
       const faixaAresta = (i: number): Faixa => {
         const p = meioDaAresta(i)
         if (motivoAresta(i)) return 'sem-dado'
         if (rio.reguaVinculada) return faixaDaRegua ?? 'sem-dado'
         if (aJusanteDaDc11(i)) return dc11!.faixa ?? 'sem-dado'
+        const rt = reguaDoTroncoNa(i)
+        if (rt) return rt.faixa ?? 'sem-dado'
         return faixaEm(p)
       }
+      // Trecho pintado por régua do tronco não tem cidade: o toque abre o painel da régua (`reguaCodigo`).
       const cidadeAresta = (i: number): string | null =>
-        motivoAresta(i) ? null : ancoraEm(meioDaAresta(i))?.cidade.id ?? null
+        motivoAresta(i) || reguaDoTroncoNa(i) ? null : ancoraEm(meioDaAresta(i))?.cidade.id ?? null
+      const reguaAresta = (i: number): string | null => reguaDoTroncoNa(i)?.codigo ?? null
       // A origem acompanha a âncora (o corte de trecho já é por âncora), e o
-      // DC-11 é referência municipal.
+      // DC-11 e as réguas do tronco são referência municipal.
       const origemAresta = (i: number): OrigemFaixa => {
-        if (aJusanteDaDc11(i)) return 'municipal'
+        if (aJusanteDaDc11(i) || reguaDoTroncoNa(i)) return 'municipal'
         return ancoraEm(meioDaAresta(i))?.origemFaixa ?? 'municipal'
+      }
+      const detalheDoTronco = (i: number): string | undefined => {
+        const rt = reguaDoTroncoNa(i)
+        return rt ? `${rt.codigo} (${rt.nome}): ${rt.motivoSemCor ?? 'sem faixa neste instante'}` : undefined
       }
       // Progresso 0..1 (nascente→foz) do trecho seq[a..b], para a onda descer.
       const progMax = cumEspinha[cumEspinha.length - 1] || 1
@@ -622,6 +656,8 @@ export function construirCena(
       let curCidade = cidadeAresta(1)
       let curOrigem = origemAresta(1)
       let curMotivo = motivoAresta(1)
+      let curRegua = reguaAresta(1)
+      let curDetalhe = detalheDoTronco(1)
       let ini = 0
       const empurra = (fim: number) => {
         const { cum, total } = acumularPixels(pts)
@@ -640,8 +676,10 @@ export function construirCena(
           cidadeId: curCidade,
           rioId: rio.rioId,
           ...(curMotivo ? { motivoCinza: curMotivo } : {}),
-          ...(curMotivo === 'regua-sem-cor' && detalheDaRegua ? { motivoDetalhe: detalheDaRegua } : {}),
+          ...(curMotivo === 'regua-sem-cor' && (detalheDaRegua ?? curDetalhe) ? { motivoDetalhe: detalheDaRegua ?? curDetalhe } : {}),
           ...(rio.reguaVinculada && !curMotivo ? { reguaCodigo: rio.reguaVinculada.codigo } : {}),
+          // Régua do tronco (Mirim): o toque abre o painel dela, com cor ou cinza (o cinza traz o motivo dela).
+          ...(!rio.reguaVinculada && curRegua ? { reguaCodigo: curRegua } : {}),
         })
       }
       for (let i = 1; i < seq.length; i++) {
@@ -650,15 +688,18 @@ export function construirCena(
         const prox = temProx ? faixaAresta(i + 1) : null
         const proxCidade = temProx ? cidadeAresta(i + 1) : null
         const proxMotivo = temProx ? motivoAresta(i + 1) : undefined
-        // Corta na troca de faixa, de âncora OU de motivo do cinza. A troca de âncora não muda a
-        // cor; muda de quem é o trecho, e é isso que o toque devolve.
-        if (temProx && (prox !== cur || proxCidade !== curCidade || proxMotivo !== curMotivo)) {
+        const proxRegua = temProx ? reguaAresta(i + 1) : null
+        // Corta na troca de faixa, de âncora, de régua do tronco OU de motivo do cinza. A troca de âncora não
+        // muda a cor; muda de quem é o trecho, e é isso que o toque devolve.
+        if (temProx && (prox !== cur || proxCidade !== curCidade || proxMotivo !== curMotivo || proxRegua !== curRegua)) {
           empurra(i)
           pts = [projetar(enq, seq[i]!)]
           cur = prox!
           curCidade = proxCidade
           curOrigem = origemAresta(i + 1)
           curMotivo = proxMotivo
+          curRegua = proxRegua
+          curDetalhe = detalheDoTronco(i + 1)
           ini = i
         }
       }

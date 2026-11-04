@@ -255,6 +255,10 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   pontilhado** de miolo claro e o rótulo "faixa estadual". Na reprodução, sem classificação estadual histórica, o
   trecho fica cinza.
 - No tronco, a primeira régua **não pinta o rio acima dela** (folga de 0,5 km).
+- **Réguas de Itajaí no tronco do Mirim (decisão do Jefferson, 04/11/2026):** `REGUAS_NO_TRONCO` — DC-10 → DC-05 → DC-06 →
+  DC-04 → foz, cada uma pinta da régua até a próxima rio abaixo com a decisão do pino dela; régua sem cor deixa o trecho
+  cinza com o motivo; Brusque pára na DC-10 (antes ia 44,9 km, até o pino de Itajaí). Só ao vivo; o trecho continua
+  correndo. A DC-03 fica fora (é do canal retificado, outro traçado). `docs/VINCULOS-DOS-TRACADOS.md`.
 - **"A jusante" de uma régua é pelo caminho do rio, nunca pela projeção na reta entre pinos** (08/10/2026): a
   Volta de Cima, abaixo da DC-11, volta para trás na reta Ilhota→Itajaí e ficava cinza. `arestasAJusanteDe`
   (traçado como grafo, distância até a foz) decide; meandro é o caso normal, não a exceção.

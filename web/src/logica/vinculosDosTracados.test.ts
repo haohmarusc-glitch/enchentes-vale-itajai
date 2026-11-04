@@ -17,11 +17,14 @@ import {
   VINCULOS,
   VINCULOS_DE_REGUA,
   arestasAJusanteDe,
+  arestasDasReguasNoTronco,
   arestasDoAlcance,
   kmEntre,
+  reguasNoTronco,
   rioParaCena,
   textoDoAlcance,
   textoDoAlcanceDaRegua,
+  textoDoAlcanceNoTronco,
   textoDoTrechoCinza,
   vinculoDaRegua,
   vinculoDeReguaDoTracado,
@@ -386,4 +389,85 @@ test('a Murta pinta pela DC-07, parada, só da régua até a DC-09', () => {
   const sem = cena([r], undefined, undefined, [dc07(null, 'leitura velha demais para dizer a faixa')])
   assert.equal(pintados(sem, 'ribeirao-murta').length, 0)
   assert.equal(pintados(cena([r]), 'ribeirao-murta').length, 0, 'na reprodução fica cinza')
+})
+
+/*
+ * Réguas de Itajaí no TRONCO do Mirim (decisão do Jefferson de 04/11/2026): a cor de Brusque ia até o pino de
+ * Itajaí (44,9 km), por cima da DC-10 (Limoeiro, 11,3 km abaixo de Brusque, fora da maré, cotas conferidas).
+ * Agora DC-10 → DC-05 → DC-06 → DC-04 → foz, cada uma da régua até a próxima, com a decisão do pino de cada uma.
+ */
+function reguaDeItajai(codigo: string, nome: string, lon: number, lat: number, faixa: ReguaNoMapa['faixa'], motivoSemCor: string | null = null): ReguaNoMapa {
+  return {
+    codigo, titulo: `${codigo} Rio Itajaí-Mirim - ${nome}`, cidade: 'itajai', nome, lon, lat, nivel: 1.0,
+    medidoEm: new Date('2026-10-07T19:00:00-03:00'), faixa, motivoSemCor, cotas: { atencao: 8, alerta: 9, emergencia: 10 },
+  }
+}
+const dc10 = (faixa: ReguaNoMapa['faixa'], motivo: string | null = null) => reguaDeItajai('DC-10', 'Limoeiro', -48.861419, -27.03353, faixa, motivo)
+const dc05 = (faixa: ReguaNoMapa['faixa'], motivo: string | null = null) => reguaDeItajai('DC-05', 'Sítio Hilário', -48.74776, -26.93336, faixa, motivo)
+const dc06 = (faixa: ReguaNoMapa['faixa'], motivo: string | null = null) => reguaDeItajai('DC-06', 'Itamirim', -48.68576, -26.92442, faixa, motivo)
+const dc04 = (faixa: ReguaNoMapa['faixa'], motivo: string | null = null) => reguaDeItajai('DC-04', 'Vitalmar', -48.68838, -26.8941, faixa, motivo)
+const kmDasArestas = (coords: LonLat[][], arestas: Set<string>) =>
+  [...arestas].reduce((s, a) => { const [li, i] = a.split(':').map(Number); return s + kmEntre(coords[li!]![i! - 1]!, coords[li!]![i!]!) }, 0)
+
+test('as réguas do tronco do Mirim: cada uma pinta da régua até a próxima, conjuntos disjuntos, com os km declarados', () => {
+  const v = reguasNoTronco('itajai-mirim')!
+  assert.ok(v)
+  assert.deepEqual([...v.reguas], ['DC-10', 'DC-05', 'DC-06', 'DC-04'])
+  const coords = tracado('itajai-mirim')
+  const todas = [dc10('normal'), dc05('normal'), dc06('normal'), dc04('normal')]
+  const cadeia = arestasDasReguasNoTronco(coords, todas.map((r) => ({ codigo: r.codigo, ponto: [r.lon, r.lat] as LonLat })), v.foz, 0.5)
+  assert.deepEqual([...cadeia.keys()], ['DC-10', 'DC-05', 'DC-06', 'DC-04'])
+  // Km somados das arestas de cada régua, medidos em 04/11/2026. Entre a DC-05 e a DC-06 o Mirim se divide em
+  // braços (curso antigo): os dois lados entram, por isso 13,0 km de arestas para 12,0 km de caminho (19,1 − 7,1).
+  const esperado: Record<string, number> = { 'DC-10': 18.3, 'DC-05': 13.0, 'DC-06': 6.0, 'DC-04': 1.1 }
+  const vistas = new Set<string>()
+  for (const [cod, arestas] of cadeia) {
+    for (const a of arestas) { assert.ok(!vistas.has(a), `aresta ${a} em duas réguas`); vistas.add(a) }
+    const km = kmDasArestas(coords, arestas)
+    assert.ok(Math.abs(km - esperado[cod]!) < 0.3, `${cod}: ${km.toFixed(1)} km, esperado ${esperado[cod]!.toFixed(1)}`)
+    assert.ok(km >= v.kmDaFoz[cod]! - (v.reguas[v.reguas.indexOf(cod) + 1] ? v.kmDaFoz[v.reguas[v.reguas.indexOf(cod) + 1]!]! : 0) - 0.4, `${cod}: as arestas cobrem ao menos o caminho declarado`)
+  }
+  const aJusanteDaDc10 = arestasAJusanteDe(coords, [-48.861419, -27.03353], v.foz, 0.5)!
+  assert.equal(vistas.size, aJusanteDaDc10.size, 'juntas, as quatro são "a jusante da DC-10"')
+  // Régua fora do ao vivo é pulada: sem a DC-05, a DC-10 vai até a DC-06.
+  const semDc05 = arestasDasReguasNoTronco(coords, [dc10('normal'), dc06('normal'), dc04('normal')].map((r) => ({ codigo: r.codigo, ponto: [r.lon, r.lat] as LonLat })), v.foz, 0.5)
+  assert.ok(Math.abs(kmDasArestas(coords, semDc05.get('DC-10')!) - (18.3 + 13.0)) < 0.3)
+})
+
+test('no Mirim, Brusque pára na DC-10; dali a cor é de cada régua de Itajaí, e régua sem cor deixa o trecho cinza com o motivo', () => {
+  const r = rio('itajai-mirim')
+  const brusqueEmAtencao = nivelSc({ brusque: 'atencao' })
+  const antes = cena([r], brusqueEmAtencao)
+  const deBrusqueAntes = doRio(antes, 'itajai-mirim').filter((t) => t.cidadeId === 'brusque' && t.faixa === 'atencao')
+  assert.ok(deBrusqueAntes.length > 0, 'sem as réguas (reprodução), Brusque pinta como sempre')
+  assert.equal(doRio(antes, 'itajai-mirim').filter((t) => t.reguaCodigo).length, 0)
+
+  const reguas = [dc10('normal'), dc05(null, 'régua de estuário: a maré cruza a cota sem enchente'), dc06('atencao'), dc04(null, 'travada')]
+  const c = cena([r], brusqueEmAtencao, undefined, reguas)
+  const mirim = doRio(c, 'itajai-mirim')
+  const deBrusque = mirim.filter((t) => t.cidadeId === 'brusque' && t.faixa === 'atencao')
+  assert.ok(deBrusque.length > 0, 'Brusque continua pintando o trecho dela')
+  const px = (ts: typeof mirim) => ts.reduce((s, t) => s + t.total, 0)
+  assert.ok(px(deBrusque) < px(deBrusqueAntes) * 0.6, `Brusque pintava ${px(deBrusqueAntes).toFixed(0)} px e agora ${px(deBrusque).toFixed(0)}: tinha de encolher até a DC-10`)
+  const porRegua = (cod: string) => mirim.filter((t) => t.reguaCodigo === cod)
+  assert.ok(porRegua('DC-10').length > 0 && porRegua('DC-10').every((t) => t.faixa === 'normal' && t.cidadeId === null && t.origemFaixa === 'municipal'), 'da DC-10 à DC-05: a faixa da DC-10, sem cidade')
+  assert.ok(porRegua('DC-05').length > 0 && porRegua('DC-05').every((t) => t.faixa === 'sem-dado' && t.motivoCinza === 'regua-sem-cor'), 'da DC-05 à DC-06: cinza, com o motivo da DC-05')
+  assert.match(porRegua('DC-05')[0]!.motivoDetalhe ?? '', /^DC-05 \(Sítio Hilário\): régua de estuário/)
+  assert.ok(porRegua('DC-06').length > 0 && porRegua('DC-06').every((t) => t.faixa === 'atencao'), 'da DC-06 à DC-04: a faixa da DC-06')
+  assert.ok(porRegua('DC-04').length > 0 && porRegua('DC-04').every((t) => t.faixa === 'sem-dado' && t.motivoCinza === 'regua-sem-cor'), 'da DC-04 à foz: cinza')
+  assert.ok(porRegua('DC-10').some((t) => t.animacao === 'direcional'), 'o tronco continua correndo abaixo da DC-10 (não é ribeirão)')
+  // O toque no trecho da régua abre o painel dela; no cinza, o motivo diz qual régua.
+  const t10 = porRegua('DC-10')[0]!
+  assert.deepEqual(reguaNoTrecho(c.trechos, t10.pts[0]![0], t10.pts[0]![1]), { codigo: 'DC-10', rioId: 'itajai-mirim' })
+  assert.match(textoDoTrechoCinza('regua-sem-cor', 'itajai-mirim', porRegua('DC-05')[0]!.motivoDetalhe), /uma régua de Itajaí, que agora está sem cor — DC-05/)
+  // O Açu e os outros cursos não mudam.
+  const acuAntes = cena([rio('itajai-acu')], brusqueEmAtencao)
+  const acuDepois = cena([rio('itajai-acu')], brusqueEmAtencao, undefined, reguas)
+  assert.deepEqual(acuDepois.trechos.map((t) => [t.faixa, t.cidadeId, t.reguaCodigo]), acuAntes.trechos.map((t) => [t.faixa, t.cidadeId, t.reguaCodigo]))
+})
+
+test('o painel da régua do tronco diz até onde a cor dela vale', () => {
+  assert.match(textoDoAlcanceNoTronco('DC-10', 'Itajaí-Mirim')!, /^No mapa, a cor desta régua vale para o Itajaí-Mirim, da régua até a próxima régua rio abaixo, a DC-05 \(18,4 km\)\./)
+  assert.match(textoDoAlcanceNoTronco('DC-04', 'Itajaí-Mirim')!, /até a confluência com o Itajaí-Açu \(1,1 km\)/)
+  assert.equal(textoDoAlcanceNoTronco('DC-11', 'Itajaí-Açu'), null)
 })

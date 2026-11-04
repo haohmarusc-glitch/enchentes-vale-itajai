@@ -249,6 +249,9 @@ baixá-lo). O corte é `@media (min-width: 1024px)` em `TelaRio.module.css`.
   cidade do rio não pinta trecho nenhum** — quem colore a foz é a penúltima. O corte de trecho passou
   a ser por (faixa, âncora) e não só por faixa: duas cidades vizinhas na mesma cor formavam um trecho
   só, e a metade de baixo devolveria o nome da de cima.
+  **Exceção no Mirim (04/11/2026):** as réguas de Itajaí que ficam no traçado (DC-10 Limoeiro, DC-05, DC-06,
+  DC-04) pintam cada uma da régua até a próxima rio abaixo, e Brusque pára na DC-10; o corte de trecho é também
+  por régua, e o toque nesse trecho abre o painel da régua (`REGUAS_NO_TRONCO`, `docs/VINCULOS-DOS-TRACADOS.md`).
 - As **barragens** (Oeste em Taió, Sul em Ituporanga, Norte em José Boiteux)
   entram como **marcadores próprios**: uma parede de aço com as comportas em
   fila, na coordenada que a API da Asthon publica (`coleta_barragens.py`). É a
