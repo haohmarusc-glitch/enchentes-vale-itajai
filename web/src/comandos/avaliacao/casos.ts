@@ -540,7 +540,39 @@ const RESERVADOS_19: Caso[] = [
   caso('atualidade', 'quando Blumenau passou da cota de alerta anteontem?', exec('fresca', [/não cobre anteontem/])),
 ]
 
-export const CASOS: Caso[] = [...casosDoCatalogo(), ...RESERVADOS, ...RESERVADOS_18, ...RESERVADOS_19]
+/**
+ * 20ª entrega (04/11/2026): os avisos meteorológicos da Defesa Civil de SC, por região. Escritos ANTES de rodar o
+ * leitor com eles (regra do CLAUDE.md); o que reprovar é achado. O passo nunca nomeia cidade ("para a região") e
+ * nunca rouba o que já existia: "quais cidades estão em alerta?" é panorama; "este site é da Defesa Civil?" é oficial.
+ */
+const RESERVADOS_20: Caso[] = [
+  caso('diretos', 'tem aviso da Defesa Civil?', cmd('avisos_dcsc')),
+  caso('diretos', 'tem algum alerta da Defesa Civil de SC hoje?', cmd('avisos_dcsc')),
+  caso('diretos', 'avisos da Defesa Civil', cmd('avisos_dcsc')),
+  caso('diretos', 'qual é o último aviso da Defesa Civil?', cmd('avisos_dcsc')),
+  caso('diretos', 'a Defesa Civil emitiu alerta?', cmd('avisos_dcsc')),
+  caso('diretos', 'tem alerta de chuva?', cmd('avisos_dcsc')),
+  caso('diretos', 'tem aviso de temporal para a região?', cmd('avisos_dcsc')),
+  caso('diretos', 'aviso meteorológico', cmd('avisos_dcsc')),
+  caso('diretos', 'o que a Defesa Civil está avisando?', cmd('avisos_dcsc')),
+  caso('diretos', 'alerta de chuva forte para o Vale do Itajaí', cmd('avisos_dcsc')),
+  caso('escrita', 'tem aviso da defesa civil', cmd('avisos_dcsc')),
+  caso('escrita', 'tem alerta da dc?', cmd('avisos_dcsc')),
+  caso('escrita', 'saiu aviso da Defesa Civil de Santa Catarina?', cmd('avisos_dcsc')),
+  caso('escrita', 'alerta da defesa civil pra hoje', cmd('avisos_dcsc')),
+  conversa('contexto', [turno('como está Blumenau?', agora), turno('e tem aviso da Defesa Civil?', cmd('avisos_dcsc'))], { nota: 'o "e" de continuação de assunto; o aviso não tem cidade' }),
+  caso('contexto', 'tem alerta da Defesa Civil?', cmd('avisos_dcsc'), { contexto: BLU, nota: 'a tela não muda o passo: o aviso é por região' }),
+  caso('ambiguidades', 'quais cidades estão em alerta?', cmd('panorama'), { nota: 'alerta do RIO continua sendo o panorama' }),
+  caso('ambiguidades', 'ler o aviso legal', cmd('oficial'), { nota: 'o aviso do site não é o aviso da Defesa Civil' }),
+  caso('ambiguidades', 'este site é da Defesa Civil?', cmd('oficial')),
+  caso('seguranca', 'avisar a Defesa Civil que o rio subiu', esclarecer, { nota: 'o chat não fala com ninguém: diz isso e aponta o 199' }),
+  caso('seguranca', 'ligar para a Defesa Civil', cmd('emergencia'), { nota: 'pedido de contato vira o telefone de emergência, nada é discado' }),
+  caso('atualidade', 'tem aviso da Defesa Civil?', exec('fresca', [/Um aviso recente da Defesa Civil de SC para a região/, /Alerta · 06\/10 às 14:34 \(Brasília\), há 26 min · Vale do Itajaí, Litoral Norte/, /não é a faixa do rio/, /199/], [/para a sua cidade/])),
+  caso('atualidade', 'tem aviso da Defesa Civil?', exec('fresca', [/para a região/], [/Blumenau/]), { contexto: BLU, nota: 'na tela de Blumenau, a resposta continua sem nomear cidade' }),
+  caso('atualidade', 'tem aviso da Defesa Civil?', exec('semDados', [/Avisos indisponíveis/, /Confira direto no site dela/, /199/], [/Alerta ·/])),
+]
+
+export const CASOS: Caso[] = [...casosDoCatalogo(), ...RESERVADOS, ...RESERVADOS_18, ...RESERVADOS_19, ...RESERVADOS_20]
 
 /** Os casos de um grupo, para relatório. */
 export const porGrupo = (g: Grupo): Caso[] => CASOS.filter((c) => c.grupo === g)

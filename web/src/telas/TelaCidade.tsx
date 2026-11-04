@@ -8,6 +8,7 @@ import ChuvaAoVivo from '../componentes/ChuvaAoVivo'
 import EstadoDasBarragens from '../componentes/EstadoDasBarragens'
 import LegendaFaixas from '../componentes/LegendaFaixas'
 import PainelCenarioAnterior from '../componentes/PainelCenarioAnterior'
+import PainelAvisosDcsc from '../componentes/PainelAvisosDcsc'
 import PainelCentroItuporanga from '../componentes/PainelCentroItuporanga'
 import ReguasDaCidade from '../componentes/ReguasDaCidade'
 import { cidadesDoRio, eventosDoRio, estacoesTempoReal, rio, topologiaDoRio } from '../dados/carregar'
@@ -376,6 +377,8 @@ export default function TelaCidade() {
                 <Link to={`/monitor/${cidade.id}`}>Abrir no Monitor, com zoom e satélite →</Link>
               </p>
             </section>
+            {/* 20ª entrega (04/11/2026): os avisos do Estado, por região — contexto oficial, nunca faixa nem cota. */}
+            <PainelAvisosDcsc />
             <details className={`cartao ${estilos.detalhes}`}>
               <summary>O que as cores querem dizer</summary>
               <LegendaFaixas />

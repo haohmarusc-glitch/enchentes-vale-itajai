@@ -38,7 +38,7 @@ test('mudaTela e precisaDoMapa batem com os conjuntos do executor; grupos e entr
     assert.equal(c.mudaTela, MUDA_A_TELA.has(tipo), `${tipo}: mudaTela`)
     assert.equal(c.precisaDoMapa, PRECISA_DO_MAPA.has(tipo), `${tipo}: precisaDoMapa`)
     assert.ok(c.grupo in GRUPOS, `${tipo}: grupo ${c.grupo}`)
-    assert.ok(c.entrega >= 1 && c.entrega <= 16, `${tipo}: entrega ${c.entrega}`)
+    assert.ok(c.entrega >= 1 && c.entrega <= 20, `${tipo}: entrega ${c.entrega}`)
     assert.ok(c.titulo && c.descricao, `${tipo}: sem título ou descrição`)
     for (const a of c.argumentos) if (a.tipo === 'enum') assert.ok(a.valores && a.valores.length >= 2, `${tipo}.${a.nome}: enum sem valores`)
   }

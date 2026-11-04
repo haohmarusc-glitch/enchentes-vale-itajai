@@ -4,7 +4,7 @@ Gerado de `web/src/comandos/capacidades.ts` por `npm run avaliar` (não editar �
 do chat: o que faz, exemplos que o leitor entende hoje, argumentos e se muda a tela. Regra do handoff de
 qualidade (PR 1): o catálogo de comandos não substitui o catálogo de cidades e réguas; são conceitos diferentes.
 
-67 capacidades, em 8 grupos.
+68 capacidades, em 8 grupos.
 
 ## Navegação: abrir telas e enquadrar o mapa
 
@@ -66,8 +66,9 @@ qualidade (PR 1): o catálogo de comandos não substitui o catálogo de cidades 
 | `origem_tracado` — De onde vem o traçado | 2ª | Fonte e cobertura do GeoJSON do rio. | "de onde vem esse traçado?"; "de onde vem o traçado do Benedito?" | `cidadeId`?, `rio`? | não |
 | `barragens` — Como estão as barragens | 5ª | O estado das comportas, como a fonte publica. | "como estão as barragens?"; "as comportas estão abertas?" | — | não |
 | `chuva_agora` — Onde está chovendo mais | 5ª | Os pluviômetros com leitura recente, 1 h / 12 h / 24 h como a fonte publica. | "onde está chovendo mais?"; "chuva agora" | — | não |
-| `mare` — Como está a maré | 5ª | A tábua da Marinha para o porto de Itajaí: previsão astronômica, não medição. | "como está a maré?"; "qual a próxima maré alta?" | — | não |
+| `mare` — Como está a maré | 5ª | A tábua de maré do porto de Itajaí (a fonte vem do próprio arquivo): previsão astronômica, não medição. | "como está a maré?"; "qual a próxima maré alta?" | — | não |
 | `de_cima` — O que vem de cima | 6ª | As cidades acima pela árvore, com a leitura de cada uma e o tempo de descida em intervalo. Ligação não é previsão. | "o que vem de cima para Blumenau?"; "como estão as cidades acima de Gaspar?" | `cidadeId`? | não |
+| `avisos_dcsc` — Avisos da Defesa Civil de SC | 20ª | Os avisos e alertas meteorológicos oficiais do Estado (WordPress da Defesa Civil de SC), por REGIÃO, como a fonte escreve: categoria, hora de Brasília, regiões citadas e link. Só os das últimas 24 h que citam uma região da bacia; os de outras regiões, só contados. Nunca: Dizer "aviso para a sua cidade" (a fonte só nomeia regiões), pintar faixa, disparar aviso de cota ou falar com a Defesa Civil ("avisar a Defesa Civil" diz que o chat não contata ninguém e aponta o 199). | "tem aviso da Defesa Civil?"; "tem alerta de chuva?"; "a Defesa Civil emitiu alerta?"; "qual é o último aviso da Defesa Civil de SC?" | — | não |
 
 ## O que o site já captou e a foz
 

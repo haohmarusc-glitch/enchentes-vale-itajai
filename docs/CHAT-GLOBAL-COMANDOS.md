@@ -905,3 +905,50 @@ de bater; dois números ou nenhum → pergunta) e **cota** ("e de atenção?", "
 2. **Confirmar só o que muda a tela.** Uma resposta a mais não custa nada; uma navegação errada no meio da cheia custa.
 3. **"ontem" é dia de Brasília** (`chaveDoDia`), não "24 h atrás"; a série publicada tem 48 h, então "anteontem" quase
    sempre responde "não cobre".
+
+## Vigésima entrega (04/11/2026): os avisos da Defesa Civil de SC
+
+Decisão do Jefferson de 04/11/2026 ("aprovo todas" as pendências do relatório de ganhos da varredura): os avisos e
+alertas meteorológicos oficiais do Estado, lidos do WordPress da Defesa Civil de SC pelo coletor
+`scripts/coleta_avisos_dcsc.py` (`ultimo_avisos_dcsc.json`), entram no site e no chat.
+
+| Onde | O que | Arquivo |
+|---|---|---|
+| Aba **Fontes** de toda cidade | painel "Avisos da Defesa Civil de SC (por região)": categoria como a fonte escreve, hora de Brasília, idade, regiões citadas, link do original; os de outras regiões só contados | `componentes/PainelAvisosDcsc.tsx`, `dados/avisosDcsc.ts` |
+| Chat | passo `avisos_dcsc`: "tem aviso da Defesa Civil?", "tem alerta de chuva?", "a Defesa Civil emitiu alerta?", "qual é o último aviso da Defesa Civil de SC?" — a mesma leitura da tela, em texto; o link vai para as fontes da cidade da tela ou para o site da DCSC | `comandos/avisosDcsc.ts`, `interpretar.ts` (`lerTrechoDaVigesima`), `executar.ts` |
+| Contato | "ligar para a Defesa Civil" → o telefone de emergência (199); "avisar/acionar/chamar a Defesa Civil" → "este chat não fala com a Defesa Civil nem com ninguém", com o 199 | `interpretar.ts` |
+
+### O que o passo nunca faz
+
+- Dizer "aviso para a sua cidade": a fonte só nomeia **regiões** ("Vale do Itajaí", "Foz do Itajaí", "Litoral Norte",
+  "todo o Estado"); o texto diz "para a região" e não nomeia cidade nem na página de uma cidade.
+- Pintar faixa, mudar cor ou disparar aviso de cota: é contexto oficial, com fonte e hora. O arquivo não entra em `leituras`.
+- Roubar frases antigas: "quais cidades estão em alerta?" segue sendo o panorama (alerta do RIO); "ler o aviso legal",
+  o aviso do site; "tem alerta?" sozinho não decide que é o da Defesa Civil (vai ao motor, como antes).
+- Mostrar aviso velho como recente: só os das últimas 24 h; arquivo com mais de 30 min é publicação parada
+  ("Avisos indisponíveis. … Confira direto no site dela."). O relógio é o das leituras, como nos outros passos.
+
+### A medida
+
+- Bateria: **+28 casos** (`RESERVADOS_20`: 14 diretos/escrita, 2 de contexto, 3 ambiguidades que não podem ser roubadas,
+  2 de segurança, 3 execuções com o cenário `fresca`/`semDados`, que agora carregam o arquivo de avisos `AVISOS_DCSC`),
+  escritos antes de rodar o leitor. **Primeira rodada: 582/584 — 27 dos 28 novos passaram**; os dois achados:
+  1. a execução "tem aviso da Defesa Civil?" saiu "indisponíveis" porque o executor usava o relógio de verdade com um
+     arquivo congelado em 06/10 — passou a usar o relógio das leituras (`aoVivo.agora`), como os outros passos;
+  2. **um caso antigo de segurança reprovou**: "acionar a defesa civil" (que a bateria já esperava como esclarecimento)
+     virou `emergencia` pelo leitor novo. "Acionar" é pedir que a Defesa Civil AJA, não pedir o telefone: saiu do grupo
+     "ligar/telefonar" e foi para o de contato, que responde que o chat não fala com ninguém e aponta o 199.
+  Depois das duas correções: **584/584**, 0 ações indevidas, 0 palpites. Nenhum esperado foi revisto.
+- Testes: `vigesima.test.ts` (leitor, o que não é roubado, contato, texto, executor com o relógio das leituras e o link,
+  ajuda), `dados/avisosDcsc.test.ts` (arquivo, idade, fuso, link só do site da DCSC, "todo o Estado").
+- Catálogo: 68 capacidades (`docs/CHAT-CAPACIDADES.md`); o teste do catálogo passou a aceitar `entrega` até 20.
+
+### Decisões
+
+1. **Grupo `rio`**, ao lado de chuva e maré: é contexto da bacia, não leitura de régua.
+2. **24 h como teto de "recente"** — a DCSC não publica a vigência legível por máquina ("próximas 4 horas" está em prosa).
+   Não é a vigência: o texto mostra a hora e a idade, e a pessoa decide.
+3. **Outras regiões só contam** ("Há 2 avisos recentes para outras regiões do Estado"): a pessoa vê que o Estado tem
+   aviso sem o chat insinuar que ele vale aqui.
+4. **Do Actions não dá**: o runner não alcança `www.defesacivil.sc.gov.br` (ConnectTimeout, sondagem de 04/11); o
+   coletor roda na VPS, a cada publicação, e falha apaga o arquivo anterior.

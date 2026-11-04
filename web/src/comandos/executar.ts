@@ -32,6 +32,8 @@ import { AVISO_RELATO, textoDaLocalizacao, textoDoRelato, type Posicao } from '.
 import { instantePedido, textoBarragens, textoChuvaAgora, textoFonteDaLeitura, textoMare } from './bacia'
 import type { Barragem } from '../dados/barragens'
 import type { TabuaMare, Trecho, TrechoExperimental } from '../dados/tipos'
+import type { AvisosDcsc } from '../dados/avisosDcsc'
+import { textoAvisosDcsc } from './avisosDcsc'
 import { leiturasDaCidadeEmTodosOsRios } from '../dados/tempoReal'
 import { TERMOS, sugestoesDoVerbete, textoDoVerbete, verbeteDe } from './glossario'
 import { TEXTO_CONFIRMAR_ESQUECER, TEXTO_EMERGENCIA, TEXTO_OFICIAL, textoAtualizacao, textoInstalar, textoPrivacidade } from './site'
@@ -95,6 +97,8 @@ export interface DadosDoChat {
   limparConversa?(): void
   /** 11ª entrega: a voz do navegador lê a última resposta, ou para de ler. */
   voz?(acao: 'ler' | 'parar'): 'lendo' | 'parado' | 'nada' | 'sem_suporte'
+  /** 20ª entrega: os avisos meteorológicos da Defesa Civil de SC (`ultimo_avisos_dcsc.json`), buscados na hora. */
+  avisosDcsc?(): Promise<AvisosDcsc | null>
 }
 
 export interface Ambiente {
@@ -713,6 +717,20 @@ export async function executar(passos: Passo[], amb: Ambiente, cat: Catalogo, ct
           }),
           sugestoes: [seguinte[passo.pergunta]],
           link: { texto: `Ver ${nome} agora →`, para: alvo === 'itajai' ? '/itajai' : `/${dc?.rio ?? 'acu'}/${alvo}` },
+        }
+      }
+      case 'avisos_dcsc': {
+        // Por região, nunca por cidade: a cidade da tela só decide para onde o link aponta.
+        const d = (await amb.dados?.avisosDcsc?.()) ?? null
+        // O relógio é o das leituras (como nos outros passos); sem leituras, o de agora.
+        const agora = (await amb.dados?.aoVivo())?.agora ?? new Date()
+        const c = cidade ? cat.cidades.find((x) => x.id === cidade) : undefined
+        return {
+          texto: textoAvisosDcsc(d, agora),
+          link: c
+            ? { texto: `Abrir as fontes de ${c.nome} →`, para: c.id === 'itajai' ? '/itajai' : `/${c.rio}/${c.id}?aba=fontes` }
+            : { texto: 'Abrir o site da Defesa Civil de SC →', para: d?.fonteUrl ?? 'https://www.defesacivil.sc.gov.br/' },
+          sugestoes: ['quais cidades estão em alerta?', 'onde está chovendo mais?'],
         }
       }
       case 'ruas_pela_cota': {

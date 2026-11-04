@@ -6,6 +6,7 @@ import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { estacoes, estacoesTempoReal, mareItajai, trechos, trechosExperimentais } from '../dados/carregar'
 import { buscarBarragens } from '../dados/barragens'
+import { buscarAvisosDcsc } from '../dados/avisosDcsc'
 import historicoChegada from '@dados/historico-chegada-itajai.json'
 import { eventosCaptados } from '../dados/eventosCaptados'
 import type { AoVivo } from '../dados/usarAoVivo'
@@ -253,6 +254,7 @@ export function useComandos(aoVivo: () => Promise<AoVivo | null> = async () => n
           localizacao,
           preferencias,
           barragens: () => buscarBarragens(),
+          avisosDcsc: () => buscarAvisosDcsc(),
           mare: () => mareItajai,
           transito: () => ({ trechos, experimentais: trechosExperimentais }),
           referenciaChegada: () => historicoChegada.referencia_estudo,
