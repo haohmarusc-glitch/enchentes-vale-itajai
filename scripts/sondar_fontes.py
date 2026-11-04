@@ -47,33 +47,35 @@ ALVOS: list[tuple[str, str]] = [
 AMOSTRA = 300
 
 
-def _robots(host_url: str, transporte) -> urllib.robotparser.RobotFileParser | None:
+def _robots(host_url: str, transporte) -> tuple[urllib.robotparser.RobotFileParser | None, str]:
+    """(robots do host, motivo). Sem resposta → (None, o erro), para o relatório dizer POR QUE não pediu
+    (a primeira rodada na Actions, 04/11/2026, só dizia "sem resposta" e não dava para saber se era rota,
+    TLS ou recusa). 404 = não há robots = tudo liberado; outro erro do servidor = tudo fechado."""
     p = urllib.parse.urlsplit(host_url)
     try:
         r = transporte(f"{p.scheme}://{p.netloc}/robots.txt", {"User-Agent": USER_AGENT}, HTTP_TIMEOUT_S)
-    except Exception:  # noqa: BLE001
-        return None
-    if r.status_code >= 400:
-        rp = urllib.robotparser.RobotFileParser()
-        rp.parse([] if r.status_code == 404 else ["User-agent: *", "Disallow: /"])
-        return rp
+    except Exception as e:  # noqa: BLE001
+        return None, f"{type(e).__name__}: {e}"
     rp = urllib.robotparser.RobotFileParser()
+    if r.status_code >= 400:
+        rp.parse([] if r.status_code == 404 else ["User-agent: *", "Disallow: /"])
+        return rp, f"HTTP {r.status_code}"
     rp.parse(r.text.splitlines())
-    return rp
+    return rp, f"HTTP {r.status_code}"
 
 
 def sondar(alvos: list[tuple[str, str]], transporte) -> dict:
     """Um GET por alvo, depois do robots do host. `transporte(url, cabecalhos, timeout)` como em `comum.baixar`."""
     saida: dict = {"gerado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"), "user_agent": USER_AGENT,
                    "alvos": {}}
-    robots_por_host: dict[str, urllib.robotparser.RobotFileParser | None] = {}
+    robots_por_host: dict[str, tuple[urllib.robotparser.RobotFileParser | None, str]] = {}
     for nome, url in alvos:
         host = urllib.parse.urlsplit(url).netloc
         if host not in robots_por_host:
             robots_por_host[host] = _robots(url, transporte)
-        rp = robots_por_host[host]
+        rp, motivo = robots_por_host[host]
         if rp is None:
-            saida["alvos"][nome] = {"url": url, "resultado": "robots.txt sem resposta; não pedido"}
+            saida["alvos"][nome] = {"url": url, "resultado": f"robots.txt sem resposta ({motivo}); não pedido"}
             continue
         if not rp.can_fetch(USER_AGENT, url):
             saida["alvos"][nome] = {"url": url, "resultado": "robots.txt não permite; não pedido"}

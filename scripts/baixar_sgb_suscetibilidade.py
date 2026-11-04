@@ -61,6 +61,22 @@ def robots_libera(texto_robots: str) -> bool:
     return rp.can_fetch(USER_AGENT, BASE + "/inundacao/MapServer/0/query")
 
 
+def robots_do_geoportal(baixar_fn=None) -> tuple[bool, str]:
+    """(pode pedir?, motivo). O geoportal NÃO publica robots.txt (404 na Actions em 04/11/2026): 404 é "nada
+    proibido", como em `sondar_fontes._robots` — a primeira rodada tratou o 404 como "sem resposta" e não pediu
+    nada. Qualquer outra falha continua fechando tudo: na dúvida não se pede."""
+    baixar_fn = baixar_fn or baixar
+    try:
+        texto = baixar_fn(ROBOTS)
+    except Exception as e:  # noqa: BLE001
+        if getattr(getattr(e, "response", None), "status_code", None) == 404:
+            return True, "robots.txt não existe (404): nada proibido"
+        return False, f"robots.txt sem resposta ({e}); nada pedido"
+    if robots_libera(texto):
+        return True, "robots.txt permite a consulta"
+    return False, "robots.txt do geoportal não permite a consulta; nada pedido"
+
+
 def url_distintos(camada: str, campo: str, filtro: str | None) -> str:
     q = {"where": filtro or "1=1", "outFields": campo, "returnDistinctValues": "true", "returnGeometry": "false",
          "f": "json"}
@@ -106,13 +122,10 @@ def main(argv: list[str] | None = None) -> int:
     a.saida.mkdir(parents=True, exist_ok=True)
     relatorio: dict = {"gerado_em": datetime.now(timezone.utc).isoformat(timespec="seconds"), "base": BASE,
                        "servicos": {}, "erros": []}
-    try:
-        if not robots_libera(baixar(ROBOTS)):
-            relatorio["erros"].append("robots.txt do geoportal não permite a consulta; nada pedido")
-            _grava(a.relatorio, relatorio)
-            return 1
-    except Exception as e:  # noqa: BLE001 — sem robots legível, na dúvida não se pede
-        relatorio["erros"].append(f"robots.txt sem resposta ({e}); nada pedido")
+    libera, motivo = robots_do_geoportal()
+    relatorio["robots"] = motivo
+    if not libera:
+        relatorio["erros"].append(motivo)
         _grava(a.relatorio, relatorio)
         return 1
     for nome, (camada, campo, filtro) in SERVICOS.items():

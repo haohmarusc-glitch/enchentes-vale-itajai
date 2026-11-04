@@ -44,7 +44,9 @@ class Sondagem(unittest.TestCase):
         self.assertEqual(s["alvos"]["aberto"]["json"], {"tipo": "dict", "chaves": ["features"], "itens": 1})
         self.assertEqual(s["alvos"]["fechado"]["resultado"], "robots.txt não permite; não pedido")
         self.assertEqual(s["alvos"]["sem-robots"]["status"], 500, "robots 404 = tudo liberado")
-        self.assertIn("robots.txt sem resposta", s["alvos"]["sem-rota"]["resultado"])
+        self.assertEqual(s["alvos"]["sem-rota"]["resultado"],
+                         "robots.txt sem resposta (ConnectionError: sem rota para https://c.exemplo/robots.txt); não pedido",
+                         "o relatório diz POR QUE o robots não respondeu")
         urls = [u for u, _ in pedidos]
         self.assertNotIn("https://a.exemplo/fechado/dados", urls, "o que o robots fecha não é pedido")
         self.assertEqual(urls.count("https://a.exemplo/robots.txt"), 1, "um robots por host")

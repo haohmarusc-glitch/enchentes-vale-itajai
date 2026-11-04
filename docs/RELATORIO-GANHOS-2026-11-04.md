@@ -47,7 +47,8 @@ entrou, onde está e o que ainda depende de decisão.
 
 1. **Avisos da DCSC no chat** — aprovar o coletor (seção 2) ou deixar como está.
 2. **Suscetibilidade/risco do SGB na "minha rua"** — aprovar como camada de contexto ou não.
-3. **CEMADEN `mapservices`/`resources`** — recusam conexão da sua rede e daqui; testar da VPS, só leitura.
+3. **CEMADEN `mapservices`/`resources`** — recusam conexão da sua rede e daqui; do Actions o `robots.txt` também não
+   respondeu (a próxima rodada grava o motivo — `docs/VARREDURA-FONTES-2026-11-04.md`, seção 12); resta testar da VPS, só leitura.
 4. **Copernicus GFM/EMS** — não conferido; serviria para a extensão observada das cheias de 2023.
 5. **Tabela do Mendeley** — se quiser, citar nas notas dos registros de Blumenau como fonte de cruzamento (confiança
    média); nada a cadastrar.

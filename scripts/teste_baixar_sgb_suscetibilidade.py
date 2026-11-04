@@ -48,6 +48,28 @@ class Resumo(unittest.TestCase):
         self.assertTrue(sgb.robots_libera("User-agent: *\nDisallow: /admin/\n"))
         self.assertFalse(sgb.robots_libera("User-agent: *\nDisallow: /\n"))
 
+    def test_robots_404_libera_e_outra_falha_fecha(self):
+        """Actions, 04/11/2026: o geoportal respondeu 404 ao robots.txt e a rodada não pediu nada."""
+        class Erro(Exception):
+            def __init__(self, status):
+                super().__init__(f"{status} Client Error")
+                self.response = type("R", (), {"status_code": status})()
+
+        def quatrocentos_e_quatro(url):
+            raise Erro(404)
+
+        def quinhentos(url):
+            raise Erro(503)
+
+        def sem_rota(url):
+            raise ConnectionError("sem rota")
+
+        self.assertEqual(sgb.robots_do_geoportal(quatrocentos_e_quatro), (True, "robots.txt não existe (404): nada proibido"))
+        self.assertEqual(sgb.robots_do_geoportal(quinhentos)[0], False)
+        self.assertIn("sem resposta", sgb.robots_do_geoportal(sem_rota)[1])
+        self.assertEqual(sgb.robots_do_geoportal(lambda url: "User-agent: *\nDisallow: /\n")[0], False)
+        self.assertEqual(sgb.robots_do_geoportal(lambda url: "User-agent: *\nDisallow: /admin/\n")[0], True)
+
 
 if __name__ == "__main__":
     unittest.main()

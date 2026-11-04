@@ -167,3 +167,23 @@ baixou a tabela do Mendeley. Status final das candidatas:
 | 7 | Canais oficiais da DC de Itajaí | links lidos | candidatos à tela "Fontes" |
 
 Índices atualizados: `docs/fontes-tempo-real.md` (DCSC, SGB, CEMADEN, FURB) e `docs/fontes-academicas.md` (Mendeley).
+
+## 12. Sondagem pelo GitHub Actions (04/11/2026, noite)
+
+Terceiro ponto de vista, depois deste ambiente e da rede do Jefferson: `.github/workflows/sondar-fontes.yml` roda
+`scripts/sondar_fontes.py` (um GET por alvo, só depois do `robots.txt` do host) e `scripts/baixar_sgb_suscetibilidade.py`,
+e publica o resultado no branch `sondagem-fontes` (`sondagem.txt/json`, `sgb.txt`, `sgb-resumo.json`, `sgb/*.geojson`).
+Primeira rodada, 13h52 UTC:
+
+| Alvo | Do runner | Leitura |
+|---|---|---|
+| CEMADEN WMS `cemaden_dev` | 200, 2 MB de capabilities | igual ao navegador |
+| CEMADEN `mapservices` / `resources` | `robots.txt` sem resposta → nada pedido | o relatório não dizia o motivo; **corrigido**: agora grava a exceção (rota, TLS ou recusa) |
+| CEMADEN gráfico PCD | 404 (página WordPress) | endereço de exemplo não existe mais |
+| DCSC `wp-json` / `feed` | `robots.txt` sem resposta → nada pedido | idem; da VPS o coletor de avisos (#564) é quem decide |
+| SGB `inundacao` / `risco` (distintos) | 200 (4 KB e 62 KB) | **funcionam do runner** |
+| SGB download por cidade | nada pedido | o geoportal responde **404 ao `robots.txt`**, e o script tratava 404 como "sem resposta". **Corrigido**: 404 = não há robots = nada proibido (como em `sondar_fontes`); outro erro continua fechando tudo |
+| FURB GeoNode, Mendeley | 200 | como antes |
+
+A rodada seguinte (disparada pelo push desta correção) deve trazer o motivo da falha nos hosts do CEMADEN e da
+DCSC e os GeoJSON do SGB por cidade. Regra que não muda: só GET, `User-Agent` do projeto, robots antes de tudo.
