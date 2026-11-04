@@ -1216,9 +1216,47 @@ def valida_divergencia_que_virou_registro() -> None:
                 )
 
 
+#: Campos obrigatórios de uma entrada de `cruzamentos` (decisão do Jefferson de 04/11/2026: a tabela do Mendeley
+#: entra nos registros de Blumenau como fonte de cruzamento, confiança média, sem mudar número nem referência).
+CAMPOS_CRUZAMENTO = ("fonte", "valor_m", "data_na_fonte", "bate_com", "confianca", "em", "doc")
+
+
+def valida_cruzamentos(eventos: list[dict] | None = None) -> None:
+    """
+    `cruzamentos` é citação, não nível: cada entrada diz a fonte, o número COMO ELA publica,
+    com que referência de Blumenau bate (ou "diferente"), a confiança, quando foi conferido
+    e o documento. A guarda cobra os campos, porque uma entrada sem `bate_com` deixaria o
+    leitor supor que o número da fonte está na régua de hoje — e a tabela do Mendeley mistura
+    três referências. O número da fonte nunca substitui `pico_m`; quem o fizer tem que
+    passar por `divergencias` ou pela conversão documentada.
+    """
+    if eventos is None:
+        eventos = le_json("enchentes.json").get("eventos", [])
+    for e in eventos:
+        if "cruzamentos" not in e:
+            continue
+        onde = f"enchentes.json: {e.get('cidade')} {e.get('data')}"
+        if not isinstance(e["cruzamentos"], list) or not e["cruzamentos"]:
+            erro(f"{onde}: cruzamentos tem de ser lista com pelo menos uma entrada (ou não existir).")
+            continue
+        for i, c in enumerate(e["cruzamentos"]):
+            faltam = [k for k in CAMPOS_CRUZAMENTO if k not in c]
+            if faltam:
+                erro(f"{onde}: cruzamentos[{i}] sem {faltam}.")
+                continue
+            if not isinstance(c["valor_m"], (int, float)):
+                erro(f"{onde}: cruzamentos[{i}].valor_m tem de ser número, é {c['valor_m']!r}.")
+            if c["confianca"] not in ("alta", "media", "baixa"):
+                erro(f"{onde}: cruzamentos[{i}].confianca {c['confianca']!r} inválida.")
+            if not isinstance(c["bate_com"], str) or not c["bate_com"].strip():
+                erro(f"{onde}: cruzamentos[{i}].bate_com vazio — diga com que referência bate, ou 'diferente'.")
+            valida_data(str(c["em"]), f"{onde} / cruzamentos[{i}].em")
+            if not (RAIZ / str(c["doc"])).exists():
+                erro(f"{onde}: cruzamentos[{i}].doc {c['doc']!r} não existe.")
+
 
 #: Campos obrigatórios de um evento pendente de identificação da régua.
-CAMPOS_PENDENTE = ("rio", "cidade", "data", "pico_m", "confianca", "fonte", "motivo", "para_migrar")
+CAMPOS_PENDENTE =("rio", "cidade", "data", "pico_m", "confianca", "fonte", "motivo", "para_migrar")
 
 
 def valida_eventos_pendentes(conhecidas: set[tuple[str, str]]) -> None:
@@ -2431,6 +2469,7 @@ def main() -> int:
     valida_coordenada_nao_confirmada()
     valida_pico_copiado_de_outra_cidade()
     valida_divergencia_que_virou_registro()
+    valida_cruzamentos()
     valida_cota_de_rua_nao_e_lamina()
     valida_codigo_ana()
     valida_ruas_sem_coordenada()

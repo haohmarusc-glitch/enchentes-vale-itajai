@@ -803,11 +803,11 @@ python3 scripts/achar_confluencias.py --gravar  # grava onde Benedito/Luís Alve
 
 ## Varredura de 04/11/2026 — fontes conferidas pelo navegador (índice)
 
-Detalhes em `docs/VARREDURA-FONTES-2026-11-04.md` e `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md`. Nenhuma em uso.
+Detalhes em `docs/VARREDURA-FONTES-2026-11-04.md` e `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md`. Em uso desde 04/11/2026: os avisos da DCSC (aba Fontes e chat, #567) e o SGB na "minha rua" (`docs/SGB-RUAS.md`); as demais, não.
 
 | Fonte | Status | Uso possível |
 |---|---|---|
-| Defesa Civil de SC — `https://www.defesacivil.sc.gov.br/wp-json/wp/v2/posts` e `/feed/` | **funciona** (200, JSON e RSS). Categorias: 7 Alerta (5.098 posts), 6 Aviso (1.040), 23 Monitoramento (802), 16 Boletins para os próximos 5 dias (824) | avisos da DCSC no chat; o texto traz só a **região** ("Vale do Itajaí", "Foz do Itajaí", "Litoral Norte"), sem município nem polígono. Consulta sugerida: `?categories=6,7&per_page=20&_fields=id,date,link,title,content` |
+| Defesa Civil de SC — `https://www.defesacivil.sc.gov.br/wp-json/wp/v2/posts` e `/feed/` | **funciona** (200, JSON e RSS). Categorias: 7 Alerta (5.098 posts), 6 Aviso (1.040), 23 Monitoramento (802), 16 Boletins para os próximos 5 dias (824) | **em uso (04/11/2026)**: `scripts/coleta_avisos_dcsc.py` → `ultimo_avisos_dcsc.json`, painel "Avisos da Defesa Civil de SC (por região)" na aba Fontes e passo `avisos_dcsc` do chat (20ª entrega, `docs/CHAT-GLOBAL-COMANDOS.md`); o texto traz só a **região** ("Vale do Itajaí", "Foz do Itajaí", "Litoral Norte"), sem município nem polígono. Consulta sugerida: `?categories=6,7&per_page=20&_fields=id,date,link,title,content` |
 | SGB — `geoportal.sgb.gov.br/server/rest/services/gestaoterritorial/inundacao/MapServer/0` | **funciona**, consulta por `uf`/`municipio` | suscetibilidade a inundação (Alta/Média/Baixa) em Apiúna 2016, Benedito Novo 2017, Blumenau, Brusque, Gaspar, Ilhota, Luiz Alves, Navegantes, Rodeio, Taió e Timbó (2013), Itajaí e José Boiteux (2019). **Contexto, nunca cota** — **em uso (04/11/2026)** na "minha rua" de Gaspar e Brusque, `docs/SGB-RUAS.md` |
 | SGB — `…/gestaoterritorial/risco/MapServer/0` | **funciona** | setorização de risco: Ascurra, Brusque (2018–19), Gaspar (2018), Ilhota (2018), Indaial, Itajaí (2012), Navegantes (2018), Pomerode, Rio do Sul (set e nov/2025), Timbó (2013–14). Contexto — **em uso (04/11/2026)**, só os setores de água (inundação, enxurrada, enchente, alagamento), `docs/SGB-RUAS.md` |
 | SGB — `…/hidrologia/` (manchas de inundação) | funciona, **nenhuma mancha da bacia do Itajaí** | descartar |

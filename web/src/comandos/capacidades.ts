@@ -54,7 +54,7 @@ export interface Capacidade {
   /** O passo só faz sentido com o Monitor aberto (o executor o abre antes). */
   precisaDoMapa: boolean
   /** O que o passo lê para responder. */
-  dados: readonly ('aoVivo' | 'serie' | 'cadastro' | 'cotasRuas' | 'captados' | 'preferencias' | 'mare' | 'barragens' | 'tracado' | 'transito' | 'aparelho' | 'monitor' | 'nenhum')[]
+  dados: readonly ('aoVivo' | 'serie' | 'cadastro' | 'cotasRuas' | 'captados' | 'preferencias' | 'mare' | 'barragens' | 'tracado' | 'transito' | 'aparelho' | 'monitor' | 'avisosDcsc' | 'nenhum')[]
   /** Quando o passo pede esclarecimento em vez de executar. */
   esclarece?: string
   /** O que o passo nunca faz (as recusas que os testes travam). */
@@ -508,6 +508,14 @@ export const CAPACIDADES: Record<Passo['tipo'], Capacidade> = {
     mudaTela: false, precisaDoMapa: false, dados: ['cotasRuas', 'aoVivo', 'cadastro'],
     nunca: 'Afirmar "já alagou" com leitura velha, cidade de várias réguas ou nível dito.',
     esclarece: 'Nível impossível ("30 m", "0 m") pergunta um nível possível (18ª).',
+  },
+  // --- 20ª entrega: os avisos da Defesa Civil de SC
+  avisos_dcsc: {
+    grupo: 'rio', entrega: 20, titulo: 'Avisos da Defesa Civil de SC',
+    descricao: 'Os avisos e alertas meteorológicos oficiais do Estado (WordPress da Defesa Civil de SC), por REGIÃO, como a fonte escreve: categoria, hora de Brasília, regiões citadas e link. Só os das últimas 24 h que citam uma região da bacia; os de outras regiões, só contados.',
+    exemplos: [{ texto: 'tem aviso da Defesa Civil?' }, { texto: 'tem alerta de chuva?' }, { texto: 'a Defesa Civil emitiu alerta?' }, { texto: 'qual é o último aviso da Defesa Civil de SC?' }],
+    argumentos: [], mudaTela: false, precisaDoMapa: false, dados: ['avisosDcsc'],
+    nunca: 'Dizer "aviso para a sua cidade" (a fonte só nomeia regiões), pintar faixa, disparar aviso de cota ou falar com a Defesa Civil ("avisar a Defesa Civil" diz que o chat não contata ninguém e aponta o 199).',
   },
 }
 

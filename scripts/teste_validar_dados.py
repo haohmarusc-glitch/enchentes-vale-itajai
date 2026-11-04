@@ -1473,6 +1473,51 @@ class SgbRuasEContextoNaoCota(unittest.TestCase):
                     self.assertTrue(set(r["tipologias"]) <= vd.TIPOLOGIAS_SGB_DE_AGUA, r)
 
 
+class CruzamentosSaoCitacaoNaoNivel(unittest.TestCase):
+    """
+    Decisão do Jefferson de 04/11/2026: a tabela do Mendeley entra nos registros de Blumenau como
+    fonte de cruzamento (`cruzamentos`, confiança média), sem mudar número nem referência. A guarda
+    cobra os campos de cada entrada — sem `bate_com`, o leitor suporia que o número da fonte está na
+    régua de hoje, e a tabela mistura três referências.
+    """
+
+    def _erros(self, eventos):
+        vd.erros.clear()
+        vd.avisos.clear()
+        vd.valida_cruzamentos(eventos)
+        return list(vd.erros)
+
+    def _entrada(self, **troca):
+        c = {"fonte": "Tabela X", "valor_m": 10.76, "data_na_fonte": "2023-10-12", "bate_com": "régua de hoje",
+             "confianca": "media", "em": "2026-11-04", "doc": "docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md"}
+        c.update(troca)
+        return c
+
+    def test_entrada_completa_passa_e_registro_sem_o_campo_tambem(self):
+        eventos = [{"cidade": "blumenau", "data": "2023-10-12", "pico_m": 10.76, "cruzamentos": [self._entrada()]},
+                   {"cidade": "gaspar", "data": "2023-10-12", "pico_m": 5.0}]
+        self.assertEqual(self._erros(eventos), [])
+
+    def test_campo_faltando_confianca_errada_e_doc_inexistente_caem(self):
+        base = {"cidade": "blumenau", "data": "2023-10-12", "pico_m": 10.76}
+        sem_bate = dict(base, cruzamentos=[{k: v for k, v in self._entrada().items() if k != "bate_com"}])
+        self.assertTrue(any("sem ['bate_com']" in e for e in self._erros([sem_bate])))
+        self.assertTrue(any("confianca" in e for e in self._erros([dict(base, cruzamentos=[self._entrada(confianca="ótima")])])))
+        self.assertTrue(any("não existe" in e for e in self._erros([dict(base, cruzamentos=[self._entrada(doc="docs/nao-ha.md")])])))
+        self.assertTrue(any("bate_com vazio" in e for e in self._erros([dict(base, cruzamentos=[self._entrada(bate_com="")])])))
+        self.assertTrue(any("valor_m" in e for e in self._erros([dict(base, cruzamentos=[self._entrada(valor_m="10,76")])])))
+        self.assertTrue(any("lista" in e for e in self._erros([dict(base, cruzamentos=[])])))
+
+    def test_os_registros_reais_de_blumenau_estao_anotados_e_o_meta_descreve_o_campo(self):
+        real = json.loads((DADOS / "enchentes.json").read_text(encoding="utf-8"))
+        self.assertIn("cruzamentos", real["_meta"]["campos"], "o _meta tem de descrever o campo")
+        com = [e for e in real["eventos"] if e.get("cruzamentos")]
+        self.assertTrue(com and all(e["cidade"] == "blumenau" for e in com), "hoje só Blumenau tem cruzamento")
+        self.assertTrue(all(c["confianca"] == "media" for e in com for c in e["cruzamentos"]),
+                        "compilação: confiança média, por decisão do Jefferson")
+        self.assertEqual(self._erros(real["eventos"]), [])
+
+
 def _dispara(eventos: list[dict]) -> bool:
     """Roda só `valida_divergencia_que_virou_registro` sobre dados em memória."""
     vd.erros.clear()

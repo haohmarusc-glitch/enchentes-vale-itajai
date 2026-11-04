@@ -21,6 +21,7 @@ import type { Cidade, CotaRua } from '../../dados/tipos'
 import type { ControleMonitor, Retrato } from '../ponte'
 import type { Ambiente, DadosDoChat } from '../executar'
 import type { Fundo } from '../tipos'
+import { montarAvisosDcsc, type AvisosDcsc } from '../../dados/avisosDcsc'
 
 export const AGORA = new Date('2026-10-06T18:00:00Z') // 15h00 em Brasília
 
@@ -114,7 +115,27 @@ export interface OpcoesDoCenario {
   rota?: string
   cotasRuas?: CotaRua[] | null
   semTransito?: boolean
+  /** 20ª: `null` = o arquivo de avisos da DCSC não veio. Sem dizer, vale `AVISOS_DCSC` (um da bacia há 26 min). */
+  avisosDcsc?: AvisosDcsc | null
 }
+
+/**
+ * 20ª: o arquivo de avisos da Defesa Civil de SC como o coletor o publica, lido pelo MESMO `montarAvisosDcsc` do site.
+ * Um Alerta para Vale do Itajaí e Litoral Norte às 14:34 de Brasília (há 26 min às 15:00), um Aviso só para o Oeste
+ * (conta, não lista) e um Alerta da bacia de 03/10 (mais de 24 h: não é recente).
+ */
+export const AVISOS_DCSC: AvisosDcsc = montarAvisosDcsc({
+  versao: 1,
+  fonte: 'Defesa Civil de Santa Catarina — www.defesacivil.sc.gov.br (categorias Alerta e Aviso)',
+  fonte_url: 'https://www.defesacivil.sc.gov.br/wp-json/wp/v2/posts?categories=7,6',
+  gerado_em: new Date(AGORA.getTime() - 5 * 60_000).toISOString(),
+  regioes_da_bacia: ['Alto Vale', 'Foz do Itajaí', 'Litoral Norte', 'Médio Vale', 'Vale do Itajaí'],
+  avisos: [
+    { id: 1, categoria: 'Alerta', titulo: 'ATENÇÃO – 06/10 14:34 – TEMPORAIS', publicado_em: '2026-10-06T14:34:00', link: 'https://www.defesacivil.sc.gov.br/atencao-06-10-1434-temporais/', regioes: ['Vale do Itajaí', 'Litoral Norte'], estado_inteiro: false, inclui_bacia: true, trecho: 'Temporais com raios e rajadas nas próximas 4 horas.' },
+    { id: 2, categoria: 'Aviso', titulo: 'AVISO – 06/10 13:00 – CHUVA NO OESTE', publicado_em: '2026-10-06T13:00:00', link: 'https://www.defesacivil.sc.gov.br/aviso-06-10-1300/', regioes: ['Oeste'], estado_inteiro: false, inclui_bacia: false, trecho: 'Chuva no Oeste.' },
+    { id: 3, categoria: 'Alerta', titulo: 'ALERTA – 03/10 06:00 – CHUVA FORTE', publicado_em: '2026-10-03T06:00:00', link: 'https://www.defesacivil.sc.gov.br/alerta-03-10/', regioes: ['Vale do Itajaí'], estado_inteiro: false, inclui_bacia: true, trecho: 'Chuva forte.' },
+  ],
+})!
 
 export function cenario(o: OpcoesDoCenario): Cenario {
   let atual: ReturnType<typeof monitorFalso> | null = null
@@ -128,6 +149,7 @@ export function cenario(o: OpcoesDoCenario): Cenario {
     base: () => '',
     cotasRuas: async () => (o.cotasRuas === undefined ? COTAS : o.cotasRuas),
     ...(o.semTransito ? {} : { transito: () => ({ trechos: transito.trechos, experimentais: transito.trechos_experimentais }) }),
+    avisosDcsc: async () => (o.avisosDcsc === undefined ? AVISOS_DCSC : o.avisosDcsc),
   }
   const amb: Ambiente = {
     navegar: (para) => {
@@ -167,8 +189,8 @@ export const CENARIOS = {
   }),
   /** Série de Blumenau com só meia hora de pontos. */
   serieCurta: () => cenario({ aoVivo: aoVivoCongelado({ leituras: [leitura('blumenau', 6.5, 10)], series: ponto('blumenau', curta) }) }),
-  /** As leituras não carregaram. */
-  semDados: () => cenario({ aoVivo: null }),
+  /** As leituras não carregaram (e o arquivo de avisos da DCSC também não). */
+  semDados: () => cenario({ aoVivo: null, avisosDcsc: null }),
   /** A publicação veio "indisponível" (coletor fora), sem leitura nenhuma. */
   indisponivel: () => cenario({ aoVivo: aoVivoCongelado({ leituras: [], situacao: 'indisponivel' }) }),
   /** Tudo certo nas leituras, mas o Monitor não monta. */
