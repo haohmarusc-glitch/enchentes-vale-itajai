@@ -193,6 +193,98 @@ export const VINCULOS_DE_REGUA: readonly VinculoDeRegua[] = [
   },
 ]
 
+/**
+ * Réguas de uma cidade NO TRONCO (decisão do Jefferson, 04/11/2026, "Prepare o PR do vínculo da DC-10 no Mirim").
+ *
+ * O DEFEITO. No tronco, o trecho entre duas cidades é pintado pela de montante, e a última cidade não pinta nada.
+ * No Mirim isso fazia a régua de Brusque (DCSC-00019) colorir **44,9 km**, até o pino de Itajaí, passando por cima
+ * da DC-10 (Limoeiro, 11,3 km abaixo de Brusque), que é régua de Itajaí fora da maré, com cotas conferidas, e que
+ * no mesmo lugar podia dizer outra faixa — o print de 04/11/2026: Mirim amarelo por Brusque em atenção e o ponto
+ * verde "Limoeiro 6,01 m" em cima dele. Para os ribeirões a regra já era "a régua representa só o trecho até a
+ * próxima régua rio abaixo" (DC-07 até a DC-09); no Açu a DC-11 já pinta a jusante dela. O Mirim não tinha isso.
+ *
+ * A REGRA. Cada régua da lista pinta, no traçado do tronco, da régua até a próxima da lista rio abaixo; a última
+ * pinta até a foz. A cor é a MESMA decisão do pino da régua (`reguasNoMapa`); régua sem cor deixa o trecho cinza
+ * com o motivo dela (`regua-sem-cor`). A cidade de montante (Brusque) passa a pintar só até a primeira régua da
+ * lista. Só ao vivo: na reprodução a régua não tem faixa histórica, e vale a regra de sempre. O trecho continua
+ * correndo como o resto do tronco (é o tronco, não um ribeirão; a DC-11 no Açu também corre).
+ */
+export interface ReguasNoTronco {
+  /** O traçado do tronco (`data/rios/<id>.geojson`). */
+  tracado: string
+  /** A cidade dona das réguas. */
+  cidade: string
+  /** Os códigos, na ordem rio abaixo. Régua fora do ao vivo é pulada: a anterior vai até a seguinte. */
+  reguas: readonly string[]
+  /** A foz do traçado ([lon, lat]): o fim do alcance da última régua. */
+  foz: LonLat
+  fozDescricao: string
+  /** Distância de cada régua à foz pelo traçado, medida em 04/11/2026, para o texto e o teste. */
+  kmDaFoz: Readonly<Record<string, number>>
+  fonte: string
+}
+
+export const REGUAS_NO_TRONCO: readonly ReguasNoTronco[] = [
+  {
+    tracado: 'itajai-mirim',
+    cidade: 'itajai',
+    reguas: ['DC-10', 'DC-05', 'DC-06', 'DC-04'],
+    foz: [-48.6816237, -26.8862005],
+    fozDescricao: 'a confluência com o Itajaí-Açu',
+    kmDaFoz: { 'DC-10': 37.5, 'DC-05': 19.1, 'DC-06': 7.1, 'DC-04': 1.1 },
+    fonte: 'As quatro réguas de Itajaí que ficam NO traçado do Itajaí-Mirim (coordenadas do cadastro, portal da Defesa ' +
+      'Civil de Itajaí): DC-10 Limoeiro a 43 m do traçado, DC-05 Sítio Hilário a 5 m, DC-06 Itamirim a 55 m e DC-04 ' +
+      'Vitalmar a 55 m. A DC-03 (canal retificado) fica a 2,3 km deste traçado e não entra. Foz: o vértice comum dos ' +
+      'traçados OSM do Mirim e do Açu (distância 0 m), medido em 04/11/2026. Decisão do Jefferson de 04/11/2026.',
+  },
+]
+
+export function reguasNoTronco(tracado: string): ReguasNoTronco | null {
+  return REGUAS_NO_TRONCO.find((v) => v.tracado === tracado) ?? null
+}
+
+/** O vínculo de tronco em que esta régua pinta (para o painel da régua dizer até onde a cor dela vale). */
+export function troncoDaRegua(codigo: string): ReguasNoTronco | null {
+  return REGUAS_NO_TRONCO.find((v) => v.reguas.includes(codigo)) ?? null
+}
+
+/**
+ * As arestas que cada régua da lista pinta: as a jusante dela (pelo traçado, até a foz) MENOS as a jusante das
+ * réguas seguintes. Régua sem vértice perto (longe do traçado, segmento solto) é pulada. A ordem da lista é a
+ * ordem rio abaixo; os conjuntos saem disjuntos e, juntos, são "a jusante da primeira".
+ */
+export function arestasDasReguasNoTronco(
+  coords: LonLat[][],
+  reguas: readonly { codigo: string; ponto: LonLat }[],
+  foz: LonLat,
+  tolerancia = TOLERANCIA_PONTO_KM,
+): Map<string, Set<string>> {
+  const aJusante = reguas
+    .map((r) => ({ codigo: r.codigo, arestas: arestasAJusanteDe(coords, r.ponto, foz, tolerancia) }))
+    .filter((r): r is { codigo: string; arestas: Set<string> } => r.arestas !== null)
+  const saida = new Map<string, Set<string>>()
+  for (let i = 0; i < aJusante.length; i++) {
+    const proprias = new Set(aJusante[i]!.arestas)
+    for (let j = i + 1; j < aJusante.length; j++) for (const a of aJusante[j]!.arestas) proprias.delete(a)
+    saida.set(aJusante[i]!.codigo, proprias)
+  }
+  return saida
+}
+
+/** O painel da régua: até onde a cor dela vale no tronco. */
+export function textoDoAlcanceNoTronco(codigo: string, nomeDoCurso: string): string | null {
+  const v = troncoDaRegua(codigo)
+  if (!v) return null
+  const km = (x: number) => x.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+  const i = v.reguas.indexOf(codigo)
+  const proxima = v.reguas[i + 1]
+  const ate = proxima ? `a próxima régua rio abaixo, a ${proxima}` : v.fozDescricao
+  const trecho = v.kmDaFoz[codigo]! - (proxima ? v.kmDaFoz[proxima]! : 0)
+  return `No mapa, a cor desta régua vale para o ${nomeDoCurso}, da régua até ${ate} (${km(trecho)} km). ` +
+    'É a classificação medida NA RÉGUA, aplicada a esse trecho: não é medição em cada ponto do rio nem mancha de ' +
+    'inundação. Não vale para o rio acima da régua, que é da régua de cima.'
+}
+
 export function vinculoDeReguaDoTracado(tracado: string): VinculoDeRegua | null {
   return VINCULOS_DE_REGUA.find((v) => v.tracado === tracado) ?? null
 }
@@ -421,7 +513,8 @@ export function textoDoTrechoCinza(motivo: MotivoDoTrecho, tracado: string, deta
   }
   if (motivo === 'regua-sem-cor') {
     const vr = vinculoDeReguaDoTracado(tracado)
-    const quem = vr ? `a régua ${vr.regua}` : 'a régua vinculada'
+    // No tronco (Mirim, 04/11/2026) o detalhe já começa pelo código da régua que pinta o trecho.
+    const quem = vr ? `a régua ${vr.regua}` : reguasNoTronco(tracado) && detalhe ? 'uma régua de Itajaí' : 'a régua vinculada'
     return `A cor deste curso é a de ${quem}, que agora está sem cor${detalhe ? ` — ${detalhe}` : '.'}`
   }
   const v = vinculoDoTracado(tracado)

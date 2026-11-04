@@ -35,7 +35,8 @@ e `web/src/telas/MonitorBacia.tsx`. Testes: `web/src/logica/vinculosDosTracados.
     passado.
 - **Tronco:** a primeira régua não pinta o rio acima dela, com folga de 0,5 km para meandro.
   - O resto da regra do tronco não mudou: a régua a montante dá a cor até a próxima, o DC-11 vale na foz e o canal
-    retificado do Mirim segue a regra própria.
+    retificado do Mirim segue a regra própria. **Desde 04/11/2026, no Mirim, as réguas de Itajaí no traçado (DC-10,
+    DC-05, DC-06, DC-04) pintam da régua até a próxima rio abaixo, e Brusque pára na DC-10** (seção própria abaixo).
   - **DC-11, "a jusante" pelo traçado (08/10/2026):** a cor da DC-11 valia para os trechos cuja projeção na reta
     entre os pinos de Ilhota e Itajaí caía depois da régua. A Volta de Cima, logo abaixo da DC-11, volta para
     trás nessa reta: com a régua em atenção (3,17 m), 9 arestas, **2,86 km** de rio ao longo da Rua Santa Regina,
@@ -116,6 +117,32 @@ Regras confirmadas pelo Jefferson em 08/10/2026:
 
 As réguas de Itajaí (DC-01 a DC-11): a chegada da cheia segue a regra de sempre (DC-11 primeiro, DC-02 depois). A
 DC-01 é referência do mar. Nenhuma faixa única de Itajaí se espalha pelos ribeirões.
+
+### Réguas de Itajaí no tronco do Mirim (decisão do Jefferson de 04/11/2026)
+
+O defeito, no print de 04/11/2026 (Brusque em atenção, 3,17 m): o Mirim amarelo de Brusque até o pino de Itajaí, e o
+ponto verde "Limoeiro 6,01 m" em cima dele. A regra do tronco ("a cidade de montante pinta até a próxima cidade; a
+última não pinta") fazia a DCSC-00019 de Brusque colorir **44,9 km**, passando pela DC-10 (régua de Itajaí **fora da
+maré**, cotas 8/9/10 m conferidas, 11,3 km abaixo de Brusque) e pelo estuário. Contradizia a regra dos ribeirões ("a
+régua representa só o trecho até a próxima régua rio abaixo", DC-07 até a DC-09) e o que a DC-11 já fazia no Açu.
+
+Agora (`REGUAS_NO_TRONCO`, `arestasDasReguasNoTronco`, `mapaMotor.ts`): as réguas de Itajaí que ficam **no traçado**
+do Mirim pintam cada uma da régua até a próxima rio abaixo, com a **mesma decisão do pino** de cada uma
+(`reguasNoMapa`); régua sem cor (maré, travada, leitura velha) deixa o trecho cinza com o motivo dela
+(`regua-sem-cor`, "DC-05 (Sítio Hilário): …"). Brusque pára na DC-10. Só ao vivo; na reprodução vale a regra de sempre.
+O trecho continua **correndo** (é o tronco; a DC-11 no Açu também corre) — diferente dos ribeirões, que ficam parados.
+O toque no trecho abre o painel da régua, que diz até onde a cor dela vale (`textoDoAlcanceNoTronco`).
+
+| Régua | Distância ao traçado | Até a foz (caminho) | Pinta até | Arestas (km somados) |
+|---|---|---|---|---|
+| DC-10 Limoeiro | 43 m | 37,5 km | a DC-05 | 18,3 km |
+| DC-05 Sítio Hilário (curso antigo) | 5 m | 19,1 km | a DC-06 | 13,0 km (braços do curso antigo entram pelos dois lados) |
+| DC-06 Itamirim | 55 m | 7,1 km | a DC-04 | 6,0 km |
+| DC-04 Vitalmar (reunião dos braços) | 55 m | 1,1 km | a confluência com o Açu (vértice comum dos traçados OSM, 0 m) | 1,1 km |
+
+Fora: a **DC-03** (canal retificado, a 2,3 km deste traçado — o canal é outro traçado, `mirim-canal-retificado`, e
+segue a regra própria). Régua fora do ao vivo é pulada: sem a DC-05, a DC-10 vai até a DC-06 (teste). Testes com o
+traçado real em `vinculosDosTracados.test.ts` ("as réguas do tronco do Mirim…", "no Mirim, Brusque pára na DC-10…").
 
 ## Defeitos corrigidos × pendências mantidas
 

@@ -3,7 +3,7 @@ import { comReferenciaAscurra } from '../dados/referenciaAscurra'
 import { chuvaMonitor, linhasChuva, linhasChuvaCompactas, mmChuva } from '../logica/chuvaMonitor'
 import { cotaDaFaixa, estadoDaLeitura, LEITURA_VARIAS_REGUAS, textoTendenciaCompacta } from '../logica/painelCompacto'
 import { NOME_TRACADO, contagemDeTracados, opcoesDeTracado, tracadosVisiveis } from '../logica/tracadosDoMapa'
-import { rioParaCena, textoDoAlcance, textoDoAlcanceDaRegua, textoDoTrechoCinza, vinculoDaCidade, vinculoDaRegua, type MotivoDoTrecho } from '../logica/vinculosDosTracados'
+import { rioParaCena, textoDoAlcance, textoDoAlcanceDaRegua, textoDoAlcanceNoTronco, textoDoTrechoCinza, troncoDaRegua, vinculoDaCidade, vinculoDaRegua, type MotivoDoTrecho } from '../logica/vinculosDosTracados'
 import { destaqueDaBacia } from '../logica/destaqueDaBacia'
 import { estadoMareAgora } from '../logica/mare'
 import { diaDeBrasilia, horaDeBrasilia, tendenciaDaLeitura } from '../logica/agora'
@@ -2155,6 +2155,7 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
           {legendaAberta ? (
             <>
           <p className={estilos.legendaNota}>No Itajaí-Açu, de Santa Regina até a foz, a cor do traçado é referência visual da DC-11. Não indica nível local, ruas alagadas nem classificação das outras réguas. Na reprodução histórica essa referência fica desativada.</p>
+          <p className={estilos.legendaNota}>No Itajaí-Mirim, do Limoeiro até a foz, a cor do traçado é a de cada régua de Itajaí no rio (DC-10, DC-05, DC-06 e DC-04), da régua até a próxima rio abaixo; a cor de Brusque vale até a DC-10. Régua sem cor deixa o trecho cinza. Na reprodução histórica vale a regra de sempre.</p>
           <p className={estilos.legendaNota}>Ondas indicam apenas o sentido ilustrativo do curso, com velocidade visual constante. Cinza em movimento não indica nível atual nem condição de segurança. Não representa velocidade da água ou chegada da cheia. Movimento ilustrativo em direção à foz; não representa a corrente real, que pode variar com a maré. Trechos sem orientação definida ficam parados.</p>
           {movimentoReduzido && <p className={estilos.legendaNota}>Movimento reduzido ativado nas preferências do dispositivo.</p>}
           {listaDaLegenda}
@@ -2240,7 +2241,11 @@ export default function MonitorBacia({ municipal = false }: { municipal?: boolea
               {/* Régua que pinta um curso (o Canhanduba pela DC-08, 08/10/2026): até onde a cor dela vale. */}
               {(() => {
                 const v = vinculoDaRegua(g.codigo)
-                return v ? <p className={estilos.painelRessalva}>{textoDoAlcanceDaRegua(v, NOME_TRACADO[v.tracado] ?? v.tracado)}</p> : null
+                if (v) return <p className={estilos.painelRessalva}>{textoDoAlcanceDaRegua(v, NOME_TRACADO[v.tracado] ?? v.tracado)}</p>
+                // Régua de Itajaí no TRONCO do Mirim (04/11/2026): da régua até a próxima rio abaixo.
+                const tronco = troncoDaRegua(g.codigo)
+                const texto = tronco ? textoDoAlcanceNoTronco(g.codigo, NOME_TRACADO[tronco.tracado] ?? tronco.tracado) : null
+                return texto ? <p className={estilos.painelRessalva}>{texto}</p> : null
               })()}
               <p className={estilos.painelRessalva}>
                 Cada régua tem o zero dela: <strong>estes metros não se comparam</strong>{' '}

@@ -480,6 +480,11 @@ o projeto.
 
 ## Pendências
 
+- [x] **Mirim: Brusque pintava até o pino de Itajaí (04/11/2026, decisão do Jefferson).** A régua de Brusque colorira 44,9 km,
+  por cima da DC-10 (Limoeiro, régua de Itajaí fora da maré, 11,3 km abaixo). Agora as réguas de Itajaí no traçado do Mirim
+  (DC-10 → DC-05 → DC-06 → DC-04 → foz) pintam cada uma até a próxima rio abaixo, com a decisão do pino de cada uma; Brusque
+  pára na DC-10; régua sem cor deixa o trecho cinza com o motivo. `REGUAS_NO_TRONCO`, `docs/VINCULOS-DOS-TRACADOS.md`
+  (PR com `monitor-autorizado`).
 - [ ] **Varredura de fontes novas (04/11/2026):** `docs/VARREDURA-FONTES-2026-11-04.md` (busca daqui) e
   `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md` (conferência do Jefferson no Chrome). Sete candidatas, nenhuma em uso.
   **Funcionam:** o `wp-json`/`feed` da Defesa Civil de SC (avisos por região — **em uso desde 04/11/2026**: coletor
