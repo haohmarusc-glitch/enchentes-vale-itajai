@@ -480,14 +480,19 @@ o projeto.
 
 ## Pendências
 
-- [ ] **Varredura de fontes novas (04/11/2026):** `docs/VARREDURA-FONTES-2026-11-04.md`. Sete candidatas, nenhuma em
-  uso: os endereços do serviço de camadas e do WMS por trás do Mapa Interativo do CEMADEN (lidos no JavaScript do mapa;
-  o serviço não abre daqui), o GeoNode `monitora.furb.br` da FURB, a tabela "Histórico de enchentes em Blumenau" no
-  Mendeley Data, os produtos vetoriais do SGB/CPRM para Brusque, Gaspar e Blumenau, o `wp-json`/`feed` da Defesa Civil
-  de SC, as manchas automáticas do Copernicus GFM e os canais oficiais da Defesa Civil de Itajaí (WhatsApp, X,
-  Instagram). Confirmado que **não** existe: SAH do SGB para o Itajaí, portal de nível em Navegantes, marégrafo público
-  do porto, dado ao vivo da Barragem Norte. Próximo passo: conferir na VPS e no navegador (seção 10 do doc); nada entra
-  em `data/` sem decisão.
+- [ ] **Varredura de fontes novas (04/11/2026):** `docs/VARREDURA-FONTES-2026-11-04.md` (busca daqui) e
+  `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md` (conferência do Jefferson no Chrome). Sete candidatas, nenhuma em uso.
+  **Funcionam:** o `wp-json`/`feed` da Defesa Civil de SC (avisos por região, candidato ao chat) e os serviços
+  `inundacao` e `risco` do geoportal do SGB (suscetibilidade e setorização por município da bacia — contexto, nunca
+  cota). **Baixada e cruzada:** a tabela "Histórico de enchentes em Blumenau" (Mendeley Data, CC BY 4.0, 102 cheias),
+  bruto com sha256 em `data/brutos/varredura-fontes-2026-11-04/` e cruzamento em
+  `docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md` (`scripts/cruzar_mendeley_blumenau.py`): 101 das 102
+  datas já estão no projeto; a tabela não declara régua e mistura IBGE (até 2001), régua antiga (2008–2011) e régua de
+  hoje (2013+); 2 números diferem (1852: 10,30 × 16,30 publicado; 2022: 9,40 × 9,41) e 1 data só dela (20/11/1862).
+  **Descartadas:** GeoNode da FURB (FlorestaSC, sem enchente), manchas do SGB (não cobrem a bacia), recorte CEMADEN do
+  SGB. **Pendentes:** CEMADEN `mapservices` (recusa conexão também na rede doméstica; testar da VPS), Copernicus GFM.
+  Confirmado que **não** existe: SAH do SGB para o Itajaí, portal de nível em Navegantes, marégrafo público do porto,
+  dado ao vivo da Barragem Norte. Nada entra em `data/` sem decisão do Jefferson.
 - [x] **O portal da Defesa Civil de Itajaí ficou fora do ar de 30/10 ~07h30 a pelo menos 31/10 15h20 e voltou até
   04/11/2026.** Todas as páginas (`/monitoramento/rios`, `mapa`, `chuvas`, `mares`, `barragens`, `?municipio_id=3|4`)
   respondiam "Internal Server Error" (500, nginx/PHP 8.4), e o `data/current/app.json` do próprio site ficou congelado

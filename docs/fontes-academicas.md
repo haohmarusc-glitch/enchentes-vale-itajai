@@ -280,3 +280,9 @@ certeza alta**. Feito em um único commit por `scripts/converter_blumenau.py --a
   trocados. Ficou como divergência desse registro, para não contar a mesma cheia duas vezes.
 * Cadastro de Blumenau: 124 → 129 registros (58 na régua de hoje, 71 fora da comparação).
 
+
+## Compilações públicas (varredura de 04/11/2026)
+
+| Material | O que contém | Onde | Status |
+|---|---|---|---|
+| Melchioretto, Loos e Silva & Warwar da Fonseca (Senac SC), *Histórico de enchentes em Blumenau*, Mendeley Data v2 (23/09/2025), CC BY 4.0 | Tabela de 102 cheias de Blumenau (1852 → 19/05/2024) com data, cota e classificação Típica/Atípica; origem declarada: Defesa Civil de Blumenau + Ribeiro (2023). **Não diz a régua**: o cruzamento mostra IBGE (Cordero) até 2001, régua antiga em 2008–2011 e régua de hoje desde 2013 | DOI 10.17632/cj64gycsw8.2; bruto e ficha em `data/brutos/varredura-fontes-2026-11-04/` | Cruzada com `enchentes.json` em `docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md`; **nada cadastrado** — decisão do Jefferson |

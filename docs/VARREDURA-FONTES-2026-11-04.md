@@ -149,3 +149,21 @@ mapas de inundação de Brusque, Rio do Sul e Gaspar; dados abertos de SC; GloFA
 (HTTP 200): `mapainterativo.cemaden.gov.br` (página, `js/script.js`, `js/interativo.js`, formulários de download),
 `defesacivil.itajai.sc.gov.br` e seu pacote JavaScript. Recusas registradas pelo proxy: ver o início deste documento.
 Nenhuma escrita, nenhum formulário enviado, nenhum e-mail.
+
+## 11. Conferência pelo navegador e handoff (04/11/2026, à tarde)
+
+O Jefferson abriu no Chrome o que este ambiente não alcança (`docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md`) e
+baixou a tabela do Mendeley. Status final das candidatas:
+
+| # | Fonte | Status | O que ficou |
+|---|---|---|---|
+| 1 | CEMADEN `mapservices`/`resources` | conexão recusada também na rede doméstica | testar da VPS |
+| 1b | CEMADEN WMS `cemaden_dev` | abre (1.180 camadas), sem PCD hidrológica ativa | o nível das PCDs segue no C24 |
+| 2 | FURB `monitora.furb.br` | GeoNode do FlorestaSC, 31 camadas, nenhuma de enchente | **descartada** como fonte de cheia |
+| 3 | Mendeley "Histórico de enchentes em Blumenau" | baixada (sha256 conferido), transcrita e cruzada | `data/brutos/varredura-fontes-2026-11-04/` e `docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md`; nada cadastrado |
+| 4 | SGB geoportal `inundacao` e `risco` | funcionam, com consulta por município | contexto de suscetibilidade e risco; manchas de inundação do SGB **não cobrem** a bacia |
+| 5 | DCSC `wp-json` / `feed` | funcionam (200) | candidato a avisos no chat; texto só por região |
+| 6 | Copernicus GFM / EMS | não conferido | pendente |
+| 7 | Canais oficiais da DC de Itajaí | links lidos | candidatos à tela "Fontes" |
+
+Índices atualizados: `docs/fontes-tempo-real.md` (DCSC, SGB, CEMADEN, FURB) e `docs/fontes-academicas.md` (Mendeley).
