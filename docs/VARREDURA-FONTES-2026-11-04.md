@@ -167,3 +167,40 @@ baixou a tabela do Mendeley. Status final das candidatas:
 | 7 | Canais oficiais da DC de Itajaí | links lidos | candidatos à tela "Fontes" |
 
 Índices atualizados: `docs/fontes-tempo-real.md` (DCSC, SGB, CEMADEN, FURB) e `docs/fontes-academicas.md` (Mendeley).
+
+## 12. Sondagem pelo GitHub Actions (04/11/2026, noite)
+
+Terceiro ponto de vista, depois deste ambiente e da rede do Jefferson: `.github/workflows/sondar-fontes.yml` roda
+`scripts/sondar_fontes.py` (um GET por alvo, só depois do `robots.txt` do host) e `scripts/baixar_sgb_suscetibilidade.py`,
+e publica o resultado no branch `sondagem-fontes` (`sondagem.txt/json`, `sgb.txt`, `sgb-resumo.json`, `sgb/*.geojson`).
+Primeira rodada, 13h52 UTC:
+
+| Alvo | Do runner | Leitura |
+|---|---|---|
+| CEMADEN WMS `cemaden_dev` | 200, 2 MB de capabilities | igual ao navegador |
+| CEMADEN `mapservices` / `resources` | `robots.txt` sem resposta → nada pedido | o relatório não dizia o motivo; **corrigido**: agora grava a exceção (rota, TLS ou recusa) |
+| CEMADEN gráfico PCD | 404 (página WordPress) | endereço de exemplo não existe mais |
+| DCSC `wp-json` / `feed` | `robots.txt` sem resposta → nada pedido | idem; da VPS o coletor de avisos (#564) é quem decide |
+| SGB `inundacao` / `risco` (distintos) | 200 (4 KB e 62 KB) | **funcionam do runner** |
+| SGB download por cidade | nada pedido | o geoportal responde **404 ao `robots.txt`**, e o script tratava 404 como "sem resposta". **Corrigido**: 404 = não há robots = nada proibido (como em `sondar_fontes`); outro erro continua fechando tudo |
+| FURB GeoNode, Mendeley | 200 | como antes |
+
+Segunda rodada (16h29 UTC), com o motivo gravado: **CEMADEN `mapservices` e `resources` = `ReadTimeout`** (a conexão
+abre e o servidor não responde em 30 s — filtro, não rota) e **DCSC `www.defesacivil.sc.gov.br` = `ConnectTimeout`**
+(nem a conexão abre: o site não atende o runner). Ou seja, do GitHub Actions essas duas fontes **não** se alcançam;
+o coletor de avisos da DCSC (#564) só faz sentido na VPS. O SGB continuou sem pedir nada: `comum.baixar` reembrulha o
+HTTPError num `RequestException` sem `response`, e a leitura do 404 não o achava — corrigido lendo a cadeia de causas.
+Regra que não muda: só GET, `User-Agent` do projeto, robots antes de tudo.
+
+Terceira rodada (16h43 UTC): o SGB passou a ser pedido e vieram **16 cartas de suscetibilidade e 24 setorizações** (190 MB
+de GeoJSON no branch). O cruzamento com as cotas de rua está em `docs/SGB-RUAS.md`.
+
+Quarta rodada (17h10 UTC), com os alvos do **Copernicus** (pendência 4 do relatório de ganhos): do runner, os quatro
+respondem **200** — portal do EMS (`emergency.copernicus.eu`), lista de ativações do EMS (`mapping.emergency.copernicus.eu/
+activations/`), portal do GFM (`global-flood.emergency.copernicus.eu`) e a API do GFM na EODC (`api.gfm.eodc.eu/v2/`, página
+HTML de documentação). Daqui e da rede do Jefferson nenhum abre. O que isso diz: a fonte existe e o Actions a alcança; o que
+ainda **não** se sabe, porque a sondagem só lê 400 caracteres, é se há ativação do EMS para o Vale do Itajaí e o que a API do
+GFM entrega sem cadastro. Próximo passo, se o Jefferson quiser: um alvo de leitura que baixe a lista de ativações inteira e
+procure "Brazil"/"Santa Catarina", e a página de termos da API do GFM. Nada disso é tempo real: serviria para a **extensão
+observada** das cheias (satélite), como contexto histórico.
+

@@ -108,6 +108,17 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   o que a pessoa quer; o motor só palpita "maiores cheias" quando a pergunta fala do rio (`FALA_DO_RIO`).
 - O piloto do classificador, listas de permissão, segredos, retenção e público **não** mudam em PR de refatoração.
 
+### SGB na "minha rua" — REGRA (decisão de 04/11/2026)
+- `data/sgb-ruas.json` é **derivado** (`scripts/cruzar_sgb_ruas.py --sgb <pasta do branch sondagem-fontes> --gravar`): para cada
+  ponto de `cotas-ruas.json` com coordenada (hoje Gaspar e Brusque), a classe de suscetibilidade a inundação da carta do
+  SGB/IPT (2013) e os setores de risco **de água** (Inundação, Enxurrada, Enchente, Alagamento) que o contêm. Setor de
+  deslizamento fica fora. Detalhes em `docs/SGB-RUAS.md`.
+- **Contexto, nunca cota, previsão ou cor.** Não entra em `cotas-ruas.json`, faixas, simulador, avisos nem como número no
+  chat. A tela diz "terreno", "carta do SGB (ano)", e que "Baixa" não é "não alaga". Fora da carta é `null`, não "sem risco".
+- O validador (`valida_sgb_ruas`) cobra: todo ponto é um ponto de `cotas-ruas.json` (mesma cidade e coordenada), só
+  tipologias de água, contagens coerentes, `_meta.regras` com "não é cota" e 199.
+- Os GeoJSON (190 MB) ficam só no branch `sondagem-fontes`; o site carrega o cruzamento (710 KB) à parte, na busca.
+
 ### Ruas alagadas registradas à mão — REGRA (decisão de 05/10/2026)
 - `data/ruas-alagadas.json` guarda a hora em que cada rua alagou, anotada durante a cheia (planilha
   `docs/modelos/ruas-alagadas.csv` → `scripts/ruas_alagadas.py`). Passo a passo: `docs/REGISTRO-RUAS-ALAGADAS.md`.

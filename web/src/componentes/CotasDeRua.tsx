@@ -22,6 +22,8 @@ import {
   proximas,
 } from '../logica/cotasRuas'
 import { metros } from '../logica/formato'
+import { useSgbDaCidade } from '../dados/sgbRuas'
+import { contextoDoPonto, indexarPontos, textoSgbDaCidade, textoSgbDoPonto } from '../logica/sgbRuas'
 import estilos from './CotasDeRua.module.css'
 
 interface Props {
@@ -54,6 +56,9 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
   const faixa = useMemo(() => faixaDaCidade(cotas, cidade.id), [cotas, cidade.id])
   const [termo, setTermo] = useState('')
   const [simulado, setSimulado] = useState<number | null>(null)
+  // O que o SGB mapeou aqui (04/11/2026): contexto do terreno, carregado à parte; nunca muda cota, conta ou cor.
+  const sgb = useSgbDaCidade(cidade.id)
+  const indiceSgb = useMemo(() => indexarPontos(sgb.cidade), [sgb.cidade])
 
   // Cidade sem cota levantada não some da tela.
   //
@@ -200,6 +205,13 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
                 ) : (
                   <span className={estilos.semNumero}>{c.nota ?? 'cota não publicada'}</span>
                 )}
+                {/* O SGB diz do TERRENO, não do nível: vem depois da cota e do abrigo, sem metro, e só
+                    quando o ponto tem coordenada e foi cruzado (hoje Gaspar e Brusque). */}
+                {(() => {
+                  const ctx = contextoDoPonto(indiceSgb, c)
+                  const t = ctx ? textoSgbDoPonto(ctx) : null
+                  return t ? <span className={estilos.sgb}>SGB: {t}</span> : null
+                })()}
                 {/* Fonte CURTA por resultado (decisão do Jefferson, 21/09/2026):
                     a linha inteira repetida em cada rua respondia por quase
                     toda a altura da lista. A identificação completa continua
@@ -241,6 +253,24 @@ export default function CotasDeRua({ cidade, leitura, agora }: Props) {
             está nesta lista, que está longe de completa.
           </p>
         )
+      ) : null}
+
+      {sgb.carregado && sgb.cidade ? (
+        <details className={estilos.fontes} data-sgb={cidade.id}>
+          <summary>O que o Serviço Geológico do Brasil mapeou em {cidade.nome} (contexto, não cota)</summary>
+          <ul className={estilos.sgbLista}>
+            {textoSgbDaCidade(sgb.cidade).map((linha, i) => (
+              <li key={i}>{linha}</li>
+            ))}
+            <li>
+              É classificação do <strong>terreno</strong> pelo SGB, com os critérios e a data dele: não é cota, não é
+              previsão e não muda nada do que está acima. “Baixa” não quer dizer que não alaga; “Alta” não quer dizer
+              que vai alagar hoje. Setores de deslizamento ficam fora porque não são o assunto deste site. Fonte:
+              geoportal do SGB (serviços <em>gestaoterritorial/inundacao</em> e <em>risco</em>)
+              {sgb.lidoEm ? `, lido em ${sgb.lidoEm}` : ''}. Não é alerta: em emergência, ligue 199.
+            </li>
+          </ul>
+        </details>
       ) : null}
 
       <hr className={estilos.divisor} />
