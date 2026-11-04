@@ -480,6 +480,27 @@ o projeto.
 
 ## Pendências
 
+- [ ] **Varredura de fontes novas (04/11/2026):** `docs/VARREDURA-FONTES-2026-11-04.md` (busca daqui) e
+  `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md` (conferência do Jefferson no Chrome). Sete candidatas, nenhuma em uso.
+  **Funcionam:** o `wp-json`/`feed` da Defesa Civil de SC (avisos por região, candidato ao chat) e os serviços
+  `inundacao` e `risco` do geoportal do SGB (suscetibilidade e setorização por município da bacia — contexto, nunca
+  cota). **Baixada e cruzada:** a tabela "Histórico de enchentes em Blumenau" (Mendeley Data, CC BY 4.0, 102 cheias),
+  bruto com sha256 em `data/brutos/varredura-fontes-2026-11-04/` e cruzamento em
+  `docs/VARREDURA-FONTES-2026-11-04-CRUZAMENTO-BLUMENAU.md` (`scripts/cruzar_mendeley_blumenau.py`): 101 das 102
+  datas já estão no projeto; a tabela não declara régua e mistura IBGE (até 2001), régua antiga (2008–2011) e régua de
+  hoje (2013+); 2 números diferem (1852: 10,30 × 16,30 publicado; 2022: 9,40 × 9,41) e 1 data só dela (20/11/1862).
+  **Descartadas:** GeoNode da FURB (FlorestaSC, sem enchente), manchas do SGB (não cobrem a bacia), recorte CEMADEN do
+  SGB. **Pendentes:** CEMADEN `mapservices` (recusa conexão também na rede doméstica; testar da VPS), Copernicus GFM.
+  Confirmado que **não** existe: SAH do SGB para o Itajaí, portal de nível em Navegantes, marégrafo público do porto,
+  dado ao vivo da Barragem Norte. Nada entra em `data/` sem decisão do Jefferson.
+- [x] **O portal da Defesa Civil de Itajaí ficou fora do ar de 30/10 ~07h30 a pelo menos 31/10 15h20 e voltou até
+  04/11/2026.** Todas as páginas (`/monitoramento/rios`, `mapa`, `chuvas`, `mares`, `barragens`, `?municipio_id=3|4`)
+  respondiam "Internal Server Error" (500, nginx/PHP 8.4), e o `data/current/app.json` do próprio site ficou congelado
+  em 30/10 07h35 UTC. As onze réguas de Itajaí ficaram "sem leitura recente" (última leitura 30/10 07h20–07h21) e a
+  PADKND de Blumenau parou às 07h30; o coletor registrou `fonte_itajai_ok: false` a cada ciclo, o bot e o painel de
+  saúde avisaram, e nenhum aviso de cota de Itajaí podia disparar. Em 04/11 12h31 UTC a coleta voltou com as 11 réguas.
+  Nada mudou no código: o erro era no servidor da Prefeitura. Fica a lição: o `app.json` é um segundo caminho de
+  leitura da mesma fonte, mas cai junto (mesma origem). Não houve contato com a Prefeitura (orientação de 14/09).
 - [x] **A DCSC bloqueou `rio_alarmes` e o mapa perdeu a faixa estadual (desde 13/10/2026; tratado em 27/10/2026).**
   A API da Defesa Civil de SC responde "Operação bloqueada." a qualquer consulta que peça `rio_alarmes` — só esse
   campo (`type`, `rio_nome`, `rio_nivel` e `rio_area_drenagem` seguem liberados, testados um a um em 27/10). O coletor
