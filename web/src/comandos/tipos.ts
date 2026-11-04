@@ -127,6 +127,8 @@ export type Passo =
   | { tipo: 'captados'; pergunta: 'lista' | 'ultima' | 'maior' | 'quantas' | 'periodo'; cidadeId?: string; cota?: string; mes?: number; ano?: number; dia?: string }
   /** 16ª: as ruas pela cota, cidade inteira (`nivelM` dito pela pessoa; `subirM` para "se subir mais 50 cm"). */
   | { tipo: 'ruas_pela_cota'; pergunta: 'nivel' | 'agora' | 'proximas' | 'primeiras'; cidadeId?: string; nivelM?: number; subirM?: number }
+  // 20ª entrega: os avisos meteorológicos da Defesa Civil de SC, por região (nunca por cidade; não é faixa do rio).
+  | { tipo: 'avisos_dcsc' }
 
 export type Interpretacao =
   | { tipo: 'comandos'; passos: Passo[] }

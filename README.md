@@ -482,7 +482,9 @@ o projeto.
 
 - [ ] **Varredura de fontes novas (04/11/2026):** `docs/VARREDURA-FONTES-2026-11-04.md` (busca daqui) e
   `docs/VARREDURA-FONTES-2026-11-04-NAVEGADOR.md` (conferência do Jefferson no Chrome). Sete candidatas, nenhuma em uso.
-  **Funcionam:** o `wp-json`/`feed` da Defesa Civil de SC (avisos por região, candidato ao chat) e os serviços
+  **Funcionam:** o `wp-json`/`feed` da Defesa Civil de SC (avisos por região — **em uso desde 04/11/2026**: coletor
+  `coleta_avisos_dcsc.py`, painel na aba Fontes e passo `avisos_dcsc` do chat, 20ª entrega; nunca faixa, nunca
+  "para a sua cidade") e os serviços
   `inundacao` e `risco` do geoportal do SGB (suscetibilidade e setorização por município da bacia — contexto, nunca
   cota). **Baixada e cruzada:** a tabela "Histórico de enchentes em Blumenau" (Mendeley Data, CC BY 4.0, 102 cheias),
   bruto com sha256 em `data/brutos/varredura-fontes-2026-11-04/` e cruzamento em

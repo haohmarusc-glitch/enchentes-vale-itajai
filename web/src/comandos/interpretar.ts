@@ -163,6 +163,45 @@ function lerTrechoDaQuinta(t: string, cat: Catalogo): Lido {
 }
 
 /**
+ * 20ª entrega: os avisos meteorológicos da Defesa Civil de SC (por região). Casa quando a frase fala de aviso/alerta
+ * E diz de quem é (Defesa Civil, DC, estadual) ou do que é (chuva, temporal, meteorológico): "tem alerta?" sozinho
+ * não entra aqui — alerta do RIO continua sendo o panorama ("quais cidades estão em alerta?"), e "ler o aviso legal"
+ * continua sendo o aviso do site. Pedido de CONTATO com a Defesa Civil não é consulta: o chat não fala com ninguém.
+ */
+const DEFESA_CIVIL = '(?:defesa civil|dc|defesa civil de sc|defesa civil de santa catarina|defesa civil do estado|defesa civil estadual|dc de sc|dc sc|defesa civil sc)'
+const AVISO = '(?:aviso|avisos|alerta|alertas|avisos? meteorologicos?|alertas? meteorologicos?)'
+const DO_TEMPO = '(?:chuva|chuvas|chuva forte|chuvas fortes|temporal|temporais|tempo|mau tempo|tempo ruim|vendaval|vento|tempestade|raios)'
+const ONDE = '(?: (?:hoje|agora|recente|recentes|em vigor|valendo|pra hoje|para hoje|de hoje|mais recente|ultimo|ultimos)| (?:para|pra|no|na|em) (?:a |o )?(?:regiao|nossa regiao|bacia|vale|vale do itajai|foz|foz do itajai|litoral norte|sc|santa catarina|estado|o estado|o vale))*'
+const TEXTO_NAO_CONTATA =
+  'Este chat não fala com a Defesa Civil nem com ninguém: não envia aviso, não liga, não registra ocorrência. Em emergência, ligue 199 (Defesa Civil) ou 193 (Bombeiros). Posso mostrar os avisos que a Defesa Civil de SC publicou: "tem aviso da Defesa Civil?".'
+function lerTrechoDaVigesima(t: string): Lido {
+  // Contato: "avisar a Defesa Civil que o rio subiu", "ligar para a Defesa Civil", "chamar a Defesa Civil".
+  // "ligar para a Defesa Civil" é pedido de telefone: sai o 199. "acionar a Defesa Civil" é pedir que ela AJA — a
+  // bateria antiga já esperava esclarecimento (achado da primeira rodada da 20ª): fica com os de contato.
+  if (new RegExp(`^(?:ligar|ligue|liga|telefonar|telefone) (?:para |pra )?(?:a |o )?${DEFESA_CIVIL}(?: .*)?$`).test(t)) return [{ tipo: 'emergencia' }]
+  if (new RegExp(`^(?:avisar|avise|avisa|comunicar|comunique|informar|informe|chamar|chame|chama|acionar|acione|mandar (?:um )?aviso (?:para|pra)|enviar (?:um )?aviso (?:para|pra)|falar com|fale com|contatar|contate|pedir (?:ajuda|socorro) (?:a|para|pra)) (?:a |o )?${DEFESA_CIVIL}(?: .*)?$`).test(t)) {
+    return { erro: TEXTO_NAO_CONTATA, sugestoes: ['tem aviso da Defesa Civil?', 'telefone de emergência'] }
+  }
+  const dcsc: Lido = [{ tipo: 'avisos_dcsc' }]
+  // "tem aviso da Defesa Civil?", "tem algum alerta da Defesa Civil de SC hoje?", "saiu aviso da Defesa Civil de Santa Catarina?"
+  const DONO = `(?: (?:da|de|do|pela|emitidos? pela|publicados? pela) (?:a )?${DEFESA_CIVIL}| (?:estadual|estaduais|do estado))`
+  const TEMPO = `(?: (?:de|da|do|para|pra|sobre) ${DO_TEMPO})`
+  const comDono = `${AVISO}(?:${TEMPO}?${DONO}|${DONO}${TEMPO}?)${ONDE}`
+  const soDoTempo = `${AVISO}(?: (?:de|da|do|para|pra|sobre) ${DO_TEMPO}| meteorologicos?)${ONDE}`
+  const abertura = '(?:(?:tem|ha|existe|existem|saiu|sairam|teve|rolou|temos|tem algum|tem alguma|tem alguns|ha algum|ha alguma|existe algum|existe alguma|saiu algum|saiu alguma|tem novo|tem nova|ha novo|ha nova)(?: algum| alguma| alguns| algumas| novo| nova| novos| novas)? )?'
+  if (new RegExp(`^${abertura}(?:o |os |a |as |um |uma )?${comDono}$`).test(t)) return dcsc
+  if (new RegExp(`^${abertura}(?:o |os |a |as |um |uma )?${soDoTempo}$`).test(t)) return dcsc
+  if (/^(?:aviso|alerta)s? meteorologicos?$/.test(t)) return dcsc
+  // "qual é o último aviso da Defesa Civil?", "quais são os avisos da Defesa Civil de SC?", "ver os alertas da Defesa Civil"
+  if (new RegExp(`^(?:qual(?: e| foi| sao| eh)?|quais(?: sao| foram)?|ver|veja|mostrar|mostre|mostra|ler|leia|le|listar|liste|me mostra|me mostre|me diga|me diz|quero ver|quero saber)(?: o| os| a| as)?(?: ultimo| ultimos| novo| novos| recentes?)? ${comDono}$`).test(t)) return dcsc
+  if (new RegExp(`^(?:qual(?: e| foi| sao| eh)?|quais(?: sao| foram)?|ver|veja|mostrar|mostre|mostra|ler|leia|le|listar|liste|me mostra|me mostre|me diga|me diz|quero ver|quero saber)(?: o| os| a| as)?(?: ultimo| ultimos| novo| novos| recentes?)? ${soDoTempo}$`).test(t)) return dcsc
+  // "a Defesa Civil emitiu alerta?", "a Defesa Civil avisou algo?", "o que a Defesa Civil está avisando?", "o que diz a Defesa Civil?"
+  if (new RegExp(`^(?:a |o )?${DEFESA_CIVIL} (?:emitiu|avisou|alertou|publicou|soltou|lancou|divulgou|mandou|tem|esta avisando|ta avisando|esta alertando|ta alertando|avisa|alerta|disse|diz|falou)(?: algum| alguma| algo| um| uma| novo| nova| algum novo| alguma nova)?(?: ${AVISO})?(?: (?:de|da|do|sobre) ${DO_TEMPO})?${ONDE}$`).test(t)) return dcsc
+  if (new RegExp(`^o que (?:a |o )?${DEFESA_CIVIL} (?:esta avisando|ta avisando|avisa|avisou|esta alertando|alerta|alertou|diz|disse|esta dizendo|ta dizendo|publicou|fala|falou|esta falando)${ONDE}$|^o que diz (?:a |o )?${DEFESA_CIVIL}${ONDE}$`).test(t)) return dcsc
+  return null
+}
+
+/**
  * 16ª entrega: as ruas pela cota, cidade inteira. O número vem como `normalizar` o deixa: "8,50 m" vira "8 50 m", e
  * "50 cm" é centímetro. Só "quais/que ruas…": "qual a cota da rua X" e "manchas na rua X" continuam onde estavam.
  */
@@ -790,6 +829,8 @@ function lerTrecho(t: string, cat: Catalogo, ctx: Contexto, cidadeDoPedido: stri
     const lido = lerTrecho(t.slice(2), cat, ctx, cidadeDoPedido)
     if (lido) return lido
   }
+  const vigesima = lerTrechoDaVigesima(t)
+  if (vigesima) return vigesima
   const decimaSexta = lerTrechoDaDecimaSexta(t, cat)
   if (decimaSexta) return decimaSexta
   const decimaQuinta = lerTrechoDaDecimaQuinta(t, cat)
