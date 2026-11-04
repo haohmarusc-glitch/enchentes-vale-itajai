@@ -28,6 +28,22 @@ jobs:
           python-version: '3.11'
       - name: Instalar dependências
         run: python3 -m pip install -r scripts/requirements.txt
+      # 1ª rodada (04/11/2026, 23h UTC): "Network is unreachable" no robots.txt. Diagnóstico de rede, só leitura:
+      # que endereços o nome tem (A/AAAA) e se o robots.txt responde por IPv4 e por IPv6.
+      - name: Diagnóstico de rede (DNS, IPv4, IPv6)
+        run: |
+          set +e
+          mkdir -p captura
+          {
+            echo "== getent ahosts"; getent ahosts defesacivil.brusque.sc.gov.br
+            echo "== dig A"; dig +short A defesacivil.brusque.sc.gov.br
+            echo "== dig AAAA"; dig +short AAAA defesacivil.brusque.sc.gov.br
+            echo "== dig CNAME"; dig +short CNAME defesacivil.brusque.sc.gov.br
+            echo "== gaspar (mesma plataforma, alcançável)"; dig +short A defesacivil.gaspar.sc.gov.br
+            echo "== robots.txt por IPv4"; curl -4 -sS -m 30 -o /dev/null -w '%{http_code} %{remote_ip}\n' -A 'enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)' https://defesacivil.brusque.sc.gov.br/robots.txt
+            echo "== robots.txt por IPv6"; curl -6 -sS -m 30 -o /dev/null -w '%{http_code} %{remote_ip}\n' -A 'enchentes-vale-itajai/0.1 (projeto aberto de dados de enchentes; contato via repositorio GitHub)' https://defesacivil.brusque.sc.gov.br/robots.txt
+          } > rede.txt 2>&1
+          cat rede.txt
       - name: Capturar
         run: |
           set +e
@@ -43,7 +59,7 @@ jobs:
         run: |
           set -euo pipefail
           linhas=""
-          for f in captura.txt captura/*; do
+          for f in rede.txt captura.txt captura/*; do
             if [ -f "$f" ]; then
               linhas="$linhas$(printf '100644 blob %s\t%s' "$(git hash-object -w "$f")" "$(basename "$f")")"$'\n'
             fi
