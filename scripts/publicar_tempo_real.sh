@@ -187,6 +187,26 @@ sys.exit(0 if d.get("versao") == 1 and d.get("reguas") and 0 <= idade <= 1800 el
   RIO_DO_SUL_RIOS_ENTRY="$(printf '100644 blob %s\tultimo_rio_do_sul_rios.json' "$BLOB_RIO_DO_SUL_RIOS")"
 fi
 
+# ultimo_avisos_dcsc.json: os avisos e alertas meteorológicos da Defesa Civil de SC, lidos do WordPress do site
+# dela (varredura de 04/11/2026). São por REGIÃO em texto livre: não nomeiam município, não pintam faixa e não
+# disparam aviso de cota — contexto oficial com fonte, hora e link. Mesma regra dos outros arquivos opcionais:
+# UMA consulta, falha apaga o anterior e nunca segura o nível; só sobe o que foi gerado há no máximo 30 min.
+AVISOS_DCSC="$RAIZ/data/tempo-real/ultimo_avisos_dcsc.json"
+if [ "$SECO" -eq 0 ] && [ -f "$RAIZ/scripts/coleta_avisos_dcsc.py" ]; then
+  timeout 60 python3 scripts/coleta_avisos_dcsc.py --publicar \
+    || echo "aviso: avisos da Defesa Civil de SC não coletados; o nível ao vivo segue." >&2
+fi
+AVISOS_DCSC_ENTRY=""
+if [ -f "$AVISOS_DCSC" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("versao") == 1 and isinstance(d.get("avisos"), list) and 0 <= idade <= 1800 else 1)' "$AVISOS_DCSC" 2>/dev/null; then
+  BLOB_AVISOS_DCSC="$(git hash-object -w "$AVISOS_DCSC")"
+  AVISOS_DCSC_ENTRY="$(printf '100644 blob %s\tultimo_avisos_dcsc.json' "$BLOB_AVISOS_DCSC")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
@@ -198,6 +218,7 @@ TREE="$(
     [ -n "$MARE_MEDIDA_ENTRY" ] && printf '%s\n' "$MARE_MEDIDA_ENTRY"
     [ -n "$ITUPORANGA_CENTRO_ENTRY" ] && printf '%s\n' "$ITUPORANGA_CENTRO_ENTRY"
     [ -n "$RIO_DO_SUL_RIOS_ENTRY" ] && printf '%s\n' "$RIO_DO_SUL_RIOS_ENTRY"
+    [ -n "$AVISOS_DCSC_ENTRY" ] && printf '%s\n' "$AVISOS_DCSC_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o
