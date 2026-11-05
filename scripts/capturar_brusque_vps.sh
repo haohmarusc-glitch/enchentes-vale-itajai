@@ -5,10 +5,12 @@
 # de código nem ao runner do GitHub (IPv4 em timeout, IPv6 recusado — rodadas de 04/11/2026 no Actions). A VPS já
 # alcançava o portal de Brusque. Só GET, robots.txt antes de tudo, User-Agent do projeto (as regras moram no .py).
 #
-# Uso, na VPS, como o usuário das coletas (que já tem a chave de publicação do `tempo-real`):
+# Uso, na VPS, como ROOT — o alias `github-enchentes` e a chave de deploy moram no ~/.ssh/config do root, como no
+# deploy.sh e no publicar_tempo_real.sh (como `enchentes`, o fetch falha: "Could not resolve hostname
+# github-enchentes", 04/11/2026):
 #     cd /opt/enchentes-vale-itajai
-#     sudo -u enchentes git fetch -q origin claude/projeto-critico-seguranca-ubkk9l-captura-brusque
-#     sudo -u enchentes git show FETCH_HEAD:scripts/capturar_brusque_vps.sh | sudo -u enchentes bash
+#     git fetch -q origin claude/projeto-critico-seguranca-ubkk9l-captura-brusque
+#     git show FETCH_HEAD:scripts/capturar_brusque_vps.sh | bash
 #
 # Não muda nada no checkout da VPS (o script e a captura ficam em /tmp) e não toca no `tempo-real` nem no main.
 set -euo pipefail
