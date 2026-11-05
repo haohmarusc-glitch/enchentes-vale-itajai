@@ -1,0 +1,3 @@
+rodada na VPS em 2026-11-05T02:34:38Z, host ubuntu-4gb-hel1-2
+132.255.223.229 STREAM srv-web-02.brusque.sc.gov.br
+132.255.223.229 DGRAM  

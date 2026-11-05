@@ -1,0 +1,1 @@
+robots.txt sem resposta (ConnectTimeout: HTTPSConnectionPool(host='defesacivil.brusque.sc.gov.br', port=443): Max retries exceeded with url: /robots.txt (Caused by ConnectTimeoutError(<HTTPSConnection(host='defesacivil.brusque.sc.gov.br', port=443) at 0x7795fa6b0d70>, 'Connection to defesacivil.brusque.sc.gov.br timed out. (connect timeout=10)'))); nada pedido
