@@ -1628,7 +1628,8 @@ class TestObservacaoNasCotas(unittest.TestCase):
         """A ressalva é depois do número, não no lugar dele."""
         r = responder("/cotas Brusque", base(), AGORA)
         self.assertLess(r.index("Atenção: <b>3,00 m</b>"), r.index("Av. Beira-Rio"))
-        self.assertLess(r.index("Emergência: <b>5,00 m</b>"), r.index("Av. Beira-Rio"))
+        self.assertLess(r.index("Alerta: <b>4,51 m</b>"), r.index("Av. Beira-Rio"))
+        self.assertLess(r.index("Emergência: <b>7,51 m</b>"), r.index("Av. Beira-Rio"))
 
     def test_cidade_sem_observacao_nao_ganha_bloco_vazio(self):
         b = base()
@@ -2535,7 +2536,8 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
 
     def test_a_cidade_segue_com_as_cotas_da_dcsc(self):
         c = self.cidade()
-        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+        # 07/11/2026: a escala é a da postagem do município, aplicada à mesma leitura DCSC-00019.
+        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "alerta": 4.51, "emergencia": 7.51})
         self.assertEqual(c["regua"], "Ponte Estaiada – DCSC")
         self.assertEqual(c["regua_das_cotas"], "Ponte Estaiada – DCSC")
 
@@ -2557,8 +2559,8 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertEqual(terceira["alerta"], 5.0)
         self.assertEqual(terceira["emergencia"], 6.0)
         self.assertIn("NÃO adotar", terceira["_regra"])
-        # A cidade não se mexeu: segue com a escala mais baixa das três.
-        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+        # A atenção segue a mais baixa das três; a escala inteira é a da postagem de 07/11/2026.
+        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "alerta": 4.51, "emergencia": 7.51})
 
     def test_o_boletim_de_2023_segue_discriminando_contra_as_TRES(self):
         """Com uma terceira escala na mesa, a pergunta é se a evidência ainda
@@ -2570,16 +2572,19 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         for outra in (div["nao_adotada"], div["nao_adotada_portal_itajai"]):
             self.assertLess(nivel, outra["atencao"])
 
-    def test_o_alerta_de_5_m_colide_com_a_emergencia_do_cadastro(self):
-        """O detalhe que faz desta divergência mais que um número: 5,00 m é
-        ALERTA na escala do portal de Itajaí e EMERGÊNCIA na do cadastro. O
-        mesmo número com dois nomes é pior que dois números diferentes."""
+    def test_5_m_deixou_de_ter_dois_nomes(self):
+        """Até 07/11/2026, 5,00 m era ALERTA no portal de Itajaí e EMERGÊNCIA no
+        cadastro — o mesmo número com dois nomes. Com a escala da postagem do
+        município (alerta de 4,51 a 7,50 m), 5,00 m é alerta nas duas, que é
+        como a Defesa Civil de Brusque chamou 5,26 m naquele dia."""
         c = self.cidade()
-        self.assertEqual(c["cotas_divergencia"]["nao_adotada_portal_itajai"]["alerta"],
-                         c["cotas_m"]["emergencia"])
-        # E o cadastro afirma que faixa de alerta não existe nesta fonte.
-        self.assertNotIn("alerta", c["cotas_m"])
-        self.assertIn("Não há faixa de alerta", c["fonte_cotas"])
+        cotas = c["cotas_m"]
+        self.assertEqual(c["cotas_divergencia"]["nao_adotada_portal_itajai"]["alerta"], 5.0)
+        self.assertLessEqual(cotas["alerta"], 5.0)
+        self.assertLess(5.0, cotas["emergencia"])
+        # A escala antiga, sem alerta, fica registrada com o motivo da troca.
+        self.assertEqual(c["cotas_substituidas_em_2026_11_07"]["_o_que_saiu"], {"atencao": 3.0, "emergencia": 5.0})
+        self.assertIn("Não há faixa de alerta", c["fonte_cotas_anterior"])
 
     def test_a_evidencia_que_discrimina_esta_registrada_e_nao_fecha(self):
         """30/10/2023: 3,18 m chamado de 'atenção'. Entre as duas atenções (3,00

@@ -1175,7 +1175,8 @@ class TestaCotasDeBrusque(unittest.TestCase):
         cls.brusque = _cidade(cls.real, "itajai-mirim", "brusque")
 
     def test_a_escala_e_a_do_municipio(self):
-        self.assertEqual(self.brusque["cotas_m"], {"atencao": 3.0, "emergencia": 5.0})
+        # Escala da postagem da Defesa Civil de Brusque, adotada pelo Jefferson em 07/11/2026.
+        self.assertEqual(self.brusque["cotas_m"], {"atencao": 3.0, "alerta": 4.51, "emergencia": 7.51})
 
     def test_os_4_80_nao_voltam_como_faixa(self):
         """Podem voltar como anotação; como degrau de aviso, não."""
@@ -1192,7 +1193,10 @@ class TestaCotasDeBrusque(unittest.TestCase):
         self.assertIn("PAR PROVADO", self.brusque["regua_das_cotas_fonte"])
 
     def test_a_fonte_da_escala_aponta_para_a_pagina_do_municipio(self):
-        self.assertIn("defesacivil.brusque.sc.gov.br", self.brusque["fonte_cotas"])
+        # Desde 07/11/2026 a fonte é a postagem do município; a legenda do portal fica em fonte_cotas_anterior.
+        self.assertIn("Defesa Civil de Brusque", self.brusque["fonte_cotas"])
+        self.assertIn("4,51 m Á 7,50 m", self.brusque["fonte_cotas"])
+        self.assertIn("defesacivil.brusque.sc.gov.br", self.brusque["fonte_cotas_anterior"])
 
     def test_o_que_saiu_fica_registrado_com_o_motivo(self):
         # Trocar cota de segurança sem deixar o rastro do que havia antes é
