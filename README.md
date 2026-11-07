@@ -480,6 +480,23 @@ o projeto.
 
 ## Pendências
 
+- [x] **🔴 Rio do Sul: o painel da Asthon publicou 3,27 m "de agora" com o rio a ~7,5 m (04–07/11/2026).** A Ponte Dom Tito
+  Buss (`f6360951`, a régua das cotas) não mediu de 04/11 08:26 a 07/11 12:16 (Brasília) — a lacuna está no
+  `station-history` —, mas o painel repetiu o último valor com `last_reading_at` novo, e o site mostrou a cidade fresca e
+  NORMAL durante a cheia (a VPS ficou fora de 05/11 08:31 até o pagamento da Hetzner, o que encurtou a exposição). Em 07/11
+  a estação voltou, mas saiu do painel, e no lugar entrou o espelho estadual `d2f60af1` (`owner_id: DCSC`, ~0,2 m de outro
+  zero). `coleta_asthon.py` passa a ler Rio do Sul e Vidal Ramos pelo histórico do MESMO station_id, com a hora de cada
+  medição; sem ponto em 3 h, fica sem leitura. Testes em `teste_coleta_asthon.py`.
+  - [ ] `coleta_riodosul_rios.py` (arquivo próprio, fora da tela) ainda lê o painel: se um dia for para a tela, passar pelo
+    histórico também.
+- [ ] **Gaspar parada desde 13/10/2026 08:06 na fonte.** A estação 21 da Defesa Civil de Gaspar segue mostrando 1,53 m
+  daquela hora (o Actions lê a página normalmente e avisa "leitura velha"). Não é coleta: Gaspar fica cinza até o município
+  religar a estação.
+- [ ] **Indaial sem régua municipal na publicação (07/11/2026).** A planilha não entrou na coleta da VPS e a DCSC-00006 está
+  sem valor desde 26/09. Conferir na VPS: `grep -i indaial /var/log/niveis.log | tail`.
+- [ ] **Ilhota DCSC-00030 em 10,81 m em 05/11 e em 07/11.** Valor igual com dois dias de cheia no meio: sensor possivelmente
+  travado. Sem faixa da DCSC, não pinta; não usar o número em análise sem conferir.
+
 - [x] **Mirim: Brusque pintava até o pino de Itajaí (04/11/2026, decisão do Jefferson).** A régua de Brusque colorira 44,9 km,
   por cima da DC-10 (Limoeiro, régua de Itajaí fora da maré, 11,3 km abaixo). Agora as réguas de Itajaí no traçado do Mirim
   (DC-10 → DC-05 → DC-06 → DC-04 → foz) pintam cada uma até a próxima rio abaixo, com a decisão do pino de cada uma; Brusque

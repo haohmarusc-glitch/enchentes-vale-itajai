@@ -93,5 +93,68 @@ class TestParse(unittest.TestCase):
         self.assertEqual(len(parse([VIDAL])), 1)
 
 
+COD_TITO = "f6360951-219f-4859-935f-b2e2d13962f1"
+COD_VIDAL = "bd65df3e-a5e3-4760-a879-56df0fb90787"
+
+
+def historico(codigo, pontos, datum="gauge_zero"):
+    return {"station_id": codigo, "level_datum": datum,
+            "level": [{"timestamp": t, "value": v} for t, v in pontos]}
+
+
+class TestHistorico(unittest.TestCase):
+    """O nível vem do station-history (07/11/2026): o painel mentiu a idade por três dias."""
+
+    def test_usa_o_ponto_mais_recente_com_a_hora_da_medicao(self):
+        from coleta_asthon import ultimo_do_historico
+        corpo = historico(COD_TITO, [
+            ("2026-11-07T15:37:43.317454Z", 7.552136695421368),
+            ("2026-11-07T15:16:27.317575Z", 7.49905109489051),
+        ])
+        self.assertEqual(ultimo_do_historico(corpo, COD_TITO),
+                         {"nivel_m": 7.55, "medido_em": "2026-11-07T12:37:43"})
+
+    def test_valor_parado_do_painel_nao_vira_leitura_de_agora(self):
+        """
+        O caso de 05/11/2026: o painel dizia 3,27 m "agora", mas o último ponto
+        do histórico era de 04/11 08:26. A leitura sai com a hora verdadeira, e
+        a tela a julga velha.
+        """
+        from coleta_asthon import ultimo_do_historico
+        corpo = historico(COD_TITO, [("2026-11-04T11:26:25.808061Z", 3.269444798978941)])
+        self.assertEqual(ultimo_do_historico(corpo, COD_TITO)["medido_em"], "2026-11-04T08:26:25")
+
+    def test_outra_estacao_outro_datum_ou_vazio_nao_entram(self):
+        from coleta_asthon import ultimo_do_historico
+        ponto = [("2026-11-07T15:30:00Z", 7.81)]
+        self.assertIsNone(ultimo_do_historico(historico("d2f60af1-53e3-497f-81d6-c6498d28f5a2", ponto), COD_TITO))
+        self.assertIsNone(ultimo_do_historico(historico(COD_TITO, ponto, datum="absolute"), COD_TITO))
+        self.assertIsNone(ultimo_do_historico(historico(COD_TITO, []), COD_TITO))
+        self.assertIsNone(ultimo_do_historico([], COD_TITO))
+
+    def test_ultimo_ponto_implausivel_nao_cai_no_anterior(self):
+        from coleta_asthon import ultimo_do_historico
+        corpo = historico(COD_TITO, [("2026-11-07T15:00:00Z", 7.4), ("2026-11-07T15:10:00Z", 0.0)])
+        self.assertIsNone(ultimo_do_historico(corpo, COD_TITO))
+
+    def test_coletar_segue_com_uma_regua_quando_a_outra_falha(self):
+        from coleta_asthon import coletar
+
+        def falso(codigo):
+            if codigo == COD_VIDAL:
+                raise ConnectionError("timeout")
+            return historico(codigo, [("2026-11-07T15:30:00Z", 7.5)])
+
+        leituras = coletar(baixar_hist=falso)
+        self.assertEqual([(l["cidade"], l["nivel_m"], l["medido_em"]) for l in leituras],
+                         [("rio-do-sul", 7.5, "2026-11-07T12:30:00")])
+        self.assertEqual(leituras[0]["estacao"], "Rio do Sul, Ponte Dom Tito Buss (Asthon)")
+
+    def test_espelho_estadual_nunca_entra_na_lista(self):
+        """d2f60af1 (owner DCSC) ocupou o lugar no painel em 07/11; é outra régua."""
+        from coleta_asthon import POR_ESTACAO
+        self.assertNotIn("d2f60af1-53e3-497f-81d6-c6498d28f5a2", POR_ESTACAO)
+
+
 if __name__ == "__main__":
     unittest.main()
