@@ -111,6 +111,24 @@ class Publicar(unittest.TestCase):
         self.assertIn("_fields=id,date,date_gmt,link,title,content,categories", ca.URL)
         self.assertTrue(ca.URL.startswith("https://www.defesacivil.sc.gov.br/wp-json/wp/v2/posts"))
 
+    def test_cabe_no_corte_de_60_s_da_publicacao(self):
+        """publicar_tempo_real.sh mata o coletor em 60 s: tentativas × espera tem de caber, com folga."""
+        corte = 60
+        sh = (Path(__file__).parent / "publicar_tempo_real.sh").read_text(encoding="utf-8")
+        self.assertIn(f"timeout {corte} python3 scripts/coleta_avisos_dcsc.py", sh)
+        self.assertLessEqual(ca.TENTATIVAS * ca.TIMEOUT_S, corte - 5)
+
+    def test_buscar_usa_uma_tentativa_e_o_timeout_proprio(self):
+        pedidos = []
+
+        def falso(url, *, tentativas, timeout):
+            pedidos.append((tentativas, timeout))
+            return "[]"
+
+        with mock.patch.object(ca, "baixar", falso):
+            self.assertEqual(ca.buscar(), [])
+        self.assertEqual(pedidos, [(ca.TENTATIVAS, ca.TIMEOUT_S)])
+
 
 if __name__ == "__main__":
     unittest.main()

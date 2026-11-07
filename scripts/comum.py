@@ -116,6 +116,7 @@ def baixar(
     tentativas: int = HTTP_TENTATIVAS,
     dormir=time.sleep,
     transporte=None,
+    timeout: float = HTTP_TIMEOUT_S,
 ) -> str:
     """
     Baixa a página, insistindo quando vale a pena.
@@ -147,7 +148,7 @@ def baixar(
 
     for tentativa in range(1, tentativas + 1):
         try:
-            resposta = transporte(url, cabecalhos, HTTP_TIMEOUT_S)
+            resposta = transporte(url, cabecalhos, timeout)
             if resposta.status_code == 429:
                 pedido = resposta.headers.get("Retry-After") if resposta.headers else None
                 try:
