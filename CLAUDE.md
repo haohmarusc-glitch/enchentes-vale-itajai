@@ -303,7 +303,7 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
     - A faixa estadual válida aparece como "faixa estadual".
     - Sem ela, fica cinza: falta de cota municipal não é nível normal.
     - Nada compara o nível com as cotas não confirmadas (frase, medidor e quadro de cota).
-  - **Brusque:** escala da postagem da Defesa Civil de Brusque desde 07/11/2026 (decisão do Jefferson): atenção 3,00, alerta 4,51 a 7,50, emergência acima de 7,50 (`cotas_m` 3,00/4,51/7,51). A leitura segue a DCSC-00019, que em cheia fica ~0,3 m abaixo do número do município; a régua oficial segue em aberto.
+  - **Brusque:** escala da postagem da Defesa Civil de Brusque desde 07/11/2026 (decisão do Jefferson): atenção 3,10 a 4,50, alerta 4,51 a 7,50, emergência acima de 7,50 (`cotas_m` 3,10/4,51/7,51). A leitura segue a DCSC-00019, que em cheia fica ~0,2–0,3 m abaixo do número do município; a régua oficial segue em aberto.
 - **A municipal só segura a estadual com cotas confirmadas** (`segura_estadual`). No motor a origem continua
   `estadual`/"faixa estadual"; **na tela** (chip do painel, cartão, legendas, chat) o rótulo é **"Classificação
   estadual nesta estação"**, com a fonte no painel (Defesa Civil de SC, monitoramento.defesacivil.sc.gov.br, campo

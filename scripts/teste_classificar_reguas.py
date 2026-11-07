@@ -85,14 +85,14 @@ class TesteGabaritoCompartilhadoComOSite(unittest.TestCase):
 
 
 class TesteFaixasMunicipais(unittest.TestCase):
-    """Brusque: atenção 3,00 · alerta 4,51 · emergência acima de 7,50 (postagem da Defesa Civil, 07/11/2026)."""
+    """Brusque: atenção 3,10 · alerta 4,51 · emergência acima de 7,50 (postagem da Defesa Civil, 07/11/2026)."""
 
     def faixa(self, nivel):
         return cr.classificar_municipal(brusque(), [leitura(nivel)], AGORA)["faixa"]
 
     def test_limites(self):
-        self.assertEqual(self.faixa(2.99), "normal")
-        self.assertEqual(self.faixa(3.0), "atencao")
+        self.assertEqual(self.faixa(3.09), "normal")
+        self.assertEqual(self.faixa(3.1), "atencao")
         self.assertEqual(self.faixa(4.5), "atencao")
         self.assertEqual(self.faixa(4.51), "alerta")
         # 5,00 m era emergência na escala antiga (estação 79); a Defesa Civil chama 5,26 m de alerta.

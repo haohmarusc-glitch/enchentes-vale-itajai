@@ -1627,7 +1627,7 @@ class TestObservacaoNasCotas(unittest.TestCase):
     def test_os_numeros_continuam_vindo_primeiro(self):
         """A ressalva é depois do número, não no lugar dele."""
         r = responder("/cotas Brusque", base(), AGORA)
-        self.assertLess(r.index("Atenção: <b>3,00 m</b>"), r.index("Av. Beira-Rio"))
+        self.assertLess(r.index("Atenção: <b>3,10 m</b>"), r.index("Av. Beira-Rio"))
         self.assertLess(r.index("Alerta: <b>4,51 m</b>"), r.index("Av. Beira-Rio"))
         self.assertLess(r.index("Emergência: <b>7,51 m</b>"), r.index("Av. Beira-Rio"))
 
@@ -2537,13 +2537,13 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
     def test_a_cidade_segue_com_as_cotas_da_dcsc(self):
         c = self.cidade()
         # 07/11/2026: a escala é a da postagem do município, aplicada à mesma leitura DCSC-00019.
-        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "alerta": 4.51, "emergencia": 7.51})
+        self.assertEqual(c["cotas_m"], {"atencao": 3.1, "alerta": 4.51, "emergencia": 7.51})
         self.assertEqual(c["regua"], "Ponte Estaiada – DCSC")
         self.assertEqual(c["regua_das_cotas"], "Ponte Estaiada – DCSC")
 
     def test_o_par_da_ana_esta_registrado_e_nao_adotado(self):
         div = self.cidade()["cotas_divergencia"]
-        self.assertEqual(div["adotada"]["atencao"], 3.0)
+        self.assertEqual(div["adotada"]["atencao"], 3.1)
         self.assertEqual(div["nao_adotada"]["atencao"], 4.0)
         self.assertEqual(div["nao_adotada"]["emergencia"], 7.0)
         self.assertIn("NÃO aplicar", div["nao_adotada"]["_regra"])
@@ -2559,8 +2559,8 @@ class TestDivergenciaDeBrusque(unittest.TestCase):
         self.assertEqual(terceira["alerta"], 5.0)
         self.assertEqual(terceira["emergencia"], 6.0)
         self.assertIn("NÃO adotar", terceira["_regra"])
-        # A atenção segue a mais baixa das três; a escala inteira é a da postagem de 07/11/2026.
-        self.assertEqual(c["cotas_m"], {"atencao": 3.0, "alerta": 4.51, "emergencia": 7.51})
+        # A escala inteira é a das postagens de 07/11/2026 (atenção 3,10 a 4,50; alerta 4,51 a 7,50).
+        self.assertEqual(c["cotas_m"], {"atencao": 3.1, "alerta": 4.51, "emergencia": 7.51})
 
     def test_o_boletim_de_2023_segue_discriminando_contra_as_TRES(self):
         """Com uma terceira escala na mesa, a pergunta é se a evidência ainda

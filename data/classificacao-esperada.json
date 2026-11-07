@@ -1,14 +1,14 @@
 {
  "_meta": {
   "o_que_e": "Gabarito da classificação estadual × municipal (PR 1, 07/10/2026). scripts/teste_classificar_reguas.py exige que o motor Python dê `esperado`; web/src/logica/classificacaoParidade.test.ts exige que o site de hoje dê `site`. Sem `diverge_do_site`, o que o site pinta tem de ser o `esperado.aplicada`.",
-  "cidade_piloto": "brusque, blumenau e rio-dos-cedros — cotas_m lidas do estacoes.json real (Brusque 3,00/4,51/7,51 desde 07/11/2026; Blumenau 3/4/6/8; Rio dos Cedros 4,80/5,30/5,70, não confirmadas); mudar as cotas exige rever este arquivo",
+  "cidade_piloto": "brusque, blumenau e rio-dos-cedros — cotas_m lidas do estacoes.json real (Brusque 3,10/4,51/7,51 desde 07/11/2026; Blumenau 3/4/6/8; Rio dos Cedros 4,80/5,30/5,70, não confirmadas); mudar as cotas exige rever este arquivo",
   "agora": "agora_brasilia é hora de Brasília sem fuso, como medido_em",
   "como_mudar": "Esperado revisto é decisão documentada, nunca ajuste para o teste passar."
  },
  "casos": [
   {
    "id": "abaixo-da-atencao",
-   "descricao": "2,29 m de agora, abaixo da atenção (3,00): normal pela municipal; a estadual existe mas não pinta",
+   "descricao": "2,29 m de agora, abaixo da atenção (3,10): normal pela municipal; a estadual existe mas não pinta",
    "agora_brasilia": "2026-10-07T13:05:00",
    "cidade": "brusque",
    "leituras": [
@@ -76,11 +76,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -126,7 +126,7 @@
   },
   {
    "id": "exatamente-na-atencao",
-   "descricao": "3,00 m é atenção: a cota alcançada usa >=, como o site",
+   "descricao": "3,10 m é atenção: a cota alcançada usa >=, como o site (revisto em 07/11/2026: a postagem da Defesa Civil de Brusque põe a atenção em 3,10 m)",
    "agora_brasilia": "2026-10-07T13:05:00",
    "cidade": "brusque",
    "leituras": [
@@ -134,7 +134,7 @@
      "estacao": "Brusque — Ponte Estaiada (DCSC-00019)",
      "cidade": "brusque",
      "rio": "itajai-mirim",
-     "nivel_m": 3.0,
+     "nivel_m": 3.1,
      "origem": "estadual",
      "usar_para_cota": true,
      "fonte": "Rede estadual (DCSC-00019)",
@@ -194,15 +194,15 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
-        "nivel_m": 3.0,
+        "nivel_m": 3.1,
         "medido_em": "2026-10-07T13:00:00",
         "idade_min": 5,
         "status_leitura": "valida",
@@ -312,11 +312,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -430,11 +430,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -548,11 +548,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -666,11 +666,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -784,11 +784,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -902,11 +902,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -1020,11 +1020,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -1138,11 +1138,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -1256,11 +1256,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -1362,11 +1362,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
@@ -1467,11 +1467,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
@@ -1572,11 +1572,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
@@ -1689,11 +1689,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -1806,11 +1806,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "DCSC-00019",
@@ -1924,11 +1924,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
@@ -2051,11 +2051,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": null,
@@ -2167,11 +2167,11 @@
         "regua_id": "DCSC-00019",
         "regua_nome": "Ponte Estaiada – DCSC",
         "cotas_m": {
-         "atencao": 3.0,
+         "atencao": 3.1,
          "alerta": 4.51,
          "emergencia": 7.51
         },
-        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\"), 05/11/2026 (6,20 m às 19:45) e 07/11/2026 (5,26 m às 16:30): \"Situação — NÍVEL DE ALERTA: 4,51 m Á 7,50 m\". Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"). Atenção continua em 3,00 m (legenda da estação 79, 07/09/2026, e boletim de 30/10/2023 chamando 3,18 m de atenção); alerta a partir de 4,51 m; emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51 (\"acima de 4,50\"). Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
+        "fonte_faixas": "Postagens da Defesa Civil de Brusque (Instagram @defesacivilbrusque, \"Cota atual do Rio Itajaí-Mirim\") de 07/11/2026: 4,45 m às 14:30, \"Situação — NÍVEL DE ATENÇÃO: até 3,10m à 4,50m\"; 5,26 m às 16:30, \"NÍVEL DE ALERTA: 4,51m Á 7,50m\" (a mesma faixa de alerta já aparecia na de 05/11, 6,20 m às 19:45). Adotada por decisão do Jefferson em 07/11/2026 (\"Adote a escala da postagem\"): atenção a partir de 3,10 m, alerta a partir de 4,51 m, emergência ACIMA de 7,50 m, gravada como 7,51 m pela mesma convenção do 4,51. O \"até 3,10m à 4,50m\" foi lido como a faixa de 3,10 a 4,50 m, como \"4,51 a 7,50\" é a do alerta. Prints na conversa de 07/11/2026; o arquivo bruto do Instagram não está no repositório.",
         "fonte_regua": "A DCSC-00019 é a régua das cotas: par provado em 07/09/2026 e reconfirmado com 1.287 pares em 03/10/2026 (`regua_das_cotas_fonte`, docs/BRUSQUE-DCSC-00019.md); a mesma estação está em REGUAS_COM_COTA_PROPRIA (scripts/coleta_estadual_com_cota.py).",
         "status_faixas": "confirmada",
         "regua_da_leitura": "Brusque",
