@@ -24,6 +24,10 @@ As demais estações da API são barragem (reservatório, escala do barramento),
 altitude ou a cota de Rio do Sul copiada para outra régua; `analisar_asthon.py`
 mostra por quê.
 
+Desde 07/11/2026 o nível das duas vem do **histórico da própria estação**
+(`station-history`, mesmo station_id), não do painel: o painel publicou um valor
+parado com carimbo de agora por três dias (ver `baixar_historico`).
+
 Dois cuidados que impedem número certo respondendo pergunta errada:
 
 * **Carimbo em UTC.** A Asthon publica `last_reading_at` com `Z` (UTC). O projeto
@@ -42,7 +46,7 @@ Uso:
 from __future__ import annotations
 
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 from comum import USER_AGENT, nivel_plausivel
@@ -130,15 +134,106 @@ def baixar(url: str = URL_PAINEL) -> dict:
     return r.json()
 
 
-def coletar() -> list[dict]:
-    dados = baixar()
-    estacoes = dados.get('stations', []) if isinstance(dados, dict) else dados
-    presentes = {e.get('station_id') for e in estacoes or [] if isinstance(e, dict)}
-    for codigo, (_, cidade) in POR_ESTACAO.items():
-        if codigo not in presentes:
-            print(f"aviso: Asthon respondeu, mas não incluiu {TITULO[cidade]} "
-                  f"(station_id={codigo}) no painel; não substituir por outra régua.", file=sys.stderr)
-    return parse(dados)
+# --- Histórico da estação: a hora REAL da medição (07/11/2026) ----------------
+#
+# O painel mentiu a idade. De 04/11 08:26 a 07/11 12:16 (Brasília) a Ponte Dom
+# Tito Buss (f6360951) não mediu nada — o `station-history` mostra a lacuna —,
+# mas o painel seguiu publicando o último valor, 3,27 m, com `last_reading_at`
+# de agora. Em 05/11, com o rio a ~7,5 m na mesma ponte (espelho estadual
+# d2f60af1, `owner_id: DCSC`), o site mostrou Rio do Sul fresco e NORMAL. Em
+# 07/11 a estação voltou a medir, mas o painel a tirou da lista e pôs no lugar
+# o espelho estadual — outra régua (~0,2 m de zero), que não é a das cotas.
+#
+# Por isso o nível destas duas réguas vem do histórico, pelo MESMO station_id:
+# cada ponto traz o carimbo da medição. Sem ponto nas últimas horas, não há
+# leitura — e a tela fica cinza, que é o certo para estação parada. O painel
+# não é mais lido para o nível delas.
+
+URL_HISTORICO = f"{BASE}station-history"
+#: Janela pedida ao histórico. Leitura com mais de 3 h já é "velha" na tela.
+JANELA_HISTORICO_H = 3
+#: O histórico destas réguas declara o nível no zero da régua. Outro datum
+#: (altitude, absoluto) seria outra grandeza: não entra.
+DATUM_ESPERADO = "gauge_zero"
+
+
+def ultimo_do_historico(corpo, codigo: str) -> dict | None:
+    """O ponto mais recente do `station-history`, com o carimbo da medição.
+
+    Devolve `{"nivel_m", "medido_em"}` (Brasília, sem fuso) ou None quando a
+    resposta é de outra estação, tem outro datum, não tem ponto válido ou o
+    último ponto é implausível (0,0 de sensor parado, altitude).
+    """
+    if not isinstance(corpo, dict):
+        return None
+    if corpo.get("station_id") not in (None, codigo):
+        return None
+    if corpo.get("level_datum") != DATUM_ESPERADO:
+        return None
+    pontos = []
+    for p in corpo.get("level") or []:
+        if not isinstance(p, dict) or not isinstance(p.get("timestamp"), str):
+            continue
+        try:
+            quando = datetime.fromisoformat(p["timestamp"].replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if quando.tzinfo is None:
+            continue
+        pontos.append((quando, p.get("value")))
+    if not pontos:
+        return None
+    quando, valor = max(pontos, key=lambda x: x[0])
+    # O último ponto manda: se ele é implausível, a régua está com problema
+    # agora, e um ponto anterior apresentado como atual mentiria a idade.
+    if not isinstance(valor, (int, float)) or isinstance(valor, bool) or not nivel_plausivel(valor):
+        return None
+    return {
+        "nivel_m": round(float(valor), 2),
+        "medido_em": quando.astimezone(FUSO_BRASILIA).replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+
+
+def baixar_historico(codigo: str, agora: datetime | None = None) -> dict:
+    import requests
+
+    from comum import espera_turno
+
+    fim = agora or datetime.now(timezone.utc)
+    ini = fim - timedelta(hours=JANELA_HISTORICO_H)
+    espera_turno()
+    r = requests.get(
+        URL_HISTORICO,
+        params={
+            "station_id": codigo,
+            "start": ini.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+            "end": fim.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+            "fields": "level",
+            "resolution": "raw",
+        },
+        headers={"User-Agent": USER_AGENT},
+        timeout=20,
+    )
+    r.raise_for_status()
+    return r.json()
+
+
+def coletar(baixar_hist=baixar_historico) -> list[dict]:
+    """Uma leitura por régua da lista fechada, do histórico da própria estação."""
+    leituras = []
+    for codigo, (rio, cidade) in POR_ESTACAO.items():
+        try:
+            ultimo = ultimo_do_historico(baixar_hist(codigo), codigo)
+        except Exception as e:  # rede, HTTP, JSON: esta régua fica sem leitura, a outra segue
+            print(f"aviso: histórico Asthon de {TITULO[cidade]} não veio ({e}).", file=sys.stderr)
+            continue
+        if ultimo is None:
+            print(f"aviso: {TITULO[cidade]} (station_id={codigo}) sem medição válida nas últimas "
+                  f"{JANELA_HISTORICO_H} h no histórico da Asthon; fica sem leitura, sem trocar de régua.",
+                  file=sys.stderr)
+            continue
+        leituras.append({"estacao": TITULO.get(cidade, cidade), "rio": rio, "cidade": cidade, **ultimo})
+    return leituras
 
 
 def main() -> int:
