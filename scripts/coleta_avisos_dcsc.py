@@ -143,8 +143,15 @@ def converter(posts: list[dict]) -> list[dict]:
     return avisos
 
 
+#: UMA tentativa de até 50 s. A publicação corta este coletor em 60 s (`timeout 60` em publicar_tempo_real.sh);
+#: com o padrão de três tentativas de 30 s mais as pausas (~96 s), uma resposta lenta nunca chegava à
+#: segunda tentativa: o coletor era morto calado e o arquivo não subia (07/11/2026, na VPS, durante a cheia).
+TENTATIVAS = 1
+TIMEOUT_S = 50
+
+
 def buscar() -> list[dict]:
-    dados = json.loads(baixar(URL))
+    dados = json.loads(baixar(URL, tentativas=TENTATIVAS, timeout=TIMEOUT_S))
     if not isinstance(dados, list):
         raise ValueError(f"resposta não é lista de posts: {str(dados)[:120]}")
     return dados

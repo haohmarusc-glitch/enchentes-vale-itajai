@@ -496,8 +496,15 @@ o projeto.
   religar a estação.
 - [ ] **Indaial sem régua municipal na publicação (07/11/2026).** A planilha não entrou na coleta da VPS e a DCSC-00006 está
   sem valor desde 26/09. Conferir na VPS: `grep -i indaial /var/log/niveis.log | tail`.
-- [ ] **Ilhota DCSC-00030 em 10,81 m em 05/11 e em 07/11.** Valor igual com dois dias de cheia no meio: sensor possivelmente
-  travado. Sem faixa da DCSC, não pinta; não usar o número em análise sem conferir.
+- [x] **Ilhota DCSC-00030 em 10,81 m em 05/11 e às 12:31 de 07/11** — parecia travada, mas às 18:46 de 07/11 marcou 11,70 m:
+  o sensor responde. Continua sem pintar porque a DCSC não configurou faixas para ela e a régua das cotas do PLANCON (Ponte
+  Cláudio Jeremias Cadorin) não tem leitura ao vivo nem equivalência provada com a estadual.
+- [ ] **Lontras DCSC-00032 publica 21474836 m (07/11/2026 18:46).** Valor-sentinela de sensor em falha (2³¹/100); o coletor o
+  recusa como suspeito (> 30 m) e Lontras fica cinza até a Defesa Civil de SC corrigir a estação.
+- [x] **Avisos da Defesa Civil de SC morriam calados na publicação (07/11/2026).** `coleta_avisos_dcsc.py` usava as três
+  tentativas de 30 s do `comum.baixar`, e `publicar_tempo_real.sh` o corta em 60 s: com o site lento, nenhuma tentativa
+  terminava. Agora é uma tentativa de até 50 s (`TENTATIVAS`/`TIMEOUT_S`, teste trava o encaixe nos 60 s); `comum.baixar`
+  ganhou `timeout=` opcional, sem mudar o padrão das outras fontes.
 
 - [x] **Mirim: Brusque pintava até o pino de Itajaí (04/11/2026, decisão do Jefferson).** A régua de Brusque colorira 44,9 km,
   por cima da DC-10 (Limoeiro, régua de Itajaí fora da maré, 11,3 km abaixo). Agora as réguas de Itajaí no traçado do Mirim
