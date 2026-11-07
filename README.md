@@ -480,8 +480,8 @@ o projeto.
 
 ## Pendências
 
-- [x] **Brusque: escala da postagem da Defesa Civil adotada (07/11/2026, decisão do Jefferson).** Com a DCSC-00019 em 5,00 m o site pintava EMERGÊNCIA (legenda da estação 79: 3,00/5,00, sem alerta) enquanto o município publicava 5,26 m em **NÍVEL DE ALERTA: 4,51 a 7,50 m**. `cotas_m` passa a 3,00/4,51/7,51; a escala antiga fica em `cotas_substituidas_em_2026_11_07` e a fonte anterior em `fonte_cotas_anterior`. Gabarito da classificação revisto (casos de alerta novos; emergência a 7,51 e 8,60 m) e testes do bot e do validador atualizados.
-  - [ ] **Número de Brusque × DCSC-00019 em cheia:** 0 m a 1,27 m, +0,26 m a 5,0 m, +0,28 m a ~6 m, +0,33 m a ~9 m. A faixa do site pode virar depois da do município. Fecha lendo a régua oficial (o portal de Brusque não responde de fora do Brasil).
+- [x] **Brusque: escala da postagem da Defesa Civil adotada (07/11/2026, decisão do Jefferson).** Com a DCSC-00019 em 5,00 m o site pintava EMERGÊNCIA (legenda da estação 79: 3,00/5,00, sem alerta) enquanto o município publicava 5,26 m em **NÍVEL DE ALERTA: 4,51 a 7,50 m**. outra postagem do mesmo dia (4,45 m às 14:30) traz "NÍVEL DE ATENÇÃO: até 3,10m à 4,50m". `cotas_m` passa a 3,10/4,51/7,51; a escala antiga fica em `cotas_substituidas_em_2026_11_07` e a fonte anterior em `fonte_cotas_anterior`. Gabarito da classificação revisto (casos de alerta novos; emergência a 7,51 e 8,60 m) e testes do bot e do validador atualizados.
+  - [ ] **Número de Brusque × DCSC-00019 em cheia:** 0 m a 1,27 m, +0,19 a +0,26 m entre 4,2 e 5,0 m (quatro pares de 07/11), +0,28 m a ~6 m, +0,33 m a ~9 m. A faixa do site pode virar depois da do município. Fecha lendo a régua oficial (o portal de Brusque não responde de fora do Brasil).
 - [x] **🔴 Rio do Sul: o painel da Asthon publicou 3,27 m "de agora" com o rio a ~7,5 m (04–07/11/2026).** A Ponte Dom Tito
   Buss (`f6360951`, a régua das cotas) não mediu de 04/11 08:26 a 07/11 12:16 (Brasília) — a lacuna está no
   `station-history` —, mas o painel repetiu o último valor com `last_reading_at` novo, e o site mostrou a cidade fresca e
