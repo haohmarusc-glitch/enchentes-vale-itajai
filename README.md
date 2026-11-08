@@ -480,6 +480,11 @@ o projeto.
 
 ## Pendências
 
+- [x] **Avisos da Defesa Civil de SC pelo GitHub Actions (08/11/2026).** A VPS nem conecta a `www.defesacivil.sc.gov.br`
+  (`ConnectTimeoutError`, 07/11). `scripts/avisos_dcsc_actions.py` + `.github/workflows/coletar-avisos-dcsc.yml` leem o
+  `wp-json` a cada 30 min (robots antes) e publicam no branch `coleta-avisos-dcsc`; `coleta_avisos_dcsc.py --publicar`
+  tenta o site e, recusado, usa o publicado (até 3 h), com `via.coletor = "github-actions"`. Mesmo caminho de Gaspar
+  e Ituporanga.
 - [x] **Medidor de descida — conferência da JICA (08/11/2026).** `scripts/medir_descida.py` mede cada ponto da Tabela 7.5.1
   a partir do pico de Rio do Sul, régua por régua até Santa Regina (DC-11), com cinco métodos, IC90 por bootstrap e maré
   tirada por análise harmônica. Relatório em `docs/DESCIDA-MEDIDA.md`. Resultado com as cheias de jul–nov/2026:

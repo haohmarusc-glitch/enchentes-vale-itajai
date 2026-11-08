@@ -143,11 +143,12 @@ def converter(posts: list[dict]) -> list[dict]:
     return avisos
 
 
-#: UMA tentativa de até 50 s. A publicação corta este coletor em 60 s (`timeout 60` em publicar_tempo_real.sh);
-#: com o padrão de três tentativas de 30 s mais as pausas (~96 s), uma resposta lenta nunca chegava à
-#: segunda tentativa: o coletor era morto calado e o arquivo não subia (07/11/2026, na VPS, durante a cheia).
+#: UMA tentativa, (conectar, ler) em segundos. A publicação corta este coletor em 60 s (`timeout 60` em
+#: publicar_tempo_real.sh), e o tempo tem de caber nos DOIS caminhos: o site e, se ele recusar, o publicado pelo
+#: Actions (`avisos_dcsc_actions.TIMEOUT_PUBLICADO_S`). Histórico: três tentativas de 30 s (~96 s) nunca chegavam à
+#: segunda; uma de 50 s esbarrou em `ConnectTimeoutError` — a VPS nem conecta ao site (07/11/2026, na cheia).
 TENTATIVAS = 1
-TIMEOUT_S = 50
+TIMEOUT_S = (8, 30)
 
 
 def buscar() -> list[dict]:
@@ -157,12 +158,14 @@ def buscar() -> list[dict]:
     return dados
 
 
-def montar(avisos: list[dict], gerado_em: str) -> dict:
+def montar(avisos: list[dict], gerado_em: str, via: dict | None = None) -> dict:
+    """`via` diz quem leu o site: a VPS, ou o GitHub Actions quando o site recusa a VPS (com a hora da leitura)."""
     return {
         "versao": 1,
         "fonte": "Defesa Civil de Santa Catarina — www.defesacivil.sc.gov.br (categorias Alerta e Aviso)",
         "fonte_url": URL,
         "gerado_em": gerado_em,
+        "via": via or {"coletor": "vps", "pagina_lida_em": gerado_em},
         "aviso": ("Avisos meteorológicos oficiais do Estado, por REGIÃO em texto livre: não nomeiam município nem "
                   "polígono, não são faixa de rio e não disparam aviso de cota. `inclui_bacia` só diz que alguma "
                   "região citada cobre cidades do projeto."),
@@ -171,19 +174,39 @@ def montar(avisos: list[dict], gerado_em: str) -> dict:
     }
 
 
-def publicar(buscador=buscar) -> int:
-    """`--publicar`: uma consulta, um arquivo pequeno. Falha APAGA o anterior (um de outra coleta não passa por atual)."""
+def ler_pelo_actions() -> dict | None:
+    """O que `avisos_dcsc_actions.py` publicou no branch `coleta-avisos-dcsc`, validado — ou None."""
+    import avisos_dcsc_actions
+
+    return avisos_dcsc_actions.ler_publicado()
+
+
+def publicar(buscador=buscar, publicado=ler_pelo_actions) -> int:
+    """`--publicar`: uma consulta, um arquivo pequeno. Falha APAGA o anterior (um de outra coleta não passa por atual).
+
+    O site primeiro. Se ele recusar a VPS (a conexão nem abre desde 07/11/2026), valem os avisos que o GitHub
+    Actions leu e publicou (`avisos_dcsc_actions.py`), com `via` dizendo isso e a hora da leitura. Sem nenhum dos
+    dois, nada é publicado.
+    """
     destino = DADOS / ARQUIVO_PUBLICAVEL
     gerado = datetime.now(tz=timezone.utc).isoformat(timespec="seconds")
+    via = None
     try:
         avisos = converter(buscador())
     except Exception as e:  # noqa: BLE001 — avisos nunca seguram a publicação do nível
-        destino.unlink(missing_ok=True)
-        print(f"aviso: avisos da Defesa Civil de SC indisponíveis ({e}); nada publicado", file=sys.stderr)
-        return 1
-    grava_json(ARQUIVO_PUBLICAVEL, montar(avisos, gerado))
+        print(f"aviso: site da Defesa Civil de SC indisponível daqui ({e}); tentando o publicado pelo Actions",
+              file=sys.stderr)
+        pelo_actions = publicado()
+        if not pelo_actions:
+            destino.unlink(missing_ok=True)
+            print("aviso: avisos da Defesa Civil de SC indisponíveis; nada publicado", file=sys.stderr)
+            return 1
+        avisos = pelo_actions["avisos"]
+        via = {"coletor": "github-actions", "pagina_lida_em": pelo_actions["pagina_lida_em"]}
+    grava_json(ARQUIVO_PUBLICAVEL, montar(avisos, gerado, via))
     bacia = sum(1 for a in avisos if a["inclui_bacia"])
-    print(f"{len(avisos)} aviso(s) da DCSC, {bacia} citando a bacia -> data/{ARQUIVO_PUBLICAVEL}")
+    print(f"{len(avisos)} aviso(s) da DCSC, {bacia} citando a bacia, via {(via or {}).get('coletor', 'vps')} "
+          f"-> data/{ARQUIVO_PUBLICAVEL}")
     return 0
 
 
