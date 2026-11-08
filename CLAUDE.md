@@ -108,6 +108,18 @@ Os JSONs em `data/` são a **fonte de verdade**. O site lê deles; scripts escre
   o que a pessoa quer; o motor só palpita "maiores cheias" quando a pergunta fala do rio (`FALA_DO_RIO`).
 - O piloto do classificador, listas de permissão, segredos, retenção e público **não** mudam em PR de refatoração.
 
+### Descida medida — REGRA (08/11/2026)
+- `scripts/medir_descida.py` confere a Tabela 7.5.1 da JICA com as séries de 2026: cada ponto medido a partir do
+  pico de Rio do Sul, régua por régua até Santa Regina (DC-11). Mede quanto a cheia leva de uma régua à outra (rede estadual
+  consolidada + coletor + `serie-recente.json`), por cinco métodos (pico a pico, meia-subida, centro de massa,
+  correlação da variação, DTW), com maré tirada por análise harmônica nas réguas de estuário e em Ilhota.
+  Saída derivada: `data/descida-medida.json` e `docs/DESCIDA-MEDIDA.md` (`--gravar`); `--agora` projeta a cheia em curso.
+- **Nunca grava em `transito.json`** e o site/bot não leem a saída: trocar o tempo que o morador vê é decisão do
+  Jefferson. Confiança só com cheias e métodos concordando (`resumir`); o resto sai `insuficiente`, com o motivo.
+- Só HORÁRIO entra na conta, nunca metro. Blumenau = PADKND + AlertaBlu; o repasse antigo "Blumenau" (3 h
+  atrasado) fica de fora. Rio do Sul = DCSC-00013 (a Asthon ficou parada de 04 a 07/11/2026).
+- No baixo vale, crista cedo (Blumenau → Ilhota/Itajaí em 1–4 h) é a crista LOCAL, não a água de Blumenau.
+
 ### SGB na "minha rua" — REGRA (decisão de 04/11/2026)
 - `data/sgb-ruas.json` é **derivado** (`scripts/cruzar_sgb_ruas.py --sgb <pasta do branch sondagem-fontes> --gravar`): para cada
   ponto de `cotas-ruas.json` com coordenada (hoje Gaspar e Brusque), a classe de suscetibilidade a inundação da carta do
