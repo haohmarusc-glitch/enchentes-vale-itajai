@@ -480,11 +480,15 @@ o projeto.
 
 ## Pendências
 
-- [x] **Avisos da Defesa Civil de SC pelo GitHub Actions (08/11/2026).** A VPS nem conecta a `www.defesacivil.sc.gov.br`
-  (`ConnectTimeoutError`, 07/11). `scripts/avisos_dcsc_actions.py` + `.github/workflows/coletar-avisos-dcsc.yml` leem o
-  `wp-json` a cada 30 min (robots antes) e publicam no branch `coleta-avisos-dcsc`; `coleta_avisos_dcsc.py --publicar`
-  tenta o site e, recusado, usa o publicado (até 3 h), com `via.coletor = "github-actions"`. Mesmo caminho de Gaspar
-  e Ituporanga.
+- [ ] **Avisos da Defesa Civil de SC: o site recusa conexão de fora do Brasil (08/11/2026).** A VPS (Helsinque) dá
+  `ConnectTimeoutError` (07/11); o runner do GitHub dá timeout no `robots.txt` (run 42435172062, duas tentativas); a
+  sessão de código toma `Connection reset`. Do Brasil, pelo celular do Jefferson, o site abre (08/11, 22:58). O caminho
+  pelo Actions (#573, `avisos_dcsc_actions.py` + `coletar-avisos-dcsc.yml`) está no main e volta a funcionar sozinho se
+  o bloqueio sair; enquanto isso falha a cada 30 min e atualiza a issue #574, sem notificar. **Não contornar o bloqueio**
+  (proxy, VPN, outro User-Agent). Os níveis e faixas da DCSC vêm de `monitoramento.defesacivil.sc.gov.br`, que atende a
+  VPS, e não são afetados. Saídas em estudo: o feed CAP nacional da IDAP (alertas que as Defesas Civis mandam à
+  população, `idapfile.mdr.gov.br/idap/api/rss/cap`, endereço citado por terceiros, sem documentação oficial achada)
+  ou uma máquina de coleta no Brasil (decisão do Jefferson).
 - [x] **Medidor de descida — conferência da JICA (08/11/2026).** `scripts/medir_descida.py` mede cada ponto da Tabela 7.5.1
   a partir do pico de Rio do Sul, régua por régua até Santa Regina (DC-11), com cinco métodos, IC90 por bootstrap e maré
   tirada por análise harmônica. Relatório em `docs/DESCIDA-MEDIDA.md`. Resultado com as cheias de jul–nov/2026:
