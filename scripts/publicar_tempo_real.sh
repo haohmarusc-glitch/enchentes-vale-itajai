@@ -207,6 +207,22 @@ sys.exit(0 if d.get("versao") == 1 and isinstance(d.get("avisos"), list) and 0 <
   AVISOS_DCSC_ENTRY="$(printf '100644 blob %s\tultimo_avisos_dcsc.json' "$BLOB_AVISOS_DCSC")"
 fi
 
+# ultimo_alertas_idap.json: os alertas que as Defesas Civis mandaram à população de SC, do feed CAP nacional da
+# IDAP (08/11/2026: o site da DCSC recusa conexão de fora do Brasil; a IDAP atende a VPS). O feed tem ~38 MB e leva
+# ~85 s: NÃO é coletado aqui (corte de 60 s), e sim por `coleta_alertas_idap.py --gravar` em linha própria do cron.
+# Aqui só sobe se foi gerado há no máximo 45 min (idade <= 2700 s, o mesmo `IDADE_MAX_PUBLICACAO_S` do coletor).
+ALERTAS_IDAP="$RAIZ/data/tempo-real/ultimo_alertas_idap.json"
+ALERTAS_IDAP_ENTRY=""
+if [ -f "$ALERTAS_IDAP" ] && python3 -c '
+import json, sys
+from datetime import datetime, timezone
+d = json.load(open(sys.argv[1]))
+idade = (datetime.now(timezone.utc) - datetime.fromisoformat(d["gerado_em"])).total_seconds()
+sys.exit(0 if d.get("versao") == 1 and isinstance(d.get("alertas"), list) and 0 <= idade <= 2700 else 1)' "$ALERTAS_IDAP" 2>/dev/null; then
+  BLOB_ALERTAS_IDAP="$(git hash-object -w "$ALERTAS_IDAP")"
+  ALERTAS_IDAP_ENTRY="$(printf '100644 blob %s\tultimo_alertas_idap.json' "$BLOB_ALERTAS_IDAP")"
+fi
+
 TREE="$(
   {
     printf '100644 blob %s\tultimo.json\n' "$BLOB"
@@ -219,6 +235,7 @@ TREE="$(
     [ -n "$ITUPORANGA_CENTRO_ENTRY" ] && printf '%s\n' "$ITUPORANGA_CENTRO_ENTRY"
     [ -n "$RIO_DO_SUL_RIOS_ENTRY" ] && printf '%s\n' "$RIO_DO_SUL_RIOS_ENTRY"
     [ -n "$AVISOS_DCSC_ENTRY" ] && printf '%s\n' "$AVISOS_DCSC_ENTRY"
+    [ -n "$ALERTAS_IDAP_ENTRY" ] && printf '%s\n' "$ALERTAS_IDAP_ENTRY"
     # Este `:` não é enfeite. Com `set -euo pipefail`, se a ÚLTIMA linha do
     # grupo for um `[ -n "$X" ] && ...` com X vazio, o grupo sai com 1, o
     # pipefail propaga e o script MORRE ANTES DE PUBLICAR — calado, porque o

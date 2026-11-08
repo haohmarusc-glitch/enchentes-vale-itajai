@@ -486,9 +486,16 @@ o projeto.
   pelo Actions (#573, `avisos_dcsc_actions.py` + `coletar-avisos-dcsc.yml`) está no main e volta a funcionar sozinho se
   o bloqueio sair; enquanto isso falha a cada 30 min e atualiza a issue #574, sem notificar. **Não contornar o bloqueio**
   (proxy, VPN, outro User-Agent). Os níveis e faixas da DCSC vêm de `monitoramento.defesacivil.sc.gov.br`, que atende a
-  VPS, e não são afetados. Saídas em estudo: o feed CAP nacional da IDAP (alertas que as Defesas Civis mandam à
-  população, `idapfile.mdr.gov.br/idap/api/rss/cap`, endereço citado por terceiros, sem documentação oficial achada)
-  ou uma máquina de coleta no Brasil (decisão do Jefferson).
+  VPS, e não são afetados. Saída adotada: o feed da IDAP (item abaixo); fica em aberto uma máquina de coleta no Brasil
+  (decisão do Jefferson).
+- [ ] **Alertas da IDAP coletados na VPS; falta mostrar (08/11/2026).** `scripts/coleta_alertas_idap.py --gravar` lê o
+  feed CAP 1.2 nacional da IDAP (`idapfile.mdr.gov.br/idap/api/rss/cap`; robots 404, a VPS alcança), guarda os alertas
+  de SC (Defesa Civil Estadual, AlertaBlu e outras municipais) com emissor, hora de Brasília sem fuso, validade e
+  municípios pelo código IBGE, e grava `ultimo_alertas_idap.json`; `publicar_tempo_real.sh` o leva ao `tempo-real` se
+  tiver até 45 min. O feed tem ~38 MB e leva ~85 s: roda em **linha própria do cron**, fora do corte de 60 s (comando no
+  docstring). Guarda só ~12 h; alerta vigente que sai do feed fica no arquivo. Endereço citado por terceiros, sem
+  documentação oficial achada. **Não é faixa nem aviso de cota.** Pendente: (1) ligar a linha do cron na VPS;
+  (2) decidir se e como o site e o chat mostram estes alertas (hoje leem só `ultimo_avisos_dcsc.json`).
 - [x] **Medidor de descida — conferência da JICA (08/11/2026).** `scripts/medir_descida.py` mede cada ponto da Tabela 7.5.1
   a partir do pico de Rio do Sul, régua por régua até Santa Regina (DC-11), com cinco métodos, IC90 por bootstrap e maré
   tirada por análise harmônica. Relatório em `docs/DESCIDA-MEDIDA.md`. Resultado com as cheias de jul–nov/2026:

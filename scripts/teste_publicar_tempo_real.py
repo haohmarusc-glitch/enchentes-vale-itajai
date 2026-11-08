@@ -183,6 +183,29 @@ class Publicador(unittest.TestCase):
                 self.assertEqual(r.returncode, 0, r.stderr)
                 self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
 
+    @staticmethod
+    def alertas_idap(idade_min: int) -> dict:
+        from datetime import datetime, timedelta, timezone
+        gerado = datetime.now(timezone.utc) - timedelta(minutes=idade_min)
+        return {"versao": 1, "gerado_em": gerado.isoformat(timespec="seconds"), "alertas": []}
+
+    def test_leva_os_alertas_da_idap_ate_45_min(self):
+        """Alertas da IDAP (08/11/2026): coletados em linha própria do cron, sobem se tiverem até 45 min."""
+        base = self.monta({"ultimo_alertas_idap.json": self.alertas_idap(40)})
+        r = self.roda(base)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("ultimo_alertas_idap.json", self.arvore(base, r.stdout))
+
+    def test_alertas_da_idap_velhos_ou_quebrados_nao_sobem(self):
+        for nome, conteudo in {"velho": json.dumps(self.alertas_idap(50)), "quebrado": "{quebrado",
+                               "outra versão": json.dumps({**self.alertas_idap(5), "versao": 2})}.items():
+            with self.subTest(nome):
+                base = self.monta({})
+                (base / "data" / "tempo-real" / "ultimo_alertas_idap.json").write_text(conteudo, encoding="utf-8")
+                r = self.roda(base)
+                self.assertEqual(r.returncode, 0, r.stderr)
+                self.assertEqual(self.arvore(base, r.stdout), {"ultimo.json"})
+
     def test_ultimo_json_sem_leituras_nao_vai_ao_ar(self):
         """O portão que já existia: publicar vazio apagaria o nível da tela."""
         base = self.monta({})
