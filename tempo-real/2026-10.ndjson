@@ -46887,3 +46887,156 @@
 {"estacao": "Rio dos Cedros — ponte próxima ao Paço Municipal (DCSC-00011)", "rio": "itajai-acu", "cidade": "rio-dos-cedros", "medido_em": "2026-10-31T23:46:24", "nivel_m": 1.11}
 {"estacao": "Rio do Sul, Ponte Dom Tito Buss (Asthon)", "rio": "itajai-acu", "cidade": "rio-do-sul", "medido_em": "2026-10-31T23:58:41", "nivel_m": 2.6}
 {"estacao": "Taió — Rio Itajaí do Oeste, Centro", "rio": "itajai-acu", "cidade": "taio", "medido_em": "2026-10-31T23:55:00", "nivel_m": 3.12}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T11:21:36", "nivel_m": 1.13}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T11:21:22", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T11:20:15", "nivel_m": 0.46}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T11:21:13", "nivel_m": 1.07}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T11:21:06", "nivel_m": 0.95}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T11:20:56", "nivel_m": 0.65}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T11:20:35", "nivel_m": 0.32}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-30T11:20:21", "nivel_m": 0.98}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T11:20:08", "nivel_m": 0.91}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T11:20:06", "nivel_m": 2.97}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T11:20:07", "nivel_m": 2.42}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T15:11:35", "nivel_m": 1.0}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T15:11:22", "nivel_m": 1.53}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T15:10:03", "nivel_m": 0.29}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T15:11:13", "nivel_m": 0.92}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T15:11:06", "nivel_m": 0.94}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T15:10:56", "nivel_m": 0.45}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T15:10:35", "nivel_m": 0.38}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-30T15:10:21", "nivel_m": 1.02}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T15:10:12", "nivel_m": 0.77}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T15:10:20", "nivel_m": 3.1}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T15:10:12", "nivel_m": 2.23}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T17:11:36", "nivel_m": 1.13}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T17:11:22", "nivel_m": 1.53}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T17:10:07", "nivel_m": 0.44}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T17:11:13", "nivel_m": 1.03}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T17:11:06", "nivel_m": 0.94}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T17:10:56", "nivel_m": 0.65}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T17:10:35", "nivel_m": 0.36}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-30T17:10:21", "nivel_m": 1.04}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T17:10:05", "nivel_m": 0.89}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T17:10:05", "nivel_m": 3.08}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T17:10:09", "nivel_m": 2.43}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T19:11:36", "nivel_m": 0.76}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T19:11:22", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T19:10:15", "nivel_m": 0.2}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T19:11:13", "nivel_m": 0.79}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T19:11:06", "nivel_m": 0.95}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T19:10:56", "nivel_m": 0.5}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T19:10:35", "nivel_m": 0.34}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-30T19:10:21", "nivel_m": 1.04}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T19:10:12", "nivel_m": 0.78}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T19:10:06", "nivel_m": 3.06}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T19:10:10", "nivel_m": 2.3}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T23:01:35", "nivel_m": 0.83}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T23:01:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T23:10:15", "nivel_m": 0.1}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T23:11:12", "nivel_m": 0.74}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T23:11:05", "nivel_m": 0.95}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T23:10:55", "nivel_m": 0.31}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T23:10:34", "nivel_m": 0.33}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-30T23:10:20", "nivel_m": 1.03}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-30T23:10:00", "nivel_m": 0.55}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-30T23:10:09", "nivel_m": 3.05}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-30T23:10:13", "nivel_m": 2.04}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T01:01:35", "nivel_m": 0.73}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T01:01:21", "nivel_m": 1.52}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T01:01:12", "nivel_m": 0.64}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T01:01:06", "nivel_m": 0.95}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T01:00:55", "nivel_m": 0.25}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T01:00:34", "nivel_m": 0.33}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T01:00:20", "nivel_m": 1.02}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T01:00:08", "nivel_m": 0.51}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T01:00:01", "nivel_m": 3.05}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T01:00:02", "nivel_m": 2.04}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T05:01:35", "nivel_m": 1.19}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T05:01:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T05:00:10", "nivel_m": 0.37}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T05:01:12", "nivel_m": 0.97}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T05:01:05", "nivel_m": 0.95}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T05:00:55", "nivel_m": 0.53}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T05:00:34", "nivel_m": 0.33}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T05:00:20", "nivel_m": 1.01}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T05:00:05", "nivel_m": 0.72}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T05:00:13", "nivel_m": 3.04}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T05:00:09", "nivel_m": 2.36}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T07:01:35", "nivel_m": 1.13}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T07:01:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T07:00:03", "nivel_m": 0.42}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T07:01:13", "nivel_m": 1.05}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T07:01:06", "nivel_m": 0.95}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T07:00:56", "nivel_m": 0.68}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T07:00:35", "nivel_m": 0.32}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T07:00:21", "nivel_m": 1.0}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T07:00:13", "nivel_m": 0.89}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T07:00:03", "nivel_m": 3.05}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T07:00:01", "nivel_m": 2.56}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T08:51:35", "nivel_m": 1.02}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T08:51:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T09:00:05", "nivel_m": 0.37}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T09:01:12", "nivel_m": 0.95}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T09:01:06", "nivel_m": 0.94}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T09:00:55", "nivel_m": 0.54}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T09:00:34", "nivel_m": 0.32}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T09:00:21", "nivel_m": 1.0}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T09:00:05", "nivel_m": 0.83}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T09:00:09", "nivel_m": 3.05}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T09:00:09", "nivel_m": 2.42}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T12:51:35", "nivel_m": 1.1}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T12:51:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T12:50:06", "nivel_m": 0.54}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T12:51:12", "nivel_m": 1.03}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T12:51:05", "nivel_m": 0.94}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T12:50:55", "nivel_m": 0.73}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T12:50:34", "nivel_m": 0.33}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T12:50:20", "nivel_m": 1.0}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T12:50:06", "nivel_m": 1.0}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T12:50:15", "nivel_m": 3.06}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T12:50:09", "nivel_m": 2.6}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T14:52:04", "nivel_m": 0.91}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T14:51:51", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T14:50:02", "nivel_m": 0.24}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T14:51:42", "nivel_m": 0.72}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T14:51:35", "nivel_m": 0.93}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T14:51:25", "nivel_m": 0.52}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T14:51:04", "nivel_m": 0.33}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T14:50:40", "nivel_m": 1.01}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T14:50:14", "nivel_m": 0.82}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T14:50:07", "nivel_m": 3.06}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T14:50:13", "nivel_m": 2.34}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T16:51:35", "nivel_m": 1.02}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T16:51:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T16:50:03", "nivel_m": 0.29}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T16:51:13", "nivel_m": 0.78}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T16:51:06", "nivel_m": 0.93}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T16:50:55", "nivel_m": 0.44}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T16:50:35", "nivel_m": 0.33}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T16:50:20", "nivel_m": 1.0}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T16:50:05", "nivel_m": 0.74}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T16:50:08", "nivel_m": 3.06}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T16:50:05", "nivel_m": 2.18}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T20:41:34", "nivel_m": 0.68}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T20:41:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T20:40:06", "nivel_m": 0.13}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T20:41:12", "nivel_m": 0.66}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T20:41:05", "nivel_m": 0.93}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T20:40:55", "nivel_m": 0.35}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T20:40:34", "nivel_m": 0.32}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T20:40:20", "nivel_m": 1.0}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T20:40:05", "nivel_m": 0.65}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T20:40:02", "nivel_m": 3.04}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T20:40:02", "nivel_m": 2.12}
+{"estacao": "DC-01 Rio Itajaí-Açu - ICMBio/CEPSUL", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T22:41:35", "nivel_m": 0.71}
+{"estacao": "DC-02 Rio Itajaí-Açu - Praça Celso Pereira da Silva", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T22:41:21", "nivel_m": 1.52}
+{"estacao": "DC-03 Rio Itajaí-Mirim (canal retificado) - Captação SEMASA", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T22:40:02", "nivel_m": 0.02}
+{"estacao": "DC-04 Rio Itajaí-Mirim (canal retificado e curso antigo) - Vitalmar Pescados", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T22:41:13", "nivel_m": 0.63}
+{"estacao": "DC-05 Rio Itajaí-Mirim (curso antigo) - Propriedade privada", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T22:41:06", "nivel_m": 0.93}
+{"estacao": "DC-06 Rio Itajaí-Mirim (curso antigo) - Itamirim Clube de Campo", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T22:40:56", "nivel_m": 0.23}
+{"estacao": "DC-07 Ribeirão da Murta - Portal", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T22:40:35", "nivel_m": 0.31}
+{"estacao": "DC-08 Ribeirão Canhanduba - Rua Benjamin Dagnoni", "rio": "ribeirao-canhanduba", "cidade": "itajai", "medido_em": "2026-10-31T22:40:21", "nivel_m": 1.0}
+{"estacao": "DC-09 Ribeirão da Murta - Ponte da Rua Lidia Puel Peixer", "rio": "ribeirao-murta", "cidade": "itajai", "medido_em": "2026-10-31T22:40:07", "nivel_m": 0.54}
+{"estacao": "DC-10 Rio Itajaí-Mirim – Bairro Limoeiro", "rio": "itajai-mirim", "cidade": "itajai", "medido_em": "2026-10-31T22:40:03", "nivel_m": 3.02}
+{"estacao": "DC-11 Rio Itajaí-Açú – Santa Regina (Volta de Cima)", "rio": "itajai-acu", "cidade": "itajai", "medido_em": "2026-10-31T22:40:03", "nivel_m": 1.99}
