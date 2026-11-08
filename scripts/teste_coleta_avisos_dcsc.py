@@ -103,7 +103,7 @@ class Publicar(unittest.TestCase):
                 def explode():
                     raise RuntimeError("503")
                 with mock.patch("sys.stderr"):
-                    self.assertEqual(ca.publicar(buscador=explode), 1)
+                    self.assertEqual(ca.publicar(buscador=explode, publicado=lambda: None), 1)
                 self.assertFalse((Path(d) / ca.ARQUIVO_PUBLICAVEL).exists(), "arquivo de outra coleta não passa por atual")
 
     def test_url_pede_so_as_categorias_de_aviso(self):
@@ -116,7 +116,32 @@ class Publicar(unittest.TestCase):
         corte = 60
         sh = (Path(__file__).parent / "publicar_tempo_real.sh").read_text(encoding="utf-8")
         self.assertIn(f"timeout {corte} python3 scripts/coleta_avisos_dcsc.py", sh)
-        self.assertLessEqual(ca.TENTATIVAS * ca.TIMEOUT_S, corte - 5)
+        import avisos_dcsc_actions as aa
+        site = ca.TENTATIVAS * sum(ca.TIMEOUT_S)
+        actions = sum(aa.TIMEOUT_PUBLICADO_S)
+        self.assertLessEqual(site + actions + 2, corte - 5, "o site e o publicado pelo Actions têm de caber juntos")
+
+    def test_site_recusado_usa_o_publicado_pelo_actions(self):
+        def recusa():
+            raise ConnectionError("ConnectTimeoutError")
+        pelo_actions = {"avisos": ca.converter(POSTS), "pagina_lida_em": "2026-11-08T01:30:00+00:00"}
+        with tempfile.TemporaryDirectory() as d:
+            with mock.patch.object(ca, "DADOS", Path(d)), mock.patch("comum.DADOS", Path(d)), \
+                    mock.patch("sys.stdout"), mock.patch("sys.stderr"):
+                (Path(d) / "tempo-real").mkdir()
+                self.assertEqual(ca.publicar(buscador=recusa, publicado=lambda: pelo_actions), 0)
+                saida = json.loads((Path(d) / ca.ARQUIVO_PUBLICAVEL).read_text(encoding="utf-8"))
+        self.assertEqual(saida["via"], {"coletor": "github-actions", "pagina_lida_em": "2026-11-08T01:30:00+00:00"})
+        self.assertEqual(len(saida["avisos"]), 3)
+        self.assertTrue(saida["gerado_em"].endswith("+00:00"))
+
+    def test_lido_pela_vps_diz_vps(self):
+        with tempfile.TemporaryDirectory() as d:
+            with mock.patch.object(ca, "DADOS", Path(d)), mock.patch("comum.DADOS", Path(d)), mock.patch("sys.stdout"):
+                (Path(d) / "tempo-real").mkdir()
+                ca.publicar(buscador=lambda: POSTS, publicado=lambda: self.fail("não devia ler o Actions"))
+                saida = json.loads((Path(d) / ca.ARQUIVO_PUBLICAVEL).read_text(encoding="utf-8"))
+        self.assertEqual(saida["via"]["coletor"], "vps")
 
     def test_buscar_usa_uma_tentativa_e_o_timeout_proprio(self):
         pedidos = []
